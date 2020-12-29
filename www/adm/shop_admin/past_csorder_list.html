@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<link rel="stylesheet" type="text/css" href="/adm/css/admin.css"/>
+		<link rel="stylesheet" type="text/css" href="/adm/css/admin.sub.css"/>
+		<link rel="stylesheet" type="text/css" href="/adm/css/samhwa_admin.css"/>
+		<link rel="stylesheet" type="text/css" href="/adm/css/samhwa_admin_common.css"/>
+		<link rel="stylesheet" type="text/css" href="/skin/admin/new/css/admin.css"/>
+		<link rel="stylesheet" type="text/css" href="/skin/admin/new/css/basic/admin.css"/>
+
+	</head>
+
+	<body>
+
+		<div id="tbl_wrap">
+			
+			<div id="wrapper">
+				<div id="container">
+					<div id="text_size">
+						<!-- font_resize('엘리먼트id', '제거할 class', '추가할 class'); -->
+						<button onclick="font_resize('container', 'ts_up ts_up2', '');"><img src="https://signstand.co.kr/adm/img/ts01.gif" alt="기본"></button>
+						<button onclick="font_resize('container', 'ts_up ts_up2', 'ts_up');"><img src="https://signstand.co.kr/adm/img/ts02.gif" alt="크게"></button>
+						<button onclick="font_resize('container', 'ts_up ts_up2', 'ts_up2');"><img src="https://signstand.co.kr/adm/img/ts03.gif" alt="더크게"></button>
+					</div>
+					<h1>과거 CS주문내역</h1>
+					<div class="local_ov01 local_ov">
+					    <span class="btn_ov01"><span class="ov_txt"> 등록된 주문 </span><span class="ov_num"> 1,000,000개</span></span>
+					
+					    <form name="flist" class="local_sch01 local_sch">
+					    <input type="hidden" name="page" value="1">
+					
+					    <label for="bn_position" class="sound_only">검색</label>
+					    <select name="bn_position" id="bn_position">
+					        <option value="" selected="selected">분류전체</option>
+					        <option value="일반">일반</option>
+					        <option value="파트너">일반</option>
+					    </select>
+					    <select name="bn_position" id="bn_position">
+					        <option value="" selected="selected">전체</option>
+					        <option value="메인">주문번호</option>
+					        <option value="주문서번호">주문서번호</option>
+					        <option value="업체명">업체명</option>
+					        <option value="담당자">담당자</option>
+					        <option value="CS매니저">CS매니저</option>
+					    </select> <input type="text" name="" value="" id=""/>
+					    / 결제금액 : <input type="text" name="" value="" id=""/>원 ~ <input type="text" name="" value="" id=""/>원
+					
+					    <input type="submit" value="검색" class="btn_submit">
+					
+					    </form>
+					
+					</div>
+		
+					<div class="tbl_head01 tbl_wrap">
+					    <table id="sodr_list">
+					    <caption>배너관리 목록</caption>
+						    <thead>
+							    <tr>
+							        <th scope="col" >No</th>
+							        <th scope="col" >분류</th>
+							        <th scope="col" >주문서작성일</th>
+							        <th scope="col" >주문서번호</th>
+							        <th scope="col" >주문번호</th>
+							        <th scope="col" >업체명</th>
+							        <th scope="col" >담당자 </th>
+							        <th scope="col" >CS매니저</th>
+							        <th scope="col" >주문상품명</th>
+							        <th scope="col" >주문금액</th>
+							        <th scope="col" >상태</th>
+							        <th scope="col" >보기</th>
+							    </tr>
+						    </thead>
+						    <tbody>
+							    <tr class="bg0">
+							        <td>2</td>
+							        <td>일반</td>
+							        <td>20-07-23 (15:37)</td>
+							        <td>315371296</td>
+							        <td>2020072315371296</td>
+							        <td>공유네트웍스</td>
+							        <td>서상열</td>
+							        <td>김매니저</td>
+							        <td>BMMP-02QB</td>
+							        <td>149,500원</td>
+							        <td>주문생성</td>
+							        <td class="td_mng td_mng_s"><a href="past_csorder_view.html" class="mng_mod btn btn_02">보기</a></td>
+							    </tr>
+							    <tr class="bg0">
+							        <td>1</td>
+							        <td>일반</td>
+							        <td>20-07-23 (15:37)</td>
+							        <td>315371296</td>
+							        <td>2020072315371296</td>
+							        <td>공유네트웍스</td>
+							        <td>서상열</td>
+							        <td>김매니저</td>
+							        <td>BMMP-02QB</td>
+							        <td>149,500원</td>
+							        <td>주문생성</td>
+							        <td class="td_mng td_mng_s"><a href="past_csorder_view.html" class="mng_mod btn btn_02">보기</a></td>
+							    </tr>
+						    </tbody>
+					    </table>
+					
+					</div>
+		<nav class="pg_wrap"><span class="pg"><span class="sound_only">현재</span><strong class="pg_current">1</strong><span class="sound_only">페이지</span>
+			<a href="#" class="pg_page">2</a>
+			<a href="#" class="pg_page">3</a>
+			<a href="#" class="pg_page">4</a>
+			<a href="#" class="pg_page">5</a>
+			<a href="#" class="pg_page">6</a>
+			<a href="#" class="pg_page">7</a>
+			<a href="#" class="pg_page pg_end">맨끝</a>
+			</span>
+		</nav>
+		
+		
+		
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
