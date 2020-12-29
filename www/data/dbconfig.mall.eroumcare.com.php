@@ -70,12 +70,12 @@ $g5['g5_shop_order_data_table'] = G5_SHOP_TABLE_PREFIX.'order_data'; // 모바�
 $g5['g5_shop_inicis_log_table'] = G5_SHOP_TABLE_PREFIX.'inicis_log'; // 이니시스 모바일 계좌이체 로그 테이블
 
 //사방넷코드
-define('SEND_COMPAYNY_ID','samhwasnd');
-define('SEND_AUTH_KEY','0A8JE6HBYdHM7BuWNy8JP9VV8PEHB60Vr');
+define('SEND_COMPAYNY_ID','');
+define('SEND_AUTH_KEY','');
 
 define('G5_EDI_URL',        'http://ediweb.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
-define('G5_EDI_USERID',     '36157278');
-define('G5_EDI_PASSWORD',   '7278'); 
+define('G5_EDI_USERID',     '');
+define('G5_EDI_PASSWORD',   ''); 
 
 define('G5_EDI_DELIVERY1',   '010'); // 010(선불) / 020(착불) / 030(신용)
 define('G5_EDI_DELIVERY2',   '020');
