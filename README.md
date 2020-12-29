@@ -7,7 +7,7 @@ Server: PHP Version 7.3.x
 ```sh
 git clone https://github.com/pelogvc/mall-eroumcare.git malleroumcare
 chmod -R 755 malleroumcare
-cd malleroumcare/data
+cd malleroumcare/www/data
 mkdir session
 mkdir cache
 cd ../
