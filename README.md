@@ -14,6 +14,15 @@ cd ../
 chmod -R 707 data
 ```
 
+## PM2
+
+```sh
+cd malleroumcare/webhook
+pm2 start index.js --name "malleroumcare-webhook" --watch
+pm2 startup
+pm2 save
+```
+
 ## Development
 
 - hosts 파일에 해당 내용 추가
