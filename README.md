@@ -25,9 +25,23 @@ pm2 save
 
 ## Development
 
-- hosts 파일에 해당 내용 추가
+hosts 파일에 해당 내용 추가
 ```sh
 127.0.0.1 mall.eroumcare.doto.li
+```
+
+vhost.conf에 해당 내용 추가
+```
+<VirtualHost *:80>
+    DocumentRoot /위치/mall-eroumcare/www
+    ServerName mall.eroumcare.doto.li
+    ServerAlias mall.eroumcare.doto.li
+    <Directory "/위치/mall-eroumcare/www">
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+</VirtualHost>
 ```
 
 ## URLs
