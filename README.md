@@ -46,6 +46,6 @@ vhost.conf에 해당 내용 추가
 
 ## URLs
 
-- PMA: <http://samhwasnd.com/eroumcarepma>
-- 본점: <https://mall.eroumcare.com>
+- PMA: <http://mall.eroumcare.com/eroumcarepma>
+- 라이브: <https://mall.eroumcare.com>
 - 테스트: <http://mall.eroumcare.doto.li>
