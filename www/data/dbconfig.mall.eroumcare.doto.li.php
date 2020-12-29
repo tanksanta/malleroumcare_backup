@@ -1,9 +1,9 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
-define('G5_MYSQL_HOST', 'localhost');
-define('G5_MYSQL_USER', 'samhwasign');
-define('G5_MYSQL_PASSWORD', 'samhwasndsh19b!741!@#!@#999');
-define('G5_MYSQL_DB', 'samhwasigntest');
+define('G5_MYSQL_HOST', '175.125.94.165');
+define('G5_MYSQL_USER', 'malleroumcare');
+define('G5_MYSQL_PASSWORD', 'malleroumcareghjdsafkjDSFFASJFKD@!DS!123');
+define('G5_MYSQL_DB', 'malleroumcare');
 define('G5_MYSQL_SET_MODE', true);
 
 define('G5_TABLE_PREFIX', 'g5_');
@@ -74,10 +74,10 @@ define('SEND_COMPAYNY_ID','samhwasnd');
 define('SEND_AUTH_KEY','0A8JE6HBYdHM7BuWNy8JP9VV8PEHB60Vr');
 
 define('G5_EDI_URL',        'http://ediweb.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
-define('G5_EDI_USERID',     '22550530');
-define('G5_EDI_PASSWORD',   'sh18c007!'); 
+define('G5_EDI_USERID',     '36157278');
+define('G5_EDI_PASSWORD',   '7278'); 
 
-define('G5_EDI_DELIVERY1',   '030'); // 010(선불) / 020(착불) / 030(신용)
+define('G5_EDI_DELIVERY1',   '010'); // 010(선불) / 020(착불) / 030(신용)
 define('G5_EDI_DELIVERY2',   '020');
 
 
