@@ -3,7 +3,7 @@ var spawn   = require('child_process').spawn;
 var crypto  = require('crypto');
 var url     = require('url');
 
-var secret  = 'amazingkey'; // secret key of the webhook
+var secret  = 'eroumcarewebhooktlzmfltzlgkjh929g8a@@d'; // secret key of the webhook
 var port    = 8081; // port
 
 http.createServer(function(req, res){

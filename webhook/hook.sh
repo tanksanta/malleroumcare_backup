@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # DIRECTORY TO THE REPOSITORY
-REPOSITORY="../repo"
+REPOSITORY="../www"
 
 cd $REPOSITORY
 
