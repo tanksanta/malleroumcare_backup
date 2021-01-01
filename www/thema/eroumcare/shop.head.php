@@ -62,9 +62,6 @@ $(document).ready(function() {
 	<div class="quick_menu">
 		<ul>
 			<li class="favorite"><a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_bookmark.png" alt=""> 즐겨찾기</a></li>
-			<li><a href="/bbs/board.php?bo_table=assembly_desc"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_guide.png" alt=""> 조립설명서</a></li>
-			<li><a href="/shop/list.php?ca_id=f030"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_pay.png" alt=""> 개인결제창</a></li>
-			<li><a href="/shop/list.php?ca_id=f020"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_acc.png" alt=""> 부속품</a></li>
 			<li><a href="https://www.ilogen.com/web/personal/tkSearch" target="_blank"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_car.png" alt=""> 배송추적</a></li>
 			<li><a href="/bbs/board.php?bo_table=notice"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_noti.png" alt=""> 공지사항</a></li>
 			<li><a href="/bbs/board.php?bo_table=qa"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_cs.png" alt=""> 고객센터</a></li>
@@ -80,19 +77,12 @@ $(document).ready(function() {
 	<div class="info">
 		<p>BANK ACCOUNT</p>
 		<p>· <?php echo $banks[0]; ?><br>
-· <?php echo $banks[1]; ?><br>
-· <?php echo $banks[2]; ?><br>
-예금주 - <?php echo $default['de_admin_company_name']; ?>
+			<?php echo $default['de_admin_company_name']; ?>
 		</p>
 	</div>
 	<div class="info">
 		<p>Email</p>
 		<p><?php echo $default['de_admin_info_email']; ?>
-		</p>
-	</div>
-	<div class="info">
-		<p>Web hard</p>
-		<p><?php echo $config['cf_1'] ?>
 		</p>
 	</div>
 	<div class="talk_area">
@@ -268,8 +258,7 @@ $(document).ready(function() {
 			</div>
 			<div class="top_right_area">
 				<div class="link_area">
-					
-				<a  onclick="pagePrintPreview()">인쇄하기</a>
+				
 					<?php if($is_member) { // 로그인 상태 ?>
 						<a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a>
 						<a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a>

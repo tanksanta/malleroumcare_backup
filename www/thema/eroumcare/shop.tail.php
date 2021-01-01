@@ -18,14 +18,13 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 	</div><!-- wrap -->
 
 
-	<div class="footer_info container_wrap">
+	<!-- <div class="footer_info container_wrap">
 		<ul>
 			<li>
 				<div class="footer_info_wrap">
 					<div class="subtit">CALL CENTER</div>
 					<div class="point_txt">T. <?php echo $default['de_admin_company_tel']; ?></div>
 					F. <?php echo $default['de_admin_company_fax']; ?><br>
-					H.P. 010-3757-5051(문자전용)<br><br>
 					평일 오전 09:00 ~ 오후 06:00<br>
 					점심 오전 12:00 ~ 오후 01:00<br>
 					휴무 토 / 일 /  공휴일 휴무
@@ -41,7 +40,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 					· <?php echo $banks[1]; ?><br>
 					· <?php echo $banks[2]; ?><br><br>
 					*예금주 - <?php echo $default['de_admin_company_name']; ?><br><br>
-					<!-- <a href="#">입금통장 사본 <img src="<?php echo THEMA_URL; ?>/assets/img/icon_print.png" alt="" /></a> -->
+					<a href="#">입금통장 사본 <img src="<?php echo THEMA_URL; ?>/assets/img/icon_print.png" alt="" /></a>
 				</div>
 			</li>
 			<li>
@@ -51,15 +50,15 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 					Web hard (<?php echo $config['cf_1'] ?>)
 				</div>
 			</li>
-			<!-- <li>
+			<li>
 				<div class="subtit">RETURN & EXCHANGE</div>
 				서울 성동구 성수이로10길 14 <br>
 				에이스하이엔드성수타워 B1 B103~104호 <br>
 				삼화에스앤디(주)<br><br>
 				<a href="#">지도보기 <img src="<?php echo THEMA_URL; ?>/assets/img/icon_pin.png" alt="" /></a><br><br>
-			</li> -->
+			</li>
 		</ul>
-		<!-- <ul>
+		<ul>
 			<li>
 				<div class="subtit">On-line Contact</div>
 				Email : sales@shsnd.com<br>
@@ -75,26 +74,25 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				<a href="https://www.ilogen.com/m/personal/tkSearch" target="_blank">로젠택배 배송위치 조회 <img src="<?php echo THEMA_URL; ?>/assets/img/icon_car.png" alt="" /></a>
 				<a href="https://kdexp.com/main.kd" target="_blank">경동택배 배송위치 조회 <img src="<?php echo THEMA_URL; ?>/assets/img/icon_car.png" alt="" /></a>
 			</li>
-		</ul> -->
-	</div>
+		</ul>
+	</div> -->
 
 	<div class="footer_area">
 		<div class="logo"><img src="<?php echo THEMA_URL; ?>/assets/img/footer_logo.png" alt="" /></div>
 		<div class="info">
 			<p class="link">
-				<a href="<?php echo G5_BBS_URL;?>/content.php?co_id=company">회사소개 </a>   |   <a href="<?php echo G5_BBS_URL;?>/page.php?hid=provision">이용약관</a>    |   <a href="<?php echo G5_BBS_URL;?>/page.php?hid=privacy"><strong>개인정보취급방침</strong></a>    |   <a href="<?php echo G5_BBS_URL;?>/page.php?hid=noemail">이메일 무단수집거부</a>    |   <a href="/shop/orderinquiry.php">주문조회(비회원)</a>
+				<a href="<?php echo G5_BBS_URL;?>/content.php?co_id=company">회사소개 </a>   |   <a href="<?php echo G5_BBS_URL;?>/page.php?hid=provision">이용약관</a>    |   <a href="<?php echo G5_BBS_URL;?>/page.php?hid=privacy"><strong>개인정보취급방침</strong></a>
 			</p>
 			<p>
-				<?php echo $default['de_admin_company_name']; ?> | 대표 : <?php echo $default['de_admin_company_owner']; ?> ㅣ 사업자등록번호 : <?php echo $default['de_admin_company_saupja_no']; ?> <a href="javascript:;" onclick="window.open('https://www.ftc.go.kr/bizCommPop.do?wrkr_no=1348113428','communicationViewPopup','width=750,height=700,scrollbars=yes')">[사업자정보확인]</a> <span class="pc_only"> ㅣ </span> <span class="mo_br"></span> 통신판매신고번호 : <?php echo $default['de_admin_tongsin_no']; ?><br>
-				개인정보보호관리자 : <?php echo $default['de_admin_info_name']; ?> ㅣ 주소 : <?php echo $default['de_admin_company_addr']; ?><a href="http://naver.me/F4in5mn2" class="btn_map" target="_blank">지도보기 <img src="<?php echo THEMA_URL; ?>/assets/img/icon_pin.png" alt="" /></a>
+				<?php echo $default['de_admin_company_name']; ?> | 대표 : <?php echo $default['de_admin_company_owner']; ?> ㅣ 사업자등록번호 : <?php echo $default['de_admin_company_saupja_no']; ?> <a href="javascript:;" onclick="window.open('https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6178614330','communicationViewPopup','width=750,height=700,scrollbars=yes')">[사업자정보확인]</a> <span class="pc_only"> ㅣ </span> <span class="mo_br"></span> 통신판매신고번호 : <?php echo $default['de_admin_tongsin_no']; ?><br>
+				개인정보보호관리자 : <?php echo $default['de_admin_info_name']; ?> ㅣ 주소 : <?php echo $default['de_admin_company_addr']; ?><!-- <a href="http://naver.me/F4in5mn2" class="btn_map" target="_blank">지도보기 <img src="<?php echo THEMA_URL; ?>/assets/img/icon_pin.png" alt="" /></a> -->
 			</p>
 			<div class="desc">
 				본, 쇼핑몰의 모든 정보, 콘텐츠 및 UI, 저작물 등의 저작권은 삼화에스앤디(주)에 있으며, 어떠한 이유에서도<br>
 				전시, 전송, 스크래핑, 무단복제, 도용 등은 저작권법(제97조5항)에 의거 금지되어 있으므로 이를 위반 시 법적처벌을 받을 수 있습니다.<br><br>
-				Copyright ⓒ2013 삼화에스앤디(주) All righs reserved.
+				Copyright ⓒEroumcare All righs reserved.
 			</div>
 		</div>
-		<div class="sign"><img src="<?php echo THEMA_URL; ?>/assets/img/footer_info.png" alt="" /></div>
 
 	</div>
 

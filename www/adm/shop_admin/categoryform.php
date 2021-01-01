@@ -92,7 +92,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $pg_anchor ='<ul class="anchor">
 <li><a href="#anc_scatefrm_basic">필수입력</a></li>
-<li><a href="#anc_scatefrm_apms">아미나 설정</a></li>
+<li><a href="#anc_scatefrm_apms"> 상품폼 설정</a></li>
 <li><a href="#anc_scatefrm_pc">PC 스킨</a></li>
 <li><a href="#anc_scatefrm_mobile">모바일 스킨</a></li>
 <li><a href="#anc_scatefrm_optional">선택입력</a></li>
@@ -284,12 +284,12 @@ if(USE_G5_THEME) {
 </section>
 
 <section id="anc_scatefrm_apms">
-    <h2 class="h2_frm">아미나 설정</h2>
+    <h2 class="h2_frm">상품폼 설정</h2>
     <?php echo $pg_anchor; ?>
 
     <div class="tbl_frm01 tbl_wrap">
         <table>
-        <caption>아미나 설정</caption>
+        <caption>상품폼 설정</caption>
         <colgroup>
             <col class="grid_4">
             <col>

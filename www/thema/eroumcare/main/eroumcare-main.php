@@ -49,32 +49,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 		</div> -->
 		
 		
-		<div class="container_wrap">
-			<div class="main_section_tit">고객님을 위한 제품 추천</div>
-			<div class="tab_list_wrap">
-				<div class="tab_list">
-					<ul>
-						<li data-id="special_tab1">실외용입간판</li>
-						<li data-id="special_tab2">신제품(NEW)</li>
-						<li data-id="special_tab3">테마가 있는 소품</li>
-						<li data-id="special_tab4">기획상품</li>
-					</ul>
-				</div>
-			</div>
-			<div class="pick_item_area special_tab1">
-				<?php echo get_samhwa_content('point_pick1'); ?>
-			</div>
-			<div class="pick_item_area special_tab2">
-				<?php echo get_samhwa_content('point_pick2'); ?>
-			</div>
-			<div class="pick_item_area special_tab3">
-				<?php echo get_samhwa_content('point_pick3'); ?>
-			</div>
-			<div class="pick_item_area special_tab4">
-				<?php echo get_samhwa_content('point_pick4'); ?>
-			</div>
-			
-		</div>
+		
 		<?php
 		// 배너
 		$bn_md = array();

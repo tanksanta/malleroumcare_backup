@@ -800,7 +800,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <input type="text" name="od_delivery_price[delivery]" value="<?php echo $od['od_delivery_price']; ?>" required class="frm_input" placeholder="운임비" style="min-width:70px">&nbsp;원&nbsp;
                                     송하인:
                                     <input type="radio" name="od_delivery_receiptperson[delivery]" id='od_delivery_receiptperson_0' value="0" <?php echo $od['od_delivery_receiptperson'] == 0 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_0">삼화</label>
+                                    <label for="od_delivery_receiptperson_0">관리기업</label>
 
                                     <input type="radio" name="od_delivery_receiptperson[delivery]" id="od_delivery_receiptperson_1" value="1" <?php echo $od['od_delivery_receiptperson'] == 1 ? 'checked' : ''; ?>/>
                                     <label for="od_delivery_receiptperson_1">주문자(<?php echo $od['od_name']; ?>)</label>

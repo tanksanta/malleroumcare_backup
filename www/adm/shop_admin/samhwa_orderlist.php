@@ -37,10 +37,10 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
     <div class="right">
         <button id="select_important">선택 계산서 발행 확인</button>
         <button id="deselect_important">선택 계산서 발행 해지</button>
-        <button id="gdexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">경동엑셀</button>
-        <button id="dzexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">더존엑셀</button>
-        <button id="handsabang" onClick="sanbang_order_send()">사방넷수동가져오기</button>
-		<button id="list_matching_cancel">매칭데이터취소</button>
+        <!-- <button id="gdexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">경동엑셀</button> -->
+        <!-- <button id="dzexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">더존엑셀</button> -->
+        <!-- <button id="handsabang" onClick="sanbang_order_send()">사방넷수동가져오기</button> -->
+		<!-- <button id="list_matching_cancel">매칭데이터취소</button> -->
         <button id="delivery_edi_return_all">송장리턴</button>
         <button class="orderExcel" data-type="1"><img src="/adm/shop_admin/img/btn_img_ex.gif">주문 엑셀 다운로드</button>
         <button class="orderExcel" data-type="2"><img src="/adm/shop_admin/img/btn_img_ex.gif">출고 엑셀 다운로드</button>
