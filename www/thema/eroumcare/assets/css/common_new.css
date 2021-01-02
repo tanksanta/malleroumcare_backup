@@ -186,7 +186,7 @@ pre{white-space: pre-wrap;}
 }
 
 
-.footer_area{width:100%;max-width:1400px;padding:20px 10px;margin:0 auto 150px;border-top:1px solid #ddd;}
+.footer_area{width:100%;max-width:1400px;padding:20px 10px;margin:60px auto 150px;border-top:1px solid #ddd;}
 .footer_area .logo{float: left;margin-right:20px;}
 .footer_area .info{float: left;padding:10px 20px;font-size:12px;}
 .footer_area .info p{margin-bottom:20px;line-height: 20px;}
