@@ -85,15 +85,21 @@ $(document).ready(function() {
 		<p><?php echo $default['de_admin_info_email']; ?>
 		</p>
 	</div>
-	<div class="talk_area">
+	<div class="info">
+		<p>최근본상품</p>
+		<div>
+            <?php include(THEMA_PATH.'/side/boxtodayview.skin.php'); // 오늘 본 상품 ?>
+		</div>
+	</div>
+	<!-- <div class="talk_area">
 		<a href="#" onclick="window.open('https://talk.naver.com/wcbxq5?ref='+encodeURIComponent(location.href.replace('view','view_snipet'))+'#nafullscreen', 'talktalk', 'width=471, height=640');return false;"> <img src="<?php echo THEMA_URL; ?>/assets/img/icon_talk_naver.png" alt=""> 네이버 톡톡 상담</a>
 		<a href="https://pf.kakao.com/_FZSEK/chat" target="_blank"> <img src="<?php echo THEMA_URL; ?>/assets/img/icon_talk_kakao.png" alt=""> 카카오톡 상담</a>
 	</div>
 	<div class="sns_link">
-		<!-- <a href="#" target="_blank"> <img src="<?php echo THEMA_URL; ?>/assets/img/btn_sns_blog.png" alt=""></a> -->
+		<a href="#" target="_blank"> <img src="<?php echo THEMA_URL; ?>/assets/img/btn_sns_blog.png" alt=""></a>
 		<a href="https://www.instagram.com/samhwasnd/" target="_blank"> <img src="<?php echo THEMA_URL; ?>/assets/img/btn_sns_instar.png" alt=""></a>
-		<!-- <a href="#" target="_blank"> <img src="<?php echo THEMA_URL; ?>/assets/img/btn_sns_you.png" alt=""></a> -->
-	</div>
+		<a href="#" target="_blank"> <img src="<?php echo THEMA_URL; ?>/assets/img/btn_sns_you.png" alt=""></a>
+	</div> -->
 </div>
 
 <div class="mo_top">
@@ -134,7 +140,7 @@ $(document).ready(function() {
 				<?php if($is_member) { // 로그인 상태 ?>
 					<a href="<?php echo $at_href['logout'];?>">로그아웃</a>
 				<?php }else{ ?>
-					<a href="/shop/orderinquiry.php" class="green">로그인</a>
+					<a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
 				<?php } ?>
 			</div>
 		</div>
@@ -271,7 +277,7 @@ $(document).ready(function() {
 						<?php } ?>
 						<a href="<?php echo G5_BBS_URL; ?>/logout.php" >로그아웃</a>
 					<?php }else{ ?>
-						<a href="/shop/orderinquiry.php" class="green">로그인</a>
+						<a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
 						<a href="<?php echo $at_href['reg'];?>">회원가입</a>
 						<a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>
 					<?php } ?>
@@ -396,7 +402,7 @@ $(document).ready(function() {
 								<?php } ?>
 								<a href="<?php echo G5_BBS_URL; ?>/logout.php" >로그아웃</a>
 							<?php }else{ ?>
-								<a href="/shop/orderinquiry.php" class="green">로그인</a>
+								<a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
 								<a href="<?php echo $at_href['reg'];?>">회원가입</a>
 								<a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>
 							<?php } ?>
