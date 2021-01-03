@@ -1711,9 +1711,6 @@
 .it_supply {
     color: #999;
     border-radius: 0px;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     height: 54px !important;
     line-height: 36px !important;
     margin-bottom: 5px;

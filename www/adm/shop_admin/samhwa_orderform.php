@@ -702,6 +702,37 @@ var od_id = '<?php echo $od['od_id']; ?>';
     </div>
     <div class="block">
         <div class="header">
+            <h2>수급자정보</h2>
+        </div>
+        <!-- 수급자 정보가 없는 경우 표시 
+        <div class="block-box">
+        	
+        	<p>입력된 수급자 정보가 없습니다. </p> 
+        	
+        </div>
+        -->
+    	<table class="recipient_info">
+			<tr>
+				<th>수급자</th>
+				<th>인정등급</th>
+				<th>유효기간</th>
+				<th>적용기간</th>
+				<th>전화번호</th>
+				<th>주소</th>
+			</tr>
+			<tr>
+				<td>홍길동</td>
+				<td>3등급</td>
+				<td>2020.12.01 ~ 2020.12.01</td>
+				<td>2020.12.01 ~ 2020.12.01</td>
+				<td>010-1111-2222</td>
+				<td>서울시 강남구 123-56</td>
+			</tr>
+		</table>
+    	
+    </div>
+    <div class="block">
+        <div class="header">
             <h2>배송정보</h2>
             <div class="right">
                 <input type="button" value="기본정보 반영" class="btn shbtn" id="reset_od_info">

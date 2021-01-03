@@ -2089,11 +2089,11 @@ ul.div-ring p {
 /* Button ------------------------------------------------------ */
 .btn.btn-color {
 	color: #fff !important; border-image: none !important; background-image: none !important;
-	border: 1px solid rgb(213, 7, 15);  
-	background-color: rgb(233, 27, 35); 
+	border: 1px solid #333;  
+	background-color: #333; 
 }
 .btn.active.btn-color, .btn.btn-color:hover, .btn.btn-color:focus, .btn.btn-color:active { 
-	background-color: rgb(213, 7, 15); 
+	background-color: #333; 
 }
 .btn.btn-dark { 
 	color: #fff !important; border-image: none !important; background-image: none !important;
@@ -2101,13 +2101,13 @@ ul.div-ring p {
 	background-color: #333; 
 }
 .btn.active.btn-dark, .btn.btn-dark:hover, .btn.btn-dark:focus, .btn.btn-dark:active { 
-	border-color: rgb(213, 7, 15); 
-	background-color: rgb(213, 7, 15); 
+	border-color: #333; 
+	background-color: #333; 
 }
 .btn.btn-black { 
 	color: #fff !important; border-image: none !important; background-image: none !important;
-	border: 1px solid #111; 
-	background-color: #333; 
+	border: 1px solid #999; 
+	background-color: #999; 
 }
 .btn.active.btn-black, .btn.btn-black:hover, .btn.btn-black:focus, .btn.btn-black:active { 
 	background-color: #111; 

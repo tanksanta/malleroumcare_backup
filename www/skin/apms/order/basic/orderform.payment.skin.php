@@ -2,15 +2,15 @@
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 ?>
 
-<?php if (!$default['de_card_point']) { ?>
+<!-- <?php if (!$default['de_card_point']) { ?>
 	<div class="well" id="sod_frm_pt_alert">
-		<i class="fa fa-bell fa-lg"></i> <strong>무통장입금</strong> 이외의 결제 수단으로 결제하시는 경우 포인트를 적립해드리지 않습니다.
+		<strong>무통장입금</strong> 이외의 결제 수단으로 결제하시는 경우 포인트를 적립해드리지 않습니다.
 	</div>
-<?php } ?>
+<?php } ?> -->
 
 <section id="sod_frm_pay" class="order-payment">
 	<div class="panel panel-default">
-		<div class="panel-heading"><strong><i class="fa fa-check fa-lg"></i> 결제정보</strong></div>
+		<div class="panel-heading"><strong> 결제정보</strong></div>
 		<div class="panel-body">
 			<?php if($oc_cnt > 0) { ?>
 				<div class="form-group">

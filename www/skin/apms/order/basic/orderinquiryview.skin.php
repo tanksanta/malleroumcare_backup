@@ -75,7 +75,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	<span class="print-hide cursor pull-right hidden-xs" data-toggle="modal" data-target="#statusModal">
 		<i class="fa fa-info-circle"></i> 상태설명
 	</span>
-	<i class="fa fa-shopping-cart fa-lg"></i> 주문번호 : <strong><?php echo $od_id; ?></strong>
+	  주문번호 : <strong><?php echo $od_id; ?></strong>
 </div>
 
 <style>
@@ -252,7 +252,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 </div>
 
 <div class="panel panel-success">
-	<div class="panel-heading"><strong><i class="fa fa-star fa-lg"></i> 결제정보</strong></div>
+	<div class="panel-heading"><strong>  결제정보</strong></div>
 	<div class="table-responsive">
 		<table class="div-table table bsk-tbl bg-white">
 		<col width="120">
@@ -347,7 +347,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 
 <?php if($is_orderform) { ?>
 	<div class="panel panel-default">
-		<div class="panel-heading"><strong><i class="fa fa-user fa-lg"></i> 주문하신 분</strong></div>
+		<div class="panel-heading"><strong> 주문하신 분</strong></div>
 		<div class="table-responsive">
 			<table class="div-table table bsk-tbl bg-white">
 			<col width="120">
@@ -376,9 +376,50 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			</table>
 		</div>
 	</div>
+	<!-- 수급자 입력 시작 -->
+	
+	<div class="point_box">
+		<div class="top_area">
+			<p>수급자 정보</p>
+			<p>주문 시 수급자정보를 입력하셨습니다.</p>
+			
+		</div>
+		<!-- 수급자 정보가 있으면 아래 내용이 보여집니다. -->
+		<div class="point_desc_info">
+			<ul>
+				<li>
+					<p>수급자</p>
+					<p>홍길동</p>
+				</li>
+				<li>
+					<p>인정등급</p>
+					<p>3등급</p>
+				</li>
+				<li>
+					<p>유효기간</p>
+					<p>2020.12.01 ~ 2020.12.01</p>
+				</li>
+				<li>
+					<p>적용기간</p>
+					<p>2020.12.01 ~ 2020.12.01</p>
+				</li>
+				<li>
+					<p>전화번호</p>
+					<p>010-1111-2222</p>
+				</li>
+				<li>
+					<p>주소</p>
+					<p>서울시 강남구 123-56</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+	
+	<!-- 수급자 입력 끝 -->
 
 	<div class="panel panel-default">
-		<div class="panel-heading"><strong><i class="fa fa-gift fa-lg"></i> 받으시는 분</strong></div>
+		<div class="panel-heading"><strong>  받으시는 분</strong></div>
 		<div class="table-responsive">
 			<table class="div-table table bsk-tbl bg-white">
 			<col width="120">

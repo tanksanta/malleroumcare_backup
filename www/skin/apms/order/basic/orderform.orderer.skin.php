@@ -30,7 +30,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 	<section id="sod_frm_orderer" style="margin-bottom:0px;">
 		<div class="panel panel-default">
-			<div class="panel-heading"><strong><i class="fa fa-user fa-lg"></i> 결제하시는 분</strong></div>
+			<div class="panel-heading"><strong> 결제하시는 분</strong></div>
 			<div class="panel-body">
 				<div class="form-group">
 					<label class="col-sm-2 control-label"><b>아이디</b></label>
@@ -80,7 +80,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 		<section id="sod_frm_agree" style="margin-bottom:0px;">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<strong><i class="fa fa-microphone fa-lg"></i> 개인정보처리방침안내</strong>
+					<strong> 개인정보처리방침안내</strong>
 				</div>
 				<div class="panel-body">
 					비회원으로 주문하시는 경우 포인트는 지급하지 않습니다.
@@ -130,7 +130,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 					<div class="btn_login">
 						<a href="<?php echo $order_login_url;?>" class="btn btn-lightgray btn-sm btn-block">
 							<i class="fa fa-sign-in"></i>
-							로그인하기 (네이버/카카오계정으로 1초 회원가입)
+							로그인/회원가입
 						</a>
 						<div class="h10"></div>
 					</div>
@@ -143,7 +143,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 	<!-- 주문하시는 분 입력 시작 { -->
 	<section id="sod_frm_orderer" style="margin-bottom:0px;">
 		<div class="panel panel-default">
-			<div class="panel-heading"><strong><i class="fa fa-user fa-lg"></i> 주문하시는 분</strong></div>
+			<div class="panel-heading"><strong>  주문하시는 분</strong></div>
 			<div class="panel-body">
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label" for="od_name"><b>이름</b><strong class="sound_only">필수</strong></label>
@@ -242,11 +242,59 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 		</div>
 	</section>
 	<!-- } 주문하시는 분 입력 끝 -->
+	
+	<!-- 수급자 입력 시작 -->
+	
+	<div class="point_box">
+		<div class="top_area">
+			<p>수급자 정보</p>
+			<p>주문 시 수급자정보가 없는 경우 사업소에서 주문한 것으로 판단하여 재고로 등록됩니다.</p>
+			<a href="#">내 수급자 조회</a>
+			
+		</div>
+		<!-- 수급자 정보가 있으면 아래 내용이 보여집니다. -->
+		<div class="point_desc">
+			<ul>
+				<li>
+					<p>수급자</p>
+					<p>홍길동</p>
+				</li>
+				<li>
+					<p>인정등급</p>
+					<p>3등급</p>
+				</li>
+				<li>
+					<p>유효기간</p>
+					<p>2020.12.01 ~ 2020.12.01</p>
+				</li>
+				<li>
+					<p>적용기간</p>
+					<p>2020.12.01 ~ 2020.12.01</p>
+				</li>
+				<li>
+					<p>전화번호</p>
+					<p>010-1111-2222</p>
+				</li>
+				<li>
+					<p>주소</p>
+					<p>서울시 강남구 123-56</p>
+				</li>
+				<li>
+					<p>한도금액</p>
+					<p>800,000원</p>
+				</li>
+			</ul>
+			<a href="#">삭제</a>
+		</div>
+	</div>
+	
+	
+	<!-- 수급자 입력 끝 -->
 
 	<!-- 받으시는 분 입력 시작 { -->
 	<section id="sod_frm_taker">
 		<div class="panel panel-default">
-			<div class="panel-heading"><strong><i class="fa fa-truck fa-lg"></i> 받으시는 분</strong></div>
+			<div class="panel-heading"><strong> 받으시는 분</strong></div>
 			<div class="panel-body">
 
 				<div class="form-group">
@@ -256,6 +304,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 							<label>
 								<input type="radio" name="ad_sel_addr" value="same" id="ad_sel_addr_same">
 								주문자와 동일
+							</label>
+							<label>
+								<input type="radio" name="ad_sel_addr" value="" id="">
+								수급자와 동일
 							</label>
 							<?php if($addr_default) { ?>
 								<label>

@@ -13,6 +13,12 @@ button {
      outline: none;
 }
 
+
+.recipient_info th,
+.recipient_info td{padding:5px;text-align:center;}
+.recipient_info th{background: #f5f5f5;font-weight:bold;border:1px solid #ddd;}
+
+
 .list-table-style .shbtn {
     border: 1px solid #cccccc;
     font-size: 12px;
