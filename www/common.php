@@ -457,9 +457,7 @@ if (isset($_REQUEST['gr_id'])) {
 
 // 자동로그인 부분에서 첫로그인에 포인트 부여하던것을 로그인중일때로 변경하면서 코드도 대폭 수정하였습니다.
 $is_first_login = false;
-if ($_SESSION['ss_mb_id']) { // 로그인중이라면
-    $member = get_member($_SESSION['ss_mb_id']);
-
+if ($_SESSION['ss_mb_id'] && $member = get_member($_SESSION['ss_mb_id'])) {
     // 차단된 회원이면 ss_mb_id 초기화
     if($member['mb_intercept_date'] && $member['mb_intercept_date'] <= date("Ymd", G5_SERVER_TIME)) {
         set_session('ss_mb_id', '');
@@ -467,14 +465,23 @@ if ($_SESSION['ss_mb_id']) { // 로그인중이라면
     } else {
         // 오늘 처음 로그인 이라면
         if (substr($member['mb_today_login'], 0, 10) != G5_TIME_YMD) {
-			$is_first_login = true;
+            $is_first_login = true;
         }
+    } 
+} else if ($query_string = getenv('QUERY_STRING') && $query_mb_id = strip_tags($_GET['token'])) {
+    set_session('ss_mb_id', $query_mb_id);
+    if ($member = get_member($_SESSION['ss_mb_id'])) {
+        echo "<script type='text/javascript'> window.location.reload(); </script>";
+    } else {
+        set_session('ss_mb_reg', $query_mb_id);
+        // $register_url = G5_BBS_URL.'/register.php?url='.urlencode(G5_ADMIN_URL);
+        $register_url = G5_BBS_URL.'/register.php';
+        echo "<script>location.href='$register_url';</script>"; 
     }
-} else {
+ } else {
     // 자동로그인 ---------------------------------------
     // 회원아이디가 쿠키에 저장되어 있다면 (3.27)
     if ($tmp_mb_id = get_cookie('ck_mb_id')) {
-
         $tmp_mb_id = substr(preg_replace("/[^a-zA-Z0-9_]*/", "", $tmp_mb_id), 0, 20);
         // 최고관리자는 자동로그인 금지
         if (strtolower($tmp_mb_id) != strtolower($config['cf_admin'])) {

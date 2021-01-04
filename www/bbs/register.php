@@ -6,9 +6,6 @@ if ($is_member) {
     goto_url(G5_URL);
 }
 
-// 세션을 지웁니다.
-set_session("ss_mb_reg", "");
-
 // Page ID
 $pid = ($pid) ? $pid : 'reg';
 $at = apms_page_thema($pid);
@@ -76,7 +73,7 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=member&amp;ts='.urlencode(THEMA);
 }
 
-$register_action_url = $action_url = G5_BBS_URL.'/register_form.php';
+$register_action_url = $action_url = G5_BBS_URL.'/register_form_update.php';
 include_once($skin_path.'/register.skin.php');
 
 if($is_reg_sub) {
