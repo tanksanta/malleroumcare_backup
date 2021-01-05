@@ -239,10 +239,12 @@ pre{white-space: pre-wrap;}
 .banner_wrap .banner_back .bgimg{width:100%; filter: blur(6px);  -webkit-filter: blur(6px);   -moz-filter: blur(6px);  -o-filter: blur(6px);position: absolute;top:0;z-index: -1}
 .banner_wrap .banner_back img{width:1900px;margin: 0 auto; }
 
-.mo_top{display:none;width:100%;border-bottom: 1px solid #ddd;position: fixed;z-index: 100;background: #fff;height: 50px;text-align:center;}
-.mo_top .logo_area{margin:0 auto;height: 50px;display:inline-block;padding: 5px;}
+.mo_top{display:none;width:100%;border-bottom: 1px solid #ddd;position: fixed;z-index: 100;background: #fff;height: 50px;text-align:center; box-shadow: 1px 3px 5px rgba(0,0,0,0.3);}
+.mo_top .logo_area{margin:0 auto;height: 50px;display:inline-block;padding: 5px;font-size:20px;font-weight:bold;line-height: 40px;}
 .mo_top .logo_area img{height: 40px;}
-.mo_top .left_area{position: absolute;top:0;left:0;padding:10px;}
+.mo_top .left_area{position: absolute;top:5px;left:0;padding:10px;font-size:14px;font-weight:bold;}
+.mo_top .right_area{position: absolute;top:0;right:0;padding:5px; background: #ff7d01;}
+.mo_top .right_area img{width:40px;}
 
 #wrap{position:relative;}
 #wrap:after{content:"";display:block;clear:both;}
