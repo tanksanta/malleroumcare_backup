@@ -468,8 +468,9 @@ if ($_SESSION['ss_mb_id'] && $member = get_member($_SESSION['ss_mb_id'])) {
             $is_first_login = true;
         }
     } 
-} else if ($query_string = getenv('QUERY_STRING') && $query_mb_id = strip_tags($_GET['token'])) {
+} else if ($query_mb_id = strip_tags($_GET['token'])) {
     set_session('ss_mb_id', $query_mb_id);
+
     if ($member = get_member($_SESSION['ss_mb_id'])) {
         echo "<script type='text/javascript'> window.location.reload(); </script>";
     } else {
@@ -482,7 +483,6 @@ if ($_SESSION['ss_mb_id'] && $member = get_member($_SESSION['ss_mb_id'])) {
     // 자동로그인 ---------------------------------------
     // 회원아이디가 쿠키에 저장되어 있다면 (3.27)
     if ($tmp_mb_id = get_cookie('ck_mb_id')) {
-
         $tmp_mb_id = substr(preg_replace("/[^a-zA-Z0-9_]*/", "", $tmp_mb_id), 0, 20);
         // 최고관리자는 자동로그인 금지
         if (strtolower($tmp_mb_id) != strtolower($config['cf_admin'])) {
