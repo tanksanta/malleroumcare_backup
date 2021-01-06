@@ -1,6 +1,30 @@
 <?php
 include_once('./_common.php');
+if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
+
+
+// $url = "https://www.naver.com" . "?" . $_SESSION['ss_mb_id'];
+// $curl = curl_init();
+// $timeout = 5; // 0으로 하면 시간제한이 없다.
+// curl_setopt($curl, CURLOPT_URL, $url);
+// curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
+// curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+// curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
+// $result =  curl_exec($curl);
+// $data = json_decode($result);
+// print_r($data);
+// curl_close($curl);
+
+$data = array(
+    "a" => "1",
+    "b" => "2",
+    "c" => "3",
+    "d" => "4",
+    "e" => "5",
+);
+
 ?>
+
 <!doctype html>
 <html lang="ko">
 <head>
@@ -28,8 +52,7 @@ body, input, textarea, select, button, table {
 
 <div class="pop_top_area">
 	<p>수급자 정보</p>
-	<div class="btn_area"><a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu_x.png" alt="" /></a></div>
-	
+	<div class="btn_area"><a href="javascript:void(0);" onclick="self.close();" attr-a="onclick : attr-a"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu_x.png" alt="" /></a></div>
 	<div class="search_area">
 		<select name="" id="">
 			<option>수급자구분</option>
@@ -44,59 +67,48 @@ body, input, textarea, select, button, table {
 	</div>
 </div>
 <div class="pop_list">
-	<ul>
-		<li>
-			<table>
-				<tr>
-					<td>수급자명</td>
-					<td>홍길동</td>
-				</tr>
-				<tr>
-					<td>본인부담금율</td>
-					<td>기초 0%</td>
-				</tr>
-				<tr>
-					<td>유효기간 만료일</td>
-					<td>2020-02-02</td>
-				</tr>
-				<tr>
-					<td>적용구간 만료일</td>
-					<td>2020-02-02</td>
-				</tr>
-				<tr>
-					<td>대여기간 만료일</td>
-					<td>2020-02-02</td>
-				</tr>
-			</table>
-			<a href="#">선택</a>
-		</li>
-		<li>
-			<table>
-				<tr>
-					<td>수급자명</td>
-					<td>홍길동</td>
-				</tr>
-				<tr>
-					<td>본인부담금율</td>
-					<td>기초 0%</td>
-				</tr>
-				<tr>
-					<td>유효기간 만료일</td>
-					<td>2020-02-02</td>
-				</tr>
-				<tr>
-					<td>적용구간 만료일</td>
-					<td>2020-02-02</td>
-				</tr>
-				<tr>
-					<td>대여기간 만료일</td>
-					<td>2020-02-02</td>
-				</tr>
-			</table>
-			<a href="#">선택</a>
-		</li>
+	<ul id="recipient_list">
+		<?php 
+		for ($i=0; $i<5; $i++) { 
+			echo '<li>
+				<table>
+					<tr>
+						<td>수급자명</td>
+						<td>' . $data['a'] . '</td>
+					</tr>
+					<tr>
+						<td>본인부담금율</td>
+						<td>' . $data['b'] . '</td>
+					</tr>
+					<tr>
+						<td>유효기간 만료일</td>
+						<td>' . $data['c'] . '</td>
+					</tr>
+					<tr>
+						<td>적용구간 만료일</td>
+						<td>' . $data['d'] . '</td>
+					</tr>
+					<tr>
+						<td>대여기간 만료일</td>
+						<td>' . $data['e'] . '</td>
+					</tr>
+				</table>
+				<a href="#" class="sel_address" title="선택">선택</a>
+				</li>';
+			}
+		?>
 	</ul>
 </div>
 
 </body>
 </html>
+
+<script>
+$(function() {
+    $(".sel_address").on("click", function() {
+		window.opener.selected_recipient($data);
+        window.close();
+    });
+
+});
+</script>

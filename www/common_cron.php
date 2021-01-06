@@ -468,7 +468,7 @@ if ($_SESSION['ss_mb_id'] && $member = get_member($_SESSION['ss_mb_id'])) {
             $is_first_login = true;
         }
     } 
-} else if ($query_mb_id = strip_tags($_GET['token'])) {
+} else if ($query_mb_id = strip_tags($_GET['usrId'])) {
     set_session('ss_mb_id', $query_mb_id);
 
     if ($member = get_member($_SESSION['ss_mb_id'])) {
