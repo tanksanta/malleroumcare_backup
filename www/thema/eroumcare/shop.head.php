@@ -155,6 +155,7 @@ $(document).ready(function() {
 	$(document).ready(function() {
 
 		$('.header-system-move-btn').click(function() {
+			window.open('location', '_self', '');
 			window.close();
 		});
 
