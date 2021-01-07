@@ -167,18 +167,3 @@ if($is_use_h1) { ?>
 	<?php echo $g5_head_title; ?>
 	</h1>
 <?php } ?>
-
-<?php
-echo ("<script>
-window.addEventListener( 'message', function( e ) {
-	if (e.data == 'nowPage') {
-	   if (history.length == 0 || history.length == 1 ) {
-		  window.close();
-	   } else {
-		  history.back();
-	   }
-	   
-	}
- }
- </script> ");
-?>
