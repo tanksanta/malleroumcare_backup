@@ -3,26 +3,16 @@ include_once('./_common.php');
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 
 
-// $url = "https://www.naver.com" . "?" . $_SESSION['ss_mb_id'];
-// $curl = curl_init();
-// $timeout = 5; // 0으로 하면 시간제한이 없다.
-// curl_setopt($curl, CURLOPT_URL, $url);
-// curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
-// curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-// curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
-// $result =  curl_exec($curl);
-// $data = json_decode($result);
-// print_r($data);
-// curl_close($curl);
-
-$data = array(
-    "a" => "1",
-    "b" => "2",
-    "c" => "3",
-    "d" => "4",
-    "e" => "5",
-);
-
+$url = "https://eroumcare.com/pen/pen2000/pen2000/selectPen2000ListAjaxByShop.do?usrId=" . $_SESSION['ss_mb_id'] . "&start=1&length=500&draw=1";
+$curl = curl_init();
+$timeout = 5; // 0으로 하면 시간제한이 없다.
+curl_setopt($curl, CURLOPT_URL, $url);
+curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
+$result =  curl_exec($curl);
+$data = json_decode($result, true)['data'];
+curl_close($curl);
 ?>
 
 <!doctype html>
@@ -69,28 +59,28 @@ body, input, textarea, select, button, table {
 <div class="pop_list">
 	<ul id="recipient_list">
 		<?php 
-		for ($i=0; $i<5; $i++) { 
+		for ($i=0; $i<count($data); $i++) { 
 			echo '<li>
 				<table>
 					<tr>
 						<td>수급자명</td>
-						<td>' . $data['a'] . '</td>
+						<td>' . $data[$i]['penNm'] . '</td>
 					</tr>
 					<tr>
 						<td>본인부담금율</td>
-						<td>' . $data['b'] . '</td>
+						<td>' . $data[$i]['penTypeNm'] . '</td>
 					</tr>
 					<tr>
 						<td>유효기간 만료일</td>
-						<td>' . $data['c'] . '</td>
+						<td>' . $data[$i]['penExpiDtm'] . '</td>
 					</tr>
 					<tr>
 						<td>적용구간 만료일</td>
-						<td>' . $data['d'] . '</td>
+						<td>' . $data[$i]['penAppEdDtm'] . '</td>
 					</tr>
 					<tr>
 						<td>대여기간 만료일</td>
-						<td>' . $data['e'] . '</td>
+						<td>' . $data[$i]['regDt'] . '</td>
 					</tr>
 				</table>
 				<a href="#" class="sel_address" title="선택">선택</a>
@@ -106,7 +96,10 @@ body, input, textarea, select, button, table {
 <script>
 $(function() {
     $(".sel_address").on("click", function() {
-		window.opener.selected_recipient($data);
+		if ($data.empty == false) {
+			window.opener.selected_recipient($data);
+		}
+		
         window.close();
     });
 
