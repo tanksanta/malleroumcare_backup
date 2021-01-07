@@ -40,6 +40,16 @@ input{
 }
 
 /* =================================================
+	* fonts
+================================================= */
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* =================================================
 	* Common
 ================================================= */
 /* html{background:#f4f4f4;} */
@@ -239,12 +249,17 @@ pre{white-space: pre-wrap;}
 .banner_wrap .banner_back .bgimg{width:100%; filter: blur(6px);  -webkit-filter: blur(6px);   -moz-filter: blur(6px);  -o-filter: blur(6px);position: absolute;top:0;z-index: -1}
 .banner_wrap .banner_back img{width:1900px;margin: 0 auto; }
 
-.mo_top{display:none;width:100%;border-bottom: 1px solid #ddd;position: fixed;z-index: 100;background: #fff;height: 50px;text-align:center; box-shadow: 1px 3px 5px rgba(0,0,0,0.3);}
-.mo_top .logo_area{margin:0 auto;height: 50px;display:inline-block;padding: 5px;font-size:20px;font-weight:bold;line-height: 40px;}
+.mo_top{display:none;width:100%;border-bottom: 1px solid #ddd;position: fixed;z-index: 100;background: #fff;height: 60px;text-align:center; box-shadow: 1px 3px 5px rgba(0,0,0,0.3);}
+.mo_top .logo_area{margin:0 auto;height: 60px;display:inline-block;padding: 5px;font-size:20px;font-weight:bold;line-height: 50px;}
+.mo_top .logo_area a {font-family: 'NanumSquareRound';}
 .mo_top .logo_area img{height: 40px;}
 .mo_top .left_area{position: absolute;top:5px;left:0;padding:10px;font-size:14px;font-weight:bold;}
-.mo_top .right_area{position: absolute;top:0;right:0;padding:5px; background: #ff7d01;}
-.mo_top .right_area img{width:40px;}
+.mo_top .right_area{position: absolute;top:0;right:0;padding:0px; background: #ff7d01;}
+.mo_top .right_area img{width:60px;}
+
+.mo_menu{display:none;border-bottom:1px solid #ddd;position: relative;z-index:10;top:60px;width:100%;padding: 15px;}
+.mo_menu a{display:inline-block;text-align:center;line-height: 20px;height: 20px;font-size:14px;font-weight:bold;width:50%;float: left;}
+.mo_menu a:first-child{border-right:1px solid #ddd;}
 
 #wrap{position:relative;}
 #wrap:after{content:"";display:block;clear:both;}
@@ -383,6 +398,7 @@ pre{white-space: pre-wrap;}
 	
 	.scroll_top{display:none;}
 	.mo_top{display:inline-block;}
+	.mo_menu{display:inline-block;}
 	.top_banner_wide{display:none;}
 	.top_common_area{display:none;}
 	.top_menu_wrap{display:none;}
@@ -440,7 +456,6 @@ pre{white-space: pre-wrap;}
 	.footer_area .info p {font-size:11px;}
 	.pc_only{display:none;}
 	.mo_br{display:block;}
-	#wrap{top:50px;}
 	
 	.sub_section_tit{font-size:25px;}
 	.sub_section_tit span{font-size:14px;}

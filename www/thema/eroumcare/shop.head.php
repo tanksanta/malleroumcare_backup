@@ -113,6 +113,10 @@ $(document).ready(function() {
 		<button><img src="<?php echo THEMA_URL; ?>/assets/img/btn_mo_menu.png" ></button>
 	</div>
 </div>
+<div class="mo_menu">
+	<a href="/shop/list.php?ca_id=10">판매품목</a>
+	<a href="/shop/list.php?ca_id=20">대여품목</a>
+</div>
 
 <div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>">
 	
