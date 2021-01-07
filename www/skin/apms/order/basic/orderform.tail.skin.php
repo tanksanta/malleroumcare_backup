@@ -1,5 +1,6 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
+
 ?>
 
 </form><?php // 주문서폼 닫기 - 삭제하면 안됨 ?>
@@ -9,6 +10,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 <?php if ($escrow_info) { ?>
 	<div class="well">
 		<?php echo $escrow_info;?>
+        <?php echo $recipient;?>
 	</div>
 <?php } ?>
 
@@ -321,13 +323,6 @@ $(function() {
         }
     });
 
-    // 수급자목록
-    $("#order_recipient").on("click", function() {
-        var url = this.href;
-        window.open(url, "win_address", "left=100,top=100,width=800,height=600,scrollbars=1");
-        return false;
-    });
-
     // 배송지목록
     $("#order_address").on("click", function() {
         var url = this.href;
@@ -496,10 +491,6 @@ function calculate_sendcost(code) {
             calculate_order_price();
         }
     );
-}
-
-function selected_recipient($code) {
-    alert($code)
 }
 
 function calculate_tax() {

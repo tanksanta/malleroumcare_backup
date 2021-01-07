@@ -285,7 +285,7 @@ if($is_kakaopay_use) {
                 <ul>
                     <li>
                         <p>수급자</p>
-                        <p><input type="text" name="od_re_name" id="od_re_name" class="frm_input" maxlength="20"></p>
+                        <p>홍길동</p>
                     </li>
                     <li>
                         <p>인정등급</p>

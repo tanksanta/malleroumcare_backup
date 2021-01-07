@@ -801,6 +801,17 @@ function get_member($mb_id, $fields='*')
 }
 
 
+// 수급자 정보를 얻는다.
+function get_recipient($penId, $fields='*')
+{
+    global $g5;
+
+    if(!$penId) return;
+
+    return sql_fetch(" select $fields from {$g5['recipient_table']} where penId = TRIM('$penId') ");
+}
+
+
 // 날짜, 조회수의 경우 높은 순서대로 보여져야 하므로 $flag 를 추가
 // $flag : asc 낮은 순서 , desc 높은 순서
 // 제목별로 컬럼 정렬하는 QUERY STRING

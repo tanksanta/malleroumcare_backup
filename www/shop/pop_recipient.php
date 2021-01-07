@@ -60,6 +60,32 @@ body, input, textarea, select, button, table {
 		<?php 
 		if(!empty($data)){
 			for ($i=0; $i<count($data); $i++) { 
+				$recipient = $data[$i];
+				if (get_recipient($recipient['penId'])) {
+					// $sql = "insert into {$g5['recipient_table']}
+					// set penNm = '{$recipient['penNm']}',
+					// penTypeNm = '{$recipient['penTypeNm']}',
+					// penExpiDtm = '{$recipient['penExpiDtm']}',
+					// penAppEdDtm = '{$recipient['penAppEdDtm']}',
+					// regDt = '{$recipient['regDt']}',
+					// penId = '{$recipient['penId']}',
+					// mb_id = '{$_SESSION['ss_mb_id']}'";
+					// sql_query($sql);
+				} else {
+					$sql = "insert into {$g5['recipient_table']}
+					set penNm = '{$recipient['penNm']}',
+					penTypeNm = '{$recipient['penTypeNm']}',
+					penExpiDtm = '{$recipient['penExpiDtm']}',
+					penAppEdDtm = '{$recipient['penAppEdDtm']}',
+					regDt = '{$recipient['regDt']}',
+					penId = '{$recipient['penId']}',
+					penAddr = '{$recipient['penAddr']}',
+					penConNum = '{$recipient['penConNum']}',
+					penMoney = '800,000원',
+					mb_id = '{$_SESSION['ss_mb_id']}'";
+					sql_query($sql);
+				}
+
 				echo '<li>
 					<table>
 						<tr>
@@ -83,7 +109,7 @@ body, input, textarea, select, button, table {
 							<td>' . $data[$i]['regDt'] . '</td>
 						</tr>
 					</table>
-					<a href="#" class="sel_address" data-target="' . $data[$i]['penId'] . '" title="선택">선택</a>
+					<a href="#" class="sel_address" data-target="' . $data[$i]['penNm'] . '" title="선택">선택</a>
 					</li>';
 			}
 		}
@@ -97,8 +123,8 @@ body, input, textarea, select, button, table {
 <script>
 $(function() {
     $(".sel_address").on("click", function() {
-		var value = $(this).data('target');
-		window.opener.selected_recipient(value);
+		var penId = $(this).data('target');
+		window.opener.selected_recipient(penId);
         window.close();
     });
 

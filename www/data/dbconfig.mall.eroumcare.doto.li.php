@@ -21,6 +21,7 @@ $g5['board_new_table'] = G5_TABLE_PREFIX.'board_new'; // 게시판 새글 테이
 $g5['login_table'] = G5_TABLE_PREFIX.'login'; // 로그인 테이블 (접속자수)
 $g5['mail_table'] = G5_TABLE_PREFIX.'mail'; // 회원메일 테이블
 $g5['member_table'] = G5_TABLE_PREFIX.'member'; // 회원 테이블
+$g5['recipient_table'] = G5_TABLE_PREFIX.'recipient'; // 수급자 테이블
 $g5['memo_table'] = G5_TABLE_PREFIX.'memo'; // 메모 테이블
 $g5['poll_table'] = G5_TABLE_PREFIX.'poll'; // 투표 테이블
 $g5['poll_etc_table'] = G5_TABLE_PREFIX.'poll_etc'; // 투표 기타의견 테이블

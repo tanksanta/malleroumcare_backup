@@ -36,6 +36,7 @@ $at = apms_page_thema($pid);
 
 $g5['title'] = '주문서 작성';
 
+
 // 모바일이 아니고 전자결제를 사용할 때만 실행
 if($is_mobile_order) { 
 	define('APMS_PGCHECK_PATH', G5_MSHOP_PATH);
