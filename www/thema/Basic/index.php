@@ -18,21 +18,12 @@ window.addEventListener('message', function( e ) {
 		console.log('nowPage');
 	   if (history.length == 0 || history.length == 1 ) {
 		console.log('close');
-			close();
+			self.opener = self;
+			window.close();
 	   } else {
 		console.log('back');
 		  history.back();
 	   }	   
 	}
  }
-
- function close(){
-
-window.open('', '_self', '');
-
-window.close();
-
-return false;
-
-}
  </script>
