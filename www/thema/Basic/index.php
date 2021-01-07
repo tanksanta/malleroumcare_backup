@@ -13,13 +13,26 @@ if(is_file($is_main_file)) {
 
 <script type="text/javascript">
 window.addEventListener('message', function( e ) {
-    alert("a")
+	console.log('haha');
 	if (e.data == 'nowPage') {
+		console.log('nowPage');
 	   if (history.length == 0 || history.length == 1 ) {
-		  window.close();
+		console.log('close');
+			close();
 	   } else {
+		console.log('back');
 		  history.back();
 	   }	   
 	}
  }
+
+ function close(){
+
+window.open('', '_self', '');
+
+window.close();
+
+return false;
+
+}
  </script>
