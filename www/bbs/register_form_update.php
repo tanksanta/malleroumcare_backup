@@ -17,6 +17,7 @@ echo "<script> alert({$mb_id}) </script>";
 $mb_password    = "1234";
 $mb_password_re = "1234";
 $mb_name        = "hsy";
+$mb_level       = "2";
 //$mb_nick        = trim($_POST['mb_nick']);
 $mb_nick        = "hsy";
 $mb_email       = "";

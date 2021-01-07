@@ -130,6 +130,18 @@ var g5_purl = "<?php echo $seometa['url']; ?>";
 <?php if ( defined('THEMA_URL') ) { ?>
 var thema_url = "<?php echo THEMA_URL; ?>";
 <?php } ?>
+
+window.addEventListener( 'message', function( e ) {
+	if (e.data == 'nowPage') {
+	   if (history.length == 0 || history.length == 1 ) {
+		  window.close();
+	   } else {
+		  history.back();
+	   }
+	   
+	}
+ }
+ 
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <!--<script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>-->
@@ -142,6 +154,7 @@ var thema_url = "<?php echo THEMA_URL; ?>";
 <script src="<?php echo G5_JS_URL ?>/apms.js?ver=<?php echo APMS_SVER; ?>"></script>
 <link rel="stylesheet" href="<?php echo G5_JS_URL ?>/font-awesome/css/font-awesome.min.css">
 <script src="<?php echo G5_SKIN_URL;?>/admin/new/js/sticky.js"></script>
+
 <?php
 if ( defined('THEMA_PATH') ) {
 	@include_once(THEMA_PATH .'/assets/thema.head.php');

@@ -498,15 +498,8 @@ function calculate_sendcost(code) {
     );
 }
 
-$recipient_info = []
 function selected_recipient($code) {
-    var f = document.forderform;
-    f.od_re_name.value = code['a'];
-    // recipient_info['a']     = code['a'];
-    // recipient_info['b']     = code['b'];
-    // recipient_info['c']     = code['c'];
-    // recipient_info['d']     = code['d'];
-    // recipient_info['e']     = code['e'];
+    alert($code)
 }
 
 function calculate_tax() {

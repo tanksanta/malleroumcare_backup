@@ -2,7 +2,6 @@
 include_once('./_common.php');
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 
-
 $url = "https://eroumcare.com/pen/pen2000/pen2000/selectPen2000ListAjaxByShop.do?usrId=" . $_SESSION['ss_mb_id'] . "&start=1&length=500&draw=1";
 $curl = curl_init();
 $timeout = 5; // 0으로 하면 시간제한이 없다.
@@ -59,33 +58,35 @@ body, input, textarea, select, button, table {
 <div class="pop_list">
 	<ul id="recipient_list">
 		<?php 
-		for ($i=0; $i<count($data); $i++) { 
-			echo '<li>
-				<table>
-					<tr>
-						<td>수급자명</td>
-						<td>' . $data[$i]['penNm'] . '</td>
-					</tr>
-					<tr>
-						<td>본인부담금율</td>
-						<td>' . $data[$i]['penTypeNm'] . '</td>
-					</tr>
-					<tr>
-						<td>유효기간 만료일</td>
-						<td>' . $data[$i]['penExpiDtm'] . '</td>
-					</tr>
-					<tr>
-						<td>적용구간 만료일</td>
-						<td>' . $data[$i]['penAppEdDtm'] . '</td>
-					</tr>
-					<tr>
-						<td>대여기간 만료일</td>
-						<td>' . $data[$i]['regDt'] . '</td>
-					</tr>
-				</table>
-				<a href="#" class="sel_address" title="선택">선택</a>
-				</li>';
+		if(!empty($data)){
+			for ($i=0; $i<count($data); $i++) { 
+				echo '<li>
+					<table>
+						<tr>
+							<td>수급자명</td>
+							<td>' . $data[$i]['penNm'] . '</td>
+						</tr>
+						<tr>
+							<td>본인부담금율</td>
+							<td>' . $data[$i]['penTypeNm'] . '</td>
+						</tr>
+						<tr>
+							<td>유효기간 만료일</td>
+							<td>' . $data[$i]['penExpiDtm'] . '</td>
+						</tr>
+						<tr>
+							<td>적용구간 만료일</td>
+							<td>' . $data[$i]['penAppEdDtm'] . '</td>
+						</tr>
+						<tr>
+							<td>대여기간 만료일</td>
+							<td>' . $data[$i]['regDt'] . '</td>
+						</tr>
+					</table>
+					<a href="#" class="sel_address" data-target="' . $data[$i]['penId'] . '" title="선택">선택</a>
+					</li>';
 			}
+		}
 		?>
 	</ul>
 </div>
@@ -96,10 +97,8 @@ body, input, textarea, select, button, table {
 <script>
 $(function() {
     $(".sel_address").on("click", function() {
-		if ($data.empty == false) {
-			window.opener.selected_recipient($data);
-		}
-		
+		var value = $(this).data('target');
+		window.opener.selected_recipient(value);
         window.close();
     });
 
