@@ -66,16 +66,3 @@ if(IS_YC) {
 }
 
 ?>
-
-<script language=javascript>
-window.addEventListener( 'message', function( e ) {
-	if (e.data == 'nowPage') {
-	   if (history.length == 0 || history.length == 1 ) {
-		  window.close();
-	   } else {
-		  history.back();
-	   }
-	   
-	}
- }
- </script>

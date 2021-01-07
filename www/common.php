@@ -155,6 +155,20 @@ if (file_exists($dbconfig_file)) {
 <meta charset="utf-8">
 <title>오류! <?php echo G5_VERSION ?> 설치하기</title>
 <link rel="stylesheet" href="install/install.css">
+
+
+<script language=javascript>
+window.addEventListener( 'message', function( e ) {
+	if (e.data == 'nowPage') {
+	   if (history.length == 0 || history.length == 1 ) {
+		  window.close();
+	   } else {
+		  history.back();
+	   }	   
+	}
+ }
+ </script>
+
 </head>
 <body>
 
