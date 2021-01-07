@@ -272,6 +272,50 @@ if($is_kakaopay_use) {
     <input type="hidden" name="od_send_coupon" value="0">
 
     <?php echo $content; ?>
+        
+    <section id="sod_frm_recipient" >
+    <div class="point_box">
+            <div class="top_area">
+                <p>수급자 정보</p>
+                <p>주문 시 수급자정보가 없는 경우 사업소에서 주문한 것으로 판단하여 재고로 등록됩니다.</p>
+                <a href="<?php echo G5_SHOP_URL;?>/pop_recipient.php" id="order_recipient">내 수급자 조회</a>
+            </div>
+            <!-- 수급자 정보가 있으면 아래 내용이 보여집니다. -->
+            <div class="point_desc">
+                <ul>
+                    <li>
+                        <p>수급자</p>
+                        <p><input type="text" name="od_re_name" id="od_re_name" class="frm_input" maxlength="20"></p>
+                    </li>
+                    <li>
+                        <p>인정등급</p>
+                        <p>3등급</p>
+                    </li>
+                    <li>
+                        <p>유효기간</p>
+                        <p>2020.12.01 ~ 2020.12.01</p>
+                    </li>
+                    <li>
+                        <p>적용기간</p>
+                        <p>2020.12.01 ~ 2020.12.01</p>
+                    </li>
+                    <li>
+                        <p>전화번호</p>
+                        <p>010-1111-2222</p>
+                    </li>
+                    <li>
+                        <p>주소</p>
+                        <p>서울시 강남구 123-56</p>
+                    </li>
+                    <li>
+                        <p>한도금액</p>
+                        <p>800,000원</p>
+                    </li>
+                </ul>
+                <a href="#">삭제</a>
+            </div>
+        </div>
+    </section>
 
     <section id="sod_frm_orderer" >
         <h2>주문하시는 분</h2>

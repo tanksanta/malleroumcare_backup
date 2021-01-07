@@ -321,6 +321,13 @@ $(function() {
         }
     });
 
+    // 수급자목록
+    $("#order_recipient").on("click", function() {
+        var url = this.href;
+        window.open(url, "win_address", "left=100,top=100,width=800,height=600,scrollbars=1");
+        return false;
+    });
+
     // 배송지목록
     $("#order_address").on("click", function() {
         var url = this.href;
@@ -489,6 +496,17 @@ function calculate_sendcost(code) {
             calculate_order_price();
         }
     );
+}
+
+$recipient_info = []
+function selected_recipient($code) {
+    var f = document.forderform;
+    f.od_re_name.value = code['a'];
+    // recipient_info['a']     = code['a'];
+    // recipient_info['b']     = code['b'];
+    // recipient_info['c']     = code['c'];
+    // recipient_info['d']     = code['d'];
+    // recipient_info['e']     = code['e'];
 }
 
 function calculate_tax() {

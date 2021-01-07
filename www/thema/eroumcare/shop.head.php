@@ -107,7 +107,7 @@ $(document).ready(function() {
 		<a href="<?php echo G5_URL; ?>">복지용구사업소 쇼핑몰</a>
 	</div>
 	<div class="left_area">
-		<button>&lt; 시스템</button>
+		<button type="button" class="header-system-move-btn">&lt; 시스템</button>
 	</div>
 	<div class="right_area header-hamburger-btn">
 		<button><img src="<?php echo THEMA_URL; ?>/assets/img/btn_mo_menu.png" ></button>
@@ -157,6 +157,11 @@ $(document).ready(function() {
 	</div>
 	<script>
 	$(document).ready(function() {
+
+		$('.header-system-move-btn').click(function() {
+			top.close ()
+		});
+
 		$('.header-hamburger-btn').click(function() {
 			// $('#samhwa-m-menu').toggle();
 			$('#samhwa-m-menu').show(10);

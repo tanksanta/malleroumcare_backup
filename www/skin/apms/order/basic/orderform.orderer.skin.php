@@ -249,8 +249,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 		<div class="top_area">
 			<p>수급자 정보</p>
 			<p>주문 시 수급자정보가 없는 경우 사업소에서 주문한 것으로 판단하여 재고로 등록됩니다.</p>
-			<a href="#">내 수급자 조회</a>
-			
+			<a href="<?php echo G5_SHOP_URL;?>/pop_recipient.php" id="order_recipient">내 수급자 조회</a>
 		</div>
 		<!-- 수급자 정보가 있으면 아래 내용이 보여집니다. -->
 		<div class="point_desc">
