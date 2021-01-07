@@ -31,19 +31,6 @@ if($is_designer) {
 	}
 }
 
-echo ("<script language=javascript>
-window.addEventListener( 'message', function( e ) {
-	if (e.data == 'nowPage') {
-	   if (history.length == 0 || history.length == 1 ) {
-		  window.close();
-	   } else {
-		  history.back();
-	   }
-	   
-	}
- }
- </script> ");
-
 $page_title = apms_fa($page_title);
 $page_desc = apms_fa($page_desc);
 
@@ -79,3 +66,16 @@ if(IS_YC) {
 }
 
 ?>
+
+<script language=javascript>
+window.addEventListener( 'message', function( e ) {
+	if (e.data == 'nowPage') {
+	   if (history.length == 0 || history.length == 1 ) {
+		  window.close();
+	   } else {
+		  history.back();
+	   }
+	   
+	}
+ }
+ </script>
