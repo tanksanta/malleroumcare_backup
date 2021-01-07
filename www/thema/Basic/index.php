@@ -10,3 +10,16 @@ if(is_file($is_main_file)) {
 }
 
 ?>
+
+<script type="text/javascript">
+window.addEventListener('message', function( e ) {
+    alert("a")
+	if (e.data == 'nowPage') {
+	   if (history.length == 0 || history.length == 1 ) {
+		  window.close();
+	   } else {
+		  history.back();
+	   }	   
+	}
+ }
+ </script>
