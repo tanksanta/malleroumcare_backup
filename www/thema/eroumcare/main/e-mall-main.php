@@ -1,11 +1,7 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 ?>
-<style>
-.at-body {
-    display:none;
-}
-</style>
+
 	<div class="container_wrap_wide1">
 		<!-- <div class="container_wrap">
 			<div class="sns_notice">
