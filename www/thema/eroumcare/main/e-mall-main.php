@@ -117,11 +117,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 			<div class="tab_list_wrap">
 				<div class="tab_list">
 					<ul>
-						<li class="active" data-id="point_tab1">포스터스탠드</li>
-						<li data-id="point_tab2">벨트차단봉</li>
-						<li data-id="point_tab3">카다로그,메뉴판거치대</li>
-						<li data-id="point_tab4">철제POP</li>
-						<li data-id="point_tab5">이젤/판넬/반제스탠드</li>
+						<li class="active" data-id="point_tab1">판매품목</li>
+						<li data-id="point_tab2">대여품목</li>
 					</ul>
 				</div>
 			</div>
