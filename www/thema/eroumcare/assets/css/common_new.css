@@ -253,12 +253,13 @@ pre{white-space: pre-wrap;}
 .mo_top .logo_area{margin:0 auto;height: 60px;display:inline-block;padding: 5px;font-size:20px;font-weight:bold;line-height: 50px;}
 .mo_top .logo_area a {font-family: 'NanumSquareRound';}
 .mo_top .logo_area img{height: 40px;}
-.mo_top .left_area{position: absolute;top:5px;left:0;padding:10px;font-size:14px;font-weight:bold;}
+.mo_top .left_area{position: absolute;top:10px;left:0;padding:10px;font-size:14px;font-weight:bold;}
 .mo_top .right_area{position: absolute;top:0;right:0;padding:0px; background: #ff7d01;}
 .mo_top .right_area img{width:60px;}
 
-.mo_menu{display:none;border-bottom:1px solid #ddd;position: relative;z-index:10;top:60px;width:100%;padding: 15px;}
+.mo_menu{display:none;border-bottom:1px solid #ddd;position: relative;z-index:10;top:60px;width:100%;padding: 15px;background: #fff;}
 .mo_menu a{display:inline-block;text-align:center;line-height: 20px;height: 20px;font-size:14px;font-weight:bold;width:50%;float: left;}
+.mo_menu a:hover{color:#333;}
 .mo_menu a:first-child{border-right:1px solid #ddd;}
 
 #wrap{position:relative;}
