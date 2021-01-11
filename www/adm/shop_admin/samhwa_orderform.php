@@ -2211,6 +2211,36 @@ $(document).ready(function() {
 						return false;
 					}else{
 
+						$.ajax({
+							type : "post",
+							url : "./ajax.cart.step.php",
+							data: formdata,
+							success : function(data){
+								if ( data.result === 'success' ) {
+									location.reload();
+								}else{
+									alert(data.msg);
+									return false;
+								}
+							}
+						});
+
+					}
+				}
+			});
+
+		}else{
+
+			$.ajax({
+				type : "post",
+				url : "./ajax.cart.step.php",
+				data: formdata,
+				success : function(data){
+					if ( data.result === 'success' ) {
+						location.reload();
+					}else{
+						alert(data.msg);
+						return false;
 					}
 				}
 			});
@@ -2218,19 +2248,7 @@ $(document).ready(function() {
 		}
 
 
-		$.ajax({
-			type : "post",
-			url : "./ajax.cart.step.php",
-			data: formdata,
-			success : function(data){
-				if ( data.result === 'success' ) {
-					location.reload();
-				}else{
-					alert(data.msg);
-					return false;
-				}
-			}
-		});
+
 
 
     });
