@@ -57,9 +57,9 @@ body, input, textarea, select, button, table {
 </div>
 <div class="pop_list">
 	<ul id="recipient_list">
-		<?php 
+		<?php
 		if(!empty($data)){
-			for ($i=0; $i<count($data); $i++) { 
+			for ($i=0; $i<count($data); $i++) {
 				$recipient = $data[$i];
 				if (get_recipient($recipient['penId'])) {
 					// $sql = "insert into {$g5['recipient_table']}
@@ -86,6 +86,8 @@ body, input, textarea, select, button, table {
 					sql_query($sql);
 				}
 
+				$recipient = $data[$i]['rn'].'|'.$data[$i]['penId'].'|'.$data[$i]['entId'].'|'.$data[$i]['penNm'].'|'.$data[$i]['penLtmNum'].'|'.$data[$i]['penRecGraCd'].'|'.$data[$i]['penRecGraNm'].'|'.$data[$i]['penTypeCd'].'|'.$data[$i]['penTypeNm'].'|'.$data[$i]['penExpiStDtm'].'|'.$data[$i]['penExpiEdDtm'].'|'.$data[$i]['penExpiDtm'].'|'.$data[$i]['penExpiRemDay'].'|'.$data[$i]['penGender'].'|'.$data[$i]['penGenderNm'].'|'.$data[$i]['penBirth'].'|'.$data[$i]['penAge'].'|'.$data[$i]['penAppEdDtm'].'|'.$data[$i]['penAddr'].'|'.$data[$i]['penAddrDtl'].'|'.$data[$i]['penConNum'].'|'.$data[$i]['penConPnum'].'|'.$data[$i]['penProNm'].'|'.$data[$i]['usrId'].'|'.$data[$i]['appCd'].'|'.$data[$i]['appCdNm'].'|'.$data[$i]['caCenYn'].'|'.$data[$i]['regDtm'].'|'.$data[$i]['regDt'].'|'.$data[$i]['ordLendEndDtm'].'|'.$data[$i]['ordLendRemDay'].'|'.$data[$i]['usrNm'].'|'.$data[$i]['penAppRemDay'].'|800,000원';
+
 				echo '<li>
 					<table>
 						<tr>
@@ -109,7 +111,7 @@ body, input, textarea, select, button, table {
 							<td>' . $data[$i]['regDt'] . '</td>
 						</tr>
 					</table>
-					<a href="#" class="sel_address" data-target="' . $data[$i]['penNm'] . '" title="선택">선택</a>
+					<a href="#" class="sel_address" data-target="' . $recipient . '" title="선택">선택</a>
 					</li>';
 			}
 		}

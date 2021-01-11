@@ -23,6 +23,20 @@ $pay_status = get_pay_step($od['od_pay_state']);
 
 $od['mb_id'] = $od['mb_id'] ? $od['mb_id'] : "비회원";
 
+//수급자정보
+$od_penId			= (isset($od['od_penId']) && $od['od_penId']) ? $od['od_penId'] : '';				// penId
+$od_penNm			= (isset($od['od_penId']) && $od['od_penId']) ? $od['od_penNm'] : $od['od_name'];	// 수급자
+$od_penTypeNm		= (isset($od['od_penId']) && $od['od_penId']) ? $od['penTypeNm'] : '';				//안전등급
+$od_penExpiDtm		= (isset($od['od_penId']) && $od['od_penId']) ? $od['penExpiDtm'] : '';				//유효기간
+$od_penAppEdDtm		= (isset($od['od_penId']) && $od['od_penId']) ? $od['penAppEdDtm'] : '';			//적용기간
+$od_penConPnum		= (isset($od['od_penId']) && $od['od_penId']) ? $od['penConPnum'] : $od['od_tel'];	//전화번호
+$od_penConNum		= (isset($od['od_penId']) && $od['od_penId']) ? $od['penConNum'] : $od['od_hp'];	//휴대전화
+$od_penzip1			= (isset($od['od_penId']) && $od['od_penId']) ? $od['od_penzip1'] : $od['od_zip1'];//우편번호
+$od_penzip2			= (isset($od['od_penId']) && $od['od_penId']) ? $od['od_penzip2'] : $od['od_zip2'];
+$od_penzip			= (isset($od['od_penId']) && $od['od_penId']) ? $od_penzip1.$od_penzip2 : $od['od_zip1'].$od['od_zip2'];
+
+$od_penAddr			= (isset($od['od_penId']) && $od['od_penId']) ? $od['od_penAddr'] : $od['od_addr1'].''.$od['od_addr2'].''.$od['od_addr3'];	//주소
+
 // 상품목록
 $sql = " select a.ct_id,
                 a.it_id,
@@ -69,7 +83,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $cate_counts[$row['ct_status']] += 1;
 
     // 상품의 옵션정보
-    $sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
+    $sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
                 from {$g5['g5_shop_cart_table']}
                 where od_id = '{$od['od_id']}'
                     and it_id = '{$row['it_id']}'
@@ -167,10 +181,20 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php'); // datepicker js
 
 // 파트너
 $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
+
+//상품 옵션 개수별 바코드 필드추가
+sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
+                    ADD `ct_barcode` TEXT NOT NULL AFTER `ct_qty` ", false);
+
 ?>
 <script>
 var od_id = '<?php echo $od['od_id']; ?>';
 </script>
+<style>
+#samhwa_order_form>.block .item_list table .item_barcode {
+    width:15%;
+}
+</style>
 <div id="samhwa_order_form">
     <div class="block">
         <div class="header">
@@ -196,6 +220,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <!--<th>분류</th>-->
                             <th class="item_name">상품</th>
                             <th class="item_qty">수량</th>
+							<th class="item_barcode">바코드</th>
                             <th class="item_price">판매금액</th>
                             <th class="item_discount">할인금액</th>
                             <th class="item_sendcost">배송비</th>
@@ -230,6 +255,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             $tot_sendcost += $carts[$i]['sum']['sendcost'];
                             $tot_total += $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'];
 
+							$prodBarNum = '';
+
                             for($k=0; $k<count($options); $k++) {
 
                                 // $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND it_id = '{$carts[$i]['it_id']}' ");
@@ -245,6 +272,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         $files[] = $file_row;
                                     }
                                 }
+
+								$prodBarNum .= $options[$k]['ct_option'].':'.$options[$k]['ct_barcode'].'^';
+
+
                                 ?>
                                 <tr class="<?php echo $k==0 ? 'top-border' : ''; ?>">
                                     <?php if ( $k == 0 ) { ?>
@@ -256,9 +287,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <td class="chkbox">
                                         <label for="ct_chk_<?php echo $chk_cnt; ?>" class="sound_only"><?php echo get_text($options[$k]['ct_option']); ?></label>
                                         <!--
-                                        <input type="checkbox" name="ct_chk[<?php echo $chk_cnt; ?>]" id="ct_chk_<?php echo $chk_cnt; ?>" value="<?php echo $chk_cnt; ?>" class="sct_sel_<?php echo $i; ?>">
+                                        <input type="checkbox" name="ct_chk[<?php echo $chk_cnt; ?>]" id="ct_chk_<?php echo $chk_cnt; ?>" value="<?php echo $chk_cnt; ?>" class="sct_sel_<?php echo $i; ?>">-->
                                         <input type="hidden" name="ct_id[<?php echo $chk_cnt; ?>]" value="<?php echo $options[$k]['ct_id']; ?>">
-                                        -->
+
                                         <input type="checkbox" name="ct_chk[]" id="ct_chk_<?php echo $chk_cnt; ?>" value="<?php echo $options[$k]['ct_id']; ?>" class="sct_sel_<?php echo $i; ?>" style="visibility: hidden;">
                                     </td>
                                     <td class="item_name">
@@ -283,7 +314,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 	                										}
 														?>
 													</div>
-                                                    
+
                                                     <?php if($od['od_tax_flag'] && $carts[$i]['ct_notax']) echo '<br/>[비과세상품]'; ?>
                                                 <?php }else{ ?>
                                                     <span style="margin-right:60px;"></span>
@@ -463,6 +494,27 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         -->
                                         <?php echo $options[$k]['ct_qty']; ?>
                                     </td>
+									<td class="item_barcode">
+                                        <label for="ct_qty_<?php echo $chk_cnt; ?>" class="sound_only"><?php echo get_text($options[$k]['ct_option']); ?> 수량</label>
+                                        <!--
+                                        <input type="text" name="ct_qty[<?php echo $chk_cnt; ?>]" id="ct_qty_<?php echo $chk_cnt; ?>" value="<?php echo $options[$k]['ct_qty']; ?>" required class="frm_input required" size="5">
+                                        -->
+                                        <!--
+                                        <input type="text" name="ct_qty[<?php echo $options[$k]['ct_id']; ?>]" id="ct_qty_<?php echo $chk_cnt; ?>" value="<?php echo $options[$k]['ct_qty']; ?>" required class="frm_input required" size="5">
+                                        -->
+										<ul>
+                                        <?php
+										for($b=0;$b<$options[$k]['ct_qty'];$b++) {
+											//$ct_barcode_array = unserialize(base64_decode($options[$k]['ct_barcode']));
+											$ct_barcode_array = explode('|', $options[$k]['ct_barcode']);
+										?>
+										<li style="padding-top:5px;"><input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?php echo $ct_barcode_array[$b]; ?>" class="frm_input"></li>
+										<?php } ?>
+										</ul>
+
+
+
+                                    </td>
                                     <td class="item_price">
                                         <?php echo number_format($options[$k]['opt_price']); ?>원
                                     </td>
@@ -493,8 +545,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         ?>
                                     </td>
                                     <td class="btncol">
-<?php if($od['od_writer']!="openmarket"){ ?>
-                                        <?php if ( $k == 0 ) { ?>
+										<?php if($od['od_writer']!="openmarket"){ ?>
+											<?php if ( $k == 0 ) { ?>
                                             <div class="more">
                                                 <img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_more_b.png" class="item_list_more" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" />
                                                 <ul class="openlayer">
@@ -509,8 +561,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                     <?php } ?>
                                                 </ul>
                                             </div>
-                                        <?php } ?>
-<?php } ?>
+											<?php } ?>
+										<?php } ?>
                                     </td>
                                 </tr>
                                 <?php
@@ -659,6 +711,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <td class="item_qty">
                                 <?php echo number_format($tot_qty); ?>
                             </td>
+							<td class="item_barcode">
+                            </td>
                             <td class="item_price">
                                 <?php echo number_format($tot_price); ?>원
                             </td>
@@ -678,10 +732,11 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         </tr>
                     </tbody>
                 </table>
+
                 <div class="frmsamhwaorderform_bottom">
                     <div class="change_status">
                         <span>선택한 상품 상태값</span>
-                        <select name="step">
+                        <select name="step" id="step">
                             <?php
                             foreach($order_steps as $step) {
                             if (!$step['cart']) continue;
@@ -704,11 +759,11 @@ var od_id = '<?php echo $od['od_id']; ?>';
         <div class="header">
             <h2>수급자정보</h2>
         </div>
-        <!-- 수급자 정보가 없는 경우 표시 
+        <!-- 수급자 정보가 없는 경우 표시
         <div class="block-box">
-        	
-        	<p>입력된 수급자 정보가 없습니다. </p> 
-        	
+
+        	<p>입력된 수급자 정보가 없습니다. </p>
+
         </div>
         -->
     	<table class="recipient_info">
@@ -721,15 +776,15 @@ var od_id = '<?php echo $od['od_id']; ?>';
 				<th>주소</th>
 			</tr>
 			<tr>
-				<td>홍길동</td>
-				<td>3등급</td>
-				<td>2020.12.01 ~ 2020.12.01</td>
-				<td>2020.12.01 ~ 2020.12.01</td>
-				<td>010-1111-2222</td>
-				<td>서울시 강남구 123-56</td>
+				<td><?php echo get_text($od['od_penNm']); ?></td>
+				<td><?php echo get_text($od['od_penTypeNm']); ?></td>
+				<td><?php echo get_text($od['od_penExpiDtm']); ?></td>
+				<td><?php echo get_text($od['od_penAppEdDtm']); ?></td>
+				<td><?php echo get_text($od['od_penConPnum']); ?></td>
+				<td><?php echo get_text($od['od_penAddr']); ?></td>
 			</tr>
 		</table>
-    	
+
     </div>
     <div class="block">
         <div class="header">
@@ -1762,7 +1817,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 HP : <?php echo $od['od_hp']; ?> / Tel : <?php echo $od['od_tel']; ?>
                 </p>
                 <?php
-                $customer_code = get_customer_code($od['od_id']); 
+                $customer_code = get_customer_code($od['od_id']);
                 $customer_code_step = get_customer_step($customer_code);
                 ?>
                 고객코드: <?php echo $customer_code; ?> (<?php echo $customer_code_step; ?>)
@@ -2108,19 +2163,76 @@ $(document).ready(function() {
             return;
         }
 
-        $.ajax({
-                    method: "POST",
-                    url: "./ajax.cart.step.php",
-                    data: formdata,
-                })
-        .done(function(data) {
-            if ( data.msg ) {
-                alert(data.msg);
-            }
-            if ( data.result === 'success' ) {
-                location.reload();
-            }
-        })
+
+		if($('#step').val() == '출고준비'){
+
+			var penId = "<?php echo $od['od_penId'];?>";
+
+			if(penId){
+
+				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
+				var dataList = {
+					'searchUsrId' : '<?php echo $od['mb_id'];?>',	//회원아이디
+					'insertPen5000Data' : [{
+						'shoBasSeq' : '',							//순번
+						'prodBarNum' : '<?php echo $prodBarNum;?>',	//옵션명1:바코드|바코드^옵션명1:바코드|바코드
+						'ordNm' : '<?php echo $od_penNm;?>',		//김예비
+						'ordCont' : '<?php echo $od_penConNum;?>',	//수급자(주문자)전화번호
+						'ordZip' : '<?php echo $od_penzip;?>',		//수급자(주문자)우편번호
+						'ordAddr' : '<?php echo $od_penAddr;?>',	//수급자(주문자)주소
+						'ordAddrDtl' : '',							//수급자(주문자)상세주소
+						'ordMemo' : '',								//
+						'payMehCd' : 'PEN00006'						//결제수단(공동코드 : PEN00006 )
+					}]
+				};
+
+			}else{
+
+				var url = 'https://eroumcare.com/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
+				var dataList = {
+					'searchUsrId' : '<?php echo $od['mb_id'];?>',	//회원아이디
+					'newStoId' : '',								//재고아이디
+					'ppcId' : '',									//취급제품 아이디
+					'prodColor' : '',								//색상
+					'prodManuDate' : '',							//제조일자
+					'prodBarNums' : '<?php echo $prodBarNum;?>',	//[바코드번호]
+					'regUsrId' : '',								//회원 아이디
+				};
+			}
+
+			$.ajax({
+				type : "post",
+				url : url,
+				data: dataList,
+				dataType : "json",
+				success : function(data){
+					if(data.errorYN == 'Y'){
+						alert(data.message);
+						return false;
+					}else{
+
+					}
+				}
+			});
+
+		}
+
+
+		$.ajax({
+			type : "post",
+			url : "./ajax.cart.step.php",
+			data: formdata,
+			success : function(data){
+				if ( data.result === 'success' ) {
+					location.reload();
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+
+
     });
 
     //배송정보 수정
