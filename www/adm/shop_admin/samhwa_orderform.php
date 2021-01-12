@@ -508,7 +508,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 											//$ct_barcode_array = unserialize(base64_decode($options[$k]['ct_barcode']));
 											$ct_barcode_array = explode('|', $options[$k]['ct_barcode']);
 										?>
-										<li style="padding-top:5px;"><input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?php echo $ct_barcode_array[$b]; ?>" class="frm_input"></li>
+										<li style="padding-top:5px;"><input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?php echo $ct_barcode_array[$b]; ?>" class="frm_input required"></li>
 										<?php } ?>
 										</ul>
 
@@ -741,7 +741,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             foreach($order_steps as $step) {
                             if (!$step['cart']) continue;
                             ?>
-                                <option value="<?php echo $step['val']; ?>" <?php echo $step['val'] == $od['od_status'] ? 'selected' : ''; ?>><?php echo $step['name']; ?></option>
+                                <option value="<?php echo $step['val']; ?>" <?php echo $step['val'] == $od['od_status'] ? 'selected' : ''; ?>><?php echo $step['name']; ?>[<?php echo $step['val']; ?>]</option>
                             <?php } ?>
                         </select>
                         <input type="button" value="변경하기" class="btn shbtn" id="change_cart_status">
@@ -2162,7 +2162,6 @@ $(document).ready(function() {
             alert('상품을 체크해주세요.');
             return;
         }
-
 
 		if($('#step').val() == '출고준비'){
 
