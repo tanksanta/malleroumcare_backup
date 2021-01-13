@@ -100,7 +100,7 @@ if (gettype($od_release) == 'string' && $od_release !== '') {
     if ($od_release == '1') { // 외부출고
         $where[] = " ( od_release_manager = '-' ) ";
     }
-    if ($od_release == '2') { // 출고아님
+    if ($od_release == '2') { // 출고대기
         $where[] = " ( od_release_manager = 'no_release' ) ";
     }
 }
@@ -716,7 +716,7 @@ foreach($orderlist as $order) {
     $release_manager = get_member($order['od_release_manager']);
     $release_manager = get_sideview($release_manager['mb_id'], get_text($release_manager['mb_name']), $release_manager['mb_email'], '');
     if ($order['od_release_manager'] == 'no_release') {
-        $release_manager = '<span style="color: #c72102;">출고아님</span>';
+        $release_manager = '<span style="color: #ff6600;">출고대기</span>';
     }
     if ($order['od_release_manager'] == '-') {
         $release_manager = '외부출고';

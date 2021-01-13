@@ -1866,7 +1866,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <div class="on">
                                 <select name="od_release_manager">
                                     <option value="">미지정</option>
-                                    <option value="no_release" <?php echo 'no_release' == $od['od_release_manager'] ? 'selected' : ''; ?>>출고아님</option>
+                                    <option value="no_release" <?php echo 'no_release' == $od['od_release_manager'] ? 'selected' : ''; ?>>출고대기</option>
                                     <option value="-" <?php echo '-' == $od['od_release_manager'] ? 'selected' : ''; ?>>외부출고</option>
                                     <?php
                                     $sql = "SELECT * FROM g5_auth WHERE au_menu = '400402' AND au_auth LIKE '%w%'";
@@ -1886,7 +1886,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                 if ($od_release_manager) {
                                     echo $od_release_manager['mb_name']; ?> 담당자 <a class="change_manager_off">변경</a>
                                 <?php } else if ($od['od_release_manager'] == 'no_release') { ?>
-                                    <span style="color: #ff3061;">출고아님</span> <a class="change_manager_off">변경</a>
+                                    <span style="color: #ffd800;">출고대기</span> <a class="change_manager_off">변경</a>
                                 <?php } else if ($od['od_release_manager'] == '-') { ?>
                                     외부출고 <a class="change_manager_off">변경</a>
                                 <?php } else { ?>
