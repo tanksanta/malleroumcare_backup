@@ -157,6 +157,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
+			
+			<?php if($it['it_basic'] > 0) { // 기본설명 ?>
+				<p>*재고 : <?php echo $it['it_stock_qty'];  ?> 개</p>
+			<?php } ?>
 
 			<?php if ( $it['it_model'] ) { ?>
 				<p class="item-model">

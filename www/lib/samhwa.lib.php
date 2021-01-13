@@ -666,7 +666,6 @@ $delivery_types = array(
         'val' => 'delivery2',
         'type' => 'delivery',
         'user-order' => 'true',
-        'required' => 'true',
     ),
     '2' => array(
         'name' => '퀵서비스(선불)',

@@ -1204,7 +1204,7 @@ if( function_exists('pg_setting_check') ){
         <tr>
             <th scope="row"><label for="de_send_cost_case">배송방법 사용</label></th>
             <td>
-                <?php echo help("선택된 배송방법만 사용자가 선택할 수 있으며, “택배(선불), 택배(착불)”은 필수 사항입니다."); ?>
+                <?php echo help("선택된 배송방법만 사용자가 선택할 수 있으며, “택배(선불)”은 필수 사항입니다."); ?>
                 <?php
                 $temp_delivery_type = 'delivery';
                 foreach($delivery_types as $type) {
