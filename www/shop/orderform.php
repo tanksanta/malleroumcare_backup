@@ -38,7 +38,7 @@ $g5['title'] = '주문서 작성';
 
 
 // 모바일이 아니고 전자결제를 사용할 때만 실행
-if($is_mobile_order) { 
+if($is_mobile_order) {
 	define('APMS_PGCHECK_PATH', G5_MSHOP_PATH);
 } else {
 	define('APMS_PGCHECK_PATH', G5_SHOP_PATH);
@@ -132,7 +132,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	if($is_guest && $row['pt_it'] == "2") {
 		alert("회원만 구매가능한 아이템이 포함되어 있습니다.\\n\\n회원이시라면 로그인 후 진행해 주십시오.");
 	}
-	
+
 	// 합계금액 계산
 	$sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
 					SUM(ct_point * ct_qty) as point,
@@ -291,7 +291,7 @@ $order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_name;
 $order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
 // 스킨 체크
-list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url); 
+list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url);
 
 // 스킨설정
 $wset = array();
@@ -418,7 +418,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 				$addr_sel[$i]['addr'] = $row['ad_name'].$sep.$row['ad_tel'].$sep.$row['ad_hp'].$sep.$row['ad_zip1'].$sep.$row['ad_zip2'].$sep.$row['ad_addr1'].$sep.$row['ad_addr2'].$sep.$row['ad_addr3'].$sep.$row['ad_jibeon'].$sep.$row['ad_subject'];
 				$addr_sel[$i]['namme'] = ($row['ad_subject']) ? $row['ad_subject'] : $row['ad_name'];
 			}
-		} 
+		}
 	}
 
 	// 주문서 스킨
@@ -1130,7 +1130,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 			alert(stock_msg);
 			return false;
 		}
-		
+
 		errmsg = "";
 		errfld = "";
 		var deffld = "";
@@ -1443,7 +1443,58 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 		if(f.pay_method.value != "무통장" && f.pay_method.value != "포인트") {
 	        jsf__pay( f );
 		} else {
+
+			/*
+			if(f.penId.value){
+
+				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
+				var dataList = {
+					'searchUsrId' : f.searchUsrId.value,	//123456789
+					'shoBasSeq' : f.shoBasSeq.value,		//12
+					'prodBarNum' : f.prodBarNum.value,		//
+					'ordNm' : f.ordNm.value,				//김예비
+					'ordCont' : f.ordCont.value,			//010-2551-8080
+					'ordZip' : f.ordZip.value,				//46241
+					'ordAddr' : f.ordAddr.value,			//부산 금정구 부산대학로63번길 2
+					'ordAddrDtl' : f.ordAddrDtl.value,		//(장전동) 1
+					'ordMemo' : f.ordMemo.value,			//
+					'payMehCd' : f.payMehCd.value			//00
+				};
+
+			}else{
+				var url = 'https://eroumcare.com/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
+				var dataList = {
+					'searchUsrId' : f.searchUsrId.value,	//123456789
+					'shoBasSeq' : f.shoBasSeq.value,		//12
+					'prodBarNum' : f.prodBarNum.value,		//
+					'ordNm' : f.ordNm.value,				//김예비
+					'ordCont' : f.ordCont.value,			//010-2551-8080
+					'ordZip' : f.ordZip.value,				//46241
+					'ordAddr' : f.ordAddr.value,			//부산 금정구 부산대학로63번길 2
+					'ordAddrDtl' : f.ordAddrDtl.value,		//(장전동) 1
+					'ordMemo' : f.ordMemo.value,			//
+					'payMehCd' : f.payMehCd.value			//00
+				};
+			}
+
+			$.ajax({
+				type : "post",
+				url : url,
+				data: dataList,
+				dataType : "json",
+				success : function(data){
+					if(data.errorYN == 'Y'){
+						alert(data.message);
+						return false;
+					}else{
+						f.submit();
+					}
+				}
+			});
+			*/
+
 			f.submit();
+
 		}
 		<?php } ?>
 		<?php if($default['de_pg_service'] == 'lg') { ?>

@@ -46,7 +46,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     // 장바구니 수량이 재고수량보다 많다면 오류
     if ($row['ct_qty'] > $it_stock_qty)
         $error .= "{$row['ct_option']} 의 재고수량이 부족합니다. 현재고수량 : $it_stock_qty 개\\n\\n";
-    
+
     if (!in_array($row['it_id'], $it_ids)) {
         $it_ids[] = $row['it_id'];
     }
@@ -264,7 +264,7 @@ else {
             } else { // 없는경우 기본 관리자에 있는걸 가져온다.
                 $total_item_sc_price += $tmp['sc_price'];
             }
-            
+
         }
 
     }
@@ -303,10 +303,10 @@ if ($is_member && $config['cf_use_point'])
     }
 }
 
-if ($od_settle_case == "포인트") 
+if ($od_settle_case == "포인트")
 {
 	$temp_order_point = $i_price + $i_send_cost + $i_send_cost2 - $i_send_coupon;
-	if($temp_order_point != $i_temp_point) 
+	if($temp_order_point != $i_temp_point)
         alert('결제하실 금액과 포인트가 일치하지 않습니다.', $page_return_url);
 
 } else {
@@ -557,6 +557,20 @@ $od_addr1         = clean_xss_tags($od_addr1);
 $od_addr2         = clean_xss_tags($od_addr2);
 $od_addr3         = clean_xss_tags($od_addr3);
 $od_addr_jibeon   = preg_match("/^(N|R)$/", $od_addr_jibeon) ? $od_addr_jibeon : '';
+
+//수급자정보
+$od_penId			= clean_xss_tags($penId);
+$od_penNm			= clean_xss_tags($penNm);
+$od_penTypeNm		= clean_xss_tags($penTypeNm);
+$od_penExpiDtm		= clean_xss_tags($penExpiDtm);
+$od_penAppEdDtm		= clean_xss_tags($penAppEdDtm);
+$od_penConPnum		= clean_xss_tags($penConPnum);
+$od_penConNum		= clean_xss_tags($penConNum);
+$od_penzip			= preg_replace('/[^0-9]/', '', $penzip);
+$od_penzip1			= substr($penzip, 0, 3);
+$od_penzip2			= substr($penzip, 3);
+$od_penAddr			= clean_xss_tags($penAddr);
+
 $od_b_name        = clean_xss_tags($od_b_name);
 $od_b_tel         = clean_xss_tags($od_b_tel);
 $od_b_hp          = clean_xss_tags($od_b_hp);
@@ -599,6 +613,18 @@ $sql = " insert {$g5['g5_shop_order_table']}
                 od_addr2          = '$od_addr2',
                 od_addr3          = '$od_addr3',
                 od_addr_jibeon    = '$od_addr_jibeon',
+
+                od_penId			= '$od_penId',
+                od_penNm			= '$od_penNm',
+                od_penTypeNm		= '$od_penTypeNm',
+                od_penExpiDtm		= '$od_penExpiDtm',
+                od_penAppEdDtm		= '$od_penAppEdDtm',
+                od_penConPnum		= '$od_penConPnum',
+                od_penConNum		= '$od_penConNum',
+                od_penzip1          = '$od_penzip1',
+                od_penzip2          = '$od_penzip2',
+                od_penAddr			= '$od_penAddr',
+
                 od_b_name         = '$od_b_name',
                 od_b_tel          = '$od_b_tel',
                 od_b_hp           = '$od_b_hp',
