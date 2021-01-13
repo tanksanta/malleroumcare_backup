@@ -2169,21 +2169,21 @@ $(document).ready(function() {
 
 			if(penId){
 
-				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
-				var dataList = {
-					'searchUsrId' : '<?php echo $od['mb_id'];?>',	//회원아이디
-					'insertPen5000Data' : [{
-						'shoBasSeq' : '',							//순번
-						'prodBarNum' : '<?php echo $prodBarNum;?>',	//옵션명1:바코드|바코드^옵션명1:바코드|바코드
-						'ordNm' : '<?php echo $od_penNm;?>',		//김예비
-						'ordCont' : '<?php echo $od_penConNum;?>',	//수급자(주문자)전화번호
-						'ordZip' : '<?php echo $od_penzip;?>',		//수급자(주문자)우편번호
-						'ordAddr' : '<?php echo $od_penAddr;?>',	//수급자(주문자)주소
-						'ordAddrDtl' : '',							//수급자(주문자)상세주소
-						'ordMemo' : '',								//
-						'payMehCd' : 'PEN00006'						//결제수단(공동코드 : PEN00006 )
-					}]
-				};
+				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do?searchUsrId=123456789&insertPen5000DataList=%20%5B%0A%09%09%7B%20%22penId%22%3A%20%22PENID_20210111094719%22%2C%0A%09%09%20%20%22prodId%22%3A%20%22PRO2020111200002%22%2C%0A%09%09%20%20%22prodNm%22%3A%20%22Glory-MC1%22%2C%0A%09%09%20%20%22itemId%22%3A%20%22ITM2020092200020%22%2C%0A%09%09%20%20%22itemNm%22%3A%20%22%EC%9A%95%EC%B0%BD%EC%98%88%EB%B0%A9%EB%A7%A4%ED%8A%B8%EB%A6%AC%EC%8A%A4%22%2C%0A%09%09%20%20%22prodPayCode%22%3A%20%22H12060130101%22%2C%0A%09%20%20%20%20%20%20%22prodColor%22%3A%20%22%EB%8B%A8%EC%9D%BC%22%2C%0A%09%09%20%20%22ordStatus%22%3A%20%2200%22%2C%0A%09%09%20%20%22prodOflPrice%22%3A%20%22307000%22%2C%0A%09%20%20%20%20%20%20%22penPay%22%3A%20%2246050%22%2C%0A%09%09%20%20%22prodBarNum%22%3A%20%2212030130110%22%2C%0A%09%09%20%20%22ordNm%22%3A%20%22%ED%85%8C%EC%8A%A4%ED%8A%B8%ED%8A%B8%22%2C%0A%09%09%20%20%22ordCont%22%3A%20%22010-8748-7796%22%2C%0A%09%09%20%20%22ordZip%22%3A%20%2248060%22%2C%0A%09%09%20%20%22ordAddr%22%3A%20%22%EB%B6%80%EC%82%B0%20%ED%95%B4%EC%9A%B4%EB%8C%80%EA%B5%AC%20APEC%EB%A1%9C%2017%22%2C%0A%09%09%20%20%22ordAddrDtl%22%3A%20%22%20(%EC%9A%B0%EB%8F%99)%22%2C%0A%09%09%20%20%22ordMemo%22%3A%20%22%22%2C%0A%09%09%20%20%22payMehCd%22%3A%20%2200%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22eformYn%22%3A%20%22Y%22%0A%09%09%7D%0A%09%5D%0A';
+				// var dataList = {
+				// 	'searchUsrId' : '<?php echo $od['mb_id'];?>',	//회원아이디
+				// 	'insertPen5000Data' : [{
+				// 		'shoBasSeq' : '',							//순번
+				// 		'prodBarNum' : '<?php echo $prodBarNum;?>',	//옵션명1:바코드|바코드^옵션명1:바코드|바코드
+				// 		'ordNm' : '<?php echo $od_penNm;?>',		//김예비
+				// 		'ordCont' : '<?php echo $od_penConNum;?>',	//수급자(주문자)전화번호
+				// 		'ordZip' : '<?php echo $od_penzip;?>',		//수급자(주문자)우편번호
+				// 		'ordAddr' : '<?php echo $od_penAddr;?>',	//수급자(주문자)주소
+				// 		'ordAddrDtl' : '',							//수급자(주문자)상세주소
+				// 		'ordMemo' : '',								//
+				// 		'payMehCd' : 'PEN00006'						//결제수단(공동코드 : PEN00006 )
+				// 	}]
+				// };
 
 			}else{
 
