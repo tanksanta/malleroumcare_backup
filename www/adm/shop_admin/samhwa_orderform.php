@@ -2187,15 +2187,15 @@ $(document).ready(function() {
 
 			}else{
 
-				var url = 'https://eroumcare.com/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
+				var url = 'https://eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';                
+                
 				var dataList = {
-					'searchUsrId' : '<?php echo $od['mb_id'];?>',	//회원아이디
-					'newStoId' : '',								//재고아이디
-					'ppcId' : '',									//취급제품 아이디
-					'prodColor' : '',								//색상
-					'prodManuDate' : '',							//제조일자
-					'prodBarNums' : '<?php echo $prodBarNum;?>',	//[바코드번호]
-					'regUsrId' : '',								//회원 아이디
+					'prodId' : 'PRO2020111200002',						//제품 아이디
+					'prodColor' : '단일',								 //색상
+					'prodManuDate' : '',							    //제조일자
+					// 'prodBarNums' : '<?php echo $prodBarNum;?>',	    //[바코드번호]
+                    'prodBarNums' : '[456456456]',	    //[바코드번호]
+					'regUsrId' : '<?php echo $od['mb_id'];?>',			//회원 아이디
 				};
 			}
 
