@@ -159,7 +159,7 @@ $(document).ready(function() {
 	$(document).ready(function() {
 
 		$('.header-system-move-btn').click(function() {
-			self.close ()
+			location.href = "https://eroumcare.com/cmm/cmm2000/cmm2000/selectCmm2003View.do";
 		});
 
 		$('.header-hamburger-btn').click(function() {

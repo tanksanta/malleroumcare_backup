@@ -510,27 +510,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
 										for($b=0;$b<$options[$k]['ct_qty'];$b++) {
 											//$ct_barcode_array = unserialize(base64_decode($options[$k]['ct_barcode']));
 											$ct_barcode_array = explode('|', $options[$k]['ct_barcode']);
-
-											//API전송데이터
-											$json_data[$k][$b]['penId'] = $od['od_penId'];						//수급자ID
-											$json_data[$k][$b]['prodId'] = $carts[$i]['it_id'];					//제품ID
-											$json_data[$k][$b]['prodNm'] = stripslashes($carts[$i]['it_name']); //제품명
-											$json_data[$k][$b]['itemId'] = 'ITM2020092200020';					//품목아이디
-											$json_data[$k][$b]['itemNm'] = $carts[$i]['it_model'];				//품목명
-											$json_data[$k][$b]['prodPayCode'] = 'H12060130101';					//급여코드
-											$json_data[$k][$b]['prodColor'] = $options[$k]['ct_option'];		//옵션명:색상
-											$json_data[$k][$b]['ordStatus'] = '00';								//"00" 구매/대여 여부 ( 공통코드 : PRO00001 )
-											$json_data[$k][$b]['prodOflPrice'] = '307000';						//고시가
-											$json_data[$k][$b]['penPay'] = '46050';								//테이블 정의에 없음
-											$json_data[$k][$b]['prodBarNum'] = $ct_barcode_array[$b];			//바코드 번호
-											$json_data[$k][$b]['ordNm"'] = $od['od_name'];						//수급자(주문자) 이름
-											$json_data[$k][$b]['ordCont'] = $od['od_hp'];						//수급자(주문자) 전화번호
-											$json_data[$k][$b]['ordZip'] = $od['od_zip1'].$od['od_zip2'];		//수급자(주문자) 우편번호
-											$json_data[$k][$b]['ordAddr'] = $od['od_addr1'];					//수급자(주문자) 주소
-											$json_data[$k][$b]['ordAddrDtl'] = $od['od_addr2'];					//수급자(주문자) 상세 주소
-											$json_data[$k][$b]['ordMemo'] = $od['od_memo'];						//배송 메모
-											$json_data[$k][$b]['payMehCd'] = '00';								//"00" 결제수단 ( 공통코드 : PEN00006 )
-											$json_data[$k][$b]['eformYn'] = 'N';
 										?>
 										<li style="padding-top:5px;"><input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?php echo $ct_barcode_array[$b]; ?>" class="frm_input required"></li>
 										<?php } ?>
@@ -760,6 +739,24 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         </tr>
                     </tbody>
                 </table>
+
+				<?php //echo $prodBarNum; ?><br>
+				<?php //echo $prodOptNum; ?>
+
+				<?php
+				/*
+				$options = explode('^', $prodOptNum);
+				$barcodes = explode('^', $prodBarNum);
+				for($i=0;$i<count($barcodes);$i++) {
+
+					$code = explode('|', $barcodes[$i]);
+					for($b=0;$b<count($code);$b++) {
+						echo $options[$i].'-'.$code[$b].'<br>';
+					}
+
+				}
+				*/
+				?>
 
                 <div class="frmsamhwaorderform_bottom">
                     <div class="change_status">
@@ -2204,29 +2201,47 @@ $(document).ready(function() {
 
 			if(penId){
 
+				/*
+				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
+				var dataList = {
+					'searchUsrId' : '<?php echo $od['mb_id'];?>',	//회원아이디
+					'insertPen5000Data' : [{
+
+						'penId' : penId,							//수급자 ID
+						'prodId' : '',								//제품 ID
+						'prodNm' : '',								//제품 명
+						'itemId' : '',								//품목 아이디
+						'itemNm' : '',								//품목 명
+						'prodPayCode' : '',							//급여코드
+						'prodColor' : '',							//색상
+						'ordStatus' : '',							//00
+						'prodOflPrice' : '',						//고시가
+						'penPay' : '',								//테이블 정의에 없음
+
+						'prodBarNum' : '<?php echo $prodBarNum;?>',	//옵션명1:바코드|바코드^옵션명1:바코드|바코드
+						'ordNm' : '<?php echo $od_penNm;?>',		//김예비
+						'ordCont' : '<?php echo $od_penConNum;?>',	//수급자(주문자)전화번호
+						'ordZip' : '<?php echo $od_penzip;?>',		//수급자(주문자)우편번호
+						'ordAddr' : '<?php echo $od_penAddr;?>',	//수급자(주문자)주소
+						'ordAddrDtl' : '',							//수급자(주문자)상세주소
+						'ordMemo' : '',								//
+						'payMehCd' : 'PEN00006',					//결제수단(공동코드 : PEN00006 )
+						'eformYn' : 'N'
+
+					}]
+				};
+				*/
+
 				<?php
 				$insertPen5000DataList = urlencode('[{"penId":"'.$od['od_penId'].'","prodId":"PRO2020111200002","prodNm":"Glory-MC1","itemId":"ITM2020092200020","itemNm":"욕창예방매트리스","prodPayCode":"H12060130101","prodColor":"단일","ordStatus":"00","prodOflPrice":"307000","penPay":"46050","prodBarNum":"12030130110","ordNm":"'.$od_penNm.'","ordCont":"'.$od_penConNum.'","ordZip":"'.$od_penzip.'","ordAddr":"'.$od_penAddr.'","ordAddrDtl":"","ordMemo":"","payMehCd":"00","eformYn":"Y"}]');
 				
 				//$insertPen5000DataList = urlencode('[{"penId": "PENID_20210111094719","prodId": "PRO2020111200002","prodNm": "Glory-MC1","itemId": "ITM2020092200020","itemNm": "욕창예방매트리스","prodPayCode": "H12060130101","prodColor": "단일","ordStatus": "00","prodOflPrice": "307000","penPay": "46050","prodBarNum": "12030130110","ordNm": "테스트트","ordCont": "010-8748-7796","ordZip": "48060","ordAddr": "부산 해운대구 APEC로 17","ordAddrDtl": " (우동)","ordMemo": "","payMehCd": "00","eformYn": "N"}]');
 				?>
 
-				/*
 				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do?insertPen5000DataList=<?php echo $insertPen5000DataList;?>';
 				var dataList = {
 					'searchUsrId' : '<?php echo $od['mb_id'];?>'
 				};
-				*/
-				
-				<?php
-				$ret = array(
-					'searchUsrId' => '123456789',
-					'insertPen5000Data' => $json_data,
-				);
-				$dataList = json_encode($ret, JSON_PRETTY_PRINT);
-				?>
-
-				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
-				var dataList = <?php echo $dataList;?>;
 
 			}else{
 
