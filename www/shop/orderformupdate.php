@@ -40,7 +40,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     // 상품에 대한 현재고수량
     if($row['io_id']) {
 		$thisProductData = [];
-		$thisProductData["prodId"] = $row["it_thezone"];
+		// $thisProductData["prodId"] = $row["it_id"];
+		$thisProductData["prodId"] = "PRO2020071400002";
 		$thisProductData["prodColor"] = $row["io_id"];
 		$thisProductData["prodBarNum"] = "";
 		$thisProductData["penStaSeq"] = count($productList) + 1;
