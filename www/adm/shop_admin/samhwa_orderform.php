@@ -12,24 +12,56 @@ include_once(G5_ADMIN_PATH.'/admin.head.php');
 //------------------------------------------------------------------------------
 $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
+$prodList = [];
+$prodListCnt = 0;
 if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 } else {
-	$chData = [];
-	$chData["uuid"] = $od["uuid"];
-	$chData["ordId"] = $od["ordId"];
-	
-	$chHeader = ["Content-type : application/json", "charset : utf-8"];
+	if($od["ordId"]){
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POST, 0);
+		curl_setopt($ch, CURLOPT_URL, "https://eroumcare.com/api/pen/pen5000/pen5000/selectPen5000.do?ordId={$od["ordId"]}&uuid={$od["uuid"]}");
+		$res = curl_exec($ch);
+		$result = json_decode($res, true);
+		$result = $result["data"];
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $chHeader);
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $chData);
-	curl_setopt($ch, CURLOPT_URL, "https://eroumcare.com/api/pen/pen5000/pen5000/selectPen5000.do");
-	$res = curl_exec($ch);
+		if($result){
+			$ordZip = [];
+			$ordZip[0] = substr($result[0]["ordZip"], 0, 3);
+			$ordZip[1] = substr($result[0]["ordZip"], 3, 2);
 
-	echo $res;
+			sql_query("
+				UPDATE {$g5["g5_shop_order_table"]} SET
+					  mb_id = '{$result[0]["usrId"]}'
+					, od_penId = '{$result[0]["penId"]}'
+					, od_delivery_text = '{$result[0]["ordWayNum"]}'
+					, od_delivery_company = '{$result[0]["delSerCd"]}'
+					, od_b_name = '{$result[0]["ordNm"]}'
+					, od_b_tel = '{$result[0]["ordCont"]}'
+					, od_memo = '{$result[0]["ordMeno"]}'
+					, od_b_zip1 = '{$ordZip[0]}'
+					, od_b_zip2 = '{$ordZip[1]}'
+					, od_b_addr1 = '{$result[0]["ordAddr"]}'
+					, od_b_addr2 = '{$result[0]["ordAddrDtl"]}'
+					, od_cart_price = '{$result[0]["finPayment"]}'
+					, payMehCd = '{$result[0]["payMehCd"]}'
+					, eformYn = '{$result[0]["eformYn"]}'
+				WHERE od_id = '{$od["od_id"]}'
+			");
+			$od = sql_fetch("SELECT * FROM {$g5["g5_shop_order_table"]} WHERE od_id = '{$od["od_id"]}'");
+			
+			foreach($result as $data){
+				$thisProductData = [];
+				
+				$thisProductData["prodId"] = $data["prodId"];
+				$thisProductData["prodColor"] = $data["prodColor"];
+				$thisProductData["prodBarNum"] = $data["prodBarNum"];
+				$thisProductData["penStaSeq"] = $data["penStaSeq"];
+				array_push($prodList, $thisProductData);
+			}
+		}
+	}
 }
 $mb = get_member($od['mb_id']);
 $od_status = get_step($od['od_status']);
@@ -548,8 +580,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
 											$json_data[$k][$b]['payMehCd'] = '00';								//"00" 결제수단 ( 공통코드 : PEN00006 )
 											$json_data[$k][$b]['eformYn'] = 'N';
 										?>
-										<li style="padding-top:5px;"><input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?php echo $ct_barcode_array[$b]; ?>" class="frm_input required"></li>
-										<?php } ?>
+										<li style="padding-top:5px;"><input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?>"></li>
+										<?php $prodListCnt++; } ?>
 										</ul>
 
 
@@ -1156,7 +1188,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 </div>
             </form>
         </div>
-        <button id="delivery_info_btn">배송정보 수정</button>
+        <button id="delivery_info_btn">주문정보 수정</button>
     </div>
     <div class="block">
         <div class="header">
@@ -2217,7 +2249,8 @@ $(document).ready(function() {
 		if($('#step').val() == '출고준비'){
 
 			var penId = "<?php echo $od['od_penId'];?>";
-
+			var url;
+			
 			if(penId){
 
 				<?php
@@ -2241,12 +2274,11 @@ $(document).ready(function() {
 				$dataList = json_encode($ret, JSON_PRETTY_PRINT);
 				?>
 
-				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
-				var dataList = <?php echo $dataList;?>;
+//				url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
 
 			}else{
 
-				var url = 'https://eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
+				url = 'https://eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
 				var dataList = {
 					'prodId' : '',									//제품 아이디
 					'prodColor' : '',								//색상
@@ -2256,39 +2288,41 @@ $(document).ready(function() {
 				};
 			}
 
-			$.ajax({
-				type : "post",
-				url : url,
-				data: dataList,
-				dataType : "json",
-				success : function(data){
-					if(data.errorYN == 'Y'){
-						alert(data.message);
-						return false;
-					}else{
+			if(url){
+				$.ajax({
+					type : "post",
+					url : url,
+					data: dataList,
+					dataType : "json",
+					success : function(data){
+						if(data.errorYN == 'Y'){
+							alert(data.message);
+							return false;
+						}else{
 
-						/*alert(data.modifyUsrIp);
-						return false;*/
+							/*alert(data.modifyUsrIp);
+							return false;*/
 
 
-						$.ajax({
-							type : "post",
-							url : "./ajax.cart.step.php",
-							data: formdata,
-							success : function(data){
-								if ( data.result === 'success' ) {
-									location.reload();
-								}else{
-									alert(data.msg);
-									return false;
+							$.ajax({
+								type : "post",
+								url : "./ajax.cart.step.php",
+								data: formdata,
+								success : function(data){
+									if ( data.result === 'success' ) {
+										location.reload();
+									}else{
+										alert(data.msg);
+										return false;
+									}
 								}
-							}
-						});
+							});
 
 
+						}
 					}
-				}
-			});
+				});
+			}
 
 		}else{
 
@@ -2318,6 +2352,7 @@ $(document).ready(function() {
 
     //배송정보 수정
     $('#delivery_info_btn').click(function() {
+		var ordId = "<?=$od["ordId"]?>";
         var od_delivery_type_data = $('#od_delivery_type').find(':selected').data('type');
         var formdata = $.extend(
             {},
@@ -2328,19 +2363,72 @@ $(document).ready(function() {
             }
         );
 
-        $.ajax({
-                    method: "POST",
-                    url: "./ajax.order.delivery.php",
-                    data: formdata,
-                })
-        .done(function(data) {
-            if ( data.msg ) {
-                alert(data.msg);
-            }
-            if ( data.result === 'success' ) {
-                location.reload();
-            }
-        })
+		if(ordId){
+			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
+			$.each(productList, function(key, value){
+				var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
+				var prodBarNum = "";
+				
+				for(var i = 0; i < prodBarNumItem.length; i++){
+					prodBarNum += (prodBarNum) ? "," : "";
+					prodBarNum += $(prodBarNumItem[i]).val();
+				}
+				
+				productList[key]["prodBarNum"] = prodBarNum;
+			});
+			
+			var sendData = {
+				orderId : "<?=$_GET["od_id"]?>",
+				delGbnCd : "",
+				ordWayNum : "",
+				delSerCd : "",
+				ordNm : $("#od_b_name").val(),
+				ordCont : $("#od_b_hp").val(),
+				ordMeno : $("#od_memo").val(),
+				ordZip : $("#od_b_zip").val(),
+				ordAddr : $("#od_b_addr1").val(),
+				ordAddrDtl : $("#od_b_addr2").val(),
+				eformYn : "<?=$od["eformYn"]?>",
+				prods : productList
+			}
+
+			$.ajax({
+				url : "https://eroumcare.com/api/pen/pen5000/pen5000/updatePen5000.do",
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json; charset=utf-8;",
+				data : JSON.stringify(sendData),
+				success : function(result){
+					$.ajax({
+								method: "POST",
+								url: "./ajax.order.delivery.php",
+								data: formdata,
+							})
+					.done(function(data) {
+						if ( data.msg ) {
+							alert(data.msg);
+						}
+						if ( data.result === 'success' ) {
+							location.reload();
+						}
+					});
+				}
+			});
+		} else {
+			$.ajax({
+						method: "POST",
+						url: "./ajax.order.delivery.php",
+						data: formdata,
+					})
+			.done(function(data) {
+				if ( data.msg ) {
+					alert(data.msg);
+				}
+				if ( data.result === 'success' ) {
+					location.reload();
+				}
+			});
+		}
     });
 
     // 배송 선택

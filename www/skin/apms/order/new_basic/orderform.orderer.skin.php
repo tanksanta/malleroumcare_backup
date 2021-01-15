@@ -281,6 +281,9 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 		#order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 		#order_recipientBox iframe { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
 		
+		#order_recipient { background-color: #333 !important; color: #FFF !important; }
+		#recipient_del { background-color: #DC3333 !important; color: #FFF !important; }
+		
 		.panel .top_area{position:relative;}
 		/*.panel .top_area p:first-child{font-weight:bold;color:#ed9947;}*/
 		.panel .top_area p:nth-child(2){font-size:12px;color:#999;margin:0;}
@@ -289,6 +292,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 		
 		@media (max-width : 750px){
 			#order_recipientBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+			#order_recipient { height: 30px; line-height: 28px; font-size: 12px; padding: 0 10px; border: 1px solid #999 !important; background-color: #999 !important; top: 0; right: 0; }
+			#recipient_del { height: 30px; line-height: 28px; font-size: 12px; padding: 0 10px; border: 1px solid #DC3333 !important; background-color: rgba(0, 0, 0, 0) !important; top: 0; right: 0; color: #DC3333 !important; margin-right: 100px !important; }
 		}
 	</style>
     <section id="sod_frm_recipient_orderer" style="margin-bottom:0px;">

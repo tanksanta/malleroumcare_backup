@@ -1142,7 +1142,7 @@ if($is_member && $od_b_name) {
 					prods : productList,
 					documentId : "THK001_THK002_THK003",
 					eformType : "00",
-					returnUrl : "<?=G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid?>",
+					returnUrl : "<?=G5_SHOP_URL.'/orderinquiryview.php?result=Y&od_id='.$od_id.'&amp;uid='.$uid?>",
 				}
 				
 				$.ajax({
@@ -1152,7 +1152,16 @@ if($is_member && $od_b_name) {
 					contentType : "application/json; charset=utf-8;",
 					data : JSON.stringify(sendData),
 					success : function(res){
-						window.location.href = "http://61.106.19.170:8080/eform/reqClient/requestJspNew?UUID=" + res.uuid + "&CONTRACT_NUMBER=" + res.ordId + "&EFORM_TYPE=00&DOCUMENT_ID=THK001_THK002_THK003";
+						if(res.uuid == undefined || res.ordId == undefined){
+							alert(res.message);
+							history.go(-3);
+						} else {
+							window.location.href = "http://61.106.19.170:8080/eform/reqClient/requestJspNew?UUID=" + res.uuid + "&CONTRACT_NUMBER=" + res.ordId + "&EFORM_TYPE=00&DOCUMENT_ID=THK001_THK002_THK003";
+						}
+					},
+					error : function(res){
+						alert("알 수 없는 오류로 계약서 작성에 실패하였습니다.");
+						history.go(-3);
 					}
 				});
 			<?php } ?>

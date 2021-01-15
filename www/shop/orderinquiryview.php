@@ -480,7 +480,7 @@ if($is_inquiryview_sub) {
 																					  
 		sql_query("
 			UPDATE g5_shop_order SET
-				  eformYn = 'Y'
+				  eformYn = '".($_GET["result"] == "Y") ? "Y" : "N"."'
 				, payMehCd = '0'
 				, prods = '{$insertProds}'
 			WHERE od_id = '{$_GET["od_id"]}'
