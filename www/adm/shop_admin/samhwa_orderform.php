@@ -14,6 +14,22 @@ $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
 if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
+} else {
+	$chData = [];
+	$chData["uuid"] = $od["uuid"];
+	$chData["ordId"] = $od["ordId"];
+	
+	$chHeader = ["Content-type : application/json", "charset : utf-8"];
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $chHeader);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $chData);
+	curl_setopt($ch, CURLOPT_URL, "https://eroumcare.com/api/pen/pen5000/pen5000/selectPen5000.do");
+	$res = curl_exec($ch);
+
+	echo $res;
 }
 $mb = get_member($od['mb_id']);
 $od_status = get_step($od['od_status']);
@@ -2219,7 +2235,7 @@ $(document).ready(function() {
 				
 				<?php
 				$ret = array(
-					'searchUsrId' => '123456789',
+					'searchUsrId' => $od['mb_id'],
 					'insertPen5000Data' => $json_data,
 				);
 				$dataList = json_encode($ret, JSON_PRETTY_PRINT);

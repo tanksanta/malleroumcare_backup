@@ -475,12 +475,14 @@ if($is_inquiryview_sub) {
 ?>
 
 <?php 
-	if($_POST["ordId"]){ 
+	if($_SESSION["productList{$_GET["od_id"]}"]){ 
+		$insertProds = addslashes(htmlspecialchars(json_encode($_SESSION["productList{$_GET["od_id"]}"])));
+																					  
 		sql_query("
 			UPDATE g5_shop_order SET
-				  ordId = '{$_POST["ordId"]}'
-				, uuid = '{$_POST["uuid"]}'
-				, eformYn = 'Y'
+				  eformYn = 'Y'
+				, payMehCd = '0'
+				, prods = '{$insertProds}'
 			WHERE od_id = '{$_GET["od_id"]}'
 		");
 		

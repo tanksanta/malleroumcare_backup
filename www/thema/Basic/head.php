@@ -3,6 +3,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 include_once(THEMA_PATH.'/assets/thema.php');
 ?>
 
+<script type="text/javascript" src="/plugin/webViewBridge/webViewBridge.js"></script>
 <div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>">
 
 	<!-- LNB -->

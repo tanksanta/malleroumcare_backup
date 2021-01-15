@@ -29,6 +29,10 @@ curl_close($curl);
 <script src="<?php echo G5_JS_URL;?>/common.js"></script>
 </head>
 <style>
+	html, body { width: 100%; height: 100%; float: left; background-color: #FFF; }
+	.pop_top_area { width: 100%; left: 0; top: 0; }
+	.pop_top_area .btn_area a { top: 15px; right: 15px; }
+	.pop_list { z-index: 2; position: relative; }
 body, input, textarea, select, button, table {
     font-size: 12px;
 }
@@ -41,7 +45,7 @@ body, input, textarea, select, button, table {
 
 <div class="pop_top_area">
 	<p>수급자 정보</p>
-	<div class="btn_area"><a href="javascript:void(0);" onclick="self.close();" attr-a="onclick : attr-a"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu_x.png" alt="" /></a></div>
+	<div class="btn_area"><a href="#" id="thisPopupCloseBtn" attr-a="onclick : attr-a"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu_x.png" alt="" /></a></div>
 	<div class="search_area">
 		<select name="" id="">
 			<option>수급자구분</option>
@@ -123,12 +127,19 @@ body, input, textarea, select, button, table {
 </html>
 
 <script>
-$(function() {
-    $(".sel_address").on("click", function() {
-		var penId = $(this).data('target');
-		window.opener.selected_recipient(penId);
-        window.close();
-    });
+	$(function() {
 
-});
+		$(".sel_address").on("click", function() {
+			var penId = $(this).data("target");
+			parent.selected_recipient(penId);
+			$("#order_recipientBox", parent.document).hide();
+		});
+
+		$("#thisPopupCloseBtn").click(function(e){
+			e.preventDefault();
+			
+			$("#order_recipientBox", parent.document).hide();
+		});
+
+	});
 </script>

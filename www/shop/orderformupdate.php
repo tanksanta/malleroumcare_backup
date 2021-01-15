@@ -43,6 +43,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 		$thisProductData["prodId"] = $row["it_id"];
 		$thisProductData["prodColor"] = $row["io_id"];
 		$thisProductData["prodBarNum"] = "";
+		$thisProductData["penStaSeq"] = count($productList) + 1;
 		
 		array_push($productList, $thisProductData);
         $it_stock_qty = (int)get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
@@ -1141,7 +1142,7 @@ if($is_member && $od_b_name) {
 					prods : productList,
 					documentId : "THK001_THK002_THK003",
 					eformType : "00",
-					returnUrl : "",
+					returnUrl : "<?=G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid?>",
 				}
 				
 				$.ajax({
@@ -1151,8 +1152,7 @@ if($is_member && $od_b_name) {
 					contentType : "application/json; charset=utf-8;",
 					data : JSON.stringify(sendData),
 					success : function(res){
-						$("body").append("<form id='submitFrm' action='<?=G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid?>' method='post'><input type='hidden' name='ordId' value='" + res.ordId + "'><input type='hidden' name='uuid' value='" + res.uuid + "'></form>");
-						$("#submitFrm").submit();
+						window.location.href = "http://61.106.19.170:8080/eform/reqClient/requestJspNew?UUID=" + res.uuid + "&CONTRACT_NUMBER=" + res.ordId + "&EFORM_TYPE=00&DOCUMENT_ID=THK001_THK002_THK003";
 					}
 				});
 			<?php } ?>

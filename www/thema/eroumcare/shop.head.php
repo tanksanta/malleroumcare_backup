@@ -1,8 +1,19 @@
 <script type="text/javascript">
-// wetoz : 2020-09-04
-if(!wcs_add) var wcs_add = {};
-wcs_add["wa"] = "s_4372b22f12c2";
-wcs.inflow("samhwasnd.com");
+	
+	// wetoz : 2020-09-04
+	if(!wcs_add) var wcs_add = {};
+	wcs_add["wa"] = "s_4372b22f12c2";
+	wcs.inflow("samhwasnd.com");
+	
+	/* 210115 */
+	document.addEventListener("message", function(e){
+		switch(e.data){
+			case "nowPage" :
+				history.go(-1);
+				break;
+		}
+	});
+	
 </script>
 
 <?php

@@ -267,15 +267,29 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
     </section>
     <!-- } 주문하시는 분 입력 끝 -->
 
-
-
+	<div id="order_recipientBox">
+		<div>
+			
+			<iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php"></iframe>
+			
+		</div>
+	</div>
 
 	<style>
+		
+		#order_recipientBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+		#order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+		#order_recipientBox iframe { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
+		
 		.panel .top_area{position:relative;}
 		/*.panel .top_area p:first-child{font-weight:bold;color:#ed9947;}*/
 		.panel .top_area p:nth-child(2){font-size:12px;color:#999;margin:0;}
 		.panel .top_area a{position:absolute;top:5px; right:0px;border:1px solid #ddd;padding: 10px 15px;display:inline-block;text-align:center;}
 		.panel .top_area a:hover{background: #f5f5f5;color:#333;}
+		
+		@media (max-width : 750px){
+			#order_recipientBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+		}
 	</style>
     <section id="sod_frm_recipient_orderer" style="margin-bottom:0px;">
 		<input type="hidden" name="penId" id="penId">
@@ -296,7 +310,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					<p class="black bold">수급자 정보</p>
 					<p>주문 시 수급자정보가 없는 경우 사업소에서 주문한 것으로 판단하여 재고로 등록됩니다.</p>
 					<a id="recipient_del" style="margin-right:130px;" class="bg-red">삭제</a>
-					<a href="<?php echo G5_SHOP_URL;?>/pop_recipient.php" id="order_recipient" class="bg-black">내 수급자 조회</a>
+					<a href="#" id="order_recipient" class="bg-black">내 수급자 조회</a>
 				</div>
 			</div>
             <div class="panel-body">
@@ -695,10 +709,12 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
                         <script type="text/javascript">
                         $(function() {
                             // 수급자목록
-                            $("#order_recipient").on("click", function() {
-                                var url = this.href;
-                                window.open(url, "win_address", "left=100,top=100,width=800,height=600,scrollbars=1");
-                                return false;
+								$("#order_recipientBox").hide();
+								$("#order_recipientBox").css("opacity", 1);
+                            $("#order_recipient").on("click", function(e){
+                                e.preventDefault();
+								
+									$("#order_recipientBox").show();
                             });
 
                             $('#od_delivery_type').change(function() {
