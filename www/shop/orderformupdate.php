@@ -22,7 +22,7 @@ if (get_cart_count($tmp_cart_id) == 0)// 장바구니에 담기
     alert('장바구니가 비어 있습니다.\\n\\n이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다.', G5_SHOP_URL.'/cart.php');
 
 $it_ids = array();
-
+$productList = [];
 $error = "";
 // 장바구니 상품 재고 검사
 $sql = " select it_id,
@@ -39,6 +39,12 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 {
     // 상품에 대한 현재고수량
     if($row['io_id']) {
+		$thisProductData = [];
+		$thisProductData["prodId"] = $row["it_id"];
+		$thisProductData["prodColor"] = $row["io_id"];
+		$thisProductData["prodBarNum"] = "";
+		
+		array_push($productList, $thisProductData);
         $it_stock_qty = (int)get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
     } else {
         $it_stock_qty = (int)get_it_stock_qty($row['it_id']);
@@ -258,7 +264,7 @@ else {
         foreach($it_ids as $it_id) {
             $sql = "SELECT * FROM {$g5['g5_shop_item_table']} WHERE it_id = {$it_id}";
             $result = sql_fetch($sql);
-
+			
             if ($result[$it_sc_add_sendcost] > -1) { // 추가배송비가 설정되어 있는 경우
                 $total_item_sc_price += $result[$it_sc_add_sendcost];
             } else { // 없는경우 기본 관리자에 있는걸 가져온다.
@@ -1101,13 +1107,56 @@ if($is_member && $od_b_name) {
 	apms_push($mb_list, $od_id, $od_id, G5_URL, $push);
 // ------------------------------------------------------------------
 
-goto_url(G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid);
+	if(!$_POST["penId"]){
+		goto_url(G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid);
+	}
+
 ?>
 
 <html>
     <head>
         <title>주문정보 기록</title>
+        <script  src="//code.jquery.com/jquery-latest.min.js"></script>
         <script>
+		
+			<?php if($_POST["penId"]){ $_SESSION["productList{$od_id}"] = $productList; ?>
+				var productList = <?=($productList) ? json_encode($productList) : "[]"?>;
+			
+				var sendData = {
+					usrId : "<?=$member["mb_id"]?>",
+					penId : "<?=$_POST["penId"]?>",
+					delGbnCd : "",
+					ordWayNum : "",
+					delSerCd : "",
+					ordNm : "<?=$_POST["od_b_name"]?>",
+					ordCont : "<?=($_POST["od_b_tel"]) ? $_POST["od_b_tel"] : $_POST["od_b_hp"]?>",
+					ordMeno : "<?=$_POST["od_memo"]?>",
+					ordZip : "<?=$_POST["od_b_zip"]?>",
+					ordAddr : "<?=$_POST["od_b_addr1"]?>",
+					ordAddrDtl : "<?=$_POST["od_b_addr2"]?>",
+					finPayment : "<?=$order_price?>",
+					payMehCd : "0",
+					regUsrId : "<?=$member["mb_id"]?>",
+					regUsrIp : "<?=$_SERVER["REMOTE_ADDR"]?>",
+					prods : productList,
+					documentId : "THK001_THK002_THK003",
+					eformType : "00",
+					returnUrl : "",
+				}
+				
+				$.ajax({
+					url : "https://eroumcare.com/api/pen/pen5000/pen5000/insertPen5000.do",
+					type : "POST",
+					dataType : "json",
+					contentType : "application/json; charset=utf-8;",
+					data : JSON.stringify(sendData),
+					success : function(res){
+						$("body").append("<form id='submitFrm' action='<?=G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid?>' method='post'><input type='hidden' name='ordId' value='" + res.ordId + "'><input type='hidden' name='uuid' value='" + res.uuid + "'></form>");
+						$("#submitFrm").submit();
+					}
+				});
+			<?php } ?>
+			
             // 결제 중 새로고침 방지 샘플 스크립트 (중복결제 방지)
             function noRefresh()
             {

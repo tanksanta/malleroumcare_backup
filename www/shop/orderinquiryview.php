@@ -473,3 +473,43 @@ if($is_inquiryview_sub) {
 	include_once('./_tail.php');
 }
 ?>
+
+<?php 
+	if($_POST["ordId"]){ 
+		sql_query("
+			UPDATE g5_shop_order SET
+				  ordId = '{$_POST["ordId"]}'
+				, uuid = '{$_POST["uuid"]}'
+				, eformYn = 'Y'
+			WHERE od_id = '{$_GET["od_id"]}'
+		");
+		
+		$orderData = sql_fetch("SELECT * FROM g5_shop_order WHERE od_id = '{$_GET["od_id"]}'");
+?>
+	<script type="text/javascript">
+		var productList = <?=($_SESSION["productList{$_GET["od_id"]}"]) ? json_encode($_SESSION["productList{$_GET["od_id"]}"]) : "[]"?>;
+
+		var sendData = {
+			orderId : "<?=$_GET["od_id"]?>",
+			delGbnCd : "",
+			ordWayNum : "",
+			delSerCd : "",
+			ordNm : "<?=$orderData["od_b_name"]?>",
+			ordCont : "<?=$orderData["od_b_tel"]?>",
+			ordMeno : "<?=$orderData["od_memo"]?>",
+			ordZip : "<?=$orderData["od_b_zip1"]?><?=$orderData["od_b_zip2"]?>",
+			ordAddr : "<?=$orderData["od_b_addr1"]?>",
+			ordAddrDtl : "<?=$orderData["od_b_addr2"]?>",
+			eformYn : "Y",
+			prods : productList
+		}
+
+		$.ajax({
+			url : "https://eroumcare.com/api/pen/pen5000/pen5000/updatePen5000.do",
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json; charset=utf-8;",
+			data : JSON.stringify(sendData)
+		});
+	</script>
+<?php } ?>

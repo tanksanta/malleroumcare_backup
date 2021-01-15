@@ -467,28 +467,6 @@ $sql_common = " ca_id               = '$ca_id',
                 it_8                = '$it_8',
                 it_9                = '$it_9',
                 it_10               = '$it_10',
-
-				prodId				= '$prodId',
-                gubun               = '$gubun',
-                prodNm				= '$prodNm',
-                itemId				= '$itemId',
-                subItem				= '$subItem',
-                prodSupPrice		= '$prodSupPrice',
-                prodOflPrice		= '$prodOflPrice',
-                ProdPayCode			= '$ProdPayCode',
-                supId               = '$supId',
-                prodColor			= '$prodColor',
-                prodSym				= '$prodSym',
-                prodWeig			= '$prodWeig',
-                prodSize			= '$prodSize',
-                prodQty				= '$prodQty',
-                prodDetail			= '$prodDetail',
-                regDtm				= '$regDtm',
-                regUsrId			= '$regUsrId',
-                regUsrIp			= '$regUsrIp',
-                supNm               = '$supNm',
-                prodImgAttr			= '$prodImgAttr',
-
                 pt_it				= '$pt_it',
                 pt_id				= '$pt_id',
                 pt_img				= '$pt_img',
@@ -796,7 +774,7 @@ $qstr = "$qstr&amp;sca=$sca&amp;page=$page";
 
 if ($w == "u") {
     goto_url("./itemform.php?w=u&amp;it_id=$it_id&amp;fn=$fn&amp;$qstr");
-}
+} 
 /*
 else if ($w == "d")  {
     $qstr = "ca_id=$ca_id&amp;sfl=$sfl&amp;sca=$sca&amp;page=$page&amp;stx=".urlencode($stx)."&amp;save_stx=".urlencode($save_stx);

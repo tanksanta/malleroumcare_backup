@@ -126,7 +126,6 @@ $result = sql_query($sql);
 
 //$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page;
 $qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page.'&amp;page_rows='.$page_rows.'&amp;save_stx='.$stx;
-if($api_it_id) $qstr  .= '&amp;api_it_id='.$api_it_id;
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 
@@ -350,7 +349,6 @@ $flist = apms_form(1,0);
             <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;fn=<?php echo $row['pt_form'];?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03"><span class="sound_only"><?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?> </span>수정</a>
             <a href="./itemcopy.php?it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>" class="itemcopy btn btn_02" target="_blank"><span class="sound_only"><?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?> </span>복사</a>
             <a href="<?php echo $href; ?>" class="btn btn_02"><span class="sound_only"><?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?> </span>보기</a>
-			<a href="<?php echo $_SERVER['SCRIPT_NAME'].'?api_it_id='.$row['it_id'].'&$qstr&amp;page='; ?>" class="btn btn_02"><span class="sound_only"><?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?> </span>정보반영</a>
         </td>
     </tr>
     <tr class="<?php echo $bg; ?>">
@@ -435,7 +433,6 @@ $flist = apms_form(1,0);
 
 <div class="btn_fixed_top">
 	<a href="#" id="itemform" class="btn btn_01"> API 상품등록</a>
-	<!--a href="#" id="itemformupdate" class="btn btn_01"> API 상품수정</a-->
     <a href="./itemform.php" class="btn btn_01">상품등록</a>
     <a href="./itemexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn btn_02">상품일괄등록</a>
     <a href="./itemexcel2.php" onclick="return excelform(this.href);" target="_blank" class="btn btn_02">상품일괄수정</a>
@@ -449,230 +446,7 @@ $flist = apms_form(1,0);
 
 <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); ?>
 
-<?php
-$sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$api_it_id' ";
-$it = sql_fetch($sql);
-?>
-
-
-<section id="anc_sitfrm_relation" class="srel anc-section">
-    <h2 class="h2_frm">API상품 수정</h2>
-
-	<form name="fitemlist2" method="post" id="fpointlist2" action="./itemapi_update.php" method="post" enctype="MULTIPART/FORM-DATA" autocomplete="off" onsubmit="return fitemformcheck(this)">
-	<input type="hidden" name="sca" value="<?php echo $sca; ?>">
-	<input type="hidden" name="sst" value="<?php echo $sst; ?>">
-	<input type="hidden" name="sod" value="<?php echo $sod; ?>">
-	<input type="hidden" name="sfl" value="<?php echo $sfl; ?>">
-	<input type="hidden" name="stx" value="<?php echo $stx; ?>">
-	<input type="hidden" name="page" value="<?php echo $page; ?>">
-	<input type="hidden" name="page_rows" value="<?php echo $page_rows; ?>">
-    <div class="compare_wrap">
-        <section class="compare_left" style="width:49%">
-			<div class="tbl_frm01 tbl_wrap">
-				<table>
-				<colgroup>
-					<col class="grid_4">
-					<col>
-				</colgroup>
-				<tbody>
-					<tr>
-						<th scope="row"><label for="api_edit_use">API상품 수정</label></th>
-						<td>
-							<label><input type="checkbox" name="api_edit_use" value="1" id="api_edit_use" checked></label> API상품수정일시 체크
-						</td>
-					</tr>
-					<tr>
-						<th scope="row" class="red"><label for="it_id">상품관리코드</label></th>
-						<td>
-							<input type="text" name="it_id" value="<?php echo $it['it_id']; ?>" id="it_id" class="frm_input required" readonly required size="40">
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="prodId">제품아이디</label></th>
-						<td>
-							<input type="text" name="prodId" value="<?php echo get_text($it['prodId']); ?>" id="prodId" class="frm_input" size="40">
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="prodNm">제품명</label></th>
-						<td>
-							<input type="text" name="prodNm" value="<?php echo get_text($it['prodNm']); ?>" id="prodNm" class="frm_input" size="40">
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="prodSym">재질</label></th>
-						<td>
-							<input type="text" name="prodSym" value="<?php echo get_text($it['prodSym']); ?>" id="prodSym" class="frm_input" size="40">
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="prodWeig">중량</label></th>
-						<td>
-							<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input" size="40">
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="prodSize">사이즈</label></th>
-						<td>
-							<input type="text" name="prodSize" value="<?php echo get_text($it['prodSize']); ?>" id="prodSize" class="frm_input" size="40">
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="prodDetail">상세정보</label></th>
-						<td>
-							<input type="text" name="prodDetail" value="<?php echo get_text($it['prodDetail']); ?>" id="prodDetail" class="frm_input" size="40">
-						</td>
-					</tr>
-				</tbody>
-				</table>
-			</div>
-        </section>
-
-        <section class="compare_right" style="width:49%">
-			<div class="tbl_frm01 tbl_wrap">
-				<table>
-				<colgroup>
-					<col class="grid_4">
-					<col>
-				</colgroup>
-				<tbody>
-					<tr>
-						<th scope="row"><label for="prodImgAttr">이미지 첨부파일 이름들</label></th>
-						<td>
-							<input type="text" name="prodImgAttr" value="<?php echo get_text($it['prodImgAttr']); ?>" id="prodImgAttr" class="frm_input" size="35">
-						</td>
-					</tr>
-
-					<?php
-					for ($i=1; $i<=10; $i++) {
-						if($it['it_img'.$i]){
-							$it['it_api_img'.$i] = G5_DATA_URL.'/item/'.$it['it_img'.$i];
-						}
-					?>
-					<tr>
-						<th scope="row">이미지파일<?php echo $i ?></th>
-						<td>
-							<input type="text" name="file<?php echo $i ?>" id="file<?php echo $i ?>" value="<?php echo get_text($it['it_api_img'.$i]) ?>" class="frm_input" size="35">
-							<?php
-							$it_img = G5_DATA_PATH.'/item/'.$it['it_img'.$i];
-							if(is_file($it_img) && $it['it_img'.$i]) {
-								$size = @getimagesize($it_img);
-								$thumb = get_it_thumbnail($it['it_img'.$i], 25, 25);
-							?>
-							<label for="it_img<?php echo $i; ?>_del"><span class="sound_only">이미지 <?php echo $i; ?> </span>파일삭제</label>
-							<input type="checkbox" name="it_img<?php echo $i; ?>_del" id="it_img<?php echo $i; ?>_del" value="1">
-							<span class="sit_wimg_limg<?php echo $i; ?>"><?php echo $thumb; ?></span>
-							<div id="limg<?php echo $i; ?>" class="banner_or_img">
-								<img src="<?php echo G5_DATA_URL; ?>/item/<?php echo $it['it_img'.$i]; ?>" alt="" width="<?php echo $size[0]; ?>" height="<?php echo $size[1]; ?>">
-								<button type="button" class="sit_wimg_close">닫기</button>
-							</div>
-							<script>
-							$('<button type="button" id="it_limg<?php echo $i; ?>_view" class="btn_frmline sit_wimg_view">이미지<?php echo $i; ?> 확인</button>').appendTo('.sit_wimg_limg<?php echo $i; ?>');
-							</script>
-							<?php } ?>
-						</td>
-					</tr>
-					<?php } ?>
-
-
-
-				</tbody>
-				</table>
-			</div>
-        </section>
-    </div>
-    <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="상품정보 수정" class="btn_submit btn">
-    </div>
-
-    </form>
-</section>
-
 <script>
-
-<?php if ($api_it_id) { ?>
-$(".banner_or_img").addClass("sit_wimg");
-$(function() {
-    $(".sit_wimg_view").bind("click", function() {
-        var sit_wimg_id = $(this).attr("id").split("_");
-        var $img_display = $("#"+sit_wimg_id[1]);
-
-        $img_display.toggle();
-
-        if($img_display.is(":visible")) {
-            $(this).text($(this).text().replace("확인", "닫기"));
-        } else {
-            $(this).text($(this).text().replace("닫기", "확인"));
-        }
-
-        var $img = $("#"+sit_wimg_id[1]).children("img");
-        var width = $img.width();
-        var height = $img.height();
-        if(width > 700) {
-            var img_width = 700;
-            var img_height = Math.round((img_width * height) / width);
-
-            $img.width(img_width).height(img_height);
-        }
-    });
-    $(".sit_wimg_close").bind("click", function() {
-        var $img_display = $(this).parents(".banner_or_img");
-        var id = $img_display.attr("id");
-        $img_display.toggle();
-        var $button = $("#it_"+id+"_view");
-        $button.text($button.text().replace("닫기", "확인"));
-    });
-});
-<?php } ?>
-
-function fitemformcheck(f)
-{
-
-    if (!f.it_id.value) {
-        alert("상품관리코드가 없습니다.");
-        return false;
-    }
-
-	if (f.prodId.value && $('#api_edit_use').is(":checked")) {
-		var error = message = "";
-		var url = 'https://eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
-		/*
-		var dataList = {
-			'prodId' : '제품아이디',
-			'prodNm' : '제품명',
-			'prodSym' : '재질',
-			'prodWeig' : '중량',
-			'prodSize' : '사이즈',
-			'prodDetail' : '상세정보',
-			'prodImgAttr' : '이미지 첨부파일 이름들',
-			'file1' : '첫번쨰 이미지 파일',
-			'file2' : '두번째 이미지 파일'
-		}
-		*/
-		var pf = document.fitemlist2;
-		var dataList = $(pf).serialize();
-
-		$.ajax({
-			url: url,
-			type: "POST",
-			data: dataList,
-			dataType: "json",
-			async: false,
-			cache: false,
-			success: function(data, textStatus) {
-				error = data.errorYN;
-				message = data.message;
-			}
-		});
-
-		if (error == "Y") {
-			alert(message);
-			return false;
-		}
-	}
-
-}
-
 function fitemlist_submit(f)
 {
     if (!is_checked("chk[]")) {
@@ -698,8 +472,8 @@ $(function() {
 			'pt_it' : '1',							//상품종류 - 1: 일반상품(배송가능), 2: 컨텐츠상품(배송불가)
 			'ca_id' : '1080',						//상품분류
 			'it_id' : 'A_<?php echo time();?>',		//상품코드
-			'it_thezone' : 'F<?php echo time();?>',	//상품코드
-			'it_name' : '4DM-<?php echo time();?>',	//상품명
+			'it_thezone' : 'F<?php echo time();?>',			//상품코드
+			'it_name' : '4DM-<?php echo time();?>',					//상품명
 			'it_basic' : '미끄럼방지용품 - 양말',	//기본설명
 			'it_explan' : '상품설명',				//상품설명
 
@@ -714,6 +488,11 @@ $(function() {
 			'it_origin' : '',						//원산지
 			'it_brand' : '',						//브랜드
 			'it_model' : '미끄럼방지양말',			//모델
+
+			/*
+			'it_option_subject' : '색상',			//옵션명 - 옵션항목은 콤마(,) 로 구분하여 여러개를 입력 예시) 라지,미디움,스몰
+			'opt_name' : '실버|검정',				//옵션
+			*/
 
 			'opt1_subject' : '색상',				//옵션제목
 			'opt1' : '실버,검정',					//옵션명
@@ -745,12 +524,31 @@ $(function() {
 			'it_soldout' : '0',						//상품품절
 			'it_stock_qty' : '99999',				//재고수량
 
-			'it_img1' : 'https://cdn.imweb.me/thumbnail/20200408/71330c9671fba.jpg',		//이미지1
+			'it_img1' : 'https://t1.daumcdn.net/news/202101/13/donga/20210113175008955ijus.jpg',		//이미지1
 			'it_img1_del' : 0,																			//이미지1삭제
-
+			/*
+			'it_img2' : 'https://t1.daumcdn.net/news/202101/13/donga/20210113175010872tiop.jpg',		//이미지2
+			'it_img2_del' : 0,																			//이미지2삭제
+			'it_img3' : 'https://t1.daumcdn.net/news/202101/13/donga/20210113175011883nhkv.jpg',		//이미지3
+			'it_img3_del' : 0,																			//이미지3삭제
+			'it_img4' : 'https://t1.daumcdn.net/news/202101/13/donga/20210113175013987bcfz.jpg',		//이미지4
+			'it_img4_del' : 0,																			//이미지4삭제
+			'it_img5' : 'https://t1.daumcdn.net/news/202101/13/donga/20210113175015031uodq.jpg',		//이미지5
+			'it_img5_del' : 0,																			//이미지5삭제
+			'it_img6' : 'https://t1.daumcdn.net/news/202101/13/donga/20210113175017919dktj.jpg',		//이미지6
+			'it_img6_del' : 0,																			//이미지6삭제
+			'it_img7' : 'https://t1.daumcdn.net/news/202101/13/donga/20210113175020013wyfz.jpg',		//이미지7
+			'it_img7_del' : 0,																			//이미지7삭제
+			'it_img8' : 'https://t1.daumcdn.net/news/202101/13/donga/20210113175021231nlvx.jpg',		//이미지8
+			'it_img8_del' : 0,																			//이미지8삭제
+			'it_img9' : 'https://t1.daumcdn.net/news/202101/13/donga/20210113175022927gzwz.jpg',		//이미지9
+			'it_img9_del' : 0,																			//이미지9삭제
+			'it_img10' : 'https://t1.daumcdn.net/news/202101/13/donga/20210113175008496vqhi.jpg',		//이미지10
+			'it_img10_del' : 0,																			//이미지10삭제
+			*/
 			'it_sc_add_sendcost' : '-1',			//산간지역 추가 배송비
 			'it_sc_add_sendcost_partner' : '-1',		//파트너회원 산간지역 추가 배송비
-
+			
 			'prodId' : '제품아이디',
 			'gubun' : '구분 ("00")',
 			'prodNm' : '제품 명',
@@ -770,7 +568,7 @@ $(function() {
 			'regUsrId' : '최초등록자 ID',
 			'regUsrIp' : '최초등록자 IP (IPV6 포함 총 39자리)',
 			'supNm' : '공급업체 이름',
-			'prodImgAttr' : '이미지 첨부파일 이름들'
+			'prodImgAttr' : '이미지 첨부파일 이름들]'
 
 		};
 
@@ -796,41 +594,7 @@ $(function() {
 
     });
 
-	$('#itemformupdate').click(function() {
 
-		var url = 'https://eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
-		var dataList = {
-			'prodId' : '제품아이디',
-			'prodNm' : '제품명',
-			'prodSym' : '재질',
-			'prodWeig' : '중량',
-			'prodSize' : '사이즈',
-			'prodDetail' : '상세정보',
-			'prodImgAttr' : '이미지 첨부파일 이름들',
-			'file1' : '첫번쨰 이미지 파일',
-			'file2' : '두번째 이미지 파일'
-		}
-
-		$.ajax({
-			type : "post",
-			url : url,
-			data: dataList,
-			dataType : "json",
-			success : function(data){
-				if(data.errorYN == 'Y'){
-
-					alert(data.message);
-					return false;
-
-				}else{
-
-					alert('상품수정완료');
-					location.reload();
-
-				}
-			}
-		});
-	});
 
 
     $(".itemcopy").click(function() {

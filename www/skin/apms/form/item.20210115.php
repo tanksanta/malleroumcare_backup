@@ -15,7 +15,6 @@ $pg_anchor .='<li><a href="#anc_sitfrm_opt">옵션사항</a></li>';
 $pg_anchor .='<li><a href="#anc_sitfrm_attach">파일첨부</a></li>';
 if($is_auth) { // 관리자일 때
 	$pg_anchor .='<li><a href="#anc_sitfrm_optional">상하단내용</a></li>';
-	$pg_anchor .='<li><a href="#anc_sitfrm_api">API상품수정</a></li>';
 	$pg_anchor .='<li><a href="#anc_sitfrm_extra">여분필드</a></li>';
 }
 $pg_anchor .='</ul>';
@@ -287,7 +286,7 @@ $pg_anchor .='</ul>';
 			</td>
 		</tr>
 		<tr>
-            <td colspan="2">
+            <td colspan="2"> 
 				<?php echo editor_html('it_explan', get_text(html_purifier($it['it_explan']), 0)); ?>
 			</td>
 		</tr>
@@ -295,11 +294,11 @@ $pg_anchor .='</ul>';
             <th scope="row">모바일 상품설명</th>
             <td>
 				<a href="<?php echo G5_BBS_URL;?>/helper.php" target="_blank" class="btn_frmline win_scrap">기능안내</a>
-				<a href="<?php echo G5_BBS_URL;?>/helper.php?act=map" target="_blank" class="btn_frmline win_scrap">구글지도</a>
+				<a href="<?php echo G5_BBS_URL;?>/helper.php?act=map" target="_blank" class="btn_frmline win_scrap">구글지도</a>			
 			</td>
         </tr>
 		<tr>
-            <td colspan="2" class="iframe">
+            <td colspan="2" class="iframe"> 
 				<?php echo editor_html('it_mobile_explan', get_text(html_purifier($it['it_mobile_explan']), 0)); ?>
 			</td>
         </tr>
@@ -307,25 +306,25 @@ $pg_anchor .='</ul>';
 		<tr>
             <th scope="row">작업시 참고사항</th>
             <td>
-				작업지시서 하단에 출력됩니다.
+				작업지시서 하단에 출력됩니다.		
 			</td>
         </tr>
 		<tr>
-			<td colspan="2">
+			<td colspan="2"> 
 				<?php echo editor_html('it_reference', get_text(html_purifier($it['it_reference']), 0)); ?>
 			</td>
 		</tr>
 		<?php if($is_auth) { // 관리자일 때만 출력 ?>
 			<tr>
 				<th scope="row">추천인 적립율</th>
-				<td>
+				<td> 
 					<?php echo help("부가세를 제한 순판매액에 대해 추천인(마케터)에게 적립됩니다."); ?>
 					<input type="text" name="pt_marketer" value="<?php echo $it['pt_marketer']; ?>" id="pt_marketer" class="frm_input sm"> % 적립
 				</td>
 			</tr>
 			<tr>
 				<th scope="row">파트너 아이디</th>
-				<td>
+				<td> 
 					<?php echo help("미등록시 최고관리자 아이디로 모든 활동이 이루어집니다."); ?>
 					<input type="text" name="pt_id" value="<?php echo $it['pt_id']; ?>" id="pt_id" class="frm_input sm">
 				</td>
@@ -542,8 +541,8 @@ $pg_anchor .='</ul>';
 				</select>
 			</td>
 		</tr>
-		<?php
-			$opt_subject = explode(',', $it['it_option_subject']);
+		<?php 
+			$opt_subject = explode(',', $it['it_option_subject']); 
 		?>
 		<tr>
 			<th scope="row">상품선택옵션</th>
@@ -1674,12 +1673,12 @@ $pg_anchor .='</ul>';
         <tbody>
 		<tr>
             <th scope="row">추가 상품설명</th>
-            <td class="helper">
+            <td class="helper"> 
 				구매한 회원에게만 출력되는 추가 상품설명입니다.
 			</td>
         </tr>
 		<tr>
-            <td colspan="2" class="iframe">
+            <td colspan="2" class="iframe"> 
 				<?php echo editor_html('pt_explan', get_text(html_purifier($it['pt_explan']),0)); ?>
 			</td>
         </tr>
@@ -1769,15 +1768,15 @@ $pg_anchor .='</ul>';
 							<input type="hidden" name="pt_reserve_use" value="<?php echo $it['pt_reserve_use']; ?>">
 							<input type="hidden" name="pt_reserve" value="<?php echo $it['pt_reserve']; ?>">
 						<?php } else { ?>
-							<?php
+							<?php 
 								if($is_auth) {
 									if($is_reserve) {
-										echo help("현재 ".$default['pt_reserve_day']."일 이내 등록상품을 대상으로 ".$default['pt_reserve_cache']."분 간격으로 예약상품을 체크하고 있습니다.");
+										echo help("현재 ".$default['pt_reserve_day']."일 이내 등록상품을 대상으로 ".$default['pt_reserve_cache']."분 간격으로 예약상품을 체크하고 있습니다."); 
 									} else {
-										echo help("판매예약은 파트너관리 > 기본설정에서 예약가능일, 예약체크, 예약대상을 모두 설정해 주셔야 작동합니다.");
+										echo help("판매예약은 파트너관리 > 기본설정에서 예약가능일, 예약체크, 예약대상을 모두 설정해 주셔야 작동합니다."); 
 									}
 								} else {
-									echo help("등록 후 {$default['pt_reserve_none']}시간이 지나면 예약 설정을 할 수 없습니다.");
+									echo help("등록 후 {$default['pt_reserve_none']}시간이 지나면 예약 설정을 할 수 없습니다."); 
 								}
 							?>
 							<input type="text" id="pt_reserve_date"  name="pt_reserve_date" value="<?php echo $pt_rdate; ?>" class="frm_input" size="10" maxlength="10" readonly>
@@ -1971,195 +1970,6 @@ $pg_anchor .='</ul>';
 
 	<?php echo $pg_anchor; ?>
 
-	<section id="anc_sitfrm_api" class="anc-section">
-		<h2 class="h2_frm">API상품등록 추가필드 설정</h2>
-		<div class="tbl_frm01 tbl_wrap">
-			<table>
-			<colgroup>
-				<col class="grid_3">
-				<col>
-			</colgroup>
-			<tbody>
-			<?php if ($w == "u"){ ?>
-			<tr>
-				<th scope="row"><label for="api_edit_use">API상품 수정</label></th>
-				<td>
-					<label><input type="checkbox" name="api_edit_use" value="1" id="api_edit_use" checked></label> API상품수정일시 체크
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodId">제품아이디</label></th>
-				<td>
-					<input type="text" name="prodId" value="<?php echo get_text($it['prodId']); ?>" id="prodId" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodNm">제품명</label></th>
-				<td>
-					<input type="text" name="prodNm" value="<?php echo get_text($it['prodNm']); ?>" id="prodNm" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodSym">재질</label></th>
-				<td>
-					<input type="text" name="prodSym" value="<?php echo get_text($it['prodSym']); ?>" id="prodSym" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodWeig">중량</label></th>
-				<td>
-					<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodSize">사이즈</label></th>
-				<td>
-					<input type="text" name="prodSize" value="<?php echo get_text($it['prodSize']); ?>" id="prodSize" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodDetail">상세정보</label></th>
-				<td>
-					<input type="text" name="prodDetail" value="<?php echo get_text($it['prodDetail']); ?>" id="prodDetail" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodImgAttr">이미지 첨부파일 이름들</label></th>
-				<td>
-					<input type="text" name="prodImgAttr" value="<?php echo get_text($it['prodImgAttr']); ?>" id="prodImgAttr" class="frm_input" size="40">
-				</td>
-			</tr>
-			<?php }else{ ?>
-			<tr>
-				<th scope="row"><label for="prodId">제품아이디</label></th>
-				<td>
-					<input type="text" name="prodId" value="<?php echo get_text($it['prodId']); ?>" id="prodId" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="gubun">구분</label></th>
-				<td>
-					<input type="text" name="gubun" value="<?php echo get_text($it['gubun']); ?>" id="gubun" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodNm">제품명</label></th>
-				<td>
-					<input type="text" name="prodNm" value="<?php echo get_text($it['prodNm']); ?>" id="prodNm" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="itemId">품목 아이디</label></th>
-				<td>
-					<input type="text" name="itemId" value="<?php echo get_text($it['itemId']); ?>" id="itemId" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="subItem">하위품목</label></th>
-				<td>
-					<input type="text" name="subItem" value="<?php echo get_text($it['subItem']); ?>" id="subItem" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodSupPrice">공급가격</label></th>
-				<td>
-					<input type="text" name="prodSupPrice" value="<?php echo get_text($it['prodSupPrice']); ?>" id="prodSupPrice" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodOflPrice">판매금액</label></th>
-				<td>
-					<input type="text" name="prodOflPrice" value="<?php echo get_text($it['prodOflPrice']); ?>" id="prodOflPrice" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="ProdPayCode">급여코드</label></th>
-				<td>
-					<input type="text" name="ProdPayCode" value="<?php echo get_text($it['ProdPayCode']); ?>" id="ProdPayCode" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="supId">공급업체 아이디</label></th>
-				<td>
-					<input type="text" name="supId" value="<?php echo get_text($it['supId']); ?>" id="supId" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodColor">색상(옵션)</label></th>
-				<td>
-					<input type="text" name="prodColor" value="<?php echo get_text($it['prodColor']); ?>" id="prodColor" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodSym">재질</label></th>
-				<td>
-					<input type="text" name="prodSym" value="<?php echo get_text($it['prodSym']); ?>" id="prodSym" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodWeig">중량</label></th>
-				<td>
-					<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodSize">사이즈</label></th>
-				<td>
-					<input type="text" name="prodSize" value="<?php echo get_text($it['prodSize']); ?>" id="prodSize" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodQty">주문가능수량</label></th>
-				<td>
-					<input type="text" name="prodQty" value="<?php echo get_text($it['prodQty']); ?>" id="prodQty" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodDetail">상세정보</label></th>
-				<td>
-					<input type="text" name="prodDetail" value="<?php echo get_text($it['prodDetail']); ?>" id="prodDetail" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="regDtm">최초등록일시</label></th>
-				<td>
-					<input type="text" name="regDtm" value="<?php echo get_text($it['regDtm']); ?>" id="regDtm" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="regUsrId">최초등록자 ID</label></th>
-				<td>
-					<input type="text" name="regUsrId" value="<?php echo get_text($it['regUsrId']); ?>" id="regUsrId" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="regUsrIp">최초등록자 IP</label></th>
-				<td>
-					<input type="text" name="regUsrIp" value="<?php echo get_text($it['regUsrIp']); ?>" id="regUsrIp" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="supNm">공급업체 이름</label></th>
-				<td>
-					<input type="text" name="supNm" value="<?php echo get_text($it['supNm']); ?>" id="supNm" class="frm_input" size="40">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="prodImgAttr">이미지 첨부파일 이름들</label></th>
-				<td>
-					<input type="text" name="prodImgAttr" value="<?php echo get_text($it['prodImgAttr']); ?>" id="prodImgAttr" class="frm_input" size="40">
-				</td>
-			</tr>
-			<?php } ?>
-			</tbody>
-			</table>
-		</div>
-	</section>
-
-	<?php echo $frm_submit; ?>
-
-	<?php echo $pg_anchor; ?>
-
 	<section id="anc_sitfrm_extra" class="anc-section">
 		<h2 class="h2_frm">여분필드 설정</h2>
 		<div class="tbl_frm01 tbl_wrap">
@@ -2263,47 +2073,6 @@ function codedupcheck(id)
 
 function fitemformcheck(f)
 {
-
-    if (f.prodId.value && $('#api_edit_use').is(":checked")) {
-
-        var error = message = "";
-		var url = 'https://eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
-		/*
-		var dataList = {
-			'prodId' : '제품아이디',
-			'prodNm' : '제품명',
-			'prodSym' : '재질',
-			'prodWeig' : '중량',
-			'prodSize' : '사이즈',
-			'prodDetail' : '상세정보',
-			'prodImgAttr' : '이미지 첨부파일 이름들',
-			'file1' : '첫번쨰 이미지 파일',
-			'file2' : '두번째 이미지 파일'
-		}
-		*/
-		var pf = document.fitemform;
-		var dataList = $(pf).serialize();
-
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: dataList,
-            dataType: "json",
-            async: false,
-            cache: false,
-            success: function(data, textStatus) {
-                error = data.errorYN;
-				message = data.message;
-            }
-        });
-
-        if (error == "Y") {
-            alert(message);
-            return false;
-        }
-    }
-
-
     if (!f.ca_id.value) {
         alert("기본분류를 선택하십시오.");
         f.ca_id.focus();
@@ -2398,12 +2167,12 @@ function fitemformcheck(f)
 	<?php echo get_editor_js('it_mobile_explan'); ?>
     <?php echo get_editor_js('pt_mobile_explan'); // APMS : 2014.07.20 ?>
 	<?php echo get_editor_js('it_reference'); ?>
-    <?php
-		if($is_auth) { // 관리자 일 때
+    <?php 
+		if($is_auth) { // 관리자 일 때	
 			echo get_editor_js('it_head_html');
 			echo get_editor_js('it_tail_html');
 			echo get_editor_js('it_mobile_head_html');
-			echo get_editor_js('it_mobile_tail_html');
+			echo get_editor_js('it_mobile_tail_html'); 
 		}
 	?>
 

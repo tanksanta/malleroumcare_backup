@@ -255,9 +255,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             $tot_sendcost += $carts[$i]['sum']['sendcost'];
                             $tot_total += $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'];
 
-							$prodBarNum = $prodOptNum = '';
-							$option_array = array();
-							$barcode_array = array();
+							$prodBarNum = '';
 
                             for($k=0; $k<count($options); $k++) {
 
@@ -275,8 +273,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     }
                                 }
 
-								$option_array[] = $options[$k]['ct_option'];
-								$barcode_array[] = $options[$k]['ct_barcode'];
+								$prodBarNum .= $options[$k]['ct_option'].':'.$options[$k]['ct_barcode'].'^';
 
 
                                 ?>
@@ -572,10 +569,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                 $chk_first++;
                                 $chk_cnt++;
                                 }
-
-								$prodOptNum = implode('^', $option_array);
-								$prodBarNum = implode('^', $barcode_array);
-
                                 if ($carts[$i]['it_outsourcing_use']) {
                                     if($carts[$i]['it_outsourcing_option']) {
                                         $outsourcing_options = explode(',', $carts[$i]['it_outsourcing_option']);
@@ -740,24 +733,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     </tbody>
                 </table>
 
-				<?php //echo $prodBarNum; ?><br>
-				<?php //echo $prodOptNum; ?>
-
-				<?php
-				/*
-				$options = explode('^', $prodOptNum);
-				$barcodes = explode('^', $prodBarNum);
-				for($i=0;$i<count($barcodes);$i++) {
-
-					$code = explode('|', $barcodes[$i]);
-					for($b=0;$b<count($code);$b++) {
-						echo $options[$i].'-'.$code[$b].'<br>';
-					}
-
-				}
-				*/
-				?>
-
                 <div class="frmsamhwaorderform_bottom">
                     <div class="change_status">
                         <span>선택한 상품 상태값</span>
@@ -800,7 +775,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
 				<th>전화번호</th>
 				<th>주소</th>
 			</tr>
-			<?php if($od['od_penId']){ ?>
 			<tr>
 				<td><?php echo get_text($od['od_penNm']); ?></td>
 				<td><?php echo get_text($od['od_penTypeNm']); ?></td>
@@ -809,11 +783,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
 				<td><?php echo get_text($od['od_penConPnum']); ?></td>
 				<td><?php echo get_text($od['od_penAddr']); ?></td>
 			</tr>
-			<?php }else{ ?>
-			<tr>
-				<td colspan="6">수급자정보가 없습니다.</td>
-			</tr>
-			<?php } ?>
 		</table>
 
     </div>
@@ -1897,7 +1866,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <div class="on">
                                 <select name="od_release_manager">
                                     <option value="">미지정</option>
-                                    <option value="no_release" <?php echo 'no_release' == $od['od_release_manager'] ? 'selected' : ''; ?>>출고아님</option>
+                                    <option value="no_release" <?php echo 'no_release' == $od['od_release_manager'] ? 'selected' : ''; ?>>출고대기</option>
                                     <option value="-" <?php echo '-' == $od['od_release_manager'] ? 'selected' : ''; ?>>외부출고</option>
                                     <?php
                                     $sql = "SELECT * FROM g5_auth WHERE au_menu = '400402' AND au_auth LIKE '%w%'";
@@ -1917,7 +1886,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                 if ($od_release_manager) {
                                     echo $od_release_manager['mb_name']; ?> 담당자 <a class="change_manager_off">변경</a>
                                 <?php } else if ($od['od_release_manager'] == 'no_release') { ?>
-                                    <span style="color: #ff3061;">출고아님</span> <a class="change_manager_off">변경</a>
+                                    <span style="color: #ffd800;">출고대기</span> <a class="change_manager_off">변경</a>
                                 <?php } else if ($od['od_release_manager'] == '-') { ?>
                                     외부출고 <a class="change_manager_off">변경</a>
                                 <?php } else { ?>
@@ -2194,64 +2163,39 @@ $(document).ready(function() {
             return;
         }
 
-
 		if($('#step').val() == '출고준비'){
 
 			var penId = "<?php echo $od['od_penId'];?>";
 
 			if(penId){
 
-				/*
-				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
-				var dataList = {
-					'searchUsrId' : '<?php echo $od['mb_id'];?>',	//회원아이디
-					'insertPen5000Data' : [{
-
-						'penId' : penId,							//수급자 ID
-						'prodId' : '',								//제품 ID
-						'prodNm' : '',								//제품 명
-						'itemId' : '',								//품목 아이디
-						'itemNm' : '',								//품목 명
-						'prodPayCode' : '',							//급여코드
-						'prodColor' : '',							//색상
-						'ordStatus' : '',							//00
-						'prodOflPrice' : '',						//고시가
-						'penPay' : '',								//테이블 정의에 없음
-
-						'prodBarNum' : '<?php echo $prodBarNum;?>',	//옵션명1:바코드|바코드^옵션명1:바코드|바코드
-						'ordNm' : '<?php echo $od_penNm;?>',		//김예비
-						'ordCont' : '<?php echo $od_penConNum;?>',	//수급자(주문자)전화번호
-						'ordZip' : '<?php echo $od_penzip;?>',		//수급자(주문자)우편번호
-						'ordAddr' : '<?php echo $od_penAddr;?>',	//수급자(주문자)주소
-						'ordAddrDtl' : '',							//수급자(주문자)상세주소
-						'ordMemo' : '',								//
-						'payMehCd' : 'PEN00006',					//결제수단(공동코드 : PEN00006 )
-						'eformYn' : 'N'
-
-					}]
-				};
-				*/
-
-				<?php
-				$insertPen5000DataList = urlencode('[{"penId":"'.$od['od_penId'].'","prodId":"PRO2020111200002","prodNm":"Glory-MC1","itemId":"ITM2020092200020","itemNm":"욕창예방매트리스","prodPayCode":"H12060130101","prodColor":"단일","ordStatus":"00","prodOflPrice":"307000","penPay":"46050","prodBarNum":"12030130110","ordNm":"'.$od_penNm.'","ordCont":"'.$od_penConNum.'","ordZip":"'.$od_penzip.'","ordAddr":"'.$od_penAddr.'","ordAddrDtl":"","ordMemo":"","payMehCd":"00","eformYn":"Y"}]');
-				
-				//$insertPen5000DataList = urlencode('[{"penId": "PENID_20210111094719","prodId": "PRO2020111200002","prodNm": "Glory-MC1","itemId": "ITM2020092200020","itemNm": "욕창예방매트리스","prodPayCode": "H12060130101","prodColor": "단일","ordStatus": "00","prodOflPrice": "307000","penPay": "46050","prodBarNum": "12030130110","ordNm": "테스트트","ordCont": "010-8748-7796","ordZip": "48060","ordAddr": "부산 해운대구 APEC로 17","ordAddrDtl": " (우동)","ordMemo": "","payMehCd": "00","eformYn": "N"}]');
-				?>
-
-				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do?insertPen5000DataList=<?php echo $insertPen5000DataList;?>';
-				var dataList = {
-					'searchUsrId' : '<?php echo $od['mb_id'];?>'
-				};
+				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do?searchUsrId=123456789&insertPen5000DataList=%20%5B%0A%09%09%7B%20%22penId%22%3A%20%22PENID_20210111094719%22%2C%0A%09%09%20%20%22prodId%22%3A%20%22PRO2020111200002%22%2C%0A%09%09%20%20%22prodNm%22%3A%20%22Glory-MC1%22%2C%0A%09%09%20%20%22itemId%22%3A%20%22ITM2020092200020%22%2C%0A%09%09%20%20%22itemNm%22%3A%20%22%EC%9A%95%EC%B0%BD%EC%98%88%EB%B0%A9%EB%A7%A4%ED%8A%B8%EB%A6%AC%EC%8A%A4%22%2C%0A%09%09%20%20%22prodPayCode%22%3A%20%22H12060130101%22%2C%0A%09%20%20%20%20%20%20%22prodColor%22%3A%20%22%EB%8B%A8%EC%9D%BC%22%2C%0A%09%09%20%20%22ordStatus%22%3A%20%2200%22%2C%0A%09%09%20%20%22prodOflPrice%22%3A%20%22307000%22%2C%0A%09%20%20%20%20%20%20%22penPay%22%3A%20%2246050%22%2C%0A%09%09%20%20%22prodBarNum%22%3A%20%2212030130110%22%2C%0A%09%09%20%20%22ordNm%22%3A%20%22%ED%85%8C%EC%8A%A4%ED%8A%B8%ED%8A%B8%22%2C%0A%09%09%20%20%22ordCont%22%3A%20%22010-8748-7796%22%2C%0A%09%09%20%20%22ordZip%22%3A%20%2248060%22%2C%0A%09%09%20%20%22ordAddr%22%3A%20%22%EB%B6%80%EC%82%B0%20%ED%95%B4%EC%9A%B4%EB%8C%80%EA%B5%AC%20APEC%EB%A1%9C%2017%22%2C%0A%09%09%20%20%22ordAddrDtl%22%3A%20%22%20(%EC%9A%B0%EB%8F%99)%22%2C%0A%09%09%20%20%22ordMemo%22%3A%20%22%22%2C%0A%09%09%20%20%22payMehCd%22%3A%20%2200%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22eformYn%22%3A%20%22Y%22%0A%09%09%7D%0A%09%5D%0A';
+				// var dataList = {
+				// 	'searchUsrId' : '<?php echo $od['mb_id'];?>',	//회원아이디
+				// 	'insertPen5000Data' : [{
+				// 		'shoBasSeq' : '',							//순번
+				// 		'prodBarNum' : '<?php echo $prodBarNum;?>',	//옵션명1:바코드|바코드^옵션명1:바코드|바코드
+				// 		'ordNm' : '<?php echo $od_penNm;?>',		//김예비
+				// 		'ordCont' : '<?php echo $od_penConNum;?>',	//수급자(주문자)전화번호
+				// 		'ordZip' : '<?php echo $od_penzip;?>',		//수급자(주문자)우편번호
+				// 		'ordAddr' : '<?php echo $od_penAddr;?>',	//수급자(주문자)주소
+				// 		'ordAddrDtl' : '',							//수급자(주문자)상세주소
+				// 		'ordMemo' : '',								//
+				// 		'payMehCd' : 'PEN00006'						//결제수단(공동코드 : PEN00006 )
+				// 	}]
+				// };
 
 			}else{
 
-				var url = 'https://eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
+				var url = 'https://eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';                
+                
 				var dataList = {
-					'prodId' : '',									//제품 아이디
-					'prodColor' : '',								//색상
-					'prodManuDate' : '',							//제조일자
-					'prodBarNums:' : '<?php echo $prodBarNum;?>',	//바코드번호
-					'regUsrId' : '<?php echo $od['mb_id'];?>'		//회원 아이디
+					'prodId' : 'PRO2020111200002',						//제품 아이디
+					'prodColor' : '단일',								 //색상
+					'prodManuDate' : '',							    //제조일자
+					// 'prodBarNums' : '<?php echo $prodBarNum;?>',	    //[바코드번호]
+                    'prodBarNums' : '[456456456]',	    //[바코드번호]
+					'regUsrId' : '<?php echo $od['mb_id'];?>',			//회원 아이디
 				};
 			}
 
@@ -2266,10 +2210,6 @@ $(document).ready(function() {
 						return false;
 					}else{
 
-						/*alert(data.modifyUsrIp);
-						return false;*/
-
-
 						$.ajax({
 							type : "post",
 							url : "./ajax.cart.step.php",
@@ -2283,7 +2223,6 @@ $(document).ready(function() {
 								}
 							}
 						});
-
 
 					}
 				}
@@ -2306,8 +2245,6 @@ $(document).ready(function() {
 			});
 
 		}
-
-
 
 
 

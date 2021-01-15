@@ -56,7 +56,7 @@ else if ($w == "u")
     $it = sql_fetch($sql);
 
 	if(!$it)
-		alert('상품정보가 존재하지 않습니다.');
+		alert('상품정보가 존재하지 않습니다.'); 
 
 	// 첫번째 분류
 	$ca_id = $it['ca_id'];
@@ -247,12 +247,12 @@ if($w == "" && !$fn) {
 	$is_reserve = ($default['pt_reserve_end'] > 0 && $default['pt_reserve_day'] > 0 && $default['pt_reserve_cache'] > 0) ? true : false;
 	$is_reserve_none = ($default['pt_reserve_cache'] > 0) ? false : true;
 
-	list($pt_rdate, $pt_rhour, $pt_rminute) = apms_reserve_end($it['pt_reserve']);
-	if($default['pt_reserve_cache'] > 0) list($pt_edate, $pt_ehour, $pt_eminute) = apms_reserve_end($it['pt_end'],1);
+	list($pt_rdate, $pt_rhour, $pt_rminute) = apms_reserve_end($it['pt_reserve']); 
+	if($default['pt_reserve_cache'] > 0) list($pt_edate, $pt_ehour, $pt_eminute) = apms_reserve_end($it['pt_end'],1); 
 
 	//$form_title = $fname.' '.$html_title;
 ?>
-	<form name="fitemform" id="fitemform" action="./itemformupdate.php" method="post" enctype="MULTIPART/FORM-DATA" autocomplete="off" onsubmit="return fitemformcheck(this)">
+	<form name="fitemform" action="./itemformupdate.php" method="post" enctype="MULTIPART/FORM-DATA" autocomplete="off" onsubmit="return fitemformcheck(this)">
 		<input type="hidden" name="codedup" value="<?php echo $default['de_code_dup_use']; ?>">
 		<input type="hidden" name="w" value="<?php echo $w; ?>">
 		<input type="hidden" name="fn" value="<?php echo $fn; ?>">
