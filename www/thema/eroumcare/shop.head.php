@@ -159,7 +159,7 @@ $(document).ready(function() {
 	$(document).ready(function() {
 
 		$('.header-system-move-btn').click(function() {
-			top.close ()
+			self.close ()
 		});
 
 		$('.header-hamburger-btn').click(function() {
