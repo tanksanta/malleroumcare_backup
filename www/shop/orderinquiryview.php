@@ -480,7 +480,7 @@ if($is_inquiryview_sub) {
 																					  
 		sql_query("
 			UPDATE g5_shop_order SET
-				  eformYn = '".($_GET["result"] == "Y") ? "Y" : "N"."'
+				  eformYn = 'Y'
 				, payMehCd = '0'
 				, prods = '{$insertProds}'
 			WHERE od_id = '{$_GET["od_id"]}'
@@ -492,7 +492,7 @@ if($is_inquiryview_sub) {
 		var productList = <?=($_SESSION["productList{$_GET["od_id"]}"]) ? json_encode($_SESSION["productList{$_GET["od_id"]}"]) : "[]"?>;
 
 		var sendData = {
-			orderId : "<?=$_GET["od_id"]?>",
+			ordId : "<?=$orderData["ordId"]?>",
 			delGbnCd : "",
 			ordWayNum : "",
 			delSerCd : "",

@@ -25,13 +25,14 @@ $it_ids = array();
 $productList = [];
 $error = "";
 // 장바구니 상품 재고 검사
-$sql = " select it_id,
-                ct_qty,
-                it_name,
-                io_id,
-                io_type,
-                ct_option
-           from {$g5['g5_shop_cart_table']}
+$sql = " select MT.it_id,
+                MT.ct_qty,
+                MT.it_name,
+                MT.io_id,
+                MT.io_type,
+                MT.ct_option,
+				( SELECT it_thezone FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_thezone
+           from {$g5['g5_shop_cart_table']} MT
           where od_id = '$tmp_cart_id'
             and ct_select = '1' ";
 $result = sql_query($sql);
@@ -40,8 +41,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     // 상품에 대한 현재고수량
     if($row['io_id']) {
 		$thisProductData = [];
-		// $thisProductData["prodId"] = $row["it_id"];
-		$thisProductData["prodId"] = "PRO2020071400002";
+		 $thisProductData["prodId"] = $row["it_thezone"];
 		$thisProductData["prodColor"] = $row["io_id"];
 		$thisProductData["prodBarNum"] = "";
 		$thisProductData["penStaSeq"] = count($productList) + 1;
@@ -1157,7 +1157,7 @@ if($is_member && $od_b_name) {
 							alert(res.message);
 							history.go(-3);
 						} else {
-							window.location.href = "http://61.106.19.170:8080/eform/reqClient/requestJspNew?UUID=" + res.uuid + "&CONTRACT_NUMBER=" + res.ordId + "&EFORM_TYPE=00&DOCUMENT_ID=THK001_THK002_THK003";
+							window.location.href = "orderformupdateReturn.php?uuid=" + res.uuid + "&ordId=" + res.ordId + "&od_id=<?=$od_id?>";
 						}
 					},
 					error : function(res){

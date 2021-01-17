@@ -2378,7 +2378,7 @@ $(document).ready(function() {
 			});
 			
 			var sendData = {
-				orderId : "<?=$_GET["od_id"]?>",
+				ordId : "<?=$od["ordId"]?>",
 				delGbnCd : "",
 				ordWayNum : "",
 				delSerCd : "",
