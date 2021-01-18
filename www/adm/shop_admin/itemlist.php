@@ -800,15 +800,13 @@ $(function() {
 
 		var url = 'https://eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
 		var dataList = {
-			'prodId' : '제품아이디',
-			'prodNm' : '제품명',
-			'prodSym' : '재질',
-			'prodWeig' : '중량',
-			'prodSize' : '사이즈',
-			'prodDetail' : '상세정보',
-			'prodImgAttr' : '이미지 첨부파일 이름들',
-			'file1' : '첫번쨰 이미지 파일',
-			'file2' : '두번째 이미지 파일'
+			'prodId' : '제품 아이디',	// prodId = it_id
+			'prodNm' : '제품명',			//	it_name
+			'prodSym' : '재질',				// prodSym
+			'prodWeig' : '중량',			// prodWeig
+			'prodSize' : '사이즈',			// prodSize
+			'prodDetail' : '상세정보',	  	//  prodDetail
+			'beforeDelFileSn': []		  // 빈 어레이 반환
 		}
 
 		$.ajax({
