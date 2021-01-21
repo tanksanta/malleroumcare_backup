@@ -81,6 +81,7 @@ if($is_mobile_order) {
 // 상품처리 ----------------------
 $tot_point = 0;
 $tot_sell_price = 0;
+$tot_sell_discount = 0;
 
 $goods = $goods_it_id = "";
 $goods_count = -1;
@@ -90,6 +91,7 @@ $sql = " select a.ct_id,
 				a.it_id,
 				a.it_name,
 				a.ct_price,
+				a.ct_discount,
 				a.ct_point,
 				a.ct_qty,
 				a.ct_status,
@@ -136,6 +138,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	// 합계금액 계산
 	$sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
 					SUM(ct_point * ct_qty) as point,
+					SUM(ct_discount) as discount,
 					SUM(ct_qty) as qty
 				from {$g5['g5_shop_cart_table']}
 				where it_id = '{$row['it_id']}'
@@ -234,6 +237,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	$item[$i]['hidden_it_id'] = $row['it_id'];
 	$item[$i]['hidden_it_name'] = get_text($row['it_name']);
 	$item[$i]['hidden_sell_price'] = $sell_price;
+	$item[$i]['hidden_sell_discount'] = $sum["discount"];
 	$item[$i]['hidden_cp_id'] = '';
 	$item[$i]['hidden_cp_price'] = 0;
 	$item[$i]['hidden_it_notax'] = $row['it_notax'];
@@ -242,6 +246,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	$item[$i]['pt_it'] = apms_pt_it($row['pt_it'],1);
 	$item[$i]['qty'] = number_format($sum['qty']);
 	$item[$i]['ct_price'] = number_format($row['ct_price']);
+	$item[$i]["ct_discount"] = number_format($sum["discount"]);
 	$item[$i]['is_coupon'] = $cp_button;
 	$item[$i]['total_price'] = number_format($sell_price);
 	$item[$i]['point'] = number_format($point);
@@ -258,6 +263,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 
 	$tot_point      += $point;
 	$tot_sell_price += $sell_price;
+	$tot_sell_discount += $sum["discount"];
 } // for 끝
 
 if ($i == 0) {
@@ -368,6 +374,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 ?>
 	<input type="hidden" name="od_price"    value="<?php echo $tot_sell_price; ?>">
 	<input type="hidden" name="org_od_price"    value="<?php echo $tot_sell_price; ?>">
+	<input type="hidden" name="od_discount"    value="<?php echo $tot_sell_discount; ?>">
 	<input type="hidden" name="od_send_cost" value="<?php echo $send_cost; ?>">
 	<input type="hidden" name="od_send_cost2" value="0">
 	<input type="hidden" name="item_coupon" value="0">
@@ -645,6 +652,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 	if($is_mobile_order && $default['de_samsung_pay_use'] ){   //삼성페이 사용시
 		require_once(G5_MSHOP_PATH.'/samsungpay/order.script.php');
 	}
+
 ?>
 <script>
 <?php if($is_mobile_order) { ?>

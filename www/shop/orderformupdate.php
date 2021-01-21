@@ -36,31 +36,34 @@ $sql = " select MT.it_id,
            from {$g5['g5_shop_cart_table']} MT
           where od_id = '$tmp_cart_id'
             and ct_select = '1' ";
+
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++)
 {
+	
+	for($i = 0; $i < $row["ct_qty"]; $i++){
+		if($_POST["penId"]){
+			$thisProductData = [];
+			$thisProductData["prodId"] = $row["it_id"];
+			$thisProductData["prodColor"] = $row["io_id"];
+			$thisProductData["prodBarNum"] = "";
+			$thisProductData["penStaSeq"] = count($productList) + 1;
+
+			array_push($productList, $thisProductData);
+		} else {
+			$thisProductData = [];
+			$thisProductData["prodId"] = $row["it_id"];
+			$thisProductData["prodColor"] = $row["io_id"];
+			$thisProductData["prodBarNum"] = "";
+			$thisProductData["prodManuDate"] = date("Y-m-d", strtotime($row["it_time"]));
+			$thisProductData["stoMemo"] = $_POST["od_memo"];
+
+			array_push($productList, $thisProductData);
+		}
+	}
+	
     // 상품에 대한 현재고수량
     if($row["io_id"]) {
-		for($i = 0; $i < $row["ct_qty"]; $i++){
-			if($_POST["penId"]){
-				$thisProductData = [];
-				$thisProductData["prodId"] = $row["it_id"];
-				$thisProductData["prodColor"] = $row["io_id"];
-				$thisProductData["prodBarNum"] = "";
-				$thisProductData["penStaSeq"] = count($productList) + 1;
-
-				array_push($productList, $thisProductData);
-			} else {
-				$thisProductData = [];
-				$thisProductData["prodId"] = $row["it_id"];
-				$thisProductData["prodColor"] = $row["io_id"];
-				$thisProductData["prodBarNum"] = "";
-				$thisProductData["prodManuDate"] = date("Y-m-d", strtotime($row["it_time"]));
-				$thisProductData["stoMemo"] = $_POST["od_memo"];
-
-				array_push($productList, $thisProductData);
-			}
-		}
         $it_stock_qty = (int)get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
     } else {
         $it_stock_qty = (int)get_it_stock_qty($row['it_id']);
@@ -83,7 +86,7 @@ if ($error != "")
     alert($error, $page_return_url);
 }
 
-$i_price     = (int)$_POST['od_price'];
+$i_price     = (int)$_POST['od_price'] - (int)$_POST['od_discount'];
 $i_send_cost  = (int)$_POST['od_send_cost'];
 $i_send_cost2  = (int)$_POST['od_send_cost2'];
 $i_send_coupon  = abs((int)$_POST['od_send_coupon']);
@@ -92,10 +95,12 @@ $i_temp_point = (int)$_POST['od_temp_point'];
 
 // 주문금액이 상이함
 $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as od_price,
-              COUNT(distinct it_id) as cart_count
+              COUNT(distinct it_id) as cart_count,
+			  SUM(ct_discount) as od_discount
             from {$g5['g5_shop_cart_table']} where od_id = '$tmp_cart_id' and ct_select = '1' ";
 $row = sql_fetch($sql);
 $tot_ct_price = $row['od_price'];
+$tot_ct_discount = ($row["od_discount"]) ? $row["od_discount"] : 0;
 $cart_count = $row['cart_count'];
 $tot_od_price = $tot_ct_price;
 
@@ -208,7 +213,7 @@ if($is_member) {
     $tot_cp_price = $tot_it_cp_price + $tot_od_cp_price;
 }
 
-if ((int)($row['od_price'] - $tot_cp_price) !== $i_price) {
+if ((int)($row['od_price'] - $row['od_discount'] - $tot_cp_price) !== $i_price) {
     die("Error.");
 }
 
@@ -621,6 +626,9 @@ if ($od['od_settle_case'] == '네이버페이') {
 }
 
 // 주문서에 입력
+$od_receipt_time = ($od_receipt_time) ? $od_receipt_time : "0000-00-00 00:00:00";
+$od_hope_date = ($od_hope_date) ? $od_hope_date : "0000-00-00 00:00:00";
+
 $sql = " insert {$g5['g5_shop_order_table']}
             set od_id             = '$od_id',
                 mb_id             = '{$member['mb_id']}',
@@ -660,6 +668,7 @@ $sql = " insert {$g5['g5_shop_order_table']}
                 od_memo           = '$od_memo',
                 od_cart_count     = '$cart_count',
                 od_cart_price     = '$tot_ct_price',
+					od_cart_discount = '$tot_ct_discount',
                 od_cart_coupon    = '$tot_it_cp_price',
                 od_send_cost      = '$od_send_cost',
                 od_send_coupon    = '$tot_sc_cp_price',
@@ -692,7 +701,17 @@ $sql = " insert {$g5['g5_shop_order_table']}
                 od_receipt_bank_no = '{$od_tno}',
                 od_sales_manager  = '{$od_sales_manager}',
                 od_receipt_bank   = '{$od_receipt_bank}',
-                staOrdCd   = '00'
+                staOrdCd   = '00',
+				
+				od_mod_history = '', 
+				od_next_status = '', 
+				od_cash = 0, 
+				od_cash_no = '', 
+				od_cash_info = '', 
+				od_pay_memo = '', 
+				od_naver_PaymentMeans = '', 
+				od_naver_PaymentCoreType = '', 
+				stoId = ''
                 ";
 $result = sql_query($sql, false);
 
@@ -970,7 +989,7 @@ if($config['cf_sms_use'] && ($default['de_sms_use2'] || $default['de_sms_use3'])
             $sms_content = str_replace("{보낸분}", $od_name, $sms_content);
             $sms_content = str_replace("{받는분}", $od_b_name, $sms_content);
             $sms_content = str_replace("{주문번호}", $od_id, $sms_content);
-            $sms_content = str_replace("{주문금액}", number_format($tot_ct_price + $od_send_cost + $od_send_cost2), $sms_content);
+            $sms_content = str_replace("{주문금액}", number_format($tot_ct_price - $tot_ct_discount + $od_send_cost + $od_send_cost2), $sms_content);
             $sms_content = str_replace("{회원아이디}", $member['mb_id'], $sms_content);
             $sms_content = str_replace("{회사명}", $default['de_admin_company_name'], $sms_content);
 
@@ -1118,7 +1137,7 @@ if($is_member && $od_b_name) {
 		'flag'=>'new',
 		'od_name'=>$od_name,
 		'od_id'=>$od_id,
-		'od_amount'=>($tot_ct_price + $od_send_cost + $od_send_cost2),
+		'od_amount'=>($tot_ct_price - $tot_ct_discount + $od_send_cost + $od_send_cost2),
 		'od_status'=>$od_status,
 		'od_memo'=>$od_memo);
 	apms_push($mb_list, $od_id, $od_id, G5_URL, $push);

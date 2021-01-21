@@ -369,6 +369,9 @@ if($pt_end_date && $default['pt_reserve_cache'] > 0) {
 
 $pt_syndi_sql = ($is_admin == 'super') ? " pt_syndi = '$pt_syndi', pt_commission = '$pt_commission', pt_incentive = '$pt_incentive', " : "";
 
+$it_sale_cnt = ($_POST["it_sale_cnt"]) ? $_POST["it_sale_cnt"] : 0;
+$it_sale_percent = ($_POST["it_sale_percent"]) ? $_POST["it_sale_percent"] : 0;
+
 $sql_common = " ca_id               = '$ca_id',
                 ca_id2              = '$ca_id2',
                 ca_id3              = '$ca_id3',
@@ -524,7 +527,9 @@ $sql_common = " ca_id               = '$ca_id',
                 it_outsourcing_option5  = '$it_outsourcing_option5',
                 it_sc_add_sendcost      = '$it_sc_add_sendcost',
                 it_sc_add_sendcost_partner = '$it_sc_add_sendcost_partner',
-                it_type             = '$it_type'
+                it_type             = '$it_type',
+                it_sale_cnt             = '$it_sale_cnt',
+                it_sale_percent             = '$it_sale_percent'
 				"; // APMS : 2014.07.20
 
                 // it_outsourcing_use  = '$it_outsourcing_use',

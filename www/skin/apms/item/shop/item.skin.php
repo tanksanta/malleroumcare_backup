@@ -115,6 +115,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
+			<?php if($it["it_sale_cnt"]){ ?>
+				<p style="color: #DC3333;"><?=$it["it_sale_cnt"]?>개 이상 <?=$it["it_sale_percent"]?>% 할인적용</p>
+			<?php } ?>
 
 			<?php if ( $it['it_model'] ) { ?>
 				<p class="item-model">
@@ -208,6 +211,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<?php } // 시중가격 끝 ?>
 				<tr><td colspan="2" class="item-price">
 						<?php echo show_samhwa_price($it, THEMA_KEY); ?>
+					<?php if($it["it_sale_cnt"]){ ?>
+						<p style="color: #DC3333;"><?=$it["it_sale_cnt"]?>개 이상 <?=$it["it_sale_percent"]?>% 할인적용</p>
+					<?php } ?>
 						<input type="hidden" id="it_price" value="<?php echo samhwa_price($it, THEMA_KEY); ?>">
 				</td></tr>
 			<?php } ?>

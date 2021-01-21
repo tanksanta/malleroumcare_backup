@@ -62,12 +62,14 @@ $action_url = G5_SHOP_URL.'/cartupdate.php';
 
 $tot_point = 0;
 $tot_sell_price = 0;
+$tot_sell_discount = 0;
 
 // $s_cart_id 로 현재 장바구니 자료 쿼리
 $sql = " select a.ct_id,
 				a.it_id,
 				a.it_name,
 				a.ct_price,
+				a.ct_discount,
 				a.ct_point,
 				a.ct_qty,
 				a.ct_status,
@@ -98,6 +100,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 	// 합계금액 계산
 	$sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
 					SUM(ct_point * ct_qty) as point,
+					SUM(ct_discount) as discount,
 					SUM(ct_qty) as qty
 				from {$g5['g5_shop_cart_table']}
 				where it_id = '{$row['it_id']}'
@@ -142,10 +145,12 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 	$item[$i]['ct_send_cost'] = $ct_send_cost;
 	$item[$i]['point'] = $point;
 	$item[$i]['sell_price'] = $sell_price;
+	$item[$i]['sell_discount'] = $sum["discount"];
 	$item[$i]['qty'] = $sum['qty'];
 
 	$tot_point      += $point;
 	$tot_sell_price += $sell_price;
+	$tot_sell_discount += $sum["discount"];
 
 } // for 끝
 
@@ -155,7 +160,7 @@ if ($i > 0) {
 }
 
 // 총계 = 주문상품금액합계 + 배송비
-$tot_price = $tot_sell_price + $send_cost; 
+$tot_price = $tot_sell_price - $tot_sell_discount + $send_cost; 
 
 // 셋업
 $setup_href = '';

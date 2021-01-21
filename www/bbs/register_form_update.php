@@ -89,6 +89,9 @@ $mb_thezone_code = get_uniqid_member();
 //        mb_password = '".get_encrypt_string($mb_password)."',
 //        mb_name = '{$mb_name}'";
 
+$resInfo["subZip01"] = substr($resInfo["supZip"], 0, 3);
+$resInfo["subZip02"] = substr($resInfo["supZip"], 3, 2);
+
 $sql = "insert into {$g5['member_table']}
         set mb_id = '{$resInfo["id"]}',
         mb_name = '{$resInfo["nm"]}',
@@ -100,6 +103,12 @@ $sql = "insert into {$g5['member_table']}
         mb_entNm = '{$resInfo["entNm"]}',
         mb_level = '2',
 		 mb_password = '".get_encrypt_string($mb_password)."',
+		 mb_giup_bnum = '{$resInfo["supCrn"]}',
+		 mb_giup_zip1 = '{$resInfo["subZip01"]}',
+		 mb_giup_zip2 = '{$resInfo["subZip02"]}',
+		 mb_giup_addr1 = '{$resInfo["supAddr"]}',
+		 mb_giup_addr2 = '{$resInfo["supAddrDetail"]}',
+		 mb_email = '{$resInfo["supMail"]}',
         mb_authCd = '{$resInfo["authCd"]}'";
 
 sql_query($sql);

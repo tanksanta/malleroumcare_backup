@@ -172,9 +172,9 @@ for($i=0; $i<$count; $i++) {
 
     // 장바구니에 Insert
     $comma = '';
-	$sql = " INSERT INTO {$g5['g5_shop_cart_table']}
-					( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3, ct_uid )
-				VALUES ";
+        $sql = " INSERT INTO {$g5['g5_shop_cart_table']}
+                        ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3, ct_uid, ct_discount )
+                    VALUES ";
 
     for($k=0; $k<$opt_count; $k++) {
 		$io_id = preg_replace(G5_OPTION_ID_FILTER, '', $_POST['io_id'][$it_id][$k]);
@@ -220,6 +220,7 @@ for($i=0; $i<$count; $i++) {
 		if($row2['ct_id']) {
 			// 재고체크
 			$tmp_ct_qty = $row2['ct_qty'];
+			
 			if(!$io_id)
 				$tmp_it_stock_qty = get_it_stock_qty($it_id);
 			else
@@ -229,10 +230,28 @@ for($i=0; $i<$count; $i++) {
 			{
 				die($io_value." 의 재고수량이 부족합니다.\\n\\n현재 재고수량 : " . number_format($tmp_it_stock_qty) . " 개");
 			}
+			
+			# 210121 묶음할인
+			$tmp_ct_qty_array = $_POST["ct_qty"][$it_id];
+			array_push($tmp_ct_qty_array, $tmp_ct_qty);
+			
+			$ct_discount = 0;
+			$ct_sale_qty = 0;
+			$ct_sale_qty_list = $tmp_ct_qty_array;
+			foreach($ct_sale_qty_list as $this_qty){
+				$ct_sale_qty += $this_qty;
+			}
+
+			if($ct_sale_qty >= $it["it_sale_cnt"] && !${"it_id_sale_status_{$it_id}"}){
+				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($it["it_sale_percent"] / 100);
+			}
+
+			${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";
 
 			$sql3 = " update {$g5['g5_shop_cart_table']}
                         set ct_qty = ct_qty + '$ct_qty',
-                        ct_uid = '$uid'
+                        ct_uid = '$uid',
+						ct_discount = '{$ct_discount}'
 						where ct_id = '{$row2['ct_id']}' ";
 			sql_query($sql3);
 			continue;
@@ -273,8 +292,22 @@ for($i=0; $i<$count; $i++) {
             $it_sc_minimum = $it['it_sc_minimum'];
             $it_sc_qty = $it['it_sc_qty'];
         }
+		
+			# 210121 묶음할인
+			$ct_discount = 0;
+			$ct_sale_qty = 0;
+			$ct_sale_qty_list = $_POST["ct_qty"][$it_id];
+			foreach($ct_sale_qty_list as $this_qty){
+				$ct_sale_qty += $this_qty;
+			}
+		
+			if($ct_sale_qty >= $it["it_sale_cnt"] && !${"it_id_sale_status_{$it_id}"}){
+				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($it["it_sale_percent"] / 100);
+			}
 
-		$sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it_sc_type}', '{$it_sc_method}', '{$it_sc_price}', '{$it_sc_minimum}', '{$it_sc_qty}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '$uid' )";
+			${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";
+
+            $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it_sc_type}', '{$it_sc_method}', '{$it_sc_price}', '{$it_sc_minimum}', '{$it_sc_qty}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '$uid', '{$ct_discount}' )";
         $comma = ' , ';
         $ct_count++;
     }

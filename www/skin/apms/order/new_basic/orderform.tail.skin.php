@@ -353,8 +353,9 @@ function coupon_cancel($el) {
 
 function calculate_total_price() {
     var $it_prc = $("input[name^=it_price]");
+    var $it_discount = $("input[name^=it_discount]");
     var $cp_prc = $("input[name^=cp_price]");
-    var tot_sell_price = sell_price = tot_cp_price = 0;
+    var tot_sell_price = tot_sell_discount = sell_price = tot_cp_price = 0;
     var it_price, cp_price, it_notax;
     var tot_mny = comm_tax_mny = comm_vat_mny = comm_free_mny = tax_mny = vat_mny = 0;
     var send_cost = parseInt($("input[name=od_send_cost]").val());
@@ -362,11 +363,14 @@ function calculate_total_price() {
     $it_prc.each(function(index) {
         it_price = parseInt($(this).val());
         cp_price = parseInt($cp_prc.eq(index).val());
+        it_discount = parseInt($it_discount.eq(index).val());
+		
         sell_price += it_price;
         tot_cp_price += cp_price;
+			tot_sell_discount += it_discount;
     });
-
-    tot_sell_price = sell_price - tot_cp_price + send_cost;
+	alert(tot_sell_discount);
+    tot_sell_price = sell_price - tot_sell_discount - tot_cp_price + send_cost;
 
     $("#ct_tot_coupon").text(number_format(String(tot_cp_price))+" 원");
     $("#ct_tot_price").text(number_format(String(tot_sell_price))+" 원");
@@ -403,6 +407,7 @@ var save_send_cost = 0;
 var save_send_cost2 = 0;
 function calculate_order_price() {
     var sell_price = parseInt($("input[name=od_price]").val());
+    var sell_discount = parseInt($("input[name=od_discount]").val());
     var send_cost = parseInt($("input[name=od_send_cost]").val());
     var send_cost2 = parseInt($("input[name=od_send_cost2]").val());
     var send_coupon = parseInt($("input[name=od_send_coupon]").val());
@@ -436,7 +441,7 @@ function calculate_order_price() {
         $('.delivery_cost_display').show();
     }
     $('.delivery_cost_display_name').html(od_delivery_type_name);
-    var tot_price = sell_price + send_cost + send_cost2 - send_coupon;
+    var tot_price = sell_price - sell_discount + send_cost + send_cost2 - send_coupon;
 
     $("input[name=good_mny]").val(tot_price);
     $("#od_tot_price").text(number_format(String(tot_price)));

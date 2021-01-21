@@ -49,6 +49,7 @@ if ( is_array($item) && count($item) ) {
             <th scope="col"><span>상품명</span></th>
             <th scope="col"><span>총수량</span></th>
             <th scope="col"><span>판매가</span></th>
+            <th scope="col"><span>할인가</span></th>
             <th scope="col"><span>소계</span></th>
             <th scope="col"><span>포인트</span></th>
             <th scope="col"><span class="last">배송비</span></th>
@@ -80,6 +81,7 @@ if ( is_array($item) && count($item) ) {
 				</td>
 				<td class="text-center"><?php echo number_format($item[$i]['qty']); ?></td>
 				<td class="text-right"><?php echo number_format($item[$i]['ct_price']); ?></td>
+				<td class="text-right"><?php echo number_format($item[$i]['sell_discount']); ?></td>
 				<td class="text-right"><span id="sell_price_<?php echo $i; ?>"><?php echo number_format($item[$i]['sell_price']); ?></span></td>
 				<td class="text-right"><?php echo number_format($item[$i]['point']); ?></td>
 				<td class="text-center"><?php echo $item[$i]['ct_send_cost']; ?></td>

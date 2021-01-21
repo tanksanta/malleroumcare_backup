@@ -405,6 +405,13 @@ $pg_anchor .='</ul>';
 			</td>
 		</tr>
 		<tr>
+			<th scope="row"><label for="it_sale_cnt">묶음할인(쇼핑몰전용)</label></th>
+			<td>
+				<input type="text" name="it_sale_cnt" value="<?=$it["it_sale_cnt"]?>" id="it_sale_cnt" class="frm_input" size="2"> 개 이상
+				<input type="text" name="it_sale_percent" value="<?=$it["it_sale_percent"]?>" id="it_sale_percent" class="frm_input" size="2"> % 할인
+			</td>
+		</tr>
+		<tr>
 			<th scope="row"><label for="it_price_partner">파트너몰 판매가격</label></th>
 			<td>
 				<input type="text" name="it_price_partner" value="<?php echo $it['it_price_partner']; ?>" id="it_price_partner" class="frm_input" size="8"> 원

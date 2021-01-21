@@ -207,6 +207,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 
         <div style="display:inline-block">
             <button type="button" style="vertical-align:middle;border: 1px solid #cccccc;font-size: 12px;cursor: pointer;padding: 4px 8px;height: auto;color: #656565;background-color: white;" onclick="go_prints();" ><img src="/adm/shop_admin/img/printer.png" align="absmiddle" style="margin-right:5px;">인쇄하기</button>
+            <button type="button" style="vertical-align:middle;border: 1px solid #009845;font-size: 12px;cursor: pointer;padding: 4px 8px;height: auto;color: #fff;background-color: #009845;" onclick="window.location.href='/shop/pop.statement.popbill.php?od_id=<?=$_GET["od_id"]?>';">거래명세서</button>
             <?php if ( $w == 'u' ) { ?>
                 <!--<button type="button" style="vertical-align:middle;border: 1px solid #009845;font-size: 12px;cursor: pointer;padding: 4px 8px;height: auto;color: #fff;background-color: #009845;" onclick="go_submit();" >저장</button>-->
             <?php } ?>

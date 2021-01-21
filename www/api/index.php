@@ -36,7 +36,7 @@ class API {
 
 		$it_id = $prodId;							//제품아이디
 		#$ca_id = $gubun;							//구분 ("00")
-		$ca_id = sql_fetch("SELECT ca_id FROM g5_shop_category WHERE itemId = '{$it_id}'")["ca_id"];
+		$ca_id = sql_fetch("SELECT ca_id FROM g5_shop_category WHERE itemId = '{$itemId}'")["ca_id"];
 		$ca_id = ($ca_id) ? $ca_id : "00";
 		$it_name = $prodNm;							//제품명
 		$it_thezone = $itemId;						//품목 아이디
@@ -144,7 +144,7 @@ class API {
 						subItem				= '$subItem',
 						prodSupPrice		= '$prodSupPrice',
 						prodOflPrice		= '$prodOflPrice',
-						ProdPayCode			= '$ProdPayCode',
+						ProdPayCode			= '$prodPayCode',
 						supId               = '$supId',
 						prodColor			= '$prodColor',
 						prodSym				= '$prodSym',

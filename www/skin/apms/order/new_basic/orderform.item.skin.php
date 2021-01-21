@@ -14,6 +14,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 		<th scope="col"><span>상품명</span></th>
 		<th scope="col"><span>총수량</span></th>
 		<th scope="col"><span>판매가</span></th>
+		<th scope="col"><span>할인가</span></th>
 		<th scope="col"><span>쿠폰</span></th>
 		<th scope="col"><span>소계</span></th>
 		<th scope="col"><span>포인트</span></th>
@@ -31,6 +32,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				<input type="hidden" name="it_id[<?php echo $i; ?>]"    value="<?php echo $item[$i]['hidden_it_id']; ?>">
 				<input type="hidden" name="it_name[<?php echo $i; ?>]"  value="<?php echo $item[$i]['hidden_it_name']; ?>">
 				<input type="hidden" name="it_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_price']; ?>">
+				<input type="hidden" name="it_discount[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_discount']; ?>">
 				<input type="hidden" name="cp_id[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_cp_id']; ?>">
 				<input type="hidden" name="cp_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_cp_price']; ?>">
 				<?php if($default['de_tax_flag_use']) { ?>
@@ -46,6 +48,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 			</td>
 			<td class="text-center"><?php echo $item[$i]['qty']; ?></td>
 			<td class="text-right"><?php echo $item[$i]['ct_price']; ?></td>
+			<td class="text-right"><?php echo $item[$i]['ct_discount']; ?></td>
 			<td class="text-center">
 				<?php if($item[$i]['is_coupon']) { ?>
 					<div class="btn-group">
@@ -71,6 +74,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 		<div class="col-xs-6 text-right">
 			<strong><?php echo number_format($tot_sell_price); ?> 원</strong>
 		</div>
+		<div class="col-xs-6">할인금액</div>
+		<div class="col-xs-6 text-right">
+			<strong><?php echo number_format($tot_sell_discount); ?> 원</strong>
+		</div>
 		<?php if($it_cp_count > 0) { ?>
 			<div class="col-xs-6">쿠폰할인</div>
 			<div class="col-xs-6 text-right">
@@ -84,7 +91,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 	</div>
 
 	<div class="row">
-		<?php $tot_price = $tot_sell_price + $send_cost; // 총계 = 주문상품금액합계 + 배송비 ?>
+		<?php $tot_price = $tot_sell_price - $tot_sell_discount + $send_cost; // 총계 = 주문상품금액합계 - 묶음할인금액합계 + 배송비 ?>
 		<div class="col-xs-6 red od_tot_price"> <b>합계금액</b></div>
 		<div class="col-xs-6 text-right red od_tot_price">
 			<strong id="ct_tot_price" class="print_price"><?php echo number_format($tot_price); ?> 원</strong>
