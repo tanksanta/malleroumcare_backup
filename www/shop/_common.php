@@ -29,4 +29,5 @@ define('IS_SHOP', true);
 // 예약체크
 apms_check_reserve_end();
 
+
 ?>

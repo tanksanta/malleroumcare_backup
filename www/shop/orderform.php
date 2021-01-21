@@ -363,6 +363,8 @@ include_once($skin_path.'/orderform.head.skin.php');
 // 상품 스킨
 if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 
+//echo $skin_path;
+
 ?>
 	<input type="hidden" name="od_price"    value="<?php echo $tot_sell_price; ?>">
 	<input type="hidden" name="org_od_price"    value="<?php echo $tot_sell_price; ?>">

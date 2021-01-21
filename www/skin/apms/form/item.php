@@ -105,7 +105,7 @@ $pg_anchor .='</ul>';
             </td>
         </tr>
 		<tr>
-            <th scope="row"><label for="it_thezone">상품코드</label></th>
+            <th scope="row"><label for="it_thezone">분류코드</label></th>
             <td>
                 <input type="text" name="it_thezone" value="<?php echo $it['it_thezone']; ?>" id="it_thezone" class="frm_input sl">
             </td>
@@ -2302,7 +2302,6 @@ function fitemformcheck(f)
             return false;
         }
     }
-
 
     if (!f.ca_id.value) {
         alert("기본분류를 선택하십시오.");

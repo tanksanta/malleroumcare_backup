@@ -14,41 +14,49 @@ if ($w == 'u' && $is_admin == 'super') {
 $mb_id = $_SESSION['ss_mb_reg'];
 echo "<script> alert({$mb_id}) </script>";
 
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_POST, 0);
+curl_setopt($ch, CURLOPT_URL, "https://eroumcare.com/pen/pen2000/pen2000/selectUser.do?usrId={$mb_id}");
+$res = curl_exec($ch);
+$resInfo = json_decode($res, true);
+$resInfo = $resInfo["loginVO"];
+
 $mb_password    = "1234";
 $mb_password_re = "1234";
-$mb_name        = "hsy";
-$mb_level       = "2";
+//$mb_name        = "hsy";
+//$mb_level       = "2";
 //$mb_nick        = trim($_POST['mb_nick']);
-$mb_nick        = "hsy";
-$mb_email       = "";
-$mb_sex         = "";
-$mb_birth       = "";
-$mb_homepage    = "";
-$mb_tel         = "";
-$mb_hp          = "";
-$mb_fax         = "";
-$mb_zip1        = "";
-$mb_zip2        = "";
-$mb_addr1       = "";
-$mb_addr2       = "";
-$mb_addr3       = "";
-$mb_addr_jibeon = "";
-$mb_signature   = "";
-$mb_profile     = "";
-$mb_recommend   = "";
-$mb_mailling    = "";
-$mb_sms         = "";
-$mb_1           = "";
-$mb_2           = "";
-$mb_3           = "";
-$mb_4           = "";
-$mb_5           = "";
-$mb_6           = "";
-$mb_7           = "";
-$mb_8           = "";
-$mb_9           = "";
-$mb_10          = "";
-$mb_type        = "";
+//$mb_nick        = "hsy";
+//$mb_email       = "";
+//$mb_sex         = "";
+//$mb_birth       = "";
+//$mb_homepage    = "";
+//$mb_tel         = "";
+//$mb_hp          = "";
+//$mb_fax         = "";
+//$mb_zip1        = "";
+//$mb_zip2        = "";
+//$mb_addr1       = "";
+//$mb_addr2       = "";
+//$mb_addr3       = "";
+//$mb_addr_jibeon = "";
+//$mb_signature   = "";
+//$mb_profile     = "";
+//$mb_recommend   = "";
+//$mb_mailling    = "";
+//$mb_sms         = "";
+//$mb_1           = "";
+//$mb_2           = "";
+//$mb_3           = "";
+//$mb_4           = "";
+//$mb_5           = "";
+//$mb_6           = "";
+//$mb_7           = "";
+//$mb_8           = "";
+//$mb_9           = "";
+//$mb_10          = "";
+//$mb_type        = "";
 
 // $mb_name        = clean_xss_tags($mb_name);
 // $mb_email       = get_email_address($mb_email);
@@ -76,10 +84,23 @@ $sql_certify .= " , mb_sex = '' ";
 
 $mb_thezone_code = get_uniqid_member();
 
+//$sql = "insert into {$g5['member_table']}
+//        set mb_id = '{$mb_id}',
+//        mb_password = '".get_encrypt_string($mb_password)."',
+//        mb_name = '{$mb_name}'";
+
 $sql = "insert into {$g5['member_table']}
-        set mb_id = '{$mb_id}',
-        mb_password = '".get_encrypt_string($mb_password)."',
-        mb_name = '{$mb_name}'";
+        set mb_id = '{$resInfo["id"]}',
+        mb_name = '{$resInfo["nm"]}',
+        mb_nick = '{$resInfo["nm"]}',
+        mb_hp = '{$resInfo["pNum"]}',
+        mb_tel = '{$resInfo["pNum"]}',
+        mb_type = '{$resInfo["type"]}',
+        mb_entId = '{$resInfo["entId"]}',
+        mb_entNm = '{$resInfo["entNm"]}',
+        mb_level = '2',
+		 mb_password = '".get_encrypt_string($mb_password)."',
+        mb_authCd = '{$resInfo["authCd"]}'";
 
 sql_query($sql);
 if ($member != get_member($_SESSION['ss_mb_reg'])) {

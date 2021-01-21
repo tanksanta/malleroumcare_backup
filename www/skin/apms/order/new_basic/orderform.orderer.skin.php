@@ -155,15 +155,6 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
         </section>
     <?php } ?>
 
-	<?php
-	$member['mb_name'] = '홍길동';
-	$member['mb_tel'] = '02-1234-45678';
-	$member['mb_hp'] = '02-1234-45678';
-	$member['mb_zip1'] = '06035';
-	$member['mb_addr1'] = '서울 강남구 가로수길 5';
-	$member['mb_email'] = 'test@test.co.kr';
-	?>
-
     <!-- 주문하시는 분 입력 시작 { -->
     <section id="sod_frm_orderer" style="margin-bottom:0px;">
         <div class="panel panel-default">
@@ -298,6 +289,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 	</style>
     <section id="sod_frm_recipient_orderer" style="margin-bottom:0px;">
 		<input type="hidden" name="penId" id="penId">
+		<input type="hidden" name="penTypeCd" id="penTypeCd">
 		<input type="hidden" name="searchUsrId" id="searchUsrId" value="123456789">
 		<input type="hidden" name="shoBasSeq" id="shoBasSeq" value="12">
 		<input type="hidden" name="prodBarNum" id="prodBarNum" value="">
@@ -451,8 +443,10 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 			document.getElementById("penConNum").value=list['penConNum'];		//휴대전화
 			document.getElementById("penConPnum").value=list['penConPnum'];		//전화번호
 			document.getElementById("penAddr").value=list['penAddr'];			//주소
+			document.getElementById("penTypeCd").value=list['penTypeCd'];			//주소
 			/*document.getElementById("penMoney").value=list['penMoney'];			//한도금액*/
 
+			$("#ad_sel_addr_recipient").parent().show();
 		}
 
 		$(function() {
@@ -473,6 +467,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				$('#penConNum').val('');
 				$('#penAddr').val('');
 				$('#penMoney').val('');
+				
+				$("#ad_sel_addr_recipient").parent().hide();
 			});
 		});
 	</script>
@@ -570,7 +566,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
                                 <input type="radio" name="ad_sel_addr" value="same" id="ad_sel_addr_same">
                                 주문자와 동일
                             </label>
-                            <label>
+                            <label style="display: none;">
                                 <input type="radio" name="ad_sel_addr" value="recipient" id="ad_sel_addr_recipient">
                                 수급자와 동일
                             </label>

@@ -31,7 +31,8 @@ $sql = " select MT.it_id,
                 MT.io_id,
                 MT.io_type,
                 MT.ct_option,
-				( SELECT it_thezone FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_thezone
+                MT.ct_qty,
+				( SELECT it_time FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_time
            from {$g5['g5_shop_cart_table']} MT
           where od_id = '$tmp_cart_id'
             and ct_select = '1' ";
@@ -39,14 +40,27 @@ $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++)
 {
     // 상품에 대한 현재고수량
-    if($row['io_id']) {
-		$thisProductData = [];
-		 $thisProductData["prodId"] = $row["it_thezone"];
-		$thisProductData["prodColor"] = $row["io_id"];
-		$thisProductData["prodBarNum"] = "";
-		$thisProductData["penStaSeq"] = count($productList) + 1;
-		
-		array_push($productList, $thisProductData);
+    if($row["io_id"]) {
+		for($i = 0; $i < $row["ct_qty"]; $i++){
+			if($_POST["penId"]){
+				$thisProductData = [];
+				$thisProductData["prodId"] = $row["it_id"];
+				$thisProductData["prodColor"] = $row["io_id"];
+				$thisProductData["prodBarNum"] = "";
+				$thisProductData["penStaSeq"] = count($productList) + 1;
+
+				array_push($productList, $thisProductData);
+			} else {
+				$thisProductData = [];
+				$thisProductData["prodId"] = $row["it_id"];
+				$thisProductData["prodColor"] = $row["io_id"];
+				$thisProductData["prodBarNum"] = "";
+				$thisProductData["prodManuDate"] = date("Y-m-d", strtotime($row["it_time"]));
+				$thisProductData["stoMemo"] = $_POST["od_memo"];
+
+				array_push($productList, $thisProductData);
+			}
+		}
         $it_stock_qty = (int)get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
     } else {
         $it_stock_qty = (int)get_it_stock_qty($row['it_id']);
@@ -677,7 +691,8 @@ $sql = " insert {$g5['g5_shop_order_table']}
                 so_nb             = '{$so_nb}',
                 od_receipt_bank_no = '{$od_tno}',
                 od_sales_manager  = '{$od_sales_manager}',
-                od_receipt_bank   = '{$od_receipt_bank}'
+                od_receipt_bank   = '{$od_receipt_bank}',
+                staOrdCd   = '00'
                 ";
 $result = sql_query($sql, false);
 
@@ -1109,10 +1124,6 @@ if($is_member && $od_b_name) {
 	apms_push($mb_list, $od_id, $od_id, G5_URL, $push);
 // ------------------------------------------------------------------
 
-	if(!$_POST["penId"]){
-		goto_url(G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid);
-	}
-
 ?>
 
 <html>
@@ -1141,8 +1152,8 @@ if($is_member && $od_b_name) {
 					regUsrId : "<?=$member["mb_id"]?>",
 					regUsrIp : "<?=$_SERVER["REMOTE_ADDR"]?>",
 					prods : productList,
-					documentId : "THK001_THK002_THK003",
-					eformType : "00",
+					documentId : "<?=($_POST["penTypeCd"] == "04") ? "THK101_THK102_THK001_THK002_THK003" : "THK001_THK002_THK003"?>",
+					eformType : "<?=($_POST["penTypeCd"] == "04") ? "21" : "00"?>",
 					returnUrl : "<?=G5_SHOP_URL.'/orderinquiryview.php?result=Y&od_id='.$od_id.'&amp;uid='.$uid?>",
 				}
 				
@@ -1153,16 +1164,97 @@ if($is_member && $od_b_name) {
 					contentType : "application/json; charset=utf-8;",
 					data : JSON.stringify(sendData),
 					success : function(res){
-						if(res.uuid == undefined || res.ordId == undefined){
-							alert(res.message);
-							history.go(-3);
+						if(res.errorYN == "Y"){
+							$.ajax({
+								url : "./orderformupdate.delete.php",
+								type : "POST",
+								data : {
+									od_id : "<?=$od_id?>"
+								},
+								success : function(){
+									alert(res.message);
+									history.go(-3);
+								}
+							});
 						} else {
 							window.location.href = "orderformupdateReturn.php?uuid=" + res.uuid + "&ordId=" + res.ordId + "&od_id=<?=$od_id?>";
 						}
 					},
 					error : function(res){
-						alert("알 수 없는 오류로 계약서 작성에 실패하였습니다.");
-						history.go(-3);
+						$.ajax({
+							url : "./orderformupdate.delete.php",
+							type : "POST",
+							data : {
+								od_id : "<?=$od_id?>"
+							},
+							success : function(){
+								alert("알 수 없는 오류로 계약서 작성에 실패하였습니다.");
+								history.go(-3);
+							}
+						});
+					}
+				});
+			<?php } else { ?>
+				var productList = <?=($productList) ? json_encode($productList) : "[]"?>;
+				var stoIdList = [];
+			
+				$.ajax({
+					url : "https://eroumcare.com/pen/pen2000/pen2000/selectUser.do?usrId=<?=$member["mb_id"]?>",
+					type : "GET",
+					success : function(res){
+						res = JSON.parse(res);
+						var entId = res.loginVO.entId;
+						
+						if(entId){
+							$.each(productList, function(key, value){
+								var sendData = {
+									usrId : "<?=$member["mb_id"]?>",
+									entId : entId,
+									prods : [
+										{
+											prodId : value.prodId,
+											prodColor : value.prodColor,
+											prodManuDate : value.prodManuDate,
+											prodBarNum : value.prodBarNum,
+											stoMemo : value.stoMemo
+										}
+									]
+								}
+
+								$.ajax({
+									url : "https://eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do",
+									type : "POST",
+									dataType : "json",
+									async : false,
+									contentType : "application/json; charset=utf-8;",
+									data : JSON.stringify(sendData),
+									success : function(result){
+										if(result.errorYN == "N"){
+											stoIdList.push(result.data[0]["stoId"]);
+										}
+									}
+								});
+							});
+							
+							$.ajax({
+								url : "orderformupdate.stoId.php",
+								type : "POST",
+								async : false,
+								data : {
+									stoIdList : stoIdList,
+									od_id : "<?=$od_id?>"
+								}
+							});
+							
+							window.location.href = "<?=G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid?>";
+						} else {
+							alert("알 수 없는 오류로 재고 요청에 실패하였습니다.");
+							window.location.href = "<?=G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid?>";
+						}
+					},
+					error : function(res){
+						alert("알 수 없는 오류로 재고 요청에 실패하였습니다.");
+						window.location.href = "<?=G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid?>";
 					}
 				});
 			<?php } ?>

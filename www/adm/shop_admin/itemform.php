@@ -251,7 +251,9 @@ if($w == "" && !$fn) {
 	if($default['pt_reserve_cache'] > 0) list($pt_edate, $pt_ehour, $pt_eminute) = apms_reserve_end($it['pt_end'],1);
 
 	//$form_title = $fname.' '.$html_title;
+	
 ?>
+
 	<form name="fitemform" id="fitemform" action="./itemformupdate.php" method="post" enctype="MULTIPART/FORM-DATA" autocomplete="off" onsubmit="return fitemformcheck(this)">
 		<input type="hidden" name="codedup" value="<?php echo $default['de_code_dup_use']; ?>">
 		<input type="hidden" name="w" value="<?php echo $w; ?>">
@@ -266,7 +268,6 @@ if($w == "" && !$fn) {
 		<input type="hidden" name="it_mobile_skin" value="">
 
 		<?php include_once($fskin_file); ?>
-
 		<div class="btn_fixed_top">
 			<a href="./itemlist.php?<?php echo $qstr; ?>" class="btn btn_02">목록</a>
 			<a href="<?php echo G5_SHOP_URL ;?>/item.php?it_id=<?php echo $it_id ;?>" class="btn_02  btn">상품보기</a>

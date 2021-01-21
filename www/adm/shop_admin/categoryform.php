@@ -163,7 +163,6 @@ if(USE_G5_THEME) {
 <input type="hidden" name="stx" value="<?php echo $stx; ?>">
 <input type="hidden" name="page" value="<?php echo $page; ?>">
 <input type="hidden" name="ca_explan_html" value="<?php echo $ca['ca_explan_html']; ?>">
-
 <section id="anc_scatefrm_basic">
     <h2 class="h2_frm">필수입력</h2>
     <?php echo $pg_anchor; ?>
@@ -191,6 +190,10 @@ if(USE_G5_THEME) {
                 <a href="./itemlist.php?sca=<?php echo $ca['ca_id']; ?>" class="btn_frmline">상품리스트</a>
             <?php } ?>
             </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="itemId">품목코드</label></th>
+            <td><input type="text" name="itemId" value="<?php echo $ca['itemId']; ?>" id="itemId" required class="required frm_input"></td>
         </tr>
         <tr>
             <th scope="row"><label for="ca_name">분류명</label></th>

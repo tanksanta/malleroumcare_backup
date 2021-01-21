@@ -170,7 +170,8 @@ $sql_common = " ca_order                = '$ca_order',
                 ca_main_item_1          = '$ca_main_item_1',
                 ca_main_item_2          = '$ca_main_item_2',
                 ca_main_item_3          = '$ca_main_item_3',
-                ca_main_item_4          = '$ca_main_item_4'
+                ca_main_item_4          = '$ca_main_item_4',
+                itemId          = '$itemId'
                  ";
 
 if ($w == "")

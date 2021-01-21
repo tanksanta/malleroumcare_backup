@@ -2,6 +2,12 @@
 include_once($_SERVER['DOCUMENT_ROOT'] .'/common.php');
 include_once('api.config.php');
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Authorization, Content-Type,Accept, Origin');
+header('Content-Type: application/json');
+
 class API {
 	function Item_Write() {
 
@@ -29,7 +35,9 @@ class API {
 		$it_name = strip_tags(clean_xss_attributes(trim($prodNm)));
 
 		$it_id = $prodId;							//제품아이디
-		$ca_id = $gubun;							//구분 ("00")
+		#$ca_id = $gubun;							//구분 ("00")
+		$ca_id = sql_fetch("SELECT ca_id FROM g5_shop_category WHERE itemId = '{$it_id}'")["ca_id"];
+		$ca_id = ($ca_id) ? $ca_id : "00";
 		$it_name = $prodNm;							//제품명
 		$it_thezone = $itemId;						//품목 아이디
 		$it_cust_price = $prodSupPrice;				//공급가격
