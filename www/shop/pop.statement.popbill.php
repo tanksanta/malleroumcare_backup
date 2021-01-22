@@ -135,7 +135,7 @@ $banks = $banks2;
 
 	$LinkId = "THKC"; # 링크아이디
 	$SecretKey = "SK6O74B5rFqXWhm3Fa73ESVTXwBL2vfQiWvrHE4tzlc="; # 시크릿키
-	$testCorpNum = "617-86-14330"; # 팝빌 회원 사업자 번호
+	$testCorpNum = "6178614330"; # 팝빌 회원 사업자 번호
 	$testUserID = "thkc1300"; # 팝빌 회원 아이디
 	$mgtKey = ""; # 전자명세서 문서번호
 	$itemCode = "121"; # 명세서 종류코드
@@ -161,12 +161,12 @@ $banks = $banks2;
 
 	$Statement->senderCorpName = "(주)티에이치케이컴퍼니"; # 공급자 상호
 	$Statement->senderCEOName = "신종호"; # 공급자 대표자 성명
-	$Statement->senderAddr = "부산광역시 금정구 부산대학로 63번길 2, 403호"; # 공급자 주소
-	$Statement->senderBizClass = "간판 및 광고물 외"; # 공급자 업종
-	$Statement->senderBizType = "제조, 도소매 외"; # 공급자 업태
+	$Statement->senderAddr = "부산광역시 금정구 부산대학로63번길 2, 403호 (장전동)"; # 공급자 주소
+	$Statement->senderBizClass = "무릎관련보호장치"; # 공급자 업종
+	$Statement->senderBizType = "제조"; # 공급자 업태
 	$Statement->senderContactName = "신종호"; # 공급자 담당자명
 	$Statement->senderTEL = "051-6430-1300"; # 공급자 전화번호
-	$Statement->senderHP = ""; # 공급자 휴대폰 번호
+	$Statement->senderHP = "010-4051-4887"; # 공급자 휴대폰 번호
 	$Statement->senderEmail = "thkc1300@hanmail.net"; # 공급자 이메일
 
 	$Statement->receiverCorpNum = $odmb["mb_giup_bnum"]; # 공급받는자 사업자 번호
@@ -222,7 +222,7 @@ $banks = $banks2;
 	}
 
 	try {
-		$result = $StatementService->RegistIssue($testCorpNum, $Statement, $memo, $testUserID, $emailSubject);
+		$result = $StatementService->FAXSend($testCorpNum, $Statement, "051-583-1301", $_GET["tel"], null);
 		$code = $result->code;
 		$message = $result->message;
 	} catch(PopbillException $pe){
@@ -233,6 +233,6 @@ $banks = $banks2;
 ?>
 
 	<script type="text/javascript">
-		alert("<?=$message?>");
+		alert("(<?=$code?>) <?=$message?>");
 		history.back();
 	</script>

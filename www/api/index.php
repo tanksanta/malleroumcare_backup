@@ -173,9 +173,22 @@ class API {
 
 			$row = sql_fetch(" select count(*) as cnt from {$g5['g5_shop_item_table']} where it_id = '$it_id' ");
 			if ($row['cnt']){
+				
+				$sql = " update {$g5['g5_shop_item_table']}
+							set $sql_common
+							where it_id = '{$it_id}'";
 
-				$data['message'] = $it_id.' 은(는) 이미 존재하는 제품아이디 입니다.';
-				$data['errorYN'] = 'Y';
+				if(sql_query($sql)){
+
+					$data['message'] = '상품수정완료';
+					$data['errorYN'] = 'N';
+
+				}else{
+
+					$data['message'] = '상품수정에 문제가 있습니다. 관리자에게 문의하세요.';
+					$data['errorYN'] = 'Y';
+
+				}
 
 			}else{
 
