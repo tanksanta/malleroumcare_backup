@@ -201,7 +201,7 @@ body, input, textarea, select, button, table {
 .btn { width:100px; border:1px solid #CCC; padding:5px 15px; font:bold 12px dotumche; color:#333; text-align:center; background:#EEEEEE; }
 body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px batangche; color:#000;}
 </style>
-<body style="overflow-x:hidden;">
+<body>
 <div id="printBtns" class="noprint" style="background-color:#eee;line-height:30px;padding:10px;">
 	<div style="padding-top:3px;">
 
@@ -211,6 +211,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
             <?php if ( $w == 'u' ) { ?>
                 <!--<button type="button" style="vertical-align:middle;border: 1px solid #009845;font-size: 12px;cursor: pointer;padding: 4px 8px;height: auto;color: #fff;background-color: #009845;" onclick="go_submit();" >저장</button>-->
             <?php } ?>
+            <button type="button" style="vertical-align:middle;border: 1px solid #cccccc;font-size: 12px;cursor: pointer;padding: 4px 8px;height: auto;color: #656565;background-color: white; position: absolute; top: 18px; right: 10px;" onclick="thisPopupClose();" >닫기</button>
         </div>
 
 	</div>
@@ -471,6 +472,11 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 
 
 <script>
+	
+	function thisPopupClose(){
+		$("#send_statementBox", parent.document).hide();
+	}
+	
 	function popbillFax(){
 		var tel = prompt("팩스 수신번호를 입력해주시길 바랍니다.");
 		

@@ -209,6 +209,14 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                 </td>
             </tr>
             <tr>
+                <th>주문형태</th>
+                <td>
+						<input type="radio" id="od_recipient_all" name="od_recipient" value="" <?=($_GET["od_recipient"] != "Y" || $_GET["od_recipient"] != "N") ? "checked" : ""?>><label for="od_recipient_all"> 전체</label>
+						<input type="radio" id="od_recipient_N" name="od_recipient" value="N" <?=($_GET["od_recipient"] == "N") ? "checked" : ""?>><label for="od_recipient_N"> 재고주문</label>
+						<input type="radio" id="od_recipient_Y" name="od_recipient" value="Y" <?=($_GET["od_recipient"] == "Y") ? "checked" : ""?>><label for="od_recipient_Y"> 상품주문</label>
+                </td>
+            </tr>
+            <tr>
                 <th>기타설정</th>
                 <td>
                     <div class="select">
@@ -261,7 +269,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                         <input type="radio" id="od_important_all" name="od_important" value="" <?php echo option_array_checked('', $od_important); ?>><label for="od_important_all"> 전체</label>
                         <input type="radio" id="od_important_0" name="od_important" value="0" <?php echo option_array_checked('0', $od_important); ?>><label for="od_important_0"> 미발행</label>
                         <input type="radio" id="od_important_1" name="od_important" value="1" <?php echo option_array_checked('1', $od_important); ?>><label for="od_important_1"> 발행</label>
-				    </div>
+				    	</div>
                     <div class="linear">
                         <span class="linear_span">출고</span>
                         <input type="radio" id="od_release_all" name="od_release" value="" <?php echo option_array_checked('', $od_release); ?>><label for="od_release_all"> 전체</label>
@@ -496,6 +504,8 @@ function doSearch() {
 
     formdata['od_important'] = formdata['od_important']; // Assign new key
     // delete formdata['od_important[]']; // Delete old key
+	
+	formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
 
     var ajax = $.ajax({
         method: "POST",

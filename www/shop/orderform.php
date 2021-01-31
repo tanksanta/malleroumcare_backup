@@ -106,7 +106,8 @@ $sql = " select a.ct_id,
 				b.pt_msg1,
 				b.pt_msg2,
 				b.pt_msg3,
-				b.it_model
+				b.it_model,
+				b.prodSupYn
 		   from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$s_cart_id'
 			and a.ct_select = '1' ";
@@ -231,9 +232,24 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 		if($sendcost == 0)
 			$ct_send_cost = '무료';
 	}
+	
+	# 210130 옵션목록
+	$optionList = [];
+	$optionSQL = sql_query("SELECT io_id, ct_qty FROM {$g5["g5_shop_cart_table"]} WHERE od_id = '{$s_cart_id}' AND it_id = '{$row["it_id"]}' ORDER BY ct_id ASC");
+	for($iii = 0; $optionRow = sql_fetch_array($optionSQL); $iii++){
+		$thisRowData = [];
+		$optionRow["io_id"] = explode(chr(30), $optionRow["io_id"]);
+		
+		$thisRowData["color"] = $optionRow["io_id"][0];
+		$thisRowData["size"] = $optionRow["io_id"][1];
+		$thisRowData["qty"] = $optionRow["ct_qty"];
+		
+		array_push($optionList, $thisRowData);
+	}
 
 	// 배열화
 	$item[$i] = $row;
+	$item[$i]["prodSupYn"] = $row["prodSupYn"];
 	$item[$i]['hidden_it_id'] = $row['it_id'];
 	$item[$i]['hidden_it_name'] = get_text($row['it_name']);
 	$item[$i]['hidden_sell_price'] = $sell_price;
@@ -243,6 +259,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	$item[$i]['hidden_it_notax'] = $row['it_notax'];
 	$item[$i]['it_name'] = $it_name;
 	$item[$i]['it_options'] = $it_options;
+	$item[$i]['it_optionList'] = $optionList;
 	$item[$i]['pt_it'] = apms_pt_it($row['pt_it'],1);
 	$item[$i]['qty'] = number_format($sum['qty']);
 	$item[$i]['ct_price'] = number_format($row['ct_price']);
@@ -262,8 +279,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	}
 
 	$tot_point      += $point;
-	$tot_sell_price += $sell_price;
-	$tot_sell_discount += $sum["discount"];
+	$tot_sell_price += ($row["prodSupYn"] == "Y") ? $sell_price : 0;
+	$tot_sell_discount += ($row["prodSupYn"] == "Y") ? $sum["discount"] : 0;
 } // for 끝
 
 if ($i == 0) {
@@ -368,8 +385,6 @@ include_once($skin_path.'/orderform.head.skin.php');
 
 // 상품 스킨
 if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
-
-//echo $skin_path;
 
 ?>
 	<input type="hidden" name="od_price"    value="<?php echo $tot_sell_price; ?>">

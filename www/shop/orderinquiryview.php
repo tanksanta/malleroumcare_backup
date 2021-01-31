@@ -59,7 +59,9 @@ $sql = " select a.it_id,
 				b.pt_msg2,
 				b.pt_msg3,
 				a.ct_uid,
-				b.it_model
+				b.it_model,
+				a.prodMemo,
+				b.prodSupYn
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$od_id'
 		  group by a.it_id, a.ct_uid
@@ -480,9 +482,10 @@ if($is_inquiryview_sub) {
 																					  
 		sql_query("
 			UPDATE g5_shop_order SET
-				  eformYn = 'Y'
+				  eformYn = 'N'
 				, payMehCd = '0'
 				, prods = '{$insertProds}'
+				, recipient_yn = 'Y'
 			WHERE od_id = '{$_GET["od_id"]}'
 		");
 		
@@ -502,7 +505,7 @@ if($is_inquiryview_sub) {
 			ordZip : "<?=$orderData["od_b_zip1"]?><?=$orderData["od_b_zip2"]?>",
 			ordAddr : "<?=$orderData["od_b_addr1"]?>",
 			ordAddrDtl : "<?=$orderData["od_b_addr2"]?>",
-			eformYn : "Y",
+			eformYn : "N",
 			prods : productList
 		}
 
@@ -514,4 +517,4 @@ if($is_inquiryview_sub) {
 			data : JSON.stringify(sendData)
 		});
 	</script>
-<?php } ?>
+<?php unset($_SESSION["productList{$_GET["od_id"]}"]); } ?>

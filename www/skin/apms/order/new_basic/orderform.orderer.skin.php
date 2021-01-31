@@ -551,6 +551,172 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 
 
     <!-- 수급자 입력 끝 -->
+    
+    <!-- 주문상품 정보 시작 -->
+	<div class="table-responsive order-item">
+		<table id="sod_list" class="div-table table bg-white bsk-tbl">
+		<tbody>
+		<tr class="<?php echo $head_class;?>">
+			<th scope="col"><span>이미지</span></th>
+			<th scope="col"><span>상품명</span></th>
+			<th scope="col"><span>총수량</span></th>
+			<th scope="col"><span>판매가</span></th>
+			<th scope="col"><span>할인가</span></th>
+			<th scope="col"><span>소계</span></th>
+			<th scope="col"><span class="last">배송비</span></th>
+			<th scope="col"><span>바코드</span></th>
+		</tr>
+		<?php for($i=0; $i < count($item); $i++) { ?>
+			<tr class="item" data-code="<?=$item[$i]["it_id"]?>" data-sup="<?=$item[$i]["prodSupYn"]?>">
+				<td class="text-center" style="vertical-align: middle;">
+					<div class="item-img">
+						<?php echo get_it_image($item[$i]['it_id'], 70, 70); ?>
+						<div class="item-type"><?php echo $item[$i]['pt_it']; ?></div>
+					</div>
+				</td>
+				<td style="vertical-align: middle;">
+					<input type="hidden" name="it_id[<?php echo $i; ?>]"    value="<?php echo $item[$i]['hidden_it_id']; ?>">
+					<input type="hidden" name="it_name[<?php echo $i; ?>]"  value="<?php echo $item[$i]['hidden_it_name']; ?>">
+					<input type="hidden" name="it_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_price']; ?>">
+					<input type="hidden" name="it_discount[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_discount']; ?>">
+					<input type="hidden" name="cp_id[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_cp_id']; ?>">
+					<input type="hidden" name="cp_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_cp_price']; ?>">
+					<?php if($default['de_tax_flag_use']) { ?>
+						<input type="hidden" name="it_notax[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_it_notax']; ?>">
+					<?php } ?>
+					<b>
+						<?php echo $item[$i]['it_model']; ?>
+						(<?php echo $item[$i]['it_name']; ?>)
+					</b>
+					<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #<?=($item[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;"><?=($item[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?></b>
+					<?php if($item[$i]['it_options']) { ?>
+						<div class="well well-sm"><?php echo $item[$i]['it_options'];?></div>
+					<?php } ?>
+				</td>
+				<td class="text-center" style="vertical-align: middle;"><?php echo $item[$i]['qty']; ?></td>
+				<td class="text-right" style="vertical-align: middle;"><?php echo $item[$i]['ct_price']; ?></td>
+				<td class="text-right" style="vertical-align: middle;"><?php echo $item[$i]['ct_discount']; ?></td>
+				<td class="text-right" style="vertical-align: middle;"><b><?php echo $item[$i]['total_price']; ?></b></td>
+				<td class="text-center delivery_cost_display_name" style="vertical-align: middle;"><?php echo $item[$i]['ct_send_cost']; ?></td>
+				<td style="width: 120px; vertical-align: middle;">
+				<?php
+					for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++){
+						for($iii = 0; $iii < $item[$i]["it_optionList"][$ii]["qty"]; $iii++){
+				?>
+						<?php if($optionCntList[$item[$i]["it_id"]][$ii] > $iii){ ?>
+							<select class="form-control input-sm prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
+								<option value="">재고 바코드</option>
+							<?php for($iiii = 0; $iiii < count($optionBarList[$item[$i]["it_id"]][$ii]); $iiii++){ ?>
+								<option value="<?=$optionBarList[$item[$i]["it_id"]][$ii][$iiii]?>"><?=$optionBarList[$item[$i]["it_id"]][$ii][$iiii]?></option>
+							<?php } ?>
+							</select>
+						<?php } else { ?>
+							<input type="text" class="form-control input-sm" value="" style="margin-bottom: 5px;" name="prodBarNum_<?=$postProdBarNumCnt?>">
+						<?php } ?>
+				<?php
+						$postProdBarNumCnt++; }
+					}
+				?>
+				<?php for($ii = 0; $ii < $item[$i]["qty"]; $ii++){ ?>
+					
+				<?php  } ?>
+				</td>
+			</tr>
+			<tr class="tr-line">
+				<td class="text-center" style="vertical-align: middle;"><span style="font-weight: bold; font-size: 12px;">요청사항</span></td>
+				<td colspan="7">
+					<input type="text" class="form-control input-sm" placeholder="추가 구매사항이나 상품관련 요청사항을 입력하세요." name="prodMemo_<?=$item[$i]["ct_id"]?>">
+				</td>
+			</tr>
+		<?php } ?>
+		</tbody>
+		</table>
+	</div>
+	
+	<?php if ($goods_count) $goods .= ' 외 '.$goods_count.'건'; ?>
+	<script type="text/javascript">
+		$(function(){
+			
+			var optionCntList = <?=json_encode($optionCntList)?>;
+			var optionBarList = <?=json_encode($optionBarList)?>;
+			var prodItemList = $("#sod_list tr.item");
+			
+			$.each(prodItemList, function(key, itemDom){
+				var code = $(itemDom).attr("data-code");
+				var itemList = $(itemDom).find(".well li");
+				
+				$.each(itemList, function(subKey, subDom){
+					var html = optionCntList[code][subKey];
+					
+					$(subDom).append(" <span style='opacity: 0.7;'>(재고수량 : " + html + "개)</span>");
+					
+					if($(itemDom).attr("data-sup") == "Y"){
+						$(subDom).css("position", "relative");
+						$(subDom).append("<div style='position: absolute; right: 0; top: 0;'><label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0;' checked> 재고소진 : </label> <select style='margin-top: -3px;'><option value='1'>1개</option></select> <label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;'> 신규주문</label></div>");
+					}
+				});
+			});
+			
+			$(".prodBarSelectBox").change(function(){
+				if($(this).val()){
+					var code = $(this).attr("data-code");
+					var item = $(this).closest("tr").find(".prodBarSelectBox" + code);
+					
+					for(var i = 0; i < item.length; i++){
+						if($(this).attr("data-this-code") != $(item[i]).attr("data-this-code")){
+							if($(this).val() == $(item[i]).val()){
+								alert("바코드는 중복선택하실 수 없습니다.");
+								$(this).val("");
+								return false;
+							}
+						}
+					}
+				}
+			});
+			
+		})
+	</script>
+	 <!-- 주문상품 정보 끝 -->
+
+	<!-- 주문상품 합계 시작 -->
+	<div class="well">
+		<div class="row">
+			<div class="col-xs-6">주문금액</div>
+			<div class="col-xs-6 text-right">
+				<strong><?php echo number_format($tot_sell_price); ?> 원</strong>
+			</div>
+			<div class="col-xs-6">할인금액</div>
+			<div class="col-xs-6 text-right">
+				<strong><?php echo number_format($tot_sell_discount); ?> 원</strong>
+			</div>
+			<?php if($it_cp_count > 0) { ?>
+				<div class="col-xs-6">쿠폰할인</div>
+				<div class="col-xs-6 text-right">
+					<strong id="ct_tot_coupon">0 원</strong>
+				</div>
+			<?php } ?>
+			<div class="col-xs-6 delivery_cost_display">배송비</div>
+			<div class="col-xs-6 text-right delivery_cost_display">
+				<strong><?php echo number_format($send_cost); ?> 원</strong>
+			</div>
+		</div>
+
+		<div class="row">
+			<?php $tot_price = $tot_sell_price - $tot_sell_discount + $send_cost; // 총계 = 주문상품금액합계 - 묶음할인금액합계 + 배송비 ?>
+			<div class="col-xs-6 red od_tot_price"> <b>합계금액</b></div>
+			<div class="col-xs-6 text-right red od_tot_price">
+				<strong id="ct_tot_price" class="print_price"><?php echo number_format($tot_price); ?> 원</strong>
+			</div>
+		</div>
+
+		<div class="row">	
+			<div class="col-xs-6"> 포인트</div>
+			<div class="col-xs-6 text-right">
+				<strong><?php echo number_format($tot_point); ?> 점</strong>
+			</div>
+		</div>
+	</div>
+   <!-- 주문상품 합계 끝 -->
 
     <!-- 받으시는 분 입력 시작 { -->
     <section id="sod_frm_taker">

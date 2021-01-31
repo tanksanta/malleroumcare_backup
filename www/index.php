@@ -6,7 +6,6 @@ if(!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 $is_index = true;
 $is_main = true;
-
 // 루트 index를 쇼핑몰 index 설정했을 때
 if(IS_YC && isset($default['de_root_index_use']) && $default['de_root_index_use'] && (!isset($ci) || !$ci)) {
     require_once(G5_SHOP_PATH.'/index.php');

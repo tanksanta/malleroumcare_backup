@@ -7,7 +7,7 @@ include_once("./_common.php");
 $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
 
-$odmb = sql_fetch("SELECT * FROM {$g5["g5_member_table"]} WHERE mb_id = '{$od["mb_id"]}'");
+$odmb = sql_fetch("SELECT * FROM g5_member WHERE mb_id = '{$od["mb_id"]}'");
 
 if (!$od["od_id"]) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
@@ -137,7 +137,7 @@ $banks = $banks2;
 	$SecretKey = "SK6O74B5rFqXWhm3Fa73ESVTXwBL2vfQiWvrHE4tzlc="; # 시크릿키
 	$testCorpNum = "6178614330"; # 팝빌 회원 사업자 번호
 	$testUserID = "thkc1300"; # 팝빌 회원 아이디
-	$mgtKey = ""; # 전자명세서 문서번호
+	$mgtKey = date("YmdHis"); # 전자명세서 문서번호
 	$itemCode = "121"; # 명세서 종류코드
 	$memo = ""; # 메모
 	$emailSubject = ""; # 발행안내메일
@@ -159,6 +159,7 @@ $banks = $banks2;
 	$Statement->itemCode = $itemCode; # 명세서 종류 코드
 	$Statement->mgtKey = $mgtKey; # 전자명세서 문서번호
 
+	$Statement->senderCorpNum = $testCorpNum; # 공급자 사업자번호
 	$Statement->senderCorpName = "(주)티에이치케이컴퍼니"; # 공급자 상호
 	$Statement->senderCEOName = "신종호"; # 공급자 대표자 성명
 	$Statement->senderAddr = "부산광역시 금정구 부산대학로63번길 2, 403호 (장전동)"; # 공급자 주소
@@ -173,7 +174,7 @@ $banks = $banks2;
 	$Statement->receiverTaxRegID = ""; # 공급받는자 종사업장 식별번호, 필요시 기재. 형식은 숫자 4자리
 	$Statement->receiverCorpName = $odmb["mb_name"]; # 공급받는자 상호
 	$Statement->receiverCEOName = ""; # 공급받는자 대표자 성명
-	$Statement->receiverAddr = "({$odmb["mb_giup_zip1"]}{$odmb["mb_giup_zip2"]}) {$odmb["mb_giup_addr1"]} {$odmb["mb_giup_addr2"]}"; # 공급받는자 주소
+	$Statement->receiverAddr = "({$odmb["mb_zip1"]}{$odmb["mb_zip2"]}) {$odmb["mb_addr1"]} {$odmb["mb_addr2"]}"; # 공급받는자 주소
 	$Statement->receiverBizClass = ""; # 공급받는자 업종
 	$Statement->receiverBizType = ""; # 공급받는자 업태
 	$Statement->receiverContactName = ""; # 공급받는자 담당자명
@@ -233,6 +234,6 @@ $banks = $banks2;
 ?>
 
 	<script type="text/javascript">
-		alert("(<?=$code?>) <?=$message?>");
+		alert("<?=($code) ? "({$code}) {$message}" : "전송이 완료되었습니다."?>");
 		history.back();
 	</script>

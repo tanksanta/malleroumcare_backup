@@ -235,6 +235,12 @@ for($i=0; $i<$count; $i++) {
 			$tmp_ct_qty_array = $_POST["ct_qty"][$it_id];
 			array_push($tmp_ct_qty_array, $tmp_ct_qty);
 			
+			$min_it_sale_cnt = ($it["it_sale_cnt"] < $it["it_sale_cnt_02"]) ? $it["it_sale_cnt"] : $it["it_sale_cnt_02"];
+			$min_it_sale_percent = ($it["it_sale_cnt"] < $it["it_sale_cnt_02"]) ? $it["it_sale_percent"] : $it["it_sale_percent_02"];
+
+			$max_it_sale_cnt = ($it["it_sale_cnt"] < $it["it_sale_cnt_02"]) ? $it["it_sale_cnt_02"] : $it["it_sale_cnt"];
+			$max_it_sale_percent = ($it["it_sale_cnt"] < $it["it_sale_cnt_02"]) ? $it["it_sale_percent_02"] : $it["it_sale_percent"];
+			
 			$ct_discount = 0;
 			$ct_sale_qty = 0;
 			$ct_sale_qty_list = $tmp_ct_qty_array;
@@ -242,8 +248,10 @@ for($i=0; $i<$count; $i++) {
 				$ct_sale_qty += $this_qty;
 			}
 
-			if($ct_sale_qty >= $it["it_sale_cnt"] && !${"it_id_sale_status_{$it_id}"}){
-				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($it["it_sale_percent"] / 100);
+			if($ct_sale_qty >= $max_it_sale_cnt && !${"it_id_sale_status_{$it_id}"}){
+				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($max_it_sale_percent / 100);
+			} else if($ct_sale_qty >= $min_it_sale_cnt && !${"it_id_sale_status_{$it_id}"}){
+				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($min_it_sale_percent / 100);
 			}
 
 			${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";
@@ -294,6 +302,12 @@ for($i=0; $i<$count; $i++) {
         }
 		
 			# 210121 묶음할인
+			$min_it_sale_cnt = ($it["it_sale_cnt"] < $it["it_sale_cnt_02"]) ? $it["it_sale_cnt"] : $it["it_sale_cnt_02"];
+			$min_it_sale_percent = ($it["it_sale_cnt"] < $it["it_sale_cnt_02"]) ? $it["it_sale_percent"] : $it["it_sale_percent_02"];
+
+			$max_it_sale_cnt = ($it["it_sale_cnt"] < $it["it_sale_cnt_02"]) ? $it["it_sale_cnt_02"] : $it["it_sale_cnt"];
+			$max_it_sale_percent = ($it["it_sale_cnt"] < $it["it_sale_cnt_02"]) ? $it["it_sale_percent_02"] : $it["it_sale_percent"];
+		
 			$ct_discount = 0;
 			$ct_sale_qty = 0;
 			$ct_sale_qty_list = $_POST["ct_qty"][$it_id];
@@ -301,8 +315,10 @@ for($i=0; $i<$count; $i++) {
 				$ct_sale_qty += $this_qty;
 			}
 		
-			if($ct_sale_qty >= $it["it_sale_cnt"] && !${"it_id_sale_status_{$it_id}"}){
-				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($it["it_sale_percent"] / 100);
+			if($ct_sale_qty >= $max_it_sale_cnt && !${"it_id_sale_status_{$it_id}"}){
+				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($max_it_sale_percent / 100);
+			} else if($ct_sale_qty >= $min_it_sale_cnt && !${"it_id_sale_status_{$it_id}"}){
+				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($min_it_sale_percent / 100);
 			}
 
 			${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";

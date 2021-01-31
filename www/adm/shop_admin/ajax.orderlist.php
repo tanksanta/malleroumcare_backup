@@ -196,6 +196,9 @@ if ($temp_where) {
 }
 //////////////////
 
+if($_POST["od_recipient"]){
+	$where[] = " recipient_yn = '{$_POST["od_recipient"]}'";
+}
 
 if ($od_misu) {
     $where[] = " od_misu != 0 ";

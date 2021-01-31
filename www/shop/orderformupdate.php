@@ -23,6 +23,8 @@ if (get_cart_count($tmp_cart_id) == 0)// 장바구니에 담기
 
 $it_ids = array();
 $productList = [];
+$postProdBarNumCnt = 0;
+
 $error = "";
 // 장바구니 상품 재고 검사
 $sql = " select MT.it_id,
@@ -32,6 +34,7 @@ $sql = " select MT.it_id,
                 MT.io_type,
                 MT.ct_option,
                 MT.ct_qty,
+                MT.ct_id,
 				( SELECT it_time FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_time
            from {$g5['g5_shop_cart_table']} MT
           where od_id = '$tmp_cart_id'
@@ -41,26 +44,37 @@ $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++)
 {
 	
-	for($i = 0; $i < $row["ct_qty"]; $i++){
+	# 상품목록
+	for($ii = 0; $ii < $row["ct_qty"]; $ii++){
 		if($_POST["penId"]){
 			$thisProductData = [];
 			$thisProductData["prodId"] = $row["it_id"];
 			$thisProductData["prodColor"] = $row["io_id"];
-			$thisProductData["prodBarNum"] = "";
+			$thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
 			$thisProductData["penStaSeq"] = count($productList) + 1;
 
 			array_push($productList, $thisProductData);
 		} else {
 			$thisProductData = [];
 			$thisProductData["prodId"] = $row["it_id"];
-			$thisProductData["prodColor"] = $row["io_id"];
-			$thisProductData["prodBarNum"] = "";
-			$thisProductData["prodManuDate"] = date("Y-m-d", strtotime($row["it_time"]));
+			$thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
+			$thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
+			$thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
+			$thisProductData["prodManuDate"] = date("Y-m-d");
 			$thisProductData["stoMemo"] = $_POST["od_memo"];
 
 			array_push($productList, $thisProductData);
 		}
+		
+		$postProdBarNumCnt++;
 	}
+	
+	# 요청사항저장
+	sql_query("
+		UPDATE {$g5["g5_shop_cart_table"]} SET
+			prodMemo = '{$_POST["prodMemo_{$row["ct_id"]}"]}'
+		WHERE ct_id = '{$row["ct_id"]}'
+	");
 	
     // 상품에 대한 현재고수량
     if($row["io_id"]) {
@@ -214,7 +228,7 @@ if($is_member) {
 }
 
 if ((int)($row['od_price'] - $row['od_discount'] - $tot_cp_price) !== $i_price) {
-    die("Error.");
+//    die("Error.");
 }
 
 // 배송비가 상이함
@@ -1143,6 +1157,62 @@ if($is_member && $od_b_name) {
 	apms_push($mb_list, $od_id, $od_id, G5_URL, $push);
 // ------------------------------------------------------------------
 
+	# 주문신청
+	if($_POST["penId"]){
+		$_SESSION["productList{$od_id}"] = $productList;
+		
+		
+	}
+
+	# 재고신청
+	if(!$_POST["penId"]){
+		$stoIdList = [];
+		
+		foreach($productList as $key => $value){
+			$sendData = [];
+			$sendData["usrId"] = $member["mb_id"];
+			$sendData["entId"] = $member["mb_entId"];
+
+			$prodsSendData = [];
+
+			$prodsData = [];
+			$prodsData["prodId"] = $value["prodId"];
+			$prodsData["prodColor"] = $value["prodColor"];
+			$prodsData["prodSize"] = $value["prodSize"];
+			$prodsData["prodManuDate"] = $value["prodManuDate"];
+			$prodsData["prodBarNum"] = $value["prodBarNum"];
+			$prodsData["stoMemo"] = $value["stoMemo"];
+			array_push($prodsSendData, $prodsData);
+
+			$sendData["prods"] = $prodsSendData;
+			
+			$oCurl = curl_init();
+			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/stock/insert");
+			curl_setopt($oCurl, CURLOPT_POST, 1);
+			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+			$res = curl_exec($oCurl);
+			$res = json_decode($res, true);
+			curl_close($oCurl);
+			
+			if($res["errorYN"] == "N"){
+				array_push($stoIdList, $res["data"][0]["stoId"]);
+			}
+		}
+		
+		$stoIdList = implode(",", $stoIdList);
+		sql_query("
+			UPDATE g5_shop_order SET
+				stoId = '{$stoIdList}'
+			WHERE od_id = '{$od_id}'
+		");
+		
+		goto_url(G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&amp;uid={$uid}");
+	}
+
 ?>
 
 <html>
@@ -1151,7 +1221,7 @@ if($is_member && $od_b_name) {
         <script  src="//code.jquery.com/jquery-latest.min.js"></script>
         <script>
 		
-			<?php if($_POST["penId"]){ $_SESSION["productList{$od_id}"] = $productList; ?>
+			<?php if($_POST["penId"]){  ?>
 				var productList = <?=($productList) ? json_encode($productList) : "[]"?>;
 			
 				var sendData = {
@@ -1211,69 +1281,6 @@ if($is_member && $od_b_name) {
 								history.go(-3);
 							}
 						});
-					}
-				});
-			<?php } else { ?>
-				var productList = <?=($productList) ? json_encode($productList) : "[]"?>;
-				var stoIdList = [];
-			
-				$.ajax({
-					url : "https://eroumcare.com/pen/pen2000/pen2000/selectUser.do?usrId=<?=$member["mb_id"]?>",
-					type : "GET",
-					success : function(res){
-						res = JSON.parse(res);
-						var entId = res.loginVO.entId;
-						
-						if(entId){
-							$.each(productList, function(key, value){
-								var sendData = {
-									usrId : "<?=$member["mb_id"]?>",
-									entId : entId,
-									prods : [
-										{
-											prodId : value.prodId,
-											prodColor : value.prodColor,
-											prodManuDate : value.prodManuDate,
-											prodBarNum : value.prodBarNum,
-											stoMemo : value.stoMemo
-										}
-									]
-								}
-
-								$.ajax({
-									url : "https://eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do",
-									type : "POST",
-									dataType : "json",
-									async : false,
-									contentType : "application/json; charset=utf-8;",
-									data : JSON.stringify(sendData),
-									success : function(result){
-										if(result.errorYN == "N"){
-											stoIdList.push(result.data[0]["stoId"]);
-										}
-									}
-								});
-							});
-							
-							$.ajax({
-								url : "orderformupdate.stoId.php",
-								type : "POST",
-								async : false,
-								data : {
-									stoIdList : stoIdList,
-									od_id : "<?=$od_id?>"
-								}
-							});
-							
-							window.location.href = "<?=G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid?>";
-						} else {
-							alert("알 수 없는 오류로 재고 요청에 실패하였습니다.");
-							window.location.href = "<?=G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid?>";
-						}
-					},
-					error : function(res){
-						alert("알 수 없는 오류로 재고 요청에 실패하였습니다.");
-						window.location.href = "<?=G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid?>";
 					}
 				});
 			<?php } ?>

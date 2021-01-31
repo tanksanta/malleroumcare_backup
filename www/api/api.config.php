@@ -39,7 +39,8 @@ $item_required_fild = Array(
 	'prodPayCode'=>'급여코드',
 	'prodDetail'=>'상세정보',
 	'regDtm'=>'최초등록일시(YMDHIS)',
-	'regUsrIp'=>'최초등록자 IP (IPV6 포함 총 39자리)'
+	'regUsrIp'=>'최초등록자 IP (IPV6 포함 총 39자리)',
+	'prodSupYn'=>'유통여부'
 );
 /*
 $item_required_fild = Array(

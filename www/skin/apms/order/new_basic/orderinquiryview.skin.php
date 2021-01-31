@@ -20,6 +20,66 @@ if($header_skin)
 
 // if(strpos($_SERVER['HTTP_REFERER'], 'orderform') !== false) {
 // }
+
+	$prodListCnt = 0;
+	$prodList = [];
+
+	if($od["ordId"]){
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POST, 0);
+		curl_setopt($ch, CURLOPT_URL, "https://eroumcare.com/api/pen/pen5000/pen5000/selectPen5000.do?ordId={$od["ordId"]}&uuid={$od["uuid"]}");
+		$res = curl_exec($ch);
+		$result = json_decode($res, true);
+		$result = $result["data"];
+
+		if($result){
+			$ordZip = [];
+			$ordZip[0] = substr($result[0]["ordZip"], 0, 3);
+			$ordZip[1] = substr($result[0]["ordZip"], 3, 2);
+
+			sql_query("
+				UPDATE {$g5["g5_shop_order_table"]} SET
+					  mb_id = '{$result[0]["usrId"]}'
+					, od_penId = '{$result[0]["penId"]}'
+					, od_delivery_text = '{$result[0]["ordWayNum"]}'
+					, od_delivery_company = '{$result[0]["delSerCd"]}'
+					, od_b_name = '{$result[0]["ordNm"]}'
+					, od_b_tel = '{$result[0]["ordCont"]}'
+					, od_memo = '{$result[0]["ordMeno"]}'
+					, od_b_zip1 = '{$ordZip[0]}'
+					, od_b_zip2 = '{$ordZip[1]}'
+					, od_b_addr1 = '{$result[0]["ordAddr"]}'
+					, od_b_addr2 = '{$result[0]["ordAddrDtl"]}'
+					, od_cart_price = '{$result[0]["finPayment"]}'
+					, payMehCd = '{$result[0]["payMehCd"]}'
+					, eformYn = '{$result[0]["eformYn"]}'
+					, staOrdCd = '{$result[0]["staOrdCd"]}'
+				WHERE od_id = '{$od["od_id"]}'
+			");
+
+			$od = sql_fetch("SELECT * FROM {$g5["g5_shop_order_table"]} WHERE od_id = '{$od["od_id"]}'");
+			
+			foreach($result as $data){
+				$thisProductData = [];
+				
+				$thisProductData["prodId"] = $data["prodId"];
+				$thisProductData["prodColor"] = $data["prodColor"];
+				$thisProductData["prodBarNum"] = $data["prodBarNum"];
+				$thisProductData["penStaSeq"] = $data["penStaSeq"];
+				array_unshift($prodList, $thisProductData);
+			}
+		}
+	} else {
+		$stoIdData = $od["stoId"];
+		$stoIdData = explode(",", $stoIdData);
+		$stoIdDataList = [];
+		foreach($stoIdData as $data){
+			array_push($stoIdDataList, $data);
+		}
+		$stoIdData = implode("|", $stoIdDataList);
+	}
+
 ?>
 
 <script type="text/javascript">
@@ -91,21 +151,21 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 		<th scope="col"><span>수량</span></th>
 		<th scope="col"><span>판매가</span></th>
 		<th scope="col"><span>소계</span></th>
-		<th scope="col"><span>포인트</span></th>
 		<th scope="col"><span>상태</span></th>
+		<th scope="col"><span>바코드</span></th>
 		<!--<th scope="col"><span class="last">배송/이용정보</span></th>-->
 	</tr>
-	<?php for($i=0; $i < count($item); $i++) { ?>
-		<?php for($k=0; $k < count($item[$i]['opt']); $k++) { ?>
+	<?php for($i=0; $i < count($item); $i++) { $prodMemo = ""; ?>
+		<?php for($k=0; $k < count($item[$i]['opt']); $k++) { $prodMemo = ($prodMemo) ? $prodMemo : $item[$i]["prodMemo"]; ?>
 			<?php if($k == 0) { ?>
 				<tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
-					<td class="text-center" rowspan="<?php echo $item[$i]['rowspan']; ?>">
+					<td class="text-center" style="vertical-align: middle;" rowspan="<?php echo ($item[$i]['rowspan'] + 1); ?>">
 						<div class="item-img">
 							<?php echo get_it_image($item[$i]['it_id'], 50, 50); ?>
 							<div class="item-type"><?php echo $item[$i]['pt_it']; ?></div>
 						</div>
 					</td>
-					<td colspan="6"><a href="./item.php?it_id=<?php echo $item[$i]['it_id']; ?>"><strong><?php echo $item[$i]['it_model']; ?> (<?php echo $item[$i]['it_name']; ?>)</strong></a></td>
+					<td colspan="6"><a href="./item.php?it_id=<?php echo $item[$i]['it_id']; ?>"><strong><?php echo $item[$i]['it_model']; ?> (<?php echo $item[$i]['it_name']; ?>)</strong> <b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #<?=($item[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;"><?=($item[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?></b></a></td>
 					<!--
 					<td rowspan="<?php echo $item[$i]['rowspan']; ?>">
 						<ul class="delivery-info">
@@ -158,19 +218,29 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				</tr>
 			<?php } ?>
 			<tr>
-				<td><?php echo $item[$i]['opt'][$k]['ct_option']; ?></td>
-				<td class="text-center"><?php echo number_format($item[$i]['opt'][$k]['ct_qty']); ?></td>
-				<td class="text-right"><?php echo number_format($item[$i]['opt'][$k]['opt_price']); ?></td>
-				<td class="text-right"><?php echo number_format($item[$i]['opt'][$k]['sell_price']); ?></td>
-				<td class="text-right"><?php echo number_format($item[$i]['opt'][$k]['point']); ?></td>
-				<td class="text-center">
+				<td style="vertical-align: middle;"><?php echo $item[$i]['opt'][$k]['ct_option']; ?></td>
+				<td class="text-center" style="vertical-align: middle;"><?php echo number_format($item[$i]['opt'][$k]['ct_qty']); ?></td>
+				<td class="text-right" style="vertical-align: middle;"><?php echo number_format($item[$i]['opt'][$k]['opt_price']); ?></td>
+				<td class="text-right" style="vertical-align: middle;"><?php echo number_format($item[$i]['opt'][$k]['sell_price']); ?></td>
+				<td class="text-center" style="vertical-align: middle;">
 					<?php
 						$ct_status = get_step($item[$i]['opt'][$k]['ct_status']);
 						echo $ct_status['name'];
 					?>
 				</td>
+				<td style="width: 120px; vertical-align: middle;">
+				<?php for($ii = 0; $ii < $item[$i]["opt"][$k]["ct_qty"]; $ii++){ ?>
+					<input type="text" class="form-control input-sm prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" style="margin-bottom: 5px;" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>">
+				<?php $prodListCnt++; } ?>
+				</td>
 			</tr>
 		<?php } ?>
+			<tr>
+				<td colspan="6">
+					<b>요청사항 : </b>
+					<?=$prodMemo?>
+				</td>
+			</tr>
 	<?php } ?>
 	</tbody>
 	</table>
@@ -688,10 +758,30 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	</form>
 <?php } ?>
 
+<div id="send_statementBox">
+	<div>
+
+		<iframe src="<?php echo G5_URL; ?>/shop/pop.statement.php?&od_id=<?=$_GET["od_id"]?>"></iframe>
+
+	</div>
+</div>
+
+<style>
+
+	#send_statementBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+	#send_statementBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+	#send_statementBox iframe { position: relative; width: 730px; height: 800px; border: 0; background-color: #FFF; left: 50%; margin-left: -365px; }
+
+	@media (max-width : 750px){
+		#send_statementBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+	}
+</style>
+
 <p class="print-hide text-center">
 	<a class="btn btn-color btn-sm" href="./orderinquiry.php"><i class="fa fa-bars"></i> 목록으로</a>
 	<button type="button" id="send_statement" class="btn btn-blue btn-sm"><i class="fa fa-print"></i> 거래명세서출력</button>
 	<button type="button" onclick="apms_print();" class="btn btn-black btn-sm"><i class="fa fa-print"></i> 프린트</button>
+	<button type="button" id="prodBarNumSaveBtn" class="btn btn-blue btn-sm">바코드저장</button>
 	<?php if($setup_href) { ?>
 		<a class="btn btn-color btn-sm win_memo" href="<?php echo $setup_href;?>">
 			<i class="fa fa-cogs"></i> 스킨설정
@@ -725,10 +815,141 @@ $(function(){
 	});
 
 	// 거래명세서 출력
+	$("#send_statementBox").hide();
+	$("#send_statementBox").css("opacity", 1);
 	$("#send_statement").click(function() {
-		var send_statement_pop;
-		var od_id = '<?php echo $od['od_id']; ?>';
-		send_statement_pop = window.open('<?php echo G5_URL; ?>/shop/pop.statement.php?&od_id=' + od_id, "send_statement", "width=730, height=800, resizable = no, scrollbars = no");
+		$("#send_statementBox").show();
 	});
+	
+	/* 바코드저장 */
+	var stoldList = [];
+	var stoIdData = "<?=$stoIdData?>";
+	if(stoIdData){
+		var sendData = {
+			stoId : stoIdData
+		}
+
+		$.ajax({
+			url : "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json; charset=utf-8;",
+			data : JSON.stringify(sendData),
+			success : function(res){
+				$.each(res.data, function(key, value){
+					$("." + value.stoId).val(value.prodBarNum);
+				});
+				
+				if(res.data){
+					stoldList = res.data;
+				}
+			}
+		});
+	}
+	
+	$("#prodBarNumSaveBtn").click(function(){
+		var ordId = "<?=$od["ordId"]?>";
+		var eformYn = "<?=$od["eformYn"]?>";
+
+		if(ordId){
+			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
+			$.each(productList, function(key, value){
+				var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
+				var prodBarNum = "";
+				
+				for(var i = 0; i < prodBarNumItem.length; i++){
+					if("<?=$od["od_status"]?>" == "완료"){
+						if(!$(prodBarNumItem[i]).val()){
+							alert("바코드를 입력해주시길 바랍니다.");
+							return false;
+						}
+					}
+					prodBarNum += (prodBarNum) ? "," : "";
+					prodBarNum += $(prodBarNumItem[i]).val();
+				}
+				
+				productList[key]["prodBarNum"] = prodBarNum;
+			});
+			
+			var sendData = {
+				ordId : "<?=$od["ordId"]?>",
+				delGbnCd : "",
+				ordWayNum : "",
+				delSerCd : "",
+				ordNm : $("#od_b_name").val(),
+				ordCont : $("#od_b_hp").val(),
+				ordMeno : $("#od_memo").val(),
+				ordZip : $("#od_b_zip").val(),
+				ordAddr : $("#od_b_addr1").val(),
+				ordAddrDtl : $("#od_b_addr2").val(),
+				eformYn : eformYn,
+				staOrdCd : "<?=$od["staOrdCd"]?>",
+				prods : productList
+			}
+
+			$.ajax({
+				url : "https://eroumcare.com/api/pen/pen5000/pen5000/updatePen5000.do",
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json; charset=utf-8;",
+				data : JSON.stringify(sendData),
+				success : function(result){
+					if(result.errorYN == "N"){
+						alert("저장이 완료되었습니다.");
+					} else {
+						alert(result.message);
+					}
+				}
+			});
+		} else {
+			var delYn = "Y";
+			var changeStatus = true;
+			if("<?=$od["od_status"]?>" == "완료"){
+				delYn = "N";
+				$.each(stoldList, function(key, value){
+					if(!$("." + value.stoId).val()){
+						changeStatus = false;
+						alert("바코드를 입력해주시길 바랍니다.");
+						return false;
+					}
+				});
+			}
+			
+			$.each(stoldList, function(key, value){
+				var sendData = {
+					usrId : "<?=$od["mb_id"]?>",
+					prods : [
+						{
+							stoId : value.stoId,
+							prodColor : value.prodColor,
+							prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
+							prodManuDate : value.prodManuDate,
+							stateCd : value.stateCd,
+							stoMemo : (value.stoMemo) ? value.stoMemo : "",
+							delYn : delYn
+						}
+					]
+				}
+
+				$.ajax({
+					url : "https://eroumcare.com/api/pro/pro2000/pro2000/updatePro2000ProdInfoAjaxByShop.do",
+					type : "POST",
+					dataType : "json",
+					async : false,
+					contentType : "application/json; charset=utf-8;",
+					data : JSON.stringify(sendData),
+					success : function(result){
+						if(result.errorYN == "Y"){
+							alert(result.message);
+							return false;
+						}
+					}
+				});
+			});
+			
+			alert("저장이 완료되었습니다.");
+		}
+	});
+	
 });
 </script>

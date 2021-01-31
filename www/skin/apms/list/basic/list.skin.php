@@ -124,7 +124,9 @@ for ($i=0; $i < $list_cnt; $i++) {
 	
 	
     if ($list[$i]['it_name']) {
-        echo "<p>".stripslashes($list[$i]['it_name'])."</p>\n";
+		$supInfo = "<b style='position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #".(($list[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333")."; margin-left: 10px;'>".(($list[$i]["prodSupYn"] == "Y") ? "유통" : "비유통")."</b>";
+		
+        echo "<p>".stripslashes($list[$i]['it_name'])." {$supInfo}</p>\n";
 	}
 	
 	if ($list[$i]['href']) {

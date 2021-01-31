@@ -22,9 +22,11 @@ class API {
 
 		$error_num=0;
 		foreach ($item_required_fild as $fild_key => $fild_value) {
-			if(!$$fild_key){
-				$error_code[$fild_key] = $fild_value.'값이 없습니다.';
-				$error_num++;
+			if($fild_key != "regUsrIp" && $fild_key != "regDtm"){
+				if(!$fild_key){
+					$error_code[$fild_key] = $fild_value.'값이 없습니다.';
+					$error_num++;
+				}
 			}
 		}
 
@@ -47,7 +49,7 @@ class API {
 		$it_stock_qty = ($prodQty)?$prodQty:9999;	//주문가능수량
 		$it_explan = $prodDetail;					//상세정보
 		$it_ip = ($regUsrIp)?$regUsrIp:$_SERVER['REMOTE_ADDR']; //최초등록자 IP (IPV6 포함 총 39자리)
-
+		$prodSupYn = ($prodSupYn) ? $prodSupYn : "Y"; # 유통여부
 
 
 		$it_img_dir = G5_DATA_PATH.'/item';
@@ -136,6 +138,8 @@ class API {
 
 						it_sc_add_sendcost = '-1',
 						it_sc_add_sendcost_partner = '-1',
+						
+						it_option_subject = '색상,사이즈',
 
 						prodId				= '$prodId',
 						gubun               = '$gubun',
@@ -158,7 +162,8 @@ class API {
 						supNm               = '$supNm',
 						prodImgAttr			= '$prodImgAttr',
 
-						pt_id				= '$pt_id'
+						pt_id				= '$pt_id',
+						prodSupYn	= '$prodSupYn'
 
 						";
 
@@ -179,8 +184,31 @@ class API {
 							where it_id = '{$it_id}'";
 
 				if(sql_query($sql)){
+					
+					# 210123 색상옵션 등록
+					sql_query("
+						DELETE FROM g5_shop_item_option
+						WHERE it_id = '{$it_id}'
+					");
+					
+					$prodSizeList = explode("|", $prodSize);
+					$prodColorList = explode("|", $prodColor);
+					foreach($prodColorList as $thisColor){
+						foreach($prodSizeList as $thisSize){
+							if($thisColor && $thisSize){
+								$thisItem = $thisColor.chr(30).$thisSize;
+								
+								sql_query("
+									INSERT INTO g5_shop_item_option
+										( io_id, io_type, it_id, io_price, io_price_partner, io_price_dealer, io_price_dealer2, io_stock_qty, io_noti_qty, io_use, io_thezone )
+									VALUES
+										( '{$thisItem}', 0, '{$it_id}', 0, 0, 0, 0, 9999, 100, 1, '' )
+								");
+							}
+						}
+					}
 
-					$data['message'] = '상품수정완료';
+					$data['message'] = "상품수정완료";
 					$data['errorYN'] = 'N';
 
 				}else{
@@ -210,8 +238,26 @@ class API {
 								$sql_common	";
 
 				if(sql_query($sql)){
+					
+					# 210123 색상옵션 등록
+					$prodSizeList = explode("|", $prodSize);
+					$prodColorList = explode("|", $prodColor);
+					foreach($prodColorList as $thisColor){
+						foreach($prodSizeList as $thisSize){
+							if($thisColor && $thisSize){
+								$thisItem = $thisColor.chr(30).$thisSize;
+								
+								sql_query("
+									INSERT INTO g5_shop_item_option
+										( io_id, io_type, it_id, io_price, io_price_partner, io_price_dealer, io_price_dealer2, io_stock_qty, io_noti_qty, io_use, io_thezone )
+									VALUES
+										( '{$thisItem}', 0, '{$it_id}', 0, 0, 0, 0, 9999, 100, 1, '' )
+								");
+							}
+						}
+					}
 
-					$data['message'] = '상품등록완료';
+					$data['message'] = "상품등록완료";
 					$data['errorYN'] = 'N';
 
 				}else{

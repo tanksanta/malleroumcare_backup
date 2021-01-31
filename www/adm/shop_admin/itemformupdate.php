@@ -372,6 +372,9 @@ $pt_syndi_sql = ($is_admin == 'super') ? " pt_syndi = '$pt_syndi', pt_commission
 $it_sale_cnt = ($_POST["it_sale_cnt"]) ? $_POST["it_sale_cnt"] : 0;
 $it_sale_percent = ($_POST["it_sale_percent"]) ? $_POST["it_sale_percent"] : 0;
 
+$it_sale_cnt_02 = ($_POST["it_sale_cnt_02"]) ? $_POST["it_sale_cnt_02"] : 0;
+$it_sale_percent_02 = ($_POST["it_sale_percent_02"]) ? $_POST["it_sale_percent_02"] : 0;
+
 $sql_common = " ca_id               = '$ca_id',
                 ca_id2              = '$ca_id2',
                 ca_id3              = '$ca_id3',
@@ -529,7 +532,9 @@ $sql_common = " ca_id               = '$ca_id',
                 it_sc_add_sendcost_partner = '$it_sc_add_sendcost_partner',
                 it_type             = '$it_type',
                 it_sale_cnt             = '$it_sale_cnt',
-                it_sale_percent             = '$it_sale_percent'
+                it_sale_percent             = '$it_sale_percent',
+					it_sale_cnt_02             = '$it_sale_cnt_02',
+                it_sale_percent_02             = '$it_sale_percent_02'
 				"; // APMS : 2014.07.20
 
                 // it_outsourcing_use  = '$it_outsourcing_use',

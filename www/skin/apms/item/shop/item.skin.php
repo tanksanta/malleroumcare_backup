@@ -118,6 +118,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php if($it["it_sale_cnt"]){ ?>
 				<p style="color: #DC3333;"><?=$it["it_sale_cnt"]?>개 이상 <?=$it["it_sale_percent"]?>% 할인적용</p>
 			<?php } ?>
+			<?php if($it["it_sale_cnt_02"]){ ?>
+				<p style="color: #DC3333;"><?=$it["it_sale_cnt_02"]?>개 이상 <?=$it["it_sale_percent_02"]?>% 할인적용</p>
+			<?php } ?>
 
 			<?php if ( $it['it_model'] ) { ?>
 				<p class="item-model">
@@ -156,7 +159,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<div class="item-info-arrowbtn mobile">
 				<img src="<?php echo THEMA_URL; ?>/assets/img/icon_arrow_down.png" class="arrow" />
 			</div>
-			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
+			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?><b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #<?=($it["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>; margin-left: 10px;"><?=($it["prodSupYn"] == "Y") ? "유통" : "비유통"?></b></h1>
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
@@ -213,6 +216,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						<?php echo show_samhwa_price($it, THEMA_KEY); ?>
 					<?php if($it["it_sale_cnt"]){ ?>
 						<p style="color: #DC3333;"><?=$it["it_sale_cnt"]?>개 이상 <?=$it["it_sale_percent"]?>% 할인적용</p>
+					<?php } ?>
+					<?php if($it["it_sale_cnt_02"]){ ?>
+						<p style="color: #DC3333;"><?=$it["it_sale_cnt_02"]?>개 이상 <?=$it["it_sale_percent_02"]?>% 할인적용</p>
 					<?php } ?>
 						<input type="hidden" id="it_price" value="<?php echo samhwa_price($it, THEMA_KEY); ?>">
 				</td></tr>

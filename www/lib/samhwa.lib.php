@@ -238,7 +238,7 @@ $order_steps = array(
         'cart' => true,
         'orderlist_complete' => false,
         'deliverylist' => true,
-		"status" => "03",
+		"status" => "00",
     ),
     '5' => array(
         'name' => '배송완료',
@@ -502,7 +502,7 @@ function get_step($od_status) {
     $k = -1;
 
     for($i=0;$i<count($order_steps); $i++) {
-        if ( $od_status == $order_steps[$i]['status'] ) {
+        if ( $od_status == $order_steps[$i]['val'] ) {
             $k = $i;
         }
     }
@@ -543,7 +543,7 @@ function get_next_step($od_status) {
     $k = -1;
 
     for($i=0;$i<count($order_steps); $i++) {
-        if ( $od_status == $order_steps[$i]['status'] ) {
+        if ( $od_status == $order_steps[$i]['val'] ) {
             $k = $i;
         }
     }
@@ -564,7 +564,7 @@ function get_prev_step($od_status) {
     $k = -1;
 
     for($i=0;$i<count($order_steps); $i++) {
-        if ( $od_status == $order_steps[$i]['status'] ) {
+        if ( $od_status == $order_steps[$i]['val'] ) {
             $k = $i;
         }
     }

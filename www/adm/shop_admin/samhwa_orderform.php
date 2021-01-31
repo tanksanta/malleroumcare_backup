@@ -74,7 +74,7 @@ if (!$od['od_id']) {
 	}
 }
 $mb = get_member($od['mb_id']);
-$od_status = get_step($od['staOrdCd']);
+$od_status = get_step($od['od_status']);
 $pay_status = get_pay_step($od['od_pay_state']);
 
 // print_r2($od);
@@ -125,7 +125,8 @@ $sql = " select a.ct_id,
                 b.it_outsourcing_option5,
 				a.pt_old_name,
                 a.pt_old_opt,
-                a.ct_uid
+                a.ct_uid,
+				a.prodMemo
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$od_id'
 		  group by a.it_id, a.ct_uid
@@ -230,8 +231,8 @@ if($od['od_settle_case'] == '간편결제') {
 $typereceipt = get_typereceipt_step($od_id);
 $typereceipt_cate = get_typereceipt_cate($od_id);
 
-$next_step = get_next_step($od['staOrdCd']);
-$prev_step = get_prev_step($od['staOrdCd']);
+$next_step = get_next_step($od['od_status']);
+$prev_step = get_prev_step($od['od_status']);
 
 // add_javascript('js 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
@@ -245,23 +246,23 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
                     ADD `ct_barcode` TEXT NOT NULL AFTER `ct_qty` ", false);
 
 	# 210121 배송시나리오 리뉴얼
-	$obStaOrdStatus = [];
-
-	$obStaOrdStatus["00"]["code"] = "00";
-	$obStaOrdStatus["00"]["name"] = "주문완료";
-	$obStaOrdStatus["00"]["next"] = "01";
-
-	$obStaOrdStatus["01"]["code"] = "01";
-	$obStaOrdStatus["01"]["name"] = "배송중";
-	$obStaOrdStatus["01"]["next"] = "02";
-
-	$obStaOrdStatus["02"]["code"] = "02";
-	$obStaOrdStatus["02"]["name"] = "배송완료";
-	$obStaOrdStatus["02"]["next"] = "03";
-
-	$obStaOrdStatus["03"]["code"] = "03";
-	$obStaOrdStatus["03"]["name"] = "주문확정";
-	$obStaOrdStatus["03"]["next"] = "";
+//	$obStaOrdStatus = [];
+//
+//	$obStaOrdStatus["00"]["code"] = "00";
+//	$obStaOrdStatus["00"]["name"] = "주문완료";
+//	$obStaOrdStatus["00"]["next"] = "01";
+//
+//	$obStaOrdStatus["01"]["code"] = "01";
+//	$obStaOrdStatus["01"]["name"] = "배송중";
+//	$obStaOrdStatus["01"]["next"] = "02";
+//
+//	$obStaOrdStatus["02"]["code"] = "02";
+//	$obStaOrdStatus["02"]["name"] = "배송완료";
+//	$obStaOrdStatus["02"]["next"] = "03";
+//
+//	$obStaOrdStatus["03"]["code"] = "03";
+//	$obStaOrdStatus["03"]["name"] = "주문확정";
+//	$obStaOrdStatus["03"]["next"] = "";
 
 ?>
 <script>
@@ -317,9 +318,12 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         $tot_discount = 0;
                         $tot_total = 0;
                         $tot_sendcost = 0;
-
+						
                         for($i=0; $i<count($carts); $i++) {
-
+								
+								# 요청사항
+								$prodMemo = "";
+							
                             // 상품이미지
                             $image = get_it_image($carts[$i]['it_id'], 50, 50);
                             $options = $carts[$i]['options'];
@@ -337,6 +341,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
 							$barcode_array = array();
 
                             for($k=0; $k<count($options); $k++) {
+								
+									# 요청사항
+									$prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
 
                                 // $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND it_id = '{$carts[$i]['it_id']}' ");
                                 $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND odc_uid = '{$carts[$i]['ct_uid']}' ");
@@ -359,7 +366,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                 ?>
                                 <tr class="<?php echo $k==0 ? 'top-border' : ''; ?>">
                                     <?php if ( $k == 0 ) { ?>
-                                        <td rowspan="<?php echo count($options); ?>" class="chkcbox">
+                                        <td rowspan="<?php echo (count($options) + 1); ?>" class="chkcbox">
                                             <label for="sit_sel_<?php echo $i; ?>" class="sound_only"><?php echo $carts[$i]['it_name']; ?> 옵션 전체선택</label>
                                             <input type="checkbox" id="sit_sel_<?php echo $i; ?>" name="it_sel[]">
                                         </td>
@@ -808,10 +815,15 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     </td>
                                     <?php } ?>
                                 </tr>
-                                <?php
-                                }
-                            }
-                        ?>
+                                <?php } ?>
+                                <tr>
+                                	<td></td>
+                                	<td colspan="10" style="text-align: left;">
+                                		<b>요청사항 : </b>
+                                		<?=$prodMemo?>
+                                	</td>
+                                </tr>
+                                <?php } ?>
                         <tr class="result">
                             <td class="chkbox">
                             </td>
@@ -1888,7 +1900,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
     </div>
     <div id="order_summarize">
         <div class="header">
-            <h1><?=$obStaOrdStatus[$od["staOrdCd"]]["name"]?></h1>
+            <h1><?=$od_status['name']?></h1>
             <button class="shbtn order_prints">작업지시서 출력</button>
             <div class="more">
                 <button><img src='<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_more_w.png' /></button>
@@ -2103,10 +2115,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
             </div>
             -->
         </div>
-        <?php if($obStaOrdStatus[$obStaOrdStatus[$od["staOrdCd"]]["next"]]["name"]){ ?>
+        <?php if ( $next_step ) { ?>
         <div class="submit">
-            <button id="order_summarize_submit" data-next-step-val="<?=$obStaOrdStatus[$obStaOrdStatus[$od["staOrdCd"]]["next"]]["name"]?>" data-next-step-code="<?=$obStaOrdStatus[$obStaOrdStatus[$od["staOrdCd"]]["next"]]["code"]?>">
-                <?=$obStaOrdStatus[$obStaOrdStatus[$od["staOrdCd"]]["next"]]["name"]?>
+            <button id="order_summarize_submit" data-next-step-val="<?php echo $next_step['val']; ?>" data-next-step-status="<?php echo $next_step['status']; ?>">
+                <?php echo $next_step['name']; ?>
             </button>
         </div>
         <?php } ?>
@@ -2219,11 +2231,12 @@ $(document).ready(function() {
 
         })
     });
-
-    $('#order_summarize_submit').click(function() {
-        var next_step_val = $(this).data('next-step-val');
-        var next_step_code = $(this).data('next-step-code');
+	
+	$("#order_summarize_submit").click(function() {
+		var next_step_val = $(this).data("next-step-val");
+		var next_step_status = $(this).data("next-step-status");
 		var ordId = "<?=$od["ordId"]?>";
+		var eformYn = (next_step_val == "완료") ? "Y" : "N";
 
 		if(ordId){
 			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
@@ -2232,7 +2245,7 @@ $(document).ready(function() {
 				var prodBarNum = "";
 				
 				for(var i = 0; i < prodBarNumItem.length; i++){
-					if(next_step_code == "03"){
+					if(next_step_val == "완료"){
 						if(!$(prodBarNumItem[i]).val()){
 							alert("바코드를 입력해주시길 바랍니다.");
 							return false;
@@ -2256,8 +2269,8 @@ $(document).ready(function() {
 				ordZip : $("#od_b_zip").val(),
 				ordAddr : $("#od_b_addr1").val(),
 				ordAddrDtl : $("#od_b_addr2").val(),
-				eformYn : "<?=$od["eformYn"]?>",
-				staOrdCd : next_step_code,
+				eformYn : eformYn,
+				staOrdCd : next_step_status,
 				prods : productList
 			}
 
@@ -2269,26 +2282,18 @@ $(document).ready(function() {
 				data : JSON.stringify(sendData),
 				success : function(result){
 					if(result.errorYN == "N"){
-						$.ajax({
-							url : "./samhwa_orderform.update.php",
-							type : "POST",
-							data : {
-								ordId : "<?=$od["od_id"]?>",
-								staOrdCd : next_step_code,
-								od_status : next_step_val,
-							},
-							success : function(result){
-								alert("주문상태가 변경되었습니다.");
-								window.location.reload();
-							}
-						});
+						change_step(od_id, next_step_val);
 					}
 				}
 			});
 		} else {
-			if(next_step_code == "03"){
+			var delYn = "Y";
+			var changeStatus = true;
+			if(next_step_val == "완료"){
+				delYn = "N";
 				$.each(stoldList, function(key, value){
 					if(!$("." + value.stoId).val()){
+						changeStatus = false;
 						alert("바코드를 입력해주시길 바랍니다.");
 						return false;
 					}
@@ -2296,7 +2301,6 @@ $(document).ready(function() {
 			}
 			
 			$.each(stoldList, function(key, value){
-
 				var sendData = {
 					usrId : "<?=$od["mb_id"]?>",
 					prods : [
@@ -2306,7 +2310,8 @@ $(document).ready(function() {
 							prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
 							prodManuDate : value.prodManuDate,
 							stateCd : value.stateCd,
-							stoMemo : (value.stoMemo) ? value.stoMemo : ""
+							stoMemo : (value.stoMemo) ? value.stoMemo : "",
+							delYn : delYn
 						}
 					]
 				}
@@ -2321,21 +2326,12 @@ $(document).ready(function() {
 				});
 			});
 			
-			$.ajax({
-				url : "./samhwa_orderform.update.php",
-				type : "POST",
-				data : {
-					ordId : "<?=$od["od_id"]?>",
-					staOrdCd : next_step_code,
-					od_status : next_step_val,
-				},
-				success : function(result){
-					alert("주문상태가 변경되었습니다.");
-					window.location.reload();
-				}
-			});
+			if(changeStatus){
+				change_step(od_id, next_step_val);
+			}
 		}
-    });
+		
+	});
 
     $('#order_prev_step').click(function() {
         var prev_step_val = $(this).data('prev-step-val');
