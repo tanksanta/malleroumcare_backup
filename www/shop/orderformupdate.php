@@ -1214,14 +1214,15 @@ if($is_member && $od_b_name) {
 		$res = curl_exec($oCurl);
 		$res = json_decode($res, true);
 		curl_close($oCurl);
-		print_r($res);
-		
-		echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
 
 		if($res["errorYN"] == "N"){
-			goto_url(G5_SHOP_URL."orderformupdateReturn.php?uuid={$res["uuid"]}&ordId={$res["ordId"]}&od_id={$od_id}");
+			goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}");
 		} else {
-			alert($res["message"]);
+			alert($res["message"], "/");
+			sql_query("
+				DELETE FROM g5_shop_order
+				WHERE od_id = '{$od_id}'
+			");
 		}
 	}
 
@@ -1281,71 +1282,6 @@ if($is_member && $od_b_name) {
         <title>주문정보 기록</title>
         <script  src="//code.jquery.com/jquery-latest.min.js"></script>
         <script>
-		
-			<?php if($_POST["penId"]){  ?>
-//				var productList = <?=($productList) ? json_encode($productList) : "[]"?>;
-//			
-//				var sendData = {
-//					usrId : "<?=$member["mb_id"]?>",
-//					penId : "<?=$_POST["penId"]?>",
-//					delGbnCd : "",
-//					ordWayNum : "",
-//					delSerCd : "",
-//					ordNm : "<?=$_POST["od_b_name"]?>",
-//					ordCont : "<?=($_POST["od_b_tel"]) ? $_POST["od_b_tel"] : $_POST["od_b_hp"]?>",
-//					ordMeno : "<?=$_POST["od_memo"]?>",
-//					ordZip : "<?=$_POST["od_b_zip"]?>",
-//					ordAddr : "<?=$_POST["od_b_addr1"]?>",
-//					ordAddrDtl : "<?=$_POST["od_b_addr2"]?>",
-//					finPayment : "<?=$order_price?>",
-//					payMehCd : "0",
-//					regUsrId : "<?=$member["mb_id"]?>",
-//					regUsrIp : "<?=$_SERVER["REMOTE_ADDR"]?>",
-//					prods : productList,
-//					documentId : "<?=($_POST["penTypeCd"] == "04") ? "THK101_THK102_THK001_THK002_THK003" : "THK001_THK002_THK003"?>",
-//					eformType : "<?=($_POST["penTypeCd"] == "04") ? "21" : "00"?>",
-//					returnUrl : "<?=G5_SHOP_URL.'/orderinquiryview.php?result=Y&od_id='.$od_id.'&amp;uid='.$uid?>",
-//				}
-//				
-//				$.ajax({
-//					url : "https://eroumcare.com/api/pen/pen5000/pen5000/insertPen5000.do",
-//					type : "POST",
-//					dataType : "json",
-//					contentType : "application/json; charset=utf-8;",
-//					data : JSON.stringify(sendData),
-//					success : function(res){
-//						if(res.errorYN == "Y"){
-//							$.ajax({
-//								url : "./orderformupdate.delete.php",
-//								type : "POST",
-//								data : {
-//									od_id : "<?=$od_id?>"
-//								},
-//								success : function(){
-//									alert(res.message);
-//									history.go(-3);
-//								}
-//							});
-//						} else {
-//							window.location.href = "orderformupdateReturn.php?uuid=" + res.uuid + "&ordId=" + res.ordId + "&od_id=<?=$od_id?>";
-//						}
-//					},
-//					error : function(res){
-//						$.ajax({
-//							url : "./orderformupdate.delete.php",
-//							type : "POST",
-//							data : {
-//								od_id : "<?=$od_id?>"
-//							},
-//							success : function(){
-//								alert("알 수 없는 오류로 계약서 작성에 실패하였습니다.");
-//								history.go(-3);
-//							}
-//						});
-//					}
-//				});
-			<?php } ?>
-			
             // 결제 중 새로고침 방지 샘플 스크립트 (중복결제 방지)
             function noRefresh()
             {

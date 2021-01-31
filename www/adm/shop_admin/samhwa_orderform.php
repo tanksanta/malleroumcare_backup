@@ -2460,7 +2460,8 @@ $(document).ready(function() {
 			});
 			
 			var sendData = {
-				ordId : "<?=$od["ordId"]?>",
+				usrId : "<?=$od["mb_id"]?>",
+				penOrdId : "<?=$od["ordId"]?>",
 				delGbnCd : "",
 				ordWayNum : "",
 				delSerCd : "",
@@ -2574,7 +2575,8 @@ $(document).ready(function() {
 			});
 			
 			var sendData = {
-				ordId : "<?=$od["ordId"]?>",
+				usrId : "<?=$od["mb_id"]?>",
+				penOrdId : "<?=$od["ordId"]?>",
 				delGbnCd : "",
 				ordWayNum : "",
 				delSerCd : "",

@@ -481,6 +481,7 @@ if($is_inquiryview_sub) {
 ?>
 
 <?php 
+
 	if($_SESSION["productList{$_GET["od_id"]}"]){ 
 		$insertProds = addslashes(htmlspecialchars(json_encode($_SESSION["productList{$_GET["od_id"]}"])));
 																					  
@@ -494,31 +495,35 @@ if($is_inquiryview_sub) {
 		");
 		
 		$orderData = sql_fetch("SELECT * FROM g5_shop_order WHERE od_id = '{$_GET["od_id"]}'");
+		
+		$sendData = [];
+		$sendData["ordId"] = $orderData["ordId"];
+		$sendData["delGbnCd"] = "";
+		$sendData["ordWayNum"] = "";
+		$sendData["delSerCd"] = "";
+		$sendData["ordNm"] = $orderData["od_b_name"];
+		$sendData["ordCont"] = $orderData["od_b_tel"];
+		$sendData["ordMeno"] = $orderData["od_memo"];
+		$sendData["ordZip"] = "{$orderData["od_b_zip1"]}{$orderData["od_b_zip2"]}";
+		$sendData["ordAddr"] = $orderData["od_b_addr1"];
+		$sendData["ordAddrDtl"] = $orderData["od_b_addr2"];
+		$sendData["eformYn"] = "N";
+		$sendData["prods"] = $_SESSION["productList{$_GET["od_id"]}"];
+		$sendData["staOrdCd"] = "00";
+
+		$oCurl = curl_init();
+		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/order/update");
+		curl_setopt($oCurl, CURLOPT_POST, 1);
+		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+		$res = curl_exec($oCurl);
+		$res = json_decode($res, true);
+		curl_close($oCurl);
+		
+		unset($_SESSION["productList{$_GET["od_id"]}"]);
+	}
+
 ?>
-	<script type="text/javascript">
-		var productList = <?=($_SESSION["productList{$_GET["od_id"]}"]) ? json_encode($_SESSION["productList{$_GET["od_id"]}"]) : "[]"?>;
-
-		var sendData = {
-			ordId : "<?=$orderData["ordId"]?>",
-			delGbnCd : "",
-			ordWayNum : "",
-			delSerCd : "",
-			ordNm : "<?=$orderData["od_b_name"]?>",
-			ordCont : "<?=$orderData["od_b_tel"]?>",
-			ordMeno : "<?=$orderData["od_memo"]?>",
-			ordZip : "<?=$orderData["od_b_zip1"]?><?=$orderData["od_b_zip2"]?>",
-			ordAddr : "<?=$orderData["od_b_addr1"]?>",
-			ordAddrDtl : "<?=$orderData["od_b_addr2"]?>",
-			eformYn : "N",
-			prods : productList
-		}
-
-		$.ajax({
-			url : "https://eroumcare.com/api/pen/pen5000/pen5000/updatePen5000.do",
-			type : "POST",
-			dataType : "json",
-			contentType : "application/json; charset=utf-8;",
-			data : JSON.stringify(sendData)
-		});
-	</script>
-<?php unset($_SESSION["productList{$_GET["od_id"]}"]); } ?>
