@@ -51,13 +51,11 @@ if($header_skin)
 					, od_b_zip2 = '{$ordZip[1]}'
 					, od_b_addr1 = '{$result[0]["ordAddr"]}'
 					, od_b_addr2 = '{$result[0]["ordAddrDtl"]}'
-					, od_cart_price = '{$result[0]["finPayment"]}'
 					, payMehCd = '{$result[0]["payMehCd"]}'
 					, eformYn = '{$result[0]["eformYn"]}'
 					, staOrdCd = '{$result[0]["staOrdCd"]}'
 				WHERE od_id = '{$od["od_id"]}'
 			");
-
 			$od = sql_fetch("SELECT * FROM {$g5["g5_shop_order_table"]} WHERE od_id = '{$od["od_id"]}'");
 			
 			foreach($result as $data){
@@ -250,7 +248,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	<div class="row">
 		<div class="col-xs-6">주문총액</div>
 		<div class="col-xs-6 text-right">
-			<strong><?php echo number_format($od['od_cart_price']); ?> 원</strong>
+			<strong><?=number_format($tot_price - $od["od_send_cost"])?> 원</strong>
 		</div>
 		<?php if($od['od_cart_coupon'] > 0) { ?>
 			<div class="col-xs-6">개별상품 쿠폰할인</div>

@@ -3,6 +3,31 @@ include_once('./_common.php');
 
 $g5['title'] = "로그인 검사";
 
+# 210131 이로움 계정검사
+$joinStatus = false;
+if($_POST["mb_id"] != "admin"){
+	$sendData = [];
+	$sendData["usrId"] = $_POST["mb_id"];
+	$sendData["pw"] = $_POST["mb_password"];
+	
+	$oCurl = curl_init();
+	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/account/entLogin");
+	curl_setopt($oCurl, CURLOPT_POST, 1);
+	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+	$res = curl_exec($oCurl);
+	$res = json_decode($res, true);
+	curl_close($oCurl);
+
+	if($res["errorYN"] == "Y"){
+		alert($res["message"]);
+		return false;
+	}
+}
+
 // 아미나빌더 소셜로그인
 $is_apms_social_check = false;
 if(isset($_POST['apms_social']) && $_POST['apms_social']) {

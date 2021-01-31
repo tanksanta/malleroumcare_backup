@@ -35,7 +35,9 @@ $sql = " select MT.it_id,
                 MT.ct_option,
                 MT.ct_qty,
                 MT.ct_id,
-				( SELECT it_time FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_time
+				( SELECT it_time FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_time,
+				( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn,
+				( SELECT ProdPayCode FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodPayCode
            from {$g5['g5_shop_cart_table']} MT
           where od_id = '$tmp_cart_id'
             and ct_select = '1' ";
@@ -49,7 +51,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 		if($_POST["penId"]){
 			$thisProductData = [];
 			$thisProductData["prodId"] = $row["it_id"];
-			$thisProductData["prodColor"] = $row["io_id"];
+			$thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
+			$thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
 			$thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
 			$thisProductData["penStaSeq"] = count($productList) + 1;
 
@@ -73,6 +76,22 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 	sql_query("
 		UPDATE {$g5["g5_shop_cart_table"]} SET
 			prodMemo = '{$_POST["prodMemo_{$row["ct_id"]}"]}'
+		WHERE ct_id = '{$row["ct_id"]}'
+	");
+	
+	# 비유통상품 금액저장
+	if($row["prodSupYn"] == "N"){
+//		sql_query("
+//			UPDATE {$g5["g5_shop_cart_table"]} SET
+//				ct_price = 0
+//			WHERE ct_id = '{$row["ct_id"]}'
+//		");
+	}
+	
+	# 재고사용수량 저장
+	sql_query("
+		UPDATE {$g5["g5_shop_cart_table"]} SET
+			ct_stock_qty = '{$_POST["it_option_stock_cnt_{$row["ct_id"]}"]}'
 		WHERE ct_id = '{$row["ct_id"]}'
 	");
 	
@@ -108,12 +127,13 @@ $i_temp_point = (int)$_POST['od_temp_point'];
 
 
 // 주문금액이 상이함
-$sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as od_price,
+$sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * (ct_qty - ct_stock_qty)))) as od_price,
               COUNT(distinct it_id) as cart_count,
-			  SUM(ct_discount) as od_discount
-            from {$g5['g5_shop_cart_table']} where od_id = '$tmp_cart_id' and ct_select = '1' ";
+			  SUM(ct_discount) as od_discount,
+			  ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
+            from {$g5['g5_shop_cart_table']} MT where od_id = '$tmp_cart_id' and ct_select = '1' ";
 $row = sql_fetch($sql);
-$tot_ct_price = $row['od_price'];
+$tot_ct_price = ($row["prodSupYn"] == "Y") ? $row['od_price'] : 0;
 $tot_ct_discount = ($row["od_discount"]) ? $row["od_discount"] : 0;
 $cart_count = $row['cart_count'];
 $tot_od_price = $tot_ct_price;
@@ -1161,7 +1181,48 @@ if($is_member && $od_b_name) {
 	if($_POST["penId"]){
 		$_SESSION["productList{$od_id}"] = $productList;
 		
+		$sendData = [];
+		$sendData["usrId"] = $member["mb_id"];
 		
+		$sendData["penId"] = $_POST["penId"];
+		$sendData["delGbnCd"] = "";
+		$sendData["ordWayNum"] = "";
+		$sendData["delSerCd"] = "";
+		$sendData["ordNm"] = $_POST["od_b_name"];
+		$sendData["ordCont"] = ($_POST["od_b_tel"]) ? $_POST["od_b_tel"] : $_POST["od_b_hp"];
+		$sendData["ordMeno"] = $_POST["od_memo"];
+		$sendData["ordZip"] = $_POST["od_b_zip"];
+		$sendData["ordAddr"] = $_POST["od_b_addr1"];
+		$sendData["ordAddrDtl"] = $_POST["od_b_addr2"];
+		$sendData["finPayment"] = "{$order_price}";
+		$sendData["payMehCd"] = "0";
+		$sendData["regUsrId"] = $member["mb_id"];
+		$sendData["regUsrIp"] = $_SERVER["REMOTE_ADDR"];
+		$sendData["prods"] = $productList;
+		$sendData["documentId"] = ($_POST["penTypeCd"] == "04") ? "THK101_THK102_THK001_THK002_THK003" : "THK001_THK002_THK003";
+		$sendData["eformType"] = ($_POST["penTypeCd"] == "04") ? "21" : "00";
+		$sendData["returnUrl"] = G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}";
+
+		$oCurl = curl_init();
+		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/order/insert");
+		curl_setopt($oCurl, CURLOPT_POST, 1);
+		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+		$res = curl_exec($oCurl);
+		$res = json_decode($res, true);
+		curl_close($oCurl);
+		print_r($res);
+		
+		echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
+
+		if($res["errorYN"] == "N"){
+			goto_url(G5_SHOP_URL."orderformupdateReturn.php?uuid={$res["uuid"]}&ordId={$res["ordId"]}&od_id={$od_id}");
+		} else {
+			alert($res["message"]);
+		}
 	}
 
 	# 재고신청
@@ -1222,67 +1283,67 @@ if($is_member && $od_b_name) {
         <script>
 		
 			<?php if($_POST["penId"]){  ?>
-				var productList = <?=($productList) ? json_encode($productList) : "[]"?>;
-			
-				var sendData = {
-					usrId : "<?=$member["mb_id"]?>",
-					penId : "<?=$_POST["penId"]?>",
-					delGbnCd : "",
-					ordWayNum : "",
-					delSerCd : "",
-					ordNm : "<?=$_POST["od_b_name"]?>",
-					ordCont : "<?=($_POST["od_b_tel"]) ? $_POST["od_b_tel"] : $_POST["od_b_hp"]?>",
-					ordMeno : "<?=$_POST["od_memo"]?>",
-					ordZip : "<?=$_POST["od_b_zip"]?>",
-					ordAddr : "<?=$_POST["od_b_addr1"]?>",
-					ordAddrDtl : "<?=$_POST["od_b_addr2"]?>",
-					finPayment : "<?=$order_price?>",
-					payMehCd : "0",
-					regUsrId : "<?=$member["mb_id"]?>",
-					regUsrIp : "<?=$_SERVER["REMOTE_ADDR"]?>",
-					prods : productList,
-					documentId : "<?=($_POST["penTypeCd"] == "04") ? "THK101_THK102_THK001_THK002_THK003" : "THK001_THK002_THK003"?>",
-					eformType : "<?=($_POST["penTypeCd"] == "04") ? "21" : "00"?>",
-					returnUrl : "<?=G5_SHOP_URL.'/orderinquiryview.php?result=Y&od_id='.$od_id.'&amp;uid='.$uid?>",
-				}
-				
-				$.ajax({
-					url : "https://eroumcare.com/api/pen/pen5000/pen5000/insertPen5000.do",
-					type : "POST",
-					dataType : "json",
-					contentType : "application/json; charset=utf-8;",
-					data : JSON.stringify(sendData),
-					success : function(res){
-						if(res.errorYN == "Y"){
-							$.ajax({
-								url : "./orderformupdate.delete.php",
-								type : "POST",
-								data : {
-									od_id : "<?=$od_id?>"
-								},
-								success : function(){
-									alert(res.message);
-									history.go(-3);
-								}
-							});
-						} else {
-							window.location.href = "orderformupdateReturn.php?uuid=" + res.uuid + "&ordId=" + res.ordId + "&od_id=<?=$od_id?>";
-						}
-					},
-					error : function(res){
-						$.ajax({
-							url : "./orderformupdate.delete.php",
-							type : "POST",
-							data : {
-								od_id : "<?=$od_id?>"
-							},
-							success : function(){
-								alert("알 수 없는 오류로 계약서 작성에 실패하였습니다.");
-								history.go(-3);
-							}
-						});
-					}
-				});
+//				var productList = <?=($productList) ? json_encode($productList) : "[]"?>;
+//			
+//				var sendData = {
+//					usrId : "<?=$member["mb_id"]?>",
+//					penId : "<?=$_POST["penId"]?>",
+//					delGbnCd : "",
+//					ordWayNum : "",
+//					delSerCd : "",
+//					ordNm : "<?=$_POST["od_b_name"]?>",
+//					ordCont : "<?=($_POST["od_b_tel"]) ? $_POST["od_b_tel"] : $_POST["od_b_hp"]?>",
+//					ordMeno : "<?=$_POST["od_memo"]?>",
+//					ordZip : "<?=$_POST["od_b_zip"]?>",
+//					ordAddr : "<?=$_POST["od_b_addr1"]?>",
+//					ordAddrDtl : "<?=$_POST["od_b_addr2"]?>",
+//					finPayment : "<?=$order_price?>",
+//					payMehCd : "0",
+//					regUsrId : "<?=$member["mb_id"]?>",
+//					regUsrIp : "<?=$_SERVER["REMOTE_ADDR"]?>",
+//					prods : productList,
+//					documentId : "<?=($_POST["penTypeCd"] == "04") ? "THK101_THK102_THK001_THK002_THK003" : "THK001_THK002_THK003"?>",
+//					eformType : "<?=($_POST["penTypeCd"] == "04") ? "21" : "00"?>",
+//					returnUrl : "<?=G5_SHOP_URL.'/orderinquiryview.php?result=Y&od_id='.$od_id.'&amp;uid='.$uid?>",
+//				}
+//				
+//				$.ajax({
+//					url : "https://eroumcare.com/api/pen/pen5000/pen5000/insertPen5000.do",
+//					type : "POST",
+//					dataType : "json",
+//					contentType : "application/json; charset=utf-8;",
+//					data : JSON.stringify(sendData),
+//					success : function(res){
+//						if(res.errorYN == "Y"){
+//							$.ajax({
+//								url : "./orderformupdate.delete.php",
+//								type : "POST",
+//								data : {
+//									od_id : "<?=$od_id?>"
+//								},
+//								success : function(){
+//									alert(res.message);
+//									history.go(-3);
+//								}
+//							});
+//						} else {
+//							window.location.href = "orderformupdateReturn.php?uuid=" + res.uuid + "&ordId=" + res.ordId + "&od_id=<?=$od_id?>";
+//						}
+//					},
+//					error : function(res){
+//						$.ajax({
+//							url : "./orderformupdate.delete.php",
+//							type : "POST",
+//							data : {
+//								od_id : "<?=$od_id?>"
+//							},
+//							success : function(){
+//								alert("알 수 없는 오류로 계약서 작성에 실패하였습니다.");
+//								history.go(-3);
+//							}
+//						});
+//					}
+//				});
 			<?php } ?>
 			
             // 결제 중 새로고침 방지 샘플 스크립트 (중복결제 방지)

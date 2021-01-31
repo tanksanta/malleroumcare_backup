@@ -37,8 +37,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
 				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
 				$res = curl_exec($oCurl);
+				$stockCntList = json_decode($res, true);
 				curl_close($oCurl);
-				echo $res;
 				
 				# 바코드조회
 				$oCurl = curl_init();
@@ -50,17 +50,16 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
 				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
 				$res = curl_exec($oCurl);
+				$stockBarList = json_decode($res, true);
 				curl_close($oCurl);
-				
-				echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
 				
 				# 재고목록
 				$thisOptionBarSubList = [];
-				$cnt = rand(0, 5);
+				$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
 				
-				array_push($thisOptionCntList, $cnt);
-				for($i = 0; $i < $cnt; $i++){
-					array_push($thisOptionBarSubList, "BAR00{$i}");
+				array_push($thisOptionCntList, $stockCntList["data"][0]["quantity"]);
+				foreach($stockBarList["data"][0]["prodBarNumList"] as $barData){
+					array_push($thisOptionBarSubList, $barData);
 				}
 				
 				array_push($thisOptionBarList, $thisOptionBarSubList);

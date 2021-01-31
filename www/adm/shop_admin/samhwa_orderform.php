@@ -18,11 +18,21 @@ if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 } else {
 	if($od["ordId"]){
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, 0);
-		curl_setopt($ch, CURLOPT_URL, "https://eroumcare.com/api/pen/pen5000/pen5000/selectPen5000.do?ordId={$od["ordId"]}&uuid={$od["uuid"]}");
-		$res = curl_exec($ch);
+		$sendData = [];
+		$sendData["penOrdId"] = $od["ordId"];
+		$sendData["uuid"] = $od["uuid"];
+		
+		$oCurl = curl_init();
+		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/order/selectList");
+		curl_setopt($oCurl, CURLOPT_POST, 1);
+		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+		$res = curl_exec($oCurl);
+		curl_close($oCurl);
+		
 		$result = json_decode($res, true);
 		$result = $result["data"];
 
@@ -44,7 +54,6 @@ if (!$od['od_id']) {
 					, od_b_zip2 = '{$ordZip[1]}'
 					, od_b_addr1 = '{$result[0]["ordAddr"]}'
 					, od_b_addr2 = '{$result[0]["ordAddrDtl"]}'
-					, od_cart_price = '{$result[0]["finPayment"]}'
 					, payMehCd = '{$result[0]["payMehCd"]}'
 					, eformYn = '{$result[0]["eformYn"]}'
 					, staOrdCd = '{$result[0]["staOrdCd"]}'
@@ -126,7 +135,8 @@ $sql = " select a.ct_id,
 				a.pt_old_name,
                 a.pt_old_opt,
                 a.ct_uid,
-				a.prodMemo
+				a.prodMemo,
+				b.prodSupYn
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$od_id'
 		  group by a.it_id, a.ct_uid
@@ -142,8 +152,9 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $cate_counts[$row['ct_status']] += 1;
 
     // 상품의 옵션정보
-    $sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
-                from {$g5['g5_shop_cart_table']}
+    $sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
+					, ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
+                from {$g5['g5_shop_cart_table']} MT
                 where od_id = '{$od['od_id']}'
                     and it_id = '{$row['it_id']}'
                     and ct_uid = '{$row['ct_uid']}'
@@ -162,18 +173,22 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
         else
             $opt_price = $opt['ct_price'] + $opt['io_price'];
 
-        $opt['opt_price'] = $opt_price;
+        $opt["opt_price"] = $opt_price;
 
         // 소계
         $opt['ct_price_stotal'] = $opt_price * $opt['ct_qty'] - $opt['ct_discount'];
         $opt['ct_point_stotal'] = $opt['ct_point'] * $opt['ct_qty'] - $opt['ct_discount'];
 
+		if($opt["prodSupYn"] == "Y"){
+			$opt["ct_price_stotal"] -= ($opt["ct_stock_qty"] * $opt_price);
+		}
+		
         $row['options'][] = $opt;
     }
 
 
     // 합계금액 계산
-    $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
+    $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * (ct_qty - ct_stock_qty)))) as price,
                     SUM(ct_qty) as qty,
                     SUM(ct_discount) as discount,
                     SUM(ct_send_cost) as sendcost
@@ -334,7 +349,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             $tot_qty += $carts[$i]['sum']['qty'];
                             $tot_discount += $carts[$i]['sum']['discount'];
                             $tot_sendcost += $carts[$i]['sum']['sendcost'];
-                            $tot_total += $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'];
+                            $tot_total += ($carts[$i]["prodSupYn"] == "Y") ? $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'] : 0;
 
 							$prodBarNum = $prodOptNum = '';
 							$option_array = array();
@@ -617,10 +632,14 @@ var od_id = '<?php echo $od['od_id']; ?>';
 											$json_data[$k][$b]['eformYn'] = 'N';
 										?>
 										<li style="padding-top:5px;">
-										<?php if($od["staOrdCd"] == "03"){ ?>
-											<span><?=$prodList[$prodListCnt]["prodBarNum"]?></span>
-										<?php } else { ?>
+										<?php if($od["recipient_yn"] == "N"){ ?>
 											<input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+										<?php } else { ?>
+											<?php if($od["staOrdCd"] == "03"){ ?>
+												<span><?=$prodList[$prodListCnt]["prodBarNum"]?></span>
+											<?php } else { ?>
+												<input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+											<?php } ?>
 										<?php } ?>
 										</li>
 										<?php $prodListCnt++; } ?>
@@ -2117,7 +2136,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
         </div>
         <?php if ( $next_step ) { ?>
         <div class="submit">
-            <button id="order_summarize_submit" data-next-step-val="<?php echo $next_step['val']; ?>" data-next-step-status="<?php echo $next_step['status']; ?>">
+            <button id="order_summarize_submit" data-next-step-val="<?php echo $next_step['val']; ?>" data-next-step-status="<?php echo $next_step["status{$od["recipient_yn"]}"]; ?>">
                 <?php echo $next_step['name']; ?>
             </button>
         </div>
@@ -2231,107 +2250,6 @@ $(document).ready(function() {
 
         })
     });
-	
-	$("#order_summarize_submit").click(function() {
-		var next_step_val = $(this).data("next-step-val");
-		var next_step_status = $(this).data("next-step-status");
-		var ordId = "<?=$od["ordId"]?>";
-		var eformYn = (next_step_val == "완료") ? "Y" : "N";
-
-		if(ordId){
-			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
-			$.each(productList, function(key, value){
-				var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
-				var prodBarNum = "";
-				
-				for(var i = 0; i < prodBarNumItem.length; i++){
-					if(next_step_val == "완료"){
-						if(!$(prodBarNumItem[i]).val()){
-							alert("바코드를 입력해주시길 바랍니다.");
-							return false;
-						}
-					}
-					prodBarNum += (prodBarNum) ? "," : "";
-					prodBarNum += $(prodBarNumItem[i]).val();
-				}
-				
-				productList[key]["prodBarNum"] = prodBarNum;
-			});
-			
-			var sendData = {
-				ordId : "<?=$od["ordId"]?>",
-				delGbnCd : "",
-				ordWayNum : "",
-				delSerCd : "",
-				ordNm : $("#od_b_name").val(),
-				ordCont : $("#od_b_hp").val(),
-				ordMeno : $("#od_memo").val(),
-				ordZip : $("#od_b_zip").val(),
-				ordAddr : $("#od_b_addr1").val(),
-				ordAddrDtl : $("#od_b_addr2").val(),
-				eformYn : eformYn,
-				staOrdCd : next_step_status,
-				prods : productList
-			}
-
-			$.ajax({
-				url : "https://eroumcare.com/api/pen/pen5000/pen5000/updatePen5000.do",
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json; charset=utf-8;",
-				data : JSON.stringify(sendData),
-				success : function(result){
-					if(result.errorYN == "N"){
-						change_step(od_id, next_step_val);
-					}
-				}
-			});
-		} else {
-			var delYn = "Y";
-			var changeStatus = true;
-			if(next_step_val == "완료"){
-				delYn = "N";
-				$.each(stoldList, function(key, value){
-					if(!$("." + value.stoId).val()){
-						changeStatus = false;
-						alert("바코드를 입력해주시길 바랍니다.");
-						return false;
-					}
-				});
-			}
-			
-			$.each(stoldList, function(key, value){
-				var sendData = {
-					usrId : "<?=$od["mb_id"]?>",
-					prods : [
-						{
-							stoId : value.stoId,
-							prodColor : value.prodColor,
-							prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
-							prodManuDate : value.prodManuDate,
-							stateCd : value.stateCd,
-							stoMemo : (value.stoMemo) ? value.stoMemo : "",
-							delYn : delYn
-						}
-					]
-				}
-
-				$.ajax({
-					url : "https://eroumcare.com/api/pro/pro2000/pro2000/updatePro2000ProdInfoAjaxByShop.do",
-					type : "POST",
-					dataType : "json",
-					async : false,
-					contentType : "application/json; charset=utf-8;",
-					data : JSON.stringify(sendData)
-				});
-			});
-			
-			if(changeStatus){
-				change_step(od_id, next_step_val);
-			}
-		}
-		
-	});
 
     $('#order_prev_step').click(function() {
         var prev_step_val = $(this).data('prev-step-val');
@@ -2513,6 +2431,120 @@ $(document).ready(function() {
 
 
     });
+	
+	/* 주문다음단계 */
+	$("#order_summarize_submit").click(function() {
+		var next_step_val = $(this).data("next-step-val");
+		var next_step_status = $(this).data("next-step-status");
+		var ordId = "<?=$od["ordId"]?>";
+		var eformYn = (next_step_val == "완료") ? "Y" : "N";
+
+		if(ordId){
+			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
+			$.each(productList, function(key, value){
+				var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
+				var prodBarNum = "";
+				
+				for(var i = 0; i < prodBarNumItem.length; i++){
+					if(next_step_val == "완료"){
+						if(!$(prodBarNumItem[i]).val()){
+							alert("바코드를 입력해주시길 바랍니다.");
+							return false;
+						}
+					}
+					prodBarNum += (prodBarNum) ? "," : "";
+					prodBarNum += $(prodBarNumItem[i]).val();
+				}
+				
+				productList[key]["prodBarNum"] = prodBarNum;
+			});
+			
+			var sendData = {
+				ordId : "<?=$od["ordId"]?>",
+				delGbnCd : "",
+				ordWayNum : "",
+				delSerCd : "",
+				ordNm : $("#od_b_name").val(),
+				ordCont : $("#od_b_hp").val(),
+				ordMeno : $("#od_memo").val(),
+				ordZip : $("#od_b_zip").val(),
+				ordAddr : $("#od_b_addr1").val(),
+				ordAddrDtl : $("#od_b_addr2").val(),
+				eformYn : eformYn,
+				staOrdCd : next_step_status,
+				lgsStoId : "",
+				prods : productList
+			}
+
+			$.ajax({
+				url : "samhwa_orderform_order_update.php",
+				type : "POST",
+				async : false,
+				data : sendData,
+				success : function(result){
+					result = JSON.parse(result);
+					if(result.errorYN == "Y"){
+						alert(result.message);
+					} else {
+						change_step(od_id, next_step_val);
+					}
+				}
+			});
+		} else {
+			var delYn = "Y";
+			var changeStatus = true;
+			if(next_step_val == "완료"){
+				delYn = "N";
+				$.each(stoldList, function(key, value){
+					if(!$("." + value.stoId).val()){
+						changeStatus = false;
+						alert("바코드를 입력해주시길 바랍니다.");
+						return false;
+					}
+				});
+			}
+			
+			$.each(stoldList, function(key, value){
+				var sendData = {
+					usrId : "<?=$od["mb_id"]?>",
+					prods : [
+						{
+							stoId : value.stoId,
+							prodColor : value.prodColor,
+							prodSize : value.prodSize,
+							prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
+							prodManuDate : value.prodManuDate,
+							stateCd : next_step_status,
+							stoMemo : (value.stoMemo) ? value.stoMemo : ""
+						}
+					]
+				}
+
+				$.ajax({
+					url : "samhwa_orderform_stock_update.php",
+					type : "POST",
+					async : false,
+					data : sendData,
+					success : function(result){
+						result = JSON.parse(result);
+						if(result.errorYN == "Y"){
+							alert(result.message);
+							changeStatus = false;
+						}
+					}
+				});
+				
+				if(!changeStatus){
+					return false;
+				}
+			});
+			
+			if(changeStatus){
+				change_step(od_id, next_step_val);
+			}
+		}
+		
+	});
 
     //배송정보 수정
     $('#delivery_info_btn').click(function() {
@@ -2554,32 +2586,38 @@ $(document).ready(function() {
 				ordAddrDtl : $("#od_b_addr2").val(),
 				eformYn : "<?=$od["eformYn"]?>",
 				staOrdCd : "<?=$od["staOrdCd"]?>",
+				lgsStoId : "",
 				prods : productList
 			}
 
 			$.ajax({
-				url : "https://eroumcare.com/api/pen/pen5000/pen5000/updatePen5000.do",
+				url : "samhwa_orderform_order_update.php",
 				type : "POST",
-				dataType : "json",
-				contentType : "application/json; charset=utf-8;",
-				data : JSON.stringify(sendData),
+				async : false,
+				data : sendData,
 				success : function(result){
-					$.ajax({
-								method: "POST",
-								url: "./ajax.order.delivery.php",
-								data: formdata,
-							})
-					.done(function(data) {
-						if ( data.msg ) {
-							alert(data.msg);
-						}
-						if ( data.result === 'success' ) {
-							location.reload();
-						}
-					});
+					result = JSON.parse(result);
+					if(result.errorYN == "Y"){
+						alert(result.message);
+					} else {
+						$.ajax({
+									method: "POST",
+									url: "./ajax.order.delivery.php",
+									data: formdata,
+								})
+						.done(function(data) {
+							if ( data.msg ) {
+								alert(data.msg);
+							}
+							if ( data.result === 'success' ) {
+								location.reload();
+							}
+						});
+					}
 				}
 			});
 		} else {
+			var changeStatus = true;
 			$.each(stoldList, function(key, value){
 
 				var sendData = {
@@ -2588,6 +2626,7 @@ $(document).ready(function() {
 						{
 							stoId : value.stoId,
 							prodColor : value.prodColor,
+							prodSize : value.prodSize,
 							prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
 							prodManuDate : value.prodManuDate,
 							stateCd : value.stateCd,
@@ -2597,28 +2636,43 @@ $(document).ready(function() {
 				}
 
 				$.ajax({
-					url : "https://eroumcare.com/api/pro/pro2000/pro2000/updatePro2000ProdInfoAjaxByShop.do",
+					url : "samhwa_orderform_stock_update.php",
 					type : "POST",
-					dataType : "json",
 					async : false,
-					contentType : "application/json; charset=utf-8;",
-					data : JSON.stringify(sendData)
+					data : sendData,
+					success : function(result){
+						result = JSON.parse(result);
+						if(result.errorYN == "Y"){
+							alert(result.message);
+							changeStatus = false;
+						}
+					}
 				});
+				
+				if(!changeStatus){
+					return false;
+				}
 			});
 			
-		$.ajax({
-					method: "POST",
-					url: "./ajax.order.delivery.php",
-					data: formdata,
-				})
-		.done(function(data) {
-			if ( data.msg ) {
-				alert(data.msg);
+			if(!changeStatus){
+				return false;
 			}
-			if ( data.result === 'success' ) {
-//				location.reload();
+			
+			if(changeStatus){
+				$.ajax({
+							method: "POST",
+							url: "./ajax.order.delivery.php",
+							data: formdata,
+						})
+				.done(function(data) {
+					if ( data.msg ) {
+						alert(data.msg);
+					}
+					if ( data.result === 'success' ) {
+		//				location.reload();
+					}
+				});
 			}
-		});
 		}
     });
 

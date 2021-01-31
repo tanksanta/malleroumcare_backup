@@ -59,6 +59,45 @@ if ( THEMA_KEY == 'partner' && !$member['mb_id'] ) {
 
 include_once(THEMA_PATH.'/side/list-cate-side.php');
 
+	# 210131 재고수량 조회
+	$optionCntHtml = "";
+	if($member["mb_id"]){
+		foreach($it["optionList"] as $optionData){
+			$sendData = [];
+			$sendData["usrId"] = $member["mb_id"];
+			$sendData["entId"] = $member["mb_entId"];
+
+			$prodsSendData = [];
+
+			$prodsData = [];
+			$prodsData["prodId"] = $it["it_id"];
+			$prodsData["prodColor"] = $optionData["color"];
+			$prodsData["prodSize"] = $optionData["size"];
+			array_push($prodsSendData, $prodsData);
+
+			$sendData["prods"] = $prodsSendData;
+
+			# 재고조회
+			$oCurl = curl_init();
+			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/stock/selectList");
+			curl_setopt($oCurl, CURLOPT_POST, 1);
+			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+			$res = curl_exec($oCurl);
+			$stockCntList = json_decode($res, true);
+			curl_close($oCurl);
+
+			# 재고목록
+			$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
+			
+			$optionCntHtml .= ($optionCntHtml) ? ", " : "";
+			$optionCntHtml .= "{$optionData["color"]}/{$optionData["size"]}({$stockCntList["data"][0]["quantity"]}개)";
+		}
+	}
+
 ?>
 
 
@@ -111,9 +150,13 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<div class="h30 visible-xs"></div>
 		</div>
 		<div class="samhwa-item-info-mobile mobile">
-			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
+			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?><b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #<?=($it["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>; margin-left: 10px;"><?=($it["prodSupYn"] == "Y") ? "유통" : "비유통"?></b></h1>
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
+			<?php } ?>
+			<!-- 재고수량 -->
+			<?php if($optionCntHtml){ ?>
+				<p class="help-block"><?=$optionCntHtml?></p>
 			<?php } ?>
 			<?php if($it["it_sale_cnt"]){ ?>
 				<p style="color: #DC3333;"><?=$it["it_sale_cnt"]?>개 이상 <?=$it["it_sale_percent"]?>% 할인적용</p>
@@ -164,8 +207,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
 			
-			
-				<p>*재고 : <?php echo $it['it_stock_qty'];  ?> 개</p> 
+			<!-- 재고수량 -->
+			<?php if($optionCntHtml){ ?>
+				<p class="help-block"><?=$optionCntHtml?></p>
+			<?php } ?>
 
 			<?php if ( $it['it_model'] ) { ?>
 				<p class="item-model">

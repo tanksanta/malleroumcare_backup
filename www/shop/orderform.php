@@ -235,7 +235,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	
 	# 210130 옵션목록
 	$optionList = [];
-	$optionSQL = sql_query("SELECT io_id, ct_qty FROM {$g5["g5_shop_cart_table"]} WHERE od_id = '{$s_cart_id}' AND it_id = '{$row["it_id"]}' ORDER BY ct_id ASC");
+	$optionSQL = sql_query("SELECT io_id, ct_qty, ct_id FROM {$g5["g5_shop_cart_table"]} WHERE od_id = '{$s_cart_id}' AND it_id = '{$row["it_id"]}' ORDER BY ct_id ASC");
 	for($iii = 0; $optionRow = sql_fetch_array($optionSQL); $iii++){
 		$thisRowData = [];
 		$optionRow["io_id"] = explode(chr(30), $optionRow["io_id"]);
@@ -243,6 +243,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 		$thisRowData["color"] = $optionRow["io_id"][0];
 		$thisRowData["size"] = $optionRow["io_id"][1];
 		$thisRowData["qty"] = $optionRow["ct_qty"];
+		$thisRowData["id"] = $optionRow["ct_id"];
 		
 		array_push($optionList, $thisRowData);
 	}
@@ -1122,6 +1123,15 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 	});
 
 	function forderform_check(f) {
+		
+		/* 재고선택박스 체크 */
+		var stockSelectBox = $("select.prodBarSelectBox");
+		for(var i = 0; i < stockSelectBox.length; i++){
+			if(!$(stockSelectBox[i]).val()){
+				alert("재고 바코드를 선택해 주십시오.");
+				return false;
+			}
+		}
 
 		// 매출증빙 현금영수증 선택시
 		if ($('#typereceipt2').is(':checked')) {

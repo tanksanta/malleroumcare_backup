@@ -34,6 +34,20 @@ $sql_ca = ($ca_id) ? "b.ca_id = '{$ca_id}'" : "a.ca_id = b.ca_id";
 $sql = " select a.*, b.ca_name, b.ca_use from {$g5['g5_shop_item_table']} a, {$g5['g5_shop_category_table']} b where a.it_id = '$it_id' and $sql_ca ";
 $it = sql_fetch($sql);
 
+# 210131 옵션목록
+$thisOptionList = [];
+$thisOptionQuery = sql_query("SELECT * FROM g5_shop_item_option WHERE it_id = '{$it["it_id"]}' ORDER BY io_no ASC");
+for($i = 0; $row = sql_fetch_array($thisOptionQuery); $i++){
+	$row["io_id"] = explode(chr(30), $row["io_id"]);
+	
+	$rowOptionData = [];
+	$rowOptionData["color"] = $row["io_id"][0];
+	$rowOptionData["size"] = $row["io_id"][1];
+	
+	array_push($thisOptionList, $rowOptionData);
+}
+$it["optionList"] = $thisOptionList;
+
 if (!$it['it_id'])
     alert('자료가 없습니다.');
 
