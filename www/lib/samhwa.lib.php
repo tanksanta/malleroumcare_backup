@@ -183,7 +183,7 @@ $order_steps = array(
         'cart_editable' => true,
         'cancelable' => true,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '1' => array(
         'name' => '입금완료',
@@ -198,7 +198,7 @@ $order_steps = array(
         'cart_editable' => true,
         'cancelable' => true,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '2' => array(
         'name' => '상품준비',
@@ -213,7 +213,7 @@ $order_steps = array(
         'cart_editable' => true,
         'cancelable' => true,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '3' => array(
         'name' => '출고준비',
@@ -229,7 +229,7 @@ $order_steps = array(
         'cart_editable' => true,
         'direct_cancel' => true,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '4' => array(
         'name' => '출고완료',
@@ -243,7 +243,7 @@ $order_steps = array(
         'orderlist_complete' => false,
         'deliverylist' => true,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '5' => array(
         'name' => '배송완료',
@@ -268,7 +268,7 @@ $order_steps = array(
         'cart' => false,
         'orderlist_complete' => false,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '16' => array(
         'name' => '주문무효',
@@ -280,7 +280,7 @@ $order_steps = array(
         'cart' => false,
         'orderlist_complete' => false,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '7' => array(
         'name' => '부분취소',
@@ -291,7 +291,7 @@ $order_steps = array(
         'cart' => false,
         'orderlist_complete' => false,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '8' => array(
         'name' => '반품',
@@ -302,7 +302,7 @@ $order_steps = array(
         'cart' => false,
         'orderlist_complete' => false,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '9' => array(
         'name' => '품절',
@@ -313,7 +313,7 @@ $order_steps = array(
         'cart' => false,
         'orderlist_complete' => false,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '10' => array(
         'name' => '작성',
@@ -327,7 +327,7 @@ $order_steps = array(
         'cart_deletable' => true,
         'cart_editable' => true,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '11' => array(
         'name' => '입고대기',
@@ -340,7 +340,7 @@ $order_steps = array(
         'orderlist_complete' => false,
         'cancellist' => true,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '12' => array(
         'name' => '입고확인',
@@ -354,7 +354,7 @@ $order_steps = array(
         'orderlist_complete' => false,
         'cancellist' => true,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '13' => array(
         'name' => '검수확인',
@@ -368,7 +368,7 @@ $order_steps = array(
         'orderlist_complete' => false,
         'cancellist' => true,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '14' => array(
         'name' => '환불완료',
@@ -381,7 +381,7 @@ $order_steps = array(
         'orderlist_complete' => false,
         'cancellist' => true,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
     '15' => array(
         'name' => '오픈마켓',
@@ -394,7 +394,7 @@ $order_steps = array(
         'cart' => true,
         'orderlist_complete' => false,
 		"statusN" => "06",
-		"statusY" => "00",
+		"statusY" => "01",
     ),
 );
 

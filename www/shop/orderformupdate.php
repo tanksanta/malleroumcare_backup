@@ -55,6 +55,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			$thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
 			$thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
 			$thisProductData["penStaSeq"] = count($productList) + 1;
+			$thisProductData["prodPayCode"] = $row["prodPayCode"];
+			$thisProductData["itemNm"] = explode(chr(30), $row["io_id"])[0]." / ".explode(chr(30), $row["io_id"])[1];
 
 			array_push($productList, $thisProductData);
 		} else {

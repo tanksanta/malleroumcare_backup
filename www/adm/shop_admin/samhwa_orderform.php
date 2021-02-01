@@ -67,6 +67,7 @@ if (!$od['od_id']) {
 				
 				$thisProductData["prodId"] = $data["prodId"];
 				$thisProductData["prodColor"] = $data["prodColor"];
+				$thisProductData["stoId"] = $data["stoId"];
 				$thisProductData["prodBarNum"] = $data["prodBarNum"];
 				$thisProductData["penStaSeq"] = $data["penStaSeq"];
 				array_unshift($prodList, $thisProductData);
@@ -2438,6 +2439,7 @@ $(document).ready(function() {
 		var next_step_status = $(this).data("next-step-status");
 		var ordId = "<?=$od["ordId"]?>";
 		var eformYn = (next_step_val == "완료") ? "Y" : "N";
+		var changeStatus = true;
 
 		if(ordId){
 			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
@@ -2449,6 +2451,7 @@ $(document).ready(function() {
 					if(next_step_val == "완료"){
 						if(!$(prodBarNumItem[i]).val()){
 							alert("바코드를 입력해주시길 바랍니다.");
+							changeStatus = false;
 							return false;
 						}
 					}
@@ -2458,6 +2461,10 @@ $(document).ready(function() {
 				
 				productList[key]["prodBarNum"] = prodBarNum;
 			});
+			
+			if(!changeStatus){
+				return false;
+			}
 			
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
@@ -2493,7 +2500,6 @@ $(document).ready(function() {
 			});
 		} else {
 			var delYn = "Y";
-			var changeStatus = true;
 			if(next_step_val == "완료"){
 				delYn = "N";
 				$.each(stoldList, function(key, value){
@@ -2559,6 +2565,7 @@ $(document).ready(function() {
                 od_delivery_type_data: od_delivery_type_data,
             }
         );
+		var changeStatus = true;
 
 		if(ordId){
 			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
@@ -2619,7 +2626,6 @@ $(document).ready(function() {
 				}
 			});
 		} else {
-			var changeStatus = true;
 			$.each(stoldList, function(key, value){
 
 				var sendData = {
