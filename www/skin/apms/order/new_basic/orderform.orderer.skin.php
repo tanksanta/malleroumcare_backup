@@ -523,9 +523,13 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 			$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 			calculate_order_price();
 			$("#ad_sel_addr_recipient").parent().show();
+			
+			$("#display_pay_button > input").val("수급자 주문하기");
 		}
 
 		$(function() {
+			$("#display_pay_button > input").val("재고 주문하기");
+			
 			$("#recipient_del").on("click", function() {
 
 				$(".recipientBox").remove();
@@ -547,6 +551,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				$('#penMoney').val('');
 				
 				$("#ad_sel_addr_recipient").parent().hide();
+				
+				$("#display_pay_button > input").val("재고 주문하기");
 			});
 		});
 	</script>
@@ -671,7 +677,9 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						<?php echo $item[$i]['it_model']; ?>
 						(<?php echo $item[$i]['it_name']; ?>)
 					</b>
-					<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #<?=($item[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;"><?=($item[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?></b>
+					<?php if($item[$i]["prodSupYn"] == "N"){ ?>
+						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
+					<?php } ?>
 					<?php if($item[$i]['it_options']) { ?>
 						<div class="well well-sm" style="width: 100%; float: left;"><?php echo $item[$i]['it_options'];?></div>
 					<?php } ?>

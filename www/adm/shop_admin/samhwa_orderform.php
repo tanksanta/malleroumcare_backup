@@ -24,7 +24,7 @@ if (!$od['od_id']) {
 		
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9001);
-		curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/order/selectList");
+		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -70,7 +70,7 @@ if (!$od['od_id']) {
 				$thisProductData["stoId"] = $data["stoId"];
 				$thisProductData["prodBarNum"] = $data["prodBarNum"];
 				$thisProductData["penStaSeq"] = $data["penStaSeq"];
-				array_unshift($prodList, $thisProductData);
+				array_push($prodList, $thisProductData);
 			}
 		}
 	} else {
@@ -137,7 +137,8 @@ $sql = " select a.ct_id,
                 a.pt_old_opt,
                 a.ct_uid,
 				a.prodMemo,
-				b.prodSupYn
+				b.prodSupYn,
+				a.ct_stock_qty
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$od_id'
 		  group by a.it_id, a.ct_uid
@@ -382,7 +383,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                 ?>
                                 <tr class="<?php echo $k==0 ? 'top-border' : ''; ?>">
                                     <?php if ( $k == 0 ) { ?>
-                                        <td rowspan="<?php echo (count($options) + 1); ?>" class="chkcbox">
+                                        <td rowspan="<?php echo (count($options) + (($prodMemo) ? 1 : 0)); ?>" class="chkcbox">
                                             <label for="sit_sel_<?php echo $i; ?>" class="sound_only"><?php echo $carts[$i]['it_name']; ?> 옵션 전체선택</label>
                                             <input type="checkbox" id="sit_sel_<?php echo $i; ?>" name="it_sel[]">
                                         </td>
@@ -401,10 +402,13 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                 <?php if ( $options[$k]['io_type'] == 0 && $k == 0 ) { ?>
                                                     <a href="/shop/item.php?it_id=<?php echo $carts[$i]['it_id']; ?>" class="image" target="_blank"><?php echo $image; ?></a>
                                                     <div class="item_info">
-	                                                    <b><?php echo stripslashes($carts[$i]['it_name']); ?> <a href="./itemform.php?w=u&amp;it_id=<?php echo $carts[$i]['it_id']; ?>" class="name">보기</a></b><br>
+	                                                    <b><?php echo stripslashes($carts[$i]['it_name']); ?> <b style="color: #<?=($carts[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;">(<?=($carts[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?>)</b> <a href="./itemform.php?w=u&amp;it_id=<?php echo $carts[$i]['it_id']; ?>" class="name">보기</a></b><br>
 	                                                    <span><?php echo $carts[$i]['it_model']; ?></span>
 	                                                    <?php if ( $carts[$i]['it_name'] != $options[$k]['ct_option']) { ?>
 	                                                        [옵션] <?php echo $options[$k]['ct_option']; ?>
+	                                                    <?php } ?>
+	                                                    <?php if($carts[$i]["ct_stock_qty"]){ ?>
+	                                                    	<p style="color: #DC3333;">* <?=$carts[$i]["ct_stock_qty"]?>개 재고소진</p>
 	                                                    <?php } ?>
 														<?php
 														  if($od['od_writer']=="openmarket"){
@@ -634,12 +638,22 @@ var od_id = '<?php echo $od['od_id']; ?>';
 										?>
 										<li style="padding-top:5px;">
 										<?php if($od["recipient_yn"] == "N"){ ?>
-											<input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+											<?php if($carts[$i]["ct_stock_qty"] > $b){ ?>
+												<span><?=$prodList[$prodListCnt]["prodBarNum"]?></span>
+												<input type="hidden" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+											<?php } else { ?>
+												<input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+											<?php } ?>
 										<?php } else { ?>
 											<?php if($od["staOrdCd"] == "03"){ ?>
 												<span><?=$prodList[$prodListCnt]["prodBarNum"]?></span>
 											<?php } else { ?>
-												<input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+												<?php if($carts[$i]["ct_stock_qty"] > $b){ ?>
+													<span><?=$prodList[$prodListCnt]["prodBarNum"]?></span>
+													<input type="hidden" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+												<?php } else { ?>
+													<input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+												<?php } ?>
 											<?php } ?>
 										<?php } ?>
 										</li>
@@ -836,13 +850,15 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>
-                                <tr>
-                                	<td></td>
-                                	<td colspan="10" style="text-align: left;">
-                                		<b>요청사항 : </b>
-                                		<?=$prodMemo?>
-                                	</td>
-                                </tr>
+										<?php if($prodMemo){ ?>
+											<tr>
+												<td></td>
+												<td colspan="10" style="text-align: left;">
+													<b>요청사항 : </b>
+													<?=$prodMemo?>
+												</td>
+											</tr>
+										<?php } ?>
                                 <?php } ?>
                         <tr class="result">
                             <td class="chkbox">

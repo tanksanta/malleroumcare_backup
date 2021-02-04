@@ -535,6 +535,7 @@ foreach($orderlist as $order) {
     }
 
     // $goods_name .= $order['cart'][0]['it_name'] ? $order['cart'][0]['it_name'] : '<span class="notyet">없음(관리자 작성중)</span>';
+	$goods_name .= "[".($order["recipient_yn"] == "Y" ? "주문" : "재고")."] ";
     $goods_name .= $order['cart'][0]['it_model'] ? $order['cart'][0]['it_model'] : '<span class="notyet">없음(관리자 작성중)</span>';
     // $goods_ct = $order['cart'][0]['ct_qty']  ? $order['cart'][0]['ct_qty']  : '0';
     // $goods_ct = count((array)$order['cart']);

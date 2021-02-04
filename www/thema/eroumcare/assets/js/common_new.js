@@ -30,12 +30,12 @@ function eventToggle(){
        if(!$('.all_menu_wrap').hasClass('on')){
            $('.all_menu_wrap').addClass('on');
            $('.all_menu_wrap').stop().animate({'z-index':'5','opacity': '1'},10);
-           $('.top_menu_all').html('<span>전체카테고리</span><img src="' + thema_url + '/assets/img/btn_top_menu_x.png" >');
+		   $('.top_menu_all').html('<img src="' + thema_url + '/assets/img/btn_top_menu_x.png" ><span>전체 상품 카테고리</span>');
            //$('body').addClass('scroll-fixed');
        } else {
            $('.all_menu_wrap').removeClass('on');
            $('.all_menu_wrap').stop().animate({'z-index':'-1','opacity': '0'},10);
-           $('.top_menu_all').html('<span>전체카테고리</span><img src="' + thema_url + '/assets/img/btn_top_menu.png" >');
+           $('.top_menu_all').html('<img src="' + thema_url + '/assets/img/btn_top_menu.jpg" ><span>전체 상품 카테고리</span>');
            //$('body').removeClass('scroll-fixed');
        }
     });
@@ -150,6 +150,21 @@ function slickSlide(){
 }
 
 $(document).ready(function() {
+	
+	/* 210203 사이드 스크롤배너 */
+	$(window).scroll(function() {
+		var scrollTop = $(window).scrollTop();
+		var top = scrollTop - 237;
+		var maxTop = $("body").innerHeight() - 1200;
+		top = (top > maxTop) ? maxTop : top;
+		console.log(maxTop);
+
+		if(scrollTop >= 237){
+			$(".scrollBannerListWrap").css("transform", "translateY(" + (top + 20) + "px)");
+		} else if(scrollTop < 237){
+			$(".scrollBannerListWrap").css("transform", "translateY(0)");
+		}
+	});
 
     // 즐겨찾기
     $('.favorite').on('click', function(e) {

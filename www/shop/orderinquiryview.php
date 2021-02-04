@@ -62,7 +62,8 @@ $sql = " select a.it_id,
 				a.ct_uid,
 				b.it_model,
 				a.prodMemo,
-				b.prodSupYn
+				b.prodSupYn,
+				a.ct_stock_qty
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$od_id'
 		  group by a.it_id, a.ct_uid

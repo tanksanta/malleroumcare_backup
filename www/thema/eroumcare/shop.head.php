@@ -65,65 +65,22 @@ $(document).ready(function() {
 	<a onclick="scrollToTop()"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_scroll.png" alt=""></a>
 </div>
 
-
-<div class="right_menu_area <?php echo $_COOKIE['right_menu_area'] == 'on' ? 'on' : ''; ?> ">
-	<button type="button"  class="right_menu_toggle">
-	<?php echo $_COOKIE['right_menu_area'] == 'on' ? '◀' : '▶'; ?>
-	</button>
-	<div class="quick_menu">
-		<ul>
-			<li class="favorite"><a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_bookmark.png" alt=""> 즐겨찾기</a></li>
-			<li><a href="https://www.ilogen.com/web/personal/tkSearch" target="_blank"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_car.png" alt=""> 배송추적</a></li>
-			<li><a href="/bbs/board.php?bo_table=notice"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_noti.png" alt=""> 공지사항</a></li>
-			<li><a href="/bbs/board.php?bo_table=qa"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_cs.png" alt=""> 고객센터</a></li>
-			<!-- <li><a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img/icon_s_biz.png" alt=""> 사업자등록증</a></li> -->
-		</ul>
-	</div>
-	<div class="info">
-		<p>CS CENTER</p>
-		<p>T. <span class="tel_info"> <?php echo $default['de_admin_company_tel']; ?></span><br>
-			F. <?php echo $default['de_admin_company_fax']; ?>
-		</p>
-	</div>
-	<div class="info">
-		<p>BANK ACCOUNT</p>
-		<p>· <?php echo $banks[0]; ?><br>
-			<?php echo $default['de_admin_company_name']; ?>
-		</p>
-	</div>
-	<div class="info">
-		<p>Email</p>
-		<p><?php echo $default['de_admin_info_email']; ?>
-		</p>
-	</div>
-	<div class="info">
-		<p>최근본상품</p>
-		<div>
-            <?php include(THEMA_PATH.'/side/boxtodayview.skin.php'); // 오늘 본 상품 ?>
-		</div>
-	</div>
-	<!-- <div class="talk_area">
-		<a href="#" onclick="window.open('https://talk.naver.com/wcbxq5?ref='+encodeURIComponent(location.href.replace('view','view_snipet'))+'#nafullscreen', 'talktalk', 'width=471, height=640');return false;"> <img src="<?php echo THEMA_URL; ?>/assets/img/icon_talk_naver.png" alt=""> 네이버 톡톡 상담</a>
-		<a href="https://pf.kakao.com/_FZSEK/chat" target="_blank"> <img src="<?php echo THEMA_URL; ?>/assets/img/icon_talk_kakao.png" alt=""> 카카오톡 상담</a>
-	</div>
-	<div class="sns_link">
-		<a href="#" target="_blank"> <img src="<?php echo THEMA_URL; ?>/assets/img/btn_sns_blog.png" alt=""></a>
-		<a href="https://www.instagram.com/samhwasnd/" target="_blank"> <img src="<?php echo THEMA_URL; ?>/assets/img/btn_sns_instar.png" alt=""></a>
-		<a href="#" target="_blank"> <img src="<?php echo THEMA_URL; ?>/assets/img/btn_sns_you.png" alt=""></a>
-	</div> -->
-</div>
-
 <div class="mo_top">
-	<div class="logo_area">
-		<a href="<?php echo G5_URL; ?>">복지용구사업소 쇼핑몰</a>
+	<div class="logoWrap">
+		<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
 	</div>
-	<div class="left_area">
-<!--		<button type="button" class="header-system-move-btn">&lt; 시스템</button>-->
+
+	<div class="searchWrap">
+		<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
+			<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
+			<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="상품명으로 검색하세요."/>
+			<button type="submit" id="sch_submit"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.jpg"></button>
+		</form>
 	</div>
-	<div class="right_area header-hamburger-btn">
-		<button><img src="<?php echo THEMA_URL; ?>/assets/img/btn_mo_menu.png" ></button>
-	</div>
+	
+	<img src="<?=THEMA_URL?>/assets/img/btn_mo_menu.png" alt="" class="header-hamburger-btn">
 </div>
+
 <div class="mo_menu">
 	<a href="/shop/list.php?ca_id=10">판매품목</a>
 	<a href="/shop/list.php?ca_id=20">대여품목</a>
@@ -131,8 +88,6 @@ $(document).ready(function() {
 
 <div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>">
 	
-
-		
 	<div id="samhwa-m-menu">
 		<div class="wrap">
 			<div class="closer">
@@ -212,7 +167,7 @@ $(document).ready(function() {
 			<div class="top_banner_wide">
 				<div class="slick">
 					<?php foreach($bn_md as $tb_row) { ?>
-					<div class="item" style="background-color:<?php echo get_text($tb_row['bn_bgcolor']); ?>";">
+					<div class="item" style="background-color:<?php echo get_text($tb_row['bn_bgcolor']); ?>;">
 						<img src="<?php echo G5_DATA_URL; ?>/banner/<?php echo $tb_row['bn_id']; ?>" title="<?php echo get_text($tb_row['bn_title']); ?>">
 					</div>
 					<?php }?>
@@ -224,70 +179,18 @@ $(document).ready(function() {
 		</div>
 		<?php } ?>
 		<div class="container_wrap txt_center top_common_area">
-			<div class="top_logo">
-				<a href="<?php echo G5_URL; ?>"><img src="<?php echo THEMA_URL; ?>/assets/img/top_logo.png" alt=""></a>
+			<div class="logoWrap">
+				<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
 			</div>
-			<div class="top_left_area">
-				<!-- <div class="link_area">
-					<ul>
-						<li><a href="#" class="favorite"><img src="<?php echo THEMA_URL; ?>/assets/img//icon_star.png" alt=""> BOOKMARK</a></li>
-						<li><a href="<?php echo G5_BBS_URL;?>/page.php?hid=intro">회사소개</a></li>
-						<li>SNS 
-							<div class="btn_sns">
-								<a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_top_sns_naver.png" alt="NAVER"></a>
-								<a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_top_sns_face.png" alt="FACEBOOK"></a>
-								<a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_top_sns_instar.png" alt="INSTARGRAM"></a>
-								<a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_top_sns_pin.png" alt="PINTEREST"></a>
-								<a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_top_sns_kakao.png" alt="KAKAO STORY"></a>
-								<a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_top_sns_you.png" alt="YOUTUBE"></a>
-							</div>
-						</li>
-					</ul>
-					
-				</div> -->
-				<div class="search">
-					<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
-						<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
-						<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="Search"/>
-						<button type="submit" id="sch_submit" value=""><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.png" ></button>
-					</form>
-				</div>
-				<?php
-				// 배너
-				$bn_md = array();
-				$tb_result = sql_query("SELECT * FROM g5_shop_banner WHERE bn_device = 'both' AND ('" .G5_TIME_YMDHIS . "' between bn_begin_time and bn_end_time" . ") AND bn_position = '상단작은배너' ORDER BY bn_order ASC ");
-				while($tb_row = sql_fetch_array($tb_result)) {
-					$bn_md[] = $tb_row;
-				}
-				if ( $bn_md ) {
-				?>
-				<div class="banner top_small_banner">
-					<?php foreach($bn_md as $tb_row) { ?>
-						<div class="item"><img src="<?php echo G5_DATA_URL; ?>/banner/<?php echo $tb_row['bn_id']; ?>" alt=""></div>
-					<?php }?>
-				</div>
-				<style>
-				.top_small_banner .slick-prev {
-					background:url('<?php echo THEMA_URL; ?>/assets/img/icon_arrow_prev.png') no-repeat;
-					top: 14px;
-    				left: 10px;
-				}
-				.top_small_banner .slick-next {
-					background:url('<?php echo THEMA_URL; ?>/assets/img/icon_arrow_next.png') no-repeat;
-					top: 14px;
-    				right: 10px;
-				}
-				</style>
-				<script>
-				$(function(){
-					$('.top_small_banner').slick({
-						infinite : true,
-						arrows : true,
-					});
-				});
-				</script>
-				<?php } ?>
+			
+			<div class="searchWrap">
+				<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
+					<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
+					<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="상품명으로 검색하세요."/>
+					<button type="submit" id="sch_submit"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.jpg"></button>
+				</form>
 			</div>
+			
 			<div class="top_right_area">
 				<div class="link_area">
 				
@@ -356,7 +259,7 @@ $(document).ready(function() {
 		</div>
 		<div class="top_menu_wrap">
 			<div class="menu_wrap">
-				<div class="menu"><button class="top_menu_all"><span>전체카테고리</span> <img src="<?php echo THEMA_URL; ?>/assets/img//btn_top_menu.png" ></button></div>
+				<div class="menu"><button class="top_menu_all"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu.jpg" ><span>전체 상품 카테고리</span></button></div>
 				<div class="main_menu">
 					<table >
 						<tr>
@@ -480,15 +383,6 @@ $(document).ready(function() {
 			
 		</div>
 		
-
-		<div class="clearfix"></div>
-		
-		<?php
-		// include_once(THEMA_PATH . '/shop.cate.php'); 
-		?>
-
-		<div class="clearfix"></div>
-		
 		<?php if($page_title) { // 페이지 타이틀 ?>
 			<div class="at-title">
 				<div class="at-container">
@@ -506,55 +400,7 @@ $(document).ready(function() {
 				</div>
 			</div>
 		<?php } ?>
-
-		<div class="container_wrap_wide">
-		<?php
-		// 배너
-		if ($is_main) {
-		$bn_md = array();
-
-		//$main_banner_name = '메인대형배너';
-		$main_banner_name = $is_main ? '메인대형배너' : '메인대형배너서브';
-
-		$tb_result = sql_query("SELECT * FROM g5_shop_banner WHERE bn_device = 'both' AND ('" .G5_TIME_YMDHIS . "' between bn_begin_time and bn_end_time" . ") AND bn_position = '{$main_banner_name}' ORDER BY bn_order ASC ");
-		while($tb_row = sql_fetch_array($tb_result)) {
-			$bn_md[] = $tb_row;
-		}
-		if ( $bn_md && ( $show_main_big_banner || $is_main ) ) {
-		?>
-		<div class="banner_wrap slick">
-			<?php foreach($bn_md as $tb_row) { ?>
-			<div class="item banner_back">
-				<img src="<?php echo G5_DATA_URL; ?>/banner/<?php echo $tb_row['bn_id']; ?>" alt="" title="<?php echo get_text($tb_row['bn_title']); ?>" />
-				<img src="<?php echo G5_DATA_URL; ?>/banner/<?php echo $tb_row['bn_id']; ?>" alt="" class="bgimg" />
-			</div>
-			<?php }?>
-			</div>
-		</div>
-		<?php 
-		}
-		}
-		?>
-
-		<div class="caid_wrap">
-			<?php
-			/*
-			// echo  basename($_SERVER['PHP_SELF']);
-			$bimg = G5_DATA_PATH."/category/{$ca_id}";
-			if (basename($_SERVER['PHP_SELF']) == 'list.php' && file_exists($bimg) && $ca_id) {
-				echo '<img src="'.G5_DATA_URL.'/category/'.$ca_id.'" ">';
-			}
-			*/
-			if ($ca_id) {
-				$sql = "SELECT * FROM g5_shop_category WHERE ca_id = '{$ca_id}'";
-				$cate_result = sql_fetch($sql);
-				echo $cate_result['ca_head_html'];
-			}
-			?>
-		</div>
-
-		</div>
-
+		
 		<?php if ( $is_main ) { ?>
 		<?php @include(THEMA_PATH . '/main/samhwa-main.php'); ?>
 		<?php } ?>
@@ -562,6 +408,26 @@ $(document).ready(function() {
 		<div class="at-body">
 			<?php if($col_name) { ?>
 				<div class="at-container">
+					<div class="scrollBannerListWrap left">
+						<ul>
+							<li></li>
+							<li></li>
+							<li></li>
+						</ul>
+					</div>
+					
+					<div class="scrollBannerListWrap right">
+						<ul>
+							<li></li>
+							<li></li>
+							<li></li>
+						</ul>
+						
+						<div class="todayViewWrap">
+							<div class="title">최근 본 상품</div>
+							<?php include(THEMA_PATH."/side/boxtodayview.skin.php"); ?>
+						</div>
+					</div>
 				<?php if($col_name == "two") { ?>
 					<div class="row at-row">
 						<div class="col-md-<?php echo $col_content;?><?php echo ($at_set['side']) ? ' pull-right' : '';?> at-col at-main">		

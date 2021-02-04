@@ -138,7 +138,12 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 
 <style>
 	.delivery-info { margin:0px; padding:0px; padding-left:15px; line-height:22px; white-space:nowrap; }
+	.orderInfoTopBtnWrap { width: 100%; float: left; text-align: right; margin-bottom: 10px; }
 </style>
+
+<div class="orderInfoTopBtnWrap">
+	<button type="button" id="prodBarNumSaveBtn" class="btn btn-blue btn-sm">바코드저장</button>
+</div>
 
 <div class="table-responsive">
 	<table class="div-table table bsk-tbl bg-white">
@@ -163,7 +168,14 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 							<div class="item-type"><?php echo $item[$i]['pt_it']; ?></div>
 						</div>
 					</td>
-					<td colspan="6"><a href="./item.php?it_id=<?php echo $item[$i]['it_id']; ?>"><strong><?php echo $item[$i]['it_model']; ?> (<?php echo $item[$i]['it_name']; ?>)</strong> <b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #<?=($item[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;"><?=($item[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?></b></a></td>
+					<td colspan="6">
+						<a href="./item.php?it_id=<?php echo $item[$i]['it_id']; ?>">
+							<strong><?php echo $item[$i]['it_model']; ?> (<?php echo $item[$i]['it_name']; ?>)</strong>
+							<?php if($item[$i]["prodSupYn"] == "N"){ ?>
+								<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
+							<?php } ?>
+						</a>
+					</td>
 					<!--
 					<td rowspan="<?php echo $item[$i]['rowspan']; ?>">
 						<ul class="delivery-info">
@@ -228,7 +240,12 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				</td>
 				<td style="width: 120px; vertical-align: middle;">
 				<?php for($ii = 0; $ii < $item[$i]["opt"][$k]["ct_qty"]; $ii++){ ?>
-					<input type="text" class="form-control input-sm prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" style="margin-bottom: 5px;" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>">
+					<?php if($od["staOrdCd"] == "03"){ ?>
+						<?=($ii) ? "<br>" : ""?>
+						<span><?=$prodList[$prodListCnt]["prodBarNum"]?></span>
+					<?php } else { ?>
+						<input type="text" class="form-control input-sm prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" style="margin-bottom: 5px;" value="" <?=($item[$i]["ct_stock_qty"] > $ii) ? "readonly" : ""?>>
+					<?php } ?>
 				<?php $prodListCnt++; } ?>
 				</td>
 			</tr>
@@ -779,7 +796,6 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	<a class="btn btn-color btn-sm" href="./orderinquiry.php"><i class="fa fa-bars"></i> 목록으로</a>
 	<button type="button" id="send_statement" class="btn btn-blue btn-sm"><i class="fa fa-print"></i> 거래명세서출력</button>
 	<button type="button" onclick="apms_print();" class="btn btn-black btn-sm"><i class="fa fa-print"></i> 프린트</button>
-	<button type="button" id="prodBarNumSaveBtn" class="btn btn-blue btn-sm">바코드저장</button>
 	<?php if($setup_href) { ?>
 		<a class="btn btn-color btn-sm win_memo" href="<?php echo $setup_href;?>">
 			<i class="fa fa-cogs"></i> 스킨설정

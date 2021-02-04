@@ -63,8 +63,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_SKIN_URL.'/style.css">', 
             $('.today-slick').slick({
                 infinite : true,
                 arrows : true,
-                prevArrow:"<button type='button' class='today-slick-prev'><i class='fa fa-angle-left' aria-hidden='true'></i></button>",
-                nextArrow:"<button type='button' class='today-slick-next'><i class='fa fa-angle-right' aria-hidden='true'></i></button>"
+                prevArrow:"<button type='button' class='today-slick-prev'><i class='fa fa-caret-left' aria-hidden='true'></i></button>",
+                nextArrow:"<button type='button' class='today-slick-next'><i class='fa fa-caret-right' aria-hidden='true'></i></button>"
             });
         })
     </script>

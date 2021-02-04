@@ -30,7 +30,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				# 재고조회
 				$oCurl = curl_init();
 				curl_setopt($oCurl, CURLOPT_PORT, 9001);
-				curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/stock/selectList");
+				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
 				curl_setopt($oCurl, CURLOPT_POST, 1);
 				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -43,7 +43,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				# 바코드조회
 				$oCurl = curl_init();
 				curl_setopt($oCurl, CURLOPT_PORT, 9001);
-				curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/stock/selectBarNumList");
+				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectBarNumList");
 				curl_setopt($oCurl, CURLOPT_POST, 1);
 				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -58,8 +58,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
 				
 				array_push($thisOptionCntList, $stockCntList["data"][0]["quantity"]);
-				foreach($stockBarList["data"][0]["prodBarNumList"] as $barData){
-					array_push($thisOptionBarSubList, $barData);
+				if($stockBarList["data"][0]["prodBarNumList"]){
+					foreach($stockBarList["data"][0]["prodBarNumList"] as $barData){
+						array_push($thisOptionBarSubList, $barData);
+					}
 				}
 				
 				array_push($thisOptionBarList, $thisOptionBarSubList);

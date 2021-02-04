@@ -1207,7 +1207,7 @@ if($is_member && $od_b_name) {
 
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9001);
-		curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/order/insert");
+		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/insert");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -1252,7 +1252,7 @@ if($is_member && $od_b_name) {
 			
 			$oCurl = curl_init();
 			curl_setopt($oCurl, CURLOPT_PORT, 9001);
-			curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/stock/insert");
+			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/insert");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -1264,6 +1264,9 @@ if($is_member && $od_b_name) {
 			
 			if($res["errorYN"] == "N"){
 				array_push($stoIdList, $res["data"][0]["stoId"]);
+			} else {
+				echo $res["message"];
+				return false;
 			}
 		}
 		

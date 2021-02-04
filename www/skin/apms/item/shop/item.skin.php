@@ -62,7 +62,42 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	# 210131 재고수량 조회
 	$optionCntHtml = "";
 	if($member["mb_id"]){
-		foreach($it["optionList"] as $optionData){
+		if($it["optionList"]){
+			foreach($it["optionList"] as $optionData){
+				$sendData = [];
+				$sendData["usrId"] = $member["mb_id"];
+				$sendData["entId"] = $member["mb_entId"];
+
+				$prodsSendData = [];
+
+				$prodsData = [];
+				$prodsData["prodId"] = $it["it_id"];
+				$prodsData["prodColor"] = $optionData["color"];
+				$prodsData["prodSize"] = $optionData["size"];
+				array_push($prodsSendData, $prodsData);
+
+				$sendData["prods"] = $prodsSendData;
+
+				# 재고조회
+				$oCurl = curl_init();
+				curl_setopt($oCurl, CURLOPT_PORT, 9001);
+				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
+				curl_setopt($oCurl, CURLOPT_POST, 1);
+				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+				$res = curl_exec($oCurl);
+				$stockCntList = json_decode($res, true);
+				curl_close($oCurl);
+
+				# 재고목록
+				$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
+
+				$optionCntHtml .= ($optionCntHtml) ? ", " : "";
+				$optionCntHtml .= "{$optionData["color"]}/{$optionData["size"]}({$stockCntList["data"][0]["quantity"]}개)";
+			}
+		} else {
 			$sendData = [];
 			$sendData["usrId"] = $member["mb_id"];
 			$sendData["entId"] = $member["mb_entId"];
@@ -71,8 +106,8 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 			$prodsData = [];
 			$prodsData["prodId"] = $it["it_id"];
-			$prodsData["prodColor"] = $optionData["color"];
-			$prodsData["prodSize"] = $optionData["size"];
+			$prodsData["prodColor"] = "";
+			$prodsData["prodSize"] = "";
 			array_push($prodsSendData, $prodsData);
 
 			$sendData["prods"] = $prodsSendData;
@@ -80,7 +115,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			# 재고조회
 			$oCurl = curl_init();
 			curl_setopt($oCurl, CURLOPT_PORT, 9001);
-			curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/stock/selectList");
+			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -89,12 +124,6 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			$res = curl_exec($oCurl);
 			$stockCntList = json_decode($res, true);
 			curl_close($oCurl);
-
-			# 재고목록
-			$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
-			
-			$optionCntHtml .= ($optionCntHtml) ? ", " : "";
-			$optionCntHtml .= "{$optionData["color"]}/{$optionData["size"]}({$stockCntList["data"][0]["quantity"]}개)";
 		}
 	}
 
@@ -150,7 +179,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<div class="h30 visible-xs"></div>
 		</div>
 		<div class="samhwa-item-info-mobile mobile">
-			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?><b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #<?=($it["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>; margin-left: 10px;"><?=($it["prodSupYn"] == "Y") ? "유통" : "비유통"?></b></h1>
+			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?>
+			<?php if($it["prodSupYn"] == "N"){ ?>
+				<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
+			<?php } ?>
+			</h1>
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
@@ -202,7 +235,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<div class="item-info-arrowbtn mobile">
 				<img src="<?php echo THEMA_URL; ?>/assets/img/icon_arrow_down.png" class="arrow" />
 			</div>
-			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?><b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #<?=($it["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>; margin-left: 10px;"><?=($it["prodSupYn"] == "Y") ? "유통" : "비유통"?></b></h1>
+			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?>
+			<?php if($it["prodSupYn"] == "N"){ ?>
+				<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
+			<?php } ?>
+			</h1>
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>

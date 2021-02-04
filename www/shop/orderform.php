@@ -644,6 +644,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 		}
 	}
 
+
 	$escrow_info = '';
 	if ($default['de_escrow_use']) {
 		// 결제대행사별 코드 include (에스크로 안내)

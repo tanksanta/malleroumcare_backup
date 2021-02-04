@@ -73,7 +73,9 @@ if ( is_array($item) && count($item) ) {
 					<input type="hidden" name="it_name[<?php echo $i; ?>]" value="<?php echo get_text($item[$i]['it_name']); ?>">
 					<a href="./item.php?it_id=<?php echo $item[$i]['it_id'];?>">
 						<b><?php echo stripslashes($item[$i]['it_model']); ?> (<?php echo stripslashes($item[$i]['it_name']); ?>)</b>
-						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #<?=($item[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;"><?=($item[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?></b>
+					<?php if($item[$i]["prodSupYn"] == "N"){ ?>
+						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
+					<?php } ?>
 					</a>
 					<?php if($item[$i]['it_options']) { ?>
 						<div class="well well-sm"><?php echo $item[$i]['it_options'];?></div>
