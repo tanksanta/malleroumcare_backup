@@ -98,6 +98,51 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 			</div>
 		</div>
 	</div>
+	
+	<div id="footerMoWrap" class="mo_layout">
+		<ul>
+			<li class="active">
+				<a href="/" title="홈">
+					<p class="img">
+						<img src="<?=THEMA_URL?>/assets/img/footerMoIconHomeActive.png" alt="홈" class="on">
+					</p>
+					<p class="name">홈</p>
+				</a>
+			</li>
+			<li>
+				<a href="/shop/my.recipient.list.php" title="수급자">
+					<p class="img">
+						<img src="<?=THEMA_URL?>/assets/img/footerMoIconRecipient.png" alt="수급자" class="off">
+					</p>
+					<p class="name">수급자</p>
+				</a>
+			</li>
+			<li>
+				<a href="#" title="보유재고">
+					<p class="img">
+						<img src="<?=THEMA_URL?>/assets/img/footerMoIconStock.png" alt="보유재고" class="off">
+					</p>
+					<p class="name">보유재고</p>
+				</a>
+			</li>
+			<li>
+				<a href="/shop/cart.php" title="장바구니">
+					<p class="img">
+						<img src="<?=THEMA_URL?>/assets/img/footerMoIconCart.png" alt="장바구니" class="off">
+					</p>
+					<p class="name">장바구니</p>
+				</a>
+			</li>
+			<li>
+				<a href="#" title="설정">
+					<p class="img">
+						<img src="<?=THEMA_URL?>/assets/img/footerMoIconMore.png" alt="설정" class="off">
+					</p>
+					<p class="name">설정</p>
+				</a>
+			</li>
+		</ul>
+	</div>
 
 </div><!-- .wrapper -->
 

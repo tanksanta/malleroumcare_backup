@@ -53,7 +53,7 @@ input{
 	* Common
 ================================================= */
 /* html{background:#f4f4f4;} */
-#thema_wrapper{background:#fff;font-family:'Nanum Gothic', sans-serif;font-size:14px;color:#333;position:relative;}
+#thema_wrapper{background:#fff;font-family:'Noto Sans KR', sans-serif;font-size:14px;color:#333;position:relative;}
 body.scroll-fixed{overflow:hidden;}
 .blind{position:absolute;overflow:hidden;clip:rect(0 0 0 0);margin:-1px;width:1px;height:1px;}
 .fr{float:right;}
@@ -67,7 +67,7 @@ a:link {text-decoration:none;}
 a:visited {text-decoration:none;}
 a:hover {text-decoration:none;}
 button{outline:none;}
-input,textarea,select,button{font-family:'Nanum Gothic', sans-serif;}
+input,textarea,select,button{font-family:'Noto Sans KR', sans-serif;}
 *{word-break:keep-all;word-wrap: break-word;box-sizing:border-box;-webkit-overflow-scrolling:touch;outline:none;}
 
 pre{white-space: pre-wrap;}
@@ -524,9 +524,13 @@ pre{white-space: pre-wrap;}
 .top_common_area > .searchWrap > form > #search::placeholder { color: #A6A6A6; }
 .top_common_area > .searchWrap > form > #sch_submit { width: 70px; height: 100%; float: left; background-color: #333; }
 
+.is-pc .at-body { min-height: 800px; }
 .at-body { width: 100%; float: left; }
 .at-container { width: 1400px; max-width: 1400px !important; margin: 0 auto; position: relative; overflow: inherit !important; }
 .at-content { width: 100%; float: left; padding-top: 0; }
+
+.samhwa-item-info > .optionStockCntList { display: none; }
+.samhwa-item-info-opener { bottom: 70px; z-index: 9; }
 
 /* 210202 메인 상단 슬라이드 */
 #mainTopSlidePCWrap { width: 100%; height: 656px; float: left; overflow: hidden; display: table; table-layout: fixed; }
@@ -550,7 +554,7 @@ pre{white-space: pre-wrap;}
 #mainTopSlidePCWrap > .viewWrap > ul > li.active { display: block; }
 #mainTopSlidePCWrap > .viewWrap > ul > li img { width: 100%; float: left; }
 
-#mainTopSlideMoWrap { width: 100%; float: left; overflow: hidden; margin-top: 20px; }
+#mainTopSlideMoWrap { width: 100%; float: left; overflow: hidden; }
 #mainTopSlideMoWrap * { position: relative; }
 #mainTopSlideMoWrap > .listWrap { width: 100%; float: left; border-radius: 5px; overflow: hidden; }
 #mainTopSlideMoWrap > .listWrap > ul { width: 100%; float: left; left: 0; transition: left 0.5s; }
@@ -594,12 +598,21 @@ pre{white-space: pre-wrap;}
 
 /* 210202 메인 추천 카테고리 */
 #mainBestCategoryWrap { width: 100%; float: left; margin-top: 65px; }
-#mainBestCategoryWrap > .title { width: 100%; float: left; text-align: center; font-size: 27px; color: #333; font-weight: bold; }
-#mainBestCategoryWrap > .list { width: 100%; float: left; margin-top: 35px; text-align: center; }
+#mainBestCategoryWrap * { position: relative; }
+#mainBestCategoryWrap > .title { width: 100%; float: left; text-align: center; font-size: 27px; color: #333; font-weight: bold; margin-bottom: 35px; }
+#mainBestCategoryWrap > .list { width: 100%; float: left; text-align: center; }
 #mainBestCategoryWrap > .list > li { width: 148px; display: inline-block; margin: 0 2px; }
 #mainBestCategoryWrap > .list > li:first-of-type { margin-left: 0; }
 #mainBestCategoryWrap > .list > li:last-of-type { margin-right: 0; }
 #mainBestCategoryWrap > .list > li > a { width: 100%; height: 80px; line-height: 76px; float: left; text-align: center; border-radius: 10px; border: 2px solid #DDD; font-weight: bold; font-size: 16px; color: #333; }
+
+#mainBestCategoryWrap > .mo_layout { width: 100%; float: left; border-top: 1px solid #D6D6D6; }
+#mainBestCategoryWrap > .mo_layout > li { width: 33.33%; float: left; border-bottom: 1px solid #D6D6D6; }
+#mainBestCategoryWrap > .mo_layout > li > a { width: 100%; float: left; padding: 25px 20px; }
+#mainBestCategoryWrap > .mo_layout > li > a > p { width: 100%; float: left; margin: 0; }
+#mainBestCategoryWrap > .mo_layout > li > a > p.img { padding-bottom: 100%; background-color: #F8F8F8; }
+#mainBestCategoryWrap > .mo_layout > li > a > p.img > img { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
+#mainBestCategoryWrap > .mo_layout > li > a > p.name { text-align: center; font-size: 15px; color: #666; margin-top: 10px; }
 
 /* 210202 메인 추천 제품 */
 #mainBestProductWrap { width: 100%; float: left; margin-top: 90px; }
@@ -652,9 +665,55 @@ pre{white-space: pre-wrap;}
 .mo_top > .searchWrap > form > #sch_submit { width: 60px; height: 100%; float: left; background-color: #333; }
 .mo_top > .header-hamburger-btn { position: absolute; height: 25px; cursor: pointer; top: 30px; right: 20px; }
 
-.mo_menu { width: 100%; float: left; top: 0; border-bottom: 0; padding: 0; }
+.mo_menu { width: 100%; float: left; top: 0; border-bottom: 0; padding: 0; margin-bottom: 20px; }
 
 .mo_layout { display: none; }
+
+/* 210204 메인 고객센터 */
+#mainCustomerInfoWrap { width: 100%; float: left; margin-top: 50px; }
+#mainCustomerInfoWrap * { position: relative; }
+#mainCustomerInfoWrap > .titleWrap { width: 100%; float: left; font-size: 18px; font-weight: bold; color: #333; margin-bottom: 15px; }
+#mainCustomerInfoWrap > .infoWrap { width: 100%; float: left; border: 2px solid #DDD; padding: 15px 20px; border-radius: 10px; }
+#mainCustomerInfoWrap > .infoWrap > li { height: 35px; line-height: 35px; float: left; font-size: 21px; font-weight: bold; color: #333; margin-right: 15px; }
+#mainCustomerInfoWrap > .infoWrap > li > img { height: 35px; float: left; }
+#mainCustomerInfoWrap > .infoWrap > li.callBtn { position: absolute; line-height: inherit; right: 20px; top: 15px; margin-right: 0; }
+#mainCustomerInfoWrap > .infoWrap > li.callBtn > a { width: 85px; height: 35px; line-height: 35px; float: left; text-align: center; color: #FFF; font-weight: bold; font-size: 13px; background-color: #333; border-radius: 5px; }
+#mainCustomerInfoWrap > .timeWrap { width: 100%; float: left; margin-top: 10px; font-size: 13px; color: #666; padding: 0 5px; }
+
+/* 210204 모바일 공용하단 */
+#footerMoWrap { position: fixed; width: 100%; height: 70px; left: 0; bottom: 0; z-index: 10; background-color: #F9F9F9; border-top: 1px solid #DDD; }
+#footerMoWrap > ul { width: 100%; height: 100%; float: left; display: table; table-layout: fixed; }
+#footerMoWrap > ul > li { width: 20%; height: 100%; display: table-cell; vertical-align: middle; }
+#footerMoWrap > ul > li > a { width: 100%; float: left; }
+#footerMoWrap > ul > li > a > p { width: 100%; float: left; text-align: center; margin: 0; font-size: 12px; color: #A9A9A9; }
+#footerMoWrap > ul > li > a > p.img > img { width: 35px; }
+#footerMoWrap > ul > li > a > p.img > img.on { display: none; }
+#footerMoWrap > ul > li > a > p.img > img.off { display: inline-block; }
+#footerMoWrap > ul > li > a > p.name { height: 15px; line-height: 15px; margin-top: 5px; }
+#footerMoWrap > ul > li.active > a > p { color: #333; }
+#footerMoWrap > ul > li.active > a > p.img > img.on { display: inline-block; }
+#footerMoWrap > ul > li.active > a > p.img > img.off { display: none; }
+
+/* 210204 수급자목록 */
+#myRecipientListWrap { width: 100%; float: left; margin-top: 20px; }
+#myRecipientListWrap * { position: relative; }
+#myRecipientListWrap > .titleWrap { width: 100%; float: left; font-size: 30px; font-weight: bold; padding: 10px 5px; }
+#myRecipientListWrap > .titleWrap > a { position: absolute; width: 100px; height: 35px; line-height: 35px; font-size: 12px; color: #FFF; background-color: #3366CC; text-align: center; font-weight: bold; top: 50%; margin-top: -17.5px; right: 0; }
+#myRecipientListWrap > .itemWrap { width: 100%; float: left; }
+#myRecipientListWrap > .itemWrap > .item { width: 49.5%; float: left; margin-right: 1%; border: 1px solid #DDD; margin-top: 1%; padding: 20px; }
+#myRecipientListWrap > .itemWrap > .item:nth-of-type(2n) { margin-right: 0; }
+#myRecipientListWrap > .itemWrap > .item > li.info { width: 100%; float: left; display: table; table-layout: fixed; margin-bottom: 5px; }
+#myRecipientListWrap > .itemWrap > .item > li.info:last-of-type { margin-bottom: 0; }
+#myRecipientListWrap > .itemWrap > .item > li.info > p { margin: 0; display: table-cell; vertical-align: top; font-size: 13px; }
+#myRecipientListWrap > .itemWrap > .item > li.info > p.labelName { width: 150px; font-weight: 500; color: #999; }
+#myRecipientListWrap > .itemWrap > .item > li.info > p.value { color: #000; }
+#myRecipientListWrap > .itemWrap > .item > li.btnWrap { position: absolute; top: 20px; right: 20px; z-index: 2; }
+#myRecipientListWrap > .itemWrap > .item > li.btnWrap > button { width: 50px; height: 30px; background-color: #FFF; color: #AAA; font-size: 12px; font-weight: bold; border: 1px solid #CCC; }
+#myRecipientListWrap > .itemWrap > .item > li.btnWrap > button.delBtn { background-color: #DC3333; color: #FFF; border: 1px solid #FFF; }
+#myRecipientListWrap > .moreBtnWrap { width: 100%; float: left; margin-top: 20px; }
+#myRecipientListWrap > .moreBtnWrap > button { width: 100%; height: 50px; float: left; border: 1px solid #CCC; font-size: 15px; font-weight: bold; color: #666; }
+#myRecipientListWrap > .moreBtnWrap > button > i { font-size: 21px; margin-right: 5px; vertical-align: middle; 새ㅔ
+-1px; }
 
 @media (max-width: 1400px){
 	.at-container { width: 100%; float: left; padding: 0 20px !important; }
@@ -664,16 +723,33 @@ pre{white-space: pre-wrap;}
 }
 
 @media (max-width: 960px){
-	body { padding-top: 160px; }
+	input, select, textarea { font-size: 16px !important; }
+	body { padding-top: 160px; padding-bottom: 70px; }
 	.pc_layout { display: none !important; }
 	.mo_layout { display: block !important; }
 	
-	.productListWrap > ul > li { width: 49%; }
+	.productListWrap > ul > li { width: 49%; margin-bottom: 10%; }
 	.productListWrap > ul > li:nth-of-type(5n) { margin-right: 2%; }
 	.productListWrap > ul > li:nth-of-type(2n) { margin-right: 0; }
+	.productListWrap > ul > li > a > p.sup { width: 80px; height: 25px; line-height: 25px; font-size: 12px; border-radius: 5px; }
+	
+	.item-head .item-image .supInfo { width: 80px; height: 25px; line-height: 25px; font-size: 12px; border-radius: 5px; }
 	
 	#mainBannerWrap > .listWrap { border-radius: 5px; overflow: hidden; }
 	
 	#mainBestCategoryWrap > .title { font-size: 21px; }
 	#mainBestProductWrap > .title { font-size: 21px; }
+	
+	.footer_area .logo { padding: 0; }
+	.footer_area .info p.link { margin-top: 30px; margin-bottom: 20px; }
+	
+	.btn_top_scroll { bottom: 80px; }
+	
+	#myRecipientListWrap > .titleWrap { font-size: 25px; }
+	
+	#myRecipientListWrap > .itemWrap > .item { width: 100%; margin-right: 0; margin-top: 2%; }
+	#myRecipientListWrap > .itemWrap > .item > li.info { display: block; margin-bottom: 10px; }
+	#myRecipientListWrap > .itemWrap > .item > li.info > p { display: block; width: 100%; float: left; }
+	#myRecipientListWrap > .itemWrap > .item > li.info > p.labelName { font-size: 12px; }
+	#myRecipientListWrap > .itemWrap > .item > li.info > p.value { font-size: 15px; font-weight: 500; margin-top: -5px; }
 }

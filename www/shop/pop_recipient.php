@@ -29,7 +29,7 @@ curl_close($curl);
 <script src="<?php echo G5_JS_URL;?>/common.js"></script>
 </head>
 <style>
-	html, body { width: 100%; height: 100%; float: left; background-color: #FFF; }
+	html, body { width: 100%; height: 100%; float: left; background-color: #FFF; padding: 0; }
 	.pop_top_area { width: 100%; left: 0; top: 0; }
 	.pop_top_area .btn_area a { top: 15px; right: 15px; }
 	.pop_list { z-index: 2; position: relative; }

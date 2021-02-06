@@ -60,7 +60,7 @@ if ( THEMA_KEY == 'partner' && !$member['mb_id'] ) {
 include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 	# 210131 재고수량 조회
-	$optionCntHtml = "";
+	$optionCntHtmlList = [];
 	if($member["mb_id"]){
 		if($it["optionList"]){
 			foreach($it["optionList"] as $optionData){
@@ -94,8 +94,13 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				# 재고목록
 				$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
 
-				$optionCntHtml .= ($optionCntHtml) ? ", " : "";
-				$optionCntHtml .= "{$optionData["color"]}/{$optionData["size"]}({$stockCntList["data"][0]["quantity"]}개)";
+				if($stockCntList["data"][0]["quantity"] > 0){
+					$thisData = [];
+					$thisData["name"] = "{$optionData["color"]}/{$optionData["size"]}";
+					$thisData["qty"] = $stockCntList["data"][0]["quantity"];
+					
+					array_push($optionCntHtmlList, $thisData);
+				}
 			}
 		} else {
 			$sendData = [];
@@ -124,6 +129,17 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			$res = curl_exec($oCurl);
 			$stockCntList = json_decode($res, true);
 			curl_close($oCurl);
+			
+			# 재고목록
+			$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
+
+			if($stockCntList["data"][0]["quantity"] > 0){
+				$thisData = [];
+				$thisData["name"] = $stockCntList["data"][0]["prodNm"];
+				$thisData["qty"] = $stockCntList["data"][0]["quantity"];
+
+				array_push($optionCntHtmlList, $thisData);
+			}
 		}
 	}
 
@@ -139,6 +155,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	<div class="samhwa-item-head-container">
 		<div class="samhwa-item-image">
 			<div class="item-image">
+			<?php if($it["prodSupYn"] == "N"){ ?>
+				<b class="supInfo">비유통 상품</b>
+			<?php } ?>
 				<a href="<?php echo $item_image_href;?>" id="item_image_href" class="popup_item_image" target="_blank" title="크게보기">
 					<img id="item_image" src="<?php echo $item_image;?>" alt="">
 				</a>
@@ -180,16 +199,20 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 		</div>
 		<div class="samhwa-item-info-mobile mobile">
 			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?>
-			<?php if($it["prodSupYn"] == "N"){ ?>
-				<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
-			<?php } ?>
 			</h1>
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
 			<!-- 재고수량 -->
-			<?php if($optionCntHtml){ ?>
-				<p class="help-block"><?=$optionCntHtml?></p>
+			<?php if($optionCntHtmlList){ ?>
+				<ul class="optionStockCntList">
+				<?php foreach($optionCntHtmlList as $data){ ?>
+					<li>
+						<span class="name"><?=$data["name"]?></span>
+						<span class="cnt"><?=number_format($data["qty"])?>개</span>
+					</li>
+				<?php } ?>
+				</ul>
 			<?php } ?>
 			<?php if($it["it_sale_cnt"]){ ?>
 				<p style="color: #DC3333;"><?=$it["it_sale_cnt"]?>개 이상 <?=$it["it_sale_percent"]?>% 할인적용</p>
@@ -209,11 +232,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php } ?>
 		</div>
 		<style>
-		@media (max-width: 991px) {
-			#samhwa-mobile-tail {
-				display:none;
+			@media (max-width: 991px) {
+				#samhwa-mobile-tail {
+					display:none;
+				}
 			}
-		}
+			
+			@media (max-width: 960px){
+				body { padding-bottom: 130px; }
+				.btn_top_scroll { bottom: 140px; }
+			}
 		</style>
 		<script>
 		$(function() {
@@ -236,17 +264,21 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<img src="<?php echo THEMA_URL; ?>/assets/img/icon_arrow_down.png" class="arrow" />
 			</div>
 			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?>
-			<?php if($it["prodSupYn"] == "N"){ ?>
-				<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
-			<?php } ?>
 			</h1>
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
 			
 			<!-- 재고수량 -->
-			<?php if($optionCntHtml){ ?>
-				<p class="help-block"><?=$optionCntHtml?></p>
+			<?php if($optionCntHtmlList){ ?>
+				<ul class="optionStockCntList">
+				<?php foreach($optionCntHtmlList as $data){ ?>
+					<li>
+						<span class="name"><?=$data["name"]?></span>
+						<span class="cnt"><?=number_format($data["qty"])?>개</span>
+					</li>
+				<?php } ?>
+				</ul>
 			<?php } ?>
 
 			<?php if ( $it['it_model'] ) { ?>

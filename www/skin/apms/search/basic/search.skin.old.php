@@ -61,59 +61,6 @@ $list_cnt = count($list);
 
 include_once($skin_path.'/search.skin.form.php');
 
-	# 210204 재고조회
-	$stockQtyList = [];
-	if($member["mb_id"]){
-		$sendData = [];
-		$sendData["usrId"] = $member["mb_id"];
-		$sendData["entId"] = $member["mb_entId"];
-		
-		$prodsSendData = [];
-		
-		for($i = 0; $i < $list_cnt; $i++){
-			$stockQtyList[$list[$i]["it_id"]] = 0;
-			
-			if($list[$i]["optionList"]){
-				foreach($list[$i]["optionList"] as $optionData){
-					$prodsData = [];
-					$prodsData["prodId"] = $list[$i]["it_id"];
-					$prodsData["prodColor"] = explode(chr(30), $optionData)[0];
-					$prodsData["prodSize"] = explode(chr(30), $optionData)[1];
-					
-					array_push($prodsSendData, $prodsData);
-				}
-			} else {
-				$prodsData = [];
-				$prodsData["prodId"] = $list[$i]["it_id"];
-				$prodsData["prodColor"] = "";
-				$prodsData["prodSize"] = "";
-
-				array_push($prodsSendData, $prodsData);
-			}
-		}
-		
-		$sendData["prods"] = $prodsSendData;
-		
-		# 재고조회
-		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9001);
-		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
-		curl_setopt($oCurl, CURLOPT_POST, 1);
-		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-		$res = curl_exec($oCurl);
-		$stockCntList = json_decode($res, true);
-		curl_close($oCurl);
-		
-		if($stockCntList["data"]){
-			foreach($stockCntList["data"] as $data){
-				$stockQtyList[$data["prodId"]] += $data["quantity"];
-			}
-		}
-	}
-
 ?>
 <style>
 	.list-wrap { margin-right:<?php echo $minus_right;?>px; margin-bottom:<?php echo $minus_bottom;?>px; }
@@ -144,48 +91,110 @@ include_once($skin_path.'/search.skin.form.php');
 		<?php } ?>
 	<?php } ?>
 </style>
+<div class="item_list_wrap">
+	<ul> 
+<?php
+// 리스트
+for ($i=0; $i < $list_cnt; $i++) {
+	echo '<li>';
 
-<div class="productListWrap" style="margin-top: 30px;">
-	<ul>
-	<?php for($i=0; $i < $list_cnt; $i++){ ?>
-	<?php
-										  
-		$img = apms_it_thumbnail($list[$i], 400, 400, false, true);
+	if ($list[$i]['it_youtube_link']) {
+        echo '<div class="icon_vod"><img src="'.THEMA_URL.'/assets/img/icon_vod.png" alt=""></div>';
+    }
 
-		if(!$img["src"] && $list[$i]["it_img1"]){
-			$img["src"] = G5_DATA_URL."/item/{$list[$i]["it_img1"]}";
-			$img["org"] = G5_DATA_URL."/item/{$list[$i]["it_img1"]}";
-		}
+    if ($list[$i]['href']) {
+        echo "<a href=\"{$list[$i]['href']}\">\n";
+	}
 
-		if(!$img["src"]){
-			$img["src"] = G5_URL."/shop/img/no_image.gif";
-		}
-										  
-	?>
-		<li>
-			<a href="<?=$list[$i]["href"]?>">
-			<?php if($list[$i]["prodSupYn"] == "N"){ ?>
-				<p class="sup">비유통 상품</p>
-			<?php } ?>
-				<p class="img">
-				<?php if($img["src"]){ ?>
-					<img src="<?=$img["src"]?>" alt="<?=$list[$i]["it_name"]?>_상품이미지">
-				<?php } ?>
-				</p>
-				<p class="name"><?=$list[$i]["it_name"]?></p>
-			<?php if($list[$i]["it_model"]){ ?>
-				<p class="info"><?=$list[$i]["it_model"]?></p>
-			<?php } ?>
-				<p class="price"><?=show_samhwa_price($list[$i], THEMA_KEY)?></p>
-			<?php if($stockQtyList[$list[$i]["it_id"]]){ ?>
-				<p class="cnt">
-					<span>재고 보유</span>
-					<span class="right"><?=$stockQtyList[$list[$i]["it_id"]]?>개</span>
-				</p>
-			<?php } ?>
-			</a>
-		</li>
-	<?php } ?>
+	$img = apms_it_thumbnail($list[$i], 400, 400, false, true);
+
+	// print_r2($list[$i]);
+	if ( !$img['src'] && $list[$i]['it_img1'] ) {
+		$img['src'] = G5_DATA_URL . '/item/' . $list[$i]['it_img1'];
+		$img['org'] = G5_DATA_URL . '/item/' . $list[$i]['it_img1'];
+	}
+
+	if ( !$img['src'] ) {
+		$img['src'] = G5_URL . '/shop/img/no_image.gif';
+	}
+	
+    if ($img['src']) {
+        echo '<div class="img_area">';
+        echo '<img src="'.$img['src'].'" alt="'.$img['alt'].'" style="display: block;">';
+		echo '</div>';
+	}
+
+	echo '<div class="desc">';
+	
+    if ($list[$i]['it_name']) {
+        echo "<p>".stripslashes($list[$i]['it_name'])."</p>\n";
+	}
+
+	
+    if ($list[$i]['it_model']) {
+        echo "<p class=\"item_tit\">  ".stripslashes($list[$i]['it_model'])."</p>\n";
+	}
+	
+	
+    echo '
+								 
+    ';
+
+	
+    if ($list[$i]['it_price']) {
+        echo '<div class="pay">'.show_samhwa_price($list[$i], THEMA_KEY).'</div>';
+	}
+	
+	if ($list[$i]['it_price']) {
+        if ( $list[$i]['it_type1']) {
+            echo '<div class="item_tag" style="border:1px solid '.$default['de_it_type1_color'].';color:'.$default['de_it_type1_color'].';">'.$default['de_it_type1_name'].'</div>';
+        }
+        if ( $list[$i]['it_type2']) {
+            echo '<div class="item_tag" style="border:1px solid '.$default['de_it_type2_color'].';color:'.$default['de_it_type2_color'].';">'.$default['de_it_type2_name'].'</div>';
+        }
+        if ( $list[$i]['it_type3']) {
+            echo '<div class="item_tag" style="border:1px solid '.$default['de_it_type3_color'].';color:'.$default['de_it_type3_color'].';">'.$default['de_it_type3_name'].'</div>';
+        }
+        if ( $list[$i]['it_type4']) {
+            echo '<div class="item_tag" style="border:1px solid '.$default['de_it_type4_color'].';color:'.$default['de_it_type4_color'].';">'.$default['de_it_type4_name'].'</div>';
+        }
+        if ( $list[$i]['it_type5']) {
+            echo '<div class="item_tag" style="border:1px solid '.$default['de_it_type5_color'].';color:'.$default['de_it_type5_color'].';">'.$default['de_it_type5_name'].'</div>';
+        }
+	}
+	
+    echo '</div>';
+
+	if ($list[$i]['href']) {
+        echo "</a>\n";
+	}
+ 
+	// 우선순위 조정
+    if ($is_admin && $sort == 'custom') {
+        $sql_custom_index = "select *
+                          from g5_shop_item_custom_index
+                          where it_id = '{$list[$i]['it_id']}' and ca_id = '{$ca_id}'";
+        $row = sql_fetch($sql_custom_index);
+        $custom_index = "<div class='custom-index'>
+                            <span>우선순위</span><input data-item-id='{$list[$i]['it_id']}' type='text' style='border: 1px solid #999; float: right; text-align: center;' value='{$row['custom_index']}' oninput='this.value = this.value.replace(/[^0-9.]/g, \"\").replace(/(\..*)\./g, \"$1\");'>
+                         </div>";
+        echo $custom_index;
+    }
+    
+    if ($list[$i]['it_youtube_link']) {
+        echo '
+        <div class="vod_area">
+            <div class="vod_tit">동영상보기</div>
+            <div class="btn_close"> <button><img src="'.THEMA_URL.'/assets/img/btn_top_menu_x.png"></button></div>
+            <iframe width="100%" height="280" src="'.$list[$i]['it_youtube_link'].'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" style="height: 56.25px;"></iframe>
+            <a href="'.$list[$i]['it_youtube_link'].'">상세보기 <img src="'.THEMA_URL.'/assets/img/btn_arrow_icon.png" alt=""> </a>
+        </div>
+        ';
+    }
+
+	echo '</li>';
+}
+?>
 	</ul>
 </div>
 

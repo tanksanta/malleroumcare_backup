@@ -198,6 +198,7 @@ $(document).ready(function() {
 						<a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a>
 						<a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a>
 						<a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송</a>
+						<a href="<?php echo G5_SHOP_URL; ?>/my.recipient.list.php" >수급자</a>
 						<?php if($member['admin']) {?>
 							<a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
 						<?php } ?>

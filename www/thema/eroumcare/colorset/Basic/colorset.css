@@ -4,10 +4,9 @@
 ■ Basic : 기본
 ********************************************************/
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,300,500,500italic,700,900,400italic,700italic');
-@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap');
 @import url('https://fonts.googleapis.com/earlyaccess/nanumgothic.css');
 
-* { font-family: Helvetica,'Nanum Gothic', "Malgun Gothic","Apple SD Gothic Neo",AppleGothic, 'Noto Sans KR' ,Dotum,Arial,Tahoma, sans-serif; }
+* { font-family: "Noto Sans KR", sans-serif; }
 body { line-height: 22px; font-size: 12px; color: rgb(51, 51, 51); background-color:#fff; background-repeat: no-repeat; background-attachment:fixed; background-size:cover; }
 body.is-pc .ko { font-size:12px; }
 a { color: rgb(51, 51, 51); cursor: pointer; text-decoration: none; }
@@ -295,7 +294,7 @@ blockquote { font-size: 12px; margin:0px 0px 20px; }
 ■ Bootstrap3 : 부트스트랩 기본속성
 ********************************************************/
 /* Button */
-.btn { font-family: "Roboto", sans-serif; }
+.btn { font-family: "Noto Sans KR", sans-serif; }
 .btn-lg { padding: 10px 16px; border-radius: 3px; line-height: 1.33; font-size: 18px; }
 .btn-lg i {	top: 3px; font-size: 24px; position: relative; }
 .btn-xs { padding: 4px 10px; }

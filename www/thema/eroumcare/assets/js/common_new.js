@@ -157,8 +157,11 @@ $(document).ready(function() {
 		var top = scrollTop - 237;
 		var maxTop = $("body").innerHeight() - 1200;
 		top = (top > maxTop) ? maxTop : top;
-		console.log(maxTop);
 
+		if(maxTop < 0){
+			return false;
+		}
+		
 		if(scrollTop >= 237){
 			$(".scrollBannerListWrap").css("transform", "translateY(" + (top + 20) + "px)");
 		} else if(scrollTop < 237){

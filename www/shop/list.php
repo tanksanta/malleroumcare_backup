@@ -150,9 +150,22 @@ if ($sort != 'custom') {
 //print_r2($list_sql);
 $result = sql_query($list_sql);
 for ($i=0; $row=sql_fetch_array($result); $i++) { 
+	$thisOptionList = [];
+	
+	# 210204 옵션
+	$thisOptionSQL = sql_query("
+		SELECT io_id
+		FROM g5_shop_item_option
+		WHERE it_id = '{$row["it_id"]}'
+	");
+	for($ii = 0; $subRow = sql_fetch_array($thisOptionSQL); $ii++){
+		array_push($thisOptionList, $subRow["io_id"]);
+	} 
+	
 	$list[$i] = $row;
 	$list[$i]['href'] = './item.php?it_id='.$row['it_id'].'&amp;ca_id='.$ca_id.$qstr.'&amp;page='.$page;
 	$list[$i]['num'] = $num;
+	$list[$i]["optionList"] = $thisOptionList;
 	$num--;
 }
 

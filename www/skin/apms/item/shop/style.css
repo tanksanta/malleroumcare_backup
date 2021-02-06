@@ -161,3 +161,12 @@
 	.responsive #item-tab .nav-justified li a { border-right:1px solid #ddd; }
 	.responsive #item-tab .nav-justified li:last-child a { border-right:0px; border-bottom:1px solid #ddd; }
 }
+
+/* 210204 */
+.optionStockCntList { width: 100%; border: 1px solid #F28D0B; margin-top: 20px; padding-bottom: 10px; }
+.optionStockCntList > li { width: 100%; height: 20px; line-height: 20px; padding: 0 15px; margin-top: 10px; }
+.optionStockCntList > li > span { font-size: 12px; }
+.optionStockCntList > li > span.name { float: left; }
+.optionStockCntList > li > span.cnt { float: right; font-weight: bold; }
+.item-head .item-image { position: relative; }
+.item-head .item-image .supInfo { position: absolute; width: 100px; height: 40px; line-height: 40px; text-align: center; color: #FFF; font-size: 13px; font-weight: bold; top: 15px; right: 15px; background-color: #F03F45; border-radius: 10px; }

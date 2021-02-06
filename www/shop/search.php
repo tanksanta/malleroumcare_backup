@@ -205,9 +205,22 @@ $total_page  = ceil($total_count / $items); // 전체 페이지 계산
 $num = $total_count - ($page - 1) * $items;
 $result = sql_query(" select * $sql_common $sql_where {$order_by} limit $from_record, $items ");
 for ($i=0; $row=sql_fetch_array($result); $i++) { 
+	$thisOptionList = [];
+	
+	# 210204 옵션
+	$thisOptionSQL = sql_query("
+		SELECT io_id
+		FROM g5_shop_item_option
+		WHERE it_id = '{$row["it_id"]}'
+	");
+	for($ii = 0; $subRow = sql_fetch_array($thisOptionSQL); $ii++){
+		array_push($thisOptionList, $subRow["io_id"]);
+	} 
+	
 	$list[$i] = $row;
 	$list[$i]['href'] = './item.php?it_id='.$row['it_id'].$ca_qstr;
 	$list[$i]['num'] = $num;
+	$list[$i]["optionList"] = $thisOptionList;
 	$num--;
 }
 
