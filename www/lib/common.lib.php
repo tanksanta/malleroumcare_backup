@@ -3411,6 +3411,7 @@ function login_password_check($mb, $pass, $hash)
 // 동일한 host url 인지
 function check_url_host($url, $msg='', $return_url=G5_URL, $is_redirect=false)
 {
+	return false;
     if(!$msg)
         $msg = 'url에 타 도메인을 지정할 수 없습니다.';
 

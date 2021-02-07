@@ -11,13 +11,32 @@
 
 ?>
 
-	<script src="//spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 	<script src="<?=G5_JS_URL?>/jquery.register_form.js"></script>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 	<style>
 		#ui-datepicker-div { z-index: 999 !important; }
+		
+		#zipAddrPopupWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+		#zipAddrPopupWrap > div { position: relative; width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+		#zipAddrPopupWrap > div > div { position: relative; width: 700px; height: 500px; background-color: #FFF; padding-top: 50px; left: 50%; margin-left: -350px; }
+		#zipAddrPopupWrap #zipAddrPopupIframe { position: relative; width: 100%; height: 100%; float: left; border: 0; background-color: #FFF; border-top: 1px solid #DDD; }
+		#zipAddrPopupWrap .closeBtn { position: absolute; font-size: 32px; color: #AAA; top: 10px; right: 10px; cursor: pointer; }
+		
+		@media (max-width : 750px){
+			#zipAddrPopupWrap > div > div { width: 100%; height: 100%; left: 0; margin-left: 0; }
+		}
 	</style>
+	
+	<div id="zipAddrPopupWrap">
+		<div>
+			<div>
+				<i class="fa fa-times-circle closeBtn" onclick="zipPopupClose();"></i>
+				<div id="zipAddrPopupIframe"></div>
+			</div>
+		</div>
+	</div>
 	
 	<form class="form-horizontal register-form">
 		<div class="panel panel-default">
@@ -28,7 +47,17 @@
 						<b>수급자명</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="text" name="penNm" class="form-control input-sm">
+						<i class="fa fa-check form-control-feedback"></i>
+					</div>
+				</div>
+				
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>주민등록번호</b>
+					</label>
+					<div class="col-sm-3">
+						<input type="text" name="penJumin" class="form-control input-sm">
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -38,7 +67,7 @@
 						<b>생년월일</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm" dateonly>
+						<input type="text" name="penBirth" class="form-control input-sm" dateonly>
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -48,7 +77,7 @@
 						<b>장기요양인정번호</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="text" name="penLtmNum" class="form-control input-sm">
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -58,6 +87,9 @@
 						<b>인정등급</b>
 					</label>
 					<div class="col-sm-3">
+						<input type="text" name="penRecGraCd" class="form-control input-sm" value="PEN00001" readonly>
+						<i class="fa fa-check form-control-feedback"></i>
+<!--
 						<select class="form-control input-sm">
 							<option value="00">등급외</option>
 							<option value="01">1등급</option>
@@ -66,6 +98,7 @@
 							<option value="04">4등급</option>
 							<option value="05">5등급</option>
 						</select>
+-->
 					</div>
 				</div>
 				
@@ -74,7 +107,7 @@
 						<b>유효기간(시작일)</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm" dateonly>
+						<input type="text" name="penExpiStDtm" class="form-control input-sm" dateonly>
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -84,7 +117,7 @@
 						<b>유효기간(종료일)</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm" dateonly>
+						<input type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly>
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -94,8 +127,17 @@
 						<b>본인부담금율</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="text" name="penTypeCd" class="form-control input-sm" value="PEN00002" readonly>
 						<i class="fa fa-check form-control-feedback"></i>
+<!--
+						<select class="form-control input-sm">
+							<option value="00">일반 15%</option>
+							<option value="01">감경 9%</option>
+							<option value="02">감경 6%</option>
+							<option value="03">의료 6%</option>
+							<option value="04">기초 0%</option>
+						</select>
+-->
 					</div>
 				</div>
 				
@@ -119,7 +161,7 @@
 						<b>휴대전화</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="text" name="penConNum" class="form-control input-sm">
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -129,7 +171,7 @@
 						<b>일반전화</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="text" name="penConPnum" class="form-control input-sm">
 					</div>
 				</div>
 				
@@ -141,20 +183,20 @@
 					<div class="col-sm-8">
 						<label for="reg_mb_zip" class="sound_only">우편번호</label>
 						<label>
-							<input type="text" name="mb_zip" class="form-control input-sm" size="6" maxlength="6" readonly>
+							<input type="text" name="penZip" class="penZip form-control input-sm" size="6" maxlength="6" readonly>
 						</label>
 						<label>
-							<button type="button" class="btn btn-black btn-sm win_zip_find" style="margin-top:0px;">주소 검색</button>
+							<button type="button" class="btn btn-black btn-sm" onclick="zipPopupOpen(this);" style="margin-top:0px;">주소 검색</button>
 						</label>
 
 						<div class="addr-line" style="margin-bottom: 5px;">
 							<label class="sound_only">기본주소</label>
-							<input type="text" name="mb_addr2" class="form-control input-sm" placeholder="기본주소" readonly>
+							<input type="text" name="penAddr" class="penAddr form-control input-sm" placeholder="기본주소" readonly>
 						</div>
 
 						<div class="addr-line">
 							<label class="sound_only">상세주소</label>
-							<input type="text" name="mb_addr2" class="form-control input-sm" placeholder="상세주소">
+							<input type="text" name="penAddrDtl" class="form-control input-sm" placeholder="상세주소">
 						</div>
 					</div>
 				</div>
@@ -169,7 +211,7 @@
 						<b>보호자명</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="text" name="penProNm" class="form-control input-sm">
 					</div>
 				</div>
 				
@@ -178,7 +220,7 @@
 						<b>생년월일</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm" dateonly>
+						<input type="text" name="penProBirth" class="form-control input-sm" dateonly>
 					</div>
 				</div>
 				
@@ -187,7 +229,24 @@
 						<b>관계</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="hidden" name="penProRel" value="PEN00003">
+						<input type="text" name="penProRelEtc" class="form-control input-sm">
+<!--
+						<select class="form-control input-sm">
+							<option value="00">처</option>
+							<option value="01">남편</option>
+							<option value="02">자</option>
+							<option value="03">자부</option>
+							<option value="04">사위</option>
+							<option value="05">형제</option>
+							<option value="06">자매</option>
+							<option value="07">손</option>
+							<option value="08">배우자 형제자매</option>
+							<option value="09">외손</option>
+							<option value="10">부모</option>
+							<option value="11">직접입력</option>
+						</select>
+-->
 					</div>
 				</div>
 				
@@ -196,7 +255,7 @@
 						<b>이메일</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="text" name="penProEmail" class="form-control input-sm">
 					</div>
 				</div>
 				
@@ -205,7 +264,7 @@
 						<b>휴대전화</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="text" name="penProConNum" class="form-control input-sm">
 					</div>
 				</div>
 				
@@ -214,7 +273,7 @@
 						<b>일반전화</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="text" name="penProConPnum" class="form-control input-sm">
 					</div>
 				</div>
 				
@@ -222,8 +281,25 @@
 					<label class="col-sm-2 control-label">
 						<b>주소</b>
 					</label>
-					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+					
+					<div class="col-sm-8">
+						<label for="reg_mb_zip" class="sound_only">우편번호</label>
+						<label>
+							<input type="text" name="penProZip" class="penZip form-control input-sm" size="6" maxlength="6" readonly>
+						</label>
+						<label>
+							<button type="button" class="btn btn-black btn-sm" onclick="zipPopupOpen(this);" style="margin-top:0px;">주소 검색</button>
+						</label>
+
+						<div class="addr-line" style="margin-bottom: 5px;">
+							<label class="sound_only">기본주소</label>
+							<input type="text" name="penProAddr" class="penAddr form-control input-sm" placeholder="기본주소" readonly>
+						</div>
+
+						<div class="addr-line">
+							<label class="sound_only">상세주소</label>
+							<input type="text" name="penProAddrDtl" class="form-control input-sm" placeholder="상세주소">
+						</div>
 					</div>
 				</div>
 				
@@ -232,7 +308,14 @@
 						<b>담당직원정보</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<select class="form-control input-sm" name="entUsrId">
+							<option value="testosw">testosw</option>
+							<option value="test4">관리자2</option>
+							<option value="poongki">백진수</option>
+							<option value="123456789" selected>사업소대표</option>
+							<option value="uxis">유시스</option>
+							<option value="dsadsa">테스트사업소2직원</option>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -261,7 +344,11 @@
 						<b>수령방법</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<select class="form-control input-sm" style="margin-bottom: 5px;" name="penRecTypeCd">
+							<option value="00">방문</option>
+							<option value="01">유선</option>
+						</select>
+						<input type="text" name="penRecTypeTxt" class="form-control input-sm">
 					</div>
 				</div>
 				
@@ -270,7 +357,7 @@
 						<b>특이사항</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="mb_name" class="form-control input-sm">
+						<input type="text" name="penRemark" class="form-control input-sm">
 					</div>
 				</div>
 			</div>
@@ -283,6 +370,30 @@
 	</form>
 	
 	<script type="text/javascript">
+			var zipPopupDom = document.getElementById("zipAddrPopupIframe");
+		
+			function zipPopupClose(){
+				$("#zipAddrPopupWrap").hide();
+			}
+		
+			function zipPopupOpen(target){
+				new daum.Postcode({
+					oncomplete: function(data){
+						var parent = $(target).closest(".col-sm-8");
+						
+						$(parent).find(".penZip").val(data.sigunguCode);
+						$(parent).find(".penAddr").val(data.address);
+
+						zipPopupClose();
+					},
+					width : "100%",
+					height : "100%",
+					maxSuggestItems : 5
+				}).embed(zipPopupDom);
+
+				$("#zipAddrPopupWrap").show();
+			}
+		
 		$(function(){
 			
 			$.datepicker.setDefaults({
@@ -300,7 +411,75 @@
 			});
 			
 			$("input:text[dateonly]").datepicker();
+			$("#zipAddrPopupWrap").css("opacity", 1);
+			$("#zipAddrPopupWrap").hide();
 			
+			$("#btn_submit").click(function(){
+				var importantIcon = $(".register-form .form-control-feedback");
+				for(var i = 0; i < importantIcon.length; i++){
+					var item = $(importantIcon[i]).prev();
+					if(!$(item).val()){
+						alert("필수값을 입력해주시길 바랍니다.");
+						$(item).focus();
+						return false;
+					}
+				}
+				
+				var sendData = {
+					penNm : $(".register-form input[name='penNm']").val(),
+					penLtmNum : $(".register-form input[name='penLtmNum']").val(),
+					penRecGraCd : $(".register-form input[name='penRecGraCd']").val(),
+					penGender : $(".register-form input[name='penGender']:checked").val(),
+					penBirth : $(".register-form input[name='penBirth']").val(),
+					penJumin : $(".register-form input[name='penJumin']").val(),
+					penTypeCd : $(".register-form input[name='penTypeCd']").val(),
+					penConNum : $(".register-form input[name='penConNum']").val(),
+					penConPnum : $(".register-form input[name='penConPnum']").val(),
+					penExpiStDtm : $(".register-form input[name='penExpiStDtm']").val(),
+					penExpiEdDtm : $(".register-form input[name='penExpiEdDtm']").val(),
+					penAppStDtm1 : "",
+					penAppEdDtm1 : "",
+					penAppStDtm2 : "",
+					penAppEdDtm2 : "",
+					penAppStDtm3 : "",
+					penAppEdDtm3 : "",
+					penRecDtm : "",
+					penAppDtm : "",
+					penZip : $(".register-form input[name='penZip']").val(),
+					penAddr : $(".register-form input[name='penAddr']").val(),
+					penAddrDtl : $(".register-form input[name='penAddrDtl']").val(),
+					penProNm : $(".register-form input[name='penProNm']").val(),
+					penProBirth : $(".register-form input[name='penProBirth']").val(),
+					penProRel : $(".register-form input[name='penProRel']").val(),
+					penProConNum : $(".register-form input[name='penProConNum']").val(),
+					penProConPnum : $(".register-form input[name='penProConPnum']").val(),
+					penProEmail : $(".register-form input[name='penProEmail']").val(),
+					penProRelEtc : $(".register-form input[name='penProRelEtc']").val(),
+					penProZip : $(".register-form input[name='penProZip']").val(),
+					penProAddr : $(".register-form input[name='penProAddr']").val(),
+					penProAddrDtl : $(".register-form input[name='penProAddrDtl']").val(),
+					penCnmTypeCd : $(".register-form input[name='penCnmTypeCd']:checked").val(),
+					penRecTypeCd : $(".register-form input[name='penRecTypeCd']").val(),
+					penRecTypeTxt : $(".register-form input[name='penRecTypeTxt']").val(),
+					penRemark : $(".register-form input[name='penRemark']").val(),
+					ent_id : "<?=$member["mb_entId"]?>",
+					entUsrId : $(".register-form input[name='entUsrId']").val(),
+					appCd : "PEN00007",
+					caCenYn : "N",
+					usrId : "<?=$member["mb_id"]?>"
+				}
+				
+				$.ajax({
+					url : "./ajax.my.recipient.write.php",
+					type : "POST",
+					async : false,
+					data : sendData,
+					success : function(result){
+						result = JSON.parse(result);
+					}
+				});
+			});
+
 		})
 	</script>
 

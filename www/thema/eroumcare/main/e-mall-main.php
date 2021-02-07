@@ -435,7 +435,7 @@
 					}
 			?>
 				<li>
-					<a href="./item.php?it_id=<?=$row["it_id"]?>">
+					<a href="/shop/item.php?it_id=<?=$row["it_id"]?>">
 					<?php if($row["prodSupYn"] == "N"){ ?>
 						<p class="sup">비유통 상품</p>
 					<?php } ?>
