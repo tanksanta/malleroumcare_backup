@@ -709,7 +709,7 @@ pre{white-space: pre-wrap;}
 #myRecipientListWrap > .itemWrap > .item > li.info > p.labelName { width: 150px; font-weight: 500; color: #999; }
 #myRecipientListWrap > .itemWrap > .item > li.info > p.value { color: #000; }
 #myRecipientListWrap > .itemWrap > .item > li.btnWrap { position: absolute; top: 20px; right: 20px; z-index: 2; }
-#myRecipientListWrap > .itemWrap > .item > li.btnWrap > button { width: 50px; height: 30px; background-color: #FFF; color: #AAA; font-size: 12px; font-weight: bold; border: 1px solid #CCC; }
+#myRecipientListWrap > .itemWrap > .item > li.btnWrap > button { width: 50px; height: 30px; background-color: #FFF; color: #AAA; font-size: 12px; font-weight: bold; border: 1px solid #CCC; margin-left: 5px; }
 #myRecipientListWrap > .itemWrap > .item > li.btnWrap > button.delBtn { background-color: #DC3333; color: #FFF; border: 1px solid #FFF; }
 #myRecipientListWrap > .moreBtnWrap { width: 100%; float: left; margin-top: 20px; }
 #myRecipientListWrap > .moreBtnWrap > button { width: 100%; height: 50px; float: left; border: 1px solid #CCC; font-size: 15px; font-weight: bold; color: #666; }
