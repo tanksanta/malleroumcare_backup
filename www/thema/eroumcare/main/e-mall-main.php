@@ -133,7 +133,7 @@
 		
 		<div class="board">
 			<div class="title">
-				<span>공지사항</span>
+				<span><a href="/bbs/board.php?bo_table=notice">공지사항</a></span>
 			</div>
 			
 			<ul class="list">
@@ -147,8 +147,8 @@
 		
 		<div class="board">
 			<div class="title">
-				<span>자주하는 질문</span>
-				<a href="#" title="온라인 질문하기">온라인 질문하기</a>
+				<span><a href="/bbs/board.php?bo_table=faq">자주하는 질문</a></span>
+				<a href="/bbs/board.php?bo_table=qa" title="온라인 질문하기">온라인 질문하기</a>
 			</div>
 			
 			<ul class="list">
@@ -240,20 +240,20 @@
 		</div>
 		
 		<ul class="list pc_layout">
-			<li><a href="#" title="요실금팬티">요실금팬티</a></li>
-			<li><a href="#" title="자세변환용구">자세변환용구</a></li>
-			<li><a href="#" title="욕창예방방석">욕창예방방석</a></li>
-			<li><a href="#" title="지팡이">지팡이</a></li>
-			<li><a href="#" title="간이변기">간이변기</a></li>
-			<li><a href="#" title="미끄럼방지">미끄럼방지</a></li>
-			<li><a href="#" title="안전손잡이">안전손잡이</a></li>
-			<li><a href="#" title="목욕의자">목욕의자</a></li>
-			<li><a href="#" title="이동변기">이동변기</a></li>
+			<li><a href="/shop/list.php?ca_id=1020" title="요실금팬티">요실금팬티</a></li>
+			<li><a href="/shop/list.php?ca_id=1030" title="자세변환용구">자세변환용구</a></li>
+			<li><a href="/shop/list.php?ca_id=1040" title="욕창예방방석">욕창예방방석</a></li>
+			<li><a href="/shop/list.php?ca_id=1050" title="지팡이">지팡이</a></li>
+			<li><a href="/shop/list.php?ca_id=1060" title="간이변기">간이변기</a></li>
+			<li><a href="/shop/list.php?ca_id=1070" title="미끄럼방지">미끄럼방지</a></li>
+			<li><a href="/shop/list.php?ca_id=1090" title="안전손잡이">안전손잡이</a></li>
+			<li><a href="/shop/list.php?ca_id=10b0" title="목욕의자">목욕의자</a></li>
+			<li><a href="/shop/list.php?ca_id=10c0" title="이동변기">이동변기</a></li>
 		</ul>
 		
 		<ul class="mo_layout">
 			<li>
-				<a href="#" title="요실금팬티">
+				<a href="/shop/list.php?ca_id=1020" title="요실금팬티">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/mainCategoryVisual01.png" alt="요실금팬티">
 					</p>
@@ -261,7 +261,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" title="자세변환용구">
+				<a href="/shop/list.php?ca_id=1030" title="자세변환용구">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/mainCategoryVisual02.png" alt="자세변환용구">
 					</p>
@@ -269,7 +269,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" title="욕창예방방석">
+				<a href="/shop/list.php?ca_id=1040" title="욕창예방방석">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/mainCategoryVisual03.png" alt="욕창예방방석">
 					</p>
@@ -277,7 +277,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" title="지팡이">
+				<a href="/shop/list.php?ca_id=1050" title="지팡이">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/mainCategoryVisual04.png" alt="지팡이">
 					</p>
@@ -285,7 +285,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" title="간이변기">
+				<a href="/shop/list.php?ca_id=1060" title="간이변기">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/mainCategoryVisual05.png" alt="간이변기">
 					</p>
@@ -293,7 +293,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" title="미끄럼방지">
+				<a href="/shop/list.php?ca_id=1070" title="미끄럼방지">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/mainCategoryVisual06.png" alt="미끄럼방지">
 					</p>
@@ -301,7 +301,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" title="안전손잡이">
+				<a href="/shop/list.php?ca_id=1090" title="안전손잡이">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/mainCategoryVisual07.png" alt="안전손잡이">
 					</p>
@@ -309,7 +309,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" title="목욕의자">
+				<a href="/shop/list.php?ca_id=10b0" title="목욕의자">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/mainCategoryVisual08.png" alt="목욕의자">
 					</p>
@@ -317,7 +317,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" title="이동변기">
+				<a href="/shop/list.php?ca_id=10c0" title="이동변기">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/mainCategoryVisual09.png" alt="이동변기">
 					</p>
