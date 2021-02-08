@@ -3,29 +3,22 @@
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 /* 외부이미지 저장 */
-function FileSave($FileLink, $dir){
+function FileSave($FileData, $dir, $num){
 
     if(!is_dir($dir)) {
         @mkdir($dir, G5_DIR_PERMISSION);
         @chmod($dir, G5_DIR_PERMISSION);
     }
 
-    $PhotoInfo = pathinfo($FileLink);
-    $PhotoName[] = md5($PhotoInfo['filename'])."_".time();
-    $PhotoName[] = $PhotoInfo['extension'];
-    $PhotoName = implode(".", $PhotoName);
-    $Curl = curl_init();
-    curl_setopt($Curl, CURLOPT_URL, $FileLink);
-    curl_setopt($Curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($Curl, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($Curl, CURLOPT_SSL_VERIFYHOST, 0);
-    $Result = curl_exec($Curl);
-    $FileSave = fopen($dir.'/'.$PhotoName, 'a');
-    fwrite($FileSave, $Result);
-    fclose($FileSave);
-
-	$file = str_replace(G5_DATA_PATH.'/item/', '', $dir.'/'.$PhotoName);
-	return $file;
+	$fileName = $FileData["name"];
+	$fileExt = array_pop(explode(".", $fileName));
+	$uploadFileName = md5($fileName)."_{$num}_".date("YmdHisw").$fileExt;
+	
+	if(move_uploaded_file($FileData["tmp_name"], "{$dir}{$uploadFileName}")){
+		return str_replace(G5_DATA_PATH.'/item/', '', $dir.'/'.$uploadFileName);
+	} else {
+		return "";
+	}
 }
 
 /* 필수값정의 */

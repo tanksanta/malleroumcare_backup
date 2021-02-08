@@ -375,6 +375,11 @@ $it_sale_percent = ($_POST["it_sale_percent"]) ? $_POST["it_sale_percent"] : 0;
 $it_sale_cnt_02 = ($_POST["it_sale_cnt_02"]) ? $_POST["it_sale_cnt_02"] : 0;
 $it_sale_percent_02 = ($_POST["it_sale_percent_02"]) ? $_POST["it_sale_percent_02"] : 0;
 
+$prodId = $it_id;
+$entId = $_POST["entId"];
+$prodSupYn = $_POST["prodSupYn"];
+$ProdPayCode = $_POST["prodPayCode"];
+
 $sql_common = " ca_id               = '$ca_id',
                 ca_id2              = '$ca_id2',
                 ca_id3              = '$ca_id3',
@@ -474,7 +479,7 @@ $sql_common = " ca_id               = '$ca_id',
                 it_9                = '$it_9',
                 it_10               = '$it_10',
 
-				prodId				= '$prodId',
+				
                 gubun               = '$gubun',
                 prodNm				= '$prodNm',
                 itemId				= '$itemId',
@@ -534,7 +539,9 @@ $sql_common = " ca_id               = '$ca_id',
                 it_sale_cnt             = '$it_sale_cnt',
                 it_sale_percent             = '$it_sale_percent',
 					it_sale_cnt_02             = '$it_sale_cnt_02',
-                it_sale_percent_02             = '$it_sale_percent_02'
+                it_sale_percent_02             = '$it_sale_percent_02',
+					entId = '$entId',
+					prodSupYn = '$prodSupYn'
 				"; // APMS : 2014.07.20
 
                 // it_outsourcing_use  = '$it_outsourcing_use',
@@ -560,6 +567,7 @@ if ($w == "")
     $sql = " insert {$g5['g5_shop_item_table']}
                 set it_id = '$it_id',
 					pt_num = '$pt_num',
+					prodId				= '$prodId',
 					$sql_common	";
     sql_query($sql);
 }

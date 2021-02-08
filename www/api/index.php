@@ -55,35 +55,35 @@ class API {
 		$it_img_dir = G5_DATA_PATH.'/item';
 
 		// 이미지업로드
-		if ($file1) {
-			$it_img1 = FileSave($file1, $it_img_dir.'/'.$it_id);
+		if ($_FILES["file1"]) {
+			$it_img1 = FileSave($_FILES["file1"], $it_img_dir.'/'.$it_id, 1);
 		}
-		if ($file2) {
-			$it_img2 = FileSave($file2, $it_img_dir.'/'.$it_id);
+		if ($_FILES["file2"]) {
+			$it_img2 = FileSave($_FILES["file2"], $it_img_dir.'/'.$it_id, 2);
 		}
-		if ($file3) {
-			$it_img3 = FileSave($file3, $it_img_dir.'/'.$it_id);
+		if ($_FILES["file1"]) {
+			$it_img3 = FileSave($_FILES["file3"], $it_img_dir.'/'.$it_id, 3);
 		}
-		if ($file4) {
-			$it_img4 = FileSave($file4, $it_img_dir.'/'.$it_id);
+		if ($_FILES["file4"]) {
+			$it_img4 = FileSave($_FILES["file4"], $it_img_dir.'/'.$it_id, 4);
 		}
-		if ($file5) {
-			$it_img5 = FileSave($file5, $it_img_dir.'/'.$it_id);
+		if ($_FILES["file5"]) {
+			$it_img5 = FileSave($_FILES["file5"], $it_img_dir.'/'.$it_id, 5);
 		}
-		if ($file6) {
-			$it_img6 = FileSave($file6, $it_img_dir.'/'.$it_id);
+		if ($_FILES["file6"]) {
+			$it_img6 = FileSave($_FILES["file6"], $it_img_dir.'/'.$it_id, 6);
 		}
-		if ($file7) {
-			$it_img7 = FileSave($file7, $it_img_dir.'/'.$it_id);
+		if ($_FILES["file7"]) {
+			$it_img7 = FileSave($_FILES["file7"], $it_img_dir.'/'.$it_id, 7);
 		}
-		if ($file8) {
-			$it_img8 = FileSave($file8, $it_img_dir.'/'.$it_id);
+		if ($_FILES["file8"]) {
+			$it_img8 = FileSave($_FILES["file8"], $it_img_dir.'/'.$it_id, 8);
 		}
-		if ($file9) {
-			$it_img9 = FileSave($file9, $it_img_dir.'/'.$it_id);
+		if ($_FILES["file9"]) {
+			$it_img9 = FileSave($_FILES["file9"], $it_img_dir.'/'.$it_id, 9);
 		}
-		if ($file10) {
-			$it_img10 = FileSave($file10, $it_img_dir.'/'.$it_id);
+		if ($_FILES["file10"]) {
+			$it_img10 = FileSave($_FILES["file10"], $it_img_dir.'/'.$it_id, 10);
 		}
 
 		$sql_common = " pt_it = '1',
@@ -163,7 +163,8 @@ class API {
 						prodImgAttr			= '$prodImgAttr',
 
 						pt_id				= '$pt_id',
-						prodSupYn	= '$prodSupYn'
+						prodSupYn	= '$prodSupYn',
+						entId = '$entId'
 
 						";
 

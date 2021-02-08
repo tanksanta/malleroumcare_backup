@@ -19,6 +19,16 @@ if($is_auth) { // 관리자일 때
 }
 $pg_anchor .='</ul>';
 
+	# 210208 entId목록
+	$entIdSQL = sql_query("SELECT mb_entId FROM g5_member WHERE mb_entId != '' AND mb_entId IS NOT NULL");
+
+	# 210208 분류코드 목록
+	$itemIdList = [];
+	$itemIdSQL = sql_query("SELECT ca_id, itemId FROM g5_shop_category");
+	for($i = 0; $row = sql_fetch_array($itemIdSQL); $i++){
+		$itemIdList[$row["ca_id"]] = $row["itemId"];
+	}
+
 ?>
 <style>
 	.sl { width:100% }
@@ -92,10 +102,10 @@ $pg_anchor .='</ul>';
                     <!-- 최근에 입력한 코드(자동 생성시)가 목록의 상단에 출력되게 하려면 아래의 코드로 대체하십시오. -->
                     <!-- <input type=text class=required name=it_id value="<?php echo 10000000000-time()?>" size=12 maxlength=10 required> <a href='javascript:;' onclick="codedupcheck(document.all.it_id.value)"><img src='./img/btn_code.gif' border=0 align=absmiddle></a> -->
                     <?php echo ($is_auth) ? help("상품관리코드는 10자리 숫자로 자동생성합니다. 직접 상품관리코드를 입력시 영문자, 숫자, - 만 입력 가능합니다.") : help("상품관리코드는 10자리 숫자로 자동생성합니다."); ?>
-                    <input type="text" name="it_id" value="<?php echo time(); ?>" id="it_id" required class="frm_input required" size="20" maxlength="20"<?php echo ($is_auth) ? '' : 'readonly';?>>
+                    <input type="text" name="it_id" value="<?php echo time(); ?>" id="it_id" required class="frm_input required" size="20" maxlength="20" readonly>
                     <!-- <?php if ($default['de_code_dup_use']) { ?><button type="button" class="btn_frmline" onclick="codedupcheck(document.all.it_id.value)">중복검사</a><?php } ?> -->
                 <?php } else { ?>
-                    <input type="hidden" name="it_id" value="<?php echo $it['it_id']; ?>">
+                    <input type="hidden" name="it_id" id="it_id" value="<?php echo $it['it_id']; ?>">
                     <span class="frm_ca_id"><?php echo $it['it_id']; ?></span>
                     <a href="<?php echo G5_SHOP_URL; ?>/item.php?it_id=<?php echo $it_id; ?>" target="blank" class="btn_frmline">상품확인</a>
                     <a href="./itemuselist.php?sfl=a.it_id&amp;stx=<?php echo $it_id; ?>" target="blank" class="btn_frmline">관련후기</a>
@@ -106,7 +116,7 @@ $pg_anchor .='</ul>';
 		<tr>
             <th scope="row"><label for="it_thezone">분류코드</label></th>
             <td>
-                <input type="text" name="it_thezone" value="<?php echo $it['it_thezone']; ?>" id="it_thezone" class="frm_input sl">
+                <input type="text" name="it_thezone" value="<?php echo $it['it_thezone']; ?>" id="it_thezone" class="frm_input sl" readonly>
             </td>
         </tr>
 		<tr>
@@ -136,22 +146,41 @@ $pg_anchor .='</ul>';
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><label for="prodSize">사이즈</label></th>
-			<td>
-				<input type="text" name="prodSize" value="<?php echo get_text($it['prodSize']); ?>" id="prodSize" class="frm_input" size="40">
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><label for="prodImgAttr">이미지 첨부파일 이름들</label></th>
-			<td>
-				<input type="text" name="prodImgAttr" value="<?php echo get_text($it['prodImgAttr']); ?>" id="prodImgAttr" class="frm_input" size="40">
-			</td>
-		</tr>
-		<tr>
             <th scope="row"><label for="pt_tag">상품태그</label></th>
             <td>
                 <?php echo help("등록할 상품태그를 콤마(,)로 구분해서 입력합니다."); ?>
                 <input type="text" name="pt_tag" value="<?php echo get_text($it['pt_tag']); ?>" id="pt_tag" class="frm_input sl">
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="entId">업체 아이디</label></th>
+            <td>
+            	<select name="entId" id="entId">
+            	<?php for($i = 0; $row = sql_fetch_array($entIdSQL); $i++){ ?>
+            		<option value="<?=$row["mb_entId"]?>" <?=(get_text($it["entId"] == $row["mb_entId"])) ? "selected" : ""?>><?=$row["mb_entId"]?></option>
+            	<?php } ?>
+            	</select>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="prodSupYn">유통구분</label></th>
+            <td>
+            	<select name="prodSupYn" id="prodSupYn">
+            		<option value="Y" <?=(get_text($it["prodSupYn"] == "Y")) ? "selected" : ""?>>유통</option>
+            		<option value="N" <?=(get_text($it["prodSupYn"] == "N")) ? "selected" : ""?>>비유통</option>
+            	</select>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="supId">공급자 아이디</label></th>
+            <td>
+                <input type="text" name="supId" value="<?php echo get_text($it['supId']); ?>" id="supId" class="frm_input sl">
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="prodPayCode">제품코드</label></th>
+            <td>
+                <input type="text" name="prodPayCode" value="<?php echo get_text($it['ProdPayCode']); ?>" id="prodPayCode" class="frm_input sl">
             </td>
         </tr>
 		<tr>
@@ -1400,7 +1429,7 @@ $pg_anchor .='</ul>';
 		{이미지:1}, {이미지:2} 와 같이 이미지 번호를 입력하면 해당 첨부이미지를 내용에 출력할 수 있습니다.
 	</div>
 
-	<div class="tbl_frm01 tbl_wrap">
+	<div class="tbl_frm01 tbl_wrap tbl_img_frm">
         <table>
         <caption>이미지 업로드</caption>
         <colgroup>
@@ -2038,6 +2067,58 @@ $pg_anchor .='</ul>';
 <?php echo $frm_submit; ?>
 
 <script>
+function dataURItoBlob(dataURI) {
+    // convert base64/URLEncoded data component to raw binary data held in a string
+    var byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+        byteString = atob(dataURI.split(',')[1]);
+    else
+        byteString = unescape(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to a typed array
+    var ia = new Uint8Array(byteString.length);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ia], {type:mimeString});
+}
+	
+var nowToDataURLResult = "";
+function toDataURL(url) {
+	return new Promise(function(resolve, reject){
+	  var xhr = new XMLHttpRequest();
+	  xhr.onload = function() {
+		var reader = new FileReader();
+		reader.onloadend = function() {
+			nowToDataURLResult = reader.result;
+			resolve();
+		}
+		reader.readAsDataURL(xhr.response);
+	  };
+	  xhr.open('GET', url);
+	  xhr.responseType = 'blob';
+	  xhr.send();
+	});
+}
+	
+function dataURLtoFile(dataurl, filename) {
+	var arr = dataurl.split(','),
+		mime = arr[0].match(/:(.*?);/)[1],
+		bstr = atob(arr[1]), 
+		n = bstr.length, 
+		u8arr = new Uint8Array(n);
+
+	while(n--){
+		u8arr[n] = bstr.charCodeAt(n);
+	}
+	
+	return new File([u8arr], filename, {type:mime});
+}
+	
 var f = document.fitemform;
 
 <?php if ($w == 'u') { ?>
@@ -2113,7 +2194,7 @@ function fitemformcheck(f)
         return false;
     }
 
-    if (f.w.value == "") {
+    if (f.w.value == ""){
         var error = "";
         $.ajax({
             url: "./ajax.it_id.php",
@@ -2135,7 +2216,55 @@ function fitemformcheck(f)
         }
 		
 		var apiStatus = true;
+		var sendDataProdColor = "";
+		var sendDataProdSize = "";
+		var sendDataGubun = $("#ca_id").val().substr(0, 2);
+		switch(sendDataGubun){
+			case "10" :
+				sendDataGubun = "00";
+				break;
+			case "20" :
+				sendDataGubun = "01";
+				break;
+		}
+		
+		var optionItemList = $(".sit_option tbody > tr");
+		$.each(optionItemList, function(key, dom){
+			var label = $(dom).find("th > input").val();
+			var value = $(dom).find("td > input").val();
+			
+			switch(label){
+				case "색상" :
+					sendDataProdColor = value.replaceAll(",", "|");
+					break;
+				case "사이즈" :
+					sendDataProdSize = value.replaceAll(",", "|");
+					break;
+			}
+		});
+		
 		var sendData = new FormData();
+        sendData.append("usrId", "<?=$member["mb_id"]?>");
+        sendData.append("entId", $("#entId").val());
+        sendData.append("prodNm", $("#it_name").val()); // 제품 명
+        sendData.append("prodSym", $("#prodSym").val()); // 재질
+        sendData.append("prodWeig", $("#prodWeig").val()); // 중량
+        sendData.append("prodColor", sendDataProdColor); // 사이즈
+        sendData.append("prodSize", sendDataProdSize); // 사이즈
+        sendData.append("prodDetail", $("#it_basic").val()); // 상세정보
+        sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
+        sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
+        sendData.append("prodSupPrice", $("#it_price").val()); //  공급가격
+        sendData.append("prodStateCode", "03"); // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
+        sendData.append("supId", $("#supId").val()); //  공급자아이디
+        sendData.append("itemId", $("#it_thezone").val()); //  아이템 아이디
+        sendData.append("subItem", ""); //  서브 아이템
+        sendData.append("gubun", sendDataGubun); //  00=구매 01=대여
+		
+		var imgFileItem = $(".tbl_img_frm input[type='file']");
+		for(var i = 0; i < imgFileItem.length; i++){
+			sendData.append("file" + (i + 1), $(imgFileItem[i])[0].files[0]);
+		}
 		
 		$.ajax({
 			url : "https://eroumcare.com:9001/api/prod/insert",
@@ -2145,16 +2274,21 @@ function fitemformcheck(f)
 			processData : false,
 			contentType : false,
 			data : sendData,
-			success : function(){
-				apiStatus = false;
+			success : function(result){
+				if(result.errorYN == "Y"){
+					alert(result.message);
+					apiStatus = false;
+				} else {
+					$("#it_id").val(result.data.prodId);
+				}
 			},
-			error : function(){
+			error : function(result){
+				alert(result.responseJSON.message);
 				apiStatus = false;
 			}
 		});
 		
 		if(!apiStatus){
-			alert("알 수 없는 오류입니다.");
 			return false;
 		}
     }
@@ -2236,6 +2370,94 @@ function fitemformcheck(f)
 	
     return true;
 }
+	
+async function frmUpdate(){
+	var sendDataProdColor = "";
+	var sendDataProdSize = "";
+	var sendDataGubun = $("#ca_id").val().substr(0, 2);
+	switch(sendDataGubun){
+		case "10" :
+			sendDataGubun = "00";
+			break;
+		case "20" :
+			sendDataGubun = "01";
+			break;
+	}
+
+	var optionItemList = $(".sit_option tbody > tr");
+	$.each(optionItemList, function(key, dom){
+		var label = $(dom).find("th > input").val();
+		var value = $(dom).find("td > input").val();
+
+		switch(label){
+			case "색상" :
+				sendDataProdColor = value.replaceAll(",", "|");
+				break;
+			case "사이즈" :
+				sendDataProdSize = value.replaceAll(",", "|");
+				break;
+		}
+	});
+
+	var sendData = new FormData();
+	sendData.append("prodId", $("#it_id").val());
+	sendData.append("usrId", "<?=$member["mb_id"]?>");
+	sendData.append("entId", $("#entId").val());
+	sendData.append("prodNm", $("#it_name").val()); // 제품 명
+	sendData.append("prodSym", $("#prodSym").val()); // 재질
+	sendData.append("prodWeig", $("#prodWeig").val()); // 중량
+	sendData.append("prodColor", sendDataProdColor); // 사이즈
+	sendData.append("prodSize", sendDataProdSize); // 사이즈
+	sendData.append("prodDetail", $("#it_basic").val()); // 상세정보
+	sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
+	sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
+	sendData.append("prodSupPrice", $("#it_price").val()); //  공급가격
+	sendData.append("prodStateCode", "03"); // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
+	sendData.append("supId", $("#supId").val()); //  공급자아이디
+	sendData.append("itemId", $("#it_thezone").val()); //  아이템 아이디
+	sendData.append("subItem", ""); //  서브 아이템
+	sendData.append("gubun", sendDataGubun); //  00=구매 01=대여
+	
+	var imgFileItem = $(".tbl_img_frm tr");
+	for(var i = 0; i < imgFileItem.length; i++){
+		nowToDataURLResult = "";
+		if($(imgFileItem[i]).find("input[type='file']")[0].files[0]){
+			sendData.append("file" + (i + 1), $(imgFileItem[i]).find("input[type='file']")[0].files[0]);
+		} else {
+			if($(imgFileItem[i]).find(".banner_or_img img").attr("src")){
+				await toDataURL($(imgFileItem[i]).find(".banner_or_img img").attr("src"));
+				var blob = dataURItoBlob(nowToDataURLResult);
+				var ext = blob.type.split("/")[1];
+				var file = dataURLtoFile(nowToDataURLResult, "file_" + i + "." + ext);
+				sendData.append("file" + (i + 1), file);
+			}
+		}
+	}
+
+	$.ajax({
+		url : "https://eroumcare.com:9001/api/prod/update",
+		type : "POST",
+		async : false,
+		cache : false,
+		processData : false,
+		contentType : false,
+		data : sendData,
+		success : function(result){
+			if(result.errorYN == "Y"){
+				alert(result.message);
+				apiStatus = false;
+			}
+		},
+		error : function(result){
+			alert(result.responseJSON.message);
+			apiStatus = false;
+		}
+	});
+}
+
+<?php if($w == "u"){ ?>
+	frmUpdate();
+<?php } ?>
 
 function categorychange(f)
 {
@@ -2252,5 +2474,16 @@ function categorychange(f)
 }
 
 categorychange(document.fitemform);
+	
+	$(function(){
+		
+		/* 210208 */
+		var itemIdList = <?=json_encode($itemIdList)?>;
+		$("#ca_id").change(function(){
+			$("#it_thezone").val(itemIdList[$(this).val()]);
+		});
+		$("#it_thezone").val(itemIdList[$("#ca_id").val()]);
+		
+	})
 
 </script>

@@ -74,8 +74,7 @@ if($_FILES['excelfile']['tmp_name']) {
     $total_count = 0;
     $fail_count = 0;
     $succ_count = 0;
-	$succDataList = [];
-	
+
     for ($i = 3; $i <= $data->sheets[0]['numRows']; $i++) {
         $total_count++;
 
@@ -121,14 +120,6 @@ if($_FILES['excelfile']['tmp_name']) {
         $it_img8            = addslashes($data->sheets[0]['cells'][$i][$j++]);
         $it_img9            = addslashes($data->sheets[0]['cells'][$i][$j++]);
         $it_img10           = addslashes($data->sheets[0]['cells'][$i][$j++]);
-        $prodSym           = addslashes($data->sheets[0]['cells'][$i][$j++]);
-        $prodWeig           = addslashes($data->sheets[0]['cells'][$i][$j++]);
-        $entId           = addslashes($data->sheets[0]['cells'][$i][$j++]);
-        $prodSupYn           = addslashes($data->sheets[0]['cells'][$i][$j++]);
-        $supId           = addslashes($data->sheets[0]['cells'][$i][$j++]);
-        $prodPayCode           = addslashes($data->sheets[0]['cells'][$i][$j++]);
-        $prodColor           = addslashes($data->sheets[0]['cells'][$i][$j++]);
-        $prodSize           = addslashes($data->sheets[0]['cells'][$i][$j++]);
         $it_explan2         = strip_tags(trim($it_explan));
 
         if(!$it_id || !$ca_id || !$it_name) {
@@ -190,12 +181,6 @@ if($_FILES['excelfile']['tmp_name']) {
 						 it_ip = '{$_SERVER['REMOTE_ADDR']}',
                          it_order = '$it_order',
                          it_tel_inq = '$it_tel_inq',
-                         prodSym = '$prodSym',
-                         prodWeig = '$prodWeig',
-                         entId = '$entId',
-                         prodSupYn = '$prodSupYn',
-                         supId = '$supId',
-                         ProdPayCode = '$prodPayCode',
                          it_img1 = '$it_img1',
                          it_img2 = '$it_img2',
                          it_img3 = '$it_img3',
@@ -209,66 +194,6 @@ if($_FILES['excelfile']['tmp_name']) {
         sql_query($sql);
 
         $succ_count++;
-		
-		$prodSizeList = explode("|", $prodSize);
-		$prodColorList = explode("|", $prodColor);
-		foreach($prodColorList as $thisColor){
-			foreach($prodSizeList as $thisSize){
-				if($thisColor && $thisSize){
-					$thisItem = $thisColor.chr(30).$thisSize;
-
-					sql_query("
-						INSERT INTO g5_shop_item_option
-							( io_id, io_type, it_id, io_price, io_price_partner, io_price_dealer, io_price_dealer2, io_stock_qty, io_noti_qty, io_use, io_thezone )
-						VALUES
-							( '{$thisItem}', 0, '{$it_id}', 0, 0, 0, 0, 9999, 100, 1, '' )
-					");
-				}
-			}
-		}
-		
-		$imgList = [];
-		array_push($imgList, $it_img1);
-		array_push($imgList, $it_img2);
-		array_push($imgList, $it_img3);
-		array_push($imgList, $it_img4);
-		array_push($imgList, $it_img5);
-		array_push($imgList, $it_img6);
-		array_push($imgList, $it_img7);
-		array_push($imgList, $it_img8);
-		array_push($imgList, $it_img9);
-		array_push($imgList, $it_img10);
-		
-		$gubun = "00";
-		switch(substr($ca_id, 0, 2)){
-			case "10" :
-				$gubun = "00";
-				break;
-			case "20" :
-				$gubun = "01";
-				break;
-		}
-		
-		$thisDataList = [];
-		$thisDataList["usrId"] = $member["mb_id"];
-		$thisDataList["entId"] = $entId;
-		$thisDataList["prodNm"] = $it_name;
-		$thisDataList["prodSym"] = $prodSym;
-		$thisDataList["prodWeig"] = $prodWeig;
-		$thisDataList["prodColor"] = $prodColor;
-		$thisDataList["prodSize"] = $prodSize;
-		$thisDataList["prodDetail"] = $it_basic;
-		$thisDataList["prodPayCode"] = $prodPayCode;
-		$thisDataList["prodSupYn"] = $prodSupYn;
-		$thisDataList["prodSupPrice"] = $it_price;
-		$thisDataList["prodStateCode"] = "03";
-		$thisDataList["supId"] = $supId;
-		$thisDataList["itemId"] = sql_fetch("SELECT itemId FROM g5_shop_category WHERE ca_id = '{$ca_id}'")["itemId"];
-		$thisDataList["subItem"] = "";
-		$thisDataList["gubun"] = $gubun;
-		$thisDataList["imgList"] = $imgList;
-		
-		$succDataList[$it_id] = $thisDataList;
     }
 }
 
@@ -305,113 +230,6 @@ include_once(G5_PATH.'/head.sub.php');
     <div class="btn_win01 btn_win">
         <button type="button" onclick="window.close();">창닫기</button>
     </div>
-    
-    <script type="text/javascript">
-		$(function(){
-			
-			var succList = <?=json_encode($succDataList)?>;
-			var successDataList = [];
-			var failDataList = [];
-			
-			function dataURItoBlob(dataURI) {
-				// convert base64/URLEncoded data component to raw binary data held in a string
-				var byteString;
-				if (dataURI.split(',')[0].indexOf('base64') >= 0)
-					byteString = atob(dataURI.split(',')[1]);
-				else
-					byteString = unescape(dataURI.split(',')[1]);
-
-				// separate out the mime component
-				var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-				// write the bytes of the string to a typed array
-				var ia = new Uint8Array(byteString.length);
-				for (var i = 0; i < byteString.length; i++) {
-					ia[i] = byteString.charCodeAt(i);
-				}
-
-				return new Blob([ia], {type:mimeString});
-			}
-
-			var nowToDataURLResult = "";
-			function toDataURL(url) {
-				return new Promise(function(resolve, reject){
-				  var xhr = new XMLHttpRequest();
-				  xhr.onload = function() {
-					var reader = new FileReader();
-					reader.onloadend = function() {
-						nowToDataURLResult = reader.result;
-						resolve();
-					}
-					reader.readAsDataURL(xhr.response);
-				  };
-				  xhr.open('GET', url);
-				  xhr.responseType = 'blob';
-				  xhr.send();
-				});
-			}
-
-			function dataURLtoFile(dataurl, filename) {
-				var arr = dataurl.split(','),
-					mime = arr[0].match(/:(.*?);/)[1],
-					bstr = atob(arr[1]), 
-					n = bstr.length, 
-					u8arr = new Uint8Array(n);
-
-				while(n--){
-					u8arr[n] = bstr.charCodeAt(n);
-				}
-
-				return new File([u8arr], filename, {type:mime});
-			}
-			
-			async function frmUpdate(){
-				$.each(succList, async function(it_id, data){
-					var sendData = new FormData();
-					
-					$.each(data, function(key, value){
-						sendData.append(key, value);
-					});
-					
-					var imgList = data.imgList;
-					for(var i = 0; i < imgList.length; i++){
-						nowToDataURLResult = "";
-						if(imgList[i]){
-							await toDataURL(imgList[i]);
-							var blob = dataURItoBlob(nowToDataURLResult);
-							var ext = blob.type.split("/")[1];
-							var file = dataURLtoFile(nowToDataURLResult, "file_" + i + "." + ext);
-							console.log(nowToDataURLResult);
-							sendData.append("file" + (i + 1), file);
-						}
-					}
-				});
-
-//				$.ajax({
-//					url : "https://eroumcare.com:9001/api/prod/update",
-//					type : "POST",
-//					async : false,
-//					cache : false,
-//					processData : false,
-//					contentType : false,
-//					data : sendData,
-//					success : function(result){
-//						if(result.errorYN == "Y"){
-//							alert(result.message);
-//							apiStatus = false;
-//						}
-//					},
-//					error : function(result){
-//						alert(result.responseJSON.message);
-//						apiStatus = false;
-//					}
-//				});
-			}
-			
-			frmUpdate();
-			
-		})
-	</script>
 
 </div>
 
