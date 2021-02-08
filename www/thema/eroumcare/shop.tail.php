@@ -134,7 +134,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				</a>
 			</li>
 			<li>
-				<a href="#" title="설정">
+				<a href="/bbs/mypage.php" title="설정">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/footerMoIconMore.png" alt="설정" class="off">
 					</p>

@@ -162,7 +162,6 @@ if ( is_array($item) && count($item) ) {
 		display:block;
 		text-align:center;
 		line-height:40px;
-		color:#0e5ea8;
 		font-weight:bold;
 	}
 	</style>
