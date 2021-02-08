@@ -81,11 +81,6 @@ $(document).ready(function() {
 	<img src="<?=THEMA_URL?>/assets/img/btn_mo_menu.png" alt="" class="header-hamburger-btn">
 </div>
 
-<div class="mo_menu">
-	<a href="/shop/list.php?ca_id=10">판매품목</a>
-	<a href="/shop/list.php?ca_id=20">대여품목</a>
-</div>
-
 <div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>">
 	
 	<div id="samhwa-m-menu">
@@ -258,8 +253,71 @@ $(document).ready(function() {
 			</script>
 			
 		</div>
+		
+		<?php if($member["mb_id"]){ ?>
+			<div id="headerTopQuickMenuWrap">
+				<div>
+					<div>
+
+						<div class="titleWrap">복지용구 통합관리 시스템</div>
+						
+						<ul class="listWrap">
+							<li>
+								<a href="/shop/my.recipient.list.php" title="수급자관리">
+									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon01.png" alt="수급자관리_아이콘" class="pc_layout">
+									<p class="mo_layout imgWrap">
+										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon01.png" alt="수급자관리_아이콘">
+									</p>
+									<span>수급자관리</span>
+								</a>
+							</li>
+							<li>
+								<a href="#" title="예비수급자관리">
+									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon02.png" alt="예비수급자관리_아이콘" class="pc_layout">
+									<p class="mo_layout imgWrap">
+										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon02.png" alt="예비수급자관리_아이콘">
+									</p>
+									<span>예비수급자관리</span>
+								</a>
+							</li>
+							<li>
+								<a href="#" title="보유재고관리">
+									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon03.png" alt="보유재고관리_아이콘" class="pc_layout">
+									<p class="mo_layout imgWrap">
+										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon03.png" alt="보유재고관리_아이콘">
+									</p>
+									<span>보유재고관리</span>
+								</a>
+							</li>
+							<li>
+								<a href="#" title="주문내역관리">
+									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon04.png" alt="주문내역관리_아이콘" class="pc_layout">
+									<p class="mo_layout imgWrap">
+										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon04.png" alt="주문내역관리_아이콘">
+									</p>
+									<span>주문내역관리</span>
+								</a>
+							</li>
+							<li>
+								<a href="#" title="시스템이용안내">
+									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon05.png" alt="시스템이용안내_아이콘">
+									<span>시스템이용안내</span>
+								</a>
+							</li>
+						</ul>
+
+					</div>
+				</div>
+			</div>
+		<?php } ?>
+		
+		<div class="mo_menu" style="<?=($member["mb_id"]) ? "margin-top: 20px;" : ""?>">
+			<a href="/shop/list.php?ca_id=10">판매품목</a>
+			<a href="/shop/list.php?ca_id=20">대여품목</a>
+		</div>
+	
 		<div class="top_menu_wrap">
-			<div class="menu_wrap">
+			<div class="menu_wrap" style="<?=($member["mb_id"]) ? "border-top: 0;" : ""?>">
 				<div class="menu"><button class="top_menu_all"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu.jpg" ><span>전체 상품 카테고리</span></button></div>
 				<div class="main_menu">
 					<table >
@@ -409,7 +467,7 @@ $(document).ready(function() {
 		<div class="at-body">
 			<?php if($col_name) { ?>
 				<div class="at-container">
-					<div class="scrollBannerListWrap left">
+					<div class="scrollBannerListWrap left" style="<?=($member["mb_id"]) ? "top: -290px;" : ""?>">
 						<ul>
 							<li></li>
 							<li></li>
@@ -417,7 +475,7 @@ $(document).ready(function() {
 						</ul>
 					</div>
 					
-					<div class="scrollBannerListWrap right">
+					<div class="scrollBannerListWrap right" style="<?=($member["mb_id"]) ? "top: -290px;" : ""?>">
 						<ul>
 							<li></li>
 							<li></li>

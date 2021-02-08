@@ -15,6 +15,7 @@ $pg_anchor .='<li><a href="#anc_sitfrm_opt">옵션사항</a></li>';
 $pg_anchor .='<li><a href="#anc_sitfrm_attach">파일첨부</a></li>';
 if($is_auth) { // 관리자일 때
 	$pg_anchor .='<li><a href="#anc_sitfrm_optional">상하단내용</a></li>';
+	$pg_anchor .='<li><a href="#anc_sitfrm_api">API상품수정</a></li>';
 	$pg_anchor .='<li><a href="#anc_sitfrm_extra">여분필드</a></li>';
 }
 $pg_anchor .='</ul>';
@@ -123,30 +124,32 @@ $pg_anchor .='</ul>';
                 <input type="text" name="it_basic" value="<?php echo get_text(html_purifier($it['it_basic'])); ?>" id="it_basic" class="frm_input sl">
             </td>
         </tr>
-		<tr>
-			<th scope="row"><label for="prodSym">재질</label></th>
-			<td>
-				<input type="text" name="prodSym" value="<?php echo get_text($it['prodSym']); ?>" id="prodSym" class="frm_input" size="40">
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><label for="prodWeig">중량</label></th>
-			<td>
-				<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input" size="40">
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><label for="prodSize">사이즈</label></th>
-			<td>
-				<input type="text" name="prodSize" value="<?php echo get_text($it['prodSize']); ?>" id="prodSize" class="frm_input" size="40">
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><label for="prodImgAttr">이미지 첨부파일 이름들</label></th>
-			<td>
-				<input type="text" name="prodImgAttr" value="<?php echo get_text($it['prodImgAttr']); ?>" id="prodImgAttr" class="frm_input" size="40">
-			</td>
-		</tr>
+       <?php if($w == "u"){ ?>
+			<tr>
+				<th scope="row"><label for="prodSym">재질</label></th>
+				<td>
+					<input type="text" name="prodSym" value="<?php echo get_text($it['prodSym']); ?>" id="prodSym" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodWeig">중량</label></th>
+				<td>
+					<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodSize">사이즈</label></th>
+				<td>
+					<input type="text" name="prodSize" value="<?php echo get_text($it['prodSize']); ?>" id="prodSize" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodImgAttr">이미지 첨부파일 이름들</label></th>
+				<td>
+					<input type="text" name="prodImgAttr" value="<?php echo get_text($it['prodImgAttr']); ?>" id="prodImgAttr" class="frm_input" size="40">
+				</td>
+			</tr>
+       <?php } ?>
 		<tr>
             <th scope="row"><label for="pt_tag">상품태그</label></th>
             <td>
@@ -1998,7 +2001,146 @@ $pg_anchor .='</ul>';
 			</table>
 		</div>
 	</section>
-	
+
+	<?php echo $frm_submit; ?>
+
+	<?php if ($w != "u"){ ?>
+		<?php echo $pg_anchor; ?>
+	<section id="anc_sitfrm_api" class="anc-section">
+		<h2 class="h2_frm">API상품등록 추가필드 설정</h2>
+		<div class="tbl_frm01 tbl_wrap">
+			<table>
+			<colgroup>
+				<col class="grid_3">
+				<col>
+			</colgroup>
+			<tbody>
+			<tr>
+				<th scope="row"><label for="prodId">제품아이디</label></th>
+				<td>
+					<input type="text" name="prodId" value="<?php echo get_text($it['prodId']); ?>" id="prodId" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="gubun">구분</label></th>
+				<td>
+					<input type="text" name="gubun" value="<?php echo get_text($it['gubun']); ?>" id="gubun" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodNm">제품명</label></th>
+				<td>
+					<input type="text" name="prodNm" value="<?php echo get_text($it['prodNm']); ?>" id="prodNm" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="itemId">품목 아이디</label></th>
+				<td>
+					<input type="text" name="itemId" value="<?php echo get_text($it['itemId']); ?>" id="itemId" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="subItem">하위품목</label></th>
+				<td>
+					<input type="text" name="subItem" value="<?php echo get_text($it['subItem']); ?>" id="subItem" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodSupPrice">공급가격</label></th>
+				<td>
+					<input type="text" name="prodSupPrice" value="<?php echo get_text($it['prodSupPrice']); ?>" id="prodSupPrice" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodOflPrice">판매금액</label></th>
+				<td>
+					<input type="text" name="prodOflPrice" value="<?php echo get_text($it['prodOflPrice']); ?>" id="prodOflPrice" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="ProdPayCode">급여코드</label></th>
+				<td>
+					<input type="text" name="ProdPayCode" value="<?php echo get_text($it['ProdPayCode']); ?>" id="ProdPayCode" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="supId">공급업체 아이디</label></th>
+				<td>
+					<input type="text" name="supId" value="<?php echo get_text($it['supId']); ?>" id="supId" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodColor">색상(옵션)</label></th>
+				<td>
+					<input type="text" name="prodColor" value="<?php echo get_text($it['prodColor']); ?>" id="prodColor" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodSym">재질</label></th>
+				<td>
+					<input type="text" name="prodSym" value="<?php echo get_text($it['prodSym']); ?>" id="prodSym" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodWeig">중량</label></th>
+				<td>
+					<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodSize">사이즈</label></th>
+				<td>
+					<input type="text" name="prodSize" value="<?php echo get_text($it['prodSize']); ?>" id="prodSize" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodQty">주문가능수량</label></th>
+				<td>
+					<input type="text" name="prodQty" value="<?php echo get_text($it['prodQty']); ?>" id="prodQty" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodDetail">상세정보</label></th>
+				<td>
+					<input type="text" name="prodDetail" value="<?php echo get_text($it['prodDetail']); ?>" id="prodDetail" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="regDtm">최초등록일시</label></th>
+				<td>
+					<input type="text" name="regDtm" value="<?php echo get_text($it['regDtm']); ?>" id="regDtm" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="regUsrId">최초등록자 ID</label></th>
+				<td>
+					<input type="text" name="regUsrId" value="<?php echo get_text($it['regUsrId']); ?>" id="regUsrId" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="regUsrIp">최초등록자 IP</label></th>
+				<td>
+					<input type="text" name="regUsrIp" value="<?php echo get_text($it['regUsrIp']); ?>" id="regUsrIp" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="supNm">공급업체 이름</label></th>
+				<td>
+					<input type="text" name="supNm" value="<?php echo get_text($it['supNm']); ?>" id="supNm" class="frm_input" size="40">
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="prodImgAttr">이미지 첨부파일 이름들</label></th>
+				<td>
+					<input type="text" name="prodImgAttr" value="<?php echo get_text($it['prodImgAttr']); ?>" id="prodImgAttr" class="frm_input" size="40">
+				</td>
+			</tr>
+			</tbody>
+			</table>
+		</div>
+	</section>
+	<?php } ?>
+
 	<?php echo $frm_submit; ?>
 
 	<?php echo $pg_anchor; ?>
@@ -2107,6 +2249,40 @@ function codedupcheck(id)
 function fitemformcheck(f)
 {
 
+    if ("<?=$w?>" == "u") {
+		var error = "N";
+		var message = "";
+		var url = 'https://eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
+		var formData = new FormData();
+		formData.append("prodId", "<?=$_GET["it_id"]?>");
+		formData.append("prodNm", $("#it_name").val());
+		formData.append("prodSym", $("#prodSym").val());
+		formData.append("prodWeig", $("#prodWeig").val());
+		formData.append("prodSize", $("#prodSize").val());
+		formData.append("prodDetail", $("#it_basic").val());
+		formData.append("beforeDelFileSn", JSON.stringify([]));
+
+		$.ajax({
+			url: url,
+			type: "POST",
+			data : formData,
+			async : false,
+			processData : false,
+			contentType : false,
+			success: function(data, textStatus){
+				error = data.errorYN;
+				message = data.message;
+			}
+		});
+
+        if (error != "N" && message) {
+            alert(message);
+            return false;
+        }
+		var pf = document.fitemform;
+		dataList = $(pf).serialize();
+    }
+
     if (!f.ca_id.value) {
         alert("기본분류를 선택하십시오.");
         f.ca_id.focus();
@@ -2133,30 +2309,6 @@ function fitemformcheck(f)
             alert(error);
             return false;
         }
-		
-		var apiStatus = true;
-		var sendData = new FormData();
-		
-		$.ajax({
-			url : "https://eroumcare.com:9001/api/prod/insert",
-			type : "POST",
-			async : false,
-			cache : false,
-			processData : false,
-			contentType : false,
-			data : sendData,
-			success : function(){
-				apiStatus = false;
-			},
-			error : function(){
-				apiStatus = false;
-			}
-		});
-		
-		if(!apiStatus){
-			alert("알 수 없는 오류입니다.");
-			return false;
-		}
     }
 
     if(f.it_point_type.value == "1" || f.it_point_type.value == "2") {
@@ -2233,8 +2385,8 @@ function fitemformcheck(f)
 			echo get_editor_js('it_mobile_tail_html');
 		}
 	?>
-	
-    return true;
+
+    return true; //
 }
 
 function categorychange(f)

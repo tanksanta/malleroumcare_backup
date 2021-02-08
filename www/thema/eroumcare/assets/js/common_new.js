@@ -156,6 +156,7 @@ $(document).ready(function() {
 		var scrollTop = $(window).scrollTop();
 		var top = scrollTop - 237;
 		var maxTop = $("body").innerHeight() - 1200;
+		var plusTop = ($("#headerTopQuickMenuWrap").length) ? 100 : 20;
 		top = (top > maxTop) ? maxTop : top;
 
 		if(maxTop < 0){
@@ -163,7 +164,7 @@ $(document).ready(function() {
 		}
 		
 		if(scrollTop >= 237){
-			$(".scrollBannerListWrap").css("transform", "translateY(" + (top + 20) + "px)");
+			$(".scrollBannerListWrap").css("transform", "translateY(" + (top + plusTop) + "px)");
 		} else if(scrollTop < 237){
 			$(".scrollBannerListWrap").css("transform", "translateY(0)");
 		}

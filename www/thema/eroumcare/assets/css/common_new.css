@@ -529,7 +529,6 @@ pre{white-space: pre-wrap;}
 .at-container { width: 1400px; max-width: 1400px !important; margin: 0 auto; position: relative; overflow: inherit !important; }
 .at-content { width: 100%; float: left; padding-top: 0; }
 
-.samhwa-item-info > .optionStockCntList { display: none; }
 .samhwa-item-info-opener { bottom: 70px; z-index: 9; }
 
 /* 210202 메인 상단 슬라이드 */
@@ -713,10 +712,23 @@ pre{white-space: pre-wrap;}
 #myRecipientListWrap > .itemWrap > .item > li.btnWrap > button.delBtn { background-color: #DC3333; color: #FFF; border: 1px solid #FFF; }
 #myRecipientListWrap > .moreBtnWrap { width: 100%; float: left; margin-top: 20px; }
 #myRecipientListWrap > .moreBtnWrap > button { width: 100%; height: 50px; float: left; border: 1px solid #CCC; font-size: 15px; font-weight: bold; color: #666; }
-#myRecipientListWrap > .moreBtnWrap > button > i { font-size: 21px; margin-right: 5px; vertical-align: middle; 새ㅔ
--1px; }
+#myRecipientListWrap > .moreBtnWrap > button > i { font-size: 21px; margin-right: 5px; vertical-align: middle; top: -1px; }
+
+/* 210208 상단퀵메뉴 */
+#headerTopQuickMenuWrap { width: 100%; float: left; }
+#headerTopQuickMenuWrap * { position: relative; }
+#headerTopQuickMenuWrap > div { width: 1400px; margin: 0 auto; }
+#headerTopQuickMenuWrap > div > div { width: 100%; float: left; padding: 25px; background-color: #333; background-image: url(../img/headerTopBG.png); background-repeat: repeat-x; }
+
+#headerTopQuickMenuWrap .titleWrap { width: 100%; float: left; color: #FFF; font-weight: 500; font-size: 15px; margin-bottom: 20px; }
+#headerTopQuickMenuWrap .listWrap { width: 100%; float: left; }
+#headerTopQuickMenuWrap .listWrap > li { width: 18.4%; float: left; margin-right: 2%; }
+#headerTopQuickMenuWrap .listWrap > li:nth-of-type(5n) { margin-right: 0; }
+#headerTopQuickMenuWrap .listWrap > li > a { width: 100%; height: 122px; line-height: 120px; float: left; border-radius: 10px; background-color: #232323; border: 1px solid #666; text-align: center; color: #FFF; font-size: 14px; }
+#headerTopQuickMenuWrap .listWrap > li > a > img { margin-right: 15px; }
 
 @media (max-width: 1400px){
+	#headerTopQuickMenuWrap > div { width: 100%; float: left; }
 	.at-container { width: 100%; float: left; padding: 0 20px !important; }
 	.top_common_area > .searchWrap { width: 400px; margin-left: -200px; }
 	.footer_area > div { width: 100%; float: left; }
@@ -753,4 +765,16 @@ pre{white-space: pre-wrap;}
 	#myRecipientListWrap > .itemWrap > .item > li.info > p { display: block; width: 100%; float: left; }
 	#myRecipientListWrap > .itemWrap > .item > li.info > p.labelName { font-size: 12px; }
 	#myRecipientListWrap > .itemWrap > .item > li.info > p.value { font-size: 15px; font-weight: 500; margin-top: -5px; }
+	
+	#headerTopQuickMenuWrap > div > div { padding: 20px; }
+	#headerTopQuickMenuWrap .listWrap > li { width: 49%; margin-bottom: 2%; }
+	#headerTopQuickMenuWrap .listWrap > li > a { height: 90px; line-height: inherit; display: table; table-layout: fixed; }
+	#headerTopQuickMenuWrap .listWrap > li > a > span { display: table-cell; vertical-align: middle; text-align: center; }
+	#headerTopQuickMenuWrap .listWrap > li > a > .imgWrap { display: table-cell !important; vertical-align: middle; text-align: center; width: 30%; }
+	#headerTopQuickMenuWrap .listWrap > li > a > .imgWrap > img { transform: scale(0.6); transform-origin: center; }
+	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(2n) { margin-right: 0; }
+	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(5n) { width: 100%; margin-bottom: 0; }
+	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(5n) > a { height: 60px; line-height: 58px; }
+	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(5n) > a > img { position: absolute; height: 22px; top: 50%; margin-top: -11px; left: 20px; }
+	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(5n) > a > span { display: inline-block; }
 }

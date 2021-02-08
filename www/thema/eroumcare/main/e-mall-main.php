@@ -46,14 +46,50 @@
 	<script type="text/javascript">
 		$(function(){
 			
-			$("#mainTopSlidePCWrap > .listWrap > ul > li").click(function(){
-				var item = $("#mainTopSlidePCWrap > .viewWrap > ul > li");
+			var mainTopSlidePCNum = 0;
+			var mainTopSlidePCStatus = true;
+			var mainTopSlidePCTimerSec = 2000;
+			var mainTopSlidePCTimer = setInterval(function(){
+				mainTopSlidePCTimerSetting();
+			}, mainTopSlidePCTimerSec);
+			
+			function mainTopSlidePCTimerSetting(){
+				var item = $("#mainTopSlidePCWrap > .listWrap > ul > li");
+				
+				mainTopSlidePCNum++;
+				if($(item).length <= mainTopSlidePCNum){
+					mainTopSlidePCNum = 0;
+				}
+				
+				mainTopSlidePCSetting();
+			}
+			
+			function mainTopSlidePCSetting(){
+				clearInterval(mainTopSlidePCTimer);
+				mainTopSlidePCStatus = false;
+				var viewItem = $("#mainTopSlidePCWrap > .viewWrap > ul > li");
+				var listItem = $("#mainTopSlidePCWrap > .listWrap > ul > li");
 				
 				$("#mainTopSlidePCWrap > .listWrap > ul > li").removeClass("active");
 				$("#mainTopSlidePCWrap > .viewWrap > ul > li ").removeClass("active");
 				
-				$(this).addClass("active");
-				$(item[$(this).index()]).addClass("active");
+				$(viewItem[mainTopSlidePCNum]).addClass("active");
+				$(listItem[mainTopSlidePCNum]).addClass("active");
+				
+				mainTopSlidePCStatus = true;
+				mainTopSlidePCTimer = setInterval(function(){
+					mainTopSlidePCTimerSetting();
+				}, mainTopSlidePCTimerSec);
+			}
+			
+			$("#mainTopSlidePCWrap > .listWrap > ul > li").click(function(){
+				if(!mainTopSlidePCStatus){
+					return false;
+				}
+				
+				mainTopSlidePCNum = $(this).index();
+				
+				mainTopSlidePCSetting();
 			});
 			
 		})
@@ -85,16 +121,45 @@
 		$(function(){
 			
 			var mainTopSlideNum = 0;
+			var mainTopSlideStatus = true;
+			var mainTopSlideTimerSec = 2000;
+			var mainTopSlideTimer = setInterval(function(){
+				mainTopSlideTimerSetting();
+			}, mainTopSlideTimerSec);
+			
+			function mainTopSlideTimerSetting(){
+				var item = $("#mainTopSlideMoWrap > .navWrap > li");
+				
+				mainTopSlideNum++;
+				if($(item).length <= mainTopSlideNum){
+					mainTopSlideNum = 0;
+				}
+				
+				mainTopSlideSetting();
+			}
 			
 			function mainTopSlideSetting(){
+				clearInterval(mainTopSlideTimer);
+				mainTopSlideStatus = false;
 				var navItem = $("#mainTopSlideMoWrap > .navWrap > li");
 				
 				$("#mainTopSlideMoWrap > .listWrap > ul").css("left", "-" + (mainTopSlideNum * 100) + "%");
 				$(navItem).removeClass("active");
 				$(navItem[mainTopSlideNum]).addClass("active");
+				
+				setTimeout(function(){
+					mainTopSlideStatus = true;
+					mainTopSlideTimer = setInterval(function(){
+						mainTopSlideTimerSetting();
+					}, mainTopSlideTimerSec);
+				}, 500);
 			}
 			
 			$("#mainTopSlideMoWrap > .navWrap > li").click(function(){
+				if(!mainTopSlideStatus){
+					return false;
+				}
+				
 				mainTopSlideNum = $(this).index();
 				
 				mainTopSlideSetting();
@@ -215,16 +280,45 @@
 		$(function(){
 			
 			var mainBannerNum = 0;
+			var mainBannerStatus = true;
+			var mainBannerTimerSec = 2000;
+			var mainBannerTimer = setInterval(function(){
+				mainBannerTimerSetting();
+			}, mainBannerTimerSec);
+			
+			function mainBannerTimerSetting(){
+				var item = $("#mainBannerWrap > .navWrap > li");
+				
+				mainBannerNum++;
+				if($(item).length <= mainBannerNum){
+					mainBannerNum = 0;
+				}
+				
+				mainBannerSetting();
+			}
 			
 			function mainBannerSetting(){
+				clearInterval(mainBannerTimer);
+				mainBannerStatus = false;
 				var navItem = $("#mainBannerWrap > .navWrap > li");
 				
 				$("#mainBannerWrap > .listWrap > ul").css("left", "-" + (mainBannerNum * 100) + "%");
 				$(navItem).removeClass("active");
 				$(navItem[mainBannerNum]).addClass("active");
+				
+				setTimeout(function(){
+					mainBannerStatus = true;
+					mainBannerTimer = setInterval(function(){
+						mainBannerTimerSetting();
+					}, mainBannerTimerSec);
+				}, 500);
 			}
 			
 			$("#mainBannerWrap > .navWrap > li").click(function(){
+				if(!mainBannerStatus){
+					return false;
+				}
+				
 				mainBannerNum = $(this).index();
 				
 				mainBannerSetting();
