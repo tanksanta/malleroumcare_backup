@@ -272,7 +272,7 @@ $(document).ready(function() {
 								</a>
 							</li>
 							<li>
-								<a href="#" title="예비수급자관리">
+								<a href="/shop/my.recipientSpare.list.php" title="예비수급자관리">
 									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon02.png" alt="예비수급자관리_아이콘" class="pc_layout">
 									<p class="mo_layout imgWrap">
 										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon02.png" alt="예비수급자관리_아이콘">
