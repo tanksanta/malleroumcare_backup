@@ -354,7 +354,7 @@ $flist = apms_form(1,0);
         </td>
     </tr>
     <tr class="<?php echo $bg; ?>">
-        <td rowspan="2" class="td_img"><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?></a></td>
+        <td rowspan="2" class="td_img"><a href="<?php echo $href; ?>"><img src="/data/item/<?=$row["it_img1"]?>" style="width: 50px;" onerror="this.src='/shop/img/no_image.gif'"></a></td>
         <td headers="th_pc_title" rowspan="2" class="td_input td_left" style="font-size: 0;">
 			<!-- <?php echo help("상품등록폼 : ".apms_form_option('name', $flist, $row['pt_form']));?>  -->
 			<!--모델명 : <?php echo htmlspecialchars2(cut_str($row['it_model'],250, "")); ?>, 상품코드 : <?php echo htmlspecialchars2(cut_str($row['it_thezone'],250, "")); ?>-->

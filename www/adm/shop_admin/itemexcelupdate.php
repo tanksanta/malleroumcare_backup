@@ -155,6 +155,8 @@ if($_FILES['excelfile']['tmp_name']) {
             $fail_count++;
             continue;
         }
+		
+		$itemId = sql_fetch("SELECT itemId FROM g5_shop_category WHERE ca_id = '{$ca_id}'")["itemId"];
 
         $sql = " INSERT INTO {$g5['g5_shop_item_table']}
                      SET it_id = '$it_id',
@@ -196,6 +198,8 @@ if($_FILES['excelfile']['tmp_name']) {
                          prodSupYn = '$prodSupYn',
                          supId = '$supId',
                          ProdPayCode = '$prodPayCode',
+						 	it_thezone = '$itemId',
+							it_option_subject = '색상,사이즈',
                          it_img1 = '$it_img1',
                          it_img2 = '$it_img2',
                          it_img3 = '$it_img3',
@@ -228,16 +232,11 @@ if($_FILES['excelfile']['tmp_name']) {
 		}
 		
 		$imgList = [];
-		array_push($imgList, $it_img1);
-		array_push($imgList, $it_img2);
-		array_push($imgList, $it_img3);
-		array_push($imgList, $it_img4);
-		array_push($imgList, $it_img5);
-		array_push($imgList, $it_img6);
-		array_push($imgList, $it_img7);
-		array_push($imgList, $it_img8);
-		array_push($imgList, $it_img9);
-		array_push($imgList, $it_img10);
+		for($ii = 1; $ii < 11; $ii++){
+			if(${"it_img{$ii}"}){
+				array_push($imgList, "/data/item/{${"it_img{$ii}"}}");
+			}
+		}
 		
 		$gubun = "00";
 		switch(substr($ca_id, 0, 2)){
@@ -263,7 +262,7 @@ if($_FILES['excelfile']['tmp_name']) {
 		$thisDataList["prodSupPrice"] = $it_price;
 		$thisDataList["prodStateCode"] = "03";
 		$thisDataList["supId"] = $supId;
-		$thisDataList["itemId"] = sql_fetch("SELECT itemId FROM g5_shop_category WHERE ca_id = '{$ca_id}'")["itemId"];
+		$thisDataList["itemId"] = $itemId;
 		$thisDataList["subItem"] = "";
 		$thisDataList["gubun"] = $gubun;
 		$thisDataList["imgList"] = $imgList;
@@ -287,9 +286,9 @@ include_once(G5_PATH.'/head.sub.php');
         <dt>총상품수</dt>
         <dd><?php echo number_format($total_count); ?></dd>
         <dt>완료건수</dt>
-        <dd><?php echo number_format($succ_count); ?></dd>
+        <dd id="successCnt"><?php echo $succ_count; ?></dd>
         <dt>실패건수</dt>
-        <dd><?php echo number_format($fail_count); ?></dd>
+        <dd id="failCnt"><?php echo $fail_count; ?></dd>
         <?php if($fail_count > 0) { ?>
         <dt>실패상품코드</dt>
         <dd><?php echo implode(', ', $fail_it_id); ?></dd>
@@ -308,11 +307,7 @@ include_once(G5_PATH.'/head.sub.php');
     
     <script type="text/javascript">
 		$(function(){
-			
-			var succList = <?=json_encode($succDataList)?>;
-			var successDataList = [];
-			var failDataList = [];
-			
+
 			function dataURItoBlob(dataURI) {
 				// convert base64/URLEncoded data component to raw binary data held in a string
 				var byteString;
@@ -365,8 +360,12 @@ include_once(G5_PATH.'/head.sub.php');
 				return new File([u8arr], filename, {type:mime});
 			}
 			
+			var succList = <?=json_encode($succDataList)?>;
+			
 			async function frmUpdate(){
+				var dataCnt = 0;
 				$.each(succList, async function(it_id, data){
+					dataCnt++;
 					var sendData = new FormData();
 					
 					$.each(data, function(key, value){
@@ -381,31 +380,55 @@ include_once(G5_PATH.'/head.sub.php');
 							var blob = dataURItoBlob(nowToDataURLResult);
 							var ext = blob.type.split("/")[1];
 							var file = dataURLtoFile(nowToDataURLResult, "file_" + i + "." + ext);
-							console.log(nowToDataURLResult);
 							sendData.append("file" + (i + 1), file);
 						}
 					}
+					
+					$.ajax({
+						url : "https://eroumcare.com:9001/api/prod/insert",
+						type : "POST",
+						async : false,
+						cache : false,
+						processData : false,
+						contentType : false,
+						data : sendData,
+						success : function(result){
+							if(result.errorYN == "Y"){
+								$.ajax({
+									url : "./ajax.item.excel.delete.php",
+									type : "POST",
+									data : {
+										it_id : it_id
+									}
+								});
+								
+								$("#successCnt").text(Number($("#successCnt").text()) - 1);
+								$("#failCnt").text(Number($("#failCnt").text()) + 1);
+							} else {
+								$.ajax({
+									url : "./ajax.item.excel.change.php",
+									type : "POST",
+									data : {
+										it_id : it_id,
+										prodId : result.data.prodId
+									}
+								});
+							}
+						},
+						error : function(result){
+							$.ajax({
+								url : "./ajax.item.excel.delete.php",
+								type : "POST",
+								data : {
+									it_id : it_id
+								}
+							});
+							
+							$("#successCnt").text(Number($("#successCnt").text()) - 1);
+							$("#failCnt").text(Number($("#failCnt").text()) + 1);
+						}
+					});
 				});
-
-//				$.ajax({
-//					url : "https://eroumcare.com:9001/api/prod/update",
-//					type : "POST",
-//					async : false,
-//					cache : false,
-//					processData : false,
-//					contentType : false,
-//					data : sendData,
-//					success : function(result){
-//						if(result.errorYN == "Y"){
-//							alert(result.message);
-//							apiStatus = false;
-//						}
-//					},
-//					error : function(result){
-//						alert(result.responseJSON.message);
-//						apiStatus = false;
-//					}
-//				});
 			}
 			
 			frmUpdate();

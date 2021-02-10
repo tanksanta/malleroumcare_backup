@@ -8,6 +8,10 @@ $g5['title'] = '엑셀파일로 상품 일괄 등록';
 include_once(G5_PATH.'/head.sub.php');
 ?>
 
+<style>
+	.excelBtn { background-color: #333; color: #FFF; font-weight: bold; padding: 5px 15px; display: inline-block; }
+</style>
+
 <div class="new_win">
     <h1><?php echo $g5['title']; ?></h1>
 
@@ -20,7 +24,7 @@ include_once(G5_PATH.'/head.sub.php');
         </p>
 
         <p>
-            <a href="<?php echo G5_URL; ?>/<?php echo G5_LIB_DIR; ?>/Excel/itemexcel.xls">상품일괄등록용 엑셀파일 다운로드</a>
+            <a href="<?php echo G5_URL; ?>/<?php echo G5_LIB_DIR; ?>/Excel/itemexcel.xls" class="excelBtn">상품일괄등록용 엑셀파일 다운로드</a>
         </p>
     </div>
 
