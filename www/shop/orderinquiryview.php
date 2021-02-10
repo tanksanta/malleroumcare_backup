@@ -63,7 +63,8 @@ $sql = " select a.it_id,
 				b.it_model,
 				a.prodMemo,
 				b.prodSupYn,
-				a.ct_stock_qty
+				a.ct_stock_qty,
+				b.it_img1
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$od_id'
 		  group by a.it_id, a.ct_uid
@@ -72,6 +73,7 @@ $result = sql_query($sql);
 for($i=0; $row=sql_fetch_array($result); $i++) {
 
 	$item[$i] = $row;
+	$item[$i]["thumbnail"] = $row["it_img1"];
 
 	$sql = " select ct_id, mb_id, it_name, ct_option, ct_qty, ct_stock_qty, ct_price, ct_point, ct_status, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_uid
 				, ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn

@@ -62,7 +62,7 @@ if ( is_array($item) && count($item) ) {
 				</td>
 				<td class="text-center">
 					<div class="item-img">
-						<?php echo get_it_image($item[$i]['it_id'], 100, 100); ?>
+						<img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';" style="width: 100px; height: 100px;">
 						<div class="item-type">
 							<?php echo $item[$i]['pt_it']; ?>
 						</div>

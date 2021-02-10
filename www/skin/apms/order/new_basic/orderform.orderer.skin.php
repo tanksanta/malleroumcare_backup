@@ -654,7 +654,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 			<tr class="item" data-code="<?=$item[$i]["it_id"]?>" data-sup="<?=$item[$i]["prodSupYn"]?>">
 				<td class="text-center" style="vertical-align: middle;">
 					<div class="item-img">
-						<?php echo get_it_image($item[$i]['it_id'], 70, 70); ?>
+						<img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';" style="width: 70px; height: 70px;">
 						<div class="item-type"><?php echo $item[$i]['pt_it']; ?></div>
 					</div>
 				</td>

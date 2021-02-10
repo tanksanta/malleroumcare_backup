@@ -2251,7 +2251,7 @@ function fitemformcheck(f)
         sendData.append("prodWeig", $("#prodWeig").val()); // 중량
         sendData.append("prodColor", sendDataProdColor); // 사이즈
         sendData.append("prodSize", sendDataProdSize); // 사이즈
-        sendData.append("prodDetail", $("#it_basic").val()); // 상세정보
+        sendData.append("prodDetail", $("#it_explan").val()); // 상세정보
         sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
         sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
         sendData.append("prodSupPrice", $("#it_price").val()); //  공급가격
@@ -2408,7 +2408,7 @@ async function frmUpdate(){
 	sendData.append("prodWeig", $("#prodWeig").val()); // 중량
 	sendData.append("prodColor", sendDataProdColor); // 사이즈
 	sendData.append("prodSize", sendDataProdSize); // 사이즈
-	sendData.append("prodDetail", $("#it_basic").val()); // 상세정보
+	sendData.append("prodDetail", $("#it_explan").val()); // 상세정보
 	sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
 	sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
 	sendData.append("prodSupPrice", $("#it_price").val()); //  공급가격

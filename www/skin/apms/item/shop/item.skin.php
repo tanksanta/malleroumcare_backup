@@ -23,7 +23,8 @@ for($i=1; $i<=10; $i++) {
 	if(!$it['it_img'.$i])
 		continue;
 
-	$thumb = get_it_thumbnail($it['it_img'.$i], 100, 100);
+	# $thumb = get_it_thumbnail($it['it_img'.$i], 100, 100);
+	$thumb = "<img src='/data/item/{$it['it_img'.$i]}'>";
 
 	if($thumb) {
 		$org_url = G5_DATA_URL.'/item/'.$it['it_img'.$i];
@@ -151,6 +152,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	<a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=<?php echo $ca_id; ?>&page=<?php echo $_GET['page']; ?>">< 제품 상세 정보</a>
 </div>
 -->
+
+<style>
+	.item-head .item-thumb img { width: 100px; height: 100px; }
+</style>
 <div class="item-head">
 	<div class="samhwa-item-head-container">
 		<div class="samhwa-item-image">

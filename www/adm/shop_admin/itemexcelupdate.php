@@ -230,14 +230,14 @@ if($_FILES['excelfile']['tmp_name']) {
 				}
 			}
 		}
-		
+
 		$imgList = [];
 		for($ii = 1; $ii < 11; $ii++){
 			if(${"it_img{$ii}"}){
 				array_push($imgList, "/data/item/{${"it_img{$ii}"}}");
 			}
 		}
-		
+
 		$gubun = "00";
 		switch(substr($ca_id, 0, 2)){
 			case "10" :
@@ -247,7 +247,7 @@ if($_FILES['excelfile']['tmp_name']) {
 				$gubun = "01";
 				break;
 		}
-		
+
 		$thisDataList = [];
 		$thisDataList["usrId"] = $member["mb_id"];
 		$thisDataList["entId"] = $entId;
@@ -256,7 +256,7 @@ if($_FILES['excelfile']['tmp_name']) {
 		$thisDataList["prodWeig"] = $prodWeig;
 		$thisDataList["prodColor"] = $prodColor;
 		$thisDataList["prodSize"] = $prodSize;
-		$thisDataList["prodDetail"] = $it_basic;
+		$thisDataList["prodDetail"] = $it_explan;
 		$thisDataList["prodPayCode"] = $prodPayCode;
 		$thisDataList["prodSupYn"] = $prodSupYn;
 		$thisDataList["prodSupPrice"] = $it_price;
@@ -266,9 +266,9 @@ if($_FILES['excelfile']['tmp_name']) {
 		$thisDataList["subItem"] = "";
 		$thisDataList["gubun"] = $gubun;
 		$thisDataList["imgList"] = $imgList;
-		
+
 		$succDataList[$it_id] = $thisDataList;
-    }
+}
 }
 
 $g5['title'] = '상품 엑셀일괄등록 결과';

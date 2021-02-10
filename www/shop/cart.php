@@ -83,7 +83,8 @@ $sql = " select a.ct_id,
 				b.pt_msg2,
 				b.pt_msg3,
 				b.it_model,
-				b.prodSupYn
+				b.prodSupYn,
+				b.it_img1
 		   from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$s_cart_id' ";
 $sql .= " group by a.it_id ";
@@ -148,6 +149,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 	$item[$i]['sell_price'] = $sell_price;
 	$item[$i]['sell_discount'] = $sum["discount"];
 	$item[$i]['qty'] = $sum['qty'];
+	$item[$i]['thumbnail'] = $row['it_img1'];
 
 	$tot_point      += $point;
 	$tot_sell_price += $sell_price;

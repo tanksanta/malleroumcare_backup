@@ -164,7 +164,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				<tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
 					<td class="text-center" style="vertical-align: middle;" rowspan="<?php echo ($item[$i]['rowspan'] + 1); ?>">
 						<div class="item-img">
-							<?php echo get_it_image($item[$i]['it_id'], 50, 50); ?>
+							<img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';" style="width: 50px; height: 50px;">
 							<div class="item-type"><?php echo $item[$i]['pt_it']; ?></div>
 						</div>
 					</td>
