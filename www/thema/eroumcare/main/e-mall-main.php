@@ -178,19 +178,19 @@
 			<ul class="info">
 				<li class="call">
 					<img src="<?=THEMA_URL?>/assets/img/mainCallIcon.png" alt="">
-					<span>02-1234-5678</span>
+					<span><?php echo $default['de_admin_company_tel']; ?></span>
 				</li>
 				<li class="time">월~금 09:00~18:00 (점심시간 12시~13시)</li>
 				<li class="etc">
 					<p>
 						<span>· Email</span>
 						<span class="line"></span>
-						<span>abc123@abc123.com</span>
+						<span><?php echo $default['de_admin_info_email']; ?></span>
 					</p>
 					<p>
 						<span>· Fax</span>
 						<span class="line"></span>
-						<span>070-222-3333</span>
+						<span><?php echo $default['de_admin_company_fax']; ?></span>
 					</p>
 				</li>
 			</ul>
@@ -232,8 +232,8 @@
 		
 		<ul class="infoWrap">
 			<li><img src="<?=THEMA_URL?>/assets/img/mainCallIcon.png" alt=""></li>
-			<li>02-1234-5678</li>
-			<li class="callBtn"><a href="tel: 02-1234-5678">전화연결</a></li>
+			<li><?php echo $default['de_admin_company_tel']; ?> </li>
+			<li class="callBtn"><a href="tel: <?php echo $default['de_admin_company_tel']; ?> ">전화연결</a></li>
 		</ul>
 		
 		<div class="timeWrap">
