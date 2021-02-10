@@ -577,7 +577,7 @@ pre{white-space: pre-wrap;}
 #mainBoardListWrap > .board > .list > li > a > img { margin-right: 10px; }
 #mainBoardListWrap > .customer > .info { width: 100%; float: left; margin-top: 20px; }
 #mainBoardListWrap > .customer > .info > li { width: 100%; float: left; color: #666; }
-#mainBoardListWrap > .customer > .info > li.call { height: 58px; line-height: 58px; font-size: 30px; font-weight: bold; color: #003333; }
+#mainBoardListWrap > .customer > .info > li.call { height: 58px; line-height: 58px; font-size: 30px; font-weight: bold; color: #333; }
 #mainBoardListWrap > .customer > .info > li.call > img { vertical-align: middle; margin-right: 10px; }
 #mainBoardListWrap > .customer > .info > li.time { margin-top: 20px; font-size: 13px; }
 #mainBoardListWrap > .customer > .info > li.etc { margin-top: 10px; }

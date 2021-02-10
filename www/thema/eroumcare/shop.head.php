@@ -254,7 +254,7 @@ $(document).ready(function() {
 			
 		</div>
 		
-		<?php if($member["mb_id"]){ ?>
+		<?php if($member['mb_level'] >= 3){ ?>
 			<div id="headerTopQuickMenuWrap">
 				<div>
 					<div>
