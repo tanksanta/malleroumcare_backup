@@ -533,10 +533,10 @@ pre{white-space: pre-wrap;}
 .samhwa-item-info-opener { bottom: 70px; z-index: 9; }
 
 /* 210202 메인 상단 슬라이드 */
-#mainTopSlidePCWrap { width: 100%; height: 656px; float: left; overflow: hidden; display: table; table-layout: fixed; }
+#mainTopSlidePCWrap { width: 100%; height: 656px; float: left; overflow: hidden; display: table; table-layout: fixed; min-width:1400px;}
 #mainTopSlidePCWrap * { position: relative; }
 #mainTopSlidePCWrap > div { height: 100%; display: table-cell; vertical-align: top; }
-#mainTopSlidePCWrap > .listWrap { width: 300px; border: 1px solid #DDD; background-color: #F8F8F8; }
+#mainTopSlidePCWrap > .listWrap { width: 20%; border: 1px solid #DDD; background-color: #F8F8F8; }
 #mainTopSlidePCWrap > .listWrap > ul { position: absolute; width: 100%; left: 0; top: 0; }
 #mainTopSlidePCWrap > .listWrap > ul > li { width: 100%; float: left; border-bottom: 1px solid #DDD; display: table; table-layout: fixed; cursor: pointer; padding: 20px; }
 #mainTopSlidePCWrap > .listWrap > ul > li > p { display: table-cell; vertical-align: middle; }
@@ -647,7 +647,7 @@ pre{white-space: pre-wrap;}
 .scrollBannerListWrap > .todayViewWrap > .title { width: 100%; float: left; font-size: 13px; font-weight: bold; color: #333; margin-bottom: 10px; }
 .scrollBannerListWrap > .todayViewWrap > #stv { width: 100%; float: left; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul { width: 100%; float: left; padding-top: 150px; }
-.scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > .slick-list { position: absolute; width: 100%; height: 140px; left: 0; top: 0; border: 1px solid #C7C7C7; overflow: hidden; }
+.scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > .slick-list { position: absolute; width: 100%; height: 140px; left: 0; top: 0; border: 1px solid #ddd; overflow: hidden; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > button { width: 62px; height: 22px; float: left; margin-right: 6px; border: 1px solid #C7C7C7; text-align: center; color: #999; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > button > i { font-size: 15px; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > button:nth-of-type(2n) { margin-right: 0; }

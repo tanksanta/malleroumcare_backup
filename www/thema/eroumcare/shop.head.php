@@ -347,7 +347,7 @@ $(document).ready(function() {
 							</td>
 						<?php } ?>
 							<td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=30">추천상품</a></td>
-							<td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=40">비급여</a></td>
+							<td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=60">신상품</a></td>
 						</tr>
 					</table>
 				</div>

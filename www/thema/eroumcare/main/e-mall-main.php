@@ -10,15 +10,15 @@
 			<ul>
 				<li class="active">
 					<p class="img">
-						<img src="/data/banner/25" alt="">
+						<img src="<?=THEMA_URL?>/assets/img/main_banner_01_thum.png" alt="">
 					</p>
 					<p class="info">
 						<img src="<?=THEMA_URL?>/assets/img/mainTopSlideActive.png" alt="" class="activeIcon">
-						<span class="big">신규 브랜드 입점할인</span>
-						<span class="small">행복한 당신의 미래를 위한<br>오늘의 평범한 일상</span>
+						<span class="big">이로움 오픈이벤트</span>
+						<span class="small">사업소 첫 구매 시<br>10,000원 할인쿠폰 제공</span>
 					</p>
 				</li>
-				<li>
+				<!-- <li>
 					<p class="img">
 						<img src="/data/banner/25" alt="">
 					</p>
@@ -27,18 +27,18 @@
 						<span class="big">신규상품 2021</span>
 						<span class="small">새로운 상품을 만나보세요.<br>이벤트 진행 중</span>
 					</p>
-				</li>
+				</li> -->
 			</ul>
 		</div>
 		
 		<div class="viewWrap">
 			<ul>
 				<li class="active">
-					<img src="/data/banner/25" alt="">
-				</li>
+					<img src="<?=THEMA_URL?>/assets/img/main_banner_01.png" alt="">
+				</li><!-- 
 				<li>
 					<img src="/data/banner/25" alt="">
-				</li>
+				</li> -->
 			</ul>
 		</div>
 	</div>
@@ -48,7 +48,7 @@
 			
 			var mainTopSlidePCNum = 0;
 			var mainTopSlidePCStatus = true;
-			var mainTopSlidePCTimerSec = 2000;
+			var mainTopSlidePCTimerSec = 5000;
 			var mainTopSlidePCTimer = setInterval(function(){
 				mainTopSlidePCTimerSetting();
 			}, mainTopSlidePCTimerSec);
@@ -96,25 +96,29 @@
 	</script>
 	
 	<div id="mainTopSlideMoWrap" class="mo_layout">
-		<div class="listWrap">
+		<!-- <div class="listWrap">
 			<ul style="width: 300%;">
 				<li style="width: 33.33%;">
-					<img src="/data/banner/25" alt="">
-				</li>
-				<li style="width: 33.33%;">
+					<img src="<?=THEMA_URL?>/assets/img/main_banner_01.png" alt="">
+				</li><li style="width: 33.33%;">
 					<img src="/data/banner/25" alt="">
 				</li>
 				<li style="width: 33.33%;">
 					<img src="/data/banner/25" alt="">
 				</li>
 			</ul>
+		</div> -->
+		<div class="slick">
+			<div class="item">
+				<img src="<?=THEMA_URL?>/assets/img/main_banner_01.png" alt="">
+			</div>
 		</div>
 		
-		<ul class="navWrap">
+		<!-- <ul class="navWrap">
 			<li class="active"></li>
 			<li></li>
 			<li></li>
-		</ul>
+		</ul> -->
 	</div>
 	
 	<script type="text/javascript">
@@ -230,7 +234,7 @@
 	<!-- 메인 배너 -->
 	<div id="mainBannerWrap">
 		<div class="listWrap">
-			<ul class="pc_layout" style="width: 300%;">
+			<!-- <ul class="pc_layout" style="width: 300%;">
 				<li style="width: 33.33%;">
 					<img src="<?=THEMA_URL?>/assets/img/testBanner01.png" alt="">
 				</li>
@@ -241,7 +245,7 @@
 					<img src="<?=THEMA_URL?>/assets/img/testBanner01.png" alt="">
 				</li>
 			</ul>
-
+			
 			<ul class="mo_layout" style="width: 300%;">
 				<li style="width: 33.33%;">
 					<img src="<?=THEMA_URL?>/assets/img/testBannerMo01.png" alt="">
@@ -252,14 +256,19 @@
 				<li style="width: 33.33%;">
 					<img src="<?=THEMA_URL?>/assets/img/testBannerMo01.png" alt="">
 				</li>
-			</ul>
+			</ul> -->
+			<div class="slick">
+				<div class="item">
+					<img src="<?=THEMA_URL?>/assets/img/main_c_banner_01.png" alt="">
+				</div>
+			</div>
 		</div>
 		
-		<ul class="navWrap">
+		<!-- <ul class="navWrap">
 			<li class="active"></li>
 			<li></li>
 			<li></li>
-		</ul>
+		</ul> -->
 	</div>
 	
 	<script type="text/javascript">
