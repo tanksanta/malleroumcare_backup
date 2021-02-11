@@ -467,7 +467,7 @@ $(document).ready(function() {
 		<div class="at-body">
 			<?php if($col_name) { ?>
 				<div class="at-container">
-					<div class="scrollBannerListWrap left" style="<?=($member["mb_id"]) ? "top: -290px;" : ""?>">
+					<div class="scrollBannerListWrap left" style="<?=($member['mb_level'] >= 3) ? "top: -290px;" : ""?>">
 						<ul>
 							<li></li>
 							<li></li>
@@ -475,7 +475,7 @@ $(document).ready(function() {
 						</ul>
 					</div>
 					
-					<div class="scrollBannerListWrap right" style="<?=($member["mb_id"]) ? "top: -290px;" : ""?>">
+					<div class="scrollBannerListWrap right" style="<?=($member['mb_level'] >= 3) ? "top: -290px;" : ""?>">
 						<ul>
 							<li></li>
 							<li></li>

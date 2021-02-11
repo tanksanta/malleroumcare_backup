@@ -221,10 +221,10 @@ function get_member_level_select($name, $start_id=0, $end_id=10, $selected="", $
             $str .= ' selected="selected"';
         $text = '';
         if ($i == 3) {
-            $text = ' (딜러)';
+            $text = ' (사업소)';
         }
         if ($i == 4) {
-            $text = ' (우수딜러)';
+            $text = ' (우수사업소)';
         }
         $str .= ">{$i}{$text}</option>\n";
     }
