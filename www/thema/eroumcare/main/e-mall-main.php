@@ -200,14 +200,7 @@
 			<div class="title">
 				<span><a href="/bbs/board.php?bo_table=notice">공지사항</a></span>
 			</div>
-			
-			<ul class="list">
-				<li><a href="#">· <img src="<?=THEMA_URL?>/assets/img/boardNew.png" alt="">공지사항 테스트글입니다.</a></li>
-				<li><a href="#">· 공지사항 테스트글입니다.</a></li>
-				<li><a href="#">· 공지사항 테스트글입니다.</a></li>
-				<li><a href="#">· 공지사항 테스트글입니다.</a></li>
-				<li><a href="#">· 공지사항 테스트글입니다.</a></li>
-			</ul>
+			<?php  echo latest('list_main', 'notice', 5, 40); ?>
 		</div>
 		
 		<div class="board">
@@ -215,14 +208,7 @@
 				<span><a href="/bbs/board.php?bo_table=faq">자주하는 질문</a></span>
 				<a href="/bbs/board.php?bo_table=qa" title="온라인 질문하기">온라인 질문하기</a>
 			</div>
-			
-			<ul class="list">
-				<li><a href="#">· 안전손잡이 설치는 어떻게 하나요?</a></li>
-				<li><a href="#">· 안전손잡이 설치는 어떻게 하나요?</a></li>
-				<li><a href="#">· 안전손잡이 설치는 어떻게 하나요?</a></li>
-				<li><a href="#">· 안전손잡이 설치는 어떻게 하나요?</a></li>
-				<li><a href="#">· 안전손잡이 설치는 어떻게 하나요?</a></li>
-			</ul>
+			<?php  echo latest('list_main', 'faq', 5, 40); ?>
 		</div>
 	</div>
 	
