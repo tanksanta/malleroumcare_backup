@@ -83,7 +83,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				<div class="logo"><img src="<?php echo THEMA_URL; ?>/assets/img/footer_logo.png" alt="" /></div>
 				<div class="info">
 					<p class="link">
-						<a href="<?php echo G5_BBS_URL;?>/content.php?co_id=company">회사소개 </a>   |   <a href="<?php echo G5_BBS_URL;?>/page.php?hid=provision">이용약관</a>    |   <a href="<?php echo G5_BBS_URL;?>/page.php?hid=privacy"><strong>개인정보취급방침</strong></a>
+						<a href="<?php echo G5_BBS_URL;?>/content.php?co_id=company">회사소개 </a>   |   <a href="<?php echo G5_BBS_URL;?>/content.php?co_id=provision">이용약관</a>    |   <a href="<?php echo G5_BBS_URL;?>/content.php?co_id=privacy"><strong>개인정보처리방침</strong></a>
 					</p>
 					<p>
 						<?php echo $default['de_admin_company_name']; ?> <span class="pc_only"> ㅣ </span> <span class="mo_br"></span> 대표 : <?php echo $default['de_admin_company_owner']; ?> ㅣ 사업자등록번호 : <?php echo $default['de_admin_company_saupja_no']; ?> <a href="javascript:;" onclick="window.open('https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6178614330','communicationViewPopup','width=750,height=700,scrollbars=yes')">[사업자정보확인]</a> <span class="pc_only"> ㅣ </span> <span class="mo_br"></span> 통신판매신고번호 : <?php echo $default['de_admin_tongsin_no']; ?> | 개인정보보호관리자 : <?php echo $default['de_admin_info_name']; ?><br>
