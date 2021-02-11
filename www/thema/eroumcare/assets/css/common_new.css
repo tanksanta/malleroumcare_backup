@@ -261,9 +261,9 @@ pre{white-space: pre-wrap;}
 .mo_top .right_area img{width:60px;}
 
 .mo_menu{display:none;border-bottom:1px solid #ddd;position: relative;z-index:10;top:60px;width:100%;padding: 15px;background: #fff;}
-.mo_menu a{display:inline-block;text-align:center;line-height: 20px;height: 20px;font-size:14px;font-weight:bold;width:50%;float: left;}
+.mo_menu a{display:inline-block;text-align:center;line-height: 20px;height: 20px;font-size:14px;font-weight:bold;width:25%;float: left;border-left:1px solid #ddd;}
 .mo_menu a:hover{color:#333;}
-.mo_menu a:first-child{border-right:1px solid #ddd;}
+.mo_menu a:first-child{border-left:0px;}
 
 #wrap{position:relative;}
 #wrap:after{content:"";display:block;clear:both;}
@@ -574,7 +574,7 @@ pre{white-space: pre-wrap;}
 #mainBoardListWrap > div > .title > a { position: absolute; height: 40px; line-height: 40px; right: 0; bottom: 10px; padding: 0 15px; border-radius: 3px; background-color: #333; color: #FFF; font-size: 15px; }
 #mainBoardListWrap > .board > .list { width: 100%; float: left; }
 #mainBoardListWrap > .board > .list > li { width: 100%; float: left; margin-top: 10px; }
-#mainBoardListWrap > .board > .list > li > a { max-width: 100%; float: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#mainBoardListWrap > .board > .list > li > a { max-width: 100%;  overflow: hidden; text-overflow: ellipsis; }
 #mainBoardListWrap > .board > .list > li > a > img { margin-right: 10px; }
 #mainBoardListWrap > .customer > .info { width: 100%; float: left; margin-top: 20px; }
 #mainBoardListWrap > .customer > .info > li { width: 100%; float: left; color: #666; }

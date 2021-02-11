@@ -314,6 +314,8 @@ $(document).ready(function() {
 		<div class="mo_menu" style="<?=($member["mb_id"]) ? "margin-top: 20px;" : ""?>">
 			<a href="/shop/list.php?ca_id=10">판매품목</a>
 			<a href="/shop/list.php?ca_id=20">대여품목</a>
+			<a href="/shop/list.php?ca_id=30">추천상품</a>
+			<a href="/shop/list.php?ca_id=60">신상품</a>
 		</div>
 	
 		<div class="top_menu_wrap">
@@ -472,8 +474,8 @@ $(document).ready(function() {
 				<div class="at-container">
 					<div class="scrollBannerListWrap left" style="<?=($member['mb_level'] >= 3) ? "top: -290px;" : ""?>">
 						<ul>
-							<li><a href=""><img src="<?php echo THEMA_URL; ?>/assets/img/wing_banner_02.png" alt="" /></a></li>
-							<li><a href=""><img src="<?php echo THEMA_URL; ?>/assets/img/wing_banner_03.png" alt="" /></a></li>
+							<li><a href="/bbs/content.php?co_id=guide"><img src="<?php echo THEMA_URL; ?>/assets/img/wing_banner_02.png" alt="" /></a></li>
+							<li><a href="/bbs/board.php?bo_table=faq&wr_id=6"><img src="<?php echo THEMA_URL; ?>/assets/img/wing_banner_03.png" alt="" /></a></li>
 						</ul>
 					</div>
 					

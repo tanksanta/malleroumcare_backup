@@ -118,7 +118,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				</a>
 			</li>
 			<li>
-				<a href="#" title="보유재고">
+				<a href="/bbs/content.php?co_id=inventory_guide" title="보유재고">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/footerMoIconStock.png" alt="보유재고" class="off">
 					</p>
