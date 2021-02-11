@@ -346,30 +346,33 @@ $(document).ready(function() {
 								</div>
 							</td>
 						<?php } ?>
+							<td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=30">추천상품</a></td>
+							<td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=40">비급여</a></td>
 						</tr>
 					</table>
 				</div>
-			</div>
-			
-			<div class="all_menu_wrap">
-				<div class="all_menu">
-					<table>
-						<?php for($i=0;$i<count($category);$i++) { ?>
-							<?php if ( $i == 0 ) echo '<tr>'; ?>
-							<td>
-								<div class="tit"><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$category[$i]['ca_id']; ?>' class='sub-title'><?php echo $category[$i]['ca_name']; ?></a></div>
-								<?php if ( $category[$i]['sub'] ) { ?>
-									<?php foreach($category[$i]['sub'] as $sub) { ?>
-										<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='sub-title'><?php echo $sub['ca_name']; ?></a>
+				<div class="all_menu_wrap">
+					<div class="all_menu">
+						<table>
+							<?php for($i=0;$i<count($category);$i++) { ?>
+								<?php if ( $i == 0 ) echo '<tr>'; ?>
+								<td>
+									<div class="tit"><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$category[$i]['ca_id']; ?>' class='sub-title'><?php echo $category[$i]['ca_name']; ?></a></div>
+									<?php if ( $category[$i]['sub'] ) { ?>
+										<?php foreach($category[$i]['sub'] as $sub) { ?>
+											<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='sub-title'><?php echo $sub['ca_name']; ?></a>
+										<?php } ?>
 									<?php } ?>
-								<?php } ?>
-							</td>
-							<?php if ( $i != 0 && $i % 5 == 4 ) echo '</tr><tr>'; ?>
-							<?php if ( $i == count($category)-1 ) echo '</tr>'; ?>
-						<?php } ?>
-					</table>
+								</td>
+								<?php if ( $i != 0 && $i % 5 == 4 ) echo '</tr><tr>'; ?>
+								<?php if ( $i == count($category)-1 ) echo '</tr>'; ?>
+							<?php } ?>
+						</table>
+					</div>
 				</div>
 			</div>
+			
+			
 		</div>
 		
 		<div class="scroll_top">

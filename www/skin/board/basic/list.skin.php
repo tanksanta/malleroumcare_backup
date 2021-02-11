@@ -7,7 +7,9 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 ?>
 
 <section class="board-list<?php echo (G5_IS_MOBILE) ? ' font-14' : '';?>"> 
-
+<div class="sub_section_tit">
+	<?php echo $board['bo_subject'] ?>
+</div>
 	<?php if($is_category) include_once($board_skin_path.'/category.skin.php'); // 카테고리	?>
 
 	<div class="list-wrap">
