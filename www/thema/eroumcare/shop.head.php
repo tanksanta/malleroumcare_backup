@@ -281,7 +281,7 @@ $(document).ready(function() {
 								</a>
 							</li>
 							<li>
-								<a href="#" title="보유재고관리">
+								<a href="/bbs/content.php?co_id=inventory_guide" title="보유재고관리">
 									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon03.png" alt="보유재고관리_아이콘" class="pc_layout">
 									<p class="mo_layout imgWrap">
 										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon03.png" alt="보유재고관리_아이콘">
@@ -290,7 +290,7 @@ $(document).ready(function() {
 								</a>
 							</li>
 							<li>
-								<a href="#" title="주문내역관리">
+								<a href="/shop/orderinquiry.php" title="주문내역관리">
 									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon04.png" alt="주문내역관리_아이콘" class="pc_layout">
 									<p class="mo_layout imgWrap">
 										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon04.png" alt="주문내역관리_아이콘">
@@ -299,7 +299,7 @@ $(document).ready(function() {
 								</a>
 							</li>
 							<li>
-								<a href="#" title="시스템이용안내">
+								<a href="/bbs/content.php?co_id=guide" title="시스템이용안내">
 									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon05.png" alt="시스템이용안내_아이콘">
 									<span>시스템이용안내</span>
 								</a>

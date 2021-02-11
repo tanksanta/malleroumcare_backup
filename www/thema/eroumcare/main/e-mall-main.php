@@ -34,7 +34,9 @@
 		<div class="viewWrap">
 			<ul>
 				<li class="active">
-					<img src="<?=THEMA_URL?>/assets/img/main_banner_01.png" alt="">
+					<a href="/bbs/board.php?bo_table=notice&wr_id=11">
+						<img src="<?=THEMA_URL?>/assets/img/main_banner_01.png" alt="">
+					</a>
 				</li><!-- 
 				<li>
 					<img src="/data/banner/25" alt="">
@@ -110,7 +112,9 @@
 		</div> -->
 		<div class="slick">
 			<div class="item">
-				<img src="<?=THEMA_URL?>/assets/img/main_banner_01.png" alt="">
+				<a href="/bbs/board.php?bo_table=notice&wr_id=11">
+					<img src="<?=THEMA_URL?>/assets/img/main_banner_01.png" alt="">
+				</a>
 			</div>
 		</div>
 		
@@ -259,7 +263,9 @@
 			</ul> -->
 			<div class="slick">
 				<div class="item">
-					<img src="<?=THEMA_URL?>/assets/img/main_c_banner_01.png" alt="">
+					<a href="/bbs/content.php?co_id=guide">
+						<img src="<?=THEMA_URL?>/assets/img/main_c_banner_01.png" alt="">
+					</a>
 				</div>
 			</div>
 		</div>
