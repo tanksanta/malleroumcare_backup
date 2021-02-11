@@ -469,17 +469,14 @@ $(document).ready(function() {
 				<div class="at-container">
 					<div class="scrollBannerListWrap left" style="<?=($member['mb_level'] >= 3) ? "top: -290px;" : ""?>">
 						<ul>
-							<li></li>
-							<li></li>
-							<li></li>
+							<li><a href=""><img src="<?php echo THEMA_URL; ?>/assets/img/wing_banner_02.png" alt="" /></a></li>
+							<li><a href=""><img src="<?php echo THEMA_URL; ?>/assets/img/wing_banner_03.png" alt="" /></a></li>
 						</ul>
 					</div>
 					
 					<div class="scrollBannerListWrap right" style="<?=($member['mb_level'] >= 3) ? "top: -290px;" : ""?>">
 						<ul>
-							<li></li>
-							<li></li>
-							<li></li>
+							<li><a target="_blank" href="<?php echo THEMA_URL; ?>/assets/카달로그(이로움)_1호.pdf" ><img src="<?php echo THEMA_URL; ?>/assets/img/wing_banner_01.png" alt="" /></a></li>
 						</ul>
 						
 						<div class="todayViewWrap">

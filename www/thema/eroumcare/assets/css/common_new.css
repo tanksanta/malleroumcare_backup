@@ -131,11 +131,11 @@ pre{white-space: pre-wrap;}
 }
 .top_menu_wrap .main_menu table td .select_menu{width: 800px;position: absolute;top: 100%;box-shadow: 1px 2px 5px rgba(0,0,0,0.4);z-index:20;background: #fff;padding:15px;visibility: hidden;}
 .top_menu_wrap .main_menu table td .select_menu .menu_area{float:left;width:auto;}
-.top_menu_wrap .main_menu table td .select_menu .menu_area td {width:100px;text-align: left;vertical-align: baseline;}
+.top_menu_wrap .main_menu table td .select_menu .menu_area td {width:120px;text-align: left;vertical-align: baseline;padding:5px;}
 .top_menu_wrap .main_menu table td .select_menu .menu_area td .cate_02{font-size:12px;font-weight:bold;color:#333;}
 .top_menu_wrap .main_menu table td .select_menu .menu_area td .cate_03{font-size:12px;color:#999;}
 .top_menu_wrap .main_menu table td .select_menu .menu_area td a{border: 0;}
-.top_menu_wrap .main_menu table td .select_menu img{float: right;width:450px;height:220px;object-fit: cover;font-family: 'object-fit: cover;';}
+.top_menu_wrap .main_menu table td .select_menu img{float: right;width:400px;height:220px;object-fit: cover;font-family: 'object-fit: cover;';}
 .top_menu_wrap .all_menu_wrap{width:100%;background: rgba(0,0,0,0.8);position:absolute;top: 100%;left:0;z-index:-1;opacity:0;}
 .top_menu_wrap .all_menu_wrap .all_menu{width:100%;max-width: 1400px;padding-left:20px; margin:0 auto;position: relative;}
 .top_menu_wrap .all_menu_wrap .all_menu table{width:100%;}
@@ -641,7 +641,7 @@ pre{white-space: pre-wrap;}
 .scrollBannerListWrap.left { left: -150px; }
 .scrollBannerListWrap.right { right: -150px; }
 .scrollBannerListWrap > ul { width: 100%; float: left; }
-.scrollBannerListWrap > ul > li { width: 100%; min-height: 160px; float: left; margin-bottom: 20px; background-color: #DDD; }
+.scrollBannerListWrap > ul > li { width: 100%; min-height: 160px; float: left; margin-bottom: 20px; border-radius: 8px;overflow: hidden;}
 .scrollBannerListWrap > .todayViewWrap { width: 100%; float: left; margin-top: 20px; }
 .scrollBannerListWrap > .todayViewWrap > .title { width: 100%; float: left; font-size: 13px; font-weight: bold; color: #333; margin-bottom: 10px; }
 .scrollBannerListWrap > .todayViewWrap > #stv { width: 100%; float: left; }
