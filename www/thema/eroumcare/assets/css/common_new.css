@@ -718,7 +718,7 @@ pre{white-space: pre-wrap;}
 /* 210208 상단퀵메뉴 */
 #headerTopQuickMenuWrap { width: 100%; float: left; }
 #headerTopQuickMenuWrap * { position: relative; }
-#headerTopQuickMenuWrap > div { width: 1400px; margin: 0 auto; }
+#headerTopQuickMenuWrap > div { width: 1200px; margin: 0 auto; }
 #headerTopQuickMenuWrap > div > div { width: 100%; float: left; padding: 25px; background-color: #333; background-image: url(../img/headerTopBG.png); background-repeat: repeat-x; }
 
 #headerTopQuickMenuWrap .titleWrap { width: 100%; float: left; color: #FFF; font-weight: 500; font-size: 15px; margin-bottom: 20px; }
