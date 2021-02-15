@@ -208,7 +208,7 @@
 			<div class="title">
 				<span><a href="/bbs/board.php?bo_table=notice">공지사항</a></span>
 			</div>
-			<?php  echo latest('list_main', 'notice', 5, 40); ?>
+			<?php  echo latest('list_main', 'notice', 5, 30); ?>
 		</div>
 		
 		<div class="board">
@@ -216,7 +216,7 @@
 				<span><a href="/bbs/board.php?bo_table=faq">자주하는 질문</a></span>
 				<a href="/bbs/board.php?bo_table=qa" title="온라인 질문하기">온라인 질문하기</a>
 			</div>
-			<?php  echo latest('list_main', 'faq', 5, 40); ?>
+			<?php  echo latest('list_main', 'faq', 5, 30); ?>
 		</div>
 	</div>
 	
