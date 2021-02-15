@@ -244,7 +244,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						<?=($ii) ? "<br>" : ""?>
 						<span><?=$prodList[$prodListCnt]["prodBarNum"]?></span>
 					<?php } else { ?>
-						<input type="text" class="form-control input-sm prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" style="margin-bottom: 5px;" value="" <?=($item[$i]["ct_stock_qty"] > $ii) ? "readonly" : ""?>>
+						<input type="text" class="form-control input-sm prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" style="margin-bottom: 5px;" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" <?=($item[$i]["ct_stock_qty"] > $ii) ? "readonly" : ""?>>
 					<?php } ?>
 				<?php $prodListCnt++; } ?>
 				</td>

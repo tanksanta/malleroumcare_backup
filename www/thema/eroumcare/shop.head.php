@@ -70,14 +70,6 @@ $(document).ready(function() {
 		<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
 	</div>
 
-	<div class="searchWrap">
-		<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
-			<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
-			<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="상품명으로 검색하세요."/>
-			<button type="submit" id="sch_submit"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.jpg"></button>
-		</form>
-	</div>
-	
 	<img src="<?=THEMA_URL?>/assets/img/btn_mo_menu.png" alt="" class="header-hamburger-btn">
 </div>
 
@@ -252,6 +244,14 @@ $(document).ready(function() {
 					
 			</script>
 			
+		</div>
+		
+		<div class="mo_searchWrap mo_layout">
+			<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
+				<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
+				<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="상품명으로 검색하세요."/>
+				<button type="submit" id="sch_submit"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.jpg"></button>
+			</form>
 		</div>
 		
 		<?php if($member['mb_level'] >= 3){ ?>

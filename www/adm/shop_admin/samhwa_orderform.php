@@ -34,6 +34,8 @@ if (!$od['od_id']) {
 		curl_close($oCurl);
 		
 		$result = json_decode($res, true);
+//		echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
+//		print_r($result);
 		$result = $result["data"];
 
 		if($result){
