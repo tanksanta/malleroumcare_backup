@@ -205,12 +205,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 		<div class="samhwa-item-info-mobile mobile">
 			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?>
 			</h1>
+			<p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p>
+			
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
+			<p class="help-block">* 본 상품은 <?=$it["it_taxInfo"]?> 상품입니다.</p>
 			<!-- 재고수량 -->
 			<?php if($optionCntHtmlList){ ?>
 				<ul class="optionStockCntList">
+					<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
 				<?php foreach($optionCntHtmlList as $data){ ?>
 					<li>
 						<span class="name"><?=$data["name"]?></span>
@@ -270,13 +274,23 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			</div>
 			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?>
 			</h1>
+			<p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p>
+			
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
 			
+			<?php if($member["mb_id"]){ ?>
+			<p style="font-size: 32px; margin: 25px 0; font-weight: bold;">
+				<?=($_COOKIE["viewType"] == "basic") ? number_format($it["it_cust_price"]) : number_format($it["it_price"])?>원
+			</p>
+			<?php } ?>
+			
+			<p class="help-block">* 본 상품은 <?=$it["it_taxInfo"]?> 상품입니다.</p>
 			<!-- 재고수량 -->
 			<?php if($optionCntHtmlList){ ?>
 				<ul class="optionStockCntList">
+					<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
 				<?php foreach($optionCntHtmlList as $data){ ?>
 					<li>
 						<span class="name"><?=$data["name"]?></span>
@@ -329,10 +343,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<tr><th scope="row">판매</th><td>전화문의</td></tr>
 			<?php } else { // 전화문의가 아닐 경우?>
 				<?php if ($it['it_cust_price']) { ?>
-					<tr><th scope="row">시중가격</th><td><?php echo display_price($it['it_cust_price']); ?></td></tr>
+					<tr><th scope="row">급여가</th><td><?php echo display_price($it['it_cust_price']); ?></td></tr>
 				<?php } // 시중가격 끝 ?>
 				<tr><td colspan="2" class="item-price">
-						<?php echo show_samhwa_price($it, THEMA_KEY); ?>
 					<?php if($it["it_sale_cnt"]){ ?>
 						<p style="color: #DC3333;"><?=$it["it_sale_cnt"]?>개 이상 <?=$it["it_sale_percent"]?>% 할인적용</p>
 					<?php } ?>
@@ -342,11 +355,6 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						<input type="hidden" id="it_price" value="<?php echo samhwa_price($it, THEMA_KEY); ?>">
 				</td></tr>
 			<?php } ?>
-			<?php
-				/* 재고 표시하는 경우 주석 해제
-				<tr><th scope="row">재고수량</th><td><?php echo number_format(get_it_stock_qty($it_id)); ?> 개</td></tr>
-				*/
-			?>
 			<?php if ($config['cf_use_point']) { // 포인트 사용한다면 ?>
 				<tr>
 				<th scope="row">포인트</th>

@@ -158,6 +158,30 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 <![endif]-->
 
 <!-- JavaScript -->
+<script type="text/javascript">
+	function setCookie(name, data){
+		var date = new Date();
+
+		if(data){
+			date.setDate(date.getDate() + 1);
+		} else {
+			date.setDate(date.getDate() - 1);
+		}
+
+		var willCookie = "";
+		willCookie += name + "=" + data + ";";
+		willCookie += "path=/;";
+		willCookie += "expires=" + date.toUTCString();
+
+		document.cookie = willCookie;
+	}
+	
+	<?php if($_GET["viewType"]){ ?>
+		setCookie("viewType", "<?=$_GET["viewType"]?>");
+		window.location.href = "/";
+	<?php } ?>
+</script>
+
 <script>
 var sub_show = "<?php echo $at_set['subv'];?>";
 var sub_hide = "<?php echo $at_set['subh'];?>";

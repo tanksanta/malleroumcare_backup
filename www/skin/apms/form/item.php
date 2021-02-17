@@ -140,6 +140,12 @@ $pg_anchor .='</ul>';
 			</td>
 		</tr>
 		<tr>
+			<th scope="row"><label for="prodSizeDetail">사이즈 상세정보</label></th>
+			<td>
+				<input type="text" name="prodSizeDetail" value="<?php echo get_text($it['prodSizeDetail']); ?>" id="prodSizeDetail" class="frm_input sl">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row"><label for="prodWeig">중량</label></th>
 			<td>
 				<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input" size="40">
@@ -168,6 +174,15 @@ $pg_anchor .='</ul>';
             	<select name="prodSupYn" id="prodSupYn">
             		<option value="Y" <?=(get_text($it["prodSupYn"] == "Y")) ? "selected" : ""?>>유통</option>
             		<option value="N" <?=(get_text($it["prodSupYn"] == "N")) ? "selected" : ""?>>비유통</option>
+            	</select>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="it_taxInfo">세무정보</label></th>
+            <td>
+            	<select name="it_taxInfo" id="it_taxInfo">
+            		<option value="영세" <?=(get_text($it["it_taxInfo"] == "영세")) ? "selected" : ""?>>영세</option>
+            		<option value="과세" <?=(get_text($it["it_taxInfo"] == "과세")) ? "selected" : ""?>>과세</option>
             	</select>
             </td>
         </tr>
@@ -505,7 +520,7 @@ $pg_anchor .='</ul>';
 		</tr>
 		<?php if($is_auth) { // 관리자일 때만 출력 ?>
 			<tr>
-				<th scope="row"><label for="it_cust_price">시중가격</label></th>
+				<th scope="row"><label for="it_cust_price">급여가</label></th>
 				<td>
 					<?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
 					<input type="text" name="it_cust_price" value="<?php echo $it['it_cust_price']; ?>" id="it_cust_price" class="frm_input" size="8"> 원
@@ -2228,6 +2243,16 @@ function fitemformcheck(f)
 				break;
 		}
 		
+		var sendDataTaxInfo = $("#it_taxInfo").val();
+		switch(sendDataTaxInfo){
+			case "영세" :
+				sendDataTaxInfo = "01";
+				break;
+			case "과세" :
+				sendDataTaxInfo = "02";
+				break;
+		}
+		
 		var optionItemList = $(".sit_option tbody > tr");
 		$.each(optionItemList, function(key, dom){
 			var label = $(dom).find("th > input").val();
@@ -2251,15 +2276,18 @@ function fitemformcheck(f)
         sendData.append("prodWeig", $("#prodWeig").val()); // 중량
         sendData.append("prodColor", sendDataProdColor); // 사이즈
         sendData.append("prodSize", sendDataProdSize); // 사이즈
+        sendData.append("prodSizeDetail", $("#prodSizeDetail").val()); // 사이즈 상세정보
         sendData.append("prodDetail", $("#it_explan").val()); // 상세정보
         sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
         sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
-        sendData.append("prodSupPrice", $("#it_price").val()); //  공급가격
+        sendData.append("prodSupPrice", $("#it_cust_price").val()); //  공급가격
+        sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
         sendData.append("prodStateCode", "03"); // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
         sendData.append("supId", $("#supId").val()); //  공급자아이디
         sendData.append("itemId", $("#it_thezone").val()); //  아이템 아이디
         sendData.append("subItem", ""); //  서브 아이템
         sendData.append("gubun", sendDataGubun); //  00=구매 01=대여
+        sendData.append("taxInfoCd", sendDataTaxInfo); //  01=영세 02=과세
 		
 		var imgFileItem = $(".tbl_img_frm input[type='file']");
 		for(var i = 0; i < imgFileItem.length; i++){
@@ -2383,6 +2411,16 @@ async function frmUpdate(){
 			sendDataGubun = "01";
 			break;
 	}
+	
+	var sendDataTaxInfo = $("#it_taxInfo").val();
+	switch(sendDataTaxInfo){
+		case "영세" :
+			sendDataTaxInfo = "01";
+			break;
+		case "과세" :
+			sendDataTaxInfo = "02";
+			break;
+	}
 
 	var optionItemList = $(".sit_option tbody > tr");
 	$.each(optionItemList, function(key, dom){
@@ -2408,15 +2446,18 @@ async function frmUpdate(){
 	sendData.append("prodWeig", $("#prodWeig").val()); // 중량
 	sendData.append("prodColor", sendDataProdColor); // 사이즈
 	sendData.append("prodSize", sendDataProdSize); // 사이즈
+	sendData.append("prodSizeDetail", $("#prodSizeDetail").val()); // 사이즈 상세정보
 	sendData.append("prodDetail", $("#it_explan").val()); // 상세정보
 	sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
 	sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
-	sendData.append("prodSupPrice", $("#it_price").val()); //  공급가격
+	sendData.append("prodSupPrice", $("#it_cust_price").val()); //  공급가격
+	sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
 	sendData.append("prodStateCode", "03"); // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
 	sendData.append("supId", $("#supId").val()); //  공급자아이디
 	sendData.append("itemId", $("#it_thezone").val()); //  아이템 아이디
 	sendData.append("subItem", ""); //  서브 아이템
 	sendData.append("gubun", sendDataGubun); //  00=구매 01=대여
+	sendData.append("taxInfoCd", sendDataTaxInfo); //  01=영세 02=과세
 	
 	var imgFileItem = $(".tbl_img_frm tr");
 	for(var i = 0; i < imgFileItem.length; i++){

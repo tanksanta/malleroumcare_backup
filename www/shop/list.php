@@ -90,11 +90,16 @@ $where .= " and ( ca_id like '$ca_id%'
 	or ca_id10 like '$ca_id%' ) ";
 $where .= $sql_apms_where;
 
+if($_GET["prodSupYn"]){
+	$where .= " AND prodSupYn = '{$_GET["prodSupYn"]}'";
+}
+
 // 정렬
 $list_sort_href = './list.php?ca_id='.$ca_id.$qstr.'&amp;sort=';
 
 if($sort) $qstr .= '&amp;sort='.$sort;
 if($sortodr) $qstr .= '&amp;sortodr='.$sortodr;
+if($_GET["prodSupYn"]) $qstr .= '&amp;prodSupYn='.$_GET["prodSupYn"];
 
 // 상위분류
 $ca_id_len = strlen($ca_id);

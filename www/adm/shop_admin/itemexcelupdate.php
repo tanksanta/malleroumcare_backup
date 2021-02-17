@@ -259,7 +259,8 @@ if($_FILES['excelfile']['tmp_name']) {
 		$thisDataList["prodDetail"] = $it_explan;
 		$thisDataList["prodPayCode"] = $prodPayCode;
 		$thisDataList["prodSupYn"] = $prodSupYn;
-		$thisDataList["prodSupPrice"] = $it_price;
+		$thisDataList["prodSupPrice"] = $it_cust_price;
+		$thisDataList["prodOflPrice"] = $it_price;
 		$thisDataList["prodStateCode"] = "03";
 		$thisDataList["supId"] = $supId;
 		$thisDataList["itemId"] = $itemId;

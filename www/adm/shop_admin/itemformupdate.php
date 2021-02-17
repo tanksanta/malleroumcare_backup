@@ -378,6 +378,7 @@ $it_sale_percent_02 = ($_POST["it_sale_percent_02"]) ? $_POST["it_sale_percent_0
 $prodId = $it_id;
 $entId = $_POST["entId"];
 $prodSupYn = $_POST["prodSupYn"];
+$it_taxInfo = $_POST["it_taxInfo"];
 $ProdPayCode = $_POST["prodPayCode"];
 
 $sql_common = " ca_id               = '$ca_id',
@@ -541,7 +542,9 @@ $sql_common = " ca_id               = '$ca_id',
 					it_sale_cnt_02             = '$it_sale_cnt_02',
                 it_sale_percent_02             = '$it_sale_percent_02',
 					entId = '$entId',
-					prodSupYn = '$prodSupYn'
+					prodSupYn = '$prodSupYn',
+					prodSizeDetail = '$prodSizeDetail',
+					it_taxInfo = '$it_taxInfo'
 				"; // APMS : 2014.07.20
 
                 // it_outsourcing_use  = '$it_outsourcing_use',

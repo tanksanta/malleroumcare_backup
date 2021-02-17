@@ -124,12 +124,23 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="sortLabel">
             <li><a <?php echo ($sort == 'custom' ) ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>custom">추천순</a></li>
-            <li><a <?php echo ($sort == 'it_price' && $sortodr == 'desc') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_price&amp;sortodr=desc">높은가격순</a></li>
-            <li><a <?php echo ($sort == 'it_price' && $sortodr == 'asc') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_price&amp;sortodr=asc">낮은가격순</a></li>
-            <li><a <?php echo ($sort == 'it_sum_qty') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_sum_qty&amp;sortodr=desc">판매많은순</a></li>
-            <li><a <?php echo ($sort == 'it_use_avg') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_use_avg&amp;sortodr=desc">평점높은순</a></li>
-            <li><a <?php echo ($sort == 'it_use_cnt') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_use_cnt&amp;sortodr=desc">후기많은순</a></li>
-            <li><a <?php echo ($sort == 'it_update_time') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_update_time&amp;sortodr=desc">최근등록순</a></li>
+            <li><a <?php echo ($sort == 'it_price' && $sortodr == 'desc') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_price&amp;sortodr=desc&prodSupYn=<?=$_GET["prodSupYn"]?>">높은가격순</a></li>
+            <li><a <?php echo ($sort == 'it_price' && $sortodr == 'asc') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_price&amp;sortodr=asc&prodSupYn=<?=$_GET["prodSupYn"]?>">낮은가격순</a></li>
+            <li><a <?php echo ($sort == 'it_sum_qty') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_sum_qty&amp;sortodr=desc&prodSupYn=<?=$_GET["prodSupYn"]?>">판매많은순</a></li>
+            <li><a <?php echo ($sort == 'it_use_avg') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_use_avg&amp;sortodr=desc&prodSupYn=<?=$_GET["prodSupYn"]?>">평점높은순</a></li>
+            <li><a <?php echo ($sort == 'it_use_cnt') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_use_cnt&amp;sortodr=desc&prodSupYn=<?=$_GET["prodSupYn"]?>">후기많은순</a></li>
+            <li><a <?php echo ($sort == 'it_update_time') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_update_time&amp;sortodr=desc&prodSupYn=<?=$_GET["prodSupYn"]?>">최근등록순</a></li>
+        </ul>
+    </div>
+    
+   	<div class="dropdown" style="margin-right: 10px;">
+        <a id="prodSupLabel" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-block">
+            유통구분
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="prodSupLabel">
+            <li><a <?php echo ($_GET["prodSupYn"] == 'Y') ? 'class="on" ' : '';?>href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=Y">유통상품</a></li>
+            <li><a <?php echo ($_GET["prodSupYn"] == 'N') ? 'class="on" ' : '';?>href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=N">비유통상품</a></li>
         </ul>
     </div>
 </div>
@@ -165,7 +176,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php if($list[$i]["it_model"]){ ?>
 				<p class="info"><?=$list[$i]["it_model"]?></p>
 			<?php } ?>
-				<p class="price"><?=show_samhwa_price($list[$i], THEMA_KEY)?></p>
+			<?php if($member["mb_id"]){ ?>
+				<p class="price"><?=($_COOKIE["viewType"] == "basic") ? number_format($list[$i]["it_cust_price"]) : number_format($list[$i]["it_price"])?>원</p>
+			<?php } ?>
+			
 			<?php if($stockQtyList[$list[$i]["it_id"]]){ ?>
 				<p class="cnt">
 					<span>재고 보유</span>

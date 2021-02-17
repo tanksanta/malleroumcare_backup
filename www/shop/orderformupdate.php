@@ -24,6 +24,7 @@ if (get_cart_count($tmp_cart_id) == 0)// 장바구니에 담기
 $it_ids = array();
 $productList = [];
 $postProdBarNumCnt = 0;
+$deliveryTotalCnt = 0;
 
 $error = "";
 // 장바구니 상품 재고 검사
@@ -54,7 +55,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			$thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
 			$thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
 			$thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
-			$thisProductData["penStaSeq"] = count($productList) + 1;
+			$thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
 			$thisProductData["prodPayCode"] = $row["prodPayCode"];
 			$thisProductData["itemNm"] = explode(chr(30), $row["io_id"])[0]." / ".explode(chr(30), $row["io_id"])[1];
 
@@ -91,11 +92,17 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 	}
 	
 	# 재고사용수량 저장
-	sql_query("
-		UPDATE {$g5["g5_shop_cart_table"]} SET
-			ct_stock_qty = '{$_POST["it_option_stock_cnt_{$row["ct_id"]}"]}'
-		WHERE ct_id = '{$row["ct_id"]}'
-	");
+	if($_POST["penId"]){
+		sql_query("
+			UPDATE {$g5["g5_shop_cart_table"]} SET
+				ct_stock_qty = '{$_POST["it_option_stock_cnt_{$row["ct_id"]}"]}'
+			WHERE ct_id = '{$row["ct_id"]}'
+		");
+		
+		if($row["prodSupYn"] == "Y"){
+			$deliveryTotalCnt += $row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"];
+		}
+	}
 	
     // 상품에 대한 현재고수량
     if($row["io_id"]) {
@@ -1218,6 +1225,48 @@ if($is_member && $od_b_name) {
 		curl_close($oCurl);
 
 		if($res["errorYN"] == "N"){
+			if(!$deliveryTotalCnt){
+				$sendData = [];
+				$sendData["usrId"] = $member["mb_id"];
+
+				$sendData["penId"] = $_POST["penId"];
+				$sendData["penOrdId"] = $res["data"]["penOrdId"];
+				$sendData["delGbnCd"] = "";
+				$sendData["ordWayNum"] = "";
+				$sendData["delSerCd"] = "";
+				$sendData["ordNm"] = $_POST["od_b_name"];
+				$sendData["ordCont"] = ($_POST["od_b_tel"]) ? $_POST["od_b_tel"] : $_POST["od_b_hp"];
+				$sendData["ordMeno"] = $_POST["od_memo"];
+				$sendData["ordZip"] = $_POST["od_b_zip"];
+				$sendData["ordAddr"] = $_POST["od_b_addr1"];
+				$sendData["ordAddrDtl"] = $_POST["od_b_addr2"];
+				$sendData["eformYn"] = "Y";
+				$sendData["staOrdCd"] = "03";
+				$sendData["lgsStoId"] = "";
+				$sendData["prods"] = $productList;
+				
+				$oCurl = curl_init();
+				curl_setopt($oCurl, CURLOPT_PORT, 9001);
+				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/update");
+				curl_setopt($oCurl, CURLOPT_POST, 1);
+				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+				$res2 = curl_exec($oCurl);
+				$res2 = json_decode($res2, true);
+				curl_close($oCurl);
+					
+				if($res2["errorYN"] == "N"){
+					sql_query("
+						UPDATE g5_shop_order SET
+							  staOrdCd = '03'
+							, od_status = '완료'
+						WHERE od_id = '{$od_id}'
+					");
+				}
+			}
+			
 			goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}");
 		} else {
 			alert($res["message"], "/");

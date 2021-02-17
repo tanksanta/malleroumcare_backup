@@ -543,7 +543,10 @@
 					<?php if($row["it_model"]){ ?>
 						<p class="info"><?=$row["it_model"]?></p>
 					<?php } ?>
-						<p class="price"><?=show_samhwa_price($row, THEMA_KEY)?></p>
+					<?php if($member["mb_id"]){ ?>
+						<p class="price"><?=($_COOKIE["viewType"] == "basic") ? number_format($row["it_cust_price"]) : number_format($row["it_price"])?>원</p>
+					<?php } ?>
+					
 					<?php if($stockQtyList[$row["it_id"]]){ ?>
 						<p class="cnt">
 							<span>재고 보유</span>

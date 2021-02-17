@@ -180,12 +180,16 @@ $(document).ready(function() {
 			
 			<div class="top_right_area">
 				<div class="link_area">
-				
+					<?php if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
+						<a href="/?viewType=basic" >기본모드</a>
+					<?php } else { ?>
+						<a href="/?viewType=adm" >관리자모드</a>
+					<?php } ?>
+					
 					<?php if($is_member) { // 로그인 상태 ?>
 						<a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a>
 						<a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a>
 						<a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송</a>
-						<a href="<?php echo G5_SHOP_URL; ?>/my.recipient.list.php" >수급자</a>
 						<?php if($member['admin']) {?>
 							<a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
 						<?php } ?>

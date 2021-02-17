@@ -536,20 +536,41 @@ foreach($orderlist as $order) {
 
     // $goods_name .= $order['cart'][0]['it_name'] ? $order['cart'][0]['it_name'] : '<span class="notyet">없음(관리자 작성중)</span>';
 	$goods_name .= "[".($order["recipient_yn"] == "Y" ? "주문" : "재고")."] ";
-    $goods_name .= $order['cart'][0]['it_model'] ? $order['cart'][0]['it_model'] : '<span class="notyet">없음(관리자 작성중)</span>';
-    // $goods_ct = $order['cart'][0]['ct_qty']  ? $order['cart'][0]['ct_qty']  : '0';
-    // $goods_ct = count((array)$order['cart']);
+    $goods_name .= $order['cart'][0]['it_name'] ? $order['cart'][0]['it_name'] : '<span class="notyet">없음(관리자 작성중)</span>';
+	
+//     $goods_ct = $order['cart'][0]['ct_qty']  ? $order['cart'][0]['ct_qty']  : '0';
+//     $goods_ct = count((array)$order['cart']);
 
     $od_cart_count = 0;
     $saved_uid = '';
     $goods_ct = 0;
+	
+	$prodSupYqty = 0;
+	$prodSupNqty = 0;
+	$prodStockqty = 0;
+	$prodDelivery = 0;
     foreach($order['cart'] as $cart) {
         $od_cart_count += $cart['ct_qty'];
         if ($saved_uid != $cart['ct_uid']) {
             $goods_ct++;
             $saved_uid = $cart['ct_uid'];
         }
+		
+		if($cart["prodSupYn"] == "Y"){
+			$prodSupYqty += $cart["ct_qty"];
+			$prodStockqty += $cart["ct_stock_qty"];
+			$prodDelivery += $cart["ct_qty"];
+			$prodDelivery -= $cart["ct_stock_qty"];
+		}
+		
+		if($cart["prodSupYn"] == "N"){
+			$prodSupNqty += $cart["ct_qty"];
+		}
     }
+	
+	$prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
+	$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
+	
     if ($od_cart_count > 0) {
         $show_od_cart_count = '| ' . $od_cart_count;
     }
@@ -678,10 +699,10 @@ foreach($orderlist as $order) {
             <div class=\"order_info\">
                 <div class=\"goods_info\">
                     <div class=\"goods_name\" title=\"{$goods_name_alt}\">
-                        {$goods_name} {$show_goods_ct}
+                        {$goods_name} {$show_goods_ct} {$prodDeliveryMemo}
                     </div>
-                    <div class=\"goods_ea\">
-                        {$show_od_cart_count}
+						<div class=\"order_num\">
+                        총 ".($prodSupYqty + $prodSupNqty)." / 유통 {$prodSupYqty}{$prodStockqtyMemo} / 비 유통 {$prodSupNqty}
                     </div>
                     <div class=\"order_num\">
                         <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">NO&nbsp;<span>{$order['od_id']}</span></a>

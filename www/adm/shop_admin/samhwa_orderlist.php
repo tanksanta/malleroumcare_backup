@@ -86,6 +86,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
 				    </div>
                 </td>
             </tr>
+<!--
             <tr>
                 <th>결제수단</th>
                 <td>
@@ -111,6 +112,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                     <label for="od_settle_case10">네이버페이</label>
                 </td>
             </tr>
+-->
             <tr>
                 <th>주문상태 출고 전</th>
                 <td class="step_before">
@@ -140,6 +142,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                     <?php } ?>
                 </td>
             </tr>
+<!--
             <tr>
                 <th>주문경로</th>
                 <td>
@@ -161,6 +164,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                     <label for="od_openmarket_7">오너클랜</label>
                 </td>
             </tr>
+-->
             <tr>
                 <th>기타선택</th>
                 <td>

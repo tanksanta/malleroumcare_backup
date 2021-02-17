@@ -14,6 +14,7 @@ $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
 $prodList = [];
 $prodListCnt = 0;
+$deliveryTotalCnt = 0;
 if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 } else {
@@ -34,8 +35,6 @@ if (!$od['od_id']) {
 		curl_close($oCurl);
 		
 		$result = json_decode($res, true);
-//		echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
-//		print_r($result);
 		$result = $result["data"];
 
 		if($result){
@@ -76,6 +75,33 @@ if (!$od['od_id']) {
 			}
 		}
 	} else {
+//		$sendData = [];
+//		$sendData["usrId"] = $od["mb_id"];
+//		
+//		$stoIdData = explode(",", $od["stoId"]);
+//		$stoIdDataList = [];
+//		foreach($stoIdData as $data){
+//			$thisList = [];
+//			$thisList["stoId"] = $data;
+//			
+//			array_push($stoIdDataList, $thisList);
+//		}
+//		$sendData["prods"] = $stoIdDataList;
+//		
+//		$oCurl = curl_init();
+//		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+//		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectBarNumList");
+//		curl_setopt($oCurl, CURLOPT_POST, 1);
+//		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+//		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+//		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+//		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+//		$res = curl_exec($oCurl);
+//		$res = json_decode($res, true);
+//		curl_close($oCurl);
+//		
+//		print_r($res);
+		
 		$stoIdData = $od["stoId"];
 		$stoIdData = explode(",", $stoIdData);
 		$stoIdDataList = [];
@@ -139,8 +165,10 @@ $sql = " select a.ct_id,
                 a.pt_old_opt,
                 a.ct_uid,
 				a.prodMemo,
-				b.prodSupYn,
-				a.ct_stock_qty
+				a.prodSupYn,
+				a.ct_qty,
+				a.ct_stock_qty,
+				b.it_img1
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$od_id'
 		  group by a.it_id, a.ct_uid
@@ -291,6 +319,15 @@ var od_id = '<?php echo $od['od_id']; ?>';
 #samhwa_order_form>.block .item_list table .item_barcode {
     width:15%;
 }
+	
+	#prodBarNumSaveBtn { border: 1px solid #333 !important; background-color: #333 !important; color: #FFF !important; }
+	#prodBarNumSaveBtn:hover { background-color: #222 !important; }
+	
+	.barNumGuideBox { position: absolute; border: 1px solid #DDD; background-color: #FFF; text-align: left; padding: 15px 20px; display: none; margin-left: 35px; margin-top: 5px; }
+	.barNumGuideBox > .title { width: 100%; font-weight: bold; margin-bottom: 15px; position: relative; }
+	.barNumGuideBox > .title > button { float: right; }
+	.barNumGuideBox > p { width: 100%; padding: 0; }
+	
 </style>
 <div id="samhwa_order_form">
     <div class="block">
@@ -303,6 +340,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 <input type="button" value="상품추가" class="btn shbtn" id="add_item">
                 <?php } ?>
                 <?php } ?>
+                <input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">
             </div>
         </div>
         <div class="item_list">
@@ -317,6 +355,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <!--<th>분류</th>-->
                             <th class="item_name">상품</th>
                             <th class="item_qty">수량</th>
+                            <th class="item_delivery_qty">배송수량</th>
 							<th class="item_barcode">바코드</th>
                             <th class="item_price">판매금액</th>
                             <th class="item_discount">할인금액</th>
@@ -343,8 +382,15 @@ var od_id = '<?php echo $od['od_id']; ?>';
 								# 요청사항
 								$prodMemo = "";
 							
+								# 배송수량
+								$deliveryCnt = 0;
+								if($carts[$i]["prodSupYn"] == "Y"){
+									$deliveryCnt = $carts[$i]["ct_qty"] - $carts[$i]["ct_stock_qty"];
+									$deliveryTotalCnt += $deliveryCnt;
+								}
+							
                             // 상품이미지
-                            $image = get_it_image($carts[$i]['it_id'], 50, 50);
+                            $image = "<img src='/data/item/{$carts[$i]["it_img1"]}' onerror='this.src=\"/shop/img/no_image.gif\";' style='width: 50px; height: 50px;'>";
                             $options = $carts[$i]['options'];
 
                             $chk_first = 0;
@@ -400,10 +446,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     </td>
                                     <td class="item_name">
                                         <div class="item_name_box">
-                                            <div class="left">
+                                            <div class="left" style="width: 100%; float: left;">
                                                 <?php if ( $options[$k]['io_type'] == 0 && $k == 0 ) { ?>
-                                                    <a href="/shop/item.php?it_id=<?php echo $carts[$i]['it_id']; ?>" class="image" target="_blank"><?php echo $image; ?></a>
-                                                    <div class="item_info">
+                                                    <a href="/shop/item.php?it_id=<?php echo $carts[$i]['it_id']; ?>" class="image" target="_blank" style="float: left;"><?php echo $image; ?></a>
+                                                    <div class="item_info" style="width: calc(100% - 80px); float: left; padding-left: 15px;">
 	                                                    <b><?php echo stripslashes($carts[$i]['it_name']); ?> <b style="color: #<?=($carts[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;">(<?=($carts[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?>)</b> <a href="./itemform.php?w=u&amp;it_id=<?php echo $carts[$i]['it_id']; ?>" class="name">보기</a></b><br>
 	                                                    <span><?php echo $carts[$i]['it_model']; ?></span>
 	                                                    <?php if ( $carts[$i]['it_name'] != $options[$k]['ct_option']) { ?>
@@ -603,6 +649,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         -->
                                         <?php echo $options[$k]['ct_qty']; ?>
                                     </td>
+                                    <td class="item_stock_qty">
+                                    	<?=$deliveryCnt?>
+                                    </td>
 									<td class="item_barcode">
                                         <label for="ct_qty_<?php echo $chk_cnt; ?>" class="sound_only"><?php echo get_text($options[$k]['ct_option']); ?> 수량</label>
                                         <!--
@@ -612,6 +661,24 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         <input type="text" name="ct_qty[<?php echo $options[$k]['ct_id']; ?>]" id="ct_qty_<?php echo $chk_cnt; ?>" value="<?php echo $options[$k]['ct_qty']; ?>" required class="frm_input required" size="5">
                                         -->
 										<ul>
+                                       <?php if($options[$k]['ct_qty'] >= 3){ ?>
+                                       		<li>
+                                       			<input type="text" class="frm_input" style="width: 70px;">
+                                       			<button type="button" style="width: 35px; height: 24px; background-color: #3366CC; color: #FFF;" class="barNumCustomSubmitBtn">적용</button>
+                                       			<button type="button" style="width: 35px; height: 24px; background-color: #999; color: #FFF;" class="barNumGuideOpenBtn">방법</button>
+                                       			<div class="barNumGuideBox">
+                                       				<div class="title">바코드 일괄 등록 방법 <button type="button" class="closeBtn">X</button></div>
+                                       				<p>
+                                       					공통된 문자/숫자를 앞에 부여 후 반복되는 숫자를 입력합니다.<br><br>
+                                       					예시) 010101^3,4,5-10- 010101은 공동문자/숫자입니다.<br><br>
+                                       					- ^이후는 자동으로 입력하기 위한 내용입니다.<br>
+                                       					-    “숫자 입력 후 콤마(,)”를 입력하면 독립 숫자가 입력됩니다.<br>
+                                       					- 5-10이라고 입력하면5부터10까지 순차적으로 입력됩니다.<br>
+                                       					- 00-20으로 시작 숫자가00인 경우2자리 숫자로 입력됩니다
+                                       				</p>
+                                       			</div>
+                                       		</li>
+                                       <?php } ?>
                                         <?php
 										for($b=0;$b<$options[$k]['ct_qty'];$b++) {
 											//$ct_barcode_array = unserialize(base64_decode($options[$k]['ct_barcode']));
@@ -639,25 +706,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 											$json_data[$k][$b]['eformYn'] = 'N';
 										?>
 										<li style="padding-top:5px;">
-										<?php if($od["recipient_yn"] == "N"){ ?>
-											<?php if($carts[$i]["ct_stock_qty"] > $b){ ?>
-												<span><?=$prodList[$prodListCnt]["prodBarNum"]?></span>
-												<input type="hidden" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
-											<?php } else { ?>
-												<input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
-											<?php } ?>
-										<?php } else { ?>
-											<?php if($od["staOrdCd"] == "03"){ ?>
-												<span><?=$prodList[$prodListCnt]["prodBarNum"]?></span>
-											<?php } else { ?>
-												<?php if($carts[$i]["ct_stock_qty"] > $b){ ?>
-													<span><?=$prodList[$prodListCnt]["prodBarNum"]?></span>
-													<input type="hidden" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
-												<?php } else { ?>
-													<input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
-												<?php } ?>
-											<?php } ?>
-										<?php } ?>
+											<input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
 										</li>
 										<?php $prodListCnt++; } ?>
 										</ul>
@@ -872,6 +921,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <td class="item_qty">
                                 <?php echo number_format($tot_qty); ?>
                             </td>
+                            <td class="item_stock_qty">
+                            	<?=$deliveryTotalCnt?>
+                            </td>
 							<td class="item_barcode">
                             </td>
                             <td class="item_price">
@@ -916,6 +968,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
             </form>
         </div>
     </div>
+    <?php if($od["recipient_yn"] == "Y"){ ?>
     <div class="block">
         <div class="header">
             <h2>수급자정보</h2>
@@ -953,6 +1006,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 		</table>
 
     </div>
+    <?php } ?>
     <div class="block">
         <div class="header">
             <h2>배송정보</h2>
@@ -2191,6 +2245,68 @@ $(document).ready(function() {
 	});
     */
 	
+	$(".barNumCustomSubmitBtn").click(function(){
+		var val = $(this).closest("li").find("input").val();
+		var target = $(this).closest("ul").find("li");
+		var barList = [];
+		
+		if(val.indexOf("^") == -1){
+			alert("내용을 입력해주시길 바랍니다.");
+			return false;
+		}
+		
+		for(var i = 0; i < target.length; i++){
+			if(i > 0){
+				if($(target[i]).find("input").val()){
+					if(!confirm("이미 등록된 바코드가 있습니다.\n무시하고 적용하시겠습니까?")){
+						return false;
+					}
+				}
+			}
+		}
+		
+		if(val){
+			val = val.split("^");
+			var first = val[0];
+			var secList = val[1].split(",");
+			for(var i = 0; i < secList.length; i++){
+				if(secList[i].indexOf("-") == -1){
+					barList.push(first + secList[i]);
+				} else {
+					var secData = secList[i].split("-");
+					var secData0Len = secData[0].length;
+					secData[0] = Number(secData[0]);
+					secData[1] = Number(secData[1]);
+
+					for(var ii = secData[0]; ii < (secData[1] + 1); ii++){
+						var barData = ii;
+						if(String(barData).length < secData0Len){
+							for(var iii = 0; iii < (secData0Len - 1); iii++){
+								barData = "0" + barData;
+							}
+						}
+						
+						barList.push(first + barData);
+					}
+				}
+			}
+			
+			for(var i = 0; i < target.length; i++){
+				if(i > 0){
+					$(target[i]).find("input").val(barList[i - 1]);
+				}
+			}
+		}
+	});
+	
+	$(".barNumGuideBox .closeBtn").click(function(){
+		$(this).closest(".barNumGuideBox").hide();
+	});
+	
+	$(".barNumGuideOpenBtn").click(function(){
+		$(this).next().toggle();
+	});
+	
 	var stoldList = [];
 	var stoIdData = "<?=$stoIdData?>";
 	if(stoIdData){
@@ -2529,47 +2645,129 @@ $(document).ready(function() {
 				});
 			}
 			
-			$.each(stoldList, function(key, value){
-				var sendData = {
-					usrId : "<?=$od["mb_id"]?>",
-					prods : [
-						{
-							stoId : value.stoId,
-							prodColor : value.prodColor,
-							prodSize : value.prodSize,
-							prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
-							prodManuDate : value.prodManuDate,
-							stateCd : next_step_status,
-							stoMemo : (value.stoMemo) ? value.stoMemo : ""
-						}
-					]
-				}
+			var prodsList = {};
 
-				$.ajax({
-					url : "samhwa_orderform_stock_update.php",
-					type : "POST",
-					async : false,
-					data : sendData,
-					success : function(result){
-						result = JSON.parse(result);
-						if(result.errorYN == "Y"){
-							alert(result.message);
-							changeStatus = false;
-						}
-					}
-				});
-				
-				if(!changeStatus){
-					return false;
+			$.each(stoldList, function(key, value){
+				prodsList[key] = {
+					stoId : value.stoId,
+					prodColor : value.prodColor,
+					prodSize : value.prodSize,
+					prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
+					prodManuDate : value.prodManuDate,
+					stateCd : next_step_status,
+					stoMemo : (value.stoMemo) ? value.stoMemo : ""
 				}
 			});
 			
-			if(changeStatus){
-				change_step(od_id, next_step_val);
+			var sendData = {
+				usrId : "<?=$od["mb_id"]?>",
+				prods : prodsList
 			}
+			
+			$.ajax({
+				url : "samhwa_orderform_stock_update.php",
+				type : "POST",
+				async : false,
+				data : sendData,
+				success : function(result){
+					result = JSON.parse(result);
+					if(result.errorYN == "Y"){
+						alert(result.message);
+					} else {
+						change_step(od_id, next_step_val);
+					}
+				}
+			});
 		}
-		
 	});
+	
+	// 바코드정보저장
+    $('#prodBarNumSaveBtn').click(function() {
+		var ordId = "<?=$od["ordId"]?>";
+		var changeStatus = true;
+
+		if(ordId){
+			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
+			$.each(productList, function(key, value){
+				var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
+				var prodBarNum = "";
+				
+				for(var i = 0; i < prodBarNumItem.length; i++){
+					prodBarNum += (prodBarNum) ? "," : "";
+					prodBarNum += $(prodBarNumItem[i]).val();
+				}
+				
+				productList[key]["prodBarNum"] = prodBarNum;
+			});
+			
+			var sendData = {
+				usrId : "<?=$od["mb_id"]?>",
+				penOrdId : "<?=$od["ordId"]?>",
+				delGbnCd : "",
+				ordWayNum : "",
+				delSerCd : "",
+				ordNm : $("#od_b_name").val(),
+				ordCont : $("#od_b_hp").val(),
+				ordMeno : $("#od_memo").val(),
+				ordZip : $("#od_b_zip").val(),
+				ordAddr : $("#od_b_addr1").val(),
+				ordAddrDtl : $("#od_b_addr2").val(),
+				eformYn : "<?=$od["eformYn"]?>",
+				staOrdCd : "<?=$od["staOrdCd"]?>",
+				lgsStoId : "",
+				prods : productList
+			}
+
+			$.ajax({
+				url : "samhwa_orderform_order_update.php",
+				type : "POST",
+				async : false,
+				data : sendData,
+				success : function(result){
+					result = JSON.parse(result);
+					if(result.errorYN == "Y"){
+						alert(result.message);
+					} else {
+						alert("저장이 완료되었습니다.");
+					}
+				}
+			});
+		} else {
+			var prodsList = {};
+				
+			$.each(stoldList, function(key, value){
+				prodsList[key] = {
+					stoId : value.stoId,
+					prodColor : value.prodColor,
+					prodSize : value.prodSize,
+					prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
+					prodManuDate : value.prodManuDate,
+					stateCd : value.stateCd,
+					stoMemo : (value.stoMemo) ? value.stoMemo : ""
+				}
+			});
+			
+			var sendData = {
+				usrId : "<?=$od["mb_id"]?>",
+				prods : prodsList
+			}
+			
+			$.ajax({
+				url : "samhwa_orderform_stock_update.php",
+				type : "POST",
+				async : false,
+				data : sendData,
+				success : function(result){
+					result = JSON.parse(result);
+					if(result.errorYN == "Y"){
+						alert(result.message);
+					} else {
+						alert("저장이 완료되었습니다.");
+					}
+				}
+			});
+		}
+    });
 
     //배송정보 수정
     $('#delivery_info_btn').click(function() {
@@ -2644,61 +2842,51 @@ $(document).ready(function() {
 				}
 			});
 		} else {
+			var prodsList = {};
+
 			$.each(stoldList, function(key, value){
-
-				var sendData = {
-					usrId : "<?=$od["mb_id"]?>",
-					prods : [
-						{
-							stoId : value.stoId,
-							prodColor : value.prodColor,
-							prodSize : value.prodSize,
-							prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
-							prodManuDate : value.prodManuDate,
-							stateCd : value.stateCd,
-							stoMemo : (value.stoMemo) ? value.stoMemo : ""
-						}
-					]
-				}
-
-				$.ajax({
-					url : "samhwa_orderform_stock_update.php",
-					type : "POST",
-					async : false,
-					data : sendData,
-					success : function(result){
-						result = JSON.parse(result);
-						if(result.errorYN == "Y"){
-							alert(result.message);
-							changeStatus = false;
-						}
-					}
-				});
-				
-				if(!changeStatus){
-					return false;
+				prodsList[key] = {
+					stoId : value.stoId,
+					prodColor : value.prodColor,
+					prodSize : value.prodSize,
+					prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
+					prodManuDate : value.prodManuDate,
+					stateCd : value.stateCd,
+					stoMemo : (value.stoMemo) ? value.stoMemo : ""
 				}
 			});
 			
-			if(!changeStatus){
-				return false;
+			var sendData = {
+				usrId : "<?=$od["mb_id"]?>",
+				prods : prodsList
 			}
 			
-			if(changeStatus){
-				$.ajax({
-							method: "POST",
-							url: "./ajax.order.delivery.php",
-							data: formdata,
-						})
-				.done(function(data) {
-					if ( data.msg ) {
-						alert(data.msg);
+			$.ajax({
+				url : "samhwa_orderform_stock_update.php",
+				type : "POST",
+				async : false,
+				data : sendData,
+				success : function(result){
+					result = JSON.parse(result);
+					if(result.errorYN == "Y"){
+						alert(result.message);
+					} else {
+					$.ajax({
+								method: "POST",
+								url: "./ajax.order.delivery.php",
+								data: formdata,
+							})
+					.done(function(data) {
+						if ( data.msg ) {
+							alert(data.msg);
+						}
+						if ( data.result === 'success' ) {
+			//				location.reload();
+						}
+					});
 					}
-					if ( data.result === 'success' ) {
-		//				location.reload();
-					}
-				});
-			}
+				}
+			});
 		}
     });
 

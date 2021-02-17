@@ -623,7 +623,7 @@ pre{white-space: pre-wrap;}
 .productListWrap { width: 100%; float: left; }
 .productListWrap * { position: relative; }
 .productListWrap > ul { width: 100%; float: left; }
-.productListWrap > ul > li { width: 18.4%; float: left; margin-right: 2%; margin-bottom: 2%; }
+.productListWrap > ul > li { width: 18.4%; height: 400px; float: left; margin-right: 2%; margin-bottom: 2%; }
 .productListWrap > ul > li:nth-of-type(5n) { margin-right: 0; }
 .productListWrap > ul > li > a { width: 100%; float: left; }
 .productListWrap > ul > li > a > p { width: 100%; float: left; margin: 0; }
@@ -709,6 +709,8 @@ pre{white-space: pre-wrap;}
 #myRecipientListWrap > .moreBtnWrap { width: 100%; float: left; margin-top: 20px; }
 #myRecipientListWrap > .moreBtnWrap > button { width: 100%; height: 50px; float: left; border: 1px solid #CCC; font-size: 15px; font-weight: bold; color: #666; }
 #myRecipientListWrap > .moreBtnWrap > button > i { font-size: 21px; margin-right: 5px; vertical-align: middle; top: -1px; }
+#myRecipientListWrap > .moreBtnWrap > button > i { font-size: 21px; margin-right: 5px; vertical-align: middle; top: -1px; }
+#myRecipientListWrap > .list-paging { width: 100%; float: left; margin-top: 20px; }
 
 /* 210208 상단퀵메뉴 */
 #headerTopQuickMenuWrap { width: 100%; float: left; }
@@ -744,7 +746,7 @@ pre{white-space: pre-wrap;}
 	.pc_layout { display: none !important; }
 	.mo_layout { display: block !important; }
 	
-	.productListWrap > ul > li { width: 49%; margin-bottom: 10%; }
+	.productListWrap > ul > li { width: 49%; height: auto; margin-bottom: 10%; }
 	.productListWrap > ul > li:nth-of-type(5n) { margin-right: 2%; }
 	.productListWrap > ul > li:nth-of-type(2n) { margin-right: 0; }
 	.productListWrap > ul > li > a > p.sup { width: 80px; height: 25px; line-height: 25px; font-size: 12px; border-radius: 5px; }

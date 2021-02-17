@@ -176,7 +176,10 @@ include_once($skin_path.'/search.skin.form.php');
 			<?php if($list[$i]["it_model"]){ ?>
 				<p class="info"><?=$list[$i]["it_model"]?></p>
 			<?php } ?>
-				<p class="price"><?=show_samhwa_price($list[$i], THEMA_KEY)?></p>
+			<?php if($member["mb_id"]){ ?>
+				<p class="price"><?=($_COOKIE["viewType"] == "basic") ? number_format($list[$i]["it_cust_price"]) : number_format($list[$i]["it_price"])?>원</p>
+			<?php } ?>
+			
 			<?php if($stockQtyList[$list[$i]["it_id"]]){ ?>
 				<p class="cnt">
 					<span>재고 보유</span>

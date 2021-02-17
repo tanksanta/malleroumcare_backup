@@ -461,8 +461,10 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				var price = Number($("input[name='ct_price[" + key + "]']").val().replaceAll(",", ""));
 				var cnt = Number($("input[name='it_qty[" + key + "]']").val().replaceAll(",", ""));
 				
+				$(itemDom).find(".barList").find("input").attr("type", "text");
+				
 				$.each(itemList, function(subKey, subDom){
-					if($(itemDom).attr("data-sup") == "Y"){
+//					if($(itemDom).attr("data-sup") == "Y"){
 						var dataBarCnt = Number($(subDom).attr("data-bar-cnt"));
 						var dataStockCnt = Number($(subDom).attr("data-stock-cnt"));
 						var optionCnt = (dataStockCnt <= dataBarCnt) ? dataStockCnt : dataBarCnt;
@@ -472,11 +474,14 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 							html += "<option value='" + (i + 1) + "'>" + (i + 1) + "개</option>";
 						}
 						
-						html = (html) ? html : "<option value='0'>0개</option>";
 						optionCnt = (optionCnt) ? optionCnt : 0;
 							
 						$(subDom).css("position", "relative");
-						$(subDom).append("<div class='recipientBox' style='float: right;' data-code='" + subKey + "'><label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0;' data-type='use' checked> 재고소진 : </label> <select style='margin-top: -3px;'>" + html + "</select> <label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new'> 신규주문</label></div>");
+						if(html){
+							$(subDom).append("<div class='recipientBox' style='float: right;' data-code='" + subKey + "'><label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0;' data-type='use' checked> 재고소진 : </label> <select style='margin-top: -3px;'>" + html + "</select> <label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new'> 신규주문</label></div>");
+						} else {
+							$(subDom).append("<div class='recipientBox' style='float: right;' data-code='" + subKey + "'><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new' checked> 신규주문</label></div>");
+						}
 						
 						$(subDom).find(".recipientBox select").val(optionCnt);
 						
@@ -502,7 +507,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						
 						var stockCntItem = $(itemDom).find(".it_option_stock_cnt");
 						$(stockCntItem[subKey]).val(Number($(subDom).find(".recipientBox select").val()));
-					}
+//					}
 				});
 				
 				$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
@@ -525,6 +530,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 			$("#ad_sel_addr_recipient").parent().show();
 			
 			$("#display_pay_button > input").val("수급자 주문하기");
+			$(".stockCntStatusDom").show();
 		}
 
 		$(function() {
@@ -552,7 +558,56 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				
 				$("#ad_sel_addr_recipient").parent().hide();
 				
+				var optionCntList = <?=json_encode($optionCntList)?>;
+				var optionBarList = <?=json_encode($optionBarList)?>;
+				var prodItemList = $("#sod_list tr.item");
+
+				$.each(prodItemList, function(key, itemDom){
+					var code = $(itemDom).attr("data-code");
+					var itemList = $(itemDom).find(".well li");
+					var discountCnt = 0;
+					var price = Number($("input[name='ct_price[" + key + "]']").val().replaceAll(",", ""));
+					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replaceAll(",", ""));
+
+					$(itemDom).find(".barList").find("input").attr("type", "hidden");
+
+					$.each(itemList, function(subKey, subDom){
+							var item = $(itemDom).find(".prodBarSelectBox" + subKey);
+							for(var i = 0; i < item.length; i++){
+								var name = $(item[i]).attr("name");
+								var dataCode = $(item[i]).attr("data-code");
+								var dataThisCode = $(item[i]).attr("data-this-code");
+								var dataName = $(item[i]).attr("data-name");
+
+								$(item[i]).after('<input type="hidden" class="form-control input-sm prodBarSelectBox' + subKey + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
+
+								$(item[i]).remove();
+							}
+
+							var stockCntItem = $(itemDom).find(".it_option_stock_cnt");
+							$(stockCntItem[subKey]).val(0);
+					});
+
+					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
+					$(itemDom).find(".price").text(number_format((cnt - discountCnt) * price) + "원");
+				});
+				
+				var it_price = $("input[name^=it_price]");
+				var it_discount = $("input[name^=it_discount]");
+				var totalPrice = 0;
+
+				$.each(it_price, function(key, dom){
+					if($(dom).closest("tr.item").attr("data-sup") == "Y"){
+						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+					}
+				});
+
+				$("input[name=od_price]").val(totalPrice);
+				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
+				calculate_order_price();
+
 				$("#display_pay_button > input").val("재고 주문하기");
+				$(".stockCntStatusDom").hide();
 			});
 		});
 	</script>
@@ -674,12 +729,14 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						<input type="hidden" name="it_notax[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_it_notax']; ?>">
 					<?php } ?>
 					<b>
-						<?php echo $item[$i]['it_model']; ?>
-						(<?php echo $item[$i]['it_name']; ?>)
+						<?php echo $item[$i]['it_name']; ?>
 					</b>
 					<?php if($item[$i]["prodSupYn"] == "N"){ ?>
 						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
+					<?php } else { ?>
+						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #3366CC;">유통</b>
 					<?php } ?>
+					
 					<?php if($item[$i]['it_options']) { ?>
 						<div class="well well-sm" style="width: 100%; float: left;"><?php echo $item[$i]['it_options'];?></div>
 					<?php } ?>
@@ -689,15 +746,15 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				<td class="text-right" style="vertical-align: middle;"><?php echo $item[$i]['ct_discount']; ?></td>
 				<td class="text-right" style="vertical-align: middle;"><b class="price"><?php echo $item[$i]['total_price']; ?></b></td>
 				<td class="text-center delivery_cost_display_name" style="vertical-align: middle;"><?php echo $item[$i]['ct_send_cost']; ?></td>
-				<td style="width: 120px; vertical-align: middle;">
+				<td style="width: 120px; vertical-align: middle;" class="barList">
 				<?php
 					for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++){
 						for($iii = 0; $iii < $item[$i]["it_optionList"][$ii]["qty"]; $iii++){
 				?>
 						<?php if($optionCntList[$item[$i]["it_id"]][$ii] > $iii){ ?>
-							<input type="text" class="form-control input-sm prodStockBarBox<?=$ii?> prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
+							<input type="hidden" class="form-control input-sm prodStockBarBox<?=$ii?> prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
 						<?php } else { ?>
-							<input type="text" class="form-control input-sm prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
+							<input type="hidden" class="form-control input-sm prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
 						<?php } ?>
 				<?php
 						$postProdBarNumCnt++; }
@@ -736,7 +793,9 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					
 					$(subDom).attr("data-bar-cnt", $(itemDom).find(".prodStockBarBox" + subKey).length);
 					$(subDom).attr("data-stock-cnt", html);
-					$(subDom).append(" <span style='opacity: 0.7;'>(재고수량 : " + html + "개)</span>");
+					if(html){
+						$(subDom).append(" <span class='stockCntStatusDom' style='opacity: 0.7; display: none;'>(보유 재고 : " + html + "개)</span>");
+					}
 				});
 			});
 			

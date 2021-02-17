@@ -30,7 +30,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_SKIN_URL.'/style.css">', 
         if ($tv_tot_count % $tv_div['img_length'] == 0) $k++;
 
         $it_name = get_text($rowx['it_name']);
-        $img = get_it_image($tv_it_id, $tv_div['img_width'], $tv_div['img_height'], $tv_it_id, '', $it_name);
+        $img = sql_fetch("SELECT it_img1 FROM g5_shop_item WHERE it_id = '{$tv_it_id}'")["it_img1"];
+		$img = "<img src='/data/item/{$img}' style='width: 140px; height: 140px;'>";
         $it_price = get_price($rowx);
         $print_price = is_int($it_price) ? number_format($it_price) : $it_price;
 

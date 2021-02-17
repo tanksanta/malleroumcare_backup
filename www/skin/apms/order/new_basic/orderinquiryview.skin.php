@@ -170,7 +170,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 					</td>
 					<td colspan="6">
 						<a href="./item.php?it_id=<?php echo $item[$i]['it_id']; ?>">
-							<strong><?php echo $item[$i]['it_model']; ?> (<?php echo $item[$i]['it_name']; ?>)</strong>
+							<strong><?php echo $item[$i]['it_name']; ?></strong>
 							<?php if($item[$i]["prodSupYn"] == "N"){ ?>
 								<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
 							<?php } ?>
