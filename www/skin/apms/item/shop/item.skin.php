@@ -224,10 +224,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				</ul>
 			<?php } ?>
 			<?php if($it["it_sale_cnt"]){ ?>
-				<p style="color: #DC3333;"><?=$it["it_sale_cnt"]?>개 이상 <?=$it["it_sale_percent"]?>% 할인적용</p>
+				<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원 할인적용</p>
 			<?php } ?>
 			<?php if($it["it_sale_cnt_02"]){ ?>
-				<p style="color: #DC3333;"><?=$it["it_sale_cnt_02"]?>개 이상 <?=$it["it_sale_percent_02"]?>% 할인적용</p>
+				<p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_02"])?>원 할인적용</p>
 			<?php } ?>
 
 			<?php if ( $it['it_model'] ) { ?>
@@ -280,11 +280,17 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
 			
-			<?php if($member["mb_id"]){ ?>
 			<p style="font-size: 32px; margin: 25px 0; font-weight: bold;">
-				<?=($_COOKIE["viewType"] == "basic") ? number_format($it["it_cust_price"]) : number_format($it["it_price"])?>원
-			</p>
+			<?php if($member["mb_id"]){ ?>
+				<?php if($member["mb_level"] == "3"){ ?>
+					<?=($_COOKIE["viewType"] == "basic") ? number_format($it["it_cust_price"]) : number_format($it["it_price"])?>원
+				<?php } else { ?>
+					<?=number_format($it["it_price"])?>원
+				<?php } ?>
+			<?php } else { ?>
+				<?=number_format($it["it_cust_price"])?>원
 			<?php } ?>
+			</p>
 			
 			<p class="help-block">* 본 상품은 <?=$it["it_taxInfo"]?> 상품입니다.</p>
 			<!-- 재고수량 -->
@@ -347,10 +353,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<?php } // 시중가격 끝 ?>
 				<tr><td colspan="2" class="item-price">
 					<?php if($it["it_sale_cnt"]){ ?>
-						<p style="color: #DC3333;"><?=$it["it_sale_cnt"]?>개 이상 <?=$it["it_sale_percent"]?>% 할인적용</p>
+						<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원 할인적용</p>
 					<?php } ?>
 					<?php if($it["it_sale_cnt_02"]){ ?>
-						<p style="color: #DC3333;"><?=$it["it_sale_cnt_02"]?>개 이상 <?=$it["it_sale_percent_02"]?>% 할인적용</p>
+						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_02"])?>원 할인적용</p>
 					<?php } ?>
 						<input type="hidden" id="it_price" value="<?php echo samhwa_price($it, THEMA_KEY); ?>">
 				</td></tr>

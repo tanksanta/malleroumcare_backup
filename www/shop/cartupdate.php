@@ -354,9 +354,11 @@ else // 장바구니에 담기
 					}
 
 					if($ct_sale_qty >= $max_it_sale_cnt && !${"it_id_sale_status_{$it_id}"}){
-						$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($max_it_sale_percent / 100);
+		//				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($max_it_sale_percent / 100);
+						$ct_discount = $max_it_sale_percent;
 					} else if($ct_sale_qty >= $min_it_sale_cnt && !${"it_id_sale_status_{$it_id}"}){
-						$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($min_it_sale_percent / 100);
+		//				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($min_it_sale_percent / 100);
+						$ct_discount = $min_it_sale_percent;
 					}
 
 					${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";
@@ -421,9 +423,11 @@ else // 장바구니에 담기
 			}
 			
 			if($ct_sale_qty >= $max_it_sale_cnt && !${"it_id_sale_status_{$it_id}"}){
-				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($max_it_sale_percent / 100);
+//				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($max_it_sale_percent / 100);
+				$ct_discount = $max_it_sale_percent;
 			} else if($ct_sale_qty >= $min_it_sale_cnt && !${"it_id_sale_status_{$it_id}"}){
-				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($min_it_sale_percent / 100);
+//				$ct_discount = ($ct_sale_qty * $it["it_price"]) * ($min_it_sale_percent / 100);
+				$ct_discount = $min_it_sale_percent;
 			}
 			
 			${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";

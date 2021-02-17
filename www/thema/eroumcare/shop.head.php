@@ -180,11 +180,13 @@ $(document).ready(function() {
 			
 			<div class="top_right_area">
 				<div class="link_area">
+				<?php if($member["mb_level"] == "3"){ ?>
 					<?php if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
-						<a href="/?viewType=basic" >기본모드</a>
+						<a href="/?viewType=basic" >급여안내모드</a>
 					<?php } else { ?>
-						<a href="/?viewType=adm" >관리자모드</a>
+						<a href="/?viewType=adm" >구매모드</a>
 					<?php } ?>
+				<?php } ?>
 					
 					<?php if($is_member) { // 로그인 상태 ?>
 						<a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a>

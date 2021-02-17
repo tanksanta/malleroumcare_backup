@@ -480,7 +480,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						if(html){
 							$(subDom).append("<div class='recipientBox' style='float: right;' data-code='" + subKey + "'><label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0;' data-type='use' checked> 재고소진 : </label> <select style='margin-top: -3px;'>" + html + "</select> <label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new'> 신규주문</label></div>");
 						} else {
-							$(subDom).append("<div class='recipientBox' style='float: right;' data-code='" + subKey + "'><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new' checked> 신규주문</label></div>");
+							$(subDom).append("<div class='recipientBox' style='float: right; display: none;' data-code='" + subKey + "'><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new' checked> 신규주문</label></div>");
 						}
 						
 						$(subDom).find(".recipientBox select").val(optionCnt);

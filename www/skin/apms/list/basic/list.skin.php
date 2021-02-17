@@ -177,7 +177,13 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<p class="info"><?=$list[$i]["it_model"]?></p>
 			<?php } ?>
 			<?php if($member["mb_id"]){ ?>
-				<p class="price"><?=($_COOKIE["viewType"] == "basic") ? number_format($list[$i]["it_cust_price"]) : number_format($list[$i]["it_price"])?>원</p>
+				<?php if($member["mb_level"] == "3"){ ?>
+					<p class="price"><?=($_COOKIE["viewType"] == "basic") ? number_format($list[$i]["it_cust_price"]) : number_format($list[$i]["it_price"])?>원</p>
+				<?php } else { ?>
+					<p class="price"><?=number_format($list[$i]["it_price"])?>원</p>
+				<?php } ?>
+			<?php } else { ?>
+				<p class="price"><?=number_format($list[$i]["it_cust_price"])?>원</p>
 			<?php } ?>
 			
 			<?php if($stockQtyList[$list[$i]["it_id"]]){ ?>

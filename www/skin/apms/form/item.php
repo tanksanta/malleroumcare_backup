@@ -475,9 +475,9 @@ $pg_anchor .='</ul>';
 			<th scope="row"><label for="it_sale_cnt">묶음할인(쇼핑몰전용)</label></th>
 			<td>
 				<input type="text" name="it_sale_cnt" value="<?=$it["it_sale_cnt"]?>" id="it_sale_cnt" class="frm_input" size="2"> 개 이상
-				<input type="text" name="it_sale_percent" value="<?=$it["it_sale_percent"]?>" id="it_sale_percent" class="frm_input" size="2"> % 할인<br>
+				<input type="text" name="it_sale_percent" value="<?=$it["it_sale_percent"]?>" id="it_sale_percent" class="frm_input" size="8"> 원 할인<br>
 				<input type="text" name="it_sale_cnt_02" value="<?=$it["it_sale_cnt_02"]?>" id="it_sale_cnt_02" class="frm_input" size="2"> 개 이상
-				<input type="text" name="it_sale_percent_02" value="<?=$it["it_sale_percent_02"]?>" id="it_sale_percent_02" class="frm_input" size="2"> % 할인
+				<input type="text" name="it_sale_percent_02" value="<?=$it["it_sale_percent_02"]?>" id="it_sale_percent_02" class="frm_input" size="8"> 원 할인
 			</td>
 		</tr>
 		<tr>
