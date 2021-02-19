@@ -178,6 +178,9 @@ include_once($skin_path.'/search.skin.form.php');
 			<?php } ?>
 			<?php if($member["mb_id"]){ ?>
 				<?php if($member["mb_level"] == "3"){ ?>
+					<?php if($_COOKIE["viewType"] != "basic"){ ?>
+						<p class="discount"><?=number_format($list[$i]["it_cust_price"])?>원</p>
+					<?php } ?>
 					<p class="price"><?=($_COOKIE["viewType"] == "basic") ? number_format($list[$i]["it_cust_price"]) : number_format($list[$i]["it_price"])?>원</p>
 				<?php } else { ?>
 					<p class="price"><?=number_format($list[$i]["it_price"])?>원</p>

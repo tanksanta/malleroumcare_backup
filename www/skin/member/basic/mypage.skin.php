@@ -167,7 +167,7 @@ if($header_skin)
 					<div class="col-xs-6">
 						<div class="form-group">
 							<a href="<?php echo $at_href['wishlist'];?>" class="btn btn-lightgray btn-sm btn-block">
-								위시리스트
+								취급상품
 							</a>
 						</div>
 					</div>
@@ -338,44 +338,6 @@ if($header_skin)
 			</div>
 			<p class="text-right">
 				<a href="<?php echo G5_URL; ?>/shop/pastorderinquiry.php"><i class="fa fa-arrow-right"></i> 과거주문내역 더보기</a>
-			</p>
-		</section>
-
-		<!-- 최근 위시리스트 시작 { -->
-		<section>
-			<h4>최근 위시리스트</h4>
-
-			<div class="table-responsive">
-				<table class="table mypage-tbl">			
-				<thead>
-				<tr>
-					<th scope="col">이미지</th>
-					<th scope="col">상품명</th>
-					<th scope="col">보관일시</th>
-				</tr>
-				</thead>
-				<tbody>
-				<?php
-				$sql = " select * from {$g5['g5_shop_wish_table']} a, {$g5['g5_shop_item_table']} b where a.mb_id = '{$member['mb_id']}' and a.it_id  = b.it_id order by a.wi_id desc limit 0, 5 ";
-				$result = sql_query($sql);
-				for ($i=0; $row = sql_fetch_array($result); $i++) {
-					$image = get_it_image($row['it_id'], 70, 70, true);
-				?>
-				<tr>
-					<td><?php echo $image; ?></td>
-					<td><a href="./item.php?it_id=<?php echo $row['it_id']; ?>"><?php echo stripslashes($row['it_name']); ?></a></td>
-					<td><?php echo $row['wi_time']; ?></td>
-				</tr>
-				<?php } ?>
-				<?php if ($i == 0) { ?>
-					<tr><td colspan="3" class="empty_table">보관 내역이 없습니다.</td></tr>
-				<?php } ?>
-				</tbody>
-				</table>
-			</div>
-
-			<p class="text-right">
-				<a href="/shop/wishlist.php"><i class="fa fa-arrow-right"></i> 위시리스트 더보기</a>
 			</p>
 		</section>
 	<?php } ?>

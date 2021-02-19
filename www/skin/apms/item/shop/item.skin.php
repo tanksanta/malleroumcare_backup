@@ -155,6 +155,8 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 <style>
 	.item-head .item-thumb img { width: 100px; height: 100px; }
+	.ca_info { font-weight: 400 !important; }
+	.ca_info > .help-block { float: right; font-size: 14px; }
 </style>
 <div class="item-head">
 	<div class="samhwa-item-head-container">
@@ -203,14 +205,15 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<div class="h30 visible-xs"></div>
 		</div>
 		<div class="samhwa-item-info-mobile mobile">
-			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?>
+			<h1 class="ca_info"><?=$it["ca_name"]?> <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p></h1>
+			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?> <span style="font-size: 15px;">(<?=$it["it_taxInfo"]?> 상품)</span>
 			</h1>
 			<p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p>
 			
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
-			<p class="help-block">* 본 상품은 <?=$it["it_taxInfo"]?> 상품입니다.</p>
+			
 			<!-- 재고수량 -->
 			<?php if($optionCntHtmlList){ ?>
 				<ul class="optionStockCntList">
@@ -272,9 +275,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<div class="item-info-arrowbtn mobile">
 				<img src="<?php echo THEMA_URL; ?>/assets/img/icon_arrow_down.png" class="arrow" />
 			</div>
-			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?>
+			<h1 class="ca_info"><?=$it["ca_name"]?> <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p></h1>
+			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?> <span style="font-size: 15px;">(<?=$it["it_taxInfo"]?> 상품)</span>
 			</h1>
-			<p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p>
 			
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
@@ -292,7 +295,6 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php } ?>
 			</p>
 			
-			<p class="help-block">* 본 상품은 <?=$it["it_taxInfo"]?> 상품입니다.</p>
 			<!-- 재고수량 -->
 			<?php if($optionCntHtmlList){ ?>
 				<ul class="optionStockCntList">
@@ -595,7 +597,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<ul class="item-buy-btn">
 					<li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="바로구매" class="btn btn-<?php echo $btn2;?> btn-block"></li>
 					<li class="cart"><input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-<?php echo $btn1;?> btn-block"></li>
-					<li class="wish"><a href="#" class="btn btn-<?php echo $btn1;?> btn-block" onclick="apms_wishlist('<?php echo $it['it_id']; ?>'); return false;">위시리스트</a></li>
+					<li class="wish"><a href="#" class="btn btn-<?php echo $btn1;?> btn-block" onclick="apms_wishlist('<?php echo $it['it_id']; ?>'); return false;">취급상품 등록</a></li>
 					<!--<li><a href="#" class="btn btn-<?php echo $btn1;?> btn-block" onclick="apms_recommend('<?php echo $it['it_id']; ?>', '<?php echo $ca_id; ?>'); return false;">추천하기</a></li>-->
 					</ul>
 				</div>
@@ -725,7 +727,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 							alert(error.replace(/\\n/g, "\n"));
 							return false;
 						} else {
-							if(confirm("위시리스트에 담겼습니다.\n\n바로 확인하시겠습니까?")) {
+							if(confirm("취급상품에 등록되었습니다.\n\n바로 확인하시겠습니까?")) {
 								document.location.href = "./wishlist.php";
 							}
 						}

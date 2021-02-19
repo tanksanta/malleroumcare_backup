@@ -90,8 +90,21 @@ $where .= " and ( ca_id like '$ca_id%'
 	or ca_id10 like '$ca_id%' ) ";
 $where .= $sql_apms_where;
 
+if(!$_COOKIE["prodSupYn"]){
+	setcookie("prodSupYn", "Y", time() + 86400 * 3650, "/");
+	$where .= " AND prodSupYn = 'Y'";
+}
+
 if($_GET["prodSupYn"]){
-	$where .= " AND prodSupYn = '{$_GET["prodSupYn"]}'";
+	setcookie("prodSupYn", $_GET["prodSupYn"], time() + 86400 * 3650, "/");
+	
+	if($_GET["prodSupYn"] == "Y" || $_GET["prodSupYn"] == "N"){
+		$where .= " AND prodSupYn = '{$_GET["prodSupYn"]}'";
+	}
+} else {
+	if($_COOKIE["prodSupYn"] == "Y" || $_COOKIE["prodSupYn"] == "N"){
+		$where .= " AND prodSupYn = '{$_COOKIE["prodSupYn"]}'";
+	}
 }
 
 // 정렬
@@ -99,7 +112,6 @@ $list_sort_href = './list.php?ca_id='.$ca_id.$qstr.'&amp;sort=';
 
 if($sort) $qstr .= '&amp;sort='.$sort;
 if($sortodr) $qstr .= '&amp;sortodr='.$sortodr;
-if($_GET["prodSupYn"]) $qstr .= '&amp;prodSupYn='.$_GET["prodSupYn"];
 
 // 상위분류
 $ca_id_len = strlen($ca_id);

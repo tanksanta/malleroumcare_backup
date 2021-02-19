@@ -124,12 +124,12 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="sortLabel">
             <li><a <?php echo ($sort == 'custom' ) ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>custom">추천순</a></li>
-            <li><a <?php echo ($sort == 'it_price' && $sortodr == 'desc') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_price&amp;sortodr=desc&prodSupYn=<?=$_GET["prodSupYn"]?>">높은가격순</a></li>
-            <li><a <?php echo ($sort == 'it_price' && $sortodr == 'asc') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_price&amp;sortodr=asc&prodSupYn=<?=$_GET["prodSupYn"]?>">낮은가격순</a></li>
-            <li><a <?php echo ($sort == 'it_sum_qty') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_sum_qty&amp;sortodr=desc&prodSupYn=<?=$_GET["prodSupYn"]?>">판매많은순</a></li>
-            <li><a <?php echo ($sort == 'it_use_avg') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_use_avg&amp;sortodr=desc&prodSupYn=<?=$_GET["prodSupYn"]?>">평점높은순</a></li>
-            <li><a <?php echo ($sort == 'it_use_cnt') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_use_cnt&amp;sortodr=desc&prodSupYn=<?=$_GET["prodSupYn"]?>">후기많은순</a></li>
-            <li><a <?php echo ($sort == 'it_update_time') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_update_time&amp;sortodr=desc&prodSupYn=<?=$_GET["prodSupYn"]?>">최근등록순</a></li>
+            <li><a <?php echo ($sort == 'it_price' && $sortodr == 'desc') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_price&amp;sortodr=desc&prodSupYn=<?=$_COOKIE["prodSupYn"]?>">높은가격순</a></li>
+            <li><a <?php echo ($sort == 'it_price' && $sortodr == 'asc') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_price&amp;sortodr=asc&prodSupYn=<?=$_COOKIE["prodSupYn"]?>">낮은가격순</a></li>
+            <li><a <?php echo ($sort == 'it_sum_qty') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_sum_qty&amp;sortodr=desc&prodSupYn=<?=$_COOKIE["prodSupYn"]?>">판매많은순</a></li>
+            <li><a <?php echo ($sort == 'it_use_avg') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_use_avg&amp;sortodr=desc&prodSupYn=<?=$_COOKIE["prodSupYn"]?>">평점높은순</a></li>
+            <li><a <?php echo ($sort == 'it_use_cnt') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_use_cnt&amp;sortodr=desc&prodSupYn=<?=$_COOKIE["prodSupYn"]?>">후기많은순</a></li>
+            <li><a <?php echo ($sort == 'it_update_time') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_update_time&amp;sortodr=desc&prodSupYn=<?=$_COOKIE["prodSupYn"]?>">최근등록순</a></li>
         </ul>
     </div>
     
@@ -139,8 +139,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="prodSupLabel">
-            <li><a <?php echo ($_GET["prodSupYn"] == 'Y') ? 'class="on" ' : '';?>href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=Y">유통상품</a></li>
-            <li><a <?php echo ($_GET["prodSupYn"] == 'N') ? 'class="on" ' : '';?>href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=N">비유통상품</a></li>
+            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=Y">유통구분</a></li>
+            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=N">비유통구분</a></li>
+            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=all">유통+비유통구분</a></li>
         </ul>
     </div>
 </div>
@@ -178,6 +179,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php } ?>
 			<?php if($member["mb_id"]){ ?>
 				<?php if($member["mb_level"] == "3"){ ?>
+					<?php if($_COOKIE["viewType"] != "basic"){ ?>
+						<p class="discount"><?=number_format($list[$i]["it_cust_price"])?>원</p>
+					<?php } ?>
 					<p class="price"><?=($_COOKIE["viewType"] == "basic") ? number_format($list[$i]["it_cust_price"]) : number_format($list[$i]["it_price"])?>원</p>
 				<?php } else { ?>
 					<p class="price"><?=number_format($list[$i]["it_price"])?>원</p>

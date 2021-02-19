@@ -39,6 +39,8 @@ $pg_anchor .='</ul>';
 	.srel .srel_list, .srel .srel_sel { height:315px;max-height:315px; }
 	.iframe iframe { min-height:370px; }
 	.btn_confirm { margin-bottom:50px; }
+	
+	.importantBorder { border: 1px solid #FF3333 !important; }
 </style>
 
 <?php echo $pg_anchor; ?>
@@ -57,7 +59,7 @@ $pg_anchor .='</ul>';
             <th scope="row"><label for="it_name">상품종류</label></th>
             <td>
 				<?php echo help("상품종류에 따라 주문 및 결제후 이용방법이 달라집니다."); ?>
-				<select name="pt_it" id="pt_it" required>
+				<select name="pt_it" id="pt_it" required class="importantBorder">
 					<option value="">선택해 주세요.</option>
 					<?php echo apms_pt_it($it['pt_it']); ?>
 				</select>
@@ -68,7 +70,7 @@ $pg_anchor .='</ul>';
             <td>
                 <?php if ($w == "") echo help("기본 분류를 선택하면, 판매/재고/HTML사용 등을, 선택한 분류의 기본값으로 설정합니다."); ?>
                 <?php echo help('각 분류는 기본 분류의 하위 분류 개념이 아니므로 기본 분류 선택시 해당 자료가 포함될 최하위 분류만 선택하시면 됩니다.'); ?>
-				<select name="ca_id" id="ca_id" onchange="categorychange(this.form)">
+				<select name="ca_id" id="ca_id" onchange="categorychange(this.form)" class="importantBorder">
                     <option value="">기본 분류 선택</option>
                     <?php echo conv_selected_option($category_select, $it['ca_id']); ?>
                 </select>
@@ -102,7 +104,7 @@ $pg_anchor .='</ul>';
                     <!-- 최근에 입력한 코드(자동 생성시)가 목록의 상단에 출력되게 하려면 아래의 코드로 대체하십시오. -->
                     <!-- <input type=text class=required name=it_id value="<?php echo 10000000000-time()?>" size=12 maxlength=10 required> <a href='javascript:;' onclick="codedupcheck(document.all.it_id.value)"><img src='./img/btn_code.gif' border=0 align=absmiddle></a> -->
                     <?php echo ($is_auth) ? help("상품관리코드는 10자리 숫자로 자동생성합니다. 직접 상품관리코드를 입력시 영문자, 숫자, - 만 입력 가능합니다.") : help("상품관리코드는 10자리 숫자로 자동생성합니다."); ?>
-                    <input type="text" name="it_id" value="<?php echo time(); ?>" id="it_id" required class="frm_input required" size="20" maxlength="20" readonly>
+                    <input type="text" name="it_id" value="<?php echo time(); ?>" id="it_id" required class="frm_input required importantBorder" size="20" maxlength="20" readonly>
                     <!-- <?php if ($default['de_code_dup_use']) { ?><button type="button" class="btn_frmline" onclick="codedupcheck(document.all.it_id.value)">중복검사</a><?php } ?> -->
                 <?php } else { ?>
                     <input type="hidden" name="it_id" id="it_id" value="<?php echo $it['it_id']; ?>">
@@ -116,39 +118,39 @@ $pg_anchor .='</ul>';
 		<tr>
             <th scope="row"><label for="it_thezone">분류코드</label></th>
             <td>
-                <input type="text" name="it_thezone" value="<?php echo $it['it_thezone']; ?>" id="it_thezone" class="frm_input sl" readonly>
+                <input type="text" name="it_thezone" value="<?php echo $it['it_thezone']; ?>" id="it_thezone" class="frm_input importantBorder sl" readonly>
             </td>
         </tr>
 		<tr>
             <th scope="row"><label for="it_name">상품명</label></th>
             <td>
                 <?php echo help("HTML 입력이 불가합니다."); ?>
-                <input type="text" name="it_name" value="<?php echo get_text(cut_str($it['it_name'], 250, "")); ?>" id="it_name" required class="frm_input required sl">
+                <input type="text" name="it_name" value="<?php echo get_text(cut_str($it['it_name'], 250, "")); ?>" id="it_name" required class="frm_input required importantBorder sl">
             </td>
         </tr>
 		<tr>
             <th scope="row"><label for="it_basic">기본설명</label></th>
             <td>
                 <?php echo help("상품명 하단에 상품에 대한 추가적인 설명이 필요한 경우에 입력합니다. HTML 입력도 가능합니다."); ?>
-                <input type="text" name="it_basic" value="<?php echo get_text(html_purifier($it['it_basic'])); ?>" id="it_basic" class="frm_input sl">
+                <input type="text" name="it_basic" value="<?php echo get_text(html_purifier($it['it_basic'])); ?>" id="it_basic" class="frm_input importantBorder sl">
             </td>
         </tr>
 		<tr>
 			<th scope="row"><label for="prodSym">재질</label></th>
 			<td>
-				<input type="text" name="prodSym" value="<?php echo get_text($it['prodSym']); ?>" id="prodSym" class="frm_input" size="40">
+				<input type="text" name="prodSym" value="<?php echo get_text($it['prodSym']); ?>" id="prodSym" class="frm_input importantBorder" size="40">
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><label for="prodSizeDetail">사이즈 상세정보</label></th>
 			<td>
-				<input type="text" name="prodSizeDetail" value="<?php echo get_text($it['prodSizeDetail']); ?>" id="prodSizeDetail" class="frm_input sl">
+				<input type="text" name="prodSizeDetail" value="<?php echo get_text($it['prodSizeDetail']); ?>" id="prodSizeDetail" class="frm_input importantBorder sl">
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><label for="prodWeig">중량</label></th>
 			<td>
-				<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input" size="40">
+				<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input importantBorder" size="40">
 			</td>
 		</tr>
 		<tr>
@@ -195,7 +197,7 @@ $pg_anchor .='</ul>';
         <tr>
             <th scope="row"><label for="prodPayCode">제품코드</label></th>
             <td>
-                <input type="text" name="prodPayCode" value="<?php echo get_text($it['ProdPayCode']); ?>" id="prodPayCode" class="frm_input sl">
+                <input type="text" name="prodPayCode" value="<?php echo get_text($it['ProdPayCode']); ?>" id="prodPayCode" class="frm_input importantBorder sl">
             </td>
         </tr>
 		<tr>
@@ -468,7 +470,7 @@ $pg_anchor .='</ul>';
 		<tr>
 			<th scope="row"><label for="it_price">판매가격</label></th>
 			<td>
-				<input type="text" name="it_price" value="<?php echo $it['it_price']; ?>" id="it_price" class="frm_input" size="8"> 원
+				<input type="text" name="it_price" value="<?php echo $it['it_price']; ?>" id="it_price" class="frm_input importantBorder" size="8"> 원
 			</td>
 		</tr>
 		<tr>
@@ -523,7 +525,7 @@ $pg_anchor .='</ul>';
 				<th scope="row"><label for="it_cust_price">급여가</label></th>
 				<td>
 					<?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
-					<input type="text" name="it_cust_price" value="<?php echo $it['it_cust_price']; ?>" id="it_cust_price" class="frm_input" size="8"> 원
+					<input type="text" name="it_cust_price" value="<?php echo $it['it_cust_price']; ?>" id="it_cust_price" class="frm_input importantBorder" size="8"> 원
 				</td>
 			</tr>
 		<?php } // 관리자 끝 ?>
@@ -2202,6 +2204,20 @@ function codedupcheck(id)
 
 function fitemformcheck(f)
 {
+	
+	var importantItem = $(".importantBorder");
+	for(var i = 0; i < importantItem.length; i++){
+		if(!$(importantItem[i]).val()){
+			var id = $(importantItem[i]).attr("id");
+			var label = $("label[for='" + id + "']").text();
+			
+			if(label){
+				alert(label + "이(가) 입력되지 않았습니다.");
+			}
+			$(importantItem[i]).focus();
+			return false;
+		}
+	}
 
     if (!f.ca_id.value) {
         alert("기본분류를 선택하십시오.");

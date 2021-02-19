@@ -632,6 +632,7 @@ pre{white-space: pre-wrap;}
 .productListWrap > ul > li > a > p.sup { position: absolute; width: 100px; height: 35px; line-height: 35px; top: 15px; right: 15px; z-index: 2; border-radius: 10px; color: #FFF; text-align: center; background-color: #F03F45; font-size: 14px; font-weight: bold; }
 .productListWrap > ul > li > a > p.name { font-size: 16px;  color: #333; margin-top: 20px; padding: 0 5px; }
 .productListWrap > ul > li > a > p.info { font-size: 13px; color: #666; margin-top: 5px; padding: 0 5px; }
+.productListWrap > ul > li > a > p.discount { font-size: 14px; color: #666; top: 28px; padding: 0 5px; text-decoration: line-through; }
 .productListWrap > ul > li > a > p.price { font-size: 18px; font-weight: bold; color: #333; margin-top: 30px; padding: 0 5px; }
 .productListWrap > ul > li > a > p.cnt { height: 40px; line-height: 38px; border: 1px solid #F28D0B; color: #F28D08; padding: 0 10px; font-size: 14px;  margin-top: 20px; }
 .productListWrap > ul > li > a > p.cnt > .right { float: right; }

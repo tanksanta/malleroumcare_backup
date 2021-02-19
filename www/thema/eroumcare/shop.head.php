@@ -182,9 +182,9 @@ $(document).ready(function() {
 				<div class="link_area">
 				<?php if($member["mb_level"] == "3"){ ?>
 					<?php if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
-						<a href="/?viewType=basic" >급여안내모드</a>
+						<a href="/?viewType=basic" >구매모드</a>
 					<?php } else { ?>
-						<a href="/?viewType=adm" >구매모드</a>
+						<a href="/?viewType=adm" >급여안내모드</a>
 					<?php } ?>
 				<?php } ?>
 					
@@ -201,8 +201,8 @@ $(document).ready(function() {
 						<a href="<?php echo G5_BBS_URL; ?>/logout.php" >로그아웃</a>
 					<?php }else{ ?>
 						<a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
-						<a href="<?php echo $at_href['reg'];?>">회원가입</a>
-						<a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>
+						<a href="#" class="registerBtn">회원가입</a>
+<!--						<a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>-->
 					<?php } ?>
 					<!-- <?php if ( $member['mb_type'] == 'partner' ) { ?>
 						<a href="https://signstand.co.kr/shop/list.php?ca_id=10">파트너전용</a>

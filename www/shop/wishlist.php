@@ -11,7 +11,36 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
 
 $list = array();
 $sql  = " select a.wi_id, a.wi_time, b.* from {$g5['g5_shop_wish_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id ) ";
-$sql .= " where a.mb_id = '{$member['mb_id']}' order by a.wi_id desc ";
+$sql .= " where a.mb_id = '{$member['mb_id']}' ";
+
+$prodList = [];
+if($member["mb_entId"]){
+	$sendData = [];
+	$sendData["entId"] = $member["mb_entId"];
+	
+	$oCurl = curl_init();
+	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/prod/selectPpcList");
+	curl_setopt($oCurl, CURLOPT_POST, 1);
+	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+	$res = curl_exec($oCurl);
+	$res = json_decode($res, true);
+	curl_close($oCurl);
+	
+	$resData = $res["data"];
+	for($i = 0; $i < count($resData); $i++){
+		if($resData[$i]["prodId"]){
+			array_push($prodList, "'{$resData[$i]["prodId"]}'");
+		}
+	}
+}
+
+$prodList = implode(",", $prodList);
+$sql .= ($prodList) ? " AND b.it_id IN ( {$prodList} )" : "";
+$sql .= " order by a.wi_id desc ";
 $result = sql_query($sql);
 for ($i=0; $row = sql_fetch_array($result); $i++) {
 

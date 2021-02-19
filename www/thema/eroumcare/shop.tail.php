@@ -180,6 +180,18 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 		setCookie("viewType", "<?=$_GET["viewType"]?>");
 		window.location.href = "/";
 	<?php } ?>
+	
+	$(function(){
+		
+		$(".registerBtn").click(function(e){
+			e.preventDefault();
+			
+			if(confirm("회원가입은 이로움시스템을 통해서만 등록이 가능합니다.\n회원가입하시겠습니까?")){
+				window.location.href = "https://eroumcare.com/cmm/cmm2000/cmm2100/selectCmm2100View.do";
+			}
+		});
+		
+	})
 </script>
 
 <script>

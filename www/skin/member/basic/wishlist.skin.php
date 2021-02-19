@@ -45,7 +45,7 @@ if($header_skin)
 			<td class="text-center">
 				<a href="./item.php?it_id=<?php echo $list[$i]['it_id']; ?>">
 				<?php if($list[$i]['img']['src']) {?>
-					<img src="<?php echo $list[$i]['img']['src'];?>" alt="<?php echo $list[$i]['img']['alt'];?>">
+					<img src="<?php echo $list[$i]['img']['src'];?>" alt="<?php echo $list[$i]['img']['alt'];?>" style="width: 50px;">
 				<?php } else { ?>
 					<i class="fa fa-camera img-fa"></i>
 				<?php } ?>
