@@ -10,10 +10,14 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
 }
 
 $list = array();
-$sql  = " select a.wi_id, a.wi_time, b.* from {$g5['g5_shop_wish_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id ) ";
-$sql .= " where a.mb_id = '{$member['mb_id']}' ";
+//$sql  = " select a.wi_id, a.wi_time, b.* from {$g5['g5_shop_wish_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id ) ";
+//$sql .= " where a.mb_id = '{$member['mb_id']}' ";
+$sql = " SELECT a.* FROM {$g5["g5_shop_item_table"]} a ";
+$sql .= " WHERE 1=1 ";
 
 $prodList = [];
+$prodPpcRegDtmList = [];
+$prodPpcIdList = [];
 if($member["mb_entId"]){
 	$sendData = [];
 	$sendData["entId"] = $member["mb_entId"];
@@ -29,18 +33,21 @@ if($member["mb_entId"]){
 	$res = curl_exec($oCurl);
 	$res = json_decode($res, true);
 	curl_close($oCurl);
-	
+
 	$resData = $res["data"];
 	for($i = 0; $i < count($resData); $i++){
 		if($resData[$i]["prodId"]){
 			array_push($prodList, "'{$resData[$i]["prodId"]}'");
+			$prodPpcRegDtmList[$resData[$i]["prodId"]] = $resData[$i]["ppcRegDtm"];
+			$prodPpcIdList[$resData[$i]["prodId"]] = $resData[$i]["ppcId"];
 		}
 	}
 }
 
 $prodList = implode(",", $prodList);
-$sql .= ($prodList) ? " AND b.it_id IN ( {$prodList} )" : "";
-$sql .= " order by a.wi_id desc ";
+$sql .= ($prodList) ? " AND a.it_id IN ( {$prodList} ) " : " AND a.it_id = '0' ";
+//$sql .= " order by a.wi_id desc ";
+$sql .= " ORDER BY FIELD (a.it_id, {$prodList}) ";
 $result = sql_query($sql);
 for ($i=0; $row = sql_fetch_array($result); $i++) {
 

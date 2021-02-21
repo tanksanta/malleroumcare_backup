@@ -157,6 +157,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	.item-head .item-thumb img { width: 100px; height: 100px; }
 	.ca_info { font-weight: 400 !important; }
 	.ca_info > .help-block { float: right; font-size: 14px; }
+	
+	.detailInfo { width: 100%; margin-top: 5px; }
+	.detailInfo > li { width: 100%; display: table; table-layout: fixed; }
+	.detailInfo > li > span { display: table-cell; vertical-align: middle; font-size: 12px; }
+	.detailInfo > li > span.infoLabel { width: 60px; }
+	.detailInfo > li > span.infoLabel > span:first-of-type { margin-right: 5px; }
+	
+	.selfPriceInfo { width: 100%; border: 1px solid #CFCFCF; padding: 10px 15px; background-color: #F8F8F8; }
+	.selfPriceInfo > .title { width: 100%; height: 20px; line-height: 20px; font-weight: bold; color: #333; }
+	.selfPriceInfo > p { width: 100%; height: 20px; line-height: 20px; margin-top: 10px; font-size: 12px; }
 </style>
 <div class="item-head">
 	<div class="samhwa-item-head-container">
@@ -213,6 +223,36 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
+			
+			<ul class="detailInfo">
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>재질</span>
+					</span>
+					<span class="info">: <?=($it["prodSym"]) ? $it["prodSym"] : "-"?></span>
+				</li>
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>사이즈</span>
+					</span>
+					<span class="info">: <?=($it["prodSizeDetail"]) ? $it["prodSizeDetail"] : "-"?></span>
+				</li>
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>중량</span>
+					</span>
+					<span class="info">: <?=($it["prodWeig"]) ? $it["prodWeig"] : "-"?></span>
+				</li>
+			</ul>
+			
+			<!-- 본인부담금 -->
+			<div class="selfPriceInfo" style="margin-top: 20px;">
+				<div class="title">본인부담금 예시</div>
+				<p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
+			</div>
 			
 			<!-- 재고수량 -->
 			<?php if($optionCntHtmlList){ ?>
@@ -283,6 +323,30 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
 			
+			<ul class="detailInfo">
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>재질</span>
+					</span>
+					<span class="info">: <?=($it["prodSym"]) ? $it["prodSym"] : "-"?></span>
+				</li>
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>사이즈</span>
+					</span>
+					<span class="info">: <?=($it["prodSizeDetail"]) ? $it["prodSizeDetail"] : "-"?></span>
+				</li>
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>중량</span>
+					</span>
+					<span class="info">: <?=($it["prodWeig"]) ? $it["prodWeig"] : "-"?></span>
+				</li>
+			</ul>
+			
 			<p style="font-size: 32px; margin: 25px 0; font-weight: bold;">
 			<?php if($member["mb_id"]){ ?>
 				<?php if($member["mb_level"] == "3"){ ?>
@@ -294,6 +358,12 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<?=number_format($it["it_cust_price"])?>원
 			<?php } ?>
 			</p>
+			
+			<!-- 본인부담금 -->
+			<div class="selfPriceInfo">
+				<div class="title">본인부담금 예시</div>
+				<p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
+			</div>
 			
 			<!-- 재고수량 -->
 			<?php if($optionCntHtmlList){ ?>
@@ -721,17 +791,36 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						alert("코드가 올바르지 않습니다.");
 						return false;
 					}
-
-					$.post("./itemwishlist.php", { it_id: it_id },	function(error) {
-						if(error != "OK") {
-							alert(error.replace(/\\n/g, "\n"));
-							return false;
-						} else {
-							if(confirm("취급상품에 등록되었습니다.\n\n바로 확인하시겠습니까?")) {
-								document.location.href = "./wishlist.php";
+					
+					$.ajax({
+						url : "./itemwishlist.php",
+						type : "POST",
+						data : {
+							it_id : it_id
+						},
+						success : function(result){
+							result = JSON.parse(result);
+							
+							if(result.errorYN == "Y"){
+								alert(result.message);
+							} else {
+								if(confirm("취급상품에 등록되었습니다.\n\n바로 확인하시겠습니까?")){
+									window.location.href = "./wishlist.php";
+								}
 							}
 						}
 					});
+
+//					$.post("./itemwishlist.php", { it_id: it_id },	function(error) {
+//						if(error != "OK") {
+//							alert(error.replace(/\\n/g, "\n"));
+//							return false;
+//						} else {
+//							if(confirm("취급상품에 등록되었습니다.\n\n바로 확인하시겠습니까?")) {
+//								document.location.href = "./wishlist.php";
+//							}
+//						}
+//					});
 
 					return false;
 				}

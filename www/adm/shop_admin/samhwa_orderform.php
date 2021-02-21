@@ -46,8 +46,6 @@ if (!$od['od_id']) {
 				UPDATE {$g5["g5_shop_order_table"]} SET
 					  mb_id = '{$result[0]["usrId"]}'
 					, od_penId = '{$result[0]["penId"]}'
-					, od_delivery_text = '{$result[0]["ordWayNum"]}'
-					, od_delivery_company = '{$result[0]["delSerCd"]}'
 					, od_b_name = '{$result[0]["ordNm"]}'
 					, od_b_tel = '{$result[0]["ordCont"]}'
 					, od_memo = '{$result[0]["ordMeno"]}'
@@ -311,14 +309,20 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
 //	$obStaOrdStatus["03"]["name"] = "주문확정";
 //	$obStaOrdStatus["03"]["next"] = "";
 
+	$prodBarNumCntBtnWord = "바코드 ({$od["od_prodBarNum_insert"]}/{$od["od_prodBarNum_total"]})";
+	$prodBarNumCntBtnWord = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
+	$prodBarNumCntBtnStatus = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? " disable" : "";
+
 ?>
 <script>
 var od_id = '<?php echo $od['od_id']; ?>';
 </script>
 <style>
+/*
 #samhwa_order_form>.block .item_list table .item_barcode {
     width:15%;
 }
+*/
 	
 	#prodBarNumSaveBtn { border: 1px solid #333 !important; background-color: #333 !important; color: #FFF !important; }
 	#prodBarNumSaveBtn:hover { background-color: #222 !important; }
@@ -327,6 +331,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
 	.barNumGuideBox > .title { width: 100%; font-weight: bold; margin-bottom: 15px; position: relative; }
 	.barNumGuideBox > .title > button { float: right; }
 	.barNumGuideBox > p { width: 100%; padding: 0; }
+	
+	.prodBarNumCntBtn { height: 29px; line-height: 29px; font-size: 11px; }
 	
 </style>
 <div id="samhwa_order_form">
@@ -340,7 +346,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 <input type="button" value="상품추가" class="btn shbtn" id="add_item">
                 <?php } ?>
                 <?php } ?>
-                <input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">
+<!--                <input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
+					<a href="#" class="prodBarNumCntBtn<?=$prodBarNumCntBtnStatus?>"><?=$prodBarNumCntBtnWord?></a>
             </div>
         </div>
         <div class="item_list">
@@ -356,7 +363,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <th class="item_name">상품</th>
                             <th class="item_qty">수량</th>
                             <th class="item_delivery_qty">배송수량</th>
-							<th class="item_barcode">바코드</th>
+							<th class="item_barcode"></th>
                             <th class="item_price">판매금액</th>
                             <th class="item_discount">할인금액</th>
                             <th class="item_sendcost">배송비</th>
@@ -433,7 +440,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <?php if ( $k == 0 ) { ?>
                                         <td rowspan="<?php echo (count($options) + (($prodMemo) ? 1 : 0)); ?>" class="chkcbox">
                                             <label for="sit_sel_<?php echo $i; ?>" class="sound_only"><?php echo $carts[$i]['it_name']; ?> 옵션 전체선택</label>
-                                            <input type="checkbox" id="sit_sel_<?php echo $i; ?>" name="it_sel[]">
+                                            <input type="checkbox" id="sit_sel_<?php echo $i; ?>" name="it_sel[]" value="<?=$carts[$i]["it_id"]?>">
                                         </td>
                                     <?php } ?>
                                     <td class="chkbox">
@@ -653,15 +660,15 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     	<?=$deliveryCnt?>
                                     </td>
 									<td class="item_barcode">
-                                        <label for="ct_qty_<?php echo $chk_cnt; ?>" class="sound_only"><?php echo get_text($options[$k]['ct_option']); ?> 수량</label>
                                         <!--
                                         <input type="text" name="ct_qty[<?php echo $chk_cnt; ?>]" id="ct_qty_<?php echo $chk_cnt; ?>" value="<?php echo $options[$k]['ct_qty']; ?>" required class="frm_input required" size="5">
                                         -->
                                         <!--
                                         <input type="text" name="ct_qty[<?php echo $options[$k]['ct_id']; ?>]" id="ct_qty_<?php echo $chk_cnt; ?>" value="<?php echo $options[$k]['ct_qty']; ?>" required class="frm_input required" size="5">
                                         -->
-										<ul>
+										<ul style="position: absolute;">
                                        <?php if($options[$k]['ct_qty'] >= 3){ ?>
+<!--
                                        		<li>
                                        			<input type="text" class="frm_input" style="width: 70px;">
                                        			<button type="button" style="width: 35px; height: 24px; background-color: #3366CC; color: #FFF;" class="barNumCustomSubmitBtn">적용</button>
@@ -678,6 +685,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                        				</p>
                                        			</div>
                                        		</li>
+-->
                                        <?php } ?>
                                         <?php
 										for($b=0;$b<$options[$k]['ct_qty'];$b++) {
@@ -706,7 +714,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 											$json_data[$k][$b]['eformYn'] = 'N';
 										?>
 										<li style="padding-top:5px;">
-											<input type="text" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+											<input type="hidden" name="ct_barcode[<?php echo $chk_cnt; ?>][<?php echo $b;?>]" id="ct_barcode_<?php echo $chk_cnt; ?>_<?php echo $b;?>" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
 										</li>
 										<?php $prodListCnt++; } ?>
 										</ul>
@@ -2245,6 +2253,18 @@ $(document).ready(function() {
 	});
     */
 	
+	$(document).on("click", ".prodBarNumCntBtn", function(e){
+		e.preventDefault();
+		
+		var popupWidth = 700;
+		var popupHeight = 700;
+
+		var popupX = (window.screen.width / 2) - (popupWidth / 2);
+		var popupY= (window.screen.height / 2) - (popupHeight / 2);
+		
+		window.open("./popup.prodBarNum.form.php?od_id=<?=$od["od_id"]?>", "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+	});
+	
 	$(".barNumCustomSubmitBtn").click(function(){
 		var val = $(this).closest("li").find("input").val();
 		var target = $(this).closest("ul").find("li");
@@ -2584,7 +2604,7 @@ $(document).ready(function() {
 				for(var i = 0; i < prodBarNumItem.length; i++){
 					if(next_step_val == "완료"){
 						if(!$(prodBarNumItem[i]).val()){
-							alert("바코드를 입력해주시길 바랍니다.");
+//							alert("바코드를 입력해주시길 바랍니다.");
 							changeStatus = false;
 							return false;
 						}
@@ -2639,7 +2659,7 @@ $(document).ready(function() {
 				$.each(stoldList, function(key, value){
 					if(!$("." + value.stoId).val()){
 						changeStatus = false;
-						alert("바코드를 입력해주시길 바랍니다.");
+//						alert("바코드를 입력해주시길 바랍니다.");
 						return false;
 					}
 				});
@@ -3088,6 +3108,13 @@ $(document).ready(function() {
     // 작업 지시서
     $('.order_prints').click(function(e) {
         // e.preventdefault();
+		var it_id = "";
+		var checkbox = $("input[name='it_sel[]']:checked");
+		for(var i = 0; i < checkbox.length; i++){
+			it_id += (it_id) ? "," : "";
+			it_id += it_id;
+		}
+		
         order_prints_pop = window.open('./pop.order.prints.php?od_id=' + od_id + '|', "order_prints_pop", "width=850, height=800, resizable = no, scrollbars = yes");
     });
 

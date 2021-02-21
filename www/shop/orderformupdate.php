@@ -26,6 +26,9 @@ $productList = [];
 $postProdBarNumCnt = 0;
 $deliveryTotalCnt = 0;
 
+$od_prodBarNum_insert = 0;
+$od_prodBarNum_total = 0;
+
 $error = "";
 // 장바구니 상품 재고 검사
 $sql = " select MT.it_id,
@@ -70,6 +73,11 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			$thisProductData["stoMemo"] = $_POST["od_memo"];
 
 			array_push($productList, $thisProductData);
+		}
+		
+		$od_prodBarNum_total++;
+		if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
+			$od_prodBarNum_insert++;
 		}
 		
 		$postProdBarNumCnt++;
@@ -548,6 +556,11 @@ else if ($od_settle_case == "KAKAOPAY")
     if($od_misu == 0)
         $od_status      = '입금';
 }
+else if ($od_settle_case == "월 마감 정산")
+{
+	$od_status = "입금";
+	$od_misu = 0;
+}
 else
 {
     die("od_settle_case Error!!!");
@@ -754,7 +767,10 @@ $sql = " insert {$g5['g5_shop_order_table']}
 				od_pay_memo = '', 
 				od_naver_PaymentMeans = '', 
 				od_naver_PaymentCoreType = '', 
-				stoId = ''
+				stoId = '',
+				
+				od_prodBarNum_insert = '{$od_prodBarNum_insert}',
+				od_prodBarNum_total = '{$od_prodBarNum_total}'
                 ";
 $result = sql_query($sql, false);
 
@@ -1314,7 +1330,11 @@ if($is_member && $od_b_name) {
 			if($res["errorYN"] == "N"){
 				array_push($stoIdList, $res["data"][0]["stoId"]);
 			} else {
-				echo $res["message"];
+				alert($res["message"], "/");
+				sql_query("
+					DELETE FROM g5_shop_order
+					WHERE od_id = '{$od_id}'
+				");
 				return false;
 			}
 		}

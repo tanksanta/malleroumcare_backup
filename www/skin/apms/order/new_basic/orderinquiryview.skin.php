@@ -864,6 +864,7 @@ $(function(){
 	$("#prodBarNumSaveBtn").click(function(){
 		var ordId = "<?=$od["ordId"]?>";
 		var eformYn = "<?=$od["eformYn"]?>";
+		var insertBarCnt = 0;
 
 		if(ordId){
 			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
@@ -880,6 +881,10 @@ $(function(){
 					}
 					prodBarNum += (prodBarNum) ? "," : "";
 					prodBarNum += $(prodBarNumItem[i]).val();
+					
+					if($(prodBarNumItem[i]).val()){
+						insertBarCnt++;
+					}
 				}
 				
 				productList[key]["prodBarNum"] = prodBarNum;
@@ -910,6 +915,15 @@ $(function(){
 				success : function(result){
 					if(result.errorYN == "N"){
 						alert("저장이 완료되었습니다.");
+						
+						$.ajax({
+							url : "/shop/ajax.order.prodBarNum.cnt.php",
+							type : "POST",
+							data : {
+								od_id : "<?=$od_id?>",
+								cnt : insertBarCnt
+							}
+						});
 					} else {
 						alert(result.message);
 					}
@@ -944,6 +958,10 @@ $(function(){
 						}
 					]
 				}
+				
+				if($("." + value.stoId).val()){
+					insertBarCnt++;
+				}
 
 				$.ajax({
 					url : "https://eroumcare.com/api/pro/pro2000/pro2000/updatePro2000ProdInfoAjaxByShop.do",
@@ -961,6 +979,14 @@ $(function(){
 				});
 			});
 			
+			$.ajax({
+				url : "/shop/ajax.order.prodBarNum.cnt.php",
+				type : "POST",
+				data : {
+					od_id : "<?=$od_id?>",
+					cnt : insertBarCnt
+				}
+			});
 			alert("저장이 완료되었습니다.");
 		}
 	});

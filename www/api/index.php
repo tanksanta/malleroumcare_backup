@@ -50,6 +50,16 @@ class API {
 		$it_explan = $prodDetail;					//상세정보
 		$it_ip = ($regUsrIp)?$regUsrIp:$_SERVER['REMOTE_ADDR']; //최초등록자 IP (IPV6 포함 총 39자리)
 		$prodSupYn = ($prodSupYn) ? $prodSupYn : "Y"; # 유통여부
+		
+		$it_taxInfo = "영세";
+		switch($taxInfoCd){
+			case "01" :
+				$it_taxInfo = "영세";
+				break;
+			case "02" :
+				$it_taxInfo = "과세";
+				break;
+		}
 
 
 		$it_img_dir = G5_DATA_PATH.'/item';
@@ -164,7 +174,10 @@ class API {
 
 						pt_id				= '$pt_id',
 						prodSupYn	= '$prodSupYn',
-						entId = '$entId'
+						entId = '$entId',
+						
+						prodSizeDetail = '$prodSizeDetail',
+						it_taxInfo = '$it_taxInfo'
 
 						";
 

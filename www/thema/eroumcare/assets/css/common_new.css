@@ -638,7 +638,7 @@ pre{white-space: pre-wrap;}
 .productListWrap > ul > li > a > p.cnt > .right { float: right; }
 
 /* 210203 스크롤 양측배너 */
-.scrollBannerListWrap { position: absolute; width: 130px; top: 0; transition: transform 0.5s; transform: translateY(0); }
+.scrollBannerListWrap { position: absolute; width: 130px; top: 0; transition: transform 0.5s; transform: translateY(0); z-index: 100; }
 .scrollBannerListWrap * { position: relative; }
 .scrollBannerListWrap.left { left: -150px; }
 .scrollBannerListWrap.right { right: -150px; }
@@ -647,12 +647,18 @@ pre{white-space: pre-wrap;}
 .scrollBannerListWrap > .todayViewWrap { width: 100%; float: left; margin-top: 20px; }
 .scrollBannerListWrap > .todayViewWrap > .title { width: 100%; float: left; font-size: 13px; font-weight: bold; color: #333; margin-bottom: 10px; }
 .scrollBannerListWrap > .todayViewWrap > #stv { width: 100%; float: left; }
-.scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul { width: 100%; float: left; padding-top: 150px; }
-.scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > .slick-list { position: absolute; width: 100%; height: 140px; left: 0; top: 0; border: 1px solid #ddd; overflow: hidden; }
+.scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul { width: 100%; float: left; padding-top: 143px; }
+.scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > .slick-list { position: absolute; width: 100%; height: 128px; left: 0; top: 0; border: 1px solid #ddd; overflow: hidden; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > button { width: 62px; height: 22px; float: left; margin-right: 6px; border: 1px solid #C7C7C7; text-align: center; color: #999; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > button > i { font-size: 15px; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > button:nth-of-type(2n) { margin-right: 0; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_pg { width: 100%; float: left; margin-top: 10px; text-align: center; color: #999; font-size: 12px; }
+.scrollBannerListWrap > .todayViewWrap > #stv > #stv_link { position: absolute; width: 350px; height: 148px; top: -10px; right: -10px; border: 1px solid #C1C1C1; display: none; table-layout: fixed; z-index: 2; color: #333; }
+.scrollBannerListWrap > .todayViewWrap > #stv > #stv_link > p { height: 100%; display: table-cell; vertical-align: top; }
+.scrollBannerListWrap > .todayViewWrap > #stv > #stv_link > p.info { width: 209px; background-color: #FFF; padding: 25px 10px 0 30px; }
+.scrollBannerListWrap > .todayViewWrap > #stv > #stv_link > p.info > span { width: 100%; float: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.scrollBannerListWrap > .todayViewWrap > #stv > #stv_link > p.info > span.price { font-size: 18px; font-weight: bold; margin-top: 15px; }
+.scrollBannerListWrap > .todayViewWrap > #stv > #stv_link > .removeBtn { position: absolute; width: 30px; height: 30px; line-height: 30px; top: 0; right: 0; background-color: #000; color: #FFF; font-weight: bold; font-size: 16px; text-align: center; cursor: pointer; }
 
 /* 210203 모바일메뉴 */
 .mo_top { height: 85px; box-shadow: 0 0 0 0; border: 0; left: 0; top: 0; }
@@ -732,6 +738,10 @@ pre{white-space: pre-wrap;}
 .mo_searchWrap > form > #search { width: calc(100% - 60px); height: 100%; float: left; background-color: #F4F4F4; font-size: 15px; color: #333; border: 0; padding: 0 25px; }
 .mo_searchWrap > form > #search::placeholder { color: #A6A6A6; }
 .mo_searchWrap > form > #sch_submit { width: 60px; height: 100%; float: left; background-color: #333; }
+
+/* 210221 바코드카운팅 */
+.prodBarNumCntBtn { display: inline-block; width: 100px; height: 35px; line-height: 35px; border-radius: 5px; border: 1px solid #FF6600; font-size: 12px; color: #FF6600; text-align: center; }
+.prodBarNumCntBtn.disable { color: #FFF; border-color: #A6A6A6; background-color: #A6A6A6; }
 
 @media (max-width: 1400px){
 	#headerTopQuickMenuWrap > div { width: 100%; float: left; }

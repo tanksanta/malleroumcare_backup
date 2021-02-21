@@ -226,8 +226,8 @@
 		
 		<ul class="infoWrap">
 			<li><img src="<?=THEMA_URL?>/assets/img/mainCallIcon.png" alt=""></li>
-			<li><?php echo $default['de_admin_company_tel']; ?> </li>
-			<li class="callBtn"><a href="tel: <?php echo $default['de_admin_company_tel']; ?> ">전화연결</a></li>
+			<li><?php echo $default['de_admin_company_tel']; ?></li>
+<!--			<li class="callBtn"><a href="tel: <?php echo $default['de_admin_company_tel']; ?>">전화연결</a></li>-->
 		</ul>
 		
 		<div class="timeWrap">

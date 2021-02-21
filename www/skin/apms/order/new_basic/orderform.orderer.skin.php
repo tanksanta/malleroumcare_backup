@@ -506,7 +506,9 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						discountCnt += optionCnt;
 						
 						var stockCntItem = $(itemDom).find(".it_option_stock_cnt");
-						$(stockCntItem[subKey]).val(Number($(subDom).find(".recipientBox select").val()));
+						var stockCntItemCnt = Number($(subDom).find(".recipientBox select").val());
+						stockCntItemCnt = (stockCntItemCnt) ? stockCntItemCnt : 0;
+						$(stockCntItem[subKey]).val(stockCntItemCnt);
 //					}
 				});
 				
@@ -865,7 +867,9 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						
 						var stockCntItem = $(itemDom).find(".it_option_stock_cnt");
 						if(checkedType == "use"){
-							$(stockCntItem[subKey]).val(Number($(subDom).find(".recipientBox select").val()));
+							var stockCntItemCnt = Number($(subDom).find(".recipientBox select").val());
+							stockCntItemCnt = (stockCntItemCnt) ? stockCntItemCnt : 0;
+							$(stockCntItem[subKey]).val(stockCntItemCnt);
 						} else {
 							$(stockCntItem[subKey]).val(0);
 						}
