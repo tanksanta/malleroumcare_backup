@@ -890,10 +890,10 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 		if(!payment_check(f))
 			return false;
 
-		if(settle_method != "포인트" && settle_method != "무통장" && f.res_cd.value != "0000") {
-			alert("결제등록요청 후 주문해 주십시오.");
-			return false;
-		}
+//		if(settle_method != "포인트" && settle_method != "무통장" && f.res_cd.value != "0000") {
+//			alert("결제등록요청 후 주문해 주십시오.");
+//			return false;
+//		}
 
 		document.getElementById("display_pay_button").style.display = "none";
 		document.getElementById("show_progress").style.display = "block";

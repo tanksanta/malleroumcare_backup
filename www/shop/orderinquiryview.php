@@ -500,7 +500,9 @@ if($is_inquiryview_sub) {
 		$orderData = sql_fetch("SELECT * FROM g5_shop_order WHERE od_id = '{$_GET["od_id"]}'");
 		
 		$sendData = [];
-		$sendData["ordId"] = $orderData["ordId"];
+		$sendData["usrId"] = $member["mb_id"];
+		$sendData["entId"] = $member["mb_entId"];
+		$sendData["penOrdId"] = $orderData["ordId"];
 		$sendData["delGbnCd"] = "";
 		$sendData["ordWayNum"] = "";
 		$sendData["delSerCd"] = "";
@@ -514,19 +516,19 @@ if($is_inquiryview_sub) {
 		$sendData["prods"] = $_SESSION["productList{$_GET["od_id"]}"];
 		$sendData["staOrdCd"] = "00";
 
-		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9001);
-		curl_setopt($oCurl, CURLOPT_URL, "http://eroumcare.com/api/order/update");
-		curl_setopt($oCurl, CURLOPT_POST, 1);
-		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-		$res = curl_exec($oCurl);
-		$res = json_decode($res, true);
-		curl_close($oCurl);
-		
 		unset($_SESSION["productList{$_GET["od_id"]}"]);
-	}
-
+		
 ?>
+
+	<script type="text/javascript">
+		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
+
+		$.ajax({
+			url : "/apiEroum/order/update.php",
+			type : "POST",
+			async : false,
+			data : sendData
+		});
+	</script>
+	
+<?php } ?>

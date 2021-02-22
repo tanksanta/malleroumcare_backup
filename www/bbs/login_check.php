@@ -37,6 +37,7 @@ if($_POST["mb_id"] != "admin"){
 		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
 		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
 		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+		curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, 15);
 		$res = curl_exec($oCurl);
 		curl_close($oCurl);
 		$resInfo = json_decode($res, true);

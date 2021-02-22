@@ -9,8 +9,8 @@ if( $od_settle_case == 'lpay' ){
     $default['de_pg_service'] = 'inicis';
 }
 
-if(($od_settle_case != '무통장' && $od_settle_case != '포인트' && $od_settle_case != 'KAKAOPAY') && $default['de_pg_service'] == 'lg' && !$_POST['LGD_PAYKEY'])
-	alert('결제등록 요청 후 주문해 주십시오.');
+//if(($od_settle_case != '무통장' && $od_settle_case != '포인트' && $od_settle_case != 'KAKAOPAY') && $default['de_pg_service'] == 'lg' && !$_POST['LGD_PAYKEY'])
+//	alert('결제등록 요청 후 주문해 주십시오.');
 
 // 장바구니가 비어있는가?
 if (get_session("ss_direct"))

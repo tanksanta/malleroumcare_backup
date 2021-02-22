@@ -61,88 +61,28 @@ if ( THEMA_KEY == 'partner' && !$member['mb_id'] ) {
 include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 	# 210131 재고수량 조회
-	$optionCntHtmlList = [];
-	if($member["mb_id"]){
-		if($it["optionList"]){
-			foreach($it["optionList"] as $optionData){
-				$sendData = [];
-				$sendData["usrId"] = $member["mb_id"];
-				$sendData["entId"] = $member["mb_entId"];
+	$sendData = [];
+	$sendData["usrId"] = $member["mb_id"];
+	$sendData["entId"] = $member["mb_entId"];
+	$prodsSendData = [];
 
-				$prodsSendData = [];
-
-				$prodsData = [];
-				$prodsData["prodId"] = $it["it_id"];
-				$prodsData["prodColor"] = $optionData["color"];
-				$prodsData["prodSize"] = $optionData["size"];
-				array_push($prodsSendData, $prodsData);
-
-				$sendData["prods"] = $prodsSendData;
-
-				# 재고조회
-				$oCurl = curl_init();
-				curl_setopt($oCurl, CURLOPT_PORT, 9001);
-				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
-				curl_setopt($oCurl, CURLOPT_POST, 1);
-				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-				$res = curl_exec($oCurl);
-				$stockCntList = json_decode($res, true);
-				curl_close($oCurl);
-
-				# 재고목록
-				$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
-
-				if($stockCntList["data"][0]["quantity"] > 0){
-					$thisData = [];
-					$thisData["name"] = "{$optionData["color"]}/{$optionData["size"]}";
-					$thisData["qty"] = $stockCntList["data"][0]["quantity"];
-					
-					array_push($optionCntHtmlList, $thisData);
-				}
-			}
-		} else {
-			$sendData = [];
-			$sendData["usrId"] = $member["mb_id"];
-			$sendData["entId"] = $member["mb_entId"];
-
-			$prodsSendData = [];
-
+	if($it["optionList"]){
+		foreach($it["optionList"] as $optionData){
 			$prodsData = [];
 			$prodsData["prodId"] = $it["it_id"];
-			$prodsData["prodColor"] = "";
-			$prodsData["prodSize"] = "";
+			$prodsData["prodColor"] = $optionData["color"];
+			$prodsData["prodSize"] = $optionData["size"];
 			array_push($prodsSendData, $prodsData);
-
-			$sendData["prods"] = $prodsSendData;
-
-			# 재고조회
-			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9001);
-			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res = curl_exec($oCurl);
-			$stockCntList = json_decode($res, true);
-			curl_close($oCurl);
-			
-			# 재고목록
-			$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
-
-			if($stockCntList["data"][0]["quantity"] > 0){
-				$thisData = [];
-				$thisData["name"] = $stockCntList["data"][0]["prodNm"];
-				$thisData["qty"] = $stockCntList["data"][0]["quantity"];
-
-				array_push($optionCntHtmlList, $thisData);
-			}
 		}
+	} else {
+		$prodsData = [];
+		$prodsData["prodId"] = $it["it_id"];
+		$prodsData["prodColor"] = "";
+		$prodsData["prodSize"] = "";
+		array_push($prodsSendData, $prodsData);
 	}
+
+	$sendData["prods"] = $prodsSendData;
 
 ?>
 
@@ -255,17 +195,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			</div>
 			
 			<!-- 재고수량 -->
-			<?php if($optionCntHtmlList){ ?>
-				<ul class="optionStockCntList">
-					<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
-				<?php foreach($optionCntHtmlList as $data){ ?>
-					<li>
-						<span class="name"><?=$data["name"]?></span>
-						<span class="cnt"><?=number_format($data["qty"])?>개</span>
-					</li>
-				<?php } ?>
-				</ul>
-			<?php } ?>
+			<ul class="optionStockCntList" style="display: none;">
+				<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
+			</ul>
 			<?php if($it["it_sale_cnt"]){ ?>
 				<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원 할인적용</p>
 			<?php } ?>
@@ -366,17 +298,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			</div>
 			
 			<!-- 재고수량 -->
-			<?php if($optionCntHtmlList){ ?>
-				<ul class="optionStockCntList">
-					<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
-				<?php foreach($optionCntHtmlList as $data){ ?>
-					<li>
-						<span class="name"><?=$data["name"]?></span>
-						<span class="cnt"><?=number_format($data["qty"])?>개</span>
-					</li>
-				<?php } ?>
-				</ul>
-			<?php } ?>
+			<ul class="optionStockCntList" style="display: none;">
+				<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
+			</ul>
 
 			<?php if ( $it['it_model'] ) { ?>
 				<p class="item-model">
@@ -1230,6 +1154,26 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 <script>
 $(function() {
+	
+	<?php if($member["mb_id"]){ ?>
+		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
+
+		$.ajax({
+			url : "/apiEroum/stock/selectListMore.php",
+			type : "POST",
+			async : false,
+			data : sendData,
+			success : function(result){
+				$.each(result, function(key, data){
+					$(".optionStockCntList").show();
+					
+					var html = '<li><span class="name">' + data.name + '</span><span class="cnt">' + data.qty + '개</span></li>';
+					$(".optionStockCntList").append(html);
+				});
+			}
+		});
+	<?php } ?>
+	
 	$("a.view_image").click(function() {
 		window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
 		return false;
