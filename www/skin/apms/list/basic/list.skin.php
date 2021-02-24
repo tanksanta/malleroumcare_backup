@@ -111,9 +111,42 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         </ul>
     </div>
     
+    <?php
+		$prodSupLabel = "유통구분";
+				   
+		if(!$_COOKIE["prodSupYn"]){
+			$prodSupLabel = "유통구분";
+		}
+
+		if($_GET["prodSupYn"]){
+			switch($_GET["prodSupYn"]){
+				case "Y" :
+					$prodSupLabel = "유통구분";
+					break;
+				case "N" :
+					$prodSupLabel = "비유통구분";
+					break;
+				case "all" :
+					$prodSupLabel = "유통+비유통구분";
+					break;
+			}
+		} else {
+			switch($_COOKIE["prodSupYn"]){
+				case "Y" :
+					$prodSupLabel = "유통구분";
+					break;
+				case "N" :
+					$prodSupLabel = "비유통구분";
+					break;
+				case "all" :
+					$prodSupLabel = "유통+비유통구분";
+					break;
+			}
+		}
+	?>
    	<div class="dropdown" style="margin-right: 10px;">
         <a id="prodSupLabel" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-block">
-            유통구분
+            <?=$prodSupLabel?>
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="prodSupLabel">

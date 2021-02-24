@@ -570,6 +570,10 @@ foreach($orderlist as $order) {
 		}
     }
 	
+	if($order["od_delivery_yn"] == "N"){
+		$prodDelivery = 0;
+	}
+	
 	$prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
 	$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
 	

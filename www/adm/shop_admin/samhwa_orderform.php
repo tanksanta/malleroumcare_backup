@@ -391,7 +391,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 							
 								# 배송수량
 								$deliveryCnt = 0;
-								if($carts[$i]["prodSupYn"] == "Y"){
+								if($carts[$i]["prodSupYn"] == "Y" && $carts[$i]["od_delivery_yn"] == "Y"){
 									$deliveryCnt = $carts[$i]["ct_qty"] - $carts[$i]["ct_stock_qty"];
 									$deliveryTotalCnt += $deliveryCnt;
 								}

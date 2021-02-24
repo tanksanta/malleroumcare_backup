@@ -24,7 +24,14 @@
 			}
 			
 			$thisData = [];
-			$thisData["name"] = ($data["prodColor"] && $data["prodSize"]) ? "{$data["prodColor"]}/{$data["prodSize"]}" : $data["prodNm"];
+			
+			if($data["prodColor"] || $data["prodSize"]){
+				$thisData["name"] = "{$data["prodColor"]}";
+				$thisData["name"] .= ($data["prodSize"]) ? "/{$data["prodSize"]}" : "";
+			} else {
+				$thisData["name"] = $data["prodNm"];
+			}
+			
 			$thisData["qty"] = $data["quantity"];
 			
 			array_push($result, $thisData);

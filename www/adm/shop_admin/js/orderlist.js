@@ -171,7 +171,7 @@ $(function(){
             return;
         }
 
-        change_step(od_id['od_id[]'], next_step_val);
+        change_step(od_id['od_id[]'], next_step_val, "true");
     });
 
     $( document ).on( "click", '#change_to_invalid_step', function() {
@@ -183,7 +183,7 @@ $(function(){
             return;
         }
 
-        change_step(od_id['od_id[]'], next_step_val);
+        change_step(od_id['od_id[]'], next_step_val, "true");
     });
 
     $( document ).on( "click", '#change_next_step', function() {
@@ -195,7 +195,7 @@ $(function(){
             return;
         }
 
-        change_step(od_id['od_id[]'], next_step_val);
+        change_step(od_id['od_id[]'], next_step_val, "true");
     });
 
     $( document ).on( "click", '#change_prev_step', function() {
@@ -208,7 +208,7 @@ $(function(){
             return;
         }
 
-        change_step(od_id['od_id[]'], prev_step_val);
+        change_step(od_id['od_id[]'], prev_step_val, "true");
     });
 
     $( document ).on( "click", '#list_order_prints', function() {

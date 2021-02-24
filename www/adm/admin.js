@@ -187,13 +187,14 @@ $.fn.serializeObject = function() {
     return result
 }
 
-function change_step(od_id, step) {
+function change_step(od_id, step, api) {
     $.ajax({
                 method: "POST",
                 url: "./ajax.order.step.php",
                 data: {
                     'step': step,
                     'od_id[]': od_id,
+						'api' : api
                 },
             })
     .done(function(data) {

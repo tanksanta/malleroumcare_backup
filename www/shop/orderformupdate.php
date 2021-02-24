@@ -1346,6 +1346,55 @@ if($is_member && $od_b_name) {
 			WHERE od_id = '{$od_id}'
 		");
 		
+		$stoIdList = explode(",", $stoIdList);
+		
+		# 210224 보유재고등록요청
+		if($_POST["od_stock_insert_yn"]){
+			$sendData = [];
+			$sendData["usrId"] = $member["mb_id"];
+			$sendData["entId"] = $member["mb_entId"];
+
+			$prodsSendData = [];
+			
+			foreach($stoIdList as $stoId){
+				$prodsData = [];
+				$prodsData["stoId"] = $stoId;
+				$prodsData["stateCd"] = "01";
+				array_push($prodsSendData, $prodsData);
+			}
+			
+			$sendData["prods"] = $prodsSendData;
+
+			$oCurl = curl_init();
+			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/update");
+			curl_setopt($oCurl, CURLOPT_POST, 1);
+			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+			$res = curl_exec($oCurl);
+			$res = json_decode($res, true);
+			curl_close($oCurl);
+
+			if($res["errorYN"] == "N"){
+				sql_query("
+					UPDATE g5_shop_order SET
+						  od_delivery_yn = 'N'
+						, staOrdCd = '01'
+						, od_status = '완료'
+					WHERE od_id = '{$od_id}'
+				");
+			} else {
+				alert($res["message"], "/");
+				sql_query("
+					DELETE FROM g5_shop_order
+					WHERE od_id = '{$od_id}'
+				");
+				return false;
+			}
+		}
+		
 		goto_url(G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&amp;uid={$uid}");
 	}
 

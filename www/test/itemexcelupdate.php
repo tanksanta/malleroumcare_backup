@@ -131,19 +131,34 @@ if($_FILES['excelfile']['tmp_name']) {
         $it_taxInfo           = addslashes($data->sheets[0]['cells'][$i][$j++]);
         $it_explan2         = strip_tags(trim($it_explan));
 		
+		$taxInfoCd = "01";
+		switch($it_taxInfo){
+			case "영세" :
+				$taxInfoCd = "01";
+				break;
+			case "과세" :
+				$taxInfoCd = "02";
+				break;
+		}
+		
         $sql = "
 			UPDATE {$g5['g5_shop_item_table']} SET
 				prodSizeDetail = '$prodSizeDetail',
-				it_taxInfo = '$it_taxInfo'
+				prodSym = '$prodSym',
+				prodWeig = '$prodWeig'
 			WHERE prodPayCode = '$prodPayCode'
 		";
         sql_query($sql);
+		
+		if($prodPayCode){
+			echo "UPDATE pro1100 SET PROD_SIZE_DETAIL = '{$prodSizeDetail}', PROD_SYM = '{$prodSym}', PROD_WEIG = '{$prodWeig}', TAX_INFO_CD = '{$taxInfoCd}' WHERE PROD_PAY_CODE = '{$prodPayCode}';<br>";
+		}
 
         $succ_count++;
 }
 }
 ?>
-
+	
 <?php
 include_once(G5_PATH.'/tail.sub.php');
 ?>

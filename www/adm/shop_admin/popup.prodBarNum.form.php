@@ -283,6 +283,8 @@
 						if($(target[i]).find("input").val()){
 							if(!confirm("이미 등록된 바코드가 있습니다.\n무시하고 적용하시겠습니까?")){
 								return false;
+							} else {
+								break;
 							}
 						}
 					}
@@ -304,7 +306,8 @@
 							for(var ii = secData[0]; ii < (secData[1] + 1); ii++){
 								var barData = ii;
 								if(String(barData).length < secData0Len){
-									for(var iii = 0; iii < (secData0Len - 1); iii++){
+									var iiiCnt = secData0Len - String(barData).length;
+									for(var iii = 0; iii < iiiCnt; iii++){
 										barData = "0" + barData;
 									}
 								}
@@ -418,6 +421,7 @@
 									}
 								});
 								opener.location.reload();
+								window.close();
 							}
 						}
 					});
@@ -467,6 +471,7 @@
 									}
 								});
 								opener.location.reload();
+								window.close();
 							}
 						}
 					});

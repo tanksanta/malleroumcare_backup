@@ -880,6 +880,19 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 
 	function forderform_check()
 	{
+		
+		/* 210224 보유재고등록요청 */
+		if($("#od_stock_insert_yn").prop("checked")){
+			var item = $(".barList input");
+			for(var i = 0; i < item.length; i++){
+				if(!$(item[i]).val()){
+					alert("재고 바코드를 입력해 주십시오.");
+					$(item[i]).focus();
+					return false;
+				}
+			}
+		}
+		
 		var f = document.forderform;
 
 		// 필드체크
@@ -1126,6 +1139,18 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 	});
 
 	function forderform_check(f) {
+		
+		/* 210224 보유재고등록요청 */
+		if($("#od_stock_insert_yn").prop("checked")){
+			var item = $(".barList input");
+			for(var i = 0; i < item.length; i++){
+				if(!$(item[i]).val()){
+					alert("재고 바코드를 입력해 주십시오.");
+					$(item[i]).focus();
+					return false;
+				}
+			}
+		}
 		
 		/* 재고선택박스 체크 */
 		var stockSelectBox = $("select.prodBarSelectBox");
