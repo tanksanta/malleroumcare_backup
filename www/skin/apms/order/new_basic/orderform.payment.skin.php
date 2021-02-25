@@ -68,6 +68,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				<div class="form-group">
 					<label class="col-sm-2 control-label"><b>결제방법</b></label>
 					<div class="col-sm-10 radio-line">
+						<label><input type="radio" id="od_settle_pay_end" name="od_settle_case" value="월 마감 정산" checked> 월 마감 정산</label>
+						
 						<?php if($is_po) { ?>
 							 <label><input type="radio" id="od_settle_point" name="od_settle_case" value="포인트"> 포인트결제</label>
 						<?php } ?>
@@ -216,7 +218,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				<div class="form-group typereceipt-form">
 					<label class="col-sm-2 control-label"><b>매출증빙</b></label>
 					<div class="col-sm-10 radio-line">
-						<input type="radio" name="ot_typereceipt" id="typereceipt0" value="0" checked="checked"> <label for="typereceipt0">발급안함</label>
+						<input type="radio" name="ot_typereceipt" id="typereceipt0" value="0"> <label for="typereceipt0">발급안함</label>
 						<input type="radio" name="ot_typereceipt" id="typereceipt2" value="31"> <label for="typereceipt2">현금영수증 </label>
 						<input type="radio" name="ot_typereceipt" id="typereceipt1" value="11"> <label for="typereceipt1" id="typereceipt1_label">세금계산서 </label>
 						<div id="typereceipt2_view">
@@ -333,6 +335,16 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				</div>
 				<script>
 				$(function() {
+					$("input[name='od_settle_case']").change(function(){
+						var val = $("input[name='od_settle_case']:checked").val();
+						
+						switch(val){
+							case "월 마감 정산" :
+								$("#settle_bank").hide();
+								break;
+						}
+					});
+					
 					function no_login() {
 						<?php if ( !$member['mb_id'] ) { ?>
 						//$('.typereceipt-form').hide();
@@ -394,7 +406,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 					// 사용자 화면에서 비회원일때와 회원인경우 신용카드를 선택한 경우 매출증빙을 선택 못하도록 안보이도록 설정
 					no_login();
-					$('#typereceipt0').click();
+					$('#typereceipt1').click();
+					$("#typereceipt1_view").show();
 
 					$('input[name="typereceipt_bnum"], input[name="p_typereceipt_bnum"]').on('keyup', function(){
 						var num = $(this).val();

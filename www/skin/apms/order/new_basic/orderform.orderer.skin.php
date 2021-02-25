@@ -14,6 +14,28 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
                     ADD `od_penzip2` char(3) NOT NULL DEFAULT '' AFTER `od_penzip1`
                     ADD `od_penAddr` varchar(100) NOT NULL DEFAULT '' AFTER `od_penzip2` ", false);
 
+	# 210223 수급자여부
+	$sendData = [];
+	$sendData["usrId"] = $member["mb_id"];
+	$sendData["entId"] = $member["mb_entId"];
+	$sendData["pageNum"] = 1;
+	$sendData["pageSize"] = 1;
+	$sendData["appCd"] = "01";
+
+	$oCurl = curl_init();
+	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
+	curl_setopt($oCurl, CURLOPT_POST, 1);
+	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+	$res = curl_exec($oCurl);
+	$res = json_decode($res, true);
+	curl_close($oCurl);
+
+	$recipientTotalCnt = $res["total"];
+
 ?>
 
 <script>
@@ -285,12 +307,18 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 		.panel .top_area a{position:absolute;top:5px; right:0px;border:1px solid #ddd;padding: 10px 15px;display:inline-block;text-align:center;}
 		.panel .top_area a:hover{background: #f5f5f5;color:#333;}
 		
+		#sod_frm_stock_status { margin-bottom: 50px; }
+		#sod_frm_stock_status input[type="checkbox"] { vertical-align: middle; margin-right: 5px; margin-top: 0; top: -2px; position: relative; }
+		#sod_frm_stock_status label { cursor: pointer; }
+		
 		@media (max-width : 750px){
 			#order_recipientBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 			#order_recipient { height: 30px; line-height: 28px; font-size: 12px; padding: 0 10px; border: 1px solid #999 !important; background-color: #999 !important; top: 0; right: 0; }
 			#recipient_del { height: 30px; line-height: 28px; font-size: 12px; padding: 0 10px; border: 1px solid #DC3333 !important; background-color: rgba(0, 0, 0, 0) !important; top: 0; right: 0; color: #DC3333 !important; margin-right: 100px !important; }
 		}
 	</style>
+   
+   <?php if($recipientTotalCnt){ ?>
     <section id="sod_frm_recipient_orderer" style="margin-bottom:0px;">
 		<input type="hidden" name="penId" id="penId">
 		<input type="hidden" name="penTypeCd" id="penTypeCd">
@@ -381,6 +409,22 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 
             </div>
         </div>
+    </section>
+    <?php } ?>
+    
+    <section id="sod_frm_stock_status">
+    	<p>
+    		<label>
+    			<input type="checkbox" name="od_stock_insert_yn" id="od_stock_insert_yn">
+    			<b>보유 재고 등록 요청</b>
+    		</label>
+    	</p>
+    	
+    	<p>
+    		<span>- 선택 시 상품배송이 되지 않습니다. 보유 재고 등록시에만 선택하세요.</span><br>
+    		<span>- 보유 재고 등록시 바코드 정보를 모두 입력해야 등록이 가능합니다.</span><br>
+    		<span>- 수급자를 선택하시면 보유 재고로 등록이 불가능합니다.</span>
+    	</p>
     </section>
 
 	<script>
@@ -506,7 +550,9 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						discountCnt += optionCnt;
 						
 						var stockCntItem = $(itemDom).find(".it_option_stock_cnt");
-						$(stockCntItem[subKey]).val(Number($(subDom).find(".recipientBox select").val()));
+						var stockCntItemCnt = Number($(subDom).find(".recipientBox select").val());
+						stockCntItemCnt = (stockCntItemCnt) ? stockCntItemCnt : 0;
+						$(stockCntItem[subKey]).val(stockCntItemCnt);
 //					}
 				});
 				
@@ -530,11 +576,17 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 			$("#ad_sel_addr_recipient").parent().show();
 			
 			$("#display_pay_button > input").val("수급자 주문하기");
+			$("#show_pay_btn > input").val("수급자 주문하기");
 			$(".stockCntStatusDom").show();
+			
+			$("#od_stock_insert_yn").prop("checked", false);
+			$("#sod_frm_stock_status").hide();
+			$(".barList input").val("");
 		}
 
 		$(function() {
 			$("#display_pay_button > input").val("재고 주문하기");
+			$("#show_pay_btn > input").val("재고 주문하기");
 			
 			$("#recipient_del").on("click", function() {
 
@@ -607,7 +659,22 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				calculate_order_price();
 
 				$("#display_pay_button > input").val("재고 주문하기");
+				$("#show_pay_btn > input").val("재고 주문하기");
 				$(".stockCntStatusDom").hide();
+				
+				$("#od_stock_insert_yn").prop("checked", false);
+				$("#sod_frm_stock_status").show();
+				$(".barList input").val("");
+			});
+			
+			$("#od_stock_insert_yn").change(function(){
+				$(".barList input").val("");
+				
+				if($(this).prop("checked")){
+					$(".barList input[type='hidden']").attr("type", "text");
+				} else {
+					$(".barList input[type='text']").attr("type", "hidden");
+				}
 			});
 		});
 	</script>
@@ -865,7 +932,9 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						
 						var stockCntItem = $(itemDom).find(".it_option_stock_cnt");
 						if(checkedType == "use"){
-							$(stockCntItem[subKey]).val(Number($(subDom).find(".recipientBox select").val()));
+							var stockCntItemCnt = Number($(subDom).find(".recipientBox select").val());
+							stockCntItemCnt = (stockCntItemCnt) ? stockCntItemCnt : 0;
+							$(stockCntItem[subKey]).val(stockCntItemCnt);
 						} else {
 							$(stockCntItem[subKey]).val(0);
 						}

@@ -62,57 +62,35 @@ include_once($list_skin_path.'/category.skin.php');
 include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 	# 210204 재고조회
-	$stockQtyList = [];
-	if($member["mb_id"]){
-		$sendData = [];
-		$sendData["usrId"] = $member["mb_id"];
-		$sendData["entId"] = $member["mb_entId"];
-		
-		$prodsSendData = [];
-		
-		for($i = 0; $i < $list_cnt; $i++){
-			$stockQtyList[$list[$i]["it_id"]] = 0;
-			
-			if($list[$i]["optionList"]){
-				foreach($list[$i]["optionList"] as $optionData){
-					$prodsData = [];
-					$prodsData["prodId"] = $list[$i]["it_id"];
-					$prodsData["prodColor"] = explode(chr(30), $optionData)[0];
-					$prodsData["prodSize"] = explode(chr(30), $optionData)[1];
-					
-					array_push($prodsSendData, $prodsData);
-				}
-			} else {
+	$sendData = [];
+	$sendData["usrId"] = $member["mb_id"];
+	$sendData["entId"] = $member["mb_entId"];
+
+	$prodsSendData = [];
+
+	for($i = 0; $i < $list_cnt; $i++){
+		$stockQtyList[$list[$i]["it_id"]] = 0;
+
+		if($list[$i]["optionList"]){
+			foreach($list[$i]["optionList"] as $optionData){
 				$prodsData = [];
 				$prodsData["prodId"] = $list[$i]["it_id"];
-				$prodsData["prodColor"] = "";
-				$prodsData["prodSize"] = "";
+				$prodsData["prodColor"] = explode(chr(30), $optionData)[0];
+				$prodsData["prodSize"] = explode(chr(30), $optionData)[1];
 
 				array_push($prodsSendData, $prodsData);
 			}
-		}
-		
-		$sendData["prods"] = $prodsSendData;
-		
-		# 재고조회
-		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9001);
-		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
-		curl_setopt($oCurl, CURLOPT_POST, 1);
-		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-		$res = curl_exec($oCurl);
-		$stockCntList = json_decode($res, true);
-		curl_close($oCurl);
-		
-		if($stockCntList["data"]){
-			foreach($stockCntList["data"] as $data){
-				$stockQtyList[$data["prodId"]] += $data["quantity"];
-			}
+		} else {
+			$prodsData = [];
+			$prodsData["prodId"] = $list[$i]["it_id"];
+			$prodsData["prodColor"] = "";
+			$prodsData["prodSize"] = "";
+
+			array_push($prodsSendData, $prodsData);
 		}
 	}
+
+	$sendData["prods"] = $prodsSendData;
 
 ?>
 
@@ -133,9 +111,42 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         </ul>
     </div>
     
+    <?php
+		$prodSupLabel = "유통구분";
+				   
+		if(!$_COOKIE["prodSupYn"]){
+			$prodSupLabel = "유통구분";
+		}
+
+		if($_GET["prodSupYn"]){
+			switch($_GET["prodSupYn"]){
+				case "Y" :
+					$prodSupLabel = "유통구분";
+					break;
+				case "N" :
+					$prodSupLabel = "비유통구분";
+					break;
+				case "all" :
+					$prodSupLabel = "유통+비유통구분";
+					break;
+			}
+		} else {
+			switch($_COOKIE["prodSupYn"]){
+				case "Y" :
+					$prodSupLabel = "유통구분";
+					break;
+				case "N" :
+					$prodSupLabel = "비유통구분";
+					break;
+				case "all" :
+					$prodSupLabel = "유통+비유통구분";
+					break;
+			}
+		}
+	?>
    	<div class="dropdown" style="margin-right: 10px;">
         <a id="prodSupLabel" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-block">
-            유통구분
+            <?=$prodSupLabel?>
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="prodSupLabel">
@@ -163,7 +174,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 		}
 										  
 	?>
-		<li>
+		<li class="<?=$list[$i]["it_id"]?>">
 			<a href="<?=$list[$i]["href"]?>">
 			<?php if($list[$i]["prodSupYn"] == "N"){ ?>
 				<p class="sup">비유통 상품</p>
@@ -189,13 +200,6 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php } else { ?>
 				<p class="price"><?=number_format($list[$i]["it_cust_price"])?>원</p>
 			<?php } ?>
-			
-			<?php if($stockQtyList[$list[$i]["it_id"]]){ ?>
-				<p class="cnt">
-					<span>재고 보유</span>
-					<span class="right"><?=$stockQtyList[$list[$i]["it_id"]]?>개</span>
-				</p>
-			<?php } ?>
 			</a>
 		</li>
 	<?php } ?>
@@ -210,6 +214,28 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	</div>
 	<div class="clearfix"></div>
 </div>
+
+<script type="text/javascript">
+	$(function(){
+
+	<?php if($member["mb_id"]){ ?>
+		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
+
+		$.ajax({
+			url : "/apiEroum/stock/selectList.php",
+			type : "POST",
+			async : false,
+			data : sendData,
+			success : function(result){
+				$.each(result, function(it_id, cnt){
+					$("." + it_id).find("a").append('<p class="cnt"><span>재고 보유</span><span class="right">' + cnt + '개</span></p>');
+				});
+			}
+		});
+	<?php } ?>
+
+	})
+</script>
 
 <?php if ($is_admin) { ?>
 <script>

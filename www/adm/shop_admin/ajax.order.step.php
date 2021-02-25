@@ -6,6 +6,7 @@ auth_check($auth[$sub_menu], "w");
 header('Content-Type: application/json');
 
 $step = $_POST['step'];
+$api = $_POST["api"];
 
 $k = false;
 foreach($order_steps as $order_step) {
@@ -48,6 +49,45 @@ foreach($od_id as $odid) {
     
     $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$odid' ";
     $od = sql_fetch($sql);
+	
+	if($api){
+		$curlURL = ($od["recipient_yn"] == "Y") ? "order" : "stock";
+		
+		$sendData = [];
+		$sendData["usrId"] = $od["mb_id"];
+		
+		if($od["recipient_yn"] == "Y"){
+			$sendData["penOrdId"] = $od["ordId"];
+			$sendData["staOrdCd"] = $step_info["status{$od["recipient_yn"]}"];
+			$sendData["prods"] = [];
+		} else {
+			$prodsList = [];
+			$od["stoId"] = explode(",", $od["stoId"]);
+			
+			for($i = 0; $i < count($od["stoId"]); $i++){
+				if($od["stoId"][$i]){
+					$thisProd = [];
+					$thisProd["stoId"] = $od["stoId"][$i];
+					$thisProd["stateCd"] = $step_info["status{$od["recipient_yn"]}"];
+					
+					array_push($prodsList, $thisProd);
+				}
+			}
+			
+			$sendData["prods"] = $prodsList;
+		}
+		
+		$oCurl = curl_init();
+		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/{$curlURL}/update");
+		curl_setopt($oCurl, CURLOPT_POST, 1);
+		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+		$res = curl_exec($oCurl);
+		curl_close($oCurl);
+	}
     
     // // PG 결제 취소
     // if($od['od_tno'] && $step == '취소') {

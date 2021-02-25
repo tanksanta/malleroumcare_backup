@@ -52,8 +52,8 @@ if($header_skin)
 				</a>
 			</td>
 			<td><a href="./item.php?it_id=<?php echo $list[$i]['it_id']; ?>"><?php echo stripslashes($list[$i]['it_name']); ?></a></td>
-			<td class="text-center"><?php echo $list[$i]['wi_time']; ?></td>
-			<td class="text-center"><a href="./wishupdate.php?w=d&amp;wi_id=<?php echo $list[$i]['wi_id']; ?>">삭제</a></td>
+			<td class="text-center"><?=$prodPpcRegDtmList[$list[$i]["it_id"]]?></td>
+			<td class="text-center"><a href="./wishupdate.php?it_id=<?=$list[$i]["it_id"]?>&ppc_id=<?=$prodPpcIdList[$list[$i]["it_id"]]?>">삭제</a></td>
 		</tr>
 	<?php } ?>
 	<?php if ($i == 0) { ?>

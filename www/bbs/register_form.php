@@ -89,7 +89,32 @@ if ($w == "") {
             $tmp_password = $_POST['mb_password'];
             $pass_check = ($member['mb_password'] === $tmp_password);
         } else {
-            $pass_check = check_password($_POST['mb_password'], $member['mb_password']);
+//            $pass_check = check_password($_POST['mb_password'], $member['mb_password']);
+			if($member["mb_id"] != "admin"){
+				$sendData = [];
+				$sendData["usrId"] = $member["mb_id"];
+				$sendData["pw"] = $_POST["mb_password"];
+
+				$oCurl = curl_init();
+				curl_setopt($oCurl, CURLOPT_PORT, 9001);
+				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entLogin");
+				curl_setopt($oCurl, CURLOPT_POST, 1);
+				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+				$res = curl_exec($oCurl);
+				$res = json_decode($res, true);
+				curl_close($oCurl);
+
+				if($res["errorYN"] == "Y"){
+					$pass_check = false;
+				} else {
+					$pass_check = true;
+				}
+			} else {
+				$pass_check = check_password($_POST['mb_password'], $member['mb_password']);
+			}
         }
 
         if (!$pass_check)

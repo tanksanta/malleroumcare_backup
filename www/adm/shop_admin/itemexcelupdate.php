@@ -129,6 +129,8 @@ if($_FILES['excelfile']['tmp_name']) {
         $prodPayCode           = addslashes($data->sheets[0]['cells'][$i][$j++]);
         $prodColor           = addslashes($data->sheets[0]['cells'][$i][$j++]);
         $prodSize           = addslashes($data->sheets[0]['cells'][$i][$j++]);
+        $prodSizeDetail           = addslashes($data->sheets[0]['cells'][$i][$j++]);
+        $it_taxInfo           = addslashes($data->sheets[0]['cells'][$i][$j++]);
         $it_explan2         = strip_tags(trim($it_explan));
 
         if(!$it_id || !$ca_id || !$it_name) {
@@ -200,6 +202,8 @@ if($_FILES['excelfile']['tmp_name']) {
                          ProdPayCode = '$prodPayCode',
 						 	it_thezone = '$itemId',
 							it_option_subject = '색상,사이즈',
+							prodSizeDetail = '$prodSizeDetail',
+							it_taxInfo = '$it_taxInfo',
                          it_img1 = '$it_img1',
                          it_img2 = '$it_img2',
                          it_img3 = '$it_img3',
@@ -247,6 +251,16 @@ if($_FILES['excelfile']['tmp_name']) {
 				$gubun = "01";
 				break;
 		}
+		
+		$taxInfo = "01";
+		switch($it_taxInfo){
+			case "영세" :
+				$taxInfo = "01";
+				break;
+			case "과세" :
+				$taxInfo = "02";
+				break;
+		}
 
 		$thisDataList = [];
 		$thisDataList["usrId"] = $member["mb_id"];
@@ -267,6 +281,8 @@ if($_FILES['excelfile']['tmp_name']) {
 		$thisDataList["subItem"] = "";
 		$thisDataList["gubun"] = $gubun;
 		$thisDataList["imgList"] = $imgList;
+		$thisDataList["taxInfoCd"] = $taxInfo;
+		$thisDataList["prodSizeDetail"] = $prodSizeDetail;
 
 		$succDataList[$it_id] = $thisDataList;
 }

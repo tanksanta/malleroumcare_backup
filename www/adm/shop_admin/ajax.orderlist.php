@@ -438,6 +438,7 @@ $ret['main'] = "
                     <th class=\"balhaeng\">발행</th>
                     <th class=\"od_time\">주문일시</th>
                     <th class=\"od_info\">주문정보</th>
+                    <th class=\"od_barNum\">바코드</th>
                     <th class=\"od_name\">받는분(주문자)</th>
                     <th class=\"od_type\">결제수단</th>
                     <th class=\"od_receipt_time\">결제일시</th>
@@ -549,6 +550,7 @@ foreach($orderlist as $order) {
 	$prodSupNqty = 0;
 	$prodStockqty = 0;
 	$prodDelivery = 0;
+	
     foreach($order['cart'] as $cart) {
         $od_cart_count += $cart['ct_qty'];
         if ($saved_uid != $cart['ct_uid']) {
@@ -568,8 +570,16 @@ foreach($orderlist as $order) {
 		}
     }
 	
+	if($order["od_delivery_yn"] == "N"){
+		$prodDelivery = 0;
+	}
+	
 	$prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
 	$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
+	
+	$prodBarNumCntBtnWord = "바코드 ({$order["od_prodBarNum_insert"]}/{$order["od_prodBarNum_total"]})";
+	$prodBarNumCntBtnWord = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
+	$prodBarNumCntBtnStatus = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? " disable" : "";
 	
     if ($od_cart_count > 0) {
         $show_od_cart_count = '| ' . $od_cart_count;
@@ -715,6 +725,9 @@ foreach($orderlist as $order) {
                     <span class=\"btn-direct-open\" onclick=\"btn_direct_open(this);\"></span>
                 </div>
             </div>
+        </td>
+		<td align=\"center\" class=\"od_barNum\">
+			<a href='#' class='prodBarNumCntBtn{$prodBarNumCntBtnStatus}' data-id='{$order["od_id"]}'>{$prodBarNumCntBtnWord}</a>
         </td>
         <td align=\"center\" class=\"od_name\">
             <a href='#' data-mb-id='{$order['mb_id']}' class='open_member_pop'>

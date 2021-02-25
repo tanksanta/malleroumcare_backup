@@ -553,6 +553,19 @@ function sanbang_order_send(){
 }
 
 $( document ).ready(function() {
+	
+	$(document).on("click", ".prodBarNumCntBtn", function(e){
+		e.preventDefault();
+		var id = $(this).attr("data-id");
+		
+		var popupWidth = 700;
+		var popupHeight = 700;
+
+		var popupX = (window.screen.width / 2) - (popupWidth / 2);
+		var popupY= (window.screen.height / 2) - (popupHeight / 2);
+		
+		window.open("./popup.prodBarNum.form.php?od_id=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+	});
 
     var submitAction = function(e) {
         $("#frmsamhwaorderlist").attr("action", "samhwa_orderlist.php");

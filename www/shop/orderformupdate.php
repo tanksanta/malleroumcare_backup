@@ -9,8 +9,8 @@ if( $od_settle_case == 'lpay' ){
     $default['de_pg_service'] = 'inicis';
 }
 
-if(($od_settle_case != '무통장' && $od_settle_case != '포인트' && $od_settle_case != 'KAKAOPAY') && $default['de_pg_service'] == 'lg' && !$_POST['LGD_PAYKEY'])
-	alert('결제등록 요청 후 주문해 주십시오.');
+//if(($od_settle_case != '무통장' && $od_settle_case != '포인트' && $od_settle_case != 'KAKAOPAY') && $default['de_pg_service'] == 'lg' && !$_POST['LGD_PAYKEY'])
+//	alert('결제등록 요청 후 주문해 주십시오.');
 
 // 장바구니가 비어있는가?
 if (get_session("ss_direct"))
@@ -25,6 +25,9 @@ $it_ids = array();
 $productList = [];
 $postProdBarNumCnt = 0;
 $deliveryTotalCnt = 0;
+
+$od_prodBarNum_insert = 0;
+$od_prodBarNum_total = 0;
 
 $error = "";
 // 장바구니 상품 재고 검사
@@ -70,6 +73,11 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			$thisProductData["stoMemo"] = $_POST["od_memo"];
 
 			array_push($productList, $thisProductData);
+		}
+		
+		$od_prodBarNum_total++;
+		if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
+			$od_prodBarNum_insert++;
 		}
 		
 		$postProdBarNumCnt++;
@@ -548,6 +556,11 @@ else if ($od_settle_case == "KAKAOPAY")
     if($od_misu == 0)
         $od_status      = '입금';
 }
+else if ($od_settle_case == "월 마감 정산")
+{
+	$od_status = "입금";
+	$od_misu = 0;
+}
 else
 {
     die("od_settle_case Error!!!");
@@ -754,7 +767,10 @@ $sql = " insert {$g5['g5_shop_order_table']}
 				od_pay_memo = '', 
 				od_naver_PaymentMeans = '', 
 				od_naver_PaymentCoreType = '', 
-				stoId = ''
+				stoId = '',
+				
+				od_prodBarNum_insert = '{$od_prodBarNum_insert}',
+				od_prodBarNum_total = '{$od_prodBarNum_total}'
                 ";
 $result = sql_query($sql, false);
 
@@ -1314,7 +1330,11 @@ if($is_member && $od_b_name) {
 			if($res["errorYN"] == "N"){
 				array_push($stoIdList, $res["data"][0]["stoId"]);
 			} else {
-				echo $res["message"];
+				alert($res["message"], "/");
+				sql_query("
+					DELETE FROM g5_shop_order
+					WHERE od_id = '{$od_id}'
+				");
 				return false;
 			}
 		}
@@ -1325,6 +1345,55 @@ if($is_member && $od_b_name) {
 				stoId = '{$stoIdList}'
 			WHERE od_id = '{$od_id}'
 		");
+		
+		$stoIdList = explode(",", $stoIdList);
+		
+		# 210224 보유재고등록요청
+		if($_POST["od_stock_insert_yn"]){
+			$sendData = [];
+			$sendData["usrId"] = $member["mb_id"];
+			$sendData["entId"] = $member["mb_entId"];
+
+			$prodsSendData = [];
+			
+			foreach($stoIdList as $stoId){
+				$prodsData = [];
+				$prodsData["stoId"] = $stoId;
+				$prodsData["stateCd"] = "01";
+				array_push($prodsSendData, $prodsData);
+			}
+			
+			$sendData["prods"] = $prodsSendData;
+
+			$oCurl = curl_init();
+			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/update");
+			curl_setopt($oCurl, CURLOPT_POST, 1);
+			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+			$res = curl_exec($oCurl);
+			$res = json_decode($res, true);
+			curl_close($oCurl);
+
+			if($res["errorYN"] == "N"){
+				sql_query("
+					UPDATE g5_shop_order SET
+						  od_delivery_yn = 'N'
+						, staOrdCd = '01'
+						, od_status = '완료'
+					WHERE od_id = '{$od_id}'
+				");
+			} else {
+				alert($res["message"], "/");
+				sql_query("
+					DELETE FROM g5_shop_order
+					WHERE od_id = '{$od_id}'
+				");
+				return false;
+			}
+		}
 		
 		goto_url(G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&amp;uid={$uid}");
 	}

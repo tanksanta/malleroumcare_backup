@@ -61,88 +61,28 @@ if ( THEMA_KEY == 'partner' && !$member['mb_id'] ) {
 include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 	# 210131 재고수량 조회
-	$optionCntHtmlList = [];
-	if($member["mb_id"]){
-		if($it["optionList"]){
-			foreach($it["optionList"] as $optionData){
-				$sendData = [];
-				$sendData["usrId"] = $member["mb_id"];
-				$sendData["entId"] = $member["mb_entId"];
+	$sendData = [];
+	$sendData["usrId"] = $member["mb_id"];
+	$sendData["entId"] = $member["mb_entId"];
+	$prodsSendData = [];
 
-				$prodsSendData = [];
-
-				$prodsData = [];
-				$prodsData["prodId"] = $it["it_id"];
-				$prodsData["prodColor"] = $optionData["color"];
-				$prodsData["prodSize"] = $optionData["size"];
-				array_push($prodsSendData, $prodsData);
-
-				$sendData["prods"] = $prodsSendData;
-
-				# 재고조회
-				$oCurl = curl_init();
-				curl_setopt($oCurl, CURLOPT_PORT, 9001);
-				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
-				curl_setopt($oCurl, CURLOPT_POST, 1);
-				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-				$res = curl_exec($oCurl);
-				$stockCntList = json_decode($res, true);
-				curl_close($oCurl);
-
-				# 재고목록
-				$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
-
-				if($stockCntList["data"][0]["quantity"] > 0){
-					$thisData = [];
-					$thisData["name"] = "{$optionData["color"]}/{$optionData["size"]}";
-					$thisData["qty"] = $stockCntList["data"][0]["quantity"];
-					
-					array_push($optionCntHtmlList, $thisData);
-				}
-			}
-		} else {
-			$sendData = [];
-			$sendData["usrId"] = $member["mb_id"];
-			$sendData["entId"] = $member["mb_entId"];
-
-			$prodsSendData = [];
-
+	if($it["optionList"]){
+		foreach($it["optionList"] as $optionData){
 			$prodsData = [];
 			$prodsData["prodId"] = $it["it_id"];
-			$prodsData["prodColor"] = "";
-			$prodsData["prodSize"] = "";
+			$prodsData["prodColor"] = $optionData["color"];
+			$prodsData["prodSize"] = $optionData["size"];
 			array_push($prodsSendData, $prodsData);
-
-			$sendData["prods"] = $prodsSendData;
-
-			# 재고조회
-			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9001);
-			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res = curl_exec($oCurl);
-			$stockCntList = json_decode($res, true);
-			curl_close($oCurl);
-			
-			# 재고목록
-			$stockCntList["data"][0]["quantity"] = ($stockCntList["data"][0]["quantity"]) ? $stockCntList["data"][0]["quantity"] : 0;
-
-			if($stockCntList["data"][0]["quantity"] > 0){
-				$thisData = [];
-				$thisData["name"] = $stockCntList["data"][0]["prodNm"];
-				$thisData["qty"] = $stockCntList["data"][0]["quantity"];
-
-				array_push($optionCntHtmlList, $thisData);
-			}
 		}
+	} else {
+		$prodsData = [];
+		$prodsData["prodId"] = $it["it_id"];
+		$prodsData["prodColor"] = "";
+		$prodsData["prodSize"] = "";
+		array_push($prodsSendData, $prodsData);
 	}
+
+	$sendData["prods"] = $prodsSendData;
 
 ?>
 
@@ -157,6 +97,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	.item-head .item-thumb img { width: 100px; height: 100px; }
 	.ca_info { font-weight: 400 !important; }
 	.ca_info > .help-block { float: right; font-size: 14px; }
+	
+	.detailInfo { width: 100%; margin-top: 5px; }
+	.detailInfo > li { width: 100%; display: table; table-layout: fixed; }
+	.detailInfo > li > span { display: table-cell; vertical-align: middle; font-size: 12px; }
+	.detailInfo > li > span.infoLabel { width: 60px; }
+	.detailInfo > li > span.infoLabel > span:first-of-type { margin-right: 5px; }
+	
+	.selfPriceInfo { width: 100%; border: 1px solid #CFCFCF; padding: 10px 15px; background-color: #F8F8F8; }
+	.selfPriceInfo > .title { width: 100%; height: 20px; line-height: 20px; font-weight: bold; color: #333; }
+	.selfPriceInfo > p { width: 100%; height: 20px; line-height: 20px; margin-top: 10px; font-size: 12px; }
 </style>
 <div class="item-head">
 	<div class="samhwa-item-head-container">
@@ -214,18 +164,40 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
 			
+			<ul class="detailInfo">
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>재질</span>
+					</span>
+					<span class="info">: <?=($it["prodSym"]) ? $it["prodSym"] : "-"?></span>
+				</li>
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>사이즈</span>
+					</span>
+					<span class="info">: <?=($it["prodSizeDetail"]) ? $it["prodSizeDetail"] : "-"?></span>
+				</li>
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>중량</span>
+					</span>
+					<span class="info">: <?=($it["prodWeig"]) ? $it["prodWeig"] : "-"?></span>
+				</li>
+			</ul>
+			
+			<!-- 본인부담금 -->
+			<div class="selfPriceInfo" style="margin-top: 20px;">
+				<div class="title">본인부담금 예시</div>
+				<p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
+			</div>
+			
 			<!-- 재고수량 -->
-			<?php if($optionCntHtmlList){ ?>
-				<ul class="optionStockCntList">
-					<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
-				<?php foreach($optionCntHtmlList as $data){ ?>
-					<li>
-						<span class="name"><?=$data["name"]?></span>
-						<span class="cnt"><?=number_format($data["qty"])?>개</span>
-					</li>
-				<?php } ?>
-				</ul>
-			<?php } ?>
+			<ul class="optionStockCntList" style="display: none;">
+				<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
+			</ul>
 			<?php if($it["it_sale_cnt"]){ ?>
 				<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원 할인적용</p>
 			<?php } ?>
@@ -283,6 +255,30 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
 			
+			<ul class="detailInfo">
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>재질</span>
+					</span>
+					<span class="info">: <?=($it["prodSym"]) ? $it["prodSym"] : "-"?></span>
+				</li>
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>사이즈</span>
+					</span>
+					<span class="info">: <?=($it["prodSizeDetail"]) ? $it["prodSizeDetail"] : "-"?></span>
+				</li>
+				<li>
+					<span class="infoLabel">
+						<span>·</span>
+						<span>중량</span>
+					</span>
+					<span class="info">: <?=($it["prodWeig"]) ? $it["prodWeig"] : "-"?></span>
+				</li>
+			</ul>
+			
 			<p style="font-size: 32px; margin: 25px 0; font-weight: bold;">
 			<?php if($member["mb_id"]){ ?>
 				<?php if($member["mb_level"] == "3"){ ?>
@@ -295,18 +291,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php } ?>
 			</p>
 			
+			<!-- 본인부담금 -->
+			<div class="selfPriceInfo">
+				<div class="title">본인부담금 예시</div>
+				<p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
+			</div>
+			
 			<!-- 재고수량 -->
-			<?php if($optionCntHtmlList){ ?>
-				<ul class="optionStockCntList">
-					<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
-				<?php foreach($optionCntHtmlList as $data){ ?>
-					<li>
-						<span class="name"><?=$data["name"]?></span>
-						<span class="cnt"><?=number_format($data["qty"])?>개</span>
-					</li>
-				<?php } ?>
-				</ul>
-			<?php } ?>
+			<ul class="optionStockCntList" style="display: none;">
+				<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
+			</ul>
 
 			<?php if ( $it['it_model'] ) { ?>
 				<p class="item-model">
@@ -721,17 +715,36 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						alert("코드가 올바르지 않습니다.");
 						return false;
 					}
-
-					$.post("./itemwishlist.php", { it_id: it_id },	function(error) {
-						if(error != "OK") {
-							alert(error.replace(/\\n/g, "\n"));
-							return false;
-						} else {
-							if(confirm("취급상품에 등록되었습니다.\n\n바로 확인하시겠습니까?")) {
-								document.location.href = "./wishlist.php";
+					
+					$.ajax({
+						url : "./itemwishlist.php",
+						type : "POST",
+						data : {
+							it_id : it_id
+						},
+						success : function(result){
+							result = JSON.parse(result);
+							
+							if(result.errorYN == "Y"){
+								alert(result.message);
+							} else {
+								if(confirm("취급상품에 등록되었습니다.\n\n바로 확인하시겠습니까?")){
+									window.location.href = "./wishlist.php";
+								}
 							}
 						}
 					});
+
+//					$.post("./itemwishlist.php", { it_id: it_id },	function(error) {
+//						if(error != "OK") {
+//							alert(error.replace(/\\n/g, "\n"));
+//							return false;
+//						} else {
+//							if(confirm("취급상품에 등록되었습니다.\n\n바로 확인하시겠습니까?")) {
+//								document.location.href = "./wishlist.php";
+//							}
+//						}
+//					});
 
 					return false;
 				}
@@ -1141,6 +1154,26 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 <script>
 $(function() {
+	
+	<?php if($member["mb_id"]){ ?>
+		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
+
+		$.ajax({
+			url : "/apiEroum/stock/selectListMore.php",
+			type : "POST",
+			async : false,
+			data : sendData,
+			success : function(result){
+				$.each(result, function(key, data){
+					$(".optionStockCntList").show();
+					
+					var html = '<li><span class="name">' + data.name + '</span><span class="cnt">' + data.qty + '개</span></li>';
+					$(".optionStockCntList").append(html);
+				});
+			}
+		});
+	<?php } ?>
+	
 	$("a.view_image").click(function() {
 		window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
 		return false;
