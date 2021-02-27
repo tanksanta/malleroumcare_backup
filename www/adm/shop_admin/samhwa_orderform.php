@@ -166,7 +166,9 @@ $sql = " select a.ct_id,
 				a.prodSupYn,
 				a.ct_qty,
 				a.ct_stock_qty,
-				b.it_img1
+				b.it_img1,
+				a.ordLendStrDtm,
+				a.ordLendEndDtm
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$od_id'
 		  group by a.it_id, a.ct_uid
@@ -313,6 +315,10 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
 	$prodBarNumCntBtnWord = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
 	$prodBarNumCntBtnStatus = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? " disable" : "";
 
+	$deliveryCntBtnWord = "배송정보 ({$od["od_delivery_insert"]}/{$od["od_delivery_total"]})";
+	$deliveryCntBtnWord = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
+	$deliveryCntBtnStatus = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? " disable" : "";
+
 ?>
 <script>
 var od_id = '<?php echo $od['od_id']; ?>';
@@ -389,6 +395,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
 								# 요청사항
 								$prodMemo = "";
 							
+								# 대여기간
+								$ordLendDtm = "";
+							
 								# 배송수량
 								$deliveryCnt = 0;
 								if($carts[$i]["prodSupYn"] == "Y" && $carts[$i]["od_delivery_yn"] == "Y"){
@@ -416,6 +425,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
 								
 									# 요청사항
 									$prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
+								
+									# 대여기간
+									$ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($carts[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($carts[$i]["ordLendEndDtm"]));
 
                                 // $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND it_id = '{$carts[$i]['it_id']}' ");
                                 $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND odc_uid = '{$carts[$i]['ct_uid']}' ");
@@ -457,7 +469,11 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                 <?php if ( $options[$k]['io_type'] == 0 && $k == 0 ) { ?>
                                                     <a href="/shop/item.php?it_id=<?php echo $carts[$i]['it_id']; ?>" class="image" target="_blank" style="float: left;"><?php echo $image; ?></a>
                                                     <div class="item_info" style="width: calc(100% - 80px); float: left; padding-left: 15px;">
-	                                                    <b><?php echo stripslashes($carts[$i]['it_name']); ?> <b style="color: #<?=($carts[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;">(<?=($carts[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?>)</b> <a href="./itemform.php?w=u&amp;it_id=<?php echo $carts[$i]['it_id']; ?>" class="name">보기</a></b><br>
+	                                                    <b><?php echo stripslashes($carts[$i]['it_name']); ?> <b style="color: #<?=($carts[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;">(<?=($carts[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?>)</b>
+	                                                    <?php if(substr($carts[$i]["ca_id"], 0, 2) == 20){ ?>
+																	<b style="color: #FFA500;">(대여)</b>
+																<?php } ?>
+	                                                     <a href="./itemform.php?w=u&amp;it_id=<?php echo $carts[$i]['it_id']; ?>" class="name">보기</a></b><br>
 	                                                    <span><?php echo $carts[$i]['it_model']; ?></span>
 	                                                    <?php if ( $carts[$i]['it_name'] != $options[$k]['ct_option']) { ?>
 	                                                        [옵션] <?php echo $options[$k]['ct_option']; ?>
@@ -909,6 +925,15 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>
+                                	<?php if(substr($carts[$i]["ca_id"], 0, 2) == 20){ ?>
+											<tr>
+												<td></td>
+												<td colspan="10" style="text-align: left;">
+													<b>대여기간 : </b>
+													<?=$ordLendDtm?>
+												</td>
+											</tr>
+                                	<?php } ?>
 										<?php if($prodMemo){ ?>
 											<tr>
 												<td></td>
@@ -1083,234 +1108,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     </tr>
 
                     <tr>
-                        <th scope="row">배송선택</th>
+                        <th scope="row">배송정보</th>
                         <td colspan="3">
-                            <select name="od_delivery_type" id="od_delivery_type" style="width: 150px;">
-                                <?php
-                                $temp_delivery_type = '';
-                                foreach($delivery_types as $type) {
-                                ?>
-                                    <option value="<?php echo $type['val']; ?>" <?php echo $type['val'] == $od['od_delivery_type'] ? 'selected' : ''; ?> data-type="<?php echo $type['type']; ?>"><?php echo $type['name']; ?></option>
-                                <?php } ?>
-                            </select>
-                            <div class="delivery_block">
-                                <!-- 택배 -->
-                                <div class="delivery_types delivery" data-delivery-type="delivery">
-                                    <select name="od_delivery_company[delivery]" style="width: 100px;">
-                                        <?php
-                                        foreach($delivery_companys as $company) {
-                                        ?>
-                                            <option value="<?php echo $company['val']; ?>" <?php echo $company['val'] == $od['od_delivery_company'] ? 'selected' : ''; ?>><?php echo $company['name']; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    <input type="text" name="od_delivery_text[delivery]" value="<?php echo $od['od_delivery_text']; ?>" required class="frm_input" placeholder="송장번호 입력" style="min-width:70px">
-                                    <select name="od_delivery_qty[delivery]" style="width: 100px;">
-                                        <?php
-                                        for($i=0;$i<=20;$i++) {
-                                        ?>
-                                            <option value="<?php echo $i; ?>" <?php echo $i == $od['od_delivery_qty'] ? 'selected' : ''; ?>><?php echo $i; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    Box&nbsp;
-                                    <input type="text" name="od_delivery_price[delivery]" value="<?php echo $od['od_delivery_price']; ?>" required class="frm_input" placeholder="운임비" style="min-width:70px">&nbsp;원&nbsp;
-                                    송하인:
-                                    <input type="radio" name="od_delivery_receiptperson[delivery]" id='od_delivery_receiptperson_0' value="0" <?php echo $od['od_delivery_receiptperson'] == 0 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_0">관리기업</label>
-
-                                    <input type="radio" name="od_delivery_receiptperson[delivery]" id="od_delivery_receiptperson_1" value="1" <?php echo $od['od_delivery_receiptperson'] == 1 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_1">주문자(<?php echo $od['od_name']; ?>)</label>
-                                    <div class="delivery_print">
-                                        <?php if($od['od_delivery_company'] == "ilogen") { ?>
-											<a href="https://www.ilogen.com/web/personal/trace/<?php echo $od['od_delivery_text']; ?>" target="_blank" class="btn_delivery"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_delivery.png" /></a>
-										<?php } elseif ($od['od_delivery_company'] == "cjlogistics") { ?>
-											<a href="https://www.doortodoor.co.kr/parcel/doortodoor.do?fsp_action=PARC_ACT_002&fsp_cmd=retrieveInvNoACT&invc_no=<?php echo $od['od_delivery_text']; ?>" target="_blank"  class="btn_delivery"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_delivery.png" /></a>
-										<?php } elseif ($od['od_delivery_company'] == "kdexp") { ?>
-											<a href="https://kdexp.com/basicNewDelivery.kd?barcode=<?php echo $od['od_delivery_text']; ?>" target="_blank"  class="btn_delivery"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_delivery.png" /></a>
-										<?php } elseif ($od['od_delivery_company'] == "ds3211") { ?>
-											<a href="http://home.daesinlogistics.co.kr/daesin/jsp/d_freight_chase/d_general_process2.jsp?billno1=<?php echo $od['od_delivery_text']; ?>" target="_blank"  class="btn_delivery"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_delivery.png" /></a>
-										<?php } elseif ($od['od_delivery_company'] == "hdexp") { ?>
-											<a href="http://www.deliverytracking.kr/?dummy=one&deliverytype=hdexp&keyword=<?php echo $od['od_delivery_text']; ?>" target="_blank"  class="btn_delivery"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_delivery.png" /></a>
-										<?php } elseif ($od['od_delivery_company'] == "lotteglogis") { ?>
-											<a href="http://www.deliverytracking.kr/?dummy=one&deliverytype=lotteglogis&keyword=<?php echo $od['od_delivery_text']; ?>" target="_blank"  class="btn_delivery"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_delivery.png" /></a>
-										<?php } elseif ($od['od_delivery_company'] == "chunilps") { ?>
-											<a href="http://www.cyber1001.co.kr/kor/taekbae/HTrace.jsp?transNo=<?php echo $od['od_delivery_text']; ?>" target="_blank"  class="btn_delivery"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_delivery.png" /></a>
-										<?php } ?>
-                                    </div>
-                                </div>
-                                <!-- 퀵서비스 -->
-                                <div class="delivery_types quick">
-                                    <!--<input type="text" name="od_delivery_text[quick]" value="<?php echo $od['od_delivery_text']; ?>" required class="frm_input" placeholder="연락처 입력" style="min-width:70px">-->
-                                    <input type="text" name="od_delivery_tel[quick]" value="<?php echo $od['od_delivery_tel']; ?>" required class="frm_input" placeholder="연락처 입력" style="min-width:70px">
-                                    <input type="text" name="od_delivery_price[quick]" value="<?php echo $od['od_delivery_price']; ?>" required class="frm_input" placeholder="운임비" style="min-width:70px">&nbsp;원&nbsp;
-                                    송하인:
-                                    <input type="radio" name="od_delivery_receiptperson[quick]" id='od_delivery_receiptperson_quick0' value="0" <?php echo $od['od_delivery_receiptperson'] == 0 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_quick0">삼화</label>
-
-                                    <input type="radio" name="od_delivery_receiptperson[quick]" id="od_delivery_receiptperson_quick1" value="1" <?php echo $od['od_delivery_receiptperson'] == 1 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_quick1">주문자(<?php echo $od['od_name']; ?>)</label>
-                                    <div class="delivery_print">
-                                        <a><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/printer.png" /></a>
-                                    </div>
-                                </div>
-                                <!-- 매장수령 -->
-                                <div class="delivery_types store">
-                                    <!--<input type="text" name="od_delivery_text[store]" value="<?php echo $od['od_delivery_text']; ?>" required class="frm_input" placeholder="메모 입력" style="width:80%">-->
-                                </div>
-                                <!-- 오토바이퀵 -->
-                                <div class="delivery_types autobike">
-                                    <!--<input type="text" name="od_delivery_text[autobike]" value="<?php echo $od['od_delivery_text']; ?>" required class="frm_input" placeholder="연락처 입력" style="min-width:70px">-->
-                                    <input type="text" name="od_delivery_tel[autobike]" value="<?php echo $od['od_delivery_tel']; ?>" required class="frm_input" placeholder="연락처 입력" style="min-width:70px">
-                                    <input type="text" name="od_delivery_price[autobike]" value="<?php echo $od['od_delivery_price']; ?>" required class="frm_input" placeholder="운임비" style="min-width:70px">&nbsp;원&nbsp;
-                                    송하인:
-                                    <input type="radio" name="od_delivery_receiptperson[autobike]" id='od_delivery_receiptperson_autobike0' value="0" <?php echo $od['od_delivery_receiptperson'] == 0 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_autobike0">삼화</label>
-
-                                    <input type="radio" name="od_delivery_receiptperson[autobike]" id="od_delivery_receiptperson_autobike1" value="1" <?php echo $od['od_delivery_receiptperson'] == 1 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_autobike1">주문자(<?php echo $od['od_name']; ?>)</label>
-                                    <div class="delivery_print">
-                                        <a><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/printer.png" /></a>
-                                    </div>
-                                </div>
-                                <!-- 다마스퀵 -->
-                                <div class="delivery_types damas">
-                                    <!--<input type="text" name="od_delivery_text[damas]" value="<?php echo $od['od_delivery_text']; ?>" required class="frm_input" placeholder="연락처 입력" style="min-width:70px">-->
-                                    <input type="text" name="od_delivery_tel[damas]" value="<?php echo $od['od_delivery_tel']; ?>" required class="frm_input" placeholder="연락처 입력" style="min-width:70px">
-                                    <input type="text" name="od_delivery_price[damas]" value="<?php echo $od['od_delivery_price']; ?>" required class="frm_input" placeholder="운임비" style="min-width:70px">&nbsp;원&nbsp;
-                                    송하인:
-                                    <input type="radio" name="od_delivery_receiptperson[damas]" id='od_delivery_receiptperson_damas0' value="0" <?php echo $od['od_delivery_receiptperson'] == 0 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_damas0">삼화</label>
-
-                                    <input type="radio" name="od_delivery_receiptperson[damas]" id="od_delivery_receiptperson_damas1" value="1" <?php echo $od['od_delivery_receiptperson'] == 1 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_damas1">주문자(<?php echo $od['od_name']; ?>)</label>
-                                    <div class="delivery_print">
-                                        <a><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/printer.png" /></a>
-                                    </div>
-                                </div>
-                                <!-- 화물택배 -->
-                                <div class="delivery_types huamul">
-                                    <select name="od_delivery_company[huamul]" style="width: 100px;">
-                                        <?php
-                                        foreach($delivery_companys as $company) {
-                                        ?>
-                                            <option value="<?php echo $company['val']; ?>" <?php echo $company['val'] == $od['od_delivery_company'] ? 'selected' : ''; ?>><?php echo $company['name']; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    <input type="text" name="od_delivery_text[huamul]" value="<?php echo $od['od_delivery_text']; ?>" required class="frm_input" placeholder="송장번호 입력" style="min-width:70px">
-                                    <select name="od_delivery_qty[huamul]" style="width: 100px;">
-                                        <?php
-                                        for($i=0;$i<=20;$i++) {
-                                        ?>
-                                            <option value="<?php echo $i; ?>" <?php echo $i == $od['od_delivery_qty'] ? 'selected' : ''; ?>><?php echo $i; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    Box&nbsp;
-                                    <input type="text" name="od_delivery_price[huamul]" value="<?php echo $od['od_delivery_price']; ?>" required class="frm_input" placeholder="운임비" style="min-width:70px">&nbsp;원&nbsp;
-                                    송하인:
-                                    <input type="radio" name="od_delivery_receiptperson[huamul]" id='od_delivery_receiptperson_huamul0' value="0" <?php echo $od['od_delivery_receiptperson'] == 0 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_huamul0">삼화</label>
-
-                                    <input type="radio" name="od_delivery_receiptperson[huamul]" id="od_delivery_receiptperson_huamul1" value="1" <?php echo $od['od_delivery_receiptperson'] == 1 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_huamul1">주문자(<?php echo $od['od_name']; ?>)</label>
-                                    <div class="delivery_print">
-                                        <a><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/printer.png" /></a>
-                                    </div>
-                                </div>
-                                <!-- 경동화물 영업소 -->
-                                <div class="delivery_types gdhuamul">
-                                    <select name="od_delivery_company[gdhuamul]" style="width: 100px;">
-                                        <?php
-                                        foreach($delivery_companys as $company) {
-                                        ?>
-                                            <option value="<?php echo $company['val']; ?>" <?php echo $company['val'] == $od['od_delivery_company'] ? 'selected' : ''; ?>><?php echo $company['name']; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    <input type="text" name="od_delivery_place[gdhuamul]" value="<?php echo $od['od_delivery_place']; ?>" required class="frm_input" placeholder="영업소 입력" style="min-width:70px">
-                                    <input type="text" name="od_delivery_text[gdhuamul]" value="<?php echo $od['od_delivery_text']; ?>" required class="frm_input" placeholder="송장번호 입력" style="min-width:70px">
-                                    <select name="od_delivery_qty[gdhuamul]" style="width: 100px;">
-                                        <?php
-                                        for($i=0;$i<=20;$i++) {
-                                        ?>
-                                            <option value="<?php echo $i; ?>" <?php echo $i == $od['od_delivery_qty'] ? 'selected' : ''; ?>><?php echo $i; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    Box&nbsp;
-                                    <input type="text" name="od_delivery_price[gdhuamul]" value="<?php echo $od['od_delivery_price']; ?>" required class="frm_input" placeholder="운임비" style="min-width:70px">&nbsp;원&nbsp;
-                                    송하인:
-                                    <input type="radio" name="od_delivery_receiptperson[gdhuamul]" id='od_delivery_receiptperson_gdhuamul0' value="0" <?php echo $od['od_delivery_receiptperson'] == 0 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_gdhuamul0">삼화</label>
-
-                                    <input type="radio" name="od_delivery_receiptperson[gdhuamul]" id="od_delivery_receiptperson_gdhuamul1" value="1" <?php echo $od['od_delivery_receiptperson'] == 1 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_gdhuamul1">주문자(<?php echo $od['od_name']; ?>)</label>
-                                    <div class="delivery_print">
-                                        <a><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/printer.png" /></a>
-                                    </div>
-                                </div>
-                                <!-- 전국화물 -->
-                                <div class="delivery_types nationwidehuamul">
-                                    <select name="od_delivery_company[nationwidehuamul]" style="width: 100px;">
-                                        <?php
-                                        foreach($delivery_companys as $company) {
-                                        ?>
-                                            <option value="<?php echo $company['val']; ?>" <?php echo $company['val'] == $od['od_delivery_company'] ? 'selected' : ''; ?>><?php echo $company['name']; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    <input type="text" name="od_delivery_text[nationwidehuamul]" value="<?php echo $od['od_delivery_text']; ?>" required class="frm_input" placeholder="송장번호 입력" style="min-width:70px">
-                                    <!--<input type="text" name="od_delivery_text[nationwidehuamul]" value="<?php echo $od['od_delivery_text']; ?>" required class="frm_input" placeholder="메모 입력" style="min-width:200px">-->
-                                    <select name="od_delivery_qty[nationwidehuamul]" style="width: 100px;">
-                                        <?php
-                                        for($i=0;$i<=20;$i++) {
-                                        ?>
-                                            <option value="<?php echo $i; ?>" <?php echo $i == $od['od_delivery_qty'] ? 'selected' : ''; ?>><?php echo $i; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    Box&nbsp;
-                                    <input type="text" name="od_delivery_price[nationwidehuamul]" value="<?php echo $od['od_delivery_price']; ?>" required class="frm_input" placeholder="운임비" style="min-width:70px">&nbsp;원&nbsp;
-                                    송하인:
-                                    <input type="radio" name="od_delivery_receiptperson[nationwidehuamul]" id='od_delivery_receiptperson_nationwidehuamul0' value="0" <?php echo $od['od_delivery_receiptperson'] == 0 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_nationwidehuamul0">삼화</label>
-
-                                    <input type="radio" name="od_delivery_receiptperson[nationwidehuamul]" id="od_delivery_receiptperson_nationwidehuamul1" value="1" <?php echo $od['od_delivery_receiptperson'] == 1 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_nationwidehuamul1">주문자(<?php echo $od['od_name']; ?>)</label>
-                                    <div class="delivery_print">
-                                        <a><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/printer.png" /></a>
-                                    </div>
-                                </div>
-                                <!-- 고속버스 -->
-                                <div class="delivery_types bus">
-                                    <input type="text" name="od_delivery_place[bus]" value="<?php echo $od['od_delivery_place']; ?>" required class="frm_input" placeholder="버스정류장 입력" style="min-width:70px">
-                                    <select name="od_delivery_qty[bus]" style="width: 100px;">
-                                        <?php
-                                        for($i=0;$i<=20;$i++) {
-                                        ?>
-                                            <option value="<?php echo $i; ?>" <?php echo $i == $od['od_delivery_qty'] ? 'selected' : ''; ?>><?php echo $i; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    Box&nbsp;
-                                    <input type="text" name="od_delivery_price[bus]" value="<?php echo $od['od_delivery_price']; ?>" required class="frm_input" placeholder="운임비" style="min-width:70px">&nbsp;원&nbsp;
-                                    송하인:
-                                    <input type="radio" name="od_delivery_receiptperson[bus]" id='od_delivery_receiptperson_bus0' value="0" <?php echo $od['od_delivery_receiptperson'] == 0 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_bus0">삼화</label>
-
-                                    <input type="radio" name="od_delivery_receiptperson[bus]" id="od_delivery_receiptperson_bus1" value="1" <?php echo $od['od_delivery_receiptperson'] == 1 ? 'checked' : ''; ?>/>
-                                    <label for="od_delivery_receiptperson_bus1">주문자(<?php echo $od['od_name']; ?>)</label>
-                                </div>
-                            </div>
-                            <div class="delivery_edi_div">
-                                <input type="button" value="EDI 전송" class="btn shbtn green delivery_edi">
-                                <input type="button" value="송장리턴" class="btn shbtn delivery_edi_return">
-                                <span style="margin-left:5px;vertical-align:middle;">* 로젠택배인경우 EDI 전송 후 로젠 프로그램을 통해 송장을 출력합니다. '송장리턴'을 클릭하시면 송장번호가 발급됩니다.</span>
-                                <?php if ($od['od_edi_date']) { ?>
-                                <p style="padding:0;color:#9e9e9e;">
-                                    * EDI 전송 내역이 있습니다. (전송일: <?php echo $od['od_edi_date']; ?>)
-                                </p>
-                                <?php } ?>
-                            </div>
-
-                            <?php if($od['od_writer']=="openmarket" && $od['od_delivery_text']){?>
-                            <div class="delivery_sabangnet_div">
-                                <input type="button" value="사방넷 배송정보기록" class="btn shbtn delivery_sabangnet_return">
-							</div>
-							<?php } ?>
+                        	<a href="#" class="deliveryCntBtn<?=$deliveryCntBtnStatus?>"><?=$deliveryCntBtnWord?></a>
                         </td>
                     </tr>
                     <!--
@@ -2239,10 +2039,32 @@ var od_id = '<?php echo $od['od_id']; ?>';
     <a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/samhwa_cancellist.php" class="btn btn_02">목록</a>
     <?php } ?>
     <a href="#" class="btn btn_01 order_prints">작업지시서 출력</a>
+    <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload()" class="btn btn_02">
 </div>
 
 <script>
 var change_member_pop, add_item_pop, matching_item_pop, edit_item_pop, delivery_print_pop, edit_payment_pop, send_estimate_pop, order_prints_pop;
+	
+	function orderListExcelDownload(){
+		$("#excelForm").remove();
+		
+		var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
+		
+		var od_id = [];
+		
+		od_id.push("<?=$od["od_id"]?>");
+		html += "<input type='hidden' name='od_id[]' value='<?=$od["od_id"]?>'>";
+		
+		html += "</form>";
+		
+		if(!od_id.length){
+			alert("선택된 주문내역이 존재하지 않습니다.");
+			return false;
+		}
+		
+		$("body").append(html);
+		$("#excelForm").submit();
+	}
 
 $(document).ready(function() {
     // 오른쪽 고정
@@ -2263,6 +2085,18 @@ $(document).ready(function() {
 		var popupY= (window.screen.height / 2) - (popupHeight / 2);
 		
 		window.open("./popup.prodBarNum.form.php?od_id=<?=$od["od_id"]?>", "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+	});
+	
+	$(document).on("click", ".deliveryCntBtn", function(e){
+		e.preventDefault();
+		
+		var popupWidth = 700;
+		var popupHeight = 700;
+
+		var popupX = (window.screen.width / 2) - (popupWidth / 2);
+		var popupY= (window.screen.height / 2) - (popupHeight / 2);
+		
+		window.open("./popup.prodDeliveryInfo.form.php?od_id=<?=$od["od_id"]?>", "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
 	});
 	
 	$(".barNumCustomSubmitBtn").click(function(){
@@ -2594,6 +2428,15 @@ $(document).ready(function() {
 		var ordId = "<?=$od["ordId"]?>";
 		var eformYn = (next_step_val == "완료") ? "Y" : "N";
 		var changeStatus = true;
+		var stateCd = "07";
+		switch(next_step_status){
+			case "01" :
+				stateCd = "07";
+				break;
+			case "03" :
+				stateCd = "02";
+				break;
+		}
 
 		if(ordId){
 			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
@@ -2614,6 +2457,7 @@ $(document).ready(function() {
 				}
 				
 				productList[key]["prodBarNum"] = prodBarNum;
+				productList[key]["stateCd"] = stateCd;
 			});
 			
 			if(!changeStatus){

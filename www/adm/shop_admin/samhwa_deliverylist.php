@@ -37,6 +37,8 @@ if( function_exists('pg_setting_check') ){
     <a href="./orderdelivery.php" id="order_delivery" class="ov_a">엑셀배송처리</a>
     <?php } ?>
     <div class="right">
+        <button id="deliveryExcelDownloadBtn">주문다운로드</button>
+        <button id="deliveryExcelUploadBtn">배송정보 일괄 업로드</button>
         <button id="delivery_edi_return_all">송장리턴</button>
     </div>
 </div>
@@ -61,72 +63,6 @@ if( function_exists('pg_setting_check') ){
                         <input type="text" id="fr_date" class="date" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10"> ~
                         <input type="text" id="to_date" class="date" name="to_date" value="<?php echo $to_date; ?>" class="frm_input" size="10" maxlength="10">
                     </div>
-                </td>
-            </tr>
-            <tr>
-                <th>결제금액</th>
-                <td>
-                    <input type="checkbox" name="price" value="1" id="search_won"><label for="search_won">&nbsp;</label>
-                    <input type="text" name="price_s" value="" class="line" maxlength="10" style="width:80px">
-                    원 ~
-                    <input type="text" name="price_e" value="" class="line" maxlength="10" style="width:80px">
-                    원
-                </td>
-            </tr>
-            <tr>
-                <th>배송수단</th>
-                <td>
-                    <input type="checkbox" name="od_delivery_type_all" class="od_delivery_type od_delivery_type_all" value="1" id="od_delivery_type0"  <?php echo get_checked($od_delivery_type, '');          ?>>
-                    <label for="od_delivery_type0">전체</label>
-                    <?php
-                    for($i=0;$i<count($delivery_types);$i++) {
-                    ?>
-                        <input type="checkbox" name="od_delivery_type" class="od_delivery_type" value="<?php echo $delivery_types[$i]['val']; ?>" id="od_delivery_type<?php echo $i+1; ?>"        <?php echo get_checked($od_delivery_type, $delivery_types[$i]['val']);          ?>>
-                        <label for="od_delivery_type<?php echo $i+1; ?>"><?php echo $delivery_types[$i]['name']; ?></label>
-                    <?php } ?>
-                </td>
-            </tr>
-            <tr>
-                <th>주문경로</th>
-                <td>
-                    <input type="checkbox" name="od_openmarket[]" value="" id="od_openmarket_0" <?php echo $od_openmarket && count($od_openmarket) >= 7 ? 'checked' : '' ?>>
-                    <label for="od_openmarket_0">전체</label>
-                    <input type="checkbox" name="od_openmarket[]" value="my" id="od_openmarket_1" <?php echo option_array_checked('my', $od_openmarket); ?>>
-                    <label for="od_openmarket_1">내사이트</label>
-                    <input type="checkbox" name="od_openmarket[]" value="11번가" id="od_openmarket_2" <?php echo option_array_checked('11번가', $od_openmarket); ?>>
-                    <label for="od_openmarket_2">11번가</label>
-                    <input type="checkbox" name="od_openmarket[]" value="인터파크" id="od_openmarket_3" <?php echo option_array_checked('인터파크', $od_openmarket); ?>>
-                    <label for="od_openmarket_3">인터파크</label>
-                    <input type="checkbox" name="od_openmarket[]" value="스마트스토어" id="od_openmarket_4" <?php echo option_array_checked('스마트스토어', $od_openmarket); ?>>
-                    <label for="od_openmarket_4">스마트스토어</label>
-                    <input type="checkbox" name="od_openmarket[]" value="ESM옥션" id="od_openmarket_5" <?php echo option_array_checked('ESM옥션', $od_openmarket); ?>>
-                    <label for="od_openmarket_5">ESM옥션</label>
-                    <input type="checkbox" name="od_openmarket[]" value="ESM지마켓" id="od_openmarket_6" <?php echo option_array_checked('ESM지마켓', $od_openmarket); ?>>
-                    <label for="od_openmarket_6">ESM지마켓</label>
-                    <input type="checkbox" name="od_openmarket[]" value="오너클랜" id="od_openmarket_7" <?php echo option_array_checked('오너클랜', $od_openmarket); ?>>
-                    <label for="od_openmarket_7">오너클랜</label>
-                </td>
-            </tr>
-            <?php
-            $member_type_flag = ($member_type_s && count($member_type_s) >= 1);
-            $member_level_flag = ($member_level_s && count($member_level_s) >= 2);
-            $is_member_flag = ($is_member_s && count($is_member_s) >= 2);
-            ?>
-            <tr>
-                <th>등급</th>
-                <td>
-                    <input type="checkbox" name="" value="" id="member_grade" class="member_grade" <?php echo ($member_type_flag && $member_level_flag && $is_member_flag) ? 'checked' : '' ?>>
-                    <label for="member_grade">전체</label>
-                    <input type="checkbox" name="member_type_s[]" value="partner" id="member_type_01" class="member_grade" <?php echo option_array_checked('partner', $member_type_s);    ?>>
-                    <label for="member_type_01">파트너</label>
-                    <input type="checkbox" name="member_level_s[]" value="4" id="member_level_01" class="member_grade" <?php echo option_array_checked('4', $member_level_s);    ?>>
-                    <label for="member_level_01">우수딜러</label>
-                    <input type="checkbox" name="member_level_s[]" value="3" id="member_level_02" class="member_grade" <?php echo option_array_checked('3', $member_level_s);  ?>>
-                    <label for="member_level_02">딜러</label>
-                    <input type="checkbox" name="is_member_s[]" value="null" id="is_member_01" class="member_grade" <?php echo option_array_checked('null', $is_member_s);  ?>>
-                    <label for="is_member_01">비회원</label>
-                    <input type="checkbox" name="is_member_s[]" value="not null" id="is_member_02" class="member_grade" <?php echo option_array_checked('not null', $is_member_s);    ?>>
-                    <label for="is_member_02">일반회원</label>
                 </td>
             </tr>
             <tr>
@@ -227,9 +163,6 @@ if( function_exists('pg_setting_check') ){
 
 <div id="samhwa_order_list">
     <ul class="order_tab">
-        <li class="" data-step="" data-status="">
-            <a>전체</a>
-        </li>
         <?php
         foreach($order_steps as $order_step) { 
             if (!$order_step['deliverylist']) continue;
@@ -238,6 +171,9 @@ if( function_exists('pg_setting_check') ){
                 <a><?php echo $order_step['name']; ?>(<span>0</span>)</a>
             </li>
         <?php } ?>
+        <li class="" data-step="" data-status="">
+            <a>전체</a>
+        </li>
     </ul>
     <div id="samhwa_order_ajax_list_table">
     </div>
@@ -286,6 +222,32 @@ var sub_menu = '<?php echo $sub_menu; ?>';
 var last_step = '';
 
 $( document ).ready(function() {
+	
+	$(document).on("click", ".prodBarNumCntBtn", function(e){
+		e.preventDefault();
+		var id = $(this).attr("data-id");
+		
+		var popupWidth = 700;
+		var popupHeight = 700;
+
+		var popupX = (window.screen.width / 2) - (popupWidth / 2);
+		var popupY= (window.screen.height / 2) - (popupHeight / 2);
+		
+		window.open("./popup.prodBarNum.form.php?od_id=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+	});
+	
+	$(document).on("click", ".deliveryCntBtn", function(e){
+		e.preventDefault();
+		var id = $(this).attr("data-id");
+		
+		var popupWidth = 700;
+		var popupHeight = 700;
+
+		var popupX = (window.screen.width / 2) - (popupWidth / 2);
+		var popupY= (window.screen.height / 2) - (popupHeight / 2);
+		
+		window.open("./popup.prodDeliveryInfo.form.php?od_id=" + id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+	});
 
     function doSearch() {
         if ( loading === true ) return;
@@ -457,6 +419,39 @@ $( document ).ready(function() {
             }
         })
     });
+	
+	/* 210226 주문다운로드 */
+	$("#deliveryExcelDownloadBtn").click(function(){
+		$("#excelForm").remove();
+		
+		var html = "<form id='excelForm' method='post' action='./order.delivery.excel.list.php'>";
+		
+		var od_id = [];
+		var item = $("input[name='od_id[]']:checked");
+		
+		for(var i = 0; i < item.length; i++){
+			od_id.push($(item[i]).val());
+			
+			html += "<input type='hidden' name='od_id[]' value='" + $(item[i]).val() + "'>";
+		}
+		
+		html += "</form>";
+		
+		if(!od_id.length){
+			alert("선택된 주문내역이 존재하지 않습니다.");
+			return false;
+		}
+		
+		$("body").append(html);
+		$("#excelForm").submit();
+	});
+	
+	$("#deliveryExcelUploadBtn").click(function(){
+		var opt = "width=600,height=450,left=10,top=10";
+		window.open("./deliveryexcel.php", "win_excel", opt);
+		return false;
+	});
+	
 });
 </script>
 <style>

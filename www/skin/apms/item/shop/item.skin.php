@@ -107,10 +107,36 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	.selfPriceInfo { width: 100%; border: 1px solid #CFCFCF; padding: 10px 15px; background-color: #F8F8F8; }
 	.selfPriceInfo > .title { width: 100%; height: 20px; line-height: 20px; font-weight: bold; color: #333; }
 	.selfPriceInfo > p { width: 100%; height: 20px; line-height: 20px; margin-top: 10px; font-size: 12px; }
+	
+	#item3dViewBtn { position: absolute; width: 130px; height: 40px; line-height: 38px; z-index: 10; top: 0; right: 25px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
+	#item3dViewBtn > img { margin-right: 10px; }
+	
+	#item3dViewBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+	#item3dViewBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+	#item3dViewBox iframe { position: relative; width: 700px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
+
+	@media (max-width : 750px){
+		#item3dViewBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+	}
 </style>
+
+<div id="item3dViewBox">
+	<div>
+
+		<iframe src="<?=G5_SHOP_URL?>/item3dview.php?it_id=<?=$it["it_id"]?>"></iframe>
+
+	</div>
+</div>
+
 <div class="item-head">
 	<div class="samhwa-item-head-container">
-		<div class="samhwa-item-image">
+		<div class="samhwa-item-image" style="position: relative;">
+		<?php if(json_decode($it["it_img_3d"], true)){ ?>
+			<div id="item3dViewBtn">
+				<img src="/img/item3dviewVisual.jpg">
+				<span>상품보기</span>
+			</div>
+		<?php } ?>
 			<div class="item-image">
 			<?php if($it["prodSupYn"] == "N"){ ?>
 				<b class="supInfo">비유통 상품</b>
@@ -149,6 +175,12 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						popup_window(url, "largeimage", opt);
 
 						return false;
+					});
+					// 이미지 3d보기
+					$("#item3dViewBox").hide();
+					$("#item3dViewBox").css("opacity", 1);
+					$("#item3dViewBtn").click(function(){
+						$("#item3dViewBox").show();
 					});
 				});
 			</script>
@@ -196,13 +228,22 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			
 			<!-- 재고수량 -->
 			<ul class="optionStockCntList" style="display: none;">
-				<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
+				<li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
 			</ul>
 			<?php if($it["it_sale_cnt"]){ ?>
 				<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원 할인적용</p>
 			<?php } ?>
 			<?php if($it["it_sale_cnt_02"]){ ?>
 				<p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_02"])?>원 할인적용</p>
+			<?php } ?>
+			<?php if($it["it_sale_cnt_03"]){ ?>
+				<p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_03"])?>원 할인적용</p>
+			<?php } ?>
+			<?php if($it["it_sale_cnt_04"]){ ?>
+				<p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_04"])?>원 할인적용</p>
+			<?php } ?>
+			<?php if($it["it_sale_cnt_05"]){ ?>
+				<p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원 할인적용</p>
 			<?php } ?>
 
 			<?php if ( $it['it_model'] ) { ?>
@@ -299,7 +340,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			
 			<!-- 재고수량 -->
 			<ul class="optionStockCntList" style="display: none;">
-				<li style="font-weight: bold; color: #F28D0B;">보유 재고</li>
+				<li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
 			</ul>
 
 			<?php if ( $it['it_model'] ) { ?>
@@ -353,6 +394,15 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<?php } ?>
 					<?php if($it["it_sale_cnt_02"]){ ?>
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_02"])?>원 할인적용</p>
+					<?php } ?>
+					<?php if($it["it_sale_cnt_03"]){ ?>
+						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_03"])?>원 할인적용</p>
+					<?php } ?>
+					<?php if($it["it_sale_cnt_04"]){ ?>
+						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_04"])?>원 할인적용</p>
+					<?php } ?>
+					<?php if($it["it_sale_cnt_05"]){ ?>
+						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원 할인적용</p>
 					<?php } ?>
 						<input type="hidden" id="it_price" value="<?php echo samhwa_price($it, THEMA_KEY); ?>">
 				</td></tr>

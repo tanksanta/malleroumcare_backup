@@ -132,7 +132,7 @@ $pg_anchor .='</ul>';
             <th scope="row"><label for="it_basic">기본설명</label></th>
             <td>
                 <?php echo help("상품명 하단에 상품에 대한 추가적인 설명이 필요한 경우에 입력합니다. HTML 입력도 가능합니다."); ?>
-                <input type="text" name="it_basic" value="<?php echo get_text(html_purifier($it['it_basic'])); ?>" id="it_basic" class="frm_input importantBorder sl">
+                <input type="text" name="it_basic" value="<?php echo get_text(html_purifier($it['it_basic'])); ?>" id="it_basic" class="frm_input sl">
             </td>
         </tr>
 		<tr>
@@ -479,7 +479,13 @@ $pg_anchor .='</ul>';
 				<input type="text" name="it_sale_cnt" value="<?=$it["it_sale_cnt"]?>" id="it_sale_cnt" class="frm_input" size="2"> 개 이상
 				<input type="text" name="it_sale_percent" value="<?=$it["it_sale_percent"]?>" id="it_sale_percent" class="frm_input" size="8"> 원 할인<br>
 				<input type="text" name="it_sale_cnt_02" value="<?=$it["it_sale_cnt_02"]?>" id="it_sale_cnt_02" class="frm_input" size="2"> 개 이상
-				<input type="text" name="it_sale_percent_02" value="<?=$it["it_sale_percent_02"]?>" id="it_sale_percent_02" class="frm_input" size="8"> 원 할인
+				<input type="text" name="it_sale_percent_02" value="<?=$it["it_sale_percent_02"]?>" id="it_sale_percent_02" class="frm_input" size="8"> 원 할인<br>
+				<input type="text" name="it_sale_cnt_03" value="<?=$it["it_sale_cnt_03"]?>" id="it_sale_cnt_03" class="frm_input" size="2"> 개 이상
+				<input type="text" name="it_sale_percent_03" value="<?=$it["it_sale_percent_03"]?>" id="it_sale_percent_03" class="frm_input" size="8"> 원 할인<br>
+				<input type="text" name="it_sale_cnt_04" value="<?=$it["it_sale_cnt_04"]?>" id="it_sale_cnt_04" class="frm_input" size="2"> 개 이상
+				<input type="text" name="it_sale_percent_04" value="<?=$it["it_sale_percent_04"]?>" id="it_sale_percent_04" class="frm_input" size="8"> 원 할인<br>
+				<input type="text" name="it_sale_cnt_05" value="<?=$it["it_sale_cnt_05"]?>" id="it_sale_cnt_05" class="frm_input" size="2"> 개 이상
+				<input type="text" name="it_sale_percent_05" value="<?=$it["it_sale_percent_05"]?>" id="it_sale_percent_05" class="frm_input" size="8"> 원 할인<br>
 			</td>
 		</tr>
 		<tr>
@@ -1118,6 +1124,13 @@ $pg_anchor .='</ul>';
 		</colgroup>
 		<tbody>
 			<tr>
+				<th scope="row"><label for="it_delivery_cnt">배송비 상세조건</label></th>
+				<td>
+					<?php echo help("상품의 박스 수량에 따라 배송비가 부과됩니다. 예를 들어 기본배송비가 3,000원 박스수량을 3으로 설정했을 경우 박스수량이 5개이면 6,000원 배송비가 부과됩니다."); ?>
+					박스수량 <input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price" class="frm_input" size="8">원 부과
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><label for="it_sc_type">배송비 유형</label></th>
 				<td>
 					<?php echo help("배송비 유형을 선택하면 자동으로 항목이 변환됩니다."); ?>
@@ -1479,6 +1492,12 @@ $pg_anchor .='</ul>';
             </td>
         </tr>
         <?php } ?>
+        <tr>
+            <th scope="row"><label for="it_img_3d">3D 이미지</label></th>
+            <td>
+                <input type="file" name="it_img_3d[]" id="it_img_3d" multiple>
+            </td>
+        </tr>
         </tbody>
         </table>
     </div>

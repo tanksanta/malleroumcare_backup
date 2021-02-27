@@ -1088,6 +1088,7 @@ if( function_exists('pg_setting_check') ){
 
 <div class="btn_fixed_top">
     <a href="./samhwa_order_new.php" id="order_add" class="btn btn_01">주문서 추가</a>
+    <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload()" class="btn btn_02">
 </div>
 <iframe src="about:blank" name="process" id="process" width="0" height="0" style="display:none"></iframe>
 
@@ -1104,6 +1105,33 @@ if( function_exists('pg_setting_check') ){
     </div>
 </div>
 </form>
+
+<script>
+	function orderListExcelDownload(){
+		$("#excelForm").remove();
+		
+		var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
+		
+		var od_id = [];
+		var item = $("input[name='od_id[]']:checked");
+		
+		for(var i = 0; i < item.length; i++){
+			od_id.push($(item[i]).val());
+			
+			html += "<input type='hidden' name='od_id[]' value='" + $(item[i]).val() + "'>";
+		}
+		
+		html += "</form>";
+		
+		if(!od_id.length){
+			alert("선택된 주문내역이 존재하지 않습니다.");
+			return false;
+		}
+		
+		$("body").append(html);
+		$("#excelForm").submit();
+	}
+</script>
 
 <?php
 include_once (G5_ADMIN_PATH.'/admin.tail.php');

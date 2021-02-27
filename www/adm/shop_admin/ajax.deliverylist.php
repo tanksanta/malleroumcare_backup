@@ -369,7 +369,7 @@ $ret['main'] = "
                     <th class=\"od_info\">주문정보</th>
                     <th class=\"od_name\">받는분(주문자)</th>
                     <th class=\"od_type\">결제수단</th>
-                    <th class=\"od_receipt_time\">결제일시</th>
+						<th class=\"od_barNum\">바코드</th>
                     <th class=\"od_price\">결제금액</th>
                     <th>출담</th>
                     <th class=\"od_delivery_info\">배송정보</th>
@@ -429,6 +429,49 @@ foreach($orderlist as $order) {
     $release_manager = '';
     $release_manager = get_member($order['od_release_manager']);
     $release_manager = get_sideview($release_manager['mb_id'], get_text($release_manager['mb_name']), $release_manager['mb_email'], '');
+	
+	$od_cart_count = 0;
+	
+	$prodSupYqty = 0;
+	$prodSupNqty = 0;
+	$prodStockqty = 0;
+	$prodDelivery = 0;
+	
+	if($order['cart']){
+		foreach($order['cart'] as $cart) {
+			$od_cart_count += $cart['ct_qty'];
+			if ($saved_uid != $cart['ct_uid']) {
+				$goods_ct++;
+				$saved_uid = $cart['ct_uid'];
+			}
+
+			if($cart["prodSupYn"] == "Y"){
+				$prodSupYqty += $cart["ct_qty"];
+				$prodStockqty += $cart["ct_stock_qty"];
+				$prodDelivery += $cart["ct_qty"];
+				$prodDelivery -= $cart["ct_stock_qty"];
+			}
+
+			if($cart["prodSupYn"] == "N"){
+				$prodSupNqty += $cart["ct_qty"];
+			}
+		}
+
+		if($order["od_delivery_yn"] == "N"){
+			$prodDelivery = 0;
+		}
+
+		$prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
+		$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
+
+		$prodBarNumCntBtnWord = "바코드 ({$order["od_prodBarNum_insert"]}/{$order["od_prodBarNum_total"]})";
+		$prodBarNumCntBtnWord = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
+		$prodBarNumCntBtnStatus = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? " disable" : "";
+		
+		$deliveryCntBtnWord = "배송정보 ({$order["od_delivery_insert"]}/{$order["od_delivery_total"]})";
+		$deliveryCntBtnWord = ($order["od_delivery_insert"] >= $order["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
+		$deliveryCntBtnStatus = ($order["od_delivery_insert"] >= $order["od_delivery_total"]) ? " disable" : "";
+	}
 
     $important2_class = $order['od_important2'] ? 'on' : '';
 
@@ -662,8 +705,8 @@ foreach($orderlist as $order) {
         <td align=\"center\" class=\"od_type\">
             {$od_receipt_name}
         </td>
-        <td align=\"center\" class=\"od_receipt_time\">
-            {$od_receipt_time}
+        <td align=\"center\" class=\"od_barNum\">
+			<a href='#' class='prodBarNumCntBtn{$prodBarNumCntBtnStatus}' data-id='{$order["od_id"]}'>{$prodBarNumCntBtnWord}</a>
         </td>
         <td align=\"center\" class=\"od_price\">
             <b>{$od_price}원</b>
@@ -671,13 +714,8 @@ foreach($orderlist as $order) {
         <td align=\"center\">
             <span class=\"icon-star-gray hand list-important2 important-25 {$important2_class}\" data-od_id='{$order['od_id']}'></span>
         </td>
-        <td class=\"delivery_info od_delivery_info\">
-            <div class=\"left\">
-                {$delivery_info}
-            </div>
-            <div class=\"right\">
-                {$delivery_btn}
-            </div>
+        <td align=\"center\" class=\"delivery_info od_delivery_info\">
+			<a href='#' class='deliveryCntBtn{$deliveryCntBtnStatus}' data-id='{$order["od_id"]}'>{$deliveryCntBtnWord}</a>
         </td>
         <td align=\"center\">
             <input type=\"text\" name=\"od_ex_date\" class=\"od_ex_date\" data-od-id=\"{$order['od_id']}\" value=\"{$order['od_ex_date']}\" />

@@ -311,6 +311,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 		#sod_frm_stock_status input[type="checkbox"] { vertical-align: middle; margin-right: 5px; margin-top: 0; top: -2px; position: relative; }
 		#sod_frm_stock_status label { cursor: pointer; }
 		
+		.dateBtn { width: 50px; height: 30px; line-height: 28px; float: left; margin-left: 10px; background-color: #EEE; font-size: 12px; color: #333 !important; font-weight: bold; text-align: center; border: 1px solid #DDD; }
+		
 		@media (max-width : 750px){
 			#order_recipientBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 			#order_recipient { height: 30px; line-height: 28px; font-size: 12px; padding: 0 10px; border: 1px solid #999 !important; background-color: #999 !important; top: 0; right: 0; }
@@ -578,6 +580,12 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 			$("#display_pay_button > input").val("수급자 주문하기");
 			$("#show_pay_btn > input").val("수급자 주문하기");
 			$(".stockCntStatusDom").show();
+			$(".ordLendFrm").show();
+			
+			var item = $(".ordLendDtmInput");
+			for(var i = 0; i < item.length; i++){
+				$(item[i]).val($(item[i]).attr("data-default"));
+			}
 			
 			$("#od_stock_insert_yn").prop("checked", false);
 			$("#sod_frm_stock_status").hide();
@@ -661,6 +669,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				$("#display_pay_button > input").val("재고 주문하기");
 				$("#show_pay_btn > input").val("재고 주문하기");
 				$(".stockCntStatusDom").hide();
+				$(".ordLendFrm").hide();
+				$(".ordLendDtmInput").val("");
 				
 				$("#od_stock_insert_yn").prop("checked", false);
 				$("#sod_frm_stock_status").show();
@@ -804,6 +814,10 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #3366CC;">유통</b>
 					<?php } ?>
 					
+					<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
+						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #FFA500;">대여</b>
+					<?php } ?>
+					
 					<?php if($item[$i]['it_options']) { ?>
 						<div class="well well-sm" style="width: 100%; float: left;"><?php echo $item[$i]['it_options'];?></div>
 					<?php } ?>
@@ -832,6 +846,19 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				<?php  } ?>
 				</td>
 			</tr>
+			<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
+				<tr class="tr-line ordLendFrm" style="display: none;">
+					<td class="text-center" style="vertical-align: middle;"><span style="font-weight: bold; font-size: 12px;">대여기간</span></td>
+					<td colspan="7">
+						<input type="text" class="form-control input-sm ordLendDtmInput ordLendStartDtm dateonly" name="ordLendStartDtm_<?=$item[$i]["ct_id"]?>" style="width: 120px; float: left;" data-default="<?=date("Y-m-d")?>">
+						<span style="width: 30px; height: 30px; line-height: 30px; float: left; text-align: center;">~</span>
+						<input type="text" class="form-control input-sm ordLendDtmInput ordLendEndDtm" name="ordLendEndDtm_<?=$item[$i]["ct_id"]?>" style="width: 120px; float: left;" data-default="<?=date("Y-m-d", strtotime("+ 364 days"))?>" readonly>
+						<a href="#" class="dateBtn" data-month="6">6개월</a>
+						<a href="#" class="dateBtn" data-month="12">1년</a>
+						<a href="#" class="dateBtn" data-month="24">2년</a>
+					</td>
+				</tr>
+			<?php } ?>
 			<tr class="tr-line">
 				<td class="text-center" style="vertical-align: middle;"><span style="font-weight: bold; font-size: 12px;">요청사항</span></td>
 				<td colspan="7">
@@ -843,9 +870,64 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 		</table>
 	</div>
 	
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<?php if ($goods_count) $goods .= ' 외 '.$goods_count.'건'; ?>
 	<script type="text/javascript">
 		$(function(){
+			
+			$.datepicker.setDefaults({
+				dateFormat : 'yy-mm-dd',
+				prevText: '이전달',
+				nextText: '다음달',
+				monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+				monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+				dayNames: ["일", "월", "화", "수", "목", "금", "토"],
+				dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
+				dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
+				showMonthAfterYear: true,
+				changeMonth: true,
+				changeYear: true
+			});
+
+			$(".dateonly").datepicker({
+				onSelect : function(dateText){
+					if($(this).hasClass("ordLendStartDtm")){
+						var dateList = $(this).val().split("-");
+						var date = new Date(dateList[0], dateList[1], dateList[2]);
+
+						date.setDate(date.getDate() + 364);
+
+						var year = date.getFullYear();
+						var month = date.getMonth();
+						var day = date.getDate();
+
+						month = (month < 10) ? "0" + month : month;
+						day = (day < 10) ? "0" + day : day;
+
+						$(this).parent("td").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
+					}
+				}
+			});
+			
+			$(".dateBtn").click(function(e){
+				e.preventDefault();
+				
+				var month = Number($(this).attr("data-month"));
+				var dateList = $(this).parent("td").find(".ordLendStartDtm").val().split("-");
+				var date = new Date(dateList[0], dateList[1], dateList[2]);
+				
+				date.setMonth(date.getMonth() + month);
+				date.setDate(date.getDate() - 1);
+				
+				var year = date.getFullYear();
+				var month = date.getMonth();
+				var day = date.getDate();
+				
+				month = (month < 10) ? "0" + month : month;
+				day = (day < 10) ? "0" + day : day;
+				
+				$(this).parent("td").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
+			});
 			
 			var optionCntList = <?=json_encode($optionCntList)?>;
 			var optionBarList = <?=json_encode($optionBarList)?>;

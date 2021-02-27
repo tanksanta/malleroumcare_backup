@@ -158,8 +158,12 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 		<th scope="col"><span>바코드</span></th>
 		<!--<th scope="col"><span class="last">배송/이용정보</span></th>-->
 	</tr>
-	<?php for($i=0; $i < count($item); $i++) { $prodMemo = ""; ?>
-		<?php for($k=0; $k < count($item[$i]['opt']); $k++) { $prodMemo = ($prodMemo) ? $prodMemo : $item[$i]["prodMemo"]; ?>
+	<?php for($i=0; $i < count($item); $i++) { $prodMemo = ""; $ordLendDtm = ""; ?>
+		<?php for($k=0; $k < count($item[$i]['opt']); $k++) { ?>
+			<?php
+				$prodMemo = ($prodMemo) ? $prodMemo : $item[$i]["prodMemo"];
+				$ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($item[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($item[$i]["ordLendEndDtm"]));
+			?>
 			<?php if($k == 0) { ?>
 				<tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
 					<td class="text-center" style="vertical-align: middle;" rowspan="<?php echo ($item[$i]['rowspan'] + 1); ?>">
@@ -173,6 +177,10 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 							<strong><?php echo $item[$i]['it_name']; ?></strong>
 							<?php if($item[$i]["prodSupYn"] == "N"){ ?>
 								<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
+							<?php } ?>
+							
+							<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
+								<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #FFA500;">대여</b>
 							<?php } ?>
 						</a>
 					</td>
@@ -234,7 +242,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				<td class="text-right" style="vertical-align: middle;"><?php echo number_format($item[$i]['opt'][$k]['sell_price']); ?></td>
 				<td class="text-center" style="vertical-align: middle;">
 					<?php
-						$ct_status = get_step($item[$i]['opt'][$k]['ct_status']);
+						$ct_status = get_step($od["od_status"]);
 						echo $ct_status['name'];
 					?>
 				</td>
@@ -247,6 +255,14 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						<input type="text" class="form-control input-sm prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" style="margin-bottom: 5px;" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" <?=($item[$i]["ct_stock_qty"] > $ii) ? "readonly" : ""?>>
 					<?php } ?>
 				<?php $prodListCnt++; } ?>
+				</td>
+			</tr>
+		<?php } ?>
+		<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
+			<tr>
+				<td colspan="6">
+					<b>대여기간 : </b>
+					<?=$ordLendDtm?>
 				</td>
 			</tr>
 		<?php } ?>

@@ -506,7 +506,7 @@
 						$img["src"] = G5_URL."/shop/img/no_image.gif";
 					}
 			?>
-				<li class="<?=$row["it_id"]?>">
+				<li class="<?=$row["it_id"]?>" data-ca="<?=substr($item[$i]["ca_id"], 0, 2)?>">
 					<a href="/shop/item.php?it_id=<?=$row["it_id"]?>">
 					<?php if($row["prodSupYn"] == "N"){ ?>
 						<p class="sup">비유통 상품</p>
@@ -552,7 +552,12 @@
 				data : sendData,
 				success : function(result){
 					$.each(result, function(it_id, cnt){
-						$("." + it_id).find("a").append('<p class="cnt"><span>재고 보유</span><span class="right">' + cnt + '개</span></p>');
+						var label = "재고 보유";
+						if($("." + it_id).attr("data-ca") == "20"){
+							label = "보유 대여 재고";
+						}
+						
+						$("." + it_id).find("a").append('<p class="cnt"><span>' + label + '</span><span class="right">' + cnt + '개</span></p>');
 					});
 				}
 			});

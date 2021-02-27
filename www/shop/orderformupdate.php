@@ -29,6 +29,9 @@ $deliveryTotalCnt = 0;
 $od_prodBarNum_insert = 0;
 $od_prodBarNum_total = 0;
 
+$od_delivery_insert = 0;
+$od_delivery_total = 0;
+
 $error = "";
 // 장바구니 상품 재고 검사
 $sql = " select MT.it_id,
@@ -61,7 +64,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			$thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
 			$thisProductData["prodPayCode"] = $row["prodPayCode"];
 			$thisProductData["itemNm"] = explode(chr(30), $row["io_id"])[0]." / ".explode(chr(30), $row["io_id"])[1];
-
+			$thisProductData["ordLendStrDtm"] = date("Y-m-d", strtotime($_POST["ordLendStartDtm_{$row["ct_id"]}"]));
+			$thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($_POST["ordLendEndDtm_{$row["ct_id"]}"]));
+			
 			array_push($productList, $thisProductData);
 		} else {
 			$thisProductData = [];
@@ -83,12 +88,22 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 		$postProdBarNumCnt++;
 	}
 	
-	# 요청사항저장
+	# 요청사항 저장
 	sql_query("
 		UPDATE {$g5["g5_shop_cart_table"]} SET
 			prodMemo = '{$_POST["prodMemo_{$row["ct_id"]}"]}'
 		WHERE ct_id = '{$row["ct_id"]}'
 	");
+	
+	# 대여기간저장
+	if($_POST["penId"]){
+		sql_query("
+			UPDATE {$g5["g5_shop_cart_table"]} SET
+				ordLendStrDtm = '{$_POST["ordLendStartDtm_{$row["ct_id"]}"]}',
+				ordLendEndDtm = '{$_POST["ordLendEndDtm_{$row["ct_id"]}"]}'
+			WHERE ct_id = '{$row["ct_id"]}'
+		");
+	}
 	
 	# 비유통상품 금액저장
 	if($row["prodSupYn"] == "N"){
@@ -109,6 +124,19 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 		
 		if($row["prodSupYn"] == "Y"){
 			$deliveryTotalCnt += $row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"];
+		}
+	}
+	
+	# 배송가능 설정
+	if($row["prodSupYn"] == "Y"){
+		if(($row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"]) > 0){
+			$od_delivery_total++;
+			
+			sql_query("
+				UPDATE {$g5["g5_shop_cart_table"]} SET
+					ct_delivery_yn = 'Y'
+				WHERE ct_id = '{$row["ct_id"]}'
+			");
 		}
 	}
 	
@@ -685,6 +713,12 @@ if ($od['od_settle_case'] == '네이버페이') {
 $od_receipt_time = ($od_receipt_time) ? $od_receipt_time : "0000-00-00 00:00:00";
 $od_hope_date = ($od_hope_date) ? $od_hope_date : "0000-00-00 00:00:00";
 
+# 배송비설정
+if(!$od_delivery_total){
+	$od_send_cost = 0;
+	$od_send_cost2 = 0;
+}
+
 $sql = " insert {$g5['g5_shop_order_table']}
             set od_id             = '$od_id',
                 mb_id             = '{$member['mb_id']}',
@@ -770,7 +804,10 @@ $sql = " insert {$g5['g5_shop_order_table']}
 				stoId = '',
 				
 				od_prodBarNum_insert = '{$od_prodBarNum_insert}',
-				od_prodBarNum_total = '{$od_prodBarNum_total}'
+				od_prodBarNum_total = '{$od_prodBarNum_total}',
+				
+				od_delivery_insert = '{$od_delivery_insert}',
+				od_delivery_total = '{$od_delivery_total}'
                 ";
 $result = sql_query($sql, false);
 
@@ -1240,7 +1277,13 @@ if($is_member && $od_b_name) {
 		$res = json_decode($res, true);
 		curl_close($oCurl);
 
-		if($res["errorYN"] == "N"){
+		if($res["errorYN"] == "Y"){
+			alert($res["message"], "/");
+			sql_query("
+				DELETE FROM g5_shop_order
+				WHERE od_id = '{$od_id}'
+			");
+		} else {
 			if(!$deliveryTotalCnt){
 				$sendData = [];
 				$sendData["usrId"] = $member["mb_id"];
@@ -1284,12 +1327,6 @@ if($is_member && $od_b_name) {
 			}
 			
 			goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}");
-		} else {
-			alert($res["message"], "/");
-			sql_query("
-				DELETE FROM g5_shop_order
-				WHERE od_id = '{$od_id}'
-			");
 		}
 	}
 

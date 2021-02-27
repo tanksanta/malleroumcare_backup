@@ -15,7 +15,6 @@ function only_number($n)
 
 if($_FILES['excelfile']['tmp_name']) {
     $file = $_FILES['excelfile']['tmp_name'];
-
     include_once(G5_LIB_PATH.'/Excel/reader.php');
 
     $data = new Spreadsheet_Excel_Reader();
@@ -158,7 +157,16 @@ if($_FILES['excelfile']['tmp_name']) {
             continue;
         }
 		
+		$prodSupYn = ($prodSupYn) ? $prodSupYn : "Y";
+		
 		$itemId = sql_fetch("SELECT itemId FROM g5_shop_category WHERE ca_id = '{$ca_id}'")["itemId"];
+		
+		$it_price = ($it_price) ? $it_price : 0;
+		$it_cust_price = ($it_cust_price) ? $it_cust_price : 0;
+		
+		$it_explan = ($prodSupYn == "N") ? addslashes("<img src='https://mall.eroumcare.com/data/item/prodSupN.png'>") : $it_explan;
+		$it_use = ($it_use) ? $it_use : 1;
+		$it_stock_qty = ($it_stock_qty) ? $it_stock_qty : 9999;
 
         $sql = " INSERT INTO {$g5['g5_shop_item_table']}
                      SET it_id = '$it_id',

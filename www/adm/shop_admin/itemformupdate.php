@@ -18,6 +18,8 @@ include_once('../apms_admin/apms.admin.lib.php');
 @mkdir(G5_DATA_PATH."/item", G5_DIR_PERMISSION);
 @chmod(G5_DATA_PATH."/item", G5_DIR_PERMISSION);
 
+$andQuery = "";
+
 // input vars 체크
 check_input_vars();
 
@@ -208,6 +210,24 @@ if ($_FILES['it_img10']['name']) {
     }
     $it_img10 = it_img_upload($_FILES['it_img10']['tmp_name'], $_FILES['it_img10']['name'], $it_img_dir.'/'.$it_id);
 }
+if ($_FILES["it_img_3d"]["name"]) {
+    $it_img_3d = [];
+	
+	$uploadCnt = 0;
+	foreach($_FILES["it_img_3d"]["name"] as $key => $data){
+		$filename = it_img_upload($_FILES["it_img_3d"]["tmp_name"][$key], "3d_{$_FILES["it_img_3d"]["name"][$key]}", $it_img_dir.'/'.$it_id);
+		
+		if($filename){
+			$uploadCnt++;
+			array_push($it_img_3d, $filename);
+		}
+	}
+	
+	$it_img_3d = json_encode($it_img_3d);
+	if($uploadCnt){
+		$andQuery .= " it_img_3d = '{$it_img_3d}', ";
+	}
+}
 
 if ($w == "" || $w == "u")
 {
@@ -375,11 +395,23 @@ $it_sale_percent = ($_POST["it_sale_percent"]) ? $_POST["it_sale_percent"] : 0;
 $it_sale_cnt_02 = ($_POST["it_sale_cnt_02"]) ? $_POST["it_sale_cnt_02"] : 0;
 $it_sale_percent_02 = ($_POST["it_sale_percent_02"]) ? $_POST["it_sale_percent_02"] : 0;
 
+$it_sale_cnt_03 = ($_POST["it_sale_cnt_03"]) ? $_POST["it_sale_cnt_03"] : 0;
+$it_sale_percent_03 = ($_POST["it_sale_percent_03"]) ? $_POST["it_sale_percent_03"] : 0;
+
+$it_sale_cnt_04 = ($_POST["it_sale_cnt_04"]) ? $_POST["it_sale_cnt_04"] : 0;
+$it_sale_percent_04 = ($_POST["it_sale_percent_04"]) ? $_POST["it_sale_percent_04"] : 0;
+
+$it_sale_cnt_05 = ($_POST["it_sale_cnt_05"]) ? $_POST["it_sale_cnt_05"] : 0;
+$it_sale_percent_05 = ($_POST["it_sale_percent_05"]) ? $_POST["it_sale_percent_05"] : 0;
+
 $prodId = $it_id;
 $entId = $_POST["entId"];
 $prodSupYn = $_POST["prodSupYn"];
 $it_taxInfo = $_POST["it_taxInfo"];
 $ProdPayCode = $_POST["prodPayCode"];
+
+$_POST["it_delivery_cnt"] = ($_POST["it_delivery_cnt"]) ? $_POST["it_delivery_cnt"] : 0;
+$_POST["it_delivery_price"] = ($_POST["it_delivery_price"]) ? $_POST["it_delivery_price"] : 0;
 
 $sql_common = " ca_id               = '$ca_id',
                 ca_id2              = '$ca_id2',
@@ -480,7 +512,7 @@ $sql_common = " ca_id               = '$ca_id',
                 it_9                = '$it_9',
                 it_10               = '$it_10',
 
-				
+					{$andQuery}
                 gubun               = '$gubun',
                 prodNm				= '$prodNm',
                 itemId				= '$itemId',
@@ -539,12 +571,21 @@ $sql_common = " ca_id               = '$ca_id',
                 it_type             = '$it_type',
                 it_sale_cnt             = '$it_sale_cnt',
                 it_sale_percent             = '$it_sale_percent',
-					it_sale_cnt_02             = '$it_sale_cnt_02',
+				  it_sale_cnt_02             = '$it_sale_cnt_02',
                 it_sale_percent_02             = '$it_sale_percent_02',
+				  it_sale_cnt_03             = '$it_sale_cnt_03',
+                it_sale_percent_03             = '$it_sale_percent_03',
+				  it_sale_cnt_04             = '$it_sale_cnt_04',
+                it_sale_percent_04             = '$it_sale_percent_04',
+				  it_sale_cnt_05             = '$it_sale_cnt_05',
+                it_sale_percent_05             = '$it_sale_percent_05',
 					entId = '$entId',
 					prodSupYn = '$prodSupYn',
 					prodSizeDetail = '$prodSizeDetail',
-					it_taxInfo = '$it_taxInfo'
+					it_taxInfo = '$it_taxInfo',
+					
+					it_delivery_cnt = '{$_POST["it_delivery_cnt"]}',
+					it_delivery_price = '{$_POST["it_delivery_price"]}'
 				"; // APMS : 2014.07.20
 
                 // it_outsourcing_use  = '$it_outsourcing_use',

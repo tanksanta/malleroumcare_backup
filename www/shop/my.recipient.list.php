@@ -57,18 +57,16 @@
 	<div id="myRecipientListWrap">
 		<div class="titleWrap">
 			수급자 목록
-<!--			<a href="./my.recipient.write.php" title="수급자 등록">수급자 등록</a>-->
+			<a href="./my.recipient.write.php" title="수급자 등록">수급자 등록</a>
 		</div>
 		
 		<div class="itemWrap">
 		<?php if($list){ ?>
 			<?php foreach($list as $data){ ?>
 				<ul class="item">
-<!--
 					<li class="btnWrap">
 						<button type="button" class="updateBtn" data-id="<?=$data["penId"]?>">수정</button><button type="button" class="delBtn" data-id="<?=$data["penId"]?>">삭제</button>
 					</li>
--->
 					<li class="info">
 						<p class="labelName">수급자명</p>
 						<p class="value"><?=($data["penNm"]) ? $data["penNm"] : "-"?></p>

@@ -140,7 +140,7 @@ include_once($skin_path.'/search.skin.form.php');
 		}
 										  
 	?>
-		<li class="<?=$list[$i]["it_id"]?>">
+		<li class="<?=$list[$i]["it_id"]?>" data-ca="<?=substr($list[$i]["ca_id"], 0, 2)?>">
 			<a href="<?=$list[$i]["href"]?>">
 			<?php if($list[$i]["prodSupYn"] == "N"){ ?>
 				<p class="sup">비유통 상품</p>
@@ -185,7 +185,12 @@ include_once($skin_path.'/search.skin.form.php');
 			data : sendData,
 			success : function(result){
 				$.each(result, function(it_id, cnt){
-					$("." + it_id).find("a").append('<p class="cnt"><span>재고 보유</span><span class="right">' + cnt + '개</span></p>');
+					var label = "재고 보유";
+					if($("." + it_id).attr("data-ca") == "20"){
+						label = "보유 대여 재고";
+					}
+
+					$("." + it_id).find("a").append('<p class="cnt"><span>' + label + '</span><span class="right">' + cnt + '개</span></p>');
 				});
 			}
 		});
