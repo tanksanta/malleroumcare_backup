@@ -1126,8 +1126,8 @@ $pg_anchor .='</ul>';
 			<tr>
 				<th scope="row"><label for="it_delivery_cnt">배송비 상세조건</label></th>
 				<td>
-					<?php echo help("상품의 박스 수량에 따라 배송비가 부과됩니다. 예를 들어 기본배송비가 3,000원 박스수량을 3으로 설정했을 경우 박스수량이 5개이면 6,000원 배송비가 부과됩니다."); ?>
-					박스수량 <input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price" class="frm_input" size="8">원 부과
+					<?php echo help("상품의 박스 수량에 따라 배송비가 부과됩니다."); ?>
+					1박스 기준 <input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price" class="frm_input" size="8">원 부과
 				</td>
 			</tr>
 			<tr>

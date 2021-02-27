@@ -243,22 +243,22 @@
 		$(function(){
 			
 			$(".ct_delivery_cnt").change(function(){
-				var parent = $(this).closest("tr");
-				
-				var price = Number($(parent).attr("data-price"));
-				var cnt = Number($(parent).attr("data-cnt"));
-				
-				var val = $(this).val();
-				
-				if(cnt){
-					var tmpCnt = Math.floor(val / cnt);
-					
-					if(tmpCnt < (val / cnt)){
-						tmpCnt += 1;
-					}
-					
-					$(parent).find(".ct_delivery_price").val(tmpCnt * price);
-				}
+//				var parent = $(this).closest("tr");
+//				
+//				var price = Number($(parent).attr("data-price"));
+//				var cnt = Number($(parent).attr("data-cnt"));
+//				
+//				var val = $(this).val();
+//				
+//				if(cnt){
+//					var tmpCnt = Math.floor(val / cnt);
+//					
+//					if(tmpCnt < (val / cnt)){
+//						tmpCnt += 1;
+//					}
+//					
+//					$(parent).find(".ct_delivery_price").val(tmpCnt * price);
+//				}
 			});
 			
 			$("#prodBarNumSaveBtn").click(function() {

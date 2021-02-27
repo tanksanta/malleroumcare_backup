@@ -49,21 +49,22 @@
 			}
 			
 			$rows[] = [ 
+				" {$it["ct_id"]} ",
 				" {$od["od_id"]} ",
 				date("Y-m-d", strtotime($od["od_time"])),
 				$it_name,
 				$delivery_company_name,
 				$it["ct_delivery_num"],
-				number_format($it["ct_delivery_cnt"]),
-				number_format($it["ct_delivery_price"])."원"
+				$it["ct_delivery_cnt"],
+				$it["ct_delivery_price"]
 			];
 		}
     }
 
-    $headers = array("주문번호", "일자", "품목명[규격]", "택배사", "송장번호", "박스수량", "배송비");
+    $headers = array("고유번호", "주문번호", "일자", "품목명[규격]", "택배사", "송장번호", "박스수량", "배송비");
     $data = array_merge(array($headers), $rows);
     
-    $widths  = array(20, 15, 50, 30, 30, 20, 30);
+    $widths  = array(20, 20, 15, 50, 30, 30, 20, 30);
     $header_bgcolor = 'FFABCDEF';
     $last_char = column_char(count($headers) - 1);
 

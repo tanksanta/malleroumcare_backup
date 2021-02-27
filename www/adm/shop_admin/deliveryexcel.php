@@ -23,9 +23,11 @@ include_once(G5_PATH.'/head.sub.php');
             엑셀파일을 저장하실 때는 <strong>Excel 97 - 2003 통합문서 (*.xls)</strong> 로 저장하셔야 합니다.
         </p>
 
+<!--
         <p>
             <a href="./deliveryexcelform.php" class="excelBtn">배송정보일괄업로드용 엑셀파일 다운로드</a>
         </p>
+-->
     </div>
 
     <form name="fitemexcel" method="post" action="./deliveryexcelupdate.php" enctype="MULTIPART/FORM-DATA" autocomplete="off">
