@@ -44,7 +44,9 @@ $sql = " select MT.it_id,
                 MT.ct_id,
 				( SELECT it_time FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_time,
 				( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn,
-				( SELECT ProdPayCode FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodPayCode
+				( SELECT ProdPayCode FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodPayCode,
+				( SELECT it_delivery_cnt FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_cnt,
+				( SELECT it_delivery_price FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_price
            from {$g5['g5_shop_cart_table']} MT
           where od_id = '$tmp_cart_id'
             and ct_select = '1' ";
@@ -132,9 +134,20 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 		if(($row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"]) > 0){
 			$od_delivery_total++;
 			
+			$tmpQty = $row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"];
+			$tmpCnt = floor($tmpQty / $row["it_delivery_cnt"]);
+
+			if($tmpCnt < ($tmpQty / $row[$i]["it_delivery_cnt"])){
+				$tmpCnt += 1;
+			}
+
+			$tmpPrice = $tmpCnt * $row["it_delivery_price"];
+			
 			sql_query("
 				UPDATE {$g5["g5_shop_cart_table"]} SET
-					ct_delivery_yn = 'Y'
+					ct_delivery_yn = 'Y',
+					ct_delivery_cnt = '{$tmpCnt}',
+					ct_delivery_price = '{$tmpPrice}'
 				WHERE ct_id = '{$row["ct_id"]}'
 			");
 		}

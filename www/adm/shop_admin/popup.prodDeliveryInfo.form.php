@@ -185,17 +185,7 @@
 				<?php 
 					for($i = 0; $i < count($carts); $i++){ 
 						$options = $carts[$i]["options"];
-						
-						if(!$carts[$i]["ct_delivery_price"] && $carts[$i]["it_delivery_cnt"]){
-							$tmpCnt = floor($carts[$i]["ct_delivery_cnt"] / $carts[$i]["it_delivery_cnt"]);
-							
-							if($tmpCnt < ($carts[$i]["ct_delivery_cnt"] / $carts[$i]["it_delivery_cnt"])){
-								$tmpCnt += 1;
-							}
-							
-							$carts[$i]["ct_delivery_price"] = $tmpCnt * $carts[$i]["it_delivery_price"];
-						}
-						
+
 						for($k = 0; $k < count($options); $k++){
 				?>
 						<tr data-price="<?=$carts[$i]["it_delivery_price"]?>" data-cnt="<?=$carts[$i]["it_delivery_cnt"]?>">

@@ -2316,7 +2316,11 @@ function fitemformcheck(f)
         sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
         sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
         sendData.append("prodSupPrice", $("#it_cust_price").val()); //  공급가격
-        sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
+			if($("#ca_id").val().substr(0, 2) == "20"){
+				sendData.append("rentalPrice", $("#it_price").val()); //  대여가격
+			} else {
+				sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
+			}
         sendData.append("prodStateCode", "03"); // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
         sendData.append("supId", $("#supId").val()); //  공급자아이디
         sendData.append("itemId", $("#it_thezone").val()); //  아이템 아이디
@@ -2486,7 +2490,11 @@ async function frmUpdate(){
 	sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
 	sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
 	sendData.append("prodSupPrice", $("#it_cust_price").val()); //  공급가격
-	sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
+	if($("#ca_id").val().substr(0, 2) == "20"){
+		sendData.append("rentalPrice", $("#it_price").val()); //  대여가격
+	} else {
+		sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
+	}
 	sendData.append("prodStateCode", "03"); // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
 	sendData.append("supId", $("#supId").val()); //  공급자아이디
 	sendData.append("itemId", $("#it_thezone").val()); //  아이템 아이디
