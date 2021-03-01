@@ -64,6 +64,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	$sendData = [];
 	$sendData["usrId"] = $member["mb_id"];
 	$sendData["entId"] = $member["mb_entId"];
+	if(substr($it["ca_id"], 0, 2) == "20"){
+		$sendData["status02"] = true;
+	}
 	$prodsSendData = [];
 
 	if($it["optionList"]){
@@ -1214,10 +1217,19 @@ $(function() {
 			async : false,
 			data : sendData,
 			success : function(result){
-				$.each(result, function(key, data){
+				$.each(result.data, function(key, value){
+					if(result["data2"]){
+						var totalQty = (result["data2"][key]["qty"]) ? result["data2"][key]["qty"] : 0;
+					} else {
+						var totalQty = 0;
+					}
 					$(".optionStockCntList").show();
 					
-					var html = '<li><span class="name">' + data.name + '</span><span class="cnt">' + data.qty + '개</span></li>';
+					var html = '<li><span class="name">' + value.name + '</span><span class="cnt">' + value.qty + '개<?=(substr($it["ca_id"], 0, 2) == "20") ? " 대여 가능" : ""?>';
+					if(totalQty){
+						html += " (총 " + totalQty + "개)";
+					}
+					html += '</span></li>';
 					$(".optionStockCntList").append(html);
 				});
 			}

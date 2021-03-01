@@ -320,7 +320,6 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 		}
 	</style>
    
-   <?php if($recipientTotalCnt){ ?>
     <section id="sod_frm_recipient_orderer" style="margin-bottom:0px;">
 		<input type="hidden" name="penId" id="penId">
 		<input type="hidden" name="penTypeCd" id="penTypeCd">
@@ -383,7 +382,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
                     </div>
                 </div>
 				<div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_name"><b>휴대전화</b><strong class="sound_only">필수</strong></label>
+                    <label class="col-sm-2 control-label" for="od_name"><b>휴대폰</b><strong class="sound_only">필수</strong></label>
                     <div class="col-sm-3">
                         <input type="text" name="penConNum" id="penConNum" class="form-control input-sm" readonly>
                         <span class="fa fa-check form-control-feedback"></span>
@@ -412,7 +411,6 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
             </div>
         </div>
     </section>
-    <?php } ?>
     
     <section id="sod_frm_stock_status">
     	<p>

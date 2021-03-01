@@ -88,7 +88,7 @@
 						<p class="value"><?=($data["penExpiDtm"]) ? $data["penExpiDtm"] : "-"?></p>
 					</li>
 					<li class="info">
-						<p class="labelName">휴대전화</p>
+						<p class="labelName">휴대폰</p>
 						<p class="value"><?=($data["penConNum"]) ? $data["penConNum"] : "-"?></p>
 					</li>
 					<li class="info">
@@ -192,7 +192,7 @@
 									html += '<p class="value">' + ((data.penExpiDtm) ? data.penExpiDtm : "-") + '</p>';
 									html += '</li>';
 									html += '<li class="info">';
-									html += '<p class="labelName">휴대전화</p>';
+									html += '<p class="labelName">휴대폰</p>';
 									html += '<p class="value">' + ((data.penConNum) ? data.penConNum : "-") + '</p>';
 									html += '</li>';
 									html += '<li class="info">';

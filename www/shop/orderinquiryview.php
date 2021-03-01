@@ -525,12 +525,12 @@ if($is_inquiryview_sub) {
 	<script type="text/javascript">
 		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
-		$.ajax({
-			url : "/apiEroum/order/update.php",
-			type : "POST",
-			async : false,
-			data : sendData
-		});
+//		$.ajax({
+//			url : "/apiEroum/order/update.php",
+//			type : "POST",
+//			async : false,
+//			data : sendData
+//		});
 	</script>
 	
 <?php } ?>

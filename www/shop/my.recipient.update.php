@@ -95,7 +95,7 @@
 						<b>생년월일</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penBirth" value="<?=$data["penBirth"]?>" class="form-control input-sm" dateonly>
+						<input type="text" name="penBirth" value="<?=$data["penBirth"]?>" class="form-control input-sm" dateonly2>
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -131,7 +131,7 @@
 						<b>유효기간(시작일)</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penExpiStDtm" value="<?=$data["penExpiDtm"][0]?>" class="form-control input-sm" dateonly>
+						<input type="text" name="penExpiStDtm" value="<?=$data["penExpiDtm"][0]?>" class="form-control input-sm" dateonly2>
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -178,7 +178,7 @@
 				
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
-						<b>휴대전화</b>
+						<b>휴대폰</b>
 					</label>
 					<div class="col-sm-3">
 						<input type="text" name="penConNum" value="<?=$data["penConNum"]?>" class="form-control input-sm">
@@ -240,7 +240,7 @@
 						<b>생년월일</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penProBirth" value="<?=$data["penProBirth"]?>" class="form-control input-sm" dateonly>
+						<input type="text" name="penProBirth" value="<?=$data["penProBirth"]?>" class="form-control input-sm" dateonly2>
 					</div>
 				</div>
 				
@@ -278,7 +278,7 @@
 				
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
-						<b>휴대전화</b>
+						<b>휴대폰</b>
 					</label>
 					<div class="col-sm-3">
 						<input type="text" name="penProConNum" value="<?=$data["penProConNum"]?>" class="form-control input-sm">
@@ -439,10 +439,15 @@
 				dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
 				showMonthAfterYear: true,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				yearRange : "c-150:c+10"
 			});
 			
-			$("input:text[dateonly]").datepicker();
+			$("input:text[dateonly]").datepicker({});
+			
+			$("input:text[dateonly2]").datepicker({
+				maxDate : "<?=date("Y-m-d")?>"
+			});
 			$("#zipAddrPopupWrap").css("opacity", 1);
 			$("#zipAddrPopupWrap").hide();
 			

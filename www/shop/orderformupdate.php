@@ -1298,6 +1298,26 @@ if($is_member && $od_b_name) {
 			");
 		} else {
 			if(!$deliveryTotalCnt){
+				$sendData2 = [];
+				$sendData2["uuid"] = $res["data"]["uuid"];
+				$sendData2["penOrdId"] = $res["data"]["penOrdId"];
+				
+				$oCurl = curl_init();
+				curl_setopt($oCurl, CURLOPT_PORT, 9001);
+				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
+				curl_setopt($oCurl, CURLOPT_POST, 1);
+				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
+				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+				$res2 = curl_exec($oCurl);
+				$res2 = json_decode($res2, true);
+				curl_close($oCurl);
+				
+				for($i = 0; $i < count($res2["data"]); $i++){
+					$productList[$i]["stoId"] = $res2["data"][$i]["stoId"];
+				}
+				
 				$sendData = [];
 				$sendData["usrId"] = $member["mb_id"];
 

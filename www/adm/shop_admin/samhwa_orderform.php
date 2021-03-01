@@ -2448,8 +2448,8 @@ $(document).ready(function() {
 					if(next_step_val == "완료"){
 						if(!$(prodBarNumItem[i]).val()){
 //							alert("바코드를 입력해주시길 바랍니다.");
-							changeStatus = false;
-							return false;
+//							changeStatus = false;
+//							return false;
 						}
 					}
 					prodBarNum += (prodBarNum) ? "," : "";
@@ -2502,9 +2502,9 @@ $(document).ready(function() {
 				delYn = "N";
 				$.each(stoldList, function(key, value){
 					if(!$("." + value.stoId).val()){
-						changeStatus = false;
+//						changeStatus = false;
 //						alert("바코드를 입력해주시길 바랍니다.");
-						return false;
+//						return false;
 					}
 				});
 			}
