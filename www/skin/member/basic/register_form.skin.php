@@ -223,6 +223,20 @@ add_javascript(G5_POSTCODE_JS, 0);
 					</div>
 				</div>
 			<?php }  ?>
+			
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label" for="mb_entConAcc01"><b>기타 협약사항1</b></label>
+					<div class="col-sm-8">
+						<textarea name="mb_entConAcc01" id="mb_entConAcc01" class="form-control input-sm" style="height: 80px;"><?=$member["mb_entConAcc01"]?></textarea>
+					</div>
+				</div>
+				
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label" for="mb_entConAcc02"><b>기타 협약사항2</b></label>
+					<div class="col-sm-8">
+						<textarea name="mb_entConAcc02" id="mb_entConAcc02" class="form-control input-sm" style="height: 80px;"><?=$member["mb_entConAcc02"]?></textarea>
+					</div>
+				</div>
 
 		</div>
 	</div>

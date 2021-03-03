@@ -1254,6 +1254,13 @@ if($is_member && $od_b_name) {
 
 	# 주문신청
 	if($_POST["penId"]){
+		
+		sql_query("
+			UPDATE g5_shop_order SET
+				od_del_yn = 'Y'
+			WHERE od_id = '{$od_id}'
+		");
+		
 		$_SESSION["productList{$od_id}"] = $productList;
 		
 		$sendData = [];
@@ -1276,6 +1283,8 @@ if($is_member && $od_b_name) {
 		$sendData["prods"] = $productList;
 		$sendData["documentId"] = ($_POST["penTypeCd"] == "04") ? "THK101_THK102_THK001_THK002_THK003" : "THK001_THK002_THK003";
 		$sendData["eformType"] = ($_POST["penTypeCd"] == "04") ? "21" : "00";
+		$sendData["entConAcco1"] = $_POST["entConAcc01"];
+		$sendData["entConAcco2"] = $_POST["entConAcc02"];
 		$sendData["returnUrl"] = G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}";
 
 		$oCurl = curl_init();
@@ -1289,6 +1298,9 @@ if($is_member && $od_b_name) {
 		$res = curl_exec($oCurl);
 		$res = json_decode($res, true);
 		curl_close($oCurl);
+		
+//		echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
+//		return false;
 
 		if($res["errorYN"] == "Y"){
 			alert($res["message"], "/");
@@ -1451,6 +1463,7 @@ if($is_member && $od_b_name) {
 				sql_query("
 					UPDATE g5_shop_order SET
 						  od_delivery_yn = 'N'
+						, od_stock_insert_yn = 'Y'
 						, staOrdCd = '01'
 						, od_status = '완료'
 					WHERE od_id = '{$od_id}'

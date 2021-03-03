@@ -6,6 +6,14 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
     return;
 }
 
+if($_SESSION["productList{$_GET["od_id"]}"] && $_GET["result"] == "Y"){ 
+	sql_query("
+		UPDATE g5_shop_order SET
+			od_del_yn = 'N'
+		WHERE od_id = '{$_GET["od_id"]}'
+	");
+}
+
 $od_id = isset($od_id) ? preg_replace('/[^A-Za-z0-9\-_]/', '', strip_tags($od_id)) : 0;
 
 if( isset($_GET['ini_noti']) && !isset($_GET['uid']) ){
@@ -21,7 +29,7 @@ if (!$is_member) {
         alert("직접 링크로는 주문서 조회가 불가합니다.\\n\\n주문조회 화면을 통하여 조회하시기 바랍니다.", G5_SHOP_URL);
 }
 
-$sql = "select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
+$sql = "select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' AND od_del_yn = 'N' ";
 if($is_member && !$is_admin)
     $sql .= " and mb_id = '{$member['mb_id']}' ";
 $od = sql_fetch($sql);
@@ -35,6 +43,7 @@ $settle_case = $od['od_settle_case'];
 // 주문상품
 $item = array();
 $arr_it_orderform = array();
+$deliveryItem = array();
 
 $st_count1 = $st_count2 = $st_count3 = 0;
 $custom_cancel = false; // 결제완료 전 결제 취소
@@ -66,13 +75,21 @@ $sql = " select a.it_id,
 				a.ct_stock_qty,
 				b.it_img1,
 				a.ordLendStrDtm,
-				a.ordLendEndDtm
+				a.ordLendEndDtm,
+				b.it_rental_price,
+				a.ct_delivery_yn,
+				a.ct_delivery_company,
+				a.ct_delivery_num
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$od_id'
 		  group by a.it_id, a.ct_uid
 		  order by a.ct_id ";
 $result = sql_query($sql);
 for($i=0; $row=sql_fetch_array($result); $i++) {
+	
+	if($row["ct_delivery_yn"] == "Y"){
+		$deliveryItem[$i] = $row;
+	}
 
 	$item[$i] = $row;
 	$item[$i]["thumbnail"] = $row["it_img1"];
@@ -178,6 +195,10 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 		// 구매회원 아이디 체크
 		if($od['mb_id'] && $od['mb_id'] != $opt['mb_id']) {
 			sql_query(" update {$g5['g5_shop_cart_table']} set mb_id = '{$od['mb_id']}' where od_id = '{$od_id}' and ct_id = '{$opt['ct_id']}' ", false);
+		}
+		
+		if($row["ct_delivery_yn"] == "Y"){
+			$deliveryItem[$i]["opt"][$k] = $opt;
 		}
 
 		$item[$i]['opt'][$k] = $opt;
@@ -487,7 +508,7 @@ if($is_inquiryview_sub) {
 
 <?php 
 
-	if($_SESSION["productList{$_GET["od_id"]}"]){ 
+	if($_SESSION["productList{$_GET["od_id"]}"] && $_GET["result"] == "Y"){ 
 		$insertProds = addslashes(htmlspecialchars(json_encode($_SESSION["productList{$_GET["od_id"]}"])));
 																					  
 		sql_query("

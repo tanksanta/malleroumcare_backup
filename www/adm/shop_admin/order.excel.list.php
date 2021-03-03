@@ -40,8 +40,7 @@
 			}
 			
 			$rows[] = [ 
-				" {$od["od_id"]} ",
-				date("Y-m-d", strtotime($od["od_time"])),
+				date("Y-m-d", strtotime($od["od_time"]))."-".($i),
 				$it_name,
 				$it["ct_qty"],
 				$od["od_name"],
@@ -52,10 +51,10 @@
 		}
     }
 
-    $headers = array("주문번호", "일자", "품목명[규격]", "수량", "성함(상호명)", "배송처", "연락처", "적요");
+    $headers = array("일자-No.", "품목명[규격]", "수량", "성함(상호명)", "배송처", "연락처", "적요");
     $data = array_merge(array($headers), $rows);
     
-    $widths  = array(20, 15, 50, 10, 30, 50, 30, 50);
+    $widths  = array(20, 50, 10, 30, 50, 30, 50);
     $header_bgcolor = 'FFABCDEF';
     $last_char = column_char(count($headers) - 1);
 

@@ -477,15 +477,15 @@ $pg_anchor .='</ul>';
 			<th scope="row"><label for="it_sale_cnt">묶음할인(쇼핑몰전용)</label></th>
 			<td>
 				<input type="text" name="it_sale_cnt" value="<?=$it["it_sale_cnt"]?>" id="it_sale_cnt" class="frm_input" size="2"> 개 이상
-				<input type="text" name="it_sale_percent" value="<?=$it["it_sale_percent"]?>" id="it_sale_percent" class="frm_input" size="8"> 원 할인<br>
+				<input type="text" name="it_sale_percent" value="<?=$it["it_sale_percent"]?>" id="it_sale_percent" class="frm_input" size="8"> 원<br>
 				<input type="text" name="it_sale_cnt_02" value="<?=$it["it_sale_cnt_02"]?>" id="it_sale_cnt_02" class="frm_input" size="2"> 개 이상
-				<input type="text" name="it_sale_percent_02" value="<?=$it["it_sale_percent_02"]?>" id="it_sale_percent_02" class="frm_input" size="8"> 원 할인<br>
+				<input type="text" name="it_sale_percent_02" value="<?=$it["it_sale_percent_02"]?>" id="it_sale_percent_02" class="frm_input" size="8"> 원<br>
 				<input type="text" name="it_sale_cnt_03" value="<?=$it["it_sale_cnt_03"]?>" id="it_sale_cnt_03" class="frm_input" size="2"> 개 이상
-				<input type="text" name="it_sale_percent_03" value="<?=$it["it_sale_percent_03"]?>" id="it_sale_percent_03" class="frm_input" size="8"> 원 할인<br>
+				<input type="text" name="it_sale_percent_03" value="<?=$it["it_sale_percent_03"]?>" id="it_sale_percent_03" class="frm_input" size="8"> 원<br>
 				<input type="text" name="it_sale_cnt_04" value="<?=$it["it_sale_cnt_04"]?>" id="it_sale_cnt_04" class="frm_input" size="2"> 개 이상
-				<input type="text" name="it_sale_percent_04" value="<?=$it["it_sale_percent_04"]?>" id="it_sale_percent_04" class="frm_input" size="8"> 원 할인<br>
+				<input type="text" name="it_sale_percent_04" value="<?=$it["it_sale_percent_04"]?>" id="it_sale_percent_04" class="frm_input" size="8"> 원<br>
 				<input type="text" name="it_sale_cnt_05" value="<?=$it["it_sale_cnt_05"]?>" id="it_sale_cnt_05" class="frm_input" size="2"> 개 이상
-				<input type="text" name="it_sale_percent_05" value="<?=$it["it_sale_percent_05"]?>" id="it_sale_percent_05" class="frm_input" size="8"> 원 할인<br>
+				<input type="text" name="it_sale_percent_05" value="<?=$it["it_sale_percent_05"]?>" id="it_sale_percent_05" class="frm_input" size="8"> 원<br>
 			</td>
 		</tr>
 		<tr>
@@ -532,6 +532,12 @@ $pg_anchor .='</ul>';
 				<td>
 					<?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
 					<input type="text" name="it_cust_price" value="<?php echo $it['it_cust_price']; ?>" id="it_cust_price" class="frm_input importantBorder" size="8"> 원
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="it_rental_price">대여금액(월)</label></th>
+				<td>
+					<input type="text" name="it_rental_price" value="<?php echo $it['it_rental_price']; ?>" id="it_rental_price" class="frm_input" size="8"> 원
 				</td>
 			</tr>
 		<?php } // 관리자 끝 ?>
@@ -2316,11 +2322,9 @@ function fitemformcheck(f)
         sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
         sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
         sendData.append("prodSupPrice", $("#it_cust_price").val()); //  공급가격
-			if($("#ca_id").val().substr(0, 2) == "20"){
-				sendData.append("rentalPrice", $("#it_price").val()); //  대여가격
-			} else {
-				sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
-			}
+		 sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
+		 sendData.append("rentalPrice", $("#it_rental_price").val()); //  대여가격(1일)
+		 sendData.append("rentalPriceExtn", $("#it_rental_price").val()); //  대여연장가격(1일)
         sendData.append("prodStateCode", "03"); // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
         sendData.append("supId", $("#supId").val()); //  공급자아이디
         sendData.append("itemId", $("#it_thezone").val()); //  아이템 아이디
@@ -2490,11 +2494,9 @@ async function frmUpdate(){
 	sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
 	sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
 	sendData.append("prodSupPrice", $("#it_cust_price").val()); //  공급가격
-	if($("#ca_id").val().substr(0, 2) == "20"){
-		sendData.append("rentalPrice", $("#it_price").val()); //  대여가격
-	} else {
-		sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
-	}
+	sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
+	sendData.append("rentalPrice", $("#it_rental_price").val()); //  대여가격(1일)
+	sendData.append("rentalPriceExtn", $("#it_rental_price").val()); //  대여연장가격(1일)
 	sendData.append("prodStateCode", "03"); // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
 	sendData.append("supId", $("#supId").val()); //  공급자아이디
 	sendData.append("itemId", $("#it_thezone").val()); //  아이템 아이디

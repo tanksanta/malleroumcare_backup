@@ -199,6 +199,8 @@ if ($fr_date && $to_date) {
     $where[] = " {$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
 }
 
+$where[] = " od_del_yn = 'N' ";
+
 if ($where) {
     $where2 = $where;
 }

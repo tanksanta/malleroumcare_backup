@@ -163,10 +163,12 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			<?php
 				$prodMemo = ($prodMemo) ? $prodMemo : $item[$i]["prodMemo"];
 				$ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($item[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($item[$i]["ordLendEndDtm"]));
+	
+				$rowspan = (substr($item[$i]["ca_id"], 0, 2) == 20) ? 3 : 1;
 			?>
 			<?php if($k == 0) { ?>
 				<tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
-					<td class="text-center" style="vertical-align: middle;" rowspan="<?php echo ($item[$i]['rowspan'] + 1); ?>">
+					<td class="text-center" style="vertical-align: middle;" rowspan="<?php echo ($item[$i]['rowspan'] + $rowspan); ?>">
 						<div class="item-img">
 							<img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';" style="width: 50px; height: 50px;">
 							<div class="item-type"><?php echo $item[$i]['pt_it']; ?></div>
@@ -261,10 +263,18 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 		<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
 			<tr>
 				<td colspan="6">
-					<b>대여기간 : </b>
-					<?=$ordLendDtm?>
+					<b>대여금액(월) : </b>
+					<?=number_format($item[$i]["it_rental_price"])?>원
 				</td>
 			</tr>
+			<?php if($od["recipient_yn"] == "Y"){ ?>
+				<tr>
+					<td colspan="6">
+						<b>대여기간 : </b>
+						<?=$ordLendDtm?>
+					</td>
+				</tr>
+			<?php } ?>
 		<?php } ?>
 			<tr>
 				<td colspan="6">
@@ -366,6 +376,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			<th scope="row">주문일시</th>
 			<td><?php echo $od['od_time']; ?></td>
 		</tr>
+		<?php if($od["od_stock_insert_yn"] == "N"){ ?>
 		<tr>
 			<th scope="row">결제방식</th>
 			<td><?php echo ($easy_pay_name ? $easy_pay_name.'('.$od['od_settle_case'].')' : check_pay_name_replace($od['od_settle_case']) ); ?></td>
@@ -441,6 +452,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 					</td>
 			</tr>
 		<?php } ?>
+		<?php } ?>
 		</tbody>
 		</table>
 	</div>
@@ -479,6 +491,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	</div>
 	<!-- 수급자 입력 시작 -->
 
+<?php if($od['od_penId']){ ?>
 	<div class="point_box">
 		<div class="top_area">
 			<p>수급자 정보</p>
@@ -489,7 +502,6 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 		<div class="point_desc_info">
 
 			<ul>
-				<?php if($od['od_penId']){ ?>
 				<li>
 					<p>수급자</p>
 					<p><?php echo get_text($od['od_penNm']); ?></p>
@@ -518,16 +530,14 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 					<p>주소</p>
 					<p><?php echo get_text($od['od_penAddr']); ?></p>
 				</li>
-				<?php }else{ ?>
-				수급자 정보가 없습니다.
-				<?php } ?>
 			</ul>
 		</div>
 	</div>
-
+<?php } ?>
 
 	<!-- 수급자 입력 끝 -->
 
+	<?php if($od["od_stock_insert_yn"] == "N"){ ?>
 	<div class="panel panel-default">
 		<div class="panel-heading"><strong>  받으시는 분</strong></div>
 		<div class="table-responsive">
@@ -567,15 +577,56 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			</table>
 		</div>
 	</div>
+	<?php } ?>
 
-	<div class="panel panel-default">
+	<?php if($od["od_stock_insert_yn"] == "N" && $deliveryItem){ ?>
+	<style>
+		#panelDeliveryList th { padding: 10px !important; }
+		#panelDeliveryList td { padding: 10px !important; }
+	</style>
+	<div class="panel panel-default" id="panelDeliveryList">
 		<div class="panel-heading"><strong><i class="fa fa-truck fa-lg"></i> 배송정보</strong></div>
 		<div class="table-responsive">
 			<table class="div-table table bsk-tbl bg-white">
-			<col width="120">
+			<colgroup>
+				<col width="60%">
+				<col width="20%">
+				<col width="20%">
+			</colgroup>
+			<thead>
+				<tr>
+					<th scope="row">상품명</th>
+					<th scope="row">택배사</th>
+					<th scope="row">송장번호</th>
+				</tr>
+			</thead>
 			<tbody>
+				<?php 
+					for($i = 0; $i < count($deliveryItem); $i++){ 
+						$options = $deliveryItem[$i]["opt"];
+
+						for($k = 0; $k < count($options); $k++){
+				?>
+					<tr>
+						<td>
+							<?=stripslashes($deliveryItem[$i]["it_name"])?>
+							<?php if($deliveryItem[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
+								(<?=$options[$k]["ct_option"]?>)
+							<?php } ?>
+						</td>
+						<td>
+						<?php foreach($delivery_companys as $data){ ?>
+							<?=($deliveryItem[$i]["ct_delivery_company"] == $data["val"]) ? $data["name"] : ""?>
+						<?php } ?>
+						</td>
+						<td><?=$deliveryItem[$i]["ct_delivery_num"]?></td>
+					</tr>
+				<?php } ?>
+			<?php } ?>
+			
 			<?php if ($od['od_delivery_text'] || $od['od_delivery_price'] || $od['od_delivery_company']) {?>
 				<?php if($od['od_delivery_company']) { ?>
+<!--
 				<tr>
 					<th scope="row">배송회사</th>
 					<td>
@@ -587,20 +638,26 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						<?php echo get_delivery_inquiry($od['od_delivery_company'], $od['od_invoice'], 'dvr_link'); ?>
 					</td>
 				</tr>
+-->
 				<?php } ?>
 				<?php if($od['od_delivery_place']) { ?>
+<!--
 					<tr>
 						<th scope="row">영업소</th>
 						<td><?php echo $od['od_delivery_place']; ?></td>
 					</tr>
+-->
 				<?php } ?>
 				<?php if($od['od_delivery_tel']) { ?>
+<!--
 					<tr>
 						<th scope="row">전화번호</th>
 						<td><?php echo $od['od_delivery_tel']; ?></td>
 					</tr>
+-->
 				<?php } ?>
 				<?php if($od['od_delivery_text']) { ?>
+<!--
 				<tr>
 					<th scope="row">운송장번호</th>
 					<td>
@@ -623,6 +680,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 
 					</td>
 				</tr>
+-->
 				<?php } ?>
 				<?php if($od['od_delivery_price']) { ?>
 				<!--
@@ -641,16 +699,20 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				</tr>
 				-->
 			<?php }	else { ?>
+<!--
 				<tr>
 					<td>아직 배송하지 않았거나 배송정보를 입력하지 못하였습니다.</td>
 				</tr>
+-->
 			<?php }	?>
 			</tbody>
 			</table>
 		</div>
 	</div>
 <?php } ?>
+<?php } ?>
 
+<?php if($od["od_stock_insert_yn"] == "N"){ ?>
 <div class="panel panel-primary">
 	<div class="panel-heading"><strong><i class="fa fa-money fa-lg"></i> 결제합계</strong></div>
 	<div class="table-responsive">
@@ -675,6 +737,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 		</table>
 	</div>
 </div>
+<?php } ?>
 
 <?php if ($cancel_price == 0) { // 취소한 내역이 없다면 ?>
     <?php

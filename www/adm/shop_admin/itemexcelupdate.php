@@ -282,11 +282,12 @@ if($_FILES['excelfile']['tmp_name']) {
 		$thisDataList["prodPayCode"] = $prodPayCode;
 		$thisDataList["prodSupYn"] = $prodSupYn;
 		$thisDataList["prodSupPrice"] = $it_cust_price;
-		if(substr($ca_id, 0, 2) == "20"){
-			$thisDataList["rentalPrice"] = $it_price;
-		} else {
-			$thisDataList["prodOflPrice"] = $it_price;
-		}
+		$thisDataList["prodOflPrice"] = $it_price;
+//		if(substr($ca_id, 0, 2) == "20"){
+//			$thisDataList["rentalPrice"] = $it_price;
+//		} else {
+//			$thisDataList["prodOflPrice"] = $it_price;
+//		}
 		$thisDataList["prodStateCode"] = "03";
 		$thisDataList["supId"] = $supId;
 		$thisDataList["itemId"] = $itemId;

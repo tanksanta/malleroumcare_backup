@@ -413,6 +413,8 @@ $ProdPayCode = $_POST["prodPayCode"];
 $_POST["it_delivery_cnt"] = ($_POST["it_delivery_cnt"]) ? $_POST["it_delivery_cnt"] : 0;
 $_POST["it_delivery_price"] = ($_POST["it_delivery_price"]) ? $_POST["it_delivery_price"] : 0;
 
+$it_rental_price = ($_POST["it_rental_price"]) ? $_POST["it_rental_price"] : 0;
+
 $sql_common = " ca_id               = '$ca_id',
                 ca_id2              = '$ca_id2',
                 ca_id3              = '$ca_id3',
@@ -440,6 +442,7 @@ $sql_common = " ca_id               = '$ca_id',
                 it_explan2          = '".strip_tags(clean_xss_attributes(trim($_POST['it_explan'])))."',
                 it_mobile_explan    = '$it_mobile_explan',
                 it_reference        = '$it_reference',
+                it_rental_price       = '$it_rental_price',
                 it_cust_price       = '$it_cust_price',
                 it_price            = '$it_price',
                 it_price_partner    = '$it_price_partner',

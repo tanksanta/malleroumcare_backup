@@ -60,6 +60,9 @@ $(document).ready(function() {
 }
 </style>
 <?php } ?>
+<style>
+	.mo_top > .modeBtn { position: absolute; font-weight: bold; font-size: 16px; top: 32px; right: 70px; }
+</style>
 
 <div class="btn_top_scroll">
 	<a onclick="scrollToTop()"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_scroll.png" alt=""></a>
@@ -70,6 +73,13 @@ $(document).ready(function() {
 		<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
 	</div>
 
+	<?php if($member["mb_level"] == "3"){ ?>
+		<?php if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
+			<a href="/?viewType=basic" class="modeBtn">구매모드</a>
+		<?php } else { ?>
+			<a href="/?viewType=adm" class="modeBtn">급여안내모드</a>
+		<?php } ?>
+	<?php } ?>
 	<img src="<?=THEMA_URL?>/assets/img/btn_mo_menu.png" alt="" class="header-hamburger-btn">
 </div>
 

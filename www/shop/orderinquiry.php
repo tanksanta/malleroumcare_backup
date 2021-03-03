@@ -13,11 +13,11 @@ $od_pwd = get_encrypt_string($od_pwd);
 // 회원인 경우
 if ($is_member)
 {
-    $sql_common = " from {$g5['g5_shop_order_table']} where mb_id = '{$member['mb_id']}' ";
+    $sql_common = " from {$g5['g5_shop_order_table']} where mb_id = '{$member['mb_id']}' AND od_del_yn = 'N' ";
 }
 else if ($od_id && $od_pwd) // 비회원인 경우 주문서번호와 비밀번호가 넘어왔다면
 {
-    $sql_common = " from {$g5['g5_shop_order_table']} where od_id = '$od_id' and od_pwd = '$od_pwd' ";
+    $sql_common = " from {$g5['g5_shop_order_table']} where od_id = '$od_id' and od_pwd = '$od_pwd' AND od_del_yn = 'N' ";
 }
 else // 그렇지 않다면 로그인으로 가기
 {
@@ -48,7 +48,7 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 // 비회원 주문확인의 경우 바로 주문서 상세조회로 이동
 if (!$is_member)
 {
-    $sql = " select od_id, od_time, od_ip from {$g5['g5_shop_order_table']} where od_id = '$od_id' and od_pwd = '$od_pwd' ";
+    $sql = " select od_id, od_time, od_ip from {$g5['g5_shop_order_table']} where od_id = '$od_id' and od_pwd = '$od_pwd' AND od_del_yn = 'N' ";
     $row = sql_fetch($sql);
     if ($row['od_id']) {
         $uid = md5($row['od_id'].$row['od_time'].$row['od_ip']);
@@ -65,6 +65,7 @@ $sql = " select o.*, i.it_model, i.it_name
   		  LEFT JOIN g5_shop_cart as c ON o.od_id = c.od_id
 		  LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
 		  where o.mb_id = '{$member['mb_id']}'
+		  AND o.od_del_yn = 'N'
 		  order by o.od_id desc
 		  $limit ";
 $result = sql_query($sql);

@@ -86,6 +86,11 @@ $tot_sell_discount = 0;
 $goods = $goods_it_id = "";
 $goods_count = -1;
 
+# 210303 수급자조회 컨트롤
+$orderItemCnt = 0;
+$rentalItemCnt = 0;
+$itemPenIdStatus = true;
+
 // $s_cart_id 로 현재 장바구니 자료 쿼리
 $sql = " select a.ct_id,
 				a.it_id,
@@ -131,6 +136,12 @@ $item = array();
 $arr_it_orderform = array();
 
 for ($i=0; $row=sql_fetch_array($result); $i++) {
+	
+	if(substr($row["ca_id"], 0, 2) == 20){
+		$rentalItemCnt++;
+	} else {
+		$orderItemCnt++;
+	}
 
 	// APMS : 비회원은 컨텐츠상품 구매않되도록 처리
 	if($is_guest && $row['pt_it'] == "2") {
@@ -907,6 +918,14 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 //			alert("결제등록요청 후 주문해 주십시오.");
 //			return false;
 //		}
+		
+		/* 210303 수급자주문 시 체크 */
+		if($("#order_submitCheckBox").length && $("#penId").val()){
+			if($("#order_submitCheckBox").css("display") == "none"){
+				$("#order_submitCheckBox").show();
+				return false;	
+			}
+		}
 
 		document.getElementById("display_pay_button").style.display = "none";
 		document.getElementById("show_progress").style.display = "block";
@@ -955,11 +974,13 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 				error_field(f.od_hope_date, "희망배송일을 선택하여 주십시오.");
 		}
 
-		check_field(f.od_b_name, "받으시는 분 이름을 입력하십시오.");
-		check_field(f.od_b_tel, "받으시는 분 전화번호를 입력하십시오.");
-		check_field(f.od_b_addr1, "주소검색을 이용하여 받으시는 분 주소를 입력하십시오.");
-		//check_field(f.od_b_addr2, "받으시는 분의 상세주소를 입력하십시오.");
-		check_field(f.od_b_zip, "받으시는 분의 우편번호를 입력하십시오.");
+		if(!$("#od_stock_insert_yn").prop("checked")){
+			check_field(f.od_b_name, "받으시는 분 이름을 입력하십시오.");
+			check_field(f.od_b_tel, "받으시는 분 전화번호를 입력하십시오.");
+			check_field(f.od_b_addr1, "주소검색을 이용하여 받으시는 분 주소를 입력하십시오.");
+			//check_field(f.od_b_addr2, "받으시는 분의 상세주소를 입력하십시오.");
+			check_field(f.od_b_zip, "받으시는 분의 우편번호를 입력하십시오.");
+		}
 
 		<?php } ?>
 		var od_settle_bank = document.getElementById("od_settle_bank");
@@ -1222,11 +1243,13 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 					error_field(f.od_hope_date, "희망배송일을 선택하여 주십시오.");
 			}
 
-			check_field(f.od_b_name, "받으시는 분 이름을 입력하십시오.");
-			check_field(f.od_b_tel, "받으시는 분 전화번호를 입력하십시오.");
-			check_field(f.od_b_addr1, "주소검색을 이용하여 받으시는 분 주소를 입력하십시오.");
-			//check_field(f.od_b_addr2, "받으시는 분의 상세주소를 입력하십시오.");
-			check_field(f.od_b_zip, "받으시는 분의 우편번호를 입력하십시요.");
+			if(!$("#od_stock_insert_yn").prop("checked")){
+				check_field(f.od_b_name, "받으시는 분 이름을 입력하십시오.");
+				check_field(f.od_b_tel, "받으시는 분 전화번호를 입력하십시오.");
+				check_field(f.od_b_addr1, "주소검색을 이용하여 받으시는 분 주소를 입력하십시오.");
+				//check_field(f.od_b_addr2, "받으시는 분의 상세주소를 입력하십시오.");
+				check_field(f.od_b_zip, "받으시는 분의 우편번호를 입력하십시요.");
+			}
 		<?php } ?>
 		var od_settle_bank = document.getElementById("od_settle_bank");
 		if (od_settle_bank) {
@@ -1337,6 +1360,14 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 				}
 			}
 
+		}
+	
+		/* 210303 수급자주문 시 체크 */
+		if($("#order_submitCheckBox").length && $("#penId").val()){
+			if($("#order_submitCheckBox").css("display") == "none"){
+				$("#order_submitCheckBox").show();
+				return false;	
+			}
 		}
 
 		var tot_price = od_price + send_cost + send_cost2 - send_coupon - temp_point;

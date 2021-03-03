@@ -77,7 +77,8 @@
 						<b>장기요양인정번호</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penLtmNum" class="form-control input-sm">
+						<span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
+						<input type="text" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);">
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -445,7 +446,7 @@
 				
 				var sendData = {
 					penNm : $(".register-form input[name='penNm']").val(),
-					penLtmNum : $(".register-form input[name='penLtmNum']").val(),
+					penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
 					penRecGraCd : $(".register-form select[name='penRecGraCd']").val(),
 					penGender : $(".register-form input[name='penGender']:checked").val(),
 					penBirth : $(".register-form input[name='penBirth']").val(),

@@ -38,6 +38,7 @@ if( function_exists('pg_setting_check') ){
     <?php } ?>
     <div class="right">
         <button id="deliveryExcelDownloadBtn">주문다운로드</button>
+        <button id="deliveryExcelDownloadBtn2">배송업로드 다운받기</button>
         <button id="deliveryExcelUploadBtn">배송정보 일괄 업로드</button>
         <button id="delivery_edi_return_all">송장리턴</button>
     </div>
@@ -222,6 +223,31 @@ var sub_menu = '<?php echo $sub_menu; ?>';
 var last_step = '';
 
 $( document ).ready(function() {
+	
+	$("#deliveryExcelDownloadBtn2").click(function(){
+		$("#excelForm").remove();
+		
+		var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
+		
+		var od_id = [];
+		var item = $("input[name='od_id[]']:checked");
+		
+		for(var i = 0; i < item.length; i++){
+			od_id.push($(item[i]).val());
+			
+			html += "<input type='hidden' name='od_id[]' value='" + $(item[i]).val() + "'>";
+		}
+		
+		html += "</form>";
+		
+		if(!od_id.length){
+			alert("선택된 주문내역이 존재하지 않습니다.");
+			return false;
+		}
+		
+		$("body").append(html);
+		$("#excelForm").submit();
+	});
 	
 	$(document).on("click", ".prodBarNumCntBtn", function(e){
 		e.preventDefault();

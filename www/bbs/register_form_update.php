@@ -121,7 +121,10 @@ if($w != "u"){
 			 mb_giup_addr1 = '{$resInfo["entAddr"]}',
 			 mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
 			 mb_email = '{$resInfo["entMail"]}',
-			mb_authCd = '{$resInfo["authCd"]}'";
+			mb_authCd = '{$resInfo["authCd"]}',
+			 mb_entConAcc01 = '{$_POST["mb_entConAcc01"]}',
+			 mb_entConAcc02 = '{$_POST["mb_entConAcc02"]}'
+			";
 
 	sql_query($sql);
 	if ($member != get_member($_SESSION['ss_mb_reg'])) {
@@ -191,7 +194,9 @@ if($w != "u"){
 				 mb_giup_zip2 = '{$resInfo["entZip02"]}',
 				 mb_giup_addr1 = '{$resInfo["entAddr"]}',
 				 mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-				 mb_email = '{$resInfo["entMail"]}'
+				 mb_email = '{$resInfo["entMail"]}',
+				 mb_entConAcc01 = '{$_POST["mb_entConAcc01"]}',
+				 mb_entConAcc02 = '{$_POST["mb_entConAcc02"]}'
 			WHERE mb_id = '{$resInfo["usrId"]}'
 		");
 		

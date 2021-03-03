@@ -10,7 +10,7 @@ include_once(G5_ADMIN_PATH.'/admin.head.php');
 //------------------------------------------------------------------------------
 // 주문서 정보
 //------------------------------------------------------------------------------
-$sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
+$sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' AND od_del_yn = 'N' ";
 $od = sql_fetch($sql);
 $prodList = [];
 $prodListCnt = 0;

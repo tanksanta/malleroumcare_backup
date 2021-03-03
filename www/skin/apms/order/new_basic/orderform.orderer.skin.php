@@ -284,6 +284,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
     </section>
     <!-- } 주문하시는 분 입력 끝 -->
 
+	<?php if($itemPenIdStatus){ ?>
 	<div id="order_recipientBox">
 		<div>
 			
@@ -291,12 +292,34 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 			
 		</div>
 	</div>
+	
+	<div id="order_submitCheckBox">
+		<div>
+			<div>
+				<div class="title">기타 협약사항1</div>
+				<textarea class="form-control input-sm" name="entConAcc01" id="entConAcc01"><?=$member["mb_entConAcc01"]?></textarea>
+
+				<div class="title">기타 협약사항2</div>
+				<textarea class="form-control input-sm" name="entConAcc02" id="entConAcc02"><?=$member["mb_entConAcc02"]?></textarea>
+				
+				<button type="button" onclick="forderform_check(this.form);">수급자 주문하기</button>
+			</div>
+		</div>
+	</div>
+	<?php } ?>
 
 	<style>
 		
 		#order_recipientBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 		#order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 		#order_recipientBox iframe { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
+		
+		#order_submitCheckBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+		#order_submitCheckBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+		#order_submitCheckBox > div > div { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; padding: 30px; text-align: center; overflow: auto; }
+		#order_submitCheckBox > div > div > .title { width: 100%; float: left; font-size: 16px; font-weight: bold; margin-bottom: 5px; text-align: left; }
+		#order_submitCheckBox > div > div > textarea { height: 100px; margin-bottom: 20px; resize: vertical; }
+		#order_submitCheckBox > div > div > button { width: 150px; height: 45px; background-color: #333; border: 0; color: #FFF; border-radius: 0; font-size: 18px; font-weight: bold; }
 		
 		#order_recipient { background-color: #333 !important; color: #FFF !important; }
 		#recipient_del { background-color: #DC3333 !important; color: #FFF !important; }
@@ -315,6 +338,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 		
 		@media (max-width : 750px){
 			#order_recipientBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+			#order_submitCheckBox > div > div { width: 100%; height: 100%; left: 0; margin-left: 0; }
 			#order_recipient { height: 30px; line-height: 28px; font-size: 12px; padding: 0 10px; border: 1px solid #999 !important; background-color: #999 !important; top: 0; right: 0; }
 			#recipient_del { height: 30px; line-height: 28px; font-size: 12px; padding: 0 10px; border: 1px solid #DC3333 !important; background-color: rgba(0, 0, 0, 0) !important; top: 0; right: 0; color: #DC3333 !important; margin-right: 100px !important; }
 		}
@@ -522,7 +546,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 							
 						$(subDom).css("position", "relative");
 						if(html){
-							$(subDom).append("<div class='recipientBox' style='float: right;' data-code='" + subKey + "'><label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0;' data-type='use' checked> 재고소진 : </label> <select style='margin-top: -3px;'>" + html + "</select> <label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new'> 신규주문</label></div>");
+							$(subDom).append("<div class='recipientBox' style='float: right; display: <?=($rentalItemCnt) ? "none" : "block"?>;' data-code='" + subKey + "'><label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0;' data-type='use' checked> 재고소진 : </label> <select style='margin-top: -3px;'>" + html + "</select> <label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new'> 신규주문</label></div>");
 						} else {
 							$(subDom).append("<div class='recipientBox' style='float: right; display: none;' data-code='" + subKey + "'><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new' checked> 신규주문</label></div>");
 						}
@@ -578,6 +602,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 			$("#display_pay_button > input").val("수급자 주문하기");
 			$("#show_pay_btn > input").val("수급자 주문하기");
 			$(".stockCntStatusDom").show();
+			$("#sod_frm_taker").show();
+			$("#sod_frm_pay").show();
 			$(".ordLendFrm").show();
 			
 			var item = $(".ordLendDtmInput");
@@ -679,8 +705,12 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				$(".barList input").val("");
 				
 				if($(this).prop("checked")){
+					$("#sod_frm_taker").hide();
+					$("#sod_frm_pay").hide();
 					$(".barList input[type='hidden']").attr("type", "text");
 				} else {
+					$("#sod_frm_taker").show();
+					$("#sod_frm_pay").show();
 					$(".barList input[type='text']").attr("type", "hidden");
 				}
 			});
@@ -833,6 +863,11 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						<?php if($optionCntList[$item[$i]["it_id"]][$ii] > $iii){ ?>
 							<input type="hidden" class="form-control input-sm prodStockBarBox<?=$ii?> prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
 						<?php } else { ?>
+						<?php
+							if($rentalItemCnt){
+								$itemPenIdStatus = false;
+							}
+						?>
 							<input type="hidden" class="form-control input-sm prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
 						<?php } ?>
 				<?php
@@ -845,6 +880,10 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				</td>
 			</tr>
 			<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
+				<tr class="tr-line">
+					<td class="text-center" style="vertical-align: middle;"><span style="font-weight: bold; font-size: 12px;">대여금액(월)</span></td>
+					<td colspan="7"><?=number_format($item[$i]["it_rental_price"])?>원</td>
+				</tr>
 				<tr class="tr-line ordLendFrm" style="display: none;">
 					<td class="text-center" style="vertical-align: middle;"><span style="font-weight: bold; font-size: 12px;">대여기간</span></td>
 					<td colspan="7">
@@ -1319,12 +1358,25 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
                         <script type="text/javascript">
                         $(function() {
                             // 수급자목록
+								$("#order_submitCheckBox").hide();
+								$("#order_submitCheckBox").css("opacity", 1);
+							
 								$("#order_recipientBox").hide();
 								$("#order_recipientBox").css("opacity", 1);
                             $("#order_recipient").on("click", function(e){
                                 e.preventDefault();
 								
+								<?php if($itemPenIdStatus){ ?>
 									$("#order_recipientBox").show();
+								<?php } else { ?>
+									<?php if($rentalItemCnt){ ?>
+										<?php if($orderItemCnt){ ?>
+											alert("판매/대여 상품 동시 주문 시 재고 주문이 포함된 경우 수급자 선택이 불가능합니다.");
+										<?php } else { ?>
+											alert("대여상품은 재고 확보 후 수급자 계약이 가능합니다.");
+										<?php } ?>
+									<?php } ?>
+								<?php } ?>
                             });
 
                             $('#od_delivery_type').change(function() {

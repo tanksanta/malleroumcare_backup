@@ -250,7 +250,8 @@ for($i=0; $i<$count; $i++) {
 				for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
 					if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
 						if($itSaleCnt < $itSaleCntList[$saleCnt]){
-							$ct_discount = $itSalePriceList[$saleCnt];
+							$ct_discount = $itSalePriceList[$saleCnt] * $ct_sale_qty;
+							$ct_discount = ($it['it_price'] * $ct_sale_qty) - $ct_discount;
 							$itSaleCnt = $itSaleCntList[$saleCnt];
 						}
 					}
@@ -320,7 +321,8 @@ for($i=0; $i<$count; $i++) {
 				for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
 					if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
 						if($itSaleCnt < $itSaleCntList[$saleCnt]){
-							$ct_discount = $itSalePriceList[$saleCnt];
+							$ct_discount = $itSalePriceList[$saleCnt] * $ct_sale_qty;
+							$ct_discount = ($it['it_price'] * $ct_sale_qty) - $ct_discount;
 							$itSaleCnt = $itSaleCntList[$saleCnt];
 						}
 					}
