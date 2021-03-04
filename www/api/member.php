@@ -9,6 +9,7 @@
 	header('Access-Control-Allow-Headers: Authorization, Content-Type,Accept, Origin');
 	header("Content-Type: application/json");
 
+
 	if(!$_POST){
 		$result["msg"] = "fail";
 		echo json_encode($result);
