@@ -457,6 +457,7 @@ $pg_anchor .='</ul>';
 
 <?php echo $pg_anchor; ?>
 
+
 <section id="anc_sitfrm_cost">
 	<h2 class="h2_frm">가격 및 재고</h2>
 	<div class="tbl_frm01 tbl_wrap">
@@ -471,6 +472,46 @@ $pg_anchor .='</ul>';
 			<th scope="row"><label for="it_price">판매가격</label></th>
 			<td>
 				<input type="text" name="it_price" value="<?php echo $it['it_price']; ?>" id="it_price" class="frm_input importantBorder" size="8"> 원
+			</td>
+		</tr>
+				<?php if($is_auth) { // 관리자일 때만 출력 ?>
+			<tr>
+				<th scope="row"><label for="it_cust_price">급여가</label></th>
+				<td>
+					<?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
+					<input type="text" name="it_cust_price" value="<?php echo $it['it_cust_price']; ?>" id="it_cust_price" class="frm_input importantBorder" size="8"> 원
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="it_rental_price">대여금액(월)</label></th>
+				<td>
+					<input type="text" name="it_rental_price" value="<?php echo $it['it_rental_price']; ?>" id="it_rental_price" class="frm_input" size="8"> 원
+				</td>
+			</tr>
+		<?php } // 관리자 끝 ?>
+		<tr>
+			<th scope="row"><label for="it_price_dealer">딜러 판매가격</label></th>
+			<td>
+				딜러&nbsp;&nbsp;
+				<input type="text" name="it_price_dealer" value="<?php echo $it['it_price_dealer']; ?>" id="it_price_dealer" class="frm_input" size="8"> 원
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<button type="button" class="btn_submit btn" id="dealer_btn">자동계산</button>
+				<select name="it_price_dealer_percent" id="it_price_dealer_percent">
+					<?php for($p=5;$p<=100;$p=$p+5) { ?>
+						<option value="<?php echo $p; ?>" <?php echo $p == 15 ? 'selected' : ''; ?>><?php echo $p; ?>%</option>
+					<?php } ?>
+				</select>
+
+				<br/>
+				우수딜러&nbsp;&nbsp;
+				<input type="text" name="it_price_dealer2" value="<?php echo $it['it_price_dealer2']; ?>" id="it_price_dealer2" class="frm_input" size="8"> 원
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<button type="button" class="btn_submit btn" id="dealer_btn2">자동계산</button>
+				<select name="it_price_dealer_percent2" id="it_price_dealer_percent2">
+					<?php for($p=5;$p<=100;$p=$p+5) { ?>
+						<option value="<?php echo $p; ?>" <?php echo $p == 15 ? 'selected' : ''; ?>><?php echo $p; ?>%</option>
+					<?php } ?>
+				</select>
 			</td>
 		</tr>
 		<tr>
@@ -501,46 +542,7 @@ $pg_anchor .='</ul>';
 				</select>
 			</td>
 		</tr>
-		<tr>
-			<th scope="row"><label for="it_price_dealer">딜러 판매가격</label></th>
-			<td>
-				딜러&nbsp;&nbsp;
-				<input type="text" name="it_price_dealer" value="<?php echo $it['it_price_dealer']; ?>" id="it_price_dealer" class="frm_input" size="8"> 원
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<button type="button" class="btn_submit btn" id="dealer_btn">자동계산</button>
-				<select name="it_price_dealer_percent" id="it_price_dealer_percent">
-					<?php for($p=5;$p<=100;$p=$p+5) { ?>
-						<option value="<?php echo $p; ?>" <?php echo $p == 15 ? 'selected' : ''; ?>><?php echo $p; ?>%</option>
-					<?php } ?>
-				</select>
 
-				<br/>
-				우수딜러&nbsp;&nbsp;
-				<input type="text" name="it_price_dealer2" value="<?php echo $it['it_price_dealer2']; ?>" id="it_price_dealer2" class="frm_input" size="8"> 원
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<button type="button" class="btn_submit btn" id="dealer_btn2">자동계산</button>
-				<select name="it_price_dealer_percent2" id="it_price_dealer_percent2">
-					<?php for($p=5;$p<=100;$p=$p+5) { ?>
-						<option value="<?php echo $p; ?>" <?php echo $p == 15 ? 'selected' : ''; ?>><?php echo $p; ?>%</option>
-					<?php } ?>
-				</select>
-			</td>
-		</tr>
-		<?php if($is_auth) { // 관리자일 때만 출력 ?>
-			<tr>
-				<th scope="row"><label for="it_cust_price">급여가</label></th>
-				<td>
-					<?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
-					<input type="text" name="it_cust_price" value="<?php echo $it['it_cust_price']; ?>" id="it_cust_price" class="frm_input importantBorder" size="8"> 원
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="it_rental_price">대여금액(월)</label></th>
-				<td>
-					<input type="text" name="it_rental_price" value="<?php echo $it['it_rental_price']; ?>" id="it_rental_price" class="frm_input" size="8"> 원
-				</td>
-			</tr>
-		<?php } // 관리자 끝 ?>
 		<tr>
 			<th scope="row"><label for="it_point_type">포인트 유형</label></th>
 			<td>
