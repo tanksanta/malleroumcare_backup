@@ -526,8 +526,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				var code = $(itemDom).attr("data-code");
 				var itemList = $(itemDom).find(".well li");
 				var discountCnt = 0;
-				var price = Number($("input[name='ct_price[" + key + "]']").val().replaceAll(",", ""));
-				var cnt = Number($("input[name='it_qty[" + key + "]']").val().replaceAll(",", ""));
+				var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
+				var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
 				
 				$(itemDom).find(".barList").find("input").attr("type", "text");
 				
@@ -594,6 +594,14 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				}
 			});
 			
+			if(!totalPrice){
+				$("input[name='od_send_cost']").val(0);
+				$(".delivery_cost_display > strong").text("0 원");
+			} else {
+				$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
+				$(".delivery_cost_display > strong").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
+			}
+			
 			$("input[name=od_price]").val(totalPrice);
 			$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 			calculate_order_price();
@@ -650,8 +658,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					var code = $(itemDom).attr("data-code");
 					var itemList = $(itemDom).find(".well li");
 					var discountCnt = 0;
-					var price = Number($("input[name='ct_price[" + key + "]']").val().replaceAll(",", ""));
-					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replaceAll(",", ""));
+					var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
+					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
 
 					$(itemDom).find(".barList").find("input").attr("type", "hidden");
 
@@ -685,6 +693,14 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
 					}
 				});
+				
+				if(!totalPrice){
+					$("input[name='od_send_cost']").val(0);
+					$(".delivery_cost_display > strong").text("0 원");
+				} else {
+					$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
+					$(".delivery_cost_display > strong").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
+				}
 
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
@@ -702,9 +718,11 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 			});
 			
 			$("#od_stock_insert_yn").change(function(){
+				var status = $(this).prop("checked");
+				var prodItemList = $("#sod_list tr.item");
 				$(".barList input").val("");
 				
-				if($(this).prop("checked")){
+				if(status){
 					$("#sod_frm_taker").hide();
 					$("#sod_frm_pay").hide();
 					$(".barList input[type='hidden']").attr("type", "text");
@@ -713,6 +731,43 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					$("#sod_frm_pay").show();
 					$(".barList input[type='text']").attr("type", "hidden");
 				}
+				
+				$.each(prodItemList, function(key, itemDom){
+					var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
+					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
+					
+					if(status){
+						price = 0;
+						$("input[name='it_discount[" + key + "]']").val(price);
+					} else {
+						$("input[name='it_discount[" + key + "]']").val(0);
+					}
+					
+					$("input[name='it_price[" + key + "]']").val(price);
+					$(itemDom).find(".price").text(number_format(price) + "원");
+				});
+				
+				if(status){
+					$("input[name='od_send_cost']").val(0);
+					$(".delivery_cost_display > strong").text("0 원");
+				} else {
+					$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
+					$(".delivery_cost_display > strong").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
+				}
+				
+				var it_price = $("input[name^=it_price]");
+				var it_discount = $("input[name^=it_discount]");
+				var totalPrice = 0;
+
+				$.each(it_price, function(key, dom){
+					if($(dom).closest("tr.item").attr("data-sup") == "Y"){
+						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+					}
+				});
+
+				$("input[name=od_price]").val(totalPrice);
+				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
+				calculate_order_price();
 			});
 		});
 	</script>
@@ -1037,8 +1092,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					var code = $(itemDom).attr("data-code");
 					var itemList = $(itemDom).find(".well li");
 					var discountCnt = 0;
-					var price = Number($("input[name='ct_price[" + key + "]']").val().replaceAll(",", ""));
-					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replaceAll(",", ""));
+					var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
+					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
 
 					$.each(itemList, function(subKey, subDom){
 						if($(itemDom).attr("data-sup") == "Y"){
@@ -1124,8 +1179,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					var code = $(itemDom).attr("data-code");
 					var itemList = $(itemDom).find(".well li");
 					var discountCnt = 0;
-					var price = Number($("input[name='ct_price[" + key + "]']").val().replaceAll(",", ""));
-					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replaceAll(",", ""));
+					var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
+					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
 
 					$.each(itemList, function(subKey, subDom){
 						if($(itemDom).attr("data-sup") == "Y"){

@@ -510,10 +510,12 @@ if($is_inquiryview_sub) {
 
 	if($_SESSION["productList{$_GET["od_id"]}"] && $_GET["result"] == "Y"){ 
 		$insertProds = addslashes(htmlspecialchars(json_encode($_SESSION["productList{$_GET["od_id"]}"])));
-																					  
+		$staOrdCd = "00";
+		$reload = false;
+		
 		sql_query("
 			UPDATE g5_shop_order SET
-				  eformYn = 'N'
+				  eformYn = 'Y'
 				, payMehCd = '0'
 				, prods = '{$insertProds}'
 				, recipient_yn = 'Y'
@@ -521,6 +523,73 @@ if($is_inquiryview_sub) {
 		");
 		
 		$orderData = sql_fetch("SELECT * FROM g5_shop_order WHERE od_id = '{$_GET["od_id"]}'");
+		
+		if(!$_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]){
+			$productList = $_SESSION["productList{$_GET["od_id"]}"];
+			
+			$sendData2 = [];
+			$sendData2["uuid"] = $_SESSION["uuid{$_GET["od_id"]}"];
+			$sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
+
+			$oCurl = curl_init();
+			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
+			curl_setopt($oCurl, CURLOPT_POST, 1);
+			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
+			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+			$res2 = curl_exec($oCurl);
+			$res2 = json_decode($res2, true);
+			curl_close($oCurl);
+
+			for($i = 0; $i < count($res2["data"]); $i++){
+				$productList[$i]["stoId"] = $res2["data"][$i]["stoId"];
+			}
+
+			$sendData = [];
+			$sendData["usrId"] = $member["mb_id"];
+
+			$sendData["penId"] = $orderData["penId"];
+			$sendData["penOrdId"] = $orderData["ordId"];
+			$sendData["delGbnCd"] = "";
+			$sendData["ordWayNum"] = "";
+			$sendData["delSerCd"] = "";
+			$sendData["ordNm"] = $orderData["od_b_name"];
+			$sendData["ordCont"] = ($orderData["od_b_tel"]) ? $orderData["od_b_tel"] : $orderData["od_b_hp"];
+			$sendData["ordMeno"] = $orderData["od_memo"];
+			$sendData["ordZip"] = "{$orderData["od_b_zip1"]}{$orderData["od_b_zip2"]}";
+			$sendData["ordAddr"] = $orderData["od_b_addr1"];
+			$sendData["ordAddrDtl"] = $orderData["od_b_addr2"];
+			$sendData["eformYn"] = "Y";
+			$sendData["staOrdCd"] = "03";
+			$sendData["lgsStoId"] = "";
+			$sendData["prods"] = $productList;
+
+			$oCurl = curl_init();
+			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/update");
+			curl_setopt($oCurl, CURLOPT_POST, 1);
+			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+			$res2 = curl_exec($oCurl);
+			$res2 = json_decode($res2, true);
+			curl_close($oCurl);
+
+			if($res2["errorYN"] == "N"){
+				$reload = true;
+				$staOrdCd = "03";
+				
+				sql_query("
+					UPDATE g5_shop_order SET
+						  staOrdCd = '03'
+						, od_status = '완료'
+					WHERE od_id = '{$orderData["od_id"]}'
+				");
+			}
+		}
 		
 		$sendData = [];
 		$sendData["usrId"] = $member["mb_id"];
@@ -535,15 +604,21 @@ if($is_inquiryview_sub) {
 		$sendData["ordZip"] = "{$orderData["od_b_zip1"]}{$orderData["od_b_zip2"]}";
 		$sendData["ordAddr"] = $orderData["od_b_addr1"];
 		$sendData["ordAddrDtl"] = $orderData["od_b_addr2"];
-		$sendData["eformYn"] = "N";
+		$sendData["eformYn"] = "Y";
 		$sendData["prods"] = $_SESSION["productList{$_GET["od_id"]}"];
-		$sendData["staOrdCd"] = "00";
+		$sendData["staOrdCd"] = $staOrdCd;
 
 		unset($_SESSION["productList{$_GET["od_id"]}"]);
+		unset($_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]);
+		unset($_SESSION["uuid{$_GET["od_id"]}"]);
+		unset($_SESSION["penOrdId{$_GET["od_id"]}"]);
 		
 ?>
 
 	<script type="text/javascript">
+		<?php if($reload){ ?>
+			window.location.reload();
+		<?php } ?>
 		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
 //		$.ajax({

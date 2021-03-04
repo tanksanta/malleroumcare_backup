@@ -6,8 +6,6 @@
 	$sendData = [];
 	$sendData["usrId"] = $member["mb_id"];
 	$sendData["entId"] = $member["mb_entId"];
-	$sendData["pageNum"] = 1;
-	$sendData["pageSize"] = 9999;
 	$sendData["appCd"] = "01";
 
 	if($_GET["penNm"]){

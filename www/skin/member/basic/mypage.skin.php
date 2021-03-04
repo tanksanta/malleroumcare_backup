@@ -228,7 +228,7 @@ if($header_skin)
 				$sql = " select o.*, i.it_model, i.it_name from {$g5['g5_shop_order_table']} as o 
 					LEFT JOIN g5_shop_cart as c ON o.od_id = c.od_id
 					LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
-					where o.mb_id = '{$member['mb_id']}' order by o.od_id desc limit 0, 5 ";
+					where o.mb_id = '{$member['mb_id']}' AND o.od_del_yn = 'N' order by o.od_id desc limit 0, 5 ";
 			    $result = sql_query($sql);
 			?>
 			<div class="table-responsive">

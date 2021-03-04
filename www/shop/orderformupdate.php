@@ -352,7 +352,7 @@ if($is_member && $send_cost > 0) {
 }
 
 if ((int)($send_cost - $tot_sc_cp_price) !== (int)($i_send_cost - $i_send_coupon)) {
-    die("Error..");
+//    die("Error..");
 }
 
 // 추가배송비가 상이함
@@ -599,7 +599,7 @@ else if ($od_settle_case == "KAKAOPAY")
 }
 else if ($od_settle_case == "월 마감 정산")
 {
-	$od_status = "입금";
+	$od_status = "준비";
 	$od_misu = 0;
 }
 else
@@ -1262,6 +1262,7 @@ if($is_member && $od_b_name) {
 		");
 		
 		$_SESSION["productList{$od_id}"] = $productList;
+		$_SESSION["deliveryTotalCnt{$od_id}"] = $deliveryTotalCnt;
 		
 		$sendData = [];
 		$sendData["usrId"] = $member["mb_id"];
@@ -1283,8 +1284,8 @@ if($is_member && $od_b_name) {
 		$sendData["prods"] = $productList;
 		$sendData["documentId"] = ($_POST["penTypeCd"] == "04") ? "THK101_THK102_THK001_THK002_THK003" : "THK001_THK002_THK003";
 		$sendData["eformType"] = ($_POST["penTypeCd"] == "04") ? "21" : "00";
-		$sendData["entConAcco1"] = $_POST["entConAcc01"];
-		$sendData["entConAcco2"] = $_POST["entConAcc02"];
+		$sendData["conAcco1"] = $_POST["entConAcc01"];
+		$sendData["conAcco2"] = $_POST["entConAcc02"];
 		$sendData["returnUrl"] = G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}";
 
 		$oCurl = curl_init();
@@ -1309,67 +1310,8 @@ if($is_member && $od_b_name) {
 				WHERE od_id = '{$od_id}'
 			");
 		} else {
-			if(!$deliveryTotalCnt){
-				$sendData2 = [];
-				$sendData2["uuid"] = $res["data"]["uuid"];
-				$sendData2["penOrdId"] = $res["data"]["penOrdId"];
-				
-				$oCurl = curl_init();
-				curl_setopt($oCurl, CURLOPT_PORT, 9001);
-				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
-				curl_setopt($oCurl, CURLOPT_POST, 1);
-				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
-				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-				$res2 = curl_exec($oCurl);
-				$res2 = json_decode($res2, true);
-				curl_close($oCurl);
-				
-				for($i = 0; $i < count($res2["data"]); $i++){
-					$productList[$i]["stoId"] = $res2["data"][$i]["stoId"];
-				}
-				
-				$sendData = [];
-				$sendData["usrId"] = $member["mb_id"];
-
-				$sendData["penId"] = $_POST["penId"];
-				$sendData["penOrdId"] = $res["data"]["penOrdId"];
-				$sendData["delGbnCd"] = "";
-				$sendData["ordWayNum"] = "";
-				$sendData["delSerCd"] = "";
-				$sendData["ordNm"] = $_POST["od_b_name"];
-				$sendData["ordCont"] = ($_POST["od_b_tel"]) ? $_POST["od_b_tel"] : $_POST["od_b_hp"];
-				$sendData["ordMeno"] = $_POST["od_memo"];
-				$sendData["ordZip"] = $_POST["od_b_zip"];
-				$sendData["ordAddr"] = $_POST["od_b_addr1"];
-				$sendData["ordAddrDtl"] = $_POST["od_b_addr2"];
-				$sendData["eformYn"] = "Y";
-				$sendData["staOrdCd"] = "03";
-				$sendData["lgsStoId"] = "";
-				$sendData["prods"] = $productList;
-				
-				$oCurl = curl_init();
-				curl_setopt($oCurl, CURLOPT_PORT, 9001);
-				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/update");
-				curl_setopt($oCurl, CURLOPT_POST, 1);
-				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-				$res2 = curl_exec($oCurl);
-				$res2 = json_decode($res2, true);
-				curl_close($oCurl);
-					
-				if($res2["errorYN"] == "N"){
-					sql_query("
-						UPDATE g5_shop_order SET
-							  staOrdCd = '03'
-							, od_status = '완료'
-						WHERE od_id = '{$od_id}'
-					");
-				}
-			}
+			$_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
+			$_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
 			
 			goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}");
 		}
@@ -1466,6 +1408,12 @@ if($is_member && $od_b_name) {
 						, od_stock_insert_yn = 'Y'
 						, staOrdCd = '01'
 						, od_status = '완료'
+					WHERE od_id = '{$od_id}'
+				");
+				
+				sql_query("
+					UPDATE g5_shop_cart SET
+						  ct_price = '0'
 					WHERE od_id = '{$od_id}'
 				");
 			} else {

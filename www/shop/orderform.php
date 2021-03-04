@@ -405,6 +405,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 	<input type="hidden" name="org_od_price"    value="<?php echo $tot_sell_price; ?>">
 	<input type="hidden" name="od_discount"    value="<?php echo $tot_sell_discount; ?>">
 	<input type="hidden" name="od_send_cost" value="<?php echo $send_cost; ?>">
+	<input type="hidden" name="od_send_cost_org" value="<?php echo $send_cost; ?>">
 	<input type="hidden" name="od_send_cost2" value="0">
 	<input type="hidden" name="item_coupon" value="0">
 	<input type="hidden" name="od_coupon" value="0">

@@ -9,6 +9,12 @@
 	header('Access-Control-Allow-Headers: Authorization, Content-Type,Accept, Origin');
 	header("Content-Type: application/json");
 
+	if(!$_POST){
+		$result["msg"] = "fail";
+		echo json_encode($result);
+		return false;
+	}
+
 	$member = sql_fetch("
 		SELECT *
 		FROM g5_member

@@ -233,20 +233,22 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<ul class="optionStockCntList" style="display: none;">
 				<li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
 			</ul>
-			<?php if($it["it_sale_cnt"]){ ?>
-				<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
-			<?php } ?>
-			<?php if($it["it_sale_cnt_02"]){ ?>
-				<p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_02"])?>원</p>
-			<?php } ?>
-			<?php if($it["it_sale_cnt_03"]){ ?>
-				<p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_03"])?>원</p>
-			<?php } ?>
-			<?php if($it["it_sale_cnt_04"]){ ?>
-				<p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_04"])?>원</p>
-			<?php } ?>
-			<?php if($it["it_sale_cnt_05"]){ ?>
-				<p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
+			<?php if($_COOKIE["viewType"] != "basic"){ ?>
+				<?php if($it["it_sale_cnt"]){ ?>
+					<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
+				<?php } ?>
+				<?php if($it["it_sale_cnt_02"]){ ?>
+					<p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_02"])?>원</p>
+				<?php } ?>
+				<?php if($it["it_sale_cnt_03"]){ ?>
+					<p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_03"])?>원</p>
+				<?php } ?>
+				<?php if($it["it_sale_cnt_04"]){ ?>
+					<p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_04"])?>원</p>
+				<?php } ?>
+				<?php if($it["it_sale_cnt_05"]){ ?>
+					<p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
+				<?php } ?>
 			<?php } ?>
 
 			<?php if ( $it['it_model'] ) { ?>
@@ -396,6 +398,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<tr><th scope="row">급여가</th><td><?php echo display_price($it['it_cust_price']); ?></td></tr>
 				<?php } // 시중가격 끝 ?>
 				<tr><td colspan="2" class="item-price">
+				<?php if($_COOKIE["viewType"] != "basic"){ ?>
 					<?php if($it["it_sale_cnt"]){ ?>
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
 					<?php } ?>
@@ -411,6 +414,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<?php if($it["it_sale_cnt_05"]){ ?>
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
 					<?php } ?>
+				<?php } ?>
 						<input type="hidden" id="it_price" value="<?php echo samhwa_price($it, THEMA_KEY); ?>">
 				</td></tr>
 			<?php } ?>
