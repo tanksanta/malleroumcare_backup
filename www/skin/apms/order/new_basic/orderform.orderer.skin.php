@@ -287,12 +287,12 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 	<?php if($itemPenIdStatus){ ?>
 	<div id="order_recipientBox">
 		<div>
-			
+
 			<iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php"></iframe>
-			
+
 		</div>
 	</div>
-	
+
 	<div id="order_submitCheckBox">
 		<div>
 			<div>
@@ -301,41 +301,42 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 
 				<div class="title">기타 협약사항2</div>
 				<textarea class="form-control input-sm" name="entConAcc02" id="entConAcc02"><?=$member["mb_entConAcc02"]?></textarea>
-				
+
 				<button type="button" onclick="forderform_check(this.form);">수급자 주문하기</button>
+				<button type="button" onclick="order_submitCheckBox_hide();">취소</button>
 			</div>
 		</div>
 	</div>
 	<?php } ?>
 
 	<style>
-		
+
 		#order_recipientBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 		#order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 		#order_recipientBox iframe { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
-		
+
 		#order_submitCheckBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 		#order_submitCheckBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 		#order_submitCheckBox > div > div { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; padding: 30px; text-align: center; overflow: auto; }
 		#order_submitCheckBox > div > div > .title { width: 100%; float: left; font-size: 16px; font-weight: bold; margin-bottom: 5px; text-align: left; }
 		#order_submitCheckBox > div > div > textarea { height: 100px; margin-bottom: 20px; resize: vertical; }
 		#order_submitCheckBox > div > div > button { width: 150px; height: 45px; background-color: #333; border: 0; color: #FFF; border-radius: 0; font-size: 18px; font-weight: bold; }
-		
+
 		#order_recipient { background-color: #333 !important; color: #FFF !important; }
 		#recipient_del { background-color: #DC3333 !important; color: #FFF !important; }
-		
+
 		.panel .top_area{position:relative;}
 		/*.panel .top_area p:first-child{font-weight:bold;color:#ed9947;}*/
 		.panel .top_area p:nth-child(2){font-size:12px;color:#999;margin:0;}
 		.panel .top_area a{position:absolute;top:5px; right:0px;border:1px solid #ddd;padding: 10px 15px;display:inline-block;text-align:center;}
 		.panel .top_area a:hover{background: #f5f5f5;color:#333;}
-		
+
 		#sod_frm_stock_status { margin-bottom: 50px; }
 		#sod_frm_stock_status input[type="checkbox"] { vertical-align: middle; margin-right: 5px; margin-top: 0; top: -2px; position: relative; }
 		#sod_frm_stock_status label { cursor: pointer; }
-		
+
 		.dateBtn { width: 50px; height: 30px; line-height: 28px; float: left; margin-left: 10px; background-color: #EEE; font-size: 12px; color: #333 !important; font-weight: bold; text-align: center; border: 1px solid #DDD; }
-		
+
 		@media (max-width : 750px){
 			#order_recipientBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 			#order_submitCheckBox > div > div { width: 100%; height: 100%; left: 0; margin-left: 0; }
@@ -343,7 +344,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 			#recipient_del { height: 30px; line-height: 28px; font-size: 12px; padding: 0 10px; border: 1px solid #DC3333 !important; background-color: rgba(0, 0, 0, 0) !important; top: 0; right: 0; color: #DC3333 !important; margin-right: 100px !important; }
 		}
 	</style>
-   
+
     <section id="sod_frm_recipient_orderer" style="margin-bottom:0px;">
 		<input type="hidden" name="penId" id="penId">
 		<input type="hidden" name="penTypeCd" id="penTypeCd">
@@ -435,7 +436,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
             </div>
         </div>
     </section>
-    
+
     <section id="sod_frm_stock_status">
     	<p>
     		<label>
@@ -443,7 +444,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
     			<b>보유 재고 등록 요청</b>
     		</label>
     	</p>
-    	
+
     	<p>
     		<span>- 선택 시 상품배송이 되지 않습니다. 보유 재고 등록시에만 선택하세요.</span><br>
     		<span>- 보유 재고 등록시 바코드 정보를 모두 입력해야 등록이 가능합니다.</span><br>
@@ -452,7 +453,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
     </section>
 
 	<script>
-		
+
 		function selected_recipient($penId) {
 			<?php $re = sql_fetch(" select * from {$g5['recipient_table']} where penId = '$penId' ");  ?>
 			// document.getElementById("penNm").value=$re['penNm'];
@@ -528,72 +529,72 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				var discountCnt = 0;
 				var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
 				var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
-				
+
 				$(itemDom).find(".barList").find("input").attr("type", "text");
-				
+
 				$.each(itemList, function(subKey, subDom){
 //					if($(itemDom).attr("data-sup") == "Y"){
 						var dataBarCnt = Number($(subDom).attr("data-bar-cnt"));
 						var dataStockCnt = Number($(subDom).attr("data-stock-cnt"));
 						var optionCnt = (dataStockCnt <= dataBarCnt) ? dataStockCnt : dataBarCnt;
 						var html = "";
-						
+
 						for(var i = 0; i < optionCnt; i++){
 							html += "<option value='" + (i + 1) + "'>" + (i + 1) + "개</option>";
 						}
-						
+
 						optionCnt = (optionCnt) ? optionCnt : 0;
-							
+
 						$(subDom).css("position", "relative");
 						if(html){
 							$(subDom).append("<div class='recipientBox' style='float: right; display: <?=($rentalItemCnt) ? "none" : "block"?>;' data-code='" + subKey + "'><label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0;' data-type='use' checked> 재고소진 : </label> <select style='margin-top: -3px;'>" + html + "</select> <label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new'> 신규주문</label></div>");
 						} else {
 							$(subDom).append("<div class='recipientBox' style='float: right; display: none;' data-code='" + subKey + "'><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new' checked> 신규주문</label></div>");
 						}
-						
+
 						$(subDom).find(".recipientBox select").val(optionCnt);
-						
+
 						var item = $(itemDom).find(".prodBarSelectBox" + subKey);
 						for(var i = 0; i < item.length; i++){
 							var name = $(item[i]).attr("name");
 							var dataCode = $(item[i]).attr("data-code");
 							var dataThisCode = $(item[i]).attr("data-this-code");
 							var dataName = $(item[i]).attr("data-name");
-							
+
 							var html = '<select class="form-control input-sm prodBarSelectBox prodBarSelectBox' + subKey + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
 							$.each(optionBarList[code][subKey], function(key, value){
 								html += '<option value="' + value + '">' + value + '</option>';
 							});
 							html += '</select>';
-							
+
 							$(item[i]).after(html);
-							
+
 							$(item[i]).remove();
 						}
-						
+
 						discountCnt += optionCnt;
-						
+
 						var stockCntItem = $(itemDom).find(".it_option_stock_cnt");
 						var stockCntItemCnt = Number($(subDom).find(".recipientBox select").val());
 						stockCntItemCnt = (stockCntItemCnt) ? stockCntItemCnt : 0;
 						$(stockCntItem[subKey]).val(stockCntItemCnt);
 //					}
 				});
-				
+
 				$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 				$(itemDom).find(".price").text(number_format((cnt - discountCnt) * price) + "원");
 			});
-			
+
 			var it_price = $("input[name^=it_price]");
 			var it_discount = $("input[name^=it_discount]");
 			var totalPrice = 0;
-			
+
 			$.each(it_price, function(key, dom){
 				if($(dom).closest("tr.item").attr("data-sup") == "Y"){
 					totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
 				}
 			});
-			
+
 			if(!totalPrice){
 				$("input[name='od_send_cost']").val(0);
 				$(".delivery_cost_display > strong").text("0 원");
@@ -601,24 +602,24 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
 				$(".delivery_cost_display > strong").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
 			}
-			
+
 			$("input[name=od_price]").val(totalPrice);
 			$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 			calculate_order_price();
 			$("#ad_sel_addr_recipient").parent().show();
-			
+
 			$("#display_pay_button > input").val("수급자 주문하기");
 			$("#show_pay_btn > input").val("수급자 주문하기");
 			$(".stockCntStatusDom").show();
 			$("#sod_frm_taker").show();
 			$("#sod_frm_pay").show();
 			$(".ordLendFrm").show();
-			
+
 			var item = $(".ordLendDtmInput");
 			for(var i = 0; i < item.length; i++){
 				$(item[i]).val($(item[i]).attr("data-default"));
 			}
-			
+
 			$("#od_stock_insert_yn").prop("checked", false);
 			$("#sod_frm_stock_status").hide();
 			$(".barList input").val("");
@@ -627,11 +628,11 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 		$(function() {
 			$("#display_pay_button > input").val("재고 주문하기");
 			$("#show_pay_btn > input").val("재고 주문하기");
-			
+
 			$("#recipient_del").on("click", function() {
 
 				$(".recipientBox").remove();
-				
+
 				$('#Yrecipient').removeClass('block');
 				$('#Yrecipient').addClass('none');
 
@@ -647,9 +648,9 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				$('#penConNum').val('');
 				$('#penAddr').val('');
 				$('#penMoney').val('');
-				
+
 				$("#ad_sel_addr_recipient").parent().hide();
-				
+
 				var optionCntList = <?=json_encode($optionCntList)?>;
 				var optionBarList = <?=json_encode($optionBarList)?>;
 				var prodItemList = $("#sod_list tr.item");
@@ -683,7 +684,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 					$(itemDom).find(".price").text(number_format((cnt - discountCnt) * price) + "원");
 				});
-				
+
 				var it_price = $("input[name^=it_price]");
 				var it_discount = $("input[name^=it_discount]");
 				var totalPrice = 0;
@@ -693,7 +694,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
 					}
 				});
-				
+
 				if(!totalPrice){
 					$("input[name='od_send_cost']").val(0);
 					$(".delivery_cost_display > strong").text("0 원");
@@ -711,17 +712,17 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				$(".stockCntStatusDom").hide();
 				$(".ordLendFrm").hide();
 				$(".ordLendDtmInput").val("");
-				
+
 				$("#od_stock_insert_yn").prop("checked", false);
 				$("#sod_frm_stock_status").show();
 				$(".barList input").val("");
 			});
-			
+
 			$("#od_stock_insert_yn").change(function(){
 				var status = $(this).prop("checked");
 				var prodItemList = $("#sod_list tr.item");
 				$(".barList input").val("");
-				
+
 				if(status){
 					$("#sod_frm_taker").hide();
 					$("#sod_frm_pay").hide();
@@ -731,22 +732,22 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					$("#sod_frm_pay").show();
 					$(".barList input[type='text']").attr("type", "hidden");
 				}
-				
+
 				$.each(prodItemList, function(key, itemDom){
 					var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
 					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
-					
+
 					if(status){
 						price = 0;
 						$("input[name='it_discount[" + key + "]']").val(price);
 					} else {
 						$("input[name='it_discount[" + key + "]']").val(0);
 					}
-					
+
 					$("input[name='it_price[" + key + "]']").val(price);
 					$(itemDom).find(".price").text(number_format(price) + "원");
 				});
-				
+
 				if(status){
 					$("input[name='od_send_cost']").val(0);
 					$(".delivery_cost_display > strong").text("0 원");
@@ -754,7 +755,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
 					$(".delivery_cost_display > strong").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
 				}
-				
+
 				var it_price = $("input[name^=it_price]");
 				var it_discount = $("input[name^=it_discount]");
 				var totalPrice = 0;
@@ -850,7 +851,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 
 
     <!-- 수급자 입력 끝 -->
-    
+
     <!-- 주문상품 정보 시작 -->
 	<div class="table-responsive order-item">
 		<table id="sod_list" class="div-table table bg-white bsk-tbl">
@@ -896,11 +897,11 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					<?php } else { ?>
 						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #3366CC;">유통</b>
 					<?php } ?>
-					
+
 					<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
 						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #FFA500;">대여</b>
 					<?php } ?>
-					
+
 					<?php if($item[$i]['it_options']) { ?>
 						<div class="well well-sm" style="width: 100%; float: left;"><?php echo $item[$i]['it_options'];?></div>
 					<?php } ?>
@@ -930,7 +931,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					}
 				?>
 				<?php for($ii = 0; $ii < $item[$i]["qty"]; $ii++){ ?>
-					
+
 				<?php  } ?>
 				</td>
 			</tr>
@@ -961,12 +962,12 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 		</tbody>
 		</table>
 	</div>
-	
+
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<?php if ($goods_count) $goods .= ' 외 '.$goods_count.'건'; ?>
 	<script type="text/javascript">
 		$(function(){
-			
+
 			$.datepicker.setDefaults({
 				dateFormat : 'yy-mm-dd',
 				prevText: '이전달',
@@ -1000,38 +1001,38 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					}
 				}
 			});
-			
+
 			$(".dateBtn").click(function(e){
 				e.preventDefault();
-				
+
 				var month = Number($(this).attr("data-month"));
 				var dateList = $(this).parent("td").find(".ordLendStartDtm").val().split("-");
 				var date = new Date(dateList[0], dateList[1], dateList[2]);
-				
+
 				date.setMonth(date.getMonth() + month);
 				date.setDate(date.getDate() - 1);
-				
+
 				var year = date.getFullYear();
 				var month = date.getMonth();
 				var day = date.getDate();
-				
+
 				month = (month < 10) ? "0" + month : month;
 				day = (day < 10) ? "0" + day : day;
-				
+
 				$(this).parent("td").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
 			});
-			
+
 			var optionCntList = <?=json_encode($optionCntList)?>;
 			var optionBarList = <?=json_encode($optionBarList)?>;
 			var prodItemList = $("#sod_list tr.item");
-			
+
 			$.each(prodItemList, function(key, itemDom){
 				var code = $(itemDom).attr("data-code");
 				var itemList = $(itemDom).find(".well li");
-				
+
 				$.each(itemList, function(subKey, subDom){
 					var html = optionCntList[code][subKey];
-					
+
 					$(subDom).attr("data-bar-cnt", $(itemDom).find(".prodStockBarBox" + subKey).length);
 					$(subDom).attr("data-stock-cnt", html);
 					if(html){
@@ -1039,12 +1040,12 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					}
 				});
 			});
-			
+
 			$(document).on("change", ".prodBarSelectBox", function(){
 				if($(this).val()){
 					var code = $(this).attr("data-code");
 					var item = $(this).closest("tr").find(".prodBarSelectBox" + code);
-					
+
 					for(var i = 0; i < item.length; i++){
 						if($(this).attr("data-this-code") != $(item[i]).attr("data-this-code")){
 							if($(this).val() == $(item[i]).val()){
@@ -1056,24 +1057,24 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					}
 				}
 			});
-			
+
 			$(document).on("change", ".recipientBox select", function(){
 				if($(this).parent(".recipientBox").find("input[type='radio']:checked").attr("data-type") != "use"){
 					return false;
 				}
-				
+
 				var code = $(this).closest(".recipientBox").attr("data-code");
 				var val = $(this).val();
 				var item = $(this).closest("tr.item").find(".prodBarSelectBox" + code);
 				var it_id = $(this).closest("tr.item").attr("data-code");
-				
+
 				for(var i = 0; i < item.length; i++){
 					var name = $(item[i]).attr("name");
 					var dataCode = $(item[i]).attr("data-code");
 					var dataThisCode = $(item[i]).attr("data-this-code");
 					var dataName = $(item[i]).attr("data-name");
 					var html = "";
-					
+
 					if(i < val){
 						html += '<select class="form-control input-sm prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
 						$.each(optionBarList[it_id][code], function(key, value){
@@ -1083,11 +1084,11 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					} else {
 						html += '<input type="text" class="form-control input-sm prodBarSelectBox' + code + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">';
 					}
-					
+
 					$(item[i]).after(html);
 					$(item[i]).remove();
 				}
-				
+
 				$.each(prodItemList, function(key, itemDom){
 					var code = $(itemDom).attr("data-code");
 					var itemList = $(itemDom).find(".well li");
@@ -1103,7 +1104,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 								discountCnt += Number($(subDom).find(".recipientBox select").val());
 							}
 						}
-						
+
 						var stockCntItem = $(itemDom).find(".it_option_stock_cnt");
 						if(checkedType == "use"){
 							var stockCntItemCnt = Number($(subDom).find(".recipientBox select").val());
@@ -1117,7 +1118,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 					$(itemDom).find(".price").text(number_format((cnt - discountCnt) * price) + "원");
 				});
-				
+
 				var it_price = $("input[name^=it_price]");
 				var it_discount = $("input[name^=it_discount]");
 				var totalPrice = 0;
@@ -1132,14 +1133,14 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
 			});
-			
+
 			$(document).on("change", ".recipientBox input[type='radio']", function(){
 				var code = $(this).closest(".recipientBox").attr("data-code");
 				var parent = $(this).closest("tr.item");
 				var type = $(this).attr("data-type");
 				var item = $(parent).find(".prodBarSelectBox" + code);
 				var it_id = $(parent).attr("data-code");
-				
+
 				switch(type){
 					case "new" :
 						for(var i = 0; i < item.length; i++){
@@ -1147,9 +1148,9 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 							var dataCode = $(item[i]).attr("data-code");
 							var dataThisCode = $(item[i]).attr("data-this-code");
 							var dataName = $(item[i]).attr("data-name");
-							
+
 							$(item[i]).after('<input type="text" class="form-control input-sm prodBarSelectBox' + code + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
-							
+
 							$(item[i]).remove();
 						}
 						break;
@@ -1159,22 +1160,22 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 							var dataCode = $(item[i]).attr("data-code");
 							var dataThisCode = $(item[i]).attr("data-this-code");
 							var dataName = $(item[i]).attr("data-name");
-							
+
 							var html = '<select class="form-control input-sm prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
 							$.each(optionBarList[it_id][code], function(key, value){
 								html += '<option value="' + value + '">' + value + '</option>';
 							});
 							html += '</select>';
-							
+
 							$(item[i]).after(html);
-							
+
 							$(item[i]).remove();
 						}
-						
+
 						$(this).closest(".recipientBox").find("select").val(item.length);
 						break;
 				}
-				
+
 				$.each(prodItemList, function(key, itemDom){
 					var code = $(itemDom).attr("data-code");
 					var itemList = $(itemDom).find(".well li");
@@ -1190,7 +1191,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 								discountCnt += Number($(subDom).find(".recipientBox select").val());
 							}
 						}
-						
+
 						var stockCntItem = $(itemDom).find(".it_option_stock_cnt");
 						if(checkedType == "use"){
 							$(stockCntItem[subKey]).val(Number($(subDom).find(".recipientBox select").val()));
@@ -1202,7 +1203,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 					$(itemDom).find(".price").text(number_format((cnt - discountCnt) * price) + "원");
 				});
-				
+
 				var it_price = $("input[name^=it_price]");
 				var it_discount = $("input[name^=it_discount]");
 				var totalPrice = 0;
@@ -1217,7 +1218,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
 			});
-			
+
 		})
 	</script>
 	 <!-- 주문상품 정보 끝 -->
@@ -1415,12 +1416,12 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
                             // 수급자목록
 								$("#order_submitCheckBox").hide();
 								$("#order_submitCheckBox").css("opacity", 1);
-							
+
 								$("#order_recipientBox").hide();
 								$("#order_recipientBox").css("opacity", 1);
                             $("#order_recipient").on("click", function(e){
                                 e.preventDefault();
-								
+
 								<?php if($itemPenIdStatus){ ?>
 									$("#order_recipientBox").show();
 								<?php } else { ?>

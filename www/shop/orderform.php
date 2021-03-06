@@ -1,6 +1,5 @@
 <?php
 include_once('./_common.php');
-
 if(USE_G5_THEME && defined('G5_THEME_PATH')) {
     require_once(G5_SHOP_PATH.'/yc/orderform.php');
     return;
@@ -136,7 +135,7 @@ $item = array();
 $arr_it_orderform = array();
 
 for ($i=0; $row=sql_fetch_array($result); $i++) {
-	
+
 	if(substr($row["ca_id"], 0, 2) == 20){
 		$rentalItemCnt++;
 	} else {
@@ -244,19 +243,19 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 		if($sendcost == 0)
 			$ct_send_cost = '무료';
 	}
-	
+
 	# 210130 옵션목록
 	$optionList = [];
 	$optionSQL = sql_query("SELECT io_id, ct_qty, ct_id FROM {$g5["g5_shop_cart_table"]} WHERE od_id = '{$s_cart_id}' AND it_id = '{$row["it_id"]}' ORDER BY ct_id ASC");
 	for($iii = 0; $optionRow = sql_fetch_array($optionSQL); $iii++){
 		$thisRowData = [];
 		$optionRow["io_id"] = explode(chr(30), $optionRow["io_id"]);
-		
+
 		$thisRowData["color"] = $optionRow["io_id"][0];
 		$thisRowData["size"] = $optionRow["io_id"][1];
 		$thisRowData["qty"] = $optionRow["ct_qty"];
 		$thisRowData["id"] = $optionRow["ct_id"];
-		
+
 		array_push($optionList, $thisRowData);
 	}
 
@@ -892,7 +891,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 
 	function forderform_check()
 	{
-		
+
 		/* 210224 보유재고등록요청 */
 		if($("#od_stock_insert_yn").prop("checked")){
 			var item = $(".barList input");
@@ -904,7 +903,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 				}
 			}
 		}
-		
+
 		var f = document.forderform;
 
 		// 필드체크
@@ -919,12 +918,12 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 //			alert("결제등록요청 후 주문해 주십시오.");
 //			return false;
 //		}
-		
+
 		/* 210303 수급자주문 시 체크 */
 		if($("#order_submitCheckBox").length && $("#penId").val()){
 			if($("#order_submitCheckBox").css("display") == "none"){
 				$("#order_submitCheckBox").show();
-				return false;	
+				return false;
 			}
 		}
 
@@ -1159,9 +1158,13 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 			<?php } ?>
 		});
 	});
+  //오성훈 20210306
+  function order_submitCheckBox_hide(){
+    $("#order_submitCheckBox").hide();
+  }
 
 	function forderform_check(f) {
-		
+
 		/* 210224 보유재고등록요청 */
 		if($("#od_stock_insert_yn").prop("checked")){
 			var item = $(".barList input");
@@ -1173,7 +1176,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 				}
 			}
 		}
-		
+
 		/* 재고선택박스 체크 */
 		var stockSelectBox = $("select.prodBarSelectBox");
 		for(var i = 0; i < stockSelectBox.length; i++){
@@ -1362,12 +1365,12 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 			}
 
 		}
-	
+
 		/* 210303 수급자주문 시 체크 */
 		if($("#order_submitCheckBox").length && $("#penId").val()){
 			if($("#order_submitCheckBox").css("display") == "none"){
 				$("#order_submitCheckBox").show();
-				return false;	
+				return false;
 			}
 		}
 

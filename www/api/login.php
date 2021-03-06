@@ -8,6 +8,8 @@
 	header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 	header('Access-Control-Allow-Headers: Authorization, Content-Type,Accept, Origin');
 
+	$returnURL = ($_POST["url"]) ? $_POST["url"] : "/";
+
 	$member = sql_fetch("
 		SELECT *
 		FROM g5_member
@@ -16,7 +18,7 @@
 
 	if($member){
 		set_session("ss_mb_id", $member["mb_id"]);
-		goto_url("/");
+		goto_url($returnURL);
 	} else {
 		$sendData = [];
 		$sendData["usrId"] = $_POST["mb_id"];
@@ -70,7 +72,7 @@
 		");
 		
 		set_session("ss_mb_id", $member["mb_id"]);
-		goto_url("/");
+		goto_url($returnURL);
 	}
 
 ?>

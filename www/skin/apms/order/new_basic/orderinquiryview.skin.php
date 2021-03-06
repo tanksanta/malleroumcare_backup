@@ -57,10 +57,10 @@ if($header_skin)
 				WHERE od_id = '{$od["od_id"]}'
 			");
 			$od = sql_fetch("SELECT * FROM {$g5["g5_shop_order_table"]} WHERE od_id = '{$od["od_id"]}'");
-			
+
 			foreach($result as $data){
 				$thisProductData = [];
-				
+
 				$thisProductData["prodId"] = $data["prodId"];
 				$thisProductData["prodColor"] = $data["prodColor"];
 				$thisProductData["prodBarNum"] = $data["prodBarNum"];
@@ -140,11 +140,11 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	.delivery-info { margin:0px; padding:0px; padding-left:15px; line-height:22px; white-space:nowrap; }
 	.orderInfoTopBtnWrap { width: 100%; float: left; text-align: right; margin-bottom: 10px; }
 </style>
-
+<?php if($od["od_stock_insert_yn"] == "N" && $deliveryItem){ ?>
 <div class="orderInfoTopBtnWrap">
 	<button type="button" id="prodBarNumSaveBtn" class="btn btn-blue btn-sm">바코드저장</button>
 </div>
-
+<?php }?>
 <div class="table-responsive">
 	<table class="div-table table bsk-tbl bg-white">
 	<tbody>
@@ -163,7 +163,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			<?php
 				$prodMemo = ($prodMemo) ? $prodMemo : $item[$i]["prodMemo"];
 				$ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($item[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($item[$i]["ordLendEndDtm"]));
-	
+
 				$rowspan = (substr($item[$i]["ca_id"], 0, 2) == 20) ? 3 : 1;
 			?>
 			<?php if($k == 0) { ?>
@@ -180,7 +180,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 							<?php if($item[$i]["prodSupYn"] == "N"){ ?>
 								<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
 							<?php } ?>
-							
+
 							<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
 								<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #FFA500;">대여</b>
 							<?php } ?>
@@ -601,8 +601,8 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				</tr>
 			</thead>
 			<tbody>
-				<?php 
-					for($i = 0; $i < count($deliveryItem); $i++){ 
+				<?php
+					for($i = 0; $i < count($deliveryItem); $i++){
 						$options = $deliveryItem[$i]["opt"];
 
 						for($k = 0; $k < count($options); $k++){
@@ -623,7 +623,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 					</tr>
 				<?php } ?>
 			<?php } ?>
-			
+
 			<?php if ($od['od_delivery_text'] || $od['od_delivery_price'] || $od['od_delivery_company']) {?>
 				<?php if($od['od_delivery_company']) { ?>
 <!--
@@ -873,7 +873,9 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 
 <p class="print-hide text-center">
 	<a class="btn btn-color btn-sm" href="./orderinquiry.php"><i class="fa fa-bars"></i> 목록으로</a>
+	<?php if($od["od_stock_insert_yn"] == "N" && $deliveryItem){ ?>
 	<button type="button" id="send_statement" class="btn btn-blue btn-sm"><i class="fa fa-print"></i> 거래명세서출력</button>
+	<?php }?>
 	<button type="button" onclick="apms_print();" class="btn btn-black btn-sm"><i class="fa fa-print"></i> 프린트</button>
 	<?php if($setup_href) { ?>
 		<a class="btn btn-color btn-sm win_memo" href="<?php echo $setup_href;?>">
@@ -913,7 +915,7 @@ $(function(){
 	$("#send_statement").click(function() {
 		$("#send_statementBox").show();
 	});
-	
+
 	/* 바코드저장 */
 	var stoldList = [];
 	var stoIdData = "<?=$stoIdData?>";
@@ -932,14 +934,14 @@ $(function(){
 				$.each(res.data, function(key, value){
 					$("." + value.stoId).val(value.prodBarNum);
 				});
-				
+
 				if(res.data){
 					stoldList = res.data;
 				}
 			}
 		});
 	}
-	
+
 	$("#prodBarNumSaveBtn").click(function(){
 		var ordId = "<?=$od["ordId"]?>";
 		var eformYn = "<?=$od["eformYn"]?>";
@@ -950,7 +952,7 @@ $(function(){
 			$.each(productList, function(key, value){
 				var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
 				var prodBarNum = "";
-				
+
 				for(var i = 0; i < prodBarNumItem.length; i++){
 					if("<?=$od["od_status"]?>" == "완료"){
 						if(!$(prodBarNumItem[i]).val()){
@@ -960,15 +962,15 @@ $(function(){
 					}
 					prodBarNum += (prodBarNum) ? "," : "";
 					prodBarNum += $(prodBarNumItem[i]).val();
-					
+
 					if($(prodBarNumItem[i]).val()){
 						insertBarCnt++;
 					}
 				}
-				
+
 				productList[key]["prodBarNum"] = prodBarNum;
 			});
-			
+
 			var sendData = {
 				ordId : "<?=$od["ordId"]?>",
 				delGbnCd : "",
@@ -994,7 +996,7 @@ $(function(){
 				success : function(result){
 					if(result.errorYN == "N"){
 						alert("저장이 완료되었습니다.");
-						
+
 						$.ajax({
 							url : "/shop/ajax.order.prodBarNum.cnt.php",
 							type : "POST",
@@ -1021,7 +1023,7 @@ $(function(){
 					}
 				});
 			}
-			
+
 			$.each(stoldList, function(key, value){
 				var sendData = {
 					usrId : "<?=$od["mb_id"]?>",
@@ -1037,7 +1039,7 @@ $(function(){
 						}
 					]
 				}
-				
+
 				if($("." + value.stoId).val()){
 					insertBarCnt++;
 				}
@@ -1057,7 +1059,7 @@ $(function(){
 					}
 				});
 			});
-			
+
 			$.ajax({
 				url : "/shop/ajax.order.prodBarNum.cnt.php",
 				type : "POST",
@@ -1069,6 +1071,6 @@ $(function(){
 			alert("저장이 완료되었습니다.");
 		}
 	});
-	
+
 });
 </script>

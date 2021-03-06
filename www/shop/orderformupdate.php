@@ -54,7 +54,7 @@ $sql = " select MT.it_id,
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++)
 {
-	
+
 	# 상품목록
 	for($ii = 0; $ii < $row["ct_qty"]; $ii++){
 		if($_POST["penId"]){
@@ -68,7 +68,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			$thisProductData["itemNm"] = explode(chr(30), $row["io_id"])[0]." / ".explode(chr(30), $row["io_id"])[1];
 			$thisProductData["ordLendStrDtm"] = date("Y-m-d", strtotime($_POST["ordLendStartDtm_{$row["ct_id"]}"]));
 			$thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($_POST["ordLendEndDtm_{$row["ct_id"]}"]));
-			
+
 			array_push($productList, $thisProductData);
 		} else {
 			$thisProductData = [];
@@ -81,22 +81,22 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 
 			array_push($productList, $thisProductData);
 		}
-		
+
 		$od_prodBarNum_total++;
 		if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
 			$od_prodBarNum_insert++;
 		}
-		
+
 		$postProdBarNumCnt++;
 	}
-	
+
 	# 요청사항 저장
 	sql_query("
 		UPDATE {$g5["g5_shop_cart_table"]} SET
 			prodMemo = '{$_POST["prodMemo_{$row["ct_id"]}"]}'
 		WHERE ct_id = '{$row["ct_id"]}'
 	");
-	
+
 	# 대여기간저장
 	if($_POST["penId"]){
 		sql_query("
@@ -106,7 +106,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			WHERE ct_id = '{$row["ct_id"]}'
 		");
 	}
-	
+
 	# 비유통상품 금액저장
 	if($row["prodSupYn"] == "N"){
 //		sql_query("
@@ -115,7 +115,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 //			WHERE ct_id = '{$row["ct_id"]}'
 //		");
 	}
-	
+
 	# 재고사용수량 저장
 	if($_POST["penId"]){
 		sql_query("
@@ -123,17 +123,17 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 				ct_stock_qty = '{$_POST["it_option_stock_cnt_{$row["ct_id"]}"]}'
 			WHERE ct_id = '{$row["ct_id"]}'
 		");
-		
+
 		if($row["prodSupYn"] == "Y"){
 			$deliveryTotalCnt += $row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"];
 		}
 	}
-	
+
 	# 배송가능 설정
 	if($row["prodSupYn"] == "Y"){
 		if(($row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"]) > 0){
 			$od_delivery_total++;
-			
+
 			$tmpQty = $row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"];
 			$tmpCnt = floor($tmpQty / $row["it_delivery_cnt"]);
 
@@ -142,7 +142,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			}
 
 			$tmpPrice = $tmpCnt * $row["it_delivery_price"];
-			
+
 			sql_query("
 				UPDATE {$g5["g5_shop_cart_table"]} SET
 					ct_delivery_yn = 'Y',
@@ -152,7 +152,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			");
 		}
 	}
-	
+
     // 상품에 대한 현재고수량
     if($row["io_id"]) {
         $it_stock_qty = (int)get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
@@ -377,7 +377,7 @@ else {
         foreach($it_ids as $it_id) {
             $sql = "SELECT * FROM {$g5['g5_shop_item_table']} WHERE it_id = {$it_id}";
             $result = sql_fetch($sql);
-			
+
             if ($result[$it_sc_add_sendcost] > -1) { // 추가배송비가 설정되어 있는 경우
                 $total_item_sc_price += $result[$it_sc_add_sendcost];
             } else { // 없는경우 기본 관리자에 있는걸 가져온다.
@@ -805,20 +805,20 @@ $sql = " insert {$g5['g5_shop_order_table']}
                 od_sales_manager  = '{$od_sales_manager}',
                 od_receipt_bank   = '{$od_receipt_bank}',
                 staOrdCd   = '00',
-				
-				od_mod_history = '', 
-				od_next_status = '', 
-				od_cash = 0, 
-				od_cash_no = '', 
-				od_cash_info = '', 
-				od_pay_memo = '', 
-				od_naver_PaymentMeans = '', 
-				od_naver_PaymentCoreType = '', 
+
+				od_mod_history = '',
+				od_next_status = '',
+				od_cash = 0,
+				od_cash_no = '',
+				od_cash_info = '',
+				od_pay_memo = '',
+				od_naver_PaymentMeans = '',
+				od_naver_PaymentCoreType = '',
 				stoId = '',
-				
+
 				od_prodBarNum_insert = '{$od_prodBarNum_insert}',
 				od_prodBarNum_total = '{$od_prodBarNum_total}',
-				
+
 				od_delivery_insert = '{$od_delivery_insert}',
 				od_delivery_total = '{$od_delivery_total}'
                 ";
@@ -1254,19 +1254,19 @@ if($is_member && $od_b_name) {
 
 	# 주문신청
 	if($_POST["penId"]){
-		
+
 		sql_query("
 			UPDATE g5_shop_order SET
 				od_del_yn = 'Y'
 			WHERE od_id = '{$od_id}'
 		");
-		
+
 		$_SESSION["productList{$od_id}"] = $productList;
 		$_SESSION["deliveryTotalCnt{$od_id}"] = $deliveryTotalCnt;
-		
+
 		$sendData = [];
 		$sendData["usrId"] = $member["mb_id"];
-		
+
 		$sendData["penId"] = $_POST["penId"];
 		$sendData["delGbnCd"] = "";
 		$sendData["ordWayNum"] = "";
@@ -1299,7 +1299,7 @@ if($is_member && $od_b_name) {
 		$res = curl_exec($oCurl);
 		$res = json_decode($res, true);
 		curl_close($oCurl);
-		
+
 //		echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
 //		return false;
 
@@ -1312,7 +1312,7 @@ if($is_member && $od_b_name) {
 		} else {
 			$_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
 			$_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
-			
+
 			goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}");
 		}
 	}
@@ -1320,7 +1320,7 @@ if($is_member && $od_b_name) {
 	# 재고신청
 	if(!$_POST["penId"]){
 		$stoIdList = [];
-		
+
 		foreach($productList as $key => $value){
 			$sendData = [];
 			$sendData["usrId"] = $member["mb_id"];
@@ -1338,7 +1338,7 @@ if($is_member && $od_b_name) {
 			array_push($prodsSendData, $prodsData);
 
 			$sendData["prods"] = $prodsSendData;
-			
+
 			$oCurl = curl_init();
 			curl_setopt($oCurl, CURLOPT_PORT, 9001);
 			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/insert");
@@ -1350,7 +1350,7 @@ if($is_member && $od_b_name) {
 			$res = curl_exec($oCurl);
 			$res = json_decode($res, true);
 			curl_close($oCurl);
-			
+
 			if($res["errorYN"] == "N"){
 				array_push($stoIdList, $res["data"][0]["stoId"]);
 			} else {
@@ -1362,16 +1362,16 @@ if($is_member && $od_b_name) {
 				return false;
 			}
 		}
-		
+
 		$stoIdList = implode(",", $stoIdList);
 		sql_query("
 			UPDATE g5_shop_order SET
 				stoId = '{$stoIdList}'
 			WHERE od_id = '{$od_id}'
 		");
-		
+
 		$stoIdList = explode(",", $stoIdList);
-		
+
 		# 210224 보유재고등록요청
 		if($_POST["od_stock_insert_yn"]){
 			$sendData = [];
@@ -1379,14 +1379,14 @@ if($is_member && $od_b_name) {
 			$sendData["entId"] = $member["mb_entId"];
 
 			$prodsSendData = [];
-			
+
 			foreach($stoIdList as $stoId){
 				$prodsData = [];
 				$prodsData["stoId"] = $stoId;
 				$prodsData["stateCd"] = "01";
 				array_push($prodsSendData, $prodsData);
 			}
-			
+
 			$sendData["prods"] = $prodsSendData;
 
 			$oCurl = curl_init();
@@ -1410,7 +1410,7 @@ if($is_member && $od_b_name) {
 						, od_status = '완료'
 					WHERE od_id = '{$od_id}'
 				");
-				
+
 				sql_query("
 					UPDATE g5_shop_cart SET
 						  ct_price = '0'
@@ -1425,7 +1425,7 @@ if($is_member && $od_b_name) {
 				return false;
 			}
 		}
-		
+
 		goto_url(G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&amp;uid={$uid}");
 	}
 

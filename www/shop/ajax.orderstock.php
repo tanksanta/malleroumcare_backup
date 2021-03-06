@@ -14,9 +14,9 @@ if(!defined('THEMA_PATH')) {
 $it_use = THEMA_KEY == 'partner' ? 'it_use_partner' : 'it_use';
 
 if (get_cart_count($tmp_cart_id) == 0)// 장바구니에 담기
-    die("장바구니가 비어 있습니다.\n\n이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다.");
-
-$keep_term = $default['de_cart_keep_term'];
+    //원본
+    //die("장바구니가 비어 있습니다.\n\n이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다.");
+    die("잘못된 접근입니다. 다시 주문해 주세요.");
 if(!$keep_term)
     $keep_term = 15; // 기본값 15일
 
@@ -58,7 +58,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     // 해당 상품이 품절 또는 판매중지 상태인지 체크합니다.
     $sql = " select it_soldout, it_use, it_use_partner, ca_id, ca_id2, ca_id3 from {$g5['g5_shop_item_table']} where it_id = '".$row['it_id']."' ";
     $item = sql_fetch($sql);
-    
+
     $category_str = '';
 
     // 분류에서 판매가능한지 체크합니다.

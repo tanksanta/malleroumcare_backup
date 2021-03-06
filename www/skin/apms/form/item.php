@@ -490,9 +490,9 @@ $pg_anchor .='</ul>';
 			</tr>
 		<?php } // 관리자 끝 ?>
 		<tr>
-			<th scope="row"><label for="it_price_dealer">딜러 판매가격</label></th>
+			<th scope="row"><label for="it_price_dealer">사업소 판매가격</label></th>
 			<td>
-				딜러&nbsp;&nbsp;
+				사업소&nbsp;&nbsp;
 				<input type="text" name="it_price_dealer" value="<?php echo $it['it_price_dealer']; ?>" id="it_price_dealer" class="frm_input" size="8"> 원
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<button type="button" class="btn_submit btn" id="dealer_btn">자동계산</button>
@@ -503,7 +503,7 @@ $pg_anchor .='</ul>';
 				</select>
 
 				<br/>
-				우수딜러&nbsp;&nbsp;
+				우수사업소&nbsp;&nbsp;
 				<input type="text" name="it_price_dealer2" value="<?php echo $it['it_price_dealer2']; ?>" id="it_price_dealer2" class="frm_input" size="8"> 원
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<button type="button" class="btn_submit btn" id="dealer_btn2">자동계산</button>

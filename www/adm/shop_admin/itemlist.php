@@ -65,6 +65,10 @@ if ($stx != "") {
         $page = 1;
 }
 
+if($_GET["searchProdSupYN"] != ""){
+	$sql_search .= " AND prodSupYn = '{$_GET["searchProdSupYN"]}' ";
+}
+
 if ($sca != "") {
     // $sql_search .= " $where (a.ca_id like '$sca%' or a.ca_id2 like '$sca%' or a.ca_id3 like '$sca%') ";
     $sql_search .= " $where (a.ca_id like '$sca%' or
@@ -125,7 +129,7 @@ $sql  = " select *
 $result = sql_query($sql);
 
 //$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page;
-$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page.'&amp;page_rows='.$page_rows.'&amp;save_stx='.$stx;
+$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page.'&amp;page_rows='.$page_rows.'&amp;save_stx='.$stx."&amp;searchProdSupYN=".$_GET["searchProdSupYN"];
 if($api_it_id) $qstr  .= '&amp;api_it_id='.$api_it_id;
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
@@ -165,6 +169,13 @@ $flist = apms_form(1,0);
 		echo '<option value="'.$row1['ca_id'].'" '.get_selected($sca, $row1['ca_id']).'>'.$nbsp.$row1['ca_name'].'</option>'.PHP_EOL;
     }
     ?>
+</select>
+
+<label for="searchProdSupYN" class="sound_only">유통구분</label>
+<select name="searchProdSupYN" id="searchProdSupYN">
+    <option value="">유통구분 전체</option>
+    <option value="Y" <?=($_GET["searchProdSupYN"] == "Y") ? "selected" : ""?>>유통</option>
+    <option value="N" <?=($_GET["searchProdSupYN"] == "N") ? "selected" : ""?>>비유통</option>
 </select>
 
 <label for="sfl" class="sound_only">검색대상</label>
@@ -230,8 +241,8 @@ $flist = apms_form(1,0);
         <th scope="col" rowspan="2" id="th_img">이미지</th>
         <th scope="col" rowspan="2" id="th_pc_title"><?php echo subject_sort_link('it_name', 'sca='.$sca); ?>상품정보 (모델명 / 상품코드 / 상품명)</a></th>
 		<th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price', 'sca='.$sca); ?>판매가격</a></th>
-        <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_dealer', 'sca='.$sca); ?>딜러가격</a></th>
-        <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_dealer2', 'sca='.$sca); ?>우수딜러가격</a></th>
+        <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_dealer', 'sca='.$sca); ?>사업소가격</a></th>
+        <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_dealer2', 'sca='.$sca); ?>우수사업소가격</a></th>
         <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_partner', 'sca='.$sca); ?>파트너가격</a></th>
         <!--<th scope="col" id="th_camt"><?php echo subject_sort_link('it_cust_price', 'sca='.$sca); ?>시중가격</a></th>-->
 		<!-- APMS - 2014.07.20 -->
@@ -274,7 +285,8 @@ $flist = apms_form(1,0);
             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i; ?>">
         </td>
 		<!-- APMS - 2014.07.20 -->
-		<td rowspan="3" class="td_num" style="white-space:nowrap">
+		<td rowspan="3" class="td_num" style="white-space:nowrap; position: relative;">
+       		<b style="position: absolute; width: 40px; height: 20px; line-height: 20px; top: 5px; right: 5px; border-radius: 5px; color: #FFF; background-color: #<?=($row["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>; font-size: 11px; text-align: center;"><?=($row["prodSupYn"] == "Y") ? "유통" : "비유통"?></b>
             <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
 			<?php if($row['pt_it']) { ?>
 				<div style="font-size:11px; letter-spacing:-1px;"><?php echo apms_pt_it($row['pt_it'],1);?></div>
@@ -583,8 +595,8 @@ $(function() {
 			'opt1' : '실버,검정',					//옵션명
 			'opt1_price' : '50000,80000',			//추가금액
 			'opt1_price_partner' : '45000,75000',	//파트너가격
-			'opt1_price_dealer' : '42500,72500',	//딜러가격
-			'opt1_price_dealer2' : '42500,72500',	//딜러가격
+			'opt1_price_dealer' : '42500,72500',	//사업소가격
+			'opt1_price_dealer2' : '42500,72500',	//사업소가격
 			'opt1_stock_qty' : '0,0',				//재고수량
 			'opt1_noti_qty' : '0,0',				//통보수량
 			'opt1_use' : '1,1',						//사용여부
@@ -592,8 +604,8 @@ $(function() {
 
 			'it_price' : '1500000',					//판매가격
 			'it_price_partner' : '1200000',			//파트너몰 판매가격
-			'it_price_dealer' : '1274900',			//딜러가격
-			'it_price_dealer2' : '1274900',			//딜러가격
+			'it_price_dealer' : '1274900',			//사업소가격
+			'it_price_dealer2' : '1274900',			//사업소가격
 
 			'it_use' : '1',							//상품판매
 
