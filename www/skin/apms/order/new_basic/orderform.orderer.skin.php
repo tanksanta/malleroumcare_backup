@@ -39,6 +39,13 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 ?>
 
 <script>
+
+//20200306성훈추가
+var optionBarList_for_renew_v="";
+var renew_num="";
+var renew_array=[];
+var renew_array2=[];
+var array_box=[];
     $(function() {
         $('#od_tel').on('keyup', function(){
             var num = $(this).val();
@@ -452,7 +459,12 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
     	</p>
     </section>
 
+		<!-- 20210306 오성훈추가 (바코드 중복 방지를 위한 input)-->
+		<input type="hidden" id="optionBarList_for_renew" value="">
+
 	<script>
+		//20210306 오성훈추가 (바코드 중복 방지를 위한 input)
+		var optionBarList_for_renew = document.getElementById("optionBarList_for_renew");
 
 		function selected_recipient($penId) {
 			<?php $re = sql_fetch(" select * from {$g5['recipient_table']} where penId = '$penId' ");  ?>
@@ -547,30 +559,39 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 
 						$(subDom).css("position", "relative");
 						if(html){
-							$(subDom).append("<div class='recipientBox' style='float: right; display: <?=($rentalItemCnt) ? "none" : "block"?>;' data-code='" + subKey + "'><label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0;' data-type='use' checked> 재고소진 : </label> <select style='margin-top: -3px;'>" + html + "</select> <label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new'> 신규주문</label></div>");
+							$(subDom).append("<div id='renew_num_v' class='recipientBox' style='float: right; display: <?=($rentalItemCnt) ? "none" : "block"?>;' data-code='" + subKey + "'><label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0;' data-type='use' checked> 재고소진 : </label> <select style='margin-top: -3px;'>" + html + "</select> <label><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new'> 신규주문</label></div>");
 						} else {
-							$(subDom).append("<div class='recipientBox' style='float: right; display: none;' data-code='" + subKey + "'><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new' checked> 신규주문</label></div>");
+							$(subDom).append("<div id='renew_num_v'class='recipientBox' style='float: right; display: none;' data-code='" + subKey + "'><input type='radio' name='" + code + "Sup" + subKey + "' style='margin-top: 0; margin-left: 10px;' data-type='new' checked> 신규주문</label></div>");
 						}
 
 						$(subDom).find(".recipientBox select").val(optionCnt);
 
 						var item = $(itemDom).find(".prodBarSelectBox" + subKey);
+
+						//20210306성훈추가 - 바코드허용개수
+						renew_num = $(itemDom).find(".prodBarSelectBox" + subKey).length;
+
 						for(var i = 0; i < item.length; i++){
 							var name = $(item[i]).attr("name");
 							var dataCode = $(item[i]).attr("data-code");
 							var dataThisCode = $(item[i]).attr("data-this-code");
 							var dataName = $(item[i]).attr("data-name");
-
-							var html = '<select class="form-control input-sm prodBarSelectBox prodBarSelectBox' + subKey + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
-							$.each(optionBarList[code][subKey], function(key, value){
-								html += '<option value="' + value + '">' + value + '</option>';
-							});
+							//20210306 성훈수정(아래줄 id 추가)
+							var html = '<select id="prodBarSelectBox_renew'+i+'" class="form-control input-sm prodBarSelectBox prodBarSelectBox' + subKey + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+							// $.each(optionBarList[code][subKey], function(key, value){
+							// 	html += '<option value="' + value + '">' + value + '</option>';
+							// });
 							html += '</select>';
 
 							$(item[i]).after(html);
 
 							$(item[i]).remove();
 						}
+
+						//20210306 성훈 추가
+						renew_array = optionBarList[code][subKey];
+						renew_array2 = optionBarList[code][subKey];
+
 
 						discountCnt += optionCnt;
 
@@ -583,6 +604,8 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 
 				$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 				$(itemDom).find(".price").text(number_format((cnt - discountCnt) * price) + "원");
+
+
 			});
 
 			var it_price = $("input[name^=it_price]");
@@ -1041,7 +1064,54 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 				});
 			});
 
+
+
+
+			//성훈20210306 바코드 동기화처리
+			$(document).on("click", ".prodBarSelectBox", function(){
+				var this_v=this; 						//this 정의
+				var this_v_v=this.value;
+				console.log(this_v.value);  //선택된 값
+				this_v.options.length=0;		//옵션 값 초기화
+				renew_array=renew_array2;		//renew_array박스(목록 초기화)
+				array_box=[];								//뺄 넣을 배열
+				var select_num = $("#renew_num_v option:selected").val();//재고소진 개수
+
+				//선택된 값 불러와서 뺄 배열에 넣기
+				for(var i=0; i<select_num; i++){
+						array_box.push(eval("document.getElementById('prodBarSelectBox_renew"+i+"').value"));
+				}
+
+				//기존배열 - 선택된값
+				for (var i = 0; i<array_box.length; i++) {
+				    var arrlen = renew_array.length;
+				    for (var j = 0; j<arrlen; j++) {
+				        if (array_box[i] == renew_array[j]) {
+				            renew_array = renew_array.slice(0, j).concat(renew_array.slice(j+1, arrlen));
+				        }
+				    }
+				}
+
+
+				$(this_v).append('<option>재고 바코드</option');//재고 바코드 추가
+
+				//기존 배열 -선택된 값 집어넣기
+				$.each(renew_array, function(key, value){
+					var selected="";
+					// console.log(this_v.value);
+					if(this_v_v == value){ selected = "selected"; }
+					$(this_v).append('<option value="' + value + '" '+selected+'>' + value + '</option');
+				});
+
+			});
+
+
+
+
 			$(document).on("change", ".prodBarSelectBox", function(){
+
+
+
 				if($(this).val()){
 					var code = $(this).attr("data-code");
 					var item = $(this).closest("tr").find(".prodBarSelectBox" + code);
@@ -1076,10 +1146,11 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 					var html = "";
 
 					if(i < val){
-						html += '<select class="form-control input-sm prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
-						$.each(optionBarList[it_id][code], function(key, value){
-							html += '<option value="' + value + '">' + value + '</option>';
-						});
+						//20210306 성훈수정(아래줄 id 추가)
+						var html = '<select id="prodBarSelectBox_renew'+i+'"class="form-control input-sm prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+						// $.each(optionBarList[it_id][code], function(key, value){
+						// 	html += '<option value="' + value + '">' + value + '</option>';
+						// });
 						html += '</select>';
 					} else {
 						html += '<input type="text" class="form-control input-sm prodBarSelectBox' + code + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">';
@@ -1161,10 +1232,11 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 							var dataThisCode = $(item[i]).attr("data-this-code");
 							var dataName = $(item[i]).attr("data-name");
 
-							var html = '<select class="form-control input-sm prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
-							$.each(optionBarList[it_id][code], function(key, value){
-								html += '<option value="' + value + '">' + value + '</option>';
-							});
+							//20210306 성훈수정(아래줄 id 추가)
+							var html = '<select id="prodBarSelectBox_renew'+i+'" class="form-control input-sm prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+							// $.each(optionBarList[it_id][code], function(key, value){
+							// 	html += '<option value="' + value + '">' + value + '</option>';
+							// });
 							html += '</select>';
 
 							$(item[i]).after(html);
