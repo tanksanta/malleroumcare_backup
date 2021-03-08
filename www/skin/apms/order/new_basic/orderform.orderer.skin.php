@@ -743,6 +743,13 @@ var array_box=[];
 
 			$("#od_stock_insert_yn").change(function(){
 				var status = $(this).prop("checked");
+
+				//20210307
+				if(status){
+					$("#display_pay_button > input").val("보유재고등록");
+				}else{
+					$("#display_pay_button > input").val("재고 주문하기");
+				}
 				var prodItemList = $("#sod_list tr.item");
 				$(".barList input").val("");
 

@@ -631,7 +631,6 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 	// 결제대행사별 코드 include (주문버튼)
 	if($is_mobile_order) {
 	    require_once(G5_MSHOP_PATH.'/'.$default['de_pg_service'].'/orderform.2.php');
-
 	    if( is_inicis_simple_pay() ){   //삼성페이 또는 L.pay 사용시
 			require_once(G5_MSHOP_PATH.'/samsungpay/orderform.2.php');
 		}
@@ -686,6 +685,13 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 ?>
 <script>
 <?php if($is_mobile_order) { ?>
+
+  //오성훈 추가 20210306
+  function order_submitCheckBox_hide(){
+    $("#order_submitCheckBox").hide();
+  }
+
+
 	$(function() {
 		$("#od_settle_bank").on("click", function() {
 			$("[name=od_deposit_name]").val( $("[name=od_name]").val() );
@@ -919,6 +925,16 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 //			return false;
 //		}
 
+    //20210307 성훈추가
+    /* 재고선택박스 체크 */
+    var stockSelectBox = $("select.prodBarSelectBox");
+    for(var i = 0; i < stockSelectBox.length; i++){
+      if(!$(stockSelectBox[i]).val()){
+        alert("재고 바코드를 선택해 주십시오.");
+        return false;
+      }
+    }
+
 		/* 210303 수급자주문 시 체크 */
 		if($("#order_submitCheckBox").length && $("#penId").val()){
 			if($("#order_submitCheckBox").css("display") == "none"){
@@ -1133,6 +1149,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 
 		return true;
 	}
+
 <?php } else { // PC결제 ?>
 
 	var form_action_url = "<?php echo $order_action_url; ?>";
@@ -1162,6 +1179,9 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
   function order_submitCheckBox_hide(){
     $("#order_submitCheckBox").hide();
   }
+
+
+
 
 	function forderform_check(f) {
 
@@ -1214,6 +1234,14 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 
 		// 재고체크
 		var stock_msg = order_stock_check();
+
+    //20210307오성훈
+    if(stock_msg=="back_button"){
+      alert('잘못된 접근입니다. 다시 주문해 주세요.');
+      location.replace(g5_url);
+      return false;
+    }
+
 		if(stock_msg != "") {
 			alert(stock_msg);
 			return false;

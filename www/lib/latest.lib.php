@@ -44,7 +44,7 @@ function latest($skin_dir='', $bo_table, $rows=10, $subject_len=40, $cache_time=
                     $cache_fwrite = true;
                 }
             }
-            
+
             if(!$cache_fwrite) {
                 try{
                     $file_contents = file_get_contents($cache_file);

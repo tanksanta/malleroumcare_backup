@@ -41,18 +41,18 @@ if(_RESPONSIVE_) {
 }
 
 // 새상품
-$is_new = (isset($wset['new']) && $wset['new']) ? $wset['new'] : 'red'; 
+$is_new = (isset($wset['new']) && $wset['new']) ? $wset['new'] : 'red';
 $new_item = ($wset['newtime']) ? $wset['newtime'] : 24;
 
 // DC
-$is_dc = (isset($wset['dc']) && $wset['dc']) ? $wset['dc'] : 'orangered'; 
+$is_dc = (isset($wset['dc']) && $wset['dc']) ? $wset['dc'] : 'orangered';
 
 // 그림자
 $shadow_in = '';
 $shadow_out = (isset($wset['shadow']) && $wset['shadow']) ? apms_shadow($wset['shadow']) : '';
 if($shadow_out && isset($wset['inshadow']) && $wset['inshadow']) {
 	$shadow_in = '<div class="in-shadow">'.$shadow_out.'</div>';
-	$shadow_out = '';	
+	$shadow_out = '';
 }
 
 $list_cnt = count($list);
@@ -110,10 +110,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
             <li><a <?php echo ($sort == 'it_update_time') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_update_time&amp;sortodr=desc&prodSupYn=<?=$_COOKIE["prodSupYn"]?>">최근등록순</a></li>
         </ul>
     </div>
-    
+
     <?php
 		$prodSupLabel = "유통구분";
-				   
+
 		if(!$_COOKIE["prodSupYn"]){
 			$prodSupLabel = "유통구분";
 		}
@@ -161,7 +161,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	<ul>
 	<?php for($i=0; $i < $list_cnt; $i++){ ?>
 	<?php
-										  
+
 		$img = apms_it_thumbnail($list[$i], 400, 400, false, true);
 
 		if(!$img["src"] && $list[$i]["it_img1"]){
@@ -172,9 +172,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 		if(!$img["src"]){
 			$img["src"] = G5_URL."/shop/img/no_image.gif";
 		}
-										  
+
 	?>
-		<li class="<?=$list[$i]["it_id"]?>" data-ca="<?=substr($list[$i]["ca_id"], 0, 2)?>">
+
+		<?php
+			$add_height="";
+			if($is_admin){
+				$add_height='style="height: 500px;"';
+			}
+		?>
+		<li class="<?=$list[$i]["it_id"]?>" data-ca="<?=substr($list[$i]["ca_id"], 0, 2)?>" >
 			<a href="<?=$list[$i]["href"]?>">
 			<?php if($list[$i]["prodSupYn"] == "N"){ ?>
 				<p class="sup">비유통 상품</p>
@@ -201,10 +208,27 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<p class="price"><?=number_format($list[$i]["it_cust_price"])?>원</p>
 			<?php } ?>
 			</a>
+
+			<div class="it_type_box">
+				<?php if($list[$i]['it_type1']){ ?><p class="p_box type1" > 판매상품</p><?php } ?>
+				<?php if($list[$i]['it_type2']){ ?><p class="p_box type2"> 대여상품</p><?php } ?>
+				<?php if($list[$i]['it_type3']){ ?><p class="p_box type3">주문제작</p><?php } ?>
+				<?php if($list[$i]['it_type4']){ ?><p class="p_box type4"> 상담문의</p><?php } ?>
+				<?php if($list[$i]['it_type5']){ ?><p class="p_box type5"> 택배전용</p><?php } ?>
+			</div>
+			<?php
+
+			// echo $list[$i]['it_type1'];
+			// echo $list[$i]['it_type2'];
+			// echo $list[$i]['it_type3'];
+			// echo $list[$i]['it_type4'];
+			// echo $list[$i]['it_type5'];
+			; ?>
 		</li>
 	<?php } ?>
 	</ul>
 </div>
+
 <div class="list-btn">
 	<div class="list-page list-paging">
 		<ul class="pagination pagination-sm en">
@@ -250,10 +274,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         // });
 
         var inputs = $('.custom-index input');
-        
+
         var customIndexObj = {}; // (item-id : custom-index)
         var tempKey;
-        
+
         if (inputs.length != 0) {
             console.log(inputs)
             inputs.each(function (i, v) {

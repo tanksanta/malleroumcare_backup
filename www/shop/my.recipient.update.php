@@ -45,18 +45,18 @@
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 	<style>
 		#ui-datepicker-div { z-index: 999 !important; }
-		
+
 		#zipAddrPopupWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 		#zipAddrPopupWrap > div { position: relative; width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 		#zipAddrPopupWrap > div > div { position: relative; width: 700px; height: 500px; background-color: #FFF; padding-top: 50px; left: 50%; margin-left: -350px; }
 		#zipAddrPopupWrap #zipAddrPopupIframe { position: relative; width: 100%; height: 100%; float: left; border: 0; background-color: #FFF; border-top: 1px solid #DDD; }
 		#zipAddrPopupWrap .closeBtn { position: absolute; font-size: 32px; color: #AAA; top: 10px; right: 10px; cursor: pointer; }
-		
+
 		@media (max-width : 750px){
 			#zipAddrPopupWrap > div > div { width: 100%; height: 100%; left: 0; margin-left: 0; }
 		}
 	</style>
-	
+
 	<div id="zipAddrPopupWrap">
 		<div>
 			<div>
@@ -65,7 +65,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<form class="form-horizontal register-form">
 		<div class="panel panel-default">
 			<div class="panel-heading"><strong>기본정보</strong></div>
@@ -79,7 +79,7 @@
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>주민등록번호</b>
@@ -89,7 +89,7 @@
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>생년월일</b>
@@ -99,7 +99,7 @@
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>장기요양인정번호</b>
@@ -110,7 +110,7 @@
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>인정등급</b>
@@ -126,7 +126,7 @@
 						</select>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>유효기간(시작일)</b>
@@ -136,7 +136,7 @@
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>유효기간(종료일)</b>
@@ -146,7 +146,7 @@
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>본인부담금율</b>
@@ -161,7 +161,7 @@
 						</select>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>성별</b>
@@ -170,13 +170,13 @@
 						<label class="checkbox-inline">
 							<input type="radio" name="penGender" value="남" style="vertical-align: middle; margin: 0 5px 0 0;" <?=($data["penGender"] == "남") ? "checked" : ""?>>남
 						</label>
-						
+
 						<label class="checkbox-inline">
 							<input type="radio" name="penGender" value="여" style="vertical-align: middle; margin: 0 5px 0 0;" <?=($data["penGender"] == "여") ? "checked" : ""?>>여
 						</label>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>휴대폰</b>
@@ -186,7 +186,7 @@
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>일반전화</b>
@@ -195,12 +195,12 @@
 						<input type="text" name="penConPnum" value="<?=$data["penConPnum"]?>" class="form-control input-sm">
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback" style="margin-bottom: 0;">
 					<label class="col-sm-2 control-label">
 						<b>주소</b>
 					</label>
-					
+
 					<div class="col-sm-8">
 						<label for="reg_mb_zip" class="sound_only">우편번호</label>
 						<label>
@@ -223,7 +223,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="panel panel-default">
 			<div class="panel-heading"><strong>보호자 정보</strong></div>
 			<div class="panel-body">
@@ -235,7 +235,7 @@
 						<input type="text" name="penProNm" value="<?=$data["penProNm"]?>" class="form-control input-sm">
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>생년월일</b>
@@ -244,7 +244,7 @@
 						<input type="text" name="penProBirth" value="<?=$data["penProBirth"]?>" class="form-control input-sm" dateonly2>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>관계</b>
@@ -267,7 +267,7 @@
 						<input type="text" name="penProRelEtc" value="<?=$data["penProRelEtc"]?>" class="form-control input-sm" <?=($data["penProRel"] == "11") ? "" : "readonly"?>>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>이메일</b>
@@ -276,7 +276,7 @@
 						<input type="text" name="penProEmail" value="<?=$data["penProEmail"]?>" class="form-control input-sm">
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>휴대폰</b>
@@ -285,7 +285,7 @@
 						<input type="text" name="penProConNum" value="<?=$data["penProConNum"]?>" class="form-control input-sm">
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>일반전화</b>
@@ -294,12 +294,12 @@
 						<input type="text" name="penProConPnum" value="<?=$data["penProConPnum"]?>" class="form-control input-sm">
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>주소</b>
 					</label>
-					
+
 					<div class="col-sm-8">
 						<label for="reg_mb_zip" class="sound_only">우편번호</label>
 						<label>
@@ -320,7 +320,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>담당직원정보</b>
@@ -338,7 +338,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="panel panel-default">
 			<div class="panel-heading"><strong>장기요양급여 제공기록지</strong></div>
 			<div class="panel-body">
@@ -350,13 +350,13 @@
 						<label class="checkbox-inline">
 							<input type="radio" name="penCnmTypeCd" value="00" style="vertical-align: middle; margin: 0 5px 0 0;" <?=($data["penCnmTypeCd"] == "00") ? "checked" : ""?>>수급자
 						</label>
-						
+
 						<label class="checkbox-inline">
 							<input type="radio" name="penCnmTypeCd" value="01" style="vertical-align: middle; margin: 0 5px 0 0;" <?=($data["penCnmTypeCd"] == "01") ? "checked" : ""?>>확인자
 						</label>
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>수령방법</b>
@@ -369,7 +369,7 @@
 						<input type="text" name="penRecTypeTxt" value="<?=$data["penRecTypeTxt"]?>" class="form-control input-sm">
 					</div>
 				</div>
-				
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>특이사항</b>
@@ -378,8 +378,8 @@
 						<input type="text" name="penRemark" value="<?=$data["penRemark"]?>" class="form-control input-sm">
 					</div>
 				</div>
-				
-				<div class="form-group has-feedback">
+
+				<!-- <div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>콜센터</b>
 					</label>
@@ -387,33 +387,95 @@
 						<label class="checkbox-inline">
 							<input type="radio" name="caCenYn" value="Y" style="vertical-align: middle; margin: 0 5px 0 0;" <?=($data["caCenYn"] == "Y") ? "checked" : ""?>>등록
 						</label>
-						
+
 						<label class="checkbox-inline">
 							<input type="radio" name="caCenYn" value="N" style="vertical-align: middle; margin: 0 5px 0 0;" <?=($data["caCenYn"] == "N") ? "checked" : ""?>>미등록
 						</label>
 					</div>
+				</div> -->
+			</div>
+		</div>
+		<!-- 20210307 성훈작업 -->
+		<style media="screen">
+		input[type="checkbox"], input[type=checkbox] {margin: 4px 0 0; margin-top: 1px \9;line-height: normal;}
+		.col-dealing{ width:80%; text-align: left;}
+		.dealing{	margin-left: 0px;}
+		</style>
+
+		<div class="panel panel-default">
+			<div class="panel-heading"><strong>취급가능 제품</strong></div>
+			<div class="panel-body">
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>판매품목</b>
+					</label>
+						<div class="col-sm-3 col-dealing">
+							<?php for($i=0; $i<14; $i++){
+								$sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
+								$sale_product_name1="경사로(실내용)"; $sale_product_id1="ITM2021010800001";
+								$sale_product_name2="욕창예방매트리스"; $sale_product_id2="ITM2020092200020";
+								$sale_product_name3="요실금팬티"; $sale_product_id3="checkbox_ITM2020092200011";
+								$sale_product_name4="자세변환용구"; $sale_product_id4="ITM2020092200010";
+								$sale_product_name5="욕창예방석"; $sale_product_id5="ITM2020092200009";
+								$sale_product_name6="지팡이"; $sale_product_id6="ITM2020092200008";
+								$sale_product_name7="간이변기"; $sale_product_id7="ITM2020092200007";
+								$sale_product_name8="미끄럼방지용품(매트)"; $sale_product_id8="ITM2020092200006";
+								$sale_product_name9="미끄럼방지용품(양말)"; $$sale_product_id9="checkbox_ITM2020092200005";
+								$sale_product_name10="안경손잡이"; $sale_product_id10="ITM2020092200004";
+								$sale_product_name11="성인용보행기"; $sale_product_id11="ITM2020092200003";
+								$sale_product_name12="목욕의자"; $sale_product_id12="ITM2020092200002";
+								$sale_product_name13="이동변기"; $sale_product_id13="ITM2020092200001";
+							?>
+							<label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
+								<input type="checkbox" name="penCnmTypeCd" id="<?=${'sale_product_id'. $i}; ?>" value="<?=${'sale_product_id'. $i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
+							</label>
+						<?php } ?>
+						</div>
+				</div>
+
+
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>대여품목</b>
+					</label>
+						<div class="col-sm-3 col-dealing">
+							<?php for($i=0; $i<8; $i++){
+								$rental_product_name0="욕창예방매트리스"; $rental_product_id0="ITM2020092200019";
+								$rental_product_name1="경사로(실내용)"; $rental_product_id1="ITM2020092200018";
+								$rental_product_name2="배회감지기"; $rental_product_id2="ITM2020092200017";
+								$rental_product_name3="목욕리프트"; $rental_product_id3="ITM2020092200016";
+								$rental_product_name4="이동욕조"; $rental_product_id4="ITM2020092200015";
+								$rental_product_name5="수동침대"; $rental_product_id5="ITM2020092200014";
+								$rental_product_name6="전동침대"; $rental_product_id6="ITM2020092200013";
+								$rental_product_name7="수동휠체어"; $rental_product_id7="ITM2020092200012";
+							?>
+							<label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
+								<input type="checkbox" name="penCnmTypeCd" id="<?=${'rental_product_id'. $i}; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
+							</label>
+						<?php } ?>
+						</div>
 				</div>
 			</div>
 		</div>
-	
+<!-- 20210307 성훈작업 -->
 		<div class="text-center" style="margin-top: 30px;">
 			<button type="button" id="btn_submit" class="btn btn-color">수정</button>
 			<a href="./my.recipient.list.php" class="btn btn-black" role="button">취소</a>
 		</div>
 	</form>
-	
+
 	<script type="text/javascript">
 			var zipPopupDom = document.getElementById("zipAddrPopupIframe");
-		
+
 			function zipPopupClose(){
 				$("#zipAddrPopupWrap").hide();
 			}
-		
+
 			function zipPopupOpen(target){
 				new daum.Postcode({
 					oncomplete: function(data){
 						var parent = $(target).closest(".col-sm-8");
-						
+
 						$(parent).find(".penZip").val(data.zonecode);
 						$(parent).find(".penAddr").val(data.address);
 
@@ -426,9 +488,9 @@
 
 				$("#zipAddrPopupWrap").show();
 			}
-		
+
 		$(function(){
-			
+
 			$.datepicker.setDefaults({
 				dateFormat : 'yy-mm-dd',
 				prevText: '이전달',
@@ -443,24 +505,24 @@
 				changeYear: true,
 				yearRange : "c-150:c+10"
 			});
-			
+
 			$("input:text[dateonly]").datepicker({});
-			
+
 			$("input:text[dateonly2]").datepicker({
 				maxDate : "<?=date("Y-m-d")?>"
 			});
 			$("#zipAddrPopupWrap").css("opacity", 1);
 			$("#zipAddrPopupWrap").hide();
-			
+
 			$(".register-form select[name='penProRel']").change(function(){
 				$(".register-form input[name='penProRelEtc']").prop("readonly", true);
 				$(".register-form input[name='penProRelEtc']").val("");
-				
+
 				if($(this).val() == "11"){
 					$(".register-form input[name='penProRelEtc']").prop("readonly", false);
 				}
 			});
-			
+
 			$("#btn_submit").click(function(){
 				var importantIcon = $(".register-form .form-control-feedback");
 				for(var i = 0; i < importantIcon.length; i++){
@@ -471,7 +533,7 @@
 						return false;
 					}
 				}
-				
+
 				var sendData = {
 					penId : "<?=$data["penId"]?>",
 					penNm : $(".register-form input[name='penNm']").val(),
@@ -517,7 +579,7 @@
 					usrId : "<?=$member["mb_id"]?>",
 					delYn : "N"
 				}
-				
+
 				$.ajax({
 					url : "./ajax.my.recipient.update.php",
 					type : "POST",

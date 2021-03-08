@@ -279,14 +279,14 @@ pre{white-space: pre-wrap;}
 	* main
 ================================================= */
 
-.tab_list{display: inline-block;width: 100%;} 
-.tab_list ul li { float: left;  padding:10px;text-align:center;border:1px solid #ddd;border-right: 0px;cursor:pointer;color:#999;} 
-.tab_list ul li:only-child {width: 100%;} 
-.tab_list ul li:nth-last-child(2), .tab_list ul li:nth-last-child(2)+li {width: calc(100% / 2 );} 
-.tab_list ul li:nth-last-child(3), .tab_list ul li:nth-last-child(3)~li {width: calc(100% / 3 );} 
-.tab_list ul li:nth-last-child(4), .tab_list ul li:nth-last-child(4)~li {width: calc(100% / 4 );} 
-.tab_list ul li:nth-last-child(5), .tab_list ul li:nth-last-child(5)~li {width: calc(100% / 5 );} 
-.tab_list ul li:last-child{border-right:1px solid #ddd} 
+.tab_list{display: inline-block;width: 100%;}
+.tab_list ul li { float: left;  padding:10px;text-align:center;border:1px solid #ddd;border-right: 0px;cursor:pointer;color:#999;}
+.tab_list ul li:only-child {width: 100%;}
+.tab_list ul li:nth-last-child(2), .tab_list ul li:nth-last-child(2)+li {width: calc(100% / 2 );}
+.tab_list ul li:nth-last-child(3), .tab_list ul li:nth-last-child(3)~li {width: calc(100% / 3 );}
+.tab_list ul li:nth-last-child(4), .tab_list ul li:nth-last-child(4)~li {width: calc(100% / 4 );}
+.tab_list ul li:nth-last-child(5), .tab_list ul li:nth-last-child(5)~li {width: calc(100% / 5 );}
+.tab_list ul li:last-child{border-right:1px solid #ddd}
 .tab_list ul li.active{background: #fff;border-bottom:3px solid #999;font-weight:bold;color:#333;}
 .tab_list ul li img {width: 100%;}
 
@@ -348,7 +348,7 @@ pre{white-space: pre-wrap;}
 .dropdown {width:140px;float: right;border: 1px solid #ddd;}
 
 /* =================================================
-	* shop 
+	* shop
 ================================================= */
 .send_estimate_div{ max-width: 50% !important;}
 .send_estimate_div a{background: #333;border:0;color:#fff;font-weight:bold;}
@@ -393,13 +393,13 @@ pre{white-space: pre-wrap;}
 	* Media Query
 ================================================= */
 @media only screen and (max-width:960px) {
-	
+
 	.point_box .top_area a{position:relative;width:100%;}
 	.point_box .point_desc li {margin:5px 0;}
 	.point_box .point_desc li p{margin:0;}
 	.point_box .point_desc li p:first-child{width:100%;text-align: left;padding:0;}
 	.point_box .point_desc li p:last-child{width:100%;padding:0;}
-	
+
 	.scroll_top{display:none;}
 	.mo_top{display:inline-block;}
 	.mo_menu{display:inline-block;}
@@ -427,7 +427,7 @@ pre{white-space: pre-wrap;}
 	.item_list_wrap ul li .desc .item_tit{font-size:16px;font-weight:bold;}
 	.item_list_wrap ul li .desc .pay{font-size:16px;position:relative;top:0}
 	.item_list_wrap ul li .desc .item_info{font-size:10px;}
-	
+
 	.pick_item_area .item_info {width:100%;}
 	.pick_item_area .item_info img{height: 120px;}
 	.pick_item_area .item_info .desc{top:30px;left:80px;width:calc(100% - 80px);}
@@ -442,14 +442,14 @@ pre{white-space: pre-wrap;}
 	.pick_item_area .item_list ul>li .num{height: 50px;}
 	.pick_item_area .item_list ul>li .tit{height: 50px;}
 	.pick_item_area .item_list ul>li .pick_desc .pick_info{ margin-top: 20%;}
-	
+
 	.tab_list_wrap{overflow-x: auto;white-space: nowrap;width:100%;}
 	.tab_list{width: auto;width:600px;}
 	.tab_list ul li{width:auto !important;}
 
 	.item_list_wrap ul li .img_area img {width:100%;height:auto;}
-	
-	
+
+
 	.footer_info{display:none;}
 	.footer_area .logo{padding: 10px;}
 	.footer_area .info{padding:10px;}
@@ -460,12 +460,12 @@ pre{white-space: pre-wrap;}
 	.footer_area .info p {font-size:11px;}
 	.pc_only{display:none;}
 	.mo_br{display:block;}
-	
+
 	.sub_section_tit{font-size:25px;}
 	.sub_section_tit span{font-size:14px;}
-	
+
 	.item_list_wrap ul>li .img_area{width:100%;height: auto;}
-	
+
 
 
 }
@@ -623,7 +623,7 @@ pre{white-space: pre-wrap;}
 .productListWrap { width: 100%; float: left; }
 .productListWrap * { position: relative; }
 .productListWrap > ul { width: 100%; float: left; }
-.productListWrap > ul > li { width: 18.4%; height: 400px; float: left; margin-right: 2%; margin-bottom: 2%; }
+.productListWrap > ul > li { width: 18.4%; height: 450px; float: left; margin-right: 2%; margin-bottom: 2%; }
 .productListWrap > ul > li:nth-of-type(5n) { margin-right: 0; }
 .productListWrap > ul > li > a { width: 100%; float: left; }
 .productListWrap > ul > li > a > p { width: 100%; float: left; margin: 0; }
@@ -759,32 +759,32 @@ pre{white-space: pre-wrap;}
 	body { padding-top: 85px; padding-bottom: 70px; }
 	.pc_layout { display: none !important; }
 	.mo_layout { display: block !important; }
-	
+
 	.productListWrap > ul > li { width: 49%; height: auto; margin-bottom: 10%; }
 	.productListWrap > ul > li:nth-of-type(5n) { margin-right: 2%; }
 	.productListWrap > ul > li:nth-of-type(2n) { margin-right: 0; }
 	.productListWrap > ul > li > a > p.sup { width: 80px; height: 25px; line-height: 25px; font-size: 12px; border-radius: 5px; }
-	
+
 	.item-head .item-image .supInfo { width: 80px; height: 25px; line-height: 25px; font-size: 12px; border-radius: 5px; }
-	
+
 	#mainBannerWrap > .listWrap { border-radius: 5px; overflow: hidden; }
-	
+
 	#mainBestCategoryWrap > .title { font-size: 21px; }
 	#mainBestProductWrap > .title { font-size: 21px; }
-	
+
 	.footer_area .logo { padding: 0; }
 	.footer_area .info p.link { margin-top: 30px; margin-bottom: 20px; }
-	
+
 	.btn_top_scroll { bottom: 80px; }
-	
+
 	#myRecipientListWrap > .titleWrap { font-size: 25px; }
-	
+
 	#myRecipientListWrap > .itemWrap > .item { width: 100%; margin-right: 0; margin-top: 2%; }
 	#myRecipientListWrap > .itemWrap > .item > li.info { display: block; margin-bottom: 10px; }
 	#myRecipientListWrap > .itemWrap > .item > li.info > p { display: block; width: 100%; float: left; }
 	#myRecipientListWrap > .itemWrap > .item > li.info > p.labelName { font-size: 12px; }
 	#myRecipientListWrap > .itemWrap > .item > li.info > p.value { font-size: 15px; font-weight: 500; margin-top: -5px; }
-	
+
 	#headerTopQuickMenuWrap > div > div { padding: 20px; }
 	#headerTopQuickMenuWrap .listWrap > li { width: 49%; margin-bottom: 2%; }
 	#headerTopQuickMenuWrap .listWrap > li > a { height: 90px; line-height: inherit; display: table; table-layout: fixed; }

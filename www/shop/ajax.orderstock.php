@@ -13,10 +13,16 @@ if(!defined('THEMA_PATH')) {
 
 $it_use = THEMA_KEY == 'partner' ? 'it_use_partner' : 'it_use';
 
-if (get_cart_count($tmp_cart_id) == 0)// 장바구니에 담기
+if (get_cart_count($tmp_cart_id) == 0){// 장바구니에 담기
     //원본
-    //die("장바구니가 비어 있습니다.\n\n이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다.");
-    die("잘못된 접근입니다. 다시 주문해 주세요.");
+    echo "back_button";
+    return false;
+
+  }
+
+
+if (get_cart_count($tmp_cart_id) == 0)// 장바구니에 담기
+    die("장바구니가 비어 있습니다.\n\n이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다.");
 if(!$keep_term)
     $keep_term = 15; // 기본값 15일
 

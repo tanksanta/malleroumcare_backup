@@ -69,7 +69,7 @@ $sql_apms_where = $sql_apms_orderby = '';
 
 $order_by = ($sort != "") ? $sort.' '.$sortodr.' ,'.$sql_apms_orderby.' it_order, pt_num desc, it_id desc' : $sql_apms_orderby.' it_order, pt_num desc, it_id desc'; // 상품 출력순서가 있다면
 if ( THEMA_KEY == 'partner' ) {
-	$where = "it_use_partner = '1'";	
+	$where = "it_use_partner = '1'";
 }else{
 	$where = "it_use = '1'";
 }
@@ -78,15 +78,15 @@ if(isset($type) && $type) {
 	$qstr .= '&amp;type='.$type;
 }
 // $where .= " and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%')";
-$where .= " and ( ca_id like '$ca_id%' 
-	or ca_id2 like '$ca_id%' 
-	or ca_id3 like '$ca_id%' 
-	or ca_id4 like '$ca_id%' 
-	or ca_id5 like '$ca_id%' 
-	or ca_id6 like '$ca_id%' 
-	or ca_id7 like '$ca_id%' 
-	or ca_id8 like '$ca_id%' 
-	or ca_id9 like '$ca_id%' 
+$where .= " and ( ca_id like '$ca_id%'
+	or ca_id2 like '$ca_id%'
+	or ca_id3 like '$ca_id%'
+	or ca_id4 like '$ca_id%'
+	or ca_id5 like '$ca_id%'
+	or ca_id6 like '$ca_id%'
+	or ca_id7 like '$ca_id%'
+	or ca_id8 like '$ca_id%'
+	or ca_id9 like '$ca_id%'
 	or ca_id10 like '$ca_id%' ) ";
 $where .= $sql_apms_where;
 
@@ -97,7 +97,7 @@ if(!$_COOKIE["prodSupYn"]){
 
 if($_GET["prodSupYn"]){
 	setcookie("prodSupYn", $_GET["prodSupYn"], time() + 86400 * 3650, "/");
-	
+
 	if($_GET["prodSupYn"] == "Y" || $_GET["prodSupYn"] == "N"){
 		$where .= " AND prodSupYn = '{$_GET["prodSupYn"]}'";
 	}
@@ -166,9 +166,9 @@ if ($sort != 'custom') {
 }
 //print_r2($list_sql);
 $result = sql_query($list_sql);
-for ($i=0; $row=sql_fetch_array($result); $i++) { 
+for ($i=0; $row=sql_fetch_array($result); $i++) {
 	$thisOptionList = [];
-	
+
 	# 210204 옵션
 	$thisOptionSQL = sql_query("
 		SELECT io_id
@@ -177,8 +177,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	");
 	for($ii = 0; $subRow = sql_fetch_array($thisOptionSQL); $ii++){
 		array_push($thisOptionList, $subRow["io_id"]);
-	} 
-	
+	}
+
 	$list[$i] = $row;
 	$list[$i]['href'] = './item.php?it_id='.$row['it_id'].'&amp;ca_id='.$ca_id.$qstr.'&amp;page='.$page;
 	$list[$i]['num'] = $num;
