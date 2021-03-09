@@ -427,7 +427,7 @@
 								$sale_product_name13="이동변기"; $sale_product_id13="ITM2020092200001";
 							?>
 							<label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-								<input type="checkbox" name="penCnmTypeCd" id="<?=${'sale_product_id'. $i}; ?>" value="<?=${'sale_product_id'. $i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
+								<input type="checkbox" name="sale_product" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
 							</label>
 						<?php } ?>
 						</div>
@@ -450,7 +450,7 @@
 								$rental_product_name7="수동휠체어"; $rental_product_id7="ITM2020092200012";
 							?>
 							<label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-								<input type="checkbox" name="penCnmTypeCd" id="<?=${'rental_product_id'. $i}; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
+								<input type="checkbox" name="penCnmTypeCd" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
 							</label>
 						<?php } ?>
 						</div>
@@ -590,10 +590,44 @@
 						if(result.errorYN == "Y"){
 							alert(result.message);
 						} else {
-							window.location.href = "./my.recipient.list.php";
+                            //취급품목
+                            var sendData2 = {
+                                penId : "<?=$data["penId"]?>",
+                            }
+
+                            var itemList=[];
+                            var sale_product_id="";
+                            var rental_product_id="";
+                            //판매품목 값 넣기
+                            for(var i=0; i<14; i++){
+                                eval("sale_product_id = document.getElementById('sale_product_id"+i+"')");
+                                if(sale_product_id.checked==true){ itemList.push(sale_product_id.value); }
+                            }
+                            //대여품목 값 넣기
+                            for(var i=0; i<8; i++){
+                                eval("rental_product_id = document.getElementById('rental_product_id"+i+"')");
+                                if(rental_product_id.checked==true){ itemList.push(rental_product_id.value); }
+                            }
+
+                            sendData['itemList']=itemList;
+                            $.ajax({
+                                url : "./ajax.my.recipient.setItem.php",
+                                type : "POST",
+                                async : false,
+                                data : sendData,
+                                success : function(result){
+                                    result = JSON.parse(result);
+                                    if(result.errorYN == "Y"){
+                                        alert(result.message);
+                                    } else {
+                                        window.location.href = "./my.recipient.list.php";
+                                    }
+                                        }
+                            });
 						}
 					}
 				});
+                
 			});
 
 		})

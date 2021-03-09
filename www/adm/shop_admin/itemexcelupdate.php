@@ -315,8 +315,10 @@ include_once(G5_PATH.'/head.sub.php');
     <dl id="excelfile_result">
         <dt>총상품수</dt>
         <dd><?php echo number_format($total_count); ?></dd>
-        <dt>완료건수</dt>
+        <dt>완료건수(쇼핑몰)</dt>
         <dd id="successCnt"><?php echo $succ_count; ?></dd>
+        <dt>완료건수(시스템)</dt>
+        <dd id="successApiCnt">0</dd>
         <dt>실패건수</dt>
         <dd id="failCnt"><?php echo $fail_count; ?></dd>
         <?php if($fail_count > 0) { ?>
@@ -337,6 +339,8 @@ include_once(G5_PATH.'/head.sub.php');
     
     <script type="text/javascript">
 		$(function(){
+			
+			var successApiCnt = 0;
 
 			function dataURItoBlob(dataURI) {
 				// convert base64/URLEncoded data component to raw binary data held in a string
@@ -443,6 +447,9 @@ include_once(G5_PATH.'/head.sub.php');
 										prodId : result.data.prodId
 									}
 								});
+								
+								successApiCnt++;
+								$("#successApiCnt").text(Number(successApiCnt));
 							}
 						},
 						error : function(result){
