@@ -100,20 +100,20 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	.item-head .item-thumb img { width: 100px; height: 100px; }
 	.ca_info { font-weight: 400 !important; }
 	.ca_info > .help-block { float: right; font-size: 14px; }
-	
+
 	.detailInfo { width: 100%; margin-top: 5px; }
 	.detailInfo > li { width: 100%; display: table; table-layout: fixed; }
 	.detailInfo > li > span { display: table-cell; vertical-align: middle; font-size: 12px; }
 	.detailInfo > li > span.infoLabel { width: 60px; }
 	.detailInfo > li > span.infoLabel > span:first-of-type { margin-right: 5px; }
-	
+
 	.selfPriceInfo { width: 100%; border: 1px solid #CFCFCF; padding: 10px 15px; background-color: #F8F8F8; }
 	.selfPriceInfo > .title { width: 100%; height: 20px; line-height: 20px; font-weight: bold; color: #333; }
 	.selfPriceInfo > p { width: 100%; height: 20px; line-height: 20px; margin-top: 10px; font-size: 12px; }
-	
+
 	#item3dViewBtn { position: absolute; width: 130px; height: 40px; line-height: 38px; z-index: 10; top: 0; right: 25px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
 	#item3dViewBtn > img { margin-right: 10px; }
-	
+
 	#item3dViewBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 	#item3dViewBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 	#item3dViewBox iframe { position: relative; width: 700px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
@@ -194,11 +194,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?> <span style="font-size: 15px;">(<?=$it["it_taxInfo"]?> 상품)</span>
 			</h1>
 			<p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p>
-			
+			<p class="help-block">* 급여코드  <span style="padding-left:29px;">: <?php echo $it['ProdPayCode']; ?></span></p>
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
-			
+
 			<ul class="detailInfo">
 				<li>
 					<span class="infoLabel">
@@ -222,13 +222,13 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<span class="info">: <?=($it["prodWeig"]) ? $it["prodWeig"] : "-"?></span>
 				</li>
 			</ul>
-			
+
 			<!-- 본인부담금 -->
 			<div class="selfPriceInfo" style="margin-top: 20px;">
 				<div class="title">본인부담금 예시</div>
 				<p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
 			</div>
-			
+
 			<!-- 재고수량 -->
 			<ul class="optionStockCntList" style="display: none;">
 				<li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
@@ -267,7 +267,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					display:none;
 				}
 			}
-			
+
 			@media (max-width: 960px){
 				body { padding-bottom: 130px; }
 				.btn_top_scroll { bottom: 140px; }
@@ -296,11 +296,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<h1 class="ca_info"><?=$it["ca_name"]?> <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p></h1>
 			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?> <span style="font-size: 15px;">(<?=$it["it_taxInfo"]?> 상품)</span>
 			</h1>
-			
+
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
-			
+				<p class="help-block" style=" color:#747474">급여코드 : <?php echo $it['ProdPayCode']; ?></p>
 			<ul class="detailInfo">
 				<li>
 					<span class="infoLabel">
@@ -324,7 +324,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<span class="info">: <?=($it["prodWeig"]) ? $it["prodWeig"] : "-"?></span>
 				</li>
 			</ul>
-			
+
 			<p style="font-size: 32px; margin: 25px 0; font-weight: bold;">
 			<?php if($member["mb_id"]){ ?>
 				<?php if($member["mb_level"] == "3"){ ?>
@@ -335,18 +335,19 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php } else { ?>
 				<?=number_format($it["it_cust_price"])?>원
 			<?php } ?>
-			
+
 			<?php if(substr($it["ca_id"], 0, 2) == "20"){ ?>
 				<br><span style="font-weight: normal; font-size: 13px; margin-top: 15px; display: inline-block;">* 대여금액(월기준) : <?=number_format($it["it_rental_price"])?>원</span>
 			<?php } ?>
+			<span style="font-size: 15px;"><?=($_COOKIE["viewType"] == "basic") ? "(판매가)" : "(급여가)" ?></span>
 			</p>
-			
+
 			<!-- 본인부담금 -->
 			<div class="selfPriceInfo">
 				<div class="title">본인부담금 예시</div>
 				<p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
 			</div>
-			
+
 			<!-- 재고수량 -->
 			<ul class="optionStockCntList" style="display: none;">
 				<li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
@@ -441,7 +442,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php } ?>
 			<?php
             $ct_send_cost_label = '배송';
-            
+
             if ($is_samhwa_partner) { // 파트너 유저 배송비
                 if ($it['it_sc_type_partner'] == 1)
                     $sc_method = '무료배송';
@@ -464,16 +465,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     }
                     $sc_method .= '</select>';
                 }
-                
+
                 $sc_price_info = "";
                 if ($it['it_sc_type_partner'] != 1) {
                     $sc_price_info = "* 배송비는 {$it['it_sc_qty_partner']}개당 배송비 부가 ({$it['it_sc_price_partner']}원)<br>* 도서산간지역은 별도 비용이 발생합니다.";
                 }
-                
+
                 if ($it['it_sc_type_partner'] == 0) { // 쇼핑몰 디폴트 셋팅 시
                     $item_price = samhwa_price($it, THEMA_KEY);
                     $send_cost = get_item_sendcost_by_default_case($item_price);
-                    
+
                     if ($send_cost > 0) {
                         $sc_price_info = "* 배송비 ({$send_cost}원)<br>* 도서산간지역은 별도 비용이 발생합니다.";
                     } else {
@@ -502,16 +503,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     }
                     $sc_method .= '</select>';
                 }
-                
+
                 $sc_price_info = "";
                 if ($it['it_sc_type'] != 1) {
                     $sc_price_info = "* 배송비는 {$it['it_sc_qty']}개당 배송비 부가 ({$it['it_sc_price']}원)<br>* 도서산간지역은 별도 비용이 발생합니다.";
                 }
-                
+
                 if ($it['it_sc_type'] == 0) { // 쇼핑몰 디폴트 셋팅 시
                     $item_price = samhwa_price($it, THEMA_KEY);
                     $send_cost = get_item_sendcost_by_default_case($item_price);
-                    
+
                     if ($send_cost > 0) {
                         $sc_price_info = "* 배송비 ({$send_cost}원)<br>* 도서산간지역은 별도 비용이 발생합니다.";
                     } else {
@@ -519,7 +520,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     }
                 }
             }
-                
+
 			?>
 			<tr>
 				<th>
@@ -776,7 +777,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						alert("코드가 올바르지 않습니다.");
 						return false;
 					}
-					
+
 					$.ajax({
 						url : "./itemwishlist.php",
 						type : "POST",
@@ -785,7 +786,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						},
 						success : function(result){
 							result = JSON.parse(result);
-							
+
 							if(result.errorYN == "Y"){
 								alert(result.message);
 							} else {
@@ -1064,7 +1065,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<li><a href="#"  onclick="fnMove('3')" ><b>상품문의<?php echo $it_qa_cnt;?></b></a></li>
 			<li class="pc"><a href="#"  onclick="fnMove('4')" ><b>교환/반품/배송정보</b></a></li>
 		</ul>
-		<div class="tab-pane active" id="div1"> <!-- id="item-explan" --> 
+		<div class="tab-pane active" id="div1"> <!-- id="item-explan" -->
 			<div class="item-explan">
 				<?php if ($it['pt_explan']) { // 구매회원에게만 추가로 보이는 상세설명 ?>
 					<div class="well"><?php echo apms_explan($it['pt_explan']); ?></div>
@@ -1078,7 +1079,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<li><a href="#"  onclick="fnMove('3')"  ><b>상품문의<?php echo $it_qa_cnt;?></b></a></li>
 			<li class="pc"><a href="#"  onclick="fnMove('4')" ><b>교환/반품/배송정보</b></a></li>
 		</ul>
-		<div class="tab-pane active" id="div2"><!-- id="item-review" --> 
+		<div class="tab-pane active" id="div2"><!-- id="item-review" -->
 			<div id="iuv"></div>
 			<div id="itemuse">
 				<?php include_once('./itemuse.php'); ?>
@@ -1090,7 +1091,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<li class="active"><a href="#"  onclick="fnMove('3')" ><b>상품문의<?php echo $it_qa_cnt;?></b></a></li>
 			<li class="pc"><a href="#"  onclick="fnMove('4')"  ><b>교환/반품/배송정보</b></a></li>
 		</ul>
-		<div class="tab-pane active" id="div3"><!-- id="item-qa" --> 
+		<div class="tab-pane active" id="div3"><!-- id="item-qa" -->
 			<div id="iqv"></div>
 			<div id="itemqa">
 				<?php include_once('./itemqa.php'); ?>
@@ -1180,7 +1181,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<li><a href="#"  onclick="fnMove('3')"  ><b>상품문의<?php echo $it_qa_cnt;?></b></a></li>
 			<li class="pc active"><a href="#"  onclick="fnMove('4')" ><b>교환/반품/배송정보</b></a></li>
 		</ul>
-		<div class="tab-pane active" id="div4"><!-- id="item-delivery" --> 
+		<div class="tab-pane active" id="div4"><!-- id="item-delivery" -->
 			<?php include_once($item_skin_path.'/item.delivery.php'); ?>
 		</div>
 	</div>
@@ -1215,7 +1216,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 <script>
 $(function() {
-	
+
 	<?php if($member["mb_id"]){ ?>
 		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
@@ -1232,7 +1233,7 @@ $(function() {
 						var totalQty = 0;
 					}
 					$(".optionStockCntList").show();
-					
+
 					var html = '<li><span class="name">' + value.name + '</span><span class="cnt">' + value.qty + '개<?=(substr($it["ca_id"], 0, 2) == "20") ? " 대여 가능" : ""?>';
 					if(totalQty){
 						html += " (총 " + totalQty + "개)";
@@ -1243,7 +1244,7 @@ $(function() {
 			}
 		});
 	<?php } ?>
-	
+
 	$("a.view_image").click(function() {
 		window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
 		return false;

@@ -92,6 +92,8 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 	$sendData["prods"] = $prodsSendData;
 
+
+
 ?>
 
 <div id="sort-wrapper">
@@ -159,6 +161,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 <div class="productListWrap" style="margin-top: 30px;">
 	<ul>
+
+		<style media="screen">
+			 .img_3d {position: absolute; width: 50px; height: 40px; margin-top:5px; line-height: 38px; z-index: 10; top: 0; right: 5px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
+		</style>
 	<?php for($i=0; $i < $list_cnt; $i++){ ?>
 	<?php
 
@@ -182,6 +188,19 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			}
 		?>
 		<li class="<?=$list[$i]["it_id"]?>" data-ca="<?=substr($list[$i]["ca_id"], 0, 2)?>" >
+        <?php
+            // 우선순위 조정
+            if ($is_admin && $sort == 'custom') {
+                $sql_custom_index = "select *
+                                    from g5_shop_item_custom_index
+                                    where it_id = '{$list[$i]['it_id']}' and ca_id = '{$ca_id}'";
+                $row = sql_fetch($sql_custom_index);
+                $custom_index = "<div class='custom-index'>
+                                <span>우선순위</span><input data-item-id='{$list[$i]['it_id']}' type='text' style='border: 1px solid #999; float: right; text-align: center;' value='{$row['custom_index']}' oninput='this.value = this.value.replace(/[^0-9.]/g, \"\").replace(/(\..*)\./g, \"$1\");'>
+                                </div>";
+                echo $custom_index;
+            }
+            ?>
 			<a href="<?=$list[$i]["href"]?>">
 			<?php if($list[$i]["prodSupYn"] == "N"){ ?>
 				<p class="sup">비유통 상품</p>
@@ -189,6 +208,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<p class="img">
 				<?php if($img["src"]){ ?>
 					<img src="<?=$img["src"]?>" alt="<?=$list[$i]["it_name"]?>_상품이미지">
+					<?php if(json_decode($list[$i]["it_img_3d"], true)){ ?>
+					<div class="img_3d">
+						<img src="<?=G5_IMG_URL?>/item3dviewVisual.jpg">
+					</div>
+					<?php } ?>
 				<?php } ?>
 				</p>
 				<p class="name"><?=$list[$i]["it_name"]?></p>
@@ -216,20 +240,20 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<?php if($list[$i]['it_type4']){ ?><p class="p_box type4"> 상담문의</p><?php } ?>
 				<?php if($list[$i]['it_type5']){ ?><p class="p_box type5"> 택배전용</p><?php } ?>
 			</div>
-			<?php
 
-			// echo $list[$i]['it_type1'];
-			// echo $list[$i]['it_type2'];
-			// echo $list[$i]['it_type3'];
-			// echo $list[$i]['it_type4'];
-			// echo $list[$i]['it_type5'];
-			; ?>
 		</li>
+
 	<?php } ?>
 	</ul>
+
 </div>
 
 <div class="list-btn">
+        <?php if ($is_admin && $sort == 'custom') { ?>
+        <div style="float: right">
+            <button type="button" style="background: #333; color: #fff; padding: 5px 15px;" onclick="submitCustomIndex('<?php echo $ca_id ?>')">우선순위 저장</button>
+        </div>
+        <?php } ?>
 	<div class="list-page list-paging">
 		<ul class="pagination pagination-sm en">
 			<?php echo apms_paging($write_pages, $page, $total_page, $list_page); ?>

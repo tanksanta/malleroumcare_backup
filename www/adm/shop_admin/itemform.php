@@ -251,7 +251,7 @@ if($w == "" && !$fn) {
 	if($default['pt_reserve_cache'] > 0) list($pt_edate, $pt_ehour, $pt_eminute) = apms_reserve_end($it['pt_end'],1);
 
 	//$form_title = $fname.' '.$html_title;
-	
+
 ?>
 
 	<form name="fitemform" id="fitemform" action="./itemformupdate.php" method="post" enctype="MULTIPART/FORM-DATA" autocomplete="off" onsubmit="return fitemformcheck(this)">
@@ -269,7 +269,8 @@ if($w == "" && !$fn) {
 
 		<?php include_once($fskin_file); ?>
 		<div class="btn_fixed_top">
-			<a href="./itemlist.php?<?php echo $qstr; ?>" class="btn btn_02">목록</a>
+
+			<a href="./itemlist.php?<?php echo $qstr; ?>&searchProdSupYN=<?php echo $_GET['searchProdSupYN']; ?>" class="btn btn_02">목록</a>
 			<a href="<?php echo G5_SHOP_URL ;?>/item.php?it_id=<?php echo $it_id ;?>" class="btn_02  btn">상품보기</a>
 			<input type="submit" value="확인" class="btn_submit btn" accesskey="s">
 		</div>

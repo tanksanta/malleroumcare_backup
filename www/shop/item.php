@@ -39,11 +39,11 @@ $thisOptionList = [];
 $thisOptionQuery = sql_query("SELECT * FROM g5_shop_item_option WHERE it_id = '{$it["it_id"]}' ORDER BY io_no ASC");
 for($i = 0; $row = sql_fetch_array($thisOptionQuery); $i++){
 	$row["io_id"] = explode(chr(30), $row["io_id"]);
-	
+
 	$rowOptionData = [];
 	$rowOptionData["color"] = $row["io_id"][0];
 	$rowOptionData["size"] = $row["io_id"][1];
-	
+
 	array_push($thisOptionList, $rowOptionData);
 }
 $it["optionList"] = $thisOptionList;
@@ -105,7 +105,7 @@ if ($is_admin || $is_author || $is_purchaser) {
 if ( THEMA_KEY == 'partner') {
 	$it_sql_common = " it_use_partner = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";
 }else{
-	$it_sql_common = " it_use = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";	
+	$it_sql_common = " it_use = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";
 }
 //$it_sql_common = " it_use = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";
 
@@ -253,7 +253,7 @@ $nogood_href = G5_SHOP_URL.'/good.php?it_id='.$it['it_id'].'&amp;good=nogood';
 if(G5_IS_MOBILE) {
 	$it['it_explan'] = ($it['it_mobile_explan']) ? $it['it_mobile_explan'] : $it['it_explan'];
 	$it['pt_explan'] = ($it['pt_mobile_explan']) ? $it['pt_mobile_explan'] : $it['pt_explan'];
-} 
+}
 
 // 보안서버경로
 if (G5_HTTPS_DOMAIN)
@@ -381,7 +381,7 @@ if($it['it_info_value']) { // 상품 정보 고시
 			$i++;
 		}
 		$is_ii = true;
-	} else {																
+	} else {
 		if($is_admin) {
 			$ii[0]['title'] = '출력오류';
 			$ii[0]['value'] = '상품 정보 고시 정보가 올바르게 저장되지 않았습니다. config.php 파일의 G5_ESCAPE_FUNCTION 설정을 addslashes 로 변경하신 후 관리자 &gt; 상품정보 수정에서 상품 정보를 다시 저장해주세요.';
@@ -609,7 +609,7 @@ if($naverpay_button_js) {
 		return true;
 	}
 	</script>
-<?php 
+<?php
 } //네이버페이
 
 // 댓글
@@ -746,7 +746,7 @@ if($is_comment && $is_comment_write) {
 		<?php } ?>
 	});
 	</script>
-<?php 
+<?php
 } // 댓글
 
 if ($ca['ca_include_tail'] && is_include_path_check($ca['ca_include_tail']))

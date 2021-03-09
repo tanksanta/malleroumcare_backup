@@ -150,7 +150,7 @@ include_once($skin_path.'/search.skin.form.php');
 					<img src="<?=$img["src"]?>" alt="<?=$list[$i]["it_name"]?>_상품이미지">
 				<?php } ?>
 				</p>
-				<p class="name"><?=$list[$i]["it_name"]?></p>
+				<p class="name"><?=$list[$i]["it_name"]  ?> <?=(substr($list[$i]["ca_id"],0,2)=="10" ? "(판매)" : "(대여)") ?></p>
 			<?php if($list[$i]["it_model"]){ ?>
 				<p class="info"><?=$list[$i]["it_model"]?></p>
 			<?php } ?>
