@@ -11,9 +11,14 @@
     </script> -->
 </head>
 <body>
-
-    <button onclick="window.webkit.messageHandlers[YOUR_HANDLER_NAME].postMessage('test')">확인</button>
-
+<script  src="//code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+    function sendBarcode(text) {
+//        alert('(Native)returnMessage() :\n' + text);
+		$("#barcodeNum").val(text);
+    }
+</script>
+    <button onclick="window.webkit.messageHandlers.openBarcode.postMessage('3');">확인</button>
+    <input type="text" id="barcodeNum">
 </body>
 </html>
-

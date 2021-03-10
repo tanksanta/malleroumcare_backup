@@ -297,3 +297,6 @@ var HY_BRIDGE = HY_BRIDGE || (function(){
 
 
     
+// function sendBarcode(text) {
+//     alert(‘(Native)returnMessage() :\n’ + text);
+// }

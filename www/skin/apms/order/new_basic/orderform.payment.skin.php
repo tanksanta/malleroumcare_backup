@@ -240,6 +240,27 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 						</div>
 						<div id="typereceipt1_view">
 						<ul id="tax_container" class="typereceiptlay">
+
+
+
+                        <?php 
+                            # 결제정보
+                            $sendData_entInfo = [];
+                            $sendData_entInfo["usrId"] = $member["mb_id"];
+ 
+                            $oCurl = curl_init();
+                            curl_setopt($oCurl, CURLOPT_PORT, 9001);
+                            curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com:9001/api/account/entInfo");
+                            curl_setopt($oCurl, CURLOPT_POST, 1);
+                            curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+                            curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData_entInfo, JSON_UNESCAPED_UNICODE));
+                            curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+                            curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+                            $res = curl_exec($oCurl);
+                            curl_close($oCurl);
+                            $entInfo=json_decode($res,true);
+                        ?>
+
 						<table>
 							<tbody>
 								<tr>
@@ -247,7 +268,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 										<label for="typereceipt_bname">기업명</label>
 									</th>
 									<td colspan="3">
-										<input type="text" name="typereceipt_bname" value="<?php echo $member['mb_giup_bname'] ?>" id="typereceipt_bname" class="frm_input" size="30" maxlength="20">
+										<input type="text" name="typereceipt_bname" value="<?php echo $entInfo['data']['entNm'] ?>" id="typereceipt_bname" class="frm_input" size="30" maxlength="20">
 									</td>
 								</tr>
 								<tr>
@@ -255,7 +276,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 										<label for="typereceipt_boss_name">대표자명</label>
 									</th>
 									<td colspan="3">
-										<input type="text" name="typereceipt_boss_name" value="<?php echo $member['mb_giup_boss_name'] ?>" id="typereceipt_boss_name" class="frm_input" size="30" maxlength="20">
+										<input type="text" name="typereceipt_boss_name" value="<?php echo $entInfo['data']['entCeoNm'] ?>" id="typereceipt_boss_name" class="frm_input" size="30" maxlength="20">
 									</td>
 								</tr>
 								<tr>
@@ -263,7 +284,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 										<label for="typereceipt_btel">연락처</label>
 									</th>
 									<td colspan="3">
-										<input type="text" name="typereceipt_btel" value="<?php echo $member['mb_giup_btel'] ?>" id="typereceipt_btel" class="frm_input" size="30" maxlength="20">
+										<input type="text" name="typereceipt_btel" value="<?php echo $entInfo['data']['entPnum'] ?>" id="typereceipt_btel" class="frm_input" size="30" maxlength="20">
 									</td>
 								</tr>
 								<tr>
@@ -293,13 +314,13 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 										<label for="typereceipt_buptae">업태</label>
 									</th>
 									<td>
-										<input type="text" name="typereceipt_buptae" value="<?php echo $member['mb_giup_buptae'] ?>" id="typereceipt_buptae" class="frm_input" size="30" maxlength="20">
+										<input type="text" name="typereceipt_buptae" value="<?php echo $entInfo['data']['entBusiCondition'] ?>" id="typereceipt_buptae" class="frm_input" size="30" maxlength="20">
 									</td>
 									<th scope="row">
 										<label for="typereceipt_bupjong">업종</label>
 									</th>
 									<td>
-										<input type="text" name="typereceipt_bupjong" value="<?php echo $member['mb_giup_bupjong'] ?>" id="typereceipt_bupjong" class="frm_input" size="30" maxlength="20">
+										<input type="text" name="typereceipt_bupjong" value="<?php echo $entInfo['data']['entBusiType'] ?>" id="typereceipt_bupjong" class="frm_input" size="30" maxlength="20">
 									</td>
 								</tr>
 								<tr>

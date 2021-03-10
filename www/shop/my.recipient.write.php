@@ -443,6 +443,7 @@
 
 	<script type="text/javascript">
 			var zipPopupDom = document.getElementById("zipAddrPopupIframe");
+            var penid="";
 
 			function zipPopupClose(){
 				$("#zipAddrPopupWrap").hide();
@@ -566,9 +567,10 @@
 						if(result.errorYN == "Y"){
 							alert(result.message);
 						} else {
+                            penid=result['data']['penId'];
                             //취급품목
                             var sendData2 = {
-                                penId : "<?=$_GET["id"]?>",
+                                penId : penid
                             }
 
                             var itemList=[];

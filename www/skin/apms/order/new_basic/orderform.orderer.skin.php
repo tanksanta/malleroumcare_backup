@@ -1,4 +1,5 @@
 <?php
+if(!$member["mb_id"]){alert('로그인을 해주세요',G5_BBS_URL.'/login.php?url=%2F');};
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 //수급자 정보 필드추가
@@ -38,14 +39,17 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 
 ?>
 
-<script>
 
-//20200306성훈추가
-var optionBarList_for_renew_v="";
+<!-- // 20200306성훈추가 재고바코드 배열빼기 -->
+<script>
 var renew_num="";
 var renew_array=[];
 var renew_array2=[];
 var array_box=[];
+</script>
+<!-- // 20200306성훈추가 재고바코드 배열빼기 -->
+
+<script>
     $(function() {
         $('#od_tel').on('keyup', function(){
             var num = $(this).val();
@@ -70,12 +74,14 @@ var array_box=[];
     });
 </script>
 
+
 <style>
 	.bsk-tbl .well li { width: 100%; float: left; }
 </style>
 
-<?php if(!$is_orderform) { //주문서가 필요없는 주문일 때 ?>
 
+
+<?php if(!$is_orderform) { //주문서가 필요없는 주문일 때 ?>
     <section id="sod_frm_orderer" style="margin-bottom:0px;">
         <div class="panel panel-default">
             <div class="panel-heading"><strong> 결제하시는 분</strong></div>
@@ -123,70 +129,78 @@ var array_box=[];
 
 <?php } else { ?>
 
+
+
+    <!-- 비회원주문 -->
     <?php if($is_guest_order) { // 비회원 주문일 때 ?>
-        <!-- 주문하시는 분 입력 시작 { -->
-        <section id="sod_frm_agree" style="margin-bottom:0px;">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <strong> 개인정보처리방침안내</strong>
-                </div>
-                <div class="panel-body">
-                    비회원으로 주문하시는 경우 포인트는 지급하지 않습니다.
-                </div>
-                <table class="table">
-                    <colgroup>
-                        <col width="30%">
-                        <col width="30%">
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th>목적</th>
-                        <th>항목</th>
-                        <th>보유기간</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>이용자 식별 및 본인 확인</td>
-                        <td>이름, 비밀번호</td>
-                        <td>5년(전자상거래등에서의 소비자보호에 관한 법률)</td>
-                    </tr>
-                    <tr>
-                        <td>배송 및 CS대응을 위한 이용자 식별</td>
-                        <td>주소, 연락처(이메일, 휴대전화번호)</td>
-                        <td>5년(전자상거래등에서의 소비자보호에 관한 법률)</td>
-                    </tr>
-                    </tbody>
-                </table>
+    <!-- 주문하시는 분 입력 시작 { -->
+    <section id="sod_frm_agree" style="margin-bottom:0px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong> 개인정보처리방침안내</strong>
             </div>
-            <div class="row row-15">
-                <div class="consent_wrap">
-                    <p>*비회원으로 주문시 경우 개인정보 동의 필수</p>
-                    <div class="btn_consent">
-                        <div data-toggle="buttons">
-                            <label class="btn btn-green btn-sm btn-block">
-                                <input type="checkbox" name="agree" value="1" id="agree" autocomplete="off">
-                                <i class="fa fa-check"></i>
-                                개인정보처리방침안내에 동의합니다.
-                            </label>
-                        </div>
-                        <div class="h10"></div>
+            <div class="panel-body">
+                비회원으로 주문하시는 경우 포인트는 지급하지 않습니다.
+            </div>
+            <table class="table">
+                <colgroup>
+                    <col width="30%">
+                    <col width="30%">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>목적</th>
+                    <th>항목</th>
+                    <th>보유기간</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>이용자 식별 및 본인 확인</td>
+                    <td>이름, 비밀번호</td>
+                    <td>5년(전자상거래등에서의 소비자보호에 관한 법률)</td>
+                </tr>
+                <tr>
+                    <td>배송 및 CS대응을 위한 이용자 식별</td>
+                    <td>주소, 연락처(이메일, 휴대전화번호)</td>
+                    <td>5년(전자상거래등에서의 소비자보호에 관한 법률)</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row row-15">
+            <div class="consent_wrap">
+                <p>*비회원으로 주문시 경우 개인정보 동의 필수</p>
+                <div class="btn_consent">
+                    <div data-toggle="buttons">
+                        <label class="btn btn-green btn-sm btn-block">
+                            <input type="checkbox" name="agree" value="1" id="agree" autocomplete="off">
+                            <i class="fa fa-check"></i>
+                            개인정보처리방침안내에 동의합니다.
+                        </label>
                     </div>
-                </div>
-                <div class="login_wrap">
-                    <p>*로그인 후 주문 시 회원 혜택 제공</p>
-                    <div class="btn_login">
-                        <a href="<?php echo $order_login_url;?>" class="btn btn-lightgray btn-sm btn-block">
-                            <i class="fa fa-sign-in"></i>
-                            로그인/회원가입
-                        </a>
-                        <div class="h10"></div>
-                    </div>
+                    <div class="h10"></div>
                 </div>
             </div>
-            <div class="h10"></div>
-        </section>
+            <div class="login_wrap">
+                <p>*로그인 후 주문 시 회원 혜택 제공</p>
+                <div class="btn_login">
+                    <a href="<?php echo $order_login_url;?>" class="btn btn-lightgray btn-sm btn-block">
+                        <i class="fa fa-sign-in"></i>
+                        로그인/회원가입
+                    </a>
+                    <div class="h10"></div>
+                </div>
+            </div>
+        </div>
+        <div class="h10"></div>
+    </section>
     <?php } ?>
+    <!-- 비회원주문 -->
+
+
+
+
 
     <!-- 주문하시는 분 입력 시작 { -->
     <section id="sod_frm_orderer" style="margin-bottom:0px;">
@@ -254,6 +268,7 @@ var array_box=[];
                     </div>
                 </div>
 
+
                 <div class="form-group has-feedback">
                     <label class="col-sm-2 control-label" for="od_email"><b>E-mail</b><strong class="sound_only"> 필수</strong></label>
                     <div class="col-sm-5">
@@ -261,6 +276,7 @@ var array_box=[];
                         <span class="fa fa-envelope form-control-feedback"></span>
                     </div>
                 </div>
+
 
                 <?php if ($default['de_hope_date_use']) { // 배송희망일 사용 ?>
                     <div class="form-group">
@@ -285,21 +301,23 @@ var array_box=[];
                             이후로 배송 바랍니다.
                         </div>
                     </div>
-                <?php } ?>
+                <?php }  ?>
+
+
             </div>
         </div>
     </section>
     <!-- } 주문하시는 분 입력 끝 -->
 
+
+
+    <!-- 수급자 정보 iframe창 -->
 	<?php if($itemPenIdStatus){ ?>
 	<div id="order_recipientBox">
 		<div>
-
 			<iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php"></iframe>
-
 		</div>
 	</div>
-
 	<div id="order_submitCheckBox">
 		<div>
 			<div>
@@ -315,9 +333,7 @@ var array_box=[];
 		</div>
 	</div>
 	<?php } ?>
-
-	<style>
-
+    <style>
 		#order_recipientBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 		#order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 		#order_recipientBox iframe { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
@@ -351,7 +367,15 @@ var array_box=[];
 			#recipient_del { height: 30px; line-height: 28px; font-size: 12px; padding: 0 10px; border: 1px solid #DC3333 !important; background-color: rgba(0, 0, 0, 0) !important; top: 0; right: 0; color: #DC3333 !important; margin-right: 100px !important; }
 		}
 	</style>
+    <!-- 수급자 정보 iframe창 -->
 
+
+
+
+
+
+
+<!-- 수급자정보 박스 -->
     <section id="sod_frm_recipient_orderer" style="margin-bottom:0px;">
 		<input type="hidden" name="penId" id="penId">
 		<input type="hidden" name="penTypeCd" id="penTypeCd">
@@ -443,8 +467,11 @@ var array_box=[];
             </div>
         </div>
     </section>
+<!-- 수급자정보 박스 -->
 
-    <section id="sod_frm_stock_status">
+
+<!-- 보유재고등록 -->
+<section id="sod_frm_stock_status">
     	<p>
     		<label>
     			<input type="checkbox" name="od_stock_insert_yn" id="od_stock_insert_yn">
@@ -458,14 +485,19 @@ var array_box=[];
     		<span>- 수급자를 선택하시면 보유 재고로 등록이 불가능합니다.</span>
     	</p>
     </section>
+<!-- 보유재고등록 -->
 
-		<!-- 20210306 오성훈추가 (바코드 중복 방지를 위한 input)-->
-		<input type="hidden" id="optionBarList_for_renew" value="">
+
+
+
+
+
+
+
+
+
 
 	<script>
-		//20210306 오성훈추가 (바코드 중복 방지를 위한 input)
-		var optionBarList_for_renew = document.getElementById("optionBarList_for_renew");
-
 		function selected_recipient($penId) {
 			<?php $re = sql_fetch(" select * from {$g5['recipient_table']} where penId = '$penId' ");  ?>
 			// document.getElementById("penNm").value=$re['penNm'];
@@ -476,6 +508,8 @@ var array_box=[];
 			// document.getElementById("penTypeNm").value=$re['penTypeNm'];
 			// document.getElementById("penMoney").value=$re['penMoney'];
 
+
+            // 수급자 정보 iframe 에서 넘긴값 받기
 			var recipient = $penId.split("|");
 			var list = {
 				"rn":recipient[0],
@@ -514,12 +548,14 @@ var array_box=[];
 				"penMoney":recipient[33]		//800,000원
 			};
 
+            //수급자 정보 컨트롤
 			$('#Yrecipient').removeClass('none');
 			$('#Yrecipient').addClass('block');
 
 			$('#Nrecipient').removeClass('block');
 			$('#Nrecipient').addClass('none');
 
+            //수급자 정보 동기화
 			document.getElementById("penId").value=list['penId'];				//penId
 			document.getElementById("penNm").value=list['penNm'];				//수급자명
 			document.getElementById("penTypeNm").value=list['penTypeNm'];		//인정등급
@@ -530,6 +566,7 @@ var array_box=[];
 			document.getElementById("penAddr").value=list['penAddr'];			//주소
 			document.getElementById("penTypeCd").value=list['penTypeCd'];			//주소
 			/*document.getElementById("penMoney").value=list['penMoney'];			//한도금액*/
+
 
 			var optionCntList = <?=json_encode($optionCntList)?>;
 			var optionBarList = <?=json_encode($optionBarList)?>;
@@ -578,9 +615,9 @@ var array_box=[];
 							var dataName = $(item[i]).attr("data-name");
 							//20210306 성훈수정(아래줄 id 추가)
 							var html = '<select id="prodBarSelectBox_renew'+i+'" class="form-control input-sm prodBarSelectBox prodBarSelectBox' + subKey + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
-							// $.each(optionBarList[code][subKey], function(key, value){
-							// 	html += '<option value="' + value + '">' + value + '</option>';
-							// });
+							$.each(optionBarList[code][subKey], function(key, value){
+								html += '<option value="' + value + '">' + value + '</option>';
+							});
 							html += '</select>';
 
 							$(item[i]).after(html);
@@ -679,16 +716,16 @@ var array_box=[];
 				var prodItemList = $("#sod_list tr.item");
 
 				$.each(prodItemList, function(key, itemDom){
-					var code = $(itemDom).attr("data-code");
-					var itemList = $(itemDom).find(".well li");
+					var code = $(itemDom).attr("data-code");            //아이템 넘버
+					var itemList = $(itemDom).find(".well li");         //바코드개수
 					var discountCnt = 0;
 					var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
 					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
 
-					$(itemDom).find(".barList").find("input").attr("type", "hidden");
+					$(itemDom).find(".barList").find("input").attr("type", "hidden");   //개수만큼 넣기
 
 					$.each(itemList, function(subKey, subDom){
-							var item = $(itemDom).find(".prodBarSelectBox" + subKey);
+							var item = $(itemDom).find(".prodBarSelectBox" + subKey);  //셀력트박스 찾기
 							for(var i = 0; i < item.length; i++){
 								var name = $(item[i]).attr("name");
 								var dataCode = $(item[i]).attr("data-code");
@@ -1055,10 +1092,9 @@ var array_box=[];
 				$(this).parent("td").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
 			});
 
-			var optionCntList = <?=json_encode($optionCntList)?>;
-			var optionBarList = <?=json_encode($optionBarList)?>;
-			var prodItemList = $("#sod_list tr.item");
-
+			var optionCntList = <?=json_encode($optionCntList)?>; //아이템정보
+			var optionBarList = <?=json_encode($optionBarList)?>; //바코드저오
+			var prodItemList = $("#sod_list tr.item");            //아이템정보2
 			$.each(prodItemList, function(key, itemDom){
 				var code = $(itemDom).attr("data-code");
 				var itemList = $(itemDom).find(".well li");
@@ -1077,51 +1113,48 @@ var array_box=[];
 
 
 
-			//성훈20210306 바코드 동기화처리
-			$(document).on("click", ".prodBarSelectBox", function(){
-				var this_v=this; 						//this 정의
-				var this_v_v=this.value;
-				console.log(this_v.value);  //선택된 값
-				this_v.options.length=0;		//옵션 값 초기화
-				renew_array=renew_array2;		//renew_array박스(목록 초기화)
-				array_box=[];								//뺄 넣을 배열
-				var select_num = $("#renew_num_v option:selected").val();//재고소진 개수
+			// //성훈20210306 바코드 동기화처리
+			// $(document).on("click", ".prodBarSelectBox", function(){
+			// 	var this_v=this; 						//this 정의
+			// 	var this_v_v=this.value;
+			// 	console.log(this_v.value);  //선택된 값
+			// 	this_v.options.length=0;		//옵션 값 초기화
+			// 	renew_array=renew_array2;		//renew_array박스(목록 초기화)
+			// 	array_box=[];								//뺄 넣을 배열
+			// 	var select_num = $("#renew_num_v option:selected").val();//재고소진 개수
 
-				//선택된 값 불러와서 뺄 배열에 넣기
-				for(var i=0; i<select_num; i++){
-						array_box.push(eval("document.getElementById('prodBarSelectBox_renew"+i+"').value"));
-				}
+			// 	//선택된 값 불러와서 뺄 배열에 넣기
+			// 	for(var i=0; i<select_num; i++){
+			// 			array_box.push(eval("document.getElementById('prodBarSelectBox_renew"+i+"').value"));
+			// 	}
 
-				//기존배열 - 선택된값
-				for (var i = 0; i<array_box.length; i++) {
-				    var arrlen = renew_array.length;
-				    for (var j = 0; j<arrlen; j++) {
-				        if (array_box[i] == renew_array[j]) {
-				            renew_array = renew_array.slice(0, j).concat(renew_array.slice(j+1, arrlen));
-				        }
-				    }
-				}
+			// 	//기존배열 - 선택된값
+			// 	for (var i = 0; i<array_box.length; i++) {
+			// 	    var arrlen = renew_array.length;
+			// 	    for (var j = 0; j<arrlen; j++) {
+			// 	        if (array_box[i] == renew_array[j]) {
+			// 	            renew_array = renew_array.slice(0, j).concat(renew_array.slice(j+1, arrlen));
+			// 	        }
+			// 	    }
+			// 	}
 
 
-				$(this_v).append('<option>재고 바코드</option');//재고 바코드 추가
+			// 	$(this_v).append('<option>재고 바코드</option');//재고 바코드 추가
 
-				//기존 배열 -선택된 값 집어넣기
-				$.each(renew_array, function(key, value){
-					var selected="";
-					// console.log(this_v.value);
-					if(this_v_v == value){ selected = "selected"; }
-					$(this_v).append('<option value="' + value + '" '+selected+'>' + value + '</option');
-				});
+			// 	//기존 배열 -선택된 값 집어넣기
+			// 	$.each(renew_array, function(key, value){
+			// 		var selected="";
+			// 		// console.log(this_v.value);
+			// 		if(this_v_v == value){ selected = "selected"; }
+			// 		$(this_v).append('<option value="' + value + '" '+selected+'>' + value + '</option');
+			// 	});
 
-			});
+			// });
 
 
 
 
 			$(document).on("change", ".prodBarSelectBox", function(){
-
-
-
 				if($(this).val()){
 					var code = $(this).attr("data-code");
 					var item = $(this).closest("tr").find(".prodBarSelectBox" + code);
@@ -1158,9 +1191,9 @@ var array_box=[];
 					if(i < val){
 						//20210306 성훈수정(아래줄 id 추가)
 						var html = '<select id="prodBarSelectBox_renew'+i+'"class="form-control input-sm prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
-						// $.each(optionBarList[it_id][code], function(key, value){
-						// 	html += '<option value="' + value + '">' + value + '</option>';
-						// });
+						$.each(optionBarList[it_id][code], function(key, value){
+							html += '<option value="' + value + '">' + value + '</option>';
+						});
 						html += '</select>';
 					} else {
 						html += '<input type="text" class="form-control input-sm prodBarSelectBox' + code + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">';
@@ -1244,9 +1277,9 @@ var array_box=[];
 
 							//20210306 성훈수정(아래줄 id 추가)
 							var html = '<select id="prodBarSelectBox_renew'+i+'" class="form-control input-sm prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
-							// $.each(optionBarList[it_id][code], function(key, value){
-							// 	html += '<option value="' + value + '">' + value + '</option>';
-							// });
+							$.each(optionBarList[it_id][code], function(key, value){
+								html += '<option value="' + value + '">' + value + '</option>';
+							});
 							html += '</select>';
 
 							$(item[i]).after(html);
