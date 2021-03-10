@@ -35,13 +35,13 @@
 		#imgList { width: 100%; display: table-cell; vertical-align: middle; }
 		#view_overlay { width: 100%; height: 100%; float: left; }
 
-		#thisPopupCloseBtn { position: fixed; z-index: 100; top: 20px; right: 20px; }
+		#thisPopupCloseBtn { position: fixed; z-index: 100; top: 40px; right: 20px; }
 
 		img { max-width: 100%; }
 
 		.touch_and_move {
 				animation: fadein 3s;	-moz-animation: fadein 3s; /* Firefox */-webkit-animation: fadein 3s; /* Safari and Chrome */	-o-animation: fadein 3s; /* Opera */
-				position: fixed; position: absolute; width: 90%; height: 50px; line-height: 50px; z-index: 10; bottom: 20px; right:5%; border-radius: 10px; color : #fff; background-color: #4d4d4d; text-align: center; font-weight: bold; font-size: 20px;
+				position: fixed; position: absolute; width: 90%; height: 50px; line-height: 50px; z-index: 10; bottom: 100px; right:5%; border-radius: 10px; color : #fff; background-color: #4d4d4d; text-align: center; font-weight: bold; font-size: 20px;
 				opacity:0;
 		}
 		@keyframes fadein {

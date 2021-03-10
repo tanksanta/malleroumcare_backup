@@ -37,6 +37,25 @@
 
 	$data["penExpiDtm"] = explode(" ~ ", $data["penExpiDtm"]);
 
+
+    # 구급자별 품목 조회
+    $sendData2 = [];
+    $sendData2["penId"] = $data['penId'];
+    // $sendData2["gubun"] ;
+	$oCurl2 = curl_init();
+	curl_setopt($oCurl2, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl2, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectItemList");
+	curl_setopt($oCurl2, CURLOPT_POST, 1);
+	curl_setopt($oCurl2, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($oCurl2, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
+	curl_setopt($oCurl2, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($oCurl2, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+	$res2 = curl_exec($oCurl2);
+	$res2 = json_decode($res2, true);
+	curl_close($oCurl2);
+
+	$data2 = $res2["data"];
+
 ?>
 
 	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -414,20 +433,20 @@
 								$sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
 								$sale_product_name1="경사로(실내용)"; $sale_product_id1="ITM2021010800001";
 								$sale_product_name2="욕창예방매트리스"; $sale_product_id2="ITM2020092200020";
-								$sale_product_name3="요실금팬티"; $sale_product_id3="checkbox_ITM2020092200011";
+								$sale_product_name3="요실금팬티"; $sale_product_id3="ITM2020092200011";
 								$sale_product_name4="자세변환용구"; $sale_product_id4="ITM2020092200010";
 								$sale_product_name5="욕창예방석"; $sale_product_id5="ITM2020092200009";
 								$sale_product_name6="지팡이"; $sale_product_id6="ITM2020092200008";
 								$sale_product_name7="간이변기"; $sale_product_id7="ITM2020092200007";
 								$sale_product_name8="미끄럼방지용품(매트)"; $sale_product_id8="ITM2020092200006";
-								$sale_product_name9="미끄럼방지용품(양말)"; $$sale_product_id9="checkbox_ITM2020092200005";
+								$sale_product_name9="미끄럼방지용품(양말)"; $sale_product_id9="ITM2020092200005";
 								$sale_product_name10="안경손잡이"; $sale_product_id10="ITM2020092200004";
 								$sale_product_name11="성인용보행기"; $sale_product_id11="ITM2020092200003";
 								$sale_product_name12="목욕의자"; $sale_product_id12="ITM2020092200002";
 								$sale_product_name13="이동변기"; $sale_product_id13="ITM2020092200001";
 							?>
 							<label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-								<input type="checkbox" name="sale_product" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
+								<input type="checkbox" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
 							</label>
 						<?php } ?>
 						</div>
@@ -450,13 +469,22 @@
 								$rental_product_name7="수동휠체어"; $rental_product_id7="ITM2020092200012";
 							?>
 							<label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-								<input type="checkbox" name="penCnmTypeCd" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
+								<input type="checkbox" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
 							</label>
 						<?php } ?>
 						</div>
 				</div>
 			</div>
 		</div>
+<script>
+
+<?php
+    for($i=0;$i<count($data2);$i++){
+        echo 'document.getElementsByName("'.$data2[$i]['itemId'].'")[0].checked = true;';
+    }
+?>
+</script>
+
 <!-- 20210307 성훈작업 -->
 		<div class="text-center" style="margin-top: 30px;">
 			<button type="button" id="btn_submit" class="btn btn-color">수정</button>
@@ -609,12 +637,12 @@
                                 if(rental_product_id.checked==true){ itemList.push(rental_product_id.value); }
                             }
 
-                            sendData['itemList']=itemList;
+                            sendData2['itemList']=itemList;
                             $.ajax({
                                 url : "./ajax.my.recipient.setItem.php",
                                 type : "POST",
                                 async : false,
-                                data : sendData,
+                                data : sendData2,
                                 success : function(result){
                                     result = JSON.parse(result);
                                     if(result.errorYN == "Y"){

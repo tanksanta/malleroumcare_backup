@@ -448,7 +448,7 @@ var array_box=[];
     	<p>
     		<label>
     			<input type="checkbox" name="od_stock_insert_yn" id="od_stock_insert_yn">
-    			<b>보유 재고 등록 요청</b>
+    			<b>보유 재고 등록</b>
     		</label>
     	</p>
 
@@ -744,12 +744,8 @@ var array_box=[];
 			$("#od_stock_insert_yn").change(function(){
 				var status = $(this).prop("checked");
 
-				//20210307
-				if(status){
-					$("#display_pay_button > input").val("보유재고등록");
-				}else{
-					$("#display_pay_button > input").val("재고 주문하기");
-				}
+
+
 				var prodItemList = $("#sod_list tr.item");
 				$(".barList input").val("");
 
@@ -795,6 +791,13 @@ var array_box=[];
 						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
 					}
 				});
+
+                //20210307
+				if(status){
+					$("#forderform_check_btn").val("보유재고등록");
+				}else{
+					$("#forderform_check_btn").val("재고 주문하기");
+				}
 
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");

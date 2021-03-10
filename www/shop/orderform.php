@@ -923,20 +923,20 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 		if(!payment_check(f))
 			return false;
 
-//		if(settle_method != "포인트" && settle_method != "무통장" && f.res_cd.value != "0000") {
-//			alert("결제등록요청 후 주문해 주십시오.");
-//			return false;
-//		}
+        //		if(settle_method != "포인트" && settle_method != "무통장" && f.res_cd.value != "0000") {
+        //			alert("결제등록요청 후 주문해 주십시오.");
+        //			return false;
+        //		}
 
-    //20210307 성훈추가
-    /* 재고선택박스 체크 */
-    var stockSelectBox = $("select.prodBarSelectBox");
-    for(var i = 0; i < stockSelectBox.length; i++){
-      if(!$(stockSelectBox[i]).val()){
-        alert("재고 바코드를 선택해 주십시오.");
-        return false;
-      }
-    }
+        //20210307 성훈추가
+        /* 재고선택박스 체크 */
+        var stockSelectBox = $("select.prodBarSelectBox");
+        for(var i = 0; i < stockSelectBox.length; i++){
+        if(!$(stockSelectBox[i]).val()){
+            alert("재고 바코드를 선택해 주십시오.");
+            return false;
+        }
+        }
 
 		/* 210303 수급자주문 시 체크 */
 		if($("#order_submitCheckBox").length && $("#penId").val()){

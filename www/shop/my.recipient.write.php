@@ -373,7 +373,7 @@
 		<!-- 20210307 성훈작업 -->
 		<style media="screen">
 		input[type="checkbox"], input[type=checkbox] {margin: 4px 0 0; margin-top: 1px \9;line-height: normal;}
-		.col-dealing{ width:45%; text-align: left;}
+		.col-dealing{ width:80%; text-align: left;}
 		.dealing{	margin-left: 0px;}
 		</style>
 
@@ -389,20 +389,20 @@
 								$sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
 								$sale_product_name1="경사로(실내용)"; $sale_product_id1="ITM2021010800001";
 								$sale_product_name2="욕창예방매트리스"; $sale_product_id2="ITM2020092200020";
-								$sale_product_name3="요실금팬티"; $sale_product_id3="checkbox_ITM2020092200011";
+								$sale_product_name3="요실금팬티"; $sale_product_id3="ITM2020092200011";
 								$sale_product_name4="자세변환용구"; $sale_product_id4="ITM2020092200010";
 								$sale_product_name5="욕창예방석"; $sale_product_id5="ITM2020092200009";
 								$sale_product_name6="지팡이"; $sale_product_id6="ITM2020092200008";
 								$sale_product_name7="간이변기"; $sale_product_id7="ITM2020092200007";
 								$sale_product_name8="미끄럼방지용품(매트)"; $sale_product_id8="ITM2020092200006";
-								$sale_product_name9="미끄럼방지용품(양말)"; $$sale_product_id9="checkbox_ITM2020092200005";
+								$sale_product_name9="미끄럼방지용품(양말)"; $sale_product_id9="ITM2020092200005";
 								$sale_product_name10="안경손잡이"; $sale_product_id10="ITM2020092200004";
 								$sale_product_name11="성인용보행기"; $sale_product_id11="ITM2020092200003";
 								$sale_product_name12="목욕의자"; $sale_product_id12="ITM2020092200002";
 								$sale_product_name13="이동변기"; $sale_product_id13="ITM2020092200001";
 							?>
 							<label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-								<input type="checkbox" name="penCnmTypeCd" id="<?=${'sale_product_id'. $i}; ?>" value="<?=${'sale_product_id'. $i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
+								<input type="checkbox" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
 							</label>
 						<?php } ?>
 						</div>
@@ -425,7 +425,7 @@
 								$rental_product_name7="수동휠체어"; $rental_product_id7="ITM2020092200012";
 							?>
 							<label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-								<input type="checkbox" name="penCnmTypeCd" id="<?=${'rental_product_id'. $i}; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
+								<input type="checkbox" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
 							</label>
 						<?php } ?>
 						</div>
@@ -566,7 +566,40 @@
 						if(result.errorYN == "Y"){
 							alert(result.message);
 						} else {
-							window.location.href = "./my.recipient.list.php";
+                            //취급품목
+                            var sendData2 = {
+                                penId : "<?=$_GET["id"]?>",
+                            }
+
+                            var itemList=[];
+                            var sale_product_id="";
+                            var rental_product_id="";
+                            //판매품목 값 넣기
+                            for(var i=0; i<14; i++){
+                                eval("sale_product_id = document.getElementById('sale_product_id"+i+"')");
+                                if(sale_product_id.checked==true){ itemList.push(sale_product_id.value); }
+                            }
+                            //대여품목 값 넣기
+                            for(var i=0; i<8; i++){
+                                eval("rental_product_id = document.getElementById('rental_product_id"+i+"')");
+                                if(rental_product_id.checked==true){ itemList.push(rental_product_id.value); }
+                            }
+
+                            sendData2['itemList']=itemList;
+                            $.ajax({
+                                url : "./ajax.my.recipient.setItem.php",
+                                type : "POST",
+                                async : false,
+                                data : sendData2,
+                                success : function(result){
+                                    result = JSON.parse(result);
+                                    if(result.errorYN == "Y"){
+                                        alert(result.message);
+                                    } else {
+                                        window.location.href = "./my.recipient.list.php";
+                                    }
+                                        }
+                            });
 						}
 					}
 				});
