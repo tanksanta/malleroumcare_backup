@@ -60,7 +60,7 @@ if($po_run) {
             <input type="checkbox" name="opt_chk_all" value="1" id="opt_chk_all">
         </th>
         <th scope="col">옵션</th>
-        <th scope="col" style="width: 300px;">추가금액(일반,파트너,딜러1,딜러2)</th>
+        <th scope="col" style="width: 300px;">추가금액(일반,파트너,사업소,우수사업소)</th>
         <th scope="col">재고수량</th>
         <th scope="col">통보수량</th>
         <th scope="col">사용여부</th>

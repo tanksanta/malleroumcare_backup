@@ -116,9 +116,9 @@ $(document).ready(function() {
 
 	<?php if($member["mb_level"] == "3"){ ?>
 		<?php if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
-			<a href="<?=$for_viewType ?>" class="modeBtn">구매모드</a>
+			<a href="#" class="modeBtn" data-type="basic">구매모드</a>
 		<?php } else { ?>
-			<a href="<?=$for_viewType ?>" class="modeBtn">급여안내모드</a>
+			<a href="#" class="modeBtn" data-type="adm">급여안내모드</a>
 		<?php } ?>
 	<?php } ?>
 
@@ -239,9 +239,9 @@ $(document).ready(function() {
 				<div class="link_area">
 				<?php if($member["mb_level"] == "3"){ ?>
 					<?php if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
-						<a href="<?=$for_viewType?>" >구매모드</a>
+						<a href="#" class="modeBtn" data-type="basic">구매모드</a>
 					<?php } else { ?>
-						<a href="<?=$for_viewType?>" >급여안내모드</a>
+						<a href="#" class="modeBtn" data-type="adm">급여안내모드</a>
 					<?php } ?>
 				<?php } ?>
 					
