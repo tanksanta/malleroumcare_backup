@@ -176,8 +176,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 	}
 	
 	<?php if($_GET["viewType"]){ ?>
-		setCookie("viewType", "<?=$_GET["viewType"]?>");
-		window.location.href = "/";
+//		setCookie("viewType", "<?=$_GET["viewType"]?>");
+//		window.location.href = "/";
 	<?php } ?>
 	
 	$(function(){

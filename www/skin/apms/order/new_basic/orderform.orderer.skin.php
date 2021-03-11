@@ -614,7 +614,7 @@ var array_box=[];
 							var dataThisCode = $(item[i]).attr("data-this-code");
 							var dataName = $(item[i]).attr("data-name");
 							//20210306 성훈수정(아래줄 id 추가)
-							var html = '<select id="prodBarSelectBox_renew'+i+'" class="form-control input-sm prodBarSelectBox prodBarSelectBox' + subKey + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+                            var html = '<select id="prodBarSelectBox_renew'+i+'" class="form-control input-sm prodBarSelectBox' + subKey + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
 							$.each(optionBarList[code][subKey], function(key, value){
 								html += '<option value="' + value + '">' + value + '</option>';
 							});
@@ -732,7 +732,7 @@ var array_box=[];
 								var dataThisCode = $(item[i]).attr("data-this-code");
 								var dataName = $(item[i]).attr("data-name");
 
-								$(item[i]).after('<input type="hidden" class="form-control input-sm prodBarSelectBox' + subKey + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
+								$(item[i]).after('<input type="hidden" class="form-control input-sm prodBarSelectBox prodBarSelectBox' + subKey + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
 
 								$(item[i]).remove();
 							}
@@ -945,7 +945,7 @@ var array_box=[];
 					</div>
 				</td>
 				<td style="vertical-align: middle; width: 600px;">
-					<input type="hidden" name="it_id[<?php echo $i; ?>]"    value="<?php echo $item[$i]['hidden_it_id']; ?>">
+					<input type="hidden" name="it_id[<?php echo $i; ?>]"    value="<?php echo $item[$i]['hidden_it_id']; ?>" class="it_id_class">
 					<input type="hidden" name="it_name[<?php echo $i; ?>]"  value="<?php echo $item[$i]['hidden_it_name']; ?>">
 					<input type="hidden" name="it_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_price']; ?>">
 					<input type="hidden" name="it_discount[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_discount']; ?>">
@@ -1155,10 +1155,45 @@ var array_box=[];
 
 
 			$(document).on("change", ".prodBarSelectBox", function(){
+                var this_a=this;
+                var this_v = $(this).val();
+                var flag=false;
 				if($(this).val()){
 					var code = $(this).attr("data-code");
 					var item = $(this).closest("tr").find(".prodBarSelectBox" + code);
 
+                    var sendData2=[];
+                    var prodsData = [];
+                    var prodsSendData = [];
+             
+                    var it_id_class = $(this).closest("tr");
+					prodsData["prodId"] = it_id_class.attr('data-code');
+                    console.log(prodsData["prodId"]);
+                    sendData2 = {
+                        usrId : "<?=$member["mb_id"]?>",
+                        prodId : prodsData["prodId"]
+                    };
+                    $.ajax({
+                        url : "./ajax.stock.selectbarnumlist.php",
+                        type : "POST",
+                        async : false,
+                        data : sendData2,
+                        success : function(result){
+                            result = JSON.parse(result);
+                            console.log(result.data[0].prodBarNumList);
+
+                            for(var i =0; i < result.data[0].prodBarNumList.length; i ++){
+                                if(result.data[0].prodBarNumList[i] == this_v){
+                                    alert("이미 등록된 바코드입니다.");
+                                    $(this_a).val("");
+                                    flag=true;
+                                    return false;
+                                }
+                            }
+                            
+                        }
+                    });
+                    if(flag){ return false;}
 					for(var i = 0; i < item.length; i++){
 						if($(this).attr("data-this-code") != $(item[i]).attr("data-this-code")){
 							if($(this).val() == $(item[i]).val()){
@@ -1189,11 +1224,10 @@ var array_box=[];
 					var html = "";
 
 					if(i < val){
-						//20210306 성훈수정(아래줄 id 추가)
-						var html = '<select id="prodBarSelectBox_renew'+i+'"class="form-control input-sm prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
-						$.each(optionBarList[it_id][code], function(key, value){
-							html += '<option value="' + value + '">' + value + '</option>';
-						});
+                        var html = '<select id="prodBarSelectBox_renew'+i+'" class="form-control input-sm prodBarSelectBox' + subKey + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+							$.each(optionBarList[code][subKey], function(key, value){
+								html += '<option value="' + value + '">' + value + '</option>';
+							});
 						html += '</select>';
 					} else {
 						html += '<input type="text" class="form-control input-sm prodBarSelectBox' + code + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">';

@@ -239,11 +239,21 @@ $flist = apms_form(1,0);
     </tr>
     <tr>
         <th scope="col" rowspan="2" id="th_img">이미지</th>
-        <th scope="col" rowspan="2" id="th_pc_title"><?php echo subject_sort_link('it_name', 'sca='.$sca); ?>상품정보 (모델명 / 상품코드 / 상품명)</a></th>
+
+
+        <!-- <th scope="col" rowspan="2" id="th_pc_title"><?php echo subject_sort_link('it_name', 'sca='.$sca); ?>상품정보 (모델명 / 상품코드 / 상품명)</a></th>
 		<th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price', 'sca='.$sca); ?>판매가격</a></th>
         <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_dealer', 'sca='.$sca); ?>사업소가격</a></th>
         <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_dealer2', 'sca='.$sca); ?>우수사업소가격</a></th>
-        <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_partner', 'sca='.$sca); ?>파트너가격</a></th>
+        <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_partner', 'sca='.$sca); ?>파트너가격</a></th> -->
+
+        <th scope="col" rowspan="2" id="th_pc_title"><?php echo subject_sort_link('it_name', 'sca='.$sca); ?>상품정보 (모델명 / 상품코드 / 상품명)</a></th>
+		<th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price', 'sca='.$sca); ?>판매가격</a></th>
+        <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_cust_price', 'sca='.$sca); ?>급여가</a></th>
+        <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_rental_price', 'sca='.$sca); ?>월대여금액</a></th>
+        <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_dealer', 'sca='.$sca); ?>사업소가격</a></th>
+
+        
         <!--<th scope="col" id="th_camt"><?php echo subject_sort_link('it_cust_price', 'sca='.$sca); ?>시중가격</a></th>-->
 		<!-- APMS - 2014.07.20 -->
         <!--
@@ -389,21 +399,21 @@ $flist = apms_form(1,0);
 			<label for="commission_<?php echo $i; ?>" class="sound_only">수수료</label>
 			<input type="text" name="pt_commission[<?php echo $i; ?>]" value="<?php echo $row['pt_commission']; ?>" id="commission_<?php echo $i; ?>" class="frm_input sit_amt" size="3">
             -->
-            <label for="price_dealer_<?php echo $i; ?>" class="sound_only">딜러 판매가격</label>
-            <input type="text" name="it_price_dealer[<?php echo $i; ?>]" value="<?php echo $row['it_price_dealer']; ?>" id="price_dealer_<?php echo $i; ?>" class="frm_input sit_amt" size="7">
+            <label for="price_dealer_<?php echo $i; ?>" class="sound_only">급여가</label>
+            <input type="text" name="it_price_dealer[<?php echo $i; ?>]" value="<?php echo $row['it_cust_price']; ?>" id="it_price<?php echo $i; ?>" class="frm_input sit_amt" size="7">
 		</td>
 		<td rowspan="2" headers="th_amt" class="td_numbig td_input">
 			<!--<?php echo ($default['pt_reserve_cache'] > 0 && $row['pt_reserve_use'] && $row['pt_reserve']) ? date("Y.m.d", $row['pt_reserve']) : '-'; ?>-->
-            <label for="price_dealer2_<?php echo $i; ?>" class="sound_only">우수딜러 판매가격</label>
-            <input type="text" name="it_price_dealer2[<?php echo $i; ?>]" value="<?php echo $row['it_price_dealer2']; ?>" id="price_dealer2_<?php echo $i; ?>" class="frm_input sit_amt" size="7">
+            <label for="price_dealer2_<?php echo $i; ?>" class="sound_only">월대여금액</label>
+            <input type="text" name="it_price_dealer2[<?php echo $i; ?>]" value="<?php echo $row['it_rental_price']; ?>" id="it_cust_price_<?php echo $i; ?>" class="frm_input sit_amt" size="7">
 		</td>
 		<td rowspan="2" headers="th_camt" class="td_numbig td_input">
             <!--
             <label for="cust_price_<?php echo $i; ?>" class="sound_only">시중가격</label>
             <input type="text" name="it_cust_price[<?php echo $i; ?>]" value="<?php echo $row['it_cust_price']; ?>" id="cust_price_<?php echo $i; ?>" class="frm_input sit_camt" size="7">
             -->
-            <label for="price_partner_<?php echo $i; ?>" class="sound_only">파트너 판매가격</label>
-            <input type="text" name="it_price_partner[<?php echo $i; ?>]" value="<?php echo $row['it_price_partner']; ?>" id="price_partner_<?php echo $i; ?>" class="frm_input sit_amt" size="7">
+            <label for="price_partner_<?php echo $i; ?>" class="sound_only">사업소가격</label>
+            <input type="text" name="it_price_partner[<?php echo $i; ?>]" value="<?php echo $row['it_price_dealer']; ?>" id="it_price_dealer_<?php echo $i; ?>" class="frm_input sit_amt" size="7">
         </td>
 		<td headers="th_amt" class="td_numbig td_input">
 			<?php if(!$row['pt_it']) $row['pt_it'] = 1; ?>

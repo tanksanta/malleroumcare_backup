@@ -1,3 +1,31 @@
+<?php 
+
+// viewType=basic
+// viewType=adm
+
+    $http_host = $_SERVER['HTTP_HOST'];
+    $request_uri = $_SERVER['REQUEST_URI'];
+    $for_viewType = 'https://'.$http_host.$request_uri;
+    $mood_type_string="";
+    if(strpos($for_viewType, '?') !== false) {  
+        if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){
+            $for_viewType=$for_viewType.'&viewType=basic';
+            $mood_type_string="급여안내";
+        }else{
+            $for_viewType=$for_viewType.'&viewType=adm';
+            
+        }
+    }else{
+        if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){
+            $for_viewType=$for_viewType.'?viewType=basic';
+            $mood_type_string="급여안내";
+        }else{
+            $for_viewType=$for_viewType.'?viewType=adm';
+            
+        }
+    }
+?>
+
 <script type="text/javascript">
 	
 	// wetoz : 2020-09-04
@@ -64,9 +92,22 @@ $(document).ready(function() {
 	.mo_top > .modeBtn { position: absolute; font-weight: bold; font-size: 16px; top: 32px; right: 70px; }
 </style>
 
+
+
+<style>
+    .top_mode_area{ position: relative; width:100%; height:50px; text-align:center; background-color: #333; color : #fff; font-size: 20px; line-height:50px; opacity:70%;}
+</style>
+<?php if($member["mb_level"] == "3"&&$_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
+<div class="top_mode_area">
+    <?=$mood_type_string;?> 모드 실행중 입니다.
+</div>
+<?php } ?>
+
 <div class="btn_top_scroll">
 	<a onclick="scrollToTop()"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_scroll.png" alt=""></a>
 </div>
+
+
 
 <div class="mo_top">
 	<div class="logoWrap">
@@ -75,11 +116,14 @@ $(document).ready(function() {
 
 	<?php if($member["mb_level"] == "3"){ ?>
 		<?php if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
-			<a href="/?viewType=basic" class="modeBtn">구매모드</a>
+			<a href="<?=$for_viewType ?>" class="modeBtn">구매모드</a>
 		<?php } else { ?>
-			<a href="/?viewType=adm" class="modeBtn">급여안내모드</a>
+			<a href="<?=$for_viewType ?>" class="modeBtn">급여안내모드</a>
 		<?php } ?>
 	<?php } ?>
+
+
+
 	<img src="<?=THEMA_URL?>/assets/img/btn_mo_menu.png" alt="" class="header-hamburger-btn">
 </div>
 
@@ -175,7 +219,11 @@ $(document).ready(function() {
 			</div>
 		</div>
 		<?php } ?>
+
+
+
 		<div class="container_wrap txt_center top_common_area">
+
 			<div class="logoWrap">
 				<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
 			</div>
@@ -187,14 +235,13 @@ $(document).ready(function() {
 					<button type="submit" id="sch_submit"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.jpg"></button>
 				</form>
 			</div>
-			
 			<div class="top_right_area">
 				<div class="link_area">
 				<?php if($member["mb_level"] == "3"){ ?>
 					<?php if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
-						<a href="/?viewType=basic" >구매모드</a>
+						<a href="<?=$for_viewType?>" >구매모드</a>
 					<?php } else { ?>
-						<a href="/?viewType=adm" >급여안내모드</a>
+						<a href="<?=$for_viewType?>" >급여안내모드</a>
 					<?php } ?>
 				<?php } ?>
 					

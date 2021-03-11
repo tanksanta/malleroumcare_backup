@@ -339,7 +339,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php if(substr($it["ca_id"], 0, 2) == "20"){ ?>
 				<br><span style="font-weight: normal; font-size: 13px; margin-top: 15px; display: inline-block;">* 대여금액(월기준) : <?=number_format($it["it_rental_price"])?>원</span>
 			<?php } ?>
-			<span style="font-size: 15px;"><?=($_COOKIE["viewType"] == "basic") ? "(판매가)" : "(급여가)" ?></span>
+			<span style="font-size: 15px;"><?=($_COOKIE["viewType"] == "basic") ? "(급여가)" : "(판매가)" ?></span>
 			</p>
 
 			<!-- 본인부담금 -->
@@ -506,7 +506,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
                 $sc_price_info = "";
                 if ($it['it_sc_type'] != 1) {
-                    $sc_price_info = "* 배송비는 {$it['it_sc_qty']}개당 배송비 부가 ({$it['it_sc_price']}원)<br>* 도서산간지역은 별도 비용이 발생합니다.";
+                    $sc_price_info = "* 배송비({$it['it_sc_price']})원)<br>* 도서산간지역은 추가 비용이 발생합니다.";
                 }
 
                 if ($it['it_sc_type'] == 0) { // 쇼핑몰 디폴트 셋팅 시
@@ -534,8 +534,8 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                         <?php echo $sc_price_info ?>
                     </p>
                     <p style="font-size: 11px">
-                        * 네이버페이 주문시 배송비는 택배(선불)로만 주문이 가능합니다.<br>
-                        * 네이버페이 주문 시 도서산간지역 배송비는 별도로 추가 결제해 주셔야 합니다.
+                        <!-- * 네이버페이 주문시 배송비는 택배(선불)로만 주문이 가능합니다.<br>
+                        * 네이버페이 주문 시 도서산간지역 배송비는 별도로 추가 결제해 주셔야 합니다. -->
                     </p>
 				</td>
 			</tr>

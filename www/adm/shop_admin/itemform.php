@@ -34,8 +34,8 @@ if ($w == "")
             alert("등록된 분류가 없습니다. 우선 분류를 등록하여 주십시오.", './categorylist.php');
         $it['ca_id'] = $row['ca_id'];
     }
-    $it['it_maker']  = stripslashes(get_cookie("ck_maker"));
-    $it['it_origin'] = stripslashes(get_cookie("ck_origin"));
+    // $it['it_maker']  = stripslashes(get_cookie("ck_maker"));
+    // $it['it_origin'] = stripslashes(get_cookie("ck_origin"));
 }
 else if ($w == "u")
 {
