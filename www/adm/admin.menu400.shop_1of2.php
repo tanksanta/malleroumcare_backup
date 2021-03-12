@@ -21,8 +21,8 @@ $menu['menu400'] = array (
     array('400810', '쿠폰존관리', G5_ADMIN_URL.'/shop_admin/couponzonelist.php', 'scf_coupon_zone'),
     array('400750', '추가배송비관리', G5_ADMIN_URL.'/shop_admin/sendcostlist.php', 'scf_sendcost', 1),
     array('400410', '미완료주문', G5_ADMIN_URL.'/shop_admin/inorderlist.php', 'scf_inorder', 1),
-    array('400420', '과거주문내역', G5_ADMIN_URL.'/shop_admin/past_order_list.php', 'scf_before_order', 1),
-    array('400430', '과거cs주문내역', G5_ADMIN_URL.'/shop_admin/past_csorder_list.php', 'scf_csorder', 1),
-    array('400510', '엑셀 다운로드 받기', G5_ADMIN_URL.'/shop_admin/exporttoexcel.php', 'scf_productexcel', 1),
+    // array('400420', '과거주문내역', G5_ADMIN_URL.'/shop_admin/past_order_list.php', 'scf_before_order', 1),
+    // array('400430', '과거cs주문내역', G5_ADMIN_URL.'/shop_admin/past_csorder_list.php', 'scf_csorder', 1),
+    // array('400510', '엑셀 다운로드 받기', G5_ADMIN_URL.'/shop_admin/exporttoexcel.php', 'scf_productexcel', 1),
 );
 ?>

@@ -290,7 +290,7 @@ if($header_skin)
 		</section>
 		<!-- } 최근 주문내역 끝 -->
 
-        <section>
+        <!-- <section>
 			<h4>과거 주문내역</h4>
 
 			<?php
@@ -339,6 +339,6 @@ if($header_skin)
 			<p class="text-right">
 				<a href="<?php echo G5_URL; ?>/shop/pastorderinquiry.php"><i class="fa fa-arrow-right"></i> 과거주문내역 더보기</a>
 			</p>
-		</section>
+		</section> -->
 	<?php } ?>
 </div>

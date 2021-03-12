@@ -10,18 +10,16 @@
     if(strpos($for_viewType, '?') !== false) {  
         if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){
             $for_viewType=$for_viewType.'&viewType=basic';
-            $mood_type_string="급여안내";
         }else{
             $for_viewType=$for_viewType.'&viewType=adm';
-            
+            $mood_type_string="급여안내";
         }
     }else{
         if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){
             $for_viewType=$for_viewType.'?viewType=basic';
-            $mood_type_string="급여안내";
         }else{
             $for_viewType=$for_viewType.'?viewType=adm';
-            
+            $mood_type_string="급여안내";
         }
     }
 ?>
@@ -78,6 +76,7 @@ $banks = explode(PHP_EOL, $default['de_bank_account']);
 $(document).ready(function() {
 	objectFitImages();
 });
+scrollToTop();
 </script>
 
 <?php if ( $_COOKIE['right_menu_area'] == 'on' ) { ?>
@@ -95,20 +94,21 @@ $(document).ready(function() {
 
 
 <style>
-    .top_mode_area{ position: relative; width:100%; height:50px; text-align:center; background-color: #333; color : #fff; font-size: 20px; line-height:50px; opacity:70%;}
+    .top_mode_area{ possition: relative; display:block; width:100%; height:50px; text-align:center; background-color: rgba(0,0,0,0.7);  color : #fff; font-size: 20px; line-height:50px; opacity:70%;}
 </style>
-<?php if($member["mb_level"] == "3"&&$_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
-<div class="top_mode_area">
-    <?=$mood_type_string;?> 모드 실행중 입니다.
-</div>
-<?php } ?>
+
+
 
 <div class="btn_top_scroll">
 	<a onclick="scrollToTop()"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_scroll.png" alt=""></a>
 </div>
 
 
-
+<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic" || !$_COOKIE["viewType"]){ ?>
+                <div class="top_mode_area">
+                    <?=$mood_type_string;?> 모드 실행중 입니다.
+                </div>
+            <?php } ?>
 <div class="mo_top">
 	<div class="logoWrap">
 		<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
@@ -221,9 +221,11 @@ $(document).ready(function() {
 		<?php } ?>
 
 
-
 		<div class="container_wrap txt_center top_common_area">
 
+  
+
+            
 			<div class="logoWrap">
 				<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
 			</div>
@@ -259,7 +261,7 @@ $(document).ready(function() {
 					<?php }else{ ?>
 						<a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
 						<a href="#" class="registerBtn">회원가입</a>
-<!--						<a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>-->
+                <!--						<a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>-->
 					<?php } ?>
 					<!-- <?php if ( $member['mb_type'] == 'partner' ) { ?>
 						<a href="https://signstand.co.kr/shop/list.php?ca_id=10">파트너전용</a>
@@ -301,9 +303,9 @@ $(document).ready(function() {
                               alert("- 도구 > 인터넷 옵션 > 보안 탭 > 신뢰할 수 있는 사이트 선택\n   1. 사이트 버튼 클릭 > 사이트 추가\n   2. 사용자 지정 수준 클릭 > 스크립팅하기 안전하지 않은 것으로 표시된 ActiveX 컨트롤 (사용)으로 체크\n\n※ 위 설정은 프린트 기능을 사용하기 위함임");
                      }
                     
-          }
-          
-}
+                }
+                
+                }           
 					
 			</script>
 			

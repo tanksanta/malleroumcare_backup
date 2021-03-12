@@ -1,7 +1,12 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
-?>
+
+
+if($_GET['co_id']=="possession_manage"){ ?>
+<link rel="stylesheet" href="<?php G5_URL?>/skin/apms/possession_manage/css/stock_page.css">
+<?php include_once(G5_PATH.'/skin/apms/possession_manage/sales_Inventory.html'); } ?>
+
 		<?php if($col_name) { ?>
 			<?php if($col_name == "two") { ?>
 					</div>

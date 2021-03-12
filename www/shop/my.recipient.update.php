@@ -429,18 +429,18 @@
 						<b>판매품목</b>
 					</label>
 						<div class="col-sm-3 col-dealing">
-							<?php for($i=0; $i<14; $i++){
-								$sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
+							<?php for($i=1; $i<14; $i++){
+								// $sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
 								$sale_product_name1="경사로(실내용)"; $sale_product_id1="ITM2021010800001";
 								$sale_product_name2="욕창예방매트리스"; $sale_product_id2="ITM2020092200020";
 								$sale_product_name3="요실금팬티"; $sale_product_id3="ITM2020092200011";
 								$sale_product_name4="자세변환용구"; $sale_product_id4="ITM2020092200010";
-								$sale_product_name5="욕창예방석"; $sale_product_id5="ITM2020092200009";
+								$sale_product_name5="욕창예방방석"; $sale_product_id5="ITM2020092200009";
 								$sale_product_name6="지팡이"; $sale_product_id6="ITM2020092200008";
 								$sale_product_name7="간이변기"; $sale_product_id7="ITM2020092200007";
 								$sale_product_name8="미끄럼방지용품(매트)"; $sale_product_id8="ITM2020092200006";
 								$sale_product_name9="미끄럼방지용품(양말)"; $sale_product_id9="ITM2020092200005";
-								$sale_product_name10="안경손잡이"; $sale_product_id10="ITM2020092200004";
+								$sale_product_name10="안전손잡이"; $sale_product_id10="ITM2020092200004";
 								$sale_product_name11="성인용보행기"; $sale_product_id11="ITM2020092200003";
 								$sale_product_name12="목욕의자"; $sale_product_id12="ITM2020092200002";
 								$sale_product_name13="이동변기"; $sale_product_id13="ITM2020092200001";
@@ -460,7 +460,7 @@
 						<div class="col-sm-3 col-dealing">
 							<?php for($i=0; $i<8; $i++){
 								$rental_product_name0="욕창예방매트리스"; $rental_product_id0="ITM2020092200019";
-								$rental_product_name1="경사로(실내용)"; $rental_product_id1="ITM2020092200018";
+								$rental_product_name1="경사로(실외용)"; $rental_product_id1="ITM2020092200018";
 								$rental_product_name2="배회감지기"; $rental_product_id2="ITM2020092200017";
 								$rental_product_name3="목욕리프트"; $rental_product_id3="ITM2020092200016";
 								$rental_product_name4="이동욕조"; $rental_product_id4="ITM2020092200015";

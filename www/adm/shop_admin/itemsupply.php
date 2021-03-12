@@ -33,7 +33,7 @@ if($ps_run) {
         </th>
         <th scope="col">옵션명</th>
         <th scope="col">옵션항목</th>
-        <th scope="col" style="width: 300px;">상품금액(일반,파트너,딜러1,딜러2)</th>
+        <th scope="col" style="width: 300px;">상품금액(일반,파트너,사업소,우수사업소)</th>
         <th scope="col">재고수량</th>
         <th scope="col">통보수량</th>
         <th scope="col">사용여부</th>
