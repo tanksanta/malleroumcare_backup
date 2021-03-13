@@ -23,8 +23,29 @@ if($_POST["mb_id"] != "admin"){
 	curl_close($oCurl);
 
 	if($res["errorYN"] == "Y"){
-		alert($res["message"]);
-		return false;
+        //시스템 회원 정보가 아닐시
+        $mb_id       = trim($_POST['mb_id']);
+        $mb_password = trim($_POST['mb_password']);
+        if (!$mb_id || !$mb_password)
+            alert('회원아이디나 비밀번호가 공백이면 안됩니다.');
+        $mb = get_member($mb_id);
+        
+        if($mb['mb_level']=="3"||$mb['mb_level']=="4"){
+            alert("시스템 계정에 동기화 되어있지 않은 계정의 권한이 3혹은 4 입니다. 계정설정을 다시해주세요.");
+        }
+        if (!$is_social_password_check && (!$mb['mb_id'] || !check_password($mb_password, $mb['mb_password'])) ) {
+            alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
+        }
+        // 차단된 아이디인가?
+        if ($mb['mb_intercept_date'] && $mb['mb_intercept_date'] <= date("Ymd", G5_SERVER_TIME)) {
+            $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $mb['mb_intercept_date']);
+            alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date);
+        }
+        // 탈퇴한 아이디인가?
+        if ($mb['mb_leave_date'] && $mb['mb_leave_date'] <= date("Ymd", G5_SERVER_TIME)) {
+            $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $mb['mb_leave_date']);
+            alert('탈퇴한 아이디이므로 접근하실 수 없습니다.\n탈퇴일 : '.$date);
+        }
 	} else {
 		unset($sendData["pw"]);
 		$mbCheck = sql_fetch("SELECT mb_id FROM {$g5["member_table"]} WHERE mb_id = '{$_POST["mb_id"]}'")["mb_id"];
@@ -94,6 +115,9 @@ if($_POST["mb_id"] != "admin"){
 			");
 		}
 	}
+
+
+
 }
 
 // 아미나빌더 소셜로그인

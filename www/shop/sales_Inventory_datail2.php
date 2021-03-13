@@ -71,11 +71,34 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
 }
 
+$sendData = [];
+$sendData["usrId"] = $member["mb_id"];
+$sendData["entId"] = $member["mb_entId"];
+$sendData["prodId"] = $_GET['prodId'];
+
+$oCurl = curl_init();
+curl_setopt($oCurl, CURLOPT_PORT, 9001);
+curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
+curl_setopt($oCurl, CURLOPT_POST, 1);
+curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+$res = curl_exec($oCurl);
+$res = json_decode($res, true);
+curl_close($oCurl);
+
+$list = [];
+if($res["data"]){
+    $list = $res["data"];
+}
+
+
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
 
 <section id="stock" class="wrap" >
-        <div class="list-more"><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php">목록</a></div>
+    <div class="list-more"><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
         <h2>대여 재고 상세</h2>
         <div class="stock-view view2">
             <div class="product-view">
@@ -325,6 +348,9 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
                             </div>
                         </li>
                         <!--반복-->
+
+
+                        
                         <li class="list cb">
                             <!--pc용-->
                             <span class="num">2</span>

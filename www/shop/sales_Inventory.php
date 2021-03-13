@@ -70,6 +70,111 @@ $setup_href = '';
 if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
 }
+///----------------------------------설정값----------------------------------
+
+
+
+
+
+
+
+//판매재고 토탈
+$sendData = [];
+$sendData["usrId"] = $member["mb_id"];
+$sendData["entId"] = $member["mb_entId"];
+$sendData["gubun"] = "00";
+
+$oCurl = curl_init();
+curl_setopt($oCurl, CURLOPT_PORT, 9001);
+curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectListForEnt");
+curl_setopt($oCurl, CURLOPT_POST, 1);
+curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+$res = curl_exec($oCurl);
+$res = json_decode($res, true);
+curl_close($oCurl);
+$sales_Inventory_total=$res['total'];//대여재고 토탈
+
+//대여재고 토탈
+$sendData = [];
+$sendData["usrId"] = $member["mb_id"];
+$sendData["entId"] = $member["mb_entId"];
+$sendData["gubun"] = "01";
+
+$oCurl = curl_init();
+curl_setopt($oCurl, CURLOPT_PORT, 9001);
+curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectListForEnt");
+curl_setopt($oCurl, CURLOPT_POST, 1);
+curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+$res = curl_exec($oCurl);
+$res = json_decode($res, true);
+curl_close($oCurl);
+$sales_Inventory_total2=$res['total'];//대여재고 토탈
+
+
+//판매재고 리스트
+$sendLength = 10;
+$sendData = [];
+$sendData["usrId"] = $member["mb_id"];
+$sendData["entId"] = $member["mb_entId"];
+$sendData["gubun"] = "00";
+$sendData["pageNum"] = ($_GET["page"]) ? $_GET["page"] : 1;
+$sendData["pageSize"] = $sendLength;
+
+if($_GET['searchtype']){
+    if($_GET['searchtype']=="1"){
+        $sql_search = 'SELECT  `it_id` FROM `g5_shop_item` WHERE `it_name`="'.$_GET['searchtypeText'].'"';
+        $row = sql_fetch($sql_search);
+        if($row['it_id']){
+            $sendData["prodId"]=$row['it_id'];
+        }elseif(!$row['it_id']&&!$_GET['searchtypeText']) {
+            $sendData["prodId"]='';
+        }
+        else{
+            $sendData["prodId"]='error';
+        }
+    }else{
+        $sendData["prodId"] = ($_GET["searchtypeText"]) ? $_GET["searchtypeText"] : "";
+    }
+}
+$oCurl = curl_init();
+curl_setopt($oCurl, CURLOPT_PORT, 9001);
+curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectListForEnt");
+curl_setopt($oCurl, CURLOPT_POST, 1);
+curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+$res = curl_exec($oCurl);
+$res = json_decode($res, true);
+curl_close($oCurl);
+
+$list = [];
+if($res["data"]){
+    $list = $res["data"];
+}
+
+
+# 페이징
+$totalCnt = $res["total"];
+$pageNum = $sendData["pageNum"]; # 페이지 번호
+$listCnt = $sendLength; # 리스트 갯수 default 10
+
+$b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
+$block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
+$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
+$b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
+$total_page = ceil( $totalCnt / $listCnt ); # 총 페이지
+// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
+if ($b_end_page > $total_page){ 
+    $b_end_page = $total_page;
+}
+$total_block = ceil($total_page/$b_pageNum_listCnt);
 
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
@@ -77,20 +182,22 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
     <section id="stock" class="wrap stock-list">
         <h2>보유재고관리</h2>
         <ul class="stock-tab">
-            <li class="active"><a href="<?=G5_SHOP_URL?>/sales_Inventory.php">판매재고<i class="num">(1022)</i></a></li>
-            <li><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php">대여재고<i class="num">(111)</i></a></li>
+            <li class="active"><a href="<?=G5_SHOP_URL?>/sales_Inventory.php">판매재고<i class="num">(<?=$sales_Inventory_total?>)</i></a></li>
+            <li><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php">대여재고<i class="num">(<?=$sales_Inventory_total2?>)</i></a></li>
         </ul>
         <div class="inner">
-            <div class="search-box">
-                <select name="" id="">
-                    <option value="">상품명</option>
-                    <option value="">제품코드</option>
-                </select>
-                <div class="input-search">
-                    <input type="text">
-                    <button type="submit"></button>
+            <form action="">
+                <div class="search-box">
+                    <select name="searchtype" id="">
+                        <option value="1" <?=$_GET['searchtype'] == "1" ? 'selected' : '' ?> >상품명</option>
+                        <option value="2" <?=$_GET['searchtype'] == "2" ? 'selected' : '' ?> >제품코드</option>
+                    </select>
+                    <div class="input-search">
+                        <input name="searchtypeText" value="<?=$_GET["searchtypeText"]?>" type="text">
+                        <button  type="submit"></button>
+                    </div>
                 </div>
-            </div>
+            </form>
             <div class="table-wrap">
                 <ul>
                     <li class="head cb">
@@ -101,77 +208,53 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
                         <span class="order">판매완료</span>
                         <span class="price">급여가</span>
                     </li>
+                        
+                    <?php for($i=0; $i<count($list); $i++){ 
+                        $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
+                        $sql = 'SELECT  `it_taxInfo`, `it_img1`, `it_cust_price` FROM `g5_shop_item` WHERE `it_id`="'.$list[$i]['prodId'].'"';
+                        $row = sql_fetch($sql);
+                    ?>
                     <!--반복-->
-                    <a href="<?=G5_SHOP_URL?>/sales_Inventory_datail.php">
+                    <a href="<?=G5_SHOP_URL?>/sales_Inventory_datail.php?prodId=<?=$list[$i]['prodId']?>&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">
                     <li class="list cb">
-                        <span class="num">1</span>
+                        <span class="num"><?=$number?></span><!-- 넘버링 -->
                         <span class="product">
                             <div class="info">
                                 <div class="img">
-                                    <img src="<?=G5_IMG_URL?>/ex01.png" alt="">
+                                    <img src="/data/item/<?=$row["it_img1"]?>" alt="" style="max-height:100%"><!-- 이미지 -->
                                 </div>
-                                <div class="text">
+                                <div class="text" style="width:100%;">
                                     <div class="info-01">
-                                        <i>[수동휠체어]</i>
-                                        <p>HAL48(22D) </p>
-                                        <p>유통/과세</p>
+                                        <i>[<?=$list[$i]['itemNm']?>]</i><!--품목명 -->
+                                        <p><?=$list[$i]['prodNm']?></p><!-- 제품명 -->
+                                        <p><?=$list[$i]['prodSupYn'] == "Y" ? '유통' : '미유통' ?>/<?=$row["it_taxInfo"]?></p><!--유통/과세 -->
                                     </div>
                                     <!--mobile 용-->
                                     <div class="info-02">
-                                        <span class="pro-num">A465465464</span>
-                                        <span class="stock">5개</span>
-                                        <span class="price">10,500원</span>
+                                        <span class="pro-num" style="font-size:6px;"><?=$list[$i]['prodId']?></span><!--상품아이디-->
+                                        <span class="stock" style=""><?=$list[$i]['orderQuantity']?>개</span><!--주문재고수량-->
+                                        <span class="price"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                                     </div>
                                 </div>
                             </div>
                         </span>
                         <!--pc 용-->
-                        <span class="pro-num m_off">A5465465464</span>
-                        <span class="stock m_off">5개</span>
-                        <span class="order">판매완료</span>
-                        <span class="price m_off">10,500원</span>
+                        <span class="pro-num m_off"><?=$list[$i]['prodId']?></span>
+                        <span class="stock m_off"><?=$list[$i]['orderQuantity']?></span><!--주문재고수량-->
+                        <span class="order"><?=$list[$i]['quantity']?></span><!--판매완료 개수-->
+                        <span class="price m_off"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                     </li>
                     </a>
-                    <!--반복-->
-                    <a href="<?=G5_SHOP_URL?>/sales_Inventory_datail.php">
-                    <li class="list cb">
-                        <span class="num">2</span>
-                        <span class="product">
-                            <div class="info">
-                                <div class="img">
-                                    <img src="<?=G5_IMG_URL?>/ex01.png" alt="">
-                                </div>
-                                <div class="text">
-                                    <div class="info-01">
-                                        <i>[수동휠체어]</i>
-                                        <p>HAL48(22D) </p>
-                                        <p>유통/과세</p>
-                                    </div>
-                                    <div class="info-02">
-                                        <span class="pro-num">M0465465464</span>
-                                        <span class="stock">5개</span>
-                                        <span class="price">10,500원</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </span>
-                        <span class="pro-num m_off">M5465465464</span>
-                        <span class="stock m_off">5개</span>
-                        <span class="order">판매완료</span>
-                        <span class="price m_off">10,500원</span>
-                    </li>
-                    </a>
+                    <?php } ?>
                 </ul>
             </div>
             <div class="pg-wrap">
                 <div>
-                    <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a>
-                    <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a>
-                    <a href="javascript:;" class="on">1</a>
-                    <a href="javascript:;">2</a>
-                    <a href="javascript:;">3</a>
-                    <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a>
-                    <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a>
+                    <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="?page=1"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
+                    <?php if($block > 1){ ?><a href="?page=<?=($b_start_page-1)?>"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
+                    <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="?page=<?=$j?>"><?=$j?></a><?php } ?>
+                    <?php if($block < $total_block){ ?><a href="?page=<?=($b_end_page+1)?>"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
+                    <?php if($block < $total_block){ ?><a href="?page=<?=$last_page?>"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
                 </div>
             </div>
         </div>
