@@ -1313,7 +1313,7 @@ if($is_member && $od_b_name) {
 			$_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
 			$_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
 
-			goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}");
+			goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}&documentId={$sendData["documentId"]}");
 		}
 	}
 

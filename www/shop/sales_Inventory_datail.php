@@ -327,16 +327,18 @@ $row = sql_fetch($sql);
                             <span class="date">입고일</span>
                             <span class="order">판매</span>
                         </li>
-
 						<?php
 						//판매재고 리스트
 						$sendLength = 5;
 						$sendData = [];
+                        $prodsSendData = [];
 						$sendData["usrId"] = $member["mb_id"];
 						$sendData["entId"] = $member["mb_entId"];
 						$sendData["prodId"] = $_GET['prodId'];
 						$sendData["pageNum"] = ($_GET["page2"]) ? $_GET["page2"] : 1;
 						$sendData["pageSize"] = $sendLength;
+                        // array_push($prodsSendData, "00");
+                        // $sendData["stateCd"] = "00";
 
 						$oCurl = curl_init();
 						curl_setopt($oCurl, CURLOPT_PORT, 9001);
@@ -354,7 +356,6 @@ $row = sql_fetch($sql);
 						if($res["data"]){
 							$list = $res["data"];
 						}
-
 						# 페이징
 						$totalCnt = $res["total"];
 						$pageNum = $sendData["pageNum"]; # 페이지 번호
@@ -371,6 +372,7 @@ $row = sql_fetch($sql);
 						}
 						$total_block = ceil($total_page/$b_pageNum_listCnt);
 						?>
+                        <div id="list_box1">
 						<?php for($i=0;$i<count($list);$i++){ 
 							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
 						?>
@@ -378,20 +380,29 @@ $row = sql_fetch($sql);
                         <li class="list cb">
                             <!--pc용-->
                             <span class="num"><?=$number?></span>
-                            <span class="product m_off"><?=$list[$i]['prodColor']?>/<?=$list[$i]['prodSize']?></span>
+                            <span class="product m_off">
+                                <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodBarNum']; }else{ echo "(옵션 없음)"; } ?>
+                            </span>
                             <span class="pro-num m_off"><b><?=$list[$i]['prodBarNum']?></b></span>
-                            <span class="date m_off"><?=$list[$i]['prodBarNum']?></span>
+                            <?php 
+                                //날짜 변환
+                                $date1=$list[$i]['modifyDtm'];
+                                $date2=date("Y-m-d H:i", strtotime($date1));
+                            ?>
+                            <span class="date m_off"><?=$date2?></span>
                             <span class="order m_off">
                                 <a href="javascript:;">수급자선택</a>
                             </span>
                             <!--mobile용-->
                             <div class="list-m">
                                 <div class="info-m">
-                                    <span class="product">미끄럼방지양말(흰색)</span>
-                                    <span class="pro-num"><b>123456789</b></span>
+                                    <span class="product">
+                                        <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodBarNum']; }else{ echo "(옵션 없음)"; } ?>
+                                    </span>
+                                    <span class="pro-num"><b><?=$list[$i]['prodBarNum']?></b></span>
                                 </div>
                                 <div class="info-m">
-                                    <span class="date">2021-03-03</span>
+                                    <span class="date"><?=$date2?></span>
                                     <span class="order">
                                         <a href="javascript:;">수급자선택</a>
                                     </span>
@@ -399,9 +410,18 @@ $row = sql_fetch($sql);
                             </div>
                         </li>
 						<?php } ?>
+                        </div>
                     </ul>
                 </div>
-
+                <div class="pg-wrap">
+                    <div id="numbering_zone1">
+                        <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="javascript:selectDetailList('1')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
+                        <?php if($block > 1){ ?><a href="javascript:selectDetailList('<?=($b_start_page-1)?>')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
+                        <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="javascript:selectDetailList('<?=$j?>')"><?=$j?></a><?php } ?>
+                        <?php if($block < $total_block){ ?><a href="javascript:selectDetailList('<?=($b_end_page+1)?>')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
+                        <?php if($block < $total_block){ ?><a href="javascript:selectDetailList('<?=$total_page?>')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
+                    </div>
+                </div>
                 <div class="table-wrap table-wrap2">
                     <h3>판매 완료</h3>
                     <ul>
@@ -413,133 +433,289 @@ $row = sql_fetch($sql);
                             <span class="date">종료일</span>
                             <span class="check">계약서</span>
                         </li>
+                        <?php
+						//판매재고 리스트
+						$sendLength = 5;
+						$sendData = [];
+                        $prodsSendData = [];
+						$sendData["usrId"] = $member["mb_id"];
+						$sendData["entId"] = $member["mb_entId"];
+						$sendData["prodId"] = $_GET['prodId'];
+						$sendData["pageNum"] = ($_GET["page2"]) ? $_GET["page2"] : 1;
+						$sendData["pageSize"] = $sendLength;
+                        // array_push($prodsSendData, "00");
+                        // $sendData["stateCd"] = "00";
+
+						$oCurl = curl_init();
+						curl_setopt($oCurl, CURLOPT_PORT, 9001);
+						curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
+						curl_setopt($oCurl, CURLOPT_POST, 1);
+						curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+						curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+						curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+						curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+						$res = curl_exec($oCurl);
+						$res = json_decode($res, true);
+						curl_close($oCurl);
+
+						$list = [];
+						if($res["data"]){
+							$list = $res["data"];
+						}
+						# 페이징
+						$totalCnt = $res["total"];
+						$pageNum = $sendData["pageNum"]; # 페이지 번호
+						$listCnt = $sendLength; # 리스트 갯수 default 10
+
+						$b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
+						$block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
+						$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
+						$b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
+						$total_page = ceil( $totalCnt / $listCnt ); # 총 페이지
+						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
+						if ($b_end_page > $total_page){ 
+							$b_end_page = $total_page;
+						}
+						$total_block = ceil($total_page/$b_pageNum_listCnt);
+						?>
+                        <div id="list_box2">
+						<?php for($i=0;$i<count($list);$i++){ 
+							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
+						?>
                         <!--반복-->
                         <li class="list cb">
-                             <!--pc용-->
-                            <span class="num">1</span>
-                            <span class="product m_off">미끄럼방지양말(흰색)</span>
-                            <span class="pro-num m_off"><b>123456789</b></span>
-                            <span class="name m_off">홍길동</span>
-                            <span class="date m_off">2021-03-03</span>
+                            <!--pc용-->
+                            <span class="num"><?=$number?></span>
+                            <span class="product m_off">
+                                <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodBarNum']; }else{ echo "(옵션 없음)"; } ?>
+                            </span>
+                            <span class="pro-num m_off"><b><?=$list[$i]['prodBarNum']?></b></span>
+                            <?php 
+                                //날짜 변환
+                                $date1=$list[$i]['modifyDtm'];
+                                $date2=date("Y-m-d H:i", strtotime($date1));
+                            ?>
+                            <span class="date m_off"><?=$date2?></span>
+                            <span class="order m_off">
+                                <a href="javascript:;">수급자선택</a>
+                            </span>
                             <!--mobile용-->
                             <div class="list-m">
                                 <div class="info-m">
-                                    <span class="product">미끄럼방지양말(흰색)</span>
-                                    <span class="pro-num"><b>123456789</b></span>
+                                    <span class="product">
+                                        <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodBarNum']; }else{ echo "(옵션 없음)"; } ?>
+                                    </span>
+                                    <span class="pro-num"><b><?=$list[$i]['prodBarNum']?></b></span>
                                 </div>
                                 <div class="info-m">
-                                    <span class="name">홍길동</span>
-                                    <span class="date">2021-03-03</span>
+                                    <span class="date"><?=$date2?></span>
+                                    <span class="order">
+                                        <a href="javascript:;">수급자선택</a>
+                                    </span>
                                 </div>
                             </div>
-                            <span class="check">
-                                <a href="javascript:;">확인</a>
-                            </span>
                         </li>
-                        <!--반복-->
-                        <!--반복-->
-                        <li class="list cb">
-                             <!--pc용-->
-                            <span class="num">1</span>
-                            <span class="product m_off">미끄럼방지양말(흰색)</span>
-                            <span class="pro-num m_off"><b>123456789</b></span>
-                            <span class="name m_off">홍길동</span>
-                            <span class="date m_off">2021-03-03</span>
-                            <!--mobile용-->
-                            <div class="list-m">
-                                <div class="info-m">
-                                    <span class="product">미끄럼방지양말(흰색)</span>
-                                    <span class="pro-num"><b>123456789</b></span>
-                                </div>
-                                <div class="info-m">
-                                    <span class="name">홍길동</span>
-                                    <span class="date">2021-03-03</span>
-                                </div>
-                            </div>
-                            <span class="check">
-                                <a href="javascript:;">확인</a>
-                            </span>
-                        </li>
-                        <!--반복-->
-                                                <!--반복-->
-                                                <li class="list cb">
-                             <!--pc용-->
-                            <span class="num">1</span>
-                            <span class="product m_off">미끄럼방지양말(흰색)</span>
-                            <span class="pro-num m_off"><b>123456789</b></span>
-                            <span class="name m_off">홍길동</span>
-                            <span class="date m_off">2021-03-03</span>
-                            <!--mobile용-->
-                            <div class="list-m">
-                                <div class="info-m">
-                                    <span class="product">미끄럼방지양말(흰색)</span>
-                                    <span class="pro-num"><b>123456789</b></span>
-                                </div>
-                                <div class="info-m">
-                                    <span class="name">홍길동</span>
-                                    <span class="date">2021-03-03</span>
-                                </div>
-                            </div>
-                            <span class="check">
-                                <a href="javascript:;">확인</a>
-                            </span>
-                        </li>
-                        <!--반복-->
-                                                <!--반복-->
-                                                <li class="list cb">
-                             <!--pc용-->
-                            <span class="num">1</span>
-                            <span class="product m_off">미끄럼방지양말(흰색)</span>
-                            <span class="pro-num m_off"><b>123456789</b></span>
-                            <span class="name m_off">홍길동</span>
-                            <span class="date m_off">2021-03-03</span>
-                            <!--mobile용-->
-                            <div class="list-m">
-                                <div class="info-m">
-                                    <span class="product">미끄럼방지양말(흰색)</span>
-                                    <span class="pro-num"><b>123456789</b></span>
-                                </div>
-                                <div class="info-m">
-                                    <span class="name">홍길동</span>
-                                    <span class="date">2021-03-03</span>
-                                </div>
-                            </div>
-                            <span class="check">
-                                <a href="javascript:;">확인</a>
-                            </span>
-                        </li>
-                        <!--반복-->
-                                                <!--반복-->
-                                                <li class="list cb">
-                             <!--pc용-->
-                            <span class="num">1</span>
-                            <span class="product m_off">미끄럼방지양말(흰색)</span>
-                            <span class="pro-num m_off"><b>123456789</b></span>
-                            <span class="name m_off">홍길동</span>
-                            <span class="date m_off">2021-03-03</span>
-                            <!--mobile용-->
-                            <div class="list-m">
-                                <div class="info-m">
-                                    <span class="product">미끄럼방지양말(흰색)</span>
-                                    <span class="pro-num"><b>123456789</b></span>
-                                </div>
-                                <div class="info-m">
-                                    <span class="name">홍길동</span>
-                                    <span class="date">2021-03-03</span>
-                                </div>
-                            </div>
-                            <span class="check">
-                                <a href="javascript:;">확인</a>
-                            </span>
-                        </li>
-                        <!--반복-->
+						<?php } ?>
+                        </div>
                     </ul>
+                </div>
+                <div class="pg-wrap">
+                    <div id="numbering_zone2">
+                        <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="javascript:selectDetailList2('1')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
+                        <?php if($block > 1){ ?><a href="javascript:selectDetailList2('<?=($b_start_page-1)?>')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
+                        <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="javascript:selectDetailList2('<?=$j?>')"><?=$j?></a><?php } ?>
+                        <?php if($block < $total_block){ ?><a href="javascript:selectDetailList2('<?=($b_end_page+1)?>')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
+                        <?php if($block < $total_block){ ?><a href="javascript:selectDetailList2('<?=$total_page?>')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <script>
+    function selectDetailList(page2){
+        var sendData = {
+            usrId : "<?=$member["mb_id"] ?>",
+            entId : "<?=$member["mb_entId"] ?>",
+            prodId : "<?=$_GET['prodId'] ?>",
+            pageNum : page2,
+            // stateCd : "01"
+            pageSize : <?=$sendLength ?>
+        }
+        $.ajax({
+            url : "./ajax.stock.selectDetailList.php",
+            type : "POST",
+            async : false,
+            data : sendData,
+            success : function(result){
+                result = JSON.parse(result);
+                if(result.errorYN == "Y"){
+                    alert(result.message);
+                } else {
+                    console.log(result);
+                    $("#list_box1 *").remove();
+                    $("#numbering_zone1 *").remove();
+                    for(var i =0 ; i < result.data.length; i++){
+                        var html = "";
+                        // if(result.data[i].prodColor){ var prodColor_v=result.data[i].prodColor; }else{ var prodColor_v=""; }//컬러
+                        // if(result.data[i].prodSize){ var prodSize_v=result.data[i].prodSize; }else{ var prodSize_v="";  } //사이즈
+                        if(result.data[i].prodColor||result.data[i].prodSize){ var option= result.data[i].prodColor +'/'+result.data[i].prodSize; }else{ var option ="(옵션 없음)";} //사이즈
+                        var number = result.total-((sendData['pageNum']-1)*sendData['pageSize'])-i; //넘버링
+                        html = html + '<li class="list cb">';
+                        html = html +'<span class="num">'+number+'</span>';
+                        html = html +'<span class="product m_off">'+option+'</span>';
+                        html = html +'<span class="pro-num m_off"><b>'+result.data[i].prodBarNum+'</b></span>';
+                        html = html +'<span class="date m_off">'+result.data[i].prodBarNum+'</span>';
+                        html = html +'<span class="order m_off">';
+                        html = html +'<a href="javascript:;">수급자선택</a>';
+                        html = html +'</span>';
+                        html = html +'<div class="list-m">';
+                        html = html +'<div class="info-m">';
+                        html = html +'<span class="product">'+result.data[i].prodColor+'/'+result.data[i].prodSize+'</span>';
+                        html = html +'<span class="pro-num"><b>'+result.data[i].prodBarNum+'</b></span>';
+                        html = html +'</div>';
+                        html = html +'<div class="info-m">';
+                        html = html +'<span class="date">2021-03-03</span>';
+                        html = html +'<span class="order">';
+                        html = html +'<a href="javascript:;">수급자선택</a>';
+                        html = html +'</span>';
+                        html = html +'</div>';
+                        html = html +'</div>';
+                        html = html +'</li>';
+                        // console.log(html);
+                        $("#list_box1").append(html);
+                    }
+                        //페이징
+						var totalCnt = result.total;
+						var pageNum = parseInt(sendData['pageNum']);
+						var listCnt = <?=$sendLength?>
 
+						var b_pageNum_listCnt = 5; //# 한 블록에 보여줄 페이지 갯수 5개
+						var block = Math.ceil(pageNum/b_pageNum_listCnt); //# 총 블록 갯수 구하기
+						var b_start_page = ( (block - 1) * b_pageNum_listCnt ) + 1; //# 블록 시작 페이지 
+						var b_end_page = b_start_page + b_pageNum_listCnt - 1;  //# 블록 종료 페이지
+						var total_page = Math.ceil( totalCnt / listCnt ); //# 총 페이지
+						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
+						if (b_end_page > total_page){ 
+							b_end_page = total_page;
+						}
+						var total_block = Math.ceil(total_page/b_pageNum_listCnt);
+                        var html_2="";
+                        if(pageNum >b_pageNum_listCnt){ 
+                            html_2 = html_2+'<a href="javascript:selectDetailList(\'1\')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a>';
+                        } 
+                        if(block > 1){
+                            html_2 = html_2+'<a href="javascript:selectDetailList(\''+(b_start_page-1)+'\')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a>';
+                        }
+                        for(var j = b_start_page; j <=b_end_page; j++){
+                            html_2 = html_2+'<a href="javascript:selectDetailList(\''+j+'\')">'+j+'</a>';
+                        }
+                        if(block < total_block){ 
+                            html_2 = html_2+'<a href="javascript:selectDetailList(\''+(b_end_page+1)+'\')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a>';
+                        }
+                        if(block < total_block){ 
+                            html_2 = html_2+'<a href="javascript:selectDetailList(\''+total_page+'\')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a>';
+                        }
+                        console.log(block);
+                        $("#numbering_zone1").append(html_2);
+                }
+            }
+        });
+    }
+    
+
+
+
+    function selectDetailList2(page2){
+        var sendData = {
+            usrId : "<?=$member["mb_id"] ?>",
+            entId : "<?=$member["mb_entId"] ?>",
+            prodId : "<?=$_GET['prodId'] ?>",
+            pageNum : page2,
+            // stateCd : "01"
+            pageSize : <?=$sendLength ?>
+        }
+        $.ajax({
+            url : "./ajax.stock.selectDetailList.php",
+            type : "POST",
+            async : false,
+            data : sendData,
+            success : function(result){
+                result = JSON.parse(result);
+                if(result.errorYN == "Y"){
+                    alert(result.message);
+                } else {
+                    console.log(result);
+                    $("#list_box2 *").remove();
+                    $("#numbering_zone2 *").remove();
+                    for(var i =0 ; i < result.data.length; i++){
+                        var html = "";
+                        // if(result.data[i].prodColor){ var prodColor_v=result.data[i].prodColor; }else{ var prodColor_v=""; }//컬러
+                        // if(result.data[i].prodSize){ var prodSize_v=result.data[i].prodSize; }else{ var prodSize_v="";  } //사이즈
+                        if(result.data[i].prodColor||result.data[i].prodSize){ var option= result.data[i].prodColor +'/'+result.data[i].prodSize; }else{ var option ="(옵션 없음)";} //사이즈
+                        var number = result.total-((sendData['pageNum']-1)*sendData['pageSize'])-i; //넘버링
+                        html = html + '<li class="list cb">';
+                        html = html +'<span class="num">'+number+'</span>';
+                        html = html +'<span class="product m_off">'+option+'</span>';
+                        html = html +'<span class="pro-num m_off"><b>'+result.data[i].prodBarNum+'</b></span>';
+                        html = html +'<span class="date m_off">'+result.data[i].prodBarNum+'</span>';
+                        html = html +'<span class="order m_off">';
+                        html = html +'<a href="javascript:;">수급자선택</a>';
+                        html = html +'</span>';
+                        html = html +'<div class="list-m">';
+                        html = html +'<div class="info-m">';
+                        html = html +'<span class="product">'+result.data[i].prodColor+'/'+result.data[i].prodSize+'</span>';
+                        html = html +'<span class="pro-num"><b>'+result.data[i].prodBarNum+'</b></span>';
+                        html = html +'</div>';
+                        html = html +'<div class="info-m">';
+                        html = html +'<span class="date">2021-03-03</span>';
+                        html = html +'<span class="order">';
+                        html = html +'<a href="javascript:;">수급자선택</a>';
+                        html = html +'</span>';
+                        html = html +'</div>';
+                        html = html +'</div>';
+                        html = html +'</li>';
+                        // console.log(html);
+                        $("#list_box2").append(html);
+                    }
+                        //페이징
+						var totalCnt = result.total;
+						var pageNum = parseInt(sendData['pageNum']);
+						var listCnt = <?=$sendLength?>
+
+						var b_pageNum_listCnt = 5; //# 한 블록에 보여줄 페이지 갯수 5개
+						var block = Math.ceil(pageNum/b_pageNum_listCnt); //# 총 블록 갯수 구하기
+						var b_start_page = ( (block - 1) * b_pageNum_listCnt ) + 1; //# 블록 시작 페이지 
+						var b_end_page = b_start_page + b_pageNum_listCnt - 1;  //# 블록 종료 페이지
+						var total_page = Math.ceil( totalCnt / listCnt ); //# 총 페이지
+						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
+						if (b_end_page > total_page){ 
+							b_end_page = total_page;
+						}
+						var total_block = Math.ceil(total_page/b_pageNum_listCnt);
+                        var html_2="";
+                        if(pageNum >b_pageNum_listCnt){ 
+                            html_2 = html_2+'<a href="javascript:selectDetailList2(\'1\')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a>';
+                        } 
+                        if(block > 1){
+                            html_2 = html_2+'<a href="javascript:selectDetailList2(\''+(b_start_page-1)+'\')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a>';
+                        }
+                        for(var j = b_start_page; j <=b_end_page; j++){
+                            html_2 = html_2+'<a href="javascript:selectDetailList2(\''+j+'\')">'+j+'</a>';
+                        }
+                        if(block < total_block){ 
+                            html_2 = html_2+'<a href="javascript:selectDetailList2(\''+(b_end_page+1)+'\')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a>';
+                        }
+                        if(block < total_block){ 
+                            html_2 = html_2+'<a href="javascript:selectDetailList2(\''+total_page+'\')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a>';
+                        }
+                        console.log(block);
+                        $("#numbering_zone2").append(html_2);
+                }
+            }
+        });
+    }
+</script>
 <?php
 if($is_inquiry_sub) {
 	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');

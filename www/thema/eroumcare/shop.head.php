@@ -138,6 +138,101 @@ scrollToTop();
 				<img src="<?php echo THEMA_URL; ?>/assets/img/top_logo_s.png">
 			</div>
 			<div class="scrollable-wrap">
+                <?php if($member['mb_level']==9){ ?>
+                <style>
+                    .or_manage{ width: 100%; height: 50px; line-height: 50px; text-align:center; border :solid 1.5px; margin-bottom:10px; border-color: #e46914; color: #e46914; }
+
+
+                    .overlay {
+                    position: fixed;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    background: rgba(0, 0, 0, 0.7);
+                    transition: opacity 500ms;
+                    visibility: hidden;
+                    opacity: 0;
+                    z-index: 900;
+                    }
+
+                    .overlay:target {
+                    visibility: visible;
+                    opacity: 1;
+                    }
+
+                    .popup {
+                    position: fixed;
+                    width: 60%;
+                    padding: 10px;
+                    max-width: 500px;
+                    border-radius: 10px;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(255, 255, 255, .9);
+                    /* "delay" the visibility transition */
+                    -webkit-transition: opacity .5s, visibility 0s linear .5s;
+                    transition: opacity .5s, visibility 0s linear .5s;
+                    z-index: 1;
+                    }
+
+                    .popup:target {
+                    visibility: visible;
+                    opacity: 1;
+                    /* cancel visibility transition delay */
+                    -webkit-transition-delay: 0s;
+                    transition-delay: 0s;
+                    }
+
+                    .popup-close {
+                    position: absolute;
+                    padding: 10px;
+                    max-width: 500px;
+                    border-radius: 10px;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(255, 255, 255, .9);
+                    }
+
+                    .popup .close {
+                    position: absolute;
+                    right: 5px;
+                    top: 5px;
+                    padding: 5px;
+                    color: #000;
+                    transition: color .3s;
+                    font-size: 2em;
+                    line-height: .6em;
+                    font-weight: bold;
+                    }
+
+                    .popup .close:hover {
+                    color: #00E5EE;
+                    }
+                </style>
+                <div class="popup_btn">
+                <a href="#pop01">팝업</a>
+                </div>
+
+                <div id="pop01" class="overlay">
+                <div class="popup">
+                    <a href="#none" class="close">&times;</a>
+                    열려라 팝업!
+                </div>
+                </div>
+                <div class="or_manage">
+                    <a href="#pop01">관리자 주문 출고 관리</a> 
+                </div>
+                <div class="or_manage_popup">
+                
+                </div>
+
+
+
+
+                <?php } ?>
 				<ul class="mobile-cate">   
 					<?php foreach($category as $cate) { ?>
 						<li class="<?php echo (substr($ca_id, 0, strlen($cate['ca_id'])) === $cate['ca_id']) ? 'on default_on ': ''; ?>" data-id="<?php echo $cate['ca_id']; ?>">

@@ -165,7 +165,7 @@ $totalCnt = $res["total"];
 $pageNum = $sendData["pageNum"]; # 페이지 번호
 $listCnt = $sendLength; # 리스트 갯수 default 10
 
-$b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
+$b_pageNum_listCnt = 1; # 한 블록에 보여줄 페이지 갯수 5개
 $block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
 $b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
 $b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
@@ -254,7 +254,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                     <?php if($block > 1){ ?><a href="?page=<?=($b_start_page-1)?>"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
                     <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="?page=<?=$j?>"><?=$j?></a><?php } ?>
                     <?php if($block < $total_block){ ?><a href="?page=<?=($b_end_page+1)?>"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
-                    <?php if($block < $total_block){ ?><a href="?page=<?=$last_page?>"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
+                    <?php if($block < $total_block){ ?><a href="?page=<?=$total_page?>"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
                 </div>
             </div>
         </div>
