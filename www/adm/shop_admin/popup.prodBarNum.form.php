@@ -3,7 +3,7 @@
 	include_once("./_common.php");
 
 	$g5["title"] = "주문 내역 바코드 수정";
-	include_once(G5_ADMIN_PATH."/admin.head.php");
+	// include_once(G5_ADMIN_PATH."/admin.head.php");
 
 	$sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 	$od = sql_fetch($sql);
@@ -159,39 +159,180 @@
 	}
 
 ?>
-
-	<style>
-		
-		#hd, #text_size, .page_title, #ft { display: none; }
-		html, body { width: 100%; height: 100%; min-width: 100%; float: left; margin: 0 !important; padding: 0 !important; overflow: hidden; }
-		#tbl_wrap { top: 0; min-height: 100%; }
-		#wrapper { min-height: 100%; padding: 0; border: 0; }
-		
-		.barNumGuideBox { position: absolute; width: 380px; border: 1px solid #DDD; background-color: #FFF; text-align: left; padding: 15px 20px; display: none; margin-left: 35px; margin-top: 5px; right: 10px; }
-		.barNumGuideBox > .title { width: 100%; font-weight: bold; margin-bottom: 15px; position: relative; }
-		.barNumGuideBox > .title > button { float: right; }
-		.barNumGuideBox > p { width: 100%; padding: 0; }
-		
-		#container { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
-		#prodBarNumFormWrap { width: 100%; height: calc(100% - 60px); float: left; overflow: auto; }
-		
-		#prodBarNumFormWrap > .titleWrap { width: 100%; float: left; font-weight: bold; font-size: 21px; padding: 20px; }
-		
-		#prodBarNumFormWrap > .tableWrap { width: 100%; float: left; }
-		#prodBarNumFormWrap > .tableWrap > table { width: 100%; float: left; table-layout: fixed; }
-		#prodBarNumFormWrap > .tableWrap > table thead > tr > th { border-top: 1px solid #3366CC; border-bottom: 1px solid #3366CC; padding: 10px 0; font-weight: bold; font-size: 13px; }
-		#prodBarNumFormWrap > .tableWrap > table tbody > tr > td { border-left: 0; border-right: 0; padding: 10px; vertical-align: top; }
-		#prodBarNumFormWrap > .tableWrap > table tbody > tr:last-of-type > td { border-bottom: 0; }
-		
-		#prodBarNumBtnWrap { width: 100%; height: 60px; float: left; background-color: #F1F1F1; padding: 10px; }
-		#prodBarNumBtnWrap > button { width: 100px; height: 40px; line-height: 28px; float: left; font-size: 13px; font-weight: bold; color: #FFF; background-color: #333; margin-left: 5px; }
-		#prodBarNumBtnWrap > button:first-of-type { margin-left: 0; }
-		#prodBarNumBtnWrap > button.main { width: calc(100% - 105px); background-color: #3366CC; }
-		
-		.frm_input { width: 380px; font-size: 13px !important; padding: 0 5px; }
-		
-	</style>
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Document</title>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+ </head>
+ <body>
 	
+
+<style>
+    @font-face { font-family: 'NanumBarunGothic';
+    src: url('<?php echo G5_CSS_URL?>/font/NanumBarunGothic.eot');
+    src: url('<?php echo G5_CSS_URL?>/font/NanumBarunGothic.eot') format('embedded-opentype'),
+    url('<?php echo G5_CSS_URL?>/font/NanumBarunGothic.woff') format('woff');}
+    body { margin:0px; padding:0px; font-family: 'NanumBarunGothic', 'serif';}
+    ul{list-style:none;}
+    a { text-decoration:none } 
+    .section1{ position:relative; width:100%; padding:0px;}
+    .head{ position:relative; width:100%; background-color:#333333;height:60px; line-height:60px;}
+    .head .p1{  float:left; margin-left:20px; color: #f1f1f1;font-size:30px; }
+    .head .xbtn{ float:right;  margin-right:20px;color: #f1f1f1; font-size:40px; line-height:60px;}
+
+    .naming_box{position:relative; width:100%; color: #333333; font-size:19px;height:70px; border-bottom: 1px solid #dddddd;}
+    .naming_box .sp1{ position:relative; left:20px; line-height:70px;}
+    .imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto;}
+    .imfomation_box a .li_box{width:100%;  height:70px; text-align:center; border-bottom: 1px solid #dddddd;}
+    .imfomation_box a .li_box .li_box_line1{width: 100%; margin:auto; float:left;color:#000;}
+    .imfomation_box a .li_box .li_box_line1 .p1{height:100%;  margin:auto; float:left; color:#000;line-height:70px;}
+    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ flex: 1; font-size:22px; margin-left:20px; float:left;}
+
+
+
+    /* @media screen and (max-width: 4000px){
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:35px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:30px;}
+        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:30px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:330px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .imfomation_box a .li_box .li_box_line1 .p1 .span3{width:500px;float:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+    }
+    @media screen and (max-width: 1200px){
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:30px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:25px;}
+        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:25px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:270px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .imfomation_box a .li_box .li_box_line1 .p1 .span3{width:auto;}
+    }
+
+    @media screen and (max-width: 1000px){
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:30px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:25px;}
+        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:25px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:270px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    }
+
+    @media screen and (max-width: 900px){
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:28px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:23px;}
+        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:23px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+    }
+
+    @media screen and (max-width: 630px){
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:23px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:20px;}
+        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:20px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+    }
+
+
+    @media screen and (max-width: 500px){
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:20px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:15px;}
+        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:15px; }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{
+            width:170px;float:left;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        }
+    }
+    .li_box.type1{display:block;}
+    .li_box.type1{display:none;} */
+}
+ </style>
+
+
+
+<section class="section1">
+
+    <div class="head">
+        <b class="p1">바코드입력</b>
+        <a href="javascript:history.back();"><span class="xbtn">&times;</span></a>
+    </div>
+
+    <div class="naming_box">
+        <span class="sp1">
+            <span class="sp1_1">[재고]<?=$od_id?></span>
+            <span class="sp1_2">(배송:<?=count($carts)+1?>개)</span>
+        </span>
+    </div>
+
+    <ul class="imfomation_box" id="imfomation_box">
+<?php 
+        for($i = 0; $i < count($carts); $i++){ 
+            $options = $carts[$i]["options"];
+            
+            for($k = 0; $k < count($options); $k++){
+?>
+                <a href="">
+                    <li class="li_box">
+                        <div class="li_box_line1">
+                            <p class="p1">
+                                <span class="span1">
+                                    <span class="span1_1">상품명(옵션명)</span>
+                                </span>
+                            </p>
+                        </div>
+                    </li>
+                </a>
+<?php
+            }   
+        }
+?>
+    <?php 
+        for($i = 0; $i < count($carts); $i++){ 
+            $options = $carts[$i]["options"];
+            
+            for($k = 0; $k < count($options); $k++){
+    ?>
+						<tr>
+							<td>
+								<?=stripslashes($carts[$i]["it_name"])?>
+								<?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
+									(<?=$options[$k]["ct_option"]?>)
+								<?php } ?>
+							</td>
+							<td>
+								<ul>
+									<li>
+										<input type="text" class="frm_input" style="width: 302px;">
+										<button type="button" style="width: 35px; height: 24px; background-color: #3366CC; color: #FFF;" class="barNumCustomSubmitBtn">적용</button>
+										<button type="button" style="width: 35px; height: 24px; background-color: #999; color: #FFF;" class="barNumGuideOpenBtn">방법</button>
+										<div class="barNumGuideBox">
+											<div class="title">바코드 일괄 등록 방법 <button type="button" class="closeBtn">X</button></div>
+											<p>
+												공통된 문자/숫자를 앞에 부여 후 반복되는 숫자를 입력합니다.<br><br>
+												예시) 010101^3,4,5-10- 010101은 공동문자/숫자입니다.<br><br>
+												- ^이후는 자동으로 입력하기 위한 내용입니다.<br>
+												-    “숫자 입력 후 콤마(,)”를 입력하면 독립 숫자가 입력됩니다.<br>
+												- 5-10이라고 입력하면5부터10까지 순차적으로 입력됩니다.<br>
+												- 00-20으로 시작 숫자가00인 경우2자리 숫자로 입력됩니다
+											</p>
+										</div>
+									</li>
+								<?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
+									<li style="padding-top: 5px;">
+										<input type="text" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+									</li>
+								<?php $prodListCnt++; } ?>
+								</ul>
+							</td>
+						</tr>
+					<?php } ?>
+				<?php } ?>
+    </ul>
+    <input type="hidden" value="1" id="page">
+</section>
+
+
 	<div id="prodBarNumFormWrap">
 		
 		<div class="titleWrap">
@@ -262,7 +403,11 @@
 	
 	<div id="prodBarNumBtnWrap">
 		<button type="button" class="main" id="prodBarNumSaveBtn">저장</button>
-		<button type="button" onclick="window.close();">취소</button>
+        <?php if($_GET['new']){ ?>
+		<button type="button" onclick="history.back();">취소</button>
+        <?php }else{ ?>
+            <button type="button" onclick="window.close();">취소</button>
+        <?php }?>
 	</div>
 	
 	<script type="text/javascript">
@@ -470,8 +615,13 @@
 										cnt : insertBarCnt
 									}
 								});
-								opener.location.reload();
-								window.close();
+                                
+                                <?php if($_GET['new']){ ?>
+                                    history.back();
+                                <?php }else{ ?>
+                                    opener.location.reload();
+                                    window.close();
+                                <?php }?>
 							}
 						}
 					});
@@ -480,5 +630,4 @@
 			
 		})
 	</script>
-
-<?php include_once(G5_ADMIN_PATH."/admin.tail.php"); ?>
+ </body>

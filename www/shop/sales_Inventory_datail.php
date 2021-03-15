@@ -337,8 +337,7 @@ $row = sql_fetch($sql);
 						$sendData["prodId"] = $_GET['prodId'];
 						$sendData["pageNum"] = ($_GET["page2"]) ? $_GET["page2"] : 1;
 						$sendData["pageSize"] = $sendLength;
-                        // array_push($prodsSendData, "00");
-                        // $sendData["stateCd"] = "00";
+                        $sendData["stateCd"] = "01";
 
 						$oCurl = curl_init();
 						curl_setopt($oCurl, CURLOPT_PORT, 9001);
@@ -434,7 +433,7 @@ $row = sql_fetch($sql);
                             <span class="check">계약서</span>
                         </li>
                         <?php
-						//판매재고 리스트
+						//판매완료 리스트
 						$sendLength = 5;
 						$sendData = [];
                         $prodsSendData = [];
@@ -443,8 +442,7 @@ $row = sql_fetch($sql);
 						$sendData["prodId"] = $_GET['prodId'];
 						$sendData["pageNum"] = ($_GET["page2"]) ? $_GET["page2"] : 1;
 						$sendData["pageSize"] = $sendLength;
-                        // array_push($prodsSendData, "00");
-                        // $sendData["stateCd"] = "00";
+                        $sendData["stateCd"] = "02";
 
 						$oCurl = curl_init();
 						curl_setopt($oCurl, CURLOPT_PORT, 9001);

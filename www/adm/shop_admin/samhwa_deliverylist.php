@@ -276,6 +276,7 @@ $( document ).ready(function() {
 	});
 
     function doSearch() {
+        // alert(od_status);
         if ( loading === true ) return;
         if ( end === true ) return;
 
@@ -286,8 +287,9 @@ $( document ).ready(function() {
             sub_menu: sub_menu,
             last_step: last_step, 
         });
+        
         loading = true;
-
+        console.log(formdata);
         var ajax = $.ajax({
                         method: "POST",
                         url: "./ajax.deliverylist.php",

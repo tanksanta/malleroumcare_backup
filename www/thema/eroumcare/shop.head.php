@@ -8,14 +8,14 @@
     $for_viewType = 'https://'.$http_host.$request_uri;
     $mood_type_string="";
     if(strpos($for_viewType, '?') !== false) {  
-        if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){
+        if($_COOKIE["viewType"] == "adm"){
             $for_viewType=$for_viewType.'&viewType=basic';
         }else{
             $for_viewType=$for_viewType.'&viewType=adm';
             $mood_type_string="급여안내";
         }
     }else{
-        if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){
+        if($_COOKIE["viewType"] == "adm"){
             $for_viewType=$for_viewType.'?viewType=basic';
         }else{
             $for_viewType=$for_viewType.'?viewType=adm';
@@ -104,7 +104,7 @@ scrollToTop();
 </div>
 
 
-<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic" || !$_COOKIE["viewType"]){ ?>
+<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>
                 <div class="top_mode_area">
                     <?=$mood_type_string;?> 모드 실행중 입니다.
                 </div>
@@ -115,7 +115,7 @@ scrollToTop();
 	</div>
 
 	<?php if($member["mb_level"] == "3"){ ?>
-		<?php if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
+		<?php if($_COOKIE["viewType"] == "adm"){ ?>
 			<a href="#" class="modeBtn" data-type="basic">구매모드</a>
 		<?php } else { ?>
 			<a href="#" class="modeBtn" data-type="adm">급여안내모드</a>
@@ -138,101 +138,18 @@ scrollToTop();
 				<img src="<?php echo THEMA_URL; ?>/assets/img/top_logo_s.png">
 			</div>
 			<div class="scrollable-wrap">
+
+
                 <?php if($member['mb_level']==9){ ?>
                 <style>
                     .or_manage{ width: 100%; height: 50px; line-height: 50px; text-align:center; border :solid 1.5px; margin-bottom:10px; border-color: #e46914; color: #e46914; }
-
-
-                    .overlay {
-                    position: fixed;
-                    top: 0;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    background: rgba(0, 0, 0, 0.7);
-                    transition: opacity 500ms;
-                    visibility: hidden;
-                    opacity: 0;
-                    z-index: 900;
-                    }
-
-                    .overlay:target {
-                    visibility: visible;
-                    opacity: 1;
-                    }
-
-                    .popup {
-                    position: fixed;
-                    width: 60%;
-                    padding: 10px;
-                    max-width: 500px;
-                    border-radius: 10px;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    background: rgba(255, 255, 255, .9);
-                    /* "delay" the visibility transition */
-                    -webkit-transition: opacity .5s, visibility 0s linear .5s;
-                    transition: opacity .5s, visibility 0s linear .5s;
-                    z-index: 1;
-                    }
-
-                    .popup:target {
-                    visibility: visible;
-                    opacity: 1;
-                    /* cancel visibility transition delay */
-                    -webkit-transition-delay: 0s;
-                    transition-delay: 0s;
-                    }
-
-                    .popup-close {
-                    position: absolute;
-                    padding: 10px;
-                    max-width: 500px;
-                    border-radius: 10px;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    background: rgba(255, 255, 255, .9);
-                    }
-
-                    .popup .close {
-                    position: absolute;
-                    right: 5px;
-                    top: 5px;
-                    padding: 5px;
-                    color: #000;
-                    transition: color .3s;
-                    font-size: 2em;
-                    line-height: .6em;
-                    font-weight: bold;
-                    }
-
-                    .popup .close:hover {
-                    color: #00E5EE;
-                    }
                 </style>
-                <div class="popup_btn">
-                <a href="#pop01">팝업</a>
-                </div>
-
-                <div id="pop01" class="overlay">
-                <div class="popup">
-                    <a href="#none" class="close">&times;</a>
-                    열려라 팝업!
-                </div>
-                </div>
                 <div class="or_manage">
-                    <a href="#pop01">관리자 주문 출고 관리</a> 
+                    <a href="<?php echo G5_SHOP_URL?>/release_orderlist.php">관리자 주문 출고 관리</a> 
                 </div>
-                <div class="or_manage_popup">
-                
-                </div>
-
-
-
-
                 <?php } ?>
+
+                
 				<ul class="mobile-cate">   
 					<?php foreach($category as $cate) { ?>
 						<li class="<?php echo (substr($ca_id, 0, strlen($cate['ca_id'])) === $cate['ca_id']) ? 'on default_on ': ''; ?>" data-id="<?php echo $cate['ca_id']; ?>">
@@ -335,7 +252,7 @@ scrollToTop();
 			<div class="top_right_area">
 				<div class="link_area">
 				<?php if($member["mb_level"] == "3"){ ?>
-					<?php if($_COOKIE["viewType"] == "adm" || !$_COOKIE["viewType"]){ ?>
+					<?php if($_COOKIE["viewType"] == "adm"){ ?>
 						<a href="#" class="modeBtn" data-type="basic">구매모드</a>
 					<?php } else { ?>
 						<a href="#" class="modeBtn" data-type="adm">급여안내모드</a>
@@ -441,7 +358,8 @@ scrollToTop();
 								</a>
 							</li>
 							<li>
-								<a href="/bbs/content.php?co_id=inventory_guide" title="보유재고관리">
+								<!-- <a href="/bbs/content.php?co_id=inventory_guide" title="보유재고관리"> -->
+								<a href="<?php echo G5_SHOP_URL?>/sales_Inventory.php" title="보유재고관리">
 									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon03.png" alt="보유재고관리_아이콘" class="pc_layout">
 									<p class="mo_layout imgWrap">
 										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon03.png" alt="보유재고관리_아이콘">
