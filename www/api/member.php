@@ -33,8 +33,14 @@
 		$result["msg"] = "success";
 		echo json_encode($result);
 	} else {
-		$result["msg"] = "존재하지 않는 회원입니다.";
-		echo json_encode($result);
+
+
+
+
+
+
+		// $result["msg"] = "존재하지 않는 회원입니다.";
+		// echo json_encode($result);
 	}
 
 ?>

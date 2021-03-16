@@ -48,7 +48,7 @@ if(in_array($pt_it, $g5['apms_automation'])) {
 
 // 파일정보
 if($w == "u") {
-    $sql = " select it_img1, it_img2, it_img3, it_img4, it_img5, it_img6, it_img7, it_img8, it_img9, it_img10
+    $sql = " select it_img1, it_img2, it_img3, it_img4, it_img5, it_img6, it_img7, it_img8, it_img9, it_img10, it_img_3d
                 from {$g5['g5_shop_item_table']}
                 where it_id = '$it_id' ";
     $file = sql_fetch($sql);
@@ -63,8 +63,9 @@ if($w == "u") {
     $it_img8    = $file['it_img8'];
     $it_img9    = $file['it_img9'];
     $it_img10   = $file['it_img10'];
+    $it_img3d   = $file['it_img_3d'];
+    
 }
-
 $it_img_dir = G5_DATA_PATH.'/item';
 
 // 파일삭제
@@ -128,6 +129,9 @@ if ($it_img10_del) {
     delete_item_thumbnail(dirname($file_img10), basename($file_img10));
     $it_img10 = '';
 }
+
+
+
 
 // 이미지업로드
 if ($_FILES['it_img1']['name']) {
@@ -227,6 +231,22 @@ if ($_FILES["it_img_3d"]["name"]) {
 	if($uploadCnt){
 		$andQuery .= " it_img_3d = '{$it_img_3d}', ";
 	}
+}
+//3d파일삭제
+$it_img_3d_del=$_POST['it_img_3d_del'];
+if ($it_img_3d_del) {
+    $it_img3d = json_decode($it_img3d, true);
+    if($it_img3d){ 
+        foreach($it_img3d as $data){
+            $file_3d = $it_img_dir.'/'.$data;
+            @unlink($data);
+            delete_item_thumbnail(dirname($file_3d), basename($file_3d));
+         } 
+     } 
+    delete_item_thumbnail(dirname($file_3d), basename($file_3d));
+    // return false;
+    $it_img_3d = '';
+    $andQuery .= " it_img_3d = '', ";
 }
 
 if ($w == "" || $w == "u")

@@ -92,9 +92,12 @@ scrollToTop();
 </style>
 
 
-
+<!-- 모드바 스타일링 -->
 <style>
-    .top_mode_area{ possition: relative; display:block; width:100%; height:50px; text-align:center; background-color: rgba(0,0,0,0.7);  color : #fff; font-size: 20px; line-height:50px; opacity:70%;}
+    .top_mode_area{ position:fixed; top :0;z-index:9999999; display:block; width:100%; height:50px; text-align:center; background-color: rgba(0,0,0,0.7);  color : #fff; font-size: 20px; line-height:50px; opacity:70%;}
+    @media screen and (max-width: 500px){
+        .top_mode_area{font-size:10px;}
+    }
 </style>
 
 
@@ -105,32 +108,32 @@ scrollToTop();
 
 
 <?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>
-                <div class="top_mode_area">
-                    <?=$mood_type_string;?> 모드 실행중 입니다.
-                </div>
-            <?php } ?>
-<div class="mo_top">
-	<div class="logoWrap">
-		<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
-	</div>
+        <div class="top_mode_area">
+            <?=$mood_type_string;?> 모드 실행중 입니다.
+        </div>
+<?php } ?>
+<div class="mo_top" <?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
+    <div class="logoWrap">
+        <a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
+    </div>
 
-	<?php if($member["mb_level"] == "3"){ ?>
-		<?php if($_COOKIE["viewType"] == "adm"){ ?>
-			<a href="#" class="modeBtn" data-type="basic">구매모드</a>
-		<?php } else { ?>
-			<a href="#" class="modeBtn" data-type="adm">급여안내모드</a>
-		<?php } ?>
-	<?php } ?>
+    <?php if($member["mb_level"] == "3"){ ?>
+        <?php if($_COOKIE["viewType"] == "adm"){ ?>
+            <a href="#" class="modeBtn" data-type="basic">구매모드</a>
+        <?php } else { ?>
+            <a href="#" class="modeBtn" data-type="adm">급여안내모드</a>
+        <?php } ?>
+    <?php } ?>
 
 
 
-	<img src="<?=THEMA_URL?>/assets/img/btn_mo_menu.png" alt="" class="header-hamburger-btn">
+    <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu.png" alt="" class="header-hamburger-btn">
 </div>
 
-<div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>">
+<div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>"<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
 	
-	<div id="samhwa-m-menu">
-		<div class="wrap">
+	<div id="samhwa-m-menu" >
+		<div class="wrap"<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
 			<div class="closer">
 				<img src="<?php echo THEMA_URL; ?>/assets/img/btn_close.png" />
 			</div>
@@ -233,11 +236,7 @@ scrollToTop();
 		<?php } ?>
 
 
-		<div class="container_wrap txt_center top_common_area">
-
-  
-
-            
+		<div class="container_wrap txt_center top_common_area"<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
 			<div class="logoWrap">
 				<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
 			</div>

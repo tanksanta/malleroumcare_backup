@@ -7,6 +7,7 @@ $pg_anchor .='<li><a href="#anc_sitfrm_compact">요약정보</a></li>';
 $pg_anchor .='<li><a href="#anc_sitfrm_cost">가격/재고/배송비</a></li>';
 $pg_anchor .='<li><a href="#anc_sitfrm_img">이미지</a></li>';
 $pg_anchor .='<li><a href="#anc_sitfrm_relation">관련상품</a></li>';
+
 if($is_auth) { // 관리자일 때
 	$pg_anchor .='<li><a href="#anc_sitfrm_event">관련이벤트</a></li>';
 
@@ -1504,6 +1505,10 @@ $pg_anchor .='</ul>';
             <th scope="row"><label for="it_img_3d">3D 이미지</label></th>
             <td>
                 <input type="file" name="it_img_3d[]" id="it_img_3d" multiple>
+                <?php if($it['it_img_3d']){ ?>
+                    <label for="it_img<?php echo $i; ?>_del"><span class="sound_only">이미지 <?php echo $i; ?> </span>파일삭제</label>
+                    <input type="checkbox" name="it_img_3d_del" id="it_img_3d_del" value="1">
+                <?php } ?>
             </td>
         </tr>
         </tbody>
