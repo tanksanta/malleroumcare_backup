@@ -9,6 +9,7 @@
 	$od = sql_fetch($sql);
 	$prodList = [];
 	$prodListCnt = 0;
+	$prodListCnt2 = 0;
 	$deliveryTotalCnt = 0;
 
 	if (!$od['od_id']) {
@@ -180,81 +181,114 @@
     ul{list-style:none;}
     a { text-decoration:none } 
     .section1{ position:relative; width:100%; padding:0px;}
-    .head{ position:relative; width:100%; background-color:#333333;height:60px; line-height:60px;}
-    .head .p1{  float:left; margin-left:20px; color: #f1f1f1;font-size:30px; }
+    .head{ position:relative; width:100%; background-color:#333333;height:60px; line-height:60px;color: #f1f1f1;}
+    .head .p1{  float:left; margin-left:20px; font-size:30px; }
+    .head .headsp{ margin-left:20px;font-size:15px;}
     .head .xbtn{ float:right;  margin-right:20px;color: #f1f1f1; font-size:40px; line-height:60px;}
-
-    .naming_box{position:relative; width:100%; color: #333333; font-size:19px;height:70px; border-bottom: 1px solid #dddddd;}
+    
+    .naming_box{position:relative; width:100%; color: #333333; font-size:19px;height:70px;}
     .naming_box .sp1{ position:relative; left:20px; line-height:70px;}
-    .imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto;}
-    .imfomation_box a .li_box{width:100%;  height:70px; text-align:center; border-bottom: 1px solid #dddddd;}
-    .imfomation_box a .li_box .li_box_line1{width: 100%; margin:auto; float:left;color:#000;}
-    .imfomation_box a .li_box .li_box_line1 .p1{height:100%;  margin:auto; float:left; color:#000;line-height:70px;}
-    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ flex: 1; font-size:22px; margin-left:20px; float:left;}
 
+    .imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto; }
+    .imfomation_box a .li_box{ width:100%;  height:auto;text-align:center;}
+    .imfomation_box a .li_box .li_box_line1{ width: 100%;  height:auto; margin:auto; float:left;color:#000;  border-top: 1px solid #dddddd;}
+    .imfomation_box a .li_box .li_box_line1 .p1{ width:100%; height:70px%;  margin:auto; float:left; color:#000;line-height:70px; text-align:left;}
+    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ width:400px; font-size:22px; margin-left:20px; float:left; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:17px; float:right;margin-right:20px;}
+    .imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 15px;}
+    .imfomation_box a .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
+    /* display:none; */
+    .imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle;width:100%;margin-left:20px; display:none;}
+    
+    .imfomation_box a .li_box .folding_box .span{margin-left :20px;width:90%;}
+    .imfomation_box a .li_box .folding_box .all{margin-bottom:5px;padding-left :20px;font-size:20px;text-align:left;float:left;height:50px;width:55%; border-radius: 6px; background-color:#c0c0c0;  color:#fff; border:0px}
+    .imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
+    .imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
 
+    .imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
 
-    /* @media screen and (max-width: 4000px){
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:35px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:30px;}
-        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:30px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:330px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-        .imfomation_box a .li_box .li_box_line1 .p1 .span3{width:500px;float:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+    .imfomation_box a .li_box .folding_box .barNumCustomSubmitBtn{float:left;margin-left:10px;color:#fff;font-size:20px;background-color:#494949; border:0px;border-radius: 6px;width:18%; height:50px;}
+    .imfomation_box a .li_box .folding_box .barNumGuideOpenBtn{float:left;margin-left:5px;width:37px; height:37px; padding-top:4px;}
+    .imfomation_box a .li_box .folding_box .notall{margin-bottom:5px;font-size:20px;text-align:left;float:left;height:50px;width:90%; border-radius: 6px; background-color:#fff;  color:#666666; border:0px; ; border: 1px solid #c0c0c0;;}
+    .imfomation_box a .li_box .folding_box img{float:left;}
+
+    /* .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } */
+    /* .imfomation_box a .li_box .li_box_line1 .p1 .span1_2{ width:auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } */
+    .bottom{ position:fixed; width:100%; height:70px;background-color:#000; bottom:0px; font-size:20px;max-width: 100%;}
+    .bottom .savebtn{ float:left;width:75%; height:70px; background-color:#000; border:0px; color:#fff; font-size:20px;}
+    .bottom .cancelbtn{ float:right; width:24%; height:70px;border:0px; color:#666666; background-color:#dddddd;font-size:20px;}
+
+    /* 팝업 */
+    #popup { display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, .7);z-index: 1; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);}
+    #popup.hide {display: none;}
+    #popup.multiple-filter { backdrop-filter: blur(4px) grayscale(90%); -webkit-backdrop-filter: blur(4px) grayscale(90%);}
+    #popup .content { padding: 20px; background: #fff; border-radius: 5px; box-shadow: 1px 1px 3px rgba(0, 0, 0, .3); max-width:90%;}
+    #popup .content { max-width:90%;}
+    #popup .closepop {height: 2.5em; cursor: pointer; color:#fff; background-color:#000; border-radius:6px;}
+
+    @media screen and (max-width: 4000px){
     }
     @media screen and (max-width: 1200px){
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:30px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:25px;}
-        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:25px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:270px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-        .imfomation_box a .li_box .li_box_line1 .p1 .span3{width:auto;}
     }
-
     @media screen and (max-width: 1000px){
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:30px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:25px;}
-        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:25px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:270px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     }
-
     @media screen and (max-width: 900px){
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:28px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:23px;}
-        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:23px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
     }
-
     @media screen and (max-width: 630px){
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:23px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:20px;}
-        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:20px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
     }
-
-
     @media screen and (max-width: 500px){
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size:20px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:15px;}
-        .imfomation_box a .li_box .li_box_line1 .p1 .span3{font-size:15px; }
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{
-            width:170px;float:left;
-            overflow:hidden;
-            text-overflow:ellipsis;
-            white-space:nowrap;
-        }
+        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ width:250px;}
     }
-    .li_box.type1{display:block;}
-    .li_box.type1{display:none;} */
 }
  </style>
 
+<?php
 
+if(!$member['mb_id']){alert('접근이 불가합니다.');}
+//접속시 db- >id 부과
+sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member['mb_id']."' where `od_id` = '{$od_id}'");
 
+?>
+<script>
+  function openCloseToc(click) {
+      if($(click).closest('li').children('.folding_box').css("display")=="none"){
+            $(click).closest('li').children('.folding_box').css("display", "block");
+            $(click).find('.p1 .span2 .up').css("display", "inline-block");
+            $(click).find('.p1 .span2 .down').css("display", "none");
+      }else{
+            $(click).closest('li').children('.folding_box').css("display", "none");
+            $(click).find('.p1 .span2 .up').css("display", "none");
+            $(click).find('.p1 .span2 .down').css("display", "inline-block");
+      }
+  }
+
+    // 팝업열기
+    function showPopup(multipleFilter) {
+    const popup = document.querySelector('#popup');
+
+        if (multipleFilter) {
+            popup.classList.add('multiple-filter');
+        } else {
+            popup.classList.remove('multiple-filter');
+        }
+
+        popup.classList.remove('hide');
+    }
+
+    // 팝업닫기
+    function closePopup() {
+        const popup = document.querySelector('#popup');
+        popup.classList.add('hide');
+    }
+
+</script>
 <section class="section1">
-
     <div class="head">
-        <b class="p1">바코드입력</b>
+        <b class="p1">바코드입력 
+        </b>
+        <span  class="headsp">
+                <?php if($od['od_edit_member']){ echo "(수정중 : ".$od['od_edit_member'].")";}?>
+            </span>
         <a href="javascript:history.back();"><span class="xbtn">&times;</span></a>
     </div>
 
@@ -265,157 +299,98 @@
         </span>
     </div>
 
+
+
     <ul class="imfomation_box" id="imfomation_box">
-<?php 
-        for($i = 0; $i < count($carts); $i++){ 
-            $options = $carts[$i]["options"];
-            
-            for($k = 0; $k < count($options); $k++){
-?>
-                <a href="">
-                    <li class="li_box">
-                        <div class="li_box_line1">
-                            <p class="p1">
-                                <span class="span1">
-                                    <span class="span1_1">상품명(옵션명)</span>
-                                </span>
-                            </p>
-                        </div>
-                    </li>
-                </a>
-<?php
-            }   
-        }
-?>
     <?php 
         for($i = 0; $i < count($carts); $i++){ 
             $options = $carts[$i]["options"];
-            
             for($k = 0; $k < count($options); $k++){
     ?>
-						<tr>
-							<td>
-								<?=stripslashes($carts[$i]["it_name"])?>
-								<?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
-									(<?=$options[$k]["ct_option"]?>)
-								<?php } ?>
-							</td>
-							<td>
-								<ul>
-									<li>
-										<input type="text" class="frm_input" style="width: 302px;">
-										<button type="button" style="width: 35px; height: 24px; background-color: #3366CC; color: #FFF;" class="barNumCustomSubmitBtn">적용</button>
-										<button type="button" style="width: 35px; height: 24px; background-color: #999; color: #FFF;" class="barNumGuideOpenBtn">방법</button>
-										<div class="barNumGuideBox">
-											<div class="title">바코드 일괄 등록 방법 <button type="button" class="closeBtn">X</button></div>
-											<p>
-												공통된 문자/숫자를 앞에 부여 후 반복되는 숫자를 입력합니다.<br><br>
-												예시) 010101^3,4,5-10- 010101은 공동문자/숫자입니다.<br><br>
-												- ^이후는 자동으로 입력하기 위한 내용입니다.<br>
-												-    “숫자 입력 후 콤마(,)”를 입력하면 독립 숫자가 입력됩니다.<br>
-												- 5-10이라고 입력하면5부터10까지 순차적으로 입력됩니다.<br>
-												- 00-20으로 시작 숫자가00인 경우2자리 숫자로 입력됩니다
-											</p>
-										</div>
-									</li>
-								<?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
-									<li style="padding-top: 5px;">
-										<input type="text" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
-									</li>
-								<?php $prodListCnt++; } ?>
-								</ul>
-							</td>
-						</tr>
-					<?php } ?>
-				<?php } ?>
-    </ul>
-    <input type="hidden" value="1" id="page">
+                <a href="javascript:void(0)">
+                    <li class="li_box">
+                        <div class="li_box_line1"   onclick="openCloseToc(this)">
+                            <p class="p1">
+                                <span class="span1">
+                                    <!-- 상품명 -->
+                                    <?=stripslashes($carts[$i]["it_name"])?>
+                                    <!-- 옵션 -->
+                                    <?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
+                                            (<?=$options[$k]["ct_option"]?>)
+                                    <?php } ?>
+                                </span>
+                                <span class="span2">
+                                    <?php 
+                                        $add_class="";
+                                        for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ 
+                                            $add_class=$add_class.' '.$stoIdDataList[$prodListCnt2].'_v';
+                                            $prodListCnt2++; 
+                                        } 
+                                    ?>
+                                    <span class="<?=$add_class?>">0</span>/<?=$options[$k]["ct_qty"]?>
+                                    <img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
+                                    <img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="folding_box">
+                                <span>
+                                <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
+                                <button type="button" class="barNumCustomSubmitBtn">등록</button>
+                                <img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
+                                </span>
+                                <div class="inputbox">
+                                    <?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
+                                    <span class="">
+                                    <input type="text" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+                                    </span>
+                                    <img src="<?php echo G5_IMG_URL?>/bacod_img.png" alt="" onclick=“window.webkit.messageHandlers.openBarcode.postMessage(‘3’);>
+                                    <?php $prodListCnt++; } ?>
+                                </div>
+                        </div>
+
+                    </li>
+                    
+                </a>
+                <?php
+                }   
+            }
+            ?>
+    <!-- 라인 -->
+</ul>
+
+<!-- <p class="bottom_line"></p> -->
+<div class="bottom">
+    <button class="savebtn" id="prodBarNumSaveBtn">저장</button>
+    <button class="cancelbtn" onclick="member_cancel()">취소</button>
+</div>
+
+<!-- 팝업 -->
+<div id="popup" class="hide">
+  <div class="content">
+    <p>
+        공통된 문자/숫자를 앞에 부여 후 반복되는 숫자를 입력합니다.<br><br>
+        예시) 010101^3,4,5-10- 010101은 공동문자/숫자입니다.<br><br>
+        - ^이후는 자동으로 입력하기 위한 내용입니다.<br>
+        -    “숫자 입력 후 콤마(,)”를 입력하면 독립 숫자가 입력됩니다.<br>
+        - 5-10이라고 입력하면5부터10까지 순차적으로 입력됩니다.<br>
+        - 00-20으로 시작 숫자가00인 경우2자리 숫자로 입력됩니다
+    </p>
+    <button class="closepop" onclick="closePopup()">닫기</button>
+  </div>
+</div>
+<!-- 팝업 -->
 </section>
 
 
-	<div id="prodBarNumFormWrap">
-		
-		<div class="titleWrap">
-			바코드 정보입력
-		</div>
-		
-		<div class="tableWrap">
-			<table>
-				<colgroup>
-					<col width="">
-					<col width="400px">
-				</colgroup>
-				
-				<thead>
-					<tr>
-						<th>상품(옵션)</th>
-						<th>바코드</th>
-					</tr>
-				</thead>
-				
-				<tbody>
-				<?php 
-					for($i = 0; $i < count($carts); $i++){ 
-						$options = $carts[$i]["options"];
-						
-						for($k = 0; $k < count($options); $k++){
-				?>
-						<tr>
-							<td>
-								<?=stripslashes($carts[$i]["it_name"])?>
-								<?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
-									(<?=$options[$k]["ct_option"]?>)
-								<?php } ?>
-							</td>
-							<td>
-								<ul>
-									<li>
-										<input type="text" class="frm_input" style="width: 302px;">
-										<button type="button" style="width: 35px; height: 24px; background-color: #3366CC; color: #FFF;" class="barNumCustomSubmitBtn">적용</button>
-										<button type="button" style="width: 35px; height: 24px; background-color: #999; color: #FFF;" class="barNumGuideOpenBtn">방법</button>
-										<div class="barNumGuideBox">
-											<div class="title">바코드 일괄 등록 방법 <button type="button" class="closeBtn">X</button></div>
-											<p>
-												공통된 문자/숫자를 앞에 부여 후 반복되는 숫자를 입력합니다.<br><br>
-												예시) 010101^3,4,5-10- 010101은 공동문자/숫자입니다.<br><br>
-												- ^이후는 자동으로 입력하기 위한 내용입니다.<br>
-												-    “숫자 입력 후 콤마(,)”를 입력하면 독립 숫자가 입력됩니다.<br>
-												- 5-10이라고 입력하면5부터10까지 순차적으로 입력됩니다.<br>
-												- 00-20으로 시작 숫자가00인 경우2자리 숫자로 입력됩니다
-											</p>
-										</div>
-									</li>
-								<?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
-									<li style="padding-top: 5px;">
-										<input type="text" value="<?=$prodList[$prodListCnt]["prodBarNum"]?>" class="frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
-									</li>
-								<?php $prodListCnt++; } ?>
-								</ul>
-							</td>
-						</tr>
-					<?php } ?>
-				<?php } ?>
-				</tbody>
-			</table>
-		</div>
-		
-	</div>
-	
-	<div id="prodBarNumBtnWrap">
-		<button type="button" class="main" id="prodBarNumSaveBtn">저장</button>
-        <?php if($_GET['new']){ ?>
-		<button type="button" onclick="history.back();">취소</button>
-        <?php }else{ ?>
-            <button type="button" onclick="window.close();">취소</button>
-        <?php }?>
-	</div>
-	
 	<script type="text/javascript">
 		$(function(){
 			
+            //넘버 검사
 			$(".barNumCustomSubmitBtn").click(function(){
-				var val = $(this).closest("li").find("input").val();
-				var target = $(this).closest("ul").find("li");
+				var val = $(this).closest(".folding_box").find(".all").val();
+				var target = $(this).closest(".folding_box").find(".notall");
 				var barList = [];
 
 				if(val.indexOf("^") == -1){
@@ -434,7 +409,6 @@
 						}
 					}
 				}
-
 				if(val){
 					val = val.split("^");
 					var first = val[0];
@@ -463,12 +437,19 @@
 					}
 
 					for(var i = 0; i < target.length; i++){
-						if(i > 0){
-							$(target[i]).find("input").val(barList[i - 1]);
-						}
+                        
+                        $(target[i]).val(barList[i]);
+                        if(barList[i].length!==12){
+                            alert('바코드는 12자리 입력이 되어야합니다.'); 
+                            target[i].focus();
+                            return false;
+                        }
 					}
 				}
 			});
+
+
+
 
 			$(".barNumGuideBox .closeBtn").click(function(){
 				$(this).closest(".barNumGuideBox").hide();
@@ -478,7 +459,10 @@
 				$(this).next().toggle();
 			});
 
+
+
 			var stoldList = [];
+            var count=0;
 			var stoIdData = "<?=$stoIdData?>";
 			if(stoIdData){
 				var sendData = {
@@ -492,10 +476,20 @@
 					contentType : "application/json; charset=utf-8;",
 					data : JSON.stringify(sendData),
 					success : function(res){
+                        console.log(res);
+                        //here2
 						$.each(res.data, function(key, value){
 							$("." + value.stoId).val(value.prodBarNum);
-						});
+                            if(value.prodBarNum){
 
+                                // setTimeout(function(){
+							    var number=$("." + value.stoId+"_v").html();
+                                var number_v=parseInt(number)+1
+							    $("." + value.stoId+"_v").html(number_v);
+                                count++;
+                                // },1000)
+                            }
+						});
 						if(res.data){
 							stoldList = res.data;
 						}
@@ -550,6 +544,7 @@
 						async : false,
 						data : sendData,
 						success : function(result){
+                            console.log(result);
 							result = JSON.parse(result);
 							if(result.errorYN == "Y"){
 								alert(result.message);
@@ -565,8 +560,7 @@
 										cnt : insertBarCnt
 									}
 								});
-								opener.location.reload();
-								window.close();
+                                member_cancel();
 							}
 						}
 					});
@@ -629,5 +623,27 @@
 			});
 			
 		})
+
+
+        function member_cancel(){
+            $.ajax({
+                url : "/shop/ajax.order.prodBarNum.cnt.php",
+                type : "POST",
+                async : false,
+                data : {
+                    od_id : "<?=$od_id?>",
+                    cancel : "y"
+                },
+                success : function(result){
+                    <?php if($_GET['new']){ ?>
+                        history.back();
+                    <?php }else{ ?>
+                        opener.location.reload();
+                        window.close();
+                    <?php }?>
+                }
+                });
+        }
 	</script>
+    <!-- <hr color="#dddddd" size="1"> -->
  </body>

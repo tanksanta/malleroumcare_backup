@@ -12,7 +12,9 @@
 	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
 	$res = curl_exec($oCurl);
 	curl_close($oCurl);
-
+    // if($res["errorYN"] == "N"){
+    //     sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '' where `od_id` = '{$_POST['od_id']}'");
+    // }
 	echo $res;
 
 ?>

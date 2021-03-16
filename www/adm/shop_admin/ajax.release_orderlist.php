@@ -733,16 +733,28 @@ foreach($orderlist as $order) {
     // <input type=\"text\" name=\"od_release_date\" class=\"od_release_date\" data-od-id=\"{$order['od_id']}\" value=\"{$order['od_release_date']}\" />
 
     // 20210315성훈 필요데이터 작업
-    $sql_2 = "SELECT * FROM g5_shop_cart WHERE od_id ='{$order['od_id']}'";
-    $od_2 = sql_fetch($sql_2);
+    // $sql_2 = "SELECT * FROM g5_shop_cart WHERE od_id ='{$order['od_id']}'";
+    // $od_2 = sql_fetch($sql_2);
     $od_status_name="";
     $class_type1="";
     $class_type2="";
     $complate_flag="";
     $complate_flag2="";
-    if($od_status['name']=="출고준비"){$od_status_name="출고<br>준비"; $class_type1="type3"; $class_type2="type3"; }
+    $edit_working="";
+    if($od_status['name']=="출고준비"){
+        $od_status_name="출고<br>준비"; $class_type1="type3";
+        if($order['od_edit_member']){   //작업중인사람
+            $class_type2="type3"; 
+        }else{
+            $class_type2="type1"; 
+        }
+    }
+    if($order['od_edit_member']){  $edit_working='<span class="barcode_box_sp1">작업중</span>'; }
     if($od_status['name']=="출고완료"){$od_status_name="출고<br>완료"; $class_type1="type4"; $class_type2="type2"; }
     if($od_status['name']=="배송완료"){$od_status_name="배송<br>완료"; $class_type1="type5"; }
+    
+    
+
     $od_detail="총 ".($prodSupYqty + $prodSupNqty)." / 유통 {$prodSupYqty}{$prodStockqtyMemo} / 비 유통 {$prodSupNqty}";
 
     if(strpos($prodBarNumCntBtnWord, "입력완료") !== false) { 
@@ -753,13 +765,13 @@ foreach($orderlist as $order) {
             $complate_flag2="type2";
         } 
     }
-
+    
     $ret['data2'] .= 
         '<a href="javascript:void(0)"><li class="li_box '.$complate_flag.' '.$complate_flag2.'">
             <div class="li_box_line1">
                 <p class="p1">
                     <span class="span1">
-                        <span class="span1_1">[재고] '.$od_2['it_name'].'</span>
+                        <span class="span1_1">'.$order["od_id"].'</span>
                         <span class="span1_2">(배송 : '.$od_cart_count.'개)</span>
                     </span>
                     <span class="span2">'.$od_detail.'</span>
@@ -768,7 +780,7 @@ foreach($orderlist as $order) {
                 <button class="state_box '.$class_type1.'">'.$od_status_name.'</button>
             </div>
             <div stlye="max-width:90%;margin: 20px; auto;">
-                <button data-id="'.$order["od_id"].'" class="barcode_box '.$class_type2.'">'.$prodBarNumCntBtnWord.'<span class="barcode_box_sp1">작업중</span></button>
+                <button data-id="'.$order["od_id"].'" class="barcode_box '.$class_type2.'">'.$prodBarNumCntBtnWord.$edit_working.'</button>
             </div>
         </li></a>';
 }

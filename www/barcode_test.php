@@ -17,8 +17,53 @@
 //        alert('(Native)returnMessage() :\n' + text);
 		$("#barcodeNum").val(text);
     }
+	
+	/* 기종체크 */
+	var deviceUserAgent = navigator.userAgent.toLowerCase();
+	var device;
+	
+	if(device.indexOf("android") > -1){
+		/* android */
+		device = "android";
+	}
+
+	if(device.indexOf("iphone") > -1 || device.indexOf("ipad") > -1 || device.indexOf("ipod") > -1){
+		/* ios */
+		device = "ios";
+	}
+	
+	$(function(){
+		
+		/* 열기 */
+		$("#btn210316open").click(function(){
+			switch(device){
+				case "android" :
+					/* android */
+					break;
+				case "ios" :
+					/* ios */
+					window.webkit.messageHandlers.openBarcode.postMessage("3");
+					break;
+			}
+		});
+		
+		/* 닫기 */
+		$("#btn210316close").click(function(){
+			switch(device){
+				case "android" :
+					/* android */
+					break;
+				case "ios" :
+					/* ios */
+					window.webkit.messageHandlers.closeBarcode.postMessage("");
+					break;
+			}
+		});
+		
+	})
 </script>
-    <button onclick="window.webkit.messageHandlers.openBarcode.postMessage('3');">확인</button>
+    <button type="button" id="btn210316open">210316 OPEN</button>
+    <button type="button" id="btn210316close">210316 CLOSE</button>
     <input type="text" id="barcodeNum">
 </body>
 </html>
