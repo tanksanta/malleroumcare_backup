@@ -22,12 +22,12 @@
 	var deviceUserAgent = navigator.userAgent.toLowerCase();
 	var device;
 	
-	if(device.indexOf("android") > -1){
+	if(deviceUserAgent.indexOf("android") > -1){
 		/* android */
 		device = "android";
 	}
 
-	if(device.indexOf("iphone") > -1 || device.indexOf("ipad") > -1 || device.indexOf("ipod") > -1){
+	if(deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1){
 		/* ios */
 		device = "ios";
 	}
@@ -39,9 +39,12 @@
 			switch(device){
 				case "android" :
 					/* android */
+					alert("android");
+					window.webkit.openBarcode("3");
 					break;
 				case "ios" :
 					/* ios */
+					alert("ios");
 					window.webkit.messageHandlers.openBarcode.postMessage("3");
 					break;
 			}
@@ -52,9 +55,12 @@
 			switch(device){
 				case "android" :
 					/* android */
+					alert("android");
+					window.webkit.closeBarcode("");
 					break;
 				case "ios" :
 					/* ios */
+					alert("ios");
 					window.webkit.messageHandlers.closeBarcode.postMessage("");
 					break;
 			}

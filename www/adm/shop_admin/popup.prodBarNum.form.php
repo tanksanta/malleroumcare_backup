@@ -193,7 +193,7 @@
     .imfomation_box a .li_box{ width:100%;  height:auto;text-align:center;}
     .imfomation_box a .li_box .li_box_line1{ width: 100%;  height:auto; margin:auto; float:left;color:#000;  border-top: 1px solid #dddddd;}
     .imfomation_box a .li_box .li_box_line1 .p1{ width:100%; height:70px%;  margin:auto; float:left; color:#000;line-height:70px; text-align:left;}
-    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ width:400px; font-size:22px; margin-left:20px; float:left; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ width:1000px; font-size:22px; margin-left:20px; float:left; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:17px; float:right;margin-right:20px;}
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 15px;}
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
@@ -209,7 +209,14 @@
 
     .imfomation_box a .li_box .folding_box .barNumCustomSubmitBtn{float:left;margin-left:10px;color:#fff;font-size:20px;background-color:#494949; border:0px;border-radius: 6px;width:18%; height:50px;}
     .imfomation_box a .li_box .folding_box .barNumGuideOpenBtn{float:left;margin-left:5px;width:37px; height:37px; padding-top:4px;}
-    .imfomation_box a .li_box .folding_box .notall{margin-bottom:5px;font-size:20px;text-align:left;float:left;height:50px;width:90%; border-radius: 6px; background-color:#fff;  color:#666666; border:0px; ; border: 1px solid #c0c0c0;;}
+    .imfomation_box a .li_box .folding_box .notall{
+        margin-bottom:5px;font-size:20px;text-align:left;float:left;height:50px;width:90%; border-radius: 6px; background-color:#fff;  color:#666666; border:0px; ; border: 1px solid #c0c0c0;;
+        /* background-image : url('<?php echo G5_IMG_URL?>/bacod_img.png');  */
+        /* background-position:top right;  */
+        /* background-repeat:no-repeat; */
+
+
+    }
     .imfomation_box a .li_box .folding_box img{float:left;}
 
     /* .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } */
@@ -237,7 +244,7 @@
     @media screen and (max-width: 630px){
     }
     @media screen and (max-width: 500px){
-        .imfomation_box a .li_box .li_box_line1 .p1 .span1{ width:250px;}
+        /* .imfomation_box a .li_box .li_box_line1 .p1 .span1{ width:250px;} */
     }
 }
  </style>
@@ -249,39 +256,7 @@ if(!$member['mb_id']){alert('접근이 불가합니다.');}
 sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member['mb_id']."' where `od_id` = '{$od_id}'");
 
 ?>
-<script>
-  function openCloseToc(click) {
-      if($(click).closest('li').children('.folding_box').css("display")=="none"){
-            $(click).closest('li').children('.folding_box').css("display", "block");
-            $(click).find('.p1 .span2 .up').css("display", "inline-block");
-            $(click).find('.p1 .span2 .down').css("display", "none");
-      }else{
-            $(click).closest('li').children('.folding_box').css("display", "none");
-            $(click).find('.p1 .span2 .up').css("display", "none");
-            $(click).find('.p1 .span2 .down').css("display", "inline-block");
-      }
-  }
 
-    // 팝업열기
-    function showPopup(multipleFilter) {
-    const popup = document.querySelector('#popup');
-
-        if (multipleFilter) {
-            popup.classList.add('multiple-filter');
-        } else {
-            popup.classList.remove('multiple-filter');
-        }
-
-        popup.classList.remove('hide');
-    }
-
-    // 팝업닫기
-    function closePopup() {
-        const popup = document.querySelector('#popup');
-        popup.classList.add('hide');
-    }
-
-</script>
 <section class="section1">
     <div class="head">
         <b class="p1">바코드입력 
@@ -327,9 +302,13 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                             $prodListCnt2++; 
                                         } 
                                     ?>
+
+
                                     <span class="<?=$add_class?>">0</span>/<?=$options[$k]["ct_qty"]?>
                                     <img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
                                     <img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
+
+
                                 </span>
                             </p>
                         </div>
@@ -343,15 +322,15 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                 <div class="inputbox">
                                     <?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
                                     <span class="">
-                                    <input type="text" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
+                                        <input type="text" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
                                     </span>
-                                    <img src="<?php echo G5_IMG_URL?>/bacod_img.png" alt="" onclick=“window.webkit.messageHandlers.openBarcode.postMessage(‘3’);>
+                                    <span class="<?=$stoIdDataList[$prodListCnt]?>_img">
+                                        <img src="<?php echo G5_IMG_URL?>/bacod_img.png" alt="" onclick="window.webkit.messageHandlers.openBarcode.postMessage('<?=$b?>');">
+                                    </span>
                                     <?php $prodListCnt++; } ?>
                                 </div>
                         </div>
-
                     </li>
-                    
                 </a>
                 <?php
                 }   
@@ -359,8 +338,8 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
             ?>
     <!-- 라인 -->
 </ul>
-
 <!-- <p class="bottom_line"></p> -->
+
 <div class="bottom">
     <button class="savebtn" id="prodBarNumSaveBtn">저장</button>
     <button class="cancelbtn" onclick="member_cancel()">취소</button>
@@ -383,267 +362,304 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 <!-- 팝업 -->
 </section>
 
+<script type="text/javascript">
+    $(function(){
+        var stoldList = [];
+        var count=0;
+        var stoIdData = "<?=$stoIdData?>";
+        if(stoIdData){
+            var sendData = {
+                stoId : stoIdData
+            }
 
-	<script type="text/javascript">
-		$(function(){
-			
-            //넘버 검사
-			$(".barNumCustomSubmitBtn").click(function(){
-				var val = $(this).closest(".folding_box").find(".all").val();
-				var target = $(this).closest(".folding_box").find(".notall");
-				var barList = [];
-
-				if(val.indexOf("^") == -1){
-					alert("내용을 입력해주시길 바랍니다.");
-					return false;
-				}
-
-				for(var i = 0; i < target.length; i++){
-					if(i > 0){
-						if($(target[i]).find("input").val()){
-							if(!confirm("이미 등록된 바코드가 있습니다.\n무시하고 적용하시겠습니까?")){
-								return false;
-							} else {
-								break;
-							}
-						}
-					}
-				}
-				if(val){
-					val = val.split("^");
-					var first = val[0];
-					var secList = val[1].split(",");
-					for(var i = 0; i < secList.length; i++){
-						if(secList[i].indexOf("-") == -1){
-							barList.push(first + secList[i]);
-						} else {
-							var secData = secList[i].split("-");
-							var secData0Len = secData[0].length;
-							secData[0] = Number(secData[0]);
-							secData[1] = Number(secData[1]);
-
-							for(var ii = secData[0]; ii < (secData[1] + 1); ii++){
-								var barData = ii;
-								if(String(barData).length < secData0Len){
-									var iiiCnt = secData0Len - String(barData).length;
-									for(var iii = 0; iii < iiiCnt; iii++){
-										barData = "0" + barData;
-									}
-								}
-
-								barList.push(first + barData);
-							}
-						}
-					}
-
-					for(var i = 0; i < target.length; i++){
-                        
-                        $(target[i]).val(barList[i]);
-                        if(barList[i].length!==12){
-                            alert('바코드는 12자리 입력이 되어야합니다.'); 
-                            target[i].focus();
-                            return false;
-                        }
-					}
-				}
-			});
-
-
-
-
-			$(".barNumGuideBox .closeBtn").click(function(){
-				$(this).closest(".barNumGuideBox").hide();
-			});
-
-			$(".barNumGuideOpenBtn").click(function(){
-				$(this).next().toggle();
-			});
-
-
-
-			var stoldList = [];
-            var count=0;
-			var stoIdData = "<?=$stoIdData?>";
-			if(stoIdData){
-				var sendData = {
-					stoId : stoIdData
-				}
-
-				$.ajax({
-					url : "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
-					type : "POST",
-					dataType : "json",
-					contentType : "application/json; charset=utf-8;",
-					data : JSON.stringify(sendData),
-					success : function(res){
-                        console.log(res);
-                        //here2
-						$.each(res.data, function(key, value){
-							$("." + value.stoId).val(value.prodBarNum);
-                            if(value.prodBarNum){
-
-                                // setTimeout(function(){
-							    var number=$("." + value.stoId+"_v").html();
-                                var number_v=parseInt(number)+1
-							    $("." + value.stoId+"_v").html(number_v);
-                                count++;
-                                // },1000)
-                            }
-						});
-						if(res.data){
-							stoldList = res.data;
-						}
-					}
-				});
-			}
-			
-			$("#prodBarNumSaveBtn").click(function() {
-				var ordId = "<?=$od["ordId"]?>";
-				var changeStatus = true;
-				var insertBarCnt = 0;
-
-				if(ordId){
-					var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
-					$.each(productList, function(key, value){
-						var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
-						var prodBarNum = "";
-
-						for(var i = 0; i < prodBarNumItem.length; i++){
-							prodBarNum += (prodBarNum) ? "," : "";
-							prodBarNum += $(prodBarNumItem[i]).val();
-							
-							if($(prodBarNumItem[i]).val()){
-								insertBarCnt++;
-							}
-						}
-
-						productList[key]["prodBarNum"] = prodBarNum;
-					});
-
-					var sendData = {
-						usrId : "<?=$od["mb_id"]?>",
-						penOrdId : "<?=$od["ordId"]?>",
-						delGbnCd : "",
-						ordWayNum : "",
-						delSerCd : "",
-						ordNm : $("#od_b_name").val(),
-						ordCont : $("#od_b_hp").val(),
-						ordMeno : $("#od_memo").val(),
-						ordZip : $("#od_b_zip").val(),
-						ordAddr : $("#od_b_addr1").val(),
-						ordAddrDtl : $("#od_b_addr2").val(),
-						eformYn : "<?=$od["eformYn"]?>",
-						staOrdCd : "<?=$od["staOrdCd"]?>",
-						lgsStoId : "",
-						prods : productList
-					}
-
-					$.ajax({
-						url : "./samhwa_orderform_order_update.php",
-						type : "POST",
-						async : false,
-						data : sendData,
-						success : function(result){
-                            console.log(result);
-							result = JSON.parse(result);
-							if(result.errorYN == "Y"){
-								alert(result.message);
-							} else {
-								alert("저장이 완료되었습니다.");
-								
-								$.ajax({
-									url : "/shop/ajax.order.prodBarNum.cnt.php",
-									type : "POST",
-									async : false,
-									data : {
-										od_id : "<?=$od_id?>",
-										cnt : insertBarCnt
-									}
-								});
-                                member_cancel();
-							}
-						}
-					});
-				} else {
-					var prodsList = {};
-
-					$.each(stoldList, function(key, value){
-						prodsList[key] = {
-							stoId : value.stoId,
-							prodColor : value.prodColor,
-							prodSize : value.prodSize,
-							prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
-							prodManuDate : value.prodManuDate,
-							stateCd : value.stateCd,
-							stoMemo : (value.stoMemo) ? value.stoMemo : ""
-						}
-						
-						if($("." + value.stoId).val()){
-							insertBarCnt++;
-						}
-					});
-
-					var sendData = {
-						usrId : "<?=$od["mb_id"]?>",
-						prods : prodsList
-					}
-
-					$.ajax({
-						url : "./samhwa_orderform_stock_update.php",
-						type : "POST",
-						async : false,
-						data : sendData,
-						success : function(result){
-							result = JSON.parse(result);
-							if(result.errorYN == "Y"){
-								alert(result.message);
-							} else {
-								alert("저장이 완료되었습니다.");
-								
-								$.ajax({
-									url : "/shop/ajax.order.prodBarNum.cnt.php",
-									type : "POST",
-									async : false,
-									data : {
-										od_id : "<?=$od_id?>",
-										cnt : insertBarCnt
-									}
-								});
-                                
-                                <?php if($_GET['new']){ ?>
-                                    history.back();
-                                <?php }else{ ?>
-                                    opener.location.reload();
-                                    window.close();
-                                <?php }?>
-							}
-						}
-					});
-				}
-			});
-			
-		})
-
-
-        function member_cancel(){
             $.ajax({
-                url : "/shop/ajax.order.prodBarNum.cnt.php",
+                url : "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
                 type : "POST",
-                async : false,
-                data : {
-                    od_id : "<?=$od_id?>",
-                    cancel : "y"
-                },
-                success : function(result){
-                    <?php if($_GET['new']){ ?>
-                        history.back();
-                    <?php }else{ ?>
-                        opener.location.reload();
-                        window.close();
-                    <?php }?>
+                dataType : "json",
+                contentType : "application/json; charset=utf-8;",
+                data : JSON.stringify(sendData),
+                success : function(res){
+                    console.log(res);
+                    //here2
+                    $.each(res.data, function(key, value){
+                        $("." + value.stoId).val(value.prodBarNum);
+                        //완료된 숫자 세고 집어넣기 
+                        if(value.prodBarNum){
+                            var number=$("." + value.stoId+"_v").html();
+                            var number_v=parseInt(number)+1
+                            $("." + value.stoId+"_v").html(number_v);
+                            count++;
+                        }
+                    });
+
+                    console.log(res.data);
+                    // $.each(res.data, function(key, value){
+                    //     //완료된 숫자 세고 집어넣기 
+                    //     if(value.prodBarNum){
+                    //         console.log();
+                    //         // $("." + value.stoId+"_img").html('z');
+                    //     }
+                    // });
+
+
+
+                    if(res.data){
+                        stoldList = res.data;
+                    }
                 }
-                });
+            });
         }
-	</script>
+        
+        $("#prodBarNumSaveBtn").click(function() {
+            var ordId = "<?=$od["ordId"]?>";
+            var changeStatus = true;
+            var insertBarCnt = 0;
+
+            if(ordId){
+                var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
+                $.each(productList, function(key, value){
+                    var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
+                    var prodBarNum = "";
+
+                    for(var i = 0; i < prodBarNumItem.length; i++){
+                        prodBarNum += (prodBarNum) ? "," : "";
+                        prodBarNum += $(prodBarNumItem[i]).val();
+                        
+                        if($(prodBarNumItem[i]).val()){
+                            insertBarCnt++;
+                        }
+                    }
+
+                    productList[key]["prodBarNum"] = prodBarNum;
+                });
+
+                var sendData = {
+                    usrId : "<?=$od["mb_id"]?>",
+                    penOrdId : "<?=$od["ordId"]?>",
+                    delGbnCd : "",
+                    ordWayNum : "",
+                    delSerCd : "",
+                    ordNm : $("#od_b_name").val(),
+                    ordCont : $("#od_b_hp").val(),
+                    ordMeno : $("#od_memo").val(),
+                    ordZip : $("#od_b_zip").val(),
+                    ordAddr : $("#od_b_addr1").val(),
+                    ordAddrDtl : $("#od_b_addr2").val(),
+                    eformYn : "<?=$od["eformYn"]?>",
+                    staOrdCd : "<?=$od["staOrdCd"]?>",
+                    lgsStoId : "",
+                    prods : productList
+                }
+
+                $.ajax({
+                    url : "./samhwa_orderform_order_update.php",
+                    type : "POST",
+                    async : false,
+                    data : sendData,
+                    success : function(result){
+                        console.log(result);
+                        result = JSON.parse(result);
+                        if(result.errorYN == "Y"){
+                            alert(result.message);
+                        } else {
+                            alert("저장이 완료되었습니다.");
+                            
+                            $.ajax({
+                                url : "/shop/ajax.order.prodBarNum.cnt.php",
+                                type : "POST",
+                                async : false,
+                                data : {
+                                    od_id : "<?=$od_id?>",
+                                    cnt : insertBarCnt
+                                }
+                            });
+                            member_cancel();
+                        }
+                    }
+                });
+            } else {
+                var prodsList = {};
+
+                $.each(stoldList, function(key, value){
+                    prodsList[key] = {
+                        stoId : value.stoId,
+                        prodColor : value.prodColor,
+                        prodSize : value.prodSize,
+                        prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
+                        prodManuDate : value.prodManuDate,
+                        stateCd : value.stateCd,
+                        stoMemo : (value.stoMemo) ? value.stoMemo : ""
+                    }
+                    
+                    if($("." + value.stoId).val()){
+                        insertBarCnt++;
+                    }
+                });
+
+                var sendData = {
+                    usrId : "<?=$od["mb_id"]?>",
+                    prods : prodsList
+                }
+
+                $.ajax({
+                    url : "./samhwa_orderform_stock_update.php",
+                    type : "POST",
+                    async : false,
+                    data : sendData,
+                    success : function(result){
+                        result = JSON.parse(result);
+                        if(result.errorYN == "Y"){
+                            alert(result.message);
+                        } else {
+                            alert("저장이 완료되었습니다.");
+                            
+                            $.ajax({
+                                url : "/shop/ajax.order.prodBarNum.cnt.php",
+                                type : "POST",
+                                async : false,
+                                data : {
+                                    od_id : "<?=$od_id?>",
+                                    cnt : insertBarCnt
+                                }
+                            });
+                            
+                            <?php if($_GET['new']){ ?>
+                                history.back();
+                            <?php }else{ ?>
+                                opener.location.reload();
+                                window.close();
+                            <?php }?>
+                        }
+                    }
+                });
+            }
+        });
+
+
+         //넘버 검사
+         $(".barNumCustomSubmitBtn").click(function(){
+            var val = $(this).closest(".folding_box").find(".all").val();
+            var target = $(this).closest(".folding_box").find(".notall");
+            var barList = [];
+
+            if(val.indexOf("^") == -1){
+                alert("내용을 입력해주시길 바랍니다.");
+                return false;
+            }
+
+            for(var i = 0; i < target.length; i++){
+                if(i > 0){
+                    if($(target[i]).find("input").val()){
+                        if(!confirm("이미 등록된 바코드가 있습니다.\n무시하고 적용하시겠습니까?")){
+                            return false;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+            if(val){
+                val = val.split("^");
+                var first = val[0];
+                var secList = val[1].split(",");
+                for(var i = 0; i < secList.length; i++){
+                    if(secList[i].indexOf("-") == -1){
+                        barList.push(first + secList[i]);
+                    } else {
+                        var secData = secList[i].split("-");
+                        var secData0Len = secData[0].length;
+                        secData[0] = Number(secData[0]);
+                        secData[1] = Number(secData[1]);
+
+                        for(var ii = secData[0]; ii < (secData[1] + 1); ii++){
+                            var barData = ii;
+                            if(String(barData).length < secData0Len){
+                                var iiiCnt = secData0Len - String(barData).length;
+                                for(var iii = 0; iii < iiiCnt; iii++){
+                                    barData = "0" + barData;
+                                }
+                            }
+
+                            barList.push(first + barData);
+                        }
+                    }
+                }
+
+                for(var i = 0; i < target.length; i++){
+                    
+                    $(target[i]).val(barList[i]);
+                    if(barList[i].length!==12){
+                        alert('바코드는 12자리 입력이 되어야합니다.'); 
+                        target[i].focus();
+                        return false;
+                    }
+                }
+            }
+        });
+
+
+
+
+        $(".barNumGuideBox .closeBtn").click(function(){
+            $(this).closest(".barNumGuideBox").hide();
+        });
+
+        $(".barNumGuideOpenBtn").click(function(){
+            $(this).next().toggle();
+        });
+    })
+
+    //종료시 멤버 수정중없에기
+    function member_cancel(){
+        $.ajax({
+            url : "/shop/ajax.order.prodBarNum.cnt.php",
+            type : "POST",
+            async : false,
+            data : {
+                od_id : "<?=$od_id?>",
+                cancel : "y"
+            },
+            success : function(result){
+                <?php if($_GET['new']){ ?>
+                    history.back();
+                <?php }else{ ?>
+                    opener.location.reload();
+                    window.close();
+                <?php }?>
+            }
+            });
+    }
+
+    function openCloseToc(click) {
+      if($(click).closest('li').children('.folding_box').css("display")=="none"){
+            $(click).closest('li').children('.folding_box').css("display", "block");
+            $(click).find('.p1 .span2 .up').css("display", "inline-block");
+            $(click).find('.p1 .span2 .down').css("display", "none");
+      }else{
+            $(click).closest('li').children('.folding_box').css("display", "none");
+            $(click).find('.p1 .span2 .up').css("display", "none");
+            $(click).find('.p1 .span2 .down').css("display", "inline-block");
+      }
+  }
+
+    // 팝업열기
+    function showPopup(multipleFilter) {
+    const popup = document.querySelector('#popup');
+
+        if (multipleFilter) {
+            popup.classList.add('multiple-filter');
+        } else {
+            popup.classList.remove('multiple-filter');
+        }
+
+        popup.classList.remove('hide');
+    }
+
+    // 팝업닫기
+    function closePopup() {
+        const popup = document.querySelector('#popup');
+        popup.classList.add('hide');
+    }
+</script>
     <!-- <hr color="#dddddd" size="1"> -->
  </body>
