@@ -292,7 +292,7 @@ $row = sql_fetch($sql);
                     <div class="info-btn">
                         <div>
                             <a href="javascript:popup01_show();" class="btn-01">신규재고등록</a>
-                            <a href="<?=G5_SHOP_URL?>/item.php?it_id=<?=$row['it_id']?>" class="btn-02" target="_blank">상세정보</a>
+                            <a href="<?=G5_SHOP_URL?>/item.php?it_id=<?=$row['it_id']?>" class="btn-02">상세정보</a>
                         </div>
                         <p>*보유 재고 등록 가능</p>
                     </div>
@@ -371,6 +371,71 @@ $row = sql_fetch($sql);
 						}
 						$total_block = ceil($total_page/$b_pageNum_listCnt);
 						?>
+                        <!-- 수급자신청 -->
+                        <style>
+                            /* .popup{display:none;} */
+                            #order_recipientBox{ 
+                                position:absolute;
+                                /* top:20%; */
+                                left:50%;
+                                width:100px;
+                                height:100px;
+                                background:#f00;
+                                margin:-50px 0 0 -50px;
+                            }
+                            #order_recipientBox { display:none;height:500px; }
+                            #order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+                            #order_recipientBox iframe { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
+                            @media (max-width : 750px){
+                                #popup{width:100%; height:100%; }
+                                #order_recipientBox {
+                                background-color:#fff;width: 100%; height: 100%; top:100px; left: 0; margin-left: 0; }
+                                #order_recipientBox iframe { width: 100%; height: 100%; top:100px; left: 0; margin-left: 0; }
+                            }
+                        </style>
+                        <script>
+                            $('#order_recipientBox').hide();
+                            function popup_control(io_value_r_color,io_value_r_size,barcode_r){
+                                $('#order_recipientBox').show();
+                                var io_value_r_v="";
+                                if(io_value_r_color){io_value_r_v="색상:"+io_value_r_color; }
+                                document.getElementById('io_id_r').value=io_value_r_color+io_value_r_size;
+                                if(io_value_r_color&&io_value_r_size){io_value_r_v=+io_value_r_v+" / "; }
+                                if(io_value_r_size){io_value_r_v=+io_value_r_v+ "사이즈:"+io_value_r_size;}
+                                document.getElementById('io_value_r').value=io_value_r_v;
+                                document.getElementById('barcode_r').value=barcode_r;
+                            }
+
+                            function selected_recipient(penId){
+                                document.getElementById('penId_r').value=penId;
+                                document.getElementById('recipient_info').submit();
+                            }
+                        </script>
+
+                        <div id="order_recipientBox">
+                                <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php" style='z-index:9999' ></iframe>
+                        </div>
+
+                        <!-- 수급자 선택시 변경되어 넘어갈 값 -->
+                        <form action="<?php echo $action_url; ?>"name="fitem" method="post" id="recipient_info"class="form item-form">
+                            <input type="hidden" name="sw_direct" value="1" id="">                                              <!-- 바로가기 -->
+                            <input type="hidden" name="it_id[]" value="<?php echo $it_id; ?>" id="it_id_r">                   <!-- 상품아이디 -->
+                            <input type="hidden" name="io_type[<?php echo $it_id; ?>][]" value="0" it="io_type_r">            <!-- 옵션타입 -->
+                            <input type="hidden" name="io_id[<?php echo $it_id; ?>][]" value="" id="io_id_r">                 <!-- 옵션 값 -->
+                            <input type="hidden" name="io_value[<?php echo $it_id; ?>][]" value="" id="io_value_r">           <!-- 옵션 명 -->
+                            <input type="hidden" class="io_price" value="0" id="io_price_r">                                  <!-- 가격 -->
+                            <input type="hidden" class="io_stock" value="<?php echo $it['it_stock_qty']; ?>" id="io_stock_r"><!-- 재고 -->
+                            <input type="hidden" name="ct_qty[<?php echo $it_id; ?>][]" value="1"id="ct_qty_r">               <!-- 수량 -->
+                            <input type="hidden" name="barcode_r" value="1" id="barcode_r">                                       <!-- 바코드 -->
+                            <input type="hidden" name="penId_r" value="1" id="penId_r">                                           <!-- penId -->
+                            <input type="hidden" name="recipient_info" value="1" id="recipient_info">                            <!-- 구분 -->
+                            <input type="hidden" name="it_msg1[]" value="<?php echo $it['pt_msg1']; ?>">
+                            <input type="hidden" name="it_msg2[]" value="<?php echo $it['pt_msg2']; ?>">
+                            <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
+                        </form>
+                        <!-- 수급자신청 -->
+                        
+
                         <div id="list_box1">
 						<?php for($i=0;$i<count($list);$i++){ 
 							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
@@ -379,8 +444,7 @@ $row = sql_fetch($sql);
                         <li class="list cb">
                             <!--pc용-->
                             <span class="num"><?=$number?></span>
-                            <span class="product m_off">
-                                <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodBarNum']; }else{ echo "(옵션 없음)"; } ?>
+                            <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?>
                             </span>
                             <span class="pro-num m_off"><b><?=$list[$i]['prodBarNum']?></b></span>
                             <?php 
@@ -390,20 +454,19 @@ $row = sql_fetch($sql);
                             ?>
                             <span class="date m_off"><?=$date2?></span>
                             <span class="order m_off">
-                                <a href="javascript:;">수급자선택</a>
+                                <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodBarNum']?>')">수급자선택</a>
                             </span>
                             <!--mobile용-->
                             <div class="list-m">
                                 <div class="info-m">
-                                    <span class="product">
-                                        <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodBarNum']; }else{ echo "(옵션 없음)"; } ?>
+                                    <span class="product"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?>
                                     </span>
                                     <span class="pro-num"><b><?=$list[$i]['prodBarNum']?></b></span>
                                 </div>
                                 <div class="info-m">
                                     <span class="date"><?=$date2?></span>
                                     <span class="order">
-                                        <a href="javascript:;">수급자선택</a>
+                                        <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodBarNum']?>')" >수급자선택</a>
                                     </span>
                                 </div>
                             </div>
@@ -421,6 +484,9 @@ $row = sql_fetch($sql);
                         <?php if($block < $total_block){ ?><a href="javascript:selectDetailList('<?=$total_page?>')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
                     </div>
                 </div>
+
+
+
                 <div class="table-wrap table-wrap2">
                     <h3>판매 완료</h3>
                     <ul>
@@ -476,42 +542,37 @@ $row = sql_fetch($sql);
 						}
 						$total_block = ceil($total_page/$b_pageNum_listCnt);
 						?>
+
                         <div id="list_box2">
 						<?php for($i=0;$i<count($list);$i++){ 
 							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
 						?>
-                        <!--반복-->
                         <li class="list cb">
-                            <!--pc용-->
+                             <!--pc용-->
                             <span class="num"><?=$number?></span>
-                            <span class="product m_off">
-                                <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodBarNum']; }else{ echo "(옵션 없음)"; } ?>
-                            </span>
+                            <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
                             <span class="pro-num m_off"><b><?=$list[$i]['prodBarNum']?></b></span>
+                            <span class="name m_off"><?=$list[$i]['penNm']?></span>
                             <?php 
                                 //날짜 변환
                                 $date1=$list[$i]['modifyDtm'];
                                 $date2=date("Y-m-d H:i", strtotime($date1));
                             ?>
                             <span class="date m_off"><?=$date2?></span>
-                            <span class="order m_off">
-                                <a href="javascript:;">수급자선택</a>
-                            </span>
                             <!--mobile용-->
                             <div class="list-m">
                                 <div class="info-m">
-                                    <span class="product">
-                                        <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodBarNum']; }else{ echo "(옵션 없음)"; } ?>
-                                    </span>
+                                    <span class="product"><?=$list[$i]['prodNm']?>  <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
                                     <span class="pro-num"><b><?=$list[$i]['prodBarNum']?></b></span>
                                 </div>
                                 <div class="info-m">
+                                    <span class="name"><?=$list[$i]['penNm']?></span>
                                     <span class="date"><?=$date2?></span>
-                                    <span class="order">
-                                        <a href="javascript:;">수급자선택</a>
-                                    </span>
                                 </div>
                             </div>
+                            <span class="check">
+                                <a href="<?=$list[$i]['eformUrl']?>">확인</a>
+                            </span>
                         </li>
 						<?php } ?>
                         </div>
@@ -530,14 +591,24 @@ $row = sql_fetch($sql);
         </div>
     </section>
 
+
+ 
     <script>
+    //날짜 변환함수
+    function date_change(str) {
+        var y = str.substr(0, 4);
+        var m = str.substr(4, 2);
+        var d = str.substr(6, 2);
+        return new Date(y,m-1,d);
+    }
+
     function selectDetailList(page2){
         var sendData = {
             usrId : "<?=$member["mb_id"] ?>",
             entId : "<?=$member["mb_entId"] ?>",
             prodId : "<?=$_GET['prodId'] ?>",
             pageNum : page2,
-            // stateCd : "01"
+            stateCd : "01",
             pageSize : <?=$sendLength ?>
         }
         $.ajax({
@@ -555,27 +626,34 @@ $row = sql_fetch($sql);
                     $("#numbering_zone1 *").remove();
                     for(var i =0 ; i < result.data.length; i++){
                         var html = "";
-                        // if(result.data[i].prodColor){ var prodColor_v=result.data[i].prodColor; }else{ var prodColor_v=""; }//컬러
-                        // if(result.data[i].prodSize){ var prodSize_v=result.data[i].prodSize; }else{ var prodSize_v="";  } //사이즈
+                        if(!result.data[i].prodColor){ result.data[i].prodColor=""; }
+                        if(!result.data[i].prodSize){   result.data[i].prodSize=""; }
                         if(result.data[i].prodColor||result.data[i].prodSize){ var option= result.data[i].prodColor +'/'+result.data[i].prodSize; }else{ var option ="(옵션 없음)";} //사이즈
                         var number = result.total-((sendData['pageNum']-1)*sendData['pageSize'])-i; //넘버링
                         html = html + '<li class="list cb">';
                         html = html +'<span class="num">'+number+'</span>';
-                        html = html +'<span class="product m_off">'+option+'</span>';
+                        html = html +'<span class="product m_off">'+result.data[i].prodNm+option+'</span>';
                         html = html +'<span class="pro-num m_off"><b>'+result.data[i].prodBarNum+'</b></span>';
-                        html = html +'<span class="date m_off">'+result.data[i].prodBarNum+'</span>';
+                        var date=result.data[i].modifyDtm;
+                        var year=date.slice(0,4);
+                        var month=date.slice(4,6);
+                        var day=date.slice(6,8);
+                        var hour=date.slice(8,10);
+                        var minute=date.slice(10,12);
+                        // var second=date.slice(12,14);
+                        html = html +'<span class="date m_off">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
                         html = html +'<span class="order m_off">';
-                        html = html +'<a href="javascript:;">수급자선택</a>';
+                        html = html +'<a href="javascript:;"onclick="popup_control(\''+result.data[i].prodColor+'\',\''+result.data[i].prodSize+'\',\''+result.data[i].prodBarNum+'\')">수급자선택</a>';
                         html = html +'</span>';
                         html = html +'<div class="list-m">';
                         html = html +'<div class="info-m">';
-                        html = html +'<span class="product">'+result.data[i].prodColor+'/'+result.data[i].prodSize+'</span>';
+                        html = html +'<span class="product">'+result.data[i].prodNm+result.data[i].prodColor+'/'+result.data[i].prodSize+'</span>';
                         html = html +'<span class="pro-num"><b>'+result.data[i].prodBarNum+'</b></span>';
                         html = html +'</div>';
                         html = html +'<div class="info-m">';
-                        html = html +'<span class="date">2021-03-03</span>';
+                        html = html +'<span class="date">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
                         html = html +'<span class="order">';
-                        html = html +'<a href="javascript:;">수급자선택</a>';
+                        html = html +'<a href="javascript:;"onclick="popup_control(\''+result.data[i].prodColor+'\',\''+result.data[i].prodSize+'\',\''+result.data[i].prodBarNum+'\')">수급자선택</a>';
                         html = html +'</span>';
                         html = html +'</div>';
                         html = html +'</div>';
@@ -630,7 +708,7 @@ $row = sql_fetch($sql);
             entId : "<?=$member["mb_entId"] ?>",
             prodId : "<?=$_GET['prodId'] ?>",
             pageNum : page2,
-            // stateCd : "01"
+            stateCd : "02",
             pageSize : <?=$sendLength ?>
         }
         $.ajax({
@@ -652,27 +730,35 @@ $row = sql_fetch($sql);
                         // if(result.data[i].prodSize){ var prodSize_v=result.data[i].prodSize; }else{ var prodSize_v="";  } //사이즈
                         if(result.data[i].prodColor||result.data[i].prodSize){ var option= result.data[i].prodColor +'/'+result.data[i].prodSize; }else{ var option ="(옵션 없음)";} //사이즈
                         var number = result.total-((sendData['pageNum']-1)*sendData['pageSize'])-i; //넘버링
+                        
+                        
                         html = html + '<li class="list cb">';
-                        html = html +'<span class="num">'+number+'</span>';
-                        html = html +'<span class="product m_off">'+option+'</span>';
-                        html = html +'<span class="pro-num m_off"><b>'+result.data[i].prodBarNum+'</b></span>';
-                        html = html +'<span class="date m_off">'+result.data[i].prodBarNum+'</span>';
-                        html = html +'<span class="order m_off">';
-                        html = html +'<a href="javascript:;">수급자선택</a>';
-                        html = html +'</span>';
-                        html = html +'<div class="list-m">';
-                        html = html +'<div class="info-m">';
-                        html = html +'<span class="product">'+result.data[i].prodColor+'/'+result.data[i].prodSize+'</span>';
-                        html = html +'<span class="pro-num"><b>'+result.data[i].prodBarNum+'</b></span>';
-                        html = html +'</div>';
-                        html = html +'<div class="info-m">';
-                        html = html +'<span class="date">2021-03-03</span>';
-                        html = html +'<span class="order">';
-                        html = html +'<a href="javascript:;">수급자선택</a>';
-                        html = html +'</span>';
-                        html = html +'</div>';
-                        html = html +'</div>';
-                        html = html +'</li>';
+                        html = html + '<span class="num">'+number+'</span>';
+                        html = html + '<span class="product m_off">'+result.data[i].prodNm+option+'</span>';
+                        html = html + '<span class="pro-num m_off"><b>'+result.data[i].prodBarNum+'</b></span>';
+                        html = html + '<span class="name m_off">'+result.data[i].penNm+'</span>';
+                        var date=result.data[i].modifyDtm;
+                        var year=date.slice(0,4);
+                        var month=date.slice(4,6);
+                        var day=date.slice(6,8);
+                        var hour=date.slice(8,10);
+                        var minute=date.slice(10,12);
+                        // var second=date.slice(12,14);
+                        html = html + '<span class="date m_off">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
+                        html = html + '<div class="list-m">';
+                        html = html + '<div class="info-m">';
+                        html = html + '<span class="product">'+result.data[i].prodNm+option+'</span>';
+                        html = html + '<span class="pro-num"><b>'+result.data[i].prodBarNum+'</b></b></span>';
+                        html = html + '</div>';
+                        html = html + '<div class="info-m">';
+                        html = html + '<span class="name">'+result.data[i].penNm+'</span>';
+                        html = html + '<span class="date">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
+                        html = html + '</div>';
+                        html = html + '</div>';
+                        html = html + '<span class="check">';
+                        html = html + '<a href="'+result.data[i].eformUrl+'">확인</a>';
+                        html = html + '</span>';
+                        html = html + '</li>';
                         // console.log(html);
                         $("#list_box2").append(html);
                     }

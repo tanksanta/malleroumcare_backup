@@ -103,6 +103,7 @@
 	$carts = array();
 	$cate_counts = array();
 
+	$od_cart_count = 0;
 	for($i=0; $row=sql_fetch_array($result); $i++) {
 
 		$cate_counts[$row['ct_status']] += 1;
@@ -130,6 +131,7 @@
 				$opt_price = $opt['ct_price'] + $opt['io_price'];
 
 			$opt["opt_price"] = $opt_price;
+			$od_cart_count += $opt["ct_qty"];
 
 			// 소계
 			$opt['ct_price_stotal'] = $opt_price * $opt['ct_qty'] - $opt['ct_discount'];
@@ -159,123 +161,132 @@
 		$carts[] = $row;
 	}
 
+	# 210317 추가정보
+	$moreInfo = sql_fetch("
+		SELECT
+			( SELECT it_name FROM g5_shop_cart WHERE od_id = a.od_id ORDER BY it_id ASC LIMIT 0, 1 ) AS it_name,
+			( SELECT COUNT(*) FROM g5_shop_cart WHERE od_id = a.od_id ) AS totalCnt
+		FROM g5_shop_order a
+		WHERE od_id = '{$od_id}'
+	");
+	
+	$moreInfoDisplayCnt = "";
+	$moreInfo["totalCnt"]--;
+	if($moreInfo["totalCnt"]){
+		$moreInfoDisplayCnt = "외 {$moreInfo["totalCnt"]}종";
+	}
+
 ?>
 <!DOCTYPE html>
  <html lang="en">
  <head>
-     <meta charset="UTF-8">
-     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Document</title>
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
- </head>
- <body>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>출고정보</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
+	<link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
 	
+	<style>
+		* { margin: 0; padding: 0; position: relative; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); outline: none; }
+		html, body { width: 100%; float: left; font-family: "Noto Sans KR", sans-serif; }
+		body { padding-top: 60px; padding-bottom: 70px; }
+		a { text-decoration: none; color: inherit; }
+		ul, li { list-style: none; }
+		button { border: 0; font-family: "Noto Sans KR", sans-serif; }
+		input { font-family: "Noto Sans KR", sans-serif;  }
 
-<style>
-    @font-face { font-family: 'NanumBarunGothic';
-    src: url('<?php echo G5_CSS_URL?>/font/NanumBarunGothic.eot');
-    src: url('<?php echo G5_CSS_URL?>/font/NanumBarunGothic.eot') format('embedded-opentype'),
-    url('<?php echo G5_CSS_URL?>/font/NanumBarunGothic.woff') format('woff');}
-    body { margin:0px; padding:0px; font-family: 'NanumBarunGothic', 'serif';}
-    ul{list-style:none;}
-    a { text-decoration:none } 
-    .section1{ position:relative; width:100%; padding:0px;}
-    .head{ position:relative; width:100%; background-color:#333333;height:60px; line-height:60px;color: #f1f1f1;}
-    .head .p1{  float:left; margin-left:20px; font-size:30px; }
-    .head .headsp{ margin-left:20px;font-size:15px;}
-    .head .xbtn{ float:right;  margin-right:20px;color: #f1f1f1; font-size:40px; line-height:60px;}
-    
-    .naming_box{position:relative; width:100%; color: #333333; font-size:19px;height:70px;}
-    .naming_box .sp1{ position:relative; left:20px; line-height:70px;}
+		/* 고정 상단 */
+		#popupHeaderTopWrap { position: fixed; width: 100%; height: 60px; left: 0; top: 0; z-index: 10; background-color: #333; padding: 0 20px; }
+		#popupHeaderTopWrap > div { height: 100%; line-height: 60px; }
+		#popupHeaderTopWrap > .title { float: left; font-weight: bold; color: #FFF; font-size: 22px; }
+		#popupHeaderTopWrap > .close { float: right; }
+		#popupHeaderTopWrap > .close > a { color: #FFF; font-size: 40px; top: -2px; }
+		
+		/* 상품기본정보 */
+		#itInfoWrap { width: 100%; float: left; padding: 20px; border-bottom: 1px solid #DFDFDF; }
+		#itInfoWrap > .name { width: 100%; float: left; font-weight: bold; font-size: 17px; }
+		
+		/* 팝업 */
+		#popup { display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, .7);z-index: 50; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);}
+		#popup.hide {display: none;}
+		#popup.multiple-filter { backdrop-filter: blur(4px) grayscale(90%); -webkit-backdrop-filter: blur(4px) grayscale(90%);}
+		#popup .content { padding: 20px; background: #fff; border-radius: 5px; box-shadow: 1px 1px 3px rgba(0, 0, 0, .3); max-width:90%;}
+		#popup .content { max-width:90%; font-size: 14px; }
+		#popup .closepop { width: 100%; height: 40px; cursor: pointer; color:#fff; background-color:#000; border-radius:6px; margin-top: 10px; }
+		
+		/* 상품목록 */
+		.imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto; float: left; }
+		.imfomation_box > a { width: 100%; float: left; }
+		.imfomation_box > a > li { width: 100%; float: left; padding: 20px; border-bottom: 1px solid #DDD; }
+		.imfomation_box a .li_box{ width:100%;  height:auto;text-align:center;}
+		.imfomation_box a .li_box .li_box_line1{ width: 100%;  height:auto; margin:auto; float:left;color:#000; }
+		.imfomation_box a .li_box .li_box_line1 .p1{ width:100%; float:left; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
+		.imfomation_box a .li_box .li_box_line1 .p1 > span { height: 100%; display: table-cell; vertical-align: middle; }
+		.imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; }
+		.imfomation_box a .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
+		.imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
+		.imfomation_box a .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
+		/* display:none; */
+		.imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle;width:100%; padding-top: 20px; display:none; float: left; box-sizing: border-box; }
+		.imfomation_box a .li_box .folding_box > span { width: 100%; float: left; }
+		.imfomation_box a .li_box .folding_box > .inputbox { width: 100%; float: left; position: relative; padding: 0; }
+		.imfomation_box a .li_box .folding_box > .inputbox > li { width: 100%; float: left; position: relative; }
+		.imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input { width: 100%; height: 50px; float: left; padding-right: 85px; box-sizing: border-box; padding-left: 20px; font-size: 17px; border: 1px solid #E4E4E4; }
+		.imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input.active { border-color: #FF5858; }
+		.imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input::placeholder { font-size: 16px; color: #AAA; }
+		.imfomation_box a .li_box .folding_box > .inputbox > li > img { position: absolute; width: 30px; right: 15px; top: 11px; z-index: 2; cursor: pointer; }
+		.imfomation_box a .li_box .folding_box > .inputbox > li > i { position: absolute; right: 55px; top: 17px; z-index: 2; font-size: 19px; color: #FF6105; opacity: 0; }
+		.imfomation_box a .li_box .folding_box > .inputbox > li > i.active { opacity: 1; }
 
-    .imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto; }
-    .imfomation_box a .li_box{ width:100%;  height:auto;text-align:center;}
-    .imfomation_box a .li_box .li_box_line1{ width: 100%;  height:auto; margin:auto; float:left;color:#000;  border-top: 1px solid #dddddd;}
-    .imfomation_box a .li_box .li_box_line1 .p1{ width:100%; height:70px%;  margin:auto; float:left; color:#000;line-height:70px; text-align:left;}
-    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ width:1000px; font-size:22px; margin-left:20px; float:left; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .imfomation_box a .li_box .li_box_line1 .p1 .span2{ font-size:17px; float:right;margin-right:20px;}
-    .imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 15px;}
-    .imfomation_box a .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
-    /* display:none; */
-    .imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle;width:100%;margin-left:20px; display:none;}
-    
-    .imfomation_box a .li_box .folding_box .span{margin-left :20px;width:90%;}
-    .imfomation_box a .li_box .folding_box .all{margin-bottom:5px;padding-left :20px;font-size:20px;text-align:left;float:left;height:50px;width:55%; border-radius: 6px; background-color:#c0c0c0;  color:#fff; border:0px}
-    .imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
-    .imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
+		.imfomation_box a .li_box .folding_box .span{margin-left :20px;width:90%;}
+		.imfomation_box a .li_box .folding_box .all{margin-bottom:5px;padding-left :20px;font-size:17px;text-align:left;float:left;height:50px;width:55%; border-radius: 6px; background-color:#c0c0c0;  color:#fff; border:0px; box-sizing: border-box; }
+		.imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
+		.imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
 
-    .imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
+		.imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
 
-    .imfomation_box a .li_box .folding_box .barNumCustomSubmitBtn{float:left;margin-left:10px;color:#fff;font-size:20px;background-color:#494949; border:0px;border-radius: 6px;width:18%; height:50px;}
-    .imfomation_box a .li_box .folding_box .barNumGuideOpenBtn{float:left;margin-left:5px;width:37px; height:37px; padding-top:4px;}
-    .imfomation_box a .li_box .folding_box .notall{
-        margin-bottom:5px;font-size:20px;text-align:left;float:left;height:50px;width:90%; border-radius: 6px; background-color:#fff;  color:#666666; border:0px; ; border: 1px solid #c0c0c0;;
-        /* background-image : url('<?php echo G5_IMG_URL?>/bacod_img.png');  */
-        /* background-position:top right;  */
-        /* background-repeat:no-repeat; */
-
-
-    }
-    .imfomation_box a .li_box .folding_box img{float:left;}
-
-    /* .imfomation_box a .li_box .li_box_line1 .p1 .span1_1{ width:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } */
-    /* .imfomation_box a .li_box .li_box_line1 .p1 .span1_2{ width:auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } */
-    .bottom{ position:fixed; width:100%; height:70px;background-color:#000; bottom:0px; font-size:20px;max-width: 100%;}
-    .bottom .savebtn{ float:left;width:75%; height:70px; background-color:#000; border:0px; color:#fff; font-size:20px;}
-    .bottom .cancelbtn{ float:right; width:24%; height:70px;border:0px; color:#666666; background-color:#dddddd;font-size:20px;}
-
-    /* 팝업 */
-    #popup { display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, .7);z-index: 1; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);}
-    #popup.hide {display: none;}
-    #popup.multiple-filter { backdrop-filter: blur(4px) grayscale(90%); -webkit-backdrop-filter: blur(4px) grayscale(90%);}
-    #popup .content { padding: 20px; background: #fff; border-radius: 5px; box-shadow: 1px 1px 3px rgba(0, 0, 0, .3); max-width:90%;}
-    #popup .content { max-width:90%;}
-    #popup .closepop {height: 2.5em; cursor: pointer; color:#fff; background-color:#000; border-radius:6px;}
-
-    @media screen and (max-width: 4000px){
-    }
-    @media screen and (max-width: 1200px){
-    }
-    @media screen and (max-width: 1000px){
-    }
-    @media screen and (max-width: 900px){
-    }
-    @media screen and (max-width: 630px){
-    }
-    @media screen and (max-width: 500px){
-        /* .imfomation_box a .li_box .li_box_line1 .p1 .span1{ width:250px;} */
-    }
-}
- </style>
-
-<?php
-
-if(!$member['mb_id']){alert('접근이 불가합니다.');}
-//접속시 db- >id 부과
-sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member['mb_id']."' where `od_id` = '{$od_id}'");
-
-?>
-
-<section class="section1">
-    <div class="head">
-        <b class="p1">바코드입력 
-        </b>
-        <span  class="headsp">
-                <?php if($od['od_edit_member']){ echo "(수정중 : ".$od['od_edit_member'].")";}?>
-            </span>
-        <a href="javascript:history.back();"><span class="xbtn">&times;</span></a>
-    </div>
-
-    <div class="naming_box">
-        <span class="sp1">
-            <span class="sp1_1">[재고]<?=$od_id?></span>
-            <span class="sp1_2">(배송:<?=count($carts)+1?>개)</span>
-        </span>
-    </div>
+		.imfomation_box a .li_box .folding_box .barNumCustomSubmitBtn{float:left;margin-left:10px;color:#fff;font-size:17px;background-color:#494949; border:0px;border-radius: 6px;width:18%; height:50px; font-weight: bold; }
+		.imfomation_box a .li_box .folding_box .barNumGuideOpenBtn{float:left;margin-left:10px;width:35px; cursor: pointer; top: 8px; }
+		.imfomation_box a .li_box .folding_box .notall{
+			margin-bottom:5px;font-size:20px;text-align:left;float:left;height:50px;width:90%; border-radius: 6px; background-color:#fff;  color:#666666; border:0px; ; border: 1px solid #c0c0c0;;
+			/* background-image : url('<?php echo G5_IMG_URL?>/bacod_img.png');  */
+			/* background-position:top right;  */
+			/* background-repeat:no-repeat; */
 
 
-
+		}
+		
+		/* 고정 하단 */
+		#popupFooterBtnWrap { position: fixed; width: 100%; height: 70px; background-color: #000; bottom: 0px; z-index: 10; }
+		#popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
+		#popupFooterBtnWrap > .savebtn{ float: left; width: 75%; height: 100%; background-color:#000; color: #FFF; }
+		#popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
+	</style>
+ </head>
+ 
+ <body>
+ 
+ 	<!-- 고정 상단 -->
+	<div id="popupHeaderTopWrap">
+		<div class="title">바코드입력</div>
+		<div class="close">
+			<a href="javascript:history.back();">
+				&times;
+			</a>
+		</div>
+	</div>
+	
+	<!-- 상품기본정보 -->
+	<div id="itInfoWrap">
+		<p class="name">
+			[<?=($od["recipient_yn"] == "Y") ? "주문" : "재고"?>] <?=$moreInfo["it_name"]?> <?=$moreInfoDisplayCnt?>
+			<span class="delivery">(배송 : <?=$od_cart_count?>개)</span>
+		</p>
+	</div>
+	
+   <!-- 상품목록 -->
     <ul class="imfomation_box" id="imfomation_box">
     <?php 
         for($i = 0; $i < count($carts); $i++){ 
@@ -319,16 +330,15 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                 <button type="button" class="barNumCustomSubmitBtn">등록</button>
                                 <img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
                                 </span>
-                                <div class="inputbox">
+                                <ul class="inputbox">
                                     <?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
-                                    <span class="">
-                                        <input type="text" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>">
-                                    </span>
-                                    <span class="<?=$stoIdDataList[$prodListCnt]?>_img">
-                                        <img src="<?php echo G5_IMG_URL?>/bacod_img.png" alt="" onclick="window.webkit.messageHandlers.openBarcode.postMessage('<?=$b?>');">
-                                    </span>
+                                    	<li>
+                                    		<input type="text" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>">
+                                    		<i class="fa fa-check"></i>
+                                    		<img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
+                                    	</li>
                                     <?php $prodListCnt++; } ?>
-                                </div>
+                                </ul>
                         </div>
                     </li>
                 </a>
@@ -336,34 +346,121 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                 }   
             }
             ?>
-    <!-- 라인 -->
-</ul>
-<!-- <p class="bottom_line"></p> -->
+	</ul>
+	
+	<!-- 팝업 -->
+	<div id="popup" class="hide">
+	  <div class="content">
+		<p>
+			공통된 문자/숫자를 앞에 부여 후 반복되는 숫자를 입력합니다.<br><br>
+			예시) 010101^3,4,5-10- 010101은 공동문자/숫자입니다.<br><br>
+			- ^이후는 자동으로 입력하기 위한 내용입니다.<br>
+			-    “숫자 입력 후 콤마(,)”를 입력하면 독립 숫자가 입력됩니다.<br>
+			- 5-10이라고 입력하면5부터10까지 순차적으로 입력됩니다.<br>
+			- 00-20으로 시작 숫자가00인 경우2자리 숫자로 입력됩니다
+		</p>
+		<button class="closepop" onclick="closePopup()">닫기</button>
+	  </div>
+	</div>
+	
+	<!-- 고정 하단 -->
+	<div id="popupFooterBtnWrap">
+		<button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
+		<button type="button" class="cancelbtn" onclick="member_cancel();">취소</button>
+	</div>
 
-<div class="bottom">
-    <button class="savebtn" id="prodBarNumSaveBtn">저장</button>
-    <button class="cancelbtn" onclick="member_cancel()">취소</button>
-</div>
+<?php
 
-<!-- 팝업 -->
-<div id="popup" class="hide">
-  <div class="content">
-    <p>
-        공통된 문자/숫자를 앞에 부여 후 반복되는 숫자를 입력합니다.<br><br>
-        예시) 010101^3,4,5-10- 010101은 공동문자/숫자입니다.<br><br>
-        - ^이후는 자동으로 입력하기 위한 내용입니다.<br>
-        -    “숫자 입력 후 콤마(,)”를 입력하면 독립 숫자가 입력됩니다.<br>
-        - 5-10이라고 입력하면5부터10까지 순차적으로 입력됩니다.<br>
-        - 00-20으로 시작 숫자가00인 경우2자리 숫자로 입력됩니다
-    </p>
-    <button class="closepop" onclick="closePopup()">닫기</button>
-  </div>
-</div>
-<!-- 팝업 -->
-</section>
+if(!$member['mb_id']){alert('접근이 불가합니다.');}
+//접속시 db- >id 부과
+sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member['mb_id']."' where `od_id` = '{$od_id}'");
+
+?>
 
 <script type="text/javascript">
+	
+	/* 바코드 입력글자 수 체크 */
+	function notallLengthCheck(){
+		var item = $(".notall");
+		
+		$(item).removeClass("active");
+		$(".imfomation_box a .li_box .folding_box > .inputbox > li > i").removeClass("active");
+		
+		for(var i = 0; i < item.length; i++){
+			var length = $(item[i]).val().length;
+			if(length < 12 && length){
+				$(item[i]).addClass("active");
+			}
+			
+			if(length == 12){
+				$(item[i]).parent().find("i").addClass("active");
+			}
+		}
+	}
+	
+	/* 기종체크 */
+	var deviceUserAgent = navigator.userAgent.toLowerCase();
+	var device;
+	
+	if(deviceUserAgent.indexOf("android") > -1){
+		/* android */
+		device = "android";
+	}
+
+	if(deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1){
+		/* ios */
+		device = "ios";
+	}
+	
+	var sendBarcodeTargetList = [];
+    function sendBarcode(text){
+		$.ajax({
+			url : "/shop/ajax.release_orderview.check.php",
+			type : "POST",
+			data : {
+				od_id : "<?=$od_id?>"
+			},
+			success : function(result){
+				if(result.error == "Y"){
+					switch(device){
+						case "android" :
+							/* android */
+							window.EroummallApp.closeBarcode("");
+							break;
+						case "ios" :
+							/* ios */
+							window.webkit.messageHandlers.closeBarcode.postMessage("");
+							break;
+					}
+					window.location.href = "/shop/release_orderlist.php";
+				} else {
+					if(sendBarcodeTargetList[0]){
+						var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
+						$(sendBarcodeTarget).val(text);
+						sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
+					}
+				}
+			}
+		});
+    }
+	
     $(function(){
+		notallLengthCheck();
+		
+		$(".notall").keyup(function(){
+				$(this).removeClass("active");
+				$(this).parent().find("i").removeClass("active");
+			
+				var length = $(this).val().length;
+				if(length < 12 && length){
+					$(this).addClass("active");
+				}
+
+				if(length == 12){
+					$(this).parent().find("i").addClass("active");
+				}
+		});
+		
         var stoldList = [];
         var count=0;
         var stoIdData = "<?=$stoIdData?>";
@@ -406,6 +503,8 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     if(res.data){
                         stoldList = res.data;
                     }
+					
+					notallLengthCheck();
                 }
             });
         }
@@ -585,6 +684,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     }
                 }
 
+					notallLengthCheck();
                 for(var i = 0; i < target.length; i++){
                     
                     $(target[i]).val(barList[i]);
@@ -595,6 +695,8 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     }
                 }
             }
+			 
+			 notallLengthCheck();
         });
 
 
@@ -607,6 +709,33 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         $(".barNumGuideOpenBtn").click(function(){
             $(this).next().toggle();
         });
+		
+		/* 210317 */
+		$(".nativePopupOpenBtn").click(function(e){
+			var cnt = 0;
+			var frm_no = $(this).closest("li").find(".frm_input").attr("data-frm-no");
+			var item = $(this).closest("ul").find(".frm_input");
+			sendBarcodeTargetList = [];
+			
+			for(var i = 0; i < item.length; i++){
+				if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no){
+					sendBarcodeTargetList.push($(item[i]).attr("data-frm-no"));
+					cnt++;
+				}
+			}
+			
+			switch(device){
+				case "android" :
+					/* android */
+					window.EroummallApp.openBarcode("" + cnt + "");
+					break;
+				case "ios" :
+					/* ios */
+					window.webkit.messageHandlers.openBarcode.postMessage("" + cnt + "");
+					break;
+			}
+		});
+		
     })
 
     //종료시 멤버 수정중없에기

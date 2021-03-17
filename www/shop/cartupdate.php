@@ -1,4 +1,40 @@
 <?php
+## checkform : _POST 및 _GET 으로 넘어온 값 보기
+function checkform($action){
+    if($action=="post"){
+    while(list($key,$value)= each($_POST)){
+    if(is_array($value)){
+    while(list($key1,$value1)=each($value)){
+    echo $key."[".$key1."]" ." = ". $value1."<br>\n";
+    }
+    }else{
+    echo $key ." = ". $value."<br>\n";
+    }
+    }
+    }elseif($action=="get"){
+    while(list($key,$value)= each($_GET)){
+    if(is_array($value)){
+    while(list($key1,$value1)=each($value)){
+    echo $key."[".$key1."]" ." = ". $value1."<br>\n";
+    }
+    }else{
+    echo $key ." = ". $value."<br>\n";
+    }
+    }
+    }else{
+    echo "사용방법 오류 : checkform 사용방법 = checkform('get' or 'post');";
+    }
+    }
+    // checkform("get");
+    echo '<br>';
+    echo '<br>';
+    // checkform("post");
+    echo json_encode($_POST);
+    // return false;
+?>
+<?php
+
+
 include_once('./_common.php');
 
 // print_r2($_POST); exit;
@@ -449,7 +485,17 @@ else // 장바구니에 담기
 // 바로 구매일 경우
 if ($sw_direct) {
 //	$sw_url = G5_SHOP_URL.'/orderform.php?sw_direct='.$sw_direct;
-    $sw_url = G5_SHOP_URL.'/orderform.php?sw_direct='.$sw_direct.'&ct_sc_method_sel='.$ct_sc_method_sel;
+
+    $from_sales_Inventory_datail="";
+    if($_POST['penId_r']){
+        $penId_r="&penId_r=".$_POST['penId_r'];
+    }
+    if($_POST['penId_r']){
+        $barcode_r="&barcode_r=".$_POST['barcode_r'];
+    }
+    $from_sales_Inventory_datail=$penId_r.$barcode_r;
+    
+    $sw_url = G5_SHOP_URL.'/orderform.php?sw_direct='.$sw_direct.'&ct_sc_method_sel='.$ct_sc_method_sel.$from_sales_Inventory_datail;
  
 	// 그누테마 사용에 따라 비회원 로직 변경
 	if ($is_member) {

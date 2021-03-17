@@ -165,7 +165,7 @@ $totalCnt = $res["total"];
 $pageNum = $sendData["pageNum"]; # 페이지 번호
 $listCnt = $sendLength; # 리스트 갯수 default 10
 
-$b_pageNum_listCnt = 1; # 한 블록에 보여줄 페이지 갯수 5개
+$b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
 $block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
 $b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
 $b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지

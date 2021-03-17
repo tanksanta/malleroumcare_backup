@@ -362,32 +362,6 @@ $ret = array();
 
 $ret['counts'] = $cate_counts;
 
-$ret['main'] = "
-<div id=\"samhwa_order_list_table\">
-    <div class=\"table list-table-style wide-table\">
-        <table>
-            <thead>
-                <tr>
-                    <th class=\"check\">선택</th>
-                    <th class=\"od_time\">주문일시</th>
-                    <th class=\"od_info\">주문정보</th>
-                    <th class=\"od_name\">받는분(주문자)</th>
-                    <th class=\"od_type\">결제수단</th>
-						<th class=\"od_barNum\">바코드</th>
-                    <th class=\"od_price\">결제금액</th>
-                    <th>출담</th>
-                    <th class=\"od_delivery_info\">배송정보</th>
-                    <th>출고예정일</th>
-                    <th>상태</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
-";
-
 
 if ( !$total_count ) {
     $ret['main'] .= "
@@ -399,6 +373,7 @@ if ( !$total_count ) {
 
 $now_step = $last_step ? $last_step : '';
 
+$foreach_i = 0;
 foreach($orderlist as $order) {
     $od_time = substr($order['od_time'],2,8) . '<br>' . '('. substr($order['od_time'],11,5) .')';
     $od_time2 = substr($order['od_time'],2,8)  . '('. substr($order['od_time'],11,5) .')';
@@ -616,120 +591,8 @@ foreach($orderlist as $order) {
         }else{
             $show_prev_status = '';
         }
-
-        $ret['data'] .= "
-        <tr class=\"step\">
-            <td colspan=\"8\" class=\"ltr-bg-step-{$od_status_info['step']}\">
-                {$show_od_status}
-            </td>
-            <td colspan=\"6\" class=\"ltr-bg-step-{$od_status_info['step']}\" style=\"text-align:right;\">
-                총 {$total_result['cnt']}건 / 합계: ₩ {$total_result['price']}원
-            </td>
-        </tr>
-        <tr class=\"btns\">
-            <td colspan=\"14\">
-                <ul class=\"left-btns\">
-                    <li class=\"order-catalog-step-btns\">
-                        <span class=\"custom-select-box-btn btn drop_multi_main\" data-value=\"select\"><a href=\"javascript:;\">전체선택</a></span><span class=\"custom-select-box-btn btn drop_multi_sub\"><a href=\"javascript:;\"></a></span>
-                        <ul class=\"list-select custom-select-box-multi\" name=\"select_25\" rows=\"4\" onchange=\"list_select(this)\" style=\"display: none;\">
-                            <li data-value=\"select\">전체선택</li>
-                            <li data-value=\"not-select\">선택안함</li>
-                            <li data-value=\"important\">별표선택</li>
-                            <li data-value=\"not-important\">별표없음</li>
-                        </ul>
-                    </li>
-                    <li class=\"order-catalog-step-btns\">
-                        {$show_next_status}
-                        {$show_prev_status}
-
-                        <span class=\"btn large\"><button name=\"delivery_edi_return\" class=\"delivery_edi_return\" id=\"25\" >송장리턴</button></span>
-
-
-                        <!--
-                        <span class=\"btn large\"><button name=\"goods_export\" id=\"25\" onclick=\"batch_goods_export(25);\">출고처리</button></span>
-
-                        <span class=\"btn large\"><button name=\"batch_custom_ready\" id=\"25\" onclick=\"batch_custom_ready(this);\">배송완료처리</button></span>
-
-
-                        
-                        <span class=\"btn large\"><button name=\"batch_custom_cancel\" id=\"25\" onclick=\"batch_custom_cancel(this);\">[수동]주문무효</button></span>
-
-
-
-                        <span class=\"btn large\"><button name=\"goods_print\" id=\"25\" onclick=\"order_print(this);\"><img src=\"/adm/shop_admin/img/printer.png\">프린트</button></span>
-
-                        <span class=\"btn large newred\">
-                            <button class=\"hand batch_reverse\" id=\"25\" onclick=\"batch_reverse(this);\" autodepositkey=\"\">
-                            '주문접수' 되돌리기
-                            </button>
-                        </span>
-                        -->
-                    </li>
-                </ul>
-            </td>
-        </tr>
-        ";
         $now_step = $order['od_status'];
     }
-
-
-    $ret['data'] .= "
-    <tr class=\"tr_{$order['od_id']}\">
-        <td align=\"center\" class=\"check\">
-            <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['od_id']}\" value=\"{$order['od_id']}\" accumul_mark=\"Y\">
-            <label for=\"check_{$order['od_id']}\">&nbsp;</label>
-        </td>
-        <td align=\"center\" class=\"od_time\">
-            {$od_time}
-        </td>
-        <td align=\"left\" class=\"od_info\">
-            <div class=\"order_info\">
-                <div class=\"goods_info\">
-                    <div class=\"goods_name\">
-                        {$goods_name}
-                    </div>
-                    <div class=\"goods_ea\">
-                        {$od_cart_count}
-                    </div>
-                    <div class=\"order_num\">
-                        <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">NO&nbsp;<span>{$order['od_id']}</span></a>
-                    </div>
-                </div>
-                <div class=\"buttons\">
-                    <a href=\"javascript:printOrderView('{$order['od_id']}')\"><img src=\"/adm/shop_admin/img/printer.png\" align=\"absmiddle\"></a>
-                    <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\" target=\"_blank\"><span><img src=\"/adm/shop_admin/img/window.png\" align=\"absmiddle\"></span></a>
-                    <span class=\"btn-direct-open\" onclick=\"btn_direct_open(this);\"></span>
-                </div>
-            </div>
-        </td>
-        <td align=\"center\" class=\"od_name\">
-            {$order['od_b_name']}
-            <br/>
-            {$mb_shorten_info}{$order['od_name']}
-        </td>
-        <td align=\"center\" class=\"od_type\">
-            {$od_receipt_name}
-        </td>
-        <td align=\"center\" class=\"od_barNum\">
-			<a href='#' class='prodBarNumCntBtn{$prodBarNumCntBtnStatus}' data-id='{$order["od_id"]}'>{$prodBarNumCntBtnWord}</a>
-        </td>
-        <td align=\"center\" class=\"od_price\">
-            <b>{$od_price}원</b>
-        </td>
-        <td align=\"center\">
-            <span class=\"icon-star-gray hand list-important2 important-25 {$important2_class}\" data-od_id='{$order['od_id']}'></span>
-        </td>
-        <td align=\"center\" class=\"delivery_info od_delivery_info\">
-			<a href='#' class='deliveryCntBtn{$deliveryCntBtnStatus}' data-id='{$order["od_id"]}'>{$deliveryCntBtnWord}</a>
-        </td>
-        <td align=\"center\">
-            <input type=\"text\" name=\"od_ex_date\" class=\"od_ex_date\" data-od-id=\"{$order['od_id']}\" value=\"{$order['od_ex_date']}\" />
-        </td>
-        <td align=\"center\">
-            {$od_status['name']}
-        </td>
-    </tr>
-    ";
     // <input type=\"text\" name=\"od_release_date\" class=\"od_release_date\" data-od-id=\"{$order['od_id']}\" value=\"{$order['od_release_date']}\" />
 
     // 20210315성훈 필요데이터 작업
@@ -740,17 +603,19 @@ foreach($orderlist as $order) {
     $class_type2="";
     $complate_flag="";
     $complate_flag2="";
-    $edit_working="";
+    $edit_working = false;
     if($od_status['name']=="출고준비"){
         $od_status_name="출고<br>준비"; $class_type1="type3";
         if($order['od_edit_member']){   //작업중인사람
-            $class_type2="type3"; 
+            $class_type2="active"; 
         }else{
-            $class_type2="type1"; 
+            $class_type2=""; 
         }
     }
-    if($order['od_edit_member']){  $edit_working='<span class="barcode_box_sp1">작업중</span>'; }
-    if($od_status['name']=="출고완료"){$od_status_name="출고<br>완료"; $class_type1="type4"; $class_type2="type2"; }
+    if($order['od_edit_member']){
+		$edit_working = true;
+	}
+    if($od_status['name']=="출고완료"){$od_status_name="출고<br>완료"; $class_type1="type4"; $class_type2="disable"; }
     if($od_status['name']=="배송완료"){$od_status_name="배송<br>완료"; $class_type1="type5"; }
     
     
@@ -765,24 +630,41 @@ foreach($orderlist as $order) {
             $complate_flag2="type2";
         } 
     }
-    
-    $ret['data2'] .= 
-        '<a href="javascript:void(0)"><li class="li_box '.$complate_flag.' '.$complate_flag2.'">
-            <div class="li_box_line1">
-                <p class="p1">
-                    <span class="span1">
-                        <span class="span1_1">'.$order["od_id"].'</span>
-                        <span class="span1_2">(배송 : '.$od_cart_count.'개)</span>
-                    </span>
-                    <span class="span2">'.$od_detail.'</span>
-                    <span class="span3">'.$od_time2.'/'.$order['od_b_name'].'</span>
-                </p>
-                <button class="state_box '.$class_type1.'">'.$od_status_name.'</button>
-            </div>
-            <div stlye="max-width:90%;margin: 20px; auto;">
-                <button data-id="'.$order["od_id"].'" class="barcode_box '.$class_type2.'">'.$prodBarNumCntBtnWord.$edit_working.'</button>
-            </div>
-        </li></a>';
+	
+	# 210317 추가정보
+	$moreInfo = sql_fetch("
+		SELECT
+			( SELECT it_name FROM g5_shop_cart WHERE od_id = a.od_id ORDER BY it_id ASC LIMIT 0, 1 ) AS it_name,
+			( SELECT COUNT(*) FROM g5_shop_cart WHERE od_id = a.od_id ) AS totalCnt
+		FROM g5_shop_order a
+		WHERE od_id = '{$order["od_id"]}'
+	");
+	
+	$moreInfoDisplayCnt = "";
+	$moreInfo["totalCnt"]--;
+	if($moreInfo["totalCnt"]){
+		$moreInfoDisplayCnt = "외 {$moreInfo["totalCnt"]}종";
+	}
+	
+	# 210318 추출 데이터 배열
+	$ret["data"][$foreach_i]["od_id"] = $order["od_id"];
+	$ret["data"][$foreach_i]["it_name"] = ($order["recipient_yn"] == "Y") ? "주문" : "재고";
+	$ret["data"][$foreach_i]["it_name"] = "[{$ret["data"][$foreach_i]["it_name"]}] ";
+	$ret["data"][$foreach_i]["it_name"] .= $moreInfo["it_name"];
+	$ret["data"][$foreach_i]["it_name"] .= ($moreInfoDisplayCnt) ? " {$moreInfoDisplayCnt}" : "";
+	$ret["data"][$foreach_i]["delivery_cnt"] = $od_cart_count;
+	$ret["data"][$foreach_i]["cnt_detail"] = $od_detail;
+	$ret["data"][$foreach_i]["date"] = $od_time2;
+	$ret["data"][$foreach_i]["od_name"] = $order["od_b_name"];
+	$ret["data"][$foreach_i]["od_status_name"] = $od_status_name;
+	$ret["data"][$foreach_i]["od_status_class"] = $class_type1;
+	$ret["data"][$foreach_i]["od_barcode_class"] = $class_type2;
+	$ret["data"][$foreach_i]["od_barcode_name"] = $prodBarNumCntBtnWord;
+	$ret["data"][$foreach_i]["edit_status"] = $edit_working;
+	$ret["data"][$foreach_i]["complate_flag"] = $complate_flag;
+	$ret["data"][$foreach_i]["complate_flag2"] = $complate_flag2;
+	
+	$foreach_i++;
 }
 
 $ret['last_step'] = $now_step;

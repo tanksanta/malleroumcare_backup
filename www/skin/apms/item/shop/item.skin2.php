@@ -14,7 +14,7 @@
 			<input type="hidden" name="it_msg1[]" value="<?php echo $it['pt_msg1']; ?>">
 			<input type="hidden" name="it_msg2[]" value="<?php echo $it['pt_msg2']; ?>">
 			<input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
-			<input type="hidden" name="sw_direct">
+			<input type="hidden" name="sw_direct" value="1">
 			<input type="hidden" name="url">
 
             <script>
@@ -93,7 +93,7 @@
 				<?php } ?>
 			</div>
 			<div class="popup-btn">
-				<button type="submit">확인</button>
+				<button type="submit" >확인</button>
 				<button type="button" class="p-cls-btn" onclick="popup01_hide()">취소</button>
 			</div>
 			</form>
@@ -115,23 +115,11 @@ function fitem_submit(f) {
 	f.action = "<?php echo $action_url; ?>";
 	f.target = "";
 
-	if (document.pressed == "장바구니") {
-		f.sw_direct.value = 0;
-	} else { // 바로구매
-		f.sw_direct.value = 1;
-	}
-
-	// 판매가격이 0 보다 작다면
-	if (document.getElementById("it_price").value < 0) {
-		alert("전화로 문의해 주시면 감사하겠습니다.");
-		return false;
-	}
 
 	if($(".it_opt_list").size() < 1) {
 		alert("선택옵션을 선택해 주십시오.");
 		return false;
 	}
-
 	var val, io_type, result = true;
 	var sum_qty = 0;
 	var min_qty = parseInt(<?php echo $it['it_buy_min_qty']; ?>);

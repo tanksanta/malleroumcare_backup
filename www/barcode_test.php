@@ -40,7 +40,7 @@
 				case "android" :
 					/* android */
 					alert("android");
-					window.webkit.openBarcode("3");
+					window.EroummallApp.openBarcode("3");
 					break;
 				case "ios" :
 					/* ios */
@@ -56,7 +56,7 @@
 				case "android" :
 					/* android */
 					alert("android");
-					window.webkit.closeBarcode("");
+					window.EroummallApp.closeBarcode("");
 					break;
 				case "ios" :
 					/* ios */

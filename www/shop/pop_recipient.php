@@ -64,7 +64,7 @@ body, input, textarea, select, button, table {
 <body>
 <div class="pop_top_area">
 	<p>수급자 정보</p>
-	<div class="btn_area"><a href="#" id="thisPopupCloseBtn" attr-a="onclick : attr-a"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu_x.png" alt="" /></a></div>
+	<div class="btn_area"><a href="#none" id="thisPopupCloseBtn" attr-a="onclick : attr-a"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu_x.png" alt="" /></a></div>
 	<form class="search_area" method="get">
 		<select name="penTypeCd">
 			<option>수급자구분</option>

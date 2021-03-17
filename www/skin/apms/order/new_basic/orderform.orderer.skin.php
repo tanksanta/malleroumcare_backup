@@ -498,6 +498,8 @@ var array_box=[];
 
 
 	<script>
+        
+
 		function selected_recipient($penId) {
 			<?php $re = sql_fetch(" select * from {$g5['recipient_table']} where penId = '$penId' ");  ?>
 			// document.getElementById("penNm").value=$re['penNm'];
@@ -571,7 +573,7 @@ var array_box=[];
 			var optionCntList = <?=json_encode($optionCntList)?>;
 			var optionBarList = <?=json_encode($optionBarList)?>;
 			var prodItemList = $("#sod_list tr.item");
-
+            console.log(prodItemList);
 			$.each(prodItemList, function(key, itemDom){
 				var code = $(itemDom).attr("data-code");
 				var itemList = $(itemDom).find(".well li");
@@ -1614,3 +1616,14 @@ var array_box=[];
 
     <!-- } 받으시는 분 입력 끝 -->
 <?php } ?>
+
+
+<script>
+<?php if($_GET['penId_r']){ //보유재고 관리에서 넘어오면 실행 ?>
+        $(document).ready(function() { 
+            selected_recipient('<?=$_GET['penId_r']?>');
+            $('.prodBarSelectBox0 option[value="<?=$_GET['barcode_r']?>"]').attr('selected', 'selected');
+        });
+<?php } ?>
+</script>
+       
