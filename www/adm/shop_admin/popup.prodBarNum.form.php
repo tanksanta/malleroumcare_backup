@@ -541,7 +541,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			switch(device){
 				case "android" :
 					/* android */
-					window.EroummallApp.openInvoiceNum("1");
+					window.EroummallApp.openInvoiceNum("");
 					break;
 				case "ios" :
 					/* ios */
