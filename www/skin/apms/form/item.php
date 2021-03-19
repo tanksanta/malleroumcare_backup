@@ -1047,25 +1047,25 @@ $pg_anchor .='</ul>';
 								$("select[name='spl_use[]']").val(spl_use);
 						}
 					});
+                    //지움
+					// $(document).on("propertychange change keyup paste input", 'input[name="opt_price[]"]', function() {
+					// 	var it_price = $(this).val();
+					// 	var percent = $('#it_price_partner_percent').val();
 
-					$(document).on("propertychange change keyup paste input", 'input[name="opt_price[]"]', function() {
-						var it_price = $(this).val();
-						var percent = $('#it_price_partner_percent').val();
+					// 	console.log($('#it_price_partner_percent').val());
 
-						console.log($('#it_price_partner_percent').val());
+					// 	var price = it_price - (it_price * ( percent / 100 ));
+					// 	price = Math.round(price/1000) * 1000; // 100원단위 절사(반올림)
 
-						var price = it_price - (it_price * ( percent / 100 ));
-						price = Math.round(price/1000) * 1000; // 100원단위 절사(반올림)
+					// 	$(this).next().val(price);
 
-						$(this).next().val(price);
-
-						percent = $('#it_price_dealer_percent').val();
-						var price = (it_price - (it_price * ( percent / 100 )) ) / 1.1;
-						price = Math.round(price/1000) * 1000;
-						price = Math.floor(price * 1.1);
-						$(this).next().next().val(price);
-						$(this).next().next().next().val(price);
-					});
+					// 	percent = $('#it_price_dealer_percent').val();
+					// 	var price = (it_price - (it_price * ( percent / 100 )) ) / 1.1;
+					// 	price = Math.round(price/1000) * 1000;
+					// 	price = Math.floor(price * 1.1);
+					// 	$(this).next().next().val(price);
+					// 	$(this).next().next().next().val(price);
+					// });
 					$(document).on("propertychange change keyup paste input", 'input[name="spl_price[]"]', function() {
 						var it_price = $(this).val();
 						var percent = $('#it_price_partner_percent').val();

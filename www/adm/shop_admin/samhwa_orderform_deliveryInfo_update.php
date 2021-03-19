@@ -15,14 +15,23 @@
 			$od_delivery_insert++;
 		}
 		
-		sql_query("
-			UPDATE g5_shop_cart SET
-				ct_delivery_company = '{$ct_delivery_company}',
-				ct_delivery_num = '{$ct_delivery_num}',
-				ct_delivery_cnt = '{$ct_delivery_cnt}',
-				ct_delivery_price = '{$ct_delivery_price}'
-			WHERE ct_id = '{$ct_id}'
-		");
+		if($update_type == "popup"){
+			sql_query("
+				UPDATE g5_shop_cart SET
+					ct_delivery_company = '{$ct_delivery_company}',
+					ct_delivery_num = '{$ct_delivery_num}'
+				WHERE ct_id = '{$ct_id}'
+			");
+		} else {
+			sql_query("
+				UPDATE g5_shop_cart SET
+					ct_delivery_company = '{$ct_delivery_company}',
+					ct_delivery_num = '{$ct_delivery_num}',
+					ct_delivery_cnt = '{$ct_delivery_cnt}',
+					ct_delivery_price = '{$ct_delivery_price}'
+				WHERE ct_id = '{$ct_id}'
+			");
+		}
 	}
 
 	sql_query("

@@ -35,7 +35,7 @@ function eventToggle(){
        } else {
            $('.all_menu_wrap').removeClass('on');
            $('.all_menu_wrap').stop().animate({'z-index':'-1','opacity': '0'},10);
-           $('.top_menu_all').html('<img src="' + thema_url + '/assets/img/btn_top_menu.jpg" ><span>전체 상품 카테고리</span>');
+           $('.top_menu_all').html('<img src="' + thema_url + '/assets/img/btn_top_menu2.png" ><span>전체 상품 카테고리</span>');
            //$('body').removeClass('scroll-fixed');
        }
     });
@@ -71,14 +71,12 @@ function scrollController() {
 	currentScrollTop = $(window).scrollTop();
 	if (currentScrollTop > 110) {
 		$('.scroll_top').stop().css({'top': '0px'},300).promise().then(function() {
-            $('.all_menu_wrap').addClass('fixed');
         });
         $('.btn_top_scroll').stop().animate({'opacity': '1'},300);
         //$('.all_menu_wrap').addClass('fixed');
 	}else {
 		$('.scroll_top').stop().css({'top': '-110px'},300);
         $('.btn_top_scroll').stop().animate({'opacity': '0'},300);
-        $('.all_menu_wrap').removeClass('fixed');
 	}
 }
 

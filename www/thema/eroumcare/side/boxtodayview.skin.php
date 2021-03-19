@@ -83,9 +83,10 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_SKIN_URL.'/style.css">', 
             $('.today-slick').slick({
                 infinite : true,
                 arrows : true,
-                prevArrow:"<button type='button' class='today-slick-prev'><i class='fa fa-caret-left' aria-hidden='true'></i></button>",
-                nextArrow:"<button type='button' class='today-slick-next'><i class='fa fa-caret-right' aria-hidden='true'></i></button>"
+                prevArrow:"<button type='button' class='today-slick-prev'><i class='fa fa-angle-left' aria-hidden='true'></i></button>",
+                nextArrow:"<button type='button' class='today-slick-next'><i class='fa fa-angle-right' aria-hidden='true'></i></button>"
             });
+			$(".scrollBannerListWrap.right").css("opacity", 1);
 			
 			$(".today-slick .slick-slide").mouseenter(function(){
 				var id = $(this).attr("data-id");
@@ -99,10 +100,13 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_SKIN_URL.'/style.css">', 
 				$("#stv_link .removeBtn").attr("data-target", $(this).attr("data-slick-index"));
 				$("#stv_link").attr("href", "/shop/item.php?it_id=" + id);
 				$("#stv_link").css("display", "table");
+				
+				$("#stv_ul > button").css("opacity", 0);
 			});
 			
 			$("#stv_link").mouseleave(function(){
 				$(this).hide();
+				$("#stv_ul > button").css("opacity", 1);
 			});
 			
 //			$("#stv_link > .removeBtn").click(function(e){

@@ -119,7 +119,7 @@ $(function() {
         calculate_total_price();
         //$("#cp_frm").remove();
 		$('#couponModal').modal('hide');
-        $cp_btn_el.text("변경").focus();
+        $cp_btn_el.text("(변경)").focus();
         if(!$cp_row_el.find(".cp_cancel").size())
             $cp_btn_el.after("<button type=\"button\" class=\"cp_cancel btn btn-black btn-xs\">취소</button>");
     });
@@ -185,6 +185,8 @@ $(function() {
         $("input[name=od_cp_id]").val(cp_id);
         $("input[name=od_coupon]").val(price);
         $("input[name=od_send_coupon]").val(0);
+        var first_price= parseInt($("#od_cp_price").text().replace(',',""));
+        price=parseInt(first_price)+(price);
         $("#od_cp_price").text(number_format(String(price)));
         $("#sc_cp_price").text(0);
         calculate_order_price();
@@ -192,7 +194,7 @@ $(function() {
 		$('#couponModal').modal('hide');
         $("#od_coupon_btn").text("쿠폰변경").focus();
         if(!$("#od_coupon_cancel").size())
-            $("#od_coupon_btn").after("<button type=\"button\" id=\"od_coupon_cancel\" class=\"btn btn-black btn-sm\">쿠폰취소</button>");
+            $("#od_coupon_btn").after(" <button type=\"button\" id=\"od_coupon_cancel\" class=\"btn btn-black btn-sm btn_frmline\">쿠폰취소</button>");
     });
 
     $(document).on("click", "#od_coupon_close", function() {
@@ -369,7 +371,7 @@ function calculate_total_price() {
         tot_cp_price += cp_price;
 			tot_sell_discount += it_discount;
     });
-	alert(tot_sell_discount);
+	// alert(tot_sell_discount);
     tot_sell_price = sell_price - tot_sell_discount - tot_cp_price + send_cost;
 
     $("#ct_tot_coupon").text(number_format(String(tot_cp_price))+" 원");

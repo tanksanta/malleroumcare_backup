@@ -135,7 +135,7 @@ $od_penAddr			= (isset($od['od_penId']) && $od['od_penId']) ? $od['od_penAddr'] 
 $sql = " select a.ct_id,
                 a.it_id,
 				a.it_name,
-                a.cp_price,
+            a.cp_price,
                 a.ct_notax,
                 a.ct_send_cost,
                 a.ct_sendcost,
@@ -979,7 +979,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     </tbody>
                 </table>
 
-                <div class="frmsamhwaorderform_bottom" style="display: none;">
+                <div class="frmsamhwaorderform_bottom">
                     <div class="change_status">
                         <span>선택한 상품 상태값</span>
                         <select name="step" id="step">
@@ -2039,17 +2039,20 @@ var od_id = '<?php echo $od['od_id']; ?>';
     <a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/samhwa_cancellist.php" class="btn btn_02">목록</a>
     <?php } ?>
     <a href="#" class="btn btn_01 order_prints">작업지시서 출력</a>
-    <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload()" class="btn btn_02">
+    <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload(1)" class="btn btn_02">
+    <input type="button" value="바코드 엑셀다운로드" onclick="orderListExcelDownload(2)" class="btn btn_02">
 </div>
 
 <script>
 var change_member_pop, add_item_pop, matching_item_pop, edit_item_pop, delivery_print_pop, edit_payment_pop, send_estimate_pop, order_prints_pop;
 	
-	function orderListExcelDownload(){
+	function orderListExcelDownload(number){
 		$("#excelForm").remove();
-		
-		var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
-		
+		if(number){
+		    var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
+        }else{
+		    var html = "<form id='excelForm' method='post' action='./order.excel.list2.php'>";
+        }
 		var od_id = [];
 		
 		od_id.push("<?=$od["od_id"]?>");

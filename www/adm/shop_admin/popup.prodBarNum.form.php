@@ -92,7 +92,9 @@
 					a.prodSupYn,
 					a.ct_qty,
 					a.ct_stock_qty,
-					b.it_img1
+					b.it_img1,
+					a.ct_delivery_company,
+					a.ct_delivery_num
 			  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
 			  group by a.it_id, a.ct_uid
@@ -111,6 +113,7 @@
 		// 상품의 옵션정보
 		$sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
 						, ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
+						, prodMemo
 					from {$g5['g5_shop_cart_table']} MT
 					where od_id = '{$od['od_id']}'
 						and it_id = '{$row['it_id']}'
@@ -176,6 +179,13 @@
 		$moreInfoDisplayCnt = "외 {$moreInfo["totalCnt"]}종";
 	}
 
+	# 210319 배송정보
+	$odDeliveryNameTel = "";
+	$odDeliveryNameTel .= $od["od_b_name"];
+	if($od["od_b_tel"]){
+		$odDeliveryNameTel .= " / {$od["od_b_tel"]}";
+	}
+
 ?>
 <!DOCTYPE html>
  <html lang="en">
@@ -207,6 +217,11 @@
 		/* 상품기본정보 */
 		#itInfoWrap { width: 100%; float: left; padding: 20px; border-bottom: 1px solid #DFDFDF; }
 		#itInfoWrap > .name { width: 100%; float: left; font-weight: bold; font-size: 17px; }
+		#itInfoWrap > .name > .delivery { color: #FF690F; }
+		#itInfoWrap > .date { width: 100%; float: left; font-size: 13px; color: #666; }
+		#itInfoWrap > .deliveryInfo { width: 100%; float: left; border-radius: 5px; padding: 10px 15px; background-color: #F1F1F1; margin-top: 20px; }
+		#itInfoWrap > .deliveryInfo > p { width: 100%; float: left; color: #000; font-size: 13px; }
+		#itInfoWrap > .deliveryInfo > p.title { color: #666; font-size: 15px; font-weight: bold; margin-bottom: 10px; }
 		
 		/* 팝업 */
 		#popup { display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, .7);z-index: 50; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);}
@@ -217,6 +232,7 @@
 		#popup .closepop { width: 100%; height: 40px; cursor: pointer; color:#fff; background-color:#000; border-radius:6px; margin-top: 10px; }
 		
 		/* 상품목록 */
+		#submitForm { width: 100%; float: left; }
 		.imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto; float: left; }
 		.imfomation_box > a { width: 100%; float: left; }
 		.imfomation_box > a > li { width: 100%; float: left; padding: 20px; border-bottom: 1px solid #DDD; }
@@ -228,6 +244,7 @@
 		.imfomation_box a .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
 		.imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
 		.imfomation_box a .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
+		.imfomation_box a .li_box .li_box_line1 .cartProdMemo { width: 100%; float: left; font-size: 13px; margin-top: 2px; text-align: left; color: #FF690F; }
 		/* display:none; */
 		.imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle;width:100%; padding-top: 20px; display:none; float: left; box-sizing: border-box; }
 		.imfomation_box a .li_box .folding_box > span { width: 100%; float: left; }
@@ -257,6 +274,10 @@
 
 
 		}
+		.imfomation_box a .li_box .deliveryInfoWrap { width: 100%; float: left; background-color: #F1F1F1; border-radius: 5px; padding: 10px; margin-top: 15px; }
+		.imfomation_box a .li_box .deliveryInfoWrap > select { width: 34%; height: 40px; float: left; margin-right: 1%; border: 1px solid #DDD; font-size: 17px; color: #666; padding-left: 10px; border-radius: 5px; }
+		.imfomation_box a .li_box .deliveryInfoWrap > input[type="text"] { width: 65%; height: 40px; float: left; border: 1px solid #DDD; font-size: 17px; color: #666; padding: 0 40px 0 10px; border-radius: 5px; }
+		.imfomation_box a .li_box .deliveryInfoWrap > img { position: absolute; width: 30px; right: 15px; top: 50%; margin-top: -15px; z-index: 2; cursor: pointer; }
 		
 		/* 고정 하단 */
 		#popupFooterBtnWrap { position: fixed; width: 100%; height: 70px; background-color: #000; bottom: 0px; z-index: 10; }
@@ -284,69 +305,111 @@
 			[<?=($od["recipient_yn"] == "Y") ? "주문" : "재고"?>] <?=$moreInfo["it_name"]?> <?=$moreInfoDisplayCnt?>
 			<span class="delivery">(배송 : <?=$od_cart_count?>개)</span>
 		</p>
+		
+		<p class="date">
+			<?=date("y-m-d(H:i)", strtotime($od["od_time"]))?>
+			<?=($od["od_b_name"]) ? " / {$od["od_name"]}" : ""?>
+		</p>
+		
+		<div class="deliveryInfo">
+			<p class="title">배송정보</p>
+			<p>
+				<span><?=$odDeliveryNameTel?></span>
+				<?=($odDeliveryNameTel) ? "<br>" : ""?>
+				<span><?=$od["od_b_addr1"]?> <?=$od["od_b_addr2"]?></span>
+			</p>
+		</div>
 	</div>
 	
    <!-- 상품목록 -->
-    <ul class="imfomation_box" id="imfomation_box">
-    <?php 
-        for($i = 0; $i < count($carts); $i++){ 
-            $options = $carts[$i]["options"];
-            for($k = 0; $k < count($options); $k++){
-    ?>
-                <a href="javascript:void(0)">
-                    <li class="li_box">
-                        <div class="li_box_line1"   onclick="openCloseToc(this)">
-                            <p class="p1">
-                                <span class="span1">
-                                    <!-- 상품명 -->
-                                    <?=stripslashes($carts[$i]["it_name"])?>
-                                    <!-- 옵션 -->
-                                    <?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
-                                            (<?=$options[$k]["ct_option"]?>)
-                                    <?php } ?>
-                                </span>
-                                <span class="span2">
-                                    <?php 
-                                        $add_class="";
-                                        for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ 
-                                            $add_class=$add_class.' '.$stoIdDataList[$prodListCnt2].'_v';
-                                            $prodListCnt2++; 
-                                        } 
-                                    ?>
+	<form id="submitForm">
+		<input type="hidden" name="od_id" value="<?=$od_id?>">
+		<input type="hidden" name="update_type" value="popup">
+		<ul class="imfomation_box" id="imfomation_box">
+		<?php 
+			for($i = 0; $i < count($carts); $i++){ 
+
+					# 요청사항
+					$prodMemo = "";
+
+				$options = $carts[$i]["options"];
+
+				for($k = 0; $k < count($options); $k++){
+
+					# 요청사항
+					$prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
+		?>
+					<a href="javascript:void(0)">
+						<li class="li_box">
+							<div class="li_box_line1"   onclick="openCloseToc(this)">
+								<p class="p1">
+									<span class="span1">
+										<!-- 상품명 -->
+										<?=stripslashes($carts[$i]["it_name"])?>
+										<!-- 옵션 -->
+										<?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
+												(<?=$options[$k]["ct_option"]?>)
+										<?php } ?>
+									</span>
+									<span class="span2">
+										<?php 
+											$add_class="";
+											for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ 
+												$add_class=$add_class.' '.$stoIdDataList[$prodListCnt2].'_v';
+												$prodListCnt2++; 
+											} 
+										?>
 
 
-                                    <span class="<?=$add_class?>">0</span>/<?=$options[$k]["ct_qty"]?>
-                                    <img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
-                                    <img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
+										<span class="<?=$add_class?>">0</span>/<?=$options[$k]["ct_qty"]?>
+										<img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
+										<img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
 
 
-                                </span>
-                            </p>
-                        </div>
+									</span>
+								</p>
+								<?php if($prodMemo){ ?>
+								<p class="cartProdMemo"><?=$prodMemo?></p>
+								<?php } ?>
+							</div>
 
-                        <div class="folding_box">
-                                <span>
-                                <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
-                                <button type="button" class="barNumCustomSubmitBtn">등록</button>
-                                <img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
-                                </span>
-                                <ul class="inputbox">
-                                    <?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
-                                    	<li>
-                                    		<input type="text" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>">
-                                    		<i class="fa fa-check"></i>
-                                    		<img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
-                                    	</li>
-                                    <?php $prodListCnt++; } ?>
-                                </ul>
-                        </div>
-                    </li>
-                </a>
-                <?php
-                }   
-            }
-            ?>
-	</ul>
+							<div class="folding_box">
+							 <?php if($options[$k]["ct_qty"] >= 2){ ?>
+									<span>
+									<input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
+									<button type="button" class="barNumCustomSubmitBtn">등록</button>
+									<img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
+									</span>
+							 <?php } ?>
+									<ul class="inputbox">
+										<?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
+											<li>
+												<input type="text" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>">
+												<i class="fa fa-check"></i>
+												<img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
+											</li>
+										<?php $prodListCnt++; } ?>
+									</ul>
+							</div>
+
+							<div class="deliveryInfoWrap">
+								<input type="hidden" name="ct_id[]" value="<?=$carts[$i]["ct_id"]?>">
+								<select name="ct_delivery_company_<?=$carts[$i]["ct_id"]?>">
+								<?php foreach($delivery_companys as $data){ ?>
+									<option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+								<?php } ?>
+								</select>
+								<input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>" placeholder="송장번호 입력">
+								<img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
+							</div>
+						</li>
+					</a>
+					<?php
+					}   
+				}
+				?>
+		</ul>
+	</form>
 	
 	<!-- 팝업 -->
 	<div id="popup" class="hide">
@@ -378,6 +441,26 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 ?>
 
 <script type="text/javascript">
+	
+	/* 바코드 입력란 설정 */
+	function foldingBoxSetting(){
+		var item = $(".folding_box");
+		for(var i = 0; i < item.length; i++){
+			var openStatus = true;
+			var notalls = $(item[i]).find(".notall");
+			for(var n = 0; n < notalls.length; n++){
+				if(!$(notalls[n]).val()){
+					openStatus = false;
+				}
+			}
+			
+			if(!openStatus){
+				$(item[i]).show();
+				$(item[i]).parent().find(".p1 .span2 .up").css("display", "inline-block");
+				$(item[i]).parent().find(".p1 .span2 .down").css("display", "none");
+			}
+		}
+	}
 	
 	/* 바코드 입력글자 수 체크 */
 	function notallLengthCheck(){
@@ -444,8 +527,28 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		});
     }
 	
+	var sendInvoiceTarget;
+    function sendInvoiceNum(text){
+		$(sendInvoiceTarget).val(text);
+    }
+	
     $(function(){
 		notallLengthCheck();
+		
+		$(".nativeDeliveryPopupOpenBtn").click(function(){
+			sendInvoiceTarget = $(this).parent().find("input[type='text']");
+			
+			switch(device){
+				case "android" :
+					/* android */
+					window.EroummallApp.openInvoiceNum("1");
+					break;
+				case "ios" :
+					/* ios */
+					window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
+					break;
+			}
+		});
 		
 		$(".notall").keyup(function(){
 				$(this).removeClass("active");
@@ -505,14 +608,25 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     }
 					
 					notallLengthCheck();
+					foldingBoxSetting();
                 }
             });
-        }
+        } else {
+			foldingBoxSetting();
+		}
         
         $("#prodBarNumSaveBtn").click(function() {
             var ordId = "<?=$od["ordId"]?>";
             var changeStatus = true;
             var insertBarCnt = 0;
+			
+			/* 210319 배송정보 저장 */
+			$.ajax({
+				url : "./samhwa_orderform_deliveryInfo_update.php",
+				type : "POST",
+				async : false,
+				data : $("#submitForm").serialize()
+			});
 
             if(ordId){
                 var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;

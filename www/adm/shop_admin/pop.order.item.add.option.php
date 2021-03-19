@@ -637,7 +637,7 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
                                     </td>
                                 </tr>
                                 <tr class="special_price_tr">
-                                    <th>딜러가 적용</th>
+                                    <th>사업소 적용</th>
                                     <td>
                                         <div class="chk_dealer_price_div">
                                             <input type="checkbox" name="chk_dealer_price" value="1" id="chk_dealer_price" onclick="price_calculate(this);">
@@ -647,7 +647,7 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
                                     </td>
                                 </tr>
                                 <tr class="special_price_tr">
-                                    <th>우수딜러가 적용</th>
+                                    <th>우수사업소 적용</th>
                                     <td>
                                         <div class="chk_dealer_price_div">
                                             <input type="checkbox" name="chk_dealer2_price" value="1" id="chk_dealer2_price" onclick="price_calculate(this);">
@@ -891,19 +891,28 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
                 line-height:20px;
                 font-size:13px;
             }
+            .content_box{
+                
+            }
             </style>
             <div id="custom_order">
-                <div class="ask">
-                    <p>
-                        <?php echo $it['it_use_custom_order'] ? '주문제작을 하시겠습니까?' : '주문제작 가능한 상품이 아닙니다.'; ?>
-                    </p>
-                    <ul class="<?php echo $it['it_use_custom_order'] ? 'enable' : 'disable'; ?> ">
-                        <li id="co_type_new_1" data-type="1">일반 주문제작</li>
-                        <li id="co_type_new_2" data-type="2">라이트패널 주문제작</li>
-                        <li id="co_type_new_3" data-type="3">천장걸이형 라이트패널 주문제작</li>
-                        <li id="co_type_new_4" data-type="4">도광판 주문제작</li>
-                        <li id="co_type_new_5" data-type="5">개폐식액자 주문제작</li>
-                    </ul>
+                <div class="ask" style="font-size:20px;">
+                        <p style=""><b>상품 등록 이용안내</b></p>
+                        <p style="margin:0px;padding-top:20px; padding-bottom:0px;text-align:left;margin-left:25%;">
+                            1.&nbsp;&nbsp;제품가격 임의 변경을 선택 후<br>
+                            &emsp;각 상품의 금액을 변경할 수 있습니다.  
+
+                        </p>
+                        <p style="margin:0px;padding-top:20px; padding-bottom:0px;text-align:left;margin-left:25%;">
+                           2.&nbsp;&nbsp;전체 금액에서 추가 할인 금액을<br>
+                           &emsp; 적용 할 수 있습니다.
+                        </p> 
+                        <p style="padding-top:0px;text-align:left;margin-left:25%;padding-bottom:0px;">
+                        </p>
+                        <p style="padding-top:20px;text-align:left;margin-left:25%;padding-bottom:0px;">
+                            3.&nbsp;&nbsp;해당 주문에 대한 관리자 확인을 위한<br>
+                            &emsp; 메모를 남길 수 있습니다.
+                        </p>    
                 </div>
                 <input type="hidden" value="" name="cs_type" id="cs_type" />
                 <div class="customs">
@@ -2007,7 +2016,7 @@ function formcheck(f) {
             // $('#it_price_wrapper').hide();
             $('#custom_it_price_wrapper').show();
             
-            // 파트너, 딜러, 우수가 끄기
+            // 파트너, 사업소, 우수가 끄기
             $('#chk_partner_price').prop('checked', false);
             $('#chk_dealer_price').prop('checked', false);
             $('#chk_dealer2_price').prop('checked', false);

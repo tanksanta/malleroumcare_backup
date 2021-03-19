@@ -19,15 +19,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>출고목록</title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 	<link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
 	<link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
 
 	<style>
-		* { margin: 0; padding: 0; position: relative; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+		* { margin: 0; padding: 0; position: relative; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); outline: none; }
 		html, body { width: 100%; float: left; font-family: "Noto Sans KR", sans-serif; }
 		body { padding-top: 60px; }
 		a { text-decoration: none; color: inherit; }
 		ul, li { list-style: none; }
+		button { border: 0; font-family: "Noto Sans KR", sans-serif; }
+		input { font-family: "Noto Sans KR", sans-serif;  }
 
 		/* 고정 상단 */
 		#popupHeaderTopWrap { position: fixed; width: 100%; height: 60px; left: 0; top: 0; z-index: 10; background-color: #333; padding: 0 20px; }
@@ -35,15 +39,26 @@
 		#popupHeaderTopWrap > .title { float: left; font-weight: bold; color: #FFF; font-size: 22px; }
 		#popupHeaderTopWrap > .close { float: right; }
 		#popupHeaderTopWrap > .close > a { color: #FFF; font-size: 40px; top: -2px; }
+		
+		/* 검색 */
+		#listSearchWrap { width: 100%; float: left; padding: 20px; padding-bottom: 0; }
+		#listSearchWrap > ul { width: 100%; float: left; display: table; table-layout: fixed; }
+		#listSearchWrap > ul > li { display: table-cell; vertical-align: middle; text-align: center; }
+		#listSearchWrap > ul > li > input[type="text"] { width: 100%; height: 50px; float: left; text-align: center; border-radius: 5px; border: 1px solid #E0E0E0; font-size: 17px; }
+		#listSearchWrap > ul > li > input[type="text"]::placeholder { color: #AAA; }
+		#listSearchWrap > ul > li > button { width: 100%; height: 50px; float: left; border-radius: 5px; font-size: 16px; background-color: #333; color: #FFF; font-weight: bold; cursor: pointer; }
 
 		/* 정렬 */
-		#listSortWrap { width: 100%; height: 60px; line-height: 59px; float: left; border-bottom: 1px solid #DFDFDF; padding: 0 20px; }
+		#listSortWrap { width: 100%; line-height: 59px; float: left; border-bottom: 1px solid #DFDFDF; padding: 20px; }
 		#listSortWrap > input[type="checkbox"] { display: none; }
-		#listSortWrap > label { display: inline-block; cursor: pointer; }
+		#listSortWrap > label { height: 20px; line-height: 20px; float: left; cursor: pointer; }
 		#listSortWrap > label > .icon { display: inline-block; width: 14px; height: 14px; border: 1px solid #666; vertical-align: middle; top: -1px; margin-right: 5px; }
 		#listSortWrap > label > .icon > i { position: absolute; left: 50%; top: 50%; margin-left: -6px; margin-top: -6px; font-size: 12px; color: #DC3333; opacity: 0; }
 		#listSortWrap > label > .label { display: inline-block; font-size: 14px; color: #666; }
 		#listSortWrap > input[type="checkbox"]:checked + label > .icon > i { opacity: 1; }
+		#listSortWrap > #listSortChangeBtn { height: 20px; line-height: 20px; float: right; border: 0; border-bottom: 1px solid #666; background-color: #FFF; cursor: pointer; }
+		#listSortWrap > #listSortChangeBtn > span { float: left; font-size: 13px; color: #666; font-weight: bold; display: none; }
+		#listSortWrap > #listSortChangeBtn > span.active { display: block; }
 		
 		/* 데이터목록 */
 		#listDataWrap { width: 100%; float: left; }
@@ -66,7 +81,7 @@
 		#listDataWrap > ul > li.mainInfo > .status.type5{ background-color: #372573; } /* 배송완료 */
 		#listDataWrap > ul > li.mainInfo > .status.type6{ background-color: #646464; } /* 주문취소 */
 		#listDataWrap > ul > li.mainInfo > .status.type7{ background-color: #2E427E; } /* 주문무효 */
-		#listDataWrap > ul > li.barInfo { height: 50px; line-height: 48px; border: 1px solid #DEDEDE; border-radius: 5px; text-align: center; margin-top: 15px; }
+		#listDataWrap > ul > li.barInfo { height: 50px; line-height: 48px; border: 1px solid #DEDEDE; border-radius: 5px; text-align: center; margin-top: 15px; cursor: pointer; }
 		#listDataWrap > ul > li.barInfo > .cnt { color: #666; font-weight: bold; font-size: 16px; }
 		#listDataWrap > ul > li.barInfo > .label { position: absolute; height: 100%; right: 15px; top: 0; font-size: 12px; color: #FF690F; font-weight: bold; }
 		#listDataWrap > ul > li.barInfo.active { border-color: #FF690F; }
@@ -87,6 +102,24 @@
 			</a>
 		</div>
 	</div>
+	
+	<!-- 검색 -->
+	<div id="listSearchWrap">
+		<ul>
+			<li>
+				<input type="text" id="search_fr_date" placeholder="시작일자" dateonly>
+			</li>
+			<li style="width: 25px;">
+				<span>~</span>
+			</li>
+			<li>
+				<input type="text" id="search_to_date" placeholder="종료일자" dateonly>
+			</li>
+			<li style="width: 90px; padding-left: 20px;">
+				<button type="button" id="searchSubmitBtn">검색</button>
+			</li>
+		</ul>
+	</div>
  	
  	<!-- 정렬 -->
  	<div id="listSortWrap">
@@ -95,8 +128,13 @@
  			<span class="icon">
  				<i class="fa fa-check"></i>
  			</span>
- 			<span class="label">미완성 바코드 작성만 보기</span>
+ 			<span class="label">바코드 등록 미완료 만 보기</span>
  		</label>
+ 		
+ 		<button type="button" id="listSortChangeBtn">
+ 			<span class="active" data-sort="od_time">주문일 정렬↓</span>
+ 			<span data-sort="od_status">상태 정렬↓</span>
+ 		</button>
  	</div>
  	
  	<!-- 데이터 목록 -->
@@ -138,7 +176,6 @@
     var sel_date_field = 'od_time';
 
     var formdata= {};
-    formdata['fr_date'] = "";
     formdata['last_step'] = "";
     formdata['od_important'] = "";
     formdata['od_release'] = "";
@@ -154,6 +191,10 @@
 
     //리스트 불러오기 ajax
     function doSearch(){
+        formdata["fr_date"] = $("#search_fr_date").val();
+        formdata["to_date"] = $("#search_to_date").val();
+        formdata["cust_sort"] = $("#listSortChangeBtn").find(".active").attr("data-sort");
+		
         formdata['cf']=document.getElementById('cf_flag').checked;
         formdata['page']=parseInt(document.getElementById('page').value);
         $.ajax({
@@ -173,7 +214,11 @@
 						html += '<span class="delivery">(배송 : ' + row.delivery_cnt + '개)</span>';
 						html += '</p>';
 						html += '<p class="cnt">' + row.cnt_detail + '</p>';
-						html += '<p class="date">' + row.date + ' / ' + row.od_name + '</p>';
+						html += '<p class="date">' + row.date;
+						if(row.od_name){
+							html += ' / ' + row.od_name;
+						}
+						html += '</p>';
 						html += '<p class="status ' + row.od_status_class + '">';
 						html += '<span>' + row.od_status_name + '</span>';
 						html += '</p>';
@@ -206,8 +251,47 @@
 
     $( document ).ready(function() {
 		
+		$.datepicker.setDefaults({
+			dateFormat : 'yy-mm-dd',
+			prevText: '이전달',
+			nextText: '다음달',
+			monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+			monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+			dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+			dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+			dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+			showMonthAfterYear: true,
+			changeMonth: true,
+			changeYear: true
+		});
+		$("input:text[dateonly]").datepicker();
+		$("input:text[dateonly]").attr("readonly", "readonly");
+		
 		$(window).resize(function(){
 			itNameSizeSetting();
+		});
+		
+		$("#searchSubmitBtn").click(function(){
+			$("#page").val(1);
+			$("#listDataWrap").html("");
+			doSearch();
+		});
+		
+		$("#listSortChangeBtn").click(function(){
+			var item = $(this).find("span");
+			var active = $(this).find(".active");
+			
+			$(item).removeClass("active");
+			
+			if($(active).next().length){
+				$(active).next().addClass("active");
+			} else {
+				$(item[0]).addClass("active");
+			}
+			
+			$("#page").val(1);
+			$("#listDataWrap").html("");
+			doSearch();
 		});
         
         $(window).scroll(function() {

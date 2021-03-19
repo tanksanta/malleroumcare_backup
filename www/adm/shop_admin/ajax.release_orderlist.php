@@ -8,7 +8,7 @@ $where = array();
 $od_step = $od_step ? $od_step : 5;
 
 $doc = strip_tags($doc);
-$sort1 = in_array($sort1, array('od_id', 'od_cart_price', 'od_receipt_price', 'od_cancel_price', 'od_misu', 'od_cash')) ? $sort1 : '';
+$sort1 = in_array($sort1, array('od_id', 'od_cart_price', 'od_receipt_price', 'od_cancel_price', 'od_misu', 'od_cash', 'od_time', 'od_status')) ? $sort1 : '';
 $sort2 = in_array($sort2, array('desc', 'asc')) ? $sort2 : 'desc';
 $sel_field = get_search_string($sel_field);
 if( !in_array($sel_field, array('od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'od_invoice')) ){   //검색할 필드 대상이 아니면 값을 제거
@@ -200,6 +200,7 @@ if ($fr_date && $to_date) {
 }
 
 $where[] = " od_del_yn = 'N' ";
+$where[] = " od_status != '완료' ";
 
 if ($where) {
     $where2 = $where;
@@ -283,7 +284,16 @@ foreach($order_steps as $order_step) {
 
 $order_by_step = implode(' , ', $order_by_steps);
 
-$sql_common .= " ORDER BY FIELD(od_status, " . $order_by_step . " ), od_id desc ";
+//$sql_common .= " ORDER BY FIELD(od_status, " . $order_by_step . " ), od_id desc ";
+$sql_common .= " ORDER BY ";
+switch($cust_sort){
+	case "od_time" :
+		$sql_common .= " od_time DESC ";
+		break;
+	case "od_status" :
+		$sql_common .= " FIELD ( od_status, '출고준비', '완료' ) DESC ";
+		break;
+}
 
 $sql = " select count(od_id) as cnt " . $sql_common;
 
@@ -444,7 +454,7 @@ foreach($orderlist as $order) {
 		$prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
 		$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
 
-		$prodBarNumCntBtnWord = "바코드 ({$order["od_prodBarNum_insert"]}/{$order["od_prodBarNum_total"]})";
+		$prodBarNumCntBtnWord = "출고관리 ({$order["od_prodBarNum_insert"]}/{$order["od_prodBarNum_total"]})";
 		$prodBarNumCntBtnWord = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
 		$prodBarNumCntBtnStatus = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? " disable" : "";
 		
@@ -655,7 +665,7 @@ foreach($orderlist as $order) {
 	$ret["data"][$foreach_i]["delivery_cnt"] = $od_cart_count;
 	$ret["data"][$foreach_i]["cnt_detail"] = $od_detail;
 	$ret["data"][$foreach_i]["date"] = $od_time2;
-	$ret["data"][$foreach_i]["od_name"] = $order["od_b_name"];
+	$ret["data"][$foreach_i]["od_name"] = $order["od_name"];
 	$ret["data"][$foreach_i]["od_status_name"] = $od_status_name;
 	$ret["data"][$foreach_i]["od_status_class"] = $class_type1;
 	$ret["data"][$foreach_i]["od_barcode_class"] = $class_type2;

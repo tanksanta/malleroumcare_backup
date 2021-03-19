@@ -483,7 +483,27 @@ function price_calculate()
         }
     });
 
+    //할인가 적용 나타내기 --성훈완료
+    var it_sale_percent = $('.it_sale_percent').get();
     $("#it_tot_price").empty().html(number_format(String(total))+"원");
+    var count = 0;
+    for(var i =0 ; i < it_sale_percent.length; i++){
+        if(parseInt(it_sale_percent[i].getAttribute('data-toggle'))<=qty){
+            if(type == "0") { // 선택옵션
+                total = parseInt(it_sale_percent[i].value)*qty;
+                count++;
+            } else { // 추가옵션]
+                total = parseInt(it_sale_percent[i].value) * qty;
+                count++;
+            }
+            $(".it_opt_prc").empty().html(number_format(String(parseInt(it_sale_percent[i].value)))+"원");
+            $("#it_tot_price").empty().html(number_format(String(total))+"원");
+        }
+    //할인가 적용 나타내기 --성훈완료
+    }
+    if(!count){ 
+        $(".it_opt_prc").empty().html(number_format(String(it_price))+"원"); 
+    }
 }
 
 // php chr() 대응

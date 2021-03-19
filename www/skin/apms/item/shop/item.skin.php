@@ -335,11 +335,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php } else { ?>
 				<?=number_format($it["it_cust_price"])?>원
 			<?php } ?>
-
+            <span style="font-size: 15px;"><?=($_COOKIE["viewType"] == "basic") ? "(급여가)" : "(판매가)" ?></span>
 			<?php if(substr($it["ca_id"], 0, 2) == "20"){ ?>
 				<br><span style="font-weight: normal; font-size: 13px; margin-top: 15px; display: inline-block;">* 대여금액(월기준) : <?=number_format($it["it_rental_price"])?>원</span>
 			<?php } ?>
-			<span style="font-size: 15px;"><?=($_COOKIE["viewType"] == "basic") ? "(급여가)" : "(판매가)" ?></span>
+			
 			</p>
 
 			<!-- 본인부담금 -->
@@ -402,18 +402,23 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<?php if($_COOKIE["viewType"] != "basic"){ ?>
 					<?php if($it["it_sale_cnt"]){ ?>
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
+						<input type="hidden" id="it_sale_percent" value="<?php echo $it["it_sale_percent"]; ?>" data-toggle="<?=$it["it_sale_cnt"]?>" class="it_sale_percent">
 					<?php } ?>
 					<?php if($it["it_sale_cnt_02"]){ ?>
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_02"])?>원</p>
+						<input type="hidden" id="it_sale_percent2" value="<?php echo $it["it_sale_percent_02"]; ?>" data-toggle="<?=$it["it_sale_cnt_02"]?>" class="it_sale_percent">
 					<?php } ?>
 					<?php if($it["it_sale_cnt_03"]){ ?>
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_03"])?>원</p>
+						<input type="hidden" id="it_sale_percent3" value="<?php echo $it["it_sale_percent_03"]; ?>" data-toggle="<?=$it["it_sale_cnt_03"]?>" class="it_sale_percent">
 					<?php } ?>
 					<?php if($it["it_sale_cnt_04"]){ ?>
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_04"])?>원</p>
+						<input type="hidden" id="it_sale_percent4" value="<?php echo $it["it_sale_percent_04"]; ?>" data-toggle="<?=$it["it_sale_cnt_04"]?>" class="it_sale_percent">
 					<?php } ?>
 					<?php if($it["it_sale_cnt_05"]){ ?>
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
+						<input type="hidden" id="it_sale_percent5" value="<?php echo $it["it_sale_percent_05"]; ?>" data-toggle="<?=$it["it_sale_cnt_05"]?>" class="it_sale_percent">
 					<?php } ?>
 				<?php } ?>
 						<input type="hidden" id="it_price" value="<?php echo samhwa_price($it, THEMA_KEY); ?>">
@@ -468,7 +473,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
                 $sc_price_info = "";
                 if ($it['it_sc_type_partner'] != 1) {
-                    $sc_price_info = "* 배송비는 {$it['it_sc_qty_partner']}개당 배송비 부가 ({$it['it_sc_price_partner']}원)<br>* 도서산간지역은 별도 비용이 발생합니다.";
+                    $sc_price_info = "* 배송비는 {$it['it_sc_qty_partner']}개당 배송비 부가 ({$it['it_sc_price_partner']}원)<br>* 도서산간지역은 추가배송비가 발생합니다.";
                 }
 
                 if ($it['it_sc_type_partner'] == 0) { // 쇼핑몰 디폴트 셋팅 시
@@ -476,9 +481,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     $send_cost = get_item_sendcost_by_default_case($item_price);
 
                     if ($send_cost > 0) {
-                        $sc_price_info = "* 배송비 ({$send_cost}원)<br>* 도서산간지역은 별도 비용이 발생합니다.";
+                        $sc_price_info = "* 배송비 ({$send_cost}원)<br>* 도서산간지역은 추가배송비가 발생합니다.";
                     } else {
-                        $sc_price_info = "* 무료배송<br>* 도서산간지역은 별도 비용이 발생합니다.";
+                        $sc_price_info = "* 무료배송<br>* 도서산간지역은 추가배송비가 발생합니다.";
                     }
                 }
             } else { // 파트너 유저 아닐 시
@@ -506,7 +511,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
                 $sc_price_info = "";
                 if ($it['it_sc_type'] != 1) {
-                    $sc_price_info = "* 배송비({$it['it_sc_price']})원)<br>* 도서산간지역은 추가 비용이 발생합니다.";
+                    $sc_price_info = "* 배송비({$it['it_sc_price']})원)<br>* 도서산간지역은 추가배송비가 발생합니다. ";
                 }
 
                 if ($it['it_sc_type'] == 0) { // 쇼핑몰 디폴트 셋팅 시
@@ -514,9 +519,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     $send_cost = get_item_sendcost_by_default_case($item_price);
 
                     if ($send_cost > 0) {
-                        $sc_price_info = "* 배송비 ({$send_cost}원)<br>* 도서산간지역은 별도 비용이 발생합니다.";
+                        $sc_price_info = "* 배송비 ({$send_cost}원)<br>* 도서산간지역은 추가배송비가 발생합니다.";
                     } else {
-                        $sc_price_info = "* 무료배송<br>* 도서산간지역은 별도 비용이 발생합니다.";
+                        $sc_price_info = "* 무료배송<br>* 도서산간지역은 추가배송비가 발생합니다.";
                     }
                 }
             }
@@ -526,8 +531,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<th>
 					<?php echo $ct_send_cost_label; ?></th><td><?php echo $sc_method; ?>
 					<span class="sc_minimum">
-						<?php if ( $it['it_sc_minimum'] ) { ?>
-							* <?php echo number_format($it['it_sc_minimum']); ?>원 이상시 무료배송
+						<?php if ( $it['it_sc_minimum'] ) { 
+                            $sc_price=((int)$it['it_sc_minimum']/10000);    
+                            
+                        ?>
+							* <?php echo number_format($sc_price); ?>만원 이상 무료배송
 						<?php } ?>
 					</span>
                     <p class="sc_price_info" style="font-size: 11px">

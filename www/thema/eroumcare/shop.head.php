@@ -88,7 +88,7 @@ scrollToTop();
 </style>
 <?php } ?>
 <style>
-	.mo_top > .modeBtn { position: absolute; font-weight: bold; font-size: 16px; top: 32px; right: 70px; }
+	.mo_top > .modeBtn { position: absolute; font-weight: bold; font-size: 16px; top: 32px; right: 70px; display: none; }
 </style>
 
 
@@ -103,7 +103,7 @@ scrollToTop();
 
 
 <div class="btn_top_scroll">
-	<a onclick="scrollToTop()"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_scroll.png" alt=""></a>
+	<a onclick="scrollToTop()"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_scroll_new.png" alt=""></a>
 </div>
 
 
@@ -127,7 +127,8 @@ scrollToTop();
 
 
 
-    <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu.png" alt="" class="header-hamburger-btn">
+    <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu_search.png" alt="" class="header-search-btn">
+    <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu_new.png" alt="" class="header-hamburger-btn">
 </div>
 
 <div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>"<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
@@ -135,7 +136,7 @@ scrollToTop();
 	<div id="samhwa-m-menu" >
 		<div class="wrap"<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
 			<div class="closer">
-				<img src="<?php echo THEMA_URL; ?>/assets/img/btn_close.png" />
+				<img src="<?php echo THEMA_URL; ?>/assets/img/btn_mo_menu_close.png" />
 			</div>
 			<div class="logo_area">
 				<img src="<?php echo THEMA_URL; ?>/assets/img/top_logo_s.png">
@@ -152,28 +153,29 @@ scrollToTop();
                 </div>
                 <?php } ?>
 
-                
-				<ul class="mobile-cate">   
-					<?php foreach($category as $cate) { ?>
-						<li class="<?php echo (substr($ca_id, 0, strlen($cate['ca_id'])) === $cate['ca_id']) ? 'on default_on ': ''; ?>" data-id="<?php echo $cate['ca_id']; ?>">
-							<a class='title'><?php echo $cate['ca_name']; ?></a> <?php /*href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$cate['ca_id']; ?>' data-id="<?php echo $cate['ca_id']; ?>"*/?>
-							<?php if ( $cate['sub'] ) { ?>
-								<ul class='sub'>
-									<?php foreach($cate['sub'] as $sub) { ?>
-										<li class="<?php echo $sub['ca_id'] == $ca_id ? 'on' : ''; ?> ">
-											<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='sub-title'><?php echo $sub['ca_name']; ?></a>
-										</li>
-									<?php } ?>
-								</ul>
-							<?php } ?>
+				<div class="mobileCate">   
+				<?php foreach($head_category as $cate) { ?>
+					<ul>
+						<li class="mainMenu">
+							<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$cate['ca_id']; ?>' class='title'><?php echo $cate['ca_name']; ?><i class="fa fa-angle-right"></i></a>
 						</li>
-					<?php } ?>
-				</ul>
+						<?php foreach($cate['sub'] as $i=>$sub) { ?>
+							<li><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='cate_02 <?php echo $sub['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub['ca_name']; ?></a></li>
+							<?php if (!empty($sub['sub'])) { ?>
+								<?php foreach($sub['sub'] as $sub2) { ?>
+									<li><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub2['ca_id']; ?>' class='cate_03 <?php echo $sub2['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub2['ca_name']; ?></a></li>
+								<?php } ?>
+							<?php } ?>
+						<?php } ?>
+					</ul>
+				<?php } ?>
+				
 				<?php if($is_member) { // 로그인 상태 ?>
 					<a href="<?php echo $at_href['logout'];?>">로그아웃</a>
 				<?php }else{ ?>
 					<a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
 				<?php } ?>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -241,13 +243,23 @@ scrollToTop();
 				<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
 			</div>
 			
-			<div class="searchWrap">
-				<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
+			<div class="bottomWrap">
+				<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form searchWrap">
 					<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
 					<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="상품명으로 검색하세요."/>
 					<button type="submit" id="sch_submit"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.jpg"></button>
 				</form>
+				
+				<div class="linkWrap">
+					<a href="https://www.nhis.or.kr/nhis/index.do" target="_blank">
+						<img src="<?=THEMA_URL?>/assets/img/top_link_01.jpg" alt="">
+					</a>
+					<a href="https://www.longtermcare.or.kr/npbs/index.jsp" target="_blank">
+						<img src="<?=THEMA_URL?>/assets/img/top_link_02.jpg" alt="">
+					</a>
+				</div>
 			</div>
+
 			<div class="top_right_area">
 				<div class="link_area">
 				<?php if($member["mb_level"] == "3"){ ?>
@@ -322,60 +334,41 @@ scrollToTop();
 			
 		</div>
 		
-		<div class="mo_searchWrap mo_layout">
-			<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
-				<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
-				<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="상품명으로 검색하세요."/>
-				<button type="submit" id="sch_submit"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.jpg"></button>
-			</form>
-		</div>
-		
 		<?php if($member['mb_level'] >= 3){ ?>
 			<div id="headerTopQuickMenuWrap">
 				<div>
 					<div>
 
-						<div class="titleWrap">복지용구 통합관리 시스템</div>
-						
 						<ul class="listWrap">
-							<li>
-								<a href="/shop/my.recipient.list.php" title="수급자관리">
-									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon01.png" alt="수급자관리_아이콘" class="pc_layout">
-									<p class="mo_layout imgWrap">
-										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon01.png" alt="수급자관리_아이콘">
+							<li class="marginDisable">
+								<a href="/bbs/content.php?co_id=guide" title="이용안내">
+									<p class="bigTitleWrap">
+										<span class="big">복지용구<br>통합관리 시스템</span>
+										<span>시스템 이용안내</span>
 									</p>
-									<span>수급자관리</span>
+									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon01.png" alt="이용안내_아이콘">
 								</a>
 							</li>
 							<li>
-								<a href="/shop/my.recipientSpare.list.php" title="예비수급자관리">
-									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon02.png" alt="예비수급자관리_아이콘" class="pc_layout">
-									<p class="mo_layout imgWrap">
-										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon02.png" alt="예비수급자관리_아이콘">
-									</p>
-									<span>예비수급자관리</span>
+								<a href="/shop/my.recipient.list.php" title="수급자관리">
+									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon02.png" alt="수급자관리_아이콘">
+									<span>수급자관리</span>
 								</a>
 							</li>
 							<li>
 								<!-- <a href="/bbs/content.php?co_id=inventory_guide" title="보유재고관리"> -->
 								<a href="<?php echo G5_SHOP_URL?>/sales_Inventory.php" title="보유재고관리">
-									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon03.png" alt="보유재고관리_아이콘" class="pc_layout">
-									<p class="mo_layout imgWrap">
-										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon03.png" alt="보유재고관리_아이콘">
-									</p>
+									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon03.png" alt="보유재고관리_아이콘">
 									<span>보유재고관리</span>
 								</a>
 							</li>
-							<li>
+							<li class="marginDisable">
 								<a href="/shop/orderinquiry.php" title="주문내역관리">
-									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon04.png" alt="주문내역관리_아이콘" class="pc_layout">
-									<p class="mo_layout imgWrap">
-										<img src="<?=THEMA_URL?>/assets/img/headerTopIcon04.png" alt="주문내역관리_아이콘">
-									</p>
+									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon04.png" alt="주문내역관리_아이콘">
 									<span>주문내역관리</span>
 								</a>
 							</li>
-							<li>
+							<li class="marginDisable">
 								<a href="/bbs/content.php?co_id=guide" title="시스템이용안내">
 									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon05.png" alt="시스템이용안내_아이콘">
 									<span>시스템이용안내</span>
@@ -388,7 +381,7 @@ scrollToTop();
 			</div>
 		<?php } ?>
 		
-		<div class="mo_menu" style="<?=($member["mb_id"]) ? "margin-top: 20px;" : ""?>">
+		<div class="mo_menu">
 			<a href="/shop/list.php?ca_id=10">판매품목</a>
 			<a href="/shop/list.php?ca_id=20">대여품목</a>
 			<a href="/shop/list.php?ca_id=30">추천상품</a>
@@ -396,8 +389,9 @@ scrollToTop();
 		</div>
 	
 		<div class="top_menu_wrap">
-			<div class="menu_wrap" style="<?=($member["mb_id"]) ? "border-top: 0;" : ""?>">
-				<div class="menu"><button class="top_menu_all"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu.jpg" ><span>전체 상품 카테고리</span></button></div>
+			<div class="menu_wrap">
+				<div class="menu"><div class="top_menu_all"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu2.png" ><span>전체 상품 카테고리</span></div>
+				</div>
 				<div class="main_menu">
 					<table >
 						<tr>
@@ -405,23 +399,14 @@ scrollToTop();
 							<td>
 								<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$cate['ca_id']; ?>' class='title'><?php echo $cate['ca_name']; ?></a>
 								<div class="select_menu">
-									<table class="menu_area">
-										<?php foreach($cate['sub'] as $i=>$sub) { ?>
-											<?php if ( $i == 0 ) echo '<tr>'; ?>
-												<td <?php echo $i == count($cate['sub'])-1 && count($cate['sub']) % 3 ? 'colspan="'.(4-count($cate['sub'])%3).'"' : ''; ?>>
-													<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='cate_02 <?php echo $sub['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub['ca_name']; ?></a>
-													<?php if (!empty($sub['sub'])) { ?>
-														<?php foreach($sub['sub'] as $sub2) { ?>
-															<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub2['ca_id']; ?>' class='cate_03 <?php echo $sub2['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub2['ca_name']; ?></a>
-														<?php } ?>
-													<?php } ?>
-												</td>
-											<?php if ( $i != 0 && $i % 3 == 2 ) echo '</tr><tr>'; ?>
-											<?php if ( $i == count($cate['sub'])-1 ) echo '</tr>'; ?>
+								<?php foreach($cate['sub'] as $i=>$sub) { ?>
+									<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='cate_02 <?php echo $sub['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub['ca_name']; ?></a>
+									<?php if (!empty($sub['sub'])) { ?>
+										<?php foreach($sub['sub'] as $sub2) { ?>
+											<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub2['ca_id']; ?>' class='cate_03 <?php echo $sub2['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub2['ca_name']; ?></a>
 										<?php } ?>
-									</table>
-									
-									<img src="<?php echo G5_DATA_URL; ?>/category/<?php echo $cate['ca_id']; ?>" alt="" />
+									<?php } ?>
+								<?php } ?>
 								</div>
 							</td>
 						<?php } ?>
@@ -430,28 +415,33 @@ scrollToTop();
 						</tr>
 					</table>
 				</div>
-				<div class="all_menu_wrap">
-					<div class="all_menu">
-						<table>
-							<?php for($i=0;$i<count($category);$i++) { ?>
-								<?php if ( $i == 0 ) echo '<tr>'; ?>
-								<td>
-									<div class="tit"><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$category[$i]['ca_id']; ?>' class='sub-title'><?php echo $category[$i]['ca_name']; ?></a></div>
-									<?php if ( $category[$i]['sub'] ) { ?>
-										<?php foreach($category[$i]['sub'] as $sub) { ?>
-											<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='sub-title'><?php echo $sub['ca_name']; ?></a>
-										<?php } ?>
-									<?php } ?>
-								</td>
-								<?php if ( $i != 0 && $i % 5 == 4 ) echo '</tr><tr>'; ?>
-								<?php if ( $i == count($category)-1 ) echo '</tr>'; ?>
-							<?php } ?>
-						</table>
-					</div>
+				<div class="catalogueWrap">
+					<a href="/thema/eroumcare/assets/카달로그(이로움)_1호.pdf">
+						<span>이로움 카달로그</span>
+						<img src="<?php echo THEMA_URL; ?>/assets/img/btn_catalogue_icon.png" >
+					</a>
 				</div>
 			</div>
 			
-			
+			<div class="all_menu_wrap">
+				<div class="all_menu">
+					<table>
+						<?php for($i=0;$i<count($category);$i++) { ?>
+							<?php if ( $i == 0 ) echo '<tr>'; ?>
+							<td>
+								<div class="tit"><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$category[$i]['ca_id']; ?>' class='sub-title'><?php echo $category[$i]['ca_name']; ?></a></div>
+								<?php if ( $category[$i]['sub'] ) { ?>
+									<?php foreach($category[$i]['sub'] as $sub) { ?>
+										<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='sub-title'><?php echo $sub['ca_name']; ?></a>
+									<?php } ?>
+								<?php } ?>
+							</td>
+							<?php if ( $i != 0 && $i % 5 == 4 ) echo '</tr><tr>'; ?>
+							<?php if ( $i == count($category)-1 ) echo '</tr>'; ?>
+						<?php } ?>
+					</table>
+				</div>
+			</div>
 		</div>
 		
 		<div class="scroll_top">
@@ -549,21 +539,39 @@ scrollToTop();
 		<div class="at-body">
 			<?php if($col_name) { ?>
 				<div class="at-container">
-					<div class="scrollBannerListWrap left" style="<?=($member['mb_level'] >= 3) ? "top: -290px;" : ""?>">
+					<div class="scrollBannerListWrap left" style="<?=($member['mb_level'] >= 3) ? "top: -355px;" : ""?>">
 						<ul>
-							<li><a href="/bbs/content.php?co_id=guide"><img src="<?php echo THEMA_URL; ?>/assets/img/wing_banner_02.png" alt="" /></a></li>
-							<li><a href="/bbs/board.php?bo_table=faq&wr_id=6"><img src="<?php echo THEMA_URL; ?>/assets/img/wing_banner_03.png" alt="" /></a></li>
+							<li>
+								<a href="/bbs/content.php?co_id=guide">
+									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_01.jpg" alt="" />
+								</a>
+							</li>
+							<li>
+								<a href="/bbs/board.php?bo_table=faq&wr_id=6">
+									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_02.jpg" alt="" />
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_03.jpg" alt="" />
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_04.jpg" alt="" />
+								</a>
+							</li>
 						</ul>
 					</div>
 					
-					<div class="scrollBannerListWrap right" style="<?=($member['mb_level'] >= 3) ? "top: -290px;" : ""?>">
-						<ul>
-							<li><a target="_blank" href="<?php echo THEMA_URL; ?>/assets/카달로그(이로움)_1호.pdf" ><img src="<?php echo THEMA_URL; ?>/assets/img/wing_banner_01.png" alt="" /></a></li>
-						</ul>
-						
+					<div class="scrollBannerListWrap right" style="<?=($member['mb_level'] >= 3) ? "top: -355px;" : ""?>">
 						<div class="todayViewWrap">
 							<div class="title">최근 본 상품</div>
 							<?php include(THEMA_PATH."/side/boxtodayview.skin.php"); ?>
+						</div>
+						
+						<div class="goToTopBtnWrap">
+							<img src="<?php echo THEMA_URL; ?>/assets/img/btn_go_to_top.png" alt="" onclick="$('html, body').animate({ scrollTop : 0 }, 1000);" />
 						</div>
 					</div>
 				<?php if($col_name == "two") { ?>

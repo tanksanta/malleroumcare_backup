@@ -501,6 +501,8 @@ var array_box=[];
         
 
 		function selected_recipient($penId) {
+
+
 			<?php $re = sql_fetch(" select * from {$g5['recipient_table']} where penId = '$penId' ");  ?>
 			// document.getElementById("penNm").value=$re['penNm'];
 			// document.getElementById("penExpiDtm").value=$re['penExpiDtm'];
@@ -567,7 +569,10 @@ var array_box=[];
 			document.getElementById("penConPnum").value=list['penConPnum'];		//전화번호
 			document.getElementById("penAddr").value=list['penAddr'];			//주소
 			document.getElementById("penTypeCd").value=list['penTypeCd'];			//주소
-			/*document.getElementById("penMoney").value=list['penMoney'];			//한도금액*/
+			///*document.getElementById("penMoney").value=list['penMoney'];			//한도금액*/
+
+			document.getElementById("coupon_box").style.display="none";			//한도금액*/
+            $("#od_cp_price").text(0);
 
 
 			var optionCntList = <?=json_encode($optionCntList)?>;
@@ -930,6 +935,7 @@ var array_box=[];
 		<tbody>
 		<tr class="<?php echo $head_class;?>">
 			<th scope="col"><span>이미지</span></th>
+			<!-- <th scope="col"><span>쿠폰</span></th> -->
 			<th scope="col"><span>상품명</span></th>
 			<th scope="col"><span>총수량</span></th>
 			<th scope="col"><span>판매가</span></th>
@@ -938,9 +944,10 @@ var array_box=[];
 			<th scope="col"><span class="last">배송비</span></th>
 			<th scope="col"><span>바코드</span></th>
 		</tr>
+
 		<?php for($i=0; $i < count($item); $i++) { ?>
 			<tr class="item" data-code="<?=$item[$i]["it_id"]?>" data-sup="<?=$item[$i]["prodSupYn"]?>">
-				<td class="text-center" style="vertical-align: middle;">
+				<td class="text-center" style="ertical-align: middle;">
 					<div class="item-img">
 						<img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';" style="width: 70px; height: 70px;">
 						<div class="item-type"><?php echo $item[$i]['pt_it']; ?></div>
@@ -981,7 +988,11 @@ var array_box=[];
 				<td class="text-center" style="vertical-align: middle;"><?php echo $item[$i]['qty']; ?></td>
 				<td class="text-right" style="vertical-align: middle;"><?php echo $item[$i]['ct_price']; ?></td>
 				<td class="text-right" style="vertical-align: middle;"><?php echo $item[$i]['ct_discount']; ?></td>
-				<td class="text-right" style="vertical-align: middle;"><b class="price"><?php echo $item[$i]['total_price']; ?></b></td>
+                <?php
+                    //소계 토탈 - 디스카운트
+                    $pirce_v = str_replace(',','',$item[$i]['total_price'])-str_replace(',','',$item[$i]['ct_discount']);
+                ?>
+				<td class="text-right" style="vertical-align: middle;"><b class="price"><?php echo number_format($pirce_v) ; ?></b></td>
 				<td class="text-center delivery_cost_display_name" style="vertical-align: middle;"><?php echo $item[$i]['ct_send_cost']; ?></td>
 				<td style="width: 120px; vertical-align: middle;" class="barList">
 				<?php
@@ -1372,10 +1383,12 @@ var array_box=[];
 
 		})
 	</script>
-	 <!-- 주문상품 정보 끝 -->
-
 	<!-- 주문상품 합계 시작 -->
+
 	<div class="well">
+        <div id="coupon_box">
+            <button type="button" id="od_coupon_btn" class="btn_frmline">쿠폰적용</button>
+        </div>
 		<div class="row">
 			<div class="col-xs-6">주문금액</div>
 			<div class="col-xs-6 text-right">
@@ -1383,10 +1396,10 @@ var array_box=[];
 			</div>
 			<div class="col-xs-6">할인금액</div>
 			<div class="col-xs-6 text-right">
-				<strong><?php echo number_format($tot_sell_discount); ?> 원</strong>
+				<strong ><span id="od_cp_price" ><?php echo number_format($tot_sell_discount); ?></span> 원</strong>
 			</div>
 			<?php if($it_cp_count > 0) { ?>
-				<div class="col-xs-6">쿠폰할인</div>
+				<div class="col-xs-6">쿠폰 할인</div>
 				<div class="col-xs-6 text-right">
 					<strong id="ct_tot_coupon">0 원</strong>
 				</div>
