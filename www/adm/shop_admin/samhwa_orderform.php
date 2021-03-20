@@ -979,7 +979,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     </tbody>
                 </table>
 
-                <div class="frmsamhwaorderform_bottom">
+                <div class="frmsamhwaorderform_bottom" style="display:none">
                     <div class="change_status">
                         <span>선택한 상품 상태값</span>
                         <select name="step" id="step">
@@ -2048,9 +2048,9 @@ var change_member_pop, add_item_pop, matching_item_pop, edit_item_pop, delivery_
 	
 	function orderListExcelDownload(number){
 		$("#excelForm").remove();
-		if(number){
+		if(number==1){
 		    var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
-        }else{
+        }else if(number==2){
 		    var html = "<form id='excelForm' method='post' action='./order.excel.list2.php'>";
         }
 		var od_id = [];

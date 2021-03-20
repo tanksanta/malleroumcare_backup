@@ -97,27 +97,17 @@ if ($is_admin || $is_author || $is_purchaser) {
 
 	$it['pt_explan'] = $it['pt_mobile_explan'] = '';
 }
-
-// ----------------------------------------------------------
-
 // 공통쿼리
 if ( THEMA_KEY == 'partner') {
 	$it_sql_common = " it_use_partner = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";
 }else{
 	$it_sql_common = " it_use = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";
 }
-//$it_sql_common = " it_use = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";
-
-
-
-
 // 보안서버경로
 if (G5_HTTPS_DOMAIN)
     $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/cartupdate.php';
 else
     $action_url = './cartupdate.php';
-
-
 // 관련상품의 개수를 얻음
 $item_relation_count = 0;
 if($default['de_rel_list_use']) {
@@ -126,8 +116,6 @@ if($default['de_rel_list_use']) {
     $item_relation_count = $row['cnt'];
 }
 $is_relation = ($item_relation_count > 0) ? true : false;
-
-
 // 상품품절체크
 if(G5_SOLDOUT_CHECK)
     $is_soldout = is_soldout($it['it_id']);
@@ -143,7 +131,6 @@ if ( THEMA_KEY == 'partner') {
 		$is_orderable = false;
 	}
 }
-
 // 주문폼 출력체크
 $is_orderform = 1;
 if($it['pt_order']) {
@@ -153,25 +140,20 @@ if($it['pt_order']) {
 if($is_orderable) {
     // 선택 옵션
     $option_item = get_item_options($it['it_id'], $it['it_option_subject'], '');
-
     // 추가 옵션
     $supply_item = get_item_supply($it['it_id'], $it['it_supply_subject'], '');
-
     // 상품 선택옵션 수
     $option_count = 0;
     if($it['it_option_subject']) {
         $temp = explode(',', $it['it_option_subject']);
         $option_count = count($temp);
     }
-
     // 상품 추가옵션 수
     $supply_count = 0;
     if($it['it_supply_subject']) {
         $temp = explode(',', $it['it_supply_subject']);
         $supply_count = count($temp);
     }
-
-	include_once(G5_SHOP_PATH.'/settle_naverpay.inc.php');
 }
 
 
@@ -256,17 +238,27 @@ $setup_href = '';
 if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
 }
+
+// --------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
 $sql = 'SELECT * FROM `g5_shop_item` WHERE `it_id`="'.$_GET['prodId'].'"';
 $row = sql_fetch($sql);
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
 <section id="stock" class="wrap" >
     <div class="list-more"><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
         <h2>대여 재고 상세</h2>
         <div class="stock-view view2">
             <div class="product-view">
-                <div class="pro-image" style="max-width:320px;">
+                <div class="pro-image" >
                     <img src="/data/item/<?=$row['it_img1']?>" alt="">
                 </div>
                     <div class="info-list">
@@ -331,13 +323,21 @@ $row = sql_fetch($sql);
 						//보유재고 리스트
 						$sendLength = 5;
 						$sendData = [];
-                        $prodsSendData = [];
 						$sendData["usrId"] = $member["mb_id"];
 						$sendData["entId"] = $member["mb_entId"];
 						$sendData["prodId"] = $_GET['prodId'];
 						$sendData["pageNum"] = ($_GET["page2"]) ? $_GET["page2"] : 1;
 						$sendData["pageSize"] = $sendLength;
-
+                        // 01: 재고(대여가능)
+                        // 02: 재고소진(대여중)
+                        // 03: AS신청
+                        // 04: 반품
+                        // 05: 기타
+                        // 06: 재고대기
+                        // 07: 주문대기
+                        // 08: 소독중
+                        // 09: 대여종료
+						$sendData["stateCd"] =['01','02','08','09'];
 						$oCurl = curl_init();
 						curl_setopt($oCurl, CURLOPT_PORT, 9001);
 						curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
@@ -349,7 +349,6 @@ $row = sql_fetch($sql);
 						$res = curl_exec($oCurl);
 						$res = json_decode($res, true);
 						curl_close($oCurl);
-
 						$list = [];
 						if($res["data"]){
 							$list = $res["data"];
@@ -374,7 +373,7 @@ $row = sql_fetch($sql);
                         <!-- 대여신청 -->
                         <style>
                             /* .popup{display:none;} */
-                            #order_recipientBox{ 
+                            #order_recipientBox { 
                                 position:absolute;
                                 /* top:20%; */
                                 left:50%;
@@ -392,6 +391,7 @@ $row = sql_fetch($sql);
                                 background-color:#fff;width: 100%; height: 100%; top:100px; left: 0; margin-left: 0; }
                                 #order_recipientBox iframe { width: 100%; height: 100%; top:100px; left: 0; margin-left: 0; }
                             }
+                            #ui-datepicker-div { z-index: 999999 !important; }
                         </style>
                         <script>
                             $('#order_recipientBox').hide();
@@ -440,24 +440,44 @@ $row = sql_fetch($sql);
                             <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
                         </form>
                         <!-- 대여신청 -->
-
+                        
                         <div id="list_box1">    
+                        <?php
+                            // print_r($list);
+                        ?>
                         <!--반복-->
                             <?php for($i=0;$i<count($list);$i++){ 
                                 $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
                                 $bg="";//대여중 일때 클래스 넣기
                                 $rental_btn='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여</a>'; //대여 버튼
+                                // '01','02','08','09'
+                                // 01: 재고(대여가능)
+                                // 02: 재고소진(대여중)
+                                // 08: 소독중
+                                // 09: 대여종료
+                                $state_menu_all="";
+
+                                //상태 메뉴
+                                $state_menu1='<li><a class="state-btn4" href="javascript:;">대여기간 수정</a></li>';
+                                $state_menu2='<li><a href="'.$list[$i]['eformUrl'].'">계약서 확인</a></li>';
+                                $state_menu3='<li class="p-btn01"><a href="javascript:;">소독신청</a></li>';
+                                $state_menu4='<li><a href="javascript:;">대여 가능상태</a></li>';
+                                $state_menu5='<li class="p-btn02"><a href="javascript:;">소독확인 신청</a></li>';
+                                $state_menu6='<li><a href="javascript:;">소독취소</a></li>';
+                                $state_menu7='<li><a href="javascript:;">소독확인중</a></li>';
+                                $state_menu8='<li><a href="javascript:;">소불용재고등록</a></li>';
+                                $state_menu9='<li><a href="javascript:;" onclick="retal_period_change(\''.$list[$i]['penOrdId'].'\',\'09\')">대여종료</a></li>';
+
+
+                                //메뉴 선택
                                 switch ($list[$i]['stateCd']) {
-                                    case '01': $state="대여가능"; break;
-                                    case '02': $state="대여중"; $bg="bg"; $rental_btn=""; break;
-                                    case '03': $state="AS신청"; break;
-                                    case '04': $state="반품"; break;
-                                    case '05': $state="기타"; break;
-                                    case '06': $state="재고대기"; break;
-                                    case '07': $state="주문대기"; break;
+                                    case '01': $state="대여가능";  break;
+                                    case '02': $state="대여중"; $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $bg="bg"; $rental_btn=""; break;
                                     case '08': $state="소독중"; break;
+                                    case '09': $state="대여종료"; break;
                                     default  : $state=""; break;
                                 }
+                                
                             ?>
                             <li class="list cb <?=$bg?>">
                                 <!--pc용-->
@@ -474,22 +494,19 @@ $row = sql_fetch($sql);
                                     <b><?=$state?><img style="padding-left:5px;" src="<?=G5_IMG_URL?>/iconnew.png" alt=""> </b>
                                     <?=$rental_btn //대여버튼 ?>
                                 </span>
+
+
                                 <span class="none m_off">
                                     <div class="state-btn2">
                                         <b><img src="<?=G5_IMG_URL?>/icon_11.png" alt=""></b>
                                         <ul>
-                                            <li><a href="javascript:;">대여기간 수정</a></li>
-                                            <li><a href="javascript:;">계약서 확인</a></li>
-                                            <li class="p-btn01"><a href="javascript:;">소독신청</a></li>
-                                            <li><a href="javascript:;">대여 가능상태</a></li>
-                                            <li class="p-btn02"><a href="javascript:;">소독확인 신청</a></li>
-                                            <li><a href="javascript:;">소독취소</a></li>
-                                            <li><a href="javascript:;">소독확인중</a></li>
-                                            <li><a href="javascript:;">소불용재고등록</a></li>
+                                            <?=$state_menu_all; ?>
                                         </ul>
                                     </div>
                                     <a class="state-btn3" href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
                                 </span>
+
+
                                 <!--mobile용-->
                                 <div class="list-m">
                                     <div class="info-m">
@@ -520,6 +537,8 @@ $row = sql_fetch($sql);
                                     </div>
                                 </div>
                                 <!--팝업 위치는 li 바로 하위[li태그자식]로 넣어주세요. -->
+
+                                
                                 <div class="popup01 popup1">
                                     <div class="p-inner">
                                         <h2>소독업체 지정</h2>
@@ -662,6 +681,41 @@ $row = sql_fetch($sql);
                                         </div>
                                     </div>
                                 </div>
+
+
+                                <div class="popup01 popup4">
+                                    <form action="">
+                                        <div class="p-inner">
+                                            <h2>대여기간 수정</h2>
+                                            <button class="cls-btn p-cls-btn" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
+                                            <ul>
+
+                                                <li>
+                                                    <b>대여시작일</b>
+                                                    <div class="input-box">
+                                                        <input type="text" value="" dateonly id="strDtm_<?=$list[$i]['penOrdId']?>">
+                                                        <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <b>대여종료일</b>
+                                                    <div class="input-box">
+                                                        <input type="text" value="" dateonly id="endDtm<?=$list[$i]['penOrdId']?>">
+                                                        <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    </div>
+                                                </li>
+
+                                            </ul> 
+                                            <div class="popup-btn">
+
+                                                <!-- ordId,stoId,ordLendStrDtm,ordLendEndDtm -->
+                                                <button type="button" onclick="retal_period_change('<?=$list[$i]['penOrdId']?>','strDtm_<?=$list[$i]['penOrdId']?>','endDtm<?=$list[$i]['penOrdId']?>')">확인</button>
+                                                <button type="button" class="p-cls-btn">취소</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
                             </li>
                             <?php } ?>
                             <!--반복-->
@@ -719,11 +773,24 @@ $row = sql_fetch($sql);
                 
             </div>
         </div>
-        <script>
 
+
+
+
+        <!-- 스크립트1 -->
+        <script>
+            
+
+            //항목 펼치기
             $('.state-btn2').on('click',function(){
                 $(this).find('ul').toggleClass('on');
                 $(this).parents('.list').siblings('.list').find('.state-btn2').find('ul').removeClass('on');
+            });
+
+            //##팝업
+            //대여기간 수정
+            $('.state-btn4').on('click',function(){
+                $(this).parents('.list').find('.popup4').stop().show();
             });
 
             //대여기록 팝업
@@ -744,108 +811,92 @@ $row = sql_fetch($sql);
                 e.stopPropagation();
                 $(this).parents('.popup01').stop().hide();
             });
+            //##팝업
 
+            //날짜 선택
+            $.datepicker.setDefaults({
+				dateFormat : 'yy-mm-dd',
+				prevText: '이전달',
+				nextText: '다음달',
+				monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+				monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+				dayNames: ["일", "월", "화", "수", "목", "금", "토"],
+				dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
+				dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
+				showMonthAfterYear: true,
+				changeMonth: true,
+				changeYear: true,
+				yearRange : "c-150:c+10"
+			});
+            //날짜 넣기
+            $("input:text[dateonly]").datepicker({});
             
-        </script>
-    </section>
+            //대여기간수정 api 통신
+            function retal_period_change(penOrdId,strDtm,endDtm){
+                var ordLendStrDtm = document.getElementById(strDtm);
+                var ordLendEndDtm = document.getElementById(endDtm);
+                var prods = {
+                stoId : "<?=$row['it_id']?>",            //재고아이디
+                    ordLendStrDtm : ordLendStrDtm.value, //대여시작일
+                    ordLendEndDtm : ordLendEndDtm.value  //대여종료일
+                };
 
-            <script>
-                function selectDetailList(page2){
                 var sendData = {
-                    usrId : "<?=$member["mb_id"] ?>",
-                    entId : "<?=$member["mb_entId"] ?>",
-                    prodId : "<?=$_GET['prodId'] ?>",
-                    pageNum : page2,
-                    // stateCd : "01",
-                    pageSize : <?=$sendLength ?>
-                }
+                    usrId : '<?=$member['mb_id']?>',      //유저아이디
+                    penOrdId : penOrdId,                  //주문아이디
+                    prods : prods
+                };
+                console.log(sendData);
                 $.ajax({
-                    url : "./ajax.stock.selectDetailList.php",
+                    url : "./ajax.order.update.php",
                     type : "POST",
                     async : false,
                     data : sendData,
                     success : function(result){
                         result = JSON.parse(result);
+
                         if(result.errorYN == "Y"){
                             alert(result.message);
                         } else {
-                            console.log(result);
-                            $("#list_box1 *").remove();
-                            $("#numbering_zone1 *").remove();
-                            for(var i =0 ; i < result.data.length; i++){
-                                var html = "";
-                                if(!result.data[i].prodColor){ result.data[i].prodColor=""; }
-                                if(!result.data[i].prodSize){   result.data[i].prodSize=""; }
-                                if(result.data[i].prodColor||result.data[i].prodSize){ var option= result.data[i].prodColor +'/'+result.data[i].prodSize; }else{ var option ="(옵션 없음)";} //사이즈
-                                var number = result.total-((sendData['pageNum']-1)*sendData['pageSize'])-i; //넘버링
-                                html = html + '<li class="list cb">';
-                                html = html +'<span class="num">'+number+'</span>';
-                                html = html +'<span class="product m_off">'+result.data[i].prodNm+option+'</span>';
-                                html = html +'<span class="pro-num m_off"><b>'+result.data[i].prodBarNum+'</b></span>';
-                                var date=result.data[i].modifyDtm;
-                                var year=date.slice(0,4);
-                                var month=date.slice(4,6);
-                                var day=date.slice(6,8);
-                                var hour=date.slice(8,10);
-                                var minute=date.slice(10,12);
-                                // var second=date.slice(12,14);
-                                html = html +'<span class="date m_off">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
-                                html = html +'<span class="order m_off">';
-                                html = html +'<a href="javascript:;"onclick="popup_control(\''+result.data[i].prodColor+'\',\''+result.data[i].prodSize+'\',\''+result.data[i].prodBarNum+'\')">수급자선택</a>';
-                                html = html +'</span>';
-                                html = html +'<div class="list-m">';
-                                html = html +'<div class="info-m">';
-                                html = html +'<span class="product">'+result.data[i].prodNm+option+'</span>';
-                                html = html +'<span class="pro-num"><b>'+result.data[i].prodBarNum+'</b></span>';
-                                html = html +'</div>';
-                                html = html +'<div class="info-m">';
-                                html = html +'<span class="date">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
-                                html = html +'<span class="order">';
-                                html = html +'<a href="javascript:;"onclick="popup_control(\''+result.data[i].prodColor+'\',\''+result.data[i].prodSize+'\',\''+result.data[i].prodBarNum+'\')">수급자선택</a>';
-                                html = html +'</span>';
-                                html = html +'</div>';
-                                html = html +'</div>';
-                                html = html +'</li>';
-                                // console.log(html);
-                                $("#list_box1").append(html);
-                            }
-                                //페이징
-                                var totalCnt = result.total;
-                                var pageNum = parseInt(sendData['pageNum']);
-                                var listCnt = <?=$sendLength?>
-
-                                var b_pageNum_listCnt = 5; //# 한 블록에 보여줄 페이지 갯수 5개
-                                var block = Math.ceil(pageNum/b_pageNum_listCnt); //# 총 블록 갯수 구하기
-                                var b_start_page = ( (block - 1) * b_pageNum_listCnt ) + 1; //# 블록 시작 페이지 
-                                var b_end_page = b_start_page + b_pageNum_listCnt - 1;  //# 블록 종료 페이지
-                                var total_page = Math.ceil( totalCnt / listCnt ); //# 총 페이지
-                                // 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-                                if (b_end_page > total_page){ 
-                                    b_end_page = total_page;
-                                }
-                                var total_block = Math.ceil(total_page/b_pageNum_listCnt);
-                                var html_2="";
-                                if(pageNum >b_pageNum_listCnt){ 
-                                    html_2 = html_2+'<a href="javascript:selectDetailList(\'1\')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a>';
-                                } 
-                                if(block > 1){
-                                    html_2 = html_2+'<a href="javascript:selectDetailList(\''+(b_start_page-1)+'\')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a>';
-                                }
-                                for(var j = b_start_page; j <=b_end_page; j++){
-                                    html_2 = html_2+'<a href="javascript:selectDetailList(\''+j+'\')">'+j+'</a>';
-                                }
-                                if(block < total_block){ 
-                                    html_2 = html_2+'<a href="javascript:selectDetailList(\''+(b_end_page+1)+'\')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a>';
-                                }
-                                if(block < total_block){ 
-                                    html_2 = html_2+'<a href="javascript:selectDetailList(\''+total_page+'\')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a>';
-                                }
-                                console.log(block);
-                                $("#numbering_zone1").append(html_2);
+                            alert('변경이 완료되었습니다.');
+                            $(ordLendStrDtm).parents('.popup01').stop().hide();
+                            
                         }
                     }
                 });
             }
+
+            //대여상품 상태변경 api 통신
+            function retal_period_change(penOrdId,staOrdCd){
+                var prods = {
+                    stoId : "<?=$row['it_id']?>",         //재고아이디
+                };
+
+                var sendData = {
+                    usrId : '<?=$member['mb_id']?>',      //유저아이디
+                    penOrdId : penOrdId,                  //주문아이디
+                    prods : prods,
+                    staOrdCd : staOrdCd
+                };
+
+                $.ajax({
+                    url : "./ajax.order.update.php",
+                    type : "POST",
+                    async : false,
+                    data : sendData,
+                    success : function(result){
+                        result = JSON.parse(result);
+                        
+                        if(result.errorYN == "Y"){
+                            alert(result.message);
+                        } else {
+                            alert('변경이 완료되었습니다.');
+                            window.location.reload();
+                        }
+                    }
+                });
+            }
+
             </script>
 
 <?php

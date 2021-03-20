@@ -275,6 +275,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			async : false,
 			data : sendData,
 			success : function(result){
+                console.log(result);
 				$.each(result, function(it_id, cnt){
 					var label = "재고 보유";
 					if($("." + it_id).attr("data-ca") == "20"){

@@ -1,72 +1,53 @@
 
 
+<style>
+    .alert-info{ background-color:#ffff; text-align:center; color:#5b5b5b; margin-bottom:0px; border-color:#fff;}
+    .info_box  { margin-bottom:20px; width:100%;height:100%; font-size:20px;}
+    .fregister{ background-color:#fff;}
+    .panel-heading{background-color:#fff; }
+    /* .input_txt{font-size:13px;} */
+    
+</style>
 <div class="alert alert-info" role="alert">
-	<strong><i class="fa fa-exclamation-circle fa-lg"></i> 회원가입약관 및 개인정보처리방침안내의 내용에 동의하셔야 회원가입 하실 수 있습니다.</strong>
-</div>
 
-<form  name="fregister" id="fregister" action="<?php echo $action_url ?>" onsubmit="return fregister_submit(this);" method="POST" autocomplete="off" class="form" role="form">
+	<div class="info_box"><b>복지용구사업소 회원가입</b></div>
+
+
+<form  class="fregister" name="fregister" id="fregister" action="<?php echo $action_url ?>" onsubmit="return fregister_submit(this);" method="POST" autocomplete="off" class="form" role="form">
 <input type="hidden" name="pim" value="<?php echo $pim;?>">
 	<div class="panel panel-default">
-		<div class="panel-heading"><strong>  회원가입약관</strong></div>
+		<div class="panel-heading"><strong>이용약관</strong></div>
 		<div class="panel-body">
-			<?php if($provision) { ?>
-				<div class="register-term">
-					<textarea readonly class="input_txt"><?php echo get_text($config['cf_stipulation']) ?></textarea>
-					
-				</div>
-			<?php } else { ?>
-				<textarea class="form-control input-sm" rows="10" readonly><?php echo get_text($config['cf_stipulation']) ?></textarea>
-			<?php } ?>
+            <div class="register-term">
+                <textarea readonly class="input_txt"><?php echo get_text($config['cf_stipulation']) ?></textarea>
+            </div>
 		</div>
 		<div class="panel-footer">
-            <label class="checkbox-inline"><input type="checkbox" name="agree" value="1" id="agree11"> 회원가입약관의 내용에 동의합니다.</label>
+            <label class="checkbox-inline"><input type="checkbox" name="agree" value="1" id="agree11">이용약관에 동의합니다.</label>
 		</div>
 	</div>
 
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<?php if($privacy) { ?>
-				<a data-toggle="collapse" href="#privacy" aria-expanded="false" aria-controls="privacy" class="pull-right">전문보기</a>
-			<?php } ?>
-			<strong>  개인정보처리방침안내</strong>
+			<strong>개인정보취급방침</strong>
 		</div>
-		<?php if($privacy) { ?>
-			<div class="panel-body collapse" id="privacy" style="border-bottom:1px solid #ddd;">
-				<div class="register-term">
-					<textarea readonly class="input_txt"><?php echo get_text($config['cf_privacy']) ?></textarea>
-				</div>
-			</div>
-		<?php } ?>
-		<table class="table" style="border-top:0px;">
-			<colgroup>
-				<col width="40%">
-				<col width="30%">
-			</colgroup>
-			<tbody>
-			<tr>
-				<th style="border-top:0px;">목적</th>
-				<th style="border-top:0px;">항목</th>
-				<th style="border-top:0px;">보유기간</th>
-			</tr>
-			<tr>
-				<td>이용자 식별 및 본인여부 확인</td>
-				<td>아이디, 이름, 비밀번호</td>
-				<td>회원 탈퇴 시까지</td>
-			</tr>
-			<tr>
-				<td>고객서비스 이용에 관한 통지, CS대응을 위한 이용자 식별</td>
-				<td>연락처 (이메일, 휴대전화번호)</td>
-				<td>회원 탈퇴 시까지</td>
-			</tr>
-			</tbody>
-		</table>
+        <div class="panel-body">
+            <div class="register-term">
+                <textarea readonly class="input_txt"><?php echo get_text($config['cf_privacy']) ?></textarea>
+            </div>
+		</div>
 		<div class="panel-footer">
-            <label class="checkbox-inline"><input type="checkbox" name="agree2" value="1" id="agree21" > 개인정보처리방침안내의 내용에 동의합니다.</label>
+            <label class="checkbox-inline"><input type="checkbox" name="agree2" value="1" id="agree21" >개인정보취급방침에 동의 합니다.</label>
 		</div>
 	</div>
+    
+    <div class="text-center">
+        <input type="checkbox"> 전체 동의 합니다.
+    </div>
 
     <div class="text-center">
-        <button type="submit" class="btn btn-color">회원가입</button>
+        <button type="submit" class="btn btn-color">동의함</button>
+        <button type="submit" class="btn btn-color">동의안함</button>
     </div>
 </form>
 
@@ -169,13 +150,13 @@ if($config['cf_social_login_use']) { //소셜 로그인 사용시
 <script>
     function fregister_submit(f) {
         if (!f.agree.checked) {
-            alert("회원가입약관의 내용에 동의하셔야 회원가입 하실 수 있습니다.");
+            alert("이용약관에 내용에 동의하셔야 회원가입 하실 수 있습니다.");
             f.agree.focus();
             return false;
         }
 
         if (!f.agree2.checked) {
-            alert("개인정보처리방침안내의 내용에 동의하셔야 회원가입 하실 수 있습니다.");
+            alert("개인정보처리방침의 내용에 동의하셔야 회원가입 하실 수 있습니다.");
             f.agree2.focus();
             return false;
         }
@@ -183,3 +164,4 @@ if($config['cf_social_login_use']) { //소셜 로그인 사용시
         return true;
     }
 </script>
+</div>

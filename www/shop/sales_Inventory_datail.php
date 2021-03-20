@@ -267,7 +267,7 @@ $row = sql_fetch($sql);
         <h2>판매 재고 상세</h2>
         <div class="stock-view">
             <div class="product-view">
-                <div class="pro-image" style="max-width:320px;">
+                <div class="pro-image">
                     <img src="/data/item/<?=$row['it_img1']?>" alt="">
                 </div>
                 <div class="info-list">
@@ -449,7 +449,7 @@ $row = sql_fetch($sql);
                             <span class="pro-num m_off"><b><?=$list[$i]['prodBarNum']?></b></span>
                             <?php 
                                 //날짜 변환
-                                $date1=$list[$i]['modifyDtm'];
+                                $date1=$list[$i]['regDtm'];
                                 $date2=date("Y-m-d H:i", strtotime($date1));
                             ?>
                             <span class="date m_off"><?=$date2?></span>
@@ -634,7 +634,7 @@ $row = sql_fetch($sql);
                         html = html +'<span class="num">'+number+'</span>';
                         html = html +'<span class="product m_off">'+result.data[i].prodNm+option+'</span>';
                         html = html +'<span class="pro-num m_off"><b>'+result.data[i].prodBarNum+'</b></span>';
-                        var date=result.data[i].modifyDtm;
+                        var date=result.data[i].regDtm;
                         var year=date.slice(0,4);
                         var month=date.slice(4,6);
                         var day=date.slice(6,8);

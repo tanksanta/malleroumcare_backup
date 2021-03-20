@@ -128,20 +128,12 @@ $sendData["pageSize"] = $sendLength;
 
 if($_GET['searchtype']){
     if($_GET['searchtype']=="1"){
-        $sql_search = 'SELECT  `it_id` FROM `g5_shop_item` WHERE `it_name`="'.$_GET['searchtypeText'].'"';
-        $row = sql_fetch($sql_search);
-        if($row['it_id']){
-            $sendData["prodId"]=$row['it_id'];
-        }elseif(!$row['it_id']&&!$_GET['searchtypeText']) {
-            $sendData["prodId"]='';
-        }
-        else{
-            $sendData["prodId"]='error';
-        }
+        $sendData["prodNm"] = ($_GET["searchtypeText"]) ? $_GET["searchtypeText"] : "";
     }else{
         $sendData["prodId"] = ($_GET["searchtypeText"]) ? $_GET["searchtypeText"] : "";
     }
 }
+
 $oCurl = curl_init();
 curl_setopt($oCurl, CURLOPT_PORT, 9001);
 curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectListForEnt");
@@ -218,12 +210,12 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                     <a href="<?=G5_SHOP_URL?>/sales_Inventory_datail.php?prodId=<?=$list[$i]['prodId']?>&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">
                     <li class="list cb">
                         <span class="num"><?=$number?></span><!-- 넘버링 -->
-                        <span class="product">
+                        <span class="product" >
                             <div class="info">
                                 <div class="img">
-                                    <img src="/data/item/<?=$row["it_img1"]?>" alt="" style="max-height:100%"><!-- 이미지 -->
+                                    <img src="/data/item/<?=$row["it_img1"]?>" alt="">
                                 </div>
-                                <div class="text" style="width:100%;">
+                                <div class="text">
                                     <div class="info-01">
                                         <i>[<?=$list[$i]['itemNm']?>]</i><!--품목명 -->
                                         <p><?=$list[$i]['prodNm']?></p><!-- 제품명 -->
@@ -231,8 +223,8 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                                     </div>
                                     <!--mobile 용-->
                                     <div class="info-02">
-                                        <span class="pro-num" style="font-size:6px;"><?=$list[$i]['prodId']?></span><!--상품아이디-->
-                                        <span class="stock" style=""><?=$list[$i]['orderQuantity']?>개</span><!--주문재고수량-->
+                                        <span class="pro-num"><?=$list[$i]['prodId']?></span><!--상품아이디-->
+                                        <span class="stock"><?=$list[$i]['quantity']?>개</span><!--주문재고수량-->
                                         <span class="price"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                                     </div>
                                 </div>
@@ -240,8 +232,8 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         </span>
                         <!--pc 용-->
                         <span class="pro-num m_off"><?=$list[$i]['prodId']?></span>
-                        <span class="stock m_off"><?=$list[$i]['orderQuantity']?></span><!--주문재고수량-->
-                        <span class="order"><?=$list[$i]['quantity']?></span><!--판매완료 개수-->
+                        <span class="stock m_off"><?=$list[$i]['quantity']?>개</span><!--주문재고수량-->
+                        <span class="order"><?=$list[$i]['orderQuantity']?>개</span><!--판매완료 개수-->
                         <span class="price m_off"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                     </li>
                     </a>

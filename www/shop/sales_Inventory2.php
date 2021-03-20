@@ -128,16 +128,7 @@ $sendData["pageSize"] = $sendLength;
 
 if($_GET['searchtype']){
     if($_GET['searchtype']=="1"){
-        $sql_search = 'SELECT  `it_id` FROM `g5_shop_item` WHERE `it_name`="'.$_GET['searchtypeText'].'"';
-        $row = sql_fetch($sql_search);
-        if($row['it_id']){
-            $sendData["prodId"]=$row['it_id'];
-        }elseif(!$row['it_id']&&!$_GET['searchtypeText']) {
-            $sendData["prodId"]='';
-        }
-        else{
-            $sendData["prodId"]='error';
-        }
+        $sendData["prodNm"] = ($_GET["searchtypeText"]) ? $_GET["searchtypeText"] : "";
     }else{
         $sendData["prodId"] = ($_GET["searchtypeText"]) ? $_GET["searchtypeText"] : "";
     }
@@ -224,9 +215,9 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <span class="product">
                             <div class="info">
                                 <div class="img">
-                                    <img src="/data/item/<?=$row["it_img1"]?>" alt="" style="max-height:100%"><!-- 이미지 -->
+                                    <img src="/data/item/<?=$row["it_img1"]?>" alt=""><!-- 이미지 -->
                                 </div>
-                                <div class="text"  style="width:100%;">
+                                <div class="text">
                                     <div class="info-01">
                                         <i>[<?=$list[$i]['itemNm']?>]</i><!--품목명 -->
                                         <p><?=$list[$i]['prodNm']?></p><!-- 제품명 -->
@@ -234,8 +225,8 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                                     </div>
                                     <!--mobile 용-->
                                     <div class="info-02">
-                                        <span class="pro-num" style="font-size:6px;"><?=$list[$i]['prodId']?></span><!--상품아이디-->
-                                        <span class="stock" style=""><?=$list[$i]['quantity']?>개</span><!--대여가능-->
+                                        <span class="pro-num"><?=$list[$i]['prodId']?></span><!--상품아이디-->
+                                        <span class="stock"><?=$list[$i]['orderQuantity']?>개</span><!--대여가능-->
                                         <span class="price"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                                     </div>
                                 </div>
