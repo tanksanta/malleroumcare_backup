@@ -24,21 +24,74 @@ else // 그렇지 않다면 로그인으로 가기
     goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/orderinquiry.php'));
 }
 
+# 210322 주문+재고
+$order_stocks = [];
+$order_stocks[0]["name"] = "주문";
+$order_stocks[0]["val"] = "Y";
+$order_stocks[1]["name"] = "재고";
+$order_stocks[1]["val"] = "N";
+
+# 210322 검색
+$sql_search = "";
+if($_GET["s_date"]){
+	$sql_search .= " AND od_time >= '{$_GET["s_date"]} 00:00:00' ";
+}
+
+if($_GET["e_date"]){
+	$sql_search .= " AND od_time <= '{$_GET["e_date"]} 23:59:59' ";
+}
+
+$search_od_status = "전체 상태";
+if($_GET["od_status"]){
+	$sql_search .= " AND od_status = '{$_GET["od_status"]}' ";
+	
+	for($i = 0; $i < count($order_steps); $i++){
+		if($order_steps[$i]["val"] == $_GET["od_status"]){
+			$search_od_status = $order_steps[$i]["name"];
+		}
+	}
+}
+
+$search_od_stock = "주문+재고";
+if($_GET["od_stock"]){
+	$sql_search .= " AND recipient_yn = '{$_GET["od_stock"]}' ";
+	
+	for($i = 0; $i < count($order_stocks); $i++){
+		if($order_stocks[$i]["val"] == $_GET["od_stock"]){
+			$search_od_stock = $order_stocks[$i]["name"];
+		}
+	}
+}
+
 // 테이블의 전체 레코드수만 얻음
-$sql = " select count(*) as cnt " . $sql_common;
-$row = sql_fetch($sql);
-$total_count = $row['cnt'];
+$item_wait_count = 0;
+$delivery_ing_count = 0;
+$total_count = 0;
+$sql = " select * " . $sql_common . " {$sql_search} ";
+$sql .= " GROUP BY od_id ";
+$result = sql_query($sql);
+for($i = 0; $row = sql_fetch_array($result); $i++){
+	if($row["od_status"] == "준비"){
+		$item_wait_count++;
+	}
+	
+	if($row["od_status"] == "배송"){
+		$delivery_ing_count++;
+	}
+	
+	$total_count++;
+}
 
 // 비회원 주문확인시 비회원의 모든 주문이 다 출력되는 오류 수정
 // 조건에 맞는 주문서가 없다면
-if ($total_count == 0)
-{
-//    goto_url(G5_SHOP_URL);	
-    if ($is_member) // 회원일 경우는 메인으로 이동
-        alert('주문이 존재하지 않습니다.', G5_SHOP_URL);
-    else // 비회원일 경우는 이전 페이지로 이동
-        alert('주문이 존재하지 않습니다.');
-}
+//if ($total_count == 0)
+//{
+////    goto_url(G5_SHOP_URL);	
+//    if ($is_member) // 회원일 경우는 메인으로 이동
+//        alert('주문이 존재하지 않습니다.', G5_SHOP_URL);
+//    else // 비회원일 경우는 이전 페이지로 이동
+//        alert('주문이 존재하지 않습니다.');
+//}
 
 $rows = $config['cf_page_rows'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
@@ -66,6 +119,8 @@ $sql = " select o.*, i.it_model, i.it_name
 		  LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
 		  where o.mb_id = '{$member['mb_id']}'
 		  AND o.od_del_yn = 'N'
+		  {$sql_search}
+		  GROUP BY o.od_id
 		  order by o.od_id desc
 		  $limit ";
 $result = sql_query($sql);
@@ -125,7 +180,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 }
 
 $write_pages = G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'];
-$list_page = $_SERVER['SCRIPT_NAME'].'?'.$qstr.'&amp;page=';
+$list_page = $_SERVER['SCRIPT_NAME'].'?'.$qstr."&amp;od_stock={$_GET["od_stock"]}&amp;od_status={$_GET["od_status"]}&amp;s_date={$_GET["s_date"]}&amp;e_date={$_GET["e_date"]}&amp;page=";
 
 // Page ID
 $pid = ($pid) ? $pid : 'inquiry';

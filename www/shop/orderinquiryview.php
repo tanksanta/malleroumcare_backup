@@ -499,33 +499,6 @@ if($od['od_pg'] == 'lg') {
     $sql_q = "select * from `g5_shop_order` where `od_id`= '".$_GET['od_id']."'";
     $row_q= sql_fetch($sql_q);
 
-    // $dis_total_date=G5_TIME_YMDHIS;
-    $renId_ren="ren".round(microtime(true));
-    $stoId_rel="1";
-    $ordId_rel="2";
-    $ren_person="홍길동";
-    $ren_date1="2021-02-23";
-    $ren_date2="2021-03-23";
-    $result_ren=$_GET['result'];
-    $od_id_ren=$_GET['od_id'];
-    $uid_ren=$_GET['uid'];
-    $ren_eformUrl="https://mall.eroumcare.com/shop/orderinquiryview.php?result=".$result_ren."&od_id=".$result_ren."&uid=".$uid_ren;
-
-
-    if($ordId_rel){
-        $sql_ren = "insert into `g5_rental`
-                    set `renId` = '$renId_ren',
-                        `stoId` = '$stoId_rel',
-                        `ordId` = '$ordId_rel',
-                        `ren_person` = '$ren_person',
-                        `ren_date1` = '$ren_date1',
-                        `ren_date2` = '$ren_date2',
-                        `ren_eformUrl` = '$ren_eformUrl'";
-                        sql_fetch($sql_ren);
-    }
-
-
-
 include_once($skin_path.'/orderinquiryview.skin.php');
 
 if($is_inquiryview_sub) {
@@ -557,10 +530,12 @@ if($is_inquiryview_sub) {
 		if(!$_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]){
 			$productList = $_SESSION["productList{$_GET["od_id"]}"];
 			
+
+
+            #대여로그 작성
 			$sendData2 = [];
 			$sendData2["uuid"] = $_SESSION["uuid{$_GET["od_id"]}"];
 			$sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
-
 			$oCurl = curl_init();
 			curl_setopt($oCurl, CURLOPT_PORT, 9001);
 			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
@@ -572,6 +547,62 @@ if($is_inquiryview_sub) {
 			$res2 = curl_exec($oCurl);
 			$res2 = json_decode($res2, true);
 			curl_close($oCurl);
+            $count=count($res2['data']);
+        if($count>0){
+
+                $sendData3=[];
+                $sendData3["usrId"] = $member["mb_id"];
+                $sendData3["entId"] = $member["mb_entId"];
+                $sendData3["pageNum"] = 1;
+                $sendData3["pageSize"] = 1;
+                $sendData3["penId"] = $res2['data'][0]['penId'];
+                
+                $oCurl = curl_init();
+                curl_setopt($oCurl, CURLOPT_PORT, 9001);
+                curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
+                curl_setopt($oCurl, CURLOPT_POST, 1);
+                curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData3, JSON_UNESCAPED_UNICODE));
+                curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+                $res_pen = curl_exec($oCurl);
+                $res_pen = json_decode($res_pen, true);
+                curl_close($oCurl);
+                $data = $res_pen["data"][0];
+
+                //수급자명
+                $ren_person=$data["penNm"];          
+                $stoId=$res2['data'][0]['stoId'];
+                $penOrdId=$res2['data'][0]['penOrdId'];
+                $strdate=date("Y-m-d", strtotime($res2['data'][0]['ordLendStrDtm']));
+                $enddate=date("Y-m-d", strtotime($res2['data'][0]['ordLendEndDtm']));
+                $ren_eformUrl="https://mall.eroumcare.com/shop/orderinquiryview.php?result={$_GET['result']}&od_id={$_GET['od_id']}&uid={$_GET['uid']}&documentId={$_GET['documentId']}";
+                for($i=0; $i<$count; $i++){
+                    $rental_log_Id="rental_log".round(microtime(true)).rand();
+                    $stoId=$res2['data'][$i]['stoId'];
+                    $penOrdId=$res2['data'][$i]['penOrdId'];
+                    $strdate=date("Y-m-d", strtotime($res2['data'][$i]['ordLendStrDtm']));
+                    $enddate=date("Y-m-d", strtotime($res2['data'][$i]['ordLendEndDtm']));
+
+                    $dis_total_date=G5_TIME_YMDHIS;
+                    $sql = " insert into `g5_rental_log`
+                        set `rental_log_Id` = '$rental_log_Id',
+                            `stoId` = '$stoId',
+                            `ordId` = '$penOrdId',
+                            `strdate` = '$strdate',
+                            `enddate` = '$enddate',
+                            `dis_total_date` = '$dis_total_date',
+                            `ren_person` = '$ren_person',
+                            `ren_eformUrl` = '$ren_eformUrl',
+                            `rental_log_division` = '2';";
+                    sql_query($sql);
+                    
+                }
+            }
+        #대여로그 작성
+
+
+	
 
 			for($i = 0; $i < count($res2["data"]); $i++){
 				$productList[$i]["stoId"] = $res2["data"][$i]["stoId"];

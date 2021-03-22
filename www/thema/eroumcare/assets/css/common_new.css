@@ -548,7 +548,7 @@ pre{white-space: pre-wrap;}
 #mainTopSlidePCWrap > .listWrap > ul > li.mainMenu > a { font-weight: bold; color: #ED8200; width: 100%; }
 #mainTopSlidePCWrap > .listWrap > ul > li.mainMenu > a > i { position: absolute; right: 0; top: 50%; margin-top: -7px; }
 #mainTopSlidePCWrap > .viewWrap { overflow: hidden; }
-#mainTopSlidePCWrap > .viewWrap > ul { position: absolute; width: 100%; height: 100%; left: 0; top: 0; transition: left 0.5s; }
+#mainTopSlidePCWrap > .viewWrap > ul { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
 #mainTopSlidePCWrap > .viewWrap > ul > li { height: 100%; float: left; }
 #mainTopSlidePCWrap > .viewWrap > ul > li img { width: 100%; height: 100%; float: left; }
 #mainTopSlidePCWrap > .viewWrap > i { position: absolute; z-index: 2; cursor: pointer; font-size: 74px; color: #666; top: 50%; margin-top: -37px; }

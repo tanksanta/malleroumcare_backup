@@ -3,6 +3,9 @@
 	if(!defined("_GNUBOARD_")) exit;
 
 ?>
+	
+	<link rel="stylesheet" href="//unpkg.com/swiper/swiper-bundle.min.css">
+	<script src="//unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 	<!-- 메인 상단 슬라이드 -->
 	<div id="mainTopSlidePCWrap">
@@ -24,22 +27,19 @@
 		<?php } ?>
 		</div>
 		
-		<div class="viewWrap">
-			<i class="fa fa-angle-left" id="mainTopSlidePrevBtn"></i>
-			<i class="fa fa-angle-right" id="mainTopSlideNextBtn"></i>
-			
-			<ul style="width: 300%;">
-				<li style="width: 33.33%;">
+		<div class="viewWrap swiper-container">
+			<ul style="width: 300%;" class="swiper-wrapper">
+				<li style="width: 33.33%;" class="swiper-slide">
 					<a href="/bbs/board.php?bo_table=notice&wr_id=11">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_01.jpg" alt="">
 					</a>
 				</li>
-				<li style="width: 33.33%;">
+				<li style="width: 33.33%;" class="swiper-slide">
 					<a href="/bbs/board.php?bo_table=notice&wr_id=11">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_02.jpg" alt="">
 					</a>
 				</li>
-				<li style="width: 33.33%;">
+				<li style="width: 33.33%;" class="swiper-slide">
 					<a href="/bbs/board.php?bo_table=notice&wr_id=11">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_02.jpg" alt="">
 					</a>
@@ -51,66 +51,11 @@
 	<script type="text/javascript">
 		$(function(){
 			
-			var mainTopSlidePCNum = 0;
-			var mainTopSlidePCStatus = true;
-			var mainTopSlidePCTimerSec = 2000;
-			var mainTopSlidePCTimer = setInterval(function(){
-				mainTopSlidePCTimerSetting();
-			}, mainTopSlidePCTimerSec);
-			
-			function mainTopSlidePCTimerSetting(){
-				var item = $("#mainTopSlidePCWrap > .viewWrap > ul > li");
-				
-				mainTopSlidePCNum++;
-				if($(item).length <= mainTopSlidePCNum){
-					mainTopSlidePCNum = 0;
-				}
-				
-				mainTopSlidePCSetting();
-			}
-			
-			function mainTopSlidePCSetting(){
-				clearInterval(mainTopSlidePCTimer);
-				mainTopSlidePCStatus = false;
-				
-				$("#mainTopSlidePCWrap > .viewWrap > ul").css("left", "-" + (mainTopSlidePCNum * 100) + "%");
-				
-				setTimeout(function(){
-					mainTopSlidePCStatus = true;
-					mainTopSlidePCTimer = setInterval(function(){
-						mainTopSlidePCTimerSetting();
-					}, mainTopSlidePCTimerSec);
-				}, 500);
-			}
-			
-			$("#mainTopSlidePrevBtn").click(function(){
-				if(!mainTopSlidePCStatus){
-					return false;
-				}
-				
-				var item = $("#mainTopSlidePCWrap > .viewWrap > ul > li");
-				
-				mainTopSlidePCNum--;
-				if(mainTopSlidePCNum < 0){
-					mainTopSlidePCNum = $(item).length - 1;
-				}
-				
-				mainTopSlidePCSetting();
-			});
-			
-			$("#mainTopSlideNextBtn").click(function(){
-				if(!mainTopSlidePCStatus){
-					return false;
-				}
-				
-				var item = $("#mainTopSlidePCWrap > .viewWrap > ul > li");
-				
-				mainTopSlidePCNum++;
-				if($(item).length <= mainTopSlidePCNum){
-					mainTopSlidePCNum = 0;
-				}
-				
-				mainTopSlidePCSetting();
+			var swiper = new Swiper(".swiper-container", {
+				slidesPerView : "auto",
+				autoplay : {
+					delay : 5000,
+				},
 			});
 			
 		})

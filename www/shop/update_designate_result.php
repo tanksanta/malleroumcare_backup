@@ -5,11 +5,10 @@
     $uploads_dir = G5_DATA_PATH.'/file/disinfection';
     $error = $_FILES['dis_file']['error'];
     $name = $_FILES['dis_file']['name'];
-    $allowed_ext = array('jpg','jpeg','png','gif');
+    $allowed_ext = array('exe');
     $ext = array_pop(explode('.', $name));
     $temp = explode(".", $_FILES["dis_file"]["name"]);
     $newfilename = $_POST['member'].'_'.round(microtime(true)) . '.' . end($temp);
-
     // 오류 확인
     if( $error != UPLOAD_ERR_OK ) {
         switch( $error ) {
@@ -30,30 +29,27 @@
         return false;
     }
     // 확장자 확인
-    if( !in_array($ext, $allowed_ext) ) {
+    if( in_array($ext, $allowed_ext) ) {
         echo "허용되지 않는 확장자입니다.";
         exit;
     }
 
     //최신 소독로그 조회
-    $sql = "SELECT * FROM `g5_disinfection` WHERE `stoId`= '{$stoId}' ORDER BY `dis_total_date` DESC LIMIT 1";
+    $sql = "SELECT `rental_log_Id` FROM `g5_rental_log` WHERE `stoId`= '{$stoId}' AND `rental_log_division`='1' ORDER BY `dis_total_date` DESC LIMIT 1";
     // echo $sql;
     $row = sql_fetch($sql);
-    $last_date = $row['dis_total_date'];
+    $rental_log_Id = $row['rental_log_Id'];
     //최신 소독로그에 update
-    $sql_update=" update `g5_disinfection` 
-        set dis_date = '{$dis_date}',
+    $sql_update=" update `g5_rental_log` 
+        set `strdate` = '{$strdate}',
+            `enddate` = '{$enddate}',
             `dis_chemical` = '{$dis_chemical}',
             `dis_chemical_history` = '{$dis_chemical_history}',
             `dis_file` = '{$newfilename}'
-            where `dis_total_date` = '{$last_date}' and `stoId`='{$stoId}'";
+            where `rental_log_Id` = '{$rental_log_Id}'";
     sql_query($sql_update);
     //파일저장
     move_uploaded_file( $_FILES['dis_file']['tmp_name'], "$uploads_dir/$newfilename");
-
-
-
-
     //대여가능 변경
     $sendData=[];
     $prodsSendData = [];

@@ -51,7 +51,7 @@ table {border-collapse: collapse;}
 .popup01 .p-inner ul .file-list input.fileHidden {display: none;}
 .popup01 .table-box {margin: 0 auto; overflow-y: hidden;overflow-x: auto;padding: 0 25px;max-width: 400px;}
 .popup01 .table-box .tti { margin:24px 0 11px; display: -webkit-box; display: -ms-flexbox; display: flex;  -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
-.popup01 .table-box .tti span {padding-left: 24px; background: url('../img/icon_02.png') no-repeat left 0 top 50%/20px auto;}
+.popup01 .table-box .tti span {padding-left: 24px; padding-top:10px; background: url('../img/icon_02.png') no-repeat left 0 top 50%/20px auto;}
 .popup01 .table-box table {width: 350px;text-align: center;}
 .popup01 .table-box table th {border-top:2px solid #ddd;border-bottom:1px solid #ddd;}
 .popup01 .table-box table th ,.popup01 .table-box table td {padding: 10px 0; font-size: 14px;}

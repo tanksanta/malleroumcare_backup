@@ -390,8 +390,8 @@ $row = sql_fetch($sql);
 						if($res["data"]){
 							$list = $res["data"];
 						}
+                        // echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
                         // print_r($list);
-
 						# 페이징
 						$totalCnt = $res["total"];
 						$pageNum = $sendData["pageNum"]; # 페이지 번호
@@ -434,7 +434,7 @@ $row = sql_fetch($sql);
                                     $rental_btn2='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여하기</a>'; //대여 버튼
                                     break;
                                     case '02': $state="대여중";  $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $bg="bg"; $rental_btn=""; break;
-                                    case '08': $state="소독중";  $state_menu_all =  $state_menu5.$state_menu6;break;
+                                    case '08': $state="소독중";  $state_menu_all =  $state_menu5. $state_menu6;break;
                                     case '09': $state="대여종료"; $state_menu_all=$state_menu3.$state_menu4.$state_menu1; break;
                                     default  : $state=""; break;
                                 }
@@ -451,7 +451,7 @@ $row = sql_fetch($sql);
                                         $style_prodSupYn='style="border-color: #0000;background-color: #0000;"';
                                     }
                                 ?>
-                                <span class="pro-num m_off"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                                <span class="pro-num m_off"><b <?=$style_prodSupYn?>><?=$list[$i]['stoId']?></b></span>
                                 <?php 
                                 //날짜 변환
                                 $date1=$list[$i]['modifyDtm'];
@@ -471,7 +471,7 @@ $row = sql_fetch($sql);
                                             <?=$state_menu_all; ?>
                                         </ul>
                                     </div>
-                                    <a class="state-btn3" href="javascript:;" onclick="open_log(this)"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                                    <a class="state-btn3" href="javascript:;" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
                                 </span>
 
 
@@ -494,7 +494,7 @@ $row = sql_fetch($sql);
                                                     <?=$state_menu_all; ?>
                                                 </ul>
                                             </div>
-                                            <a class="state-btn3" href="javascript:;"  onclick="open_log(this)" ><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                                            <a class="state-btn3" href="javascript:;"  onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')" ><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
                                         </span>
                                     </div>
                                 </div>
@@ -545,9 +545,16 @@ $row = sql_fetch($sql);
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <ul>
                                             <li>
-                                                <b>소독일자</b>
+                                                <b>소독 시작일</b>
                                                 <div class="input-box">
-                                                    <input type="text" name="dis_date" dateonly id="dis_date_<?=$list[$i]['stoId']?>" readonly>
+                                                    <input type="text" name="strdate" dateonly id="strdate_<?=$list[$i]['stoId']?>" readonly>
+                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <b>소독 마감일</b>
+                                                <div class="input-box">
+                                                    <input type="text" name="enddate" dateonly id="enddate_<?=$list[$i]['stoId']?>" readonly>
                                                     <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
@@ -579,7 +586,7 @@ $row = sql_fetch($sql);
                                         </ul>
                                         <div class="popup-btn">
                                         <!-- designate_disinfection('<?=$list[$i]['stoId']?>','dis_detail_<?=$list[$i]['stoId']?>','dis_perosn_<?=$list[$i]['stoId']?>','dis_phone_<?=$list[$i]['stoId']?>','08 -->
-                                            <button type="button" onclick="designate_result('<?=$list[$i]['stoId']?>','dis_date_<?=$list[$i]['stoId']?>','dis_chemical_<?=$list[$i]['stoId']?>','dis_chemical_history_<?=$list[$i]['stoId']?>','dis_file_text_<?=$list[$i]['stoId']?>','dis_file_<?=$list[$i]['stoId']?>','designate_result_form_<?=$list[$i]['stoId']?>')">확인</button>
+                                            <button type="button" onclick="designate_result('<?=$list[$i]['stoId']?>','strdate_<?=$list[$i]['stoId']?>','enddate_<?=$list[$i]['stoId']?>','dis_chemical_<?=$list[$i]['stoId']?>','dis_chemical_history_<?=$list[$i]['stoId']?>','dis_file_text_<?=$list[$i]['stoId']?>','dis_file_<?=$list[$i]['stoId']?>','designate_result_form_<?=$list[$i]['stoId']?>')">확인</button>
                                             <button type="button" class="p-cls-btn" onclick="close_popup(this)">취소</button>
                                         </div>
                                     </div>
@@ -593,8 +600,8 @@ $row = sql_fetch($sql);
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <div class="table-box">
                                             <div class="tti">
-                                                <h4>상품명(옵션명)</h4>
-                                                <span>123456497</span>
+                                                <h4><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></h4>
+                                                <span><?=$list[$i]['prodBarNum']?></span>
                                             </div>
                                             <table>
                                                 <colgroup>
@@ -609,52 +616,14 @@ $row = sql_fetch($sql);
                                                     <th>기간</th>
                                                     <th>문서</th>
                                                 </thead>
-                                                <tbody>
-                                                    <?php //for(){ 
-                                                        $sql_v=
-                                                        "SELECT g5_disinfection.disId,
-                                                                g5_disinfection.stoId,
-                                                                g5_disinfection.dis_detail,
-                                                                g5_disinfection.dis_perosn,
-                                                                g5_disinfection.dis_date,
-                                                                g5_disinfection.dis_chemical,
-                                                                g5_disinfection.dis_chemical_history,
-                                                                g5_disinfection.dis_file,
-                                                                g5_disinfection.dis_total_date,
-                                                                g5_rental.renId,
-                                                                g5_rental.stoId,
-                                                                g5_rental.ordId,
-                                                                g5_rental.ren_person,
-                                                                g5_rental.ren_date1,
-                                                                g5_rental.ren_date2,
-                                                                g5_rental.ren_eformUrl
-                                                        FROM g5_disinfection left join g5_rental 
-                                                        WHERE g5_rental.stoId = '".$list[$i]['stoId']."' order by ";    
-                                                        
-                                                    ?>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td>홍길동 대여</td>
-                                                        <td>01/20~02/11</td>
-                                                        <td>
-                                                            <a href="javascript:;">계약서</a>
-                                                        </td>
-                                                    </tr>
-                                                    <?php// } ?>
-
+                                                <tbody id="log_<?=$list[$i]['stoId']?>">
+                                                
                                                 </tbody>
                                             </table>
                                         </div>
                                         <div class="pg-wrap">
-                                            <div>
-                                                <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a>
-                                                <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a>
-                                                <a href="javascript:;" class="on">1</a>
-                                                <a href="javascript:;">2</a>
-                                                <a href="javascript:;">3</a>
-                                                <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a>
-                                                <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a>
-                                            </div>
+                                            <!-- 페이지 넣는곳 -->
+                                            <div id="page_<?=$list[$i]['stoId']?>"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -800,7 +769,7 @@ $row = sql_fetch($sql);
                                 $date2=date("Y-m-d", strtotime($date1));
                                 ?>
                                 <span class="date m_off"><?=$date2?></span>
-                                <span class="none m_off" onclick="open_log(this)">
+                                <span class="none m_off" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')">
                                     <a class="state-btn3" href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
                                 </span>
                                 <!--mobile용-->
@@ -811,11 +780,10 @@ $row = sql_fetch($sql);
                                     </div>
                                     <div class="info-m">
                                         <span class="none">
-                                            <a class="state-btn3" href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                                            <a class="state-btn3" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')"  href="javascript:; "><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
                                         </span>
                                     </div>
                                 </div>
-
                                    <!-- 대여기록 -->
                                    <div class="popup01 popup3">
                                     <div class="p-inner">
@@ -839,44 +807,21 @@ $row = sql_fetch($sql);
                                                     <th>기간</th>
                                                     <th>문서</th>
                                                 </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td>홍길동 대여</td>
-                                                        <td>01/20~02/11</td>
-                                                        <td>
-                                                            <a href="javascript:;">계약서</a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>2</td>
-                                                        <td>ABC 업체소독</td>
-                                                        <td>01/20~02/11</td>
-                                                        <td>
-                                                            <a href="javascript:;">소독 확인서</a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>1</td>
-                                                        <td>홍길동 대여</td>
-                                                        <td>01/20~02/11</td>
-                                                        <td>
-                                                            <a href="javascript:;">계약서</a>
-                                                        </td>
-                                                    </tr>
+                                                <tbody id="log_<?=$list[$i]['stoId']?>">
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>홍길동 대여</td>
+                                                    <td>01/20~02/11</td>
+                                                    <td>
+                                                        <a href="javascript:;">계약서</a>
+                                                    </td>
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                         <div class="pg-wrap">
-                                            <div>
-                                                <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a>
-                                                <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a>
-                                                <a href="javascript:;" class="on">1</a>
-                                                <a href="javascript:;">2</a>
-                                                <a href="javascript:;">3</a>
-                                                <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a>
-                                                <a href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a>
-                                            </div>
+                                            <!-- 페이지 넣는곳 -->
+                                            <div id="page_<?=$list[$i]['stoId']?>"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -916,26 +861,56 @@ $row = sql_fetch($sql);
     function open_retal_period(e){
         $(e).parents('.list').find('.popup4').stop().show();
     }
-    // $('.state-btn4').on('click',function(){
-        
-    // });
 
     //대여기록 팝업
-    function open_log(e){
-        $(e).parents('.list').find('.popup3').stop().show();
+    function open_log(e ,stoId,logid,page,pageid,num){
+        var logid_object= document.getElementById(logid);
+        var pageid_object= document.getElementById(pageid);
+
+        var sendData = {
+            stoId:stoId,
+            logid:page,
+            page:page,
+            pageid:page,
+        }
+
+        $.ajax({//리스트
+            url : "./ajax.rental_log.php",
+            type : "POST",
+            async : false,
+            data : sendData,
+            success : function(result){
+			    logid_object.innerHTML="";
+			    $(logid_object).append(result);
+            }
+        });
+
+        $.ajax({//페이징
+            url : "./ajax.rental_log_page.php",
+            type : "POST",
+            async : false,
+            data : sendData,
+            success : function(result){
+			    pageid_object.innerHTML="";
+			    $(pageid_object).append(result)
+            }
+        });
+
+        if(num=1){
+            $(e).parents('.list').find('.popup3').stop().show();
+        }
     }
+
 
     //소독업체지정 팝업
     function open_designate_disinfection(e){
         $(e).parents('.list').find('.popup1').stop().show();
     }
     //소독확인신청 팝업
-    // $('.p-btn02').on('click',function(){
-    //     $(this).parents('.list').find('.popup2').stop().show();
-    // });
     function open_designate_result(e){
         $(e).parents('.list').find('.popup2').stop().show();
     }
+    //닫기
     function close_popup(e){
         // alert('z');
         // e.stopPropagation();
@@ -1098,8 +1073,8 @@ $row = sql_fetch($sql);
     $(document).on('change', '.fileHidden', function() {
         ext = $(this).val().split('.').pop().toLowerCase(); //확장자
         //배열에 추출한 확장자가 존재하는지 체크
-        if($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
-            alert('이미지 파일이 아닙니다.');
+        if($.inArray(ext, ['exe']) == 1) {
+            alert('지원하는 파일이 아닙니다.');
             $(this).val()="";
             return false;
         }else{
@@ -1108,14 +1083,16 @@ $row = sql_fetch($sql);
     });
 
     //소독 결과 확인 지정 POST - >PHP 
-    function designate_result(stoId,dis_date,dis_chemical,dis_chemical_history,dis_file_text,dis_file,designate_result_form){
-        var dis_date = document.getElementById(dis_date);
+    function designate_result(stoId,strdate,enddate,dis_chemical,dis_chemical_history,dis_file_text,dis_file,designate_result_form){
+        var strdate = document.getElementById(strdate);
+        var enddate = document.getElementById(enddate);
         var dis_chemical = document.getElementById(dis_chemical);
         var dis_chemical_history = document.getElementById(dis_chemical_history);
         var dis_file_text = document.getElementById(dis_file_text);
         var dis_file = document.getElementById(dis_file);
         var designate_result_form = document.getElementById(designate_result_form);
-        if(!dis_date.value){ alert('날짜를 입력해주세요'); return false;}
+        if(!strdate.value){ alert('소독시작 날짜를 입력해주세요'); return false;}
+        if(!enddate.value){ alert('소독마감 날짜를 입력해주세요'); return false;}
         if(!dis_chemical.value){ alert('약품종류를 입력해주세요'); return false;}
         if(!dis_chemical_history.value){ alert('약품사용내역을 입력해주세요'); return false;}
         if(!dis_file_text.value){ alert('파일을 선택해주세요'); return false;}

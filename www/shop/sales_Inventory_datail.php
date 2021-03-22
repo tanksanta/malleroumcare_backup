@@ -337,7 +337,7 @@ $row = sql_fetch($sql);
 						$sendData["prodId"] = $_GET['prodId'];
 						$sendData["pageNum"] = ($_GET["page2"]) ? $_GET["page2"] : 1;
 						$sendData["pageSize"] = $sendLength;
-                        $sendData["stateCd"] = "01";
+                        $sendData["stateCd"] =['01'];
 
 						$oCurl = curl_init();
 						curl_setopt($oCurl, CURLOPT_PORT, 9001);
@@ -350,7 +350,6 @@ $row = sql_fetch($sql);
 						$res = curl_exec($oCurl);
 						$res = json_decode($res, true);
 						curl_close($oCurl);
-
 						$list = [];
 						if($res["data"]){
 							$list = $res["data"];
@@ -508,7 +507,7 @@ $row = sql_fetch($sql);
 						$sendData["prodId"] = $_GET['prodId'];
 						$sendData["pageNum"] = ($_GET["page2"]) ? $_GET["page2"] : 1;
 						$sendData["pageSize"] = $sendLength;
-                        $sendData["stateCd"] = "02";
+                        $sendData["stateCd"] =['02'];
 
 						$oCurl = curl_init();
 						curl_setopt($oCurl, CURLOPT_PORT, 9001);
