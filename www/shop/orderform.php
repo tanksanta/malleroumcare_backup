@@ -1238,12 +1238,12 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 		// 재고체크
 		var stock_msg = order_stock_check();
 
-    //20210307오성훈
-    if(stock_msg=="back_button"){
-      alert('잘못된 접근입니다. 다시 주문해 주세요.');
-      location.replace(g5_url);
-      return false;
-    }
+        //20210307오성훈
+        if(stock_msg=="back_button"){
+        alert('잘못된 접근입니다. 다시 주문해 주세요.');
+        location.replace(g5_url);
+        return false;
+        }
 
 		if(stock_msg != "") {
 			alert(stock_msg);

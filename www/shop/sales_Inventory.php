@@ -219,7 +219,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                                     <div class="info-01">
                                         <i>[<?=$list[$i]['itemNm']?>]</i><!--품목명 -->
                                         <p><?=$list[$i]['prodNm']?></p><!-- 제품명 -->
-                                        <p><?=$list[$i]['prodSupYn'] == "Y" ? '유통' : '미유통' ?>/<?=$row["it_taxInfo"]?></p><!--유통/과세 -->
+                                        <p><?=$list[$i]['prodSupYn'] == "Y" ? '유통' : '비유통' ?>/<?=$row["it_taxInfo"]?></p><!--유통/과세 -->
                                     </div>
                                     <!--mobile 용-->
                                     <div class="info-02">

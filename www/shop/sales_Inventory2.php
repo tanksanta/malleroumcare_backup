@@ -209,7 +209,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         $row = sql_fetch($sql);
                     ?>
                     <!--반복-->
-                    <a href="<?=G5_SHOP_URL?>/sales_Inventory_datail2.php?prodId=<?=$list[$i]['prodId']?>&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">
+                    <a href="<?=G5_SHOP_URL?>/sales_Inventory_datail2.php?prodId=<?=$list[$i]['prodId']?>&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>&prodSupYn=<?=$list[$i]['prodSupYn']?>">
                     <li class="list cb">
                         <span class="num"><?=$number?></span><!-- 넘버링 -->
                         <span class="product">

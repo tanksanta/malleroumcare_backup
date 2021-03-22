@@ -492,10 +492,40 @@ if($od['od_pg'] == 'lg') {
     }
 }
 
-$typereceipt = get_typereceipt_step($od['od_id']);
-$typereceipt_cate = get_typereceipt_cate($od['od_id']);
+    $typereceipt = get_typereceipt_step($od['od_id']);
+    $typereceipt_cate = get_typereceipt_cate($od['od_id']);
 
-// 주문내역 스킨 불러오기
+    // 주문내역 스킨 불러오기
+    $sql_q = "select * from `g5_shop_order` where `od_id`= '".$_GET['od_id']."'";
+    $row_q= sql_fetch($sql_q);
+
+    // $dis_total_date=G5_TIME_YMDHIS;
+    $renId_ren="ren".round(microtime(true));
+    $stoId_rel="1";
+    $ordId_rel="2";
+    $ren_person="홍길동";
+    $ren_date1="2021-02-23";
+    $ren_date2="2021-03-23";
+    $result_ren=$_GET['result'];
+    $od_id_ren=$_GET['od_id'];
+    $uid_ren=$_GET['uid'];
+    $ren_eformUrl="https://mall.eroumcare.com/shop/orderinquiryview.php?result=".$result_ren."&od_id=".$result_ren."&uid=".$uid_ren;
+
+
+    if($ordId_rel){
+        $sql_ren = "insert into `g5_rental`
+                    set `renId` = '$renId_ren',
+                        `stoId` = '$stoId_rel',
+                        `ordId` = '$ordId_rel',
+                        `ren_person` = '$ren_person',
+                        `ren_date1` = '$ren_date1',
+                        `ren_date2` = '$ren_date2',
+                        `ren_eformUrl` = '$ren_eformUrl'";
+                        sql_fetch($sql_ren);
+    }
+
+
+
 include_once($skin_path.'/orderinquiryview.skin.php');
 
 if($is_inquiryview_sub) {
