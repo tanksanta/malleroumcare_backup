@@ -18,18 +18,18 @@ if($header_skin)
 	<table class="div-table table bg-white">
 	<tbody>
 	<tr class="bg-black">
-		<th class="text-center" scope="col" width="60">선택</th>
+		<!-- <th class="text-center" scope="col" width="60">선택</th> -->
 		<th class="text-center" scope="col">이미지</th>
 		<th class="text-center" scope="col">상품명</th>
 		<th class="text-center" scope="col">보관일시</th>
-		<th class="text-center" scope="col">삭제</th>
+		<!-- <th class="text-center" scope="col">삭제</th> -->
 	</tr>
 	<?php 
 	for($i=0; $i < count($list);$i++) { 
 		$list[$i]['img'] = apms_it_thumbnail($list[$i], 40, 40, false, true);	
 	?>
 		<tr>
-			<td class="text-center">
+			<!-- <td class="text-center">
 				<?php if($list[$i]['is_soldout']) { // 품절검사 ?>
 					품절
 				<?php } else { //품절이 아니면 체크할수 있도록한다 ?>
@@ -41,7 +41,7 @@ if($header_skin)
 				<input type="hidden" name="io_id[<?php echo $list[$i]['it_id']; ?>][0]" value="">
 				<input type="hidden" name="io_value[<?php echo $list[$i]['it_id']; ?>][0]" value="<?php echo $list[$i]['it_name']; ?>">
 				<input type="hidden" name="ct_qty[<?php echo $list[$i]['it_id']; ?>][0]" value="1">
-			</td>
+			</td> -->
 			<td class="text-center">
 				<a href="./item.php?it_id=<?php echo $list[$i]['it_id']; ?>">
 				<?php if($list[$i]['img']['src']) {?>
@@ -51,9 +51,9 @@ if($header_skin)
 				<?php } ?>
 				</a>
 			</td>
-			<td><a href="./item.php?it_id=<?php echo $list[$i]['it_id']; ?>"><?php echo stripslashes($list[$i]['it_name']); ?></a></td>
+			<td style="text-align:center"><a href="./item.php?it_id=<?php echo $list[$i]['it_id']; ?>"><?php echo stripslashes($list[$i]['it_name']); ?></a></td>
 			<td class="text-center"><?=$prodPpcRegDtmList[$list[$i]["it_id"]]?></td>
-			<td class="text-center"><a href="./wishupdate.php?it_id=<?=$list[$i]["it_id"]?>&ppc_id=<?=$prodPpcIdList[$list[$i]["it_id"]]?>">삭제</a></td>
+			<!-- <td class="text-center"><a href="./wishupdate.php?it_id=<?=$list[$i]["it_id"]?>&ppc_id=<?=$prodPpcIdList[$list[$i]["it_id"]]?>">삭제</a></td> -->
 		</tr>
 	<?php } ?>
 	<?php if ($i == 0) { ?>
@@ -64,10 +64,10 @@ if($header_skin)
 	</table>
 </div>
 
-<p class="text-center">
+<!-- <p class="text-center">
 	<button type="submit" class="btn btn-black btn-sm" onclick="return fwishlist_check(document.fwishlist,'');">장바구니 담기</button>
 	<button type="submit" class="btn btn-color btn-sm" onclick="return fwishlist_check(document.fwishlist,'direct_buy');">주문하기</button>
-</p>
+</p> -->
 </form>
 
 <br>

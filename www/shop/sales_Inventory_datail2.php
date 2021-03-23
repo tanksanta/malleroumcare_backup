@@ -413,8 +413,11 @@ $row = sql_fetch($sql);
                         <div id="list_box1">    
                             <?php for($i=0;$i<count($list);$i++){ 
                                 $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
+                                
                                 $bg="";//대여중 일때 클래스 넣기
                                 $rental_btn=''; //대여 버튼
+
+
                                 //상태 메뉴
                                 $state_menu_all="";
                                 $state_menu1='<li><a class="state-btn4" onclick="open_retal_period(this)" href="javascript:;">대여기간 수정</a></li>';
@@ -438,20 +441,27 @@ $row = sql_fetch($sql);
                                     case '09': $state="대여종료"; $state_menu_all=$state_menu3.$state_menu4.$state_menu1; break;
                                     default  : $state=""; break;
                                 }
-                                
+                                //N버튼
+                                $nimg="";
+                                $sql_new="select count(*) as count from `g5_rental_log` where `stoId` =  '".$list[$i]['stoId']."'";
+                                $row_new = sql_fetch($sql_new);
+                                $nimg_flag = $row_new['count'];
+                                if(!$nimg_flag){ $nimg='<img style="padding-left:5px;" src="'.G5_IMG_URL.'/iconnew.png" alt="">'; }
+
                             ?>
                             <li class="list cb <?=$bg?>">
                                 <!--pc용-->
                                 <span class="num"><?=$number?></span>
                                 <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
                                 <?php
+                                    //유통 / 비유통 구분
                                     if($_GET['prodSupYn'] == "N" ){
                                         $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
                                     }else{
                                         $style_prodSupYn='style="border-color: #0000;background-color: #0000;"';
                                     }
                                 ?>
-                                <span class="pro-num m_off"><b <?=$style_prodSupYn?>><?=$list[$i]['stoId']?></b></span>
+                                <span class="pro-num m_off"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 <?php 
                                 //날짜 변환
                                 $date1=$list[$i]['modifyDtm'];
@@ -459,7 +469,7 @@ $row = sql_fetch($sql);
                                 ?>
                                 <span class="date m_off"><?=$date2?></span>
                                 <span class="state m_off">
-                                    <b><?=$state?><img style="padding-left:5px;" src="<?=G5_IMG_URL?>/iconnew.png" alt=""> </b>
+                                    <b><?=$state?><?=$nimg?></b>
                                     <?=$rental_btn //대여버튼 ?>
                                 </span>
 
@@ -964,14 +974,11 @@ $row = sql_fetch($sql);
             async : false,
             data : sendData,
             success : function(result){
-                result = JSON.parse(result);
-
                 if(result.errorYN == "Y"){
                     alert(result.message);
                 } else {
                     alert('변경이 완료되었습니다.');
                     $(ordLendStrDtm).parents('.popup01').stop().hide();
-                    
                 }
             }
         });

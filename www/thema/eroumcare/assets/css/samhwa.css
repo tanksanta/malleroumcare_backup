@@ -953,9 +953,9 @@
 	.responsive .at-body .at-container {
 		padding:0 0px !important;
     }
-    .at-content {
+    /* .at-content {
         padding:20px 20px;
-    }
+    } */
 	.at-container-service>ul>li {
 		width:100% !important;
 	}

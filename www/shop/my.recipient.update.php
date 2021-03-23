@@ -627,7 +627,7 @@
                             var sale_product_id="";
                             var rental_product_id="";
                             //판매품목 값 넣기
-                            for(var i=0; i<14; i++){
+                            for(var i=1; i<14; i++){
                                 eval("sale_product_id = document.getElementById('sale_product_id"+i+"')");
                                 if(sale_product_id.checked==true){ itemList.push(sale_product_id.value); }
                             }
@@ -648,6 +648,7 @@
                                     if(result.errorYN == "Y"){
                                         alert(result.message);
                                     } else {
+                                        alert('완료되었습니다');
                                         window.location.href = "./my.recipient.list.php";
                                     }
                                         }

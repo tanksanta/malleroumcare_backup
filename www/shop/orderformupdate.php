@@ -137,9 +137,11 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			$tmpQty = $row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"];
 			$tmpCnt = floor($tmpQty / $row["it_delivery_cnt"]);
 
-			if($tmpCnt < ($tmpQty / $row[$i]["it_delivery_cnt"])){
-				$tmpCnt += 1;
-			}
+            if($row[$i]["it_delivery_cnt"]){
+                if($tmpCnt < ($tmpQty / $row[$i]["it_delivery_cnt"])){
+                    $tmpCnt += 1;
+                }
+            }
 
 			$tmpPrice = $tmpCnt * $row["it_delivery_price"];
 
