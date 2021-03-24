@@ -8,6 +8,7 @@ if($header_skin)
 	include_once('./header.php');
 
 ?>
+
 <form name="fwishlist" method="post" action="./cartupdate.php">
 <input type="hidden" name="act"       value="multi">
 <input type="hidden" name="sw_direct" value="">

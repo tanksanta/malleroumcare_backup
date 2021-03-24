@@ -669,7 +669,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<ul class="item-buy-btn">
 					<li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="바로구매" class="btn btn-<?php echo $btn2;?> btn-block"></li>
 					<li class="cart"><input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-<?php echo $btn1;?> btn-block"></li>
-					<li class="wish"><a href="#" class="btn btn-<?php echo $btn1;?> btn-block" onclick="item_wish(document.fitem, '<?php echo $it['it_id']; ?>');">취급상품 등록</a></li>
+					<li class="wish"><a href="#" class="btn btn-<?php echo $btn1;?> btn-block" onclick="apms_wishlist('<?php echo $it['it_id']; ?>'); return false;">취급상품 등록</a></li>
 					<!--<li><a href="#" class="btn btn-<?php echo $btn1;?> btn-block" onclick="apms_recommend('<?php echo $it['it_id']; ?>', '<?php echo $ca_id; ?>'); return false;">추천하기</a></li>-->
 					</ul>
 				</div>
@@ -688,13 +688,6 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			</form>
 
 			<script>
-                // 취급상품 등록 20210324 쇼핑몰기본 기능작업
-                function item_wish(f, it_id)
-                {
-                    f.url.value = "<?php echo G5_SHOP_URL; ?>/wishupdate.php?it_id="+it_id;
-                    f.action = "<?php echo G5_SHOP_URL; ?>/wishupdate.php";
-                    f.submit();
-                }
 				// BS3
 				$(function() {
 					$("select.it_option").addClass("form-control input-sm");
