@@ -3,13 +3,8 @@ include_once('./_common.php');
 
 if (!$is_member)
     goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_SHOP_URL.'/wishlist.php'));
-
-if (G5_IS_MOBILE) {
-    include_once(G5_MSHOP_PATH.'/wishlist.php');
-    return;
-}
-
 // 테마에 wishlist.php 있으면 include
+
 if(defined('G5_THEME_SHOP_PATH')) {
     $theme_wishlist_file = G5_THEME_SHOP_PATH.'/wishlist.php';
     if(is_file($theme_wishlist_file)) {
@@ -28,7 +23,6 @@ include_once('./_head.php');
 .pg-wrap div {text-align: center;font-size: 0;}
 .pg-wrap div a {display: inline-block;padding: 0 13px; vertical-align: middle;font-size: 14px;color:#999;}
 .pg-wrap div a.on {color:#333}
-
 </style>
 <!-- 위시리스트 시작 { -->
 <div id="sod_ws">
@@ -36,7 +30,6 @@ include_once('./_head.php');
     <input type="hidden" name="act"       value="multi">
     <input type="hidden" name="sw_direct" value="">
     <input type="hidden" name="prog"      value="wish">
-
     <div class="wishlist-skin">
 	<table class="div-table table bg-white">
 	<tbody style="text-align:center; line-height:50px;">
@@ -55,15 +48,15 @@ include_once('./_head.php');
         if($_GET['page']){$page=$_GET['page'];}else{$page=1;}
 
 
-
+        $listCnt = 5; # 리스트 갯수 default 10
+        $b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
         $load=($page-1)*$listCnt; //5개씩
         $sql  = " select a.wi_id, a.wi_time, b.* from {$g5['g5_shop_wish_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id ) ";
         $sql .= " where a.mb_id = '{$member['mb_id']}' order by a.wi_id desc limit {$load}, 5";
         
         # 페이징
         $pageNum = $page; # 페이지 번호
-        $listCnt = 5; # 리스트 갯수 default 10
-        $b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
+
         $block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
         $b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
         $b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
@@ -72,9 +65,8 @@ include_once('./_head.php');
         if ($b_end_page > $total_page){ 
             $b_end_page = $total_page;
         }
+        
         $total_block = ceil($total_page/$b_pageNum_listCnt);
-
-
         $result = sql_query($sql);
         for ($i=0; $row = sql_fetch_array($result); $i++) {
             $number = $totalCnt-(($page-1)*5)-$i; //넘버링
