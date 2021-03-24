@@ -134,6 +134,7 @@ if($header_skin)
 		$itemSQL = sql_query("
 			SELECT a.*
 				, ( SELECT it_img1 FROM {$g5["g5_shop_item_table"]} WHERE it_id = a.it_id ) AS it_img
+				, ( SELECT prodSupYn FROM {$g5["g5_shop_item_table"]} WHERE it_id = a.it_id ) AS prodSupYn
 			FROM {$g5["g5_shop_cart_table"]} a
 			WHERE od_id = '{$row["od_id"]}'
 		");
@@ -142,7 +143,7 @@ if($header_skin)
 			array_push($itemList, $item);
 		}
 	?>
-		<div class="table-list<?=($i) ? " table-list2" : ""?>">
+		<div class="table-list table-list2">
 			<div class="top">
 				<span> <i class="m_none">주문번호 :</i> <a href="<?=$row["od_href"]?>"><?=$row["od_id"]?></a> </span>
 				<span> <?=display_price($row["od_total_price"])?> </span>
@@ -185,7 +186,10 @@ if($header_skin)
 								<?php } ?>
 								</div>
 							<?php } ?>
-								<div class="name"><?=$item["it_name"]?> <?=($item["ct_option"] && $item["ct_option"] != $item["it_name"]) ? "({$item["ct_option"]})" : ""?></div>
+								<div class="name">
+									<?=$item["it_name"]?> <?=($item["ct_option"] && $item["ct_option"] != $item["it_name"]) ? "({$item["ct_option"]})" : ""?>
+									<?=($item["prodSupYn"] == "N") ? "<b>비유통</b>" : ""?>
+								</div>
 								<div>
 									<em>수량 : <?=$item["ct_qty"]?></em>
 								<?php if($item["ct_stock_qty"]){ ?>
@@ -202,15 +206,18 @@ if($header_skin)
 						</li>
 						<li class="info-btn">
 							<div>
-<!--								<a href="javascirpt:;" class="btn-01 btn-0"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드</a>-->
-							<a href="javascirpt:;" class="btn-03 btn-0"><?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$row["od_prodBarNum_total"]})" : "바코드 확인"?></a>
+							<?php if($item["prodSupYn"] == "N"){ ?>
+								<a href="javascirpt:;" class="btn-03 btn-0"><?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$row["od_prodBarNum_total"]})" : "바코드 확인"?></a>
+							<?php } else { ?>
+								<a href="javascirpt:;" class="btn-01 btn-0"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드</a>
+							<?php } ?>
 							
 							<?php if($row["od_delivery_insert"]){ ?>
 								<a href="javascirpt:;" class="btn-02 btn-0">배송정보</a>
 							<?php } ?>
 							
 							<?php if($row["od_status"] == "배송완료"){ ?>
-								<a href="javascirpt:;" class="btn-02 btn-0">재고확인</a>
+								<a href="https://mall.eroumcare.com/shop/sales_Inventory_datail.php?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
 							<?php } ?>
 							</div>
 						</li>

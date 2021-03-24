@@ -259,6 +259,8 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 }
 $sql = 'SELECT * FROM `g5_shop_item` WHERE `it_id`="'.$_GET['prodId'].'"';
 $row = sql_fetch($sql);
+// print_r($row);
+
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
 
@@ -282,7 +284,7 @@ $row = sql_fetch($sql);
                         </li>
                         <li>
                             <span>제품코드</span>
-                            <span><?=$row['it_id']?></span>
+                            <span><?=$row['ProdPayCode']?></span>
                         </li>
                         <li>
                             <span>가격</span>
@@ -440,13 +442,23 @@ $row = sql_fetch($sql);
 							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
                             if($list[$i]['prodColor']&&$list[$i]['prodSize']){ $div="/";}else{$div="";}
                         ?>
+                        <?php
+                            //유통 / 비유통 구분
+                            if($_GET['prodSupYn'] == "N" ){
+                                $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                                $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                            }else{
+                                $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                                $prodBarNumCntBtn_2="";
+                            }
+                        ?>
                         <!--반복-->
                         <li class="list cb">
                             <!--pc용-->
                             <span class="num"><?=$number?></span>
                             <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?>
                             </span>
-                            <span class="pro-num m_off"><b><?=$list[$i]['prodBarNum']?></b></span>
+                            <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                             <?php 
                                 //날짜 변환
                                 $date1=$list[$i]['regDtm'];
@@ -461,7 +473,7 @@ $row = sql_fetch($sql);
                                 <div class="info-m">
                                     <span class="product"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?>
                                     </span>
-                                    <span class="pro-num"><b><?=$list[$i]['prodBarNum']?></b></span>
+                                    <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 </div>
                                 <div class="info-m">
                                     <span class="date"><?=$date2?></span>
@@ -508,7 +520,7 @@ $row = sql_fetch($sql);
 						$sendData["prodId"] = $_GET['prodId'];
 						$sendData["pageNum"] = ($_GET["page2"]) ? $_GET["page2"] : 1;
 						$sendData["pageSize"] = $sendLength;
-                        $sendData["stateCd"] =['02'];
+                        $sendData["stateCd"] =['02','07'];
 
 						$oCurl = curl_init();
 						curl_setopt($oCurl, CURLOPT_PORT, 9001);
@@ -548,11 +560,21 @@ $row = sql_fetch($sql);
 							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
                             if($list[$i]['prodColor']&&$list[$i]['prodSize']){ $div="/";}else{$div="";}
 						?>
+                        <?php
+                            //유통 / 비유통 구분
+                            if($_GET['prodSupYn'] == "N" ){
+                                $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                                $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                            }else{
+                                $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                                $prodBarNumCntBtn_2="";
+                            }
+                        ?>
                         <li class="list cb">
                              <!--pc용-->
                             <span class="num"><?=$number?></span>
                             <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?></span>
-                            <span class="pro-num m_off"><b><?=$list[$i]['prodBarNum']?></b></span>
+                            <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                             <span class="name m_off"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
                             <?php 
                                 //날짜 변환
@@ -564,7 +586,7 @@ $row = sql_fetch($sql);
                             <div class="list-m">
                                 <div class="info-m">
                                     <span class="product"><?=$list[$i]['prodNm']?>  <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?></span>
-                                    <span class="pro-num"><b><?=$list[$i]['prodBarNum']?></b></span>
+                                    <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 </div>
                                 <div class="info-m">
                                     <span class="name"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
@@ -632,11 +654,19 @@ $row = sql_fetch($sql);
                         if(!result.data[i].prodSize){   result.data[i].prodSize=""; }
                         if(result.data[i].prodColor&&result.data[i].prodSize){ div = "/";}
                         if(result.data[i].prodColor||result.data[i].prodSize){ var option= '('+result.data[i].prodColor +div+result.data[i].prodSize+')'; }else{ var option ="(옵션 없음)";} //사이즈
+                        if("<?=$_GET['prodSupYn']?>" == "N" ){
+                            var style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                            var prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                        }else{
+                            var style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                            var prodBarNumCntBtn_2="";
+                        }
+                        
                         var number = result.total-((sendData['pageNum']-1)*sendData['pageSize'])-i; //넘버링
                         html = html + '<li class="list cb">';
                         html = html +'<span class="num">'+number+'</span>';
                         html = html +'<span class="product m_off">'+result.data[i].prodNm+' '+option+'</span>';
-                        html = html +'<span class="pro-num m_off"><b>'+result.data[i].prodBarNum+'</b></span>';
+                        html = html +'<span class="pro-num m_off '+prodBarNumCntBtn_2+'" data-id="'+result.data[i].stoId+'" ><b '+style_prodSupYn+'>'+result.data[i].prodBarNum+'</b></span>';
                         var date=result.data[i].regDtm;
                         var year=date.slice(0,4);
                         var month=date.slice(4,6);
@@ -650,8 +680,8 @@ $row = sql_fetch($sql);
                         html = html +'</span>';
                         html = html +'<div class="list-m">';
                         html = html +'<div class="info-m">';
-                        html = html +'<span class="product">'+result.data[i].prodNm+result.data[i].prodColor+div+result.data[i].prodSize+'</span>';
-                        html = html +'<span class="pro-num"><b>'+result.data[i].prodBarNum+'</b></span>';
+                        html = html +'<span class="product">'+result.data[i].prodNm+" "+option+'</span>';
+                        html = html +'<span class="pro-num '+prodBarNumCntBtn_2+'" data-id="'+result.data[i].stoId+'" ><b '+style_prodSupYn+'>'+result.data[i].prodBarNum+'</b></span>';
                         html = html +'</div>';
                         html = html +'<div class="info-m">';
                         html = html +'<span class="date">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
@@ -711,7 +741,7 @@ $row = sql_fetch($sql);
             entId : "<?=$member["mb_entId"] ?>",
             prodId : "<?=$_GET['prodId'] ?>",
             pageNum : page2,
-            stateCd : ["02"],
+            stateCd : ["02","07"],
             pageSize : <?=$sendLength ?>
         }
         $.ajax({
@@ -735,12 +765,19 @@ $row = sql_fetch($sql);
                         if(result.data[i].prodColor&&result.data[i].prodSize){ div = "/";}
                         if(result.data[i].prodColor||result.data[i].prodSize){ var option= '('+result.data[i].prodColor +div+result.data[i].prodSize+')'; }else{ var option ="(옵션 없음)";} //사이즈
                         var number = result.total-((sendData['pageNum']-1)*sendData['pageSize'])-i; //넘버링
+                        if("<?=$_GET['prodSupYn']?>" == "N" ){
+                            var style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                            var prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                        }else{
+                            var style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                            var prodBarNumCntBtn_2="";
+                        }
                         
                         
                         html = html + '<li class="list cb">';
                         html = html + '<span class="num">'+number+'</span>';
                         html = html + '<span class="product m_off">'+result.data[i].prodNm+' '+option+'</span>';
-                        html = html + '<span class="pro-num m_off"><b>'+result.data[i].prodBarNum+'</b></span>';
+                        html = html + '<span class="pro-num m_off '+prodBarNumCntBtn_2+'" data-id="'+result.data[i].stoId+'" ><b '+style_prodSupYn+'>'+result.data[i].prodBarNum+'</b></span>';
                         html = html + '<span class="name m_off"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id='+result.data[i].penId+'">'+result.data[i].penNm+'</a></span>';
                         var date=result.data[i].modifyDtm;
                         var year=date.slice(0,4);
@@ -753,7 +790,7 @@ $row = sql_fetch($sql);
                         html = html + '<div class="list-m">';
                         html = html + '<div class="info-m">';
                         html = html + '<span class="product">'+result.data[i].prodNm+' '+option+'</span>';
-                        html = html + '<span class="pro-num"><b>'+result.data[i].prodBarNum+'</b></b></span>';
+                        html = html + '<span class="pro-num '+prodBarNumCntBtn_2+'" data-id="'+result.data[i].stoId+'" ><b '+style_prodSupYn+'>'+result.data[i].prodBarNum+'</b></b></span>';
                         html = html + '</div>';
                         html = html + '<div class="info-m">';
                         html = html + '<span class="name"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id='+result.data[i].penId+'">'+result.data[i].penNm+'</a></a></span>';
@@ -804,6 +841,22 @@ $row = sql_fetch($sql);
             }
         });
     }
+
+    //바코드 클릭시 팝업
+    $(document).on("click", ".prodBarNumCntBtn_2", function(e){
+        e.preventDefault();
+        var id = $(this).attr("data-id");
+        var popupWidth = 700;
+        var popupHeight = 700;
+        var popupX = (window.screen.width / 2) - (popupWidth / 2);
+        var popupY= (window.screen.height / 2) - (popupHeight / 2);
+        <?php if(is_mobile()){ ?>
+            location.href='<?=G5_URL?>/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=<?=$_GET['prodId']?>&stoId='+id;
+        <?php }else{ ?>
+            window.open("<?=G5_URL?>/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=<?=$_GET['prodId']?>&stoId=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+        <?php } ?>
+    });
+
 </script>
 <?php
 if($is_inquiry_sub) {

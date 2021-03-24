@@ -208,6 +208,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         $sql = 'SELECT  `it_taxInfo`, `it_img1`, `it_cust_price` FROM `g5_shop_item` WHERE `it_id`="'.$list[$i]['prodId'].'"';
                         $row = sql_fetch($sql);
                     ?>
+                    
                     <!--반복-->
                     <a href="<?=G5_SHOP_URL?>/sales_Inventory_datail2.php?prodId=<?=$list[$i]['prodId']?>&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>&prodSupYn=<?=$list[$i]['prodSupYn']?>">
                     <li class="list cb">
@@ -225,7 +226,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                                     </div>
                                     <!--mobile 용-->
                                     <div class="info-02">
-                                        <span class="pro-num"><?=$list[$i]['prodId']?></span><!--상품아이디-->
+                                        <span class="pro-num"><?=$list[$i]['prodPayCode']?></span><!--상품아이디-->
                                         <span class="stock"><?=$list[$i]['orderQuantity']?>개</span><!--대여가능-->
                                         <span class="price"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                                     </div>
@@ -233,7 +234,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                             </div>
                         </span>
                         <!--pc 용-->
-                        <span class="pro-num m_off"><?=$list[$i]['prodId']?></span>
+                        <span class="pro-num m_off"><?=$list[$i]['prodPayCode']?></span>
                         <span class="stock m_off"><?=$list[$i]['quantity']?></span><!--대여가능-->
                         <span class="order"><?=$list[$i]['orderQuantity']?></span><!--대여중-->
                         <span class="price m_off"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->

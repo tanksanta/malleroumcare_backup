@@ -286,7 +286,7 @@ $row = sql_fetch($sql);
                         </li>
                         <li>
                             <span>제품코드</span>
-                            <span><?=$row['it_id']?></span>
+                            <span><?=$row['ProdPayCode']?></span>
                         </li>
                         <li>
                             <span>가격</span>
@@ -457,11 +457,13 @@ $row = sql_fetch($sql);
                                     //유통 / 비유통 구분
                                     if($_GET['prodSupYn'] == "N" ){
                                         $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                                        $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
                                     }else{
-                                        $style_prodSupYn='style="border-color: #0000;background-color: #0000;"';
+                                        $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                                        $prodBarNumCntBtn_2="";
                                     }
                                 ?>
-                                <span class="pro-num m_off"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                                <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 <?php 
                                 //날짜 변환
                                 $date1=$list[$i]['modifyDtm'];
@@ -489,11 +491,11 @@ $row = sql_fetch($sql);
                                 <div class="list-m">
                                     <div class="info-m">
                                         <span class="product"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
-                                        <span class="pro-num"><b <?=$style_prodSupYn?> ><?=$list[$i]['prodBarNum']?></b></span>
+                                        <span class="pro-num <?=$prodBarNumCntBtn_2;?>"" ><b <?=$style_prodSupYn?> ><?=$list[$i]['prodBarNum']?></b></span>
                                     </div>
                                     <div class="info-m">
                                         <span class="state">
-                                            <b>대여가능<img style="padding-left:5px;" src="<?=G5_IMG_URL?>/iconnew.png" alt=""> </b>
+                                            <b>대여가능<?=$nimg?></b>
                                         </span>
                                         <span class="none">
                                             <?=$rental_btn2?>
@@ -766,31 +768,47 @@ $row = sql_fetch($sql);
                                     case '05': $state="기타";   break;
                                     default  : $state="";      break;
                                 }
+                                
                             ?>
-
+                            <?php
+                                //유통 / 비유통 구분
+                                if($_GET['prodSupYn'] == "N" ){
+                                    $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                                    $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                                }else{
+                                    $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                                    $prodBarNumCntBtn_2="";
+                                }
+                            ?>
                             <li class="list cb">
                                 <!--pc용-->
                                 <span class="num"><?=$number?></span>
                                 <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
-                                <span class="pro-num m_off"><b><?=$list[$i]['prodBarNum']?></b></span>
+                                <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 <?php 
                                 //날짜 변환
                                 $date1=$list[$i]['modifyDtm'];
                                 $date2=date("Y-m-d", strtotime($date1));
                                 ?>
                                 <span class="date m_off"><?=$date2?></span>
+                                
+
                                 <span class="none m_off" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')">
+                                    <a href="javascript:;" class="state-btn1" onclick="retal_state_change2('<?=$list[$i]['stoId'] ?>','01','변경되었습니다.')" >대여가능</a>
                                     <a class="state-btn3" href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
                                 </span>
+
                                 <!--mobile용-->
                                 <div class="list-m">
                                     <div class="info-m">
                                         <span class="product"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
-                                        <span class="pro-num" ><b><?=$list[$i]['prodBarNum']?></b></span>
+                                        <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                                             <a href="javascript:;" style="margin-right:7px;" class="state-btn1" onclick="retal_state_change2('<?=$list[$i]['stoId'] ?>','01','변경되었습니다.')" >대여가능</a>
+                                            <a class="state-btn3" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')"  href="javascript:; "><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
                                     </div>
                                     <div class="info-m">
                                         <span class="none">
-                                            <a class="state-btn3" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')"  href="javascript:; "><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                                            
                                         </span>
                                     </div>
                                 </div>
@@ -801,8 +819,8 @@ $row = sql_fetch($sql);
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <div class="table-box">
                                             <div class="tti">
-                                                <h4>상품명(옵션명)</h4>
-                                                <span>123456497</span>
+                                                <h4><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></h4>
+                                                <span><?=$list[$i]['prodBarNum']?></span>
                                             </div>
                                             <table>
                                                 <colgroup>
@@ -817,16 +835,7 @@ $row = sql_fetch($sql);
                                                     <th>기간</th>
                                                     <th>문서</th>
                                                 </thead>
-                                                <tbody id="log_<?=$list[$i]['stoId']?>">
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>홍길동 대여</td>
-                                                    <td>01/20~02/11</td>
-                                                    <td>
-                                                        <a href="javascript:;">계약서</a>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
+                                                <tbody id="log_<?=$list[$i]['stoId']?>"></tbody>
                                             </table>
                                         </div>
                                         <div class="pg-wrap">
@@ -1110,7 +1119,7 @@ $row = sql_fetch($sql);
     function page_load(page_n) {
         page_n = parseInt(page_n);
         $.ajax({
-            url : "<?= G5_SHOP_URL; ?>/sales_Inventory_datail2.php?prodId=<?=$it_id?>&page2="+page_n,
+            url : "<?= G5_SHOP_URL; ?>/sales_Inventory_datail2.php?prodId=<?=$it_id?>&page2="+page_n+"&prodSupYn=<?=$_GET['prodSupYn']?>",
             type : "get",
             async : false,
             success : function(result){
@@ -1128,7 +1137,7 @@ $row = sql_fetch($sql);
     function page_load2(page_n) {
         page_n = parseInt(page_n);
         $.ajax({
-            url : "<?= G5_SHOP_URL; ?>/sales_Inventory_datail2.php?prodId=<?=$it_id?>&page2="+page_n,
+            url : "<?= G5_SHOP_URL; ?>/sales_Inventory_datail2.php?prodId=<?=$it_id?>&page2="+page_n+"&prodSupYn=<?=$_GET['prodSupYn']?>",
             type : "get",
             async : false,
             success : function(result){
@@ -1142,6 +1151,22 @@ $row = sql_fetch($sql);
         });
         $("input:text[dateonly]").datepicker({});
     }
+
+    //바코드 클릭시 팝업
+    $(document).on("click", ".prodBarNumCntBtn_2", function(e){
+        e.preventDefault();
+        var id = $(this).attr("data-id");
+        var popupWidth = 700;
+        var popupHeight = 700;
+        var popupX = (window.screen.width / 2) - (popupWidth / 2);
+        var popupY= (window.screen.height / 2) - (popupHeight / 2);
+        <?php if(is_mobile()){ ?>
+            location.href='<?=G5_URL?>/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=<?=$_GET['prodId']?>&stoId='+id;
+        <?php }else{ ?>
+            window.open("<?=G5_URL?>/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=<?=$_GET['prodId']?>&stoId=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+        <?php } ?>
+    });
+
 
 </script>
 

@@ -116,6 +116,9 @@ $res = json_decode($res, true);
 curl_close($oCurl);
 $sales_Inventory_total2=$res['total'];//대여재고 토탈
 
+//---------------------토탈---------------------------------------
+
+
 
 //판매재고 리스트
 $sendLength = 10;
@@ -150,7 +153,7 @@ $list = [];
 if($res["data"]){
     $list = $res["data"];
 }
-
+// print_r($list);
 
 # 페이징
 $totalCnt = $res["total"];
@@ -200,14 +203,13 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <span class="order">판매완료</span>
                         <span class="price">급여가</span>
                     </li>
-                        
                     <?php for($i=0; $i<count($list); $i++){ 
                         $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
                         $sql = 'SELECT  `it_taxInfo`, `it_img1`, `it_cust_price` FROM `g5_shop_item` WHERE `it_id`="'.$list[$i]['prodId'].'"';
                         $row = sql_fetch($sql);
                     ?>
                     <!--반복-->
-                    <a href="<?=G5_SHOP_URL?>/sales_Inventory_datail.php?prodId=<?=$list[$i]['prodId']?>&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">
+                    <a href="<?=G5_SHOP_URL?>/sales_Inventory_datail.php?prodId=<?=$list[$i]['prodId']?>&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>&prodSupYn=<?=$list[$i]['prodSupYn']?>">
                     <li class="list cb">
                         <span class="num"><?=$number?></span><!-- 넘버링 -->
                         <span class="product" >
@@ -223,7 +225,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                                     </div>
                                     <!--mobile 용-->
                                     <div class="info-02">
-                                        <span class="pro-num"><?=$list[$i]['prodId']?></span><!--상품아이디-->
+                                        <span class="pro-num"><?=$list[$i]['prodPayCode']?></span><!--상품아이디-->
                                         <span class="stock"><?=$list[$i]['quantity']?>개</span><!--주문재고수량-->
                                         <span class="price"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                                     </div>
@@ -231,7 +233,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                             </div>
                         </span>
                         <!--pc 용-->
-                        <span class="pro-num m_off"><?=$list[$i]['prodId']?></span>
+                        <span class="pro-num m_off"><?=$list[$i]['prodPayCode']?></span>
                         <span class="stock m_off"><?=$list[$i]['quantity']?>개</span><!--주문재고수량-->
                         <span class="order"><?=$list[$i]['orderQuantity']?>개</span><!--판매완료 개수-->
                         <span class="price m_off"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->

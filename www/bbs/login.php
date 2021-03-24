@@ -59,6 +59,13 @@ if (!is_file($login_file))
     $skin_path   = G5_SKIN_PATH.'/member/basic';
 
 include_once($skin_path.'/login.skin.php');
+?>
+
+	<style>
+		.form-box { margin-top: 40px; transition: none !important; }
+	</style>
+
+<?php
 
 if($is_login_sub) {
 	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');

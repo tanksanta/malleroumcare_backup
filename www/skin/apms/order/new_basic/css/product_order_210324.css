@@ -74,12 +74,13 @@ table {border-collapse: collapse;}
 
 
 .list-wrap {padding-bottom: 50px;}
-.list-wrap .info-top {padding: 10px 16px; background: #f6f8e3;  display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; position: relative; top: 1px; z-index: 2; }
+.list-wrap .info-top {padding: 10px 16px; background: #f6f8e3;  display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
 .list-wrap .info-top a {width: 100px; border-radius: 5px;text-align: center; display: inline-block;vertical-align: top;padding: 3px 0;border:1px solid #b6bd00;background: #fff;color: #b6bd00;font-size: 14px;}
-.list-wrap .info-top h5 {font-size: 14px; line-height: 30px; font-weight: normal; margin: 0 !important; z-index: 2; position: relative;}
+.list-wrap .info-top h5 {font-size: 14px;font-weight: normal;line-height: 1.5;}
 
 .table-list {}
-.table-list .list {padding: 15px 16px;}
+.table-list .list {padding: 15px 16px;border-bottom: 1px solid #ddd;}
+.table-list .list:last-child {border-bottom: none;}
 .table-list .list ul {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
 .table-list .list li {}
 .table-list .list .btn-0 {margin-bottom: 6px; display: block;vertical-align: top;width: 100px;border: 1px solid #ddd;background: #fff;padding: 3px 0;border-radius: 5px; font-size: 14px;text-align: center;}
@@ -134,7 +135,7 @@ table {border-collapse: collapse;}
 .pro-icon .icon02 {background: #b6bd00;}
 .pro-icon .icon03 {background: #ee8102;}
 
-.table-list2 .pro {width: 70%;}
+.table-list2 .pro {width: 40%;}
 .table-list2 .num {width: 10%;}
 .table-list2 .pro-price {width: 20%;}
 .table-list2 .price {width: 15%;} 
@@ -143,13 +144,12 @@ table {border-collapse: collapse;}
 .table-list2 .head {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
 .table-list2 .head li {display: block; padding: 12px 0 12px 20px; background: #eee;text-align: center;font-size: 16px;}
 
-.table-list2 .list {padding: 15px 16px;font-size: 14px;}
+.table-list2 .list {padding: 15px 0 15px 16px;border-bottom: 1px solid #ddd;font-size: 14px;}
 .table-list2 .list:last-child {border-bottom: none;}
 .table-list2 .list ul {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
-.table-list2 .list ul > li {display: block;text-align: right;}
+.table-list2 .list ul > li {display: block;text-align: center;}
 .table-list2 .list .pro {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
-.table-list2 .pro .img {width: 100px;height: 100px;border: 1px solid #ddd;}
-.table-list2 .pro .img > img { width: 100%; height: 100%; }
+.table-list2 .pro .img {width: 100px;height: auto;border: 1px solid #ddd;}
 .table-list2 .pro-info {padding-left: 20px;text-align: left;}
 .table-list2 .pro-info div {padding-bottom: 7px;}
 .table-list2 .pro-info div:last-child {padding-bottom: 0;}
@@ -165,8 +165,8 @@ table {border-collapse: collapse;}
 .table-list2 .list-btm .list-day ul {font-size: 0;margin-left:6px;}
 .table-list2 .list-btm .list-day ul li {margin-right: 6px; display: inline-block;width: 50px;height: 30px;line-height:28px;border: 1px solid #ddd;background: #eee;text-align: center;font-size: 14px;}
 .table-list2 .list-btm .list-day ul li:last-child {margin-right: 0;}
-.table-list2 .list-btm .list-day ul li.on {background: #666;}
-.table-list2 .list-btm .list-day ul li.on a {color: #fff;}
+.table-list2 .list-btm .list-day ul li:hover {background: #666;}
+.table-list2 .list-btm .list-day ul li:hover a {color: #fff;}
 .table-list2 .list-btm textarea {padding: 5px 0 0; resize: none; width: 100%;border: 1px solid #ddd;height: 30px;font-size: 12px;}
 
 .w-240 {width: 240px !important;}
@@ -191,6 +191,8 @@ table {border-collapse: collapse;}
 .table-list4.table-list3 ul .addr button {margin:0 10px 0 0;}
 .table-list4.table-list3 ul .addr input {width:calc(100% - 100px);}
 .table-list4.table-list3 ul li input {width: 100%;}
+.table-list4.table-list3 ul li input[type="radio"] { width: 15px; margin-right: 5px; margin-left: 20px; margin-top: -4px; }
+.table-list4.table-list3 ul li input[type="radio"]:first-of-type { margin-left: 0; }
 .table-list4 .list-con.list-tel div {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
 .table-list4 .list-con.list-tel div input,
 .table-list4 .list-con.list-tel div select {width: 100%; margin-right: 10px;}
@@ -208,15 +210,15 @@ table {border-collapse: collapse;}
 .order-info .top .add-ac ul li:last-child {padding-bottom: 0;}
 
 .check-ac .check {display: inline-block; vertical-align: middle;margin-right: 14px;}
-.check-ac .check input[type="checkbox"] {display: none;}
+.check-ac .check input[type="radio"] {display: none;}
 .check-ac .check label { display: inline; width: 100%;}
-.check-ac .check input[type="checkbox"] + label .check_on { cursor: pointer;padding-right:0; display: inline-block; width:18px;height:18px; border-radius: 50%; border:1px solid #ddd; background-color: #fff;}
-.check-ac .check input[type="checkbox"]:checked + label .check_on {position: relative; border:1px solid #ee8102;}
-.check-ac .check input[type="checkbox"]:checked + label .check_on:after {content: ''; display: block; position: absolute;  display: block; left: 50%; top:50%; margin: -5px 0 0 -5px; width: 10px; height: 10px; border-radius: 50%; background: #ee8102;}
+.check-ac .check input[type="radio"] + label .check_on { cursor: pointer;padding-right:0; display: inline-block; width:18px;height:18px; border-radius: 50%; border:1px solid #ddd; background-color: #fff;}
+.check-ac .check input[type="radio"]:checked + label .check_on {position: relative; border:1px solid #ee8102;}
+.check-ac .check input[type="radio"]:checked + label .check_on:after {content: ''; display: block; position: absolute;  display: block; left: 50%; top:50%; margin: -5px 0 0 -5px; width: 10px; height: 10px; border-radius: 50%; background: #ee8102;}
 .check-ac .check b {display: inline-block;vertical-align: top;font-size: 14px;color: #666;font-weight: 300;}
 
 .detail-price h5 {padding-bottom: 18px; font-size: 16px;color: #232323;}
-.coupon-icon {display: inline-block;padding: 2px 9px;border-radius: 5px;border:1px solid #ddd;background:#eee;font-style: normal;}
+.coupon-icon {display: inline-block;padding: 2px 9px;border-radius: 5px;border:1px solid #ddd;background:#eee;font-style: normal; cursor: pointer; }
 .detail-price .all-info {margin-bottom: 40px;}
 .detail-price .all-info ul {padding: 10px; border: 1px solid #666;border-bottom-color: #ddd;}
 .detail-price .all-info ul li div {padding-bottom: 12px; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;font-size: 14px;}
@@ -267,7 +269,6 @@ table {border-collapse: collapse;}
 #pro-order2 .de-btn {display: inline-block;vertical-align: middle;padding: 3px 10px;margin-right: 6px; font-style: normal;border-radius:5px;font-size: 14px;background: #fff;border: 1px solid #ddd;}
 #pro-order2 .name-top {margin-bottom: 44px;}
 #pro-order2 .name-top div {background: #f6f8e3;padding: 12px;font-size:14px;display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
-#pro-order2 .name-top div > p { margin: 0; }
 #pro-order2 .name-top div a {border-radius: 5px; display: inline-block;padding: 6px 0;width: 100px;text-align: center; color: #b7be00;background: #fff;border:1px solid #b7be00;}
 #pro-order2 .name-top.gray div {background: #eee;}
 #pro-order2 .name-top.gray div a {border-color: #333;color: #333;}

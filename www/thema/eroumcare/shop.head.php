@@ -25,7 +25,10 @@
 ?>
 
 <script type="text/javascript">
-	
+    function gotosearch(){
+        window.location.href = '<?=G5_SHOP_URL?>/search.php';
+    }
+
 	// wetoz : 2020-09-04
 	if(!wcs_add) var wcs_add = {};
 	wcs_add["wa"] = "s_4372b22f12c2";
@@ -90,14 +93,13 @@ scrollToTop();
 <style>
 	.mo_top > .modeBtn { position: absolute; font-weight: bold; font-size: 16px; top: 32px; right: 70px; display: none; }
 </style>
-
-
 <!-- 모드바 스타일링 -->
 <style>
     .top_mode_area{ position:fixed; top :0;z-index:9999999; display:block; width:100%; height:50px; text-align:center; background-color: rgba(0,0,0,0.7);  color : #fff; font-size: 20px; line-height:50px; opacity:70%;}
     @media screen and (max-width: 500px){
         .top_mode_area{font-size:10px;}
     }
+    .mode_div{ position: absolute; width: 140px; right: 85px; top: 30px; font-size:16px;}
 </style>
 
 
@@ -116,18 +118,17 @@ scrollToTop();
     <div class="logoWrap">
         <a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
     </div>
-
-    <?php if($member["mb_level"] == "3"){ ?>
-        <?php if($_COOKIE["viewType"] == "adm"){ ?>
-            <a href="#" class="modeBtn" data-type="basic">구매모드</a>
-        <?php } else { ?>
-            <a href="#" class="modeBtn" data-type="adm">급여안내모드</a>
+    <div class="mode_div">
+        <?php if($member["mb_level"] == "3"){ ?>
+            <?php if($_COOKIE["viewType"] == "adm"){ ?>
+                <a href="#" class="modeBtn" data-type="basic" ><b>구매모드</b>
+            </a>
+            <?php } else { ?>
+                <a href="#" class="modeBtn" data-type="adm"><b>급여안내모드</b></a>
+            <?php } ?>
         <?php } ?>
-    <?php } ?>
-
-
-
-    <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu_search.png" alt="" class="header-search-btn">
+    </div>
+    <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu_search.png" alt="" class="header-search-btn" onclick="gotosearch();">
     <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu_new.png" alt="" class="header-hamburger-btn">
 </div>
 

@@ -74,10 +74,500 @@ var array_box=[];
     });
 </script>
 
+	<section class="tab-wrap tab-2 on">
+		<div class="detail-wrap">
+			<h4>상품 정보</h4>
+			<div class="info-wrap">
+				<div class="table-list2">
+					<ul class="head">
+						<li class="pro">상품(옵션)</li>
+						<li class="num">수량</li>
+						<li class="pro-price">급여가</li>
+						<li class="price">상품금액</li>
+						<li class="delivery-price" style="width: 20%;">배송비</li>
+						<li class="barcode" style="display: none;">바코드</li>
+					</ul>
 
-<style>
-	.bsk-tbl .well li { width: 100%; float: left; }
-</style>
+					<?php for($i=0; $i < count($item); $i++) { ?>
+						<div class="list item" data-code="<?=$item[$i]["it_id"]?>" data-sup="<?=$item[$i]["prodSupYn"]?>">
+							<ul class="cb">
+								<li class="pro">
+									<div class="img"><img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';"></div>
+									<div class="pro-info">
+										<div class="pro-icon">
+											<i class="icon01"><?=($item[$i]["prodSupYn"] == "N") ? "비유통" : "유통"?></i>
+											
+										<?php if(substr($item[$i]["ca_id"], 0, 2) == 10){ ?>
+											<i class="icon03">판매</i>
+										<?php } ?>
+										
+										<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
+											<i class="icon02">대여</i>
+										<?php } ?>
+										</div>    
+										<div class="name">
+											<input type="hidden" name="it_id[<?php echo $i; ?>]"    value="<?php echo $item[$i]['hidden_it_id']; ?>" class="it_id_class">
+											<input type="hidden" name="it_name[<?php echo $i; ?>]"  value="<?php echo $item[$i]['hidden_it_name']; ?>">
+											<input type="hidden" name="it_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_price']; ?>">
+											<input type="hidden" name="it_discount[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_discount']; ?>">
+											<input type="hidden" name="cp_id[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_cp_id']; ?>">
+											<input type="hidden" name="cp_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_cp_price']; ?>">
+											<input type="hidden" name="ct_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['ct_price']; ?>">
+											<input type="hidden" name="it_qty[<?php echo $i; ?>]" value="<?php echo $item[$i]['qty']; ?>">
+											<?php for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++){ ?>
+												<input type="hidden" class="it_option_stock_cnt" name="it_option_stock_cnt_<?=$item[$i]["it_optionList"][$ii]["id"]?>" value="0">
+											<?php } ?>
+											<?php if($default['de_tax_flag_use']) { ?>
+												<input type="hidden" name="it_notax[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_it_notax']; ?>">
+											<?php } ?>
+											<?php echo $item[$i]['it_name']; ?>
+										</div>
+										<?php if($item[$i]['it_options']) { ?>
+											<div class="text"><?php echo $item[$i]['it_options'];?></div>
+										<?php } ?>
+										
+										<?php
+											//소계 토탈 - 디스카운트
+											$pirce_v = str_replace(',','',$item[$i]['total_price'])-str_replace(',','',$item[$i]['ct_discount']);
+										?>
+										<!--모바일용-->
+										<div class="info_pc_none">
+											<div>
+												<p><?php echo $item[$i]['qty']; ?>개</p>
+											</div>
+											<div>
+												<p><?php echo $item[$i]['ct_price']; ?></p>
+											</div>
+											<div>
+												<p><?php echo number_format($pirce_v) ; ?></p>
+											</div>
+										</div>
+									</div>
+								</li>
+								<li class="num m_none">
+									<p><?php echo $item[$i]['qty']; ?>개</p>
+								</li>
+								<li class="pro-price m_none">
+									<p><?php echo $item[$i]['ct_price']; ?></p>
+								</li>
+								<li class="price m_none">
+									<p><?php echo number_format($pirce_v) ; ?></p>
+								</li>
+								<li class="delivery-price m_none" style="width: 20%;">
+									<p><?php echo $item[$i]['ct_send_cost']; ?></p>
+								</li>
+								<li class="barcode m_none barList" style="display: none;">
+								<?php
+									for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++){
+										for($iii = 0; $iii < $item[$i]["it_optionList"][$ii]["qty"]; $iii++){
+								?>
+										<?php if($optionCntList[$item[$i]["it_id"]][$ii] > $iii){ ?>
+											<input type="hidden" class="prodStockBarBox<?=$ii?> prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
+										<?php } else { ?>
+										<?php
+											if($rentalItemCnt){
+												$itemPenIdStatus = false;
+											}
+										?>
+											<input type="hidden" class="prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
+										<?php } ?>
+								<?php
+										$postProdBarNumCnt++; }
+									}
+								?>
+								</li>
+							</ul>
+							<div class="list-btm">
+<!--
+								<div class="check-ac">
+									<span class="check">
+										<input type="checkbox" id="chek_a" name="">
+										<label for="chek_a">
+											<span class="check_on"></span>
+										</label>
+										<b>신규주문</b>
+									</span>
+									<span class="check">
+										<input type="checkbox" id="chek_b" name="">
+										<label for="chek_b">
+											<span class="check_on"></span>
+										</label>
+										<b>재고소진</b>
+									</span>
+									<div class="num-select">
+										<p>1개</p>
+										<ul>
+											<li>1개</li>
+											<li>2개</li>
+											<li>3개</li>
+											<li>4개</li>
+											<li>5개</li>
+										</ul>
+									</div>
+								</div>
+-->
+								<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
+								<div>
+									<span class="btm-tti">대여금액(월)</span>
+									<span><?=number_format($item[$i]["it_rental_price"])?>원</span>
+								</div>
+								<div>
+									<span class="btm-tti">대여기간</span>
+									<span class="list-day">
+										<input type="text" class="ordLendDtmInput ordLendStartDtm dateonly" style="margin-right: 6px;" name="ordLendStartDtm_<?=$item[$i]["ct_id"]?>" data-default="<?=date("Y-m-d")?>" value="<?=date("Y-m-d")?>"> ~ <input type="text" class="ordLendDtmInput ordLendEndDtm dateonly" style="margin-left: 6px;" name="ordLendEndDtm_<?=$item[$i]["ct_id"]?>" data-default="<?=date("Y-m-d", strtotime("+ 364 days"))?>" readonly value="<?=date("Y-m-d", strtotime("+ 364 days"))?>">
+										<ul>
+											<li><a href="#" class="dateBtn" data-month="6">6개월</a></li>
+											<li><a href="#" class="dateBtn" data-month="12">1년</a></li>
+											<li><a href="#" class="dateBtn" data-month="24">2년</a></li>
+										</ul>
+									</span>
+								</div>
+								<?php } ?>
+								<div>
+									<span class="btm-tti">요청사항</span>
+									<span class="list-textarea">
+										<textarea name="prodMemo_<?=$item[$i]["ct_id"]?>" placeholder="추가 구매 사항이나 상품관련 요청사항을 입력하세요." ></textarea>
+									</span>
+								</div>
+							</div>
+						</div>
+					<?php } ?>
+				</div>
+			</div>
+
+			<div class="order-info">
+				<div class="top">
+					<h5>받으시는 분</h5>
+					<?php if($is_member){ ?>
+					<div class="add-ac">
+						<p>배송지 선택</p>
+						<ul>
+							<li name="ad_sel_addr" id="ad_sel_addr_same" data-value="same">주문자와 동일</li>
+							<li name="ad_sel_addr" id="ad_sel_addr_recipient" data-value="recipient" style="display: none;">수급자와 동일</li>
+							<li name="ad_sel_addr" id="od_sel_addr_new" data-value="new">신규 배송지</li>
+							<li name="ad_sel_addr" id="order_address">배송지 목록</li>
+						</ul>
+					</div>
+					<?php } ?>
+				</div>
+				<div class="table-list3">
+					<ul>
+						<li>
+							<strong>이름</strong>
+							<div>
+								<input class="w-240" type="text" id="od_b_name" name="od_b_name">
+							</div>
+						</li>
+						<li>
+							<strong>전화번호</strong>
+							<div>
+								<input class="w-240" type="text" id="od_b_tel" name="od_b_tel">
+							</div>
+						</li>
+						<li>
+							<strong>핸드폰</strong>
+							<div>
+								<input class="w-240" type="text" id="od_b_hp" name="od_b_hp">
+							</div>
+						</li>
+						<li class="addr">
+							<strong>주소</strong>
+							<div>
+								<div>
+									<input type="text"  class="w-70"name="od_b_zip" id="od_b_zip" required readonly>
+									<button type="button" onclick="win_zip('forderform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">우편번호</button>
+									<input type="hidden" name="od_b_addr_jibeon" value="">
+								</div>
+								<div>
+									<input type="text" name="od_b_addr1" id="od_b_addr1" required readonly style="width: 100%;">
+								 </div>
+								 <div>
+									<input type="text" name="od_b_addr2" id="od_b_addr2" style="width: 100%;">
+								 </div>
+							</div>
+						</li>
+						<li>
+							<strong>배송요청사항</strong>
+							<textarea class="w-all" name="od_memo" id="od_memo"></textarea>
+                        <select name="od_delivery_type" id="od_delivery_type" style="display: none;">
+                            <?php
+                            foreach($delivery_types as $type) {
+                                // if ( $type['user-order'] != true ) continue;
+                                if ( !$default['de_delivery_type_' . $type['val']] ) continue;
+                            ?>
+                                <option value="<?php echo $type['val']; ?>" <?php echo $type['val'] == $od['od_delivery_type'] ? 'selected' : ''; ?> data-type="<?php echo $type['type']; ?>"><?php echo $type['name']; ?></option>
+                            <?php } ?>
+                        </select>
+						</li>
+					</ul>
+				</div>
+
+				<div class="top">
+					<h5>매출증빙</h5>
+					<div class="check-ac">
+						<span class="check">
+							<input type="radio" id="typereceipt1" name="ot_typereceipt" value="11">
+							<label for="typereceipt1">
+								<span class="check_on"></span>
+							</label>
+							<b>세금계산서</b>
+						</span>
+						<span class="check">
+							<input type="radio" id="typereceipt2" name="ot_typereceipt" value="31">
+							<label for="typereceipt2">
+								<span class="check_on"></span>
+							</label>
+							<b>현금영수증</b>
+						</span>
+						<span class="check">
+							<input type="radio" id="typereceipt0" name="ot_typereceipt" value="0">
+							<label for="typereceipt0">
+								<span class="check_on"></span>
+							</label>
+							<b>발급 안함</b>
+						</span>
+					</div>
+				</div>
+				<div class="table-list3 table-list4" id="typereceipt1_view">
+				<?php 
+					# 결제정보
+					$sendData_entInfo = [];
+					$sendData_entInfo["usrId"] = $member["mb_id"];
+
+					$oCurl = curl_init();
+					curl_setopt($oCurl, CURLOPT_PORT, 9001);
+					curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com:9001/api/account/entInfo");
+					curl_setopt($oCurl, CURLOPT_POST, 1);
+					curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData_entInfo, JSON_UNESCAPED_UNICODE));
+					curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+					curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+					$res = curl_exec($oCurl);
+					curl_close($oCurl);
+					$entInfo=json_decode($res,true);
+				?>
+					<ul>
+						<li>
+							<div class="list-con">
+								<strong>기업명</strong>
+								<div>
+									<input type="text" name="typereceipt_bname" value="<?php echo $entInfo['data']['entNm'] ?>" id="typereceipt_bname" maxlength="20">
+								</div>
+							</div>
+							<div class="list-con">
+								<strong>대표자명</strong>
+								<div>
+									<input type="text" name="typereceipt_boss_name" value="<?php echo $entInfo['data']['entCeoNm'] ?>" id="typereceipt_boss_name" maxlength="20">
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="list-con">
+								<strong>사업자번호</strong>
+								<div>
+									<input type="text" name="typereceipt_bnum" value="<?php echo $member['mb_giup_bnum'] ?>" id="typereceipt_bnum" maxlength="12" <?php echo $member['mb_giup_bnum'] ? ' readonly ' : ''; ?>>
+								</div>
+							</div>
+							<div class="list-con list-tel">
+								<strong>연락처</strong>
+								<div>
+									<input type="text" name="typereceipt_btel" value="<?php echo $entInfo['data']['entPnum'] ?>" id="typereceipt_btel" maxlength="20" style="margin-left: 0;">
+								</div>
+							</div>
+						</li>
+						<li class="addr">
+							<strong>주소</strong>
+							<div>
+								<div>
+									<input type="text"  class="w-70"name="ot_location_zip" value="<?php echo get_text($member['mb_giup_zip1']).get_text($member['mb_giup_zip2']); ?>" id="ot_location_zip" required readonly>
+									<button type="button" onclick="win_zip('forderform', 'ot_location_zip', 'ot_location_addr1', 'ot_location_addr2', 'ot_location_addr3', 'ot_location_jibeon');">우편번호</button>
+									<input type="hidden" name="ot_location_jibeon" value="">
+								</div>
+								<div>
+									<input type="text" name="ot_location_addr1" value="<?php echo get_text($member['mb_giup_addr1']); ?>" id="ot_location_addr1" required readonly>
+								 </div>
+								 <div>
+									<input type="text" name="ot_location_addr2" value="<?php echo get_text($member['mb_giup_addr2']); ?>" id="ot_location_addr2">
+								 </div>
+							</div>
+						</li>
+						<li>
+							<div class="list-con">
+								<strong>업태</strong>
+								<div>
+									<input type="text" name="typereceipt_buptae" value="<?php echo $entInfo['data']['entBusiCondition'] ?>" id="typereceipt_buptae" maxlength="20">
+								</div>
+							</div>
+							<div class="list-con">
+								<strong>업종</strong>
+								<div>
+									<input type="text" name="typereceipt_bupjong" value="<?php echo $entInfo['data']['entBusiType'] ?>" id="typereceipt_bupjong" maxlength="20">
+								</div>
+							</div>
+						</li>
+						<li class="em">
+							<div class="list-con">
+								<strong>이메일</strong>
+								<div>
+									<input type="text" name="typereceipt_email" value="<?php echo $member['mb_giup_tax_email'] ?>" id="typereceipt_email" maxlength="20">
+								</div>
+							</div>
+							<?php
+							$sql = "SELECT * FROM g5_member_giup_manager WHERE mb_id = '{$member['mb_id']}'";
+							$result = sql_query($sql);
+							$managers = array();
+							while( $m_row = sql_fetch_array($result) ) {
+								$managers[] = $m_row;
+							}
+							if (!count($managers)) {
+								array_push($managers, array());
+							}
+							?>
+							<div class="list-con">
+								<strong>담당자명</strong>
+								<div>
+									<input type="text" name="typereceipt_manager_name" value="<?php echo $managers[0]['mm_name'] ?>" id="typereceipt_manager_name" maxlength="20">
+								</div>
+							</div>
+						</li>
+
+					</ul>
+				</div>
+				
+				<div class="table-list3 table-list4" id="typereceipt2_view">
+					<ul>
+						<li>
+							<input type="radio" name="typereceipt_cuse" class="typereceipt_cuse" id="cuse0" value="1" checked> <label for="cuse0">개인 소득공제</label>
+							<input type="radio" name="typereceipt_cuse" class="typereceipt_cuse" id="cuse1" value="2"> <label for="cuse1">사업자 지출증빙</label>
+						</li>
+						<li>
+							<div class="list-con personallay">
+								<strong>휴대폰번호</strong>
+								<div>
+									<input type="text" name="p_typereceipt_btel" class="number" maxlength="13" title="휴대폰번호('-' 없이 입력)" placeholder="휴대폰번호('-' 없이 입력)">
+								</div>
+							</div>
+							<div class="list-con businesslay" style="display: none;">
+								<strong>휴대폰번호</strong>
+								<div>
+									<input type="text" name="p_typereceipt_bnum" class="number" maxlength="12" title="사업자번호('-' 없이 입력)" placeholder="사업자번호('-' 없이 입력)">
+								</div>
+							</div>
+							<div class="list-con list-tel">
+								<strong>이메일</strong>
+								<div>
+									<input type="text" name="p_typereceipt_email" title="이메일주소">
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="detail-price">
+			<h5 class="icon-tti order_recipientInfoBox" style="display: none;">
+				수급자 정보
+				<a href="#" id="order_recipient"><img src="<?=$SKIN_URL?>/image/icon_23.png" alt=""> 내 수급자 조회</a>
+			</h5>
+			<div class="all-info all-info2 order_recipientInfoBox" style="display: none;">
+				<ul>
+					<li>
+						<div>
+							<b>수급자명</b>
+							<span id="penNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>인정등급</b>
+							<span id="penTypeNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>장기요양번호</b>
+							<span id="penLtmNum_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<h5>결제정보</h5>
+			<div class="all-info">
+				<ul>
+					<li>
+						<div>
+							<b>주문금액</b>
+							<span id="printTotalCellPrice"><?php echo number_format($tot_sell_price); ?>원</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>할인금액
+								<i class="coupon-icon" id="od_coupon_btn">쿠폰</i>
+							</b>
+							<span><span id="od_cp_price"><?php echo number_format($tot_sell_discount); ?></span>원</span>
+						</div>
+<!--
+						<div class="coupon-on">
+							<b>쿠폰적용</b>
+							<span>2000원</span>
+						</div>
+-->
+					</li>
+					<li>
+						<div>
+							<b>배송비</b>
+							<span class="delivery_cost_display"><?php echo number_format($send_cost); ?>원</span>
+						</div>
+					</li>
+				</ul>
+				<div class="all-info-price od_tot_price">
+					<b>합계금액</b>
+					<span id="ct_tot_price" class="print_price"><?php echo number_format($tot_price); ?>원</span>
+				</div>
+			</div>
+			<h5 class="stock_insert_none">결제방법</h5>
+			<div class="payment-tab stock_insert_none">
+				<ul>
+					<li class="on">
+						<a href="#" data-for="od_settle_pay_end">
+							<img src="<?=$SKIN_URL?>/image/icon_21.png" alt="">
+							월 마감정산
+						</a>
+					</li>
+					<li>
+						<a href="#" data-for="od_settle_bank">
+							<img src="<?=$SKIN_URL?>/image/icon_22.png" alt="">
+							무통장입금
+						</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div id="settle_bank" style="display: none;">
+				<h5>입금할 계좌</h5>
+				<select name="od_bank_account" id="od_bank_account" style="width: 100%; height: 30px; border: 1px solid #DDD; padding: 5px; margin-top: -25px;">
+					<option value="">선택하십시오.</option>
+					<?php echo $bank_account; ?>
+				</select>
+				
+				<h5>입금자명</h5>
+				<input type="text" name="od_deposit_name" id="od_deposit_name" maxlength="20" style="width: 100%; height: 30px; border: 1px solid #DDD; padding: 5px; margin-top: -25px; margin-bottom: 40px;">
+			</div>
+			
+			<div class="text" style="display: none;">
+				<span>- 보유재고 등록 선택 시 상품배송이 되지 않습니다. </span>
+				<span>- 보유 재고 등록시 바코드 정보를 모두 입력해야 등록이 가능합니다. </span>
+			</div>
+			
+			<div class="pay-btn">
+				<button type="button" id="forderform_check_btn" onclick="forderform_check(this.form);">상품 주문하기</button>
+				<a href="javascript:history.go(-1);">취소</a>
+			</div>
+		</div>
+
+	</section>
 
 
 
@@ -203,7 +693,7 @@ var array_box=[];
 
 
     <!-- 주문하시는 분 입력 시작 { -->
-    <section id="sod_frm_orderer" style="margin-bottom:0px;">
+    <section id="sod_frm_orderer" style="margin-bottom:0px; display: none;">
         <div class="panel panel-default">
             <div class="panel-heading"><strong>  주문하시는 분</strong></div>
             <div class="panel-body">
@@ -358,8 +848,6 @@ var array_box=[];
 		#sod_frm_stock_status input[type="checkbox"] { vertical-align: middle; margin-right: 5px; margin-top: 0; top: -2px; position: relative; }
 		#sod_frm_stock_status label { cursor: pointer; }
 
-		.dateBtn { width: 50px; height: 30px; line-height: 28px; float: left; margin-left: 10px; background-color: #EEE; font-size: 12px; color: #333 !important; font-weight: bold; text-align: center; border: 1px solid #DDD; }
-
 		@media (max-width : 750px){
 			#order_recipientBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 			#order_submitCheckBox > div > div { width: 100%; height: 100%; left: 0; margin-left: 0; }
@@ -368,134 +856,6 @@ var array_box=[];
 		}
 	</style>
     <!-- 수급자 정보 iframe창 -->
-
-
-
-
-
-
-
-<!-- 수급자정보 박스 -->
-    <section id="sod_frm_recipient_orderer" style="margin-bottom:0px;">
-		<input type="hidden" name="penId" id="penId">
-		<input type="hidden" name="penTypeCd" id="penTypeCd">
-		<input type="hidden" name="searchUsrId" id="searchUsrId" value="123456789">
-		<input type="hidden" name="shoBasSeq" id="shoBasSeq" value="12">
-		<input type="hidden" name="prodBarNum" id="prodBarNum" value="">
-		<input type="hidden" name="ordNm" id="ordNm" value="김예비">
-		<input type="hidden" name="ordCont" id="ordCont" value="010-2551-8080">
-		<input type="hidden" name="ordZip" id="ordZip" value="46241">
-		<input type="hidden" name="ordAddr" id="ordAddr" value="부산 금정구 부산대학로63번길 2">
-		<input type="hidden" name="ordAddrDtl" id="ordAddrDtl" value="(장전동) 1">
-		<input type="hidden" name="ordMemo" id="ordMemo" value="">
-		<input type="hidden" name="payMehCd" id="payMehCd" value="00">
-
-        <div class="panel panel-default" style="border:1px solid #ed9947;">
-			<div class="panel-heading">
-				<div class="top_area">
-					<p class="black bold">수급자 정보</p>
-					<p>주문 시 수급자정보가 없는 경우 사업소에서 주문한 것으로 판단하여 재고로 등록됩니다.</p>
-					<a id="recipient_del" style="margin-right:130px;" class="bg-red">삭제</a>
-					<a href="#" id="order_recipient" class="bg-black">내 수급자 조회</a>
-				</div>
-			</div>
-            <div class="panel-body">
-
-			<div id="Yrecipient" class="none">
-                <div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label"><b>수급자</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="penNm" id="penNm" class="form-control input-sm" readonly>
-                        <span class="fa fa-check form-control-feedback"></span>
-                    </div>
-                </div>
-				<div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_name"><b>인정등급</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="penTypeNm" id="penTypeNm" class="form-control input-sm" readonly>
-                        <span class="fa fa-check form-control-feedback"></span>
-                    </div>
-                </div>
-				<div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_name"><b>유효기간</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="penExpiDtm" id="penExpiDtm" class="form-control input-sm" readonly>
-                        <span class="fa fa-check form-control-feedback"></span>
-                    </div>
-                </div>
-				<div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_name"><b>적용기간</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="penAppEdDtm" id="penAppEdDtm" class="form-control input-sm" readonly>
-                        <span class="fa fa-check form-control-feedback"></span>
-                    </div>
-                </div>
-				<div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_name"><b>전화번호</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="penConPnum" id="penConPnum" class="form-control input-sm" readonly>
-                        <span class="fa fa-check form-control-feedback"></span>
-                    </div>
-                </div>
-				<div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_name"><b>휴대폰</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="penConNum" id="penConNum" class="form-control input-sm" readonly>
-                        <span class="fa fa-check form-control-feedback"></span>
-                    </div>
-                </div>
-				<div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_name"><b>주소</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="penAddr" id="penAddr" class="form-control input-sm" readonly>
-						<input type="hidden" name="penzip" id="penzip" value="">
-                        <span class="fa fa-check form-control-feedback"></span>
-                    </div>
-                </div>
-				<!--div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_name"><b>한도금액</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="penMoney" id="penMoney" class="form-control input-sm" readonly>
-                        <span class="fa fa-check form-control-feedback"></span>
-                    </div>
-                </div-->
-			</div>
-			<div id="Nrecipient" class="block">
-				<p class="bold">입력된 수급자 정보가 없습니다. </p>
-			</div>
-
-            </div>
-        </div>
-    </section>
-<!-- 수급자정보 박스 -->
-
-
-<!-- 보유재고등록 -->
-<section id="sod_frm_stock_status">
-    	<p>
-    		<label>
-    			<input type="checkbox" name="od_stock_insert_yn" id="od_stock_insert_yn">
-    			<b>보유 재고 등록</b>
-    		</label>
-    	</p>
-
-    	<p>
-    		<span>- 선택 시 상품배송이 되지 않습니다. 보유 재고 등록시에만 선택하세요.</span><br>
-    		<span>- 보유 재고 등록시 바코드 정보를 모두 입력해야 등록이 가능합니다.</span><br>
-    		<span>- 수급자를 선택하시면 보유 재고로 등록이 불가능합니다.</span>
-    	</p>
-    </section>
-<!-- 보유재고등록 -->
-
-
-
-
-
-
-
-
-
-
 
 	<script>
         
@@ -570,14 +930,21 @@ var array_box=[];
 			document.getElementById("penAddr").value=list['penAddr'];			//주소
 			document.getElementById("penTypeCd").value=list['penTypeCd'];			//주소
 			///*document.getElementById("penMoney").value=list['penMoney'];			//한도금액*/
+			
+			$("#penNm_print").text(list['penNm']);				//수급자명
+			$("#penNm_print").css("color", "");
+			$("#penTypeNm_print").text(list['penTypeNm']);				//수급자명
+			$("#penTypeNm_print").css("color", "");
+			$("#penLtmNum_print").text(list['penLtmNum']);				//장기요양번호
+			$("#penLtmNum_print").css("color", "");
 
-			document.getElementById("coupon_box").style.display="none";			//한도금액*/
+			document.getElementById("od_coupon_btn").style.display="none";			//한도금액*/
             $("#od_cp_price").text(0);
 
 
 			var optionCntList = <?=json_encode($optionCntList)?>;
 			var optionBarList = <?=json_encode($optionBarList)?>;
-			var prodItemList = $("#sod_list tr.item");
+			var prodItemList = $(".table-list2 .list.item");
             console.log(prodItemList);
 			$.each(prodItemList, function(key, itemDom){
 				var code = $(itemDom).attr("data-code");
@@ -664,19 +1031,17 @@ var array_box=[];
 
 			if(!totalPrice){
 				$("input[name='od_send_cost']").val(0);
-				$(".delivery_cost_display > strong").text("0 원");
+				$(".delivery_cost_display").text("0 원");
 			} else {
 				$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
-				$(".delivery_cost_display > strong").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
+				$(".delivery_cost_display").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
 			}
 
 			$("input[name=od_price]").val(totalPrice);
 			$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 			calculate_order_price();
-			$("#ad_sel_addr_recipient").parent().show();
+			$("#ad_sel_addr_recipient").show();
 
-			$("#display_pay_button > input").val("수급자 주문하기");
-			$("#show_pay_btn > input").val("수급자 주문하기");
 			$(".stockCntStatusDom").show();
 			$("#sod_frm_taker").show();
 			$("#sod_frm_pay").show();
@@ -693,9 +1058,6 @@ var array_box=[];
 		}
 
 		$(function() {
-			$("#display_pay_button > input").val("재고 주문하기");
-			$("#show_pay_btn > input").val("재고 주문하기");
-
 			$("#recipient_del").on("click", function() {
 
 				$(".recipientBox").remove();
@@ -716,11 +1078,11 @@ var array_box=[];
 				$('#penAddr').val('');
 				$('#penMoney').val('');
 
-				$("#ad_sel_addr_recipient").parent().hide();
+				$("#ad_sel_addr_recipient").hide();
 
 				var optionCntList = <?=json_encode($optionCntList)?>;
 				var optionBarList = <?=json_encode($optionBarList)?>;
-				var prodItemList = $("#sod_list tr.item");
+				var prodItemList = $(".table-list2 .list.item");
 
 				$.each(prodItemList, function(key, itemDom){
 					var code = $(itemDom).attr("data-code");            //아이템 넘버
@@ -764,18 +1126,17 @@ var array_box=[];
 
 				if(!totalPrice){
 					$("input[name='od_send_cost']").val(0);
-					$(".delivery_cost_display > strong").text("0 원");
+					$(".delivery_cost_display").text("0 원");
 				} else {
 					$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
-					$(".delivery_cost_display > strong").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
+					$(".delivery_cost_display").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
 				}
 
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
 
-				$("#display_pay_button > input").val("재고 주문하기");
-				$("#show_pay_btn > input").val("재고 주문하기");
+				$(".pay-btn button").text("상품 주문하기");
 				$(".stockCntStatusDom").hide();
 				$(".ordLendFrm").hide();
 				$(".ordLendDtmInput").val("");
@@ -785,12 +1146,10 @@ var array_box=[];
 				$(".barList input").val("");
 			});
 
-			$("#od_stock_insert_yn").change(function(){
-				var status = $(this).prop("checked");
+			function od_stock_insert_yn(){
+				var status = $("#od_stock_insert_yn").prop("checked");
 
-
-
-				var prodItemList = $("#sod_list tr.item");
+				var prodItemList = $(".table-list2 .list.item");
 				$(".barList input").val("");
 
 				if(status){
@@ -820,10 +1179,10 @@ var array_box=[];
 
 				if(status){
 					$("input[name='od_send_cost']").val(0);
-					$(".delivery_cost_display > strong").text("0 원");
+					$(".delivery_cost_display").text("0 원");
 				} else {
 					$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
-					$(".delivery_cost_display > strong").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
+					$(".delivery_cost_display").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
 				}
 
 				var it_price = $("input[name^=it_price]");
@@ -836,215 +1195,98 @@ var array_box=[];
 					}
 				});
 
-                //20210307
-				if(status){
-					$("#forderform_check_btn").val("보유재고등록");
-				}else{
-					$("#forderform_check_btn").val("재고 주문하기");
-				}
-
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
+			}
+			
+			
+		//상품주문,수급자주문,보유재고등록 탭
+		$('.detail-tab li').on('click',function(){
+			if($(this).hasClass("on")){
+				return false;
+			}
+			
+			let thisIndex = $(this).index();
+			$(this).addClass('on');
+			$(this).siblings('li').removeClass('on');
+			$('.tab-wrap').eq(thisIndex).addClass('on');
+
+			$("#od_stock_insert_yn").prop("checked", false);
+			$("#forderform_check_btn").text("상품 주문하기");
+			
+			$(".tab-2 .table-list2 .delivery-price").css("width", "20%");
+			$(".tab-2 .table-list2 .barcode").hide();
+			
+			$(".order-info").show();
+			$(".stock_insert_none").show();
+			$(".order_recipientInfoBox").hide();
+			
+			$("#penId").val("");
+
+			switch($(this).attr("data-type")){
+				case "stock_insert" :
+					$("#od_stock_insert_yn").prop("checked", true);
+					$("#forderform_check_btn").text("보유재고 등록");
+					$(".tab-2 .table-list2 .delivery-price").css("width", "10%");
+					$(".tab-2 .table-list2 .barcode").show();
+					$(".order-info").hide();
+					$(".stock_insert_none").hide();
+					break;
+				case "order_pen" :
+					$(".tab-2 .table-list2 .delivery-price").css("width", "10%");
+					$(".tab-2 .table-list2 .barcode").show();
+					$(".order_recipientInfoBox").show();
+					break;
+			}
+			
+			od_stock_insert_yn();
+		});
+
+		//결제방법 탭
+		$('.payment-tab ul li > a').on('click',function(e){
+			e.preventDefault();
+		});
+		$('.payment-tab ul li').on('click',function(e){
+			e.preventDefault();
+
+			var target = $(this).find("a").attr("data-for");
+
+			$("input[name='od_settle_case']").prop("checked", false);
+			$("#" + target).prop("checked", true);
+
+			$('.payment-tab ul li').removeClass("on");
+			$('.payment-tab ul li > a[data-for="' + target + '"]').closest("li").addClass("on");
+			
+			$("#settle_bank").hide();
+			switch(target){
+				case "od_settle_bank" :
+					$("#settle_bank").show();
+					break;
+			}
+		});
+		//배송지선택
+		$('.add-ac').find('p').on('click',function(){
+			$(this).siblings('ul').stop().toggle();
+
+			$('.add-ac').find('ul li').on('click',function(){
+				let textValue = $(this).text();
+				$(this).parents('ul').siblings('p').text(textValue);
+				$(this).parents('ul').stop().hide();
 			});
 		});
-	</script>
+		//재고 개수 선택
+		$('.num-select').find('p').on('click',function(){
+			$(this).siblings('ul').stop().toggleClass('on');
 
-
-
-
-    <!-- 수급자 입력 시작 -->
-    <!--section>
-		<div class="point_box" id="recipient_box">
-			<div class="top_area">
-				<p>수급자 정보</p>
-				<p>주문 시 수급자정보가 없는 경우 사업소에서 주문한 것으로 판단하여 재고로 등록됩니다.</p>
-				<a id="recipient_del" style="margin-right:130px;">삭제</a>
-				<a href="<?php echo G5_SHOP_URL;?>/pop_recipient.php" id="order_recipient">내 수급자 조회</a>
-			</div>
-
-			<input type="hidden" name="penId" id="penId">
-			<input type="hidden" name="searchUsrId" id="searchUsrId" value="123456789">
-			<input type="hidden" name="shoBasSeq" id="shoBasSeq" value="12">
-			<input type="hidden" name="prodBarNum" id="prodBarNum" value="">
-			<input type="hidden" name="ordNm" id="ordNm" value="김예비">
-			<input type="hidden" name="ordCont" id="ordCont" value="010-2551-8080">
-			<input type="hidden" name="ordZip" id="ordZip" value="46241">
-			<input type="hidden" name="ordAddr" id="ordAddr" value="부산 금정구 부산대학로63번길 2">
-			<input type="hidden" name="ordAddrDtl" id="ordAddrDtl" value="(장전동) 1">
-			<input type="hidden" name="ordMemo" id="ordMemo" value="">
-			<input type="hidden" name="payMehCd" id="payMehCd" value="00">
-
-			<div class="point_desc">
-				<ul>
-					<li>
-						<p>수급자</p>
-						<p><input name="penNm" id="penNm" class="form-control input-sm" readonly></p>
-					</li>
-					<li>
-						<p>인정등급</p>
-						<p><input name="penTypeNm" id="penTypeNm" class="form-control input-sm" readonly></p>
-					</li>
-					<li>
-						<p>유효기간</p>
-						<p><input name="penExpiDtm" id="penExpiDtm" class="form-control input-sm" readonly></p>
-					</li>
-					<li>
-						<p>적용기간</p>
-						<p><input name="penAppEdDtm" id="penAppEdDtm" class="form-control input-sm" readonly></p>
-					</li>
-					<li>
-						<p>전화번호</p>
-						<p><input name="penConPnum" id="penConPnum" class="form-control input-sm" readonly></p>
-					</li>
-					<li>
-						<p>휴대전화</p>
-						<p><input name="penConNum" id="penConNum" class="form-control input-sm" readonly></p>
-					</li>
-					<li>
-						<p>주소</p>
-						<p><input name="penAddr" id="penAddr" class="form-control input-sm" readonly></p>
-					</li>
-				</ul>
-			</div>
-
-			<script>
-			$(function() {
-				$("#recipient_del").on("click", function() {
-					$('#penNm').val('');
-					$('#penTypeNm').val('');
-					$('#penExpiDtm').val('');
-					$('#penAppEdDtm').val('');
-					$('#penConPnum').val('');
-					$('#penConNum').val('');
-					$('#penAddr').val('');
-					$('#penMoney').val('');
-				});
-
+			$('.num-select').find('ul li').on('click',function(){
+				let textValue = $(this).text();
+				$(this).parents('ul').siblings('p').text(textValue);
+				$(this).parents('ul').removeClass('on');
 			});
-			</script>
-		</div>
-	</section-->
-
-
-    <!-- 수급자 입력 끝 -->
-
-    <!-- 주문상품 정보 시작 -->
-	<div class="table-responsive order-item">
-		<table id="sod_list" class="div-table table bg-white bsk-tbl">
-		<tbody>
-		<tr class="<?php echo $head_class;?>">
-			<th scope="col"><span>이미지</span></th>
-			<!-- <th scope="col"><span>쿠폰</span></th> -->
-			<th scope="col"><span>상품명</span></th>
-			<th scope="col"><span>총수량</span></th>
-			<th scope="col"><span>판매가</span></th>
-			<th scope="col"><span>할인가</span></th>
-			<th scope="col"><span>소계</span></th>
-			<th scope="col"><span class="last">배송비</span></th>
-			<th scope="col"><span>바코드</span></th>
-		</tr>
-
-		<?php for($i=0; $i < count($item); $i++) { ?>
-			<tr class="item" data-code="<?=$item[$i]["it_id"]?>" data-sup="<?=$item[$i]["prodSupYn"]?>">
-				<td class="text-center" style="ertical-align: middle;">
-					<div class="item-img">
-						<img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';" style="width: 70px; height: 70px;">
-						<div class="item-type"><?php echo $item[$i]['pt_it']; ?></div>
-					</div>
-				</td>
-				<td style="vertical-align: middle; width: 600px;">
-					<input type="hidden" name="it_id[<?php echo $i; ?>]"    value="<?php echo $item[$i]['hidden_it_id']; ?>" class="it_id_class">
-					<input type="hidden" name="it_name[<?php echo $i; ?>]"  value="<?php echo $item[$i]['hidden_it_name']; ?>">
-					<input type="hidden" name="it_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_price']; ?>">
-					<input type="hidden" name="it_discount[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_discount']; ?>">
-					<input type="hidden" name="cp_id[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_cp_id']; ?>">
-					<input type="hidden" name="cp_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_cp_price']; ?>">
-					<input type="hidden" name="ct_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['ct_price']; ?>">
-					<input type="hidden" name="it_qty[<?php echo $i; ?>]" value="<?php echo $item[$i]['qty']; ?>">
-					<?php for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++){ ?>
-						<input type="hidden" class="it_option_stock_cnt" name="it_option_stock_cnt_<?=$item[$i]["it_optionList"][$ii]["id"]?>" value="0">
-					<?php } ?>
-					<?php if($default['de_tax_flag_use']) { ?>
-						<input type="hidden" name="it_notax[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_it_notax']; ?>">
-					<?php } ?>
-					<b>
-						<?php echo $item[$i]['it_name']; ?>
-					</b>
-					<?php if($item[$i]["prodSupYn"] == "N"){ ?>
-						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
-					<?php } else { ?>
-						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #3366CC;">유통</b>
-					<?php } ?>
-
-					<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
-						<b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #FFA500;">대여</b>
-					<?php } ?>
-
-					<?php if($item[$i]['it_options']) { ?>
-						<div class="well well-sm" style="width: 100%; float: left;"><?php echo $item[$i]['it_options'];?></div>
-					<?php } ?>
-				</td>
-				<td class="text-center" style="vertical-align: middle;"><?php echo $item[$i]['qty']; ?></td>
-				<td class="text-right" style="vertical-align: middle;"><?php echo $item[$i]['ct_price']; ?></td>
-				<td class="text-right" style="vertical-align: middle;"><?php echo $item[$i]['ct_discount']; ?></td>
-                <?php
-                    //소계 토탈 - 디스카운트
-                    $pirce_v = str_replace(',','',$item[$i]['total_price'])-str_replace(',','',$item[$i]['ct_discount']);
-                ?>
-				<td class="text-right" style="vertical-align: middle;"><b class="price"><?php echo number_format($pirce_v) ; ?></b></td>
-				<td class="text-center delivery_cost_display_name" style="vertical-align: middle;"><?php echo $item[$i]['ct_send_cost']; ?></td>
-				<td style="width: 120px; vertical-align: middle;" class="barList">
-				<?php
-					for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++){
-						for($iii = 0; $iii < $item[$i]["it_optionList"][$ii]["qty"]; $iii++){
-				?>
-						<?php if($optionCntList[$item[$i]["it_id"]][$ii] > $iii){ ?>
-							<input type="hidden" class="form-control input-sm prodStockBarBox<?=$ii?> prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
-						<?php } else { ?>
-						<?php
-							if($rentalItemCnt){
-								$itemPenIdStatus = false;
-							}
-						?>
-							<input type="hidden" class="form-control input-sm prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
-						<?php } ?>
-				<?php
-						$postProdBarNumCnt++; }
-					}
-				?>
-				<?php for($ii = 0; $ii < $item[$i]["qty"]; $ii++){ ?>
-
-				<?php  } ?>
-				</td>
-			</tr>
-			<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
-				<tr class="tr-line">
-					<td class="text-center" style="vertical-align: middle;"><span style="font-weight: bold; font-size: 12px;">대여금액(월)</span></td>
-					<td colspan="7"><?=number_format($item[$i]["it_rental_price"])?>원</td>
-				</tr>
-				<tr class="tr-line ordLendFrm" style="display: none;">
-					<td class="text-center" style="vertical-align: middle;"><span style="font-weight: bold; font-size: 12px;">대여기간</span></td>
-					<td colspan="7">
-						<input type="text" class="form-control input-sm ordLendDtmInput ordLendStartDtm dateonly" name="ordLendStartDtm_<?=$item[$i]["ct_id"]?>" style="width: 120px; float: left;" data-default="<?=date("Y-m-d")?>">
-						<span style="width: 30px; height: 30px; line-height: 30px; float: left; text-align: center;">~</span>
-						<input type="text" class="form-control input-sm ordLendDtmInput ordLendEndDtm" name="ordLendEndDtm_<?=$item[$i]["ct_id"]?>" style="width: 120px; float: left;" data-default="<?=date("Y-m-d", strtotime("+ 364 days"))?>" readonly>
-						<a href="#" class="dateBtn" data-month="6">6개월</a>
-						<a href="#" class="dateBtn" data-month="12">1년</a>
-						<a href="#" class="dateBtn" data-month="24">2년</a>
-					</td>
-				</tr>
-			<?php } ?>
-			<tr class="tr-line">
-				<td class="text-center" style="vertical-align: middle;"><span style="font-weight: bold; font-size: 12px;">요청사항</span></td>
-				<td colspan="7">
-					<input type="text" class="form-control input-sm" placeholder="추가 구매사항이나 상품관련 요청사항을 입력하세요." name="prodMemo_<?=$item[$i]["ct_id"]?>">
-				</td>
-			</tr>
-		<?php } ?>
-		</tbody>
-		</table>
-	</div>
+		});
+		});
+	</script>
 
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<?php if ($goods_count) $goods .= ' 외 '.$goods_count.'건'; ?>
@@ -1080,7 +1322,7 @@ var array_box=[];
 						month = (month < 10) ? "0" + month : month;
 						day = (day < 10) ? "0" + day : day;
 
-						$(this).parent("td").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
+						$(this).closest(".list-day").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
 					}
 				}
 			});
@@ -1089,7 +1331,7 @@ var array_box=[];
 				e.preventDefault();
 
 				var month = Number($(this).attr("data-month"));
-				var dateList = $(this).parent("td").find(".ordLendStartDtm").val().split("-");
+				var dateList = $(this).closest(".list-day").find(".ordLendStartDtm").val().split("-");
 				var date = new Date(dateList[0], dateList[1], dateList[2]);
 
 				date.setMonth(date.getMonth() + month);
@@ -1102,12 +1344,12 @@ var array_box=[];
 				month = (month < 10) ? "0" + month : month;
 				day = (day < 10) ? "0" + day : day;
 
-				$(this).parent("td").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
+				$(this).closest(".list-day").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
 			});
 
 			var optionCntList = <?=json_encode($optionCntList)?>; //아이템정보
 			var optionBarList = <?=json_encode($optionBarList)?>; //바코드저오
-			var prodItemList = $("#sod_list tr.item");            //아이템정보2
+			var prodItemList = $(".table-list2 .list.item");            //아이템정보2
 			$.each(prodItemList, function(key, itemDom){
 				var code = $(itemDom).attr("data-code");
 				var itemList = $(itemDom).find(".well li");
@@ -1383,239 +1625,42 @@ var array_box=[];
 
 		})
 	</script>
-	<!-- 주문상품 합계 시작 -->
+    
+	<script type="text/javascript">
+		$(function() {
+			// 수급자목록
+				$("#order_submitCheckBox").hide();
+				$("#order_submitCheckBox").css("opacity", 1);
 
-	<div class="well">
-        <div id="coupon_box">
-            <button type="button" id="od_coupon_btn" class="btn_frmline">쿠폰적용</button>
-        </div>
-		<div class="row">
-			<div class="col-xs-6">주문금액</div>
-			<div class="col-xs-6 text-right">
-				<strong id="printTotalCellPrice"><?php echo number_format($tot_sell_price); ?> 원</strong>
-			</div>
-			<div class="col-xs-6">할인금액</div>
-			<div class="col-xs-6 text-right">
-				<strong ><span id="od_cp_price" ><?php echo number_format($tot_sell_discount); ?></span> 원</strong>
-			</div>
-			<?php if($it_cp_count > 0) { ?>
-				<div class="col-xs-6">쿠폰 할인</div>
-				<div class="col-xs-6 text-right">
-					<strong id="ct_tot_coupon">0 원</strong>
-				</div>
-			<?php } ?>
-			<div class="col-xs-6 delivery_cost_display">배송비</div>
-			<div class="col-xs-6 text-right delivery_cost_display">
-				<strong><?php echo number_format($send_cost); ?> 원</strong>
-			</div>
-		</div>
+				$("#order_recipientBox").hide();
+				$("#order_recipientBox").css("opacity", 1);
+			$("#order_recipient").on("click", function(e){
+				e.preventDefault();
 
-		<div class="row">
-			<?php $tot_price = $tot_sell_price - $tot_sell_discount + $send_cost; // 총계 = 주문상품금액합계 - 묶음할인금액합계 + 배송비 ?>
-			<div class="col-xs-6 red od_tot_price"> <b>합계금액</b></div>
-			<div class="col-xs-6 text-right red od_tot_price">
-				<strong id="ct_tot_price" class="print_price"><?php echo number_format($tot_price); ?> 원</strong>
-			</div>
-		</div>
-	</div>
-   <!-- 주문상품 합계 끝 -->
+				<?php if($itemPenIdStatus){ ?>
+					$("#order_recipientBox").show();
+				<?php } else { ?>
+					<?php if($rentalItemCnt){ ?>
+						<?php if($orderItemCnt){ ?>
+							alert("판매/대여 상품 동시 주문 시 재고 주문이 포함된 경우 수급자 선택이 불가능합니다.");
+						<?php } else { ?>
+							alert("대여상품은 재고 확보 후 수급자 계약이 가능합니다.");
+						<?php } ?>
+					<?php } ?>
+				<?php } ?>
+			});
 
-    <!-- 받으시는 분 입력 시작 { -->
-    <section id="sod_frm_taker">
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong> 받으시는 분</strong></div>
-            <div class="panel-body">
+			$('#od_delivery_type').change(function() {
+				var val = $(this).val();
 
-                <div class="form-group">
-                    <label class="col-sm-2 control-label"><b>배송지선택</b></label>
-                    <div class="col-sm-10 radio-line">
-                        <?php if($is_member) { ?>
-                            <label>
-                                <input type="radio" name="ad_sel_addr" value="same" id="ad_sel_addr_same">
-                                주문자와 동일
-                            </label>
-                            <label style="display: none;">
-                                <input type="radio" name="ad_sel_addr" value="recipient" id="ad_sel_addr_recipient">
-                                수급자와 동일
-                            </label>
-                            <?php if($addr_default) { ?>
-                                <label>
-                                    <input type="radio" name="ad_sel_addr" value="<?php echo get_text($addr_default);?>" id="ad_sel_addr_def">
-                                    기본배송지
-                                </label>
-                            <?php } ?>
-
-                            <?php for($i=0; $i < count($addr_sel); $i++) { ?>
-                                <label>
-                                    <input type="radio" name="ad_sel_addr" value="<?php echo get_text($addr_sel[$i]['addr']);?>" id="ad_sel_addr_<?php echo $i+1;?>">
-                                    최근배송지<?php echo ($addr_sel[$i]['name']) ? '('.get_text($addr_sel[$i]['name']).')' : '';?>
-                                </label>
-                            <?php } ?>
-                            <label>
-                                <input type="radio" name="ad_sel_addr" value="new" id="od_sel_addr_new">
-                                신규배송지
-                            </label>
-                            <span>
-                                <a href="<?php echo G5_SHOP_URL;?>/orderaddress.php" id="order_address" class="btn btn-black btn-sm">배송지목록</a>
-                            </span>
-                        <?php } else { ?>
-                            <label>
-                                <input type="checkbox" name="ad_sel_addr" value="same" id="ad_sel_addr_same">
-                                주문자와 동일
-                            </label>
-                        <?php } ?>
-                    </div>
-                </div>
-                <?php if($is_member) { ?>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" for="ad_subject"><b>배송지명</b></label>
-                        <div class="col-sm-3">
-                            <input type="text" name="ad_subject" id="ad_subject" class="form-control input-sm" maxlength="20">
-                        </div>
-                        <div class="col-sm-7 radio-line">
-                            <label>
-                                <input type="checkbox" name="ad_default" id="ad_default" value="1">
-                                기본배송지로 설정
-                            </label>
-                        </div>
-                    </div>
-                <?php } ?>
-
-                <div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_b_name"><b>이름</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="od_b_name" id="od_b_name" required class="form-control input-sm" maxlength="20">
-                        <span class="fa fa-check form-control-feedback"></span>
-                    </div>
-                </div>
-                <div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_b_tel"><b>전화번호</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="od_b_tel" id="od_b_tel" required class="form-control input-sm" maxlength="20">
-                        <span class="fa fa-phone form-control-feedback"></span>
-                    </div>
-                </div>
-                <div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label" for="od_b_hp"><b>핸드폰</b></label>
-                    <div class="col-sm-3">
-                        <input type="text" name="od_b_hp" id="od_b_hp" class="form-control input-sm" maxlength="20">
-                        <span class="fa fa-mobile form-control-feedback"></span>
-                    </div>
-                </div>
-
-                <div class="form-group has-feedback">
-                    <label class="col-sm-2 control-label"><b>주소</b><strong class="sound_only">필수</strong></label>
-                    <div class="col-sm-8">
-                        <label for="od_b_zip" class="sound_only">우편번호<strong class="sound_only"> 필수</strong></label>
-                        <label>
-                            <input type="text" name="od_b_zip" id="od_b_zip" required class="form-control input-sm" size="6" maxlength="6">
-                        </label>
-                        <label>
-                            <button type="button" class="btn btn-black btn-sm" style="margin-top:0px;" onclick="win_zip('forderform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">주소 검색</button>
-                        </label>
-
-                        <div class="addr-line">
-                            <label class="sound_only" for="od_b_addr1">기본주소<strong class="sound_only"> 필수</strong></label>
-                            <input type="text" name="od_b_addr1" id="od_b_addr1" required class="form-control input-sm" size="60" placeholder="기본주소">
-                        </div>
-
-                        <div class="addr-line">
-                            <label class="sound_only" for="od_b_addr2">상세주소</label>
-                            <input type="text" name="od_b_addr2" id="od_b_addr2" class="form-control input-sm" size="50" placeholder="상세주소">
-                        </div>
-
-                        <label class="sound_only" for="od_b_addr3">참고항목</label>
-                        <input type="text" name="od_b_addr3" id="od_b_addr3" class="form-control input-sm" size="50" readonly="readonly" placeholder="참고항목">
-                        <input type="hidden" name="od_b_addr_jibeon" value="">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="od_memo"><b>전하실말씀</b></label>
-                    <div class="col-sm-8">
-                        <textarea name="od_memo" rows=3 id="od_memo" class="form-control input-sm"></textarea>
-                    </div>
-                </div>
-
-                <style>
-                #od_delivery_type {
-                    font-size: 12px;
-                    color: #555;
-                    appearance: none;
-                    -webkit-appearance: none;
-                    -moz-appearance: none;
-                    padding: 2px 25px 0px 3px;
-                    background: #ffffff url(/adm/shop_admin/img/admin_select_n.gif) no-repeat right 8px center;
-                    border: 1px solid #dbdde2;
-                    border-radius: 0px;
-                    width: 100px;
-                    height: 28px;
-                    padding: 0px 13px;
-                    vertical-align: middle;
-                    margin-top:5px;
-                }
-                .quick_explain {
-                    vertical-align:middle;
-                    margin-left:5px;
-                    display:none;
-                }
-                </style>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="od_memo"><b>배송방법</b></label>
-                    <div class="col-sm-8">
-                        <select name="od_delivery_type" id="od_delivery_type" style="width: 150px;">
-                            <?php
-                            foreach($delivery_types as $type) {
-                                // if ( $type['user-order'] != true ) continue;
-                                if ( !$default['de_delivery_type_' . $type['val']] ) continue;
-                            ?>
-                                <option value="<?php echo $type['val']; ?>" <?php echo $type['val'] == $od['od_delivery_type'] ? 'selected' : ''; ?> data-type="<?php echo $type['type']; ?>"><?php echo $type['name']; ?></option>
-                            <?php } ?>
-                        </select>
-                        <span class="quick_explain">
-                            담당자와 상담 후 선택해 주시기 바랍니다. (고객센터 : 02-2267-8080)
-                        </span>
-                        <script type="text/javascript">
-                        $(function() {
-                            // 수급자목록
-								$("#order_submitCheckBox").hide();
-								$("#order_submitCheckBox").css("opacity", 1);
-
-								$("#order_recipientBox").hide();
-								$("#order_recipientBox").css("opacity", 1);
-                            $("#order_recipient").on("click", function(e){
-                                e.preventDefault();
-
-								<?php if($itemPenIdStatus){ ?>
-									$("#order_recipientBox").show();
-								<?php } else { ?>
-									<?php if($rentalItemCnt){ ?>
-										<?php if($orderItemCnt){ ?>
-											alert("판매/대여 상품 동시 주문 시 재고 주문이 포함된 경우 수급자 선택이 불가능합니다.");
-										<?php } else { ?>
-											alert("대여상품은 재고 확보 후 수급자 계약이 가능합니다.");
-										<?php } ?>
-									<?php } ?>
-								<?php } ?>
-                            });
-
-                            $('#od_delivery_type').change(function() {
-                                var val = $(this).val();
-
-                                if ( val === 'quick2' ) {
-                                    $('.quick_explain').show();
-                                }else{
-                                    $('.quick_explain').hide();
-                                }
-                            });
-                        });
-                        </script>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
+				if ( val === 'quick2' ) {
+					$('.quick_explain').show();
+				}else{
+					$('.quick_explain').hide();
+				}
+			});
+		});
+	</script>
 
     <?php if ($ct_sc_method_sel) { ?>
     <script>
@@ -1626,8 +1671,7 @@ var array_box=[];
 
     </script>
     <?php } ?>
-
-    <!-- } 받으시는 분 입력 끝 -->
+    
 <?php } ?>
 
 

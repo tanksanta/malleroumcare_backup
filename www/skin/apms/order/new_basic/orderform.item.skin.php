@@ -127,6 +127,3 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 ?>
 
-<!-- <div class="well well-sm">
-	<i class="fa fa-shopping-cart fa-lg"></i> 주문하실 상품을 확인해 주세요.
-</div> -->

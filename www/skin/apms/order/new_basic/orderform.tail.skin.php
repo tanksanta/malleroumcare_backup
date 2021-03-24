@@ -3,6 +3,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 ?>
 
+</section>
 </form><?php // 주문서폼 닫기 - 삭제하면 안됨 ?>
 
 <br>

@@ -421,7 +421,15 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						<input type="hidden" id="it_sale_percent5" value="<?php echo $it["it_sale_percent_05"]; ?>" data-toggle="<?=$it["it_sale_cnt_05"]?>" class="it_sale_percent">
 					<?php } ?>
 				<?php } ?>
-						<input type="hidden" id="it_price" value="<?php echo samhwa_price($it, THEMA_KEY); ?>">
+						<input type="hidden" id="it_price" value="
+                            <?php 
+                                if($member["mb_id"]){
+                                    echo samhwa_price($it, THEMA_KEY); 
+                                }else{
+                                    echo $it["it_cust_price"];
+                                }
+                            ?>
+                        ">
 				</td></tr>
 			<?php } ?>
 			<?php if ($config['cf_use_point']) { // 포인트 사용한다면 ?>
