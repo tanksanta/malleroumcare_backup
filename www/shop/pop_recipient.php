@@ -91,6 +91,11 @@ body, input, textarea, select, button, table {
 					<td>수급자명</td>
 					<td><?=($data["penNm"]) ? $data["penNm"] : "-"?></td>
 				</tr>
+                <tr>
+					<td>장기요양번호</td>
+					<td><?=($data["penNm"]) ? $data["penLtmNum"] : "-"?></td>
+				</tr>
+                
 				<tr>
 					<td>본인부담금율</td>
 					<td><?=($data["penTypeNm"]) ? $data["penTypeNm"] : "-"?></td>
@@ -128,8 +133,8 @@ body, input, textarea, select, button, table {
 
 		$("#thisPopupCloseBtn").click(function(e){
 			e.preventDefault();
-			
 			$("#order_recipientBox", parent.document).hide();
+            parent.$('#mask').css({'width':'0px','height':'0px'}); 
 		});
 
 	});

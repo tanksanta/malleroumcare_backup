@@ -263,7 +263,6 @@ $row = sql_fetch($sql);
 
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
-
 <section id="stock" class="wrap" >
         <div class="list-more"><a href="<?=G5_SHOP_URL?>/sales_Inventory.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
         <h2>판매 재고 상세</h2>
@@ -398,6 +397,7 @@ $row = sql_fetch($sql);
                             $('#order_recipientBox').hide();
                             function popup_control(io_value_r_color,io_value_r_size,barcode_r){
                                 $('#order_recipientBox').show();
+                                wrapWindowByMask();
                                 var io_value_r_v="";
                                 if(io_value_r_color){io_value_r_v="색상:"+io_value_r_color; }
                                 document.getElementById('io_id_r').value=io_value_r_color+io_value_r_size;
@@ -435,8 +435,11 @@ $row = sql_fetch($sql);
                             <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
                         </form>
                         <!-- 수급자신청 -->
-                        
-
+                        <?php if(!$list){ ?>
+                            <li style="text-align:center" >
+                                자료가 없습니다.
+                            </li>
+                        <?php } ?>
                         <div id="list_box1">
 						<?php for($i=0;$i<count($list);$i++){ 
 							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
@@ -554,7 +557,11 @@ $row = sql_fetch($sql);
 						}
 						$total_block = ceil($total_page/$b_pageNum_listCnt);
 						?>
-
+                      <?php if(!$list){ ?>
+                            <li style="text-align:center" >
+                                자료가 없습니다.
+                            </li>
+                        <?php } ?>
                         <div id="list_box2">
 						<?php for($i=0;$i<count($list);$i++){ 
 							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
@@ -856,6 +863,22 @@ $row = sql_fetch($sql);
             window.open("<?=G5_URL?>/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=<?=$_GET['prodId']?>&stoId=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
         <?php } ?>
     });
+
+
+    function wrapWindowByMask(){
+        //화면의 높이와 너비를 구한다.
+        var maskHeight = $(document).height();  
+        var maskWidth = $(window).width();
+        //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채운다.
+        $('#mask').css({'width':maskWidth,'height':maskHeight});  
+        //마스크의 투명도 처리
+        $('#mask').fadeTo("slow",0.8);    
+    }
+    $("#thisPopupCloseBtn").click(function(e){
+		alert('z');
+    });
+
+
 
 </script>
 <?php

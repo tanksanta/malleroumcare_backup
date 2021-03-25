@@ -59,7 +59,16 @@
 			수급자 목록
 			<a href="./my.recipient.write.php" title="수급자 등록">수급자 등록</a>
 		</div>
-		
+        <?php if(!$list){ ?>
+        <style>
+            .no_content{
+                width:100%; height:100px; text-align:center;margin-top:150px;
+            }
+        </style>
+        <div class="no_content">
+            내용이 없습니다
+        </div>
+        <?php } ?>
 		<div class="itemWrap">
 		<?php if($list){ ?>
 			<?php foreach($list as $data){ ?>

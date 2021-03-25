@@ -327,6 +327,7 @@ $row = sql_fetch($sql);
     $('#order_recipientBox').hide();
     function popup_control(io_value_r_color,io_value_r_size,barcode_r){
         $('#order_recipientBox').show();
+        wrapWindowByMask()
         var io_value_r_v="";
         if(io_value_r_color){io_value_r_v="색상:"+io_value_r_color; }
         if(io_value_r_color&&io_value_r_size){io_value_r_color=io_value_r_color+""; }
@@ -410,13 +411,18 @@ $row = sql_fetch($sql);
 
                         //반복 시작
 						?>
+                        <?php if(!$list){ ?>
+                            <li style="text-align:center" >
+                                자료가 없습니다.
+                            </li>
+                        <?php } ?>
                         <div id="list_box1">    
                             <?php for($i=0;$i<count($list);$i++){ 
                                 $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
                                 
                                 $bg="";//대여중 일때 클래스 넣기
                                 $rental_btn=''; //대여 버튼
-
+                                $water="";//소독중 표시
 
                                 //상태 메뉴
                                 $state_menu_all="";
@@ -437,7 +443,7 @@ $row = sql_fetch($sql);
                                     $rental_btn2='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여하기</a>'; //대여 버튼
                                     break;
                                     case '02': $state="대여중";  $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $bg="bg"; $rental_btn=""; break;
-                                    case '08': $state="소독중";  $state_menu_all =  $state_menu5. $state_menu6;break;
+                                    case '08': $state="소독중";  $water='<img style="margin-left:2px; margin-bottom:3px;" src="'.G5_IMG_URL.'/water.png" alt="">'; $state_menu_all =  $state_menu5. $state_menu6;break;
                                     case '09': $state="대여종료"; $state_menu_all=$state_menu3.$state_menu4.$state_menu1; break;
                                     default  : $state=""; break;
                                 }
@@ -471,7 +477,7 @@ $row = sql_fetch($sql);
                                 ?>
                                 <span class="date m_off"><?=$date2?></span>
                                 <span class="state m_off">
-                                    <b><?=$state?><?=$nimg?></b>
+                                    <b><?=$state?><?=$nimg?><?=$water?></b>
                                     <?=$rental_btn //대여버튼 ?>
                                 </span>
 
@@ -758,6 +764,11 @@ $row = sql_fetch($sql);
 
                         //반복 시작
 						?>
+                        <?php if(!$list){ ?>
+                            <li style="text-align:center" >
+                                자료가 없습니다.
+                            </li>
+                        <?php } ?>
                         <div id="list_box2">
                             <?php for($i=0;$i<count($list);$i++){ 
                                 $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
@@ -1166,7 +1177,16 @@ $row = sql_fetch($sql);
             window.open("<?=G5_URL?>/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=<?=$_GET['prodId']?>&stoId=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
         <?php } ?>
     });
-
+    //대여버튼 클릭
+    function wrapWindowByMask(){
+        //화면의 높이와 너비를 구한다.
+        var maskHeight = $(document).height();  
+        var maskWidth = $(window).width();
+        //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채운다.
+        $('#mask').css({'width':maskWidth,'height':maskHeight});  
+        //마스크의 투명도 처리
+        $('#mask').fadeTo("slow",0.8);    
+    }
 
 </script>
 

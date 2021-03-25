@@ -120,6 +120,15 @@ $sales_Inventory_total2=$res['total'];//대여재고 토탈
 
 
 
+// $sql_item_id="SELECT * FROM `g5_shop_item` WHERE `ca_id` LIKE '20%'";
+// $row_item_id = sql_query($sql_item_id);
+// while ($row = sql_fetch_array($row_item_id))
+// {
+//     echo $row['it_id'].'<br>';
+//     echo $row['ca_id'].'<br>';
+
+// }
+
 //판매재고 리스트
 $sendLength = 10;
 $sendData = [];
@@ -203,6 +212,11 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <span class="order">판매완료</span>
                         <span class="price">급여가</span>
                     </li>
+                    <?php if(!$list){ ?>
+                            <li style="text-align:center" >
+                                자료가 없습니다.
+                            </li>
+                        <?php } ?>
                     <?php for($i=0; $i<count($list); $i++){ 
                         $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
                         $sql = 'SELECT  `it_taxInfo`, `it_img1`, `it_cust_price` FROM `g5_shop_item` WHERE `it_id`="'.$list[$i]['prodId'].'"';

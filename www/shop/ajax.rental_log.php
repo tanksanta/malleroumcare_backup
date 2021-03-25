@@ -11,6 +11,9 @@
     # 페이징
     $totalCnt = $row['count'];
 
+    if(!$totalCnt){
+        echo '<tr style=""><td colspan="4" ><br><br><br>자료가 없습니다</td></tr>';
+    }
     $list="";
     for($i = 0; $row = sql_fetch_array($result); $i++){
         $number = $totalCnt-(($page-1)*5)-$i;

@@ -1398,7 +1398,12 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 		}
 
 		/* 210303 수급자주문 시 체크 */
-		if($("#order_submitCheckBox").length && $("#penId").val()){
+		if($(".detail-tab ul li.on").attr("data-type") == "order_pen"){
+			if(!$("#penId").val()){
+				alert("수급자 선택 후 주문이 가능합니다.");
+				return false;
+			}
+
 			if($("#order_submitCheckBox").css("display") == "none"){
 				$("#order_submitCheckBox").show();
 				return false;

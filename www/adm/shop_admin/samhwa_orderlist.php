@@ -44,7 +44,6 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
         <button id="delivery_edi_return_all">송장리턴</button>
         <button class="orderExcel" data-type="1"><img src="/adm/shop_admin/img/btn_img_ex.gif">주문 엑셀 다운로드</button>
         <button class="orderExcel" data-type="2"><img src="/adm/shop_admin/img/btn_img_ex.gif">출고 엑셀 다운로드</button>
-        <button class="orderExcel" data-type="3"><img src="/adm/shop_admin/img/btn_img_ex.gif">바코드 정보 다운로드</button>
     </div>
 </div>
 

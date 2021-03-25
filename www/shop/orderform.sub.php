@@ -1169,6 +1169,8 @@ function calculate_tax()
 
 function forderform_check(f)
 {
+	alert(1);
+	return false;
     // 재고체크
     var stock_msg = order_stock_check();
     if(stock_msg != "") {
@@ -1244,6 +1246,19 @@ function forderform_check(f)
         alert("결제방식을 선택하십시오.");
         return false;
     }
+	
+	/* 210303 수급자주문 시 체크 */
+	if($(".detail-tab ul li.on").attr("data-type") == "order_pen"){
+		if(!$("#penId").val()){
+			alert("수급자 선택 후 주문이 가능합니다.");
+			return false;
+		}
+
+		if($("#order_submitCheckBox").css("display") == "none"){
+			$("#order_submitCheckBox").show();
+			return false;
+		}
+	}
 
     var od_price = parseInt(f.od_price.value);
     var send_cost = parseInt(f.od_send_cost.value);

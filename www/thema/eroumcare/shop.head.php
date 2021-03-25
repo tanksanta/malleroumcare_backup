@@ -101,6 +101,7 @@ scrollToTop();
     }
     .mode_div{ position: absolute; width: 140px; right: 85px; top: 30px; font-size:16px;}
 </style>
+<div id="mask" style="position:absolute; left:0;top:0; background-color:#000; z-index:300"></div> 
 
 
 

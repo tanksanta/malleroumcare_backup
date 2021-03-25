@@ -21,38 +21,49 @@ if($_POST["mb_id"] != "admin"){
 	$res = curl_exec($oCurl);
 	$res = json_decode($res, true);
 	curl_close($oCurl);
-
+    // print_r($res);
+    // return false;
 	if($res["errorYN"] == "Y"){
         //시스템 회원 정보가 아닐시
         $mb_id       = trim($_POST['mb_id']);
         $mb_password = trim($_POST['mb_password']);
+
         if (!$mb_id || !$mb_password)
             alert('회원아이디나 비밀번호가 공백이면 안됩니다.');
         $mb = get_member($mb_id);
-        
-        if($mb['mb_level']=="3"||$mb['mb_level']=="4"){
-            alert("시스템 계정에 동기화 되어있지 않은 계정의 권한이 3혹은 4 입니다. 계정설정을 다시해주세요.");
+  
+        if($mb['mb_level'] !== "9"){
+            //임시작업
+            alert('승인 후 이용이 가능합니다. 관리자 문의해주세요.');
         }
+        
         if (!$is_social_password_check && (!$mb['mb_id'] || !check_password($mb_password, $mb['mb_password'])) ) {
             alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
         }
+
+        if($mb['mb_level']=="3"||$mb['mb_level']=="4"){
+            alert("시스템 계정에 동기화 되어있지 않은 계정의 권한이 3혹은 4 입니다. 계정설정을 다시해주세요.");
+        }
+
         // 차단된 아이디인가?
         if ($mb['mb_intercept_date'] && $mb['mb_intercept_date'] <= date("Ymd", G5_SERVER_TIME)) {
             $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $mb['mb_intercept_date']);
             alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date);
         }
+
         // 탈퇴한 아이디인가?
         if ($mb['mb_leave_date'] && $mb['mb_leave_date'] <= date("Ymd", G5_SERVER_TIME)) {
             $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $mb['mb_leave_date']);
             alert('탈퇴한 아이디이므로 접근하실 수 없습니다.\n탈퇴일 : '.$date);
         }
+
 	} else {
 		unset($sendData["pw"]);
 		$mbCheck = sql_fetch("SELECT mb_id FROM {$g5["member_table"]} WHERE mb_id = '{$_POST["mb_id"]}'")["mb_id"];
 
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9001);
-		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entInfo");
+		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/ent/account");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -66,7 +77,7 @@ if($_POST["mb_id"] != "admin"){
 		
 		$resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
 		$resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
-			
+
 		if(!$mbCheck){
 			sql_query("
 				INSERT INTO {$g5["member_table"]} SET

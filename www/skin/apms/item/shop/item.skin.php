@@ -99,7 +99,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 <style>
 	.item-head .item-thumb img { width: 100px; height: 100px; }
 	.ca_info { font-weight: 400 !important; }
-	.ca_info > .help-block { float: right; font-size: 14px; }
+	.ca_info > .help-block { float: right; margin-right:20px; font-size: 14px; }
 
 	.detailInfo { width: 100%; margin-top: 5px; }
 	.detailInfo > li { width: 100%; display: table; table-layout: fixed; }
@@ -117,10 +117,20 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	#item3dViewBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 	#item3dViewBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 	#item3dViewBox iframe { position: relative; width: 700px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
-
+    .margin-left { margin-left:15px; }
+    .margin-right { margin-left:50px; }
+    .item-form.npay_btn_list th, .item-form .npay_btn_list td {padding: 0 !important;}
 	@media (max-width : 750px){
 		#item3dViewBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 	}
+    @media (max-width: 991px) {
+        #samhwa-mobile-tail { display:none; }
+        .margin-leftm{ margin-left:15px; }
+    }
+    @media (max-width: 960px){
+        body { padding-bottom: 130px; }
+        .btn_top_scroll { bottom: 140px; }
+    }
 </style>
 
 <div id="item3dViewBox">
@@ -189,90 +199,95 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			</script>
 			<div class="h30 visible-xs"></div>
 		</div>
-		<div class="samhwa-item-info-mobile mobile">
-			<h1 class="ca_info"><?=$it["ca_name"]?> <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p></h1>
-			<h1><?php echo stripslashes($it['it_name']); // 상품명 ?> <span style="font-size: 15px;">(<?=$it["it_taxInfo"]?> 상품)</span>
-			</h1>
-			<p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p>
-			<p class="help-block">* 급여코드  <span style="padding-left:29px;">: <?php echo $it['ProdPayCode']; ?></span></p>
-			<?php if($it['it_basic']) { // 기본설명 ?>
-				<p class="help-block"><?php echo $it['it_basic']; ?></p>
-			<?php } ?>
-
-			<ul class="detailInfo">
-				<li>
-					<span class="infoLabel">
-						<span>·</span>
-						<span>재질</span>
-					</span>
-					<span class="info">: <?=($it["prodSym"]) ? $it["prodSym"] : "-"?></span>
-				</li>
-				<li>
-					<span class="infoLabel">
-						<span>·</span>
-						<span>사이즈</span>
-					</span>
-					<span class="info">: <?=($it["prodSizeDetail"]) ? $it["prodSizeDetail"] : "-"?></span>
-				</li>
-				<li>
-					<span class="infoLabel">
-						<span>·</span>
-						<span>중량</span>
-					</span>
-					<span class="info">: <?=($it["prodWeig"]) ? $it["prodWeig"] : "-"?></span>
-				</li>
-			</ul>
-
-			<!-- 본인부담금 -->
-			<div class="selfPriceInfo" style="margin-top: 20px;">
-				<div class="title">본인부담금 예시</div>
-				<p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
-			</div>
+            <div class="samhwa-item-info-mobile mobile">
+            <div class="margin-left">
+                    <h1 class="ca_info"><?=$it["ca_name"]?> <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p></h1>
+                    <h1><?php echo stripslashes($it['it_name']); // 상품명 ?> <span style="font-size: 15px;">(<?=$it["it_taxInfo"]?> 상품)</span>
+                    </h1>
+                    <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p>
+                    <p class="help-block">* 급여코드  <span style="padding-left:29px;">: <?php echo $it['ProdPayCode']; ?></span></p>
+                    <?php if($it['it_basic']) { // 기본설명 ?>
+                        <p class="help-block"><?php echo $it['it_basic']; ?></p>
+                    <?php } ?>
+                    <ul class="detailInfo">
+                        <li>
+                            <span class="infoLabel">
+                                <span>·</span>
+                                <span>재질</span>
+                            </span>
+                            <span class="info">: <?=($it["prodSym"]) ? $it["prodSym"] : "-"?></span>
+                        </li>
+                        <li>
+                            <span class="infoLabel">
+                                <span>·</span>
+                                <span>사이즈</span>
+                            </span>
+                            <span class="info">: <?=($it["prodSizeDetail"]) ? $it["prodSizeDetail"] : "-"?></span>
+                        </li>
+                        <li>
+                            <span class="infoLabel">
+                                <span>·</span>
+                                <span>중량</span>
+                            </span>
+                            <span class="info">: <?=($it["prodWeig"]) ? $it["prodWeig"] : "-"?></span>
+                        </li>
+                        <li>
+                            <h1 style="">
+                                <?php if($member["mb_id"]){ ?>
+                                    <?php if($member["mb_level"] == "3"){ ?>
+                                        <?=($_COOKIE["viewType"] == "basic") ? number_format($it["it_cust_price"]) : number_format($it["it_price"])?>원
+                                    <?php } else { ?>
+                                        <?=number_format($it["it_price"])?>원
+                                    <?php } ?>
+                                <?php } else { ?>
+                                    <?=number_format($it["it_cust_price"])?>원
+                                <?php } ?>
+                                <span style="font-size:13px;"><?=($_COOKIE["viewType"] == "basic") ? "(급여가)" : "(판매가)" ?></span>
+                            </h1>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 본인부담금 -->
+                <div class="selfPriceInfo" style="margin-top: 20px;">
+                    <div class="title">본인부담금 예시</div>
+                    <p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
+                </div>
 
 			<!-- 재고수량 -->
-			<ul class="optionStockCntList" style="display: none;">
-				<li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
-			</ul>
-			<?php if($_COOKIE["viewType"] != "basic"){ ?>
-				<?php if($it["it_sale_cnt"]){ ?>
-					<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
-				<?php } ?>
-				<?php if($it["it_sale_cnt_02"]){ ?>
-					<p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_02"])?>원</p>
-				<?php } ?>
-				<?php if($it["it_sale_cnt_03"]){ ?>
-					<p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_03"])?>원</p>
-				<?php } ?>
-				<?php if($it["it_sale_cnt_04"]){ ?>
-					<p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_04"])?>원</p>
-				<?php } ?>
-				<?php if($it["it_sale_cnt_05"]){ ?>
-					<p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
-				<?php } ?>
-			<?php } ?>
+            <div class="margin-left">
+                <ul class="optionStockCntList" style="display: none;">
+                    <li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
+                </ul>
+                <?php if($_COOKIE["viewType"] != "basic"){ ?>
+                    <?php if($it["it_sale_cnt"]){ ?>
+                        <p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
+                    <?php } ?>
+                    <?php if($it["it_sale_cnt_02"]){ ?>
+                        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_02"])?>원</p>
+                    <?php } ?>
+                    <?php if($it["it_sale_cnt_03"]){ ?>
+                        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_03"])?>원</p>
+                    <?php } ?>
+                    <?php if($it["it_sale_cnt_04"]){ ?>
+                        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_04"])?>원</p>
+                    <?php } ?>
+                    <?php if($it["it_sale_cnt_05"]){ ?>
+                        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
+                    <?php } ?>
+                <?php } ?>
 
-			<?php if ( $it['it_model'] ) { ?>
-				<p class="item-model">
-					<?php echo str_replace(';', '<br/>', $it['it_model']); ?>
-				</p>
-			<?php } ?>
+                <?php if ( $it['it_model'] ) { ?>
+                    <p class="item-model">
+                        <?php echo str_replace(';', '<br/>', $it['it_model']); ?>
+                    </p>
+                <?php } ?>
 
-			<?php if ($is_tag) { // 태그 ?>
-				<p class="item-tag"><?php echo $tag_list;?></p>
-			<?php } ?>
+                <?php if ($is_tag) { // 태그 ?>
+                    <p class="item-tag"><?php echo $tag_list;?></p>
+                <?php } ?>
+            </div>
+            
 		</div>
-		<style>
-			@media (max-width: 991px) {
-				#samhwa-mobile-tail {
-					display:none;
-				}
-			}
-
-			@media (max-width: 960px){
-				body { padding-bottom: 130px; }
-				.btn_top_scroll { bottom: 140px; }
-			}
-		</style>
 		<script>
 		$(function() {
 			$('.samhwa-item-info-opener').click(function() {
@@ -290,6 +305,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			</ul>
 		</div>
 		<div class="samhwa-item-info">
+        <div class="margin-leftm">
 			<div class="item-info-arrowbtn mobile">
 				<img src="<?php echo THEMA_URL; ?>/assets/img/icon_arrow_down.png" class="arrow" />
 			</div>
@@ -301,47 +317,48 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
 				<p class="help-block" style=" color:#747474">급여코드 : <?php echo $it['ProdPayCode']; ?></p>
-			<ul class="detailInfo">
-				<li>
-					<span class="infoLabel">
-						<span>·</span>
-						<span>재질</span>
-					</span>
-					<span class="info">: <?=($it["prodSym"]) ? $it["prodSym"] : "-"?></span>
-				</li>
-				<li>
-					<span class="infoLabel">
-						<span>·</span>
-						<span>사이즈</span>
-					</span>
-					<span class="info">: <?=($it["prodSizeDetail"]) ? $it["prodSizeDetail"] : "-"?></span>
-				</li>
-				<li>
-					<span class="infoLabel">
-						<span>·</span>
-						<span>중량</span>
-					</span>
-					<span class="info">: <?=($it["prodWeig"]) ? $it["prodWeig"] : "-"?></span>
-				</li>
-			</ul>
+            <div clas="margin-leftm">
+                <ul class="detailInfo">
+                    <li>
+                        <span class="infoLabel">
+                            <span>·</span>
+                            <span>재질</span>
+                        </span>
+                        <span class="info">: <?=($it["prodSym"]) ? $it["prodSym"] : "-"?></span>
+                    </li>
+                    <li>
+                        <span class="infoLabel">
+                            <span>·</span>
+                            <span>사이즈</span>
+                        </span>
+                        <span class="info">: <?=($it["prodSizeDetail"]) ? $it["prodSizeDetail"] : "-"?></span>
+                    </li>
+                    <li>
+                        <span class="infoLabel">
+                            <span>·</span>
+                            <span>중량</span>
+                        </span>
+                        <span class="info">: <?=($it["prodWeig"]) ? $it["prodWeig"] : "-"?></span>
+                    </li>
+                </ul>
+            </div>
 
 			<p style="font-size: 32px; margin: 25px 0; font-weight: bold;">
-			<?php if($member["mb_id"]){ ?>
-				<?php if($member["mb_level"] == "3"){ ?>
-					<?=($_COOKIE["viewType"] == "basic") ? number_format($it["it_cust_price"]) : number_format($it["it_price"])?>원
-				<?php } else { ?>
-					<?=number_format($it["it_price"])?>원
-				<?php } ?>
-			<?php } else { ?>
-				<?=number_format($it["it_cust_price"])?>원
-			<?php } ?>
-            <span style="font-size: 15px;"><?=($_COOKIE["viewType"] == "basic") ? "(급여가)" : "(판매가)" ?></span>
-			<?php if(substr($it["ca_id"], 0, 2) == "20"){ ?>
-				<br><span style="font-weight: normal; font-size: 13px; margin-top: 15px; display: inline-block;">* 대여금액(월기준) : <?=number_format($it["it_rental_price"])?>원</span>
-			<?php } ?>
-			
+                <?php if($member["mb_id"]){ ?>
+                    <?php if($member["mb_level"] == "3"){ ?>
+                        <?=($_COOKIE["viewType"] == "basic") ? number_format($it["it_cust_price"]) : number_format($it["it_price"])?>원
+                    <?php } else { ?>
+                        <?=number_format($it["it_price"])?>원
+                    <?php } ?>
+                <?php } else { ?>
+                    <?=number_format($it["it_cust_price"])?>원
+                <?php } ?>
+                <span style="font-size: 15px;"><?=($_COOKIE["viewType"] == "basic") ? "(급여가)" : "(판매가)" ?></span>
+                <?php if(substr($it["ca_id"], 0, 2) == "20"){ ?>
+                    <br><span style="font-weight: normal; font-size: 13px; margin-top: 15px; display: inline-block;">* 대여금액(월기준) : <?=number_format($it["it_rental_price"])?>원</span>
+                <?php } ?>
 			</p>
-
+       </div>
 			<!-- 본인부담금 -->
 			<div class="selfPriceInfo">
 				<div class="title">본인부담금 예시</div>
@@ -675,7 +692,6 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				</div>
 				<?php if ( $it['it_10'] != "1") { ?> <!-- 여분필드 10에 네이버페이 노출 1로 할 경우 노출안됨 -->
 					<?php if ($naverpay_button_js) { ?>
-	                    <style>.item-form.npay_btn_list th, .item-form .npay_btn_list td {padding: 0 !important;}</style> <!-- // wetoz : 2020-09-04 -->
 						<div style="margin-bottom:15px;"><?php echo $naverpay_request_js.$naverpay_button_js; ?></div>
 					<?php } ?>
 				<?php } ?>

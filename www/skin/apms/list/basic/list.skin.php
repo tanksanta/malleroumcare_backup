@@ -165,6 +165,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 		<style media="screen">
 			 .img_3d {position: absolute; width: 50px; height: 40px; margin-top:5px; line-height: 38px; z-index: 10; top: 0; right: 5px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
 		</style>
+    <?php if(!$list_cnt){ ?>
+    <style>
+        .no_content{
+            width:100%; height:100px; text-align:center;margin-top:50px;
+        }
+    </style>
+    <div class="no_content">
+        내용이 없습니다
+    </div>
+    <?php } ?>
 	<?php for($i=0; $i < $list_cnt; $i++){ ?>
 	<?php
 

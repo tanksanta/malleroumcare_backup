@@ -292,8 +292,11 @@ $(function() {
     });
 
     // 배송지선택
-    $("input[name=ad_sel_addr]").on("click", function() {
-        var addr = $(this).val().split(String.fromCharCode(30));
+   $(".ad_sel_addr").on("click", function() {
+	   if($(this).attr("id") == "order_address"){
+		   return false;
+	   }
+        var addr = $(this).attr("data-value").split(String.fromCharCode(30));
 
         if (addr[0] == "same") {
             gumae2baesong();
@@ -313,9 +316,9 @@ $(function() {
             f.od_b_zip.value         = addr[3] + addr[4];
             f.od_b_addr1.value       = addr[5];
             f.od_b_addr2.value       = addr[6];
-            f.od_b_addr3.value       = addr[7];
-            f.od_b_addr_jibeon.value = addr[8];
-            f.ad_subject.value       = addr[9];
+//            f.od_b_addr3.value       = addr[7];
+//            f.od_b_addr_jibeon.value = addr[8];
+//            f.ad_subject.value       = addr[9];
 
             var zip1 = addr[3].replace(/[^0-9]/g, "");
             var zip2 = addr[4].replace(/[^0-9]/g, "");
@@ -330,7 +333,7 @@ $(function() {
 
     // 배송지목록
     $("#order_address").on("click", function() {
-        var url = this.href;
+        var url = "<?php echo G5_SHOP_URL;?>/orderaddress.php";
         window.open(url, "win_address", "left=100,top=100,width=800,height=600,scrollbars=1");
         return false;
     });
@@ -554,8 +557,8 @@ function gumae2baesong() {
     f.od_b_zip.value  = f.od_zip.value;
     f.od_b_addr1.value = f.od_addr1.value;
     f.od_b_addr2.value = f.od_addr2.value;
-    f.od_b_addr3.value = f.od_addr3.value;
-    f.od_b_addr_jibeon.value = f.od_addr_jibeon.value;
+//    f.od_b_addr3.value = f.od_addr3.value;
+//    f.od_b_addr_jibeon.value = f.od_addr_jibeon.value;
 
     calculate_sendcost(String(f.od_b_zip.value));
 }
@@ -570,8 +573,8 @@ function gumae3baesong() {
     f.od_b_zip.value  = f.od_zip.value;
     f.od_b_addr1.value = f.penAddr.value;
     f.od_b_addr2.value = f.od_addr2.value;
-    f.od_b_addr3.value = f.od_addr3.value;
-    f.od_b_addr_jibeon.value = f.od_addr_jibeon.value;
+//    f.od_b_addr3.value = f.od_addr3.value;
+//    f.od_b_addr_jibeon.value = f.od_addr_jibeon.value;
 
     calculate_sendcost(String(f.od_b_zip.value));
 }
