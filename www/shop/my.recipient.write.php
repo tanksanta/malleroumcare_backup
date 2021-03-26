@@ -316,7 +316,7 @@
 			<div class="panel-body">
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
-						<b>확인자</b>
+						<b>보호자</b>
 					</label>
 					<div class="col-sm-3">
 						<label class="checkbox-inline">
@@ -324,7 +324,7 @@
 						</label>
 
 						<label class="checkbox-inline">
-							<input type="radio" name="penCnmTypeCd" value="01" style="vertical-align: middle; margin: 0 5px 0 0;">확인자
+							<input type="radio" name="penCnmTypeCd" value="01" style="vertical-align: middle; margin: 0 5px 0 0;">보호자
 						</label>
 					</div>
 				</div>
