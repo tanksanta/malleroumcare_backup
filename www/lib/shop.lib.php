@@ -1199,14 +1199,24 @@ function print_item_options($it_id, $cart_id, $pt_msg1='', $pt_msg2='', $pt_msg3
 	
 	$ct_status = ($ct_status) ? "and find_in_set(ct_status, '{$ct_status}')" : "";
 
-    $sql = " select ct_option, ct_qty, io_price, pt_msg1, pt_msg2, pt_msg3
+	$display = "block";
+	$list = [];
+    $sql = " select it_name, ct_option, ct_qty, io_price, pt_msg1, pt_msg2, pt_msg3
                 from {$g5['g5_shop_cart_table']} where it_id = '$it_id' and od_id = '$cart_id' $ct_status order by io_type asc, ct_id asc ";
     $result = sql_query($sql);
+	for($i=0; $row=sql_fetch_array($result); $i++) {
+		array_push($list, $row);
+		if(get_text($row["ct_option"]) == $row["it_name"]){
+			$display = "none";
+		}
+	}
 
     $str = '';
-    for($i=0; $row=sql_fetch_array($result); $i++) {
+    for($i=0; $i < count($list); $i++) {
+		$row = $list[$i];
+		
         if($i == 0)
-            $str .= '<ul style="line-height:20px;">'.PHP_EOL;
+            $str .= '<ul style="line-height:20px; display: '.$display.';">'.PHP_EOL;
 		if($ct_opt) { 
 			$str .= '<li>'.get_text($row['ct_option']).' '.$row['ct_qty'].'개';
 		} else {

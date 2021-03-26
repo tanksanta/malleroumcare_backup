@@ -73,8 +73,68 @@ var array_box=[];
         });
     });
 </script>
+	
 
 	<section class="tab-wrap tab-2 on">
+		<div class="detail-price pc_none tablet_block">
+			<h5 class="icon-tti order_recipientInfoBox" style="display: none;">
+				수급자 정보
+				<a href="#" class="order_recipient"><img src="<?=$SKIN_URL?>/image/icon_23.png" alt=""> 내 수급자 조회</a>
+			</h5>
+			<div class="all-info all-info2 order_recipientInfoBox" style="display: none;">
+				<ul>
+					<li>
+						<div>
+							<b>수급자명</b>
+							<span class="penNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>인정등급</b>
+							<span class="penTypeNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>장기요양번호</b>
+							<span class="penLtmNum_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>유효기간</b>
+							<span class="penExpiDtm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>적용기간</b>
+							<span class="penAppEdDtm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>전화번호</b>
+							<span class="penConPnum_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>휴대폰</b>
+							<span class="penConNum_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>주소</b>
+							<span class="penAddr_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	
 		<div class="detail-wrap">
 			<h4>상품 정보</h4>
 			<div class="info-wrap">
@@ -139,7 +199,7 @@ var array_box=[];
 												<p><?php echo $item[$i]['ct_price']; ?></p>
 											</div>
 											<div>
-												<p><?php echo number_format($pirce_v) ; ?></p>
+												<p class="price_print"><?php echo number_format($pirce_v) ; ?></p>
 											</div>
 										</div>
 									</div>
@@ -151,12 +211,12 @@ var array_box=[];
 									<p><?php echo $item[$i]['ct_price']; ?></p>
 								</li>
 								<li class="price m_none">
-									<p><?php echo number_format($pirce_v) ; ?></p>
+									<p class="price_print"><?php echo number_format($pirce_v) ; ?></p>
 								</li>
 								<li class="delivery-price m_none" style="width: 20%;">
 									<p><?php echo $item[$i]['ct_send_cost']; ?></p>
 								</li>
-								<li class="barcode m_none barList" style="display: none;">
+								<li class="barcode barList" style="display: none;">
 								<?php
 									for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++){
 										for($iii = 0; $iii < $item[$i]["it_optionList"][$ii]["qty"]; $iii++){
@@ -179,11 +239,11 @@ var array_box=[];
 							</ul>
 							<div class="list-btm">
 								<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
-								<div class="stock_insert_none">
+								<div class="stock_insert_none order_none" style="display: none;">
 									<span class="btm-tti">대여금액(월)</span>
 									<span><?=number_format($item[$i]["it_rental_price"])?>원</span>
 								</div>
-								<div class="stock_insert_none">
+								<div class="stock_insert_none order_none" style="display: none;">
 									<span class="btm-tti">대여기간</span>
 									<span class="list-day">
 										<input type="text" class="ordLendDtmInput ordLendStartDtm dateonly" style="margin-right: 6px;" name="ordLendStartDtm_<?=$item[$i]["ct_id"]?>" data-default="<?=date("Y-m-d")?>" value="<?=date("Y-m-d")?>"> ~ <input type="text" class="ordLendDtmInput ordLendEndDtm dateonly" style="margin-left: 6px;" name="ordLendEndDtm_<?=$item[$i]["ct_id"]?>" data-default="<?=date("Y-m-d", strtotime("+ 364 days"))?>" readonly value="<?=date("Y-m-d", strtotime("+ 364 days"))?>">
@@ -308,7 +368,7 @@ var array_box=[];
 
 					$oCurl = curl_init();
 					curl_setopt($oCurl, CURLOPT_PORT, 9001);
-					curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com:9001/api/account/entInfo");
+					curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/ent/account");
 					curl_setopt($oCurl, CURLOPT_POST, 1);
 					curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 					curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData_entInfo, JSON_UNESCAPED_UNICODE));
@@ -381,7 +441,7 @@ var array_box=[];
 							<div class="list-con">
 								<strong>이메일</strong>
 								<div>
-									<input type="text" name="typereceipt_email" value="<?php echo $member['mb_giup_tax_email'] ?>" id="typereceipt_email" maxlength="20">
+									<input type="text" name="typereceipt_email" value="<?php echo $entInfo['data']['entMail'] ?>" id="typereceipt_email" maxlength="20">
 								</div>
 							</div>
 							<?php
@@ -398,7 +458,7 @@ var array_box=[];
 							<div class="list-con">
 								<strong>담당자명</strong>
 								<div>
-									<input type="text" name="typereceipt_manager_name" value="<?php echo $managers[0]['mm_name'] ?>" id="typereceipt_manager_name" maxlength="20">
+									<input type="text" name="typereceipt_manager_name" value="<?php echo $entInfo['data']['entTaxCharger'] ?>" id="typereceipt_manager_name" maxlength="20">
 								</div>
 							</div>
 						</li>
@@ -438,28 +498,58 @@ var array_box=[];
 		</div>
 
 		<div class="detail-price">
-			<h5 class="icon-tti order_recipientInfoBox" style="display: none;">
+			<h5 class="icon-tti order_recipientInfoBox m_none tablet_none" style="display: none;">
 				수급자 정보
-				<a href="#" id="order_recipient"><img src="<?=$SKIN_URL?>/image/icon_23.png" alt=""> 내 수급자 조회</a>
+				<a href="#" class="order_recipient"><img src="<?=$SKIN_URL?>/image/icon_23.png" alt=""> 내 수급자 조회</a>
 			</h5>
-			<div class="all-info all-info2 order_recipientInfoBox" style="display: none;">
+			<div class="all-info all-info2 order_recipientInfoBox m_none tablet_none" style="display: none;">
 				<ul>
 					<li>
 						<div>
 							<b>수급자명</b>
-							<span id="penNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+							<span class="penNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
 						</div>
 					</li>
 					<li>
 						<div>
 							<b>인정등급</b>
-							<span id="penTypeNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+							<span class="penTypeNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
 						</div>
 					</li>
 					<li>
 						<div>
 							<b>장기요양번호</b>
-							<span id="penLtmNum_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+							<span class="penLtmNum_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>유효기간</b>
+							<span class="penExpiDtm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>적용기간</b>
+							<span class="penAppEdDtm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>전화번호</b>
+							<span class="penConPnum_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>휴대폰</b>
+							<span class="penConNum_print" style="color: #CCC;">수급자를 선택해주세요.</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>주소</b>
+							<span class="penAddr_print" style="color: #CCC;">수급자를 선택해주세요.</span>
 						</div>
 					</li>
 				</ul>
@@ -903,12 +993,15 @@ var array_box=[];
 			document.getElementById("penTypeCd").value=list['penTypeCd'];			//주소
 			///*document.getElementById("penMoney").value=list['penMoney'];			//한도금액*/
 			
-			$("#penNm_print").text(list['penNm']);				//수급자명
-			$("#penNm_print").css("color", "");
-			$("#penTypeNm_print").text(list['penTypeNm']);				//수급자명
-			$("#penTypeNm_print").css("color", "");
-			$("#penLtmNum_print").text(list['penLtmNum']);				//장기요양번호
-			$("#penLtmNum_print").css("color", "");
+			$(".penNm_print").text(list['penNm']);				//수급자명
+			$(".penTypeNm_print").text(list['penTypeNm']);				//수급자명
+			$(".penLtmNum_print").text(list['penLtmNum']);				//장기요양번호
+			$(".penExpiDtm_print").text(list['penExpiDtm']);				//유효기간
+			$(".penAppEdDtm_print").text(list['penAppEdDtm']);				//적용기간
+			$(".penConNum_print").text(list['penConNum']);				//휴대전화
+			$(".penConPnum_print").text(list['penConPnum']);				//전화번호
+			$(".penAddr_print").text(list['penAddr']);				//주소
+			$(".tab-2 .detail-price .all-info.all-info2 ul li span").css("color", "");
 
 			document.getElementById("od_coupon_btn").style.display="none";			//한도금액*/
             $("#od_cp_price").text(0);
@@ -942,6 +1035,7 @@ var array_box=[];
 
 						optionCnt = (optionCnt) ? optionCnt : 0;
 
+						$(subDom).closest(".item").find(".recipientBox").remove();
 						$(subDom).css("position", "relative");
 						if(html){
 							$(subDom).closest(".item").find(".list-btm").prepend("<div id='renew_num_v' class='check-ac recipientBox' style='display: " + display + ";' data-code='" + subKey + "'><label><input type='radio' name='" + code + "Sup" + subKey + "' data-type='new'> 신규주문</label><label><input type='radio' name='" + code + "Sup" + subKey + "' data-type='use' checked> 재고소진 </label> <select>" + html + "</select></div>");
@@ -988,7 +1082,7 @@ var array_box=[];
 				});
 
 				$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
-				$(itemDom).find(".price").text(number_format((cnt - discountCnt) * price) + "원");
+				$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
 
 
 			});
@@ -1084,7 +1178,7 @@ var array_box=[];
 					});
 
 					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
-					$(itemDom).find(".price").text(number_format((cnt - discountCnt) * price) + "원");
+					$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
 				});
 
 				var it_price = $("input[name^=it_price]");
@@ -1147,7 +1241,7 @@ var array_box=[];
 					}
 
 					$("input[name='it_price[" + key + "]']").val(price);
-					$(itemDom).find(".price").text(number_format(price) + "원");
+					$(itemDom).find(".price_print").text(number_format(price));
 				});
 
 				if(status){
@@ -1193,6 +1287,7 @@ var array_box=[];
 			
 			$(".order-info").show();
 			$(".stock_insert_none").show();
+			$(".order_none").show();
 			$(".order_recipientInfoBox").hide();
 			
 			$("#penId").val("");
@@ -1215,6 +1310,9 @@ var array_box=[];
 					$(".tab-2 .table-list2 .delivery-price").css("width", "10%");
 					$(".tab-2 .table-list2 .barcode").show();
 					$(".order_recipientInfoBox").show();
+					break;
+				case "order" :
+					$(".order_none").hide();
 					break;
 			}
 		});
@@ -1408,26 +1506,28 @@ var array_box=[];
                         usrId : "<?=$member["mb_id"]?>",
                         prodId : prodsData["prodId"]
                     };
-//                    $.ajax({
-//                        url : "./ajax.stock.selectbarnumlist.php",
-//                        type : "POST",
-//                        async : false,
-//                        data : sendData2,
-//                        success : function(result){
-//                            result = JSON.parse(result);
-//                            console.log(result.data[0].prodBarNumList);
-//
-//                            for(var i =0; i < result.data[0].prodBarNumList.length; i ++){
-//                                if(result.data[0].prodBarNumList[i] == this_v){
-//                                    alert("이미 등록된 바코드입니다.");
-//                                    $(this_a).val("");
-//                                    flag=true;
-//                                    return false;
-//                                }
-//                            }
-//                            
-//                        }
-//                    });
+						if($("#od_stock_insert_yn").prop("checked")){
+							$.ajax({
+								url : "./ajax.stock.selectbarnumlist.php",
+								type : "POST",
+								async : false,
+								data : sendData2,
+								success : function(result){
+									result = JSON.parse(result);
+									console.log(result.data[0].prodBarNumList);
+
+									for(var i =0; i < result.data[0].prodBarNumList.length; i ++){
+										if(result.data[0].prodBarNumList[i] == this_v){
+											alert("이미 등록된 바코드입니다.");
+											$(this_a).val("");
+											flag=true;
+											return false;
+										}
+									}
+
+								}
+							});
+						}
                     if(flag){ return false;}
 					for(var i = 0; i < item.length; i++){
 						if($(this).attr("data-this-code") != $(item[i]).attr("data-this-code")){
@@ -1499,7 +1599,7 @@ var array_box=[];
 					});
 
 					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
-					$(itemDom).find(".price").text(number_format((cnt - discountCnt) * price) + "원");
+					$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
 				});
 
 				var it_price = $("input[name^=it_price]");
@@ -1585,7 +1685,7 @@ var array_box=[];
 					});
 
 					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
-					$(itemDom).find(".price").text(number_format((cnt - discountCnt) * price) + "원");
+					$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
 				});
 
 				var it_price = $("input[name^=it_price]");
@@ -1614,7 +1714,7 @@ var array_box=[];
 
 				$("#order_recipientBox").hide();
 				$("#order_recipientBox").css("opacity", 1);
-			$("#order_recipient").on("click", function(e){
+			$(".order_recipient").click(function(e){
 				e.preventDefault();
 				
 				<?php if($itemPenIdStatus){ ?>
@@ -1652,6 +1752,8 @@ var array_box=[];
 <script>
 <?php if($_GET['penId_r']){ //보유재고 관리에서 넘어오면 실행 ?>
         $(document).ready(function() { 
+            $('#c_recipient').click();
+
             selected_recipient('<?=$_GET['penId_r']?>');
             $('.prodBarSelectBox0 option[value="<?=$_GET['barcode_r']?>"]').attr('selected', 'selected');
         });

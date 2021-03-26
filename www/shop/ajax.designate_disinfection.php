@@ -7,6 +7,7 @@
         $sql = " insert into `g5_rental_log`
             set `rental_log_Id` = '$rental_log_Id',
                 `stoId` = '$stoId',
+                `dis_state` = '소독중',
                 `dis_detail` = '$dis_detail',
                 `dis_perosn` = '$dis_perosn',
                 `dis_phone` = '$dis_phone',

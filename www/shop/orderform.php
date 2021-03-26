@@ -112,7 +112,8 @@ $sql = " select a.ct_id,
 				b.pt_msg3,
 				b.it_model,
 				a.prodSupYn,
-				b.it_img1
+				b.it_img1,
+				b.it_rental_price
 		   from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$s_cart_id'
 			and a.ct_select = '1' ";
@@ -281,6 +282,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	$item[$i]['point'] = number_format($point);
 	$item[$i]['ct_send_cost'] = $ct_send_cost;
 	$item[$i]['thumbnail'] = $row["it_img1"];
+	$item[$i]['it_rental_price'] = $row["it_rental_price"];
 
 	if(!in_array($row['pt_it'], $g5['apms_automation'])) {
 		$arr_it_orderform[] = $row['it_id'];

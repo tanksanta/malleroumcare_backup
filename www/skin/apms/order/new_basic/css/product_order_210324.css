@@ -186,6 +186,7 @@ table {border-collapse: collapse;}
 
 .table-list4 {}
 .table-list4 ul li {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
+.table-list4 ul li.addr > div { margin-left: -10px; }
 .table-list4 .list-con {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
 .table-list4 .list-con > div {width: 100%;padding-right: 17px;}
 .table-list4.table-list3 ul .addr button {margin:0 10px 0 0;}
@@ -275,6 +276,7 @@ table {border-collapse: collapse;}
 #pro-order2 .de-btn {display: inline-block;vertical-align: middle;padding: 3px 10px;margin-right: 6px; font-style: normal;border-radius:5px;font-size: 14px;background: #fff;border: 1px solid #ddd;}
 #pro-order2 .name-top {margin-bottom: 44px;}
 #pro-order2 .name-top div {background: #f6f8e3;padding: 12px;font-size:14px;display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
+#pro-order2 .name-top div > p { margin: 0; }
 #pro-order2 .name-top div a {border-radius: 5px; display: inline-block;padding: 6px 0;width: 100px;text-align: center; color: #b7be00;background: #fff;border:1px solid #b7be00;}
 #pro-order2 .name-top.gray div {background: #eee;}
 #pro-order2 .name-top.gray div a {border-color: #333;color: #333;}
@@ -312,7 +314,7 @@ table {border-collapse: collapse;}
 @media screen and (max-width: 1020px){
     .tab-2 .table-list2 .barcode {display: none;}
     .tab-2 .table-list2 .delivery-price {width: 20%;}
-    .m_barcode {display: block;}
+    .m_barcode {display: block !important;}
     .m_barcode input {width: 116px; height: 26px;border: 1px solid #ddd;}
     
     #pro-order2 .table-list2 .pro {width: 55%;}
@@ -326,6 +328,9 @@ table {border-collapse: collapse;}
 }
 
 @media screen and (max-width: 860px){
+	.tablet_none { display: none !important; }
+	.tablet_block { display: block !important; }
+	
     .order-date .list-date input {width: 100px;}
     .detail-wrap {width: 100%;}
     .tab-wrap.on {display: block;}
@@ -347,6 +352,7 @@ table {border-collapse: collapse;}
     .table-list2 .delivery-price.m_none {display: none !important;}
     .table-list2 .pro {width: 55%;}
     .table-list4 ul li:not(.addr) {display: block;}
+	.table-list4 ul li.addr > div { margin-left: 0; }
     .table-list4 .list-con {margin-bottom: 10px;}
 
 }
@@ -355,6 +361,8 @@ table {border-collapse: collapse;}
     .m_none {display: none !important;}
     .pc_none {display: block !important;}
 
+	.tab-2 .table-list2 .barcode { width: 100%; padding-left: 84px; }
+	.tab-2 .table-list2 .barcode > * { width: 120px !important; display: block; }
     .order-list {padding-top: 60px;}
     .tti {font-size: 21px;} 
     .order-date {padding: 20px 4%;margin-bottom: 33px;}

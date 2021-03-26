@@ -532,7 +532,7 @@ if($is_inquiryview_sub) {
 			
 
 
-            #대여로그 작성
+        #대여로그 작성
 			$sendData2 = [];
 			$sendData2["uuid"] = $_SESSION["uuid{$_GET["od_id"]}"];
 			$sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
@@ -569,7 +569,7 @@ if($is_inquiryview_sub) {
                 $res_pen = json_decode($res_pen, true);
                 curl_close($oCurl);
                 $data = $res_pen["data"][0];
-
+                print_r($res2);
                 //수급자명
                 $ren_person=$data["penNm"];          
                 $stoId=$res2['data'][0]['stoId'];
@@ -638,7 +638,7 @@ if($is_inquiryview_sub) {
 			$res2 = curl_exec($oCurl);
 			$res2 = json_decode($res2, true);
 			curl_close($oCurl);
-
+            
 			if($res2["errorYN"] == "N"){
 				$reload = true;
 				$staOrdCd = "03";
@@ -669,16 +669,16 @@ if($is_inquiryview_sub) {
 		$sendData["prods"] = $_SESSION["productList{$_GET["od_id"]}"];
 		$sendData["staOrdCd"] = $staOrdCd;
 
-		unset($_SESSION["productList{$_GET["od_id"]}"]);
-		unset($_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]);
-		unset($_SESSION["uuid{$_GET["od_id"]}"]);
-		unset($_SESSION["penOrdId{$_GET["od_id"]}"]);
+		// unset($_SESSION["productList{$_GET["od_id"]}"]);
+		// unset($_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]);
+		// unset($_SESSION["uuid{$_GET["od_id"]}"]);
+		// unset($_SESSION["penOrdId{$_GET["od_id"]}"]);
 		
 ?>
 
 	<script type="text/javascript">
 		<?php if($reload){ ?>
-			window.location.reload();
+			// window.location.reload();
 		<?php } ?>
 		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 

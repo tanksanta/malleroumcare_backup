@@ -153,7 +153,7 @@ if(!defined('G5_IS_ADMIN') && $config['cf_add_script']) {
     echo $config['cf_add_script'].PHP_EOL;
 }
 ?>
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
 </head>
 <body<?php echo (isset($g5['body_script']) && $g5['body_script']) ? $g5['body_script'].' ' : ''; ?> class="<?php echo (_RESPONSIVE_) ? '' : 'no-';?>responsive <?php echo $body_mode;?>">
 <?php

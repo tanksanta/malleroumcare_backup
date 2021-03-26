@@ -219,7 +219,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <span class="num"><?=$number?></span><!-- 넘버링 -->
                         <span class="product">
                             <div class="info">
-                                <div class="img">
+                                <div class="img"  style="min-width:100px; min-height:100px;">
                                     <img src="/data/item/<?=$row["it_img1"]?>" alt=""><!-- 이미지 -->
                                 </div>
                                 <div class="text">

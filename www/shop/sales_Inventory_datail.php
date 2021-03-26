@@ -327,6 +327,7 @@ $row = sql_fetch($sql);
                             <span class="pro-num">바코드</span>
                             <span class="date">입고일</span>
                             <span class="order">판매</span>
+                            <span class="del">삭제</span>
                         </li>
 						<?php
 						//판매재고 리스트
@@ -471,6 +472,11 @@ $row = sql_fetch($sql);
                             <span class="order m_off">
                                 <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodBarNum']?>')">수급자선택</a>
                             </span>
+                            <span class="del m_off">
+                                <a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">
+                                    삭제
+                                </a>
+                            </span>
                             <!--mobile용-->
                             <div class="list-m">
                                 <div class="info-m">
@@ -482,6 +488,9 @@ $row = sql_fetch($sql);
                                     <span class="date"><?=$date2?></span>
                                     <span class="order">
                                         <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodBarNum']?>')" >수급자선택</a>
+                                    </span>
+                                    <span class="order2">
+                                        <a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">삭제</a>
                                     </span>
                                 </div>
                             </div>
@@ -685,6 +694,7 @@ $row = sql_fetch($sql);
                         html = html +'<span class="order m_off">';
                         html = html +'<a href="javascript:;"onclick="popup_control(\''+result.data[i].prodColor+'\',\''+result.data[i].prodSize+'\',\''+result.data[i].prodBarNum+'\')">수급자선택</a>';
                         html = html +'</span>';
+                        html = html +'<span class="del m_off"><a href="javascript:;" onclick="del_stoId(\''+result.data[i].stoId+'\')">삭제</a></span>';
                         html = html +'<div class="list-m">';
                         html = html +'<div class="info-m">';
                         html = html +'<span class="product">'+result.data[i].prodNm+" "+option+'</span>';
@@ -695,6 +705,7 @@ $row = sql_fetch($sql);
                         html = html +'<span class="order">';
                         html = html +'<a href="javascript:;"onclick="popup_control(\''+result.data[i].prodColor+'\',\''+result.data[i].prodSize+'\',\''+result.data[i].prodBarNum+'\')">수급자선택</a>';
                         html = html +'</span>';
+                        html = html +'<span class="order2"><a href="javascript:;" onclick="del_stoId(\''+result.data[i].stoId+'\')">삭제</a></span>';
                         html = html +'</div>';
                         html = html +'</div>';
                         html = html +'</li>';
@@ -877,7 +888,34 @@ $row = sql_fetch($sql);
     $("#thisPopupCloseBtn").click(function(e){
 		alert('z');
     });
+    function del_stoId(stoId){
+        var prods={};
+        prods['stoId'] = [stoId];
+        if (confirm("정말 삭제하시겠습니까??") == true){
+            
 
+             var sendData = {
+                stoId: [stoId] 
+            }
+
+            console.log(sendData);
+            $.ajax({
+                url : "./ajax.stock.delete.php",
+                type : "POST",
+                async : false,
+                data : sendData,
+                success : function(result){
+                    result = JSON.parse(result);
+                    if(result.errorYN == "Y"){
+                        alert(result.message);
+                    } else {
+                        alert('삭제되었습니다.');
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    }
 
 
 </script>

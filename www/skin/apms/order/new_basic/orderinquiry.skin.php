@@ -78,6 +78,60 @@ if($header_skin)
 		});
 	} );
 </script>
+  
+   <!-- 210326 재고조회팝업 -->
+	<div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
+		<div>
+		</div>
+	</div>
+  	<!-- 210326 재고조회팝업 -->
+   
+   <!-- 210326 배송정보팝업 -->
+	<div id="popupProdDeliveryInfoBox" class="listPopupBoxWrap">
+		<div>
+		</div>
+	</div>
+   
+    <style>
+		.listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+		.listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+		.listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+
+		@media (max-width : 750px){
+			.listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+		}
+	</style>
+  
+	<script type="text/javascript">
+		$(function(){
+
+			$(".listPopupBoxWrap").hide();
+			$(".listPopupBoxWrap").css("opacity", 1);
+			
+			$(".popupDeliveryInfoBtn").click(function(e){
+				e.preventDefault();
+				
+				var od = $(this).attr("data-od");
+				$("#popupProdDeliveryInfoBox > div").append("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od + "'>");
+				$("#popupProdDeliveryInfoBox iframe").load(function(){
+					$("#popupProdDeliveryInfoBox").show();
+				});
+			});
+			
+			$(".popupProdBarNumInfoBtn").click(function(e){
+				e.preventDefault();
+				
+				var od = $(this).attr("data-od");
+				var it = $(this).attr("data-it");
+				$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=" + it + "&od_id=" + od + "'>");
+				$("#popupProdBarNumInfoBox iframe").load(function(){
+					$("#popupProdBarNumInfoBox").show();
+				});
+			});
+			
+		})
+	</script>
+   <!-- 210326 배송정보팝업 -->
     
 <section id="pro-order" class="wrap order-list">
 	<h2 class="tti">주문내역</h2>
@@ -171,7 +225,7 @@ if($header_skin)
 			<?php if($row["recipient_yn"] == "Y"){ ?>
 				<div class="info-top">
 					<h5>수급자 정보 : <?=$row["od_penNm"]?> (<?=$row["od_penTypeNm"]?>)</h5>
-					<a href="javascript:;">계약서</a>
+					<a href="javascript:;" style="display: none;">계약서</a>
 				</div>
 			<?php } ?>
 			</div>
@@ -180,7 +234,7 @@ if($header_skin)
 				<div class="list">
 					<ul class="cb">
 						<li class="pro">
-							<div class="img">
+							<div class="img" style="min-width:100px; min-height:100px;">
 							<?php if($item["it_img"]){ ?>
 								<img src="/data/item/<?=$item["it_img"]?>" onerror="this.src='/img/no_img.png';">
 							<?php } ?>
@@ -217,13 +271,13 @@ if($header_skin)
 						<li class="info-btn">
 							<div>
 							<?php if($item["prodSupYn"] == "N"){ ?>
-								<a href="javascirpt:;" class="btn-03 btn-0"><?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$row["od_prodBarNum_total"]})" : "바코드 확인"?></a>
+								<a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"><?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$row["od_prodBarNum_total"]})" : "바코드 확인"?></a>
 							<?php } else { ?>
-								<a href="javascirpt:;" class="btn-01 btn-0"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드</a>
+								<a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드</a>
 							<?php } ?>
 							
-							<?php if($row["od_delivery_insert"]){ ?>
-								<a href="javascirpt:;" class="btn-02 btn-0">배송정보</a>
+							<?php if($row["od_delivery_insert"] && ($item["prodSupYn"] == "Y")){ ?>
+								<a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
 							<?php } ?>
 							
 							<?php if($row["od_status"] == "배송완료"){ ?>

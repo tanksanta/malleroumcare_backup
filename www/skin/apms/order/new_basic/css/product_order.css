@@ -327,11 +327,11 @@ table {border-collapse: collapse;}
     .detail-tab ul li h4 {padding-top: 10px; font-size: 18px;}
     .table-list2 .head li {padding-left: 0; font-size: 13px;}
     .table-list2 .pro-info .name {font-size: 14px;}
-    
+    .table-list .delivery {text-align: center;}
 }
 
 @media screen and (max-width: 800px){
-    .table-list .delivery {text-align: center;padding-right: 5px;}
+    .table-list .delivery {text-align: right;}
     .order-date .list-date {float: none;}
     .order-date .list-tab {float: none;margin: 20px 0;}
     .order-date .list-select {float: none;margin-top: 0;}
@@ -341,10 +341,12 @@ table {border-collapse: collapse;}
     .table-list2 .pro {width: 55%;}
     .table-list4 ul li:not(.addr) {display: block;}
     .table-list4 .list-con {margin-bottom: 10px;}
-
+    .info-btn{ margin-left:70px;}
 }
 
 @media screen and (max-width: 600px){
+    .info-btn{ margin-left:0px;}
+
     .m_none {display: none !important;}
     .pc_none {display: block !important;}
 

@@ -67,7 +67,7 @@ if($header_skin)
                         비유통 상품은 배송되지 않습니다.
                     </p>
                 </li>
-                <li data-type="order_pen">
+                <li data-type="order_pen" id="c_recipient">
                     <span></span>
                     <h4>수급자 주문</h4>
                     <p>

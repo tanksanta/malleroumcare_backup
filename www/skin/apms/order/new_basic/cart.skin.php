@@ -118,7 +118,7 @@ if ( is_array($item) && count($item) ) {
 
     <div style="margin-bottom:15px; text-align:center;">
         <?php if ($i == 0) { ?>
-	        <a href="<?php echo G5_SHOP_URL; ?>/" class="btn btn-color btn-sm">계속하기</a>
+	        <!-- <a href="<?php echo G5_SHOP_URL; ?>/" class="btn btn-color btn-sm">계속하기</a> -->
         <?php } else { ?>
 			<input type="hidden" name="url" value="./orderform.php">
 			<input type="hidden" name="records" value="<?php echo $i; ?>">
@@ -133,14 +133,14 @@ if ( is_array($item) && count($item) ) {
 			<div class="row">
 				<div class="col-sm-6 col-sm-offset-3">
 					<div class="btn-group btn-group-justified">
-						<div class="btn-group">
+						<!-- <div class="btn-group">
 							<a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=<?php echo $continue_ca_id; ?>" class="btn btn-white btn-block btn-sm">계속하기</a>
-						</div>
+						</div> -->
 						<div class="btn-group">
 							<button type="button" onclick="return form_check('seldelete');" class="btn  btn-white btn-block btn-sm"> 선택삭제</button>
 						</div>
 						<div class="btn-group">
-							<button type="button" onclick="return form_check('alldelete');" class="btn btn-white btn-block btn-sm"> 비우기</button>
+							<button type="button" onclick="return form_check('alldelete');" class="btn btn-white btn-block btn-sm">전체삭제</button>
 						</div>
 					</div>
 					<?php if ($naverpay_button_js) { ?>

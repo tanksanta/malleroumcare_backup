@@ -422,6 +422,7 @@ $row = sql_fetch($sql);
                                 
                                 $bg="";//대여중 일때 클래스 넣기
                                 $rental_btn=''; //대여 버튼
+                                $rental_btn2=''; //대여 버튼
                                 $water="";//소독중 표시
 
                                 //상태 메뉴
@@ -435,6 +436,7 @@ $row = sql_fetch($sql);
                                 $state_menu7='<li><a href="javascript:;">소독확인중</a></li>';
                                 $state_menu8='<li><a href="javascript:;" onclick="retal_state_change2(\''.$list[$i]['stoId'].'\',\'05\',\'불용재고로 등록되었습니다.\')" >불용재고등록</a></li>';
                                 $state_menu9='<li><a href="javascript:;" onclick="retal_state_change(\''.$list[$i]['stoId'].'\',\'09\')">대여종료</a></li>';
+                                $state_menu_del='<li><a href="javascript:;" onclick="del_stoId(\''.$list[$i]['stoId'].'\')">삭제</a></li>';
 
                                 //메뉴 선택  01: 재고(대여가능) 02: 재고소진(대여중) 08: 소독중 09: 대여종료
                                 switch ($list[$i]['stateCd']) {
@@ -443,13 +445,23 @@ $row = sql_fetch($sql);
                                     $rental_btn2='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여하기</a>'; //대여 버튼
                                     break;
                                     case '02': $state="대여중";  $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $bg="bg"; $rental_btn=""; break;
-                                    case '08': $state="소독중";  $water='<img style="margin-left:2px; margin-bottom:3px;" src="'.G5_IMG_URL.'/water.png" alt="">'; $state_menu_all =  $state_menu5. $state_menu6;break;
+                                    case '08': $state="소독중";   $state_menu_all =  $state_menu5. $state_menu6;break;
                                     case '09': $state="대여종료"; $state_menu_all=$state_menu3.$state_menu4.$state_menu1; break;
                                     default  : $state=""; break;
                                 }
+                                //대여가능  
+                                if($state=="대여가능"){
+                                    $sql_state = "SELECT `dis_state` FROM `g5_rental_log` WHERE `stoId`= '{$list[$i]['stoId']}' AND `rental_log_division`='1' ORDER BY `dis_total_date` DESC LIMIT 1";
+                                    $row_state = sql_fetch($sql_state);
+                                    $dis_state = $row_state['dis_state'];
+                                    if($dis_state=="소독완료"){
+                                        $water='<img style="margin-left:2px; margin-bottom:3px;" src="'.G5_IMG_URL.'/water.png" alt="">';
+                                    }
+                                }
+                                $state_menu_all=$state_menu_all.$state_menu_del;
                                 //N버튼
                                 $nimg="";
-                                $sql_new="select count(*) as count from `g5_rental_log` where `stoId` =  '".$list[$i]['stoId']."'";
+                                $sql_new="select count(*) as count from `g5_rental_log` where `stoId` =  '".$list[$i]['stoId']."' and `rental_log_division` = '2';";
                                 $row_new = sql_fetch($sql_new);
                                 $nimg_flag = $row_new['count'];
                                 if(!$nimg_flag){ $nimg='<img style="padding-left:5px;" src="'.G5_IMG_URL.'/iconnew.png" alt="">'; }
@@ -505,7 +517,6 @@ $row = sql_fetch($sql);
                                         </span>
                                         <span class="none">
                                             <?=$rental_btn2?>
-                                            <!-- <a class="state-btn1" href="javascript:;">대여하기</a> -->
                                             <div class="state-btn2" onclick="open_list(this);">
                                                 <b><img src="<?=G5_IMG_URL?>/icon_11.png" alt=""></b>
                                                 <ul>
@@ -621,7 +632,7 @@ $row = sql_fetch($sql);
                                                 <h4><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></h4>
                                                 <span><?=$list[$i]['prodBarNum']?></span>
                                             </div>
-                                            <table>
+                                            <table >
                                                 <colgroup>
                                                     <col width="10%">
                                                     <col width="30%">
@@ -629,10 +640,10 @@ $row = sql_fetch($sql);
                                                     <col width="30%">
                                                 </colgroup>
                                                 <thead>
-                                                    <th>No.</th>
-                                                    <th>내용</th>
-                                                    <th>기간</th>
-                                                    <th>문서</th>
+                                                    <th style="text-align: center;">No.</th>
+                                                    <th style="text-align: center;">내용</th>
+                                                    <th style="text-align: center;">기간</th>
+                                                    <th style="text-align: center;">문서</th>
                                                 </thead>
                                                 <tbody id="log_<?=$list[$i]['stoId']?>">
                                                 
@@ -841,10 +852,10 @@ $row = sql_fetch($sql);
                                                     <col width="30%">
                                                 </colgroup>
                                                 <thead>
-                                                    <th>No.</th>
-                                                    <th>내용</th>
-                                                    <th>기간</th>
-                                                    <th>문서</th>
+                                                    <th style="text-align: center;">No.</th>
+                                                    <th style="text-align: center;">내용</th>
+                                                    <th style="text-align: center;">기간</th>
+                                                    <th style="text-align: center;">문서</th>
                                                 </thead>
                                                 <tbody id="log_<?=$list[$i]['stoId']?>"></tbody>
                                             </table>
@@ -1187,7 +1198,35 @@ $row = sql_fetch($sql);
         //마스크의 투명도 처리
         $('#mask').fadeTo("slow",0.8);    
     }
+    //삭제
+    function del_stoId(stoId){
+        var prods={};
+        prods['stoId'] = [stoId];
+        if (confirm("정말 삭제하시겠습니까??") == true){
+            
 
+             var sendData = {
+                stoId: [stoId] 
+            }
+
+            console.log(sendData);
+            $.ajax({
+                url : "./ajax.stock.delete.php",
+                type : "POST",
+                async : false,
+                data : sendData,
+                success : function(result){
+                    result = JSON.parse(result);
+                    if(result.errorYN == "Y"){
+                        alert(result.message);
+                    } else {
+                        alert('삭제되었습니다.');
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    }
 </script>
 
 
@@ -1201,6 +1240,3 @@ if($is_inquiry_sub) {
 	include_once('./_tail.php');
 }
 ?>
-  
-  
-  

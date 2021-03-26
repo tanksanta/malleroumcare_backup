@@ -3,9 +3,51 @@
 	include_once("./_common.php");
 	$g5["title"] = "주문 내역 바코드 수정";
 	// include_once(G5_ADMIN_PATH."/admin.head.php");
+
+	//보유재고 리스트 보유재고 api 통신
+	$sendLength = 5;
+	$orderStoIdList = [];
+	$sendData = [];
+	$sendData["usrId"] = $member["mb_id"];
+	$sendData["entId"] = $member["mb_entId"];
+	$sendData["prodId"] = $_GET['prodId'];
+			
+	if($_GET['stoId']){
+		$sendData["stoId"] = $_GET['stoId'];
+		array_push($orderStoIdList, $_GET['stoId']);
+	}
+
+	if($_GET["od_id"]){
+		$stoIdList = sql_fetch("SELECT stoId FROM g5_shop_order WHERE od_id = '{$_GET["od_id"]}'")["stoId"];
+		$stoIdList = explode(",", $stoIdList);
+		foreach($stoIdList as $stoId){
+			array_push($orderStoIdList, $stoId);
+		}
+	}
+			
+	// 01: 재고(대여가능) 02: 재고소진(대여중) 03: AS신청 04: 반품 05: 기타 06: 재고대기 07: 주문대기 08: 소독중 09: 대여종료
+	$sendData["stateCd"] =['01','02','08','09'];
+	$oCurl = curl_init();
+	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
+	curl_setopt($oCurl, CURLOPT_POST, 1);
+	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+	$res = curl_exec($oCurl);
+	$res = json_decode($res, true);
+	curl_close($oCurl);
+	$list = [];
+	if($res["data"]){
+		$list = $res["data"];
+	}
+			
+	$it = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$_GET["prodId"]}'");
+
 ?>
 <!DOCTYPE html>
- <html lang="en">
+ <html lang="ko">
  <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,7 +60,10 @@
 	<style>
 		* { margin: 0; padding: 0; position: relative; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); outline: none; }
 		html, body { width: 100%; float: left; font-family: "Noto Sans KR", sans-serif; }
-		body { padding-top: 60px; padding-bottom: 70px; }
+		body { padding-top: 60px; }
+		<?php if($it["prodSupYn"] == "N"){ ?>
+		body { padding-bottom: 70px; }
+		<?php } ?>
 		a { text-decoration: none; color: inherit; }
 		ul, li { list-style: none; }
 		button { border: 0; font-family: "Noto Sans KR", sans-serif; }
@@ -51,16 +96,17 @@
 		/* 상품목록 */
 		#submitForm { width: 100%; float: left; }
 		.imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto; float: left; }
-		.imfomation_box > a { width: 100%; float: left; }
+		.imfomation_box > a { width: 100%; float: left; cursor: default; }
 		.imfomation_box > a > li { width: 100%; float: left; padding: 20px; border-bottom: 1px solid #DDD; }
 		.imfomation_box a .li_box{ width:100%;  height:auto;text-align:center;}
 		.imfomation_box a .li_box .li_box_line1{ width: 100%;  height:auto; margin:auto; float:left;color:#000; }
 		.imfomation_box a .li_box .li_box_line1 .p1{ width:100%; float:left; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
 		.imfomation_box a .li_box .li_box_line1 .p1 > span { height: 100%; display: table-cell; vertical-align: middle; }
-		.imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; }
+		.imfomation_box a .li_box .li_box_line1 .p1 .span1{ width: 100%; float: left; font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; }
 		.imfomation_box a .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
 		.imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
 		.imfomation_box a .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
+		.imfomation_box a .li_box .li_box_line1 .p1 .span3{ width: 100%; float: left; font-size: 14px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; color: #666; }
 		.imfomation_box a .li_box .li_box_line1 .cartProdMemo { width: 100%; float: left; font-size: 13px; margin-top: 2px; text-align: left; color: #FF690F; }
 		/* display:none; */
 		.imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle;width:100%; padding-top: 20px; display:none; float: left; box-sizing: border-box; }
@@ -106,56 +152,34 @@
  <body>
  	<!-- 고정 상단 -->
 	<div id="popupHeaderTopWrap">
-		<div class="title">바코드 수정 입력</div>
+		<div class="title"><?=($it["prodSupYn"] == "N") ? "바코드 수정 입력" : "바코드정보"?></div>
 		<div class="close">
-			<a href="javascript:closePopup();">
+			<a href="#" class="popupCloseBtn">
 				&times;
 			</a>
 		</div>
 	</div>
    <!-- 상품목록 -->
-   <?php
-	//보유재고 리스트 보유재고 api 통신
-	$sendLength = 5;
-	$sendData = [];
-	$sendData["usrId"] = $member["mb_id"];
-	$sendData["entId"] = $member["mb_entId"];
-	$sendData["prodId"] = $_GET['prodId'];
-	$sendData["stoId"] = $_GET['stoId'];
-	// 01: 재고(대여가능) 02: 재고소진(대여중) 03: AS신청 04: 반품 05: 기타 06: 재고대기 07: 주문대기 08: 소독중 09: 대여종료
-	$sendData["stateCd"] =['01','02','08','09'];
-	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
-	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
-	curl_setopt($oCurl, CURLOPT_POST, 1);
-	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-	$res = curl_exec($oCurl);
-	$res = json_decode($res, true);
-	curl_close($oCurl);
-	$list = [];
-	if($res["data"]){
-		$list = $res["data"];
-	}
-	// print_r($list);
-	
- 	?>
+
 	<form id="submitForm">
 		<input type="hidden" name="od_id" value="">
 		<input type="hidden" name="update_type" value="popup">
 		<ul class="imfomation_box" id="imfomation_box">
+		<?php for($i = 0; $i < count($list); $i++){ 
+			if(!in_array($list[$i]["stoId"], $orderStoIdList)){
+				continue;
+			}
+		?>
 			<a href="javascript:void(0)">
 				<li class="li_box">
-					<div class="li_box_line1"   onclick="openCloseToc(this)">
+					<div class="li_box_line1">
 						<p class="p1">
 							<span class="span1">
-								<?=$list[0]['prodNm']?> <?php if($list[0]['prodColor']||$list[0]['prodSize']){ echo $list[0]['prodColor'].'/'.$list[0]['prodSize']; }else{ echo "(옵션 없음)"; } ?>
+								<?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?>
 							</span>
-							<span class="span1">
-								<?php if($list[0]['prodBarNum']){ ?>
-								현재 바코드 : (<?=$list[0]['prodBarNum']?>)
+							<span class="span3">
+								<?php if($list[$i]['prodBarNum']){ ?>
+								현재 바코드 : (<?=$list[$i]['prodBarNum']?>)
 								<?php } ?>
 							</span>
 							<span class="span2">
@@ -164,25 +188,31 @@
 							</span>
 						</p>
 					</div>
+					<?php if($it["prodSupYn"] == "N"){ ?>
 					<div class="folding_box">
 						<ul class="inputbox">
 								<li>
-									<input type="text" value="" id="barcode_v" class="notall frm_input  required " placeholder="수정하실 바코드를 입력하세요.">
+									<input type="text" value="" class="notall frm_input  required " placeholder="수정하실 바코드를 입력하세요.">
 									<i class="fa fa-check"></i>
 									<!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>"> -->
 								</li>
 						</ul>
 					</div>
+					<?php } ?>
 				</li>
 			</a>
+		<?php } ?>
 		</ul>
 	</form>
 	</div>
+	
+	<?php if($it["prodSupYn"] == "N"){ ?>
 	<!-- 고정 하단 -->
 	<div id="popupFooterBtnWrap">
 		<button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
-		<button type="button" class="cancelbtn" onclick="closePopup();">취소</button>
+		<button type="button" class="cancelbtn popupCloseBtn" onclick="closePopup();">취소</button>
 	</div>
+	<?php } ?>
 <?php
 
 if(!$member['mb_id']){alert('접근이 불가합니다.');}
@@ -216,57 +246,66 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         $("#prodBarNumSaveBtn").click(function() {
 			var stoldList = [];
 			var count=0;
-			var stoIdData = "<?=$_GET['stoId']?>";
-			var sendData = {
-				stoId : stoIdData
-			}
-			$.ajax({
-				url : "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json; charset=utf-8;",
-				data : JSON.stringify(sendData),
-				success : function(res){
-					if(res.data){
-						stoldList = res.data;
-					}
-					var prodsList = {};
-					var barcode_v = document.getElementById('barcode_v');
-					// if(barcode_v.length !== 12){
-					// 	alert('바코드는 12자리를 입력하셔야합니다.'); return false;
-					// }
-					$.each(stoldList, function(key, value){
-						prodsList[key] = {
-							stoId : value.stoId,
-							prodColor : value.prodColor,
-							prodSize : value.prodSize,
-							prodBarNum : barcode_v.value,
-							prodManuDate : value.prodManuDate,
-							stateCd : value.stateCd,
-							stoMemo : (value.stoMemo) ? value.stoMemo : ""
-						}
-					});
-					var sendData = {
-						usrId : "<?=$member["mb_id"]?>",
-						prods : prodsList
-					}				
-					$.ajax({
-						url : "./samhwa_orderform_stock_update.php",
-						type : "POST",
-						async : false,
-						data : sendData,
-						success : function(result){
-							result = JSON.parse(result);
-							if(result.errorYN == "Y"){
-								alert(result.message);
-							} else {
-								alert("저장이 완료되었습니다.");
-								closePopup();
-							}
-						}
-					});
+			var stoIdData = <?=json_encode($orderStoIdList)?>;
+			var barcode_v = $(".notall");
+			
+			for(var i = 0; i < stoIdData.length; i++){
+				var sendData = {
+					stoId : stoIdData[i]
 				}
-			});
+			
+				$.ajax({
+					url : "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
+					type : "POST",
+					dataType : "json",
+					contentType : "application/json; charset=utf-8;",
+					async : false,
+					data : JSON.stringify(sendData),
+					success : function(res){
+						if(res.data){
+							stoldList = res.data;
+						}
+						var prodsList = {};
+						
+						// if(barcode_v.length !== 12){
+						// 	alert('바코드는 12자리를 입력하셔야합니다.'); return false;
+						// }
+						$.each(stoldList, function(key, value){
+							prodsList[key] = {
+								stoId : value.stoId,
+								prodColor : value.prodColor,
+								prodSize : value.prodSize,
+								prodBarNum : $(barcode_v[i]).val(),
+								prodManuDate : value.prodManuDate,
+								stateCd : value.stateCd,
+								stoMemo : (value.stoMemo) ? value.stoMemo : ""
+							}
+						});
+						var sendData = {
+							usrId : "<?=$member["mb_id"]?>",
+							prods : prodsList
+						}				
+						$.ajax({
+							url : "./samhwa_orderform_stock_update.php",
+							type : "POST",
+							async : false,
+							data : sendData,
+							success : function(result){
+								result = JSON.parse(result);
+								if(result.errorYN == "Y"){
+									alert(result.message);
+									return false;
+								}
+							}
+						});
+					}
+				});
+			}
+			
+			alert("저장이 완료되었습니다.");
+			
+			$("#popupProdBarNumInfoBox", parent.document).hide();
+			$("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
         });
 
 	$(".notall").keyup(function(){
@@ -305,6 +344,13 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			window.close();
 		<?php }?>
     }
+	
+	$(".popupCloseBtn").click(function(e){
+		e.preventDefault();
+
+		$("#popupProdBarNumInfoBox", parent.document).hide();
+		$("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
+	});
 </script>
     <!-- <hr color="#dddddd" size="1"> -->
  </body>

@@ -139,6 +139,42 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 }
 </script>
 
+   <!-- 210326 배송정보팝업 -->
+	<div id="popupProdDeliveryInfoBox" class="listPopupBoxWrap">
+		<div>
+		</div>
+	</div>
+   
+    <style>
+		.listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+		.listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+		.listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+
+		@media (max-width : 750px){
+			.listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+		}
+	</style>
+  
+	<script type="text/javascript">
+		$(function(){
+
+			$(".listPopupBoxWrap").hide();
+			$(".listPopupBoxWrap").css("opacity", 1);
+			
+			$(".popupDeliveryInfoBtn").click(function(e){
+				e.preventDefault();
+				
+				var od = $(this).attr("data-od");
+				$("#popupProdDeliveryInfoBox > div").append("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od + "'>");
+				$("#popupProdDeliveryInfoBox iframe").load(function(){
+					$("#popupProdDeliveryInfoBox").show();
+				});
+			});
+			
+		})
+	</script>
+   <!-- 210326 배송정보팝업 -->
+
 <link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css">
 <section id="pro-order2" class="wrap order-list">
 	<h2 class="tti">
@@ -147,18 +183,75 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	</h2>
 
 	<section class="tab-wrap tab-2 on">
+		<?php if($od["od_penId"]){ ?>
+		<div class="detail-price pc_none tablet_block">
+			<h5>수급자 정보</h5>
+			<div class="all-info all-info2">
+				<ul>
+					<li>
+						<div>
+							<b>수급자명</b>
+							<span><?=($od["od_penNm"]) ? $od["od_penNm"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>인정등급</b>
+							<span><?=($od["od_penTypeNm"]) ? $od["od_penTypeNm"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>장기요양번호</b>
+							<span><?=($od["od_penLtmNum"]) ? $od["od_penLtmNum"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>유효기간</b>
+							<span><?=($od["od_penExpiDtm"]) ? $od["od_penExpiDtm"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>적용기간</b>
+							<span><?=($od["od_penAppEdDtm"]) ? $od["od_penAppEdDtm"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>전화번호</b>
+							<span><?=($od["od_penConPnum"]) ? $od["od_penConPnum"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>휴대폰</b>
+							<span><?=($od["od_penConNum"]) ? $od["od_penConNum"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>주소</b>
+							<span><?=($od["od_penAddr"]) ? $od["od_penAddr"] : "-"?></span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<?php } ?>
 		<div class="detail-wrap">
 			<div class="name-top<?=($od["recipient_yn"] == "N") ? " gray" : ""?>">
 				<div>
 				<?php if($od["recipient_yn"] == "Y"){ ?>
 					<p>수급자 주문</p>
-					<a href="javascript;;">계약서</a>
+					<a href="javascript;;" style="display: none;">계약서</a>
 				<?php }else if($od["od_stock_insert_yn"] == "Y"){ ?>
 					<p>보유재고 등록</p>
-					<a href="javascript;;">보유재고등록</a>
+					<a href="javascript;;" style="display: none;">보유재고등록</a>
 				<?php } else { ?>
 					<p>상품 주문</p>
-					<a href="javascript;;">재고확인</a>
+					<a href="javascript;;" style="display: none;">재고확인</a>
 				<?php } ?>
 				</div>
 			</div>
@@ -198,24 +291,28 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 											<?php } ?>
 											</div>    
 											<div class="name"><?php echo $item[$i]['it_name']; ?></div>
-											<div class="text"><?php echo $item[$i]['opt'][$k]['ct_option']; ?></div>
+											<?php if($item[$i]['opt'][$k]['ct_option'] != $item[$i]['it_name']){ ?>
+											<div class="text"><?=$item[$i]['opt'][$k]['ct_option']?></div>
+											<?php } ?>
 											<!--모바일용-->
 											<div class="info_pc_none">
 												<div>
-													<p>1개</p>
+													<p><?php echo number_format($item[$i]['opt'][$k]['ct_qty']); ?>개</p>
 												</div>
 												<div>
-													<p>72,000</p>
+													<p><?php echo number_format($item[$i]['opt'][$k]['opt_price']); ?></p>
 												</div>
 												<div>
-													<p>52,000</p>
+													<p><?php echo number_format($item[$i]['opt'][$k]['sell_price']); ?></p>
 												</div>
 											</div>
+										<?php if($od["od_delivery_insert"] && ($item[$i]["prodSupYn"] == "Y")){ ?>
 											<div class="delivery_price_pc">
 												<p>
-													<a href="javascript:;" class="de-btn">배송조회</a>
+													<a href="#" class="de-btn popupDeliveryInfoBtn" data-od="<?=$od["od_id"]?>">배송조회</a>
 												</p>
 											</div>
+										<?php } ?>
 										</div>
 									</li>
 									<li class="num m_none">
@@ -262,10 +359,12 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 										</div>
 									<?php } ?>
 								<?php } ?>
+								<?php if($prodMemo){ ?>
 									<div>
 										<span class="btm-tti">요청사항 : </span>
 										<span><?=$prodMemo?></span>
 									</div>
+								<?php } ?>
 								</div>
 							</div>
 						<?php } ?>
@@ -319,25 +418,55 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 		
 		<div class="detail-price">
 			<?php if($od["od_penId"]){ ?>
-			<h5>수급자 정보</h5>
-			<div class="all-info all-info2">
+			<h5 class="m_none tablet_none">수급자 정보</h5>
+			<div class="all-info all-info2 m_none tablet_none">
 				<ul>
 					<li>
 						<div>
 							<b>수급자명</b>
-							<span><?=$od["od_penNm"]?></span>
+							<span><?=($od["od_penNm"]) ? $od["od_penNm"] : "-"?></span>
 						</div>
 					</li>
 					<li>
 						<div>
 							<b>인정등급</b>
-							<span><?=$od["od_penTypeNm"]?></span>
+							<span><?=($od["od_penTypeNm"]) ? $od["od_penTypeNm"] : "-"?></span>
 						</div>
 					</li>
 					<li>
 						<div>
 							<b>장기요양번호</b>
-							<span><?=$od["od_penLtmNum"]?></span>
+							<span><?=($od["od_penLtmNum"]) ? $od["od_penLtmNum"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>유효기간</b>
+							<span><?=($od["od_penExpiDtm"]) ? $od["od_penExpiDtm"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>적용기간</b>
+							<span><?=($od["od_penAppEdDtm"]) ? $od["od_penAppEdDtm"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>전화번호</b>
+							<span><?=($od["od_penConPnum"]) ? $od["od_penConPnum"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>휴대폰</b>
+							<span><?=($od["od_penConNum"]) ? $od["od_penConNum"] : "-"?></span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<b>주소</b>
+							<span><?=($od["od_penAddr"]) ? $od["od_penAddr"] : "-"?></span>
 						</div>
 					</li>
 				</ul>

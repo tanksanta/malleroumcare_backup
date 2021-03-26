@@ -43,6 +43,7 @@
     $sql_update=" update `g5_rental_log` 
         set `strdate` = '{$strdate}',
             `enddate` = '{$enddate}',
+            `dis_state` = '소독완료',
             `dis_chemical` = '{$dis_chemical}',
             `dis_chemical_history` = '{$dis_chemical_history}',
             `dis_file` = '{$newfilename}'

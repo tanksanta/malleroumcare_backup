@@ -188,7 +188,7 @@
 
 ?>
 <!DOCTYPE html>
- <html lang="en">
+ <html lang="ko">
  <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -256,6 +256,8 @@
 		.imfomation_box a .li_box .folding_box > .inputbox > li > img { position: absolute; width: 30px; right: 15px; top: 11px; z-index: 2; cursor: pointer; }
 		.imfomation_box a .li_box .folding_box > .inputbox > li > i { position: absolute; right: 55px; top: 17px; z-index: 2; font-size: 19px; color: #FF6105; opacity: 0; }
 		.imfomation_box a .li_box .folding_box > .inputbox > li > i.active { opacity: 1; }
+		.imfomation_box a .li_box .folding_box > .inputbox > li > .overlap { position: absolute; right: 55px; top: 15px; z-index: 2; font-size: 14px; color: #DC3333; opacity: 0; font-weight: bold; }
+		.imfomation_box a .li_box .folding_box > .inputbox > li > .overlap.active { opacity: 1; }
 
 		.imfomation_box a .li_box .folding_box .span{margin-left :20px;width:90%;}
 		.imfomation_box a .li_box .folding_box .all{margin-bottom:5px;padding-left :20px;font-size:17px;text-align:left;float:left;height:50px;width:55%; border-radius: 6px; background-color:#c0c0c0;  color:#fff; border:0px; box-sizing: border-box; }
@@ -384,8 +386,9 @@
 									<ul class="inputbox">
 										<?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
 											<li>
-												<input type="text" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>">
+												<input type="text" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
 												<i class="fa fa-check"></i>
+												<span class="overlap">중복</span>
 												<img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
 											</li>
 										<?php $prodListCnt++; } ?>
@@ -468,6 +471,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		
 		$(item).removeClass("active");
 		$(".imfomation_box a .li_box .folding_box > .inputbox > li > i").removeClass("active");
+		$(".imfomation_box a .li_box .folding_box > .inputbox > li > .overlap").removeClass("active");
 		
 		for(var i = 0; i < item.length; i++){
 			var length = $(item[i]).val().length;
@@ -477,6 +481,17 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			
 			if(length == 12){
 				$(item[i]).parent().find("i").addClass("active");
+				
+				var index = $(item[i]).parent("li").index();
+				var prodItem = $(item[i]).closest(".inputbox").find("li");
+				for(var ii = 0; ii < prodItem.length; ii++){
+					if($(prodItem[ii]).index() != index){
+						if($(prodItem[ii]).find(".notall").val() == $(item[i]).val()){
+							$(item[i]).parent().find("i").removeClass("active");
+							$(item[i]).parent().find(".overlap").addClass("active");
+						}
+					}
+				}
 			}
 		}
 	}
@@ -523,6 +538,8 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 						sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
 					}
 				}
+				
+				notallLengthCheck();
 			}
 		});
     }
@@ -551,17 +568,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		});
 		
 		$(".notall").keyup(function(){
-				$(this).removeClass("active");
-				$(this).parent().find("i").removeClass("active");
-			
-				var length = $(this).val().length;
-				if(length < 12 && length){
-					$(this).addClass("active");
-				}
-
-				if(length == 12){
-					$(this).parent().find("i").addClass("active");
-				}
+			notallLengthCheck();
 		});
 		
         var stoldList = [];
