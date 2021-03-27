@@ -391,7 +391,7 @@ $row = sql_fetch($sql);
                                 #popup{width:100%; height:100%; }
                                 #order_recipientBox {
                                 background-color:#fff;width: 100%; height: 100%; top:100px; left: 0; margin-left: 0; }
-                                #order_recipientBox iframe { width: 100%; height: 100%; top:100px; left: 0; margin-left: 0; }
+                                #order_recipientBox iframe { position: fixed; top:0;margin: 0 auto; left: 0; right:0; width: 100%; height: 100%;  }
                             }
                         </style>
                         <script>

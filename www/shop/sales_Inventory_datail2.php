@@ -252,20 +252,6 @@ $row = sql_fetch($sql);
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<style>
-    #order_recipientBox { position:absolute;left:50%; width:100px; height:100px; background:#f00; margin:-50px 0 0 -50px; }
-    #order_recipientBox { display:none;height:500px; }
-    #order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
-    #order_recipientBox iframe { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
-    @media (max-width : 750px){
-        #popup{width:100%; height:100%; }
-        #order_recipientBox {
-        background-color:#fff;width: 100%; height: 100%; top:100px; left: 0; margin-left: 0; }
-        #order_recipientBox iframe { width: 100%; height: 100%; top:100px; left: 0; margin-left: 0; }
-    }
-    #ui-datepicker-div { z-index: 999999 !important; }
-</style>
-
 <section id="stock" class="wrap" >
     <div class="list-more"><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
         <h2>대여 재고 상세</h2>
@@ -323,11 +309,25 @@ $row = sql_fetch($sql);
                             <span class="none"></span>
                         </li>
 <!------------------------------------------------------- 대여신청 ------------------------------------------------------->
+<style>
+    #order_recipientBox { position:absolute;left:50%; width:100px; height:100px; background:#f00; margin:-50px 0 0 -50px; }
+    #order_recipientBox { display:none;height:500px; }
+    #order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+    #order_recipientBox iframe { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
+    @media (max-width : 750px){
+        #popup{width:100%; height:100%; }
+        #order_recipientBox {background-color:#fff;width: 100%; height: 100%; top:0; left: 0; margin-left: 0; }
+        #order_recipientBox iframe { position: fixed; top:0;margin: 0 auto; left: 0; right:0; width: 100%; height: 100%;  }
+    }
+    #ui-datepicker-div { z-index: 999999 !important; }
+    .state-btn1:hover{color: #fff;}
+</style>
 <script>
     $('#order_recipientBox').hide();
     function popup_control(io_value_r_color,io_value_r_size,barcode_r){
         $('#order_recipientBox').show();
-        wrapWindowByMask()
+        wrapWindowByMask();
+
         var io_value_r_v="";
         if(io_value_r_color){io_value_r_v="색상:"+io_value_r_color; }
         if(io_value_r_color&&io_value_r_size){io_value_r_color=io_value_r_color+""; }
@@ -345,7 +345,7 @@ $row = sql_fetch($sql);
     }
 </script>
 <div id="order_recipientBox">
-        <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php" style='z-index:9999' ></iframe>
+        <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php" style='z-index:9999' id="recipient_iframe"></iframe>
 </div>
 <!-- 수급자 선택시 변경되어 넘어갈 값 -->
 <form action="<?php echo $action_url; ?>"name="fitem" method="post" id="recipient_info"class="form item-form">
