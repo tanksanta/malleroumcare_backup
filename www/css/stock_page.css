@@ -94,7 +94,7 @@ table {border-collapse: collapse;}
 .table-wrap .list .info-m {display: none;}
 
 /* 재고상세 */
-.list-more {text-align: right;}
+.list-more {text-align: right; width:130px; float:right; }
 .list-more a {padding: 9px 49px; display:inline-block;font-size: 14px;color:#232323; border: 1px solid #ddd;}
 .stock-view {display: -webkit-box; display: -ms-flexbox; display: flex;}
 .stock-view .inner {width: calc(100% - 261px);}

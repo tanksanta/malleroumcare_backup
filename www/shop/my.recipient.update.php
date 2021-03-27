@@ -104,7 +104,7 @@
 						<b>주민등록번호</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penJumin" value="<?=$data["penJumin"]?>" class="form-control input-sm">
+						<input type="number" maxlength="13" oninput="maxLengthCheck(this)" name="penJumin" value="<?=$data["penJumin"]?>" class="form-control input-sm">
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -125,7 +125,7 @@
 					</label>
 					<div class="col-sm-3">
 						<span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
-						<input type="text" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>" >
+						<input type="number" maxlength="10" oninput="maxLengthCheck(this)"  name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>" >
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -363,7 +363,7 @@
 			<div class="panel-body">
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
-						<b>확인자</b>
+						<b>보호자</b>
 					</label>
 					<div class="col-sm-3">
 						<label class="checkbox-inline">
@@ -494,6 +494,15 @@
 
 	<script type="text/javascript">
 			var zipPopupDom = document.getElementById("zipAddrPopupIframe");
+
+
+            //maxnum 지정
+            function maxLengthCheck(object){
+                if (object.value.length > object.maxLength){
+                object.value = object.value.slice(0, object.maxLength);
+                }    
+            }
+
 
 			function zipPopupClose(){
 				$("#zipAddrPopupWrap").hide();

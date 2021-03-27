@@ -882,6 +882,7 @@ $row = sql_fetch($sql);
         var maskWidth = $(window).width();
         //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채운다.
         $('#mask').css({'width':maskWidth,'height':maskHeight});  
+        // $('html, body').css({'height':'100%','min-height':'100%','overflow':'hidden','touch-action':'none'});
         //마스크의 투명도 처리
         $('#mask').fadeTo("slow",0.8);    
     }

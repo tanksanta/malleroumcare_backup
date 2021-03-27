@@ -192,7 +192,7 @@
 					<div class="folding_box">
 						<ul class="inputbox">
 								<li>
-									<input type="text" value="" class="notall frm_input  required " placeholder="수정하실 바코드를 입력하세요.">
+									<input type="number" maxlength="12" oninput="maxLengthCheck(this)" value="" class="notall frm_input  required " placeholder="수정하실 바코드를 입력하세요.">
 									<i class="fa fa-check"></i>
 									<!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>"> -->
 								</li>
@@ -222,6 +222,15 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 ?>
 
 <script type="text/javascript">
+
+
+        //maxnum 지정
+        function maxLengthCheck(object){
+            if (object.value.length > object.maxLength){
+            object.value = object.value.slice(0, object.maxLength);
+            }    
+        }
+
 		foldingBoxSetting();
 		/* 바코드 입력란 설정 */
 		function foldingBoxSetting(){

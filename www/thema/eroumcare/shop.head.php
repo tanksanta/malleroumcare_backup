@@ -264,36 +264,43 @@ scrollToTop();
 
 			<div class="top_right_area">
 				<div class="link_area">
-				<?php if($member["mb_level"] == "3"){ ?>
-					<?php if($_COOKIE["viewType"] == "adm"){ ?>
-						<a href="#" class="modeBtn" data-type="basic">구매모드</a>
-					<?php } else { ?>
-						<a href="#" class="modeBtn" data-type="adm">급여안내모드</a>
-					<?php } ?>
-				<?php } ?>
-					
-					<?php if($is_member) { // 로그인 상태 ?>
-						<a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a>
-						<a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a>
-						<a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송</a>
-						<?php if($member['admin']) {?>
-							<a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
-						<?php } ?>
-						<?php if($is_samhwa_admin && !$member['admin']) {?>
-							<a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
-						<?php } ?>
-						<a href="<?php echo G5_BBS_URL; ?>/logout.php" >로그아웃</a>
-					<?php }else{ ?>
-						<a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
-						<a href="#" class="registerBtn">회원가입</a>
-                <!--						<a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>-->
-					<?php } ?>
-					<!-- <?php if ( $member['mb_type'] == 'partner' ) { ?>
-						<a href="https://signstand.co.kr/shop/list.php?ca_id=10">파트너전용</a>
-					<?php }else{ ?>
-						<a href="https://signstand.co.kr/shop/list.php?ca_id=10">기업전용</a>
-					<?php } ?> -->
+                    <?php if($member["mb_level"] == "3"){ ?>
+                        <?php if($_COOKIE["viewType"] == "adm"){ ?>
+                            <a href="#" class="modeBtn" data-type="basic">구매모드</a>
+                        <?php } else { ?>
+                            <a href="#" class="modeBtn" data-type="adm">급여안내모드</a>
+                        <?php } ?>
+                    <?php } ?>
+                        
+                        <?php if($is_member) { // 로그인 상태 ?>
+                            <a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a>
+                            <a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a>
+                            <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송</a>
+                            <?php if($member['admin']) {?>
+                                <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
+                            <?php } ?>
+                            <?php if($is_samhwa_admin && !$member['admin']) {?>
+                                <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
+                            <?php } ?>
+                            <a href="<?php echo G5_BBS_URL; ?>/logout.php" >로그아웃</a>
+                        <?php }else{ ?>
+                            <a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
+                            <a href="#" class="registerBtn">회원가입</a>
+                    <!--						<a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>-->
+                        <?php } ?>
+                        <!-- <?php if ( $member['mb_type'] == 'partner' ) { ?>
+                            <a href="https://signstand.co.kr/shop/list.php?ca_id=10">파트너전용</a>
+                        <?php }else{ ?>
+                            <a href="https://signstand.co.kr/shop/list.php?ca_id=10">기업전용</a>
+                        <?php } ?> -->
 				</div>
+
+                <?php if($member["mb_level"] == "3"){ ?>
+                <div class="link_area"  style="float:right; padding:0px;">
+                    <a href="javascript:void(0)" style="cursor:default;"><?=$member["mb_name"]?></a>
+                </div>
+                <?php } ?>
+
 				<!-- <div class="search">
 					<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
 						<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
