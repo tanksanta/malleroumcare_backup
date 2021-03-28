@@ -179,5 +179,4 @@ if($is_cart_sub) {
 } else {
 	include_once('./_tail.php');
 }
-
 ?>

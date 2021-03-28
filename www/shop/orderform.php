@@ -1184,8 +1184,12 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
   function order_submitCheckBox_hide(){
     $("#order_submitCheckBox").hide();
   }
-
-
+    //maxnum 지정
+    function maxLengthCheck(object){
+            if (object.value.length > object.maxLength){
+            object.value = object.value.slice(0, object.maxLength);
+            }    
+        }
 
 
 	function forderform_check(f) {
@@ -1194,6 +1198,11 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 		if($("#od_stock_insert_yn").prop("checked")){
 			var item = $(".barList input");
 			for(var i = 0; i < item.length; i++){
+                if($(item[i]).val().length !== 12 ){
+                    alert("바코드는 12자리로 입력해 주십시오.");
+					$(item[i]).focus();
+					return false;
+                }
 				if(!$(item[i]).val()){
 					alert("재고 바코드를 입력해 주십시오.");
 					$(item[i]).focus();

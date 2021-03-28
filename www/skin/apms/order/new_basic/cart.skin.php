@@ -21,14 +21,6 @@ if ( is_array($item) && count($item) ) {
 	$od_id = $ct['od_id'];
 }
 
-$sql_d = "SELECT `de_send_conditional` FROM `g5_shop_default`";
-$result_d = sql_fetch($sql_d);
-
-//쇼핑몰에서 설정한 일정한 금액 이상이 넘을경우 배송비 무료
-// if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
-//     $tot_price=$tot_price-$send_cost;
-//     $send_cost=0;
-// }
 ?>
 
 <script src="<?php echo $skin_url;?>/shop.js"></script>
@@ -51,7 +43,7 @@ $result_d = sql_fetch($sql_d);
         <tr class="<?php echo $head_class;?>">
             <th scope="col">
                 <label for="ct_all" class="sound_only">상품 전체</label>
-                <span><input  type="checkbox" name="ct_all" value="1" id="ct_all" checked="checked"></span>
+                <span><input type="checkbox" name="ct_all" value="1" id="ct_all" checked="checked"></span>
             </th>
 			<th scope="col"><span>이미지</span></th>
             <th scope="col"><span>상품명</span></th>
@@ -66,7 +58,7 @@ $result_d = sql_fetch($sql_d);
 			<tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
 				<td class="text-center">
 					<label for="ct_chk_<?php echo $i; ?>" class="sound_only">상품</label>
-					<input class="check_cart" data-target="<?=$item[$i]['sell_price']?>" data-target2="<?=get_item_sendcost($item[$i]['it_id'], $item[$i]['ct_price'], $item[$i]['qty'],$s_cart_id)?>" type="checkbox" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked">
+					<input type="checkbox" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked">
 				</td>
 				<td class="text-center">
 					<div class="item-img">
@@ -105,24 +97,24 @@ $result_d = sql_fetch($sql_d);
         </table>
     </div>
 
-    <?php //if ($tot_price > 0 || $send_cost > 0) { ?>
+    <?php if ($tot_price > 0 || $send_cost > 0) { ?>
 		<div class="well bg-white">
 			<div class="row">
-				<?php //if ($send_cost > 0) { // 배송비가 0 보다 크다면 (있다면) ?>
+				<?php if ($send_cost > 0) { // 배송비가 0 보다 크다면 (있다면) ?>
 					<div class="col-xs-6">배송비</div>
 					<div class="col-xs-6 text-right">
-						<strong id="delivery_pirce"><?php echo number_format($send_cost); ?> 원 (*10만원이상 무료배송)</strong>
+						<strong><?php echo number_format($send_cost); ?> 원 (*10만원이상 무료배송)</strong>
 					</div>
-				<?php //} ?>
-				<?php //if ($tot_price > 0) { ?>
+				<?php } ?>
+				<?php if ($tot_price > 0) { ?>
 					<div class="col-xs-6"> 총 상품금액 </div>
 					<div class="col-xs-6 text-right">
-						<strong id="total_price"><?php echo number_format($tot_price); ?> 원 <!-- / <?php echo number_format($tot_point); ?> 점 --></strong>
+						<strong><?php echo number_format($tot_price); ?> 원 <!-- / <?php echo number_format($tot_point); ?> 점 --></strong>
 					</div>
-				<?php //} ?>
+				<?php } ?>
 			</div>
 		</div>
-	<?php //} ?>
+	<?php } ?>
 
     <div style="margin-bottom:15px; text-align:center;">
         <?php if ($i == 0) { ?>
@@ -189,30 +181,6 @@ $result_d = sql_fetch($sql_d);
 <?php } ?>
 
 <script>
-
-    //클릭시 총 상품금액 변경
-    $(".check_cart").click(function() {
-        var check_cart = $( '.check_cart' ).get();
-        var price=0;
-        var delivery=0;
-        for ( var i = 0; i < check_cart.length; i++) {
-            console.log(check_cart[i].checked);
-            if(check_cart[i].checked==true){
-                price = price+parseInt($(check_cart[i]).data('target'));
-                delivery = delivery+parseInt($(check_cart[i]).data('target2'));
-            }
-        }
-        if(price >= parseInt(<?=$result_d['de_send_conditional']?>)){delivery=0;}
-        $("#delivery_pirce").html(number_format(delivery)+" 원 (*10만원이상 무료배송)");
-        $("#total_price").html(number_format(price+delivery)+" 원");
-    });
-
-    //콤마찍기
-    function number_format(num){
-        var regexp = /\B(?=(\d{3})+(?!\d))/g;
-        return num.toString().replace(regexp, ',');
-    }
-
 	$(function() {
 		var close_btn_idx;
 
@@ -240,19 +208,6 @@ $result_d = sql_fetch($sql_d);
 				$("input[name^=ct_chk]").attr("checked", true);
 			else
 				$("input[name^=ct_chk]").attr("checked", false);
-
-            var check_cart = $( '.check_cart' ).get();
-            var price=0;
-            var delivery=0;
-            for ( var i = 0; i < check_cart.length; i++) {
-                console.log(check_cart[i].checked);
-                if(check_cart[i].checked==true){
-                    price = price+parseInt($(check_cart[i]).data('target'));
-                    delivery = delivery+parseInt($(check_cart[i]).data('target2'));
-                }
-            }
-            $("#delivery_pirce").html(number_format(delivery)+" 원 (*10만원이상 무료배송)");
-            $("#total_price").html(number_format(price+delivery)+" 원");
 		});
 
 		// 옵션수정 닫기

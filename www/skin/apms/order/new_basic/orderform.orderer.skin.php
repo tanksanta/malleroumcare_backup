@@ -222,14 +222,14 @@ var array_box=[];
 										for($iii = 0; $iii < $item[$i]["it_optionList"][$ii]["qty"]; $iii++){
 								?>
 										<?php if($optionCntList[$item[$i]["it_id"]][$ii] > $iii){ ?>
-											<input type="hidden" class="prodStockBarBox<?=$ii?> prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
+											<input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)" class="prodStockBarBox<?=$ii?> prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
 										<?php } else { ?>
 										<?php
 											if(substr($item[$i]["ca_id"], 0, 2) == 20){
 												$itemPenIdStatus = false;
 											}
 										?>
-											<input type="hidden" class="prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
+											<input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)"class="prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
 										<?php } ?>
 								<?php
 										$postProdBarNumCnt++; }
@@ -1222,7 +1222,7 @@ var array_box=[];
 				if(status){
 					$("#sod_frm_taker").hide();
 					$("#sod_frm_pay").hide();
-					$(".barList input[type='hidden']").attr("type", "text");
+					$(".barList input[type='hidden']").attr("type", "number");
 				} else {
 					$("#sod_frm_taker").show();
 					$("#sod_frm_pay").show();
@@ -1310,6 +1310,7 @@ var array_box=[];
 					$(".tab-2 .table-list2 .delivery-price").css("width", "10%");
 					$(".tab-2 .table-list2 .barcode").show();
 					$(".order_recipientInfoBox").show();
+                    $("#order_recipientBox").show();
 					break;
 				case "order" :
 					$(".order_none").hide();

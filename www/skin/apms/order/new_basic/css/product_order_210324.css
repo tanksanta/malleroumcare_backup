@@ -423,3 +423,14 @@ table {border-collapse: collapse;}
     #pro-order2 .table-list2 .list-btm > div::after {display: none;}
 
 }
+
+
+/* 210329성훈추가 */
+input[type="number"]::placeholder { 
+    text-align: center;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
