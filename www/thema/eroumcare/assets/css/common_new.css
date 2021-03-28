@@ -138,7 +138,7 @@ pre{white-space: pre-wrap;}
 .top_menu_wrap .catalogueWrap { width: 16.4%; }
 .top_menu_wrap .catalogueWrap > a { width: 100%; height: 50px; line-height: 50px; float: left; color: #FFF; text-align: center; background-color: #333; font-size: 13px; font-weight: bold; }
 .top_menu_wrap .catalogueWrap > a > img { margin-left: 10px; vertical-align: middle; top: -1px; }
-.top_menu_wrap .all_menu_wrap{width:100%;background: rgba(0,0,0,0.8);position:absolute;top:357px;left:0;z-index:-1;opacity:0;display: block; }
+.top_menu_wrap .all_menu_wrap{width:100%;background: rgba(0,0,0,0.8);position:absolute;top:52px;left:0;z-index:-1;opacity:0;display: block; }
 .top_menu_wrap .all_menu_wrap .all_menu{width:100%;max-width: 1400px; margin:0 auto;position: relative;}
 .top_menu_wrap .all_menu_wrap .all_menu table{width:100%;}
 .top_menu_wrap .all_menu_wrap .all_menu table td{width:20%;border-bottom:1px solid #555;padding:20px;border-left:1px solid #555;vertical-align: baseline;}
@@ -188,7 +188,7 @@ pre{white-space: pre-wrap;}
 .company_menu a.active{color:#f08200;}
 
 
-
+.sc_price_info{margin-left:5px !important;}
 
 @media only screen and (max-width:1600px) {
 
@@ -531,7 +531,7 @@ pre{white-space: pre-wrap;}
 .is-pc .at-body { min-height: 800px; }
 .at-body { width: 100%; float: left; }
 .at-container { width: 100%; max-width: 1200px !important; margin: 0 auto; position: relative; overflow: inherit !important; }
-.at-content { width: 100%; float: left; padding-top: 0; }
+.at-content { width: 100%; float: left; padding-top: 0; padding:10px;}
 .at-content .cate_wrap{text-align:center;margin:20px 0;}
 
 .samhwa-item-info-opener { bottom: 70px; z-index: 9; }
@@ -740,6 +740,7 @@ pre{white-space: pre-wrap;}
 #headerTopQuickMenuWrap .listWrap > li:nth-of-type(5) { margin-right: 0; }
 #headerTopQuickMenuWrap .listWrap > li > a { width: 100%; height: 100%; border-radius: 15px; background-color: #F5F5F5; border: 1px solid #DDD; text-align: center; color: #333; font-size: 21px; display: table-cell; vertical-align: middle; font-weight: bold; }
 #headerTopQuickMenuWrap .listWrap > li > a > img { margin-right: 30px; }
+#headerTopQuickMenuWrap .listWrap > li > a > span {display:inline-block;width:140px;}
 
 /* 210215 상단검색 */
 .mo_searchWrap { width: 100%; height: 55px; float: left; padding: 0 20px; margin-bottom: 20px; }
@@ -831,7 +832,7 @@ pre{white-space: pre-wrap;}
 	#headerTopQuickMenuWrap .listWrap > li { width: 49%; height: 70px; }
 	#headerTopQuickMenuWrap .listWrap > li > a { font-size: 14px; overflow: hidden; }
 	#headerTopQuickMenuWrap .listWrap > li > a > img { width: 30px; margin-right: 5px; }
-	#headerTopQuickMenuWrap .listWrap > li > a > span { top: 1px; }
+	#headerTopQuickMenuWrap .listWrap > li > a > span { top: 1px; width:100px;text-align: center; }
 	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) { width: 100%; height: 170px; margin-right: 0; margin-bottom: 2% !important; }
 	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a { padding: 45px 0 0 15px; }
 	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a > .bigTitleWrap > span { font-size: 13px; }

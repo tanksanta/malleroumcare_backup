@@ -1234,6 +1234,12 @@ if( function_exists('pg_setting_check') ){
             </td>
         </tr>
         <tr>
+            <th scope="row"><label for="de_send_conditional">일정가격 이상 구매시 무료배송</label></th>
+            <td>
+                <input type="text" name="de_send_conditional" value="<?php echo $default['de_send_conditional']; ?>" size="40" class="frm_input" id="de_send_cost_list"> 원
+            </td>
+        </tr>
+        <tr>
             <th scope="row"><label for="de_hope_date_use">희망배송일사용</label></th>
             <td>
                 <?php echo help("'예'로 설정한 경우 주문서에서 희망배송일을 입력 받습니다."); ?>
@@ -1243,6 +1249,7 @@ if( function_exists('pg_setting_check') ){
                 </select>
             </td>
         </tr>
+
         <tr>
              <th scope="row"><label for="de_hope_date_after">희망배송일지정</label></th>
             <td>

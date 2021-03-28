@@ -432,7 +432,7 @@ scrollToTop();
 				</div>
 			</div>
 			
-			<div class="all_menu_wrap">
+			<div class="all_menu_wrap"  style="<?=($member['mb_level'] >= 3) ? "top: 358px;" : ""?>">
 				<div class="all_menu">
 					<table>
 						<?php for($i=0;$i<count($category);$i++) { ?>

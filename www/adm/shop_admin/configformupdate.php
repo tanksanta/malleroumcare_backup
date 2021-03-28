@@ -168,6 +168,9 @@ $check_sanitize_keys = array(
 'de_send_cost_case',            //배송비유형
 'de_send_cost_limit',           //배송비상한가
 'de_send_cost_list',            //배송비
+
+'de_send_conditional',          //일정가격 이상 구매시 무료배송(추가)
+
 'de_hope_date_use',             //희망배송일사용
 'de_hope_date_after',           //희망배송일지정
 'de_rel_img_width',             //관련상품출력 이미지폭
@@ -380,6 +383,7 @@ $sql = " update {$g5['g5_shop_default_table']}
                 de_send_cost_case             = '{$de_send_cost_case}',
                 de_send_cost_limit            = '{$de_send_cost_limit}',
                 de_send_cost_list             = '{$de_send_cost_list}',
+                de_send_conditional           = '{$de_send_conditional}',
                 de_hope_date_use              = '{$de_hope_date_use}',
                 de_hope_date_after            = '{$de_hope_date_after}',
                 de_baesong_content            = '{$_POST['de_baesong_content']}',

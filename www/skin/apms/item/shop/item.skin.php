@@ -1266,11 +1266,12 @@ $(function() {
 			data : sendData,
 			success : function(result){
 				$.each(result.data, function(key, value){
-					if(result["data2"]){
-						var totalQty = (result["data2"][key]["qty"]) ? result["data2"][key]["qty"] : 0;
-					} else {
+                    console.log(result);
+					// if(result["data2"]){
+					// 	var totalQty = (result["data2"][key]["qty"]) ? result["data2"][key]["qty"] : 0;
+					// } else {
 						var totalQty = 0;
-					}
+					// }
 					$(".optionStockCntList").show();
 
 					var html = '<li><span class="name">' + value.name + '</span><span class="cnt">' + value.qty + '개<?=(substr($it["ca_id"], 0, 2) == "20") ? " 대여 가능" : ""?>';
