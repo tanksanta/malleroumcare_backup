@@ -87,7 +87,7 @@
 
 	<form class="form-horizontal register-form">
 		<div class="panel panel-default">
-			<div class="panel-heading"><strong><?=$sendData["penId"];?>기본정보</strong></div>
+			<div class="panel-heading"><strong>기본정보</strong></div>
 			<div class="panel-body">
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
