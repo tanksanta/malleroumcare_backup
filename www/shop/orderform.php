@@ -401,6 +401,14 @@ include_once($skin_path.'/orderform.head.skin.php');
 // 상품 스킨
 if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 
+//일정 가격이 넘으면 무료
+$sql_d = "SELECT `de_send_conditional` FROM `g5_shop_default`";
+$result_d = sql_fetch($sql_d);
+if($tot_sell_price >=$result_d['de_send_conditional']){
+    $send_cost=0;
+}
+$tot_price="";
+$tot_price=$tot_sell_price+$send_cost;
 ?>
 	<input type="hidden" name="od_price"    value="<?php echo $tot_sell_price; ?>">
 	<input type="hidden" name="org_od_price"    value="<?php echo $tot_sell_price; ?>">

@@ -198,6 +198,13 @@ $tot_ct_discount = ($row["od_discount"]) ? $row["od_discount"] : 0;
 $cart_count = $row['cart_count'];
 $tot_od_price = $tot_ct_price;
 
+//20210329 토탈 가격이 일정금액 이상 넘으면 배송비 무료
+$sql_d = "SELECT `de_send_conditional` FROM `g5_shop_default`";
+$result_d = sql_fetch($sql_d);
+if($tot_ct_price >=$result_d['de_send_conditional']){
+
+}
+
 // 쿠폰금액계산
 $tot_cp_price = 0;
 if($is_member) {
@@ -734,6 +741,9 @@ if(!$od_delivery_total){
 	$od_send_cost2 = 0;
 }
 
+
+
+
 $sql = " insert {$g5['g5_shop_order_table']}
             set od_id             = '$od_id',
                 mb_id             = '{$member['mb_id']}',
@@ -773,7 +783,7 @@ $sql = " insert {$g5['g5_shop_order_table']}
                 od_memo           = '$od_memo',
                 od_cart_count     = '$cart_count',
                 od_cart_price     = '$tot_ct_price',
-					od_cart_discount = '$tot_ct_discount',
+				od_cart_discount = '$tot_ct_discount',
                 od_cart_coupon    = '$tot_it_cp_price',
                 od_send_cost      = '$od_send_cost',
                 od_send_coupon    = '$tot_sc_cp_price',

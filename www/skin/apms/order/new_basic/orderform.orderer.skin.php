@@ -37,6 +37,14 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 
 	$recipientTotalCnt = $res["total"];
 
+
+//쇼핑몰에서 설정한 일정한 금액 이상이 넘을경우 배송비 무료
+$sql_d = "SELECT `de_send_conditional` FROM `g5_shop_default`";
+$result_d = sql_fetch($sql_d);
+if($tot_sell_price >=$result_d['de_send_conditional']){
+    $send_cost=0;
+}
+$tot_price=$tot_sell_price+$send_cost;
 ?>
 
 
@@ -586,7 +594,7 @@ var array_box=[];
 				</ul>
 				<div class="all-info-price od_tot_price">
 					<b>합계금액</b>
-					<span id="ct_tot_price" class="print_price"><?php echo number_format($tot_price); ?>원</span>
+					<span id="ct_tot_price" class="print_price"><?php echo number_format($tot_price); ?> 원</span>
 				</div>
 			</div>
 			<h5 class="stock_insert_none">결제방법</h5>
@@ -1191,6 +1199,8 @@ var array_box=[];
 					}
 				});
 
+                //here
+                
 				if(!totalPrice){
 					$("input[name='od_send_cost']").val(0);
 					$(".delivery_cost_display").text("0 원");
@@ -1198,7 +1208,6 @@ var array_box=[];
 					$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
 					$(".delivery_cost_display").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
 				}
-
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
