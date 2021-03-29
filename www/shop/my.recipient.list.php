@@ -49,9 +49,6 @@
 	if ($b_end_page > $total_page){ 
 		$b_end_page = $total_page;
 	}
-<<<<<<< HEAD
-	$total_block = ceil($total_page/$b_pageNum_listCnt);
-=======
 	$total_block = ceil($total_page/$b_pageNum_listCnt); 
  
 ?>
@@ -62,31 +59,22 @@
     }
 
 </style>
-<!-- 수급자 일괄등록  -->
-<form enctype="multipart/form-data" action="<?=G5_BBS_URL?>/excel_read.php" method="post" id="excelFrom">
-    <input type="file" style="width:0px; height:0px;" id="excelFile" name="excelFile" accept=".xls, .xlsx">
-</form>
 <script>
-    $("#excelFile").change(function(){
-        var excelFrom = document.getElementById('excelFrom');
-        excelFrom.submit();
-        alert('change');
-    });
+   function excelform(url){
+       var opt = "width=600,height=450,left=10,top=10";
+        window.open(url, "win_excel", opt);
+        return false;
+    }
 </script>
->>>>>>> parent of d1002e5... 엑셀 일괄업로드 작업
 
-?>
+<!-- 수급자 일괄등록  -->
 
 	<!-- 210204 수급자목록 -->
 	<div id="myRecipientListWrap">
 		<div class="titleWrap">
 			수급자 목록
-<<<<<<< HEAD
-			<a href="./my.recipient.write.php" title="수급자 등록">수급자 등록</a>
-=======
 			<a href="./my.recipient.write.php" class="a1" title="수급자 등록">수급자 등록</a>
-			<label for="excelFile" class="a2" title="수급자 등록">수급자일괄등록</label>
->>>>>>> parent of d1002e5... 엑셀 일괄업로드 작업
+			<a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="a2" title="수급자일괄등록">수급자일괄등록</a>
 		</div>
         <?php if(!$list){ ?>
         <style>
