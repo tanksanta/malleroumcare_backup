@@ -49,36 +49,15 @@
 	if ($b_end_page > $total_page){ 
 		$b_end_page = $total_page;
 	}
-	$total_block = ceil($total_page/$b_pageNum_listCnt); 
- 
+	$total_block = ceil($total_page/$b_pageNum_listCnt);
+
 ?>
-<style>
-    .a2{
-        position: absolute; width: 100px; height: 35px; line-height: 35px; font-size: 12px; color: #FFF; 
-        text-align: center; top: 50%; margin-top: -17.5px; right: 0; 
-    }
-
-</style>
-<!-- 수급자 일괄등록  -->
-<form enctype="multipart/form-data" action="<?=G5_BBS_URL?>/excel_read.php" method="post" id="excelFrom">
-    <input type="file" style="width:0px; height:0px;" id="excelFile" name="excelFile" accept=".xls, .xlsx">
-</form>
-<script>
-    $("#excelFile").change(function(){
-        var excelFrom = document.getElementById('excelFrom');
-        excelFrom.submit();
-        alert('change');
-    });
-</script>
-
-<!-- 수급자 일괄등록  -->
 
 	<!-- 210204 수급자목록 -->
 	<div id="myRecipientListWrap">
 		<div class="titleWrap">
 			수급자 목록
-			<a href="./my.recipient.write.php" class="a1" title="수급자 등록">수급자 등록</a>
-			<label for="excelFile" class="a2" title="수급자 등록">수급자일괄등록</label>
+			<a href="./my.recipient.write.php" title="수급자 등록">수급자 등록</a>
 		</div>
         <?php if(!$list){ ?>
         <style>
