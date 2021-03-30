@@ -3,7 +3,7 @@
 	// header("Content-Type: application/json");
     include_once("./_common.php");
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/update");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -18,7 +18,7 @@
         $stoId=$_POST['prods'][0]['stoId'];
         $ordLendStrDtm=$_POST['prods'][0]['ordLendStrDtm'];
         $ordLendEndDtm=$_POST['prods'][0]['ordLendEndDtm'];
-        $sql_update=" update `g5_rental_log` 
+        $sql_update=" update `g5_rental_log`
         set `strdate` = '{$ordLendStrDtm}',
             `enddate` = '{$ordLendEndDtm}'
             where `ordId` = '{$ordId}' and `stoId`= '{$stoId}' ";

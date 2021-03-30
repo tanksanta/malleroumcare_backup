@@ -4,7 +4,9 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 // 관련상품 전체 추출을 위해서 재세팅함
 $rmods = 100;
 $rrows = 1;
-
+if(!$member['mb_id']){
+	alert('회원만 확인이 가능합니다.',G5_BBS_URL.'/login.php');
+}
 // 버튼컬러
 $btn1 = (isset($wset['btn1']) && $wset['btn1']) ? $wset['btn1'] : 'black';
 $btn2 = (isset($wset['btn2']) && $wset['btn2']) ? $wset['btn2'] : 'color';
@@ -286,7 +288,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     <p class="item-tag"><?php echo $tag_list;?></p>
                 <?php } ?>
             </div>
-            
+
 		</div>
 		<script>
 		$(function() {
@@ -439,9 +441,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<?php } ?>
 				<?php } ?>
 						<input type="hidden" id="it_price" value="
-                            <?php 
+                            <?php
                                 if($member["mb_id"]){
-                                    echo samhwa_price($it, THEMA_KEY); 
+                                    echo samhwa_price($it, THEMA_KEY);
                                 }else{
                                     echo $it["it_cust_price"];
                                 }
@@ -557,9 +559,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<th>
 					<?php echo $ct_send_cost_label; ?></th><td><?php echo $sc_method; ?>
 					<span class="sc_minimum">
-						<?php if ( $it['it_sc_minimum'] ) { 
-                            $sc_price=((int)$it['it_sc_minimum']/10000);    
-                            
+						<?php if ( $it['it_sc_minimum'] ) {
+                            $sc_price=((int)$it['it_sc_minimum']/10000);
+
                         ?>
 							* <?php echo number_format($sc_price); ?>만원 이상 무료배송
 						<?php } ?>

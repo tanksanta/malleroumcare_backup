@@ -22,9 +22,9 @@
 	} else {
 		$sendData = [];
 		$sendData["usrId"] = $_POST["mb_id"];
-		
+
 		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entInfo");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -36,10 +36,10 @@
 		curl_close($oCurl);
 		$resInfo = json_decode($res, true);
 		$resInfo = $resInfo["data"];
-		
+
 		$resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
 		$resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
-		
+
 		sql_query("
 			INSERT INTO {$g5["member_table"]} SET
 				mb_id = '{$resInfo["usrId"]}',
@@ -64,13 +64,13 @@
 				 mb_email = '{$resInfo["entMail"]}',
 				mb_authCd = '{$resInfo["authCd"]}'
 		");
-		
+
 		$member = sql_fetch("
 			SELECT *
 			FROM g5_member
 			WHERE mb_id = '{$resInfo["usrId"]}'
 		");
-		
+
 		set_session("ss_mb_id", $member["mb_id"]);
 		goto_url($returnURL);
 	}

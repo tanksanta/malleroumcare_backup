@@ -36,7 +36,7 @@ $order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_name;
 $order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
 // 스킨 체크
-list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url); 
+list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url);
 
 // 스킨설정
 $wset = array();
@@ -85,7 +85,7 @@ $sendData["entId"] = $member["mb_entId"];
 $sendData["gubun"] = "00";
 
 $oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_PORT, 9001);
+curl_setopt($oCurl, CURLOPT_PORT, 9901);
 curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectListForEnt");
 curl_setopt($oCurl, CURLOPT_POST, 1);
 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -104,7 +104,7 @@ $sendData["entId"] = $member["mb_entId"];
 $sendData["gubun"] = "01";
 
 $oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_PORT, 9001);
+curl_setopt($oCurl, CURLOPT_PORT, 9901);
 curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectListForEnt");
 curl_setopt($oCurl, CURLOPT_POST, 1);
 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -147,7 +147,7 @@ if($_GET['searchtype']){
 }
 
 $oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_PORT, 9001);
+curl_setopt($oCurl, CURLOPT_PORT, 9901);
 curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectListForEnt");
 curl_setopt($oCurl, CURLOPT_POST, 1);
 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -171,11 +171,11 @@ $listCnt = $sendLength; # 리스트 갯수 default 10
 
 $b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
 $block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
-$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
+$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지
 $b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
 $total_page = ceil( $totalCnt / $listCnt ); # 총 페이지
 // 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-if ($b_end_page > $total_page){ 
+if ($b_end_page > $total_page){
     $b_end_page = $total_page;
 }
 $total_block = ceil($total_page/$b_pageNum_listCnt);
@@ -217,7 +217,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                                 자료가 없습니다.
                             </li>
                         <?php } ?>
-                    <?php for($i=0; $i<count($list); $i++){ 
+                    <?php for($i=0; $i<count($list); $i++){
                         $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
                         $sql = 'SELECT  `it_taxInfo`, `it_img1`, `it_cust_price` FROM `g5_shop_item` WHERE `it_id`="'.$list[$i]['prodId'].'"';
                         $row = sql_fetch($sql);
@@ -276,6 +276,3 @@ if($is_inquiry_sub) {
 	include_once('./_tail.php');
 }
 ?>
-  
-  
-  

@@ -40,7 +40,7 @@ $pg_anchor .='</ul>';
 	.srel .srel_list, .srel .srel_sel { height:315px;max-height:315px; }
 	.iframe iframe { min-height:370px; }
 	.btn_confirm { margin-bottom:50px; }
-	
+
 	.importantBorder { border: 1px solid #FF3333 !important; }
 </style>
 
@@ -2076,7 +2076,7 @@ $pg_anchor .='</ul>';
 			</table>
 		</div>
 	</section>
-	
+
 	<?php echo $frm_submit; ?>
 
 	<?php echo $pg_anchor; ?>
@@ -2135,7 +2135,7 @@ function dataURItoBlob(dataURI) {
 
     return new Blob([ia], {type:mimeString});
 }
-	
+
 var nowToDataURLResult = "";
 function toDataURL(url) {
 	return new Promise(function(resolve, reject){
@@ -2153,21 +2153,21 @@ function toDataURL(url) {
 	  xhr.send();
 	});
 }
-	
+
 function dataURLtoFile(dataurl, filename) {
 	var arr = dataurl.split(','),
 		mime = arr[0].match(/:(.*?);/)[1],
-		bstr = atob(arr[1]), 
-		n = bstr.length, 
+		bstr = atob(arr[1]),
+		n = bstr.length,
 		u8arr = new Uint8Array(n);
 
 	while(n--){
 		u8arr[n] = bstr.charCodeAt(n);
 	}
-	
+
 	return new File([u8arr], filename, {type:mime});
 }
-	
+
 var f = document.fitemform;
 
 <?php if ($w == 'u') { ?>
@@ -2236,13 +2236,13 @@ function codedupcheck(id)
 
 function fitemformcheck(f)
 {
-	
+
 	var importantItem = $(".importantBorder");
 	for(var i = 0; i < importantItem.length; i++){
 		if(!$(importantItem[i]).val()){
 			var id = $(importantItem[i]).attr("id");
 			var label = $("label[for='" + id + "']").text();
-			
+
 			if(label){
 				alert(label + "이(가) 입력되지 않았습니다.");
 			}
@@ -2277,7 +2277,7 @@ function fitemformcheck(f)
             alert(error);
             return false;
         }
-		
+
 		var apiStatus = true;
 		var sendDataProdColor = "";
 		var sendDataProdSize = "";
@@ -2290,7 +2290,7 @@ function fitemformcheck(f)
 				sendDataGubun = "01";
 				break;
 		}
-		
+
 		var sendDataTaxInfo = $("#it_taxInfo").val();
 		switch(sendDataTaxInfo){
 			case "영세" :
@@ -2300,12 +2300,12 @@ function fitemformcheck(f)
 				sendDataTaxInfo = "02";
 				break;
 		}
-		
+
 		var optionItemList = $(".sit_option tbody > tr");
 		$.each(optionItemList, function(key, dom){
 			var label = $(dom).find("th > input").val();
 			var value = $(dom).find("td > input").val();
-			
+
 			switch(label){
 				case "색상" :
 					sendDataProdColor = value.replaceAll(",", "|");
@@ -2315,7 +2315,7 @@ function fitemformcheck(f)
 					break;
 			}
 		});
-		
+
 		var sendData = new FormData();
         sendData.append("usrId", "<?=$member["mb_id"]?>");
         sendData.append("entId", $("#entId").val());
@@ -2338,14 +2338,14 @@ function fitemformcheck(f)
         sendData.append("subItem", ""); //  서브 아이템
         sendData.append("gubun", sendDataGubun); //  00=구매 01=대여
         sendData.append("taxInfoCd", sendDataTaxInfo); //  01=영세 02=과세
-		
+
 		var imgFileItem = $(".tbl_img_frm input[type='file']");
 		for(var i = 0; i < imgFileItem.length; i++){
 			sendData.append("file" + (i + 1), $(imgFileItem[i])[0].files[0]);
 		}
-		
+
 		$.ajax({
-			url : "https://eroumcare.com:9001/api/prod/insert",
+			url : "https://eroumcare.com:9901/api/prod/insert",
 			type : "POST",
 			async : false,
 			cache : false,
@@ -2365,7 +2365,7 @@ function fitemformcheck(f)
 				apiStatus = false;
 			}
 		});
-		
+
 		if(!apiStatus){
 			return false;
 		}
@@ -2445,10 +2445,10 @@ function fitemformcheck(f)
 			echo get_editor_js('it_mobile_tail_html');
 		}
 	?>
-	
+
     return true;
 }
-	
+
 async function frmUpdate(){
 	var sendDataProdColor = "";
 	var sendDataProdSize = "";
@@ -2461,7 +2461,7 @@ async function frmUpdate(){
 			sendDataGubun = "01";
 			break;
 	}
-	
+
 	var sendDataTaxInfo = $("#it_taxInfo").val();
 	switch(sendDataTaxInfo){
 		case "영세" :
@@ -2510,7 +2510,7 @@ async function frmUpdate(){
 	sendData.append("subItem", ""); //  서브 아이템
 	sendData.append("gubun", sendDataGubun); //  00=구매 01=대여
 	sendData.append("taxInfoCd", sendDataTaxInfo); //  01=영세 02=과세
-	
+
 	var imgFileItem = $(".tbl_img_frm tr");
 	for(var i = 0; i < imgFileItem.length; i++){
 		nowToDataURLResult = "";
@@ -2528,7 +2528,7 @@ async function frmUpdate(){
 	}
 
 	$.ajax({
-		url : "https://eroumcare.com:9001/api/prod/update",
+		url : "https://eroumcare.com:9901/api/prod/update",
 		type : "POST",
 		async : false,
 		cache : false,
@@ -2567,16 +2567,16 @@ function categorychange(f)
 }
 
 categorychange(document.fitemform);
-	
+
 	$(function(){
-		
+
 		/* 210208 */
 		var itemIdList = <?=json_encode($itemIdList)?>;
 		$("#ca_id").change(function(){
 			$("#it_thezone").val(itemIdList[$(this).val()]);
 		});
 		$("#it_thezone").val(itemIdList[$("#ca_id").val()]);
-		
+
 	})
 
 </script>

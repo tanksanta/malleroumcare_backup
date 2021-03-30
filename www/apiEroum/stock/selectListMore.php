@@ -11,7 +11,7 @@
 	}
 
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -28,30 +28,30 @@
 			if(!$data["quantity"] && !$status02){
 				continue;
 			}
-			
+
 			$thisData = [];
-			
+
 			if($data["prodColor"] || $data["prodSize"]){
 				$thisData["name"] = "{$data["prodColor"]}";
 				$thisData["name"] .= ($data["prodSize"]) ? "/{$data["prodSize"]}" : "";
 			} else {
 				$thisData["name"] = $data["prodNm"];
 			}
-			
+
 			$thisData["qty"] = $data["quantity"];
-			
+
 			array_push($data1, $thisData);
 		}
-		
+
 		$result["data"] = $data1;
 	}
 
 	if($status02){
 		$data2 = [];
 		$_POST["stateCd"] = "02";
-		
+
 		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -75,7 +75,7 @@
 				array_push($data2, $thisData);
 			}
 		}
-		
+
 		$result["data2"] = $data2;
 	}
 

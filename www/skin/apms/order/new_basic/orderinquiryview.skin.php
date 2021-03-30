@@ -78,7 +78,7 @@ if($header_skin)
 		$stoIdData = implode("|", $stoIdDataList);
 	}
 
-	# 스킨경로	
+	# 스킨경로
 	$SKIN_URL = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
 	# 210324 수급자정보
@@ -91,7 +91,7 @@ if($header_skin)
 		$sendPenData["penId"] = $od["od_penId"];
 
 		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -144,7 +144,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 		<div>
 		</div>
 	</div>
-   
+
     <style>
 		.listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 		.listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
@@ -154,23 +154,23 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			.listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 		}
 	</style>
-  
+
 	<script type="text/javascript">
 		$(function(){
 
 			$(".listPopupBoxWrap").hide();
 			$(".listPopupBoxWrap").css("opacity", 1);
-			
+
 			$(".popupDeliveryInfoBtn").click(function(e){
 				e.preventDefault();
-				
+
 				var od = $(this).attr("data-od");
 				$("#popupProdDeliveryInfoBox > div").append("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od + "'>");
 				$("#popupProdDeliveryInfoBox iframe").load(function(){
 					$("#popupProdDeliveryInfoBox").show();
 				});
 			});
-			
+
 		})
 	</script>
    <!-- 210326 배송정보팝업 -->
@@ -285,11 +285,11 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 											<?php if(substr($item[$i]["ca_id"], 0, 2) == 10){ ?>
 												<i class="icon03">판매</i>
 											<?php } ?>
-											
+
 											<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
 												<i class="icon02">대여</i>
 											<?php } ?>
-											</div>    
+											</div>
 											<div class="name"><?php echo $item[$i]['it_name']; ?></div>
 											<?php if($item[$i]['opt'][$k]['ct_option'] != $item[$i]['it_name']){ ?>
 											<div class="text"><?=$item[$i]['opt'][$k]['ct_option']?></div>
@@ -415,7 +415,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			</div>
 			<?php } ?>
 		</div>
-		
+
 		<div class="detail-price">
 			<?php if($od["od_penId"]){ ?>
 			<h5 class="m_none tablet_none">수급자 정보</h5>
@@ -472,7 +472,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				</ul>
 			</div>
 			<?php } ?>
-			
+
 			<h5>결제정보</h5>
 			<div class="all-info all-info2">
 				<ul>
@@ -558,7 +558,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			<?php if($od["od_stock_insert_yn"] == "N" && $deliveryItem){ ?>
 				<button type="button" id="send_statement"><img src="<?=$SKIN_URL?>/image/icon_24.png" alt=""> 거래명세서 출력</button>
 			<?php }?>
-				
+
 			<?php if ($cancel_price == 0) { // 취소한 내역이 없다면 ?>
 				<?php
 				$type = 0;
@@ -592,7 +592,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				?>
 				<?php if (($custom_cancel || $pay_complete_cancel || $pay_complete_cancel2 || $preparation_cancel || $shipped_cancel) && !$cancel_request_row['od_id']) { ?>
 					<a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false" aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
-					
+
 					<div class="h15"></div>
 
 					<div id="sod_fin_cancelfrm" class="collapse">
@@ -691,10 +691,10 @@ function fcancel_check(f) {
 $(function(){
 	$("#cancel_btn").click(function(e){
 		e.preventDefault();
-		
+
 		$("#sod_fin_cancelfrm").toggleClass("collapse");
 	});
-	
+
 	$(".delivery-confirm").click(function(){
 		if(confirm("상품을 수령하셨습니까?\n\n확인시 배송완료 처리가됩니다.")) {
 			return true;

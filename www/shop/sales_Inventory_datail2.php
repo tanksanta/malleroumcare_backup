@@ -204,7 +204,7 @@ $order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_name;
 $order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
 // 스킨 체크
-list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url); 
+list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url);
 
 // 스킨설정
 $wset = array();
@@ -377,7 +377,7 @@ $row = sql_fetch($sql);
                         // 01: 재고(대여가능) 02: 재고소진(대여중) 03: AS신청 04: 반품 05: 기타 06: 재고대기 07: 주문대기 08: 소독중 09: 대여종료
 						$sendData["stateCd"] =['01','02','08','09'];
 						$oCurl = curl_init();
-						curl_setopt($oCurl, CURLOPT_PORT, 9001);
+						curl_setopt($oCurl, CURLOPT_PORT, 9901);
 						curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
 						curl_setopt($oCurl, CURLOPT_POST, 1);
 						curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -400,11 +400,11 @@ $row = sql_fetch($sql);
 
 						$b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
 						$block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
-						$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
+						$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지
 						$b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
 						$total_page = ceil( $totalCnt / $listCnt ); # 총 페이지
 						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-						if ($b_end_page > $total_page){ 
+						if ($b_end_page > $total_page){
 							$b_end_page = $total_page;
 						}
 						$total_block = ceil($total_page/$b_pageNum_listCnt);
@@ -416,10 +416,10 @@ $row = sql_fetch($sql);
                                 자료가 없습니다.
                             </li>
                         <?php } ?>
-                        <div id="list_box1">    
-                            <?php for($i=0;$i<count($list);$i++){ 
-                                $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
-                                
+                        <div id="list_box1">
+                            <?php for($i=0;$i<count($list);$i++){
+                                $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
+
                                 $bg="";//대여중 일때 클래스 넣기
                                 $rental_btn=''; //대여 버튼
                                 $rental_btn2=''; //대여 버튼
@@ -440,7 +440,7 @@ $row = sql_fetch($sql);
 
                                 //메뉴 선택  01: 재고(대여가능) 02: 재고소진(대여중) 08: 소독중 09: 대여종료
                                 switch ($list[$i]['stateCd']) {
-                                    case '01': $state="대여가능"; $state_menu_all=$state_menu3.$state_menu8; 
+                                    case '01': $state="대여가능"; $state_menu_all=$state_menu3.$state_menu8;
                                     $rental_btn='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여</a>'; //대여 버튼
                                     $rental_btn2='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여하기</a>'; //대여 버튼
                                     break;
@@ -449,7 +449,7 @@ $row = sql_fetch($sql);
                                     case '09': $state="대여종료"; $state_menu_all=$state_menu3.$state_menu4.$state_menu1; break;
                                     default  : $state=""; break;
                                 }
-                                //대여가능  
+                                //대여가능
                                 if($state=="대여가능"){
                                     $sql_state = "SELECT `dis_state` FROM `g5_rental_log` WHERE `stoId`= '{$list[$i]['stoId']}' AND `rental_log_division`='1' ORDER BY `dis_total_date` DESC LIMIT 1";
                                     $row_state = sql_fetch($sql_state);
@@ -482,7 +482,7 @@ $row = sql_fetch($sql);
                                     }
                                 ?>
                                 <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
-                                <?php 
+                                <?php
                                 //날짜 변환
                                 $date1=$list[$i]['modifyDtm'];
                                 $date2=date("Y-m-d", strtotime($date1));
@@ -646,7 +646,7 @@ $row = sql_fetch($sql);
                                                     <th style="text-align: center;">문서</th>
                                                 </thead>
                                                 <tbody id="log_<?=$list[$i]['stoId']?>">
-                                                
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -684,7 +684,7 @@ $row = sql_fetch($sql);
                                                     </div>
                                                 </li>
 
-                                            </ul> 
+                                            </ul>
                                             <div class="popup-btn">
                                                 <!-- ordId,stoId,ordLendStrDtm,ordLendEndDtm -->
                                                 <button type="button" onclick="retal_period_change('<?php echo $list[$i]['penOrdId']?>','<?=$list[$i]['stoId']?>','strDtm_<?=$list[$i]['stoId']?>','endDtm_<?=$list[$i]['stoId']?>')">확인</button>
@@ -700,7 +700,7 @@ $row = sql_fetch($sql);
                     </ul>
                     <i class="text02">* 이로움몰에서 구매한 바코드는 관리자 문의 후 수정이 가능합니다.</i>
                 </div>
-                
+
                 <!-- 페이징 -->
                 <div class="pg-wrap" id="pagin_1">
                     <div id="numbering_zone1">
@@ -742,7 +742,7 @@ $row = sql_fetch($sql);
                         // 01: 재고(대여가능) 02: 재고소진(대여중) 03: AS신청 04: 반품 05: 기타 06: 재고대기 07: 주문대기 08: 소독중 09: 대여종료
 						$sendData["stateCd"] =['03','04','05'];
 						$oCurl = curl_init();
-						curl_setopt($oCurl, CURLOPT_PORT, 9001);
+						curl_setopt($oCurl, CURLOPT_PORT, 9901);
 						curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
 						curl_setopt($oCurl, CURLOPT_POST, 1);
 						curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -764,11 +764,11 @@ $row = sql_fetch($sql);
 
 						$b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
 						$block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
-						$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
+						$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지
 						$b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
 						$total_page = ceil( $totalCnt / $listCnt ); # 총 페이지
 						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-						if ($b_end_page > $total_page){ 
+						if ($b_end_page > $total_page){
 							$b_end_page = $total_page;
 						}
 						$total_block = ceil($total_page/$b_pageNum_listCnt);
@@ -781,8 +781,8 @@ $row = sql_fetch($sql);
                             </li>
                         <?php } ?>
                         <div id="list_box2">
-                            <?php for($i=0;$i<count($list);$i++){ 
-                                $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
+                            <?php for($i=0;$i<count($list);$i++){
+                                $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
                                 //메뉴 선택  01: 재고(대여가능) 02: 재고소진(대여중) 08: 소독중 09: 대여종료
                                 switch ($list[$i]['stateCd']) {
                                     case '03': $state="AS신청"; break;
@@ -790,7 +790,7 @@ $row = sql_fetch($sql);
                                     case '05': $state="기타";   break;
                                     default  : $state="";      break;
                                 }
-                                
+
                             ?>
                             <?php
                                 //유통 / 비유통 구분
@@ -807,13 +807,13 @@ $row = sql_fetch($sql);
                                 <span class="num"><?=$number?></span>
                                 <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
                                 <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
-                                <?php 
+                                <?php
                                 //날짜 변환
                                 $date1=$list[$i]['modifyDtm'];
                                 $date2=date("Y-m-d", strtotime($date1));
                                 ?>
                                 <span class="date m_off"><?=$date2?></span>
-                                
+
 
                                 <span class="none m_off" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')">
                                     <a href="javascript:;" class="state-btn1" onclick="retal_state_change2('<?=$list[$i]['stoId'] ?>','01','변경되었습니다.')" >대여가능</a>
@@ -830,7 +830,7 @@ $row = sql_fetch($sql);
                                     </div>
                                     <div class="info-m">
                                         <span class="none">
-                                            
+
                                         </span>
                                     </div>
                                 </div>
@@ -882,7 +882,7 @@ $row = sql_fetch($sql);
                         <?php if($block < $total_block){ ?><a href="javascript:page_load2('<?=$total_page?>')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
                     </div>
                 </div>
-                
+
             </div>
         </div>
 
@@ -983,14 +983,14 @@ $row = sql_fetch($sql);
     });
     //날짜 넣기
     $("input:text[dateonly]").datepicker({});
-            
+
     //대여기간수정 api 통신
     function retal_period_change(penOrdId,stoId,strDtm,endDtm){
         var ordLendStrDtm = document.getElementById(strDtm);
         var ordLendEndDtm = document.getElementById(endDtm);
         var sendData = {
             usrId : "<?=$member["mb_id"]?>",
-            penOrdId : penOrdId,  
+            penOrdId : penOrdId,
             prods : [
                 {
                     stoId : stoId,                      //재고아이디
@@ -1083,7 +1083,7 @@ $row = sql_fetch($sql);
         if(!dis_detail.value){ alert('상세정보를 입력해주세요'); return false;}
         if(!dis_perosn.value){ alert('담당자명을 입력해주세요'); return false;}
         if(!dis_phone.value){ alert('연락처를 입력해주세요'); return false;}
-        
+
         var sendData = {
             stoId : stoId,
             dis_detail : dis_detail.value,
@@ -1120,7 +1120,7 @@ $row = sql_fetch($sql);
         }
     });
 
-    //소독 결과 확인 지정 POST - >PHP 
+    //소독 결과 확인 지정 POST - >PHP
     function designate_result(stoId,strdate,enddate,dis_chemical,dis_chemical_history,dis_file_text,dis_file,designate_result_form){
         var strdate = document.getElementById(strdate);
         var enddate = document.getElementById(enddate);
@@ -1191,22 +1191,22 @@ $row = sql_fetch($sql);
     //대여버튼 클릭
     function wrapWindowByMask(){
         //화면의 높이와 너비를 구한다.
-        var maskHeight = $(document).height();  
+        var maskHeight = $(document).height();
         var maskWidth = $(window).width();
         //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채운다.
-        $('#mask').css({'width':maskWidth,'height':maskHeight});  
+        $('#mask').css({'width':maskWidth,'height':maskHeight});
         //마스크의 투명도 처리
-        $('#mask').fadeTo("slow",0.8);    
+        $('#mask').fadeTo("slow",0.8);
     }
     //삭제
     function del_stoId(stoId){
         var prods={};
         prods['stoId'] = [stoId];
         if (confirm("정말 삭제하시겠습니까??") == true){
-            
+
 
              var sendData = {
-                stoId: [stoId] 
+                stoId: [stoId]
             }
 
             console.log(sendData);

@@ -19,7 +19,7 @@
 	$sendData["pageSize"] = $sendLength;
 
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -42,20 +42,20 @@
 
 	$b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
 	$block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
-	$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
+	$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지
 	$b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
 	$total_page = ceil( $totalCnt / $listCnt ); # 총 페이지
 	// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-	if ($b_end_page > $total_page){ 
+	if ($b_end_page > $total_page){
 		$b_end_page = $total_page;
 	}
-	$total_block = ceil($total_page/$b_pageNum_listCnt); 
- 
+	$total_block = ceil($total_page/$b_pageNum_listCnt);
+
 ?>
 <style>
     .a2{
-        position: absolute; width: 100px; height: 35px; line-height: 35px; font-size: 12px; color: #FFF; 
-        text-align: center; top: 50%; margin-top: -17.5px; right: 0; 
+        position: absolute; width: 100px; height: 35px; line-height: 35px; font-size: 12px; color: #FFF;
+        text-align: center; top: 50%; margin-top: -17.5px; right: 0;
     }
 
 </style>
@@ -141,14 +141,14 @@
 			<?php } ?>
 		<?php } ?>
 		</div>
-		
+
 		<div class="list-page list-paging">
 			<ul class="pagination pagination-sm en">
 				<li></li>
 			<?php if($block > 1){ ?>
 				<li><a href="?page=<?=($b_start_page-1)?>"><i class="fa fa-angle-left"></i></a></li>
 			<?php } ?>
-			
+
 			<?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?>
 				<li class="<?=($j == $pageNum) ? "active" : ""?>">
 					<a href="?page=<?=$j?>"><?=$j?></a>
@@ -161,10 +161,10 @@
 			</ul>
 		</div>
 	</div>
-	
+
 	<script type="text/javascript">
 		$(function(){
-			
+
 			$("#myRecipientListWrap > .moreBtnWrap > button").click(function(){
 				var page = Number($(this).attr("data-page")) + 1;
 				var sendData = {
@@ -173,7 +173,7 @@
 					pageNum : page,
 					pageSize : "<?=$sendLength?>"
 				}
-				
+
 				$.ajax({
 					url : "./ajax.my.recipient.list.php",
 					type : "POST",
@@ -185,13 +185,13 @@
 							alert(result.message);
 						} else {
 							var list = result.data;
-							
+
 							if(!list.length){
 								alert("데이터가 존재하지 않습니다.");
 							} else {
 								$.each(list, function(key, data){
 									var html = '';
-									
+
 									html += '<ul class="item">';
 									html += '<li class="btnWrap">';
 									html += '<button type="button" class="updateBtn" data-id="' + data.penId + '">수정</button>';
@@ -242,26 +242,26 @@
 									html += '<p class="value">' + ((data.appCdNm) ? data.appCdNm : "-") + '</p>';
 									html += '</li>';
 									html += '</ul>';
-									
+
 									$("#myRecipientListWrap > .itemWrap").append(html);
 								});
-								
+
 								$("#myRecipientListWrap > .moreBtnWrap > button").attr("data-page", page);
 							}
 						}
 					}
 				});
 			});
-			
+
 			$(document).on("click", "#myRecipientListWrap > .itemWrap > .item > li.btnWrap > .updateBtn", function(){
 				var id = $(this).attr("data-id");
-				
+
 				window.location.href = "./my.recipient.update.php?id=" + id;
 			});
-			
+
 			$(document).on("click", "#myRecipientListWrap > .itemWrap > .item > li.btnWrap > .delBtn", function(){
 				var id = $(this).attr("data-id");
-				
+
 				if(confirm("해당 데이터를 삭제하시겠습니까?")){
 					$.ajax({
 						url : "./ajax.my.recipient.delete.php",
@@ -272,7 +272,7 @@
 						},
 						success : function(result){
 							result = JSON.parse(result);
-							
+
 							if(result.errorYN == "Y"){
 								alert(result.message);
 							} else {
@@ -282,7 +282,7 @@
 					});
 				}
 			});
-			
+
 		})
 	</script>
 

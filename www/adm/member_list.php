@@ -27,17 +27,17 @@ if ($stx) {
             $sql_search .= " ({$sfl} like '%{$stx}') ";
             break;
         case 'all' :
-            $sql_search .= " 
-                                mb_tel like '%{$stx}%' OR 
-                                mb_hp like '%{$stx}%' OR 
-                                mb_id like '%{$stx}%' OR 
-                                mb_nick like '%{$stx}%' OR 
-                                mb_name like '%{$stx}%' OR 
-                                mb_email like '%{$stx}%' OR 
-                                mb_datetime like '%{$stx}%' OR 
-                                mb_ip like '%{$stx}%' OR 
-                                mb_giup_bnum like '%{$stx}%' OR 
-                                mb_recommend like '%{$stx}%' OR 
+            $sql_search .= "
+                                mb_tel like '%{$stx}%' OR
+                                mb_hp like '%{$stx}%' OR
+                                mb_id like '%{$stx}%' OR
+                                mb_nick like '%{$stx}%' OR
+                                mb_name like '%{$stx}%' OR
+                                mb_email like '%{$stx}%' OR
+                                mb_datetime like '%{$stx}%' OR
+                                mb_ip like '%{$stx}%' OR
+                                mb_giup_bnum like '%{$stx}%' OR
+                                mb_recommend like '%{$stx}%' OR
                                 mb_1 like '%{$stx}%' OR
                                 mb_giup_bname like '%{$stx}%'
                             ";
@@ -117,10 +117,16 @@ $g5['title'] = '회원관리';
 include_once('./admin.head.php');
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
+if($_GET['manager']){
+$sql_common = " from {$g5['member_table']} a left join {$g5['auth_table']} b on (a.mb_id=b.mb_id) ";
+$sql_search = " where b.au_menu ='200100' ";
+}
 $sql = " select * {$sql_common} {$sql_search} {$sql_order} limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
 $colspan = ($is_membership) ? 18 : 17;
+
+
 ?>
 
 <div class="local_ov01 local_ov">
@@ -198,7 +204,7 @@ $colspan = ($is_membership) ? 18 : 17;
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
 <input type="submit" class="btn_submit" value="검색">
-
+<button type="submit" class="btn_submit" name="manager" value="1">영업담당자 검색</button>
 </form>
 
 <div class="local_desc01 local_desc">
@@ -232,7 +238,7 @@ $colspan = ($is_membership) ? 18 : 17;
         <th scope="col" rowspan="2" id="mb_giup_bnum">사업자번호</th>
         <th scope="col" rowspan="2" id="mb_list_datetime">회원가입일</th>
         <th scope="col" rowspan="2" id="mb_list_updatedate">최종수정일</th>
-        <th scope="col" rowspan="2" id="mb_list_lastmanager">최종영업담당자</th>
+        <th scope="col" rowspan="2" id="mb_list_lastmanager">영업담당자</th>
         <!--
         <th scope="col" id="mb_list_mailc"><?php echo subject_sort_link('mb_email_certify', '', 'desc') ?>메일인증</a></th>
         <th scope="col" id="mb_list_open"><?php echo subject_sort_link('mb_open', '', 'desc') ?>정보공개</a></th>
@@ -343,14 +349,14 @@ $colspan = ($is_membership) ? 18 : 17;
             //소셜계정이 있다면
             if(function_exists('social_login_link_account')){
                 if( $my_social_accounts = social_login_link_account($row['mb_id'], false, 'get_data') ){
-                    
+
                     echo '<div class="member_social_provider sns-wrap-over sns-wrap-32">';
                     foreach( (array) $my_social_accounts as $account){     //반복문
                         if( empty($account) || empty($account['provider']) ) continue;
-                        
+
                         $provider = strtolower($account['provider']);
                         $provider_name = social_get_provider_service_name($provider);
-                        
+
                         echo '<span class="sns-icon sns-'.$provider.'" title="'.$provider_name.'">';
                         echo '<span class="ico"></span>';
                         echo '<span class="txt">'.$provider_name.'</span>';
@@ -429,7 +435,7 @@ $colspan = ($is_membership) ? 18 : 17;
                 echo '&nbsp;&nbsp;&nbsp;<a href="'. G5_ADMIN_URL .'/shop_admin/partnerpayform.php?mb_id='.$row['mb_id'].'" class="btn btn_02">결제하기</a>';
             }
             ?>
-            
+
         </td>
         <td headers="mb_list_mobile" class="td_tel"><?php echo get_text($row['mb_hp']); ?></td>
         <td headers="mb_list_mobile" class="td_partnermall" style="text-align:center;">
@@ -445,7 +451,7 @@ $colspan = ($is_membership) ? 18 : 17;
 				<input type="hidden" name="as_date[<?php echo $i; ?>]" value="<?php echo $row['as_date'];?>" id="as_date_<?php echo $i;?>">
 			</td>
 		<?php } ?>
-        
+
         <?php
         $sql =  "select count(*) as cnt
                  from {$g5['g5_shop_order_table']}
@@ -462,7 +468,7 @@ $colspan = ($is_membership) ? 18 : 17;
                 display: inline-block;
             }
         </style>
-        
+
         <td headers="mb_list_order" rowspan="2" class="td_mng td_order_s"> <a class="btn_back" href="/adm/shop_admin/samhwa_orderlist.php?mb_info=true&sel_field=mb_id&search=<?php echo $mb_id ?>"><?php echo $total_count ?> 건</a></td>
         <td headers="mb_list_mng" rowspan="2" class="td_mng td_mng_s"><?php echo $s_mod ?><?php echo $s_grp ?></td>
     </tr>
@@ -579,7 +585,7 @@ $( document ).ready(function() {
         var checked = $('.tbl_mblist td input[type=checkbox]:checked');
 
         var mb_ids = [];
-        
+
         $.map(checked, function(v, i) {
             var mb_id = $(v).closest('td').find('.mb_id_input').val();
             mb_ids.push(mb_id);
@@ -604,10 +610,10 @@ $( document ).ready(function() {
                 input.name = 'mb_ids[]';
                 input.value = mb_ids[i];
                 document.body.appendChild(input);
-                form.appendChild(input); 
+                form.appendChild(input);
             }
         }
-        document.body.appendChild(form); 
+        document.body.appendChild(form);
         form.submit();
 
     });

@@ -22,7 +22,7 @@ foreach($od_ids as $od_id) {
 			$sendData["uuid"] = $od["uuid"];
 
 			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_PORT, 9901);
 			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -186,7 +186,7 @@ foreach($od_ids as $od_id) {
     // 견적서 정보
     $sql = " select * from g5_shop_order_estimate where od_id = '$od_id' ";
     $est = sql_fetch($sql);
-    
+
     $delivery = get_delivery_step($od['od_delivery_type']);
 
     // 메모
@@ -214,22 +214,22 @@ include_once('./pop.head.php');
 	.text-left { text-align: left !important; }
 	.text-right { text-align: right !important; }
 	p { margin-bottom: 0; }
-	
+
 	#pbreak { width: 100%; float: left; }
 	#pbreak > table { width: 100%; float: left; table-layout: fixed; margin-bottom: 10px; }
 	#pbreak > table:last-of-type { margin-bottom: 0; }
-	
+
 	.titleTable > thead > tr > th { text-align: center; padding-bottom: 10px; border-bottom: 1px solid #000; }
 	.titleTable > thead > tr > th > h3 { display: inline-block; border-bottom: 3px solid #000; }
 	.titleTable > tbody > tr > * { border-bottom: 1px solid #000; border-right: 1px solid #000; text-align: center; padding: 2px 10px; }
 	.titleTable > tbody > tr > *:first-of-type { border-left: 1px solid #000; }
 	.titleTable > tbody > tr > th { background-color: #F5F5F5; }
-	
+
 	.prodsTable { border: 1px solid #000; border-bottom: 0; }
 	.prodsTable tr > * { border-right: 1px solid #000; border-bottom: 1px solid #000; text-align: center; padding: 2px 10px; }
 	.prodsTable tr > *:last-child { border-right: 0; }
 	.prodsTable > thead > tr > th { background-color: #F5F5F5; }
-	
+
 	.footTable { border: 1px solid #000; border-bottom: 0; }
 	.footTable tr > * { border-right: 1px solid #000; border-bottom: 1px solid #000; text-align: center; padding: 2px 10px; }
 	.footTable tr > *:last-child { border-right: 0; }
@@ -243,7 +243,7 @@ foreach($infos as $info) {
 ?>
 
     <div class="pbreak" id="pbreak">
-    
+
     	<table class="titleTable">
     		<colgroup>
     			<col width="15%">
@@ -251,7 +251,7 @@ foreach($infos as $info) {
     			<col width="15%">
     			<col width="35%">
     		</colgroup>
-    		
+
     		<thead>
     			<tr>
     				<th colspan="4">
@@ -259,7 +259,7 @@ foreach($infos as $info) {
     				</th>
     			</tr>
     		</thead>
-    		
+
     		<tbody>
     			<tr>
     				<th>발주처</th>
@@ -281,7 +281,7 @@ foreach($infos as $info) {
     			</tr>
     		</tbody>
     	</table>
-    	
+
     	<table class="prodsTable">
     		<colgroup>
     			<col width="30%">
@@ -289,7 +289,7 @@ foreach($infos as $info) {
     			<col width="40%">
     			<col width="20%">
     		</colgroup>
-    		
+
     		<thead>
     			<tr>
     				<th>품목명[규격]</th>
@@ -298,30 +298,30 @@ foreach($infos as $info) {
     				<th>적요</th>
     			</tr>
     		</thead>
-    		
+
     		<tbody>
     		<?php
-				for($i = 0; $i < count($info["carts"]); $i++){ 
+				for($i = 0; $i < count($info["carts"]); $i++){
 					$options = $info["carts"][$i]["options"];
-					
+
 					$prodMemo = "";
-					
+
 					for($k = 0; $k < count($options); $k++){
 						if(($options[$k]["ct_qty"] - $options[$k]["ct_stock_qty"]) <= 0){
 							continue;
 						}
-						
+
 						$totalCnt += $options[$k]["ct_qty"] - $options[$k]["ct_stock_qty"];
-						
+
 						$prodMemo = ($prodMemo) ? $prodMemo : $info["carts"][$i]["prodMemo"];
 			?>
   				<tr>
   					<td class="text-left"><?=$info["carts"][$i]["it_name"]?> <?=($info["carts"][$i]["it_name"] != $options[$k]["ct_option"]) ? "({$options[$k]["ct_option"]})" : ""?></td>
   					<td class="text-right"><?=($options[$k]["ct_qty"] - $options[$k]["ct_stock_qty"])?></td>
   					<td class="text-left">
-  					<?php 
+  					<?php
 						$defaultBarCntCheck =$options[$k]["ct_stock_qty"];
-						for($b = 0; $b < $options[$k]["ct_qty"]; $b++){ 
+						for($b = 0; $b < $options[$k]["ct_qty"]; $b++){
 							if($defaultBarCntCheck > 0){
 								$defaultBarCntCheck--;
 								$prodListCnt++;
@@ -338,7 +338,7 @@ foreach($infos as $info) {
    			<?php } } ?>
     		</tbody>
     	</table>
-    	
+
     	<table class="footTable">
     		<colgroup>
     			<col width="20%">
@@ -346,7 +346,7 @@ foreach($infos as $info) {
     			<col width="20%">
     			<col width="30%">
     		</colgroup>
-    		
+
     		<tbody>
     			<tr>
     				<th>수량</th>
@@ -356,9 +356,9 @@ foreach($infos as $info) {
     			</tr>
     		</tbody>
     	</table>
-    	
+
 	</div>
-    	
+
 <?php if ( count($infos) - 1 > $index ) { ?>
     <div class="endline"></div><br style="height:0; line-height:0">
 <?php
@@ -369,7 +369,7 @@ $index++;
 
 <script type="text/javascript">
 	$(function(){
-		
+
 		var stoldList = [];
 		var stoIdData = "<?=$stoIdData?>";
 		if(stoIdData){
@@ -391,17 +391,17 @@ $index++;
 					if(res.data){
 						stoldList = res.data;
 					}
-					
+
 					document.execCommand("print", false, null) || window.print();
 				}
 			});
 		} else {
 			document.execCommand("print", false, null) || window.print();
 		}
-		
+
 	})
 </script>
 
-<?php 
+<?php
 include_once('./pop.tail.php');
 ?>

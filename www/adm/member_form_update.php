@@ -17,30 +17,30 @@ $mm_nos = array();
 for($i=0;$i<count($_POST['mm_name']);$i++) {
     if ( !$_POST['mm_name'][$i] ) continue;
     if ( $_POST['mm_no'][$i] ) {
-        $sql = "UPDATE g5_member_giup_manager SET 
-            mm_name = '{$_POST['mm_name'][$i]}', 
-            mm_part = '{$_POST['mm_part'][$i]}', 
-            mm_rank = '{$_POST['mm_rank'][$i]}', 
-            mm_work = '{$_POST['mm_work'][$i]}', 
-            mm_tel = '{$_POST['mm_tel'][$i]}', 
-            mm_hp = '{$_POST['mm_hp'][$i]}', 
-            mm_hp_extension = '{$_POST['mm_hp_extension'][$i]}', 
-            mm_thezone = '{$_POST['mm_thezone'][$i]}', 
-            mm_email = '{$_POST['mm_email'][$i]}' 
+        $sql = "UPDATE g5_member_giup_manager SET
+            mm_name = '{$_POST['mm_name'][$i]}',
+            mm_part = '{$_POST['mm_part'][$i]}',
+            mm_rank = '{$_POST['mm_rank'][$i]}',
+            mm_work = '{$_POST['mm_work'][$i]}',
+            mm_tel = '{$_POST['mm_tel'][$i]}',
+            mm_hp = '{$_POST['mm_hp'][$i]}',
+            mm_hp_extension = '{$_POST['mm_hp_extension'][$i]}',
+            mm_thezone = '{$_POST['mm_thezone'][$i]}',
+            mm_email = '{$_POST['mm_email'][$i]}'
             WHERE mm_no = '{$_POST['mm_no'][$i]}'";
         $mm_nos[] = " mm_no != '{$_POST['mm_no'][$i]}' ";
         sql_query($sql);
     }else{
-        $sql = "INSERT g5_member_giup_manager SET 
-                    mb_id = '{$mb_id}', 
-                    mm_name = '{$_POST['mm_name'][$i]}', 
-                    mm_part = '{$_POST['mm_part'][$i]}', 
-                    mm_rank = '{$_POST['mm_rank'][$i]}', 
-                    mm_work = '{$_POST['mm_work'][$i]}', 
-                    mm_tel = '{$_POST['mm_tel'][$i]}', 
-                    mm_hp = '{$_POST['mm_hp'][$i]}', 
-                    mm_hp_extension = '{$_POST['mm_hp_extension'][$i]}', 
-                    mm_thezone = '{$_POST['mm_thezone'][$i]}', 
+        $sql = "INSERT g5_member_giup_manager SET
+                    mb_id = '{$mb_id}',
+                    mm_name = '{$_POST['mm_name'][$i]}',
+                    mm_part = '{$_POST['mm_part'][$i]}',
+                    mm_rank = '{$_POST['mm_rank'][$i]}',
+                    mm_work = '{$_POST['mm_work'][$i]}',
+                    mm_tel = '{$_POST['mm_tel'][$i]}',
+                    mm_hp = '{$_POST['mm_hp'][$i]}',
+                    mm_hp_extension = '{$_POST['mm_hp_extension'][$i]}',
+                    mm_thezone = '{$_POST['mm_thezone'][$i]}',
                     mm_email = '{$_POST['mm_email'][$i]}'";
         sql_query($sql);
         $mm_no = sql_insert_id();
@@ -224,6 +224,7 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_dealer = '{$_POST['mb_dealer']}',
                  mb_partner_pay_type = '{$_POST['mb_partner_pay_type']}',
                  mb_partner_remark = '{$_POST['mb_partner_remark']}',
+                 mb_manager = '{$_POST['mb_manager']}',
                  mb_update_date = now()
                   ";
 
@@ -347,7 +348,7 @@ if( $w == '' || $w == 'u' ){
 
             move_uploaded_file($_FILES['mb_icon']['tmp_name'], $dest_path);
             chmod($dest_path, G5_FILE_PERMISSION);
-            
+
             if (file_exists($dest_path)) {
                 $size = @getimagesize($dest_path);
                 if ($size[0] > $config['cf_member_icon_width'] || $size[1] > $config['cf_member_icon_height']) {
@@ -368,7 +369,7 @@ if( $w == '' || $w == 'u' ){
             }
         }
     }
-    
+
     $mb_img_dir = G5_DATA_PATH.'/member_image/';
     if( !is_dir($mb_img_dir) ){
         @mkdir($mb_img_dir, G5_DIR_PERMISSION);
@@ -385,13 +386,13 @@ if( $w == '' || $w == 'u' ){
         if (!preg_match($image_regex, $_FILES['mb_img']['name'])) {
             alert($_FILES['mb_img']['name'] . '은(는) 이미지 파일이 아닙니다.');
         }
-        
+
         if (preg_match($image_regex, $_FILES['mb_img']['name'])) {
             @mkdir($mb_img_dir, G5_DIR_PERMISSION);
             @chmod($mb_img_dir, G5_DIR_PERMISSION);
-            
+
             $dest_path = $mb_img_dir.'/'.$mb_icon_img;
-            
+
             move_uploaded_file($_FILES['mb_img']['tmp_name'], $dest_path);
             chmod($dest_path, G5_FILE_PERMISSION);
 
@@ -422,5 +423,3 @@ alert('저장되었습니다.');
 goto_url('./member_form.php?'.$qstr.'&amp;w=u&amp;mb_id='.$mb_id, false);
 
 ?>
-
-

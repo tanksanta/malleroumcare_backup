@@ -77,7 +77,7 @@ if($_FILES['excelfile']['tmp_name']) {
          $sendData['penRecGraCd'] = ($data->sheets[0]['cells'][$i][$j++]); //인정등급
          $sendData['penExpiStDtm'] = addslashes($data->sheets[0]['cells'][$i][$j++]);//유효기간 시작일
          $sendData['penExpiEdDtm'] = addslashes($data->sheets[0]['cells'][$i][$j++]);//유효기간 종료일
-         $sendData['penTypeCd'] = addslashes($data->sheets[0]['cells'][$i][$j++]); //본인부담율 일반 15% = 00/ 감경 9% =01 / 감경 6%=02 / 의료 6% =03 / 기초 0% =04 
+         $sendData['penTypeCd'] = addslashes($data->sheets[0]['cells'][$i][$j++]); //본인부담율 일반 15% = 00/ 감경 9% =01 / 감경 6%=02 / 의료 6% =03 / 기초 0% =04
          $sendData['penGender'] = addslashes($data->sheets[0]['cells'][$i][$j++]); //성별
          $sendData['penConNum'] = addslashes($data->sheets[0]['cells'][$i][$j++]);//휴대번호
          $sendData['penConPnum'] = addslashes($data->sheets[0]['cells'][$i][$j++]);//일반번호
@@ -110,7 +110,7 @@ if($_FILES['excelfile']['tmp_name']) {
          }
          $sendData['entUsrId'] =  addslashes($data->sheets[0]['cells'][$i][$j++]);//담당직원정보
 
-         
+
 
          $sendData['penCnmTypeCd'] =  addslashes($data->sheets[0]['cells'][$i][$j++]);//확인자
          $sendData['penRecTypeCd'] =  addslashes($data->sheets[0]['cells'][$i][$j++]);//수령방법
@@ -123,10 +123,10 @@ if($_FILES['excelfile']['tmp_name']) {
          $sendData['appCd'] = "01";
          $sendData['usrId'] = $member["mb_id"];
          $sendData['delYn'] = "N";
-         
+
 
          $oCurl = curl_init();
-         curl_setopt($oCurl, CURLOPT_PORT, 9001);
+         curl_setopt($oCurl, CURLOPT_PORT, 9901);
          curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/insert");
          curl_setopt($oCurl, CURLOPT_POST, 1);
          curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -153,13 +153,13 @@ if($_FILES['excelfile']['tmp_name']) {
             for($k=0; $k< count($renPro);$k++){
                 array_push($itemList,$renPro[$k]);
             }
-            
+
             $sendData2['penId']=$res['data']['penId'];
             $sendData2['itemList']=$itemList;
 
 
             $oCurl2 = curl_init();
-            curl_setopt($oCurl2, CURLOPT_PORT, 9001);
+            curl_setopt($oCurl2, CURLOPT_PORT, 9901);
             curl_setopt($oCurl2, CURLOPT_URL, "https://eroumcare.com/api/recipient/setItem");
             curl_setopt($oCurl2, CURLOPT_POST, 1);
             curl_setopt($oCurl2, CURLOPT_RETURNTRANSFER, 1);
@@ -180,7 +180,7 @@ if($_FILES['excelfile']['tmp_name']) {
     alert('파일을 읽을 수 없습니다.');
 }
 ?>
-	
+
 <?php
 include_once(G5_PATH.'/tail.sub.php');
 ?>

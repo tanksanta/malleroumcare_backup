@@ -22,9 +22,9 @@ if (!$od['od_id']) {
 		$sendData = [];
 		$sendData["penOrdId"] = $od["ordId"];
 		$sendData["uuid"] = $od["uuid"];
-		
+
 		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -33,7 +33,7 @@ if (!$od['od_id']) {
 		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
 		$res = curl_exec($oCurl);
 		curl_close($oCurl);
-		
+
 		$result = json_decode($res, true);
 		$result = $result["data"];
 
@@ -60,10 +60,10 @@ if (!$od['od_id']) {
 			");
 
 			$od = sql_fetch("SELECT * FROM {$g5["g5_shop_order_table"]} WHERE od_id = '{$od["od_id"]}'");
-			
+
 			foreach($result as $data){
 				$thisProductData = [];
-				
+
 				$thisProductData["prodId"] = $data["prodId"];
 				$thisProductData["prodColor"] = $data["prodColor"];
 				$thisProductData["stoId"] = $data["stoId"];
@@ -75,19 +75,19 @@ if (!$od['od_id']) {
 	} else {
 //		$sendData = [];
 //		$sendData["usrId"] = $od["mb_id"];
-//		
+//
 //		$stoIdData = explode(",", $od["stoId"]);
 //		$stoIdDataList = [];
 //		foreach($stoIdData as $data){
 //			$thisList = [];
 //			$thisList["stoId"] = $data;
-//			
+//
 //			array_push($stoIdDataList, $thisList);
 //		}
 //		$sendData["prods"] = $stoIdDataList;
-//		
+//
 //		$oCurl = curl_init();
-//		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+//		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 //		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectBarNumList");
 //		curl_setopt($oCurl, CURLOPT_POST, 1);
 //		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -97,9 +97,9 @@ if (!$od['od_id']) {
 //		$res = curl_exec($oCurl);
 //		$res = json_decode($res, true);
 //		curl_close($oCurl);
-//		
+//
 //		print_r($res);
-		
+
 		$stoIdData = $od["stoId"];
 		$stoIdData = explode(",", $stoIdData);
 		$stoIdDataList = [];
@@ -214,7 +214,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 		if($opt["prodSupYn"] == "Y"){
 			$opt["ct_price_stotal"] -= ($opt["ct_stock_qty"] * $opt_price);
 		}
-		
+
         $row['options'][] = $opt;
     }
 
@@ -329,17 +329,17 @@ var od_id = '<?php echo $od['od_id']; ?>';
     width:15%;
 }
 */
-	
+
 	#prodBarNumSaveBtn { border: 1px solid #333 !important; background-color: #333 !important; color: #FFF !important; }
 	#prodBarNumSaveBtn:hover { background-color: #222 !important; }
-	
+
 	.barNumGuideBox { position: absolute; border: 1px solid #DDD; background-color: #FFF; text-align: left; padding: 15px 20px; display: none; margin-left: 35px; margin-top: 5px; }
 	.barNumGuideBox > .title { width: 100%; font-weight: bold; margin-bottom: 15px; position: relative; }
 	.barNumGuideBox > .title > button { float: right; }
 	.barNumGuideBox > p { width: 100%; padding: 0; }
-	
+
 	.prodBarNumCntBtn { height: 29px; line-height: 29px; font-size: 11px; }
-	
+
 </style>
 <div id="samhwa_order_form">
     <div class="block">
@@ -389,22 +389,22 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         $tot_discount = 0;
                         $tot_total = 0;
                         $tot_sendcost = 0;
-						
+
                         for($i=0; $i<count($carts); $i++) {
-								
+
 								# 요청사항
 								$prodMemo = "";
-							
+
 								# 대여기간
 								$ordLendDtm = "";
-							
+
 								# 배송수량
 								$deliveryCnt = 0;
 								if($carts[$i]["prodSupYn"] == "Y" && $carts[$i]["od_delivery_yn"] == "Y"){
 									$deliveryCnt = $carts[$i]["ct_qty"] - $carts[$i]["ct_stock_qty"];
 									$deliveryTotalCnt += $deliveryCnt;
 								}
-							
+
                             // 상품이미지
                             $image = "<img src='/data/item/{$carts[$i]["it_img1"]}' onerror='this.src=\"/shop/img/no_image.gif\";' style='width: 50px; height: 50px;'>";
                             $options = $carts[$i]['options'];
@@ -422,10 +422,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
 							$barcode_array = array();
 
                             for($k=0; $k<count($options); $k++) {
-								
+
 									# 요청사항
 									$prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
-								
+
 									# 대여기간
 									$ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($carts[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($carts[$i]["ordLendEndDtm"]));
 
@@ -2045,7 +2045,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 
 <script>
 var change_member_pop, add_item_pop, matching_item_pop, edit_item_pop, delivery_print_pop, edit_payment_pop, send_estimate_pop, order_prints_pop;
-	
+
 	function orderListExcelDownload(number){
 		$("#excelForm").remove();
 		if(number==1){
@@ -2054,17 +2054,17 @@ var change_member_pop, add_item_pop, matching_item_pop, edit_item_pop, delivery_
 		    var html = "<form id='excelForm' method='post' action='./order.excel.list2.php'>";
         }
 		var od_id = [];
-		
+
 		od_id.push("<?=$od["od_id"]?>");
 		html += "<input type='hidden' name='od_id[]' value='<?=$od["od_id"]?>'>";
-		
+
 		html += "</form>";
-		
+
 		if(!od_id.length){
 			alert("선택된 주문내역이 존재하지 않습니다.");
 			return false;
 		}
-		
+
 		$("body").append(html);
 		$("#excelForm").submit();
 	}
@@ -2077,41 +2077,41 @@ $(document).ready(function() {
 		className: "fixed"
 	});
     */
-	
+
 	$(document).on("click", ".prodBarNumCntBtn", function(e){
 		e.preventDefault();
-		
+
 		var popupWidth = 700;
 		var popupHeight = 700;
 
 		var popupX = (window.screen.width / 2) - (popupWidth / 2);
 		var popupY= (window.screen.height / 2) - (popupHeight / 2);
-		
+
 		window.open("./popup.prodBarNum.form.php?od_id=<?=$od["od_id"]?>", "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
 	});
-	
+
 	$(document).on("click", ".deliveryCntBtn", function(e){
 		e.preventDefault();
-		
+
 		var popupWidth = 700;
 		var popupHeight = 700;
 
 		var popupX = (window.screen.width / 2) - (popupWidth / 2);
 		var popupY= (window.screen.height / 2) - (popupHeight / 2);
-		
+
 		window.open("./popup.prodDeliveryInfo.form.php?od_id=<?=$od["od_id"]?>", "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
 	});
-	
+
 	$(".barNumCustomSubmitBtn").click(function(){
 		var val = $(this).closest("li").find("input").val();
 		var target = $(this).closest("ul").find("li");
 		var barList = [];
-		
+
 		if(val.indexOf("^") == -1){
 			alert("내용을 입력해주시길 바랍니다.");
 			return false;
 		}
-		
+
 		for(var i = 0; i < target.length; i++){
 			if(i > 0){
 				if($(target[i]).find("input").val()){
@@ -2121,7 +2121,7 @@ $(document).ready(function() {
 				}
 			}
 		}
-		
+
 		if(val){
 			val = val.split("^");
 			var first = val[0];
@@ -2142,12 +2142,12 @@ $(document).ready(function() {
 								barData = "0" + barData;
 							}
 						}
-						
+
 						barList.push(first + barData);
 					}
 				}
 			}
-			
+
 			for(var i = 0; i < target.length; i++){
 				if(i > 0){
 					$(target[i]).find("input").val(barList[i - 1]);
@@ -2155,15 +2155,15 @@ $(document).ready(function() {
 			}
 		}
 	});
-	
+
 	$(".barNumGuideBox .closeBtn").click(function(){
 		$(this).closest(".barNumGuideBox").hide();
 	});
-	
+
 	$(".barNumGuideOpenBtn").click(function(){
 		$(this).next().toggle();
 	});
-	
+
 	var stoldList = [];
 	var stoIdData = "<?=$stoIdData?>";
 	if(stoIdData){
@@ -2181,7 +2181,7 @@ $(document).ready(function() {
 				$.each(res.data, function(key, value){
 					$("." + value.stoId).val(value.prodBarNum);
 				});
-				
+
 				if(res.data){
 					stoldList = res.data;
 				}
@@ -2324,12 +2324,12 @@ $(document).ready(function() {
 
 			var penId = "<?php echo $od['od_penId'];?>";
 			var url;
-			
+
 			if(penId){
 
 				<?php
 				$insertPen5000DataList = urlencode('[{"penId":"'.$od['od_penId'].'","prodId":"PRO2020111200002","prodNm":"Glory-MC1","itemId":"ITM2020092200020","itemNm":"욕창예방매트리스","prodPayCode":"H12060130101","prodColor":"단일","ordStatus":"00","prodOflPrice":"307000","penPay":"46050","prodBarNum":"12030130110","ordNm":"'.$od_penNm.'","ordCont":"'.$od_penConNum.'","ordZip":"'.$od_penzip.'","ordAddr":"'.$od_penAddr.'","ordAddrDtl":"","ordMemo":"","payMehCd":"00","eformYn":"Y"}]');
-				
+
 				//$insertPen5000DataList = urlencode('[{"penId": "PENID_20210111094719","prodId": "PRO2020111200002","prodNm": "Glory-MC1","itemId": "ITM2020092200020","itemNm": "욕창예방매트리스","prodPayCode": "H12060130101","prodColor": "단일","ordStatus": "00","prodOflPrice": "307000","penPay": "46050","prodBarNum": "12030130110","ordNm": "테스트트","ordCont": "010-8748-7796","ordZip": "48060","ordAddr": "부산 해운대구 APEC로 17","ordAddrDtl": " (우동)","ordMemo": "","payMehCd": "00","eformYn": "N"}]');
 				?>
 
@@ -2339,7 +2339,7 @@ $(document).ready(function() {
 					'searchUsrId' : '<?php echo $od['mb_id'];?>'
 				};
 				*/
-				
+
 				<?php
 				$ret = array(
 					'searchUsrId' => $od['mb_id'],
@@ -2423,7 +2423,7 @@ $(document).ready(function() {
 
 
     });
-	
+
 	/* 주문다음단계 */
 	$("#order_summarize_submit").click(function() {
 		var next_step_val = $(this).data("next-step-val");
@@ -2446,7 +2446,7 @@ $(document).ready(function() {
 			$.each(productList, function(key, value){
 				var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
 				var prodBarNum = "";
-				
+
 				for(var i = 0; i < prodBarNumItem.length; i++){
 					if(next_step_val == "완료"){
 						if(!$(prodBarNumItem[i]).val()){
@@ -2458,15 +2458,15 @@ $(document).ready(function() {
 					prodBarNum += (prodBarNum) ? "," : "";
 					prodBarNum += $(prodBarNumItem[i]).val();
 				}
-				
+
 				productList[key]["prodBarNum"] = prodBarNum;
 				productList[key]["stateCd"] = stateCd;
 			});
-			
+
 			if(!changeStatus){
 				return false;
 			}
-			
+
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
 				penOrdId : "<?=$od["ordId"]?>",
@@ -2511,7 +2511,7 @@ $(document).ready(function() {
 					}
 				});
 			}
-			
+
 			var prodsList = {};
 
 			$.each(stoldList, function(key, value){
@@ -2525,12 +2525,12 @@ $(document).ready(function() {
 					stoMemo : (value.stoMemo) ? value.stoMemo : ""
 				}
 			});
-			
+
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
 				prods : prodsList
 			}
-			
+
 			$.ajax({
 				url : "samhwa_orderform_stock_update.php",
 				type : "POST",
@@ -2547,7 +2547,7 @@ $(document).ready(function() {
 			});
 		}
 	});
-	
+
 	// 바코드정보저장
     $('#prodBarNumSaveBtn').click(function() {
 		var ordId = "<?=$od["ordId"]?>";
@@ -2558,15 +2558,15 @@ $(document).ready(function() {
 			$.each(productList, function(key, value){
 				var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
 				var prodBarNum = "";
-				
+
 				for(var i = 0; i < prodBarNumItem.length; i++){
 					prodBarNum += (prodBarNum) ? "," : "";
 					prodBarNum += $(prodBarNumItem[i]).val();
 				}
-				
+
 				productList[key]["prodBarNum"] = prodBarNum;
 			});
-			
+
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
 				penOrdId : "<?=$od["ordId"]?>",
@@ -2601,7 +2601,7 @@ $(document).ready(function() {
 			});
 		} else {
 			var prodsList = {};
-				
+
 			$.each(stoldList, function(key, value){
 				prodsList[key] = {
 					stoId : value.stoId,
@@ -2613,12 +2613,12 @@ $(document).ready(function() {
 					stoMemo : (value.stoMemo) ? value.stoMemo : ""
 				}
 			});
-			
+
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
 				prods : prodsList
 			}
-			
+
 			$.ajax({
 				url : "samhwa_orderform_stock_update.php",
 				type : "POST",
@@ -2655,15 +2655,15 @@ $(document).ready(function() {
 			$.each(productList, function(key, value){
 				var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
 				var prodBarNum = "";
-				
+
 				for(var i = 0; i < prodBarNumItem.length; i++){
 					prodBarNum += (prodBarNum) ? "," : "";
 					prodBarNum += $(prodBarNumItem[i]).val();
 				}
-				
+
 				productList[key]["prodBarNum"] = prodBarNum;
 			});
-			
+
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
 				penOrdId : "<?=$od["ordId"]?>",
@@ -2722,12 +2722,12 @@ $(document).ready(function() {
 					stoMemo : (value.stoMemo) ? value.stoMemo : ""
 				}
 			});
-			
+
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
 				prods : prodsList
 			}
-			
+
 			$.ajax({
 				url : "samhwa_orderform_stock_update.php",
 				type : "POST",
@@ -2961,7 +2961,7 @@ $(document).ready(function() {
 			it_id += (it_id) ? "," : "";
 			it_id += it_id;
 		}
-		
+
         order_prints_pop = window.open('./pop.order.prints.php?od_id=' + od_id + '|', "order_prints_pop", "width=850, height=800, resizable = no, scrollbars = yes");
     });
 

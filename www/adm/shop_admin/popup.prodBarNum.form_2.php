@@ -24,11 +24,11 @@
 			array_push($orderStoIdList, $stoId);
 		}
 	}
-			
+
 	// 01: 재고(대여가능) 02: 재고소진(대여중) 03: AS신청 04: 반품 05: 기타 06: 재고대기 07: 주문대기 08: 소독중 09: 대여종료
 	$sendData["stateCd"] =['01','02','08','09'];
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -42,7 +42,7 @@
 	if($res["data"]){
 		$list = $res["data"];
 	}
-			
+
 	$it = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$_GET["prodId"]}'");
 
 ?>
@@ -56,7 +56,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 	<link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
 	<link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
-	
+
 	<style>
 		* { margin: 0; padding: 0; position: relative; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); outline: none; }
 		html, body { width: 100%; float: left; font-family: "Noto Sans KR", sans-serif; }
@@ -75,7 +75,7 @@
 		#popupHeaderTopWrap > .title { float: left; font-weight: bold; color: #FFF; font-size: 22px; }
 		#popupHeaderTopWrap > .close { float: right; }
 		#popupHeaderTopWrap > .close > a { color: #FFF; font-size: 40px; top: -2px; }
-		
+
 		/* 상품기본정보 */
 		#itInfoWrap { width: 100%; float: left; padding: 20px; border-bottom: 1px solid #DFDFDF; }
 		#itInfoWrap > .name { width: 100%; float: left; font-weight: bold; font-size: 17px; }
@@ -84,7 +84,7 @@
 		#itInfoWrap > .deliveryInfo { width: 100%; float: left; border-radius: 5px; padding: 10px 15px; background-color: #F1F1F1; margin-top: 20px; }
 		#itInfoWrap > .deliveryInfo > p { width: 100%; float: left; color: #000; font-size: 13px; }
 		#itInfoWrap > .deliveryInfo > p.title { color: #666; font-size: 15px; font-weight: bold; margin-bottom: 10px; }
-		
+
 		/* 팝업 */
 		#popup { display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, .7);z-index: 50; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);}
 		#popup.hide {display: none;}
@@ -92,7 +92,7 @@
 		#popup .content { padding: 20px; background: #fff; border-radius: 5px; box-shadow: 1px 1px 3px rgba(0, 0, 0, .3); max-width:90%;}
 		#popup .content { max-width:90%; font-size: 14px; }
 		#popup .closepop { width: 100%; height: 40px; cursor: pointer; color:#fff; background-color:#000; border-radius:6px; margin-top: 10px; }
-		
+
 		/* 상품목록 */
 		#submitForm { width: 100%; float: left; }
 		.imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto; float: left; }
@@ -141,7 +141,7 @@
 		.imfomation_box a .li_box .deliveryInfoWrap > select { width: 34%; height: 40px; float: left; margin-right: 1%; border: 1px solid #DDD; font-size: 17px; color: #666; padding-left: 10px; border-radius: 5px; }
 		.imfomation_box a .li_box .deliveryInfoWrap > input[type="text"] { width: 65%; height: 40px; float: left; border: 1px solid #DDD; font-size: 17px; color: #666; padding: 0 40px 0 10px; border-radius: 5px; }
 		.imfomation_box a .li_box .deliveryInfoWrap > img { position: absolute; width: 30px; right: 15px; top: 50%; margin-top: -15px; z-index: 2; cursor: pointer; }
-		
+
 		/* 고정 하단 */
 		#popupFooterBtnWrap { position: fixed; width: 100%; height: 70px; background-color: #000; bottom: 0px; z-index: 10; }
 		#popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
@@ -165,7 +165,7 @@
 		<input type="hidden" name="od_id" value="">
 		<input type="hidden" name="update_type" value="popup">
 		<ul class="imfomation_box" id="imfomation_box">
-		<?php for($i = 0; $i < count($list); $i++){ 
+		<?php for($i = 0; $i < count($list); $i++){
 			if(!in_array($list[$i]["stoId"], $orderStoIdList)){
 				continue;
 			}
@@ -205,7 +205,7 @@
 		</ul>
 	</form>
 	</div>
-	
+
 	<?php if($it["prodSupYn"] == "N"){ ?>
 	<!-- 고정 하단 -->
 	<div id="popupFooterBtnWrap">
@@ -228,7 +228,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         function maxLengthCheck(object){
             if (object.value.length > object.maxLength){
             object.value = object.value.slice(0, object.maxLength);
-            }    
+            }
         }
 
 		foldingBoxSetting();
@@ -257,12 +257,12 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			var count=0;
 			var stoIdData = <?=json_encode($orderStoIdList)?>;
 			var barcode_v = $(".notall");
-			
+
 			for(var i = 0; i < stoIdData.length; i++){
 				var sendData = {
 					stoId : stoIdData[i]
 				}
-			
+
 				$.ajax({
 					url : "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
 					type : "POST",
@@ -275,7 +275,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 							stoldList = res.data;
 						}
 						var prodsList = {};
-						
+
 						// if(barcode_v.length !== 12){
 						// 	alert('바코드는 12자리를 입력하셔야합니다.'); return false;
 						// }
@@ -293,7 +293,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 						var sendData = {
 							usrId : "<?=$member["mb_id"]?>",
 							prods : prodsList
-						}				
+						}
 						$.ajax({
 							url : "./samhwa_orderform_stock_update.php",
 							type : "POST",
@@ -310,9 +310,9 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 					}
 				});
 			}
-			
+
 			alert("저장이 완료되었습니다.");
-			
+
 			$("#popupProdBarNumInfoBox", parent.document).hide();
 			$("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
         });
@@ -320,7 +320,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 	$(".notall").keyup(function(){
 			$(this).removeClass("active");
 			$(this).parent().find("i").removeClass("active");
-		
+
 			var length = $(this).val().length;
 			if(length < 12 && length){
 				$(this).addClass("active");
@@ -353,7 +353,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			window.close();
 		<?php }?>
     }
-	
+
 	$(".popupCloseBtn").click(function(e){
 		e.preventDefault();
 

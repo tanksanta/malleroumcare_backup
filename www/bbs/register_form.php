@@ -96,7 +96,7 @@ if ($w == "") {
 				$sendData["pw"] = $_POST["mb_password"];
 
 				$oCurl = curl_init();
-				curl_setopt($oCurl, CURLOPT_PORT, 9001);
+				curl_setopt($oCurl, CURLOPT_PORT, 9901);
 				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entLogin");
 				curl_setopt($oCurl, CURLOPT_POST, 1);
 				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -156,7 +156,7 @@ $at = apms_page_thema($pid);
 include_once(G5_LIB_PATH.'/apms.thema.lib.php');
 
 // 스킨 체크
-list($member_skin_path, $member_skin_url) = apms_skin_thema('member', $member_skin_path, $member_skin_url); 
+list($member_skin_path, $member_skin_url) = apms_skin_thema('member', $member_skin_path, $member_skin_url);
 
 // 설정값 불러오기
 $is_regform_sub = false;

@@ -40,7 +40,7 @@
     $row = sql_fetch($sql);
     $rental_log_Id = $row['rental_log_Id'];
     //최신 소독로그에 update
-    $sql_update=" update `g5_rental_log` 
+    $sql_update=" update `g5_rental_log`
         set `strdate` = '{$strdate}',
             `enddate` = '{$enddate}',
             `dis_state` = '소독완료',
@@ -65,7 +65,7 @@
 
     // echo json_encode($sendData);
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/update");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -80,6 +80,6 @@
     } else {
         alert('완료되었습니다.');
     }
-    
-    
+
+
 ?>

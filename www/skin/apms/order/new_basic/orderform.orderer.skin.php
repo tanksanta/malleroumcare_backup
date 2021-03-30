@@ -24,7 +24,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 	$sendData["appCd"] = "01";
 
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -81,7 +81,7 @@ var array_box=[];
         });
     });
 </script>
-	
+
 
 	<section class="tab-wrap tab-2 on">
 		<div class="detail-price pc_none tablet_block">
@@ -142,7 +142,7 @@ var array_box=[];
 				</ul>
 			</div>
 		</div>
-	
+
 		<div class="detail-wrap">
 			<h4>상품 정보</h4>
 			<div class="info-wrap">
@@ -164,15 +164,15 @@ var array_box=[];
 									<div class="pro-info">
 										<div class="pro-icon">
 											<i class="icon01"><?=($item[$i]["prodSupYn"] == "N") ? "비유통" : "유통"?></i>
-											
+
 										<?php if(substr($item[$i]["ca_id"], 0, 2) == 10){ ?>
 											<i class="icon03">판매</i>
 										<?php } ?>
-										
+
 										<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
 											<i class="icon02">대여</i>
 										<?php } ?>
-										</div>    
+										</div>
 										<div class="name">
 											<input type="hidden" name="it_id[<?php echo $i; ?>]"    value="<?php echo $item[$i]['hidden_it_id']; ?>" class="it_id_class">
 											<input type="hidden" name="it_name[<?php echo $i; ?>]"  value="<?php echo $item[$i]['hidden_it_name']; ?>">
@@ -193,7 +193,7 @@ var array_box=[];
 										<?php if($item[$i]['it_options']) { ?>
 											<div class="text"><?php echo $item[$i]['it_options'];?></div>
 										<?php } ?>
-										
+
 										<?php
 											//소계 토탈 - 디스카운트
 											$pirce_v = str_replace(',','',$item[$i]['total_price'])-str_replace(',','',$item[$i]['ct_discount']);
@@ -369,13 +369,13 @@ var array_box=[];
 					</div>
 				</div>
 				<div class="table-list3 table-list4" id="typereceipt1_view">
-				<?php 
+				<?php
 					# 결제정보
 					$sendData_entInfo = [];
 					$sendData_entInfo["usrId"] = $member["mb_id"];
 
 					$oCurl = curl_init();
-					curl_setopt($oCurl, CURLOPT_PORT, 9001);
+					curl_setopt($oCurl, CURLOPT_PORT, 9901);
 					curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/ent/account");
 					curl_setopt($oCurl, CURLOPT_POST, 1);
 					curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -473,7 +473,7 @@ var array_box=[];
 
 					</ul>
 				</div>
-				
+
 				<div class="table-list3 table-list4" id="typereceipt2_view">
 					<ul>
 						<li>
@@ -614,23 +614,23 @@ var array_box=[];
 					</li>
 				</ul>
 			</div>
-			
+
 			<div id="settle_bank" style="display: none;">
 				<h5>입금할 계좌</h5>
 				<select name="od_bank_account" id="od_bank_account" style="width: 100%; height: 30px; border: 1px solid #DDD; padding: 5px; margin-top: -25px;">
 					<option value="">선택하십시오.</option>
 					<?php echo $bank_account; ?>
 				</select>
-				
+
 				<h5>입금자명</h5>
 				<input type="text" name="od_deposit_name" id="od_deposit_name" maxlength="20" style="width: 100%; height: 30px; border: 1px solid #DDD; padding: 5px; margin-top: -25px; margin-bottom: 40px;">
 			</div>
-			
+
 			<div class="text" style="display: none;">
 				<span>- 보유재고 등록 선택 시 상품배송이 되지 않습니다. </span>
 				<span>- 보유 재고 등록시 바코드 정보를 모두 입력해야 등록이 가능합니다. </span>
 			</div>
-			
+
 			<div class="pay-btn">
 				<button type="button" id="forderform_check_btn" onclick="forderform_check(this.form);">상품 주문하기</button>
 				<a href="javascript:history.go(-1);">취소</a>
@@ -928,7 +928,7 @@ var array_box=[];
     <!-- 수급자 정보 iframe창 -->
 
 	<script>
-        
+
 
 		function selected_recipient($penId) {
 
@@ -1000,7 +1000,7 @@ var array_box=[];
 			document.getElementById("penAddr").value=list['penAddr'];			//주소
 			document.getElementById("penTypeCd").value=list['penTypeCd'];			//주소
 			///*document.getElementById("penMoney").value=list['penMoney'];			//한도금액*/
-			
+
 			$(".penNm_print").text(list['penNm']);				//수급자명
 			$(".penTypeNm_print").text(list['penTypeNm']);				//수급자명
 			$(".penLtmNum_print").text(list['penLtmNum']);				//장기요양번호
@@ -1200,7 +1200,7 @@ var array_box=[];
 				});
 
                 //here
-                
+
 				if(!totalPrice){
 					$("input[name='od_send_cost']").val(0);
 					$(".delivery_cost_display").text("0 원");
@@ -1275,14 +1275,14 @@ var array_box=[];
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
 			}
-			
-			
+
+
 		//상품주문,수급자주문,보유재고등록 탭
 		$('.detail-tab li').on('click',function(){
 			if($(this).hasClass("on")){
 				return false;
 			}
-			
+
 			let thisIndex = $(this).index();
 			$(this).addClass('on');
 			$(this).siblings('li').removeClass('on');
@@ -1290,21 +1290,21 @@ var array_box=[];
 
 			$("#od_stock_insert_yn").prop("checked", false);
 			$("#forderform_check_btn").text("상품 주문하기");
-			
+
 			$(".tab-2 .table-list2 .delivery-price").css("width", "20%");
 			$(".tab-2 .table-list2 .barcode").hide();
-			
+
 			$(".order-info").show();
 			$(".stock_insert_none").show();
 			$(".order_none").show();
 			$(".order_recipientInfoBox").hide();
-			
+
 			$("#penId").val("");
 			$(".tab-2 .detail-price .all-info.all-info2 ul li span").text("수급자를 선택해주세요.");
 			$(".tab-2 .detail-price .all-info.all-info2 ul li span").css("color", "#CCC");
 			$(".order-info .top .add-ac p").text("배송지 선택");
 			recipientDelete();
-			
+
 			switch($(this).attr("data-type")){
 				case "stock_insert" :
 					$("#od_stock_insert_yn").prop("checked", true);
@@ -1341,7 +1341,7 @@ var array_box=[];
 
 			$('.payment-tab ul li').removeClass("on");
 			$('.payment-tab ul li > a[data-for="' + target + '"]').closest("li").addClass("on");
-			
+
 			$("#settle_bank").hide();
 			switch(target){
 				case "od_settle_bank" :
@@ -1417,7 +1417,7 @@ var array_box=[];
 				if(!$(this).closest(".list-day").find(".ordLendStartDtm").val()){
 					$(this).closest(".list-day").find(".ordLendStartDtm").val($(this).closest(".list-day").find(".ordLendStartDtm").attr("data-default"));
 				}
-				
+
 				var month = Number($(this).attr("data-month"));
 				var dateList = $(this).closest(".list-day").find(".ordLendStartDtm").val().split("-");
 				var date = new Date(dateList[0], dateList[1], dateList[2]);
@@ -1508,7 +1508,7 @@ var array_box=[];
                     var sendData2=[];
                     var prodsData = [];
                     var prodsSendData = [];
-             
+
                     var it_id_class = $(this).closest("li");
 					prodsData["prodId"] = it_id_class.attr('data-code');
                     console.log(prodsData["prodId"]);
@@ -1715,7 +1715,7 @@ var array_box=[];
 
 		})
 	</script>
-    
+
 	<script type="text/javascript">
 		$(function() {
 			// 수급자목록
@@ -1726,7 +1726,7 @@ var array_box=[];
 				$("#order_recipientBox").css("opacity", 1);
 			$(".order_recipient").click(function(e){
 				e.preventDefault();
-				
+
 				<?php if($itemPenIdStatus){ ?>
 					$("#order_recipientBox").show();
 				<?php } else { ?>
@@ -1755,13 +1755,13 @@ var array_box=[];
 
     </script>
     <?php } ?>
-    
+
 <?php } ?>
 
 
 <script>
 <?php if($_GET['penId_r']){ //보유재고 관리에서 넘어오면 실행 ?>
-        $(document).ready(function() { 
+        $(document).ready(function() {
             $('#c_recipient').click();
 
             selected_recipient('<?=$_GET['penId_r']?>');
@@ -1769,4 +1769,3 @@ var array_box=[];
         });
 <?php } ?>
 </script>
-       

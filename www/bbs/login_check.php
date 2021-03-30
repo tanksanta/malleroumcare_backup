@@ -9,9 +9,9 @@ if($_POST["mb_id"] != "admin"){
 	$sendData = [];
 	$sendData["usrId"] = $_POST["mb_id"];
 	$sendData["pw"] = $_POST["mb_password"];
-	
+
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entLogin");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -31,12 +31,12 @@ if($_POST["mb_id"] != "admin"){
         if (!$mb_id || !$mb_password)
             alert('회원아이디나 비밀번호가 공백이면 안됩니다.');
         $mb = get_member($mb_id);
-  
+
         if($mb['mb_level'] !== "9"){
             //임시작업
             alert('승인 후 이용이 가능합니다. 관리자 문의해주세요.');
         }
-        
+
         if (!$is_social_password_check && (!$mb['mb_id'] || !check_password($mb_password, $mb['mb_password'])) ) {
             alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
         }
@@ -62,7 +62,7 @@ if($_POST["mb_id"] != "admin"){
 		$mbCheck = sql_fetch("SELECT mb_id FROM {$g5["member_table"]} WHERE mb_id = '{$_POST["mb_id"]}'")["mb_id"];
 
 		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/ent/account");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -74,7 +74,7 @@ if($_POST["mb_id"] != "admin"){
 		curl_close($oCurl);
 		$resInfo = json_decode($res, true);
 		$resInfo = $resInfo["data"];
-		
+
 		$resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
 		$resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
 
@@ -218,7 +218,7 @@ if($is_apms_social_check) {
 	if ($mb_email != $mb['mb_email']) {
 		if ($msg = exist_mb_email($mb_email, $mb_id)) alert($msg, "", true, true);
 
-		//회원정보에 이메일 업데이트 
+		//회원정보에 이메일 업데이트
 		$mb_sql = "mb_email = '{$mb_email}'";
 		if(is_use_email_certify()) {
 			$mb_sql .= ", mb_email_certify = ''";
@@ -281,7 +281,7 @@ if ($url) {
 
     // $_POST 배열변수에서 아래의 이름을 가지지 않은 것만 넘김
     $post_check_keys = array('mb_id', 'mb_password', 'x', 'y', 'url', 'slr_url');
-    
+
     //소셜 로그인 추가
     if($is_social_login){
         $post_check_keys[] = 'provider';

@@ -74,7 +74,7 @@ if($_FILES['excelfile']['tmp_name']) {
     $fail_count = 0;
     $succ_count = 0;
 	$succDataList = [];
-	
+
     for ($i = 3; $i <= $data->sheets[0]['numRows']; $i++) {
         $total_count++;
 
@@ -156,14 +156,14 @@ if($_FILES['excelfile']['tmp_name']) {
             $fail_count++;
             continue;
         }
-		
+
 		$prodSupYn = ($prodSupYn) ? $prodSupYn : "Y";
-		
+
 		$itemId = sql_fetch("SELECT itemId FROM g5_shop_category WHERE ca_id = '{$ca_id}'")["itemId"];
-		
+
 		$it_price = ($it_price) ? $it_price : 0;
 		$it_cust_price = ($it_cust_price) ? $it_cust_price : 0;
-		
+
 		$it_explan = ($prodSupYn == "N") ? addslashes("<img src='https://mall.eroumcare.com/data/item/prodSupN.png'>") : $it_explan;
 		$it_use = ($it_use) ? $it_use : 1;
 		$it_stock_qty = ($it_stock_qty) ? $it_stock_qty : 9999;
@@ -225,7 +225,7 @@ if($_FILES['excelfile']['tmp_name']) {
         sql_query($sql);
 
         $succ_count++;
-		
+
 		$prodSizeList = explode("|", $prodSize);
 		$prodColorList = explode("|", $prodColor);
 		foreach($prodColorList as $thisColor){
@@ -259,7 +259,7 @@ if($_FILES['excelfile']['tmp_name']) {
 				$gubun = "01";
 				break;
 		}
-		
+
 		$taxInfo = "01";
 		switch($it_taxInfo){
 			case "영세" :
@@ -336,10 +336,10 @@ include_once(G5_PATH.'/head.sub.php');
     <div class="btn_win01 btn_win">
         <button type="button" onclick="window.close();">창닫기</button>
     </div>
-    
+
     <script type="text/javascript">
 		$(function(){
-			
+
 			var successApiCnt = 0;
 
 			function dataURItoBlob(dataURI) {
@@ -383,8 +383,8 @@ include_once(G5_PATH.'/head.sub.php');
 			function dataURLtoFile(dataurl, filename) {
 				var arr = dataurl.split(','),
 					mime = arr[0].match(/:(.*?);/)[1],
-					bstr = atob(arr[1]), 
-					n = bstr.length, 
+					bstr = atob(arr[1]),
+					n = bstr.length,
 					u8arr = new Uint8Array(n);
 
 				while(n--){
@@ -393,19 +393,19 @@ include_once(G5_PATH.'/head.sub.php');
 
 				return new File([u8arr], filename, {type:mime});
 			}
-			
+
 			var succList = <?=json_encode($succDataList)?>;
-			
+
 			async function frmUpdate(){
 				var dataCnt = 0;
 				$.each(succList, async function(it_id, data){
 					dataCnt++;
 					var sendData = new FormData();
-					
+
 					$.each(data, function(key, value){
 						sendData.append(key, value);
 					});
-					
+
 					var imgList = data.imgList;
 					for(var i = 0; i < imgList.length; i++){
 						nowToDataURLResult = "";
@@ -417,9 +417,9 @@ include_once(G5_PATH.'/head.sub.php');
 							sendData.append("file" + (i + 1), file);
 						}
 					}
-					
+
 					$.ajax({
-						url : "https://eroumcare.com:9001/api/prod/insert",
+						url : "https://eroumcare.com:9901/api/prod/insert",
 						type : "POST",
 						async : false,
 						cache : false,
@@ -435,7 +435,7 @@ include_once(G5_PATH.'/head.sub.php');
 										it_id : it_id
 									}
 								});
-								
+
 								$("#successCnt").text(Number($("#successCnt").text()) - 1);
 								$("#failCnt").text(Number($("#failCnt").text()) + 1);
 							} else {
@@ -447,7 +447,7 @@ include_once(G5_PATH.'/head.sub.php');
 										prodId : result.data.prodId
 									}
 								});
-								
+
 								successApiCnt++;
 								$("#successApiCnt").text(Number(successApiCnt));
 							}
@@ -460,16 +460,16 @@ include_once(G5_PATH.'/head.sub.php');
 									it_id : it_id
 								}
 							});
-							
+
 							$("#successCnt").text(Number($("#successCnt").text()) - 1);
 							$("#failCnt").text(Number($("#failCnt").text()) + 1);
 						}
 					});
 				});
 			}
-			
+
 			frmUpdate();
-			
+
 		})
 	</script>
 

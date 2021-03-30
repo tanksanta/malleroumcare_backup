@@ -108,6 +108,12 @@ if($w == "" && !$fn) {
 	</div>
 	<form name="fitemform" onsubmit="return fitemformcheck(this)">
 	<input type="hidden" name="w" value="<?php echo $w; ?>">
+	<input type="hidden" name="sst" value="<?php echo $_GET['sst']; ?>">
+	<input type="hidden" name="sod" value="<?php echo $_GET['sod']; ?>">
+	<input type="hidden" name="sfl" value="<?php echo $_GET['sfl']; ?>">
+	<input type="hidden" name="stx" value="<?php echo $_GET['stx']; ?>">
+	<input type="hidden" name="page" value="<?php echo $$_GET['page']; ?>">
+	<input type="hidden" name="searchProdSupYN" value="<?php echo $_GET['searchProdSupYN']; ?>">
 	<?php if($it_id) { ?>
 		<input type="hidden" name="it_id" value="<?php echo $it_id; ?>">
 		<input type="hidden" name="cfn" value="1">
@@ -264,6 +270,7 @@ if($w == "" && !$fn) {
 		<input type="hidden" name="sfl" value="<?php echo $sfl; ?>">
 		<input type="hidden" name="stx"  value="<?php echo $stx; ?>">
 		<input type="hidden" name="page" value="<?php echo $page; ?>">
+		<input type="hidden" name="searchProdSupYN" value="<?php echo $_GET['searchProdSupYN']; ?>">
 		<input type="hidden" name="it_skin" value="">
 		<input type="hidden" name="it_mobile_skin" value="">
 

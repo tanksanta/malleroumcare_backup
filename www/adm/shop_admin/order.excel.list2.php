@@ -26,7 +26,7 @@
 			$sendData["uuid"] = $od["uuid"];
 
 			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_PORT, 9901);
 			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -52,7 +52,7 @@
 				}
 			}
 		} else {
-			//없으면 수급자 지정 안했을 때임 
+			//없으면 수급자 지정 안했을 때임
 			//수급자 지정안되어있으면 api다시 조회해서 불러옴
 			$stoIdData = $od["stoId"];
 			$stoIdData = explode(",", $stoIdData);
@@ -191,9 +191,9 @@
 
 
 
-            
-     
-			// [주문자 ] [ 주문일시] [상품(옵션명)] [ 바코드  ] 
+
+
+			// [주문자 ] [ 주문일시] [상품(옵션명)] [ 바코드  ]
 			$headers = array("[주문자]", "[주문일시]", "[상품(옵션명)]", "[바코드]");
 			$widths  = array(20, 20, 40, 30, 30);
 			$header_bgcolor = 'FFABCDEF';
@@ -216,7 +216,7 @@
 			foreach($widths as $i => $w){
 				$excel->setActiveSheetIndex(0)->getColumnDimension( column_char($i) )->setWidth($w);
 			}
-            
+
 			$excel->getActiveSheet()->setCellValueExplicit('A1' , '[주문자]', PHPExcel_Cell_DataType::TYPE_STRING);
 			$excel->getActiveSheet()->setCellValueExplicit('B1' , '[주문일시]', PHPExcel_Cell_DataType::TYPE_STRING);
 			$excel->getActiveSheet()->setCellValueExplicit('C1' , '[상품(옵션명)]', PHPExcel_Cell_DataType::TYPE_STRING);
@@ -229,13 +229,13 @@
 
             $count_plus=0;
             $array=[];
-            for($i = 0; $i < count($carts); $i++){ 
+            for($i = 0; $i < count($carts); $i++){
                 $option_v="";
                 $product_v=stripslashes($carts[$i]["it_name"]); //상품명
-                $options = $carts[$i]["options"];               
+                $options = $carts[$i]["options"];
                 for($k = 0; $k < count($options); $k++){
 
-                    if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ 
+                    if($carts[$i]["it_name"] != $options[$k]["ct_option"]){
                         $option_v="(".$options[$k]["ct_option"].")";    //옵션명
                     }
 
@@ -247,7 +247,7 @@
                             "product" => $product_v.$option_v,
                             "barcode_num" => $barcode_num,
                         ];
-                        $prodListCnt++; 
+                        $prodListCnt++;
                     }
                 }
             }

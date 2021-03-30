@@ -17,7 +17,7 @@
 	}
 
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -95,7 +95,7 @@ body, input, textarea, select, button, table {
 					<td>장기요양번호</td>
 					<td><?=($data["penNm"]) ? $data["penLtmNum"] : "-"?></td>
 				</tr>
-                
+
 				<tr>
 					<td>본인부담금율</td>
 					<td><?=($data["penTypeNm"]) ? $data["penTypeNm"] : "-"?></td>
@@ -134,7 +134,7 @@ body, input, textarea, select, button, table {
 		$("#thisPopupCloseBtn").click(function(e){
 			e.preventDefault();
 			$("#order_recipientBox", parent.document).hide();
-            parent.$('#mask').css({'width':'0px','height':'0px'}); 
+            parent.$('#mask').css({'width':'0px','height':'0px'});
 		});
 
 	});

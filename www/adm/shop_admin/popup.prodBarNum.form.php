@@ -21,7 +21,7 @@
 			$sendData["uuid"] = $od["uuid"];
 
 			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_PORT, 9901);
 			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -172,7 +172,7 @@
 		FROM g5_shop_order a
 		WHERE od_id = '{$od_id}'
 	");
-	
+
 	$moreInfoDisplayCnt = "";
 	$moreInfo["totalCnt"]--;
 	if($moreInfo["totalCnt"]){
@@ -197,7 +197,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 	<link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
 	<link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
-	
+
 	<style>
 		* { margin: 0; padding: 0; position: relative; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); outline: none; }
 		html, body { width: 100%; float: left; font-family: "Noto Sans KR", sans-serif; }
@@ -213,7 +213,7 @@
 		#popupHeaderTopWrap > .title { float: left; font-weight: bold; color: #FFF; font-size: 22px; }
 		#popupHeaderTopWrap > .close { float: right; }
 		#popupHeaderTopWrap > .close > a { color: #FFF; font-size: 40px; top: -2px; }
-		
+
 		/* 상품기본정보 */
 		#itInfoWrap { width: 100%; float: left; padding: 20px; border-bottom: 1px solid #DFDFDF; }
 		#itInfoWrap > .name { width: 100%; float: left; font-weight: bold; font-size: 17px; }
@@ -222,7 +222,7 @@
 		#itInfoWrap > .deliveryInfo { width: 100%; float: left; border-radius: 5px; padding: 10px 15px; background-color: #F1F1F1; margin-top: 20px; }
 		#itInfoWrap > .deliveryInfo > p { width: 100%; float: left; color: #000; font-size: 13px; }
 		#itInfoWrap > .deliveryInfo > p.title { color: #666; font-size: 15px; font-weight: bold; margin-bottom: 10px; }
-		
+
 		/* 팝업 */
 		#popup { display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, .7);z-index: 50; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);}
 		#popup.hide {display: none;}
@@ -230,7 +230,7 @@
 		#popup .content { padding: 20px; background: #fff; border-radius: 5px; box-shadow: 1px 1px 3px rgba(0, 0, 0, .3); max-width:90%;}
 		#popup .content { max-width:90%; font-size: 14px; }
 		#popup .closepop { width: 100%; height: 40px; cursor: pointer; color:#fff; background-color:#000; border-radius:6px; margin-top: 10px; }
-		
+
 		/* 상품목록 */
 		#submitForm { width: 100%; float: left; }
 		.imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto; float: left; }
@@ -280,7 +280,7 @@
 		.imfomation_box a .li_box .deliveryInfoWrap > select { width: 34%; height: 40px; float: left; margin-right: 1%; border: 1px solid #DDD; font-size: 17px; color: #666; padding-left: 10px; border-radius: 5px; }
 		.imfomation_box a .li_box .deliveryInfoWrap > input[type="text"] { width: 65%; height: 40px; float: left; border: 1px solid #DDD; font-size: 17px; color: #666; padding: 0 40px 0 10px; border-radius: 5px; }
 		.imfomation_box a .li_box .deliveryInfoWrap > img { position: absolute; width: 30px; right: 15px; top: 50%; margin-top: -15px; z-index: 2; cursor: pointer; }
-		
+
 		/* 고정 하단 */
 		#popupFooterBtnWrap { position: fixed; width: 100%; height: 70px; background-color: #000; bottom: 0px; z-index: 10; }
 		#popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
@@ -288,9 +288,9 @@
 		#popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
 	</style>
  </head>
- 
+
  <body>
- 
+
  	<!-- 고정 상단 -->
 	<div id="popupHeaderTopWrap">
 		<div class="title">바코드입력</div>
@@ -300,19 +300,19 @@
 			</a>
 		</div>
 	</div>
-	
+
 	<!-- 상품기본정보 -->
 	<div id="itInfoWrap">
 		<p class="name">
 			[<?=($od["recipient_yn"] == "Y") ? "주문" : "재고"?>] <?=$moreInfo["it_name"]?> <?=$moreInfoDisplayCnt?>
 			<span class="delivery">(배송 : <?=$od_cart_count?>개)</span>
 		</p>
-		
+
 		<p class="date">
 			<?=date("y-m-d(H:i)", strtotime($od["od_time"]))?>
 			<?=($od["od_b_name"]) ? " / {$od["od_name"]}" : ""?>
 		</p>
-		
+
 		<div class="deliveryInfo">
 			<p class="title">배송정보</p>
 			<p>
@@ -322,14 +322,14 @@
 			</p>
 		</div>
 	</div>
-	
+
    <!-- 상품목록 -->
 	<form id="submitForm">
 		<input type="hidden" name="od_id" value="<?=$od_id?>">
 		<input type="hidden" name="update_type" value="popup">
 		<ul class="imfomation_box" id="imfomation_box">
-		<?php 
-			for($i = 0; $i < count($carts); $i++){ 
+		<?php
+			for($i = 0; $i < count($carts); $i++){
 
 					# 요청사항
 					$prodMemo = "";
@@ -354,12 +354,12 @@
 										<?php } ?>
 									</span>
 									<span class="span2">
-										<?php 
+										<?php
 											$add_class="";
-											for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ 
+											for($b = 0; $b< $options[$k]["ct_qty"]; $b++){
 												$add_class=$add_class.' '.$stoIdDataList[$prodListCnt2].'_v';
-												$prodListCnt2++; 
-											} 
+												$prodListCnt2++;
+											}
 										?>
 
 
@@ -408,12 +408,12 @@
 						</li>
 					</a>
 					<?php
-					}   
+					}
 				}
 				?>
 		</ul>
 	</form>
-	
+
 	<!-- 팝업 -->
 	<div id="popup" class="hide">
 	  <div class="content">
@@ -428,7 +428,7 @@
 		<button class="closepop" onclick="closePopup()">닫기</button>
 	  </div>
 	</div>
-	
+
 	<!-- 고정 하단 -->
 	<div id="popupFooterBtnWrap">
 		<button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
@@ -444,12 +444,12 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 ?>
 
 <script type="text/javascript">
-	
+
     //maxnum 지정
     function maxLengthCheck(object){
         if (object.value.length > object.maxLength){
         object.value = object.value.slice(0, object.maxLength);
-        }    
+        }
     }
 
 	/* 바코드 입력란 설정 */
@@ -463,7 +463,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 					openStatus = false;
 				}
 			}
-			
+
 			if(!openStatus){
 				$(item[i]).show();
 				$(item[i]).parent().find(".p1 .span2 .up").css("display", "inline-block");
@@ -471,24 +471,24 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			}
 		}
 	}
-	
+
 	/* 바코드 입력글자 수 체크 */
 	function notallLengthCheck(){
 		var item = $(".notall");
-		
+
 		$(item).removeClass("active");
 		$(".imfomation_box a .li_box .folding_box > .inputbox > li > i").removeClass("active");
 		$(".imfomation_box a .li_box .folding_box > .inputbox > li > .overlap").removeClass("active");
-		
+
 		for(var i = 0; i < item.length; i++){
 			var length = $(item[i]).val().length;
 			if(length < 12 && length){
 				$(item[i]).addClass("active");
 			}
-			
+
 			if(length == 12){
 				$(item[i]).parent().find("i").addClass("active");
-				
+
 				var index = $(item[i]).parent("li").index();
 				var prodItem = $(item[i]).closest(".inputbox").find("li");
 				for(var ii = 0; ii < prodItem.length; ii++){
@@ -502,11 +502,11 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			}
 		}
 	}
-	
+
 	/* 기종체크 */
 	var deviceUserAgent = navigator.userAgent.toLowerCase();
 	var device;
-	
+
 	if(deviceUserAgent.indexOf("android") > -1){
 		/* android */
 		device = "android";
@@ -516,7 +516,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		/* ios */
 		device = "ios";
 	}
-	
+
 	var sendBarcodeTargetList = [];
     function sendBarcode(text){
 		$.ajax({
@@ -545,23 +545,23 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 						sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
 					}
 				}
-				
+
 				notallLengthCheck();
 			}
 		});
     }
-	
+
 	var sendInvoiceTarget;
     function sendInvoiceNum(text){
 		$(sendInvoiceTarget).val(text);
     }
-	
+
     $(function(){
 		notallLengthCheck();
-		
+
 		$(".nativeDeliveryPopupOpenBtn").click(function(){
 			sendInvoiceTarget = $(this).parent().find("input[type='text']");
-			
+
 			switch(device){
 				case "android" :
 					/* android */
@@ -573,11 +573,11 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 					break;
 			}
 		});
-		
+
 		$(".notall").keyup(function(){
 			notallLengthCheck();
 		});
-		
+
         var stoldList = [];
         var count=0;
         var stoIdData = "<?=$stoIdData?>";
@@ -597,7 +597,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     //here2
                     $.each(res.data, function(key, value){
                         $("." + value.stoId).val(value.prodBarNum);
-                        //완료된 숫자 세고 집어넣기 
+                        //완료된 숫자 세고 집어넣기
                         if(value.prodBarNum){
                             var number=$("." + value.stoId+"_v").html();
                             var number_v=parseInt(number)+1
@@ -608,7 +608,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
                     console.log(res.data);
                     // $.each(res.data, function(key, value){
-                    //     //완료된 숫자 세고 집어넣기 
+                    //     //완료된 숫자 세고 집어넣기
                     //     if(value.prodBarNum){
                     //         console.log();
                     //         // $("." + value.stoId+"_img").html('z');
@@ -620,7 +620,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     if(res.data){
                         stoldList = res.data;
                     }
-					
+
 					notallLengthCheck();
 					foldingBoxSetting();
                 }
@@ -628,12 +628,12 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         } else {
 			foldingBoxSetting();
 		}
-        
+
         $("#prodBarNumSaveBtn").click(function() {
             var ordId = "<?=$od["ordId"]?>";
             var changeStatus = true;
             var insertBarCnt = 0;
-			
+
 			/* 210319 배송정보 저장 */
 			$.ajax({
 				url : "./samhwa_orderform_deliveryInfo_update.php",
@@ -651,7 +651,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     for(var i = 0; i < prodBarNumItem.length; i++){
                         prodBarNum += (prodBarNum) ? "," : "";
                         prodBarNum += $(prodBarNumItem[i]).val();
-                        
+
                         if($(prodBarNumItem[i]).val()){
                             insertBarCnt++;
                         }
@@ -690,7 +690,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                             alert(result.message);
                         } else {
                             alert("저장이 완료되었습니다.");
-                            
+
                             $.ajax({
                                 url : "/shop/ajax.order.prodBarNum.cnt.php",
                                 type : "POST",
@@ -717,7 +717,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                         stateCd : value.stateCd,
                         stoMemo : (value.stoMemo) ? value.stoMemo : ""
                     }
-                    
+
                     if($("." + value.stoId).val()){
                         insertBarCnt++;
                     }
@@ -739,7 +739,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                             alert(result.message);
                         } else {
                             alert("저장이 완료되었습니다.");
-                            
+
                             $.ajax({
                                 url : "/shop/ajax.order.prodBarNum.cnt.php",
                                 type : "POST",
@@ -749,7 +749,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                     cnt : insertBarCnt
                                 }
                             });
-                            
+
                             <?php if($_GET['new']){ ?>
                                 history.back();
                             <?php }else{ ?>
@@ -814,16 +814,16 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
 					notallLengthCheck();
                 for(var i = 0; i < target.length; i++){
-                    
+
                     $(target[i]).val(barList[i]);
                     if(barList[i].length!==12){
-                        alert('바코드는 12자리 입력이 되어야합니다.'); 
+                        alert('바코드는 12자리 입력이 되어야합니다.');
                         target[i].focus();
                         return false;
                     }
                 }
             }
-			 
+
 			 notallLengthCheck();
         });
 
@@ -837,21 +837,21 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         $(".barNumGuideOpenBtn").click(function(){
             $(this).next().toggle();
         });
-		
+
 		/* 210317 */
 		$(".nativePopupOpenBtn").click(function(e){
 			var cnt = 0;
 			var frm_no = $(this).closest("li").find(".frm_input").attr("data-frm-no");
 			var item = $(this).closest("ul").find(".frm_input");
 			sendBarcodeTargetList = [];
-			
+
 			for(var i = 0; i < item.length; i++){
 				if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no){
 					sendBarcodeTargetList.push($(item[i]).attr("data-frm-no"));
 					cnt++;
 				}
 			}
-			
+
 			switch(device){
 				case "android" :
 					/* android */
@@ -863,7 +863,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 					break;
 			}
 		});
-		
+
     })
 
     //종료시 멤버 수정중없에기

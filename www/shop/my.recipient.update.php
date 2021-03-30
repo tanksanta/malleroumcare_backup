@@ -18,7 +18,7 @@
 	$sendData["penId"] = $_GET["id"];
 
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -43,7 +43,7 @@
     $sendData2["penId"] = $data['penId'];
     // $sendData2["gubun"] ;
 	$oCurl2 = curl_init();
-	curl_setopt($oCurl2, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl2, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl2, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectItemList");
 	curl_setopt($oCurl2, CURLOPT_POST, 1);
 	curl_setopt($oCurl2, CURLOPT_RETURNTRANSFER, 1);
@@ -500,7 +500,7 @@
             function maxLengthCheck(object){
                 if (object.value.length > object.maxLength){
                 object.value = object.value.slice(0, object.maxLength);
-                }    
+                }
             }
 
 
@@ -665,7 +665,7 @@
 						}
 					}
 				});
-                
+
 			});
 
 		})

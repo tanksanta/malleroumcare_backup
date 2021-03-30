@@ -64,7 +64,7 @@ if($w == "u") {
     $it_img9    = $file['it_img9'];
     $it_img10   = $file['it_img10'];
     $it_img3d   = $file['it_img_3d'];
-    
+
 }
 $it_img_dir = G5_DATA_PATH.'/item';
 
@@ -216,17 +216,17 @@ if ($_FILES['it_img10']['name']) {
 }
 if ($_FILES["it_img_3d"]["name"]) {
     $it_img_3d = [];
-	
+
 	$uploadCnt = 0;
 	foreach($_FILES["it_img_3d"]["name"] as $key => $data){
 		$filename = it_img_upload($_FILES["it_img_3d"]["tmp_name"][$key], "3d_{$_FILES["it_img_3d"]["name"][$key]}", $it_img_dir.'/'.$it_id);
-		
+
 		if($filename){
 			$uploadCnt++;
 			array_push($it_img_3d, $filename);
 		}
 	}
-	
+
 	$it_img_3d = json_encode($it_img_3d);
 	if($uploadCnt){
 		$andQuery .= " it_img_3d = '{$it_img_3d}', ";
@@ -236,13 +236,13 @@ if ($_FILES["it_img_3d"]["name"]) {
 $it_img_3d_del=$_POST['it_img_3d_del'];
 if ($it_img_3d_del) {
     $it_img3d = json_decode($it_img3d, true);
-    if($it_img3d){ 
+    if($it_img3d){
         foreach($it_img3d as $data){
             $file_3d = $it_img_dir.'/'.$data;
             @unlink($data);
             delete_item_thumbnail(dirname($file_3d), basename($file_3d));
-         } 
-     } 
+         }
+     }
     delete_item_thumbnail(dirname($file_3d), basename($file_3d));
     // return false;
     $it_img_3d = '';
@@ -606,7 +606,7 @@ $sql_common = " ca_id               = '$ca_id',
 					prodSupYn = '$prodSupYn',
 					prodSizeDetail = '$prodSizeDetail',
 					it_taxInfo = '$it_taxInfo',
-					
+
 					it_delivery_cnt = '{$_POST["it_delivery_cnt"]}',
 					it_delivery_price = '{$_POST["it_delivery_price"]}'
 				"; // APMS : 2014.07.20
@@ -877,7 +877,7 @@ if($all_fields) {
     sql_query(" update {$g5['g5_shop_item_table']} set it_name = it_name {$all_fields} ");
 }
 
-$qstr = "$qstr&amp;sca=$sca&amp;page=$page";
+$qstr = "$qstr&amp;sca=$sca&amp;page=$page&searchProdSupYN=$searchProdSupYN";
 
 if ($w == "u") {
     goto_url("./itemform.php?w=u&amp;it_id=$it_id&amp;fn=$fn&amp;$qstr");

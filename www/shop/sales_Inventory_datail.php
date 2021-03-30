@@ -223,7 +223,7 @@ $order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_name;
 $order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
 // 스킨 체크
-list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url); 
+list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url);
 
 // 스킨설정
 $wset = array();
@@ -342,7 +342,7 @@ $row = sql_fetch($sql);
                         $sendData["stateCd"] =['01'];
 
 						$oCurl = curl_init();
-						curl_setopt($oCurl, CURLOPT_PORT, 9001);
+						curl_setopt($oCurl, CURLOPT_PORT, 9901);
 						curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
 						curl_setopt($oCurl, CURLOPT_POST, 1);
 						curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -363,11 +363,11 @@ $row = sql_fetch($sql);
 
 						$b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
 						$block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
-						$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
+						$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지
 						$b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
 						$total_page = ceil( $totalCnt / $listCnt ); # 총 페이지
 						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-						if ($b_end_page > $total_page){ 
+						if ($b_end_page > $total_page){
 							$b_end_page = $total_page;
 						}
 						$total_block = ceil($total_page/$b_pageNum_listCnt);
@@ -375,7 +375,7 @@ $row = sql_fetch($sql);
                         <!-- 수급자신청 -->
                         <style>
                             /* .popup{display:none;} */
-                            #order_recipientBox{ 
+                            #order_recipientBox{
                                 position:absolute;
                                 /* top:20%; */
                                 left:50%;
@@ -442,8 +442,8 @@ $row = sql_fetch($sql);
                             </li>
                         <?php } ?>
                         <div id="list_box1">
-						<?php for($i=0;$i<count($list);$i++){ 
-							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
+						<?php for($i=0;$i<count($list);$i++){
+							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
                             if($list[$i]['prodColor']&&$list[$i]['prodSize']){ $div="/";}else{$div="";}
                         ?>
                         <?php
@@ -463,7 +463,7 @@ $row = sql_fetch($sql);
                             <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?>
                             </span>
                             <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
-                            <?php 
+                            <?php
                                 //날짜 변환
                                 $date1=$list[$i]['regDtm'];
                                 $date2=date("Y-m-d H:i", strtotime($date1));
@@ -535,7 +535,7 @@ $row = sql_fetch($sql);
                         $sendData["stateCd"] =['02','07'];
 
 						$oCurl = curl_init();
-						curl_setopt($oCurl, CURLOPT_PORT, 9001);
+						curl_setopt($oCurl, CURLOPT_PORT, 9901);
 						curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
 						curl_setopt($oCurl, CURLOPT_POST, 1);
 						curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -557,11 +557,11 @@ $row = sql_fetch($sql);
 
 						$b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
 						$block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
-						$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지 
+						$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지
 						$b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
 						$total_page = ceil( $totalCnt / $listCnt ); # 총 페이지
 						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-						if ($b_end_page > $total_page){ 
+						if ($b_end_page > $total_page){
 							$b_end_page = $total_page;
 						}
 						$total_block = ceil($total_page/$b_pageNum_listCnt);
@@ -572,8 +572,8 @@ $row = sql_fetch($sql);
                             </li>
                         <?php } ?>
                         <div id="list_box2">
-						<?php for($i=0;$i<count($list);$i++){ 
-							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i	
+						<?php for($i=0;$i<count($list);$i++){
+							$number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
                             if($list[$i]['prodColor']&&$list[$i]['prodSize']){ $div="/";}else{$div="";}
 						?>
                         <?php
@@ -592,7 +592,7 @@ $row = sql_fetch($sql);
                             <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?></span>
                             <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                             <span class="name m_off"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
-                            <?php 
+                            <?php
                                 //날짜 변환
                                 $date1=$list[$i]['modifyDtm'];
                                 $date2=date("Y-m-d H:i", strtotime($date1));
@@ -631,7 +631,7 @@ $row = sql_fetch($sql);
     </section>
 
 
- 
+
     <script>
     //날짜 변환함수
     function date_change(str) {
@@ -677,7 +677,7 @@ $row = sql_fetch($sql);
                             var style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
                             var prodBarNumCntBtn_2="";
                         }
-                        
+
                         var number = result.total-((sendData['pageNum']-1)*sendData['pageSize'])-i; //넘버링
                         html = html + '<li class="list cb">';
                         html = html +'<span class="num">'+number+'</span>';
@@ -719,28 +719,28 @@ $row = sql_fetch($sql);
 
 						var b_pageNum_listCnt = 5; //# 한 블록에 보여줄 페이지 갯수 5개
 						var block = Math.ceil(pageNum/b_pageNum_listCnt); //# 총 블록 갯수 구하기
-						var b_start_page = ( (block - 1) * b_pageNum_listCnt ) + 1; //# 블록 시작 페이지 
+						var b_start_page = ( (block - 1) * b_pageNum_listCnt ) + 1; //# 블록 시작 페이지
 						var b_end_page = b_start_page + b_pageNum_listCnt - 1;  //# 블록 종료 페이지
 						var total_page = Math.ceil( totalCnt / listCnt ); //# 총 페이지
 						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-						if (b_end_page > total_page){ 
+						if (b_end_page > total_page){
 							b_end_page = total_page;
 						}
 						var total_block = Math.ceil(total_page/b_pageNum_listCnt);
                         var html_2="";
-                        if(pageNum >b_pageNum_listCnt){ 
+                        if(pageNum >b_pageNum_listCnt){
                             html_2 = html_2+'<a href="javascript:selectDetailList(\'1\')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a>';
-                        } 
+                        }
                         if(block > 1){
                             html_2 = html_2+'<a href="javascript:selectDetailList(\''+(b_start_page-1)+'\')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a>';
                         }
                         for(var j = b_start_page; j <=b_end_page; j++){
                             html_2 = html_2+'<a href="javascript:selectDetailList(\''+j+'\')">'+j+'</a>';
                         }
-                        if(block < total_block){ 
+                        if(block < total_block){
                             html_2 = html_2+'<a href="javascript:selectDetailList(\''+(b_end_page+1)+'\')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a>';
                         }
-                        if(block < total_block){ 
+                        if(block < total_block){
                             html_2 = html_2+'<a href="javascript:selectDetailList(\''+total_page+'\')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a>';
                         }
                         console.log(block);
@@ -749,7 +749,7 @@ $row = sql_fetch($sql);
             }
         });
     }
-    
+
 
 
 
@@ -790,8 +790,8 @@ $row = sql_fetch($sql);
                             var style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
                             var prodBarNumCntBtn_2="";
                         }
-                        
-                        
+
+
                         html = html + '<li class="list cb">';
                         html = html + '<span class="num">'+number+'</span>';
                         html = html + '<span class="product m_off">'+result.data[i].prodNm+' '+option+'</span>';
@@ -829,28 +829,28 @@ $row = sql_fetch($sql);
 
 						var b_pageNum_listCnt = 5; //# 한 블록에 보여줄 페이지 갯수 5개
 						var block = Math.ceil(pageNum/b_pageNum_listCnt); //# 총 블록 갯수 구하기
-						var b_start_page = ( (block - 1) * b_pageNum_listCnt ) + 1; //# 블록 시작 페이지 
+						var b_start_page = ( (block - 1) * b_pageNum_listCnt ) + 1; //# 블록 시작 페이지
 						var b_end_page = b_start_page + b_pageNum_listCnt - 1;  //# 블록 종료 페이지
 						var total_page = Math.ceil( totalCnt / listCnt ); //# 총 페이지
 						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-						if (b_end_page > total_page){ 
+						if (b_end_page > total_page){
 							b_end_page = total_page;
 						}
 						var total_block = Math.ceil(total_page/b_pageNum_listCnt);
                         var html_2="";
-                        if(pageNum >b_pageNum_listCnt){ 
+                        if(pageNum >b_pageNum_listCnt){
                             html_2 = html_2+'<a href="javascript:selectDetailList2(\'1\')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a>';
-                        } 
+                        }
                         if(block > 1){
                             html_2 = html_2+'<a href="javascript:selectDetailList2(\''+(b_start_page-1)+'\')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a>';
                         }
                         for(var j = b_start_page; j <=b_end_page; j++){
                             html_2 = html_2+'<a href="javascript:selectDetailList2(\''+j+'\')">'+j+'</a>';
                         }
-                        if(block < total_block){ 
+                        if(block < total_block){
                             html_2 = html_2+'<a href="javascript:selectDetailList2(\''+(b_end_page+1)+'\')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a>';
                         }
-                        if(block < total_block){ 
+                        if(block < total_block){
                             html_2 = html_2+'<a href="javascript:selectDetailList2(\''+total_page+'\')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a>';
                         }
                         console.log(block);
@@ -878,13 +878,13 @@ $row = sql_fetch($sql);
 
     function wrapWindowByMask(){
         //화면의 높이와 너비를 구한다.
-        var maskHeight = $(document).height();  
+        var maskHeight = $(document).height();
         var maskWidth = $(window).width();
         //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채운다.
-        $('#mask').css({'width':maskWidth,'height':maskHeight});  
+        $('#mask').css({'width':maskWidth,'height':maskHeight});
         // $('html, body').css({'height':'100%','min-height':'100%','overflow':'hidden','touch-action':'none'});
         //마스크의 투명도 처리
-        $('#mask').fadeTo("slow",0.8);    
+        $('#mask').fadeTo("slow",0.8);
     }
     $("#thisPopupCloseBtn").click(function(e){
 		alert('z');
@@ -893,10 +893,10 @@ $row = sql_fetch($sql);
         var prods={};
         prods['stoId'] = [stoId];
         if (confirm("정말 삭제하시겠습니까??") == true){
-            
+
 
              var sendData = {
-                stoId: [stoId] 
+                stoId: [stoId]
             }
 
             console.log(sendData);
@@ -928,6 +928,3 @@ if($is_inquiry_sub) {
 	include_once('./_tail.php');
 }
 ?>
-  
-  
-  

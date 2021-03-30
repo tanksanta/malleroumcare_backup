@@ -6,7 +6,7 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
     return;
 }
 
-if($_SESSION["productList{$_GET["od_id"]}"] && $_GET["result"] == "Y"){ 
+if($_SESSION["productList{$_GET["od_id"]}"] && $_GET["result"] == "Y"){
 	sql_query("
 		UPDATE g5_shop_order SET
 			od_del_yn = 'N'
@@ -59,9 +59,9 @@ $sql = " select a.it_id,
 				a.it_sc_type,
 				a.pt_it,
 				a.pt_id,
-				a.pt_send, 
+				a.pt_send,
 				a.pt_send_num,
-				a.ct_status, 
+				a.ct_status,
 				b.ca_id,
 				b.ca_id2,
 				b.ca_id3,
@@ -86,7 +86,7 @@ $sql = " select a.it_id,
 		  order by a.ct_id ";
 $result = sql_query($sql);
 for($i=0; $row=sql_fetch_array($result); $i++) {
-	
+
 	if($row["ct_delivery_yn"] == "Y"){
 		$deliveryItem[$i] = $row;
 	}
@@ -113,7 +113,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 					SUM(ct_qty) as qty
 				from {$g5['g5_shop_cart_table']}
 				where it_id = '{$row['it_id']}'
-				  and od_id = '$od_id' 
+				  and od_id = '$od_id'
 				  and ct_uid = '{$row['ct_uid']}'";
 	$sum = sql_fetch($sql);
 
@@ -196,7 +196,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 		if($od['mb_id'] && $od['mb_id'] != $opt['mb_id']) {
 			sql_query(" update {$g5['g5_shop_cart_table']} set mb_id = '{$od['mb_id']}' where od_id = '{$od_id}' and ct_id = '{$opt['ct_id']}' ", false);
 		}
-		
+
 		if($row["ct_delivery_yn"] == "Y"){
 			$deliveryItem[$i]["opt"][$k] = $opt;
 		}
@@ -221,7 +221,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 		}
 
 		$item[$i]['opt'][$k]['ct_option'] = $opt_msg;
-		
+
 		if($opt['io_type'])
 			$opt_price = $opt['io_price'];
 		else
@@ -355,7 +355,7 @@ if($disp_receipt) {
 		} else {
 			$hp_receipt_script = 'window.open(\''.G5_BILL_RECEIPT_URL.'mcash_bill&tno='.$od['od_tno'].'&order_no='.$od['od_id'].'&trade_mony='.$od['od_receipt_price'].'\', \'winreceipt\', \'width=500,height=690,scrollbars=yes,resizable=yes\');';
 		}
-		
+
 		$disp_receipt_href = 'href="javascript:;" onclick="'.$hp_receipt_script.'"';
 	}
 
@@ -373,7 +373,7 @@ if($disp_receipt) {
 		} else {
 			$card_receipt_script = 'window.open(\''.G5_BILL_RECEIPT_URL.'card_bill&tno='.$od['od_tno'].'&order_no='.$od['od_id'].'&trade_mony='.$od['od_receipt_price'].'\', \'winreceipt\', \'width=470,height=815,scrollbars=yes,resizable=yes\');';
 		}
-		
+
 		$disp_receipt_href = 'href="javascript:;" onclick="'.$card_receipt_script.'"';
 	}
 
@@ -448,7 +448,7 @@ $order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_name;
 $order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
 // 스킨 체크
-list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url); 
+list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url);
 
 // 스킨설정
 $wset = array();
@@ -509,13 +509,13 @@ if($is_inquiryview_sub) {
 }
 ?>
 
-<?php 
+<?php
 
-	if($_SESSION["productList{$_GET["od_id"]}"] && $_GET["result"] == "Y"){ 
+	if($_SESSION["productList{$_GET["od_id"]}"] && $_GET["result"] == "Y"){
 		$insertProds = addslashes(htmlspecialchars(json_encode($_SESSION["productList{$_GET["od_id"]}"])));
 		$staOrdCd = "00";
 		$reload = false;
-		
+
 		sql_query("
 			UPDATE g5_shop_order SET
 				  eformYn = 'Y'
@@ -524,12 +524,12 @@ if($is_inquiryview_sub) {
 				, recipient_yn = 'Y'
 			WHERE od_id = '{$_GET["od_id"]}'
 		");
-		
+
 		$orderData = sql_fetch("SELECT * FROM g5_shop_order WHERE od_id = '{$_GET["od_id"]}'");
-		
+
 		if(!$_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]){
 			$productList = $_SESSION["productList{$_GET["od_id"]}"];
-			
+
 
 
         #대여로그 작성
@@ -537,7 +537,7 @@ if($is_inquiryview_sub) {
 			$sendData2["uuid"] = $_SESSION["uuid{$_GET["od_id"]}"];
 			$sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
 			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_PORT, 9901);
 			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -556,9 +556,9 @@ if($is_inquiryview_sub) {
                 $sendData3["pageNum"] = 1;
                 $sendData3["pageSize"] = 1;
                 $sendData3["penId"] = $res2['data'][0]['penId'];
-                
+
                 $oCurl = curl_init();
-                curl_setopt($oCurl, CURLOPT_PORT, 9001);
+                curl_setopt($oCurl, CURLOPT_PORT, 9901);
                 curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
                 curl_setopt($oCurl, CURLOPT_POST, 1);
                 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -571,7 +571,7 @@ if($is_inquiryview_sub) {
                 $data = $res_pen["data"][0];
                 print_r($res2);
                 //수급자명
-                $ren_person=$data["penNm"];          
+                $ren_person=$data["penNm"];
                 $stoId=$res2['data'][0]['stoId'];
                 $penOrdId=$res2['data'][0]['penOrdId'];
                 $strdate=date("Y-m-d", strtotime($res2['data'][0]['ordLendStrDtm']));
@@ -596,13 +596,13 @@ if($is_inquiryview_sub) {
                             `ren_eformUrl` = '$ren_eformUrl',
                             `rental_log_division` = '2';";
                     sql_query($sql);
-                    
+
                 }
             }
         #대여로그 작성
 
 
-	
+
 
 			for($i = 0; $i < count($res2["data"]); $i++){
 				$productList[$i]["stoId"] = $res2["data"][$i]["stoId"];
@@ -628,7 +628,7 @@ if($is_inquiryview_sub) {
 			$sendData["prods"] = $productList;
 
 			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_PORT, 9901);
 			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/update");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -638,11 +638,11 @@ if($is_inquiryview_sub) {
 			$res2 = curl_exec($oCurl);
 			$res2 = json_decode($res2, true);
 			curl_close($oCurl);
-            
+
 			if($res2["errorYN"] == "N"){
 				$reload = true;
 				$staOrdCd = "03";
-				
+
 				sql_query("
 					UPDATE g5_shop_order SET
 						  staOrdCd = '03'
@@ -651,7 +651,7 @@ if($is_inquiryview_sub) {
 				");
 			}
 		}
-		
+
 		$sendData = [];
 		$sendData["usrId"] = $member["mb_id"];
 		$sendData["entId"] = $member["mb_entId"];
@@ -673,7 +673,7 @@ if($is_inquiryview_sub) {
 		// unset($_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]);
 		// unset($_SESSION["uuid{$_GET["od_id"]}"]);
 		// unset($_SESSION["penOrdId{$_GET["od_id"]}"]);
-		
+
 ?>
 
 	<script type="text/javascript">
@@ -689,5 +689,5 @@ if($is_inquiryview_sub) {
 //			data : sendData
 //		});
 	</script>
-	
+
 <?php } ?>

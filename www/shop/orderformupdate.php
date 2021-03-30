@@ -1301,7 +1301,7 @@ if($is_member && $od_b_name) {
 		$sendData["returnUrl"] = G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}&documentId={$sendData["documentId"]}";
 
 		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/insert");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -1352,7 +1352,7 @@ if($is_member && $od_b_name) {
 			$sendData["prods"] = $prodsSendData;
 
 			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_PORT, 9901);
 			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/insert");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -1402,7 +1402,7 @@ if($is_member && $od_b_name) {
 			$sendData["prods"] = $prodsSendData;
 
 			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9001);
+			curl_setopt($oCurl, CURLOPT_PORT, 9901);
 			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/update");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);

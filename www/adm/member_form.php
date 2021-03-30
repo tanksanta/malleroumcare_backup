@@ -183,6 +183,13 @@ label {
         <col>
     </colgroup>
     <tbody>
+      <tr>
+        <th scope="row"><label for="mb_manager">영업당당자<?php echo $sound_only ?></label></th>
+        <td>
+
+          <input type="text" name="mb_manager" id="mb_manager" value="<?=$mb['mb_manager']?>"class="frm_input " size="15" maxlength="20">
+        </td>
+      </tr>
     <tr>
         <th scope="row"><label for="mb_id">아이디<?php echo $sound_only ?></label></th>
         <td>
@@ -565,7 +572,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
         <td colspan="3">
             <input type="text" name="mb_giup_bnum" value="<?php echo $mb['mb_giup_bnum'] ?>" id="mb_giup_bnum" class="frm_input" size="30" maxlength="20">
             <!--<label><button type="button" id="mb_giup_bnum_check" class="btn btn-black btn-sm" onclick="check_giup_bnum();">중복확인</button></label>-->
-            *관리자 권한으로 사업자번호가 중복되어도 입력이 가능합니다. 
+            *관리자 권한으로 사업자번호가 중복되어도 입력이 가능합니다.
         </td>
     </tr>
     <tr>
@@ -575,7 +582,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
         <td colspan="3">
             <input type="text" name="mb_giup_sbnum" value="<?php echo $mb['mb_giup_sbnum'] ?>" id="mb_giup_sbnum" class="frm_input" size="30" maxlength="20">
             <!--<label><button type="button" id="mb_giup_sbnum_check" class="btn btn-black btn-sm" onclick="check_giup_sbnum();">중복확인</button></label>-->
-            *종사업자 정보는 필수 입력 사항이 아닙니다. 관리자 권한으로 종사업자번호가 중복되어도 입력이 가능합니다. 
+            *종사업자 정보는 필수 입력 사항이 아닙니다. 관리자 권한으로 종사업자번호가 중복되어도 입력이 가능합니다.
         </td>
     </tr>
     <tr>
@@ -977,7 +984,7 @@ $(function() {
     $('#add_manager').on("click", function() {
 
         var el = $('#manager_list_body');
-        
+
         var str = '<tr>';
         str +=      '<td>';
         str +=          '<input type="text" name="mm_name[]" value="" class="frm_input" size="30" maxlength="20" style="width:100%">';
@@ -1051,7 +1058,7 @@ $(function() {
         num.trim();
         this.value = auto_saup_hypen(num) ;
     });
-    
+
 	$('input[name="mm_tel[]"]').on('keyup', function(){
         var num = $(this).val();
         num.trim();

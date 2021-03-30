@@ -11,7 +11,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 		foreach($item as $itemData){
 			$thisOptionCntList = [];
 			$thisOptionBarList = [];
-			
+
 			if($itemData["it_optionList"]){
 				foreach($itemData["it_optionList"] as $optionData){
 					$sendData = [];
@@ -30,7 +30,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 					# 재고조회
 					$oCurl = curl_init();
-					curl_setopt($oCurl, CURLOPT_PORT, 9001);
+					curl_setopt($oCurl, CURLOPT_PORT, 9901);
 					curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
 					curl_setopt($oCurl, CURLOPT_POST, 1);
 					curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -43,7 +43,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 					# 바코드조회
 					$oCurl = curl_init();
-					curl_setopt($oCurl, CURLOPT_PORT, 9001);
+					curl_setopt($oCurl, CURLOPT_PORT, 9901);
 					curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectBarNumList");
 					curl_setopt($oCurl, CURLOPT_POST, 1);
 					curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -82,7 +82,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 				# 재고조회
 				$oCurl = curl_init();
-				curl_setopt($oCurl, CURLOPT_PORT, 9001);
+				curl_setopt($oCurl, CURLOPT_PORT, 9901);
 				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectList");
 				curl_setopt($oCurl, CURLOPT_POST, 1);
 				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -92,10 +92,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				$res = curl_exec($oCurl);
 				$stockCntList = json_decode($res, true);
 				curl_close($oCurl);
-				
+
 				# 바코드조회
 				$oCurl = curl_init();
-				curl_setopt($oCurl, CURLOPT_PORT, 9001);
+				curl_setopt($oCurl, CURLOPT_PORT, 9901);
 				curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectBarNumList");
 				curl_setopt($oCurl, CURLOPT_POST, 1);
 				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -119,11 +119,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 				array_push($thisOptionBarList, $thisOptionBarSubList);
 			}
-			
+
 			$optionCntList[$itemData["it_id"]] = $thisOptionCntList;
 			$optionBarList[$itemData["it_id"]] = $thisOptionBarList;
 		}
 	}
 
 ?>
-

@@ -20,9 +20,9 @@ $prodPpcIdList = [];
 if($member["mb_entId"]){
 	$sendData = [];
 	$sendData["entId"] = $member["mb_entId"];
-	
+
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/prod/selectPpcList");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -71,7 +71,7 @@ $at = apms_page_thema($pid);
 include_once(G5_LIB_PATH.'/apms.thema.lib.php');
 
 // 스킨 체크
-list($member_skin_path, $member_skin_url) = apms_skin_thema('member', $member_skin_path, $member_skin_url); 
+list($member_skin_path, $member_skin_url) = apms_skin_thema('member', $member_skin_path, $member_skin_url);
 
 // 설정값 불러오기
 $is_wishlist_sub = false;

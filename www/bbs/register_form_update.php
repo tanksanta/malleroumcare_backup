@@ -18,7 +18,7 @@ if($w != "u"){
 	$sendData["usrId"] = $mb_id;
 
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entInfo");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -142,9 +142,9 @@ if($w != "u"){
 	$sendData["entPnum"] = $_POST["mb_hp"];
 	$sendData["entMail"] = $_POST["mb_email"];
 	$sendData["pw"] = $_POST["mb_password"];
-		
+
 	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9001);
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entUpdate");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -154,7 +154,7 @@ if($w != "u"){
 	$res = curl_exec($oCurl);
 	$res = json_decode($res, true);
 	curl_close($oCurl);
-	
+
 	if($res["errorYN"] == "Y"){
 		alert($res["message"]);
 	} else {
@@ -162,7 +162,7 @@ if($w != "u"){
 		$sendData["usrId"] = $member["mb_id"];
 		
 		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9001);
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entInfo");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
@@ -173,10 +173,10 @@ if($w != "u"){
 		curl_close($oCurl);
 		$resInfo = json_decode($res, true);
 		$resInfo = $resInfo["data"];
-		
+
 		$resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
 		$resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
-		
+
 		sql_query("
 			UPDATE {$g5["member_table"]} SET
 				mb_name = '{$resInfo["entNm"]}',
@@ -199,12 +199,12 @@ if($w != "u"){
 				 mb_entConAcc02 = '{$_POST["mb_entConAcc02"]}'
 			WHERE mb_id = '{$resInfo["usrId"]}'
 		");
-		
+
 		alert("수정이 완료되었습니다.");
 	}
-	
+
 	goto_url("/bbs/member_confirm.php?url=register_form.php");
-}   
+}
 
 // 사용자 코드 실행
 @include_once ($member_skin_path.'/register_form_update.tail.skin.php');
