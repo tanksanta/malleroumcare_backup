@@ -142,7 +142,7 @@ table {border-collapse: collapse;}
 .table-list2 .delivery-price {width: 20%;} 
 
 .table-list2 .head {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
-.table-list2 .head li {display: block; padding: 12px 0 12px 20px; background: #eee;text-align: center;font-size: 16px;}
+.table-list2 .head li {display: block; padding: 10px; background: #eee;text-align: center;font-size: 14px;}
 
 .table-list2 .list {padding: 15px 0 15px 16px;border-bottom: 1px solid #ddd;font-size: 14px;}
 .table-list2 .list:last-child {border-bottom: none;}
@@ -167,7 +167,7 @@ table {border-collapse: collapse;}
 .table-list2 .list-btm .list-day ul li:last-child {margin-right: 0;}
 .table-list2 .list-btm .list-day ul li:hover {background: #666;}
 .table-list2 .list-btm .list-day ul li:hover a {color: #fff;}
-.table-list2 .list-btm textarea {padding: 5px 0 0; resize: none; width: 100%;border: 1px solid #ddd;height: 30px;font-size: 12px;}
+.table-list2 .list-btm textarea {padding: 5px; resize: none; width: 100%;border: 1px solid #ddd;height: 34px;font-size: 12px;}
 
 .w-240 {width: 240px !important;}
 .w-70 {width: 70px !important;}
@@ -246,7 +246,7 @@ table {border-collapse: collapse;}
 
 .tab-2 .table-list2 .delivery-price {width: 10%;}
 .table-list2 .pro-price {width: 15%;}
-.tab-2 .table-list2 .barcode {width: 10%;}
+.tab-2 .table-list2 .barcode {width: 15%;}
 .tab-2 .table-list2 .barcode input {width: 100%; height: 26px;border: 1px solid #ddd;}
 .tab-2 .table-list2 .barcode select {width: 100%; height: 26px;border: 1px solid #ddd;}
 .tab-2 .table-list2 .list-btm .check-ac { width: 100%; }
