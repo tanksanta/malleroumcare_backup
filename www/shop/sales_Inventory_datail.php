@@ -310,7 +310,7 @@ $row = sql_fetch($sql);
 
 			<div class="popup01 popup2" id="popup01">
 				<div class="p-inner">
-					<h2>상품 옵션 설정</h2>
+					<div class="pop_tit">상품 옵션 설정</div>
 					<button class="cls-btn p-cls-btn" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt="" onclick="popup01_hide()"></button>
 					<?php include_once($item_skin_file);?>
 				</div>

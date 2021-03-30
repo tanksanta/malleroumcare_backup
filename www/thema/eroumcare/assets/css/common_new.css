@@ -75,6 +75,8 @@ pre{white-space: pre-wrap;}
 .hidden{display:none;}
 .txt_center{text-align:center;}
 
+.stock-list .table-wrap li .product {text-align:left !important;}
+
 .store-detail{position:relative;margin-bottom: 300px;}
 .slick-slide img{width:100%;}
 .slick-dots{padding:10px 0;font-size:0;text-align:center;display:none !important;}
@@ -631,7 +633,7 @@ pre{white-space: pre-wrap;}
 .productListWrap > ul > li > a > p.price { font-size: 18px; font-weight: bold; color: #333; margin-top: 30px; padding: 0 5px; }
 .productListWrap > ul > li > a > p.cnt { height: 40px; line-height: 38px; border: 1px solid #F28D0B; color: #F28D08; padding: 0 10px; font-size: 14px; margin-top: 20px; }
 .productListWrap > ul > li > a > p.cnt > .right { float: right; }
-.productListWrap > ul > li > a .img_3d { position: absolute; width: 50px; height: 40px; margin-top:5px; line-height: 38px; z-index: 10; top: 0; right: 5px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
+.productListWrap > ul > li > a .img_3d { position: absolute !important; width: 50px; height: 40px; margin-top:5px; line-height: 38px; z-index: 10; top: 0; right: 5px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
 
 /* 210203 스크롤 양측배너 */
 .scrollBannerListWrap { position: absolute; width: 130px; top: -52px; transition: transform 0.5s; transform: translateY(0); z-index: 100; }

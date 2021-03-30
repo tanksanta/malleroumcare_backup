@@ -290,7 +290,7 @@ $row = sql_fetch($sql);
             </div>
             <div class="popup01 popup2" id="popup01">
 				<div class="p-inner">
-					<h2>상품 옵션 설정</h2>
+					<div class="pop_tit">상품 옵션 설정</div>
 					<button class="cls-btn p-cls-btn" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt="" onclick="popup01_hide()"></button>
 					<?php include_once($item_skin_file);?>
 				</div>
@@ -306,7 +306,7 @@ $row = sql_fetch($sql);
                             <span class="pro-num">바코드</span>
                             <span class="date">입고일</span>
                             <span class="state">상태</span>
-                            <span class="none"></span>
+                            <span class="none">설정</span>
                         </li>
 <!------------------------------------------------------- 대여신청 ------------------------------------------------------->
 <style>
@@ -532,7 +532,7 @@ $row = sql_fetch($sql);
                                 <!-- 소독업체지정 -->
                                 <div class="popup01 popup1">
                                     <div class="p-inner">
-                                        <h2>소독업체 지정</h2>
+                                        <div class="pop_tit">소독업체 지정</div>
                                         <button class="cls-btn p-cls-btn" type="button" onclick="close_popup(this)" ><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <ul>
                                             <li>
@@ -570,7 +570,7 @@ $row = sql_fetch($sql);
                                     <input type="hidden" name="member" value="<?php echo $member['mb_id']?>">
                                     <input type="hidden" name="stoId" value="<?=$list[$i]['stoId']?>">
                                     <div class="p-inner">
-                                        <h2>소독 결과 확인</h2>
+                                        <div class="pop_tit">소독 결과 확인</div>
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <ul>
                                             <li>
@@ -625,7 +625,7 @@ $row = sql_fetch($sql);
                                 <!-- 대여기록 -->
                                 <div class="popup01 popup3">
                                     <div class="p-inner">
-                                        <h2>대여 기록</h2>
+                                        <div class="pop_tit">대여 기록</div>
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <div class="table-box">
                                             <div class="tti">
@@ -636,8 +636,8 @@ $row = sql_fetch($sql);
                                                 <colgroup>
                                                     <col width="10%">
                                                     <col width="30%">
-                                                    <col width="30%">
-                                                    <col width="30%">
+                                                    <col width="35%">
+                                                    <col width="25%">
                                                 </colgroup>
                                                 <thead>
                                                     <th style="text-align: center;">No.</th>
@@ -661,7 +661,7 @@ $row = sql_fetch($sql);
                                 <div class="popup01 popup4">
                                     <form action="">
                                         <div class="p-inner">
-                                            <h2>대여기간 수정</h2>
+                                            <div class="pop_tit">대여기간 수정</div>
                                             <button onclick="close_popup(this)" class="cls-btn p-cls-btn" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                             <ul>
                                                 <?php
@@ -837,7 +837,7 @@ $row = sql_fetch($sql);
                                    <!-- 대여기록 -->
                                    <div class="popup01 popup3">
                                     <div class="p-inner">
-                                        <h2>대여 기록</h2>
+                                        <div class="pop_tit">대여 기록</div>
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <div class="table-box">
                                             <div class="tti">

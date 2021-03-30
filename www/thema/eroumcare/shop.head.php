@@ -393,8 +393,8 @@ scrollToTop();
 		<div class="mo_menu">
 			<a href="/shop/list.php?ca_id=10">판매품목</a>
 			<a href="/shop/list.php?ca_id=20">대여품목</a>
-			<a href="/shop/list.php?ca_id=30">추천상품</a>
-			<a href="/shop/list.php?ca_id=60">신상품</a>
+			<a href="/shop/list.php?ca_id=60">추천상품</a>
+			<a href="/shop/list.php?ca_id=30">신상품</a>
 		</div>
 	
 		<div class="top_menu_wrap">
@@ -419,8 +419,8 @@ scrollToTop();
 								</div>
 							</td>
 						<?php } ?>
-							<td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=30">추천상품</a></td>
-							<td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=60">신상품</a></td>
+							<td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=60">추천상품</a></td>
+							<td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=30">신상품</a></td>
 						</tr>
 					</table>
 				</div>
