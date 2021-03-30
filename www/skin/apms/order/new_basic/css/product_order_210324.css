@@ -247,7 +247,7 @@ table {border-collapse: collapse;}
 .tab-2 .table-list2 .delivery-price {width: 10%;}
 .table-list2 .pro-price {width: 15%;}
 .tab-2 .table-list2 .barcode {width: 15%;}
-.tab-2 .table-list2 .barcode input {width: 100%; height: 26px;border: 1px solid #ddd;}
+.tab-2 .table-list2 .barcode input {width: 100%; height: 26px;border: 1px solid #ddd;font-size:12px;padding:5px;}
 .tab-2 .table-list2 .barcode select {width: 100%; height: 26px;border: 1px solid #ddd;}
 .tab-2 .table-list2 .list-btm .check-ac { width: 100%; }
 .tab-2 .table-list2 .list-btm .check-ac > label { display: inline-block; height: 30px; line-height: 30px; font-size: 13px; color: #666; margin: 0; margin-right: 20px; cursor: pointer; }

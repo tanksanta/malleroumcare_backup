@@ -118,7 +118,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
                 <?php //if ($tot_price > 0) { ?>
                     <div class="col-xs-6"> 총 상품금액 </div>
                     <div class="col-xs-6 text-right">
-                        <strong id="total_price">(배송비 : <?=number_format($send_cost)?>+상품가격 : <?=number_format($tot_price-$send_cost)?>) = <?php echo number_format($tot_price); ?> 원 <!-- / <?php echo number_format($tot_point); ?> 점 --></strong>
+                        <strong id="total_price"><?php echo number_format($tot_price); ?> 원 <!-- / <?php echo number_format($tot_point); ?> 점 --></strong>
                     </div>
                 <?php //} ?>
             </div>
@@ -205,7 +205,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         }
         if(price >= parseInt(<?=$result_d['de_send_conditional']?>)){delivery=0;}
         $("#delivery_pirce").html(number_format(delivery)+" 원 (*10만원이상 무료배송)");
-        $("#total_price").html("(배송비 : "+number_format(delivery)+"+상품가격 : "+number_format(price)+") = "+number_format(price+delivery)+" 원");
+        $("#total_price").html(number_format(price+delivery)+" 원");
     });
 
     //콤마찍기
@@ -255,7 +255,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
             }
             if(price >= parseInt(<?=$result_d['de_send_conditional']?>)){delivery=0;}
             $("#delivery_pirce").html(number_format(delivery)+" 원 (*10만원이상 무료배송)");
-            $("#total_price").html("(배송비 : "+number_format(delivery)+"+상품가격 : "+number_format(price)+") = "+number_format(price+delivery)+" 원");
+            $("#total_price").html(number_format(price+delivery)+" 원");
         });
 
         // 옵션수정 닫기
