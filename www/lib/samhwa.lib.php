@@ -1756,4 +1756,19 @@ function get_customer_code($od_id) {
     return $customer_code_ck;
 }
 
+function get_category_where($ca_id) {
+    return " (
+        ca_id = '{$ca_id}' OR
+        ca_id2 = '{$ca_id}' OR
+        ca_id3 = '{$ca_id}' OR
+        ca_id4 = '{$ca_id}' OR
+        ca_id5 = '{$ca_id}' OR
+        ca_id6 = '{$ca_id}' OR
+        ca_id7 = '{$ca_id}' OR
+        ca_id8 = '{$ca_id}' OR
+        ca_id9 = '{$ca_id}' OR 
+        ca_id10 = '{$ca_id}'
+    ) ";
+}
+
 ?>
