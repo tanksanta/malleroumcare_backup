@@ -399,15 +399,16 @@ $row = sql_fetch($sql);
                             function popup_control(io_value_r_color,io_value_r_size,barcode_r){
                                 $('#order_recipientBox').show();
                                 wrapWindowByMask();
+
                                 var io_value_r_v="";
                                 if(io_value_r_color){io_value_r_v="색상:"+io_value_r_color; }
+                                if(io_value_r_color&&io_value_r_size){io_value_r_color=io_value_r_color+""; }
+                                if(io_value_r_color&&io_value_r_size){io_value_r_v=io_value_r_v+" / "; }
+                                if(io_value_r_size){io_value_r_v=io_value_r_v+ "사이즈:"+io_value_r_size;}
                                 document.getElementById('io_id_r').value=io_value_r_color+io_value_r_size;
-                                if(io_value_r_color&&io_value_r_size){io_value_r_v=+io_value_r_v+" / "; }
-                                if(io_value_r_size){io_value_r_v=+io_value_r_v+ "사이즈:"+io_value_r_size;}
                                 document.getElementById('io_value_r').value=io_value_r_v;
                                 document.getElementById('barcode_r').value=barcode_r;
                             }
-
                             function selected_recipient(penId){
                                 document.getElementById('penId_r').value=penId;
                                 document.getElementById('recipient_info').submit();
