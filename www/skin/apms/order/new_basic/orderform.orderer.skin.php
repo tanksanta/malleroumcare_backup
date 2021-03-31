@@ -1634,6 +1634,7 @@ var array_box=[];
 				var item = $(parent).find(".prodBarSelectBox" + code);
 				var it_id = $(parent).attr("data-code");
 
+                var od_send_cost_org = $("input[name^=od_send_cost_org]")
 				switch(type){
 					case "new" :
 						for(var i = 0; i < item.length; i++){
@@ -1646,6 +1647,7 @@ var array_box=[];
 
 							$(item[i]).remove();
 						}
+				        $("input[name=od_send_cost]").val($("input[name=od_send_cost_org]").val());
 						break;
 					case "use" :
 						for(var i = 0; i < item.length; i++){
@@ -1665,7 +1667,7 @@ var array_box=[];
 
 							$(item[i]).remove();
 						}
-
+				        $("input[name=od_send_cost]").val(0);
 						$(this).closest(".recipientBox").find("select").val(item.length);
 						break;
 				}
@@ -1707,7 +1709,7 @@ var array_box=[];
 						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
 					}
 				});
-
+                $(".delivery_cost_display").text(number_format($("input[name=od_send_cost]").val())+" 원");
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
