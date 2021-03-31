@@ -556,17 +556,17 @@ scrollToTop();
 								</a>
 							</li>
 							<li>
-								<a href="/bbs/board.php?bo_table=faq&wr_id=6">
+								<a href="/bbs/board.php?bo_table=faq&wr_id=6" >
 									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_02.jpg" alt="" />
 								</a>
 							</li>
 							<li>
-								<a href="<?=THEMA_URL?>/assets/img/eroum_biz_registration.jpg">
+								<a href="<?=THEMA_URL?>/assets/img/eroum_biz_registration.jpg" target="_blank">
 									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_03.jpg" alt="" />
 								</a>
 							</li>
 							<li>
-								<a href="<?=THEMA_URL?>/assets/img/eroum_account.jpg">
+								<a href="<?=THEMA_URL?>/assets/img/eroum_account.jpg" target="_blank">
 									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_04.jpg" alt="" />
 								</a>
 							</li>
