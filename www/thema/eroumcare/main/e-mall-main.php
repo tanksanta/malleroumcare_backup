@@ -30,13 +30,13 @@
 		<div class="viewWrap swiper-container">
 			<ul style="width: 300%;" class="swiper-wrapper">
 				<li style="width: 33.33%;" class="swiper-slide">
-					<a href="/bbs/board.php?bo_table=notice&wr_id=11">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_01.jpg" alt="">
+					<a href="/bbs/content.php?co_id=guide">
+						<img src="<?=THEMA_URL?>/assets/img/main_banner_03.jpg" alt="">
 					</a>
 				</li>
 				<li style="width: 33.33%;" class="swiper-slide">
 					<a href="/bbs/board.php?bo_table=notice&wr_id=11">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_02.jpg" alt="">
+						<img src="<?=THEMA_URL?>/assets/img/main_banner_01.jpg" alt="">
 					</a>
 				</li>
 				<li style="width: 33.33%;" class="swiper-slide">
@@ -326,12 +326,12 @@
 				<li class="call">
 					<img src="<?=THEMA_URL?>/assets/img/mainCallIcon.png" alt="">
 					<p>
-						<span class="Label">콜센터</span>
-						<span class="value"><?php echo $default['de_admin_company_tel']; ?></span>
+						<span class="Label">주문안내</span>
+						<span class="value">032-562-6608</span>
 					</p>
 					<p>
-						<span class="Label">물류</span>
-						<span class="value"><?php echo $default['de_admin_company_tel']; ?></span>
+						<span class="Label">시스템안내</span>
+						<span class="value">02-830-1301~2</span>
 					</p>
 				</li>
 				<li class="time">월~금 09:00~18:00 (점심시간 12시~13시)</li>
