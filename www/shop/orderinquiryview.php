@@ -677,7 +677,7 @@ if($is_inquiryview_sub) {
 
 	<script type="text/javascript">
 		<?php if($reload){ ?>
-			alert('<?=$coun?>');
+			alert('<?=$count?>');
 			// window.location.reload();
 		<?php } ?>
 		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
