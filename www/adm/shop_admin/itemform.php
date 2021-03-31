@@ -158,6 +158,8 @@ if($w == "" && !$fn) {
 			$crow = apms_form_skin('', $it['ca_id']);
 			$fn = $crow['pi_id'];
 			$fskin = $crow['pi_file'];
+			//임시
+			$fskin = 'item.php';
 			$fname = $crow['pi_name'];
 		} else {
 			$fskin = $frow['pi_file'];
