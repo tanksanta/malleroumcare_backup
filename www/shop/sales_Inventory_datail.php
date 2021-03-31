@@ -409,6 +409,7 @@ $row = sql_fetch($sql);
                                 document.getElementById('io_value_r').value=io_value_r_v;
                                 document.getElementById('barcode_r').value=barcode_r;
                             }
+
                             function selected_recipient(penId){
                                 document.getElementById('penId_r').value=penId;
                                 document.getElementById('recipient_info').submit();
