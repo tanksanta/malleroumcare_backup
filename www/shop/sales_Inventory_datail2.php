@@ -677,18 +677,25 @@ $row = sql_fetch($sql);
                                                 <li>
                                                     <b>대여시작일</b>
                                                     <div class="input-box">
-                                                        <input type="text" value="<?=$ordLendStrDtm_date?>" dateonly id="strDtm_<?=$list[$i]['stoId']?>">
+                                                        <input type="text" value="<?=$ordLendStrDtm_date?>" dateonly<?=$list[$i]['stoId']?>_s id="strDtm_<?=$list[$i]['stoId']?>">
                                                         <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                     </div>
                                                 </li>
                                                 <li>
                                                     <b>대여종료일</b>
                                                     <div class="input-box">
-                                                        <input type="text" value="<?=$ordLendEndDtm_date?>" dateonly id="endDtm_<?=$list[$i]['stoId']?>">
+                                                        <input type="text" value="<?=$ordLendEndDtm_date?>" dateonly<?=$list[$i]['stoId']?>_e id="endDtm_<?=$list[$i]['stoId']?>">
                                                         <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                     </div>
                                                 </li>
-
+                                                <script>
+                                                        $("input:text[dateonly<?=$list[$i]['stoId']?>_s]").datepicker({
+                                                            minDate: "<?=$date2?>"
+                                                        });
+                                                        $("input:text[dateonly<?=$list[$i]['stoId']?>_e]").datepicker({
+                                                            minDate: "<?=$date2?>"
+                                                        });
+                                                </script>
                                             </ul>
                                             <div class="popup-btn">
                                                 <!-- ordId,stoId,ordLendStrDtm,ordLendEndDtm -->
