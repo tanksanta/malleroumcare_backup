@@ -422,10 +422,9 @@ foreach($orderlist as $order) {
     $important_class = $order['od_important'] ? 'on' : '';
 
     $sql_goods_name="SELECT `it_name` FROM `g5_shop_cart` WHERE `od_id` = '".$order["od_id"]."'";
-    $sql_goods_result = sql_query($sql_goods_name);
-    $sql_goods_row=sql_fetch_array($sql_goods_result);
+    $sql_goods_result = sql_fetch($sql_goods_name);
 
-	  $goods_name = $sql_goods_row[0]['it_name'] ? $sql_goods_row[0]['it_name'] : '<span class="notyet">없음(관리자 작성중)</span>';
+	  $goods_name = $sql_goods_result['it_name'] ? $sql_goods_result['it_name'] : '<span class="notyet">없음(관리자 작성중)</span>';
 
     $sale_manager = '';
     $sale_manager = get_member($order['od_sales_manager']);
