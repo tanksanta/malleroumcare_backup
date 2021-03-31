@@ -59,6 +59,12 @@
 body, input, textarea, select, button, table {
     font-size: 12px;
 }
+
+.empty_list {
+	margin-top: 250px;
+    text-align: center;
+    font-size: 1.2em;
+}
 </style>
 
 <body>
@@ -116,6 +122,10 @@ body, input, textarea, select, button, table {
 			<a href="#" class="sel_address" data-target="<?=$recipient?>" title="선택">선택</a>
 			</li>
 		<?php } ?>
+	<?php } else { ?>
+		<div class="empty_list">
+			수급자가 없습니다.
+		</div>
 	<?php } ?>
 	</ul>
 </div>
