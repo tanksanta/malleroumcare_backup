@@ -619,6 +619,26 @@ var array_box=[];
 				<h5>입금할 계좌</h5>
 				<select name="od_bank_account" id="od_bank_account" style="width: 100%; height: 30px; border: 1px solid #DDD; padding: 5px; margin-top: -25px;">
 					<option value="">선택하십시오.</option>
+					<?php
+                          if ($default['de_bank_use']) {
+                            // 은행계좌를 배열로 만든후
+                            $str = explode("\n", trim($default['de_bank_account']));
+                            if (count($str) <= 1)
+                            {
+                                $bank_account = '<option value="'.$str[0].'">'.$str[0].PHP_EOL.'</option> ';
+                            }
+                            else
+                            {
+                                $bank_account .= '<option value="">선택하십시오.</option>';
+                                for ($i=0; $i<count($str); $i++)
+                                {
+                                    //$str[$i] = str_replace("\r", "", $str[$i]);
+                                    $str[$i] = trim($str[$i]);
+                                    $bank_account .= '<option value="'.$str[$i].'">'.$str[$i].'</option>'.PHP_EOL;
+                                }
+                            }
+                        }
+                        ?>
 					<?php echo $bank_account; ?>
 				</select>
 
