@@ -334,7 +334,6 @@ $row = sql_fetch($sql);
         if(io_value_r_color&&io_value_r_size){io_value_r_v=io_value_r_v+" / "; }
         if(io_value_r_size){io_value_r_v=io_value_r_v+ "사이즈:"+io_value_r_size;}
         // alert();
-        // return false;
         document.getElementById('io_id_r').value=io_value_r_color+io_value_r_size;
         document.getElementById('io_value_r').value=io_value_r_v;
         document.getElementById('barcode_r').value=barcode_r;
@@ -590,14 +589,14 @@ $row = sql_fetch($sql);
                                                 <b>소독 시작일</b>
                                                 <div class="input-box">
                                                     <input type="text" name="strdate" dateonly<?=$list[$i]['stoId']?>_ss id="strdate_<?=$list[$i]['stoId']?>" readonly value="<?=$dis_total_date?>">
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <button type="button" onclick="click_x(this)"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                             <li>
                                                 <b>소독 마감일</b>
                                                 <div class="input-box">
                                                     <input type="text" name="enddate" dateonly<?=$list[$i]['stoId']?>_ee id="enddate_<?=$list[$i]['stoId']?>" readonly>
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <button type="button"  onclick="click_x(this)" ><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                             <script>
@@ -612,21 +611,21 @@ $row = sql_fetch($sql);
                                                 <b>약품종류</b>
                                                 <div class="input-box">
                                                     <input type="text" name="dis_chemical" id="dis_chemical_<?=$list[$i]['stoId']?>">
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <button type="button"  onclick="click_x(this)"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                             <li>
                                                 <b>약품사용내역</b>
                                                 <div class="input-box">
                                                     <input type="text"  name="dis_chemical_history" id="dis_chemical_history_<?=$list[$i]['stoId']?>">
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <button type="button"  onclick="click_x(this)"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                             <li class="file-list">
                                                 <b>첨부파일(소독필증)</b>
                                                 <div class="input-box">
                                                     <input type="text"  name="dis_file_text" id="dis_file_text_<?=$list[$i]['stoId']?>" class="filetext" readonly>
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <!-- <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button> -->
                                                 </div>
                                                 <div class="inputFile cb">
                                                     <input type="file"  name="dis_file" id="dis_file_<?=$list[$i]['stoId']?>" class="fileHidden" name=""  title="파일첨부 1 : 용량  이하만 업로드 가능">
@@ -705,12 +704,12 @@ $row = sql_fetch($sql);
                                                     </div>
                                                 </li>
                                                 <script>
-                                                        $("input:text[dateonly<?=$list[$i]['stoId']?>_s]").datepicker({
-                                                            minDate: "<?=$date2?>"
-                                                        });
-                                                        $("input:text[dateonly<?=$list[$i]['stoId']?>_e]").datepicker({
-                                                            minDate: "<?=$date2?>"
-                                                        });
+                                                            $("input:text[dateonly<?=$list[$i]['stoId']?>_s]").datepicker({
+                                                                minDate: "<?=$date2?>"
+                                                            });
+                                                            $("input:text[dateonly<?=$list[$i]['stoId']?>_e]").datepicker({
+                                                                minDate: "<?=$date2?>"
+                                                            });
                                                 </script>
                                             </ul>
                                             <div class="popup-btn">
@@ -1010,7 +1009,6 @@ $row = sql_fetch($sql);
         yearRange : "c-150:c+10"
     });
     //날짜 넣기
-    $("input:text[dateonly]").datepicker({});
 
     //대여기간수정 api 통신
     function retal_period_change(penOrdId,stoId,strDtm,endDtm){
@@ -1164,7 +1162,10 @@ $row = sql_fetch($sql);
         if(!dis_file_text.value){ alert('파일을 선택해주세요'); return false;}
         designate_result_form.submit();
     }
+    function click_x(this_click){
 
+        $(this_click).closest("li").find("input").val("");
+    }
     //페이징 처리1
     function page_load(page_n) {
         page_n = parseInt(page_n);
