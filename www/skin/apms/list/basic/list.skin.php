@@ -114,34 +114,34 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
     </div>
 
     <?php
-		$prodSupLabel = "유통구분";
+		$prodSupLabel = "유통";
 
 		if(!$_COOKIE["prodSupYn"]){
-			$prodSupLabel = "유통구분";
+			$prodSupLabel = "유통";
 		}
 
 		if($_GET["prodSupYn"]){
 			switch($_GET["prodSupYn"]){
 				case "Y" :
-					$prodSupLabel = "유통구분";
+					$prodSupLabel = "유통";
 					break;
 				case "N" :
-					$prodSupLabel = "비유통구분";
+					$prodSupLabel = "비유통";
 					break;
 				case "all" :
-					$prodSupLabel = "유통+비유통구분";
+					$prodSupLabel = "유통+비유통";
 					break;
 			}
 		} else {
 			switch($_COOKIE["prodSupYn"]){
 				case "Y" :
-					$prodSupLabel = "유통구분";
+					$prodSupLabel = "유통";
 					break;
 				case "N" :
-					$prodSupLabel = "비유통구분";
+					$prodSupLabel = "비유통";
 					break;
 				case "all" :
-					$prodSupLabel = "유통+비유통구분";
+					$prodSupLabel = "유통+비유통";
 					break;
 			}
 		}
@@ -152,9 +152,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="prodSupLabel">
-            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=Y">유통구분</a></li>
-            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=N">비유통구분</a></li>
-            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=all">유통+비유통구분</a></li>
+            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=Y">유통</a></li>
+            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=N">비유통</a></li>
+            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=all">유통+비유통</a></li>
         </ul>
     </div>
 </div>
