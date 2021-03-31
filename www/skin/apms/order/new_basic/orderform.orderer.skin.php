@@ -1763,7 +1763,7 @@ var array_box=[];
 <?php if($_GET['penId_r']){ //보유재고 관리에서 넘어오면 실행 ?>
         $(document).ready(function() {
             $('#c_recipient').click();
-
+            $("#order_recipientBox").hide();
             selected_recipient('<?=$_GET['penId_r']?>');
             $('.prodBarSelectBox0 option[value="<?=$_GET['barcode_r']?>"]').attr('selected', 'selected');
         });
