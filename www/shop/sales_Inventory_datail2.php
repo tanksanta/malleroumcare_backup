@@ -578,20 +578,36 @@ $row = sql_fetch($sql);
                                         <h2>소독 결과 확인</h2>
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <ul>
+                                            <?php 
+                                                if($state=="소독중"){
+                                                    $stoId_s=$list[$i]['stoId'];
+                                                    $sql_sodock = "SELECT `dis_total_date` FROM `g5_rental_log` WHERE `stoId`= '{$stoId_s}' AND `rental_log_division`='1' ORDER BY `dis_total_date` DESC LIMIT 1";
+                                                    $row_sodock = sql_fetch($sql_sodock);
+                                                    $dis_total_date = date("Y-m-d", strtotime($row_sodock['dis_total_date']));
+                                                }
+                                            ?>
                                             <li>
                                                 <b>소독 시작일</b>
                                                 <div class="input-box">
-                                                    <input type="text" name="strdate" dateonly id="strdate_<?=$list[$i]['stoId']?>" readonly>
+                                                    <input type="text" name="strdate" dateonly<?=$list[$i]['stoId']?>_ss id="strdate_<?=$list[$i]['stoId']?>" readonly value="<?=$dis_total_date?>">
                                                     <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                             <li>
                                                 <b>소독 마감일</b>
                                                 <div class="input-box">
-                                                    <input type="text" name="enddate" dateonly id="enddate_<?=$list[$i]['stoId']?>" readonly>
+                                                    <input type="text" name="enddate" dateonly<?=$list[$i]['stoId']?>_ee id="enddate_<?=$list[$i]['stoId']?>" readonly>
                                                     <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
+                                            <script>
+                                                     $("input:text[dateonly<?=$list[$i]['stoId']?>_ss]").datepicker({
+                                                        minDate: "<?=$date2 ?>",
+                                                    });
+                                                    $("input:text[dateonly<?=$list[$i]['stoId']?>_ee]").datepicker({
+                                                        minDate: "<?=$dis_total_date ?>"
+                                                    });
+                                            </script>
                                             <li>
                                                 <b>약품종류</b>
                                                 <div class="input-box">
