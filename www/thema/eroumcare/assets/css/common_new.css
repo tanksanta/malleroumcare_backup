@@ -200,7 +200,7 @@ pre{white-space: pre-wrap;}
 
 
 .footer_area { width: 100%; float: left; border-top: 1px solid #DEDEDE; }
-.footer_area > div { width: 1400px; margin: 0 auto; }
+.footer_area > div { width: 1200px; margin: 0 auto; }
 .footer_area > div > div { width: 100%; float: left; padding: 45px 0; }
 .footer_area > div > div > div { width: 100%; float: left; }
 .footer_area .logo{float: left;margin-right:20px;}

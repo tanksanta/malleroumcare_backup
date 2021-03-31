@@ -28,12 +28,12 @@
 		</div>
 		
 		<div class="viewWrap swiper-container">
-			<ul style="width: 300%;" class="swiper-wrapper">
-				<li style="width: 33.33%;" class="swiper-slide">
+			<ul style="width: 100%;" class="swiper-wrapper">
+				<li style="width: 100%;" class="swiper-slide">
 					<a href="/bbs/content.php?co_id=guide">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_03.jpg" alt="">
 					</a>
-				</li>
+				</li><!-- 
 				<li style="width: 33.33%;" class="swiper-slide">
 					<a href="/bbs/board.php?bo_table=notice&wr_id=11">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_01.jpg" alt="">
@@ -43,7 +43,7 @@
 					<a href="/bbs/board.php?bo_table=notice&wr_id=11">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_02.jpg" alt="">
 					</a>
-				</li>
+				</li> -->
 			</ul>
 		</div>
 	</div>
