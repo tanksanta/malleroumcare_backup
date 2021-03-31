@@ -68,7 +68,7 @@
 		</div>
 		
 		<ul class="list">
-			<li><a href="#" data-no="1020" title="요실금팬티" class="active">요실금팬티</a></li>
+			<li><a href="#" data-no="1020" title="요실금팬티">요실금팬티</a></li>
 			<li><a href="#" data-no="1030" title="자세변환용구">자세변환용구</a></li>
 			<li><a href="#" data-no="1040" title="욕창예방방석">욕창예방방석</a></li>
 			<li><a href="#" data-no="1050" title="지팡이">지팡이</a></li>
@@ -84,6 +84,15 @@
 			</ul>
 		</div>
 	</div>
+
+	<script>
+	// 첫번째 클릭
+	$(document).ready(function(){
+		setTimeout(function() {
+			$('#mainBestCategoryWrap>ul.list').children('li:first-child').children('a').first()[0].click()
+		}, 500);
+	});
+	</script>
 	
 	<!-- 메인 추천 제품 -->
 	<div id="mainBestProductWrap">
