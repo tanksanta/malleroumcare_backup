@@ -116,7 +116,9 @@ body, input, textarea, select, button, table {
 			<a href="#" class="sel_address" data-target="<?=$recipient?>" title="선택">선택</a>
 			</li>
 		<?php } ?>
-	<?php } ?>
+	<?php }else{ ?>
+            <div style="margin-top:200px; wdith:100%; text-align:center; font-size:14px;">등록된 수급자가 없습니다.</div>
+    <? } ?>
 	</ul>
 </div>
 </body>
