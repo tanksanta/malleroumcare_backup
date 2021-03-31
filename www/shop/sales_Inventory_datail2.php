@@ -290,7 +290,7 @@ $row = sql_fetch($sql);
             </div>
             <div class="popup01 popup2" id="popup01">
 				<div class="p-inner">
-					<div class="pop_tit">상품 옵션 설정</div>
+					<h2>상품 옵션 설정</h2>
 					<button class="cls-btn p-cls-btn" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt="" onclick="popup01_hide()"></button>
 					<?php include_once($item_skin_file);?>
 				</div>
@@ -306,7 +306,7 @@ $row = sql_fetch($sql);
                             <span class="pro-num">바코드</span>
                             <span class="date">입고일</span>
                             <span class="state">상태</span>
-                            <span class="none">설정</span>
+                            <span class="none"></span>
                         </li>
 <!------------------------------------------------------- 대여신청 ------------------------------------------------------->
 <style>
@@ -437,14 +437,19 @@ $row = sql_fetch($sql);
                                 $state_menu8='<li><a href="javascript:;" onclick="retal_state_change2(\''.$list[$i]['stoId'].'\',\'05\',\'불용재고로 등록되었습니다.\')" >불용재고등록</a></li>';
                                 $state_menu9='<li><a href="javascript:;" onclick="retal_state_change(\''.$list[$i]['stoId'].'\',\'09\')">대여종료</a></li>';
                                 $state_menu_del='<li><a href="javascript:;" onclick="del_stoId(\''.$list[$i]['stoId'].'\')">삭제</a></li>';
-
+                                //대여 날짜 변환
+                                $rental_date="";
+                                $ordLendStrDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendStrDtm']));
+                                $ordLendEndDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendEndDtm']));
                                 //메뉴 선택  01: 재고(대여가능) 02: 재고소진(대여중) 08: 소독중 09: 대여종료
                                 switch ($list[$i]['stateCd']) {
                                     case '01': $state="대여가능"; $state_menu_all=$state_menu3.$state_menu8;
                                     $rental_btn='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여</a>'; //대여 버튼
                                     $rental_btn2='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여하기</a>'; //대여 버튼
                                     break;
-                                    case '02': $state="대여중";  $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $bg="bg"; $rental_btn=""; break;
+                                    case '02': $state="대여중";  $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $bg="bg"; $rental_btn=""; 
+                                    $rental_date=$ordLendStrDtm_date.'~'.$ordLendEndDtm_date;
+                                    break;
                                     case '08': $state="소독중";   $state_menu_all =  $state_menu5. $state_menu6;break;
                                     case '09': $state="대여종료"; $state_menu_all=$state_menu3.$state_menu4.$state_menu1; break;
                                     default  : $state=""; break;
@@ -489,7 +494,7 @@ $row = sql_fetch($sql);
                                 ?>
                                 <span class="date m_off"><?=$date2?></span>
                                 <span class="state m_off">
-                                    <b><?=$state?><?=$nimg?><?=$water?></b>
+                                    <b><?=$state?><?=$nimg?><?=$water?><span><?=$rental_date?></span></b>
                                     <?=$rental_btn //대여버튼 ?>
                                 </span>
 
@@ -513,7 +518,7 @@ $row = sql_fetch($sql);
                                     </div>
                                     <div class="info-m">
                                         <span class="state">
-                                            <b>대여가능<?=$nimg?></b>
+                                            <b><?=$state?><?=$nimg?><?=$water?><span><?=$rental_date?></b>
                                         </span>
                                         <span class="none">
                                             <?=$rental_btn2?>
@@ -532,7 +537,7 @@ $row = sql_fetch($sql);
                                 <!-- 소독업체지정 -->
                                 <div class="popup01 popup1">
                                     <div class="p-inner">
-                                        <div class="pop_tit">소독업체 지정</div>
+                                        <h2>소독업체 지정</h2>
                                         <button class="cls-btn p-cls-btn" type="button" onclick="close_popup(this)" ><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <ul>
                                             <li>
@@ -570,7 +575,7 @@ $row = sql_fetch($sql);
                                     <input type="hidden" name="member" value="<?php echo $member['mb_id']?>">
                                     <input type="hidden" name="stoId" value="<?=$list[$i]['stoId']?>">
                                     <div class="p-inner">
-                                        <div class="pop_tit">소독 결과 확인</div>
+                                        <h2>소독 결과 확인</h2>
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <ul>
                                             <li>
@@ -625,7 +630,7 @@ $row = sql_fetch($sql);
                                 <!-- 대여기록 -->
                                 <div class="popup01 popup3">
                                     <div class="p-inner">
-                                        <div class="pop_tit">대여 기록</div>
+                                        <h2>대여 기록</h2>
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <div class="table-box">
                                             <div class="tti">
@@ -636,8 +641,8 @@ $row = sql_fetch($sql);
                                                 <colgroup>
                                                     <col width="10%">
                                                     <col width="30%">
-                                                    <col width="35%">
-                                                    <col width="25%">
+                                                    <col width="30%">
+                                                    <col width="30%">
                                                 </colgroup>
                                                 <thead>
                                                     <th style="text-align: center;">No.</th>
@@ -661,7 +666,7 @@ $row = sql_fetch($sql);
                                 <div class="popup01 popup4">
                                     <form action="">
                                         <div class="p-inner">
-                                            <div class="pop_tit">대여기간 수정</div>
+                                            <h2>대여기간 수정</h2>
                                             <button onclick="close_popup(this)" class="cls-btn p-cls-btn" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                             <ul>
                                                 <?php
@@ -837,7 +842,7 @@ $row = sql_fetch($sql);
                                    <!-- 대여기록 -->
                                    <div class="popup01 popup3">
                                     <div class="p-inner">
-                                        <div class="pop_tit">대여 기록</div>
+                                        <h2>대여 기록</h2>
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <div class="table-box">
                                             <div class="tti">
