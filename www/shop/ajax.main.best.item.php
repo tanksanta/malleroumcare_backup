@@ -7,7 +7,7 @@
 	$productSQL = sql_query("
 		SELECT *
 		FROM g5_shop_item
-		WHERE ca_id2 = '30'
+		WHERE ( ca_id2 = '30' OR ca_id = '60' )
 		AND ca_id = '{$no}'
 		ORDER BY it_id DESC
 	");
