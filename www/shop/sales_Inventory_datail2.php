@@ -446,7 +446,7 @@ $row = sql_fetch($sql);
                                     $rental_btn='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여</a>'; //대여 버튼
                                     $rental_btn2='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여하기</a>'; //대여 버튼
                                     break;
-                                    case '02': $state="대여중";  $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $bg="bg"; $rental_btn=""; 
+                                    case '02': $state="대여중";  $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $rental_btn=""; 
                                     $rental_date=$ordLendStrDtm_date.'~'.$ordLendEndDtm_date;
                                     
                                     //30일 미만일경우
