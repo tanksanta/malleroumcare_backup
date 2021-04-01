@@ -228,7 +228,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <span class="num"><?=$number?></span><!-- 넘버링 -->
                         <span class="product" >
                             <div class="info">
-                                <div class="img"  style="min-width:100px; min-height:100px;">
+                                <div class="img"  style="min-width:90px; min-height:90px;">
                                     <img src="/data/item/<?=$row["it_img1"]?>" alt="">
                                 </div>
                                 <div class="text">
@@ -240,7 +240,8 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                                     <!--mobile 용-->
                                     <div class="info-02">
                                         <span class="pro-num"><?=$list[$i]['prodPayCode']?></span><!--상품아이디-->
-                                        <span class="stock"><?=$list[$i]['quantity']?>개</span><!--주문재고수량-->
+                                        <span class="stock"><?=$list[$i]['quantity']?>개 남음</span><!--주문재고수량-->
+                                        <span class="order">판매완료: <?=$list[$i]['orderQuantity']?>개</span><!--판매완료 개수-->
                                         <span class="price"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                                     </div>
                                 </div>
@@ -249,7 +250,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <!--pc 용-->
                         <span class="pro-num m_off"><?=$list[$i]['prodPayCode']?></span>
                         <span class="stock m_off"><?=$list[$i]['quantity']?>개</span><!--주문재고수량-->
-                        <span class="order"><?=$list[$i]['orderQuantity']?>개</span><!--판매완료 개수-->
+                        <span class="order m_off"><?=$list[$i]['orderQuantity']?>개</span><!--판매완료 개수-->
                         <span class="price m_off"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                     </li>
                     </a>
