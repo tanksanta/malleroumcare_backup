@@ -508,7 +508,7 @@ $row = sql_fetch($sql);
                                 <span class="none m_off">
                                     <div class="state-btn2" onclick="open_list(this);">
                                         <b><img src="<?=G5_IMG_URL?>/icon_11.png" alt=""></b>
-                                        <ul>
+                                        <ul class="modalDialog">
                                             <?=$state_menu_all; ?>
                                         </ul>
                                     </div>
@@ -530,7 +530,7 @@ $row = sql_fetch($sql);
                                             <?=$rental_btn2?>
                                             <div class="state-btn2" onclick="open_list(this);">
                                                 <b><img src="<?=G5_IMG_URL?>/icon_11.png" alt=""></b>
-                                                <ul>
+                                                <ul class="modalDialog">
                                                     <?=$state_menu_all; ?>
                                                 </ul>
                                             </div>
@@ -927,9 +927,18 @@ $row = sql_fetch($sql);
 <script>
      //항목 펼치기
     function open_list(e){
+        $(".modalDialog").removeClass('on');
         $(e).find('ul').toggleClass('on');
         $(e).parents('.list').siblings('.list').find('.').find('ul').removeClass('on');
     }
+
+    // modal 다른곳 클릭하면 꺼지게
+    $('body').click(function (event) 
+    {
+        if(!$(event.target).closest('.state-btn2').length && !$(event.target).is('.state-btn2')) {
+            $(".modalDialog").removeClass('on');
+        }
+    });
 
     //##팝업
     //대여기간 수정
