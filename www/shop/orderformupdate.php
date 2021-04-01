@@ -1067,8 +1067,8 @@ apms_order($od_id, $od_status, $member['mb_recommend']);
 // 쿠폰업데이트
 apms_coupon_update($member['mb_id']);
 
-include_once(G5_SHOP_PATH.'/ordermail1.inc.php');
-include_once(G5_SHOP_PATH.'/ordermail2.inc.php');
+// include_once(G5_SHOP_PATH.'/ordermail1.inc.php');
+// include_once(G5_SHOP_PATH.'/ordermail2.inc.php');
 
 // SMS BEGIN --------------------------------------------------------
 // 주문고객과 쇼핑몰관리자에게 SMS 전송
