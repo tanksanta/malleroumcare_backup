@@ -64,7 +64,7 @@ define('G5_SOLDOUT_CHECK', true);
 
 // 주문폼의 상품이 재고 차감에 포함되는 기준 시간설정
 // 0 이면 재고 차감에 계속 포함됨
-define('G5_CART_STOCK_LIMIT', 3);
+define('G5_CART_STOCK_LIMIT', 6);
 
 // 아이코드 코인 최소금액 설정
 // 코인 잔액이 설정 금액보다 작을 때는 주문시 SMS 발송 안함
