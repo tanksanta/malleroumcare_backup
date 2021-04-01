@@ -979,7 +979,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     </tbody>
                 </table>
 
-                <div class="frmsamhwaorderform_bottom" style="display:none">
+                <div class="frmsamhwaorderform_bottom">
                     <div class="change_status">
                         <span>선택한 상품 상태값</span>
                         <select name="step" id="step">
@@ -992,7 +992,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         </select>
                         <input type="button" value="변경하기" class="btn shbtn" id="change_cart_status">
                     </div>
-                    <div class="change_discount2">
+                    <div class="change_discount2" style="display:none">
                         <span>총 가격변경(추가할인/금액추가) *금액을 추가하려면 (-) 입력 후 금액 입력</span>
                         <input type="text" class="frm_input" name="od_cart_discount2" id="od_cart_discount2" value="<?php echo $od['od_cart_discount2']; ?>" />
                         <input type="button" value="적용" class="btn shbtn" id="change_discount2">
