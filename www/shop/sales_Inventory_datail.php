@@ -264,7 +264,7 @@ $row = sql_fetch($sql);
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
 <section id="stock" class="wrap" >
-        <div class="list-more"><a href="<?=G5_SHOP_URL?>/sales_Inventory.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
+        <div class="list-more m_off"><a href="<?=G5_SHOP_URL?>/sales_Inventory.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
         <h2>판매 재고 상세</h2>
         <div class="stock-view">
             <div class="product-view">
@@ -291,7 +291,7 @@ $row = sql_fetch($sql);
                         </li>
                     </ul>
                     <div class="info-btn">
-                        <div>
+                        <div class="info-btn-area">
                             <a href="javascript:popup01_show();" class="btn-01">신규재고등록</a>
                             <a href="<?=G5_SHOP_URL?>/item.php?it_id=<?=$row['it_id']?>" class="btn-02">상세정보</a>
                         </div>
