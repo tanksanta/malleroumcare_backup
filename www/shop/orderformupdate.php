@@ -1333,47 +1333,41 @@ if($is_member && $od_b_name) {
 	if(!$_POST["penId"]){
 		$stoIdList = [];
 
-		foreach($productList as $key => $value){
-			$sendData = [];
-			$sendData["usrId"] = $member["mb_id"];
-			$sendData["entId"] = $member["mb_entId"];
+        $sendData = [];
+        $sendData["usrId"] = $member["mb_id"];
+        $sendData["entId"] = $member["mb_entId"];
+        $prodsSendData = [];
+        $prodsData = [];
+        foreach($productList as $key => $value){
+            $prodsData["prodId"] = $value["prodId"];
+            $prodsData["prodColor"] = $value["prodColor"];
+            $prodsData["prodSize"] = $value["prodSize"];
+            $prodsData["prodManuDate"] = $value["prodManuDate"];
+            $prodsData["prodBarNum"] = $value["prodBarNum"];
+            $prodsData["stoMemo"] = $value["stoMemo"];
+            array_push($prodsSendData, $prodsData);
+        }
 
-			$prodsSendData = [];
+        $sendData["prods"] = $prodsSendData;
+        $oCurl = curl_init();
+        curl_setopt($oCurl, CURLOPT_PORT, 9901);
+        curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/insert");
+        curl_setopt($oCurl, CURLOPT_POST, 1);
+        curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+        curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+        $res = curl_exec($oCurl);
+        $res = json_decode($res, true);
+        curl_close($oCurl);
 
-			$prodsData = [];
-			$prodsData["prodId"] = $value["prodId"];
-			$prodsData["prodColor"] = $value["prodColor"];
-			$prodsData["prodSize"] = $value["prodSize"];
-			$prodsData["prodManuDate"] = $value["prodManuDate"];
-			$prodsData["prodBarNum"] = $value["prodBarNum"];
-			$prodsData["stoMemo"] = $value["stoMemo"];
-			array_push($prodsSendData, $prodsData);
-
-			$sendData["prods"] = $prodsSendData;
-
-			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9901);
-			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/insert");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res = curl_exec($oCurl);
-			$res = json_decode($res, true);
-			curl_close($oCurl);
-
-			if($res["errorYN"] == "N"){
-				array_push($stoIdList, $res["data"][0]["stoId"]);
-			} else {
-				alert($res["message"], "/");
-				sql_query("
-					DELETE FROM g5_shop_order
-					WHERE od_id = '{$od_id}'
-				");
-				return false;
-			}
-		}
+        if($res["errorYN"] == "N"){
+            for($k=0; $k<count($res['data']);$k++){
+                array_push($stoIdList, $res['data'][$k]["stoId"]);
+            }
+        } else {
+            alert($res["message"], "/");
+        }
 
 		$stoIdList = implode(",", $stoIdList);
 		sql_query("
