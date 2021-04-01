@@ -334,7 +334,6 @@ $row = sql_fetch($sql);
         if(io_value_r_color&&io_value_r_size){io_value_r_v=io_value_r_v+" / "; }
         if(io_value_r_size){io_value_r_v=io_value_r_v+ "사이즈:"+io_value_r_size;}
         // alert();
-        // return false;
         document.getElementById('io_id_r').value=io_value_r_color+io_value_r_size;
         document.getElementById('io_value_r').value=io_value_r_v;
         document.getElementById('barcode_r').value=barcode_r;
@@ -447,8 +446,15 @@ $row = sql_fetch($sql);
                                     $rental_btn='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여</a>'; //대여 버튼
                                     $rental_btn2='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodBarNum'].'\')">대여하기</a>'; //대여 버튼
                                     break;
-                                    case '02': $state="대여중";  $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $bg="bg"; $rental_btn=""; 
+                                    case '02': $state="대여중";  $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $rental_btn=""; 
                                     $rental_date=$ordLendStrDtm_date.'~'.$ordLendEndDtm_date;
+                                    
+                                    //30일 미만일경우
+                                    $srat_cal = new DateTime($ordLendStrDtm_date);
+                                    $end_cal = new DateTime($ordLendEndDtm_date);
+                                    $result_cal = date_diff($srat_cal, $end_cal);
+                                    if($result_cal->days <= 30){ $bg="bg";}
+                                    
                                     break;
                                     case '08': $state="소독중";   $state_menu_all =  $state_menu5. $state_menu6;break;
                                     case '09': $state="대여종료"; $state_menu_all=$state_menu3.$state_menu4.$state_menu1; break;
@@ -578,39 +584,55 @@ $row = sql_fetch($sql);
                                         <h2>소독 결과 확인</h2>
                                         <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                                         <ul>
+                                            <?php 
+                                                if($state=="소독중"){
+                                                    $stoId_s=$list[$i]['stoId'];
+                                                    $sql_sodock = "SELECT `dis_total_date` FROM `g5_rental_log` WHERE `stoId`= '{$stoId_s}' AND `rental_log_division`='1' ORDER BY `dis_total_date` DESC LIMIT 1";
+                                                    $row_sodock = sql_fetch($sql_sodock);
+                                                    $dis_total_date = date("Y-m-d", strtotime($row_sodock['dis_total_date']));
+                                                }
+                                            ?>
                                             <li>
                                                 <b>소독 시작일</b>
                                                 <div class="input-box">
-                                                    <input type="text" name="strdate" dateonly id="strdate_<?=$list[$i]['stoId']?>" readonly>
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <input type="text" name="strdate" dateonly<?=$list[$i]['stoId']?>_ss id="strdate_<?=$list[$i]['stoId']?>" readonly value="<?=$dis_total_date?>">
+                                                    <button type="button" onclick="click_x(this)"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                             <li>
                                                 <b>소독 마감일</b>
                                                 <div class="input-box">
-                                                    <input type="text" name="enddate" dateonly id="enddate_<?=$list[$i]['stoId']?>" readonly>
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <input type="text" name="enddate" dateonly<?=$list[$i]['stoId']?>_ee id="enddate_<?=$list[$i]['stoId']?>" readonly>
+                                                    <button type="button"  onclick="click_x(this)" ><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
+                                            <script>
+                                                     $("input:text[dateonly<?=$list[$i]['stoId']?>_ss]").datepicker({
+                                                        minDate: "<?=$date2 ?>",
+                                                    });
+                                                    $("input:text[dateonly<?=$list[$i]['stoId']?>_ee]").datepicker({
+                                                        minDate: "<?=$dis_total_date ?>"
+                                                    });
+                                            </script>
                                             <li>
                                                 <b>약품종류</b>
                                                 <div class="input-box">
                                                     <input type="text" name="dis_chemical" id="dis_chemical_<?=$list[$i]['stoId']?>">
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <button type="button"  onclick="click_x(this)"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                             <li>
                                                 <b>약품사용내역</b>
                                                 <div class="input-box">
                                                     <input type="text"  name="dis_chemical_history" id="dis_chemical_history_<?=$list[$i]['stoId']?>">
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <button type="button"  onclick="click_x(this)"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                             <li class="file-list">
                                                 <b>첨부파일(소독필증)</b>
                                                 <div class="input-box">
                                                     <input type="text"  name="dis_file_text" id="dis_file_text_<?=$list[$i]['stoId']?>" class="filetext" readonly>
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <!-- <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button> -->
                                                 </div>
                                                 <div class="inputFile cb">
                                                     <input type="file"  name="dis_file" id="dis_file_<?=$list[$i]['stoId']?>" class="fileHidden" name=""  title="파일첨부 1 : 용량  이하만 업로드 가능">
@@ -677,18 +699,25 @@ $row = sql_fetch($sql);
                                                 <li>
                                                     <b>대여시작일</b>
                                                     <div class="input-box">
-                                                        <input type="text" value="<?=$ordLendStrDtm_date?>" dateonly id="strDtm_<?=$list[$i]['stoId']?>">
+                                                        <input type="text" value="<?=$ordLendStrDtm_date?>" dateonly<?=$list[$i]['stoId']?>_s id="strDtm_<?=$list[$i]['stoId']?>">
                                                         <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                     </div>
                                                 </li>
                                                 <li>
                                                     <b>대여종료일</b>
                                                     <div class="input-box">
-                                                        <input type="text" value="<?=$ordLendEndDtm_date?>" dateonly id="endDtm_<?=$list[$i]['stoId']?>">
+                                                        <input type="text" value="<?=$ordLendEndDtm_date?>" dateonly<?=$list[$i]['stoId']?>_e id="endDtm_<?=$list[$i]['stoId']?>">
                                                         <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                     </div>
                                                 </li>
-
+                                                <script>
+                                                            $("input:text[dateonly<?=$list[$i]['stoId']?>_s]").datepicker({
+                                                                minDate: "<?=$date2?>"
+                                                            });
+                                                            $("input:text[dateonly<?=$list[$i]['stoId']?>_e]").datepicker({
+                                                                minDate: "<?=$date2?>"
+                                                            });
+                                                </script>
                                             </ul>
                                             <div class="popup-btn">
                                                 <!-- ordId,stoId,ordLendStrDtm,ordLendEndDtm -->
@@ -987,7 +1016,6 @@ $row = sql_fetch($sql);
         yearRange : "c-150:c+10"
     });
     //날짜 넣기
-    $("input:text[dateonly]").datepicker({});
 
     //대여기간수정 api 통신
     function retal_period_change(penOrdId,stoId,strDtm,endDtm){
@@ -1141,7 +1169,10 @@ $row = sql_fetch($sql);
         if(!dis_file_text.value){ alert('파일을 선택해주세요'); return false;}
         designate_result_form.submit();
     }
+    function click_x(this_click){
 
+        $(this_click).closest("li").find("input").val("");
+    }
     //페이징 처리1
     function page_load(page_n) {
         page_n = parseInt(page_n);

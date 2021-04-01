@@ -575,7 +575,7 @@ if($is_inquiryview_sub) {
                 $penOrdId=$res2['data'][0]['penOrdId'];
                 $strdate=date("Y-m-d", strtotime($res2['data'][0]['ordLendStrDtm']));
                 $enddate=date("Y-m-d", strtotime($res2['data'][0]['ordLendEndDtm']));
-                $ren_eformUrl=$res2['data']['eformUrl'];
+                $ren_eformUrl=$res2['data'][0]['eformUrl'];
                 for($i=0; $i<$count; $i++){
                     $rental_log_Id="rental_log".round(microtime(true)).rand();
                     $stoId=$res2['data'][$i]['stoId'];

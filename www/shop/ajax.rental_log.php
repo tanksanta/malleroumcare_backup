@@ -18,8 +18,8 @@
     for($i = 0; $row = sql_fetch_array($result); $i++){
         $number = $totalCnt-(($page-1)*5)-$i;
         if($row['strdate']){
-            $strdate=substr($row['strdate'],5,2).'/'.substr($row['strdate'],8,2);
-            $enddate=substr($row['enddate'],5,2).'/'.substr($row['enddate'],8,2);
+            $strdate=substr($row['strdate'],0,2).'/'.substr($row['strdate'],5,2).'/'.substr($row['strdate'],8,2);
+            $enddate=substr($row['enddate'],0,2).'/'.substr($row['enddate'],5,2).'/'.substr($row['enddate'],8,2);
             $date=$strdate.'~'.$enddate;
         }else{
             $date="미등록";
