@@ -241,7 +241,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                                     <div class="info-02">
                                         <span class="pro-num"><?=$list[$i]['prodPayCode']?></span><!--상품아이디-->
                                         <span class="stock"><?=$list[$i]['quantity']?>개 남음</span><!--주문재고수량-->
-                                        <span class="order">판매완료: <?=$list[$i]['orderQuantity']?>개</span><!--판매완료 개수-->
+                                        <span class="order">판매완료 <?=$list[$i]['orderQuantity']?>개</span><!--판매완료 개수-->
                                         <span class="price"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                                     </div>
                                 </div>
