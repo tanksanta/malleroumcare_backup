@@ -119,7 +119,7 @@ table {border-collapse: collapse;}
 .stock-view .table-wrap.table-wrap2 .check {width: 12%;}
 
 .stock-view .table-wrap.table-wrap2 {margin-top: 120px;}
-.stock-view .table-wrap h3 {padding: 0 0 19px; font-size: 16px;color: #232323;}
+.stock-view .table-wrap h3 {padding: 0 0 19px; font-size: 16px;color: #232323;margin-top: 0px;}
 .stock-view .table-wrap li .order a {padding:5px 11px 5px 30px; display: inline-block;border: 1px solid #ddd;border-radius: 6px; background: url('../img/icon_01.png') no-repeat left 11px top 50%/11px auto;}
 .stock-view .table-wrap li .order2 a {padding:5px 10px 5px 10px; display: inline-block;border: 1px solid #ddd;border-radius: 6px; }
 .stock-view .table-wrap li .check a {padding:5px 11px 5px 30px; display: inline-block;border: 1px solid #ddd;border-radius: 6px; background: url('../img/icon_03.png') no-repeat left 11px top 50%/11px auto;}
@@ -159,7 +159,7 @@ table {border-collapse: collapse;}
 @media screen and (max-width: 1020px){
     /* 재고상세 */
     .stock-view .inner {width: calc(100% - 150px);}
-    .product-view {padding:0 20px;}
+    .product-view {padding:0 20px 0 0;}
     .product-view .pro-image {width: 150px;height: 150px;}
     .stock-view .info-btn a {display: block;}
     .stock-view .info-btn .btn-01 {margin: 0 0 10px;}
@@ -236,9 +236,9 @@ table {border-collapse: collapse;}
     .text01 {margin-bottom: 6px;text-align: right;}
     .text02 {margin: 20px 0 0;}
 
-    .stock-view .info-btn .btn-01 {display:inline-block; width: 60%;margin-right: 6px;}
-    .stock-view .info-btn .btn-02 {display:inline-block; width: 32%;}
-    .product-view .pro-image img{width:74px;}
+    .stock-view .info-btn .btn-01 {display:inline-block; width: 60%;margin-right: 6px;font-size: 12px;}
+    .stock-view .info-btn .btn-02 {display:inline-block; width: 32%;font-size: 11px;}
+    /* .product-view .pro-image img{width:74px;} */
     
     
 }
