@@ -448,6 +448,13 @@ $row = sql_fetch($sql);
                                     break;
                                     case '02': $state="대여중";  $state_menu_all = $state_menu1.$state_menu2.$state_menu9; $bg="bg"; $rental_btn=""; 
                                     $rental_date=$ordLendStrDtm_date.'~'.$ordLendEndDtm_date;
+                                    
+                                    //30일 미만일경우
+                                    $srat_cal = new DateTime($ordLendStrDtm_date);
+                                    $end_cal = new DateTime($ordLendEndDtm_date);
+                                    $result_cal = date_diff($srat_cal, $end_cal);
+                                    if($result_cal->days <= 30){ $bg="bg";}
+                                    
                                     break;
                                     case '08': $state="소독중";   $state_menu_all =  $state_menu5. $state_menu6;break;
                                     case '09': $state="대여종료"; $state_menu_all=$state_menu3.$state_menu4.$state_menu1; break;
