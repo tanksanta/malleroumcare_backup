@@ -150,8 +150,8 @@ var array_box=[];
 					<ul class="head">
 						<li class="pro">상품(옵션)</li>
 						<li class="num">수량</li>
-						<li class="pro-price">급여가</li>
-						<li class="price">상품금액</li>
+						<li class="pro-price">단가</li>
+						<li class="price">총금액</li>
 						<li class="delivery-price" style="width: 20%;">배송비</li>
 						<li class="barcode" style="display: none;">바코드</li>
 					</ul>
