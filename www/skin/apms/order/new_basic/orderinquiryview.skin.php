@@ -595,8 +595,9 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 
 				?>
 				<?php if (($custom_cancel || $pay_complete_cancel || $pay_complete_cancel2 || $preparation_cancel || $shipped_cancel) && !$cancel_request_row['od_id']) { ?>
+					<?php if($od["od_stock_insert_yn"] !== "Y"){  ?>
 					<a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false" aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
-
+					<?php } ?>
 					<div class="h15"></div>
 
 					<div id="sod_fin_cancelfrm" class="collapse">
