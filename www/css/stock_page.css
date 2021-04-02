@@ -113,7 +113,7 @@ table {border-collapse: collapse;}
 
 .stock-view .table-wrap li .num {width: 12%;}
 .stock-view .table-wrap li .date {width: 15%;}
-.stock-view .table-wrap li .order {width: 20%;}
+.stock-view .table-wrap li .order {width: 18%;}
 .stock-view .table-wrap.table-wrap2 li .product {width: 30%;}
 .stock-view .table-wrap.table-wrap2 .name {width: 10%;}
 .stock-view .table-wrap.table-wrap2 .check {width: 12%;}
@@ -254,7 +254,18 @@ table {border-collapse: collapse;}
     .popup01 .p-inner ul {display: inline-block;}
     
     #stock-list h2 {padding-bottom: 26px; font-size:21px;}
-    #stock h2 {font-size: 21px;font-weight:bold;}
+    #stock h2 {
+        font-size: 18px;
+        font-weight:bold;
+        padding-left: 20px;
+        margin: 0;
+        padding-top: 16px;
+        background-color: #f5f5f5;
+        padding-bottom: 20px;
+    }
+    .popup01 .p-inner .cls-btn {
+        top: 15px;
+    }
     .table-wrap .head {display: none;}
     .table-wrap li {padding: 16px 0px;}
     .stock-tab li a {padding: 14px 0;}
