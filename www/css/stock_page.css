@@ -204,6 +204,7 @@ table {border-collapse: collapse;}
         width:100%;
         display:flex;
         justify-content: space-between;
+        margin-top: 20px;
     }
     .stock-view .product-view .pro-image{
         width: 250px;
@@ -265,6 +266,9 @@ table {border-collapse: collapse;}
     }
     .popup01 .p-inner .cls-btn {
         top: 15px;
+    }
+    .popup01 .table-box table {
+        width: 100%;
     }
     .table-wrap .head {display: none;}
     .table-wrap li {padding: 16px 0px;}
