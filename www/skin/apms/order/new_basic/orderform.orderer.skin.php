@@ -295,19 +295,19 @@ var array_box=[];
 						<li>
 							<strong>이름</strong>
 							<div>
-								<input class="w-240" type="text" id="od_b_name" name="od_b_name">
+								<input class="w-240" type="text" id="od_b_name" name="od_b_name" value="<?=$member['mb_name']?>">
 							</div>
 						</li>
 						<li>
 							<strong>전화번호</strong>
 							<div>
-								<input class="w-240" type="text" id="od_b_tel" name="od_b_tel">
+								<input class="w-240" type="text" id="od_b_tel" name="od_b_tel" value="<?=$member['mb_tel']?>">
 							</div>
 						</li>
 						<li>
 							<strong>핸드폰</strong>
 							<div>
-								<input class="w-240" type="text" id="od_b_hp" name="od_b_hp">
+								<input class="w-240" type="text" id="od_b_hp" name="od_b_hp" value="<?=$member['mb_hp']?>">
 							</div>
 						</li>
 						<li class="addr">
