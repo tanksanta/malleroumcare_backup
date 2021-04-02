@@ -285,7 +285,15 @@ var array_box=[];
 							<li class="ad_sel_addr" id="ad_sel_addr_same" data-value="same">주문자와 동일</li>
 							<li class="ad_sel_addr" id="ad_sel_addr_recipient" data-value="recipient" style="display: none;">수급자와 동일</li>
 							<li class="ad_sel_addr" id="od_sel_addr_new" data-value="new">신규 배송지</li>
-							<li class="ad_sel_addr" id="order_address">배송지 목록</li>
+							<?php
+							if ($member['mb_id']) {
+								$sql = "SELECT count(*) as cnt from {$g5['g5_shop_order_address_table']} where mb_id = '{$member['mb_id']}' ";
+								$result = sql_fetch($sql);
+								if ($result['cnt']) { 
+							?>
+									<li class="ad_sel_addr" id="order_address">배송지 목록</li>
+								<?php } ?>
+							<?php } ?>
 						</ul>
 					</div>
 					<?php } ?>
