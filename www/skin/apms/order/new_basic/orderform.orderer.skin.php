@@ -22,6 +22,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 	$sendData["pageNum"] = 1;
 	$sendData["pageSize"] = 1;
 	$sendData["appCd"] = "01";
+
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
@@ -149,8 +150,8 @@ var array_box=[];
 					<ul class="head">
 						<li class="pro">상품(옵션)</li>
 						<li class="num">수량</li>
-						<li class="pro-price">급여가</li>
-						<li class="price">상품금액</li>
+						<li class="pro-price">단가</li>
+						<li class="price">총금액</li>
 						<li class="delivery-price" style="width: 20%;">배송비</li>
 						<li class="barcode" style="display: none;">바코드</li>
 					</ul>
@@ -294,19 +295,19 @@ var array_box=[];
 						<li>
 							<strong>이름</strong>
 							<div>
-								<input class="w-240" type="text" id="od_b_name" name="od_b_name" value="<?=$member['mb_name']?>">
+								<input class="w-240" type="text" id="od_b_name" name="od_b_name">
 							</div>
 						</li>
 						<li>
 							<strong>전화번호</strong>
 							<div>
-								<input class="w-240" type="text" id="od_b_tel" name="od_b_tel" value="<?=$member['mb_tel']?>">
+								<input class="w-240" type="text" id="od_b_tel" name="od_b_tel">
 							</div>
 						</li>
 						<li>
 							<strong>핸드폰</strong>
 							<div>
-								<input class="w-240" type="text" id="od_b_hp" name="od_b_hp" value="<?=$member['mb_hp']?>">
+								<input class="w-240" type="text" id="od_b_hp" name="od_b_hp">
 							</div>
 						</li>
 						<li class="addr">
@@ -613,14 +614,12 @@ var array_box=[];
 					</li>
 				</ul>
 			</div>
-            
-
 
 			<div id="settle_bank" style="display: none;">
 				<h5>입금할 계좌</h5>
 				<select name="od_bank_account" id="od_bank_account" style="width: 100%; height: 30px; border: 1px solid #DDD; padding: 5px; margin-top: -25px;">
 					<option value="">선택하십시오.</option>
-                    <?php
+					<?php
                           if ($default['de_bank_use']) {
                             // 은행계좌를 배열로 만든후
                             $str = explode("\n", trim($default['de_bank_account']));
@@ -1152,7 +1151,8 @@ var array_box=[];
 			$("#od_stock_insert_yn").prop("checked", false);
 			$("#sod_frm_stock_status").hide();
 			$(".barList input").val("");
-            $('#ad_sel_addr_recipient').click();
+			$('#ad_sel_addr_recipient').click();
+
 		}
 
 		$(function() {
@@ -1304,7 +1304,7 @@ var array_box=[];
 			if($(this).hasClass("on")){
 				return false;
 			}
-            $('#ad_sel_addr_same').click();
+			$('#ad_sel_addr_same').click();
 			let thisIndex = $(this).index();
 			$(this).addClass('on');
 			$(this).siblings('li').removeClass('on');
@@ -1320,14 +1320,15 @@ var array_box=[];
 			$(".stock_insert_none").show();
 			$(".order_none").show();
 			$(".order_recipientInfoBox").hide();
+
 			$("#penId").val("");
 			$(".tab-2 .detail-price .all-info.all-info2 ul li span").text("수급자를 선택해주세요.");
 			$(".tab-2 .detail-price .all-info.all-info2 ul li span").css("color", "#CCC");
 			$(".order-info .top .add-ac p").text("배송지 선택");
 			recipientDelete();
+
 			switch($(this).attr("data-type")){
 				case "stock_insert" :
-                    $('#ad_sel_addr_same').click();
 					$("#od_stock_insert_yn").prop("checked", true);
 					$("#forderform_check_btn").text("보유재고 등록");
 					$(".tab-2 .table-list2 .delivery-price").css("width", "10%");
@@ -1341,7 +1342,6 @@ var array_box=[];
 					$(".tab-2 .table-list2 .barcode").show();
 					$(".order_recipientInfoBox").show();
                     $("#order_recipientBox").show();
-                    
 					break;
 				case "order" :
 					$(".order_none").hide();
