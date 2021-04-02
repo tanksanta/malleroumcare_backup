@@ -360,10 +360,12 @@ $mb_phone = ' | 연락처 : ' . $mb_row['mb_hp'];
 $sql = "select sum(od_cart_price) as od_cart_price, sum(od_send_cost) as od_send_cost, sum(od_send_cost2) as od_send_cost2, sum(od_cart_discount) as od_cart_discount
         from g5_shop_order
         where mb_id = '{$search}'";
-$where_pay_state_0 = "and od_pay_state = '0'";
+// $where_pay_state_0 = "and od_pay_state = '0'";
+// $total_result = sql_fetch($sql.$where_pay_state_0);
+// $outstanding_balance = number_format($total_result['od_cart_price'] + $total_result['od_send_cost'] + $total_result['od_send_cost2'] - $total_result['od_cart_discount']  - $total_result['od_cart_discount2']);
 
-$total_result = sql_fetch($sql.$where_pay_state_0);
-$outstanding_balance = number_format($total_result['od_cart_price'] + $total_result['od_send_cost'] + $total_result['od_send_cost2'] - $total_result['od_cart_discount']  - $total_result['od_cart_discount2']);
+$outstanding_balance = samhwa_get_misu($search);
+$outstanding_balance = number_format($outstanding_balance['misu']);
 
 $total_result2 = sql_fetch($sql);
 $total_balance = number_format($total_result2['od_cart_price'] + $total_result2['od_send_cost'] + $total_result2['od_send_cost2'] - $total_result2['od_cart_discount']  - $total_result2['od_cart_discount2']);

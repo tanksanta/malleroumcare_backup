@@ -1150,15 +1150,20 @@ function samhwa_get_misu($mb_id) {
     $ptmb = get_member($mb_id);
 
     // 미수금액
-    $sql = "SELECT * FROM `g5_shop_order` WHERE mb_id = '{$mb_id}' and od_misu > 0";
-    $misu_result = sql_query($sql);
-    $misus = array();
-    $misu_price = 0;
-    $misu_gang_price = 0;
-    while($misu_row = sql_fetch_array($misu_result)) {
-        $misus[] = $misu_row;
-        $misu_price += $misu_row['od_misu'];
-    }
+    // $sql = "SELECT * FROM `g5_shop_order` WHERE mb_id = '{$mb_id}' and od_misu > 0";
+    // $misu_result = sql_query($sql);
+    // $misus = array();
+    // $misu_price = 0;
+    // $misu_gang_price = 0;
+    // while($misu_row = sql_fetch_array($misu_result)) {
+    //     $misus[] = $misu_row;
+    //     $misu_price += $misu_row['od_misu'];
+    // }
+
+    $sql = "select sum(od_cart_price) as od_cart_price, sum(od_send_cost) as od_send_cost, sum(od_send_cost2) as od_send_cost2, sum(od_cart_discount) as od_cart_discount
+    from g5_shop_order
+    where mb_id = '{$mb_id}' and od_pay_state = '0'";
+    $total_result = sql_fetch($sql);
 
     // 강력미수금액
     if ( $ptmb['mb_partner_date_pay_date'] > 0 ) {
@@ -1167,7 +1172,7 @@ function samhwa_get_misu($mb_id) {
     }
 
     return array(
-        'misu' => $misu_price,
+        'misu' => ($total_result['od_cart_price'] + $total_result['od_send_cost'] + $total_result['od_send_cost2'] - $total_result['od_cart_discount']  - $total_result['od_cart_discount2']),
         'misu_gang' => $misu_gang_result['gang_misu'],
     );
 
