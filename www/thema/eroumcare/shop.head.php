@@ -111,11 +111,12 @@ scrollToTop();
 
 
 <?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>
-        <div class="top_mode_area">
+        <!-- <div class="top_mode_area">
             <?=$mood_type_string;?> 모드 실행중 입니다.
-        </div>
+        </div> -->
 <?php } ?>
-<div class="mo_top" <?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
+<?php #//급여모드 보고시면  top_mode_area 주석 해제, mo_top에는 style="margin-top:50px;" 넣어야함  ?>
+<div class="mo_top" <?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?><?php  } ?>>
     <div class="logoWrap">
         <a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
     </div>
