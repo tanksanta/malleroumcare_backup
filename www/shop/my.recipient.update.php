@@ -399,7 +399,7 @@
 						<b>담당직원정보</b>
 					</label>
 					<div class="col-sm-3">
-                    <input type="text" name="entUsrId" class="form-control input-sm" placeholder="담당직원정보">
+                    <input type="text" name="entUsrId" class="form-control input-sm"  value="<?=$member['mb_giup_boss_name']?>" placeholder="담당직원정보">
 						<!-- <select class="form-control input-sm" name="entUsrId">
 							<option value="testosw" <?=($data["usrId"] == "testosw") ? "selected" : ""?>>testosw</option>
 							<option value="test4" <?=($data["usrId"] == "test4") ? "selected" : ""?>>관리자2</option>
