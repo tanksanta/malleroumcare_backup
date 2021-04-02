@@ -407,6 +407,8 @@ $result_d = sql_fetch($sql_d);
 if($tot_sell_price >=$result_d['de_send_conditional']){
     $send_cost=0;
 }
+if($tot_sell_price=="0"){ $send_cost=0; }
+
 $tot_price="";
 $tot_price=$tot_sell_price+$send_cost;
 ?>
