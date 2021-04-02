@@ -74,6 +74,9 @@
 		@media (max-width : 750px){
 			#zipAddrPopupWrap > div > div { width: 100%; height: 100%; left: 0; margin-left: 0; }
 		}
+        .has-feedback .form-control {
+            padding-right: 0px;
+        }
 	</style>
 
 	<div id="zipAddrPopupWrap">
@@ -84,8 +87,9 @@
 			</div>
 		</div>
 	</div>
-
+    
 	<form class="form-horizontal register-form">
+        <input type="hidden" value="<?=substr($data['penProBirth'],2,2) ?><?=substr($data['penProBirth'],5,2) ?><?=substr($data['penProBirth'],8,2) ?>" id="penProBirth" >
 		<div class="panel panel-default">
 			<div class="panel-heading"><strong>기본정보</strong></div>
 			<div class="panel-body">
@@ -99,13 +103,15 @@
 					</div>
 				</div>
 
-				<div class="form-group has-feedback">
+
+                <div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>주민등록번호</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="number" maxlength="13" oninput="maxLengthCheck(this)" name="penJumin" value="<?=$data["penJumin"]?>" class="form-control input-sm">
-						<i class="fa fa-check form-control-feedback"></i>
+						<input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" style="display: inline-block;width:47%;" value="<?=substr($data["penJumin"], 0, 6) ?>" > - 
+						<input type="password" maxlength="7" oninput="maxLengthCheck(this)"id="penJumin2" name="penJumin2" min="0" class="form-control input-sm" style="display:inline-block;;width:48%;" value="<?=substr($data["penJumin"], 6, 7) ?>">
+						<qi class="fa fa-check form-control-feedback"></qi>
 					</div>
 				</div>
 
@@ -114,18 +120,18 @@
 						<b>생년월일</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penBirth" value="<?=$data["penBirth"]?>" class="form-control input-sm" dateonly2>
-						<i class="fa fa-check form-control-feedback"></i>
+                        <select name="penBirth1" id="year" title="년도" class="form-control input-sm year " style="display:inline-block;width:32%;"></select>
+                        <select name="penBirth2" id="month" title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
+                        <select name="penBirth3" id="day" title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
 					</div>
 				</div>
-
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>장기요양인정번호</b>
 					</label>
 					<div class="col-sm-3">
 						<span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
-						<input type="number" maxlength="10" oninput="maxLengthCheck(this)"  name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>" >
+						<input type="number" maxlength="10" oninput="maxLengthCheck(this)"  id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>" >
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -145,6 +151,52 @@
 						</select>
 					</div>
 				</div>
+
+<!-- 
+                <div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>휴대폰</b>
+					</label>
+					<div class="col-sm-3">
+                        <select class="form-control input-sm" name="penConNum1" id="penConNum1" style="display:inline-block; width:30%;">
+							<option value="010" <?=(substr($data["penConNum"], 0, 3) == "010") ? "selected" : ""?> >010</option>
+							<option value="011" <?=(substr($data["penConNum"], 0, 3) == "011") ? "selected" : ""?> >011</option>
+							<option value="016" <?=(substr($data["penConNum"], 0, 3) == "016") ? "selected" : ""?> >016</option>
+						</select>
+						<input type="text" name="penConNum2" class="form-control input-sm" value="<?=substr($data["penConNum"], 3, 4)?>" id="penConNum2" style="display:inline-block; width:30%;">
+						<input type="text" name="penConNum3" class="form-control input-sm" value="<?=substr($data["penConNum"], 7, 4)?>" id="penConNum3" style="display:inline-block; width:30%;">
+						<i class="fa fa-check form-control-feedback"></i>
+					</div>
+				</div>
+
+
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>일반전화</b>
+					</label>
+					<div class="col-sm-3">
+                        <select class="form-control input-sm" name="penConPnum1" style="display:inline-block; width:30%;" id="penConPnum1" >
+                        <option value="02" <?=(substr($data["penConNum"], 0, 2) == "02") ? "selected" : ""?> >02 </option>
+                          <option value="031" <?=(substr($data["penConNum"], 0, 3) == "031") ? "selected" : ""?>>031 </option>
+                          <option value="032" <?=(substr($data["penConNum"], 0, 3) == "032") ? "selected" : ""?>>032</option>
+                          <option value="033" <?=(substr($data["penConNum"], 0, 3) == "033") ? "selected" : ""?>>033 </option>
+                          <option value="041" <?=(substr($data["penConNum"], 0, 3) == "041") ? "selected" : ""?>>041 </option>
+                          <option value="042" <?=(substr($data["penConNum"], 0, 3) == "042") ? "selected" : ""?>>042 </option>
+                          <option value="043" <?=(substr($data["penConNum"], 0, 3) == "043") ? "selected" : ""?>>043 </option>
+                          <option value="051" <?=(substr($data["penConNum"], 0, 3) == "051") ? "selected" : ""?>>051 </option>
+                          <option value="052" <?=(substr($data["penConNum"], 0, 3) == "052") ? "selected" : ""?>>052 </option>
+                          <option value="053" <?=(substr($data["penConNum"], 0, 3) == "053") ? "selected" : ""?>>053 </option>
+                          <option value="054" <?=(substr($data["penConNum"], 0, 3) == "054") ? "selected" : ""?>>054 </option>
+                          <option value="055" <?=(substr($data["penConNum"], 0, 3) == "055") ? "selected" : ""?>>055 </option>
+                          <option value="061" <?=(substr($data["penConNum"], 0, 3) == "061") ? "selected" : ""?>>061 </option>
+                          <option value="062" <?=(substr($data["penConNum"], 0, 3) == "062") ? "selected" : ""?>>062 </option>
+                          <option value="063" <?=(substr($data["penConNum"], 0, 3) == "063") ? "selected" : ""?>>063 </option>
+                          <option value="064" <?=(substr($data["penConNum"], 0, 3) == "064") ? "selected" : ""?>>064 </option>
+						</select>
+						<input type="text" name="penConPnum2" class="form-control input-sm" style="display:inline-block; width:30%;" id="penConPnum2" >
+						<input type="text" name="penConPnum3" class="form-control input-sm" style="display:inline-block; width:30%;" id="penConPnum3" >
+					</div>
+				</div> -->
 
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
@@ -255,12 +307,14 @@
 					</div>
 				</div>
 
-				<div class="form-group has-feedback">
+                <div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>생년월일</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penProBirth" value="<?=$data["penProBirth"]?>" class="form-control input-sm" dateonly2>
+                        <select name="penProBirth1"  title="년도" class="form-control input-sm year"  style="display:inline-block;width:32%;"></select>
+                        <select name="penProBirth2"  title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
+                        <select name="penProBirth3"  title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
 					</div>
 				</div>
 
@@ -345,14 +399,15 @@
 						<b>담당직원정보</b>
 					</label>
 					<div class="col-sm-3">
-						<select class="form-control input-sm" name="entUsrId">
+                    <input type="text" name="entUsrId" class="form-control input-sm" placeholder="담당직원정보">
+						<!-- <select class="form-control input-sm" name="entUsrId">
 							<option value="testosw" <?=($data["usrId"] == "testosw") ? "selected" : ""?>>testosw</option>
 							<option value="test4" <?=($data["usrId"] == "test4") ? "selected" : ""?>>관리자2</option>
 							<option value="poongki" <?=($data["usrId"] == "poongki") ? "selected" : ""?>>백진수</option>
 							<option value="123456789" <?=($data["usrId"] == "123456789") ? "selected" : ""?>>사업소대표</option>
 							<option value="uxis" <?=($data["usrId"] == "uxis") ? "selected" : ""?>>유시스</option>
 							<option value="dsadsa" <?=($data["usrId"] == "dsadsa") ? "selected" : ""?>>테스트사업소2직원</option>
-						</select>
+						</select> -->
 					</div>
 				</div>
 			</div>
@@ -495,7 +550,89 @@
 	<script type="text/javascript">
 			var zipPopupDom = document.getElementById("zipAddrPopupIframe");
 
+            $(document).ready(function () {
+                setDateBox();
+                //생년월일 세팅
+                var penJumin1 =  document.getElementById('penJumin1');
+                var penProBirth =  document.getElementById('penProBirth');
+                var year=penJumin1.value.substring(0,2);
+                var month=penJumin1.value.substring(2,4);
+                var day=penJumin1.value.substring(4,6);
 
+                var year2=penProBirth.value.substring(0,2);
+                var month2=penProBirth.value.substring(2,4);
+                var day2=penProBirth.value.substring(4,6);
+
+                if( year < <?=substr(date("Y"),2,2) ?> ){ 
+                    year='20'+year; 
+                }else {
+                        year='19'+year; 
+                }
+
+                if( year2 < <?=substr(date("Y"),2,2) ?> ){ 
+                    year2='20'+year2; 
+                }else {
+                        year2='19'+year2; 
+                }
+                $(".register-form select[name='penBirth1']").val(year);
+                $(".register-form select[name='penBirth2']").val(month);
+                $(".register-form select[name='penBirth3']").val(day);
+
+                
+                $(".register-form select[name='penProBirth1']").val(year2);
+                $(".register-form select[name='penProBirth2']").val(month2);
+                $(".register-form select[name='penProBirth3']").val(day2);
+        });
+            //생년월일
+            function setDateBox() {
+                var dt = new Date();
+                var year = "";
+                var com_year = dt.getFullYear();
+
+                // 발행 뿌려주기
+                $(".year").append("<option value=''>년도</option>");
+
+                // 올해 기준으로 -50년부터 +1년을 보여준다.
+                for (var y = (com_year - 100); y <= (com_year); y++) {
+                $(".year").append("<option value='" + y + "'>" + y + "</option>");
+                }
+
+                // 월 뿌려주기(1월부터 12월)
+                var month;
+                $(".month").append("<option value=''>월</option>");
+                for (var i = 1; i <= 12; i++) {
+                var first_num="";
+                if(i<10){first_num = 0;}
+                $(".month").append("<option value='"+first_num + i + "'>"+first_num + i+"</option>");
+                }
+
+                // 일 뿌려주기(1일부터 31일)
+                var day;
+                $(".day").append("<option value=''>일</option>");
+                for (var i = 1; i <= 31; i++) {
+                if(i<10){first_num = 0;}
+                $(".day").append("<option value='" + i + "'>" + i + "</option>");
+                }
+
+            }
+            //주민번호 체크
+            $('#penJumin1').on('keyup', function(){
+                if(this.value.length == 6 ){
+                    var year=this.value.substring(0,2);
+                    var month=this.value.substring(2,4);
+                    var day=this.value.substring(4,6);
+                    if( year < <?=substr(date("Y"),2,2) ?> ){ 
+                        year='20'+year; 
+                    }else {
+                         year='19'+year; 
+                    }
+                    $(".register-form select[name='penBirth1']").val(year);
+                    $(".register-form select[name='penBirth2']").val(month);
+                    $(".register-form select[name='penBirth3']").val(day);
+                }
+                // alert(this.value.length);
+
+            });
             //maxnum 지정
             function maxLengthCheck(object){
                 if (object.value.length > object.maxLength){
@@ -570,6 +707,24 @@
 						return false;
 					}
 				}
+                var penJumin1 =  document.getElementById('penJumin1');
+                var penJumin2 =  document.getElementById('penJumin2');
+                var penLtmNum =  document.getElementById('penLtmNum');
+
+                if(!penJumin1.value){  alert('주민번호 앞자리를 입력해주새요.');  $(penJumin1).focus(); return false;}
+                if(penJumin1.value.length !== 6){  alert('주민번호 앞자리는 6자리입니다.'); $(penJumin1).focus(); return false;}
+                if(!penJumin2.value){  alert('주민번호 뒷자리를 입력해주새요.');  $(penJumin2).focus(); return false;}
+                if(penJumin2.value.length !== 7){  alert('주민번호 뒷자리는 7자리입니다.');  $(penJumin2).focus(); return false;}
+                if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penJumin2).focus(); return false;}
+
+                var penJumin = penJumin1.value+penJumin2.value;
+                var penBirth = $(".register-form select[name='penBirth1']").val()+'-'
+                + $(".register-form select[name='penBirth2']").val()+'-'
+                + $(".register-form select[name='penBirth3']").val();
+
+                var penProBirth = $(".register-form select[name='penProBirth1']").val()+'-'
+                + $(".register-form select[name='penProBirth2']").val()+'-'
+                + $(".register-form select[name='penProBirth3']").val();
 
 				var sendData = {
 					penId : "<?=$data["penId"]?>",
@@ -577,8 +732,8 @@
 					penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
 					penRecGraCd : $(".register-form select[name='penRecGraCd']").val(),
 					penGender : $(".register-form input[name='penGender']:checked").val(),
-					penBirth : $(".register-form input[name='penBirth']").val(),
-					penJumin : $(".register-form input[name='penJumin']").val(),
+                    penBirth : penBirth,
+					penJumin : penJumin,
 					penTypeCd : $(".register-form select[name='penTypeCd']").val(),
 					penConNum : $(".register-form input[name='penConNum']").val(),
 					penConPnum : $(".register-form input[name='penConPnum']").val(),
@@ -596,7 +751,7 @@
 					penAddr : $(".register-form input[name='penAddr']").val(),
 					penAddrDtl : $(".register-form input[name='penAddrDtl']").val(),
 					penProNm : $(".register-form input[name='penProNm']").val(),
-					penProBirth : $(".register-form input[name='penProBirth']").val(),
+					penProBirth : penProBirth,
 					penProRel : $(".register-form select[name='penProRel']").val(),
 					penProConNum : $(".register-form input[name='penProConNum']").val(),
 					penProConPnum : $(".register-form input[name='penProConPnum']").val(),
