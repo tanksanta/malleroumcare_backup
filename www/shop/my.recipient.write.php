@@ -166,8 +166,7 @@
 						<b>휴대폰</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penConNum" value="<?=$data["penConNum"]?>" class="form-control input-sm">
-						<i class="fa fa-check form-control-feedback"></i>
+						<input type="text" name="penConNum" value="" class="form-control input-sm">
 					</div>
 				</div>
 
@@ -176,7 +175,7 @@
 						<b>일반전화</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penConPnum" value="<?=$data["penConPnum"]?>" class="form-control input-sm">
+						<input type="text" name="penConPnum" value="" class="form-control input-sm">
 					</div>
 				</div>
 
@@ -264,13 +263,12 @@
 				</div>
 
 
-				<div class="form-group has-feedback">
+                <div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>휴대폰</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penConNum" value="<?=$data["penConNum"]?>" class="form-control input-sm">
-						<i class="fa fa-check form-control-feedback"></i>
+						<input type="text" name="penProConNum" value="" class="form-control input-sm">
 					</div>
 				</div>
 
@@ -279,9 +277,10 @@
 						<b>일반전화</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penConPnum" value="<?=$data["penConPnum"]?>" class="form-control input-sm">
+						<input type="text" name="penProConPnum" value="" class="form-control input-sm">
 					</div>
 				</div>
+
 				<!-- <div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>휴대폰</b>
