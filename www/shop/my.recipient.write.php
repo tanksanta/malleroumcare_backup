@@ -34,7 +34,9 @@
             margin: 0;
         }
 
-
+        .has-feedback .form-control {
+            padding-right: 0px;
+        }
 	</style>
 
 	<div id="zipAddrPopupWrap">
@@ -76,9 +78,9 @@
 						<b>생년월일</b>
 					</label>
 					<div class="col-sm-3">
-                        <select name="penBirth1" id="year" title="년도" class="form-control input-sm" style="display:inline-block;width:32%;"></select>
-                        <select name="penBirth2" id="month" title="월" class="form-control input-sm" style="display:inline-block;width:32%;"></select>
-                        <select name="penBirth3" id="day" title="일"  class="form-control input-sm" style="display:inline-block;width:32%;"></select>
+                        <select name="penBirth1" id="year" title="년도" class="form-control input-sm year" style="display:inline-block;width:32%;"></select>
+                        <select name="penBirth2" id="month" title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
+                        <select name="penBirth3" id="day" title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
 					</div>
 				</div>
 
@@ -164,7 +166,13 @@
 						<b>휴대폰</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penConNum" class="form-control input-sm">
+                        <select class="form-control input-sm" name="penConNum1" id="penConNum1" style="display:inline-block; width:30%;">
+							<option value="010">010</option>
+							<option value="011">011</option>
+							<option value="016">016</option>
+						</select>
+						<input type="text" name="penConNum2" class="form-control input-sm" id="penConNum2" style="display:inline-block; width:30%;">
+						<input type="text" name="penConNum3" class="form-control input-sm" id="penConNum3" style="display:inline-block; width:30%;">
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -174,7 +182,27 @@
 						<b>일반전화</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penConPnum" class="form-control input-sm">
+                        <select class="form-control input-sm" name="penConPnum1" style="display:inline-block; width:30%;" id="penConPnum1" >
+                        <option value="02">02 </option>
+                          <option value="031">031 </option>
+                          <option value="032">032</option>
+                          <option value="033">033 </option>
+                          <option value="041">041 </option>
+                          <option value="042">042 </option>
+                          <option value="043">043 </option>
+                          <option value="051">051 </option>
+                          <option value="052">052 </option>
+                          <option value="053">053 </option>
+                          <option value="054">054 </option>
+                          <option value="054">054 </option>
+                          <option value="055">055 </option>
+                          <option value="061">061 </option>
+                          <option value="062">062 </option>
+                          <option value="063">063 </option>
+                          <option value="064">064 </option>
+						</select>
+						<input type="text" name="penConPnum2" class="form-control input-sm" style="display:inline-block; width:30%;" id="penConPnum2" >
+						<input type="text" name="penConPnum3" class="form-control input-sm" style="display:inline-block; width:30%;" id="penConPnum3" >
 					</div>
 				</div>
 
@@ -218,12 +246,14 @@
 					</div>
 				</div>
 
-				<div class="form-group has-feedback">
+                <div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>생년월일</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penProBirth" class="form-control input-sm" dateonly2>
+                        <select name="penProBirth1"  title="년도" class="form-control input-sm year"  style="display:inline-block;width:32%;"></select>
+                        <select name="penProBirth2"  title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
+                        <select name="penProBirth3"  title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
 					</div>
 				</div>
 
@@ -259,7 +289,52 @@
 					</div>
 				</div>
 
+
+                <div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>휴대폰</b>
+					</label>
+					<div class="col-sm-3">
+                        <select class="form-control input-sm" name="penProConNum1" id="penProConNum1" style="display:inline-block; width:30%;">
+							<option value="010">010</option>
+							<option value="011">011</option>
+							<option value="016">016</option>
+						</select>
+						<input type="text" name="penProConNum2" class="form-control input-sm" id="penProConNum2" style="display:inline-block; width:30%;">
+						<input type="text" name="penProConNum3" class="form-control input-sm" id="penProConNum3" style="display:inline-block; width:30%;">
+						<i class="fa fa-check form-control-feedback"></i>
+					</div>
+				</div>
+
 				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>일반전화</b>
+					</label>
+					<div class="col-sm-3">
+                        <select class="form-control input-sm" name="penProConPnum1" style="display:inline-block; width:30%;" id="penProConPnum1" >
+                        <option value="02">02 </option>
+                          <option value="031">031 </option>
+                          <option value="032">032</option>
+                          <option value="033">033 </option>
+                          <option value="041">041 </option>
+                          <option value="042">042 </option>
+                          <option value="043">043 </option>
+                          <option value="051">051 </option>
+                          <option value="052">052 </option>
+                          <option value="053">053 </option>
+                          <option value="054">054 </option>
+                          <option value="054">054 </option>
+                          <option value="055">055 </option>
+                          <option value="061">061 </option>
+                          <option value="062">062 </option>
+                          <option value="063">063 </option>
+                          <option value="064">064 </option>
+						</select>
+						<input type="text" name="penProConPnum2" class="form-control input-sm" style="display:inline-block; width:30%;" id="penProConPnum2" >
+						<input type="text" name="penProConPnum3" class="form-control input-sm" style="display:inline-block; width:30%;" id="penProConPnum3" >
+					</div>
+				</div>
+				<!-- <div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>휴대폰</b>
 					</label>
@@ -275,7 +350,7 @@
 					<div class="col-sm-3">
 						<input type="text" name="penProConPnum" class="form-control input-sm">
 					</div>
-				</div>
+				</div> -->
 
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
@@ -308,14 +383,16 @@
 						<b>담당직원정보</b>
 					</label>
 					<div class="col-sm-3">
-						<select class="form-control input-sm" name="entUsrId">
+                    <input type="text" name="entUsrId" class="form-control input-sm" placeholder="담당직원정보">
+
+						<!-- <select class="form-control input-sm" name="entUsrId">
 							<option value="testosw">testosw</option>
 							<option value="test4">관리자2</option>
 							<option value="poongki">백진수</option>
 							<option value="123456789" selected>사업소대표</option>
 							<option value="uxis">유시스</option>
 							<option value="dsadsa">테스트사업소2직원</option>
-						</select>
+						</select> -->
 					</div>
 				</div>
 			</div>
@@ -448,8 +525,12 @@
 			<a href="./my.recipient.list.php" class="btn btn-black" role="button">취소</a>
 		</div>
 	</form>
-	<script type="text/javascript">
+    <button onclick="test()"> test</button>
 
+	<script type="text/javascript">
+			var zipPopupDom = document.getElementById("zipAddrPopupIframe");
+            var penid="";
+            
             $(document).ready(function () {
                 setDateBox();
             });
@@ -460,27 +541,28 @@
                 var com_year = dt.getFullYear();
 
                 // 발행 뿌려주기
-                $("#year").append("<option value=''>년도</option>");
+                $(".year").append("<option value=''>년도</option>");
 
                 // 올해 기준으로 -50년부터 +1년을 보여준다.
                 for (var y = (com_year - 100); y <= (com_year); y++) {
-                $("#year").append("<option value='" + y + "'>" + y + "</option>");
+                $(".year").append("<option value='" + y + "'>" + y + "</option>");
                 }
 
                 // 월 뿌려주기(1월부터 12월)
                 var month;
-                $("#month").append("<option value=''>월</option>");
+                $(".month").append("<option value=''>월</option>");
                 for (var i = 1; i <= 12; i++) {
                 var first_num="";
                 if(i<10){first_num = 0;}
-                $("#month").append("<option value='"+first_num + i + "'>"+first_num + i+"</option>");
+                $(".month").append("<option value='"+first_num + i + "'>"+first_num + i+"</option>");
                 }
 
                 // 일 뿌려주기(1일부터 31일)
                 var day;
-                $("#day").append("<option value=''>일</option>");
+                $(".day").append("<option value=''>일</option>");
                 for (var i = 1; i <= 31; i++) {
-                $("#day").append("<option value='" + i + "'>" + i + "</option>");
+                if(i<10){first_num = 0;}
+                $(".day").append("<option value='" + i + "'>" + i + "</option>");
                 }
 
             }
@@ -498,6 +580,7 @@
                     $(".register-form select[name='penBirth1']").val(year);
                     $(".register-form select[name='penBirth2']").val(month);
                     $(".register-form select[name='penBirth3']").val(day);
+                    
                 }
                 // alert(this.value.length);
 
@@ -508,9 +591,6 @@
                 object.value = object.value.slice(0, object.maxLength);
                 }    
             }
-
-			var zipPopupDom = document.getElementById("zipAddrPopupIframe");
-            var penid="";
 
 			function zipPopupClose(){
 				$("#zipAddrPopupWrap").hide();
@@ -584,25 +664,58 @@
                 var penJumin1 =  document.getElementById('penJumin1');
                 var penJumin2 =  document.getElementById('penJumin2');
                 var penLtmNum =  document.getElementById('penLtmNum');
+                
+                var penConPnum1 =  document.getElementById('penConPnum1');
+                var penConPnum2 =  document.getElementById('penConPnum2');
+                var penConPnum3 =  document.getElementById('penConPnum3');
+
+                var penConNum1 =  document.getElementById('penConNum1');
+                var penConNum2 =  document.getElementById('penConNum2');
+                var penConNum3 =  document.getElementById('penConNum3');
+
+                var penProConNum1 =  document.getElementById('penProConNum1');
+                var penProConNum2 =  document.getElementById('penProConNum2');
+                var penProConNum3 =  document.getElementById('penProConNum3');
+
+                var penProConPnum1 =  document.getElementById('penProConPnum1');
+                var penProConPnum2 =  document.getElementById('penProConPnum2');
+                var penProConPnum3 =  document.getElementById('penProConPnum3');
+
 
                 if(!penJumin1.value){  alert('주민번호 앞자리를 입력해주새요.');  $(penJumin1).focus(); return false;}
                 if(penJumin1.value.length !== 6){  alert('주민번호 앞자리는 6자리입니다.'); $(penJumin1).focus(); return false;}
                 if(!penJumin2.value){  alert('주민번호 뒷자리를 입력해주새요.');  $(penJumin2).focus(); return false;}
                 if(penJumin2.value.length !== 7){  alert('주민번호 뒷자리는 7자리입니다.');  $(penJumin2).focus(); return false;}
-                if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penJumin2).focus(); return false;}
+                if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penLtmNum).focus(); return false;}
+                if(!penConNum1.value) {  alert('휴대폰번호를 입력하세요.'); $(penConNum1).focus();  return false;}
+                if(!penConNum2.value) {  alert('휴대폰번호를 입력하세요.'); $(penConNum2).focus();  return false;}
+                if(!penConNum3.value) {  alert('휴대폰번호를 입력하세요.'); $(penConNum3).focus();  return false;}
+                var penJumin = penJumin1.value+penJumin2.value;
+                var penBirth = $(".register-form select[name='penBirth1']").val()+'-'
+                + $(".register-form select[name='penBirth2']").val()+'-'
+                + $(".register-form select[name='penBirth3']").val();
 
-                var penJumin=$(".register-form input[name='penJumin1']").val()+$(".register-form input[name='penJumin2']").val();
+                var penProBirth = $(".register-form select[name='penProBirth1']").val()+'-'
+                + $(".register-form select[name='penProBirth2']").val()+'-'
+                + $(".register-form select[name='penProBirth3']").val();
+
+                var penConPnum = penConPnum1.value + penConPnum2.value + penConPnum3.value;
+                var penConNum = penConNum1.value + penConNum2.value +penConNum3.value;
+
+                var penProConPnum = penProConPnum1.value + penProConPnum2.value + penProConPnum3.value;
+                var penProConNum = penProConNum1.value + penProConNum2.value +penProConNum3.value;
+                
                 $(".register-form input[name='penJumin2']").val()
 				var sendData = {
 					penNm : $(".register-form input[name='penNm']").val(),
 					penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
 					penRecGraCd : $(".register-form select[name='penRecGraCd']").val(),
 					penGender : $(".register-form input[name='penGender']:checked").val(),
-					penBirth : $(".register-form input[name='penBirth']").val(),
-					penJumin : $(".register-form input[name='penJumin']").val(),
+					penBirth : penBirth,
+					penJumin : penJumin,
 					penTypeCd : $(".register-form select[name='penTypeCd']").val(),
-					penConNum : $(".register-form input[name='penConNum']").val(),
-					penConPnum : $(".register-form input[name='penConPnum']").val(),
+					penConNum : penConNum,
+					penConPnum : penConPnum,
 					penExpiStDtm : $(".register-form input[name='penExpiStDtm']").val(),
 					penExpiEdDtm : $(".register-form input[name='penExpiEdDtm']").val(),
 					penAppStDtm1 : $(".register-form input[name='penExpiStDtm']").val(),
@@ -617,10 +730,10 @@
 					penAddr : $(".register-form input[name='penAddr']").val(),
 					penAddrDtl : $(".register-form input[name='penAddrDtl']").val(),
 					penProNm : $(".register-form input[name='penProNm']").val(),
-					penProBirth : $(".register-form input[name='penProBirth']").val(),
+					penProBirth : penProBirth,
 					penProRel : $(".register-form select[name='penProRel']").val(),
-					penProConNum : $(".register-form input[name='penProConNum']").val(),
-					penProConPnum : $(".register-form input[name='penProConPnum']").val(),
+					penProConNum : penProConNum,
+					penProConPnum : penProConPnum,
 					penProEmail : $(".register-form input[name='penProEmail']").val(),
 					penProRelEtc : $(".register-form input[name='penProRelEtc']").val(),
 					penProZip : $(".register-form input[name='penProZip']").val(),
