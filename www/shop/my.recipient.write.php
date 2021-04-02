@@ -443,21 +443,13 @@
 			</div>
 		</div>
 <!-- 20210307 성훈작업 -->
-
-
 		<div class="text-center" style="margin-top: 30px;">
 			<button type="button" id="btn_submit" class="btn btn-color">등록</button>
 			<a href="./my.recipient.list.php" class="btn btn-black" role="button">취소</a>
 		</div>
 	</form>
-    <button onclick="test()">test</button>
 	<script type="text/javascript">
 
-            
-            function test(){
-                var penJumin=$(".register-form input[name='penJumin1']").val()+$(".register-form input[name='penJumin2']").val();
-                alert(penJumin);
-            }
             $(document).ready(function () {
                 setDateBox();
             });
