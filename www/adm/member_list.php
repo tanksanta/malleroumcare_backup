@@ -39,7 +39,8 @@ if ($stx) {
                                 mb_giup_bnum like '%{$stx}%' OR
                                 mb_recommend like '%{$stx}%' OR
                                 mb_1 like '%{$stx}%' OR
-                                mb_giup_bname like '%{$stx}%'
+                                mb_giup_bname like '%{$stx}%' OR
+                                mb_manager like '%{$stx}%'
                             ";
             break;
         default :
@@ -200,11 +201,12 @@ $colspan = ($is_membership) ? 18 : 17;
     <option value="mb_recommend"<?php echo get_selected($_GET['sfl'], "mb_recommend"); ?>>추천인</option>
     <option value="mb_1"<?php echo get_selected($_GET['sfl'], "mb_1"); ?>>여분필드1</option>
     <option value="mb_giup_bname"<?php echo get_selected($_GET['sfl'], "mb_giup_bname"); ?>>기업명</option>
+    <option value="mb_manager"<?php echo get_selected($_GET['sfl'], "mb_manager"); ?>>영업담당자</option>
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
 <input type="submit" class="btn_submit" value="검색">
-<button type="submit" class="btn_submit" name="manager" value="1">영업담당자 검색</button>
+<!-- <button type="submit" class="btn_submit" name="manager" value="1">영업담당자 검색</button> -->
 </form>
 
 <div class="local_desc01 local_desc">
