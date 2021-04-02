@@ -27,6 +27,14 @@
 		@media (max-width : 750px){
 			#zipAddrPopupWrap > div > div { width: 100%; height: 100%; left: 0; margin-left: 0; }
 		}
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+
 	</style>
 
 	<div id="zipAddrPopupWrap">
@@ -57,8 +65,9 @@
 						<b>주민등록번호</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="number" maxlength="13" oninput="maxLengthCheck(this)" name="penJumin" class="form-control input-sm">
-						<i class="fa fa-check form-control-feedback"></i>
+						<input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" style="display: inline-block;width:47%;"> - 
+						<input type="password" maxlength="7" oninput="maxLengthCheck(this)"id="penJumin2" name="penJumin2" min="0" class="form-control input-sm" style="display:inline-block;;width:48%;">
+						<qi class="fa fa-check form-control-feedback"></qi>
 					</div>
 				</div>
 
@@ -67,8 +76,9 @@
 						<b>생년월일</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penBirth" class="form-control input-sm" dateonly2>
-						<i class="fa fa-check form-control-feedback"></i>
+                        <select name="penBirth1" id="year" title="년도" class="form-control input-sm" style="display:inline-block;width:32%;"></select>
+                        <select name="penBirth2" id="month" title="월" class="form-control input-sm" style="display:inline-block;width:32%;"></select>
+                        <select name="penBirth3" id="day" title="일"  class="form-control input-sm" style="display:inline-block;width:32%;"></select>
 					</div>
 				</div>
 
@@ -78,7 +88,7 @@
 					</label>
 					<div class="col-sm-3">
 						<span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
-						<input type="number" maxlength="10" oninput="maxLengthCheck(this)" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);">
+						<input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);">
 						<i class="fa fa-check form-control-feedback"></i>
 					</div>
 				</div>
@@ -440,9 +450,66 @@
 			<a href="./my.recipient.list.php" class="btn btn-black" role="button">취소</a>
 		</div>
 	</form>
-
+    <button onclick="test()">test</button>
 	<script type="text/javascript">
 
+            
+            function test(){
+                var penJumin=$(".register-form input[name='penJumin1']").val()+$(".register-form input[name='penJumin2']").val();
+                alert(penJumin);
+            }
+            $(document).ready(function () {
+                setDateBox();
+            });
+            //생년월일
+            function setDateBox() {
+                var dt = new Date();
+                var year = "";
+                var com_year = dt.getFullYear();
+
+                // 발행 뿌려주기
+                $("#year").append("<option value=''>년도</option>");
+
+                // 올해 기준으로 -50년부터 +1년을 보여준다.
+                for (var y = (com_year - 100); y <= (com_year); y++) {
+                $("#year").append("<option value='" + y + "'>" + y + "</option>");
+                }
+
+                // 월 뿌려주기(1월부터 12월)
+                var month;
+                $("#month").append("<option value=''>월</option>");
+                for (var i = 1; i <= 12; i++) {
+                var first_num="";
+                if(i<10){first_num = 0;}
+                $("#month").append("<option value='"+first_num + i + "'>"+first_num + i+"</option>");
+                }
+
+                // 일 뿌려주기(1일부터 31일)
+                var day;
+                $("#day").append("<option value=''>일</option>");
+                for (var i = 1; i <= 31; i++) {
+                $("#day").append("<option value='" + i + "'>" + i + "</option>");
+                }
+
+            }
+            //주민번호 체크
+            $('#penJumin1').on('keyup', function(){
+                if(this.value.length == 6 ){
+                    var year=this.value.substring(0,2);
+                    var month=this.value.substring(2,4);
+                    var day=this.value.substring(4,6);
+                    if( year < <?=substr(date("Y"),2,2) ?> ){ 
+                        year='20'+year; 
+                    }else {
+                         year='19'+year; 
+                    }
+                    $(".register-form select[name='penBirth1']").val(year);
+                    $(".register-form select[name='penBirth2']").val(month);
+                    $(".register-form select[name='penBirth3']").val(day);
+                }
+                // alert(this.value.length);
+
+            });
             //maxnum 지정
             function maxLengthCheck(object){
                 if (object.value.length > object.maxLength){
@@ -510,6 +577,8 @@
 			});
 
 			$("#btn_submit").click(function(){
+       
+
 				var importantIcon = $(".register-form .form-control-feedback");
 				for(var i = 0; i < importantIcon.length; i++){
 					var item = $(importantIcon[i]).prev();
@@ -520,6 +589,18 @@
 					}
 				}
 
+                var penJumin1 =  document.getElementById('penJumin1');
+                var penJumin2 =  document.getElementById('penJumin2');
+                var penLtmNum =  document.getElementById('penLtmNum');
+
+                if(!penJumin1.value){  alert('주민번호 앞자리를 입력해주새요.');  $(penJumin1).focus(); return false;}
+                if(penJumin1.value.length !== 6){  alert('주민번호 앞자리는 6자리입니다.'); $(penJumin1).focus(); return false;}
+                if(!penJumin2.value){  alert('주민번호 뒷자리를 입력해주새요.');  $(penJumin2).focus(); return false;}
+                if(penJumin2.value.length !== 7){  alert('주민번호 뒷자리는 7자리입니다.');  $(penJumin2).focus(); return false;}
+                if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penJumin2).focus(); return false;}
+
+                var penJumin=$(".register-form input[name='penJumin1']").val()+$(".register-form input[name='penJumin2']").val();
+                $(".register-form input[name='penJumin2']").val()
 				var sendData = {
 					penNm : $(".register-form input[name='penNm']").val(),
 					penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
