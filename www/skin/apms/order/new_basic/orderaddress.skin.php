@@ -91,9 +91,9 @@ $(function() {
         f.od_b_zip.value         = addr[3] + addr[4];
         f.od_b_addr1.value       = addr[5];
         f.od_b_addr2.value       = addr[6];
-        f.od_b_addr3.value       = addr[7];
+        // f.od_b_addr3.value       = addr[7];
         f.od_b_addr_jibeon.value = addr[8];
-        f.ad_subject.value       = addr[9];
+        // f.ad_subject.value       = addr[9];
 
         var zip1 = addr[3].replace(/[^0-9]/g, "");
         var zip2 = addr[4].replace(/[^0-9]/g, "");
