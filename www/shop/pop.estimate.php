@@ -390,7 +390,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
     ?>
         <?php for($k=0; $k<count($options); $k++) { ?>
             <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
-                <td align="left" style="padding-left:5px;"><div class="goods_name"><?php echo $carts[$i]['it_model']; ?></div></td>
+                <td align="left" style="padding-left:5px;"><div class="goods_name"><?php echo $carts[$i]['it_name']; ?></div></td>
                 <td align="left" style="padding-left:5px;">
                 <?php echo $options[$k]['ct_option'] != $options[$k]['it_name'] ? '옵션: ' . $options[$k]['ct_option'] : ''; ?>
                 <?php echo $options[$k]['ct_option'] != $options[$k]['it_name'] && $options[$k]['cs'] && $k == 0 ? ', ' : ''; ?>
