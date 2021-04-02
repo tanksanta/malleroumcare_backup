@@ -1301,6 +1301,14 @@ var array_box=[];
 
 		//상품주문,수급자주문,보유재고등록 탭
 		$('.detail-tab li').on('click',function(){
+			switch($(this).attr("data-type")){
+				case "order_pen" :
+                <?php if(!$itemPenIdStatus){ ?>
+                    alert("대여상품은 재고 확보 후 수급자 계약이 가능합니다.");
+                    return false;
+                <?php } ?>
+            }
+			
 			if($(this).hasClass("on")){
 				return false;
 			}
