@@ -1085,6 +1085,7 @@ var array_box=[];
 							var dataName = $(item[i]).attr("data-name");
 							//20210306 성훈수정(아래줄 id 추가)
                             var html = '<select id="prodBarSelectBox_renew'+i+'" class="prodBarSelectBox prodBarSelectBox' + subKey + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+							optionBarList[code][subKey].sort();
 							$.each(optionBarList[code][subKey], function(key, value){
 								html += '<option value="' + value + '">' + value + '</option>';
 							});
@@ -1600,6 +1601,7 @@ var array_box=[];
 
 					if(i < val){
                         var html = '<select id="prodBarSelectBox_renew'+i+'" class="prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+							optionBarList[it_id][code].sort();
 							$.each(optionBarList[it_id][code], function(key, value){
 								html += '<option value="' + value + '">' + value + '</option>';
 							});
@@ -1688,6 +1690,7 @@ var array_box=[];
 
 							//20210306 성훈수정(아래줄 id 추가)
 							var html = '<select id="prodBarSelectBox_renew'+i+'" class="prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+							optionBarList[it_id][code].sort();
 							$.each(optionBarList[it_id][code], function(key, value){
 								html += '<option value="' + value + '">' + value + '</option>';
 							});
