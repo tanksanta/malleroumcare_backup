@@ -151,6 +151,7 @@ table {border-collapse: collapse;}
 .table-list2 .list .pro {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
 .table-list2 .pro .img {width: 100px;height: auto;border: 1px solid #ddd;}
 .table-list2 .pro-info {padding-left: 20px;text-align: left;}
+.table-list2 .pro-info ul > li {text-align:left;}
 .table-list2 .pro-info div {padding-bottom: 7px;}
 .table-list2 .pro-info div:last-child {padding-bottom: 0;}
 .table-list2 .pro-info .name {font-size: 16px;}
@@ -206,7 +207,7 @@ table {border-collapse: collapse;}
 .order-info .top h5 {color:#232323;font-size: 16px;}
 .order-info .top .add-ac {position: relative; font-size: 14px;color: #666;width: 114px;}
 .order-info .top .add-ac p {cursor: pointer; padding: 5px 0 5px 12px; background: url('../image/icon_18.png') no-repeat right 10px top 50%/8px auto;}
-.order-info .top .add-ac ul {display: none; position: absolute;left: 0;top:26px;background: #fff;z-index: 1; padding: 10px 12px;border: 1px solid #ddd;height: 124px;overflow-y: auto;}
+.order-info .top .add-ac ul {display: none; position: absolute;left: 0;top:26px;background: #fff;z-index: 1; padding: 10px 12px;border: 1px solid #ddd; overflow-y: auto;}
 .order-info .top .add-ac ul li {cursor: pointer;padding-bottom: 10px;}
 .order-info .top .add-ac ul li:last-child {padding-bottom: 0;}
 
