@@ -272,16 +272,50 @@ if($header_skin)
 							<div>
 							<?php if($item["prodSupYn"] == "N"){ ?>
 								<a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"><?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$row["od_prodBarNum_total"]})" : "바코드 확인"?></a>
-							<?php } else { ?>
+							<?php } else { 
+
+								//바코드 개수 구하기
+								$sendData2=[];
+								$sendData2["stateCd"] =['01','02','08','09'];
+								$sendData2["usrId"] = $member["mb_id"];
+								$sendData2["entId"] = $member["mb_entId"];
+								$sendData2["prodId"] = $item["it_id"];
+								$oCurl = curl_init();
+								curl_setopt($oCurl, CURLOPT_PORT, 9901);
+								curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
+								curl_setopt($oCurl, CURLOPT_POST, 1);
+								curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+								curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
+								curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+								curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+								$res = curl_exec($oCurl);
+								$res = json_decode($res, true);
+								curl_close($oCurl);
+								// print_r($res["data"][0]['prodBarNum']);
+								$barcode_c=0;		
+								for($k=0;$k<count($res["data"]); $k++){
+									if($res["data"][$k]['prodBarNum']) $barcode_c++;
+								}
+							?>
+								<?php if($barcode_c>0){ ?>
 								<a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드</a>
+								<?php }else { ?>
+									아직 바코드가 입력되지 않았습니다.
+								<?php } ?>
 							<?php } ?>
 							
 							<?php if($row["od_delivery_insert"] && ($item["prodSupYn"] == "Y")){ ?>
 								<a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
 							<?php } ?>
-							
+                            <?php 
+                                if($item["ordLendStrDtm"] && $item["ordLendStrDtm"] != "0000-00-00 00:00:00"){
+                                    $path ="sales_Inventory_datail2.php";
+                                }else{
+                                    $path ="sales_Inventory_datail.php";
+                                }
+                            ?>
 							<?php if($row["od_status"] == "배송완료"){ ?>
-								<a href="https://mall.eroumcare.com/shop/sales_Inventory_datail.php?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
+								<a href="https://mall.eroumcare.com/shop/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
 							<?php } ?>
 							</div>
 						</li>
