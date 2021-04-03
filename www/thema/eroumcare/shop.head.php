@@ -104,9 +104,35 @@ scrollToTop();
 <div id="mask" style="position:absolute; left:0;top:0; background-color:#000; z-index:300"></div> 
 
 
+<style>
+.btn_top_scroll {
+	display:flex;
+}
+.btn_top_scroll .scroll_btn {
+	text-align: center;
+    background-color: #6b6b6b;
+    opacity: 0.7;
+    margin-left: 5px;
+    width: 50px;
+    padding: 5px 0;
+    line-height: 15px;
+    color: white;
+    border-radius: 2px;
+}
+.btn_top_scroll .scroll_btn span {
+	display:block;
+}
+</style>
 
 <div class="btn_top_scroll">
-	<a onclick="scrollToTop()"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_scroll_new.png" alt=""></a>
+	<a onclick="scrollToBack()" class="scroll_btn">
+		<span>◀</span>
+		Back
+	</a>
+	<a onclick="scrollToTop()" class="scroll_btn">
+		<span>▲</span>
+		Top
+	</a>
 </div>
 
 

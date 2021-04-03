@@ -9,6 +9,10 @@ function scrollToTop() {
     $('html, body').animate({scrollTop: 0 }, 300);
 }
 
+function scrollToBack() {
+    window.history.back();
+}
+
 function eventToggle(){
     $('.right_menu_toggle').on('click', function(){
        if(!$(this).closest('.right_menu_area').hasClass('on')){
