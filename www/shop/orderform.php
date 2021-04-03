@@ -1007,7 +1007,7 @@ $tot_price=$tot_sell_price+$send_cost;
 
 		if(!$("#od_stock_insert_yn").prop("checked")){
 			check_field(f.od_b_name, "받으시는 분 이름을 입력하십시오.");
-			check_field(f.od_b_tel, "받으시는 분 전화번호를 입력하십시오.");
+			// check_field(f.od_b_tel, "받으시는 분 전화번호를 입력하십시오.");
 			check_field(f.od_b_addr1, "주소검색을 이용하여 받으시는 분 주소를 입력하십시오.");
 			//check_field(f.od_b_addr2, "받으시는 분의 상세주소를 입력하십시오.");
 			check_field(f.od_b_zip, "받으시는 분의 우편번호를 입력하십시오.");
@@ -1301,7 +1301,7 @@ $tot_price=$tot_sell_price+$send_cost;
 
 			if(!$("#od_stock_insert_yn").prop("checked")){
 				check_field(f.od_b_name, "받으시는 분 이름을 입력하십시오.");
-				check_field(f.od_b_tel, "받으시는 분 전화번호를 입력하십시오.");
+				// check_field(f.od_b_tel, "받으시는 분 전화번호를 입력하십시오.");
 				check_field(f.od_b_addr1, "주소검색을 이용하여 받으시는 분 주소를 입력하십시오.");
 				//check_field(f.od_b_addr2, "받으시는 분의 상세주소를 입력하십시오.");
 				check_field(f.od_b_zip, "받으시는 분의 우편번호를 입력하십시요.");

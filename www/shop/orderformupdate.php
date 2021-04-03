@@ -705,8 +705,8 @@ $od_penzip2			= substr($penzip, 3);
 $od_penAddr			= clean_xss_tags($penAddr);
 
 $od_b_name        = clean_xss_tags($od_b_name);
-$od_b_tel         = clean_xss_tags($od_b_tel);
 $od_b_hp          = clean_xss_tags($od_b_hp);
+$od_b_tel         = clean_xss_tags($od_b_tel) ? clean_xss_tags($od_b_tel) : $od_b_hp;
 $od_b_addr1       = clean_xss_tags($od_b_addr1);
 $od_b_addr2       = clean_xss_tags($od_b_addr2);
 $od_b_addr3       = clean_xss_tags($od_b_addr3);
