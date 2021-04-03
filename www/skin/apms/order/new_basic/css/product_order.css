@@ -74,9 +74,9 @@ table {border-collapse: collapse;}
 
 
 .list-wrap {padding-bottom: 50px;}
-.list-wrap .info-top {padding: 10px 16px; background: #f6f8e3;  display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; position: relative; top: 1px; z-index: 2; }
+.list-wrap .info-top {padding: 10px 16px; background: #f6f8e3;  display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; position: relative; top: 1px;  }
 .list-wrap .info-top a {width: 100px; border-radius: 5px;text-align: center; display: inline-block;vertical-align: top;padding: 3px 0;border:1px solid #b6bd00;background: #fff;color: #b6bd00;font-size: 14px;}
-.list-wrap .info-top h5 {font-size: 14px; line-height: 30px; font-weight: normal; margin: 0 !important; z-index: 2; position: relative;}
+.list-wrap .info-top h5 {font-size: 14px; line-height: 30px; font-weight: normal; margin: 0 !important;   position: relative;}
 
 .table-list {}
 .table-list .list {padding: 15px 16px;}

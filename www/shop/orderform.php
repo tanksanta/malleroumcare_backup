@@ -302,7 +302,7 @@ if ($i == 0) {
 	alert('장바구니가 비어 있습니다.', G5_SHOP_URL.'/cart.php');
 } else {
 	// 배송비 계산
-	$send_cost = get_sendcost($s_cart_id);
+	$send_cost = get_sendcost2($s_cart_id);
 }
 
 // 복합과세처리
@@ -407,6 +407,8 @@ $result_d = sql_fetch($sql_d);
 if($tot_sell_price >=$result_d['de_send_conditional']){
     $send_cost=0;
 }
+if($tot_sell_price=="0"){ $send_cost=0; }
+
 $tot_price="";
 $tot_price=$tot_sell_price+$send_cost;
 ?>
