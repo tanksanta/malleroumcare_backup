@@ -331,8 +331,18 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
                                             if($od["od_stock_insert_yn"] == "Y"){
 												echo "등록완료";
                                             }else{
-												$ct_status = get_step($od["od_status"]);
-												echo $ct_status['name'];
+                                                if($item[$i]["prodSupYn"] == "N"){
+                                                    echo "등록완료";
+                                                }else{ 
+                                                    ?>
+											<a href="javascript:;"class="de-btn">
+                                                    <?php
+                                                    $ct_status = get_step($od["od_status"]);
+												    echo $ct_status['name'];
+                                                    ?>
+                                            </a>
+                                            <?php
+                                                }
                                             }
 											?>
 											</a>
