@@ -472,6 +472,12 @@ else // 장바구니에 담기
 			
 			${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";
 
+            //무조건 판매가
+            $sql_i = "SELECT `it_price` FROM `g5_shop_item` WHERE `it_id` ='".$it['it_id']."'";
+            $result_i = sql_fetch($sql_i);
+            $it['it_price']=$result_i['it_price'];
+
+
             $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it_sc_type}', '{$it_sc_method}', '{$it_sc_price}', '{$it_sc_minimum}', '{$it_sc_qty}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '$uid', '{$ct_discount}', '{$it["prodSupYn"]}' )";
             $comma = ' , ';
             $ct_count++;
