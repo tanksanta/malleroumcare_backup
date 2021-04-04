@@ -67,7 +67,15 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
             <tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
                 <td class="text-center">
                     <label for="ct_chk_<?php echo $i; ?>" class="sound_only">상품</label>
-                    <input class="check_cart" data-target="<?=$item[$i]['sell_price']?>" data-target2="<?=get_item_sendcost($item[$i]['it_id'], $item[$i]['ct_price'], $item[$i]['qty'],$s_cart_id)?>" type="checkbox" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked">
+                    <input class="check_cart" data-target="<?=$item[$i]['sell_price']?>" data-target2="
+                    <?php
+                    if($item[$i]["prodSupYn"] == "N"){
+                        echo "0";
+                    }else{
+                        echo get_item_sendcost($item[$i]['it_id'], $item[$i]['ct_price'], $item[$i]['qty'],$s_cart_id);
+                    }
+                    ?>
+                    " type="checkbox" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked">
                 </td>
                 <td class="text-center">
                     <div class="item-img">
