@@ -78,6 +78,9 @@ if($_POST["mb_id"] != "admin"){
 		$resInfo = json_decode($res, true);
 		$resInfo = $resInfo["data"];
 
+		$resInfo["usrZip01"] = substr($resInfo["entZip"], 0, 3);
+		$resInfo["usrZip02"] = substr($resInfo["entZip"], 3, 2);
+		
 		$resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
 		$resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
 
