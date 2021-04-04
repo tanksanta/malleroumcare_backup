@@ -441,9 +441,13 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<?php } ?>
 				<?php } ?>
 						<input type="hidden" id="it_price" value="
-                            <?php
+							<?php
                                 if($member["mb_id"]){
-                                    echo samhwa_price($it, THEMA_KEY);
+                                    if($_COOKIE["viewType"] == "basic"){
+                                        echo $it["it_cust_price"];
+                                    }else{
+                                        echo $it["it_price"];
+                                    }
                                 }else{
                                     echo $it["it_cust_price"];
                                 }
