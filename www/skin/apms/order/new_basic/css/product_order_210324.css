@@ -176,13 +176,13 @@ table {border-collapse: collapse;}
 .order-info {margin-top: 74px;}
 .table-list3 {margin-bottom: 74px; padding: 20px 0;border-bottom: 1px solid #ddd;}
 .table-list3 select {border:1px solid #ddd;border-radius: none;height: 26px;}
-.table-list3 ul li {padding-bottom: 14px; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
+.table-list3 ul li {padding-bottom: 8px; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
 .table-list3 ul li div {width: 100%;}
 .table-list3 ul .addr div {margin-bottom: 14px;}
 .table-list3 ul .addr div:last-child {margin-bottom: 0;}
-.table-list3 ul .addr button {margin-left: 10px; border:1px solid #333;width: 70px;height:26px;text-align: center;}
+.table-list3 ul .addr button {margin-left: 10px; border:1px solid #666; text-align: center;font-size:12px;padding:0 5px;}
 .table-list3 ul li strong {display: block;width: 90px;font-size: 14px;}
-.table-list3 ul li input {padding: 5px; border: 1px solid #ddd;height: 26px;}
+.table-list3 ul li input {padding: 5px; border: 1px solid #ddd;height: 26px;font-size:12px;}
 .table-list3 ul li textarea {padding: 5px; resize: none;height: 70px;border: 1px solid #ddd;}
 
 .table-list4 {}
@@ -238,7 +238,7 @@ table {border-collapse: collapse;}
 .payment-tab ul li {cursor: pointer; width: 100%; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; border: 1px solid #ddd;height: 96px;}
 .payment-tab ul li a {font-size: 14px;}
 .payment-tab ul li a img {display: block;margin: 0 auto; padding-bottom: 14px;}
-.payment-tab ul li.on {border-color: #333;}
+.payment-tab ul li.on {border-color: #ee8102;}
 .payment-tab ul li.on a {color: #ee8102;}
 
 .pay-btn {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
@@ -417,7 +417,6 @@ table {border-collapse: collapse;}
     .table-list2 .list ul {display: block;}
     .table-list2 .list .pro {width: 100%;}
     .table-list3 ul li strong {width: 100px;}
-    .payment-tab ul li {height: 84px;}
     .payment-tab ul li a {font-size: 12px;}
     .check-ac {display: none;}
     .table-list2 .list-btm textarea {height: 40px;font-size: 10px;}
