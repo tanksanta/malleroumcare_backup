@@ -203,11 +203,11 @@ var array_box=[];
 											<div>
 												<p><?php echo $item[$i]['qty']; ?>개</p>
 											</div>
-											<!-- <div>
-												<p><?php echo $item[$i]['ct_price']; ?></p>
-											</div> -->
 											<div>
-												<p class="price_print"><?php echo number_format($pirce_v) ; ?>원</p>
+												<p><?php echo $item[$i]['ct_price']; ?></p>
+											</div>
+											<div>
+												<p class="price_print"><?php echo number_format($pirce_v) ; ?></p>
 											</div>
 										</div>
 									</div>
@@ -1045,7 +1045,6 @@ var array_box=[];
 			var optionCntList = <?=json_encode($optionCntList)?>;
 			var optionBarList = <?=json_encode($optionBarList)?>;
 			var prodItemList = $(".table-list2 .list.item");
-            console.log(prodItemList);
 			$.each(prodItemList, function(key, itemDom){
 				var code = $(itemDom).attr("data-code");
 				var itemList = $(itemDom).find(".pro > .pro-info > .text li");
@@ -1103,6 +1102,7 @@ var array_box=[];
 							$(item[i]).remove();
 						}
 
+                        
 						//20210306 성훈 추가
 						renew_array = optionBarList[code][subKey];
 						renew_array2 = optionBarList[code][subKey];
@@ -1116,9 +1116,9 @@ var array_box=[];
 						$(stockCntItem[subKey]).val(stockCntItemCnt);
 //					}
 				});
-
 				$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 				$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
+                
 
 
 			});
@@ -1127,22 +1127,40 @@ var array_box=[];
 			var it_discount = $("input[name^=it_discount]");
 			var totalPrice = 0;
 
-			$.each(it_price, function(key, dom){
-				if($(dom).closest(".list.item").attr("data-sup") == "Y"){
-					totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
-				}
-			});
-
+            //배송비조회
+            var send_prie =0;
+            $.each(it_price, function(key, dom){
+                if($(dom).closest(".list.item").attr("data-sup") == "Y"){
+                    var send_prie2 =0;
+                    sendData_v=[];
+                    sendData_v = {
+                        "it_id" : $(dom).closest(".list.item").attr("data-code"),
+                        "cart_id" :'<?=$s_cart_id?>'
+                    };
+                    $.ajax({
+                            url : "./ajax.stock.send_prie.php",
+                            type : "POST",
+                            async : false,
+                            data : sendData_v,
+                            success : function(result){
+                                send_prie2=result;
+                            }
+                        });
+                    if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
+                    totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+                }
+            });
 			if(!totalPrice){
 				$("input[name='od_send_cost']").val(0);
 				$(".delivery_cost_display").text("0 원");
 			} else {
-				$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
-				$(".delivery_cost_display").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
-			}
-
+                // $("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
+                $("input[name='od_send_cost']").val(send_prie);
+				$(".delivery_cost_display").text(number_format(send_prie) + " 원");
+			};
 			$("input[name=od_price]").val(totalPrice);
 			$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
+
 			calculate_order_price();
 			$("#ad_sel_addr_recipient").show();
 
@@ -1163,6 +1181,8 @@ var array_box=[];
 
 		}
 
+
+        
 		$(function() {
 			function recipientDelete(){
 				$(".recipientBox").remove();
@@ -1223,37 +1243,21 @@ var array_box=[];
 				var it_discount = $("input[name^=it_discount]");
 				var totalPrice = 0;
 
-				//배송비조회
-				var send_prie =0;
 				$.each(it_price, function(key, dom){
 					if($(dom).closest(".list.item").attr("data-sup") == "Y"){
-						var send_prie2 =0;
-						sendData_v=[];
-						sendData_v = {
-							"it_id" : $(dom).closest(".list.item").attr("data-code"),
-							"cart_id" :'<?=$s_cart_id?>'
-						};
-						$.ajax({
-								url : "./ajax.stock.send_prie.php",
-								type : "POST",
-								async : false,
-								data : sendData_v,
-								success : function(result){
-									send_prie2=result;
-								}
-							});
-						if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
 						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
 					}
 				});
+
+                //here
+
 				if(!totalPrice){
 					$("input[name='od_send_cost']").val(0);
 					$(".delivery_cost_display").text("0 원");
 				} else {
-					// $("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
-					$("input[name='od_send_cost']").val(send_prie);
-					$(".delivery_cost_display").text(number_format(send_prie) + " 원");
-				};
+					$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
+					$(".delivery_cost_display").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
+				}
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
@@ -1319,6 +1323,7 @@ var array_box=[];
 
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
+                
 				calculate_order_price();
 			}
 
@@ -1403,6 +1408,7 @@ var array_box=[];
 					break;
 			}
 		});
+        
 		//배송지선택
 		$('.add-ac').find('p').on('click',function(){
 			$(this).siblings('ul').stop().toggle();
@@ -1465,6 +1471,24 @@ var array_box=[];
 				}
 			});
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			$(".dateBtn").click(function(e){
 				e.preventDefault();
 
@@ -1489,6 +1513,17 @@ var array_box=[];
 				$(this).closest(".list-day").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
 			});
 
+
+
+
+
+
+
+
+
+
+
+
 			var optionCntList = <?=json_encode($optionCntList)?>; //아이템정보
 			var optionBarList = <?=json_encode($optionBarList)?>; //바코드저오
 			var prodItemList = $(".table-list2 .list.item");            //아이템정보2
@@ -1506,6 +1541,23 @@ var array_box=[];
 					}
 				});
 			});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 			$(document).on("change", ".prodBarSelectBox", function(){
@@ -1574,6 +1626,21 @@ var array_box=[];
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			$(document).on("change", ".prodBarSelectBox", function(){
                 var this_a=this;
                 var this_v = $(this).val();
@@ -1588,6 +1655,7 @@ var array_box=[];
 
                     var it_id_class = $(this).closest("li");
 					prodsData["prodId"] = it_id_class.attr('data-code');
+                    채ㅜㅋㅋ
                     console.log(prodsData["prodId"]);
                     sendData2 = {
                         usrId : "<?=$member["mb_id"]?>",
@@ -1628,6 +1696,25 @@ var array_box=[];
 				}
 			});
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			$(document).on("change", ".recipientBox select", function(){
 				if($(this).parent(".recipientBox").find("input[type='radio']:checked").attr("data-type") != "use"){
 					return false;
@@ -1661,6 +1748,7 @@ var array_box=[];
 				}
 
 				$.each(prodItemList, function(key, itemDom){
+                    
 					var code = $(itemDom).attr("data-code");
 					var itemList = $(itemDom).find(".pro > .pro-info > .text li");
 					var discountCnt = 0;
@@ -1668,6 +1756,7 @@ var array_box=[];
 					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
 
 					$.each(itemList, function(subKey, subDom){
+                        
 						if($(itemDom).attr("data-sup") == "Y"){
 							var checkedType = $(subDom).closest(".item").find(".list-btm").find(".recipientBox input[type='radio']:checked").attr("data-type");
 
@@ -1685,7 +1774,7 @@ var array_box=[];
 							$(stockCntItem[subKey]).val(0);
 						}
 					});
-
+              
 					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 					$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
 				});
@@ -1705,6 +1794,27 @@ var array_box=[];
 				calculate_order_price();
 			});
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
 			$(document).on("change", ".recipientBox input[type='radio']", function(){
 				var code = $(this).closest(".recipientBox").attr("data-code");
 				var parent = $(this).closest(".list.item");
@@ -1746,7 +1856,11 @@ var array_box=[];
 
 							$(item[i]).remove();
 						}
+
+
+
 				        $("input[name=od_send_cost]").val(0);
+                        
 						$(this).closest(".recipientBox").find("select").val(item.length);
 						break;
 				}
@@ -1774,7 +1888,6 @@ var array_box=[];
 							$(stockCntItem[subKey]).val(0);
 						}
 					});
-
 					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 					$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
 				});
