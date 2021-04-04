@@ -393,6 +393,10 @@ pre{white-space: pre-wrap;}
 .pop_list ul>li a{position:absolute;top:18px;right:12px;color:#fff;background: #999;font-size:14px;line-height: 36px;height: 36px;display:inline-block;text-align: center;width:50px;}
 .pop_list ul>li a:hover{background:#333;}
 
+
+#display_pay_button {display:none;}
+
+
 /* =================================================
 	* Media Query
 ================================================= */
@@ -785,6 +789,8 @@ pre{white-space: pre-wrap;}
 }
 
 @media (max-width: 960px){
+	
+	
 	
 	body { padding-top: 85px; padding-bottom: 70px; }
 	.pc_layout { display: none !important; }
