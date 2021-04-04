@@ -203,11 +203,11 @@ var array_box=[];
 											<div>
 												<p><?php echo $item[$i]['qty']; ?>개</p>
 											</div>
-											<div>
+											<!-- <div>
 												<p><?php echo $item[$i]['ct_price']; ?></p>
-											</div>
+											</div> -->
 											<div>
-												<p class="price_print"><?php echo number_format($pirce_v) ; ?></p>
+												<p class="price_print"><?php echo number_format($pirce_v) ; ?>원</p>
 											</div>
 										</div>
 									</div>
