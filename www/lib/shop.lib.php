@@ -1841,11 +1841,6 @@ function get_sendcost($cart_id, $selected=1, $update=0)
 
         $send_cost = get_item_sendcost($sc['it_id'], $sum['price'], $sum['qty'], $cart_id, $update);
                 
-        //비유통 상품 배송비 무료
-        $sql_prodSupYn = "SELECT `prodSupYn` FROM `g5_shop_item` WHERE `it_id` = '".$sc['it_id']."' ";
-        $result_prodSupYn = sql_fetch($sql_prodSupYn);
-        if($result_prodSupYn['prodSupYn']=="N"){ $send_cost=0;}
-
         if($send_cost > 0)
             $total_send_cost += $send_cost;
 
