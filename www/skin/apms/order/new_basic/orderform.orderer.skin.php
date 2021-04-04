@@ -1223,21 +1223,37 @@ var array_box=[];
 				var it_discount = $("input[name^=it_discount]");
 				var totalPrice = 0;
 
+				//배송비조회
+				var send_prie =0;
 				$.each(it_price, function(key, dom){
 					if($(dom).closest(".list.item").attr("data-sup") == "Y"){
+						var send_prie2 =0;
+						sendData_v=[];
+						sendData_v = {
+							"it_id" : $(dom).closest(".list.item").attr("data-code"),
+							"cart_id" :'<?=$s_cart_id?>'
+						};
+						$.ajax({
+								url : "./ajax.stock.send_prie.php",
+								type : "POST",
+								async : false,
+								data : sendData_v,
+								success : function(result){
+									send_prie2=result;
+								}
+							});
+						if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
 						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
 					}
 				});
-
-                //here
-
 				if(!totalPrice){
 					$("input[name='od_send_cost']").val(0);
 					$(".delivery_cost_display").text("0 원");
 				} else {
-					$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
-					$(".delivery_cost_display").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
-				}
+					// $("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
+					$("input[name='od_send_cost']").val(send_prie);
+					$(".delivery_cost_display").text(number_format(send_prie) + " 원");
+				};
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
@@ -1767,11 +1783,30 @@ var array_box=[];
 				var it_discount = $("input[name^=it_discount]");
 				var totalPrice = 0;
 
+                //배송비 조회
+                var send_prie =0;
 				$.each(it_price, function(key, dom){
 					if($(dom).closest(".list.item").attr("data-sup") == "Y"){
+                        var send_prie2 =0;
+                        sendData_v=[];
+                        sendData_v = {
+                            "it_id" : $(dom).closest(".list.item").attr("data-code"),
+                            "cart_id" :'<?=$s_cart_id?>'
+                        };
+                        $.ajax({
+								url : "./ajax.stock.send_prie.php",
+								type : "POST",
+								async : false,
+								data : sendData_v,
+								success : function(result){
+                                    send_prie2=result;
+								}
+							});
+                        if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
 						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
 					}
 				});
+                $("input[name='od_send_cost']").val(send_prie);
                 $(".delivery_cost_display").text(number_format($("input[name=od_send_cost]").val())+" 원");
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
