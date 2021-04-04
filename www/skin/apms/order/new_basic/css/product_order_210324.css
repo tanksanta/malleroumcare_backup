@@ -150,6 +150,7 @@ table {border-collapse: collapse;}
 .table-list2 .list ul > li {display: block;text-align: center;}
 .table-list2 .list .pro {display: -webkit-box; display: -ms-flexbox; display: flex;}
 .table-list2 .pro .img {width: 100px;height: 100px;border: 1px solid #ddd;}
+.table-list2 .pro .img img{max-width:100%;max-height: 100%;}
 .table-list2 .pro-info {padding-left: 20px;text-align: left;}
 .table-list2 .pro-info ul > li {text-align:left;}
 /* .table-list2 .pro-info div {padding-bottom: 7px;} */
