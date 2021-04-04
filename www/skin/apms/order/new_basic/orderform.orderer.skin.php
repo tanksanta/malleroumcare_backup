@@ -1146,8 +1146,8 @@ var array_box=[];
                                 send_prie2=result;
                             }
                         });
-                    if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
-                    totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+                        totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+                        if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
                 }
             });
 			if(!totalPrice){
@@ -1915,8 +1915,8 @@ var array_box=[];
                                     send_prie2=result;
 								}
 							});
-                        if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
-						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+                            totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+                            if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
 					}
 				});
                 $("input[name='od_send_cost']").val(send_prie);
