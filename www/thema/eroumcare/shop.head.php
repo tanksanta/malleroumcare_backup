@@ -96,8 +96,8 @@ scrollToTop();
 <!-- 모드바 스타일링 -->
 <style>
     .top_mode_area{ position:fixed; top :0;z-index:9999999; display:block; width:100%; height:50px; text-align:center; background-color: rgba(0,0,0,0.7);  color : #fff; font-size: 20px; line-height:50px; opacity:70%;}
-    @media screen and (max-width: 500px){
-        .top_mode_area{font-size:10px;}
+    @media screen and (max-width: 960px){
+        .top_mode_area{font-size:10px;display:none;}
     }
     .mode_div{ position: absolute; width: 140px; right: 85px; top: 30px; font-size:16px;}
 </style>
@@ -137,9 +137,9 @@ scrollToTop();
 
 
 <?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>
-        <!-- <div class="top_mode_area">
+        <div class="top_mode_area">
             <?=$mood_type_string;?> 모드 실행중 입니다.
-        </div> -->
+        </div>
 <?php } ?>
 <?php #//급여모드 보고시면  top_mode_area 주석 해제, mo_top에는 style="margin-top:50px;" 넣어야함  ?>
 <div class="mo_top" <?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?><?php  } ?>>
@@ -160,7 +160,8 @@ scrollToTop();
     <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu_new.png" alt="" class="header-hamburger-btn">
 </div>
 
-<div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>"<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
+<!-- <div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>"<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>> -->
+<div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>">
 	
 	<div id="samhwa-m-menu" >
 		<div class="wrap"<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
