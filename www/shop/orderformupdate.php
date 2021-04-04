@@ -1369,8 +1369,8 @@ if($is_member && $od_b_name) {
             DELETE FROM g5_shop_order
             WHERE od_id = '{$od_id}'
             ");
-            echo print_r($res);
-            return false;
+            // echo print_r($res);
+            // return false;
             alert('시스템 오류, 주문이 불가능합니다.',G5_URL);
         }
 
