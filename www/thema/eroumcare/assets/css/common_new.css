@@ -540,7 +540,7 @@ pre{white-space: pre-wrap;}
 .at-content { width: 100%; float: left; padding-top: 0; }
 .at-content .cate_wrap{text-align:center;margin:20px 0;}
 
-.samhwa-item-info-opener { bottom: 70px; z-index: 9; }
+.samhwa-item-info-opener { bottom: 70px; z-index: 11; }
 
 /* 210202 메인 상단 슬라이드 */
 #mainTopSlidePCWrap { width: 100%; height: 563px; float: left; overflow: hidden; display: table; table-layout: fixed; max-width:1400px;}
