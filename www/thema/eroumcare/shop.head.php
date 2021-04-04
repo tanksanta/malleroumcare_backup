@@ -125,10 +125,10 @@ scrollToTop();
 </style>
 
 <div class="btn_top_scroll">
-	<a onclick="scrollToBack()" class="scroll_btn">
+	<!-- <a onclick="scrollToBack()" class="scroll_btn">
 		<span>◀</span>
 		Back
-	</a>
+	</a> -->
 	<a onclick="scrollToTop()" class="scroll_btn">
 		<span>▲</span>
 		Top
