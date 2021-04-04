@@ -970,7 +970,6 @@ var array_box=[];
 			// document.getElementById("penTypeNm").value=$re['penTypeNm'];
 			// document.getElementById("penMoney").value=$re['penMoney'];
 
-
             // 수급자 정보 iframe 에서 넘긴값 받기
 			var recipient = $penId.split("|");
 			var list = {
@@ -1493,7 +1492,31 @@ var array_box=[];
 			});
 
 
+			$(document).on("change", ".prodBarSelectBox", function(){
+				var code = $(this).closest(".list.item").find(".recipientBox").attr("data-code");
+				var it_id = $(this).closest(".list.item").attr("data-code");
 
+				var selected = [];
+				var parent;
+
+				$(this).closest(".list.item").find('.prodBarSelectBox').each(function(i, item) {
+					selected.push($(item).val());
+					parent = this;
+				}).promise().done(function() {
+					$(parent).closest(".list.item").find('.prodBarSelectBox').each(function(i, item) {
+						$(item).find('option').show();
+						$(item).find('option').css({"visibility":"visible"}); // ie에서 option show, hidden 이슈 있어서 대체
+
+						// 선택된값 숨기기
+						$(item).find('option').each(function(ii, sub_item) {
+							if ( $(sub_item).val() && selected.indexOf($(sub_item).val()) > -1 ) {
+								$(sub_item).hide();
+								$(sub_item).css({"visibility":"hidden"});
+							}
+						});
+					});
+				});
+			});
 
 			// //성훈20210306 바코드 동기화처리
 			// $(document).on("click", ".prodBarSelectBox", function(){
@@ -1532,7 +1555,6 @@ var array_box=[];
 			// 	});
 
 			// });
-
 
 
 
