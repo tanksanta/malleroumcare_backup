@@ -664,7 +664,7 @@ pre{white-space: pre-wrap;}
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_link > p.info > span { width: 100%; float: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_link > p.info > span.price { font-size: 18px; font-weight: bold; margin-top: 15px; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_link > .removeBtn { position: absolute; width: 30px; height: 30px; line-height: 30px; top: 0; right: 0; background-color: #000; color: #FFF; font-weight: bold; font-size: 16px; text-align: center; cursor: pointer; }
-.scrollBannerListWrap > .goToTopBtnWrap { width: 100%; float: left; text-align: center; margin-top: 30px; }
+.scrollBannerListWrap > .goToTopBtnWrap { width: 100%; float: left; text-align: center; margin-top: 30px; display:none;}
 .scrollBannerListWrap > .goToTopBtnWrap > img { cursor: pointer; }
 
 /* 210203 모바일메뉴 */
