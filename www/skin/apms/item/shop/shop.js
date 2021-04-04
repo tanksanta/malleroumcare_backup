@@ -471,9 +471,15 @@ function price_calculate()
     var $el_type = $("input[name^=io_type]");
     var price, type, qty, total = 0;
 
+    var el_qty = $("input[name^=ct_qty]");
+    var qty=0;
+    for(var k =0; k < el_qty.length; k++){
+        qty = qty + parseInt(el_qty.eq(k).val());
+    }
+
     $el_prc.each(function(index) {
         price = parseInt($(this).val());
-        qty = parseInt($el_qty.eq(index).val());
+        // qty = parseInt($el_qty.eq(index).val());
         type = $el_type.eq(index).val();
 
         if(type == "0") { // 선택옵션
