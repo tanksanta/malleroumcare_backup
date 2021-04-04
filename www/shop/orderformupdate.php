@@ -1315,11 +1315,11 @@ if($is_member && $od_b_name) {
 //		return false;
 
 		if($res["errorYN"] == "Y"){
-			alert($res["message"], "/");
-			sql_query("
-				DELETE FROM g5_shop_order
-				WHERE od_id = '{$od_id}'
-			");
+            sql_query("
+            DELETE FROM g5_shop_order
+            WHERE od_id = '{$od_id}'
+            ");
+            alert('시스템 오류, 수급자 주문이 불가능합니다.',G5_URL);
 		} else {
 			$_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
 			$_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
@@ -1365,7 +1365,11 @@ if($is_member && $od_b_name) {
                 array_push($stoIdList, $res['data'][$k]["stoId"]);
             }
         } else {
-            alert($res["message"], "/");
+            sql_query("
+            DELETE FROM g5_shop_order
+            WHERE od_id = '{$od_id}'
+            ");
+            alert('시스템 오류, 주문이 불가능합니다.',G5_URL);
         }
 
 		$stoIdList = implode(",", $stoIdList);
@@ -1422,12 +1426,11 @@ if($is_member && $od_b_name) {
 					WHERE od_id = '{$od_id}'
 				");
 			} else {
-				alert($res["message"], "/");
-				sql_query("
-					DELETE FROM g5_shop_order
-					WHERE od_id = '{$od_id}'
-				");
-				return false;
+                sql_query("
+                DELETE FROM g5_shop_order
+                WHERE od_id = '{$od_id}'
+                ");
+                alert('시스템 오류, 보유재고 등록이 불가능합니다.',G5_URL);
 			}
 		}
 
