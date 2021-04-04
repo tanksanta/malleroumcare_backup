@@ -269,6 +269,13 @@ scrollToTop();
 
 
 		<div class="container_wrap txt_center top_common_area"<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
+			<style>
+                .move_system{ position: absolute; left: 0; top: 0; text-align: right;}
+                .move_system a{ height: 60px; padding: 15px 20px; line-height: 26px;color: #333;font-weight: bold;float: left;color: #333;}
+            </style>
+            <div class="move_system">
+                <a href="<?=G5_BBS_URL?>/gotoSystem.php" onclick="goto_system();">◀ 이로움 통합 시스템바로가기</a>
+			</div>
 			<div class="logoWrap">
 				<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
 			</div>
