@@ -599,12 +599,12 @@ scrollToTop();
 							</li>
 							<li>
 								<a href="<?=THEMA_URL?>/assets/img/eroum_biz_registration.jpg" target="_blank">
-									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_03.jpg" alt="" />
+									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_04.jpg" alt="" />
 								</a>
 							</li>
 							<li>
 								<a href="<?=THEMA_URL?>/assets/img/eroum_account.jpg" target="_blank">
-									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_04.jpg" alt="" />
+									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_03.jpg" alt="" />
 								</a>
 							</li>
 						</ul>
