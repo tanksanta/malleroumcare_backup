@@ -740,7 +740,10 @@ if(!$od_delivery_total){
 	$od_send_cost2 = 0;
 }
 
-
+//보유재고 discount = 0 
+if($_POST["od_stock_insert_yn"]){
+    $tot_ct_discount=0;
+}
 
 
 $sql = " insert {$g5['g5_shop_order_table']}

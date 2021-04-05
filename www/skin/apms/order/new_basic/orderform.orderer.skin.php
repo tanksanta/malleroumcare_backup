@@ -1170,7 +1170,7 @@ var array_box=[];
 				$(".delivery_cost_display").text(number_format(send_price) + " 원");
 			};
 			$("input[name=od_price]").val(totalPrice);
-			$("#od_cp_price").text(number_format(discount_prie) + " 원");
+			$("#od_cp_price").text(number_format(discount_prie));
 			$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 
 			calculate_order_price();
@@ -1398,6 +1398,7 @@ var array_box=[];
 
 			switch($(this).attr("data-type")){
 				case "stock_insert" :
+					$("input[name=od_discount]").val("0");
 					$("#od_stock_insert_yn").prop("checked", true);
 					$("#forderform_check_btn").text("보유재고 등록");
 					$(".tab-2 .table-list2 .delivery-price").css("width", "10%");
@@ -1407,12 +1408,14 @@ var array_box=[];
 					od_stock_insert_yn();
 					break;
 				case "order_pen" :
+					$("input[name=od_discount]").val("0") = $("input[name=org_discount]").val();
 					$(".tab-2 .table-list2 .delivery-price").css("width", "10%");
 					$(".tab-2 .table-list2 .barcode").show();
 					$(".order_recipientInfoBox").show();
                     $("#order_recipientBox").show();
 					break;
 				case "order" :
+					$("input[name=od_discount]").val("0") = $("input[name=org_discount]").val();
 					$(".order_none").hide();
 					break;
 			}

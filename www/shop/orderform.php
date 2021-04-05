@@ -415,6 +415,7 @@ $tot_price=$tot_sell_price+$send_cost;
 	<input type="hidden" name="od_price"    value="<?php echo $tot_sell_price; ?>">
 	<input type="hidden" name="org_od_price"    value="<?php echo $tot_sell_price; ?>">
 	<input type="hidden" name="od_discount"    value="<?php echo $tot_sell_discount; ?>">
+	<input type="hidden" name="org_discount"    value="<?php echo $tot_sell_discount; ?>">
 	<input type="hidden" name="od_send_cost" value="<?php echo $send_cost; ?>">
 	<input type="hidden" name="od_send_cost_org" value="<?php echo $send_cost; ?>">
 	<input type="hidden" name="od_send_cost2" value="0">
