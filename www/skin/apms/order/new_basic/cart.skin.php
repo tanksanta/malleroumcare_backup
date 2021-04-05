@@ -118,10 +118,11 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         <div class="well bg-white">
             <div class="row">
                 <?php //if ($send_cost > 0) { // 배송비가 0 보다 크다면 (있다면) ?>
-                    <div class="col-xs-6">배송비</div>
+                    <!-- <div class="col-xs-6">배송비 정보</div>
                     <div class="col-xs-6 text-right">
                         <strong id="delivery_pirce"><?php echo number_format($send_cost); ?> 원 (*10만원이상 무료배송)</strong>
-                    </div>
+                        <strong id="delivery_pirce">10만원이상 무료배송</strong>
+                    </div> -->
                 <?php //} ?>
                 <?php //if ($tot_price > 0) { ?>
                     <div class="col-xs-6"> 총 상품금액 </div>
@@ -130,6 +131,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
                     </div>
                 <?php //} ?>
             </div>
+            <span>*10만원 이상 무료배송되며, 비유통상품은 주문시 결제금액에 포함되지 않습니다.</span>
         </div>
     <?php //} ?>
 
