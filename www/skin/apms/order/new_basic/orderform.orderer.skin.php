@@ -1408,14 +1408,14 @@ var array_box=[];
 					od_stock_insert_yn();
 					break;
 				case "order_pen" :
-					$("input[name=od_discount]").val("0") = $("input[name=org_discount]").val();
+					$("input[name=od_discount]").val($("input[name=org_discount]").val());
 					$(".tab-2 .table-list2 .delivery-price").css("width", "10%");
 					$(".tab-2 .table-list2 .barcode").show();
 					$(".order_recipientInfoBox").show();
                     $("#order_recipientBox").show();
 					break;
 				case "order" :
-					$("input[name=od_discount]").val("0") = $("input[name=org_discount]").val();
+					$("input[name=od_discount]").val($("input[name=org_discount]").val());
 					$(".order_none").hide();
 					break;
 			}
