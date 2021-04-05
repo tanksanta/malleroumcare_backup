@@ -1137,27 +1137,27 @@ var array_box=[];
 			var totalPrice = 0;
 
             //배송비조회
-            var send_prie =0;
+            var send_price =0;
             $.each(it_price, function(key, dom){
                 if($(dom).closest(".list.item").attr("data-sup") == "Y"){
-                    var send_prie2 =0;
+                    var send_price2 =0;
                     sendData_v=[];
                     sendData_v = {
                         "it_id" : $(dom).closest(".list.item").attr("data-code"),
                         "cart_id" :'<?=$s_cart_id?>'
                     };
                     $.ajax({
-                            url : "./ajax.stock.send_prie.php",
+                            url : "./ajax.stock.send_price.php",
                             type : "POST",
                             async : false,
                             data : sendData_v,
                             success : function(result){
-                                send_prie2=result;
+                                send_price2=result;
                             }
                         });
                         totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
-                        if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
-                        if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_prie = 0; }
+                        if(totalPrice > 0){  send_price = send_price+parseInt(send_price2); }
+                        if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_price = 0; }
                 }
             });
 			if(!totalPrice){
@@ -1165,8 +1165,8 @@ var array_box=[];
 				$(".delivery_cost_display").text("0 원");
 			} else {
                 // $("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
-                $("input[name='od_send_cost']").val(send_prie);
-				$(".delivery_cost_display").text(number_format(send_prie) + " 원");
+                $("input[name='od_send_cost']").val(send_price);
+				$(".delivery_cost_display").text(number_format(send_price) + " 원");
 			};
 			$("input[name=od_price]").val(totalPrice);
 			$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
@@ -1845,33 +1845,33 @@ var array_box=[];
 				var totalPrice = 0;
 
                 //배송비조회
-                var send_prie =0;
+                var send_price =0;
                 $.each(it_price, function(key, dom){
                     if($(dom).closest(".list.item").attr("data-sup") == "Y"){
-                        var send_prie2 =0;
+                        var send_price2 =0;
                         sendData_v=[];
                         sendData_v = {
                             "it_id" : $(dom).closest(".list.item").attr("data-code"),
                             "cart_id" :'<?=$s_cart_id?>'
                         };
                         $.ajax({
-                                url : "./ajax.stock.send_prie.php",
+                                url : "./ajax.stock.send_price.php",
                                 type : "POST",
                                 async : false,
                                 data : sendData_v,
                                 success : function(result){
-                                    send_prie2=result;
+                                    send_price2=result;
                                 }
                             });
 
                             totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
-                            if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
-                            if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_prie = 0; }
+                            if(totalPrice > 0){  send_price = send_price+parseInt(send_price2); }
+                            if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_price = 0; }
 
                     }
                 });
-                    $("input[name='od_send_cost']").val(send_prie);
-                    $(".delivery_cost_display").text(send_prie+" 원");
+                    $("input[name='od_send_cost']").val(send_price);
+                    $(".delivery_cost_display").text(send_price+" 원");
                     $("input[name=od_price]").val(totalPrice);
                     $("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
@@ -1989,30 +1989,30 @@ var array_box=[];
 				var totalPrice = 0;
 
                 //배송비 조회
-                var send_prie =0;
+                var send_price =0;
 				$.each(it_price, function(key, dom){
 					if($(dom).closest(".list.item").attr("data-sup") == "Y"){
-                        var send_prie2 =0;
+                        var send_price2 =0;
                         sendData_v=[];
                         sendData_v = {
                             "it_id" : $(dom).closest(".list.item").attr("data-code"),
                             "cart_id" :'<?=$s_cart_id?>'
                         };
                         $.ajax({
-								url : "./ajax.stock.send_prie.php",
+								url : "./ajax.stock.send_price.php",
 								type : "POST",
 								async : false,
 								data : sendData_v,
 								success : function(result){
-                                    send_prie2=result;
+                                    send_price2=result;
 								}
 							});
                             totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
-                            if(totalPrice > 0){  send_prie = send_prie+parseInt(send_prie2); }
-                            if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_prie = 0; }
+                            if(totalPrice > 0){  send_price = send_price+parseInt(send_price2); }
+                            if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_price = 0; }
 					}
 				});
-                $("input[name='od_send_cost']").val(send_prie);
+                $("input[name='od_send_cost']").val(send_price);
                 $(".delivery_cost_display").text(number_format($("input[name=od_send_cost]").val())+" 원");
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
