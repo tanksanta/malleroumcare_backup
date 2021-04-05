@@ -73,7 +73,7 @@
 			<li><a href="#" data-no="1040" title="욕창예방방석">욕창예방방석</a></li>
 			<li><a href="#" data-no="1050" title="지팡이">지팡이</a></li>
 			<li><a href="#" data-no="1060" title="간이변기">간이변기</a></li>
-			<li><a href="#" data-no="1070" title="미끄럼방지">미끄럼방지</a></li>
+			<li><a href="#" data-no="1080" title="미끄럼방지매트">미끄럼방지매트</a></li>
 			<li><a href="#" data-no="1090" title="안전손잡이">안전손잡이</a></li>
 			<li><a href="#" data-no="10b0" title="목욕의자">목욕의자</a></li>
 			<li><a href="#" data-no="10c0" title="이동변기">이동변기</a></li>
