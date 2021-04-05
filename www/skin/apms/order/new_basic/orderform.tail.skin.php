@@ -8,6 +8,13 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 <br>
 
+
+<form name="barcode_popup_form" class="hidden" id="barcode_popup_form">
+	<input type=text name="it_id" value="">
+	<input type=text name="barcodes" value="">
+	<input type="button" name="button1" value="전 송">
+</form>
+
 <?php if ($escrow_info) { ?>
 	<div class="well">
 		<?php echo $escrow_info;?>

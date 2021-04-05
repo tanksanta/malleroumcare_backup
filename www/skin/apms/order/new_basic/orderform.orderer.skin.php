@@ -237,7 +237,7 @@ var array_box=[];
 												$itemPenIdStatus = false;
 											}
 										?>
-											<input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)"class="prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
+											<input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)"class="hidden barcode_input prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
 										<?php } ?>
 								<?php
 										$postProdBarNumCnt++; }
@@ -898,7 +898,6 @@ var array_box=[];
     <!-- } 주문하시는 분 입력 끝 -->
 
 
-
     <!-- 수급자 정보 iframe창 -->
 	<?php if($itemPenIdStatus){ ?>
 	<div id="order_recipientBox">
@@ -1045,6 +1044,9 @@ var array_box=[];
 			var optionCntList = <?=json_encode($optionCntList)?>;
 			var optionBarList = <?=json_encode($optionBarList)?>;
 			var prodItemList = $(".table-list2 .list.item");
+
+			$('.open_input_barcode').remove();
+
 			$.each(prodItemList, function(key, itemDom){
 				var code = $(itemDom).attr("data-code");
 				var itemList = $(itemDom).find(".pro > .pro-info > .text li");
@@ -1120,6 +1122,13 @@ var array_box=[];
 				$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
                 
 
+				var has_barcode_text = $(itemDom).find('.barcode.barList').find('input[type="text"]').length;
+				var has_barcode_button = $(itemDom).find('.barcode.barList').find('.open_input_barcode').length;
+				var it_id = $(itemDom).data('code');
+
+				if (has_barcode_text && !has_barcode_button) {
+					$('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
+				}
 
 			});
 
@@ -1218,17 +1227,28 @@ var array_box=[];
 					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
 
 					$(itemDom).find(".barList").find("input").attr("type", "hidden");   //개수만큼 넣기
+					
+					var input_count = 0;
+
+					$('.open_input_barcode').remove();
 
 					$.each(itemList, function(subKey, subDom){
 							var item = $(itemDom).find(".prodBarSelectBox" + subKey);  //셀력트박스 찾기
+							var parent = $(this).closest(".list.item");
+							var it_id = $(parent).attr("data-code");
+
 							for(var i = 0; i < item.length; i++){
 								var name = $(item[i]).attr("name");
 								var dataCode = $(item[i]).attr("data-code");
 								var dataThisCode = $(item[i]).attr("data-this-code");
 								var dataName = $(item[i]).attr("data-name");
 
-								$(item[i]).after('<input type="hidden" class="prodBarSelectBox prodBarSelectBox' + subKey + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
-
+								$(item[i]).after('<input type="hidden" class="prodBarSelectBox hidden barcode_input prodBarSelectBox' + subKey + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
+								input_count++;
+								
+								if (i === item.length - 1 && input_count) {
+									$(item[i]).after('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + input_count + ')</a>');
+								}
 								$(item[i]).remove();
 							}
 
@@ -1302,6 +1322,15 @@ var array_box=[];
 
 					$("input[name='it_price[" + key + "]']").val(price);
 					$(itemDom).find(".price_print").text(number_format(price));
+					
+					
+					var has_barcode_text = $(itemDom).find('.barcode.barList').find('.barcode_input').length;
+					var has_barcode_button = $(itemDom).find('.barcode.barList').find('.open_input_barcode').length;
+					var it_id = $(itemDom).data('code');
+
+					if (has_barcode_text && !has_barcode_button) {
+						$('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
+					}
 				});
 
 				if(status){
@@ -1626,6 +1655,28 @@ var array_box=[];
 			// });
 
 
+			$(document).on("click", ".open_input_barcode", function(){
+				var it_id = $(this).data('id');
+				var barcode_nodes = $(this).closest('.barList').find('.barcode_input');
+				var barcodes = [];
+
+				$(barcode_nodes).each(function(i, item) {
+					barcodes.push($(item).val());
+				});
+
+				window.name = "barcodeParent";
+				var url = "./popup.order_barcode_form.php";
+				var openWin = window.open("",
+                    "barcodeChild", "width=683, height=800, resizable = no, scrollbars = no");
+				$('#barcode_popup_form').attr('target', 'barcodeChild');
+				$('#barcode_popup_form').attr('action', url);
+				$('#barcode_popup_form').attr('method', 'post');
+				$('#barcode_popup_form input[name="it_id"]').val(it_id);
+				$('#barcode_popup_form input[name="barcodes"]').val(barcodes.join('|'));
+				$('#barcode_popup_form').submit();
+			});
+
+
 
 
 
@@ -1726,6 +1777,10 @@ var array_box=[];
 				var item = $(this).closest(".list.item").find(".prodBarSelectBox" + code);
 				var it_id = $(this).closest(".list.item").attr("data-code");
 
+				var input_count = 0;
+
+				$('.open_input_barcode').remove();
+
 				for(var i = 0; i < item.length; i++){
 					var name = $(item[i]).attr("name");
 					var dataCode = $(item[i]).attr("data-code");
@@ -1741,7 +1796,12 @@ var array_box=[];
 							});
 						html += '</select>';
 					} else {
-						html += '<input type="text" class="prodBarSelectBox' + code + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">';
+						input_count++;
+						html += '<input type="text" class="prodBarSelectBox' + code + ' hidden barcode_input" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">';
+					}
+
+					if (i === item.length - 1 && input_count) {
+						html += '<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + input_count + ')</a>';
 					}
 
 					$(item[i]).after(html);
@@ -1845,6 +1905,10 @@ var array_box=[];
 				var item = $(parent).find(".prodBarSelectBox" + code);
 				var it_id = $(parent).attr("data-code");
 
+				var input_count = 0;
+
+				$('.open_input_barcode').remove();
+
                 var od_send_cost_org = $("input[name^=od_send_cost_org]")
 				switch(type){
 					case "new" :
@@ -1854,7 +1918,12 @@ var array_box=[];
 							var dataThisCode = $(item[i]).attr("data-this-code");
 							var dataName = $(item[i]).attr("data-name");
 
-							$(item[i]).after('<input type="text" class="prodBarSelectBox' + code + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
+							$(item[i]).after('<input type="text" class="prodBarSelectBox' + code + ' hidden barcode_input" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
+							input_count++;
+
+							if (i === item.length - 1 && input_count) {
+								$(item[i]).after('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + input_count + ')</a>');
+							}
 
 							$(item[i]).remove();
 						}
@@ -1994,7 +2063,6 @@ var array_box=[];
     <?php } ?>
 
 <?php } ?>
-
 
 <script>
 <?php if($_GET['penId_r']){ //보유재고 관리에서 넘어오면 실행 ?>
