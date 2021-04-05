@@ -204,7 +204,7 @@ else // 장바구니에 담기
             alert('상품정보가 존재하지 않습니다.');
 
         // 파트너몰 가격 구분
-        $it['it_price'] = samhwa_price($it, THEMA_KEY);
+        // $it['it_price'] = samhwa_price($it, THEMA_KEY);
 
         // 바로구매에 있던 장바구니 자료를 지운다.
         if($i == 0 && $sw_direct)
