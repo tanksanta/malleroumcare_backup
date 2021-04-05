@@ -956,9 +956,8 @@ var array_box=[];
 
 	<script>
 
-
+		// 수급자 선택 함수-
 		function selected_recipient($penId) {
-
 
 			<?php $re = sql_fetch(" select * from {$g5['recipient_table']} where penId = '$penId' ");  ?>
 			// document.getElementById("penNm").value=$re['penNm'];
@@ -1136,8 +1135,9 @@ var array_box=[];
 			var it_discount = $("input[name^=it_discount]");
 			var totalPrice = 0;
 
-            //배송비조회
+            //배송비조회, 할인가 계산
             var send_price =0;
+            var discount_prie =0;
             $.each(it_price, function(key, dom){
                 if($(dom).closest(".list.item").attr("data-sup") == "Y"){
                     var send_price2 =0;
@@ -1155,7 +1155,8 @@ var array_box=[];
                                 send_price2=result;
                             }
                         });
-                        totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+                        totalPrice += totalPrice + parseInt($(it_price[key]).val());
+                        discount_prie = discount_prie + parseInt($(it_discount[key]).val());
                         if(totalPrice > 0){  send_price = send_price+parseInt(send_price2); }
                         if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_price = 0; }
                 }
@@ -1164,11 +1165,12 @@ var array_box=[];
 				$("input[name='od_send_cost']").val(0);
 				$(".delivery_cost_display").text("0 원");
 			} else {
-                // $("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
+                $("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
                 $("input[name='od_send_cost']").val(send_price);
 				$(".delivery_cost_display").text(number_format(send_price) + " 원");
 			};
 			$("input[name=od_price]").val(totalPrice);
+			$("#od_cp_price").text(number_format(discount_prie) + " 원");
 			$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 
 			calculate_order_price();
