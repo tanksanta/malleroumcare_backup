@@ -791,7 +791,8 @@ pre{white-space: pre-wrap;}
 
 @media (max-width: 960px){
 	
-	
+	.is-pc .at-body{padding:0 10px}
+	.mo_menu{padding:0 10px}
 	
 	body { padding-top: 85px; padding-bottom: 70px; }
 	.pc_layout { display: none !important; }
