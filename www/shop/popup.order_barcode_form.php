@@ -230,7 +230,7 @@
 	<!-- 고정 하단 -->
 	<div id="popupFooterBtnWrap">
 		<button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
-		<button type="button" class="cancelbtn" onclick="member_cancel();">취소</button>
+		<button type="button" class="cancelbtn" onclick="do_cancel();">취소</button>
 	</div>
 
 <?php
@@ -571,25 +571,8 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
     })
 
-    //종료시 멤버 수정중없에기
-    function member_cancel(){
-        $.ajax({
-            url : "/shop/ajax.order.prodBarNum.cnt.php",
-            type : "POST",
-            async : false,
-            data : {
-                od_id : "<?=$od_id?>",
-                cancel : "y"
-            },
-            success : function(result){
-                <?php if($_GET['new']){ ?>
-                    history.back();
-                <?php }else{ ?>
-                    opener.location.reload();
-                    window.close();
-                <?php }?>
-            }
-            });
+    function do_cancel(){
+        window.close();
     }
 
     function openCloseToc(click) {

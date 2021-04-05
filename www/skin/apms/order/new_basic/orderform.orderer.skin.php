@@ -1127,7 +1127,7 @@ var array_box=[];
 				var it_id = $(itemDom).data('code');
 
 				if (has_barcode_text && !has_barcode_button) {
-					$('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
+					$(itemDom).find('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
 				}
 
 			});
@@ -1323,13 +1323,13 @@ var array_box=[];
 					$("input[name='it_price[" + key + "]']").val(price);
 					$(itemDom).find(".price_print").text(number_format(price));
 					
-					
+					// 보유재고 바코드					
 					var has_barcode_text = $(itemDom).find('.barcode.barList').find('.barcode_input').length;
 					var has_barcode_button = $(itemDom).find('.barcode.barList').find('.open_input_barcode').length;
 					var it_id = $(itemDom).data('code');
 
 					if (has_barcode_text && !has_barcode_button) {
-						$('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
+						$(itemDom).find('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
 					}
 				});
 
