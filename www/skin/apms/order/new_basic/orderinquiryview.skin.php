@@ -707,7 +707,10 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 
 	</div>
 </div>
-
+<div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
+    <div>
+    </div>
+</div>
 <style>
 
 	#send_statementBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
