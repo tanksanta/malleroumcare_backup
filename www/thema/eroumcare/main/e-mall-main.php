@@ -4,8 +4,8 @@
 
 ?>
 	
-	<link rel="stylesheet" href="//unpkg.com/swiper/swiper-bundle.min.css">
-	<script src="//unpkg.com/swiper/swiper-bundle.min.js"></script>
+	<link rel="stylesheet" href="<?php echo G5_URL; ?>/css/swiper.min.css">
+	<script src="<?php echo G5_URL; ?>/js/swiper.min.js"></script>
 
 	<!-- 메인 상단 슬라이드 -->
 	<div id="mainTopSlidePCWrap">
