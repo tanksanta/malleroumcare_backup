@@ -299,11 +299,11 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 												<div>
 													<p><?php echo number_format($item[$i]['opt'][$k]['ct_qty']); ?>개</p>
 												</div>
-												<div>
+												<!-- <div>
 													<p><?php echo number_format($item[$i]['opt'][$k]['opt_price']); ?></p>
-												</div>
+												</div> -->
 												<div>
-													<p><?php echo number_format($item[$i]['opt'][$k]['sell_price']); ?></p>
+													<p>상품금액 : <?php echo number_format($item[$i]['opt'][$k]['sell_price']); ?></p>
 												</div>
 											</div>
 										<?php if($od["od_delivery_insert"] && ($item[$i]["prodSupYn"] == "Y")){ ?>
@@ -347,12 +347,45 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 									</li>
 									<li class="barcode">
 									<?php for($ii = 0; $ii < $item[$i]["opt"][$k]["ct_qty"]; $ii++){ ?>
-										<?php if($od["staOrdCd"] == "03"){ ?>
-											<b><?=$prodList[$prodListCnt]["prodBarNum"]?></b>
-										<?php } else { ?>
-											<b class="prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>"><?=$prodList[$prodListCnt]["prodBarNum"]?></b>
-										<?php } ?>
-									<?php $prodListCnt++; } ?>
+                                            <!-- <?php if($od["staOrdCd"] == "03"){ ?>
+                                                <b>ㅁㅁㅁㅁㅁ<?=$prodList[$prodListCnt]["prodBarNum"]?></b>
+                                            <?php } else { ?>
+                                                <b class="prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>"><?=$prodList[$prodListCnt]["prodBarNum"]?></b>
+                                            <?php } ?> -->
+                                        <?php $prodListCnt++; } ?>
+                                        <?php if($item[$i]["prodSupYn"] == "N"){ ?>
+                                            <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-od="<?=$od["od_id"]?>" data-it="<?=$item[$i]["it_id"]?>"><?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$row["od_prodBarNum_total"]})" : "바코드 확인"?></a>
+                                        <?php } else { 
+
+                                                //바코드 개수 구하기
+                                                $sendData2=[];
+                                                $sendData2["stateCd"] =['01','02','08','09'];
+                                                $sendData2["usrId"] = $member["mb_id"];
+                                                $sendData2["entId"] = $member["mb_entId"];
+                                                $sendData2["prodId"] = $item[$i]["it_id"];
+                                                $oCurl = curl_init();
+                                                curl_setopt($oCurl, CURLOPT_PORT, 9901);
+                                                curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
+                                                curl_setopt($oCurl, CURLOPT_POST, 1);
+                                                curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+                                                curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
+                                                curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+                                                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+                                                $res = curl_exec($oCurl);
+                                                $res = json_decode($res, true);
+                                                curl_close($oCurl);
+                                                // print_r($res["data"][0]['prodBarNum']);
+                                                $barcode_c=0;		
+                                                for($k=0;$k<count($res["data"]); $k++){
+                                                    if($res["data"][$k]['prodBarNum']) $barcode_c++;
+                                                }
+                                        ?>
+                                        <?php if($barcode_c>0){ ?>
+                                            <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-od="<?=$od["od_id"]?>" data-it="<?=$item[$i]["it_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드(<?=$barcode_c."/".count($res["data"])?>)</a>
+                                        <?php }else { ?>
+                                            아직 바코드가 입력되지 않았습니다.
+                                        <?php } ?>
+                                    <?php } ?>
 									</li>
 								</ul>
 								<div class="list-btm">
@@ -687,6 +720,20 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 </style>
 
 <script>
+
+
+$(".popupProdBarNumInfoBtn").click(function(e){
+	e.preventDefault();
+	
+	var od = $(this).attr("data-od");
+	var it = $(this).attr("data-it");
+	$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "'>");
+	$("#popupProdBarNumInfoBox iframe").load(function(){
+		$("#popupProdBarNumInfoBox").show();
+	});
+});
+
+
 function fcancel_check(f) {
     var btn_text = $('#cancel_btn').text();
     var strArray = btn_text.split('하기');
