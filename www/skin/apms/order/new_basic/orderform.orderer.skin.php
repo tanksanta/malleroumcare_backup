@@ -1138,6 +1138,7 @@ var array_box=[];
 				//전체개수 - 재고 코드개수 : 가격넣기
 				$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 				$("input[name='it_discount[" + key + "]']").val(change_discount);
+				$("input[name='od_discount']").val(change_discount);
 				$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
                 
 
