@@ -60,7 +60,7 @@
 	<style>
 		* { margin: 0; padding: 0; position: relative; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); outline: none; }
 		html, body { width: 100%; float: left; font-family: "Noto Sans KR", sans-serif; }
-		body { padding-top: 60px; padding-bottom: 70px; }
+		body { padding-top: 60px; padding-bottom: 70px; background: white; }
 		a { text-decoration: none; color: inherit; }
 		ul, li { list-style: none; }
 		button { border: 0; font-family: "Noto Sans KR", sans-serif; }
@@ -437,26 +437,23 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
         // 저장
         $("#prodBarNumSaveBtn").click(function() {
-
-			if( ( navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1 ) ) { // 스마트폰인 경우
+			if(navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1) {
 				$opener = window.parent;
 				is_mobile = true;
 			} else {
-				$opener = window.opener || window.open('', 'barcodeParent');
+				$opener = window.opener || window.open('', 'barcode_parent');
 			}
 
             var parent = $opener.$('.list.item[data-code='+ it_id +']');
-            var inputs = $opener.$('.list.item[data-code='+ it_id +'] .barcode_input');
+            var inputs = $(parent).find('.barcode_input');
             var button = $(parent).find('.open_input_barcode');
 
             var barcodes = [];
 
-            // if (!inputs || !inputs.length) {
-            //     alert('바코드를 등록할 수 없습니다.');
-            //     return;
-            // }
-
-			alert(JSON.stringify(inputs));
+            if (!inputs || !inputs.length) {
+                alert('바코드를 등록할 수 없습니다.');
+                return;
+            }
 
             var count = 0;
 
@@ -476,7 +473,13 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                 }
 
                 alert('적용되었습니다.');
+
+				if (is_mobile) {
+					$opener.$('#barcode_popup_iframe').hide();
+					return;
+				}
                 window.self.close();
+				
             });
         });
 
