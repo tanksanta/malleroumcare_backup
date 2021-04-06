@@ -1129,7 +1129,6 @@ var array_box=[];
                             async : false,
                             data : sendData_discount,
                             success : function(result){
-                                alert(result);
                                 change_discount=change_discount+parseInt(result);
                             }
                         });
