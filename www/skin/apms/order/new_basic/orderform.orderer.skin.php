@@ -1156,7 +1156,7 @@ var array_box=[];
 			var it_discount = $("input[name^=it_discount]");
 			var totalPrice = 0;
 
-            //배송비조회, 할인가 계산
+            //배송비조회
             var send_price =0;
             var discount_prie =0;
             $.each(it_price, function(key, dom){
@@ -1733,7 +1733,6 @@ var array_box=[];
 
                     var it_id_class = $(this).closest("li");
 					prodsData["prodId"] = it_id_class.attr('data-code');
-                    채ㅜㅋㅋ
                     console.log(prodsData["prodId"]);
                     sendData2 = {
                         usrId : "<?=$member["mb_id"]?>",
