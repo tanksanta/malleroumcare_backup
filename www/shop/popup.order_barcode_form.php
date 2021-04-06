@@ -456,6 +456,8 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
             //     return;
             // }
 
+			alert(JSON.stringify(inputs));
+
             var count = 0;
 
             $('.barcode_input').each(function(i, item) {
