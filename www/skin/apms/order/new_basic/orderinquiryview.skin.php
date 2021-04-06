@@ -326,7 +326,6 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 									</li>
 									<li class="delivery-price m_none">
 										<p>
-											<a href="javascript:;"class="de-btn">
 											<?php
                                             if($od["od_stock_insert_yn"] == "Y"){
 												echo "등록완료";
@@ -335,7 +334,6 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
                                                     echo "등록완료";
                                                 }else{ 
                                                     ?>
-											<a href="javascript:;"class="de-btn">
                                                     <?php
                                                     $ct_status = get_step($od["od_status"]);
 												    echo $ct_status['name'];
@@ -345,7 +343,6 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
                                                 }
                                             }
 											?>
-											</a>
 										</p>
 									</li>
 									<li class="barcode">
