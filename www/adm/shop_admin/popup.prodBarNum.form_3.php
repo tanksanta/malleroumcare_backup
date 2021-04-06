@@ -293,7 +293,7 @@
 
  	<!-- 고정 상단 -->
 	<div id="popupHeaderTopWrap">
-		<div class="title">바코드입력</div>
+		<div class="title">바코드</div>
 		<div class="close">
 			<a href="#" class="popupCloseBtn">
 				&times;
