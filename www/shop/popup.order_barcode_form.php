@@ -434,37 +434,37 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
         // 저장
         $("#prodBarNumSaveBtn").click(function() {
-            var parent = $(opener.document).find('.list.item[data-code='+ it_id +']');
-            var inputs = $(parent).find('.barcode_input');
-            var button = $(parent).find('.open_input_barcode');
+            // var parent = $(opener.document).find('.list.item[data-code='+ it_id +']');
+            // var inputs = $(parent).find('.barcode_input');
+            // var button = $(parent).find('.open_input_barcode');
 
-            var barcodes = [];
+            // var barcodes = [];
 
-            if (!inputs || !inputs.length) {
-                alert('바코드를 등록할 수 없습니다.');
-                return;
-            }
+            // if (!inputs || !inputs.length) {
+            //     alert('바코드를 등록할 수 없습니다.');
+            //     return;
+            // }
 
-            var count = 0;
+            // var count = 0;
 
-            $('.barcode_input').each(function(i, item) {
-                var val = $(item).val();
-                $(inputs[i], opener.document).val(val);
-                barcodes.push(val);
+            // $('.barcode_input').each(function(i, item) {
+            //     var val = $(item).val();
+            //     $(inputs[i], opener.document).val(val);
+            //     barcodes.push(val);
 
-                if (val) count++;
-            }).promise().done(function() {
-                $(button).html('바코드 (' + count + '/' + inputs.length + ')');
+            //     if (val) count++;
+            // }).promise().done(function() {
+            //     $(button).html('바코드 (' + count + '/' + inputs.length + ')');
 
-                var dup = hasDuplicates(barcodes);
-                if (dup) {
-                    alert('중복된 값(' + dup + ')이 있습니다.');
-                    return false;
-                }
-
-                // alert('적용되었습니다.');
-                window.self.close();
-            });
+            //     var dup = hasDuplicates(barcodes);
+            //     if (dup) {
+            //         alert('중복된 값(' + dup + ')이 있습니다.');
+            //         return false;
+            //     }
+            // });
+			
+			alert('적용되었습니다.');
+			window.self.close();
         });
 
 
