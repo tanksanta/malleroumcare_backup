@@ -562,9 +562,12 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						</div>
 					</li>
 				</ul>
+                <?php 
+                    $total_price = $tot_price - $od['od_cart_discount']  -$od['od_cart_discount2'] ;
+                ?>
 				<div class="all-info-price">
 					<b>합계금액</b>
-					<span><?php echo number_format($tot_price); ?> 원</span>
+					<span><?php echo number_format($total_price); ?> 원</span>
 				</div>
 			</div>
 
