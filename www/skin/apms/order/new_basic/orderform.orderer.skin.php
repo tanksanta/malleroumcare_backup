@@ -1052,7 +1052,7 @@ var array_box=[];
 				var discountCnt = 0;
 				var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
 				var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
-
+				var change_discount = 0;
 				$(itemDom).find(".barList").find("input").attr("type", "text");
 
 				$.each(itemList, function(subKey, subDom){
