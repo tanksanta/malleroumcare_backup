@@ -434,13 +434,15 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
         // 저장
         $("#prodBarNumSaveBtn").click(function() {
-			if(!window.opener){
-				window.opener = window.open('', 'barcodeParent');
-			}else{
-				window.opener = window.opener;
+
+			if( ( navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1 ) ) { // 스마트폰인 경우
+				$opener = window.parent;
+				is_mobile = true;
+			} else {
+				$opener = window.opener || window.open('', 'barcodeParent');
 			}
 
-            var parent = $(window.opener.document).find('.list.item[data-code='+ it_id +']');
+            var parent = $($opener.document).find('.list.item[data-code='+ it_id +']');
             var inputs = $(parent).find('.barcode_input');
             var button = $(parent).find('.open_input_barcode');
 
@@ -455,7 +457,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
             $('.barcode_input').each(function(i, item) {
                 var val = $(item).val();
-                $(inputs[i], window.opener.document).val(val);
+                $(inputs[i], $opener.document).val(val);
                 barcodes.push(val);
 
                 if (val) count++;
