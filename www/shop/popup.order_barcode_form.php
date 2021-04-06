@@ -446,7 +446,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			}
 
             var parent = $opener.$('.list.item[data-code='+ it_id +']');
-            var inputs = $(parent).find('.barcode_input');
+            var inputs = $opener.$('.list.item[data-code='+ it_id +'] .barcode_input');
             var button = $(parent).find('.open_input_barcode');
 
             var barcodes = [];
