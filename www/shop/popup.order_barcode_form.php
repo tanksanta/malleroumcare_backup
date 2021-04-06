@@ -442,7 +442,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 				$opener = window.opener || window.open('', 'barcodeParent');
 			}
 
-            var parent = $($opener.document).find('.list.item[data-code='+ it_id +']');
+            var parent = $($opener).('.list.item[data-code='+ it_id +']');
             var inputs = $(parent).find('.barcode_input');
             var button = $(parent).find('.open_input_barcode');
 
@@ -457,7 +457,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
             $('.barcode_input').each(function(i, item) {
                 var val = $(item).val();
-                $(inputs[i], $opener.document).val(val);
+                $(inputs[i]).val(val);
                 barcodes.push(val);
 
                 if (val) count++;
