@@ -1115,9 +1115,30 @@ var array_box=[];
 						var stockCntItemCnt = Number($(subDom).closest(".item").find(".list-btm").find(".recipientBox select").val());
 						stockCntItemCnt = (stockCntItemCnt) ? stockCntItemCnt : 0;
 						$(stockCntItem[subKey]).val(stockCntItemCnt);
+
+						//할인율 계산
+						sendData_discount=[];
+                        //it_id, 주문수량 - 재고수량
+                        sendData_discount = {
+                            "it_id" : $(itemDom).data('code'),
+                            "ct_sale_qty" : dataBarCnt-dataStockCnt
+                        };
+                        $.ajax({
+                            url : "./ajax.change_discount.php",
+                            type : "POST",
+                            async : false,
+                            data : sendData_discount,
+                            success : function(result){
+                                alert(result);
+                                change_discount=change_discount+parseInt(result);
+                            }
+                        });
 //					}
 				});
+
+				//전체개수 - 재고 코드개수 : 가격넣기
 				$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
+				$("input[name='it_discount[" + key + "]']").val(change_discount);
 				$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
                 
 
@@ -1128,6 +1149,7 @@ var array_box=[];
 				if (has_barcode_text && !has_barcode_button) {
 					$(itemDom).find('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
 				}
+				
 
 			});
 
