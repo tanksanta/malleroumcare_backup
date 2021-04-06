@@ -432,6 +432,9 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
             return false; 
         }
 
+		var $opener;
+    	var is_mobile = false;
+
         // 저장
         $("#prodBarNumSaveBtn").click(function() {
 
