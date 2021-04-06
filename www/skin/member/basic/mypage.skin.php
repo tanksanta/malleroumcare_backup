@@ -178,6 +178,13 @@ if($header_skin)
 							</a>
 						</div>
 					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<a href="<?php echo G5_URL; ?>/shop/cart.php" class="btn btn-lightgray btn-sm btn-block">
+								장바구니
+							</a>
+						</div>
+					</div>
 				<?php } ?>
 				<!-- <div class="col-xs-6">
 					<div class="form-group">
@@ -193,20 +200,20 @@ if($header_skin)
 						</a>
 					</div>
 				</div> -->
-				<div class="col-xs-6">
+				<!-- <div class="col-xs-6">
 					<div class="form-group">
 						<a href="<?php echo $at_href['edit'];?>" class="btn btn-lightgray btn-sm btn-block">
 							정보수정
 						</a>
 					</div>
-				</div>
-				<div class="col-xs-6">
+				</div> -->
+				<!-- <div class="col-xs-6">
 					<div class="form-group">
 						<?php if ( $member['mb_type'] == 'partner' ) { ?>
 						<a href="/shop/partner_excel.php" class="btn btn-lightgray btn-sm btn-block">제품상세페이지 다운로드</a>
 						<?php } ?>
 					</div>
-				</div>
+				</div> -->
 				<!-- <div class="col-xs-6">
 					<div class="form-group">
 						<a href="<?php echo $at_href['leave'];?>" class="btn btn-lightgray btn-sm btn-block leave-me">
@@ -215,6 +222,7 @@ if($header_skin)
 					</div>
 				</div> -->
 			</div>
+			<p>*상업소 정보수정은 통합시스템에서 가능합니다.</p>
 		</div>
 	</div>
 
@@ -279,7 +287,7 @@ if($header_skin)
 					</tr>
 			    <?php } ?>
 				<?php if ($i == 0) { ?>
-					<tr><td colspan="7" class="empty_table">주문 내역이 없습니다.</td></tr>
+					<tr><td colspan="10" class="empty_table">주문 내역이 없습니다.</td></tr>
 				<?php } ?>
 			    </tbody>
 			    </table>
