@@ -123,7 +123,7 @@ if($header_skin)
 				
 				var od = $(this).attr("data-od");
 				var it = $(this).attr("data-it");
-				$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=" + it + "&od_id=" + od + "'>");
+				$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "'>");
 				$("#popupProdBarNumInfoBox iframe").load(function(){
 					$("#popupProdBarNumInfoBox").show();
 				});
