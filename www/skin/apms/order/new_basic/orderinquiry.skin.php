@@ -236,7 +236,7 @@ if($header_skin)
 						<li class="pro">
 							<div class="img" style="min-width:100px; min-height:100px;">
 							<?php if($item["it_img"]){ ?>
-								<img src="/data/item/<?=$item["it_img"]?>" onerror="this.src='/img/no_img.png';">
+								<a href="<?=$row["od_href"]?>"><img src="/data/item/<?=$item["it_img"]?>" onerror="this.src='/img/no_img.png';"></a>
 							<?php } ?>
 							</div>
 							<div class="pro-info">
@@ -251,8 +251,10 @@ if($header_skin)
 								</div>
 							<?php } ?>
 								<div class="name">
+									<a href="<?=$row["od_href"]?>">
 									<?=$item["it_name"]?> <?=($item["ct_option"] && $item["ct_option"] != $item["it_name"]) ? "({$item["ct_option"]})" : ""?>
 									<?=($item["prodSupYn"] == "N") ? "<b>비유통</b>" : ""?>
+									</a>
 								</div>
 								<div>
 									<em>수량 : <?=$item["ct_qty"]?></em>
