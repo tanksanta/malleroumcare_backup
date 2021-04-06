@@ -451,10 +451,10 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
             var barcodes = [];
 
-            if (!inputs || !inputs.length) {
-                alert('바코드를 등록할 수 없습니다.');
-                return;
-            }
+            // if (!inputs || !inputs.length) {
+            //     alert('바코드를 등록할 수 없습니다.');
+            //     return;
+            // }
 
             var count = 0;
 
