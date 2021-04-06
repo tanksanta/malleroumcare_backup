@@ -1897,7 +1897,7 @@ var array_box=[];
                     }
                 });
                     $("input[name='od_send_cost']").val(send_price);
-                    $(".delivery_cost_display").text(send_price+" 원");
+                    $(".delivery_cost_display").text(number_format(send_price)+" 원");
                     $("input[name=od_price]").val(totalPrice);
                     $("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
