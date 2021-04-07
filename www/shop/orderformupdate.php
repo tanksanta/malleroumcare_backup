@@ -1316,13 +1316,12 @@ if($is_member && $od_b_name) {
 
 //		echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
 //		return false;
-
 		if($res["errorYN"] == "Y"){
             sql_query("
             DELETE FROM g5_shop_order
             WHERE od_id = '{$od_id}'
             ");
-            alert('시스템 오류, 수급자 주문이 불가능합니다.',G5_URL);
+            alert($res["message"],G5_URL);
 		} else {
 			$_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
 			$_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
@@ -1374,7 +1373,9 @@ if($is_member && $od_b_name) {
             ");
             // echo print_r($res);
             // return false;
-            alert('시스템 오류, 주문이 불가능합니다.',G5_URL);
+            // alert('시스템 오류, 주문이 불가능합니다.',G5_URL);
+            alert($res["message"],G5_URL);
+
         }
 
 		$stoIdList = implode(",", $stoIdList);
@@ -1435,7 +1436,9 @@ if($is_member && $od_b_name) {
                 DELETE FROM g5_shop_order
                 WHERE od_id = '{$od_id}'
                 ");
-                alert('시스템 오류, 보유재고 등록이 불가능합니다.',G5_URL);
+                // alert('시스템 오류, 보유재고 등록이 불가능합니다.',G5_URL);
+                alert($res["message"],G5_URL);
+
 			}
 		}
 
