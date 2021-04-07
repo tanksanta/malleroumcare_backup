@@ -30,6 +30,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
     $tot_price=$tot_price-$send_cost;
     $send_cost=0;
 }
+echo '<br>'.$item[0]['ct_id'];
 ?>
 
 <script src="<?php echo $skin_url;?>/shop.js"></script>
