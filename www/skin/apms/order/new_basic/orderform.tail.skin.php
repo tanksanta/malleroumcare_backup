@@ -9,6 +9,18 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 <br>
 
 
+<style>
+#barcode_popup_iframe {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index:9999;
+}
+</style>
+<iframe name="barcode_popup_iframe" id="barcode_popup_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
 <form name="barcode_popup_form" class="hidden" id="barcode_popup_form">
 	<input type=text name="it_id" value="">
 	<input type=text name="barcodes" value="">

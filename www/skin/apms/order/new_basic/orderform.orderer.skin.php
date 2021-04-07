@@ -1647,16 +1647,24 @@ var array_box=[];
 				var it_id = $(this).data('id');
 				var barcode_nodes = $(this).closest('.barList').find('.barcode_input');
 				var barcodes = [];
+				var is_mobile = navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1;
 
 				$(barcode_nodes).each(function(i, item) {
 					barcodes.push($(item).val());
 				});
 
-				window.name = "barcodeParent";
+				window.name = "barcode_parent";
 				var url = "./popup.order_barcode_form.php";
-				var openWin = window.open("",
-                    "barcodeChild", "width=683, height=800, resizable = no, scrollbars = no");
-				$('#barcode_popup_form').attr('target', 'barcodeChild');
+				var open_win;
+
+				if(is_mobile) {
+					$('#barcode_popup_iframe').show();
+				} else {
+					open_win = window.open("", "barcode_child", "width=683, height=800, resizable = no, scrollbars = no");
+				}
+
+				$('#barcode_popup_form').attr('target', is_mobile ? 'barcode_popup_iframe' : 'barcode_child');
+
 				$('#barcode_popup_form').attr('action', url);
 				$('#barcode_popup_form').attr('method', 'post');
 				$('#barcode_popup_form input[name="it_id"]').val(it_id);
