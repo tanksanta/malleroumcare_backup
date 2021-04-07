@@ -238,13 +238,22 @@ for($i=0; $i<$count; $i++) {
 			$ct_discount = 0;
 			$ct_sale_qty = 0;
 			$ct_sale_qty_list = $tmp_ct_qty_array;
+            
 			foreach($ct_sale_qty_list as $this_qty){
 				$ct_sale_qty += $this_qty;
 			}
 
+            echo $ct_sale_qty;
+            return false;
+
 			$itSaleCntList = [$it["it_sale_cnt"], $it["it_sale_cnt_02"], $it["it_sale_cnt_03"], $it["it_sale_cnt_04"], $it["it_sale_cnt_05"]];
 			$itSalePriceList = [$it["it_sale_percent"], $it["it_sale_percent_02"], $it["it_sale_percent_03"], $it["it_sale_percent_04"], $it["it_sale_percent_05"]];
 			$itSaleCnt = 0;
+
+            //무조건 판매가
+            $sql_i = "SELECT `it_price` FROM `g5_shop_item` WHERE `it_id` ='".$it['it_id']."'";
+            $result_i = sql_fetch($sql_i);
+            $it['it_price']=$result_i['it_price'];
 
 			if(!${"it_id_sale_status_{$it_id}"}){
 				for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
@@ -252,11 +261,16 @@ for($i=0; $i<$count; $i++) {
 						if($itSaleCnt < $itSaleCntList[$saleCnt]){
 							$ct_discount = $itSalePriceList[$saleCnt] * $ct_sale_qty;
 							$ct_discount = ($it['it_price'] * $ct_sale_qty) - $ct_discount;
+
+                  
 							$itSaleCnt = $itSaleCntList[$saleCnt];
 						}
 					}
 				}
 			}
+            echo $ct_discount;
+            return false;
+
 
 			${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";
 
@@ -312,10 +326,17 @@ for($i=0; $i<$count; $i++) {
 			foreach($ct_sale_qty_list as $this_qty){
 				$ct_sale_qty += $this_qty;
 			}
-		
+			
 			$itSaleCntList = [$it["it_sale_cnt"], $it["it_sale_cnt_02"], $it["it_sale_cnt_03"], $it["it_sale_cnt_04"], $it["it_sale_cnt_05"]];
 			$itSalePriceList = [$it["it_sale_percent"], $it["it_sale_percent_02"], $it["it_sale_percent_03"], $it["it_sale_percent_04"], $it["it_sale_percent_05"]];
 			$itSaleCnt = 0;
+
+
+            //무조건 판매가
+            $sql_i = "SELECT `it_price` FROM `g5_shop_item` WHERE `it_id` ='".$it['it_id']."'";
+            $result_i = sql_fetch($sql_i);
+            $it['it_price']=$result_i['it_price'];
+
 
 			if(!${"it_id_sale_status_{$it_id}"}){
 				for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
