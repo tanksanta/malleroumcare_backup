@@ -1785,6 +1785,8 @@ var array_box=[];
                     //아이템 개당 계산
 					$.each(itemList, function(subKey, subDom){
                         var dataBarCnt = Number($(subDom).attr("data-bar-cnt"));
+					    var select_num = $(itemDom).find(".prodBarSelectBox"); //select 개수
+
 						if($(itemDom).attr("data-sup") == "Y"){
 							var checkedType = $(subDom).closest(".item").find(".list-btm").find(".recipientBox input[type='radio']:checked").attr("data-type");
 
@@ -1796,7 +1798,7 @@ var array_box=[];
                             //it_id, 주문수량 - 재고수량
                             sendData_discount = {
                                 "it_id" : code,
-                                "ct_sale_qty" : dataBarCnt -select_count
+                                "ct_sale_qty" : dataBarCnt -select_num.length
                             };
                             $.ajax({
                                 url : "./ajax.change_discount.php",
