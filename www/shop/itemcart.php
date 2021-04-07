@@ -243,8 +243,6 @@ for($i=0; $i<$count; $i++) {
 				$ct_sale_qty += $this_qty;
 			}
 
-            echo $ct_sale_qty;
-            return false;
 
 			$itSaleCntList = [$it["it_sale_cnt"], $it["it_sale_cnt_02"], $it["it_sale_cnt_03"], $it["it_sale_cnt_04"], $it["it_sale_cnt_05"]];
 			$itSalePriceList = [$it["it_sale_percent"], $it["it_sale_percent_02"], $it["it_sale_percent_03"], $it["it_sale_percent_04"], $it["it_sale_percent_05"]];
@@ -268,9 +266,6 @@ for($i=0; $i<$count; $i++) {
 					}
 				}
 			}
-            echo $ct_discount;
-            return false;
-
 
 			${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";
 
