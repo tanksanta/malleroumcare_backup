@@ -1,337 +1,436 @@
 <?php
-if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
+include_once('./_common.php');
 
-// add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
-add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="screen">', 0);
+// 보관기간이 지난 상품 삭제
+cart_item_clean();
 
-// 목록헤드
-if(isset($wset['chead']) && $wset['chead']) {
-    add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/head/'.$wset['chead'].'.css" media="screen">', 0);
-    $head_class = 'list-head';
-} else {
-    $head_class = (isset($wset['ccolor']) && $wset['ccolor']) ? 'tr-head border-'.$wset['ccolor'] : 'tr-head border-black';
+// cart id 설정
+set_cart_id($sw_direct);
+
+if(!defined('THEMA_PATH')) {
+	include_once(G5_LIB_PATH.'/apms.thema.lib.php');
 }
 
-// 헤더 출력
-if($header_skin)
-    include_once('./header.php');
+if($sw_direct)
+    $tmp_cart_id = get_session('ss_cart_direct');
+else
+    $tmp_cart_id = get_session('ss_cart_id');
 
-if ( is_array($item) && count($item) ) {
-    $ct = sql_fetch("SELECT * FROM g5_shop_cart WHERE ct_id = '{$item[0]['ct_id']}'");
-    $od_id = $ct['od_id'];
+// 브라우저에서 쿠키를 허용하지 않은 경우라고 볼 수 있음.
+if (!$tmp_cart_id)
+{
+    die('더 이상 작업을 진행할 수 없습니다.\n\n브라우저의 쿠키 허용을 사용하지 않음으로 설정한것 같습니다.\n\n브라우저의 인터넷 옵션에서 쿠키 허용을 사용으로 설정해 주십시오.\n\n그래도 진행이 되지 않는다면 쇼핑몰 운영자에게 문의 바랍니다.');
 }
 
+$tmp_cart_id = preg_replace('/[^a-z0-9_\-]/i', '', $tmp_cart_id);
 
-//쇼핑몰에서 설정한 일정한 금액 이상이 넘을경우 배송비 무료
-$sql_d = "SELECT `de_send_conditional` FROM `g5_shop_default`";
-$result_d = sql_fetch($sql_d);
-
-if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
-    $tot_price=$tot_price-$send_cost;
-    $send_cost=0;
+// 레벨(권한)이 상품구입 권한보다 작다면 상품을 구입할 수 없음.
+if ($member['mb_level'] < $default['de_level_sell'])
+{
+    die('상품을 구입할 수 있는 권한이 없습니다.');
 }
-?>
 
-<script src="<?php echo $skin_url;?>/shop.js"></script>
+$count = count($_POST['it_id']);
+if ($count < 1)
+    die('장바구니에 담을 상품을 선택하여 주십시오.');
 
-<!-- Modal -->
-<div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-        <div id="mod_option_box"></div>
-      </div>
-    </div>
-  </div>
-</div>
+$ct_count = 0;
+for($i=0; $i<$count; $i++) {
+    $it_id = $_POST['it_id'][$i];
+    $opt_count = count($_POST['io_id'][$it_id]);
 
-<form name="frmcartlist" id="sod_bsk_list" method="post" action="<?php echo $action_url; ?>" class="form" role="form">
-    <div class="table-responsive">
-        <table class="div-table table bsk-tbl bg-white">
-        <tbody>
-        <tr class="<?php echo $head_class;?>">
-            <th scope="col">
-                <label for="ct_all" class="sound_only">상품 전체</label>
-                <span><input  type="checkbox" name="ct_all" value="1" id="ct_all" checked="checked"></span>
-            </th>
-            <th scope="col"><span>이미지</span></th>
-            <th scope="col"><span>상품명</span></th>
-            <th scope="col"><span>총수량</span></th>
-            <th scope="col"><span>상품금액</span></th>
-            <th scope="col"><span>할인가</span></th>
-            <th scope="col"><span>소계</span></th>
-            <!-- <th scope="col"><span>포인트</span></th> -->
-            <th scope="col"><span class="last">배송비</span></th>
-        </tr>
-        <?php for($i=0;$i < count($item); $i++) { ?>
-            <tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
-                <td class="text-center">
-                    <label for="ct_chk_<?php echo $i; ?>" class="sound_only">상품</label>
-                    <input class="check_cart" data-target="<?=$item[$i]['sell_price']?>" data-target2="
-                    <?php
-                    if($item[$i]["prodSupYn"] == "N"){
-                        echo "0";
-                    }else{
-                        echo get_item_sendcost($item[$i]['it_id'], $item[$i]['ct_price'], $item[$i]['qty'],$s_cart_id);
-                    }
-                    ?>
-                    " type="checkbox" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked">
-                </td>
-                <td class="text-center">
-                    <div class="item-img">
-                        <img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';" style="width: 100px; height: 100px;">
-                        <div class="item-type">
-                            <?php echo $item[$i]['pt_it']; ?>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $item[$i]['it_id']; ?>">
-                    <input type="hidden" name="it_name[<?php echo $i; ?>]" value="<?php echo get_text($item[$i]['it_name']); ?>">
-                    <a href="./item.php?it_id=<?php echo $item[$i]['it_id'];?>">
-                        <b><?php echo stripslashes($item[$i]['it_name']); ?></b>
-                    <?php if($item[$i]["prodSupYn"] == "N"){ ?>
-                        <b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
-                    <?php } ?>
-                    </a>
-                    <?php if($item[$i]['it_options']) { ?>
-                        <div class="well well-sm"><?php echo $item[$i]['it_options'];?></div>
-                        <button type="button" class="btn btn-primary btn-sm btn-block mod_options">선택사항수정</button>
-                    <?php } ?>
-                </td>
-                <td class="text-center"><?php echo number_format($item[$i]['qty']); ?></td>
-                <td class="text-right"><?php echo number_format($item[$i]['ct_price']); ?></td>
-                <td class="text-right"><?php echo number_format($item[$i]['sell_discount']); ?></td>
-                <td class="text-right"><span id="sell_price_<?php echo $i; ?>"><?php echo number_format($item[$i]['sell_price']); ?></span></td>
-                <!-- <td class="text-right"><?php echo number_format($item[$i]['point']); ?></td> -->
-                <td class="text-center"><?php echo $item[$i]['ct_send_cost']; ?></td>
-            </tr>
-        <?php } ?>
-        <?php if ($i == 0) { ?>
-            <tr><td colspan="8" class="text-center text-muted"><p style="padding:50px 0;">장바구니가 비어 있습니다.</p></td></tr>
-        <?php } ?>
-        </tbody>
-        </table>
-    </div>
+    if($opt_count && $_POST['io_type'][$it_id][0] != 0)
+        die('상품의 선택옵션을 선택해 주십시오.');
 
-    <?php //if ($tot_price > 0 || $send_cost > 0) { ?>
-        <div class="well bg-white">
-            <div class="row">
-                <?php //if ($send_cost > 0) { // 배송비가 0 보다 크다면 (있다면) ?>
-                    <!-- <div class="col-xs-6">배송비 정보</div>
-                    <div class="col-xs-6 text-right">
-                        <strong id="delivery_pirce"><?php echo number_format($send_cost); ?> 원 (*10만원이상 무료배송)</strong>
-                        <strong id="delivery_pirce">10만원이상 무료배송</strong>
-                    </div> -->
-                <?php //} ?>
-                <?php //if ($tot_price > 0) { ?>
-                    <div class="col-xs-6"> 총 상품금액 </div>
-                    <div class="col-xs-6 text-right">
-                        <strong id="total_price"><?php echo number_format($tot_price); ?> 원 <!-- / <?php echo number_format($tot_point); ?> 점 --></strong>
-                    </div>
-                <?php //} ?>
-            </div>
-            <span>*10만원 이상 무료배송되며, 비유통상품은 주문시 결제금액에 포함되지 않습니다.</span>
-        </div>
-    <?php //} ?>
-
-    <div style="margin-bottom:15px; text-align:center;">
-        <?php if ($i == 0) { ?>
-            <!-- <a href="<?php echo G5_SHOP_URL; ?>/" class="btn btn-color btn-sm">계속하기</a> -->
-        <?php } else { ?>
-            <input type="hidden" name="url" value="./orderform.php">
-            <input type="hidden" name="records" value="<?php echo $i; ?>">
-            <input type="hidden" name="act" value="">
-            <div class="row">
-                <div class="col-sm-6 col-sm-offset-3">
-                    <div class="form-group">
-                        <button type="button" onclick="return form_check('buy');" class="btn btn-black btn-block btn-lg"> 주문하기</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6 col-sm-offset-3">
-                    <div class="btn-group btn-group-justified">
-                        <!-- <div class="btn-group">
-                            <a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=<?php echo $continue_ca_id; ?>" class="btn btn-white btn-block btn-sm">계속하기</a>
-                        </div> -->
-                        <div class="btn-group">
-                            <button type="button" onclick="return form_check('seldelete');" class="btn  btn-white btn-block btn-sm"> 선택삭제</button>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" onclick="return form_check('alldelete');" class="btn btn-white btn-block btn-sm">전체삭제</button>
-                        </div>
-                    </div>
-                    <?php if ($naverpay_button_js) { ?>
-                        <div style="margin-top:20px;"><?php echo $naverpay_request_js.$naverpay_button_js; ?></div>
-                    <?php } ?>
-                </div>
-            </div>
-        <?php } ?>
-    </div>
-
-    <style>
-    .send_estimate_div {
-        margin:20px auto;
-        max-width:585px;
+    for($k=0; $k<$opt_count; $k++) {
+        if ($_POST['ct_qty'][$it_id][$k] < 1)
+            die('수량은 1 이상 입력해 주십시오.');
     }
-    #send_estimate {
-        border:1px solid #0e5ea8;
-        font-size:14px;
-        display:block;
-        text-align:center;
-        line-height:40px;
-        font-weight:bold;
-    }
-    </style>
 
-    <div class="send_estimate_div">
-        <a id="send_estimate">견적서 출력</a>
-    </div>
+	// 본인인증, 성인인증체크
+	if(!$is_admin) {
+		$msg = shop_member_cert_check($it_id, 'item');
+		if($msg)
+            die($msg);
+	}
 
-</form>
+    // 상품정보
+    $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
+    $it = sql_fetch($sql);
+    if(!$it['it_id'])
+        die('상품정보가 존재하지 않습니다.');
 
-<?php if($setup_href) { ?>
-    <p class="text-center">
-        <a class="btn btn-color btn-sm win_memo" href="<?php echo $setup_href;?>">
-            <i class="fa fa-cogs"></i> 스킨설정
-        </a>
-    </p>
-<?php } ?>
+    // 파트너몰 가격 구분
+    $it['it_price'] = samhwa_price($it, THEMA_KEY);
 
-<script>
+	// 바로구매에 있던 장바구니 자료를 지운다.
+    if($i == 0 && $sw_direct)
+		sql_query(" delete from {$g5['g5_shop_cart_table']} where od_id = '$tmp_cart_id' and ct_direct = 1 ", false);
 
-    //클릭시 총 상품금액 변경
-    $(".check_cart").click(function() {
-        var check_cart = $( '.check_cart' ).get();
-        var price=0;
-        var delivery=0;
-        for ( var i = 0; i < check_cart.length; i++) {
-            console.log(check_cart[i].checked);
-            if(check_cart[i].checked==true){
-                price = price+parseInt($(check_cart[i]).data('target'));
-                delivery = delivery+parseInt($(check_cart[i]).data('target2'));
-            }
+    // 최소, 최대 수량 체크
+    if($it['it_buy_min_qty'] || $it['it_buy_max_qty']) {
+        $sum_qty = 0;
+        for($k=0; $k<$opt_count; $k++) {
+            if($_POST['io_type'][$it_id][$k] == 0)
+                $sum_qty += (int)$_POST['ct_qty'][$it_id][$k];
         }
-        if(price >= parseInt(<?=$result_d['de_send_conditional']?>)){delivery=0;}
-        $("#delivery_pirce").html(number_format(delivery)+" 원 (*10만원이상 무료배송)");
-        $("#total_price").html(number_format(price+delivery)+" 원");
-    });
 
-    //콤마찍기
-    function number_format(num){
-        var regexp = /\B(?=(\d{3})+(?!\d))/g;
-        return num.toString().replace(regexp, ',');
+        if($it['it_buy_min_qty'] > 0 && $sum_qty < $it['it_buy_min_qty'])
+            die($it['it_name'].'의 선택옵션 개수 총합 '.number_format($it['it_buy_min_qty']).'개 이상 주문해 주십시오.');
+
+        if($it['it_buy_max_qty'] > 0 && $sum_qty > $it['it_buy_max_qty'])
+            die($it['it_name'].'의 선택옵션 개수 총합 '.number_format($it['it_buy_max_qty']).'개 이하로 주문해 주십시오.');
+
+        // 기존에 장바구니에 담긴 상품이 있는 경우에 최대 구매수량 체크
+        if($it['it_buy_max_qty'] > 0) {
+            $sql4 = " select count(*) as cnt
+                        from {$g5['g5_shop_cart_table']}
+                        where od_id = '$tmp_cart_id'
+                          and it_id = '$it_id'
+                          and io_type = '0'
+                          and ct_status = '쇼핑' ";
+            $row4 = sql_fetch($sql4);
+
+			$option_sum_qty = ($act === 'optionmod') ? $sum_qty : $sum_qty + $row4['ct_sum'];
+
+			if($option_sum_qty > $it['it_buy_max_qty'])
+                die($it['it_name'].'의 선택옵션 개수 총합 '.number_format($it['it_buy_max_qty']).'개 이하로 주문해 주십시오.');
+        }
     }
 
-    $(function() {
-        var close_btn_idx;
+    // 옵션정보를 얻어서 배열에 저장
+    $opt_list = array();
+    $sql = " select * from {$g5['g5_shop_item_option_table']} where it_id = '$it_id' and io_use = 1 order by io_no asc ";
+    $result = sql_query($sql);
+    $lst_count = 0;
+    for($k=0; $row=sql_fetch_array($result); $k++) {
+        $opt_list[$row['io_type']][$row['io_id']]['id'] = $row['io_id'];
+        $opt_list[$row['io_type']][$row['io_id']]['use'] = $row['io_use'];
+        $opt_list[$row['io_type']][$row['io_id']]['price'] = $row['io_price'];
+        $opt_list[$row['io_type']][$row['io_id']]['io_price'] = $row['io_price'];
+        $opt_list[$row['io_type']][$row['io_id']]['io_price_partner'] = $row['io_price_partner'];
+        $opt_list[$row['io_type']][$row['io_id']]['io_price_dealer'] = $row['io_price_dealer'];
+        $opt_list[$row['io_type']][$row['io_id']]['io_price_dealer2'] = $row['io_price_dealer2'];
+        $opt_list[$row['io_type']][$row['io_id']]['stock'] = $row['io_stock_qty'];
 
-        // 선택사항수정
-        $(".mod_options").click(function() {
-            var it_id = $(this).closest("tr").find("input[name^=it_id]").val();
-            var $this = $(this);
-            close_btn_idx = $(".mod_options").index($(this));
-            $('#cartModal').modal('show');
-            $.post(
-                "./cartoption.php",
-                { it_id: it_id },
-                function(data) {
-                    $("#mod_option_form").remove();
-                    //$this.after("<div id=\"mod_option_frm\"></div>");
-                    $("#mod_option_box").html(data);
-                    price_calculate();
-                }
-            );
-        });
+        // 선택옵션 개수
+        if(!$row['io_type'])
+            $lst_count++;
+    }
 
-        // 모두선택
-        $("input[name=ct_all]").click(function() {
-            if($(this).is(":checked"))
-                $("input[name^=ct_chk]").attr("checked", true);
+    //--------------------------------------------------------
+	//  재고 검사, 바로구매일 때만 체크
+    //--------------------------------------------------------
+    // 이미 장바구니에 있는 같은 상품의 수량합계를 구한다.
+	if($sw_direct) {
+		for($k=0; $k<$opt_count; $k++) {
+			$io_id = preg_replace(G5_OPTION_ID_FILTER, '', $_POST['io_id'][$it_id][$k]);
+			$io_type = preg_replace('#[^01]#', '', $_POST['io_type'][$it_id][$k]);
+			$io_value = $_POST['io_value'][$it_id][$k];
+
+			$sql = " select SUM(ct_qty) as cnt from {$g5['g5_shop_cart_table']}
+					  where od_id <> '$tmp_cart_id'
+						and it_id = '$it_id'
+						and io_id = '$io_id'
+						and io_type = '$io_type'
+						and ct_stock_use = 0
+						and ct_status = '쇼핑'
+						and ct_select = '1' ";
+			$row = sql_fetch($sql);
+			$sum_qty = $row['cnt'];
+
+			// 재고 구함
+			$ct_qty = (int)$_POST['ct_qty'][$it_id][$k];
+			if(!$io_id)
+				$it_stock_qty = get_it_stock_qty($it_id);
+			else
+				$it_stock_qty = get_option_stock_qty($it_id, $io_id, $io_type);
+
+			if ($ct_qty + $sum_qty > $it_stock_qty)
+			{
+	            die($io_value.' 의 재고수량이 부족합니다.\n\n현재 재고수량 : ' . number_format($it_stock_qty - $sum_qty) . ' 개');
+			}
+		}
+	}
+    //--------------------------------------------------------
+
+	// 옵션수정일 때 기존 장바구니 자료를 먼저 삭제
+	if($act == 'optionmod')
+		sql_query(" delete from {$g5['g5_shop_cart_table']} where od_id = '$tmp_cart_id' and it_id = '$it_id' ");
+
+    // 장바구니에 Insert
+    // 바로구매일 경우 장바구니가 체크된것으로 강제 설정
+    if($sw_direct) {
+        $ct_select = 1;
+		$ct_select_time = G5_TIME_YMDHIS;
+    } else {
+        $ct_select = 0;
+		$ct_select_time = '0000-00-00 00:00:00';
+    }
+    
+    $uid = uuidv4();
+
+    // 장바구니에 Insert
+    $comma = '';
+        $sql = " INSERT INTO {$g5['g5_shop_cart_table']}
+                        ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3, ct_uid, ct_discount, prodSupYn )
+                    VALUES ";
+
+    for($k=0; $k<$opt_count; $k++) {
+		$io_id = preg_replace(G5_OPTION_ID_FILTER, '', $_POST['io_id'][$it_id][$k]);
+		$io_type = preg_replace('#[^01]#', '', $_POST['io_type'][$it_id][$k]);
+        $io_value = $_POST['io_value'][$it_id][$k];
+
+		$pt_msg1 = get_text($_POST['pt_msg1'][$it_id][$k]);
+		$pt_msg2 = get_text($_POST['pt_msg2'][$it_id][$k]);
+        $pt_msg3 = get_text($_POST['pt_msg3'][$it_id][$k]);
+
+        // 선택옵션정보가 존재하는데 선택된 옵션이 없으면 건너뜀
+        if($lst_count && $io_id == '')
+            continue;
+
+        // 구매할 수 없는 옵션은 건너뜀
+        if($io_id && !$opt_list[$io_type][$io_id]['use'])
+            continue;
+
+        // $io_price = $opt_list[$io_type][$io_id]['price'];
+        $io_price = samhwa_opt_price($opt_list[$io_type][$io_id], THEMA_KEY);
+        $ct_qty = (int)$_POST['ct_qty'][$it_id][$k];
+
+        // 구매가격이 음수인지 체크
+        if($io_type) {
+            if((int)$io_price < 0)
+                die('구매금액이 음수인 상품은 구매할 수 없습니다.');
+        } else {
+            if((int)$it['it_price'] + (int)$io_price < 0)
+                die('구매금액이 음수인 상품은 구매할 수 없습니다.');
+        }
+
+        // 동일옵션의 상품이 있으면 수량 더함
+        $sql2 = " select ct_id, ct_qty, io_type
+                    from {$g5['g5_shop_cart_table']}
+                    where od_id = '$tmp_cart_id'
+                      and it_id = '$it_id'
+                      and io_id = '$io_id'
+					  and pt_msg1 = '{$pt_msg1}'
+					  and pt_msg2 = '{$pt_msg2}'
+					  and pt_msg3 = '{$pt_msg3}'
+					  and ct_status = '쇼핑' ";
+        $row2 = sql_fetch($sql2);
+		if($row2['ct_id']) {
+            // 재고체크
+            $tmp_ct_qty = $row2['ct_qty'];
+            
+            if(!$io_id)
+                $tmp_it_stock_qty = get_it_stock_qty($it_id);
             else
-                $("input[name^=ct_chk]").attr("checked", false);
+                $tmp_it_stock_qty = get_option_stock_qty($it_id, $io_id, $row2['io_type']);
 
-            //체크시 배송비 및 총 상품금액 반영
-            var check_cart = $( '.check_cart' ).get();
-            var price=0;
-            var delivery=0;
-            for ( var i = 0; i < check_cart.length; i++) {
-                console.log(check_cart[i].checked);
-                if(check_cart[i].checked==true){
-                    price = price+parseInt($(check_cart[i]).data('target'));
-                    delivery = delivery+parseInt($(check_cart[i]).data('target2'));
+            if ($tmp_ct_qty + $ct_qty > $tmp_it_stock_qty)
+            {
+                die($io_value." 의 재고수량이 부족합니다.\\n\\n현재 재고수량 : " . number_format($tmp_it_stock_qty) . " 개");
+            }
+            
+
+
+
+            # 210121 묶음할인
+            // $tmp_ct_qty_array = $_POST["ct_qty"][$it_id];
+            // array_push($tmp_ct_qty_array, $tmp_ct_qty);
+            // $ct_discount = 0;
+            // $ct_sale_qty = 0;
+            // $ct_sale_qty_list = $tmp_ct_qty_array;
+            
+            // foreach($ct_sale_qty_list as $this_qty){
+            // 	$ct_sale_qty += $this_qty;
+            // }
+
+
+            # 210407 묶음할인
+            $ct_discount = 0;
+            $ct_sale_qty = 0;
+            //해당 상품의 모든 옵션값 개수 총합
+            $sql3 = " select sum(ct_qty) as ct_qty
+            from {$g5['g5_shop_cart_table']}
+            where od_id = '$tmp_cart_id'
+            and it_id = '$it_id'
+            and pt_msg1 = '{$pt_msg1}'
+            and pt_msg2 = '{$pt_msg2}'
+            and pt_msg3 = '{$pt_msg3}'
+            and ct_status = '쇼핑' ";
+            $row3 = sql_fetch($sql3);
+            //전체 개수 + 현재 개수
+            $ct_sale_qty = $row3['ct_qty']+$ct_qty;
+
+            //마지막에 한번만 discount 할거라 모든 ct_id의 discount 0으로 업데이트
+            $sql3 = " update {$g5['g5_shop_cart_table']}
+            ct_discount = '0'
+            where od_id = '$tmp_cart_id'
+            and it_id = '$it_id'";
+            sql_query($sql3);
+
+            
+            $itSaleCntList = [$it["it_sale_cnt"], $it["it_sale_cnt_02"], $it["it_sale_cnt_03"], $it["it_sale_cnt_04"], $it["it_sale_cnt_05"]];
+            $itSalePriceList = [$it["it_sale_percent"], $it["it_sale_percent_02"], $it["it_sale_percent_03"], $it["it_sale_percent_04"], $it["it_sale_percent_05"]];
+            $itSaleCnt = 0;
+
+            //무조건 판매가
+            $sql_i = "SELECT `it_price` FROM `g5_shop_item` WHERE `it_id` ='".$it['it_id']."'";
+            $result_i = sql_fetch($sql_i);
+            $it['it_price']=$result_i['it_price'];
+            if($it['prodSupYn']=="N"){
+                $it['it_price']=0;
+            }
+            //할인율 적용
+            if(!${"it_id_sale_status_{$it_id}"}){
+                for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
+                    if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
+                        if($itSaleCnt < $itSaleCntList[$saleCnt]){
+                            $ct_discount = $itSalePriceList[$saleCnt] * $ct_sale_qty;
+                            $ct_discount = ($it['it_price'] * $ct_sale_qty) - $ct_discount;
+                            $itSaleCnt = $itSaleCntList[$saleCnt];
+                        }
+                    }
                 }
             }
-            if(price >= parseInt(<?=$result_d['de_send_conditional']?>)){delivery=0;}
-            $("#delivery_pirce").html(number_format(delivery)+" 원 (*10만원이상 무료배송)");
-            $("#total_price").html(number_format(price+delivery)+" 원");
-        });
 
-        // 옵션수정 닫기
-        $(document).on("click", "#mod_option_close", function() {
-            $('#cartModal').modal('hide');
-            //$("#mod_option_frm").remove();
-            $("#mod_option_form").remove();
-            $(".mod_options").eq(close_btn_idx).focus();
-        });
-        $("#win_mask").click(function () {
-            $('#cartModal').modal('hide');
-            //$("#mod_option_frm").remove();
-            $("#mod_option_form").remove();
-            $(".mod_options").eq(close_btn_idx).focus();
-        });
+            ${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";
 
-        // 견적서 출력
-        $("#send_estimate").click(function() {
-            var send_estimate_pop;
-            var od_id = '<?php echo $od_id; ?>';
-            var send_cost = '<?php echo $send_cost ? $send_cost : 0; ?>';
-            send_estimate_pop = window.open('<?php echo G5_SHOP_URL; ?>/pop.estimate.php?od_id=' + od_id + '&send_cost=' + send_cost, "send_estimate", "width=730, height=800, resizable = no, scrollbars = no");
-        });
-
-    });
-
-    function fsubmit_check(f) {
-        if($("input[name^=ct_chk]:checked").size() < 1) {
-            alert("구매하실 상품을 하나이상 선택해 주십시오.");
-            return false;
+            $sql3 = " update {$g5['g5_shop_cart_table']}
+                        set ct_qty = ct_qty + '$ct_qty',
+                        ct_uid = '$uid',
+                        ct_discount = '{$ct_discount}'
+                        where ct_id = '{$row2['ct_id']}' ";
+            sql_query($sql3);
+            continue;
         }
 
-        return true;
-    }
-
-    function form_check(act) {
-        var f = document.frmcartlist;
-        var cnt = f.records.value;
-
-        if (act == "buy")
-        {
-            if($("input[name^=ct_chk]:checked").size() < 1) {
-                alert("주문하실 상품을 하나이상 선택해 주십시오.");
-                return false;
+        // 포인트
+        $point = 0;
+        if($config['cf_use_point']) {
+            if($io_type == 0) {
+                $point = get_item_point($it, $io_id);
+            } else {
+                $point = $it['it_supply_point'];
             }
 
-            f.act.value = act;
-            f.submit();
+            if($point < 0)
+                $point = 0;
         }
-        else if (act == "alldelete")
-        {
-            f.act.value = act;
-            f.submit();
+
+        // 배송비결제
+        if($it['it_sc_type'] == 1)
+            $ct_send_cost = 2; // 무료
+        else if($it['it_sc_type'] > 1 && $it['it_sc_method'] == 1)
+            $ct_send_cost = 1; // 착불
+
+        $io_value = sql_real_escape_string(strip_tags($io_value));
+        $remote_addr = get_real_client_ip();
+        
+        if ($member['mb_type'] == 'partner') {
+            $it_sc_type = $it['it_sc_type_partner'];
+            $it_sc_method = $it['it_sc_method_partner'];
+            $it_sc_price = $it['it_sc_price_partner'];
+            $it_sc_minimum = $it['it_sc_minimum_partner'];
+            $it_sc_qty = $it['it_sc_qty_partner'];
+        }else{
+            $it_sc_type = $it['it_sc_type'];
+            $it_sc_method = $it['it_sc_method'];
+            $it_sc_price = $it['it_sc_price'];
+            $it_sc_minimum = $it['it_sc_minimum'];
+            $it_sc_qty = $it['it_sc_qty'];
         }
-        else if (act == "seldelete")
-        {
-            if($("input[name^=ct_chk]:checked").size() < 1) {
-                alert("삭제하실 상품을 하나이상 선택해 주십시오.");
-                return false;
+		
+
+
+
+            # 210407 묶음할인
+            $ct_discount = 0;
+            $ct_sale_qty = 0;
+            //해당 상품의 모든 옵션값 개수 총합
+            $sql3 = " select sum(ct_qty) as ct_qty
+            from {$g5['g5_shop_cart_table']}
+            where od_id = '$tmp_cart_id'
+            and it_id = '$it_id'
+            and pt_msg1 = '{$pt_msg1}'
+            and pt_msg2 = '{$pt_msg2}'
+            and pt_msg3 = '{$pt_msg3}'
+            and ct_status = '쇼핑' ";
+            $row3 = sql_fetch($sql3);
+            //전체 개수 + 현재 개수
+            $ct_sale_qty = $row3['ct_qty']+$ct_qty;
+
+            //마지막에 한번만 discount 할거라 모든 ct_id의 discount 0으로 업데이트
+            $sql3 = " update {$g5['g5_shop_cart_table']}
+            ct_discount = '0'
+            where od_id = '$tmp_cart_id'
+            and it_id = '$it_id'";
+            sql_query($sql3);
+
+            if($row3['ct_qty']){
+                //전체 개수 + 현재 개수
+                $ct_sale_qty = $row3['ct_qty']+$ct_qty;
+
+                //마지막에 한번만 discount 할거라 모든 ct_id의 discount 0으로 업데이트
+                $sql3 = " update {$g5['g5_shop_cart_table']}
+                ct_discount = '0'
+                where od_id = '$tmp_cart_id'
+                and it_id = '$it_id'";
+                sql_query($sql3);
+
+                //전체 개수 + 현재 개수
+                $ct_sale_qty = $row3['ct_qty']+$ct_qty;
+
+                //마지막에 한번만 discount 할거라 모든 ct_id의 discount 0으로 업데이트
+                $sql3 = " update {$g5['g5_shop_cart_table']}
+                ct_discount = '0'
+                where od_id = '$tmp_cart_id'
+                and it_id = '$it_id'";
+                sql_query($sql3);
+            }else{
+                $ct_discount = 0;
+                $ct_sale_qty = 0;
+                $ct_sale_qty_list = $_POST["ct_qty"][$it_id];
+                foreach($ct_sale_qty_list as $this_qty){
+                    $ct_sale_qty += $this_qty;
+                }
+            }
+            
+			$itSaleCntList = [$it["it_sale_cnt"], $it["it_sale_cnt_02"], $it["it_sale_cnt_03"], $it["it_sale_cnt_04"], $it["it_sale_cnt_05"]];
+			$itSalePriceList = [$it["it_sale_percent"], $it["it_sale_percent_02"], $it["it_sale_percent_03"], $it["it_sale_percent_04"], $it["it_sale_percent_05"]];
+			$itSaleCnt = 0;
+
+
+            //무조건 판매가, 비유통이면 0 원
+            $sql_i = "SELECT `it_price` FROM `g5_shop_item` WHERE `it_id` ='".$it['it_id']."'";
+            $result_i = sql_fetch($sql_i);
+            $it['it_price']=$result_i['it_price'];
+            if($it['prodSupYn']=="N"){
+                $it['it_price']=0;
             }
 
-            f.act.value = act;
-            f.submit();
-        }
+			if(!${"it_id_sale_status_{$it_id}"}){
+				for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
+					if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
+						if($itSaleCnt < $itSaleCntList[$saleCnt]){
+							$ct_discount = $itSalePriceList[$saleCnt] * $ct_sale_qty;
+							$ct_discount = ($it['it_price'] * $ct_sale_qty) - $ct_discount;
+							$itSaleCnt = $itSaleCntList[$saleCnt];
+						}
+					}
+				}
+			}
 
-        return true;
+			${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";
+
+            $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it_sc_type}', '{$it_sc_method}', '{$it_sc_price}', '{$it_sc_minimum}', '{$it_sc_qty}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '$uid', '{$ct_discount}', '{$it["prodSupYn"]}' )";
+        $comma = ' , ';
+        $ct_count++;
     }
-</script>
 
+    if($ct_count > 0)
+        sql_query($sql);
+}
+
+die('OK');
+?>
