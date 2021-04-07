@@ -327,6 +327,7 @@ table {border-collapse: collapse;}
 
 @media screen and (max-width: 960px){
     .table-list2 .head li {font-size: 12px;}
+    .pay-btn2 #send_statement{display: none;}
 }
 
 @media screen and (max-width: 860px){
