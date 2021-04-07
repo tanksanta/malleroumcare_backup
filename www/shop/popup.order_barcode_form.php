@@ -243,6 +243,9 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
 <script type="text/javascript">
 
+	var $opener;
+	var is_mobile = navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1;
+
     var it_id = '<?php echo $it_id; ?>';
     //maxnum 지정
     function maxLengthCheck(object){
@@ -432,17 +435,9 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
             return false; 
         }
 
-		var $opener;
-    	var is_mobile = false;
-
         // 저장
         $("#prodBarNumSaveBtn").click(function() {
-			if(navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1) {
-				$opener = window.parent;
-				is_mobile = true;
-			} else {
-				$opener = window.opener || window.open('', 'barcode_parent');
-			}
+			$opener = is_mobile ? window.parent : (window.opener || window.open('', 'barcode_parent'));
 
             var parent = $opener.$('.list.item[data-code='+ it_id +']');
             var inputs = $(parent).find('.barcode_input');
@@ -588,6 +583,11 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
     })
 
     function do_cancel(){
+		if (is_mobile) {
+			$opener = is_mobile ? window.parent : (window.opener || window.open('', 'barcode_parent'));
+			$opener.$('#barcode_popup_iframe').hide();
+			return;
+		}
         window.close();
     }
 
