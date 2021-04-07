@@ -278,7 +278,7 @@ if($header_skin)
 
 								//바코드 개수 구하기
 								$sendData2=[];
-								$sendData2["stateCd"] =['01','02','08','09'];
+								// $sendData2["stateCd"] =['01','02','08','09'];
 								$sendData2["usrId"] = $member["mb_id"];
 								$sendData2["entId"] = $member["mb_entId"];
 								$sendData2["prodId"] = $item["it_id"];
