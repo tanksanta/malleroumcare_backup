@@ -611,7 +611,7 @@
                 $(".day").append("<option value=''>일</option>");
                 for (var i = 1; i <= 31; i++) {
                 if(i<10){first_num = 0;}
-                $(".day").append("<option value='" + i + "'>" + i + "</option>");
+                $(".day").append("<option value='" + first_num+i + "'>" +first_num+ i + "</option>");
                 }
 
             }
