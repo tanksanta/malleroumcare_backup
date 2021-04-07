@@ -39,12 +39,12 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 
 
 //쇼핑몰에서 설정한 일정한 금액 이상이 넘을경우 배송비 무료
-// $sql_d = "SELECT `de_send_conditional` FROM `g5_shop_default`";
-// $result_d = sql_fetch($sql_d);
-// if($tot_sell_price >=$result_d['de_send_conditional']){
-//     $send_cost=0;
-// }
-// $tot_price=$tot_sell_price+$send_cost;
+$sql_d = "SELECT `de_send_conditional` FROM `g5_shop_default`";
+$result_d = sql_fetch($sql_d);
+if($tot_sell_price >=$result_d['de_send_conditional']){
+    $send_cost=0;
+}
+$tot_price=$tot_sell_price+$send_cost-$tot_sell_discount;
 ?>
 
 
