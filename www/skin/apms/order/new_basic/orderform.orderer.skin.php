@@ -1180,7 +1180,7 @@ var array_box=[];
                                 send_price2=result;
                             }
                         });
-                        totalPrice += totalPrice + parseInt($(it_price[key]).val());
+                        totalPrice = totalPrice + parseInt($(it_price[key]).val());
                         discount_prie = discount_prie + parseInt($(it_discount[key]).val());
                         if(totalPrice > 0){  send_price = send_price+parseInt(send_price2); }
                         if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_price = 0; }
