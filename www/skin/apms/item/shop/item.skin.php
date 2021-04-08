@@ -257,9 +257,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 			<!-- 재고수량 -->
             <div class="margin-left">
+				<?php if($_COOKIE["viewType"] != "basic"){ ?>
                 <ul class="optionStockCntList" style="display: none;">
                     <li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
                 </ul>
+                <?php } ?>
                 <?php if($_COOKIE["viewType"] != "basic"){ ?>
                     <?php if($it["it_sale_cnt"]){ ?>
                         <p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
@@ -368,10 +370,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			</div>
 
 			<!-- 재고수량 -->
+			<?php if($_COOKIE["viewType"] != "basic"){ ?>
 			<ul class="optionStockCntList" style="display: none;">
 				<li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
 			</ul>
-
+			<?php } ?>
 			<?php if ( $it['it_model'] ) { ?>
 				<p class="item-model">
 					<?php echo str_replace(';', '<br/>', $it['it_model']); ?>
