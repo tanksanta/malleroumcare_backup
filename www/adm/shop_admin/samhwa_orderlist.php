@@ -203,9 +203,9 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                     <input type="checkbox" name="member_type_s[]" value="partner" id="member_type_01" class="member_grade" <?php echo option_array_checked('partner', $member_type_s);    ?>>
                     <label for="member_type_01">파트너</label>
                     <input type="checkbox" name="member_level_s[]" value="4" id="member_level_01" class="member_grade" <?php echo option_array_checked('4', $member_level_s);    ?>>
-                    <label for="member_level_01">우수딜러</label>
+                    <label for="member_level_01">우수사업소</label>
                     <input type="checkbox" name="member_level_s[]" value="3" id="member_level_02" class="member_grade" <?php echo option_array_checked('3', $member_level_s);  ?>>
-                    <label for="member_level_02">딜러</label>
+                    <label for="member_level_02">사업소</label>
                     <input type="checkbox" name="is_member_s[]" value="null" id="is_member_01" class="member_grade" <?php echo option_array_checked('null', $is_member_s);  ?>>
                     <label for="is_member_01">비회원</label>
                     <input type="checkbox" name="is_member_s[]" value="not null" id="is_member_02" class="member_grade" <?php echo option_array_checked('not null', $is_member_s);    ?>>
@@ -343,10 +343,10 @@ if ($mb_row['mb_type'] == 'partner') { // 파트너
     array_push($mb_type_arr, "파트너");
 }
 if ($mb_row['mb_level'] == 3) { // 딜러
-    array_push($mb_type_arr,  "딜러");
+    array_push($mb_type_arr,  "사업소");
 }
 if ($mb_row['mb_level'] == 4) { // 우수딜러
-    array_push($mb_type_arr,  "우수딜러");
+    array_push($mb_type_arr,  "우수사업소");
 }
 
 $mb_type = '유형 : ' . (implode(', ', $mb_type_arr));
