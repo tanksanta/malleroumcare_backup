@@ -1193,7 +1193,7 @@ function samhwa_get_mb_shorten_info($mb_id) {
         $ret .= '<span class="mb_shorten_info partner">파</span>';
     }
     if ($mb['mb_level'] == 3) { // 딜러
-        $ret .= '<span class="mb_shorten_info dealer dealer_1">딜</span>';
+        $ret .= '<span class="mb_shorten_info dealer dealer_1">사</span>';
     }
     if ($mb['mb_level'] == 4) { // 우수딜러
         $ret .= '<span class="mb_shorten_info dealer dealer_2">우</span>';
