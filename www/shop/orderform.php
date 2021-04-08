@@ -1421,6 +1421,9 @@ $tot_price=$tot_sell_price+$send_cost;
 
 		/* 210303 수급자주문 시 체크 */
 		if($(".detail-tab ul li.on").attr("data-type") == "order_pen"){
+			var od_b_tel = document.getElementById('od_b_tel');
+            if(!od_b_tel.value){ alert('전화번호를 입력해주세요.'); return false;} 
+
 			if(!$("#penId").val()){
 				alert("수급자 선택 후 주문이 가능합니다.");
 				return false;
