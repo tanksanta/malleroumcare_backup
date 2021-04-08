@@ -26,7 +26,7 @@
 
 <script type="text/javascript">
     function gotosearch(){
-        window.location.href = '<?=G5_SHOP_URL?>/search.php';
+        window.location.href = '<?=G5_SHOP_URL?>/search.php?qname=1';
     }
 
 	// wetoz : 2020-09-04
@@ -285,6 +285,7 @@ scrollToTop();
 			<div class="bottomWrap">
 				<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form searchWrap">
 					<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
+					<input type="hidden" name="qname"	value="1">
 					<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="상품명으로 검색하세요."/>
 					<button type="submit" id="sch_submit"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.jpg"></button>
 				</form>
