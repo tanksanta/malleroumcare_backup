@@ -86,6 +86,15 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $row['sum'] = $sum;
     $amount['order'] += $sum['price'] - $sum['discount'];
 
+    $sql_taxInfo = 'select `it_taxInfo` from `g5_shop_item` where `it_id` = "'.$options[$k]['it_id'].'"';
+    $it_taxInfo = sql_fetch($sql_taxInfo);
+    if($it_taxInfo['it_taxInfo']=="과세"){ 
+        $money1+=$sum['price'] - $sum['discount'];
+    }else{
+        $money2+=$sum['price'] - $sum['discount'];
+    }
+
+
     if ( !$od['od_send_cost'] ) {
         $od['od_send_cost'] += $sum['ct_send_cost'];
     }
@@ -99,6 +108,7 @@ if ( $od['od_cart_price'] ) {
 }
 if ( $send_cost ) {
     $amount['order'] += $send_cost;
+    $money1+= $send_cost;
 }
 
 // 입금액 = 결제금액 + 포인트
@@ -385,6 +395,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 
     <?php
         $a = 0;
+        $m_money=0;
         for($i=0; $i<count($carts); $i++) { 
         $options = $carts[$i]['options'];
     ?>
@@ -398,10 +409,24 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
                     사이즈: 가로(<?php echo $options[$k]['cs']['size_width']; ?>mm) X 세로(<?php echo $options[$k]['cs']['size_height']; ?>mm)
                 <?php } ?>
                 </td>
+
+                <?php
+                $sql_taxInfo = 'select `it_taxInfo` from `g5_shop_item` where `it_id` = "'.$options[$k]['it_id'].'"';
+                $it_taxInfo = sql_fetch($sql_taxInfo);
+                if($it_taxInfo['it_taxInfo']=="영세"){ 
+                    $m_money = $m_money + ($options[$k]['opt_price']* $options[$k]['ct_qty'] - $options[$k]['opt_price']* $options[$k]['ct_qty']/ 1.1);
+                ?>
+                <td align="center"><?php echo $options[$k]['ct_qty']; ?></td>
+                <td align="center"><?php echo number_format($options[$k]['opt_price']); ?></td>
+                <td align="center"><?php echo number_format($options[$k]['opt_price']* $options[$k]['ct_qty']); ?></td>
+                <td align="center">0</td>
+
+                <?php }else{ ?>
                 <td align="center"><?php echo $options[$k]['ct_qty']; ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1); ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']); ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty']); ?></td>
+                <?php } ?>
             </tr>
             <?php $a++; ?>
         <?php } ?>
@@ -462,8 +487,10 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 		<td align="center"></td>
 		<td align="center"></td>
 		<td align="center"></td>
-		<td align="center"><?php echo number_format($amount['order'] / 1.1); ?></td>
-		<td align="center"><?php echo number_format($amount['order'] / 1.1 / 10); ?></td>
+		<!-- <td align="center"><?php echo number_format($amount['order'] / 1.1); ?></td>
+		<td align="center"><?php echo number_format($amount['order'] / 1.1 / 10); ?></td> -->
+		<td align="center"><?php echo number_format($money1 / 1.1 + $money2); ?></td>
+		<td align="center"><?php echo number_format($money1 / 1.1 / 10); ?></td>
 	</tr>
 	</table>
 
