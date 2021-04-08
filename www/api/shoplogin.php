@@ -8,12 +8,11 @@
 	header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 	header('Access-Control-Allow-Headers: Authorization, Content-Type,Accept, Origin');
 	header("Content-Type: application/json");
-	
 	$joinStatus = false;
 	if($_POST["mb_id"] != "admin"){
 		$sendData = [];
-		$sendData["usrId"] = $_POST["mb_id"];
-		$sendData["pw"] = $_POST["mb_password"];
+		$sendData["usrId"] = $_REQUEST["mb_id"];
+		$sendData["pw"] = $_REQUEST["mb_password"];
 		echo print_r($_POST);
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9901);
