@@ -1286,7 +1286,7 @@ if($is_member && $od_b_name) {
 		$sendData["ordWayNum"] = "";
 		$sendData["delSerCd"] = "";
 		$sendData["ordNm"] = $_POST["od_b_name"];
-		$sendData["ordCont"] = ($_POST["od_b_tel"]) ? $_POST["od_b_tel"] : $_POST["od_b_hp"];
+        $sendData["ordCont"] = ($_POST["od_b_hp"]) ? $_POST["od_b_hp"] : $_POST["od_b_tel"];
 		$sendData["ordMeno"] = $_POST["od_memo"];
 		$sendData["ordZip"] = $_POST["od_b_zip"];
 		$sendData["ordAddr"] = $_POST["od_b_addr1"];
