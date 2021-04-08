@@ -276,7 +276,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 <script type="text/javascript">
 	$(function(){
 
-	<?php if($member["mb_id"]){ ?>
+	<?php if($member["mb_id"]&&$_COOKIE["viewType"] != "basic"){ ?>
 		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
 		$.ajax({

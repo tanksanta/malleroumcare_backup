@@ -201,7 +201,7 @@ $colspan = ($is_membership) ? 18 : 17;
     <option value="mb_recommend"<?php echo get_selected($_GET['sfl'], "mb_recommend"); ?>>추천인</option>
     <option value="mb_1"<?php echo get_selected($_GET['sfl'], "mb_1"); ?>>여분필드1</option>
     <option value="mb_giup_bname"<?php echo get_selected($_GET['sfl'], "mb_giup_bname"); ?>>기업명</option>
-    <option value="mb_manager"<?php echo get_selected($_GET['sfl'], "mb_manager"); ?>>영업담당자</option>
+    <option value="mb_id"<?php echo get_selected($_GET['sfl'], "mb_id"); ?>>영업담당자</option>
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">

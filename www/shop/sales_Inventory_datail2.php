@@ -550,21 +550,21 @@ $row = sql_fetch($sql);
                                                 <b>상세정보</b>
                                                 <div class="input-box">
                                                     <input type="text" id="dis_detail_<?=$list[$i]['stoId']?>">
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <button type="button" onclick="click_x(this)" ><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                             <li>
                                                 <b>담당자명</b>
                                                 <div class="input-box">
                                                     <input type="text" id="dis_perosn_<?=$list[$i]['stoId']?>">
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <button type="button" onclick="click_x(this)"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                             <li>
                                                 <b>연락처</b>
                                                 <div class="input-box">
                                                     <input type="tel" id="dis_phone_<?=$list[$i]['stoId']?>">
-                                                    <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                                                    <button type="button" onclick="click_x(this)"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                                                 </div>
                                             </li>
                                         </ul>
@@ -1123,8 +1123,8 @@ $row = sql_fetch($sql);
         var dis_phone = document.getElementById(dis_phone);
 
         if(!dis_detail.value){ alert('상세정보를 입력해주세요'); return false;}
-        if(!dis_perosn.value){ alert('담당자명을 입력해주세요'); return false;}
-        if(!dis_phone.value){ alert('연락처를 입력해주세요'); return false;}
+        // if(!dis_perosn.value){ alert('담당자명을 입력해주세요'); return false;}
+        // if(!dis_phone.value){ alert('연락처를 입력해주세요'); return false;}
 
         var sendData = {
             stoId : stoId,
@@ -1173,9 +1173,9 @@ $row = sql_fetch($sql);
         var designate_result_form = document.getElementById(designate_result_form);
         if(!strdate.value){ alert('소독시작 날짜를 입력해주세요'); return false;}
         if(!enddate.value){ alert('소독마감 날짜를 입력해주세요'); return false;}
-        if(!dis_chemical.value){ alert('약품종류를 입력해주세요'); return false;}
-        if(!dis_chemical_history.value){ alert('약품사용내역을 입력해주세요'); return false;}
-        if(!dis_file_text.value){ alert('파일을 선택해주세요'); return false;}
+        // if(!dis_chemical.value){ alert('약품종류를 입력해주세요'); return false;}
+        // if(!dis_chemical_history.value){ alert('약품사용내역을 입력해주세요'); return false;}
+        // if(!dis_file_text.value){ alert('파일을 선택해주세요'); return false;}
         designate_result_form.submit();
     }
     function click_x(this_click){
