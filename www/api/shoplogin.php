@@ -13,6 +13,7 @@
 		$sendData = [];
 		$sendData["usrId"] = $_REQUEST["mb_id"];
 		$sendData["pw"] = $_REQUEST["mb_password"];
+		echo print_r($_POST);
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entLogin");
@@ -102,12 +103,15 @@
 			}
 			
 			$result["msg"] = "success";
+
+            // 회원아이디 세션 생성
+            set_session('ss_mb_id', strip_tags($_REQUEST["mb_id"]));
+            // FLASH XSS 공격에 대응하기 위하여 회원의 고유키를 생성해 놓는다. 관리자에서 검사함 - 110106
+            set_session('ss_mb_key', md5($mb['mb_datetime'] . get_real_client_ip() . $_SERVER['HTTP_USER_AGENT']));
+
+
 			echo json_encode($result);
 		}
-		// 회원아이디 세션 생성
-		set_session('ss_mb_id', $mb['mb_id']);
-		// FLASH XSS 공격에 대응하기 위하여 회원의 고유키를 생성해 놓는다. 관리자에서 검사함 - 110106
-		set_session('ss_mb_key', md5($mb['mb_datetime'] . get_real_client_ip() . $_SERVER['HTTP_USER_AGENT']));
 	}
 	
 	?>

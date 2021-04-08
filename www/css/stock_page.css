@@ -192,7 +192,7 @@ table {border-collapse: collapse;}
 
     /* 재고상세 */
     .stock-view .inner {width: 100%;overflow: hidden;}
-    .stock-view .table-wrap {overflow-y: hidden;overflow-x: auto;-ms-overflow-style: none; scrollbar-width: none;}
+    .stock-view .table-wrap {-ms-overflow-style: none; scrollbar-width: none;}
     .stock-view .table-wrap::-webkit-scrollbar {display: none;}
     .stock-view .table-wrap ul {width: 100%;}
 
