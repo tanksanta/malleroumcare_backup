@@ -14,7 +14,7 @@
 		$sendData = [];
 		$sendData["usrId"] = $_POST["mb_id"];
 		$sendData["pw"] = $_POST["mb_password"];
-	
+		echo print_r($_POST);
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entLogin");
