@@ -396,11 +396,15 @@ pre{white-space: pre-wrap;}
 
 #display_pay_button {display:none;}
 
+.well span{font-size:12px;}
+
 
 /* =================================================
 	* Media Query
 ================================================= */
 @media only screen and (max-width:960px) {
+	
+	.send_estimate_div{display: none;}
 
 	.point_box .top_area a{position:relative;width:100%;}
 	.point_box .point_desc li {margin:5px 0;}
