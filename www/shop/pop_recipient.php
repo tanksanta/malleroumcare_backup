@@ -12,7 +12,7 @@
 		$sendData["penNm"] = $_GET["penNm"];
 	}
 
-	if($_GET["penTypeCd"]){
+	if($_GET["penTypeCd"]&&$_GET["penTypeCd"]!=="수급자구분"){
 		$sendData["penTypeCd"] = $_GET["penTypeCd"];
 	}
 
