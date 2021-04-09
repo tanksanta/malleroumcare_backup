@@ -188,7 +188,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 	
 	$(function(){
 		
-		<?php if($member["mb_level"] == "3"){ ?>
+		<?php if($member["mb_level"] == "3"||$member["mb_level"] =="4"){ ?>
 		$(".modeBtn").click(function(e){
 			e.preventDefault();
 			
