@@ -753,6 +753,15 @@ foreach($orderlist as $order) {
     $sale_manager = get_member($order['od_sales_manager']);
     $sale_manager = get_sideview($sale_manager['mb_id'], get_text($sale_manager['mb_name']), $sale_manager['mb_email'], '');
 
+    
+   //영업담당자
+   $sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='".$order['mb_id']."'";
+   $result_manager = sql_fetch($sql_manager);
+   $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
+   $result_manager = sql_fetch($sql_manager);
+   $sale_manager=$result_manager['mb_name'];
+
+
     $release_manager = '';
     $release_manager = get_member($order['od_release_manager']);
     $release_manager = get_sideview($release_manager['mb_id'], get_text($release_manager['mb_name']), $release_manager['mb_email'], '');
