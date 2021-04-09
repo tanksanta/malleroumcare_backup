@@ -136,18 +136,18 @@ scrollToTop();
 </div>
 
 
-<?php if($member["mb_level"] =="3"||$member["mb_level"] =="4"&&$_COOKIE["viewType"]=="basic"){ ?>
+<?php if(($member["mb_level"] =="3"||$member["mb_level"]) =="4"&&$_COOKIE["viewType"]=="basic"){ ?>
         <div class="top_mode_area">
             <?=$mood_type_string;?> 모드 실행중 입니다.
         </div>
 <?php } ?>
 <?php #//급여모드 보고시면  top_mode_area 주석 해제, mo_top에는 style="margin-top:50px;" 넣어야함  ?>
-<div class="mo_top" <?php if($member["mb_level"] =="3"||$member["mb_level"] =="4"&&$_COOKIE["viewType"]=="basic"){ ?><?php  } ?>>
+<div class="mo_top" <?php if(($member["mb_level"] =="3"||$member["mb_level"]) =="4"&&$_COOKIE["viewType"]=="basic"){ ?><?php  } ?>>
     <div class="logoWrap">
         <a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
     </div>
     <div class="mode_div">
-        <?php if($member["mb_level"] =="3"||$member["mb_level"] =="4"){ ?>
+        <?php if(($member["mb_level"] =="3"||$member["mb_level"]) =="4"){ ?>
             <?php if($_COOKIE["viewType"] == "adm"){ ?>
                 <a href="#" class="modeBtn" data-type="basic" ><b>구매모드</b>
             </a>
@@ -164,7 +164,7 @@ scrollToTop();
 <div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>">
 	
 	<div id="samhwa-m-menu" >
-		<div class="wrap"<?php if($member["mb_level"] =="3"||$member["mb_level"] =="4"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
+		<div class="wrap"<?php if(($member["mb_level"] =="3"||$member["mb_level"]) =="4"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
 			<div class="closer">
 				<img src="<?php echo THEMA_URL; ?>/assets/img/btn_mo_menu_close.png" />
 			</div>
@@ -268,7 +268,7 @@ scrollToTop();
 		<?php } ?>
 
 
-		<div class="container_wrap txt_center top_common_area"<?php if($member["mb_level"] =="3"||$member["mb_level"] =="4"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
+		<div class="container_wrap txt_center top_common_area"<?php if(($member["mb_level"] =="3"||$member["mb_level"]) =="4"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
 			<style>
                 .move_system{ position: absolute; left: 0; top: 0; text-align: right;}
                 .move_system a{ height: 60px; padding: 15px 20px; line-height: 26px;color: #333;font-weight: bold;float: left;color: #333;}
@@ -302,7 +302,7 @@ scrollToTop();
 
 			<div class="top_right_area">
 				<div class="link_area">
-                    <?php if($member["mb_level"] =="3"||$member["mb_level"] =="4"){ ?>
+                    <?php if(($member["mb_level"] =="3"||$member["mb_level"]) =="4"){ ?>
                         <?php if($_COOKIE["viewType"] == "adm"){ ?>
                             <a href="#" class="modeBtn" data-type="basic">구매모드</a>
                         <?php } else { ?>
