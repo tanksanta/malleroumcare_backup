@@ -192,7 +192,9 @@ $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) 
 			  ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
             from {$g5['g5_shop_cart_table']} MT where od_id = '$tmp_cart_id' and ct_select = '1' ";
 $row = sql_fetch($sql);
-$tot_ct_price = ($row["prodSupYn"] == "Y") ? $row['od_price'] : 0;
+// $tot_ct_price = ($row["prodSupYn"] == "Y") ? $row['od_price'] : 0;
+$tot_ct_price = $row['od_price'];
+
 $tot_ct_discount = ($row["od_discount"]) ? $row["od_discount"] : 0;
 $cart_count = $row['cart_count'];
 $tot_od_price = $tot_ct_price;
