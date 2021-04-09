@@ -665,7 +665,7 @@ pre{white-space: pre-wrap;}
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > button { width: 50%; height: 22px; float: left; border: 1px solid #DDD; text-align: center; color: #999; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > button > i { font-size: 15px; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_ul > button:nth-of-type(2n) { border-left: 0; }
-.scrollBannerListWrap > .todayViewWrap > #stv > #stv_pg { width: 100%; float: left; margin-top: 10px; text-align: center; color: #999; font-size: 12px; display: none; }
+.scrollBannerListWrap > .todayViewWrap > #stv > #stv_pg { width: 100%; float: left; margin-top: 10px; text-align: center; color: #999; font-size: 12px; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_link { position: absolute; width: 350px; height: 148px; top: -10px; right: -10px; border: 1px solid #C1C1C1; display: none; table-layout: fixed; z-index: 2; color: #333; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_link > p { height: 100%; display: table-cell; vertical-align: top; }
 .scrollBannerListWrap > .todayViewWrap > #stv > #stv_link > p.info { width: 209px; background-color: #FFF; padding: 25px 10px 0 30px; }
