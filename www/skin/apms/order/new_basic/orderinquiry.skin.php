@@ -253,6 +253,7 @@ if($header_skin)
                 // for($k=0;$k<count($res["data"]); $k++){
                 //     if($res["data"][$k]['prodBarNum']) $barcode_c++;
                 // }
+                // print_r($item['ct_qty']);
             ?>
 
 				<div class="list">
@@ -296,8 +297,32 @@ if($header_skin)
 						</li>
 						<li class="info-btn">
 							<div>
+                            <?php
+                                $sendData = [];
+                                $sendData["penOrdId"] = $item["ordId"];
+                                $sendData["uuid"] = $item["uuid"];
+                                $sendData["it_id"] = $item["it_id"];
+                                
+                                $oCurl = curl_init();
+                                curl_setopt($oCurl, CURLOPT_PORT, 9901);
+                                curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
+                                curl_setopt($oCurl, CURLOPT_POST, 1);
+                                curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+                                curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+                                curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+                                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+                                $res = curl_exec($oCurl);
+                                curl_close($oCurl);
+                    
+                                $result = json_decode($res, true);
+                                $result = $result["data"];
+                                // print_r($item);
+                            ?>
 							<?php if($item["prodSupYn"] == "N"){ ?>
-								<a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"><?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$row["od_prodBarNum_total"]})" : "바코드 확인"?></a>
+								<a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"> 
+                                <!-- <?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$item['ct_qty']})" : "바코드 확인"?> -->
+                                바코드 확인
+                                </a>
 							<?php } else { ?>
 								<?php //if($barcode_c>0){ ?>
 								<a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드</a>
@@ -310,7 +335,6 @@ if($header_skin)
 								<a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
 							<?php } ?>
                             <?php 
-
                                 $sql_v= "SELECT `ca_id` FROM `g5_shop_item` WHERE `it_id` = '".$item["it_id"]."'";
                                 $result_v=sql_fetch($sql_v);
                                 $str = substr($result_v['ca_id'],0 , 2);

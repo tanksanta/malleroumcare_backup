@@ -292,7 +292,7 @@
  <body>
 
  	<!-- 고정 상단 -->
-	<div id="popupHeaderTopWrap">
+     <div id="popupHeaderTopWrap">
 		<div class="title">바코드</div>
 		<div class="close">
 			<a href="#" class="popupCloseBtn">
@@ -329,6 +329,7 @@
 		<input type="hidden" name="update_type" value="popup">
 		<ul class="imfomation_box" id="imfomation_box">
 		<?php
+            $prodSupYn_count=0;
 			for($i = 0; $i < count($carts); $i++){
 
 					# 요청사항
@@ -336,8 +337,19 @@
 
 				$options = $carts[$i]["options"];
 
-				for($k = 0; $k < count($options); $k++){
+                //유통 비유통
+                $readonly = "";
+                if($carts[$i]['prodSupYn']=="N"){
+                    $barcode_placeholder ="바코드를 입력하세요.";
+                }else{
+                    $barcode_placeholder ="바코드가 입력되지 않았습니다.";
+                    $readonly="readonly";
+                }
 
+
+				for($k = 0; $k < count($options); $k++){
+                    if($options[$k]['it_id']!==$_GET['prodId']){ $prodListCnt++; continue;}
+                    if($options[$k]['prodSupYn']=="N") $prodSupYn_count++;
 					# 요청사항
 					$prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
 		?>
@@ -376,13 +388,20 @@
 							</div>
 
 							<div class="folding_box">
+							 <?php if($options[$k]["ct_qty"] >= 2){ ?>
+									<!-- <span>
+									<input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
+									<button type="button" class="barNumCustomSubmitBtn">등록</button>
+									<img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
+									</span> -->
+							 <?php } ?>
 									<ul class="inputbox">
 										<?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
 											<li>
-												<input type="number" readonly maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" placeholder="바코드가 입력되지 않았습니다." data-frm-no="<?=$prodListCnt?>" maxlength="12">
-												<!-- <i class="fa fa-check"></i> -->
-												<!-- <span class="overlap">중복</span> -->
-												<!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>"> -->
+												<input <?=$readonly?> type="number" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>" class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" placeholder="<?=$barcode_placeholder?>" data-frm-no="<?=$prodListCnt?>" maxlength="12">
+												<i class="fa fa-check"></i>
+												<span class="overlap">중복</span>
+												<img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
 											</li>
 										<?php $prodListCnt++; } ?>
 									</ul>
@@ -395,6 +414,39 @@
 				?>
 		</ul>
 	</form>
+
+	<!-- 팝업 -->
+	<div id="popup" class="hide">
+	  <div class="content">
+		<p>
+            바코드 일괄등록<br><br>
+            1. 공동된 숫자 이후 꺽쇠(^)를 입력하세요<br>
+            2. 하이픈(-)을 이용해 연속한 숫자를 입력할 수 있습니다.<br>
+            3. 콤마(,)를 이용해 연속하지 않은 숫자를 입력할 수 있습니다.<br><br>
+
+            예시1) 2012000^1-3 입력시 <br>
+            20120001, 20120002, 20120003이 일괄등록 됩니다.<br><br>
+
+            예시2) 2012000^1,3,5 입력시<br>
+            20120001, 20120003, 20120005가 일괄등록 됩니다.<br><br>
+
+			<!-- 공통된 문자/숫자를 앞에 부여 후 반복되는 숫자를 입력합니다.<br><br>
+			예시) 010101^3,4,5-10- 010101은 공동문자/숫자입니다.<br><br>
+			- ^이후는 자동으로 입력하기 위한 내용입니다.<br>
+			-    “숫자 입력 후 콤마(,)”를 입력하면 독립 숫자가 입력됩니다.<br>
+			- 5-10이라고 입력하면5부터10까지 순차적으로 입력됩니다.<br>
+			- 00-20으로 시작 숫자가00인 경우2자리 숫자로 입력됩니다 -->
+		</p>
+		<button class="closepop" onclick="closePopup()">닫기</button>
+	  </div>
+	</div>
+	<!-- 고정 하단 -->
+    <?php if($prodSupYn_count){ ?>
+	<div id="popupFooterBtnWrap">
+		<button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
+		<button type="button" class="cancelbtn popupCloseBtn" >취소</button>
+	</div>
+    <?php } ?>
 <?php
 
 if(!$member['mb_id']){alert('접근이 불가합니다.');}
@@ -878,7 +930,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         popup.classList.add('hide');
     }
 
-	$(".popupCloseBtn").click(function(e){
+    $(".popupCloseBtn").click(function(e){
 		e.preventDefault();
 
 		$("#popupProdBarNumInfoBox", parent.document).hide();
