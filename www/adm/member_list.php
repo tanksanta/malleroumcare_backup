@@ -206,7 +206,7 @@ $colspan = ($is_membership) ? 18 : 17;
     <option value="mb_recommend"<?php echo get_selected($_GET['sfl'], "mb_recommend"); ?>>추천인</option>
     <option value="mb_1"<?php echo get_selected($_GET['sfl'], "mb_1"); ?>>여분필드1</option>
     <option value="mb_giup_bname"<?php echo get_selected($_GET['sfl'], "mb_giup_bname"); ?>>기업명</option>
-    <option value="mb_id2"<?php echo get_selected($_GET['sfl'], "mb_id2"); ?>>영업담당자</option>
+    <option value="mb_manager"<?php echo get_selected($_GET['sfl'], "mb_manager"); ?>>영업담당자</option>
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
@@ -396,15 +396,18 @@ $colspan = ($is_membership) ? 18 : 17;
         </td>
         <td headers="mb_list_lastmanager"  rowspan="2" class="td_mblastmanager" style="">
             <?php
-            $sql =  "select b.*
-                        from {$g5['g5_shop_order_table']} as a
-                        LEFT JOIN g5_member_giup_manager as b ON a.od_giup_manager = b.mm_no
-                        where a.mb_id = '{$mb_id}' and a.od_giup_manager != 0
-                        ORDER BY a.od_id DESC
-                    ";
-            $lastmanager = sql_fetch($sql);
+            // $sql =  "select b.*
+            //             from {$g5['g5_shop_order_table']} as a
+            //             LEFT JOIN g5_member_giup_manager as b ON a.od_giup_manager = b.mm_no
+            //             where a.mb_id = '{$mb_id}' and a.od_giup_manager != 0
+            //             ORDER BY a.od_id DESC
+            //         ";
+            // $lastmanager = sql_fetch($sql);
             // print_r2($lastmanager);
-            echo htmlspecialchars($lastmanager['mm_name']);
+            // echo htmlspecialchars($lastmanager['mm_name']);
+            $sql_v = "SELECT `mb_name` FROM `g5_member` where `mb_id` = '".$row['mb_manager']."'";
+            $manaher_name = sql_fetch($sql_v);
+            echo $manaher_name['mb_name'];
             ?>
         </td>
         <!--
