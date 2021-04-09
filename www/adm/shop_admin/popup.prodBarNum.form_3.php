@@ -11,6 +11,7 @@
 	$prodListCnt = 0;
 	$prodListCnt2 = 0;
 	$deliveryTotalCnt = 0;
+    $prodSupYn_count=0;
 
 	if (!$od['od_id']) {
 		alert("해당 주문번호로 주문서가 존재하지 않습니다.");
@@ -329,27 +330,30 @@
 		<input type="hidden" name="update_type" value="popup">
 		<ul class="imfomation_box" id="imfomation_box">
 		<?php
-            $prodSupYn_count=0;
 			for($i = 0; $i < count($carts); $i++){
-
-					# 요청사항
-					$prodMemo = "";
+                # 요청사항
+                $prodMemo = "";
 
 				$options = $carts[$i]["options"];
 
-                //유통 비유통
+                //보유재고 (무조건 입력) / 유통(미입력) 비유통(입력)
                 $readonly = "";
-                if($carts[$i]['prodSupYn']=="N"){
-                    $barcode_placeholder ="바코드를 입력하세요.";
+                if($_GET['stock_insert']=="1"){
+                    if($carts[$i]['prodSupYn']=="N"){
+                        $barcode_placeholder ="바코드를 입력하세요.";
+                    }else{
+                        $barcode_placeholder ="바코드가 입력되지 않았습니다.";
+                        $readonly="readonly";
+                    }
                 }else{
-                    $barcode_placeholder ="바코드가 입력되지 않았습니다.";
-                    $readonly="readonly";
+                    $barcode_placeholder ="바코드를 입력하세요.";
+                    $prodSupYn_count++;
                 }
 
 
 				for($k = 0; $k < count($options); $k++){
                     if($options[$k]['it_id']!==$_GET['prodId']){ $prodListCnt++; continue;}
-                    if($options[$k]['prodSupYn']=="N") $prodSupYn_count++;
+                    if($options[$k]['prodSupYn']==="N"){ $prodSupYn_count++; }
 					# 요청사항
 					$prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
 		?>
