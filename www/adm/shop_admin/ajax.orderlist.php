@@ -511,7 +511,8 @@ foreach($orderlist as $order) {
     //     $od_cart_count = '';
     // }
 
-    $od_price = number_format($order['od_cart_price'] + $order['od_send_cost'] + $order['od_send_cost2'] - $order['od_cart_discount'] - $order['od_cart_discount2']);
+    $od_price = number_format($order['od_cart_price'] + $order['od_send_cost'] + $order['od_send_cost2'] - $order['od_cart_discount'] - $order['od_cart_discount2'])."원";
+    if($order['od_stock_insert_yn']=="Y") $od_price ="보유재고등록";
 
     $mb_shorten_info = $order['od_name'] ? samhwa_get_mb_shorten_info($order['mb_id']) : '';
 
@@ -743,7 +744,7 @@ foreach($orderlist as $order) {
         </td>
         <td align=\"center\" class=\"od_receipt_time\">{$od_receipt_time} </td>
         <td align=\"center\" class=\"od_price\">
-            <b>{$od_price}원</b>
+            <b>{$od_price}</b>
         </td>
     </tr>
     ";
