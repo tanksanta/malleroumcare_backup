@@ -186,8 +186,17 @@ label {
       <tr>
         <th scope="row"><label for="mb_manager">영업당당자<?php echo $sound_only ?></label></th>
         <td>
-
-          <input type="text" name="mb_manager" id="mb_manager" value="<?=$mb['mb_manager']?>"class="frm_input " size="15" maxlength="20">
+        <select name="mb_manager" id="mb_manager">
+            <?php
+                $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '200100'";
+                $result_m = sql_query($sql_m);
+                for ($k=0; $row_m=sql_fetch_array($result_m); $k++){
+                    $selected="";
+                    if($mb['mb_manager']==$row_m['mb_id']) $selected="selected";
+                    echo '<option value="'.$row_m['mb_id'].'" '.$selected.'>'.$row_m['mb_name'].'('.$row_m['mb_id'].')</option>';
+                }
+            ?>
+        </select>
         </td>
       </tr>
     <tr>
