@@ -423,7 +423,7 @@ $row = sql_fetch($sql);
                                 $rental_btn=''; //대여 버튼
                                 $rental_btn2=''; //대여 버튼
                                 $water="";//소독중 표시
-
+                                
                                 //상태 메뉴
                                 $state_menu_all="";
                                 $state_menu1='<li><a class="state-btn4" onclick="open_retal_period(this)" href="javascript:;">대여기간 수정</a></li>';
@@ -484,15 +484,24 @@ $row = sql_fetch($sql);
                                 <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
                                 <?php
                                     //유통 / 비유통 구분
-                                    if($_GET['prodSupYn'] == "N" ){
+                                    $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%'";
+                                    $result_stock = sql_fetch($sql_stock);
+                                    $stock_insert="1";
+                                    if($result_stock['od_stock_insert_yn']=="Y"){
                                         $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
                                         $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                                        $stock_insert ="2";
                                     }else{
-                                        $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
-                                        $prodBarNumCntBtn_2="";
+                                        if($_GET['prodSupYn'] == "N" ){
+                                            $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                                            $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                                        }else{
+                                            $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                                            $prodBarNumCntBtn_2="";
+                                        }
                                     }
                                 ?>
-                                <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                                <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 <?php
                                 //날짜 변환
                                 $date1=$list[$i]['modifyDtm'];
@@ -520,7 +529,7 @@ $row = sql_fetch($sql);
                                 <div class="list-m">
                                     <div class="info-m">
                                         <span class="product"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
-                                        <span class="pro-num <?=$prodBarNumCntBtn_2;?>"" ><b <?=$style_prodSupYn?> ><?=$list[$i]['prodBarNum']?></b></span>
+                                        <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?> ><?=$list[$i]['prodBarNum']?></b></span>
                                     </div>
                                     <div class="info-m">
                                         <span class="state">
@@ -828,19 +837,28 @@ $row = sql_fetch($sql);
                             ?>
                             <?php
                                 //유통 / 비유통 구분
-                                if($_GET['prodSupYn'] == "N" ){
+                                $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%'";
+                                $result_stock = sql_fetch($sql_stock);
+                                $stock_insert="1";
+                                if($result_stock['od_stock_insert_yn']=="Y"){
                                     $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
                                     $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                                    $stock_insert ="2";
                                 }else{
-                                    $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
-                                    $prodBarNumCntBtn_2="";
+                                    if($_GET['prodSupYn'] == "N" ){
+                                        $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                                        $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                                    }else{
+                                        $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                                        $prodBarNumCntBtn_2="";
+                                    }
                                 }
                             ?>
                             <li class="list cb">
                                 <!--pc용-->
                                 <span class="num"><?=$number?></span>
                                 <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
-                                <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                                <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 <?php
                                 //날짜 변환
                                 $date1=$list[$i]['modifyDtm'];
@@ -858,7 +876,7 @@ $row = sql_fetch($sql);
                                 <div class="list-m">
                                     <div class="info-m">
                                         <span class="product"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo $list[$i]['prodColor'].'/'.$list[$i]['prodSize']; }else{ echo "(옵션 없음)"; } ?></span>
-                                        <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                                        <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                              <a href="javascript:;" style="margin-right:7px;" class="state-btn1" onclick="retal_state_change2('<?=$list[$i]['stoId'] ?>','01','변경되었습니다.')" >대여가능</a>
                                             <a class="state-btn3" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')"  href="javascript:; "><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
                                     </div>
@@ -920,8 +938,40 @@ $row = sql_fetch($sql);
             </div>
         </div>
 
+<!-- 바코드 클릭 -->
+<style>
+    .listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+    .listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+    .listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
 
+    @media (max-width : 750px){
+        .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+    }
+</style>
+<script type="text/javascript">
+    $(function(){
+        //바코드 클릭시 팝업
+        $(document).on("click", ".prodBarNumCntBtn_2", function(e){
+            e.preventDefault();
+				
+            var od = $(this).attr("data-od");
+            var it = $(this).attr("data-it");
+            var stock = $(this).attr("data-stock");
+            $("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "'>");
+            $("#popupProdBarNumInfoBox iframe").load(function(){
+                $("#popupProdBarNumInfoBox").show();
+            });
+        });
 
+        $(".listPopupBoxWrap").hide();
+        $(".listPopupBoxWrap").css("opacity", 1);
+    })
+</script>
+<div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
+    <div>
+    </div>
+</div>
+<!-- 바코드 클릭 -->
 
 <!-- 스크립트 -->
 <script>
@@ -1219,20 +1269,6 @@ $row = sql_fetch($sql);
         $("input:text[dateonly]").datepicker({});
     }
 
-    //바코드 클릭시 팝업
-    $(document).on("click", ".prodBarNumCntBtn_2", function(e){
-        e.preventDefault();
-        var id = $(this).attr("data-id");
-        var popupWidth = 700;
-        var popupHeight = 700;
-        var popupX = (window.screen.width / 2) - (popupWidth / 2);
-        var popupY= (window.screen.height / 2) - (popupHeight / 2);
-        <?php if(is_mobile()){ ?>
-            location.href='<?=G5_URL?>/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=<?=$_GET['prodId']?>&stoId='+id;
-        <?php }else{ ?>
-            window.open("<?=G5_URL?>/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=<?=$_GET['prodId']?>&stoId=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
-        <?php } ?>
-    });
     //대여버튼 클릭
     function wrapWindowByMask(){
         //화면의 높이와 너비를 구한다.

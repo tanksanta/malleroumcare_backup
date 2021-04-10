@@ -259,7 +259,6 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 }
 $sql = 'SELECT * FROM `g5_shop_item` WHERE `it_id`="'.$_GET['prodId'].'"';
 $row = sql_fetch($sql);
-// print_r($row);
 
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
@@ -450,12 +449,21 @@ $row = sql_fetch($sql);
                         ?>
                         <?php
                             //유통 / 비유통 구분
-                            if($_GET['prodSupYn'] == "N" ){
+                            $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%'";
+                            $result_stock = sql_fetch($sql_stock);
+                            $stock_insert="1";
+                            if($result_stock['od_stock_insert_yn']=="Y"){
                                 $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
                                 $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                                $stock_insert ="2";
                             }else{
-                                $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
-                                $prodBarNumCntBtn_2="";
+                                if($_GET['prodSupYn'] == "N" ){
+                                    $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                                    $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                                }else{
+                                    $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                                    $prodBarNumCntBtn_2="";
+                                }
                             }
                         ?>
                         <!--반복-->
@@ -464,7 +472,7 @@ $row = sql_fetch($sql);
                             <span class="num"><?=$number?></span>
                             <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?>
                             </span>
-                            <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                            <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                             <?php
                                 //날짜 변환
                                 $date1=$list[$i]['regDtm'];
@@ -484,7 +492,7 @@ $row = sql_fetch($sql);
                                 <div class="info-m">
                                     <span class="product"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?>
                                     </span>
-                                    <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                                    <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 </div>
                                 <div class="info-m">
                                     <span class="date"><?=$date2?></span>
@@ -501,13 +509,14 @@ $row = sql_fetch($sql);
                         </div>
                     </ul>
                 </div>
-                <div class="pg-wrap">
+                <!-- 페이징 -->
+                <div class="pg-wrap" id="pagin_1">
                     <div id="numbering_zone1">
-                        <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="javascript:selectDetailList('1')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
-                        <?php if($block > 1){ ?><a href="javascript:selectDetailList('<?=($b_start_page-1)?>')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
-                        <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="javascript:selectDetailList('<?=$j?>')"><?=$j?></a><?php } ?>
-                        <?php if($block < $total_block){ ?><a href="javascript:selectDetailList('<?=($b_end_page+1)?>')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
-                        <?php if($block < $total_block){ ?><a href="javascript:selectDetailList('<?=$total_page?>')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
+                        <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="javascript:page_load('1')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
+                        <?php if($block > 1){ ?><a href="javascript:page_load('<?=($b_start_page-1)?>')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
+                        <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="javascript:page_load('<?=$j?>')"><?=$j?></a><?php } ?>
+                        <?php if($block < $total_block){ ?><a href="javascript:page_load('<?=($b_end_page+1)?>')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
+                        <?php if($block < $total_block){ ?><a href="javascript:page_load('<?=$total_page?>')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
                     </div>
                 </div>
 
@@ -580,19 +589,28 @@ $row = sql_fetch($sql);
 						?>
                         <?php
                             //유통 / 비유통 구분
-                            if($_GET['prodSupYn'] == "N" ){
+                            $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%'";
+                            $result_stock = sql_fetch($sql_stock);
+                            $stock_insert="1";
+                            if($result_stock['od_stock_insert_yn']=="Y"){
                                 $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
                                 $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                                $stock_insert ="2";
                             }else{
-                                $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
-                                $prodBarNumCntBtn_2="";
+                                if($_GET['prodSupYn'] == "N" ){
+                                    $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                                    $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+                                }else{
+                                    $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                                    $prodBarNumCntBtn_2="";
+                                }
                             }
-                        ?>
+                            ?>
                         <li class="list cb">
                              <!--pc용-->
                             <span class="num"><?=$number?></span>
                             <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?></span>
-                            <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                            <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                             <span class="name m_off"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
                             <?php
                                 //날짜 변환
@@ -604,7 +622,7 @@ $row = sql_fetch($sql);
                             <div class="list-m">
                                 <div class="info-m">
                                     <span class="product"><?=$list[$i]['prodNm']?>  <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?></span>
-                                    <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-id="<?=$list[$i]['stoId']?>" ><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                                    <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 </div>
                                 <div class="info-m">
                                     <span class="name"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
@@ -619,18 +637,53 @@ $row = sql_fetch($sql);
                         </div>
                     </ul>
                 </div>
-                <div class="pg-wrap">
-                    <div id="numbering_zone2">
-                        <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="javascript:selectDetailList2('1')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
-                        <?php if($block > 1){ ?><a href="javascript:selectDetailList2('<?=($b_start_page-1)?>')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
-                        <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="javascript:selectDetailList2('<?=$j?>')"><?=$j?></a><?php } ?>
-                        <?php if($block < $total_block){ ?><a href="javascript:selectDetailList2('<?=($b_end_page+1)?>')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
-                        <?php if($block < $total_block){ ?><a href="javascript:selectDetailList2('<?=$total_page?>')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
+                <!-- 페이징2 -->
+                <div class="pg-wrap" id="pagin_2">
+                    <div id="numbering_zone1">
+                        <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="javascript:page_load2('1')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
+                        <?php if($block > 1){ ?><a href="javascript:page_load2('<?=($b_start_page-1)?>')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
+                        <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="javascript:page_load2('<?=$j?>')"><?=$j?></a><?php } ?>
+                        <?php if($block < $total_block){ ?><a href="javascript:page_load2('<?=($b_end_page+1)?>')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
+                        <?php if($block < $total_block){ ?><a href="javascript:page_load2('<?=$total_page?>')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+<!-- 바코드 클릭 -->
+<style>
+    .listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+    .listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+    .listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+
+    @media (max-width : 750px){
+        .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+    }
+</style>
+<script type="text/javascript">
+    $(function(){
+        //바코드 클릭시 팝업
+        $(document).on("click", ".prodBarNumCntBtn_2", function(e){
+            e.preventDefault();
+				
+            var od = $(this).attr("data-od");
+            var it = $(this).attr("data-it");
+            var stock = $(this).attr("data-stock");
+            $("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "'>");
+            $("#popupProdBarNumInfoBox iframe").load(function(){
+                $("#popupProdBarNumInfoBox").show();
+            });
+        });
+
+        $(".listPopupBoxWrap").hide();
+        $(".listPopupBoxWrap").css("opacity", 1);
+    })
+</script>
+<div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
+    <div>
+    </div>
+</div>
+<!-- 바코드 클릭 -->
 
 
 
@@ -643,240 +696,42 @@ $row = sql_fetch($sql);
         return new Date(y,m-1,d);
     }
 
-    function selectDetailList(page2){
-        var sendData = {
-            usrId : "<?=$member["mb_id"] ?>",
-            entId : "<?=$member["mb_entId"] ?>",
-            prodId : "<?=$_GET['prodId'] ?>",
-            pageNum : page2,
-            stateCd : ["01"],
-            pageSize : <?=$sendLength ?>
-        }
+    //페이징 처리1
+    function page_load(page_n) {
+        page_n = parseInt(page_n);
         $.ajax({
-            url : "./ajax.stock.selectDetailList.php",
-            type : "POST",
+            url : "<?= G5_SHOP_URL; ?>/sales_Inventory_datail.php?prodId=<?=$it_id?>&page2="+page_n+"&prodSupYn=<?=$_GET['prodSupYn']?>",
+            type : "get",
             async : false,
-            data : sendData,
             success : function(result){
-                result = JSON.parse(result);
-                if(result.errorYN == "Y"){
-                    alert(result.message);
-                } else {
-                    console.log(result);
-                    $("#list_box1 *").remove();
-                    $("#numbering_zone1 *").remove();
-                    for(var i =0 ; i < result.data.length; i++){
-                        var html = "";
-                        var div = "";
-                        if(!result.data[i].prodColor){ result.data[i].prodColor=""; }
-                        if(!result.data[i].prodSize){   result.data[i].prodSize=""; }
-                        if(result.data[i].prodColor&&result.data[i].prodSize){ div = "/";}
-                        if(result.data[i].prodColor||result.data[i].prodSize){ var option= '('+result.data[i].prodColor +div+result.data[i].prodSize+')'; }else{ var option ="(옵션 없음)";} //사이즈
-                        if("<?=$_GET['prodSupYn']?>" == "N" ){
-                            var style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
-                            var prodBarNumCntBtn_2="prodBarNumCntBtn_2";
-                        }else{
-                            var style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
-                            var prodBarNumCntBtn_2="";
-                        }
-
-                        var number = result.total-((sendData['pageNum']-1)*sendData['pageSize'])-i; //넘버링
-                        html = html + '<li class="list cb">';
-                        html = html +'<span class="num">'+number+'</span>';
-                        html = html +'<span class="product m_off">'+result.data[i].prodNm+' '+option+'</span>';
-                        html = html +'<span class="pro-num m_off '+prodBarNumCntBtn_2+'" data-id="'+result.data[i].stoId+'" ><b '+style_prodSupYn+'>'+result.data[i].prodBarNum+'</b></span>';
-                        var date=result.data[i].regDtm;
-                        var year=date.slice(0,4);
-                        var month=date.slice(4,6);
-                        var day=date.slice(6,8);
-                        var hour=date.slice(8,10);
-                        var minute=date.slice(10,12);
-                        // var second=date.slice(12,14);
-                        html = html +'<span class="date m_off">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
-                        html = html +'<span class="order m_off">';
-                        html = html +'<a href="javascript:;"onclick="popup_control(\''+result.data[i].prodColor+'\',\''+result.data[i].prodSize+'\',\''+result.data[i].prodBarNum+'\')">수급자선택</a>';
-                        html = html +'</span>';
-                        html = html +'<span class="del m_off"><a href="javascript:;" onclick="del_stoId(\''+result.data[i].stoId+'\')">삭제</a></span>';
-                        html = html +'<div class="list-m">';
-                        html = html +'<div class="info-m">';
-                        html = html +'<span class="product">'+result.data[i].prodNm+" "+option+'</span>';
-                        html = html +'<span class="pro-num '+prodBarNumCntBtn_2+'" data-id="'+result.data[i].stoId+'" ><b '+style_prodSupYn+'>'+result.data[i].prodBarNum+'</b></span>';
-                        html = html +'</div>';
-                        html = html +'<div class="info-m">';
-                        html = html +'<span class="date">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
-                        html = html +'<span class="order">';
-                        html = html +'<a href="javascript:;"onclick="popup_control(\''+result.data[i].prodColor+'\',\''+result.data[i].prodSize+'\',\''+result.data[i].prodBarNum+'\')">수급자선택</a>';
-                        html = html +'</span>';
-                        html = html +'<span class="order2"><a href="javascript:;" onclick="del_stoId(\''+result.data[i].stoId+'\')">삭제</a></span>';
-                        html = html +'</div>';
-                        html = html +'</div>';
-                        html = html +'</li>';
-                        // console.log(html);
-                        $("#list_box1").append(html);
-                    }
-                        //페이징
-						var totalCnt = result.total;
-						var pageNum = parseInt(sendData['pageNum']);
-						var listCnt = <?=$sendLength?>
-
-						var b_pageNum_listCnt = 5; //# 한 블록에 보여줄 페이지 갯수 5개
-						var block = Math.ceil(pageNum/b_pageNum_listCnt); //# 총 블록 갯수 구하기
-						var b_start_page = ( (block - 1) * b_pageNum_listCnt ) + 1; //# 블록 시작 페이지
-						var b_end_page = b_start_page + b_pageNum_listCnt - 1;  //# 블록 종료 페이지
-						var total_page = Math.ceil( totalCnt / listCnt ); //# 총 페이지
-						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-						if (b_end_page > total_page){
-							b_end_page = total_page;
-						}
-						var total_block = Math.ceil(total_page/b_pageNum_listCnt);
-                        var html_2="";
-                        if(pageNum >b_pageNum_listCnt){
-                            html_2 = html_2+'<a href="javascript:selectDetailList(\'1\')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a>';
-                        }
-                        if(block > 1){
-                            html_2 = html_2+'<a href="javascript:selectDetailList(\''+(b_start_page-1)+'\')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a>';
-                        }
-                        for(var j = b_start_page; j <=b_end_page; j++){
-                            html_2 = html_2+'<a href="javascript:selectDetailList(\''+j+'\')">'+j+'</a>';
-                        }
-                        if(block < total_block){
-                            html_2 = html_2+'<a href="javascript:selectDetailList(\''+(b_end_page+1)+'\')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a>';
-                        }
-                        if(block < total_block){
-                            html_2 = html_2+'<a href="javascript:selectDetailList(\''+total_page+'\')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a>';
-                        }
-                        console.log(block);
-                        $("#numbering_zone1").append(html_2);
-                }
+                var list_box1 =$(result).find("#list_box1").html();
+                var pagin_1 =$(result).find("#pagin_1").html();
+                $("#list_box1").html("");
+                $("#pagin_1").html("");
+                $("#list_box1").append(list_box1);
+                $("#pagin_1").append(pagin_1);
             }
         });
+        $("input:text[dateonly]").datepicker({});
     }
-
-
-
-
-    function selectDetailList2(page2){
-        var sendData = {
-            usrId : "<?=$member["mb_id"] ?>",
-            entId : "<?=$member["mb_entId"] ?>",
-            prodId : "<?=$_GET['prodId'] ?>",
-            pageNum : page2,
-            stateCd : ["02","07"],
-            pageSize : <?=$sendLength ?>
-        }
+    //페이징 처리2
+    function page_load2(page_n) {
+        page_n = parseInt(page_n);
         $.ajax({
-            url : "./ajax.stock.selectDetailList.php",
-            type : "POST",
+            url : "<?= G5_SHOP_URL; ?>/sales_Inventory_datail.php?prodId=<?=$it_id?>&page2="+page_n+"&prodSupYn=<?=$_GET['prodSupYn']?>",
+            type : "get",
             async : false,
-            data : sendData,
             success : function(result){
-                result = JSON.parse(result);
-                if(result.errorYN == "Y"){
-                    alert(result.message);
-                } else {
-                    console.log(result);
-                    $("#list_box2 *").remove();
-                    $("#numbering_zone2 *").remove();
-                    for(var i =0 ; i < result.data.length; i++){
-                        var html = "";
-                        var div = "";
-                        if(!result.data[i].prodColor){ result.data[i].prodColor=""; }
-                        if(!result.data[i].prodSize){   result.data[i].prodSize=""; }
-                        if(result.data[i].prodColor&&result.data[i].prodSize){ div = "/";}
-                        if(result.data[i].prodColor||result.data[i].prodSize){ var option= '('+result.data[i].prodColor +div+result.data[i].prodSize+')'; }else{ var option ="(옵션 없음)";} //사이즈
-                        var number = result.total-((sendData['pageNum']-1)*sendData['pageSize'])-i; //넘버링
-                        if("<?=$_GET['prodSupYn']?>" == "N" ){
-                            var style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
-                            var prodBarNumCntBtn_2="prodBarNumCntBtn_2";
-                        }else{
-                            var style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
-                            var prodBarNumCntBtn_2="";
-                        }
-
-
-                        html = html + '<li class="list cb">';
-                        html = html + '<span class="num">'+number+'</span>';
-                        html = html + '<span class="product m_off">'+result.data[i].prodNm+' '+option+'</span>';
-                        html = html + '<span class="pro-num m_off '+prodBarNumCntBtn_2+'" data-id="'+result.data[i].stoId+'" ><b '+style_prodSupYn+'>'+result.data[i].prodBarNum+'</b></span>';
-                        html = html + '<span class="name m_off"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id='+result.data[i].penId+'">'+result.data[i].penNm+'</a></span>';
-                        var date=result.data[i].modifyDtm;
-                        var year=date.slice(0,4);
-                        var month=date.slice(4,6);
-                        var day=date.slice(6,8);
-                        var hour=date.slice(8,10);
-                        var minute=date.slice(10,12);
-                        // var second=date.slice(12,14);
-                        html = html + '<span class="date m_off">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
-                        html = html + '<div class="list-m">';
-                        html = html + '<div class="info-m">';
-                        html = html + '<span class="product">'+result.data[i].prodNm+' '+option+'</span>';
-                        html = html + '<span class="pro-num '+prodBarNumCntBtn_2+'" data-id="'+result.data[i].stoId+'" ><b '+style_prodSupYn+'>'+result.data[i].prodBarNum+'</b></b></span>';
-                        html = html + '</div>';
-                        html = html + '<div class="info-m">';
-                        html = html + '<span class="name"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id='+result.data[i].penId+'">'+result.data[i].penNm+'</a></a></span>';
-                        html = html + '<span class="date">'+year+"-"+month+"-"+day+" "+hour+":"+minute+'</span>';
-                        html = html + '</div>';
-                        html = html + '</div>';
-                        html = html + '<span class="check">';
-                        html = html + '<a href="'+result.data[i].eformUrl+'">확인</a>';
-                        html = html + '</span>';
-                        html = html + '</li>';
-                        // console.log(html);
-                        $("#list_box2").append(html);
-                    }
-                        //페이징
-						var totalCnt = result.total;
-						var pageNum = parseInt(sendData['pageNum']);
-						var listCnt = <?=$sendLength?>
-
-						var b_pageNum_listCnt = 5; //# 한 블록에 보여줄 페이지 갯수 5개
-						var block = Math.ceil(pageNum/b_pageNum_listCnt); //# 총 블록 갯수 구하기
-						var b_start_page = ( (block - 1) * b_pageNum_listCnt ) + 1; //# 블록 시작 페이지
-						var b_end_page = b_start_page + b_pageNum_listCnt - 1;  //# 블록 종료 페이지
-						var total_page = Math.ceil( totalCnt / listCnt ); //# 총 페이지
-						// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-						if (b_end_page > total_page){
-							b_end_page = total_page;
-						}
-						var total_block = Math.ceil(total_page/b_pageNum_listCnt);
-                        var html_2="";
-                        if(pageNum >b_pageNum_listCnt){
-                            html_2 = html_2+'<a href="javascript:selectDetailList2(\'1\')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a>';
-                        }
-                        if(block > 1){
-                            html_2 = html_2+'<a href="javascript:selectDetailList2(\''+(b_start_page-1)+'\')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a>';
-                        }
-                        for(var j = b_start_page; j <=b_end_page; j++){
-                            html_2 = html_2+'<a href="javascript:selectDetailList2(\''+j+'\')">'+j+'</a>';
-                        }
-                        if(block < total_block){
-                            html_2 = html_2+'<a href="javascript:selectDetailList2(\''+(b_end_page+1)+'\')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a>';
-                        }
-                        if(block < total_block){
-                            html_2 = html_2+'<a href="javascript:selectDetailList2(\''+total_page+'\')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a>';
-                        }
-                        console.log(block);
-                        $("#numbering_zone2").append(html_2);
-                }
+                var list_box2 =$(result).find("#list_box2").html();
+                var pagin_2 =$(result).find("#pagin_2").html();
+                $("#list_box2").html("");
+                $("#pagin_2").html("");
+                $("#list_box2").append(list_box2);
+                $("#pagin_2").append(pagin_2);
             }
         });
+        $("input:text[dateonly]").datepicker({});
     }
-
-    //바코드 클릭시 팝업
-    $(document).on("click", ".prodBarNumCntBtn_2", function(e){
-        e.preventDefault();
-        var id = $(this).attr("data-id");
-        var popupWidth = 700;
-        var popupHeight = 700;
-        var popupX = (window.screen.width / 2) - (popupWidth / 2);
-        var popupY= (window.screen.height / 2) - (popupHeight / 2);
-        <?php if(is_mobile()){ ?>
-            location.href='<?=G5_URL?>/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=<?=$_GET['prodId']?>&stoId='+id;
-        <?php }else{ ?>
-            window.open("<?=G5_URL?>/adm/shop_admin/popup.prodBarNum.form_2.php?prodId=<?=$_GET['prodId']?>&stoId=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
-        <?php } ?>
-    });
-
 
     function wrapWindowByMask(){
         //화면의 높이와 너비를 구한다.
