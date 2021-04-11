@@ -359,7 +359,7 @@ if($header_skin)
 							<?php if($row["od_status"] == "배송완료"){ ?>
 								<a href="<?php echo G5_SHOP_URL; ?>/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
 							<?php } ?>
-							<?php if($row["od_status"] == "배송"){ ?>
+							<?php if($row["od_status"] == "출고완료"){ ?>
 								<a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a>
 							<?php } ?>
 							</div>
