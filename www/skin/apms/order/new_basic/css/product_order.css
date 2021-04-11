@@ -86,6 +86,11 @@ table {border-collapse: collapse;}
 .table-list .list .btn-0:last-child {margin-bottom: 0;}
 .table-list .list .btn-0.btn-02 {background: #ddd;}
 .table-list .list .btn-0.btn-03 {border:1px solid #428bca;color:#428bca;}
+.table-list .list .btn-0.btn-04 {
+    border:1px solid #428bca;
+    color: white;
+    background-color:#428bca;
+}
 .table-list .pro {width: 70%; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
 .table-list .pro .img {width: 100px;height: 100px;border: 1px solid #ddd;}
 .table-list .pro-info {padding-left: 20px;}

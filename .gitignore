@@ -29,3 +29,5 @@ www/data/lp/*
 www/data/lp*
 www/data/om
 backup/*
+www/eroumcarepma/tmp/*
+www/eroumcarepma/tmp/twig/*/*.php

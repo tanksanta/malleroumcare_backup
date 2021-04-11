@@ -357,7 +357,10 @@ if($header_skin)
                                 }
                             ?>
 							<?php if($row["od_status"] == "배송완료"){ ?>
-								<a href="https://mall.eroumcare.com/shop/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
+								<a href="<?php echo G5_SHOP_URL; ?>/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
+							<?php } ?>
+							<?php if($row["od_status"] == "배송"){ ?>
+								<a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a>
 							<?php } ?>
 							</div>
 						</li>
@@ -409,6 +412,31 @@ if($header_skin)
 			
 			$(this).closest("form").find("input[name='" + target + "']").val(val);
 		});
+
+		$('.delivery_ok').click(function(e) {
+
+			e.preventDefault();
+
+			var od_id = $(this).data('od-id');
+			var ct_id = $(this).data('ct-id');
+
+			$.ajax({
+				method: "POST",
+				dataType:"json",
+				url: "./ajax.order.delivery.ok.php",
+				data: {
+					od_id: od_id,
+					ct_id: ct_id
+				}
+			}).done(function(data) {
+				console.log(data);
+				if ( data.msg ) {
+					alert(data.msg);
+				}
+				if ( data.result === 'success' ) {
+				}
+			})
+		})
 		
 	})
 </script>
