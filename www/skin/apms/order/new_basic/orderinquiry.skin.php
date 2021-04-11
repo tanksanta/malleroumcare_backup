@@ -433,6 +433,9 @@ if($header_skin)
 				if ( data.msg ) {
 					alert(data.msg);
 				}
+				if (data.result === 'success') {
+					location.reload(true);
+				}
 			})
 		})
 		
