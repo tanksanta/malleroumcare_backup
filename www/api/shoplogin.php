@@ -10,11 +10,13 @@
 	header("Content-Type: application/json");
 	$joinStatus = false;
 	$result=[];
+	if(!$_REQUEST["mb_id"]){$result["msg"] = "mb_id is null. mb_id is a required value."; echo json_encode($result); }
+	if(!$_REQUEST["mb_password"]){ "mb_password is null. mb_password is a required value."; echo json_encode($result);}
+
 	if($_POST["mb_id"] != "admin"){
 		$sendData = [];
 		$sendData["usrId"] = $_REQUEST["mb_id"];
 		$sendData["pw"] = $_REQUEST["mb_password"];
-		echo print_r($_POST);
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/account/entLogin");
