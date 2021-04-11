@@ -157,21 +157,22 @@ if($_FILES['excelfile']['tmp_name']) {
             $sendData2['penId']=$res['data']['penId'];
             $sendData2['itemList']=$itemList;
 
-
-            $oCurl2 = curl_init();
-            curl_setopt($oCurl2, CURLOPT_PORT, 9901);
-            curl_setopt($oCurl2, CURLOPT_URL, "https://eroumcare.com/api/recipient/setItem");
-            curl_setopt($oCurl2, CURLOPT_POST, 1);
-            curl_setopt($oCurl2, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($oCurl2, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
-            curl_setopt($oCurl2, CURLOPT_SSL_VERIFYPEER, FALSE);
-            curl_setopt($oCurl2, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-            $res2 = curl_exec($oCurl2);
-            curl_close($oCurl2);
-            $res2=json_decode($res2,true);
-
-            if($res['errorYN']=="Y"){
-               alert(($i-6)."번째의 수급자, 보호자, 장기요양급여제공기록지까지 업로드 되었습니다.".($i-6).'번째의 판매품목과 대여품목을 확인하세요.');
+            if($sendData2['penId']&&$sendData2['itemList']){
+                $oCurl2 = curl_init();
+                curl_setopt($oCurl2, CURLOPT_PORT, 9901);
+                curl_setopt($oCurl2, CURLOPT_URL, "https://eroumcare.com/api/recipient/setItem");
+                curl_setopt($oCurl2, CURLOPT_POST, 1);
+                curl_setopt($oCurl2, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($oCurl2, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
+                curl_setopt($oCurl2, CURLOPT_SSL_VERIFYPEER, FALSE);
+                curl_setopt($oCurl2, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+                $res2 = curl_exec($oCurl2);
+                curl_close($oCurl2);
+                $res2=json_decode($res2,true);
+                
+                if($res['errorYN']=="Y"){
+                alert(($i-6)."번째의 수급자, 보호자, 장기요양급여제공기록지까지 업로드 되었습니다.".($i-6).'번째의 판매품목과 대여품목을 확인하세요.');
+                }
             }
         }
     }
