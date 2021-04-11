@@ -97,6 +97,7 @@ if($_FILES['excelfile']['tmp_name']) {
          $sendData['penProAddr'] = addslashes($data->sheets[0]['cells'][$i][$j++]);//주소
          $sendData['penProAddrDtl'] =  addslashes($data->sheets[0]['cells'][$i][$j++]);//상세주소
          $y_and_n = addslashes($data->sheets[0]['cells'][$i][$j++]);//수급자동일
+         
          if($y_and_n=="Y"){
             $sendData['penProNm'] = $sendData['penNm'];
             $sendData['penProBirth'] = $sendData['penBirth'];//생년월일

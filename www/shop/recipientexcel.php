@@ -20,7 +20,7 @@ include_once('../common.php');
         </p>
 
         <p>
-            <a href="<?php echo G5_URL; ?>/<?php echo G5_LIB_DIR; ?>/Excel/recipientexcel.xls" class="excelBtn">수급자등록용 엑셀파일 다운로드</a>
+            <a href="<?php echo G5_URL; ?>/<?php echo G5_LIB_DIR; ?>/Excel/recipientExcel.xls" class="excelBtn">수급자등록용 엑셀파일 다운로드</a>
         </p>
     </div>
 
