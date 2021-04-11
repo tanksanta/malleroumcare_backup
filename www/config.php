@@ -59,6 +59,13 @@ define('G5_PHPMAILER_DIR',  'PHPMailer');
 define('G5_SESSION_DIR',    'session');
 define('G5_THEME_DIR',      'theme');
 
+// 이로움 API 
+define('EROUMCARE_API_PORT',                    9901);
+// 15 재고 상세 목록
+define('EROUMCARE_API_SELECT_DETAIL_LIST',      'https://eroumcare.com/api/stock/selectDetailList');
+// 16 재고 수정
+define('EROUMCARE_API_STOCK_UPDATE',            'https://eroumcare.com:9901/api/stock/update');
+
 // 로젠택배 EDI 연동 
 // dbconfig 파일에 작성하도록 수정
 // 실주소 : https://ilogen.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL
