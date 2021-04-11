@@ -21,7 +21,7 @@ if (!$result['ct_id']) {
 
 $sql = "
     update {$g5['g5_shop_cart_table']}
-    set ct_status = '완료' 
+    set ct_status = '배송완료' 
     where ct_id = '{$result['ct_id']}'
     ";
 sql_query($sql);
