@@ -184,7 +184,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
     <title>판매재고목록</title>
     <section id="stock" class="wrap stock-list">
-        <h2>보유재고관리</h2>
+        <div class="sub_section_tit">보유재고관리</div>
         <ul class="stock-tab">
             <li class="active"><a href="<?=G5_SHOP_URL?>/sales_Inventory.php">판매재고<i class="num">(<?=$sales_Inventory_total?>)</i></a></li>
             <li><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php">대여재고<i class="num">(<?=$sales_Inventory_total2?>)</i></a></li>

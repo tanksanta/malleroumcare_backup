@@ -75,8 +75,194 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 ?>
 
 <!-- 내용 -->
-<section>
-
+<title>판매재고목록</title>
+<section   class="wrap  ">
+    <div class="sub_section_tit">청구/전자문서관리</div>
+    <ul class="list_tab">
+        <li class="active"><a href="<?=G5_SHOP_URL?>/claim_manage.php">청구관리</a></li>
+        <li ><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<span class="red_info">미작성: 1건</span></a></li>
+    </ul>
+     <div class="inner">
+     	<div class="date_wrap">
+     		<div class="date_this">
+     			<a href="#">이번달</a>
+     		</div>
+     		<div class="date_selected">
+     			<a href="#">◀ 지난달</a>
+     			<select name="" id="">
+     				<option selected>2021년 3월</option>
+     				<option>2021년 2월</option>
+     				<option>2021년 1월</option>
+     			</select>
+     			<a href="#" class="disabled">다음달 ▶</a>
+     		</div>
+     		
+     	</div>
+     	
+     	<div class="search_box">
+            <select name="searchtype" id="">
+                <option value="1">상품명</option>
+                <option value="2">제품코드</option>
+            </select>
+            <div class="input_search">
+                <input name="searchtypeText" value="<?=$_GET["searchtypeText"]?>" type="text">
+                <button  type="submit"></button>
+            </div>
+        </div>
+ 		<div class="r_btn_area">
+ 			<span>마지막 업데이트 : 1일</span>
+ 			<a href="#" class="btn_nhis">건보 자료 업로드</a>
+ 			<a href="#">엑셀다운로드</a>
+ 		</div>
+ 		<div class="list_box">
+ 			<div class="table_box">
+ 			<table >
+				 <tr>
+				 	<th>No.</th>
+				 	<th>수급자 정보</th>
+				 	<th>상품정보</th>
+				 	<th>분류</th>
+				 	<th>급여시작일</th>
+				 	<th>급여비용총액</th>
+				 	<th>본인부담금</th>
+				 	<th>청구액</th>
+				 	<th>검증상태</th>
+				 </tr>
+				 <tr>
+				 	<td>5</td>
+				 	<td>홍길동(L2233321333 / 3등급 /기초0%)</td>
+				 	<td>상품명(11111)</td>
+				 	<td class="text_c">일반계약</td>
+				 	<td class="text_c">2021-02-02</td>
+				 	<td class="text_r">200,000원</td>
+				 	<td class="text_r">10,000원</td>
+				 	<td class="text_r">210,000원</td>
+				 	<td class="text_c">정상</td>
+				 </tr>
+				 <tr class="bg_red">
+				 	<td>4</td>
+				 	<td>
+				 		홍길동(L2233321333 / 3등급 /기초0%)
+				 		<p class="text_red">홍**(L22333**** / 2등급 /기초0%)</p>
+				 		<a href="#" class="w_100">수정하기</a>
+				 	</td>
+				 	<td>상품명(11111)외 2건</td>
+				 	<td class="text_c">일반계약</td>
+				 	<td class="text_c">2021-02-02</td>
+				 	<td class="text_r">
+				 		200,000원
+				 		<p class="text_red">150,000원</p>
+				 		<a href="#" class="w_100">수정</a>
+				 	</td>
+				 	<td class="text_r">
+				 		100,000원
+				 	</td>
+				 	<td class="text_r">
+				 		300,000원
+				 		<p class="text_red">250,000원</p>
+				 		<a href="#" class="w_100">수정</a>
+				 	</td>
+				 	<td class="text_c text_red">오류</td>
+				 </tr>
+				 <tr>
+				 	<td>3</td>
+				 	<td class="text_point">홍길동(L2233321333 / 3등급 /기초0%)
+				 		<a href="#" class="w_100">변경하기</a>
+				 	</td>
+				 	<td>상품명(11111)</td>
+				 	<td class="text_c">일반계약</td>
+				 	<td class="text_c">2021-02-02</td>
+				 	<td class="text_r">200,000원</td>
+				 	<td class="text_r">10,000원</td>
+				 	<td class="text_r text_point">210,000원
+				 		<a href="#" class="w_100">변경</a></td>
+				 	<td class="text_c text_point">변경완료</td>
+				 </tr>
+				 <tr>
+				 	<td>2</td>
+				 	<td>홍길동(L2233321333 / 3등급 /기초0%)</td>
+				 	<td>상품명(11111)</td>
+				 	<td class="text_c">일반계약</td>
+				 	<td class="text_c">2021-02-02</td>
+				 	<td class="text_r">200,000원</td>
+				 	<td class="text_r">10,000원</td>
+				 	<td class="text_r">210,000원</td>
+				 	<td class="text_c text_gray">대기</td>
+				 </tr>
+				 <tr>
+				 	<td>1</td>
+				 	<td>홍길동(L2233321333 / 3등급 /기초0%)</td>
+				 	<td>상품명(11111)</td>
+				 	<td class="text_c">월대여청구</td>
+				 	<td class="text_c">2021-02-02</td>
+				 	<td class="text_r">200,000원</td>
+				 	<td class="text_r">10,000원</td>
+				 	<td class="text_r">210,000원</td>
+				 	<td class="text_c text_gray">대기</td>
+				 </tr>
+			 </table>
+			 </div>
+			 
+			 <div class="list-paging">
+			 	<ul class="pagination ">
+			 		<li> </li>
+			 		<li><a href="#"> &lt;</a></li>
+			 		<li class="active"><a href="#">1</a></li>
+			 		<li><a href="#">2</a></li>
+			 		<li><a href="#">3</a></li>
+			 		<li><a href="#">&gt;</a></li>
+			 		<li> </li>
+			 	</ul>
+			 </div>
+			 <div class="subtit">
+			 	건강관리공단 미 매칭 자료 
+			 </div>
+ 			<div class="table_box">
+ 			<table >
+				 <tr>
+				 	<th>No.</th>
+				 	<th>수급자 정보</th>
+				 	<th>급여시작일</th>
+				 	<th>급여비용총액</th>
+				 	<th>본인부담금</th>
+				 	<th>청구액</th>
+				 	<th>검증상태</th>
+				 </tr>
+				 <tr>
+				 	<td>2</td>
+				 	<td>홍길동(L2233***** / 3등급 /기초0%)</td>
+				 	<td class="text_c">2021-02-02</td>
+				 	<td class="text_r">200,000원</td>
+				 	<td class="text_r">10,000원</td>
+				 	<td class="text_r">210,000원</td>
+				 	<td class="text_c text_gray">미매칭</td>
+				 </tr>
+				 <tr>
+				 	<td>1</td>
+				 	<td>홍길동(L2233***** / 3등급 /기초0%)</td>
+				 	<td class="text_c">2021-02-02</td>
+				 	<td class="text_r">200,000원</td>
+				 	<td class="text_r">10,000원</td>
+				 	<td class="text_r">210,000원</td>
+				 	<td class="text_c text_gray">미매칭</td>
+				 </tr>
+			 </table>
+			 </div>
+			 
+			 <div class="list-paging">
+			 	<ul class="pagination ">
+			 		<li> </li>
+			 		<li><a href="#"> &lt;</a></li>
+			 		<li class="active"><a href="#">1</a></li>
+			 		<li><a href="#">2</a></li>
+			 		<li><a href="#">3</a></li>
+			 		<li><a href="#">&gt;</a></li>
+			 		<li> </li>
+			 	</ul>
+			 </div>
+ 		</div>
+     </div>
+    
 </section>
 
 

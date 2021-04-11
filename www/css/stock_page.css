@@ -24,8 +24,8 @@ table {border-collapse: collapse;}
 .search-box {margin:0 0 16px;font-size: 0;text-align: left;} 
 .search-box select {margin-right:6px;display: inline-block;vertical-align: top;width:97px;height:30px;border:1px solid #d7d7d7;border-radius: 6px;font-size: 14px;}
 .search-box .input-search {display: inline-block;vertical-align: top; width:176px;height:30px;overflow: hidden;position: relative;border: 1px solid #d7d7d7;border-radius: 6px;}
-.search-box .input-search input {width: calc(100% - 30px); height: 28px;font-size: 14px;}
-.search-box .input-search button {position: absolute;top:0;right:0;z-index:1;width: 30px;height: 30px;background: url('../img/search_icon.png') no-repeat center top 50%/12px auto;}
+.search-box .input-search input {width: calc(100% - 30px); height: 28px;font-size: 14px;border:0;padding:0 5px;}
+.search-box .input-search button {position: absolute;top:0;right:0;z-index:1;width: 30px;height: 30px;background: url('/img/search_icon.png') no-repeat center top 50%/12px auto;}
 /* 페이징 */
 .pg-wrap {margin: 20px 0 0;}
 .pg-wrap div {text-align: center;font-size: 0;}
