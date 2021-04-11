@@ -10,8 +10,8 @@
 	header("Content-Type: application/json");
 	$joinStatus = false;
 	$result=[];
-	if(!$_REQUEST["mb_id"]){$result["msg"] = "mb_id is null. mb_id is a required value."; echo json_encode($result); }
-	if(!$_REQUEST["mb_password"]){$result["msg"] = "mb_password is null. mb_password is a required value."; echo json_encode($result);}
+	if(!$_REQUEST["mb_id"]){$result["msg"] = "mb_id is null. mb_id is a required value."; echo json_encode($result); return false;}
+	if(!$_REQUEST["mb_password"]){$result["msg"] = "mb_password is null. mb_password is a required value."; echo json_encode($result); return false;}
 
 	if($_POST["mb_id"] != "admin"){
 		$sendData = [];
