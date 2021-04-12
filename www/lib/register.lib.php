@@ -59,7 +59,7 @@ function empty_mb_nick($reg_mb_nick)
 
 function valid_mb_nick($reg_mb_nick)
 {
-    if (!check_string($reg_mb_nick, G5_HANGUL + G5_ALPHABETIC + G5_NUMERIC))
+    if (!check_string($reg_mb_nick, G5_HANGUL + G5_ALPHABETIC + G5_NUMERIC + G5_SPECIAL + G5_SPACE))
         return aslang('alert', 'reg_nick_valid'); //닉네임은 공백없이 한글, 영문, 숫자만 입력 가능합니다.
     else
         return "";
