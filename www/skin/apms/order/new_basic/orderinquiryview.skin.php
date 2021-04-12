@@ -458,6 +458,16 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				</div>
 			</div>
 			<?php } ?>
+			<?php 
+                $sql_od ="select `od_hide_control` from `g5_shop_order` where `od_id` = '".$od['od_id']."'";
+                $result_od = sql_fetch($sql_od);
+            ?>
+            <?php if(!$result_od['od_hide_control']){ ?>
+            <div class="list-more">
+                <a href="javascript:void(0)" onclick="hide_control('<?=$od["od_id"] ?>')">주문내역삭제</a>
+                <p >*해당 주문을 삭제하시면 주문내역에 더 이상 노출되지 않습니다.</p>
+            </div>
+            <?php } ?>
 		</div>
 
 		<div class="detail-price">
@@ -723,7 +733,21 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 </style>
 
 <script>
-
+function hide_control(od_id){
+    $.ajax({
+            method: "POST",
+            url: "./ajax.hide_control.php",
+            data: {
+                od_id: od_id
+            }
+        }).done(function(data) {
+            // console.log(data);
+            if(data=="S"){
+                alert('삭제가 완료되었습니다.');
+                location.href="<?=G5_URL?>/shop/orderinquiry.php"; 
+            }
+        })
+}
 
 $(".popupProdBarNumInfoBtn").click(function(e){
 	e.preventDefault();

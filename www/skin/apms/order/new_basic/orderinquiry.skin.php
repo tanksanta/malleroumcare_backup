@@ -223,7 +223,6 @@ if($header_skin)
 			<?php } else { ?>
 				<span class="btn-pro on"> <img src="<?=$SKIN_URL?>/image/icon_16.png" alt=""> 상품 주문 </span>
 			<?php } ?>
-                <span class="btn-pro on" style="cursor:pointer" onclick="hide_control('<?=$row["od_id"] ?>')"> 주문삭제 </span>
 			</div>
 
 			<div class="info-wrap">
