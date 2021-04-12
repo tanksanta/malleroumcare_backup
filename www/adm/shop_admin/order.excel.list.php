@@ -45,7 +45,7 @@
 				$it["ct_qty"],
 				$od["od_b_name"],
 				$od["od_b_addr1"],
-				$od["od_b_tel"]
+				$od["od_b_tel"],
 				$it["prodMemo"]
 			];
 		}
