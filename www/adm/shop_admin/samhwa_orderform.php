@@ -353,6 +353,16 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 <?php } ?>
                 <?php } ?>
 <!--                <input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
+
+                    <?php 
+                        $sql_cart ="select `ct_hide_control` from `g5_shop_cart` where `od_id` = '".$od['od_id']."'";
+                        $result_ct = sql_fetch($sql_cart);
+                    ?>
+                    <?php if($result_ct['ct_hide_control'] == "1"){ ?>
+                        <a href="#" class="orderHide" onclick="hide_control('<?=$od['od_id'] ?>', '2')">주문내역 출력</a>
+                    <?php }else{ ?>
+                        <a href="#" class="orderHide disable" onclick="hide_control('<?=$od['od_id'] ?>', '1')">주문내역 숨김</a>
+					<?php }?>
 					<a href="#" class="prodBarNumCntBtn<?=$prodBarNumCntBtnStatus?>"><?=$prodBarNumCntBtnWord?></a>
             </div>
         </div>
@@ -2044,6 +2054,28 @@ var od_id = '<?php echo $od['od_id']; ?>';
 </div>
 
 <script>
+
+    //주문내역 숨김처리
+    function hide_control(od_id,ct_hide_control){
+        $.ajax({
+				method: "POST",
+				url: "<?=G5_SHOP_URL?>/ajax.hide_control.php",
+				data: {
+					od_id: od_id,
+					ct_hide_control: ct_hide_control
+				}
+			}).done(function(data) {
+                if(data=="S1"){
+                    alert('숨김처리가 완료되었습니다.');
+                    window.location.reload(); 
+                }
+                if(data=="S2"){
+                    alert('보이기처리가 완료되었습니다.');
+                    window.location.reload(); 
+                }
+			})
+    }
+
 var change_member_pop, add_item_pop, matching_item_pop, edit_item_pop, delivery_print_pop, edit_payment_pop, send_estimate_pop, order_prints_pop;
 
 	function orderListExcelDownload(number){
