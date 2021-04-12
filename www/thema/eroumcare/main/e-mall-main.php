@@ -335,8 +335,23 @@
 				<li class="call">
 					<img src="<?=THEMA_URL?>/assets/img/mainCallIcon.png" alt="">
 					<p>
-						<span class="Label">주문안내</span>
-						<span class="value">032-562-6608</span>
+						<?php 
+                            $manager_hp="";
+                            if($member['mb_manager']){
+                                $sql_m ='select * from `g5_member` where `mb_id` = "'.$member['mb_manager'].'"';
+                                $result_m = sql_fetch($sql_m);
+                                $manager_hp = $result_m['mb_hp'];
+                            }
+                            if($manager_hp){
+                        ?>
+                            <span class="Label">영업담당자:</span>
+                            <span class="value"><?=$manager_hp?></span>
+                        <?php 
+                            }else{
+                        ?>
+                            <span class="Label">주문안내</span>
+                            <span class="value">032-562-6608</span>
+                        <?php } ?>
 					</p>
 					<p>
 						<span class="Label">시스템안내</span>
