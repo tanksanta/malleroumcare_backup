@@ -38,14 +38,16 @@
 			if($it_name != $it["ct_option"]){
 				$it_name .= " [{$it["ct_option"]}]";
 			}
-			
+            $addr="";
+            if($od_b_zip1){$addr= "(".$od_b_zip1.$od_b_zip2.")";}
+			$addr = $addr.$od["od_b_addr1"].' '.$od["od_b_addr2"].' '.$od["od_b_addr3"];
 			$rows[] = [ 
 				date("Y-m-d", strtotime($od["od_time"]))."-".($i),
 				$it_name,
 				$it["ct_qty"],
                 $it_name." / ".$it["ct_qty"].' EA',
 				$od["od_b_name"],
-				$od["od_b_addr1"],
+				$addr,
 				$od["od_b_tel"],
 				$it["prodMemo"]
 			];
