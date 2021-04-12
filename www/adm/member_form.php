@@ -190,6 +190,7 @@ label {
             <?php
                 $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '200100'";
                 $result_m = sql_query($sql_m);
+                echo '<option value="">영업 담당자를 선택하세요.</option>';
                 for ($k=0; $row_m=sql_fetch_array($result_m); $k++){
                     $selected="";
                     if($mb['mb_manager']==$row_m['mb_id']) $selected="selected";
