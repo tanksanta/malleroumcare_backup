@@ -43,6 +43,7 @@
 				date("Y-m-d", strtotime($od["od_time"]))."-".($i),
 				$it_name,
 				$it["ct_qty"],
+                $it_name."&".$it["ct_qty"],
 				$od["od_b_name"],
 				$od["od_b_addr1"],
 				$od["od_b_tel"],
@@ -51,7 +52,7 @@
 		}
     }
 
-    $headers = array("일자-No.", "품목명[규격]", "수량", "성함(상호명)", "배송처", "연락처", "적요");
+    $headers = array("일자-No.", "품목명[규격]", "수량", "품목&수량","성함(상호명)", "배송처", "연락처", "적요");
     $data = array_merge(array($headers), $rows);
     
     $widths  = array(20, 50, 10, 30, 50, 30, 50);
