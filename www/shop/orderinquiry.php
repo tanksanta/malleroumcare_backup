@@ -32,6 +32,8 @@ $order_stocks[1]["name"] = "재고";
 $order_stocks[1]["val"] = "N";
 
 # 210322 검색
+# 210412 주문 hide
+$sql_search = " and `ct_hide_control` != '1'";
 $sql_search = "";
 if($_GET["s_date"]){
 	$sql_search .= " AND od_time >= '{$_GET["s_date"]} 00:00:00' ";

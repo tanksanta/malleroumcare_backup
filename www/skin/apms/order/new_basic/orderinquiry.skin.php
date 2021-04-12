@@ -223,6 +223,7 @@ if($header_skin)
 			<?php } else { ?>
 				<span class="btn-pro on"> <img src="<?=$SKIN_URL?>/image/icon_16.png" alt=""> 상품 주문 </span>
 			<?php } ?>
+                <span class="btn-pro on" style="cursor:pointer" onclick="hide_control('<?=$row["od_id"] ?>')"> 주문삭제 </span>
 			</div>
 
 			<div class="info-wrap">
@@ -359,7 +360,7 @@ if($header_skin)
 							<?php if($row["od_status"] == "배송완료"){ ?>
 								<a href="<?php echo G5_SHOP_URL; ?>/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
 							<?php } ?>
-							<?php if($row["od_status"] == "배송"){ ?>
+							<?php if($row["od_status"] == "출고완료"){ ?>
 								<a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a>
 							<?php } ?>
 							</div>
@@ -388,6 +389,21 @@ if($header_skin)
 <?php } ?>
 
 <script type="text/javascript">
+    function hide_control(od_id){
+        $.ajax({
+				method: "POST",
+				url: "./ajax.hide_control.php",
+				data: {
+					od_id: od_id
+				}
+			}).done(function(data) {
+                if(data=="S"){
+                    alert('삭제가 완료되었습니다.');
+                    window.location.reload(); 
+                }
+			})
+    }
+
 	function searchDateSetting(type){
 		switch(type){
 			case "1week" :
