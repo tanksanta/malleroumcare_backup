@@ -354,7 +354,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 <?php } ?>
 <!--                <input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
 
-                    <?php 
+                    <!-- <?php 
                         $sql_cart ="select `ct_hide_control` from `g5_shop_cart` where `od_id` = '".$od['od_id']."'";
                         $result_ct = sql_fetch($sql_cart);
                     ?>
@@ -362,7 +362,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <a href="#" class="orderHide" onclick="hide_control('<?=$od['od_id'] ?>', '2')">주문내역 출력</a>
                     <?php }else{ ?>
                         <a href="#" class="orderHide disable" onclick="hide_control('<?=$od['od_id'] ?>', '1')">주문내역 숨김</a>
-					<?php }?>
+					<?php }?> -->
+
+
 					<a href="#" class="prodBarNumCntBtn<?=$prodBarNumCntBtnStatus?>"><?=$prodBarNumCntBtnWord?></a>
             </div>
         </div>
