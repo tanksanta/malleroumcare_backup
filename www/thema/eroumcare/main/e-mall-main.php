@@ -337,15 +337,17 @@
 					<p>
 						<?php 
                             $manager_hp="";
+                            $manager_name="";
                             if($member['mb_manager']){
                                 $sql_m ='select * from `g5_member` where `mb_id` = "'.$member['mb_manager'].'"';
                                 $result_m = sql_fetch($sql_m);
                                 $manager_hp = $result_m['mb_hp'];
+                                $manager_name = $result_m['mb_name'];
                             }
                             if($manager_hp){
                         ?>
                             <span class="Label">영업담당자:</span>
-                            <span class="value"><?=$manager_hp?></span>
+                            <span class="value"><?=$manager_name?>(<?=$manager_hp?>)</span>
                         <?php 
                             }else{
                         ?>
