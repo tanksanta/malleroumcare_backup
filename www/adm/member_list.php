@@ -13,8 +13,13 @@ if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_u
 $sql_common = " from {$g5['member_table']} ";
 
 //영업담당자 추가
-if($sfl=="mb_id2"){
-    $sfl="mb_id";
+$flag_m=false;
+if($sfl=="mb_manager"){
+    $sql_cm = "select `mb_id` from `g5_member` where `mb_name`= '".$stx."'";
+    $result_cm= sql_fetch($sql_cm);
+    $stx2=$stx;
+    $stx=$result_cm['mb_id'];
+    $flag_m=true;
 }
 
 $sql_search = " where (1) ";
@@ -135,6 +140,10 @@ $colspan = ($is_membership) ? 18 : 17;
 
 ?>
 
+<?php
+//영업담당자 이름표시
+$stx=$stx2;
+?>
 <div class="local_ov01 local_ov">
     <?php echo $listall ?>
     <span class="btn_ov01"><span class="ov_txt">총회원수 </span><span class="ov_num"> <?php echo number_format($total_count) ?>명 </span></span>
