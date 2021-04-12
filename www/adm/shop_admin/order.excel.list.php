@@ -43,7 +43,7 @@
 				date("Y-m-d", strtotime($od["od_time"]))."-".($i),
 				$it_name,
 				$it["ct_qty"],
-                $it_name."&".$it["ct_qty"],
+                $it_name." / ".$it["ct_qty"].' EA',
 				$od["od_b_name"],
 				$od["od_b_addr1"],
 				$od["od_b_tel"],
