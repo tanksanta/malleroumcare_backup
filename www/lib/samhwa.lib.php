@@ -831,6 +831,20 @@ $delivery_companys = array(
         'name' => '천일택배',
         'val' => 'chunilps',
     ),
+    '7' => array(
+        'name' => '화물배송',
+        'val' => 'hwamul',
+    ),
+
+    '8' => array(
+        'name' => '퀵배송',
+        'val' => 'quick',
+    ),
+
+    '9' => array(
+        'name' => '기타배송',
+        'val' => 'etc',
+    ),
 );
 
 $refund_types = array(
