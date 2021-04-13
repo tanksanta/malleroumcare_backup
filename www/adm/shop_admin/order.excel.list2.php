@@ -185,14 +185,6 @@
 
 		$carts[] = $row;
 	}
-
-
-
-
-
-
-
-
 			// [주문자 ] [ 주문일시] [상품(옵션명)] [ 바코드  ]
 			$headers = array("[주문자]", "[주문일시]", "[상품(옵션명)]", "[바코드]");
 			$widths  = array(20, 20, 40, 30, 30);
@@ -238,7 +230,6 @@
                     if($carts[$i]["it_name"] != $options[$k]["ct_option"]){
                         $option_v="(".$options[$k]["ct_option"].")";    //옵션명
                     }
-
                     for($b = 0; $b< $options[$k]["ct_qty"]; $b++){
                         $barcode_num=$prodList[$b]["prodBarNum"];   //바코드
                         $rows[] =[
@@ -255,8 +246,16 @@
 			//수급자 바코드가 없을때 통신한 바코드로 전환
 			for($i=0;$i<count($rows);$i++){
 				if(!$rows[$i]['barcode_num'])
+                // echo print_r($result_again[$i]).'<br><br><br><br>';
+                $sql_i = "select `it_name` from `g5_shop_item` where `it_id` = '".$result_again[$i]['prodId']."'";
+                $result_i = sql_fetch($sql_i);
+                if($result_again[$i]['prodColor']) $result_again[$i]['prodColor']="[".$result_again[$i]['prodColor']."]";
+                if($result_again[$i]['prodSize']) $result_again[$i]['prodSize']="[".$result_again[$i]['prodSize']."]";
+				$rows[$i]['product']=$result_i['it_name']." ".$result_again[$i]['prodColor']." ".$result_again[$i]['prodSize'];
 				$rows[$i]['barcode_num']=$result_again[$i]['prodBarNum'];
 			}
+            // return false;
+            // return false;
 
             for($i=0;$i<count($rows);$i++){
                 $count_plus=$i+2;//엑셀카운트
