@@ -124,7 +124,9 @@ if($header_skin)
 				var od = $(this).attr("data-od");
 				var it = $(this).attr("data-it");
 				var stock = $(this).attr("data-stock");
-				$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "'>");
+				var option = $(this).attr("data-option");
+
+				$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option +"'>");
 				$("#popupProdBarNumInfoBox iframe").load(function(){
 					$("#popupProdBarNumInfoBox").show();
 				});
@@ -325,19 +327,19 @@ if($header_skin)
                             <?php 
                                 if($stock_insert=="2"){
                             ?>
-                                <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-stock="<?=$stock_insert?>" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"> 
+                                <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn"  data-option="<?=$item["ct_option"]?>"  data-stock="<?=$stock_insert?>" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"> 
                                 <!-- <?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$item['ct_qty']})" : "바코드 확인"?> -->
                                 바코드 확인
                                 </a>
 							<?php }else{ ?>
                                 <?php if($item["prodSupYn"] == "N"){ ?>
-                                    <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-stock="<?=$stock_insert?>" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"> 
+                                    <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn"  data-option="<?=$item["ct_option"]?>"  data-stock="<?=$stock_insert?>" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"> 
                                     <!-- <?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$item['ct_qty']})" : "바코드 확인"?> -->
                                     바코드 확인
                                     </a>
                                 <?php } else { ?>
                                     <?php //if($barcode_c>0){ ?>
-                                    <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-stock="<?=$stock_insert?>" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드</a>
+                                    <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn"  data-option="<?=$item["ct_option"]?>"  data-stock="<?=$stock_insert?>" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드</a>
                                     <?php //}else { ?>
                                         <!-- 아직 바코드가 입력되지 않았습니다. -->
                                     <?php //} ?>

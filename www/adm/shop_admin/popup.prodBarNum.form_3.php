@@ -352,7 +352,7 @@
 
 
 				for($k = 0; $k < count($options); $k++){
-                    if($options[$k]['it_id']!==$_GET['prodId']){ $prodListCnt++; continue;}
+					if($options[$k]['it_id']!==$_GET['prodId']||$options[$k]["ct_option"]!==$_GET['option']){ $prodListCnt++; continue;}
                     if($options[$k]['prodSupYn']==="N"){ $prodSupYn_count++; }
 					# 요청사항
 					$prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
