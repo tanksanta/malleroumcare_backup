@@ -347,7 +347,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
             <h2>주문정보<span>(주문일시:<?php echo $od['od_time']; ?>)</span></h2>
             <div class="right">
                 <?php if($od['od_writer']!="openmarket"){ ?>
-                <span>*상품 준비단계 전까지 상품을 추가 할 수 있습니다.&nbsp;&nbsp;</span>
                 <input type="button" value="상품추가" class="btn shbtn" id="add_item">
                 <?php } ?>
                 <!--<input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
