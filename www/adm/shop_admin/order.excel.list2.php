@@ -253,9 +253,17 @@
                 if($result_again[$i]['prodSize']) $result_again[$i]['prodSize']="[".$result_again[$i]['prodSize']."]";
 				$rows[$i]['product']=$result_i['it_name']." ".$result_again[$i]['prodColor']." ".$result_again[$i]['prodSize'];
 				$rows[$i]['barcode_num']=$result_again[$i]['prodBarNum'];
+				$rows[$i]['stoId']=$result_again[$i]['stoId'];
 			}
-            // return false;
-            // return false;
+            if($rows[0]['stoId']){
+                $marks = array();
+                foreach ($rows as $key => $row)
+                {
+                    $marks[$key] = $row['stoId'];
+                    
+                }
+                array_multisort($marks, SORT_ASC, $rows);
+            }
 
             for($i=0;$i<count($rows);$i++){
                 $count_plus=$i+2;//엑셀카운트
