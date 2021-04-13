@@ -141,10 +141,20 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 						 
 					 </table>
 			 	</div>
-			 	
 				 <p>
 				 	*대여제품인 경우 수급자 분류에 따라서 서명이 필요한 문서가 노출됩니다.
 				 </p>
+			 	<div class="list-paging">
+				 	<ul class="pagination ">
+				 		<li> </li>
+				 		<li><a href="#"> &lt;</a></li>
+				 		<li class="active"><a href="#">1</a></li>
+				 		<li><a href="#">2</a></li>
+				 		<li><a href="#">3</a></li>
+				 		<li><a href="#">&gt;</a></li>
+				 		<li> </li>
+				 	</ul>
+				 </div>
 			 </div>
 			 
 		</div>

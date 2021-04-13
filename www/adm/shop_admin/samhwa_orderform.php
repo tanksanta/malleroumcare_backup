@@ -1779,7 +1779,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         </div>
                     </div>
                     <input name="od_cancel_memo" rows="8" placeholder="입력한 메모내용이 보여집니다." value="<?php echo get_text($od['od_cancel_memo']); ?>" id="cancel_memo_content" />
-                    <input type="button" value="신청" class="btn shbtn" id="cancel_submit">
+                    <input type="button" value="반영" class="btn shbtn" id="cancel_submit">
                 </div>
             </div>
         </div>
