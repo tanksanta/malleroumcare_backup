@@ -49,12 +49,14 @@
 				$od["od_b_name"],
 				$addr,
 				$od["od_b_tel"],
-				$it["prodMemo"]
+				$od["od_b_hp"],
+				$it["prodMemo"],
+				$od["od_memo"]
 			];
 		}
     }
 
-    $headers = array("일자-No.", "품목명[규격]", "수량", "품목&수량","성함(상호명)", "배송처", "연락처", "적요");
+    $headers = array("일자-No.", "품목명[규격]", "수량", "품목&수량","성함(상호명)", "배송처", "연락처","휴대폰", "적요","배송지요청사항");
     $data = array_merge(array($headers), $rows);
     
     $widths  = array(20, 50, 10, 30, 50, 30, 50);
