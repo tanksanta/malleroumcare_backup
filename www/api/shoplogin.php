@@ -42,6 +42,7 @@
 						 mb_giup_addr1 = '{$resInfo["entAddr"]}',
 						 mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
 						 mb_email = '{$resInfo["entMail"]}',
+						 mb_fax = '{$resInfo["entFax"]}',
 						 mb_password2 = '".$mb_password2."',
 						mb_authCd = '{$resInfo["authCd"]}'
 				");
@@ -64,6 +65,7 @@
 						 mb_giup_addr1 = '{$resInfo["entAddr"]}',
 						 mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
 						 mb_email = '{$resInfo["entMail"]}',
+						 mb_fax = '{$resInfo["entFax"]}',
 						 mb_password2 = '".$mb_password2."'
 					WHERE mb_id = '{$resInfo["usrId"]}'
 				");
