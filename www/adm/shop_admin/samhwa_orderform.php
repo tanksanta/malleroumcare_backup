@@ -346,26 +346,21 @@ var od_id = '<?php echo $od['od_id']; ?>';
         <div class="header">
             <h2>주문정보<span>(주문일시:<?php echo $od['od_time']; ?>)</span></h2>
             <div class="right">
-                <?php if ( $od['od_status'] == '주문' ||  $od['od_status'] == '입금' ||  $od['od_status'] == '작성' ) { ?>
                 <?php if($od['od_writer']!="openmarket"){ ?>
                 <span>*상품 준비단계 전까지 상품을 추가 할 수 있습니다.&nbsp;&nbsp;</span>
                 <input type="button" value="상품추가" class="btn shbtn" id="add_item">
                 <?php } ?>
-                <?php } ?>
-<!--                <input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
-
-                    <!-- <?php 
-                        $sql_cart ="select `ct_hide_control` from `g5_shop_cart` where `od_id` = '".$od['od_id']."'";
-                        $result_ct = sql_fetch($sql_cart);
-                    ?>
-                    <?php if($result_ct['ct_hide_control'] == "1"){ ?>
-                        <a href="#" class="orderHide" onclick="hide_control('<?=$od['od_id'] ?>', '2')">주문내역 출력</a>
-                    <?php }else{ ?>
-                        <a href="#" class="orderHide disable" onclick="hide_control('<?=$od['od_id'] ?>', '1')">주문내역 숨김</a>
-					<?php }?> -->
-
-
-					<a href="#" class="prodBarNumCntBtn<?=$prodBarNumCntBtnStatus?>"><?=$prodBarNumCntBtnWord?></a>
+                <!--<input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
+                <!-- <?php 
+                    $sql_cart ="select `ct_hide_control` from `g5_shop_cart` where `od_id` = '".$od['od_id']."'";
+                    $result_ct = sql_fetch($sql_cart);
+                ?>
+                <?php if($result_ct['ct_hide_control'] == "1"){ ?>
+                    <a href="#" class="orderHide" onclick="hide_control('<?=$od['od_id'] ?>', '2')">주문내역 출력</a>
+                <?php }else{ ?>
+                    <a href="#" class="orderHide disable" onclick="hide_control('<?=$od['od_id'] ?>', '1')">주문내역 숨김</a>
+                <?php }?> -->
+                <a href="#" class="prodBarNumCntBtn<?=$prodBarNumCntBtnStatus?>"><?=$prodBarNumCntBtnWord?></a>
             </div>
         </div>
         <div class="item_list">
