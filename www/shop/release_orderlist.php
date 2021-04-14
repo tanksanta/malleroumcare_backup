@@ -105,6 +105,16 @@
 	
 	<!-- 검색 -->
 	<div id="listSearchWrap">
+    <ul>
+        <li>
+            <select name="search_option" id="search_option">
+                <option value="">선택하세요</option>
+                <option value="it_name">상품명</option>
+                <option value="od_name">사업소명</option>
+            </select>
+            <input type="text" name="search_text" id="search_text" placeholder="">
+        </li>
+    </ul>
 		<ul>
 			<li>
 				<input type="text" id="search_fr_date" placeholder="시작일자" dateonly>
@@ -193,8 +203,13 @@
     function doSearch(){
         formdata["fr_date"] = $("#search_fr_date").val();
         formdata["to_date"] = $("#search_to_date").val();
+
+        formdata["search_option"] = $("#search_option").val();
+        formdata["search_text"] = $("#search_text").val();
+
         formdata["cust_sort"] = $("#listSortChangeBtn").find(".active").attr("data-sort");
-		
+
+
         formdata['cf']=document.getElementById('cf_flag').checked;
         formdata['page']=parseInt(document.getElementById('page').value);
         $.ajax({
@@ -203,6 +218,8 @@
             data: formdata,
         })
         .done(function(result){
+            // console.log(result);
+            // return false;
             if(result.data){
 					var html = "";
 				

@@ -199,6 +199,11 @@ if ($fr_date && $to_date) {
     $where[] = " {$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
 }
 
+if ($search_option) {
+        $where[] = " {$search_option} LIKE '%{$search_text}%' ";
+}
+
+
 $where[] = " od_del_yn = 'N' ";
 $where[] = " od_status != '완료' ";
 
@@ -273,9 +278,11 @@ if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
 $sql_common = " from {$g5['g5_shop_order_table']} as A 
+    left join (select od_id as cart_od_id, it_name from {$g5['g5_shop_cart_table']}) B
+    on A.od_id = B.cart_od_id
     left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
     on A.mb_id = C.mb_id_temp
-$sql_search ";
+$sql_search group by A.od_id";
 
 foreach($order_steps as $order_step) { 
     if (!$order_step['deliverylist']) continue;
@@ -297,6 +304,8 @@ switch($cust_sort){
 
 $sql = " select count(od_id) as cnt " . $sql_common;
 
+// echo $sql;
+// return false;
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
