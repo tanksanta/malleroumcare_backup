@@ -1091,7 +1091,8 @@ if( function_exists('pg_setting_check') ){
 
 <div class="btn_fixed_top">
     <a href="./samhwa_order_new.php" id="order_add" class="btn btn_01">주문서 추가</a>
-    <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload()" class="btn btn_02">
+    <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload('excel')" class="btn btn_02">
+    <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn btn_03">
 </div>
 <iframe src="about:blank" name="process" id="process" width="0" height="0" style="display:none"></iframe>
 
@@ -1110,10 +1111,15 @@ if( function_exists('pg_setting_check') ){
 </form>
 
 <script>
-	function orderListExcelDownload(){
+	function orderListExcelDownload(type = 'excel'){
 		$("#excelForm").remove();
 		
-		var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
+        var html;
+        if (type === 'excel') {
+		    html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
+        } else if (type === 'ecount') {
+            html = "<form id='excelForm' method='post' action='./order.ecount.excel.list.php'>";
+        }
 		
 		var od_id = [];
 		var item = $("input[name='od_id[]']:checked");
