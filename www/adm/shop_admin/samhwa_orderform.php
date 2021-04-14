@@ -767,9 +767,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <td class="item_memo">
                                         <?php if ( $k == 0 ) {
                                             // $sql = "SELECT * FROM g5_shop_order_cart_memo WHERE od_id = '{$od_id}' AND it_id = '{$options[$k]['it_id']}'";
-                                            $sql = "SELECT * FROM g5_shop_order_cart_memo WHERE od_id = '{$od_id}' AND ctm_uid = '{$options[$k]['ct_uid']}'";
-                                            $item_memo = sql_fetch($sql);
-                                            echo htmlspecialchars($item_memo['ctm_memo']);
+                                            // $sql = "SELECT * FROM g5_shop_order_cart_memo WHERE od_id = '{$od_id}' AND ctm_uid = '{$options[$k]['ct_uid']}'";
+                                            // $item_memo = sql_fetch($sql);
+                                            // echo htmlspecialchars($item_memo['ctm_memo']);
+                                            echo $prodMemo;
                                         }
                                         ?>
                                     </td>
@@ -944,8 +945,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
 											<tr>
 												<td></td>
 												<td colspan="10" style="text-align: left;">
-													<b>요청사항 : </b>
-													<?=$prodMemo?>
+													<!-- <b>요청사항 : </b>
+													<?=$prodMemo?> -->
 												</td>
 											</tr>
 										<?php } ?>
