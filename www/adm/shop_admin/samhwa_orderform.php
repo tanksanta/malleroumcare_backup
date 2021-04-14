@@ -784,7 +784,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                     $temp_ct_step = get_step($options[$k]['ct_status']);
                                                     ?>
                                                     <?php if ($temp_ct_step['cart_editable']) { ?>
-                                                    <li class="edit_item" data-od-id="<?php echo $od_id; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>">수정</li>
+                                                    <li class="edit_item" data-od-id="<?php echo $od_id; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>"  data-memo="<?php echo $prodMemo; ?>">수정</li>
                                                     <?php } ?>
                                                     <?php if ($temp_ct_step['cart_deletable']) { ?>
                                                     <li class="delete_item" data-od-id="<?php echo $od_id; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>">삭제</li>
@@ -2852,10 +2852,11 @@ $(document).ready(function() {
     // 상품 수정
     $('.edit_item').click(function() {
 
-        var it_id = $(this).data('it-id');
-        var uid = $(this).data('uid');
+    var it_id = $(this).data('it-id');
+    var uid = $(this).data('uid');
+    var memo = $(this).data('memo');
 
-        edit_item_pop = window.open('./pop.order.item.add.option.php?w=1&od_id=' + od_id + '&it_id=' + it_id + '&uid=' + uid, "edit_item_pop", "width=1080, height=900, resizable = no, scrollbars = no");
+    edit_item_pop = window.open('./pop.order.item.add.option.php?w=1&od_id=' + od_id + '&it_id=' + it_id + '&uid=' + uid + "&memo="+memo, "edit_item_pop", "width=1080, height=900, resizable = no, scrollbars = no");
     });
 
     // 상품 삭제
