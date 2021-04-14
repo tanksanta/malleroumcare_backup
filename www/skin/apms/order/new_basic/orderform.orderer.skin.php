@@ -336,7 +336,7 @@ var array_box=[];
 						</li>
 						<li>
 							<strong>배송요청사항</strong>
-							<input type="text" class="w-all" name="od_memo" id="od_memo">
+							<input type="text" maxlength="20" class="w-all" name="od_memo" id="od_memo" placeholder="20자 이내로 입력해 주세요.">
                         <select name="od_delivery_type" id="od_delivery_type" style="display: none;">
                             <?php
                             foreach($delivery_types as $type) {
