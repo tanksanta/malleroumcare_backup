@@ -64,7 +64,7 @@ if($po_run) {
         <th scope="col">재고수량</th>
         <th scope="col">통보수량</th>
         <th scope="col">사용여부</th>
-        <th scope="col">더존코드</th>
+        <th scope="col">품목코드</th>
     </tr>
     </thead>
     <tbody>

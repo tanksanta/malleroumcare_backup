@@ -377,6 +377,7 @@ $check_sanitize_keys = array(
 'it_sc_price_partner',          // 기본배송비
 'it_sc_minimum_partner',        // 배송비 상세조건
 'it_thezone',           // 더존코드
+'it_thezone2',           // 더존코드
 'it_sc_add_sendcost',           // 산간지역 추가 배송비
 'it_sc_add_sendcost_partner'    // 파트너 산간지역 추가 배송비
 );
@@ -581,6 +582,7 @@ $sql_common = " ca_id               = '$ca_id',
                 pt_msg2			    = '$pt_msg2',
                 pt_msg3			    = '$pt_msg3',
                 it_thezone          = '$it_thezone',
+                it_thezone2         = '$it_thezone2',
                 it_youtube_link     = '$it_youtube_link',
                 it_outsourcing_use  = '$it_outsourcing_use',
                 it_outsourcing_id   = '$it_outsourcing_id',

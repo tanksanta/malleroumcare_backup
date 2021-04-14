@@ -123,6 +123,12 @@ $pg_anchor .='</ul>';
             </td>
         </tr>
 		<tr>
+            <th scope="row"><label for="it_thezone2">품목코드</label></th>
+            <td>
+                <input type="text" name="it_thezone2" value="<?php echo $it['it_thezone2']; ?>" id="it_thezone" class="frm_input importantBorder sl">
+            </td>
+        </tr>
+		<tr>
             <th scope="row"><label for="it_name">상품명</label></th>
             <td>
                 <?php echo help("HTML 입력이 불가합니다."); ?>
