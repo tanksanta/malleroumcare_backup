@@ -103,6 +103,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php'); // datepicker js
                             <?php if ($od['od_settle_case'] == '네이버페이') { ?>
                                 <?php echo $od['od_settle_case'];?> <input type="hidden" name="od_settle_case" value="<?php echo $od['od_settle_case'];?>" />
                             <?php } else { ?>
+                                <input type="radio" name="od_settle_case" id='od_settle_case_6' value="월 마감 정산" <?php echo $od['od_settle_case'] == '월 마감 정산' ? 'checked' : ''; ?>/>
+                                <label for="od_settle_case_6">월 마감 정산</label>
                                 <input type="radio" name="od_settle_case" id='od_settle_case_0' value="신용카드" <?php echo $od['od_settle_case'] == '신용카드' ? 'checked' : ''; ?>/>
                                 <label for="od_settle_case_0">신용카드</label>
                                 <input type="radio" name="od_settle_case" id='od_settle_case_1' value="계좌이체" <?php echo $od['od_settle_case'] == '계좌이체' ? 'checked' : ''; ?>/>
