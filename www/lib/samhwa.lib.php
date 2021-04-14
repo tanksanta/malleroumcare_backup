@@ -835,6 +835,10 @@ $delivery_companys = array(
         'name' => '로젠택배',
         'val' => 'ilogen',
     ),
+    '10' => array(
+        'name' => '한진택배',
+        'val' => 'hanjin',
+    ),
     '1' => array(
         'name' => '대한통운',
         'val' => 'cjlogistics',
