@@ -336,7 +336,7 @@ var array_box=[];
 						</li>
 						<li>
 							<strong>배송요청사항</strong>
-							<textarea class="w-all" name="od_memo" id="od_memo"></textarea>
+							<input type="text" class="w-all" name="od_memo" id="od_memo">
                         <select name="od_delivery_type" id="od_delivery_type" style="display: none;">
                             <?php
                             foreach($delivery_types as $type) {
