@@ -667,7 +667,7 @@ foreach($orderlist as $order) {
 	
 	# 210318 추출 데이터 배열
 	$ret["data"][$foreach_i]["od_id"] = $order["od_id"];
-	$ret["data"][$foreach_i]["od_b_addr"] = $order["od_b_addr1"]." ".$order["od_b_addr2"]." ".$order["od_b_addr3"]." ".$order["od_b_zip"];
+	$ret["data"][$foreach_i]["od_b_name"] = $order["od_b_name"];
 	$ret["data"][$foreach_i]["it_name"] = ($order["recipient_yn"] == "Y") ? "주문" : "재고";
 	$ret["data"][$foreach_i]["it_name"] = "[{$ret["data"][$foreach_i]["it_name"]}] ";
 	$ret["data"][$foreach_i]["it_name"] .= $moreInfo["it_name"];

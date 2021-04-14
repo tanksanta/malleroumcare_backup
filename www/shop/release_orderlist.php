@@ -238,7 +238,7 @@
 						html += '</p>';
 						html += '<p class="date">' + row.date;
                         if(row.od_name){
-							html += "/" + row.od_b_addr;
+							html += "/" + row.od_b_name;
 						}
 						html += '</p>';
 						html += '<p class="status ' + row.od_status_class + '">';
