@@ -231,9 +231,14 @@
 						html += '<span class="delivery">(배송 : ' + row.delivery_cnt + '개)</span>';
 						html += '</p>';
 						html += '<p class="cnt">' + row.cnt_detail + '</p>';
+						html += '<p class="cnt">사업소 : ';
+                        if(row.od_name){
+							html += row.od_name;
+						}
+						html += '</p>';
 						html += '<p class="date">' + row.date;
-						if(row.od_name){
-							html += ' / ' + row.od_name;
+                        if(row.od_name){
+							html += "/" + row.od_b_addr;
 						}
 						html += '</p>';
 						html += '<p class="status ' + row.od_status_class + '">';
