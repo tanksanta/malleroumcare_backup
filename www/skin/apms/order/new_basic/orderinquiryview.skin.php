@@ -267,7 +267,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						<li class="barcode">바코드</li>
 					</ul>
 
-					<?php for($i=0; $i < count($item); $i++) { $prodMemo = ""; $ordLendDtm = ""; ?>
+					<?php for($i=0; $i < count($item); $i++) { $prodMemo = ""; $ordLendDtm = "";$stock_insert ="1"; ?>
 						<?php for($k=0; $k < count($item[$i]['opt']); $k++) { ?>
 							<?php
 								$prodMemo = ($prodMemo) ? $prodMemo : $item[$i]["prodMemo"];
@@ -346,46 +346,24 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 										</p>
 									</li>
 									<li class="barcode">
+                                    <?php
+                                        //보유재고 아님 -> 1
+                                        //보유재고 등록 -> 2
+                                        $stock_insert="1";
+                                        if($od["od_stock_insert_yn"] == "Y"){ 
+                                            $stock_insert ="2";
+                                        }
+                                    ?>
+
 									<?php for($ii = 0; $ii < $item[$i]["opt"][$k]["ct_qty"]; $ii++){ ?>
                                             <!-- <?php if($od["staOrdCd"] == "03"){ ?>
-                                                <b>ㅁㅁㅁㅁㅁ<?=$prodList[$prodListCnt]["prodBarNum"]?></b>
+                                                <b><?=$prodList[$prodListCnt]["prodBarNum"]?></b>
                                             <?php } else { ?>
                                                 <b class="prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>"><?=$prodList[$prodListCnt]["prodBarNum"]?></b>
                                             <?php } ?> -->
-                                        <?php $prodListCnt++; } ?>
-                                        <?php if($item[$i]["prodSupYn"] == "N"){ ?>
-                                            <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-od="<?=$od["od_id"]?>" data-it="<?=$item[$i]["it_id"]?>"><?=($row["od_prodBarNum_insert"] < $row["od_prodBarNum_total"]) ? "바코드 ({$row["od_prodBarNum_insert"]}/{$row["od_prodBarNum_total"]})" : "바코드 확인"?></a>
-                                        <?php } else { 
+                                    <?php $prodListCnt++; } ?>
 
-                                                //바코드 개수 구하기
-                                                $sendData2=[];
-                                                $sendData2["stateCd"] =['01','02','08','09'];
-                                                $sendData2["usrId"] = $member["mb_id"];
-                                                $sendData2["entId"] = $member["mb_entId"];
-                                                $sendData2["prodId"] = $item[$i]["it_id"];
-                                                $oCurl = curl_init();
-                                                curl_setopt($oCurl, CURLOPT_PORT, 9901);
-                                                curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectDetailList");
-                                                curl_setopt($oCurl, CURLOPT_POST, 1);
-                                                curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-                                                curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
-                                                curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-                                                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-                                                $res = curl_exec($oCurl);
-                                                $res = json_decode($res, true);
-                                                curl_close($oCurl);
-                                                // print_r($res["data"][0]['prodBarNum']);
-                                                $barcode_c=0;		
-                                                for($k=0;$k<count($res["data"]); $k++){
-                                                    if($res["data"][$k]['prodBarNum']) $barcode_c++;
-                                                }
-                                        ?>
-                                        <?php if($barcode_c>0){ ?>
-                                            <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-od="<?=$od["od_id"]?>" data-it="<?=$item[$i]["it_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드(<?=$barcode_c."/".count($res["data"])?>)</a>
-                                        <?php }else { ?>
-                                            아직 바코드가 입력되지 않았습니다.
-                                        <?php } ?>
-                                    <?php } ?>
+                                        <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-od="<?=$od["od_id"]?>" data-it="<?=$item[$i]["it_id"]?>" data-stock="<?=$stock_insert?>" data-option="<?=$item[$i]['opt'][$k]['ct_option'] ?>"  ><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 확인</a>
 									</li>
 								</ul>
 								<div class="list-btm">
@@ -754,10 +732,12 @@ $(".popupProdBarNumInfoBtn").click(function(e){
 	
 	var od = $(this).attr("data-od");
 	var it = $(this).attr("data-it");
-	$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "'>");
-	$("#popupProdBarNumInfoBox iframe").load(function(){
-		$("#popupProdBarNumInfoBox").show();
-	});
+    var stock = $(this).attr("data-stock");
+    var option = encodeURIComponent($(this).attr("data-option"));
+    $("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od +  "&option=" + option + "&stock_insert=" + stock +"'>");
+    $("#popupProdBarNumInfoBox iframe").load(function(){
+        $("#popupProdBarNumInfoBox").show();
+    });
 });
 
 
