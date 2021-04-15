@@ -15,7 +15,7 @@ $where[] = " (a.ca_id = b.ca_id and a.it_use = 1 and b.ca_use = 1 and b.as_menu_
 
 $search_all = true;
 // 상세검색 이라면
-if (isset($_GET['qname']) || isset($_GET['qexplan']) || isset($_GET['qid']) || isset($_GET['qtag']) || isset($_GET['qbasic']) || isset($_GET['itmodel']))
+if (isset($_GET['qname']) || isset($_GET['qexplan']) || isset($_GET['qid']) || isset($_GET['qtag']) || isset($_GET['qbasic']) || isset($_GET['itmodel']) || isset($_GET['pttag']))
     $search_all = false;
 
 $q       = ($stx) ? $stx : $_GET['q'];
@@ -29,6 +29,7 @@ $qcaid   = isset($_GET['qcaid']) ? preg_replace('#[^a-z0-9]#i', '', trim($_GET['
 $qfrom   = isset($_GET['qfrom']) ? preg_replace('/[^0-9]/', '', trim($_GET['qfrom'])) : '';
 $qto     = isset($_GET['qto']) ? preg_replace('/[^0-9]/', '', trim($_GET['qto'])) : '';
 $itmodel = isset($_GET['itmodel']) ? trim($_GET['itmodel']) : '';
+$itmodel = isset($_GET['pttag']) ? trim($_GET['pttag']) : '';
 
 if (isset($_GET['qsort']))  {
     $qsort = trim($_GET['qsort']);
@@ -52,6 +53,7 @@ $qid_check = false;
 $qtag_check = false;
 $qbasic_check = false;
 $itmodel_check = false;
+$pttag_check = false;
 
 if($search_all) {
     $qname_check = true;
@@ -60,6 +62,7 @@ if($search_all) {
     $qtag_check = true;
     $qbasic_check = true;
     $itmodel_check = true;
+    $pttag_check = true;
 } else {
     if($qname)
         $qname_check = true;
@@ -73,6 +76,8 @@ if($search_all) {
         $qbasic_check = true;
     if($itmodel)
         $itmodel_check = true;
+    if($pttag)
+        $pttag_check = true;
 }
 
 if ($q) {
@@ -95,6 +100,8 @@ if ($q) {
             $concat[] = "a.it_basic";
         if ($search_all || $itmodel)
             $concat[] = "a.it_model";
+        if ($search_all || $pttag)
+            $concat[] = "a.pt_tag";
 		$concat_fields = "concat(".implode(",' ',",$concat).")";
 
         $detail_where[] = $concat_fields." like '%$word%' ";
@@ -229,10 +236,10 @@ $admin_href = ($is_admin) ? G5_ADMIN_URL.'/shop_admin/configform.php#anc_scf_etc
 $write_pages = G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'];
 
 if($search_all) {
-	$qname = $qexplan = $qid = $qtag = $qbasic = $itmodel = 1;
+	$qname = $qexplan = $qid = $qtag = $qbasic = $itmodel = $pttag = 1;
 }
 $query_string = 'ca_id='.$ca_id.'&amp;q='.urlencode($q);
-$query_string .= '&amp;qname='.$qname.'&amp;qexplan='.$qexplan.'&amp;qid='.$qid.'&amp;qtag='.$qtag.'&amp;qbasic='.$qbasic.'&amp;itmodel='.$itmodel;
+$query_string .= '&amp;qname='.$qname.'&amp;qexplan='.$qexplan.'&amp;qid='.$qid.'&amp;qtag='.$qtag.'&amp;qbasic='.$qbasic.'&amp;itmodel='.$itmodel.'&amp;pttag='.$pttag;
 if($qcaid) $query_string .= '&amp;qcaid='.$qcaid;
 if($qfrom && $qto) $query_string .= '&amp;qfrom='.$qfrom.'&amp;qto='.$qto;
 $query_string .='&amp;qsort='.$qsort.'&amp;qorder='.$qorder;
