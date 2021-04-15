@@ -88,8 +88,6 @@ $mb = get_member($od['mb_id']);
 $od_status = get_step($od['od_status']);
 $pay_status = get_pay_step($od['od_pay_state']);
 
-// print_r2($od);
-
 $od['mb_id'] = $od['mb_id'] ? $od['mb_id'] : "비회원";
 
 //수급자정보
@@ -209,9 +207,6 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 
     $carts[] = $row;
 }
-//print_r2($carts);
-//print_r2($cate_counts);
-
 
 // 주문금액 = 상품구입금액 + 배송비 + 추가배송비 - 할인금액 - 추가할인금액
 $amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'];
@@ -1769,7 +1764,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
         <div class="block-box gray logs">
             <?php
             $logs = get_order_admin_log($od['od_id']);
-            // print_r2($logs);
             foreach($logs as $log) {
                 $log_mb = get_member($log['mb_id']);
                 echo '<span class="log_datetime">'.$log['ol_datetime'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) ' . $log['ol_content'] . '<br/>';

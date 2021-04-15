@@ -64,8 +64,6 @@
             $stoIdDataList = explode('|',$sto_imsi);
             $stoIdDataList=array_filter($stoIdDataList);
             $stoIdData = implode("|", $stoIdDataList);
-            print_r($stoIdData);
-			
 		}
 	}
 
