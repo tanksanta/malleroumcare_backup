@@ -26,10 +26,11 @@
     for($i=1; $od=sql_fetch_array($result); $i++) 
     {
 		$itList = sql_query("
-			SELECT *
-			FROM g5_shop_cart
-			WHERE od_id = '{$od["od_id"]}'
-			ORDER BY ct_id ASC
+			SELECT cart.*, item.it_thezone2
+			FROM g5_shop_cart as cart
+			INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
+			WHERE cart.od_id = '{$od["od_id"]}'
+			ORDER BY cart.ct_id ASC
 		");
 		
 		for($ii = 0; $it = sql_fetch_array($itList); $ii++){
@@ -43,8 +44,12 @@
 			$addr = $addr.$od["od_b_addr1"].' '.$od["od_b_addr2"].' '.$od["od_b_addr3"];
 
 			$mb = get_member($it['mb_id']);
-			$od_sales_manager = get_member($it['od_sales_manager']);
-
+			
+			//영업담당자
+			// $od_sales_manager = get_member($od['od_sales_manager']);
+			$sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
+			$result_manager = sql_fetch($sql_manager);
+			$od_sales_manager = get_member($result_manager['mb_manager']);
 			
 			if($it['io_type'])
 				$opt_price = $it['io_price'];
@@ -52,6 +57,8 @@
 				$opt_price = $it['ct_price'] + $it['io_price'];
 
 			$it["opt_price"] = $opt_price;
+
+			$thezone_code = $it['io_thezone'] ? $it['io_thezone'] : $it['it_thezone2'];
 
 			$rows[] = [ 
 				date("Y-m-d", strtotime($od["od_time"])),
@@ -69,7 +76,7 @@
 				'',
 				'통합관리플랫폼',
 				'',
-				$it['io_thezone'], // 품목코드
+				$thezone_code, // 품목코드
 				'',
 				'',
 				$it["ct_qty"],
