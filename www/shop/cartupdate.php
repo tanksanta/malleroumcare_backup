@@ -254,6 +254,7 @@ else // 장바구니에 담기
             $opt_list[$row['io_type']][$row['io_id']]['io_price_partner'] = $row['io_price_partner'];
             $opt_list[$row['io_type']][$row['io_id']]['io_price_dealer'] = $row['io_price_dealer'];
             $opt_list[$row['io_type']][$row['io_id']]['stock'] = $row['io_stock_qty'];
+            $opt_list[$row['io_type']][$row['io_id']]['io_thezone'] = $row['io_thezone'];
 
             // 선택옵션 개수
             if(!$row['io_type'])
@@ -315,7 +316,7 @@ else // 장바구니에 담기
         // 장바구니에 Insert
         $comma = '';
         $sql = " INSERT INTO {$g5['g5_shop_cart_table']}
-                        ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3, ct_uid, ct_discount, prodSupYn )
+                        ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3, ct_uid, ct_discount, prodSupYn, io_thezone )
                     VALUES ";
 
         for($k=0; $k<$opt_count; $k++) {
@@ -337,6 +338,7 @@ else // 장바구니에 담기
 
             // $io_price = $opt_list[$io_type][$io_id]['price'];
             $io_price = samhwa_opt_price($opt_list[$io_type][$io_id], THEMA_KEY);
+            $io_thezone = $opt_list[$io_type][$io_id]['io_thezone'];
             $ct_qty = (int)$_POST['ct_qty'][$it_id][$k];
 
             // 구매가격이 음수인지 체크
@@ -478,7 +480,7 @@ else // 장바구니에 담기
             $it['it_price']=$result_i['it_price'];
 
 
-            $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it_sc_type}', '{$it_sc_method}', '{$it_sc_price}', '{$it_sc_minimum}', '{$it_sc_qty}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '$uid', '{$ct_discount}', '{$it["prodSupYn"]}' )";
+            $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it_sc_type}', '{$it_sc_method}', '{$it_sc_price}', '{$it_sc_minimum}', '{$it_sc_qty}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '$uid', '{$ct_discount}', '{$it["prodSupYn"]}', '{$io_thezone}' )";
             $comma = ' , ';
             $ct_count++;
         }

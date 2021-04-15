@@ -66,6 +66,7 @@ for($i=0; $i<count($it_ids); $i++) {
         $opt_list[$row['io_type']][$row['io_id']]['price_dealer'] = $row['io_price_dealer'];
         $opt_list[$row['io_type']][$row['io_id']]['price_dealer2'] = $row['io_price_dealer2'];
         $opt_list[$row['io_type']][$row['io_id']]['stock'] = $row['io_stock_qty'];
+        $opt_list[$row['io_type']][$row['io_id']]['io_thezone'] = $row['io_thezone'];
 
         // 선택옵션 개수
         if(!$row['io_type'])
@@ -78,7 +79,7 @@ for($i=0; $i<count($it_ids); $i++) {
 
     $comma = '';
     $sql = " INSERT INTO {$g5['g5_shop_cart_table']}
-                    ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3, ct_history, ct_discount, ct_price_type, ct_uid )
+                    ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3, ct_history, ct_discount, ct_price_type, ct_uid, io_thezone )
                 VALUES ";
 
     $ct_select = 1;
@@ -99,6 +100,7 @@ for($i=0; $i<count($it_ids); $i++) {
         $io_price = $chk_partner_price && $opt_list[$io_type][$io_id]['price_partner'] ? $opt_list[$io_type][$io_id]['price_partner'] : $io_price;
         // 임의 상품 옵션 가격 적용
         $io_price = $chk_custom_price ? $_POST['io_price'][$it_id][$k] : $opt_list[$io_type][$io_id]['price'];
+        $io_thezone = $opt_list[$io_type][$io_id]['io_thezone'];
         
         $ct_qty = (int)$_POST['ct_qty'][$it_id][$k];
         $it_price = $chk_dealer_price && $it['it_price_dealer'] ? $it['it_price_dealer'] : $it['it_price'];
@@ -157,7 +159,7 @@ for($i=0; $i<count($it_ids); $i++) {
 
         $io_value = $io_value ? $io_value : addslashes($it['it_name']);
 
-        $sql .= $comma."( '$od_id', '{$od['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '작성', '{$it_price}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '', '$add_ct_discount', '$ct_price_type', '$uid' )";
+        $sql .= $comma."( '$od_id', '{$od['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '작성', '{$it_price}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '', '$add_ct_discount', '$ct_price_type', '$uid', '$io_thezone' )";
         $comma = ' , ';
         $ct_count++;
 
