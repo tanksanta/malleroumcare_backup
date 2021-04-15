@@ -314,7 +314,21 @@ var od_id = '<?php echo $od['od_id']; ?>';
 <div id="samhwa_order_form">
     <div class="block">
         <div class="header">
-            <h2>주문정보<span>(주문일시:<?php echo $od['od_time']; ?>)</span></h2>
+            <h2>주문정보<span>(주문일시:<?php echo $od['od_time']; ?>)</span>
+            <?php
+                $del_button=false;
+                if($od['od_stock_insert_yn']=="Y"){
+                    echo "보유재고 등록";
+                }else{
+                    if($od['od_penId']){
+                        echo "수급자주문";
+                    }else{
+                        echo "재고주문";
+                        $del_button=true;
+                    }
+                }
+            ?>
+            </h2>
             <div class="right">
                 <?php if($od['od_writer']!="openmarket"){ ?>
                 <input type="button" value="상품추가" class="btn shbtn" id="add_item">
@@ -756,7 +770,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                     <?php if ($temp_ct_step['cart_editable']) { ?>
                                                     <li class="edit_item" data-od-id="<?php echo $od_id; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>"  data-memo="<?php echo $prodMemo; ?>">수정</li>
                                                     <?php } ?>
-                                                    <?php if ($temp_ct_step['cart_deletable']) { ?>
+                                                    <?php if ($temp_ct_step['cart_deletable']&&$del_button) { ?>
                                                     <li class="delete_item" data-od-id="<?php echo $od_id; ?>" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>">삭제</li>
                                                     <?php } ?>
                                                 </ul>
