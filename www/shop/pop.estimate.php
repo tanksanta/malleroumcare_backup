@@ -421,7 +421,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
                 <td align="center"><?php echo number_format($options[$k]['opt_price']); ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price']* $options[$k]['ct_qty']); ?></td>
                 <td align="center">0</td>
-                <td align="center"><?php echo number_format($options[$k]['opt_price'] + ($options[$k]['opt_price'] * $options[$k]['ct_qty'])); ?></td>
+                <td align="center"><?php echo number_format(($options[$k]['opt_price'] * $options[$k]['ct_qty'])); ?></td>
 
                 <?php }else{ ?>
                 <td align="center"><?php echo $options[$k]['ct_qty']; ?></td>
