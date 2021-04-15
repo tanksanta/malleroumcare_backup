@@ -428,7 +428,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1); ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']); ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty']); ?></td>
-                <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty'] + ($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty'])); ?></td>
+                <td align="center"><?php echo number_format(($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']) + ($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty'])); ?></td>
                 <?php } ?>
             </tr>
             <?php $a++; ?>
