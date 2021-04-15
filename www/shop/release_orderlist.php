@@ -42,7 +42,7 @@
 		
 		/* 검색 */
 		#listSearchWrap { width: 100%; float: left; padding: 20px; padding-bottom: 0; }
-		#listSearchWrap > ul { width: 100%; float: left; display: table; table-layout: fixed; }
+		#listSearchWrap > ul { width: 100%; float: left; display: table; table-layout: fixed;margin-bottom:10px; }
 		#listSearchWrap > ul > li { display: table-cell; vertical-align: middle; text-align: center; }
 		#listSearchWrap > ul > li > input[type="text"] { width: 100%; height: 50px; float: left; text-align: center; border-radius: 5px; border: 1px solid #E0E0E0; font-size: 17px; }
 		#listSearchWrap > ul > li > input[type="text"]::placeholder { color: #AAA; }
@@ -88,6 +88,9 @@
 		#listDataWrap > ul > li.barInfo.active > .cnt { color: #FF690F; }
 		#listDataWrap > ul > li.barInfo.disable { border-color: #B8B8B8; background-color: #B8B8B8; }
 		#listDataWrap > ul > li.barInfo.disable > .cnt { color: #FFF; }
+		
+		#search_option{ width: 80px; height: 50px; float: left;  border-radius: 5px; border: 1px solid #E0E0E0; font-size: 14px; text-align:center;}
+		#search_text{width:calc(100% - 90px) !important;margin-left:10px;}
 	</style>
 </head>
  
@@ -108,11 +111,11 @@
     <ul>
         <li>
             <select name="search_option" id="search_option">
-                <option value="">선택하세요</option>
-                <option value="it_name">상품명</option>
+                <!-- <option value="">선택하세요</option> -->
+                <option value="it_name" selected>상품명</option>
                 <option value="od_name">사업소명</option>
             </select>
-            <input type="text" name="search_text" id="search_text" placeholder="">
+            <input type="text" name="search_text" id="search_text" placeholder="검색명입력" >
         </li>
     </ul>
 		<ul>
