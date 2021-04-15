@@ -13,6 +13,11 @@ button {
      outline: none;
 }
 
+.box_orange{margin-left: 20px;border-radius:5px;padding:5px 10px;background: #ee7a01;color:#fff !important;font-size:14px;}
+.box_green{margin-left: 20px;border-radius:5px;padding:5px 10px;background: #afcb07;color:#fff !important;font-size:14px;}
+.box_gray{margin-left: 20px;border-radius:5px;padding:5px 10px;background: #aaa;color:#fff !important;font-size:14px;}
+
+
 
 .recipient_info th,
 .recipient_info td{padding:5px;text-align:center;}

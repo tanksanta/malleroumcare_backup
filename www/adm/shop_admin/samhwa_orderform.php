@@ -318,12 +318,12 @@ var od_id = '<?php echo $od['od_id']; ?>';
             <?php
                 $del_button=false;
                 if($od['od_stock_insert_yn']=="Y"){
-                    echo "보유재고 등록";
+                    echo "<span class='box_gray'>보유재고 등록</span>";
                 }else{
                     if($od['od_penId']){
-                        echo "수급자주문";
+                        echo "<span class='box_green'>수급자주문</span>";
                     }else{
-                        echo "재고주문";
+                        echo "<span class='box_orange'>재고주문</span>";
                         $del_button=true;
                     }
                 }
