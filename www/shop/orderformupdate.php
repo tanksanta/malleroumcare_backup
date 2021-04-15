@@ -68,6 +68,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			$thisProductData["itemNm"] = explode(chr(30), $row["io_id"])[0]." / ".explode(chr(30), $row["io_id"])[1];
 			$thisProductData["ordLendStrDtm"] = date("Y-m-d", strtotime($_POST["ordLendStartDtm_{$row["ct_id"]}"]));
 			$thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($_POST["ordLendEndDtm_{$row["ct_id"]}"]));
+			$thisProductData["ct_id"] = $row["ct_id"];
 
 			array_push($productList, $thisProductData);
 		} else {
@@ -78,6 +79,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			$thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
 			$thisProductData["prodManuDate"] = date("Y-m-d");
 			$thisProductData["stoMemo"] = $_POST["od_memo"];
+			$thisProductData["ct_id"] = $row["ct_id"];
 
 			array_push($productList, $thisProductData);
 		}
