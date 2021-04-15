@@ -47,13 +47,25 @@
 				}
 			}
 		} else {
-			$stoIdData = $od["stoId"];
-			$stoIdData = explode(",", $stoIdData);
-			$stoIdDataList = [];
-			foreach($stoIdData as $data){
-				array_push($stoIdDataList, $data);
-			}
-			$stoIdData = implode("|", $stoIdDataList);
+			// $stoIdData = $od["stoId"];
+			// $stoIdData = explode(",", $stoIdData);
+			// $stoIdDataList = [];
+			// foreach($stoIdData as $data){
+			// 	array_push($stoIdDataList, $data);
+			// }
+			// $stoIdData = implode("|", $stoIdDataList);
+
+            $sto_imsi="";
+            $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+            $result_ct = sql_query($sql_ct);
+            while($row_ct = sql_fetch_array($result_ct)) {
+                $sto_imsi .=$row_ct['stoId'];
+            }
+            $stoIdDataList = explode('|',$sto_imsi);
+            $stoIdDataList=array_filter($stoIdDataList);
+            $stoIdData = implode("|", $stoIdDataList);
+            print_r($stoIdData);
+			
 		}
 	}
 

@@ -73,40 +73,15 @@ if (!$od['od_id']) {
 			}
 		}
 	} else {
-//		$sendData = [];
-//		$sendData["usrId"] = $od["mb_id"];
-//
-//		$stoIdData = explode(",", $od["stoId"]);
-//		$stoIdDataList = [];
-//		foreach($stoIdData as $data){
-//			$thisList = [];
-//			$thisList["stoId"] = $data;
-//
-//			array_push($stoIdDataList, $thisList);
-//		}
-//		$sendData["prods"] = $stoIdDataList;
-//
-//		$oCurl = curl_init();
-//		curl_setopt($oCurl, CURLOPT_PORT, 9901);
-//		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectBarNumList");
-//		curl_setopt($oCurl, CURLOPT_POST, 1);
-//		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-//		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-//		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-//		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-//		$res = curl_exec($oCurl);
-//		$res = json_decode($res, true);
-//		curl_close($oCurl);
-//
-//		print_r($res);
-
-		$stoIdData = $od["stoId"];
-		$stoIdData = explode(",", $stoIdData);
-		$stoIdDataList = [];
-		foreach($stoIdData as $data){
-			array_push($stoIdDataList, $data);
-		}
-		$stoIdData = implode("|", $stoIdDataList);
+        $sto_imsi="";
+        $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+        $result_ct = sql_query($sql_ct);
+        while($row_ct = sql_fetch_array($result_ct)) {
+            $sto_imsi .=$row_ct['stoId'];
+        }
+        $stoIdDataList = explode('|',$sto_imsi);
+        $stoIdDataList=array_filter($stoIdDataList);
+        $stoIdData = implode("|", $stoIdDataList);
 	}
 }
 $mb = get_member($od['mb_id']);
@@ -293,23 +268,23 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
                     ADD `ct_barcode` TEXT NOT NULL AFTER `ct_qty` ", false);
 
 	# 210121 배송시나리오 리뉴얼
-//	$obStaOrdStatus = [];
-//
-//	$obStaOrdStatus["00"]["code"] = "00";
-//	$obStaOrdStatus["00"]["name"] = "주문완료";
-//	$obStaOrdStatus["00"]["next"] = "01";
-//
-//	$obStaOrdStatus["01"]["code"] = "01";
-//	$obStaOrdStatus["01"]["name"] = "배송중";
-//	$obStaOrdStatus["01"]["next"] = "02";
-//
-//	$obStaOrdStatus["02"]["code"] = "02";
-//	$obStaOrdStatus["02"]["name"] = "배송완료";
-//	$obStaOrdStatus["02"]["next"] = "03";
-//
-//	$obStaOrdStatus["03"]["code"] = "03";
-//	$obStaOrdStatus["03"]["name"] = "주문확정";
-//	$obStaOrdStatus["03"]["next"] = "";
+    //	$obStaOrdStatus = [];
+    //
+    //	$obStaOrdStatus["00"]["code"] = "00";
+    //	$obStaOrdStatus["00"]["name"] = "주문완료";
+    //	$obStaOrdStatus["00"]["next"] = "01";
+    //
+    //	$obStaOrdStatus["01"]["code"] = "01";
+    //	$obStaOrdStatus["01"]["name"] = "배송중";
+    //	$obStaOrdStatus["01"]["next"] = "02";
+    //
+    //	$obStaOrdStatus["02"]["code"] = "02";
+    //	$obStaOrdStatus["02"]["name"] = "배송완료";
+    //	$obStaOrdStatus["02"]["next"] = "03";
+    //
+    //	$obStaOrdStatus["03"]["code"] = "03";
+    //	$obStaOrdStatus["03"]["name"] = "주문확정";
+    //	$obStaOrdStatus["03"]["next"] = "";
 
 	$prodBarNumCntBtnWord = "바코드 ({$od["od_prodBarNum_insert"]}/{$od["od_prodBarNum_total"]})";
 	$prodBarNumCntBtnWord = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
@@ -776,7 +751,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     </td>
                                     <td class="btncol">
 										<?php if($od['od_writer']!="openmarket"){ ?>
-											<?php if ( $k == 0 ) { ?>
+											<?php //if ( $k == 0 ) { ?>
                                             <div class="more">
                                                 <img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_more_b.png" class="item_list_more" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" />
                                                 <ul class="openlayer">
@@ -787,12 +762,12 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                     <li class="edit_item" data-od-id="<?php echo $od_id; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>"  data-memo="<?php echo $prodMemo; ?>">수정</li>
                                                     <?php } ?>
                                                     <?php if ($temp_ct_step['cart_deletable']) { ?>
-                                                    <li class="delete_item" data-od-id="<?php echo $od_id; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>">삭제</li>
+                                                    <li class="delete_item" data-od-id="<?php echo $od_id; ?>" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>">삭제</li>
                                                     <?php } ?>
                                                 </ul>
                                             </div>
 											<?php } ?>
-										<?php } ?>
+										<?php //} ?>
                                     </td>
                                 </tr>
                                 <?php
@@ -2858,23 +2833,23 @@ $(document).ready(function() {
 
     edit_item_pop = window.open('./pop.order.item.add.option.php?w=1&od_id=' + od_id + '&it_id=' + it_id + '&uid=' + uid + "&memo="+memo, "edit_item_pop", "width=1080, height=900, resizable = no, scrollbars = no");
     });
-
     // 상품 삭제
     $('.delete_item').click(function() {
-
         var it_id = $(this).data('it-id');
         var uid = $(this).data('uid');
-
+        var ct_id = $(this).data('ct-id');
         $.ajax({
-                    method: "POST",
-                    url: "./ajax.order.item.delete.php",
-                    data: {
-                        od_id: od_id,
-                        it_id: it_id,
-                        uid: uid,
-                    },
-                })
+            method: "POST",
+            url: "./ajax.order.item.delete.php",
+            data: {
+                od_id: od_id,
+                it_id: it_id,
+                uid: uid,
+                ct_id: ct_id,
+            },
+        })
         .done(function(data) {
+            console.log(data);
             if ( data.msg ) {
                 alert(data.msg);
             }
@@ -3467,7 +3442,6 @@ function submit_typereceipt_after(msgFlag) {
         }
     })
 }
-
 </script>
 <?php
 include_once(G5_ADMIN_PATH.'/admin.tail.php');
