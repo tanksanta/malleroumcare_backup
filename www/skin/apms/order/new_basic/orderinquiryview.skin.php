@@ -181,6 +181,9 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 		주문상세
 		<div class="list-more"><a href="./orderinquiry.php">목록</a></div>
 	</h2>
+	<div class="od_status">
+		<?= $od["od_status"] ?>
+	</div>
 
 	<section class="tab-wrap tab-2 on">
 		<?php if($od["od_penId"]){ ?>

@@ -34,6 +34,7 @@ table {border-collapse: collapse;}
 
 
 .order-list {padding-top: 66px;}
+.order-list .od_status{padding:20px;font-size:20px;width:100%;border-radius:5px;height: 60px;line-height: 20px;margin-bottom:20px;text-align:center;font-weight:bold;border:1px solid #ddd;}
 .pc_none,.info_pc_none {display: none !important;}
 .m_barcode {display: none;}
 
