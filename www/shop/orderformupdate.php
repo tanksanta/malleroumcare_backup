@@ -1348,6 +1348,7 @@ if($is_member && $od_b_name) {
             $prodsData["prodManuDate"] = $value["prodManuDate"];
             $prodsData["prodBarNum"] = $value["prodBarNum"];
             $prodsData["stoMemo"] = $value["stoMemo"];
+            $prodsData["ct_id"] = $value["ct_id"];
             array_push($prodsSendData, $prodsData);
         }
 
@@ -1367,6 +1368,8 @@ if($is_member && $od_b_name) {
         if($res["errorYN"] == "N"){
             for($k=0; $k<count($res['data']);$k++){
                 array_push($stoIdList, $res['data'][$k]["stoId"]);
+                $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
+                sql_query($sql_ct);
             }
         } else {
             sql_query("
