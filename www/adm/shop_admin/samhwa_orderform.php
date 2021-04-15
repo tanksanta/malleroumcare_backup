@@ -1847,6 +1847,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     <li>
                         <span class="manager_name">- 영업담당자</span>
                         <div class="managers">
+                            <!--
                             <div class="on">
                                 <select name="od_sales_manager">
                                     <option value="">없음</option>
@@ -1873,6 +1874,13 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <a class="change_manager_off">선택</a>
                                 <?php } ?>
                             </div>
+                            -->
+                            <?php
+                            $sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
+                            $result_manager = sql_fetch($sql_manager);
+                            $od_sales_manager = get_member($result_manager['mb_manager']);
+                            echo $od_sales_manager['mb_name'] ? $od_sales_manager['mb_name'] : '없음';
+                            ?>
                         </div>
                     </li>
                     <li>
