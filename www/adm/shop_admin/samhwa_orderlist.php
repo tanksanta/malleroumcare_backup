@@ -1111,7 +1111,7 @@ if( function_exists('pg_setting_check') ){
 </form>
 
 <script>
-	function orderListExcelDownload(type = 'excel'){
+	function orderListExcelDownload(type){
 		$("#excelForm").remove();
 		
         var html;
