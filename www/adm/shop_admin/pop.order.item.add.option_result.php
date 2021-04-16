@@ -463,13 +463,13 @@ $stoIdList = ','.implode(",", $stoIdList);
 
 $sql_q = "select `stoId` from `g5_shop_order` where `od_id` = '".$od_id."'";
 $result_q=sql_fetch($sql_q);
-$result_q[`stoId`];
+$result_q['stoId'];
 
 //수정시 불필요한 , 정리
 $result_q[`stoId`] = explode('|',$result_q[`stoId`]);
 $result_q[`stoId`]=array_filter($result_q[`stoId`]);
 $result_q[`stoId`]=implode(',',$result_q[`stoId`]);
-$stoIdList=$stoIdList.$result_q[`stoId`];
+$stoIdList=$result_q[`stoId`].$stoIdList;
 
 //정리된 stoId update
 sql_query("
