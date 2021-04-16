@@ -66,7 +66,7 @@ for($i=0; $i<count($it_ids); $i++) {
 
 
             //order 테이블에 stoId, barcodetotalcount 값 빼기
-            sql_query("update `g5_shop_order` set `stoId` = replace(stoId, '$arr_d2', '') and where `od_id` = '$od_id'");
+            sql_query("update `g5_shop_order` set `stoId` = replace(stoId, '$arr_d2', '') where `od_id` = '$od_id'");
         }
         // return false;
         $sql = "DELETE FROM {$g5['g5_shop_cart_table']} WHERE od_id = '$od_id' AND ct_uid = '$uid'";
@@ -457,28 +457,25 @@ if($res["errorYN"] == "N"){
     alert($res["message"],G5_URL);
     return false;
 }
-
 //통신 성공시 order table 에 stoId 추가, total stoId 개수 갱신
 $stoIdList = ','.implode(",", $stoIdList);
 
 $sql_q = "select `stoId` from `g5_shop_order` where `od_id` = '".$od_id."'";
 $result_q=sql_fetch($sql_q);
-$result_q['stoId'];
 
 //수정시 불필요한 , 정리
-$result_q[`stoId`] = explode('|',$result_q[`stoId`]);
-$result_q[`stoId`]=array_filter($result_q[`stoId`]);
-$result_q[`stoId`]=implode(',',$result_q[`stoId`]);
-$stoIdList=$result_q[`stoId`].$stoIdList;
+$result_q['stoId'] = explode(',',$result_q['stoId']);
+$result_q['stoId']=array_filter($result_q['stoId']);
+$result_q['stoId']=implode(',',$result_q['stoId']);
 
+
+$stoIdList=$result_q['stoId'].$stoIdList;
 //정리된 stoId update
 sql_query("
 UPDATE `g5_shop_order` SET
     `stoId` = '".$stoIdList."'
 WHERE od_id = '{$od_id}'
 ");
-
-
 //들어있는 바코드수 구하기
 $sto_imsi="";
 $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
@@ -516,8 +513,6 @@ sql_query($sql);
 //order total 수 조정
 $sql = "update `g5_shop_order` set `od_prodBarNum_total` = ".count($result_again)." where `od_id` = '".$od_id."'";
 sql_query($sql);
-
-
 ?>
 <html>
 <head>
