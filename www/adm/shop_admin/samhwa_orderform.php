@@ -324,13 +324,15 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         echo "<span class='box_green'>수급자주문</span>";
                     }else{
                         echo "<span class='box_orange'>재고주문</span>";
-                        $del_button=true;
+                        if($od_status['name'] =="상품준비" ||$od_status['name'] =="츌고준비"||$od_status['name'] =="츌고완료"){
+                            $del_button=true;
+                        }
                     }
                 }
             ?>
             </h2>
             <div class="right">
-                <?php if($od['od_writer']!="openmarket"){ ?>
+                <?php if($od['od_writer']!="openmarket"&&$del_button){ ?>
                 <input type="button" value="상품추가" class="btn shbtn" id="add_item">
                 <?php } ?>
                 <!--<input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
@@ -762,6 +764,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 										<?php if($od['od_writer']!="openmarket"){ ?>
 											<?php //if ( $k == 0 ) { ?>
                                             <div class="more">
+                                            <?php if($del_button){ ?>
                                                 <img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_more_b.png" class="item_list_more" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" />
                                                 <ul class="openlayer">
                                                     <?php
@@ -770,10 +773,11 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                     <?php if ($temp_ct_step['cart_editable']) { ?>
                                                     <li class="edit_item" data-od-id="<?php echo $od_id; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>"  data-memo="<?php echo $prodMemo; ?>">수정</li>
                                                     <?php } ?>
-                                                    <?php if ($temp_ct_step['cart_deletable']&&$del_button) { ?>
+                                                    <?php if ($temp_ct_step['cart_deletable']) { ?>
                                                     <li class="delete_item" data-od-id="<?php echo $od_id; ?>" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>">삭제</li>
                                                     <?php } ?>
                                                 </ul>
+                                                <?php } ?>
                                             </div>
 											<?php } ?>
 										<?php //} ?>
