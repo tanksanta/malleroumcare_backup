@@ -1424,6 +1424,11 @@ if($is_member && $od_b_name) {
 			curl_close($oCurl);
 
 			if($res["errorYN"] == "N"){
+                for($k=0; $k<count($res['data']);$k++){
+                    array_push($stoIdList, $res['data'][$k]["stoId"]);
+                    $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
+                    sql_query($sql_ct);
+                }
 				sql_query("
 					UPDATE g5_shop_order SET
 						  od_delivery_yn = 'N'
