@@ -24,7 +24,8 @@
 
     $rows = [];
     for($i=1; $od=sql_fetch_array($result); $i++) 
-    {
+    {   
+
 		$itList = sql_query("
 			SELECT cart.*, item.it_thezone2
 			FROM g5_shop_cart as cart
@@ -34,11 +35,43 @@
 		");
 		
 		for($ii = 0; $it = sql_fetch_array($itList); $ii++){
-			$it_name = $it["it_name"];
+			
+            
+            #바코드
+            $stoIdDataList = explode('|',$it['stoId']);
+            $stoIdDataList=array_filter($stoIdDataList);
+            $stoIdData = implode("|", $stoIdDataList);
+
+            $barcode=[];
+            $sendData["stoId"] = $stoIdData;
+            $oCurl = curl_init();
+            curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
+            curl_setopt($oCurl, CURLOPT_POST, 1);
+            curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+            curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+            curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+            $res = curl_exec($oCurl);
+            curl_close($oCurl);
+            $result_again = json_decode($res, true);
+            $result_again =$result_again['data'];
+            for($k=0; $k < count($result_again); $k++){
+                if($result_again[$k]['prodBarNum']){
+                    array_push($barcode,$result_again[$k]['prodBarNum']);
+                }
+            }
+            $barcode = implode(",", $barcode);
+            $barcode = $barcode." "; 
+            
+            
+            
+            
+            $it_name = $it["it_name"];
 			
 			if($it_name != $it["ct_option"]){
 				$it_name .= " [{$it["ct_option"]}]";
 			}
+
             $addr="";
             if($od_b_zip1){$addr= "(".$od_b_zip1.$od_b_zip2.")";}
 			$addr = $addr.$od["od_b_addr1"].' '.$od["od_b_addr2"].' '.$od["od_b_addr3"];
@@ -84,14 +117,13 @@
 				'',
 				round(($it['opt_price'] ? $it['opt_price'] : 0) / 1.1) * $it['ct_qty'], // 공급가액
 				round(($it['opt_price'] ? $it['opt_price'] : 0) / 1.1 / 10) * $it['ct_qty'], // 부가세
-				'', // 바코드
+				$barcode, // 바코드
 				$it['ct_delivery_num'], // 로젠송장번호,
 				'',
 				'',
 			];
 		}
     }
-
     $headers = array("일자", "순번", "거래처코드", "거래처명","담당자", "출하창고", "거래유형","통화", "환율","성명(상호명)", "배송처", "전잔액", "후잔액", "특이사항", "참고사항", "품목코드", "품목명", "규격", "수량", "단가(vat포함)", "외화금액", "공급가액", "부가세", "바코드", "로젠 송장번호", "적요", "생산전표생성");
     $data = array_merge(array($headers), $rows);
     
