@@ -94,7 +94,7 @@
 			$thezone_code = $it['io_thezone'] ? $it['io_thezone'] : $it['it_thezone2'];
 
 			$rows[] = [ 
-				date("Y-m-d", strtotime($od["od_time"])),
+				date("Y-m-d", strtotime($od["od_ex_date"])),
 				$i,
 				$mb['mb_thezone'],
 				'',

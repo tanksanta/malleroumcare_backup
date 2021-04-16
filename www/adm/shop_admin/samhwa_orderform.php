@@ -1096,9 +1096,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     </tr>
 
                     <tr>
-                        <th scope="row"><label for="od_ex_date">출고예정일</label></th>
+                        <th scope="row"><label for="od_ex_date">출고완료일</label></th>
                         <td colspan="3">
-                            <input type="text" name="od_ex_date" value="<?php echo $od['od_ex_date']; ?>" id="od_ex_date" required class="frm_input required" maxlength="10" minlength="10">
+                            <!-- id="od_ex_date" -->
+                            <input type="text" readonly name="od_ex_date" value="<?php echo $od['od_ex_date']; ?>"  required class="frm_input required" maxlength="10" minlength="10">
                         </td>
                     </tr>
 
