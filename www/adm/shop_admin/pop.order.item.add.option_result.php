@@ -458,7 +458,7 @@ if($res["errorYN"] == "N"){
     return false;
 }
 //통신 성공시 order table 에 stoId 추가, total stoId 개수 갱신
-$stoIdList = ','.implode(",", $stoIdList);
+$stoIdList = implode(",", $stoIdList);
 
 $sql_q = "select `stoId` from `g5_shop_order` where `od_id` = '".$od_id."'";
 $result_q=sql_fetch($sql_q);
@@ -467,9 +467,10 @@ $result_q=sql_fetch($sql_q);
 $result_q['stoId'] = explode(',',$result_q['stoId']);
 $result_q['stoId']=array_filter($result_q['stoId']);
 $result_q['stoId']=implode(',',$result_q['stoId']);
+if($result_q['stoId']){
+    $stoIdList=$result_q['stoId'].','.$stoIdList;
+}
 
-
-$stoIdList=$result_q['stoId'].$stoIdList;
 //정리된 stoId update
 sql_query("
 UPDATE `g5_shop_order` SET
