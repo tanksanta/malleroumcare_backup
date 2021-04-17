@@ -56,7 +56,7 @@
 					a.ct_combine_ct_id
 			  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
-			  -- AND a.ct_delivery_yn = 'Y'
+			  AND a.ct_delivery_yn = 'Y'
 			  group by a.it_id, a.ct_uid
 			  order by a.ct_id ";
 
