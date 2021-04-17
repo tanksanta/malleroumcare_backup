@@ -104,7 +104,8 @@
 					a.ct_stock_qty,
 					b.it_img1,
 					a.ct_delivery_company,
-					a.ct_delivery_num
+					a.ct_delivery_num,
+					a.ct_combine_ct_id
 			  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
 			  group by a.it_id, a.ct_uid
@@ -121,7 +122,7 @@
 		$cate_counts[$row['ct_status']] += 1;
 
 		// 상품의 옵션정보
-		$sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
+		$sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid, ct_combine_ct_id
 						, ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
 						, prodMemo
 					from {$g5['g5_shop_cart_table']} MT
@@ -406,14 +407,25 @@
 							</div>
 
 							<div class="deliveryInfoWrap">
-								<input type="hidden" name="ct_id[]" value="<?=$carts[$i]["ct_id"]?>">
-								<select name="ct_delivery_company_<?=$carts[$i]["ct_id"]?>">
-								<?php foreach($delivery_companys as $data){ ?>
-									<option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+								<?php if ($carts[$i]['ct_combine_ct_id']) { ?>
+									<?php
+									// 합포 상품 찾기
+									foreach($carts as $c) {
+										if($carts[$i]['ct_combine_ct_id'] === $c['ct_id']) {
+											echo stripslashes($c["it_name"]) . ' 상품과 같이 배송';
+										}
+									}
+									?>
+								<?php } else { ?>
+									<input type="hidden" name="ct_id[]" value="<?=$carts[$i]["ct_id"]?>">
+									<select name="ct_delivery_company_<?=$carts[$i]["ct_id"]?>">
+									<?php foreach($delivery_companys as $data){ ?>
+										<option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+									<?php } ?>
+									</select>
+									<input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>" placeholder="송장번호 입력">
+									<img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
 								<?php } ?>
-								</select>
-								<input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>" placeholder="송장번호 입력">
-								<img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
 							</div>
 						</li>
 					</a>
