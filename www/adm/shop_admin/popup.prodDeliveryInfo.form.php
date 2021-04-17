@@ -52,10 +52,11 @@
 					a.ct_delivery_price,
 					b.it_delivery_cnt,
 					b.it_delivery_price,
-					b.it_img1
+					b.it_img1,
+					a.ct_combine_ct_id
 			  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
-			  AND a.ct_delivery_yn = 'Y'
+			  -- AND a.ct_delivery_yn = 'Y'
 			  group by a.it_id, a.ct_uid
 			  order by a.ct_id ";
 
@@ -69,7 +70,7 @@
 		$cate_counts[$row['ct_status']] += 1;
 
 		// 상품의 옵션정보
-		$sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
+		$sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid, ct_combine_ct_id
 						, ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
 					from {$g5['g5_shop_cart_table']} MT
 					where od_id = '{$od['od_id']}'
@@ -151,6 +152,17 @@
 		#prodBarNumBtnWrap > button.main { width: calc(100% - 105px); background-color: #3366CC; }
 		
 		.frm_input { width: 100%; font-size: 13px !important; padding: 0 5px; }
+
+		.combine {
+			display:none;
+		}
+		.combine.active {
+			display:table-cell;
+		}
+		.ct_combine_ct_id {
+			width:100%;
+			text-align-last:center;
+		}
 		
 	</style>
 	
@@ -169,6 +181,7 @@
 					<col width="20%">
 					<col width="10%">
 					<col width="150px">
+					<col width="80px">
 				</colgroup>
 				
 				<thead>
@@ -178,6 +191,7 @@
 						<th>송장번호</th>
 						<th>박스수량</th>
 						<th>배송비</th>
+						<th>합포여부</th>
 					</tr>
 				</thead>
 				
@@ -196,24 +210,39 @@
 									(<?=$options[$k]["ct_option"]?>)
 								<?php } ?>
 							</td>
-							<td>
+							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
 								<select class="frm_input" name="ct_delivery_company_<?=$carts[$i]["ct_id"]?>">
 								<?php foreach($delivery_companys as $data){ ?>
 									<option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
 								<?php } ?>
 								</select>
 							</td>
-							<td><input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" class="frm_input" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>"></td>
-							<td>
+							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
+								<input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" class="frm_input" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>">
+							</td>
+							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
 								<select class="frm_input ct_delivery_cnt" name="ct_delivery_cnt_<?=$carts[$i]["ct_id"]?>">
 								<?php for($ii = 1; $ii < 21; $ii++){ ?>
 									<option value="<?=$ii?>" <?=($carts[$i]["ct_delivery_cnt"] == $ii) ? "selected" : ""?>><?=$ii?></option>
 								<?php } ?>
 								</select>
 							</td>
-							<td>
+							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
 								<input type="text" value="<?=$carts[$i]["ct_delivery_price"]?>" class="frm_input ct_delivery_price" name="ct_delivery_price_<?=$carts[$i]["ct_id"]?>" style="width: 100px;">
 								<span>원</span>
+							</td>
+							<td class="combine combine_y <?php if($carts[$i]['ct_combine_ct_id']) echo ' active ';?>" colspan="4">
+								<select name="ct_combine_ct_id_<?php echo $carts[$i]["ct_id"]; ?>" class="ct_combine_ct_id">
+									<?php
+									foreach($carts as $c) { 
+										if ($c['ct_id'] === $carts[$i]['ct_id']) continue;
+									?>
+										<option value="<?php echo $c['ct_id']; ?>"><?php echo stripslashes($c["it_name"]); ?>
+									<?php } ?>
+								</select>
+							</td>
+							<td>
+								<label><input type="checkbox" name="ct_combine_<?php echo $carts[$i]["ct_id"]; ?>" class="chk_ct_combine" value="1" <?php if($carts[$i]['ct_combine_ct_id']) echo ' checked';?>> 합포</label>
 							</td>
 						</tr>
 					<?php } ?>
@@ -250,6 +279,19 @@
 //					$(parent).find(".ct_delivery_price").val(tmpCnt * price);
 //				}
 			});
+
+			$('.chk_ct_combine').click(function() {
+				var parent = $(this).closest('tr');
+
+				if ($(this).is(":checked")) {
+					$(parent).find('.combine_y').addClass('active');
+					$(parent).find('.combine_n').removeClass('active');
+					return;
+				}
+
+				$(parent).find('.combine_n').addClass('active');
+				$(parent).find('.combine_y').removeClass('active');
+			})
 			
 			$("#prodBarNumSaveBtn").click(function() {
 				var ordId = "<?=$od["ordId"]?>";
