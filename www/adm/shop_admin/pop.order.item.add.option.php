@@ -693,11 +693,11 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
                                 $memo = sql_fetch($sql);
                                 ?>
                                 <tr>
-                                    <th colspan="2">비고</th>
+                                    <th colspan="2">요청사항</th>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <textarea name="g5_shop_order_cart_memo" rows="8" placeholder="메모를 입력하세요." id="g5_shop_order_cart_memo"><?php echo $_GET['memo']; ?></textarea>
+                                        <textarea name="g5_shop_order_cart_memo" rows="8"  id="g5_shop_order_cart_memo"><?php echo $_GET['memo']; ?></textarea>
                                     </td>
                                 </tr>
                             </tbody>

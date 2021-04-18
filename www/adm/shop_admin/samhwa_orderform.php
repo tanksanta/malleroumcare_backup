@@ -367,7 +367,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <th class="item_sendcost">배송비</th>
                             <th class="item_stotal">결제금액</th>
                             <th class="item_status">상태</th>
-                            <th class="item_memo">비고</th>
+                            <th class="item_memo">요청사항</th>
                             <th class="btncol"></th>
                         </tr>
                     </thead>
