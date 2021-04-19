@@ -79,10 +79,10 @@
 				<thead>
 					<tr>
 						<th>상품(옵션)</th>
-						<th>분류</th>
-						<th>송장번호</th>
 						<th>박스수량</th>
 						<th>배송비</th>
+						<th>분류</th>
+						<th>송장번호</th>
 						<th>합포여부</th>
 					</tr>
 				</thead>
@@ -103,6 +103,17 @@
 								<?php } ?>
 							</td>
 							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
+								<select class="frm_input ct_delivery_cnt" name="ct_delivery_cnt_<?=$carts[$i]["ct_id"]?>" data-it-cnt="<?php echo $carts[$i]['it_delivery_cnt']; ?>" data-it-cnt-price="<?php echo $carts[$i]['it_delivery_price']; ?>">
+								<?php for($ii = 0; $ii < 21; $ii++){ ?>
+									<option value="<?=$ii?>" <?=($carts[$i]["ct_delivery_cnt"] == $ii) ? "selected" : ""?>><?=$ii?></option>
+								<?php } ?>
+								</select>
+							</td>
+							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
+								<input type="text" value="<?=$carts[$i]["ct_delivery_price"]?>" class="frm_input ct_delivery_price" name="ct_delivery_price_<?=$carts[$i]["ct_id"]?>" style="width: 100px;">
+								<span>원</span>
+							</td>
+							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
 								<select class="frm_input" name="ct_delivery_company_<?=$carts[$i]["ct_id"]?>">
 								<?php foreach($delivery_companys as $data){ ?>
 									<option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
@@ -111,17 +122,6 @@
 							</td>
 							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
 								<input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" class="frm_input" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>">
-							</td>
-							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
-								<select class="frm_input ct_delivery_cnt" name="ct_delivery_cnt_<?=$carts[$i]["ct_id"]?>">
-								<?php for($ii = 1; $ii < 21; $ii++){ ?>
-									<option value="<?=$ii?>" <?=($carts[$i]["ct_delivery_cnt"] == $ii) ? "selected" : ""?>><?=$ii?></option>
-								<?php } ?>
-								</select>
-							</td>
-							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
-								<input type="text" value="<?=$carts[$i]["ct_delivery_price"]?>" class="frm_input ct_delivery_price" name="ct_delivery_price_<?=$carts[$i]["ct_id"]?>" style="width: 100px;">
-								<span>원</span>
 							</td>
 							<td class="combine combine_y <?php if($carts[$i]['ct_combine_ct_id']) echo ' active ';?>" colspan="4">
 								<select name="ct_combine_ct_id_<?php echo $carts[$i]["ct_id"]; ?>" class="ct_combine_ct_id">
@@ -152,26 +152,26 @@
 	
 	<script type="text/javascript">
 		$(function(){
-			
+			// 박스 가격 계산
 			$(".ct_delivery_cnt").change(function(){
-//				var parent = $(this).closest("tr");
-//				
-//				var price = Number($(parent).attr("data-price"));
-//				var cnt = Number($(parent).attr("data-cnt"));
-//				
-//				var val = $(this).val();
-//				
-//				if(cnt){
-//					var tmpCnt = Math.floor(val / cnt);
-//					
-//					if(tmpCnt < (val / cnt)){
-//						tmpCnt += 1;
-//					}
-//					
-//					$(parent).find(".ct_delivery_price").val(tmpCnt * price);
-//				}
+				var parent = $(this).closest("tr");
+				var cnt = $(this).data('it-cnt');
+				var price = $(this).data('it-cnt-price');
+
+				var val = $(this).val();
+				
+				if(cnt){
+					var tmpCnt = Math.floor(val / cnt);
+					
+					if(tmpCnt < (val / cnt)){
+						tmpCnt += 1;
+					}
+					
+					$(parent).find(".ct_delivery_price").val(tmpCnt * price);
+				}
 			});
 
+			// 합포
 			$('.chk_ct_combine').click(function() {
 				var parent = $(this).closest('tr');
 
