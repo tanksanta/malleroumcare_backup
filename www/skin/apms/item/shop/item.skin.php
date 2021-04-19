@@ -111,7 +111,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 	.selfPriceInfo { width: 100%; border: 1px solid #CFCFCF; padding: 10px 15px; background-color: #F8F8F8; }
 	.selfPriceInfo > .title { width: 100%; height: 20px; line-height: 20px; font-weight: bold; color: #333; }
-	.selfPriceInfo > p { width: 100%; height: 20px; line-height: 20px; margin-top: 10px; font-size: 12px; }
+	.selfPriceInfo > p { width: 100%; height: 20px; line-height: 20px; margin-top: 10px; font-size: 18px; }
 
 	#item3dViewBtn { position: absolute; width: 130px; height: 40px; line-height: 38px; z-index: 10; top: 0; right: 25px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
 	#item3dViewBtn > img { margin-right: 10px; }
@@ -251,7 +251,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                 </div>
                 <!-- 본인부담금 -->
                 <div class="selfPriceInfo" style="margin-top: 20px;">
-                    <div class="title">본인부담금 예시</div>
+                    <div class="title">본인부담금</div>
                     <p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
                 </div>
 
@@ -365,7 +365,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
        </div>
 			<!-- 본인부담금 -->
 			<div class="selfPriceInfo">
-				<div class="title">본인부담금 예시</div>
+				<div class="title">본인부담금</div>
 				<p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
 			</div>
 
