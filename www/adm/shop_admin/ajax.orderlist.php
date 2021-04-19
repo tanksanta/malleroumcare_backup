@@ -460,7 +460,7 @@ $ret['main'] = "
                     <th class=\"od_release_manager_star\">출담</th>
                     <th class=\"od_pay_state\">결제여부</th>
                     <th class=\"od_delivery_type\">출고방법</th>
-                    <th class=\"od_ex_date\">희망출고일</th>
+                    <th class=\"od_ex_date\">출고완료일</th>
                     <th class=\"od_step\">주문상태</th>
                     <th class=\"od_matching\">매칭여부</th>
                     <th class=\"od_list_memo\">메모</th>
@@ -781,6 +781,13 @@ foreach($orderlist as $order) {
     $od_pay_state = '<span class="" style="color:'. $pay_status['color'] .'">'.$pay_status['name'] .'</span>';
 
     $od_ex_date = $order['od_ex_date'] === '0000-00-00' ? '-' : $order['od_ex_date'];
+
+    if($od_status_info['name']=="상품준비"||$od_status_info['name']=="출고준비"){
+        $od_ex_date = "출고예정";
+    }
+    if($od_status_info['name']=="주문취소"||$od_status_info['name']=="주문무효"){
+        $od_ex_date = $od_status_info['name'];
+    }
 
     if ($cancel_request_row['od_id']) {
         $od_status = get_canel_request($cancel_request_row['request_type']);
