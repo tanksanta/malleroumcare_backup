@@ -782,9 +782,14 @@ foreach($orderlist as $order) {
 
     $od_ex_date = $order['od_ex_date'] === '0000-00-00' ? '-' : $order['od_ex_date'];
 
+    //상품준비, 출고준비, 값 0000-00-00 이면, 출고예정
+    if($order['od_ex_date'] === '0000-00-00'){
+        $od_ex_date = "출고예정";
+    }
     if($od_status_info['name']=="상품준비"||$od_status_info['name']=="출고준비"){
         $od_ex_date = "출고예정";
     }
+    //주문취소, 주문무효이면 상태값표시
     if($od_status_info['name']=="주문취소"||$od_status_info['name']=="주문무효"){
         $od_ex_date = $od_status_info['name'];
     }
