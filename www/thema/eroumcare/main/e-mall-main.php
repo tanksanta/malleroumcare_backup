@@ -346,8 +346,8 @@
                             }
                             if($manager_hp){
                         ?>
-                            <span class="Label">영업담당자:</span>
-                            <span class="value"><?=$manager_name?>(<?=$manager_hp?>)</span>
+                            <span class="Label"><?=$manager_name?> <span style="font-size:11px;">(담당자)</span> </span>
+                            <span class="value" ><?=$manager_hp?></span>
                         <?php 
                             }else{
                         ?>
