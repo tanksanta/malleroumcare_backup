@@ -2452,6 +2452,25 @@ $(document).ready(function() {
 	/* 주문다음단계 */
 	$("#order_summarize_submit").click(function() {
 		var next_step_val = $(this).data("next-step-val");
+
+        //출고완료시, od_ex_date 값 변경
+        if(next_step_val="배송"){
+            sendData={};
+            sendData['od_id'] ="<?=$_GET['od_id']?>";
+            console.log(sendData);
+			$.ajax({
+				url : "./ajax.od_ex_date.php",
+				type : "POST",
+				async : false,
+				data : sendData,
+				success : function(result){
+                    if(result=="N"){
+                        alert('주문서가 없습니다.');
+                    }
+				}
+			});
+        }
+
 		var next_step_status = $(this).data("next-step-status");
 		var ordId = "<?=$od["ordId"]?>";
 		var eformYn = (next_step_val == "완료") ? "Y" : "N";
