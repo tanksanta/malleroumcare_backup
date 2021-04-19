@@ -45,14 +45,7 @@
             $barcode=[];
             $sendData["stoId"] = $stoIdData;
             $oCurl = curl_init();
-            curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
-            curl_setopt($oCurl, CURLOPT_POST, 1);
-            curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-            curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-            curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-            $res = curl_exec($oCurl);
-            curl_close($oCurl);
+			$res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
             $result_again = json_decode($res, true);
             $result_again =$result_again['data'];
             for($k=0; $k < count($result_again); $k++){
