@@ -323,7 +323,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     if($od['od_penId']){
                         echo "<span class='box_green'>수급자주문</span>";
                     }else{
-                        echo "<span class='box_orange'>재고주문</span>";
+                        echo "<span class='box_orange'>상품주문</span>";
                         if($od_status['name']=="상품준비"||$od_status['name']=="출고준비"||$od_status['name']=="출고완료"){
                             $del_button=true;
                         }
