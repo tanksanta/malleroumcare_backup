@@ -48,13 +48,11 @@
 			$res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
             $result_again = json_decode($res, true);
             $result_again =$result_again['data'];
-			if($result_again){
-				for($k=0; $k < count($result_again); $k++){
-					if($result_again[$k]['prodBarNum']){
-						array_push($barcode,$result_again[$k]['prodBarNum']);
-					}
-				}
-			}
+            for($k=0; $k < count($result_again); $k++){
+                if($result_again[$k]['prodBarNum']){
+                    array_push($barcode,$result_again[$k]['prodBarNum']);
+                }
+            }
             $barcode = implode(",", $barcode);
             $barcode = $barcode." "; 
             
