@@ -114,6 +114,7 @@
                 <!-- <option value="">선택하세요</option> -->
                 <option value="it_name" selected>상품명</option>
                 <option value="od_name">사업소명</option>
+                <option value="od_b_name">수화인</option>
             </select>
             <input type="text" name="search_text" id="search_text" placeholder="검색명입력" >
         </li>
@@ -241,7 +242,7 @@
 						html += '</p>';
 						html += '<p class="date">' + row.date;
                         if(row.od_name){
-							html += "/" + row.od_b_name;
+							html += " / " + row.od_b_name;
 						}
 						html += '</p>';
 						html += '<p class="status ' + row.od_status_class + '">';
