@@ -69,10 +69,10 @@
 			<table>
 				<colgroup>
 					<col width="">
-					<col width="15%">
-					<col width="20%">
 					<col width="10%">
 					<col width="150px">
+					<col width="15%">
+					<col width="20%">
 					<col width="80px">
 				</colgroup>
 				
@@ -115,6 +115,7 @@
 							</td>
 							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
 								<select class="frm_input" name="ct_delivery_company_<?=$carts[$i]["ct_id"]?>">
+									<option value="">선택하세요.</option>
 								<?php foreach($delivery_companys as $data){ ?>
 									<option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
 								<?php } ?>

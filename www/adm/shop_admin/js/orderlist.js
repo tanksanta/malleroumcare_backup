@@ -470,9 +470,24 @@ $(function(){
         })
     });
 
+    // 일괄 전송
+    $(document).on( "click", '#delivery_edi_send_all', function() {
+        $.ajax({
+            method: "POST",
+            url: "./ajax.order.delivery.edi.all.php",
+        })
+        .done(function(data) {
+            if ( data.msg ) {
+                alert(data.msg);
+            }
+            if ( data.result === 'success' ) {
+                location.reload();
+            }
+        })
+    });
+
     // 송장 리턴
-    $( document ).on( "click", '#delivery_edi_return_all', function() {
-    
+    $(document).on( "click", '#delivery_edi_return_all', function() {
         $.ajax({
             method: "POST",
             url: "./ajax.order.delivery.edi.return.all.php",
