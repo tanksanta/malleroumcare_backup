@@ -182,7 +182,33 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 		<div class="list-more"><a href="./orderinquiry.php">목록</a></div>
 	</h2>
 	<div class="od_status">
-		<?= $od["od_status"] ?>
+	<?php 
+		$sql = "select *
+				from g5_shop_order_cancel_request
+				where od_id = '{$od['od_id']}' and approved = 0";
+
+		$cancel_request_row = sql_fetch($sql);
+		$info="";
+		if ($cancel_request_row['request_type'] == 'cancel') {
+			$info = "주문취소를 요청하셨습니다.";
+		}
+		if ($cancel_request_row['request_type'] == 'return') {
+			$info = "주문반품을 요청하셨습니다.";
+		}
+		if(!$info){
+			switch ($od["od_status"]) {
+				case '준비': echo "주문이 완료되었습니다.";  break;
+				case '출고준비': echo "주문이 완료되었습니다.";  break;
+				case '배송': echo "배송이 시작되었습니다.";  break;
+				case '완료': echo "배송이 완료되었습니다.";  break;
+				case '취소': echo "주문이 취소되었습니다.";  break;
+				case '주문무효': echo "주문이 취소되었습니다.";  break;
+				default: break;
+			}
+		}else{
+			echo $info;
+		}
+    ?>
 	</div>
 
 	<section class="tab-wrap tab-2 on">
