@@ -112,7 +112,7 @@
 				round(($it['opt_price'] ? $it['opt_price'] : 0) / 1.1 / 10) * $it['ct_qty'], // 부가세
 				$barcode, // 바코드
 				$it['ct_delivery_num'], // 로젠송장번호,
-				'',
+				$it['prodMemo'], //적요
 				'',
 			];
 		}
