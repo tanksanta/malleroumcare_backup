@@ -1320,18 +1320,30 @@ if($is_member && $od_b_name) {
 
 //		echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
 //		return false;
-		if($res["errorYN"] == "Y"){
+        $stoIdList = [];
+        if($res["errorYN"] == "N"){
+            for($k=0;$k<count($res['data']['stockList']);$k++){
+                array_push($stoIdList, $res['data']['stockList'][$k]["stoId"]);
+                $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data']['stockList'][$k]["stoId"]."|') where `ct_id` ='".$res['data']['stockList'][$k]["ct_id"]."'";
+                sql_query($sql_ct);
+            }
+            $stoIdList = implode(",", $stoIdList);
+            sql_query("
+            UPDATE g5_shop_order SET
+                stoId = '{$stoIdList}'
+            WHERE od_id = '{$od_id}'
+            ");
+
+            $_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
+            $_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
+            goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}&documentId={$sendData["documentId"]}");
+        } else {
             sql_query("
             DELETE FROM g5_shop_order
             WHERE od_id = '{$od_id}'
             ");
             alert($res["message"],G5_URL);
-		} else {
-			$_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
-			$_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
-
-			goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}&documentId={$sendData["documentId"]}");
-		}
+        }
 	}
 
 	# 재고신청
