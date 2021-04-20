@@ -1023,6 +1023,7 @@ var array_box=[];
 			document.getElementById("penConNum").value=list['penConNum'];		//휴대전화
 			document.getElementById("penConPnum").value=list['penConPnum'];		//전화번호
 			document.getElementById("penAddr").value=list['penAddr'];			//주소
+			document.getElementById("penAddrDtl").value=list['penAddrDtl'];			//상세주소
 			document.getElementById("penTypeCd").value=list['penTypeCd'];			//주소
 			///*document.getElementById("penMoney").value=list['penMoney'];			//한도금액*/
 

@@ -50,6 +50,8 @@ if($header_skin)
     <input type="text" name="penConPnum" id="penConPnum" class="form-control input-sm" readonly style="display: none;">
     <input type="text" name="penConNum" id="penConNum" class="form-control input-sm" readonly style="display: none;">
     <input type="text" name="penAddr" id="penAddr" class="form-control input-sm" readonly style="display: none;">
+    <input type="text" name="penAddrDtl" id="penAddrDtl" class="form-control input-sm" readonly style="display: none;">
+
 <!--    <input type="text" name="penMoney" id="penMoney" class="form-control input-sm" readonly>-->
 
     <section id="pro-order" class="wrap order-list">

@@ -591,7 +591,7 @@ function gumae3baesong() {
     f.od_b_hp.value   = f.penConNum.value;
     f.od_b_zip.value  = f.od_zip.value;
     f.od_b_addr1.value = f.penAddr.value;
-    f.od_b_addr2.value = f.od_addr2.value;
+    f.od_b_addr2.value = f.penAddrDtl.value;
 //    f.od_b_addr3.value = f.od_addr3.value;
 //    f.od_b_addr_jibeon.value = f.od_addr_jibeon.value;
 
