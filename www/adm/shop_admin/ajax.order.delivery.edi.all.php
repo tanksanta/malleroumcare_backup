@@ -152,39 +152,17 @@ foreach($carts as $cart) {
 
     set_order_admin_log($od_id, $it_name . ' EDI 전송');
 
-    // $sql = " update {$g5['g5_shop_order_table']}
-    // set 
-    //     od_b_name = '$od_b_name',
-    //     od_b_tel = '$od_b_tel',
-    //     od_b_hp = '$od_b_hp',
-    //     od_b_zip1 = '$od_b_zip1',
-    //     od_b_zip2 = '$od_b_zip2',
-    //     od_b_addr1 = '$od_b_addr1',
-    //     od_b_addr2 = '$od_b_addr2',
-    //     od_b_addr3 = '$od_b_addr3',
-    //     od_b_addr_jibeon = '$od_b_addr_jibeon',
-    //     od_ex_date = '$od_ex_date',
-    //     od_memo = '$od_memo',
-    //     od_delivery_type = '$od_delivery_type',
-    //     od_delivery_company = '$od_delivery_company',
-    //     od_delivery_text = '$od_delivery_text',
-    //     od_delivery_place = '$od_delivery_place',
-    //     od_delivery_tel = '$od_delivery_tel',
-    //     od_delivery_receiptperson = '$od_delivery_receiptperson',
-    //     od_delivery_qty = '$od_delivery_qty',
-    //     od_delivery_price = '$od_delivery_price',
-    //     od_send_admin_memo = '$od_send_admin_memo',
-    //     od_edi_date = now(),
-    //     od_edi_msg = '{$result}', 
-    //     od_edi_chk = '{$od_delivery_receiptperson}', 
-    //     od_edi_price = '$priceAmt', 
-    //     od_edi_ea = '$qty',
-    //     od_edi_result = '$edi_result',
-    //     od_invoice_time = now(),
-    //     od_invoice = '$od_delivery_text'
-    //     ";
-    // $sql .= " where od_id = '$od_id' ";
-    // sql_query($sql);
+    $sql = " update {$g5['g5_shop_cart_table']}
+    set 
+        ct_edi_date = now(),
+        ct_edi_msg = '{$result}', 
+        ct_edi_chk = '', 
+        ct_edi_price = '$priceAmt', 
+        ct_edi_ea = '$qty',
+        ct_edi_result = '$edi_result'
+    where ct_id = '{$cart['ct_id']}'
+        ";
+    sql_query($sql);
 }
 
 $ret = array(
