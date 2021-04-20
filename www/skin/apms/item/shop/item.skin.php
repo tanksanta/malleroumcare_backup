@@ -111,7 +111,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 	.selfPriceInfo { width: 100%; border: 1px solid #CFCFCF; padding: 10px 15px; background-color: #F8F8F8; }
 	.selfPriceInfo > .title { width: 100%; height: 20px; line-height: 20px; font-weight: bold; color: #333; }
-	.selfPriceInfo > p { width: 100%; height: 20px; line-height: 20px; margin-top: 10px; font-size: 18px; }
+	.selfPriceInfo > p { width: 100%;  line-height: 20px; margin-top: 10px; font-size: 18px; }
 
 	#item3dViewBtn { position: absolute; width: 130px; height: 40px; line-height: 38px; z-index: 10; top: 0; right: 25px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
 	#item3dViewBtn > img { margin-right: 10px; }
@@ -132,6 +132,8 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
     @media (max-width: 960px){
         body { padding-bottom: 130px; }
         .btn_top_scroll { bottom: 140px; }
+		.selfPriceInfo > p { font-size: 14px; }
+        
     }
 </style>
 
