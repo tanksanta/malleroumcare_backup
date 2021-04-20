@@ -86,14 +86,15 @@ if($_POST["mb_id"] != "admin"){
         $mb_password2 =  base64_encode ($mb_password) ;
         // echo $mb_password2;
         // return false;
+		
 		if(!$mbCheck){
 			sql_query("
 				INSERT INTO {$g5["member_table"]} SET
 					mb_id = '{$resInfo["usrId"]}',
 					mb_name = '{$resInfo["entNm"]}',
 					mb_nick = '{$resInfo["entNm"]}',
-					mb_hp = '{$resInfo["entPnum"]}',
-					mb_tel = '{$resInfo["entPnum"]}',
+					mb_hp = '{$resInfo["usrPnum"]}',
+					mb_tel = '{$resInfo["usrPnum"]}',
 					mb_type = '{$resInfo["type"]}',
 					mb_entId = '{$resInfo["entId"]}',
 					mb_entNm = '{$resInfo["entNm"]}',
@@ -118,8 +119,8 @@ if($_POST["mb_id"] != "admin"){
 				UPDATE {$g5["member_table"]} SET
 					mb_name = '{$resInfo["entNm"]}',
 					mb_nick = '{$resInfo["entNm"]}',
-					mb_hp = '{$resInfo["entPnum"]}',
-					mb_tel = '{$resInfo["entPnum"]}',
+					mb_hp = '{$resInfo["usrPnum"]}',
+					mb_tel = '{$resInfo["usrPnum"]}',
 					mb_entId = '{$resInfo["entId"]}',
 					mb_entNm = '{$resInfo["entNm"]}',
                     mb_zip1 = '{$resInfo["usrZip01"]}',
