@@ -45,8 +45,8 @@
             $barcode=[];
             $sendData["stoId"] = $stoIdData;
             $oCurl = curl_init();
-			$res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
-            $result_again = json_decode($res, true);
+			$res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+            $result_again = $res;
             $result_again =$result_again['data'];
             for($k=0; $k < count($result_again); $k++){
                 if($result_again[$k]['prodBarNum']){
