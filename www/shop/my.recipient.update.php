@@ -727,6 +727,9 @@
                 + $(".register-form select[name='penProBirth2']").val()+'-'
                 + $(".register-form select[name='penProBirth3']").val();
 
+				if(penBirth.length !== 10){ alert("보호자 생년월일을 확인하세요."); return false;}
+                if(penProBirth.length !== 10){ penProBirth=""; }
+
 				var sendData = {
 					penId : "<?=$data["penId"]?>",
 					penNm : $(".register-form input[name='penNm']").val(),
