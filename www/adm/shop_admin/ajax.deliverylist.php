@@ -441,6 +441,11 @@ foreach($orderlist as $order) {
 	$prodStockqty = 0;
 	$prodDelivery = 0;
 
+    $cart_cnt = 0;
+    $delivery_input_cnt = 0; // 입력
+    $edi_success_cnt = 0; // 전송
+    $edi_return_cnt = 0; // 송장
+
 	if($order['cart']){
 		foreach($order['cart'] as $cart) {
 			$od_cart_count += $cart['ct_qty'];
@@ -459,6 +464,23 @@ foreach($orderlist as $order) {
 			if($cart["prodSupYn"] == "N"){
 				$prodSupNqty += $cart["ct_qty"];
 			}
+
+            // 합포가 아니면
+            if (!$cart['ct_combine_ct_id']) {
+                $cart_cnt++;
+
+                if($cart['ct_delivery_cnt'] > 0) {
+                    $delivery_input_cnt++;
+                }
+
+                if($cart['ct_edi_result'] == '1') {
+                    $edi_success_cnt++;
+                }
+
+                if($cart['ct_delivery_num']) {
+                    $edi_return_cnt++;
+                }
+            }
 		}
 
 		if($order["od_delivery_yn"] == "N"){
@@ -472,9 +494,15 @@ foreach($orderlist as $order) {
 		$prodBarNumCntBtnWord = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
 		$prodBarNumCntBtnStatus = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? " disable" : "";
 
-		$deliveryCntBtnWord = "배송정보 ({$order["od_delivery_insert"]}/{$order["od_delivery_total"]})";
-		$deliveryCntBtnWord = ($order["od_delivery_insert"] >= $order["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
-		$deliveryCntBtnStatus = ($order["od_delivery_insert"] >= $order["od_delivery_total"]) ? " disable" : "";
+        $deliveryCntBtnWord = " 입력 ({$delivery_input_cnt}/". $cart_cnt .")";
+        $deliveryCntBtnWord .= ", 전송 ({$edi_success_cnt}/". $cart_cnt .")";
+        $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $cart_cnt .")";
+
+        $deliveryCntBtnStatus = '';
+        if ($edi_return_cnt >= $cart_cnt) {
+		    $deliveryCntBtnWord = '입력완료';
+            $deliveryCntBtnStatus = ' disable ';
+        }
 	}
 
     $important2_class = $order['od_important2'] ? 'on' : '';
@@ -719,7 +747,7 @@ foreach($orderlist as $order) {
             <span class=\"icon-star-gray hand list-important2 important-25 {$important2_class}\" data-od_id='{$order['od_id']}'></span>
         </td>
         <td align=\"center\" class=\"delivery_info od_delivery_info\">
-			<a href='#' class='deliveryCntBtn{$deliveryCntBtnStatus}' data-id='{$order["od_id"]}'>{$deliveryCntBtnWord}</a>
+			<a href='#' class='deliveryCntBtn{$deliveryCntBtnStatus} wide' data-id='{$order["od_id"]}'>{$deliveryCntBtnWord}</a>
         </td>
         <td align=\"center\">
             <input type=\"text\" name=\"od_ex_date\" class=\"od_ex_date\" data-od-id=\"{$order['od_id']}\" value=\"{$order['od_ex_date']}\" />

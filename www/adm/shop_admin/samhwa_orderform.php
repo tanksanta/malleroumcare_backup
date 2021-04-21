@@ -152,18 +152,53 @@ $result = sql_query($sql);
 $carts = array();
 $cate_counts = array();
 
+$delivery_cnt = 0; // 배송목록 카운트
+$delivery_input_cnt = 0; // 입력
+$edi_success_cnt = 0; // 전송
+$edi_return_cnt = 0; // 송장
+
 for($i=0; $row=sql_fetch_array($result); $i++) {
 
     $cate_counts[$row['ct_status']] += 1;
 
     // 상품의 옵션정보
-    $sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
-					, ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
-                from {$g5['g5_shop_cart_table']} MT
-                where od_id = '{$od['od_id']}'
-                    and it_id = '{$row['it_id']}'
-                    and ct_uid = '{$row['ct_uid']}'
-                order by io_type asc, ct_id asc ";
+    $sql = " select a.ct_id,
+						a.mb_id, 
+						a.it_id, 
+						a.ct_price, 
+						a.ct_point, 
+						a.ct_qty, 
+						a.ct_stock_qty, 
+						a.ct_barcode, 
+						a.ct_option, 
+						a.ct_status, 
+						a.cp_price, 
+						a.ct_stock_use, 
+						a.ct_point_use, 
+						a.ct_send_cost, 
+						a.ct_sendcost, 
+						a.io_type, 
+						a.io_price, 
+						a.pt_msg1, 
+						a.pt_msg2, 
+						a.pt_msg3, 
+						a.ct_discount, 
+						a.ct_uid, 
+						a.ct_combine_ct_id,
+						b.it_delivery_cnt,
+						b.it_delivery_price,
+						a.ct_delivery_cnt,
+						a.ct_delivery_price,
+						a.it_name,
+						a.ct_delivery_company,
+						a.ct_delivery_num,
+						( SELECT prodSupYn FROM g5_shop_item WHERE it_id = a.it_id ) AS prodSupYn,
+						prodMemo
+					from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
+					where a.od_id = '{$od['od_id']}'
+						and a.it_id = '{$row['it_id']}'
+						and a.ct_uid = '{$row['ct_uid']}'
+					order by a.io_type asc, a.ct_id asc ";
     $res = sql_query($sql);
 
     $row['options_span'] = sql_num_rows($res);
@@ -187,6 +222,22 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 		if($opt["prodSupYn"] == "Y"){
 			$opt["ct_price_stotal"] -= ($opt["ct_stock_qty"] * $opt_price);
 		}
+
+        if (!$opt['ct_combine_ct_id']) {
+            $delivery_cnt++;
+
+            if($opt['ct_delivery_cnt'] > 0) {
+                $delivery_input_cnt++;
+            }
+
+            if($opt['ct_edi_result'] == '1') {
+                $edi_success_cnt++;
+            }
+
+            if($opt['ct_delivery_num']) {
+                $edi_return_cnt++;
+            }
+        }
 
         $row['options'][] = $opt;
     }
@@ -285,9 +336,20 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
 	$prodBarNumCntBtnWord = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
 	$prodBarNumCntBtnStatus = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? " disable" : "";
 
-	$deliveryCntBtnWord = "배송정보 ({$od["od_delivery_insert"]}/{$od["od_delivery_total"]})";
-	$deliveryCntBtnWord = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
-	$deliveryCntBtnStatus = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? " disable" : "";
+	// $deliveryCntBtnWord = "배송정보 ({$od["od_delivery_insert"]}/{$od["od_delivery_total"]})";
+	// $deliveryCntBtnWord = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
+	// $deliveryCntBtnStatus = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? " disable" : "";
+
+    
+    $deliveryCntBtnWord = " 입력 ({$delivery_input_cnt}/". $delivery_cnt .")";
+    $deliveryCntBtnWord .= ", 전송 ({$edi_success_cnt}/". $delivery_cnt .")";
+    $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
+
+    $deliveryCntBtnStatus = '';
+    if ($edi_return_cnt >= $delivery_cnt) {
+        $deliveryCntBtnWord = '입력완료';
+        $deliveryCntBtnStatus = ' disable ';
+    }
 
 ?>
 <script>
@@ -1106,7 +1168,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     <tr>
                         <th scope="row">배송정보</th>
                         <td colspan="3">
-                        	<a href="#" class="deliveryCntBtn<?=$deliveryCntBtnStatus?>"><?=$deliveryCntBtnWord?></a>
+                        	<a href="#" class="deliveryCntBtn<?=$deliveryCntBtnStatus?> wide"><?=$deliveryCntBtnWord?></a>
                         </td>
                     </tr>
                     <!--
