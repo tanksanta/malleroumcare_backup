@@ -89,20 +89,20 @@
 				<p class="labelVal num">
 					<b>
 					<?php foreach($delivery_companys as $data){ ?>
-						<?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? $data["name"] : ""?>
+						<?=($options[$k]["ct_delivery_company"] == $data["val"]) ? $data["name"] : ""?>
 					<?php } ?>
 					</b>
 					<span>
-						<?=($carts[$i]["ct_delivery_num"]) ? $carts[$i]["ct_delivery_num"] : "-"?>
+						<?=($options[$k]["ct_delivery_num"]) ? $options[$k]["ct_delivery_num"] : "-"?>
 					</span>
 				</p>
 				<p class="labelVal cnt">
 					<b>박스</b>
-					<span><?=number_format($carts[$i]["ct_delivery_cnt"])?>개</span>
+					<span><?=number_format($options[$k]["ct_delivery_cnt"])?>개</span>
 				</p>
 				<p class="labelVal price">
 					<b>배송비</b>
-					<span><?=number_format($carts[$i]["ct_delivery_price"])?>원</span>
+					<span><?=number_format($options[$k]["ct_delivery_price"])?>원</span>
 				</p>
 			</li>
 		</ul>
