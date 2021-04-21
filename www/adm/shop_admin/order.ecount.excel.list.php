@@ -92,7 +92,7 @@
 			}
 
 			$rows[] = [ 
-				date("Y-m-d", strtotime($od["od_ex_date"])),
+				date("Y-m-d", strtotime($od["od_time"])),
 				$i,
 				$mb['mb_thezone'],
 				'',
