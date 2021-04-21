@@ -834,6 +834,9 @@ pre{white-space: pre-wrap;}
 
 .deliveryCntBtn { display: inline-block; width: 100px; height: 35px; line-height: 35px; border-radius: 5px; border: 1px solid #FF6600; font-size: 12px; color: #FF6600; text-align: center; }
 .deliveryCntBtn.disable { color: #FFF; border-color: #A6A6A6; background-color: #A6A6A6; }
+.deliveryCntBtn.wide {
+	width:220px;
+}
 
 /* 210319 */
 #samhwa-m-menu .wrap .closer img { width: 25px; cursor: pointer; }

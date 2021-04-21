@@ -100,14 +100,43 @@ function get_carts_by_od_id($od_id, $delivery_yn = null) {
 		$cate_counts[$row['ct_status']] += 1;
 
 		// 상품의 옵션정보
-		$sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid, ct_combine_ct_id
-						, ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
-						, prodMemo
-					from {$g5['g5_shop_cart_table']} MT
-					where od_id = '{$od_id}'
-						and it_id = '{$row['it_id']}'
-						and ct_uid = '{$row['ct_uid']}'
-					order by io_type asc, ct_id asc ";
+		$sql = " select a.ct_id,
+						a.mb_id, 
+						a.it_id, 
+						a.ct_price, 
+						a.ct_point, 
+						a.ct_qty, 
+						a.ct_stock_qty, 
+						a.ct_barcode, 
+						a.ct_option, 
+						a.ct_status, 
+						a.cp_price, 
+						a.ct_stock_use, 
+						a.ct_point_use, 
+						a.ct_send_cost, 
+						a.ct_sendcost, 
+						a.io_type, 
+						a.io_price, 
+						a.pt_msg1, 
+						a.pt_msg2, 
+						a.pt_msg3, 
+						a.ct_discount, 
+						a.ct_uid, 
+						a.ct_combine_ct_id,
+						b.it_delivery_cnt,
+						b.it_delivery_price,
+						a.ct_delivery_cnt,
+						a.ct_delivery_price,
+						a.it_name,
+						a.ct_delivery_company,
+						a.ct_delivery_num,
+						( SELECT prodSupYn FROM g5_shop_item WHERE it_id = a.it_id ) AS prodSupYn,
+						prodMemo
+					from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
+					where a.od_id = '{$od_id}'
+						and a.it_id = '{$row['it_id']}'
+						and a.ct_uid = '{$row['ct_uid']}'
+					order by a.io_type asc, a.ct_id asc ";
 		$res = sql_query($sql);
 
 		$row['options_span'] = sql_num_rows($res);

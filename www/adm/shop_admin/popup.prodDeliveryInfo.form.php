@@ -91,51 +91,59 @@
 				<?php 
 					for($i = 0; $i < count($carts); $i++){ 
 						$options = $carts[$i]["options"];
+						// print_r2($options);
 
 						for($k = 0; $k < count($options); $k++){
 				?>
-						<tr data-price="<?=$carts[$i]["it_delivery_price"]?>" data-cnt="<?=$carts[$i]["it_delivery_cnt"]?>">
+						<tr data-price="<?=$options[$k]["it_delivery_price"]?>" data-cnt="<?=$options[$k]["it_delivery_cnt"]?>">
 							<td>
-								<input type="hidden" name="ct_id[]" value="<?=$carts[$i]["ct_id"]?>">
+								<input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
 								<?=stripslashes($carts[$i]["it_name"])?>
 								<?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
 									(<?=$options[$k]["ct_option"]?>)
 								<?php } ?>
 							</td>
-							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
-								<select class="frm_input ct_delivery_cnt" name="ct_delivery_cnt_<?=$carts[$i]["ct_id"]?>" data-it-cnt="<?php echo $carts[$i]['it_delivery_cnt']; ?>" data-it-cnt-price="<?php echo $carts[$i]['it_delivery_price']; ?>">
+							<td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
+								<select class="frm_input ct_delivery_cnt" name="ct_delivery_cnt_<?=$options[$k]["ct_id"]?>" data-it-cnt="<?php echo $options[$k]['it_delivery_cnt']; ?>" data-it-cnt-price="<?php echo $carts[$i]['it_delivery_price']; ?>">
 								<?php for($ii = 0; $ii < 21; $ii++){ ?>
-									<option value="<?=$ii?>" <?=($carts[$i]["ct_delivery_cnt"] == $ii) ? "selected" : ""?>><?=$ii?></option>
+									<option value="<?=$ii?>" <?=($options[$k]["ct_delivery_cnt"] == $ii) ? "selected" : ""?>><?=$ii?></option>
 								<?php } ?>
 								</select>
 							</td>
-							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
-								<input type="text" value="<?=$carts[$i]["ct_delivery_price"]?>" class="frm_input ct_delivery_price" name="ct_delivery_price_<?=$carts[$i]["ct_id"]?>" style="width: 100px;">
+							<td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
+								<input type="text" value="<?=$options[$k]["ct_delivery_price"]?>" class="frm_input ct_delivery_price" name="ct_delivery_price_<?=$options[$k]["ct_id"]?>" style="width: 100px;">
 								<span>원</span>
 							</td>
-							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
-								<select class="frm_input" name="ct_delivery_company_<?=$carts[$i]["ct_id"]?>">
+							<td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
+								<select class="frm_input" name="ct_delivery_company_<?=$options[$k]["ct_id"]?>">
 									<option value="">선택하세요.</option>
 								<?php foreach($delivery_companys as $data){ ?>
-									<option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+									<option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
 								<?php } ?>
 								</select>
 							</td>
-							<td class="combine combine_n <?php if(!$carts[$i]['ct_combine_ct_id']) echo ' active ';?>">
-								<input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" class="frm_input" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>">
+							<td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
+								<input type="text" value="<?=$options[$k]["ct_delivery_num"]?>" class="frm_input" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>">
 							</td>
-							<td class="combine combine_y <?php if($carts[$i]['ct_combine_ct_id']) echo ' active ';?>" colspan="4">
-								<select name="ct_combine_ct_id_<?php echo $carts[$i]["ct_id"]; ?>" class="ct_combine_ct_id">
+							<td class="combine combine_y <?php if($options[$k]['ct_combine_ct_id']) echo ' active ';?>" colspan="4">
+								<select name="ct_combine_ct_id_<?php echo $options[$k]["ct_id"]; ?>" class="ct_combine_ct_id">
 									<?php
 									foreach($carts as $c) { 
-										if ($c['ct_id'] === $carts[$i]['ct_id']) continue;
-									?>
-										<option value="<?php echo $c['ct_id']; ?>"><?php echo stripslashes($c["it_name"]); ?>
+										foreach($c['options'] as $o) {
+											if ($o['ct_id'] === $options[$k]['ct_id']) continue;
+										?>
+											<option value="<?php echo $o['ct_id']; ?>">
+												<?php echo stripslashes($o["it_name"]); ?>
+												<?php if($c["it_name"] != $o["ct_option"]){ ?>
+													(<?php echo $o["ct_option"]; ?>)
+												<?php } ?>
+											</option>
+										<?php } ?>
 									<?php } ?>
 								</select>
 							</td>
 							<td>
-								<label><input type="checkbox" name="ct_combine_<?php echo $carts[$i]["ct_id"]; ?>" class="chk_ct_combine" value="1" <?php if($carts[$i]['ct_combine_ct_id']) echo ' checked';?>> 합포</label>
+								<label><input type="checkbox" name="ct_combine_<?php echo $options[$k]["ct_id"]; ?>" class="chk_ct_combine" value="1" <?php if($options[$k]['ct_combine_ct_id']) echo ' checked';?>> 합포</label>
 							</td>
 						</tr>
 					<?php } ?>
