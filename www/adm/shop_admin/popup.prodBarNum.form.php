@@ -301,23 +301,29 @@
 							</div>
 
 							<div class="deliveryInfoWrap">
-								<?php if ($carts[$i]['ct_combine_ct_id']) { ?>
+								<?php if ($options[$k]['ct_combine_ct_id']) { ?>
 									<?php
 									// 합포 상품 찾기
 									foreach($carts as $c) {
-										if($carts[$i]['ct_combine_ct_id'] === $c['ct_id']) {
-											echo stripslashes($c["it_name"]) . ' 상품과 같이 배송';
+										foreach($c['options'] as $o) {
+											if($options[$k]['ct_combine_ct_id'] === $o['ct_id']) {
+												echo stripslashes($c["it_name"]);
+												if($c["it_name"] != $o["ct_option"]){
+													echo '(' . $o["ct_option"] . ')';
+												}
+												echo ' 상품과 같이 배송 됩니다.';
+											}
 										}
 									}
 									?>
 								<?php } else { ?>
-									<input type="hidden" name="ct_id[]" value="<?=$carts[$i]["ct_id"]?>">
-									<select name="ct_delivery_company_<?=$carts[$i]["ct_id"]?>">
+									<input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
+									<select name="ct_delivery_company_<?=$options[$k]["ct_id"]?>">
 									<?php foreach($delivery_companys as $data){ ?>
-										<option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+										<option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
 									<?php } ?>
 									</select>
-									<input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>" placeholder="송장번호 입력">
+									<input type="text" value="<?=$options[$k]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>" placeholder="송장번호 입력">
 									<img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
 								<?php } ?>
 							</div>

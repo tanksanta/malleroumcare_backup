@@ -132,7 +132,7 @@
 										foreach($c['options'] as $o) {
 											if ($o['ct_id'] === $options[$k]['ct_id']) continue;
 										?>
-											<option value="<?php echo $o['ct_id']; ?>">
+											<option value="<?php echo $o['ct_id']; ?>" <?php echo ($options[$k]['ct_combine_ct_id'] === $o['ct_id']) ? ' selected ' : '' ; ?>>
 												<?php echo stripslashes($o["it_name"]); ?>
 												<?php if($c["it_name"] != $o["ct_option"]){ ?>
 													(<?php echo $o["ct_option"]; ?>)
