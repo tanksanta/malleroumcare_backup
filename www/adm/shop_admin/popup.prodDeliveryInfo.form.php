@@ -143,7 +143,17 @@
 								</select>
 							</td>
 							<td>
-								<label><input type="checkbox" name="ct_combine_<?php echo $options[$k]["ct_id"]; ?>" class="chk_ct_combine" value="1" <?php if($options[$k]['ct_combine_ct_id']) echo ' checked';?>> 합포</label>
+								<label>
+									<input 
+										type="checkbox" 
+										name="ct_combine_<?php echo $options[$k]["ct_id"]; ?>" 
+										class="chk_ct_combine" 
+										value="1" 
+										<?php if($options[$k]['ct_combine_ct_id']) echo ' checked';?>
+										<?php if(count($options) === 1 && count($carts) === 1) echo ' disabled';?>
+									>
+									합포
+								</label>
 							</td>
 						</tr>
 					<?php } ?>
