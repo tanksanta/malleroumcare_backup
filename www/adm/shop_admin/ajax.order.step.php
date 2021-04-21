@@ -40,6 +40,18 @@ foreach($od_id as $odid) {
 $step_info = get_step($step);
 
 foreach($od_id as $odid) {
+
+    if($step=="배송"){
+
+    $od_ex_date = date("Y-m-d");
+    $sql = " update {$g5['g5_shop_order_table']} set 
+        od_ex_date = '$od_ex_date'
+        where od_id = '$odid' 
+    ";
+    sql_query($sql);
+        
+    }
+
     $sql = " update {$g5['g5_shop_order_table']}
         set od_status = '{$step}' ";
     $sql .= " where od_id = '{$odid}' ";
