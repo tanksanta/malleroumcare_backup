@@ -86,24 +86,41 @@
 						(<?=$options[$k]["ct_option"]?>)
 					<?php } ?>
 				</p>
-				<p class="labelVal num">
-					<b>
-					<?php foreach($delivery_companys as $data){ ?>
-						<?=($options[$k]["ct_delivery_company"] == $data["val"]) ? $data["name"] : ""?>
-					<?php } ?>
-					</b>
-					<span>
-						<?=($options[$k]["ct_delivery_num"]) ? $options[$k]["ct_delivery_num"] : "-"?>
-					</span>
-				</p>
-				<p class="labelVal cnt">
-					<b>박스</b>
-					<span><?=number_format($options[$k]["ct_delivery_cnt"])?>개</span>
-				</p>
-				<p class="labelVal price">
-					<b>배송비</b>
-					<span><?=number_format($options[$k]["ct_delivery_price"])?>원</span>
-				</p>
+				<?php if ($options[$k]['ct_combine_ct_id']) { ?>
+					<?php
+					// 합포 상품 찾기
+					foreach($carts as $c) {
+						foreach($c['options'] as $o) {
+							if($options[$k]['ct_combine_ct_id'] === $o['ct_id']) {
+								echo stripslashes($c["it_name"]);
+								if($c["it_name"] != $o["ct_option"]){
+									echo '(' . $o["ct_option"] . ')';
+								}
+								echo ' 상품과 같이 배송 됩니다.';
+							}
+						}
+					}
+					?>
+				<?php }else { ?>
+					<p class="labelVal num">
+						<b>
+						<?php foreach($delivery_companys as $data){ ?>
+							<?=($options[$k]["ct_delivery_company"] == $data["val"]) ? $data["name"] : ""?>
+						<?php } ?>
+						</b>
+						<span>
+							<?=($options[$k]["ct_delivery_num"]) ? $options[$k]["ct_delivery_num"] : "-"?>
+						</span>
+					</p>
+					<p class="labelVal cnt">
+						<b>박스</b>
+						<span><?=number_format($options[$k]["ct_delivery_cnt"])?>개</span>
+					</p>
+					<p class="labelVal price">
+						<b>배송비</b>
+						<span><?=number_format($options[$k]["ct_delivery_price"])?>원</span>
+					</p>
+				<?php } ?>
 			</li>
 		</ul>
 		<?php } ?>
