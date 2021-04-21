@@ -88,7 +88,7 @@
             if($od["od_ex_date"]=="0000-00-00"){
                 $date = "출고전";
             }else{
-                $date =date("Y-m-d", strtotime($od["od_ex_date"]));
+                $date =date("Ymd", strtotime($od["od_ex_date"]));
             }
 			$rows[] = [ 
 				$date,
