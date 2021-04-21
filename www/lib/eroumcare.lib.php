@@ -32,8 +32,10 @@ function get_eroumcare2($api_url, $data) {
 
 function get_carts_by_od_id($od_id, $delivery_yn = null) {
 
+	// 유통 비유통 구분시
 	if ($delivery_yn) {
-		$delivery_where = "AND a.ct_delivery_yn = '". $delivery_yn ."'";
+		// $delivery_where = "AND a.ct_delivery_yn = '". $delivery_yn ."'";
+		$delivery_where = "AND a.prodSupYn = 'Y'";
 	}
 
 	global $g5;
