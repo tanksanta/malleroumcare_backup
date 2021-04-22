@@ -268,7 +268,7 @@
 										?>
 
 
-										<span class="<?=$add_class?>">0</span>/<?=$options[$k]["ct_qty"]?>
+										<span class="<?=$add_class?> c_num">0</span>/<?=$options[$k]["ct_qty"]?>
 										<img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
 										<img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
 
@@ -390,13 +390,16 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		var item = $(".folding_box");
 		for(var i = 0; i < item.length; i++){
 			var openStatus = true;
+			var d_count=0;
 			var notalls = $(item[i]).find(".notall");
 			for(var n = 0; n < notalls.length; n++){
 				if(!$(notalls[n]).val() || $(notalls[n]).val().length<12){
+					d_count++;
 					openStatus = false;
 				}
 			}
-
+			//숫자채우기
+			$(item[i]).parent().find(".p1 .span2 .c_num").html(notalls.length-d_count);
 			if(!openStatus){
 				$(item[i]).show();
 				$(item[i]).parent().find(".p1 .span2 .up").css("display", "inline-block");
@@ -533,10 +536,10 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                         $("." + value.stoId).val(value.prodBarNum);
                         //완료된 숫자 세고 집어넣기
                         if(value.prodBarNum){
-                            var number=$("." + value.stoId+"_v").html();
-                            var number_v=parseInt(number)+1
-                            $("." + value.stoId+"_v").html(number_v);
-                            count++;
+                            // var number=$("." + value.stoId+"_v").html();
+                            // var number_v=parseInt(number)+1
+                            // $("." + value.stoId+"_v").html(number_v);
+                            // count++;
                         }
                     });
 
