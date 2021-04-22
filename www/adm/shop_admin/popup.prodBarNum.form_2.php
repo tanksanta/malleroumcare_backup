@@ -239,7 +239,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 				var openStatus = true;
 				var notalls = $(item[i]).find(".notall");
 				for(var n = 0; n < notalls.length; n++){
-					if(!$(notalls[n]).val()){
+					if(!$(notalls[n]).val() || $(notalls[n]).val().length<12){
 						openStatus = false;
 					}
 				}
