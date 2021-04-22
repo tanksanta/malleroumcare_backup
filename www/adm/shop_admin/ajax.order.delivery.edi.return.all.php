@@ -73,7 +73,7 @@ while($cart = sql_fetch_array($rrr) ) {
     $it_name = $cart["it_name"];
 			
     if($it_name != $cart["ct_option"]){
-        $it_name .= " [{$cart["ct_option"]}]";
+        $it_name .= " ({$cart["ct_option"]})";
     }
 
     $sql = "update {$g5['g5_shop_cart_table']} set 
@@ -82,7 +82,7 @@ while($cart = sql_fetch_array($rrr) ) {
     sql_query($sql);
 
     $return_count++;
-    set_order_admin_log($od_id, 'EDI 리턴');
+    set_order_admin_log($od_id, $it_name . ' EDI 리턴');
 }
 
 if ($return_success) { 

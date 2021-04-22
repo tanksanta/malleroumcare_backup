@@ -128,7 +128,7 @@ foreach($carts as $cart) {
     $it_name = $cart["it_name"];
 			
     if($it_name != $cart["ct_option"]){
-        $it_name .= " [{$cart["ct_option"]}]";
+        $it_name .= " ({$cart["ct_option"]})";
     }
 
     $edi['goodsName']       = $it_name;
