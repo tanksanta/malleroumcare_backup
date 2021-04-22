@@ -291,7 +291,7 @@
 									<ul class="inputbox">
 										<?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
 											<li>
-												<input type="number" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+												<input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
 												<i class="fa fa-check"></i>
 												<span class="overlap">중복</span>
 												<img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
@@ -508,6 +508,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		});
 
 		$(".notall").keyup(function(){
+            $(this).val($(this).val().replace(/[^0-9]/g,""));
 			notallLengthCheck();
 		});
 

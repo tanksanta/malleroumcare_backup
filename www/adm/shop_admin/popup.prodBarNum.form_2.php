@@ -192,7 +192,7 @@
 					<div class="folding_box">
 						<ul class="inputbox">
 								<li>
-									<input type="number" maxlength="12" oninput="maxLengthCheck(this)" value="" class="notall frm_input  required " placeholder="수정하실 바코드를 입력하세요.">
+									<input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="" class="notall frm_input  required " placeholder="수정하실 바코드를 입력하세요.">
 									<i class="fa fa-check"></i>
 									<!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>"> -->
 								</li>
@@ -320,6 +320,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 	$(".notall").keyup(function(){
 			$(this).removeClass("active");
 			$(this).parent().find("i").removeClass("active");
+            $(this).val($(this).val().replace(/[^0-9]/g,""));
 
 			var length = $(this).val().length;
 			if(length < 12 && length){
