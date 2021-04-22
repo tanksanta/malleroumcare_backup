@@ -57,7 +57,10 @@
             $barcode = $barcode." "; 
             
             
-            
+			//할인적용 단가
+			if($od['od_cart_price']){
+				$price_d = ($od['od_cart_price']-$od['od_cart_discount'])/$it["ct_qty"];
+			}
             
             $it_name = $it["it_name"];
 			
@@ -110,7 +113,7 @@
 				'',
 				'',
 				$it["ct_qty"],
-				$it['opt_price'] ? $it['opt_price'] : 0, // 단가(판매가)
+				$price_d ? $price_d : 0, // 단가(판매가)
 				'',
 				round(($it['opt_price'] ? $it['opt_price'] : 0) / 1.1) * $it['ct_qty'], // 공급가액
 				round(($it['opt_price'] ? $it['opt_price'] : 0) / 1.1 / 10) * $it['ct_qty'], // 부가세
