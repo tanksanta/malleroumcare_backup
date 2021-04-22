@@ -295,6 +295,15 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 							prods : prodsList
 						}
 						$.ajax({
+							url : "./ajax.barcode_log.php",
+							type : "POST",
+							async : false,
+							data : sendData['prods'],
+							success : function(result){
+									console.log(result);
+								}
+						});
+						$.ajax({
 							url : "./samhwa_orderform_stock_update.php",
 							type : "POST",
 							async : false,
