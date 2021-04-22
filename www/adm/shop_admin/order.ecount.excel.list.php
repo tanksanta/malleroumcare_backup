@@ -115,8 +115,8 @@
 				$it["ct_qty"],
 				$price_d ? $price_d : 0, // 단가(판매가)
 				'',
-				round(($it['opt_price'] ? $it['opt_price'] : 0) / 1.1) * $it['ct_qty'], // 공급가액
-				round(($it['opt_price'] ? $it['opt_price'] : 0) / 1.1 / 10) * $it['ct_qty'], // 부가세
+				round(($price_d ? $price_d : 0) / 1.1) * $it['ct_qty'], // 공급가액
+				round(($price_d ? $price_d : 0) / 1.1 / 10) * $it['ct_qty'], // 부가세
 				$barcode, // 바코드
 				$it['ct_delivery_num'], // 로젠송장번호,
 				$it['prodMemo'], //적요
