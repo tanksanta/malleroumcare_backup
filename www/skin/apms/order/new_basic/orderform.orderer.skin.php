@@ -330,7 +330,7 @@ var array_box=[];
 									<input type="text" name="od_b_addr1" id="od_b_addr1" value="<?php echo get_text($member['mb_addr1']) ?>" required readonly style="width: 100%;">
 								 </div>
 								 <div>
-									<input type="text" name="od_b_addr2" id="od_b_addr2" value="<?php echo get_text($member['mb_addr2']).get_text($member['mb_addr_jibeon']) ?>" style="width: 100%;">
+									<input type="text" name="od_b_addr2" id="od_b_addr2" required value="<?php echo get_text($member['mb_addr2']).get_text($member['mb_addr_jibeon']) ?>" style="width: 100%;">
 								 </div>
 							</div>
 						</li>
