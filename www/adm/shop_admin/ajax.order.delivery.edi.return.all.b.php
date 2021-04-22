@@ -7,38 +7,11 @@ $return_success = 0;
 $return_failed = 0;
 $return_count = 0;
 
-$sql = "SELECT 
-    c.*, 
-    i.it_model,
-    o.od_name,
-    o.od_addr1,
-    o.od_addr2,
-    o.od_tel,
-    o.od_hp,
-    o.od_b_name,
-    o.od_b_addr1,
-    o.od_b_addr2,
-    o.od_b_tel,
-    o.od_b_hp,
-    o.od_id
-FROM 
-    g5_shop_cart as c 
-    LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
-    LEFT JOIN g5_shop_order as o ON c.od_id = o.od_id
-WHERE 
-    o.od_status = '출고준비'
-    -- AND c.ct_status = '출고준비'
-    AND c.ct_delivery_cnt > 0 -- 박스개수 1개 이상
-    AND c.ct_delivery_company = 'ilogen' -- 로젠택배
-    AND ( c.ct_combine_ct_id IS NULL OR c.ct_combine_ct_id = '') -- 합포가 아닌것
-    AND ( c.ct_delivery_num IS NULL OR c.ct_delivery_num = '') -- 송장번호 없는것
-    AND c.ct_edi_result = 1 -- edi result 성공
-";
-
+$sql = " select * from {$g5['g5_shop_order_table']} where od_edi_result = '1' AND od_delivery_text = '' and ( od_delivery_type = 'delivery1' OR od_delivery_type = 'delivery2' ) ";
 $rrr = sql_query($sql);
 
-while($cart = sql_fetch_array($rrr) ) {
-    $od_id = trim($cart['od_id']);
+while($od = sql_fetch_array($rrr) ) {
+    $od_id = trim($od['od_id']);
 
     unset($edi);
     unset($param);
@@ -46,6 +19,7 @@ while($cart = sql_fetch_array($rrr) ) {
     $edi['passWord']		= G5_EDI_PASSWORD;
     $edi['fixTakeNo']		= $od_id;
 
+    //$client		= new SoapClient('https://ilogen.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
     $client     = new SoapClient(G5_EDI_URL);
     $param		= array('parameters'=>$edi);
     $array		= $client->__call('W_PHP_NTx_TakeNoToSlip_Select', $param);
@@ -59,26 +33,20 @@ while($cart = sql_fetch_array($rrr) ) {
         }
         if( $sendnum ){
             // echo $sendnum;
-            $ct_delivery_num = $sendnum;
+            $od_delivery_text = $sendnum;
             $return_success++;
         }else{
-            $ct_delivery_num = '';
+            $od_delivery_text = '';
             $return_failed++;
         }
     }else{
-        $ct_delivery_num = '';
+        $od_delivery_text = '';
         $return_failed++;
     }
 
-    $it_name = $cart["it_name"];
-			
-    if($it_name != $cart["ct_option"]){
-        $it_name .= " [{$cart["ct_option"]}]";
-    }
-
-    $sql = "update {$g5['g5_shop_cart_table']} set 
-                ct_delivery_num = '$ct_delivery_num'
-            where ct_id = '{$cart['ct_id']}' ";
+    $sql = "update {$g5['g5_shop_order_table']} set 
+                od_delivery_text = '$od_delivery_text'
+            where od_id = '$od_id' ";
     sql_query($sql);
 
     $return_count++;

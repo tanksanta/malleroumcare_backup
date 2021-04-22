@@ -22,7 +22,8 @@ $sql = "SELECT
     o.od_b_addr1,
     o.od_b_addr2,
     o.od_b_tel,
-    o.od_b_hp
+    o.od_b_hp,
+    o.od_id
 FROM 
     g5_shop_cart as c 
     LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
@@ -143,9 +144,12 @@ foreach($carts as $cart) {
     $result		= $array->W_PHP_Tx_ExcelFile_SaveResult;
     if ( $result=='TRUE' ) {
         $edi_result = '1';
+        $return_success++;
     }else{
         $edi_result = '3';
+        $return_failed++;
     }
+    $return_count++;
 
     echo $result;
     exit;
@@ -165,9 +169,23 @@ foreach($carts as $cart) {
     sql_query($sql);
 }
 
+// $ret = array(
+//     'result' => 'success',
+//     'msg' => 'EDI 전송이 완료되었습니다.',
+// );
+
+if ($return_success) { 
+    $result = 'success';
+}else{
+    $result = 'fail';
+}
+
 $ret = array(
-    'result' => 'success',
-    'msg' => 'EDI 전송이 완료되었습니다.',
+    'result' => $result,
+    'msg' => 'EDI 전송이 '. $return_success . '개 완료되었습니다. (' . $return_failed .'개 실패)',
+    'return_success' => $return_success,
+    'return_failed' => $return_failed,
+    'return_count' => $return_count,
 );
 $json = json_encode($ret);
 echo $json;
