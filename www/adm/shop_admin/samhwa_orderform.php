@@ -2573,6 +2573,9 @@ $(document).ready(function() {
 				prods : productList
 			}
 
+
+
+
 			$.ajax({
 				url : "samhwa_orderform_order_update.php",
 				type : "POST",
@@ -2618,6 +2621,26 @@ $(document).ready(function() {
 				usrId : "<?=$od["mb_id"]?>",
 				prods : prodsList
 			}
+
+
+            //임시 작업 cart_status update - 추후 cart table 기준으로 바꿀거 대비
+            var send_ct_status={};
+            send_ct_status['od_id']= '<?php echo $_GET['od_id']?>';
+            send_ct_status['ct_status']= next_step_val;
+			$.ajax({
+				url : "./ct_status_update.php",
+				type : "POST",
+				async : false,
+				data : send_ct_status,
+				success : function(result){
+                    console.log(result);
+					if(result == "N"){
+                        alert('주문서가 업데이트 되지 않았습니다.');
+                    }
+				}
+			});
+
+
 
 			$.ajax({
 				url : "samhwa_orderform_stock_update.php",
