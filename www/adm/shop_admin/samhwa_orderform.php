@@ -192,6 +192,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 						a.it_name,
 						a.ct_delivery_company,
 						a.ct_delivery_num,
+                        a.ct_edi_result,
 						( SELECT prodSupYn FROM g5_shop_item WHERE it_id = a.it_id ) AS prodSupYn,
 						prodMemo
 					from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
