@@ -182,6 +182,7 @@
     var od_status = '';
     var od_step = "";
     var page= parseInt(document.getElementById('page').value);
+    var page2= 1;
     var loading = false;
     var end = false;
     var sel_field = 'od_id';
@@ -215,7 +216,9 @@
 
 
         formdata['cf']=document.getElementById('cf_flag').checked;
-        formdata['page']=parseInt(document.getElementById('page').value);
+        // formdata['page']=parseInt(document.getElementById('page').value);
+        formdata['page']=page2;
+		page2++;
         $.ajax({
             method: "POST",
             url: "<?=G5_URL?>/adm/shop_admin/ajax.release_orderlist.php",
