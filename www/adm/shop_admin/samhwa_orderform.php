@@ -503,12 +503,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
 
                                 ?>
                                 <tr class="<?php echo $k==0 ? 'top-border' : ''; ?>">
-                                    <?php if ( $k == 0 ) { ?>
-                                        <td rowspan="<?php echo (count($options) + (($prodMemo) ? 1 : 0)); ?>" class="chkcbox">
-                                            <label for="sit_sel_<?php echo $i; ?>" class="sound_only"><?php echo $carts[$i]['it_name']; ?> 옵션 전체선택</label>
-                                            <input type="checkbox" id="sit_sel_<?php echo $i; ?>" name="it_sel[]" value="<?=$carts[$i]["it_id"]?>">
-                                        </td>
-                                    <?php } ?>
+                                    <td rowspan="1" class="chkcbox">
+                                        <label for="sit_sel_<?php echo $i; ?>_<?php echo $k; ?>" class="sound_only"><?php echo $carts[$i]['it_name']; ?> 옵션 전체선택</label>
+                                        <input type="checkbox" id="sit_sel_<?php echo $i; ?>_<?php echo $k; ?>" name="it_sel[]" value="<?=$options[$k]['ct_id']?>">
+                                    </td>
                                     <td class="chkbox">
                                         <label for="ct_chk_<?php echo $chk_cnt; ?>" class="sound_only"><?php echo get_text($options[$k]['ct_option']); ?></label>
                                         <!--
@@ -810,7 +808,21 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         <?php echo number_format($options[$k]['ct_price_stotal']); ?>원
                                     </td>
                                     <td class="item_status">
-                                        <?php echo $options[$k]['ct_status']; ?>
+                                        <?php 
+                                            $ct_status_text="";
+                                            switch ($options[$k]['ct_status']) {
+                                                case '작성': $ct_status_text="작성"; break;
+                                                case '주문무효': $ct_status_text="주문무효"; break;
+                                                case '취소': $ct_status_text="주문취소"; break;
+                                                case '주문': $ct_status_text="상품주문"; break;
+                                                case '입금': $ct_status_text="입금완료"; break;
+                                                case '준비': $ct_status_text="상품준비"; break;
+                                                case '출고준비': $ct_status_text="출고준비"; break;
+                                                case '배송': $ct_status_text="출고완료"; break;
+                                                case '완료': $ct_status_text="배송완료"; break;
+                                            }
+                                            echo $ct_status_text;
+                                        ?>
                                     </td>
                                     <td class="item_memo">
                                         <?php if ( $k == 0 ) {
@@ -822,6 +834,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         }
                                         ?>
                                     </td>
+
                                     <td class="btncol">
 										<?php if($od['od_writer']!="openmarket"){ ?>
 											<?php //if ( $k == 0 ) { ?>
@@ -844,6 +857,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 											<?php } ?>
 										<?php //} ?>
                                     </td>
+                                    
                                 </tr>
                                 <?php
                                 $chk_first++;
