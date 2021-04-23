@@ -1,17 +1,47 @@
 <?php
+include_once("./_common.php");
 
-	include_once("./_common.php");
+$g5["title"] = "주문 내역 바코드 수정";
+include_once(G5_ADMIN_PATH."/admin.head.php");
 
-	$g5["title"] = "주문 내역 바코드 수정";
-	include_once(G5_ADMIN_PATH."/admin.head.php");
+$sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
+$od = sql_fetch($sql);
+$prodList = [];
+$prodListCnt = 0;
+$deliveryTotalCnt = 0;
 
-	$sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
-	$od = sql_fetch($sql);
-	$prodList = [];
-	$prodListCnt = 0;
-	$deliveryTotalCnt = 0;
+$carts = get_carts_by_od_id($od_id, 'Y');
 
-	$carts = get_carts_by_od_id($od_id, 'Y');
+	
+$delivery_cnt = 0; // 배송목록 카운트
+$delivery_input_cnt = 0; // 입력
+$edi_success_cnt = 0; // 전송
+$edi_return_cnt = 0; // 송장
+
+foreach($carts as $c) { 
+	foreach($c['options'] as $opt) {
+        	if (!$opt['ct_combine_ct_id']) {
+            $delivery_cnt++;
+
+            if($opt['ct_delivery_cnt'] > 0) {
+                $delivery_input_cnt++;
+            }
+
+            if($opt['ct_edi_result'] == '1') {
+                $edi_success_cnt++;
+            }
+
+            if($opt['ct_delivery_num']) {
+                $edi_return_cnt++;
+            }
+        }
+	}
+}
+
+
+$deliveryCntBtnWord = " 입력 ({$delivery_input_cnt}/". $delivery_cnt .")";
+$deliveryCntBtnWord .= ", 전송 ({$edi_success_cnt}/". $delivery_cnt .")";
+$deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
 
 ?>
 
@@ -31,6 +61,12 @@
 		#prodBarNumFormWrap { width: 100%; height: calc(100% - 60px); float: left; overflow: auto; }
 		
 		#prodBarNumFormWrap > .titleWrap { width: 100%; float: left; font-weight: bold; font-size: 21px; padding: 20px; }
+		#prodBarNumFormWrap > .titleWrap span {
+			font-size: 12px;
+			vertical-align: middle;
+			font-weight: normal;
+			padding-left: 10px;
+		}
 		
 		#prodBarNumFormWrap > .tableWrap { width: 100%; float: left; }
 		#prodBarNumFormWrap > .tableWrap > table { width: 100%; float: left; table-layout: fixed; }
@@ -63,6 +99,9 @@
 		
 		<div class="titleWrap">
 			배송정보입력
+			<span>
+			<?php echo $deliveryCntBtnWord; ?>
+			</span>
 		</div>
 		
 		<div class="tableWrap">
