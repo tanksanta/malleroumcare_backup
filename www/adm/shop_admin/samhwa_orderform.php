@@ -1040,12 +1040,14 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     <div class="change_status">
                         <span>선택한 상품 상태값</span>
                         <select name="step" id="step">
-                            <?php
-                            foreach($order_steps as $step) {
-                            if (!$step['cart']) continue;
-                            ?>
-                                <option value="<?php echo $step['val']; ?>" <?php echo $step['val'] == $od['od_status'] ? 'selected' : ''; ?>><?php echo $step['name']; ?>[<?php echo $step['val']; ?>]</option>
-                            <?php } ?>
+                            <option value="주문무효">주문무효</option>
+                            <option value="취소">주문취소</option>
+                            <option value="주문">상품주문</option>
+                            <option value="입금">입금완료</option>
+                            <option value="준비">상품준비</option>
+                            <option value="출고준비">출고준비</option>
+                            <option value="배송">출고완료</option>
+                            <option value="완료">배송완료</option>
                         </select>
                         <input type="button" value="변경하기" class="btn shbtn" id="change_cart_status">
                     </div>
@@ -2393,6 +2395,11 @@ $(document).ready(function() {
     });
 
     $('#change_cart_status').click(function() {
+
+
+        //20210423
+        var step = document.getElementById('step');
+        var it_sel = document.getElementsByName("it_sel[]");
         var formdata = $.extend(
             {},
             $('#frmsamhwaorderform').serializeObject(),
@@ -2400,11 +2407,46 @@ $(document).ready(function() {
                 od_id: od_id,
             }
         );
-
-        if (formdata['ct_chk[]'] === undefined) {
+        if (formdata['it_sel[]'] === undefined) {
             alert('상품을 체크해주세요.');
             return;
         }
+        var ct_id = [];
+        for(var k=0; k<it_sel.length; k++){
+            if(it_sel[k].checked==true){
+                ct_id.push(it_sel[k].value);
+            }
+        }
+        var sendData={};
+        sendData['ct_id']=ct_id;
+        sendData['step']=step.value;
+        // return false;
+        $.ajax({
+            type : "post",
+            url : "./ajax.cart_status.php",
+            data: sendData,
+            success : function(data){
+                if ( data === 'success' ) {
+                    alert('변경되었습니다.');
+                    location.reload();
+                }else{
+                    alert(data);
+                }
+            }
+        });
+
+        return false;
+
+
+
+
+
+
+
+
+
+
+
 
 
 		if($('#step').val() == '출고준비'){
