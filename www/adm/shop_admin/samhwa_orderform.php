@@ -227,7 +227,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
         if (!$opt['ct_combine_ct_id']) {
             $delivery_cnt++;
 
-            if($opt['ct_delivery_cnt'] > 0) {
+            if($opt['ct_delivery_company'] === 'ilogen' && $opt['ct_delivery_cnt'] > 0) {
                 $delivery_input_cnt++;
             }
 

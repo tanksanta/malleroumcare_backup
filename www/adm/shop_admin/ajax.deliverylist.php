@@ -469,7 +469,7 @@ foreach($orderlist as $order) {
             if (!$cart['ct_combine_ct_id']) {
                 $cart_cnt++;
 
-                if($cart['ct_delivery_cnt'] > 0) {
+                if($cart['ct_delivery_company'] === 'ilogen' && $cart['ct_delivery_cnt'] > 0) {
                     $delivery_input_cnt++;
                 }
 
