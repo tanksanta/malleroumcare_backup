@@ -68,11 +68,13 @@ foreach($carts as $cart) {
     $extraAmt				= 0;
     $gprice					= 0;
 
+    $take_no                = $cart['od_id'] . '_' . $cart['ct_id'];
+
     $edi['userID']			= G5_EDI_USERID;
     $edi['passWord']		= G5_EDI_PASSWORD; 
     // $edi['takeDt']			= $cart['ct_ex_date'] != '0000-00-00' ? str_replace("-", "", substr($cart['od_ex_date'], 0, 10)) : date("Ymd");
     $edi['takeDt']          = date("Ymd");
-    $edi['fixTakeNo']		= $cart['od_id'];
+    $edi['fixTakeNo']		= $take_no;
 
     // 송하인
     $edi['sndCustNm']		= $cart['od_name'];
@@ -151,10 +153,7 @@ foreach($carts as $cart) {
     }
     $return_count++;
 
-    echo $result;
-    exit;
-
-    set_order_admin_log($od_id, $it_name . ' EDI 전송');
+    set_order_admin_log($cart['od_id'], $it_name . ' EDI 전송');
 
     $sql = " update {$g5['g5_shop_cart_table']}
     set 

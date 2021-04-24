@@ -44,7 +44,7 @@ while($cart = sql_fetch_array($rrr) ) {
     unset($param);
     $edi['userID']			= G5_EDI_USERID;
     $edi['passWord']		= G5_EDI_PASSWORD;
-    $edi['fixTakeNo']		= $od_id;
+    $edi['fixTakeNo']		= $cart['od_id'] . '_' . $cart['ct_id'];
 
     $client     = new SoapClient(G5_EDI_URL);
     $param		= array('parameters'=>$edi);
