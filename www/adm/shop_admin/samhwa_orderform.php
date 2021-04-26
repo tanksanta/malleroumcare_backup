@@ -522,7 +522,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                 <?php if ( $options[$k]['io_type'] == 0 && $k == 0 ) { ?>
                                                     <a href="/shop/item.php?it_id=<?php echo $carts[$i]['it_id']; ?>" class="image" target="_blank" style="float: left;"><?php echo $image; ?></a>
                                                     <div class="item_info" style="width: calc(100% - 80px); float: left; padding-left: 15px;">
-	                                                    <b><?php echo stripslashes($carts[$i]['it_name']); ?> <b style="color: #<?=($carts[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;">(<?=($carts[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?>)</b>
+	                                                    <b>
+                                                        <?php if($options[$k]['ct_status'] == "재고소진"){ echo "[재고소진]"; } ?>
+                                                        <?php echo stripslashes($carts[$i]['it_name']); ?> <b style="color: #<?=($carts[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;">(<?=($carts[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?>)</b>
 	                                                    <?php if(substr($carts[$i]["ca_id"], 0, 2) == 20){ ?>
 																	<b style="color: #FFA500;">(대여)</b>
 																<?php } ?>
@@ -549,7 +551,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                     <?php if($od['od_tax_flag'] && $carts[$i]['ct_notax']) echo '<br/>[비과세상품]'; ?>
                                                 <?php }else{ ?>
                                                     <span style="margin-right:60px;"></span>
-                                                    <b>[옵션] <?php echo $options[$k]['ct_option']; ?></b>
+                                                    <?php if ( $carts[$i]['it_name'] != $options[$k]['ct_option']) { ?>[옵션]<?php } ?>
+                                                    <?php if($options[$k]['ct_status'] == "재고소진"){ echo "재고소진"; } ?>
 													<?php
 											          if($od['od_writer']=="openmarket"){
 													    if($carts[$i]['it_name']!=$carts[$i]['pt_old_name']){ ?>
@@ -812,6 +815,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         <?php 
                                             $ct_status_text="";
                                             switch ($options[$k]['ct_status']) {
+                                                case '재고소진': $ct_status_text="재고소진"; break;
                                                 case '작성': $ct_status_text="작성"; break;
                                                 case '주문무효': $ct_status_text="주문무효"; break;
                                                 case '취소': $ct_status_text="주문취소"; break;
