@@ -62,6 +62,19 @@
 				$price_d = ($od['od_cart_price']-$od['od_cart_discount'])/$it["ct_qty"];
 			}
             
+			//영세 과세 구분
+			$sql_taxInfo = 'select `it_taxInfo` from `g5_shop_item` where `it_id` = "'.$it['it_id'].'"';
+			$it_taxInfo = sql_fetch($sql_taxInfo);
+			$price_d_p ="";
+			$price_d_s ="";
+			if($it_taxInfo['it_taxInfo']=="영세"){
+				$price_d_p = $price_d;
+				$price_d_s = "0";
+			}else{
+				$price_d_p = round(($price_d ? $price_d : 0) / 1.1) * $it['ct_qty']; // 공급가액
+				$price_d_s = round(($price_d ? $price_d : 0) / 1.1 / 10) * $it['ct_qty']; // 부가세
+			}
+
             $it_name = $it["it_name"];
 			
 			if($it_name != $it["ct_option"]){
@@ -107,7 +120,7 @@
 				$addr,
 				'',
 				'',
-				'통합관리플랫폼',
+				$it['prodMemo'],
 				'',
 				$thezone_code, // 품목코드
 				'',
@@ -115,11 +128,11 @@
 				$it["ct_qty"],
 				$price_d ? $price_d : 0, // 단가(판매가)
 				'',
-				round(($price_d ? $price_d : 0) / 1.1) * $it['ct_qty'], // 공급가액
-				round(($price_d ? $price_d : 0) / 1.1 / 10) * $it['ct_qty'], // 부가세
+				$price_d_p, //공급가액
+                $price_d_s, //부가세
 				$barcode, // 바코드
 				$it['ct_delivery_num'], // 로젠송장번호,
-				$it['prodMemo'], //적요
+				'통합관리플랫폼', //적요
 				'',
 			];
 		}
