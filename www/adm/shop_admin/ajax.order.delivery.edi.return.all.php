@@ -52,6 +52,7 @@ while($cart = sql_fetch_array($rrr) ) {
     $result		= $array->W_PHP_NTx_TakeNoToSlip_SelectResult;
 
     $arr		= explode("≡", $result);
+    $sendnum = '';
     if($arr){
         foreach( $arr as $v ){
             $arr2		= explode("Ξ", $v);
