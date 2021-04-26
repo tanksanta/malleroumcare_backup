@@ -254,7 +254,8 @@ $sql = "INSERT INTO {$g5['g5_shop_cart_table']}
         DelayedDispatchReason,
         od_naver_orderid,
         ct_uid,
-        io_thezone)
+        io_thezone,
+        ct_delivery_cnt, ct_delivery_price, ct_delivery_company)
         SELECT
             0,
             '{$od_id_new}',
@@ -314,7 +315,8 @@ $sql = "INSERT INTO {$g5['g5_shop_cart_table']}
             DelayedDispatchReason,
             od_naver_orderid,
             ct_uid,
-            io_thezone
+            io_thezone,
+            ct_delivery_cnt, ct_delivery_price, ct_delivery_company
         FROM {$g5['g5_shop_cart_table']}
         WHERE od_id = '{$od_id}'
         ";
