@@ -553,6 +553,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                     <span style="margin-right:60px;"></span>
                                                     <?php if ( $carts[$i]['it_name'] != $options[$k]['ct_option']) { ?>[옵션]<?php } ?>
                                                     <?php if($options[$k]['ct_status'] == "재고소진"){ echo "재고소진"; } ?>
+                                                    <?php echo $options[$k]['ct_option']; ?></b>
 													<?php
 											          if($od['od_writer']=="openmarket"){
 													    if($carts[$i]['it_name']!=$carts[$i]['pt_old_name']){ ?>
