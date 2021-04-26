@@ -2858,8 +2858,8 @@ ul.div-ring p {
 .cheditor-popup-cframe { height:auto !important; }
 
 /* 2021성훈추가 */
-.p_box { float: left;font-size:10px; padding:0px 5px; margin:4px 5px 0px 0px;}
-.type1 { border: 1px solid #8b8b8b;color: #8b8b8b; }
+.p_box { float: left;font-size:14px; padding:3px 8px; margin:4px 5px 0px 0px;font-weight:bold;}
+.type1 { border: 1px solid #ff0000;color: #ff0000;}
 .type2 { border: 1px solid #e76fae;color: #e76fae;}
 .type3 { border: 1px solid #dc9854;color: #dc9854;}
 .type4 { border: 1px solid #4e7bbe;color: #4e7bbe;}
