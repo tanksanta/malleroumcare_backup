@@ -1977,12 +1977,12 @@ function get_item_sendcost($it_id, $price, $qty, $cart_id, $update=0)
 
     // 장바구니의 배송비 설정
     if ($update && $sendcost > -1) {
-        $sql = "SELECT min(ct_id) as ct_id FROM {$g5['g5_shop_cart_table']} WHERE `od_id` = '{$cart_id}' and `it_id` = '{$it_id}'";
+        $sql = "SELECT min(ct_id) as ct_id FROM {$g5['g5_shop_cart_table']} WHERE `od_id` = '{$cart_id}' and `it_id` = '{$it_id}' and ct_status NOT IN('재고소진')";
         $s_ct_id = sql_fetch($sql);
         $s_ct_id = $s_ct_id['ct_id'];
 
         if ($s_ct_id) {
-            $sql = "UPDATE {$g5['g5_shop_cart_table']} SET ct_sendcost = '{$sendcost}' WHERE ct_id = '{$s_ct_id}'";
+            $sql = "UPDATE {$g5['g5_shop_cart_table']} SET ct_sendcost = '{$sendcost}' WHERE ct_id = '{$s_ct_id}'  and ct_status NOT IN('재고소진') ";
             sql_query($sql);
         }
     }
