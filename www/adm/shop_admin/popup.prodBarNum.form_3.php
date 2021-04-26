@@ -238,6 +238,7 @@
 								<p class="p1">
 									<span class="span1">
 										<!-- 상품명 -->
+										<?php if($options[$k]['ct_stock_qty']){ echo '[재고소진]'; } ?>
 										<?=stripslashes($carts[$i]["it_name"])?>
 										<!-- 옵션 -->
 										<?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
