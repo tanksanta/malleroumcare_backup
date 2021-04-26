@@ -38,7 +38,7 @@ WHERE
     AND ( c.ct_combine_ct_id IS NULL OR c.ct_combine_ct_id = '') -- 합포가 아닌것
     AND ( c.ct_delivery_num IS NULL OR c.ct_delivery_num = '') -- 송장번호 없는것
     AND c.ct_edi_result = 0
-    -- and o.od_id = '2021042610362847'
+    -- and o.od_id = '2021042313174631'
 ";
 $cart_result = sql_query($sql);
 while ( $row2 = sql_fetch_array($cart_result) ) {
@@ -135,6 +135,18 @@ foreach($carts as $cart) {
 			
     if($it_name != $cart["ct_option"]){
         $it_name .= " ({$cart["ct_option"]})";
+    }
+
+    $sql = "SELECT * FROM g5_shop_cart WHERE ct_combine_ct_id = '{$cart['ct_id']}'";
+    $combine_result = sql_query($sql);
+    while ($combine_row = sql_fetch_array($combine_result)) {
+        
+        $combine_it_name = $combine_row["it_name"];
+        if($combine_it_name != $combine_row["ct_option"]){
+            $combine_it_name .= " ({$combine_row["ct_option"]})";
+        }
+
+        $it_name .= '#' . $combine_it_name;
     }
 
     $edi['goodsName']       = $it_name;
