@@ -110,6 +110,7 @@ function get_carts_by_od_id($od_id, $delivery_yn = null) {
 						a.ct_barcode, 
 						a.ct_option, 
 						a.ct_status, 
+						a.stoId, 
 						a.cp_price, 
 						a.ct_stock_use, 
 						a.ct_point_use, 
