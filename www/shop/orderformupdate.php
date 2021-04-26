@@ -257,8 +257,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			sql_query("
 				UPDATE {$g5["g5_shop_cart_table"]} SET
 					ct_delivery_yn = 'Y',
-					ct_delivery_cnt = '{$tmpCnt}',
-					ct_delivery_price = '{$tmpPrice}'
+					-- ct_delivery_cnt = '{$tmpCnt}',
+					-- ct_delivery_price = '{$tmpPrice}'
 				WHERE ct_id = '{$row["ct_id"]}'
 			");
 		}
