@@ -167,6 +167,13 @@ include_once($skin_path.'/search.skin.form.php');
 				<p class="price"><?=number_format($list[$i]["it_cust_price"])?>원</p>
 			<?php } ?>
 			</a>
+			<div class="it_type_box">
+				<?php if($list[$i]['it_type1']){ ?><p class="p_box type1" > 일시품절</p><?php } ?>
+				<?php if($list[$i]['it_type2']){ ?><p class="p_box type2"> 대여상품</p><?php } ?>
+				<?php if($list[$i]['it_type3']){ ?><p class="p_box type3">주문제작</p><?php } ?>
+				<?php if($list[$i]['it_type4']){ ?><p class="p_box type4"> 상담문의</p><?php } ?>
+				<?php if($list[$i]['it_type5']){ ?><p class="p_box type5"> 택배전용</p><?php } ?>
+			</div>
 		</li>
 	<?php } ?>
 	</ul>
