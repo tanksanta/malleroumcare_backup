@@ -28,7 +28,8 @@
 				UPDATE g5_shop_cart SET
 					$combine_where
 					ct_delivery_company = '{$ct_delivery_company}',
-					ct_delivery_num = '{$ct_delivery_num}'
+					ct_delivery_num = '{$ct_delivery_num}',
+					ct_edi_result = NULL
 				WHERE ct_id = '{$ct_id}'
 			");
 		} else {
@@ -38,7 +39,8 @@
 					ct_delivery_company = '{$ct_delivery_company}',
 					ct_delivery_num = '{$ct_delivery_num}',
 					ct_delivery_cnt = '{$ct_delivery_cnt}',
-					ct_delivery_price = '{$ct_delivery_price}'
+					ct_delivery_price = '{$ct_delivery_price}',
+					ct_edi_result = NULL
 				WHERE ct_id = '{$ct_id}'
 			");
 		}
