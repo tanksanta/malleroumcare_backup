@@ -72,8 +72,8 @@ define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://eroumc
 // dbconfig 파일에 작성하도록 수정
 // 실주소 : https://ilogen.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL
 // 테스트서버 : http://1.255.199.16/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL
-define('G5_EDI_URL',        'http://1.255.199.16/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
-// define('G5_EDI_URL',        'https://ilogen.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
+// define('G5_EDI_URL',        'http://1.255.199.16/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
+define('G5_EDI_URL',        'https://ilogen.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
 define('G5_EDI_USERID',     '32551129');
 define('G5_EDI_PASSWORD',   'daon12345');
 
