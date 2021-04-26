@@ -16,56 +16,15 @@
 	if (!$od['od_id']) {
 		alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 	} else {
-		if($od["ordId"]){
-			$sendData = [];
-			$sendData["penOrdId"] = $od["ordId"];
-			$sendData["uuid"] = $od["uuid"];
-
-			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9901);
-			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res = curl_exec($oCurl);
-			curl_close($oCurl);
-
-			$result = json_decode($res, true);
-			$result = $result["data"];
-
-			if($result){
-				foreach($result as $data){
-					$thisProductData = [];
-
-					$thisProductData["prodId"] = $data["prodId"];
-					$thisProductData["prodColor"] = $data["prodColor"];
-					$thisProductData["stoId"] = $data["stoId"];
-					$thisProductData["prodBarNum"] = $data["prodBarNum"];
-					$thisProductData["penStaSeq"] = $data["penStaSeq"];
-					array_push($prodList, $thisProductData);
-				}
-			}
-			} else {
-				// $stoIdData = $od["stoId"];
-				// $stoIdData = explode(",", $stoIdData);
-				// $stoIdDataList = [];
-				// foreach($stoIdData as $data){
-				// 	array_push($stoIdDataList, $data);
-				// }
-				// $stoIdData = implode("|", $stoIdDataList);
-
-				$sto_imsi="";
-				$sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
-				$result_ct = sql_query($sql_ct);
-				while($row_ct = sql_fetch_array($result_ct)) {
-					$sto_imsi .=$row_ct['stoId'];
-				}
-				$stoIdDataList = explode('|',$sto_imsi);
-				$stoIdDataList=array_filter($stoIdDataList);
-				$stoIdData = implode("|", $stoIdDataList);
-			}
+		$sto_imsi="";
+		$sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+		$result_ct = sql_query($sql_ct);
+		while($row_ct = sql_fetch_array($result_ct)) {
+			$sto_imsi .=$row_ct['stoId'];
+		}
+		$stoIdDataList = explode('|',$sto_imsi);
+		$stoIdDataList=array_filter($stoIdDataList);
+		$stoIdData = implode("|", $stoIdDataList);
 	}
 
 	// 상품목록
@@ -362,9 +321,13 @@
 
 
 				for($k = 0; $k < count($options); $k++){
+					$stoId_v=[];
+					$stoId_v = explode('|',$options[$k]['stoId']);
+					$stoId_v=array_filter($stoId_v);
+
                     if($options[$k]['it_id']!==$_GET['prodId']||$options[$k]["ct_option"]!==$_GET['option']){ 
 						for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ 
-							echo '<input type="hidden" maxlength="12" oninput="maxLengthCheck(this)" value="'.$prodList[$b]["prodBarNum"].'" class="notall frm_input frm_input_'.$prodListCnt.' required prodBarNumItem_'.$prodList[$prodListCnt]["penStaSeq"].' '.$stoIdDataList[$prodListCnt].'" placeholder="'.$barcode_placeholder.'" data-frm-no="'.$prodListCnt.'" maxlength="12">';
+							echo '<input type="hidden" maxlength="12" oninput="maxLengthCheck(this)" value="'.$prodList[$b]["prodBarNum"].'" class="notall frm_input frm_input_'.$prodListCnt.' required prodBarNumItem_'.$prodList[$prodListCnt]["penStaSeq"].' '.$stoId_v[$b].'" placeholder="'.$barcode_placeholder.'" data-frm-no="'.$prodListCnt.'" maxlength="12">';
 							$prodListCnt++; 
 							$prodListCnt2++;
 						}
@@ -409,23 +372,16 @@
 							</div>
 
 							<div class="folding_box">
-							 <?php if($options[$k]["ct_qty"] >= 2){ ?>
-									<!-- <span>
-									<input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
-									<button type="button" class="barNumCustomSubmitBtn">등록</button>
-									<img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
-									</span> -->
-							 <?php } ?>
-									<ul class="inputbox">
-										<?php for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ ?>
-											<li>
-												<input <?=$readonly?> type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>" class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>" placeholder="<?=$barcode_placeholder?>" data-frm-no="<?=$prodListCnt?>" maxlength="12">
-												<i class="fa fa-check"></i>
-												<span class="overlap">중복</span>
-												<img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
-											</li>
-										<?php $prodListCnt++; } ?>
-									</ul>
+										<?php for($b = 0; $b< count($stoId_v); $b++){ ?>
+                                        <li>
+                                            <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                                            <i class="fa fa-check"></i>
+                                            <span class="overlap">중복</span>
+                                            <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
+                                        </li>
+                                        <?php
+                                            }
+                                        ?>
 							</div>
 						</li>
 					</a>
@@ -679,80 +635,8 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 				async : false,
 				data : $("#submitForm").serialize()
 			});
-
-            if(ordId){
-                var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
-                $.each(productList, function(key, value){
-                    var prodBarNumItem = $(".prodBarNumItem_" + value.penStaSeq);
-                    var prodBarNum = "";
-
-                    for(var i = 0; i < prodBarNumItem.length; i++){
-                        prodBarNum += (prodBarNum) ? "," : "";
-                        prodBarNum += $(prodBarNumItem[i]).val();
-
-                        if($(prodBarNumItem[i]).val()){
-                            insertBarCnt++;
-                        }
-                    }
-
-                    productList[key]["prodBarNum"] = prodBarNum;
-                });
-
-                var sendData = {
-                    usrId : "<?=$od["mb_id"]?>",
-                    penOrdId : "<?=$od["ordId"]?>",
-                    delGbnCd : "",
-                    ordWayNum : "",
-                    delSerCd : "",
-                    ordNm : $("#od_b_name").val(),
-                    ordCont : $("#od_b_hp").val(),
-                    ordMeno : $("#od_memo").val(),
-                    ordZip : $("#od_b_zip").val(),
-                    ordAddr : $("#od_b_addr1").val(),
-                    ordAddrDtl : $("#od_b_addr2").val(),
-                    eformYn : "<?=$od["eformYn"]?>",
-                    staOrdCd : "<?=$od["staOrdCd"]?>",
-                    lgsStoId : "",
-                    prods : productList
-                }
-                $.ajax({
-                    url : "./ajax.barcode_log.php",
-                    type : "POST",
-                    async : false,
-                    data : sendData['prods'],
-                    success : function(result){
-                            console.log(result);
-                        }
-                });
-                $.ajax({
-                    url : "./samhwa_orderform_order_update.php",
-                    type : "POST",
-                    async : false,
-                    data : sendData,
-                    success : function(result){
-                        console.log(result);
-                        result = JSON.parse(result);
-                        if(result.errorYN == "Y"){
-                            alert(result.message);
-                        } else {
-                            alert("저장이 완료되었습니다.");
-
-                            $.ajax({
-                                url : "/shop/ajax.order.prodBarNum.cnt.php",
-                                type : "POST",
-                                async : false,
-                                data : {
-                                    od_id : "<?=$od_id?>",
-                                    cnt : insertBarCnt
-                                }
-                            });
-                            member_cancel();
-                        }
-                    }
-                });
-            } else {
+			
                 var prodsList = {};
-
                 $.each(stoldList, function(key, value){
                     prodsList[key] = {
                         stoId : value.stoId,
@@ -813,7 +697,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                         }
                     }
                 });
-            }
         });
 
 
