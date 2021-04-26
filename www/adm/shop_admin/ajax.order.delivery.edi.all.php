@@ -23,7 +23,9 @@ $sql = "SELECT
     o.od_b_addr2,
     o.od_b_tel,
     o.od_b_hp,
-    o.od_id
+    o.od_id,
+    o.od_b_zip1,
+    o.od_b_zip2
 FROM 
     g5_shop_cart as c 
     LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
@@ -36,6 +38,7 @@ WHERE
     AND ( c.ct_combine_ct_id IS NULL OR c.ct_combine_ct_id = '') -- 합포가 아닌것
     AND ( c.ct_delivery_num IS NULL OR c.ct_delivery_num = '') -- 송장번호 없는것
     AND c.ct_edi_result = 0
+    -- and o.od_id = '2021042610362847'
 ";
 $cart_result = sql_query($sql);
 while ( $row2 = sql_fetch_array($cart_result) ) {
@@ -87,6 +90,7 @@ foreach($carts as $cart) {
     // 수취인
     $edi['rcvCustNm']		= $cart['od_b_name'];
 
+    $edi['rcvZipCd']        = $cart['od_b_zip1'] . $cart['od_b_zip2'];
     $edi['rcvCustAddr1']	= $cart['od_b_addr1'];
     $edi['rcvCustAddr2']	= $cart['od_b_addr2'];
     $edi['rcvTelNo']		= $cart['od_b_tel'] ? $cart['od_b_tel'] : $cart['od_b_hp'];
