@@ -31,7 +31,6 @@ $od_prodBarNum_total = 0;
 
 $od_delivery_insert = 0;
 $od_delivery_total = 0;
-
 $error = "";
 // 장바구니 상품 재고 검사
 $sql = " select MT.it_id,
@@ -54,24 +53,9 @@ $sql = " select MT.it_id,
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++)
 {
-
-	# 상품목록
+	# 상품목록 수급자 주문 아니면
 	for($ii = 0; $ii < $row["ct_qty"]; $ii++){
-		if($_POST["penId"]){
-			$thisProductData = [];
-			$thisProductData["prodId"] = $row["it_id"];
-			$thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
-			$thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
-			$thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
-			$thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
-			$thisProductData["prodPayCode"] = $row["prodPayCode"];
-			$thisProductData["itemNm"] = explode(chr(30), $row["io_id"])[0]." / ".explode(chr(30), $row["io_id"])[1];
-			$thisProductData["ordLendStrDtm"] = date("Y-m-d", strtotime($_POST["ordLendStartDtm_{$row["ct_id"]}"]));
-			$thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($_POST["ordLendEndDtm_{$row["ct_id"]}"]));
-			$thisProductData["ct_id"] = $row["ct_id"];
-
-			array_push($productList, $thisProductData);
-		} else {
+		if(!$_POST["penId"]){
 			$thisProductData = [];
 			$thisProductData["prodId"] = $row["it_id"];
 			$thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
@@ -82,14 +66,14 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			$thisProductData["ct_id"] = $row["ct_id"];
 
 			array_push($productList, $thisProductData);
-		}
 
-		$od_prodBarNum_total++;
-		if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
-			$od_prodBarNum_insert++;
+            $od_prodBarNum_total++;
+            if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
+                $od_prodBarNum_insert++;
+            }
+    
+            $postProdBarNumCnt++;
 		}
-
-		$postProdBarNumCnt++;
 	}
 
 	# 요청사항 저장
@@ -111,28 +95,152 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 
 	# 비유통상품 금액저장
 	if($row["prodSupYn"] == "N"){
-//		sql_query("
-//			UPDATE {$g5["g5_shop_cart_table"]} SET
-//				ct_price = 0
-//			WHERE ct_id = '{$row["ct_id"]}'
-//		");
+    //		sql_query("
+    //			UPDATE {$g5["g5_shop_cart_table"]} SET
+    //				ct_price = 0
+    //			WHERE ct_id = '{$row["ct_id"]}'
+    //		");
 	}
 
 	# 재고사용수량 저장
 	if($_POST["penId"]){
-		sql_query("
-			UPDATE {$g5["g5_shop_cart_table"]} SET
-				ct_stock_qty = '{$_POST["it_option_stock_cnt_{$row["ct_id"]}"]}'
-			WHERE ct_id = '{$row["ct_id"]}'
-		");
+
+        #수급자일 경우, 기존 ct_id 신규 주문과 재고소진 나누기
+        //기존 ct_id select
+        $sql_ss = "select * from `g5_shop_cart` where `ct_id` = '{$row["ct_id"]}'";
+        $r_ss = sql_fetch($sql_ss);
+
+        //(주문 - 재고소진 = 신규)
+        //재고소진 개수
+        $ct_stock_qty_v = $_POST["it_option_stock_cnt_{$row["ct_id"]}"];
+        //기존 주문개수
+        $ct_qty_v = $r_ss['ct_qty'];
+        // 신규 개수
+        $ct_new_v =$ct_qty_v-$ct_stock_qty_v;
+
+
+        //재고 소진개수가 있으면 실행
+        if($ct_stock_qty_v){
+            
+            //산규주문 개수가 0개면 기존 ct_id에 ct_stock_qty 업데이트 (모두 재고소진 한 경우)
+            if(!$ct_new_v) {
+                sql_query("
+                    UPDATE {$g5["g5_shop_cart_table"]} SET
+                        ct_stock_qty = '{$_POST["it_option_stock_cnt_{$row["ct_id"]}"]}'
+                    WHERE ct_id = '{$row["ct_id"]}'
+                ");
+                //수급자 주문이고 산규갸수가 0이면
+                for($ii = 0; $ii < $row["ct_qty"]; $ii++){
+                    $thisProductData = [];
+                    $thisProductData["prodId"] = $row["it_id"];
+                    $thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
+                    $thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
+                    $thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
+                    $thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
+                    $thisProductData["prodPayCode"] = $row["prodPayCode"];
+                    $thisProductData["itemNm"] = explode(chr(30), $row["io_id"])[0]." / ".explode(chr(30), $row["io_id"])[1];
+                    $thisProductData["ordLendStrDtm"] = date("Y-m-d", strtotime($_POST["ordLendStartDtm_{$row["ct_id"]}"]));
+                    $thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($_POST["ordLendEndDtm_{$row["ct_id"]}"]));
+                    $thisProductData["ct_id"] = $row["ct_id"];
+                    array_push($productList, $thisProductData);
+                    $od_prodBarNum_total++;
+                    if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
+                        $od_prodBarNum_insert++;
+                    }
+                    $postProdBarNumCnt++;
+                }
+
+            //신규주문이 있으면, 기존 ct_id 는 재고소진으로 update / 신규는 새로 insert
+            }else{
+
+                //재고소진 update
+                sql_query("
+                    UPDATE {$g5["g5_shop_cart_table"]} SET
+                    ct_qty = '{$ct_stock_qty_v}',
+                    ct_stock_qty = '{$ct_stock_qty_v}'
+                    WHERE ct_id = '{$row["ct_id"]}'
+                ");
+
+                //재고소진 담기 - > $row["ct_id"];
+                for($ii = 0; $ii < $ct_stock_qty_v; $ii++){
+                    $thisProductData = [];
+                    $thisProductData["prodId"] = $row["it_id"];
+                    $thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
+                    $thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
+                    $thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
+                    $thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
+                    $thisProductData["prodPayCode"] = $row["prodPayCode"];
+                    $thisProductData["itemNm"] = explode(chr(30), $row["io_id"])[0]." / ".explode(chr(30), $row["io_id"])[1];
+                    $thisProductData["ordLendStrDtm"] = date("Y-m-d", strtotime($_POST["ordLendStartDtm_{$row["ct_id"]}"]));
+                    $thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($_POST["ordLendEndDtm_{$row["ct_id"]}"]));
+                    $thisProductData["ct_id"] = $row["ct_id"];
+        
+                    array_push($productList, $thisProductData);
+        
+                    $od_prodBarNum_total++;
+                    if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
+                        $od_prodBarNum_insert++;
+                    }
+            
+                    $postProdBarNumCnt++;
+                }
+
+
+                //신규주문 insert
+                $sql_stock_insert = "
+                INSERT INTO `g5_shop_cart`(`od_id`, `mb_id`, `it_id`, `it_name`, `it_sc_type`, `it_sc_method`, `it_sc_price`, `it_sc_minimum`, `it_sc_qty`, `ct_status`, `ct_next_status`, `ct_history`, `ct_price`, `ct_discount`, `ct_point`, `cp_price`, `ct_point_use`, `ct_stock_use`, `ct_option`, `ct_qty`, `ct_stock_qty`, `ct_barcode`, `ct_notax`, `io_id`, `io_type`, `io_price`, `ct_time`, `ct_ip`, `ct_send_cost`, `ct_sendcost`, `ct_direct`, `ct_select`, `ct_select_time`, `pt_sale`, `pt_commission`, `pt_point`, `pt_incentive`, `pt_net`, `pt_commission_rate`, `pt_incentive_rate`, `pt_it`, `pt_id`, `pt_send`, `pt_send_num`, `pt_datetime`, `pt_msg1`, `pt_msg2`, `pt_msg3`, `mk_id`, `mk_profit`, `mk_benefit`, `mk_profit_rate`, `mk_benefit_rate`, `ct_memo`, `ProductOrderID`, `ClaimType`, `ClaimStatus`, `PlaceOrderStatus`, `DelayedDispatchReason`, `od_naver_orderid`, `ct_price_type`, `pt_old_name`, `pt_old_opt`, `ct_uid`, `prodMemo`, `prodSupYn`, `ordLendStrDtm`, `ordLendEndDtm`, `ct_delivery_yn`, `ct_delivery_company`, `ct_delivery_num`, `ct_delivery_cnt`, `ct_delivery_price`, `ct_hide_control`, `stoId`, `io_thezone`, `ct_admin_new`, `ct_edi_result`, `ct_edi_date`, `ct_edi_msg`, `ct_edi_chk`, `ct_edi_price`, `ct_edi_ea`, `ct_combine_ct_id`)
+                                    VALUES ('".$r_ss['od_id']."','".$r_ss['mb_id']."','".$r_ss['it_id']."','".$r_ss['it_name']."','".$r_ss['it_sc_type']."','".$r_ss['it_sc_method']."','".$r_ss['it_sc_price']."','".$r_ss['it_sc_minimum']."','".$r_ss['it_sc_qty']."','".$r_ss['ct_status']."','".$r_ss['ct_next_status']."','".$r_ss['ct_history']."','".$r_ss['ct_price']."','".$r_ss['ct_discount']."','".$r_ss['ct_point']."','".$r_ss['cp_price']."','".$r_ss['ct_point_use']."','".$r_ss['ct_stock_use']."','".$r_ss['ct_option']."','".$ct_new_v."','0','".$r_ss['ct_barcode']."','".$r_ss['ct_notax']."','".$r_ss['io_id']."','".$r_ss['io_type']."','".$r_ss['io_price']."','".$r_ss['ct_time']."','".$r_ss['ct_ip']."','".$r_ss['ct_send_cost']."','".$r_ss['ct_sendcost']."','".$r_ss['ct_direct']."','".$r_ss['ct_select']."','".$r_ss['ct_select_time']."','".$r_ss['pt_sale']."','".$r_ss['pt_commission']."','".$r_ss['pt_point']."','".$r_ss['pt_incentive']."','".$r_ss['pt_net']."','".$r_ss['pt_commission_rate']."','".$r_ss['pt_incentive_rate']."','".$r_ss['pt_it']."','".$r_ss['pt_id']."','".$r_ss['pt_send']."','".$r_ss['pt_send_num']."','".$r_ss['pt_datetime']."','".$r_ss['pt_msg1']."','".$r_ss['pt_msg2']."','".$r_ss['pt_msg3']."','".$r_ss['mk_id']."','".$r_ss['mk_profit']."','".$r_ss['mk_benefit']."','".$r_ss['mk_profit_rate']."','".$r_ss['mk_benefit_rate']."','".$r_ss['ct_memo']."','".$r_ss['ProductOrderID']."','".$r_ss['ClaimType']."','".$r_ss['ClaimStatus']."','".$r_ss['PlaceOrderStatus']."','".$r_ss['DelayedDispatchReason']."','".$r_ss['od_naver_orderid']."','".$r_ss['ct_price_type']."','".$r_ss['pt_old_name']."','".$r_ss['pt_old_opt']."','".$r_ss['ct_uid']."','".$r_ss['prodMemo']."','".$r_ss['prodSupYn']."','".$r_ss['ordLendStrDtm']."','".$r_ss['ordLendEndDtm']."','".$r_ss['ct_delivery_yn']."','".$r_ss['ct_delivery_company']."','".$r_ss['ct_delivery_num']."','".$r_ss['ct_delivery_cnt']."','".$r_ss['ct_delivery_price']."','".$r_ss['ct_hide_control']."','".$r_ss['stoId']."','".$r_ss['io_thezone']."','".$r_ss['ct_admin_new']."','".$r_ss['ct_edi_result']."','".$r_ss['ct_edi_date']."','".$r_ss['ct_edi_msg']."','".$r_ss['ct_edi_chk']."','".$r_ss['ct_edi_price']."','".$r_ss['ct_edi_ea']."','".$r_ss['ct_combine_ct_id']."')";
+                sql_query($sql_stock_insert);
+                $new_ct_id = sql_insert_id();
+
+                //신규주문 담기 - > $new_ct_id;
+                for($ii = 0; $ii < $ct_new_v; $ii++){
+                    $thisProductData = [];
+                    $thisProductData["prodId"] = $row["it_id"];
+                    $thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
+                    $thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
+                    $thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
+                    $thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
+                    $thisProductData["prodPayCode"] = $row["prodPayCode"];
+                    $thisProductData["itemNm"] = explode(chr(30), $row["io_id"])[0]." / ".explode(chr(30), $row["io_id"])[1];
+                    $thisProductData["ordLendStrDtm"] = date("Y-m-d", strtotime($_POST["ordLendStartDtm_{$row["ct_id"]}"]));
+                    $thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($_POST["ordLendEndDtm_{$row["ct_id"]}"]));
+                    $thisProductData["ct_id"] = $new_ct_id;
+        
+                    array_push($productList, $thisProductData);
+        
+                    $od_prodBarNum_total++;
+                    if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
+                        $od_prodBarNum_insert++;
+                    }
+            
+                    $postProdBarNumCnt++;
+                }
+
+            }
+
+        }
+
 
 		if($row["prodSupYn"] == "Y"){
 			$deliveryTotalCnt += $row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"];
 		}
+
+        
 	}
+
+    //ct_stock_qty 값이 있으면, 재고소진 상태로 바꿈
+    $sql_cs = "update {$g5['g5_shop_cart_table']}
+    set ct_status = '재고소진'
+    where od_id = '".$r_ss['od_id']."'
+    and ct_select = '1'  and not ct_stock_qty = '0' ";
+    $result_cs = sql_query($sql_cs, false);
+
+
 
 	# 배송가능 설정
 	if($row["prodSupYn"] == "Y"){
+        
 		if(($row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"]) > 0){
 			$od_delivery_total++;
 
@@ -170,6 +278,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
         $it_ids[] = $row['it_id'];
     }
 }
+
+
 
 if($i == 0)
     alert('장바구니가 비어 있습니다.\\n\\n이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다.', G5_SHOP_URL.'/cart.php');
@@ -970,6 +1080,17 @@ $sql = "update {$g5['g5_shop_cart_table']}
            and ct_select = '1' ";
 $result = sql_query($sql, false);
 
+
+//ct_stock_qty 값이 있으면, 재고소진 상태로 바꿈
+$sql = "update {$g5['g5_shop_cart_table']}
+           set ct_status = '재고소진'
+           where od_id = '$od_id'
+           and ct_select = '1'  and not ct_stock_qty = '0' ";
+$result = sql_query($sql, false);
+
+
+
+
 // 택배 선불이 아니면 카트에 있는 배송비 0으로 만들어주기
 if ( $od_delivery_type != 'delivery1' ) {
     $sql = "UPDATE {$g5['g5_shop_cart_table']} SET ct_sendcost = 0 WHERE od_id = '$od_id'";
@@ -1318,8 +1439,6 @@ if($is_member && $od_b_name) {
 		$res = json_decode($res, true);
 		curl_close($oCurl);
 
-//		echo json_encode($sendData, JSON_UNESCAPED_UNICODE);
-//		return false;
         $stoIdList = [];
         if($res["errorYN"] == "N"){
             for($k=0;$k<count($res['data']['stockList']);$k++){
