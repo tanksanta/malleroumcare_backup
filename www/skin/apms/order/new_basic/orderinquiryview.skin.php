@@ -319,7 +319,10 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 												<i class="icon02">대여</i>
 											<?php } ?>
 											</div>
-											<div class="name"><?php echo $item[$i]['it_name']; ?></div>
+											<div class="name">
+											<?php echo $item[$i]['it_name']; ?>
+                                            <?php if($item[$i]['opt'][$k]['ct_stock_qty']) echo '[재고소진]'; ?>
+											</div>
 											<?php if($item[$i]['opt'][$k]['ct_option'] != $item[$i]['it_name']){ ?>
 											<div class="text"><?=$item[$i]['opt'][$k]['ct_option']?></div>
 											<?php } ?>
