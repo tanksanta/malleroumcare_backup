@@ -22,7 +22,7 @@
 				<p>SYSYEM <span>01</span></p>
 				<p>복지용구급여</p>
 				<p>복지용구 사업소<br>업무편의를 쉽고 간편하게</p>
-				<a href="#">바로가기</a>
+				<a href="<?php echo G5_URL; ?>/main.php">바로가기</a>
 			</div>
 			<div class="service_icon">
 				<img src="<?php echo G5_URL; ?>/thema/eroumcare/assets/img/main_service_icon_01.png" alt="" />
