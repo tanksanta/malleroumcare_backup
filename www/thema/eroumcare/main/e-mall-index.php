@@ -7,7 +7,7 @@
 <div class="main_top_wrap">
 	<img src="<?php echo G5_URL; ?>/thema/eroumcare/assets/img/main_top_desc.png" alt="" />
 	<p>
-		<a href="#">전체 상품 보기</a>
+		<a href="<?php echo G5_URL; ?>/main.php">전체 상품 보기</a>
 	</p>
 	
 </div>
