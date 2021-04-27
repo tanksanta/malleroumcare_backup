@@ -474,8 +474,8 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
             ?>
             <?php if(!$result_od['od_hide_control']){ ?>
             <div class="list-more">
-                <a href="javascript:void(0)" onclick="hide_control('<?=$od["od_id"] ?>')">주문내역삭제</a>
-                <p >*해당 주문을 삭제하시면 주문내역에 더 이상 노출되지 않습니다.</p>
+                <p><a href="javascript:void(0)" onclick="hide_control('<?=$od["od_id"] ?>')">주문내역 숨김처리</a></p>
+                <p >*해당 주문을 숨김처리하면 주문내역에 노출되지 않습니다.<br>*숨김처리는 주문취소가 되지 않습니다.</p>
             </div>
             <?php } ?>
 		</div>
