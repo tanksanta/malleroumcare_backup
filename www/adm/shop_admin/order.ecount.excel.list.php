@@ -68,7 +68,7 @@
 			$price_d_p ="";
 			$price_d_s ="";
 			if($it_taxInfo['it_taxInfo']=="영세"){
-				$price_d_p = $price_d;
+				$price_d_p = $price_d*$it['ct_qty'];
 				$price_d_s = "0";
 			}else{
 				$price_d_p = round(($price_d ? $price_d : 0) / 1.1) * $it['ct_qty']; // 공급가액
