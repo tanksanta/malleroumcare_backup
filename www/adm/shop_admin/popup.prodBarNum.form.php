@@ -258,8 +258,7 @@
                                             <span class="overlap">중복</span>
                                             <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
                                         </li>
-                                        <?php
-                                            }
+                                        <?php	$prodListCnt++;  }
                                         ?>
 									</ul>
 							</div>
