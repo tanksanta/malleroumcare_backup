@@ -30,7 +30,7 @@
 					$combine_where
 					ct_delivery_company = '{$ct_delivery_company}',
 					ct_delivery_num = '{$ct_delivery_num}',
-					ct_edi_result = NULL,
+					ct_edi_result = 0,
 					ct_is_direct_delivery = '{$ct_is_direct_delivery}'
 				WHERE ct_id = '{$ct_id}'
 			");
