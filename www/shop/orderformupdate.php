@@ -219,6 +219,27 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 
             }
 
+        }else{
+            //신규주문만 있으면 그대로 보냄
+            for($ii = 0; $ii < $row["ct_qty"]; $ii++){
+                $thisProductData = [];
+                $thisProductData["prodId"] = $row["it_id"];
+                $thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
+                $thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
+                $thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
+                $thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
+                $thisProductData["prodPayCode"] = $row["prodPayCode"];
+                $thisProductData["itemNm"] = explode(chr(30), $row["io_id"])[0]." / ".explode(chr(30), $row["io_id"])[1];
+                $thisProductData["ordLendStrDtm"] = date("Y-m-d", strtotime($_POST["ordLendStartDtm_{$row["ct_id"]}"]));
+                $thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($_POST["ordLendEndDtm_{$row["ct_id"]}"]));
+                $thisProductData["ct_id"] = $row["ct_id"];
+                array_push($productList, $thisProductData);
+                $od_prodBarNum_total++;
+                if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
+                    $od_prodBarNum_insert++;
+                }
+                $postProdBarNumCnt++;
+            }
         }
 
 
