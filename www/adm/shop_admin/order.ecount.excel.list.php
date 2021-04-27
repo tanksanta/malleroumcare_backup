@@ -36,7 +36,8 @@
 		
 		for($ii = 0; $it = sql_fetch_array($itList); $ii++){
 			
-            
+            // print_r($it);
+            // echo "<br><br>";
             #바코드
             $stoIdDataList = explode('|',$it['stoId']);
             $stoIdDataList=array_filter($stoIdDataList);
@@ -59,9 +60,8 @@
             
 			//할인적용 단가
 			if($od['od_cart_price']){
-				$price_d = ($od['od_cart_price']-$od['od_cart_discount'])/$it["ct_qty"];
+				$price_d = ($it['ct_price']*$it["ct_qty"]-$it['ct_discount'])/$it["ct_qty"];
 			}
-            
 			//영세 과세 구분
 			$sql_taxInfo = 'select `it_taxInfo` from `g5_shop_item` where `it_id` = "'.$it['it_id'].'"';
 			$it_taxInfo = sql_fetch($sql_taxInfo);
@@ -143,6 +143,7 @@
 			];
 		}
     }
+
     $headers = array("일자", "순번", "거래처코드", "거래처명","담당자", "출하창고", "거래유형","통화", "환율","성명(상호명)", "배송처", "전잔액", "후잔액", "특이사항", "참고사항", "품목코드", "품목명", "규격", "수량", "단가(vat포함)", "외화금액", "공급가액", "부가세", "바코드", "로젠 송장번호", "적요", "생산전표생성");
     $data = array_merge(array($headers), $rows);
     
