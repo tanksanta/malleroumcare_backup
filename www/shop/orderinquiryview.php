@@ -600,46 +600,18 @@ if($is_inquiryview_sub) {
         #대여로그 작성
 
 
-			#
-			for($i = 0; $i < count($res2["data"]); $i++){
-				$productList[$i]["stoId"] = $res2["data"][$i]["stoId"];
-			}
+        #재고소진 상태값 변경
+        for($i = 0; $i < count($res2["data"]); $i++){
+            $productList[$i]["stoId"] = $res2["data"][$i]["stoId"];
+            $productList[$i]["stateCd"] = "02";
+            if(!$productList[$i]['prodId']){ unset($productList[$i]);}
+        }
 
-			$sendData = [];
-			$sendData["usrId"] = $member["mb_id"];
-
-			$sendData["penId"] = $orderData["penId"];
-			$sendData["penOrdId"] = $orderData["ordId"];
-			$sendData["delGbnCd"] = "";
-			$sendData["ordWayNum"] = "";
-			$sendData["delSerCd"] = "";
-			$sendData["ordNm"] = $orderData["od_b_name"];
-			$sendData["ordCont"] = ($orderData["od_b_tel"]) ? $orderData["od_b_tel"] : $orderData["od_b_hp"];
-			$sendData["ordMeno"] = $orderData["od_memo"];
-			$sendData["ordZip"] = "{$orderData["od_b_zip1"]}{$orderData["od_b_zip2"]}";
-			$sendData["ordAddr"] = $orderData["od_b_addr1"];
-			$sendData["ordAddrDtl"] = $orderData["od_b_addr2"];
-			$sendData["eformYn"] = "Y";
-			$sendData["staOrdCd"] = "03";
-			$sendData["lgsStoId"] = "";
-			$sendData["prods"] = $productList;
-
-			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9901);
-			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/update");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res2 = curl_exec($oCurl);
-			$res2 = json_decode($res2, true);
-			curl_close($oCurl);
-
-			if($res2["errorYN"] == "N"){
-				$reload = true;
-				$staOrdCd = "03";
-			}
+        $sendData = [];
+        $sendData["usrId"] = $member["mb_id"];
+        $sendData["entId"] = $member["mb_entId"];
+        $sendData["prods"] = $productList;
+        $api_result = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $sendData);
  
 
 		unset($_SESSION["productList{$_GET["od_id"]}"]);
