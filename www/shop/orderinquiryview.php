@@ -527,27 +527,26 @@ if($is_inquiryview_sub) {
 
 		$orderData = sql_fetch("SELECT * FROM g5_shop_order WHERE od_id = '{$_GET["od_id"]}'");
 
-		if(!$_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]){
-			$productList = $_SESSION["productList{$_GET["od_id"]}"];
+		$productList = $_SESSION["productList{$_GET["od_id"]}"];
 
 
 
-        #대여로그 작성
-			$sendData2 = [];
-			$sendData2["uuid"] = $_SESSION["uuid{$_GET["od_id"]}"];
-			$sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
-			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9901);
-			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res2 = curl_exec($oCurl);
-			$res2 = json_decode($res2, true);
-			curl_close($oCurl);
-            $count=count($res2['data']);
+        #판매, 대여로그 작성
+		$sendData2 = [];
+		$sendData2["uuid"] = $_SESSION["uuid{$_GET["od_id"]}"];
+		$sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
+		$oCurl = curl_init();
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
+		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
+		curl_setopt($oCurl, CURLOPT_POST, 1);
+		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
+		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+		$res2 = curl_exec($oCurl);
+		$res2 = json_decode($res2, true);
+		curl_close($oCurl);
+		$count=count($res2['data']);
         if($count>0){
 
                 $sendData3=[];
@@ -601,8 +600,7 @@ if($is_inquiryview_sub) {
         #대여로그 작성
 
 
-
-
+			#
 			for($i = 0; $i < count($res2["data"]); $i++){
 				$productList[$i]["stoId"] = $res2["data"][$i]["stoId"];
 			}
@@ -641,32 +639,8 @@ if($is_inquiryview_sub) {
 			if($res2["errorYN"] == "N"){
 				$reload = true;
 				$staOrdCd = "03";
-
-				// sql_query("
-				// 	UPDATE g5_shop_order SET
-				// 		  staOrdCd = '03'
-				// 		, od_status = '완료'
-				// 	WHERE od_id = '{$orderData["od_id"]}'
-				// ");
 			}
-		}
-
-		$sendData = [];
-		$sendData["usrId"] = $member["mb_id"];
-		$sendData["entId"] = $member["mb_entId"];
-		$sendData["penOrdId"] = $orderData["ordId"];
-		$sendData["delGbnCd"] = "";
-		$sendData["ordWayNum"] = "";
-		$sendData["delSerCd"] = "";
-		$sendData["ordNm"] = $orderData["od_b_name"];
-		$sendData["ordCont"] = $orderData["od_b_tel"];
-		$sendData["ordMeno"] = $orderData["od_memo"];
-		$sendData["ordZip"] = "{$orderData["od_b_zip1"]}{$orderData["od_b_zip2"]}";
-		$sendData["ordAddr"] = $orderData["od_b_addr1"];
-		$sendData["ordAddrDtl"] = $orderData["od_b_addr2"];
-		$sendData["eformYn"] = "Y";
-		$sendData["prods"] = $_SESSION["productList{$_GET["od_id"]}"];
-		$sendData["staOrdCd"] = $staOrdCd;
+ 
 
 		unset($_SESSION["productList{$_GET["od_id"]}"]);
 		unset($_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]);
