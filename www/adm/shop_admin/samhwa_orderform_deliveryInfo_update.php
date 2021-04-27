@@ -29,7 +29,7 @@
 					$combine_where
 					ct_delivery_company = '{$ct_delivery_company}',
 					ct_delivery_num = '{$ct_delivery_num}',
-					ct_edi_result = NULL
+					ct_edi_result = 0
 				WHERE ct_id = '{$ct_id}'
 			");
 		} else {
@@ -40,7 +40,7 @@
 					ct_delivery_num = '{$ct_delivery_num}',
 					ct_delivery_cnt = '{$ct_delivery_cnt}',
 					ct_delivery_price = '{$ct_delivery_price}',
-					ct_edi_result = NULL
+					ct_edi_result = 0
 				WHERE ct_id = '{$ct_id}'
 			");
 		}
