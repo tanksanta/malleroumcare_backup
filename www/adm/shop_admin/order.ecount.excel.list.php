@@ -101,6 +101,12 @@
 			$it["opt_price"] = $opt_price;
 
 			$thezone_code = $it['io_thezone'] ? $it['io_thezone'] : $it['it_thezone2'];
+
+			$delivery = '';
+			if ($it['ct_delivery_num']) {
+				$delivery = '(' . get_delivery_company_step($it['ct_delivery_company'])['name'] . ') ' . $it['ct_delivery_num'];
+			}
+			
             if($od["od_ex_date"]=="0000-00-00"){
                 $date = "출고전";
             }else{
@@ -131,7 +137,7 @@
 				$price_d_p, //공급가액
                 $price_d_s, //부가세
 				$barcode, // 바코드
-				$it['ct_delivery_num'], // 로젠송장번호,
+				$delivery, // 로젠송장번호,
 				'통합관리플랫폼', //적요
 				'',
 			];
