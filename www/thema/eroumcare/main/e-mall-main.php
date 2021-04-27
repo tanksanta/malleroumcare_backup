@@ -387,7 +387,7 @@
 		<div class="board">
 			<div class="title">
 				<span>자주하는 질문</span>
-				<a href="/bbs/board.php?bo_table=qa" title="더보기">더보기<i class="fa fa-plus-square-o"></i></a>
+				<a href="/bbs/board.php?bo_table=faq" title="더보기">더보기<i class="fa fa-plus-square-o"></i></a>
 			</div>
 			<?php  echo latest('list_main', 'faq', 5, 30); ?>
 		</div>
