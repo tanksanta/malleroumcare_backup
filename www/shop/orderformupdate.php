@@ -257,8 +257,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 			sql_query("
 				UPDATE {$g5["g5_shop_cart_table"]} SET
 					ct_delivery_yn = 'Y',
-					ct_delivery_cnt = '{$tmpCnt}',
-					ct_delivery_price = '{$tmpPrice}'
+					-- ct_delivery_cnt = '{$tmpCnt}',
+					-- ct_delivery_price = '{$tmpPrice}'
 				WHERE ct_id = '{$row["ct_id"]}'
 			");
 		}
@@ -1426,6 +1426,7 @@ if($is_member && $od_b_name) {
 		$sendData["conAcco1"] = $_POST["entConAcc01"];
 		$sendData["conAcco2"] = $_POST["entConAcc02"];
 		$sendData["returnUrl"] = G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}&documentId={$sendData["documentId"]}";
+
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9901);
 		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/insert");
