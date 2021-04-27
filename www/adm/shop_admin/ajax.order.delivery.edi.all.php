@@ -38,6 +38,7 @@ WHERE
     AND ( c.ct_combine_ct_id IS NULL OR c.ct_combine_ct_id = '') -- 합포가 아닌것
     AND ( c.ct_delivery_num IS NULL OR c.ct_delivery_num = '') -- 송장번호 없는것
     AND c.ct_edi_result = 0
+    AND c.ct_is_direct_delivery = 0 -- 직배송 아닌것
     -- and o.od_id = '2021042313174631'
 ";
 $cart_result = sql_query($sql);

@@ -11,7 +11,8 @@
 		$ct_delivery_cnt = $_POST["ct_delivery_cnt_{$ct_id}"];
 		$ct_delivery_price = $_POST["ct_delivery_price_{$ct_id}"];
 		$ct_delivery_combine = $_POST["ct_combine_{$ct_id}"];
-		$ct_delivery_combine_ct_id = $_POST["ct_combine_ct_id_{$ct_id}"];
+		$ct_delivery_combine_ct_id = (int)$_POST["ct_combine_ct_id_{$ct_id}"];
+		$ct_is_direct_delivery = (int)$_POST["ct_is_direct_delivery_{$ct_id}"] ?: 0;
 		
 		if($ct_delivery_num){
 			$od_delivery_insert++;
@@ -29,7 +30,8 @@
 					$combine_where
 					ct_delivery_company = '{$ct_delivery_company}',
 					ct_delivery_num = '{$ct_delivery_num}',
-					ct_edi_result = 0
+					ct_edi_result = NULL,
+					ct_is_direct_delivery = '{$ct_is_direct_delivery}'
 				WHERE ct_id = '{$ct_id}'
 			");
 		} else {
@@ -40,7 +42,8 @@
 					ct_delivery_num = '{$ct_delivery_num}',
 					ct_delivery_cnt = '{$ct_delivery_cnt}',
 					ct_delivery_price = '{$ct_delivery_price}',
-					ct_edi_result = 0
+					ct_edi_result = 0,
+					ct_is_direct_delivery = '{$ct_is_direct_delivery}'
 				WHERE ct_id = '{$ct_id}'
 			");
 		}

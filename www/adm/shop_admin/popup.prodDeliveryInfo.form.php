@@ -113,6 +113,7 @@ $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
 					<col width="15%">
 					<col width="20%">
 					<col width="80px">
+					<col width="90px">
 				</colgroup>
 				
 				<thead>
@@ -123,6 +124,7 @@ $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
 						<th>분류</th>
 						<th>송장번호</th>
 						<th>합포여부</th>
+						<th>직배송</th>
 					</tr>
 				</thead>
 				
@@ -181,7 +183,7 @@ $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
 									<?php } ?>
 								</select>
 							</td>
-							<td>
+							<td style="text-align:center;">
 								<label>
 									<input 
 										type="checkbox" 
@@ -192,6 +194,18 @@ $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
 										<?php if(count($options) === 1 && count($carts) === 1) echo ' disabled';?>
 									>
 									합포
+								</label>
+							</td>
+							<td style="text-align:center;">
+								<label>
+									<input 
+										type="checkbox" 
+										name="ct_is_direct_delivery_<?php echo $options[$k]["ct_id"]; ?>" 
+										class="chk_ct_is_direct_delivery" 
+										value="1" 
+										<?php if($options[$k]['ct_is_direct_delivery']) echo ' checked';?>
+									>
+									직배송
 								</label>
 							</td>
 						</tr>
