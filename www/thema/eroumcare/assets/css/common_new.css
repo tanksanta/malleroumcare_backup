@@ -277,8 +277,35 @@ pre{white-space: pre-wrap;}
 .paging_number a:hover{border:1px solid #aaa;}
 .paging_number a.active{background: #333;color:#fff;font-weight:bold;border:1px solid #333;}
 
+/* =================================================
+	* main new 
+================================================= */
 
+.main_top_wrap{background: url(../img/main_top_bgimg.png) center center;background-size:cover;width:100%;min-height: 600px;max-width:1200px;text-align:center;padding:50px;border-radius:10px;}
+.main_top_wrap img{max-width:100%}
+.main_top_wrap a{margin-top:50px;display:inline-block;background: #f28b08;color:#fff;font-size:26px;padding: 20px 80px;border-radius:10px;box-shadow: 3px 3px 3px rgba(0,0,0,0.4);}
 
+.service_info{margin:50px 0 ;max-width:1200px;width:100%;}
+.service_info .service_tit{font-size:40px;color:#333;font-weight:bold;text-align:center;}
+.service_info .service_tit p{font-size:18px;color:#999;font-weight:100;}
+.service_info ul{margin:30px 0; }
+.service_info ul > li{position:relative;min-height:200px;float:left;width:calc(100% / 3 - 10px);margin-right:15px;margin-bottom:15px;border:1px solid #ddd;border-radius:10px;padding:10px 20px;}
+.service_info ul > li:nth-child(3n){margin-right:0;}
+.service_info ul > li .service_desc{float: left;}
+.service_info ul > li .service_desc p{font-size:14px;color:#999;margin:5px 0;}
+.service_info ul > li .service_desc p:nth-child(2){font-size:24px;font-weight:400;color:#333;margin:10px 0;}
+.service_info ul > li .service_desc p:first-child span{color:rgba(238,128,5,255);}
+.service_info ul > li .service_desc a{margin-top:20px;display:inline-block;width:120px;border-bottom:1px solid #ddd;padding:5px 0;}
+.service_info ul > li .service_desc a:after{content:'>';    margin-left: 30px;}
+.service_info ul > li .service_icon{position:absolute;top:25px;right:10px;z-index: -1;}
+
+@media only screen and (max-width:960px) {
+	.main_top_wrap{min-height:auto;padding: 30px;}
+	.main_top_wrap a{margin-top:20px;font-size:16px;}
+	.service_info .service_tit{font-size:30px;}
+	.service_info .service_tit p span{display: block;}
+	.service_info ul > li{width:100%;margin-right:0px;min-height: auto;padding:20px;}
+}
 /* =================================================
 	* main
 ================================================= */
