@@ -23,6 +23,7 @@ if (get_cart_count($tmp_cart_id) == 0)// 장바구니에 담기
 
 $it_ids = array();
 $productList = [];
+$productList2 = [];
 $postProdBarNumCnt = 0;
 $deliveryTotalCnt = 0;
 
@@ -143,6 +144,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
                     $thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($_POST["ordLendEndDtm_{$row["ct_id"]}"]));
                     $thisProductData["ct_id"] = $row["ct_id"];
                     array_push($productList, $thisProductData);
+                    array_push($productList2, $thisProductData);
                     $od_prodBarNum_total++;
                     if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
                         $od_prodBarNum_insert++;
@@ -176,6 +178,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
                     $thisProductData["ct_id"] = $row["ct_id"];
         
                     array_push($productList, $thisProductData);
+                    array_push($productList2, $thisProductData);
         
                     $od_prodBarNum_total++;
                     if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
@@ -1421,7 +1424,7 @@ if($is_member && $od_b_name) {
 			WHERE od_id = '{$od_id}'
 		");
 
-		$_SESSION["productList{$od_id}"] = $productList;
+		$_SESSION["productList{$od_id}"] = $productList2;
 		$_SESSION["deliveryTotalCnt{$od_id}"] = $deliveryTotalCnt;
 
 		$sendData = [];

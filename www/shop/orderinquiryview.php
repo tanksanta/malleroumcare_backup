@@ -642,12 +642,12 @@ if($is_inquiryview_sub) {
 				$reload = true;
 				$staOrdCd = "03";
 
-				sql_query("
-					UPDATE g5_shop_order SET
-						  staOrdCd = '03'
-						, od_status = '완료'
-					WHERE od_id = '{$orderData["od_id"]}'
-				");
+				// sql_query("
+				// 	UPDATE g5_shop_order SET
+				// 		  staOrdCd = '03'
+				// 		, od_status = '완료'
+				// 	WHERE od_id = '{$orderData["od_id"]}'
+				// ");
 			}
 		}
 
