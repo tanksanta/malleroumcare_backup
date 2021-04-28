@@ -472,9 +472,20 @@ $(function(){
 
     // 일괄 전송
     $(document).on( "click", '#delivery_edi_send_all', function() {
+        
+		var od_id = [];
+		var item = $("input[name='od_id[]']:checked");
+		
+		for(var i = 0; i < item.length; i++){
+			od_id.push($(item[i]).val());
+		}
+
         $.ajax({
             method: "POST",
             url: "./ajax.order.delivery.edi.all.php",
+            data: {
+                od_id: od_id
+            },
         })
         .done(function(data) {
             if ( data.msg ) {
@@ -488,9 +499,20 @@ $(function(){
 
     // 송장 리턴
     $(document).on( "click", '#delivery_edi_return_all', function() {
+        
+		var od_id = [];
+		var item = $("input[name='od_id[]']:checked");
+		
+		for(var i = 0; i < item.length; i++){
+			od_id.push($(item[i]).val());
+		}
+
         $.ajax({
             method: "POST",
             url: "./ajax.order.delivery.edi.return.all.php",
+            data: {
+                od_id: od_id
+            },
         })
         .done(function(data) {
             if ( data.msg ) {

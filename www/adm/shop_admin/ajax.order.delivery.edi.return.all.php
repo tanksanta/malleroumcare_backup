@@ -3,6 +3,11 @@ include_once('./_common.php');
 
 header('Content-Type: application/json');
 
+$where = "o.od_status = '출고준비'";
+if (is_array($od_id)) {
+    $where = ' o.od_id IN (\'' . implode('\',\'', $od_id) . '\')';
+}
+
 $return_success = 0;
 $return_failed = 0;
 $return_count = 0;
@@ -26,7 +31,7 @@ FROM
     LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
     LEFT JOIN g5_shop_order as o ON c.od_id = o.od_id
 WHERE 
-    o.od_status = '출고준비'
+    {$where}
     -- AND c.ct_status = '출고준비'
     AND c.ct_delivery_cnt > 0 -- 박스개수 1개 이상
     AND c.ct_delivery_company = 'ilogen' -- 로젠택배
