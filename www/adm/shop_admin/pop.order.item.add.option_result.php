@@ -445,7 +445,7 @@ if($res["errorYN"] == "N"){
     for($k=0; $k<count($res['data']);$k++){
         // ct_id에 업로드
         array_push($stoIdList, $res['data'][$k]["stoId"]);
-        $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
+        $sql_ct = "update `g5_shop_cart` set ct_status='작성', `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
         sql_query($sql_ct);
     }
 } else {
