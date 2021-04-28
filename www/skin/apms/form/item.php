@@ -1139,6 +1139,13 @@ $pg_anchor .='</ul>';
 		</colgroup>
 		<tbody>
 			<tr>
+				<th scope="row"><label for="it_is_direct_delivery">직배송</label></th>
+				<td>
+					<?php echo help("체크하시면 로젠택배 EDI전송을 사용하지 않습니다."); ?>
+					<label><input type="checkbox" name="it_is_direct_delivery" value="1" id="it_is_direct_delivery" <?php echo ($it['it_is_direct_delivery']) ? "checked" : ""; ?>> 직배송 사용</label>
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><label for="it_delivery_cnt">배송비 상세조건</label></th>
 				<td>
 					<?php echo help("상품의 박스 수량에 따라 배송비가 부과됩니다."); ?>

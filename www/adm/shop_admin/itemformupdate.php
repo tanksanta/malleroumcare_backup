@@ -436,6 +436,8 @@ $_POST["it_delivery_price"] = ($_POST["it_delivery_price"]) ? $_POST["it_deliver
 
 $it_rental_price = ($_POST["it_rental_price"]) ? $_POST["it_rental_price"] : 0;
 
+$it_is_direct_delivery = (int)$it_is_direct_delivery ?: 0;
+
 $sql_common = " ca_id               = '$ca_id',
                 ca_id2              = '$ca_id2',
                 ca_id3              = '$ca_id3',
@@ -610,7 +612,8 @@ $sql_common = " ca_id               = '$ca_id',
 					it_taxInfo = '$it_taxInfo',
 
 					it_delivery_cnt = '{$_POST["it_delivery_cnt"]}',
-					it_delivery_price = '{$_POST["it_delivery_price"]}'
+					it_delivery_price = '{$_POST["it_delivery_price"]}',
+                    it_is_direct_delivery = '$it_is_direct_delivery'
 				"; // APMS : 2014.07.20
 
                 // it_outsourcing_use  = '$it_outsourcing_use',
