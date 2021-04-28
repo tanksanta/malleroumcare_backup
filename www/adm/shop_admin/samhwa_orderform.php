@@ -822,7 +822,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                 case '작성': $ct_status_text="작성"; break;
                                                 case '주문무효': $ct_status_text="주문무효"; break;
                                                 case '취소': $ct_status_text="주문취소"; break;
-                                                case '주문': $ct_status_text="상품주문"; break;
+                                                case '주문': $ct_status_text="주문접수"; break;
                                                 case '입금': $ct_status_text="입금완료"; break;
                                                 case '준비': $ct_status_text="상품준비"; break;
                                                 case '출고준비': $ct_status_text="출고준비"; break;
@@ -1067,14 +1067,14 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     <div class="change_status">
                         <span>선택한 상품 상태값</span>
                         <select name="step" id="step">
-                            <option value="주문무효">주문무효</option>
-                            <option value="취소">주문취소</option>
-                            <option value="주문">상품주문</option>
+                            <option value="주문">주문접수</option>
                             <option value="입금">입금완료</option>
                             <option value="준비">상품준비</option>
                             <option value="출고준비">출고준비</option>
                             <option value="배송">출고완료</option>
                             <option value="완료">배송완료</option>
+                            <option value="주문무효">주문무효</option>
+                            <option value="취소">주문취소</option>
                         </select>
                         <input type="button" value="변경하기" class="btn shbtn" id="change_cart_status">
                     </div>
