@@ -193,6 +193,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 						a.ct_delivery_company,
 						a.ct_delivery_num,
                         a.ct_edi_result,
+                        b.it_is_direct_delivery,
 						( SELECT prodSupYn FROM g5_shop_item WHERE it_id = a.it_id ) AS prodSupYn,
 						prodMemo
 					from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
@@ -830,6 +831,11 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                             }
                                             echo $ct_status_text;
                                         ?>
+                                        <?php if($options[$k]['it_is_direct_delivery']) { ?>
+                                        <p style="color:#ea2500;">
+                                            직배송
+                                        </p>
+                                        <?php } ?>
                                     </td>
                                     <td class="item_memo">
                                         <?php if ( $k == 0 ) {
