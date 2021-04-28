@@ -1593,11 +1593,13 @@ if($is_member && $od_b_name) {
 					WHERE od_id = '{$od_id}'
 				");
 
-				sql_query("
-					UPDATE g5_shop_cart SET
-						  ct_price = '0'
-					WHERE od_id = '{$od_id}'
-				");
+                sql_query("
+                    UPDATE g5_shop_cart SET
+                        `ct_status` = '보유재고등록',
+                        `ct_price` = '0',
+                        `ct_sendcost` = '0'
+                    WHERE od_id = '{$od_id}'
+                ");
 			} else {
                 sql_query("
                 DELETE FROM g5_shop_order
