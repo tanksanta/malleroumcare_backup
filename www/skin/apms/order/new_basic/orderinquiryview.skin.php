@@ -28,7 +28,7 @@ if($header_skin)
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_POST, 0);
-		curl_setopt($ch, CURLOPT_URL, "https://eroumcare.com/api/pen/pen5000/pen5000/selectPen5000.do?ordId={$od["ordId"]}&uuid={$od["uuid"]}");
+		curl_setopt($ch, CURLOPT_URL, "https://system.eroumcare.com/api/pen/pen5000/pen5000/selectPen5000.do?ordId={$od["ordId"]}&uuid={$od["uuid"]}");
 		$res = curl_exec($ch);
 		$result = json_decode($res, true);
 		$result = $result["data"];
@@ -92,7 +92,7 @@ if($header_skin)
 
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9901);
-		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
+		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendPenData, JSON_UNESCAPED_UNICODE));
@@ -819,7 +819,7 @@ $(function(){
 		}
 
 		$.ajax({
-			url : "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
+			url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
 			type : "POST",
 			dataType : "json",
 			contentType : "application/json; charset=utf-8;",
@@ -882,7 +882,7 @@ $(function(){
 			}
 
 			$.ajax({
-				url : "https://eroumcare.com/api/pen/pen5000/pen5000/updatePen5000.do",
+				url : "https://system.eroumcare.com/api/pen/pen5000/pen5000/updatePen5000.do",
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json; charset=utf-8;",
@@ -939,7 +939,7 @@ $(function(){
 				}
 
 				$.ajax({
-					url : "https://eroumcare.com/api/pro/pro2000/pro2000/updatePro2000ProdInfoAjaxByShop.do",
+					url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/updatePro2000ProdInfoAjaxByShop.do",
 					type : "POST",
 					dataType : "json",
 					async : false,

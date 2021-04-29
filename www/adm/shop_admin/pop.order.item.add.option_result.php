@@ -55,7 +55,7 @@ for($i=0; $i<count($it_ids); $i++) {
             $sendData_stoId['stoId']=$arr_d1;
             $oCurl = curl_init();
             curl_setopt($oCurl, CURLOPT_PORT, 9901);
-            curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/deleteMulti");
+            curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/deleteMulti");
             curl_setopt($oCurl, CURLOPT_POST, 1);
             curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData_stoId, JSON_UNESCAPED_UNICODE));
@@ -428,7 +428,7 @@ foreach($productList as $key => $value){
 $sendData["prods"] = $prodsSendData;
 $oCurl = curl_init();
 curl_setopt($oCurl, CURLOPT_PORT, 9901);
-curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/insert");
+curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/insert");
 curl_setopt($oCurl, CURLOPT_POST, 1);
 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -496,7 +496,7 @@ $stoIdData = implode("|", $stoIdDataList);
 $count_b=0;
 $sendData["stoId"] = $stoIdData;
 $oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
+curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
 curl_setopt($oCurl, CURLOPT_POST, 1);
 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));

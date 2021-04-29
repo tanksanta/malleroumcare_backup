@@ -537,7 +537,7 @@ if($is_inquiryview_sub) {
 		$sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9901);
-		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
+		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/order/selectList");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
@@ -558,7 +558,7 @@ if($is_inquiryview_sub) {
 
                 $oCurl = curl_init();
                 curl_setopt($oCurl, CURLOPT_PORT, 9901);
-                curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
+                curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
                 curl_setopt($oCurl, CURLOPT_POST, 1);
                 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData3, JSON_UNESCAPED_UNICODE));

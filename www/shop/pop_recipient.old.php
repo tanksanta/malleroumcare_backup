@@ -2,7 +2,7 @@
 include_once('./_common.php');
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 
-$url = "https://eroumcare.com/pen/pen2000/pen2000/selectPen2000ListAjaxByShop.do?usrId=" . $_SESSION['ss_mb_id'] . "&start=1&length=500&draw=1";
+$url = "https://system.eroumcare.com/pen/pen2000/pen2000/selectPen2000ListAjaxByShop.do?usrId=" . $_SESSION['ss_mb_id'] . "&start=1&length=500&draw=1";
 $curl = curl_init();
 $timeout = 5; // 0으로 하면 시간제한이 없다.
 curl_setopt($curl, CURLOPT_URL, $url);

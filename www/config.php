@@ -62,11 +62,11 @@ define('G5_THEME_DIR',      'theme');
 // 이로움 API 
 define('EROUMCARE_API_PORT',                                     9901);
 // 15 재고 상세 목록
-define('EROUMCARE_API_SELECT_DETAIL_LIST',                       'https://eroumcare.com/api/stock/selectDetailList');
+define('EROUMCARE_API_SELECT_DETAIL_LIST',                       'https://system.eroumcare.com/api/stock/selectDetailList');
 // 16 재고 수정
-define('EROUMCARE_API_STOCK_UPDATE',                             'https://eroumcare.com:9901/api/stock/update');
+define('EROUMCARE_API_STOCK_UPDATE',                             'https://system.eroumcare.com:9901/api/stock/update');
 // 장바구니 정보
-define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do');
+define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do');
 
 // 로젠택배 EDI 연동 
 // dbconfig 파일에 작성하도록 수정

@@ -2202,7 +2202,7 @@ $(document).ready(function() {
 			if(penId){
 
 				/*
-				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
+				var url = 'https://system.eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
 				var dataList = {
 					'searchUsrId' : '<?php echo $od['mb_id'];?>',	//회원아이디
 					'insertPen5000Data' : [{
@@ -2238,14 +2238,14 @@ $(document).ready(function() {
 				//$insertPen5000DataList = urlencode('[{"penId": "PENID_20210111094719","prodId": "PRO2020111200002","prodNm": "Glory-MC1","itemId": "ITM2020092200020","itemNm": "욕창예방매트리스","prodPayCode": "H12060130101","prodColor": "단일","ordStatus": "00","prodOflPrice": "307000","penPay": "46050","prodBarNum": "12030130110","ordNm": "테스트트","ordCont": "010-8748-7796","ordZip": "48060","ordAddr": "부산 해운대구 APEC로 17","ordAddrDtl": " (우동)","ordMemo": "","payMehCd": "00","eformYn": "N"}]');
 				?>
 
-				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do?insertPen5000DataList=<?php echo $insertPen5000DataList;?>';
+				var url = 'https://system.eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do?insertPen5000DataList=<?php echo $insertPen5000DataList;?>';
 				var dataList = {
 					'searchUsrId' : '<?php echo $od['mb_id'];?>'
 				};
 
 			}else{
 
-				var url = 'https://eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
+				var url = 'https://system.eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
 				var dataList = {
 					'prodId' : '',									//제품 아이디
 					'prodColor' : '',								//색상

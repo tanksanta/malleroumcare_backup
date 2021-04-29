@@ -419,7 +419,7 @@ include_once(G5_PATH.'/head.sub.php');
 					}
 
 					$.ajax({
-						url : "https://eroumcare.com:9901/api/prod/insert",
+						url : "https://system.eroumcare.com:9901/api/prod/insert",
 						type : "POST",
 						async : false,
 						cache : false,

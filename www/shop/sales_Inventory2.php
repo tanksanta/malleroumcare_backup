@@ -79,7 +79,7 @@ $sendData["gubun"] = "00";
 
 $oCurl = curl_init();
 curl_setopt($oCurl, CURLOPT_PORT, 9901);
-curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectListForEnt");
+curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectListForEnt");
 curl_setopt($oCurl, CURLOPT_POST, 1);
 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -98,7 +98,7 @@ $sendData["gubun"] = "01";
 
 $oCurl = curl_init();
 curl_setopt($oCurl, CURLOPT_PORT, 9901);
-curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectListForEnt");
+curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectListForEnt");
 curl_setopt($oCurl, CURLOPT_POST, 1);
 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -137,7 +137,7 @@ if($_GET['searchtype']){
 
 $oCurl = curl_init();
 curl_setopt($oCurl, CURLOPT_PORT, 9901);
-curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/stock/selectListForEnt");
+curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectListForEnt");
 curl_setopt($oCurl, CURLOPT_POST, 1);
 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));

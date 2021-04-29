@@ -27,7 +27,7 @@
 
 			$oCurl = curl_init();
 			curl_setopt($oCurl, CURLOPT_PORT, 9901);
-			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
+			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/order/selectList");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -67,7 +67,7 @@
 
             $oCurl = curl_init();
 
-			curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
+			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));

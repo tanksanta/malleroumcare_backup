@@ -2252,7 +2252,7 @@ function fitemformcheck(f)
     if ("<?=$w?>" == "u") {
 		var error = "N";
 		var message = "";
-		var url = 'https://eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
+		var url = 'https://system.eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
 		var formData = new FormData();
 		formData.append("prodId", "<?=$_GET["it_id"]?>");
 		formData.append("prodNm", $("#it_name").val());

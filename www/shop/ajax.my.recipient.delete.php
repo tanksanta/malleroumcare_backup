@@ -11,7 +11,7 @@
 
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);
-	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/selectList");
+	curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -41,7 +41,7 @@
 
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);
-	curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/recipient/update");
+	curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/update");
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));

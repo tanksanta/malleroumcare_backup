@@ -2358,7 +2358,7 @@ function fitemformcheck(f)
 		}
 
 		$.ajax({
-			url : "https://eroumcare.com:9901/api/prod/insert",
+			url : "https://system.eroumcare.com:9901/api/prod/insert",
 			type : "POST",
 			async : false,
 			cache : false,
@@ -2541,7 +2541,7 @@ async function frmUpdate(){
 	}
 
 	$.ajax({
-		url : "https://eroumcare.com:9901/api/prod/update",
+		url : "https://system.eroumcare.com:9901/api/prod/update",
 		type : "POST",
 		async : false,
 		cache : false,

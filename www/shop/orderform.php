@@ -1606,7 +1606,7 @@ $tot_price=$tot_sell_price+$send_cost;
 			/*
 			if(f.penId.value){
 
-				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
+				var url = 'https://system.eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
 				var dataList = {
 					'searchUsrId' : f.searchUsrId.value,	//123456789
 					'shoBasSeq' : f.shoBasSeq.value,		//12
@@ -1621,7 +1621,7 @@ $tot_price=$tot_sell_price+$send_cost;
 				};
 
 			}else{
-				var url = 'https://eroumcare.com/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
+				var url = 'https://system.eroumcare.com/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
 				var dataList = {
 					'searchUsrId' : f.searchUsrId.value,	//123456789
 					'shoBasSeq' : f.shoBasSeq.value,		//12

@@ -91,7 +91,7 @@ foreach($od_id as $odid) {
 
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9901);
-		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/{$curlURL}/update");
+		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/{$curlURL}/update");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));

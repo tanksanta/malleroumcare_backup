@@ -209,7 +209,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 			e.preventDefault();
 			
 			if(confirm("회원가입은 이로움시스템을 통해서만 등록이 가능합니다.\n회원가입하시겠습니까?")){
-				window.location.href = "https://eroumcare.com/cmm/cmm4000/cmm4000/selectCmm4000View.do";
+				window.location.href = "https://system.eroumcare.com/cmm/cmm4000/cmm4000/selectCmm4000View.do";
 			}
 		});
 		
