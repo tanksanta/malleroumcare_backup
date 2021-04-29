@@ -669,7 +669,9 @@ foreach($orderlist as $order) {
                         {$show_next_status}
                         {$show_prev_status}
 
+                        <!--
                         <span class=\"btn large\"><button name=\"delivery_edi_return\" class=\"delivery_edi_return\" id=\"25\" >송장리턴</button></span>
+                        -->
 
 
                         <!--
