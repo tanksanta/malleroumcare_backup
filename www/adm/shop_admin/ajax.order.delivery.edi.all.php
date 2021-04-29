@@ -142,7 +142,7 @@ foreach($carts as $cart) {
         $it_name .= " ({$cart["ct_option"]})";
     }
 
-    $it_name .= ' ' . $cart['ct_qty'] . '개';
+    $it_name .= ' * ' . $cart['ct_qty'] . '개';
 
     $sql = "SELECT * FROM g5_shop_cart WHERE ct_combine_ct_id = '{$cart['ct_id']}'";
     $combine_result = sql_query($sql);
@@ -153,9 +153,9 @@ foreach($carts as $cart) {
             $combine_it_name .= " ({$combine_row["ct_option"]})";
         }
 
-        $combine_it_name .= $combine_row['ct_qty'] . "개";
+        $combine_it_name .= ' * ' . $combine_row['ct_qty'] . "개";
 
-        $it_name .= '#' . $combine_it_name;
+        $it_name .= ' # ' . $combine_it_name;
     }
 
     $edi['goodsName']       = $it_name;
