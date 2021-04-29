@@ -150,8 +150,10 @@ foreach($carts as $cart) {
         
         $combine_it_name = $combine_row["it_name"];
         if($combine_it_name != $combine_row["ct_option"]){
-            $combine_it_name .= " ({$combine_row["ct_option"]}) " . $combine_row['ct_qty'] . "개";
+            $combine_it_name .= " ({$combine_row["ct_option"]})";
         }
+
+        $combine_it_name .= $combine_row['ct_qty'] . "개";
 
         $it_name .= '#' . $combine_it_name;
     }
