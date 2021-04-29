@@ -142,6 +142,8 @@ foreach($carts as $cart) {
         $it_name .= " ({$cart["ct_option"]})";
     }
 
+    $it_name .= ' ' . $cart['ct_qty'] . '개';
+
     $sql = "SELECT * FROM g5_shop_cart WHERE ct_combine_ct_id = '{$cart['ct_id']}'";
     $combine_result = sql_query($sql);
     while ($combine_row = sql_fetch_array($combine_result)) {
