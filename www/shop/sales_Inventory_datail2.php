@@ -1077,35 +1077,35 @@ $row = sql_fetch($sql);
     //날짜 넣기
 
     //대여기간수정 api 통신
-    function retal_period_change(penOrdId,stoId,strDtm,endDtm){
-        var ordLendStrDtm = document.getElementById(strDtm);
-        var ordLendEndDtm = document.getElementById(endDtm);
-        var sendData = {
-            usrId : "<?=$member["mb_id"]?>",
-            penOrdId : penOrdId,
-            prods : [
-                {
-                    stoId : stoId,                      //재고아이디
-                    ordLendStrDtm : ordLendStrDtm.value, //대여시작일
-                    ordLendEndDtm : ordLendEndDtm.value  //대여종료일
-                }
-            ]
-        }
-        $.ajax({
-            url : "./ajax.order.update.php",
-            type : "POST",
-            async : false,
-            data : sendData,
-            success : function(result){
-                if(result.errorYN == "Y"){
-                    alert(result.message);
-                } else {
-                    alert('변경이 완료되었습니다.');
-                    $(ordLendStrDtm).parents('.popup01').stop().hide();
-                }
-            }
-        });
-    }
+    // function retal_period_change(penOrdId,stoId,strDtm,endDtm){
+    //     var ordLendStrDtm = document.getElementById(strDtm);
+    //     var ordLendEndDtm = document.getElementById(endDtm);
+    //     var sendData = {
+    //         usrId : "<?=$member["mb_id"]?>",
+    //         penOrdId : penOrdId,
+    //         prods : [
+    //             {
+    //                 stoId : stoId,                      //재고아이디
+    //                 ordLendStrDtm : ordLendStrDtm.value, //대여시작일
+    //                 ordLendEndDtm : ordLendEndDtm.value  //대여종료일
+    //             }
+    //         ]
+    //     }
+    //     $.ajax({
+    //         url : "./ajax.order.update.php",
+    //         type : "POST",
+    //         async : false,
+    //         data : sendData,
+    //         success : function(result){
+    //             if(result.errorYN == "Y"){
+    //                 alert(result.message);
+    //             } else {
+    //                 alert('변경이 완료되었습니다.');
+    //                 $(ordLendStrDtm).parents('.popup01').stop().hide();
+    //             }
+    //         }
+    //     });
+    // }
 
     //대여상품 상태변경 api 통신 (대여종료)
     function retal_state_change(stoId,stateCd){
