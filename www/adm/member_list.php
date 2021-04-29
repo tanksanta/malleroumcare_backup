@@ -83,7 +83,7 @@ if ($is_admin != 'super')
     $sql_search .= " and mb_level <= '{$member['mb_level']}' ";
 
 if (!$sst) {
-    $sst = "mb_update_date";
+    $sst = "mb_datetime";
     $sod = "desc";
 }
 
