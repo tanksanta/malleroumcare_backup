@@ -71,7 +71,7 @@ $_POST['it_info_value'] = 'a:8:{s:8:"material";s:28:"상세설명페이지 참�
 
 
 $_POST['it_img1'] = '1609479865/1.png';			//이미지
-$_POST['pt_thumb'] = 'https://mall.eroumcare.com/data/item/1609479865/1.png';			//이미지
+$_POST['pt_thumb'] = 'https://eroumcare.com/data/item/1609479865/1.png';			//이미지
 */
 
 

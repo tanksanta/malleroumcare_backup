@@ -164,7 +164,7 @@ if($_FILES['excelfile']['tmp_name']) {
 		$it_price = ($it_price) ? $it_price : 0;
 		$it_cust_price = ($it_cust_price) ? $it_cust_price : 0;
 
-		$it_explan = ($prodSupYn == "N") ? addslashes("<img src='https://mall.eroumcare.com/data/item/prodSupN.png'>") : $it_explan;
+		$it_explan = ($prodSupYn == "N") ? addslashes("<img src='https://eroumcare.com/data/item/prodSupN.png'>") : $it_explan;
 		$it_use = ($it_use) ? $it_use : 1;
 		$it_stock_qty = ($it_stock_qty) ? $it_stock_qty : 9999;
 

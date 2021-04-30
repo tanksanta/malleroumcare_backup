@@ -579,7 +579,7 @@ $(function() {
 
 	$('#itemform').click(function() {
 
-		var url = 'https://mall.eroumcare.com/eroumcare_itemformupdate.php';
+		var url = 'https://eroumcare.com/eroumcare_itemformupdate.php';
 		var dataList = {
 			'pt_it' : '1',							//상품종류 - 1: 일반상품(배송가능), 2: 컨텐츠상품(배송불가)
 			'ca_id' : '1080',						//상품분류
