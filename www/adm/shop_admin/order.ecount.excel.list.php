@@ -6,38 +6,25 @@
 	include_once(G5_LIB_PATH."/PHPExcel.php");
 	function column_char($i) { return chr( 65 + $i ); }
 
-	$od_id = [];
-	for($i = 0; $i < count($_POST["od_id"]); $i++){
-		if($_POST["od_id"][$i]){
-			array_push($od_id, "'{$_POST["od_id"][$i]}'");
-		}
-	}
+    
+        $ct_id=$_POST['od_id'];
+        $count_number=0;
+        $count_od_id="";
 
-	$od_id = implode(",", $od_id);
+		for($ii = 0; $ii < count($ct_id); $ii++){
 
-    $sql = "
-		SELECT *
-		FROM g5_shop_order
-		WHERE od_id IN ( {$od_id} )
-	";
-    $result = sql_query($sql);
-
-    $rows = [];
-    for($i=1; $od=sql_fetch_array($result); $i++) 
-    {   
-
-		$itList = sql_query("
-			SELECT cart.*, item.it_thezone2
-			FROM g5_shop_cart as cart
-			INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
-			WHERE cart.od_id = '{$od["od_id"]}'
-			ORDER BY cart.ct_id ASC
-		");
+            $it = sql_fetch("
+                SELECT cart.*, item.it_thezone2
+                FROM g5_shop_cart as cart
+                INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
+                WHERE cart.ct_id = '{$ct_id[$ii]}'
+                ORDER BY cart.ct_id ASC
+		    ");
 		
-		for($ii = 0; $it = sql_fetch_array($itList); $ii++){
-			
-            // print_r($it);
-            // echo "<br><br>";
+            $od = sql_fetch(" 
+                SELECT * FROM g5_shop_order WHERE od_id = '".$it['od_id']."'
+            ");
+            if($count_od_id !==$it['od_id']){$count_number++; $count_od_id=$it['od_id']; }
             #바코드
             $stoIdDataList = explode('|',$it['stoId']);
             $stoIdDataList=array_filter($stoIdDataList);
@@ -49,14 +36,15 @@
 			$res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
             $result_again = $res;
             $result_again =$result_again['data'];
+
             for($k=0; $k < count($result_again); $k++){
                 if($result_again[$k]['prodBarNum']){
                     array_push($barcode,$result_again[$k]['prodBarNum']);
                 }
             }
+
             $barcode = implode(",", $barcode);
             $barcode = $barcode." "; 
-            
             
 			//할인적용 단가
 			if($od['od_cart_price']){
@@ -113,8 +101,8 @@
                 $date =date("Ymd", strtotime($od["od_ex_date"]));
             }
 			$rows[] = [ 
-				$date,
-				$i,
+				$date,  //날짜
+				$count_number,
 				$mb['mb_thezone'],
 				'',
 				$od_sales_manager['mb_name'],
@@ -142,9 +130,8 @@
 				'',
 			];
 		}
-    }
 
-    $headers = array("일자", "순번", "거래처코드", "거래처명","담당자", "출하창고", "거래유형","통화", "환율","성명(상호명)", "배송처", "전잔액", "후잔액", "특이사항", "참고사항", "품목코드", "품목명", "규격", "수량", "단가(vat포함)", "외화금액", "공급가액", "부가세", "바코드", "로젠 송장번호", "적요", "생산전표생성");
+    $headers = array("일자", "순서", "거래처코드", "거래처명","담당자", "출하창고", "거래유형","통화", "환율","성명(상호명)", "배송처", "전잔액", "후잔액", "특이사항", "참고사항", "품목코드", "품목명", "규격", "수량", "단가(vat포함)", "외화금액", "공급가액", "부가세", "바코드", "로젠 송장번호", "적요", "생산전표생성");
     $data = array_merge(array($headers), $rows);
     
     $widths  = array(20, 50, 10, 30, 50, 30, 50);

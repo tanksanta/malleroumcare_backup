@@ -6,33 +6,22 @@
 	include_once(G5_LIB_PATH."/PHPExcel.php");
 	function column_char($i) { return chr( 65 + $i ); }
 
-	$od_id = [];
-	for($i = 0; $i < count($_POST["od_id"]); $i++){
-		if($_POST["od_id"][$i]){
-			array_push($od_id, "'{$_POST["od_id"][$i]}'");
-		}
-	}
+        $ct_id=$_POST['od_id'];
+        for($ii = 0; $ii < count($ct_id); $ii++){
 
-	$od_id = implode(",", $od_id);
+            $it = sql_fetch("
+                SELECT cart.*, item.it_thezone2
+                FROM g5_shop_cart as cart
+                INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
+                WHERE cart.ct_id = '{$ct_id[$ii]}'
+                ORDER BY cart.ct_id ASC
+            ");
+        
+            $od = sql_fetch(" 
+                SELECT * FROM g5_shop_order WHERE od_id = '".$it['od_id']."'
+            ");
 
-    $sql = "
-		SELECT *
-		FROM g5_shop_order
-		WHERE od_id IN ( {$od_id} )
-	";
-    $result = sql_query($sql);
 
-    $rows = [];
-    for($i=1; $od=sql_fetch_array($result); $i++) 
-    {
-		$itList = sql_query("
-			SELECT *
-			FROM g5_shop_cart
-			WHERE od_id = '{$od["od_id"]}'
-			ORDER BY ct_id ASC
-		");
-		
-		for($ii = 0; $it = sql_fetch_array($itList); $ii++){
 			$it_name = $it["it_name"];
 			
 			if($it_name != $it["ct_option"]){
@@ -54,7 +43,6 @@
 				$od["od_memo"]
 			];
 		}
-    }
 
     $headers = array("일자-No.", "품목명[규격]", "수량", "품목&수량","성함(상호명)", "배송처", "연락처","휴대폰", "적요","배송지요청사항");
     $data = array_merge(array($headers), $rows);
