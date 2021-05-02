@@ -538,8 +538,8 @@ foreach($orderlist as $order) {
 		$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
 
 		$prodBarNumCntBtnWord = "바코드";
-		$prodBarNumCntBtnWord = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
-		$prodBarNumCntBtnStatus = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? " disable" : "";
+		// $prodBarNumCntBtnWord = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
+		// $prodBarNumCntBtnStatus = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? " disable" : "";
         
 
         $deliveryCntBtnWord = " 입력 ({$delivery_input_cnt}/". $cart_cnt .")";
@@ -548,10 +548,10 @@ foreach($orderlist as $order) {
         $deliveryCntBtnWord ="배송정보";
 
         $deliveryCntBtnStatus = '';
-        if ($edi_return_cnt >= $cart_cnt) {
-		    $deliveryCntBtnWord = '입력완료';
-            $deliveryCntBtnStatus = ' disable ';
-        }
+        // if ($edi_return_cnt >= $cart_cnt) {
+		//     $deliveryCntBtnWord = '입력완료';
+        //     $deliveryCntBtnStatus = ' disable ';
+        // }
 	}
 
     $important2_class = $order['od_important2'] ? 'on' : '';
