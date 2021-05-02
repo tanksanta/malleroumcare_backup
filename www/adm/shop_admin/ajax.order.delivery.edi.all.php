@@ -3,9 +3,11 @@ include_once('./_common.php');
 
 header('Content-Type: application/json');
 
-$where = "o.od_status = '출고준비'";
-if (is_array($od_id)) {
-    $where = ' o.od_id IN (\'' . implode('\',\'', $od_id) . '\')';
+$where = "c.ct_status = '출고준비'";
+$ct_id=$od_id;
+
+if (is_array($ct_id)) {
+    $where = ' c.ct_id IN (\'' . implode('\',\'', $ct_id) . '\')';
 }
 
 $return_success = 0;
@@ -49,7 +51,11 @@ $cart_result = sql_query($sql);
 while ( $row2 = sql_fetch_array($cart_result) ) {
     $carts[] = $row2;
 }
-
+// $sql_v=[];
+// $sql_v['v']=$sql;
+// $json = json_encode($carts);
+// echo $json;
+// return false;
 foreach($carts as $cart) {
 
     unset($edi);
@@ -142,7 +148,7 @@ foreach($carts as $cart) {
         $it_name .= " ({$cart["ct_option"]})";
     }
 
-    $it_name .= ' * ' . $cart['ct_qty'] . '개';
+    $it_name .= ' ' . $cart['ct_qty'] . '개';
 
     $sql = "SELECT * FROM g5_shop_cart WHERE ct_combine_ct_id = '{$cart['ct_id']}'";
     $combine_result = sql_query($sql);
@@ -153,9 +159,7 @@ foreach($carts as $cart) {
             $combine_it_name .= " ({$combine_row["ct_option"]})";
         }
 
-        $combine_it_name .= ' * ' . $combine_row['ct_qty'] . "개";
-
-        $it_name .= ' # ' . $combine_it_name;
+        $it_name .= '#' . $combine_it_name;
     }
 
     $edi['goodsName']       = $it_name;
