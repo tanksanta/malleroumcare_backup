@@ -9,6 +9,7 @@
 		$deliveryTotalCnt = 0;
 		if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
 		$sub_menu = '400402';
+        alert('준비중입니다.',G5_URL);
 
  ?>
  <!DOCTYPE html>
