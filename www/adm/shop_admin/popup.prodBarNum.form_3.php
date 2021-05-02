@@ -345,23 +345,21 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		var item = $(".folding_box");
 		for(var i = 0; i < item.length; i++){
 			var openStatus = true;
-            var d_count=0;
+			var d_count=0;
 			var notalls = $(item[i]).find(".notall");
 			for(var n = 0; n < notalls.length; n++){
-                if(!$(notalls[n]).val()|| $(notalls[n]).val().length<12){
-                    d_count++;
+				if(!$(notalls[n]).val() || $(notalls[n]).val().length<12){
+					d_count++;
 					openStatus = false;
-                    
 				}
 			}
-            //숫자채우기
-            $(item[i]).parent().find(".p1 .span2 .c_num").html(notalls.length-d_count);
+			//숫자채우기
+			$(item[i]).parent().find(".p1 .span2 .c_num").html(notalls.length-d_count);
 			if(!openStatus){
 				$(item[i]).show();
 				$(item[i]).parent().find(".p1 .span2 .up").css("display", "inline-block");
 				$(item[i]).parent().find(".p1 .span2 .down").css("display", "none");
 			}
-
 		}
 	}
 
@@ -376,12 +374,12 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		for(var i = 0; i < item.length; i++){
 			var length = $(item[i]).val().length;
 			if(length < 12 && length){
-                console.log(length);
 				$(item[i]).addClass("active");
 			}
 
 			if(length == 12){
 				$(item[i]).parent().find("i").addClass("active");
+
 				var index = $(item[i]).parent("li").index();
 				var prodItem = $(item[i]).closest(".inputbox").find("li");
 				for(var ii = 0; ii < prodItem.length; ii++){
@@ -479,8 +477,9 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
             var sendData = {
                 stoId : stoIdData
             }
+
             $.ajax({
-                url : "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
+                url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
                 type : "POST",
                 dataType : "json",
                 contentType : "application/json; charset=utf-8;",
@@ -491,16 +490,29 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     $.each(res.data, function(key, value){
                         $("." + value.stoId).val(value.prodBarNum);
                         //완료된 숫자 세고 집어넣기
-                        // if(value.prodBarNum){
-                        //     var number=$("." + value.stoId+"_v").html();
-                        //     var number_v=parseInt(number)+1
-                        //     $("." + value.stoId+"_v").html(number_v);
-                        //     count++;
-                        // }
+                        if(value.prodBarNum){
+                            // var number=$("." + value.stoId+"_v").html();
+                            // var number_v=parseInt(number)+1
+                            // $("." + value.stoId+"_v").html(number_v);
+                            // count++;
+                        }
                     });
+
+                    console.log(res.data);
+                    // $.each(res.data, function(key, value){
+                    //     //완료된 숫자 세고 집어넣기
+                    //     if(value.prodBarNum){
+                    //         console.log();
+                    //         // $("." + value.stoId+"_img").html('z');
+                    //     }
+                    // });
+
+
+
                     if(res.data){
                         stoldList = res.data;
                     }
+
 					notallLengthCheck();
 					foldingBoxSetting();
                 }
@@ -521,7 +533,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 				async : false,
 				data : $("#submitForm").serialize()
 			});
-
                 var prodsList = {};
                 $.each(stoldList, function(key, value){
                     prodsList[key] = {
@@ -543,7 +554,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     usrId : "<?=$od["mb_id"]?>",
                     prods : prodsList
                 }
-
                 $.ajax({
                     url : "./ajax.barcode_log.php",
                     type : "POST",
@@ -553,7 +563,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                             console.log(result);
                         }
                 });
-
                 $.ajax({
                     url : "./samhwa_orderform_stock_update.php",
                     type : "POST",
@@ -586,6 +595,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     }
                 });
         });
+
 
          //넘버 검사
          $(".barNumCustomSubmitBtn").click(function(){
@@ -741,15 +751,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         const popup = document.querySelector('#popup');
         popup.classList.add('hide');
     }
-
-    $(".popupCloseBtn").click(function(e){
-		e.preventDefault();
-
-		$("#popupProdBarNumInfoBox", parent.document).hide();
-		$("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
-	});
-
-    $(document).ready(function() { notallLengthCheck(); });
 </script>
     <!-- <hr color="#dddddd" size="1"> -->
  </body>
+
