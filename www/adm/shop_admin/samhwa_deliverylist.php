@@ -262,7 +262,9 @@ $( document ).ready(function() {
         var it = $(this).attr("data-it");
         var stock = $(this).attr("data-stock");
         var option = encodeURIComponent($(this).attr("data-option"));
-        window.open("./popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+        //popup.prodBarNum.form_3.php 으로하면 cart 기준으로 바뀜 (상품하나씩)
+
+        window.open("./popup.prodBarNum.form.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
     });
 	
 	$(document).on("click", ".deliveryCntBtn", function(e){
@@ -276,7 +278,9 @@ $( document ).ready(function() {
 		var popupX = (window.screen.width / 2) - (popupWidth / 2);
 		var popupY= (window.screen.height / 2) - (popupHeight / 2);
 		
-		window.open("./popup.prodDeliveryInfo.form2.php?od_id=" + id +"&ct_id="+ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+        //아래로하면 cart기준으로 바꿈(상품하나씩)
+		// window.open("./popup.prodDeliveryInfo.form2.php?od_id=" + id +"&ct_id="+ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+		window.open("./popup.prodDeliveryInfo.form.php?od_id=" + id +"&ct_id="+ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
 	});
 
     function doSearch() {
