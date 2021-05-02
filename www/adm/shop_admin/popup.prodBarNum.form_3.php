@@ -547,6 +547,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                         stateCd : value.stateCd,
                         stoMemo : (value.stoMemo) ? value.stoMemo : ""
                     }
+					if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false;}
 
                     if($("." + value.stoId).val()){
                         insertBarCnt++;

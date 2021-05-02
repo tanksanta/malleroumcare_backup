@@ -559,7 +559,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                         insertBarCnt++;
                     }
                 });
-
+                if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false;}
                 var sendData = {
                     usrId : "<?=$od["mb_id"]?>",
                     prods : prodsList
