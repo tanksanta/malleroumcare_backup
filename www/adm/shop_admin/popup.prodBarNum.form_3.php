@@ -16,15 +16,15 @@
 	if (!$od['od_id']) {
 		alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 	} else {
-		$sto_imsi="";
-		$sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
-		$result_ct = sql_query($sql_ct);
-		while($row_ct = sql_fetch_array($result_ct)) {
-			$sto_imsi .=$row_ct['stoId'];
-		}
-		$stoIdDataList = explode('|',$sto_imsi);
-		$stoIdDataList=array_filter($stoIdDataList);
-		$stoIdData = implode("|", $stoIdDataList);
+            $sto_imsi="";
+            $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+            $result_ct = sql_query($sql_ct);
+            while($row_ct = sql_fetch_array($result_ct)) {
+                $sto_imsi .=$row_ct['stoId'];
+            }
+            $stoIdDataList = explode('|',$sto_imsi);
+            $stoIdDataList=array_filter($stoIdDataList);
+            $stoIdData = implode("|", $stoIdDataList);
 	}
 
 	$carts = get_carts_by_od_id($od_id);
@@ -213,14 +213,14 @@
                     $barcode_placeholder ="바코드를 입력하세요.";
                     $prodSupYn_count++;
                 }
-
+                if($member['mb_id']=="admin"){
+                $readonly = "";
+                $prodSupYn_count++;
+                }
 
 				for($k = 0; $k < count($options); $k++){
-					$stoId_v=[];
-					$stoId_v = explode('|',$options[$k]['stoId']);
-					$stoId_v=array_filter($stoId_v);
-
-                    if($options[$k]['it_id']!==$_GET['prodId']||$options[$k]["ct_option"]!==$_GET['option']){ 
+                    if($options[$k]['it_id'] !== $_GET['prodId'] || $options[$k]["ct_option"]!==$_GET['option']){ 
+                    
 						for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ 
 							echo '<input type="hidden" maxlength="12" oninput="maxLengthCheck(this)" value="'.$prodList[$b]["prodBarNum"].'" class="notall frm_input frm_input_'.$prodListCnt.' required prodBarNumItem_'.$prodList[$prodListCnt]["penStaSeq"].' '.$stoIdDataList[$prodListCnt].'" placeholder="'.$barcode_placeholder.'" data-frm-no="'.$prodListCnt.'" maxlength="12">';
 							$prodListCnt++; 
@@ -238,7 +238,7 @@
 								<p class="p1">
 									<span class="span1">
 										<!-- 상품명 -->
-										<?php if($options[$k]['ct_stock_qty']){ echo '[재고소진]'; } ?>
+                                        <?php if($options[$k]['ct_stock_qty']){ echo '[재고소진]'; } ?>
 										<?=stripslashes($carts[$i]["it_name"])?>
 										<!-- 옵션 -->
 										<?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
@@ -253,13 +253,9 @@
 												$prodListCnt2++;
 											}
 										?>
-
-
 										<span class="<?=$add_class?> c_num">0</span>/<?=$options[$k]["ct_qty"]?>
 										<img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
 										<img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
-
-
 									</span>
 								</p>
 								<?php if($prodMemo){ ?>
@@ -349,22 +345,23 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		var item = $(".folding_box");
 		for(var i = 0; i < item.length; i++){
 			var openStatus = true;
-			var d_count=0;
+            var d_count=0;
 			var notalls = $(item[i]).find(".notall");
 			for(var n = 0; n < notalls.length; n++){
-				if(!$(notalls[n]).val() || $(notalls[n]).val().length<12){
-					d_count++;
+                if(!$(notalls[n]).val()|| $(notalls[n]).val().length<12){
+                    d_count++;
 					openStatus = false;
+                    
 				}
 			}
-			//숫자채우기
-			$(item[i]).parent().find(".p1 .span2 .c_num").html(notalls.length-d_count);
-
+            //숫자채우기
+            $(item[i]).parent().find(".p1 .span2 .c_num").html(notalls.length-d_count);
 			if(!openStatus){
 				$(item[i]).show();
 				$(item[i]).parent().find(".p1 .span2 .up").css("display", "inline-block");
 				$(item[i]).parent().find(".p1 .span2 .down").css("display", "none");
 			}
+
 		}
 	}
 
@@ -379,12 +376,12 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		for(var i = 0; i < item.length; i++){
 			var length = $(item[i]).val().length;
 			if(length < 12 && length){
+                console.log(length);
 				$(item[i]).addClass("active");
 			}
 
 			if(length == 12){
 				$(item[i]).parent().find("i").addClass("active");
-
 				var index = $(item[i]).parent("li").index();
 				var prodItem = $(item[i]).closest(".inputbox").find("li");
 				for(var ii = 0; ii < prodItem.length; ii++){
@@ -482,9 +479,8 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
             var sendData = {
                 stoId : stoIdData
             }
-
             $.ajax({
-                url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
+                url : "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
                 type : "POST",
                 dataType : "json",
                 contentType : "application/json; charset=utf-8;",
@@ -502,22 +498,9 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                         //     count++;
                         // }
                     });
-
-                    console.log(res.data);
-                    // $.each(res.data, function(key, value){
-                    //     //완료된 숫자 세고 집어넣기
-                    //     if(value.prodBarNum){
-                    //         console.log();
-                    //         // $("." + value.stoId+"_img").html('z');
-                    //     }
-                    // });
-
-
-
                     if(res.data){
                         stoldList = res.data;
                     }
-
 					notallLengthCheck();
 					foldingBoxSetting();
                 }
@@ -560,6 +543,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     usrId : "<?=$od["mb_id"]?>",
                     prods : prodsList
                 }
+
                 $.ajax({
                     url : "./ajax.barcode_log.php",
                     type : "POST",
@@ -569,6 +553,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                             console.log(result);
                         }
                 });
+
                 $.ajax({
                     url : "./samhwa_orderform_stock_update.php",
                     type : "POST",
@@ -601,7 +586,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     }
                 });
         });
-
 
          //넘버 검사
          $(".barNumCustomSubmitBtn").click(function(){
@@ -764,6 +748,8 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		$("#popupProdBarNumInfoBox", parent.document).hide();
 		$("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
 	});
+
+    $(document).ready(function() { notallLengthCheck(); });
 </script>
     <!-- <hr color="#dddddd" size="1"> -->
  </body>

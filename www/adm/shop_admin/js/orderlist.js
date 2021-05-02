@@ -488,6 +488,7 @@ $(function(){
             },
         })
         .done(function(data) {
+            // return false;
             if ( data.msg ) {
                 alert(data.msg);
             }

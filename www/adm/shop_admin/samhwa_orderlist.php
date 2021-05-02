@@ -27,6 +27,37 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
 </style>
 <script src="<?php echo G5_ADMIN_URL; ?>/shop_admin/js/orderlist.js?ver=<?php echo time(); ?>"></script>
 
+<?php
+
+    // echo '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>';
+    // $sqlv="select `ct_id`, `stoId` from `g5_shop_cart`";
+    // $result = sql_query($sqlv);
+    // $i=0;
+    // while($row = sql_fetch_array($result)) {
+    //     $i++;
+    //     $count_a=0;
+    //     $stoIdDataList = explode('|',$row['stoId']);
+    //     $stoIdDataList=array_filter($stoIdDataList);
+    //     $stoIdData = implode("|", $stoIdDataList);
+    //     $sendData["stoId"] = $stoIdData;
+    //     $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+    //     $result_again =$res['data'];
+    //     echo $row['ct_id']." / ".$row['stoId']." / ".count($stoIdDataList).'<br>';
+    //     // print_r($result_again);
+    //     for($k=0;$k<count($result_again);$k++){
+    //         if($result_again[$k]['prodBarNum']){
+    //             $count_a++;
+    //         }
+    //     }
+    //     echo $count_a.'<br>';
+    //     // echo 'UPDATE `g5_shop_cart` SET `ct_barcode_insert`="'.$count_a.'" where ct_id = "'.$row['ct_id'].'"';
+    //     echo sql_query('UPDATE `g5_shop_cart` SET `ct_barcode_insert`="'.$count_a.'" where `ct_id` = "'.$row['ct_id'].'"');
+    //     echo '<br><br>';
+    //     // if($i==50){ return false;}
+    // }
+    // return false;
+?>
+
 <div class="local_ov01 local_ov fixed">
     <?php echo $listall; ?>
     <h1 style="border:0;padding:5px 0;margin:0;">주문내역</h1>
@@ -35,16 +66,16 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
     <a href="./orderdelivery.php" id="order_delivery" class="ov_a">엑셀배송처리</a>
     <?php } ?>
     <div class="right">
-        <button id="select_important">선택 계산서 발행 확인</button>
-        <button id="deselect_important">선택 계산서 발행 해지</button>
+        <!-- <button id="select_important">선택 계산서 발행 확인</button> -->
+        <!-- <button id="deselect_important">선택 계산서 발행 해지</button> -->
         <!-- <button id="gdexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">경동엑셀</button> -->
         <!-- <button id="dzexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">더존엑셀</button> -->
         <!-- <button id="handsabang" onClick="sanbang_order_send()">사방넷수동가져오기</button> -->
 		<!-- <button id="list_matching_cancel">매칭데이터취소</button> -->
         <button id="delivery_edi_send_all">로젠 EDI 일괄 전송</button>
         <button id="delivery_edi_return_all">송장리턴</button>
-        <button class="orderExcel" data-type="1"><img src="/adm/shop_admin/img/btn_img_ex.gif">주문 엑셀 다운로드</button>
-        <button class="orderExcel" data-type="2"><img src="/adm/shop_admin/img/btn_img_ex.gif">출고 엑셀 다운로드</button>
+        <!-- <button class="orderExcel" data-type="1"><img src="/adm/shop_admin/img/btn_img_ex.gif">주문 엑셀 다운로드</button> -->
+        <!-- <button class="orderExcel" data-type="2"><img src="/adm/shop_admin/img/btn_img_ex.gif">출고 엑셀 다운로드</button> -->
     </div>
 </div>
 
@@ -143,54 +174,6 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                     <?php } ?>
                 </td>
             </tr>
-    <!--
-            <tr>
-                <th>주문경로</th>
-                <td>
-                    <input type="checkbox" name="od_openmarket[]" value="" id="od_openmarket_0" <?php echo $od_openmarket && count($od_openmarket) >= 7 ? 'checked' : '' ?>>
-                    <label for="od_openmarket_0">전체</label>
-                    <input type="checkbox" name="od_openmarket[]" value="my" id="od_openmarket_1" <?php echo option_array_checked('my', $od_openmarket); ?>>
-                    <label for="od_openmarket_1">내사이트</label>
-                    <input type="checkbox" name="od_openmarket[]" value="11번가" id="od_openmarket_2" <?php echo option_array_checked('11번가', $od_openmarket); ?>>
-                    <label for="od_openmarket_2">11번가</label>
-                    <input type="checkbox" name="od_openmarket[]" value="인터파크" id="od_openmarket_3" <?php echo option_array_checked('인터파크', $od_openmarket); ?>>
-                    <label for="od_openmarket_3">인터파크</label>
-                    <input type="checkbox" name="od_openmarket[]" value="스마트스토어" id="od_openmarket_4" <?php echo option_array_checked('스마트스토어', $od_openmarket); ?>>
-                    <label for="od_openmarket_4">스마트스토어</label>
-                    <input type="checkbox" name="od_openmarket[]" value="ESM옥션" id="od_openmarket_5" <?php echo option_array_checked('ESM옥션', $od_openmarket); ?>>
-                    <label for="od_openmarket_5">ESM옥션</label>
-                    <input type="checkbox" name="od_openmarket[]" value="ESM지마켓" id="od_openmarket_6" <?php echo option_array_checked('ESM지마켓', $od_openmarket); ?>>
-                    <label for="od_openmarket_6">ESM지마켓</label>
-                    <input type="checkbox" name="od_openmarket[]" value="오너클랜" id="od_openmarket_7" <?php echo option_array_checked('오너클랜', $od_openmarket); ?>>
-                    <label for="od_openmarket_7">오너클랜</label>
-                </td>
-            </tr>
--->
-            <tr>
-                <th>기타선택</th>
-                <td>
-                    <input type="checkbox" name="od_misu" value="Y" id="od_misu01" <?php echo get_checked($od_misu, 'Y'); ?>>
-                    <label for="od_misu01">미수금</label>
-                    <input type="checkbox" name="od_cancel_price" value="Y" id="od_misu02" <?php echo get_checked($od_cancel_price, 'Y'); ?>>
-                    <label for="od_misu02">반품,품절</label>
-                    <input type="checkbox" name="od_refund_price" value="Y" id="od_misu03" <?php echo get_checked($od_refund_price, 'Y'); ?>>
-                    <label for="od_misu03">환불</label>
-                    <input type="checkbox" name="od_receipt_point" value="Y" id="od_misu04" <?php echo get_checked($od_receipt_point, 'Y'); ?>>
-                    <label for="od_misu04">포인트주문</label>
-                    <input type="checkbox" name="od_coupon" value="Y" id="od_misu05" <?php echo get_checked($od_coupon, 'Y'); ?>>
-                    <label for="od_misu05">쿠폰</label>
-                    <?php if($default['de_escrow_use']) { ?>
-                    <input type="checkbox" name="od_escrow" value="Y" id="od_misu06" <?php echo get_checked($od_escrow, 'Y'); ?>>
-                    <label for="od_misu06">에스크로</label>
-                    <?php } ?>
-                    <div class="linear">
-                        <span class="linear_span">주문방법</span>
-                        <input type="radio" id="add_admin_all" name="add_admin" value="" <?php echo option_array_checked('', $add_admin); ?>><label for="add_admin_all"> 전체</label>
-                        <input type="radio" id="add_admin_0" name="add_admin" value="0" <?php echo option_array_checked('0', $add_admin); ?>><label for="add_admin_0"> 일반주문</label>
-                        <input type="radio" id="add_admin_1" name="add_admin" value="1" <?php echo option_array_checked('1', $add_admin); ?>><label for="add_admin_1"> 관리자주문</label>
-				    </div>
-                </td>
-            </tr>
             <?php
             $member_type_flag = ($member_type_s && count($member_type_s) >= 1);
             $member_level_flag = ($member_level_s && count($member_level_s) >= 2);
@@ -201,14 +184,10 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                 <td>
                     <input type="checkbox" name="" value="" id="member_grade" class="member_grade" <?php echo ($member_type_flag && $member_level_flag && $is_member_flag) ? 'checked' : '' ?>>
                     <label for="member_grade">전체</label>
-                    <input type="checkbox" name="member_type_s[]" value="partner" id="member_type_01" class="member_grade" <?php echo option_array_checked('partner', $member_type_s);    ?>>
-                    <label for="member_type_01">파트너</label>
                     <input type="checkbox" name="member_level_s[]" value="4" id="member_level_01" class="member_grade" <?php echo option_array_checked('4', $member_level_s);    ?>>
                     <label for="member_level_01">우수사업소</label>
                     <input type="checkbox" name="member_level_s[]" value="3" id="member_level_02" class="member_grade" <?php echo option_array_checked('3', $member_level_s);  ?>>
                     <label for="member_level_02">사업소</label>
-                    <input type="checkbox" name="is_member_s[]" value="null" id="is_member_01" class="member_grade" <?php echo option_array_checked('null', $is_member_s);  ?>>
-                    <label for="is_member_01">비회원</label>
                     <input type="checkbox" name="is_member_s[]" value="not null" id="is_member_02" class="member_grade" <?php echo option_array_checked('not null', $is_member_s);    ?>>
                     <label for="is_member_02">일반회원</label>
                 </td>
@@ -390,14 +369,17 @@ $total_balance = number_format($total_result2['od_cart_price'] + $total_result2[
             <a>전체</a>
         </li>
         <?php
-        foreach($order_steps as $order_step) {
+            foreach($order_steps as $order_step) {
             if (!$order_step['orderlist']) continue;
         ?>
             <li class="" data-step="<?php echo $order_step['step']; ?>" data-status="<?php echo $order_step['val']; ?>">
                 <a><?php echo $order_step['name']; ?>(<span>0</span>)</a>
             </li>
         <?php } ?>
+
+
     </ul>
+    
     <div id="samhwa_order_ajax_list_table">
     </div>
 </div>
@@ -520,7 +502,8 @@ function doSearch() {
         data: formdata,
     })
         .done(function(html) {
-            // console.log(html)
+            console.log(html);
+            
             if ( page === 1 ) {
                 $('#samhwa_order_ajax_list_table').html(html.main);
             }
@@ -557,18 +540,20 @@ function sanbang_order_send(){
 
 $( document ).ready(function() {
 	
-	$(document).on("click", ".prodBarNumCntBtn", function(e){
-		e.preventDefault();
-		var id = $(this).attr("data-id");
-		
-		var popupWidth = 700;
-		var popupHeight = 700;
-
-		var popupX = (window.screen.width / 2) - (popupWidth / 2);
-		var popupY= (window.screen.height / 2) - (popupHeight / 2);
-		
-		window.open("./popup.prodBarNum.form.php?od_id=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
-	});
+    $(document).on("click", ".prodBarNumCntBtn", function(e){
+      e.preventDefault();
+        var popupWidth = 700;
+        var popupHeight = 700;
+        var popupX = (window.screen.width / 2) - (popupWidth / 2);
+        var popupY= (window.screen.height / 2) - (popupHeight / 2);
+        // var id = $(this).attr("data-id");
+        // window.open("./popup.prodBarNum.form.php?od_id=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+        var od = $(this).attr("data-od");
+        var it = $(this).attr("data-it");
+        var stock = $(this).attr("data-stock");
+        var option = encodeURIComponent($(this).attr("data-option"));
+        window.open("./popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+    });
 
     var submitAction = function(e) {
         $("#frmsamhwaorderlist").attr("action", "samhwa_orderlist.php");

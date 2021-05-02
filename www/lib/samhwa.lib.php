@@ -395,12 +395,12 @@ $order_steps = array(
         'cart_deletable' => true,
     ),
     '14' => array(
-        'name' => '환불완료',
-        'val' => '환불완료',
+        'name' => '재고소진',
+        'val' => '재고소진',
         'prev' => 13,
-        'orderlist' => false,
+        'orderlist' => true,
         'step' => 70,
-        'chulgo' => '',
+        'chulgo' => '출고후',
         'cart' => true,
         'orderlist_complete' => false,
         'cancellist' => true,
@@ -408,22 +408,26 @@ $order_steps = array(
 		"statusY" => "01",
         'cart_editable' => true,
         'cart_deletable' => true,
+        "statusN" => "06",
+		"statusY" => "01",
     ),
     '15' => array(
-        'name' => '오픈마켓',
-        'val' => '오픈마켓',
+        'name' => '보유재고등록',
+        'val' => '보유재고등록',
         'next' => 1,
         'prev' => 10, // 작성
         'orderlist' => true,
         'step' => 5,
-        'chulgo' => '출고전',
+        'chulgo' => '출고후',
         'cart' => true,
         'orderlist_complete' => false,
 		"statusN" => "06",
 		"statusY" => "01",
         'cart_editable' => true,
         'cart_deletable' => true,
-    ),
+        "statusN" => "06",
+		"statusY" => "01",
+    )
 );
 
 $cancel_request_types = array(
