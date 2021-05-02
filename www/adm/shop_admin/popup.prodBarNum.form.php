@@ -542,6 +542,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 				data : $("#submitForm").serialize()
 			});
                 var prodsList = {};
+				var flag=false;
                 $.each(stoldList, function(key, value){
 					if($("." + value.stoId).val()&&$("." + value.stoId).val().length !=12){ flag =true;}
                     prodsList[key] = {
