@@ -280,6 +280,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 						// 	alert('바코드는 12자리를 입력하셔야합니다.'); return false;
 						// }
 						$.each(stoldList, function(key, value){
+							if($("." + value.stoId).val()&&$("." + value.stoId).val().length !=12){ flag =true;}
 							prodsList[key] = {
 								stoId : value.stoId,
 								prodColor : value.prodColor,
