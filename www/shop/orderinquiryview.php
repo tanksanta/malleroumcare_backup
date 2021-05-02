@@ -6,7 +6,7 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
     return;
 }
 
-if($_SESSION["productList{$_GET["od_id"]}"] && $_GET["result"] == "Y"){
+if($_GET["result"] == "Y"){
 	sql_query("
 		UPDATE g5_shop_order SET
 			od_del_yn = 'N'
@@ -511,7 +511,7 @@ if($is_inquiryview_sub) {
 
 <?php
 
-	if($_SESSION["productList{$_GET["od_id"]}"] && $_GET["result"] == "Y"){
+	if($_GET["result"] == "Y"){
 		$insertProds = addslashes(htmlspecialchars(json_encode($_SESSION["productList{$_GET["od_id"]}"])));
 		$staOrdCd = "00";
 		$reload = false;
