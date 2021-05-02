@@ -3,9 +3,11 @@ include_once('./_common.php');
 
 header('Content-Type: application/json');
 
-$where = "o.od_status = '출고준비'";
-if (is_array($od_id)) {
-    $where = ' o.od_id IN (\'' . implode('\',\'', $od_id) . '\')';
+$where = "c.ct_status = '출고준비'";
+$ct_id=$od_id;
+
+if (is_array($ct_id)) {
+    $where = ' c.ct_id IN (\'' . implode('\',\'', $ct_id) . '\')';
 }
 
 $return_success = 0;
