@@ -6,19 +6,19 @@
 	include_once(G5_LIB_PATH."/PHPExcel.php");
 	function column_char($i) { return chr( 65 + $i ); }
 
-	$od_id = [];
+	$ct_id = [];
 	for($i = 0; $i < count($_POST["od_id"]); $i++){
 		if($_POST["od_id"][$i]){
-			array_push($od_id, "'{$_POST["od_id"][$i]}'");
+			array_push($ct_id, "'{$_POST["od_id"][$i]}'");
 		}
 	}
 
-	$od_id = implode(",", $od_id);
+	$ct_id = implode(",", $ct_id);
 
     $sql = "
 		SELECT *
-		FROM g5_shop_order
-		WHERE od_id IN ( {$od_id} )
+		FROM g5_shop_cart
+		WHERE ct_id IN ( {$ct_id} )
 	";
     $result = sql_query($sql);
 

@@ -250,22 +250,25 @@ $( document ).ready(function() {
 		$("#excelForm").submit();
 	});
 	
-	$(document).on("click", ".prodBarNumCntBtn", function(e){
-		e.preventDefault();
-		var id = $(this).attr("data-id");
-		
-		var popupWidth = 700;
-		var popupHeight = 700;
-
-		var popupX = (window.screen.width / 2) - (popupWidth / 2);
-		var popupY= (window.screen.height / 2) - (popupHeight / 2);
-		
-		window.open("./popup.prodBarNum.form.php?od_id=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
-	});
+    $(document).on("click", ".prodBarNumCntBtn", function(e){
+      e.preventDefault();
+        var popupWidth = 700;
+        var popupHeight = 700;
+        var popupX = (window.screen.width / 2) - (popupWidth / 2);
+        var popupY= (window.screen.height / 2) - (popupHeight / 2);
+        // var id = $(this).attr("data-id");
+        // window.open("./popup.prodBarNum.form.php?od_id=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+        var od = $(this).attr("data-od");
+        var it = $(this).attr("data-it");
+        var stock = $(this).attr("data-stock");
+        var option = encodeURIComponent($(this).attr("data-option"));
+        window.open("./popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+    });
 	
 	$(document).on("click", ".deliveryCntBtn", function(e){
 		e.preventDefault();
 		var id = $(this).attr("data-id");
+		var ct_id = $(this).attr("data-ct");
 		
 		var popupWidth = 700;
 		var popupHeight = 700;
@@ -273,7 +276,7 @@ $( document ).ready(function() {
 		var popupX = (window.screen.width / 2) - (popupWidth / 2);
 		var popupY= (window.screen.height / 2) - (popupHeight / 2);
 		
-		window.open("./popup.prodDeliveryInfo.form.php?od_id=" + id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+		window.open("./popup.prodDeliveryInfo.form2.php?od_id=" + id +"&ct_id="+ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
 	});
 
     function doSearch() {
@@ -326,7 +329,7 @@ $( document ).ready(function() {
                 //         }
                 //     }
                 // );
-                $(".od_ex_date").datepicker(
+                $(".ct_ex_date").datepicker(
                     { 
                         changeMonth: true, 
                         changeYear: true, 
@@ -334,14 +337,16 @@ $( document ).ready(function() {
                         showButtonPanel: true, 
                         yearRange: "c-99:c+99", 
                         maxDate: "+365d",
-                        onSelect: function(od_ex_date, inst) {
-                            var od_id = $(this).data('od-id');
+                        onSelect: function(ct_ex_date, inst) {
+                            var ct_id = $(this).data('ct-id');
+                            console.log(ct_id);
+                            console.log(ct_ex_date);
                             $.ajax({
                                 method: "POST",
                                 url: "./ajax.order.delivery.change_delivery_time.php",
                                 data: {
-                                    od_ex_date: od_ex_date,
-                                    od_id: od_id,
+                                    ct_ex_date: ct_ex_date,
+                                    ct_id: ct_id,
                                 },
                             }).done(function(data) {
                                 if ( data.msg ) {
