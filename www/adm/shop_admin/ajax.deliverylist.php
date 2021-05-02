@@ -548,10 +548,10 @@ foreach($orderlist as $order) {
         $deliveryCntBtnWord ="배송정보";
 
         $deliveryCntBtnStatus = '';
-        // if ($edi_return_cnt >= $cart_cnt) {
-		//     $deliveryCntBtnWord = '입력완료';
-        //     $deliveryCntBtnStatus = ' disable ';
-        // }
+        if ($edi_return_cnt >= $cart_cnt) {
+		    $deliveryCntBtnWord = '입력완료';
+            $deliveryCntBtnStatus = ' disable ';
+        }
 	}
 
     $important2_class = $order['od_important2'] ? 'on' : '';
