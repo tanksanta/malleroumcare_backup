@@ -7,7 +7,7 @@ auth_check($auth[$sub_menu], "r");
 $g5['title'] = '반품및 취소 관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
-
+alert("준비중입니다.",G5_URL."/adm/shop_admin/samhwa_orderlist.php");
 $where = array();
 
 $doc = strip_tags($doc);
