@@ -300,7 +300,26 @@ if($header_skin)
 							</div>
 						</li>
 						<li class="delivery m_none">
-							<p><?=($row["od_stock_insert_yn"] == "Y") ? "재고등록완료" : $row["od_status"]?></p>
+                            <?php if($row["od_status"]=="주문무효"||$row["od_status"]=="주문취소"){
+                                echo $row["od_status"];
+
+                            }else{
+                                $ct_status_text="";
+                                switch ($item['ct_status']) {
+                                    case '보유재고등록': $ct_status_text="보유재고등록"; break;
+                                    case '재고소진': $ct_status_text="재고소진"; break;
+                                    case '작성': $ct_status_text="작성"; break;
+                                    case '주문무효': $ct_status_text="주문무효"; break;
+                                    case '취소': $ct_status_text="주문취소"; break;
+                                    case '주문': $ct_status_text="주문접수"; break;
+                                    case '입금': $ct_status_text="입금완료"; break;
+                                    case '준비': $ct_status_text="상품준비"; break;
+                                    case '출고준비': $ct_status_text="출고준비"; break;
+                                    case '배송': $ct_status_text="출고완료"; break;
+                                    case '완료': $ct_status_text="배송완료"; break;
+                                }
+                                echo $ct_status_text;
+                            }?>
 						</li>
 						<li class="info-btn">
 							<div>
