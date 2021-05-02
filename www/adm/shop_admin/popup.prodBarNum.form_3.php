@@ -320,7 +320,7 @@
     <?php if($prodSupYn_count){ ?>
 	<div id="popupFooterBtnWrap">
 		<button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
-		<button type="button" class="cancelbtn popupCloseBtn" >취소</button>
+		<button type="button" class="cancelbtn popupCloseBtn"  onclick="member_cancel();">취소</button>
 	</div>
     <?php } ?>
 <?php
