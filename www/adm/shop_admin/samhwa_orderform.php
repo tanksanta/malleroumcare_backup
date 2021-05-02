@@ -25,7 +25,7 @@ if (!$od['od_id']) {
 
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9901);
-		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/order/selectList");
+		curl_setopt($oCurl, CURLOPT_URL, "https://eroumcare.com/api/order/selectList");
 		curl_setopt($oCurl, CURLOPT_POST, 1);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -63,7 +63,6 @@ if (!$od['od_id']) {
 
 			foreach($result as $data){
 				$thisProductData = [];
-
 				$thisProductData["prodId"] = $data["prodId"];
 				$thisProductData["prodColor"] = $data["prodColor"];
 				$thisProductData["stoId"] = $data["stoId"];
@@ -71,17 +70,18 @@ if (!$od['od_id']) {
 				$thisProductData["penStaSeq"] = $data["penStaSeq"];
 				array_push($prodList, $thisProductData);
 			}
+
 		}
 	} else {
-        $sto_imsi="";
-        $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
-        $result_ct = sql_query($sql_ct);
-        while($row_ct = sql_fetch_array($result_ct)) {
-            $sto_imsi .=$row_ct['stoId'];
-        }
-        $stoIdDataList = explode('|',$sto_imsi);
-        $stoIdDataList=array_filter($stoIdDataList);
-        $stoIdData = implode("|", $stoIdDataList);
+            $sto_imsi="";
+            $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+            $result_ct = sql_query($sql_ct);
+            while($row_ct = sql_fetch_array($result_ct)) {
+                $sto_imsi .=$row_ct['stoId'];
+            }
+            $stoIdDataList = explode('|',$sto_imsi);
+            $stoIdDataList=array_filter($stoIdDataList);
+            $stoIdData = implode("|", $stoIdDataList);
 	}
 }
 $mb = get_member($od['mb_id']);
@@ -152,55 +152,18 @@ $result = sql_query($sql);
 $carts = array();
 $cate_counts = array();
 
-$delivery_cnt = 0; // 배송목록 카운트
-$delivery_input_cnt = 0; // 입력
-$edi_success_cnt = 0; // 전송
-$edi_return_cnt = 0; // 송장
-
 for($i=0; $row=sql_fetch_array($result); $i++) {
 
     $cate_counts[$row['ct_status']] += 1;
 
     // 상품의 옵션정보
-    $sql = " select a.ct_id,
-						a.mb_id, 
-						a.it_id, 
-						a.ct_price, 
-						a.ct_point, 
-						a.ct_qty, 
-						a.ct_stock_qty, 
-						a.ct_barcode, 
-						a.ct_option, 
-						a.ct_status, 
-						a.cp_price, 
-						a.ct_stock_use, 
-						a.ct_point_use, 
-						a.ct_send_cost, 
-						a.ct_sendcost, 
-						a.io_type, 
-						a.io_price, 
-						a.pt_msg1, 
-						a.pt_msg2, 
-						a.pt_msg3, 
-						a.ct_discount, 
-						a.ct_uid, 
-						a.ct_combine_ct_id,
-						b.it_delivery_cnt,
-						b.it_delivery_price,
-						a.ct_delivery_cnt,
-						a.ct_delivery_price,
-						a.it_name,
-						a.ct_delivery_company,
-						a.ct_delivery_num,
-                        a.ct_edi_result,
-                        b.it_is_direct_delivery,
-						( SELECT prodSupYn FROM g5_shop_item WHERE it_id = a.it_id ) AS prodSupYn,
-						prodMemo
-					from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
-					where a.od_id = '{$od['od_id']}'
-						and a.it_id = '{$row['it_id']}'
-						and a.ct_uid = '{$row['ct_uid']}'
-					order by a.io_type asc, a.ct_id asc ";
+    $sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_ex_date, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
+					, ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
+                from {$g5['g5_shop_cart_table']} MT
+                where od_id = '{$od['od_id']}'
+                    and it_id = '{$row['it_id']}'
+                    and ct_uid = '{$row['ct_uid']}'
+                order by io_type asc, ct_id asc ";
     $res = sql_query($sql);
 
     $row['options_span'] = sql_num_rows($res);
@@ -224,22 +187,6 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 		if($opt["prodSupYn"] == "Y"){
 			$opt["ct_price_stotal"] -= ($opt["ct_stock_qty"] * $opt_price);
 		}
-
-        if (!$opt['ct_combine_ct_id']) {
-            $delivery_cnt++;
-
-            if($opt['ct_delivery_company'] === 'ilogen' && $opt['ct_delivery_cnt'] > 0) {
-                $delivery_input_cnt++;
-            }
-
-            if($opt['ct_edi_result'] == '1') {
-                $edi_success_cnt++;
-            }
-
-            if($opt['ct_delivery_num']) {
-                $edi_return_cnt++;
-            }
-        }
 
         $row['options'][] = $opt;
     }
@@ -338,20 +285,9 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
 	$prodBarNumCntBtnWord = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
 	$prodBarNumCntBtnStatus = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? " disable" : "";
 
-	// $deliveryCntBtnWord = "배송정보 ({$od["od_delivery_insert"]}/{$od["od_delivery_total"]})";
-	// $deliveryCntBtnWord = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
-	// $deliveryCntBtnStatus = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? " disable" : "";
-
-    
-    $deliveryCntBtnWord = " 입력 ({$delivery_input_cnt}/". $delivery_cnt .")";
-    $deliveryCntBtnWord .= ", 전송 ({$edi_success_cnt}/". $delivery_cnt .")";
-    $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
-
-    $deliveryCntBtnStatus = '';
-    if ($edi_return_cnt >= $delivery_cnt) {
-        $deliveryCntBtnWord = '입력완료';
-        $deliveryCntBtnStatus = ' disable ';
-    }
+	$deliveryCntBtnWord = "배송정보 ({$od["od_delivery_insert"]}/{$od["od_delivery_total"]})";
+	$deliveryCntBtnWord = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
+	$deliveryCntBtnStatus = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? " disable" : "";
 
 ?>
 <script>
@@ -432,6 +368,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <th class="item_stotal">결제금액</th>
                             <th class="item_status">상태</th>
                             <th class="item_memo">요청사항</th>
+                            <th class="item_memo">출고완료일</th>
                             <th class="btncol"></th>
                         </tr>
                     </thead>
@@ -478,16 +415,12 @@ var od_id = '<?php echo $od['od_id']; ?>';
 							$barcode_array = array();
 
                             for($k=0; $k<count($options); $k++) {
-
-									# 요청사항
-									$prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
-
-									# 대여기간
-									$ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($carts[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($carts[$i]["ordLendEndDtm"]));
-
+                                # 요청사항
+                                $prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
+                                # 대여기간
+                                $ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($carts[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($carts[$i]["ordLendEndDtm"]));
                                 // $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND it_id = '{$carts[$i]['it_id']}' ");
                                 $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND odc_uid = '{$carts[$i]['ct_uid']}' ");
-
                                 // 파일
                                 $files = array();
                                 if ( $k == 0 ) {
@@ -498,11 +431,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         $files[] = $file_row;
                                     }
                                 }
-
 								$option_array[] = $options[$k]['ct_option'];
 								$barcode_array[] = $options[$k]['ct_barcode'];
-
-
                                 ?>
                                 <tr class="<?php echo $k==0 ? 'top-border' : ''; ?>">
                                     <td rowspan="1" class="chkcbox">
@@ -535,7 +465,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 	                                                        [옵션] <?php echo $options[$k]['ct_option']; ?>
 	                                                    <?php } ?>
 	                                                    <?php if($carts[$i]["ct_stock_qty"]){ ?>
-	                                                    	<p style="color: #DC3333;">* <?=$carts[$i]["ct_stock_qty"]?>개 재고소진</p>
+	                                                    	<p style="color: #DC3333;">* <?=$$options[$k]["ct_stock_qty"]?>개 재고소진</p>
 	                                                    <?php } ?>
 														<?php
 														  if($od['od_writer']=="openmarket"){
@@ -552,6 +482,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                     <?php if($od['od_tax_flag'] && $carts[$i]['ct_notax']) echo '<br/>[비과세상품]'; ?>
                                                 <?php }else{ ?>
                                                     <span style="margin-right:60px;"></span>
+                                                    <b>
                                                     <?php if ( $carts[$i]['it_name'] != $options[$k]['ct_option']) { ?>[옵션]<?php } ?>
                                                     <?php if($options[$k]['ct_status'] == "재고소진"){ echo "재고소진"; } ?>
                                                     <?php echo $options[$k]['ct_option']; ?></b>
@@ -765,7 +696,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
 										for($b=0;$b<$options[$k]['ct_qty'];$b++) {
 											//$ct_barcode_array = unserialize(base64_decode($options[$k]['ct_barcode']));
 											$ct_barcode_array = explode('|', $options[$k]['ct_barcode']);
-
 											//API전송데이터
 											$json_data[$k][$b]['penId'] = $od['od_penId'];						//수급자ID
 											$json_data[$k][$b]['prodId'] = $carts[$i]['it_id'];					//제품ID
@@ -831,11 +761,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                             }
                                             echo $ct_status_text;
                                         ?>
-                                        <?php if($options[$k]['it_is_direct_delivery']) { ?>
-                                        <p style="color:#ea2500;">
-                                            직배송
-                                        </p>
-                                        <?php } ?>
                                     </td>
                                     <td class="item_memo">
                                         <?php if ( $k == 0 ) {
@@ -847,7 +772,11 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         }
                                         ?>
                                     </td>
-
+                                    <td class="btncol">
+                                    <!-- 출고완료일 -->
+                                    <?php echo $options[$k]['ct_ex_date'];?>
+                                    <!-- 출고완료일 -->
+                                     </td>
                                     <td class="btncol">
 										<?php if($od['od_writer']!="openmarket"){ ?>
 											<?php //if ( $k == 0 ) { ?>
@@ -870,7 +799,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 											<?php } ?>
 										<?php //} ?>
                                     </td>
-                                    
+
                                 </tr>
                                 <?php
                                 $chk_first++;
@@ -1197,7 +1126,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     <tr>
                         <th scope="row">배송정보</th>
                         <td colspan="3">
-                        	<a href="#" class="deliveryCntBtn<?=$deliveryCntBtnStatus?> wide"><?=$deliveryCntBtnWord?></a>
+                        	<a href="#" class="deliveryCntBtn<?=$deliveryCntBtnStatus?>"><?=$deliveryCntBtnWord?></a>
                         </td>
                     </tr>
                     <!--
@@ -1886,7 +1815,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
     </div>
     <div id="order_summarize">
         <div class="header">
-            <h1><?=$od_status['name']?></h1>
+            <!-- <h1><?=$od_status['name']?></h1> -->
             <button class="shbtn order_prints">작업지시서 출력</button>
             <div class="more">
                 <button><img src='<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_more_w.png' /></button>
@@ -2110,15 +2039,14 @@ var od_id = '<?php echo $od['od_id']; ?>';
             -->
         </div>
         <?php if ( $next_step ) { ?>
-        <div class="submit">
+        <!-- <div class="submit">
             <button id="order_summarize_submit" data-next-step-val="<?php echo $next_step['val']; ?>" data-next-step-status="<?php echo $next_step["status{$od["recipient_yn"]}"]; ?>">
                 <?php echo $next_step['name']; ?>
             </button>
-        </div>
+        </div> -->
         <?php } ?>
     </div>
 </div>
-
 <div class="btn_fixed_top">
     <?php if ($sub_menu == '400400') { ?>
     <a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/samhwa_orderlist.php" class="btn btn_02">목록</a>
@@ -2288,7 +2216,7 @@ $(document).ready(function() {
 		}
 
 		$.ajax({
-			url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
+			url : "https://eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
 			type : "POST",
 			dataType : "json",
 			contentType : "application/json; charset=utf-8;",
@@ -2423,8 +2351,6 @@ $(document).ready(function() {
 
     $('#change_cart_status').click(function() {
 
-
-        //20210423
         var step = document.getElementById('step');
         var it_sel = document.getElementsByName("it_sel[]");
         var formdata = $.extend(
@@ -2447,7 +2373,6 @@ $(document).ready(function() {
         var sendData={};
         sendData['ct_id']=ct_id;
         sendData['step']=step.value;
-        // return false;
         $.ajax({
             type : "post",
             url : "./ajax.cart_status.php",
@@ -2476,13 +2401,17 @@ $(document).ready(function() {
 
 
 
-		if($('#step').val() == '출고준비'){
 
+
+
+
+
+
+
+		if($('#step').val() == '출고준비'){
 			var penId = "<?php echo $od['od_penId'];?>";
 			var url;
-
 			if(penId){
-
 				<?php
 				$insertPen5000DataList = urlencode('[{"penId":"'.$od['od_penId'].'","prodId":"PRO2020111200002","prodNm":"Glory-MC1","itemId":"ITM2020092200020","itemNm":"욕창예방매트리스","prodPayCode":"H12060130101","prodColor":"단일","ordStatus":"00","prodOflPrice":"307000","penPay":"46050","prodBarNum":"12030130110","ordNm":"'.$od_penNm.'","ordCont":"'.$od_penConNum.'","ordZip":"'.$od_penzip.'","ordAddr":"'.$od_penAddr.'","ordAddrDtl":"","ordMemo":"","payMehCd":"00","eformYn":"Y"}]');
 
@@ -2490,7 +2419,7 @@ $(document).ready(function() {
 				?>
 
 				/*
-				var url = 'https://system.eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do?insertPen5000DataList=<?php echo $insertPen5000DataList;?>';
+				var url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do?insertPen5000DataList=<?php echo $insertPen5000DataList;?>';
 				var dataList = {
 					'searchUsrId' : '<?php echo $od['mb_id'];?>'
 				};
@@ -2504,11 +2433,11 @@ $(document).ready(function() {
 				$dataList = json_encode($ret, JSON_PRETTY_PRINT);
 				?>
 
-//				url = 'https://system.eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
+//				url = 'https://eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
 
 			}else{
 
-				url = 'https://system.eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
+				url = 'https://eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
 				var dataList = {
 					'prodId' : '',									//제품 아이디
 					'prodColor' : '',								//색상
@@ -2581,14 +2510,24 @@ $(document).ready(function() {
     });
 
 	/* 주문다음단계 */
+    //출고준비 -> 06
+    //배송 ->06
+    //완료 -> 01
 	$("#order_summarize_submit").click(function() {
-		var next_step_val = $(this).data("next-step-val");
-
-		var next_step_status = $(this).data("next-step-status");
+		var next_step_val = $(this).data("next-step-val"); //다음 스텝
+		var next_step_status = $(this).data("next-step-status"); //다음 스텝번호
 		var ordId = "<?=$od["ordId"]?>";
 		var eformYn = (next_step_val == "완료") ? "Y" : "N";
 		var changeStatus = true;
 		var stateCd = "07";
+
+        console.log(next_step_val);
+        console.log(next_step_status);
+        console.log(ordId);
+        console.log(eformYn);
+        console.log(changeStatus);
+
+
 		switch(next_step_status){
 			case "01" :
 				stateCd = "07";
@@ -2598,6 +2537,7 @@ $(document).ready(function() {
 				break;
 		}
 
+        //수급자 주문시
 		if(ordId){
 			var productList = <?=($prodList) ? json_encode($prodList) : "[]"?>;
 			$.each(productList, function(key, value){
@@ -2607,9 +2547,9 @@ $(document).ready(function() {
 				for(var i = 0; i < prodBarNumItem.length; i++){
 					if(next_step_val == "완료"){
 						if(!$(prodBarNumItem[i]).val()){
-//							alert("바코드를 입력해주시길 바랍니다.");
-//							changeStatus = false;
-//							return false;
+                        //alert("바코드를 입력해주시길 바랍니다.");
+                        //changeStatus = false;
+                        //return false;
 						}
 					}
 					prodBarNum += (prodBarNum) ? "," : "";
@@ -2623,7 +2563,6 @@ $(document).ready(function() {
 			if(!changeStatus){
 				return false;
 			}
-
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
 				penOrdId : "<?=$od["ordId"]?>",
@@ -2641,8 +2580,10 @@ $(document).ready(function() {
 				lgsStoId : "",
 				prods : productList
 			}
-
-
+            // alert(next_step_status);
+            // alert(stateCd);
+            // console.log(sendData);
+            // return false;
 
 
 			$.ajax({
@@ -2660,20 +2601,20 @@ $(document).ready(function() {
 				}
 			});
 		} else {
+            //일반주문시
 			var delYn = "Y";
 			if(next_step_val == "완료"){
 				delYn = "N";
 				$.each(stoldList, function(key, value){
 					if(!$("." + value.stoId).val()){
-//						changeStatus = false;
-//						alert("바코드를 입력해주시길 바랍니다.");
-//						return false;
+                    //changeStatus = false;
+                    //alert("바코드를 입력해주시길 바랍니다.");
+                    //return false;
 					}
 				});
 			}
 
 			var prodsList = {};
-
 			$.each(stoldList, function(key, value){
 				prodsList[key] = {
 					stoId : value.stoId,
@@ -2709,8 +2650,7 @@ $(document).ready(function() {
 				}
 			});
 
-
-
+            
 			$.ajax({
 				url : "samhwa_orderform_stock_update.php",
 				type : "POST",
@@ -2725,7 +2665,11 @@ $(document).ready(function() {
 					}
 				}
 			});
+
+
 		}
+
+
         //출고완료시, od_ex_date 값 변경
         if(next_step_val=="배송"){
         sendData2={};
