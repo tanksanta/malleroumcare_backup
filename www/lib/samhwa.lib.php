@@ -1278,11 +1278,11 @@ function samhwa_xp_icon() {
 		}
 
 		if ( $member['mb_level'] == 3) {
-			$mb_level_name = '딜러';
+			$mb_level_name = '사업소';
 			$mb_level = 'dealer1';
 		}
 		if ( $member['mb_level'] == 4) {
-			$mb_level_name = '우수딜러';
+			$mb_level_name = '우수사업소';
 			$mb_level = 'dealer2';
 		}
 
