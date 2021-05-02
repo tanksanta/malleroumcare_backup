@@ -126,7 +126,7 @@ if($header_skin)
 				var stock = $(this).attr("data-stock");
 				var option = encodeURIComponent($(this).attr("data-option"));
 
-				$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od +  "&option=" + option + "&stock_insert=" + stock +"'>");
+				$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_4.php?prodId=" + it + "&od_id=" + od +  "&option=" + option + "&stock_insert=" + stock +"'>");
 				$("#popupProdBarNumInfoBox iframe").load(function(){
 					$("#popupProdBarNumInfoBox").show();
 				});
