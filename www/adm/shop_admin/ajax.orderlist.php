@@ -623,10 +623,10 @@ foreach($orderlist as $order) {
 	
 	$prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
 	$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
-	// $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
-	$prodBarNumCntBtnWord = "바코드";
-	$prodBarNumCntBtnWord = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
-	$prodBarNumCntBtnStatus = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? " disable" : "";
+    
+    $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
+    $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
+    $prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
 	
     if ($od_cart_count > 0) {
         $show_od_cart_count = '| ' . $od_cart_count;
