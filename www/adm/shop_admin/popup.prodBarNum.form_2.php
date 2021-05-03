@@ -304,6 +304,17 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 									console.log(result);
 								}
 						});
+						
+						//cart 기준 barcode insert update
+						$.ajax({
+							url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
+							type : "POST",
+							async : false,
+							data : {
+								od_id : "<?=$od_id?>",
+							}
+						});
+
 						$.ajax({
 							url : "./samhwa_orderform_stock_update.php",
 							type : "POST",
