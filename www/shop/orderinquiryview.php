@@ -37,6 +37,7 @@ if (!$od['od_id'] || (!$is_member && md5($od['od_id'].$od['od_time'].$od['od_ip'
     alert("조회하실 주문서가 없습니다.", G5_SHOP_URL);
 }
 
+
 // 결제방법
 $settle_case = $od['od_settle_case'];
 
@@ -613,28 +614,7 @@ if($is_inquiryview_sub) {
         $sendData["prods"] = $productList;
         $api_result = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $sendData);
  
-		//cart 기준 barcode insert update
-		$od_id=$_GET["od_id"];
-		$sqlv="select `ct_id`, `stoId` from `g5_shop_cart` where `od_id` ='".$od_id."'";
-		$result = sql_query($sqlv);
-	
-		while($row = sql_fetch_array($result)) {
-			$count_a=0;
-			$stoIdDataList = explode('|',$row['stoId']);
-			$stoIdDataList=array_filter($stoIdDataList);
-			$stoIdData = implode("|", $stoIdDataList);
-			$sendData["stoId"] = $stoIdData;
-			$res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
-			$result_again =$res['data'];
-			// print_r($result_again);
-			for($k=0;$k<count($result_again);$k++){
-				if($result_again[$k]['prodBarNum']){
-					$count_a++;
-				}
-			}
-			$row['ct_id']." / ".$sendData." / ".count($stoIdDataList)." / ".$count_a.'<br>';
-			sql_query('UPDATE `g5_shop_cart` SET `ct_barcode_insert`="'.$count_a.'" where `ct_id` = "'.$row['ct_id'].'"');
-		}
+
 
 
 
@@ -646,6 +626,16 @@ if($is_inquiryview_sub) {
 ?>
 
 	<script type="text/javascript">
+		//cart 기준 barcode insert update
+		$.ajax({
+			url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
+			type : "POST",
+			async : false,
+			data : {
+				od_id : "<?=$_GET["od_id"]?>",
+			}
+		});
+
 		<?php if($reload){ ?>
 			window.location.reload();
 		<?php } ?>
