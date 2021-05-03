@@ -183,6 +183,7 @@ $flist = apms_form(1,0);
     <option value="it_thezone" <?php echo get_selected($sfl, 'it_thezone'); ?>>상품코드</option>
     <option value="it_name" <?php echo get_selected($sfl, 'it_name'); ?>>상품명</option>
     <option value="it_model" <?php echo get_selected($sfl, 'it_model'); ?>>모델명</option>
+    <option value="prodPayCode" <?php echo get_selected($sfl, 'prodPayCode'); ?>>제품코드</option>
     <option value="it_id" <?php echo get_selected($sfl, 'it_id'); ?>>상품코드</option>
     <option value="it_maker" <?php echo get_selected($sfl, 'it_maker'); ?>>제조사</option>
     <option value="it_origin" <?php echo get_selected($sfl, 'it_origin'); ?>>원산지</option>
