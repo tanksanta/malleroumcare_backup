@@ -170,7 +170,7 @@
 	<div id="itInfoWrap">
 		<p class="name">
 			[<?=($od["recipient_yn"] == "Y") ? "주문" : "재고"?>] <?=$moreInfo["it_name"]?> <?=$moreInfoDisplayCnt?>
-			<span class="delivery">(배송 : <?=$od_cart_count?>개)</span>
+			<!-- <span class="delivery">(배송 : <?=$od_cart_count?>개)</span> -->
 		</p>
 
 		<p class="date">
