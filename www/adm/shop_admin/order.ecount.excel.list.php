@@ -95,10 +95,9 @@
 				$delivery = '(' . get_delivery_company_step($it['ct_delivery_company'])['name'] . ') ' . $it['ct_delivery_num'];
 			}
 			
-            if($od["od_ex_date"]=="0000-00-00"){
-                $date = "출고전";
-            }else{
-                $date =date("Ymd", strtotime($od["od_ex_date"]));
+			$date = "출고전";
+            if($it["ct_ex_date"] !== "0000-00-00"){
+                $date =date("Ymd", strtotime($it["ct_ex_date"]));
             }
 			$rows[] = [ 
 				$date,  //날짜
