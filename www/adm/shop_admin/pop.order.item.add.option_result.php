@@ -41,15 +41,14 @@ for($i=0; $i<count($it_ids); $i++) {
         // $sql = "DELETE FROM {$g5['g5_shop_cart_table']} WHERE od_id = '$od_id' AND it_id = '$it_id'";
 
         #수정시 재고주문 stoId 컨트롤 
-        $sql_d = "SELECT `ct_id`, `stoId` FROM `g5_shop_cart` WHERE `od_id` = '$od_id' AND `ct_uid` = '$uid'";
+        $sql_d = "SELECT `ct_id`, `stoId`, `ct_status` FROM `g5_shop_cart` WHERE `od_id` = '$od_id' AND `ct_uid` = '$uid'";
         $result_d = sql_query($sql_d);
         for($k=0; $row_k=sql_fetch_array($result_d); $k++) {
             //배열 정리
             $arr_d = explode('|',$row_k['stoId']);
             $arr_d1=array_filter($arr_d);
             $arr_d2=implode(',',$arr_d1);
-
-
+            $ct_status_w=$row_k['ct_status'];
             //시스템재고 삭제
             $sendData  = [];
             $sendData_stoId['stoId']=$arr_d1;
@@ -444,8 +443,13 @@ if($res["errorYN"] == "N"){
     //성공시 ct_id에 업로드
     for($k=0; $k<count($res['data']);$k++){
         // ct_id에 업로드
+        if($w){
+            $ct_status = $ct_status_w;
+        }else{
+            $ct_status = "준비";
+        }
         array_push($stoIdList, $res['data'][$k]["stoId"]);
-        $sql_ct = "update `g5_shop_cart` set ct_status='작성', `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
+        $sql_ct = "update `g5_shop_cart` set ct_status='".$ct_status."', `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
         sql_query($sql_ct);
     }
 } else {
