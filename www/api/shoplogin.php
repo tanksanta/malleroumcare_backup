@@ -70,6 +70,29 @@
 					WHERE mb_id = '{$resInfo["usrId"]}'
 				");
 			}
+
+			$sendData["usrId"] = $resInfo["usrId"];
+			$oCurl = curl_init();
+			curl_setopt($oCurl, CURLOPT_PORT, 9901);
+			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/ent/account");
+			curl_setopt($oCurl, CURLOPT_POST, 1);
+			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+			curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, 15);
+			$res = curl_exec($oCurl);
+			curl_close($oCurl);
+			$resInfo = json_decode($res, true);
+			$resInfo = $resInfo["data"];
+
+			sql_query("
+				UPDATE {$g5["member_table"]} SET
+					mb_entId = '{$resInfo["entId"]}'
+				WHERE mb_id = '{$resInfo["usrId"]}'
+			");
+
+
         set_session('ss_mb_id', strip_tags($_REQUEST["mb_id"]));
         set_session('ss_mb_key', md5($mb['mb_datetime'] . get_real_client_ip() . $_SERVER['HTTP_USER_AGENT']));
         $result["msg"] = "success";
