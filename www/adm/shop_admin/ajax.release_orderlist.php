@@ -664,7 +664,7 @@ foreach($orderlist as $order) {
     if($ct_status['name']=="출고준비"){
         $od_status_name="출고<br>준비"; $class_type1="type3";
         if($order['od_edit_member']){   //작업중인사람
-            $class_type2="active"; 
+            // $class_type2="active"; 
         }else{
             $class_type2=""; 
         }
