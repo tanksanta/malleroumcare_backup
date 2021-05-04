@@ -1550,38 +1550,32 @@ if($is_member && $od_b_name) {
 		$stoIdList = explode(",", $stoIdList);
 
 		# 210224 보유재고등록요청
-		if($_POST["od_stock_insert_yn"]){
-			$sendData = [];
-			$sendData["usrId"] = $member["mb_id"];
-			$sendData["entId"] = $member["mb_entId"];
+        if($_POST["od_stock_insert_yn"]){
+            $stoIdDataList = explode('|',$stoId);
+            $stoIdDataList=array_filter($stoIdDataList);
+            $stoIdData = implode("|", $stoIdDataList);
+            $sendData["stoId"] = $stoIdData;
+            $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+            $result_again =$res['data'];
+            $new_sto_ids = array_map(function($data) {
+                return array(
+                    'stoId' => $data['stoId'],
+                    'prodBarNum' => $data['prodBarNum'],
+                    'stateCd' => "01"
+                );
+            }, $result_again);
 
-			$prodsSendData = [];
-
-			foreach($stoIdList as $stoId){
-				$prodsData = [];
-				$prodsData["stoId"] = $stoId;
-				$prodsData["stateCd"] = "01";
-				array_push($prodsSendData, $prodsData);
-			}
-
-			$sendData["prods"] = $prodsSendData;
-
-			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9901);
-			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/update");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res = curl_exec($oCurl);
-			$res = json_decode($res, true);
-			curl_close($oCurl);
+            $api_data = array(
+                'usrId' => $member["mb_id"],
+                'entId' => $member["mb_entId"],
+                'prods' => $new_sto_ids,
+            );
+            $res = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $api_data);
 
 			if($res["errorYN"] == "N"){
                 for($k=0; $k<count($res['data']);$k++){
                     array_push($stoIdList, $res['data'][$k]["stoId"]);
-                    $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
+                    $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|'), where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
                     sql_query($sql_ct);
                 }
 				sql_query("
@@ -1592,25 +1586,22 @@ if($is_member && $od_b_name) {
 						, od_status = '완료'
 					WHERE od_id = '{$od_id}'
 				");
-
-                sql_query("
-                    UPDATE g5_shop_cart SET
-                        `ct_status` = '보유재고등록',
-                        `ct_price` = '0',
-                        `ct_sendcost` = '0'
-                    WHERE od_id = '{$od_id}'
-                ");
+				sql_query("
+					UPDATE g5_shop_cart SET
+                          `ct_status` = '보유재고등록',
+						  `ct_price` = '0',
+						  `ct_sendcost` = '0'
+					WHERE od_id = '{$od_id}'
+				");
 			} else {
                 sql_query("
                 DELETE FROM g5_shop_order
                 WHERE od_id = '{$od_id}'
                 ");
-                // alert('시스템 오류, 보유재고 등록이 불가능합니다.',G5_URL);
                 alert($res["message"],G5_URL);
 
 			}
 		}
-
 		goto_url(G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&amp;uid={$uid}");
 	}
 
