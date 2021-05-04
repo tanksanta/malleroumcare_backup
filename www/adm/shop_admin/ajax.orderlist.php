@@ -506,6 +506,7 @@ foreach($orderlist as $order) {
     $ct_qty=$result_ct['ct_qty'];                                                                                   //개수
     $ct_status_text = $result_ct['ct_status'];                                                                           //상태
     $ct_it_id = $result_ct['it_id'];      
+    $ct_ex_date = $result_ct['ct_ex_date'];      
     switch ($ct_status_text) {
         case '보유재고등록': $ct_status_text="보유재고등록"; break;
         case '재고소진': $ct_status_text="재고소진"; break;
@@ -623,11 +624,14 @@ foreach($orderlist as $order) {
 	
 	$prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
 	$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
-
-    $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
-    $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
-    $prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
 	
+    
+    $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
+	$prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
+	$prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
+    // $prodBarNumCntBtnWord = "바코드";
+
+
     if ($od_cart_count > 0) {
         $show_od_cart_count = '| ' . $od_cart_count;
     }
@@ -834,7 +838,7 @@ foreach($orderlist as $order) {
     // }
     // //주문취소, 주문무효이면 상태값표시
     // if($ct_status_info['name']=="주문취소"||$ct_status_info['name']=="주문무효"){
-    //     $od_ex_date = $ct_status_info['name'];
+    //     $ct_ex_date = $ct_status_info['name'];
     // }
     // $od_ex_date=$result_ct['ct_status'];
     // if ($cancel_request_row['od_id']) {
