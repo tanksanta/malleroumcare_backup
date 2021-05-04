@@ -1007,8 +1007,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         </select>
                         <input type="button" value="변경하기" class="btn shbtn" id="change_cart_status">
                     </div>
-                    <div class="change_discount2" style="display:none">
-                        <span>총 가격변경(추가할인/금액추가) *금액을 추가하려면 (-) 입력 후 금액 입력</span>
+                    <div class="change_discount2" >
+                        <span>*추가 배송비 : </span>
                         <input type="text" class="frm_input" name="od_cart_discount2" id="od_cart_discount2" value="<?php echo $od['od_cart_discount2']; ?>" />
                         <input type="button" value="적용" class="btn shbtn" id="change_discount2">
                     </div>
@@ -1129,14 +1129,12 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         	<a href="#" class="deliveryCntBtn<?=$deliveryCntBtnStatus?>"><?=$deliveryCntBtnWord?></a>
                         </td>
                     </tr>
-                    <!--
-                    <tr>
-                        <th scope="row">배송비</th>
-                        <td><input type="text" name="od_send_cost" value="<?php echo $od['od_send_cost']; ?>" id="od_send_cost" required class="frm_input required" size="30">&nbsp;원</td>
-                    </tr>
-                    -->
-                    <tr style="display:none">
+                    <!-- <tr>
                         <th scope="row">추가 배송비</th>
+                        <td colspan="3"><input type="text" name="" value="" id="" required class="frm_input required" size="30"> 원</td>
+                    </tr> -->
+                    <tr style="display:none">
+                        <th scope="row">지역별 추가 배송비</th>
                         <td colspan="3"><input type="text" name="od_send_cost2" value="<?php echo $od['od_send_cost2']; ?>" id="od_send_cost2" required class="frm_input required" size="30" readonly>&nbsp;원&nbsp;&nbsp;* 추가배송비는 변경하실 수 없습니다.</td>
                     </tr>
                     <!--
@@ -1979,12 +1977,12 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <div class="right"><span class="red"> <?php echo number_format($tot_discount); ?>원</span></div>
                     </li>
                     <li>
-                        <div class="left">추가할인/금액추가</div>
+                        <div class="left">추가배송비</div>
                         <div class="right"><span class="red"> <?php echo number_format($od['od_cart_discount2']); ?>원</span></div>
                     </li>
                     <li>
                         <div class="left"><b>총금액</b></div>
-                        <div class="right"><b><?php echo number_format($tot_total + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount2']); ?>원</b></div>
+                        <div class="right"><b><?php echo number_format($tot_total + $od['od_send_cost'] + $od['od_send_cost2'] + $od['od_cart_discount2']); ?>원</b></div>
                     </li>
                 </ul>
             </div>
