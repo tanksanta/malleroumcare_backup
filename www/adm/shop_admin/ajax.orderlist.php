@@ -623,7 +623,7 @@ foreach($orderlist as $order) {
 	
 	$prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
 	$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
-    
+
     $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
     $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
     $prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
@@ -826,16 +826,16 @@ foreach($orderlist as $order) {
     $od_ex_date = $order['od_ex_date'] === '0000-00-00' ? '-' : $order['od_ex_date'];
 
     //상품준비, 출고준비, 값 0000-00-00 이면, 출고예정
-    if($order['od_ex_date'] === '0000-00-00'){
-        $od_ex_date = "출고예정";
+    if($ct_ex_date === '0000-00-00'){
+        $ct_ex_date = "출고예정";
     }
-    if($ct_status_info['name']=="상품준비"||$ct_status_info['name']=="출고준비"){
-        $od_ex_date = "출고예정";
-    }
-    //주문취소, 주문무효이면 상태값표시
-    if($ct_status_info['name']=="주문취소"||$ct_status_info['name']=="주문무효"){
-        $od_ex_date = $ct_status_info['name'];
-    }
+    // if($ct_status_info['name']=="상품준비"||$ct_status_info['name']=="출고준비"){
+    //     $od_ex_date = "출고예정";
+    // }
+    // //주문취소, 주문무효이면 상태값표시
+    // if($ct_status_info['name']=="주문취소"||$ct_status_info['name']=="주문무효"){
+    //     $od_ex_date = $ct_status_info['name'];
+    // }
     // $od_ex_date=$result_ct['ct_status'];
     // if ($cancel_request_row['od_id']) {
     //     $ct_status = get_canel_request($cancel_request_row['request_type']);
@@ -872,7 +872,7 @@ foreach($orderlist as $order) {
             {$show_od_delivery_type}
         </td>
         <td align=\"center\" class=\"od_ex_date\">
-            {$od_ex_date}
+            {$ct_ex_date}
         </td>
         <td align=\"center\" class=\"od_step\">
             {$ct_status_text}
