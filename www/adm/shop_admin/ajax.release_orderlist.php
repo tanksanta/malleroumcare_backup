@@ -496,10 +496,6 @@ foreach($orderlist as $order) {
 		$prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
 		$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
 
-		$prodBarNumCntBtnWord = "출고관리 ({$order["od_prodBarNum_insert"]}/{$order["od_prodBarNum_total"]})";
-		$prodBarNumCntBtnWord = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
-		$prodBarNumCntBtnStatus = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? " disable" : "";
-		
         $prodBarNumCntBtnWord = "출고관리 ".$result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
         $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
         $prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
@@ -661,6 +657,7 @@ foreach($orderlist as $order) {
     $complate_flag="";
     $complate_flag2="";
     $edit_working = false;
+    
     if($ct_status['name']=="출고준비"){
         $od_status_name="출고<br>준비"; $class_type1="type3";
         if($order['od_edit_member']){   //작업중인사람
@@ -672,7 +669,7 @@ foreach($orderlist as $order) {
     if($order['od_edit_member']){
 		$edit_working = true;
 	}
-    if($ct_status['name']=="출고완료"){$od_status_name="출고<br>완료"; $class_type1="type4"; $class_type2="disable"; }
+    if($ct_status['name']=="출고완료"){$od_status_name="출고<br>완료"; $class_type1="type4"; $class_type2= ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : ""; }
     if($ct_status['name']=="배송완료"){$od_status_name="배송<br>완료"; $class_type1="type5"; }
     
     
