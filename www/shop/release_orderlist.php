@@ -252,7 +252,7 @@
 						html += '<span>' + row.od_status_name + '</span>';
 						html += '</p>';
 						html += '</li>';
-						html += '<li class="barInfo barcode_box ' + row.od_barcode_class + '" data-id="' + row.od_id + '">';
+						html += '<li class="barInfo barcode_box ' + row.od_barcode_class + '" data-id="' + row.od_id + '" data-stock="2" data-it="'+row.ct_it_id+'"  data-option="'+row.ct_option+'" >';
 						html += '<span class="cnt">' + row.od_barcode_name + '</span>';
 						if(row.edit_status){
 							html += '<span class="label">작업중</span>';
@@ -373,7 +373,13 @@
 		e.preventDefault();
 		var id = $(this).attr("data-id");
 		
-		$.ajax({
+
+        var od = $(this).attr("data-od");
+        var it = $(this).attr("data-it");
+        var stock = $(this).attr("data-stock");
+        var option = encodeURIComponent($(this).attr("data-option"));
+		
+        $.ajax({
 			url : "/shop/ajax.release_orderview.check.php",
 			type : "POST",
 			data : {
@@ -385,7 +391,7 @@
 						location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form.php?od_id="+ id+"&new=1";
 					}
 				} else {
-					location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form.php?od_id="+ id+"&new=1";
+					location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&new=1"+"&stock_insert=" + stock + "&option=" + option+"&prodId=" + it;
 				}
 			}
 		});
