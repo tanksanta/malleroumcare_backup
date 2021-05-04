@@ -100,3 +100,20 @@ CREATE TABLE IF NOT EXISTS `eform_document_item` (
   UNIQUE KEY `index1` (`dc_id`, `it_id`),
   KEY `index2` (`dc_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eform_document_content`
+--
+
+-- 계약서 작성 내용 테이블
+
+DROP TABLE IF EXISTS `eform_document_content`;
+CREATE TABLE IF NOT EXISTS `eform_document_content` (
+  `dc_id` binary(16) NOT NULL, -- 문서 아이디, FK
+  `ct_id` varchar(255) NOT NULL, -- 문서 내 폼 ID
+  `ct_content` longtext, -- 폼 작성 내용 todo: 사실 체크박스랑 사인밖에 없긴 한데...
+  UNIQUE KEY `index1` (`dc_id`, `ct_id`),
+  KEY `index2` (`dc_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
