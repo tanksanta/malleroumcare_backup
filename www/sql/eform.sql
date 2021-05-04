@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   -- 계약서 생성시 IP
   `dc_ip` varchar(255) NOT NULL default '',
   -- 계약서 생성 브라우저 정보
-  `dc_browser` longtext,
+  `dc_browser` text NOT NULL,
   -- 직인 파일명
   `dc_signUrl` varchar(255) NOT NULL default '',
   -- ---------
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   -- 계약서 작성시 IP
   `dc_sign_ip` varchar(255) NOT NULL default '',
   -- 계약서 작성 브라우저 정보
-  `dc_sign_browser` longtext,
+  `dc_sign_browser` text NOT NULL,
   -- 사인 파일명
   `dc_sign_signUrl` varchar(255) NOT NULL default '',
   PRIMARY KEY (`dc_id`)
@@ -116,4 +116,24 @@ CREATE TABLE IF NOT EXISTS `eform_document_content` (
   `ct_content` longtext, -- 폼 작성 내용 todo: 사실 체크박스랑 사인밖에 없긴 한데...
   UNIQUE KEY `index1` (`dc_id`, `ct_id`),
   KEY `index2` (`dc_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eform_document_log`
+--
+
+-- 계약서 로그 테이블 → 감사추적인증서
+
+DROP TABLE IF EXISTS `eform_document_log`;
+CREATE TABLE IF NOT EXISTS `eform_document_log` (
+  `dl_id` int(11) NOT NULL auto_increment, -- 로그 ID, (PRI, AI)
+  `dc_id` binary(16) NOT NULL, -- 문서 ID, FK
+  `dl_log` text NOT NULL, -- 로그 내용
+  `dl_ip` varchar(255) NOT NULL default '', -- 로그 작성 IP
+  `dl_browser` text NOT NULL, -- 로그 작성 브라우저 정보
+  `dl_datetime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', -- 로그 작성 시각
+  PRIMARY KEY (`dl_id`),
+  KEY `index1` (`dc_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
