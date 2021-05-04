@@ -770,7 +770,12 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		$("#popupProdBarNumInfoBox", parent.document).hide();
 		$("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
 	});
-    
+	$(".popupCloseBtn").click(function(e){
+		e.preventDefault();
+
+		$("#popupProdBarNumInfoBox", parent.document).hide();
+		$("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
+	});
 </script>
     <!-- <hr color="#dddddd" size="1"> -->
  </body>
