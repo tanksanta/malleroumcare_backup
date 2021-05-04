@@ -254,9 +254,9 @@
 						html += '</li>';
 						html += '<li class="barInfo barcode_box ' + row.od_barcode_class + '" data-id="' + row.od_id + '" data-stock="2" data-it="'+row.ct_it_id+'"  data-option="'+row.ct_option+'" >';
 						html += '<span class="cnt">' + row.od_barcode_name + '</span>';
-						if(row.edit_status){
-							html += '<span class="label">작업중</span>';
-						}
+						// if(row.edit_status){
+						// 	html += '<span class="label">작업중</span>';
+						// }
 						html += '</li>';
 						html += '</ul>';
 					});
@@ -386,13 +386,13 @@
 				od_id : id
 			},
 			success : function(result){
-				if(result.error == "Y"){
-					if(confirm("작업중입니다. 무시하고 진행 시 이전 작업자는 작업이 종료됩니다. 무시하시겠습니까?")){
-						location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form.php?od_id="+ id+"&new=1";
-					}
-				} else {
+				// if(result.error == "Y"){
+				// 	if(confirm("작업중입니다. 무시하고 진행 시 이전 작업자는 작업이 종료됩니다. 무시하시겠습니까?")){
+				// 		location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form.php?od_id="+ id+"&new=1";
+				// 	}
+				// } else {
 					location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&new=1"+"&stock_insert=" + stock + "&option=" + option+"&prodId=" + it;
-				}
+				// }
 			}
 		});
 	});
