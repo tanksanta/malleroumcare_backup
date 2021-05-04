@@ -4,6 +4,8 @@
 -- Table structure for table `eform_document`
 --
 
+-- 계약서 테이블
+
 DROP TABLE IF EXISTS `eform_document`;
 CREATE TABLE IF NOT EXISTS `eform_document` (
   `dc_id` binary(16) NOT NULL, -- 문서 ID, PRI, UNHEX(REPLACE(UUID(),'-',''))
@@ -70,4 +72,31 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   -- 사인 파일명
   `dc_sign_signUrl` varchar(255) NOT NULL default '',
   PRIMARY KEY (`dc_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eform_document_item`
+--
+
+-- 계약서 구매/대여 물품 테이블
+
+DROP TABLE IF EXISTS `eform_document_item`;
+CREATE TABLE IF NOT EXISTS `eform_document_item` (
+  `it_id` int(11) NOT NULL auto_increment, -- 물품 id (PRI, AI)
+  `dc_id` binary(16) NOT NULL, -- 문서 아이디, FK
+  `gubun` varchar(255) NOT NULL, -- 판매재고 00 / 대여재고 01
+  `ca_name` varchar(255) NOT NULL, -- 품목명 : 이동변기
+  `it_name` varchar(255) NOT NULL, -- 제품명 : APT-101
+  `it_code` varchar(255) NOT NULL, -- 품목 코드
+  `it_barcode` varchar(255) NOT NULL DEFAULT '', -- 바코드
+  `it_qty` int(11) NOT NULL DEFAULT 1, -- 개수
+  `it_date` longtext, -- 판매계약일(제공일자) or 대여계약기간(gubun == 01)
+  `it_price` int(11) NOT NULL DEFAULT 0, -- 급여가
+  `it_price_pen` int(11) NOT NULL DEFAULT 0, -- 수급자부담액
+  `it_price_ent` int(11) NOT NULL DEFAULT 0, -- 공단부담액
+  PRIMARY KEY (`it_id`),
+  UNIQUE KEY `index1` (`dc_id`, `it_id`),
+  KEY `index2` (`dc_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
