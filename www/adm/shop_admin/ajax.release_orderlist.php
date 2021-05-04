@@ -723,6 +723,11 @@ foreach($orderlist as $order) {
 	$ret["data"][$foreach_i]["edit_status"] = $edit_working;
 	$ret["data"][$foreach_i]["complate_flag"] = $complate_flag;
 	$ret["data"][$foreach_i]["complate_flag2"] = $complate_flag2;
+
+	$ret["data"][$foreach_i]["option"] = $complate_flag2;
+	$ret["data"][$foreach_i]["complate_flag2"] = $complate_flag2;
+    $ret["data"][$foreach_i]["ct_it_id"] = $ct_it_id;
+	$ret["data"][$foreach_i]["ct_option"] = $result_ct["ct_option"];
 	
 	$foreach_i++;
 }
