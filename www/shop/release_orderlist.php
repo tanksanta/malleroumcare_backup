@@ -9,8 +9,7 @@
 		$deliveryTotalCnt = 0;
 		if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
 		$sub_menu = '400402';
-        alert('준비중입니다.',G5_URL);
-
+        // alert('준비중입니다.',G5_URL);
  ?>
  <!DOCTYPE html>
 <html lang="en">
@@ -226,24 +225,24 @@
             data: formdata,
         })
         .done(function(result){
-            // console.log(result);
+            console.log(result);
             // return false;
             if(result.data){
 					var html = "";
-				
 					$.each(result.data, function(key, row){
 						html += '<ul class="' + row.complate_flag + ' ' + row.complate_flag2 + '">';
 						html += '<li class="mainInfo">';
 						html += '<p class="name">';
 						html += '<span class="it_name">' + row.it_name + '</span>';
-						html += '<span class="delivery">(배송 : ' + row.delivery_cnt + '개)</span>';
+						// html += '<span class="delivery">(배송 : ' + row.delivery_cnt + '개)</span>';
 						html += '</p>';
-						html += '<p class="cnt">' + row.cnt_detail + '</p>';
-						html += '<p class="cnt">사업소 : ';
+						html += '<p class="cnt">' + row.cnt_detail + '개 / ';
+						html += '사업소 : ';
                         if(row.od_name){
 							html += row.od_name;
 						}
 						html += '</p>';
+						html += '<p class="cnt">'+row.od_id+'</p>';
 						html += '<p class="date">' + row.date;
                         if(row.od_name){
 							html += " / " + row.od_b_name;
@@ -304,6 +303,7 @@
 		$("#searchSubmitBtn").click(function(){
 			$("#page").val(1);
 			$("#listDataWrap").html("");
+            page2=0;
 			doSearch();
 		});
 		

@@ -3,18 +3,18 @@
 include_once('./_common.php');
 
 // auth_check($auth[$sub_menu], "r");
-
+$ct_status=$od_status;
 $where = array();
 $od_step = $od_step ? $od_step : 5;
 
 $doc = strip_tags($doc);
-$sort1 = in_array($sort1, array('od_id', 'od_cart_price', 'od_receipt_price', 'od_cancel_price', 'od_misu', 'od_cash', 'od_time', 'od_status')) ? $sort1 : '';
+$sort1 = in_array($sort1, array('od_id', 'od_cart_price', 'od_receipt_price', 'od_cancel_price', 'od_misu', 'od_cash', 'od_time', 'ct_status')) ? $sort1 : '';
 $sort2 = in_array($sort2, array('desc', 'asc')) ? $sort2 : 'desc';
 $sel_field = get_search_string($sel_field);
 if( !in_array($sel_field, array('od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'od_invoice')) ){   //검색할 필드 대상이 아니면 값을 제거
     $sel_field = '';
 }
-$od_status = get_search_string($od_status);
+$ct_status = get_search_string($ct_status);
 $search = get_search_string($search);
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
@@ -205,47 +205,47 @@ if ($search_option) {
 
 
 $where[] = " od_del_yn = 'N' ";
-$where[] = " od_status != '완료' ";
+$where[] = " ct_status != '완료' ";
 
 if ($where) {
     $where2 = $where;
 }
 
-if ( $od_status ) {
-    if ( is_array($od_status) ) {
+if ( $ct_status ) {
+    if ( is_array($ct_status) ) {
         
         $order_steps_where = array();
-        foreach($od_status as $s) {
-            $order_steps_where[] = " od_status = '{$s}'";
+        foreach($ct_status as $s) {
+            $order_steps_where[] = " ct_status = '{$s}'";
         }
         $where[] = ' ( '.implode(' OR ', $order_steps_where).' ) ';
     }else{
-        $where[] = " od_status = '{$od_status}'";
+        $where[] = " ct_status = '{$ct_status}'";
     }
 }else{
     $order_steps_where = array();
     foreach($order_steps as $order_step) { 
         if (!$order_step['deliverylist']) continue;
 
-        $order_steps_where[] = " od_status = '{$order_step['val']}' ";
+        $order_steps_where[] = " ct_status = '{$order_step['val']}' ";
     }
     $where[] = ' ( '.implode(' OR ', $order_steps_where).' ) ';
 }
 /*
-if ($od_status) {
-    switch($od_status) {
+if ($ct_status) {
+    switch($ct_status) {
         case '전체취소':
-            $where[] = " od_status = '취소' ";
+            $where[] = " ct_status = '취소' ";
             break;
         case '부분취소':
-            $where[] = " od_status IN('주문', '입금', '준비', '배송', '완료') and od_cancel_price > 0 ";
+            $where[] = " ct_status IN('주문', '입금', '준비', '배송', '완료') and od_cancel_price > 0 ";
             break;
         default:
-            $where[] = " od_status = '$od_status' ";
+            $where[] = " ct_status = '$ct_status' ";
             break;
     }
 
-    switch ($od_status) {
+    switch ($ct_status) {
         case '주문' :
             $sort1 = "od_id";
             $sort2 = "desc";
@@ -262,10 +262,10 @@ if ($od_status) {
 }
 */
 
-// $where[] = " od_status = '{$od_status}'";
+// $where[] = " ct_status = '{$ct_status}'";
 
 // 최고관리자가 아닐때
-if ( $od_status == '작성' && $is_admin != 'super' ) {
+if ( $ct_status == '작성' && $is_admin != 'super' ) {
     $where[] = " od_writer = '{$member['mb_id']}' ";
 }
 
@@ -277,12 +277,12 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from {$g5['g5_shop_order_table']} as A 
-    left join (select od_id as cart_od_id, it_name from {$g5['g5_shop_cart_table']}) B
-    on A.od_id = B.cart_od_id
-    left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
-    on A.mb_id = C.mb_id_temp
-$sql_search group by A.od_id";
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status from {$g5['g5_shop_cart_table']}) B
+                inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
+                left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
+                on A.mb_id = C.mb_id_temp
+                $sql_search
+                group by cart_ct_id ";
 
 foreach($order_steps as $order_step) { 
     if (!$order_step['deliverylist']) continue;
@@ -291,26 +291,22 @@ foreach($order_steps as $order_step) {
 
 $order_by_step = implode(' , ', $order_by_steps);
 
-//$sql_common .= " ORDER BY FIELD(od_status, " . $order_by_step . " ), od_id desc ";
+//$sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), od_id desc ";
 $sql_common .= " ORDER BY ";
 switch($cust_sort){
 	case "od_time" :
 		$sql_common .= " od_time DESC ";
 		break;
-	case "od_status" :
-		$sql_common .= " FIELD ( od_status, '출고준비', '완료' ) DESC ";
+	case "ct_status" :
+		$sql_common .= " FIELD ( ct_status, '출고준비', '완료' ) DESC ";
 		break;
 }
 
 $sql = " select count(od_id) as cnt " . $sql_common;
 
-// echo $sql;
-// return false;
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
-// echo $sql;
-// return 
 // 총 금액
 $sql = " select sum(od_cart_price) as od_cart_price, sum(od_send_cost) as od_send_cost, sum(od_send_cost2) as od_send_cost2, sum(od_cart_discount) as od_cart_discount, sum(od_cart_discount2) as od_cart_discount2 " . $sql_common;
 $row = sql_fetch($sql);
@@ -322,20 +318,27 @@ $cate_counts = array();
 
 if ( $where2 || $where ) {
     if ( $is_admin != 'super' ) {
-        $where2[] = " if(`od_status` = '작성', `od_writer`, '{$member['mb_id']}') = '{$member['mb_id']}' ";
+        $where2[] = " if(`ct_status` = '작성', `od_writer`, '{$member['mb_id']}') = '{$member['mb_id']}' ";
     }
     if ( $where2 ) {
         $sql_search2 = ' where '.implode(' and ', $where2);
     }
 }
-$sql_common2 = " from {$g5['g5_shop_order_table']} as A
-    left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
-    on A.mb_id = C.mb_id_temp
-$sql_search2 ";
-$sql = " select count(od_id) as cnt, od_status $sql_common2 group by od_status";
+$sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
+
+//$sql = " select count(od_id) as cnt, ct_status $sql_common2 group by ct_status";
+
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status from {$g5['g5_shop_cart_table']}) B
+        inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
+        left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
+        on A.mb_id = C.mb_id_temp
+        $sql_search2
+        group by ct_status ";
+
+
 $result = sql_query($sql);
 while( $row = sql_fetch_array($result) ) {
-    $cate_counts[$row['od_status']] = $row['cnt'];
+    $cate_counts[$row['ct_status']] = $row['cnt'];
 }
 
 // print_r($cate_counts);
@@ -348,14 +351,14 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
 $sql  = " select *,
             (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
-           $sql_common 
+           $sql_common
            limit $from_record, $rows ";
 $result = sql_query($sql);
 
 $orderlist = array();
 while( $row = sql_fetch_array($result) ) {
     // $sql = "SELECT * FROM g5_shop_cart WHERE od_id = '{$row['od_id']}'";
-    $sql = "SELECT c.*, i.it_model, i.it_name, i.it_id FROM g5_shop_cart as c LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id WHERE c.od_id = '{$row['od_id']}'";
+    $sql = "SELECT c.*, i.it_model FROM g5_shop_cart as c LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id WHERE c.od_id = '{$row['od_id']}'";
     $cart_result = sql_query($sql);
     $row['cart'] = array();
     while ( $row2 = sql_fetch_array($cart_result) ) {
@@ -394,6 +397,36 @@ $now_step = $last_step ? $last_step : '';
 
 $foreach_i = 0;
 foreach($orderlist as $order) {
+
+
+        // cart_table  기준 정렬
+        $sql_ct = "select * from `g5_shop_cart` where `ct_id` ='".$order['cart_ct_id']."'";
+        $result_ct = sql_fetch($sql_ct);
+        
+        
+        $ct_price =number_format($result_ct['ct_price']*$result_ct['ct_qty']+$result_ct['ct_sendcost']-$result_ct['ct_discount']);//가격
+        if($result_ct['ct_status']=="보유재고등록"||$result_ct['ct_status']=="재고소진"){ $ct_price =$result_ct['ct_status'];}
+        $ct_it_name =$result_ct['it_name'];                                                                             //상품이름
+        $ct_option = ($result_ct["ct_option"] == $result_ct['it_name']) ? "" : "(".$result_ct['ct_option'].")";         //옵션
+        $ct_it_name=$ct_it_name.$ct_option;                                                                             //상품이름 + 옵션
+        $ct_qty=$result_ct['ct_qty'];                                                                                   //개수
+        $ct_status_text = $result_ct['ct_status'];                                                                           //상태
+        $ct_it_id = $result_ct['it_id'];      
+        $ct_ex_date = $result_ct['ct_ex_date'];      
+        switch ($ct_status_text) {
+            case '보유재고등록': $ct_status_text="보유재고등록"; break;
+            case '재고소진': $ct_status_text="재고소진"; break;
+            case '주문무효': $ct_status_text="주문무효"; break;
+            case '취소': $ct_status_text="주문취소"; break;
+            case '주문': $ct_status_text="상품주문"; break;
+            case '입금': $ct_status_text="입금완료"; break;
+            case '준비': $ct_status_text="상품준비"; break;
+            case '출고준비': $ct_status_text="출고준비"; break;
+            case '배송': $ct_status_text="출고완료"; break;
+            case '완료': $ct_status_text="배송완료"; break;
+        }
+        $stock_insert=1;
+
     $od_time = substr($order['od_time'],2,8) . '<br>' . '('. substr($order['od_time'],11,5) .')';
     $od_time2 = substr($order['od_time'],2,8)  . '('. substr($order['od_time'],11,5) .')';
 
@@ -467,6 +500,11 @@ foreach($orderlist as $order) {
 		$prodBarNumCntBtnWord = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
 		$prodBarNumCntBtnStatus = ($order["od_prodBarNum_insert"] >= $order["od_prodBarNum_total"]) ? " disable" : "";
 		
+        $prodBarNumCntBtnWord = "출고관리 ".$result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
+        $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
+        $prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
+
+
 		$deliveryCntBtnWord = "배송정보 ({$order["od_delivery_insert"]}/{$order["od_delivery_total"]})";
 		$deliveryCntBtnWord = ($order["od_delivery_insert"] >= $order["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
 		$deliveryCntBtnStatus = ($order["od_delivery_insert"] >= $order["od_delivery_total"]) ? " disable" : "";
@@ -474,7 +512,7 @@ foreach($orderlist as $order) {
 
     $important2_class = $order['od_important2'] ? 'on' : '';
 
-    $od_status = get_step($order['od_status']);
+    $ct_status = get_step($order['ct_status']);
 
     $od_delivery = get_delivery_step($order['od_delivery_type']);
     // print_r($od_delivery);
@@ -582,22 +620,22 @@ foreach($orderlist as $order) {
         }
     }
 
-    if ( $now_step != $order['od_status'] ) {
+    if ( $now_step != $order['ct_status'] ) {
         
         if ( $where ) {
-            $sql_search = ' where '.implode(' and ', $where) . " and od_status = '{$order['od_status']}' ";
+            $sql_search = ' where '.implode(' and ', $where) . " and ct_status = '{$order['ct_status']}' ";
         }else{
-            $sql_search = " where od_status = '{$order['od_status']}' ";
+            $sql_search = " where ct_status = '{$order['ct_status']}' ";
         }
         $sql = " select count(od_id) as cnt, sum(od_cart_price) as od_cart_price, sum(od_send_cost) as od_send_cost, sum(od_send_cost2) as od_send_cost2, sum(od_cart_discount) as od_cart_discount, sum(od_cart_discount2) as od_cart_discount2 from {$g5['g5_shop_order_table']} $sql_search ";
         $total_result = sql_fetch($sql);
         $total_result['price'] = number_format($total_result['od_cart_price'] + $total_result['od_send_cost'] + $total_result['od_send_cost2'] - $total_result['od_cart_discount'] - $total_result['od_cart_discount2']);
             
-        $od_status_info = get_step($order['od_status']);
+        $od_status_info = get_step($order['ct_status']);
         $show_od_status = $od_status_info['chulgo'] ? $od_status_info['name'] . '<span>(' . $od_status_info['chulgo'] . ')</span>' : $od_status_info['name'];
 
-        $next_step = get_next_step($order['od_status']);
-        $prev_step = get_prev_step($order['od_status']);
+        $next_step = get_next_step($order['ct_status']);
+        $prev_step = get_prev_step($order['ct_status']);
         
         if ( $next_step ) {
             $show_next_status = '<span class="btn large"><button id="change_next_step" data-next-step-val="'. $next_step['val'] .'">선택 '. $next_step['name'] .'단계로 변경</button></span>';
@@ -610,7 +648,7 @@ foreach($orderlist as $order) {
         }else{
             $show_prev_status = '';
         }
-        $now_step = $order['od_status'];
+        $now_step = $order['ct_status'];
     }
     // <input type=\"text\" name=\"od_release_date\" class=\"od_release_date\" data-od-id=\"{$order['od_id']}\" value=\"{$order['od_release_date']}\" />
 
@@ -623,7 +661,7 @@ foreach($orderlist as $order) {
     $complate_flag="";
     $complate_flag2="";
     $edit_working = false;
-    if($od_status['name']=="출고준비"){
+    if($ct_status['name']=="출고준비"){
         $od_status_name="출고<br>준비"; $class_type1="type3";
         if($order['od_edit_member']){   //작업중인사람
             $class_type2="active"; 
@@ -634,8 +672,8 @@ foreach($orderlist as $order) {
     if($order['od_edit_member']){
 		$edit_working = true;
 	}
-    if($od_status['name']=="출고완료"){$od_status_name="출고<br>완료"; $class_type1="type4"; $class_type2="disable"; }
-    if($od_status['name']=="배송완료"){$od_status_name="배송<br>완료"; $class_type1="type5"; }
+    if($ct_status['name']=="출고완료"){$od_status_name="출고<br>완료"; $class_type1="type4"; $class_type2="disable"; }
+    if($ct_status['name']=="배송완료"){$od_status_name="배송<br>완료"; $class_type1="type5"; }
     
     
 
@@ -668,12 +706,14 @@ foreach($orderlist as $order) {
 	# 210318 추출 데이터 배열
 	$ret["data"][$foreach_i]["od_id"] = $order["od_id"];
 	$ret["data"][$foreach_i]["od_b_name"] = $order["od_b_name"];
-	$ret["data"][$foreach_i]["it_name"] = ($order["recipient_yn"] == "Y") ? "주문" : "재고";
+
+	$ret["data"][$foreach_i]["it_name"] = ($ct_status_text == "재고소진") ? "재고" : "주문";
+
 	$ret["data"][$foreach_i]["it_name"] = "[{$ret["data"][$foreach_i]["it_name"]}] ";
-	$ret["data"][$foreach_i]["it_name"] .= $moreInfo["it_name"];
-	$ret["data"][$foreach_i]["it_name"] .= ($moreInfoDisplayCnt) ? " {$moreInfoDisplayCnt}" : "";
+	$ret["data"][$foreach_i]["it_name"] .= $ct_it_name;
+
 	$ret["data"][$foreach_i]["delivery_cnt"] = $od_cart_count;
-	$ret["data"][$foreach_i]["cnt_detail"] = $od_detail;
+	$ret["data"][$foreach_i]["cnt_detail"] = $ct_qty;
 	$ret["data"][$foreach_i]["date"] = $od_time2;
 	$ret["data"][$foreach_i]["od_name"] = $order["od_name"];
 	$ret["data"][$foreach_i]["od_status_name"] = $od_status_name;
