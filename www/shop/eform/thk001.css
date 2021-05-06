@@ -111,6 +111,7 @@ body {
 }
 
 .thk001_table.sign_table {
+  border-bottom: 1px solid #000000;
 }
 
 .thk001_table.sign_table th,
