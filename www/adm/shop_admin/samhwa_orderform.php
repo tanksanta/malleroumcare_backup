@@ -1008,9 +1008,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <input type="button" value="변경하기" class="btn shbtn" id="change_cart_status">
                     </div>
                     <div class="change_discount2" >
-                        <span>*추가 배송비 : </span>
-                        <input type="text" class="frm_input" name="od_cart_discount2" id="od_cart_discount2" value="<?php echo $od['od_cart_discount2']; ?>" />
-                        <input type="button" value="적용" class="btn shbtn" id="change_discount2">
+                        <span>추가 배송비</span>
+                        <input type="text" class="frm_input" name="od_send_cost2" id="od_send_cost2" value="<?php echo $od['od_send_cost2']; ?>" />
+                        <input type="button" value="적용" class="btn shbtn" id="change_send_cost2">
                     </div>
                 </div>
             </form>
@@ -1970,7 +1970,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     </li>
                     <li>
                         <div class="left">배송비</div>
-                        <div class="right"><?php echo number_format($od['od_send_cost'] + $od['od_send_cost2']); ?>원</div>
+                        <div class="right"><?php echo number_format($od['od_send_cost']); ?>원</div>
                     </li>
                     <li>
                         <div class="left">할인</div>
@@ -1978,7 +1978,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                     </li>
                     <li>
                         <div class="left">추가배송비</div>
-                        <div class="right"><span class="red"> <?php echo number_format($od['od_cart_discount2']); ?>원</span></div>
+                        <div class="right"><span class="red"> <?php echo number_format($od['od_send_cost2']); ?>원</span></div>
                     </li>
                     <li>
                         <div class="left"><b>총금액</b></div>
@@ -3310,34 +3310,34 @@ $(document).ready(function() {
         })
     });
 
-    // 추가할인 적용
-    $('#change_discount2').click(function() {
+    // 추가배송비 적용
+    $('#change_send_cost2').click(function() {
 
-        var od_cart_discount2 = parseInt($('#od_cart_discount2').val());
+    var od_send_cost2 = parseInt($('#od_send_cost2').val());
 
-        //2020-09-07 (-) 적용
+    //2020-09-07 (-) 적용
 
-        //if ( od_cart_discount2 < 0 ) {
-        //    alert('추가할인 금액은 0보다 작은금액을 입력하실 수 없습니다.');
-        //    return false;
-        //}
+    //if ( od_cart_discount2 < 0 ) {
+    //    alert('추가할인 금액은 0보다 작은금액을 입력하실 수 없습니다.');
+    //    return false;
+    //}
 
-        $.ajax({
-                    method: "POST",
-                    url: "./ajax.order.discount.change.php",
-                    data: {
-                        od_id: od_id,
-                        od_cart_discount2: od_cart_discount2,
-                    },
-                })
-        .done(function(data) {
-            if ( data.msg ) {
-                alert(data.msg);
-            }
-            if ( data.result === 'success' ) {
-                location.reload();
-            }
-        })
+    $.ajax({
+                method: "POST",
+                url: "./ajax.order.change_sendcost2.php",
+                data: {
+                    od_id: od_id,
+                    od_send_cost2: od_send_cost2,
+                },
+            })
+    .done(function(data) {
+        if ( data.msg ) {
+            alert(data.msg);
+        }
+        if ( data.result === 'success' ) {
+            location.reload();
+        }
+    })
     });
 
 
