@@ -1,0 +1,155 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #e8e8e8;
+}
+
+.a4 {
+  width: 1240px;
+  height: 1754px;
+  margin: 0 auto;
+  background-color: #ffffff;
+}
+
+.thk002 {
+  padding: 0 64px;
+}
+
+.thk002_h1 {
+  margin: 0;
+  padding: 16px;
+  font-size: 28px;
+  text-align: center;
+}
+
+.thk002 .desc {
+  font-size: 14px;
+  margin: 0;
+  padding: 6px;
+}
+
+.thk002_table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 18px;
+}
+
+.thk002_table th,
+.thk002_table td {
+  border: 1px solid #000000;
+  padding: 6px;
+  font-weight: normal;
+}
+
+.thk002_table th {
+  border-bottom: none;
+  padding-bottom: 0;
+  font-size: 14px;
+  text-align: left;
+}
+
+.thk002_table td {
+  border-top: none;
+}
+
+.thk002_table tr > th:first-child,
+.thk002_table tr > td:first-child {
+  border-left: 0;
+}
+
+.thk002_table tr > th:last-child,
+.thk002_table tr > td:last-child {
+  border-right: 0;
+}
+
+.item_table {
+  margin-top: 6px;
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 16px;
+}
+
+.item_table .bold {
+  font-weight: bold;
+}
+
+.item_table .center {
+  text-align: center;
+}
+
+.item_table .right {
+  text-align: right;
+}
+
+.item_table th,
+.item_table td {
+  padding: 4px 6px;
+  border: 1px solid #000000;
+  font-weight: normal;
+}
+
+.item_table th {
+  text-align: center;
+  font-size: 14px;
+}
+
+.item_table td {
+  padding: 4px 6px;
+  font-size: 12px;
+  height: 16px;
+}
+
+.item_table th.head {
+  padding: 8px 6px;
+  font-size: 16px;
+}
+
+.thk002 .item_table tr > th:first-child,
+.thk002 .item_table tr > td:first-child,
+.thk002 .sign_table tr > th:first-child,
+.thk002 .sign_table tr > td:first-child {
+  border-left: 0;
+}
+
+.thk002 .item_table tr > th:last-child,
+.thk002 .item_table tr > td:last-child,
+.thk002 .sign_table tr > th:last-child,
+.thk002 .sign_table tr > td:last-child {
+  border-right: 0;
+}
+
+.sign_table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 16px;
+}
+
+.sign_table th,
+.sign_table td {
+  padding: 6px;
+  border: 1px solid #000000;
+  font-weight: normal;
+}
+
+.notice_div {
+  border-top: 1px solid #000000;
+  border-bottom: 2px solid #000000;
+  font-size: 14px;
+  margin: 0;
+  padding: 6px;
+  text-align: center;
+  background-color: #bbbbbb;
+}
+
+.thk002_article {
+  margin: 12px 0;
+  padding: 0 0 0 24px;
+  font-size: 14px;
+}
+
+.thk002_article li {
+  line-height: 1.25;
+  padding: 4px;
+}
