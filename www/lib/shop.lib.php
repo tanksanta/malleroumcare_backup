@@ -1981,10 +1981,10 @@ function get_item_sendcost($it_id, $price, $qty, $cart_id, $update=0)
         $s_ct_id = sql_fetch($sql);
         $s_ct_id = $s_ct_id['ct_id'];
 
-        if ($s_ct_id) {
-            $sql = "UPDATE {$g5['g5_shop_cart_table']} SET ct_sendcost = '{$sendcost}' WHERE ct_id = '{$s_ct_id}'  and ct_status NOT IN('재고소진') ";
-            sql_query($sql);
-        }
+        // if ($s_ct_id) {
+        //     $sql = "UPDATE {$g5['g5_shop_cart_table']} SET ct_sendcost = '{$sendcost}' WHERE ct_id = '{$s_ct_id}'  and ct_status NOT IN('재고소진') ";
+        //     sql_query($sql);
+        // }
     }
 
     return $sendcost;
