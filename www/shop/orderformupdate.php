@@ -888,7 +888,7 @@ $sql_send = " select
                 SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * (ct_qty - ct_stock_qty)))) as price,
                 SUM(ct_discount) as discount
                 from {$g5['g5_shop_cart_table']}
-                where od_id = '{$od['od_id']}'";
+                where od_id = '{$tmp_cart_id}'";
 $result_send = sql_fetch($sql_send);
 $result_total = $result_send['price']-$result_send['discount'];
 
