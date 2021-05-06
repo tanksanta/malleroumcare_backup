@@ -205,7 +205,8 @@ function change_step(od_id, step, api) {
         console.log(data);
         if ( data == 'success' ) {
             alert('상태가 변경되었습니다.');
-            location.reload();
+            $("#"+step).click();
+            // location.reload();
         }else{
             alert('알수없는 원인으로 실패되었습니다.');
         }

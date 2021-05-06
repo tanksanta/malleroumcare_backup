@@ -372,7 +372,7 @@ $total_balance = number_format($total_result2['od_cart_price'] + $total_result2[
             foreach($order_steps as $order_step) {
             if (!$order_step['orderlist']) continue;
         ?>
-            <li class="" data-step="<?php echo $order_step['step']; ?>" data-status="<?php echo $order_step['val']; ?>">
+            <li class="" data-step="<?php echo $order_step['step']; ?>" data-status="<?php echo $order_step['val']; ?>" id="<?php echo $order_step['val']; ?>" >
                 <a><?php echo $order_step['name']; ?>(<span>0</span>)</a>
             </li>
         <?php } ?>
