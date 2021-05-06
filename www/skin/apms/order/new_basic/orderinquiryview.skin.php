@@ -196,15 +196,21 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			$info = "주문반품을 요청하셨습니다.";
 		}
 		if(!$info){
-			switch ($od["od_status"]) {
-				case '준비': echo "주문이 완료되었습니다.";  break;
-				case '출고준비': echo "주문이 완료되었습니다.";  break;
-				case '배송': echo "배송이 시작되었습니다.";  break;
-				case '완료': echo "배송이 완료되었습니다.";  break;
-				case '취소': echo "주문이 취소되었습니다.";  break;
-				case '주문무효': echo "주문이 취소되었습니다.";  break;
-				default: break;
-			}
+            if($od["od_stock_insert_yn"] == "Y"){
+            echo "재고 등록이 완료되었습니다";
+            }else{
+                // switch ($od["od_status"]) {
+                    // case '준비': echo "주문이 완료되었습니다.";  break;
+                    // case '출고준비': echo "주문이 완료되었습니다.";  break;
+                    // case '배송': echo "배송이 시작되었습니다.";  break;
+                    // case '완료': echo "배송이 완료되었습니다.";  break;
+                    // case '취소': echo "주문이 취소되었습니다.";  break;
+                    // case '주문무효': echo "주문이 취소되었습니다.";  break;
+                    // default: break;
+                // }
+            echo "주문이 완료되었습니다.";
+            }
+
 		}else{
 			echo $info;
 		}
