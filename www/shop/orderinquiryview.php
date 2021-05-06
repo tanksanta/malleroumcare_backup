@@ -522,7 +522,6 @@ if($is_inquiryview_sub) {
 				  eformYn = 'Y'
 				, payMehCd = '0'
 				, prods = '{$insertProds}'
-				, recipient_yn = 'Y'
 			WHERE od_id = '{$_GET["od_id"]}'
 		");
 

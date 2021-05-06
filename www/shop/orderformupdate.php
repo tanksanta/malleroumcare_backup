@@ -1474,6 +1474,7 @@ if($is_member && $od_b_name) {
             sql_query("
             UPDATE g5_shop_order SET
                 stoId = '{$stoIdList}'
+                , recipient_yn = 'Y'
             WHERE od_id = '{$od_id}'
             ");
 
