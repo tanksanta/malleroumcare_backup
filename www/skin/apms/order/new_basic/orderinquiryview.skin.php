@@ -611,14 +611,14 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						</div>
 					</li>
 					<?php } ?>
-
 					<?php if ($od['od_send_cost2'] > 0) { ?>
-						<div class="col-xs-6">추가배송비</div>
-						<div class="col-xs-6 text-right">
-							<strong><?php echo number_format($od['od_send_cost2']); ?> 원</strong>
-						</div>
+					<li>
+							<div class="col-xs-6">추가배송비</div>
+							<div class="col-xs-6 text-right">
+								<strong><?php echo number_format($od['od_send_cost2']); ?> 원</strong>
+							</div>
+					</li>
 					<?php } ?>
-
 
 					<li>
 						<div>
