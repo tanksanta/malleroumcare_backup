@@ -780,11 +780,11 @@ foreach($orderlist as $order) {
                     {$od_send_admin_memo}
                 </div>
 
-                <div class=\"ct_count\">
-                    {$ct_count}
-                </div>
 
                 <div class=\"buttons\">
+	                <div class=\"ct_count\">
+	                    {$ct_count}
+	                </div>
                     <a href=\"javascript:printOrderView('{$order['od_id']}')\"><img src=\"/adm/shop_admin/img/printer.png\" align=\"absmiddle\"></a>
                     <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\" target=\"_blank\"><span><img src=\"/adm/shop_admin/img/window.png\" align=\"absmiddle\"></span></a>
                     <span class=\"btn-direct-open\" onclick=\"btn_direct_open(this);\"></span>
