@@ -611,6 +611,12 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						</div>
 					</li>
 					<?php } ?>
+					<li>
+						<div>
+							<b>배송비</b>
+							<span><?php echo number_format($od['od_send_cost']); ?> 원</span>
+						</div>
+					</li>
 					<?php if ($od['od_send_cost2'] > 0) { ?>
 					<li>
 						<div>
@@ -619,13 +625,6 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						</div>
 					</li>
 					<?php } ?>
-
-					<li>
-						<div>
-							<b>배송비</b>
-							<span><?php echo number_format($od['od_send_cost']); ?> 원</span>
-						</div>
-					</li>
 				</ul>
                 <?php 
                     $total_price = $tot_price - $od['od_cart_discount']  -$od['od_cart_discount2'] ;
