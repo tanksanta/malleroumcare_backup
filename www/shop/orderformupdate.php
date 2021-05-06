@@ -1548,11 +1548,9 @@ if($is_member && $od_b_name) {
 			WHERE od_id = '{$od_id}'
 		");
 
-		$stoIdList = explode(",", $stoIdList);
-
 		# 210224 보유재고등록요청
         if($_POST["od_stock_insert_yn"]){
-            $stoIdDataList = explode('|',$stoId);
+            $stoIdDataList = explode(',',$stoIdList);
             $stoIdDataList=array_filter($stoIdDataList);
             $stoIdData = implode("|", $stoIdDataList);
             $sendData["stoId"] = $stoIdData;
