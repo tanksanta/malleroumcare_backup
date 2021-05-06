@@ -1008,7 +1008,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <input type="button" value="변경하기" class="btn shbtn" id="change_cart_status">
                     </div>
                     <div class="change_discount2" >
-                        <span>추가 배송비</span>
+                        <span>* 추가 배송비</span>
                         <input type="text" class="frm_input" name="od_send_cost2" id="od_send_cost2" value="<?php echo $od['od_send_cost2']; ?>" />
                         <input type="button" value="적용" class="btn shbtn" id="change_send_cost2">
                     </div>
