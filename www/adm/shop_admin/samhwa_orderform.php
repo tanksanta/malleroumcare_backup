@@ -364,7 +364,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 							<th class="item_barcode"></th>
                             <th class="item_price">판매금액</th>
                             <th class="item_discount">할인금액</th>
-                            <th class="item_sendcost">배송비</th>
+                            <!-- <th class="item_sendcost">배송비</th> -->
                             <th class="item_stotal">결제금액</th>
                             <th class="item_status">상태</th>
                             <th class="item_memo">요청사항</th>
@@ -737,9 +737,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                             -
                                         <?php } ?>
                                     </td>
-                                    <td class="item_sendcost">
+                                    <!-- <td class="item_sendcost">
                                         <?php echo number_format($options[$k]['ct_sendcost']); ?>원
-                                    </td>
+                                    </td> -->
                                     <td class="item_stotal">
                                         <?php echo number_format($options[$k]['ct_price_stotal']); ?>원
                                     </td>
@@ -978,9 +978,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <td class="item_discount">
                                 - <?php echo number_format($tot_discount); ?>원
                             </td>
-                            <td class="item_sendcost">
-                                <!--<?php echo number_format($tot_sendcost); ?>원-->
-                            </td>
+                            <!-- <td class="item_sendcost">
+                             <?php echo number_format($tot_sendcost); ?>원
+                             </td> -->
                             <td class="item_stotal">
                                 <?php echo number_format($tot_total); ?>원
                             </td>
