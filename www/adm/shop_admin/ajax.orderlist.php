@@ -496,7 +496,17 @@ foreach($orderlist as $order) {
     // cart_table  기준 정렬
     $sql_ct = "select * from `g5_shop_cart` where `ct_id` ='".$order['cart_ct_id']."'";
     $result_ct = sql_fetch($sql_ct);
-    
+
+
+    //ct_count (order 기준 - 개수 )
+    $sql_ct_count = "select count(ct_id) as ct_count from `g5_shop_cart` where `od_id` ='".$order['od_id']."'";
+    $result_ct_count = sql_fetch($sql_ct_count);
+    if($result_ct_count['ct_count'] > 1){
+        $ct_count =$result_ct_count['ct_count']-1;
+        $ct_count='+'.$ct_count;
+    }else{
+        $ct_count="";
+    }
     
     $ct_price =number_format($result_ct['ct_price']*$result_ct['ct_qty']+$result_ct['ct_sendcost']-$result_ct['ct_discount']);//가격
     if($result_ct['ct_status']=="보유재고등록"||$result_ct['ct_status']=="재고소진"){ $ct_price =$result_ct['ct_status'];}
@@ -769,6 +779,11 @@ foreach($orderlist as $order) {
                     </div>
                     {$od_send_admin_memo}
                 </div>
+
+                <div class=\"ct_count\">
+                    {$ct_count}
+                </div>
+
                 <div class=\"buttons\">
                     <a href=\"javascript:printOrderView('{$order['od_id']}')\"><img src=\"/adm/shop_admin/img/printer.png\" align=\"absmiddle\"></a>
                     <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\" target=\"_blank\"><span><img src=\"/adm/shop_admin/img/window.png\" align=\"absmiddle\"></span></a>
