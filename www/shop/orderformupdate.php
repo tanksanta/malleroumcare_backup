@@ -159,7 +159,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
                     UPDATE {$g5["g5_shop_cart_table"]} SET
                     ct_qty = '{$ct_stock_qty_v}',
                     ct_stock_qty = '{$ct_stock_qty_v}',
-                    ct_delivery_cnt = '0',
+                    ct_delivery_cnt = '0'
                     WHERE ct_id = '{$row["ct_id"]}'
                 ");
 
