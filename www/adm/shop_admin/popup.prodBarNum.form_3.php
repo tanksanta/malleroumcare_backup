@@ -267,16 +267,25 @@
 								<?php } ?>
 							</div>
 
+							
 							<div class="folding_box">
+								<?php if($options[$k]["ct_qty"] >= 2){ ?>
+										<span>
+										<input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
+										<button type="button" class="barNumCustomSubmitBtn">등록</button>
+										<img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
+										</span>
+								<?php } ?>
 									<ul class="inputbox">
-									<?php for($b = 0; $b< count($stoId_v); $b++){ ?>
-										<li>
-											<input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
-											<i class="fa fa-check"></i>
-											<span class="overlap">중복</span>
-											<img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
-										</li>
-									<?php	$prodListCnt++;  } ?>
+										<?php for($b = 0; $b< count($stoId_v); $b++){ ?>
+                                        <li>
+                                            <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                                            <i class="fa fa-check"></i>
+                                            <span class="overlap">중복</span>
+                                            <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
+                                        </li>
+                                        <?php	$prodListCnt++;  }
+                                        ?>
 									</ul>
 							</div>
 						</li>
