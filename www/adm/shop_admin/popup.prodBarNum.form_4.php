@@ -219,6 +219,9 @@
                 }
 
 				for($k = 0; $k < count($options); $k++){
+					$stoId_v=[];
+					$stoId_v = explode('|',$options[$k]['stoId']);
+					$stoId_v=array_filter($stoId_v);
                     if($options[$k]['it_id'] !== $_GET['prodId'] || $options[$k]["ct_option"]!==$_GET['option']){ 
                     
 						for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ 
@@ -265,21 +268,14 @@
 
 							<div class="folding_box">
 									<ul class="inputbox">
-                                        <?php 
-                                            $stoId_v=[];
-                                            $stoId_v = explode('|',$options[$k]['stoId']);
-                                            $stoId_v=array_filter($stoId_v);
-                                            for($b = 0; $b< count($stoId_v); $b++){
-                                        ?>
-                                        <li>
-                                            <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
-                                            <i class="fa fa-check"></i>
-                                            <span class="overlap">중복</span>
-                                            <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
-                                        </li>
-                                        <?php
-                                            }
-                                        ?>
+									<?php for($b = 0; $b< count($stoId_v); $b++){ ?>
+										<li>
+											<input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+											<i class="fa fa-check"></i>
+											<span class="overlap">중복</span>
+											<img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
+										</li>
+									<?php	$prodListCnt++;  } ?>
 									</ul>
 							</div>
 						</li>
