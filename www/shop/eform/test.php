@@ -1,10 +1,9 @@
 <?php
 $url = './thk001_1.html';
-exec('/usr/local/bin/wkhtmltopdf --enable-local-file-access --viewport-size 1240 "'.$url.'" "test.pdf"');
+exec('/usr/local/bin/wkhtmltopdf -L 0 -R 0 -T 0 -B 0 --enable-local-file-access --viewport-size 1240 "'.$url.'" "test.pdf"');
 
-header("Content-type:application/pdf");
-// It will be called downloaded.pdf
-header("Content-Disposition:attachment;filename=test.pdf");
-// The PDF source is in original.pdf
-readfile("test.pdf");
+header("Content-type: application/pdf");
+header("Content-Disposition: inline; filename=test.pdf");
+
+@readfile("test.pdf");
 ?>

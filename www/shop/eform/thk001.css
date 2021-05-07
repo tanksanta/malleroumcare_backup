@@ -8,13 +8,10 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  background-color: #e8e8e8;
 }
 
 .a4 {
   width: 1240px;
-  height: 1754px;
   margin: 0 auto;
   background-color: #ffffff;
 }
