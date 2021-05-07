@@ -480,7 +480,7 @@ else // 장바구니에 담기
             $it['it_price']=$result_i['it_price'];
 
             // 배송정보 기본설정
-            $ct_delivery_cnt = $result_i['it_delivery_cnt'] ? $ct_qty : 0;
+            $ct_delivery_cnt = $result_i['it_delivery_cnt'] ? floor($ct_qty / $result_i['it_delivery_cnt']) : 0;
             $ct_delivery_price = $result_i['it_delivery_cnt'] ? ((@round($ct_qty / $result_i['it_delivery_cnt']) ?: 1) * $result_i['it_delivery_price']) : 0;
             $ct_delivery_company = 'ilogen';
 

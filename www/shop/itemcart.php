@@ -403,13 +403,7 @@ for($i=0; $i<$count; $i++) {
 			$itSaleCnt = 0;
 
 
-            //무조건 판매가, 비유통이면 0 원
-            $sql_i = "SELECT * FROM `g5_shop_item` WHERE `it_id` ='".$it['it_id']."'";
-            $result_i = sql_fetch($sql_i);
-            $it['it_price']=$result_i['it_price'];
-            if($it['prodSupYn']=="N"){
-                $it['it_price']=0;
-            }
+
 
 			if(!${"it_id_sale_status_{$it_id}"}){
 				for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
@@ -425,10 +419,19 @@ for($i=0; $i<$count; $i++) {
 
 			${"it_id_sale_status_{$it_id}"} = (${"it_id_sale_status_{$it_id}"}) ? ${"it_id_sale_status_{$it_id}"} : "할인완료";
 
+            //무조건 판매가, 비유통이면 0 원
+            $sql_i = "SELECT * FROM `g5_shop_item` WHERE `it_id` ='".$it['it_id']."'";
+            $result_i = sql_fetch($sql_i);
+            $it['it_price']=$result_i['it_price'];
+            if($it['prodSupYn']=="N"){
+                $it['it_price']=0;
+            }
+
             // 배송정보 기본설정
-            $ct_delivery_cnt = $result_i['it_delivery_cnt'] ? $ct_qty : 0;
+            $ct_delivery_cnt = $result_i['it_delivery_cnt'] ? floor($ct_qty / $result_i['it_delivery_cnt']) : 0;
             $ct_delivery_price = $result_i['it_delivery_cnt'] ? ((@round($ct_qty / $result_i['it_delivery_cnt']) ?: 1) * $result_i['it_delivery_price']) : 0;
             $ct_delivery_company = 'ilogen';
+
 
             $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it_sc_type}', '{$it_sc_method}', '{$it_sc_price}', '{$it_sc_minimum}', '{$it_sc_qty}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '$uid', '{$ct_discount}', '{$it["prodSupYn"]}', '$io_thezone', '$ct_delivery_cnt', '$ct_delivery_price', '$ct_delivery_company', '{$it['it_is_direct_delivery']}' )";
         $comma = ' , ';
