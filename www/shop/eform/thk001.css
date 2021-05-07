@@ -95,7 +95,7 @@ body {
 .thk001_article_div {
   padding: 16px;
   margin: 0;
-  border-top: 1px solid #000000;
+  border-top: 2px solid #000000;
   border-bottom: 1px solid #000000;
 }
 
@@ -105,6 +105,51 @@ body {
 
 .thk001_article_div .thk001_article li {
   padding: 8px 6px;
+}
+
+.thk001_article.hangul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: thk001_article;
+}
+
+.thk001_article.hangul li {
+  display: table;
+  counter-increment: thk001_article;
+}
+
+.thk001_article.hangul li:before {
+  display: table-cell;
+  padding-right: 8px;
+  content: counter(thk001_article) '.';
+}
+
+.thk001_article.hangul li:first-child:before {
+  content: '가.';
+}
+
+.thk001_article.hangul li:first-child + li:before {
+  content: '나.';
+}
+
+.thk001_article.hangul li:first-child + li + li:before {
+  content: '다.';
+}
+
+.thk001_article.asterisk {
+  padding: 0;
+  list-style: none;
+}
+
+.thk001_article.asterisk li {
+  display: table;
+}
+
+.thk001_article.asterisk li:before {
+  display: table-cell;
+  padding: 0 8px 0 16px;
+  content: '*';
 }
 
 .thk001_date_div {
