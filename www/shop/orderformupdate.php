@@ -158,7 +158,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
                 sql_query("
                     UPDATE {$g5["g5_shop_cart_table"]} SET
                     ct_qty = '{$ct_stock_qty_v}',
-                    ct_stock_qty = '{$ct_stock_qty_v}'
+                    ct_stock_qty = '{$ct_stock_qty_v}',
+                    ct_delivery_cnt = '0',
                     WHERE ct_id = '{$row["ct_id"]}'
                 ");
 
@@ -267,8 +268,10 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 
 	# 배송가능 설정
 	if($row["prodSupYn"] == "Y"){
+        
 		if(($row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"]) > 0){
 			$od_delivery_total++;
+
 			$tmpQty = $row["ct_qty"] - $_POST["it_option_stock_cnt_{$row["ct_id"]}"];
             if($row[$i]["it_delivery_cnt"]){
 			    $tmpCnt = floor($tmpQty / $row["it_delivery_cnt"]);
@@ -276,7 +279,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
                     $tmpCnt += 1;
                 }
             }
+
 			$tmpPrice = $tmpCnt * $row["it_delivery_price"];
+
 			sql_query("
 				UPDATE {$g5["g5_shop_cart_table"]} SET
 					ct_delivery_yn = 'Y'
