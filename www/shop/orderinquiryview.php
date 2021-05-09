@@ -601,20 +601,30 @@ if($is_inquiryview_sub) {
 
 
         #재고소진 상태값 변경
-        for($i = 0; $i < count($res2["data"]); $i++){
-            $productList[$i]["stoId"] = $res2["data"][$i]["stoId"];
-            $productList[$i]["stateCd"] = "02";
-            if(!$productList[$i]['prodId']){ unset($productList[$i]);}
+        $sto_imsi="";
+        $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' and ct_status ='재고소진'";
+        $result_ct = sql_query($sql_ct);
+        while($row_ct = sql_fetch_array($result_ct)) {
+            $sto_imsi .=$row_ct['stoId'];
+        }
+
+        $stoIdDataList = explode('|',$sto_imsi);
+        $stoIdDataList=array_filter($stoIdDataList);
+        $stoIdData = implode("|", $stoIdDataList);
+        $sendData["stoId"] = $stoIdData;
+        $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+        $result_again =$res['data'];
+        for($i = 0; $i < count($result_again); $i++){
+            $productList2[$i]["stoId"] = $result_again[$i]["stoId"];
+            $productList2[$i]["prodBarNum"] = $result_again[$i]["prodBarNum"];
+            $productList2[$i]["stateCd"] = "02";
         }
 
         $sendData = [];
         $sendData["usrId"] = $member["mb_id"];
         $sendData["entId"] = $member["mb_entId"];
-        $sendData["prods"] = $productList;
+        $sendData["prods"] = $productList2;
         $api_result = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $sendData);
- 
-
-
 
 
 		unset($_SESSION["productList{$_GET["od_id"]}"]);
