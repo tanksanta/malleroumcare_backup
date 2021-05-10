@@ -146,7 +146,8 @@
  		</label>
  		
  		<button type="button" id="listSortChangeBtn">
- 			<span class="active" data-sort="od_time">주문일 정렬↓</span>
+ 			<!-- <span class="active" data-sort="od_time">주문일 정렬↓</span> -->
+ 			<span class="active" data-sort="od_time"></span>
  			<span data-sort="od_status">상태 정렬↓</span>
  		</button>
  	</div>
