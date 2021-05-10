@@ -145,10 +145,10 @@
  			<span class="label">바코드 등록 미완료 만 보기</span>
  		</label>
  		
- 		<!-- <button type="button" id="listSortChangeBtn">
+ 		<button type="button" id="listSortChangeBtn">
  			<span class="active" data-sort="od_time">주문일 정렬↓</span>
  			<span data-sort="od_status">상태 정렬↓</span>
- 		</button> -->
+ 		</button>
  	</div>
  	
  	<!-- 데이터 목록 -->
