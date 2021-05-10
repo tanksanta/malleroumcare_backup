@@ -225,7 +225,7 @@
                     if($options[$k]['it_id'] !== $_GET['prodId'] || $options[$k]["ct_option"]!==$_GET['option']){ 
                     
 						for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ 
-							echo '<input type="hidden" maxlength="12" oninput="maxLengthCheck(this)" value="'.$prodList[$b]["prodBarNum"].'" class="notall frm_input frm_input_'.$prodListCnt.' required prodBarNumItem_'.$prodList[$prodListCnt]["penStaSeq"].' '.$stoIdDataList[$prodListCnt].'" placeholder="'.$barcode_placeholder.'" data-frm-no="'.$prodListCnt.'" maxlength="12">';
+							echo '<input type="hidden" maxlength="12" oninput="maxLengthCheck(this)" value="'.$prodList[$b]["prodBarNum"].'" class="frm_input frm_input_'.$prodListCnt.' required prodBarNumItem_'.$prodList[$prodListCnt]["penStaSeq"].' '.$stoIdDataList[$prodListCnt].'" placeholder="'.$barcode_placeholder.'" data-frm-no="'.$prodListCnt.'" maxlength="12">';
 							$prodListCnt++; 
 							$prodListCnt2++;
 						}

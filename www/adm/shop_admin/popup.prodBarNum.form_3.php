@@ -317,7 +317,7 @@
 								<?php } ?>
 							</div>
 
-							
+
 						</li>
 					</a>
 					<?php
@@ -613,8 +613,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                         if(result.errorYN == "Y"){
                             alert(result.message);
                         } else {
-                            alert("저장이 완료되었습니다.");
-
 							//cart 기준 barcode insert update
 							$.ajax({
                                 url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
@@ -635,12 +633,23 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                 }
                             });
 
-                            <?php if($_GET['new']){ ?>
-                                history.back();
-                            <?php }else{ ?>
-                                opener.location.reload();
-                                window.close();
-                            <?php }?>
+							$.ajax({
+                                url : "/shop/ajax.order.prodBarNum.cnt.php",
+                                type : "POST",
+                                async : false,
+                                data : {
+                                    od_id : "<?=$od_id?>",
+                                    cnt : insertBarCnt
+                                }
+                            });
+                            var con_test = confirm("저장되었습니다. 주문목록으로 이동하시겠습니까");
+                            if(con_test == true){
+                                location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
+                            }
+                            else if(con_test == false){
+                                window.location.reload();
+                            }
+
                         }
                     }
                 });
