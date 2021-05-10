@@ -160,7 +160,7 @@
      <div id="popupHeaderTopWrap">
 		<div class="title">바코드</div>
 		<div class="close">
-			<a href="#" class="popupCloseBtn">
+			<a href="#" class="popupCloseBtn" onclick="member_cancel();">
 				&times;
 			</a>
 		</div>
