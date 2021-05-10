@@ -516,7 +516,17 @@ foreach($orderlist as $order) {
     $ct_qty=$result_ct['ct_qty'];                                                                                   //개수
     $ct_status_text = $result_ct['ct_status'];                                                                           //상태
     $ct_it_id = $result_ct['it_id'];      
-    $ct_ex_date = $result_ct['ct_ex_date'];      
+    $ct_ex_date = $result_ct['ct_ex_date'];                                                                          //출고완료일
+    $ct_manager = $result_ct['ct_manager'];                                                                          //출고 담당자 아이디
+    
+    if($ct_manager){
+        $sql_ct_manager = sql_fetch("select `mb_name` from `g5_member` where `mb_id` = '".$ct_manager."'");   
+        $ct_manager_name=$sql_ct_manager['mb_name'];
+    }else{
+        $ct_manager_name="미지정";
+    }
+    
+    
     switch ($ct_status_text) {
         case '보유재고등록': $ct_status_text="보유재고등록"; break;
         case '재고소진': $ct_status_text="재고소진"; break;
@@ -833,10 +843,6 @@ foreach($orderlist as $order) {
     if ($order['od_release_manager'] == '-') {
         $release_manager = '외부출고';
     }
-    if (!$order['od_release_manager']) {
-        $release_manager = '미지정';
-    }
-
     $important2_class = $order['od_important2'] ? 'on' : '';
 
     $pay_status = get_pay_step($order['od_pay_state']);
@@ -879,7 +885,7 @@ foreach($orderlist as $order) {
             {$sale_manager}
         </td>
         <td align=\"center\" class=\"od_release_manager\">
-            {$release_manager}
+            {$ct_manager_name}
         </td>
         <td align=\"center\" class=\"od_release_manager_star\">
             <span class=\"icon-star-gray hand list-important2 important-25 {$important2_class}\" data-od_id='{$order['od_id']}'></span>
