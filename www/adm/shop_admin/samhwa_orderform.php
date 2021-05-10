@@ -157,7 +157,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $cate_counts[$row['ct_status']] += 1;
 
     // 상품의 옵션정보
-    $sql = " select ct_id, mb_id, ct_delivery_cnt, ct_combine_ct_id, it_id, ct_price, ct_point, ct_qty, ct_ex_date, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
+    $sql = " select ct_id, mb_id, ct_manager, ct_delivery_cnt, ct_combine_ct_id, it_id, ct_price, ct_point, ct_qty, ct_ex_date, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
 					, ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
                 from {$g5['g5_shop_cart_table']} MT
                 where od_id = '{$od['od_id']}'
@@ -801,7 +801,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         ?>
                                         </select>
                                      </td>
-                                     
+
                                     <td class="btncol">
 										<?php if($od['od_writer']!="openmarket"){ ?>
 											<?php //if ( $k == 0 ) { ?>
