@@ -146,7 +146,7 @@ $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
 							</td>
 							<td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
 								<select class="frm_input ct_delivery_cnt" name="ct_delivery_cnt_<?=$options[$k]["ct_id"]?>" data-it-cnt="<?php echo $options[$k]['it_delivery_cnt']; ?>" data-it-cnt-price="<?php echo $carts[$i]['it_delivery_price']; ?>">
-								<?php for($ii = 0; $ii < 21; $ii++){ ?>
+								<?php for($ii = 0; $ii < 200; $ii++){ ?>
 									<option value="<?=$ii?>" <?=($options[$k]["ct_delivery_cnt"] == $ii) ? "selected" : ""?>><?=$ii?></option>
 								<?php } ?>
 								</select>
