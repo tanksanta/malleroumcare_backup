@@ -1012,6 +1012,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <td class="item_status">
                             </td>
                             <td class="item_memo"></td>
+                            <td class="item_memo"></td>
+                            <td class="btncol"></td>
                             <td class="btncol"></td>
                         </tr>
                     </tbody>
