@@ -279,7 +279,7 @@
 									<ul class="inputbox">
 										<?php for($b = 0; $b< count($stoId_v); $b++){ ?>
                                         <li>
-                                            <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                                            <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>  2<?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
                                             <i class="fa fa-check"></i>
                                             <span class="overlap">중복</span>
                                             <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
@@ -289,7 +289,7 @@
 									</ul>
 							</div>
 
-							<div class="deliveryInfoWrap">
+                            <div class="deliveryInfoWrap">
 								<?php if ($options[$k]['ct_combine_ct_id']) { ?>
 									<?php
 									// 합포 상품 찾기
@@ -316,7 +316,6 @@
 									<img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
 								<?php } ?>
 							</div>
-
 
 						</li>
 					</a>
@@ -412,7 +411,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			if(length < 12 && length){
 				$(item[i]).addClass("active");
 			}
-
 			if(length == 12){
 				$(item[i]).parent().find("i").addClass("active");
 
@@ -509,6 +507,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         var stoldList = [];
         var count=0;
         var stoIdData = "<?=$stoIdData?>";
+        console.log(stoIdData);
         if(stoIdData){
             var sendData = {
                 stoId : stoIdData
@@ -571,14 +570,18 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			});
                 var prodsList = {};
                 
-						var flag=false;
-						$.each(stoldList, function(key, value){
+                    var flag=false;
+                    $.each(stoldList, function(key, value){
 						if($("." + value.stoId).val()&&$("." + value.stoId).val().length !=12){ flag =true;}
-                    prodsList[key] = {
+
+                        var prodBarNum = ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "";
+                        prodBarNum = (prodBarNum) ?  prodBarNum : $(".2" + value.stoId).val();
+                        console.log(prodBarNum);
+                        prodsList[key] = {
                         stoId : value.stoId,
                         prodColor : value.prodColor,
                         prodSize : value.prodSize,
-                        prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
+                        prodBarNum : prodBarNum,
                         prodManuDate : value.prodManuDate,
                         stateCd : value.stateCd,
                         stoMemo : (value.stoMemo) ? value.stoMemo : ""
@@ -594,6 +597,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     usrId : "<?=$od["mb_id"]?>",
                     prods : prodsList
                 }
+
                 $.ajax({
                     url : "./ajax.barcode_log.php",
                     type : "POST",
@@ -603,6 +607,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                             console.log(result);
                         }
                 });
+
                 $.ajax({
                     url : "./samhwa_orderform_stock_update.php",
                     type : "POST",
@@ -622,26 +627,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                     od_id : "<?=$od_id?>",
                                 }
                             });
-							
-                            $.ajax({
-                                url : "/shop/ajax.order.prodBarNum.cnt.php",
-                                type : "POST",
-                                async : false,
-                                data : {
-                                    od_id : "<?=$od_id?>",
-                                    cnt : insertBarCnt
-                                }
-                            });
-
-							$.ajax({
-                                url : "/shop/ajax.order.prodBarNum.cnt.php",
-                                type : "POST",
-                                async : false,
-                                data : {
-                                    od_id : "<?=$od_id?>",
-                                    cnt : insertBarCnt
-                                }
-                            });
                             var con_test = confirm("저장되었습니다. 주문목록으로 이동하시겠습니까?");
                             if(con_test == true){
                                 location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
@@ -649,7 +634,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                             else if(con_test == false){
                                 window.location.reload();
                             }
-
                         }
                     }
                 });
