@@ -369,6 +369,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <th class="item_status">상태</th>
                             <th class="item_memo">요청사항</th>
                             <th class="item_memo">출고완료일</th>
+                            <th class="item_memo">출고담당자</th>
                             <th class="btncol"></th>
                         </tr>
                     </thead>
@@ -785,6 +786,22 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <?php echo $options[$k]['ct_ex_date'];?>
                                     <!-- 출고완료일 -->
                                      </td>
+
+                                     <td class="btncol">
+                                        <select class="ct_manager" data-ct-id="<?php echo $options[$k]['ct_id']; ?>">
+                                        <?php
+                                            $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '200100'";
+                                            $result_m = sql_query($sql_m);
+                                            echo '<option value="">담당자 선택</option>';
+                                            for ($q=0; $row_m=sql_fetch_array($result_m); $q++){
+                                                $selected="";
+                                                if($options[$k]['ct_manager'] == $row_m['mb_id']){ $selected="selected"; }
+                                                echo '<option value="'.$row_m['mb_id'].'" '.$selected.'>'.$row_m['mb_name'].'('.$row_m['mb_id'].')</option>';
+                                            }
+                                        ?>
+                                        </select>
+                                     </td>
+                                     
                                     <td class="btncol">
 										<?php if($od['od_writer']!="openmarket"){ ?>
 											<?php //if ( $k == 0 ) { ?>
@@ -1914,7 +1931,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             ?>
                         </div>
                     </li>
-                    <li>
+
+
+                    <!-- <li>
                         <span class="manager_name">- 출고담당자</span>
                         <div class="managers">
                             <div class="on">
@@ -1948,7 +1967,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                 <?php } ?>
                             </div>
                         </div>
-                    </li>
+                    </li> -->
+
+
                 </ul>
             </div>
             <div class="block">
@@ -3585,6 +3606,37 @@ function submit_typereceipt_after(msgFlag) {
         }
     })
 }
+
+$(".ct_manager").change(function(){
+
+if(confirm('출고담당자를 변경하시겠습니까?')){
+
+    var ct_manager = $(this).val();
+    var ct_id = $(this).data('ct-id');
+    var sendData = {};
+    sendData['ct_manager'] = ct_manager;
+    sendData['ct_id'] = ct_id;
+    
+    $.ajax({
+    method: "POST",
+    url: "./ajax.ct_manager.php",
+    data: sendData
+    })
+    .done(function(data) {
+        if(data.result=="success"){
+            alert('출고 담당자가 지정되었습니다.');
+            window.location.reload(); 
+        }else{
+            alert('실패하였습니다.');
+        }
+    });
+}else{
+    window.location.reload(); 
+}
+
+});
+
+
 </script>
 <?php
 include_once(G5_ADMIN_PATH.'/admin.tail.php');
