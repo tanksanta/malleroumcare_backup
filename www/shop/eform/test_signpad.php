@@ -75,8 +75,8 @@ include_once('./_common.php');
     .popup-modal .bottom-wrap button {
       display: inline-block;
       margin: 0;
-      padding: 16px;
-      border:none;
+      padding: 18px 16px;
+      border: none;
       text-align: center;
       vertical-align: middle;
       font-size: 16px;
@@ -108,8 +108,11 @@ include_once('./_common.php');
     var wrapper = document.getElementById('sign-pad');
     var canvas = wrapper.querySelector('canvas');
     var signaturePad = new SignaturePad(canvas, {
-      minWidth: 4,
-      maxWidth: 6
+      backgroundColor: 'transparent',
+      minDistance: 5,
+      throttle: 3,
+      minWidth: 5,
+      maxWidth: 5
     });
 
     function resizeCanvas() {
