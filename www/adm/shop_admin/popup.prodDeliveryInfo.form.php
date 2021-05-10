@@ -145,11 +145,13 @@ $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
 								<?php } ?>
 							</td>
 							<td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
-								<select class="frm_input ct_delivery_cnt" name="ct_delivery_cnt_<?=$options[$k]["ct_id"]?>" data-it-cnt="<?php echo $options[$k]['it_delivery_cnt']; ?>" data-it-cnt-price="<?php echo $carts[$i]['it_delivery_price']; ?>">
+                            <input type="number" value ="<?=$options[$k]["ct_delivery_cnt"]?>" class="frm_input ct_delivery_cnt" name="ct_delivery_cnt_<?=$options[$k]["ct_id"]?>" data-it-cnt="<?php echo $options[$k]['it_delivery_cnt']; ?>" data-it-cnt-price="<?php echo $carts[$i]['it_delivery_price']; ?>">
+								
+                                <!-- <select class="frm_input ct_delivery_cnt" name="ct_delivery_cnt_<?=$options[$k]["ct_id"]?>" data-it-cnt="<?php echo $options[$k]['it_delivery_cnt']; ?>" data-it-cnt-price="<?php echo $carts[$i]['it_delivery_price']; ?>">
 								<?php for($ii = 0; $ii < 201; $ii++){ ?>
 									<option value="<?=$ii?>" <?=($options[$k]["ct_delivery_cnt"] == $ii) ? "selected" : ""?>><?=$ii?></option>
 								<?php } ?>
-								</select>
+								</select> -->
 							</td>
 							<td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
 								<input type="text" value="<?=$options[$k]["ct_delivery_price"]?>" class="frm_input ct_delivery_price" name="ct_delivery_price_<?=$options[$k]["ct_id"]?>" style="width: 100px;">
@@ -172,7 +174,7 @@ $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
 									foreach($carts as $c) { 
 										foreach($c['options'] as $o) {
 											if ($o['ct_id'] === $options[$k]['ct_id']) continue;
-										?>
+                                    ?>
 											<option value="<?php echo $o['ct_id']; ?>" <?php echo ($options[$k]['ct_combine_ct_id'] === $o['ct_id']) ? ' selected ' : '' ; ?>>
 												<?php echo stripslashes($o["it_name"]); ?>
 												<?php if($c["it_name"] != $o["ct_option"]){ ?>
@@ -182,6 +184,8 @@ $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $delivery_cnt .")";
 										<?php } ?>
 									<?php } ?>
 								</select>
+
+
 							</td>
 							<td style="text-align:center;">
 								<label>
