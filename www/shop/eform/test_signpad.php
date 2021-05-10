@@ -26,13 +26,32 @@ include_once('./_common.php');
       background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
     }
     #sign-pad {
+      position: relative;
       background-color: #fff;
       width: 100%;
       height: 100%;
     }
     #sign-pad canvas {
+      position: absolute;
+      z-index: 9999;
       width:100%;
       height: 100%;
+    }
+    #sign-back {
+      position: absolute;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: center;
+      align-items: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      text-align: center;
+      top: 110px; 
+      left: 16px;
+      right: 16px;
+      height: 240px;
+      color: #aaa;
+      background-color: #f2f2f2;
     }
     .popup-modal {
       background-color: #fff;
@@ -43,11 +62,12 @@ include_once('./_common.php');
       max-height: 460px;
     }
     .popup-modal .head-wrap {
-      padding: 16px;
+      padding: 24px 16px 16px 16px;
       text-align: center;
-      font-size: 18px;
-      color: #fff;
-      background-color: #5884cc;
+      font-size: 24px;
+      font-weight: bold;
+      color: #000;
+      background-color: #fff;
     }
     .popup-modal .bottom-wrap {
 
@@ -63,13 +83,13 @@ include_once('./_common.php');
       color: #fff;
       cursor: pointer;
     }
-    #btn-sign-cancel {
-      width: 20%;
-      background-color: #9c9c9c;
-    }
     #btn-sign-submit {
       width: 80%;
-      background-color: #5681ca;
+      background-color: #f28b08;
+    }
+    #btn-sign-cancel {
+      width: 20%;
+      background-color: #7d7d7d;
     }
   </style>
   <div id="popup-sign">
@@ -77,10 +97,10 @@ include_once('./_common.php');
       <div class="head-wrap">서명하기</div>
       <div id="sign-pad">
         <canvas></canvas>
-        <div class="sign-back"></div>
+        <div id="sign-back">이곳에 사인해주세요.</div>
       </div>
       <div class="bottom-wrap">
-        <button id="btn-sign-cancel">취소</button><button id="btn-sign-submit">확인</button>
+        <button id="btn-sign-submit">확인</button><button id="btn-sign-cancel">취소</button>
       </div>
     </div>
   </div>
