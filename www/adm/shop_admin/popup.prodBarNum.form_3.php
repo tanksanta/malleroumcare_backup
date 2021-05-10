@@ -642,7 +642,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                     cnt : insertBarCnt
                                 }
                             });
-                            var con_test = confirm("저장되었습니다. 주문목록으로 이동하시겠습니까");
+                            var con_test = confirm("저장되었습니다. 주문목록으로 이동하시겠습니까?");
                             if(con_test == true){
                                 location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
                             }
