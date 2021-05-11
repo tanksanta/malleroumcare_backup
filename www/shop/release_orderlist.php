@@ -152,7 +152,15 @@
  			</span>
  			<span class="label">내 담당만 보기</span>
  		</label>
-		 
+
+		<input type="checkbox" id="cf_flag3">
+ 		<label for="cf_flag3">
+ 			<span class="icon">
+ 				<i class="fa fa-check"></i>
+ 			</span>
+ 			<span class="label">미지정만 보기</span>
+ 		</label>
+
  		<button type="button" id="listSortChangeBtn">
  			<!-- <span class="active" data-sort="od_time">주문일 정렬↓</span> -->
  			<span class="active" data-sort="od_time"></span>
@@ -364,9 +372,8 @@
     // });
     //미완료 바코드 작성만보기버튼
 	function cf_flag(){ 
-
-        //둘다체크
-        if(document.getElementById('cf_flag').checked&&document.getElementById('cf_flag2').checked){
+        //자신, 바코드
+        if(document.getElementById('cf_flag').checked&&document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked){
             $("#listDataWrap > ul").removeClass("type2");
             $("#listDataWrap > ul").addClass("type1");
             $("#listDataWrap > ul.<?=$member['mb_name']?>").removeClass("type1");
@@ -374,20 +381,31 @@
 
             $("#listDataWrap > ul.cf").addClass("type1");
             $("#listDataWrap > ul.cf").removeClass("type2");
+        }
+        //미지정, 바코드
+        if(document.getElementById('cf_flag').checked&&document.getElementById('cf_flag3').checked&&!document.getElementById('cf_flag2').checked){
+            $("#listDataWrap > ul").removeClass("type2");
+            $("#listDataWrap > ul").addClass("type1");
+            $("#listDataWrap > ul.미지정").removeClass("type1");
+            $("#listDataWrap > ul.미지정").addClass("type2");
+
+            $("#listDataWrap > ul.cf").addClass("type1");
+            $("#listDataWrap > ul.cf").removeClass("type2");
 
         }
+
         //바코드 미완료만체크
-        if(document.getElementById('cf_flag').checked&&!document.getElementById('cf_flag2').checked){
+        if(document.getElementById('cf_flag').checked&&!document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked){
             $("#listDataWrap > ul").removeClass("type1");
             $("#listDataWrap > ul").addClass("type2");
             
             $("#listDataWrap > ul.cf").addClass("type1");
             $("#listDataWrap > ul.cf").removeClass("type2");
 
-
         }
+
         //내담당만 체크
-        if(!document.getElementById('cf_flag').checked&&document.getElementById('cf_flag2').checked){
+        if(!document.getElementById('cf_flag').checked&&document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked){
             $("#listDataWrap > ul.cf").addClass("type2");
             $("#listDataWrap > ul.cf").removeClass("type1");
 
@@ -395,20 +413,37 @@
             $("#listDataWrap > ul").addClass("type1");
             $("#listDataWrap > ul.<?=$member['mb_name']?>").removeClass("type1");
             $("#listDataWrap > ul.<?=$member['mb_name']?>").addClass("type2");
+        }
+        //미완료만 체크
+        if(!document.getElementById('cf_flag').checked&&document.getElementById('cf_flag3').checked&&!document.getElementById('cf_flag2').checked){
+            $("#listDataWrap > ul.cf").addClass("type2");
+            $("#listDataWrap > ul.cf").removeClass("type1");
+
+            $("#listDataWrap > ul").removeClass("type2");
+            $("#listDataWrap > ul").addClass("type1");
+            $("#listDataWrap > ul.미지정").removeClass("type1");
+            $("#listDataWrap > ul.미지정").addClass("type2");
 
         }
-        //둘다 체크 x
-        if(!document.getElementById('cf_flag').checked&&!document.getElementById('cf_flag2').checked){
+
+        //셋다 체크 x
+        if(!document.getElementById('cf_flag').checked&&!document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked){
             $("#listDataWrap > ul.cf").addClass("type2");
             $("#listDataWrap > ul.cf").removeClass("type1");
         }
 
+        doSearch();
 		itNameSizeSetting();
     }
 	$("#cf_flag").change(function(){
 		cf_flag();
 	});
 	$("#cf_flag2").change(function(){
+        document.getElementById('cf_flag3').checked=false;
+		cf_flag();
+	});
+    $("#cf_flag3").change(function(){
+        document.getElementById('cf_flag2').checked=false;
 		cf_flag();
 	});
 
