@@ -726,8 +726,13 @@ foreach($orderlist as $order) {
     $ret["data"][$foreach_i]["ct_it_id"] = $ct_it_id;
 	$ret["data"][$foreach_i]["ct_option"] = $result_ct["ct_option"];
 
-    $ct_manager = sql_fetch('select `mb_name` from `g5_member` where mb_id = "'.$result_ct["ct_manager"].'"');
-	$ret["data"][$foreach_i]["ct_manager"] = $ct_manager['mb_name'];
+    $ct_manager_sql = sql_fetch('select `mb_name` from `g5_member` where mb_id = "'.$result_ct["ct_manager"].'"');
+    if($ct_manager_sql['mb_name']){
+        $ct_manage=$ct_manager_sql['mb_name'];
+    }else{
+        $ct_manage="미지정";
+    }
+	$ret["data"][$foreach_i]["ct_manager"] = $ct_manage;
 	
 	$foreach_i++;
 }
