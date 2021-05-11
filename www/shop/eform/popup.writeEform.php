@@ -16,6 +16,7 @@
   <style>
   * { margin: 0; padding: 0; box-sizing: border-box; position: relative; }
   html, body { width: 100%; min-width: 100%; margin: 0 !important; padding: 0; font-family: "Noto Sans KR", sans-serif; font-size: 13px; }
+  button { display: inline-block; }
 
   #popupWrap {
     padding-bottom: 12px;
@@ -119,6 +120,63 @@
     margin-left: 12px;
   }
 
+  #prodRow .prodContentWrap {
+    border: 1px solid #ddd;
+    padding: 0 8px;
+  }
+
+  #prodRow .prodTableRow:first-child {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #prodRow .prodTableRow {
+    padding: 10px 0;
+  }
+
+  #prodRow .prodHead {
+    -webkit-flex: 1;          /* Chrome */
+    -ms-flex: 1;              /* IE 10 */
+    flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    font-weight: bold;
+  }
+
+  #prodRow .prodTableWrap {
+    overflow-x: auto;
+  }
+
+  #prodRow table {
+    width: 100%;
+    min-width: 800px;
+  }
+
+  #prodRow thead {
+    background-color: #f5f5f5;
+    color: #999;
+  }
+
+  #prodRow td,
+  #prodRow th {
+    font-weight: normal;
+    text-align: center;
+    padding: 8px 6px;
+  }
+
+  .btnDelProd {
+    font-size: 24px;
+    height: 20px;
+    line-height: 13px;
+    vertical-align: middle;
+    color: #666;
+  }
+
+  #btnAddBuyProd, #btnAddRentProd {
+    display: block;
+    padding: 6px 18px;
+    margin-bottom: 6px;
+    color: #fff;
+    background-color: #ee8102;
+  }
+
   #chkConfirm {
     vertical-align: middle;
     margin-right: 6px;
@@ -169,6 +227,80 @@
         <div class="right">
           <span class="notice">*계약서 작성을 위해 추가하는 물품은 통합시스템에서 관리되지 않고 계약서 작성에만 활용됩니다.</span>
           <label class="checkbox"><input id="chkConfirm" type="checkbox">확인함</label>
+        </div>
+      </div>
+      <div class="prodContentWrap">
+        <div class="prodTableRow">
+          <div class="flex">
+            <div class="prodHead">구매물품</div>
+            <button id="btnAddBuyProd">추가</button>
+          </div>
+          <div class="prodTableWrap">
+            <table id="tableBuyProd">
+              <thead>
+                <tr>
+                  <th>품목명</th>
+                  <th>제품명</th>
+                  <th>제품기호</th>
+                  <th>일련번호(바코드)</th>
+                  <th>개수</th>
+                  <th>판매계약일</th>
+                  <th>고시가</th>
+                  <th>본인부담금</th>
+                  <th>삭제</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Aaaa</td>
+                  <td>ddddd</td>
+                  <td>Fddddd</td>
+                  <td></td>
+                  <td>2</td>
+                  <td>2021-02-02</td>
+                  <td>10원</td>
+                  <td>3원</td>
+                  <td><button class="btnDelProd">&times;</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="prodTableRow">
+          <div class="flex">
+            <div class="prodHead">대여물품</div>
+            <button id="btnAddRentProd">추가</button>
+          </div>
+          <div class="prodTableWrap">
+            <table id="tableBuyProd">
+              <thead>
+                <tr>
+                  <th>품목명</th>
+                  <th>제품명</th>
+                  <th>제품기호</th>
+                  <th>일련번호(바코드)</th>
+                  <th>개수</th>
+                  <th>계약기간</th>
+                  <th>고시가</th>
+                  <th>본인부담금</th>
+                  <th>삭제</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Aaaa</td>
+                  <td>ddddd</td>
+                  <td>Fddddd</td>
+                  <td></td>
+                  <td>2</td>
+                  <td>21-02-02 ~ 25-02-02</td>
+                  <td>10원</td>
+                  <td>3원</td>
+                  <td><button class="btnDelProd">&times;</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
