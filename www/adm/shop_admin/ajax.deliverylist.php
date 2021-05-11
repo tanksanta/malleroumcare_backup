@@ -389,7 +389,7 @@ $ret['main'] = "
                     <th class=\"od_type\">결제수단</th>
 						<th class=\"od_barNum\">바코드</th>
                     <th class=\"od_price\">결제금액</th>
-                    <th>출담</th>
+                    <th>출고담당자</th>
                     <th class=\"od_delivery_info\">배송정보</th>
                     <th>출고예정일</th>
                     <th>상태</th>
@@ -438,6 +438,21 @@ foreach($orderlist as $order) {
     $ct_status_text = $result_ct['ct_status'];                                                                           //상태
     $ct_it_id = $result_ct['it_id'];      
     $ct_ex_date = $result_ct['ct_ex_date'];      
+    $ct_manager = $result_ct['ct_manager'];                                                                          //출고 담당자 아이디
+    //출고담당자 select
+    $od_release_select="";
+    $od_release_select = '<select class="ct_manager" data-ct-id="'.$order['cart_ct_id'].'">';
+        $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '200100'";
+        $result_m = sql_query($sql_m);
+        $od_release_select .= '<option value="">미지정</option>';
+        for ($q=0; $row_m=sql_fetch_array($result_m); $q++){
+            $selected="";
+            if($ct_manager == $row_m['mb_id']){ $selected="selected"; }
+            $od_release_select .='<option value="'.$row_m['mb_id'].'" '.$selected.'>'.$row_m['mb_name'].'('.$row_m['mb_id'].')</option>';
+        }
+    $od_release_select .='</select>';
+
+
     switch ($ct_status_text) {
         case '보유재고등록': $ct_status_text="보유재고등록"; break;
         case '재고소진': $ct_status_text="재고소진"; break;
@@ -794,11 +809,10 @@ foreach($orderlist as $order) {
                         <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">NO&nbsp;<span>{$order['od_id']}</span></a>
                     </div>
                 </div>
-            
+            <div class=\"ct_count\">
+                {$ct_count}
+            </div>
                 <div class=\"buttons\">
-		            <div class=\"ct_count\">
-		                {$ct_count}
-		            </div>
                     <a href=\"javascript:printOrderView('{$order['od_id']}')\"><img src=\"/adm/shop_admin/img/printer.png\" align=\"absmiddle\"></a>
                     <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\" target=\"_blank\"><span><img src=\"/adm/shop_admin/img/window.png\" align=\"absmiddle\"></span></a>
                     <span class=\"btn-direct-open\" onclick=\"btn_direct_open(this);\"></span>
@@ -820,7 +834,7 @@ foreach($orderlist as $order) {
             <b>{$ct_price}원</b>
         </td>
         <td align=\"center\">
-            <span class=\"icon-star-gray hand list-important2 important-25 {$important2_class}\" data-od_id='{$order['od_id']}'></span>
+        {$od_release_select}
         </td>
         <td align=\"center\" class=\"delivery_info od_delivery_info\">
 			<a href='#' class='deliveryCntBtn{$deliveryCntBtnStatus} wide' data-id='{$order["od_id"]}'  data-ct='{$order["cart_ct_id"]}' >{$deliveryCntBtnWord}</a>
