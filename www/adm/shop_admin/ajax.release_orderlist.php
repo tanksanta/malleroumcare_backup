@@ -725,6 +725,9 @@ foreach($orderlist as $order) {
 	$ret["data"][$foreach_i]["complate_flag2"] = $complate_flag2;
     $ret["data"][$foreach_i]["ct_it_id"] = $ct_it_id;
 	$ret["data"][$foreach_i]["ct_option"] = $result_ct["ct_option"];
+
+    $ct_manager = sql_fetch('select `mb_name` from `g5_member` where mb_id = "'.$result_ct["ct_manager"].'"');
+	$ret["data"][$foreach_i]["ct_manager"] = $ct_manager['mb_name'];
 	
 	$foreach_i++;
 }
