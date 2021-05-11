@@ -21,7 +21,7 @@
 
   }
 
-  #popupWrap .head {
+  #popupWrap .flex {
     display: -ms-flexbox;      /* TWEENER - IE 10 */
     display: -webkit-flex;     /* NEW - Chrome */
     display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
@@ -31,6 +31,9 @@
     -webkit-align-items: center;
     -ms-flex-align: center;
     align-items: center;
+  }
+
+  #popupWrap .head {
     padding: 12px;
     border-bottom: 1px solid #ddd;
   }
@@ -63,27 +66,86 @@
     vertical-align: middle;
   }
 
+  #popupWrap .row {
+    padding: 0 18px;
+  }
+
   #popupWrap h3 {
     margin: 0;
     padding: 12px 0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  #tablePenInfo {
+    border: 0;
+    border-top: 12px solid #f5f5f5;
+    border-bottom: 12px solid #f5f5f5;
+    background-color: #f5f5f5;
+    width: 100%;
+  }
+
+  #tablePenInfo th,
+  #tablePenInfo td {
+    padding: 2px 8px;
+  }
+
+  #tablePenInfo th {
+    min-width: 126px;
+    text-align: left;
+    font-weight: normal;
+  }
+
+  #tablePenInfo th:before {
+    display: inline;
+    content: '·';
+    padding-right: 2px;
+  }
+
+  #tablePenInfo td {
+    width: 100%;
   }
   </style>
 </head>
 <body>
   <div id="popupWrap">
-    <div class="head">
-      <div class="title">계약서 생성</div>
+    <div class="head flex">
+      <h1 class="title">계약서 생성</h1>
       <div class="menu">
         <button id="btnResetEform">변경사항 초기화</button>
         <button id="btnCloseEform">&times;</button>
       </div>
     </div>
-    <div id="penRow">
-      <h3></h3>
+    <div id="penRow" class="row">
+      <h3>수급자정보</h3>
+      <table id="tablePenInfo">
+        <tr>
+          <th>수급자</th>
+          <td>홍길동</td>
+        </tr>
+        <tr>
+          <th>장기요양인정번호</th>
+          <td>L11111121233</td>
+        </tr>
+        <tr>
+          <th>인정등급</th>
+          <td>2등급</td>
+        </tr>
+        <tr>
+          <th>구분</th>
+          <td>감경 6%</td>
+        </tr>
+      </table>
     </div>
-    <div id="prodRow"></div>
-    <div id="agree1Row"></div>
-    <div id="agree2Row"></div>
+    <div id="prodRow" class="row">
+      <h3>공급물품</h3>
+    </div>
+    <div id="agree1Row" class="row">
+      <h3>특약사항1</h3>
+    </div>
+    <div id="agree2Row" class="row">
+      <h3>특약사항2</h3>
+    </div>
   </div>
 </body>
 </html>
