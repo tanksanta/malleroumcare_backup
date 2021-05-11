@@ -18,7 +18,7 @@
   html, body { width: 100%; min-width: 100%; margin: 0 !important; padding: 0; font-family: "Noto Sans KR", sans-serif; font-size: 13px; }
 
   #popupWrap {
-
+    padding-bottom: 12px;
   }
 
   #popupWrap .flex {
@@ -105,6 +105,32 @@
   #tablePenInfo td {
     width: 100%;
   }
+
+  #prodRow .right {
+    padding: 8px;
+  }
+
+  #prodRow .notice {
+    color: red;
+  }
+
+  #prodRow .checkbox {
+    display: inline-block;
+    margin-left: 12px;
+  }
+
+  #chkConfirm {
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  #popupWrap .row.entConAcc textarea {
+    display: block;
+    width: 100%;
+    height: 100px;
+    resize: vertical;
+    padding: 8px;
+  }
   </style>
 </head>
 <body>
@@ -138,13 +164,21 @@
       </table>
     </div>
     <div id="prodRow" class="row">
-      <h3>공급물품</h3>
+      <div class="flex">
+        <h3>공급물품</h3>
+        <div class="right">
+          <span class="notice">*계약서 작성을 위해 추가하는 물품은 통합시스템에서 관리되지 않고 계약서 작성에만 활용됩니다.</span>
+          <label class="checkbox"><input id="chkConfirm" type="checkbox">확인함</label>
+        </div>
+      </div>
     </div>
-    <div id="agree1Row" class="row">
+    <div id="entConAcc01Row" class="row entConAcc">
       <h3>특약사항1</h3>
+      <textarea name="entConAcc01" id="entConAcc01">본 계약은 국민건강보험 노인장기요양보험 급여상품의 공급계약을 체결함에 목적이 있다.</textarea>
     </div>
-    <div id="agree2Row" class="row">
+    <div id="entConAcc02Row" class="row entConAcc">
       <h3>특약사항2</h3>
+      <textarea name="entConAcc02" id="entConAcc02">본 계약서에 명시되지 아니한 사항이나 의견이 상이할 때에는 상호 협의하에 해결하는 것을 원칙으로 한다.</textarea>
     </div>
   </div>
 </body>
