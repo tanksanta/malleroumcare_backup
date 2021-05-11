@@ -106,7 +106,7 @@ foreach($carts as $cart) {
     $edi['rcvCustAddr2']	= $cart['od_b_addr2'];
     $edi['rcvTelNo']		= $cart['od_b_tel'] ? $cart['od_b_tel'] : $cart['od_b_hp'];
     $edi['rcvHandNo']		= $cart['od_b_hp'] ? $cart['od_b_hp'] : $cart['od_b_tel'];
-    $edi['freightType']		= '010';	// 010(선불) / 020(착불) / 030(신용)
+    $edi['freightType']		= '030';	// 010(선불) / 020(착불) / 030(신용)
 
 
     $edi['qty']				= $qty;
