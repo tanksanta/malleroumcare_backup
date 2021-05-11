@@ -519,13 +519,18 @@ foreach($orderlist as $order) {
     $ct_ex_date = $result_ct['ct_ex_date'];                                                                          //출고완료일
     $ct_manager = $result_ct['ct_manager'];                                                                          //출고 담당자 아이디
     
-    if($ct_manager){
-        $sql_ct_manager = sql_fetch("select `mb_name` from `g5_member` where `mb_id` = '".$ct_manager."'");   
-        $ct_manager_name=$sql_ct_manager['mb_name'];
-    }else{
-        $ct_manager_name="미지정";
-    }
-    
+    //출고담당자 select
+    $od_release_select="";
+    $od_release_select = '<select class="ct_manager" data-ct-id="'.$order['cart_ct_id'].'">';
+        $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '200100'";
+        $result_m = sql_query($sql_m);
+        $od_release_select .= '<option value="">미지정</option>';
+        for ($q=0; $row_m=sql_fetch_array($result_m); $q++){
+            $selected="";
+            if($ct_manager == $row_m['mb_id']){ $selected="selected"; }
+            $od_release_select .='<option value="'.$row_m['mb_id'].'" '.$selected.'>'.$row_m['mb_name'].'('.$row_m['mb_id'].')</option>';
+        }
+    $od_release_select .='</select>';
     
     switch ($ct_status_text) {
         case '보유재고등록': $ct_status_text="보유재고등록"; break;
@@ -885,7 +890,7 @@ foreach($orderlist as $order) {
             {$sale_manager}
         </td>
         <td align=\"center\" class=\"od_release_manager\">
-            {$ct_manager_name}
+            {$od_release_select}
         </td>
         <td align=\"center\" class=\"od_release_manager_star\">
             <span class=\"icon-star-gray hand list-important2 important-25 {$important2_class}\" data-od_id='{$order['od_id']}'></span>

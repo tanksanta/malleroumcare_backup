@@ -1127,6 +1127,35 @@ if( function_exists('pg_setting_check') ){
 		$("body").append(html);
 		$("#excelForm").submit();
 	}
+
+            //출고담당자
+            $(document).on("change", ".ct_manager", function(e){
+            if(confirm('출고담당자를 변경하시겠습니까?')){
+
+                var ct_manager = $(this).val();
+                var ct_id = $(this).data('ct-id');
+                var sendData = {};
+                sendData['ct_manager'] = ct_manager;
+                sendData['ct_id'] = ct_id;
+                
+                $.ajax({
+                method: "POST",
+                url: "./ajax.ct_manager.php",
+                data: sendData
+                })
+                .done(function(data) {
+                    if(data.result=="success"){
+                        alert('출고 담당자가 지정되었습니다.');
+                        // window.location.reload(); 
+                    }else{
+                        alert('실패하였습니다.');
+                    }
+                });
+            }else{
+                // window.location.reload(); 
+            }
+        });
+        
 </script>
 
 <?php
