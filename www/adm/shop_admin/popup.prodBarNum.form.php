@@ -398,6 +398,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 						}
 					}
 				}
+				item[i+1].focus();
 			}
 		}
 	}
