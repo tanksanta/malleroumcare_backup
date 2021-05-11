@@ -121,7 +121,7 @@ for($i=0; $i<count($it_ids); $i++) {
 
     $comma = '';
     $sql = " INSERT INTO {$g5['g5_shop_cart_table']}
-                    ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3, ct_history, ct_discount, ct_price_type, ct_uid, io_thezone, ct_admin_new, ct_delivery_cnt, ct_delivery_price, ct_delivery_company )
+                    ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3, ct_history, ct_discount, ct_price_type, ct_uid, io_thezone, ct_admin_new, ct_delivery_cnt, ct_delivery_price, ct_delivery_company, prodMemo )
                 VALUES ";
 
     $ct_select = 1;
@@ -206,7 +206,7 @@ for($i=0; $i<count($it_ids); $i++) {
         $io_value = $io_value ? $io_value : addslashes($it['it_name']);
         $ct_admin_new_v = GenerateString(15);
         array_push($ct_admin_new,$ct_admin_new_v);
-        $sql .= $comma."( '$od_id', '{$od['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '작성', '{$it_price}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '', '$add_ct_discount', '$ct_price_type', '$uid', '$io_thezone','$ct_admin_new_v', '$ct_delivery_cnt', '$ct_delivery_price', '$ct_delivery_company' )";
+        $sql .= $comma."( '$od_id', '{$od['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '작성', '{$it_price}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '', '$add_ct_discount', '$ct_price_type', '$uid', '$io_thezone','$ct_admin_new_v', '$ct_delivery_cnt', '$ct_delivery_price', '$ct_delivery_company', '$g5_shop_order_cart_memo' )";
         $comma = ' , ';
         $ct_count++;
 
