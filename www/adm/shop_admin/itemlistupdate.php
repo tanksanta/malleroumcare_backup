@@ -101,6 +101,7 @@ if ($_POST['act_button'] == "선택수정") {
             ca_id10        = '".sql_real_escape_string($p_ca_id10)."',
             it_name        = '".$p_it_name."',
             it_price       = '".sql_real_escape_string($p_it_price)."',
+            it_cust_price       = '".sql_real_escape_string($p_it_cust_price)."',
             it_price_partner       = '".sql_real_escape_string($p_it_price_partner)."',
             it_price_dealer       = '".sql_real_escape_string($p_it_price_dealer)."',
             it_price_dealer2       = '".sql_real_escape_string($p_it_price_dealer2)."',
