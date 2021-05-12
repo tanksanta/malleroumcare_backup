@@ -50,7 +50,7 @@
     -ms-flex: 1;              /* IE 10 */
     flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 500;
     padding: 0 6px;
   }
 
@@ -91,7 +91,7 @@
     margin: 0;
     padding: 12px 0;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 500;
   }
 
   #tablePenInfo {
@@ -153,7 +153,7 @@
     -webkit-flex: 1;          /* Chrome */
     -ms-flex: 1;              /* IE 10 */
     flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-    font-weight: bold;
+    font-weight: 500;
   }
 
   #prodRow .prodTableWrap {
@@ -228,7 +228,7 @@
 
   .popupFootWrap button {
     height: 100%;
-    font-weight: bold;
+    font-weight: 500;
     font-size: 20px;
     color: #fff;
   }
