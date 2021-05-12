@@ -552,7 +552,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 							<li class="eform-tab-head">공급계약서</li>
 							<li class="eform-tab-desc">수급자 주문시 간편하게 작성하는 온라인 계약</li>
 							<li class="eform-tab-links">
-								<?php if(!$eform["dc_id"]) { // 계약서 생성 전 ?>
+								<?php if(!$eform["dc_id"] || $eform["dc_status"] == '0') { // 계약서 생성 전 ?>
 								<a href="#" id="linkEformWrite" class="eform-tab-link">계약서 생성</a>
 								<?php } ?>
 							</li>
