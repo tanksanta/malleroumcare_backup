@@ -524,7 +524,7 @@ foreach($orderlist as $order) {
     $od_release_select = '<select class="ct_manager" data-ct-id="'.$order['cart_ct_id'].'">';
         $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '200100'";
         $result_m = sql_query($sql_m);
-        $od_release_select .= '<option value="">미지정</option>';
+        $od_release_select .= '<option value="미지정">미지정</option>';
         for ($q=0; $row_m=sql_fetch_array($result_m); $q++){
             $selected="";
             if($ct_manager == $row_m['mb_id']){ $selected="selected"; }
