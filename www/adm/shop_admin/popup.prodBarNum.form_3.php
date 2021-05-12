@@ -198,12 +198,12 @@
                 # 요청사항
                 $prodMemo = "";
 
-				$options = $carts[$i]["options"];
+				$options = $ct["options"];
 
                 //보유재고 (무조건 입력) / 유통(미입력) 비유통(입력)
                 $readonly = "";
                 if($_GET['stock_insert']=="1"){
-                    if($carts[$i]['prodSupYn']=="N"){
+                    if($ct['prodSupYn']=="N"){
                         $barcode_placeholder ="바코드를 입력하세요.";
                     }else{
                         $barcode_placeholder ="바코드가 입력되지 않았습니다.";
@@ -234,7 +234,7 @@
 					}
                     if($options[$k]['prodSupYn']==="N"){ $prodSupYn_count++; }
 					# 요청사항
-					$prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
+					$prodMemo = ($prodMemo) ? $prodMemo : $ct["prodMemo"];
 		?>
 					<a href="javascript:void(0)">
 						<li class="li_box">
@@ -243,9 +243,9 @@
 									<span class="span1">
 										<!-- 상품명 -->
                                         <?php if($options[$k]['ct_stock_qty']){ echo '[재고소진]'; } ?>
-										<?=stripslashes($carts[$i]["it_name"])?>
+										<?=stripslashes($ct["it_name"])?>
 										<!-- 옵션 -->
-										<?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
+										<?php if($ct["it_name"] != $options[$k]["ct_option"]){ ?>
 												(<?=$options[$k]["ct_option"]?>)
 										<?php } ?>
 									</span>
@@ -424,7 +424,10 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 						}
 					}
 				}
-				item[i+1].focus();
+
+				var j = i+1;
+                if(i<item.length){ $(item[j]).focus(); }
+
 			}
 		}
 	}
