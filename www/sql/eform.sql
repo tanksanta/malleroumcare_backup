@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   -- 사인 파일명
   `dc_sign_signUrl` varchar(255) NOT NULL default '',
   PRIMARY KEY (`dc_id`),
+  UNIQUE KEY `index1` (`dc_id`, `od_id`),
   KEY `od_id` (`od_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
