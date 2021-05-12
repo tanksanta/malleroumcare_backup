@@ -678,13 +678,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						</div>
 					</li>
 					<?php } ?>
-					<li>
-						<div>
-							<b>배송비</b>
-							<span><?php echo number_format($od['od_send_cost']); ?> 원</span>
-						</div>
-					</li>
-					<?php if ($od['od_send_cost2'] > 0) { ?>
+                    <?php if ($od['od_send_cost2'] > 0) { ?>
 					<li>
 						<div>
 							<b>추가배송비</b>
@@ -692,6 +686,12 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						</div>
 					</li>
 					<?php } ?>
+					<li>
+						<div>
+							<b>배송비</b>
+							<span><?php echo number_format($od['od_send_cost']); ?> 원</span>
+						</div>
+					</li>
 				</ul>
                 <?php 
                     $total_price = $tot_price - $od['od_cart_discount']  -$od['od_cart_discount2'] ;
@@ -715,35 +715,35 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				if ($pay_complete_cancel || $preparation_cancel)
 					$type = 2;
 
-				$btn_name = "주문 취소하기";
-				$action_url = "./orderinquirycancel.php";
-				$to = "";
+				// $btn_name = "주문 취소하기";
+				// $action_url = "./orderinquirycancel.php";
+				// $to = "";
 
-				if ($pay_complete_cancel2 || $preparation_cancel) {
+                $sql = "select *
+                        from g5_shop_order_cancel_request
+                        where od_id = '{$od['od_id']}' and approved = 0";
+
+                $cancel_request_row = sql_fetch($sql);
+
+                
+                $sql = "select * from g5_shop_cart where od_id = '{$od['od_id']}'";
+                $sql_result = sql_query($sql);
+                $flag=true;
+                while ($row = sql_fetch_array($sql_result)) {
+                    if($row['ct_status'] !=="준비") $flag= false;
+                }
+
+
+				if ($flag) {
 					$action_url = "./orderinquirycancelrequest.php";
 					$btn_name = "취소 요청하기";
 					$to = "cancel";
 				}
 
-				if ($shipped_cancel) {
-					$action_url = "./orderinquirycancelrequest.php";
-					$btn_name = "반품 요청하기";
-					$to = "return";
-				}
-
-				$sql = "select *
-						from g5_shop_order_cancel_request
-						where od_id = '{$od['od_id']}' and approved = 0";
-
-				$cancel_request_row = sql_fetch($sql);
-
 				?>
-				<?php if (($custom_cancel || $pay_complete_cancel || $pay_complete_cancel2 || $preparation_cancel || $shipped_cancel) && !$cancel_request_row['od_id']) { ?>
-					<?php if($od["od_stock_insert_yn"] !== "Y"){  ?>
-					<a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false" aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
-					<?php } ?>
-					<div class="h15"></div>
-
+                <?php if($od["od_stock_insert_yn"] !== "Y"&&$flag&&!$cancel_request_row['od_id']){  ?>
+                    <a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false" aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
+                    <div class="h15"></div>
 					<div id="sod_fin_cancelfrm" class="collapse">
 						<div class="well">
 							<form class="form" role="form" method="post" action="<?php echo $action_url ?>" onsubmit="return fcancel_check(this);">
@@ -770,7 +770,26 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 							</form>
 						</div>
 					</div>
+                
+                <?php } ?>
+
+
+				<?php 
+                // if ($shipped_cancel) {
+                //     $action_url = "./orderinquirycancelrequest.php";
+                //     $btn_name = "반품 요청하기";
+                //     $to = "return";
+                // }
+
+
+                // $sql = "select *
+                //         from g5_shop_order_cancel_request
+                //         where od_id = '{$od['od_id']}' and approved = 0";
+
+                // $cancel_request_row = sql_fetch($sql);
+                if (($custom_cancel || $pay_complete_cancel || $pay_complete_cancel2 || $preparation_cancel || $shipped_cancel) && !$cancel_request_row['od_id']) { ?>
 				<?php } ?>
+                
 			<?php } ?>
 			</div>
 		</div>
@@ -809,7 +828,8 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	</div>
 </div>
 <div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
-	<div></div>
+    <div>
+    </div>
 </div>
 <style>
 
@@ -1086,4 +1106,4 @@ $(function(){
 
 })
 </script>
-<!-- 210326 배송정보팝업 -->
+<!-- 210512 전자계약서 팝업 -->
