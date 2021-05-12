@@ -178,7 +178,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	</script>
    <!-- 210326 배송정보팝업 -->
 
-<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?edited=210512">
+<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?edited=2105121313">
 <section id="pro-order2" class="wrap order-list">
 	<h2 class="tti">
 		주문상세
