@@ -113,6 +113,62 @@ if($header_skin)
 		}
 	}
 
+	/*
+	# 200512 전자계약서
+	$eform = [];
+	if($od["od_penId"]) { // 수급자 주문일 시
+		$sendPenData = [];
+		$sendPenData["usrId"] = $od["mb_id"];
+		$sendPenData["entId"] = sql_fetch("SELECT mb_entId FROM g5_member WHERE mb_id = '{$od["mb_id"]}'")["mb_entId"];
+		$sendPenData["pageNum"] = 1;
+		$sendPenData["pageSize"] = 1;
+		$sendPenData["penId"] = $od["od_penId"];
+
+		$oCurl = curl_init();
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
+		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
+		curl_setopt($oCurl, CURLOPT_POST, 1);
+		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendPenData, JSON_UNESCAPED_UNICODE));
+		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+		$res = curl_exec($oCurl);
+		$res = json_decode($res, true);
+		curl_close($oCurl);
+
+		$penData = $res["data"][0];
+		$entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
+
+		$eform = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '{$od["od_id"]}'");
+		if(!$eform['dc_id']) { // 전자계약서가 없을 경우
+			sql_query("INSERT INTO `eform_document` SET
+			`dc_id` = UNHEX(REPLACE(UUID(),'-','')),
+			`dc_subject` = '일단 테스트',
+			`dc_status` = '0',
+			`od_id` = '{$od["od_id"]}',
+			`entId` = '{$entData["mb_entId"]}',
+			`entNm` = '{$entData["mb_entNm"]}',
+			`entCrn` = '{$entData["mb_giup_bnum"]}',
+			`entMail` = '{$entData["mb_email"]}',
+			`entCeoNm` = '{$entData["mb_giup_boss_name"]}',
+			`entConAcc01` = '{$entData["mb_entConAcc01"]}',
+			`entConAcc02` = '{$entData["mb_entConAcc02"]}',
+			`penId` = '{$penData["penId"]}',
+			`penNm` = '{$penData["penNm"]}',
+			`penConNum` = '{$penData["penConNum"]}', # 휴대전화번호인데 전화번호랑 둘중에 어떤거 입력해야될지?
+			`penBirth` = '{$penData["penBirth"]}',
+			`penLtmNum` = '{$penData["penLtmNum"]}',
+			`penRecGraCd` = '{$penData["penRecGraCd"]}', # 장기요양등급
+			`penRecGraNm` = '{$penData["penRecGraNm"]}',
+			`penTypeCd` = '{$penData["penTypeCd"]}', # 본인부담금율
+			`penTypeNm` = '{$penData["penTypeNm"]}',
+			`penExpiDtm` = '{$penData["penExpiDtm"]}', # 수급자 이용기간
+			`dc_browser` = '',
+			`dc_sign_browser` = ''
+			");
+		}
+	}
+	*/
 ?>
 
 <script type="text/javascript">
@@ -175,7 +231,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	</script>
    <!-- 210326 배송정보팝업 -->
 
-<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css">
+<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?edited=2105121313">
 <section id="pro-order2" class="wrap order-list">
 	<h2 class="tti">
 		주문상세
@@ -492,6 +548,17 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			<div class="all-info all-info2 m_none tablet_none">
 				<ul>
 					<li>
+						<ul class="eform-tab">
+							<li class="eform-tab-head">공급계약서</li>
+							<li class="eform-tab-desc">수급자 주문시 간편하게 작성하는 온라인 계약</li>
+							<li class="eform-tab-links">
+								<?php if(!$eform["dc_id"]) { // 계약서 생성 전 ?>
+								<a href="#" id="linkEformWrite" class="eform-tab-link">계약서 생성</a>
+								<?php } ?>
+							</li>
+						</ul>
+					</li>
+					<li>
 						<div>
 							<b>수급자명</b>
 							<span><?=($od["od_penNm"]) ? $od["od_penNm"] : "-"?></span>
@@ -611,7 +678,13 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						</div>
 					</li>
 					<?php } ?>
-                    <?php if ($od['od_send_cost2'] > 0) { ?>
+					<li>
+						<div>
+							<b>배송비</b>
+							<span><?php echo number_format($od['od_send_cost']); ?> 원</span>
+						</div>
+					</li>
+					<?php if ($od['od_send_cost2'] > 0) { ?>
 					<li>
 						<div>
 							<b>추가배송비</b>
@@ -619,12 +692,6 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 						</div>
 					</li>
 					<?php } ?>
-					<li>
-						<div>
-							<b>배송비</b>
-							<span><?php echo number_format($od['od_send_cost']); ?> 원</span>
-						</div>
-					</li>
 				</ul>
                 <?php 
                     $total_price = $tot_price - $od['od_cart_discount']  -$od['od_cart_discount2'] ;
@@ -648,35 +715,35 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 				if ($pay_complete_cancel || $preparation_cancel)
 					$type = 2;
 
-				// $btn_name = "주문 취소하기";
-				// $action_url = "./orderinquirycancel.php";
-				// $to = "";
+				$btn_name = "주문 취소하기";
+				$action_url = "./orderinquirycancel.php";
+				$to = "";
 
-                $sql = "select *
-                        from g5_shop_order_cancel_request
-                        where od_id = '{$od['od_id']}' and approved = 0";
-
-                $cancel_request_row = sql_fetch($sql);
-
-                
-                $sql = "select * from g5_shop_cart where od_id = '{$od['od_id']}'";
-                $sql_result = sql_query($sql);
-                $flag=true;
-                while ($row = sql_fetch_array($sql_result)) {
-                    if($row['ct_status'] !=="준비") $flag= false;
-                }
-
-
-				if ($flag) {
+				if ($pay_complete_cancel2 || $preparation_cancel) {
 					$action_url = "./orderinquirycancelrequest.php";
 					$btn_name = "취소 요청하기";
 					$to = "cancel";
 				}
 
+				if ($shipped_cancel) {
+					$action_url = "./orderinquirycancelrequest.php";
+					$btn_name = "반품 요청하기";
+					$to = "return";
+				}
+
+				$sql = "select *
+						from g5_shop_order_cancel_request
+						where od_id = '{$od['od_id']}' and approved = 0";
+
+				$cancel_request_row = sql_fetch($sql);
+
 				?>
-                <?php if($od["od_stock_insert_yn"] !== "Y"&&$flag&&!$cancel_request_row['od_id']){  ?>
-                    <a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false" aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
-                    <div class="h15"></div>
+				<?php if (($custom_cancel || $pay_complete_cancel || $pay_complete_cancel2 || $preparation_cancel || $shipped_cancel) && !$cancel_request_row['od_id']) { ?>
+					<?php if($od["od_stock_insert_yn"] !== "Y"){  ?>
+					<a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false" aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
+					<?php } ?>
+					<div class="h15"></div>
+
 					<div id="sod_fin_cancelfrm" class="collapse">
 						<div class="well">
 							<form class="form" role="form" method="post" action="<?php echo $action_url ?>" onsubmit="return fcancel_check(this);">
@@ -703,26 +770,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 							</form>
 						</div>
 					</div>
-                
-                <?php } ?>
-
-
-				<?php 
-                // if ($shipped_cancel) {
-                //     $action_url = "./orderinquirycancelrequest.php";
-                //     $btn_name = "반품 요청하기";
-                //     $to = "return";
-                // }
-
-
-                // $sql = "select *
-                //         from g5_shop_order_cancel_request
-                //         where od_id = '{$od['od_id']}' and approved = 0";
-
-                // $cancel_request_row = sql_fetch($sql);
-                if (($custom_cancel || $pay_complete_cancel || $pay_complete_cancel2 || $preparation_cancel || $shipped_cancel) && !$cancel_request_row['od_id']) { ?>
 				<?php } ?>
-                
 			<?php } ?>
 			</div>
 		</div>
@@ -761,8 +809,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	</div>
 </div>
 <div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
-    <div>
-    </div>
+	<div></div>
 </div>
 <style>
 
@@ -1001,3 +1048,42 @@ $(function(){
 
 });
 </script>
+
+<!-- 210512 전자계약서 팝업 -->
+<div id="popupEformWrite">
+	<div></div>
+</div>
+
+<style>
+#popupEformWrite { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#popupEformWrite > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+#popupEformWrite iframe { position: relative; width: 1024px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -512px; }
+
+@media (max-width : 1240px){
+	#popupEformWrite iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+
+body.modal-open {
+	overflow: hidden;
+}
+</style>
+
+<script type="text/javascript">
+$(function(){
+	$("#popupEformWrite").hide();
+	$("#popupEformWrite").css("opacity", 1);
+
+	$("#linkEformWrite").click(function(e){
+		e.preventDefault();
+
+		//var od = $(this).attr("data-od");
+		$("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.writeEform.php'>");
+		$("#popupEformWrite iframe").load(function(){
+			$("body").addClass('modal-open');
+			$("#popupEformWrite").show();
+		});
+	});
+
+})
+</script>
+<!-- 210326 배송정보팝업 -->
