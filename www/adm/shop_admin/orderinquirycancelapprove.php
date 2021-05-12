@@ -30,7 +30,40 @@ sql_query($sql);
 
 // 무통장 취소 처리
 if ($cancel_request_row['request_type'] == "cancel") {
+
     // 장바구니 자료 취소
+
+    //시스템 취소
+    $stateCd ="06";
+    $sql = "select * from g5_shop_cart where od_id = '{$od['od_id']}'";
+    $sql_result = sql_query($sql);
+    while ($row = sql_fetch_array($sql_result)) {
+            $stoId=$stoId.$result_ct_s['stoId'];
+            $usrId=$result_ct_s['mb_id'];
+            $entId=$result_ct_s['mb_entId'];
+    }
+
+    $stoIdDataList = explode('|',$stoId);
+    $stoIdDataList=array_filter($stoIdDataList);
+    $stoIdData = implode("|", $stoIdDataList);
+    $sendData["stoId"] = $stoIdData;
+    $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+    $result_again =$res['data'];
+    $new_sto_ids = array_map(function($data) {
+        global $stateCd;
+        return array(
+            'stoId' => $data['stoId'],
+            'prodBarNum' => $data['prodBarNum'],
+            'stateCd' => $stateCd
+        );
+    }, $result_again);
+    $api_data = array(
+        'usrId' => $usrId,
+        'entId' => $entId,
+        'prods' => $new_sto_ids,
+    );
+    $api_result = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $api_data);
+
     sql_query(" update {$g5['g5_shop_cart_table']} set ct_status = '취소' where od_id = '$od_id' ");
 
     // 주문 취소
