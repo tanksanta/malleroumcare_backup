@@ -322,12 +322,12 @@ var array_box=[];
 							<strong>주소</strong>
 							<div>
 								<div>
-									<input type="text"  class="w-70"name="od_b_zip" id="od_b_zip" value="<?php echo $member['mb_zip1'].$member['mb_zip2'] ?>" required readonly>
+									<input type="text"  class="w-70"name="od_b_zip" id="od_b_zip" value="<?php echo $member['mb_zip1'].$member['mb_zip2'] ?>" required>
 									<button type="button" onclick="win_zip('forderform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">우편번호</button>
 									<input type="hidden" name="od_b_addr_jibeon" value="<?=$member['mb_hp']?>">
 								</div>
 								<div>
-									<input type="text" name="od_b_addr1" id="od_b_addr1" value="<?php echo get_text($member['mb_addr1']) ?>" required readonly style="width: 100%;">
+									<input type="text" name="od_b_addr1" id="od_b_addr1" value="<?php echo get_text($member['mb_addr1']) ?>" required  style="width: 100%;">
 								 </div>
 								 <div>
 									<input type="text" name="od_b_addr2" id="od_b_addr2" required value="<?php echo get_text($member['mb_addr2']).get_text($member['mb_addr_jibeon']) ?>" style="width: 100%;">
