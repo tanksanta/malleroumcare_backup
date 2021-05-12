@@ -396,5 +396,18 @@
       <button id="btnCancelEform">취소</button>
     </div>
   </div>
+  <script type="text/javascript">
+  function closePopup(e) {
+    e.preventDefault();
+    $("body", parent.document).removeClass("modal-open");
+    $("#popupEformWrite", parent.document).hide();
+    $("#popupEformWrite", parent.document).find("iframe").remove();
+  }
+
+  $(function(){
+    $("#btnCloseEform").click(closePopup);
+    $("#btnCancelEform").click(closePopup);
+  });
+  </script>
 </body>
 </html>
