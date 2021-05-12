@@ -1,5 +1,7 @@
 <?php
 	include_once("./_common.php");
+
+  $eform = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '$od_id'");
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -261,19 +263,19 @@
         <table id="tablePenInfo">
           <tr>
             <th>수급자</th>
-            <td>홍길동</td>
+            <td><?=$eform["penNm"]?></td>
           </tr>
           <tr>
             <th>장기요양인정번호</th>
-            <td>L11111121233</td>
+            <td><?=$eform["penLtmNum"]?></td>
           </tr>
           <tr>
             <th>인정등급</th>
-            <td>2등급</td>
+            <td><?=$eform["penRecGraNm"]?></td>
           </tr>
           <tr>
             <th>구분</th>
-            <td>감경 6%</td>
+            <td><?=$eform["penTypeNm"]?></td>
           </tr>
         </table>
       </div>
