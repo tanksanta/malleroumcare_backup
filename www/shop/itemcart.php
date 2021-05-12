@@ -234,10 +234,15 @@ for($i=0; $i<$count; $i++) {
             }
 
 
-            //무조건 판매가, 비유통이면 0 원
+            //무조건 판매가, 비유통이면 0 원 , 우수사업소 할인가
             $sql_i = "SELECT * FROM `g5_shop_item` WHERE `it_id` ='".$it['it_id']."'";
             $result_i = sql_fetch($sql_i);
             $it['it_price']=$result_i['it_price'];
+
+            if($member['mb_level']=="4"&&$result_i['it_price_dealer2']){
+                $it['it_price']=$result_i['it_price_dealer2'];
+            }
+
             if($it['prodSupYn']=="N"){
                 $it['it_price']=0;
             }
@@ -264,9 +269,16 @@ for($i=0; $i<$count; $i++) {
             $ct_sale_qty = $row3['ct_qty']+$ct_sale_qty;
 
 
+
             
             $itSaleCntList = [$it["it_sale_cnt"], $it["it_sale_cnt_02"], $it["it_sale_cnt_03"], $it["it_sale_cnt_04"], $it["it_sale_cnt_05"]];
             $itSalePriceList = [$it["it_sale_percent"], $it["it_sale_percent_02"], $it["it_sale_percent_03"], $it["it_sale_percent_04"], $it["it_sale_percent_05"]];
+
+            //우수사업소고 우수사업소 할인가가 있으면 적용
+            if($member['mb_level']=="4"&&$it['it_sale_percent_great']){
+                $itSalePriceList = [$it["it_sale_percent_great"], $it["it_sale_percent_great_02"], $it["it_sale_percent_great_03"], $it["it_sale_percent_great_04"], $it["it_sale_percent_great_05"]];
+            }
+            
             $itSaleCnt = 0;
 
             //기존 + 신규주문 개수
@@ -327,13 +339,19 @@ for($i=0; $i<$count; $i++) {
             $it_sc_qty = $it['it_sc_qty'];
         }
 
-            //무조건 판매가, 비유통이면 0 원
-            $sql_i = "SELECT * FROM `g5_shop_item` WHERE `it_id` ='".$it['it_id']."'";
-            $result_i = sql_fetch($sql_i);
-            $it['it_price']=$result_i['it_price'];
-            if($it['prodSupYn']=="N"){
-                $it['it_price']=0;
-            }
+             //무조건 판매가, 비유통이면 0 원 , 우수사업소 할인가
+             $sql_i = "SELECT * FROM `g5_shop_item` WHERE `it_id` ='".$it['it_id']."'";
+             $result_i = sql_fetch($sql_i);
+             $it['it_price']=$result_i['it_price'];
+ 
+             if($member['mb_level']=="4"&&$result_i['it_price_dealer2']){
+                 $it['it_price']=$result_i['it_price_dealer2'];
+             }
+ 
+             if($it['prodSupYn']=="N"){
+                 $it['it_price']=0;
+             }
+
 
             #묶음할인
 			$ct_discount = 0;
@@ -345,6 +363,12 @@ for($i=0; $i<$count; $i++) {
 			
 			$itSaleCntList = [$it["it_sale_cnt"], $it["it_sale_cnt_02"], $it["it_sale_cnt_03"], $it["it_sale_cnt_04"], $it["it_sale_cnt_05"]];
 			$itSalePriceList = [$it["it_sale_percent"], $it["it_sale_percent_02"], $it["it_sale_percent_03"], $it["it_sale_percent_04"], $it["it_sale_percent_05"]];
+
+            //우수사업소고 우수사업소 할인가가 있으면 적용
+            if($member['mb_level']=="4"&&$it['it_sale_percent_great']){
+                $itSalePriceList = [$it["it_sale_percent_great"], $it["it_sale_percent_great_02"], $it["it_sale_percent_great_03"], $it["it_sale_percent_great_04"], $it["it_sale_percent_great_05"]];
+            }
+
 			$itSaleCnt = 0;
 
             for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){

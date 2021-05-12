@@ -237,16 +237,27 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                         </li>
                         <li>
                             <h1 style="">
-                                <?php if($member["mb_id"]){ ?>
-                                    <?php if($member["mb_level"] == "3"){ ?>
-                                        <?=($_COOKIE["viewType"] == "basic") ? number_format($it["it_cust_price"]) : number_format($it["it_price"])?>원
-                                    <?php } else { ?>
-                                        <?=number_format($it["it_price"])?>원
-                                    <?php } ?>
-                                <?php } else { ?>
-                                    <?=number_format($it["it_cust_price"])?>원
-                                <?php } ?>
-                                <span style="font-size:13px;"><?=($_COOKIE["viewType"] == "basic") ? "(급여가)" : "(판매가)" ?></span>
+                                <?php if($member["mb_id"]){ 
+                                        if($_COOKIE["viewType"] == "basic"){
+                                                echo number_format($it["it_cust_price"])."원";
+                                        }else{
+                                            if($member["mb_level"] == "3"){ 
+                                                //사업소 가격
+                                                echo number_format($it["it_price"])."원";
+                                            }else if($member["mb_level"] == "4"){ 
+                                                //우수 사업소 가격
+                                                echo ($it["it_price_dealer2"]) ? number_format($it["it_price_dealer2"])."원" : number_format($it["it_price"])."원";
+                                            } else { 
+                                                echo number_format($it["it_price"])."원";
+                                            } 
+                                        }
+                                    }
+                                ?>
+                                <span style="font-size:13px;">
+                                    <?=($_COOKIE["viewType"] == "basic") ? "(급여가)" : "(판매가)" ?>
+                                    <?=($it["it_price_dealer2"]) ? "-우수사업소" : "" ?>
+                                </span>
+                                
                             </h1>
                         </li>
                     </ul>
@@ -260,11 +271,14 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<!-- 재고수량 -->
             <div class="margin-left">
 				<?php if($_COOKIE["viewType"] != "basic"){ ?>
+
                 <ul class="optionStockCntList" style="display: none;">
                     <li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
                 </ul>
                 <?php } ?>
                 <?php if($_COOKIE["viewType"] != "basic"){ ?>
+                 
+                <?php if($member['mb_level'] == "3"){ ?>
                     <?php if($it["it_sale_cnt"]){ ?>
                         <p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
                     <?php } ?>
@@ -280,6 +294,23 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     <?php if($it["it_sale_cnt_05"]){ ?>
                         <p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
                     <?php } ?>
+                <?php }else if($member['mb_level'] == "4"){ ?>
+                        <?php if($it["it_sale_cnt"]){ ?>
+                        <p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent_great"])?>원</p>
+                        <?php } ?>
+                        <?php if($it["it_sale_cnt_02"]){ ?>
+                            <p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_great_02"])?>원</p>
+                        <?php } ?>
+                        <?php if($it["it_sale_cnt_03"]){ ?>
+                            <p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_great_03"])?>원</p>
+                        <?php } ?>
+                        <?php if($it["it_sale_cnt_04"]){ ?>
+                            <p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_great_04"])?>원</p>
+                        <?php } ?>
+                        <?php if($it["it_sale_cnt_05"]){ ?>
+                            <p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_great_05"])?>원</p>
+                        <?php } ?>
+                <?php }?>
                 <?php } ?>
 
                 <?php if ( $it['it_model'] ) { ?>
@@ -350,16 +381,26 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
             </div>
 
 			<p style="font-size: 32px; margin: 25px 0; font-weight: bold;">
-                <?php if($member["mb_id"]){ ?>
-                    <?php if($member["mb_level"] == "3"){ ?>
-                        <?=($_COOKIE["viewType"] == "basic") ? number_format($it["it_cust_price"]) : number_format($it["it_price"])?>원
-                    <?php } else { ?>
-                        <?=number_format($it["it_price"])?>원
-                    <?php } ?>
-                <?php } else { ?>
-                    <?=number_format($it["it_cust_price"])?>원
-                <?php } ?>
-                <span style="font-size: 15px;"><?=($_COOKIE["viewType"] == "basic") ? "(급여가)" : "(판매가)" ?></span>
+                <?php if($member["mb_id"]){ 
+                        if($_COOKIE["viewType"] == "basic"){
+                                echo number_format($it["it_cust_price"])."원";
+                        }else{
+                            if($member["mb_level"] == "3"){ 
+                                //사업소 가격
+                                echo number_format($it["it_price"])."원";
+                            }else if($member["mb_level"] == "4"){ 
+                                //우수 사업소 가격
+                                echo ($it["it_price_dealer2"]) ? number_format($it["it_price_dealer2"])."원" : number_format($it["it_price"])."원";
+                            } else { 
+                                echo number_format($it["it_price"])."원";
+                            } 
+                        }
+                    }
+                ?>
+                <span style="font-size: 15px;">
+                <?=($_COOKIE["viewType"] == "basic") ? "(급여가)" : "(판매가)" ?>
+                <?=($it["it_price_dealer2"]) ? "-우수사업소" : "" ?>
+                </span>
                 <?php if(substr($it["ca_id"], 0, 2) == "20"){ ?>
                     <br><span style="font-weight: normal; font-size: 13px; margin-top: 15px; display: inline-block;">* 대여금액(월기준) : <?=number_format($it["it_rental_price"])?>원</span>
                 <?php } ?>
@@ -432,7 +473,8 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<?php } // 시중가격 끝 ?>
 				<tr><td colspan="2" class="item-price">
 				<?php if($_COOKIE["viewType"] != "basic"){ ?>
-					<?php if($it["it_sale_cnt"]){ ?>
+                <?php if($member['mb_level'] == "3"){ ?>
+                    <?php if($it["it_sale_cnt"]){ ?>
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
 						<input type="hidden" id="it_sale_percent" value="<?php echo $it["it_sale_percent"]; ?>" data-toggle="<?=$it["it_sale_cnt"]?>" class="it_sale_percent">
 					<?php } ?>
@@ -452,17 +494,44 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
 						<input type="hidden" id="it_sale_percent5" value="<?php echo $it["it_sale_percent_05"]; ?>" data-toggle="<?=$it["it_sale_cnt_05"]?>" class="it_sale_percent">
 					<?php } ?>
+                <?php }else if($member['mb_level'] == "4"){ ?>
+                        <?php if($it["it_sale_cnt"]){ ?>
+                            <p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent_great"])?>원</p>
+						    <input type="hidden" id="it_sale_percent" value="<?php echo $it["it_sale_percent_great"]; ?>" data-toggle="<?=$it["it_sale_cnt"]?>" class="it_sale_percent">
+                        <?php } ?>
+                        <?php if($it["it_sale_cnt_02"]){ ?>
+                            <p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_great_02"])?>원</p>
+						    <input type="hidden" id="it_sale_percent2" value="<?php echo $it["it_sale_percent_great_02"]; ?>" data-toggle="<?=$it["it_sale_cnt_02"]?>" class="it_sale_percent">
+                        <?php } ?>
+                        <?php if($it["it_sale_cnt_03"]){ ?>
+                            <p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_great_03"])?>원</p>
+						    <input type="hidden" id="it_sale_percent3" value="<?php echo $it["it_sale_percent_great_03"]; ?>" data-toggle="<?=$it["it_sale_cnt_03"]?>" class="it_sale_percent">
+                        <?php } ?>
+                        <?php if($it["it_sale_cnt_04"]){ ?>
+                            <p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_great_04"])?>원</p>
+						    <input type="hidden" id="it_sale_percent4" value="<?php echo $it["it_sale_percent_great_04"]; ?>" data-toggle="<?=$it["it_sale_cnt_04"]?>" class="it_sale_percent">
+                        <?php } ?>
+                        <?php if($it["it_sale_cnt_05"]){ ?>
+                            <p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_great_05"])?>원</p>
+						    <input type="hidden" id="it_sale_percent5" value="<?php echo $it["it_sale_percent_great_05"]; ?>" data-toggle="<?=$it["it_sale_cnt_05"]?>" class="it_sale_percent">
+                        <?php } ?>
+                <?php }?>
 				<?php } ?>
 						<input type="hidden" id="it_price" value="
-							<?php
-                                if($member["mb_id"]){
+                            <?php if($member["mb_id"]){ 
                                     if($_COOKIE["viewType"] == "basic"){
-                                        echo $it["it_cust_price"];
+                                            echo $it["it_cust_price"];
                                     }else{
-                                        echo $it["it_price"];
+                                        if($member["mb_level"] == "3"){ 
+                                            //사업소 가격
+                                            echo $it["it_price"];
+                                        }else if($member["mb_level"] == "4"){ 
+                                            //우수 사업소 가격
+                                            echo ($it["it_price_dealer2"]) ? $it["it_price_dealer2"] : $it["it_price"];
+                                        } else { 
+                                            echo $it["it_price"];
+                                        } 
                                     }
-                                }else{
-                                    echo $it["it_cust_price"];
                                 }
                             ?>
                         ">
