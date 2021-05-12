@@ -314,12 +314,12 @@ var array_box=[];
 							<strong>주소</strong>
 							<div>
 								<div>
-									<input type="text"  class="w-70"name="od_b_zip" id="od_b_zip" required readonly>
+									<input type="text"  class="w-70"name="od_b_zip" id="od_b_zip" required >
 									<button type="button" onclick="win_zip('forderform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">우편번호</button>
 									<input type="hidden" name="od_b_addr_jibeon" value="">
 								</div>
 								<div>
-									<input type="text" name="od_b_addr1" id="od_b_addr1" required readonly style="width: 100%;">
+									<input type="text" name="od_b_addr1" id="od_b_addr1" required  style="width: 100%;">
 								 </div>
 								 <div>
 									<input type="text" name="od_b_addr2" id="od_b_addr2" style="width: 100%;">
