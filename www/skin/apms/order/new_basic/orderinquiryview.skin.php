@@ -113,34 +113,36 @@ if($header_skin)
 		}
 	}
 
-	/*
+// 테스트 환경일 때만
+if(defined('IS_TEST_ENVIRONMENT')) {
+	echo "<style>.eform-tab{display:block !important;}</style>";
 	# 200512 전자계약서
 	$eform = [];
 	if($od["od_penId"]) { // 수급자 주문일 시
-		$sendPenData = [];
-		$sendPenData["usrId"] = $od["mb_id"];
-		$sendPenData["entId"] = sql_fetch("SELECT mb_entId FROM g5_member WHERE mb_id = '{$od["mb_id"]}'")["mb_entId"];
-		$sendPenData["pageNum"] = 1;
-		$sendPenData["pageSize"] = 1;
-		$sendPenData["penId"] = $od["od_penId"];
-
-		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9901);
-		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
-		curl_setopt($oCurl, CURLOPT_POST, 1);
-		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendPenData, JSON_UNESCAPED_UNICODE));
-		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-		$res = curl_exec($oCurl);
-		$res = json_decode($res, true);
-		curl_close($oCurl);
-
-		$penData = $res["data"][0];
-		$entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
-
 		$eform = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '{$od["od_id"]}'");
 		if(!$eform['dc_id']) { // 전자계약서가 없을 경우
+			$sendPenData = [];
+			$sendPenData["usrId"] = $od["mb_id"];
+			$sendPenData["entId"] = sql_fetch("SELECT mb_entId FROM g5_member WHERE mb_id = '{$od["mb_id"]}'")["mb_entId"];
+			$sendPenData["pageNum"] = 1;
+			$sendPenData["pageSize"] = 1;
+			$sendPenData["penId"] = $od["od_penId"];
+	
+			$oCurl = curl_init();
+			curl_setopt($oCurl, CURLOPT_PORT, 9901);
+			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
+			curl_setopt($oCurl, CURLOPT_POST, 1);
+			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendPenData, JSON_UNESCAPED_UNICODE));
+			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+			$res = curl_exec($oCurl);
+			$res = json_decode($res, true);
+			curl_close($oCurl);
+	
+			$penData = $res["data"][0];
+			$entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
+
 			sql_query("INSERT INTO `eform_document` SET
 			`dc_id` = UNHEX(REPLACE(UUID(),'-','')),
 			`dc_subject` = '일단 테스트',
@@ -168,7 +170,7 @@ if($header_skin)
 			");
 		}
 	}
-	*/
+}
 ?>
 
 <script type="text/javascript">
@@ -553,7 +555,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 							<li class="eform-tab-desc">수급자 주문시 간편하게 작성하는 온라인 계약</li>
 							<li class="eform-tab-links">
 								<?php if(!$eform["dc_id"] || $eform["dc_status"] == '0') { // 계약서 생성 전 ?>
-								<a href="#" id="linkEformWrite" class="eform-tab-link">계약서 생성</a>
+								<a href="#" id="linkEformWrite" class="eform-tab-link" data-od="<?=$od["od_id"]?>">계약서 생성</a>
 								<?php } ?>
 							</li>
 						</ul>
@@ -1096,8 +1098,8 @@ $(function(){
 	$("#linkEformWrite").click(function(e){
 		e.preventDefault();
 
-		//var od = $(this).attr("data-od");
-		$("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.writeEform.php'>");
+		var od = $(this).data('od');
+		$("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.writeEform.php?od_id="+od+"'>");
 		$("#popupEformWrite iframe").load(function(){
 			$("body").addClass('modal-open');
 			$("#popupEformWrite").show();
