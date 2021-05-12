@@ -756,8 +756,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	</div>
 </div>
 <div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
-    <div>
-    </div>
+	<div></div>
 </div>
 <style>
 
@@ -996,3 +995,42 @@ $(function(){
 
 });
 </script>
+
+<!-- 210512 전자계약서 팝업 -->
+<div id="popupEformWrite">
+	<div></div>
+</div>
+
+<style>
+#popupEformWrite { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#popupEformWrite > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+#popupEformWrite iframe { position: relative; width: 1024px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -512px; }
+
+@media (max-width : 1240px){
+	#popupEformWrite iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+
+body.modal-open {
+	overflow: hidden;
+}
+</style>
+
+<script type="text/javascript">
+$(function(){
+	$("#popupEformWrite").hide();
+	$("#popupEformWrite").css("opacity", 1);
+
+	$("#linkEformWrite").click(function(e){
+		e.preventDefault();
+
+		//var od = $(this).attr("data-od");
+		$("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.writeEform.php'>");
+		$("#popupEformWrite iframe").load(function(){
+			$("body").addClass('modal-open');
+			$("#popupEformWrite").show();
+		});
+	});
+
+})
+</script>
+<!-- 210326 배송정보팝업 -->
