@@ -154,18 +154,36 @@ include_once($skin_path.'/search.skin.form.php');
 			<?php if($list[$i]["it_model"]){ ?>
 				<p class="info"><?=$list[$i]["it_model"]?></p>
 			<?php } ?>
-			<?php if($member["mb_id"]){ ?>
-				<?php if($member["mb_level"] == "3"){ ?>
-					<?php if($_COOKIE["viewType"] != "basic"){ ?>
-						<p class="discount"><?=number_format($list[$i]["it_cust_price"])?>원</p>
-					<?php } ?>
-					<p class="price"><?=($_COOKIE["viewType"] == "basic") ? number_format($list[$i]["it_cust_price"]) : number_format($list[$i]["it_price"])?>원</p>
-				<?php } else { ?>
-					<p class="price"><?=number_format($list[$i]["it_price"])?>원</p>
-				<?php } ?>
-			<?php } else { ?>
-				<p class="price"><?=number_format($list[$i]["it_cust_price"])?>원</p>
-			<?php } ?>
+
+
+            <?php if($_COOKIE["viewType"] !== "basic"){ ?>
+                <p class="discount">
+                    <?=number_format($list[$i]["it_cust_price"])?>원
+                </p>
+            <?php } ?>
+            <p class="price">
+                    <?php
+                    if($member["mb_id"]){
+                        if($_COOKIE["viewType"] == "basic"){
+                                echo number_format($list[$i]["it_cust_price"])."원";
+                        }else{
+                            if($member["mb_level"] == "3"){ 
+                                //사업소 가격
+                                echo number_format($list[$i]["it_price"])."원";
+                            }else if($member["mb_level"] == "4"){ 
+                                //우수 사업소 가격
+                                echo ($list[$i]["it_price_dealer2"]) ? number_format($list[$i]["it_price_dealer2"])."원" : number_format($list[$i]["it_price"])."원";
+                            } else { 
+                                echo number_format($list[$i]["it_price"])."원";
+                            } 
+                        }
+                    }else{
+                        echo number_format($list[$i]["it_cust_price"]).'원';
+                    }
+                ?>
+            </p>
+
+
 			</a>
 			<div class="it_type_box">
 				<?php if($list[$i]['it_type1']){ ?><p class="p_box type1" > 일시품절</p><?php } ?>
