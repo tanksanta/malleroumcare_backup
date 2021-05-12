@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   `dc_id` binary(16) NOT NULL, -- 문서 ID, PRI, UNHEX(REPLACE(UUID(),'-',''))
   `dc_subject` varchar(255) NOT NULL DEFAULT '', -- 문서 제목
   `dc_status` varchar(255) NOT NULL DEFAULT '', -- 서명 상태 (서명 대기, 서명 완료...) → todo: 생략 가능한가?
+  `od_id` BIGINT(20) unsigned NOT NULL, -- 주문 ID (FK)
   -- ---------
   -- 사업소
   -- ---------
@@ -71,7 +72,8 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   `dc_sign_browser` text NOT NULL,
   -- 사인 파일명
   `dc_sign_signUrl` varchar(255) NOT NULL default '',
-  PRIMARY KEY (`dc_id`)
+  PRIMARY KEY (`dc_id`),
+  KEY `od_id` (`od_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
