@@ -175,7 +175,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	</script>
    <!-- 210326 배송정보팝업 -->
 
-<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css">
+<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?edited=210512">
 <section id="pro-order2" class="wrap order-list">
 	<h2 class="tti">
 		주문상세
@@ -491,6 +491,15 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			<h5 class="m_none tablet_none">수급자 정보</h5>
 			<div class="all-info all-info2 m_none tablet_none">
 				<ul>
+					<li>
+						<ul class="eform-tab">
+							<li class="eform-tab-head">공급계약서</li>
+							<li class="eform-tab-desc">수급자 주문시 간편하게 작성하는 온라인 계약</li>
+							<li class="eform-tab-links">
+								<a href="#" id="linkEformWrite" class="eform-tab-link">계약서 생성</a>
+							</li>
+						</ul>
+					</li>
 					<li>
 						<div>
 							<b>수급자명</b>
