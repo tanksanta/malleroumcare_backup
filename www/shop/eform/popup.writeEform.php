@@ -386,11 +386,11 @@
       </div>
       <div id="entConAcc01Row" class="row entConAcc">
         <h3>특약사항1</h3>
-        <textarea name="entConAcc01" id="entConAcc01">본 계약은 국민건강보험 노인장기요양보험 급여상품의 공급계약을 체결함에 목적이 있다.</textarea>
+        <textarea name="entConAcc01" id="entConAcc01"><?=$eform["entConAcc01"]?></textarea>
       </div>
       <div id="entConAcc02Row" class="row entConAcc">
         <h3>특약사항2</h3>
-        <textarea name="entConAcc02" id="entConAcc02">본 계약서에 명시되지 아니한 사항이나 의견이 상이할 때에는 상호 협의하에 해결하는 것을 원칙으로 한다.</textarea>
+        <textarea name="entConAcc02" id="entConAcc02"><?=$eform["entConAcc02"]?></textarea>
       </div>
     </div>
     <div class="popupFootWrap flex">
