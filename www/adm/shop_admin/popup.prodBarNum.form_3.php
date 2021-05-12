@@ -413,7 +413,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			}
 			if(length == 12){
 				$(item[i]).parent().find("i").addClass("active");
-
 				var index = $(item[i]).parent("li").index();
 				var prodItem = $(item[i]).closest(".inputbox").find("li");
 				for(var ii = 0; ii < prodItem.length; ii++){
@@ -424,8 +423,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 						}
 					}
 				}
-				var  j = i+1;
-				if(i<item.length){ $(item[j]).focus(); }
 			}
 		}
 	}
@@ -501,8 +498,17 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			}
 		});
 
-		$(".notall").keyup(function(){
+		var $notall = $(".notall").keyup(function(){
             $(this).val($(this).val().replace(/[^0-9]/g,""));
+            if($(this).val().length == 12){
+                var idx = $notall.index(this); // <- 변경된 코드
+                var num = idx+1;
+
+                var item = $(".notall");
+                if(num < item.length){
+                    $notall[num].focus();
+                }
+            }
 			notallLengthCheck();
 		});
 

@@ -398,9 +398,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 						}
 					}
 				}
-				
-				var j = i+1;
-                if(i<item.length){ $(item[j]).focus(); }
 			}
 		}
 	}
@@ -476,8 +473,17 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			}
 		});
 
-		$(".notall").keyup(function(){
+		var $notall = $(".notall").keyup(function(){
             $(this).val($(this).val().replace(/[^0-9]/g,""));
+            if($(this).val().length == 12){
+                var idx = $notall.index(this); // <- 변경된 코드
+                var num = idx+1;
+
+                var item = $(".notall");
+                if(num < item.length){
+                    $notall[num].focus();
+                }
+            }
 			notallLengthCheck();
 		});
 
