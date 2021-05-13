@@ -1,32 +1,27 @@
 <?php
 
 	include_once("./_common.php");
-
 	$g5["title"] = "주문 내역 바코드 수정";
 	// include_once(G5_ADMIN_PATH."/admin.head.php");
-
-	$sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
+    $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 	$od = sql_fetch($sql);
+	$sql = " select * from {$g5['g5_shop_cart_table']} where `ct_id` = '$ct_id' ";
+	$ct = sql_fetch($sql);
 	$prodList = [];
 	$prodListCnt = 0;
-	$prodListCnt2 = 0;
 	$deliveryTotalCnt = 0;
     $prodSupYn_count=0;
-
-	if (!$od['od_id']) {
+	if (!$ct['ct_id']) {
 		alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 	} else {
-            $sto_imsi="";
-            $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
-            $result_ct = sql_query($sql_ct);
-            while($row_ct = sql_fetch_array($result_ct)) {
-                $sto_imsi .=$row_ct['stoId'];
-            }
+            $sto_imsi=$ct['stoId'];
             $stoIdDataList = explode('|',$sto_imsi);
             $stoIdDataList=array_filter($stoIdDataList);
             $stoIdData = implode("|", $stoIdDataList);
-	}
-
+            $sendData["stoId"] = $stoIdData;
+            $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+            $result_again =$res['data'];
+    }
 	$carts = get_carts_by_od_id($od_id);
 
 	# 210317 추가정보
@@ -169,8 +164,7 @@
 	<!-- 상품기본정보 -->
 	<div id="itInfoWrap">
 		<p class="name">
-			[<?=($od["recipient_yn"] == "Y") ? "주문" : "재고"?>] <?=$moreInfo["it_name"]?> <?=$moreInfoDisplayCnt?>
-			<!-- <span class="delivery">(배송 : <?=$od_cart_count?>개)</span> -->
+			[<?=($od["recipient_yn"] == "Y") ? "주문" : "재고"?>] <?=$ct["it_name"]?>
 		</p>
 
 		<p class="date">
@@ -194,47 +188,30 @@
 		<input type="hidden" name="update_type" value="popup">
 		<ul class="imfomation_box" id="imfomation_box">
 		<?php
-			for($i = 0; $i < count($carts); $i++){
-                # 요청사항
-                $prodMemo = "";
-
-				$options = $carts[$i]["options"];
-
-                //보유재고 (무조건 입력) / 유통(미입력) 비유통(입력)
-                $readonly = "";
-                if($_GET['stock_insert']=="1"){
-                    if($carts[$i]['prodSupYn']=="N"){
-                        $barcode_placeholder ="바코드를 입력하세요.";
+                    # 요청사항
+                    $prodMemo = "";
+                    //보유재고 (무조건 입력) / 유통(미입력) 비유통(입력)
+                    $readonly = "";
+                    if($_GET['stock_insert']=="1"){
+                        if($ct['prodSupYn']=="N"){
+                            $barcode_placeholder ="바코드를 입력하세요.";
+                        }else{
+                            $barcode_placeholder ="바코드가 입력되지 않았습니다.";
+                            $readonly="readonly";
+                        }
                     }else{
-                        $barcode_placeholder ="바코드가 입력되지 않았습니다.";
-                        $readonly="readonly";
+                        $barcode_placeholder ="바코드를 입력하세요.";
+                        $prodSupYn_count++;
                     }
-                }else{
-                    $barcode_placeholder ="바코드를 입력하세요.";
+                    if($member['mb_id']=="admin"){
+                    $readonly = "";
                     $prodSupYn_count++;
-                }
-                if($member['mb_id']=="admin"){
-                $readonly = "";
-                $prodSupYn_count++;
-                }
+                    }
 
-				for($k = 0; $k < count($options); $k++){
-					$stoId_v=[];
-					$stoId_v = explode('|',$options[$k]['stoId']);
-					$stoId_v=array_filter($stoId_v);
 
-                    if($options[$k]['it_id'] !== $_GET['prodId'] || $options[$k]["ct_option"]!==$_GET['option']){ 
-                    
-						for($b = 0; $b< $options[$k]["ct_qty"]; $b++){ 
-							echo '<input type="hidden" maxlength="12" oninput="maxLengthCheck(this)" value="'.$prodList[$b]["prodBarNum"].'" class="frm_input frm_input_'.$prodListCnt.' required prodBarNumItem_'.$prodList[$prodListCnt]["penStaSeq"].' '.$stoIdDataList[$prodListCnt].'" placeholder="'.$barcode_placeholder.'" data-frm-no="'.$prodListCnt.'" maxlength="12">';
-							$prodListCnt++; 
-							$prodListCnt2++;
-						}
-						continue;
-					}
-                    if($options[$k]['prodSupYn']==="N"){ $prodSupYn_count++; }
+                    if($ct['prodSupYn']==="N"){ $prodSupYn_count++; }
 					# 요청사항
-					$prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
+					$prodMemo = $ct["prodMemo"];
 		?>
 					<a href="javascript:void(0)">
 						<li class="li_box">
@@ -242,34 +219,29 @@
 								<p class="p1">
 									<span class="span1">
 										<!-- 상품명 -->
-                                        <?php if($options[$k]['ct_stock_qty']){ echo '[재고소진]'; } ?>
-										<?=stripslashes($carts[$i]["it_name"])?>
+                                        <?php if($ct['ct_stock_qty']){ echo '[재고소진]'; } ?>
+										<?=stripslashes($ct["it_name"])?>
 										<!-- 옵션 -->
-										<?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
-												(<?=$options[$k]["ct_option"]?>)
+										<?php if($ct["it_name"] != $ct["ct_option"]){ ?>
+												(<?=$ct["ct_option"]?>)
 										<?php } ?>
 									</span>
 									<span class="span2">
-										<?php
-											$add_class="";
-											for($b = 0; $b< $options[$k]["ct_qty"]; $b++){
-												$add_class=$add_class.' '.$stoIdDataList[$prodListCnt2].'_v';
-												$prodListCnt2++;
-											}
-										?>
-										<span class="<?=$add_class?> c_num">0</span>/<?=$options[$k]["ct_qty"]?>
+										<span class="<?=$add_class?> c_num">0</span>/<?=$ct["ct_qty"]?>
 										<img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
 										<img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
 									</span>
 								</p>
+
 								<?php if($prodMemo){ ?>
-								<p class="cartProdMemo"><?=$prodMemo?></p>
+								    <p class="cartProdMemo"><?=$prodMemo?></p>
 								<?php } ?>
+
 							</div>
 
 							
 							<div class="folding_box">
-								<?php if($options[$k]["ct_qty"] >= 2){ ?>
+								<?php if($ct["ct_qty"] >= 2){ ?>
 										<span>
 										<input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
 										<button type="button" class="barNumCustomSubmitBtn">등록</button>
@@ -277,9 +249,9 @@
 										</span>
 								<?php } ?>
 									<ul class="inputbox">
-										<?php for($b = 0; $b< count($stoId_v); $b++){ ?>
+										<?php for($b = 0; $b< count($result_again); $b++){ ?>
                                         <li>
-                                            <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>  2<?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                                            <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
                                             <i class="fa fa-check"></i>
                                             <span class="overlap">중복</span>
                                             <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
@@ -290,12 +262,12 @@
 							</div>
 
                             <div class="deliveryInfoWrap">
-								<?php if ($options[$k]['ct_combine_ct_id']) { ?>
+								<?php if ($ct['ct_combine_ct_id']) { ?>
 									<?php
 									// 합포 상품 찾기
 									foreach($carts as $c) {
 										foreach($c['options'] as $o) {
-											if($options[$k]['ct_combine_ct_id'] === $o['ct_id']) {
+											if($ct['ct_combine_ct_id'] === $o['ct_id']) {
 												echo stripslashes($c["it_name"]);
 												if($c["it_name"] != $o["ct_option"]){
 													echo '(' . $o["ct_option"] . ')';
@@ -306,23 +278,19 @@
 									}
 									?>
 								<?php } else { ?>
-									<input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
-									<select name="ct_delivery_company_<?=$options[$k]["ct_id"]?>">
+									<input type="hidden" name="ct_id[]" value="<?=$ct["ct_id"]?>">
+									<select name="ct_delivery_company_<?=$ct["ct_id"]?>">
 									<?php foreach($delivery_companys as $data){ ?>
-										<option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+										<option value="<?=$data["val"]?>" <?=($ct["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
 									<?php } ?>
 									</select>
-									<input type="text" value="<?=$options[$k]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>" placeholder="송장번호 입력">
+									<input type="text" value="<?=$ct["ct_delivery_num"]?>" name="ct_delivery_num_<?=$ct["ct_id"]?>" placeholder="송장번호 입력">
 									<img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
 								<?php } ?>
 							</div>
 
 						</li>
 					</a>
-					<?php
-					}
-				}
-				?>
 		</ul>
 	</form>
 
@@ -413,6 +381,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			}
 			if(length == 12){
 				$(item[i]).parent().find("i").addClass("active");
+
 				var index = $(item[i]).parent("li").index();
 				var prodItem = $(item[i]).closest(".inputbox").find("li");
 				for(var ii = 0; ii < prodItem.length; ii++){
@@ -425,6 +394,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 				}
 			}
 		}
+        
 	}
 
 	/* 기종체크 */
@@ -515,12 +485,10 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         var stoldList = [];
         var count=0;
         var stoIdData = "<?=$stoIdData?>";
-        console.log(stoIdData);
         if(stoIdData){
             var sendData = {
                 stoId : stoIdData
             }
-
             $.ajax({
                 url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
                 type : "POST",
@@ -528,34 +496,12 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                 contentType : "application/json; charset=utf-8;",
                 data : JSON.stringify(sendData),
                 success : function(res){
-                    console.log(res);
-                    //here2
                     $.each(res.data, function(key, value){
                         $("." + value.stoId).val(value.prodBarNum);
-                        //완료된 숫자 세고 집어넣기
-                        if(value.prodBarNum){
-                            // var number=$("." + value.stoId+"_v").html();
-                            // var number_v=parseInt(number)+1
-                            // $("." + value.stoId+"_v").html(number_v);
-                            // count++;
-                        }
                     });
-
-                    console.log(res.data);
-                    // $.each(res.data, function(key, value){
-                    //     //완료된 숫자 세고 집어넣기
-                    //     if(value.prodBarNum){
-                    //         console.log();
-                    //         // $("." + value.stoId+"_img").html('z');
-                    //     }
-                    // });
-
-
-
                     if(res.data){
                         stoldList = res.data;
                     }
-
 					notallLengthCheck();
 					foldingBoxSetting();
                 }
@@ -577,14 +523,11 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 				data : $("#submitForm").serialize()
 			});
                 var prodsList = {};
-                
                     var flag=false;
                     $.each(stoldList, function(key, value){
 						if($("." + value.stoId).val()&&$("." + value.stoId).val().length !=12){ flag =true;}
-
                         var prodBarNum = ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "";
                         prodBarNum = (prodBarNum) ?  prodBarNum : $(".2" + value.stoId).val();
-                        console.log(prodBarNum);
                         prodsList[key] = {
                         stoId : value.stoId,
                         prodColor : value.prodColor,
@@ -595,11 +538,12 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                         stoMemo : (value.stoMemo) ? value.stoMemo : ""
                     }
 					if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false;}
-
                     if($("." + value.stoId).val()){
                         insertBarCnt++;
                     }
                 });
+
+                if(flag){ return false;}
 
                 var sendData = {
                     usrId : "<?=$od["mb_id"]?>",
@@ -670,6 +614,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     }
                 }
             }
+            
             if(val){
                 val = val.split("^");
                 var first = val[0];
@@ -708,7 +653,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     }
                 }
             }
-
 			 notallLengthCheck();
         });
 
@@ -762,12 +706,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                 cancel : "y"
             },
             success : function(result){
-                <?php if($_GET['new']){ ?>
-                    history.back();
-                <?php }else{ ?>
-                    opener.location.reload();
-                    window.close();
-                <?php }?>
+                location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
             }
             });
     }
@@ -803,6 +742,4 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         popup.classList.add('hide');
     }
 </script>
-    <!-- <hr color="#dddddd" size="1"> -->
  </body>
-
