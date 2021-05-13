@@ -412,18 +412,23 @@ $pt_syndi_sql = ($is_admin == 'super') ? " pt_syndi = '$pt_syndi', pt_commission
 
 $it_sale_cnt = ($_POST["it_sale_cnt"]) ? $_POST["it_sale_cnt"] : 0;
 $it_sale_percent = ($_POST["it_sale_percent"]) ? $_POST["it_sale_percent"] : 0;
+$it_sale_percent = ($_POST["it_sale_percent_great"]) ? $_POST["it_sale_percent_great"] : 0;
 
 $it_sale_cnt_02 = ($_POST["it_sale_cnt_02"]) ? $_POST["it_sale_cnt_02"] : 0;
 $it_sale_percent_02 = ($_POST["it_sale_percent_02"]) ? $_POST["it_sale_percent_02"] : 0;
+$it_sale_percent_02 = ($_POST["it_sale_percent_great_02"]) ? $_POST["it_sale_percent_great_02"] : 0;
 
 $it_sale_cnt_03 = ($_POST["it_sale_cnt_03"]) ? $_POST["it_sale_cnt_03"] : 0;
 $it_sale_percent_03 = ($_POST["it_sale_percent_03"]) ? $_POST["it_sale_percent_03"] : 0;
+$it_sale_percent_03 = ($_POST["it_sale_percent_great_03"]) ? $_POST["it_sale_percent_great_03"] : 0;
 
 $it_sale_cnt_04 = ($_POST["it_sale_cnt_04"]) ? $_POST["it_sale_cnt_04"] : 0;
 $it_sale_percent_04 = ($_POST["it_sale_percent_04"]) ? $_POST["it_sale_percent_04"] : 0;
+$it_sale_percent_04 = ($_POST["it_sale_percent_great_04"]) ? $_POST["it_sale_percent_great_04"] : 0;
 
 $it_sale_cnt_05 = ($_POST["it_sale_cnt_05"]) ? $_POST["it_sale_cnt_05"] : 0;
 $it_sale_percent_05 = ($_POST["it_sale_percent_05"]) ? $_POST["it_sale_percent_05"] : 0;
+$it_sale_percent_05 = ($_POST["it_sale_percent_great_05"]) ? $_POST["it_sale_percent_great_05"] : 0;
 
 $prodId = $it_id;
 $entId = $_POST["entId"];
@@ -433,6 +438,9 @@ $ProdPayCode = $_POST["prodPayCode"];
 
 $_POST["it_delivery_cnt"] = ($_POST["it_delivery_cnt"]) ? $_POST["it_delivery_cnt"] : 0;
 $_POST["it_delivery_price"] = ($_POST["it_delivery_price"]) ? $_POST["it_delivery_price"] : 0;
+
+$_POST["it_delivery_min_cnt"] = ($_POST["it_delivery_min_cnt"]) ? $_POST["it_delivery_min_cnt"] : 0;
+$_POST["it_delivery_min_price"] = ($_POST["it_delivery_min_price"]) ? $_POST["it_delivery_min_price"] : 0;
 
 $it_rental_price = ($_POST["it_rental_price"]) ? $_POST["it_rental_price"] : 0;
 
@@ -598,14 +606,20 @@ $sql_common = " ca_id               = '$ca_id',
                 it_type             = '$it_type',
                 it_sale_cnt             = '$it_sale_cnt',
                 it_sale_percent             = '$it_sale_percent',
+                it_sale_percent_great             = '$it_sale_percent_great',
 				  it_sale_cnt_02             = '$it_sale_cnt_02',
                 it_sale_percent_02             = '$it_sale_percent_02',
+                it_sale_percent_great_02             = '$it_sale_percent_great_02',
 				  it_sale_cnt_03             = '$it_sale_cnt_03',
                 it_sale_percent_03             = '$it_sale_percent_03',
+                it_sale_percent_great_03             = '$it_sale_percent_great_03',
 				  it_sale_cnt_04             = '$it_sale_cnt_04',
                 it_sale_percent_04             = '$it_sale_percent_04',
+                it_sale_percent_great_04             = '$it_sale_percent_great_04',
 				  it_sale_cnt_05             = '$it_sale_cnt_05',
                 it_sale_percent_05             = '$it_sale_percent_05',
+                it_sale_percent_great_05             = '$it_sale_percent_great_05',
+                
 					entId = '$entId',
 					prodSupYn = '$prodSupYn',
 					prodSizeDetail = '$prodSizeDetail',
@@ -613,6 +627,8 @@ $sql_common = " ca_id               = '$ca_id',
 
 					it_delivery_cnt = '{$_POST["it_delivery_cnt"]}',
 					it_delivery_price = '{$_POST["it_delivery_price"]}',
+                    it_delivery_min_cnt = '{$_POST["it_delivery_min_cnt"]}',
+					it_delivery_min_price = '{$_POST["it_delivery_min_price"]}',
                     it_is_direct_delivery = '$it_is_direct_delivery'
 				"; // APMS : 2014.07.20
 
