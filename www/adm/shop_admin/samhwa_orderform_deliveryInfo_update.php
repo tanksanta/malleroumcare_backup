@@ -14,7 +14,7 @@
 		$ct_delivery_combine_ct_id = (int)$_POST["ct_combine_ct_id_{$ct_id}"];
 		$ct_is_direct_delivery = (int)$_POST["ct_is_direct_delivery_{$ct_id}"] ?: 0;
 		
-		if($ct_delivery_num){
+		if($ct_delivery_num||$ct_delivery_combine){
 			$od_delivery_insert++;
 		}
 
