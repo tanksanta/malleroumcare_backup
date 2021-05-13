@@ -412,23 +412,23 @@ $pt_syndi_sql = ($is_admin == 'super') ? " pt_syndi = '$pt_syndi', pt_commission
 
 $it_sale_cnt = ($_POST["it_sale_cnt"]) ? $_POST["it_sale_cnt"] : 0;
 $it_sale_percent = ($_POST["it_sale_percent"]) ? $_POST["it_sale_percent"] : 0;
-$it_sale_percent = ($_POST["it_sale_percent_great"]) ? $_POST["it_sale_percent_great"] : 0;
+$it_sale_percent_great = ($_POST["it_sale_percent_great"]) ? $_POST["it_sale_percent_great"] : 0;
 
 $it_sale_cnt_02 = ($_POST["it_sale_cnt_02"]) ? $_POST["it_sale_cnt_02"] : 0;
 $it_sale_percent_02 = ($_POST["it_sale_percent_02"]) ? $_POST["it_sale_percent_02"] : 0;
-$it_sale_percent_02 = ($_POST["it_sale_percent_great_02"]) ? $_POST["it_sale_percent_great_02"] : 0;
+$it_sale_percent_great_02 = ($_POST["it_sale_percent_great_02"]) ? $_POST["it_sale_percent_great_02"] : 0;
 
 $it_sale_cnt_03 = ($_POST["it_sale_cnt_03"]) ? $_POST["it_sale_cnt_03"] : 0;
 $it_sale_percent_03 = ($_POST["it_sale_percent_03"]) ? $_POST["it_sale_percent_03"] : 0;
-$it_sale_percent_03 = ($_POST["it_sale_percent_great_03"]) ? $_POST["it_sale_percent_great_03"] : 0;
+$it_sale_percent_great_03 = ($_POST["it_sale_percent_great_03"]) ? $_POST["it_sale_percent_great_03"] : 0;
 
 $it_sale_cnt_04 = ($_POST["it_sale_cnt_04"]) ? $_POST["it_sale_cnt_04"] : 0;
 $it_sale_percent_04 = ($_POST["it_sale_percent_04"]) ? $_POST["it_sale_percent_04"] : 0;
-$it_sale_percent_04 = ($_POST["it_sale_percent_great_04"]) ? $_POST["it_sale_percent_great_04"] : 0;
+$it_sale_percent_great_04 = ($_POST["it_sale_percent_great_04"]) ? $_POST["it_sale_percent_great_04"] : 0;
 
 $it_sale_cnt_05 = ($_POST["it_sale_cnt_05"]) ? $_POST["it_sale_cnt_05"] : 0;
 $it_sale_percent_05 = ($_POST["it_sale_percent_05"]) ? $_POST["it_sale_percent_05"] : 0;
-$it_sale_percent_05 = ($_POST["it_sale_percent_great_05"]) ? $_POST["it_sale_percent_great_05"] : 0;
+$it_sale_percent_great_05 = ($_POST["it_sale_percent_great_05"]) ? $_POST["it_sale_percent_great_05"] : 0;
 
 $prodId = $it_id;
 $entId = $_POST["entId"];
