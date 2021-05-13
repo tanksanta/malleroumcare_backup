@@ -83,7 +83,7 @@ if (!$od['od_id']) {
                 $sto_imsi .=$row_ct['stoId'];
 
                 //배송정보
-                if($row_ct['ct_combine_ct_id']||$row_ct['ct_delivery_num']){
+                if($row_ct['ct_combine_ct_id']||$row_ct['ct_delivery_num']||$row_ct['ct_is_direct_delivery']){
                     $delivery_insert++;
                 }
 
