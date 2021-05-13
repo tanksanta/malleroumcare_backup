@@ -1,7 +1,8 @@
 <?php
 	include_once("./_common.php");
 
-  $eform = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '$od_id'");
+  $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
+  $items = sql_query("SELECT * FROM `eform_document_item` WHERE dc_id = UNHEX('{$eform["uuid"]}')");
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -341,7 +342,7 @@
               <button id="btnAddRentProd">추가</button>
             </div>
             <div class="prodTableWrap">
-              <table id="tableBuyProd">
+              <table id="tableRentProd">
                 <thead>
                   <tr>
                     <th>품목명</th>
@@ -386,11 +387,11 @@
       </div>
       <div id="entConAcc01Row" class="row entConAcc">
         <h3>특약사항1</h3>
-        <textarea name="entConAcc01" id="entConAcc01"><?=$eform["entConAcc01"]?></textarea>
+        <textarea name="entConAcc01" id="entConAcc01"></textarea>
       </div>
       <div id="entConAcc02Row" class="row entConAcc">
         <h3>특약사항2</h3>
-        <textarea name="entConAcc02" id="entConAcc02"><?=$eform["entConAcc02"]?></textarea>
+        <textarea name="entConAcc02" id="entConAcc02"></textarea>
       </div>
     </div>
     <div class="popupFootWrap flex">
@@ -409,6 +410,74 @@
   $(function(){
     $("#btnCloseEform").click(closePopup);
     $("#btnCancelEform").click(closePopup);
+
+    var status = {
+      agreement: false,
+      entConAcc01: "<?=htmlspecialchars($eform["entConAcc01"])?>",
+      entConAcc02: "<?=htmlspecialchars($eform["entConAcc02"])?>",
+      buy: {
+        items: [<?php while($item = sql_fetch_array($items)) {
+          if($item['gubun'] == '00') { // 판매재고 ?>
+            {
+              it_id: '<?=$item['it_id']?>',
+              ca_name: '<?=htmlspecialchars($item['ca_name'])?>',
+              it_name: '<?=htmlspecialchars($item['it_name'])?>',
+              it_code: '<?=htmlspecialchars($item['it_code'])?>',
+              it_barcode: '<?=htmlspecialchars($item['it_barcode'])?>',
+              it_qty: '<?=$item['it_qty']?>',
+              it_date: '<?=htmlspecialchars($item['it_date'])?>',
+              it_price: '<?=$item['it_price']?>',
+              it_price_pen: '<?=$item['it_price_pen']?>',
+              deleted: false
+            },
+<?php     }
+        } ?>],
+        customs: []
+      },
+      rent: {
+        items: [<?php while($item = sql_fetch_array($items)) {
+          if($item['gubun'] == '01') { // 대여재고 ?>
+            {
+              it_id: '<?=$item['it_id']?>',
+              ca_name: '<?=htmlspecialchars($item['ca_name'])?>',
+              it_name: '<?=htmlspecialchars($item['it_name'])?>',
+              it_code: '<?=htmlspecialchars($item['it_code'])?>',
+              it_barcode: '<?=htmlspecialchars($item['it_barcode'])?>',
+              it_qty: '<?=$item['it_qty']?>',
+              it_date: '<?=htmlspecialchars($item['it_date'])?>',
+              it_price: '<?=$item['it_price']?>',
+              it_price_pen: '<?=$item['it_price_pen']?>',
+              deleted: false
+            },
+<?php     }
+        } ?>],
+        customs: []
+      }
+    };
+
+    function repaintForm() {
+      var renderBuyItem = function(item) {
+        var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+item.it_price+'</td><td>'+item.it_price_pen+'</td><td><button class="btnDelProd" data-id="'+item.it_id+'" data-gubun="00">&times;</button></td></tr>';
+        $("#tableBuyProd tbody").append(html);
+      };
+
+      // 확인함 체크박스
+      $('#chkConfirm').attr('checked', status.agreement);
+      // 특약사항
+      $('#entConAcc01').val(status.entConAcc01);
+      $('#entConAcc02').val(status.entConAcc02);
+
+      //구매물품
+      $("#tableBuyProd tbody").empty();
+      for(var i = 0; i < status.buy.items.length; i++) {
+        renderBuyItem(status.buy.items[i]);
+      }
+
+      //대여물품
+      $("#tableRentProd tbody").empty();
+    }
+
+    repaintForm();
   });
   </script>
 </body>
