@@ -466,6 +466,12 @@
       status.agreement = !status.agreement;
       repaintForm();
     });
+    $('#entConAcc01').on('input propertychange paste', function() { // 특약사항1
+      status.entConAcc01 = $(this).val();
+    });
+    $('#entConAcc02').on('input propertychange paste', function() { // 특약사항2
+      status.entConAcc02 = $(this).val();
+    });
     $(document).on('change', 'input', function() {
 
     });
