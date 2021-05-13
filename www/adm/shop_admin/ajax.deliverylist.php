@@ -569,10 +569,22 @@ foreach($orderlist as $order) {
         $deliveryCntBtnWord = " 입력 ({$delivery_input_cnt}/". $cart_cnt .")";
         $deliveryCntBtnWord .= ", 전송 ({$edi_success_cnt}/". $cart_cnt .")";
         $deliveryCntBtnWord .= ", 송장 ({$edi_return_cnt}/". $cart_cnt .")";
-        $deliveryCntBtnWord ="배송정보";
 
+
+        //배송정보
         $deliveryCntBtnStatus = '';
-        if ($edi_return_cnt >= $cart_cnt) {
+        $deliveryCntBtnWord ="배송정보";
+        $delivery_insert=0;
+        $delivery_all_insert=0;
+        $sql_od_ct = " select * from {$g5['g5_shop_cart_table']} where od_id = '".$result_ct['od_id']."' ";
+        $result_od_ct = sql_query($sql_od_ct);
+        while($row_od_ct = sql_fetch_array($result_od_ct)) {
+            $delivery_all_insert++;
+            if($row_od_ct['ct_combine_ct_id']||$row_od_ct['ct_delivery_num']){
+                $delivery_insert++;
+            }
+        }
+        if ($delivery_insert >= $delivery_all_insert) {
 		    $deliveryCntBtnWord = '입력완료';
             $deliveryCntBtnStatus = ' disable ';
         }
