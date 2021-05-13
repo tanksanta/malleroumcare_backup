@@ -411,7 +411,7 @@
     $("#btnCloseEform").click(closePopup);
     $("#btnCancelEform").click(closePopup);
 
-    var status = {
+    var initialStatus = {
       agreement: false,
       entConAcc01: "<?=htmlspecialchars($eform["entConAcc01"])?>",
       entConAcc02: "<?=htmlspecialchars($eform["entConAcc02"])?>",
@@ -454,6 +454,8 @@
         customs: []
       }
     };
+
+    var status = JSON.parse(JSON.stringify(initialStatus)); // deep copy
 
     function repaintForm() {
       var renderBuyItem = function(item) {
