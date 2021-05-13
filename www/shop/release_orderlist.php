@@ -21,6 +21,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+	<script src="<?=G5_JS_URL?>/cookie.js"></script>
 	<link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
 	<link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
 
@@ -137,14 +138,13 @@
  	
  	<!-- 정렬 -->
  	<div id="listSortWrap">
- 		<input type="checkbox" id="cf_flag" checked>
+ 		<input type="checkbox" id="cf_flag">
  		<label for="cf_flag">
  			<span class="icon">
  				<i class="fa fa-check"></i>
  			</span>
  			<span class="label">바코드 등록 미완료 만 보기</span>
  		</label>
- 		
 
         <input type="checkbox" id="cf_flag2">
  		<label for="cf_flag2">
@@ -175,6 +175,8 @@
  	<input type="hidden" value="1" id="page">
 
 <script>
+// 출처: https://cofs.tistory.com/363 [CofS]
+
 	/* 210317 아이템 이름 넓이 조정 */
 	function itNameSizeSetting(){
 		var item = $("#listDataWrap > ul");
@@ -301,6 +303,11 @@
 
     $( document ).ready(function() {
 		
+
+        if(getCookie("cf_flag")){ document.getElementById('cf_flag').checked =true;}else{document.getElementById('cf_flag').checked =false; }
+        if(getCookie("cf_flag2")){ document.getElementById('cf_flag2').checked =true;}else{document.getElementById('cf_flag2').checked =false; }
+        if(getCookie("cf_flag3")){ document.getElementById('cf_flag3').checked =true;}else{document.getElementById('cf_flag3').checked =false; }
+
 		$.datepicker.setDefaults({
 			dateFormat : 'yy-mm-dd',
 			prevText: '이전달',
@@ -375,6 +382,9 @@
     function cf_flag(){ 
         //자신, 바코드
         if(document.getElementById('cf_flag').checked&&document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked){
+            setCookie("cf_flag", true, 1);
+            setCookie("cf_flag2", true, 1);
+            deleteCookie("cf_flag3");
             $("#listDataWrap > ul").removeClass("type2");
             $("#listDataWrap > ul").addClass("type1");
             $("#listDataWrap > ul.<?=$member['mb_name']?>").removeClass("type1");
@@ -385,6 +395,10 @@
         }
         //미지정, 바코드
         if(document.getElementById('cf_flag').checked&&document.getElementById('cf_flag3').checked&&!document.getElementById('cf_flag2').checked){
+            setCookie("cf_flag", true, 1);
+            deleteCookie("cf_flag2");
+            setCookie("cf_flag3", true, 1);
+
             $("#listDataWrap > ul").removeClass("type2");
             $("#listDataWrap > ul").addClass("type1");
             $("#listDataWrap > ul.미지정").removeClass("type1");
@@ -395,10 +409,12 @@
 
         }
 
-
-
         //바코드 미완료만체크
         if(document.getElementById('cf_flag').checked&&!document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked){
+            setCookie("cf_flag", true, 1);
+            deleteCookie("cf_flag2");
+            deleteCookie("cf_flag3");
+
             $("#listDataWrap > ul").removeClass("type1");
             $("#listDataWrap > ul").addClass("type2");
             
@@ -409,6 +425,10 @@
 
         //내담당만 체크
         if(!document.getElementById('cf_flag').checked&&document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked){
+            deleteCookie("cf_flag");
+            setCookie("cf_flag2", true, 1);
+            deleteCookie("cf_flag3");
+
             $("#listDataWrap > ul.cf").addClass("type2");
             $("#listDataWrap > ul.cf").removeClass("type1");
 
@@ -419,6 +439,10 @@
         }
         //미완료만 체크
         if(!document.getElementById('cf_flag').checked&&document.getElementById('cf_flag3').checked&&!document.getElementById('cf_flag2').checked){
+            deleteCookie("cf_flag");
+            deleteCookie("cf_flag2");
+            setCookie("cf_flag3", true, 1);
+
             $("#listDataWrap > ul.cf").addClass("type2");
             $("#listDataWrap > ul.cf").removeClass("type1");
 
@@ -431,6 +455,9 @@
 
         //셋다 체크 x
         if(!document.getElementById('cf_flag').checked&&!document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked){
+            deleteCookie("cf_flag");
+            deleteCookie("cf_flag2");
+            deleteCookie("cf_flag3");
             $("#listDataWrap > ul.cf").addClass("type2");
             $("#listDataWrap > ul.cf").removeClass("type1");
         }
@@ -451,6 +478,7 @@
 		cf_flag();
 	});
     //바코드 버튼 클릭
+
     $(document).on("click", ".barcode_box", function(e){
 		e.preventDefault();
 		var id = $(this).attr("data-id");
