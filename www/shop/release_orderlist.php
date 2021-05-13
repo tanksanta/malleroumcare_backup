@@ -68,7 +68,7 @@
 		#listDataWrap > ul > li.mainInfo { padding-right: 110px; }
 		#listDataWrap > ul > li.mainInfo > p { width: 100%; float: left; }
 		#listDataWrap > ul > li.mainInfo > .name { font-size: 17px; font-weight: bold; color: #000; }
-		#listDataWrap > ul > li.mainInfo > .name > span { float: left; overflow: hidden; text-overflow: ellipsis; white-space: normal; }
+		#listDataWrap > ul > li.mainInfo > .name > span { float: left; overflow: hidden; text-overflow: ellipsis; white-space: ; }
 		#listDataWrap > ul > li.mainInfo > .name > span.delivery { color: #FF690F; padding-left: 5px; }
 		#listDataWrap > ul > li.mainInfo > .cnt { font-size: 13px; color: #999; margin-top: 2px; }
 		#listDataWrap > ul > li.mainInfo > .date { font-size: 13px; color: #999; margin-top: 20px; }
@@ -144,8 +144,9 @@
  			</span>
  			<span class="label">바코드 등록 미완료 만 보기</span>
  		</label>
+ 		
 
-		 <input type="checkbox" id="cf_flag2">
+        <input type="checkbox" id="cf_flag2">
  		<label for="cf_flag2">
  			<span class="icon">
  				<i class="fa fa-check"></i>
@@ -153,7 +154,7 @@
  			<span class="label">내 담당만 보기</span>
  		</label>
 
-		<input type="checkbox" id="cf_flag3">
+        <input type="checkbox" id="cf_flag3">
  		<label for="cf_flag3">
  			<span class="icon">
  				<i class="fa fa-check"></i>
@@ -162,7 +163,6 @@
  		</label>
 
  		<button type="button" id="listSortChangeBtn">
- 			<!-- <span class="active" data-sort="od_time">주문일 정렬↓</span> -->
  			<span class="active" data-sort="od_time"></span>
  			<span data-sort="od_status">상태 정렬↓</span>
  		</button>
@@ -272,7 +272,8 @@
 						html += '<span>' + row.od_status_name + '</span>';
 						html += '</p>';
 						html += '</li>';
-						html += '<li class="barInfo barcode_box ' + row.od_barcode_class + '" data-id="' + row.od_id + '" data-stock="2" data-it="'+row.ct_it_id+'"  data-option="'+row.ct_option+'" >';
+						// html += '<li class="barInfo barcode_box ' + row.od_barcode_class + '" data-id="' + row.od_id + '" data-stock="2" data-it="'+row.ct_it_id+'"  data-option="'+row.ct_option+'" >';
+						html += '<li class="barInfo barcode_box ' + row.od_barcode_class + '" data-id="' + row.od_id + '" data-ct-id="'+row.ct_id + '" >';
 						html += '<span class="cnt">' + row.od_barcode_name + '</span>';
 						// if(row.edit_status){
 						// 	html += '<span class="label">작업중</span>';
@@ -371,7 +372,7 @@
     //     });
     // });
     //미완료 바코드 작성만보기버튼
-	function cf_flag(){ 
+    function cf_flag(){ 
         //자신, 바코드
         if(document.getElementById('cf_flag').checked&&document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked){
             $("#listDataWrap > ul").removeClass("type2");
@@ -393,6 +394,8 @@
             $("#listDataWrap > ul.cf").removeClass("type2");
 
         }
+
+
 
         //바코드 미완료만체크
         if(document.getElementById('cf_flag').checked&&!document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked){
@@ -435,6 +438,7 @@
         doSearch();
 		itNameSizeSetting();
     }
+
 	$("#cf_flag").change(function(){
 		cf_flag();
 	});
@@ -446,11 +450,11 @@
         document.getElementById('cf_flag2').checked=false;
 		cf_flag();
 	});
-
     //바코드 버튼 클릭
     $(document).on("click", ".barcode_box", function(e){
 		e.preventDefault();
 		var id = $(this).attr("data-id");
+		var ct_id = $(this).attr("data-ct-id");
 		
 
         var od = $(this).attr("data-od");
@@ -470,7 +474,7 @@
 				// 		location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form.php?od_id="+ id+"&new=1";
 				// 	}
 				// } else {
-					location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&new=1"+"&stock_insert=" + stock + "&option=" + option+"&prodId=" + it;
+					location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&ct_id="+ct_id;
 				// }
 			}
 		});
