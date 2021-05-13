@@ -475,12 +475,30 @@
     $(document).on('change', 'input', function() {
 
     });
+    $(document).on('click', '.btnDelProd', function() { // 물품 삭제 버튼
+      if(!confirm('정말 해당 물품을 삭제하시겠습니까?')) return;
+
+      if($(this).data('type') === 'item') { // 실제로 구매/대여한 물품이면
+        var items = status[$(this).data('gubun')].items;
+        var it_id = $(this).data('id');
+        for(var i = 0; i < items.length; i++) {
+          if(items[i].it_id == it_id) {
+            items[i].deleted = true;
+            break;
+          }
+        }
+      }
+
+      repaintForm();
+    });
 
     function repaintForm() {
-      var renderBuyItem = function(item) {
-        var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+item.it_price+'</td><td>'+item.it_price_pen+'</td><td><button class="btnDelProd" data-id="'+item.it_id+'" data-gubun="00">&times;</button></td></tr>';
+      var renderItem = function(item, gubun) {
+        if(item.deleted) return; // 삭제된 물품은 안보여줌
+        var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+item.it_price+'</td><td>'+item.it_price_pen+'</td><td><button class="btnDelProd" data-type="item" data-id="'+item.it_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
         $("#tableBuyProd tbody").append(html);
       };
+
 
       // 확인함 체크박스
       $('#chkConfirm').prop('checked', status.agreement);
@@ -491,11 +509,14 @@
       //구매물품
       $("#tableBuyProd tbody").empty();
       for(var i = 0; i < status.buy.items.length; i++) {
-        renderBuyItem(status.buy.items[i]);
+        renderItem(status.buy.items[i], 'buy');
       }
 
       //대여물품
       $("#tableRentProd tbody").empty();
+      for(var i = 0; i < status.rent.items.length; i++) {
+        renderItem(status.rent.items[i], 'rent');
+      }
     }
 
     repaintForm();
