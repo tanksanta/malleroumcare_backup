@@ -15,6 +15,7 @@ $od = sql_fetch($sql);
 $prodList = [];
 $prodListCnt = 0;
 $deliveryTotalCnt = 0;
+$delivery_insert=0;
 if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 } else {
@@ -74,10 +75,18 @@ if (!$od['od_id']) {
 		}
 	} else {
             $sto_imsi="";
-            $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+            $sql_ct = " select * from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
             $result_ct = sql_query($sql_ct);
+            //배송정보
+
             while($row_ct = sql_fetch_array($result_ct)) {
                 $sto_imsi .=$row_ct['stoId'];
+
+                //배송정보
+                if($row_ct['ct_combine_ct_id']||$row_ct['ct_delivery_num']){
+                    $delivery_insert++;
+                }
+
             }
             $stoIdDataList = explode('|',$sto_imsi);
             $stoIdDataList=array_filter($stoIdDataList);
@@ -281,13 +290,15 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
     //	$obStaOrdStatus["03"]["name"] = "주문확정";
     //	$obStaOrdStatus["03"]["next"] = "";
 
+
+
 	$prodBarNumCntBtnWord = "바코드 ({$od["od_prodBarNum_insert"]}/{$od["od_prodBarNum_total"]})";
 	$prodBarNumCntBtnWord = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
 	$prodBarNumCntBtnStatus = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? " disable" : "";
 
-	$deliveryCntBtnWord = "배송정보 ({$od["od_delivery_insert"]}/{$od["od_delivery_total"]})";
-	$deliveryCntBtnWord = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
-	$deliveryCntBtnStatus = ($od["od_delivery_insert"] >= $od["od_delivery_total"]) ? " disable" : "";
+	$deliveryCntBtnWord = "배송정보 ({$delivery_insert}/{$od["od_delivery_total"]})";
+	$deliveryCntBtnWord = ($delivery_insert >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
+	$deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disable" : "";
 
 ?>
 <script>
