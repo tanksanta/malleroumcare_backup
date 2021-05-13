@@ -472,8 +472,15 @@
     $('#entConAcc02').on('input propertychange paste', function() { // 특약사항2
       status.entConAcc02 = $(this).val();
     });
-    $(document).on('change', 'input', function() {
-
+    $(document).on('input propertychange paste', '.inputItem', function() { // 실제 구매/대여 아이템 필드
+      var it_id = $(this).data('id'); 
+      var field = $(this).data('field');
+      var items = status[$(this).data('gubun')].items;
+      for(var i = 0; i < items.length; i++) {
+        if(items[i].it_id == it_id) {
+          items[i][field] = $(this).val();
+        }
+      }
     });
     $(document).on('click', '.btnDelProd', function() { // 물품 삭제 버튼
       if(!confirm('정말 해당 물품을 삭제하시겠습니까?')) return;
@@ -495,13 +502,13 @@
     function repaintForm() {
       var renderItem = function(item, gubun) {
         if(item.deleted) return; // 삭제된 물품은 안보여줌
-        var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+item.it_price+'</td><td>'+item.it_price_pen+'</td><td><button class="btnDelProd" data-type="item" data-id="'+item.it_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
+        var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" class="inputItem" data-gubun="'+gubun+'" data-id="'+item.it_id+'" data-field="it_barcode" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+item.it_price+'</td><td>'+item.it_price_pen+'</td><td><button class="btnDelProd" data-type="item" data-id="'+item.it_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
         $("#tableBuyProd tbody").append(html);
       };
 
-
       // 확인함 체크박스
       $('#chkConfirm').prop('checked', status.agreement);
+
       // 특약사항
       $('#entConAcc01').val(status.entConAcc01);
       $('#entConAcc02').val(status.entConAcc02);
