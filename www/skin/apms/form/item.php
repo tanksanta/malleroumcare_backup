@@ -1163,8 +1163,7 @@ $pg_anchor .='</ul>';
 				<th scope="row"><label for="it_delivery_cnt">배송비 상세조건</label></th>
 				<td>
 					<?php echo help("상품의 박스 수량에 따라 배송비가 부과됩니다."); ?>
-					1박스 기준 <input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price" class="frm_input" size="8">원 부과,
-					최소수량 <input type="text" name="it_delivery_min_cnt" value="<?php echo $it['it_delivery_min_cnt']; ?>" id="it_delivery_min_cnt" class="frm_input" size="8">개 이하 <input type="text" name="it_delivery_min_price" value="<?php echo $it['it_delivery_min_price']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
+					1박스 기준 <input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price" class="frm_input" size="8">원 부과
 				</td>
 			</tr>
 			<tr>

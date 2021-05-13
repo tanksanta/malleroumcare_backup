@@ -486,31 +486,8 @@ else // 장바구니에 담기
 
 
             // 배송정보 기본설정
-            //최소값 적용이 있는 상품인 경우
-            if($result_i['it_delivery_min_cnt']){
-                //박스 개수 큰것 +작은것 - >ceil
-                $ct_delivery_cnt = $result_i['it_delivery_cnt'] ? ceil($ct_qty / $result_i['it_delivery_cnt']) : 0;
-                //큰박스 floor 한 가격을 담음
-                $ct_delivery_bigbox = $result_i['it_delivery_cnt'] ? floor($ct_qty / $result_i['it_delivery_cnt']) : 0;
-                $ct_delivery_price = $result_i['it_delivery_cnt'] ? ($ct_delivery_bigbox * $result_i['it_delivery_price']) : 0;
-                //나머지
-                $remainder = $ct_qty % $result_i['it_delivery_cnt'];
-                //나머지가 있으면
-                if($remainder){
-                    //나머지가 최소수량보다 작으면
-                    if($remainder <= $result_i['it_delivery_min_cnt']) {
-                        //작은 박스 가격 더해줌
-                        $ct_delivery_price = $ct_delivery_price + $result_i['it_delivery_min_price'];
-                    }else{
-                        //큰 박스 가격 더해줌
-                        $ct_delivery_price = $ct_delivery_price + $result_i['it_delivery_price'];
-                    }
-                }
-            }else{
-                //없으면 큰박스로만 진행
-                $ct_delivery_cnt = $result_i['it_delivery_cnt'] ? ceil($ct_qty / $result_i['it_delivery_cnt']) : 0;
-                $ct_delivery_price = $result_i['it_delivery_cnt'] ? ((@round($ct_qty / $result_i['it_delivery_cnt']) ?: 1) * $result_i['it_delivery_price']) : 0;
-            }
+            $ct_delivery_cnt = $result_i['it_delivery_cnt'] ? ceil($ct_qty / $result_i['it_delivery_cnt']) : 0;
+            $ct_delivery_price = $result_i['it_delivery_cnt'] ? ((@round($ct_qty / $result_i['it_delivery_cnt']) ?: 1) * $result_i['it_delivery_price']) : 0;
             $ct_delivery_company = 'ilogen';
 
 
