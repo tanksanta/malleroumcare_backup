@@ -457,6 +457,19 @@
 
     var status = JSON.parse(JSON.stringify(initialStatus)); // deep copy
 
+    $('#btnResetEform').click(function(e) { // 변경사항 초기화
+      e.preventDefault();
+      status = JSON.parse(JSON.stringify(initialStatus));
+      repaintForm();
+    });
+    $('#chkConfirm').click(function(e) { // 확인함 체크박스
+      status.agreement = !status.agreement;
+      repaintForm();
+    });
+    $(document).on('change', 'input', function() {
+
+    });
+
     function repaintForm() {
       var renderBuyItem = function(item) {
         var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+item.it_price+'</td><td>'+item.it_price_pen+'</td><td><button class="btnDelProd" data-id="'+item.it_id+'" data-gubun="00">&times;</button></td></tr>';
@@ -464,7 +477,7 @@
       };
 
       // 확인함 체크박스
-      $('#chkConfirm').attr('checked', status.agreement);
+      $('#chkConfirm').prop('checked', status.agreement);
       // 특약사항
       $('#entConAcc01').val(status.entConAcc01);
       $('#entConAcc02').val(status.entConAcc02);
