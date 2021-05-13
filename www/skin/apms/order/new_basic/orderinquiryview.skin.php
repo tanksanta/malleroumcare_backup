@@ -143,9 +143,15 @@ if(defined('IS_TEST_ENVIRONMENT')) {
 			$penData = $res["data"][0];
 			$entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
 
+			$countPostfix = sql_fetch("SELECT COUNT(`dc_id`) as cnt FROM `eform_document` WHERE `entId` = '{$entData["mb_entId"]}' AND `penId` = '{$penData["penId"]}'")["cnt"];
+			$countPostfix += 1;
+			if($countPostfix < 10) $countPostfix = "00".$countPostfix;
+			else if($countPostfix < 100) $countPostfix = "0".$countPostfix;
+			$dcSubject = $entData["mb_entNm"]."_".str_replace('-', '', $entData["mb_giup_bnum"])."_".$penData["penNm"].substr($penData["penLtmNum"], 0, 6)."_".date("Ymd")."_".$countPostfix;
+
 			sql_query("INSERT INTO `eform_document` SET
 			`dc_id` = UNHEX(REPLACE(UUID(),'-','')),
-			`dc_subject` = '일단 테스트',
+			`dc_subject` = '$dcSubject',
 			`dc_status` = '0',
 			`od_id` = '{$od["od_id"]}',
 			`entId` = '{$entData["mb_entId"]}',
