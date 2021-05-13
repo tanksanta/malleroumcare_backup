@@ -121,19 +121,19 @@ if(defined('IS_TEST_ENVIRONMENT')) {
 	if($od["od_penId"]) { // 수급자 주문일 시
 		$eform = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '{$od["od_id"]}'");
 		if(!$eform['dc_id']) { // 전자계약서가 없을 경우
-			$sendPenData = [];
-			$sendPenData["usrId"] = $od["mb_id"];
-			$sendPenData["entId"] = sql_fetch("SELECT mb_entId FROM g5_member WHERE mb_id = '{$od["mb_id"]}'")["mb_entId"];
-			$sendPenData["pageNum"] = 1;
-			$sendPenData["pageSize"] = 1;
-			$sendPenData["penId"] = $od["od_penId"];
+			$sendData = [];
+			$sendData["usrId"] = $od["mb_id"];
+			$sendData["entId"] = sql_fetch("SELECT mb_entId FROM g5_member WHERE mb_id = '{$od["mb_id"]}'")["mb_entId"];
+			$sendData["pageNum"] = 1;
+			$sendData["pageSize"] = 1;
+			$sendData["penId"] = $od["od_penId"];
 	
 			$oCurl = curl_init();
 			curl_setopt($oCurl, CURLOPT_PORT, 9901);
 			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendPenData, JSON_UNESCAPED_UNICODE));
+			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
 			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
 			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
 			$res = curl_exec($oCurl);
@@ -149,8 +149,10 @@ if(defined('IS_TEST_ENVIRONMENT')) {
 			else if($countPostfix < 100) $countPostfix = "0".$countPostfix;
 			$dcSubject = $entData["mb_entNm"]."_".str_replace('-', '', $entData["mb_giup_bnum"])."_".$penData["penNm"].substr($penData["penLtmNum"], 0, 6)."_".date("Ymd")."_".$countPostfix;
 
+			$dcId = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
+
 			sql_query("INSERT INTO `eform_document` SET
-			`dc_id` = UNHEX(REPLACE(UUID(),'-','')),
+			`dc_id` = UNHEX('$dcId'),
 			`dc_subject` = '$dcSubject',
 			`dc_status` = '0',
 			`od_id` = '{$od["od_id"]}',
@@ -174,6 +176,38 @@ if(defined('IS_TEST_ENVIRONMENT')) {
 			`dc_browser` = '',
 			`dc_sign_browser` = ''
 			");
+
+			$sendData = [];
+			$sendData["penOrdId"] = $od["ordId"];
+
+			$oCurl = curl_init();
+			curl_setopt($oCurl, CURLOPT_PORT, 9901);
+			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/eform/selectEform001");
+			curl_setopt($oCurl, CURLOPT_POST, 1);
+			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+			$res = curl_exec($oCurl);
+			$res = json_decode($res, true);
+			curl_close($oCurl);
+
+			foreach($res["data"] as $item) {
+				$priceEnt = intval($item["prodPrice"]) - intval($item["penPrice"]);
+				sql_query("INSERT INTO `eform_document_item` SET
+				`dc_id` = UNHEX('$dcId'),
+				`gubun` = '{$item["gubun"]}',
+				`ca_name` = '{$item["itemNm"]}',
+				`it_name` = '{$item["prodNm"]}',
+				`it_code` = '{$item["prodPayCode"]}',
+				`it_barcode` = '{$item["prodBarNum"]}',
+				`it_qty` = '1',
+				`it_date` = '{$item["contractDate"]}',
+				`it_price` = '{$item["prodPrice"]}',
+				`it_price_pen` = '{$item["penPrice"]}',
+				`it_price_ent` = '$priceEnt'
+				");
+			}
 		}
 	}
 }
