@@ -4,8 +4,8 @@ include_once('./_common.php');
 $mb = get_member($_SESSION['ss_mb_id']);
 
 // 회원정보가 없다면 초기 페이지로 이동
-if (!$mb['mb_id'])
-    goto_url(G5_URL);
+// if (!$mb['mb_id'])
+    // goto_url(G5_URL);
 
 $mb['mb_name'] = get_text($mb['mb_name']); 
 
