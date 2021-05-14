@@ -32,13 +32,10 @@ if($_POST["mb_id"] != "admin"){
             alert('회원아이디나 비밀번호가 공백이면 안됩니다.');
         $mb = get_member($mb_id);
         echo $mb['mb_level'];
-        // return false;
-        // if($mb['mb_level'] !== "9"){
-        //     //임시작업
-        //     if($mb['mb_level'] !== "5"){
-        //         alert('승인 후 이용이 가능합니다. 관리자 문의해주세요.');
-        //     }
-        // }
+		if($mb['mb_level']<5){
+            //임시작업
+            alert('승인 후 이용이 가능합니다. 관리자 문의해주세요.');
+        }
 
         if (!$is_social_password_check && (!$mb['mb_id'] || !check_password($mb_password, $mb['mb_password'])) ) {
             alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
