@@ -30,24 +30,25 @@ if($eform['dc_status'] != '0') {
 }
 
 $ip = $_SERVER['REMOTE_ADDR'];
-$browser = get_browser();
+$browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 $timestamp = time();
 $datetime = date('Y-m-d H:i:s', $timestamp);
 
-$countPostfix = sql_fetch("SELECT COUNT(`dc_id`) as cnt FROM `eform_document` WHERE `entId` = '{$eform["entId"]}' AND `penId` = '{$eform["penId"]}'")["cnt"];
-$countPostfix += 1;
-if($countPostfix < 10) $countPostfix = "00".$countPostfix;
-else if($countPostfix < 100) $countPostfix = "0".$countPostfix;
-$dcSubject = $eform["entNm"]."_".str_replace('-', '', $eform["entCrn"])."_".$eform["penNm"].substr($eform["penLtmNum"], 0, 6)."_".date("Ymd")."_".$countPostfix;
+$countPostfix = sql_fetch("SELECT COUNT(`dc_id`) as cnt FROM `eform_document` WHERE `entId` = '{$eform["entId"]}' AND `penId` = '{$eform["penId"]}' AND `dc_status` != '0'")["cnt"] + 1;
+if($countPostfix < 10) $countPostfix = "00".$countPostfix; else if($countPostfix < 100) $countPostfix = "0".$countPostfix;
+$subject = $eform["entNm"]."_".str_replace('-', '', $eform["entCrn"])."_".$eform["penNm"].substr($eform["penLtmNum"], 0, 6)."_".date("Ymd")."_".$countPostfix;
 
 // 계약서 정보 업데이트
 sql_query("UPDATE `eform_document` SET
-`dc_subject` = '',
+`dc_subject` = '$subject',
 `dc_status` = '1',
 `dc_datetime` = '$datetime',
 `dc_ip` = '$ip',
-`dc_signUrl` = '',
+`dc_signUrl` = ''
+WHERE `dc_id` = UNHEX('$uuid')
 ");
 
 // todo: 계약서 로그 작성
+
+echo json_response(200, 'OK');
 ?>
