@@ -133,8 +133,6 @@ if ($q) {
 
     $where[] = "(".implode(" and ", $detail_where).")";
 }
-print_r($where);
-return false;
 // 분류
 $ca_qstr = '';
 if ($qcaid) {
