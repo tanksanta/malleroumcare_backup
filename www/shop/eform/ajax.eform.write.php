@@ -29,7 +29,7 @@ if($eform['dc_status'] != '0') {
   exit;
 }
 
-$ent = api_call('POST', 'https://system.eroumcare.com/api/ent/account', array(
+$ent = api_call('https://system.eroumcare.com/api/ent/account', 'POST', array(
   'usrId' => $od['mb_id']
 ));
 $entSealImg = $ent['data']['entSealImg'];
@@ -38,14 +38,15 @@ if(!$entSealImg) {
   exit;
 }
 
-// todo: 직인 파일 사본 저장시켜야함
-/*
+// 직인 파일 사본 저장
 $signdir = G5_DATA_PATH.'/eform/sign';
 if(!is_dir($signdir)) {
   @mkdir($signdir, G5_DIR_PERMISSION, true);
   @chmod($signdir, G5_DIR_PERMISSION);
 }
-*/
+$signdata = get_url_content($entSealImg);
+$filename = $uuid."_".$eform['entId']."_".date("YmdHisw").".png";
+file_put_contents("$signdir/$filename", $signdata);
 
 function updateItem($item) {
   if($item['deleted']) { // 물품 계약서 상에서 삭제시킨 경우
@@ -109,7 +110,7 @@ sql_query("UPDATE `eform_document` SET
 `dc_status` = '1',
 `dc_datetime` = '$datetime',
 `dc_ip` = '$ip',
-`dc_signUrl` = '',
+`dc_signUrl` = '/data/eform/sign/$filename',
 `entConAcc01` = '{$status['entConAcc01']}',
 `entConAcc02` = '{$status['entConAcc02']}'
 WHERE `dc_id` = UNHEX('$uuid')

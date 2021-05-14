@@ -14,11 +14,11 @@ function json_response($code = 200, $message = null) {
   ));
 }
 
-function api_call($method = 'GET', $url, $data = null) {
+function api_call($url, $method = 'GET', $data = null, $port = 9901) {
   if($method == 'GET') $url .= '?'.http_build_query($data);
 
   $oCurl = curl_init();
-  curl_setopt($oCurl, CURLOPT_PORT, 9901);
+  curl_setopt($oCurl, CURLOPT_PORT, $port);
   curl_setopt($oCurl, CURLOPT_URL, $url);
   if($method == 'POST') {
     curl_setopt($oCurl, CURLOPT_POST, 1);
@@ -30,5 +30,15 @@ function api_call($method = 'GET', $url, $data = null) {
   $res = curl_exec($oCurl);
   curl_close($oCurl);
   return json_decode($res, true);
+}
+
+function get_url_content($url) {
+  $oCurl = curl_init();
+  curl_setopt($oCurl, CURLOPT_URL, $url);
+  curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+  $res = curl_exec($oCurl);
+  curl_close($oCurl);
+  return $res;
 }
 ?>
