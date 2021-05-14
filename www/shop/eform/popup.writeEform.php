@@ -483,7 +483,7 @@
       }
     });
     $(document).on('click', '.btnDelProd', function() { // 물품 삭제 버튼
-      if(!confirm('정말 해당 물품을 삭제하시겠습니까?')) return;
+      if(!confirm('해당 물품을 삭제하시겠습니까?')) return;
 
       if($(this).data('type') === 'item') { // 실제로 구매/대여한 물품이면
         var items = status[$(this).data('gubun')].items;
@@ -497,6 +497,17 @@
       }
 
       repaintForm();
+    });
+    $('#btnSubmitEform').click(function() { // 계약서 생성
+      if(!confirm('계약서를 생성하시겠습니까?')) return;
+      $.post('./ajax.eform.write.php', {status: JSON.stringify(status), uuid: '<?=$eform["uuid"]?>'}, 'json')
+      .done(function(data) {
+        // 생성 완료
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
     });
 
     function repaintForm() {
