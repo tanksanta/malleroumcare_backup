@@ -35,8 +35,6 @@ if(!$entSealImg) {
   exit;
 }
 
-// todo: 구매/대여 물품 정보 업데이트
-// 실제 구매/대여 물품 정보 업데이트
 function updateItem($item) {
   if($item['deleted']) { // 물품 계약서 상에서 삭제시킨 경우
     sql_query("DELETE FROM `eform_document_item` WHERE `it_id` = '{$item['it_id']}'");
@@ -48,9 +46,16 @@ function updateItem($item) {
     ");
   }
 }
+// 실제 구매 물품 정보 업데이트
 foreach($status['buy']['items'] as $item) {
   updateItem($item);
 }
+// 실제 대여 물품 정보 업데이트
+foreach($status['rent']['items'] as $item) {
+  updateItem($item);
+}
+
+// todo: 계약서 상 구매/대여 물품 정보 업데이트
 
 $ip = $_SERVER['REMOTE_ADDR'];
 $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
