@@ -68,7 +68,9 @@ foreach($status['rent']['items'] as $item) {
 }
 
 function addItem($item, $gubun, $uuid) {
-  $priceEnt = intval($item['it_price']) - intval($item['it_price_ent']);
+  $it_price = intval(str_replace(",", "", $item['it_price']));
+  $it_price_pen = intval(str_replace(",", "", $item['it_price_pen']));
+  $it_price_ent = $it_price - $it_price_pen;
   sql_query("INSERT INTO `eform_document_item` SET
   `dc_id` = UNHEX('$uuid'),
   `gubun` = '$gubun',
@@ -78,9 +80,9 @@ function addItem($item, $gubun, $uuid) {
   `it_barcode` = '{$item['it_barcode']}',
   `it_qty` = '{$item['it_qty']}',
   `it_date` = '{$item['it_date']}',
-  `it_price` = '{$item['it_price']}',
-  `it_price_pen` = '{$item['it_price_pen']}',
-  `it_price_ent` = '$priceEnt'
+  `it_price` = '$it_price',
+  `it_price_pen` = '$it_price_pen',
+  `it_price_ent` = '$it_price_ent'
   ");
 }
 // 계약서 상 구매 물품 정보 추가

@@ -520,6 +520,19 @@
         }
       }
     });
+    $(document).on('keyup', '.inputNumber', function() { // 숫자 전용 필드
+      var selection = window.getSelection().toString();
+      if (selection !== '') return;
+      if ($.inArray( event.keyCode, [38,40,37,39]) !== -1 ) return;
+
+      var $this = $(this);
+      var input = $this.val();
+
+      var input = input.replace(/[\D\s\._\-]+/g, "");
+      input = input ? parseInt( input, 10 ) : 0;
+
+      $this.val(input.toLocaleString('en-US'));
+    });
     $(document).on('click', '.btnDelProd', function() { // 물품 삭제 버튼
       if(!confirm('해당 물품을 삭제하시겠습니까?')) return;
 
@@ -586,7 +599,7 @@
     function repaintForm() {
       var renderItem = function(item, gubun) {
         if(item.deleted) return; // 삭제된 물품은 안보여줌
-        var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" class="inputItem" data-gubun="'+gubun+'" data-id="'+item.it_id+'" data-field="it_barcode" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+item.it_price+'</td><td>'+item.it_price_pen+'</td><td><button class="btnDelProd" data-type="item" data-id="'+item.it_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
+        var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" class="inputItem" data-gubun="'+gubun+'" data-id="'+item.it_id+'" data-field="it_barcode" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+parseInt(item.it_price).toLocaleString('en-US')+'</td><td>'+item.it_price_pen+'</td><td><button class="btnDelProd" data-type="item" data-id="'+item.it_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
         if(gubun == 'buy') $("#tableBuyProd tbody").append(html);
         else $("#tableRentProd tbody").append(html);
       };
