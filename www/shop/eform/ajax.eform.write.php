@@ -1,29 +1,23 @@
 <?php
 include_once("./_common.php");
-
-function json_response($code = 200, $message = null) {
-  http_response_code($code);
-  header("Content-Type: application/json");
-  $status = array(
-    200 => '200 OK',
-    400 => '400 Bad Request',
-    500 => '500 Internal Server Error'
-  );
-  header('Status: '.$status[$code]);
-  return json_encode(array(
-    'status' => $code < 300, // success or not?
-    'message' => $message
-  ));
-}
-
+include_once('./lib/eform.lib.php');
 
 $uuid = $_POST['uuid'];
 $status = json_decode($_POST['status']);
 
+$eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
+
 // todo: 계약서를 생성 할 권한이 있는 사람인지 체크해야됨
+$sql = "SELECT * FROM {$g5['g5_shop_order_table']} WHERE `od_id` = '{$eform['od_id']}'";
+if($is_member && !$is_admin)
+    $sql .= " and mb_id = '{$member['mb_id']}' ";
+$od = sql_fetch($sql);
+if(!$od['id_id']) {
+  echo json_response(400, '계약서를 생성할 권한이 없습니다.');
+  exit;
+}
 
 // 계약서 상태 체크 (dc_status == 0 인지)
-$eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
 if($eform['dc_status'] != '0') {
   echo json_response(400, '이미 계약서가 생성된 주문입니다.');
   exit;
@@ -49,6 +43,9 @@ WHERE `dc_id` = UNHEX('$uuid')
 ");
 
 // todo: 계약서 로그 작성
+
+// todo: 직인 파일 사본 저장시켜야함
+
 
 echo json_response(200, 'OK');
 ?>
