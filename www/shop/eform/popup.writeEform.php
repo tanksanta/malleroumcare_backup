@@ -7,7 +7,7 @@
   $buy = [];
   $rent = [];
   while($item = sql_fetch_array($items)) {
-    if($item['gubun' == '00']) array_push($buy, $item); // 판매 재고
+    if($item['gubun'] == '00') array_push($buy, $item); // 판매 재고
     else array_push($rent, $item); // 대여 재고
   }
 ?>
@@ -23,6 +23,7 @@
   <link rel="shortcut icon" href="<?php echo THEMA_URL; ?>/assets/img/top_logo_icon.ico">
   <link rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
   <script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>
+  <?php include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php'); ?>
   <style>
   * { margin: 0; padding: 0; box-sizing: border-box; position: relative; }
   html, body { width: 100%; min-width: 100%; height: 100%; min-height: 100%; margin: 0 !important; padding: 0; font-family: "Noto Sans KR", sans-serif; font-size: 13px; }
@@ -191,6 +192,7 @@
     width: 100%;
     height: 24px;
     border: 1px solid #ddd;
+    text-align: center;
   }
 
   #prodRow input.period {
@@ -303,6 +305,17 @@
             </div>
             <div class="prodTableWrap">
               <table id="tableBuyProd">
+                <colgroup>
+                  <col style="width: 10%">
+                  <col style="width: 10%">
+                  <col style="width: 15%">
+                  <col>
+                  <col style="width: 5%">
+                  <col>
+                  <col style="width: 10%">
+                  <col style="width: 10%">
+                  <col style="width: 40px">
+                </colgroup>
                 <thead>
                   <tr>
                     <th>품목명</th>
@@ -350,6 +363,17 @@
             </div>
             <div class="prodTableWrap">
               <table id="tableRentProd">
+                <colgroup>
+                  <col style="width: 10%">
+                  <col style="width: 10%">
+                  <col style="width: 15%">
+                  <col>
+                  <col style="width: 5%">
+                  <col>
+                  <col style="width: 10%">
+                  <col style="width: 10%">
+                  <col style="width: 40px">
+                </colgroup>
                 <thead>
                   <tr>
                     <th>품목명</th>
@@ -419,6 +443,7 @@
     $("#btnCancelEform").click(closePopup);
 
     var initialStatus = {
+      customCounter: 0,
       agreement: false,
       entConAcc01: <?=json_encode($eform["entConAcc01"])?>,
       entConAcc02: <?=json_encode($eform["entConAcc02"])?>,
@@ -485,6 +510,16 @@
         }
       }
     });
+    $(document).on('input propertychange paste', '.inputCustom', function() { // 계약서 상 임의로 추가한 아이템 필드
+      var temp_id = $(this).data('id'); 
+      var field = $(this).data('field');
+      var customs = status[$(this).data('gubun')].customs;
+      for(var i = 0; i < customs.length; i++) {
+        if(customs[i].temp_id == temp_id) {
+          customs[i][field] = $(this).val();
+        }
+      }
+    });
     $(document).on('click', '.btnDelProd', function() { // 물품 삭제 버튼
       if(!confirm('해당 물품을 삭제하시겠습니까?')) return;
 
@@ -497,9 +532,38 @@
             break;
           }
         }
+      } else { // 계약서 상 임의로 추가한 물품이면
+        var customs = status[$(this).data('gubun')].customs;
+        var temp_id = $(this).data('id');
+        for(var i = 0; i < customs.length; i++) {
+          if(customs[i].temp_id == temp_id) {
+            customs.splice(i, 1);
+            break;
+          }
+        }
       }
 
       repaintForm();
+    });
+    var addProd = function(gubun) {
+      status[gubun].customs.push({
+        temp_id: status.customCounter++,
+        ca_name: '',
+        it_name: '',
+        it_code: '',
+        it_barcode: '',
+        it_qty: '',
+        it_date: '',
+        it_price: '',
+        it_price_pen: ''
+      });
+      repaintForm();
+    };
+    $('#btnAddBuyProd').click(function() { // 구매물품 추가
+      addProd('buy');
+    });
+    $('#btnAddRentProd').click(function() { // 대여물품 추가
+      addProd('rent');
     });
     $('#btnSubmitEform').click(function() { // 계약서 생성
       // todo: 폼 무결성 체크
@@ -526,6 +590,18 @@
         if(gubun == 'buy') $("#tableBuyProd tbody").append(html);
         else $("#tableRentProd tbody").append(html);
       };
+      var renderCustom = function(custom, gubun) {
+        var html = '<tr><td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="ca_name" value="'+custom.ca_name+'"></td><td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_name" value="'+custom.it_name+'"></td>\
+                    <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_code" value="'+custom.it_code+'"></td>\
+                    <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_barcode" value="'+custom.it_barcode+'"></td>\
+                    <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_qty" value="'+custom.it_qty+'"></td>\
+                    <td><input type="text" class="datePicker"></td>\
+                    <td><input type="text" class="inputCustom inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price" value="'+custom.it_price+'"></td>\
+                    <td><input type="text" class="inputCustom inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price_pen" value="'+custom.it_price_pen+'"></td>\
+                    <td><button class="btnDelProd" data-type="custom" data-id="'+custom.temp_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
+        if(gubun == 'buy') $("#tableBuyProd tbody").append(html);
+        else $("#tableRentProd tbody").append(html);
+      };
 
       // 확인함 체크박스
       $('#chkConfirm').prop('checked', status.agreement);
@@ -539,11 +615,17 @@
       for(var i = 0; i < status.buy.items.length; i++) {
         renderItem(status.buy.items[i], 'buy');
       }
+      for(var i = 0; i < status.buy.customs.length; i++) {
+        renderCustom(status.buy.customs[i], 'buy');
+      }
 
       //대여물품
       $("#tableRentProd tbody").empty();
       for(var i = 0; i < status.rent.items.length; i++) {
         renderItem(status.rent.items[i], 'rent');
+      }
+      for(var i = 0; i < status.rent.customs.length; i++) {
+        renderCustom(status.rent.customs[i], 'rent');
       }
     }
 
