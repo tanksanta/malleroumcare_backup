@@ -3,7 +3,7 @@ include_once("./_common.php");
 include_once('./lib/eform.lib.php');
 
 $uuid = $_POST['uuid'];
-$status = json_decode($_POST['status'], true);
+$status = json_decode(stripslashes($_POST['status']), true);
 if(!$uuid || !$status) {
   echo json_response(400, '잘못된 요청입니다.');
   exit;
@@ -36,7 +36,21 @@ if(!$entSealImg) {
 }
 
 // todo: 구매/대여 물품 정보 업데이트
- 
+// 실제 구매/대여 물품 정보 업데이트
+function updateItem($item) {
+  if($item['deleted']) { // 물품 계약서 상에서 삭제시킨 경우
+    sql_query("DELETE FROM `eform_document_item` WHERE `it_id` = '{$item['it_id']}'");
+  } else {
+    // 실제 구매/대여 물품은 바코드 정보만 수정할 수 있음
+    sql_query("UPDATE `eform_document_item` SET
+    `it_barcode` = '{$item['it_barcode']}'
+    WHERE `it_id` = '{$item['it_id']}'
+    ");
+  }
+}
+foreach($status['buy']['items'] as $item) {
+  updateItem($item);
+}
 
 $ip = $_SERVER['REMOTE_ADDR'];
 $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
