@@ -499,6 +499,12 @@
       repaintForm();
     });
     $('#btnSubmitEform').click(function() { // 계약서 생성
+      // todo: 폼 무결성 체크
+      if(!status.agreement) {
+        alert('계약서 작성 유의사항을 읽고 \'확인함\'에 체크해주세요.');
+        return;
+      }
+
       if(!confirm('계약서를 생성하시겠습니까?')) return;
       $.post('./ajax.eform.write.php', {status: JSON.stringify(status), uuid: '<?=$eform["uuid"]?>'}, 'json')
       .done(function(data) {
