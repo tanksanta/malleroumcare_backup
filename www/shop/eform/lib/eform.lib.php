@@ -15,14 +15,16 @@ function json_response($code = 200, $message = null) {
 }
 
 function api_call($method = 'GET', $url, $data = null) {
-  if($method == 'GET') $url .= '?'. http_build_query($data);
+  if($method == 'GET') $url .= '?'.http_build_query($data);
 
   $oCurl = curl_init();
   curl_setopt($oCurl, CURLOPT_PORT, 9901);
   curl_setopt($oCurl, CURLOPT_URL, $url);
-  if($method == 'POST') curl_setopt($oCurl, CURLOPT_POST, 1);
+  if($method == 'POST') {
+    curl_setopt($oCurl, CURLOPT_POST, 1);
+    if($data) curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
+  }
   curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-  if($data && $method == 'POST') curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
   curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
   curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
   $res = curl_exec($oCurl);

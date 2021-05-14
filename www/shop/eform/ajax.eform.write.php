@@ -7,12 +7,11 @@ $status = json_decode($_POST['status']);
 
 $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
 
-// todo: 계약서를 생성 할 권한이 있는 사람인지 체크해야됨
 $sql = "SELECT * FROM {$g5['g5_shop_order_table']} WHERE `od_id` = '{$eform['od_id']}'";
 if($is_member && !$is_admin)
-    $sql .= " and mb_id = '{$member['mb_id']}' ";
+    $sql .= " AND mb_id = '{$member['mb_id']}' ";
 $od = sql_fetch($sql);
-if(!$od['id_id']) {
+if(!$od['mb_id']) {
   echo json_response(400, '계약서를 생성할 권한이 없습니다.');
   exit;
 }
@@ -20,6 +19,16 @@ if(!$od['id_id']) {
 // 계약서 상태 체크 (dc_status == 0 인지)
 if($eform['dc_status'] != '0') {
   echo json_response(400, '이미 계약서가 생성된 주문입니다.');
+  exit;
+}
+
+// todo: 직인 파일 사본 저장시켜야함
+$ent = api_call('POST', 'https://system.eroumcare.com/api/ent/account', array(
+  'usrId' => $od['mb_id']
+));
+$entSealImg = $ent['data']['entSealImg'];
+if(!$entSealImg) {
+  echo json_response(400, '통합시스템에서 사업소 직인 이미지를 등록해주세요.');
   exit;
 }
 
@@ -43,9 +52,6 @@ WHERE `dc_id` = UNHEX('$uuid')
 ");
 
 // todo: 계약서 로그 작성
-
-// todo: 직인 파일 사본 저장시켜야함
-
 
 echo json_response(200, 'OK');
 ?>
