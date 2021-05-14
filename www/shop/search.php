@@ -88,20 +88,40 @@ if ($q) {
         if (!$word) continue;
 
         $concat = array();
+
+        //띄어쓰기 구분 o
+        // if ($search_all || $qname)
+        //     $concat[] = "a.it_name";
+        // if ($search_all || $qexplan)
+        //     $concat[] = "a.it_explan2";
+        // if ($search_all || $qid)
+        //     $concat[] = "a.it_id";
+        // if ($search_all || $qtag)
+        //     $concat[] = "a.pt_tag";
+        // if ($search_all || $qbasic)
+        //     $concat[] = "a.it_basic";
+        // if ($search_all || $itmodel)
+        //     $concat[] = "a.it_model";
+        // if ($search_all || $pttag)
+        //     $concat[] = "a.pt_tag";
+
+        //띄어쓰기 구분 x
         if ($search_all || $qname)
-            $concat[] = "a.it_name";
+            $concat[] = "REPLACE(a.it_name, ' ', '')";
         if ($search_all || $qexplan)
-            $concat[] = "a.it_explan2";
+            $concat[] = "REPLACE(a.it_explan2, ' ', '')";
         if ($search_all || $qid)
-            $concat[] = "a.it_id";
+            $concat[] = "REPLACE(a.it_id, ' ', '')";
         if ($search_all || $qtag)
-            $concat[] = "a.pt_tag";
+            $concat[] = "REPLACE(a.pt_tag, ' ', '')";
         if ($search_all || $qbasic)
-            $concat[] = "a.it_basic";
+            $concat[] = "REPLACE(a.it_basic, ' ', '')";
         if ($search_all || $itmodel)
-            $concat[] = "a.it_model";
+            $concat[] = "REPLACE(a.it_model, ' ', '')";
         if ($search_all || $pttag)
-            $concat[] = "a.pt_tag";
+            $concat[] = "REPLACE(a.pt_tag, ' ', '')";
+
+
 		$concat_fields = "concat(".implode(",' ',",$concat).")";
 
         $detail_where[] = $concat_fields." like '%$word%' ";
@@ -113,7 +133,8 @@ if ($q) {
 
     $where[] = "(".implode(" and ", $detail_where).")";
 }
-
+print_r($where);
+return false;
 // 분류
 $ca_qstr = '';
 if ($qcaid) {
