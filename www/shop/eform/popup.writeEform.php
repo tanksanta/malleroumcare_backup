@@ -413,8 +413,8 @@
 
     var initialStatus = {
       agreement: false,
-      entConAcc01: "<?=htmlspecialchars($eform["entConAcc01"])?>",
-      entConAcc02: "<?=htmlspecialchars($eform["entConAcc02"])?>",
+      entConAcc01: <?=json_encode($eform["entConAcc01"])?>,
+      entConAcc02: <?=json_encode($eform["entConAcc02"])?>,
       buy: {
         items: [<?php while($item = sql_fetch_array($items)) {
           if($item['gubun'] == '00') { // 판매재고 ?>
