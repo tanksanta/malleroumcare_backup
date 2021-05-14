@@ -55,7 +55,30 @@ foreach($status['rent']['items'] as $item) {
   updateItem($item);
 }
 
-// todo: 계약서 상 구매/대여 물품 정보 업데이트
+function addItem($item, $gubun, $uuid) {
+  $priceEnt = intval($item['it_price']) - intval($item['it_price_ent']);
+  sql_query("INSERT INTO `eform_document_item` SET
+  `dc_id` = UNHEX('$uuid'),
+  `gubun` = '$gubun',
+  `ca_name` = '{$item['ca_name']}',
+  `it_name` = '{$item['it_name']}',
+  `it_code` = '{$item['it_code']}',
+  `it_barcode` = '{$item['it_barcode']}',
+  `it_qty` = '{$item['it_qty']}',
+  `it_date` = '{$item['it_date']}',
+  `it_price` = '{$item['it_price']}',
+  `it_price_pen` = '{$item['it_price_pen']}',
+  `it_price_ent` = '$priceEnt'
+  ");
+}
+// 계약서 상 구매 물품 정보 추가
+foreach($status['buy']['customs'] as $item) {
+  addItem($item, '00', $uuid);
+}
+// 계약서 상 대여 물품 정보 추가
+foreach($status['rent']['customs'] as $item) {
+  addItem($item, '01', $uuid);
+}
 
 $ip = $_SERVER['REMOTE_ADDR'];
 $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
