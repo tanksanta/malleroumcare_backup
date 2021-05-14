@@ -88,8 +88,6 @@ if ($q) {
         if (!$word) continue;
 
         $concat = array();
-
-        //띄어쓰기 구분 o
         // if ($search_all || $qname)
         //     $concat[] = "a.it_name";
         // if ($search_all || $qexplan)
@@ -105,7 +103,6 @@ if ($q) {
         // if ($search_all || $pttag)
         //     $concat[] = "a.pt_tag";
 
-        //띄어쓰기 구분 x
         if ($search_all || $qname)
             $concat[] = "REPLACE(a.it_name, ' ', '')";
         if ($search_all || $qexplan)
@@ -133,6 +130,7 @@ if ($q) {
 
     $where[] = "(".implode(" and ", $detail_where).")";
 }
+
 // 분류
 $ca_qstr = '';
 if ($qcaid) {
