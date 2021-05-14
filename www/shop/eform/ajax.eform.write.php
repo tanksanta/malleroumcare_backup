@@ -3,7 +3,7 @@ include_once("./_common.php");
 include_once('./lib/eform.lib.php');
 
 $uuid = $_POST['uuid'];
-$status = json_decode($_POST['status']);
+$status = json_decode($_POST['status'], true);
 
 $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
 
@@ -16,7 +16,6 @@ if(!$od['mb_id']) {
   exit;
 }
 
-// 계약서 상태 체크 (dc_status == 0 인지)
 if($eform['dc_status'] != '0') {
   echo json_response(400, '이미 계약서가 생성된 주문입니다.');
   exit;
@@ -31,6 +30,9 @@ if(!$entSealImg) {
   echo json_response(400, '통합시스템에서 사업소 직인 이미지를 등록해주세요.');
   exit;
 }
+
+// todo: 구매/대여 물품 정보 업데이트
+
 
 $ip = $_SERVER['REMOTE_ADDR'];
 $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
@@ -51,7 +53,16 @@ sql_query("UPDATE `eform_document` SET
 WHERE `dc_id` = UNHEX('$uuid')
 ");
 
-// todo: 계약서 로그 작성
+// 계약서 로그 작성
+$log = '전자계약서를 생성했습니다.';
+
+sql_query("INSERT INTO `eform_document_log` SET
+`dc_id` = UNHEX('$uuid'),
+`dl_log` = '$log',
+`dl_ip` = '$ip',
+`dl_browser` = '$browser',
+`dl_datetime` = '$datetime'
+");
 
 echo json_response(200, 'OK');
 ?>
