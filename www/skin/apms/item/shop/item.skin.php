@@ -278,7 +278,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                 <?php } ?>
                 <?php if($_COOKIE["viewType"] != "basic"){ ?>
                  
-                <?php if($member['mb_level'] == "3"){ ?>
+                <?php if($member['mb_level'] == "3"||!$it['it_sale_percent_great']){ ?>
                     <?php if($it["it_sale_cnt"]){ ?>
                         <p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
                     <?php } ?>
@@ -294,7 +294,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     <?php if($it["it_sale_cnt_05"]){ ?>
                         <p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
                     <?php } ?>
-                <?php }else if($member['mb_level'] == "4"){ ?>
+                <?php }else if($member['mb_level'] == "4"&&$it['it_sale_percent_great']){ ?>
                         <?php if($it["it_sale_cnt"]){ ?>
                         <p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent_great"])?>원</p>
                         <?php } ?>
@@ -473,7 +473,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<?php } // 시중가격 끝 ?>
 				<tr><td colspan="2" class="item-price">
 				<?php if($_COOKIE["viewType"] != "basic"){ ?>
-                <?php if($member['mb_level'] == "3"){ ?>
+                <?php if($member['mb_level'] == "3"||!$it['it_sale_percent_great']){ ?>
                     <?php if($it["it_sale_cnt"]){ ?>
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
 						<input type="hidden" id="it_sale_percent" value="<?php echo $it["it_sale_percent"]; ?>" data-toggle="<?=$it["it_sale_cnt"]?>" class="it_sale_percent">
@@ -494,7 +494,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						<p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
 						<input type="hidden" id="it_sale_percent5" value="<?php echo $it["it_sale_percent_05"]; ?>" data-toggle="<?=$it["it_sale_cnt_05"]?>" class="it_sale_percent">
 					<?php } ?>
-                <?php }else if($member['mb_level'] == "4"){ ?>
+                <?php }else if($member['mb_level'] == "4"&&$it['it_sale_percent_great']){ ?>
                         <?php if($it["it_sale_cnt"]){ ?>
                             <p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent_great"])?>원</p>
 						    <input type="hidden" id="it_sale_percent" value="<?php echo $it["it_sale_percent_great"]; ?>" data-toggle="<?=$it["it_sale_cnt"]?>" class="it_sale_percent">
