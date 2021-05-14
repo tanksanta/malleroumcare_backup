@@ -528,6 +528,8 @@
       var $this = $(this);
       var input = $this.val();
 
+      if(input === '') return;
+
       var input = input.replace(/[\D\s\._\-]+/g, "");
       input = input ? parseInt( input, 10 ) : 0;
 
