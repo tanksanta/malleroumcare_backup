@@ -10,6 +10,10 @@ if(!$uuid || !$status) {
 }
 
 $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
+if(!$eform['dc_id']) {
+  echo json_response(500, '생성할 계약서를 찾을 수 없습니다.');
+  exit;
+}
 
 $sql = "SELECT * FROM {$g5['g5_shop_order_table']} WHERE `od_id` = '{$eform['od_id']}'";
 if($is_member && !$is_admin)
@@ -25,7 +29,6 @@ if($eform['dc_status'] != '0') {
   exit;
 }
 
-// todo: 직인 파일 사본 저장시켜야함
 $ent = api_call('POST', 'https://system.eroumcare.com/api/ent/account', array(
   'usrId' => $od['mb_id']
 ));
@@ -34,6 +37,15 @@ if(!$entSealImg) {
   echo json_response(400, '통합시스템에서 사업소 직인 이미지를 등록해주세요.');
   exit;
 }
+
+// todo: 직인 파일 사본 저장시켜야함
+/*
+$signdir = G5_DATA_PATH.'/eform/sign';
+if(!is_dir($signdir)) {
+  @mkdir($signdir, G5_DIR_PERMISSION, true);
+  @chmod($signdir, G5_DIR_PERMISSION);
+}
+*/
 
 function updateItem($item) {
   if($item['deleted']) { // 물품 계약서 상에서 삭제시킨 경우

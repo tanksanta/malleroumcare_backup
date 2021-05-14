@@ -3,6 +3,13 @@
 
   $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
   $items = sql_query("SELECT * FROM `eform_document_item` WHERE dc_id = UNHEX('{$eform["uuid"]}')");
+
+  $buy = [];
+  $rent = [];
+  while($item = sql_fetch_array($items)) {
+    if($item['gubun' == '00']) array_push($buy, $item); // 판매 재고
+    else array_push($rent, $item); // 대여 재고
+  }
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -416,41 +423,37 @@
       entConAcc01: <?=json_encode($eform["entConAcc01"])?>,
       entConAcc02: <?=json_encode($eform["entConAcc02"])?>,
       buy: {
-        items: [<?php while($item = sql_fetch_array($items)) {
-          if($item['gubun'] == '00') { // 판매재고 ?>
-            {
-              it_id: '<?=$item['it_id']?>',
-              ca_name: '<?=htmlspecialchars($item['ca_name'])?>',
-              it_name: '<?=htmlspecialchars($item['it_name'])?>',
-              it_code: '<?=htmlspecialchars($item['it_code'])?>',
-              it_barcode: '<?=htmlspecialchars($item['it_barcode'])?>',
-              it_qty: '<?=$item['it_qty']?>',
-              it_date: '<?=htmlspecialchars($item['it_date'])?>',
-              it_price: '<?=$item['it_price']?>',
-              it_price_pen: '<?=$item['it_price_pen']?>',
-              deleted: false
-            },
-<?php     }
-        } ?>],
+        items: [<?php foreach($buy as $item) { ?>
+          {
+            it_id: '<?=$item['it_id']?>',
+            ca_name: '<?=htmlspecialchars($item['ca_name'])?>',
+            it_name: '<?=htmlspecialchars($item['it_name'])?>',
+            it_code: '<?=htmlspecialchars($item['it_code'])?>',
+            it_barcode: '<?=htmlspecialchars($item['it_barcode'])?>',
+            it_qty: '<?=$item['it_qty']?>',
+            it_date: '<?=htmlspecialchars($item['it_date'])?>',
+            it_price: '<?=$item['it_price']?>',
+            it_price_pen: '<?=$item['it_price_pen']?>',
+            deleted: false
+          },
+<?php   } ?>],
         customs: []
       },
       rent: {
-        items: [<?php while($item = sql_fetch_array($items)) {
-          if($item['gubun'] == '01') { // 대여재고 ?>
-            {
-              it_id: '<?=$item['it_id']?>',
-              ca_name: '<?=htmlspecialchars($item['ca_name'])?>',
-              it_name: '<?=htmlspecialchars($item['it_name'])?>',
-              it_code: '<?=htmlspecialchars($item['it_code'])?>',
-              it_barcode: '<?=htmlspecialchars($item['it_barcode'])?>',
-              it_qty: '<?=$item['it_qty']?>',
-              it_date: '<?=htmlspecialchars($item['it_date'])?>',
-              it_price: '<?=$item['it_price']?>',
-              it_price_pen: '<?=$item['it_price_pen']?>',
-              deleted: false
-            },
-<?php     }
-        } ?>],
+        items: [<?php foreach($rent as $item) { ?>
+          {
+            it_id: '<?=$item['it_id']?>',
+            ca_name: '<?=htmlspecialchars($item['ca_name'])?>',
+            it_name: '<?=htmlspecialchars($item['it_name'])?>',
+            it_code: '<?=htmlspecialchars($item['it_code'])?>',
+            it_barcode: '<?=htmlspecialchars($item['it_barcode'])?>',
+            it_qty: '<?=$item['it_qty']?>',
+            it_date: '<?=htmlspecialchars($item['it_date'])?>',
+            it_price: '<?=$item['it_price']?>',
+            it_price_pen: '<?=$item['it_price_pen']?>',
+            deleted: false
+          },
+<?php   } ?>],
         customs: []
       }
     };
@@ -520,7 +523,8 @@
       var renderItem = function(item, gubun) {
         if(item.deleted) return; // 삭제된 물품은 안보여줌
         var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" class="inputItem" data-gubun="'+gubun+'" data-id="'+item.it_id+'" data-field="it_barcode" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+item.it_price+'</td><td>'+item.it_price_pen+'</td><td><button class="btnDelProd" data-type="item" data-id="'+item.it_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
-        $("#tableBuyProd tbody").append(html);
+        if(gubun == 'buy') $("#tableBuyProd tbody").append(html);
+        else $("#tableRentProd tbody").append(html);
       };
 
       // 확인함 체크박스
