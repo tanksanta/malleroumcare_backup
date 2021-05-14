@@ -185,19 +185,19 @@ if(defined('IS_TEST_ENVIRONMENT')) {
 			$res = json_decode($res, true);
 			curl_close($oCurl);
 
-			foreach($res["data"] as $item) {
-				$priceEnt = intval($item["prodPrice"]) - intval($item["penPrice"]);
+			foreach($res["data"] as $it) {
+				$priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);
 				sql_query("INSERT INTO `eform_document_item` SET
 				`dc_id` = UNHEX('$dcId'),
-				`gubun` = '{$item["gubun"]}',
-				`ca_name` = '{$item["itemNm"]}',
-				`it_name` = '{$item["prodNm"]}',
-				`it_code` = '{$item["prodPayCode"]}',
-				`it_barcode` = '{$item["prodBarNum"]}',
+				`gubun` = '{$it["gubun"]}',
+				`ca_name` = '{$it["itemNm"]}',
+				`it_name` = '{$it["prodNm"]}',
+				`it_code` = '{$it["prodPayCode"]}',
+				`it_barcode` = '{$it["prodBarNum"]}',
 				`it_qty` = '1',
-				`it_date` = '{$item["contractDate"]}',
-				`it_price` = '{$item["prodPrice"]}',
-				`it_price_pen` = '{$item["penPrice"]}',
+				`it_date` = '{$it["contractDate"]}',
+				`it_price` = '{$it["prodPrice"]}',
+				`it_price_pen` = '{$it["penPrice"]}',
 				`it_price_ent` = '$priceEnt'
 				");
 			}
