@@ -4,6 +4,10 @@ include_once('./lib/eform.lib.php');
 
 $uuid = $_POST['uuid'];
 $status = json_decode($_POST['status'], true);
+if(!$uuid || !$status) {
+  echo json_response(400, '잘못된 요청입니다.');
+  exit;
+}
 
 $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
 
