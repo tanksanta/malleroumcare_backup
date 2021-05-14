@@ -533,6 +533,21 @@
 
       $this.val(input.toLocaleString('en-US'));
     });
+    $(document).on("focus", ".datePicker", function(){
+        if($(this).data('gubun') == 'buy') {
+          $(this).datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
+        }
+    });
+    $(document).on('change', '.datePicker', function() {
+      var temp_id = $(this).data('id');
+      var field = $(this).data('field');
+      var customs = status[$(this).data('gubun')].customs;
+      for(var i = 0; i < customs.length; i++) {
+        if(customs[i].temp_id == temp_id) {
+          customs[i][field] = $(this).val();
+        }
+      }
+    });
     $(document).on('click', '.btnDelProd', function() { // 물품 삭제 버튼
       if(!confirm('해당 물품을 삭제하시겠습니까?')) return;
 
@@ -608,7 +623,7 @@
                     <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_code" value="'+custom.it_code+'"></td>\
                     <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_barcode" value="'+custom.it_barcode+'"></td>\
                     <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_qty" value="'+custom.it_qty+'"></td>\
-                    <td><input type="text" class="datePicker"></td>\
+                    <td><input type="text" class="datePicker" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_date" value="'+custom.it_date+'"></td>\
                     <td><input type="text" class="inputCustom inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price" value="'+custom.it_price+'"></td>\
                     <td><input type="text" class="inputCustom inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price_pen" value="'+custom.it_price_pen+'"></td>\
                     <td><button class="btnDelProd" data-type="custom" data-id="'+custom.temp_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
