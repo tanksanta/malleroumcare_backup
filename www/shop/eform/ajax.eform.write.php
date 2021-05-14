@@ -32,7 +32,7 @@ if(!$entSealImg) {
 }
 
 // todo: 구매/대여 물품 정보 업데이트
-
+ 
 
 $ip = $_SERVER['REMOTE_ADDR'];
 $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
@@ -49,7 +49,9 @@ sql_query("UPDATE `eform_document` SET
 `dc_status` = '1',
 `dc_datetime` = '$datetime',
 `dc_ip` = '$ip',
-`dc_signUrl` = ''
+`dc_signUrl` = '',
+`entConAcc01` = '{$status['entConAcc01']}',
+`entConAcc02` = '{$status['entConAcc02']}'
 WHERE `dc_id` = UNHEX('$uuid')
 ");
 
