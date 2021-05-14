@@ -286,6 +286,10 @@ scrollToTop();
 				<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form searchWrap">
 					<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
 					<input type="hidden" name="qname"	value="1">
+					<input type="hidden" name="qexplan"	value="1">
+					<input type="hidden" name="qid"	value="1">
+					<input type="hidden" name="qbasic"	value="1">
+					<input type="hidden" name="pttag"	value="1">
 					<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="상품명으로 검색하세요."/>
 					<button type="submit" id="sch_submit"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.jpg"></button>
 				</form>
