@@ -12,7 +12,10 @@ if($header_skin)
 
 
 <?php if(!$pim) { ?>
-	<div class="text-center" style="margin:30px 0px;">
-		<a href="<?php echo G5_URL; ?>/" class="btn btn-color" role="button">메인으로</a>
+	<div class="wait_member">
+		<img src="/img/icon_home.png" alt="" />
+		<p>복지 사업소 회원등록이 완료되었습니다.</p>
+		<p>관리자 승인 후 서비스 이용이 가능합니다. </p>
+		<a href="/bbs/content.php?co_id=guide">서비스 이용안내</a>
 	</div>
 <?php } ?>
