@@ -195,8 +195,9 @@
     text-align: center;
   }
 
-  #prodRow input.period {
-    width: 50%;
+  #prodRow .rangePicker {
+    width: calc(50% - 2px) !important;
+    margin: 0 1px;
   }
 
   .btnDelProd {
@@ -330,28 +331,6 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Aaaa</td>
-                    <td>ddddd</td>
-                    <td>Fddddd</td>
-                    <td><input type="text" class="datePicker"></td>
-                    <td>2</td>
-                    <td>2021-02-02</td>
-                    <td>10원</td>
-                    <td>3원</td>
-                    <td><button class="btnDelProd">&times;</button></td>
-                  </tr>
-                  <tr>
-                    <td><input type="text" ></td>
-                    <td><input type="text" ></td>
-                    <td><input type="text" ></td>
-                    <td><input type="text" class="datePicker"></td>
-                    <td><input type="text" ></td>
-                    <td><input type="text" ></td>
-                    <td><input type="text" ></td>
-                    <td><input type="text" ></td>
-                    <td><button class="btnDelProd">&times;</button></td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -388,28 +367,6 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Aaaa</td>
-                    <td>ddddd</td>
-                    <td>Fddddd</td>
-                    <td><input type="text" ></td>
-                    <td>2</td>
-                    <td>21-02-02 ~ 25-02-02</td>
-                    <td>10원</td>
-                    <td>3원</td>
-                    <td><button class="btnDelProd">&times;</button></td>
-                  </tr>
-                  <tr>
-                    <td><input type="text" ></td>
-                    <td><input type="text" ></td>
-                    <td><input type="text" ></td>
-                    <td><input type="text" ></td>
-                    <td><input type="text" ></td>
-                    <td><input type="text" class="datePicker period"><input type="text" class="datePicker period"></td>
-                    <td><input type="text" ></td>
-                    <td><input type="text" ></td>
-                    <td><button class="btnDelProd">&times;</button></td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -535,18 +492,40 @@
 
       $this.val(input.toLocaleString('en-US'));
     });
-    $(document).on("focus", ".datePicker", function(){
-        if($(this).data('gubun') == 'buy') {
-          $(this).datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
-        }
-    });
-    $(document).on('change', '.datePicker', function() {
+    var dateFormat = 'yy-mm-dd';
+    function getDate(element) {
+      var date;
+      try {
+        date = $.datepicker.parseDate(dateFormat, element.value);
+      } catch( error ) {
+        date = null;
+      }
+      return date;
+    }
+    $(document).on('change', '.datePicker', function() { // 구매물품 날짜 선택
       var temp_id = $(this).data('id');
       var field = $(this).data('field');
-      var customs = status[$(this).data('gubun')].customs;
+      var customs = status.buy.customs;
       for(var i = 0; i < customs.length; i++) {
         if(customs[i].temp_id == temp_id) {
           customs[i][field] = $(this).val();
+        }
+      }
+    });
+    $(document).on('change', '.rangePicker', function() { // 대여물품 기간 선택
+      var temp_id = $(this).data('id');
+      var range = $(this).data('range'); // 'from' or 'to'
+      if(range === 'from') {
+        var to = $(".rangePicker[data-id="+temp_id+"][data-range=to]");
+        to.datepicker("option", "minDate", getDate(this));
+      } else {
+        var from = $(".rangePicker[data-id="+temp_id+"][data-range=from]");
+        from.datepicker("option", "maxDate", getDate(this));
+      }
+      var customs = status.rent.customs;
+      for(var i = 0; i < customs.length; i++) {
+        if(customs[i].temp_id == temp_id) {
+          customs[i]['range_'+range] = $(this).val();
         }
       }
     });
@@ -585,7 +564,9 @@
         it_qty: '',
         it_date: '',
         it_price: '',
-        it_price_pen: ''
+        it_price_pen: '',
+        range_from: '',
+        range_to: ''
       });
       repaintForm();
     };
@@ -616,21 +597,23 @@
     function repaintForm() {
       var renderItem = function(item, gubun) {
         if(item.deleted) return; // 삭제된 물품은 안보여줌
-        var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" class="inputItem" data-gubun="'+gubun+'" data-id="'+item.it_id+'" data-field="it_barcode" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+parseInt(item.it_price).toLocaleString('en-US')+'</td><td>'+item.it_price_pen+'</td><td><button class="btnDelProd" data-type="item" data-id="'+item.it_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
+        var html = '<tr><td>'+item.ca_name+'</td><td>'+item.it_name+'</td><td>'+item.it_code+'</td><td><input type="text" class="inputItem" data-gubun="'+gubun+'" data-id="'+item.it_id+'" data-field="it_barcode" value="'+item.it_barcode+'"></td><td>'+item.it_qty+'</td><td>'+item.it_date+'</td><td>'+parseInt(item.it_price).toLocaleString('en-US')+'</td><td>'+parseInt(item.it_price_pen).toLocaleString('en-US')+'</td><td><button class="btnDelProd" data-type="item" data-id="'+item.it_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
         if(gubun == 'buy') $("#tableBuyProd tbody").append(html);
         else $("#tableRentProd tbody").append(html);
       };
       var renderCustom = function(custom, gubun) {
-        var html = '<tr><td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="ca_name" value="'+custom.ca_name+'"></td><td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_name" value="'+custom.it_name+'"></td>\
+        var datefield = '<td><input type="text" class="datePicker" data-id="'+custom.temp_id+'" data-field="it_date" value="'+custom.it_date+'"></td>';
+        if(gubun === 'rent') datefield = '<td><input type="text" class="rangePicker" data-id="'+custom.temp_id+'" data-range="from" value="'+custom.range_from+'"><input type="text" class="rangePicker" data-id="'+custom.temp_id+'" data-range="to" value="'+custom.range_to+'"></td>';
+        var $html = $('<tr><td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="ca_name" value="'+custom.ca_name+'"></td><td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_name" value="'+custom.it_name+'"></td>\
                     <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_code" value="'+custom.it_code+'"></td>\
                     <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_barcode" value="'+custom.it_barcode+'"></td>\
-                    <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_qty" value="'+custom.it_qty+'"></td>\
-                    <td><input type="text" class="datePicker" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_date" value="'+custom.it_date+'"></td>\
-                    <td><input type="text" class="inputCustom inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price" value="'+custom.it_price+'"></td>\
+                    <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_qty" value="'+custom.it_qty+'"></td>'
+                    + datefield + 
+                    '<td><input type="text" class="inputCustom inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price" value="'+custom.it_price+'"></td>\
                     <td><input type="text" class="inputCustom inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price_pen" value="'+custom.it_price_pen+'"></td>\
-                    <td><button class="btnDelProd" data-type="custom" data-id="'+custom.temp_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>';
-        if(gubun == 'buy') $("#tableBuyProd tbody").append(html);
-        else $("#tableRentProd tbody").append(html);
+                    <td><button class="btnDelProd" data-type="custom" data-id="'+custom.temp_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>');
+        if(gubun == 'buy') $html.appendTo("#tableBuyProd tbody").find('.datePicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
+        else $html.appendTo("#tableRentProd tbody").find('.rangePicker').datepicker({ defaultDate: '+1w', changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
       };
 
       // 확인함 체크박스

@@ -72,6 +72,7 @@ function addItem($item, $gubun, $uuid) {
   $it_price = intval(str_replace(",", "", $item['it_price']));
   $it_price_pen = intval(str_replace(",", "", $item['it_price_pen']));
   $it_price_ent = $it_price - $it_price_pen;
+  if($gubun == '01') $item['it_date'] = $item['range_from'].'-'.$item['range_to'];
   sql_query("INSERT INTO `eform_document_item` SET
   `dc_id` = UNHEX('$uuid'),
   `gubun` = '$gubun',
