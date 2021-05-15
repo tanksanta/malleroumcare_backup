@@ -311,6 +311,24 @@ pre{white-space: pre-wrap;}
 	.service_info .service_tit p span{display: block;}
 	.service_info ul > li{width:100%;margin-right:0px;min-height: auto;padding:20px;}
 }
+
+
+/* 회원대기화면 */
+.wait_member {text-align:center;padding: 100px 20px;}
+.wait_member p:nth-child(2){font-size:30px;font-weight:bold;margin:10px 0;}
+.wait_member p:nth-child(3){font-size:24px;color:#999;}
+.wait_member a{display:inline-block;text-align: center;width:240px;padding:15px;border-radius: 3px;background: #333;color:#fff;font-weight:bold;margin-top:70px;}
+
+@media only screen and (max-width:960px) {
+	.wait_member img{width:100px;}
+	.wait_member p:nth-child(2){font-size:20px;font-weight:bold;margin:10px 0;}
+	.wait_member p:nth-child(3){font-size:14px;color:#999;}
+	.wait_member a{display:inline-block;text-align: center;width:200px;padding:15px;border-radius: 3px;background: #333;color:#fff;font-weight:bold;margin-top:70px;}
+
+}
+
+
+
 /* =================================================
 	* main
 ================================================= */
