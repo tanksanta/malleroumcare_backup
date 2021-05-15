@@ -477,20 +477,25 @@
         }
       }
     });
-    $(document).on('keyup', '.inputNumber', function() { // 숫자 전용 필드
-      var selection = window.getSelection().toString();
-      if (selection !== '') return;
-      if ($.inArray( event.keyCode, [38,40,37,39]) !== -1 ) return;
+    $(document).on('input propertychange paste', '.inputNumber', function() { // 숫자 전용 필드
+      var temp_id = $(this).data('id'); 
+      var field = $(this).data('field');
+      var input = $(this).val();
 
-      var $this = $(this);
-      var input = $this.val();
+      input = input.replace(/[\D\s\._\-]+/g, "");
+      if(input !== '') {
+        input = input ? parseInt( input, 10 ) : 0;
+        $(this).val(input.toLocaleString('en-US'));
+      } else {
+        $(this).val('');
+      }
 
-      if(input === '') return;
-
-      var input = input.replace(/[\D\s\._\-]+/g, "");
-      input = input ? parseInt( input, 10 ) : 0;
-
-      $this.val(input.toLocaleString('en-US'));
+      var customs = status[$(this).data('gubun')].customs;
+      for(var i = 0; i < customs.length; i++) {
+        if(customs[i].temp_id == temp_id) {
+          customs[i][field] = $(this).val();
+        }
+      }
     });
     var dateFormat = 'yy-mm-dd';
     function getDate(element) {
@@ -609,8 +614,8 @@
                     <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_barcode" value="'+custom.it_barcode+'"></td>\
                     <td><input type="text" class="inputCustom" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_qty" value="'+custom.it_qty+'"></td>'
                     + datefield + 
-                    '<td><input type="text" class="inputCustom inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price" value="'+custom.it_price+'"></td>\
-                    <td><input type="text" class="inputCustom inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price_pen" value="'+custom.it_price_pen+'"></td>\
+                    '<td><input type="text" class="inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price" value="'+custom.it_price+'"></td>\
+                    <td><input type="text" class="inputNumber" data-gubun="'+gubun+'" data-id="'+custom.temp_id+'" data-field="it_price_pen" value="'+custom.it_price_pen+'"></td>\
                     <td><button class="btnDelProd" data-type="custom" data-id="'+custom.temp_id+'" data-gubun="'+gubun+'">&times;</button></td></tr>');
         if(gubun == 'buy') $html.appendTo("#tableBuyProd tbody").find('.datePicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
         else $html.appendTo("#tableRentProd tbody").find('.rangePicker').datepicker({ defaultDate: '+1w', changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
