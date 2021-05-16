@@ -114,7 +114,7 @@ if($header_skin)
 	}
 
 // 테스트 환경일 때만
-if(defined('IS_TEST_ENVIRONMENT')) {
+if(defined('IS_TEST_ENVIRONMENT') || $member['mb_id'] == '123456789') {
 	echo "<style>.eform-tab{display:block !important;}</style>";
 	# 200512 전자계약서
 	$eform = [];
