@@ -1150,6 +1150,13 @@ $(function(){
 	});
 	$('#linkEformEdit').click(function(e) { // 내용변경 버튼
 		e.preventDefault();
+
+		var od = $(this).data('od');
+		$("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.editEform.php?od_id="+od+"'>");
+		$("#popupEformWrite iframe").load(function(){
+			$("body").addClass('modal-open');
+			$("#popupEformWrite").show();
+		});
 	});
 	$('#linkEformView').click(function(e) { // 계약서 다운로드 버튼
 		e.preventDefault();
