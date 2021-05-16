@@ -32,13 +32,13 @@ if ($w == "") {
     // 리퍼러 체크
     referer_check();
 
-    if (!isset($_POST['agree']) || !$_POST['agree']) {
-        alert('회원가입약관의 내용에 동의하셔야 회원가입 하실 수 있습니다.', G5_BBS_URL.'/register.php');
-    }
+    // if (!isset($_POST['agree']) || !$_POST['agree']) {
+    //     alert('회원가입약관의 내용에 동의하셔야 회원가입 하실 수 있습니다.', G5_BBS_URL.'/register.php');
+    // }
 
-    if (!isset($_POST['agree2']) || !$_POST['agree2']) {
-        alert('개인정보처리방침안내의 내용에 동의하셔야 회원가입 하실 수 있습니다.', G5_BBS_URL.'/register.php');
-    }
+    // if (!isset($_POST['agree2']) || !$_POST['agree2']) {
+    //     alert('개인정보처리방침안내의 내용에 동의하셔야 회원가입 하실 수 있습니다.', G5_BBS_URL.'/register.php');
+    // }
 
     $agree  = preg_replace('#[^0-9]#', '', $_POST['agree']);
     $agree2 = preg_replace('#[^0-9]#', '', $_POST['agree2']);
