@@ -1147,6 +1147,9 @@ $(function(){
 	});
 	$('#linkEformSign').click(function(e) { // 계약서 작성 버튼
 		e.preventDefault();
+
+		var od = $(this).data('od');
+		window.open('/shop/eform/signEform.php');
 	});
 	$('#linkEformEdit').click(function(e) { // 내용변경 버튼
 		e.preventDefault();

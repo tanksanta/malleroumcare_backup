@@ -1,173 +1,154 @@
-@import url(https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
-
-* {
-  font-family: 'Spoqa Han Sans Neo', 'sans-serif';
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-}
-
-.a4 {
-  width: 1240px;
-  margin: 0 auto;
-  background-color: #ffffff;
-}
-
 .thk001 {
   padding: 0 64px;
 }
 
-.thk001_h1 {
+.thk001 .thk001_h1 {
   margin: 0;
   padding: 16px;
   font-size: 28px;
   text-align: center;
 }
 
-.thk001_table {
+.thk001 .thk001_table {
   border-collapse: collapse;
   width: 100%;
   font-size: 18px;
 }
 
-.thk001_table tr.divider {
+.thk001 .thk001_table tr.divider {
   border-top: 4px solid #000000;
 }
 
-.thk001_table th,
-.thk001_table td {
+.thk001 .thk001_table th,
+.thk001 .thk001_table td {
   padding: 6px;
   border: 1px solid #000000;
   font-weight: normal;
 }
 
-.thk001_table th {
+.thk001 .thk001_table th {
   text-align: center;
   font-size: 16px;
 }
 
-.thk001_table td {
+.thk001 .thk001_table td {
 }
 
-.thk001_table .bold {
+.thk001 .thk001_table .bold {
   font-weight: bold;
 }
 
-.thk001_table .center {
+.thk001 .thk001_table .center {
   text-align: center;
 }
 
-.thk001_table .right {
+.thk001 .thk001_table .right {
   text-align: right;
 }
 
-.thk001_article {
+.thk001 .thk001_article {
   margin: 24px 0;
   padding: 0 0 0 24px;
   font-size: 16px;
 }
 
-.thk001_article li {
+.thk001 .thk001_article li {
   line-height: 1.5;
   padding: 6px;
 }
 
-.thk001_h3 {
+.thk001 .thk001_h3 {
   margin: 0;
   padding: 6px 0;
   font-weight: bold;
   font-size: 16px;
 }
 
-.thk001_table.item_table {
+.thk001 .thk001_table.item_table {
   margin-bottom: 24px;
 }
 
-.thk001_table.item_table td {
+.thk001 .thk001_table.item_table td {
   padding: 4px 6px;
   font-size: 12px;
   height: 16px;
 }
 
-.thk001_article_div {
+.thk001 .thk001_article_div {
   padding: 16px;
   margin: 0;
   border-top: 2px solid #000000;
   border-bottom: 1px solid #000000;
 }
 
-.thk001_article_div .thk001_article {
+.thk001 .thk001_article_div .thk001_article {
   margin: 0;
 }
 
-.thk001_article_div .thk001_article li {
+.thk001 .thk001_article_div .thk001_article li {
   padding: 8px 6px;
 }
 
-.thk001_article.hangul {
+.thk001 .thk001_article.hangul {
   margin: 0;
   padding: 0;
   list-style: none;
   counter-reset: thk001_article;
 }
 
-.thk001_article.hangul li {
+.thk001 .thk001_article.hangul li {
   display: table;
   counter-increment: thk001_article;
 }
 
-.thk001_article.hangul li:before {
+.thk001 .thk001_article.hangul li:before {
   display: table-cell;
   padding-right: 8px;
   content: counter(thk001_article) '.';
 }
 
-.thk001_article.hangul li:first-child:before {
+.thk001 .thk001_article.hangul li:first-child:before {
   content: '가.';
 }
 
-.thk001_article.hangul li:first-child + li:before {
+.thk001 .thk001_article.hangul li:first-child + li:before {
   content: '나.';
 }
 
-.thk001_article.hangul li:first-child + li + li:before {
+.thk001 .thk001_article.hangul li:first-child + li + li:before {
   content: '다.';
 }
 
-.thk001_article.asterisk {
+.thk001 .thk001_article.asterisk {
   padding: 0;
   list-style: none;
 }
 
-.thk001_article.asterisk li {
+.thk001 .thk001_article.asterisk li {
   display: table;
 }
 
-.thk001_article.asterisk li:before {
+.thk001 .thk001_article.asterisk li:before {
   display: table-cell;
   padding: 0 8px 0 16px;
   content: '*';
 }
 
-.thk001_date_div {
+.thk001 .thk001_date_div {
   margin: 0;
   padding: 24px 120px 24px 0;
   text-align: right;
 }
 
-.thk001_table.sign_table {
+.thk001 .thk001_table.sign_table {
   border-bottom: 1px solid #000000;
 }
 
-.thk001_table.sign_table th,
-.thk001_table.sign_table td {
+.thk001 .thk001_table.sign_table th,
+.thk001 .thk001_table.sign_table td {
   border: none;
 }
 
-/* The container */
 .checkbox-container {
   display: inline-block;
   position: relative;
@@ -181,7 +162,6 @@ body {
   user-select: none;
 }
 
-/* Hide the browser's default checkbox */
 .checkbox-container input {
   position: absolute;
   opacity: 0;
@@ -190,7 +170,6 @@ body {
   width: 0;
 }
 
-/* Create a custom checkbox */
 .checkbox-container .checkmark {
   position: absolute;
   top: 0;
@@ -202,27 +181,23 @@ body {
   border: 1px solid #e28529;
 }
 
-/* When the checkbox is checked, add a blue background */
 .checkbox-container input:checked ~ .checkmark {
   border: 1px solid #a0a0a0;
 }
 
-/* Create the checkmark/indicator (hidden when not checked) */
 .checkbox-container .checkmark:after {
   content: '';
   position: absolute;
   display: none;
 }
 
-/* Show the checkmark when checked */
 .checkbox-container input:checked ~ .checkmark:after {
   display: block;
 }
 
-/* Style the checkmark/indicator */
 .checkbox-container .checkmark:after {
-  left: 6px;
-  top: 3px;
+  left: 5px;
+  top: 1px;
   width: 4px;
   height: 8px;
   border: solid #000;
