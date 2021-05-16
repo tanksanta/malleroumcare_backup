@@ -276,6 +276,9 @@ table {border-collapse: collapse;}
 .eform-tab-desc {color:#999;padding:6px 0;}
 .eform-tab-links {}
 .eform-tab-links .eform-tab-link {display:block;width:100%;padding:8px;background-color:#ee8102;color:#fff;text-align:center;}
+.eform-tab-links .eform-tab-flexbox {margin:0;padding:0;display:-ms-flexbox;display:-webkit-flex;display:flex;-webkit-justify-content:space-between !important;-ms-flex-pack:justify !important;justify-content:space-between !important;}
+.eform-tab-links .eform-tab-link.half {width:calc(50% - 4px);}
+.eform-tab-links .eform-tab-link.white {border:1px solid #ddd;background-color:#fff;color:#666;}
 
 #pro-order .tti,
 #pro-order2 .tti {padding-left: 0;}

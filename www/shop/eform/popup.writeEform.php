@@ -592,6 +592,8 @@
       $.post('./ajax.eform.write.php', {status: JSON.stringify(status), uuid: '<?=$eform["uuid"]?>'}, 'json')
       .done(function(data) {
         // 생성 완료
+        alert('계약서 생성이 완료되었습니다.');
+        parent.location.reload();
       })
       .fail(function($xhr) {
         var data = $xhr.responseJSON;
