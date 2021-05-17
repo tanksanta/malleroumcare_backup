@@ -620,6 +620,27 @@ if($is_inquiryview_sub) {
             $productList2[$i]["stateCd"] = "02";
         }
 
+		//orderupdate 업데이트 - >eformYn를 위해서 (계약서 작성완료)
+		$sendData_order = [];
+		$sendData_order["usrId"] = $member["mb_id"];
+		$sendData_order["penId"] = $orderData["penId"];
+		$sendData_order["penOrdId"] = $orderData["ordId"];
+		$sendData_order["delGbnCd"] = "";
+		$sendData_order["ordWayNum"] = "";
+		$sendData_order["delSerCd"] = "";
+		$sendData_order["ordNm"] = $orderData["od_b_name"];
+		$sendData_order["ordCont"] = ($orderData["od_b_tel"]) ? $orderData["od_b_tel"] : $orderData["od_b_hp"];
+		$sendData_order["ordMeno"] = $orderData["od_memo"];
+		$sendData_order["ordZip"] = "{$orderData["od_b_zip1"]}{$orderData["od_b_zip2"]}";
+		$sendData_order["ordAddr"] = $orderData["od_b_addr1"];
+		$sendData_order["ordAddrDtl"] = $orderData["od_b_addr2"];
+		$sendData_order["eformYn"] = "Y";
+		$sendData_order["staOrdCd"] = "02";
+		$sendData_order["lgsStoId"] = "";
+		$sendData_order["prods"] = $productList2;
+		$api_result1 = get_eroumcare("https://eroumcare.com/api/order/update", $sendData_order);
+
+		//누실된 바코드가 있을 수 있으로 stock_update 다시 진행
         $sendData = [];
         $sendData["usrId"] = $member["mb_id"];
         $sendData["entId"] = $member["mb_entId"];
