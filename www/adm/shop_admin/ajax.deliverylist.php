@@ -580,7 +580,7 @@ foreach($orderlist as $order) {
         $result_od_ct = sql_query($sql_od_ct);
         while($row_od_ct = sql_fetch_array($result_od_ct)) {
             $delivery_all_insert++;
-            if($row_od_ct['ct_combine_ct_id']||$row_od_ct['ct_delivery_num']||$row_od_ct['ct_is_direct_delivery']){
+            if($row_od_ct['ct_combine_ct_id']||$row_od_ct['ct_delivery_num']){
                 $delivery_insert++;
             }
         }
