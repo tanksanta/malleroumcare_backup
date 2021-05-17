@@ -599,7 +599,7 @@ if($is_inquiryview_sub) {
             }
         #대여로그 작성
 
-
+	if($od["od_penId"]) {
         #재고소진 상태값 변경
         $sto_imsi="";
         $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' and ct_status ='재고소진'";
@@ -625,7 +625,7 @@ if($is_inquiryview_sub) {
         $sendData["entId"] = $member["mb_entId"];
         $sendData["prods"] = $productList2;
         $api_result = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $sendData);
-
+	}
 
 		unset($_SESSION["productList{$_GET["od_id"]}"]);
 		unset($_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]);

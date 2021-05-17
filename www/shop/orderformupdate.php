@@ -1444,7 +1444,7 @@ if($is_member && $od_b_name) {
 			WHERE od_id = '{$od_id}'
 		");
 
-		$_SESSION["productList{$od_id}"] = $productList2;
+		$_SESSION["productList{$od_id}"] = $productList;
 		$_SESSION["deliveryTotalCnt{$od_id}"] = $deliveryTotalCnt;
 
 		$sendData = [];
