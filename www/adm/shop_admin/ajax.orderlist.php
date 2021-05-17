@@ -813,7 +813,7 @@ foreach($orderlist as $order) {
             <a href='#' data-mb-id='{$order['mb_id']}' class='open_member_pop'>
                 {$order['od_b_name']}
                 <br/>
-                {$mb_shorten_info}{$order['od_name']}
+                {$mb_shorten_info}{$mb_entNm}
             </a>
         </td>
         <td align=\"center\" class=\"od_type\">
@@ -831,10 +831,17 @@ foreach($orderlist as $order) {
     $sale_manager = get_sideview($sale_manager['mb_id'], get_text($sale_manager['mb_name']), $sale_manager['mb_email'], '');
 
     
-   //영업담당자
-   $sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='".$order['mb_id']."'";
-   $result_manager = sql_fetch($sql_manager);
-   $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
+    //영업담당자
+    $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$order['mb_id']."'";
+    $result_manager = sql_fetch($sql_manager);
+
+    //사업소명
+    if($result_manager['mb_entNm']){
+        $mb_entNm = $result_manager['mb_entNm'];
+    }else{
+        $mb_entNm = $order['od_name'];
+    }
+    $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
    $result_manager = sql_fetch($sql_manager);
    $sale_manager=$result_manager['mb_name'];
 

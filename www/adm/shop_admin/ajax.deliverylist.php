@@ -452,7 +452,17 @@ foreach($orderlist as $order) {
         }
     $od_release_select .='</select>';
 
+   //영업담당자
+   $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$order['mb_id']."'";
+   $result_manager = sql_fetch($sql_manager);
 
+    //사업소명
+    if($result_manager['mb_entNm']){
+        $mb_entNm = $result_manager['mb_entNm'];
+    }else{
+        $mb_entNm = $order['od_name'];
+    }
+    
     switch ($ct_status_text) {
         case '보유재고등록': $ct_status_text="보유재고등록"; break;
         case '재고소진': $ct_status_text="재고소진"; break;
@@ -834,7 +844,7 @@ foreach($orderlist as $order) {
         <td align=\"center\" class=\"od_name\">
             {$order['od_b_name']}
             <br/>
-            {$mb_shorten_info}{$order['od_name']}
+            {$mb_shorten_info}{$mb_entNm}
         </td>
         <td align=\"center\" class=\"od_type\">
             {$od_receipt_name}

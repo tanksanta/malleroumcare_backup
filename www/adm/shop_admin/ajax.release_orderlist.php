@@ -712,7 +712,17 @@ foreach($orderlist as $order) {
 	$ret["data"][$foreach_i]["delivery_cnt"] = $od_cart_count;
 	$ret["data"][$foreach_i]["cnt_detail"] = $ct_qty;
 	$ret["data"][$foreach_i]["date"] = $od_time2;
-	$ret["data"][$foreach_i]["od_name"] = $order["od_name"];
+	
+    $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$order['mb_id']."'";
+    $result_manager = sql_fetch($sql_manager);
+    //사업소명
+    if($result_manager['mb_entNm']){
+        $mb_entNm = $result_manager['mb_entNm'];
+    }else{
+        $mb_entNm = $order['od_name'];
+    }
+    $ret["data"][$foreach_i]["od_name"] = $mb_entNm;
+
 	$ret["data"][$foreach_i]["od_status_name"] = $od_status_name;
 	$ret["data"][$foreach_i]["od_status_class"] = $class_type1;
 	$ret["data"][$foreach_i]["od_barcode_class"] = $class_type2;

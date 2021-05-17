@@ -263,7 +263,7 @@
 						html += '</p>';
 						html += '<p class="cnt">'+row.od_id+'</p>';
 						html += '<p class="date">' + row.date;
-                        if(row.od_name){
+                        if(row.od_b_name){
 							html += " / " + row.od_b_name;
 						}
 						html += '</p>';
