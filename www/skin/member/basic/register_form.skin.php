@@ -1033,6 +1033,7 @@ function fregisterform_submit()
                         contentType : false,
                         data : sendData,
 					    success : function(result){
+							console.log(result);
                             if(result =="N"){
                                 alert('파일을 확인하세요');
                                 return flase;
