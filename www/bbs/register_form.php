@@ -21,17 +21,15 @@ if( $provider && function_exists('social_nonce_is_valid') ){   //모바일로 �
 }
 
 if ($w == "") {
-
     // 회원 로그인을 한 경우 회원가입 할 수 없다
     // 경고창이 뜨는것을 막기위해 아래의 코드로 대체
     // alert("이미 로그인중이므로 회원 가입 하실 수 없습니다.", "./");
-    if ($is_member) {
-        goto_url(G5_URL);
-    }
+    // if ($is_member) {
+    //     goto_url(G5_URL);
+    // }
 
     // 리퍼러 체크
     referer_check();
-
     // if (!isset($_POST['agree']) || !$_POST['agree']) {
     //     alert('회원가입약관의 내용에 동의하셔야 회원가입 하실 수 있습니다.', G5_BBS_URL.'/register.php');
     // }
@@ -43,18 +41,18 @@ if ($w == "") {
     $agree  = preg_replace('#[^0-9]#', '', $_POST['agree']);
     $agree2 = preg_replace('#[^0-9]#', '', $_POST['agree2']);
 
-    $member['mb_birth'] = '';
-    $member['mb_sex']   = '';
-    $member['mb_name']  = '';
-    if (isset($_POST['birth'])) {
-        $member['mb_birth'] = $_POST['birth'];
-    }
-    if (isset($_POST['sex'])) {
-        $member['mb_sex']   = $_POST['sex'];
-    }
-    if (isset($_POST['mb_name'])) {
-        $member['mb_name']  = $_POST['mb_name'];
-    }
+    // $member['mb_birth'] = '';
+    // $member['mb_sex']   = '';
+    // $member['mb_name']  = '';
+    // if (isset($_POST['birth'])) {
+    //     $member['mb_birth'] = $_POST['birth'];
+    // }
+    // if (isset($_POST['sex'])) {
+    //     $member['mb_sex']   = $_POST['sex'];
+    // }
+    // if (isset($_POST['mb_name'])) {
+    //     $member['mb_name']  = $_POST['mb_name'];
+    // }
 
     $g5['title'] = '회원 가입';
 
@@ -83,49 +81,56 @@ if ($w == "") {
         }
     }
 
-    if (isset($_POST['mb_password'])) {
+//     if (isset($_POST['mb_password'])) {
+//         // 수정된 정보를 업데이트후 되돌아 온것이라면 비밀번호가 암호화 된채로 넘어온것임
+//         if ($_POST['is_update']) {
+//             $tmp_password = $_POST['mb_password'];
+//             $pass_check = ($member['mb_password'] === $tmp_password);
+//         } else {
+// //            $pass_check = check_password($_POST['mb_password'], $member['mb_password']);
+// 			if($member["mb_id"] != "admin"){
+// 				$sendData = [];
+// 				$sendData["usrId"] = $member["mb_id"];
+// 				$sendData["pw"] = $_POST["mb_password"];
+// 				$oCurl = curl_init();
+// 				curl_setopt($oCurl, CURLOPT_PORT, 9901);
+// 				curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/account/entLogin");
+// 				curl_setopt($oCurl, CURLOPT_POST, 1);
+// 				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+// 				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+// 				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+// 				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+// 				$res = curl_exec($oCurl);
+// 				$res = json_decode($res, true);
+// 				curl_close($oCurl);
+// 				if($res["errorYN"] == "Y"){
+// 					$pass_check = false;
+// 				} else {
+// 					$pass_check = true;
+// 				}
+// 			} else {
+// 				$pass_check = check_password($_POST['mb_password'], $member['mb_password']);
+// 			}
+//         }
+//         if (!$pass_check)
+//             alert('비밀번호가 틀립니다.');
+//     }
+
+    if ($_POST['mb_password']) {
         // 수정된 정보를 업데이트후 되돌아 온것이라면 비밀번호가 암호화 된채로 넘어온것임
-        if ($_POST['is_update']) {
+        if ($_POST['is_update'])
             $tmp_password = $_POST['mb_password'];
-            $pass_check = ($member['mb_password'] === $tmp_password);
-        } else {
-//            $pass_check = check_password($_POST['mb_password'], $member['mb_password']);
-			if($member["mb_id"] != "admin"){
-				$sendData = [];
-				$sendData["usrId"] = $member["mb_id"];
-				$sendData["pw"] = $_POST["mb_password"];
+        else
+            $tmp_password = get_encrypt_string($_POST['mb_password']);
 
-				$oCurl = curl_init();
-				curl_setopt($oCurl, CURLOPT_PORT, 9901);
-				curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/account/entLogin");
-				curl_setopt($oCurl, CURLOPT_POST, 1);
-				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-				curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-				curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-				$res = curl_exec($oCurl);
-				$res = json_decode($res, true);
-				curl_close($oCurl);
-
-				if($res["errorYN"] == "Y"){
-					$pass_check = false;
-				} else {
-					$pass_check = true;
-				}
-			} else {
-				$pass_check = check_password($_POST['mb_password'], $member['mb_password']);
-			}
-        }
-
-        if (!$pass_check)
+        if ($member['mb_password'] != $tmp_password)
             alert('비밀번호가 틀립니다.');
     }
 
-    $g5['title'] = '회원 정보 수정';
 
+    $g5['title'] = '회원 정보 수정';
     set_session("ss_reg_mb_name", $member['mb_name']);
     set_session("ss_reg_mb_hp", $member['mb_hp']);
-
     $member['mb_email']       = get_text($member['mb_email']);
     $member['mb_homepage']    = get_text($member['mb_homepage']);
     $member['mb_birth']       = get_text($member['mb_birth']);

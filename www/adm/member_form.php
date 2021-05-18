@@ -938,10 +938,52 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
 <div class="btn_fixed_top">
     <a href="./member_list.php?<?php echo $qstr ?>" class="btn btn_02">목록</a>
     <input type="submit" value="확인" class="btn_submit btn" accesskey='s'>
+
+
+    <?php
+        $sendData=[];
+        $sendData['usrId'] = $mb['mb_id'];
+        $oCurl = curl_init();
+        curl_setopt($oCurl, CURLOPT_PORT, 9901);
+        curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/ent/account");
+        curl_setopt($oCurl, CURLOPT_POST, 1);
+        curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+        curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+        $res = curl_exec($oCurl);
+        curl_close($oCurl);
+        $res = json_decode($res, true);
+    ?>
+    <?php if($res['data']['entConfirmCd'] == "02"){ ?> <input type="button" value="승인" class="btn btn_02 accept" id="accept"> <?php } ?>
 </div>
 </form>
 
 <script>
+$("#accept").click(function(){
+    var sendData = new FormData();
+    sendData.append("entId", "<?=$mb['mb_entId']?>");//아이디
+    sendData.append("entConfirmCd", "01");//아이디
+
+    $.ajax({
+        type: 'POST',
+        url : "https://system.eroumcare.com:9901/api/ent/update",
+        type : "POST",
+        async : false,
+        cache : false,
+        processData : false,
+        contentType : false,
+        data : sendData,
+    }).done(function (data) {
+        if(data.message == "SUCCESS"){
+            alert('승인되었습니다.');
+            location.reload();
+        }
+        console.log(data.message);
+    });
+
+});
+
 function fmember_submit(f)
 {
     if (!f.mb_icon.value.match(/\.(gif|jpe?g|png)$/i) && f.mb_icon.value) {

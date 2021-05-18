@@ -23,7 +23,7 @@
 				sql_query("
                     INSERT INTO {$g5["member_table"]} SET
                     mb_id = '{$resInfo["usrId"]}',
-                    mb_name = '{$resInfo["entCeoNm"]}',
+                    mb_name = '{$resInfo["usrNm"]}',
                     mb_nick = '{$resInfo["entNm"]}',
                     mb_hp = '{$resInfo["usrPnum"]}',
                     mb_tel = '{$resInfo["usrPnum"]}',
@@ -41,44 +41,63 @@
                     mb_giup_zip2 = '{$resInfo["entZip02"]}',
                     mb_giup_addr1 = '{$resInfo["entAddr"]}',
                     mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-                    mb_email = '{$resInfo["entMail"]}',
+                    mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
+                    mb_email = '{$resInfo["usrMail"]}',
                     mb_fax = '{$resInfo["entFax"]}',
                     mb_authCd = '{$resInfo["authCd"]}',
                     mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
+                    mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
+                    mb_giup_bupjong = '{$resInfo["entBusiType"]}',
                     mb_sex = '{$resInfo["usrGender"]}',
                     mb_birth = '{$resInfo["usrBirth"]}',
                     mb_giup_btel = '{$resInfo["entPnum"]}',
+                    mb_giup_tax_email = '{$resInfo["entMail"]}',
+                    mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
+                    mb_giup_bname = '{$resInfo["entNm"]}',
+                    mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
+                    mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
                     mb_password2 = '".$mb_password2."'
 				");
 			} else {
-				sql_query("
+                sql_query("
                     UPDATE {$g5["member_table"]} SET
-                    mb_name = '{$resInfo["entCeoNm"]}',
-                    mb_nick = '{$resInfo["entNm"]}',
-                    mb_hp = '{$resInfo["usrPnum"]}',
-                    mb_tel = '{$resInfo["usrPnum"]}',
-                    mb_entId = '{$resInfo["entId"]}',
-                    mb_entNm = '{$resInfo["entNm"]}',
-                    mb_zip1 = '{$resInfo["usrZip01"]}',
-                    mb_zip2 = '{$resInfo["usrZip02"]}',
-                    mb_addr1 = '{$resInfo["usrAddr"]}',
-                    mb_addr2 = '{$resInfo["usrAddrDetail"]}',
-                    mb_giup_bnum = '{$resInfo["entCrn"]}',
-                    mb_giup_zip1 = '{$resInfo["entZip01"]}',
-                    mb_giup_zip2 = '{$resInfo["entZip02"]}',
-                    mb_giup_addr1 = '{$resInfo["entAddr"]}',
-                    mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-                    mb_email = '{$resInfo["entMail"]}',
-                    mb_fax = '{$resInfo["entFax"]}',
-                    mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
-                    mb_sex = '{$resInfo["usrGender"]}',
-                    mb_birth = '{$resInfo["usrBirth"]}',
-                    mb_giup_btel = '{$resInfo["entPnum"]}',
-                    mb_password2 = '".$mb_password2."'
-                WHERE mb_id = '{$resInfo["usrId"]}'
-				");
+                        mb_name = '{$resInfo["usrNm"]}',
+                        mb_nick = '{$resInfo["entNm"]}',
+                        mb_hp = '{$resInfo["usrPnum"]}',
+                        mb_tel = '{$resInfo["usrPnum"]}',
+                        mb_type = '{$resInfo["type"]}',
+                        mb_entId = '{$resInfo["entId"]}',
+                        mb_entNm = '{$resInfo["entNm"]}',
+                        mb_password = '".get_encrypt_string($mb_password)."',
+                        mb_zip1 = '{$resInfo["usrZip01"]}',
+                        mb_zip2 = '{$resInfo["usrZip02"]}',
+                        mb_addr1 = '{$resInfo["usrAddr"]}',
+                        mb_addr2 = '{$resInfo["usrAddrDetail"]}',
+                        mb_giup_bnum = '{$resInfo["entCrn"]}',
+                        mb_giup_zip1 = '{$resInfo["entZip01"]}',
+                        mb_giup_zip2 = '{$resInfo["entZip02"]}',
+                        mb_giup_addr1 = '{$resInfo["entAddr"]}',
+                        mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
+                        mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
+                        mb_email = '{$resInfo["usrMail"]}',
+                        mb_fax = '{$resInfo["entFax"]}',
+                        mb_authCd = '{$resInfo["authCd"]}',
+                        mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
+                        mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
+                        mb_giup_bupjong = '{$resInfo["entBusiType"]}',
+                        mb_sex = '{$resInfo["usrGender"]}',
+                        mb_birth = '{$resInfo["usrBirth"]}',
+                        mb_giup_btel = '{$resInfo["entPnum"]}',
+                        mb_giup_tax_email = '{$resInfo["entMail"]}',
+                        mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
+                        mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
+                        mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
+                        mb_giup_bname = '{$resInfo["entNm"]}',
+                        mb_password2 = '".$mb_password2."'
+                    WHERE mb_id = '{$resInfo["usrId"]}'
+                ");
 			}
-
+            
 			$sendData["usrId"] = $resInfo["usrId"];
 			$oCurl = curl_init();
 			curl_setopt($oCurl, CURLOPT_PORT, 9901);

@@ -34,7 +34,7 @@ if($_POST["mb_id"] != "admin"){
         echo $mb['mb_level'];
         if($mb['mb_level']<5){
             //임시작업
-            alert('승인 후 이용이 가능합니다. 관리자 문의해주세요.');
+            // alert('승인 후 이용이 가능합니다. 관리자 문의해주세요.');
         }
 
         if (!$is_social_password_check && (!$mb['mb_id'] || !check_password($mb_password, $mb['mb_password'])) ) {
@@ -78,18 +78,19 @@ if($_POST["mb_id"] != "admin"){
 		$resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
 		$resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
         $mb_password2 =  base64_encode ($mb_password) ;
+
 		if(!$mbCheck){
 			sql_query("
 				INSERT INTO {$g5["member_table"]} SET
-					mb_id = '{$resInfo["usrId"]}',
-					mb_name = '{$resInfo["entCeoNm"]}',
-					mb_nick = '{$resInfo["entNm"]}',
-					mb_hp = '{$resInfo["usrPnum"]}',
-					mb_tel = '{$resInfo["usrPnum"]}',
-					mb_type = '{$resInfo["type"]}',
-					mb_entId = '{$resInfo["entId"]}',
-					mb_entNm = '{$resInfo["entNm"]}',
-					mb_level = '3',
+                    mb_id = '{$resInfo["usrId"]}',
+                    mb_name = '{$resInfo["usrNm"]}',
+                    mb_nick = '{$resInfo["entNm"]}',
+                    mb_hp = '{$resInfo["usrPnum"]}',
+                    mb_tel = '{$resInfo["usrPnum"]}',
+                    mb_type = '{$resInfo["type"]}',
+                    mb_entId = '{$resInfo["entId"]}',
+                    mb_entNm = '{$resInfo["entNm"]}',
+                    mb_level = '3',
                     mb_password = '".get_encrypt_string($mb_password)."',
                     mb_zip1 = '{$resInfo["usrZip01"]}',
                     mb_zip2 = '{$resInfo["usrZip02"]}',
@@ -100,49 +101,67 @@ if($_POST["mb_id"] != "admin"){
                     mb_giup_zip2 = '{$resInfo["entZip02"]}',
                     mb_giup_addr1 = '{$resInfo["entAddr"]}',
                     mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-                    mb_email = '{$resInfo["entMail"]}',
+                    mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
+                    mb_email = '{$resInfo["usrMail"]}',
                     mb_fax = '{$resInfo["entFax"]}',
-					mb_authCd = '{$resInfo["authCd"]}',
+                    mb_authCd = '{$resInfo["authCd"]}',
                     mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
+                    mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
+                    mb_giup_bupjong = '{$resInfo["entBusiType"]}',
                     mb_sex = '{$resInfo["usrGender"]}',
                     mb_birth = '{$resInfo["usrBirth"]}',
                     mb_giup_btel = '{$resInfo["entPnum"]}',
+                    mb_giup_tax_email = '{$resInfo["entMail"]}',
+                    mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
+                    mb_giup_bname = '{$resInfo["entNm"]}',
+                    mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
+                    mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
                     mb_password2 = '".$mb_password2."'
 			");
 		} else {
-			sql_query("
-				UPDATE {$g5["member_table"]} SET
-					mb_name = '{$resInfo["entCeoNm"]}',
-					mb_nick = '{$resInfo["entNm"]}',
-					mb_hp = '{$resInfo["usrPnum"]}',
-					mb_tel = '{$resInfo["usrPnum"]}',
-					mb_entId = '{$resInfo["entId"]}',
-					mb_entNm = '{$resInfo["entNm"]}',
+            sql_query("
+                UPDATE {$g5["member_table"]} SET
+                    mb_name = '{$resInfo["usrNm"]}',
+                    mb_nick = '{$resInfo["entNm"]}',
+                    mb_hp = '{$resInfo["usrPnum"]}',
+                    mb_tel = '{$resInfo["usrPnum"]}',
+                    mb_type = '{$resInfo["type"]}',
+                    mb_entId = '{$resInfo["entId"]}',
+                    mb_entNm = '{$resInfo["entNm"]}',
+                    mb_password = '".get_encrypt_string($mb_password)."',
                     mb_zip1 = '{$resInfo["usrZip01"]}',
                     mb_zip2 = '{$resInfo["usrZip02"]}',
                     mb_addr1 = '{$resInfo["usrAddr"]}',
                     mb_addr2 = '{$resInfo["usrAddrDetail"]}',
-					mb_giup_bnum = '{$resInfo["entCrn"]}',
-					mb_giup_zip1 = '{$resInfo["entZip01"]}',
-					mb_giup_zip2 = '{$resInfo["entZip02"]}',
-					mb_giup_addr1 = '{$resInfo["entAddr"]}',
-					mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-					mb_email = '{$resInfo["entMail"]}',
-					mb_fax = '{$resInfo["entFax"]}',
+                    mb_giup_bnum = '{$resInfo["entCrn"]}',
+                    mb_giup_zip1 = '{$resInfo["entZip01"]}',
+                    mb_giup_zip2 = '{$resInfo["entZip02"]}',
+                    mb_giup_addr1 = '{$resInfo["entAddr"]}',
+                    mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
+                    mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
+                    mb_email = '{$resInfo["usrMail"]}',
+                    mb_fax = '{$resInfo["entFax"]}',
+                    mb_authCd = '{$resInfo["authCd"]}',
                     mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
+                    mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
+                    mb_giup_bupjong = '{$resInfo["entBusiType"]}',
                     mb_sex = '{$resInfo["usrGender"]}',
                     mb_birth = '{$resInfo["usrBirth"]}',
                     mb_giup_btel = '{$resInfo["entPnum"]}',
+                    mb_giup_tax_email = '{$resInfo["entMail"]}',
+                    mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
+                    mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
+                    mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
+                    mb_giup_bname = '{$resInfo["entNm"]}',
                     mb_password2 = '".$mb_password2."'
-				WHERE mb_id = '{$resInfo["usrId"]}'
-			");
+                WHERE mb_id = '{$resInfo["usrId"]}'
+            ");
 		}
 	}
 
 
 
 }
-
 // 아미나빌더 소셜로그인
 $is_apms_social_check = false;
 if(isset($_POST['apms_social']) && $_POST['apms_social']) {
@@ -355,6 +374,7 @@ if(defined('G5_USE_SHOP') && G5_USE_SHOP && function_exists('set_cart_id')){
     $sql = " update {$g5['g5_shop_cart_table']} set ct_select = '0' where od_id = '$s_cart_id' ";
     sql_query($sql);
 }
+// return false;
 
-goto_url($link);
+goto_url(G5_URL);
 ?>
