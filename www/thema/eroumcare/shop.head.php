@@ -337,7 +337,7 @@ scrollToTop();
                         <?php } ?> -->
 				</div>
 
-                <?php if($member["mb_level"] == "3"){ ?>
+                <?php if($member["mb_level"] == "3"||$member["mb_level"] == "4"){ ?>
                 <div class="link_area"  style="float:right; padding:0px;">
                     <a href="javascript:void(0)" style="cursor:default;"><?=$member["mb_entNm"]?></a>
                 </div>
