@@ -146,8 +146,8 @@ add_javascript(G5_POSTCODE_JS, 0);
                     if($member['mb_sex'] =="00") $mb_sex_check00="checked";
                     if($member['mb_sex'] =="01") $mb_sex_check01="checked";
                 ?>
-					남<input type="radio" id="mb_sex" name="mb_sex" value="00" <?=$mb_sex_check00?> class="input-sm" size="10">
-					여<input type="radio" id="mb_sex" name="mb_sex" value="01" <?=$mb_sex_check01?> class="input-sm" size="10">
+					<input type="radio" id="mb_sex" name="mb_sex" value="00" <?=$mb_sex_check00?> class="input-sm" size="10"> 남, 
+					<input type="radio" id="mb_sex" name="mb_sex" value="01" <?=$mb_sex_check01?> class="input-sm" size="10"> 여
 				</div>
 			</div>
             
