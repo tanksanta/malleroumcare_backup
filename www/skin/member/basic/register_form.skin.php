@@ -1054,7 +1054,11 @@ function fregisterform_submit()
                                     data : sendData2,
                                 }).done(function (data) {
                                     alert("완료되었습니다.");
-                                    location.href='<?=G5_URL?>';
+									<?php if(!$w){ ?>
+										location.href='<?=G5_URL?>/bbs/register_result.php';
+										<?php }else{ ?>
+										location.href='<?=G5_URL?>';
+									<?php } ?>
                                 });
                             }else{
                                 alert(data);

@@ -117,8 +117,9 @@ if($header_skin)
 		</div>
 		<div class="form-footer">
 			<p class="text-center">
-				<a href="#" class="registerBtn" target="_blank"> 사업소 회원가입</a>
-<!--				<a href="<?php echo G5_BBS_URL ?>/password_lost.php" target="_blank" id="login_password_lost"><i class="fa fa-search"></i> 정보찾기</a>-->
+				<a href="<?=G5_BBS_URL?>/register.php" > 사업소 회원가입</a>
+				<!-- <a href="<?=G5_BBS_URL?>" class="registerBtn" target="_blank"> 사업소 회원가입</a> -->
+				<!-- <a href="<?php echo G5_BBS_URL ?>/password_lost.php" target="_blank" id="login_password_lost"><i class="fa fa-search"></i> 정보찾기</a> -->
 			</p>
 		</div>
 	</div>

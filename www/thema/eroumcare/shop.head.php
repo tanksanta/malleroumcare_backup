@@ -327,7 +327,7 @@ scrollToTop();
                             <a href="<?php echo G5_BBS_URL; ?>/logout.php" >로그아웃</a>
                         <?php }else{ ?>
                             <a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
-                            <a href="https://system.eroumcare.com/cmm/cmm4000/cmm4000/selectCmm4000View.do" class="registerBtn" target="_blank">사업소 회원가입</a>
+                            <a href="<?=G5_BBS_URL?>/register.php" class="registerBtn" target="_blank">사업소 회원가입</a>
                     <!--						<a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>-->
                         <?php } ?>
                         <!-- <?php if ( $member['mb_type'] == 'partner' ) { ?>

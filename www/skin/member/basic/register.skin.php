@@ -1,5 +1,6 @@
 
 
+
 <style>
     .alert-info{ background-color:#ffff; text-align:center; color:#5b5b5b; margin-bottom:0px; border-color:#fff;}
     .info_box  { margin-bottom:20px; width:100%;height:100%; font-size:20px;}
@@ -9,11 +10,8 @@
     
 </style>
 <div class="alert alert-info" role="alert">
-
-	<div class="info_box"><b>복지용구사업소 회원가입</b></div>
-
-
-<form  class="fregister" name="fregister" id="fregister" action="<?php echo $action_url ?>" onsubmit="return fregister_submit(this);" method="POST" autocomplete="off" class="form" role="form">
+<div class="info_box"><b>복지용구사업소 회원가입</b></div>
+<form  class="fregister" name="fregister" id="fregister" action="<?php echo G5_BBS_URL ?>/register_form.php" onsubmit="return fregister_submit(this);" method="POST" autocomplete="off" class="form" role="form">
 <input type="hidden" name="pim" value="<?php echo $pim;?>">
 	<div class="panel panel-default">
 		<div class="panel-heading"><strong>이용약관</strong></div>
@@ -41,17 +39,16 @@
 		</div>
 	</div>
     
-    <div class="text-center">
-        <input type="checkbox"> 전체 동의 합니다.
+    <div class="text-center" style="margin-bottom:30px;">
+        <input type="checkbox" id="check_all"> 전체 동의 합니다.
     </div>
 
     <div class="text-center">
-        <button type="submit" class="btn btn-color">동의함</button>
-        <button type="submit" class="btn btn-color">동의안함</button>
+        <button type="submit" class="btn btn-color">확인</button>
+        <button type="button" class="btn btn-color" onclick ="(location.href='<?=G5_URL?>')" >취소</button>
     </div>
 </form>
 
-<br><br><br>
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
@@ -148,6 +145,21 @@ if($config['cf_social_login_use']) { //소셜 로그인 사용시
 
 
 <script>
+
+$("#check_all").click(function(){ 
+    var chk = $(this).attr('checked');//.attr('checked'); 
+    if(chk){
+        $("#agree11").prop('checked', true);
+        $("#agree21").prop('checked', true);
+    }else{
+        $("#agree11").prop('checked', false);
+        $("#agree21").prop('checked', false);
+    } 
+});
+
+
+    
+    
     function fregister_submit(f) {
         if (!f.agree.checked) {
             alert("이용약관에 내용에 동의하셔야 회원가입 하실 수 있습니다.");
