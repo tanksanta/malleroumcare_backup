@@ -55,6 +55,17 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			<td>1</td>
 			<td>10</td>
 		</tr>
+		<tr class="bg_gray">
+			<td>수급자수</td>
+			<td>관리사업소 수급자</td>
+			<td>311</td>
+			<td>122</td>
+			<td>233</td>
+			<td>21</td>
+			<td>322</td>
+			<td>133</td>
+			<td>1022</td>
+		</tr>
 		<tr>
 			<td>2021-05-17 ~ 2021-05-23</td>
 			<td>신규사업소</td>
