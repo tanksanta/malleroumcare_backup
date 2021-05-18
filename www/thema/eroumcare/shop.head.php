@@ -339,7 +339,7 @@ scrollToTop();
 
                 <?php if($member["mb_level"] == "3"){ ?>
                 <div class="link_area"  style="float:right; padding:0px;">
-                    <a href="javascript:void(0)" style="cursor:default;"><?=$member["mb_name"]?></a>
+                    <a href="javascript:void(0)" style="cursor:default;"><?=$member["mb_entNm"]?></a>
                 </div>
                 <?php } ?>
 
