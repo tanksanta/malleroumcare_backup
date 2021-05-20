@@ -56,6 +56,7 @@
                     mb_giup_bname = '{$resInfo["entNm"]}',
                     mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
                     mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
+                    mb_datetime = '".G5_TIME_YMDHIS."',
                     mb_password2 = '".$mb_password2."'
 				");
 			} else {

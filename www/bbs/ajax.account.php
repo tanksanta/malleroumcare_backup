@@ -146,6 +146,7 @@
                 mb_giup_bname = '{$resInfo["entNm"]}',
                 sealFile = '".$sealFile_name."',
                 crnFile = '".$crnFile_name."',
+                mb_datetime = '".G5_TIME_YMDHIS."',
                 mb_password2 = '".$mb_password2."'
         ");
     } else {
