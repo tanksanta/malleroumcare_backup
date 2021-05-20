@@ -5,14 +5,12 @@ include_once('./lib/eform.lib.php');
 $uuid = $_POST['uuid'];
 $status = json_decode(stripslashes($_POST['status']), true);
 if(!$uuid || !$status) {
-  echo json_response(400, '잘못된 요청입니다.');
-  exit;
+  json_response(400, '잘못된 요청입니다.');
 }
 
 $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
 if(!$eform['dc_id']) {
-  echo json_response(500, '생성할 계약서를 찾을 수 없습니다.');
-  exit;
+  json_response(500, '생성할 계약서를 찾을 수 없습니다.');
 }
 
 $sql = "SELECT * FROM {$g5['g5_shop_order_table']} WHERE `od_id` = '{$eform['od_id']}'";
@@ -20,22 +18,24 @@ if($is_member && !$is_admin)
     $sql .= " AND mb_id = '{$member['mb_id']}' ";
 $od = sql_fetch($sql);
 if(!$od['mb_id']) {
-  echo json_response(400, '계약서를 생성할 권한이 없습니다.');
-  exit;
+  json_response(400, '계약서를 생성할 권한이 없습니다.');
 }
 
 if($eform['dc_status'] != '0') {
-  echo json_response(400, '이미 계약서가 생성된 주문입니다.');
-  exit;
+  json_response(400, '이미 계약서가 생성된 주문입니다.');
 }
 
-$ent = api_call('https://system.eroumcare.com/api/ent/account', 'POST', array(
+// 입력 값 무결성 검사
+if($error = valid_status_input($status)) {
+  json_response(400, $error);
+}
+
+$ent = api_post_call('https://system.eroumcare.com/api/ent/account', array(
   'usrId' => $od['mb_id']
 ));
 $entSealImg = $ent['data']['entSealImg'];
 if(!$entSealImg) {
-  echo json_response(400, '통합시스템에서 사업소 직인 이미지를 등록해주세요.');
-  exit;
+  json_response(400, '통합시스템에서 사업소 직인 이미지를 등록해주세요.');
 }
 
 // 직인 파일 사본 저장
@@ -130,5 +130,5 @@ sql_query("INSERT INTO `eform_document_log` SET
 `dl_datetime` = '$datetime'
 ");
 
-echo json_response(200, 'OK');
+json_response(200, 'OK');
 ?>

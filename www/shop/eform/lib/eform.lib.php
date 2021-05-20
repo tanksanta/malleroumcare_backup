@@ -8,12 +8,14 @@ function json_response($code = 200, $message = null) {
     500 => '500 Internal Server Error'
   );
   header('Status: '.$status[$code]);
-  return json_encode(array(
+  echo json_encode(array(
     'status' => $code < 300, // success or not?
     'message' => $message
   ));
+  exit;
 }
 
+// JSON API 호출 함수
 function api_call($url, $method = 'GET', $data = null, $port = 9901) {
   if($method == 'GET') $url .= '?'.http_build_query($data);
 
@@ -32,6 +34,16 @@ function api_call($url, $method = 'GET', $data = null, $port = 9901) {
   return json_decode($res, true);
 }
 
+// API 호출 GET 헬퍼
+function api_get_call($url, $data = null, $port = 9901) {
+  return api_call($url, 'GET', $data, $port);
+}
+
+// API 호출 POST 헬퍼
+function api_post_call($url, $data = null, $port = 9901) {
+  return api_call($url, 'POST', $data, $port);
+}
+
 function get_url_content($url) {
   $oCurl = curl_init();
   curl_setopt($oCurl, CURLOPT_URL, $url);
@@ -40,5 +52,76 @@ function get_url_content($url) {
   $res = curl_exec($oCurl);
   curl_close($oCurl);
   return $res;
+}
+
+// 계약서 생성 시 입력 값 무결성 검사
+function valid_status_input($status) {
+  $count_buy = $count_rent = 0;
+
+  // 실제 구매 물품
+  foreach($status['buy']['items'] as $item) {
+    // 바코드 검사?
+    $count_buy++;
+  }
+
+  // 실제 대여 물품
+  foreach($status['rent']['items'] as $item) {
+    // 바코드 검사?
+    $count_rent++;
+  }
+
+  // 계약서 상 임의로 추가한 구매 물품
+  foreach($status['buy']['customs'] as $item) {
+    $count_buy++;
+    if($item['ca_name'] === '') {
+      return "{$count_buy}번째 구매물품의 품목명을 입력해주세요.";
+    }
+    if($item['it_name'] === '') {
+      return "{$count_buy}번째 구매물품의 제품명을 입력해주세요.";
+    }
+    if($item['it_code'] === '') {
+      return "{$count_buy}번째 구매물품의 제품기호를 입력해주세요.";
+    }
+    if($item['it_qty'] === '') {
+      return "{$count_buy}번째 구매물품의 개수를 입력해주세요.";
+    }
+    if($item['it_date'] === '') {
+      return "{$count_buy}번째 구매물품의 판매계약일을 입력해주세요.";
+    }
+    if($item['it_price'] === '') {
+      return "{$count_buy}번째 구매물품의 고시가를 입력해주세요.";
+    }
+    if($item['it_price_pen'] === '') {
+      return "{$count_buy}번째 구매물품의 본인부담금을 입력해주세요.";
+    }
+  }
+
+  // 계약서 상 임의로 추가한 대여 물품
+  foreach($status['rent']['customs'] as $item) {
+    $count_rent++;
+    if($item['ca_name'] === '') {
+      return "{$count_buy}번째 대여물품의 품목명을 입력해주세요.";
+    }
+    if($item['it_name'] === '') {
+      return "{$count_buy}번째 대여물품의 제품명을 입력해주세요.";
+    }
+    if($item['it_code'] === '') {
+      return "{$count_buy}번째 대여물품의 제품기호를 입력해주세요.";
+    }
+    if($item['it_qty'] === '') {
+      return "{$count_buy}번째 대여물품의 개수를 입력해주세요.";
+    }
+    if($item['range_from'] === '' || $item['range_to'] === '') {
+      return "{$count_buy}번째 대여물품의 계약기간을 입력해주세요.";
+    }
+    if($item['it_price'] === '') {
+      return "{$count_buy}번째 대여물품의 고시가를 입력해주세요.";
+    }
+    if($item['it_price_pen'] === '') {
+      return "{$count_buy}번째 대여물품의 본인부담금을 입력해주세요.";
+    }
+  }
+
+  return false;
 }
 ?>
