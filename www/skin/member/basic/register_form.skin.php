@@ -985,7 +985,21 @@ function fregisterform_submit()
     }
     //mb_fax
     var mb_fax = $("#mb_fax1").val() + "-" + $("#mb_fax2").val() + "-" + $("#mb_fax3").val();
-
+    if(!$("#mb_fax1").val()){
+        alert('팩스를 입력해주세요.');
+        $("#mb_fax1").focus();
+        return false;
+    }
+    if(!$("#mb_fax2").val()){
+        alert('팩스를 입력해주세요.');
+        $("#mb_fax2").focus();
+        return false;
+    }
+    if(!$("#mb_fax3").val()){
+        alert('팩스를 입력해주세요.');
+        $("#mb_fax3").focus();
+        return false;
+    }
     var msg = reg_mb_email_check();
     if (msg) {
         alert(msg);
@@ -1165,9 +1179,16 @@ function fregisterform_submit()
             }).done(function (data) {
 
                 if(data.message == "SUCCESS"){
-                    //사업자등록증
+					//사업자등록증
+					var flag ='<?=$member['crnFile']?>';
                     var imgFileItem1 = $(".mb_giup_file1 input[type='file']");
                     for(var i = 0; i < imgFileItem1.length; i++){
+                        if(!flag){
+                            if(!$(imgFileItem1[i])[0].files[0]){
+                                alert('사업자등록증을 첨부해주세요.');
+                                return false;
+                            }
+                        }
                         if($(imgFileItem1[i])[0].files[0]){
                             sendData.append("crnFile", $(imgFileItem1[i])[0].files[0]);
                         }
