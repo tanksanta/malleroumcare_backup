@@ -34,7 +34,7 @@ if($_POST["mb_id"] != "admin"){
         echo $mb['mb_level'];
         if($mb['mb_level']<5){
             //임시작업
-            // alert('승인 후 이용이 가능합니다. 관리자 문의해주세요.');
+            alert('승인 후 이용이 가능합니다. 관리자 문의해주세요.');
         }
 
         if (!$is_social_password_check && (!$mb['mb_id'] || !check_password($mb_password, $mb['mb_password'])) ) {
