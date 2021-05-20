@@ -198,3 +198,5 @@
 #sns_register .txt:hover{background:rgba(0,0,0,0.07)}
 
 .vertical-spacer { padding: 15px 0; }
+.number_box1{ display:inline-block;width:30%;}
+.number_box2{ display:inline-block;width:34%;}
