@@ -101,9 +101,11 @@ $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
 $timestamp = time();
 $datetime = date('Y-m-d H:i:s', $timestamp);
 
-$countPostfix = sql_fetch("SELECT COUNT(`dc_id`) as cnt FROM `eform_document` WHERE `entId` = '{$eform["entId"]}' AND `penId` = '{$eform["penId"]}' AND `dc_status` != '0'")["cnt"] + 1;
-if($countPostfix < 10) $countPostfix = "00".$countPostfix; else if($countPostfix < 100) $countPostfix = "0".$countPostfix;
-$subject = $eform["entNm"]."_".str_replace('-', '', $eform["entCrn"])."_".$eform["penNm"].substr($eform["penLtmNum"], 0, 6)."_".date("Ymd")."_".$countPostfix;
+// 문서 제목 생성
+$subject = $eform["entNm"]."_".str_replace('-', '', $eform["entCrn"])."_".$eform["penNm"].substr($eform["penLtmNum"], 0, 6)."_".date("Ymd")."_";
+$subject_count_postfix = sql_fetch("SELECT COUNT(`dc_id`) as cnt FROM `eform_document` WHERE `dc_subject` LIKE '{$subject}%'")["cnt"];
+$subject_count_postfix = str_pad($subject_count_postfix + 1, 3, '0', STR_PAD_LEFT); // zerofill
+$subject .= $subject_count_postfix;
 
 // 계약서 정보 업데이트
 sql_query("UPDATE `eform_document` SET
