@@ -844,21 +844,21 @@ function fregisterform_submit()
     var mb_birth = $("#year").val() + $("#month").val() + $("#day").val();
     var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
 
-    if(!$("#year").val()){
-        alert('연도를 선택해주세요');
-        $("#year").focus();
-        return false;
-    }
-    if(!$("#month").val()){
-        alert('월 선택해주세요');
-        $("#month").focus();
-        return false;
-    }
-    if(!$("#day").val()){
-        alert('일을 선택해주세요');
-        $("#day").focus();
-        return false;
-    }
+    // if(!$("#year").val()){
+    //     alert('연도를 선택해주세요');
+    //     $("#year").focus();
+    //     return false;
+    // }
+    // if(!$("#month").val()){
+    //     alert('월 선택해주세요');
+    //     $("#month").focus();
+    //     return false;
+    // }
+    // if(!$("#day").val()){
+    //     alert('일을 선택해주세요');
+    //     $("#day").focus();
+    //     return false;
+    // }
     var msg = reg_mb_email_check();
     if (msg) {
         alert(msg);
