@@ -154,7 +154,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 					<label class="col-sm-2 control-label" for="reg_mb_tel"><b>전화번호</b><?php if ($config['cf_req_tel']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
 					<div class="col-sm-3">
 						<!-- <input type="text" name="mb_tel" value="<?php echo get_text($member['mb_tel']) ?>" id="reg_mb_tel" <?php echo $config['cf_req_tel']?"required":""; ?> class="form-control input-sm" maxlength="20"> -->
-                        <select name="mb_tel1" id="mb_tel1" class="form-control input-sm number_box1"  style="display:inline-block;width:30%;">
+                        <select name="mb_tel1" id="mb_tel1" class="form-control input-sm number_box1">
                             <?php $mb_giup_btel =explode('-',$member['mb_giup_btel']); ?>
                             <option value="02" <?=($mb_giup_btel[0] =="02")? "selected": "" ; ?> >02</option>
                             <option value="010" <?=($mb_giup_btel[0] =="010")? "selected": "" ; ?>>010</option>
