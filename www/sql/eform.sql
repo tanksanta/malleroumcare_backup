@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   `dc_sign_signUrl` varchar(255) NOT NULL default '',
   PRIMARY KEY (`dc_id`),
   UNIQUE KEY `index1` (`dc_id`, `od_id`),
+  KEY `dc_subject` (`dc_subject`),
   KEY `od_id` (`od_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
