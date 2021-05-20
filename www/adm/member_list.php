@@ -271,6 +271,7 @@ $stx=$stx2;
 		<?php } ?>
         <th scope="col" rowspan="2" id="mb_list_order">주문</th>
         <th scope="col" rowspan="2" id="mb_list_mng">관리</th>
+        <th scope="col" rowspan="2" id="mb_list_accept" class="accept">승인</th>
     </tr>
     <tr>
         <th scope="col" id="mb_list_name"><?php echo subject_sort_link('mb_name') ?>이름</a></th>
@@ -490,6 +491,35 @@ $stx=$stx2;
 
         <td headers="mb_list_order" rowspan="2" class="td_mng td_order_s"> <a class="btn_back" href="/adm/shop_admin/samhwa_orderlist.php?mb_info=true&sel_field=mb_id&search=<?php echo $mb_id ?>"><?php echo $total_count ?> 건</a></td>
         <td headers="mb_list_mng" rowspan="2" class="td_mng td_mng_s"><?php echo $s_mod ?><?php echo $s_grp ?></td>
+        <td headers="mb_list_mng" rowspan="2" class="td_mng td_mng_s">
+            <?php
+                if(!$row['mb_entId']){
+                    echo "쇼핑몰 전용 아이디";                
+                }else{
+                $sendData = [];
+                $sendData['usrId'] = $row['mb_id'];
+                $oCurl = curl_init();
+                curl_setopt($oCurl, CURLOPT_PORT, 9901);
+                curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/ent/account");
+                curl_setopt($oCurl, CURLOPT_POST, 1);
+                curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+                curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+                $res = curl_exec($oCurl);
+                $res = json_decode($res, true);
+                if($res['data']['entConfirmCd'] == "01"){
+                    echo "<span>승인완료</span>";
+                }else{
+                    echo '<button type="button" class="btn btn_02 accept" data-id="'.$row['mb_id'].'" data-entid="'.$row['mb_entId'].'">승인</button>';
+                }
+            ?>
+            
+            
+
+
+            <?php }?>
+        </td>
     </tr>
     <tr class="<?php echo $bg; ?>">
         <td headers="mb_list_name" class="td_mbname"><?php echo get_text($row['mb_name']); ?></td>
@@ -637,6 +667,42 @@ $( document ).ready(function() {
 
     });
 });
+
+
+$(".accept").click(function(){
+    var sendData = new FormData();
+    var usrId = $(this).data('id');
+    var entId = $(this).data('entid');
+    
+    sendData.append("usrId", usrId);//
+    sendData.append("entId", entId);//
+    sendData.append("entConfirmCd", "01");//
+    for (var pair of sendData.entries()) { console.log(pair[0]+ ', ' + pair[1]); }
+
+
+    $.ajax({
+        type: 'POST',
+        url : "https://system.eroumcare.com:9901/api/ent/update",
+        type : "POST",
+        async : false,
+        cache : false,
+        processData : false,
+        contentType : false,
+        data : sendData,
+    }).done(function (data) {
+        // console.log(sendData);
+        // console.log(data);
+        // return false;
+        if(data.message == "SUCCESS"){
+            alert('승인되었습니다.');
+            location.reload();
+        }
+        // console.log(data.message);
+    });
+
+});
+
+
 </script>
 
 <?php
