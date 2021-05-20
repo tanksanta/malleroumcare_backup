@@ -40,7 +40,7 @@
 	</div>
     
     <div class="text-center" style="margin-bottom:30px;">
-        <input type="checkbox" id="check_all"> 전체 동의 합니다.
+        <label ><input type="checkbox" id="check_all"> 전체 동의 합니다.</label>
     </div>
 
     <div class="text-center">

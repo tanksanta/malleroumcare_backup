@@ -389,6 +389,19 @@ pre{white-space: pre-wrap;}
 .sns_notice .notice_wrap ul>li a{font-size:11px;display:inline-block;position:relative;width:100%;padding:5px 0;border-bottom:1px solid #eee;}
 .sns_notice .notice_wrap ul>li a .date{position:absolute;right:0;top:5px;}
 
+/* =================================================
+	* Register
+================================================= */
+.panel-footer{text-align:left;}
+.panel-default .control-label{font-size:14px}
+.form-group span{padding-top:7px;display:inline-block;} 
+
+
+@media only screen and (max-width:960px) {
+	 
+}
+
+
 
 /* =================================================
 	* sub

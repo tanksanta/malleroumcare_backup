@@ -93,36 +93,38 @@ add_javascript(G5_POSTCODE_JS, 0);
 		<div class="panel-heading"><strong>기본정보</strong></div>
 		<div class="panel-body">
 
-			<div class="form-group has-feedback text-gap">
+			<div class="form-group has-feedback  ">
 				<label class="col-sm-2 control-label" for="reg_mb_id"><b>아이디</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
 					<input type="text" name="mb_id" value="<?php echo $member['mb_id'] ?>" id="reg_mb_id" <?php echo $required ?> <?php echo $readonly ?> class="form-control input-sm" minlength="3" maxlength="20">
-					<span class="fa fa-check form-control-feedback"></span>
 				</div>
-                <span id="id_keyup"></span>
+				<div class="col-sm-3">
+					<span id="id_keyup"></span>
+				</div>
+                
 			</div>
 
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="reg_mb_password"><b>비밀번호</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
 					<input type="password" name="mb_password" id="reg_mb_password" <?php echo $required ?> class="form-control input-sm" minlength="3" maxlength="20">
-					<span class="fa fa-lock form-control-feedback"></span>
 					<div class="h15 hidden-lg hidden-md hidden-sm"></div>
 				</div>
-                영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.
+				<div class="col-sm-3">
+					<span>*영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.</span>
+				</div>
 			</div>
             <div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="reg_mb_password_re"><b>비밀번호 확인</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
 					<input type="password" name="mb_password_re" id="reg_mb_password_re" <?php echo $required ?> class="form-control input-sm" minlength="3" maxlength="20">
-					<span class="fa fa-check form-control-feedback"></span>
 				</div>
 			</div>
             
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for=""><b>분류</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
-					<span style="margin-top:10px;font-weight:bold;height:30px;line-height:30px;">복지용구사업소</span>
+					<span>복지용구사업소</span>
 				</div>
 			</div>
             <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
@@ -138,10 +140,9 @@ add_javascript(G5_POSTCODE_JS, 0);
 					<div class="col-sm-3">
 						<input type="hidden" name="mb_hp" id="reg_mb_hp">
 						<?php $mb_hp =explode('-',$member['mb_hp']); ?>
-                        <input type="text" class="form-control input-sm" name="mb_hp1" size="6" id="mb_hp1" title="전화번호(1)" maxlength="4"  value="<?=$mb_hp[0]?>" required style="display:inline-block;width:32%;">
-						<input type="text" class="form-control input-sm" name="mb_hp2" size="6" id="mb_hp2" title="전화번호(2)" maxlength="4"  value="<?=$mb_hp[1]?>" required style="display:inline-block;width:32%;">
-                        <input type="text" class="form-control input-sm" name="mb_hp3" size="6" id="mb_hp3" title="전화번호(3)" maxlength="4"  value="<?=$mb_hp[2]?>" required style="display:inline-block;width:32%;">
-                        <span class="fa fa-mobile form-control-feedback"></span>
+                        <input type="text" class="form-control input-sm" name="mb_hp1" size="6" id="mb_hp1" title="전화번호(1)" maxlength="4"  value="<?=$mb_hp[0]?>" required style="display:inline-block;width:30%;">
+						<input type="text" class="form-control input-sm" name="mb_hp2" size="6" id="mb_hp2" title="전화번호(2)" maxlength="4"  value="<?=$mb_hp[1]?>" required style="display:inline-block;width:34%;">
+                        <input type="text" class="form-control input-sm" name="mb_hp3" size="6" id="mb_hp3" title="전화번호(3)" maxlength="4"  value="<?=$mb_hp[2]?>" required style="display:inline-block;width:34%;">
 						<?php if ($config['cf_cert_use'] && $config['cf_cert_hp']) { ?>
 							<input type="hidden" name="old_mb_hp" value="<?php echo get_text($member['mb_hp']) ?>">
 						<?php } ?>
@@ -155,7 +156,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 					<label class="col-sm-2 control-label" for="reg_mb_tel"><b>전화번호</b><?php if ($config['cf_req_tel']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
 					<div class="col-sm-3">
 						<!-- <input type="text" name="mb_tel" value="<?php echo get_text($member['mb_tel']) ?>" id="reg_mb_tel" <?php echo $config['cf_req_tel']?"required":""; ?> class="form-control input-sm" maxlength="20"> -->
-                        <select name="mb_tel1" id="mb_tel1" class="form-control input-sm"  style="display:inline-block;width:32%;">
+                        <select name="mb_tel1" id="mb_tel1" class="form-control input-sm"  style="display:inline-block;width:30%;">
                             <?php $mb_giup_btel =explode('-',$member['mb_giup_btel']); ?>
                             <option value="02" <?=($mb_giup_btel[0] =="02")? "selected": "" ; ?> >02</option>
                             <option value="010" <?=($mb_giup_btel[0] =="010")? "selected": "" ; ?>>010</option>
@@ -177,9 +178,8 @@ add_javascript(G5_POSTCODE_JS, 0);
                             <option value="064" <?=($mb_giup_btel[0] =="064")? "selected": "" ; ?>>064</option>
                             <option value="070" <?=($mb_giup_btel[0] =="070")? "selected": "" ; ?>>070</option>
                         </select>
-                        <input type="text" class="form-control input-sm" name="mb_tel2" size="6" id="mb_tel2" title="전화번호(2)" maxlength="4"  value="<?=$mb_giup_btel[1]?>" required style="display:inline-block;width:32%;">
-                        <input type="text" class="form-control input-sm" name="mb_tel3" size="6" id="mb_tel3" title="전화번호(3)" maxlength="4"  value="<?=$mb_giup_btel[2]?>" required style="display:inline-block;width:32%;">
-                        <span class="fa fa-phone form-control-feedback"></span>
+                        <input type="text" class="form-control input-sm" name="mb_tel2" size="6" id="mb_tel2" title="전화번호(2)" maxlength="4"  value="<?=$mb_giup_btel[1]?>" required style="display:inline-block;width:34%;">
+                        <input type="text" class="form-control input-sm" name="mb_tel3" size="6" id="mb_tel3" title="전화번호(3)" maxlength="4"  value="<?=$mb_giup_btel[2]?>" required style="display:inline-block;width:34%;">
 					</div>
 				</div>
 			<?php }  ?>
@@ -189,11 +189,10 @@ add_javascript(G5_POSTCODE_JS, 0);
 				<div class="col-sm-3">
                     <?php $mb_fax =explode('-',$member['mb_fax']); ?>
 					<!-- <input type="text" name="mb_fax" value="<?php echo get_text($member['mb_fax']) ?>" id="reg_mb_fax" <?php echo ($config['cf_reg_fax'])?"required":""; ?> class="form-control input-sm" maxlength="13"> -->
-                    <input type="text" class="form-control input-sm" name="mb_fax1" size="6" id="mb_fax1" title="전화번호(1)" maxlength="4"  value="<?=$mb_fax[0]?>" required style="display:inline-block;width:32%;">
-                    <input type="text" class="form-control input-sm" name="mb_fax2" size="6" id="mb_fax2" title="전화번호(2)" maxlength="4"  value="<?=$mb_fax[1]?>" required style="display:inline-block;width:32%;">
-                    <input type="text" class="form-control input-sm" name="mb_fax3" size="6" id="mb_fax3" title="전화번호(3)" maxlength="4"  value="<?=$mb_fax[2]?>" required style="display:inline-block;width:32%;">
+                    <input type="text" class="form-control input-sm" name="mb_fax1" size="6" id="mb_fax1" title="전화번호(1)" maxlength="4"  value="<?=$mb_fax[0]?>" required style="display:inline-block;width:30%;">
+                    <input type="text" class="form-control input-sm" name="mb_fax2" size="6" id="mb_fax2" title="전화번호(2)" maxlength="4"  value="<?=$mb_fax[1]?>" required style="display:inline-block;width:34%;">
+                    <input type="text" class="form-control input-sm" name="mb_fax3" size="6" id="mb_fax3" title="전화번호(3)" maxlength="4"  value="<?=$mb_fax[2]?>" required style="display:inline-block;width:34%;">
                     
-                    <span class="fa fa-fax form-control-feedback"></span>
 				</div>
 			</div>
         
@@ -230,8 +229,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 				<label class="col-sm-2 control-label" for="reg_mb_email"><b>이메일(세금계산서 수신용)</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-5">
 					<input type="hidden" name="old_email" value="<?php echo $member['mb_email'] ?>">
-					<input type="text" name="mb_email" value="<?php echo isset($member['mb_email'])?$member['mb_email']:''; ?>" id="reg_mb_email" required class="form-control input-sm email" size="70" maxlength="100">
-					<span class="fa fa-envelope form-control-feedback"></span>
+					<input type="text" name="mb_email" value="<?php echo isset($member['mb_email'])?$member['mb_email']:''; ?>" id="reg_mb_email" required class="form-control input-sm email" maxlength="100">
 				</div>
 			</div>
 		</div>
@@ -345,7 +343,6 @@ add_javascript(G5_POSTCODE_JS, 0);
 				<label class="col-sm-2 control-label" for="mb_giup_manager_name"><b>담당자명</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
 					<input type="text" id="mb_giup_manager_name" name="mb_giup_manager_name" value="<?php echo get_text($member['mb_giup_manager_name']) ?>" <?php echo $required ?> class="form-control input-sm" size="10">
-					<span class="fa fa-check form-control-feedback"></span>
 				</div>
 				<?php if($config['cf_cert_use']) { ?>
 					<div class="col-sm-7">
