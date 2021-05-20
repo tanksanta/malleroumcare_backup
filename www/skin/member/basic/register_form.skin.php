@@ -1498,11 +1498,11 @@ function check_giup_bnum(type) {
 function check_giup_sbnum(type) {
     var msg = reg_mb_giup_sbnum_check();
 
-    if (type == "click") {∂
+    if (type == "click") {
         if (msg === "") {
             $('#form-sbnum-feed-text > span').hide();
             $('#form-sbnum-feed-text > .available').show();
-            return true;∂ç
+            return true;
         }
 
         else if (msg === "이미 사용중인 종사업자번호입니다.") {
