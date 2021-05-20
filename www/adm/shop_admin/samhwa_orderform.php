@@ -974,14 +974,14 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>
-                                	<?php if(substr($carts[$i]["ca_id"], 0, 2) == 20){ ?>
-											<!-- <tr>
+                                	<?php if(substr($carts[$i]["ca_id"], 0, 2) == 20&&$ct_status_text == "재고소진"){ ?>
+											<tr>
 												<td></td>
 												<td colspan="10" style="text-align: left;">
 													<b>대여기간 : </b>
 													<?=$ordLendDtm?>
 												</td>
-											</tr> -->
+											</tr>
                                 	<?php } ?>
 										<?php if($prodMemo){ ?>
 											<tr>
