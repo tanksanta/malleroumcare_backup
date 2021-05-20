@@ -162,6 +162,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 label {
     margin-right:10px;
 }
+.accept {
+    cursor:pointer;
+}
 </style>
 <script src="<?php echo G5_JS_URL ?>/jquery.register_form.js"></script>
 <form name="fmember" id="fmember" action="./member_form_update.php" onsubmit="return fmember_submit(this);" method="post" enctype="multipart/form-data">
@@ -963,6 +966,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
 $("#accept").click(function(){
     var sendData = new FormData();
     sendData.append("entId", "<?=$mb['mb_entId']?>");//아이디
+    sendData.append("usrId", "<?=$mb['mb_id']?>");//아이디
     sendData.append("entConfirmCd", "01");//아이디
 
     $.ajax({
