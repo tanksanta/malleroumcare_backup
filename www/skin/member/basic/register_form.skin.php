@@ -98,7 +98,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 				<div class="col-sm-3">
 					<input type="text" name="mb_id" value="<?php echo $member['mb_id'] ?>" id="reg_mb_id" <?php echo $required ?> <?php echo $readonly ?> class="form-control input-sm" minlength="3" maxlength="20">
 				</div>
-				<div class="col-sm-3">
+				<div class="desc_txt">
 					<span id="id_keyup"></span>
 				</div>
                 
@@ -110,7 +110,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 					<input type="password" name="mb_password" id="reg_mb_password" <?php echo $required ?> class="form-control input-sm" minlength="3" maxlength="20">
 					<div class="h15 hidden-lg hidden-md hidden-sm"></div>
 				</div>
-				<div class="col-sm-3">
+				<div class="desc_txt">
 					<span>*영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.</span>
 				</div>
 			</div>
@@ -123,7 +123,7 @@ add_javascript(G5_POSTCODE_JS, 0);
             
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for=""><b>분류</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
+				<div class="desc_txt">
 					<span>복지용구사업소</span>
 				</div>
 			</div>

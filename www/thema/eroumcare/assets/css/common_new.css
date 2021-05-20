@@ -394,7 +394,7 @@ pre{white-space: pre-wrap;}
 ================================================= */
 .panel-footer{text-align:left;}
 .panel-default .control-label{font-size:14px}
-.form-group span{padding-top:7px;display:inline-block;} 
+.form-group .desc_txt{padding:7px 15px 0 15px;;display:inline-block;} 
 
 
 @media only screen and (max-width:960px) {
