@@ -1189,6 +1189,7 @@ function fregisterform_submit()
                             }else{
                                 result = JSON.parse(result);
                             }
+                            sendData2.append("usrId", result.data['usrId']); //usrId
                             sendData2.append("entId", result.data['entId']); //entId
                             //이전 서버에 저장
                             if(data.message == "SUCCESS"){
