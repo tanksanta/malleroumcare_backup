@@ -151,14 +151,14 @@ add_javascript(G5_POSTCODE_JS, 0);
 				</div>
 			</div>
             
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
+			<!-- <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
 				<label class="col-sm-2 control-label" for="penBirth"><b>관리자 생일</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
                         <select name="penBirth1" id="year" title="년도" class="form-control input-sm year" style="display:inline-block;width:32%;"></select>
                         <select name="penBirth2" id="month" title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
                         <select name="penBirth3" id="day" title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
 				</div>
-			</div>
+			</div> -->
 
 			<?php if ($config['cf_use_hp'] || $config['cf_cert_hp']) {  ?>
 				<div class="form-group has-feedback">
@@ -563,47 +563,47 @@ add_javascript(G5_POSTCODE_JS, 0);
 </form>
 <script>
 
-$(document).ready(function () {
-                setDateBox();
-            });
-    //생년월일
-    function setDateBox() {
-        var dt = new Date();
-        var year = "";
-        var com_year = dt.getFullYear();
-        var selected1 ="";
-        var selected2 ="";
-        var selected3 ="";
-        // 발행 뿌려주기
-        $(".year").append("<option value=''>년도</option>");
+// $(document).ready(function () {
+//                 setDateBox();
+//             });
+    // //생년월일
+    // function setDateBox() {
+    //     var dt = new Date();
+    //     var year = "";
+    //     var com_year = dt.getFullYear();
+    //     var selected1 ="";
+    //     var selected2 ="";
+    //     var selected3 ="";
+    //     // 발행 뿌려주기
+    //     $(".year").append("<option value=''>년도</option>");
 
-        // 올해 기준으로 -50년부터 +1년을 보여준다.
-        for (var y = (com_year - 100); y <= (com_year); y++) {
-        <?php if($w){ ?> if(y == <?=substr($member['mb_birth'], 0, 4)?>){selected1 = 'selected';} <?php } ?>
-        $(".year").append("<option value='" + y + "' " + selected1 + ">" + y + "</option>");
-        }
+    //     // 올해 기준으로 -50년부터 +1년을 보여준다.
+    //     for (var y = (com_year - 100); y <= (com_year); y++) {
+    //     <?php if($w){ ?> if(y == <?=substr($member['mb_birth'], 0, 4)?>){selected1 = 'selected';} <?php } ?>
+    //     $(".year").append("<option value='" + y + "' " + selected1 + ">" + y + "</option>");
+    //     }
 
-        // 월 뿌려주기(1월부터 12월)
-        var month;
-        $(".month").append("<option value=''>월</option>");
-        for (var i = 1; i <= 12; i++) {
-        var first_num="";
-        if(i<10){first_num = 0;}
-        <?php if($w){ ?> if(first_num + i == <?=substr($member['mb_birth'], 4, 2)?>) {selected2 = 'selected';}<?php } ?>
-        $(".month").append("<option value='"+first_num + i + "' " + selected2 + ">"+first_num + i+"</option>");
-        }
+    //     // 월 뿌려주기(1월부터 12월)
+    //     var month;
+    //     $(".month").append("<option value=''>월</option>");
+    //     for (var i = 1; i <= 12; i++) {
+    //     var first_num="";
+    //     if(i<10){first_num = 0;}
+    //     <?php if($w){ ?> if(first_num + i == <?=substr($member['mb_birth'], 4, 2)?>) {selected2 = 'selected';}<?php } ?>
+    //     $(".month").append("<option value='"+first_num + i + "' " + selected2 + ">"+first_num + i+"</option>");
+    //     }
 
-        // 일 뿌려주기(1일부터 31일)
-        var day;
-        $(".day").append("<option value=''>일</option>");
-        for (var i = 1; i <= 31; i++) {
-            var first_num="";
-        if(i<10){first_num = 0;}
-        <?php if($w){ ?> if(first_num + i == <?=substr($member['mb_birth'], 4, 2)?>) {selected3 = 'selected';}<?php } ?>
-        $(".day").append("<option value='" +first_num+ i + "'" + selected3 + ">" + first_num+i + "</option>");
-        }
+    //     // 일 뿌려주기(1일부터 31일)
+    //     var day;
+    //     $(".day").append("<option value=''>일</option>");
+    //     for (var i = 1; i <= 31; i++) {
+    //         var first_num="";
+    //     if(i<10){first_num = 0;}
+    //     <?php if($w){ ?> if(first_num + i == <?=substr($member['mb_birth'], 4, 2)?>) {selected3 = 'selected';}<?php } ?>
+    //     $(".day").append("<option value='" +first_num+ i + "'" + selected3 + ">" + first_num+i + "</option>");
+    //     }
 
-    }
+    // }
             
 $(function() {
 
