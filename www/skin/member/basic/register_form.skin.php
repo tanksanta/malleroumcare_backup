@@ -13,7 +13,7 @@ if($header_skin)
 	include_once('./header.php');
 
 add_javascript(G5_POSTCODE_JS, 0);
-echo $skin_url;
+
 ?>
 <script src="<?php echo G5_JS_URL ?>/jquery.register_form.js"></script>
 <?php if($config['cf_cert_use'] && ($config['cf_cert_ipin'] || $config['cf_cert_hp'])) { ?>
@@ -96,7 +96,7 @@ echo $skin_url;
 				<div class="col-sm-3">
 					<input type="text" name="mb_id" value="<?php echo $member['mb_id'] ?>" id="reg_mb_id" <?php echo $required ?> <?php echo $readonly ?> class="form-control input-sm" minlength="3" maxlength="20">
 				</div>
-				<div class="col-sm-3">
+				<div class="desc_txt">
 					<span id="id_keyup"></span>
 				</div>
                 
@@ -108,7 +108,7 @@ echo $skin_url;
 					<input type="password" name="mb_password" id="reg_mb_password" <?php echo $required ?> class="form-control input-sm" minlength="3" maxlength="20">
 					<div class="h15 hidden-lg hidden-md hidden-sm"></div>
 				</div>
-				<div class="col-sm-3">
+				<div class="desc_txt">
 					<span>*영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.</span>
 				</div>
 			</div>
@@ -121,7 +121,7 @@ echo $skin_url;
             
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for=""><b>분류</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
+				<div class="desc_txt">
 					<span>복지용구사업소</span>
 				</div>
 			</div>
@@ -138,9 +138,9 @@ echo $skin_url;
 					<div class="col-sm-3">
 						<input type="hidden" name="mb_hp" id="reg_mb_hp">
 						<?php $mb_hp =explode('-',$member['mb_hp']); ?>
-                        <input type="text" class="form-control input-sm input-sm number_box1" name="mb_hp1" size="6" id="mb_hp1" title="전화번호(1)" maxlength="4"  value="<?=$mb_hp[0]?>" required>
-						<input type="text" class="form-control input-sm input-sm number_box2" name="mb_hp2" size="6" id="mb_hp2" title="전화번호(2)" maxlength="4"  value="<?=$mb_hp[1]?>" required>
-                        <input type="text" class="form-control input-sm input-sm number_box2" name="mb_hp3" size="6" id="mb_hp3" title="전화번호(3)" maxlength="4"  value="<?=$mb_hp[2]?>" required>
+                        <input type="text" class="form-control input-sm number_box1" name="mb_hp1" size="6" id="mb_hp1" title="전화번호(1)" maxlength="4"  value="<?=$mb_hp[0]?>" required>
+						<input type="text" class="form-control input-sm number_box2" name="mb_hp2" size="6" id="mb_hp2" title="전화번호(2)" maxlength="4"  value="<?=$mb_hp[1]?>" required>
+                        <input type="text" class="form-control input-sm number_box2" name="mb_hp3" size="6" id="mb_hp3" title="전화번호(3)" maxlength="4"  value="<?=$mb_hp[2]?>" required>
 						<?php if ($config['cf_cert_use'] && $config['cf_cert_hp']) { ?>
 							<input type="hidden" name="old_mb_hp" value="<?php echo get_text($member['mb_hp']) ?>">
 						<?php } ?>
@@ -154,7 +154,7 @@ echo $skin_url;
 					<label class="col-sm-2 control-label" for="reg_mb_tel"><b>전화번호</b><?php if ($config['cf_req_tel']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
 					<div class="col-sm-3">
 						<!-- <input type="text" name="mb_tel" value="<?php echo get_text($member['mb_tel']) ?>" id="reg_mb_tel" <?php echo $config['cf_req_tel']?"required":""; ?> class="form-control input-sm" maxlength="20"> -->
-                        <select name="mb_tel1" id="mb_tel1" class="form-control input-sm input-sm number_box1">
+                        <select name="mb_tel1" id="mb_tel1" class="form-control input-sm number_box1"  style="display:inline-block;width:30%;">
                             <?php $mb_giup_btel =explode('-',$member['mb_giup_btel']); ?>
                             <option value="02" <?=($mb_giup_btel[0] =="02")? "selected": "" ; ?> >02</option>
                             <option value="010" <?=($mb_giup_btel[0] =="010")? "selected": "" ; ?>>010</option>
@@ -176,8 +176,8 @@ echo $skin_url;
                             <option value="064" <?=($mb_giup_btel[0] =="064")? "selected": "" ; ?>>064</option>
                             <option value="070" <?=($mb_giup_btel[0] =="070")? "selected": "" ; ?>>070</option>
                         </select>
-                        <input type="text" class="form-control input-sm input-sm number_box2" name="mb_tel2" size="6" id="mb_tel2" title="전화번호(2)" maxlength="4"  value="<?=$mb_giup_btel[1]?>">
-                        <input type="text" class="form-control input-sm input-sm number_box2" name="mb_tel3" size="6" id="mb_tel3" title="전화번호(3)" maxlength="4"  value="<?=$mb_giup_btel[2]?>">
+                        <input type="text" class="form-control input-sm number_box2" name="mb_tel2" size="6" id="mb_tel2" title="전화번호(2)" maxlength="4"  value="<?=$mb_giup_btel[1]?>" required>
+                        <input type="text" class="form-control input-sm number_box2" name="mb_tel3" size="6" id="mb_tel3" title="전화번호(3)" maxlength="4"  value="<?=$mb_giup_btel[2]?>" required>
 					</div>
 				</div>
 			<?php }  ?>
@@ -1498,11 +1498,11 @@ function check_giup_bnum(type) {
 function check_giup_sbnum(type) {
     var msg = reg_mb_giup_sbnum_check();
 
-    if (type == "click") {
+    if (type == "click") {∂
         if (msg === "") {
             $('#form-sbnum-feed-text > span').hide();
             $('#form-sbnum-feed-text > .available').show();
-            return true;
+            return true;∂ç
         }
 
         else if (msg === "이미 사용중인 종사업자번호입니다.") {
