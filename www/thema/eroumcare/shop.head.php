@@ -467,8 +467,8 @@ scrollToTop();
 					</table>
 				</div>
 				<div class="catalogueWrap">
-					<a href="/thema/eroumcare/assets/카달로그(이로움)_1호.pdf">
-						<span>이로움 카달로그</span>
+					<a href="/thema/eroumcare/assets/catalog_2.pdf">
+						<span>이로움 카달로그(2호)</span>
 						<img src="<?php echo THEMA_URL; ?>/assets/img/btn_catalogue_icon.png" >
 					</a>
 				</div>
