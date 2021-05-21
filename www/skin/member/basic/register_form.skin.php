@@ -1155,7 +1155,20 @@ function fregisterform_submit()
     for (var pair of sendData.entries()) { console.log(pair[0]+ ', ' + pair[1]); }
     // return false;
 
-
+    //사업자등록증
+    var flag ='<?=$member['crnFile']?>';
+    var imgFileItem1 = $(".mb_giup_file1 input[type='file']");
+    for(var i = 0; i < imgFileItem1.length; i++){
+        if(!flag){
+            if(!$(imgFileItem1[i])[0].files[0]){
+                alert('사업자등록증을 첨부해주세요.');
+                return false;
+            }
+        }
+        if($(imgFileItem1[i])[0].files[0]){
+            sendData.append("crnFile", $(imgFileItem1[i])[0].files[0]);
+        }
+    }
     <?php if(!$w){
             $api_url = "https://system.eroumcare.com:9901/api/ent/insert";
         }else{
@@ -1174,21 +1187,6 @@ function fregisterform_submit()
             }).done(function (data) {
 
                 if(data.message == "SUCCESS"){
-					//사업자등록증
-					var flag ='<?=$member['crnFile']?>';
-                    var imgFileItem1 = $(".mb_giup_file1 input[type='file']");
-                    for(var i = 0; i < imgFileItem1.length; i++){
-                        if(!flag){
-                            if(!$(imgFileItem1[i])[0].files[0]){
-                                alert('사업자등록증을 첨부해주세요.');
-                                return false;
-                            }
-                        }
-                        if($(imgFileItem1[i])[0].files[0]){
-                            sendData.append("crnFile", $(imgFileItem1[i])[0].files[0]);
-                        }
-                    }
-
                     $.ajax({
                         type: 'POST',
                         url : "<?=G5_BBS_URL?>/ajax.account.php",
