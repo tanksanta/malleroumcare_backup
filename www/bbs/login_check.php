@@ -63,7 +63,7 @@ if($_POST["mb_id"] != "admin"){
 			sql_query("
             INSERT INTO {$g5["member_table"]} SET
                 mb_id = '{$resInfo["usrId"]}',
-                mb_name = '{$resInfo["usrNm"]}',
+                mb_name = '{$resInfo["entNm"]}',
                 mb_nick = '{$resInfo["entNm"]}',
                 mb_hp = '{$resInfo["usrPnum"]}',
                 mb_tel = '{$resInfo["usrPnum"]}',
@@ -104,7 +104,7 @@ if($_POST["mb_id"] != "admin"){
 		} else {
             sql_query("
                 UPDATE {$g5["member_table"]} SET
-                    mb_name = '{$resInfo["usrNm"]}',
+                    mb_name = '{$resInfo["entNm"]}',
                     mb_nick = '{$resInfo["entNm"]}',
                     mb_hp = '{$resInfo["usrPnum"]}',
                     mb_tel = '{$resInfo["usrPnum"]}',
