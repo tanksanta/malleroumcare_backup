@@ -33,7 +33,6 @@ if($_POST["mb_id"] != "admin"){
         if (!$is_social_password_check && (!$mb['mb_id'] || !check_password($mb_password, $mb['mb_password'])) ) {
             alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
         }
-        alert($res['message']);
         if($mb['mb_level']<5){
             //임시작업
             alert('승인 후 이용이 가능합니다. 관리자 문의해주세요.');
@@ -59,7 +58,7 @@ if($_POST["mb_id"] != "admin"){
 		$resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
 		$resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
         $mb_password2 =  base64_encode ($mb_password) ;
-
+        
 		if(!$mbCheck){
 			sql_query("
 				INSERT INTO {$g5["member_table"]} SET
