@@ -9,6 +9,7 @@ include_once('./_common.php');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <script src="<?php echo G5_JS_URL ?>/signature_pad.umd.js"></script>
+  <script src="./js/signEform.js"></script>
 </head>
 <body>
   <style>
@@ -111,21 +112,11 @@ include_once('./_common.php');
       backgroundColor: 'transparent',
       minDistance: 5,
       throttle: 3,
-      minWidth: 5,
-      maxWidth: 5
+      minWidth: 4,
+      maxWidth: 4
     });
 
-    function resizeCanvas() {
-      var ratio =  Math.max(window.devicePixelRatio || 1, 1);
-
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
-      canvas.getContext("2d").scale(ratio, ratio);
-
-      signaturePad.clear();
-    }
-
-    window.onresize = resizeCanvas;
+    window.onresize = function() { resizeCanvas(canvas, signaturePad) };
     resizeCanvas();
   </script>
 </body>
