@@ -34,8 +34,7 @@ if($_POST["mb_id"] != "admin"){
             alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
         }
         if($mb['mb_level']<5){
-            //임시작업
-            alert('승인 후 이용이 가능합니다. 관리자 문의해주세요.');
+            alert($res['message']);
         }
 	} else {
 		unset($sendData["pw"]);
