@@ -1133,13 +1133,13 @@ function fregisterform_submit()
     sendData.append("usrZip", $("#reg_mb_zip").val()); //관리자 우편번호
     sendData.append("usrAddr", $("#reg_mb_addr1").val());//관리자 주소
     sendData.append("usrAddrDetail", $("#reg_mb_addr2").val())+$("#reg_mb_addr3").val();//관리자 주소 상세
+    sendData.append("entMail", $("#reg_mb_email").val());//메일
 
 
 
     // sendData.append("usrNm", $("#mb_name").val()); //관리자이름
     // sendData.append("usrBirth", mb_birth);//생년월일
     // sendData.append("usrGender", $("#mb_sex").val());//성별
-    // sendData.append("entMail", $("#mb_giup_tax_email").val());//메일
     // sendData.append("entBusiNum",$("#mb_giup_sbnum").val()); //종사업장번호
 
 
