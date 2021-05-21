@@ -51,9 +51,11 @@ include_once('./_common.php');
 
     function resizeSignBack(origWidth, origHeight) {
       var canvasWidth = canvas.offsetWidth;
+      var canvasHegiht = canvas.offsetHeight;
       var dpiRatio = canvasWidth / origWidth;
       var newHeight = origHeight * dpiRatio;
 
+      signBack.style.top = ((canvasHegiht / 2) - (newHeight / 2)) + 'px';
       signBack.style.width = canvasWidth + 'px';
       signBack.style.height = newHeight + 'px';
     }

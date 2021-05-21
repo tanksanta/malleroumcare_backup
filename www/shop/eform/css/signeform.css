@@ -160,6 +160,7 @@ body {
   font-weight: bold;
   color: #000;
   background-color: #fff;
+  border-bottom: 1px solid #ddd;
 }
 
 .popup-modal .bottom-wrap {
