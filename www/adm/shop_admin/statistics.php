@@ -140,7 +140,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			<td><?php echo get_customer_new('all',date("Y-m-d",$start_day),date("Y-m-d",$last_day)); ?></td>
 		</tr>
         <?php 
-            if(date("Y-m-d",$start_day) == "2021-05-17")break;
+            if(date("Y-m-d",$start_day) == "2021-04-05")break;
         } ?>
 	</table>
 	<p>*기준은 매주 월요일부터 일요일까지 신규 가입된 사업소 중 담당자가 지정된 사업소만 보여집니다.<br>
