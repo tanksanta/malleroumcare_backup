@@ -651,6 +651,18 @@ function get_barcode_log($od_id) {
     return $ret;
 }
 
+function get_delivery_log($od_id) {
+
+    $sql = "SELECT * FROM g5_delivery_log WHERE od_id = '{$od_id}' ORDER BY d_date DESC;";
+    $result = sql_query($sql);
+
+    $ret = array();
+    while($row = sql_fetch_array($result)) {
+        $ret[] = $row;
+    }
+
+    return $ret;
+}
 function set_order_admin_log($od_id, $content) {
     global $member;
 
