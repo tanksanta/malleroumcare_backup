@@ -49,19 +49,16 @@
             sql_query($sql_ct);
 
             //시스템 상태값 변경
-            if($_POST['step']=="완료"||$_POST['step']=="주문무효"||$_POST['step']=="취소"){
-                $stoId=$stoId.$result_ct_s['stoId'];
-                $usrId=$result_ct_s['mb_id'];
-                $entId=$result_ct_s['mb_entId'];
-            }
+            $stoId=$stoId.$result_ct_s['stoId'];
+            $usrId=$result_ct_s['mb_id'];
+            $entId=$result_ct_s['mb_entId'];
         }
 
-        if($_POST['step']=="완료"||$_POST['step']=="주문무효"||$_POST['step']=="취소"){
             //완료 판매완료로 바꿈
+            $stateCd="06";
             switch ($_POST['step']) {
+                case '배송':    $stateCd="01"; break;
                 case '완료':    $stateCd="01"; break;
-                case '주문무효': $stateCd="06"; break;
-                case '취소':    $stateCd="06"; break;
             }
             $stoIdDataList = explode('|',$stoId);
             $stoIdDataList=array_filter($stoIdDataList);
@@ -88,9 +85,6 @@
             }else{
                 echo "fail";
             }
-        }else{
-            echo "success";
-        }
     }else{
         echo "fail";
     }
