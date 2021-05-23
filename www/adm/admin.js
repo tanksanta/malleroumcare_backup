@@ -211,7 +211,7 @@ function change_step(od_id, step, api) {
                 $("#"+step).click();
             }
         }else{
-            alert('알수없는 원인으로 실패되었습니다.');
+            alert(data);
         }
     });
 }

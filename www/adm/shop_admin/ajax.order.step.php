@@ -10,7 +10,7 @@ if($_POST['ct_id']&&$_POST['step']){
     $add_sql="";
     $ct_ex_date = date("Y-m-d");
     $stateCd;
-    
+    $flag =true;
     //상태값 치환
     switch ($_POST['step']) {
         case '보유재고등록': $ct_status_text="보유재고등록"; break;
@@ -25,7 +25,8 @@ if($_POST['ct_id']&&$_POST['step']){
         case '배송': $ct_status_text="출고완료"; break;
         case '완료': $ct_status_text="배송완료"; break;
     }
-
+    $sql=[];
+    $sql_ct=[];
     for($i=0;$i<count($_POST['ct_id']); $i ++){
         $sql_ct_s = "select a.od_id, a.it_id, a.it_name, a.ct_option, a.mb_id, a.stoId, b.mb_entId from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
         $result_ct_s=sql_fetch($sql_ct_s);
@@ -35,19 +36,17 @@ if($_POST['ct_id']&&$_POST['step']){
             $content=$content."(".$result_ct_s['ct_option'].")";
         }
         $content =$content."-".$ct_status_text." 변경";
-        $sql = "INSERT INTO g5_shop_order_admin_log SET
+        //로그 insert
+        $sql[$i]= "INSERT INTO g5_shop_order_admin_log SET
             od_id = '{$od_id}',
             mb_id = '{$member['mb_id']}',
             ol_content = '{$content}',
             ol_datetime = now()
         ";
-        //로그 insert
-        sql_query($sql);
-
+        
         //상태 update
         if($_POST['step']=="배송"){$add_sql = ", `ct_ex_date` = '".$ct_ex_date."'"; }
-        $sql_ct = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql." where `ct_id` = '".$_POST['ct_id'][$i]."'";
-        sql_query($sql_ct);
+        $sql_ct[$i] = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql." where `ct_id` = '".$_POST['ct_id'][$i]."'";
 
         //시스템 상태값 변경
         $stoId=$stoId.$result_ct_s['stoId'];
@@ -72,21 +71,40 @@ if($_POST['ct_id']&&$_POST['step']){
             return array(
                 'stoId' => $data['stoId'],
                 'prodBarNum' => $data['prodBarNum'],
+                'prodId' => $data['prodId'],
                 'stateCd' => $stateCd
             );
         }, $result_again);
-        $api_data = array(
-            'usrId' => $usrId,
-            'entId' => $entId,
-            'prods' => $new_sto_ids,
-        );
-        $api_result = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $api_data);
-        if ($api_result['errorYN'] === 'N') {
-            echo "success";
-            exit;
-        }else{
-            echo "fail";
-            exit;
+
+        if($stateCd == "01"){
+            for($k=0;$k<count($new_sto_ids);$k++){
+                $result_confirm = sql_fetch("select `prodSupYn` from `g5_shop_item` where `it_id` ='".$new_sto_ids[$k]['prodId']."'");
+                if($result_confirm['prodSupYn'] == "Y"&&!$new_sto_ids[$k]['prodBarNum']){
+                    echo "유통상품의 모든 바코드가 입력되어야 출고가 가능합니다";
+                    $flag=false;
+                    return false;
+                }
+            }
+        }
+
+        if($flag){
+
+            for($i=0;$i<count($sql);$i++){
+                sql_query($sql[$i]);
+                sql_query($sql_ct[$i]);
+            }
+            
+            $api_data = array(
+                'usrId' => $usrId,
+                'entId' => $entId,
+                'prods' => $new_sto_ids,
+            );
+            $api_result = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $api_data);
+            if ($api_result['errorYN'] === 'N') {
+                echo "success";
+            }else{
+                echo "fail";
+            }
         }
 }else{
     echo "fail";
