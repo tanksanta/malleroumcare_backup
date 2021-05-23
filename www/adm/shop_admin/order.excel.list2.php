@@ -19,65 +19,29 @@
 	if (!$od['od_id']) {
 		alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 	} else {
-		if($od["ordId"]){
-			//수급자 있을때
-			$sendData = [];
-			$sendData["penOrdId"] = $od["ordId"];
-			$sendData["uuid"] = $od["uuid"];
-
-			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9901);
-			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/order/selectList");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res = curl_exec($oCurl);
-			curl_close($oCurl);
-
-			$result = json_decode($res, true);
-			$result = $result["data"];
-
-			if($result){
-				foreach($result as $data){
-					$thisProductData = [];
-
-					$thisProductData["prodId"] = $data["prodId"];
-					$thisProductData["prodColor"] = $data["prodColor"];
-					$thisProductData["stoId"] = $data["stoId"];
-					$thisProductData["prodBarNum"] = $data["prodBarNum"];
-					$thisProductData["penStaSeq"] = $data["penStaSeq"];
-					array_push($prodList, $thisProductData);
-				}
-			}
-		} else {
-			//없으면 수급자 지정 안했을 때임
-			//수급자 지정안되어있으면 api다시 조회해서 불러옴
-			$stoIdData = $od["stoId"];
-			$stoIdData = explode(",", $stoIdData);
-			$stoIdDataList = [];
-			foreach($stoIdData as $data){
-				array_push($stoIdDataList, $data);
-			}
-			$stoIdData = implode("|", $stoIdDataList);
-
-			$sendData = [];
-			$sendData["stoId"] = $stoIdData;
-
-            $oCurl = curl_init();
-
-			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res = curl_exec($oCurl);
-			curl_close($oCurl);
-			$result_again = json_decode($res, true);
-			$result_again = $result_again["data"];
-		}
+        $sto_imsi="";
+        $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+        $result_ct = sql_query($sql_ct);
+        while($row_ct = sql_fetch_array($result_ct)) {
+            $sto_imsi .=$row_ct['stoId'];
+        }
+        $stoIdDataList = explode('|',$sto_imsi);
+        $stoIdDataList=array_filter($stoIdDataList);
+        $stoIdData = implode("|", $stoIdDataList);
+        $sendData = [];
+        $sendData["stoId"] = $stoIdData;
+        $oCurl = curl_init();
+  
+        curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
+        curl_setopt($oCurl, CURLOPT_POST, 1);
+        curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+        curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+        $res = curl_exec($oCurl);
+        curl_close($oCurl);
+        $result_again = json_decode($res, true);
+        $result_again = $result_again["data"];
 	}
 	// 상품목록
 	$sql = " select a.ct_id,
@@ -233,7 +197,6 @@
                     for($b = 0; $b< $options[$k]["ct_qty"]; $b++){
                         $barcode_num=$prodList[$b]["prodBarNum"];   //바코드
                         $rows[] =[
-                            "name" => $name_v,
                             "date" => $date_v,
                             "product" => $product_v.$option_v,
                             "barcode_num" => $barcode_num,
@@ -260,11 +223,18 @@
                 foreach ($rows as $key => $row)
                 {
                     $marks[$key] = $row['stoId'];
-                    
                 }
-                array_multisort($marks, SORT_ASC, $rows);
-            }
+                $marks2 = array();
+                foreach ($rows as $key => $row)
+                {
+                    $marks2[$key] = $row['barcode_num'];
+                }
 
+                array_multisort(
+                    $marks2, SORT_ASC, $rows,
+                    $marks, SORT_DESC, $rows
+                );
+            }
             for($i=0;$i<count($rows);$i++){
                 $count_plus=$i+2;//엑셀카운트
                 $excel->getActiveSheet()->setCellValueExplicit('A'.$count_plus , $rows[$i]['name'] , PHPExcel_Cell_DataType::TYPE_STRING);
