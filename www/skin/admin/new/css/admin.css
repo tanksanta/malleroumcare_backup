@@ -1242,6 +1242,7 @@ button,input[type="submit"] {cursor:pointer}
 
 /*하단버튼*/
 .btn_fixed_top{position:fixed; width:100%; left:0; bottom:0; z-index:100; background:#fff; border-top:1px solid #ddd; text-align:center; padding:5px !important; margin:0 !important; }
+.btn_fixed_top2{position:fixed; width:100%; left:0; bottom:40px; z-index:100; background:#fff; border-top:1px solid #ddd; text-align:center; padding:5px !important; margin:0 !important; }
 
 .btn_fixed_top .btn {display:inline-block; border:0; height:30px; line-height:30px; padding:0 10px; font-weight:bold; vertical-align:middle; margin:5px; }
 .btn_fixed_top .btn_submit,

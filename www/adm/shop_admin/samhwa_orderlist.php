@@ -1081,6 +1081,11 @@ if( function_exists('pg_setting_check') ){
     <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload('excel')" class="btn btn_02">
     <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn btn_03">
 </div>
+
+<div class="btn_fixed_top2">
+    <input type="button" value="더보기" onclick="doSearch()" class="btn btn_02">
+</div>
+
 <iframe src="about:blank" name="process" id="process" width="0" height="0" style="display:none"></iframe>
 
 <form>
