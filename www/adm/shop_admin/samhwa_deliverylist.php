@@ -129,6 +129,15 @@ if( function_exists('pg_setting_check') ){
                 </td>
             </tr>
             <tr>
+                <th>작업상태</th>
+              <td>
+                    <div class="list">
+                        <input type="checkbox" id="complete1" name="complete1" value="1" <?php echo option_array_checked('1', $complete1); ?>><label for="complete1"> 바코드 미 완료 내역만 보기</label>
+                        <input type="checkbox" id="complete2" name="complete2" value="1" <?php echo option_array_checked('1', $complete2); ?>><label for="complete2"> 배송정보 미 입력 내역만 보기</label>
+				    </div>
+              </td>
+            </tr>
+            <tr>
                 <th>검색어</th>
                 <td>
                     <select name="sel_field" id="sel_field">
@@ -212,7 +221,9 @@ if( function_exists('pg_setting_check') ){
         </form>
     </div>
 </div>
-
+<div class="btn_fixed_top3">
+    <input type="button" value="더보기" onclick="doSearch()" class="btn btn_02">
+</div>
 <script>
 
 var od_status = '주문';
@@ -223,67 +234,10 @@ var end = false;
 var sub_menu = '<?php echo $sub_menu; ?>';
 var last_step = '';
 
-$( document ).ready(function() {
-	
-	$("#deliveryExcelDownloadBtn2").click(function(){
-		$("#excelForm").remove();
-		
-		var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
-		
-		var od_id = [];
-		var item = $("input[name='od_id[]']:checked");
-		
-		for(var i = 0; i < item.length; i++){
-			od_id.push($(item[i]).val());
-			
-			html += "<input type='hidden' name='od_id[]' value='" + $(item[i]).val() + "'>";
-		}
-		
-		html += "</form>";
-		
-		if(!od_id.length){
-			alert("선택된 주문내역이 존재하지 않습니다.");
-			return false;
-		}
-		
-		$("body").append(html);
-		$("#excelForm").submit();
-	});
-	
-    $(document).on("click", ".prodBarNumCntBtn", function(e){
-      e.preventDefault();
-        var popupWidth = 700;
-        var popupHeight = 700;
-        var popupX = (window.screen.width / 2) - (popupWidth / 2);
-        var popupY= (window.screen.height / 2) - (popupHeight / 2);
-        // var id = $(this).attr("data-id");
-        // window.open("./popup.prodBarNum.form.php?od_id=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
-        var od = $(this).attr("data-od");
-        var it = $(this).attr("data-it");
-        var stock = $(this).attr("data-stock");
-        var option = encodeURIComponent($(this).attr("data-option"));
-        //popup.prodBarNum.form_3.php 으로하면 cart 기준으로 바뀜 (상품하나씩)
 
-        window.open("./popup.prodBarNum.form.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
-    });
-	
-	$(document).on("click", ".deliveryCntBtn", function(e){
-		e.preventDefault();
-		var id = $(this).attr("data-id");
-		var ct_id = $(this).attr("data-ct");
-		
-		var popupWidth = 700;
-		var popupHeight = 700;
 
-		var popupX = (window.screen.width / 2) - (popupWidth / 2);
-		var popupY= (window.screen.height / 2) - (popupHeight / 2);
-		
-        //아래로하면 cart기준으로 바꿈(상품하나씩)
-		// window.open("./popup.prodDeliveryInfo.form2.php?od_id=" + id +"&ct_id="+ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
-		window.open("./popup.prodDeliveryInfo.form.php?od_id=" + id +"&ct_id="+ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
-	});
 
-    function doSearch() {
+function doSearch() {
         // alert(od_status);
         if ( loading === true ) return;
         if ( end === true ) return;
@@ -308,6 +262,7 @@ $( document ).ready(function() {
                     $('#samhwa_order_ajax_list_table').html(html.main);
                 }
                 $('#samhwa_order_list_table>div.table tbody').append(html.data);
+                complete();
                 // $(".od_release_date").datepicker(
                 //     { 
                 //         changeMonth: true, 
@@ -385,7 +340,100 @@ $( document ).ready(function() {
             .always(function() {
                 loading = false;
             });
+
+            if(document.getElementById('complete1').checked){
+                $('.complete1').hide(); 
+            }else{
+                $('.complete1').show(); 
+            }
     }
+    function complete(){
+        $('.complete1').show();
+        $('.complete2').show();
+        
+        //바코드 o 배송 체크 o
+        if(document.getElementById('complete1').checked&&document.getElementById('complete2').checked){
+            $('.complete1').hide(); 
+            $('.complete2').hide(); 
+        }
+
+        //바코드 x 배송 체크 o
+        if(!document.getElementById('complete1').checked&&document.getElementById('complete2').checked){
+            $('.complete2').hide(); 
+        }
+
+        //바코드 o 배송 체크 x
+        if(document.getElementById('complete1').checked&&!document.getElementById('complete2').checked){
+            $('.complete1').hide(); 
+        }
+    }
+    $("#complete1").change(function(){
+        complete();
+	});
+    $("#complete2").change(function(){
+        complete();
+	});
+$( document ).ready(function() {
+	
+	$("#deliveryExcelDownloadBtn2").click(function(){
+		$("#excelForm").remove();
+		
+		var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
+		
+		var od_id = [];
+		var item = $("input[name='od_id[]']:checked");
+		
+		for(var i = 0; i < item.length; i++){
+			od_id.push($(item[i]).val());
+			
+			html += "<input type='hidden' name='od_id[]' value='" + $(item[i]).val() + "'>";
+		}
+		
+		html += "</form>";
+		
+		if(!od_id.length){
+			alert("선택된 주문내역이 존재하지 않습니다.");
+			return false;
+		}
+		
+		$("body").append(html);
+		$("#excelForm").submit();
+	});
+	
+    $(document).on("click", ".prodBarNumCntBtn", function(e){
+      e.preventDefault();
+        var popupWidth = 700;
+        var popupHeight = 700;
+        var popupX = (window.screen.width / 2) - (popupWidth / 2);
+        var popupY= (window.screen.height / 2) - (popupHeight / 2);
+        // var id = $(this).attr("data-id");
+        // window.open("./popup.prodBarNum.form.php?od_id=" + id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+        var od = $(this).attr("data-od");
+        var it = $(this).attr("data-it");
+        var stock = $(this).attr("data-stock");
+        var option = encodeURIComponent($(this).attr("data-option"));
+        //popup.prodBarNum.form_3.php 으로하면 cart 기준으로 바뀜 (상품하나씩)
+
+        window.open("./popup.prodBarNum.form.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+    });
+	
+	$(document).on("click", ".deliveryCntBtn", function(e){
+		e.preventDefault();
+		var id = $(this).attr("data-id");
+		var ct_id = $(this).attr("data-ct");
+		
+		var popupWidth = 700;
+		var popupHeight = 700;
+
+		var popupX = (window.screen.width / 2) - (popupWidth / 2);
+		var popupY= (window.screen.height / 2) - (popupHeight / 2);
+		
+        //아래로하면 cart기준으로 바꿈(상품하나씩)
+		// window.open("./popup.prodDeliveryInfo.form2.php?od_id=" + id +"&ct_id="+ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+		window.open("./popup.prodDeliveryInfo.form.php?od_id=" + id +"&ct_id="+ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+	});
+
+
     var submitAction = function(e) {
         e.preventDefault();
         e.stopPropagation();

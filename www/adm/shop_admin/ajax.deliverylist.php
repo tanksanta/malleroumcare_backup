@@ -573,6 +573,7 @@ foreach($orderlist as $order) {
 
         $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
         $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
+        $class_c1 = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "complete1" : "";
         $prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
         
 
@@ -594,8 +595,10 @@ foreach($orderlist as $order) {
                 $delivery_insert++;
             }
         }
+        $class_c2="";
         if ($delivery_insert >= $delivery_all_insert) {
-		    $deliveryCntBtnWord = '입력완료';
+            $deliveryCntBtnWord = '입력완료';
+            $class_c2 = 'complete2 ';
             $deliveryCntBtnStatus = ' disable ';
         }
 	}
@@ -810,7 +813,7 @@ foreach($orderlist as $order) {
 
 
     $ret['data'] .= "
-    <tr class=\"tr_{$order['cart_ct_id']}\">
+    <tr class=\"tr_{$order['cart_ct_id']} {$class_c1} {$class_c2}\">
         <td align=\"center\" class=\"check\">
             <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['cart_ct_id']}\" value=\"{$order['cart_ct_id']}\" accumul_mark=\"Y\">
             <label for=\"check_{$order['cart_ct_id']}\">&nbsp;</label>
