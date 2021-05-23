@@ -556,6 +556,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 					if($("." + value.stoId).val()&&$("." + value.stoId).val().length !=12){ flag =true;}
                     prodsList[key] = {
                         stoId : value.stoId,
+                        prodId : value.prodId,
                         prodColor : value.prodColor,
                         prodSize : value.prodSize,
                         prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
@@ -573,15 +574,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                     usrId : "<?=$od["mb_id"]?>",
                     prods : prodsList
                 }
-                $.ajax({
-                    url : "./ajax.barcode_log.php",
-                    type : "POST",
-                    async : false,
-                    data : sendData['prods'],
-                    success : function(result){
-                            console.log(result);
-                        }
-                });
+
                 $.ajax({
                     url : "./samhwa_orderform_stock_update.php",
                     type : "POST",
@@ -623,6 +616,22 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                         }
                     }
                 });
+
+				var sendData_barcode = {
+                    mb_id : "<?=$member["mb_id"]?>",
+                    od_id : "<?=$_GET["od_id"]?>",
+                    prods : prodsList
+                }
+                $.ajax({
+                    url : "./ajax.barcode_log.php",
+                    type : "POST",
+                    async : false,
+                    data : sendData_barcode,
+                    success : function(result){
+                            console.log(result);
+                        }
+                });
+
         });
 
 

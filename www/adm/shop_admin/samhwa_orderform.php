@@ -1849,6 +1849,27 @@ var od_id = '<?php echo $od['od_id']; ?>';
             ?>
         </div>
     </div>
+
+    <div class="block">
+        <div class="header">
+            <h2>바코드 기록</h2>
+            <div class="right">
+            </div>
+        </div>
+        <div class="block-box gray logs">
+            <?php
+            $logs = get_barcode_log($od['od_id']);
+            foreach($logs as $log) {
+                $log_mb = get_member($log['mb_id']);
+                echo '<span class="log_datetime">'.$log['b_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) ' . $log['b_content'] . '<br/>';
+            }
+            if (!count($logs)) {
+                echo '기록이 없습니다.';
+            }
+            ?>
+        </div>
+    </div>
+    
     <div id="order_summarize">
         <div class="header">
             <!-- <h1><?=$od_status['name']?></h1> -->
