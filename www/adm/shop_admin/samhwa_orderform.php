@@ -1870,6 +1870,64 @@ var od_id = '<?php echo $od['od_id']; ?>';
         </div>
     </div>
     
+    <div class="block">
+        <div class="header">
+            <h2>배송 기록</h2>
+            <div class="right">
+            </div>
+        </div>
+        <div class="block-box gray logs">
+
+            <?php
+            $logs = get_delivery_log($od['od_id']);
+            foreach($logs as $log) {
+                $log_mb = get_member($log['mb_id']);
+                //아이템 검색
+                $sql_ct ="select * from g5_shop_cart where ct_id = '".$log['ct_id']."'";
+                $result_ct=sql_fetch($sql_ct);
+
+                //아이템 이름
+                $it_name= $result_ct['it_name'];
+                if($result_ct['ct_option']){ $it_name .="(".$result_ct['ct_option'].")"; }
+
+                //택배사
+                $delivery_company="";
+                foreach($delivery_companys as $data){ 
+                    if($log["ct_delivery_company"] == $data["val"] ){
+                        $delivery_company="(".$data["name"].")";
+                    }
+                }
+                //직배송
+                $direct_delivery="";
+                if($log["ct_is_direct_delivery"]=="1"){
+                    $direct_delivery="[직배송]";
+                }
+
+                //합포
+                $combine="";
+                if($log["ct_combine_ct_id"]){
+                    //합포 검색
+                    $sql_ct_p ="select * from g5_shop_cart where ct_id = '".$log['ct_combine_ct_id']."'";
+                    $result_ct_p=sql_fetch($sql_ct_p);
+                    //합포 아이템 이름
+                    $it_name_p= $result_ct_p['it_name'];
+                    if($result_ct_p['ct_option']){ $it_name_p .="(".$result_ct_p['ct_option'].")"; }
+
+                    $combine="합포 - ".$it_name_p."";
+                }
+                if($log['ct_combine_ct_id']){
+                    echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' ['. $combine.'] '.$direct_delivery.'<br/>';
+                }else{
+                    echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' 송장번호['. $log['ct_delivery_num'].'] '.$direct_delivery.'<br/>';
+                }
+            }
+            if (!count($logs)) {
+                echo '기록이 없습니다.';
+            }
+            ?>
+        </div>
+    </div>
+    
     <div id="order_summarize">
         <div class="header">
             <!-- <h1><?=$od_status['name']?></h1> -->

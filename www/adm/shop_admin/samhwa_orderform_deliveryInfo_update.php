@@ -47,6 +47,35 @@
 				WHERE ct_id = '{$ct_id}'
 			");
 		}
+
+
+        //배송 로그
+        $od_id=$_POST["od_id"];
+        $mb_id=$member["mb_id"];
+        $data=date("Y-m-d H:i:s");
+        if ($ct_delivery_combine) {
+			$combine_where2 = "ct_combine_ct_id = '{$ct_delivery_combine_ct_id}',";
+		} else {
+			$combine_where2 = "ct_combine_ct_id = '',";
+		}
+
+        $sql = " insert into `g5_delivery_log`
+        set od_id = '{$od_id}',
+            ct_id = '{$ct_id}',
+            mb_id = '{$mb_id}',
+            d_content = '',
+            $combine_where2
+            ct_delivery_company = '{$ct_delivery_company}',
+            ct_delivery_num = '{$ct_delivery_num}',
+            ct_delivery_cnt = '{$ct_delivery_cnt}',
+            ct_delivery_price = '{$ct_delivery_price}',
+            ct_edi_result = '0',
+            ct_is_direct_delivery = '{$ct_is_direct_delivery}',
+            d_date = '{$data}'
+        ";
+        sql_query($sql);
+
+
 	}
 
 	sql_query("
