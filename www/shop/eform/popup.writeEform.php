@@ -1,15 +1,15 @@
 <?php
-	include_once("./_common.php");
+include_once("./_common.php");
 
-  $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
-  $items = sql_query("SELECT * FROM `eform_document_item` WHERE dc_id = UNHEX('{$eform["uuid"]}')");
+$eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
+$items = sql_query("SELECT * FROM `eform_document_item` WHERE dc_id = UNHEX('{$eform["uuid"]}')");
 
-  $buy = [];
-  $rent = [];
-  while($item = sql_fetch_array($items)) {
-    if($item['gubun'] == '00') array_push($buy, $item); // 판매 재고
-    else array_push($rent, $item); // 대여 재고
-  }
+$buy = [];
+$rent = [];
+while($item = sql_fetch_array($items)) {
+  if($item['gubun'] == '00') array_push($buy, $item); // 판매 재고
+  else array_push($rent, $item); // 대여 재고
+}
 ?>
 <!DOCTYPE html>
 <html lang="ko">

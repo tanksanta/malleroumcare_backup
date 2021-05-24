@@ -25,6 +25,9 @@ include_once('./_common.php');
     </div>
   </div>
   <script>
+  // 테스트 서명 비율 200x75
+  var origWidth = 200;
+  var origHeight = 75;
 
   var wrapper = document.getElementById('sign-pad');
   var canvas = wrapper.querySelector('canvas');
@@ -46,8 +49,7 @@ include_once('./_common.php');
     canvas.getContext('2d').scale(ratio, ratio);
 
     signaturePad.clear();
-    // 테스트 서명 비율 200x75
-    resizeSignBack(200, 75);
+    resizeSignBack(origWidth, origHeight);
   }
 
   function resizeSignBack(origWidth, origHeight) {
@@ -70,14 +72,19 @@ include_once('./_common.php');
   // //////////////////////////////////////
   // TEST PURPOSE
   // //////////////////////////////////////
-  function toResizedDataURL(canvas, dpiRatio) {
+  function toResizedDataURL(canvas, origWidth, origHeight) {
+    var canvasWidth = canvas.width;
+    var canvasHeight = canvas.height;
+
+    var dpiRatio = origWidth / canvasWidth;
+
     var resizedCanvas = document.createElement('canvas');
     var resizedContext = resizedCanvas.getContext('2d');
 
-    resizedCanvas.width = canvas.width * dpiRatio;
-    resizedCanvas.height = canvas.height * dpiRatio;
+    resizedCanvas.width = origWidth;
+    resizedCanvas.height = origHeight;
 
-    resizedContext.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
+    resizedContext.drawImage(canvas, 0, 0, origWidth, origHeight);
     return resizedCanvas.toDataURL();
   }
 
@@ -123,10 +130,7 @@ include_once('./_common.php');
     if (signaturePad.isEmpty()) {
       alert("Please provide a signature first.");
     } else {
-      var origWidth = 200;
-      var canvasWidth = canvas.offsetWidth;
-      var dpiRatio = origWidth / canvasWidth;
-      var dataURL = toResizedDataURL(canvas, dpiRatio);
+      var dataURL = toResizedDataURL(canvas, origWidth, origHeight);
       download(dataURL, "signature.png");
     }
   });

@@ -1149,7 +1149,7 @@ $(function(){
 		e.preventDefault();
 
 		var od = $(this).data('od');
-		window.open('/shop/eform/signEform.php');
+		window.open('/shop/eform/signEform.php?od_id='+od);
 	});
 	$('#linkEformEdit').click(function(e) { // 내용변경 버튼
 		e.preventDefault();
