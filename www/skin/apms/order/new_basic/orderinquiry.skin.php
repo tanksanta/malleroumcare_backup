@@ -410,6 +410,7 @@ if($header_skin)
                 }
 			})
     }
+
 	function searchDateSetting(type){
 		switch(type){
 			case "1week" :
@@ -425,17 +426,23 @@ if($header_skin)
 
 		$("#date2").val("<?=date("Y-m-d")?>");
 	}
+	
 	$(function(){
+		
 		$(".hiddenChange").click(function(){
 			var target = $(this).attr("data-target");
 			var val = $(this).attr("data-val");
 			
 			$(this).closest("form").find("input[name='" + target + "']").val(val);
 		});
+
 		$('.delivery_ok').click(function(e) {
+
 			e.preventDefault();
+
 			var od_id = $(this).data('od-id');
 			var ct_id = $(this).data('ct-id');
+
 			$.ajax({
 				method: "POST",
 				dataType:"json",
@@ -454,5 +461,6 @@ if($header_skin)
 				}
 			})
 		})
+		
 	})
 </script>
