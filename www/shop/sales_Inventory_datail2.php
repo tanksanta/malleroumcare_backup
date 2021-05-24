@@ -298,25 +298,28 @@ $row = sql_fetch($sql);
             <div class="inner">
                 <div class="table-wrap">
                     <p class="text01">대여기간 종료일이 1달 미만 제품입니다.</p>
-                    <h3>보유 재고</h3>
+                    <div class="tit_area">
+                    	<h3>보유 재고</h3>
 
-                    <form action="" class="search-box">
-                            <input type="hidden" name="prodId" value="<?=$_GET['prodId']?>">
-                            <input type="hidden" name="page" value="<?=$_GET['page']?>">
-                            <input type="hidden" name="searchtype" value="<?=$_GET['searchtype']?>">
-                            <input type="hidden" name="searchtypeText" value="<?=$_GET['searchtypeText']?>">
-                            <input type="hidden" name="prodSupYn" value="<?=$_GET['prodSupYn']?>">
-                            <div class="search-box">
-                                <select name="soption" id="">
-                                    <option value="1" <?=$_GET['soption'] == "1" ? 'selected' : '' ?> >바코드</option>
-                                    <option value="2" <?=$_GET['soption'] == "2" ? 'selected' : '' ?> >옵션명</option>
-                                </select>
-                                <div class="input-search">
-                                    <input name="stx" value="<?=$_GET["stx"]?>" type="text">
-                                    <button  type="submit"></button>
-                                </div>
-                            </div>
-                    </form>
+	                    <form action="" >
+	                            <input type="hidden" name="prodId" value="<?=$_GET['prodId']?>">
+	                            <input type="hidden" name="page" value="<?=$_GET['page']?>">
+	                            <input type="hidden" name="searchtype" value="<?=$_GET['searchtype']?>">
+	                            <input type="hidden" name="searchtypeText" value="<?=$_GET['searchtypeText']?>">
+	                            <input type="hidden" name="prodSupYn" value="<?=$_GET['prodSupYn']?>">
+	                            <div class="search-box">
+	                                <select name="soption" id="">
+	                                    <option value="1" <?=$_GET['soption'] == "1" ? 'selected' : '' ?> >바코드</option>
+	                                    <option value="2" <?=$_GET['soption'] == "2" ? 'selected' : '' ?> >옵션명</option>
+	                                </select>
+	                                <div class="input-search">
+	                                    <input name="stx" value="<?=$_GET["stx"]?>" type="text">
+	                                    <button  type="submit"></button>
+	                                </div>
+	                            </div>
+	                    </form>
+                    </div>
+                    
 
                     <ul>
                         <li class="head cb">

@@ -21,7 +21,7 @@ table {border-collapse: collapse;}
 .cb:after { clear: both; display: block; content: '';}
 
 /* 검색폼 */
-.search-box {margin:0 0 16px;font-size: 0;text-align: left;} 
+.search-box {font-size: 0;text-align: left;} 
 .search-box select {margin-right:6px;display: inline-block;vertical-align: top;width:97px;height:30px;border:1px solid #d7d7d7;border-radius: 6px;font-size: 14px;}
 .search-box .input-search {display: inline-block;vertical-align: top; width:176px;height:30px;overflow: hidden;position: relative;border: 1px solid #d7d7d7;border-radius: 6px;}
 .search-box .input-search input {width: calc(100% - 30px); height: 28px;font-size: 14px;border:0;padding:0 5px;}
@@ -107,6 +107,9 @@ table {border-collapse: collapse;}
 .stock-view .info-btn .btn-02 {background: #999;width: 30%;}
 .stock-view .info-btn p {padding:10px 0 0;text-align:left;font-size: 14px;color: #666;}
 
+.stock-view .inner .tit_area{display:inline-block;width:100%;}
+
+
 .product-view {padding: 0 20px 0 0;}
 .product-view .pro-image {width: 261px;height: 261px;border: 1px solid #d7d7d7; overflow: hidden;text-align: center;}
 .product-view .pro-image img {width:100%; height:100%;}
@@ -119,7 +122,9 @@ table {border-collapse: collapse;}
 .stock-view .table-wrap.table-wrap2 .check {width: 12%;}
 
 .stock-view .table-wrap.table-wrap2 {margin-top: 120px;}
-.stock-view .table-wrap h3 {padding: 0 0 19px; font-size: 16px;color: #232323;margin-top: 0px;}
+.stock-view .table-wrap .tit_area{display:inline-block;width:100%;}
+.stock-view .table-wrap .tit_area h3 {padding: 10px 0; font-size: 16px;color: #232323;margin-top: 0px;float:left;}
+.stock-view .table-wrap .tit_area .search-box {float: right;padding:10px 0;}
 .stock-view .table-wrap li .order a {padding:5px 11px 5px 30px; display: inline-block;border: 1px solid #ddd;border-radius: 6px; background: url('../img/icon_01.png') no-repeat left 11px top 50%/11px auto;}
 .stock-view .table-wrap li .order2 a {padding:5px 10px 5px 10px; display: inline-block;border: 1px solid #ddd;border-radius: 6px; }
 .stock-view .table-wrap li .check a {padding:5px 11px 5px 30px; display: inline-block;border: 1px solid #ddd;border-radius: 6px; background: url('../img/icon_03.png') no-repeat left 11px top 50%/11px auto;}
@@ -168,6 +173,10 @@ table {border-collapse: collapse;}
     .stock-view .info-btn .btn-02 {width: 160px;}
 }
 @media screen and (max-width: 820px){
+	.stock-view .table-wrap .tit_area h3{width:100%;padding:14px; }
+	.stock-view .table-wrap h3{font-size:16px;}
+	.stock-view .table-wrap .tit_area .search-box{width:100%;}
+	.search-box .input-search{width: calc( 100% - 105px);}
     .stock-list .table-wrap li .order {
         margin-left: 0 !important;
         width: auto;
