@@ -13,24 +13,24 @@
         <col style="width: 25%" />
       </colgroup>
       <tr>
-        <th>수급자 성명</th>
-        <th>생년월일</th>
-        <th>장기요양등급</th>
-        <th>장기요양인정번호</th>
+        <th scope="row">수급자 성명</th>
+        <th scope="row">생년월일</th>
+        <th scope="row">장기요양등급</th>
+        <th scope="row">장기요양인정번호</th>
       </tr>
       <tr>
-        <td>기초1</td>
-        <td>1981-01-11</td>
-        <td>3등급</td>
-        <td>L1111111112</td>
+        <td><?=$eform['penNm']?></td>
+        <td><?=$eform['penBirth']?></td>
+        <td><?=$eform['penRecGraNm']?></td>
+        <td><?=$eform['penLtmNum']?></td>
       </tr>
       <tr>
-        <th colspan="2">장기요양기관명</th>
-        <th colspan="2">장기요양기관기호</th>
+        <th scope="row" colspan="2">장기요양기관명</th>
+        <th scope="row" colspan="2">장기요양기관기호</th>
       </tr>
       <tr>
-        <td colspan="2">(주)다온테크</td>
-        <td colspan="2">126-88-01425</td>
+        <td colspan="2"><?=$eform['entNm']?></td>
+        <td colspan="2"><?=$eform['entCrn']?></td>
       </tr>
     </table>
     <table class="item_table">
@@ -43,156 +43,57 @@
         <col style="width: 10%" />
         <col style="width: 10%" />
       </colgroup>
-      <tr>
-        <th class="head" colspan="7">[ ]구입 [ ]대여</th>
-      </tr>
-      <tr>
-        <th rowspan="2">품목명</th>
-        <th rowspan="2">제품명</th>
-        <th rowspan="2">제품코드</th>
-        <th rowspan="2">제공일자</th>
-        <th colspan="3">급여비 내역(원)</th>
-      </tr>
-      <tr>
-        <th>총액</th>
-        <th>수급자<br />부담액</th>
-        <th>공단<br />부담액</th>
-      </tr>
-      <tr>
-        <td>이동변기</td>
-        <td>APT-101</td>
-        <td>T03030060001-123456789012</td>
-        <td>2021-04-07</td>
-        <td class="right">229,500</td>
-        <td class="right">0</td>
-        <td class="right">229,500</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
+      <thead>
+        <tr>
+          <th class="head" colspan="7">[ ✓ ]구입 [ &nbsp; ]대여</th>
+        </tr>
+        <tr>
+          <th scope="row" rowspan="2">품목명</th>
+          <th scope="row" rowspan="2">제품명</th>
+          <th scope="row" rowspan="2">제품코드</th>
+          <th scope="row" rowspan="2">제공일자</th>
+          <th scope="row" colspan="3">급여비 내역(원)</th>
+        </tr>
+        <tr>
+          <th scope="row">총액</th>
+          <th scope="row">수급자<br>부담액</th>
+          <th scope="row">공단<br>부담액</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        $count = 0;
+        foreach($buy as $item) {
+        ?>
+        <tr>
+          <td><?=$item['ca_name']?></td>
+          <td><?=$item['it_name']?></td>
+          <td><?=$item['it_code']?><?php if($item['it_barcode']) echo "- {$item['it_barcode']}"; ?></td>
+          <td><?=$item['it_date']?></td>
+          <td class="right"><?=number_format($item['it_price'])?></td>
+          <td class="right"><?=number_format($item['it_price_pen'])?></td>
+          <td class="right"><?=number_format($item['it_price_ent'])?></td>
+        </tr>
+        <?php
+          $count++;
+        }
+
+        // 최소 15줄은 생성
+        for($i = $count; $i < 15; $i++) {
+        ?>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="right"></td>
+          <td class="right"></td>
+          <td class="right"></td>
+        </tr>
+        <?php
+        }
+        ?>
+      </tbody>
     </table>
     <table class="item_table">
       <colgroup>
@@ -204,74 +105,65 @@
         <col style="width: 10%" />
         <col style="width: 10%" />
       </colgroup>
-      <tr>
-        <th class="head" colspan="7">[ ]구입 [ ]대여</th>
-      </tr>
-      <tr>
-        <th rowspan="2">품목명</th>
-        <th rowspan="2">제품명</th>
-        <th rowspan="2">제품코드</th>
-        <th rowspan="2">대여기간</th>
-        <th colspan="3">급여비 내역(원)</th>
-      </tr>
-      <tr>
-        <th>총액</th>
-        <th>수급자<br />부담액</th>
-        <th>공단<br />부담액</th>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="right"></td>
-        <td class="right"></td>
-        <td class="right"></td>
-      </tr>
+      <thead>
+        <tr>
+          <th class="head" colspan="7">[ &nbsp; ]구입 [ ✓ ]대여</th>
+        </tr>
+        <tr>
+          <th scope="row" rowspan="2">품목명</th>
+          <th scope="row" rowspan="2">제품명</th>
+          <th scope="row" rowspan="2">제품코드</th>
+          <th scope="row" rowspan="2">대여기간</th>
+          <th scope="row" colspan="3">급여비 내역(원)</th>
+        </tr>
+        <tr>
+          <th scope="row">총액</th>
+          <th scope="row">수급자<br>부담액</th>
+          <th scope="row">공단<br>부담액</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        $count = 0;
+        foreach($rent as $item) {
+        ?>
+        <tr>
+          <td><?=$item['ca_name']?></td>
+          <td><?=$item['it_name']?></td>
+          <td><?=$item['it_code']?><?php if($item['it_barcode']) echo "- {$item['it_barcode']}"; ?></td>
+          <td><?=$item['it_date']?></td>
+          <td class="right"><?=number_format($item['it_price'])?></td>
+          <td class="right"><?=number_format($item['it_price_pen'])?></td>
+          <td class="right"><?=number_format($item['it_price_ent'])?></td>
+        </tr>
+        <?php
+          $count++;
+        }
+
+        // 최소 5줄은 생성
+        for($i = $count; $i < 5; $i++) {
+        ?>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="right"></td>
+            <td class="right"></td>
+            <td class="right"></td>
+          </tr>
+        <?php
+        }
+        ?>
+      </tbody>
     </table>
     <table class="sign_table">
       <colgroup>
         <col style="width: 15%" />
-        <col style="width: 15%" />
-        <col style="width: 30%" />
-        <col style="width: 15%" />
         <col style="width: 10%" />
+        <col style="width: 25%" />
+        <col style="width: 20%" />
+        <col style="width: 15%" />
         <col style="width: 15%" />
       </colgroup>
       <tr>
@@ -279,28 +171,28 @@
         <td colspan="5"><br /><br /><br /><br /></td>
       </tr>
       <tr>
-        <th rowspan="3">확인자</th>
-        <th>사업소<br />담당자</th>
+        <th scope="col" rowspan="3">확인자</th>
+        <th scope="col">사업소<br />담당자</th>
         <td colspan="2" style="border-right: 0"></td>
-        <td style="border-left: 0;border-right: 0">최재호</td>
+        <td style="border-left: 0;border-right: 0"><?=$eform['entCeoNm']?></td>
         <td style="border-left: 0;color: #999;font-size: 14px;text-align: right">( 서명 또는 인 )</td>
       </tr>
       <tr>
-        <th rowspan="2">수급자<br />또는<br />보호자</th>
+        <th scope="col" rowspan="2">수급자<br />또는<br />보호자</th>
         <td colspan="2" style="border-right: 0"></td>
-        <td style="border-left: 0;border-right: 0">기초1</td>
+        <td style="border-left: 0;border-right: 0"><?=$eform['penNm']?></td>
         <td style="border-left: 0;color: #999;font-size: 14px;text-align: right">( 서명 또는 인 )</td>
       </tr>
       <tr>
         <td colspan="4">
-          수급자와의 관계 : [ ]본인 [ ]가족 [ ]친족 [ ]기타( )
+          수급자와의 관계 : [ ✓ ]본인 [ &nbsp; ]가족 [ &nbsp; ]친족 [ &nbsp; ]기타( &nbsp; )
         </td>
       </tr>
       <tr>
-        <th colspan="2">확인일시</th>
-        <td>2021년 04월 07일</td>
-        <th>확인방법</th>
-        <td colspan="2">[ ]방문 [ ]유선</td>
+        <th scope="col" colspan="2">확인일시</th>
+        <td><?=date('Y년 m월 d일', strtotime($eform['dc_datetime']))?></td>
+        <th scope="col">확인방법</th>
+        <td colspan="2">[ ✓ ]방문 [ &nbsp; ]유선</td>
       </tr>
     </table>
     <div class="notice_div">유의사항</div>
