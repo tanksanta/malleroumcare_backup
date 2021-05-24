@@ -207,6 +207,8 @@
                     $readonly = "";
                     $prodSupYn_count++;
                     }
+
+
                     if($ct['prodSupYn']==="N"){ $prodSupYn_count++; }
 					# 요청사항
 					$prodMemo = $ct["prodMemo"];
@@ -328,7 +330,7 @@
 
 if(!$member['mb_id']){alert('접근이 불가합니다.');}
 //접속시 db- >id 부과
-sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member['mb_id']."' where `od_id` = '{$od_id}'");
+sql_query("update {$g5['g5_shop_cart_table']} set `ct_edit_member` = '".$member['mb_id']."' where `ct_id` = '{$ct_id}'");
 
 ?>
 
@@ -550,16 +552,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                 }
 
                 $.ajax({
-                    url : "./ajax.barcode_log.php",
-                    type : "POST",
-                    async : false,
-                    data : sendData['prods'],
-                    success : function(result){
-                            console.log(result);
-                        }
-                });
-
-                $.ajax({
                     url : "./samhwa_orderform_stock_update.php",
                     type : "POST",
                     async : false,
@@ -578,33 +570,32 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                     od_id : "<?=$od_id?>",
                                 }
                             });
-							var sendData_barcode = {
-								mb_id : "<?=$member["mb_id"]?>",
-								od_id : "<?=$_GET["od_id"]?>",
-								prods : prodsList
-							}
-							$.ajax({
-								url : "./ajax.barcode_log.php",
-								type : "POST",
-								async : false,
-								data : sendData_barcode,
-								success : function(result){
-									var con_test = confirm("저장되었습니다. 주문목록으로 이동하시겠습니까?");
-									if(con_test == true){
-										location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
-									}
-									else if(con_test == false){
-										window.location.reload();
-									}
-								}
-							});
-
+                            member_cancel();
+                            var con_test = confirm("저장되었습니다. 주문목록으로 이동하시겠습니까?\n\n 취소 시 작업중 표시는 유지됩니다.");
+                            if(con_test == true){
+                                location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
+                            }
+                            else if(con_test == false){
+                                window.location.reload();
+                            }
                         }
                     }
                 });
-
-
-				
+				var sendData_barcode = {
+                    mb_id : "<?=$member["mb_id"]?>",
+                    od_id : "<?=$_GET["od_id"]?>",
+                    prods : prodsList
+                }
+                $.ajax({
+                    url : "./ajax.barcode_log.php",
+                    type : "POST",
+                    async : false,
+                    data : sendData_barcode,
+                    success : function(result){
+                            console.log(result);
+                        }
+                });
+                
         });
 
 
@@ -713,6 +704,16 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
     //종료시 멤버 수정중없에기
     function member_cancel(){
+
+        $.ajax({
+            url : "/shop/ajax.member_cancel.php",
+            type : "POST",
+            async : false,
+            data : {
+                ct_id : "<?=$ct_id?>"
+            }
+        });
+
         $.ajax({
             url : "/shop/ajax.order.prodBarNum.cnt.php",
             type : "POST",

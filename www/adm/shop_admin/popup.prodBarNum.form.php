@@ -159,7 +159,7 @@
 	<div id="popupHeaderTopWrap">
 		<div class="title">바코드입력</div>
 		<div class="close">
-			<a href="javascript:history.back();">
+			<a href="javascript:member_cancel();">
 				&times;
 			</a>
 		</div>
@@ -335,8 +335,7 @@
 
 if(!$member['mb_id']){alert('접근이 불가합니다.');}
 //접속시 db- >id 부과
-sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member['mb_id']."' where `od_id` = '{$od_id}'");
-
+sql_query("update {$g5['g5_shop_cart_table']} set `ct_edit_member` = '".$member['mb_id']."' where `od_id` = '{$od_id}'");
 ?>
 
 <script type="text/javascript">
@@ -586,7 +585,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                             alert(result.message);
                         } else {
                             alert("저장이 완료되었습니다.");
-
 							//cart 기준 barcode insert update
 							$.ajax({
                                 url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
@@ -596,7 +594,6 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                     od_id : "<?=$od_id?>",
                                 }
                             });
-
                             $.ajax({
                                 url : "/shop/ajax.order.prodBarNum.cnt.php",
                                 type : "POST",
@@ -606,17 +603,10 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                     cnt : insertBarCnt
                                 }
                             });
-
-                            <?php if($_GET['new']){ ?>
-                                history.back();
-                            <?php }else{ ?>
-                                opener.location.reload();
-                                window.close();
-                            <?php }?>
+                            member_cancel();
                         }
                     }
                 });
-
 				var sendData_barcode = {
                     mb_id : "<?=$member["mb_id"]?>",
                     od_id : "<?=$_GET["od_id"]?>",
@@ -740,6 +730,16 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
     //종료시 멤버 수정중없에기
     function member_cancel(){
+
+        $.ajax({
+            url : "/shop/ajax.member_cancel.php",
+            type : "POST",
+            async : false,
+            data : {
+                od_id : "<?=$od_id?>"
+            }
+        });
+            
         $.ajax({
             url : "/shop/ajax.order.prodBarNum.cnt.php",
             type : "POST",
