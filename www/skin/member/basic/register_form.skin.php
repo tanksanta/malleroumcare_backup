@@ -486,6 +486,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                     <?php if($member['crnFile']){ ?>
                         <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/license/<?=$member['crnFile']?>" alt="">
                     <?php }?>
+                    <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 2Mbyte 이하로 등록해주세요.</p>
 				</div>
 			</div>
 			<div class="form-group has-feedback">
@@ -495,6 +496,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                     <?php if($member['sealFile']){ ?>
                     <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/stamp/<?=$member['sealFile']?>" alt="">
                     <?php }?>
+                    <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 2Mbyte 이하로 등록해주세요.</p>
 				</div>
 			</div>
 
