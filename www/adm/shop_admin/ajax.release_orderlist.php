@@ -666,9 +666,7 @@ foreach($orderlist as $order) {
             $class_type2=""; 
         }
     }
-    if($order['od_edit_member']){
-		$edit_working = true;
-	}
+
     if($ct_status['name']=="출고완료"){$od_status_name="출고<br>완료"; $class_type1="type4"; $class_type2= ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : ""; }
     if($ct_status['name']=="배송완료"){$od_status_name="배송<br>완료"; $class_type1="type5"; }
     
@@ -721,8 +719,12 @@ foreach($orderlist as $order) {
     }else{
         $mb_entNm = $order['od_name'];
     }
-    $ret["data"][$foreach_i]["od_name"] = $mb_entNm;
+    if($result_ct['ct_edit_member']){
+		$edit_working = true;
+        $class_type2="active"; 
+	}
 
+    $ret["data"][$foreach_i]["od_name"] = $mb_entNm;
 	$ret["data"][$foreach_i]["od_status_name"] = $od_status_name;
 	$ret["data"][$foreach_i]["od_status_class"] = $class_type1;
 	$ret["data"][$foreach_i]["od_barcode_class"] = $class_type2;
