@@ -24,6 +24,7 @@
   padding: 6px;
   border: 1px solid #000000;
   font-weight: normal;
+  vertical-align: middle;
 }
 
 .thk001 .thk001_table th {
@@ -71,7 +72,8 @@
 .thk001 .thk001_table.item_table td {
   padding: 4px 6px;
   font-size: 12px;
-  height: 16px;
+  line-height: 12px;
+  height: 20px;
 }
 
 .thk001 .thk001_article_div {
