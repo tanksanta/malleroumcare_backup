@@ -23,6 +23,7 @@
   height: 44px;
   border: 1px solid #000000;
   font-weight: normal;
+  vertical-align: middle;
 }
 
 .thk003 .sign_table tr > th:first-child,

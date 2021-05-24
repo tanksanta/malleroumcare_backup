@@ -10,33 +10,33 @@
         <col style="width: 22%" />
       </colgroup>
       <tr>
-        <th rowspan="4">고지<br />내용</th>
-        <th>수집 · 이용 기관</th>
+        <th scope="col" rowspan="4">고지<br />내용</th>
+        <th scope="col">수집 · 이용 기관</th>
         <td colspan="3">
           보건복지부, 공공부조 및 사회서비스를 제공하는 국기 및
           지방자치단체(업무 위임/위탁기관 포함)
         </td>
       </tr>
       <tr>
-        <th>수집 · 이용 목적</th>
+        <th scope="col">수집 · 이용 목적</th>
         <td colspan="3">
           국가 및 지방자치단체가 제공하는 공공부조, 사회서비스 복지대상자 선정
           및 제공의 적정성 확인 조사
         </td>
       </tr>
       <tr>
-        <th>수집 · 이용 항목</th>
+        <th scope="col">수집 · 이용 항목</th>
         <td colspan="3">
           신청인 기재사항의 개인정보, 주소, 고유식별정보(주민등록번호),
           <br />장기요양급여 자격결정/수혜이력 정보(민감정보(건강정보))
         </td>
       </tr>
       <tr>
-        <th>보유 · 이용 기간</th>
+        <th scope="col">보유 · 이용 기간</th>
         <td colspan="3">수급자격의 상실시점으로부터 5년</td>
       </tr>
       <tr>
-        <th rowspan="3">동의<br />사항</th>
+        <th scope="col" rowspan="3">동의<br />사항</th>
         <td colspan="3">
           본인은 「개인정보보호법」 제17조 및 제18조 개인정보의 처리에 관하여
           고지 받았으며, 이를 충분히 이해하고 그 처리에 동의합니다.
@@ -58,20 +58,20 @@
         <td>[ ]동의함<br />[ ]동의하지 않음</td>
       </tr>
       <tr class="sign_row">
-        <th colspan="3"></th>
-        <td colspan="2" style="text-align: center">2021년 04월 07일</td>
+        <td colspan="3"></td>
+        <td colspan="2" style="text-align: center"><?=date('Y년 m월 d일', strtotime($eform['dc_datetime']))?></td>
       </tr>
       <tr class="sign_row">
-        <th colspan="2"></th>
-        <th style="text-align: right">위 동의인 성명</th>
-        <td>기초1</td>
-        <th style="text-align: center; color: #999">(서명)</th>
+        <td colspan="2"></td>
+        <th scope="col" style="text-align: right">위 동의인 성명</th>
+        <td><?=$eform['penNm']?></td>
+        <td style="text-align: center; color: #999; font-size: 14px;">(서명)</td>
       </tr>
       <tr class="sign_row">
-        <th colspan="2"></th>
-        <th style="text-align: right">대리인 성명</th>
+        <td colspan="2"></td>
+        <th scope="col" style="text-align: right">대리인 성명</th>
         <td></td>
-        <th style="text-align: center; color: #999">(서명)</th>
+        <td style="text-align: center; color: #999; font-size: 14px;">(서명)</td>
       </tr>
     </table>
     <div class="desc">※대리인이 작성시 아래의 위임장을 작성</div>
@@ -86,18 +86,18 @@
         <col style="width: 25%" />
       </colgroup>
       <tr>
-        <th rowspan="3">대리인</th>
-        <th>성명</th>
+        <th scope="col" rowspan="3">대리인</th>
+        <th scope="col">성명</th>
         <td colspan="3"></td>
       </tr>
       <tr>
-        <th>주소</th>
+        <th scope="col">주소</th>
         <td colspan="3"></td>
       </tr>
       <tr>
-        <th>위임자와의 관계</th>
+        <th scope="col">위임자와의 관계</th>
         <td></td>
-        <th>전화번호</th>
+        <th scope="col">전화번호</th>
         <td></td>
       </tr>
     </table>
@@ -115,14 +115,14 @@
         <col style="width: 25%" />
       </colgroup>
       <tr>
-        <th rowspan="2">위임자</th>
-        <th>성명</th>
+        <th scope="col" rowspan="2">위임자</th>
+        <th scope="col">성명</th>
         <td></td>
-        <th>장기요양인정번호</th>
+        <th scope="col">장기요양인정번호</th>
         <td></td>
       </tr>
       <tr>
-        <th>주소</th>
+        <th scope="col">주소</th>
         <td colspan="3"></td>
       </tr>
     </table>
