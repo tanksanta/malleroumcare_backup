@@ -4,12 +4,10 @@
     <div class="thk001_article_div">
       <ol class="thk001_article">
         <li>
-          본 계약은 국민건강보험 노인장기요양보험 급여상품의 공급계약을
-          체결함에 목적이 있다.
+          <?=nl2br($eform['entConAcc01'])?>
         </li>
         <li>
-          본 계약서에 명시되지 아니한 사항이나 의견이 상이할 때에는 상호
-          협의하에 해결하는 것을 원칙으로 한다.
+          <?=nl2br($eform['entConAcc02'])?>
         </li>
         <li>
           "을" 은 물품 등의 하자 · 채무불이행 등으로 인한 소비자의 피해에
@@ -73,7 +71,7 @@
           </label>)
       </li>
     </ul>
-    <div class="thk001_date_div">계약일 : 2021년 04월 07일</div>
+    <div class="thk001_date_div">계약일 : <?=date('Y년 m월 d일', strtotime($eform['dc_datetime']))?></div>
     <table class="thk001_table sign_table">
       <colgroup>
         <col style="width: 20%" />
@@ -84,50 +82,52 @@
         <col style="width: 16%" />
         <col style="width: 14%" />
       </colgroup>
-      <tr>
-        <th class="right">(갑)</th>
-        <th class="right">수급자 :</th>
-        <td class="center">기초1</td>
-        <td class="center" style="font-size: 14px; position: relative;"><button style="
-          padding: 0;
-          border: 0;
-          display: block;
-          position: absolute;
-          top: 0;
-          left: 0;
-          display: -ms-flexbox;
-          display: flex;
-          -ms-flex-align: center;
-          align-items: center;
-          -ms-flex-pack: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(242, 139, 8, 0.7);
-          color: #fff;
-          border-radius: 8px;
-          cursor: pointer;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-      ">서명하기</button>(서명)</td>
-        <th class="right">대리인 :</td>
-        <td class="center"></td>
-        <td class="center" style="font-size: 14px">(서명)</td>
-      </tr>
-      <tr>
-        <th class="right">(을)</th>
-        <th class="right">사업체 :</th>
-        <td class="center">(주)다온테크</td>
-        <td></td>
-        <th class="right">대표 :</th>
-        <td class="center">최재호</td>
-        <td class="center" style="font-size: 14px">(서명)</td>
-      </tr>
-      <tr>
-        <td colspan="7"></td>
-      </tr>
+      <tbody>
+        <tr>
+          <th scope="col" class="right">(갑)</th>
+          <th scope="col" class="right">수급자 :</th>
+          <td class="center"><?=$eform['penNm']?></td>
+          <td class="center" style="font-size: 14px; position: relative;"><button style="
+            padding: 0;
+            border: 0;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(242, 139, 8, 0.7);
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        ">서명하기</button>(서명)</td>
+          <th scope="col" class="right">대리인 :</td>
+          <td class="center"></td>
+          <td class="center" style="font-size: 14px">(서명)</td>
+        </tr>
+        <tr>
+          <th scope="col" class="right">(을)</th>
+          <th scope="col" class="right">사업체 :</th>
+          <td class="center"><?=$eform['entNm']?></td>
+          <td></td>
+          <th scope="col" class="right">대표 :</th>
+          <td class="center"><?=$eform['entCeoNm']?></td>
+          <td class="center" style="font-size: 14px">(서명)</td>
+        </tr>
+        <tr>
+          <td colspan="7"></td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>
