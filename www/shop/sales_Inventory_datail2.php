@@ -299,6 +299,25 @@ $row = sql_fetch($sql);
                 <div class="table-wrap">
                     <p class="text01">대여기간 종료일이 1달 미만 제품입니다.</p>
                     <h3>보유 재고</h3>
+
+                    <form action="" class="search-box">
+                            <input type="hidden" name="prodId" value="<?=$_GET['prodId']?>">
+                            <input type="hidden" name="page" value="<?=$_GET['page']?>">
+                            <input type="hidden" name="searchtype" value="<?=$_GET['searchtype']?>">
+                            <input type="hidden" name="searchtypeText" value="<?=$_GET['searchtypeText']?>">
+                            <input type="hidden" name="prodSupYn" value="<?=$_GET['prodSupYn']?>">
+                            <div class="search-box">
+                                <select name="soption" id="">
+                                    <option value="1" <?=$_GET['soption'] == "1" ? 'selected' : '' ?> >바코드</option>
+                                    <option value="2" <?=$_GET['soption'] == "2" ? 'selected' : '' ?> >옵션명</option>
+                                </select>
+                                <div class="input-search">
+                                    <input name="stx" value="<?=$_GET["stx"]?>" type="text">
+                                    <button  type="submit"></button>
+                                </div>
+                            </div>
+                    </form>
+
                     <ul>
                         <li class="head cb">
                             <span class="num">No.</span>
@@ -375,6 +394,12 @@ $row = sql_fetch($sql);
 						$sendData["pageSize"] = $sendLength;
                         // 01: 재고(대여가능) 02: 재고소진(대여중) 03: AS신청 04: 반품 05: 기타 06: 재고대기 07: 주문대기 08: 소독중 09: 대여종료
 						$sendData["stateCd"] =['01','02','08','09'];
+                        if($_GET['soption']=="1"){
+                            $sendData["prodBarNum"]=$_GET['stx'];
+                        }
+                        if($_GET['soption']=="2"){
+                            $sendData["searchOption"] =$_GET['stx'];
+                        }
 						$oCurl = curl_init();
 						curl_setopt($oCurl, CURLOPT_PORT, 9901);
 						curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectDetailList");
@@ -784,6 +809,12 @@ $row = sql_fetch($sql);
 						$sendData["pageSize"] = $sendLength;
                         // 01: 재고(대여가능) 02: 재고소진(대여중) 03: AS신청 04: 반품 05: 기타 06: 재고대기 07: 주문대기 08: 소독중 09: 대여종료
 						$sendData["stateCd"] =['03','04','05'];
+                        if($_GET['soption']=="1"){
+                            $sendData["prodBarNum"]=$_GET['stx'];
+                        }
+                        if($_GET['soption']=="2"){
+                            $sendData["searchOption"] =$_GET['stx'];
+                        }
 						$oCurl = curl_init();
 						curl_setopt($oCurl, CURLOPT_PORT, 9901);
 						curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectDetailList");
