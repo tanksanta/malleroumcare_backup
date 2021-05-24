@@ -207,8 +207,6 @@
                     $readonly = "";
                     $prodSupYn_count++;
                     }
-
-
                     if($ct['prodSupYn']==="N"){ $prodSupYn_count++; }
 					# 요청사항
 					$prodMemo = $ct["prodMemo"];
@@ -580,31 +578,32 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                                     od_id : "<?=$od_id?>",
                                 }
                             });
-                            var con_test = confirm("저장되었습니다. 주문목록으로 이동하시겠습니까?");
-                            if(con_test == true){
-                                location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
-                            }
-                            else if(con_test == false){
-                                window.location.reload();
-                            }
+							var sendData_barcode = {
+								mb_id : "<?=$member["mb_id"]?>",
+								od_id : "<?=$_GET["od_id"]?>",
+								prods : prodsList
+							}
+							$.ajax({
+								url : "./ajax.barcode_log.php",
+								type : "POST",
+								async : false,
+								data : sendData_barcode,
+								success : function(result){
+									var con_test = confirm("저장되었습니다. 주문목록으로 이동하시겠습니까?");
+									if(con_test == true){
+										location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
+									}
+									else if(con_test == false){
+										window.location.reload();
+									}
+								}
+							});
+
                         }
                     }
                 });
 
-				var sendData_barcode = {
-                    mb_id : "<?=$member["mb_id"]?>",
-                    od_id : "<?=$_GET["od_id"]?>",
-                    prods : prodsList
-                }
-                $.ajax({
-                    url : "./ajax.barcode_log.php",
-                    type : "POST",
-                    async : false,
-                    data : sendData_barcode,
-                    success : function(result){
-                            console.log(result);
-                        }
-                });
+
 				
         });
 
