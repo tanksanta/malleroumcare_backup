@@ -161,7 +161,7 @@
 									<input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
 									<i class="fa fa-check"></i>
 									<span class="overlap">중복</span>
-									<img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
+									<!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>"> -->
 								</li>
 								<?php	$prodListCnt++;  }
 								?>
