@@ -1,6 +1,18 @@
 <?php
 include_once("./_common.php");
 
+if(!$is_member) {
+  alert('먼저 로그인하세요.');
+}
+
+$sql = "SELECT * FROM {$g5['g5_shop_order_table']} WHERE `od_id` = '$od_id'";
+if($is_member && !$is_admin)
+    $sql .= " AND mb_id = '{$member['mb_id']}' ";
+$od = sql_fetch($sql);
+if(!$od['mb_id']) {
+  alert('계약서를 생성할 권한이 없습니다.');
+}
+
 $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
 $items = sql_query("SELECT * FROM `eform_document_item` WHERE dc_id = UNHEX('{$eform["uuid"]}')");
 

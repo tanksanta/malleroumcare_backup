@@ -2,6 +2,10 @@
 include_once("./_common.php");
 include_once('./lib/eform.lib.php');
 
+if(!$is_member) {
+  json_response(400, '먼저 로그인하세요.');
+}
+
 $uuid = $_POST['uuid'];
 $status = json_decode(stripslashes($_POST['status']), true);
 if(!$uuid || !$status) {

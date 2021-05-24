@@ -1,4 +1,4 @@
-<div class="a4">
+<div id="thk001_2" class="a4">
   <div class="thk001">
     <h3 class="thk001_h3">기타 협약사항</h3>
     <div class="thk001_article_div">

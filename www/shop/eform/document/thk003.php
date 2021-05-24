@@ -1,4 +1,4 @@
-<div class="a4">
+<div id="thk003" class="a4">
   <div class="thk003">
     <h2 class="thk003_h2">개인정보 수집 · 이용 사전동의서</h2>
     <table class="sign_table">

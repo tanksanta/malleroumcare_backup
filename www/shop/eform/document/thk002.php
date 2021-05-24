@@ -1,4 +1,4 @@
-<div class="a4">
+<div id="thk002" class="a4">
   <div class="thk002">
     <h1 class="thk002_h1">장기요양급여 제공기록지(복지용구)</h1>
     <div class="desc">
