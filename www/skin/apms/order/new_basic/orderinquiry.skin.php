@@ -120,11 +120,15 @@ if($header_skin)
 			
 			$(".popupProdBarNumInfoBtn").click(function(e){
 				e.preventDefault();
-				var od_id = $(this).attr("data-id");
-				var ct_id = $(this).attr("data-ct-id");
-				$("#popupProdBarNumInfoBox > div").append("<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
+				
+				var od = $(this).attr("data-od");
+				var it = $(this).attr("data-it");
+				var stock = $(this).attr("data-stock");
+				var option = encodeURIComponent($(this).attr("data-option"));
+
+				$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_4.php?prodId=" + it + "&od_id=" + od +  "&option=" + option + "&stock_insert=" + stock +"'>");
 				$("#popupProdBarNumInfoBox iframe").load(function(){
-				$("#popupProdBarNumInfoBox").show();
+					$("#popupProdBarNumInfoBox").show();
 				});
 			});
 			
@@ -341,15 +345,11 @@ if($header_skin)
                                 // print_r($item);
                             ?>
                                 <?php if($item["prodSupYn"] == "N"){ ?>
-
-                                    <!-- <li class="barInfo barcode_box  disable" data-id="2021052417305437" data-ct-id="48984"><span class="cnt">입력완료</span></li> -->
-                                    <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"> 
+                                    <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-option="<?=$item["ct_option"]?>"   data-option="<?=$item["ct_option"]?>"  data-stock="<?=$stock_insert?>" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"> 
                                     바코드 확인
                                     </a>
                                 <?php } else { ?>
-                                    <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 
-                                    바코드
-                                    </a>
+                                    <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-option="<?=$item["ct_option"]?>"   data-option="<?=$item["ct_option"]?>"  data-stock="<?=$stock_insert?>" data-od="<?=$row["od_id"]?>" data-it="<?=$item["it_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드</a>
                                 <?php } ?>
 							<?php if($row["od_delivery_insert"] && ($item["prodSupYn"] == "Y")){ ?>
 								<a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
@@ -367,8 +367,8 @@ if($header_skin)
 							<?php if($row["od_status"] == "배송완료"){ ?>
 								<a href="<?php echo G5_SHOP_URL; ?>/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
 							<?php } ?>
-							<?php if($ct_status_text == "출고완료"){ ?>
-								<a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a>
+							<?php if($row["od_status"] == "출고완료"){ ?>
+								<!-- <a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a> -->
 							<?php } ?>
 							</div>
 						</li>
