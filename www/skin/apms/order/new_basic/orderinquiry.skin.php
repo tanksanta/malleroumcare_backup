@@ -122,9 +122,9 @@ if($header_skin)
 				e.preventDefault();
 				var od_id = $(this).attr("data-id");
 				var ct_id = $(this).attr("data-ct-id");
-				$("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
+				$("#popupProdBarNumInfoBox > div").append("<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
 				$("#popupProdBarNumInfoBox iframe").load(function(){
-					$("#popupProdBarNumInfoBox").show();
+				$("#popupProdBarNumInfoBox").show();
 				});
 			});
 			
