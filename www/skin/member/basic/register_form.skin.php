@@ -482,7 +482,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_giup_file1 "><b>사업자등록증</b></label>
 				<div class="col-sm-8 mb_giup_file1">
-					<input type="file" name="mb_giup_file1" class="input-sm " id="mb_giup_file1">
+					<input type="file" name="mb_giup_file1" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file1">
                     <?php if($member['crnFile']){ ?>
                         <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/license/<?=$member['crnFile']?>" alt="">
                     <?php }?>
@@ -491,7 +491,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_giup_file2"><b>사업자직인 (계약서 날인)</b></label>
 				<div class="col-sm-8 mb_giup_file2">
-					<input type="file" name="mb_giup_file2" class="input-sm" id="mb_giup_file2">
+					<input type="file" name="mb_giup_file2" accept=".gif, .jpg, .png, .pdf" class="input-sm" id="mb_giup_file2">
                     <?php if($member['sealFile']){ ?>
                     <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/stamp/<?=$member['sealFile']?>" alt="">
                     <?php }?>
@@ -908,17 +908,17 @@ function fregisterform_submit()
 		}
 	}
     
-    // if (f.mb_password.value.length < 8 || f.mb_password.value.length > 12) {
-    //     alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
-    //     f.mb_password.focus();
-    //     return false;
-    // }
+    if (f.mb_password.value.length < 8 || f.mb_password.value.length > 12) {
+        alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
+        f.mb_password.focus();
+        return false;
+    }
 
-    // if (f.mb_password_re.value.length < 3 || f.mb_password_re.value.length > 12) {
-    //     alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
-    //     f.mb_password_re.focus();
-    //     return false;
-    // }
+    if (f.mb_password_re.value.length < 3 || f.mb_password_re.value.length > 12) {
+        alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
+        f.mb_password_re.focus();
+        return false;
+    }
 
     if(f.mb_password_re.value.search(/\s/) != -1){
         alert("비밀번호는 공백 없이 입력해주세요.");
@@ -1149,6 +1149,11 @@ function fregisterform_submit()
         if($(imgFileItem2[i])[0].files[0]){
             sendData.append("sealFile", $(imgFileItem2[i])[0].files[0]);
             sendData2.append("sealFile", $(imgFileItem2[i])[0].files[0]);
+
+            if($(imgFileItem2[i])[0].files[0].size > 1024 * 1024 * 2){
+                alert('사업자직인 (계약서 날인) : 2MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem2[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
+                return false;
+            }
         }
     }
 
@@ -1164,6 +1169,10 @@ function fregisterform_submit()
                 alert('사업자등록증을 첨부해주세요.');
                 return false;
             }
+            if($(imgFileItem1[i])[0].files[0].size > 1024 * 1024 * 2){
+                alert('사업자등록증 : 2MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem1[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
+                return false;
+            }
         }
         if($(imgFileItem1[i])[0].files[0]){
             sendData.append("crnFile", $(imgFileItem1[i])[0].files[0]);
@@ -1175,76 +1184,71 @@ function fregisterform_submit()
             $api_url = "https://system.eroumcare.com:9901/api/ent/update";
         } 
     ?>
-        $.ajax({
-                type: 'POST',
-                url : "<?=$api_url?>",
-                type : "POST",
-                async : false,
-                cache : false,
-                processData : false,
-                contentType : false,
-                data : sendData,
-            }).done(function (data) {
+        var info = "<?php echo $w==''?'회원가입 하시겠습니까?':'수정 하시겠습니까?'; ?>";
+        if (confirm(info)) {
+            $.ajax({
+                    type: 'POST',
+                    url : "<?=$api_url?>",
+                    type : "POST",
+                    async : false,
+                    cache : false,
+                    processData : false,
+                    contentType : false,
+                    data : sendData,
+                }).done(function (data) {
+                    if(data.message == "SUCCESS"){
+                        $.ajax({
+                            type: 'POST',
+                            url : "<?=G5_BBS_URL?>/ajax.account.php",
+                            type : "POST",
+                            async : false,
+                            cache : false,
+                            processData : false,
+                            contentType : false,
+                            data : sendData,
+                            success : function(result){
+                                if(result =="N"){
+                                    alert('파일을 확인하세요');
+                                    return flase;
+                                }else{
+                                    result = JSON.parse(result);
+                                }
+                                sendData2.append("usrId", result.data['usrId']); //usrId
+                                sendData2.append("entId", result.data['entId']); //entId
+                                //이전 서버에 저장
+                                if(data.message == "SUCCESS"){
 
-                if(data.message == "SUCCESS"){
-                    $.ajax({
-                        type: 'POST',
-                        url : "<?=G5_BBS_URL?>/ajax.account.php",
-                        type : "POST",
-                        async : false,
-                        cache : false,
-                        processData : false,
-                        contentType : false,
-                        data : sendData,
-					    success : function(result){
-                            if(result =="N"){
-                                alert('파일을 확인하세요');
-                                return flase;
-                            }else{
-                                result = JSON.parse(result);
+                                    $.ajax({
+                                        type: 'POST',
+                                        url : "https://ex.eroumcare.com:9001/api/ent/update",
+                                        type : "POST",
+                                        async : false,
+                                        cache : false,
+                                        processData : false,
+                                        contentType : false,
+                                        data : sendData2,
+                                    }).done(function (data) {
+                                        alert("완료되었습니다.");
+                                        <?php if(!$w){ ?>
+                                            location.href='<?=G5_URL?>/bbs/register_result.php';
+                                            <?php }else{ ?>
+                                            location.href='<?=G5_URL?>';
+                                        <?php } ?>
+                                    });
+                                }else{
+                                    alert(data);
+                                    return false;
+                                }
                             }
-                            sendData2.append("usrId", result.data['usrId']); //usrId
-                            sendData2.append("entId", result.data['entId']); //entId
-                            //이전 서버에 저장
-                            if(data.message == "SUCCESS"){
-
-                                $.ajax({
-                                    type: 'POST',
-                                    url : "https://ex.eroumcare.com:9001/api/ent/update",
-                                    type : "POST",
-                                    async : false,
-                                    cache : false,
-                                    processData : false,
-                                    contentType : false,
-                                    data : sendData2,
-                                }).done(function (data) {
-                                    alert("완료되었습니다.");
-									<?php if(!$w){ ?>
-										location.href='<?=G5_URL?>/bbs/register_result.php';
-										<?php }else{ ?>
-										location.href='<?=G5_URL?>';
-									<?php } ?>
-                                });
-                            }else{
-                                alert(data);
-                                return false;
-                            }
-                        }
-                    });
-                }else{
-                    alert(data.message);
-                    return false;
-                }
-        });
+                        });
+                    }else{
+                        alert(1);
+                        alert(data.message);
+                        return false;
+                    }
+            });
+        }
         return false;
-
-
-
-
-
-
-
-
 
 
 
