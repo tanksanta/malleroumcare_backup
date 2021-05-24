@@ -539,6 +539,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                             async : false,
                             data : sendData_barcode,
                             success : function(result){
+                                alert('완료되었습니다.');
                                 close();
                             }
                         });
@@ -687,6 +688,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		close();
 	});
     function close(){
+        parent.document.location.reload();
         $("#popupProdBarNumInfoBox", parent.document).hide();
 		$("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
     }

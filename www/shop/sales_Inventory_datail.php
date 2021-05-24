@@ -426,7 +426,6 @@ $row = sql_fetch($sql);
                             function popup_control(io_value_r_color,io_value_r_size,barcode_r){
                                 $('#order_recipientBox').show();
                                 wrapWindowByMask();
-
                                 var io_value_r_v="";
                                 if(io_value_r_color){io_value_r_v="색상:"+io_value_r_color; }
                                 if(io_value_r_color&&io_value_r_size){io_value_r_color=io_value_r_color+""; }
@@ -498,9 +497,17 @@ $row = sql_fetch($sql);
                         <li class="list cb">
                             <!--pc용-->
                             <span class="num"><?=$number?></span>
-                            <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?>
+                            <span class="product m_off">
+                            <?php 
+                                if($list[$i]['prodColor']||$list[$i]['prodSize']){ 
+                                    $name= $list[$i]['prodNm'].'('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; 
+                                }else{ 
+                                    $name=$list[$i]['prodNm'];
+                                } 
+                                echo $name;
+                            ?>
                             </span>
-                            <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                            <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                             <?php
                                 //날짜 변환
                                 $date1=$list[$i]['regDtm'];
@@ -518,9 +525,10 @@ $row = sql_fetch($sql);
                             <!--mobile용-->
                             <div class="list-m">
                                 <div class="info-m">
-                                    <span class="product"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?>
+                                    <span class="product"><?=$list[$i]['prodNm']?>
+                                    <?=$name?>
                                     </span>
-                                    <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                                    <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 </div>
                                 <div class="info-m">
                                     <span class="date"><?=$date2?></span>
@@ -642,8 +650,17 @@ $row = sql_fetch($sql);
                         <li class="list cb">
                              <!--pc용-->
                             <span class="num"><?=$number?></span>
-                            <span class="product m_off"><?=$list[$i]['prodNm']?> <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?></span>
-                            <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                            <span class="product m_off"><?=$list[$i]['prodNm']?> 
+                            <?php 
+                                if($list[$i]['prodColor']||$list[$i]['prodSize']){ 
+                                    $name= $list[$i]['prodNm'].'('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; 
+                                }else{ 
+                                    $name=$list[$i]['prodNm'];
+                                } 
+                                echo $name;
+                            ?>
+                        </span>
+                            <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>"  data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                             <span class="name m_off"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
                             <?php
                                 //날짜 변환
@@ -654,8 +671,8 @@ $row = sql_fetch($sql);
                             <!--mobile용-->
                             <div class="list-m">
                                 <div class="info-m">
-                                    <span class="product"><?=$list[$i]['prodNm']?>  <?php if($list[$i]['prodColor']||$list[$i]['prodSize']){ echo '('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; }else{ echo "(옵션 없음)"; } ?></span>
-                                    <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-od="<?=$result_stock['od_id']?>" data-it="<?=$_GET['prodId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                                    <span class="product"><?=$list[$i]['prodNm']?><?=$name;?></span>
+                                    <span class="pro-num <?=$prodBarNumCntBtn_2;?>"  data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                                 </div>
                                 <div class="info-m">
                                     <span class="name"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
@@ -698,11 +715,9 @@ $row = sql_fetch($sql);
         //바코드 클릭시 팝업
         $(document).on("click", ".prodBarNumCntBtn_2", function(e){
             e.preventDefault();
-				
-            var od = $(this).attr("data-od");
-            var it = $(this).attr("data-it");
-            var stock = $(this).attr("data-stock");
-            $("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_3.php?prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "'>");
+            var stoId = $(this).attr("data-stoId");
+            var name = encodeURIComponent($(this).attr("data-name"));
+            $("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_5.php?stoId="+ stoId + "&name="+name+"'>");
             $("#popupProdBarNumInfoBox iframe").load(function(){
                 $("#popupProdBarNumInfoBox").show();
             });
