@@ -65,7 +65,7 @@
         <td colspan="2"></td>
         <th scope="col" style="text-align: right">위 동의인 성명</th>
         <td><?=$eform['penNm']?></td>
-        <td style="text-align: center; color: #999; font-size: 14px;">(서명)</td>
+        <td class="sign-form" data-id="sign_003_1" style="text-align: center; color: #999; font-size: 14px;">(서명)</td>
       </tr>
       <tr class="sign_row">
         <td colspan="2"></td>

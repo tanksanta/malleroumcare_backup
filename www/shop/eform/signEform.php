@@ -63,6 +63,55 @@ while($item = sql_fetch_array($items)) {
       e.preventDefault();
       window.close();
     });
+
+    var pos = {
+      sign_001_1: {
+        top: -5,
+        left: 15,
+        width: 120,
+        height: 40
+      },
+      seal_001_1: {
+        top: -5,
+        left: 15,
+        width: 120,
+        height: 40
+      },
+      seal_002_1: {
+        top: 5,
+        left: 60,
+        width: 120,
+        height: 40
+      },
+      sign_002_1: {
+        top: -3,
+        left: 60,
+        width: 120,
+        height: 40
+      },
+      sign_003_1: {
+        top: -4,
+        left: 50,
+        width: 120,
+        height: 40
+      }
+    };
+
+    var state = {
+      chk_001_1: false,
+      sign_001_1: '',
+      seal_001_1: '<?=htmlspecialchars($eform['dc_signUrl'])?>',
+      seal_002_1: '<?=htmlspecialchars($eform['dc_signUrl'])?>',
+      sign_002_1: '',
+      chk_003_1: false,
+      chk_003_2: false,
+      chk_003_3: false,
+      sign_003_1: '',
+    };
+
+    function repaint() {
+
+    }
   });
   </script>
 </body>

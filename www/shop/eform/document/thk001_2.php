@@ -87,30 +87,7 @@
           <th scope="col" class="right">(갑)</th>
           <th scope="col" class="right">수급자 :</th>
           <td class="center"><?=$eform['penNm']?></td>
-          <td class="center" style="font-size: 14px; position: relative;"><button style="
-            padding: 0;
-            border: 0;
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-align: center;
-            align-items: center;
-            -ms-flex-pack: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(242, 139, 8, 0.7);
-            color: #fff;
-            border-radius: 8px;
-            cursor: pointer;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        ">서명하기</button>(서명)</td>
+          <td class="sign-form center" data-id="sign_001_1" style="font-size: 14px;">(서명)</td>
           <th scope="col" class="right">대리인 :</td>
           <td class="center"></td>
           <td class="center" style="font-size: 14px">(서명)</td>
@@ -122,7 +99,7 @@
           <td></td>
           <th scope="col" class="right">대표 :</th>
           <td class="center"><?=$eform['entCeoNm']?></td>
-          <td class="center" style="font-size: 14px">(서명)</td>
+          <td class="seal-form center" data-id="seal_001_1" style="font-size: 14px">(서명)</td>
         </tr>
         <tr>
           <td colspan="7"></td>

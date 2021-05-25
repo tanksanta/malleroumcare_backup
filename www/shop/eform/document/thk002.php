@@ -175,13 +175,13 @@
         <th scope="col">사업소<br />담당자</th>
         <td colspan="2" style="border-right: 0"></td>
         <td style="border-left: 0;border-right: 0"><?=$eform['entCeoNm']?></td>
-        <td style="border-left: 0;color: #999;font-size: 14px;text-align: right">( 서명 또는 인 )</td>
+        <td class="seal-form" data-id="seal_002_1" style="border-left: 0;color: #999;font-size: 14px;text-align: right">( 서명 또는 인 )</td>
       </tr>
       <tr>
         <th scope="col" rowspan="2">수급자<br />또는<br />보호자</th>
         <td colspan="2" style="border-right: 0"></td>
         <td style="border-left: 0;border-right: 0"><?=$eform['penNm']?></td>
-        <td style="border-left: 0;color: #999;font-size: 14px;text-align: right">( 서명 또는 인 )</td>
+        <td class="sign-form" data-id="sign_002_1" style="border-left: 0;color: #999;font-size: 14px;text-align: right">( 서명 또는 인 )</td>
       </tr>
       <tr>
         <td colspan="4">
