@@ -28,7 +28,7 @@ while($item = sql_fetch_array($items)) {
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=1240, initial-scale=1.0">
   <title><?php echo $eform['dc_subject']; ?></title>
   <link rel="stylesheet" href="css/default.css">
   <link rel="stylesheet" href="css/signeform.css">
