@@ -1159,8 +1159,6 @@ function fregisterform_submit()
         }
     }
 
-    for (var pair of sendData.entries()) { console.log(pair[0]+ ', ' + pair[1]); }
-    // return false;
 
     //사업자등록증
     var flag ='<?=$member['crnFile']?>';
