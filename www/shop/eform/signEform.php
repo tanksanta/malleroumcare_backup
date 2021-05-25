@@ -123,6 +123,23 @@ while($item = sql_fetch_array($items)) {
       resizeHandler();
     });
 
+    $(document).on('click', '.chk-form', function(e) {
+      //e.preventDefault();
+
+      var id = $(this).attr('id').split('_');
+      var isN = id.pop() === 'n';
+      id = id.join('_');
+
+      if(isN) {
+        state[id] = false;
+      } else {
+        if($('#'+id+'_n').length > 0) state[id] = true;
+        else state[id] = !state[id];
+      }
+
+      repaint();
+    });
+
     var origWidth = 120;
     var origHeight = 40;
 
@@ -336,6 +353,17 @@ while($item = sql_fetch_array($items)) {
           var imageURL = state[id];
           $wrap.html('<img src="'+imageURL+'" height="'+pos[id].height+'" alt="수급자 서명">');
         }
+      });
+
+      // 체크박스
+      $('.chk-form').each(function() {
+        var id = $(this).attr('id').split('_');
+        var YorN = id.pop();
+        var reverse = YorN === 'n';
+        id = id.join('_');
+
+        var $chk = $('#'+id+'_'+YorN);
+        $chk.prop('checked', reverse ? !state[id] : state[id]);
       });
     }
 

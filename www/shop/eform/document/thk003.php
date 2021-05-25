@@ -41,21 +41,37 @@
           본인은 「개인정보보호법」 제17조 및 제18조 개인정보의 처리에 관하여
           고지 받았으며, 이를 충분히 이해하고 그 처리에 동의합니다.
         </td>
-        <td>[ ]동의함<br />[ ]동의하지 않음</td>
+        <td><label class="checkbox-container">동의함
+          <input class="chk-form" id="chk_003_1_y" type="checkbox">
+          <span class="checkmark"></span>
+          </label><br><label class="checkbox-container">동의하지 않음
+          <input class="chk-form" id="chk_003_1_n" type="checkbox">
+          <span class="checkmark"></span>
+          </label></td>
       </tr>
       <tr>
         <td colspan="3">
           본인은 「개인정보보호법」 제23조 민감정보(건강정보)의 처리에 관하여
           고지 받았으며, 이를 충분히 이해하고 그 처리에 동의합니다.
         </td>
-        <td>[ ]동의함<br />[ ]동의하지 않음</td>
+        <td><label class="checkbox-container">동의함
+          <input class="chk-form" id="chk_003_2_y" type="checkbox">
+          <span class="checkmark"></span>
+          </label><br><label class="checkbox-container">동의하지 않음
+          <input class="chk-form" id="chk_003_2_n" type="checkbox">
+          <span class="checkmark"></td>
       </tr>
       <tr>
         <td colspan="3">
           본인은 「개인정보보호법」 제24조 고유식별정보(주민등록번호)의 처리에
           관하여 고지 받았으며, 이를 충분히 이해하고 그 처리에 동의합니다.
         </td>
-        <td>[ ]동의함<br />[ ]동의하지 않음</td>
+        <td><label class="checkbox-container">동의함
+          <input class="chk-form" id="chk_003_3_y" type="checkbox">
+          <span class="checkmark"></span>
+          </label><br><label class="checkbox-container">동의하지 않음
+          <input class="chk-form" id="chk_003_3_n" type="checkbox">
+          <span class="checkmark"></td>
       </tr>
       <tr class="sign_row">
         <td colspan="3"></td>

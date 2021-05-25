@@ -66,7 +66,7 @@
       <li>
         복지용구 공급계약 체결 시 제품의 일련번호(바코드)가 추가/수정하는
         것에 대한 안내를 받았으며, 이에 수급자 본인은 동의한다. (<label class="checkbox-container">동의함
-          <input type="checkbox">
+          <input class="chk-form" id="chk_001_1_y" type="checkbox">
           <span class="checkmark"></span>
           </label>)
       </li>
