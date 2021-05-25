@@ -11,27 +11,8 @@
         $count_number=0;
         $count_od_id="";
 
-
-    //ct_id에 해당하는 od_id구하기(중복없음)
-    $ct_string = empty($ct_id)?'NULL':"'".join("','", $ct_id)."'";
-    $sql ="select `od_id` from `g5_shop_cart` where ct_id in(".$ct_string.") group by `od_id` order by `od_id` desc ";
-    $result = sql_query($sql);
-    $od_id=[];
-    while($row = sql_fetch_array($result)){
-        array_push($od_id,$row['od_id']);
-    }
-
-    for($i=0;$i<count($od_id); $i++){
-        
-        //od->ct_id 구하기
-        $sql_ct="SELECT ct_id FROM g5_shop_cart WHERE od_id = '".$od_id[$i]."'";
-        $ct = sql_query($sql_ct);
-        $ct_id=[];
-        while($row = sql_fetch_array($ct)){
-            array_push($ct_id,$row['ct_id']);
-        }
-
 		for($ii = 0; $ii < count($ct_id); $ii++){
+
             $it = sql_fetch("
                 SELECT cart.*, item.it_thezone2
                 FROM g5_shop_cart as cart
@@ -39,13 +20,11 @@
                 WHERE cart.ct_id = '{$ct_id[$ii]}'
                 ORDER BY cart.ct_id ASC
 		    ");
+		
             $od = sql_fetch(" 
-            SELECT * FROM g5_shop_order WHERE od_id = '".$it['od_id']."'
+                SELECT * FROM g5_shop_order WHERE od_id = '".$it['od_id']."'
             ");
-            if($count_od_id !==$it['od_id']){
-                $count_number++; 
-                $count_od_id=$it['od_id']; 
-            }
+            if($count_od_id !==$it['od_id']){$count_number++; $count_od_id=$it['od_id']; }
             #바코드
             $stoIdDataList = explode('|',$it['stoId']);
             $stoIdDataList=array_filter($stoIdDataList);
@@ -150,39 +129,6 @@
 				'',
 			];
 		}
-        //배송비
-        $count_number++;
-        $rows[] = [ 
-            $date,  //날짜
-            $count_number,
-            $mb['mb_thezone'],
-            '',
-            $od_sales_manager['mb_name'],
-            '',
-            '',
-            '',
-            '',
-            $od["od_b_name"],
-            $addr,
-            '',
-            '',
-            $it['prodMemo'],
-            '',
-            '00043', // 품목코드
-            '',
-            '',
-            '1',
-            $od['od_send_cost'], // 단가(판매가)
-            '',
-            round($od['od_send_cost']/1.1), //공급가액
-            $od['od_send_cost']-round($od['od_send_cost']/1.1), //부가세
-            '', // 바코드
-            $delivery, // 로젠송장번호,
-            '통합관리플랫폼', //적요
-            '',
-        ];
-
-    }
 
     $headers = array("일자", "순서", "거래처코드", "거래처명","담당자", "출하창고", "거래유형","통화", "환율","성명(상호명)", "배송처", "전잔액", "후잔액", "특이사항", "참고사항", "품목코드", "품목명", "규격", "수량", "단가(vat포함)", "외화금액", "공급가액", "부가세", "바코드", "로젠 송장번호", "적요", "생산전표생성");
     $data = array_merge(array($headers), $rows);
