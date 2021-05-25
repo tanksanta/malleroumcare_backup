@@ -610,7 +610,7 @@ var array_box=[];
 				<ul>
 					<li class="on">
 						<a href="#" data-for="od_settle_pay_end">
-							<img src="<?=$SKIN_URL?>/image/icon_21.png" alt="">
+							<img src="<?=$SKIN_URL?>/image/icon_21_on.png" alt="">
 							월 마감정산
 						</a>
 					</li>
@@ -1464,6 +1464,14 @@ var array_box=[];
 
 			$('.payment-tab ul li').removeClass("on");
 			$('.payment-tab ul li > a[data-for="' + target + '"]').closest("li").addClass("on");
+
+			$('.payment-tab ul li > a[data-for="od_settle_pay_end"]').find("img").attr("src","<?=$SKIN_URL?>/image/icon_21.png");
+			$('.payment-tab ul li > a[data-for="od_settle_bank"]').find("img").attr("src","<?=$SKIN_URL?>/image/icon_22.png");
+            if(target == "od_settle_pay_end"){
+			    $('.payment-tab ul li > a[data-for="od_settle_pay_end"]').find("img").attr("src","<?=$SKIN_URL?>/image/icon_21_on.png");
+            }else{
+			    $('.payment-tab ul li > a[data-for="od_settle_bank"]').find("img").attr("src","<?=$SKIN_URL?>/image/icon_22_on.png");
+            }
 
 			$("#settle_bank").hide();
 			switch(target){
