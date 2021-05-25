@@ -472,8 +472,6 @@
 			<a href="./my.recipient.list.php" class="btn btn-black" role="button">취소</a>
 		</div>
 	</form>
-    <button onclick="test()"> test</button>
-
 	<script type="text/javascript">
 			var zipPopupDom = document.getElementById("zipAddrPopupIframe");
             var penid="";
