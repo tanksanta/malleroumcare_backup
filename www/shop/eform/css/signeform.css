@@ -108,8 +108,8 @@ body {
 }
 
 #popup-sign {
-  /* display: none; Hidden by default */
-  display: table;
+  display: none;
+  /*display: table;*/
   table-layout: fixed;
   position: fixed; /* Stay in place */
   z-index: 999; /* Sit on top */
