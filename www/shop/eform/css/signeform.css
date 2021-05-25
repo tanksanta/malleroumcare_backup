@@ -3,6 +3,10 @@ body {
   background-color: #f5f5f5;
 }
 
+.modal-open {
+  overflow: hidden;
+}
+
 .flexbox {
   display: -ms-flexbox;
   display: -webkit-flex;
@@ -105,16 +109,23 @@ body {
 
 #popup-sign {
   /* display: none; Hidden by default */
+  display: table;
+  table-layout: fixed;
   position: fixed; /* Stay in place */
   z-index: 999; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.6);
+}
+
+.popup-modal-wrap {
+  display: table-cell;
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
 }
 
 #sign-pad {
@@ -127,8 +138,6 @@ body {
 #sign-pad canvas {
   position: absolute;
   z-index: 9999;
-  width:100%;
-  height: 100%;
 }
 
 #sign-back {
@@ -145,18 +154,22 @@ body {
 }
 
 .popup-modal {
+  position: relative;
   background-color: #fff;
   margin: 0 auto;
-  width: 100%;
-  height: 100%;
-  max-width: 700px;
-  max-height: 460px;
 }
 
 .popup-modal .head-wrap {
-  padding: 24px 16px 16px 16px;
+  z-index: 10000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  padding: 20px;
   text-align: center;
   font-size: 24px;
+  line-height: 30px;
   font-weight: bold;
   color: #000;
   background-color: #fff;
@@ -164,27 +177,35 @@ body {
 }
 
 .popup-modal .bottom-wrap {
-
+  z-index: 10001;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .popup-modal .bottom-wrap button {
   display: inline-block;
+  height: 100%;
   margin: 0;
-  padding: 18px 16px;
+  padding: 15px;
   border: none;
   text-align: center;
   vertical-align: middle;
   font-size: 16px;
+  line-height: 25px;
   color: #fff;
   cursor: pointer;
 }
 
 #btn-sign-submit {
+  float: left;
   width: 80%;
   background-color: #f28b08;
 }
 
 #btn-sign-cancel {
+  float: right;
   width: 20%;
   background-color: #7d7d7d;
 }
@@ -250,14 +271,9 @@ body {
 .btn-sign {
   padding: 0;
   border: 0;
+  width: 100%;
+  height: 100%;
   display: block;
-  position: absolute;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align: center;
-  align-items: center;
-  -ms-flex-pack: center;
-  justify-content: center;
   background-color: rgba(242, 139, 8, 0.7);
   color: #fff;
   border-radius: 8px;
