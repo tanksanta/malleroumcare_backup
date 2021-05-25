@@ -491,8 +491,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
                                                 <b class="prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoIdDataList[$prodListCnt]?>"><?=$prodList[$prodListCnt]["prodBarNum"]?></b>
                                             <?php } ?> -->
                                     <?php $prodListCnt++; } ?>
-
-                                        <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-od="<?=$od["od_id"]?>" data-it="<?=$item[$i]["it_id"]?>" data-stock="<?=$stock_insert?>" data-option="<?=$item[$i]['opt'][$k]['ct_option'] ?>"  ><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 확인</a>
+                                        <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$od["od_id"]?>" data-ct-id="<?=$item[$i]['opt'][$k]["ct_id"]?>" ><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 확인</a>
 									</li>
 								</ul>
 								<div class="list-btm">
@@ -903,12 +902,11 @@ function hide_control(od_id){
 
 $(".popupProdBarNumInfoBtn").click(function(e){
 	e.preventDefault();
-	
-	var od = $(this).attr("data-od");
-	var it = $(this).attr("data-it");
-    var stock = $(this).attr("data-stock");
-    var option = encodeURIComponent($(this).attr("data-option"));
-    $("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_4.php?prodId=" + it + "&od_id=" + od +  "&option=" + option + "&stock_insert=" + stock +"'>");
+
+    var od_id = $(this).attr("data-id");
+    var ct_id = $(this).attr("data-ct-id");
+
+    $("#popupProdBarNumInfoBox > div").append("<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
     $("#popupProdBarNumInfoBox iframe").load(function(){
         $("#popupProdBarNumInfoBox").show();
     });
@@ -1149,7 +1147,7 @@ $(function(){
 		e.preventDefault();
 
 		var od = $(this).data('od');
-		window.open('/shop/eform/signEform.php?od_id='+od);
+		window.open('/shop/eform/signEform.php');
 	});
 	$('#linkEformEdit').click(function(e) { // 내용변경 버튼
 		e.preventDefault();
