@@ -5,7 +5,7 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
     require_once(G5_SHOP_PATH.'/yc/orderinquiryview.php');
     return;
 }
-
+$reload = false;
 if($_GET["result"] == "Y"){
 	sql_query("
 		UPDATE g5_shop_order SET
@@ -512,11 +512,11 @@ if($is_inquiryview_sub) {
 
 <?php
 
-	if($_GET["result"] == "Y"){
+
+	if($_GET["result"] == "Y"&&$_SESSION["productList{$_GET["od_id"]}"]){
+		$reload = true;
 		$insertProds = addslashes(htmlspecialchars(json_encode($_SESSION["productList{$_GET["od_id"]}"])));
 		$staOrdCd = "00";
-		$reload = false;
-
 		sql_query("
 			UPDATE g5_shop_order SET
 				  eformYn = 'Y'
@@ -530,6 +530,24 @@ if($is_inquiryview_sub) {
 		$productList = $_SESSION["productList{$_GET["od_id"]}"];
 
 
+        #모두 재고소진, 보유재고등록일 경우 배송비 - 0원 처리
+        $sql_up ="select * from `g5_shop_cart` where `od_id`='".$_GET["od_id"]."'";
+        $result_up=sql_query($sql_up);
+        $flag=true;
+        for ($i=0; $row=sql_fetch_array($result_up); $i++) {
+            if($row['ct_status']=="재고소진"||$row['ct_status']=="보유재고등록"){
+                continue;
+            }else{
+                $flag=false;
+            }
+        }
+        if($flag){
+            sql_query("
+            UPDATE g5_shop_order SET
+                od_send_cost = '0'
+            WHERE od_id = '{$_GET["od_id"]}'
+            ");
+        }
 
         #판매, 대여로그 작성
 		$sendData2 = [];
