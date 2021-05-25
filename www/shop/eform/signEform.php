@@ -248,11 +248,6 @@ while($item = sql_fetch_array($items)) {
     }
 
     function toResizedDataURL(canvas, origWidth, origHeight) {
-      var canvasWidth = canvas.width;
-      var canvasHeight = canvas.height;
-
-      var dpiRatio = origWidth / canvasWidth;
-
       var resizedCanvas = document.createElement('canvas');
       var resizedContext = resizedCanvas.getContext('2d');
 
@@ -260,13 +255,15 @@ while($item = sql_fetch_array($items)) {
       resizedCanvas.height = origHeight * 5;
 
       var $signBack = $('#sign-back');
+      var ratio = Math.max(window.devicePixelRatio || 1, 1);
 
       resizedContext.drawImage(canvas,
-        $signBack.css('left').replace(/[^-\d\.]/g, ''), $signBack.css('top').replace(/[^-\d\.]/g, '') - 70,
-        $signBack.width(), $signBack.height(),
+        $signBack.css('left').replace(/[^-\d\.]/g, '') * ratio, ($signBack.css('top').replace(/[^-\d\.]/g, '') - 70) * ratio,
+        $signBack.width() * ratio, $signBack.height() * ratio,
         0, 0,
         origWidth * 5, origHeight * 5
       );
+
       return resizedCanvas.toDataURL();
     }
 
