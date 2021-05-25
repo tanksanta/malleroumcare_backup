@@ -110,8 +110,25 @@ while($item = sql_fetch_array($items)) {
     };
 
     function repaint() {
+      $('.seal-form').each(function(index) {
+        console.log($(this));
+        var id = $(this).data('id');
+        if($('#'+id).length === 0) $(this).append('<div id="'+id+'" class="seal-wrap"></div>')
+        
+        var $wrap = $('#'+id);
+        $wrap.css({
+          top: pos[id].top,
+          left: pos[id].left,
+          width: pos[id].width,
+          height: pos[id].height
+        });
 
+        var imageURL = state[id];
+        $wrap.html('<img src="'+imageURL+'" height="'+pos[id].height+'" alt="사업소 직인">');
+      });
     }
+
+    repaint();
   });
   </script>
 </body>
