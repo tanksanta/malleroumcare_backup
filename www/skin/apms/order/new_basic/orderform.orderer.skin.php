@@ -99,7 +99,7 @@ var array_box=[];
 					</li>
 					<li>
 						<div>
-							<b>인정등급</b>
+							<b>본인부담금율</b>
 							<span class="penTypeNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
 						</div>
 					</li>
@@ -528,7 +528,7 @@ var array_box=[];
 					</li>
 					<li>
 						<div>
-							<b>인정등급</b>
+							<b>본인부담금율</b>
 							<span class="penTypeNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
 						</div>
 					</li>
@@ -1017,7 +1017,8 @@ var array_box=[];
             //수급자 정보 동기화
 			document.getElementById("penId").value=list['penId'];				//penId
 			document.getElementById("penNm").value=list['penNm'];				//수급자명
-			document.getElementById("penTypeNm").value=list['penTypeNm'];		//인정등급
+			document.getElementById("penRecGraNm").value=list['penRecGraNm'];		//안전등급
+			document.getElementById("penTypeNm").value=list['penTypeNm'];		//본인부담금율
 			document.getElementById("penExpiDtm").value=list['penExpiDtm'];		//유효기간
 			document.getElementById("penAppEdDtm").value=list['penAppEdDtm'];	//적용기간
 			document.getElementById("penConNum").value=list['penConNum'];		//휴대전화
@@ -1465,6 +1466,7 @@ var array_box=[];
 			$('.payment-tab ul li').removeClass("on");
 			$('.payment-tab ul li > a[data-for="' + target + '"]').closest("li").addClass("on");
 
+            
 			$('.payment-tab ul li > a[data-for="od_settle_pay_end"]').find("img").attr("src","<?=$SKIN_URL?>/image/icon_21.png");
 			$('.payment-tab ul li > a[data-for="od_settle_bank"]').find("img").attr("src","<?=$SKIN_URL?>/image/icon_22.png");
             if(target == "od_settle_pay_end"){
