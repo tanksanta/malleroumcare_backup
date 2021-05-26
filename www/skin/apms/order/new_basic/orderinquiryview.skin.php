@@ -167,6 +167,7 @@ if(defined('IS_TEST_ENVIRONMENT') || $member['mb_id'] == '123456789') {
 			`penTypeNm` = '{$penData["penTypeNm"]}',
 			`penExpiDtm` = '{$penData["penExpiDtm"]}', # 수급자 이용기간
 			`penJumin` = '{$penData["penJumin"]}',
+			`penZip` = '{$penData["penZip"]}',
 			`penAddr` = '{$penData["penAddr"]}',
 			`penAddrDtl` = '{$penData["penAddrDtl"]}'
 			");

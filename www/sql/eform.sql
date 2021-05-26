@@ -52,6 +52,8 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   `penExpiDtm` varchar(255), -- 2021-01-11 ~ 2022-01-10
   -- 주민등록번호
   `penJumin` varchar(255) NOT NULL default '',
+  -- 우편번호
+  `penZip` varchar(255) NOT NULL default '',
   -- 주소
   `penAddr` varchar(255) NOT NULL default '',
   -- 상세주소
