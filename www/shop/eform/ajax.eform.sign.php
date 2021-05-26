@@ -70,7 +70,7 @@ $datetime = date('Y-m-d H:i:s', $timestamp);
 sql_query("UPDATE `eform_document` SET
 `dc_status` = '2',
 `dc_sign_datetime` = '$datetime',
-`dc_sign_ip` = '$ip',
+`dc_sign_ip` = '$ip'
 WHERE `dc_id` = UNHEX('$uuid')
 ");
 
