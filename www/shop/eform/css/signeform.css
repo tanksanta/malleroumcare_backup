@@ -107,9 +107,14 @@ body {
   font-size: 16px;
   color: #333;
   height: 40px;
-  padding: 0 40px;
+  width: 150px;
   margin: 0 5px;
   text-align: center;
+}
+
+.sign-eform-foot .menu-wrap button.primary {
+  background-color: #ee8102;
+  color: #fff;
 }
 
 #popup-sign {

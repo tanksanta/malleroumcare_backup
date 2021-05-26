@@ -137,15 +137,15 @@ while($item = sql_fetch_array($items)) {
     $('#btnNext').click(function(e) {
       e.preventDefault();
 
+      var todos = getTodos();
+      if(todos.current < todos.total) {
+        return alert('현재 단계에서 모든 입력을 완료해주세요.');
+      }
+
       if(currentStage < totalStage) {
-        var todos = getTodos();
-        if(todos.current === todos.total) {
-          currentStage++;
-          repaint();
-          scrollToTop();
-        } else {
-          alert('현재 단계에서 모든 입력을 완료해주세요.');
-        }
+        currentStage++;
+        repaint();
+        scrollToTop();
       } else {
         // 마지막 단계 작성완료
       }
@@ -344,11 +344,13 @@ while($item = sql_fetch_array($items)) {
       return resizedCanvas.toDataURL();
     }
 
+    // 입력완료 체크
     function getTodos() {
       var currentTodos = 0;
       var totalTodos = 0;
       for(var id in state) {
         var key = id.split('_')
+        // 사업소 직인은 이미 입력되어있으니까
         if(parseInt(key[1]) === currentStage && key[0] !== 'seal') {
           totalTodos++;
           if(state[id]) currentTodos++;
@@ -381,6 +383,13 @@ while($item = sql_fetch_array($items)) {
         case 3:
           $('#thk003').css({ display: 'block' });
           break;
+      }
+
+      // 마지막 단계면 작성완료 버튼으로 변경
+      if(currentStage === totalStage) {
+        $('#btnNext').addClass('primary').text('완료');
+      } else {
+        $('#btnNext').removeClass('primary').text('다음단계');
       }
 
       // 직인
