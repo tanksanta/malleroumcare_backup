@@ -57,8 +57,6 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   `dc_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
   -- 계약서 생성시 IP
   `dc_ip` varchar(255) NOT NULL default '',
-  -- 계약서 생성 브라우저 정보
-  `dc_browser` text NOT NULL,
   -- 직인 파일명
   `dc_signUrl` varchar(255) NOT NULL default '',
   -- ---------
@@ -68,10 +66,6 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   `dc_sign_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
   -- 계약서 작성시 IP
   `dc_sign_ip` varchar(255) NOT NULL default '',
-  -- 계약서 작성 브라우저 정보
-  `dc_sign_browser` text NOT NULL,
-  -- 사인 파일명
-  `dc_sign_signUrl` varchar(255) NOT NULL default '',
   PRIMARY KEY (`dc_id`),
   UNIQUE KEY `index1` (`dc_id`, `od_id`),
   KEY `dc_subject` (`dc_subject`),
