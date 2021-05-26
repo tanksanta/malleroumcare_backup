@@ -165,7 +165,10 @@ if(defined('IS_TEST_ENVIRONMENT') || $member['mb_id'] == '123456789') {
 			`penRecGraNm` = '{$penData["penRecGraNm"]}',
 			`penTypeCd` = '{$penData["penTypeCd"]}', # 본인부담금율
 			`penTypeNm` = '{$penData["penTypeNm"]}',
-			`penExpiDtm` = '{$penData["penExpiDtm"]}' # 수급자 이용기간
+			`penExpiDtm` = '{$penData["penExpiDtm"]}', # 수급자 이용기간
+			`penJumin` = '{$penData["penJumin"]}',
+			`penAddr` = '{$penData["penAddr"]}',
+			`penAddrDtl` = '{$penData["penAddrDtl"]}'
 			");
 
 			$sendData = [];

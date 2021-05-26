@@ -50,6 +50,12 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   `penTypeNm` varchar(255), -- 감경 6%
   -- 이용기간
   `penExpiDtm` varchar(255), -- 2021-01-11 ~ 2022-01-10
+  -- 주민등록번호
+  `penJumin` varchar(255) NOT NULL default '',
+  -- 주소
+  `penAddr` varchar(255) NOT NULL default '',
+  -- 상세주소
+  `penAddrDtl` varchar(255) NOT NULL default '',
   -- ---------
   -- 계약서 생성 정보
   -- ---------
