@@ -1,42 +1,47 @@
-.thk004 {
-  padding: 24px 64px;
+.thk102 {
+  padding: 0 128px;
 }
 
-.thk004 .thk004-h1 {
+.thk102 .thk102-h1 {
   padding: 20px 0 !important;
   font-size: 20px !important;
   font-weight: bold !important;
   text-align: center;
 }
 
-.thk004 .thk004-table {
+.thk102 .thk102-table {
   border-collapse: collapse;
   border: 2px solid #000000;
   width: 100%;
   font-size: 14px;
 }
 
-.thk004 .thk004-table p {
+
+.thk102 .thk102-table p {
   padding: 0;
   margin: 4px 0;
 }
 
-.thk004 .thk004-table th,
-.thk004 .thk004-table td {
+.thk102 .thk102-table th,
+.thk102 .thk102-table td {
   padding: 6px;
   border: 1px solid #000000;
   font-weight: normal;
   vertical-align: middle;
 }
 
-.thk004 .thk004-table .center {
+.thk102 .thk102-table .tr-content td {
+  font-size: 12px !important;
+}
+
+.thk102 .thk102-table .center {
   text-align: center;
 }
 
-.thk004 .thk004-table .right {
+.thk102 .thk102-table .right {
   text-align: right;
 }
 
-.thk004 .thk004-table .slash {
+.thk102 .thk102-table .slash {
   background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="100%" y2="100%" stroke="black" /></svg>');
 }

@@ -1,0 +1,151 @@
+.thk101 {
+  padding: 0 128px;
+}
+
+.thk101 .thk101-h1 {
+  margin: 0;
+  padding: 16px;
+  font-size: 28px;
+  text-align: center;
+}
+
+.thk101 table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+
+.thk101 table th,
+.thk101 table td {
+  padding: 6px;
+  border: 1px solid #000000;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+.thk101 table th {
+  text-align: center;
+}
+
+.thk101 table th:first-child,
+.thk101 table td:first-child {
+  border-left: none !important;
+}
+
+.thk101 table th:last-child,
+.thk101 table td:last-child {
+  border-right: none !important;
+}
+
+.thk101 .thk101-head-table-desc {
+  font-size: 12px;
+  padding: 0 0 4px 4px;
+}
+
+.thk101 .thk101-head-table {
+  font-size: 14px;
+}
+
+.thk101 .thk101-head-table td {
+  position: relative;
+  text-align: center;
+  background-color: #b2b2b2;
+  border: 1px solid #747474;
+  padding: 10px;
+}
+
+.thk101 .thk101-head-table .td-header {
+  position: absolute;
+  top:0;
+  left:0;
+  padding: 4px;
+}
+
+.thk101 .app-table {
+  margin: 2px 0;
+}
+
+.thk101 .app-table td {
+  padding: 12px 6px;
+}
+
+.thk101 .sign-table + .sign-table {
+  margin-top: 8px;
+}
+
+.thk101 .sign-table th,
+.thk101 .sign-table td {
+  font-size: 14px;
+  line-height: 18px;
+  padding: 6px;
+  border: none;
+}
+
+.thk101 .sign-table td.td-to {
+  padding-top: 10px;
+  line-height: 1.25;
+  border-bottom: 2px solid #989898;
+}
+
+.thk101 .sign-desc {
+  text-align: center;
+  font-size: 14px !important;
+}
+
+.thk101 .table-doc {
+  margin: 8px 0;
+}
+
+.thk101 .table-doc p {
+  margin: 0;
+  padding: 6px 0;
+  text-align: center;
+}
+
+.thk101 .table-doc ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.thk101 .sign-table th.th-sign-head {
+ background-color: #b2b2b2;
+ font-size: 18px;
+ border-top: 2px solid #525252;
+ border-bottom: 1px solid #888888;
+ line-height: 1;
+}
+
+.thk101 .sign-table .flow-box {
+  height: 35px;
+  width: 100%;
+  border: 1px solid #000000;
+  text-align: center;
+}
+
+.thk101 .sign-table .flow-box p {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.thk101 .sign-table .right-arrow {
+  content: '';
+  background: url('../svg/right-arrow.svg') no-repeat center center;
+  background-size: 15.5px 13px;
+}
+
+.thk101 .sign-table .no-padding td {
+  padding: 0 !important;
+}
+
+.thk101 .center {
+  text-align: center;
+}
+
+.thk101 .right {
+  text-align: right;
+}

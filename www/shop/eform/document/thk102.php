@@ -6,15 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="stylesheet" href="../css/signeform.css">
-  <link rel="stylesheet" href="../css/thk004.css">
+  <link rel="stylesheet" href="../css/thk102.css">
   <style>
     .a4 { width: 1200px; margin: 0 auto; }
   </style>
 </head>
 <body>
-<div id="thk004" class="a4">
-  <div class="thk004">
-    <table class="thk004-table">
+<div id="thk102" class="a4">
+  <div class="thk102">
+    <table class="thk102-table">
       <colgroup>
         <col style="width: 5%" />
         <col style="width: 7%" />
@@ -31,7 +31,7 @@
       </colgroup>
       <thead>
         <tr>
-          <th scope="row" colspan="12" class="thk004-h1">재가서비스 이용내역서</th>
+          <th scope="row" colspan="12" class="thk102-h1">재가서비스 이용내역서</th>
         </tr>
       </thead>
       <tbody>
@@ -67,7 +67,7 @@
           <th scope="row" colspan="2">장기요양<br>기관명</th>
           <th scope="row">장기요양<br>기관기호</th>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td colspan="2">&nbsp;</td>
           <td colspan="2">&nbsp;</td>
@@ -76,7 +76,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td colspan="2">&nbsp;</td>
           <td colspan="2">&nbsp;</td>
@@ -105,7 +105,7 @@
           <th scope="row" colspan="2">장기요양<br>기관명</th>
           <th scope="row">장기요양<br>기관기호</th>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">이동변기</td>
           <td>T03030060001</td>
           <td class="center">V(1)</td>
@@ -115,7 +115,7 @@
           <td colspan="2">(주)다온테크</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -125,7 +125,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -135,7 +135,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -145,7 +145,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -155,7 +155,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -165,7 +165,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -175,7 +175,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -185,7 +185,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -195,7 +195,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -205,7 +205,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -215,7 +215,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -225,7 +225,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -235,7 +235,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
@@ -245,7 +245,7 @@
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        <tr>
+        <tr class="tr-content">
           <td colspan="2">&nbsp;</td>
           <td>&nbsp;</td>
           <td class="center">&nbsp;</td>
