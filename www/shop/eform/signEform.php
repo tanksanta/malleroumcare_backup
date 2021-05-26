@@ -148,6 +148,21 @@ while($item = sql_fetch_array($items)) {
         scrollToTop();
       } else {
         // 마지막 단계 작성완료
+        if(!confirm('계약서 작성을 완료하시겠습니까?')) return;
+        $.post('./ajax.eform.sign.php', {
+          state: JSON.stringify(state),
+          uuid: '<?=$eform["uuid"]?>'}, 'json'
+        )
+        .done(function(data) {
+          // 작성 완료
+          alert('계약서 작성이 완료되었습니다.');
+          parent.location.reload();
+          window.close();
+        })
+        .fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        });
       }
     });
 
