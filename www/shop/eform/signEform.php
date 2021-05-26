@@ -74,6 +74,81 @@ while($item = sql_fetch_array($items)) {
   </div>
   <script>
   $(function() {
+    var currentStage = 1;
+    var totalStage = 3;
+
+    var pos = {
+      sign_001_1: {
+        top: -5,
+        left: 15,
+        width: 120,
+        height: 40
+      },
+      seal_001_1: {
+        top: -5,
+        left: 15,
+        width: 120,
+        height: 40
+      },
+      seal_002_1: {
+        top: 5,
+        left: 60,
+        width: 120,
+        height: 40
+      },
+      sign_002_1: {
+        top: -3,
+        left: 60,
+        width: 120,
+        height: 40
+      },
+      sign_003_1: {
+        top: -4,
+        left: 50,
+        width: 120,
+        height: 40
+      }
+    };
+
+    var state = {
+      chk_001_1: false,
+      sign_001_1: '',
+      seal_001_1: '<?=htmlspecialchars($eform['dc_signUrl'])?>',
+      seal_002_1: '<?=htmlspecialchars($eform['dc_signUrl'])?>',
+      sign_002_1: '',
+      chk_003_1: false,
+      chk_003_2: false,
+      chk_003_3: false,
+      sign_003_1: '',
+    };
+
+    $('#btnPrev').click(function(e) {
+      e.preventDefault();
+
+      if(currentStage > 1) {
+        currentStage--;
+        repaint();
+      } else {
+        alert('첫 번째 단계입니다.');
+      }
+    });
+
+    $('#btnNext').click(function(e) {
+      e.preventDefault();
+
+      if(currentStage < totalStage) {
+        var todos = getTodos();
+        if(todos.current === todos.total) {
+          currentStage++;
+          repaint();
+        } else {
+          alert('현재 단계에서 모든 입력을 완료해주세요.');
+        }
+      } else {
+        // 마지막 단계 작성완료
+      }
+    });
+
     $('#btnCloseSign').click(function(e) {
       e.preventDefault();
       window.close();
@@ -267,52 +342,45 @@ while($item = sql_fetch_array($items)) {
       return resizedCanvas.toDataURL();
     }
 
-    var pos = {
-      sign_001_1: {
-        top: -5,
-        left: 15,
-        width: 120,
-        height: 40
-      },
-      seal_001_1: {
-        top: -5,
-        left: 15,
-        width: 120,
-        height: 40
-      },
-      seal_002_1: {
-        top: 5,
-        left: 60,
-        width: 120,
-        height: 40
-      },
-      sign_002_1: {
-        top: -3,
-        left: 60,
-        width: 120,
-        height: 40
-      },
-      sign_003_1: {
-        top: -4,
-        left: 50,
-        width: 120,
-        height: 40
+    function getTodos() {
+      var currentTodos = 0;
+      var totalTodos = 0;
+      for(var id in state) {
+        var key = id.split('_')
+        if(parseInt(key[1]) === currentStage && key[0] !== 'seal') {
+          totalTodos++;
+          if(state[id]) currentTodos++;
+        }
       }
-    };
 
-    var state = {
-      chk_001_1: false,
-      sign_001_1: '',
-      seal_001_1: '<?=htmlspecialchars($eform['dc_signUrl'])?>',
-      seal_002_1: '<?=htmlspecialchars($eform['dc_signUrl'])?>',
-      sign_002_1: '',
-      chk_003_1: false,
-      chk_003_2: false,
-      chk_003_3: false,
-      sign_003_1: '',
-    };
+      var todos = {
+        current: currentTodos,
+        total: totalTodos
+      }
+
+      return todos;
+    }
+
+    function scrollToTop() {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
 
     function repaint() {
+      // 현재 단계만 보여주기
+      $('.a4').css({ display: 'none' });
+      switch(currentStage) {
+        case 1:
+          $('#thk001_1, #thk001_2').css({ display: 'block' });
+          break;
+        case 2:
+          $('#thk002').css({ display: 'block' });
+          break;
+        case 3:
+          $('#thk003').css({ display: 'block' });
+          break;
+      }
+
       // 직인
       $('.seal-form').each(function() {
         var id = $(this).data('id');
@@ -362,6 +430,17 @@ while($item = sql_fetch_array($items)) {
         var $chk = $('#'+id+'_'+YorN);
         $chk.prop('checked', reverse ? !state[id] : state[id]);
       });
+
+      // 입력 상태
+      var todos = getTodos();
+
+      $('.sign-eform-foot .desc').text(todos.total + '건 중 ' + todos.current + '건 완료되었습니다.');
+
+      if(todos.current === todos.total) {
+
+      } else {
+
+      }
     }
 
     repaint();
