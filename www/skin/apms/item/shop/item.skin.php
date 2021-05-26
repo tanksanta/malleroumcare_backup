@@ -1385,6 +1385,7 @@ $(function() {
 $(document).ready(function() {
      $('.item-explan').find('iframe').css('width','100%'); 
      $('.item-explan').find('iframe').css('height','100%'); 
+     $('.item-explan').find('iframe').attr('allowfullscreen','allowfullscreen');
 });
 </script>
 
