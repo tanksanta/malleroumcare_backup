@@ -836,6 +836,7 @@ $od_addr_jibeon   = preg_match("/^(N|R)$/", $od_addr_jibeon) ? $od_addr_jibeon :
 $od_penId			= clean_xss_tags($penId);
 $od_penNm			= clean_xss_tags($penNm);
 $od_penTypeNm		= clean_xss_tags($penTypeNm);
+$od_penRecGraNm		= clean_xss_tags($penRecGraNm);
 $od_penExpiDtm		= clean_xss_tags($penExpiDtm);
 $od_penAppEdDtm		= clean_xss_tags($penAppEdDtm);
 $od_penConPnum		= clean_xss_tags($penConPnum);
@@ -921,6 +922,7 @@ $sql = " insert {$g5['g5_shop_order_table']}
 
                 od_penId			= '$od_penId',
                 od_penNm			= '$od_penNm',
+                od_penRecGraNm	    = '$od_penRecGraNm',
                 od_penTypeNm		= '$od_penTypeNm',
                 od_penExpiDtm		= '$od_penExpiDtm',
                 od_penAppEdDtm		= '$od_penAppEdDtm',

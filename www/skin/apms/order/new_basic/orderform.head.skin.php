@@ -45,6 +45,7 @@ if($header_skin)
     
     <input type="text" name="penNm" id="penNm" class="form-control input-sm" readonly style="display: none;">
     <input type="text" name="penTypeNm" id="penTypeNm" class="form-control input-sm" readonly style="display: none;">
+    <input type="text" name="penRecGraNm" id="penRecGraNm" class="form-control input-sm" readonly style="display: none;">
     <input type="text" name="penExpiDtm" id="penExpiDtm" class="form-control input-sm" readonly style="display: none;">
     <input type="text" name="penAppEdDtm" id="penAppEdDtm" class="form-control input-sm" readonly style="display: none;">
     <input type="text" name="penConPnum" id="penConPnum" class="form-control input-sm" readonly style="display: none;">

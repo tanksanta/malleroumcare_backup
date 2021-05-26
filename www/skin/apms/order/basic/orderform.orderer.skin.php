@@ -44,7 +44,7 @@ $result_d = sql_fetch($sql_d);
 if($tot_sell_price >=$result_d['de_send_conditional']){
     $send_cost=0;
 }
-$tot_price=$tot_sell_price+$send_cost;
+$tot_price=$tot_sell_price+$send_cost-$tot_sell_discount;
 ?>
 
 
@@ -99,7 +99,7 @@ var array_box=[];
 					</li>
 					<li>
 						<div>
-							<b>인정등급</b>
+							<b>본인부담금율</b>
 							<span class="penTypeNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
 						</div>
 					</li>
@@ -150,8 +150,8 @@ var array_box=[];
 					<ul class="head">
 						<li class="pro">상품(옵션)</li>
 						<li class="num">수량</li>
-						<li class="pro-price">급여가</li>
-						<li class="price">상품금액</li>
+						<li class="pro-price">단가</li>
+						<li class="price">총금액</li>
 						<li class="delivery-price" style="width: 20%;">배송비</li>
 						<li class="barcode" style="display: none;">바코드</li>
 					</ul>
@@ -196,7 +196,7 @@ var array_box=[];
 
 										<?php
 											//소계 토탈 - 디스카운트
-											$pirce_v = str_replace(',','',$item[$i]['total_price'])-str_replace(',','',$item[$i]['ct_discount']);
+											$pirce_v = str_replace(',','',$item[$i]['total_price']);
 										?>
 										<!--모바일용-->
 										<div class="info_pc_none">
@@ -237,7 +237,7 @@ var array_box=[];
 												$itemPenIdStatus = false;
 											}
 										?>
-											<input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)"class="prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
+											<input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)"class="hidden barcode_input prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
 										<?php } ?>
 								<?php
 										$postProdBarNumCnt++; }
@@ -285,7 +285,15 @@ var array_box=[];
 							<li class="ad_sel_addr" id="ad_sel_addr_same" data-value="same">주문자와 동일</li>
 							<li class="ad_sel_addr" id="ad_sel_addr_recipient" data-value="recipient" style="display: none;">수급자와 동일</li>
 							<li class="ad_sel_addr" id="od_sel_addr_new" data-value="new">신규 배송지</li>
-							<li class="ad_sel_addr" id="order_address">배송지 목록</li>
+							<?php
+							if ($member['mb_id']) {
+								$sql = "SELECT count(*) as cnt from {$g5['g5_shop_order_address_table']} where mb_id = '{$member['mb_id']}' ";
+								$result = sql_fetch($sql);
+								if ($result['cnt']) { 
+							?>
+									<li class="ad_sel_addr" id="order_address">배송지 목록</li>
+								<?php } ?>
+							<?php } ?>
 						</ul>
 					</div>
 					<?php } ?>
@@ -295,40 +303,40 @@ var array_box=[];
 						<li>
 							<strong>이름</strong>
 							<div>
-								<input class="w-240" type="text" id="od_b_name" name="od_b_name">
+								<input class="w-240" type="text" id="od_b_name" name="od_b_name" value="<?=$member['mb_name']?>">
 							</div>
 						</li>
 						<li>
 							<strong>전화번호</strong>
 							<div>
-								<input class="w-240" type="text" id="od_b_tel" name="od_b_tel">
+								<input class="w-240" type="text" id="od_b_tel" name="od_b_tel" value="<?=$member['mb_tel']?>">
 							</div>
 						</li>
 						<li>
 							<strong>핸드폰</strong>
 							<div>
-								<input class="w-240" type="text" id="od_b_hp" name="od_b_hp">
+								<input class="w-240" type="text" id="od_b_hp" name="od_b_hp" value="<?=$member['mb_hp']?>">
 							</div>
 						</li>
 						<li class="addr">
 							<strong>주소</strong>
 							<div>
 								<div>
-									<input type="text"  class="w-70"name="od_b_zip" id="od_b_zip" required >
+									<input type="text"  class="w-70"name="od_b_zip" id="od_b_zip" value="<?php echo $member['mb_zip1'].$member['mb_zip2'] ?>" required>
 									<button type="button" onclick="win_zip('forderform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">우편번호</button>
-									<input type="hidden" name="od_b_addr_jibeon" value="">
+									<input type="hidden" name="od_b_addr_jibeon" value="<?=$member['mb_hp']?>">
 								</div>
 								<div>
-									<input type="text" name="od_b_addr1" id="od_b_addr1" required  style="width: 100%;">
+									<input type="text" name="od_b_addr1" id="od_b_addr1" value="<?php echo get_text($member['mb_addr1']) ?>" required  style="width: 100%;">
 								 </div>
 								 <div>
-									<input type="text" name="od_b_addr2" id="od_b_addr2" style="width: 100%;">
+									<input type="text" name="od_b_addr2" id="od_b_addr2" required value="<?php echo get_text($member['mb_addr2']).get_text($member['mb_addr_jibeon']) ?>" style="width: 100%;">
 								 </div>
 							</div>
 						</li>
 						<li>
 							<strong>배송요청사항</strong>
-							<textarea class="w-all" name="od_memo" id="od_memo"></textarea>
+							<input type="text" maxlength="20" class="w-all" name="od_memo" id="od_memo" placeholder="20자 이내로 입력해 주세요.">
                         <select name="od_delivery_type" id="od_delivery_type" style="display: none;">
                             <?php
                             foreach($delivery_types as $type) {
@@ -520,7 +528,7 @@ var array_box=[];
 					</li>
 					<li>
 						<div>
-							<b>인정등급</b>
+							<b>본인부담금율</b>
 							<span class="penTypeNm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
 						</div>
 					</li>
@@ -602,7 +610,7 @@ var array_box=[];
 				<ul>
 					<li class="on">
 						<a href="#" data-for="od_settle_pay_end">
-							<img src="<?=$SKIN_URL?>/image/icon_21.png" alt="">
+							<img src="<?=$SKIN_URL?>/image/icon_21_on.png" alt="">
 							월 마감정산
 						</a>
 					</li>
@@ -619,7 +627,7 @@ var array_box=[];
 				<h5>입금할 계좌</h5>
 				<select name="od_bank_account" id="od_bank_account" style="width: 100%; height: 30px; border: 1px solid #DDD; padding: 5px; margin-top: -25px;">
 					<option value="">선택하십시오.</option>
-                    <?php
+					<?php
                           if ($default['de_bank_use']) {
                             // 은행계좌를 배열로 만든후
                             $str = explode("\n", trim($default['de_bank_account']));
@@ -890,7 +898,6 @@ var array_box=[];
     <!-- } 주문하시는 분 입력 끝 -->
 
 
-
     <!-- 수급자 정보 iframe창 -->
 	<?php if($itemPenIdStatus){ ?>
 	<div id="order_recipientBox">
@@ -949,9 +956,8 @@ var array_box=[];
 
 	<script>
 
-
+		// 수급자 선택 함수-
 		function selected_recipient($penId) {
-
 
 			<?php $re = sql_fetch(" select * from {$g5['recipient_table']} where penId = '$penId' ");  ?>
 			// document.getElementById("penNm").value=$re['penNm'];
@@ -961,7 +967,6 @@ var array_box=[];
 			// document.getElementById("penAddr").value=$re['penAddr'];
 			// document.getElementById("penTypeNm").value=$re['penTypeNm'];
 			// document.getElementById("penMoney").value=$re['penMoney'];
-
 
             // 수급자 정보 iframe 에서 넘긴값 받기
 			var recipient = $penId.split("|");
@@ -1012,12 +1017,14 @@ var array_box=[];
             //수급자 정보 동기화
 			document.getElementById("penId").value=list['penId'];				//penId
 			document.getElementById("penNm").value=list['penNm'];				//수급자명
-			document.getElementById("penTypeNm").value=list['penTypeNm'];		//인정등급
+			document.getElementById("penRecGraNm").value=list['penRecGraNm'];		//안전등급
+			document.getElementById("penTypeNm").value=list['penTypeNm'];		//본인부담금율
 			document.getElementById("penExpiDtm").value=list['penExpiDtm'];		//유효기간
 			document.getElementById("penAppEdDtm").value=list['penAppEdDtm'];	//적용기간
 			document.getElementById("penConNum").value=list['penConNum'];		//휴대전화
 			document.getElementById("penConPnum").value=list['penConPnum'];		//전화번호
 			document.getElementById("penAddr").value=list['penAddr'];			//주소
+			document.getElementById("penAddrDtl").value=list['penAddrDtl'];			//상세주소
 			document.getElementById("penTypeCd").value=list['penTypeCd'];			//주소
 			///*document.getElementById("penMoney").value=list['penMoney'];			//한도금액*/
 
@@ -1038,14 +1045,16 @@ var array_box=[];
 			var optionCntList = <?=json_encode($optionCntList)?>;
 			var optionBarList = <?=json_encode($optionBarList)?>;
 			var prodItemList = $(".table-list2 .list.item");
-            console.log(prodItemList);
+
+			$('.open_input_barcode').remove();
+
 			$.each(prodItemList, function(key, itemDom){
 				var code = $(itemDom).attr("data-code");
 				var itemList = $(itemDom).find(".pro > .pro-info > .text li");
 				var discountCnt = 0;
 				var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
 				var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
-
+				var change_discount = 0;
 				$(itemDom).find(".barList").find("input").attr("type", "text");
 
 				$.each(itemList, function(subKey, subDom){
@@ -1085,6 +1094,7 @@ var array_box=[];
 							var dataName = $(item[i]).attr("data-name");
 							//20210306 성훈수정(아래줄 id 추가)
                             var html = '<select id="prodBarSelectBox_renew'+i+'" class="prodBarSelectBox prodBarSelectBox' + subKey + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+							optionBarList[code][subKey].sort();
 							$.each(optionBarList[code][subKey], function(key, value){
 								html += '<option value="' + value + '">' + value + '</option>';
 							});
@@ -1095,6 +1105,7 @@ var array_box=[];
 							$(item[i]).remove();
 						}
 
+                        
 						//20210306 성훈 추가
 						renew_array = optionBarList[code][subKey];
 						renew_array2 = optionBarList[code][subKey];
@@ -1106,12 +1117,41 @@ var array_box=[];
 						var stockCntItemCnt = Number($(subDom).closest(".item").find(".list-btm").find(".recipientBox select").val());
 						stockCntItemCnt = (stockCntItemCnt) ? stockCntItemCnt : 0;
 						$(stockCntItem[subKey]).val(stockCntItemCnt);
+
+						//할인율 계산
+						sendData_discount=[];
+                        //it_id, 주문수량 - 재고수량
+                        sendData_discount = {
+                            "it_id" : $(itemDom).data('code'),
+                            "ct_sale_qty" : dataBarCnt-dataStockCnt
+                        };
+                        $.ajax({
+                            url : "./ajax.change_discount.php",
+                            type : "POST",
+                            async : false,
+                            data : sendData_discount,
+                            success : function(result){
+                                change_discount=change_discount+parseInt(result);
+                            }
+                        });
 //					}
 				});
 
+				//전체개수 - 재고 코드개수 : 가격넣기
 				$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
+				$("input[name='it_discount[" + key + "]']").val(change_discount);
+                $("input[name='od_discount']").val(change_discount);
 				$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
+                
 
+				var has_barcode_text = $(itemDom).find('.barcode.barList').find('input[type="text"]').length;
+				var has_barcode_button = $(itemDom).find('.barcode.barList').find('.open_input_barcode').length;
+				var it_id = $(itemDom).data('code');
+
+				if (has_barcode_text && !has_barcode_button) {
+					$(itemDom).find('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
+				}
+				
 
 			});
 
@@ -1119,22 +1159,47 @@ var array_box=[];
 			var it_discount = $("input[name^=it_discount]");
 			var totalPrice = 0;
 
-			$.each(it_price, function(key, dom){
-				if($(dom).closest(".list.item").attr("data-sup") == "Y"){
-					totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
-				}
-			});
 
+
+            
+            //배송비조회
+            var send_price =0;
+            var discount_prie =0;
+            $.each(it_price, function(key, dom){
+                if($(dom).closest(".list.item").attr("data-sup") == "Y"){
+                    var send_price2 =0;
+                    sendData_v=[];
+                    sendData_v = {
+                        "it_id" : $(dom).closest(".list.item").attr("data-code"),
+                        "cart_id" :'<?=$s_cart_id?>'
+                    };
+                    $.ajax({
+                            url : "./ajax.stock.send_price.php",
+                            type : "POST",
+                            async : false,
+                            data : sendData_v,
+                            success : function(result){
+                                send_price2=result;
+                            }
+                        });
+                        totalPrice = totalPrice + parseInt($(it_price[key]).val());
+                        discount_prie = discount_prie + parseInt($(it_discount[key]).val());
+                        if(totalPrice > 0){  send_price = send_price+parseInt(send_price2); }
+                        if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_price = 0; }
+                }
+            });
 			if(!totalPrice){
 				$("input[name='od_send_cost']").val(0);
 				$(".delivery_cost_display").text("0 원");
 			} else {
-				$("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
-				$(".delivery_cost_display").text(number_format($("input[name='od_send_cost_org']").val()) + " 원");
-			}
-
+                $("input[name='od_send_cost']").val($("input[name='od_send_cost_org']").val());
+                $("input[name='od_send_cost']").val(send_price);
+				$(".delivery_cost_display").text(number_format(send_price) + " 원");
+			};
 			$("input[name=od_price]").val(totalPrice);
+			$("#od_cp_price").text(number_format(discount_prie));
 			$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
+
 			calculate_order_price();
 			$("#ad_sel_addr_recipient").show();
 
@@ -1151,8 +1216,12 @@ var array_box=[];
 			$("#od_stock_insert_yn").prop("checked", false);
 			$("#sod_frm_stock_status").hide();
 			$(".barList input").val("");
+			$('#ad_sel_addr_recipient').click();
+
 		}
 
+
+        
 		$(function() {
 			function recipientDelete(){
 				$(".recipientBox").remove();
@@ -1187,17 +1256,28 @@ var array_box=[];
 					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
 
 					$(itemDom).find(".barList").find("input").attr("type", "hidden");   //개수만큼 넣기
+					
+					var input_count = 0;
+
+					$('.open_input_barcode').remove();
 
 					$.each(itemList, function(subKey, subDom){
 							var item = $(itemDom).find(".prodBarSelectBox" + subKey);  //셀력트박스 찾기
+							var parent = $(this).closest(".list.item");
+							var it_id = $(parent).attr("data-code");
+
 							for(var i = 0; i < item.length; i++){
 								var name = $(item[i]).attr("name");
 								var dataCode = $(item[i]).attr("data-code");
 								var dataThisCode = $(item[i]).attr("data-this-code");
 								var dataName = $(item[i]).attr("data-name");
 
-								$(item[i]).after('<input type="hidden" class="prodBarSelectBox prodBarSelectBox' + subKey + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
-
+								$(item[i]).after('<input type="hidden" class="prodBarSelectBox hidden barcode_input prodBarSelectBox' + subKey + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
+								input_count++;
+								
+								if (i === item.length - 1 && input_count) {
+									$(item[i]).after('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + input_count + ')</a>');
+								}
 								$(item[i]).remove();
 							}
 
@@ -1215,7 +1295,7 @@ var array_box=[];
 
 				$.each(it_price, function(key, dom){
 					if($(dom).closest(".list.item").attr("data-sup") == "Y"){
-						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+						totalPrice =  totalPrice + parseInt($(it_price[key]).val());
 					}
 				});
 
@@ -1241,6 +1321,8 @@ var array_box=[];
 				$("#sod_frm_stock_status").show();
 				$(".barList input").val("");
 			};
+
+
 
 			function od_stock_insert_yn(){
 				var status = $("#od_stock_insert_yn").prop("checked");
@@ -1271,6 +1353,15 @@ var array_box=[];
 
 					$("input[name='it_price[" + key + "]']").val(price);
 					$(itemDom).find(".price_print").text(number_format(price));
+					
+					// 보유재고 바코드					
+					var has_barcode_text = $(itemDom).find('.barcode.barList').find('.barcode_input').length;
+					var has_barcode_button = $(itemDom).find('.barcode.barList').find('.open_input_barcode').length;
+					var it_id = $(itemDom).data('code');
+
+					if (has_barcode_text && !has_barcode_button) {
+						$(itemDom).find('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
+					}
 				});
 
 				if(status){
@@ -1287,22 +1378,31 @@ var array_box=[];
 
 				$.each(it_price, function(key, dom){
 					if($(dom).closest(".list.item").attr("data-sup") == "Y"){
-						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+                        totalPrice =  totalPrice + parseInt($(it_price[key]).val());
 					}
 				});
 
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
+                
 				calculate_order_price();
 			}
 
 
 		//상품주문,수급자주문,보유재고등록 탭
 		$('.detail-tab li').on('click',function(){
+			switch($(this).attr("data-type")){
+				case "order_pen" :
+                <?php if(!$itemPenIdStatus){ ?>
+                    alert("대여상품은 재고 확보 후 수급자 계약이 가능합니다.");
+                    return false;
+                <?php } ?>
+            }
+			
 			if($(this).hasClass("on")){
 				return false;
 			}
-
+			$('#ad_sel_addr_same').click();
 			let thisIndex = $(this).index();
 			$(this).addClass('on');
 			$(this).siblings('li').removeClass('on');
@@ -1327,6 +1427,7 @@ var array_box=[];
 
 			switch($(this).attr("data-type")){
 				case "stock_insert" :
+					$("input[name=od_discount]").val("0");
 					$("#od_stock_insert_yn").prop("checked", true);
 					$("#forderform_check_btn").text("보유재고 등록");
 					$(".tab-2 .table-list2 .delivery-price").css("width", "10%");
@@ -1336,12 +1437,15 @@ var array_box=[];
 					od_stock_insert_yn();
 					break;
 				case "order_pen" :
+					$("input[name=od_discount]").val($("input[name=org_discount]").val());
 					$(".tab-2 .table-list2 .delivery-price").css("width", "10%");
 					$(".tab-2 .table-list2 .barcode").show();
 					$(".order_recipientInfoBox").show();
                     $("#order_recipientBox").show();
 					break;
 				case "order" :
+                    discount_for_order();
+					$("input[name=od_discount]").val($("input[name=org_discount]").val());
 					$(".order_none").hide();
 					break;
 			}
@@ -1362,6 +1466,15 @@ var array_box=[];
 			$('.payment-tab ul li').removeClass("on");
 			$('.payment-tab ul li > a[data-for="' + target + '"]').closest("li").addClass("on");
 
+            
+			$('.payment-tab ul li > a[data-for="od_settle_pay_end"]').find("img").attr("src","<?=$SKIN_URL?>/image/icon_21.png");
+			$('.payment-tab ul li > a[data-for="od_settle_bank"]').find("img").attr("src","<?=$SKIN_URL?>/image/icon_22.png");
+            if(target == "od_settle_pay_end"){
+			    $('.payment-tab ul li > a[data-for="od_settle_pay_end"]').find("img").attr("src","<?=$SKIN_URL?>/image/icon_21_on.png");
+            }else{
+			    $('.payment-tab ul li > a[data-for="od_settle_bank"]').find("img").attr("src","<?=$SKIN_URL?>/image/icon_22_on.png");
+            }
+
 			$("#settle_bank").hide();
 			switch(target){
 				case "od_settle_bank" :
@@ -1369,6 +1482,7 @@ var array_box=[];
 					break;
 			}
 		});
+        
 		//배송지선택
 		$('.add-ac').find('p').on('click',function(){
 			$(this).siblings('ul').stop().toggle();
@@ -1395,8 +1509,44 @@ var array_box=[];
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<?php if ($goods_count) $goods .= ' 외 '.$goods_count.'건'; ?>
 	<script type="text/javascript">
-		$(function(){
 
+            //상품주문 클릭시 할인금액 계산
+            function discount_for_order(){
+            var prodItemList = $(".table-list2 .list.item");      //아이템정보2
+            var change_discount=0;
+            $.each(prodItemList, function(key, itemDom){
+                var code = $(itemDom).attr("data-code");
+                var itemList = $(itemDom).find(".pro > .pro-info > .text li");
+
+                $.each(itemList, function(subKey, subDom){
+                    var dataBarCnt = Number($(subDom).attr("data-bar-cnt"));
+                    //할인율 계산
+                    sendData_discount=[];
+                    //it_id, 주문수량 - 재고수량
+                    sendData_discount = {
+                        "it_id" : code,
+                        "ct_sale_qty" : dataBarCnt
+                    };
+                    $.ajax({
+                        url : "./ajax.change_discount.php",
+                        type : "POST",
+                        async : false,
+                        data : sendData_discount,
+                        success : function(result){
+                            //console.log(sendData_discount);
+                            //console.log(result);
+                            change_discount=change_discount+parseInt(result);
+                        }
+                    });
+                    
+                });
+            });
+            $("input[name='od_discount']").val(change_discount);
+            $("#od_cp_price").text(number_format(change_discount));
+        }
+
+		$(function(){
+            //데이터 피커
 			$.datepicker.setDefaults({
 				dateFormat : 'yy-mm-dd',
 				prevText: '이전달',
@@ -1455,16 +1605,16 @@ var array_box=[];
 				$(this).closest(".list-day").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
 			});
 
+
 			var optionCntList = <?=json_encode($optionCntList)?>; //아이템정보
 			var optionBarList = <?=json_encode($optionBarList)?>; //바코드저오
-			var prodItemList = $(".table-list2 .list.item");            //아이템정보2
+			var prodItemList = $(".table-list2 .list.item");      //아이템정보2
 			$.each(prodItemList, function(key, itemDom){
 				var code = $(itemDom).attr("data-code");
 				var itemList = $(itemDom).find(".pro > .pro-info > .text li");
 
 				$.each(itemList, function(subKey, subDom){
 					var html = optionCntList[code][subKey];
-
 					$(subDom).attr("data-bar-cnt", $(itemDom).find(".prodStockBarBox" + subKey).length);
 					$(subDom).attr("data-stock-cnt", html);
 					if(html){
@@ -1475,48 +1625,66 @@ var array_box=[];
 
 
 
+            //재고바코드 셀렉트 박스
+			$(document).on("change", ".prodBarSelectBox", function(){
+				var code = $(this).closest(".list.item").find(".recipientBox").attr("data-code");
+				var it_id = $(this).closest(".list.item").attr("data-code");
 
-			// //성훈20210306 바코드 동기화처리
-			// $(document).on("click", ".prodBarSelectBox", function(){
-			// 	var this_v=this; 						//this 정의
-			// 	var this_v_v=this.value;
-			// 	console.log(this_v.value);  //선택된 값
-			// 	this_v.options.length=0;		//옵션 값 초기화
-			// 	renew_array=renew_array2;		//renew_array박스(목록 초기화)
-			// 	array_box=[];								//뺄 넣을 배열
-			// 	var select_num = $("#renew_num_v option:selected").val();//재고소진 개수
+				var selected = [];
+				var parent;
 
-			// 	//선택된 값 불러와서 뺄 배열에 넣기
-			// 	for(var i=0; i<select_num; i++){
-			// 			array_box.push(eval("document.getElementById('prodBarSelectBox_renew"+i+"').value"));
-			// 	}
+				$(this).closest(".list.item").find('.prodBarSelectBox').each(function(i, item) {
+					selected.push($(item).val());
+					parent = this;
+				}).promise().done(function() {
+					$(parent).closest(".list.item").find('.prodBarSelectBox').each(function(i, item) {
+						$(item).find('option').show();
+						$(item).find('option').css({"visibility":"visible"}); // ie에서 option show, hidden 이슈 있어서 대체
 
-			// 	//기존배열 - 선택된값
-			// 	for (var i = 0; i<array_box.length; i++) {
-			// 	    var arrlen = renew_array.length;
-			// 	    for (var j = 0; j<arrlen; j++) {
-			// 	        if (array_box[i] == renew_array[j]) {
-			// 	            renew_array = renew_array.slice(0, j).concat(renew_array.slice(j+1, arrlen));
-			// 	        }
-			// 	    }
-			// 	}
-
-
-			// 	$(this_v).append('<option>재고 바코드</option');//재고 바코드 추가
-
-			// 	//기존 배열 -선택된 값 집어넣기
-			// 	$.each(renew_array, function(key, value){
-			// 		var selected="";
-			// 		// console.log(this_v.value);
-			// 		if(this_v_v == value){ selected = "selected"; }
-			// 		$(this_v).append('<option value="' + value + '" '+selected+'>' + value + '</option');
-			// 	});
-
-			// });
+						// 선택된값 숨기기
+						$(item).find('option').each(function(ii, sub_item) {
+							if ( $(sub_item).val() && selected.indexOf($(sub_item).val()) > -1 ) {
+								$(sub_item).hide();
+								$(sub_item).css({"visibility":"hidden"});
+							}
+						});
+					});
+				});
+			});
 
 
+            //바코드입력 함수
+			$(document).on("click", ".open_input_barcode", function(){
+				var it_id = $(this).data('id');
+				var barcode_nodes = $(this).closest('.barList').find('.barcode_input');
+				var barcodes = [];
+				var is_mobile = navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1;
+
+				$(barcode_nodes).each(function(i, item) {
+					barcodes.push($(item).val());
+				});
+
+				window.name = "barcode_parent";
+				var url = "./popup.order_barcode_form.php";
+				var open_win;
+
+				if(is_mobile) {
+					$('#barcode_popup_iframe').show();
+				} else {
+					open_win = window.open("", "barcode_child", "width=683, height=800, resizable = no, scrollbars = no");
+				}
+
+				$('#barcode_popup_form').attr('target', is_mobile ? 'barcode_popup_iframe' : 'barcode_child');
+
+				$('#barcode_popup_form').attr('action', url);
+				$('#barcode_popup_form').attr('method', 'post');
+				$('#barcode_popup_form input[name="it_id"]').val(it_id);
+				$('#barcode_popup_form input[name="barcodes"]').val(barcodes.join('|'));
+				$('#barcode_popup_form').submit();
+			});
 
 
+            //재고바코드 셀렉트 박스
 			$(document).on("change", ".prodBarSelectBox", function(){
                 var this_a=this;
                 var this_v = $(this).val();
@@ -1531,7 +1699,7 @@ var array_box=[];
 
                     var it_id_class = $(this).closest("li");
 					prodsData["prodId"] = it_id_class.attr('data-code');
-                    console.log(prodsData["prodId"]);
+                    //console.log(prodsData["prodId"]);
                     sendData2 = {
                         usrId : "<?=$member["mb_id"]?>",
                         prodId : prodsData["prodId"]
@@ -1544,7 +1712,7 @@ var array_box=[];
 								data : sendData2,
 								success : function(result){
 									result = JSON.parse(result);
-									console.log(result.data[0].prodBarNumList);
+									//console.log(result.data[0].prodBarNumList);
 
 									for(var i =0; i < result.data[0].prodBarNumList.length; i ++){
 										if(result.data[0].prodBarNumList[i] == this_v){
@@ -1571,6 +1739,8 @@ var array_box=[];
 				}
 			});
 
+
+            //수급자 -> select 박스 클릭시 돌아가는 함수
 			$(document).on("change", ".recipientBox select", function(){
 				if($(this).parent(".recipientBox").find("input[type='radio']:checked").attr("data-type") != "use"){
 					return false;
@@ -1581,41 +1751,77 @@ var array_box=[];
 				var item = $(this).closest(".list.item").find(".prodBarSelectBox" + code);
 				var it_id = $(this).closest(".list.item").attr("data-code");
 
+				var input_count = 0;
+                var select_count = 0;
+                var change_discount=0;
+
+				$('.open_input_barcode').remove();
+
+
+                // 신규, 재고소진
 				for(var i = 0; i < item.length; i++){
 					var name = $(item[i]).attr("name");
 					var dataCode = $(item[i]).attr("data-code");
 					var dataThisCode = $(item[i]).attr("data-this-code");
 					var dataName = $(item[i]).attr("data-name");
 					var html = "";
-
 					if(i < val){
+                        select_count++;
                         var html = '<select id="prodBarSelectBox_renew'+i+'" class="prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+							optionBarList[it_id][code].sort();
 							$.each(optionBarList[it_id][code], function(key, value){
 								html += '<option value="' + value + '">' + value + '</option>';
 							});
 						html += '</select>';
 					} else {
-						html += '<input type="text" class="prodBarSelectBox' + code + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">';
+						input_count++;
+						html += '<input type="text" class="prodBarSelectBox' + code + ' hidden barcode_input" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">';
 					}
 
+					if (i === item.length - 1 && input_count) {
+						html += '<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + input_count + ')</a>';
+					}
 					$(item[i]).after(html);
 					$(item[i]).remove();
 				}
 
+                //전체 아이템 
 				$.each(prodItemList, function(key, itemDom){
+                    
 					var code = $(itemDom).attr("data-code");
 					var itemList = $(itemDom).find(".pro > .pro-info > .text li");
 					var discountCnt = 0;
 					var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
 					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
-
+                    //아이템 개당 계산
 					$.each(itemList, function(subKey, subDom){
+                        var dataBarCnt = Number($(subDom).attr("data-bar-cnt"));
+					    var select_num = $(itemDom).find(".prodBarSelectBox"); //select 개수
+
 						if($(itemDom).attr("data-sup") == "Y"){
 							var checkedType = $(subDom).closest(".item").find(".list-btm").find(".recipientBox input[type='radio']:checked").attr("data-type");
 
 							if(checkedType == "use"){
 								discountCnt += Number($(subDom).closest(".item").find(".list-btm").find(".recipientBox select").val());
 							}
+                            //할인율 계산
+                            sendData_discount=[];
+                            //it_id, 주문수량 - 재고수량
+                            sendData_discount = {
+                                "it_id" : code,
+                                "ct_sale_qty" : dataBarCnt -select_num.length
+                            };
+                            $.ajax({
+                                url : "./ajax.change_discount.php",
+                                type : "POST",
+                                async : false,
+                                data : sendData_discount,
+                                success : function(result){
+                                    //console.log(sendData_discount);
+                                    //console.log(result);
+                                    change_discount=change_discount+parseInt(result);
+                                }
+                            });
 						}
 
 						var stockCntItem = $(itemDom).find(".it_option_stock_cnt");
@@ -1626,8 +1832,8 @@ var array_box=[];
 						} else {
 							$(stockCntItem[subKey]).val(0);
 						}
-					});
-
+                        });
+                    $("input[name='it_discount[" + key + "]']").val(change_discount);
 					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 					$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
 				});
@@ -1635,24 +1841,57 @@ var array_box=[];
 				var it_price = $("input[name^=it_price]");
 				var it_discount = $("input[name^=it_discount]");
 				var totalPrice = 0;
+                //배송비조회, 할인율계산
+                var send_price =0;
+                $.each(it_price, function(key, dom){
 
-				$.each(it_price, function(key, dom){
-					if($(dom).closest(".list.item").attr("data-sup") == "Y"){
-						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
-					}
-				});
+                    if($(dom).closest(".list.item").attr("data-sup") == "Y"){
+                        var send_price2 =0;
+                        sendData_v=[];
+                        sendData_v = {
+                            "it_id" : $(dom).closest(".list.item").attr("data-code"),
+                            "cart_id" :'<?=$s_cart_id?>'
+                        };
+                        $.ajax({
+                                url : "./ajax.stock.send_price.php",
+                                type : "POST",
+                                async : false,
+                                data : sendData_v,
+                                success : function(result){
+                                    send_price2=result;
+                                }
+                            });
 
-				$("input[name=od_price]").val(totalPrice);
-				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
+                            totalPrice =  totalPrice + parseInt($(it_price[key]).val());
+
+                            if(totalPrice > 0){  send_price = send_price+parseInt(send_price2); }
+                            if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_price = 0; }
+
+                    }
+                });
+                    $("input[name='od_discount']").val(change_discount);
+                    $("#od_cp_price").text(number_format(change_discount));
+                    $("input[name='od_send_cost']").val(send_price);
+                    $(".delivery_cost_display").text(number_format(send_price)+" 원");
+                    $("input[name=od_price]").val(totalPrice);
+                    $("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
 			});
 
+
+
+            //수급자신청 재고소진 or 신규주문 
 			$(document).on("change", ".recipientBox input[type='radio']", function(){
 				var code = $(this).closest(".recipientBox").attr("data-code");
 				var parent = $(this).closest(".list.item");
 				var type = $(this).attr("data-type");
 				var item = $(parent).find(".prodBarSelectBox" + code);
 				var it_id = $(parent).attr("data-code");
+
+				var input_count = 0;
+                var change_discount=0;
+
+				$('.open_input_barcode').remove();
 
                 var od_send_cost_org = $("input[name^=od_send_cost_org]")
 				switch(type){
@@ -1663,7 +1902,12 @@ var array_box=[];
 							var dataThisCode = $(item[i]).attr("data-this-code");
 							var dataName = $(item[i]).attr("data-name");
 
-							$(item[i]).after('<input type="text" class="prodBarSelectBox' + code + '" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
+							$(item[i]).after('<input type="text" class="prodBarSelectBox' + code + ' hidden barcode_input" value="" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '">');
+							input_count++;
+
+							if (i === item.length - 1 && input_count) {
+								$(item[i]).after('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + input_count + ')</a>');
+							}
 
 							$(item[i]).remove();
 						}
@@ -1678,6 +1922,7 @@ var array_box=[];
 
 							//20210306 성훈수정(아래줄 id 추가)
 							var html = '<select id="prodBarSelectBox_renew'+i+'" class="prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
+							optionBarList[it_id][code].sort();
 							$.each(optionBarList[it_id][code], function(key, value){
 								html += '<option value="' + value + '">' + value + '</option>';
 							});
@@ -1700,6 +1945,7 @@ var array_box=[];
 					var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
 
 					$.each(itemList, function(subKey, subDom){
+                        var dataBarCnt = Number($(subDom).attr("data-bar-cnt"));
 						if($(itemDom).attr("data-sup") == "Y"){
 							var checkedType = $(subDom).closest(".item").find(".list-btm").find(".recipientBox input[type='radio']:checked").attr("data-type");
 
@@ -1714,8 +1960,28 @@ var array_box=[];
 						} else {
 							$(stockCntItem[subKey]).val(0);
 						}
-					});
 
+                        //할인율 계산
+                        sendData_discount=[];
+                        //it_id, 주문수량 - 재고수량
+                        sendData_discount = {
+                            "it_id" : code,
+                            "ct_sale_qty" : dataBarCnt
+                        };
+                        $.ajax({
+                            url : "./ajax.change_discount.php",
+                            type : "POST",
+                            async : false,
+                            data : sendData_discount,
+                            success : function(result){
+                                //console.log(sendData_discount);
+                                //console.log(result);
+                                change_discount=change_discount+parseInt(result);
+                            }
+                        });
+
+					});
+                    
 					$("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
 					$(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
 				});
@@ -1723,18 +1989,39 @@ var array_box=[];
 				var it_price = $("input[name^=it_price]");
 				var it_discount = $("input[name^=it_discount]");
 				var totalPrice = 0;
-
+                //배송비 조회
+                var send_price =0;
 				$.each(it_price, function(key, dom){
 					if($(dom).closest(".list.item").attr("data-sup") == "Y"){
-						totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+                        var send_price2 =0;
+                        sendData_v=[];
+                        sendData_v = {
+                            "it_id" : $(dom).closest(".list.item").attr("data-code"),
+                            "cart_id" :'<?=$s_cart_id?>'
+                        };
+                        $.ajax({
+								url : "./ajax.stock.send_price.php",
+								type : "POST",
+								async : false,
+								data : sendData_v,
+								success : function(result){
+                                    send_price2=result;
+								}
+							});
+                            totalPrice += $(it_price[key]).val() - $(it_discount[key]).val();
+                            if(totalPrice > 0){  send_price = send_price+parseInt(send_price2); }
+                            if(totalPrice >= <?=$result_d['de_send_conditional'] ?>){  send_price = 0; }
 					}
 				});
+
+                $("input[name='od_discount']").val(change_discount);
+                $("#od_cp_price").text(number_format(change_discount));
+                $("input[name='od_send_cost']").val(send_price);
                 $(".delivery_cost_display").text(number_format($("input[name=od_send_cost]").val())+" 원");
 				$("input[name=od_price]").val(totalPrice);
 				$("#printTotalCellPrice").text(number_format(totalPrice) + " 원");
 				calculate_order_price();
 			});
-
 		})
 	</script>
 
@@ -1780,7 +2067,6 @@ var array_box=[];
 
 <?php } ?>
 
-
 <script>
 <?php if($_GET['penId_r']){ //보유재고 관리에서 넘어오면 실행 ?>
         $(document).ready(function() {
@@ -1788,6 +2074,7 @@ var array_box=[];
             $("#order_recipientBox").hide();
             selected_recipient('<?=$_GET['penId_r']?>');
             $('.prodBarSelectBox0 option[value="<?=$_GET['barcode_r']?>"]').attr('selected', 'selected');
+            $('#ad_sel_addr_same').click();
         });
 <?php } ?>
 </script>
