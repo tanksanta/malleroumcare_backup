@@ -14,6 +14,11 @@ if(!$od['mb_id']) {
 }
 
 $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
+
+if($eform['dc_status'] != '1') {
+  alert('이미 작성된 계약서입니다.');
+}
+
 $items = sql_query("SELECT * FROM `eform_document_item` WHERE dc_id = UNHEX('{$eform["uuid"]}')");
 
 $buy = [];
