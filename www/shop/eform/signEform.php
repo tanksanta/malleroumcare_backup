@@ -128,6 +128,7 @@ while($item = sql_fetch_array($items)) {
       if(currentStage > 1) {
         currentStage--;
         repaint();
+        scrollToTop();
       } else {
         alert('첫 번째 단계입니다.');
       }
@@ -141,6 +142,7 @@ while($item = sql_fetch_array($items)) {
         if(todos.current === todos.total) {
           currentStage++;
           repaint();
+          scrollToTop();
         } else {
           alert('현재 단계에서 모든 입력을 완료해주세요.');
         }
