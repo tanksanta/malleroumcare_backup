@@ -65,10 +65,10 @@
         <col style="width: 14%" />
         <col style="width: 14%" />
         <col style="width: 14%" />
-        <col style="width: 4%" />
+        <col style="width: 6%" />
         <col style="width: 14%" />
-        <col style="width: 13%" />
-        <col style="width: 13%" />
+        <col style="width: 12%" />
+        <col style="width: 12%" />
       </colgroup>
       <thead>
         <tr>

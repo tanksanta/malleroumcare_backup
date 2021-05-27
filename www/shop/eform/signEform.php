@@ -114,25 +114,25 @@ $is_gicho = $eform['penTypeCd'] == '04';
       },
       sign_001_1: {
         top: -5,
-        left: 15,
+        left: 10,
         width: 120,
         height: 40
       },
       seal_001_1: {
         top: -5,
-        left: 15,
+        left: 10,
         width: 120,
         height: 40
       },
       seal_002_1: {
         top: 5,
-        left: 60,
+        left: 40,
         width: 120,
         height: 40
       },
       sign_002_1: {
         top: -3,
-        left: 60,
+        left: 40,
         width: 120,
         height: 40
       },

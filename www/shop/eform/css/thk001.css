@@ -1,5 +1,5 @@
 .thk001 {
-  padding: 0 64px;
+  padding: 0 128px;
 }
 
 .thk001 .thk001_h1 {
@@ -33,6 +33,7 @@
 }
 
 .thk001 .thk001_table td {
+  font-size: 16px;
 }
 
 .thk001 .thk001_table .bold {
@@ -67,6 +68,10 @@
 
 .thk001 .thk001_table.item_table {
   margin-bottom: 24px;
+}
+
+.thk001 .thk001_table.item_table th {
+  font-size: 14px;
 }
 
 .thk001 .thk001_table.item_table td {
