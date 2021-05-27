@@ -5,6 +5,25 @@ $(function(){
 });
 
 
+//프로젝트 동영상 리사이징
+$(window).load(function(){
+	// video size
+	var _video = $('.video_wrap').find('iframe');
+	var video_w = _video.width();
+	var video_h = video_w*(9/16);
+	_video.css('height', video_h);
+	// var 
+});
+$(window).resize(function(){
+	// video size
+	var _video = $('.video_wrap').find('iframe');
+	var video_w = _video.width();
+	var video_h = video_w*(9/16);
+	_video.css('height', video_h);
+	// var 
+});
+
+
 function scrollToTop() {
     $('html, body').animate({scrollTop: 0 }, 300);
 }
