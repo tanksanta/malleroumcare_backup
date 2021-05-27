@@ -116,13 +116,17 @@
 }
 
 .thk101 .sign-table .flow-box {
+  padding: 6px 0 !important;
+}
+
+.thk101 .sign-table .flow-box > div {
   height: 35px;
   width: 100%;
   border: 1px solid #000000;
   text-align: center;
 }
 
-.thk101 .sign-table .flow-box p {
+.thk101 .sign-table .flow-box > div > p {
   margin: 0;
   padding: 0;
   position: relative;

@@ -27,6 +27,9 @@ while($item = sql_fetch_array($items)) {
   if($item['gubun'] == '00') array_push($buy, $item); // 판매 재고
   else array_push($rent, $item); // 대여 재고
 }
+
+// 기초수급자 체크
+$is_gicho = $eform['penTypeCd'] == '04';
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -37,6 +40,8 @@ while($item = sql_fetch_array($items)) {
   <title><?php echo $eform['dc_subject']; ?></title>
   <link rel="stylesheet" href="css/default.css">
   <link rel="stylesheet" href="css/signeform.css">
+  <link rel="stylesheet" href="css/thk101.css">
+  <link rel="stylesheet" href="css/thk102.css">
   <link rel="stylesheet" href="css/thk001.css">
   <link rel="stylesheet" href="css/thk002.css">
   <link rel="stylesheet" href="css/thk003.css">
@@ -50,6 +55,10 @@ while($item = sql_fetch_array($items)) {
   </div>
   <div class="sign-eform-body">
     <?php
+    if($is_gicho) {
+      include_once('./document/thk101.php');
+      include_once('./document/thk102.php');
+    }
     include_once('./document/thk001_1.php');
     include_once('./document/thk001_2.php');
     include_once('./document/thk002.php');
@@ -79,10 +88,30 @@ while($item = sql_fetch_array($items)) {
   </div>
   <script>
   $(function() {
+    var isGicho = <?=($is_gicho ? 'true' : 'false')?>;
+
     var currentStage = 1;
-    var totalStage = 3;
+    var totalStage = isGicho ? 5 : 3;
 
     var pos = {
+      sign_101_1: {
+        top: -5,
+        left: 10,
+        width: 120,
+        height: 40
+      },
+      sign_101_2: {
+        top: -5,
+        left: 10,
+        width: 120,
+        height: 40
+      },
+      sign_101_3: {
+        top: -5,
+        left: 10,
+        width: 120,
+        height: 40
+      },
       sign_001_1: {
         top: -5,
         left: 15,
@@ -126,6 +155,13 @@ while($item = sql_fetch_array($items)) {
       chk_003_3: false,
       sign_003_1: '',
     };
+    if(isGicho) {
+      $.extend(state, {
+        sign_101_1: '',
+        sign_101_2: '',
+        sign_101_3: ''
+      });
+    }
 
     $('#btnPrev').click(function(e) {
       e.preventDefault();
@@ -371,7 +407,7 @@ while($item = sql_fetch_array($items)) {
       for(var id in state) {
         var key = id.split('_')
         // 사업소 직인은 이미 입력되어있으니까
-        if(parseInt(key[1]) === currentStage && key[0] !== 'seal') {
+        if(getCurrentDocument() === key[1] && key[0] !== 'seal') {
           totalTodos++;
           if(state[id]) currentTodos++;
         }
@@ -390,20 +426,18 @@ while($item = sql_fetch_array($items)) {
       document.documentElement.scrollTop = 0;
     }
 
+    function getCurrentDocument() {
+      var documentlist = ['001', '002', '003'];
+      if(isGicho) documentlist.unshift('101', '102');
+      return documentlist[currentStage - 1];
+    }
+
     function repaint() {
       // 현재 단계만 보여주기
       $('.a4').css({ display: 'none' });
-      switch(currentStage) {
-        case 1:
-          $('#thk001_1, #thk001_2').css({ display: 'block' });
-          break;
-        case 2:
-          $('#thk002').css({ display: 'block' });
-          break;
-        case 3:
-          $('#thk003').css({ display: 'block' });
-          break;
-      }
+      var currentDocument = getCurrentDocument();
+      if(currentDocument === '001') $('#thk001_1, #thk001_2').css({ display: 'block' });
+      else $('#thk' + currentDocument).css({ display: 'block' });
 
       // 마지막 단계면 작성완료 버튼으로 변경
       if(currentStage === totalStage) {

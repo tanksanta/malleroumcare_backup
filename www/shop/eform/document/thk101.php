@@ -1,21 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="../css/signeform.css">
-  <link rel="stylesheet" href="../css/thk101.css">
-  <style>
-    .a4 { width: 1200px; margin: 0 auto; }
-  </style>
-</head>
-<body>
 <div id="thk101" class="a4">
   <div class="thk101">
-    <h1 class="thk101-h1">장기요양기관 입소·이용신청서([√] 신규신청 [ &nbsp;]갱신 [ &nbsp;]변경 [ &nbsp;]해지)</h1>
-    <div class="thk101-head-table-desc">※［ ］에는 해당되는 곳에 √표를 합니다.</div>
+    <h1 class="thk101-h1">장기요양기관 입소·이용신청서([✓] 신규신청 [ &nbsp;]갱신 [ &nbsp;]변경 [ &nbsp;]해지)</h1>
+    <div class="thk101-head-table-desc">※［ ］에는 해당되는 곳에 ✓표를 합니다.</div>
     <table class="thk101-head-table">
       <colgroup>
         <col style="width: 33.3%;">
@@ -42,19 +28,19 @@
         <tr>
           <th scope="col" rowspan="3">신청인</th>
           <th scope="col">성명</th>
-          <td>기초1</td>
+          <td><?=$eform['penNm']?></td>
           <th scope="col">생년월일</th>
-          <td>1981-01-11</td>
+          <td><?=$eform['penBirth']?></td>
           <th scope="col">수급자와의<br>관계</th>
           <td>본인</td>
         </tr>
         <tr>
           <th scope="col">주소</th>
-          <td colspan="5">(14790) 경기 부천시 범안로 220 101 101</td>
+          <td colspan="5">(<?=$eform['penZip']?>) <?=$eform['penAddr']?> <?=$eform['penAddrDtl']?></td>
         </tr>
         <tr>
           <th scope="col">전화번호</th>
-          <td colspan="5" style="position: relative;">010-1234-5678<div style="position: absolute; bottom: 0; right: 0; padding: 2px 4px;">(휴대전화: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; )</div></td>
+          <td colspan="5" style="position: relative;"><?=$eform['penConNum']?><div style="position: absolute; bottom: 0; right: 0; padding: 2px 4px;">(휴대전화: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; )</div></td>
         </tr>
       </tbody>
     </table>
@@ -62,41 +48,39 @@
       <colgroup>
         <col style="width: 10%">
         <col style="width: 10%">
-        <col style="width: 25%">
-        <col style="width: 15%">
-        <col style="width: 15%">
+        <col style="width: 35%">
         <col style="width: 10%">
-        <col style="width: 15%">
+        <col style="width: 35%">
       </colgroup>
       <tbody>
         <tr>
           <th scope="col" rowspan="6">수급자</th>
           <th scope="col">성명</th>
-          <td colspan="2">기초1</td>
+          <td><?=$eform['penNm']?></td>
           <th scope="col">주민등록번호</th>
-          <td colspan="2">null</td>
+          <td><?=substr($eform['penJumin'], 0, 6)?>-<?=substr($eform['penJumin'], 6)?></td>
         </tr>
         <tr>
           <th scope="col">장기요양<br>등급</th>
-          <td colspan="2">3등급</td>
+          <td><?=$eform['penRecGraNm']?></td>
           <th scope="col">장기요양인정번호</th>
-          <td colspan="2">null</td>
+          <td><?=$eform['penLtmNum']?></td>
         </tr>
         <tr>
           <th scope="col">주소</th>
-          <td colspan="5">(14790) 경기 부천시 범안로 220 101 101</td>
+          <td colspan="3">(<?=$eform['penZip']?>) <?=$eform['penAddr']?> <?=$eform['penAddrDtl']?></td>
         </tr>
         <tr>
           <th scope="col">전화번호</th>
-          <td colspan="5" style="position: relative;">010-1234-5678<div style="position: absolute; bottom: 0; right: 0; padding: 2px 4px;">(휴대전화: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; )</div></td>
+          <td colspan="3" style="position: relative;"><?=$eform['penConNum']?><div style="position: absolute; bottom: 0; right: 0; padding: 2px 4px;">(휴대전화: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; )</div></td>
         </tr>
         <tr>
           <th scope="col">입소·이용 희망<br>장기요양기관</th>
-          <td colspan="5">(주)다온테크</td>
+          <td colspan="3"><?=$eform['entNm']?></td>
         </tr>
         <tr>
           <th scope="col">구분</th>
-          <td colspan="5">[√] &nbsp;「의료급여법」 &nbsp;제3조제1항제1호에 따른 의료급여를 받는 사람<br>[ &nbsp;] &nbsp;「의료급여법」 &nbsp;제3조제1항제1호 외의 규정에 따른 의료급여를 받는 사람</td>
+          <td colspan="3">[✓] &nbsp;「의료급여법」 &nbsp;제3조제1항제1호에 따른 의료급여를 받는 사람<br>[ &nbsp;] &nbsp;「의료급여법」 &nbsp;제3조제1항제1호 외의 규정에 따른 의료급여를 받는 사람</td>
         </tr>
       </tbody>
     </table>
@@ -113,13 +97,13 @@
         </tr>
         <tr>
           <td colspan="2">&nbsp;</td>
-          <td colspan="2" class="center" style="font-size: 16px;">2021년 04월 07일</td>
+          <td colspan="2" class="center" style="font-size: 16px;"><?=date('Y년 m월 d일', strtotime($eform['dc_datetime']))?></td>
         </tr>
         <tr>
           <td>&nbsp;</td>
           <th scope="col" class="right">신청인:</th>
-          <td style="font-size: 16px;">기초1</td>
-          <td class="sign-desc">(서명 또는 인)</td>
+          <td style="font-size: 16px;"><?=$eform['penNm']?></td>
+          <td class="sign-desc sign-form" data-id="sign_101_1">(서명 또는 인)</td>
         </tr>
         <tr>
           <td colspan="4" class="center"><p style="display: inline-block; margin: 0; padding: 0; text-align: left;">※ 신청인이 수급자 본인·가족, 사회복지전담공무원, 특별자치시장·특별자치도지사·시장·군수·구청장이 지정<br> &nbsp; &nbsp; 한 자 외의 이해관계인인 경우에는 수급자의 동의를 받아야 합니다.</p></td>
@@ -127,8 +111,8 @@
         <tr>
           <td>&nbsp;</td>
           <th scope="col" class="right">수급자(또는 보호자):</th>
-          <td style="font-size: 16px;">기초1</td>
-          <td class="sign-desc">(서명 또는 인)</td>
+          <td style="font-size: 16px;"><?=$eform['penNm']?></td>
+          <td class="sign-desc sign-form" data-id="sign_101_2">(서명 또는 인)</td>
         </tr>
         <tr>
           <td colspan="2" class="center td-to" style="font-weight: bold; font-size: 20px;">○○ 특별자치시장 · 특별자치도지사 · 시장 · 군수 · 구청장</td>
@@ -168,20 +152,20 @@
         <tr>
           <td>&nbsp;</td>
           <th scope="col" class="center">신청인</th>
-          <td style="font-size: 16px;">기초1</td>
-          <td class="sign-desc">(서명 또는 인)</td>
+          <td style="font-size: 16px;"><?=$eform['penNm']?></td>
+          <td class="sign-desc sign-form" data-id="sign_101_3">(서명 또는 인)</td>
         </tr>
       </tbody>
     </table>
     <table class="sign-table">
       <colgroup>
-        <col style="width: 22%">
-        <col style="width: 4%">
-        <col style="width: 22%">
-        <col style="width: 4%">
-        <col style="width: 22%">
-        <col style="width: 4%">
-        <col style="width: 22%">
+        <col style="width: 19%">
+        <col style="width: 8%">
+        <col style="width: 19%">
+        <col style="width: 8%">
+        <col style="width: 19%">
+        <col style="width: 8%">
+        <col style="width: 19%">
       </colgroup>
       <thead>
         <tr>
@@ -190,13 +174,13 @@
       </thead>
       <tbody>
         <tr>
-          <td><div class="flow-box"><p>신청서 작성</p></div></td>
+          <td class="flow-box"><div><p>신청서 작성</p></div></td>
           <td class="right-arrow"></td>
-          <td><div class="flow-box"><p>접수 및 확인</p></div></td>
+          <td class="flow-box"><div><p>접수 및 확인</p></div></td>
           <td class="right-arrow"></td>
-          <td><div class="flow-box"><p>장기요양기관에<br>의뢰서 송부</p></div></td>
+          <td class="flow-box"><div><p>장기요양기관에<br>의뢰서 송부</p></div></td>
           <td class="right-arrow"></td>
-          <td><div class="flow-box"><p>통지</p></div></td>
+          <td class="flow-box"><div><p>통지</p></div></td>
         </tr>
         <tr class="no-padding">
           <td class="center">신청인</td>
@@ -211,5 +195,3 @@
     </table>
   </div>
 </div>
-</body>
-</html>

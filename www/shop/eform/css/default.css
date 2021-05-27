@@ -1,7 +1,6 @@
 @import url(https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
 
 * {
-  font-family: 'Spoqa Han Sans Neo', 'sans-serif';
   box-sizing: border-box;
 }
 
@@ -106,4 +105,8 @@ table {
 td,
 th {
   padding: 0;
+}
+
+body {
+  font-family: 'Spoqa Han Sans Neo', 'sans-serif';
 }
