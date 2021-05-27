@@ -3,7 +3,7 @@ include_once("./_common.php");
 
 $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
 
-if($eform['uuid'] !== $uuid || $eform['dc_status'] != '1') {
+if($eform['uuid'] !== $uuid) {
   alert('계약서를 확인할 수 없습니다.');
 }
 

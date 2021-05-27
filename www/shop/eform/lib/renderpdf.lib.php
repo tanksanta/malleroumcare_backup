@@ -25,6 +25,6 @@ foreach($options as $key => $val) {
 }
 
 $G5_URL = G5_URL;
-exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/eform/renderEform.php?od_id={$eform['od_id']}&uuid={$eform['uuid']}\" \"{$pdfdir}\"");
+exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/eform/renderEform.php?od_id={$eform['od_id']}&uuid={$uuid}\" \"{$pdfdir}\"");
 
 ?>
