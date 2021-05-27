@@ -74,10 +74,10 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   `dc_sign_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
   -- 계약서 작성시 IP
   `dc_sign_ip` varchar(255) NOT NULL default '',
-  -- 계약서 PDF 파일 경로
-  `dc_pdf_url` varchar(255) NOT NULL default '',
-  -- 감사추적인증서 파일 경로
-  `dc_cert_pdf_url` varchar(255) NOT NULL default '',
+  -- 계약서 PDF 파일 이름
+  `dc_pdf_file` varchar(255) NOT NULL default '',
+  -- 감사추적인증서 파일 이름
+  `dc_cert_pdf_file` varchar(255) NOT NULL default '',
   PRIMARY KEY (`dc_id`),
   UNIQUE KEY `index1` (`dc_id`, `od_id`),
   KEY `dc_subject` (`dc_subject`),
