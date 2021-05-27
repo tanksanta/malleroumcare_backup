@@ -1382,19 +1382,6 @@ $(function() {
 		return false;
 	});
 });
-$(document).ready(function() {
-
-	// $('.item-explan').find('iframe').css({ width: $(window).innerWidth() + 'px', height: $(window).innerHeight() + 'px' }); 
-	// // If you want to keep full screen on window resize 
-	// $(window).resize(function(){ 
-	// 	$('.item-explan').find('iframe').css({ width: $(window).innerWidth() + 'px', height: $(window).innerHeight() + 'px' }); 
-	// }); 
-
-
-     $('.item-explan').find('iframe').css('width','100%'); 
-    //  $('.item-explan').find('iframe').css('height','100%'); 
-    //  $('.item-explan').find('iframe').attr('allowfullscreen','allowfullscreen');
-});
 </script>
 
 <?php
