@@ -75,6 +75,8 @@ pre{white-space: pre-wrap;}
 .hidden{display:none;}
 .txt_center{text-align:center;}
 
+.video_wrap iframe{width:100%;}
+
 .stock-list .table-wrap li .product {text-align:left !important;}
 
 .store-detail{position:relative;margin-bottom: 300px;}
