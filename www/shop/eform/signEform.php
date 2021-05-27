@@ -89,6 +89,7 @@ $is_gicho = $eform['penTypeCd'] == '04';
   <script>
   $(function() {
     var isGicho = <?=($is_gicho ? 'true' : 'false')?>;
+    var od_url = '<?=G5_SHOP_URL?>/orderinquiryview.php?od_id=<?=$od_id?>&uid=<?=md5($od_id.$od['od_time'].$od['od_ip'])?>';
 
     var currentStage = 1;
     var totalStage = isGicho ? 5 : 3;
@@ -197,8 +198,7 @@ $is_gicho = $eform['penTypeCd'] == '04';
         .done(function(data) {
           // 작성 완료
           alert('계약서 작성이 완료되었습니다.');
-          parent.location.reload();
-          window.close();
+          location.href = od_url;
         })
         .fail(function($xhr) {
           var data = $xhr.responseJSON;
@@ -209,7 +209,7 @@ $is_gicho = $eform['penTypeCd'] == '04';
 
     $('#btnCloseSign').click(function(e) {
       e.preventDefault();
-      window.close();
+      location.href = od_url;
     });
 
     function closeSignPopup() {

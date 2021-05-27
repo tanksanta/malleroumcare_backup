@@ -61,6 +61,16 @@ foreach($state as $id => $val) {
   ");
 }
 
+// PDF 파일 생성
+$pdfdir = G5_DATA_PATH.'/eform/pdf';
+if(!is_dir($pdfdir)) {
+  @mkdir($pdfdir, G5_DIR_PERMISSION, true);
+  @chmod($pdfdir, G5_DIR_PERMISSION);
+}
+$pdffile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_'.date("YmdHisw").'.pdf';
+$pdfdir .= '/'.$pdffile;
+include_once('./lib/renderpdf.lib.php');
+
 $ip = $_SERVER['REMOTE_ADDR'];
 $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 $timestamp = time();
@@ -70,7 +80,8 @@ $datetime = date('Y-m-d H:i:s', $timestamp);
 sql_query("UPDATE `eform_document` SET
 `dc_status` = '2',
 `dc_sign_datetime` = '$datetime',
-`dc_sign_ip` = '$ip'
+`dc_sign_ip` = '$ip',
+`dc_pdf_file` = '$pdffile'
 WHERE `dc_id` = UNHEX('$uuid')
 ");
 

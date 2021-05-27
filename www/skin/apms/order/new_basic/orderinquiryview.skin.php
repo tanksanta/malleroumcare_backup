@@ -1149,7 +1149,7 @@ $(function(){
 		e.preventDefault();
 
 		var od = $(this).data('od');
-		window.open('/shop/eform/signEform.php?od_id='+od);
+		location.href = '/shop/eform/signEform.php?od_id='+od;
 	});
 	$('#linkEformEdit').click(function(e) { // 내용변경 버튼
 		e.preventDefault();
@@ -1163,6 +1163,9 @@ $(function(){
 	});
 	$('#linkEformView').click(function(e) { // 계약서 다운로드 버튼
 		e.preventDefault();
+
+		var od = $(this).data('od');
+		window.open('/shop/eform/downloadEform.php?od_id='+od);
 	});
 
 })

@@ -1,7 +1,7 @@
 <div id="thk101" class="a4">
   <div class="thk101">
     <h1 class="thk101-h1">장기요양기관 입소·이용신청서([✓] 신규신청 [ &nbsp;]갱신 [ &nbsp;]변경 [ &nbsp;]해지)</h1>
-    <div class="thk101-head-table-desc">※［ ］에는 해당되는 곳에 ✓표를 합니다.</div>
+    <div class="thk101-head-table-desc">※ [ ] 에는 해당되는 곳에 ✓표를 합니다.</div>
     <table class="thk101-head-table">
       <colgroup>
         <col style="width: 33.3%;">
@@ -80,7 +80,7 @@
         </tr>
         <tr>
           <th scope="col">구분</th>
-          <td colspan="3">[✓] &nbsp;「의료급여법」 &nbsp;제3조제1항제1호에 따른 의료급여를 받는 사람<br>[ &nbsp;] &nbsp;「의료급여법」 &nbsp;제3조제1항제1호 외의 규정에 따른 의료급여를 받는 사람</td>
+          <td colspan="3">[✓] &nbsp;「의료급여법」 &nbsp;제3조제1항제1호에 따른 의료급여를 받는 사람<br>[ &nbsp; ] &nbsp;「의료급여법」 &nbsp;제3조제1항제1호 외의 규정에 따른 의료급여를 받는 사람</td>
         </tr>
       </tbody>
     </table>
