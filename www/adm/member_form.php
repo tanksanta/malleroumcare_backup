@@ -188,7 +188,7 @@ label {
     <tr>
         <th colspan="4">
             <div style="padding: 20px 20px;background-color: #f1f1f1;">
-                <h2 style="margin:0;padding:0;">기본정보<?=$mb['mb_name']?></h2>
+                <h2 style="margin:0;padding:0;">기본정보</h2>
             </div>
         </th>
     </tr>
