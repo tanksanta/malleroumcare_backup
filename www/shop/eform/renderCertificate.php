@@ -36,15 +36,7 @@ $is_gicho = $eform['penTypeCd'] == '04';
 $timestamp = time();
 $datetime = date('Y-m-d H:i:s', $timestamp);
 
-$sign_status = '';
-switch($eform['dc_status']) {
-  case 2:
-    $sign_status = '완료 됨';
-    break;
-  default:
-    $sign_status = '서명되지 않음';
-    break;
-}
+$sign_status = '완료 됨';
 ?>
 <!DOCTYPE html>
 <html lang="ko">
