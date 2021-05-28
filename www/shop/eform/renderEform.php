@@ -1,6 +1,9 @@
 <?php
 include_once("./_common.php");
 
+$timestamp = intval($_GET['timestamp']);
+$datetime = date('Y-m-d H:i:s', $timestamp);
+
 $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
 
 if($eform['uuid'] !== $uuid || $eform['entId'] !== $entId || $eform['penId'] !== $penId) {
@@ -27,6 +30,7 @@ while($ct = sql_fetch_array($contents)) {
 
 // 기초수급자 체크
 $is_gicho = $eform['penTypeCd'] == '04';
+
 ?>
 <!DOCTYPE html>
 <html lang="ko">

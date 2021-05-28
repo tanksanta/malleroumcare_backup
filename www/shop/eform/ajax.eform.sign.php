@@ -61,16 +61,6 @@ foreach($state as $id => $val) {
   ");
 }
 
-// PDF 파일 생성
-$pdfdir = G5_DATA_PATH.'/eform/pdf';
-if(!is_dir($pdfdir)) {
-  @mkdir($pdfdir, G5_DIR_PERMISSION, true);
-  @chmod($pdfdir, G5_DIR_PERMISSION);
-}
-$pdffile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_'.date("YmdHisw").'.pdf';
-$pdfdir .= '/'.$pdffile;
-include_once('./lib/renderpdf.lib.php');
-
 $ip = $_SERVER['REMOTE_ADDR'];
 $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 $timestamp = time();
@@ -86,6 +76,16 @@ sql_query("INSERT INTO `eform_document_log` SET
 `dl_browser` = '$browser',
 `dl_datetime` = '$datetime'
 ");
+
+// PDF 파일 생성
+$pdfdir = G5_DATA_PATH.'/eform/pdf';
+if(!is_dir($pdfdir)) {
+  @mkdir($pdfdir, G5_DIR_PERMISSION, true);
+  @chmod($pdfdir, G5_DIR_PERMISSION);
+}
+$pdffile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_'.date("YmdHisw").'.pdf';
+$pdfdir .= '/'.$pdffile;
+include_once('./lib/renderpdf.lib.php');
 
 // 감사 추적 인증서 PDF 파일 생성
 $certdir = G5_DATA_PATH.'/eform/cert';
