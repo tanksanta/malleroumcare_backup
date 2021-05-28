@@ -75,7 +75,7 @@
       </tr>
       <tr class="sign_row">
         <td colspan="3"></td>
-        <td colspan="2" style="text-align: center"><?=date('Y년 m월 d일', strtotime($eform['dc_datetime']))?></td>
+        <td colspan="2" style="text-align: center"><?=date('Y년 m월 d일', $timestamp)?></td>
       </tr>
       <tr class="sign_row">
         <td colspan="2"></td>

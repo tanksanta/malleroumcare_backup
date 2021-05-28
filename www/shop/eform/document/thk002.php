@@ -190,7 +190,7 @@
       </tr>
       <tr>
         <th scope="col" colspan="2">확인일시</th>
-        <td><?=date('Y년 m월 d일', strtotime($eform['dc_datetime']))?></td>
+        <td><?=date('Y년 m월 d일', $timestamp)?></td>
         <th scope="col">확인방법</th>
         <td colspan="2">[ ✓ ]방문 [ &nbsp; ]유선</td>
       </tr>

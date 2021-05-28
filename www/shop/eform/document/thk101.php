@@ -97,7 +97,7 @@
         </tr>
         <tr>
           <td colspan="2">&nbsp;</td>
-          <td colspan="2" class="center" style="font-size: 16px;"><?=date('Y년 m월 d일', strtotime($eform['dc_datetime']))?></td>
+          <td colspan="2" class="center" style="font-size: 16px;"><?=date('Y년 m월 d일', $timestamp)?></td>
         </tr>
         <tr>
           <td>&nbsp;</td>

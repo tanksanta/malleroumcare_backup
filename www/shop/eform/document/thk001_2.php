@@ -71,7 +71,7 @@
           </label>)
       </li>
     </ul>
-    <div class="thk001_date_div">계약일 : <?=date('Y년 m월 d일', strtotime($eform['dc_datetime']))?></div>
+    <div class="thk001_date_div">계약일 : <?=date('Y년 m월 d일', $timestamp)?></div>
     <table class="thk001_table sign_table">
       <colgroup>
         <col style="width: 20%" />
