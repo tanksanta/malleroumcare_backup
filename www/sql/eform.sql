@@ -16,15 +16,15 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   -- 사업소
   -- ---------
   -- 사업소 ID
-  `entId` varchar(255), -- ENT2020070900001
+  `entId` varchar(255) NOT NULL default '', -- ENT2020070900001
   -- 사업소명
-  `entNm` varchar(255), -- 이로움사업소1
+  `entNm` varchar(255) NOT NULL default '', -- 이로움사업소1
   -- 사업자등록번호
-  `entCrn` varchar(255), -- 사업자번호 todo: system.eroumcare.com 이랑 연동할지 알아봐야함
+  `entCrn` varchar(255) NOT NULL default '', -- 사업자번호 todo: system.eroumcare.com 이랑 연동할지 알아봐야함
   -- 사업소이메일
-  `entMail` varchar(255),
+  `entMail` varchar(255) NOT NULL default '',
   -- 대표자명
-  `entCeoNm` varchar(255),
+  `entCeoNm` varchar(255) NOT NULL default '',
   -- 특약사항1
   `entConAcc01` longtext, -- 본 계약은 국민건강보험 노인장기요양보험 급여상품의 공급계약을 체결함에 목적이 있다.
   -- 특약사항2
@@ -33,23 +33,25 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   -- 수급자
   -- ---------
   -- 수급자 ID
-  `penId` varchar(255), -- PENID_20210111094719
+  `penId` varchar(255) NOT NULL default '', -- PENID_20210111094719
   -- 수급자 이름
-  `penNm` varchar(255), -- 테스트트
+  `penNm` varchar(255) NOT NULL default '', -- 테스트트
+  -- 수급자 메일
+  `penMail` varchar(255) NOT NULL default '',
   -- 수급자 전화번호
-  `penConNum` varchar(255), -- 010-8748-7796
+  `penConNum` varchar(255) NOT NULL default '', -- 010-8748-7796
   -- 수급자 생년월일
-  `penBirth` varchar(255), -- 20210111
+  `penBirth` varchar(255) NOT NULL default '', -- 20210111
   -- 장기요양인정번호
-  `penLtmNum` varchar(255), -- L123123123123
+  `penLtmNum` varchar(255) NOT NULL default '', -- L123123123123
   -- 장기요양등급
-  `penRecGraCd` varchar(255), -- 02
-  `penRecGraNm` varchar(255), -- 2등급
+  `penRecGraCd` varchar(255) NOT NULL default '', -- 02
+  `penRecGraNm` varchar(255) NOT NULL default '', -- 2등급
   -- 본인부담금율
-  `penTypeCd` varchar(255), -- 02
-  `penTypeNm` varchar(255), -- 감경 6%
+  `penTypeCd` varchar(255) NOT NULL default '', -- 02
+  `penTypeNm` varchar(255) NOT NULL default '', -- 감경 6%
   -- 이용기간
-  `penExpiDtm` varchar(255), -- 2021-01-11 ~ 2022-01-10
+  `penExpiDtm` varchar(255) NOT NULL default '', -- 2021-01-11 ~ 2022-01-10
   -- 주민등록번호
   `penJumin` varchar(255) NOT NULL default '',
   -- 우편번호
