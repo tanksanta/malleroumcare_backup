@@ -536,7 +536,7 @@ if(!$mbCheck){
             mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
             mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
             mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
-            mb_giup_bname = '{$resInfo["entNm"]}',
+            mb_giup_bname = '{$resInfo["entNm"]}'
         WHERE mb_id = '{$resInfo["usrId"]}'
     ");
 }
