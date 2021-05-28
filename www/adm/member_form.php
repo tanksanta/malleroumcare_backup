@@ -418,7 +418,7 @@ label {
     </tr>
     <tr>
         <th scope="row">
-            <label for="mb_partner_date_auto_buy_cnt">사업자직인 (계약서 날인)<?=$mb['sealFile']?></label>
+            <label for="mb_partner_date_auto_buy_cnt">사업자직인 (계약서 날인)</label>
         </th>
         <td colspan="3" class="mb_giup_file2">
             <input type="file" name="mb_giup_file2" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file2">
