@@ -65,6 +65,15 @@ table th {
   text-align: center;
 }
 
+.table-sign-info td.img .image {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .table-history td {
   vertical-align: top;
 }

@@ -125,4 +125,21 @@ function valid_status_input($status) {
   return false;
 }
 
+// 코드로 문서 이름 가져오는 함수 ($code = '001' | '002' | '003' | '101' ...)
+function get_document_name($code) {
+  switch($code) {
+    case '001':
+      return '복지용구 공급 계약서';
+    case '002':
+      return '장기요양급여 제공기록지(복지용구)';
+    case '003':
+      return '개인정보 수집·이용 사전동의서';
+    case '101':
+      return '장기요양기관 입소·이용신청서';
+    case '102':
+      return '재가서비스 이용내역서';
+    default:
+      return '';
+  }
+}
 ?>
