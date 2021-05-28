@@ -3,50 +3,50 @@ $sub_menu = "200100";
 include_once("./_common.php");
 include_once(G5_LIB_PATH."/register.lib.php");
 include_once(G5_LIB_PATH.'/thumbnail.lib.php');
-
+$w = 'u';
 if ($w == 'u')
     check_demo();
 
 auth_check($auth[$sub_menu], 'w');
 
-check_admin_token();
+// check_admin_token();
 
 $mb_id = trim($_POST['mb_id']);
 
 $mm_nos = array();
-for($i=0;$i<count($_POST['mm_name']);$i++) {
-    if ( !$_POST['mm_name'][$i] ) continue;
-    if ( $_POST['mm_no'][$i] ) {
-        $sql = "UPDATE g5_member_giup_manager SET
-            mm_name = '{$_POST['mm_name'][$i]}',
-            mm_part = '{$_POST['mm_part'][$i]}',
-            mm_rank = '{$_POST['mm_rank'][$i]}',
-            mm_work = '{$_POST['mm_work'][$i]}',
-            mm_tel = '{$_POST['mm_tel'][$i]}',
-            mm_hp = '{$_POST['mm_hp'][$i]}',
-            mm_hp_extension = '{$_POST['mm_hp_extension'][$i]}',
-            mm_thezone = '{$_POST['mm_thezone'][$i]}',
-            mm_email = '{$_POST['mm_email'][$i]}'
-            WHERE mm_no = '{$_POST['mm_no'][$i]}'";
-        $mm_nos[] = " mm_no != '{$_POST['mm_no'][$i]}' ";
-        sql_query($sql);
-    }else{
-        $sql = "INSERT g5_member_giup_manager SET
-                    mb_id = '{$mb_id}',
-                    mm_name = '{$_POST['mm_name'][$i]}',
-                    mm_part = '{$_POST['mm_part'][$i]}',
-                    mm_rank = '{$_POST['mm_rank'][$i]}',
-                    mm_work = '{$_POST['mm_work'][$i]}',
-                    mm_tel = '{$_POST['mm_tel'][$i]}',
-                    mm_hp = '{$_POST['mm_hp'][$i]}',
-                    mm_hp_extension = '{$_POST['mm_hp_extension'][$i]}',
-                    mm_thezone = '{$_POST['mm_thezone'][$i]}',
-                    mm_email = '{$_POST['mm_email'][$i]}'";
-        sql_query($sql);
-        $mm_no = sql_insert_id();
-        $mm_nos[] = " mm_no != '{$mm_no}' ";
-    }
-}
+// for($i=0;$i<count($_POST['mm_name']);$i++) {
+//     if ( !$_POST['mm_name'][$i] ) continue;
+//     if ( $_POST['mm_no'][$i] ) {
+//         $sql = "UPDATE g5_member_giup_manager SET
+//             mm_name = '{$_POST['mm_name'][$i]}',
+//             mm_part = '{$_POST['mm_part'][$i]}',
+//             mm_rank = '{$_POST['mm_rank'][$i]}',
+//             mm_work = '{$_POST['mm_work'][$i]}',
+//             mm_tel = '{$_POST['mm_tel'][$i]}',
+//             mm_hp = '{$_POST['mm_hp'][$i]}',
+//             mm_hp_extension = '{$_POST['mm_hp_extension'][$i]}',
+//             mm_thezone = '{$_POST['mm_thezone'][$i]}',
+//             mm_email = '{$_POST['mm_email'][$i]}'
+//             WHERE mm_no = '{$_POST['mm_no'][$i]}'";
+//         $mm_nos[] = " mm_no != '{$_POST['mm_no'][$i]}' ";
+//         sql_query($sql);
+//     }else{
+//         $sql = "INSERT g5_member_giup_manager SET
+//                     mb_id = '{$mb_id}',
+//                     mm_name = '{$_POST['mm_name'][$i]}',
+//                     mm_part = '{$_POST['mm_part'][$i]}',
+//                     mm_rank = '{$_POST['mm_rank'][$i]}',
+//                     mm_work = '{$_POST['mm_work'][$i]}',
+//                     mm_tel = '{$_POST['mm_tel'][$i]}',
+//                     mm_hp = '{$_POST['mm_hp'][$i]}',
+//                     mm_hp_extension = '{$_POST['mm_hp_extension'][$i]}',
+//                     mm_thezone = '{$_POST['mm_thezone'][$i]}',
+//                     mm_email = '{$_POST['mm_email'][$i]}'";
+//         sql_query($sql);
+//         $mm_no = sql_insert_id();
+//         $mm_nos[] = " mm_no != '{$mm_no}' ";
+//     }
+// }
 
 $mm_nos_query = implode(' AND ', $mm_nos);
 sql_query("DELETE FROM g5_member_giup_manager WHERE mb_id = '{$mb_id}' AND ( {$mm_nos_query} )");
@@ -157,13 +157,21 @@ $_POST['mb_dealer'] = $_POST['mb_dealer'] ? (int)$_POST['mb_dealer'] : 0;
 
 if ($msg = valid_mb_nick($mb_nick))     alert($msg, "", true, true);
 
+
+
+
+$mb_hp = $_POST['mb_hp1']."-".$_POST['mb_hp2']."-".$_POST['mb_hp3'];
+$mb_fax = $_POST['mb_fax1']."-".$_POST['mb_fax2']."-".$_POST['mb_fax3'];
+$mb_giup_btel = $_POST['mb_tel1']."-".$_POST['mb_tel2']."-".$_POST['mb_tel3'];
+$mb_tel = $_POST['mb_tel1']."-".$_POST['mb_tel2']."-".$_POST['mb_tel3'];
+
 $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_nick = '{$mb_nick}',
                  mb_email = '{$mb_email}',
                  mb_homepage = '{$_POST['mb_homepage']}',
-                 mb_tel = '{$_POST['mb_tel']}',
+                 mb_tel = '{$mb_tel}',
                  mb_hp = '{$mb_hp}',
-                 mb_fax = '{$_POST['mb_fax']}',
+                 mb_fax = '{$mb_fax}',
                  mb_certify = '{$mb_certify}',
                  mb_adult = '{$mb_adult}',
                  mb_zip1 = '$mb_zip1',
@@ -416,6 +424,121 @@ if( $w == '' || $w == 'u' ){
             }
         }
     }
+}
+
+
+$sendData=[];
+$sendData['usrId']=$_POST['mb_id'];
+
+$oCurl = curl_init();
+curl_setopt($oCurl, CURLOPT_PORT, 9901);
+curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/ent/account");
+curl_setopt($oCurl, CURLOPT_POST, 1);
+curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+$res = curl_exec($oCurl);
+$res_send = curl_exec($oCurl);
+curl_close($oCurl);
+$resInfo = json_decode($res, true);
+$resInfo = $resInfo["data"];
+$resInfo["usrZip01"] = substr($resInfo["usrZip"], 0, 3);
+$resInfo["usrZip02"] = substr($resInfo["usrZip"], 3, 2);
+$resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
+$resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
+
+if($_POST['usrPw']){
+    $mb_password = trim($_POST['usrPw']);
+    $mb_password2 =  base64_encode ($mb_password) ;
+    $password = "mb_password = '".get_encrypt_string($mb_password)."',
+                mb_password2 = '".$mb_password2."',";
+}else{
+    $password="";
+}
+
+$crnFile_name ="";
+$sealFile_name ="";
+$mbCheck = sql_fetch("SELECT * FROM {$g5["member_table"]} WHERE mb_id = '".$_POST["usrId"]."'");
+
+if(!$mbCheck){
+    sql_query("
+        INSERT INTO {$g5["member_table"]} SET
+            mb_id = '{$resInfo["usrId"]}',
+            mb_name = '{$resInfo["entNm"]}',
+            mb_nick = '{$resInfo["entNm"]}',
+            mb_hp = '{$resInfo["usrPnum"]}',
+            mb_tel = '{$resInfo["usrPnum"]}',
+            mb_type = '{$resInfo["type"]}',
+            mb_entId = '{$resInfo["entId"]}',
+            mb_entNm = '{$resInfo["entNm"]}',
+            mb_level = '3',
+            mb_password = '".get_encrypt_string($mb_password)."',
+            mb_password2 = '".$mb_password2."',
+            mb_zip1 = '{$resInfo["usrZip01"]}',
+            mb_zip2 = '{$resInfo["usrZip02"]}',
+            mb_addr1 = '{$resInfo["usrAddr"]}',
+            mb_addr2 = '{$resInfo["usrAddrDetail"]}',
+            mb_giup_bnum = '{$resInfo["entCrn"]}',
+            mb_giup_zip1 = '{$resInfo["entZip01"]}',
+            mb_giup_zip2 = '{$resInfo["entZip02"]}',
+            mb_giup_addr1 = '{$resInfo["entAddr"]}',
+            mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
+            mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
+            mb_email = '{$resInfo["usrMail"]}',
+            mb_fax = '{$resInfo["entFax"]}',
+            mb_authCd = '{$resInfo["authCd"]}',
+            mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
+            mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
+            mb_giup_bupjong = '{$resInfo["entBusiType"]}',
+            mb_sex = '{$resInfo["usrGender"]}',
+            mb_birth = '{$resInfo["usrBirth"]}',
+            mb_giup_btel = '{$resInfo["entPnum"]}',
+            mb_giup_tax_email = '{$resInfo["entMail"]}',
+            mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
+            mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
+            mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
+            mb_giup_bname = '{$resInfo["entNm"]}',
+            mb_datetime = '".G5_TIME_YMDHIS."'
+            
+    ");
+} else {
+    sql_query("
+        UPDATE {$g5["member_table"]} SET
+            mb_name = '{$resInfo["entNm"]}',
+            mb_nick = '{$resInfo["entNm"]}',
+            mb_hp = '{$resInfo["usrPnum"]}',
+            mb_tel = '{$resInfo["usrPnum"]}',
+            mb_type = '{$resInfo["type"]}',
+            mb_entId = '{$resInfo["entId"]}',
+            mb_entNm = '{$resInfo["entNm"]}',
+            {$password}
+            mb_zip1 = '{$resInfo["usrZip01"]}',
+            mb_zip2 = '{$resInfo["usrZip02"]}',
+            mb_addr1 = '{$resInfo["usrAddr"]}',
+            mb_addr2 = '{$resInfo["usrAddrDetail"]}',
+            mb_giup_bnum = '{$resInfo["entCrn"]}',
+            mb_giup_zip1 = '{$resInfo["entZip01"]}',
+            mb_giup_zip2 = '{$resInfo["entZip02"]}',
+            mb_giup_addr1 = '{$resInfo["entAddr"]}',
+            mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
+            mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
+            mb_email = '{$resInfo["usrMail"]}',
+            mb_fax = '{$resInfo["entFax"]}',
+            mb_authCd = '{$resInfo["authCd"]}',
+            mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
+            mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
+            mb_giup_bupjong = '{$resInfo["entBusiType"]}',
+            mb_sex = '{$resInfo["usrGender"]}',
+            mb_birth = '{$resInfo["usrBirth"]}',
+            mb_giup_btel = '{$resInfo["entPnum"]}',
+            mb_giup_tax_email = '{$resInfo["entMail"]}',
+            mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
+            mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
+            mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
+            mb_giup_bname = '{$resInfo["entNm"]}',
+        WHERE mb_id = '{$resInfo["usrId"]}'
+    ");
 }
 
 alert('저장되었습니다.');

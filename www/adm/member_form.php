@@ -3,7 +3,6 @@ $sub_menu = "200100";
 include_once('./_common.php');
 
 auth_check($auth[$sub_menu], 'w');
-
 if ($w == '')
 {
     // $required_mb_id = 'required';
@@ -167,7 +166,7 @@ label {
 }
 </style>
 <script src="<?php echo G5_JS_URL ?>/jquery.register_form.js"></script>
-<form name="fmember" id="fmember" action="./member_form_update.php" onsubmit="return fmember_submit(this);" method="post" enctype="multipart/form-data">
+<form name="fmember" id="fmember" action="./member_form_update.php" onsubmit="return fmember_submit();" method="post" enctype="multipart/form-data">
 <input type="hidden" name="w" value="<?php echo $w ?>">
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
@@ -186,6 +185,13 @@ label {
         <col>
     </colgroup>
     <tbody>
+    <tr>
+        <th colspan="4">
+            <div style="padding: 20px 20px;background-color: #f1f1f1;">
+                <h2 style="margin:0;padding:0;">기본정보<?=$mb['mb_name']?></h2>
+            </div>
+        </th>
+    </tr>
       <tr>
         <th scope="row"><label for="mb_manager">영업당당자<?php echo $sound_only ?></label></th>
         <td>
@@ -217,12 +223,12 @@ label {
         <th scope="row"><label for="mb_password">비밀번호<?php echo $sound_only ?></label></th>
         <td><input type="password" name="mb_password" id="mb_password" <?php echo $required_mb_password ?> class="frm_input <?php echo $required_mb_password ?>" size="15" maxlength="20"></td>
     </tr>
-    <tr>
-        <th scope="row"><label for="mb_name">이름(실명)<strong class="sound_only">필수</strong></label></th>
+    <!-- <tr>
+        <th scope="row"><label for="mb_name">이름/기업명<strong class="sound_only">필수</strong></label></th>
         <td><input type="text" name="mb_name" value="<?php echo $mb['mb_name'] ?>" id="mb_name" class="frm_input" size="15" maxlength="20"></td>
         <th scope="row"><label for="mb_nick">닉네임</label></th>
         <td><input type="text" name="mb_nick" value="<?php echo $mb['mb_nick'] ?>" id="mb_nick" class=" frm_input" size="15" maxlength="20"></td>
-    </tr>
+    </tr> -->
     <tr>
         <th scope="row"><label for="mb_level">회원 권한</label></th>
         <td><?php echo get_member_level_select('mb_level', 1, $member['mb_level'], $mb['mb_level']) ?></td>
@@ -241,23 +247,195 @@ label {
 			</td>
 		</tr>
 	<?php } ?>
-	<tr>
-        <th scope="row"><label for="mb_email">E-mail<strong class="sound_only">필수</strong></label></th>
-        <td><input type="text" name="mb_email" value="<?php echo $mb['mb_email'] ?>" id="mb_email" maxlength="100" required class="required frm_input email" size="30"></td>
-        <th scope="row"><label for="mb_homepage">홈페이지</label></th>
-        <td><input type="text" name="mb_homepage" value="<?php echo $mb['mb_homepage'] ?>" id="mb_homepage" class="frm_input" maxlength="255" size="15"></td>
-    </tr>
     <tr>
         <th scope="row"><label for="mb_hp">휴대폰번호</label></th>
-        <td><input type="text" name="mb_hp" value="<?php echo $mb['mb_hp'] ?>" id="mb_hp" class="frm_input" size="15" maxlength="20"></td>
+        <td>
+        <?php $mb_hp =explode('-',$mb['mb_hp']); ?>
+        <input type="text" name="mb_hp1" value="<?=$mb_hp[0]?>" id="mb_hp1" class="frm_input" size="15" maxlength="20">
+        <input type="text" name="mb_hp2" value="<?=$mb_hp[1]?>" id="mb_hp2" class="frm_input" size="15" maxlength="20">
+        <input type="text" name="mb_hp3" value="<?=$mb_hp[2]?>" id="mb_hp3" class="frm_input" size="15" maxlength="20">
+        
+        </td>
         <th scope="row"><label for="mb_tel">전화번호</label></th>
-        <td><input type="text" name="mb_tel" value="<?php echo $mb['mb_tel'] ?>" id="mb_tel" class="frm_input" size="15" maxlength="20"></td>
+        <td>
+        <select name="mb_tel1" id="mb_tel1" class="form-control input-sm number_box1">
+            <?php $mb_giup_btel =explode('-',$mb['mb_giup_btel']); ?>
+            <option value="02" <?=($mb_giup_btel[0] =="02")? "selected": "" ; ?> >02</option>
+            <option value="010" <?=($mb_giup_btel[0] =="010")? "selected": "" ; ?>>010</option>
+            <option value="031" <?=($mb_giup_btel[0] =="031")? "selected": "" ; ?>>031</option>
+            <option value="032" <?=($mb_giup_btel[0] =="032")? "selected": "" ; ?>>032</option>
+            <option value="033" <?=($mb_giup_btel[0] =="033")? "selected": "" ; ?>>033</option>
+            <option value="041" <?=($mb_giup_btel[0] =="041")? "selected": "" ; ?>>041</option>
+            <option value="042" <?=($mb_giup_btel[0] =="042")? "selected": "" ; ?>>042</option>
+            <option value="043" <?=($mb_giup_btel[0] =="043")? "selected": "" ; ?>>043</option>
+            <option value="044" <?=($mb_giup_btel[0] =="044")? "selected": "" ; ?>>044</option>
+            <option value="051" <?=($mb_giup_btel[0] =="051")? "selected": "" ; ?>>051</option>
+            <option value="052" <?=($mb_giup_btel[0] =="052")? "selected": "" ; ?>>052</option>
+            <option value="053" <?=($mb_giup_btel[0] =="053")? "selected": "" ; ?>>053</option>
+            <option value="054" <?=($mb_giup_btel[0] =="054")? "selected": "" ; ?>>054</option>
+            <option value="055" <?=($mb_giup_btel[0] =="055")? "selected": "" ; ?>>055</option>
+            <option value="061" <?=($mb_giup_btel[0] =="061")? "selected": "" ; ?>>061</option>
+            <option value="062" <?=($mb_giup_btel[0] =="062")? "selected": "" ; ?>>062</option>
+            <option value="063" <?=($mb_giup_btel[0] =="063")? "selected": "" ; ?>>063</option>
+            <option value="064" <?=($mb_giup_btel[0] =="064")? "selected": "" ; ?>>064</option>
+            <option value="070" <?=($mb_giup_btel[0] =="070")? "selected": "" ; ?>>070</option>
+        </select>
+        <input type="text" name="mb_tel2" value="<?php echo $mb_giup_btel[1] ?>" id="mb_tel2" class="frm_input" size="15" maxlength="20">
+        <input type="text" name="mb_tel3" value="<?php echo $mb_giup_btel[2] ?>" id="mb_tel3" class="frm_input" size="15" maxlength="20">
+        </td>
     </tr>
     <tr>
         <th scope="row"><label for="mb_fax">팩스번호</label></th>
-        <td colspan="3"><input type="text" name="mb_fax" value="<?php echo $mb['mb_fax'] ?>" id="mb_fax" class="frm_input" size="15" maxlength="20"></td>
+        <td colspan="3">
+        <?php $mb_fax =explode('-',$mb['mb_fax']); ?>
+        <input type="text" name="mb_fax1" value="<?php echo $mb_fax[0] ?>" id="mb_fax1" class="frm_input" size="15" maxlength="20">
+        <input type="text" name="mb_fax2" value="<?php echo $mb_fax[1] ?>" id="mb_fax2" class="frm_input" size="15" maxlength="20">
+        <input type="text" name="mb_fax3" value="<?php echo $mb_fax[2] ?>" id="mb_fax3" class="frm_input" size="15" maxlength="20">
+        </td>
     </tr>
     <tr>
+        <th scope="row"><label for="mb_email">이메일(세금계산서 수신용)<strong class="sound_only">필수</strong></label></th>
+        <td><input type="text" name="mb_email" value="<?php echo $mb['mb_email'] ?>" id="mb_email" maxlength="100" required class="required frm_input email" size="30"></td>
+        <!-- <th scope="row"><label for="mb_homepage">홈페이지</label></th>
+        <td><input type="text" name="mb_homepage" value="<?php echo $mb['mb_homepage'] ?>" id="mb_homepage" class="frm_input" maxlength="255" size="15"></td> -->
+    </tr>
+    <tr>
+        <th colspan="4">
+            <div style="padding: 20px 20px;background-color: #f1f1f1;">
+                <h2 style="margin:0;padding:0;">사업자 정보</h2>
+            </div>
+        </th>
+    </tr>
+    <tr>
+        <th scope="row">
+            <label for="mb_giup_bname">이름/기업명</label>
+        </th>
+        <td colspan="3">
+            <input type="text" name="mb_giup_bname" value="<?php echo $mb['mb_giup_bname'] ?>" id="mb_giup_bname" class="frm_input" size="30" maxlength="20">
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">
+            <label for="mb_giup_boss_name">대표자명</label>
+        </th>
+        <td colspan="3">
+            <input type="text" name="mb_giup_boss_name" value="<?php echo $mb['mb_giup_boss_name'] ?>" id="mb_giup_boss_name" class="frm_input" size="30" maxlength="20">
+        </td>
+    </tr>
+    <!-- <tr>
+        <th scope="row">
+            <label for="mb_giup_btel">연락처</label>
+        </th>
+        <td colspan="3">
+            <input type="text" name="mb_giup_btel" value="<?php echo $mb['mb_giup_btel'] ?>" id="mb_giup_btel" class="frm_input" size="30" maxlength="20">
+        </td>
+    </tr> -->
+    <tr>
+        <th scope="row">
+            <label for="mb_giup_bnum">사업자번호</label>
+        </th>
+        <td colspan="3">
+            <input type="text" name="mb_giup_bnum" value="<?php echo $mb['mb_giup_bnum'] ?>" id="mb_giup_bnum" class="frm_input" size="30" maxlength="20">
+            <!--<label><button type="button" id="mb_giup_bnum_check" class="btn btn-black btn-sm" onclick="check_giup_bnum();">중복확인</button></label>-->
+            <!-- *관리자 권한으로 사업자번호가 중복되어도 입력이 가능합니다. -->
+        </td>
+    </tr>
+    <!-- <tr>
+        <th scope="row">
+            <label for="mb_giup_sbnum">종사업자번호</label>
+        </th>
+        <td colspan="3">
+            <input type="text" name="mb_giup_sbnum" value="<?php echo $mb['mb_giup_sbnum'] ?>" id="mb_giup_sbnum" class="frm_input" size="30" maxlength="20">
+            <label><button type="button" id="mb_giup_sbnum_check" class="btn btn-black btn-sm" onclick="check_giup_sbnum();">중복확인</button></label>
+            *종사업자 정보는 필수 입력 사항이 아닙니다. 관리자 권한으로 종사업자번호가 중복되어도 입력이 가능합니다.
+        </td>
+    </tr> -->
+    <!-- <tr>
+        <th scope="row">
+            <label for="mb_giup_sbnum_explain">종사업자 관련내용</label>
+        </th>
+        <td colspan="3">
+            <input type="text" name="mb_giup_sbnum_explain" value="<?php echo $mb['mb_giup_sbnum_explain'] ?>" id="mb_giup_sbnum_explain" class="frm_input" size="30" maxlength="20">
+        </td>
+    </tr> -->
+    <tr>
+        <th scope="row">
+            <label for="mb_giup_buptae">업태</label>
+        </th>
+        <td>
+            <input type="text" name="mb_giup_buptae" value="<?php echo $mb['mb_giup_buptae'] ?>" id="mb_giup_buptae" class="frm_input" size="30" maxlength="20">
+        </td>
+        <th scope="row">
+            <label for="mb_giup_bupjong">업종</label>
+        </th>
+        <td>
+            <input type="text" name="mb_giup_bupjong" value="<?php echo $mb['mb_giup_bupjong'] ?>" id="mb_giup_bupjong" class="frm_input" size="30" maxlength="20">
+        </td>
+    </tr>
+        
+    <tr>
+        <th scope="row">
+            <label for="mb_giup_manager_name">담당자명</label>
+        </th>
+        <td colspan="3">
+            <input type="text" name="mb_giup_manager_name" value="<?php echo $mb['mb_giup_manager_name'] ?>" id="mb_giup_manager_name" class="frm_input" size="30" maxlength="20">
+        </td>
+    </tr>
+    <!-- <tr>
+        <th scope="row">
+            <label for="mb_giup_manager_tel">담당자연락처</label>
+        </th>
+        <td colspan="3">
+            <input type="text" name="mb_giup_manager_tel" value="<?php echo $mb['mb_giup_manager_tel'] ?>" id="mb_giup_manager_tel" class="frm_input" size="30" maxlength="20">
+        </td>
+    </tr> -->
+    <tr>
+        <th scope="row">주소</th>
+        <td colspan="3" class="td_addr_line">
+            <label for="mb_giup_zip" class="sound_only">우편번호</label>
+            <input type="text" name="mb_giup_zip" value="<?php echo $mb['mb_giup_zip1'].$mb['mb_giup_zip2']; ?>" id="mb_giup_zip" class="frm_input readonly" size="5" maxlength="6">
+            <button type="button" class="btn_frmline" onclick="win_zip('fmember', 'mb_giup_zip', 'mb_giup_addr1', 'mb_giup_addr2', 'mb_giup_addr3', 'mb_giup_addr_jibeon');">주소 검색</button><br>
+            <input type="text" name="mb_giup_addr1" value="<?php echo $mb['mb_giup_addr1'] ?>" id="mb_giup_addr1" class="frm_input readonly" size="60">
+            <label for="mb_giup_addr1">기본주소</label><br>
+            <input type="text" name="mb_giup_addr2" value="<?php echo $mb['mb_giup_addr2'] ?>" id="mb_giup_addr2" class="frm_input" size="60">
+            <label for="mb_giup_addr2">상세주소</label>
+            <br>
+            <input type="text" name="mb_giup_addr3" value="<?php echo $mb['mb_giup_addr3'] ?>" id="mb_giup_addr3" class="frm_input" size="60">
+            <label for="mb_giup_addr3">참고항목</label>
+            <input type="hidden" name="mb_giup_addr_jibeon" value="<?php echo $mb['mb_giup_addr_jibeon']; ?>"><br>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">
+            <label for="mb_partner_date_auto_buy_cnt">사업자등록증</label>
+        </th>
+        <td colspan="3" class="mb_giup_file1">
+            <input type="file" name="mb_giup_file1" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file1">
+            <?php if($mb['crnFile']){ ?>
+                <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/license/<?=$mb['crnFile']?>" alt="">
+            <?php }?>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">
+            <label for="mb_partner_date_auto_buy_cnt">사업자직인 (계약서 날인)<?=$mb['sealFile']?></label>
+        </th>
+        <td colspan="3" class="mb_giup_file2">
+            <input type="file" name="mb_giup_file2" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file2">
+            <?php if($mb['sealFile']){ ?>
+                <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/stamp/<?=$mb['sealFile']?>" alt="">
+            <?php }?>
+        </td>
+    </tr>
+    <!-- <tr>
+        <th scope="row">
+            <label for="mb_giup_tax_email">세금계산서이메일</label>
+        </th>
+        <td colspan="3">
+            <input type="text" name="mb_giup_tax_email" value="<?php echo $mb['mb_giup_tax_email'] ?>" id="mb_giup_tax_email" class="frm_input" size="30" maxlength="30">
+        </td>
+    </tr> -->
+    <!-- <tr>
         <?php
         if ($w != 'u') {
             $mb_thezone_placeholder = "등록 시 자동으로 발급됩니다.";
@@ -267,7 +445,7 @@ label {
         <td colspan="3">
             <input type="text" name="mb_thezone" value="<?php echo $mb['mb_thezone'] ?>" id="mb_thezone" class="frm_input" size="35" maxlength="50" placeholder="<?php echo $mb_thezone_placeholder ?>" <?php echo $w == '' ? 'readonly' : '' ?>>
         </td>
-    </tr>
+    </tr> -->
     <!--
     <tr>
         <th scope="row">딜러 여부</th>
@@ -279,7 +457,7 @@ label {
         </td>
     </tr>
     -->
-    <tr>
+    <!-- <tr>
         <th scope="row">본인확인방법</th>
         <td colspan="3">
             <input type="radio" name="mb_certify_case" value="ipin" id="mb_certify_ipin" <?php if($mb['mb_certify'] == 'ipin') echo 'checked="checked"'; ?>>
@@ -287,8 +465,8 @@ label {
             <input type="radio" name="mb_certify_case" value="hp" id="mb_certify_hp" <?php if($mb['mb_certify'] == 'hp') echo 'checked="checked"'; ?>>
             <label for="mb_certify_hp">휴대폰</label>
         </td>
-    </tr>
-    <tr>
+    </tr> -->
+    <!-- <tr>
         <th scope="row">본인확인</th>
         <td>
             <input type="radio" name="mb_certify" value="1" id="mb_certify_yes" <?php echo $mb_certify_yes; ?>>
@@ -303,6 +481,13 @@ label {
             <input type="radio" name="mb_adult" value="0" id="mb_adult_no" <?php echo $mb_adult_no; ?>>
             <label for="mb_adult_no">아니오</label>
         </td>
+    </tr> -->
+    <tr>
+        <th colspan="4">
+            <div style="padding: 20px 20px;background-color: #f1f1f1;">
+                <h2 style="margin:0;padding:0;">배송지 주소</h2>
+            </div>
+        </th>
     </tr>
     <tr>
         <th scope="row">주소</th>
@@ -320,7 +505,7 @@ label {
             <input type="hidden" name="mb_addr_jibeon" value="<?php echo $mb['mb_addr_jibeon']; ?>"><br>
         </td>
     </tr>
-    <tr>
+    <!-- <tr>
         <th scope="row"><label for="mb_icon">회원아이콘</label></th>
         <td colspan="3">
             <?php echo help('이미지 크기는 <strong>넓이 '.$config['cf_member_icon_width'].'픽셀 높이 '.$config['cf_member_icon_height'].'픽셀</strong>로 해주세요.') ?>
@@ -335,8 +520,8 @@ label {
             }
             ?>
         </td>
-    </tr>
-    <tr>
+    </tr> -->
+    <!-- <tr>
         <th scope="row"><label for="mb_img">회원이미지</label></th>
         <td colspan="3">
             <?php echo help('이미지 크기는 <strong>넓이 '.$config['cf_member_img_width'].'픽셀 높이 '.$config['cf_member_img_height'].'픽셀</strong>로 해주세요.') ?>
@@ -351,8 +536,8 @@ label {
             }
             ?>
         </td>
-    </tr>
-	<tr>
+    </tr> -->
+	<!-- <tr>
         <th scope="row">메일 수신</th>
         <td>
             <input type="radio" name="mb_mailling" value="1" id="mb_mailling_yes" <?php echo $mb_mailling_yes; ?>>
@@ -367,8 +552,8 @@ label {
             <input type="radio" name="mb_sms" value="0" id="mb_sms_no" <?php echo $mb_sms_no; ?>>
             <label for="mb_sms_no">아니오</label>
         </td>
-    </tr>
-    <tr>
+    </tr> -->
+    <!-- <tr>
         <th scope="row">정보 공개</th>
         <td colspan="3">
             <input type="radio" name="mb_open" value="1" id="mb_open_yes" <?php echo $mb_open_yes; ?>>
@@ -440,7 +625,7 @@ this.form.mb_leave_date.value=this.value; } else { this.form.mb_leave_date.value
 this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
             <label for="mb_intercept_date_set_today">접근차단일을 오늘로 지정</label>
         </td>
-    </tr>
+    </tr> -->
 
     <?php
     //소셜계정이 있다면
@@ -529,21 +714,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
         }   //end if
     }   //end if
     ?>
-
-    <?php for ($i=1; $i<=10; $i++) { ?>
-    <tr>
-        <th scope="row"><label for="mb_<?php echo $i ?>">여분 필드 <?php echo $i ?></label></th>
-        <td colspan="3"><input type="text" name="mb_<?php echo $i ?>" value="<?php echo $mb['mb_'.$i] ?>" id="mb_<?php echo $i ?>" class="frm_input" size="30" maxlength="255"></td>
-    </tr>
-    <?php } ?>
-    <tr>
-        <th colspan="4">
-            <div style="padding: 20px 20px;background-color: #f1f1f1;">
-                <h2 style="margin:0;padding:0;">기업 정보</h2>
-            </div>
-        </th>
-    </tr>
-    <tr>
+    <!-- <tr>
         <th scope="row">기업멤버유형</th>
         <td colspan="3">
             <input type="radio" name="mb_giup_type" value="0" id="mb_giup_type_0" <?php echo $mb_giup_type_0; ?>>
@@ -553,116 +724,10 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
             <input type="radio" name="mb_giup_type" value="2" id="mb_giup_type_2" <?php echo $mb_giup_type_2; ?>>
             <label for="mb_giup_type_2">납품/판매목적</label>
         </td>
-    </tr>
-    <tr>
-        <th scope="row">
-            <label for="mb_giup_bname">기업명</label>
-        </th>
-        <td colspan="3">
-            <input type="text" name="mb_giup_bname" value="<?php echo $mb['mb_giup_bname'] ?>" id="mb_giup_bname" class="frm_input" size="30" maxlength="20">
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">
-            <label for="mb_giup_boss_name">대표자명</label>
-        </th>
-        <td colspan="3">
-            <input type="text" name="mb_giup_boss_name" value="<?php echo $mb['mb_giup_boss_name'] ?>" id="mb_giup_boss_name" class="frm_input" size="30" maxlength="20">
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">
-            <label for="mb_giup_btel">연락처</label>
-        </th>
-        <td colspan="3">
-            <input type="text" name="mb_giup_btel" value="<?php echo $mb['mb_giup_btel'] ?>" id="mb_giup_btel" class="frm_input" size="30" maxlength="20">
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">
-            <label for="mb_giup_bnum">사업자번호</label>
-        </th>
-        <td colspan="3">
-            <input type="text" name="mb_giup_bnum" value="<?php echo $mb['mb_giup_bnum'] ?>" id="mb_giup_bnum" class="frm_input" size="30" maxlength="20">
-            <!--<label><button type="button" id="mb_giup_bnum_check" class="btn btn-black btn-sm" onclick="check_giup_bnum();">중복확인</button></label>-->
-            *관리자 권한으로 사업자번호가 중복되어도 입력이 가능합니다.
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">
-            <label for="mb_giup_sbnum">종사업자번호</label>
-        </th>
-        <td colspan="3">
-            <input type="text" name="mb_giup_sbnum" value="<?php echo $mb['mb_giup_sbnum'] ?>" id="mb_giup_sbnum" class="frm_input" size="30" maxlength="20">
-            <!--<label><button type="button" id="mb_giup_sbnum_check" class="btn btn-black btn-sm" onclick="check_giup_sbnum();">중복확인</button></label>-->
-            *종사업자 정보는 필수 입력 사항이 아닙니다. 관리자 권한으로 종사업자번호가 중복되어도 입력이 가능합니다.
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">
-            <label for="mb_giup_sbnum_explain">종사업자 관련내용</label>
-        </th>
-        <td colspan="3">
-            <input type="text" name="mb_giup_sbnum_explain" value="<?php echo $mb['mb_giup_sbnum_explain'] ?>" id="mb_giup_sbnum_explain" class="frm_input" size="30" maxlength="20">
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">
-            <label for="mb_giup_buptae">업태</label>
-        </th>
-        <td>
-            <input type="text" name="mb_giup_buptae" value="<?php echo $mb['mb_giup_buptae'] ?>" id="mb_giup_buptae" class="frm_input" size="30" maxlength="20">
-        </td>
-        <th scope="row">
-            <label for="mb_giup_bupjong">업종</label>
-        </th>
-        <td>
-            <input type="text" name="mb_giup_bupjong" value="<?php echo $mb['mb_giup_bupjong'] ?>" id="mb_giup_bupjong" class="frm_input" size="30" maxlength="20">
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">회사주소</th>
-        <td colspan="3" class="td_addr_line">
-            <label for="mb_giup_zip" class="sound_only">우편번호</label>
-            <input type="text" name="mb_giup_zip" value="<?php echo $mb['mb_giup_zip1'].$mb['mb_giup_zip2']; ?>" id="mb_giup_zip" class="frm_input readonly" size="5" maxlength="6">
-            <button type="button" class="btn_frmline" onclick="win_zip('fmember', 'mb_giup_zip', 'mb_giup_addr1', 'mb_giup_addr2', 'mb_giup_addr3', 'mb_giup_addr_jibeon');">주소 검색</button><br>
-            <input type="text" name="mb_giup_addr1" value="<?php echo $mb['mb_giup_addr1'] ?>" id="mb_giup_addr1" class="frm_input readonly" size="60">
-            <label for="mb_giup_addr1">기본주소</label><br>
-            <input type="text" name="mb_giup_addr2" value="<?php echo $mb['mb_giup_addr2'] ?>" id="mb_giup_addr2" class="frm_input" size="60">
-            <label for="mb_giup_addr2">상세주소</label>
-            <br>
-            <input type="text" name="mb_giup_addr3" value="<?php echo $mb['mb_giup_addr3'] ?>" id="mb_giup_addr3" class="frm_input" size="60">
-            <label for="mb_giup_addr3">참고항목</label>
-            <input type="hidden" name="mb_giup_addr_jibeon" value="<?php echo $mb['mb_giup_addr_jibeon']; ?>"><br>
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">
-            <label for="mb_giup_tax_email">세금계산서이메일</label>
-        </th>
-        <td colspan="3">
-            <input type="text" name="mb_giup_tax_email" value="<?php echo $mb['mb_giup_tax_email'] ?>" id="mb_giup_tax_email" class="frm_input" size="30" maxlength="30">
-        </td>
-    </tr>
-    <!--
-    <tr>
-        <th scope="row">
-            <label for="mb_giup_manager_name">담당자명</label>
-        </th>
-        <td colspan="3">
-            <input type="text" name="mb_giup_manager_name" value="<?php echo $mb['mb_giup_manager_name'] ?>" id="mb_giup_manager_name" class="frm_input" size="30" maxlength="20">
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">
-            <label for="mb_giup_manager_tel">담당자연락처</label>
-        </th>
-        <td colspan="3">
-            <input type="text" name="mb_giup_manager_tel" value="<?php echo $mb['mb_giup_manager_tel'] ?>" id="mb_giup_manager_tel" class="frm_input" size="30" maxlength="20">
-        </td>
-    </tr>
-    -->
-    <tr>
+    </tr> -->
+
+
+    <!-- <tr>
         <th scope="row">
             <label for="mb_giup_manager_name">담당자</label>
         </th>
@@ -701,7 +766,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
                             <th scope="col" id="mm_hp" >전화번호</th>
                             <th scope="col" id="mm_hp_extension" >내선번호</th>
                             <th scope="col" id="mm_tel" >핸드폰</th>
-                            <!--<th scope="col" id="mm_thezone" >더존코드</th>-->
+                            <th scope="col" id="mm_thezone" >더존코드</th>
                             <th scope="col" id="mm_email" >이메일</th>
                             <th scope="col" id="mm_del" >삭제여부</th>
                         </tr>
@@ -744,11 +809,11 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
                             <td>
                                 <input type="text" name="mm_tel[]" value="<?php echo $managers[$m]['mm_tel'] ?>" id="mm_tel_<?php echo $m; ?>" class="frm_input" size="30" maxlength="20">
                             </td>
-                            <!--
+                            
                             <td>
                                 <input type="text" name="mm_thezone[]" value="<?php echo $managers[$m]['mm_thezone'] ?>" id="mm_thezone_<?php echo $m; ?>" class="frm_input" size="30" maxlength="20">
                             </td>
-                            -->
+                           
                             <td>
                                 <input type="text" name="mm_email[]" value="<?php echo $managers[$m]['mm_email'] ?>" id="mm_email_<?php echo $m; ?>" class="frm_input" size="30" maxlength="50">
                             </td>
@@ -765,7 +830,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
                 </table>
             </div>
         </td>
-    </tr>
+    </tr> -->
     <tr>
         <th colspan="4">
             <div style="padding: 20px 20px;background-color: #f1f1f1;">
@@ -934,13 +999,34 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
             ?>
         </td>
     </tr>
+    <tr>
+        <th colspan="4">
+            <div style="padding: 20px 20px;background-color: #f1f1f1;">
+                <h2 style="margin:0;padding:0;">여분 필드</h2>
+            </div>
+        </th>
+    </tr>
+    <?php for ($i=1; $i<=10; $i++) { ?>
+    <tr>
+        <th scope="row"><label for="mb_<?php echo $i ?>">여분 필드 <?php echo $i ?></label></th>
+        <td colspan="3"><input type="text" name="mb_<?php echo $i ?>" value="<?php echo $mb['mb_'.$i] ?>" id="mb_<?php echo $i ?>" class="frm_input" size="30" maxlength="255"></td>
+    </tr>
+    <?php } ?>
+    <tr>
+        <th colspan="4">
+            <div style="padding: 20px 20px;background-color: #f1f1f1;">
+                <h2 style="margin:0;padding:0;">기업 정보</h2>
+            </div>
+        </th>
+    </tr>
     </tbody>
     </table>
 </div>
 
 <div class="btn_fixed_top">
     <a href="./member_list.php?<?php echo $qstr ?>" class="btn btn_02">목록</a>
-    <input type="submit" value="확인" class="btn_submit btn" accesskey='s'>
+    <!-- <input type="submit" value="확인" class="btn_submit btn" accesskey='s'> -->
+    <input type="button" onclick="fmember_submit()" id="btn_submit" value="확인" class="btn_submit btn" accesskey='s'>
 
 
     <?php
@@ -988,8 +1074,335 @@ $("#accept").click(function(){
 
 });
 
-function fmember_submit(f)
-{
+function fmember_submit()
+{   
+     var f = document.getElementById("fmember");
+	// 회원아이디 검사
+	if (f.w.value == "") {
+		var msg = reg_mb_id_check();
+		if (msg) {
+			alert(msg);
+			f.mb_id.select();
+			return false;
+		}
+	}
+    if(!f.mb_giup_bname.value){
+        alert('이름/기업명을 입력하세요.');
+        f.mb_giup_bname.focus();
+        return false;
+    }
+
+    var mb_hp = $("#mb_hp1").val() + "-" + $("#mb_hp2").val() + "-" + $("#mb_hp3").val();
+    if(!$("#mb_hp1").val()){
+        alert('휴대폰번호를 입력해주세요.');
+        $("#mb_hp1").focus();
+        return false;
+    }
+    if(!$("#mb_hp2").val()){
+        alert('휴대폰번호를 입력해주세요');
+        $("#mb_hp2").focus();
+        return false;
+    }
+    if(!$("#mb_hp3").val()){
+        alert('휴대폰번호를 입력해주세요');
+        $("#mb_hp3").focus();
+        return false;
+    }
+
+    var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
+    if(!$("#mb_tel1").val()){
+        alert('전화번호를 입력해주세요.');
+        $("#mb_tel1").focus();
+        return false;
+    }
+    if(!$("#mb_tel2").val()){
+        alert('전화번호를 입력해주세요');
+        $("#mb_tel2").focus();
+        return false;
+    }
+    if(!$("#mb_tel3").val()){
+        alert('전화번호를 입력해주세요');
+        $("#mb_tel3").focus();
+        return false;
+    }
+    //mb_fax
+    var mb_fax = $("#mb_fax1").val() + "-" + $("#mb_fax2").val() + "-" + $("#mb_fax3").val();
+    if(!$("#mb_fax1").val()){
+        alert('팩스를 입력해주세요.');
+        $("#mb_fax1").focus();
+        return false;
+    }
+    if(!$("#mb_fax2").val()){
+        alert('팩스를 입력해주세요.');
+        $("#mb_fax2").focus();
+        return false;
+    }
+    if(!$("#mb_fax3").val()){
+        alert('팩스를 입력해주세요.');
+        $("#mb_fax3").focus();
+        return false;
+    }
+    // E-mail 검사
+	// if ((f.w.value == "") || (f.w.value == "u" && f.mb_email.defaultValue != f.mb_email.value)) {
+	// 	var msg = reg_mb_email_check();
+	// 	if (msg) {
+	// 		alert(msg);
+	// 		f.reg_mb_email.select();
+	// 		return false;
+	// 	}
+	// }
+    if(!f.mb_giup_bnum.value){
+        alert('사업자 번호를 입력하세요.');
+        f.mb_giup_bnum.focus();
+        return false;
+    }
+    if(!f.mb_giup_boss_name.value){
+        alert('대표자명을 입력하세요.');
+        f.mb_giup_boss_name.focus();
+        return false;
+    }
+    if(!f.mb_giup_bupjong.value){
+        alert('업종을 입력하세요.');
+        f.mb_giup_bupjong.focus();
+        return false;
+    }
+    if(!f.mb_giup_buptae.value){
+        alert('업태를 입력하세요.');
+        f.mb_giup_buptae.focus();
+        return false;
+    }
+    if(!f.mb_giup_manager_name.value){
+        alert('담당자명을 입력하세요.');
+        f.mb_giup_manager_name.focus();
+        return false;
+    }
+
+    if(!f.mb_giup_zip.value){
+        alert('(사업자정보) 우편번호를 입력하세요');
+        f.mb_giup_zip.focus();
+        return false;
+    }
+    if(!f.mb_giup_addr1.value){
+        alert('(사업자정보) 주소를 입력하세요');
+        f.mb_giup_addr1.focus();
+        return false;
+    }
+    if(!f.mb_giup_addr2.value&&!f.mb_giup_addr3.value){
+        alert('(사업자정보) 주소상세를 입력하세요');
+        f.mb_giup_addr2.focus();
+        return false;
+    }
+
+    if(!f.mb_zip.value){
+        alert('(배송지 주소) 우편번호를 입력하세요');
+        f.mb_zip.focus();
+        return false;
+    }
+    if(!f.mb_addr1.value){
+        alert('(배송지 주소) 주소를 입력하세요');
+        f.mb_addr1.focus();
+        return false;
+    }
+    if(!f.mb_addr2.value&&!f.mb_addr3.value){
+        alert('(배송지 주소) 주소상세를 입력하세요');
+        f.mb_addr2.focus();
+        return false;
+    }
+    // var msg = reg_mb_hp_check();
+	// if (msg) {
+	// 	alert(msg);
+	// 	f.reg_mb_hp.select();
+	// 	return false;
+	// }
+
+    // if (f.mb_name.value.length < 1) {
+    //     alert("관리자 이름을 입력하십시오.");
+    //     f.mb_name.focus();
+    //     return false;
+    // }
+
+    // if (!f.mb_sex.value) {
+    //     alert("성별을 선택해주세요");
+    //     f.mb_sex.focus();
+    //     return false;
+    // }
+    
+    // var mb_birth = $("#year").val() + $("#month").val() + $("#day").val();
+    // var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
+
+    // if(!$("#year").val()){
+    //     alert('연도를 선택해주세요');
+    //     $("#year").focus();
+    //     return false;
+    // }
+    // if(!$("#month").val()){
+    //     alert('월 선택해주세요');
+    //     $("#month").focus();
+    //     return false;
+    // }
+    // if(!$("#day").val()){
+    //     alert('일을 선택해주세요');
+    //     $("#day").focus();
+    //     return false;
+    // }
+
+
+    //체크 끝
+
+
+    //통신
+    var sendData = new FormData();
+    var sendData2 = new FormData();
+    sendData.append("usrId", $("#mb_id").val());//아이디
+    if($("#mb_password").val()){
+        sendData.append("usrPw", $("#mb_password").val());//비밀번호
+    }
+    sendData.append("entNm", $("#mb_giup_bname").val()); //사업체명
+    sendData.append("usrPnum", mb_hp);//관리자 휴대폰번호
+    sendData.append("entPnum", mb_tel); //사업소 전화번호
+    sendData.append("entFax", mb_fax); //사업소 팩스
+    sendData.append("usrMail", $("#mb_email").val());//메일
+
+    <?php if($w){ ?> 
+            sendData.append("entId", "<?=$mb['mb_entId']?>");
+    <?php } ?>
+    <?php if($w){ ?> 
+        sendData.append("entUsrId", $("#mb_id").val() );//entUsrId
+    <?php } ?>
+    
+    sendData.append("entCrn", $("#mb_giup_bnum").val()); //사업자 등록번호
+    sendData.append("entCeoNm", $("#mb_giup_boss_name").val()); //사업소 대표
+    sendData.append("entBusiType",$("#mb_giup_bupjong").val()); //사업소 업종
+    sendData.append("entBusiCondition",$("#mb_giup_buptae").val()); //사업소 업태
+    sendData.append("entZip", $("#mb_giup_zip").val());  //사업소 우편번호
+    sendData.append("entAddr", $("#mb_giup_addr1").val()); //사업소 주소
+    sendData.append("entAddrDetail",$("#mb_giup_addr2").val() + $("#mb_giup_addr3").val() ); //사업소 주소 상세
+    sendData.append("entTaxCharger",$("#mb_giup_manager_name").val()); //담당자
+    sendData.append("entConAcco1",$("#mb_entConAcc01").val()); //특약사항1
+    sendData.append("entConAcco2",$("#mb_entConAcc02").val()); //특약사항2
+
+    sendData.append("usrZip", $("#mb_zip").val()); //관리자 우편번호
+    sendData.append("usrAddr", $("#mb_addr1").val());//관리자 주소
+    sendData.append("usrAddrDetail", $("#mb_addr2").val())+$("#mb_addr3").val();//관리자 주소 상세
+    sendData.append("entMail", $("#mb_email").val());//메일
+
+
+
+    // sendData.append("usrNm", $("#mb_name").val()); //관리자이름
+    // sendData.append("usrBirth", mb_birth);//생년월일
+    // sendData.append("usrGender", $("#mb_sex").val());//성별
+    // sendData.append("entBusiNum",$("#mb_giup_sbnum").val()); //종사업장번호
+
+
+    //직인파일
+    var imgFileItem2 = $(".mb_giup_file2 input[type='file']");
+    for(var i = 0; i < imgFileItem2.length; i++){
+        if($(imgFileItem2[i])[0].files[0]){
+            if($(imgFileItem2[i])[0].files[0].size > 1024 * 1024 * 2){
+                alert('사업자직인 (계약서 날인) : 2MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem2[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
+                return false;
+            }
+            sendData.append("sealFile", $(imgFileItem2[i])[0].files[0]);
+            sendData2.append("sealFile", $(imgFileItem2[i])[0].files[0]);
+        }
+    }
+    //사업자등록증
+    var flag ='<?=$mb['crnFile']?>';
+    var imgFileItem1 = $(".mb_giup_file1 input[type='file']");
+    for(var i = 0; i < imgFileItem1.length; i++){
+        if(!flag){
+            if(!$(imgFileItem1[i])[0].files[0]){
+                alert('사업자등록증을 첨부해주세요.');
+                return false;
+            }
+            if($(imgFileItem1[i])[0].files[0].size > 1024 * 1024 * 2){
+                alert('사업자등록증 : 2MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem1[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
+                return false;
+            }
+        }
+        if($(imgFileItem1[i])[0].files[0]){
+            sendData.append("crnFile", $(imgFileItem1[i])[0].files[0]);
+        }
+    }
+
+    // for (let value of sendData.values()) {
+    //     console.log(value);
+    // }
+    // return false;
+
+    <?php if(!$w){
+            $api_url = "https://system.eroumcare.com:9901/api/ent/insert";
+        }else{
+            $api_url = "https://system.eroumcare.com:9901/api/ent/update";
+        } 
+    ?>
+        var info = "<?php echo $w==''?'회원가입 하시겠습니까?':'수정 하시겠습니까?'; ?>";
+        if (confirm(info)) {
+            $.ajax({
+                    type: 'POST',
+                    url : "<?=$api_url?>",
+                    type : "POST",
+                    async : false,
+                    cache : false,
+                    processData : false,
+                    contentType : false,
+                    data : sendData,
+                }).done(function (data) {
+                    if(data.message == "SUCCESS"){
+                        $.ajax({
+                            type: 'POST',
+                            url : "<?=G5_BBS_URL?>/ajax.account_admin.php",
+                            type : "POST",
+                            async : false,
+                            cache : false,
+                            processData : false,
+                            contentType : false,
+                            data : sendData,
+                            success : function(result){
+                                console.log(result);
+                                if(result =="N"){
+                                    alert('파일을 확인하세요');
+                                    return flase;
+                                }else{
+                                    result = JSON.parse(result);
+                                }
+                                sendData2.append("usrId", result.data['usrId']); //usrId
+                                sendData2.append("entId", result.data['entId']); //entId
+                                //이전 서버에 저장
+                                if(data.message == "SUCCESS"){
+                                    $.ajax({
+                                        type: 'POST',
+                                        url : "https://ex.eroumcare.com:9001/api/ent/update",
+                                        type : "POST",
+                                        async : false,
+                                        cache : false,
+                                        processData : false,
+                                        contentType : false,
+                                        data : sendData2,
+                                    }).done(function (data) {
+                                        // alert("완료되었습니다.");
+                                        // f.submit();
+                                        f.submit();
+                                        <?php if(!$w){ ?>
+                                            // location.href='<?=G5_URL?>/bbs/register_result.php';
+                                            <?php }else{ ?>
+                                            // location.href='<?=G5_URL?>';
+                                        <?php } ?>
+                                    });
+                                }else{
+                                    alert(data);
+                                    return false;
+                                }
+                            }
+                        });
+                    }else{
+                        alert(data);
+                        return false;
+                    }
+            });
+        }
+        return false;
+
     if (!f.mb_icon.value.match(/\.(gif|jpe?g|png)$/i) && f.mb_icon.value) {
         alert('아이콘은 이미지 파일만 가능합니다.');
         return false;
