@@ -87,16 +87,6 @@ $pdffile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_'.date("YmdHisw").'.p
 $pdfdir .= '/'.$pdffile;
 include_once('./lib/renderpdf.lib.php');
 
-// 감사 추적 인증서 PDF 파일 생성
-$certdir = G5_DATA_PATH.'/eform/cert';
-if(!is_dir($certdir)) {
-  @mkdir($certdir, G5_DIR_PERMISSION, true);
-  @chmod($certdir, G5_DIR_PERMISSION);
-}
-$certfile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_cert_'.date("YmdHisw").'.pdf';
-$certdir .= '/'.$certfile;
-include_once('./lib/rendercertpdf.lib.php');
-
 // 계약서 정보 업데이트
 sql_query("UPDATE `eform_document` SET
 `dc_status` = '2',
@@ -106,6 +96,16 @@ sql_query("UPDATE `eform_document` SET
 `dc_cert_pdf_file` = '$certfile'
 WHERE `dc_id` = UNHEX('$uuid')
 ");
+
+// 감사 추적 인증서 PDF 파일 생성
+$certdir = G5_DATA_PATH.'/eform/cert';
+if(!is_dir($certdir)) {
+  @mkdir($certdir, G5_DIR_PERMISSION, true);
+  @chmod($certdir, G5_DIR_PERMISSION);
+}
+$certfile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_cert_'.date("YmdHisw").'.pdf';
+$certdir .= '/'.$certfile;
+include_once('./lib/rendercertpdf.lib.php');
 
 json_response(200, 'OK');
 ?>
