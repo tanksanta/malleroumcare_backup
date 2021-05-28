@@ -30,6 +30,22 @@ while($item = sql_fetch_array($items)) {
 
 // 기초수급자 체크
 $is_gicho = $eform['penTypeCd'] == '04';
+
+// 계약서 로그 작성
+$log = '전자계약서의 내용을 확인했습니다.';
+
+$ip = $_SERVER['REMOTE_ADDR'];
+$browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+$timestamp = time();
+$datetime = date('Y-m-d H:i:s', $timestamp);
+
+sql_query("INSERT INTO `eform_document_log` SET
+`dc_id` = UNHEX('{$eform["uuid"]}'),
+`dl_log` = '$log',
+`dl_ip` = '$ip',
+`dl_browser` = '$browser',
+`dl_datetime` = '$datetime'
+");
 ?>
 <!DOCTYPE html>
 <html lang="ko">
