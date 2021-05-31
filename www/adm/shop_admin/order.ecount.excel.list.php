@@ -42,7 +42,7 @@
                     array_push($barcode,$result_again[$k]['prodBarNum']);
                 }
             }
-
+			asort($barcode);
             $barcode = implode(",", $barcode);
             $barcode = $barcode." "; 
             
