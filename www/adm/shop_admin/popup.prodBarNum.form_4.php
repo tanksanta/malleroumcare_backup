@@ -262,7 +262,7 @@
                                             <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" <?=$readonly?> placeholder="<?=$readonly_text?>"  data-frm-no="<?=$prodListCnt?>" maxlength="12">
                                             <i class="fa fa-check"></i>
                                             <span class="overlap">중복</span>
-                                            <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
+                                            <!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>"> -->
                                         </li>
                                         <?php	$prodListCnt++;  }
                                         ?>
@@ -550,7 +550,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
                             data : sendData_barcode,
                             success : function(result){
                                 alert('완료되었습니다.');
-                                close();
+                                close2();
                             }
                         });
                     }
@@ -690,17 +690,11 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         popup.classList.add('hide');
     }
     $(".popupCloseBtn").click(function(e){
-		e.preventDefault();
-		close();
+        close2();
 	});
-	$(".popupCloseBtn").click(function(e){
-		e.preventDefault();
-		close();
-	});
-    function close(){
-        parent.document.location.reload();
-        $("#popupProdBarNumInfoBox", parent.document).hide();
-		$("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
+    function close2(){
+        opener.location.reload();
+        window.close();
     }
 
 </script>
