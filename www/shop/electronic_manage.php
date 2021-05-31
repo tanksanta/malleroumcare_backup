@@ -160,7 +160,7 @@ $incompleted_eform_count = 0;
 			 </div>
 			 
 		</div>
-		<form id="form_search">
+		<form id="form_search" method="get">
 			<div class="search_box">
 				<select name="sel_field" id="sel_field">
 					<option value="penNm"<?php if($sel_field == 'penNm' || $sel_field == 'all') echo ' selected'; ?>>수급자</option>
