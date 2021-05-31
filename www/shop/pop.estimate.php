@@ -498,8 +498,8 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 		<td align="center"></td>
 		<!-- <td align="center"><?php echo number_format($amount['order'] / 1.1); ?></td>
 		<td align="center"><?php echo number_format($amount['order'] / 1.1 / 10); ?></td> -->
-		<td align="center"><?php echo number_format(($money1+$od['od_cart_discount']) / 1.1 + $money2); ?></td>
-		<td align="center"><?php echo number_format(($money1+$od['od_cart_discount']) / 1.1 / 10); ?></td>
+		<td align="center"><?php echo number_format(($money1) / 1.1 + $money2); ?></td>
+		<td align="center"><?php echo number_format(($money1) / 1.1 / 10); ?></td>
         <td align="center"><?php echo number_format(($money1 / 1.1 + $money2) + ($money1 / 1.1 / 10)); ?></td>
 	</tr>
 	</table>

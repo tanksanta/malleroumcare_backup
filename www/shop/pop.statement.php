@@ -7,6 +7,7 @@ include_once('./_common.php');
 $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
 
+$od['od_send_cost'] = $send_cost ? $send_cost : $od['od_send_cost'];
 if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 }
@@ -105,10 +106,10 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 if ( $od['od_cart_price'] ) {
     $amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'];
 }
-if ( $send_cost ) {
-    $amount['order'] += $send_cost;
-    $money1+= $send_cost;
-}
+// if ( $send_cost ) {
+//     $amount['order'] += $send_cost;
+//     $money1+= $send_cost;
+// }
 // 입금액 = 결제금액 + 포인트
 $amount['receipt'] = $od['od_receipt_price'] + $od['od_receipt_point'];
 
@@ -382,7 +383,9 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
         <?php } ?>
     <?php } ?>
 
-    <?php if ( $od['od_send_cost'] ) { ?>
+    <?php if ( $od['od_send_cost'] ) { 
+    $money1+= $od['od_send_cost'];    
+    ?>
         <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
             <td align="left" style="padding-left:5px;"><div class="goods_name">배송비</div></td>
             <td align="left" style="padding-left:5px;"></td>
@@ -443,8 +446,8 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 		<td align="center"></td>
 		<!-- <td align="center"><?php echo number_format($amount['order'] / 1.1); ?></td>
 		<td align="center"><?php echo number_format($amount['order'] / 1.1 / 10); ?></td> -->
-		<td align="center"><?php echo number_format(($money1+$od['od_send_cost']) / 1.1 + $money2); ?></td>
-		<td align="center"><?php echo number_format(($money1+$od['od_send_cost']) / 1.1 / 10); ?></td>
+		<td align="center"><?php echo number_format(($money1) / 1.1 + $money2); ?></td>
+		<td align="center"><?php echo number_format(($money1) / 1.1 / 10); ?></td>
         <td align="center"><?php echo number_format(($money1 / 1.1 + $money2) + ($money1 / 1.1 / 10)); ?></td>
 	</tr>
 	</table>
