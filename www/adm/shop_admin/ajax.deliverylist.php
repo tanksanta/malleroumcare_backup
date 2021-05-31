@@ -274,7 +274,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status from {$g5['g5_shop_cart_table']}) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date from {$g5['g5_shop_cart_table']}) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -288,7 +288,7 @@ foreach($order_steps as $order_step) {
 
 $order_by_step = implode(' , ', $order_by_steps);
 
-$sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), od_id desc ";
+$sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), B.ct_move_date desc, od_id desc ";
 
 $sql = " select count(od_id) as cnt " . $sql_common;
 

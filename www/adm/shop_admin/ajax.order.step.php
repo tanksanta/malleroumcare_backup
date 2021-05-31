@@ -9,6 +9,7 @@ if($_POST['ct_id']&&$_POST['step']){
     $entId="";
     $add_sql="";
     $ct_ex_date = date("Y-m-d");
+    $ct_move_date = date("Y-m-d H:i:s");
     $stateCd;
     $flag =true;
     //상태값 치환
@@ -46,7 +47,7 @@ if($_POST['ct_id']&&$_POST['step']){
         
         //상태 update
         if($_POST['step']=="배송"){$add_sql = ", `ct_ex_date` = '".$ct_ex_date."'"; }
-        $sql_ct[$i] = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql." where `ct_id` = '".$_POST['ct_id'][$i]."'";
+        $sql_ct[$i] = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql.", `ct_move_date`='".$ct_move_date."' where `ct_id` = '".$_POST['ct_id'][$i]."'";
 
         //시스템 상태값 변경
         $stoId=$stoId.$result_ct_s['stoId'];

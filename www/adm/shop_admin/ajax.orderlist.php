@@ -309,7 +309,7 @@ if ($sort2 == "") $sort2 = "desc";
 
 // shop_cart 조인으로 수정
 // member 테이블 조인
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status from {$g5['g5_shop_cart_table']}) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status ,ct_move_date from {$g5['g5_shop_cart_table']}) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -326,7 +326,7 @@ $order_by_step = implode(' , ', $order_by_steps);
 // $sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), od_id desc ";
 // echo $order_by_step;
 // return false;
-$sql_common .= " ORDER BY FIELD(B.ct_status, " . $order_by_step . " ), od_id desc ";
+$sql_common .= " ORDER BY FIELD(B.ct_status, " . $order_by_step . " ), B.ct_move_date desc, od_id desc ";
 // echo $order_by_step;
 // return false;
 
@@ -674,7 +674,6 @@ foreach($orderlist as $order) {
     $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
 	$prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
 	$prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
-    // $prodBarNumCntBtnWord = "바코드";
 
 
     if ($od_cart_count > 0) {
