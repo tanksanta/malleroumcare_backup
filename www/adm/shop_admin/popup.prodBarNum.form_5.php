@@ -3,8 +3,11 @@
 	include_once("./_common.php");
 	$g5["title"] = "주문 내역 바코드 수정";
 	// include_once(G5_ADMIN_PATH."/admin.head.php");
-    $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
-	$od = sql_fetch($sql);
+    // $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
+	// $od = sql_fetch($sql);
+    $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$stoId."%'";
+    $od = sql_fetch($sql_stock);
+
 	$sql = " select * from {$g5['g5_shop_cart_table']} where `ct_id` = '$ct_id' ";
 	$ct = sql_fetch($sql);
 	$prodList = [];
@@ -156,9 +159,18 @@
 
 					<div class="folding_box">
 							<ul class="inputbox">
+                                <?php 
+                                    if($ct["prodSupYn"] == "N"||$od['od_stock_insert_yn']=="Y"){
+                                        $readonly="";
+                                        $readonly_text="바코드를 입력하세요.";
+                                    }else{
+                                        $readonly="readonly";
+                                        $readonly_text="바코드가 입력되지 않았습니다.";
+                                    }
+                                ?>
 								<?php for($b = 0; $b< count($result_again); $b++){ ?>
 								<li>
-									<input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+									<input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" <?=$readonly?> placeholder="<?=$readonly_text?>" data-frm-no="<?=$prodListCnt?>" maxlength="12">
 									<i class="fa fa-check"></i>
 									<span class="overlap">중복</span>
 									<!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>"> -->
@@ -197,10 +209,12 @@
 	  </div>
 	</div>
 	<!-- 고정 하단 -->
-	<div id="popupFooterBtnWrap">
-		<button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
-		<button type="button" class="cancelbtn popupCloseBtn">취소</button>
-	</div>
+    <?php if($ct["prodSupYn"] == "N"||$od['od_stock_insert_yn']=="Y"){ ?>
+        <div id="popupFooterBtnWrap">
+            <button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
+            <button type="button" class="cancelbtn popupCloseBtn">취소</button>
+        </div>
+    <?php } ?>
 <?php
 if(!$member['mb_id']){alert('접근이 불가합니다.');}
 //접속시 db- >id 부과

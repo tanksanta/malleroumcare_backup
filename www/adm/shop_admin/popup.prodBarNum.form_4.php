@@ -247,9 +247,19 @@
 										</span>
 								<?php } ?>
 									<ul class="inputbox">
+                                        <?php 
+
+                                            if($ct["prodSupYn"] == "N"||$od['od_stock_insert_yn']=="Y"){
+                                                $readonly="";
+                                                $readonly_text="바코드를 입력하세요.";
+                                            }else{
+                                                $readonly="readonly";
+                                                $readonly_text="바코드가 입력되지 않았습니다.";
+                                            }
+                                        ?>
 										<?php for($b = 0; $b< count($result_again); $b++){ ?>
                                         <li>
-                                            <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                                            <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" <?=$readonly?> placeholder="<?=$readonly_text?>"  data-frm-no="<?=$prodListCnt?>" maxlength="12">
                                             <i class="fa fa-check"></i>
                                             <span class="overlap">중복</span>
                                             <!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>"> -->
@@ -289,7 +299,7 @@
 	  </div>
 	</div>
 	<!-- 고정 하단 -->
-    <?php if($ct["prodSupYn"] == "N"){ ?>
+    <?php if($ct["prodSupYn"] == "N"||$od['od_stock_insert_yn']=="Y"){ ?>
 	<div id="popupFooterBtnWrap">
 		<button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
 		<button type="button" class="cancelbtn popupCloseBtn">취소</button>
