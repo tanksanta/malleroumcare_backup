@@ -83,7 +83,7 @@ $incompleted_eform_count = get_incompleted_eform_count();
         <li class="active"><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<?php echo ($incompleted_eform_count ? '<span class="red_info">미작성: '.$incompleted_eform_count.'건</span>' : ''); ?></a></li>
     </ul>
     <div class="inner">
-    	<div class="list_box">
+    	<div class="list_box" style="display: none;">
  			<div class="point_box">
  				<div class="subtit">
 				 	전자문서 미 작성내역
