@@ -239,7 +239,7 @@
 
 							</div>
 							<div class="folding_box">
-								<?php if($ct["ct_qty"] >= 2){ ?>
+								<?php if($ct["ct_qty"] >= 2&&($ct["prodSupYn"] == "N"||$od['od_stock_insert_yn']=="Y")){ ?>
 										<span>
 										<input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
 										<button type="button" class="barNumCustomSubmitBtn">등록</button>
