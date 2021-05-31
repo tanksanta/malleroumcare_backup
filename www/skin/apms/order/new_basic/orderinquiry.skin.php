@@ -128,8 +128,8 @@ if($header_skin)
                 var popupHeight = 700;
                 var popupX = (window.screen.width / 2) - (popupWidth / 2);
                 var popupY= (window.screen.height / 2) - (popupHeight / 2);
-                window.open("<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
-
+                location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id;
+                // window.open("<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
 				// $("#popupProdBarNumInfoBox > div").append("<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
 				// $("#popupProdBarNumInfoBox iframe").load(function(){
 				// 	$("#popupProdBarNumInfoBox").show();
