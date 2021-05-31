@@ -427,15 +427,15 @@ label {
             <?php }?>
         </td>
     </tr>
-    <!-- <tr>
+    <tr>
         <th scope="row">
             <label for="mb_giup_tax_email">세금계산서이메일</label>
         </th>
         <td colspan="3">
             <input type="text" name="mb_giup_tax_email" value="<?php echo $mb['mb_giup_tax_email'] ?>" id="mb_giup_tax_email" class="frm_input" size="30" maxlength="30">
         </td>
-    </tr> -->
-    <!-- <tr>
+    </tr>
+    <tr>
         <?php
         if ($w != 'u') {
             $mb_thezone_placeholder = "등록 시 자동으로 발급됩니다.";
@@ -445,8 +445,8 @@ label {
         <td colspan="3">
             <input type="text" name="mb_thezone" value="<?php echo $mb['mb_thezone'] ?>" id="mb_thezone" class="frm_input" size="35" maxlength="50" placeholder="<?php echo $mb_thezone_placeholder ?>" <?php echo $w == '' ? 'readonly' : '' ?>>
         </td>
-    </tr> -->
-    <!--
+    </tr>
+    
     <tr>
         <th scope="row">딜러 여부</th>
         <td colspan="3">
@@ -456,8 +456,7 @@ label {
             <label for="mb_dealer_y">딜러회원</label>
         </td>
     </tr>
-    -->
-    <!-- <tr>
+     <tr>
         <th scope="row">본인확인방법</th>
         <td colspan="3">
             <input type="radio" name="mb_certify_case" value="ipin" id="mb_certify_ipin" <?php if($mb['mb_certify'] == 'ipin') echo 'checked="checked"'; ?>>
@@ -465,8 +464,8 @@ label {
             <input type="radio" name="mb_certify_case" value="hp" id="mb_certify_hp" <?php if($mb['mb_certify'] == 'hp') echo 'checked="checked"'; ?>>
             <label for="mb_certify_hp">휴대폰</label>
         </td>
-    </tr> -->
-    <!-- <tr>
+    </tr>
+     <tr>
         <th scope="row">본인확인</th>
         <td>
             <input type="radio" name="mb_certify" value="1" id="mb_certify_yes" <?php echo $mb_certify_yes; ?>>
@@ -481,7 +480,7 @@ label {
             <input type="radio" name="mb_adult" value="0" id="mb_adult_no" <?php echo $mb_adult_no; ?>>
             <label for="mb_adult_no">아니오</label>
         </td>
-    </tr> -->
+    </tr>
     <tr>
         <th colspan="4">
             <div style="padding: 20px 20px;background-color: #f1f1f1;">
@@ -505,7 +504,7 @@ label {
             <input type="hidden" name="mb_addr_jibeon" value="<?php echo $mb['mb_addr_jibeon']; ?>"><br>
         </td>
     </tr>
-    <!-- <tr>
+    <tr>
         <th scope="row"><label for="mb_icon">회원아이콘</label></th>
         <td colspan="3">
             <?php echo help('이미지 크기는 <strong>넓이 '.$config['cf_member_icon_width'].'픽셀 높이 '.$config['cf_member_icon_height'].'픽셀</strong>로 해주세요.') ?>
@@ -520,8 +519,8 @@ label {
             }
             ?>
         </td>
-    </tr> -->
-    <!-- <tr>
+    </tr>
+<tr>
         <th scope="row"><label for="mb_img">회원이미지</label></th>
         <td colspan="3">
             <?php echo help('이미지 크기는 <strong>넓이 '.$config['cf_member_img_width'].'픽셀 높이 '.$config['cf_member_img_height'].'픽셀</strong>로 해주세요.') ?>
@@ -536,8 +535,8 @@ label {
             }
             ?>
         </td>
-    </tr> -->
-	<!-- <tr>
+    </tr>
+<tr>
         <th scope="row">메일 수신</th>
         <td>
             <input type="radio" name="mb_mailling" value="1" id="mb_mailling_yes" <?php echo $mb_mailling_yes; ?>>
@@ -552,8 +551,8 @@ label {
             <input type="radio" name="mb_sms" value="0" id="mb_sms_no" <?php echo $mb_sms_no; ?>>
             <label for="mb_sms_no">아니오</label>
         </td>
-    </tr> -->
-    <!-- <tr>
+    </tr>
+<tr>
         <th scope="row">정보 공개</th>
         <td colspan="3">
             <input type="radio" name="mb_open" value="1" id="mb_open_yes" <?php echo $mb_open_yes; ?>>
@@ -625,7 +624,8 @@ this.form.mb_leave_date.value=this.value; } else { this.form.mb_leave_date.value
 this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
             <label for="mb_intercept_date_set_today">접근차단일을 오늘로 지정</label>
         </td>
-    </tr> -->
+    </tr>
+
 
     <?php
     //소셜계정이 있다면
@@ -714,7 +714,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
         }   //end if
     }   //end if
     ?>
-    <!-- <tr>
+    <tr>
         <th scope="row">기업멤버유형</th>
         <td colspan="3">
             <input type="radio" name="mb_giup_type" value="0" id="mb_giup_type_0" <?php echo $mb_giup_type_0; ?>>
@@ -724,10 +724,8 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
             <input type="radio" name="mb_giup_type" value="2" id="mb_giup_type_2" <?php echo $mb_giup_type_2; ?>>
             <label for="mb_giup_type_2">납품/판매목적</label>
         </td>
-    </tr> -->
-
-
-    <!-- <tr>
+    </tr>
+<tr>
         <th scope="row">
             <label for="mb_giup_manager_name">담당자</label>
         </th>
@@ -830,7 +828,8 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
                 </table>
             </div>
         </td>
-    </tr> -->
+    </tr> 
+
     <tr>
         <th colspan="4">
             <div style="padding: 20px 20px;background-color: #f1f1f1;">
