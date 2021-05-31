@@ -76,7 +76,7 @@ $incompleted_eform_count = get_incompleted_eform_count();
 
 <!-- 내용 -->
 <title>판매재고목록</title>
-<section   class="wrap  ">
+<section class="wrap ">
     <div class="sub_section_tit">청구/전자문서관리</div>
     <ul class="list_tab">
         <li><a href="<?=G5_SHOP_URL?>/claim_manage.php">청구관리</a></li>
@@ -158,26 +158,28 @@ $incompleted_eform_count = get_incompleted_eform_count();
 			 </div>
 			 
 		</div>
-    	<div class="search_box">
-            <select name="searchtype" id="">
-                <option value="1">수급자</option>
-                <option value="2">상품명</option>
-            </select>
-            <div class="input_search">
-                <input name="searchtypeText" value="<?=$_GET["searchtypeText"]?>" type="text">
-                <button  type="submit"></button>
-            </div>
-        </div>
- 		<div class="r_btn_area">
- 			<select >
-                <option>작성일정렬</option>
-                <option>수급자정렬</option>
-                <option>상품명정렬</option>
-            </select>
- 		</div>
- 		<div class="list_box">
+		<form id="form_search">
+			<div class="search_box">
+				<select name="sel_field" id="sel_field">
+					<option value="penNm"<?php if($sel_field == 'penNm' || $sel_field == 'all') echo ' selected'; ?>>수급자</option>
+					<option value="it_name"<?php if($sel_field == 'it_name') echo ' selected'; ?>>상품명</option>
+				</select>
+				<div class="input_search">
+						<input name="search" id="search" value="<?=$search?>" type="text">
+						<button id="btn_search" type="submit"></button>
+				</div>
+			</div>
+			<div class="r_btn_area">
+				<select name="sel_order" id="sel_order">
+					<option value="dc_sign_datetime"<?php if(!$sel_order || $sel_order == 'dc_sign_datetime') echo ' selected'; ?>>작성일정렬</option>
+					<option value="penNm"<?php if($sel_order == 'penNm') echo ' selected'; ?>>수급자정렬</option>
+				</select>
+			</div>
+		</form>
+ 		<div id="list_wrap" class="list_box">
  			<div class="table_box">
- 			<table >
+ 			<table id="table_list">
+			 <thead>
 				 <tr>
 				 	<th>No.</th>
 				 	<th>수급자 정보</th>
@@ -187,6 +189,8 @@ $incompleted_eform_count = get_incompleted_eform_count();
 				 	<th>전자문서</th>
 				 	<th>비고</th>
 				 </tr>
+				</thead>
+				<tbody>
 				 <tr>
 				 	<td>3</td>
 				 	<td>홍길동(L2233321333 / 3등급 /기초0%)</td>
@@ -198,42 +202,14 @@ $incompleted_eform_count = get_incompleted_eform_count();
 				 	</td>
 				 	<td class="text_c"> </td>
 				 </tr>
-				 
-				 <tr>
-				 	<td>2</td>
-				 	<td>홍길동(L2233321333 / 3등급 /기초0%)</td>
-				 	<td>상품명(11111)</td>
-				 	<td>급여제공기록지(서명)</td>
-				 	<td class="text_c">2021-02-02</td>
-				 	<td class="text_c">
-				 		<a href="#" class="btn_basic">다운로드</a>
-				 	</td>
-				 	<td class="text_c"><a href="#">공급계약서 다운로드</a></td>
-				 </tr>
-				 <tr>
-				 	<td>1</td>
-				 	<td>홍길동(L2233321333 / 3등급 /기초0%)</td>
-				 	<td>상품명(11111)</td>
-				 	<td>급여제공기록지</td>
-				 	<td class="text_c">2021-02-02</td>
-				 	<td class="text_c">
-				 		<select name="" id=""  class="btn_basic">
-				 			<option>::문서선택::</option>
-				 			<option>계약서</option>
-				 			<option>이용신청서</option>
-				 			<option>이용내역서</option>
-				 			<option>전체</option>
-				 		</select>
-				 	</td>
-				 	<td class="text_c"><a href="#">공급계약서 다운로드</a></td>
-				 </tr>
+				</tbody>
 			 </table>
 			 </div>
 			 
 			 <div class="list-paging">
 			 	<ul class="pagination ">
 			 		<li> </li>
-			 		<li><a href="#"> &lt;</a></li>
+			 		<li><a href="#">&lt;</a></li>
 			 		<li class="active"><a href="#">1</a></li>
 			 		<li><a href="#">2</a></li>
 			 		<li><a href="#">3</a></li>
@@ -246,10 +222,46 @@ $incompleted_eform_count = get_incompleted_eform_count();
     
 </section>
 
+<script>
+$(function() {
+	search();
 
+	function search(queryString) {
+		if(!queryString) queryString = '';
+		var params = $('#form_search').serialize();
+		var $listWrap = $('#list_wrap');
 
+		$.ajax({
+			method: 'GET',
+			url: '<?=G5_SHOP_URL?>/eform/ajax.eform.list.php?' + queryString,
+			data: params,
+			beforeSend: function() {
+				$listWrap.html('<div style="text-align:center;"><img src="<?=G5_URL?>/img/loading-modal.gif"></div>');
+			}
+		})
+		 .done(function(data) {
+			 $listWrap.html(data);
+		 })
+		 .fail(function() {
+			 $listWrap.html('');
+		 });
+	}
 
+	$('#btn_search').click(function(e) {
+		$('#form_search').submit();
+	});
 
+	$('#search').keyup(function(e) {
+		if(e.key === 'Enter') {
+			$('#form_search').submit();
+		}
+	});
+
+	$('#sel_order').change(function(e) {
+		$('#form_search').submit();
+	});
+});
+</script>
 
 <?php
 if($is_inquiry_sub) {

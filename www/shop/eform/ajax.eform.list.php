@@ -1,0 +1,105 @@
+<?php
+include_once("./_common.php");
+include_once('./lib/eform.lib.php');
+
+if(!$member['mb_entId']) {
+  alert('로그인이 필요합니다.');
+}
+
+// 검색처리
+$where = array();
+
+$search = isset($_GET['search']) ? get_search_string($_GET['search']) : '';
+$sel_field = isset($_GET['sel_field']) && in_array($_GET['sel_field'], array('penNm', 'it_name')) ? $_GET['sel_field'] : '';
+$sel_order = isset($_GET['sel_order']) && in_array($_GET['sel_order'], array('dc_sign_datetime', 'penNm')) ? $_GET['sel_order'] : '';
+
+$qstr = '';
+
+// 정렬 순서
+$sql_order = ' ORDER BY ';
+switch($sel_order) {
+  case 'penNm':
+    $qstr .= 'sel_order=penNm';
+    $sql_order .= 'E.penNm ASC ';
+    break;
+  default:
+    $qstr .= 'sel_order=dc_sign_datetime';
+    $sql_order .= 'E.dc_sign_datetime DESC ';
+}
+
+// 작성 완료된 계약서 & 마이그레이션 된 계약서만
+$where[] = " (dc_status = '2' OR dc_status = '3') ";
+
+if ($search != '') {
+  $qstr .= '&amp;search='.urlencode($search);
+  if($sel_field != '' && in_array($sel_field, array('penNm', 'it_name'))) {
+    $qstr .= '&amp;sel_field='.urlencode($sel_field);
+    $where[] = " $sel_field like '%{$search}%' ";
+  }
+}
+
+// where 배열 처리
+$sql_where = " WHERE E.entId = '{$member['mb_entId']}' ";
+if($where) {
+  $sql_where .= ' AND '.implode(' AND ', $where);
+}
+
+$sql_from = " FROM `eform_document` E";
+$total_count = sql_fetch("SELECT COUNT(*) AS cnt" . $sql_from . $sql_where)['cnt'];
+
+$page_rows = $config['cf_page_rows'];
+$total_page = ceil($total_count / $page_rows); // 전체 페이지 계산
+if ($page < 1) $page = 1;
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
+
+$sql_limit = " LIMIT {$from_record}, {$page_rows} ";
+
+$result = sql_query("SELECT HEX(E.dc_id) as uuid, E.*" . $sql_from . $sql_where . $sql_limit);
+
+?>
+<div class="table_box">
+<table id="table_list">
+<thead>
+<tr>
+<th>No.</th>
+<th>수급자 정보</th>
+<th>상품정보</th>
+<th>분류</th>
+<th>작성일</th>
+<th>전자문서</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<?php
+for($i = 0; $row = sql_fetch_array($result); $i++) {
+?>
+<tr>
+<td><?=$from_record + $i + 1?></td>
+<td><?="{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})"?></td>
+<td>상품명</td>
+<td>일반계약</td>
+<td class="text_c"><?=date('Y-m-d', strtotime($row['dc_sign_datetime']))?></td>
+<td class="text_c">
+  <a href="<?=G5_SHOP_URL?>/eform/downloadEform.php?od_id=<?=$row["od_id"]?>" class="btn_basic">다운로드</a>
+</td>
+<td class="text_c"><a href="<?=G5_SHOP_URL?>/eform/downloadCert.php?od_id=<?=$row["od_id"]?>">감사추적인증서 다운로드</a></td>
+</tr>
+<?php
+}
+?>
+</tbody>
+</table>
+</div>
+<div class="list-paging">
+<!--<ul class="pagination ">
+<li></li>
+<li><a href="#">&lt;</a></li>
+<li class="active"><a href="#">1</a></li>
+<li><a href="#">2</a></li>
+<li><a href="#">3</a></li>
+<li><a href="#">&gt;</a></li>
+<li></li>
+</ul>-->
+<?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+</div>
