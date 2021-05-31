@@ -706,20 +706,20 @@ pre{white-space: pre-wrap;}
 /* 210202 메인 최근게시글 */
 #mainBoardListWrap { width: 100%; float: left; margin-bottom: 30px; }
 #mainBoardListWrap * { position: relative; }
-#mainBoardListWrap > div { width: 32%; height: 250px; float: left; margin-right: 2%; border: 1px solid #DDD; padding: 15px 10px; }
+#mainBoardListWrap > div { width: 32%; height: 220px; float: left; margin-right: 2%; border: 1px solid #DDD; padding: 15px 10px; }
 #mainBoardListWrap > div:nth-of-type(3n) { margin-right: 0; }
-#mainBoardListWrap > div > .title { width: 100%; float: left; padding-bottom: 12px; border-bottom: 2px solid #EDEDED; margin-bottom: 10px; padding-left: 10px; }
+#mainBoardListWrap > div > .title { width: 100%; float: left; padding-bottom: 12px; border-bottom: 2px solid #EDEDED; margin-bottom: 10px; padding-left: 5px; }
 #mainBoardListWrap > div > .title > span { font-size: 15px; font-weight: bold; color: #666; }
 #mainBoardListWrap > div > .title > a { position: absolute; height: 28px; line-height: 28px; right: 0; top: -2px; font-size: 13px; color: #999; }
 #mainBoardListWrap > div > .title > a > i { font-size: 28px; margin-left: 5px; vertical-align: middle; top: -1px; color: #E6E6E6; }
-#mainBoardListWrap > .board > .list { width: 100%; float: left; padding-left: 10px; }
-#mainBoardListWrap > .board > .list > li { width: 100%; float: left; margin-top: 5px; }
+#mainBoardListWrap > .board > .list { width: 100%; float: left;   }
+#mainBoardListWrap > .board > .list > li { width: 100%; float: left; margin-top: 5px;font-size:13px; }
 #mainBoardListWrap > .board > .list > li > a { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 #mainBoardListWrap > .board > .list > li > a > img { margin-right: 10px; }
 #mainBoardListWrap > .customer > .info { width: 100%; float: left; padding: 10px; }
 #mainBoardListWrap > .customer > .info > li { width: 100%; float: left; color: #666; }
 #mainBoardListWrap > .customer > .info > li.call > img { width: 14%; float: left; vertical-align: middle; margin-right: 4%; top: 5px; }
-#mainBoardListWrap > .customer > .info > li.call > p { width: 82%; float: left; padding: 0; font-size: 20px; font-weight: bold; color: #333; margin: 3px 0; }
+#mainBoardListWrap > .customer > .info > li.call > p { width: 82%; float: left; padding: 0; font-size: 17px; font-weight: bold; color: #333; margin: 3px 0; }
 #mainBoardListWrap > .customer > .info > li.call > p > span { float: left; }
 #mainBoardListWrap > .customer > .info > li.call > p > span.Label { width: 120px; }
 #mainBoardListWrap > .customer > .info > li.time { margin-top: 20px; font-size: 13px; color: #999; }
