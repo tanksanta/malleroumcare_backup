@@ -179,46 +179,6 @@ $incompleted_eform_count = 0;
 			</div>
 		</form>
  		<div id="list_wrap" class="list_box">
- 			<div class="table_box">
- 			<table id="table_list">
-			 <thead>
-				 <tr>
-				 	<th>No.</th>
-				 	<th>수급자 정보</th>
-				 	<th>상품정보</th>
-				 	<th>분류</th>
-				 	<th>작성일</th>
-				 	<th>전자문서</th>
-				 	<th>비고</th>
-				 </tr>
-				</thead>
-				<tbody>
-				 <tr>
-				 	<td>3</td>
-				 	<td>홍길동(L2233321333 / 3등급 /기초0%)</td>
-				 	<td>상품명(11111)</td>
-				 	<td>일반계약</td>
-				 	<td class="text_c">2021-02-02</td>
-				 	<td class="text_c">
-				 		<a href="#" class="btn_basic">다운로드</a>
-				 	</td>
-				 	<td class="text_c"> </td>
-				 </tr>
-				</tbody>
-			 </table>
-			 </div>
-			 
-			 <div class="list-paging">
-			 	<ul class="pagination ">
-			 		<li> </li>
-			 		<li><a href="#">&lt;</a></li>
-			 		<li class="active"><a href="#">1</a></li>
-			 		<li><a href="#">2</a></li>
-			 		<li><a href="#">3</a></li>
-			 		<li><a href="#">&gt;</a></li>
-			 		<li> </li>
-			 	</ul>
-			 </div>
 		</div>
 	</div>
     

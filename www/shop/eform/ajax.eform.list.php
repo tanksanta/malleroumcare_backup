@@ -7,6 +7,7 @@ if(!$member['mb_entId']) {
 }
 
 // 검색처리
+$select = array();
 $where = array();
 
 $search = isset($_GET['search']) ? get_search_string($_GET['search']) : '';
@@ -17,26 +18,37 @@ $qstr = '';
 
 // 정렬 순서
 $sql_order = ' ORDER BY ';
+$index_order = '';
 switch($sel_order) {
   case 'penNm':
     $qstr .= 'sel_order=penNm';
-    $sql_order .= 'E.penNm ASC ';
+    $index_order = 'ASC';
+    $sql_order .= 'E.penNm ' . $index_order;
     break;
   default:
     $qstr .= 'sel_order=dc_sign_datetime';
-    $sql_order .= 'E.dc_sign_datetime DESC ';
+    $index_order = 'DESC';
+    $sql_order .= 'E.dc_sign_datetime ' . $index_order;
 }
 
 // 작성 완료된 계약서 & 마이그레이션 된 계약서만
 $where[] = " (dc_status = '2' OR dc_status = '3') ";
 
-if ($search != '') {
+$select[] = ' I.it_name ';
+$select[] = ' COUNT(E.dc_id) as it_count ';
+$sql_join = ' LEFT JOIN `eform_document_item` I ON E.dc_id = I.dc_id ';
+$sql_group = " GROUP BY E.dc_id";
+
+if ($search != '' && $sel_field != '') {
   $qstr .= '&amp;search='.urlencode($search);
-  if($sel_field != '' && in_array($sel_field, array('penNm', 'it_name'))) {
-    $qstr .= '&amp;sel_field='.urlencode($sel_field);
-    $where[] = " $sel_field like '%{$search}%' ";
-  }
+  $qstr .= '&amp;sel_field='.urlencode($sel_field);
+
+  $where[] = " $sel_field like '%{$search}%' ";
 }
+
+// select 배열 처리
+$select[] = "E.*";
+$sql_select = "HEX(E.dc_id) as uuid, ".implode(', ', $select);
 
 // where 배열 처리
 $sql_where = " WHERE E.entId = '{$member['mb_entId']}' ";
@@ -54,8 +66,7 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
 $sql_limit = " LIMIT {$from_record}, {$page_rows} ";
 
-$result = sql_query("SELECT HEX(E.dc_id) as uuid, E.*" . $sql_from . $sql_where . $sql_limit);
-
+$result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where . $sql_group . $sql_order . $sql_limit);
 ?>
 <div class="table_box">
 <table id="table_list">
@@ -73,11 +84,12 @@ $result = sql_query("SELECT HEX(E.dc_id) as uuid, E.*" . $sql_from . $sql_where 
 <tbody>
 <?php
 for($i = 0; $row = sql_fetch_array($result); $i++) {
+  $index = $from_record + $i + 1;
 ?>
 <tr>
-<td><?=$from_record + $i + 1?></td>
+<td><?=$index?></td>
 <td><?="{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})"?></td>
-<td>상품명</td>
+<td><?=$row["it_name"]?><?php if($row['it_count'] > 1) { echo ' 외 ' . ($row['it_count'] - 1) . '건'; } ?></td>
 <td>일반계약</td>
 <td class="text_c"><?=date('Y-m-d', strtotime($row['dc_sign_datetime']))?></td>
 <td class="text_c">
