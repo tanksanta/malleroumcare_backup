@@ -85,6 +85,15 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $row['sum'] = $sum;
     $amount['order'] += $sum['price'] - $sum['discount'];
 
+
+    $sql_taxInfo = 'select `it_taxInfo` from `g5_shop_item` where `it_id` = "'.$options[$k]['it_id'].'"';
+    $it_taxInfo = sql_fetch($sql_taxInfo);
+    if($it_taxInfo['it_taxInfo']=="과세"){ 
+        $money1+=$sum['price'] - $sum['discount'];
+    }else{
+        $money2+=$sum['price'] - $sum['discount'];
+    }
+
     if ( !$od['od_send_cost'] ) {
         $od['od_send_cost'] += $sum['ct_send_cost'];
     }
@@ -96,7 +105,10 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 if ( $od['od_cart_price'] ) {
     $amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'];
 }
-
+if ( $send_cost ) {
+    $amount['order'] += $send_cost;
+    $money1+= $send_cost;
+}
 // 입금액 = 결제금액 + 포인트
 $amount['receipt'] = $od['od_receipt_price'] + $od['od_receipt_point'];
 
@@ -338,12 +350,33 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
         <?php for($k=0; $k<count($options); $k++) { ?>
             <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
                 <td align="left" style="padding-left:5px;"><div class="goods_name"><?php echo $carts[$i]['it_name']; ?></div></td>
-                <td align="left" style="padding-left:5px;"><?php echo $options[$k]['ct_option']; ?></td>
+                <td align="left" style="padding-left:5px;">
+                <?php echo $options[$k]['ct_option'] != $options[$k]['it_name'] ? '옵션: ' . $options[$k]['ct_option'] : ''; ?>
+                <?php echo $options[$k]['ct_option'] != $options[$k]['it_name'] && $options[$k]['cs'] && $k == 0 ? ', ' : ''; ?>
+                <?php if($options[$k]['cs'] && $k == 0){ ?>
+                    사이즈: 가로(<?php echo $options[$k]['cs']['size_width']; ?>mm) X 세로(<?php echo $options[$k]['cs']['size_height']; ?>mm)
+                <?php } ?>
+                </td>
+
+                <?php
+                $sql_taxInfo = 'select `it_taxInfo` from `g5_shop_item` where `it_id` = "'.$options[$k]['it_id'].'"';
+                $it_taxInfo = sql_fetch($sql_taxInfo);
+                if($it_taxInfo['it_taxInfo']=="영세"){ 
+                    $m_money = $m_money + ($options[$k]['opt_price']* $options[$k]['ct_qty'] - $options[$k]['opt_price']* $options[$k]['ct_qty']/ 1.1);
+                ?>
+                <td align="center"><?php echo $options[$k]['ct_qty']; ?></td>
+                <td align="center"><?php echo number_format($options[$k]['opt_price']); ?></td>
+                <td align="center"><?php echo number_format($options[$k]['opt_price']* $options[$k]['ct_qty']); ?></td>
+                <td align="center">0</td>
+                <td align="center"><?php echo number_format(($options[$k]['opt_price'] * $options[$k]['ct_qty'])); ?></td>
+
+                <?php }else{ ?>
                 <td align="center"><?php echo $options[$k]['ct_qty']; ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1); ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']); ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty']); ?></td>
-                <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty'] + ($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty'])); ?></td>
+                <td align="center"><?php echo number_format(($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']) + ($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty'])); ?></td>
+                <?php } ?>
             </tr>
             <?php $a++; ?>
         <?php } ?>
@@ -354,7 +387,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
             <td align="left" style="padding-left:5px;"><div class="goods_name">배송비</div></td>
             <td align="left" style="padding-left:5px;"></td>
             <td align="center"></td>
-            <td align="center"><?php echo number_format($od['od_send_cost'] / 1.1); ?></td>
+            <td align="center"><?php echo number_format($od['od_send_cost']); ?></td>
             <td align="center"><?php echo number_format($od['od_send_cost'] / 1.1); ?></td>
             <td align="center"><?php echo number_format($od['od_send_cost'] / 1.1 / 10); ?></td>
             <td align="center"><?php echo number_format($od['od_send_cost'] / 1.1 + $od['od_send_cost'] / 1.1 / 10); ?></td>
@@ -408,9 +441,11 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 		<td align="center"></td>
 		<td align="center"></td>
 		<td align="center"></td>
-		<td align="center"><?php echo number_format($amount['order'] / 1.1); ?></td>
-		<td align="center"><?php echo number_format($amount['order'] / 1.1 / 10); ?></td>
-        <td align="center"><?php echo number_format(($amount['order'] / 1.1) + ($amount['order'] / 1.1 / 10)); ?></td>
+		<!-- <td align="center"><?php echo number_format($amount['order'] / 1.1); ?></td>
+		<td align="center"><?php echo number_format($amount['order'] / 1.1 / 10); ?></td> -->
+		<td align="center"><?php echo number_format(($money1+$od['od_send_cost']) / 1.1 + $money2); ?></td>
+		<td align="center"><?php echo number_format(($money1+$od['od_send_cost']) / 1.1 / 10); ?></td>
+        <td align="center"><?php echo number_format(($money1 / 1.1 + $money2) + ($money1 / 1.1 / 10)); ?></td>
 	</tr>
 	</table>
 

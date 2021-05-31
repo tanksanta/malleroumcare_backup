@@ -397,10 +397,12 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
     <?php
         $a = 0;
         $m_money=0;
+        $price1=0;  //공가금액
+        $price2=0;  //세액
         for($i=0; $i<count($carts); $i++) { 
         $options = $carts[$i]['options'];
     ?>
-        <?php for($k=0; $k<count($options); $k++) { ?>
+          <?php for($k=0; $k<count($options); $k++) { ?>
             <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
                 <td align="left" style="padding-left:5px;"><div class="goods_name"><?php echo $carts[$i]['it_name']; ?></div></td>
                 <td align="left" style="padding-left:5px;">
@@ -440,7 +442,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
             <td align="left" style="padding-left:5px;"><div class="goods_name">배송비</div></td>
             <td align="left" style="padding-left:5px;"></td>
             <td align="center"></td>
-            <td align="center"><?php echo number_format($od['od_send_cost'] / 1.1); ?></td>
+            <td align="center"><?php echo number_format($od['od_send_cost']); ?></td>
             <td align="center"><?php echo number_format($od['od_send_cost'] / 1.1); ?></td>
             <td align="center"><?php echo number_format($od['od_send_cost'] / 1.1 / 10); ?></td>
             <td align="center"><?php echo number_format($od['od_send_cost'] / 1.1 + $od['od_send_cost'] / 1.1 / 10); ?></td>
@@ -496,8 +498,8 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 		<td align="center"></td>
 		<!-- <td align="center"><?php echo number_format($amount['order'] / 1.1); ?></td>
 		<td align="center"><?php echo number_format($amount['order'] / 1.1 / 10); ?></td> -->
-		<td align="center"><?php echo number_format(($money1+$money2) / 1.1); ?></td>
-		<td align="center"><?php echo number_format(($money1+$money2) / 1.1 / 10); ?></td>
+		<td align="center"><?php echo number_format(($money1+$od['od_cart_discount']) / 1.1 + $money2); ?></td>
+		<td align="center"><?php echo number_format(($money1+$od['od_cart_discount']) / 1.1 / 10); ?></td>
         <td align="center"><?php echo number_format(($money1 / 1.1 + $money2) + ($money1 / 1.1 / 10)); ?></td>
 	</tr>
 	</table>
