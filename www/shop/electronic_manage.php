@@ -71,7 +71,9 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
 }
 
+// 미작성 내역 일단 숨기기
 $incompleted_eform_count = get_incompleted_eform_count();
+$incompleted_eform_count = 0;
 ?>
 
 <!-- 내용 -->
