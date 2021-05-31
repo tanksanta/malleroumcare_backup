@@ -1,18 +1,30 @@
+.new-page {
+  page-break-before: always;
+}
+
 .a4 {
   width: 1240px;
   margin: 0 auto;
 }
 
 .head {
+  position: relative;
   background-color: #e9e9e9;
   color: #aaa;
   font-size: 12px;
-  padding:20px 20px 10px 0;
+  height: 12mm;
   text-align: right;
+}
+
+.head-text {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
 }
 
 .body {
   padding: 0 60px;
+  padding-bottom: 20px;
 }
 
 h3 {
@@ -21,6 +33,7 @@ h3 {
   margin: 20px 0;
   padding: 6px 0;
   border-bottom: 1px solid #ddd;
+  color: #000;
 }
 
 table {
@@ -87,4 +100,10 @@ table th {
 .table-history .ip {
   font-weight: normal;
   color: #000;
+}
+
+.conditions p {
+  color: #999;
+  font-size: 12px;
+  line-height: 1.5;
 }

@@ -31,11 +31,6 @@ $logs = sql_query("SELECT * FROM `eform_document_log` WHERE dc_id = UNHEX('{$efo
 // 기초수급자 체크
 $is_gicho = $eform['penTypeCd'] == '04';
 
-
-// 감사추적 인증서 제작시간
-$timestamp = time();
-$datetime = date('Y-m-d H:i:s', $timestamp);
-
 $sign_status = '완료 됨';
 ?>
 <!DOCTYPE html>
@@ -50,7 +45,6 @@ $sign_status = '완료 됨';
 </head>
 <body>
 <div class="a4">
-  <div class="head">감사 추적 인증서 (제작시간 : <?=$datetime?>)</div>
   <div class="body">
     <div class="section">
       <h3>감사 추적 인증서</h3>
@@ -84,10 +78,11 @@ $sign_status = '완료 됨';
     <div class="section">
       <h3>서명 정보</h3>
       <?php
+      $index = 0;
       foreach($state as $code => $arrs) {
         foreach($arrs as $arr) {
      ?>
-      <table class="table-sign-info">
+      <table class="table-sign-info<?php if($index === 4) echo ' new-page'; ?>">
         <colgroup>
           <col style="width: 20%;">
           <col style="">
@@ -120,6 +115,7 @@ $sign_status = '완료 됨';
         </tbody>
       </table>
       <?php
+          $index++;
         }
       }
       ?>
@@ -154,8 +150,8 @@ $sign_status = '완료 됨';
         </tbody>
       </table>
     </div>
-    <div class="section">
-      <h3>전자서명 이용약관</h3>
+    <div class="section conditions">
+    <?php require_once('./document/conditions.php'); ?>
     </div>
   </div>
 </div>
