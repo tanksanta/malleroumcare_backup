@@ -2695,6 +2695,16 @@ function is_coupon_downloaded($mb_id, $cz_id)
     return ($row['cnt'] > 0);
 }
 
+// 계약서 미작성 주문 개수 가져오기
+function get_incompleted_eform_count() {
+    global $member;
+
+    if(!$member['mb_entId']) return 0;
+    $count = sql_fetch("SELECT COUNT(*) AS cnt FROM `eform_document` WHERE entId = '{$member["mb_entId"]}' AND dc_status = 1")['cnt'];
+
+    return $count;
+}
+
 //==============================================================================
 // 쇼핑몰 라이브러리 모음 끝
 //==============================================================================

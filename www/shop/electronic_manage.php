@@ -71,7 +71,7 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
 }
 
-
+$incompleted_eform_count = get_incompleted_eform_count();
 ?>
 
 <!-- 내용 -->
@@ -80,7 +80,7 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
     <div class="sub_section_tit">청구/전자문서관리</div>
     <ul class="list_tab">
         <li><a href="<?=G5_SHOP_URL?>/claim_manage.php">청구관리</a></li>
-        <li class="active"><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<span class="red_info">미작성: 1건</span></a></li>
+        <li class="active"><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<?php echo ($incompleted_eform_count ? '<span class="red_info">미작성: '.$incompleted_eform_count.'건</span>' : '');?></a></li>
     </ul>
     <div class="inner">
     	<div class="list_box">
