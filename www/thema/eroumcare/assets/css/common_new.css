@@ -259,7 +259,8 @@ pre{white-space: pre-wrap;}
 .banner_wrap .banner_back .bgimg{width:100%; filter: blur(6px);  -webkit-filter: blur(6px);   -moz-filter: blur(6px);  -o-filter: blur(6px);position: absolute;top:0;z-index: -1}
 .banner_wrap .banner_back img{width:1900px;margin: 0 auto; }
 
-.mo_top{display:none;width:100%;border-bottom: 1px solid #ddd;position: fixed;z-index: 100;background: #fff;height: 60px;text-align:center; box-shadow: 1px 3px 5px rgba(0,0,0,0.3);}
+.mo_top{display:none;width:100%;border-bottom: 1px solid #ddd;position: fixed;z-index: 100;background-color: #fff;height: 60px;text-align:center; box-shadow: 1px 3px 5px rgba(0,0,0,0.3);}
+.mo_top.is-index{background-color:#eef2eb}
 .mo_top .logo_area{margin:0 auto;height: 60px;display:inline-block;padding: 5px;font-size:20px;font-weight:bold;line-height: 50px;}
 .mo_top .logo_area a {font-family: 'NanumSquareRound';}
 .mo_top .logo_area img{height: 40px;}
@@ -874,26 +875,10 @@ pre{white-space: pre-wrap;}
 #myRecipientListWrap > .list-paging { width: 100%; float: left; margin-top: 20px; }
 
 /* 210208 상단퀵메뉴 */
-#headerTopQuickMenuWrap { display: none; width: 100%; float: left; margin-bottom: 40px; }
+#headerTopQuickMenuWrap { display: none; width: 100%; }
 #headerTopQuickMenuWrap * { position: relative; }
 #headerTopQuickMenuWrap > div { width: 1200px; margin: 0 auto; }
 #headerTopQuickMenuWrap > div > div { width: 100%; float: left; }
-
-#headerTopQuickMenuWrap .titleWrap { width: 100%; float: left; color: #FFF; font-weight: 500; font-size: 15px; margin-bottom: 20px; }
-#headerTopQuickMenuWrap .listWrap { width: 100%; float: left; }
-#headerTopQuickMenuWrap .listWrap > li { width: 29%; height: 120px; float: left; margin-right: 2%; margin-bottom: 2%; display: table; table-layout: fixed; }
-#headerTopQuickMenuWrap .listWrap > li.marginDisable { margin-bottom: 0 !important; }
-#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) { width: 38%; height: 265px; }
-#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a { float: left; padding: 50px 0 0 20px; background-color: #F6FAF3; }
-#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a > .bigTitleWrap { width: 100%; float: left; text-align: left; }
-#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a > .bigTitleWrap > span { width: 100%; float: left; font-size: 14px; font-weight: normal; }
-#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a > .bigTitleWrap > span.big { font-size: 23px; line-height: 30px; margin-bottom: 15px; font-weight: bold; }
-#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a > img { position: absolute; margin-right: 0; bottom: 0; right: 10px; }
-#headerTopQuickMenuWrap .listWrap > li:nth-of-type(3) { margin-right: 0; }
-#headerTopQuickMenuWrap .listWrap > li:nth-of-type(5) { margin-right: 0; }
-#headerTopQuickMenuWrap .listWrap > li > a { width: 100%; height: 100%; border-radius: 15px; background-color: #F5F5F5; border: 1px solid #DDD; text-align: center; color: #333; font-size: 21px; display: table-cell; vertical-align: middle; font-weight: bold; }
-#headerTopQuickMenuWrap .listWrap > li > a > img { margin-right: 30px; }
-#headerTopQuickMenuWrap .listWrap > li > a > span {display:inline-block;width:140px;}
 
 /* 210215 상단검색 */
 .mo_searchWrap { width: 100%; height: 55px; float: left; padding: 0 20px; margin-bottom: 20px; }
@@ -932,8 +917,6 @@ pre{white-space: pre-wrap;}
 
 @media (max-width: 1200px){
 	#mainTopSlidePCWrap { width: calc(100% + 40px); left: -20px; position: relative; }
-	#headerTopQuickMenuWrap > div { width: 100%; float: left; }
-	#headerTopQuickMenuWrap > div > div { padding: 20px; }
 	.at-container { width: 100%; float: left; padding: 0 20px !important; }
 	.top_common_area > .searchWrap { width: 400px; margin-left: -200px; }
 	.footer_area > div { width: 100%; float: left; }
@@ -990,18 +973,15 @@ pre{white-space: pre-wrap;}
 	#myRecipientListWrap > .itemWrap > .item > li.info > p.labelName { font-size: 12px; }
 	#myRecipientListWrap > .itemWrap > .item > li.info > p.value { font-size: 15px; font-weight: 500; margin-top: -5px; }
 
-	#headerTopQuickMenuWrap { display: block; margin-bottom: 20px; }
-	#headerTopQuickMenuWrap > div > div { padding-top: 0; }
-	#headerTopQuickMenuWrap .listWrap > li { width: 49%; height: 70px; }
-	#headerTopQuickMenuWrap .listWrap > li > a { font-size: 14px; overflow: hidden; }
-	#headerTopQuickMenuWrap .listWrap > li > a > img { width: 30px; margin-right: 5px; }
-	#headerTopQuickMenuWrap .listWrap > li > a > span { top: 1px; width:100px;text-align: center; }
-	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) { width: 100%; height: 170px; margin-right: 0; margin-bottom: 2% !important; }
-	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a { padding: 45px 0 0 15px; }
-	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a > .bigTitleWrap > span { font-size: 13px; }
-	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a > .bigTitleWrap > span.big { font-size: 18px; line-height: 24px; }
-	#headerTopQuickMenuWrap .listWrap > li:nth-of-type(1) > a > img { width: 185px; bottom: -10px; -webkit-perspective: 1; }
-	
+	#headerTopQuickMenuWrap { display: block; float: left; }
+	#headerTopQuickMenuWrap > div { width: 100%; float: left; }
+	#headerTopQuickMenuWrap > div > div { padding: 0 10px; }
+	#headerTopQuickMenuWrap .listWrap > li { width:25%; padding: 5px; height: 60px; float: left; }
+	#headerTopQuickMenuWrap .listWrap > li > a { display:block; padding: 15px 0; border-radius: 10px; text-align: center; background-color: #e1e5df; font-size: 14px; line-height: 20px; overflow: hidden; }
+	#headerTopQuickMenuWrap .listWrap > li > a > span { color: #333; font-weight: 500; }
+
+	#thema_wrapper.is-index { background-color: #fff; background: linear-gradient(to bottom, #eef2eb 450px, #fff 450px); }
+
 	#mainBoardListWrap { padding: 0 10px; }
 	#mainBoardListWrap > div { width: 100%; margin: 0; margin:5px 0; }
 	#mainBoardListWrap > .customer { display: block; height: auto; }
@@ -1017,5 +997,5 @@ pre{white-space: pre-wrap;}
 }
 
 @media (max-width: 450px){
-	#headerTopQuickMenuWrap .listWrap > li > a { padding-left: 15px; text-align: left; }
+	#headerTopQuickMenuWrap .listWrap > li > a { font-size: 12px; }
 }

@@ -146,9 +146,9 @@ scrollToTop();
         </div>
 <?php } ?>
 <?php #//급여모드 보고시면  top_mode_area 주석 해제, mo_top에는 style="margin-top:50px;" 넣어야함  ?>
-<div class="mo_top" <?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")&&$_COOKIE["viewType"]=="basic"){ ?><?php  } ?>>
+<div class="mo_top <?php echo $is_index; ?>" <?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")&&$_COOKIE["viewType"]=="basic"){ ?><?php  } ?>>
     <div class="logoWrap">
-        <a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
+        <a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png" alt="이로움 로고"></a>
     </div>
     <div class="mode_div">
         <?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")){ ?>
@@ -390,44 +390,28 @@ scrollToTop();
 			<div id="headerTopQuickMenuWrap">
 				<div>
 					<div>
-
 						<ul class="listWrap">
-							<li class="marginDisable">
-								<a href="/bbs/content.php?co_id=guide" title="이용안내">
-									<p class="bigTitleWrap">
-										<span class="big">복지용구<br>통합관리 시스템</span>
-										<span>시스템 이용안내</span>
-									</p>
-									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon01.png" alt="이용안내_아이콘">
+							<li>
+								<a href="/shop/my.recipient.list.php" title="수급자">
+									<span>수급자</span>
 								</a>
 							</li>
 							<li>
-								<a href="/shop/my.recipient.list.php" title="수급자관리">
-									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon02.png" alt="수급자관리_아이콘">
-									<span>수급자관리</span>
+								<a href="/shop/electronic_manage.php" title="전자문서">
+									<span>전자문서</span>
 								</a>
 							</li>
 							<li>
-								<!-- <a href="/bbs/content.php?co_id=inventory_guide" title="보유재고관리"> -->
-								<a href="<?php echo G5_SHOP_URL?>/sales_Inventory.php" title="보유재고관리">
-									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon03.png" alt="보유재고관리_아이콘">
-									<span>보유재고관리</span>
+								<a href="<?php echo G5_SHOP_URL?>/sales_Inventory.php" title="보유재고">
+									<span>보유재고</span>
 								</a>
 							</li>
 							<li class="marginDisable">
 								<a href="/shop/orderinquiry.php" title="주문내역관리">
-									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon04.png" alt="주문내역관리_아이콘">
 									<span>주문내역관리</span>
 								</a>
 							</li>
-							<li class="marginDisable">
-								<a href="/bbs/content.php?co_id=guide" title="시스템이용안내">
-									<img src="<?=THEMA_URL?>/assets/img/headerTopIcon05.png" alt="시스템이용안내_아이콘">
-									<span>시스템이용안내</span>
-								</a>
-							</li>
 						</ul>
-
 					</div>
 				</div>
 			</div>
