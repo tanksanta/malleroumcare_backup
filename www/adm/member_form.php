@@ -251,9 +251,9 @@ label {
         <th scope="row"><label for="mb_hp">휴대폰번호</label></th>
         <td>
         <?php $mb_hp =explode('-',$mb['mb_hp']); ?>
-        <input type="text" name="mb_hp1" value="<?=$mb_hp[0]?>" id="mb_hp1" class="frm_input" size="15" maxlength="20">
-        <input type="text" name="mb_hp2" value="<?=$mb_hp[1]?>" id="mb_hp2" class="frm_input" size="15" maxlength="20">
-        <input type="text" name="mb_hp3" value="<?=$mb_hp[2]?>" id="mb_hp3" class="frm_input" size="15" maxlength="20">
+        <input type="text" name="mb_hp1" value="<?=$mb_hp[0]?>" id="mb_hp1" class="frm_input"size="15" maxlength="3">
+        <input type="text" name="mb_hp2" value="<?=$mb_hp[1]?>" id="mb_hp2" class="frm_input" size="15" maxlength="4">
+        <input type="text" name="mb_hp3" value="<?=$mb_hp[2]?>" id="mb_hp3" class="frm_input" size="15" maxlength="4">
         
         </td>
         <th scope="row"><label for="mb_tel">전화번호</label></th>
@@ -280,17 +280,17 @@ label {
             <option value="064" <?=($mb_giup_btel[0] =="064")? "selected": "" ; ?>>064</option>
             <option value="070" <?=($mb_giup_btel[0] =="070")? "selected": "" ; ?>>070</option>
         </select>
-        <input type="text" name="mb_tel2" value="<?php echo $mb_giup_btel[1] ?>" id="mb_tel2" class="frm_input" size="15" maxlength="20">
-        <input type="text" name="mb_tel3" value="<?php echo $mb_giup_btel[2] ?>" id="mb_tel3" class="frm_input" size="15" maxlength="20">
+        <input type="text" name="mb_tel2" value="<?php echo $mb_giup_btel[1] ?>" id="mb_tel2" class="frm_input" size="15" maxlength="4">
+        <input type="text" name="mb_tel3" value="<?php echo $mb_giup_btel[2] ?>" id="mb_tel3" class="frm_input" size="15" maxlength="4">
         </td>
     </tr>
     <tr>
         <th scope="row"><label for="mb_fax">팩스번호</label></th>
         <td colspan="3">
         <?php $mb_fax =explode('-',$mb['mb_fax']); ?>
-        <input type="text" name="mb_fax1" value="<?php echo $mb_fax[0] ?>" id="mb_fax1" class="frm_input" size="15" maxlength="20">
-        <input type="text" name="mb_fax2" value="<?php echo $mb_fax[1] ?>" id="mb_fax2" class="frm_input" size="15" maxlength="20">
-        <input type="text" name="mb_fax3" value="<?php echo $mb_fax[2] ?>" id="mb_fax3" class="frm_input" size="15" maxlength="20">
+        <input type="text" name="mb_fax1" value="<?php echo $mb_fax[0] ?>" id="mb_fax1" class="frm_input" size="15"  maxlength="3">
+        <input type="text" name="mb_fax2" value="<?php echo $mb_fax[1] ?>" id="mb_fax2" class="frm_input" size="15"  maxlength="4">
+        <input type="text" name="mb_fax3" value="<?php echo $mb_fax[2] ?>" id="mb_fax3" class="frm_input" size="15"  maxlength="4">
         </td>
     </tr>
     <tr>
