@@ -73,6 +73,10 @@ while( $row = sql_fetch_array($res) ) {
 
 $banks = explode(PHP_EOL, $default['de_bank_account']); 
 
+$is_index = '';
+if(defined('_INDEX_')) { // index에서만 실행
+	$is_index = 'is-index';
+}
 ?>
 <script src="<?php echo THEMA_URL; ?>/assets/js/ofi.js" type="text/javascript" charset="utf-8"></script>
 <script>
@@ -161,7 +165,7 @@ scrollToTop();
 </div>
 
 <!-- <div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>"<?php if($member["mb_level"] =="3"&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>> -->
-<div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?>">
+<div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?> <?php echo $is_index ?>">
 	
 	<div id="samhwa-m-menu" >
 		<div class="wrap"<?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
@@ -279,7 +283,7 @@ scrollToTop();
 				<?php } ?>
 			</div>
 			<div class="logoWrap">
-				<a href="<?=G5_URL?>" class="logoTitle"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt="이로움 로고"></a>
+				<a href="<?=G5_URL?>" class="logoTitle"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png" alt="이로움 로고"></a>
 				<ul class="nav nav-left">
 					<li><a href="/shop/my.recipient.list.php" title="수급자">수급자</a></li>
 					<li><a href="/shop/electronic_manage.php" title="전자문서">전자문서관리</a></li>
