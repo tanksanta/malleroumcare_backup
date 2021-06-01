@@ -867,7 +867,7 @@ pre{white-space: pre-wrap;}
 #myRecipientListWrap > .list-paging { width: 100%; float: left; margin-top: 20px; }
 
 /* 210208 상단퀵메뉴 */
-#headerTopQuickMenuWrap { width: 100%; float: left; margin-bottom: 40px; }
+#headerTopQuickMenuWrap { display: none; width: 100%; float: left; margin-bottom: 40px; }
 #headerTopQuickMenuWrap * { position: relative; }
 #headerTopQuickMenuWrap > div { width: 1200px; margin: 0 auto; }
 #headerTopQuickMenuWrap > div > div { width: 100%; float: left; }
@@ -983,7 +983,7 @@ pre{white-space: pre-wrap;}
 	#myRecipientListWrap > .itemWrap > .item > li.info > p.labelName { font-size: 12px; }
 	#myRecipientListWrap > .itemWrap > .item > li.info > p.value { font-size: 15px; font-weight: 500; margin-top: -5px; }
 
-	#headerTopQuickMenuWrap { margin-bottom: 20px; }
+	#headerTopQuickMenuWrap { display: block; margin-bottom: 20px; }
 	#headerTopQuickMenuWrap > div > div { padding-top: 0; }
 	#headerTopQuickMenuWrap .listWrap > li { width: 49%; height: 70px; }
 	#headerTopQuickMenuWrap .listWrap > li > a { font-size: 14px; overflow: hidden; }
