@@ -464,7 +464,7 @@ scrollToTop();
 				</div>
 			</div>
 			
-			<div class="all_menu_wrap"  style="<?=($member['mb_level'] >= 3) ? "top: 358px;" : ""?>">
+			<div class="all_menu_wrap">
 				<div class="all_menu">
 					<table>
 						<?php for($i=0;$i<count($category);$i++) { ?>
@@ -580,7 +580,7 @@ scrollToTop();
 		<div class="at-body">
 			<?php if($col_name) { ?>
 				<div class="at-container">
-					<div class="scrollBannerListWrap left" style="<?=($member['mb_level'] >= 3) ? "top: -355px;" : ""?>">
+					<div class="scrollBannerListWrap left">
 						<ul>
 							<li>
 								<a href="/bbs/content.php?co_id=guide">
@@ -605,7 +605,7 @@ scrollToTop();
 						</ul>
 					</div>
 					
-					<div class="scrollBannerListWrap right" style="<?=($member['mb_level'] >= 3) ? "top: -355px;" : ""?>">
+					<div class="scrollBannerListWrap right">
 						<div class="todayViewWrap">
 							<div class="title">최근 본 상품</div>
 							<?php include(THEMA_PATH."/side/boxtodayview.skin.php"); ?>

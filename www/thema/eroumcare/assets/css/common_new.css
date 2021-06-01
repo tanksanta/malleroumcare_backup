@@ -778,7 +778,7 @@ pre{white-space: pre-wrap;}
 
 
 /* 210203 스크롤 양측배너 */
-.scrollBannerListWrap { position: absolute; width: 130px; top: -52px; transition: transform 0.5s; transform: translateY(0); z-index: 100; }
+.scrollBannerListWrap { position: absolute; width: 130px; top: 0; transition: transform 0.5s; transform: translateY(0); z-index: 100; }
 .scrollBannerListWrap * { position: relative; }
 .scrollBannerListWrap.left { width: 100px; left: -120px; }
 .scrollBannerListWrap.right { right: -150px; opacity: 0; }
