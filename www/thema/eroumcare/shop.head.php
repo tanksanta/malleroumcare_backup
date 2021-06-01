@@ -270,38 +270,33 @@ scrollToTop();
 
 		<div class="container_wrap txt_center top_common_area"<?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
 			<style>
-                .move_system{ position: absolute; left: 0; top: 0; text-align: right;}
-                .move_system a{ height: 60px; padding: 15px 20px; line-height: 26px;color: #333;font-weight: bold;float: left;color: #333;}
-            </style>
-            <div class="move_system">
-                <?php if($member["mb_level"] =="3" || $member["mb_level"] =="4"){ ?>
-                	<a href="<?=G5_BBS_URL?>/gotoSystem.php" onclick="goto_system();" target="_blank"  >◀ 이로움 통합 시스템바로가기</a>
-                <?php } ?>
+				.move_system{position:absolute; left:0; top:0; text-align:right;}
+				.move_system a{padding:15px 20px 0 0;line-height:26px;color:#333;font-size:13px;font-weight:bold;float:left;color:#666;}
+			</style>
+			<div class="move_system">
+				<?php if($member["mb_level"] =="3" || $member["mb_level"] =="4"){ ?>
+				<a href="<?=G5_BBS_URL?>/gotoSystem.php" onclick="goto_system();" target="_blank"  >◀ 이로움 통합 시스템바로가기</a>
+				<?php } ?>
 			</div>
 			<div class="logoWrap">
-				<a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt=""></a>
-			</div>
-			
-			<div class="bottomWrap">
-				<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form searchWrap">
-					<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
-					<input type="hidden" name="qname"	value="1">
-					<input type="hidden" name="qexplan"	value="1">
-					<input type="hidden" name="qid"	value="1">
-					<input type="hidden" name="qbasic"	value="1">
-					<input type="hidden" name="pttag"	value="1">
-					<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="상품명으로 검색하세요."/>
-					<button type="submit" id="sch_submit"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.jpg"></button>
-				</form>
-				
-				<div class="linkWrap">
-					<a href="https://www.nhis.or.kr/nhis/index.do" target="_blank">
-						<img src="<?=THEMA_URL?>/assets/img/top_link_01.jpg" alt="">
-					</a>
-					<a href="https://www.longtermcare.or.kr/npbs/index.jsp" target="_blank">
-						<img src="<?=THEMA_URL?>/assets/img/top_link_02.jpg" alt="">
-					</a>
-				</div>
+				<a href="<?=G5_URL?>" class="logoTitle"><img src="<?=THEMA_URL?>/assets/img/top_logo.jpg" alt="이로움 로고"></a>
+				<ul class="nav nav-left">
+					<li><a href="/shop/my.recipient.list.php" title="수급자">수급자</a></li>
+					<li><a href="/shop/electronic_manage.php" title="전자문서">전자문서관리</a></li>
+					<li><a href="/shop/sales_Inventory.php" title="보유재고">보유재고</a></li>
+				</ul>
+				<ul class="nav nav-right">
+					<li><a href="/shop/list.php?ca_id=10" title="판매품목">판매품목</a></li>
+					<li><a href="/shop/list.php?ca_id=20" title="대여품목">대여품목</a></li>
+					<li class="catalog">
+						<a href="/thema/eroumcare/assets/catalog_2.pdf" target="_blank" alt="이달의 카달로그">
+							<div class="catalogWrap">
+								<span>이달의 카달로그</span>
+								<img src="<?php echo THEMA_URL; ?>/assets/img/btn_catalogue_icon.png">
+							</div>
+						</a>
+					</li>
+				</ul>
 			</div>
 
 			<div class="top_right_area">
@@ -315,6 +310,7 @@ scrollToTop();
                     <?php } ?>
                         
                         <?php if($is_member) { // 로그인 상태 ?>
+														<a href="<?php echo G5_SHOP_URL; ?>/search.php" >상품검색</a>
                             <a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a>
                             <a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a>
                             <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송</a>
@@ -336,12 +332,6 @@ scrollToTop();
                             <a href="https://signstand.co.kr/shop/list.php?ca_id=10">기업전용</a>
                         <?php } ?> -->
 				</div>
-
-                <?php if($member["mb_level"] == "3"||$member["mb_level"] == "4"){ ?>
-                <div class="link_area"  style="float:right; padding:0px;">
-                    <a href="javascript:void(0)" style="cursor:default;"><?=$member["mb_entNm"]?></a>
-                </div>
-                <?php } ?>
 
 				<!-- <div class="search">
 					<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">

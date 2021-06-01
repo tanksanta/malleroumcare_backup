@@ -110,9 +110,10 @@ pre{white-space: pre-wrap;}
 .top_left_area .link_area ul>li .btn_sns{float: right;margin-left:10px;}
 .top_left_area .banner {padding:10px;}
 .top_right_area{position: absolute;right:0;top:0;text-align:right;}
-.top_right_area .link_area{height: 60px;padding: 15px 10px;line-height: 26px;color:#333;}
-.top_right_area .link_area a{font-weight:bold;float: left;padding: 0 20px;border-right:1px solid #ddd;color:#333}
-.top_right_area .link_area a:last-child{border-right:0;}
+.top_right_area .link_area{padding: 15px 10px 0 0;line-height: 26px;color:#333;}
+.top_right_area .link_area a{position:relative;font-size:13px;font-weight:bold;float: left;padding: 0 15px;color:#666}
+.top_right_area .link_area a:after{content:' ';position:absolute;border-left:1px solid #9e9e9e;top:30%;bottom:30%;right:0;}
+.top_right_area .link_area a:last-child:after{border:0;}
 .search {padding:3px 10px;border: 1px solid #ddd;display: inline-block;position: relative;width: 300px;}
 .search input{display:inline-block;font-size:14px;border:0;padding:5px 0;}
 .search input::placeholder {color:#ccc;}
@@ -651,15 +652,17 @@ pre{white-space: pre-wrap;}
 
 /* 210202 기존 스타일 수정 */
 .top_common_area { height: 180px; }
-.top_common_area > .logoWrap { position: absolute; left: 10px; top: 50%; margin-top: -35px; }
-.top_common_area > .bottomWrap { position: absolute; right: 10px; bottom: 40px; }
-.top_common_area > .bottomWrap > .searchWrap { position: relative; float: left; }
-.top_common_area > .bottomWrap > .searchWrap > #search { width: 380px; height: 41px; float: left; border: 1px solid #DDD; padding: 0 50px 0 10px; font-size: 14px; }
-.top_common_area > .bottomWrap > .searchWrap > #search::placeholder { color: #A6A6A6; }
-.top_common_area > .bottomWrap > .searchWrap > #sch_submit { position: absolute; width: 22px; height: 22px; top: 50%; margin-top: -11px; right: 10px; }
-.top_common_area > .bottomWrap > .linkWrap { float: left; margin-left: 15px; }
-.top_common_area > .bottomWrap > .linkWrap > a { height: 41px; float: left; margin-left: 5px; }
-.top_common_area > .bottomWrap > .linkWrap > a > img { height: 100%; float: left; }
+.top_common_area > .logoWrap { position: absolute; left: 0; right: 0; top: 50px; }
+.top_common_area .nav { height: 40px; }
+.top_common_area .nav li { display:inline-block; }
+.top_common_area .nav li a{ color: #333; font-size: 18px; line-height: 20px; padding: 10px 20px; }
+.top_common_area .nav li a:hover, .top_common_area .nav li a:focus { color: inherit; background: none; }
+.top_common_area .nav li.catalog a { padding: 0 20px; }
+.top_common_area .nav li.catalog a .catalogWrap { background-color: #828282; color: #fff; font-size: 14px; line-height: 16px; padding: 10px; margin: 2px 0; border-radius: 8px; }
+.top_common_area .nav li.catalog a img { vertical-align: middle; margin-left: 5px; margin-top: -1px; }
+.top_common_area a.logoTitle { display: block; text-align: center; }
+.top_common_area .nav-left { position: absolute; top: 20px; left: 50px; }
+.top_common_area .nav-right { position: absolute; top: 20px; right: 0; }
 
 .is-pc .at-body { min-height: 800px; }
 .at-body { width: 100%; float: left; }
