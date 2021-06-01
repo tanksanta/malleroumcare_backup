@@ -119,87 +119,83 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	#item3dViewBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 	#item3dViewBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 	#item3dViewBox iframe { position: relative; width: 700px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
-    .margin-left { margin-left:15px; }
-    .margin-right { margin-left:50px; }
-    .item-form.npay_btn_list th, .item-form .npay_btn_list td {padding: 0 !important;}
+	.margin-left { margin-left:15px; }
+	.margin-right { margin-left:50px; }
+	.item-form.npay_btn_list th, .item-form .npay_btn_list td {padding: 0 !important;}
 	@media (max-width : 750px){
 		#item3dViewBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 	}
-    @media (max-width: 991px) {
-        #samhwa-mobile-tail { display:none; }
-        .margin-leftm{ margin-left:15px; }
-    }
-    @media (max-width: 960px){
-        body { padding-bottom: 130px; }
-        .btn_top_scroll { bottom: 140px; }
-		.selfPriceInfo > p { font-size: 14px; }
-        
-    }
+	@media (max-width: 991px) {
+		#samhwa-mobile-tail { display:none; }
+		.margin-leftm{ margin-left:15px; }
+	}
+	@media (max-width: 960px){
+		body { padding-bottom: 130px; }
+		.btn_top_scroll { bottom: 140px; }
+		.selfPriceInfo > p { font-size: 14px; }     
+	}
 </style>
 
 <div id="item3dViewBox">
 	<div>
-
 		<iframe src="<?=G5_SHOP_URL?>/item3dview.php?it_id=<?=$it["it_id"]?>"></iframe>
-
 	</div>
 </div>
 
 <div class="item-head">
 	<div class="samhwa-item-head-container">
 		<div class="samhwa-item-image" style="position: relative;">
-		<?php if(json_decode($it["it_img_3d"], true)){ ?>
+			<?php if(json_decode($it["it_img_3d"], true)){ ?>
 			<div id="item3dViewBtn">
 				<img src="/img/item3dviewVisual.jpg">
 				<span>상품보기</span>
 			</div>
-		<?php } ?>
-			<div class="item-image">
-			<?php if($it["prodSupYn"] == "N"){ ?>
-				<b class="supInfo">비유통 상품</b>
 			<?php } ?>
+			<div class="item-image">
+				<?php if($it["prodSupYn"] == "N"){ ?>
+				<b class="supInfo">비유통 상품</b>
+				<?php } ?>
 				<a href="<?php echo $item_image_href;?>" id="item_image_href" class="popup_item_image" target="_blank" title="크게보기">
 					<img id="item_image" src="<?php echo $item_image;?>" alt="">
 				</a>
 				<?php if($wset['shadow']) echo apms_shadow($wset['shadow']); //그림자 ?>
 			</div>
 			<div class="item-thumb text-center">
-			<?php
+				<?php
 				for($i=0; $i < count($thumbnails); $i++) {
 					echo $thumbnails[$i];
 				}
-			?>
+				?>
 			</div>
 			<script>
-				$(function(){
-					$(".thumb_item_image").hover(function() {
-						$(".thumb_item_image").removeClass('on');
-						$(this).addClass('on');
-						var img = $(this).attr("data-ref");
-						var url = $(this).attr("data-href");
-						$("#item_image").attr("src", null);
-						var myImg = document.getElementById('item_image');
-						myImg.src = img;
-						$("#item_image_href").attr("href", url);
-						return true;
-					});
-					// 이미지 크게보기
-					$(".popup_item_image").click(function() {
-						var url = $(this).attr("href");
-						var top = 10;
-						var left = 10;
-						var opt = 'scrollbars=yes,top='+top+',left='+left;
-						popup_window(url, "largeimage", opt);
-
-						return false;
-					});
-					// 이미지 3d보기
-					$("#item3dViewBox").hide();
-					$("#item3dViewBox").css("opacity", 1);
-					$("#item3dViewBtn").click(function(){
-						$("#item3dViewBox").show();
-					});
+			$(function(){
+				$(".thumb_item_image").hover(function() {
+					$(".thumb_item_image").removeClass('on');
+					$(this).addClass('on');
+					var img = $(this).attr("data-ref");
+					var url = $(this).attr("data-href");
+					$("#item_image").attr("src", null);
+					var myImg = document.getElementById('item_image');
+					myImg.src = img;
+					$("#item_image_href").attr("href", url);
+					return true;
 				});
+				// 이미지 크게보기
+				$(".popup_item_image").click(function() {
+					var url = $(this).attr("href");
+					var top = 10;
+					var left = 10;
+					var opt = 'scrollbars=yes,top='+top+',left='+left;
+					popup_window(url, "largeimage", opt);
+					return false;
+				});
+				// 이미지 3d보기
+				$("#item3dViewBox").hide();
+				$("#item3dViewBox").css("opacity", 1);
+				$("#item3dViewBtn").click(function(){
+					$("#item3dViewBox").show();
+				});
+			});
 			</script>
 			<div class="h30 visible-xs"></div>
 		</div>

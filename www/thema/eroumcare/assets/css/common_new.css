@@ -664,6 +664,9 @@ pre{white-space: pre-wrap;}
 .top_common_area .nav-left { position: absolute; top: 20px; left: 50px; }
 .top_common_area .nav-right { position: absolute; top: 20px; right: 0; }
 
+.top_common_area > .bottomWrap { position: absolute; right: 10px; bottom: 10px; }
+
+
 .is-pc .at-body { min-height: 800px; }
 .at-body { width: 100%; float: left; }
 .at-container { width: 100%; max-width: 1200px !important; margin: 0 auto; position: relative; overflow: inherit !important; }
