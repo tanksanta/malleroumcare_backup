@@ -651,7 +651,7 @@ pre{white-space: pre-wrap;}
 }
 
 /* 210202 기존 스타일 수정 */
-.top_common_area { height: 180px; }
+.top_common_area { height: 160px; }
 .top_common_area > .logoWrap { position: absolute; left: 0; right: 0; top: 50px; }
 .top_common_area .nav { height: 40px; }
 .top_common_area .nav li { display:inline-block; }
