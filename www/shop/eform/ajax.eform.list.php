@@ -83,8 +83,12 @@ $result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where
 </thead>
 <tbody>
 <?php
+$num_rows = sql_num_rows($result);
 for($i = 0; $row = sql_fetch_array($result); $i++) {
   $index = $from_record + $i + 1;
+  if($index_order == 'DESC') {
+    $index = $from_record + $num_rows - $i;
+  }
 ?>
 <tr>
 <td><?=$index?></td>
