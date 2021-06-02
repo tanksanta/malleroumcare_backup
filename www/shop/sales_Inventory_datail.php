@@ -748,7 +748,7 @@ $row = sql_fetch($sql);
     function page_load(page_n) {
         page_n = parseInt(page_n);
         $.ajax({
-            url : "<?= G5_SHOP_URL; ?>/sales_Inventory_datail.php?prodId=<?=$it_id?>&page2="+page_n+"&prodSupYn=<?=$_GET['prodSupYn']?>",
+            url : "<?= G5_SHOP_URL; ?>/sales_Inventory_datail.php?prodId=<?=$it_id?>&page2="+page_n+"&prodSupYn=<?=$_GET['prodSupYn']?>&soption=<?=$_GET['soption']?>&stx=<?=$_GET['stx']?>",
             type : "get",
             async : false,
             success : function(result){
@@ -766,7 +766,7 @@ $row = sql_fetch($sql);
     function page_load2(page_n) {
         page_n = parseInt(page_n);
         $.ajax({
-            url : "<?= G5_SHOP_URL; ?>/sales_Inventory_datail.php?prodId=<?=$it_id?>&page2="+page_n+"&prodSupYn=<?=$_GET['prodSupYn']?>",
+            url : "<?= G5_SHOP_URL; ?>/sales_Inventory_datail.php?prodId=<?=$it_id?>&page2="+page_n+"&prodSupYn=<?=$_GET['prodSupYn']?>&soption=<?=$_GET['soption']?>&stx=<?=$_GET['stx']?>",
             type : "get",
             async : false,
             success : function(result){
