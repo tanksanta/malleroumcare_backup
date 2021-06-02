@@ -2191,11 +2191,11 @@ ul.wait-partner-btns:after {
     .item-head ul.item-buy-btn li input[type="submit"] {
         height:60px;
         font-size: 16px;
+        margin: 0;
+        border-radius: 0 !important;
+        box-shadow: none;
     }
     .item-head ul.item-buy-btn li.cart input[type="submit"] {
-        background-color:#e7e7e7;
-        border:1px solid #e7e7e7;
-        color:#ababab;
         height:60px;
         font-size: 16px;
     }
