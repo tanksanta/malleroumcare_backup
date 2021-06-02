@@ -1371,12 +1371,7 @@ function fmember_submit()
                                 sendData2.append("entId", result.data['entId']); //entId
                                 //이전 서버에 저장
                                 if(result.message == "SUCCESS"){
-									alert("완료되었습니다.");
-									<?php if(!$w){ ?>
-										location.href='<?=G5_URL?>/bbs/register_result.php';
-										<?php }else{ ?>
-										location.href='<?=G5_URL?>';
-									<?php } ?>
+                                f.submit();
                                 }else{
                                     alert(result.message);
                                     return false;
