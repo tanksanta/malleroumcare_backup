@@ -87,22 +87,22 @@
             switch( $error ) {
                 case UPLOAD_ERR_INI_SIZE:
                 case UPLOAD_ERR_FORM_SIZE:
-                    echo '파일이 너무 큽니다.';
+                    echo 'N';
                     break;
                 exit;
                 default:
-                echo '파일이 제대로 업로드되지 않았습니다.';
+                echo 'N';
                 exit;
             }
             exit;
         }
         if($file['size'] >= $max_file_size) {
-            echo '2MB 까지만 업로드 가능합니다.';
+            echo 'N';
             exit;
         }
         // 확장자 확인
         if( in_array($ext, $allowed_ext) ) {
-            echo '허용되지 않는 확장자입니다.';
+            echo 'N';
             exit;
         }
     }
