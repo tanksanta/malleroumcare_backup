@@ -91,10 +91,16 @@
 			$thezone_code = $it['io_thezone'] ? $it['io_thezone'] : $it['it_thezone2'];
 
 			$delivery = '';
+			//송장번호 출력
 			if ($it['ct_delivery_num']) {
 				$delivery = '(' . get_delivery_company_step($it['ct_delivery_company'])['name'] . ') ' . $it['ct_delivery_num'];
 			}
-			
+			//합포 송장번호 출력
+            if ($it['ct_combine_ct_id']) {
+                $sql_ct ="select `ct_delivery_company`, `ct_delivery_num` from g5_shop_cart where `ct_id` = '".$it['ct_combine_ct_id']."'";
+                $result_ct = sql_fetch($sql_ct);
+                $delivery = '(' . get_delivery_company_step($result_ct['ct_delivery_company'])['name'] . ') ' . $result_ct['ct_delivery_num'];
+			}
 			$date = "출고전";
             if($it["ct_ex_date"] !== "0000-00-00"){
                 $date =date("Ymd", strtotime($it["ct_ex_date"]));
@@ -129,7 +135,6 @@
 				'',
 			];
 		}
-
     $headers = array("일자", "순서", "거래처코드", "거래처명","담당자", "출하창고", "거래유형","통화", "환율","성명(상호명)", "배송처", "전잔액", "후잔액", "특이사항", "참고사항", "품목코드", "품목명", "규격", "수량", "단가(vat포함)", "외화금액", "공급가액", "부가세", "바코드", "로젠 송장번호", "적요", "생산전표생성");
     $data = array_merge(array($headers), $rows);
     
