@@ -1211,7 +1211,12 @@ function fregisterform_submit()
                                     alert('파일을 확인하세요');
                                     return flase;
                                 }
-																result = JSON.parse(result);
+																try {
+																	result = JSON.parse(result);
+																} catch(ex) {
+																	alert('서버 응답 오류 : ' + result);
+																	return false;
+																}
 																if(result.errorYN === 'Y') {
 																	alert(result.message);
 																	return false;
