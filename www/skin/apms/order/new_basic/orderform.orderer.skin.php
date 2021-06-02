@@ -3,39 +3,41 @@ if(!$member["mb_id"]){alert('로그인을 해주세요',G5_BBS_URL.'/login.php?u
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 //수급자 정보 필드추가
-sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
-					ADD `od_penId` varchar(20) NOT NULL DEFAULT '' AFTER `od_addr_jibeon`,
-                    ADD `od_penNm` varchar(20) NOT NULL DEFAULT '' AFTER `od_penId`,
-                    ADD `od_penTypeNm` varchar(20) NOT NULL DEFAULT '' AFTER `od_penNm`,
-                    ADD `od_penExpiDtm` varchar(20) NOT NULL DEFAULT '' AFTER `od_penTypeNm`,
-                    ADD `od_penAppEdDtm` varchar(20) NOT NULL DEFAULT '' AFTER `od_penExpiDtm`,
-                    ADD `od_penConPnum` varchar(20) NOT NULL DEFAULT '' AFTER `od_penAppEdDtm`,
-                    ADD `od_penConNum` varchar(20) NOT NULL DEFAULT '' AFTER `od_penConPnum`,
-					ADD `od_penzip1` char(3) NOT NULL DEFAULT '' AFTER `od_penConNum`,
-                    ADD `od_penzip2` char(3) NOT NULL DEFAULT '' AFTER `od_penzip1`
-                    ADD `od_penAddr` varchar(100) NOT NULL DEFAULT '' AFTER `od_penzip2` ", false);
+if(!sql_query(" select od_penId from {$g5['g5_shop_order_table']} limit 1 ", false)) {
+	sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
+								ADD `od_penId` varchar(20) NOT NULL DEFAULT '' AFTER `od_addr_jibeon`,
+								ADD `od_penNm` varchar(20) NOT NULL DEFAULT '' AFTER `od_penId`,
+								ADD `od_penTypeNm` varchar(20) NOT NULL DEFAULT '' AFTER `od_penNm`,
+								ADD `od_penExpiDtm` varchar(20) NOT NULL DEFAULT '' AFTER `od_penTypeNm`,
+								ADD `od_penAppEdDtm` varchar(20) NOT NULL DEFAULT '' AFTER `od_penExpiDtm`,
+								ADD `od_penConPnum` varchar(20) NOT NULL DEFAULT '' AFTER `od_penAppEdDtm`,
+								ADD `od_penConNum` varchar(20) NOT NULL DEFAULT '' AFTER `od_penConPnum`,
+								ADD `od_penzip1` char(3) NOT NULL DEFAULT '' AFTER `od_penConNum`,
+								ADD `od_penzip2` char(3) NOT NULL DEFAULT '' AFTER `od_penzip1`
+								ADD `od_penAddr` varchar(100) NOT NULL DEFAULT '' AFTER `od_penzip2` ", true);
+}
 
-	# 210223 수급자여부
-	$sendData = [];
-	$sendData["usrId"] = $member["mb_id"];
-	$sendData["entId"] = $member["mb_entId"];
-	$sendData["pageNum"] = 1;
-	$sendData["pageSize"] = 1;
-	$sendData["appCd"] = "01";
+# 210223 수급자여부
+$sendData = [];
+$sendData["usrId"] = $member["mb_id"];
+$sendData["entId"] = $member["mb_entId"];
+$sendData["pageNum"] = 1;
+$sendData["pageSize"] = 1;
+$sendData["appCd"] = "01";
 
-	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9901);
-	curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
-	curl_setopt($oCurl, CURLOPT_POST, 1);
-	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-	$res = curl_exec($oCurl);
-	$res = json_decode($res, true);
-	curl_close($oCurl);
+$oCurl = curl_init();
+curl_setopt($oCurl, CURLOPT_PORT, 9901);
+curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
+curl_setopt($oCurl, CURLOPT_POST, 1);
+curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+$res = curl_exec($oCurl);
+$res = json_decode($res, true);
+curl_close($oCurl);
 
-	$recipientTotalCnt = $res["total"];
+$recipientTotalCnt = $res["total"];
 
 
 //쇼핑몰에서 설정한 일정한 금액 이상이 넘을경우 배송비 무료
