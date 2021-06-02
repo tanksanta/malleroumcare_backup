@@ -337,6 +337,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 		</div>
 		<div class="samhwa-item-info">
 			<div class="margin-leftm">
+				<div class="item-info-arrowbtn mobile">
+					<img src="<?php echo THEMA_URL; ?>/assets/img/icon_arrow_down.png" class="arrow" />
+				</div>
 				<div class="top-info-wrap">
 					<ul class="top-info-list">
 						<li><?=$it["ca_name"]?></li>
