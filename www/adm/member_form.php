@@ -1361,10 +1361,11 @@ function fmember_submit()
                                 if(result =="N"){
                                     alert('파일을 확인하세요');
                                     return flase;
-                                }else{
-                                    result = JSON.parse(result);
-                                    if(result.errorYN === 'Y') alert(result.message);
-									return false;
+                                }
+                                result = JSON.parse(result);
+                                if(result.errorYN === 'Y') {
+                                    alert(result.message);
+                                    return false;
                                 }
                                 sendData2.append("usrId", result.data['usrId']); //usrId
                                 sendData2.append("entId", result.data['entId']); //entId
