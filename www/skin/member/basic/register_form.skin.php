@@ -1217,24 +1217,12 @@ function fregisterform_submit()
                                 sendData2.append("entId", result.data['entId']); //entId
                                 //이전 서버에 저장
                                 if(data.message == "SUCCESS"){
-
-                                    $.ajax({
-                                        type: 'POST',
-                                        url : "https://ex.eroumcare.com:9001/api/ent/update",
-                                        type : "POST",
-                                        async : false,
-                                        cache : false,
-                                        processData : false,
-                                        contentType : false,
-                                        data : sendData2,
-                                    }).done(function (data) {
-                                        alert("완료되었습니다.");
-                                        <?php if(!$w){ ?>
-                                            location.href='<?=G5_URL?>/bbs/register_result.php';
-                                            <?php }else{ ?>
-                                            location.href='<?=G5_URL?>';
-                                        <?php } ?>
-                                    });
+									alert("완료되었습니다.");
+									<?php if(!$w){ ?>
+										location.href='<?=G5_URL?>/bbs/register_result.php';
+										<?php }else{ ?>
+										location.href='<?=G5_URL?>';
+									<?php } ?>
                                 }else{
                                     alert(data);
                                     return false;
