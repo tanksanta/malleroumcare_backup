@@ -21,22 +21,13 @@ function mailer($fname, $fmail, $to, $subject, $content, $type=0, $file="", $cc=
         $mail->IsSMTP(); // telling the class to use SMTP
         $mail->Host = G5_SMTP; // SMTP server
         if(defined('G5_SMTP_PORT') && G5_SMTP_PORT)
-            $mail->Host = G5_SMTP; // SMTP server 
-            $mail->Port = 465;  // set the SMTP port 
-            $mail->IsSMTP(); 
-            $mail->SMTPAuth  = true;                  // enable SMTP authentication 
-            $mail->SMTPSecure = "ssl";                // sets the prefix to the servier 
-            $mail->Host      = "smtp.naver.com";      // sets GMAIL as the SMTP server 
-            $mail->Port      = 465;                  // set the SMTP port for the GMAIL server 
-            $mail->Username  = "koreanleo0623";
-            $mail->Username  = "112233qw@@";
-
-
-        // if(defined('G5_SMTP_USERNAME') && G5_SMTP_USERNAME) {
-        //     $mail->SMTPAuth = true;
-        //     $mail->Username = G5_SMTP_USERNAME;
-        //     $mail->Password = G5_SMTP_PASSWORD;
-        // }
+            $mail->Port = G5_SMTP_PORT;
+        
+        if(defined('G5_SMTP_USERNAME') && G5_SMTP_USERNAME) {
+            $mail->SMTPAuth = true;
+            $mail->Username = G5_SMTP_USERNAME;
+            $mail->Password = G5_SMTP_PASSWORD;
+        }
     }
     $mail->CharSet = 'UTF-8';
     $mail->From = $fmail;
