@@ -1226,7 +1226,7 @@ function fregisterform_submit()
 										location.href='<?=G5_URL?>';
 									<?php } ?>
                                 }else{
-                                    alert(data);
+                                    alert(result.message);
                                     return false;
                                 }
                             }
