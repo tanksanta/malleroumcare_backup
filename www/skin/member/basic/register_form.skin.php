@@ -1218,7 +1218,7 @@ function fregisterform_submit()
                                 sendData2.append("usrId", result.data['usrId']); //usrId
                                 sendData2.append("entId", result.data['entId']); //entId
                                 //이전 서버에 저장
-                                if(data.message == "SUCCESS"){
+                                if(result.message == "SUCCESS"){
 									alert("완료되었습니다.");
 									<?php if(!$w){ ?>
 										location.href='<?=G5_URL?>/bbs/register_result.php';
