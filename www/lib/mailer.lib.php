@@ -32,11 +32,11 @@ function mailer($fname, $fmail, $to, $subject, $content, $type=0, $file="", $cc=
             $mail->Username  = "112233qw@@";
 
 
-        if(defined('G5_SMTP_USERNAME') && G5_SMTP_USERNAME) {
-            $mail->SMTPAuth = true;
-            $mail->Username = G5_SMTP_USERNAME;
-            $mail->Password = G5_SMTP_PASSWORD;
-        }
+        // if(defined('G5_SMTP_USERNAME') && G5_SMTP_USERNAME) {
+        //     $mail->SMTPAuth = true;
+        //     $mail->Username = G5_SMTP_USERNAME;
+        //     $mail->Password = G5_SMTP_PASSWORD;
+        // }
     }
     $mail->CharSet = 'UTF-8';
     $mail->From = $fmail;
