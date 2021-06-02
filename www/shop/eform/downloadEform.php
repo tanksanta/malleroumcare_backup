@@ -15,7 +15,7 @@ if(!$od['mb_id']) {
 
 $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
 
-if($eform['dc_status'] != '2' || $eform['dc_status'] != '3') {
+if($eform['dc_status'] != '2' && $eform['dc_status'] != '3') {
   alert('계약서가 작성되지 않았습니다.');
 }
 

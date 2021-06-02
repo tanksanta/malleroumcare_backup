@@ -595,7 +595,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 									<a href="#" id="linkEformSign" class="eform-tab-link half" data-od="<?=$od["od_id"]?>">계약서 작성</a>
 									<a href="#" id="linkEformEdit" class="eform-tab-link half white" data-od="<?=$od["od_id"]?>">내용변경</a>
 								</div>
-								<?php } else if ($eform['dc_status'] == '2') { // 계약서 작성 완료 ?>
+								<?php } else if ($eform['dc_status'] == '2' || $eform['dc_status'] == '3') { // 계약서 작성 완료 ?>
 								<a href="#" id="linkEformView" class="eform-tab-link white" data-od="<?=$od["od_id"]?>">계약서 다운로드</a>
 								<?php } ?>
 							</li>

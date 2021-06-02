@@ -45,10 +45,13 @@ while($od = sql_fetch_array($result)) {
     $subject_count_postfix = str_pad($subject_count_postfix + 1, 3, '0', STR_PAD_LEFT); // zerofill
     $subject .= $subject_count_postfix;
 
-    $dc_id = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
+    //sql_query("UPDATE `eform_document` SET dc_subject = '$subject' WHERE od_id = '{$od["od_id"]}'");
+
+    /*$dc_id = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
     
     sql_query("INSERT INTO `eform_document` SET
     `dc_id` = UNHEX('$dc_id'),
+    `dc_subject` = '$subject',
     `dc_status` = '3',
     `od_id` = '{$od["od_id"]}',
     `entId` = '{$entData["mb_entId"]}',
@@ -93,7 +96,7 @@ while($od = sql_fetch_array($result)) {
       `it_date` = '{$it_date}',
       `it_price` = '{$it["prodOflPrice"]}'
       ");
-    }
+    }*/
   } catch(Exception $e) {
     echo $od['ordId'].' 를 처리 하는 도중 오류 발생<br>';
   }
