@@ -18,27 +18,18 @@ if($is_orderable) echo '<script src="'.$item_skin_url.'/shop.js"></script>'.PHP_
 
 // 이미지처리
 $j=0;
-$thumbnails = array();
-$item_image = '';
-$item_image_href = '';
+$images = array();
 for($i=1; $i<=10; $i++) {
-	if(!$it['it_img'.$i])
-		continue;
+	if(!$it['it_img'.$i]) continue;
 
-	# $thumb = get_it_thumbnail($it['it_img'.$i], 100, 100);
-	$thumb = "<img src='/data/item/{$it['it_img'.$i]}'>";
-
-	if($thumb) {
-		$org_url = G5_DATA_URL.'/item/'.$it['it_img'.$i];
-		$img = apms_thumbnail($org_url, 400, 400, false, true);
-		$thumb_url = ($img['src']) ? $img['src'] : $org_url;
-		if($j == 0) {
-			$item_image = $thumb_url; // 큰이미지
-			$item_image_href = G5_SHOP_URL.'/largeimage.php?it_id='.$it['it_id'].'&amp;ca_id='.$ca_id.'&amp;no='.$i; // 큰이미지 주소
-		}
-		$thumbnails[$j] = '<a data-href="'.G5_SHOP_URL.'/largeimage.php?it_id='.$it['it_id'].'&amp;ca_id='.$ca_id.'&amp;no='.$i.'" data-ref="'.$thumb_url.'" class="thumb_item_image">'.$thumb.'<span class="sound_only"> '.$i.'번째 이미지 새창</span></a>';
-		$j++;
-	}
+	$org_url = G5_DATA_URL.'/item/'.$it['it_img'.$i];
+	$img = apms_thumbnail($org_url, 400, 400, false, true);
+	$thumb_url = ($img['src']) ? $img['src'] : $org_url;
+	$images[$j] = array(
+		'src' => $thumb_url,
+		'href' => G5_SHOP_URL.'/largeimage.php?it_id='.$it['it_id'].'&amp;ca_id='.$ca_id.'&amp;no='.$i
+	);
+	$j++;
 }
 
 // 카운팅
@@ -155,30 +146,37 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<?php if($it["prodSupYn"] == "N"){ ?>
 				<b class="supInfo">비유통 상품</b>
 				<?php } ?>
-				<a href="<?php echo $item_image_href;?>" id="item_image_href" class="popup_item_image" target="_blank" title="크게보기">
+				<div class="item_image_slider">
+					<?php
+					foreach($images as $img) {
+					?>
+					<a href="<?=$img['href']?>" class="popup_item_image image_slide" target="_blank" title="크게보기">
+						<img src="<?=$img['src']?>" alt="상품 이미지">
+					</a>
+					<?php
+					}
+					?>
+				</div>
+				<!--<a href="<?php echo $item_image_href;?>" id="item_image_href" class="popup_item_image" target="_blank" title="크게보기">
 					<img id="item_image" src="<?php echo $item_image;?>" alt="">
-				</a>
+				</a>-->
 				<?php if($wset['shadow']) echo apms_shadow($wset['shadow']); //그림자 ?>
 			</div>
-			<div class="item-thumb text-center">
+			<!--<div class="item-thumb text-center">
 				<?php
 				for($i=0; $i < count($thumbnails); $i++) {
 					echo $thumbnails[$i];
 				}
 				?>
-			</div>
+			</div>-->
 			<script>
 			$(function(){
-				$(".thumb_item_image").hover(function() {
-					$(".thumb_item_image").removeClass('on');
-					$(this).addClass('on');
-					var img = $(this).attr("data-ref");
-					var url = $(this).attr("data-href");
-					$("#item_image").attr("src", null);
-					var myImg = document.getElementById('item_image');
-					myImg.src = img;
-					$("#item_image_href").attr("href", url);
-					return true;
+				// 이미지 슬라이드
+				$('.item_image_slider').slick({
+					dots: true,
+					arrows: false,
+					autoplay: true,
+  				autoplaySpeed: 5000
 				});
 				// 이미지 크게보기
 				$(".popup_item_image").click(function() {
