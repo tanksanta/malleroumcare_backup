@@ -1214,7 +1214,7 @@ function fregisterform_submit()
 																try {
 																	result = JSON.parse(result);
 																} catch(ex) {
-																	alert('서버 응답 오류 : ' + result);
+																	alert('서버 응답 오류 : ' + ex.message);
 																	return false;
 																}
 																if(result.errorYN === 'Y') {
