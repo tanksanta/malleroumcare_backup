@@ -57,7 +57,7 @@ if($where) {
 }
 
 $sql_from = " FROM `eform_document` E";
-$total_count = sql_fetch("SELECT COUNT(*) AS cnt" . $sql_from . $sql_where)['cnt'];
+$total_count = sql_fetch("SELECT COUNT(R.dc_id) AS cnt FROM (SELECT E.dc_id" . $sql_from . $sql_join . $sql_where . $sql_group . ') R')['cnt'];
 
 $page_rows = $config['cf_page_rows'];
 $total_page = ceil($total_count / $page_rows); // 전체 페이지 계산
@@ -99,7 +99,11 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 <td class="text_c">
   <a href="<?=G5_SHOP_URL?>/eform/downloadEform.php?od_id=<?=$row["od_id"]?>" class="btn_basic">다운로드</a>
 </td>
-<td class="text_c"><a href="<?=G5_SHOP_URL?>/eform/downloadCert.php?od_id=<?=$row["od_id"]?>">감사추적인증서 다운로드</a></td>
+<td class="text_c">
+  <?php if($row['dc_status'] != '3') { // 이전 계약서는 감사추적인증서가 없음 ?>
+  <a href="<?=G5_SHOP_URL?>/eform/downloadCert.php?od_id=<?=$row["od_id"]?>">감사추적인증서 다운로드</a>
+  <?php } ?>
+</td>
 </tr>
 <?php
 }
