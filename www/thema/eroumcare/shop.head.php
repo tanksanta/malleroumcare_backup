@@ -424,7 +424,7 @@ scrollToTop();
 			<a href="/shop/list.php?ca_id=30">신상품</a>
 		</div>
 	
-		<div class="top_menu_wrap">
+		<div class="top_menu_wrap" style="display: none;">
 			<div class="menu_wrap">
 				<div class="menu"><div class="top_menu_all"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu2.png" ><span>전체 상품 카테고리</span></div>
 				</div>
