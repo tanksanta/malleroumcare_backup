@@ -20,12 +20,13 @@ while($od = sql_fetch_array($result)) {
 
     if(!$data_arr['data']) {
       echo $od['ordId'].' : ';
+      echo $od['mb_id']. ' : ';
       echo var_dump($data_arr);
       echo '<br>';
       continue;
     }
 
-    /*$entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
+    $entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
     $penData = api_post_call('https://system.eroumcare.com/api/recipient/selectList', array(
       'usrId' => $od["mb_id"],
       'entId' => $entData["mb_entId"],
@@ -90,9 +91,9 @@ while($od = sql_fetch_array($result)) {
       `it_barcode` = '{$it["prodBarNum"]}',
       `it_qty` = '1',
       `it_date` = '{$it_date}',
-      `it_price` = '{$it["prodOflPrice"]}',
+      `it_price` = '{$it["prodOflPrice"]}'
       ");
-    }*/
+    }
   } catch(Exception $e) {
     echo $od['ordId'].' 를 처리 하는 도중 오류 발생<br>';
   }

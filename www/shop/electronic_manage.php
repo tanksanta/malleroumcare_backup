@@ -203,6 +203,12 @@ $(function() {
 		})
 		 .done(function(data) {
 			 $listWrap.html(data);
+			 // 페이지네이션 처리
+			 $('#list_wrap .pagination a').on('click', function(e) {
+				 e.preventDefault();
+				 var params = $(this).attr('href').replace('?', '');
+				 search(params);
+				});
 		 })
 		 .fail(function() {
 			 $listWrap.html('');

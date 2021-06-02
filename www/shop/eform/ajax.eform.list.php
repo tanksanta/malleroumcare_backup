@@ -87,7 +87,7 @@ $num_rows = sql_num_rows($result);
 for($i = 0; $row = sql_fetch_array($result); $i++) {
   $index = $from_record + $i + 1;
   if($index_order == 'DESC') {
-    $index = $from_record + $num_rows - $i;
+    $index = $total_count - $from_record - $i;
   }
 ?>
 <tr>
@@ -121,5 +121,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 <li><a href="#">&gt;</a></li>
 <li></li>
 </ul>-->
-<?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+<ul class="pagination pagination-sm en">
+		<?php echo apms_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+</ul>
 </div>
