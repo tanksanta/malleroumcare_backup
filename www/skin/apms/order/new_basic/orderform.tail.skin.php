@@ -21,6 +21,11 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 }
 </style>
 <iframe name="barcode_popup_iframe" id="barcode_popup_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+<script>
+function sendBarcode(text){
+    alert(text);
+}
+</script>
 <form name="barcode_popup_form" class="hidden" id="barcode_popup_form">
 	<input type=text name="it_id" value="">
 	<input type=text name="barcodes" value="">
