@@ -303,9 +303,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			success : function(result){
                 console.log(result);
 				$.each(result, function(it_id, cnt){
-					var label = "재고 보유";
+					var label = "My 재고 보유";
 					if($("." + it_id).attr("data-ca") == "20"){
-						label = "보유 대여 재고";
+						label = "My 보유 대여 재고";
 					}
 
 					$("." + it_id).find("a").append('<p class="cnt"><span>' + label + '</span><span class="right">' + cnt + '개</span></p>');

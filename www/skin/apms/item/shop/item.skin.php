@@ -271,7 +271,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 				<?php if($_COOKIE["viewType"] != "basic"){ ?>
 
                 <ul class="optionStockCntList" style="display: none;">
-                    <li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
+                    <li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "My 보유 대여 재고" : "My 보유 재고"?></li>
                 </ul>
                 <?php } ?>
                 <?php if($_COOKIE["viewType"] != "basic"){ ?>
@@ -420,7 +420,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<!-- 재고수량 -->
 			<?php if($_COOKIE["viewType"] != "basic"){ ?>
 			<ul class="optionStockCntList" style="display: none;">
-				<li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "보유 대여 재고" : "보유 재고"?></li>
+				<li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "My 보유 대여 재고" : "My 보유 재고"?></li>
 			</ul>
 			<?php } ?>
 			<?php if ( $it['it_model'] ) { ?>
