@@ -155,8 +155,8 @@ if (file_exists($dbconfig_file)) {
     $g5['sys_connect_db'] = $sys_connect_db;
 
     sql_set_charset('utf8', $sys_connect_db);
-    if(defined('G5_MYSQL_SET_MODE') && SYS_MYSQL_SET_MODE) sql_query("SET SESSION sql_mode = ''");
-    if(defined('G5_TIMEZONE')) sql_query(" set time_zone = '".G5_TIMEZONE."'");
+    if(defined('G5_MYSQL_SET_MODE') && SYS_MYSQL_SET_MODE) sql_query("SET SESSION sql_mode = ''", false, $sys_connect_db);
+    if(defined('G5_TIMEZONE')) sql_query(" set time_zone = '".G5_TIMEZONE."'", false, $sys_connect_db);
 } else {
 ?>
 
