@@ -1511,10 +1511,17 @@ if($is_member && $od_b_name) {
 
             $_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
             $_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
-            if($use_new_eform)
+            if($use_new_eform) {
+                sql_query("
+                    UPDATE g5_shop_order SET
+                        ordId = '{$res["data"]["penOrdId"]}'
+                        , uuid = '{$res["data"]["uuid"]}'
+                    WHERE od_id = '{$od_id}'
+                ");
                 goto_url(G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}");
-            else
+            } else {
                 goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}&documentId={$sendData["documentId"]}");
+            }
         } else {
             sql_query("
             DELETE FROM g5_shop_order
