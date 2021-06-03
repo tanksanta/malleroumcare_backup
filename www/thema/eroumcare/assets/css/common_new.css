@@ -479,7 +479,7 @@ pre{white-space: pre-wrap;}
 
 .search_box {margin:0 0 16px;font-size: 0; float: left;} 
 .search_box select {margin-right:6px;display: inline-block;padding:5px;border:1px solid #d7d7d7;border-radius: 3px;font-size: 14px;float: left;}
-.search_box .input_search {display: inline-block;width:176px;height:33px; position: relative;border: 1px solid #d7d7d7;border-radius: 3px; padding:5px;}
+.search_box .input_search {display: inline-block;width:176px;height:33px; position: relative;border: 1px solid #d7d7d7;border-radius: 3px; padding:0px;}
 .search_box .input_search input {width: calc(100% - 30px);font-size: 14px;border:0;}
 .search_box .input_search button {position: absolute;top:0;right:0;z-index:1;width: 30px;height: 30px;background: url('/img/search_icon.png') no-repeat center top 50%/12px auto;}
 
@@ -874,6 +874,19 @@ pre{white-space: pre-wrap;}
 #myRecipientListWrap > .moreBtnWrap > button > i { font-size: 21px; margin-right: 5px; vertical-align: middle; top: -1px; }
 #myRecipientListWrap > .moreBtnWrap > button > i { font-size: 21px; margin-right: 5px; vertical-align: middle; top: -1px; }
 #myRecipientListWrap > .list-paging { width: 100%; float: left; margin-top: 20px; }
+
+.btn.eroumcare_btn {
+    width: 100px;
+    height: 35px;
+    line-height: 35px;
+    font-size: 12px;
+    color: #FFF;
+    background-color: #3366CC;
+    text-align: center;
+    font-weight: bold;
+    padding: 0;
+    border-color: #3366CC;
+}
 
 /* 210208 상단퀵메뉴 */
 #headerTopQuickMenuWrap { display: none; width: 100%; }
