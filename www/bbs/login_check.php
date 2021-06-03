@@ -57,8 +57,6 @@ if($_POST["mb_id"] != "admin"){
 		$resInfo["usrZip02"] = substr($resInfo["usrZip"], 3, 2);
 		$resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
 		$resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
-        $mb_password2 =  base64_encode ($mb_password) ;
-        
 		if(!$mbCheck){
 			sql_query("
             INSERT INTO {$g5["member_table"]} SET
@@ -99,7 +97,6 @@ if($_POST["mb_id"] != "admin"){
                 sealFile = '".$sealFile_name."',
                 crnFile = '".$crnFile_name."',
                 mb_datetime = '".G5_TIME_YMDHIS."',
-                mb_password2 = '".$mb_password2."'
 			");
 		} else {
             sql_query("
@@ -136,7 +133,6 @@ if($_POST["mb_id"] != "admin"){
                     mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
                     mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
                     mb_giup_bname = '{$resInfo["entNm"]}',
-                    mb_password2 = '".$mb_password2."'
                 WHERE mb_id = '{$resInfo["usrId"]}'
             ");
 		}

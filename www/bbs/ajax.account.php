@@ -1,5 +1,20 @@
 <?php
     include_once('./_common.php');
+    print_r2($_REQUEST);
+
+
+    $oCurl = curl_init();
+	curl_setopt($oCurl, CURLOPT_PORT, 9901);
+	curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com:9901/api/ent/insert");
+	curl_setopt($oCurl, CURLOPT_POST, 1);
+	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($_POST, JSON_UNESCAPED_UNICODE));
+	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+	$res = curl_exec($oCurl);
+    print_r2($res);
+    return false;
+
 
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);
@@ -20,7 +35,6 @@
     $resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
 
     $mb_password = trim($_POST['usrPw']);
-    $mb_password2 =  base64_encode ($mb_password) ;
     $crnFile_name ="";
     $sealFile_name ="";
     $mbCheck = sql_fetch("SELECT * FROM {$g5["member_table"]} WHERE mb_id = '".$_POST["usrId"]."'");
@@ -87,22 +101,22 @@
             switch( $error ) {
                 case UPLOAD_ERR_INI_SIZE:
                 case UPLOAD_ERR_FORM_SIZE:
-                    echo 'N';
+                    echo '파일이 너무 큽니다.';
                     break;
                 exit;
                 default:
-                echo 'N';
+                echo '파일이 제대로 업로드되지 않았습니다.';
                 exit;
             }
             exit;
         }
         if($file['size'] >= $max_file_size) {
-            echo 'N';
+            echo '2MB 까지만 업로드 가능합니다.';
             exit;
         }
         // 확장자 확인
         if( in_array($ext, $allowed_ext) ) {
-            echo 'N';
+            echo '허용되지 않는 확장자입니다.';
             exit;
         }
     }
@@ -147,7 +161,6 @@
                 sealFile = '".$sealFile_name."',
                 crnFile = '".$crnFile_name."',
                 mb_datetime = '".G5_TIME_YMDHIS."',
-                mb_password2 = '".$mb_password2."'
         ");
     } else {
         sql_query("
@@ -186,7 +199,6 @@
                 mb_giup_bname = '{$resInfo["entNm"]}',
                 sealFile = '".$sealFile_name."',
                 crnFile = '".$crnFile_name."',
-                mb_password2 = '".$mb_password2."'
             WHERE mb_id = '{$resInfo["usrId"]}'
         ");
     }
