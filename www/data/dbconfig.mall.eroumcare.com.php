@@ -6,6 +6,12 @@ define('G5_MYSQL_PASSWORD', 'malleroumcareghjdsafkjDSFFASJFKD@!DS!123');
 define('G5_MYSQL_DB', 'malleroumcare');
 define('G5_MYSQL_SET_MODE', true);
 
+define('SYS_MYSQL_HOST', '61.106.19.167');
+define('SYS_MYSQL_USER', 'WMDSDB');
+define('SYS_MYSQL_PASSWORD', 'WMDSDB');
+define('SYS_MYSQL_DB', 'wmdsdb');
+define('SYS_MYSQL_SET_MODE', true);
+
 define('G5_TABLE_PREFIX', 'g5_');
 
 $g5['write_prefix'] = G5_TABLE_PREFIX.'write_'; // 게시판 테이블명 접두사
