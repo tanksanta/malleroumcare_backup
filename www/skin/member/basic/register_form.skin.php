@@ -489,6 +489,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                     <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 2Mbyte 이하로 등록해주세요.</p>
 				</div>
 			</div>
+            <?php if($w){ ?>
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_giup_file2"><b>사업자직인 (계약서 날인)</b></label>
 				<div class="col-sm-8 mb_giup_file2">
@@ -499,7 +500,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                     <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 2Mbyte 이하로 등록해주세요.</p>
 				</div>
 			</div>
-
+            <?php } ?>
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_entConAcc01"><b>특약사항1</b></label>
 				<div class="col-sm-8">
@@ -1144,7 +1145,7 @@ function fregisterform_submit()
     // sendData.append("usrGender", $("#mb_sex").val());//성별
     // sendData.append("entBusiNum",$("#mb_giup_sbnum").val()); //종사업장번호
 
-
+    <?php if($w){ ?>
     //직인파일
     var imgFileItem2 = $(".mb_giup_file2 input[type='file']");
     for(var i = 0; i < imgFileItem2.length; i++){
@@ -1158,7 +1159,7 @@ function fregisterform_submit()
             }
         }
     }
-
+    <?php } ?>
 
     //사업자등록증
     var flag ='<?=$member['crnFile']?>';

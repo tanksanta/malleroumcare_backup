@@ -416,6 +416,7 @@ label {
             <?php }?>
         </td>
     </tr>
+    <?php if($w){ ?>
     <tr>
         <th scope="row">
             <label for="mb_partner_date_auto_buy_cnt">사업자직인 (계약서 날인)</label>
@@ -427,6 +428,7 @@ label {
             <?php }?>
         </td>
     </tr>
+    <?php } ?>
     <tr>
         <th scope="row">
             <label for="mb_giup_tax_email">세금계산서이메일</label>
@@ -1292,7 +1294,7 @@ function fmember_submit()
     // sendData.append("usrGender", $("#mb_sex").val());//성별
     // sendData.append("entBusiNum",$("#mb_giup_sbnum").val()); //종사업장번호
 
-
+    <?php if($w){ ?>
     //직인파일
     var imgFileItem2 = $(".mb_giup_file2 input[type='file']");
     for(var i = 0; i < imgFileItem2.length; i++){
@@ -1305,6 +1307,7 @@ function fmember_submit()
             sendData2.append("sealFile", $(imgFileItem2[i])[0].files[0]);
         }
     }
+    <?php } ?>
     //사업자등록증
     var flag ='<?=$mb['crnFile']?>';
     var imgFileItem1 = $(".mb_giup_file1 input[type='file']");
