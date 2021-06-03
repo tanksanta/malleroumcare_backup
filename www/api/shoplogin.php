@@ -56,8 +56,7 @@
                     mb_giup_bname = '{$resInfo["entNm"]}',
                     mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
                     mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
-                    mb_datetime = '".G5_TIME_YMDHIS."',
-                    mb_password2 = '".$mb_password2."'
+                    mb_datetime = '".G5_TIME_YMDHIS."'
 				");
 			} else {
                 sql_query("
@@ -93,8 +92,7 @@
                         mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
                         mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
                         mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
-                        mb_giup_bname = '{$resInfo["entNm"]}',
-                        mb_password2 = '".$mb_password2."'
+                        mb_giup_bname = '{$resInfo["entNm"]}'
                     WHERE mb_id = '{$resInfo["usrId"]}'
                 ");
 			}
