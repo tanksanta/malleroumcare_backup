@@ -151,9 +151,12 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<?php
 					foreach($images as $img) {
 					?>
-					<a href="<?=$img['href']?>" class="popup_item_image image_slide" target="_blank" title="크게보기">
+					<!--<a href="<?=$img['href']?>" class="popup_item_image image_slide" target="_blank" title="크게보기">
 						<img src="<?=$img['src']?>" alt="상품 이미지">
-					</a>
+					</a>-->
+					<div class="popup_item_image image_slide">
+						<img src="<?=$img['src']?>" alt="상품 이미지">
+					</div>
 					<?php
 					}
 					?>
@@ -180,14 +183,14 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
   				autoplaySpeed: 5000
 				});
 				// 이미지 크게보기
-				$(".popup_item_image").click(function() {
+				/*$(".popup_item_image").click(function() {
 					var url = $(this).attr("href");
 					var top = 10;
 					var left = 10;
 					var opt = 'scrollbars=yes,top='+top+',left='+left;
 					popup_window(url, "largeimage", opt);
 					return false;
-				});
+				});*/
 				// 이미지 3d보기
 				$("#item3dViewBox").hide();
 				$("#item3dViewBox").css("opacity", 1);
