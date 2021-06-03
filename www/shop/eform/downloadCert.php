@@ -7,7 +7,7 @@ if($dc_id && $penLtmNum && $penNm && $penBirth) {
           penLtmNum = '$penLtmNum' and
           penNm = '$penNm' and
           penBirth = '$penBirth' and
-          (dc_status = '2' or dc_status = '3')";
+          dc_status = '2'";
 
   $eform = sql_fetch($sql);
 
@@ -26,10 +26,10 @@ if($dc_id && $penLtmNum && $penNm && $penBirth) {
   }
 
   $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
-}
 
-if($eform['dc_status'] != '2') {
-  alert('감사추적인증서가 작성되지 않았습니다.');
+  if($eform['dc_status'] != '2') {
+    alert('감사추적인증서가 작성되지 않았습니다.');
+  }
 }
 
 

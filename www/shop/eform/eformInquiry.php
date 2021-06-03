@@ -20,7 +20,8 @@ add_stylesheet('<link rel="stylesheet" href="css/eforminquiry.css">', 0);
       <div class="form-group">
         <label class="col-sm-4 control-label" for="penLtmNum"><b>요양인정번호</b><strong class="sound_only">필수</strong></label>
         <div class="col-sm-8">
-          <input type="text" name="penLtmNum" value="" id="penLtmNum" required  class="form-control input-sm">
+          <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
+          <input type="number" min="0" maxlength="10" oninput="maxLengthCheck(this)" name="penLtmNum" value="" id="penLtmNum" required style="width: calc(100% - 16px)" class="form-control input-sm">
         </div>
       </div>
       <div class="form-group">
@@ -74,6 +75,12 @@ function setDateBox() {
     var first_num="";
     if(i<10){first_num = 0;}
     $(".day").append("<option value='" + first_num+i + "'>" +first_num+ i + "</option>");
+  }
+}
+
+function maxLengthCheck(object){
+  if (object.value.length > object.maxLength){
+    object.value = object.value.slice(0, object.maxLength);
   }
 }
 
