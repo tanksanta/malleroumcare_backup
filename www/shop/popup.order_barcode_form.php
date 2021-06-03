@@ -202,7 +202,7 @@
                                         <input type="number" maxlength="12" oninput="maxLengthCheck(this)" value="<?php echo $barcodes[$b]; ?>" class="notall frm_input frm_input_<?=$prodListCnt?> required barcode_input" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
                                         <i class="fa fa-check"></i>
                                         <span class="overlap">중복</span>
-                                        <!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>"> -->
+                                        <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
                                     </li>
                                 <?php $prodListCnt++; } ?>
                             </ul>
@@ -601,7 +601,9 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
             $(click).find('.p1 .span2 .up').css("display", "none");
             $(click).find('.p1 .span2 .down').css("display", "inline-block");
       }
-  }
+  	}
+
+	
 
     // 팝업열기
     function showPopup(multipleFilter) {
