@@ -279,7 +279,7 @@ scrollToTop();
 			</style>
 			<div class="move_system">
 				<?php if($member["mb_level"] =="3" || $member["mb_level"] =="4"){ ?>
-				<a href="<?=G5_BBS_URL?>/gotoSystem.php" onclick="goto_system();" target="_blank"  >◀ 이로움 통합 시스템바로가기</a>
+				<!-- <a href="<?=G5_BBS_URL?>/gotoSystem.php" target="_blank"  >◀ 이로움 통합 시스템바로가기</a> -->
 				<?php } ?>
 			</div>
 			<div class="logoWrap">
