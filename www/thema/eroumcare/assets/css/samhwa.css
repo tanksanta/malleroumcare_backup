@@ -1640,7 +1640,7 @@
     top: 0;
     bottom: 0;
     right: 0;
-    width: calc(100% - 450px);
+    width: calc(100% - 550px);
 }
 .item-head .samhwa-item-image .item-image,
 .item-head .samhwa-item-image .item-image .item_image_slider {
