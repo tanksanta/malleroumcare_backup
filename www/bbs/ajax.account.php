@@ -1,21 +1,5 @@
 <?php
     include_once('./_common.php');
-    print_r2($_REQUEST);
-
-
-    $oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9901);
-	curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com:9901/api/ent/insert");
-	curl_setopt($oCurl, CURLOPT_POST, 1);
-	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($_POST, JSON_UNESCAPED_UNICODE));
-	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-	$res = curl_exec($oCurl);
-    print_r2($res);
-    return false;
-
-
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);
 	curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/ent/account");
