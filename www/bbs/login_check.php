@@ -96,7 +96,7 @@ if($_POST["mb_id"] != "admin"){
                 mb_giup_bname = '{$resInfo["entNm"]}',
                 sealFile = '".$sealFile_name."',
                 crnFile = '".$crnFile_name."',
-                mb_datetime = '".G5_TIME_YMDHIS."',
+                mb_datetime = '".G5_TIME_YMDHIS."'
 			");
 		} else {
             sql_query("
