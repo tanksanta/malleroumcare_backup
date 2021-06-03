@@ -1,0 +1,19 @@
+.eform-inquiry-wrap {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eform-inquiry-wrap .panel-body {
+  text-align: left;
+}
+
+#btnEformInquiry {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: #ee8102;
+  color: #fff;
+  text-align: center;
+}
