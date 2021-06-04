@@ -149,14 +149,14 @@ if (file_exists($dbconfig_file)) {
     if(defined('G5_TIMEZONE')) sql_query(" set time_zone = '".G5_TIMEZONE."'");
 
     // 이로움 시스템 DB 세팅
-    $sys_connect_db = sql_connect(SYS_MYSQL_HOST, SYS_MYSQL_USER, SYS_MYSQL_PASSWORD, SYS_MYSQL_DB) or die('SYSTEM MySQL Connect Error!!!');
-    $sys_select_db  = sql_select_db(SYS_MYSQL_DB, $sys_connect_db) or die('SYSTEM MySQL DB Error!!!');
+    // $sys_connect_db = sql_connect(SYS_MYSQL_HOST, SYS_MYSQL_USER, SYS_MYSQL_PASSWORD, SYS_MYSQL_DB) or die('SYSTEM MySQL Connect Error!!!');
+    // $sys_select_db  = sql_select_db(SYS_MYSQL_DB, $sys_connect_db) or die('SYSTEM MySQL DB Error!!!');
 
-    $g5['sys_connect_db'] = $sys_connect_db;
+    // $g5['sys_connect_db'] = $sys_connect_db;
 
-    sql_set_charset('utf8', $sys_connect_db);
-    if(defined('G5_MYSQL_SET_MODE') && SYS_MYSQL_SET_MODE) sql_query("SET SESSION sql_mode = ''", false, $sys_connect_db);
-    if(defined('G5_TIMEZONE')) sql_query(" set time_zone = '".G5_TIMEZONE."'", false, $sys_connect_db);
+    // sql_set_charset('utf8', $sys_connect_db);
+    // if(defined('G5_MYSQL_SET_MODE') && SYS_MYSQL_SET_MODE) sql_query("SET SESSION sql_mode = ''", false, $sys_connect_db);
+    // if(defined('G5_TIMEZONE')) sql_query(" set time_zone = '".G5_TIMEZONE."'", false, $sys_connect_db);
 } else {
 ?>
 
