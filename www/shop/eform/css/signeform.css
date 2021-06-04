@@ -120,6 +120,13 @@ body {
   color: #fff;
 }
 
+.sign-eform-foot .menu-wrap button:disabled { 
+  cursor: not-allowed;
+  pointer-events: none;
+  background-color: #999;
+  color: #fff;
+}
+
 #popup-sign {
   display: none;
   /*display: table;*/

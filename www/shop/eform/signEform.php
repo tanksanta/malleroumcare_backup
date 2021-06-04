@@ -207,6 +207,8 @@ sql_query("INSERT INTO `eform_document_log` SET
       } else {
         // 마지막 단계 작성완료
         if(!confirm('계약서 작성을 완료하시겠습니까?')) return;
+        $(this).text('진행 중...');
+        $(this).prop('disabled', true);
         $.post('./ajax.eform.sign.php', {
           state: JSON.stringify(state),
           uuid: '<?=$eform["uuid"]?>'}, 'json'
@@ -217,6 +219,8 @@ sql_query("INSERT INTO `eform_document_log` SET
           location.href = od_url;
         })
         .fail(function($xhr) {
+          $(this).text('완료');
+          $(this).prop('disabled', false);
           var data = $xhr.responseJSON;
           alert(data && data.message);
         });
