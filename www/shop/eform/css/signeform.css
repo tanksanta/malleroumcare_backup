@@ -334,7 +334,7 @@ body {
 .seal-wrap img,
 .sign-wrap img {
   max-width: 130px;
-  max-height: ;
+  max-height: 130px;
   display: inline-block;
 }
 
