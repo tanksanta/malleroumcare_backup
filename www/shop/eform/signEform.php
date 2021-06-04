@@ -473,8 +473,8 @@ sql_query("INSERT INTO `eform_document_log` SET
           left: pos[id].left,
           /*width: pos[id].width,
           height: pos[id].height*/
-          maxWidth: 200,
-          maxHeight: 200
+          maxWidth: 130,
+          maxHeight: 130
         });
 
         if(id == 'seal_002_1') {

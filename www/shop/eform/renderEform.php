@@ -164,8 +164,8 @@ $is_gicho = $eform['penTypeCd'] == '04';
           left: pos[id].left,
           /*width: pos[id].width,
           height: pos[id].height*/
-          maxWidth: 200,
-          maxHeight: 200
+          maxWidth: 130,
+          maxHeight: 130
         });
 
         if(id == 'seal_002_1') {
