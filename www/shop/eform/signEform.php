@@ -259,7 +259,7 @@ sql_query("INSERT INTO `eform_document_log` SET
       closeSignPopup();
     });
 
-    $(document).on('click', '.btn-sign', function(e) {
+    $(document).on('click', '.btn-sign, .img-sign', function(e) {
       e.preventDefault();
       var id = $(this).data('id');
 
@@ -471,12 +471,14 @@ sql_query("INSERT INTO `eform_document_log` SET
         $wrap.css({
           top: pos[id].top,
           left: pos[id].left,
-          width: pos[id].width,
-          height: pos[id].height
+          /*width: pos[id].width,
+          height: pos[id].height*/
+          maxWidth: 200,
+          maxHeight: 200
         });
 
         var imageURL = state[id];
-        $wrap.html('<img src="'+imageURL+'" height="'+pos[id].height+'" alt="사업소 직인">');
+        $wrap.html('<img src="'+imageURL+'" alt="사업소 직인">');
       });
 
       // 서명
@@ -497,7 +499,7 @@ sql_query("INSERT INTO `eform_document_log` SET
           $wrap.html('<button class="btn-sign" data-id="'+id+'">서명하기</button>');
         } else {
           var imageURL = state[id];
-          $wrap.html('<img src="'+imageURL+'" height="'+pos[id].height+'" alt="수급자 서명">');
+          $wrap.html('<img class="img-sign" data-id="'+id+'" src="'+imageURL+'" height="'+pos[id].height+'" alt="수급자 서명">');
         }
       });
 

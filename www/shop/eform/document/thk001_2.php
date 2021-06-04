@@ -99,7 +99,7 @@
           <td></td>
           <th scope="col" class="right">대표 :</th>
           <td class="center"><?=$eform['entCeoNm']?></td>
-          <td class="seal-form center" data-id="seal_001_1" style="font-size: 14px">(서명)</td>
+          <td class="seal-form center" data-id="seal_001_1" style="font-size: 14px"><div style="position: relative; z-index: 100;">(서명)</div></td>
         </tr>
         <tr>
           <td colspan="7"></td>
