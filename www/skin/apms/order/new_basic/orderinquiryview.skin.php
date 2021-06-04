@@ -1135,7 +1135,7 @@ $(function(){
 </div>
 
 <style>
-#popupEformWrite { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#popupEformWrite { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 #popupEformWrite > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 #popupEformWrite iframe { position: relative; width: 1024px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -512px; }
 
