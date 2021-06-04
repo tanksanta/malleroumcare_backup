@@ -1153,15 +1153,19 @@ $(function(){
 	$("#popupEformWrite").hide();
 	$("#popupEformWrite").css("opacity", 1);
 
-	$(".linkEformWrite").click(function(e) { // 계약서 생성 버튼
-		e.preventDefault();
-
-		var od = $(this).data('od');
-		$("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.writeEform.php?od_id="+od+"'>");
+	function writeEform(od_id) {
+		$("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.writeEform.php?od_id="+od_id+"'>");
 		$("#popupEformWrite iframe").load(function(){
 			$("body").addClass('modal-open');
 			$("#popupEformWrite").show();
 		});
+	}
+
+	$(".linkEformWrite").click(function(e) { // 계약서 생성 버튼
+		e.preventDefault();
+
+		var od = $(this).data('od');
+		writeEform(od);
 	});
 	$('.linkEformSign').click(function(e) { // 계약서 작성 버튼
 		e.preventDefault();
@@ -1186,6 +1190,21 @@ $(function(){
 		window.open('/shop/eform/downloadEform.php?od_id='+od);
 	});
 
+	<?php
+	if($_GET['result'] == 'writeEform' && (!$eform["dc_id"] || $eform["dc_status"] == '0')) {
+	?>
+	if(confirm('수급자 주문이 완료되었습니다.\n계약서를 생성하시겠습니까?')) {
+		writeEform('<?=$od["od_id"]?>');
+	}
+	<?php
+	} else if($_GET['result'] == 'signEform' && $eform["dc_status"] == '1') {
+	?>
+	if(confirm('계약서가 생성되었습니다.\n계약서를 작성하시겠습니까?')) {
+		location.href = '/shop/eform/signEform.php?od_id='+<?=$od["od_id"]?>;
+	}
+	<?php
+	}
+	?>
 })
 </script>
 <!-- 210512 전자계약서 팝업 -->
