@@ -601,7 +601,7 @@ if( $w == '' || $w == 'u' ){
             ");
         }
         //파일저장
-        if($_FILES['crnFile']['tmp_name']){
+        if($_FILES['crnFile']['tmp_name']){관
             move_uploaded_file( $_FILES['crnFile']['tmp_name'], $crnFile);
         }
         if($_FILES['sealFile']['tmp_name']){
@@ -613,7 +613,7 @@ if( $w == '' || $w == 'u' ){
         goto_url('./member_form.php?'.$qstr.'&amp;w=u&amp;mb_id='.$mb_id, false);
     }else{
         //실패시 지움
-        $sql="DELETE FROM `g5_member` WHERE mb_id='".$_POST['mb_id']."'";
+        // $sql="DELETE FROM `g5_member` WHERE mb_id='".$_POST['mb_id']."'";
         sql_query($sql);
         //실패 이동
         //성공 결과 페이지 이동
