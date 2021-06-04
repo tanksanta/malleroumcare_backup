@@ -419,7 +419,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
             });
             if(flag){ return false;}
             var sendData = {
-                usrId : "<?=$od["mb_id"]?>",
+                usrId : "<?=$member["mb_id"]?>",
                 prods : prodsList
             }
 
