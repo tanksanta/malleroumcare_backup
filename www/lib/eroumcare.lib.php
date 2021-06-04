@@ -188,3 +188,11 @@ function get_carts_by_od_id($od_id, $delivery_yn = null) {
 
 	return $carts;
 }
+
+$pen_type_cd = array(
+	'00' => '일반 15%',
+	'01' => '감경 9%',
+	'02' => '감경 6%',
+	'03' => '의료 6%',
+	'04' => '기초 0%',
+);

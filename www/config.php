@@ -68,7 +68,7 @@ define('EROUMCARE_API_STOCK_UPDATE',                             'https://system
 // 장바구니 정보
 define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do');
 //수급자조회
-define('EROUMCARE_API_RECIPIENT_SELECTLIST',            'https://eroumcare.com:9901/api/recipient/selectList');
+define('EROUMCARE_API_RECIPIENT_SELECTLIST',                     'https://system.eroumcare.com/api/recipient/selectList');
 
 // 로젠택배 EDI 연동 
 // dbconfig 파일에 작성하도록 수정
