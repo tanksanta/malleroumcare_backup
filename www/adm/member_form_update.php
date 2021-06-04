@@ -601,7 +601,7 @@ if( $w == '' || $w == 'u' ){
             ");
         }
         //파일저장
-        if($_FILES['crnFile']['tmp_name']){관
+        if($_FILES['crnFile']['tmp_name']){
             move_uploaded_file( $_FILES['crnFile']['tmp_name'], $crnFile);
         }
         if($_FILES['sealFile']['tmp_name']){
