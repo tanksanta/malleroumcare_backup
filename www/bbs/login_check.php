@@ -39,6 +39,7 @@ if($_POST["mb_id"] != "admin"){
         }
 
 	} else {
+        $_SESSION[$mb_id]=$res['data']['pw'];
 		$mbCheck = sql_fetch("SELECT mb_id FROM {$g5["member_table"]} WHERE mb_id = '{$_POST["mb_id"]}'")["mb_id"];
 		$oCurl = curl_init();
 		curl_setopt($oCurl, CURLOPT_PORT, 9901);
