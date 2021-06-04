@@ -952,12 +952,12 @@ $tot_price=$tot_sell_price+$send_cost;
         }
 
 		/* 210303 수급자주문 시 체크 */
-		if($("#order_submitCheckBox").length && $("#penId").val()){
+		/*if($("#order_submitCheckBox").length && $("#penId").val()){
 			if($("#order_submitCheckBox").css("display") == "none"){
 				$("#order_submitCheckBox").show();
 				return false;
 			}
-		}
+		}*/
 
 		document.getElementById("display_pay_button").style.display = "none";
 		document.getElementById("show_progress").style.display = "block";
@@ -1429,10 +1429,10 @@ $tot_price=$tot_sell_price+$send_cost;
 				return false;
 			}
 
-			if($("#order_submitCheckBox").css("display") == "none"){
+			/*if($("#order_submitCheckBox").css("display") == "none"){
 				$("#order_submitCheckBox").show();
 				return false;
-			}
+			}*/
 		}
 
 		var tot_price = od_price + send_cost + send_cost2 - send_coupon - temp_point;

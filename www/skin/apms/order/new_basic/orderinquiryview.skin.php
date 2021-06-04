@@ -113,96 +113,92 @@ if($header_skin)
 		}
 	}
 
-// 테스트 환경일 때만
-if(defined('IS_TEST_ENVIRONMENT') || $member['mb_id'] == '123456789') {
-	echo "<style>.eform-tab{display:block !important;}</style>";
-	# 200512 전자계약서
-	$eform = [];
-	if($od["od_penId"]) { // 수급자 주문일 시
-		$eform = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '{$od["od_id"]}'");
-		if(!$eform['dc_id']) { // 전자계약서가 없을 경우
-			$sendData = [];
-			$sendData["usrId"] = $od["mb_id"];
-			$sendData["entId"] = sql_fetch("SELECT mb_entId FROM g5_member WHERE mb_id = '{$od["mb_id"]}'")["mb_entId"];
-			$sendData["pageNum"] = 1;
-			$sendData["pageSize"] = 1;
-			$sendData["penId"] = $od["od_penId"];
-	
-			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9901);
-			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res = curl_exec($oCurl);
-			$res = json_decode($res, true);
-			curl_close($oCurl);
-	
-			$penData = $res["data"][0];
-			$entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
+# 200512 전자계약서
+$eform = [];
+if($od["od_penId"]) { // 수급자 주문일 시
+	$eform = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '{$od["od_id"]}'");
+	if(!$eform['dc_id']) { // 전자계약서가 없을 경우
+		$sendData = [];
+		$sendData["usrId"] = $od["mb_id"];
+		$sendData["entId"] = sql_fetch("SELECT mb_entId FROM g5_member WHERE mb_id = '{$od["mb_id"]}'")["mb_entId"];
+		$sendData["pageNum"] = 1;
+		$sendData["pageSize"] = 1;
+		$sendData["penId"] = $od["od_penId"];
 
-			$dcId = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
+		$oCurl = curl_init();
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
+		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
+		curl_setopt($oCurl, CURLOPT_POST, 1);
+		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+		$res = curl_exec($oCurl);
+		$res = json_decode($res, true);
+		curl_close($oCurl);
 
-			sql_query("INSERT INTO `eform_document` SET
+		$penData = $res["data"][0];
+		$entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
+
+		$dcId = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
+
+		sql_query("INSERT INTO `eform_document` SET
+		`dc_id` = UNHEX('$dcId'),
+		`dc_status` = '0',
+		`od_id` = '{$od["od_id"]}',
+		`entId` = '{$entData["mb_entId"]}',
+		`entNm` = '{$entData["mb_entNm"]}',
+		`entCrn` = '{$entData["mb_giup_bnum"]}',
+		`entMail` = '{$entData["mb_email"]}',
+		`entCeoNm` = '{$entData["mb_giup_boss_name"]}',
+		`entConAcc01` = '{$entData["mb_entConAcc01"]}',
+		`entConAcc02` = '{$entData["mb_entConAcc02"]}',
+		`penId` = '{$penData["penId"]}',
+		`penNm` = '{$penData["penNm"]}',
+		`penConNum` = '{$penData["penConNum"]}', # 휴대전화번호인데 전화번호랑 둘중에 어떤거 입력해야될지?
+		`penBirth` = '{$penData["penBirth"]}',
+		`penLtmNum` = '{$penData["penLtmNum"]}',
+		`penRecGraCd` = '{$penData["penRecGraCd"]}', # 장기요양등급
+		`penRecGraNm` = '{$penData["penRecGraNm"]}',
+		`penTypeCd` = '{$penData["penTypeCd"]}', # 본인부담금율
+		`penTypeNm` = '{$penData["penTypeNm"]}',
+		`penExpiDtm` = '{$penData["penExpiDtm"]}', # 수급자 이용기간
+		`penJumin` = '{$penData["penJumin"]}',
+		`penZip` = '{$penData["penZip"]}',
+		`penAddr` = '{$penData["penAddr"]}',
+		`penAddrDtl` = '{$penData["penAddrDtl"]}'
+		");
+
+		$sendData = [];
+		$sendData["penOrdId"] = $od["ordId"];
+
+		$oCurl = curl_init();
+		curl_setopt($oCurl, CURLOPT_PORT, 9901);
+		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/eform/selectEform001");
+		curl_setopt($oCurl, CURLOPT_POST, 1);
+		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+		$res = curl_exec($oCurl);
+		$res = json_decode($res, true);
+		curl_close($oCurl);
+
+		foreach($res["data"] as $it) {
+			$priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);
+			sql_query("INSERT INTO `eform_document_item` SET
 			`dc_id` = UNHEX('$dcId'),
-			`dc_status` = '0',
-			`od_id` = '{$od["od_id"]}',
-			`entId` = '{$entData["mb_entId"]}',
-			`entNm` = '{$entData["mb_entNm"]}',
-			`entCrn` = '{$entData["mb_giup_bnum"]}',
-			`entMail` = '{$entData["mb_email"]}',
-			`entCeoNm` = '{$entData["mb_giup_boss_name"]}',
-			`entConAcc01` = '{$entData["mb_entConAcc01"]}',
-			`entConAcc02` = '{$entData["mb_entConAcc02"]}',
-			`penId` = '{$penData["penId"]}',
-			`penNm` = '{$penData["penNm"]}',
-			`penConNum` = '{$penData["penConNum"]}', # 휴대전화번호인데 전화번호랑 둘중에 어떤거 입력해야될지?
-			`penBirth` = '{$penData["penBirth"]}',
-			`penLtmNum` = '{$penData["penLtmNum"]}',
-			`penRecGraCd` = '{$penData["penRecGraCd"]}', # 장기요양등급
-			`penRecGraNm` = '{$penData["penRecGraNm"]}',
-			`penTypeCd` = '{$penData["penTypeCd"]}', # 본인부담금율
-			`penTypeNm` = '{$penData["penTypeNm"]}',
-			`penExpiDtm` = '{$penData["penExpiDtm"]}', # 수급자 이용기간
-			`penJumin` = '{$penData["penJumin"]}',
-			`penZip` = '{$penData["penZip"]}',
-			`penAddr` = '{$penData["penAddr"]}',
-			`penAddrDtl` = '{$penData["penAddrDtl"]}'
+			`gubun` = '{$it["gubun"]}',
+			`ca_name` = '{$it["itemNm"]}',
+			`it_name` = '{$it["prodNm"]}',
+			`it_code` = '{$it["prodPayCode"]}',
+			`it_barcode` = '{$it["prodBarNum"]}',
+			`it_qty` = '1',
+			`it_date` = '{$it["contractDate"]}',
+			`it_price` = '{$it["prodPrice"]}',
+			`it_price_pen` = '{$it["penPrice"]}',
+			`it_price_ent` = '$priceEnt'
 			");
-
-			$sendData = [];
-			$sendData["penOrdId"] = $od["ordId"];
-
-			$oCurl = curl_init();
-			curl_setopt($oCurl, CURLOPT_PORT, 9901);
-			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/eform/selectEform001");
-			curl_setopt($oCurl, CURLOPT_POST, 1);
-			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-			$res = curl_exec($oCurl);
-			$res = json_decode($res, true);
-			curl_close($oCurl);
-
-			foreach($res["data"] as $it) {
-				$priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);
-				sql_query("INSERT INTO `eform_document_item` SET
-				`dc_id` = UNHEX('$dcId'),
-				`gubun` = '{$it["gubun"]}',
-				`ca_name` = '{$it["itemNm"]}',
-				`it_name` = '{$it["prodNm"]}',
-				`it_code` = '{$it["prodPayCode"]}',
-				`it_barcode` = '{$it["prodBarNum"]}',
-				`it_qty` = '1',
-				`it_date` = '{$it["contractDate"]}',
-				`it_price` = '{$it["prodPrice"]}',
-				`it_price_pen` = '{$it["penPrice"]}',
-				`it_price_ent` = '$priceEnt'
-				");
-			}
 		}
 	}
 }
@@ -268,7 +264,7 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 	</script>
    <!-- 210326 배송정보팝업 -->
 
-<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?edited=2105121313">
+<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?edited=2106041957">
 <section id="pro-order2" class="wrap order-list">
 	<h2 class="tti">
 		주문상세

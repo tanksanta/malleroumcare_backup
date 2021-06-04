@@ -1254,10 +1254,10 @@ function forderform_check(f)
 			return false;
 		}
 
-		if($("#order_submitCheckBox").css("display") == "none"){
+		/*if($("#order_submitCheckBox").css("display") == "none"){
 			$("#order_submitCheckBox").show();
 			return false;
-		}
+		}*/
 	}
 
     var od_price = parseInt(f.od_price.value);

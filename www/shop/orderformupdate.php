@@ -1440,10 +1440,10 @@ if($is_member && $od_b_name) {
 	# 주문신청
 	if($_POST["penId"]){
         ///////// 테스트 목적 //////////
-        $use_new_eform = false;
-        if($member['mb_id'] == '123456789') {
+        $use_new_eform = true;
+        /*if($member['mb_id'] == '123456789') {
             $use_new_eform = true;
-        }
+        }*/
         /////////////////////////////
 
         if(!$use_new_eform) {
