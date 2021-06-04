@@ -342,3 +342,15 @@ body {
   position: relative;
   z-index: 1;
 }
+
+@media screen and (max-width: 900px){
+	.sign-eform-body .a4{width:calc(100% - 30px);padding:20px 0;zoom: 0.8;}
+	.thk101{padding:0 20px !important;}
+	.sign-eform-body{padding-top: 80px;}
+	
+}
+
+@media screen and (max-width: 600px){
+	.sign-eform-body .a4{zoom: 0.40;}
+	
+}
