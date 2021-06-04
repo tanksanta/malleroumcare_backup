@@ -21,7 +21,7 @@ table {border-collapse: collapse;}
 .cb:after { clear: both; display: block; content: '';}
 
 /* 검색폼 */
-.search-box {font-size: 0;text-align: left;} 
+.search-box {font-size: 0;text-align: left;padding-bottom:10px;} 
 .search-box select {margin-right:6px;display: inline-block;vertical-align: top;width:97px;height:30px;border:1px solid #d7d7d7;border-radius: 6px;font-size: 14px;}
 .search-box .input-search {display: inline-block;vertical-align: top; width:176px;height:30px;overflow: hidden;position: relative;border: 1px solid #d7d7d7;border-radius: 6px;}
 .search-box .input-search input {width: calc(100% - 30px); height: 28px;font-size: 14px;border:0;padding:0 5px;}

@@ -101,8 +101,8 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
      	
      	<div class="search_box">
             <select name="searchtype" id="">
-                <option value="1">상품명</option>
-                <option value="2">제품코드</option>
+                <option value="1">수급자명</option>
+                <option value="2">요양인정번호</option>
             </select>
             <div class="input_search">
                 <input name="searchtypeText" value="<?=$_GET["searchtypeText"]?>" type="text">
@@ -110,7 +110,7 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
             </div>
         </div>
  		<div class="r_btn_area">
- 			<span>마지막 업데이트 : 1일</span>
+ 			<span>최신검증일 : 2021-03-01 13:35</span>
  			<a href="#" class="btn_nhis">건보 자료 업로드</a>
  			<a href="#">엑셀다운로드</a>
  		</div>
@@ -120,39 +120,33 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 				 <tr>
 				 	<th>No.</th>
 				 	<th>수급자 정보</th>
-				 	<th>상품정보</th>
-				 	<th>분류</th>
 				 	<th>급여시작일</th>
 				 	<th>급여비용총액</th>
 				 	<th>본인부담금</th>
 				 	<th>청구액</th>
 				 	<th>검증상태</th>
+				 	<th>금액변경</th>
 				 </tr>
 				 <tr>
 				 	<td>5</td>
-				 	<td>홍길동(L2233321333 / 3등급 /기초0%)</td>
-				 	<td>상품명(11111)</td>
-				 	<td class="text_c">일반계약</td>
+				 	<td><a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a></td>
 				 	<td class="text_c">2021-02-02</td>
 				 	<td class="text_r">200,000원</td>
 				 	<td class="text_r">10,000원</td>
 				 	<td class="text_r">210,000원</td>
 				 	<td class="text_c">정상</td>
+				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
 				 </tr>
 				 <tr class="bg_red">
 				 	<td>4</td>
 				 	<td>
-				 		홍길동(L2233321333 / 3등급 /기초0%)
+				 		<a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a>
 				 		<p class="text_red">홍**(L22333**** / 2등급 /기초0%)</p>
-				 		<a href="#" class="w_100">수정하기</a>
 				 	</td>
-				 	<td>상품명(11111)외 2건</td>
-				 	<td class="text_c">일반계약</td>
 				 	<td class="text_c">2021-02-02</td>
 				 	<td class="text_r">
 				 		200,000원
 				 		<p class="text_red">150,000원</p>
-				 		<a href="#" class="w_100">수정</a>
 				 	</td>
 				 	<td class="text_r">
 				 		100,000원
@@ -160,45 +154,40 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 				 	<td class="text_r">
 				 		300,000원
 				 		<p class="text_red">250,000원</p>
-				 		<a href="#" class="w_100">수정</a>
 				 	</td>
 				 	<td class="text_c text_red">오류</td>
+				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
 				 </tr>
 				 <tr>
 				 	<td>3</td>
-				 	<td class="text_point">홍길동(L2233321333 / 3등급 /기초0%)
-				 		<a href="#" class="w_100">변경하기</a>
+				 	<td class="text_point"><a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a>
 				 	</td>
-				 	<td>상품명(11111)</td>
-				 	<td class="text_c">일반계약</td>
 				 	<td class="text_c">2021-02-02</td>
 				 	<td class="text_r">200,000원</td>
 				 	<td class="text_r">10,000원</td>
-				 	<td class="text_r text_point">210,000원
-				 		<a href="#" class="w_100">변경</a></td>
+				 	<td class="text_r text_point">210,000원</td>
 				 	<td class="text_c text_point">변경완료</td>
+				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
 				 </tr>
 				 <tr>
 				 	<td>2</td>
-				 	<td>홍길동(L2233321333 / 3등급 /기초0%)</td>
-				 	<td>상품명(11111)</td>
-				 	<td class="text_c">일반계약</td>
+				 	<td><a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a></td>
 				 	<td class="text_c">2021-02-02</td>
 				 	<td class="text_r">200,000원</td>
 				 	<td class="text_r">10,000원</td>
 				 	<td class="text_r">210,000원</td>
 				 	<td class="text_c text_gray">대기</td>
+				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
 				 </tr>
 				 <tr>
 				 	<td>1</td>
-				 	<td>홍길동(L2233321333 / 3등급 /기초0%)</td>
-				 	<td>상품명(11111)</td>
-				 	<td class="text_c">월대여청구</td>
+				 	<td><a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a></td>
 				 	<td class="text_c">2021-02-02</td>
 				 	<td class="text_r">200,000원</td>
 				 	<td class="text_r">10,000원</td>
 				 	<td class="text_r">210,000원</td>
 				 	<td class="text_c text_gray">대기</td>
+				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
 				 </tr>
 			 </table>
 			 </div>
