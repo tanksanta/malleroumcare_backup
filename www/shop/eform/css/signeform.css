@@ -344,6 +344,7 @@ body {
 }
 
 @media screen and (max-width: 900px){
+  .sign-eform-body .a4 * {text-size-adjust: auto;-webkit-text-size-adjust: auto;}
 	.sign-eform-body .a4{width:calc(100% - 30px);padding:20px 0;zoom: 0.8;}
 	.sign-eform-body .a4 > div{padding:0 20px !important;}
 	.sign-eform-body{padding-top: 80px;}
