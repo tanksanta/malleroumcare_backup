@@ -411,8 +411,8 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         	<div class="it_type_box">
 				<?php if($it['it_type1']){ ?><p class="p_box type1" > 일시품절</p><?php } ?>
 				<?php if($it['it_type2']){ ?><p class="p_box type2"> 대여상품</p><?php } ?>
-				<?php if($it['it_type3']){ ?><p class="p_box type3">주문제작</p><?php } ?>
-				<?php if($it['it_type4']){ ?><p class="p_box type4"> 상담문의</p><?php } ?>
+				<?php if($it['it_type3']){ ?><p class="p_box type3"> 주문제작</p><?php } ?>
+				<?php if($it['it_type4']){ ?><p class="p_box type4"> 예약가능</p><?php } ?>
 				<?php if($it['it_type5']){ ?><p class="p_box type5"> 택배전용</p><?php } ?>
 			</div>
        </div>
