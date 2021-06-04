@@ -1,6 +1,7 @@
 <?php
 include_once("./_common.php");
 include_once('./lib/eform.lib.php');
+include_once(G5_LIB_PATH.'/icode.lms.lib.php');
 
 if(!$is_member) {
   json_response(400, '먼저 로그인하세요.');
@@ -106,6 +107,36 @@ sql_query("UPDATE `eform_document` SET
 `dc_cert_pdf_file` = '$certfile'
 WHERE `dc_id` = UNHEX('$uuid')
 ");
+
+// 문자 발송
+$send_hp = '02-830-1301';
+$recv_hp = $eform['penConNum'];
+
+$send_hp = str_replace('-', '', $send_hp);
+$recv_hp = str_replace('-', '', $recv_hp);
+
+$link = G5_SHOP_URL.'/eform/eformInquiry.php?id='.$uuid;
+$msg = "[이로움]\n{$eform['penNm']}님 '".mb_substr($eform['entNm'], 0, 8, 'utf-8')."' 사업소와 전자계약이 체결되었습니다.\n\n* 문서확인 : {$link}";
+
+$port_setting = get_icode_port_type($config['cf_icode_id'], $config['cf_icode_pw']);
+if($port_setting !== false && $recv_hp) {
+    $SMS = new LMS;
+    $SMS->SMS_con($config['cf_icode_server_ip'], $config['cf_icode_id'], $config['cf_icode_pw'], $port_setting);
+
+    $strDest     = array();
+    $strDest[]   = $recv_hp;
+    $strCallBack = $send_hp;
+    $strCaller   = iconv_euckr('이로움');
+    $strSubject  = iconv_euckr('[이로움] 계약체결완료');
+    $strURL      = '';
+    $strData     = iconv_euckr($msg);
+    $strDate     = '';
+    $nCount      = count($strDest);
+
+    $res = $SMS->Add($strDest, $strCallBack, $strCaller, $strSubject, $strURL, $strData, $strDate, $nCount);
+
+    $SMS->Send();
+}
 
 json_response(200, 'OK');
 ?>

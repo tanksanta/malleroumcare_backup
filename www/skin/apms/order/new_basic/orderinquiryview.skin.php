@@ -1197,7 +1197,7 @@ $(function(){
 		writeEform('<?=$od["od_id"]?>');
 	}
 	<?php
-	} else if($_GET['result'] == 'signEform' && $eform["dc_status"] == '1') {
+	} else if($_GET['result'] == 'writeEform' && $eform["dc_status"] == '1') {
 	?>
 	if(confirm('계약서가 생성되었습니다.\n계약서를 작성하시겠습니까?')) {
 		location.href = '/shop/eform/signEform.php?od_id='+<?=$od["od_id"]?>;

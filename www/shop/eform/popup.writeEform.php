@@ -176,16 +176,6 @@ while($item = sql_fetch_array($items)) {
     $("#popupEformWrite", parent.document).find("iframe").remove();
   }
 
-  function updateQueryStringParameter(uri, key, value) {
-    var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-    if (uri.match(re)) {
-      return uri.replace(re, '$1' + key + "=" + value + '$2');
-    } else {
-      return uri + separator + key + "=" + value;
-    }
-  }
-
   $(function(){
     $("#btnCloseEform").click(closePopup);
     $("#btnCancelEform").click(closePopup);
@@ -384,7 +374,7 @@ while($item = sql_fetch_array($items)) {
       .done(function(data) {
         // 생성 완료
         alert('계약서 생성이 완료되었습니다.');
-        parent.location.href = updateQueryStringParameter(parent.location.href, 'result', 'signEform');
+        parent.location.reload();
       })
       .fail(function($xhr) {
         var data = $xhr.responseJSON;
