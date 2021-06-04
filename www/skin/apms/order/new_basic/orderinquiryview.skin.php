@@ -317,6 +317,24 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 			<div class="all-info all-info2">
 				<ul>
 					<li>
+						<ul class="eform-tab">
+							<li class="eform-tab-head">공급계약서</li>
+							<li class="eform-tab-desc">수급자 주문시 간편하게 작성하는 온라인 계약</li>
+							<li class="eform-tab-links">
+								<?php if(!$eform["dc_id"] || $eform["dc_status"] == '0') { // 계약서 생성 전 ?>
+								<a href="#" id="linkEformWrite" class="eform-tab-link" data-od="<?=$od["od_id"]?>">계약서 생성</a>
+								<?php } else if ($eform['dc_status'] == '1') { // 계약서 생성 후 & 작성 전 ?>
+								<div class="eform-tab-flexbox">
+									<a href="#" id="linkEformSign" class="eform-tab-link half" data-od="<?=$od["od_id"]?>">계약서 작성</a>
+									<a href="#" id="linkEformEdit" class="eform-tab-link half white" data-od="<?=$od["od_id"]?>">내용변경</a>
+								</div>
+								<?php } else if ($eform['dc_status'] == '2' || $eform['dc_status'] == '3') { // 계약서 작성 완료 ?>
+								<a href="#" id="linkEformView" class="eform-tab-link white" data-od="<?=$od["od_id"]?>">계약서 다운로드</a>
+								<?php } ?>
+							</li>
+						</ul>
+					</li>
+					<li>
 						<div>
 							<b>수급자명</b>
 							<span><?=($od["od_penNm"]) ? $od["od_penNm"] : "-"?></span>
