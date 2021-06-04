@@ -62,7 +62,7 @@ sql_query("INSERT INTO `eform_document_log` SET
   <link rel="stylesheet" href="css/thk002.css">
   <link rel="stylesheet" href="css/thk003.css">
   <script src="<?=G5_JS_URL?>/signature_pad.umd.js"></script>
-  <script src="<?=G5_JS_URL?>/jquery-1.11.3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 </head>
 <body>
   <div class="sign-eform-head flexbox justify">
@@ -476,6 +476,12 @@ sql_query("INSERT INTO `eform_document_log` SET
           maxWidth: 200,
           maxHeight: 200
         });
+
+        if(id == 'seal_002_1') {
+          $wrap.css({
+            transform: 'translateY(-50%)'
+          });
+        }
 
         var imageURL = state[id];
         $wrap.html('<img src="'+imageURL+'" alt="사업소 직인">');

@@ -162,12 +162,20 @@ $is_gicho = $eform['penTypeCd'] == '04';
         $wrap.css({
           top: pos[id].top,
           left: pos[id].left,
-          width: pos[id].width,
-          height: pos[id].height
+          /*width: pos[id].width,
+          height: pos[id].height*/
+          maxWidth: 200,
+          maxHeight: 200
         });
 
+        if(id == 'seal_002_1') {
+          $wrap.css({
+            transform: 'translateY(-50%)'
+          });
+        }
+
         var imageURL = state[id];
-        $wrap.html('<img src="'+imageURL+'" height="'+pos[id].height+'" alt="사업소 직인">');
+        $wrap.html('<img src="'+imageURL+'" alt="사업소 직인">');
       });
 
       // 서명
