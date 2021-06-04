@@ -67,7 +67,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 }
 #ui-datepicker-div { z-index: 999 !important; }
 </style>
-<form class="form-horizontal register-form" role="form" id="fregisterform" name="fregisterform" action="<?php echo $action_url ?>" onsubmit="return fregisterform_submit();" method="post" enctype="multipart/form-data" autocomplete="off">
+<form class="form-horizontal register-form" role="form" id="fregisterform" name="fregisterform" action="<?=G5_BBS_URL?>/ajax.account.php" onsubmit="return fregisterform_submit();" method="post" enctype="multipart/form-data" autocomplete="off">
 	<input type="hidden" name="w" value="<?php echo $w ?>">
 	<input type="hidden" name="url" value="<?php echo $urlencode ?>">
 	<input type="hidden" name="pim" value="<?php echo $pim;?>"> 
@@ -482,22 +482,22 @@ add_javascript(G5_POSTCODE_JS, 0);
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_giup_file1 "><b>사업자등록증</b></label>
 				<div class="col-sm-8 mb_giup_file1">
-					<input type="file" name="mb_giup_file1" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file1">
+					<input type="file" name="crnFile" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file1">
                     <?php if($member['crnFile']){ ?>
-                        <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/license/<?=$member['crnFile']?>" alt="">
+                        <img style="max-width:100px; max-height:100px;"  src="<?=G5_DATA_URL?>/file/member/license/<?=$member['crnFile']?>" alt="">
                     <?php }?>
-                    <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 2Mbyte 이하로 등록해주세요.</p>
+                    <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 10Mbyte 이하로 등록해주세요.</p>
 				</div>
 			</div>
             <?php if($w){ ?>
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_giup_file2"><b>사업자직인 (계약서 날인)</b></label>
 				<div class="col-sm-8 mb_giup_file2">
-					<input type="file" name="mb_giup_file2" accept=".gif, .jpg, .png, .pdf" class="input-sm" id="mb_giup_file2">
+					<input type="file" name="sealFile" accept=".gif, .jpg, .png, .pdf" class="input-sm" id="mb_giup_file2">
                     <?php if($member['sealFile']){ ?>
                     <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/stamp/<?=$member['sealFile']?>" alt="">
                     <?php }?>
-                    <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 2Mbyte 이하로 등록해주세요.</p>
+                    <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 10Mbyte 이하로 등록해주세요.</p>
 				</div>
 			</div>
             <?php } ?>
@@ -1153,8 +1153,8 @@ function fregisterform_submit()
             sendData.append("sealFile", $(imgFileItem2[i])[0].files[0]);
             sendData2.append("sealFile", $(imgFileItem2[i])[0].files[0]);
 
-            if($(imgFileItem2[i])[0].files[0].size > 1024 * 1024 * 2){
-                alert('사업자직인 (계약서 날인) : 2MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem2[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
+            if($(imgFileItem2[i])[0].files[0].size > 1024 * 1024 * 10){
+                alert('사업자직인 (계약서 날인) : 10MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem2[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
                 return false;
             }
         }
@@ -1170,8 +1170,8 @@ function fregisterform_submit()
                 alert('사업자등록증을 첨부해주세요.');
                 return false;
             }
-            if($(imgFileItem1[i])[0].files[0].size > 1024 * 1024 * 2){
-                alert('사업자등록증 : 2MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem1[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
+            if($(imgFileItem1[i])[0].files[0].size > 1024 * 1024 * 10){
+                alert('사업자등록증 : 10MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem1[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
                 return false;
             }
         }
@@ -1198,263 +1198,15 @@ function fregisterform_submit()
                     data : sendData,
                 }).done(function (data) {
                     if(data.message == "SUCCESS"){
-                        $.ajax({
-                            type: 'POST',
-                            url : "<?=G5_BBS_URL?>/ajax.account.php",
-                            type : "POST",
-                            async : false,
-                            cache : false,
-                            processData : false,
-                            contentType : false,
-                            data : sendData,
-                            success : function(result){
-                                if(result =="N"){
-                                    alert('파일을 확인하세요');
-                                    return flase;
-                                }
-																try {
-																	result = JSON.parse(result);
-																} catch(ex) {
-																	alert('서버 응답 오류 : ' + ex.message);
-																	return false;
-																}
-																if(result.errorYN === 'Y') {
-																	alert(result.message);
-																	return false;
-																}
-                                sendData2.append("usrId", result.data['usrId']); //usrId
-                                sendData2.append("entId", result.data['entId']); //entId
-                                //이전 서버에 저장
-                                if(result.message == "SUCCESS"){
-									alert("완료되었습니다.");
-									<?php if(!$w){ ?>
-										location.href='<?=G5_URL?>/bbs/register_result.php';
-										<?php }else{ ?>
-										location.href='<?=G5_URL?>';
-									<?php } ?>
-                                }else{
-                                    alert(result.message);
-                                    return false;
-                                }
-                            }
-                        });
+                        f.submit();
+                        return false;
                     }else{
-                        alert(1);
                         alert(data.message);
                         return false;
                     }
             });
         }
         return false;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-	// 기업정보 사용시 기업 관련 필드 모두 필수 처리
-	if($('#mb_giup').is(":checked") == true) {
-		if (!$('input[name="mb_giup_type"]:checked').length) {
-			alert("회원유형을 선택하십시오.");
-			return false;
-		}
-		if (!$('#mb_giup_bname').val()) {
-			alert("기업명을 입력하십시오.");
-			return false;
-		}
-		if (!$('#mb_giup_boss_name').val()) {
-			alert("대표자명을 입력하십시오.");
-			return false;
-		}
-		if (!$('#mb_giup_btel').val()) {
-			alert("기업정보 - 연락처를 입력하십시오.");
-			return false;
-		}
-		if (!$('#mb_giup_bnum').val()) {
-			alert("사업자번호를 입력하십시오.");
-			return false;
-		}
-
-        if ($('#fregisterform input[name=w]').val() == "") {
-            if (!$('#mb_giup_sbnum').val() && $('#mb_giup_bnum').val()) { // 종사업자 없다면 사업자 중복 체크
-                if (!check_giup_bnum()) {
-                    return false;
-                }
-            }
-
-            if ($('#mb_giup_sbnum').val() && $('#mb_giup_bnum').val()) { // 종사업자 있다면 사업자 중복 우회
-                if (!check_giup_sbnum()) {
-                    return false;
-                }
-            }
-        }
-
-        if ($('#mb_giup_sbnum').val() && $('#mb_giup_bnum').val()) { // 종사업자 있다면
-            if (!$('#mb_giup_sbnum_explain').val()) {
-                alert("종사업자 관련 내용을 입력하세요.");
-                return false;
-            }
-        }
-		
-		if (!$('#mb_giup_buptae').val()) {
-			alert("업태를 입력하십시오.");
-			return false;
-		}
-		if (!$('#mb_giup_bupjong').val()) {
-			alert("업종을 입력하십시오.");
-			return false;
-		}
-		if (!$('#mb_giup_zip').val()) {
-			alert("주소를 입력하십시오.");
-			return false;
-		}
-		if (!$('#mb_giup_tax_email').val()) {
-			alert("세금계산서 이메일을 입력하십시오.");
-			return false;
-		}
-		//if (!$('#mm_name_0').val()) {
-		//	alert("담당자 이름을 입력하십시오.");
-		//	return false;
-		//}
-		//if (!$('#mm_tel_0').val()) {
-		//	alert("담당자 연락처를 입력하십시오.");
-		//	return false;
-		//}
-	}
-	//  else {
-	// 	if (confirm("세금계산서 발급을 원하시면 기업정보를 입력해주세요.\r\n입력하시겠습니까? ")) {
-	// 		$('#mb_giup').click();
-	// 		return false;
-	// 	}
-	// }
-
-	//console.log('ok');
-	//return false;
-
-	// 회원아이디 검사
-	if (f.w.value == "") {
-		var msg = reg_mb_id_check();
-		if (msg) {
-			alert(msg);
-			f.mb_id.select();
-			return false;
-		}
-	}
-
-
-
-
-
-
-    
-	// 이름 검사
-	if (f.w.value=="") {
-		if (f.mb_name.value.length < 1) {
-			alert("이름을 입력하십시오.");
-			f.mb_name.focus();
-			return false;
-		}
-
-		/*
-		var pattern = /([^가-힣\x20])/i;
-		if (pattern.test(f.mb_name.value)) {
-			alert("이름은 한글로 입력하십시오.");
-			f.mb_name.select();
-			return false;
-		}
-		*/
-	}
-
-	<?php if($w == '' && $config['cf_cert_use'] && $config['cf_cert_req']) { ?>
-	// 본인확인 체크
-	if(f.cert_no.value=="") {
-		alert("회원가입을 위해서는 본인확인을 해주셔야 합니다.");
-		return false;
-	}
-	<?php } ?>
-
-	// 닉네임 검사
-	/*
-	if ((f.w.value == "") || (f.w.value == "u" && f.mb_nick.defaultValue != f.mb_nick.value)) {
-		var msg = reg_mb_nick_check();
-		if (msg) {
-			alert(msg);
-			f.reg_mb_nick.select();
-			return false;
-		}
-	}
-	*/
-
-	// E-mail 검사
-	if ((f.w.value == "") || (f.w.value == "u" && f.mb_email.defaultValue != f.mb_email.value)) {
-		var msg = reg_mb_email_check();
-		if (msg) {
-			alert(msg);
-			f.reg_mb_email.select();
-			return false;
-		}
-	}
-
-	<?php if (($config['cf_use_hp'] || $config['cf_cert_hp']) && $config['cf_req_hp']) {  ?>
-	// 휴대폰번호 체크
-	var msg = reg_mb_hp_check();
-	if (msg) {
-		alert(msg);
-		f.reg_mb_hp.select();
-		return false;
-	}
-	<?php } ?>
-
-	if (typeof f.mb_icon != "undefined") {
-		if (f.mb_icon.value) {
-			if (!f.mb_icon.value.toLowerCase().match(/.(gif|jpe?g|png)$/i)) {
-				alert("회원아이콘이 이미지 파일이 아닙니다.");
-				f.mb_icon.focus();
-				return false;
-			}
-		}
-	}
-
-	if (typeof f.mb_img != "undefined") {
-		if (f.mb_img.value) {
-			if (!f.mb_img.value.toLowerCase().match(/.(gif|jpe?g|png)$/i)) {
-				alert("회원이미지가 이미지 파일이 아닙니다.");
-				f.mb_img.focus();
-				return false;
-			}
-		}
-	}
-
-	if (typeof(f.mb_recommend) != "undefined" && f.mb_recommend.value) {
-		if (f.mb_id.value == f.mb_recommend.value) {
-			alert("본인을 추천할 수 없습니다.");
-			f.mb_recommend.focus();
-			return false;
-		}
-
-		var msg = reg_mb_recommend_check();
-		if (msg) {
-			alert(msg);
-			f.mb_recommend.select();
-			return false;
-		}
-	}
-
-	<?php //echo chk_captcha_js();  ?>
-
-	// document.getElementById("btn_submit").disabled = "disabled";
-
 }
 
 function check_giup_bnum(type) {

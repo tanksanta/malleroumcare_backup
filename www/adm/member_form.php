@@ -410,7 +410,7 @@ label {
             <label for="mb_partner_date_auto_buy_cnt">사업자등록증</label>
         </th>
         <td colspan="3" class="mb_giup_file1">
-            <input type="file" name="mb_giup_file1" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file1">
+            <input type="file" name="crnFile" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file1">
             <?php if($mb['crnFile']){ ?>
                 <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/license/<?=$mb['crnFile']?>" alt="">
             <?php }?>
@@ -422,7 +422,7 @@ label {
             <label for="mb_partner_date_auto_buy_cnt">사업자직인 (계약서 날인)</label>
         </th>
         <td colspan="3" class="mb_giup_file2">
-            <input type="file" name="mb_giup_file2" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file2">
+            <input type="file" name="sealFile" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file2">
             <?php if($mb['sealFile']){ ?>
                 <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/stamp/<?=$mb['sealFile']?>" alt="">
             <?php }?>
@@ -1351,38 +1351,10 @@ function fmember_submit()
                     data : sendData,
                 }).done(function (data) {
                     if(data.message == "SUCCESS"){
-                        $.ajax({
-                            type: 'POST',
-                            url : "<?=G5_BBS_URL?>/ajax.account_admin.php",
-                            type : "POST",
-                            async : false,
-                            cache : false,
-                            processData : false,
-                            contentType : false,
-                            data : sendData,
-                            success : function(result){
-                                if(result =="N"){
-                                    alert('파일을 확인하세요');
-                                    return flase;
-                                }
-                                result = JSON.parse(result);
-                                if(result.errorYN === 'Y') {
-                                    alert(result.message);
-                                    return false;
-                                }
-                                sendData2.append("usrId", result.data['usrId']); //usrId
-                                sendData2.append("entId", result.data['entId']); //entId
-                                //이전 서버에 저장
-                                if(result.message == "SUCCESS"){
-                                f.submit();
-                                }else{
-                                    alert(result.message);
-                                    return false;
-                                }
-                            }
-                        });
+                        f.submit();
+                        return false;
                     }else{
-                        alert(data);
+                        alert(data.message);
                         return false;
                     }
             });

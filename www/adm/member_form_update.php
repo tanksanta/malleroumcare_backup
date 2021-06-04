@@ -3,9 +3,8 @@ $sub_menu = "200100";
 include_once("./_common.php");
 include_once(G5_LIB_PATH."/register.lib.php");
 include_once(G5_LIB_PATH.'/thumbnail.lib.php');
-$w = 'u';
 if ($w == 'u')
-    check_demo();
+check_demo();
 
 auth_check($auth[$sub_menu], 'w');
 
@@ -426,123 +425,200 @@ if( $w == '' || $w == 'u' ){
     }
 }
 
+    #시스템 정보와 맞춤
+    $sendData=[];
+    $sendData['usrId'] =$_POST['mb_id'];
+    $resInfo = get_eroumcare(EROUMCARE_API_ENT_ACCOUNT, $sendData);
+    //데이터 성공시
+    if($resInfo['message']=="SUCCESS"){
+        $resInfo = $resInfo["data"];
+        $resInfo["usrZip01"] = substr($resInfo["usrZip"], 0, 3);
+        $resInfo["usrZip02"] = substr($resInfo["usrZip"], 3, 2);
+        $resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
+        $resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
+        $mb_password = trim($_POST['mb_password']);
+        $crnFile_name ="";
+        $sealFile_name ="";
+        $mbCheck = sql_fetch("SELECT * FROM {$g5["member_table"]} WHERE mb_id = '".$_POST["mb_id"]."'");
+        if($mbCheck['sealFile']){
+            $sealFile_name = $mbCheck['sealFile'];
+        }
+        if($mbCheck['crnFile']){
+            $crnFile_name = $mbCheck['crnFile'];
+        }
+        //서버 최대 용량 10Mb
+        $max_file_size = 1024*1024*10;
+        //사업자등록증
+        if($_FILES['crnFile']['tmp_name']){
+            // 변수 정리
+            $uploads_dir = G5_DATA_PATH.'/file/member/license';
+            $error = $_FILES['crnFile']['error'];
+            $name = $_FILES['crnFile']['name'];
+            $allowed_ext = array('exe');
+            $ext = array_pop(explode('.', $name));
+            $temp = explode(".", $_FILES["crnFile"]["name"]);
+            $crnFile_name = $_POST['mb_id'].'_'.round(microtime(true)) . '.' . end($temp);
+            $crnFile = "$uploads_dir/$crnFile_name";
+            // 오류 확인
+            if( $error != UPLOAD_ERR_OK ) {
+                switch( $error ) {
+                    case UPLOAD_ERR_INI_SIZE:
+                    case UPLOAD_ERR_FORM_SIZE:
+                        alert('파일이 너무 큽니다.',G5_BBS_URL."/register.php");
+                        break;
+                    exit;
+                    default:
+                        alert('파일이 제대로 업로드되지 않았습니다.',G5_BBS_URL."/register.php");
+                    exit;
+                }
+                exit;
+            }
+            if($file['size'] >= $max_file_size) {
+                alert('10Mb 까지만 업로드 가능합니다.',G5_BBS_URL."/register.php");
+                exit;
+            }
+            // 확장자 확인
+            if( in_array($ext, $allowed_ext) ) {
+                alert('허용되지 않는 확장자입니다',G5_BBS_URL."/register.php");
+                exit;
+            }
+        }
+        //직인
+        if($_FILES['sealFile']['tmp_name']){
+            // 변수 정리
+            $uploads_dir = G5_DATA_PATH.'/file/member/stamp';
+            $error = $_FILES['sealFile']['error'];
+            $name = $_FILES['sealFile']['name'];
+            $allowed_ext = array('exe');
+            $ext = array_pop(explode('.', $name));
+            $temp = explode(".", $_FILES["sealFile"]["name"]);
+            $sealFile_name = $_POST['mb_id'].'_'.round(microtime(true)) . '.' . end($temp);
+            $sealFile = "$uploads_dir/$sealFile_name";
+            // 오류 확인
+            if( $error != UPLOAD_ERR_OK ) {
+                switch( $error ) {
+                    case UPLOAD_ERR_INI_SIZE:
+                    case UPLOAD_ERR_FORM_SIZE:
+                        alert('파일이 너무 큽니다.',G5_BBS_URL."/register.php");
+                        break;
+                    exit;
+                    default:
+                    alert('파일이 제대로 업로드되지 않았습니다.',G5_BBS_URL."/register.php");
+                    exit;
+                }
+                exit;
+            }
+            if($file['size'] >= $max_file_size) {
+                alert('10Mb 까지만 업로드 가능합니다.',G5_BBS_URL."/register.php");
+                exit;
+            }
+            // 확장자 확인
+            if( in_array($ext, $allowed_ext) ) {
+                alert('허용되지 않는 확장자입니다',G5_BBS_URL."/register.php");
+                exit;
+            }
+        }
 
-$sendData=[];
-$sendData['usrId']=$_POST['mb_id'];
+        if(!$mbCheck){
+            sql_query("
+                INSERT INTO {$g5["member_table"]} SET
+                    mb_id = '{$resInfo["usrId"]}',
+                    mb_name = '{$resInfo["entNm"]}',
+                    mb_nick = '{$resInfo["entNm"]}',
+                    mb_hp = '{$resInfo["usrPnum"]}',
+                    mb_tel = '{$resInfo["usrPnum"]}',
+                    mb_type = '{$resInfo["type"]}',
+                    mb_entId = '{$resInfo["entId"]}',
+                    mb_entNm = '{$resInfo["entNm"]}',
+                    mb_level = '3',
+                    mb_password = '".get_encrypt_string($mb_password)."',
+                    mb_zip1 = '{$resInfo["usrZip01"]}',
+                    mb_zip2 = '{$resInfo["usrZip02"]}',
+                    mb_addr1 = '{$resInfo["usrAddr"]}',
+                    mb_addr2 = '{$resInfo["usrAddrDetail"]}',
+                    mb_giup_bnum = '{$resInfo["entCrn"]}',
+                    mb_giup_zip1 = '{$resInfo["entZip01"]}',
+                    mb_giup_zip2 = '{$resInfo["entZip02"]}',
+                    mb_giup_addr1 = '{$resInfo["entAddr"]}',
+                    mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
+                    mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
+                    mb_email = '{$resInfo["usrMail"]}',
+                    mb_fax = '{$resInfo["entFax"]}',
+                    mb_authCd = '{$resInfo["authCd"]}',
+                    mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
+                    mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
+                    mb_giup_bupjong = '{$resInfo["entBusiType"]}',
+                    mb_sex = '{$resInfo["usrGender"]}',
+                    mb_birth = '{$resInfo["usrBirth"]}',
+                    mb_giup_btel = '{$resInfo["entPnum"]}',
+                    mb_giup_tax_email = '{$resInfo["entMail"]}',
+                    mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
+                    mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
+                    mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
+                    mb_giup_bname = '{$resInfo["entNm"]}',
+                    sealFile = '".$sealFile_name."',
+                    crnFile = '".$crnFile_name."',
+                    mb_datetime = '".G5_TIME_YMDHIS."'
+            ");
+        } else {
+            sql_query("
+                UPDATE {$g5["member_table"]} SET
+                    mb_name = '{$resInfo["entNm"]}',
+                    mb_nick = '{$resInfo["entNm"]}',
+                    mb_hp = '{$resInfo["usrPnum"]}',
+                    mb_tel = '{$resInfo["usrPnum"]}',
+                    mb_type = '{$resInfo["type"]}',
+                    mb_entId = '{$resInfo["entId"]}',
+                    mb_entNm = '{$resInfo["entNm"]}',
+                    mb_password = '".get_encrypt_string($mb_password)."',
+                    mb_zip1 = '{$resInfo["usrZip01"]}',
+                    mb_zip2 = '{$resInfo["usrZip02"]}',
+                    mb_addr1 = '{$resInfo["usrAddr"]}',
+                    mb_addr2 = '{$resInfo["usrAddrDetail"]}',
+                    mb_giup_bnum = '{$resInfo["entCrn"]}',
+                    mb_giup_zip1 = '{$resInfo["entZip01"]}',
+                    mb_giup_zip2 = '{$resInfo["entZip02"]}',
+                    mb_giup_addr1 = '{$resInfo["entAddr"]}',
+                    mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
+                    mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
+                    mb_email = '{$resInfo["usrMail"]}',
+                    mb_fax = '{$resInfo["entFax"]}',
+                    mb_authCd = '{$resInfo["authCd"]}',
+                    mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
+                    mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
+                    mb_giup_bupjong = '{$resInfo["entBusiType"]}',
+                    mb_sex = '{$resInfo["usrGender"]}',
+                    mb_birth = '{$resInfo["usrBirth"]}',
+                    mb_giup_btel = '{$resInfo["entPnum"]}',
+                    mb_giup_tax_email = '{$resInfo["entMail"]}',
+                    mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
+                    mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
+                    mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
+                    mb_giup_bname = '{$resInfo["entNm"]}',
+                    sealFile = '".$sealFile_name."',
+                    crnFile = '".$crnFile_name."'
+                WHERE mb_id = '{$resInfo["usrId"]}'
+            ");
+        }
+        //파일저장
+        if($_FILES['crnFile']['tmp_name']){
+            move_uploaded_file( $_FILES['crnFile']['tmp_name'], $crnFile);
+        }
+        if($_FILES['sealFile']['tmp_name']){
+            move_uploaded_file( $_FILES['sealFile']['tmp_name'], $sealFile);
+        }
 
-$oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_PORT, 9901);
-curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/ent/account");
-curl_setopt($oCurl, CURLOPT_POST, 1);
-curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-$res = curl_exec($oCurl);
-$res_send = curl_exec($oCurl);
-curl_close($oCurl);
-$resInfo = json_decode($res, true);
-$resInfo = $resInfo["data"];
-$resInfo["usrZip01"] = substr($resInfo["usrZip"], 0, 3);
-$resInfo["usrZip02"] = substr($resInfo["usrZip"], 3, 2);
-$resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
-$resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
+        //성공 결과 페이지 이동
+        alert('저장되었습니다.');
+        goto_url('./member_form.php?'.$qstr.'&amp;w=u&amp;mb_id='.$mb_id, false);
+    }else{
+        //실패시 지움
+        $sql="DELETE FROM `g5_member` WHERE mb_id='".$_POST['mb_id']."'";
+        sql_query($sql);
+        //실패 이동
+        //성공 결과 페이지 이동
+        alert('회원정보 저장에 실패하였습니다..',G5_URL."/member_list.php");
+    }
 
-if($_POST['usrPw']){
-    $mb_password = trim($_POST['usrPw']);
-    $mb_password2 =  base64_encode ($mb_password) ;
-    $password = "mb_password = '".get_encrypt_string($mb_password)."',
-                mb_password2 = '".$mb_password2."',";
-}else{
-    $password="";
-}
-
-$crnFile_name ="";
-$sealFile_name ="";
-$mbCheck = sql_fetch("SELECT * FROM {$g5["member_table"]} WHERE mb_id = '".$_POST["usrId"]."'");
-
-if(!$mbCheck){
-    sql_query("
-        INSERT INTO {$g5["member_table"]} SET
-            mb_id = '{$resInfo["usrId"]}',
-            mb_name = '{$resInfo["entNm"]}',
-            mb_nick = '{$resInfo["entNm"]}',
-            mb_hp = '{$resInfo["usrPnum"]}',
-            mb_tel = '{$resInfo["usrPnum"]}',
-            mb_type = '{$resInfo["type"]}',
-            mb_entId = '{$resInfo["entId"]}',
-            mb_entNm = '{$resInfo["entNm"]}',
-            mb_level = '3',
-            mb_password = '".get_encrypt_string($mb_password)."',
-            mb_password2 = '".$mb_password2."',
-            mb_zip1 = '{$resInfo["usrZip01"]}',
-            mb_zip2 = '{$resInfo["usrZip02"]}',
-            mb_addr1 = '{$resInfo["usrAddr"]}',
-            mb_addr2 = '{$resInfo["usrAddrDetail"]}',
-            mb_giup_bnum = '{$resInfo["entCrn"]}',
-            mb_giup_zip1 = '{$resInfo["entZip01"]}',
-            mb_giup_zip2 = '{$resInfo["entZip02"]}',
-            mb_giup_addr1 = '{$resInfo["entAddr"]}',
-            mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-            mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
-            mb_email = '{$resInfo["usrMail"]}',
-            mb_fax = '{$resInfo["entFax"]}',
-            mb_authCd = '{$resInfo["authCd"]}',
-            mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
-            mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
-            mb_giup_bupjong = '{$resInfo["entBusiType"]}',
-            mb_sex = '{$resInfo["usrGender"]}',
-            mb_birth = '{$resInfo["usrBirth"]}',
-            mb_giup_btel = '{$resInfo["entPnum"]}',
-            mb_giup_tax_email = '{$resInfo["entMail"]}',
-            mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
-            mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
-            mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
-            mb_giup_bname = '{$resInfo["entNm"]}',
-            mb_datetime = '".G5_TIME_YMDHIS."'
-            
-    ");
-} else {
-    sql_query("
-        UPDATE {$g5["member_table"]} SET
-            mb_name = '{$resInfo["entNm"]}',
-            mb_nick = '{$resInfo["entNm"]}',
-            mb_hp = '{$resInfo["usrPnum"]}',
-            mb_tel = '{$resInfo["usrPnum"]}',
-            mb_type = '{$resInfo["type"]}',
-            mb_entId = '{$resInfo["entId"]}',
-            mb_entNm = '{$resInfo["entNm"]}',
-            {$password}
-            mb_zip1 = '{$resInfo["usrZip01"]}',
-            mb_zip2 = '{$resInfo["usrZip02"]}',
-            mb_addr1 = '{$resInfo["usrAddr"]}',
-            mb_addr2 = '{$resInfo["usrAddrDetail"]}',
-            mb_giup_bnum = '{$resInfo["entCrn"]}',
-            mb_giup_zip1 = '{$resInfo["entZip01"]}',
-            mb_giup_zip2 = '{$resInfo["entZip02"]}',
-            mb_giup_addr1 = '{$resInfo["entAddr"]}',
-            mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-            mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
-            mb_email = '{$resInfo["usrMail"]}',
-            mb_fax = '{$resInfo["entFax"]}',
-            mb_authCd = '{$resInfo["authCd"]}',
-            mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
-            mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
-            mb_giup_bupjong = '{$resInfo["entBusiType"]}',
-            mb_sex = '{$resInfo["usrGender"]}',
-            mb_birth = '{$resInfo["usrBirth"]}',
-            mb_giup_btel = '{$resInfo["entPnum"]}',
-            mb_giup_tax_email = '{$resInfo["entMail"]}',
-            mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
-            mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
-            mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
-            mb_giup_bname = '{$resInfo["entNm"]}'
-        WHERE mb_id = '{$resInfo["usrId"]}'
-    ");
-}
-
-alert('저장되었습니다.');
-
-goto_url('./member_form.php?'.$qstr.'&amp;w=u&amp;mb_id='.$mb_id, false);
 
 ?>
