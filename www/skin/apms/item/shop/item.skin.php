@@ -4,8 +4,14 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 // 관련상품 전체 추출을 위해서 재세팅함
 $rmods = 100;
 $rrows = 1;
+$sendData = [];
+$sendData['usrId'] = $member['mb_id'];
+$resInfo = get_eroumcare(EROUMCARE_API_ENT_ACCOUNT, $sendData);
 if(!$member['mb_id']){
-	alert('회원만 확인이 가능합니다.',G5_BBS_URL.'/login.php');
+	alert('회원만 이용 가능합니다.',G5_BBS_URL.'/login.php');
+}
+if($resInfo['data']['entConfirmCd']=="02"||!$resInfo['data']['entConfirmCd']){
+	alert('승인된 회원만 이용 가능합니다.',G5_BBS_URL.'/login.php');
 }
 // 버튼컬러
 $btn1 = (isset($wset['btn1']) && $wset['btn1']) ? $wset['btn1'] : 'black';
