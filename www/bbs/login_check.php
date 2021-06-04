@@ -7,17 +7,7 @@ if($_POST["mb_id"] != "admin"){
 	$sendData = [];
 	$sendData["usrId"] = $_POST["mb_id"];
 	$sendData["pw"] = $_POST["mb_password"];
-	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9901);
-	curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/account/entLogin");
-	curl_setopt($oCurl, CURLOPT_POST, 1);
-	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-	$res = curl_exec($oCurl);
-	$res = json_decode($res, true);
-	curl_close($oCurl);
+    $res = get_eroumcare(EROUMCARE_API_ACCOUNT_ENTLOGIN, $sendData);
 	if($res["errorYN"] == "Y"){
         //시스템 회원 정보가 아닐시
         $mb_id       = trim($_POST['mb_id']);
@@ -33,7 +23,32 @@ if($_POST["mb_id"] != "admin"){
         if (!$is_social_password_check && (!$mb['mb_id'] || !check_password($mb_password, $mb['mb_password'])) ) {
             alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
         }
-        //레벨 5이하 - >인경우 메세지 출력
+  
+        //관리자 승인 대기인 경우 : 로그인 시키고 - 결과페이지로 이동, 상품보기 불가능
+        if($mb['mb_level']<5&&$res['message']=="미승인된 사업소 입니다. 관리자에게 문의하세요."){
+            #로그인 체크
+            if ($_POST["mb_id"] == "admin" && !$is_social_password_check && (!$mb['mb_id'] || !login_password_check($mb, $mb_password, $mb['mb_password'])) ) {
+                alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
+            }
+            // 차단된 아이디인가?
+            if ($mb['mb_intercept_date'] && $mb['mb_intercept_date'] <= date("Ymd", G5_SERVER_TIME)) {
+                $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $mb['mb_intercept_date']);
+                alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date);
+            }
+            // 탈퇴한 아이디인가?
+            if ($mb['mb_leave_date'] && $mb['mb_leave_date'] <= date("Ymd", G5_SERVER_TIME)) {
+                $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $mb['mb_leave_date']);
+                alert('탈퇴한 아이디이므로 접근하실 수 없습니다.\n탈퇴일 : '.$date);
+            }
+            // 회원아이디 세션 생성
+            set_session('ss_mb_id', $mb['mb_id']);
+            // FLASH XSS 공격에 대응하기 위하여 회원의 고유키를 생성해 놓는다. 관리자에서 검사함 - 110106
+            set_session('ss_mb_key', md5($mb['mb_datetime'] . get_real_client_ip() . $_SERVER['HTTP_USER_AGENT']));
+            //이로움 통합시스템 이동
+            $_SESSION[$mb_id]=$mb_password;
+            alert('관리자 승인이 대기중입니다.',G5_BBS_URL."/register_result.php");
+        }
+
         if($mb['mb_level']<5){
             alert($res['message']);
         }
@@ -41,18 +56,7 @@ if($_POST["mb_id"] != "admin"){
 	} else {
         $_SESSION[$mb_id]=$res['data']['pw'];
 		$mbCheck = sql_fetch("SELECT mb_id FROM {$g5["member_table"]} WHERE mb_id = '{$_POST["mb_id"]}'")["mb_id"];
-		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9901);
-		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/ent/account");
-		curl_setopt($oCurl, CURLOPT_POST, 1);
-		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-		curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, 15);
-		$res = curl_exec($oCurl);
-		curl_close($oCurl);
-		$resInfo = json_decode($res, true);
+        $resInfo = get_eroumcare(EROUMCARE_API_ENT_ACCOUNT, $sendData);
 		$resInfo = $resInfo["data"];
 		$resInfo["usrZip01"] = substr($resInfo["usrZip"], 0, 3);
 		$resInfo["usrZip02"] = substr($resInfo["usrZip"], 3, 2);
