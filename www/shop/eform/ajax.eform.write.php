@@ -34,23 +34,20 @@ if($error = valid_status_input($status)) {
   json_response(400, $error);
 }
 
-$ent = api_post_call('https://system.eroumcare.com/api/ent/account', array(
-  'usrId' => $od['mb_id']
-));
-$entSealImg = $ent['data']['entSealImg'];
-if(!$entSealImg) {
-  json_response(400, '통합시스템에서 사업소 직인 이미지를 등록해주세요.');
-}
-
 // 직인 파일 사본 저장
+$seal_file = $member['sealFile'];
+$seal_dir = G5_DATA_PATH.'/file/member/stamp';
+if(!$seal_file) {
+  json_response(400, '회원정보에 직인 이미지를 등록해주세요.');
+}
+$seal_data = file_get_contents($seal_dir.'/'.$seal_file);
 $signdir = G5_DATA_PATH.'/eform/sign';
 if(!is_dir($signdir)) {
   @mkdir($signdir, G5_DIR_PERMISSION, true);
   @chmod($signdir, G5_DIR_PERMISSION);
 }
-$signdata = get_url_content($entSealImg);
 $filename = $uuid."_".$eform['entId']."_".date("YmdHisw").".png";
-file_put_contents("$signdir/$filename", $signdata);
+file_put_contents("$signdir/$filename", $seal_data);
 
 function updateItem($item) {
   if($item['deleted']) { // 물품 계약서 상에서 삭제시킨 경우
