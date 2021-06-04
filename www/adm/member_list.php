@@ -497,24 +497,15 @@ $stx=$stx2;
                     echo "쇼핑몰 전용 아이디";                
                 }else{
                 $sendData = [];
+                $sendData = [];
                 $sendData['usrId'] = $row['mb_id'];
-                $oCurl = curl_init();
-                curl_setopt($oCurl, CURLOPT_PORT, 9901);
-                curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/ent/account");
-                curl_setopt($oCurl, CURLOPT_POST, 1);
-                curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-                curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-                $res = curl_exec($oCurl);
-                $res = json_decode($res, true);
-                if($res['data']['entConfirmCd'] == "01"){
+                $resInfo = get_eroumcare(EROUMCARE_API_ENT_ACCOUNT, $sendData);
+                if($resInfo['data']['entConfirmCd'] == "01"){
                     echo "<span>승인완료</span>";
                 }else{
                     echo '<button type="button" class="btn btn_02 accept" data-id="'.$row['mb_id'].'" data-entid="'.$row['mb_entId'].'">승인</button>';
                 }
             ?>
-            
             
 
 
