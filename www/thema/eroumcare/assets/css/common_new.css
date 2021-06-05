@@ -1100,6 +1100,9 @@ pre{white-space: pre-wrap;}
 
 @media (max-width: 750px) {
 	#thema_wrapper.is-index { background-color: #fff; background: linear-gradient(to bottom, #eef2eb 400px, #fff 400px); }
+	.at-content .cate_wrap{padding:0;}
+	.at-content .cate_wrap .cate_head{float:none;padding:5px 5px;}
+	.at-content .cate_wrap .cate_body{margin-left:0;}
 }
 
 @media (max-width: 450px){
