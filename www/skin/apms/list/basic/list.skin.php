@@ -112,51 +112,6 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
             <li><a <?php echo ($sort == 'it_update_time') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_update_time&amp;sortodr=desc&prodSupYn=<?=$_COOKIE["prodSupYn"]?>">최근등록순</a></li>
         </ul>
     </div>
-
-    <?php
-		$prodSupLabel = "유통";
-
-		if(!$_COOKIE["prodSupYn"]){
-			$prodSupLabel = "유통";
-		}
-
-		if($_GET["prodSupYn"]){
-			switch($_GET["prodSupYn"]){
-				case "Y" :
-					$prodSupLabel = "유통";
-					break;
-				case "N" :
-					$prodSupLabel = "비유통";
-					break;
-				case "all" :
-					$prodSupLabel = "유통+비유통";
-					break;
-			}
-		} else {
-			switch($_COOKIE["prodSupYn"]){
-				case "Y" :
-					$prodSupLabel = "유통";
-					break;
-				case "N" :
-					$prodSupLabel = "비유통";
-					break;
-				case "all" :
-					$prodSupLabel = "유통+비유통";
-					break;
-			}
-		}
-	?>
-   	<div class="dropdown" style="margin-right: 10px;">
-        <a id="prodSupLabel" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-block">
-            <?=$prodSupLabel?>
-            <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="prodSupLabel">
-            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=Y">유통</a></li>
-            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=N">비유통</a></li>
-            <li><a href="<?="{$list_sort_href}"?><?=$_GET["sort"]?>&prodSupYn=all">유통+비유통</a></li>
-        </ul>
-    </div>
 </div>
 
 <div class="productListWrap" style="margin-top: 30px;">

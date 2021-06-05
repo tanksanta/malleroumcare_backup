@@ -472,9 +472,9 @@ pre{white-space: pre-wrap;}
 
 .sub_section_tit{font-size:30px;font-weight:bold;padding:10px 5px; line-height: 50px;}
 .sub_section_tit span{font-size:16px;margin-left:20px;}
-.cate_wrap a{padding:5px 10px 5px 0; font-size:14px;}
+/*.cate_wrap a{padding:5px 10px 5px 0; font-size:14px;}
 .cate_wrap a:first-child{padding:5px 10px 5px 5px;}
-.cate_wrap a:last-child{border-right:0;}
+.cate_wrap a:last-child{border-right:0;}*/
 .dropdown {width:140px;float: right;border: 1px solid #ddd;}
 
 /* =================================================
@@ -735,8 +735,23 @@ pre{white-space: pre-wrap;}
 .at-body { width: 100%; float: left; }
 .at-container { width: 100%; max-width: 1200px !important; margin: 0 auto; position: relative; overflow: inherit !important; }
 .at-content { width: 100%; float: left; padding-top: 0; }
-.at-content .cate_wrap{ margin-bottom:10px;max-width:800px;}
-.at-content .cate_wrap a{padding:10px 10px 10px 5px;display: inline-block;}
+/*.at-content .cate_wrap{ margin-bottom:10px;max-width:800px;}*/
+.at-content .cate_wrap{padding: 10px 20px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 10px;}
+.at-content .cate_wrap ul{}
+.at-content .cate_wrap ul li{margin: 0; padding: 10px;border-bottom: 1px solid #ddd;}
+.at-content .cate_wrap ul li:after{display: block; content: ' '; clear: both;}
+.at-content .cate_wrap ul li:last-child{border: none;}
+.at-content .cate_wrap .cate_head{font-size: 18px; padding: 10px 0; float: left;}
+.at-content .cate_wrap .cate_body{margin-left: 120px;font-size: 14px;}
+.at-content .cate_wrap .cate_body a{display:inline-block; padding: 2px 5px; background-color: #fff; color: #333; border-radius: 5px; margin: 5px;}
+.at-content .cate_wrap .cate_body a.active{background-color: #ef7c00; color: #fff;}
+
+.cate_selected{font-size: 14px;}
+.cate_selected .selected_head {display:inline-block;}
+.cate_selected .selected_head a {display:inline-block; padding: 5px 10px; color: #333;}
+.cate_selected .selected_body {display:inline-block;}
+.cate_selected .selected_body a {display:inline-block;position: relative;padding: 5px 10px;color:#ef7c00; }
+.cate_selected .selected_body a:before {content: ' ';position: absolute;border-left: 1px solid #ddd;top: 30%;bottom: 30%;left: 0;}
 
 .samhwa-item-info-opener { bottom: 70px; z-index: 11; }
 

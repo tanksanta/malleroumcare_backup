@@ -16,6 +16,8 @@ if( isset($sort) && ! in_array($sort, array('custom', 'it_sum_qty', 'it_price', 
     $sort='';
 }
 
+if(!$ca_sub) $ca_sub = array();
+
 $sql = " select * from {$g5['g5_shop_category_table']} where ca_id = '$ca_id' and ca_use = '1'  ";
 $ca = sql_fetch($sql);
 if (!$ca['ca_id'])
@@ -78,7 +80,24 @@ if(isset($type) && $type) {
 	$qstr .= '&amp;type='.$type;
 }
 // $where .= " and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%')";
-$where .= " and ( ca_id like '$ca_id%'
+$where .= " and ( 1 != 1 ";
+if($ca_sub) {
+	foreach($ca_sub as $sub) {
+		$ca_id_sub = $ca_id.$sub;
+		$where .= " or ca_id like '$ca_id_sub%'
+		or ca_id2 like '$ca_id_sub%'
+		or ca_id3 like '$ca_id_sub%' 
+		or ca_id4 like '$ca_id_sub%'
+		or ca_id5 like '$ca_id_sub%' 
+		or ca_id6 like '$ca_id_sub%'
+		or ca_id7 like '$ca_id_sub%' 
+		or ca_id8 like '$ca_id_sub%'
+		or ca_id9 like '$ca_id_sub%' 
+		or ca_id10 like '$ca_id_sub%'
+		";
+	}
+} else {
+	$where .= " or ca_id like '$ca_id%'
 	or ca_id2 like '$ca_id%'
 	or ca_id3 like '$ca_id%'
 	or ca_id4 like '$ca_id%'
@@ -87,23 +106,36 @@ $where .= " and ( ca_id like '$ca_id%'
 	or ca_id7 like '$ca_id%'
 	or ca_id8 like '$ca_id%'
 	or ca_id9 like '$ca_id%'
-	or ca_id10 like '$ca_id%' ) ";
+	or ca_id10 like '$ca_id%'
+	";
+}
+$where .= " ) ";
+/*$where .= " and ( ca_id like '$ca_id%'
+	or ca_id2 like '$ca_id%'
+	or ca_id3 like '$ca_id%'
+	or ca_id4 like '$ca_id%'
+	or ca_id5 like '$ca_id%'
+	or ca_id6 like '$ca_id%'
+	or ca_id7 like '$ca_id%'
+	or ca_id8 like '$ca_id%'
+	or ca_id9 like '$ca_id%'
+	or ca_id10 like '$ca_id%' ) ";*/
 $where .= $sql_apms_where;
 
-if(!$_COOKIE["prodSupYn"]){
+/*if(!$_COOKIE["prodSupYn"]){
 	setcookie("prodSupYn", "Y", time() + 86400 * 3650, "/");
 	$where .= " AND prodSupYn = 'Y'";
 }
 
-if($_GET["prodSupYn"]){
-	setcookie("prodSupYn", $_GET["prodSupYn"], time() + 86400 * 3650, "/");
+if($_COOKIE["prodSupYn"] == "Y" || $_COOKIE["prodSupYn"] == "N"){
+	$prodSupYn = $_COOKIE["prodSupYn"];
+}*/
 
-	if($_GET["prodSupYn"] == "Y" || $_GET["prodSupYn"] == "N"){
-		$where .= " AND prodSupYn = '{$_GET["prodSupYn"]}'";
-	}
-} else {
-	if($_COOKIE["prodSupYn"] == "Y" || $_COOKIE["prodSupYn"] == "N"){
-		$where .= " AND prodSupYn = '{$_COOKIE["prodSupYn"]}'";
+if($prodSupYn) {
+	//setcookie("prodSupYn", $prodSupYn, time() + 86400 * 3650, "/");
+
+	if($prodSupYn == "Y" || $prodSupYn == "N"){
+		$where .= " AND prodSupYn = '{$prodSupYn}'";
 	}
 }
 
