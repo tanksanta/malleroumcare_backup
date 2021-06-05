@@ -63,6 +63,8 @@ if($prodSupYn) $sup_url .= "&prodSupYn=$prodSupYn";
 
 // 페이지 주소 수정
 $list_page = $_SERVER['SCRIPT_NAME'].'?ca_id='.$ca_id.$ca_sub_url.$sort_url.$sup_url.'&page=';
+// 상품 정렬 주소 수정
+$list_sort_href = './list.php?ca_id='.$ca_id.$ca_sub_url.$qstr.'&sort=';
 $ca_sub_name_table = array();
 ?>
 <div id="samhwa-list-banner">
