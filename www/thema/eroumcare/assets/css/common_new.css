@@ -286,17 +286,73 @@ pre{white-space: pre-wrap;}
 	* main new 
 ================================================= */
 
-.main_top_wrap{background: url(../img/main_top_bgimg.png) center center;background-size:cover;width:100%;min-height: 600px;max-width:1200px;text-align:center;padding:50px;}
-.main_top_wrap img{max-width:100%}
-.main_top_wrap a{margin-top:50px;display:inline-block;background: #f28b08;color:#fff;font-size:26px;padding: 20px 80px;border-radius:10px;box-shadow: 3px 3px 3px rgba(0,0,0,0.4);}
+.main_top_wrap{
+	text-align: center;	
+	border-bottom: 1px solid #ccc;
+}
+.main_slider_nav {
+	display: inline-block;
+}
+.main_slider_nav:after {
+	display: block;
+	content: ' ';
+	clear: both;
+}
+.main_slider_nav div {
+	float: left;
+	background: none;
+	padding: 10px 30px;
+	border-radius: 30px;
+	text-align: center;
+	color: #777;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.main_slider_nav div + div {
+	margin-left: 10px;	
+}
+.main_slider_nav div.active {
+	background-color: #777;
+	color: #fff;
+}
 
-.service_info{margin:50px 0 ;max-width:1200px;width:100%;}
-.service_info .service_tit{font-size:40px;color:#333;font-weight:bold;text-align:center;}
+.main_slider {
+	margin: 30px 0 20px 0;
+}
+.main_slide {}
+.main_slide_head {
+	line-height: 1.5;
+}
+.main_slide_head h2 {
+	font-size: 40px;
+	color: #333;
+	font-weight: 500;
+	margin: 4px 0 0 0;
+}
+.main_slide_head .desc {
+	font-size: 24px;
+	color: #828282;
+}
+
+.service_info{margin:50px 0 ;max-width:1200px;width:100%;text-align: center;}
+.service_info .service_tit{font-size:40px;color:#333;font-weight:500;text-align:center;}
 .service_info .service_tit p{
 	font-size:18px;
-	color:#999;
+	color:#333;
 	font-weight:100;
 	margin-top:30px;
+}
+.service_info .service_link{
+	margin-top: 10px;
+	display: inline-block;
+	font-size:18px;
+	color:#fff;
+	background-color:#ef7c00;
+	padding: 12px 40px;
+	border-radius: 30px;
 }
 .service_info ul{margin:30px 0 0; display: inline-block;}
 .service_info ul > li{position:relative;min-height:200px;float:left;width:calc(100% / 3 - 10px);margin-right:15px;margin-bottom:15px;border:1px solid #ddd;border-radius:10px;padding:10px 20px;}
@@ -310,8 +366,10 @@ pre{white-space: pre-wrap;}
 .service_info ul > li .service_icon{position:absolute;top:25px;right:10px; }
 
 @media only screen and (max-width:960px) {
-	.main_top_wrap{min-height:auto;padding: 30px;margin-top:10px;border-radius:10px;}
-	.main_top_wrap a{margin-top:20px;font-size:16px;}
+	.main_top_wrap .main_slider_nav{display: none;}
+	.main_slide_head{padding: 20px 0;	}
+	.main_slide_head h2{font-size: 30px;}
+	.main_slide_head .desc{font-size: 18px;}
 	.service_info .service_tit{font-size:30px;}
 	.service_info .service_tit p span{display: block;}
 	.service_info ul > li{width:100%;margin-right:0px;min-height: auto;padding:20px;}
@@ -670,7 +728,7 @@ pre{white-space: pre-wrap;}
 
 #thema_wrapper.is-index {
 	background-color: #fff; /* For browsers that do not support gradients */
-  background: linear-gradient(to bottom, #eef2eb 625px, #fff 625px);
+  background: linear-gradient(to bottom, #eef2eb 700px, #fff 700px);
 }
 
 .is-pc .at-body { min-height: 800px; }
@@ -1008,7 +1066,7 @@ pre{white-space: pre-wrap;}
 	#headerTopQuickMenuWrap .listWrap > li > a { display:block; padding: 15px 0; border-radius: 10px; text-align: center; background-color: #e1e5df; font-size: 14px; line-height: 20px; overflow: hidden; }
 	#headerTopQuickMenuWrap .listWrap > li > a > span { color: #333; font-weight: 500; }
 
-	#thema_wrapper.is-index { background-color: #fff; background: linear-gradient(to bottom, #eef2eb 450px, #fff 450px); }
+	#thema_wrapper.is-index { background-color: #fff; background: linear-gradient(to bottom, #eef2eb 500px, #fff 500px); }
 
 	#mainBoardListWrap { padding: 0 10px; }
 	#mainBoardListWrap > div { width: 100%; margin: 0; margin:5px 0; }
@@ -1024,6 +1082,11 @@ pre{white-space: pre-wrap;}
 	#item-tab { padding: 0 20px; }
 }
 
+@media (max-width: 750px) {
+	#thema_wrapper.is-index { background-color: #fff; background: linear-gradient(to bottom, #eef2eb 400px, #fff 400px); }
+}
+
 @media (max-width: 450px){
+	#thema_wrapper.is-index { background-color: #fff; background: linear-gradient(to bottom, #eef2eb 300px, #fff 300px); }
 	#headerTopQuickMenuWrap .listWrap > li > a { font-size: 12px; }
 }
