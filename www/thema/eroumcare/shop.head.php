@@ -173,37 +173,43 @@ scrollToTop();
 				<img src="<?php echo THEMA_URL; ?>/assets/img/btn_mo_menu_close.png" />
 			</div>
 			<div class="logo_area">
-				<img src="<?php echo THEMA_URL; ?>/assets/img/top_logo_s.png">
+				<div class="ent_name"><?=($member["mb_entNm"] ? $member["mb_entNm"] : '이로움')?></div>
+				<?php if($member['mb_level']==9){ ?>
+				<style>
+						.or_manage{ width: 100%; height: 50px; line-height: 50px; text-align:center; margin-bottom:10px; color: #fff; background-color: #ef7c00; border-radius: 10px; }
+				</style>
+				<div class="or_manage">
+						<a href="<?php echo G5_SHOP_URL?>/release_orderlist.php">관리자 주문 출고 관리</a> 
+				</div>
+				<?php } ?>
 			</div>
 			<div class="scrollable-wrap">
 
-
-                <?php if($member['mb_level']==9){ ?>
-                <style>
-                    .or_manage{ width: 100%; height: 50px; line-height: 50px; text-align:center; border :solid 1.5px; margin-bottom:10px; border-color: #e46914; color: #e46914; }
-                </style>
-                <div class="or_manage">
-                    <a href="<?php echo G5_SHOP_URL?>/release_orderlist.php">관리자 주문 출고 관리</a> 
-                </div>
-                <?php } ?>
-
-				<div class="mobileCate">   
-				<?php foreach($head_category as $cate) { ?>
-					<ul>
-						<li class="mainMenu">
-							<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$cate['ca_id']; ?>' class='title'><?php echo $cate['ca_name']; ?><i class="fa fa-angle-right"></i></a>
-						</li>
-						<?php foreach($cate['sub'] as $i=>$sub) { ?>
-							<li><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='cate_02 <?php echo $sub['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub['ca_name']; ?></a></li>
-							<?php if (!empty($sub['sub'])) { ?>
-								<?php foreach($sub['sub'] as $sub2) { ?>
-									<li><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub2['ca_id']; ?>' class='cate_03 <?php echo $sub2['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub2['ca_name']; ?></a></li>
-								<?php } ?>
-							<?php } ?>
-						<?php } ?>
+				<div class="mobileCate">
+					<div class="cate_head">복지용구통합관리</div>
+					<ul class="cate_menu">
+						<li><a href="/shop/my.recipient.list.php" title="수급자">수급자 관리</a></li>
+						<li><a href="/shop/electronic_manage.php" title="전자문서">전자문서 관리</a></li>
+						<li><a href="/shop/sales_Inventory.php" title="보유재고">보유재고 관리</a></li>
+						<li><a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송 관리</a></li>
+						<li><a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a></li>
+						<li><a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a></li>
 					</ul>
-				<?php } ?>
-				
+					<div class="cate_head">복지용구 품목</div>
+					<ul class="cate_menu">
+						<li><a href="/shop/list.php?ca_id=10" title="판매품목">판매품목</a></li>
+						<li><a href="/shop/list.php?ca_id=20" title="대여품목">대여품목</a></li>
+					</ul>
+				<a href="/thema/eroumcare/assets/catalog_2.pdf" class="cata_link" target="_blank" alt="이달의 카달로그">
+					<div class="catalogWrap">
+						<span>이달의 카달로그</span>
+						<img src="<?php echo THEMA_URL; ?>/assets/img/btn_catalogue_icon.png">
+					</div>
+				</a>
+				<div class="cate_msg">
+					<p>보다 나은 세상을 위해</p>
+					<p class="bold">이로움이 함께합니다.</p>
+				</div>
 				<?php if($is_member) { // 로그인 상태 ?>
 					<a href="<?php echo $at_href['logout'];?>">로그아웃</a>
 				<?php }else{ ?>
