@@ -858,7 +858,6 @@ pre{white-space: pre-wrap;}
 .productListWrap > ul > li > a .img_3d { position: absolute !important; width: 50px; height: 40px; margin-top:5px; line-height: 38px; z-index: 4; top: 0; right: 5px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
 .productListWrap > ul > li > a .btn_wishlist { position: absolute; bottom: 10px; right: 10px; font-size: 30px; color: #ddd; }
 .productListWrap > ul > li > a .btn_wishlist:hover,
-.productListWrap > ul > li > a .btn_wishlist:active,
 .productListWrap > ul > li > a .btn_wishlist.active { color: #f4b133; }
 .productListWrap > ul > li > a > p.cnt {position: absolute;top: 10px;left: 10px;width: auto;border-radius: 5px;height: 30px;line-height: 30px;background-color: #F28D08;color: #fff;padding: 0 10px;font-size: 12px;}
 .productListWrap > ul > li > a > p.tag { color: #1ca2ff; margin-top: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
