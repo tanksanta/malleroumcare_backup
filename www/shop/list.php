@@ -79,6 +79,10 @@ if(isset($type) && $type) {
 	$where .= " and it_type{$type} = '1'";
 	$qstr .= '&amp;type='.$type;
 }
+if(isset($q) && $q) {
+	$q = get_search_string($q);
+	$where .= " and it_name like '%$q%' ";
+}
 // $where .= " and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%')";
 $ca_sub_orderby = '';
 $where .= " and ( 1 != 1 ";
@@ -118,6 +122,7 @@ if($ca_sub) {
 	";
 }
 $where .= " ) ";
+
 /*$where .= " and ( ca_id like '$ca_id%'
 	or ca_id2 like '$ca_id%'
 	or ca_id3 like '$ca_id%'

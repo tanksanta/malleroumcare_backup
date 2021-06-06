@@ -60,11 +60,13 @@ if($sortodr) $sort_url .= "&sortodr=$sortodr";
 $sup_url = "";
 if($prodSupYn) $sup_url .= "&prodSupYn=$prodSupYn";
 // print_r2($next_category);
+$q_url = "";
+if($q) $q_url .= "&q=$q";
 
 // 페이지 주소 수정
-$list_page = $_SERVER['SCRIPT_NAME'].'?ca_id='.$ca_id.$ca_sub_url.$sort_url.$sup_url.'&page=';
+$list_page = $_SERVER['SCRIPT_NAME'].'?ca_id='.$ca_id.$ca_sub_url.$sort_url.$sup_url.$q_url.'&page=';
 // 상품 정렬 주소 수정
-$list_sort_href = './list.php?ca_id='.$ca_id.$ca_sub_url.$sup_url.'&sort=';
+$list_sort_href = './list.php?ca_id='.$ca_id.$ca_sub_url.$sup_url.$q_url.'&sort=';
 $ca_sub_name_table = array();
 ?>
 <div id="samhwa-list-banner">
@@ -91,6 +93,22 @@ $ca_sub_name_table = array();
 </div>
 <div class="cate_wrap">
 	<ul>
+		<li>
+			<div class="cate_head">검색어</div>
+			<div class="cate_body">
+				<form class="form_cate" action="/shop/list.php" method="get">
+					<input type="hidden" name="ca_id" value="<?=$ca_id?>">
+					<?php foreach($ca_sub as $val) { ?>
+					<input type="hidden" name="ca_sub[]" value="<?=$val?>">
+					<?php } ?>
+					<?php if($sort) echo "<input type='hidden' name='sort' value='$sort'>"; ?> 
+					<?php if($sortodr) echo "<input type='hidden' name='sortodr' value='$sortodr'>"; ?> 
+					<?php if($prodSupYn) echo "<input type='hidden' name='prodSupYn' value='$prodSupYn'>"; ?> 
+					<input type="text" name="q" class="input_search" maxlength="30">
+					<input type="submit" class="input_submit" value="검색">
+				</form>
+			</div>
+		</li>
 		<?php if($next_category) { ?>
 		<li>
 			<div class="cate_head">상품분류</div>
@@ -98,7 +116,7 @@ $ca_sub_name_table = array();
 				<?php foreach($next_category as $cate) {
 					$ca_sub_name_table[substr($cate['ca_id'], 2)] = $cate['ca_name'];
 				?>
-				<a href="<?php echo $ca_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? '' : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2)).$ca_sub_url.$sort_url.$sup_url ;?>"
+				<a href="<?php echo $ca_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? '' : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2)).$ca_sub_url.$sort_url.$sup_url.$q_url ;?>"
 					class="<?php if(in_array(substr($cate['ca_id'], 2), $ca_sub)) echo 'active'; ?>">
 					<?php echo $cate['ca_name']; ?>(<?php echo $cate['cnt']; ?>)
 				</a>
@@ -109,9 +127,9 @@ $ca_sub_name_table = array();
 		<li>
 			<div class="cate_head">유통여부</div>
 			<div class="cate_body">
-				<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'N' ? 'all' : 'Y')?>"
+				<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'N' ? 'all' : 'Y').$q_url?>"
 				class="<?php if(in_array($prodSupYn, array('Y', 'all'))) echo 'active'; ?>">유통품목(<?=$prodCount['Y']?>)</a>
-        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'Y' ? 'all' : 'N')?>"
+        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'Y' ? 'all' : 'N').$q_url?>"
 				class="<?php if(in_array($prodSupYn, array('N', 'all'))) echo 'active'; ?>">비유통품목(<?=$prodCount['N']?>)</a>
 			</div>
 		</li>
@@ -121,20 +139,23 @@ $ca_sub_name_table = array();
 		</li>-->
 	</ul>
 </div>
-<?php if($ca_sub || $prodSupYn) { ?>
+<?php if($q || $ca_sub || $prodSupYn) { ?>
 <div class="cate_selected">
 	<div class="selected_head">
 		<a href="<?=G5_SHOP_URL.'/list.php?ca_id='.$ca_id?>">전체해제</a>
 	</div>
 	<div class="selected_body">
+		<?php if($q) { ?>
+			<a href="<?=$ca_url.$ca_sub_url.$sort_url.$sup_url?>"><?=$q?> <i class="fa fa-times" aria-hidden="true"></i></a>
+		<? } ?>
 		<?php if(in_array($prodSupYn, array('Y', 'all'))) { ?>
-			<a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=N' : '')?>">유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+			<a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=N' : '').$q_url?>">유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
 		<?php } ?>
 		<?php if(in_array($prodSupYn, array('N', 'all'))) { ?>
-			<a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=Y' : '')?>">비유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+			<a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=Y' : '').$q_url?>">비유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
 		<?php } ?>
 		<?php foreach($ca_sub as $sub) { ?>
-		<a href="<?=$ca_url.make_ca_sub_url(array_diff($ca_sub, [$sub])).$sort_url.$sub_url?>"><?=$ca_sub_name_table[$sub]?> <i class="fa fa-times" aria-hidden="true"></i></a>
+		<a href="<?=$ca_url.make_ca_sub_url(array_diff($ca_sub, [$sub])).$sort_url.$sup_url.$q_url?>"><?=$ca_sub_name_table[$sub]?> <i class="fa fa-times" aria-hidden="true"></i></a>
 		<?php } ?>
 	</div>
 </div>
