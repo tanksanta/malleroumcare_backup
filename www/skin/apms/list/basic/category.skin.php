@@ -25,7 +25,7 @@ $sql = "SELECT * FROM g5_shop_category where ( length(ca_id) = 4 and ca_id like 
 $res3 = sql_query($sql);
 while( $row3 = sql_fetch_array($res3) ) {
 	// 해당 분류에 속한 상품의 수
-	$sql1 = " select COUNT(*) as cnt from {$g5['g5_shop_item_table']}
+	/*$sql1 = " select COUNT(*) as cnt from {$g5['g5_shop_item_table']}
 		where ( ca_id LIKE '{$row3['ca_id']}%'
 		or ca_id2 LIKE '{$row3['ca_id']}%'
 		or ca_id3 LIKE '{$row3['ca_id']}%' ) 
@@ -33,16 +33,16 @@ while( $row3 = sql_fetch_array($res3) ) {
 		";
 	// echo $sql1 . '<br>';
 	$row1 = sql_fetch($sql1);
-	$row3['cnt'] = $row1['cnt'];
+	$row3['cnt'] = $row1['cnt'];*/
 
 	$next_category[] = $row3;
 }
 
-$prodCount = sql_fetch("
+/*$prodCount = sql_fetch("
 	select Y.Y, N.N from
 	(select count(*) AS Y from {$g5['g5_shop_item_table']} where it_use = '1' and prodSupYn = 'Y' and (ca_id LIKE '{$ca_id}%' or ca_id2 LIKE '{$ca_id}%' or ca_id3 LIKE '{$ca_id}%')) Y,
 	(select count(*) AS N from {$g5['g5_shop_item_table']} where it_use = '1' and prodSupYn = 'N' and (ca_id LIKE '{$ca_id}%' or ca_id2 LIKE '{$ca_id}%' or ca_id3 LIKE '{$ca_id}%')) N
-");
+");*/
 
 function make_ca_sub_url($ca_sub) {
 	$ca_sub_url = "";
@@ -118,7 +118,7 @@ $ca_sub_name_table = array();
 				?>
 				<a href="<?php echo $ca_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? '' : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2)).$ca_sub_url.$sort_url.$sup_url.$q_url ;?>"
 					class="<?php if(in_array(substr($cate['ca_id'], 2), $ca_sub)) echo 'active'; ?>">
-					<?php echo $cate['ca_name']; ?>(<?php echo $cate['cnt']; ?>)
+					<?php echo $cate['ca_name']; ?>
 				</a>
 				<?php } ?>
 			</div>
@@ -128,9 +128,9 @@ $ca_sub_name_table = array();
 			<div class="cate_head">유통여부</div>
 			<div class="cate_body">
 				<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'N' ? 'all' : 'Y').$q_url?>"
-				class="<?php if(in_array($prodSupYn, array('Y', 'all'))) echo 'active'; ?>">유통품목(<?=$prodCount['Y']?>)</a>
+				class="<?php if(in_array($prodSupYn, array('Y', 'all'))) echo 'active'; ?>">유통품목</a>
         <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'Y' ? 'all' : 'N').$q_url?>"
-				class="<?php if(in_array($prodSupYn, array('N', 'all'))) echo 'active'; ?>">비유통품목(<?=$prodCount['N']?>)</a>
+				class="<?php if(in_array($prodSupYn, array('N', 'all'))) echo 'active'; ?>">비유통품목</a>
 			</div>
 		</li>
 		<!--<li>

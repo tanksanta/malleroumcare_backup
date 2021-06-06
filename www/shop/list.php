@@ -143,6 +143,7 @@ $where .= $sql_apms_where;
 if($_COOKIE["prodSupYn"] == "Y" || $_COOKIE["prodSupYn"] == "N"){
 	$prodSupYn = $_COOKIE["prodSupYn"];
 }*/
+if(!$prodSupYn) $prodSupYn = 'Y';
 
 if($prodSupYn) {
 	//setcookie("prodSupYn", $prodSupYn, time() + 86400 * 3650, "/");
@@ -150,8 +151,6 @@ if($prodSupYn) {
 	if($prodSupYn == "Y" || $prodSupYn == "N"){
 		$where .= " AND prodSupYn = '{$prodSupYn}'";
 	}
-} else {
-	$where .= " AND prodSupYn = 'Y'";
 }
 
 // 정렬
