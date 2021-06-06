@@ -147,7 +147,7 @@ $ca_sub_name_table = array();
 	<div class="selected_body">
 		<?php if($q) { ?>
 			<a href="<?=$ca_url.$ca_sub_url.$sort_url.$sup_url?>"><?=$q?> <i class="fa fa-times" aria-hidden="true"></i></a>
-		<? } ?>
+		<?php } ?>
 		<?php if(in_array($prodSupYn, array('Y', 'all'))) { ?>
 			<a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=N' : '').$q_url?>">유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
 		<?php } ?>
