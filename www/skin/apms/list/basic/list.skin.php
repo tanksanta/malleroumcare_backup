@@ -191,7 +191,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						<img src="<?=G5_IMG_URL?>/item3dviewVisual.jpg">
 					</div>
 				<?php } ?>
+				<?php if($member["mb_id"]){ ?>
 				<button class="btn_wishlist <?=($wishlist[$list[$i]['it_id']] ? 'active' : '')?>" data-id="<?=$list[$i]['it_id']?>"><i class="fa fa-star" aria-hidden="true"></i></button>
+				<?php } ?>
 				</div>
 				<p class="name"><?=$list[$i]["it_name"]?></p>
 			<?php if($list[$i]["it_model"]){ ?>
