@@ -392,8 +392,7 @@ scrollToTop();
 			
 		</div>
 		
-		<?php if($member['mb_level'] >= 3){ ?>
-			<div id="headerTopQuickMenuWrap">
+			<div id="headerTopQuickMenuWrap" class="<?=$is_index?>">
 				<div>
 					<div>
 						<ul class="listWrap">
@@ -413,22 +412,14 @@ scrollToTop();
 								</a>
 							</li>
 							<li class="marginDisable">
-								<a href="/shop/orderinquiry.php" title="주문내역관리">
-									<span>주문내역관리</span>
+								<a href="/shop/list.php?ca_id=10" title="판매/대여품목">
+									<span>판매/대여품목</span>
 								</a>
 							</li>
 						</ul>
 					</div>
 				</div>
 			</div>
-		<?php } ?>
-		
-		<div class="mo_menu">
-			<a href="/shop/list.php?ca_id=10">판매품목</a>
-			<a href="/shop/list.php?ca_id=20">대여품목</a>
-			<a href="/shop/list.php?ca_id=60">추천상품</a>
-			<a href="/shop/list.php?ca_id=30">신상품</a>
-		</div>
 	
 		<div class="top_menu_wrap" style="display: none;">
 			<div class="menu_wrap">
