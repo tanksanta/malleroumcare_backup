@@ -104,7 +104,7 @@ $ca_sub_name_table = array();
 					<?php if($sort) echo "<input type='hidden' name='sort' value='$sort'>"; ?> 
 					<?php if($sortodr) echo "<input type='hidden' name='sortodr' value='$sortodr'>"; ?> 
 					<?php if($prodSupYn) echo "<input type='hidden' name='prodSupYn' value='$prodSupYn'>"; ?> 
-					<input type="text" name="q" class="input_search" maxlength="30">
+					<input type="text" name="q" value="<?=($q ? $q : '')?>" class="input_search" maxlength="30">
 					<input type="submit" class="input_submit" value="검색">
 				</form>
 			</div>
