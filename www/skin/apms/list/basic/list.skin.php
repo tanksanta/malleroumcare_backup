@@ -258,12 +258,12 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			success : function(result){
                 console.log(result);
 				$.each(result, function(it_id, cnt){
-					var label = "My 재고 보유";
+					var label = "내 보유 재고";
 					if($("." + it_id).attr("data-ca") == "20"){
-						label = "My 보유 대여 재고";
+						label = "내 대여 재고";
 					}
 
-					$("." + it_id).find("a").append('<p class="cnt"><span>' + label + '</span><span class="right">' + cnt + '개</span></p>');
+					$("." + it_id).find("a").append('<p class="cnt"><span>' + label + ' : ' + cnt + '개</span></p>');
 				});
 			}
 		});

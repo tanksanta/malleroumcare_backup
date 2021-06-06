@@ -838,7 +838,7 @@ pre{white-space: pre-wrap;}
 #mainBestProductWrap > .title { width: 100%; float: left; text-align: center; font-size: 27px; color: #333; font-weight: bold; margin-bottom: 35px; }
 
 /* 210202 상품목록 */
-.productListWrap { width: 100%; float: left; }
+.productListWrap { width: 100%; }
 .productListWrap * { position: relative; }
 .productListWrap > ul { width: 100%; float: left; }
 .productListWrap > ul > li { width: 23.4%; height: 380px; float: left; margin-right: 2%; margin-bottom: 3%; }
@@ -852,9 +852,21 @@ pre{white-space: pre-wrap;}
 .productListWrap > ul > li > a > p.info { font-size: 13px; color: #666; margin-top: 5px; padding: 0 5px; }
 .productListWrap > ul > li > a > p.discount { font-size: 14px; color: #666; top: 28px; padding: 0 5px; text-decoration: line-through; }
 .productListWrap > ul > li > a > p.price { font-size: 18px; font-weight: bold; color: #333; margin-top: 30px; padding: 0 5px; }
-.productListWrap > ul > li > a > p.cnt { height: 40px; line-height: 38px; border: 1px solid #F28D0B; color: #F28D08; padding: 0 10px; font-size: 14px; margin-top: 20px; }
-.productListWrap > ul > li > a > p.cnt > .right { float: right; }
 .productListWrap > ul > li > a .img_3d { position: absolute !important; width: 50px; height: 40px; margin-top:5px; line-height: 38px; z-index: 4; top: 0; right: 5px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
+.productListWrap > ul > li > a > p.cnt {position: absolute;
+	top: 10px;
+	left: 10px;
+	width: auto;
+	border-radius: 5px;
+	height: 30px;
+	line-height: 30px;
+	background-color: #F28D08;
+	color: #fff;
+	padding: 0 10px;
+	font-size: 12px;
+}
+.productListWrap:after { content: ' '; display: block; clear: both; }
+.productListWrap > ul:after { content: ' '; display: block; clear: both; }
 .it_type_box{padding:5px;margin-bottom:10px;display:inline-block;}
 #sort-wrapper .dropdown {border: none !important;}
 
@@ -1035,7 +1047,6 @@ pre{white-space: pre-wrap;}
 	.mo_layout { display: block !important; }
 
 	.productListWrap > ul > li { width: 49%; height: auto; margin-bottom: 10%; }
-	.productListWrap > ul > li:nth-of-type(5n) { margin-right: 2%; }
 	.productListWrap > ul > li:nth-of-type(2n) { margin-right: 0; }
 	.productListWrap > ul > li > a > p.sup { width: 80px; height: 25px; line-height: 25px; font-size: 12px; border-radius: 5px; }
 
