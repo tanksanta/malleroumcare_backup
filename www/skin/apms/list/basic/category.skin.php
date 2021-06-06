@@ -86,7 +86,7 @@ $ca_sub_name_table = array();
 		</a>
 	</span>
 	<?php if($ca_id == '10' || $ca_id == '20') { ?> 
-	<a href="/shop/list.php?ca_id=<?=($ca_id == '10' ? '20' : '10')?>" class="m_switch_link"><?=($ca_id == '10' ? '대여' : '판매')?>품목 <i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+	<a href="/shop/list.php?ca_id=<?php echo ($ca_id == '10' ? '20' : '10'); ?>" class="m_switch_link"><?php echo ($ca_id == '10' ? '대여' : '판매'); ?>품목 <i class="fa fa-chevron-right" aria-hidden="true"></i></a>
 	<? } ?>
 </div>
 <div class="cate_wrap">
