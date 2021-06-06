@@ -841,7 +841,7 @@ pre{white-space: pre-wrap;}
 .productListWrap { width: 100%; }
 .productListWrap * { position: relative; }
 .productListWrap > ul { width: 100%; float: left; }
-.productListWrap > ul > li { width: 23.4%; height: 450px; float: left; margin-right: 2%; margin-bottom: 3%; }
+.productListWrap > ul > li { width: 23.4%; height: 460px; float: left; margin-right: 2%; margin-bottom: 3%; }
 .productListWrap > ul > li:nth-of-type(4n) { margin-right: 0; }
 .productListWrap > ul > li > a { width: 100%; float: left; }
 .productListWrap > ul > li > a > p { width: 100%; float: left; margin: 0; }
@@ -854,7 +854,7 @@ pre{white-space: pre-wrap;}
 .productListWrap > ul > li > a > p.price { font-size: 16px; font-weight: bold; color: #333; margin-top: 0px; padding: 0 5px; }
 .productListWrap > ul > li > a .img_3d { position: absolute !important; width: 50px; height: 40px; margin-top:5px; line-height: 38px; z-index: 4; top: 0; right: 5px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
 .productListWrap > ul > li > a > p.cnt {position: absolute;top: 10px;left: 10px;width: auto;border-radius: 5px;height: 30px;line-height: 30px;background-color: #F28D08;color: #fff;padding: 0 10px;font-size: 12px;}
-.productListWrap > ul > li > a > p.tag { color: #1ca2ff; margin-top: 10px; }
+.productListWrap > ul > li > a > p.tag { color: #1ca2ff; margin-top: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .productListWrap > ul > li > a > p.tag .hash-tag { font-weight: 100; }
 .productListWrap > ul > li > a > p.tag .hash-tag + .hash-tag { margin-left: 10px; }
 .productListWrap > ul > li > a > .detailInfo { float: left; width: 100%; margin-top: 10px; color: #999; font-size: 12px; line-height: 1.25; }
@@ -862,6 +862,7 @@ pre{white-space: pre-wrap;}
 .productListWrap:after { content: ' '; display: block; clear: both; }
 .productListWrap > ul:after { content: ' '; display: block; clear: both; }
 .it_type_box{padding:5px;margin-bottom:10px;display:inline-block;}
+.m_switch_link { display: none; float:right; font-size: 16px; }
 #sort-wrapper .dropdown {border: none !important;}
 
 
@@ -1039,6 +1040,8 @@ pre{white-space: pre-wrap;}
 	body { padding-top: 85px; padding-bottom: 70px; }
 	.pc_layout { display: none !important; }
 	.mo_layout { display: block !important; }
+
+	.m_switch_link { display: inline-block; }
 
 	.productListWrap > ul > li { width: 49%; height: auto; margin-bottom: 10%; }
 	.productListWrap > ul > li:nth-of-type(2n) { margin-right: 0; }
