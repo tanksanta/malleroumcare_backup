@@ -153,7 +153,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			}
 		?>
 		<li class="<?=$list[$i]["it_id"]?>" data-ca="<?=substr($list[$i]["ca_id"], 0, 2)?>" >
-        <?php
+        <?php 
             // 우선순위 조정
             if ($is_admin && $sort == 'custom') {
                 $sql_custom_index = "select *
@@ -166,28 +166,50 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                 echo $custom_index;
             }
             ?>
-			<a href="<?=$list[$i]["href"]?>">
+			<a class="it_link" href="<?=$list[$i]["href"]?>">
 			<?php if($list[$i]["prodSupYn"] == "N"){ ?>
 				<p class="sup">비유통 상품</p>
 			<?php } ?>
 				<p class="img">
 				<?php if($img["src"]){ ?>
 					<img src="<?=$img["src"]?>" alt="<?=$list[$i]["it_name"]?>_상품이미지">
-					<?php if(json_decode($list[$i]["it_img_3d"], true)){ ?>
+				<?php } ?>
+				</p>
+				<?php if(json_decode($list[$i]["it_img_3d"], true)){ ?>
 					<div class="img_3d">
 						<img src="<?=G5_IMG_URL?>/item3dviewVisual.jpg">
 					</div>
 					<?php } ?>
-				<?php } ?>
-				</p>
 				<p class="name"><?=$list[$i]["it_name"]?></p>
 			<?php if($list[$i]["it_model"]){ ?>
 				<p class="info"><?=$list[$i]["it_model"]?></p>
 			<?php } ?>
-
+					<ul class="detailInfo">
+							<li>
+									<span class="infoLabel">
+											<span>·</span>
+											<span>재질</span>
+									</span>
+									<span class="info">: <?=($list[$i]["prodSym"]) ? $list[$i]["prodSym"] : "-"?></span>
+							</li>
+							<li>
+									<span class="infoLabel">
+											<span>·</span>
+											<span>사이즈</span>
+									</span>
+									<span class="info">: <?=($list[$i]["prodSizeDetail"]) ? $list[$i]["prodSizeDetail"] : "-"?></span>
+							</li>
+							<li>
+									<span class="infoLabel">
+											<span>·</span>
+											<span>중량</span>
+									</span>
+									<span class="info">: <?=($list[$i]["prodWeig"]) ? $list[$i]["prodWeig"] : "-"?></span>
+							</li>
+					</ul>
             <?php if($_COOKIE["viewType"] !== "basic"){ ?>
                 <p class="discount">
-                    <?=number_format($list[$i]["it_cust_price"])?>원
+                    <?=number_format($list[$i]["it_cust_price"])?>원 (수급자 급여가)
                 </p>
             <?php } ?>
                 <p class="price">
@@ -210,8 +232,23 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                             echo number_format($list[$i]["it_cust_price"]).'원';
                         }
                     ?>
+										(사업소 판매가)
                 </p>
-                
+                <?php
+								$tag_list = apms_get_text($list[$i]['pt_tag']);
+								if($tag_list) {
+								?>
+								<p class="tag">
+									<?php
+									$tag = explode(",", $tag_list);
+									foreach($tag as $val) {
+										echo '<span class="hash-tag">#'.$val.'</span>';
+									}
+									?>
+								</p>
+								<?php
+								}
+								?>
 			</a>
 
 			<div class="it_type_box">
@@ -263,7 +300,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 						label = "내 대여 재고";
 					}
 
-					$("." + it_id).find("a").append('<p class="cnt"><span>' + label + ' : ' + cnt + '개</span></p>');
+					$("." + it_id).find(".it_link").append('<p class="cnt"><span>' + label + ' : ' + cnt + '개</span></p>');
 				});
 			}
 		});
