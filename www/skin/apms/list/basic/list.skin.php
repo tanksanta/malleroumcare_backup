@@ -61,6 +61,9 @@ include_once($list_skin_path.'/category.skin.php');
 
 include_once(THEMA_PATH.'/side/list-cate-side.php');
 
+	# 210606 위시리스트
+	$wishlist = [];
+
 	# 210204 재고조회
 	$sendData = [];
 	$sendData["usrId"] = $member["mb_id"];
@@ -69,6 +72,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	$prodsSendData = [];
 
 	for($i = 0; $i < $list_cnt; $i++){
+		$wishlist[$list[$i]['it_id']] = false;
 		$stockQtyList[$list[$i]["it_id"]] = 0;
 
 		if($list[$i]["optionList"]){
@@ -92,8 +96,14 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 	$sendData["prods"] = $prodsSendData;
 
+	$it_keys = array_keys($wishlist);
+	$wish_result = sql_query("SELECT it_id from {$g5['g5_shop_wish_table']} where mb_id = {$member['mb_id']} and it_id in ('"
+	.implode("', '", $it_keys).
+	"')");
 
-
+	while($wish_row = sql_fetch_array($wish_result)) {
+		$wishlist[$wish_row['it_id']] = true;
+	}
 ?>
 
 <div id="sort-wrapper">
@@ -170,6 +180,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php if($list[$i]["prodSupYn"] == "N"){ ?>
 				<p class="sup">비유통 상품</p>
 			<?php } ?>
+			<div class="img_wrap">
 				<p class="img">
 				<?php if($img["src"]){ ?>
 					<img src="<?=$img["src"]?>" alt="<?=$list[$i]["it_name"]?>_상품이미지">
@@ -179,7 +190,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<div class="img_3d">
 						<img src="<?=G5_IMG_URL?>/item3dviewVisual.jpg">
 					</div>
-					<?php } ?>
+				<?php } ?>
+				<button class="btn_wishlist <?=($wishlist[$list[$i]['it_id']] ? 'active' : '')?>" data-id="<?=$list[$i]['it_id']?>"><i class="fa fa-star" aria-hidden="true"></i></button>
+				</div>
 				<p class="name"><?=$list[$i]["it_name"]?></p>
 			<?php if($list[$i]["it_model"]){ ?>
 				<p class="info"><?=$list[$i]["it_model"]?></p>
@@ -282,7 +295,53 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 </div>
 
 <script type="text/javascript">
+// Wishlist
+function apms_wishlist(it_id, $this) {
+	if(!it_id) {
+		alert("코드가 올바르지 않습니다.");
+		return false;
+	}
+
+	if($this.hasClass('active')) {
+		$.ajax({
+			url : "./wishupdate.php?w=r&it_id="+encodeURIComponent(it_id),
+			type : "GET",
+			success : function(result){
+				$this.prop('disabled', false);
+				$this.removeClass('active');
+				/*if(confirm("위시리스트에 등록되었습니다.\n\n바로 확인하시겠습니까?")){
+					window.location.href = "./wishlist.php";
+				}*/
+			}
+		});
+	} else {
+		$.ajax({
+			url : "./wishupdate.php",
+			type : "POST",
+			data : {
+				it_id : it_id
+			},
+			success : function(result){
+				$this.prop('disabled', false);
+				$this.addClass('active');
+				/*if(confirm("위시리스트에 등록되었습니다.\n\n바로 확인하시겠습니까?")){
+					window.location.href = "./wishlist.php";
+				}*/
+			}
+		});
+	}
+	return false;
+}
+
 	$(function(){
+		$('.btn_wishlist').click(function (e) {
+			e.stopPropagation();
+			e.preventDefault();
+			var it_id = $(this).data('id');
+			$(this).prop('disabled', true);
+			apms_wishlist(it_id, $(this));
+			return false;
+		});
 
 	<?php if($member["mb_id"]&&$_COOKIE["viewType"] != "basic"){ ?>
 		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;

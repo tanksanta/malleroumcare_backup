@@ -19,6 +19,13 @@ if ($w == "d")
                 and mb_id = '{$member['mb_id']}' ";
     sql_query($sql);
 }
+else if($w == 'r') {
+    $it_id = trim($_GET['it_id']);
+    $sql = " delete from {$g5['g5_shop_wish_table']}
+    where it_id = '$it_id'
+      and mb_id = '{$member['mb_id']}' ";
+sql_query($sql);
+}
 else
 {
     if(is_array($it_id))
