@@ -95,7 +95,7 @@ $ca_sub_name_table = array();
 				<?php foreach($next_category as $cate) {
 					$ca_sub_name_table[substr($cate['ca_id'], 2)] = $cate['ca_name'];
 				?>
-				<a href="<?php echo $ca_url.$ca_sub_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? '' : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2)).$sort_url.$sup_url ;?>"
+				<a href="<?php echo $ca_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? '' : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2)).$ca_sub_url.$sort_url.$sup_url ;?>"
 					class="<?php if(in_array(substr($cate['ca_id'], 2), $ca_sub)) echo 'active'; ?>">
 					<?php echo $cate['ca_name']; ?>(<?php echo $cate['cnt']; ?>)
 				</a>

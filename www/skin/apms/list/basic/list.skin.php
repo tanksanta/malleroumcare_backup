@@ -237,7 +237,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         <?php } ?>
 	<div class="list-page list-paging">
 		<ul class="pagination pagination-sm en">
-			<?php echo apms_paging($write_pages, $page, $total_page, $list_page); ?>
+			<?php echo apms_paging(5, $page, $total_page, $list_page); ?>
 		</ul>
 		<div class="clearfix"></div>
 	</div>

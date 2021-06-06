@@ -82,6 +82,8 @@ if(isset($type) && $type) {
 // $where .= " and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%')";
 $where .= " and ( 1 != 1 ";
 if($ca_sub) {
+	$ca_sub_orderby = " case ";
+	$ca_sub_idx = 1;
 	foreach($ca_sub as $sub) {
 		$ca_id_sub = $ca_id.$sub;
 		$where .= " or ca_id like '$ca_id_sub%'
@@ -95,7 +97,12 @@ if($ca_sub) {
 		or ca_id9 like '$ca_id_sub%' 
 		or ca_id10 like '$ca_id_sub%'
 		";
+		$ca_sub_orderby .= " when (ca_id like '$ca_id_sub%'
+		or ca_id2 like '$ca_id_sub%'
+		or ca_id3 like '$ca_id_sub%') then $ca_sub_idx ";
+		$ca_sub_idx++;
 	}
+	$ca_sub_orderby .= " end ";
 } else {
 	$where .= " or ca_id like '$ca_id%'
 	or ca_id2 like '$ca_id%'
@@ -168,12 +175,14 @@ echo '<div id="sct_hhtml">'.conv_content($ca['ca_'.MOBILE_.'head_html'], 1).'</d
 // 상품 리스트
 $list = array();
 
-if(!$list_mods) $list_mods = 3;
-if(!$list_rows) $list_rows = 5;
+/*if(!$list_mods) $list_mods = 4;
+if(!$list_rows) $list_rows = 5;*/
+$list_mods = 4;
+$list_rows = 3;
 
 // 총몇개 = 한줄에 몇개 * 몇줄
 $item_rows = $list_rows * $list_mods;
-
+echo "$list_mods, $list_rows, $item_rows";
 // 페이지가 없으면 첫 페이지 (1 페이지)
 if ($page < 1) $page = 1;
 // 시작 레코드 구함
@@ -188,14 +197,14 @@ $num = $total_count - ($page - 1) * $item_rows;
 
 // 커스텀 인덱스
 if ($sort != 'custom') {
-	$list_sql = "select * from `{$g5['g5_shop_item_table']}` where $where order by $order_by limit $from_record, $item_rows";
+	$list_sql = "select * from `{$g5['g5_shop_item_table']}` where $where order by $ca_sub_orderby, $order_by limit $from_record, $item_rows";
 } else {
 	$list_sql = "select *
 				 from (select *
 					   from `{$g5['g5_shop_item_table']}` a
 					   left join (select it_id as temp_it_id, ca_id as temp_ca_id, custom_index from g5_shop_item_custom_index) b
 					   on (a.it_id = b.temp_it_id) and  (temp_ca_id = '{$ca_id}')) jt
-				 where $where order by custom_index is null asc, custom_index asc, pt_num asc, it_id asc limit $from_record, $item_rows
+				 where $where order by $ca_sub_orderby, custom_index is null asc, custom_index asc, pt_num asc, it_id asc limit $from_record, $item_rows
 				 ";
 }
 //print_r2($list_sql);
