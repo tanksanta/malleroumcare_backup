@@ -137,6 +137,8 @@ if($prodSupYn) {
 	if($prodSupYn == "Y" || $prodSupYn == "N"){
 		$where .= " AND prodSupYn = '{$prodSupYn}'";
 	}
+} else {
+	$where .= " AND prodSupYn = 'Y'";
 }
 
 // 정렬
