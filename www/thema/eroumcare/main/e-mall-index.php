@@ -28,7 +28,7 @@
 		서비스 이용문의
 		<p>복지용구 판매 사업소 및 요양센터 운영담당자 들의 문의를 받습니다.</p>
 	</div>
-	<a href="#" onclick="alert('준비 중입니다.')"  class="service_link">간편 문의하기</a>
+	<a href="/bbs/qalist.php"  class="service_link">간편 문의하기</a>
 </div>
 
 <!-- 메인 배너 -->
