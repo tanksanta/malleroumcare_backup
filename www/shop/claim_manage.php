@@ -62,14 +62,15 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 }
 
 # ##################################################################
-# 1. 우선 현재 로그인한 사용자 entId 가지고 와야됨
+# 수급자별로 (penId 별로 묶어야함)
+# 묶어서 start_date가 가장 빠른거로 출력해야됨. <- 해당 월보다 작으면 1일부터 시작하는거고, 아니면 그 일부터 시작하는거고
+# 그리고 급여가 전부 더하고 = 급여비용총액
+# 수급자 본인부담금 다 더하고 = 본인부담금
+# 급여가 - 본인부담금 = 청구액
+# 수급자정보 이름, PENID, 등급, 기초... 어쩌고
 
-# 2. 그리고 해당 entId로 된 계약서 조회
-# 3. penId 별로 묶어야되나? 흠.. 일단 대여가있으면 대여기간 계산도 해야되서 전체 리스트 가져야외될듯?
-# 4. 그냥 전체 리스트 가져와서 foreach 순회 돌면서
-# - 1. 판매 계약인지? -> 선택한 해당 월 주문인지?
-# - 2. 대여 계약인지? -> 선택한 해당 월이 사이에 있는지?
-# - 3. 
+# 수급자(penId) 별로 몇년도 무슨월 청구내역 수정사항 테이블도 만들어야함
+
 
 $selected_month = '2021-06-01';
 
@@ -79,7 +80,13 @@ if(!$entId) {
 }
 
 $eform_query = sql_query("
-SELECT a.*, b.* FROM `eform_document` a
+SELECT
+	STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d') as start_date,
+	SUM(`it_price`) as total_price,
+	SUM(`it_price_pen`) as total_price_pen,
+	(SUM(`it_price`) - SUM(`it_price_pen`)) as total_price_ent,
+	a.*, b.*
+FROM `eform_document` a
 LEFT JOIN `eform_document_item` b
 ON a.dc_id = b.dc_id
 WHERE
@@ -101,10 +108,16 @@ WHERE
 			)
 		)
 	)
+GROUP BY `penId`
+ORDER BY SUBSTRING_INDEX(`it_date`, '-', '3')
 ");
 
-while($eform = sql_fetch_array($eform_query)) {
-}
+$total_count = sql_num_rows($eform_query);
+$page_rows = $config['cf_page_rows'];
+$total_page = ceil($total_count / $page_rows); // 전체 페이지 계산
+if ($page < 1) $page = 1;
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
+
 ?>
 
 <!-- 내용 -->
@@ -155,10 +168,24 @@ while($eform = sql_fetch_array($eform_query)) {
 				 	<th>급여비용총액</th>
 				 	<th>본인부담금</th>
 				 	<th>청구액</th>
-				 	<th>검증상태</th>
-				 	<th>금액변경</th>
+				 	<!--<th>검증상태</th>
+				 	<th>금액변경</th>-->
 				 </tr>
-				 <tr>
+				<?php 
+				for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
+					$index = $from_record + $i + 1;
+				?>
+					<td><?=$index?></td>
+				 	<td><a href="#"><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></a></td>
+				 	<td class="text_c"><?=$row['start_date']?></td>
+				 	<td class="text_r"><?=number_format($row['total_price'])?>원</td>
+				 	<td class="text_r"><?=number_format($row['total_price_pen'])?>원</td>
+				 	<td class="text_r"><?=number_format($row['total_price_ent'])?>원</td>
+				 	<!--<td class="text_c">정상</td>
+				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>-->
+				 </tr>
+				<?php } ?>
+				 <!--<tr>
 				 	<td>5</td>
 				 	<td><a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a></td>
 				 	<td class="text_c">2021-02-02</td>
@@ -219,22 +246,13 @@ while($eform = sql_fetch_array($eform_query)) {
 				 	<td class="text_r">210,000원</td>
 				 	<td class="text_c text_gray">대기</td>
 				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
-				 </tr>
+				 </tr>-->
 			 </table>
 			 </div>
 			 
 			 <div class="list-paging">
-			 	<ul class="pagination ">
-			 		<li> </li>
-			 		<li><a href="#"> &lt;</a></li>
-			 		<li class="active"><a href="#">1</a></li>
-			 		<li><a href="#">2</a></li>
-			 		<li><a href="#">3</a></li>
-			 		<li><a href="#">&gt;</a></li>
-			 		<li> </li>
-			 	</ul>
 			 </div>
-			 <div class="subtit">
+			 <!--<div class="subtit">
 			 	건강관리공단 미 매칭 자료 
 			 </div>
  			<div class="table_box">
@@ -281,7 +299,7 @@ while($eform = sql_fetch_array($eform_query)) {
 			 	</ul>
 			 </div>
  		</div>
-     </div>
+     </div>-->
     
 </section>
 
