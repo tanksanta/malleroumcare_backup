@@ -70,18 +70,40 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 # - 1. 판매 계약인지? -> 선택한 해당 월 주문인지?
 # - 2. 대여 계약인지? -> 선택한 해당 월이 사이에 있는지?
 # - 3. 
+
+$selected_month = '2021-06-01';
+
 $entId = $member['mb_entId'];
 if(!$entId) {
 	alert('사업소 회원만 접근 가능합니다.');
 }
 
-$eform_query = sql_query("SELECT * FROM `eform_document` WHERE
+$eform_query = sql_query("
+SELECT a.*, b.* FROM `eform_document` a
+LEFT JOIN `eform_document_item` b
+ON a.dc_id = b.dc_id
+WHERE
 	entId = '$entId'
 	AND dc_status = '2'
-	AND (
+	AND
+	(
+		(
+			gubun = '00' AND
+			STR_TO_DATE(`it_date`, '%Y-%m-%d') BETWEEN '$selected_month' AND LAST_DAY('$selected_month')
+		)
+		OR
+		(
+			gubun = '01' AND
+			(
+				(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d') <= '$selected_month')
+				AND
+				(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d') >= '$selected_month')
+			)
+		)
+	)
 ");
+
 while($eform = sql_fetch_array($eform_query)) {
-	
 }
 ?>
 

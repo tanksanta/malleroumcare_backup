@@ -2,7 +2,7 @@
 include_once("./_common.php");
 include_once('./lib/eform.lib.php');
 
-json_response(400, '접근 ㄴㄴ');
+//json_response(400, '접근 ㄴㄴ');
 
 $data = api_post_call('https://system.eroumcare.com/api/eform/selectEform001', array('penOrdId' => 'ORDER-20210604000013'));
 echo '<pre>';
