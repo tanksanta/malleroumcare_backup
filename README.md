@@ -18,15 +18,6 @@ chmod -R 707 data
 
 <https://wkhtmltopdf.org/downloads.html> 설치
 
-## PM2
-
-```sh
-cd malleroumcare/webhook
-pm2 start index.js --name "malleroumcare-webhook" --watch
-pm2 startup
-pm2 save
-```
-
 ## Development
 
 hosts 파일에 해당 내용 추가
@@ -52,6 +43,5 @@ vhost.conf에 해당 내용 추가
 
 ## URLs
 
-- PMA: <http://mall.eroumcare.com/eroumcarepma>
-- 라이브: <https://mall.eroumcare.com>
+- 라이브: <https://eroumcare.com>
 - 테스트: <http://mall.eroumcare.doto.li>
