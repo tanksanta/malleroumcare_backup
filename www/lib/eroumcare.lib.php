@@ -208,7 +208,6 @@ function get_carts_by_recipient($recipient) {
                 and a.ct_direct = '0'
                 and a.ct_status = '쇼핑' 
 		  ";
-	$sql .= " group by a.it_id ";
 	$sql .= " order by a.ct_id ";
 	$result = sql_fetch($sql);
 
