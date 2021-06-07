@@ -1093,122 +1093,122 @@ function fmember_submit()
         return false;
     }
 
-    var mb_hp = $("#mb_hp1").val() + "-" + $("#mb_hp2").val() + "-" + $("#mb_hp3").val();
-    if(!$("#mb_hp1").val()){
-        alert('휴대폰번호를 입력해주세요.');
-        $("#mb_hp1").focus();
-        return false;
-    }
-    if(!$("#mb_hp2").val()){
-        alert('휴대폰번호를 입력해주세요');
-        $("#mb_hp2").focus();
-        return false;
-    }
-    if(!$("#mb_hp3").val()){
-        alert('휴대폰번호를 입력해주세요');
-        $("#mb_hp3").focus();
-        return false;
-    }
+    // var mb_hp = $("#mb_hp1").val() + "-" + $("#mb_hp2").val() + "-" + $("#mb_hp3").val();
+    // if(!$("#mb_hp1").val()){
+    //     alert('휴대폰번호를 입력해주세요.');
+    //     $("#mb_hp1").focus();
+    //     return false;
+    // }
+    // if(!$("#mb_hp2").val()){
+    //     alert('휴대폰번호를 입력해주세요');
+    //     $("#mb_hp2").focus();
+    //     return false;
+    // }
+    // if(!$("#mb_hp3").val()){
+    //     alert('휴대폰번호를 입력해주세요');
+    //     $("#mb_hp3").focus();
+    //     return false;
+    // }
 
-    var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
-    if(!$("#mb_tel1").val()){
-        alert('전화번호를 입력해주세요.');
-        $("#mb_tel1").focus();
-        return false;
-    }
-    if(!$("#mb_tel2").val()){
-        alert('전화번호를 입력해주세요');
-        $("#mb_tel2").focus();
-        return false;
-    }
-    if(!$("#mb_tel3").val()){
-        alert('전화번호를 입력해주세요');
-        $("#mb_tel3").focus();
-        return false;
-    }
+    // var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
+    // if(!$("#mb_tel1").val()){
+    //     alert('전화번호를 입력해주세요.');
+    //     $("#mb_tel1").focus();
+    //     return false;
+    // }
+    // if(!$("#mb_tel2").val()){
+    //     alert('전화번호를 입력해주세요');
+    //     $("#mb_tel2").focus();
+    //     return false;
+    // }
+    // if(!$("#mb_tel3").val()){
+    //     alert('전화번호를 입력해주세요');
+    //     $("#mb_tel3").focus();
+    //     return false;
+    // }
     //mb_fax
-    var mb_fax = $("#mb_fax1").val() + "-" + $("#mb_fax2").val() + "-" + $("#mb_fax3").val();
-    if(!$("#mb_fax1").val()){
-        alert('팩스를 입력해주세요.');
-        $("#mb_fax1").focus();
-        return false;
-    }
-    if(!$("#mb_fax2").val()){
-        alert('팩스를 입력해주세요.');
-        $("#mb_fax2").focus();
-        return false;
-    }
-    if(!$("#mb_fax3").val()){
-        alert('팩스를 입력해주세요.');
-        $("#mb_fax3").focus();
-        return false;
-    }
+    // var mb_fax = $("#mb_fax1").val() + "-" + $("#mb_fax2").val() + "-" + $("#mb_fax3").val();
+    // if(!$("#mb_fax1").val()){
+    //     alert('팩스를 입력해주세요.');
+    //     $("#mb_fax1").focus();
+    //     return false;
+    // }
+    // if(!$("#mb_fax2").val()){
+    //     alert('팩스를 입력해주세요.');
+    //     $("#mb_fax2").focus();
+    //     return false;
+    // }
+    // if(!$("#mb_fax3").val()){
+    //     alert('팩스를 입력해주세요.');
+    //     $("#mb_fax3").focus();
+    //     return false;
+    // }
     // E-mail 검사
-	// if ((f.w.value == "") || (f.w.value == "u" && f.mb_email.defaultValue != f.mb_email.value)) {
-	// 	var msg = reg_mb_email_check();
-	// 	if (msg) {
-	// 		alert(msg);
-	// 		f.reg_mb_email.select();
-	// 		return false;
-	// 	}
-	// }
-    if(!f.mb_giup_bnum.value){
-        alert('사업자 번호를 입력하세요.');
-        f.mb_giup_bnum.focus();
-        return false;
-    }
-    if(!f.mb_giup_boss_name.value){
-        alert('대표자명을 입력하세요.');
-        f.mb_giup_boss_name.focus();
-        return false;
-    }
-    if(!f.mb_giup_bupjong.value){
-        alert('업종을 입력하세요.');
-        f.mb_giup_bupjong.focus();
-        return false;
-    }
-    if(!f.mb_giup_buptae.value){
-        alert('업태를 입력하세요.');
-        f.mb_giup_buptae.focus();
-        return false;
-    }
-    if(!f.mb_giup_manager_name.value){
-        alert('담당자명을 입력하세요.');
-        f.mb_giup_manager_name.focus();
-        return false;
-    }
+	if ((f.w.value == "") || (f.w.value == "u" && f.mb_email.defaultValue != f.mb_email.value)) {
+		var msg = reg_mb_email_check();
+		if (msg) {
+			alert(msg);
+			f.reg_mb_email.select();
+			return false;
+		}
+	}
+    // if(!f.mb_giup_bnum.value){
+    //     alert('사업자 번호를 입력하세요.');
+    //     f.mb_giup_bnum.focus();
+    //     return false;
+    // }
+    // if(!f.mb_giup_boss_name.value){
+    //     alert('대표자명을 입력하세요.');
+    //     f.mb_giup_boss_name.focus();
+    //     return false;
+    // }
+    // if(!f.mb_giup_bupjong.value){
+    //     alert('업종을 입력하세요.');
+    //     f.mb_giup_bupjong.focus();
+    //     return false;
+    // }
+    // if(!f.mb_giup_buptae.value){
+    //     alert('업태를 입력하세요.');
+    //     f.mb_giup_buptae.focus();
+    //     return false;
+    // }
+    // if(!f.mb_giup_manager_name.value){
+    //     alert('담당자명을 입력하세요.');
+    //     f.mb_giup_manager_name.focus();
+    //     return false;
+    // }
 
-    if(!f.mb_giup_zip.value){
-        alert('(사업자정보) 우편번호를 입력하세요');
-        f.mb_giup_zip.focus();
-        return false;
-    }
-    if(!f.mb_giup_addr1.value){
-        alert('(사업자정보) 주소를 입력하세요');
-        f.mb_giup_addr1.focus();
-        return false;
-    }
-    if(!f.mb_giup_addr2.value&&!f.mb_giup_addr3.value){
-        alert('(사업자정보) 주소상세를 입력하세요');
-        f.mb_giup_addr2.focus();
-        return false;
-    }
+    // if(!f.mb_giup_zip.value){
+    //     alert('(사업자정보) 우편번호를 입력하세요');
+    //     f.mb_giup_zip.focus();
+    //     return false;
+    // }
+    // if(!f.mb_giup_addr1.value){
+    //     alert('(사업자정보) 주소를 입력하세요');
+    //     f.mb_giup_addr1.focus();
+    //     return false;
+    // }
+    // if(!f.mb_giup_addr2.value&&!f.mb_giup_addr3.value){
+    //     alert('(사업자정보) 주소상세를 입력하세요');
+    //     f.mb_giup_addr2.focus();
+    //     return false;
+    // }
 
-    if(!f.mb_zip.value){
-        alert('(배송지 주소) 우편번호를 입력하세요');
-        f.mb_zip.focus();
-        return false;
-    }
-    if(!f.mb_addr1.value){
-        alert('(배송지 주소) 주소를 입력하세요');
-        f.mb_addr1.focus();
-        return false;
-    }
-    if(!f.mb_addr2.value&&!f.mb_addr3.value){
-        alert('(배송지 주소) 주소상세를 입력하세요');
-        f.mb_addr2.focus();
-        return false;
-    }
+    // if(!f.mb_zip.value){
+    //     alert('(배송지 주소) 우편번호를 입력하세요');
+    //     f.mb_zip.focus();
+    //     return false;
+    // }
+    // if(!f.mb_addr1.value){
+    //     alert('(배송지 주소) 주소를 입력하세요');
+    //     f.mb_addr1.focus();
+    //     return false;
+    // }
+    // if(!f.mb_addr2.value&&!f.mb_addr3.value){
+    //     alert('(배송지 주소) 주소상세를 입력하세요');
+    //     f.mb_addr2.focus();
+    //     return false;
+    // }
     // var msg = reg_mb_hp_check();
 	// if (msg) {
 	// 	alert(msg);
