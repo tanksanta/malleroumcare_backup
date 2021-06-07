@@ -183,7 +183,15 @@
 							<br/>
 							계약 <?php echo $contract['cnt']; ?>건, 판매 <?php echo $contract_sell['cnt']; ?>건, 대여 <?php echo $contract_borrow['cnt']; ?>건
 						</td>
-						<td>
+						<td style="text-align:center;">
+							<?php
+								$cart_count = get_carts_by_recipient($data['penId']);
+								echo $cart_count . '개';
+							?>
+							<br/>
+							<?php if ($data["penLtmNum"]) { ?>
+							<a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn small" title="추가하기">추가하기</a>
+							<?php } ?>
 						</td>
 						<td style="text-align:center;">
 							<?php if ($data['recYn'] === 'N') { ?>

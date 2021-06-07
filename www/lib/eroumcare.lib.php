@@ -196,3 +196,21 @@ $pen_type_cd = array(
 	'03' => '의료 6%',
 	'04' => '기초 0%',
 );
+
+function get_carts_by_recipient($recipient) {
+	global $member;
+	global $g5;
+
+	$sql = " select count(*) as cnt
+		   from {$g5['g5_shop_cart_table']} a
+		  where a.ct_pen_id = '$recipient' 
+		  		and a.mb_id = '{$member['mb_id']}'
+                and a.ct_direct = '0'
+                and a.ct_status = '쇼핑' 
+		  ";
+	$sql .= " group by a.it_id ";
+	$sql .= " order by a.ct_id ";
+	$result = sql_fetch($sql);
+
+	return $result['cnt'] ?: 0;
+}

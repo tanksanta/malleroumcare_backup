@@ -158,6 +158,65 @@ if($_GET['co_id']=="possession_manage"){ ?>
 	</div>
 </div>
 
+<?php if ($_SESSION['recipient']) { ?>
+<style>
+#fixed_recipient {
+	position:fixed;
+	bottom:80px;
+	right:20px;
+	width:330px;
+	border:1px solid #f9d1a4;
+	padding:10px 15px;
+	background-color:#fff;
+}
+#fixed_recipient .info {
+	float:left;
+	width:200px;
+	padding-top:7px;
+}
+#fixed_recipient .info h5 {
+	margin:0;
+}
+#fixed_recipient .info p {
+	margin:0;
+}
+#fixed_recipient .cart {
+	float:right;
+	border:1px solid #f3f3f3;
+	border-radius: 3px;
+	display:block;
+	padding:6px 9px;
+	text-align:center;
+	line-height: 14px;
+}
+#fixed_recipient .close {
+	float:right;
+	display:block;
+	margin-left:15px;
+	line-height:41px;
+}
+</style>
+<div id="fixed_recipient">
+	<div class="info">
+		<h5>
+			<?php echo $_SESSION['recipient']['penNm']; ?>
+			(<?php echo substr($_SESSION['recipient']['penBirth'], 2, 2); ?>년생/<?php echo $_SESSION['recipient']['penGender']; ?>)
+		</h5>
+		<p>
+			L<?php echo $_SESSION['recipient']["penLtmNum"]; ?>
+			(<?php echo $_SESSION['recipient']["penRecGraNm"]; ?><?php echo $pen_type_cd[$_SESSION['recipient']['penTypeCd']] ? '/' . $pen_type_cd[$_SESSION['recipient']['penTypeCd']] : ''; ?>)
+		</p>
+	</div>
+	
+	<a href='<?php echo G5_SHOP_URL; ?>/connect_recipient.php' class="close">
+		X
+	</a>
+	<a href='<?php echo G5_SHOP_URL; ?>/cart.php' class="cart">
+		장바구니<br/><b><?php echo get_carts_by_recipient($_SESSION['recipient']['penId']); ?>개</b>
+	</a>
+</div>
+<?php } ?>
+
 <!--[if lt IE 9]>
 <script type="text/javascript" src="<?php echo THEMA_URL;?>/assets/js/respond.js"></script>
 <![endif]-->
