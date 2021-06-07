@@ -17,7 +17,7 @@ $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
 if (!$pen_id || $res['errorYN'] === 'Y' || count($res['data']) < 1) {
     // die('정상적인 pen_id가 아닙니다.');
     unset($_SESSION['recipient']);
-    goto_url(G5_SHOP_URL);
+    goto_url(G5_SHOP_URL . '/my_recipient_list.php');
     exit;
 }
 
