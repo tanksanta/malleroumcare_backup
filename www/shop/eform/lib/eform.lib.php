@@ -80,14 +80,66 @@ function valid_status_input($status) {
 
   // 실제 구매 물품
   foreach($status['buy']['items'] as $item) {
-    // 바코드 검사?
     $count_buy++;
+
+    if($item['deleted']) { // 계약서 상에서 삭제시킨경우
+      $count_buy--;
+      continue;
+    }
+
+    if($item['ca_name'] === '') {
+      return "{$count_buy}번째 구매물품의 품목명이 유효하지 않습니다.";
+    }
+    if($item['it_name'] === '') {
+      return "{$count_buy}번째 구매물품의 제품명이 유효하지 않습니다.";
+    }
+    if($item['it_code'] === '') {
+      return "{$count_buy}번째 구매물품의 제품기호가 유효하지 않습니다.";
+    }
+    if($item['it_qty'] === '') {
+      return "{$count_buy}번째 구매물품의 개수가 유효하지 않습니다.";
+    }
+    if($item['it_date'] === '') {
+      return "{$count_buy}번째 구매물품의 판매계약일이 유효하지 않습니다.";
+    }
+    if($item['it_price'] === '') {
+      return "{$count_buy}번째 구매물품의 고시가가 유효하지 않습니다.";
+    }
+    if($item['it_price_pen'] === '') {
+      return "{$count_buy}번째 구매물품의 본인부담금이 유효하지 않습니다.";
+    }
   }
 
   // 실제 대여 물품
   foreach($status['rent']['items'] as $item) {
-    // 바코드 검사?
     $count_rent++;
+
+    if($item['deleted']) { // 계약서 상에서 삭제시킨경우
+      $count_rent--;
+      continue;
+    }
+
+    if($item['ca_name'] === '') {
+      return "{$count_rent}번째 대여물품의 품목명이 유효하지 않습니다.";
+    }
+    if($item['it_name'] === '') {
+      return "{$count_rent}번째 대여물품의 제품명이 유효하지 않습니다.";
+    }
+    if($item['it_code'] === '') {
+      return "{$count_rent}번째 대여물품의 제품기호가 유효하지 않습니다.";
+    }
+    if($item['it_qty'] === '') {
+      return "{$count_rent}번째 대여물품의 개수가 유효하지 않습니다.";
+    }
+    if($item['range_from'] === '' || $item['range_to'] === '') {
+      return "{$count_rent}번째 대여물품의 계약기간이 유효하지 않습니다.";
+    }
+    if($item['it_price'] === '') {
+      return "{$count_rent}번째 대여물품의 고시가가 유효하지 않습니다.";
+    }
+    if($item['it_price_pen'] === '') {
+      return "{$count_rent}번째 대여물품의 본인부담금이 유효하지 않습니다.";
+    }
   }
 
   // 계약서 상 임의로 추가한 구매 물품
@@ -120,26 +172,30 @@ function valid_status_input($status) {
   foreach($status['rent']['customs'] as $item) {
     $count_rent++;
     if($item['ca_name'] === '') {
-      return "{$count_buy}번째 대여물품의 품목명을 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 품목명을 입력해주세요.";
     }
     if($item['it_name'] === '') {
-      return "{$count_buy}번째 대여물품의 제품명을 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 제품명을 입력해주세요.";
     }
     if($item['it_code'] === '') {
-      return "{$count_buy}번째 대여물품의 제품기호를 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 제품기호를 입력해주세요.";
     }
     if($item['it_qty'] === '') {
-      return "{$count_buy}번째 대여물품의 개수를 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 개수를 입력해주세요.";
     }
     if($item['range_from'] === '' || $item['range_to'] === '') {
-      return "{$count_buy}번째 대여물품의 계약기간을 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 계약기간을 입력해주세요.";
     }
     if($item['it_price'] === '') {
-      return "{$count_buy}번째 대여물품의 고시가를 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 고시가를 입력해주세요.";
     }
     if($item['it_price_pen'] === '') {
-      return "{$count_buy}번째 대여물품의 본인부담금을 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 본인부담금을 입력해주세요.";
     }
+  }
+
+  if($count_buy == 0 && $count_rent == 0) {
+    return "계약할 구매 물품 또는 대여 물품을 입력해주세요.";
   }
 
   return false;

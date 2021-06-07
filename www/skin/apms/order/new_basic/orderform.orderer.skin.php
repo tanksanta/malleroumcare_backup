@@ -901,7 +901,7 @@ var array_box=[];
 
 
     <!-- 수급자 정보 iframe창 -->
-	<?php if($itemPenIdStatus){ ?>
+	<?php //if($itemPenIdStatus){ ?>
 	<div id="order_recipientBox">
 		<div>
 			<iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php"></iframe>
@@ -921,7 +921,7 @@ var array_box=[];
 			</div>
 		</div>
 	</div>
-	<?php } ?>
+	<?php //} ?>
     <style>
 		#order_recipientBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 		#order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
@@ -1393,14 +1393,6 @@ var array_box=[];
 
 		//상품주문,수급자주문,보유재고등록 탭
 		$('.detail-tab li').on('click',function(){
-			switch($(this).attr("data-type")){
-				case "order_pen" :
-                <?php if(!$itemPenIdStatus){ ?>
-                    alert("대여상품은 재고 확보 후 수급자 계약이 가능합니다.");
-                    return false;
-                <?php } ?>
-            }
-			
 			if($(this).hasClass("on")){
 				return false;
 			}
@@ -2035,15 +2027,11 @@ var array_box=[];
 
 				$("#order_recipientBox").hide();
 				$("#order_recipientBox").css("opacity", 1);
-			$(".order_recipient").click(function(e){
-				e.preventDefault();
+				$(".order_recipient").click(function(e){
+					e.preventDefault();
 
-				<?php if($itemPenIdStatus){ ?>
 					$("#order_recipientBox").show();
-				<?php } else { ?>
-					alert("대여상품은 재고 확보 후 수급자 계약이 가능합니다.");
-				<?php } ?>
-			});
+				});
 
 			$('#od_delivery_type').change(function() {
 				var val = $(this).val();
