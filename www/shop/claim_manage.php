@@ -174,6 +174,8 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 				<?php 
 				for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
 					$index = $from_record + $i + 1;
+					if(strtotime($row['start_date']) < strtotime($selected_month))
+						$row['start_date'] = $selected_month;
 				?>
 					<td><?=$index?></td>
 				 	<td><a href="#"><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></a></td>
