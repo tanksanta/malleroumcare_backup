@@ -231,23 +231,22 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                         <?php
                         if($member["mb_id"]){
                             if($_COOKIE["viewType"] == "basic"){
-                                    echo number_format($list[$i]["it_cust_price"])."원";
+                                    echo number_format($list[$i]["it_cust_price"])."원 (수급자 급여가)";
                             }else{
                                 if($member["mb_level"] == "3"){ 
                                     //사업소 가격
-                                    echo number_format($list[$i]["it_price"])."원";
+                                    echo number_format($list[$i]["it_price"])."원 (사업소 판매가)";
                                 }else if($member["mb_level"] == "4"){ 
                                     //우수 사업소 가격
-                                    echo ($list[$i]["it_price_dealer2"]) ? number_format($list[$i]["it_price_dealer2"])."원" : number_format($list[$i]["it_price"])."원";
+                                    echo ($list[$i]["it_price_dealer2"]) ? number_format($list[$i]["it_price_dealer2"])."원" : number_format($list[$i]["it_price"])."원 (사업소 판매가)";
                                 } else { 
-                                    echo number_format($list[$i]["it_price"])."원";
+                                    echo number_format($list[$i]["it_price"])."원 (사업소 판매가)";
                                 } 
                             }
                         }else{
-                            echo number_format($list[$i]["it_cust_price"]).'원';
+                            echo number_format($list[$i]["it_cust_price"]).'원 (사업소 판매가)';
                         }
                     ?>
-										(사업소 판매가)
                 </p>
                 <?php
 								$tag_list = apms_get_text($list[$i]['pt_tag']);
