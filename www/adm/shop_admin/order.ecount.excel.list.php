@@ -43,9 +43,87 @@
                 }
             }
 			asort($barcode);
-            $barcode = implode(",", $barcode);
-            $barcode = $barcode." "; 
-            
+            $barcode2=[];
+            $barcode_string="";
+            $y = 0;  
+            foreach($barcode as $key=>$val)  
+            {  
+                $new_key = $y;  
+                $barcode2[$new_key] = $val;  
+                $y++;  
+            }
+            $k=0;
+            $k2=0;
+            $comma="";
+            for($y=0; $y<=count($barcode2); $y++){
+
+
+                if($barcode2[$y]-1 == $barcode2[$y-1]){
+                    $k++;
+                    //같음;
+                }else{
+                    //같지않음;
+                    if($y==0){
+                            #처음
+                            $k=0;
+                            $barcode_string .= $barcode2[$y];
+                            $start=false;
+                    }else{
+                        $k2++;
+                        if($y == count($barcode2)){
+                            #마지막
+                            //중간 끝 바코드가 현재 바코드와 같은경우
+                            if(substr($barcode_string, -12)==$barcode2[$y-1]){
+                                continue;
+                            }
+                            if($k>0){
+                                $barcode_string.="-".($barcode2[$y-1]);
+                                continue;
+                            }else{
+                                //끝문자가 ","로 끝나는 경우
+                                if(substr($barcode_string, -1)==","){
+                                    $barcode_string .= ($barcode2[$y-1]);
+                                    continue;
+                                }else{
+                                    $barcode_string.=",".($barcode2[$y-1]);
+                                    continue;
+                                }
+                            }
+                        }else{
+                            #중간
+                            $k=0;
+                            //처음과 같은경우
+                            if($barcode_string==$barcode2[$y-1]){
+                                $barcode_string.=",";
+                                continue;
+                            }
+                            //끝문자가 ","로 끝나는 경우
+                            if(substr($barcode_string, -1)==","){
+                                $barcode_string .= ($barcode2[$y-1]);
+                                continue;
+                            }
+                            //중간 끝 바코드가 현재 바코드와 같은경우
+                            if(substr($barcode_string, -12)==$barcode2[$y-1]){
+                                $barcode_string.=",";
+                                continue;
+                            }
+                            $barcode_string .= "-".($barcode2[$y-1]).", ".$barcode2[$y];
+                        }
+                    }
+                }
+            }
+
+            //끊김없이 연속인 경우
+            if($k2 == 1){
+                $barcode_string=$barcode2[0]."-".$barcode2[count($barcode2)-1];
+            }
+            //바코드가 한개인 경우
+            if(count($barcode2) == 1 ){
+                $barcode_string=$barcode2[0];
+            }
+            $barcode_string.=" "; 
+
+
 			//할인적용 단가
 			if($od['od_cart_price']){
 				$price_d = ($it['ct_price']*$it["ct_qty"]-$it['ct_discount'])/$it["ct_qty"];
@@ -129,7 +207,7 @@
 				'',
 				$price_d_p, //공급가액
                 $price_d_s, //부가세
-				$barcode, // 바코드
+				$barcode_string, // 바코드
 				$delivery, // 로젠송장번호,
 				'통합관리플랫폼', //적요
 				'',
