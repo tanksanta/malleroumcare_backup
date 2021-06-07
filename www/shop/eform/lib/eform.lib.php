@@ -120,25 +120,25 @@ function valid_status_input($status) {
   foreach($status['rent']['customs'] as $item) {
     $count_rent++;
     if($item['ca_name'] === '') {
-      return "{$count_buy}번째 대여물품의 품목명을 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 품목명을 입력해주세요.";
     }
     if($item['it_name'] === '') {
-      return "{$count_buy}번째 대여물품의 제품명을 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 제품명을 입력해주세요.";
     }
     if($item['it_code'] === '') {
-      return "{$count_buy}번째 대여물품의 제품기호를 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 제품기호를 입력해주세요.";
     }
     if($item['it_qty'] === '') {
-      return "{$count_buy}번째 대여물품의 개수를 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 개수를 입력해주세요.";
     }
     if($item['range_from'] === '' || $item['range_to'] === '') {
-      return "{$count_buy}번째 대여물품의 계약기간을 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 계약기간을 입력해주세요.";
     }
     if($item['it_price'] === '') {
-      return "{$count_buy}번째 대여물품의 고시가를 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 고시가를 입력해주세요.";
     }
     if($item['it_price_pen'] === '') {
-      return "{$count_buy}번째 대여물품의 본인부담금을 입력해주세요.";
+      return "{$count_rent}번째 대여물품의 본인부담금을 입력해주세요.";
     }
   }
 
