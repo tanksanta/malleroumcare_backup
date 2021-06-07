@@ -115,7 +115,7 @@
 				</div>
 			</div>
 			<div class="r_btn_area">
-				<a href="./my.recipient.write.php" class="btn eroumcare_btn" title="수급자 등록">수급자 등록</a>
+				<a href="./my_recipient_write.php" class="btn eroumcare_btn" title="수급자 등록">수급자 등록</a>
 				<a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn" title="수급자일괄등록">수급자일괄등록</a>
 			</div>
 		</form>
@@ -381,7 +381,7 @@
 			$(document).on("click", "#myRecipientListWrap > .itemWrap > .item > li.btnWrap > .updateBtn", function(){
 				var id = $(this).attr("data-id");
 
-				window.location.href = "./my.recipient.update.php?id=" + id;
+				window.location.href = "./my_recipient_update.php?id=" + id;
 			});
 
 			$(document).on("click", "#myRecipientListWrap > .itemWrap > .item > li.btnWrap > .delBtn", function(){
