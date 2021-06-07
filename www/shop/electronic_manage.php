@@ -8,20 +8,14 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
 
 define("_ORDERINQUIRY_", true);
 
-$od_pwd = get_encrypt_string($od_pwd);
-
 // 회원인 경우
 if ($is_member)
 {
     $sql_common = " from {$g5['g5_shop_order_table']} where mb_id = '{$member['mb_id']}' AND od_del_yn = 'N' ";
 }
-else if ($od_id && $od_pwd) // 비회원인 경우 주문서번호와 비밀번호가 넘어왔다면
-{
-    $sql_common = " from {$g5['g5_shop_order_table']} where od_id = '$od_id' and od_pwd = '$od_pwd' AND od_del_yn = 'N' ";
-}
 else // 그렇지 않다면 로그인으로 가기
 {
-    goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/orderinquiry.php'));
+    goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/electronic_manage.php'));
 }
 
 // Page ID
@@ -53,14 +47,10 @@ if($is_demo) {
 $is_inquiry_sub = false;
 @include_once($order_skin_path.'/config.skin.php');
 
-$g5['title'] = '주문내역조회';
+$g5['title'] = '전자문서관리';
 
-if($is_inquiry_sub) {
-	include_once(G5_PATH.'/head.sub.php');
-	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/head.sub.php');
-} else {
-	include_once('./_head.php');
-}
+
+include_once('./_head.php');
 
 $skin_path = $order_skin_path;
 $skin_url = $order_skin_url;
@@ -232,10 +222,5 @@ $(function() {
 </script>
 
 <?php
-if($is_inquiry_sub) {
-	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');
-	include_once(G5_PATH.'/tail.sub.php');
-} else {
-	include_once('./_tail.php');
-}
+include_once('./_tail.php');
 ?>
