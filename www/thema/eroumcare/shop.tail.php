@@ -159,43 +159,6 @@ if($_GET['co_id']=="possession_manage"){ ?>
 </div>
 
 <?php if ($_SESSION['recipient']) { ?>
-<style>
-#fixed_recipient {
-	position:fixed;
-	bottom:80px;
-	right:20px;
-	width:330px;
-	border:1px solid #f9d1a4;
-	padding:10px 15px;
-	background-color:#fff;
-}
-#fixed_recipient .info {
-	float:left;
-	width:200px;
-	padding-top:7px;
-}
-#fixed_recipient .info h5 {
-	margin:0;
-}
-#fixed_recipient .info p {
-	margin:0;
-}
-#fixed_recipient .cart {
-	float:right;
-	border:1px solid #f3f3f3;
-	border-radius: 3px;
-	display:block;
-	padding:6px 9px;
-	text-align:center;
-	line-height: 14px;
-}
-#fixed_recipient .close {
-	float:right;
-	display:block;
-	margin-left:15px;
-	line-height:41px;
-}
-</style>
 <div id="fixed_recipient">
 	<div class="info">
 		<h5>
