@@ -3,7 +3,7 @@
 /* List Head */
 .list-head, .list-head th { 
 	font-weight:bold; border:0px; text-align:center; clear:both;
-	color:#333; height:43px; line-height:43px; background: url('./img/basic-black.gif') repeat-x !important; 
+	color:#333; height:43px; line-height:43px; border-bottom:1px solid #ddd; 
 }
 .list-head a { 
 	text-decoration:none; color:#333; 

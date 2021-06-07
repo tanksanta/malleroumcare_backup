@@ -717,7 +717,7 @@
 }
 .div-table.table > tbody > tr > td {
 	/* vertical-align: middle;  */
-	padding: 10px 0 !important;
+	padding: 10px !important;
 }
 .div-table.table > tfoot > tr > td {
 	/* vertical-align: middle;  */

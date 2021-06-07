@@ -10,7 +10,7 @@ a { text-decoration: none; color: #333;}
 ul, li, ol {list-style: none;}
 img { vertical-align: middle; max-width: 100%;}
 br {font-family: sans-serif !important;}
-.wrap { max-width: 1200px; margin: 0 auto;}
+.wrap { max-width: 1400px; margin: 0 auto;}
 button { cursor: pointer; padding: 0;}
 button, input, textarea { border: none; background:transparent;font-family: 'Nanum Gothic', sans-serif;}
 button, :focus, :active { outline: 0;}
