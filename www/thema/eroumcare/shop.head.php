@@ -327,7 +327,7 @@ scrollToTop();
                     <?php } ?>
                         
                         <?php if($is_member) { // 로그인 상태 ?>
-														<a href="<?php echo G5_SHOP_URL; ?>/search.php" >상품검색</a>
+														<!-- <a href="<?php echo G5_SHOP_URL; ?>/search.php" >상품검색</a> -->
                             <a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a>
                             <a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a>
                             <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송</a>
