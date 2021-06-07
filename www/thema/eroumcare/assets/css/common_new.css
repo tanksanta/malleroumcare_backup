@@ -972,6 +972,12 @@ pre{white-space: pre-wrap;}
     padding: 0;
     border-color: #3366CC;
 }
+.btn.eroumcare_btn.small {
+	width:auto;
+	padding:0 10px;
+	height: 25px;
+    line-height: 25px;
+}
 
 /* 210208 상단퀵메뉴 */
 #headerTopQuickMenuWrap { display: none; width: 100%; }
