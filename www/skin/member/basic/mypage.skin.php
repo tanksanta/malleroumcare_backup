@@ -222,7 +222,6 @@ if($header_skin)
 					</div>
 				</div> -->
 			</div>
-			<p>*사업소 정보수정은 통합시스템에서 가능합니다.</p>
 		</div>
 	</div>
 
