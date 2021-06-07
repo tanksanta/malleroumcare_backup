@@ -80,8 +80,13 @@ function valid_status_input($status) {
 
   // 실제 구매 물품
   foreach($status['buy']['items'] as $item) {
-    // 바코드 검사?
     $count_buy++;
+
+    if($item['deleted']) { // 계약서 상에서 삭제시킨경우
+      $count_buy--;
+      continue;
+    }
+
     if($item['ca_name'] === '') {
       return "{$count_buy}번째 구매물품의 품목명이 유효하지 않습니다.";
     }
@@ -107,8 +112,13 @@ function valid_status_input($status) {
 
   // 실제 대여 물품
   foreach($status['rent']['items'] as $item) {
-    // 바코드 검사?
     $count_rent++;
+
+    if($item['deleted']) { // 계약서 상에서 삭제시킨경우
+      $count_rent--;
+      continue;
+    }
+
     if($item['ca_name'] === '') {
       return "{$count_rent}번째 대여물품의 품목명이 유효하지 않습니다.";
     }
@@ -182,6 +192,10 @@ function valid_status_input($status) {
     if($item['it_price_pen'] === '') {
       return "{$count_rent}번째 대여물품의 본인부담금을 입력해주세요.";
     }
+  }
+
+  if($count_buy == 0 && $count_rent == 0) {
+    return "계약할 구매 물품 또는 대여 물품을 입력해주세요.";
   }
 
   return false;
