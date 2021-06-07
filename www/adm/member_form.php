@@ -1093,7 +1093,7 @@ function fmember_submit()
         return false;
     }
 
-    // var mb_hp = $("#mb_hp1").val() + "-" + $("#mb_hp2").val() + "-" + $("#mb_hp3").val();
+    var mb_hp = $("#mb_hp1").val() + "-" + $("#mb_hp2").val() + "-" + $("#mb_hp3").val();
     // if(!$("#mb_hp1").val()){
     //     alert('휴대폰번호를 입력해주세요.');
     //     $("#mb_hp1").focus();
@@ -1110,7 +1110,7 @@ function fmember_submit()
     //     return false;
     // }
 
-    // var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
+    var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
     // if(!$("#mb_tel1").val()){
     //     alert('전화번호를 입력해주세요.');
     //     $("#mb_tel1").focus();
@@ -1127,7 +1127,7 @@ function fmember_submit()
     //     return false;
     // }
     //mb_fax
-    // var mb_fax = $("#mb_fax1").val() + "-" + $("#mb_fax2").val() + "-" + $("#mb_fax3").val();
+    var mb_fax = $("#mb_fax1").val() + "-" + $("#mb_fax2").val() + "-" + $("#mb_fax3").val();
     // if(!$("#mb_fax1").val()){
     //     alert('팩스를 입력해주세요.');
     //     $("#mb_fax1").focus();
@@ -1229,7 +1229,7 @@ function fmember_submit()
     // }
     
     // var mb_birth = $("#year").val() + $("#month").val() + $("#day").val();
-    // var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
+    var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
 
     // if(!$("#year").val()){
     //     alert('연도를 선택해주세요');
