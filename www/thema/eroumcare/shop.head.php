@@ -160,7 +160,7 @@ scrollToTop();
             <?php } ?>
         <?php } ?>
     </div>
-    <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu_search.png" alt="" class="header-search-btn" onclick="gotosearch();">
+    <!-- <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu_search.png" alt="" class="header-search-btn" onclick="gotosearch();"> -->
     <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu_new.png" alt="" class="header-hamburger-btn">
 </div>
 

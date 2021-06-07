@@ -1092,24 +1092,26 @@ pre{white-space: pre-wrap;}
 	#headerTopQuickMenuWrap > div { width: 100%; float: left; }
 	#headerTopQuickMenuWrap > div > div { padding: 0 10px; }
 	#headerTopQuickMenuWrap .listWrap > li { width:25%; padding: 5px; height: 60px; float: left; }
-	#headerTopQuickMenuWrap .listWrap > li > a { display:block; padding: 15px 0; border-radius: 10px; text-align: center; background-color: #f1f1f1; font-size: 14px; line-height: 20px; overflow: hidden; }
+	#headerTopQuickMenuWrap .listWrap > li > a { display:block; padding: 10px 0; border-radius: 10px; text-align: center; background-color: #f1f1f1; font-size: 14px; line-height: 20px; overflow: hidden; }
 	#headerTopQuickMenuWrap.is-index .listWrap > li > a { background-color: #e1e5df;}
 	#headerTopQuickMenuWrap .listWrap > li > a > span { color: #333; font-weight: 500; }
 
 	#thema_wrapper.is-index { background-color: #fff; background: linear-gradient(to bottom, #eef2eb 500px, #fff 500px); }
 
 	#mainBoardListWrap { padding: 0 10px; }
-	#mainBoardListWrap > div { width: 100%; margin: 0; margin:5px 0; }
+	#mainBoardListWrap > div { width: 100%; margin: 0; margin:5px 0; height: auto;}
 	#mainBoardListWrap > .customer { display: block; height: auto; }
 	
 	#sort-wrapper { padding: 0 20px; }
 	#myRecipientListWrap { padding: 0 20px; }
 	#stock { padding: 0 20px; padding-top: 20px; }
-	.productListWrap { padding: 0 20px; }
+	.productListWrap { padding: 0; }
 	.mypage-skin { padding: 0 20px; padding-top: 20px; }
 	.register-form { padding: 0 20px; padding-top: 20px; }
 	.item-head { padding: 0 20px; }
 	#item-tab { padding: 0 20px; }
+	
+	.productListWrap > ul > li > a > p.price{font-size:14px;}
 }
 
 @media (max-width: 750px) {

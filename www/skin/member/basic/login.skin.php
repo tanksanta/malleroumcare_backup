@@ -190,13 +190,15 @@ if($header_skin)
 
 	<?php } else if (preg_match("/orderinquiry.php$/", $url)) { ?>
 
+		<!-- 비회원 주문조회 숨김
+			
 		<div class="form-box">
 			<div class="form-header">
 				<h2><b>비회원 주문조회</b></h2>
 			</div>
 			<div class="form-body">
 				<p>메일로 발송해드린 주문서의 <strong>주문번호</strong> 및 주문 시 입력하신 <strong>비밀번호</strong>를 정확히 입력해주십시오.</p>
-
+		
 				<form class="form" role="form" name="forderinquiry" method="post" action="<?php echo urldecode($url); ?>" autocomplete="off">
 					<div class="form-group has-feedback">
 						<label for="od_id" class="od_id"><b>주문서번호</b><strong class="sound_only"> 필수</strong></label>
@@ -208,12 +210,12 @@ if($header_skin)
 						<input type="password" name="od_pwd" size="20" id="od_pwd" required class="form-control input-sm">
 						<span class="fa fa-lock form-control-feedback"></span>
 					</div>
-
+		
 					<button type="submit" class="btn btn-color btn-block">확인하기</button>
-
+		
 				</form>
 			</div>
-		</div>
+		</div> -->
 
 	<?php } ?>
 <?php } ?>
