@@ -4,7 +4,12 @@ include_once('./lib/eform.lib.php');
 
 json_response(400, '접근 ㄴㄴ');
 
-function dtmToYmd($dtm) {
+$data = api_post_call('https://system.eroumcare.com/api/eform/selectEform001', array('penOrdId' => 'ORDER-20210604000013'));
+echo '<pre>';
+var_dump($data);
+echo '</pre>';
+
+/*function dtmToYmd($dtm) {
   return substr($dtm, 0, 4).'-'.substr($dtm, 4, 2).'-'.substr($dtm, 6, 2);
 }
 
@@ -97,10 +102,10 @@ while($od = sql_fetch_array($result)) {
       `it_price` = '{$it["prodOflPrice"]}'
       ");
     }*/
-  } catch(Exception $e) {
+/*  } catch(Exception $e) {
     echo $od['ordId'].' 를 처리 하는 도중 오류 발생<br>';
   }
-}
+}*/
 
 /*
 $data_arr = api_post_call('https://eroumcare.com/api/order/selectList', array(

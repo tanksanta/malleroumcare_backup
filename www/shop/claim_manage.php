@@ -61,7 +61,28 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
 }
 
+# ##################################################################
+# 1. 우선 현재 로그인한 사용자 entId 가지고 와야됨
 
+# 2. 그리고 해당 entId로 된 계약서 조회
+# 3. penId 별로 묶어야되나? 흠.. 일단 대여가있으면 대여기간 계산도 해야되서 전체 리스트 가져야외될듯?
+# 4. 그냥 전체 리스트 가져와서 foreach 순회 돌면서
+# - 1. 판매 계약인지? -> 선택한 해당 월 주문인지?
+# - 2. 대여 계약인지? -> 선택한 해당 월이 사이에 있는지?
+# - 3. 
+$entId = $member['mb_entId'];
+if(!$entId) {
+	alert('사업소 회원만 접근 가능합니다.');
+}
+
+$eform_query = sql_query("SELECT * FROM `eform_document` WHERE
+	entId = '$entId'
+	AND dc_status = '2'
+	AND (
+");
+while($eform = sql_fetch_array($eform_query)) {
+	
+}
 ?>
 
 <!-- 내용 -->
