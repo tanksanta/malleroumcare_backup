@@ -28,7 +28,7 @@
 		서비스 이용문의
 		<p>복지용구 판매 사업소 및 요양센터 운영담당자 들의 문의를 받습니다.</p>
 	</div>
-	<a href="https://docs.google.com/forms/d/e/1FAIpQLScjDhZcZsUjz730sCuXhL6oZ9Cks4YNsy8W_t6xkOSwX_3PkQ/viewform?usp=sf_link" target="_blank" class="service_link">간편 문의하기</a>
+	<a href="#" onclick="alert('준비 중입니다.')"  class="service_link">간편 문의하기</a>
 </div>
 
 <!-- 메인 배너 -->
