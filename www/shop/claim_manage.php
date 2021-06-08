@@ -79,6 +79,14 @@ if(!$entId) {
 	alert('사업소 회원만 접근 가능합니다.');
 }
 
+$where = "";
+$search = get_search_string($search);
+if(in_array($searchtype, ['penNm', 'penLtmNum']) && $search) {
+	$where = " AND $searchtype LIKE '%$search%' ";
+}
+
+echo $where;
+
 $eform_query = sql_query("
 SELECT
 	STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d') as start_date,
@@ -92,6 +100,7 @@ ON a.dc_id = b.dc_id
 WHERE
 	entId = '$entId'
 	AND dc_status = '2'
+	$where
 	AND
 	(
 		(
@@ -144,14 +153,16 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
      	</div>
      	
      	<div class="search_box">
+				 <form action="/shop/claim_manage.php" method="get">
             <select name="searchtype" id="">
-                <option value="1">수급자명</option>
-                <option value="2">요양인정번호</option>
+                <option value="penNm">수급자명</option>
+                <option value="penLtmNum">요양인정번호</option>
             </select>
             <div class="input_search">
-                <input name="searchtypeText" value="<?=$_GET["searchtypeText"]?>" type="text">
+                <input name="search" value="<?=$_GET["search"]?>" type="text">
                 <button  type="submit"></button>
             </div>
+					</form>
         </div>
  		<div class="r_btn_area">
  			<!--<span>최신검증일 : 2021-03-01 13:35</span>
