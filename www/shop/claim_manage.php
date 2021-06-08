@@ -8,15 +8,8 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
 
 define("_ORDERINQUIRY_", true);
 
-// 회원인 경우
-if ($is_member)
-{
-    $sql_common = " from {$g5['g5_shop_order_table']} where mb_id = '{$member['mb_id']}' AND od_del_yn = 'N' ";
-}
-else // 그렇지 않다면 로그인으로 가기
-{
-    goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/claim_manage.php'));
-}
+// 회원이 아닌 경우
+if (!$is_member) goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/claim_manage.php'));
 
 // Page ID
 $pid = ($pid) ? $pid : 'inquiry';
