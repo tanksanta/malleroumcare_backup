@@ -3,6 +3,7 @@
 DROP TABLE IF EXISTS `claim_management`;
 CREATE TABLE IF NOT EXISTS `claim_management` (
   `cl_id` int(11) NOT NULL auto_increment, -- 청구 id (PRI, AI)
+  `cl_status` varchar(30) NOT NULL default '0',
   `mb_id` varchar(30) NOT NULL, -- 멤버 id (FK)
   `penId` varchar(255) NOT NULL default '',
   `penNm` varchar(255) NOT NULL default '',
