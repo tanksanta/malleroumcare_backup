@@ -1,4 +1,13 @@
 <?php
+function is_valid_json($str) {
+  json_decode($str);
+  return json_last_error() == JSON_ERROR_NONE;
+}
+
+function array_keys_exists(array $keys, array $arr) {
+  return !array_diff($keys, array_keys($arr));
+}
+
 function json_response($code = 200, $message = null) {
   http_response_code($code);
   header("Content-Type: application/json");

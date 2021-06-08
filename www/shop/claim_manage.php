@@ -86,7 +86,7 @@ SELECT
 	SUM(`it_price`) as total_price,
 	SUM(`it_price_pen`) as total_price_pen,
 	(SUM(`it_price`) - SUM(`it_price_pen`)) as total_price_ent,
-	penNm, penLtmNum, penRecGraCd, penRecGraNm, penTypeCd, penTypeNm, penBirth
+	penId, penNm, penLtmNum, penRecGraCd, penRecGraNm, penTypeCd, penTypeNm, penBirth
 FROM `eform_document` a
 LEFT JOIN `eform_document_item` b
 ON a.dc_id = b.dc_id
@@ -120,6 +120,11 @@ $total_page = ceil($total_count / $page_rows); // 전체 페이지 계산
 if ($page < 1) $page = 1;
 $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
+$cl_query = sql_query("SELECT * FROM `claim_management` WHERE selected_month = '$selected_month' AND mb_id = '{$member['mb_id']}'");
+$cl = [];
+while($row = sql_fetch_array($cl_query)) {
+	$cl[] = $row;
+}
 ?>
 
 <!-- 내용 -->
@@ -172,23 +177,45 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 				 	<th>급여비용총액</th>
 				 	<th>본인부담금</th>
 				 	<th>청구액</th>
-				 	<!--<th>검증상태</th>
-				 	<th>금액변경</th>-->
+				 	<th>검증상태</th>
+				 	<th>금액변경</th>
 				 </tr>
 				<?php 
 				for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
 					$index = $from_record + $i + 1;
+					$row['selected_month'] = $selected_month;
 					if(strtotime($row['start_date']) < strtotime($selected_month))
 						$row['start_date'] = $selected_month;
+					
+					$row['cl_status'] = '0';
+					foreach($cl as $val) {
+						if
+						(
+							$val['penId'] == $row['penId'] &&
+							$val['penNm'] == $row['penNm'] &&
+							$val['penLtmNum'] == $row['penLtmNum'] &&
+							$val['penRecGraCd'] == $row['penRecGraCd'] &&
+							$val['penTypeCd'] == $row['penTypeCd']
+						) {
+							$row['cl_status'] = $val['cl_status'];
+							$row['start_date'] = $val['start_date'];
+							$row['total_price'] = $val['total_price'];
+							$row['total_price_pen'] = $val['total_price_pen'];
+							$row['total_price_ent'] = $val['total_price_ent'];
+						}
+					}
 				?>
+				<tr>
 					<td><?=$index?></td>
 				 	<td><a href="#"><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></a></td>
-				 	<td class="text_c"><?=$row['start_date']?></td>
-				 	<td class="text_r"><?=number_format($row['total_price'])?>원</td>
-				 	<td class="text_r"><?=number_format($row['total_price_pen'])?>원</td>
-				 	<td class="text_r"><?=number_format($row['total_price_ent'])?>원</td>
-				 	<!--<td class="text_c">정상</td>
-				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>-->
+				 	<td class="text_c start_date"><?=$row['start_date']?></td>
+				 	<td class="text_r total_price"><?=number_format($row['total_price'])?>원</td>
+				 	<td class="text_r total_price_pen"><?=number_format($row['total_price_pen'])?>원</td>
+				 	<td class="text_r total_price_ent"><?=number_format($row['total_price_ent'])?>원</td>
+				 	<td class="text_c status" data-status="<?=$row['cl_status']?>"><?=($row['cl_status'] == '0' ? '대기' : '변경')?></td>
+				 	<td class="text_c">
+						 <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
+					</td>
 				 </tr>
 				<?php } ?>
 				 <!--<tr>
@@ -309,8 +336,63 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
     
 </section>
 
+<div id="popupEdit">
+	<div></div>
+</div>
+<style>
+td.status {color: #333;}
+td.status[data-status="0"] {color: #bbb;}
 
+#popupEdit { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#popupEdit > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+#popupEdit iframe { position: relative; width: 700px; height: 300px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
 
+@media (max-width : 800px){
+	#popupEdit iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+
+body.modal-open {
+	overflow: hidden;
+}
+</style>
+
+<script>
+function updateClaim(cl_id, data) {
+	var $tr = $('.btn_edit[data-id="'+cl_id+'"]').closest('tr');
+	$tr.find('.start_date').text(data['start_date']);
+	$tr.find('.total_price').text(data['total_price']);
+	$tr.find('.total_price_pen').text(data['total_price_pen']);
+	$tr.find('.total_price_ent').text(data['total_price_ent']);
+	$tr.find('.status').attr('data-status', '1').text('변경');
+}
+
+$(function() {
+  $("#popupEdit").hide();
+	$("#popupEdit").css("opacity", 1);
+
+	// 내용변경 버튼
+	$(document).on('click', '.btn_edit', function(e) {
+		e.preventDefault();
+
+		var $this = $(this);
+		var data = $this.data('json');
+		$.post('./ajax.claim_manage.write.php', JSON.stringify(data), 'json')
+		.done(function(data) {
+			var cl_id = data.message;
+			$this.attr('data-id', cl_id);
+			$("#popupEdit > div").html("<iframe src='./claim_manage_edit.php?cl_id="+cl_id+"'>");
+			$("#popupEdit iframe").load(function(){
+				$("body").addClass('modal-open');
+				$("#popupEdit").show();
+			});
+		})
+		.fail(function($xhr) {
+			var data = $xhr.responseJSON;
+      alert(data && data.message);
+		});
+	});
+});
+</script>
 
 
 <?php
