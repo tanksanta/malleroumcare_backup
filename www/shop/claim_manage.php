@@ -89,11 +89,11 @@ echo $where;
 
 $eform_query = sql_query("
 SELECT
-	STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d') as start_date,
+	MIN(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d')) as start_date,
 	SUM(`it_price`) as total_price,
 	SUM(`it_price_pen`) as total_price_pen,
 	(SUM(`it_price`) - SUM(`it_price_pen`)) as total_price_ent,
-	a.*, b.*
+	penNm, penLtmNum, penRecGraCd, penRecGraNm, penTypeCd, penTypeNm, penBirth
 FROM `eform_document` a
 LEFT JOIN `eform_document_item` b
 ON a.dc_id = b.dc_id
@@ -118,7 +118,7 @@ WHERE
 		)
 	)
 GROUP BY `penId`
-ORDER BY SUBSTRING_INDEX(`it_date`, '-', '3')
+ORDER BY `penNm` ASC
 ");
 
 $total_count = sql_num_rows($eform_query);
@@ -143,7 +143,7 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
      			<a href="#">이번달</a>
      		</div>
      		<div class="date_selected">
-     			<a href="#">◀ 지난달</a>
+     			<a href="#" class="disabled">◀ 지난달</a>
      			<select name="" id="">
      				<option selected>2021년 6월</option>
      			</select>
