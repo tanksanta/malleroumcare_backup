@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `claim_management` (
   `total_price` int(11) NOT NULL default 0, -- 급여비용총액
   `total_price_pen` int(11) NOT NULL default 0, -- 본인부담금
   `total_price_ent` int(11) NOT NULL default 0, -- 청구액
-  `selected_month` date NOT NULL -- 청구관리에서 선택된 달 (값: 선택된 달의 1일)
-  PRIMARY KEY (`it_id`),
-  UNIQUE KEY `mb_id` (`mb_id`),
+  `selected_month` date NOT NULL, -- 청구관리에서 선택된 달 (값: 선택된 달의 1일)
+  PRIMARY KEY (`cl_id`),
+  KEY `mb_id` (`mb_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
