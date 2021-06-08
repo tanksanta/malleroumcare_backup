@@ -901,7 +901,19 @@ $od_send_cost2=0;
 if($result_total >=100000){
     $od_send_cost=0;
 }else{
-    $od_send_cost=3000;
+    $flag = false;
+    for($k=0;$k<count($_POST['it_id']);$k++){
+        $sql_it = "select `it_sc_type`,`it_sc_price` from `g5_shop_item` where `it_id` = '".$_POST['it_id'][$k]."'";
+        $result_it = sql_fetch($sql_it);
+        if($result_it['it_sc_type']!=="1"){
+            $flag =true;
+        }
+    }
+    if($flag){
+        $od_send_cost=3000;
+    }else{
+        $od_send_cost=0;
+    }
 }
 
 
