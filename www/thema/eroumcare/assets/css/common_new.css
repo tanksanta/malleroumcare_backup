@@ -834,7 +834,7 @@ pre{white-space: pre-wrap;}
 #mainBestCategoryWrap > .list > li:last-of-type { border-right: 1px solid #DDD; }
 #mainBestCategoryWrap > .list > li > a { width: 100%; height: 50px; line-height: 50px; float: left; text-align: center; font-weight: bold; font-size: 14px; color: #333; }
 #mainBestCategoryWrap > .list > li > a.active { color: #FFF; background-color: #333; }
-#mainBestCategoryWrap > .productListWrap { margin-top: 40px; }
+#mainBestCategoryWrap > .productListWrap { margin-top: 40px; float: left; }
 
 /* 210202 메인 추천 제품 */
 #mainBestProductWrap { width: 100%; float: left; margin-top: 90px; }
