@@ -1,5 +1,6 @@
 <?php
 include_once("./_common.php");
+include_once('./lib/eform.lib.php');
 
 if(!$is_member) {
   alert('먼저 로그인하세요.');
@@ -13,7 +14,30 @@ if(!$od['mb_id']) {
   alert('계약서를 생성할 권한이 없습니다.');
 }
 
-$eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
+$eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id' and dc_status='0'");
+if(!$eform['uuid']) alert('전자계약서를 생성할 수 없는 상태입니다.');
+
+# 전자계약서 정보 업데이트(최신화) - 바코드 정보 새로 계속 가져오기
+# 여기 개선이 필요함. 바코드 정보가 변경이 안됐을 때는 새로 가져오지 만다든가..
+sql_query("DELETE FROM `eform_document_item` WHERE `dc_id` = UNHEX('{$eform["uuid"]}')");
+$res = api_post_call('https://system.eroumcare.com/api/eform/selectEform001', array('penOrdId' => $od["ordId"]));
+foreach($res["data"] as $it) {
+  $priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);
+  sql_query("INSERT INTO `eform_document_item` SET
+  `dc_id` = UNHEX('{$eform["uuid"]}'),
+  `gubun` = '{$it["gubun"]}',
+  `ca_name` = '{$it["itemNm"]}',
+  `it_name` = '{$it["prodNm"]}',
+  `it_code` = '{$it["prodPayCode"]}',
+  `it_barcode` = '{$it["prodBarNum"]}',
+  `it_qty` = '1',
+  `it_date` = '{$it["contractDate"]}',
+  `it_price` = '{$it["prodPrice"]}',
+  `it_price_pen` = '{$it["penPrice"]}',
+  `it_price_ent` = '$priceEnt'
+  ");
+}
+
 $items = sql_query("SELECT * FROM `eform_document_item` WHERE dc_id = UNHEX('{$eform["uuid"]}')");
 
 $buy = [];
