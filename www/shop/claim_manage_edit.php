@@ -17,6 +17,7 @@ if(!$cl) alert('내용을 변경할 수 없습니다.');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>내용변경</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <?php include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php'); ?>
   <link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
   <link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
   <style>
@@ -73,9 +74,9 @@ if(!$cl) alert('내용을 변경할 수 없습니다.');
         <tr>
           <td>수정</td>
           <td><input type="text" name="start_date" id="start_date" value="<?=$cl['start_date']?>"></td>
-          <td class="num"><input type="number" min="0" name="total_price" id="total_price" value="<?=$cl['total_price']?>"></td>
-          <td class="num"><input type="number" min="0" name="total_price_pen" id="total_price_pen" value="<?=$cl['total_price_pen']?>"></td>
-          <td class="num"><input type="number" min="0" name="total_price_ent" id="total_price_ent" value="<?=$cl['total_price_ent']?>"></td>  
+          <td class="num"><input type="text" name="total_price" id="total_price" value="<?=$cl['total_price']?>"></td>
+          <td class="num"><input type="text" name="total_price_pen" id="total_price_pen" value="<?=$cl['total_price_pen']?>"></td>
+          <td class="num"><input type="text" name="total_price_ent" id="total_price_ent" value="<?=$cl['total_price_ent']?>"></td>  
         </tr>
       </tbody>
     </table>
@@ -92,6 +93,8 @@ $(function() {
   } catch(e) {
     alert("서버 오류로 내용을 변경할 수 없습니다.");
   }
+
+  $('#start_date').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
 
   function closePopup() {
     $("body", parent.document).removeClass("modal-open");

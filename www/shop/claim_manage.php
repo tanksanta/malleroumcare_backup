@@ -232,6 +232,13 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
 						$row['start_date'] = $selected_month;
 					
 					$row['cl_status'] = '0';
+
+					$row['orig'] = array();
+					$row['orig']['start_date'] = $row['start_date'];
+					$row['orig']['total_price'] = $row['total_price'];
+					$row['orig']['total_price_pen'] = $row['total_price_pen'];
+					$row['orig']['total_price_ent'] = $row['total_price_ent'];
+
 					foreach($cl as $val) {
 						if
 						(
@@ -252,10 +259,10 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
 				<tr>
 					<td><?=$index?></td>
 				 	<td><a href="#"><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></a></td>
-				 	<td class="text_c start_date"><?=$row['start_date']?></td>
-				 	<td class="text_r total_price"><?=number_format($row['total_price'])?>원</td>
-				 	<td class="text_r total_price_pen"><?=number_format($row['total_price_pen'])?>원</td>
-				 	<td class="text_r total_price_ent"><?=number_format($row['total_price_ent'])?>원</td>
+				 	<td class="text_c start_date <?=($row['orig']['start_date'] != $row['start_date'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['start_date']?>"><?=$row['start_date']?></td>
+				 	<td class="text_r total_price <?=($row['orig']['total_price'] != $row['total_price'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price']?>"><?=number_format($row['total_price'])?>원</td>
+				 	<td class="text_r total_price_pen <?=($row['orig']['total_price_pen'] != $row['total_price_pen'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price_pen']?>"><?=number_format($row['total_price_pen'])?>원</td>
+				 	<td class="text_r total_price_ent <?=($row['orig']['total_price_ent'] != $row['total_price_ent'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price_ent']?>"><?=number_format($row['total_price_ent'])?>원</td>
 				 	<td class="text_c status" data-status="<?=$row['cl_status']?>"><?=($row['cl_status'] == '0' ? '대기' : '변경')?></td>
 				 	<td class="text_c">
 						 <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
@@ -340,10 +347,42 @@ body.modal-open {
 <script>
 function updateClaim(cl_id, data) {
 	var $tr = $('.btn_edit[data-id="'+cl_id+'"]').closest('tr');
-	$tr.find('.start_date').text(data['start_date']);
-	$tr.find('.total_price').text(data['total_price']);
-	$tr.find('.total_price_pen').text(data['total_price_pen']);
-	$tr.find('.total_price_ent').text(data['total_price_ent']);
+	var start_date = data['start_date'];
+	var total_price = data['total_price'];
+	var total_price_pen = data['total_price_pen'];
+	var total_price_ent = data['total_price_ent'];
+
+	var $start_date = $tr.find('.start_date');
+	var $total_price = $tr.find('.total_price');
+	var $total_price_pen = $tr.find('.total_price_pen');
+	var $total_price_ent = $tr.find('.total_price_ent');
+
+	// 값이 변경되면 초록색으로 표시
+	if($start_date.data('orig') != start_date)
+		$start_date.addClass('text_point');
+	else
+		$start_date.removeClass('text_point');
+
+	if($total_price.data('orig') != total_price)
+		$total_price.addClass('text_point');
+	else
+		$total_price.removeClass('text_point');
+
+	if($total_price_pen.data('orig') != total_price_pen)
+		$total_price_pen.addClass('text_point');
+	else
+		$total_price_pen.removeClass('text_point');
+
+	if($total_price_ent.data('orig') != total_price_ent)
+		$total_price_ent.addClass('text_point');
+	else
+		$total_price_ent.removeClass('text_point');
+
+
+	$start_date.text(start_date);
+	$total_price.text(parseInt(total_price).toLocaleString('en-US')+'원');
+	$total_price_pen.text(parseInt(total_price_pen).toLocaleString('en-US')+'원');
+	$total_price_ent.text(parseInt(total_price_ent).toLocaleString('en-US')+'원');
 	$tr.find('.status').attr('data-status', '1').text('변경');
 }
 
