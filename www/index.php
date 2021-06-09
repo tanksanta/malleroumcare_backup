@@ -8,10 +8,18 @@ $is_index = true;
 $is_main = true;
 // 루트 index를 쇼핑몰 index 설정했을 때
 if(IS_YC && isset($default['de_root_index_use']) && $default['de_root_index_use'] && (!isset($ci) || !$ci)) {
+		if($is_member) {
+			require_once(G5_SHOP_PATH.'/main.php');
+			return;
+		}
     require_once(G5_SHOP_PATH.'/index.php');
     return;
 } else {
 	if(USE_G5_THEME && defined('G5_THEME_PATH')) {
+		if($is_member) {
+			require_once(G5_THEME_PATH.'/main.php');
+			return;
+		}
 		require_once(G5_THEME_PATH.'/index.php');
 		return;
 	}
