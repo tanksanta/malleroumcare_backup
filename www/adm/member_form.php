@@ -224,7 +224,7 @@ label {
         <td><input type="password" name="mb_password" id="mb_password" <?php echo $required_mb_password ?> class="frm_input <?php echo $required_mb_password ?>" size="15" maxlength="20"></td>
     </tr>
     <!-- <tr>
-        <th scope="row"><label for="mb_name">이름/기업명<strong class="sound_only">필수</strong></label></th>
+        <th scope="row"><label for="mb_name">기업명<strong class="sound_only">필수</strong></label></th>
         <td><input type="text" name="mb_name" value="<?php echo $mb['mb_name'] ?>" id="mb_name" class="frm_input" size="15" maxlength="20"></td>
         <th scope="row"><label for="mb_nick">닉네임</label></th>
         <td><input type="text" name="mb_nick" value="<?php echo $mb['mb_nick'] ?>" id="mb_nick" class=" frm_input" size="15" maxlength="20"></td>
@@ -308,7 +308,7 @@ label {
     </tr>
     <tr>
         <th scope="row">
-            <label for="mb_giup_bname">이름/기업명</label>
+            <label for="mb_giup_bname">기업명</label>
         </th>
         <td colspan="3">
             <input type="text" name="mb_giup_bname" value="<?php echo $mb['mb_giup_bname'] ?>" id="mb_giup_bname" class="frm_input" size="30" maxlength="20">
@@ -1088,7 +1088,7 @@ function fmember_submit()
 		}
 	}
     if(!f.mb_giup_bname.value){
-        alert('이름/기업명을 입력하세요.');
+        alert('기업명을 입력하세요.');
         f.mb_giup_bname.focus();
         return false;
     }

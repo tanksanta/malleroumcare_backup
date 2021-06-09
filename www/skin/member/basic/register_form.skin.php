@@ -126,7 +126,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 				</div>
 			</div>
             <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_bname"><b>이름/기업명</b><strong class="sound_only">필수</strong></label>
+				<label class="col-sm-2 control-label" for="mb_giup_bname"><b>기업명</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
 					<input type="text" id="mb_giup_bname" name="mb_giup_bname" value="<?php echo get_text($member['mb_giup_bname']) ?>" class="form-control input-sm" size="10">
 				</div>
@@ -943,7 +943,7 @@ function fregisterform_submit()
     }
 
     if(!f.mb_giup_bname.value){
-        alert('이름/기업명을 입력하세요.');
+        alert('기업명을 입력하세요.');
         f.mb_giup_bname.focus();
         return false;
     }
