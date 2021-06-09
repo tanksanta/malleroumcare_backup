@@ -54,17 +54,6 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
 }
 
-# ##################################################################
-# 수급자별로 (penId 별로 묶어야함)
-# 묶어서 start_date가 가장 빠른거로 출력해야됨. <- 해당 월보다 작으면 1일부터 시작하는거고, 아니면 그 일부터 시작하는거고
-# 그리고 급여가 전부 더하고 = 급여비용총액
-# 수급자 본인부담금 다 더하고 = 본인부담금
-# 급여가 - 본인부담금 = 청구액
-# 수급자정보 이름, PENID, 등급, 기초... 어쩌고
-
-# 수급자(penId) 별로 몇년도 무슨월 청구내역 수정사항 테이블도 만들어야함
-
-
 $selected_month = '2021-06-01';
 
 $entId = $member['mb_entId'];
@@ -77,8 +66,6 @@ $search = get_search_string($search);
 if(in_array($searchtype, ['penNm', 'penLtmNum']) && $search) {
 	$where = " AND $searchtype LIKE '%$search%' ";
 }
-
-echo $where;
 
 $eform_query = sql_query("
 SELECT
