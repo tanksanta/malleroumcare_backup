@@ -112,51 +112,71 @@ $cl = [];
 while($row = sql_fetch_array($cl_query)) {
 	$cl[] = $row;
 }
+
 ?>
 
-<!-- 내용 -->
-<title>판매재고목록</title>
-<section   class="wrap  ">
-    <div class="sub_section_tit">청구/전자문서관리</div>
-    <ul class="list_tab">
-        <li class="active"><a href="<?=G5_SHOP_URL?>/claim_manage.php">청구관리</a></li>
-        <li ><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<!--<span class="red_info">미작성: 1건</span>--></a></li>
-    </ul>
-     <div class="inner">
-     	<div class="date_wrap">
-     		<div class="date_this">
-     			<a href="#">이번달</a>
-     		</div>
-     		<div class="date_selected">
-     			<a href="#" class="disabled">◀ 지난달</a>
-     			<select name="" id="">
-     				<option selected>2021년 6월</option>
-     			</select>
-     			<a href="#" class="disabled">다음달 ▶</a>
-     		</div>
-     		
-     	</div>
-     	
-     	<div class="search_box">
-				 <form action="/shop/claim_manage.php" method="get">
-            <select name="searchtype" id="">
-                <option value="penNm">수급자명</option>
-                <option value="penLtmNum">요양인정번호</option>
-            </select>
-            <div class="input_search">
-                <input name="search" value="<?=$_GET["search"]?>" type="text">
-                <button  type="submit"></button>
-            </div>
-					</form>
-        </div>
- 		<div class="r_btn_area">
- 			<!--<span>최신검증일 : 2021-03-01 13:35</span>
- 			<a href="#" class="btn_nhis">건보 자료 업로드</a>-->
- 			<a href="./claim_manage_excel.php?selected_month=<?=$selected_month?>&searchtype=<?=$searchtype?>&search=<?=$search?>&page=<?=$page?>">엑셀다운로드</a>
- 		</div>
- 		<div class="list_box">
- 			<div class="table_box">
- 			<table >
+<section class="wrap">
+	<div class="sub_section_tit">청구/전자문서관리</div>
+	<ul class="list_tab">
+		<li class="active"><a href="<?=G5_SHOP_URL?>/claim_manage.php">청구관리</a></li>
+		<li ><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<!--<span class="red_info">미작성: 1건</span>--></a></li>
+	</ul>
+	<div class="inner">
+		<form action="/shop/claim_manage.php" method="get">
+			<div class="date_wrap">
+				<div class="date_this">
+					<a href="#">이번달</a>
+				</div>
+				<div class="date_selected">
+					<a href="#" class="disabled">◀ 지난달</a>
+					<select name="selected_month" id="selected_month">
+						<?php
+						$cur_year = intval(date('Y'));
+						$cur_month = intval(date('n'));
+
+						for($year = 2021; $year <= $cur_year; $year++) {
+							for($month = 1; $month <= 12; $month++) {
+								if($year == 2021 && $month < 6) { // 2021년 6월 이전은 무시 (신규계약서 적용 전)
+									continue;
+								}
+
+								if($year == $cur_year && $month > $cur_month) { // 현재 년/월 보다 미래는 무시
+									break;
+								}
+
+								$leading_zero_month = str_pad($month, 2, '0', STR_PAD_LEFT);
+
+							?>
+							<option value="<?="{$year}-{$leading_zero_month}-01"?>"<?=($year == $cur_year && $month == $cur_month) ? ' selected' : ''?>><?="{$year}년 {$month}월"?></option>
+							<?php
+							}
+						}
+						?>
+					</select>
+					<a href="#" class="disabled">다음달 ▶</a>
+				</div>
+			</div>
+				
+			<div class="search_box">
+				<select name="searchtype" id="">
+					<option value="penNm">수급자명</option>
+					<option value="penLtmNum">요양인정번호</option>
+				</select>
+				<div class="input_search">
+					<input name="search" value="<?=$_GET["search"]?>" type="text">
+					<button type="submit"></button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="r_btn_area">
+		<!--<span>최신검증일 : 2021-03-01 13:35</span>
+		<a href="#" class="btn_nhis">건보 자료 업로드</a>-->
+		<a href="./claim_manage_excel.php?selected_month=<?=$selected_month?>&searchtype=<?=$searchtype?>&search=<?=$search?>&page=<?=$page?>">엑셀다운로드</a>
+	</div>
+	<div class="list_box">
+		<div class="table_box">
+			<table>
 				 <tr>
 				 	<th>No.</th>
 				 	<th>수급자 정보</th>
@@ -203,75 +223,13 @@ while($row = sql_fetch_array($cl_query)) {
 				 	<td class="text_c">
 						 <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
 					</td>
-				 </tr>
+				</tr>
 				<?php } ?>
-				 <!--<tr>
-				 	<td>5</td>
-				 	<td><a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a></td>
-				 	<td class="text_c">2021-02-02</td>
-				 	<td class="text_r">200,000원</td>
-				 	<td class="text_r">10,000원</td>
-				 	<td class="text_r">210,000원</td>
-				 	<td class="text_c">정상</td>
-				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
-				 </tr>
-				 <tr class="bg_red">
-				 	<td>4</td>
-				 	<td>
-				 		<a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a>
-				 		<p class="text_red">홍**(L22333**** / 2등급 /기초0%)</p>
-				 	</td>
-				 	<td class="text_c">2021-02-02</td>
-				 	<td class="text_r">
-				 		200,000원
-				 		<p class="text_red">150,000원</p>
-				 	</td>
-				 	<td class="text_r">
-				 		100,000원
-				 	</td>
-				 	<td class="text_r">
-				 		300,000원
-				 		<p class="text_red">250,000원</p>
-				 	</td>
-				 	<td class="text_c text_red">오류</td>
-				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
-				 </tr>
-				 <tr>
-				 	<td>3</td>
-				 	<td class="text_point"><a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a>
-				 	</td>
-				 	<td class="text_c">2021-02-02</td>
-				 	<td class="text_r">200,000원</td>
-				 	<td class="text_r">10,000원</td>
-				 	<td class="text_r text_point">210,000원</td>
-				 	<td class="text_c text_point">변경완료</td>
-				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
-				 </tr>
-				 <tr>
-				 	<td>2</td>
-				 	<td><a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a></td>
-				 	<td class="text_c">2021-02-02</td>
-				 	<td class="text_r">200,000원</td>
-				 	<td class="text_r">10,000원</td>
-				 	<td class="text_r">210,000원</td>
-				 	<td class="text_c text_gray">대기</td>
-				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
-				 </tr>
-				 <tr>
-				 	<td>1</td>
-				 	<td><a href="#">홍길동(L2233321333 / 3등급 /기초0%)</a></td>
-				 	<td class="text_c">2021-02-02</td>
-				 	<td class="text_r">200,000원</td>
-				 	<td class="text_r">10,000원</td>
-				 	<td class="text_r">210,000원</td>
-				 	<td class="text_c text_gray">대기</td>
-				 	<td class="text_c"><a href="#" class="w_100">변경</a></td>
-				 </tr>-->
-			 </table>
-			 </div>
-			 
-			 <div class="list-paging">
-			 </div>
+			</table>
+		</div>
+
+		<div class="list-paging">
+		</div>
 			 <!--<div class="subtit">
 			 	건강관리공단 미 매칭 자료 
 			 </div>
@@ -318,9 +276,8 @@ while($row = sql_fetch_array($cl_query)) {
 			 		<li> </li>
 			 	</ul>
 			 </div>
- 		</div>
-     </div>-->
-    
+ 		</div>-->
+	</div>
 </section>
 
 <div id="popupEdit">
@@ -356,6 +313,12 @@ function updateClaim(cl_id, data) {
 $(function() {
   $("#popupEdit").hide();
 	$("#popupEdit").css("opacity", 1);
+
+	// 청구 달 선택
+	$('#selected_month').change(function() {
+		var selected_month = $(this).val();
+		location.href='./claim_manage.php?selected_month=' + selected_month;
+	});
 
 	// 내용변경 버튼
 	$(document).on('click', '.btn_edit', function(e) {

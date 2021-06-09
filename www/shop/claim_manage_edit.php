@@ -23,7 +23,6 @@ if(!$cl) alert('내용을 변경할 수 없습니다.');
     * { margin: 0; padding: 0; position: relative; box-sizing: border-box; outline: none; }
     html, body { font-family: "Noto Sans KR", sans-serif; }
     body { padding: 50px 0 50px 0; }
-    .table_box {}
     table {width: 100%; color: #333; border-collapse: collapse; border-spacing: 0;}
     th, td { padding: 6px 8px; border: none; text-align: center;}
     td.num { text-align: right; }
