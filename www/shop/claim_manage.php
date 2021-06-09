@@ -54,7 +54,7 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
 }
 
-$selected_month = '2021-06-01';
+if(!$selected_month) $selected_month = date('Y-m-01');
 
 $entId = $member['mb_entId'];
 if(!$entId) {
@@ -113,6 +113,46 @@ while($row = sql_fetch_array($cl_query)) {
 	$cl[] = $row;
 }
 
+$cur_year = intval(date('Y'));
+$cur_month = intval(date('n'));
+
+$sel_year = intval(substr($selected_month, 0, 4));
+$sel_month = intval(substr($selected_month, 5, 2));
+
+$has_prev = false;
+$has_next = false;
+if($sel_year <= $cur_year && $sel_year >= 2021) {
+	if($sel_year == 2021) {
+		if($sel_month > 6) {
+			$has_prev = true;
+			$prev_month = "2021-".str_pad($sel_month-1, 2, '0', STR_PAD_LEFT).'-01';
+		}
+		if($sel_month < $cur_month) {
+			$has_next = true;
+			$next_month = "2021-".str_pad($sel_month+1, 2, '0', STR_PAD_LEFT).'-01';
+		}
+	} else if($sel_year > 2021) {
+		$has_prev = true;
+		if($sel_year == $cur_year) {
+			if($sel_month < $cur_month) {
+				$has_next = true;
+				$next_month = "$sel_year-".str_pad($sel_month+1, 2, '0', STR_PAD_LEFT).'-01';
+			}
+		} else if($sel_year < $cur_year) {
+			$has_next = true;
+			if($sel_month == 12) {
+				$next_month = ($sel_year + 1).'-01-01';
+			} else {
+				$next_month = "$sel_year-".str_pad($sel_month+1, 2, '0', STR_PAD_LEFT).'-01';
+			}
+		}
+		if($sel_month == 1) {
+			$prev_month = ($sel_year - 1).'-12-01';
+		} else {
+			$prev_month = $sel_year.'-'.str_pad($sel_month-1, 2, '0', STR_PAD_LEFT).'-01';
+		}
+	}
+}
 ?>
 
 <section class="wrap">
@@ -125,15 +165,12 @@ while($row = sql_fetch_array($cl_query)) {
 		<form action="/shop/claim_manage.php" method="get">
 			<div class="date_wrap">
 				<div class="date_this">
-					<a href="#">이번달</a>
+					<a href="?selected_month=<?=date('Y-m-01')?>">이번달</a>
 				</div>
 				<div class="date_selected">
-					<a href="#" class="disabled">◀ 지난달</a>
+					<a href="<?=$has_prev ? '?selected_month='.$prev_month : '#'?>" class="<?=$has_prev ? '' : 'disabled'?>">◀ 지난달</a>
 					<select name="selected_month" id="selected_month">
 						<?php
-						$cur_year = intval(date('Y'));
-						$cur_month = intval(date('n'));
-
 						for($year = 2021; $year <= $cur_year; $year++) {
 							for($month = 1; $month <= 12; $month++) {
 								if($year == 2021 && $month < 6) { // 2021년 6월 이전은 무시 (신규계약서 적용 전)
@@ -153,7 +190,7 @@ while($row = sql_fetch_array($cl_query)) {
 						}
 						?>
 					</select>
-					<a href="#" class="disabled">다음달 ▶</a>
+					<a href="<?=$has_next ? '?selected_month='.$next_month : '#'?>" class="<?=$has_next ? '' : 'disabled'?>">다음달 ▶</a>
 				</div>
 			</div>
 				
