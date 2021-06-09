@@ -386,9 +386,19 @@ function updateClaim(cl_id, data) {
 	$tr.find('.status').attr('data-status', '1').text('변경');
 }
 
+function closePopup() {
+    $("body").removeClass("modal-open");
+    $("#popupEdit").hide();
+    $("#popupEdit").find("iframe").remove();
+}
+
 $(function() {
   $("#popupEdit").hide();
 	$("#popupEdit").css("opacity", 1);
+	$('#popupEdit > div').click(function (e) {
+		e.stopPropagation();
+		closePopup()
+	});
 
 	// 청구 달 선택
 	$('#selected_month').change(function() {
