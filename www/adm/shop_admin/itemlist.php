@@ -178,6 +178,12 @@ $flist = apms_form(1,0);
     <option value="N" <?=($_GET["searchProdSupYN"] == "N") ? "selected" : ""?>>비유통</option>
 </select>
 
+<script>
+    $( '#searchProdSupYN' ).change( function(){
+        $('#searchProdSupYN2').val($(this).val());
+    });
+</script>
+
 <label for="sfl" class="sound_only">검색대상</label>
 <select name="sfl" id="sfl">
     <option value="it_thezone" <?php echo get_selected($sfl, 'it_thezone'); ?>>상품코드</option>
@@ -216,6 +222,7 @@ $flist = apms_form(1,0);
 <input type="hidden" name="stx" value="<?php echo $stx; ?>">
 <input type="hidden" name="page" value="<?php echo $page; ?>">
 <input type="hidden" name="page_rows" value="<?php echo $page_rows; ?>">
+<input type="hidden" name="searchProdSupYN" value="" id="searchProdSupYN2">
 
 <div class="tbl_head01 tbl_wrap">
     <table>

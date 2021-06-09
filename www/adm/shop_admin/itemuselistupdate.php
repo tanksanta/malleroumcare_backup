@@ -46,5 +46,5 @@ for ($i=0; $i<count($_POST['chk']); $i++)
     }
 }
 
-goto_url("./itemuselist.php?sca=$sca&amp;sst=$sst&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page");
+goto_url("./itemuselist.php?sca=$sca&amp;sst=$sst&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN=$searchProdSupYN");
 ?>
