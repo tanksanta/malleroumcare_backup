@@ -152,7 +152,7 @@ while($row = sql_fetch_array($cl_query)) {
  		<div class="r_btn_area">
  			<!--<span>최신검증일 : 2021-03-01 13:35</span>
  			<a href="#" class="btn_nhis">건보 자료 업로드</a>-->
- 			<a href="#">엑셀다운로드</a>
+ 			<a href="./claim_manage_excel.php?selected_month=<?=$selected_month?>&searchtype=<?=$searchtype?>&search=<?=$search?>&page=<?=$page?>">엑셀다운로드</a>
  		</div>
  		<div class="list_box">
  			<div class="table_box">
