@@ -69,10 +69,10 @@ $incompleted_eform_count = 0;
 <!-- 내용 -->
 <title>판매재고목록</title>
 <section class="wrap ">
-    <div class="sub_section_tit">전자문서관리</div>
-    <ul class="list_tab" style="display: none;">
+    <div class="sub_section_tit">청구/전자문서관리</div>
+    <ul class="list_tab">
         <li><a href="<?=G5_SHOP_URL?>/claim_manage.php">청구관리</a></li>
-        <li class="active"><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<?php echo ($incompleted_eform_count ? '<span class="red_info">미작성: '.$incompleted_eform_count.'건</span>' : ''); ?></a></li>
+        <li class="active"><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<?php //echo ($incompleted_eform_count ? '<span class="red_info">미작성: '.$incompleted_eform_count.'건</span>' : ''); ?></a></li>
     </ul>
     <div class="inner">
     	<div class="list_box" style="display: none;">

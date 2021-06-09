@@ -189,7 +189,7 @@ scrollToTop();
 					<div class="cate_head">복지용구통합관리</div>
 					<ul class="cate_menu">
 						<li><a href="/shop/my.recipient.list.php" title="수급자">수급자 관리</a></li>
-						<li><a href="/shop/electronic_manage.php" title="전자문서">전자문서 관리</a></li>
+						<li><a href="/shop/claim_manage.php" title="청구/전자문서">청구/전자문서 관리</a></li>
 						<li><a href="/shop/sales_Inventory.php" title="보유재고">보유재고 관리</a></li>
 						<li><a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송 관리</a></li>
 						<li><a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a></li>
@@ -292,7 +292,7 @@ scrollToTop();
 				<a href="<?=G5_URL?>" class="logoTitle"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png" alt="이로움 로고"></a>
 				<ul class="nav nav-left">
 					<li><a href="/shop/my.recipient.list.php" title="수급자">수급자</a></li>
-					<li><a href="/shop/electronic_manage.php" title="전자문서">전자문서관리</a></li>
+					<li><a href="/shop/claim_manage.php" title="청구/전자문서">청구/전자문서</a></li>
 					<li><a href="/shop/sales_Inventory.php" title="보유재고">보유재고</a></li>
 				</ul>
 				<ul class="nav nav-right">
@@ -402,8 +402,8 @@ scrollToTop();
 								</a>
 							</li>
 							<li>
-								<a href="/shop/electronic_manage.php" title="전자문서">
-									<span>전자문서</span>
+								<a href="/shop/claim_manage.php" title="청구/전자문서">
+									<span>청구/전자문서</span>
 								</a>
 							</li>
 							<li>
