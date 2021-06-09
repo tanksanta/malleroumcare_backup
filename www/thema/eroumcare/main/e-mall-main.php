@@ -16,7 +16,7 @@
 					<a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$cate['ca_id']; ?>' class='title'><?php echo $cate['ca_name']; ?><i class="fa fa-angle-right"></i></a>
 				</li>
 				<?php foreach($cate['sub'] as $i=>$sub) { ?>
-					<li><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='cate_02 <?php echo $sub['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub['ca_name']; ?></a></li>
+					<li><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id='.substr($sub['ca_id'], 0, 2).'&ca_sub%5B%5D='.substr($sub['ca_id'], 2, 2); ?>' class='cate_02 <?php echo $sub['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub['ca_name']; ?></a></li>
 					<?php if (!empty($sub['sub'])) { ?>
 						<?php foreach($sub['sub'] as $sub2) { ?>
 							<li><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub2['ca_id']; ?>' class='cate_03 <?php echo $sub2['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub2['ca_name']; ?></a></li>
