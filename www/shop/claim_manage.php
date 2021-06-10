@@ -246,7 +246,8 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
 							$val['penNm'] == $row['penNm'] &&
 							$val['penLtmNum'] == $row['penLtmNum'] &&
 							$val['penRecGraCd'] == $row['penRecGraCd'] &&
-							$val['penTypeCd'] == $row['penTypeCd']
+							$val['penTypeCd'] == $row['penTypeCd'] &&
+							$val['cl_status'] != 0
 						) {
 							$row['cl_status'] = $val['cl_status'];
 							$row['start_date'] = $val['start_date'];

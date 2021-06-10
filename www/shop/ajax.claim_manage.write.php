@@ -22,7 +22,16 @@ $check = sql_fetch("SELECT cl_id FROM `claim_management` WHERE
   penTypeCd = '{$post['penTypeCd']}' AND
   selected_month = '{$post['selected_month']}'
 ");
-if($check['cl_id']) json_response(200, $check['cl_id']);
+if($check['cl_id']) {
+  // 이미 생성되어있는 변경지점이면 값을 새로 업데이트
+  sql_query("UPDATE `claim_management` SET
+    total_price = '{$post['total_price']}',
+    total_price_pen = '{$post['total_price_pen']}',
+    total_price_ent = '{$post['total_price_ent']}'
+    WHERE cl_id = '{$check['cl_id']}'
+  ");
+  json_response(200, $check['cl_id']);
+}
 
 $result = sql_query("INSERT INTO `claim_management` SET
   mb_id = '{$member['mb_id']}',
