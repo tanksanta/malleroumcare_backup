@@ -1016,6 +1016,14 @@ pre{white-space: pre-wrap;}
 	line-height:41px;
 }
 
+/* 주문 */
+
+#pro-order-loading {
+	width:100%;
+	padding:200px 0;
+	text-align:center;
+}
+
 /* 210208 상단퀵메뉴 */
 #headerTopQuickMenuWrap { display: none; width: 100%; }
 #headerTopQuickMenuWrap * { position: relative; }
@@ -1164,6 +1172,24 @@ pre{white-space: pre-wrap;}
 	.at-content .cate_wrap{padding:0;}
 	.at-content .cate_wrap .cate_head{float:none;padding:5px 5px;}
 	.at-content .cate_wrap .cate_body{margin-left:0;}
+
+	#pro-order {
+		padding-top: 10px;
+	}
+
+	.detail-tab ul li h4 {
+		margin-bottom:0;
+	}
+
+	#fixed_recipient {
+		width: 90%;
+		right: 5%;
+		z-index: 999999;
+		box-sizing: border-box;
+	}
+	#fixed_recipient .info {
+		width: 65%;
+	}
 }
 
 @media (max-width: 450px){
