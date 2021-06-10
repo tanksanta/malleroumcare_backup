@@ -6,7 +6,7 @@ include_once(G5_SHOP_PATH.'/settle_naverpay.inc.php');
 cart_item_clean();
 
 // cart id 설정
-set_cart_id($sw_direct);
+set_cart_id($sw_direct, $_SESSION['recipient']['penId'] ?? null);
 
 $s_cart_id = get_session('ss_cart_id');
 // 선택필드 초기화
