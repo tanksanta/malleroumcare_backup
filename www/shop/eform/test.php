@@ -6,7 +6,10 @@ json_response(400, '접근 ㄴㄴ');
 
 include_once(G5_LIB_PATH.'/mailer.lib.php');
 // 메일 알림
-mailer('no-reply', 'no-reply@eroumcare.com', 'admin@the.gg', '메일 테스트', '메일테스트입니다.<br>111<br>2222<br>333', 0);
+$pdfdir = G5_DATA_PATH.'/eform/pdf';
+$pdffile = '0E775CF1BEC911EBA294AC1F6BADFF68_PENID_20210527000001_ENT2020070900001_202105271756164.pdf';
+$pdfdir .= '/'.$pdffile;
+mailer('이로움', 'no-reply@eroumcare.com', 'admin@the.gg', '메일 테스트', '메일테스트입니다.<br>111<br>2222<br>333', 1, [array('path' => $pdfdir, 'name' => '파일명_테스트.pdf')]);
 
 /*$data = api_post_call('https://system.eroumcare.com/api/eform/selectEform001', array('penOrdId' => 'ORDER-20210604000013'));
 echo '<pre>';
