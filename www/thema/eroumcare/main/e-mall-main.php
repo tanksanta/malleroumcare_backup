@@ -30,12 +30,12 @@
 		<div class="viewWrap swiper-container">
 			<ul style="width: 100%;" class="swiper-wrapper">
 				<li style="width: 100%;" class="swiper-slide">
-					<a href="/bbs/board.php?bo_table=notice&wr_id=23">
+					<a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=notice&wr_id=23">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_04.jpg" alt="">
 					</a>
 				</li>
 				<li style="width: 100%;" class="swiper-slide">
-					<a href="/bbs/content.php?co_id=guide">
+					<a href="<?php echo G5_URL; ?>/bbs/content.php?co_id=guide">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_03.jpg" alt="">
 					</a>
 				</li><!-- 
@@ -320,7 +320,7 @@
 		<div class="listWrap">
 			<div class="slick">
 				<div class="item">
-					<a href="/bbs/content.php?co_id=guide">
+					<a href="<?php echo G5_URL; ?>/bbs/content.php?co_id=guide">
 						<img src="<?=THEMA_URL?>/assets/img/main_c_banner_01.png" alt="" class="pc_layout">
 						<img src="<?=THEMA_URL?>/assets/img/main_c_banner_m_01.jpg" alt="" class="mo_layout">
 					</a>
@@ -384,7 +384,7 @@
 		<div class="board">
 			<div class="title">
 				<span>공지사항</span> 
-				<a href="/bbs/board.php?bo_table=notice" title="더보기">더보기<i class="fa fa-plus-square-o"></i></a>
+				<a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=notice" title="더보기">더보기<i class="fa fa-plus-square-o"></i></a>
 			</div>
 			<?php  echo latest('list_main', 'notice', 5, 30); ?>
 		</div>
@@ -392,7 +392,7 @@
 		<div class="board">
 			<div class="title">
 				<span>자주하는 질문</span>
-				<a href="/bbs/board.php?bo_table=faq" title="더보기">더보기<i class="fa fa-plus-square-o"></i></a>
+				<a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=faq" title="더보기">더보기<i class="fa fa-plus-square-o"></i></a>
 			</div>
 			<?php  echo latest('list_main', 'faq', 5, 30); ?>
 		</div>
