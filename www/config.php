@@ -208,11 +208,13 @@ define('G5_MOBILE_AGENT',   'phone|samsung|lgtel|mobile|[^A]skt|nokia|blackberry
 
 // SMTP
 // lib/mailer.lib.php 에서 사용
-define('G5_SMTP',      '127.0.0.1');
-define('G5_SMTP_PORT', '25');
+define('G5_SMTP',      'smtp-relay.gmail.com');
+define('G5_SMTP_PORT', '465');
 
-define('G5_SMTP_USERNAME', '');
-define('G5_SMTP_PASSWORD', '');
+define('G5_SMTP_USERNAME', 'admin@eroumcare.com');
+define('G5_SMTP_PASSWORD', 'thkc1301@');
+
+define('G5_SMTP_SSL', true);
 
 
 /********************

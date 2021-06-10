@@ -28,6 +28,10 @@ function mailer($fname, $fmail, $to, $subject, $content, $type=0, $file="", $cc=
             $mail->Username = G5_SMTP_USERNAME;
             $mail->Password = G5_SMTP_PASSWORD;
         }
+        
+        if(defined('G5_SMTP_SSL') && G5_SMTP_SSL) {
+            $mail->SMTPSecure = "ssl";
+        }
     }
     $mail->CharSet = 'UTF-8';
     $mail->From = $fmail;
