@@ -1465,7 +1465,7 @@ function get_new_od_id()
 
 
 // cart id 설정
-function set_cart_id($direct, $recipient = null)
+function set_cart_id($direct)
 {
     global $g5, $default, $member;
 
@@ -1476,31 +1476,22 @@ function set_cart_id($direct, $recipient = null)
             set_session('ss_cart_direct', $tmp_cart_id);
         }
     } else {
-        if ($member['mb_id'] && $recipient) {
-            set_session('ss_cart_id', $member['mb_id'] . $recipient);
-            $pen_sql = " and pen_id = '{$recipient}' ";
-        }else{
-            // 비회원장바구니 cart id 쿠키설정
-            if ($default['de_guest_cart_use']) {
-                $tmp_cart_id = preg_replace('/[^a-z0-9_\-]/i', '', get_cookie('ck_guest_cart_id'));
-                if ($tmp_cart_id) {
-                    set_session('ss_cart_id', $tmp_cart_id);
-                //set_cookie('ck_guest_cart_id', $tmp_cart_id, ($default['de_cart_keep_term'] * 86400));
-                } else {
-                    $tmp_cart_id = get_uniqid();
-                    set_session('ss_cart_id', $tmp_cart_id);
-                    set_cookie('ck_guest_cart_id', $tmp_cart_id, ($default['de_cart_keep_term'] * 86400));
-                }
-            } else {
-                // $tmp_cart_id = get_session('ss_cart_id');
-                $tmp_cart_id = get_session('ss_original_cart_id');
-                if (!$tmp_cart_id) {
-                    $tmp_cart_id = get_uniqid();
-                    set_session('ss_cart_id', $tmp_cart_id);
-                    set_session('ss_original_cart_id', $tmp_cart_id);
-                }
+        // 비회원장바구니 cart id 쿠키설정
+        if($default['de_guest_cart_use']) {
+            $tmp_cart_id = preg_replace('/[^a-z0-9_\-]/i', '', get_cookie('ck_guest_cart_id'));
+            if($tmp_cart_id) {
                 set_session('ss_cart_id', $tmp_cart_id);
-                $pen_sql = " and pen_id is null ";
+                //set_cookie('ck_guest_cart_id', $tmp_cart_id, ($default['de_cart_keep_term'] * 86400));
+            } else {
+                $tmp_cart_id = get_uniqid();
+                set_session('ss_cart_id', $tmp_cart_id);
+                set_cookie('ck_guest_cart_id', $tmp_cart_id, ($default['de_cart_keep_term'] * 86400));
+            }
+        } else {
+            $tmp_cart_id = get_session('ss_cart_id');
+            if(!$tmp_cart_id) {
+                $tmp_cart_id = get_uniqid();
+                set_session('ss_cart_id', $tmp_cart_id);
             }
         }
 
@@ -1510,9 +1501,7 @@ function set_cart_id($direct, $recipient = null)
                         set od_id = '$tmp_cart_id'
                         where mb_id = '{$member['mb_id']}'
                           and ct_direct = '0'
-                          and ct_status = '쇼핑' 
-                          {$pen_sql}
-            ";
+                          and ct_status = '쇼핑' ";
             sql_query($sql);
         }
     }
