@@ -125,113 +125,6 @@
                         <select name="penBirth3" id="day" title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
 					</div>
 				</div>
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>장기요양인정번호</b>
-					</label>
-					<div class="col-sm-3">
-						<span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
-						<input type="number" maxlength="10" oninput="maxLengthCheck(this)"  id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>" >
-						<i class="fa fa-check form-control-feedback"></i>
-					</div>
-				</div>
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>인정등급</b>
-					</label>
-					<div class="col-sm-3">
-						<select class="form-control input-sm" name="penRecGraCd">
-							<option value="00" <?=($data["penRecGraCd"] == "00") ? "selected" : ""?>>등급외</option>
-							<option value="01" <?=($data["penRecGraCd"] == "01") ? "selected" : ""?>>1등급</option>
-							<option value="02" <?=($data["penRecGraCd"] == "02") ? "selected" : ""?>>2등급</option>
-							<option value="03" <?=($data["penRecGraCd"] == "03") ? "selected" : ""?>>3등급</option>
-							<option value="04" <?=($data["penRecGraCd"] == "04") ? "selected" : ""?>>4등급</option>
-							<option value="05" <?=($data["penRecGraCd"] == "05") ? "selected" : ""?>>5등급</option>
-						</select>
-					</div>
-				</div>
-
-<!-- 
-                <div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>휴대폰</b>
-					</label>
-					<div class="col-sm-3">
-                        <select class="form-control input-sm" name="penConNum1" id="penConNum1" style="display:inline-block; width:30%;">
-							<option value="010" <?=(substr($data["penConNum"], 0, 3) == "010") ? "selected" : ""?> >010</option>
-							<option value="011" <?=(substr($data["penConNum"], 0, 3) == "011") ? "selected" : ""?> >011</option>
-							<option value="016" <?=(substr($data["penConNum"], 0, 3) == "016") ? "selected" : ""?> >016</option>
-						</select>
-						<input type="text" name="penConNum2" class="form-control input-sm" value="<?=substr($data["penConNum"], 3, 4)?>" id="penConNum2" style="display:inline-block; width:30%;">
-						<input type="text" name="penConNum3" class="form-control input-sm" value="<?=substr($data["penConNum"], 7, 4)?>" id="penConNum3" style="display:inline-block; width:30%;">
-						<i class="fa fa-check form-control-feedback"></i>
-					</div>
-				</div>
-
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>일반전화</b>
-					</label>
-					<div class="col-sm-3">
-                        <select class="form-control input-sm" name="penConPnum1" style="display:inline-block; width:30%;" id="penConPnum1" >
-                        <option value="02" <?=(substr($data["penConNum"], 0, 2) == "02") ? "selected" : ""?> >02 </option>
-                          <option value="031" <?=(substr($data["penConNum"], 0, 3) == "031") ? "selected" : ""?>>031 </option>
-                          <option value="032" <?=(substr($data["penConNum"], 0, 3) == "032") ? "selected" : ""?>>032</option>
-                          <option value="033" <?=(substr($data["penConNum"], 0, 3) == "033") ? "selected" : ""?>>033 </option>
-                          <option value="041" <?=(substr($data["penConNum"], 0, 3) == "041") ? "selected" : ""?>>041 </option>
-                          <option value="042" <?=(substr($data["penConNum"], 0, 3) == "042") ? "selected" : ""?>>042 </option>
-                          <option value="043" <?=(substr($data["penConNum"], 0, 3) == "043") ? "selected" : ""?>>043 </option>
-                          <option value="051" <?=(substr($data["penConNum"], 0, 3) == "051") ? "selected" : ""?>>051 </option>
-                          <option value="052" <?=(substr($data["penConNum"], 0, 3) == "052") ? "selected" : ""?>>052 </option>
-                          <option value="053" <?=(substr($data["penConNum"], 0, 3) == "053") ? "selected" : ""?>>053 </option>
-                          <option value="054" <?=(substr($data["penConNum"], 0, 3) == "054") ? "selected" : ""?>>054 </option>
-                          <option value="055" <?=(substr($data["penConNum"], 0, 3) == "055") ? "selected" : ""?>>055 </option>
-                          <option value="061" <?=(substr($data["penConNum"], 0, 3) == "061") ? "selected" : ""?>>061 </option>
-                          <option value="062" <?=(substr($data["penConNum"], 0, 3) == "062") ? "selected" : ""?>>062 </option>
-                          <option value="063" <?=(substr($data["penConNum"], 0, 3) == "063") ? "selected" : ""?>>063 </option>
-                          <option value="064" <?=(substr($data["penConNum"], 0, 3) == "064") ? "selected" : ""?>>064 </option>
-						</select>
-						<input type="text" name="penConPnum2" class="form-control input-sm" style="display:inline-block; width:30%;" id="penConPnum2" >
-						<input type="text" name="penConPnum3" class="form-control input-sm" style="display:inline-block; width:30%;" id="penConPnum3" >
-					</div>
-				</div> -->
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>유효기간(시작일)</b>
-					</label>
-					<div class="col-sm-3">
-						<input type="text" name="penExpiStDtm" value="<?=$data["penExpiDtm"][0]?>" class="form-control input-sm" dateonly2>
-						<i class="fa fa-check form-control-feedback"></i>
-					</div>
-				</div>
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>유효기간(종료일)</b>
-					</label>
-					<div class="col-sm-3">
-						<input type="text" name="penExpiEdDtm" value="<?=$data["penExpiDtm"][1]?>" class="form-control input-sm" dateonly>
-						<i class="fa fa-check form-control-feedback"></i>
-					</div>
-				</div>
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>본인부담금율</b>
-					</label>
-					<div class="col-sm-3">
-						<select class="form-control input-sm" name="penTypeCd">
-							<option value="00" <?=($data["penTypeCd"] == "00") ? "selected" : ""?>>일반 15%</option>
-							<option value="01" <?=($data["penTypeCd"] == "01") ? "selected" : ""?>>감경 9%</option>
-							<option value="02" <?=($data["penTypeCd"] == "02") ? "selected" : ""?>>감경 6%</option>
-							<option value="03" <?=($data["penTypeCd"] == "03") ? "selected" : ""?>>의료 6%</option>
-							<option value="04" <?=($data["penTypeCd"] == "04") ? "selected" : ""?>>기초 0%</option>
-						</select>
-					</div>
-				</div>
 
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
@@ -296,7 +189,66 @@
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading"><strong>보호자 정보</strong></div>
+			<div class="panel-heading"><strong>장기요양정보</strong></div>
+			<div class="panel-body">
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>장기요양인정번호</b>
+					</label>
+					<div class="col-sm-3">
+						<span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
+						<input type="number" maxlength="10" oninput="maxLengthCheck(this)"  id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>" >
+						<i class="fa fa-check form-control-feedback"></i>
+					</div>
+				</div>
+
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>인정등급</b>
+					</label>
+					<div class="col-sm-3">
+						<select class="form-control input-sm" name="penRecGraCd">
+							<option value="00" <?=($data["penRecGraCd"] == "00") ? "selected" : ""?>>등급외</option>
+							<option value="01" <?=($data["penRecGraCd"] == "01") ? "selected" : ""?>>1등급</option>
+							<option value="02" <?=($data["penRecGraCd"] == "02") ? "selected" : ""?>>2등급</option>
+							<option value="03" <?=($data["penRecGraCd"] == "03") ? "selected" : ""?>>3등급</option>
+							<option value="04" <?=($data["penRecGraCd"] == "04") ? "selected" : ""?>>4등급</option>
+							<option value="05" <?=($data["penRecGraCd"] == "05") ? "selected" : ""?>>5등급</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>본인부담금율</b>
+					</label>
+					<div class="col-sm-3">
+						<select class="form-control input-sm" name="penTypeCd">
+							<option value="00" <?=($data["penTypeCd"] == "00") ? "selected" : ""?>>일반 15%</option>
+							<option value="01" <?=($data["penTypeCd"] == "01") ? "selected" : ""?>>감경 9%</option>
+							<option value="02" <?=($data["penTypeCd"] == "02") ? "selected" : ""?>>감경 6%</option>
+							<option value="03" <?=($data["penTypeCd"] == "03") ? "selected" : ""?>>의료 6%</option>
+							<option value="04" <?=($data["penTypeCd"] == "04") ? "selected" : ""?>>기초 0%</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>유효기간</b>
+					</label>
+					<div class="col-sm-3">
+						<input type="text" name="penExpiStDtm" value="<?=$data["penExpiDtm"][0]?>" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;"> ~
+						<input type="text" name="penExpiEdDtm" value="<?=$data["penExpiDtm"][1]?>" class="form-control input-sm" dateonly style="display: inline-block;width:48%;">
+						<i class="fa fa-check form-control-feedback"></i>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading"><strong>보호자정보</strong></div>
 			<div class="panel-body">
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">

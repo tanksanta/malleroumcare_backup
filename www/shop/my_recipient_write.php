@@ -86,68 +86,6 @@
 
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
-						<b>장기요양인정번호</b>
-					</label>
-					<div class="col-sm-3">
-						<span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
-						<input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);">
-						<i class="fa fa-check form-control-feedback"></i>
-					</div>
-				</div>
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>인정등급</b>
-					</label>
-					<div class="col-sm-3">
-						<select class="form-control input-sm" name="penRecGraCd">
-							<option value="00">등급외</option>
-							<option value="01">1등급</option>
-							<option value="02">2등급</option>
-							<option value="03">3등급</option>
-							<option value="04">4등급</option>
-							<option value="05">5등급</option>
-						</select>
-					</div>
-				</div>
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>유효기간(시작일)</b>
-					</label>
-					<div class="col-sm-3">
-						<input type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2>
-						<i class="fa fa-check form-control-feedback"></i>
-					</div>
-				</div>
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>유효기간(종료일)</b>
-					</label>
-					<div class="col-sm-3">
-						<input type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly>
-						<i class="fa fa-check form-control-feedback"></i>
-					</div>
-				</div>
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>본인부담금율</b>
-					</label>
-					<div class="col-sm-3">
-						<select class="form-control input-sm" name="penTypeCd">
-							<option value="00">일반 15%</option>
-							<option value="01">감경 9%</option>
-							<option value="02">감경 6%</option>
-							<option value="03">의료 6%</option>
-							<option value="04">기초 0%</option>
-						</select>
-					</div>
-				</div>
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
 						<b>성별</b>
 					</label>
 					<div class="col-sm-3">
@@ -208,7 +146,65 @@
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading"><strong>보호자 정보</strong></div>
+			<div class="panel-heading"><strong>장기요양정보</strong></div>
+			<div class="panel-body">
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>장기요양인정번호</b>
+					</label>
+					<div class="col-sm-3">
+						<span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
+						<input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);">
+						<i class="fa fa-check form-control-feedback"></i>
+					</div>
+				</div>
+
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>인정등급</b>
+					</label>
+					<div class="col-sm-3">
+						<select class="form-control input-sm" name="penRecGraCd">
+							<option value="00">등급외</option>
+							<option value="01">1등급</option>
+							<option value="02">2등급</option>
+							<option value="03">3등급</option>
+							<option value="04">4등급</option>
+							<option value="05">5등급</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>본인부담금율</b>
+					</label>
+					<div class="col-sm-3">
+						<select class="form-control input-sm" name="penTypeCd">
+							<option value="00">일반 15%</option>
+							<option value="01">감경 9%</option>
+							<option value="02">감경 6%</option>
+							<option value="03">의료 6%</option>
+							<option value="04">기초 0%</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>유효기간</b>
+					</label>
+					<div class="col-sm-3">
+						<input type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;"> ~
+						<input type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;">
+						<i class="fa fa-check form-control-feedback"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading"><strong>보호자정보</strong></div>
 			<div class="panel-body">
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
