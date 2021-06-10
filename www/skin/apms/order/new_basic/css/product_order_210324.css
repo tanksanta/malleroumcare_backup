@@ -121,6 +121,9 @@ table {border-collapse: collapse;}
 .detail-tab ul li.on span {background-image: url('../image/icon_19.png');}
 .detail-tab ul li.on h4,
 .detail-tab ul li.on p {color: #fff;}
+.detail-tab ul li.only {
+    width: 100% !important;
+}
 
 .tab-wrap {display: none; }
 .tab-wrap.on {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
