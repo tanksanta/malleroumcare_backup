@@ -2,6 +2,7 @@
 include_once("./_common.php");
 include_once('./lib/eform.lib.php');
 include_once(G5_LIB_PATH.'/icode.lms.lib.php');
+include_once(G5_LIB_PATH.'/mailer.lib.php');
 
 if(!$is_member) {
   json_response(400, '먼저 로그인하세요.');
@@ -137,6 +138,22 @@ if($port_setting !== false && $recv_hp) {
 
     $SMS->Send();
 }
+
+// 메일 발송
+// 기초 수급자 체크
+$is_gicho = $eform['penTypeCd'] == '04';
+
+$file = [
+  array('path' => $pdfdir, 'name' => "{$eform['dc_subject']}.pdf"),
+  array('path' => $certdir, 'name' => "감사추적인증서_{$eform['dc_subject']}.pdf")
+];
+
+ob_start();
+include_once ('./mail.eform.sign.php');
+$content = ob_get_contents();
+ob_end_clean();
+
+mailer('이로움', 'no-reply@eroumcare.com', $eform['entMail'], "[이로움] {$eform['penNm']}님 {$eform['entNm']}사업소와 전자계약이 체결되었습니다.", $content, 1, $file);
 
 json_response(200, 'OK');
 ?>

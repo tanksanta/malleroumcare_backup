@@ -59,20 +59,43 @@
                         <tbody>
                           <tr>
                             <td style="border-top:1px solid #ced3d6;text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:20px 0">문서 이름</td>
-                            <td style="border-top:1px solid #ced3d6;text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:20px 0">사업소명_1112233333_수급자명L11123_20210102_001</td>
+                            <td style="border-top:1px solid #ced3d6;text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:20px 0"><?=$eform['dc_subject']?></td>
                           </tr>
+                          <?php if($is_gicho) { ?>
                           <tr>
                             <td style="border-top:1px solid #ced3d6;width:150px;text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">문서 내용</td>
-                            <td style="border-top:1px solid #ced3d6;text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">1. 개인정보이용수집동의서</td>
+                            <td style="border-top:1px solid #ced3d6;text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">1. 장기요양기관이용신청서</td>
                           </tr>
                           <tr>
                             <td>&nbsp;</td>
-                            <td style="text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">2. 복지용구공급계약서</td>
+                            <td style="text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">2. 재가서비스이용내역서</td>
+                          </tr>
+                          <tr>
+                            <td>&nbsp;</td>
+                            <td style="text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">3. 복지용구공급계약서</td>
+                          </tr>
+                          <tr>
+                            <td>&nbsp;</td>
+                            <td style="text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">4. 장기요양급여제공기록지</td>
                           </tr>
                           <tr>
                             <td style="border-bottom:1px solid #ced3d6;">&nbsp;</td>
-                            <td style="border-bottom:1px solid #ced3d6; text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">3. 장기요양급여제공기록지</td>
+                            <td style="border-bottom:1px solid #ced3d6; text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">5. 개인정보이용수집동의서</td>
                           </tr>
+                          <?php } else { ?>
+                          <tr>
+                            <td style="border-top:1px solid #ced3d6;width:150px;text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">문서 내용</td>
+                            <td style="border-top:1px solid #ced3d6;text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">1. 복지용구공급계약서</td>
+                          </tr>
+                          <tr>
+                            <td>&nbsp;</td>
+                            <td style="text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">2. 장기요양급여제공기록지</td>
+                          </tr>
+                            <tr>
+                            <td style="border-bottom:1px solid #ced3d6;">&nbsp;</td>
+                            <td style="border-bottom:1px solid #ced3d6; text-align:left;color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 0">3. 개인정보이용수집동의서</td>
+                          </tr>
+                          <?php } ?>
                         </tbody>
                       </table>
                     </td>
@@ -82,7 +105,7 @@
                   </tr>
                   <tr>
                     <td style="color:#696969;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:0">
-                      <a href="#" style="color:#ffffff;background-color:#f07b01;display:inline-block;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 40px;text-decoration:none;">전자문서 확인</a>
+                      <a href="<?=$link?>" style="color:#ffffff;background-color:#f07b01;display:inline-block;font-family:AppleSDGothicNeo-Regular,'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,dotum,'돋움',Dotum,Helvetica;font-size:15px;letter-spacing:-1px;line-height:23px;margin:0;padding:10px 40px;text-decoration:none;">전자문서 확인</a>
                     </td>
                   </tr>
                 </tbody>
