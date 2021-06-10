@@ -64,6 +64,8 @@ $tot_point = 0;
 $tot_sell_price = 0;
 $tot_sell_discount = 0;
 
+$sql_ct_pen_id = $_SESSION['recipient']['penId'] ? " AND a.ct_pen_id = '{$_SESSION['recipient']['penId']}'" : " AND a.ct_pen_id is null ";
+
 // $s_cart_id 로 현재 장바구니 자료 쿼리
 $sql = " select a.ct_id,
 				a.it_id,
@@ -86,7 +88,7 @@ $sql = " select a.ct_id,
 				a.prodSupYn,
 				b.it_img1
 		   from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
-		  where a.od_id = '$s_cart_id' ";
+		  where a.od_id = '$s_cart_id' {$sql_ct_pen_id}";
 $sql .= " group by a.it_id ";
 $sql .= " order by a.ct_id ";
 $result = sql_query($sql);

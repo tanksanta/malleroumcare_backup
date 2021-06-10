@@ -1476,8 +1476,10 @@ function set_cart_id($direct, $recipient = null)
             set_session('ss_cart_direct', $tmp_cart_id);
         }
     } else {
-        if ($member['mb_id'] && $recipient) {
-            set_session('ss_cart_id', $member['mb_id'] . $recipient);
+        if ($member['mb_id'] && $recipient) { // 수급자 선택시
+            // set_session('ss_cart_id', get_uniqid());
+            $tmp_cart_id = preg_replace("/[^0-9]/", "", $recipient);
+            set_session('ss_cart_id', $tmp_cart_id);
             $pen_sql = " and pen_id = '{$recipient}' ";
         }else{
             // 비회원장바구니 cart id 쿠키설정
