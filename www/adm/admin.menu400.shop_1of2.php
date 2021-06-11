@@ -3,6 +3,7 @@ if (!defined('G5_USE_SHOP') || !G5_USE_SHOP) return;
 
 $menu['menu400'] = array (
     array('400000', '쇼핑몰관리', G5_ADMIN_URL.'/shop_admin/', 'shop_config'),
+    array('400001', '출고담당자', G5_ADMIN_URL.'/shop_admin/samhwa_deliverylist.php', 'scf_order_delivery', 1),
     array('400100', '쇼핑몰설정', G5_ADMIN_URL.'/shop_admin/configform.php', 'scf_config'),
     array('400400', '주문내역', G5_ADMIN_URL.'/shop_admin/samhwa_orderlist.php', 'scf_order', 1),
     array('400402', '출고리스트', G5_ADMIN_URL.'/shop_admin/samhwa_deliverylist.php', 'scf_order_delivery', 1),

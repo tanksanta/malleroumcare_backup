@@ -196,8 +196,7 @@ echo $pagelist;
             <th scope="row"><label for="au_menu">접근가능메뉴<strong class="sound_only">필수</strong></label></th>
             <td>
                 <select id="au_menu" name="au_menu" required class="required">
-                    <option value=''>선택하세요</option>
-                    <option value="000001">000001 출고담당자</option>
+                    <option value=''>선택하세요</option>ㅋ
                     <?php
                     foreach($auth_menu as $key=>$value)
                     {
