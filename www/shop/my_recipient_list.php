@@ -139,7 +139,7 @@
 							<?php echo $total_count - (($page - 1) * $rows) - $i; ?>
 						</td>
 						<td>
-							<a href='<?php echo G5_URL; ?>/shop/my_recipient_update.php?id=<?php echo $data['penId']; ?>'>
+							<a href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId']; ?>'>
 								<?php echo $data['penNm']; ?>
 								(<?php echo substr($data['penBirth'], 2, 2); ?>년생/<?php echo $data['penGender']; ?>)
 								<br/>
