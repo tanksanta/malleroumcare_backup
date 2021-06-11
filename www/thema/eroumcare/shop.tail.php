@@ -172,7 +172,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 	</div>
 	
 	<a href='<?php echo G5_SHOP_URL; ?>/connect_recipient.php' class="close" onClick="return confirm('<?php echo $_SESSION['recipient']['penNm']; ?> 수급자 연결을 해지하겠습니까?');">
-		X
+		<i class="fa fa-times"></i>
 	</a>
 	<a href='<?php echo G5_SHOP_URL; ?>/cart.php' class="cart">
 		장바구니<br/><b><?php echo get_carts_by_recipient($_SESSION['recipient']['penId']); ?>개</b>
