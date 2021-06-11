@@ -23,7 +23,7 @@
   if(!$pen)
     alert('수급자 정보가 존재하지 않습니다.');
 
-  function check_and_print($check, $prefix, $postfix) {
+  function check_and_print($check, $prefix = '', $postfix = '') {
     if($check) return $prefix.$check.$postfix;
     return '';
   }
@@ -58,7 +58,7 @@
     </div>
     <div class="row">
       <div class="col-sm-2">·보호자</div>
-      <div class="col-sm-10">: <?=check_and_print($pen_pro_rel_cd[$pen['penProRel']], '(', ')')?><?=check_and_print($pen['penProNm'], '', ', ')?><?=check_and_print(substr($pen['penProBirth'], 2, 2), '', '년생, ')?><?=check_and_print($pen['penProConNum'], '', ', ')?><?=check_and_print($pen['penProConPNum'], '', ', ')?><?="{$pen['penProAddr']} {$pen['penProAddrDtl']}"?></div>
+      <div class="col-sm-10">: <?=check_and_print($pen_pro_rel_cd[$pen['penProRel']], '(', ')')?><?=$pen['penProNm']?><?=check_and_print(substr($pen['penProBirth'], 2, 2), ', ', '년생')?><?=check_and_print($pen['penProConNum'], ', ')?><?=check_and_print($pen['penProConPNum'], ', ')?><?=check_and_print($pen['penProAddr'], ', ')?><?=check_and_print($pen['penProAddrDtl'], ' ')?></div>
     </div>
     <div class="row">
       <div class="col-sm-2">·장기요양기록지</div>
