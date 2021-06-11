@@ -178,6 +178,7 @@
 				<span><?=$odDeliveryNameTel?></span>
 				<?=($odDeliveryNameTel) ? "<br>" : ""?>
 				<span><?=$od["od_b_addr1"]?> <?=$od["od_b_addr2"]?></span>
+				<p><?=$od["od_memo"]?></p>
 			</p>
 		</div>
 	</div>
