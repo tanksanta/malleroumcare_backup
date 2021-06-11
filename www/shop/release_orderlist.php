@@ -331,7 +331,7 @@
 		$("#searchSubmitBtn").click(function(){
 			$("#page").val(1);
 			$("#listDataWrap").html("");
-      page2=0;
+      page2=1;
 			doSearch();
 		});
 		
