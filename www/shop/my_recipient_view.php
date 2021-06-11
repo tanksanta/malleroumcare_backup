@@ -20,16 +20,12 @@
     alert('서버 오류로 수급자 정보를 불러올 수 없습니다.');
   
   $pen = $res['data'][0];
-  if(!$pen) { var_dump($res); exit; }
-    //alert('수급자 정보가 존재하지 않습니다.');
+  if(!$pen)
+    alert('수급자 정보가 존재하지 않습니다.');
 
-  function combine_data($data = []) {
-    $res = '';
-    foreach($data as $val) {
-      if($res)
-        $res .= $val.', ';
-    }
-    return $res;
+  function check_and_print($check, $prefix, $postfix) {
+    if($check) return $prefix.$check.$postfix;
+    return '';
   }
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL?>/my_recipient.css">
@@ -62,11 +58,11 @@
     </div>
     <div class="row">
       <div class="col-sm-2">·보호자</div>
-      <div class="col-sm-10">: (<?=$pen['penProRel']?>)<?=$pen['penProNm']?>, <?=substr($pen['penProBirth'], 2, 2)?>년생, <?=$pen['penProConNum']?>, <?=$pen['penProConPNum']?>, 서울시 종로구 111-22</div>
+      <div class="col-sm-10">: <?=check_and_print($pen_pro_rel_cd[$pen['penProRel']], '(', ')')?><?=check_and_print($pen['penProNm'], '', ', ')?><?=check_and_print(substr($pen['penProBirth'], 2, 2), '', '년생, ')?><?=check_and_print($pen['penProConNum'], '', ', ')?><?=check_and_print($pen['penProConPNum'], '', ', ')?><?="{$pen['penProAddr']} {$pen['penProAddrDtl']}"?></div>
     </div>
     <div class="row">
       <div class="col-sm-2">·장기요양기록지</div>
-      <div class="col-sm-10">: 확인자(수급자), 수령방법(방문)</div>
+      <div class="col-sm-10">: 확인자(<?=$pen_cnm_type_cd[$pen['penCnmTypeCd']]?>), 수령방법(<?=$pen_rec_type_cd[$pen['penRecTypeCd']]?>) <?=$pen['penRecTypeTxt']?></div>
     </div>
   </div>
 
