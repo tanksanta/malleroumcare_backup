@@ -801,7 +801,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                      <td class="btncol">
                                         <select class="ct_manager" data-ct-id="<?php echo $options[$k]['ct_id']; ?>">
                                         <?php
-                                            $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '200100'";
+                                            $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '400001'";
                                             $result_m = sql_query($sql_m);
                                             echo '<option value="미지정">미지정</option>';
                                             for ($q=0; $row_m=sql_fetch_array($result_m); $q++){
