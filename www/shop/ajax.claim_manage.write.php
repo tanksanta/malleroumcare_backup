@@ -14,7 +14,7 @@ if(!$post || !array_keys_exists([
   'start_date', 'total_price', 'total_price_pen', 'total_price_ent', 'selected_month'
 ], $post)) json_response(400, '잘못된 요청입니다.'.json_encode($post));
 
-$check = sql_fetch("SELECT cl_id FROM `claim_management` WHERE
+$check = sql_fetch("SELECT cl_id, cl_status FROM `claim_management` WHERE
   penId = '{$post['penId']}' AND
   penNm = '{$post['penNm']}' AND
   penLtmNum = '{$post['penLtmNum']}' AND
@@ -24,12 +24,14 @@ $check = sql_fetch("SELECT cl_id FROM `claim_management` WHERE
 ");
 if($check['cl_id']) {
   // 이미 생성되어있는 변경지점이면 값을 새로 업데이트
-  sql_query("UPDATE `claim_management` SET
-    total_price = '{$post['total_price']}',
-    total_price_pen = '{$post['total_price_pen']}',
-    total_price_ent = '{$post['total_price_ent']}'
-    WHERE cl_id = '{$check['cl_id']}'
-  ");
+  if($check['cl_status'] == 0) {
+    sql_query("UPDATE `claim_management` SET
+      total_price = '{$post['total_price']}',
+      total_price_pen = '{$post['total_price_pen']}',
+      total_price_ent = '{$post['total_price_ent']}'
+      WHERE cl_id = '{$check['cl_id']}'
+    ");
+  }
   json_response(200, $check['cl_id']);
 }
 
