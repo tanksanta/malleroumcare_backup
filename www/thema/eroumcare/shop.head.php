@@ -174,7 +174,7 @@ scrollToTop();
 			</div>
 			<div class="logo_area">
 				<div class="ent_name"><?=($member["mb_entNm"] ? $member["mb_entNm"] : '이로움')?></div>
-				<?php if($member['mb_level']==9){ ?>
+				<?php if($member['mb_level'] >= 9){ ?>
 				<style>
 						.or_manage{ width: 100%; height: 50px; line-height: 50px; text-align:center; margin-bottom:10px; color: #fff; background-color: #ef7c00; border-radius: 10px; }
 				</style>
