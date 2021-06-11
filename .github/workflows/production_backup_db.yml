@@ -1,0 +1,29 @@
+name: Backup Database
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 19 * * 1" # 매주 월요일 새벽 4시(UTC 19)
+
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: get time
+        id: time
+        uses: nanzm/get-time-action@v1.1
+        with:
+          timeZone: 9
+          format: 'YYYY-MM-DD-HH-mm-ss'
+      - name: backup mysql
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/malleroumcare/backup
+            mysqldump -h ${{ secrets.MYSQL_HOST }} -u ${{ secrets.MYSQL_USER }} -p'${{ secrets.MYSQL_PASSWORD }}' ${{ secrets.MYSQL_DB }} > backup_${{ steps.time.outputs.time }}.sql
