@@ -1,4 +1,4 @@
-name: Backup db
+name: Backup Database
 
 on:
   workflow_dispatch:
@@ -19,12 +19,6 @@ jobs:
           format: 'YYYY-MM-DD-HH-mm-ss'
       - name: backup mysql
         uses: appleboy/ssh-action@master
-        env:
-          MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASS: ${{ secrets.MYSQL_PASSWORD }}
-          MYSQL_DB: ${{ secrets.MYSQL_DB }}
-          CURRENT_TIME: ${{ steps.time.outputs.time }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -32,4 +26,4 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /home/malleroumcare/backup
-            echo "mysqldump -h $MYSQL_HOST -u $MYSQL_USER -p'$MYSQL_PASS' $MYSQL_DB > backup_$CURRENT_TIME.sql"
+            mysqldump -h ${{ secrets.MYSQL_HOST }} -u ${{ secrets.MYSQL_USER }} -p'${{ secrets.MYSQL_PASSWORD }}' ${{ secrets.MYSQL_DB }} > backup_${{ steps.time.outputs.time }}.sql
