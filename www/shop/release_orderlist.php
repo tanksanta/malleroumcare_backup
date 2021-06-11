@@ -244,7 +244,7 @@
             data: formdata,
         })
         .done(function(result){
-            console.log(result);
+            //console.log(result);
             // return false;
             if(result.data){
 					var html = "";
