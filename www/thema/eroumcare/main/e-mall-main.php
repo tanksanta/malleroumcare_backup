@@ -30,8 +30,13 @@
 		<div class="viewWrap swiper-container">
 			<ul style="width: 100%;" class="swiper-wrapper">
 				<li style="width: 100%;" class="swiper-slide">
+<<<<<<< Updated upstream
 					<a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=notice&wr_id=23">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_04.jpg" alt="">
+=======
+					<a href="/bbs/board.php?bo_table=notice&wr_id=23">
+						<img src="<?=THEMA_URL?>/assets/img/main_banner_05.jpg" alt="">
+>>>>>>> Stashed changes
 					</a>
 				</li>
 				<li style="width: 100%;" class="swiper-slide">
