@@ -1,6 +1,7 @@
-name: backup db
+name: Backup db
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 19 * * 1" # 매주 월요일 새벽 4시(UTC 19)
 
