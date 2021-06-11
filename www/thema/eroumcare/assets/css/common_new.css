@@ -988,6 +988,7 @@ pre{white-space: pre-wrap;}
 	border:1px solid #f9d1a4;
 	padding:10px 15px;
 	background-color:#fff;
+	z-index: 99;
 }
 #fixed_recipient .info {
 	float:left;
@@ -1184,7 +1185,6 @@ pre{white-space: pre-wrap;}
 	#fixed_recipient {
 		width: 90%;
 		right: 5%;
-		z-index: 999999;
 		box-sizing: border-box;
 	}
 	#fixed_recipient .info {
