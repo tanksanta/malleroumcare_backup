@@ -186,7 +186,7 @@ $flist = apms_form(1,0);
 
 <label for="sfl" class="sound_only">검색대상</label>
 <select name="sfl" id="sfl">
-    <option value="it_thezone" <?php echo get_selected($sfl, 'it_thezone'); ?>>상품코드</option>
+    <option value="it_thezone" <?php echo get_selected($sfl, 'it_thezone'); ?>>분류코드</option>
     <option value="it_name" <?php echo get_selected($sfl, 'it_name'); ?>>상품명</option>
     <option value="it_model" <?php echo get_selected($sfl, 'it_model'); ?>>모델명</option>
     <option value="it_id" <?php echo get_selected($sfl, 'it_id'); ?>>상품코드</option>
