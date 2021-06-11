@@ -599,7 +599,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     $send_cost = get_item_sendcost_by_default_case($item_price);
 
                     if ($send_cost > 0) {
-                        $sc_price_info = "* 배송비 ({$send_cost}원)<br>* 도서산간지역은 추가배송비가 발생합니다.";
+                        $sc_price_info = "* 배송비 [{$send_cost}원]<br>* 도서산간지역 추가배송비 [".($send_cost + 2000)."원]";
                     } else {
                         $sc_price_info = "* 무료배송<br>* 도서산간지역은 추가배송비가 발생합니다.";
                     }
@@ -638,7 +638,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     $send_cost = get_item_sendcost_by_default_case($item_price);
 
                     if ($send_cost > 0) {
-                        $sc_price_info = "* 배송비 ({$send_cost}원)<br>* 도서산간지역은 추가배송비가 발생합니다.";
+                        $sc_price_info = "* 배송비 [{$send_cost}원]<br>* 도서산간지역 추가배송비 [".($send_cost + 2000)."원]";
                     } else {
                         $sc_price_info = "* 무료배송<br>* 도서산간지역은 추가배송비가 발생합니다.";
                     }
