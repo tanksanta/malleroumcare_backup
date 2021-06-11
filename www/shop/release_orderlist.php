@@ -331,7 +331,7 @@
 		$("#searchSubmitBtn").click(function(){
 			$("#page").val(1);
 			$("#listDataWrap").html("");
-            page2=0;
+      page2=0;
 			doSearch();
 		});
 		
@@ -352,17 +352,11 @@
 			doSearch();
 		});
         
-        $(window).scroll(function() {
-            // alert($(window).scrollTop()%100)
-            if($(window).scrollTop()%100){
-                doSearch();
-            }
-            // alert($(document).height() - $(window).height());
-            // alert($(document).height() - $(window).height()-100);
-            // if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-            //     doSearch();
-            // }
-        });
+			$(window).scroll(function() {
+					if((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+						doSearch();
+					}
+			});
 		
     });
 
@@ -462,20 +456,23 @@
             $("#listDataWrap > ul.cf").removeClass("type1");
         }
 
-        doSearch();
+        //doSearch();
 		itNameSizeSetting();
     }
 
 	$("#cf_flag").change(function(){
 		cf_flag();
+		doSearch();
 	});
 	$("#cf_flag2").change(function(){
         document.getElementById('cf_flag3').checked=false;
 		cf_flag();
+		doSearch();
 	});
     $("#cf_flag3").change(function(){
         document.getElementById('cf_flag2').checked=false;
 		cf_flag();
+		doSearch();
 	});
     //바코드 버튼 클릭
 
