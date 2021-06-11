@@ -197,6 +197,7 @@ echo $pagelist;
             <td>
                 <select id="au_menu" name="au_menu" required class="required">
                     <option value=''>선택하세요</option>
+                    <option value="000001">000001 출고담당자</option>
                     <?php
                     foreach($auth_menu as $key=>$value)
                     {
