@@ -232,7 +232,7 @@ if($header_skin)
 			<h4>최근 주문내역</h4>
 			<?php
 				// 최근 주문내역
-				$sql = " select o.*, i.it_model, i.it_name from {$g5['g5_shop_order_table']} as o 
+				$sql = " select o.*, i.it_model, i.it_name, c.ct_qty from {$g5['g5_shop_order_table']} as o 
 					LEFT JOIN g5_shop_cart as c ON o.od_id = c.od_id
 					LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
 					where o.mb_id = '{$member['mb_id']}' AND o.od_del_yn = 'N' order by o.od_id desc limit 0, 5 ";
@@ -278,7 +278,7 @@ if($header_skin)
 						<td><?php echo $row['od_b_name']; ?></td>
 						<td><?php echo show_delivery_info($row); ?></td>
 						<td><?php echo substr($row['od_time'],2,14); ?> (<?php echo get_yoil($row['od_time']); ?>)</td>
-						<td><?php echo $row['od_cart_count']; ?></td>
+						<td><?php echo $row['ct_qty']; ?></td>
 						<td><?php echo display_price($row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2']); ?></td>
 						<td><?php echo display_price($row['od_receipt_price']); ?></td>
 						<td><?php echo display_price($row['od_misu']); ?></td>
