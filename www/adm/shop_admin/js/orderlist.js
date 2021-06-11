@@ -473,18 +473,25 @@ $(function(){
     // 일괄 전송
     $(document).on( "click", '#delivery_edi_send_all', function() {
         
-		var od_id = [];
+		var ct_id = [];
 		var item = $("input[name='od_id[]']:checked");
+        var type = $(this).data('type');
 		
 		for(var i = 0; i < item.length; i++){
-			od_id.push($(item[i]).val());
+			ct_id.push($(item[i]).val());
 		}
+
+        if (type && type === 'resend' && !ct_id.length) {
+            alert('재전송할 주문을 선택해주세요.');
+            return;
+        }
 
         $.ajax({
             method: "POST",
             url: "./ajax.order.delivery.edi.all.php",
             data: {
-                od_id: od_id
+                ct_id: ct_id,
+                type: type,
             },
         })
         .done(function(data) {

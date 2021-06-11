@@ -4,10 +4,22 @@ include_once('./_common.php');
 header('Content-Type: application/json');
 
 $where = "c.ct_status = '출고준비'";
-$ct_id=$od_id;
 
 if (is_array($ct_id)) {
     $where = ' c.ct_id IN (\'' . implode('\',\'', $ct_id) . '\')';
+}
+
+if ($type === 'resend') {
+    if (!$ct_id) {
+        $ret = array(
+            'result' => 'fail',
+            'msg' => '재전송할 주문을 선택해주세요.',
+        );
+        echo json_encode($ret);
+        exit;
+    }
+} else {
+    $where .= " AND c.ct_edi_result = 0 ";
 }
 
 $return_success = 0;
@@ -43,7 +55,7 @@ WHERE
     AND c.ct_delivery_company = 'ilogen' -- 로젠택배
     AND ( c.ct_combine_ct_id IS NULL OR c.ct_combine_ct_id = '') -- 합포가 아닌것
     AND ( c.ct_delivery_num IS NULL OR c.ct_delivery_num = '') -- 송장번호 없는것
-    AND c.ct_edi_result = 0
+    -- AND c.ct_edi_result = 0 -- 위에서 처리
     AND c.ct_is_direct_delivery = 0 -- 직배송 아닌것
     -- and o.od_id = '2021042313174631'
 ";
