@@ -1,4 +1,16 @@
 <?php
+	if($_POST['penProTypeCd'] == '02') { // 보호자 : 요양보호사
+		$_POST['penProRel'] = '11'; // 관계 : 직접입력
+	} else if($_POST['penProTypeCd'] == '00') { // 보호자 : 없음
+		$_POST['penProNm'] = '';
+		$_POST['penProBirth'] = '';
+		$_POST['penProConNum'] = '';
+		$_POST['penProConPnum'] = '';
+		$_POST['penProEmail'] = '';
+		$_POST['penProZip'] = '';
+		$_POST['penProAddr'] = '';
+		$_POST['penProAddrDtl'] = '';
+	}
 
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);

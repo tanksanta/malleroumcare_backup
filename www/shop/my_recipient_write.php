@@ -24,6 +24,11 @@
 		#zipAddrPopupWrap #zipAddrPopupIframe { position: relative; width: 100%; height: 100%; float: left; border: 0; background-color: #FFF; border-top: 1px solid #DDD; }
 		#zipAddrPopupWrap .closeBtn { position: absolute; font-size: 32px; color: #AAA; top: 10px; right: 10px; cursor: pointer; }
 
+		.panel-heading.clear:after { display: block; content: ' '; clear:both; }
+		.panel-heading .l-heading-wrap { float: left; }
+		.panel-heading .r-heading-wrap { float: right; }
+		.panel-heading .r-heading-wrap .checkbox-inline { padding-top: 0; padding-left: 0; }
+
 		@media (max-width : 750px){
 			#zipAddrPopupWrap > div > div { width: 100%; height: 100%; left: 0; margin-left: 0; }
 		}
@@ -204,8 +209,44 @@
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading"><strong>보호자정보</strong></div>
-			<div class="panel-body">
+			<div class="panel-heading clear">
+				<div class="l-heading-wrap"><strong>보호자정보</strong></div>
+				<div class="r-heading-wrap">
+					<label class="checkbox-inline">
+						<input type="radio" class="radio_pro_type" name="penProTypeCd" value="01" style="vertical-align: middle; margin: 0 5px 0 0;" checked>일반보호자
+					</label>
+					<label class="checkbox-inline">
+						<input type="radio" class="radio_pro_type" name="penProTypeCd" value="02" style="vertical-align: middle; margin: 0 5px 0 0;">요양보호사
+					</label>
+					<label class="checkbox-inline">
+						<input type="radio" class="radio_pro_type" name="penProTypeCd" value="00" style="vertical-align: middle; margin: 0 5px 0 0;">없음
+					</label>
+				</div>
+			</div>
+			<div id="panel_pro" class="panel-body">
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b id="pro_rel_title">관계</b>
+					</label>
+					<div class="col-sm-3">
+						<select class="form-control input-sm penProRel" name="penProRel" style="margin-bottom: 5px;">
+							<option value="00">처</option>
+							<option value="01">남편</option>
+							<option value="02">자</option>
+							<option value="03">자부</option>
+							<option value="04">사위</option>
+							<option value="05">형제</option>
+							<option value="06">자매</option>
+							<option value="07">손</option>
+							<option value="08">배우자 형제자매</option>
+							<option value="09">외손</option>
+							<option value="10">부모</option>
+							<option value="11">직접입력</option>
+						</select>
+						<input type="text" name="penProRelEtc" class="form-control input-sm" readonly>
+					</div>
+				</div>
+
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
 						<b>보호자명</b>
@@ -223,29 +264,6 @@
                         <select name="penProBirth1"  title="년도" class="form-control input-sm year"  style="display:inline-block;width:32%;"></select>
                         <select name="penProBirth2"  title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
                         <select name="penProBirth3"  title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
-					</div>
-				</div>
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>관계</b>
-					</label>
-					<div class="col-sm-3">
-						<select class="form-control input-sm" name="penProRel" style="margin-bottom: 5px;">
-							<option value="00">처</option>
-							<option value="01">남편</option>
-							<option value="02">자</option>
-							<option value="03">자부</option>
-							<option value="04">사위</option>
-							<option value="05">형제</option>
-							<option value="06">자매</option>
-							<option value="07">손</option>
-							<option value="08">배우자 형제자매</option>
-							<option value="09">외손</option>
-							<option value="10">부모</option>
-							<option value="11">직접입력</option>
-						</select>
-						<input type="text" name="penProRelEtc" class="form-control input-sm" readonly>
 					</div>
 				</div>
 
@@ -590,6 +608,35 @@
 				}
 			});
 
+			function onProTypeChange($this) {
+				var val = $this.val();
+
+				if(val == '00') { // 없음
+					$('#panel_pro').hide();
+				} else {
+					if(val == '02') { // 요양보호사
+						$('#pro_rel_title').text('기관');
+						$('.register-form .penProRel').hide();
+						$(".register-form input[name='penProRelEtc']").val('');
+						$('.register-form input[name="penProRelEtc"]').prop('readonly', false);
+					} else {
+						$('#pro_rel_title').text('관계');
+						$('.register-form .penProRel').show();
+						$(".register-form input[name='penProRelEtc']").val('');
+						if($('.register-form select[name="penProRel"]').val() != '11') {
+							$(".register-form input[name='penProRelEtc']").prop("readonly", true);
+						} else {
+							$('.register-form input[name="penProRelEtc"]').prop('readonly', false);
+						}
+					}
+					$('#panel_pro').show();
+				}
+			}
+			onProTypeChange($('.register-form input[name="penProTypeCd"]:checked'));
+			$('.radio_pro_type').change(function() {
+				onProTypeChange($(this));
+			});
+
 			$("#btn_submit").click(function(){
        
 
@@ -625,7 +672,6 @@
 				if(penBirth.length !== 10){ alert("주민번호를 확인하세요."); return false;}
                 if(penProBirth.length !== 10){ penProBirth=""; }
 
-                $(".register-form input[name='penJumin2']").val()
 				var sendData = {
 					penNm : $(".register-form input[name='penNm']").val(),
 					penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
@@ -649,6 +695,7 @@
 					penZip : $(".register-form input[name='penZip']").val(),
 					penAddr : $(".register-form input[name='penAddr']").val(),
 					penAddrDtl : $(".register-form input[name='penAddrDtl']").val(),
+					penProTypeCd : $('.register-form input[name="penProTypeCd"]:checked').val(),
 					penProNm : $(".register-form input[name='penProNm']").val(),
 					penProBirth : penProBirth,
 					penProRel : $(".register-form select[name='penProRel']").val(),

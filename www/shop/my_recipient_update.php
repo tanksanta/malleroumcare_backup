@@ -4,57 +4,36 @@
 	include_once("./_head.php");
 
 	# 회원검사
-	if(!$member["mb_id"]){
+	if(!$member["mb_id"])
 		alert("접근 권한이 없습니다.");
-		return false;
-	}
+
+	if(!$_GET["id"])
+    alert("정상적이지 않은 접근입니다.");
 
 	# 수급자정보
-	$sendData = [];
-	$sendData["usrId"] = $member["mb_id"];
-	$sendData["entId"] = $member["mb_entId"];
-	$sendData["pageNum"] = 1;
-	$sendData["pageSize"] = 1;
-	$sendData["penId"] = $_GET["id"];
+	$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+    'usrId' => $member['mb_id'],
+    'entId' => $member['mb_entId'],
+    'penId' => $_GET['id']
+  ));
 
-	$oCurl = curl_init();
-	curl_setopt($oCurl, CURLOPT_PORT, 9901);
-	curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
-	curl_setopt($oCurl, CURLOPT_POST, 1);
-	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-	$res = curl_exec($oCurl);
-	$res = json_decode($res, true);
-	curl_close($oCurl);
+	if(!$res || $res['errorYn'] == 'Y')
+		alert('서버 오류로 수급자 정보를 불러올 수 없습니다.');
 
 	$data = $res["data"][0];
-	if(!$data){
-		alert("존재하지 않는 데이터입니다.");
-		return false;
-	}
+	if(!$data)
+		alert('수급자 정보가 존재하지 않습니다.');
 
 	$data["penExpiDtm"] = explode(" ~ ", $data["penExpiDtm"]);
 
+	// 수급자 취급가능 제품
+	$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST, array(
+    'penId' => $data['penId']
+  ));
 
-    # 구급자별 품목 조회
-    $sendData2 = [];
-    $sendData2["penId"] = $data['penId'];
-    // $sendData2["gubun"] ;
-	$oCurl2 = curl_init();
-	curl_setopt($oCurl2, CURLOPT_PORT, 9901);
-	curl_setopt($oCurl2, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectItemList");
-	curl_setopt($oCurl2, CURLOPT_POST, 1);
-	curl_setopt($oCurl2, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($oCurl2, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
-	curl_setopt($oCurl2, CURLOPT_SSL_VERIFYPEER, FALSE);
-	curl_setopt($oCurl2, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-	$res2 = curl_exec($oCurl2);
-	$res2 = json_decode($res2, true);
-	curl_close($oCurl2);
-
-	$data2 = $res2["data"];
+	$data2 = [];
+	if($res['data'])
+		$data2 = $res["data"];
 
 ?>
 
@@ -70,6 +49,11 @@
 		#zipAddrPopupWrap > div > div { position: relative; width: 700px; height: 500px; background-color: #FFF; padding-top: 50px; left: 50%; margin-left: -350px; }
 		#zipAddrPopupWrap #zipAddrPopupIframe { position: relative; width: 100%; height: 100%; float: left; border: 0; background-color: #FFF; border-top: 1px solid #DDD; }
 		#zipAddrPopupWrap .closeBtn { position: absolute; font-size: 32px; color: #AAA; top: 10px; right: 10px; cursor: pointer; }
+
+		.panel-heading.clear:after { display: block; content: ' '; clear:both; }
+		.panel-heading .l-heading-wrap { float: left; }
+		.panel-heading .r-heading-wrap { float: right; }
+		.panel-heading .r-heading-wrap .checkbox-inline { padding-top: 0; padding-left: 0; }
 
 		@media (max-width : 750px){
 			#zipAddrPopupWrap > div > div { width: 100%; height: 100%; left: 0; margin-left: 0; }
@@ -248,34 +232,27 @@
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading"><strong>보호자정보</strong></div>
-			<div class="panel-body">
+			<div class="panel-heading clear">
+				<div class="l-heading-wrap"><strong>보호자정보</strong></div>
+				<div class="r-heading-wrap">
+					<label class="checkbox-inline">
+						<input type="radio" class="radio_pro_type" name="penProTypeCd" value="01" style="vertical-align: middle; margin: 0 5px 0 0;" <?=($data["penProTypeCd"] == "01") ? "checked" : ""?>>일반보호자
+					</label>
+					<label class="checkbox-inline">
+						<input type="radio" class="radio_pro_type" name="penProTypeCd" value="02" style="vertical-align: middle; margin: 0 5px 0 0;" <?=($data["penProTypeCd"] == "02") ? "checked" : ""?>>요양보호사
+					</label>
+					<label class="checkbox-inline">
+						<input type="radio" class="radio_pro_type" name="penProTypeCd" value="00" style="vertical-align: middle; margin: 0 5px 0 0;" <?=($data["penProTypeCd"] == "00") ? "checked" : ""?>>없음
+					</label>
+				</div>
+			</div>
+			<div id="panel_pro" class="panel-body">
 				<div class="form-group has-feedback">
 					<label class="col-sm-2 control-label">
-						<b>보호자명</b>
+						<b id="pro_rel_title">관계</b>
 					</label>
 					<div class="col-sm-3">
-						<input type="text" name="penProNm" value="<?=$data["penProNm"]?>" class="form-control input-sm">
-					</div>
-				</div>
-
-                <div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>생년월일</b>
-					</label>
-					<div class="col-sm-3">
-                        <select name="penProBirth1"  title="년도" class="form-control input-sm year"  style="display:inline-block;width:32%;"></select>
-                        <select name="penProBirth2"  title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
-                        <select name="penProBirth3"  title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
-					</div>
-				</div>
-
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label">
-						<b>관계</b>
-					</label>
-					<div class="col-sm-3">
-						<select class="form-control input-sm" name="penProRel" style="margin-bottom: 5px;">
+						<select class="form-control input-sm penProRel" name="penProRel" style="margin-bottom: 5px;">
 							<option value="00" <?=($data["penProRel"] == "00") ? "selected" : ""?>>처</option>
 							<option value="01" <?=($data["penProRel"] == "01") ? "selected" : ""?>>남편</option>
 							<option value="02" <?=($data["penProRel"] == "02") ? "selected" : ""?>>자</option>
@@ -290,6 +267,26 @@
 							<option value="11" <?=($data["penProRel"] == "11") ? "selected" : ""?>>직접입력</option>
 						</select>
 						<input type="text" name="penProRelEtc" value="<?=$data["penProRelEtc"]?>" class="form-control input-sm" <?=($data["penProRel"] == "11") ? "" : "readonly"?>>
+					</div>
+				</div>
+
+				<div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>보호자명</b>
+					</label>
+					<div class="col-sm-3">
+						<input type="text" name="penProNm" value="<?=$data["penProNm"]?>" class="form-control input-sm">
+					</div>
+				</div>
+
+        <div class="form-group has-feedback">
+					<label class="col-sm-2 control-label">
+						<b>생년월일</b>
+					</label>
+					<div class="col-sm-3">
+                        <select name="penProBirth1"  title="년도" class="form-control input-sm year"  style="display:inline-block;width:32%;"></select>
+                        <select name="penProBirth2"  title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
+                        <select name="penProBirth3"  title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
 					</div>
 				</div>
 
@@ -650,6 +647,35 @@
 				}
 			});
 
+			function onProTypeChange($this) {
+				var val = $this.val();
+
+				if(val == '00') { // 없음
+					$('#panel_pro').hide();
+				} else {
+					if(val == '02') { // 요양보호사
+						$('#pro_rel_title').text('기관');
+						$('.register-form .penProRel').hide();
+						$(".register-form input[name='penProRelEtc']").val('');
+						$('.register-form input[name="penProRelEtc"]').prop('readonly', false);
+					} else {
+						$('#pro_rel_title').text('관계');
+						$('.register-form .penProRel').show();
+						$(".register-form input[name='penProRelEtc']").val('');
+						if($('.register-form select[name="penProRel"]').val() != '11') {
+							$(".register-form input[name='penProRelEtc']").prop("readonly", true);
+						} else {
+							$('.register-form input[name="penProRelEtc"]').prop('readonly', false);
+						}
+					}
+					$('#panel_pro').show();
+				}
+			}
+			onProTypeChange($('.register-form input[name="penProTypeCd"]:checked'));
+			$('.radio_pro_type').change(function() {
+				onProTypeChange($(this));
+			});
+
 			$("#btn_submit").click(function(){
 				var importantIcon = $(".register-form .form-control-feedback");
 				for(var i = 0; i < importantIcon.length; i++){
@@ -688,7 +714,7 @@
 					penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
 					penRecGraCd : $(".register-form select[name='penRecGraCd']").val(),
 					penGender : $(".register-form input[name='penGender']:checked").val(),
-                    penBirth : penBirth,
+					penBirth : penBirth,
 					penJumin : penJumin,
 					penTypeCd : $(".register-form select[name='penTypeCd']").val(),
 					penConNum : $(".register-form input[name='penConNum']").val(),
@@ -706,6 +732,7 @@
 					penZip : $(".register-form input[name='penZip']").val(),
 					penAddr : $(".register-form input[name='penAddr']").val(),
 					penAddrDtl : $(".register-form input[name='penAddrDtl']").val(),
+					penProTypeCd : $('.register-form input[name="penProTypeCd"]:checked').val(),
 					penProNm : $(".register-form input[name='penProNm']").val(),
 					penProBirth : penProBirth,
 					penProRel : $(".register-form select[name='penProRel']").val(),
@@ -769,7 +796,7 @@
                                         alert(result.message);
                                     } else {
                                         alert('완료되었습니다');
-                                        window.location.href = "./my.recipient.list.php";
+                                        window.location.href = "./my_recipient_view.php?id=<?=$_GET['id']?>";
                                     }
                                         }
                             });
