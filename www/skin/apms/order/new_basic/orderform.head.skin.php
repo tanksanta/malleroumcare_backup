@@ -54,6 +54,9 @@ if($header_skin)
     <input type="text" name="penAddrDtl" id="penAddrDtl" class="form-control input-sm" readonly style="display: none;">
 
 <!--    <input type="text" name="penMoney" id="penMoney" class="form-control input-sm" readonly>-->
+    <section id="pro-order-loading">
+        <img src="<?php echo G5_IMG_URL; ?>/loading-modal.gif" />
+    </section>
 
     <section id="pro-order" class="wrap order-list">
         <h2 class="tti">

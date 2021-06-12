@@ -2067,4 +2067,42 @@ var array_box=[];
             $('#ad_sel_addr_same').click();
         });
 <?php } ?>
+
+$(document).ready(function() {
+	<?php
+	// 수급자 선택시
+	if ($_SESSION['recipient']['penId']) { 
+		$recipient = $_SESSION['recipient']["rn"]."|".$_SESSION['recipient']["penId"]."|".$_SESSION['recipient']["entId"]."|".$_SESSION['recipient']["penNm"]."|".$_SESSION['recipient']["penLtmNum"]."|".$_SESSION['recipient']["penRecGraCd"]."|".$_SESSION['recipient']["penRecGraNm"]."|".$_SESSION['recipient']["penTypeCd"]."|".$_SESSION['recipient']["penTypeNm"]."|".$_SESSION['recipient']["penExpiStDtm"]."|".$_SESSION['recipient']["penExpiEdDtm"]."|".$_SESSION['recipient']["penExpiDtm"]."|".$_SESSION['recipient']["penExpiRemDay"]."|".$_SESSION['recipient']["penGender"]."|".$_SESSION['recipient']["penGenderNm"]."|".$_SESSION['recipient']["penBirth"]."|".$_SESSION['recipient']["penAge"]."|".$_SESSION['recipient']["penAppEdDtm"]."|".$_SESSION['recipient']["penAddr"]."|".$_SESSION['recipient']["penAddrDtl"]."|".$_SESSION['recipient']["penConNum"]."|".$_SESSION['recipient']["penConPnum"]."|".$_SESSION['recipient']["penProNm"]."|".$_SESSION['recipient']["usrId"]."|".$_SESSION['recipient']["appCd"]."|".$_SESSION['recipient']["appCdNm"]."|".$_SESSION['recipient']["caCenYn"]."|".$_SESSION['recipient']["regDtm"]."|".$_SESSION['recipient']["regDt"]."|".$_SESSION['recipient']["ordLendEndDtm"]."|".$_SESSION['recipient']["ordLendRemDay"]."|".$_SESSION['recipient']["usrNm"]."|".$_SESSION['recipient']["penAppRemDay"]."|800,000원";
+	?>
+		$('#c_recipient').click();
+		$("#order_recipientBox").hide();
+
+		// 수급자 선택
+		selected_recipient('<?php echo $recipient; ?>');
+		// $('#ad_sel_addr_same').click();
+		setTimeout(function() {
+			$('#ad_sel_addr_recipient').click(); // 받으시는분 수급자와 동일 클릭
+		}, 500);
+
+		// 수급자 주문외 다른 버튼 안보이도록 변경
+		$('.detail-tab ul li').hide();
+		$('#c_recipient').show();
+		$('#c_recipient').addClass('only');
+		
+		// 내 수급자 조회 hide
+		$('.order_recipient').hide();
+	<?php } ?>
+
+	// 보여주기
+	setTimeout(function() {
+		$('#pro-order-loading').hide();
+		$('#pro-order').show();
+	}, 500);
+});
 </script>
+
+<style>
+#pro-order {
+	display:none;
+}
+</style>
