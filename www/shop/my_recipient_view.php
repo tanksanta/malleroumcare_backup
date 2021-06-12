@@ -115,10 +115,14 @@
   <div class="sub_title_wrap">
     <div class="sub_title l_title">
       장바구니
+      <?php
+      $cart_count = get_carts_by_recipient($pen['penId']);
+      echo " : {$cart_count}개"
+      ?>
     </div>
     <div class="r_btn_wrap">
-      <a class="c_btn" href="#">신규추가하기</a>
-      <a class="c_btn primary" href="#">장바구니 바로가기</a>
+      <a class="c_btn" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>">신규추가하기</a>
+      <a class="c_btn primary" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/cart.php')?>">장바구니 바로가기</a>
     </div>
   </div>
 
