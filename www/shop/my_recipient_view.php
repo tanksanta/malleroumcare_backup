@@ -22,6 +22,21 @@
   $pen = $res['data'][0];
   if(!$pen)
     alert('수급자 정보가 존재하지 않습니다.');
+  
+  $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST, array(
+    'penId' => $_GET['id']
+  ));
+
+  // 수급자 취급가능 제품
+  $products = array(
+    '00' => [], /* 판매제품 */
+    '01' => [] /* 대여제품 */
+  );
+  if($res['data']) {
+    foreach($res['data'] as $val) {
+      $products[$val['gubun']][$val['itemId']] = $val['itemNm'];
+    }
+  }
 
   function check_and_print($check, $prefix = '', $postfix = '') {
     if($check) return $prefix.$check.$postfix;
@@ -76,13 +91,24 @@
     <div class="item_wrap">
       <div class="item_head">판매품목</div>
       <div class="item_body">
-        <a href="#">욕창예방매트리스</a>
-        <a href="#">요실금팬티</a>
-        <a href="#">자세변환용구</a>
+      <?php
+      foreach($products['00'] as $id => $name) {
+        $ca_id = $sale_product_cate_table[$id];
+      ?>
+        <a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/list.php?ca_id='.substr($ca_id, 0, 2).'&ca_sub%5B%5D='.substr($ca_id, 2, 2))?>"><?=$name?></a>
+      <?php } ?>
       </div>
     </div>
     <div class="item_wrap">
       <div class="item_head">대여품목</div>
+      <div class="item_body">
+      <?php
+      foreach($products['01'] as $id => $name) {
+        $ca_id = $rental_product_cate_table[$id];
+      ?>
+        <a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/list.php?ca_id='.substr($ca_id, 0, 2).'&ca_sub%5B%5D='.substr($ca_id, 2, 2))?>"><?=$name?></a>
+      <?php } ?>
+      </div>
     </div>
   </div>
 

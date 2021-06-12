@@ -7,6 +7,9 @@ if(!$is_member){
     exit;
 }
 
+if(!$redirect)
+    $redirect = G5_SHOP_URL;
+
 $send_data = [];
 $send_data['usrId'] = $member['mb_id'];
 $send_data['entId'] = $member['mb_entId'];
@@ -25,4 +28,4 @@ $pen = $res['data'][0];
 
 set_session('recipient', $pen);
 
-goto_url(G5_SHOP_URL);
+goto_url($redirect);
