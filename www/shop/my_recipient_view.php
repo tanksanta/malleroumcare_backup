@@ -157,6 +157,11 @@
         </div>
       </div>
     </div>
+    <div class="main_btn_wrap">
+      <a href="<?=G5_SHOP_URL.'/electronic_manage.php?penId='.$pen['penId']?>" class="primary">전자문서 확인</a>
+      <a href="<?=G5_SHOP_URL.'/claim_manage.php?penId='.$pen['penId']?>" class="secondary">청구관리</a>
+      <a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/cart.php')?>">주문내역</a>
+    </div>
   </div>
 
   <div class="sub_title_wrap">

@@ -16,6 +16,11 @@ if(in_array($searchtype, ['penNm', 'penLtmNum']) && $search) {
 	$where = " AND $searchtype LIKE '%$search%' ";
 }
 
+// 수급자만 모아보기
+if($penId) {
+	$where .= " AND penId = '$penId' ";
+}
+
 $eform_query = sql_query("
 SELECT
 	MIN(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d')) as start_date,

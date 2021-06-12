@@ -151,6 +151,9 @@ $incompleted_eform_count = 0;
 			 
 		</div>
 		<form id="form_search" method="get">
+			<?php if($penId) { ?>
+				<input type="hidden" name="penId" value="<?=$penId ? $penId : ''?>">
+			<?php } else { ?>
 			<div class="search_box">
 				<select name="sel_field" id="sel_field">
 					<option value="penNm"<?php if($sel_field == 'penNm' || $sel_field == 'all') echo ' selected'; ?>>수급자</option>
@@ -167,6 +170,7 @@ $incompleted_eform_count = 0;
 					<option value="penNm"<?php if($sel_order == 'penNm') echo ' selected'; ?>>수급자정렬</option>
 				</select>
 			</div>
+			<?php } ?>
 		</form>
  		<div id="list_wrap" class="list_box">
 		</div>

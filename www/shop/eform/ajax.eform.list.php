@@ -10,11 +10,17 @@ if(!$member['mb_entId']) {
 $select = array();
 $where = array();
 
+$penId = isset($_GET['penId']) ? get_search_string($_GET['penId']) : '';
 $search = isset($_GET['search']) ? get_search_string($_GET['search']) : '';
 $sel_field = isset($_GET['sel_field']) && in_array($_GET['sel_field'], array('penNm', 'it_name')) ? $_GET['sel_field'] : '';
 $sel_order = isset($_GET['sel_order']) && in_array($_GET['sel_order'], array('dc_sign_datetime', 'penNm')) ? $_GET['sel_order'] : '';
 
 $qstr = '';
+
+// 수급자만 골라보기
+if($penId != '') {
+  $where[] = " penId = '$penId' ";
+}
 
 // 정렬 순서
 $sql_order = ' ORDER BY ';

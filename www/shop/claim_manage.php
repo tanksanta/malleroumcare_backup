@@ -67,6 +67,11 @@ if(in_array($searchtype, ['penNm', 'penLtmNum']) && $search) {
 	$where = " AND $searchtype LIKE '%$search%' ";
 }
 
+// 수급자만 모아보기
+if($penId) {
+	$where .= " AND penId = '$penId' ";
+}
+
 $eform_query = sql_query("
 SELECT
 	MIN(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d')) as start_date,
@@ -165,10 +170,10 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
 		<form action="/shop/claim_manage.php" method="get">
 			<div class="date_wrap">
 				<div class="date_this">
-					<a href="?selected_month=<?=date('Y-m-01')?>">이번달</a>
+					<a href="?selected_month=<?=date('Y-m-01')?><?=$penId ? "&penId=$penId" : ''?>">이번달</a>
 				</div>
 				<div class="date_selected">
-					<a href="<?=$has_prev ? '?selected_month='.$prev_month : '#'?>" class="<?=$has_prev ? '' : 'disabled'?>">◀ 지난달</a>
+					<a href="<?=$has_prev ? '?selected_month='.$prev_month.($penId ? "&penId=$penId" : '') : '#'?>" class="<?=$has_prev ? '' : 'disabled'?>">◀ 지난달</a>
 					<select name="selected_month" id="selected_month">
 						<?php
 						for($year = 2021; $year <= $cur_year; $year++) {
@@ -190,10 +195,11 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
 						}
 						?>
 					</select>
-					<a href="<?=$has_next ? '?selected_month='.$next_month : '#'?>" class="<?=$has_next ? '' : 'disabled'?>">다음달 ▶</a>
+					<a href="<?=$has_next ? '?selected_month='.$next_month.($penId ? "&penId=$penId" : '') : '#'?>" class="<?=$has_next ? '' : 'disabled'?>">다음달 ▶</a>
 				</div>
 			</div>
-				
+			
+			<?php if(!$penId) { ?>
 			<div class="search_box">
 				<select name="searchtype" id="">
 					<option value="penNm">수급자명</option>
@@ -204,12 +210,13 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
 					<button type="submit"></button>
 				</div>
 			</div>
+			<?php } ?>
 		</form>
 	</div>
 	<div class="r_btn_area">
 		<!--<span>최신검증일 : 2021-03-01 13:35</span>
 		<a href="#" class="btn_nhis">건보 자료 업로드</a>-->
-		<a href="./claim_manage_excel.php?selected_month=<?=$selected_month?>&searchtype=<?=$searchtype?>&search=<?=$search?>&page=<?=$page?>">엑셀다운로드</a>
+		<a href="./claim_manage_excel.php?selected_month=<?=$selected_month?>&searchtype=<?=$searchtype?>&search=<?=$search?>&page=<?=$page?><?=$penId ? "&penId=$penId" : ''?>">엑셀다운로드</a>
 	</div>
 	<div class="list_box">
 		<div class="table_box">
