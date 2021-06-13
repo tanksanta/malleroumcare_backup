@@ -214,6 +214,24 @@ function get_carts_by_recipient($recipient) {
 	return $result['cnt'] ?: 0;
 }
 
+function get_memos_by_recipient($penId) {
+	global $member;
+	global $g5;
+
+	$result = sql_query("
+		SELECT * FROM `recipient_memo`
+		WHERE penId = '$penId'
+		ORDER BY me_id desc
+	");
+
+	$res = [];
+	while($row = sql_fetch_array($result)) {
+		$res[] = $row;
+	}
+
+	return $res;
+}
+
 // 보호자 관계
 $pen_pro_rel_cd = array(
 	'00' => '처',
