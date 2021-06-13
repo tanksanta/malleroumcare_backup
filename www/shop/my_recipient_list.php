@@ -150,7 +150,7 @@
 						</td>
 						<td>
 							<?php if ($data["penLtmNum"]) { ?>
-								L<?php echo $data["penLtmNum"]; ?>
+								<?php echo $data["penLtmNum"]; ?>
 								(<?php echo $data["penRecGraNm"]; ?><?php echo $pen_type_cd[$data['penTypeCd']] ? '/' . $pen_type_cd[$data['penTypeCd']] : ''; ?>)
 								<br/>
 								<?php echo $data['penExpiDtm']; ?>
