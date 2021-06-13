@@ -67,6 +67,11 @@
 .recipient_view_wrap .main_btn_wrap a.primary { background-color: #ee8102; }
 .recipient_view_wrap .main_btn_wrap a.secondary { background-color: #cbd411; }
 
+.recipient_view_wrap .b_btn {
+  display: inline-block; font-size: 18px; line-height: 25px; padding: 10px; text-align: center; width: 170px; color: #fff; background-color: #727272; border-radius: 8px; 
+  background-color: #ee8102; 
+}
+
 @media (max-width: 768px) {
   .recipient_view_wrap .info_wrap .row { margin-bottom: 10px; }
   .recipient_view_wrap .info_wrap .row:last-child { margin-bottom: 0; }

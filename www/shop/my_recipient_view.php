@@ -45,6 +45,9 @@ function check_and_print($check, $prefix = '', $postfix = '') {
 
 // 메모 가져오기
 $memos = get_memos_by_recipient($pen['penId']);
+
+// 욕구사정기록지 가져오기
+$recs = get_recs_by_recipient($pen['penId']);
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL?>/my_recipient.css">
 <div class="recipient_view_wrap">
@@ -166,9 +169,21 @@ $memos = get_memos_by_recipient($pen['penId']);
     </div>
   </div>
   <div class="section_wrap grey">
-    <div class="sub_section_wrap">
-      ㅇㅇㅇ
+    <div class="sub_section_wrap" style="text-align: center">
+      <a href="#" class="b_btn">신규등록</a>
     </div>
+    <?php foreach($recs as $rec) { ?>
+    <div class="memo_row">
+      <div class="memo_body">
+        <div class="memo_date"><?=date('Y년 m월 d일', dtmtotime($rec['regDtm']))?></div>
+        <div class="memo_content"><?=$rec['totalReview']?></div>
+      </div>
+      <div class="memo_btn_wrap">
+        <button class="c_btn" data-id="<?=$rec['recId']?>">출력</button>
+        <button class="c_btn" data-id="<?=$rec['recId']?>">수정</button>
+      </div>
+    </div>
+    <?php } ?>
   </div>
 </div>
 

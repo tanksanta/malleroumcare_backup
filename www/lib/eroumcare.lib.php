@@ -30,6 +30,19 @@ function get_eroumcare2($api_url, $data) {
 	return $res;
 }
 
+// 시스템DB dtm형식을 timestamp로 변환
+// ex) dtm: 20210411223341
+function dtmtotime($dtm) {
+  $Y = substr($dtm, 0, 4);
+  $m = substr($dtm, 4, 2);
+  $d = substr($dtm, 6, 2);
+  $H = substr($dtm, 8, 2);
+  $i = substr($dtm, 10, 2);
+  $s = substr($dtm, 12, 2);
+
+  return strtotime("$Y-$m-$d $H:$i:$s");
+}
+
 function get_carts_by_od_id($od_id, $delivery_yn = null) {
 
 	// 유통 비유통 구분시
@@ -215,7 +228,6 @@ function get_carts_by_recipient($recipient) {
 }
 
 function get_memos_by_recipient($penId) {
-	global $member;
 	global $g5;
 
 	$result = sql_query("
@@ -227,6 +239,25 @@ function get_memos_by_recipient($penId) {
 	$res = [];
 	while($row = sql_fetch_array($result)) {
 		$res[] = $row;
+	}
+
+	return $res;
+}
+
+// 욕구사정기록지
+function get_recs_by_recipient($penId) {
+	global $member;
+	global $g5;
+
+	$result = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_REC_LIST, array(
+		'usrId' => $member['mb_id'],
+		'entId' => $member['mb_entId'],
+		'penId' => $penId
+	));
+
+	$res = [];
+	if($result['errorYN'] == 'N' && $result['data']) {
+		$res = $result['data'];
 	}
 
 	return $res;

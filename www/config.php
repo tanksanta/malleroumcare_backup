@@ -71,6 +71,8 @@ define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://system
 define('EROUMCARE_API_RECIPIENT_SELECTLIST',                     'https://system.eroumcare.com/api/recipient/selectList');
 //수급자별 품목 조회
 define('EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST',               'https://system.eroumcare.com/api/recipient/selectItemList');
+//수급자별 욕구사정기록지 조회
+define('EROUMCARE_API_RECIPIENT_SELECT_REC_LIST',                'https://system.eroumcare.com/api/recipient/selectRecList');
 //회원조회1
 define('EROUMCARE_API_ENT_ACCOUNT',            'https://system.eroumcare.com/api/ent/account');
 //회원조회2
