@@ -166,7 +166,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 			(<?php echo substr($_SESSION['recipient']['penBirth'], 2, 2); ?>년생/<?php echo $_SESSION['recipient']['penGender']; ?>)
 		</h5>
 		<p>
-			L<?php echo $_SESSION['recipient']["penLtmNum"]; ?>
+			<?php echo $_SESSION['recipient']["penLtmNum"]; ?>
 			(<?php echo $_SESSION['recipient']["penRecGraNm"]; ?><?php echo $pen_type_cd[$_SESSION['recipient']['penTypeCd']] ? '/' . $pen_type_cd[$_SESSION['recipient']['penTypeCd']] : ''; ?>)
 		</p>
 	</div>

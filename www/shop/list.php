@@ -16,7 +16,7 @@ if( isset($sort) && ! in_array($sort, array('custom', 'it_sum_qty', 'it_price', 
     $sort='';
 }
 
-if(!$ca_sub) $ca_sub = array();
+if(!$ca_sub) $ca_sub = [];
 
 $sql = " select * from {$g5['g5_shop_category_table']} where ca_id = '$ca_id' and ca_use = '1'  ";
 $ca = sql_fetch($sql);
