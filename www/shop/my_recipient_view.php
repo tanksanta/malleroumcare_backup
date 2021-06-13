@@ -1,47 +1,50 @@
 <?php
 
-	include_once("./_common.php");
-	include_once("./_head.php");
+include_once("./_common.php");
+include_once("./_head.php");
 
-	# 회원검사
-	if(!$member["mb_id"])
-		alert("접근 권한이 없습니다.");
+# 회원검사
+if(!$member["mb_id"])
+  alert("접근 권한이 없습니다.");
 
-  if(!$_GET["id"])
-    alert("정상적이지 않은 접근입니다.");
+if(!$_GET["id"])
+  alert("정상적이지 않은 접근입니다.");
 
-  $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
-    'usrId' => $member['mb_id'],
-    'entId' => $member['mb_entId'],
-    'penId' => $_GET['id']
-  ));
+$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+  'usrId' => $member['mb_id'],
+  'entId' => $member['mb_entId'],
+  'penId' => $_GET['id']
+));
 
-  if(!$res || $res['errorYn'] == 'Y')
-    alert('서버 오류로 수급자 정보를 불러올 수 없습니다.');
-  
-  $pen = $res['data'][0];
-  if(!$pen)
-    alert('수급자 정보가 존재하지 않습니다.');
-  
-  $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST, array(
-    'penId' => $_GET['id']
-  ));
+if(!$res || $res['errorYn'] == 'Y')
+  alert('서버 오류로 수급자 정보를 불러올 수 없습니다.');
 
-  // 수급자 취급가능 제품
-  $products = array(
-    '00' => [], /* 판매제품 */
-    '01' => [] /* 대여제품 */
-  );
-  if($res['data']) {
-    foreach($res['data'] as $val) {
-      $products[$val['gubun']][$val['itemId']] = $val['itemNm'];
-    }
+$pen = $res['data'][0];
+if(!$pen)
+  alert('수급자 정보가 존재하지 않습니다.');
+
+$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST, array(
+  'penId' => $pen['penId']
+));
+
+// 수급자 취급가능 제품
+$products = array(
+  '00' => [], /* 판매제품 */
+  '01' => [] /* 대여제품 */
+);
+if($res['data']) {
+  foreach($res['data'] as $val) {
+    $products[$val['gubun']][$val['itemId']] = $val['itemNm'];
   }
+}
 
-  function check_and_print($check, $prefix = '', $postfix = '') {
-    if($check) return $prefix.$check.$postfix;
-    return '';
-  }
+function check_and_print($check, $prefix = '', $postfix = '') {
+  if($check) return $prefix.$check.$postfix;
+  return '';
+}
+
+// 메모 가져오기
+$memos = get_memos_by_recipient($pen['penId']);
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL?>/my_recipient.css">
 <div class="recipient_view_wrap">
@@ -134,28 +137,21 @@
     </div>
     <div class="section_wrap grey">
       <div class="sub_section_wrap">
-        ㅇㅇㅇ
+        <textarea name="memo" class="memo" rows="4"></textarea>
+        <input type="submit" class="btn_write_memo c_btn primary" value="등록">
       </div>
+      <?php foreach($memos as $memo) { ?>
       <div class="memo_row">
         <div class="memo_body">
-          <div class="memo_date">2021년 03월 12일</div>
-          <div class="memo_content">사업소가 작성한 메모가 여기에 보여집니다.</div>
+          <div class="memo_date"><?=date('Y년 m월 d일', strtotime($memo['me_created_at']))?></div>
+          <div class="memo_content"><?=nl2br($memo['memo'])?></div>
         </div>
         <div class="memo_btn_wrap">
-          <a class="c_btn" href="#">수정</a>
-          <a class="c_btn" href="#">삭제</a>
+          <button class="btn_edit_memo c_btn" data-id="<?=$memo['me_id']?>">수정</button>
+          <button class="btn_delete_memo c_btn" data-id="<?=$memo['me_id']?>">삭제</button>
         </div>
       </div>
-      <div class="memo_row">
-        <div class="memo_body">
-          <div class="memo_date">2021년 03월 12일</div>
-          <div class="memo_content">사업소가 작성한 메모가 여기에 보여집니다.</div>
-        </div>
-        <div class="memo_btn_wrap">
-          <a class="c_btn" href="#">수정</a>
-          <a class="c_btn" href="#">삭제</a>
-        </div>
-      </div>
+      <?php } ?>
     </div>
     <div class="main_btn_wrap">
       <a href="<?=G5_SHOP_URL.'/electronic_manage.php?penId='.$pen['penId']?>" class="primary">전자문서 확인</a>
@@ -175,4 +171,94 @@
     </div>
   </div>
 </div>
+
+<script>
+$(function() {
+
+  // 메모 작성
+  $(document).on('click', '.btn_write_memo', function() {
+    var val = $(this).closest('div').find('.memo').val();
+    $.post('ajax.my.recipient.memo.php', {
+      id: '<?=$pen['penId']?>',
+      memo: val
+    }, 'json')
+    .done(function() {
+      location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  // 메모 수정 등록
+  $(document).on('click', '.btn_update_memo', function() {
+    var val = $(this).closest('div').find('.memo').val();
+    var me_id = $(this).data('id');
+
+    $.post('ajax.my.recipient.memo.php', {
+      id: '<?=$pen['penId']?>',
+      me_id: me_id,
+      memo: val
+    }, 'json')
+    .done(function() {
+      location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  // 메모 수정 취소
+  $(document).on('click', '.btn_cancel_memo', function() {
+    var $row = $(this).closest('.memo_row');
+
+    $row.find('.memo_body').show();
+    $row.find('.memo_btn_wrap').show();
+    $row.find('.edit_memo_wrap').remove();
+  });
+
+  // 메모 수정
+  $(document).on('click', '.btn_edit_memo', function() {
+    var $row = $(this).closest('.memo_row');
+    var val = $row.find('.memo_content').text();
+    var me_id = $(this).data('id');
+
+    $row.find('.memo_body').hide();
+    $row.find('.memo_btn_wrap').hide();
+    $('\
+      <div class="edit_memo_wrap sub_section_wrap">\
+        <textarea name="memo" class="memo" rows="4">'+val+'</textarea>\
+        <input type="submit" class="btn_update_memo c_btn primary" data-id="'+me_id+'" value="등록">\
+        <input type="button" class="btn_cancel_memo c_btn" value="취소">\
+      </div>\
+    ')
+    .appendTo($row);
+  });
+
+  // 메모 삭제
+  $(document).on('click', '.btn_delete_memo', function() {
+    var $row = $(this).closest('.memo_row');
+    var me_id = $(this).data('id');
+
+    if(confirm('메모를 삭제하시겠습니까?')) {
+      $.post('ajax.my.recipient.memo.php', {
+        id: '<?=$pen['penId']?>',
+        me_id: me_id,
+        del: true
+      }, 'json')
+      .done(function() {
+        location.reload();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    }
+  });
+
+});
+</script>
+
 <?php include_once("./_tail.php"); ?>

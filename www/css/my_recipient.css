@@ -56,6 +56,11 @@
 .recipient_view_wrap .memo_row .memo_btn_wrap { float: right; }
 .recipient_view_wrap .memo_btn_wrap .c_btn + .c_btn { margin-left: 5px; }
 
+.recipient_view_wrap .memo_wrap .sub_section_wrap { position: relative; }
+.recipient_view_wrap .memo_wrap .sub_section_wrap textarea.memo { width: 100%; padding-right: 80px; height: 80px; resize:none; border: none; background: none; }
+.recipient_view_wrap .memo_wrap .sub_section_wrap .c_btn { width: 70px; position: absolute; bottom: 15px; right: 15px; }
+.recipient_view_wrap .memo_wrap .sub_section_wrap .btn_cancel_memo { top: 15px; border:none; }
+
 .recipient_view_wrap .main_btn_wrap {padding: 30px 0 10px 0; text-align: center;}
 .recipient_view_wrap .main_btn_wrap a { display: inline-block; font-size: 18px; line-height: 25px; padding: 10px; text-align: center; width: 170px; color: #fff; background-color: #727272; border-radius: 8px; }
 .recipient_view_wrap .main_btn_wrap a + a { margin-left: 20px; }

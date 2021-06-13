@@ -8,8 +8,11 @@ if(!$member["mb_id"])
 if(!$_POST["id"])
   json_response(400, "정상적이지 않은 접근입니다.");
 
-if(!$_POST["memo"])
+if(!$_POST['del'] && !$_POST["memo"])
   json_response(400, '메모를 입력해주세요.');
+
+$memo = sql_escape_string($_POST['memo']);
+$me_id = get_search_string($_POST['me_id']);
 
 // 존재하는 수급자인지 체크
 $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
@@ -27,13 +30,20 @@ if(!$pen)
 
 $datetime = date('Y-m-d H:i:s');
 
-if($_POST['me_id']) {
-  // update
-  sql_query("UPDATE `recipient_memo` SET
-    memo = '$memo',
-    me_updated_at = '$datetime'
-    WHERE penId = '{$pen['penId']}'
-  ");
+if($me_id) {
+  if($_POST['del']) {
+    // delete
+    sql_query("DELETE FROM `recipient_memo`
+      WHERE me_id = '$me_id'
+    ");
+  } else {
+    // update
+    sql_query("UPDATE `recipient_memo` SET
+      memo = '$memo',
+      me_updated_at = '$datetime'
+      WHERE me_id = '$me_id'
+    ");
+  }
 } else {
   // insert
   sql_query("INSERT INTO `recipient_memo` SET
