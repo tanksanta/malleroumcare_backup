@@ -23,19 +23,14 @@ $pen = $res['data'][0];
 if(!$pen)
   alert('수급자 정보가 존재하지 않습니다.');
 
-$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST, array(
-  'penId' => $pen['penId']
-));
-
 // 수급자 취급가능 제품
+$items = get_items_by_recipient($pen['penId']);
 $products = array(
   '00' => [], /* 판매제품 */
   '01' => [] /* 대여제품 */
 );
-if($res['data']) {
-  foreach($res['data'] as $val) {
-    $products[$val['gubun']][$val['itemId']] = $val['itemNm'];
-  }
+foreach($items as $val) {
+  $products[$val['gubun']][$val['itemId']] = $val['itemNm'];
 }
 
 function check_and_print($check, $prefix = '', $postfix = '') {

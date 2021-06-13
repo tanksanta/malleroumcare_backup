@@ -228,7 +228,6 @@ function get_carts_by_recipient($recipient) {
 }
 
 function get_memos_by_recipient($penId) {
-	global $g5;
 
 	$result = sql_query("
 		SELECT * FROM `recipient_memo`
@@ -247,11 +246,24 @@ function get_memos_by_recipient($penId) {
 // 욕구사정기록지
 function get_recs_by_recipient($penId) {
 	global $member;
-	global $g5;
 
 	$result = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_REC_LIST, array(
 		'usrId' => $member['mb_id'],
 		'entId' => $member['mb_entId'],
+		'penId' => $penId
+	));
+
+	$res = [];
+	if($result['errorYN'] == 'N' && $result['data']) {
+		$res = $result['data'];
+	}
+
+	return $res;
+}
+
+// 수급자별 취급 상품
+function get_items_by_recipient($penId) {
+	$result = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST, array(
 		'penId' => $penId
 	));
 
