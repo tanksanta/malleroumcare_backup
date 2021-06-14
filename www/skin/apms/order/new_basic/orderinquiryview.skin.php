@@ -81,64 +81,35 @@ if($header_skin)
 	# 스킨경로
 	$SKIN_URL = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
+# 수급자 주문일 시
+if($od["od_penId"]) {
+	$entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
+	$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+		'usrId' => $od["mb_id"],
+		'entId' => $entData["mb_entId"],
+		'penId' => $od["od_penId"]
+	));
+	if(!$res["data"]) {
+		alert('존재하지 않는 수급자에 대한 주문입니다.');
+	}
+	$penData = $res["data"][0];
+
 	# 210324 수급자정보
-	if($od["od_penId"] && !$od["od_penLtmNum"]){
-		$sendPenData = [];
-		$sendPenData["usrId"] = $od["mb_id"];
-		$sendPenData["entId"] = sql_fetch("SELECT mb_entId FROM g5_member WHERE mb_id = '{$od["mb_id"]}'")["mb_entId"];
-		$sendPenData["pageNum"] = 1;
-		$sendPenData["pageSize"] = 1;
-		$sendPenData["penId"] = $od["od_penId"];
-
-		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9901);
-		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
-		curl_setopt($oCurl, CURLOPT_POST, 1);
-		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendPenData, JSON_UNESCAPED_UNICODE));
-		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-		$res = curl_exec($oCurl);
-		$res = json_decode($res, true);
-		curl_close($oCurl);
-
-		$data = $res["data"][0];
-		if($data["penLtmNum"]){
+	if(!$od["od_penLtmNum"]) {
+		if($penData["penLtmNum"]) {
 			sql_query("
 				UPDATE {$g5["g5_shop_order_table"]} SET
-					od_penLtmNum = '{$data["penLtmNum"]}'
+					od_penLtmNum = '{$penData["penLtmNum"]}'
 				WHERE od_id = '{$od["od_id"]}'
 			");
-			$od["od_penLtmNum"] = $data["penLtmNum"];
+			$od["od_penLtmNum"] = $penData["penLtmNum"];
 		}
 	}
 
-# 200512 전자계약서
-$eform = [];
-if($od["od_penId"]) { // 수급자 주문일 시
+	# 200512 전자계약서
+	$eform = [];
 	$eform = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '{$od["od_id"]}'");
 	if(!$eform['dc_id']) { // 전자계약서가 없을 경우
-		$sendData = [];
-		$sendData["usrId"] = $od["mb_id"];
-		$sendData["entId"] = sql_fetch("SELECT mb_entId FROM g5_member WHERE mb_id = '{$od["mb_id"]}'")["mb_entId"];
-		$sendData["pageNum"] = 1;
-		$sendData["pageSize"] = 1;
-		$sendData["penId"] = $od["od_penId"];
-
-		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9901);
-		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
-		curl_setopt($oCurl, CURLOPT_POST, 1);
-		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-		$res = curl_exec($oCurl);
-		$res = json_decode($res, true);
-		curl_close($oCurl);
-
-		$penData = $res["data"][0];
-		$entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
 
 		$dcId = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
 
@@ -169,20 +140,10 @@ if($od["od_penId"]) { // 수급자 주문일 시
 		`penAddrDtl` = '{$penData["penAddrDtl"]}'
 		");
 
-		$sendData = [];
-		$sendData["penOrdId"] = $od["ordId"];
-
-		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_PORT, 9901);
-		curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/eform/selectEform001");
-		curl_setopt($oCurl, CURLOPT_POST, 1);
-		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-		$res = curl_exec($oCurl);
-		$res = json_decode($res, true);
-		curl_close($oCurl);
+		// 계약서 품목별 초기값 가져오기
+		$res = get_eroumcare(EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST, array(
+			'penOrdId' => $od["ordId"]
+		));
 
 		foreach($res["data"] as $it) {
 			$priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);

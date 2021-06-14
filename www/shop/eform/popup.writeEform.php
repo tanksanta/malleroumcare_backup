@@ -17,6 +17,30 @@ if(!$od['mb_id']) {
 $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id' and dc_status='0'");
 if(!$eform['uuid']) alert('전자계약서를 생성할 수 없는 상태입니다.');
 
+# 수급자 유효기간이 없으면
+if(!$eform['penExpiDtm']) {
+	$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+		'usrId' => $od["mb_id"],
+		'entId' => $entData["mb_entId"],
+		'penId' => $od["od_penId"]
+	));
+	if(!$res["data"]) {
+		alert('존재하지 않는 수급자에 대한 주문입니다.');
+	}
+	$penData = $res["data"][0];
+
+  # 시스템 DB에도 수급자 유효기간이 없으면
+  if(!$penData['penExpiDtm']) {
+    alert('수급자 정보에서 수급자 유효기간을 설정해주세요.');
+  }
+
+  # 업데이트
+  sql_query("UPDATE `eform_document` SET
+    `penExpiDtm` = '{$penData['penExpiDtm']}'
+    WHERE `dc_id` = UNHEX('{$eform['uuid']}')
+  ");
+}
+
 # 전자계약서 정보 업데이트(최신화) - 바코드 정보 새로 계속 가져오기
 # 여기 개선이 필요함. 바코드 정보가 변경이 안됐을 때는 새로 가져오지 만다든가..
 sql_query("DELETE FROM `eform_document_item` WHERE `dc_id` = UNHEX('{$eform["uuid"]}')");
