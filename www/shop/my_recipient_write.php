@@ -760,7 +760,7 @@
                                         alert(result.message);
                                     } else {
                                         alert('완료되었습니다');
-                                        window.location.href = "./my.recipient.list.php";
+                                        window.location.href = "./my_recipient_list.php";
                                     }
                                         }
                             });
