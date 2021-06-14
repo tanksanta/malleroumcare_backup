@@ -55,7 +55,6 @@ $recs = get_recs_by_recipient($pen['penId']);
     </div>
   </div>
   <div class="info_wrap">
-    <a class="c_btn" href="./my_recipient_update.php?id=<?=$pen['penId']?>">기본정보 수정</a>
     <div class="row">
       <div class="col-sm-2">·연락처</div>
       <div class="col-sm-10">: <?=$pen['penConNum']?><?=($pen['penConPnum'] ? ", {$pen['penConPnum']}" : "")?></div>
@@ -79,6 +78,11 @@ $recs = get_recs_by_recipient($pen['penId']);
     <div class="row">
       <div class="col-sm-2">·장기요양기록지</div>
       <div class="col-sm-10">: 확인자(<?=$pen_cnm_type_cd[$pen['penCnmTypeCd']]?>), 수령방법(<?=$pen_rec_type_cd[$pen['penRecTypeCd']]?>) <?=$pen['penRecTypeTxt']?></div>
+    </div>
+    <a class="c_btn" href="./my_recipient_update.php?id=<?=$pen['penId']?>">기본정보 수정</a>
+    <div class="tel_btn_wrap">
+      <a href="tel:<?=$pen['penConNum']?>" class="tel_btn"><i class="fa fa-phone" aria-hidden="true"></i>수급자 전화연결</a>
+      <a href="tel:<?=$pen['penProConNum']?>" class="tel_btn"><i class="fa fa-phone" aria-hidden="true"></i>보호자 전화연결</a>
     </div>
   </div>
 
@@ -121,7 +125,7 @@ $recs = get_recs_by_recipient($pen['penId']);
       echo " : {$cart_count}개"
       ?>
     </div>
-    <div class="r_btn_wrap">
+    <div class="cart_btn_wrap r_btn_wrap">
       <a class="c_btn" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>">신규추가하기</a>
       <a class="c_btn primary" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/cart.php')?>">장바구니 바로가기</a>
     </div>

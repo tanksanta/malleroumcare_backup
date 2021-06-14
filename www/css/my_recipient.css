@@ -33,6 +33,10 @@
 .recipient_view_wrap .info_wrap { position: relative; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 15px 0; color: #666; }
 .recipient_view_wrap .info_wrap .c_btn { position: absolute; top:15px; right:5px; z-index: 100; }
 .recipient_view_wrap .info_wrap .col-sm-2 {max-width: 150px;}
+.recipient_view_wrap .tel_btn_wrap { position: absolute; bottom: 15px; right: 5px; }
+.recipient_view_wrap .tel_btn { display: inline-block; color: #333; font-size: 16px; line-height: 20px; height: 50px; padding: 15px 20px; border: 1px solid #ddd; border-radius: 3px; background-color: #fff; vertical-align: middle; }
+.recipient_view_wrap .tel_btn .fa { font-size: 20px; line-height: 20px; padding-right: 5px; vertical-align: middle; }
+.recipient_view_wrap .tel_btn + .tel_btn { margin-left: 5px; }
 
 .recipient_view_wrap .sub_title_wrap {position: relative;}
 .recipient_view_wrap .sub_title {font-size: 24px; font-weight: 500; line-height:50px; padding: 10px 5px; margin-top: 10px;}
@@ -75,12 +79,21 @@
 @media (max-width: 768px) {
   .recipient_view_wrap .info_wrap .row { margin-bottom: 10px; }
   .recipient_view_wrap .info_wrap .row:last-child { margin-bottom: 0; }
+  .recipient_view_wrap .info_wrap .c_btn { position: static; }
+  .recipient_view_wrap .tel_btn_wrap { position: static; margin-top: 20px; }
   
   .recipient_view_wrap .sub_title { padding-bottom: 20px; }
   .recipient_view_wrap .sub_title_desc {left:5px; bottom: 10px;}
 
-  .recipient_view_wrap .sub_title_wrap .r_btn_wrap { position: initial; margin-top: -25px; padding-bottom: 10px; }
+  .recipient_view_wrap .sub_title_wrap .r_btn_wrap { position: static; margin-top: -25px; padding-bottom: 10px; }
 
-  .recipient_view_wrap .main_btn_wrap a { display: block; width: 100%; }
-  .recipient_view_wrap .main_btn_wrap a + a { margin-top: 10px; margin-left: 0; }
+  .recipient_view_wrap .memo_row .memo_body { float: none; }
+  .recipient_view_wrap .memo_row .memo_btn_wrap { float: none; }
+
+  .recipient_view_wrap .main_btn_wrap a { width: auto; margin-bottom: 10px; }
+  .recipient_view_wrap .main_btn_wrap a + a { margin-left: 10px; }
+
+  .recipient_view_wrap .cart_btn_wrap { text-align: center; }
+  .recipient_view_wrap .cart_btn_wrap .c_btn { width: calc(50% - 15px); font-size: 16px; line-height: 20px; height: 50px; padding: 15px 20px; }
+  .recipient_view_wrap .cart_btn_wrap .c_btn + .c_btn { margin-left: 10px !important; }
 }

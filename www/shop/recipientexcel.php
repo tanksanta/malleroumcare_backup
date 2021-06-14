@@ -1,6 +1,9 @@
 <?php
 $sub_menu = '400300';
 include_once('../common.php');
+
+echo '<h1>수급자 일괄등록 기능 점검 중입니다.</h1>';
+exit;
 ?>
 <link rel="stylesheet" href="https://eroumcare.com/skin/admin/new/css/admin.css">
 
