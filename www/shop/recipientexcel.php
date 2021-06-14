@@ -1,9 +1,6 @@
 <?php
 $sub_menu = '400300';
 include_once('../common.php');
-
-echo '<h1>수급자 일괄등록 기능 점검 중입니다.</h1>';
-exit;
 ?>
 <link rel="stylesheet" href="https://eroumcare.com/skin/admin/new/css/admin.css">
 
@@ -23,7 +20,7 @@ exit;
         </p>
 
         <p>
-            <a href="<?php echo G5_URL; ?>/<?php echo G5_LIB_DIR; ?>/Excel/recipientExcel.xls" class="excelBtn">수급자등록용 엑셀파일 다운로드</a>
+            <a href="<?php echo G5_SHOP_URL; ?>/recipientExcel.xls" class="excelBtn">수급자등록용 엑셀파일 다운로드</a>
         </p>
     </div>
 

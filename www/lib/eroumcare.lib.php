@@ -243,7 +243,7 @@ function get_memos_by_recipient($penId) {
 	return $res;
 }
 
-// 욕구사정기록지
+// 수급자별 욕구사정기록지
 function get_recs_by_recipient($penId) {
 	global $member;
 
@@ -273,6 +273,132 @@ function get_items_by_recipient($penId) {
 	}
 
 	return $res;
+}
+
+$recipient_input_regex = array(
+	'penJumin' => '/([1-9][0-9]{5})-?([1-9][0-9]{6})/',
+	'penBirth' => '/([1-9][0-9]{3})-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/',
+	'penLtmNum' => '/L?([0-9]{10})/',
+	'penRecGraCd' => '/(0[0-5])/',
+	'penExpiStDtm' => '/([1-9][0-9]{3})-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/',
+	'penExpiEdDtm' => '/([1-9][0-9]{3})-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/',
+	'penTypeCd' => '/(0[0-4])/',
+	'penGender' => '/(남|여)/',
+	'penConNum' => '/([0-9]{3})-?([0-9]{4}|[0-9]{3})-?([0-9]{4})/',
+	'penConPnum' => '/([0-9]{3}|[0-9]{2})-?([0-9]{4}|[0-9]{3})-?([0-9]{4})/',
+	'penProBirth' => '/([1-9][0-9]{3})-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/',
+	'penProRel' => '/(0[0-9]|10)/',
+	'penProConNum' => '/([0-9]{3})-?([0-9]{4}|[0-9]{3})-?([0-9]{4})/',
+	'penProConPnum' => '/([0-9]{3}|[0-9]{2})-?([0-9]{4}|[0-9]{3})-?([0-9]{4})/'
+);
+
+function recipient_preg_match($data, $key) {
+	global $recipient_input_regex;
+
+	$matches = [];
+	preg_match($recipient_input_regex[$key], $data[$key], $matches);
+
+	return $matches;
+}
+
+// 수급자 등록시 필드 정규화
+function normalize_recipient_input($data) {
+	$penBirth = recipient_preg_match($data, 'penBirth');
+	$data['penBirth'] = $penBirth[1].'-'.$penBirth[2].'-'.$penBirth[3];
+
+	$penLtmNum = recipient_preg_match($data, 'penLtmNum');
+	$data['penLtmNum'] = 'L'.$penLtmNum[1];
+
+	$penRecGraCd = recipient_preg_match($data, 'penRecGraCd');
+	$data['penRecGraCd'] = $penRecGraCd[1];
+
+	$penTypeCd = recipient_preg_match($data, 'penTypeCd');
+	$data['penTypeCd'] = $penTypeCd[1];
+
+	$penGender = recipient_preg_match($data, 'penGender');
+	$data['penGender'] = $penGender[1];
+
+	$penExpiStDtm = recipient_preg_match($data, 'penExpiStDtm');
+	if($penExpiStDtm)
+		$data['penExpiStDtm'] = $penExpiStDtm[1].'-'.$penExpiStDtm[2].'-'.$penExpiStDtm[3];
+	
+	$penExpiEdDtm = recipient_preg_match($data, 'penExpiEdDtm');
+	if($penExpiEdDtm)
+		$data['penExpiEdDtm'] = $penExpiEdDtm[1].'-'.$penExpiEdDtm[2].'-'.$penExpiEdDtm[3];
+
+	$penJumin = recipient_preg_match($data, 'penJumin');
+	if($penJumin)
+		$data['penJumin'] = $penJumin[1].$penJumin[2];
+
+	$penConNum = recipient_preg_match($data, 'penConNum');
+	if($penConNum)
+		$data['penConNum'] = $penConNum[1].'-'.$penConNum[2].'-'.$penConNum[3];
+
+	$penConPnum = recipient_preg_match($data, 'penConPnum');
+	if($penConPnum)
+		$data['penConPnum'] = $penConPnum[1].'-'.$penConPnum[2].'-'.$penConPnum[3];
+	
+	$penProBirth = recipient_preg_match($data, 'penProBirth');
+	if($penProBirth)
+		$data['penProBirth'] = $penProBirth[1].'-'.$penProBirth[2].'-'.$penProBirth[3];
+
+	$penProRel = recipient_preg_match($data, 'penProRel');
+	if($penProRel)
+		$data['penProRel'] = $penProRel[1];
+
+	$penProConNum = recipient_preg_match($data, 'penProConNum');
+	if($penProConNum)
+		$data['penProConNum'] = $penProConNum[1].'-'.$penProConNum[2].'-'.$penProConNum[3];
+
+	$penProConPnum = recipient_preg_match($data, 'penProConPnum');
+	if($penProConPnum)
+		$data['penProConPnum'] = $penProConPnum[1].'-'.$penProConPnum[2].'-'.$penProConPnum[3];
+	
+	return $data;
+}
+
+// 수급자 등록시 필드 무결성 체크
+function valid_recipient_input($data) {
+
+	if(!$data['penNm']) {
+		return '수급자명을 입력해주세요.';
+	}
+	if(!recipient_preg_match($data, 'penBirth')) {
+		return '생년월일을 확인해주세요.';
+	}
+	if(!recipient_preg_match($data, 'penLtmNum')) {
+		return '장기요양번호를 확인해주세요.';
+	}
+	if(!recipient_preg_match($data, 'penRecGraCd')) {
+		return '장기요양등급을 확인해주세요.';
+	}
+	if(!recipient_preg_match($data, 'penTypeCd')) {
+		return '본인부담율을 확인해주세요.';
+	}
+	# 기초수급자는 주민등록번호 입력 필수
+	if($data['penTypeCd'] == '04') {
+		if(!recipient_preg_match($data, 'penJumin')) {
+			return '주민등록번호를 확인해주세요.';
+		}
+	}
+	if(!recipient_preg_match($data, 'penGender')) {
+		return '성별을 확인해주세요.';
+	}
+	if($data['penExpiStDtm']) {
+		if(!recipient_preg_match($data, 'penExpiStDtm')) {
+			return '유효기간(시작일)을 확인해주세요.';
+		}
+		if(!recipient_preg_match($data, 'penExpiEdDtm')) {
+			return '유효기간(종료일)을 확인해주세요.';
+		}
+	}
+	if($data['penConNum'] && !recipient_preg_match($data, 'penConNum')) {
+		return '휴대폰번호를 확인해주세요.';
+	}
+	if($data['penConPnum'] && !recipient_preg_match($data, 'penConPnum')) {
+		return '일반전화번호를 확인해주세요.';
+	}
+	return false;
 }
 
 // 보호자 관계

@@ -67,17 +67,19 @@ define('EROUMCARE_API_SELECT_DETAIL_LIST',                       'https://system
 define('EROUMCARE_API_STOCK_UPDATE',                             'https://system.eroumcare.com:9901/api/stock/update');
 // 장바구니 정보
 define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do');
-//수급자조회
+// 수급자 등록
+define('EROUMCARE_API_RECIPIENT_INSERT',                         'https://system.eroumcare.com/api/recipient/insert');
+// 수급자 조회
 define('EROUMCARE_API_RECIPIENT_SELECTLIST',                     'https://system.eroumcare.com/api/recipient/selectList');
-//수급자별 품목 조회
+// 수급자별 품목 조회
 define('EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST',               'https://system.eroumcare.com/api/recipient/selectItemList');
-//수급자별 욕구사정기록지 조회
+// 수급자별 욕구사정기록지 조회
 define('EROUMCARE_API_RECIPIENT_SELECT_REC_LIST',                'https://system.eroumcare.com/api/recipient/selectRecList');
 // 계약서 초기값 가져오기 (품목 별 본인부담률 계산한 값들 포함)
 define('EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST',          'https://system.eroumcare.com/api/eform/selectEform001');
-//회원조회1
+// 회원조회1
 define('EROUMCARE_API_ENT_ACCOUNT',            'https://system.eroumcare.com/api/ent/account');
-//회원조회2
+// 회원조회2
 define('EROUMCARE_API_ACCOUNT_ENTLOGIN',            'https://system.eroumcare.com/api/account/entLogin');
 
 // 로젠택배 EDI 연동 
