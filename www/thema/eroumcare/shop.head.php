@@ -284,7 +284,7 @@ scrollToTop();
 				.move_system a{padding:15px 20px 0 0;line-height:26px;color:#333;font-size:13px;font-weight:bold;float:left;color:#666;}
 			</style>
 			<div class="move_system">
-				<?php if($_SESSION[$member['mb_id']]&&($member["mb_level"] =="3" || $member["mb_level"] =="4")){ ?>
+				<?php if($_SESSION[$member['mb_id']]&&($member["mb_level"] =="3" || $member["mb_level"] =="4")){ ?>dd
 				<a href="<?=G5_BBS_URL?>/gotoSystem.php" target="_blank"  >◀ 이로움 통합 시스템바로가기</a>
 				<?php } ?>
 			</div>
