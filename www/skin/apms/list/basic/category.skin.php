@@ -98,9 +98,6 @@ $ca_sub_name_table = array();
 			<div class="cate_body">
 				<form class="form_cate" action="/shop/list.php" method="get">
 					<input type="hidden" name="ca_id" value="<?=$ca_id?>">
-					<?php foreach($ca_sub as $val) { ?>
-					<input type="hidden" name="ca_sub[]" value="<?=$val?>">
-					<?php } ?>
 					<?php if($sort) echo "<input type='hidden' name='sort' value='$sort'>"; ?> 
 					<?php if($sortodr) echo "<input type='hidden' name='sortodr' value='$sortodr'>"; ?> 
 					<?php if($prodSupYn) echo "<input type='hidden' name='prodSupYn' value='$prodSupYn'>"; ?> 
@@ -116,7 +113,7 @@ $ca_sub_name_table = array();
 				<?php foreach($next_category as $cate) {
 					$ca_sub_name_table[substr($cate['ca_id'], 2)] = $cate['ca_name'];
 				?>
-				<a href="<?php echo $ca_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? make_ca_sub_url(array_diff($ca_sub, [substr($cate['ca_id'], 2)])) : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2).$ca_sub_url).$sort_url.$sup_url.$q_url ;?>"
+				<a href="<?php echo $ca_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? make_ca_sub_url(array_diff($ca_sub, [substr($cate['ca_id'], 2)])) : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2)).$sort_url.$sup_url.$q_url ;?>"
 					class="<?php if(in_array(substr($cate['ca_id'], 2), $ca_sub)) echo 'active'; ?>">
 					<?php echo $cate['ca_name']; ?>
 				</a>
