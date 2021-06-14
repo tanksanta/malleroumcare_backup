@@ -114,7 +114,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 				</a>
 			</li>
 			<li>
-				<a href="/shop/my_recipient_list.php" title="수급자">
+				<a href="/shop/my.recipient.list.php" title="수급자">
 					<p class="img">
 						<img src="<?=THEMA_URL?>/assets/img/footerMoIconRecipient.png" alt="수급자" class="off">
 					</p>
