@@ -389,9 +389,9 @@ function get_view_thumbnail($contents, $thumb_width=0)
 						$caption = ($alt) ? ' data-title="'.$alt.'"' : '';
 						$thumb_tag = '<a href="'.$src.'" data-lightbox="view-lightbox"'.$caption.' target="_blank">'.$thumb_tag.'</a>';
 					} else if (strpos($img_tag, G5_DATA_DIR.'/'.G5_EDITOR_DIR) || strpos($img_tag, G5_DATA_DIR.'/file')) {
-						$thumb_tag = '<a href="'.G5_BBS_URL.'/view_image.php?fn='.urlencode(str_replace(G5_URL, "", $src)).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+						//$thumb_tag = '<a href="'.G5_BBS_URL.'/view_image.php?fn='.urlencode(str_replace(G5_URL, "", $src)).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
 					} else {
-						$thumb_tag = '<a href="'.G5_BBS_URL.'/view_img.php?img='.urlencode($src).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+						//$thumb_tag = '<a href="'.G5_BBS_URL.'/view_img.php?img='.urlencode($src).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
 					}
 				}
 
@@ -434,9 +434,9 @@ function get_view_thumbnail($contents, $thumb_width=0)
 					$caption = ($alt) ? ' data-title="'.$alt.'"' : '';
 					$thumb_tag = '<a href="'.$src.'" data-lightbox="view-lightbox"'.$caption.' target="_blank">'.$thumb_tag.'</a>';
 				} else if (strpos($img_tag, G5_DATA_DIR.'/'.G5_EDITOR_DIR) || strpos($img_tag, G5_DATA_DIR.'/file')) {
-					$thumb_tag = '<a href="'.G5_BBS_URL.'/view_image.php?fn='.urlencode(str_replace(G5_URL, "", $src)).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+					//$thumb_tag = '<a href="'.G5_BBS_URL.'/view_image.php?fn='.urlencode(str_replace(G5_URL, "", $src)).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
 				} else {
-					$thumb_tag = '<a href="'.G5_BBS_URL.'/view_img.php?img='.urlencode($src).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+					//$thumb_tag = '<a href="'.G5_BBS_URL.'/view_img.php?img='.urlencode($src).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
 				}
 			}
 
@@ -456,9 +456,9 @@ function get_view_thumbnail($contents, $thumb_width=0)
 			} else {
 				if($is_view == "1") {
 					$caption = ($alt) ? ' data-title="'.$alt.'"' : '';
-					$thumb_tag = '<a href="'.$src.'" data-lightbox="view-lightbox"'.$caption.' target="_blank">'.$thumb_tag.'</a>';
+					//$thumb_tag = '<a href="'.$src.'" data-lightbox="view-lightbox"'.$caption.' target="_blank">'.$thumb_tag.'</a>';
 				} else {
-					$thumb_tag = '<a href="'.G5_BBS_URL.'/view_img.php?img='.urlencode($src).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+					//$thumb_tag = '<a href="'.G5_BBS_URL.'/view_img.php?img='.urlencode($src).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
 				}
 			}
 
