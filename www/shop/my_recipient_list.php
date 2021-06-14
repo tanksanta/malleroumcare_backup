@@ -114,13 +114,13 @@
 						<button id="btn_search" type="submit"></button>
 				</div>
 			</div>
-			<div class="r_btn_area">
-				<a href="./my_recipient_write.php" class="btn eroumcare_btn" title="수급자 등록">수급자 등록</a>
-				<a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn" title="수급자일괄등록">수급자일괄등록</a>
+			<div class="r_btn_area pc">
+				<a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
+				<a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
 			</div>
 		</form>
 
-		<div class="list_box">
+		<div class="list_box pc">
 			<div class="table_box">	
 				<table >
 					<tr>
@@ -190,13 +190,13 @@
 							?>
 							<br/>
 							<?php if ($data["penLtmNum"]) { ?>
-							<a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn small" title="추가하기">추가하기</a>
+							<a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2 small" title="추가하기">추가하기</a>
 							<?php } ?>
 						</td>
 						<td style="text-align:center;">
 							<?php if ($data['recYn'] === 'N') { ?>
 								욕구사정기록지 미작성<br/>
-								<a href="#" class="btn eroumcare_btn small" title="작성하기">작성하기</a>
+								<a href="#" class="btn eroumcare_btn2 small" title="작성하기">작성하기</a>
 							<?php } ?>
 						</td>
 					</tr>
@@ -216,6 +216,77 @@
         </div>
         <?php } ?>
 
+		<?php if($list){ ?>
+			<div class="list_box mobile">
+				<ul class="li_box">
+					<?php foreach ($list as $data) { ?>
+						<li>
+							<div class="info">
+								<a href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId']; ?>'>
+									<b>
+									<?php echo $data['penNm']; ?>
+									(<?php echo substr($data['penBirth'], 2, 2); ?>년생/<?php echo $data['penGender']; ?>)
+									</b>
+									<?php if ($data['penProNm']) { ?>
+										<span class="li_box_protector">
+										* 보호자(<?php echo $data['penProNm']; ?><?php echo $data['penProTypeCd'] == '00' ? '/없음' : ''; ?><?php echo $data['penProTypeCd'] == '01' ? '/일반보호자' : ''; ?><?php echo $data['penProTypeCd'] == '02' ? '/요양보호사' : ''; ?>)
+										</span>
+									<?php } ?>
+									<p>
+										<?php if ($data["penLtmNum"]) { ?>
+											<b>
+												<?php echo $data["penLtmNum"]; ?>
+												(<?php echo $data["penRecGraNm"]; ?><?php echo $pen_type_cd[$data['penTypeCd']] ? '/' . $pen_type_cd[$data['penTypeCd']] : ''; ?>)
+											</b>
+										<?php }else{ ?>
+											예비수급자
+										<?php } ?>
+									</p>
+									<p>
+										<b>
+											1년사용: 
+											<?php
+											// 유효기간
+											$exp_date = substr($data['penExpiStDtm'], 4, 4);
+											$exp_now = date('m') . date('d');
+											$exp_year = intval($exp_date) < intval($exp_now) ? intval(date('Y')) : intval(date('Y')) - 1; // 지금날짜보다 크면 올해, 작으면 작년
+
+											$exp_start = date('Y-m-d', strtotime($exp_year . $exp_date));
+											$exp_end = date('Y-m-d', strtotime('+ 1 years', strtotime($exp_start)));
+
+											// $count = sql_fetch("SELECT COUNT(*) AS cnt FROM `eform_document` WHERE penId = '{$data['penId']}' AND dc_status IN ('1', '2')")['cnt'];
+
+											// 계약건수, 금액
+											$contract = sql_fetch("SELECT count(*) as cnt, SUM(it_price) as sum_it_price from eform_document_item edi where edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$data['penId']}' AND dc_status IN ('1', '2') and dc_datetime BETWEEN '{$exp_start}' AND '{$exp_end}')");
+											// 판매 건수
+											$contract_sell = sql_fetch("SELECT count(*) as cnt from eform_document_item edi where edi.gubun = '00' and edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$data['penId']}' AND dc_status IN ('1', '2') and dc_datetime BETWEEN '{$exp_start}' AND '{$exp_end}')");
+											// 대여 건수
+											$contract_borrow = sql_fetch("SELECT count(*) as cnt from eform_document_item edi where edi.gubun = '01' and edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$data['penId']}' AND dc_status IN ('1', '2') and dc_datetime BETWEEN '{$exp_start}' AND '{$exp_end}')");
+
+											?>
+											<span class="<?php echo $contract['sum_it_price'] > 1400000 ? 'red' : ''; ?>"><?php echo number_format($contract['sum_it_price']); ?>원</span>
+										</b>
+										<span style="font-size:0.9em;">
+											계약 <?php echo $contract['cnt']; ?>건, 판매 <?php echo $contract_sell['cnt']; ?>건, 대여 <?php echo $contract_borrow['cnt']; ?>건
+										</span>
+									</p>
+								</a>
+								<?php if ($data['recYn'] === 'N') { ?>
+									<a href="#" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 작성</a>
+								<?php } ?>
+							</div>
+							<?php if ($data["penLtmNum"]) { ?>
+							<a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>" class="li_box_right_btn" title="추가하기">
+								장바구니
+								<br/>
+								<b><?php echo get_carts_by_recipient($data['penId']) . '개'; ?></b>
+							</a>
+							<?php } ?>
+						</li>
+					<?php } ?>
+				</ul>
+			</div>
+		<?php } ?>
 
 		<!--
 		<div class="itemWrap">

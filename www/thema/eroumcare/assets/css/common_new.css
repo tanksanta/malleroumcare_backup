@@ -39,6 +39,13 @@ input{
     border-radius: 0;
 }
 
+.pc {
+	display:block;
+}
+.mobile {
+	display:none !important;
+}
+
 /* =================================================
 	* fonts
 ================================================= */
@@ -662,7 +669,25 @@ pre{white-space: pre-wrap;}
 
 	.item_list_wrap ul>li .img_area{width:100%;height: auto;}
 
+	.pc {
+		display:none;
+	}
 
+	.mobile {
+		display:block !important;
+	}
+
+	.search_box select {
+		width:120px;
+	}
+
+	.search_box {
+		width:100%;
+	}
+
+	.search_box .input_search {
+		width: calc(100% - 130px);
+	}
 
 }
 
@@ -978,6 +1003,17 @@ pre{white-space: pre-wrap;}
 	height: 25px;
     line-height: 25px;
 }
+.btn.eroumcare_btn2 {
+    color: #666;
+    border: 1px solid #dedede;
+    padding: 0px 15px;
+    line-height: 35px;
+    border-radius: 8px !important;
+}
+.btn.eroumcare_btn2.small {
+	line-height:25px;
+	padding: 0px 7px;
+}
 
 /* 수급자 fixed */
 #fixed_recipient {
@@ -1023,6 +1059,32 @@ pre{white-space: pre-wrap;}
 	width:100%;
 	padding:200px 0;
 	text-align:center;
+}
+
+.list_box .li_box {
+	clear:both;
+}
+.list_box .li_box > li {
+	border-top:1px solid #efefef;
+	padding:15px 0;
+	display:flex;
+	justify-content: space-between;
+}
+.list_box .li_box > li .li_box_right_btn {
+	display:block;
+	border:1px solid #e5e5e5;
+	border-radius:5px;
+	text-align:center;
+	padding:10px 7px;
+	font-size:0.9em;
+	height: 68px;
+}
+.list_box .li_box > li .li_box_protector {
+	font-size:0.8em;
+	margin-left:5px;
+}
+.list_box .li_box > li p {
+	margin-bottom:0;
 }
 
 /* 210208 상단퀵메뉴 */
@@ -1155,7 +1217,9 @@ pre{white-space: pre-wrap;}
 	#mainBoardListWrap > .customer { display: block; height: auto; }
 	
 	#sort-wrapper { padding: 0 20px; }
-	#myRecipientListWrap { padding: 0 20px; }
+	#myRecipientListWrap {
+		padding: 0 10px;
+	}
 	#stock { padding: 0 20px; padding-top: 20px; }
 	.productListWrap { padding: 0; }
 	.mypage-skin { padding: 0 20px; padding-top: 20px; }
