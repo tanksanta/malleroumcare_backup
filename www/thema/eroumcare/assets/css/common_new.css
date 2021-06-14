@@ -1018,13 +1018,14 @@ pre{white-space: pre-wrap;}
 /* 수급자 fixed */
 #fixed_recipient {
 	position:fixed;
-	bottom:80px;
-	right:20px;
+	bottom:20px;
+	left:20px;
 	width:330px;
 	border:1px solid #f9d1a4;
 	padding:10px 15px;
 	background-color:#fff;
 	z-index: 99;
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 #fixed_recipient .info {
 	float:left;
@@ -1248,7 +1249,8 @@ pre{white-space: pre-wrap;}
 
 	#fixed_recipient {
 		width: 90%;
-		right: 5%;
+		left: 5%;
+		bottom: 80px;
 		box-sizing: border-box;
 	}
 	#fixed_recipient .info {
