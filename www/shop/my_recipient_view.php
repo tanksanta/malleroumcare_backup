@@ -81,8 +81,8 @@ $recs = get_recs_by_recipient($pen['penId']);
     </div>
     <a class="c_btn" href="./my_recipient_update.php?id=<?=$pen['penId']?>">기본정보 수정</a>
     <div class="tel_btn_wrap">
-      <a href="tel:<?=$pen['penConNum']?>" class="tel_btn"><i class="fa fa-phone" aria-hidden="true"></i>수급자 전화연결</a>
-      <a href="tel:<?=$pen['penProConNum']?>" class="tel_btn"><i class="fa fa-phone" aria-hidden="true"></i>보호자 전화연결</a>
+      <a href="tel:<?=$pen['penConNum'] ?: $pen['penConPNum']?>" class="tel_btn"><i class="fa fa-phone" aria-hidden="true"></i>수급자 전화연결</a>
+      <a href="tel:<?=$pen['penProConNum'] ?: $pen['penProConPnum']?>" class="tel_btn"><i class="fa fa-phone" aria-hidden="true"></i>보호자 전화연결</a>
     </div>
   </div>
 
