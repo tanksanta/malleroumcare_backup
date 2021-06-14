@@ -53,6 +53,10 @@ header("Pragma: no-cache"); // HTTP/1.0
 
 <link rel="shortcut icon" href="<?php echo $config['cf_2'] ?>">
 
+
+<meta name="naver-site-verification" content="b5d57e0d1230874d9e69fef47be8c718405a0b87" />
+
+
 <meta charset="utf-8">
 <?php
 $body_mode = 'is-pc';
