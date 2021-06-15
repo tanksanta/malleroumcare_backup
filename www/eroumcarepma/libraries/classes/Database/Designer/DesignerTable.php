@@ -30,10 +30,10 @@ class DesignerTable
      * @param string|null $displayField The display field if available
      */
     public function __construct(
-        string $databaseName,
-        string $tableName,
-        string $tableEngine,
-        ?string $displayField
+        $databaseName,
+        $tableName,
+        $tableEngine,
+        $displayField
     ) {
         $this->databaseName = $databaseName;
         $this->tableName = $tableName;
@@ -46,8 +46,7 @@ class DesignerTable
      *
      * @return bool
      */
-    public function supportsForeignkeys(): bool
-    {
+    public function supportsForeignkeys() {
         return Util::isForeignKeySupported($this->tableEngine);
     }
 
@@ -56,8 +55,7 @@ class DesignerTable
      *
      * @return string
      */
-    public function getDatabaseName(): string
-    {
+    public function getDatabaseName() {
         return $this->databaseName;
     }
 
@@ -66,8 +64,7 @@ class DesignerTable
      *
      * @return string
      */
-    public function getTableName(): string
-    {
+    public function getTableName() {
         return $this->tableName;
     }
 
@@ -76,8 +73,7 @@ class DesignerTable
      *
      * @return string
      */
-    public function getTableEngine(): string
-    {
+    public function getTableEngine() {
         return $this->tableEngine;
     }
 
@@ -96,8 +92,7 @@ class DesignerTable
      *
      * @return string
      */
-    public function getDbTableString(): string
-    {
+    public function getDbTableString() {
         return $this->databaseName . '.' . $this->tableName;
     }
 }

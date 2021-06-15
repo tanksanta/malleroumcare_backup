@@ -1,8 +1,8 @@
 <?php
+
 /**
  * Parses a list of options.
  */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Components;
 
@@ -14,6 +14,10 @@ use PhpMyAdmin\SqlParser\Translator;
 
 /**
  * Parses a list of options.
+ *
+ * @category   Components
+ *
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class OptionsArray extends Component
 {
@@ -22,14 +26,16 @@ class OptionsArray extends Component
      *
      * @var array
      */
-    public $options = [];
+    public $options = array();
 
     /**
+     * Constructor.
+     *
      * @param array $options The array of options. Options that have a value
      *                       must be an array with at least two keys `name` and
      *                       `expr` or `value`.
      */
-    public function __construct(array $options = [])
+    public function __construct(array $options = array())
     {
         $this->options = $options;
     }
@@ -41,9 +47,9 @@ class OptionsArray extends Component
      *
      * @return OptionsArray
      */
-    public static function parse(Parser $parser, TokensList $list, array $options = [])
+    public static function parse(Parser $parser, TokensList $list, array $options = array())
     {
-        $ret = new static();
+        $ret = new self();
 
         /**
          * The ID that will be assigned to duplicate options.
@@ -161,7 +167,7 @@ class OptionsArray extends Component
                     // This is only the beginning. The value is parsed in state
                     // 1 and 2. State 1 is used to skip the first equals sign
                     // and state 2 to parse the actual value.
-                    $ret->options[$lastOptionId] = [
+                    $ret->options[$lastOptionId] = array(
                         // @var string The name of the option.
                         'name' => $token->value,
                         // @var bool Whether it contains an equal sign.
@@ -170,8 +176,8 @@ class OptionsArray extends Component
                         // @var string Raw value.
                         'expr' => '',
                         // @var string Processed value.
-                        'value' => '',
-                    ];
+                        'value' => ''
+                    );
                     $state = 1;
                 } elseif ($lastOption[1] === 'expr' || $lastOption[1] === 'expr=') {
                     // This is a keyword that is followed by an expression.
@@ -179,15 +185,15 @@ class OptionsArray extends Component
 
                     // Skipping this option in order to parse the expression.
                     ++$list->idx;
-                    $ret->options[$lastOptionId] = [
+                    $ret->options[$lastOptionId] = array(
                         // @var string The name of the option.
                         'name' => $token->value,
                         // @var bool Whether it contains an equal sign.
                         //           This is used by the builder to rebuild it.
                         'equals' => $lastOption[1] === 'expr=',
                         // @var Expression The parsed expression.
-                        'expr' => '',
-                    ];
+                        'expr' => ''
+                    );
                     $state = 1;
                 }
             } elseif ($state === 1) {
@@ -205,7 +211,7 @@ class OptionsArray extends Component
                     $ret->options[$lastOptionId]['expr'] = Expression::parse(
                         $parser,
                         $list,
-                        empty($lastOption[2]) ? [] : $lastOption[2]
+                        empty($lastOption[2]) ? array() : $lastOption[2]
                     );
                     $ret->options[$lastOptionId]['value']
                         = $ret->options[$lastOptionId]['expr']->expr;
@@ -270,19 +276,19 @@ class OptionsArray extends Component
      *
      * @return string
      */
-    public static function build($component, array $options = [])
+    public static function build($component, array $options = array())
     {
         if (empty($component->options)) {
             return '';
         }
 
-        $options = [];
+        $options = array();
         foreach ($component->options as $option) {
             if (! is_array($option)) {
                 $options[] = $option;
             } else {
                 $options[] = $option['name']
-                    . (! empty($option['equals']) && $option['equals'] ? '=' : ' ')
+                    . ((! empty($option['equals']) && $option['equals']) ? '=' : ' ')
                     . (! empty($option['expr']) ? $option['expr'] : $option['value']);
             }
         }

@@ -214,14 +214,16 @@ function get_carts_by_recipient($recipient) {
 	global $member;
 	global $g5;
 
-	$sql = "SELECT count(*) as cnt
-		   	from {$g5['g5_shop_cart_table']} a
-		  	where a.ct_pen_id = '$recipient' 
-		  		and a.mb_id = '{$member['mb_id']}'
-                and a.ct_direct = '0'
-                and a.ct_status = '쇼핑' 
-			GROUP BY a.it_id 
-			order by a.ct_id ";
+	$sql = "SELECT COUNT(*) AS cnt FROM (
+				SELECT *
+				from {$g5['g5_shop_cart_table']} a
+				where a.ct_pen_id = '$recipient' 
+					and a.mb_id = '{$member['mb_id']}'
+					and a.ct_direct = '0'
+					and a.ct_status = '쇼핑' 
+				GROUP BY a.it_id 
+				order by a.ct_id 
+			) b";
 	$result = sql_fetch($sql);
 
 	return $result['cnt'] ?: 0;

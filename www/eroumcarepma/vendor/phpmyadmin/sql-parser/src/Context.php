@@ -1,11 +1,11 @@
 <?php
+
 /**
  * Defines a context class that is later extended to define other contexts.
  *
  * A context is a collection of keywords, operators and functions used for
  * parsing.
  */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser;
 
@@ -13,6 +13,10 @@ use PhpMyAdmin\SqlParser\Exceptions\LoaderException;
 
 /**
  * Holds the configuration of the context that is currently used.
+ *
+ * @category Contexts
+ *
+ * @license  https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 abstract class Context
 {
@@ -82,14 +86,14 @@ abstract class Context
      *
      * @var array
      */
-    public static $KEYWORDS = [];
+    public static $KEYWORDS = array();
 
     /**
      * List of operators and their flags.
      *
      * @var array
      */
-    public static $OPERATORS = [
+    public static $OPERATORS = array(
         // Some operators (*, =) may have ambiguous flags, because they depend on
         // the context they are being used in.
         // For example: 1. SELECT * FROM table; # SQL specific (wildcard)
@@ -133,8 +137,8 @@ abstract class Context
         ')' => 16,
         '.' => 16,
         ',' => 16,
-        ';' => 16,
-    ];
+        ';' => 16
+    );
 
     /**
      * The mode of the MySQL server that will be used in lexing, parsing and
@@ -332,18 +336,28 @@ abstract class Context
         if ($len === 0) {
             return null;
         }
+
+        // If comment is Bash style (#):
         if ($str[0] === '#') {
             return Token::FLAG_COMMENT_BASH;
-        } elseif (($len > 1) && ($str[0] === '/') && ($str[1] === '*')) {
+        }
+        // If comment is opening C style (/*), warning, it could be a MySQL command (/*!)
+        if (($len > 1) && ($str[0] === '/') && ($str[1] === '*')) {
             return ($len > 2) && ($str[2] === '!') ?
                 Token::FLAG_COMMENT_MYSQL_CMD : Token::FLAG_COMMENT_C;
-        } elseif (($len > 1) && ($str[0] === '*') && ($str[1] === '/')) {
+        }
+        // If comment is closing C style (*/), warning, it could conflicts with wildcard and a real opening C style.
+        // It would looks like the following valid SQL statement: "SELECT */* comment */ FROM...".
+        if (($len > 1) && ($str[0] === '*') && ($str[1] === '/')) {
             return Token::FLAG_COMMENT_C;
-        } elseif (($len > 2) && ($str[0] === '-')
+        }
+        // If comment is SQL style (--\s?):
+        if (($len > 2) && ($str[0] === '-')
             && ($str[1] === '-') && static::isWhitespace($str[2])
         ) {
             return Token::FLAG_COMMENT_SQL;
-        } elseif (($len === 2) && $end && ($str[0] === '-') && ($str[1] === '-')) {
+        }
+        if (($len === 2) && $end && ($str[0] === '-') && ($str[1] === '-')) {
             return Token::FLAG_COMMENT_SQL;
         }
 
@@ -381,7 +395,7 @@ abstract class Context
      */
     public static function isNumber($str)
     {
-        return ($str >= '0') && ($str <= '9') || ($str === '.')
+        return (($str >= '0') && ($str <= '9')) || ($str === '.')
             || ($str === '-') || ($str === '+') || ($str === 'e') || ($str === 'E');
     }
 
@@ -450,7 +464,9 @@ abstract class Context
     {
         // NOTES:   Only non alphanumeric ASCII characters may be separators.
         //          `~` is the last printable ASCII character.
-        return ($str <= '~') && ($str !== '_')
+        return ($str <= '~')
+            && ($str !== '_')
+            && ($str !== '$')
             && (($str < '0') || ($str > '9'))
             && (($str < 'a') || ($str > 'z'))
             && (($str < 'A') || ($str > 'Z'));
@@ -464,7 +480,7 @@ abstract class Context
      * @param string $context name of the context or full class name that
      *                        defines the context
      *
-     * @throws LoaderException if the specified context doesn't exist.
+     * @throws LoaderException if the specified context doesn't exist
      */
     public static function load($context = '')
     {
@@ -574,6 +590,29 @@ abstract class Context
         }
 
         return $quote . str_replace($quote, $quote . $quote, $str) . $quote;
+    }
+
+    /**
+     * Returns char used to quote identifiers based on currently set SQL Mode (ie. standard or ANSI_QUOTES)
+     * @return string either " (double quote, ansi_quotes mode) or ` (backtick, standard mode)
+     */
+    public static function getIdentifierQuote()
+    {
+        return self::hasMode(self::SQL_MODE_ANSI_QUOTES) ? '"' : '`';
+    }
+
+    /**
+     * Function verifies that given SQL Mode constant is currently set
+     *
+     * @return boolean false on empty param, true/false on given constant/int value
+     * @param int $flag for example Context::SQL_MODE_ANSI_QUOTES
+     */
+    public static function hasMode($flag = null)
+    {
+        if (empty($flag)) {
+            return false;
+        }
+        return (self::$MODE & $flag) === $flag;
     }
 }
 

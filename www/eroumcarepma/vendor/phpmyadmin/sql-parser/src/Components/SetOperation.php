@@ -1,8 +1,8 @@
 <?php
+
 /**
  * `SET` keyword parser.
  */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Components;
 
@@ -13,6 +13,10 @@ use PhpMyAdmin\SqlParser\TokensList;
 
 /**
  * `SET` keyword parser.
+ *
+ * @category   Keywords
+ *
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class SetOperation extends Component
 {
@@ -31,10 +35,12 @@ class SetOperation extends Component
     public $value;
 
     /**
+     * Constructor.
+     *
      * @param string $column Field's name..
      * @param string $value  new value
      */
-    public function __construct($column = null, $value = null)
+    public function __construct($column = '', $value = '')
     {
         $this->column = $column;
         $this->value = $value;
@@ -47,11 +53,11 @@ class SetOperation extends Component
      *
      * @return SetOperation[]
      */
-    public static function parse(Parser $parser, TokensList $list, array $options = [])
+    public static function parse(Parser $parser, TokensList $list, array $options = array())
     {
-        $ret = [];
+        $ret = array();
 
-        $expr = new static();
+        $expr = new self();
 
         /**
          * The state of the parser.
@@ -112,18 +118,18 @@ class SetOperation extends Component
                 $tmp = Expression::parse(
                     $parser,
                     $list,
-                    [
-                        'breakOnAlias' => true,
-                    ]
+                    array(
+                        'breakOnAlias' => true
+                    )
                 );
-                if ($tmp === null) {
+                if (is_null($tmp)) {
                     $parser->error('Missing expression.', $token);
                     break;
                 }
                 $expr->column = trim($expr->column);
                 $expr->value = $tmp->expr;
                 $ret[] = $expr;
-                $expr = new static();
+                $expr = new self();
                 $state = 0;
                 $commaLastSeenAt = null;
             }
@@ -144,7 +150,7 @@ class SetOperation extends Component
      *
      * @return string
      */
-    public static function build($component, array $options = [])
+    public static function build($component, array $options = array())
     {
         if (is_array($component)) {
             return implode(', ', $component);

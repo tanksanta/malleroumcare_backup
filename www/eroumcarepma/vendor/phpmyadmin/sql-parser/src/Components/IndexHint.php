@@ -1,8 +1,8 @@
 <?php
+
 /**
  * Parses an Index hint.
  */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Components;
 
@@ -13,6 +13,10 @@ use PhpMyAdmin\SqlParser\TokensList;
 
 /**
  * Parses an Index hint.
+ *
+ * @category   Components
+ *
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class IndexHint extends Component
 {
@@ -42,15 +46,17 @@ class IndexHint extends Component
      *
      * @var array
      */
-    public $indexes = [];
+    public $indexes = array();
 
     /**
+     * Constructor.
+     *
      * @param string $type       the type of hint (USE/FORCE/IGNORE)
      * @param string $indexOrKey What the hint is for (INDEX/KEY)
      * @param string $for        the clause for which this hint is (JOIN/ORDER BY/GROUP BY)
-     * @param array  $indexes    List of indexes in this hint
+     * @param string $indexes    List of indexes in this hint
      */
-    public function __construct(string $type = null, string $indexOrKey = null, string $for = null, array $indexes = [])
+    public function __construct(string $type = null, string $indexOrKey = null, string $for = null, array $indexes = array())
     {
         $this->type = $type;
         $this->indexOrKey = $indexOrKey;
@@ -65,10 +71,10 @@ class IndexHint extends Component
      *
      * @return IndexHint|Component[]
      */
-    public static function parse(Parser $parser, TokensList $list, array $options = [])
+    public static function parse(Parser $parser, TokensList $list, array $options = array())
     {
-        $ret = [];
-        $expr = new static();
+        $ret = array();
+        $expr = new self();
         $expr->type = isset($options['type']) ? $options['type'] : null;
         /**
          * The state of the parser.
@@ -80,7 +86,6 @@ class IndexHint extends Component
          *      2 -------------------- [ expr_list ] --------------------> 0
          *      3 -------------- [ JOIN/GROUP BY/ORDER BY ] -------------> 4
          *      4 -------------------- [ expr_list ] --------------------> 0
-         *
          * @var int
          */
         $state = 0;
@@ -138,7 +143,7 @@ class IndexHint extends Component
                         $expr->indexes = ExpressionArray::parse($parser, $list);
                         $state = 0;
                         $ret[] = $expr;
-                        $expr = new static();
+                        $expr = new self();
                     }
                     break;
                 case 3:
@@ -158,7 +163,7 @@ class IndexHint extends Component
                     $expr->indexes = ExpressionArray::parse($parser, $list);
                     $state = 0;
                     $ret[] = $expr;
-                    $expr = new static();
+                    $expr = new self();
                     break;
             }
         }
@@ -168,12 +173,12 @@ class IndexHint extends Component
     }
 
     /**
-     * @param IndexHint|IndexHint[] $component the component to be built
-     * @param array                 $options   parameters for building
+     * @param ArrayObj|ArrayObj[] $component the component to be built
+     * @param array               $options   parameters for building
      *
      * @return string
      */
-    public static function build($component, array $options = [])
+    public static function build($component, array $options = array())
     {
         if (is_array($component)) {
             return implode(' ', $component);

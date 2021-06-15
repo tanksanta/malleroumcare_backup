@@ -1,16 +1,20 @@
 <?php
+
 /**
  * Defines a token along with a set of types and flags and utility functions.
  *
  * An array of tokens will result after parsing the query.
  */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser;
 
 /**
  * A structure representing a lexeme that explicitly indicates its
  * categorization for the purpose of parsing.
+ *
+ * @category Tokens
+ *
+ * @license  https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class Token
 {
@@ -211,6 +215,8 @@ class Token
     public $position;
 
     /**
+     * Constructor.
+     *
      * @param string $token the value of the token
      * @param int    $type  the type of the token
      * @param int    $flags the flags of the token
@@ -252,17 +258,16 @@ class Token
                 if ($this->flags & self::FLAG_NUMBER_HEX) {
                     if ($this->flags & self::FLAG_NUMBER_NEGATIVE) {
                         $ret = str_replace('-', '', $this->token);
-                        sscanf($ret, '%x', $ret);
-                        $ret = -$ret;
+                        $ret = -hexdec($ret);
                     } else {
-                        sscanf($ret, '%x', $ret);
+                        $ret = hexdec($ret);
                     }
                 } elseif (($this->flags & self::FLAG_NUMBER_APPROXIMATE)
                 || ($this->flags & self::FLAG_NUMBER_FLOAT)
                 ) {
-                    sscanf($ret, '%f', $ret);
-                } else {
-                    sscanf($ret, '%d', $ret);
+                    $ret = (float) $ret;
+                } elseif (! ($this->flags & self::FLAG_NUMBER_BINARY)) {
+                    $ret = (int) $ret;
                 }
 
                 return $ret;
@@ -294,7 +299,7 @@ class Token
                     // in PHP 5.3- the `null` parameter isn't handled correctly.
                     $str = mb_substr(
                         $str,
-                        ! empty($str[1]) && ($str[1] === '@') ? 2 : 1,
+                        (! empty($str[1]) && ($str[1] === '@')) ? 2 : 1,
                         mb_strlen($str),
                         'UTF-8'
                     );
@@ -324,16 +329,16 @@ class Token
     public function getInlineToken()
     {
         return str_replace(
-            [
+            array(
                 "\r",
                 "\n",
                 "\t",
-            ],
-            [
+            ),
+            array(
                 '\r',
                 '\n',
                 '\t',
-            ],
+            ),
             $this->token
         );
     }
