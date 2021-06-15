@@ -1,82 +1,85 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Core functions used all over the scripts.
  * This script is distinct from libraries/common.inc.php because this
  * script is called from /test.
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin;
 
-use PhpMyAdmin\Plugins\AuthenticationPlugin;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-
-use const DATE_RFC1123;
-use const E_USER_ERROR;
-use const E_USER_WARNING;
-use const FILTER_VALIDATE_IP;
-use function array_keys;
-use function array_pop;
-use function array_walk_recursive;
-use function chr;
-use function count;
-use function date_default_timezone_get;
-use function date_default_timezone_set;
-use function defined;
-use function explode;
-use function extension_loaded;
-use function filter_var;
-use function function_exists;
-use function getenv;
-use function gettype;
-use function gmdate;
-use function hash_equals;
-use function hash_hmac;
-use function header;
-use function htmlspecialchars;
-use function http_build_query;
-use function implode;
-use function in_array;
-use function ini_get;
-use function ini_set;
-use function intval;
-use function is_array;
-use function is_numeric;
-use function is_scalar;
-use function is_string;
-use function json_encode;
-use function mb_internal_encoding;
-use function mb_strlen;
-use function mb_strpos;
-use function mb_strrpos;
-use function mb_substr;
-use function parse_str;
-use function parse_url;
-use function preg_match;
-use function preg_replace;
-use function session_id;
-use function session_write_close;
-use function sprintf;
-use function str_replace;
-use function strlen;
-use function strpos;
-use function strtolower;
-use function strtr;
-use function substr;
-use function trigger_error;
-use function unserialize;
-use function urldecode;
-use function vsprintf;
+use PhpMyAdmin\DatabaseInterface;
+use PhpMyAdmin\Message;
+use PhpMyAdmin\Response;
+use PhpMyAdmin\Sanitize;
+use PhpMyAdmin\Template;
+use PhpMyAdmin\Url;
+use PhpMyAdmin\Util;
 
 /**
  * Core class
+ *
+ * @package PhpMyAdmin
  */
 class Core
 {
+    /**
+     * the whitelist for goto parameter
+     * @static array $goto_whitelist
+     */
+    public static $goto_whitelist = array(
+        'db_datadict.php',
+        'db_sql.php',
+        'db_events.php',
+        'db_export.php',
+        'db_importdocsql.php',
+        'db_multi_table_query.php',
+        'db_qbe.php',
+        'db_structure.php',
+        'db_import.php',
+        'db_operations.php',
+        'db_search.php',
+        'db_routines.php',
+        'export.php',
+        'import.php',
+        'index.php',
+        'pdf_pages.php',
+        'pdf_schema.php',
+        'server_binlog.php',
+        'server_collations.php',
+        'server_databases.php',
+        'server_engines.php',
+        'server_export.php',
+        'server_import.php',
+        'server_privileges.php',
+        'server_sql.php',
+        'server_status.php',
+        'server_status_advisor.php',
+        'server_status_monitor.php',
+        'server_status_queries.php',
+        'server_status_variables.php',
+        'server_variables.php',
+        'sql.php',
+        'tbl_addfield.php',
+        'tbl_change.php',
+        'tbl_create.php',
+        'tbl_import.php',
+        'tbl_indexes.php',
+        'tbl_sql.php',
+        'tbl_export.php',
+        'tbl_operations.php',
+        'tbl_structure.php',
+        'tbl_relation.php',
+        'tbl_replace.php',
+        'tbl_row_action.php',
+        'tbl_select.php',
+        'tbl_zoom_select.php',
+        'transformation_overview.php',
+        'transformation_wrapper.php',
+        'user_password.php',
+    );
+
     /**
      * checks given $var and returns it if valid, or $default of not valid
      * given $var is also checked for type being 'similar' as $default
@@ -98,13 +101,13 @@ class Core
      * echo Core::ifSetOr($cfg['EnableFoo'], false, 'boolean'); // true
      * </code>
      *
-     * @see self::isValid()
-     *
-     * @param mixed $var     param to check
+     * @param mixed &$var    param to check
      * @param mixed $default default value
      * @param mixed $type    var type or array of values to check against $var
      *
-     * @return mixed $var or $default
+     * @return mixed   $var or $default
+     *
+     * @see self::isValid()
      */
     public static function ifSetOr(&$var, $default = null, $type = 'similar')
     {
@@ -148,17 +151,16 @@ class Core
      *
      * to avoid this we set this var to null if not isset
      *
-     * @see https://www.php.net/gettype
-     *
-     * @param mixed $var     variable to check
+     * @param mixed &$var    variable to check
      * @param mixed $type    var type or array of valid values to check against $var
      * @param mixed $compare var to compare with $var
      *
-     * @return bool whether valid or not
+     * @return boolean whether valid or not
      *
      * @todo add some more var types like hex, bin, ...?
+     * @see https://secure.php.net/gettype
      */
-    public static function isValid(&$var, $type = 'length', $compare = null): bool
+    public static function isValid(&$var, $type = 'length', $compare = null)
     {
         if (! isset($var)) {
             // var is not even set
@@ -177,24 +179,24 @@ class Core
         // allow some aliases of var types
         $type = strtolower($type);
         switch ($type) {
-            case 'identic':
-                $type = 'identical';
-                break;
-            case 'len':
-                $type = 'length';
-                break;
-            case 'bool':
-                $type = 'boolean';
-                break;
-            case 'float':
-                $type = 'double';
-                break;
-            case 'int':
-                $type = 'integer';
-                break;
-            case 'null':
-                $type = 'NULL';
-                break;
+        case 'identic' :
+            $type = 'identical';
+            break;
+        case 'len' :
+            $type = 'length';
+            break;
+        case 'bool' :
+            $type = 'boolean';
+            break;
+        case 'float' :
+            $type = 'double';
+            break;
+        case 'int' :
+            $type = 'integer';
+            break;
+        case 'null' :
+            $type = 'NULL';
+            break;
         }
 
         if ($type === 'identical') {
@@ -204,16 +206,16 @@ class Core
         // whether we should check against given $compare
         if ($type === 'similar') {
             switch (gettype($compare)) {
-                case 'string':
-                case 'boolean':
-                    $type = 'scalar';
-                    break;
-                case 'integer':
-                case 'double':
-                    $type = 'numeric';
-                    break;
-                default:
-                    $type = gettype($compare);
+            case 'string':
+            case 'boolean':
+                $type = 'scalar';
+                break;
+            case 'integer':
+            case 'double':
+                $type = 'numeric';
+                break;
+            default:
+                $type = gettype($compare);
             }
         } elseif ($type === 'equal') {
             $type = gettype($compare);
@@ -223,9 +225,8 @@ class Core
         if ($type === 'length' || $type === 'scalar') {
             $is_scalar = is_scalar($var);
             if ($is_scalar && $type === 'length') {
-                return strlen((string) $var) > 0;
+                return strlen($var) > 0;
             }
-
             return $is_scalar;
         }
 
@@ -242,12 +243,18 @@ class Core
      * like a cookie or form.
      *
      * @param string $path The path to check
+     *
+     * @return string  The secured path
+     *
+     * @access  public
      */
-    public static function securePath(string $path): string
+    public static function securePath($path)
     {
         // change .. to .
-        return (string) preg_replace('@\.\.*@', '.', $path);
-    }
+        $path = preg_replace('@\.\.*@', '.', $path);
+
+        return $path;
+    } // end function
 
     /**
      * displays the given error message on phpMyAdmin error page in foreign language,
@@ -257,13 +264,10 @@ class Core
      *
      * @param string       $error_message the error message or named error message
      * @param string|array $message_args  arguments applied to $error_message
+     *
+     * @return void
      */
-    public static function fatalError(
-        string $error_message,
-        $message_args = null
-    ): void {
-        global $dbi;
-
+    public static function fatalError($error_message, $message_args = null) {
         /* Use format string if applicable */
         if (is_string($message_args)) {
             $error_message = sprintf($error_message, $message_args);
@@ -275,10 +279,7 @@ class Core
          * Avoid using Response class as config does not have to be loaded yet
          * (this can happen on early fatal error)
          */
-        if (isset($dbi, $GLOBALS['PMA_Config']) && $dbi !== null
-            && $GLOBALS['PMA_Config']->get('is_setup') === false
-            && Response::getInstance()->isAjax()
-        ) {
+        if (isset($GLOBALS['dbi']) && !is_null($GLOBALS['dbi']) && isset($GLOBALS['PMA_Config']) && $GLOBALS['PMA_Config']->get('is_setup') === false && Response::getInstance()->isAjax()) {
             $response = Response::getInstance();
             $response->setRequestStatus(false);
             $response->addJSON('message', Message::error($error_message));
@@ -286,20 +287,19 @@ class Core
             // Generate JSON manually
             self::headerJSON();
             echo json_encode(
-                [
+                array(
                     'success' => false,
                     'message' => Message::error($error_message)->getDisplay(),
-                ]
+                )
             );
         } else {
-            $error_message = strtr($error_message, ['<br>' => '[br]']);
-            $template = new Template();
+            $error_message = strtr($error_message, array('<br />' => '[br]'));
+            $error_header = __('Error');
+            $lang = isset($GLOBALS['lang']) ? $GLOBALS['lang'] : 'en';
+            $dir = isset($GLOBALS['text_dir']) ? $GLOBALS['text_dir'] : 'ltr';
 
-            echo $template->render('error/generic', [
-                'lang' => $GLOBALS['lang'] ?? 'en',
-                'dir' => $GLOBALS['text_dir'] ?? 'ltr',
-                'error_message' => Sanitize::sanitizeMessage($error_message),
-            ]);
+            // Displays the error message
+            include './libraries/error.inc.php';
         }
         if (! defined('TESTSUITE')) {
             exit;
@@ -313,30 +313,21 @@ class Core
      *
      * @return string  the URL
      *
-     * @access public
+     * @access  public
      */
-    public static function getPHPDocLink(string $target): string
+    public static function getPHPDocLink($target)
     {
         /* List of PHP documentation translations */
-        $php_doc_languages = [
-            'pt_BR',
-            'zh',
-            'fr',
-            'de',
-            'it',
-            'ja',
-            'ro',
-            'ru',
-            'es',
-            'tr',
-        ];
+        $php_doc_languages = array(
+            'pt_BR', 'zh', 'fr', 'de', 'it', 'ja', 'pl', 'ro', 'ru', 'fa', 'es', 'tr'
+        );
 
         $lang = 'en';
-        if (isset($GLOBALS['lang']) && in_array($GLOBALS['lang'], $php_doc_languages)) {
+        if (in_array($GLOBALS['lang'], $php_doc_languages)) {
             $lang = $GLOBALS['lang'];
         }
 
-        return self::linkURL('https://www.php.net/manual/' . $lang . '/' . $target);
+        return self::linkURL('https://secure.php.net/manual/' . $lang . '/' . $target);
     }
 
     /**
@@ -345,15 +336,11 @@ class Core
      * @param string $extension Extension name
      * @param bool   $fatal     Whether the error is fatal.
      * @param string $extra     Extra string to append to message.
+     *
+     * @return void
      */
-    public static function warnMissingExtension(
-        string $extension,
-        bool $fatal = false,
-        string $extra = ''
-    ): void {
-        /** @var ErrorHandler $error_handler */
-        global $error_handler;
-
+    public static function warnMissingExtension($extension, $fatal = false, $extra = '')
+    {
         /* Gettext does not have to be loaded yet here */
         if (function_exists('__')) {
             $message = __(
@@ -373,15 +360,14 @@ class Core
         }
         if ($fatal) {
             self::fatalError($message);
-
             return;
         }
 
-        $error_handler->addError(
+        $GLOBALS['error_handler']->addError(
             $message,
             E_USER_WARNING,
             '',
-            0,
+            '',
             false
         );
     }
@@ -391,20 +377,18 @@ class Core
      *
      * @param string $db database to count tables for
      *
-     * @return int count of tables in $db
+     * @return integer count of tables in $db
      */
-    public static function getTableCount(string $db): int
+    public static function getTableCount($db)
     {
-        global $dbi;
-
-        $tables = $dbi->tryQuery(
+        $tables = $GLOBALS['dbi']->tryQuery(
             'SHOW TABLES FROM ' . Util::backquote($db) . ';',
             DatabaseInterface::CONNECT_USER,
             DatabaseInterface::QUERY_STORE
         );
         if ($tables) {
-            $num_tables = $dbi->numRows($tables);
-            $dbi->freeResult($tables);
+            $num_tables = $GLOBALS['dbi']->numRows($tables);
+            $GLOBALS['dbi']->freeResult($tables);
         } else {
             $num_tables = 0;
         }
@@ -419,14 +403,16 @@ class Core
      * in Moodle)
      *
      * @param string|int $size size (Default = 0)
+     *
+     * @return integer $size
      */
-    public static function getRealSize($size = 0): int
+    public static function getRealSize($size = 0)
     {
         if (! $size) {
             return 0;
         }
 
-        $binaryprefixes = [
+        $binaryprefixes = array(
             'T' => 1099511627776,
             't' => 1099511627776,
             'G' =>    1073741824,
@@ -435,35 +421,37 @@ class Core
             'm' =>       1048576,
             'K' =>          1024,
             'k' =>          1024,
-        ];
+        );
 
-        if (preg_match('/^([0-9]+)([KMGT])/i', (string) $size, $matches)) {
-            return (int) ($matches[1] * $binaryprefixes[$matches[2]]);
+        if (preg_match('/^([0-9]+)([KMGT])/i', $size, $matches)) {
+            return $matches[1] * $binaryprefixes[$matches[2]];
         }
 
         return (int) $size;
-    }
+    } // end getRealSize()
 
     /**
-     * Checks given $page against given $allowList and returns true if valid
+     * boolean phpMyAdmin.Core::checkPageValidity(string &$page, array $whitelist)
+     *
+     * checks given $page against given $whitelist and returns true if valid
      * it optionally ignores query parameters in $page (script.php?ignored)
      *
-     * @param string $page      page to check
-     * @param array  $allowList allow list to check page against
-     * @param bool   $include   whether the page is going to be included
+     * @param string  &$page     page to check
+     * @param array   $whitelist whitelist to check page against
+     * @param boolean $include   whether the page is going to be included
      *
-     * @return bool whether $page is valid or not (in $allowList or not)
+     * @return boolean whether $page is valid or not (in $whitelist or not)
      */
-    public static function checkPageValidity(&$page, array $allowList = [], $include = false): bool
+    public static function checkPageValidity(&$page, array $whitelist = [], $include = false)
     {
-        if (empty($allowList)) {
-            $allowList = ['index.php'];
+        if (empty($whitelist)) {
+            $whitelist = self::$goto_whitelist;
         }
-        if (empty($page)) {
+        if (! isset($page) || !is_string($page)) {
             return false;
         }
 
-        if (in_array($page, $allowList)) {
+        if (in_array($page, $whitelist)) {
             return true;
         }
         if ($include) {
@@ -473,9 +461,9 @@ class Core
         $_page = mb_substr(
             $page,
             0,
-            (int) mb_strpos($page . '?', '?')
+            mb_strpos($page . '?', '?')
         );
-        if (in_array($_page, $allowList)) {
+        if (in_array($_page, $whitelist)) {
             return true;
         }
 
@@ -483,10 +471,13 @@ class Core
         $_page = mb_substr(
             $_page,
             0,
-            (int) mb_strpos($_page . '?', '?')
+            mb_strpos($_page . '?', '?')
         );
+        if (in_array($_page, $whitelist)) {
+            return true;
+        }
 
-        return in_array($_page, $allowList);
+        return false;
     }
 
     /**
@@ -499,24 +490,24 @@ class Core
      *
      * @return string  value of $var or empty string
      */
-    public static function getenv(string $var_name): string
+    public static function getenv($var_name)
     {
         if (isset($_SERVER[$var_name])) {
-            return (string) $_SERVER[$var_name];
+            return $_SERVER[$var_name];
         }
 
         if (isset($_ENV[$var_name])) {
-            return (string) $_ENV[$var_name];
+            return $_ENV[$var_name];
         }
 
         if (getenv($var_name)) {
-            return (string) getenv($var_name);
+            return getenv($var_name);
         }
 
         if (function_exists('apache_getenv')
             && apache_getenv($var_name, true)
         ) {
-            return (string) apache_getenv($var_name, true);
+            return apache_getenv($var_name, true);
         }
 
         return '';
@@ -527,14 +518,16 @@ class Core
      *
      * @param string $uri         the header to send
      * @param bool   $use_refresh whether to use Refresh: header when running on IIS
+     *
+     * @return void
      */
-    public static function sendHeaderLocation(string $uri, bool $use_refresh = false): void
+    public static function sendHeaderLocation($uri, $use_refresh = false)
     {
         if ($GLOBALS['PMA_Config']->get('PMA_IS_IIS') && mb_strlen($uri) > 600) {
             Response::getInstance()->disable();
 
-            $template = new Template();
-            echo $template->render('header_location', ['uri' => $uri]);
+            echo Template::get('header_location')
+                ->render(array('uri' => $uri));
 
             return;
         }
@@ -543,7 +536,7 @@ class Core
          * Avoid relative path redirect problems in case user entered URL
          * like /phpmyadmin/index.php/ which some web servers happily accept.
          */
-        if ($uri[0] === '.') {
+        if ($uri[0] == '.') {
             $uri = $GLOBALS['PMA_Config']->getRootPath() . substr($uri, 2);
         }
 
@@ -568,8 +561,10 @@ class Core
 
     /**
      * Outputs application/json headers. This includes no caching.
+     *
+     * @return void
      */
-    public static function headerJSON(): void
+    public static function headerJSON()
     {
         if (defined('TESTSUITE')) {
             return;
@@ -586,8 +581,10 @@ class Core
 
     /**
      * Outputs headers to prevent caching in browser (and on the way).
+     *
+     * @return void
      */
-    public static function noCacheHeader(): void
+    public static function noCacheHeader()
     {
         if (defined('TESTSUITE')) {
             return;
@@ -607,6 +604,7 @@ class Core
         header('Last-Modified: ' . gmdate(DATE_RFC1123));
     }
 
+
     /**
      * Sends header indicating file download.
      *
@@ -615,19 +613,17 @@ class Core
      * @param string $mimetype MIME type to include in headers.
      * @param int    $length   Length of content (optional)
      * @param bool   $no_cache Whether to include no-caching headers.
+     *
+     * @return void
      */
-    public static function downloadHeader(
-        string $filename,
-        string $mimetype,
-        int $length = 0,
-        bool $no_cache = true
-    ): void {
+    public static function downloadHeader($filename, $mimetype, $length = 0, $no_cache = true)
+    {
         if ($no_cache) {
             self::noCacheHeader();
         }
         /* Replace all possibly dangerous chars in filename */
         $filename = Sanitize::sanitizeFilename($filename);
-        if (! empty($filename)) {
+        if (!empty($filename)) {
             header('Content-Description: File Transfer');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
         }
@@ -640,11 +636,9 @@ class Core
             header('Content-Encoding: gzip');
         }
         header('Content-Transfer-Encoding: binary');
-        if ($length <= 0) {
-            return;
+        if ($length > 0) {
+            header('Content-Length: ' . $length);
         }
-
-        header('Content-Length: ' . $length);
     }
 
     /**
@@ -656,9 +650,9 @@ class Core
      * @param array  $array   the array
      * @param mixed  $default default value
      *
-     * @return array|mixed|null array element or $default
+     * @return mixed    array element or $default
      */
-    public static function arrayRead(string $path, array $array, $default = null)
+    public static function arrayRead($path, array $array, $default = null)
     {
         $keys = explode('/', $path);
         $value =& $array;
@@ -668,25 +662,26 @@ class Core
             }
             $value =& $value[$key];
         }
-
         return $value;
     }
 
     /**
      * Stores value in an array
      *
-     * @param string $path  path in the array
-     * @param array  $array the array
-     * @param mixed  $value value to store
+     * @param string $path   path in the array
+     * @param array  &$array the array
+     * @param mixed  $value  value to store
+     *
+     * @return void
      */
-    public static function arrayWrite(string $path, array &$array, $value): void
+    public static function arrayWrite($path, array &$array, $value)
     {
         $keys = explode('/', $path);
         $last_key = array_pop($keys);
         $a =& $array;
         foreach ($keys as $key) {
             if (! isset($a[$key])) {
-                $a[$key] = [];
+                $a[$key] = array();
             }
             $a =& $a[$key];
         }
@@ -696,14 +691,16 @@ class Core
     /**
      * Removes value from an array
      *
-     * @param string $path  path in the array
-     * @param array  $array the array
+     * @param string $path   path in the array
+     * @param array  &$array the array
+     *
+     * @return void
      */
-    public static function arrayRemove(string $path, array &$array): void
+    public static function arrayRemove($path, array &$array)
     {
         $keys = explode('/', $path);
         $keys_last = array_pop($keys);
-        $path = [];
+        $path = array();
         $depth = 0;
 
         $path[0] =& $array;
@@ -725,11 +722,11 @@ class Core
 
         // remove empty nested arrays
         for (; $depth >= 0; $depth--) {
-            if (isset($path[$depth + 1]) && count($path[$depth + 1]) !== 0) {
+            if (! isset($path[$depth+1]) || count($path[$depth+1]) == 0) {
+                unset($path[$depth][$keys[$depth]]);
+            } else {
                 break;
             }
-
-            unset($path[$depth][$keys[$depth]]);
         }
     }
 
@@ -740,27 +737,22 @@ class Core
      *
      * @return string URL for a link.
      */
-    public static function linkURL(string $url): string
+    public static function linkURL($url)
     {
-        if (! preg_match('#^https?://#', $url)) {
+        if (!preg_match('#^https?://#', $url)) {
             return $url;
         }
 
-        $params = [];
+        $params = array();
         $params['url'] = $url;
 
         $url = Url::getCommon($params);
         //strip off token and such sensitive information. Just keep url.
         $arr = parse_url($url);
+        parse_str($arr["query"], $vars);
+        $query = http_build_query(array("url" => $vars["url"]));
 
-        if (! is_array($arr)) {
-            $arr = [];
-        }
-
-        parse_str($arr['query'] ?? '', $vars);
-        $query = http_build_query(['url' => $vars['url']]);
-
-        if ($GLOBALS['PMA_Config'] !== null && $GLOBALS['PMA_Config']->get('is_setup')) {
+        if (!is_null($GLOBALS['PMA_Config']) && $GLOBALS['PMA_Config']->get('is_setup')) {
             $url = '../url.php?' . $query;
         } else {
             $url = './url.php?' . $query;
@@ -770,39 +762,30 @@ class Core
     }
 
     /**
-     * Checks whether domain of URL is an allowed domain or not.
+     * Checks whether domain of URL is whitelisted domain or not.
      * Use only for URLs of external sites.
      *
      * @param string $url URL of external site.
      *
-     * @return bool True: if domain of $url is allowed domain,
-     * False: otherwise.
+     * @return boolean True: if domain of $url is allowed domain,
+     *                 False: otherwise.
      */
-    public static function isAllowedDomain(string $url): bool
+    public static function isAllowedDomain($url)
     {
         $arr = parse_url($url);
-
-        if (! is_array($arr)) {
-            $arr = [];
-        }
-
         // We need host to be set
         if (! isset($arr['host']) || strlen($arr['host']) == 0) {
             return false;
         }
         // We do not want these to be present
-        $blocked = [
-            'user',
-            'pass',
-            'port',
-        ];
+        $blocked = array('user', 'pass', 'port');
         foreach ($blocked as $part) {
-            if (isset($arr[$part]) && strlen((string) $arr[$part]) != 0) {
+            if (isset($arr[$part]) && strlen($arr[$part]) != 0) {
                 return false;
             }
         }
-        $domain = $arr['host'];
-        $domainAllowList = [
+        $domain = $arr["host"];
+        $domainWhiteList = array(
             /* Include current domain */
             $_SERVER['SERVER_NAME'],
             /* phpMyAdmin domains */
@@ -812,24 +795,21 @@ class Core
             'demo.phpmyadmin.net',
             'docs.phpmyadmin.net',
             /* mysql.com domains */
-            'dev.mysql.com',
-            'bugs.mysql.com',
+            'dev.mysql.com','bugs.mysql.com',
             /* mariadb domains */
-            'mariadb.org',
-            'mariadb.com',
+            'mariadb.org', 'mariadb.com',
             /* php.net domains */
             'php.net',
-            'www.php.net',
+            'secure.php.net',
             /* Github domains*/
-            'github.com',
-            'www.github.com',
+            'github.com','www.github.com',
             /* Percona domains */
             'www.percona.com',
             /* Following are doubtful ones. */
             'mysqldatabaseadministration.blogspot.com',
-        ];
+        );
 
-        return in_array($domain, $domainAllowList);
+        return in_array($domain, $domainWhiteList);
     }
 
     /**
@@ -839,34 +819,38 @@ class Core
      *
      * @return string Escaped and cleaned up text suitable for html
      */
-    public static function mimeDefaultFunction(string $buffer): string
+    public static function mimeDefaultFunction($buffer)
     {
         $buffer = htmlspecialchars($buffer);
         $buffer = str_replace('  ', ' &nbsp;', $buffer);
+        $buffer = preg_replace("@((\015\012)|(\015)|(\012))@", '<br />' . "\n", $buffer);
 
-        return (string) preg_replace("@((\015\012)|(\015)|(\012))@", '<br>' . "\n", $buffer);
+        return $buffer;
     }
 
     /**
      * Displays SQL query before executing.
      *
      * @param array|string $query_data Array containing queries or query itself
+     *
+     * @return void
      */
-    public static function previewSQL($query_data): void
+    public static function previewSQL($query_data)
     {
         $retval = '<div class="preview_sql">';
         if (empty($query_data)) {
             $retval .= __('No change');
         } elseif (is_array($query_data)) {
             foreach ($query_data as $query) {
-                $retval .= Html\Generator::formatSql($query);
+                $retval .= Util::formatSql($query);
             }
         } else {
-            $retval .= Html\Generator::formatSql($query_data);
+            $retval .= Util::formatSql($query_data);
         }
         $retval .= '</div>';
         $response = Response::getInstance();
         $response->addJSON('sql_data', $retval);
+        exit;
     }
 
     /**
@@ -876,23 +860,19 @@ class Core
      *
      * @return bool true if empty
      */
-    public static function emptyRecursive($value): bool
+    public static function emptyRecursive($value)
     {
         $empty = true;
         if (is_array($value)) {
             array_walk_recursive(
                 $value,
-                /**
-                 * @param mixed $item
-                 */
-                static function ($item) use (&$empty) {
+                function ($item) use (&$empty) {
                     $empty = $empty && empty($item);
                 }
             );
         } else {
             $empty = empty($value);
         }
-
         return $empty;
     }
 
@@ -900,45 +880,45 @@ class Core
      * Creates some globals from $_POST variables matching a pattern
      *
      * @param array $post_patterns The patterns to search for
+     *
+     * @return void
      */
-    public static function setPostAsGlobal(array $post_patterns): void
+    public static function setPostAsGlobal(array $post_patterns)
     {
-        global $containerBuilder;
-
         foreach (array_keys($_POST) as $post_key) {
             foreach ($post_patterns as $one_post_pattern) {
-                if (! preg_match($one_post_pattern, $post_key)) {
-                    continue;
+                if (preg_match($one_post_pattern, $post_key)) {
+                    $GLOBALS[$post_key] = $_POST[$post_key];
                 }
-
-                $GLOBALS[$post_key] = $_POST[$post_key];
-                $containerBuilder->setParameter($post_key, $GLOBALS[$post_key]);
             }
         }
     }
 
-    public static function setDatabaseAndTableFromRequest(ContainerInterface $containerBuilder): void
+    /**
+     * Creates some globals from $_REQUEST
+     *
+     * @param string $param db|table
+     *
+     * @return void
+     */
+    public static function setGlobalDbOrTable($param)
     {
-        global $db, $table, $url_params;
-
-        $databaseFromRequest = $_POST['db'] ?? $_GET['db'] ?? $_REQUEST['db'] ?? null;
-        $tableFromRequest = $_POST['table'] ?? $_GET['table'] ?? $_REQUEST['table'] ?? null;
-
-        $db = self::isValid($databaseFromRequest) ? $databaseFromRequest : '';
-        $table = self::isValid($tableFromRequest) ? $tableFromRequest : '';
-
-        $url_params['db'] = $db;
-        $url_params['table'] = $table;
-        $containerBuilder->setParameter('db', $db);
-        $containerBuilder->setParameter('table', $table);
-        $containerBuilder->setParameter('url_params', $url_params);
+        $GLOBALS[$param] = '';
+        if (self::isValid($_REQUEST[$param])) {
+            // can we strip tags from this?
+            // only \ and / is not allowed in db names for MySQL
+            $GLOBALS[$param] = $_REQUEST[$param];
+            $GLOBALS['url_params'][$param] = $GLOBALS[$param];
+        }
     }
 
     /**
      * PATH_INFO could be compromised if set, so remove it from PHP_SELF
      * and provide a clean PHP_SELF here
+     *
+     * @return void
      */
-    public static function cleanupPathInfo(): void
+    public static function cleanupPathInfo()
     {
         global $PMA_PHP_SELF;
 
@@ -962,15 +942,13 @@ class Core
         }
 
         $path = [];
-        foreach (explode('/', $PMA_PHP_SELF) as $part) {
+        foreach(explode('/', $PMA_PHP_SELF) as $part) {
             // ignore parts that have no value
-            if (empty($part) || $part === '.') {
-                continue;
-            }
+            if (empty($part) || $part === '.') continue;
 
             if ($part !== '..') {
                 // cool, we found a new part
-                $path[] = $part;
+                array_push($path, $part);
             } elseif (count($path) > 0) {
                 // going back up? sure
                 array_pop($path);
@@ -979,13 +957,14 @@ class Core
             // as there is nothing sane to do
         }
 
-        $PMA_PHP_SELF = htmlspecialchars('/' . implode('/', $path));
+        $PMA_PHP_SELF = htmlspecialchars('/' . join('/', $path));
     }
 
     /**
      * Checks that required PHP extensions are there.
+     * @return void
      */
-    public static function checkExtensions(): void
+    public static function checkExtensions()
     {
         /**
          * Warning about mbstring.
@@ -1018,19 +997,17 @@ class Core
         /**
          * hash is required for cookie authentication.
          */
-        if (function_exists('hash_hmac')) {
-            return;
+        if (! function_exists('hash_hmac')) {
+            self::warnMissingExtension('hash', true);
         }
-
-        self::warnMissingExtension('hash', true);
     }
 
     /**
      * Gets the "true" IP address of the current user
      *
-     * @return string|bool the ip of the user
+     * @return string   the ip of the user
      *
-     * @access private
+     * @access  private
      */
     public static function getIp()
     {
@@ -1043,7 +1020,7 @@ class Core
         $direct_ip = $_SERVER['REMOTE_ADDR'];
 
         /* Do we trust this IP as a proxy? If yes we will use it's header. */
-        if (! isset($GLOBALS['cfg']['TrustedProxies'][$direct_ip])) {
+        if (!isset($GLOBALS['cfg']['TrustedProxies'][$direct_ip])) {
             /* Return true IP */
             return $direct_ip;
         }
@@ -1066,7 +1043,7 @@ class Core
 
         // We could not parse header
         return false;
-    }
+    } // end of the 'getIp()' function
 
     /**
      * Sanitizes MySQL hostname
@@ -1074,10 +1051,12 @@ class Core
      * * strips p: prefix(es)
      *
      * @param string $name User given hostname
+     *
+     * @return string
      */
-    public static function sanitizeMySQLHost(string $name): string
+    public static function sanitizeMySQLHost($name)
     {
-        while (strtolower(substr($name, 0, 2)) === 'p:') {
+        while (strtolower(substr($name, 0, 2)) == 'p:') {
             $name = substr($name, 2);
         }
 
@@ -1090,14 +1069,15 @@ class Core
      * * strips part behind null byte
      *
      * @param string $name User given username
+     *
+     * @return string
      */
-    public static function sanitizeMySQLUser(string $name): string
+    public static function sanitizeMySQLUser($name)
     {
         $position = strpos($name, chr(0));
         if ($position !== false) {
             return substr($name, 0, $position);
         }
-
         return $name;
     }
 
@@ -1108,9 +1088,9 @@ class Core
      *
      * @param string $data Data to unserialize
      *
-     * @return mixed|null
+     * @return mixed
      */
-    public static function safeUnserialize(string $data)
+    public static function safeUnserialize($data)
     {
         if (! is_string($data)) {
             return null;
@@ -1122,7 +1102,8 @@ class Core
         for ($i = 0; $i < $length; $i++) {
             $value = $data[$i];
 
-            switch ($value) {
+            switch ($value)
+            {
                 case '}':
                     /* end of array */
                     if ($depth <= 0) {
@@ -1141,7 +1122,7 @@ class Core
                     }
                     // skip string, quotes and ;
                     $i += 2 + $strlen + 1;
-                    if ($data[$i] !== ';') {
+                    if ($data[$i] != ';') {
                         return null;
                     }
                     break;
@@ -1150,7 +1131,7 @@ class Core
                 case 'i':
                 case 'd':
                     /* bool, integer or double */
-                    // skip value to separator
+                    // skip value to sepearator
                     $i = strpos($data, ';', $i);
                     if ($i === false) {
                         return null;
@@ -1190,8 +1171,10 @@ class Core
 
     /**
      * Applies changes to PHP configuration.
+     *
+     * @return void
      */
-    public static function configure(): void
+    public static function configure()
     {
         /**
          * Set utf-8 encoding for PHP
@@ -1204,7 +1187,7 @@ class Core
          * things behave slightly unexpectedly, for example
          * round(1.2, 2) returns 1.199999999999999956.
          */
-        ini_set('precision', '14');
+        ini_set('precision', 14);
 
         /**
          * check timezone setting
@@ -1216,8 +1199,10 @@ class Core
 
     /**
      * Check whether PHP configuration matches our needs.
+     *
+     * @return void
      */
-    public static function checkConfiguration(): void
+    public static function checkConfiguration()
     {
         /**
          * As we try to handle charsets by ourself, mbstring overloads just
@@ -1226,7 +1211,7 @@ class Core
          * We specifically use empty here as we are looking for anything else than
          * empty value or 0.
          */
-        if (extension_loaded('mbstring') && ! empty(ini_get('mbstring.func_overload'))) {
+        if (extension_loaded('mbstring') && !empty(ini_get('mbstring.func_overload'))) {
             self::fatalError(
                 __(
                     'You have enabled mbstring.func_overload in your PHP '
@@ -1240,51 +1225,82 @@ class Core
          * The ini_set and ini_get functions can be disabled using
          * disable_functions but we're relying quite a lot of them.
          */
-        if (function_exists('ini_get') && function_exists('ini_set')) {
-            return;
+        if (! function_exists('ini_get') || ! function_exists('ini_set')) {
+            self::fatalError(
+                __(
+                    'You have disabled ini_get and/or ini_set in php.ini. '
+                    . 'This option is incompatible with phpMyAdmin!'
+                )
+            );
         }
+    }
 
-        self::fatalError(
-            __(
-                'The ini_get and/or ini_set functions are disabled in php.ini. '
-                . 'phpMyAdmin requires these functions!'
-            )
-        );
+    /**
+     * prints list item for main page
+     *
+     * @param string $name            displayed text
+     * @param string $listId          id, used for css styles
+     * @param string $url             make item as link with $url as target
+     * @param string $mysql_help_page display a link to MySQL's manual
+     * @param string $target          special target for $url
+     * @param string $a_id            id for the anchor,
+     *                                used for jQuery to hook in functions
+     * @param string $class           class for the li element
+     * @param string $a_class         class for the anchor element
+     *
+     * @return void
+     */
+    public static function printListItem($name, $listId = null, $url = null,
+        $mysql_help_page = null, $target = null, $a_id = null, $class = null,
+        $a_class = null
+    ) {
+        echo Template::get('list/item')
+            ->render(
+                array(
+                    'content' => $name,
+                    'id' => $listId,
+                    'class' => $class,
+                    'url' => array(
+                        'href' => $url,
+                        'target' => $target,
+                        'id' => $a_id,
+                        'class' => $a_class,
+                    ),
+                    'mysql_help_page' => $mysql_help_page,
+                )
+            );
     }
 
     /**
      * Checks request and fails with fatal error if something problematic is found
+     *
+     * @return void
      */
-    public static function checkRequest(): void
+    public static function checkRequest()
     {
         if (isset($_REQUEST['GLOBALS']) || isset($_FILES['GLOBALS'])) {
-            self::fatalError(__('GLOBALS overwrite attempt'));
+            self::fatalError(__("GLOBALS overwrite attempt"));
         }
 
         /**
          * protect against possible exploits - there is no need to have so much variables
          */
-        if (count($_REQUEST) <= 1000) {
-            return;
+        if (count($_REQUEST) > 1000) {
+            self::fatalError(__('possible exploit'));
         }
-
-        self::fatalError(__('possible exploit'));
     }
 
     /**
      * Sign the sql query using hmac using the session token
      *
      * @param string $sqlQuery The sql query
-     *
      * @return string
      */
     public static function signSqlQuery($sqlQuery)
     {
+        /** @var array $cfg */
         global $cfg;
-
-        $secret = $_SESSION[' HMAC_secret '] ?? '';
-
-        return hash_hmac('sha256', $sqlQuery, $secret . $cfg['blowfish_secret']);
+        return hash_hmac('sha256', $sqlQuery, $_SESSION[' HMAC_secret '] . $cfg['blowfish_secret']);
     }
 
     /**
@@ -1292,138 +1308,13 @@ class Core
      *
      * @param string $sqlQuery  The sql query
      * @param string $signature The Signature to check
-     *
      * @return bool
      */
     public static function checkSqlQuerySignature($sqlQuery, $signature)
     {
+        /** @var array $cfg */
         global $cfg;
-
-        $secret = $_SESSION[' HMAC_secret '] ?? '';
-        $hmac = hash_hmac('sha256', $sqlQuery, $secret . $cfg['blowfish_secret']);
-
+        $hmac = hash_hmac('sha256', $sqlQuery, $_SESSION[' HMAC_secret '] . $cfg['blowfish_secret']);
         return hash_equals($hmac, $signature);
-    }
-
-    /**
-     * Check whether user supplied token is valid, if not remove any possibly
-     * dangerous stuff from request.
-     *
-     * Check for token mismatch only if the Request method is POST.
-     * GET Requests would never have token and therefore checking
-     * mis-match does not make sense.
-     */
-    public static function checkTokenRequestParam(): void
-    {
-        global $token_mismatch, $token_provided;
-
-        $token_mismatch = true;
-        $token_provided = false;
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return;
-        }
-
-        if (self::isValid($_POST['token'])) {
-            $token_provided = true;
-            $token_mismatch = ! @hash_equals($_SESSION[' PMA_token '], $_POST['token']);
-        }
-
-        if (! $token_mismatch) {
-            return;
-        }
-
-        // Warn in case the mismatch is result of failed setting of session cookie
-        if (isset($_POST['set_session']) && $_POST['set_session'] !== session_id()) {
-            trigger_error(
-                __(
-                    'Failed to set session cookie. Maybe you are using '
-                    . 'HTTP instead of HTTPS to access phpMyAdmin.'
-                ),
-                E_USER_ERROR
-            );
-        }
-
-        /**
-         * We don't allow any POST operation parameters if the token is mismatched
-         * or is not provided.
-         */
-        $allowList = ['ajax_request'];
-        Sanitize::removeRequestVars($allowList);
-    }
-
-    public static function setGotoAndBackGlobals(ContainerInterface $container, Config $config): void
-    {
-        global $goto, $back, $url_params;
-
-        // Holds page that should be displayed.
-        $goto = '';
-        $container->setParameter('goto', $goto);
-
-        if (isset($_REQUEST['goto']) && self::checkPageValidity($_REQUEST['goto'])) {
-            $goto = $_REQUEST['goto'];
-            $url_params['goto'] = $goto;
-            $container->setParameter('goto', $goto);
-            $container->setParameter('url_params', $url_params);
-        } else {
-            if ($config->issetCookie('goto')) {
-                $config->removeCookie('goto');
-            }
-            unset($_REQUEST['goto'], $_GET['goto'], $_POST['goto']);
-        }
-
-        if (isset($_REQUEST['back']) && self::checkPageValidity($_REQUEST['back'])) {
-            // Returning page.
-            $back = $_REQUEST['back'];
-            $container->setParameter('back', $back);
-        } else {
-            if ($config->issetCookie('back')) {
-                $config->removeCookie('back');
-            }
-            unset($_REQUEST['back'], $_GET['back'], $_POST['back']);
-        }
-    }
-
-    public static function connectToDatabaseServer(DatabaseInterface $dbi, AuthenticationPlugin $auth): void
-    {
-        global $cfg;
-
-        /**
-         * Try to connect MySQL with the control user profile (will be used to get the privileges list for the current
-         * user but the true user link must be open after this one so it would be default one for all the scripts).
-         */
-        $controlLink = false;
-        if ($cfg['Server']['controluser'] !== '') {
-            $controlLink = $dbi->connect(DatabaseInterface::CONNECT_CONTROL);
-        }
-
-        // Connects to the server (validates user's login)
-        $userLink = $dbi->connect(DatabaseInterface::CONNECT_USER);
-
-        if ($userLink === false) {
-            $auth->showFailure('mysql-denied');
-        }
-
-        if ($controlLink) {
-            return;
-        }
-
-        /**
-         * Open separate connection for control queries, this is needed to avoid problems with table locking used in
-         * main connection and phpMyAdmin issuing queries to configuration storage, which is not locked by that time.
-         */
-        $dbi->connect(DatabaseInterface::CONNECT_USER, null, DatabaseInterface::CONNECT_CONTROL);
-    }
-
-    /**
-     * Get the container builder
-     */
-    public static function getContainerBuilder(): ContainerBuilder
-    {
-        $containerBuilder = new ContainerBuilder();
-        $loader = new PhpFileLoader($containerBuilder, new FileLocator(ROOT_PATH . 'libraries'));
-        $loader->load('services_loader.php');
-
-        return $containerBuilder;
     }
 }

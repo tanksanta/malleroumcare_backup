@@ -1,30 +1,19 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Abstract class for the external transformations plugins
+ *
+ * @package    PhpMyAdmin-Transformations
+ * @subpackage External
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Plugins\Transformations\Abs;
 
 use PhpMyAdmin\Plugins\TransformationsPlugin;
-use stdClass;
-use const E_USER_DEPRECATED;
-use function count;
-use function fclose;
-use function feof;
-use function fgets;
-use function fwrite;
-use function htmlspecialchars;
-use function is_resource;
-use function proc_close;
-use function proc_open;
-use function sprintf;
-use function strlen;
-use function trigger_error;
 
 /**
  * Provides common methods for all of the external transformations plugins.
+ *
+ * @package PhpMyAdmin
  */
 abstract class ExternalTransformationsPlugin extends TransformationsPlugin
 {
@@ -58,9 +47,9 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
      *
      * @return bool
      */
-    public function applyTransformationNoWrap(array $options = [])
+    public function applyTransformationNoWrap(array $options = array())
     {
-        if (! isset($options[3]) || $options[3] == '') {
+        if (!isset($options[3]) || $options[3] == '') {
             $nowrap = true;
         } elseif ($options[3] == '1' || $options[3] == 1) {
             $nowrap = true;
@@ -74,20 +63,21 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
     /**
      * Does the actual work of each specific transformations plugin.
      *
-     * @param string        $buffer  text to be transformed
-     * @param array         $options transformation options
-     * @param stdClass|null $meta    meta information
+     * @param string $buffer  text to be transformed
+     * @param array  $options transformation options
+     * @param string $meta    meta information
      *
      * @return string
      */
-    public function applyTransformation($buffer, array $options = [], ?stdClass $meta = null)
+    public function applyTransformation($buffer, array $options = array(), $meta = '')
     {
         // possibly use a global transform and feed it with special options
 
         // further operations on $buffer using the $options[] array.
 
-        $allowed_programs = [];
+        $allowed_programs = array();
 
+        //
         // WARNING:
         //
         // It's up to administrator to allow anything here. Note that users may
@@ -102,7 +92,7 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
         //$allowed_programs[1] = '/usr/local/bin/validate';
 
         // no-op when no allowed programs
-        if (count($allowed_programs) === 0) {
+        if (count($allowed_programs) == 0) {
             return $buffer;
         }
 
@@ -121,9 +111,8 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
         if (isset($options[1]) && strlen((string) $options[1]) > 0) {
             trigger_error(sprintf(
                 __(
-                    'You are using the external transformation command line'
-                    . ' options field, which has been deprecated for security reasons.'
-                    . ' Add all command line options directly to the definition in %s.'
+                    'You are using the external transformation command line options field, which has been deprecated for security reasons. '
+                    . 'Add all command line options directly to the definition in %s.'
                 ),
                 '[code]libraries/classes/Plugins/Transformations/Abs/ExternalTransformationsPlugin.php[/code]'
             ), E_USER_DEPRECATED);
@@ -131,22 +120,16 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
 
         // needs PHP >= 4.3.0
         $newstring = '';
-        $descriptorspec = [
-            0 => [
-                'pipe',
-                'r',
-            ],
-            1 => [
-                'pipe',
-                'w',
-            ],
-        ];
+        $descriptorspec = array(
+            0 => array("pipe", "r"),
+            1 => array("pipe", "w"),
+        );
         $process = proc_open($program . ' ' . $options[1], $descriptorspec, $pipes);
         if (is_resource($process)) {
             fwrite($pipes[0], $buffer);
             fclose($pipes[0]);
 
-            while (! feof($pipes[1])) {
+            while (!feof($pipes[1])) {
                 $newstring .= fgets($pipes[1], 1024);
             }
             fclose($pipes[1]);
@@ -163,6 +146,7 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
         return $retstring;
     }
 
+
     /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
 
     /**
@@ -172,6 +156,6 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
      */
     public static function getName()
     {
-        return 'External';
+        return "External";
     }
 }

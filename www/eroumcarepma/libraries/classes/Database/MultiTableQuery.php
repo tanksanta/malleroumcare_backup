@@ -1,26 +1,21 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Handles DB Multi-table query
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Database;
 
 use PhpMyAdmin\DatabaseInterface;
-use PhpMyAdmin\Operations;
 use PhpMyAdmin\ParseAnalyze;
-use PhpMyAdmin\Relation;
-use PhpMyAdmin\RelationCleanup;
 use PhpMyAdmin\Sql;
 use PhpMyAdmin\Template;
-use PhpMyAdmin\Transformations;
-use PhpMyAdmin\Url;
-use function array_keys;
-use function md5;
 
 /**
  * Class to handle database Multi-table querying
+ *
+ * @package PhpMyAdmin
  */
 class MultiTableQuery
 {
@@ -44,7 +39,7 @@ class MultiTableQuery
      * Default number of columns
      *
      * @access private
-     * @var int
+     * @var integer
      */
     private $defaultNoOfColumns;
 
@@ -56,26 +51,21 @@ class MultiTableQuery
      */
     private $tables;
 
-    /** @var Template */
-    public $template;
-
     /**
+     * Constructor
+     *
      * @param DatabaseInterface $dbi                DatabaseInterface instance
-     * @param Template          $template           Template instance
      * @param string            $dbName             Database name
-     * @param int               $defaultNoOfColumns Default number of columns
+     * @param integer           $defaultNoOfColumns Default number of columns
      */
     public function __construct(
         DatabaseInterface $dbi,
-        Template $template,
         $dbName,
         $defaultNoOfColumns = 3
     ) {
         $this->dbi = $dbi;
         $this->db = $dbName;
         $this->defaultNoOfColumns = $defaultNoOfColumns;
-
-        $this->template = $template;
 
         $this->tables = $this->dbi->getTables($this->db);
     }
@@ -88,14 +78,13 @@ class MultiTableQuery
     public function getFormHtml()
     {
         $tables = [];
-        foreach ($this->tables as $table) {
+        foreach($this->tables as $table) {
             $tables[$table]['hash'] = md5($table);
             $tables[$table]['columns'] = array_keys(
                 $this->dbi->getColumns($this->db, $table)
             );
         }
-
-        return $this->template->render('database/multi_table_query/form', [
+        return Template::get('database/multi_table_query/form')->render([
             'db' => $this->db,
             'tables' => $tables,
             'default_no_of_columns' => $this->defaultNoOfColumns,
@@ -105,29 +94,24 @@ class MultiTableQuery
     /**
      * Displays multi-table query results
      *
-     * @param string $sqlQuery       The query to parse
-     * @param string $db             The current database
-     * @param string $themeImagePath Uri of the PMA theme image
+     * @param string $sqlQuery      The query to parse
+     * @param string $db            The current database
+     * @param string $pmaThemeImage Uri of the PMA theme image
+     *
+     * @return void
      */
-    public static function displayResults($sqlQuery, $db, $themeImagePath): string
+    public static function displayResults($sqlQuery, $db, $pmaThemeImage)
     {
-        global $dbi;
+        list(
+            $analyzedSqlResults,
+            $db,
+            $tableFromSql
+        ) = ParseAnalyze::sqlQuery($sqlQuery, $db);
 
-        [, $db] = ParseAnalyze::sqlQuery($sqlQuery, $db);
-
-        $goto = Url::getFromRoute('/database/multi-table-query');
-
-        $relation = new Relation($dbi);
-        $sql = new Sql(
-            $dbi,
-            $relation,
-            new RelationCleanup($dbi, $relation),
-            new Operations($dbi, $relation),
-            new Transformations(),
-            new Template()
-        );
-
-        return $sql->executeQueryAndSendQueryResponse(
+        extract($analyzedSqlResults);
+        $goto = 'db_multi_table_query.php';
+        $sql = new Sql();
+        $sql->executeQueryAndSendQueryResponse(
             null, // analyzed_sql_results
             false, // is_gotofile
             $db, // db
@@ -136,12 +120,15 @@ class MultiTableQuery
             null, // sql_query_for_bookmark - see below
             null, // extra_data
             null, // message_to_show
+            null, // message
             null, // sql_data
             $goto, // goto
-            $themeImagePath,
+            $pmaThemeImage, // pmaThemeImage
             null, // disp_query
             null, // disp_message
+            null, // query_type
             $sqlQuery, // sql_query
+            null, // selectedTables
             null // complete_query
         );
     }

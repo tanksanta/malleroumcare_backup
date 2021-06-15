@@ -1,9 +1,8 @@
 <?php
+
 /**
  * Parses a reference to a LOCK expression.
  */
-
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Components;
 
@@ -11,11 +10,13 @@ use PhpMyAdmin\SqlParser\Component;
 use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Token;
 use PhpMyAdmin\SqlParser\TokensList;
-use function implode;
-use function is_array;
 
 /**
  * Parses a reference to a LOCK expression.
+ *
+ * @category   Components
+ *
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class LockExpression extends Component
 {
@@ -38,11 +39,11 @@ class LockExpression extends Component
      * @param TokensList $list    the list of tokens that are being parsed
      * @param array      $options parameters for parsing
      *
-     * @return LockExpression
+     * @return CaseExpression
      */
-    public static function parse(Parser $parser, TokensList $list, array $options = [])
+    public static function parse(Parser $parser, TokensList $list, array $options = array())
     {
-        $ret = new static();
+        $ret = new self();
 
         /**
          * The state of the parser.
@@ -76,14 +77,13 @@ class LockExpression extends Component
             }
 
             if ($state === 0) {
-                $ret->table = Expression::parse($parser, $list, ['parseField' => 'table']);
+                $ret->table = Expression::parse($parser, $list, array('parseField' => 'table'));
                 $state = 1;
             } elseif ($state === 1) {
                 // parse lock type
                 $ret->type = self::parseLockType($parser, $list);
                 $state = 2;
             }
-
             $prevToken = $token;
         }
 
@@ -103,7 +103,7 @@ class LockExpression extends Component
      *
      * @return string
      */
-    public static function build($component, array $options = [])
+    public static function build($component, array $options = array())
     {
         if (is_array($component)) {
             return implode(', ', $component);
@@ -112,9 +112,6 @@ class LockExpression extends Component
         return $component->table . ' ' . $component->type;
     }
 
-    /**
-     * @return string
-     */
     private static function parseLockType(Parser $parser, TokensList $list)
     {
         $lockType = '';
@@ -175,7 +172,6 @@ class LockExpression extends Component
                     $parser->error('Unexpected keyword.', $token);
                     break;
                 }
-
                 $lockType .= $token->keyword;
             } elseif ($state === 1) {
                 if ($token->keyword === 'LOCAL') {

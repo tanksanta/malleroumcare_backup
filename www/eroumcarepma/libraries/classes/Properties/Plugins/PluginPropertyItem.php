@@ -1,11 +1,11 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * The top-level class of the "Plugin" subtree of the object-oriented
  * properties system (the other subtree is "Options").
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Properties\Plugins;
 
 use PhpMyAdmin\Properties\Options\Groups\OptionsPropertyRootGroup;
@@ -16,6 +16,8 @@ use PhpMyAdmin\Properties\PropertyItem;
  *  - PhpMyAdmin\Properties\Plugins\ExportPluginProperties,
  *  - PhpMyAdmin\Properties\Plugins\ImportPluginProperties and
  *  - TransformationsPluginProperties
+ *
+ * @package PhpMyAdmin
  */
 abstract class PluginPropertyItem extends PropertyItem
 {
@@ -24,31 +26,31 @@ abstract class PluginPropertyItem extends PropertyItem
      *
      * @var string
      */
-    private $text;
+    private $_text;
     /**
      * Extension
      *
      * @var string
      */
-    private $extension;
+    private $_extension;
     /**
      * Options
      *
      * @var OptionsPropertyRootGroup
      */
-    private $options;
+    private $_options;
     /**
      * Options text
      *
      * @var string
      */
-    private $optionsText;
+    private $_optionsText;
     /**
      * MIME Type
      *
      * @var string
      */
-    private $mimeType;
+    private $_mimeType;
     /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
 
     /**
@@ -58,7 +60,7 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function getText()
     {
-        return $this->text;
+        return $this->_text;
     }
 
     /**
@@ -70,7 +72,7 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function setText($text)
     {
-        $this->text = $text;
+        $this->_text = $text;
     }
 
     /**
@@ -80,7 +82,7 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function getExtension()
     {
-        return $this->extension;
+        return $this->_extension;
     }
 
     /**
@@ -92,7 +94,7 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function setExtension($extension)
     {
-        $this->extension = $extension;
+        $this->_extension = $extension;
     }
 
     /**
@@ -102,7 +104,7 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function getOptions()
     {
-        return $this->options;
+        return $this->_options;
     }
 
     /**
@@ -114,7 +116,7 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function setOptions($options)
     {
-        $this->options = $options;
+        $this->_options = $options;
     }
 
     /**
@@ -124,7 +126,7 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function getOptionsText()
     {
-        return $this->optionsText;
+        return $this->_optionsText;
     }
 
     /**
@@ -136,7 +138,7 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function setOptionsText($optionsText)
     {
-        $this->optionsText = $optionsText;
+        $this->_optionsText = $optionsText;
     }
 
     /**
@@ -146,7 +148,7 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function getMimeType()
     {
-        return $this->mimeType;
+        return $this->_mimeType;
     }
 
     /**
@@ -158,7 +160,7 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function setMimeType($mimeType)
     {
-        $this->mimeType = $mimeType;
+        $this->_mimeType = $mimeType;
     }
 
     /**
@@ -168,6 +170,6 @@ abstract class PluginPropertyItem extends PropertyItem
      */
     public function getPropertyType()
     {
-        return 'plugin';
+        return "plugin";
     }
 }

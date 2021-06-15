@@ -1,38 +1,23 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Session handling
  *
+ * @package PhpMyAdmin
+ *
  * @see     https://www.php.net/manual/en/features.sessions.php
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin;
 
-use const PHP_SESSION_ACTIVE;
-use function defined;
-use function function_exists;
-use function htmlspecialchars;
-use function implode;
-use function ini_get;
-use function ini_set;
-use function preg_replace;
-use function session_abort;
-use function session_cache_limiter;
-use function session_destroy;
-use function session_id;
-use function session_name;
-use function session_regenerate_id;
-use function session_save_path;
-use function session_set_cookie_params;
-use function session_start;
-use function session_status;
-use function session_unset;
-use function session_write_close;
-use function setcookie;
+use PhpMyAdmin\Config;
+use PhpMyAdmin\Core;
+use PhpMyAdmin\ErrorHandler;
+use PhpMyAdmin\Util;
 
 /**
  * Session class
+ *
+ * @package PhpMyAdmin
  */
 class Session
 {
@@ -50,13 +35,11 @@ class Session
          * Check if token is properly generated (the generation can fail, for example
          * due to missing /dev/random for openssl).
          */
-        if (! empty($_SESSION[' PMA_token '])) {
-            return;
+        if (empty($_SESSION[' PMA_token '])) {
+            Core::fatalError(
+                'Failed to generate random CSRF token!'
+            );
         }
-
-        Core::fatalError(
-            'Failed to generate random CSRF token!'
-        );
     }
 
     /**
@@ -86,7 +69,7 @@ class Session
      */
     private static function sessionFailed(array $errors)
     {
-        $messages = [];
+        $messages = array();
         foreach ($errors as $error) {
             /*
              * Remove path from open() in error message to avoid path disclossure
@@ -116,28 +99,26 @@ class Session
             . 'webserver log file and configure your PHP '
             . 'installation properly. Also ensure that cookies are enabled '
             . 'in your browser.'
-            . '<br><br>'
-            . implode('<br><br>', $messages)
+            . '<br /><br />'
+            . implode('<br /><br />', $messages)
         );
     }
 
     /**
      * Set up session
      *
-     * @param Config       $config       Configuration handler
-     * @param ErrorHandler $errorHandler Error handler
-     *
+     * @param PhpMyAdmin\Config       $config       Configuration handler
+     * @param PhpMyAdmin\ErrorHandler $errorHandler Error handler
      * @return void
      */
     public static function setUp(Config $config, ErrorHandler $errorHandler)
     {
         // verify if PHP supports session, die if it does not
-        if (! function_exists('session_name')) {
+        if (!function_exists('session_name')) {
             Core::warnMissingExtension('session', true);
         } elseif (! empty(ini_get('session.auto_start'))
-            && session_name() !== 'phpMyAdmin'
-            && ! empty(session_id())
-        ) {
+            && session_name() != 'phpMyAdmin'
+            && !empty(session_id())) {
             // Do not delete the existing non empty session, it might be used by
             // other applications; instead just close it.
             if (empty($_SESSION)) {
@@ -154,11 +135,8 @@ class Session
 
         // session cookie settings
         session_set_cookie_params(
-            0,
-            $config->getRootPath(),
-            '',
-            $config->isHttps(),
-            true
+            0, $config->getRootPath(),
+            '', $config->isHttps(), true
         );
 
         // cookies are safer (use ini_set() in case this function is disabled)
@@ -166,7 +144,7 @@ class Session
 
         // optionally set session_save_path
         $path = $config->get('SessionSavePath');
-        if (! empty($path)) {
+        if (!empty($path)) {
             session_save_path($path);
             // We can not do this unconditionally as this would break
             // any more complex setup (eg. cluster), see
@@ -186,6 +164,13 @@ class Session
         // delete session/cookies when browser is closed
         ini_set('session.cookie_lifetime', '0');
 
+        // warn but don't work with bug
+        ini_set('session.bug_compat_42', 'false');
+        ini_set('session.bug_compat_warn', 'true');
+
+        // use more secure session ids
+        ini_set('session.hash_function', '1');
+
         // some pages (e.g. stylesheet) may be cached on clients, but not in shared
         // proxy servers
         session_cache_limiter('private');
@@ -193,7 +178,7 @@ class Session
         $httpCookieName = $config->getCookieName('phpMyAdmin');
         @session_name($httpCookieName);
 
-        // Restore correct session ID (it might have been reset by auto started session
+        // Restore correct sesion ID (it might have been reset by auto started session
         if ($config->issetCookie('phpMyAdmin')) {
             session_id($config->getCookie('phpMyAdmin'));
         }
@@ -216,7 +201,7 @@ class Session
         /**
          * Disable setting of session cookies for further session_start() calls.
          */
-        if (session_status() !== PHP_SESSION_ACTIVE) {
+        if(session_status() !== PHP_SESSION_ACTIVE) {
             ini_set('session.use_cookies', 'true');
         }
 
@@ -224,32 +209,28 @@ class Session
          * Token which is used for authenticating access queries.
          * (we use "space PMA_token space" to prevent overwriting)
          */
-        if (! empty($_SESSION[' PMA_token '])) {
-            return;
-        }
+        if (empty($_SESSION[' PMA_token '])) {
+            self::generateToken();
 
-        self::generateToken();
-
-        /**
-         * Check for disk space on session storage by trying to write it.
-         *
-         * This seems to be most reliable approach to test if sessions are working,
-         * otherwise the check would fail with custom session backends.
-         */
-        $orig_error_count = $errorHandler->countErrors();
-        session_write_close();
-        if ($errorHandler->countErrors() > $orig_error_count) {
-            $errors = $errorHandler->sliceErrors($orig_error_count);
-            self::sessionFailed($errors);
+            /**
+             * Check for disk space on session storage by trying to write it.
+             *
+             * This seems to be most reliable approach to test if sessions are working,
+             * otherwise the check would fail with custom session backends.
+             */
+            $orig_error_count = $errorHandler->countErrors();
+            session_write_close();
+            if ($errorHandler->countErrors() > $orig_error_count) {
+                $errors = $errorHandler->sliceErrors($orig_error_count);
+                self::sessionFailed($errors);
+            }
+            session_start();
+            if (empty($_SESSION[' PMA_token '])) {
+                Core::fatalError(
+                    'Failed to store CSRF token in session! ' .
+                    'Probably sessions are not working properly.'
+                );
+            }
         }
-        session_start();
-        if (! empty($_SESSION[' PMA_token '])) {
-            return;
-        }
-
-        Core::fatalError(
-            'Failed to store CSRF token in session! ' .
-            'Probably sessions are not working properly.'
-        );
     }
 }

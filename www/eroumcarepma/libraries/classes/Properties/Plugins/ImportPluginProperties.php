@@ -1,14 +1,16 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Properties class for the import plug-in
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Properties\Plugins;
 
 /**
  * Defines possible options and getters and setters for them.
+ *
+ * @package PhpMyAdmin
  */
 class ImportPluginProperties extends PluginPropertyItem
 {
@@ -24,6 +26,6 @@ class ImportPluginProperties extends PluginPropertyItem
      */
     public function getItemType()
     {
-        return 'import';
+        return "import";
     }
 }

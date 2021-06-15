@@ -1,9 +1,8 @@
 <?php
+
 /**
  * Parses an array.
  */
-
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Components;
 
@@ -11,13 +10,13 @@ use PhpMyAdmin\SqlParser\Component;
 use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Token;
 use PhpMyAdmin\SqlParser\TokensList;
-use function implode;
-use function is_array;
-use function strlen;
-use function trim;
 
 /**
  * Parses an array.
+ *
+ * @category   Components
+ *
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class ArrayObj extends Component
 {
@@ -26,20 +25,22 @@ class ArrayObj extends Component
      *
      * @var array
      */
-    public $raw = [];
+    public $raw = array();
 
     /**
      * The array that contains the processed value of each token.
      *
      * @var array
      */
-    public $values = [];
+    public $values = array();
 
     /**
+     * Constructor.
+     *
      * @param array $raw    the unprocessed values
      * @param array $values the processed values
      */
-    public function __construct(array $raw = [], array $values = [])
+    public function __construct(array $raw = array(), array $values = array())
     {
         $this->raw = $raw;
         $this->values = $values;
@@ -52,9 +53,9 @@ class ArrayObj extends Component
      *
      * @return ArrayObj|Component[]
      */
-    public static function parse(Parser $parser, TokensList $list, array $options = [])
+    public static function parse(Parser $parser, TokensList $list, array $options = array())
     {
-        $ret = empty($options['type']) ? new static() : [];
+        $ret = empty($options['type']) ? new self() : array();
 
         /**
          * The last raw expression.
@@ -132,7 +133,6 @@ class ArrayObj extends Component
                             $lastRaw = $lastValue = '';
                         }
                     }
-
                     continue;
                 }
             }
@@ -144,7 +144,7 @@ class ArrayObj extends Component
                 $ret[] = $options['type']::parse(
                     $parser,
                     $list,
-                    empty($options['typeOptions']) ? [] : $options['typeOptions']
+                    empty($options['typeOptions']) ? array() : $options['typeOptions']
                 );
             }
         }
@@ -153,13 +153,14 @@ class ArrayObj extends Component
         //
         // This is treated differently to treat the following cases:
         //
-        //           => []
-        //      [,]  => ['', '']
-        //      []   => []
-        //      [a,] => ['a', '']
-        //      [a]  => ['a']
+        //           => array()
+        //      (,)  => array('', '')
+        //      ()   => array()
+        //      (a,) => array('a', '')
+        //      (a)  => array('a')
+        //
         $lastRaw = trim($lastRaw);
-        if (empty($options['type'])
+        if ((empty($options['type']))
             && ((strlen($lastRaw) > 0) || ($isCommaLast))
         ) {
             $ret->raw[] = $lastRaw;
@@ -175,7 +176,7 @@ class ArrayObj extends Component
      *
      * @return string
      */
-    public static function build($component, array $options = [])
+    public static function build($component, array $options = array())
     {
         if (is_array($component)) {
             return implode(', ', $component);

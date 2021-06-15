@@ -1,13 +1,18 @@
 <?php
-
-declare(strict_types=1);
-
+/* vim: set expandtab sw=4 ts=4 sts=4: */
+/**
+ * Holds the PhpMyAdmin\Properties\Options\Items\HiddenPropertyItem class
+ *
+ * @package PhpMyAdmin
+ */
 namespace PhpMyAdmin\Properties\Options\Items;
 
 use PhpMyAdmin\Properties\Options\OptionsPropertyOneItem;
 
 /**
  * Single property item class of type hidden
+ *
+ * @package PhpMyAdmin
  */
 class HiddenPropertyItem extends OptionsPropertyOneItem
 {
@@ -23,6 +28,6 @@ class HiddenPropertyItem extends OptionsPropertyOneItem
      */
     public function getItemType()
     {
-        return 'hidden';
+        return "hidden";
     }
 }

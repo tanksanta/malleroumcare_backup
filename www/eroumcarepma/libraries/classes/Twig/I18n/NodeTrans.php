@@ -1,55 +1,62 @@
 <?php
-
-declare(strict_types=1);
-
+/* vim: set expandtab sw=4 ts=4 sts=4: */
+/**
+ * hold PhpMyAdmin\Twig\I18n\NodeTrans class
+ *
+ * @package PhpMyAdmin\Twig\I18n
+ */
 namespace PhpMyAdmin\Twig\I18n;
 
-use PhpMyAdmin\Twig\Extensions\Node\TransNode;
 use Twig\Compiler;
-use Twig\Node\Expression\AbstractExpression;
+use Twig\Extensions\Node\TransNode;
 use Twig\Node\Node;
-use function array_merge;
-use function str_replace;
-use function trim;
+use Twig\Node\Expression\AbstractExpression;
 
+/**
+ * Class NodeTrans
+ *
+ * @package PhpMyAdmin\Twig\I18n
+ */
 class NodeTrans extends TransNode
 {
     /**
+     * Constructor.
+     *
      * The nodes are automatically made available as properties ($this->node).
      * The attributes are automatically made available as array items ($this['name']).
      *
      * @param Node               $body    Body of node trans
-     * @param Node|null          $plural  Node plural
+     * @param Node               $plural  Node plural
      * @param AbstractExpression $count   Node count
-     * @param Node|null          $context Node context
-     * @param Node|null          $notes   Node notes
+     * @param Node               $context Node context
+     * @param Node               $notes   Node notes
      * @param int                $lineno  The line number
      * @param string             $tag     The tag name associated with the Node
      */
     public function __construct(
         Node $body,
-        ?Node $plural,
-        ?AbstractExpression $count,
-        ?Node $context,
-        ?Node $notes,
-        int $lineno,
-        string $tag
+        Node $plural = null,
+        AbstractExpression $count = null,
+        Node $context = null,
+        Node $notes = null,
+        $lineno,
+        $tag = null
     ) {
-        $nodes = ['body' => $body];
-        if ($count !== null) {
+        $nodes = array('body' => $body);
+        if (null !== $count) {
             $nodes['count'] = $count;
         }
-        if ($plural !== null) {
+        if (null !== $plural) {
             $nodes['plural'] = $plural;
         }
-        if ($context !== null) {
+        if (null !== $context) {
             $nodes['context'] = $context;
         }
-        if ($notes !== null) {
+        if (null !== $notes) {
             $nodes['notes'] = $notes;
         }
 
-        Node::__construct($nodes, [], $lineno, $tag);
+        Node::__construct($nodes, array(), $lineno, $tag);
     }
 
     /**
@@ -63,11 +70,10 @@ class NodeTrans extends TransNode
     {
         $compiler->addDebugInfo($this);
 
-        [$msg, $vars] = $this->compileString($this->getNode('body'));
+        list($msg, $vars) = $this->compileString($this->getNode('body'));
 
-        $msg1 = null;
         if ($this->hasNode('plural')) {
-            [$msg1, $vars1] = $this->compileString($this->getNode('plural'));
+            list($msg1, $vars1) = $this->compileString($this->getNode('plural'));
 
             $vars = array_merge($vars, $vars1);
         }
@@ -81,14 +87,15 @@ class NodeTrans extends TransNode
             $message = trim($this->getNode('notes')->getAttribute('data'));
 
             // line breaks are not allowed cause we want a single line comment
-            $message = str_replace(["\n", "\r"], ' ', $message);
-            $compiler->write('// l10n: ' . $message . "\n");
+            $message = str_replace(array("\n", "\r"), ' ', $message);
+            $compiler->write("// l10n: {$message}\n");
         }
 
         if ($vars) {
             $compiler
                 ->write('echo strtr(' . $function . '(')
-                ->subcompile($msg);
+                ->subcompile($msg)
+            ;
 
             if ($this->hasNode('plural')) {
                 $compiler
@@ -96,24 +103,27 @@ class NodeTrans extends TransNode
                     ->subcompile($msg1)
                     ->raw(', abs(')
                     ->subcompile($this->hasNode('count') ? $this->getNode('count') : null)
-                    ->raw(')');
+                    ->raw(')')
+                ;
             }
 
             $compiler->raw('), array(');
 
             foreach ($vars as $var) {
-                if ($var->getAttribute('name') === 'count') {
+                if ('count' === $var->getAttribute('name')) {
                     $compiler
                         ->string('%count%')
                         ->raw(' => abs(')
                         ->subcompile($this->hasNode('count') ? $this->getNode('count') : null)
-                        ->raw('), ');
+                        ->raw('), ')
+                    ;
                 } else {
                     $compiler
                         ->string('%' . $var->getAttribute('name') . '%')
                         ->raw(' => ')
                         ->subcompile($var)
-                        ->raw(', ');
+                        ->raw(', ')
+                    ;
                 }
             }
 
@@ -134,7 +144,8 @@ class NodeTrans extends TransNode
                     ->subcompile($msg1)
                     ->raw(', abs(')
                     ->subcompile($this->hasNode('count') ? $this->getNode('count') : null)
-                    ->raw(')');
+                    ->raw(')')
+                ;
             }
 
             $compiler->raw(");\n");
@@ -144,8 +155,10 @@ class NodeTrans extends TransNode
     /**
      * @param bool $plural        Return plural or singular function to use
      * @param bool $hasMsgContext It has message context?
+     *
+     * @return string
      */
-    protected function getTransFunction($plural, bool $hasMsgContext = false): string
+    protected function getTransFunction($plural, $hasMsgContext = false)
     {
         if ($hasMsgContext) {
             return $plural ? '_ngettext' : '_pgettext';

@@ -1,29 +1,21 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Static methods for URL/hidden inputs generating
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin;
 
-use function htmlentities;
-use function htmlspecialchars;
-use function http_build_query;
-use function ini_get;
-use function is_array;
-use function mb_strpos;
-use function strlen;
-
 /**
  * Static methods for URL/hidden inputs generating
+ *
+ * @package PhpMyAdmin
  */
 class Url
 {
     /**
      * Generates text with hidden inputs.
-     *
-     * @see Url::getCommon()
      *
      * @param string|array $db     optional database name
      *                             (can also be an array of parameters)
@@ -32,26 +24,30 @@ class Url
      * @param string|array $skip   do not generate a hidden field for this parameter
      *                             (can be an array of strings)
      *
+     * @see Url::getCommon()
+     *
      * @return string   string with input fields
      *
-     * @access public
+     * @access  public
      */
-    public static function getHiddenInputs(
-        $db = '',
-        $table = '',
-        $indent = 0,
-        $skip = []
+    public static function getHiddenInputs($db = '', $table = '',
+        $indent = 0, $skip = array()
     ) {
+        /** @var Config $PMA_Config */
         global $PMA_Config;
 
         if (is_array($db)) {
             $params  =& $db;
+            $_indent = empty($table) ? $indent : $table;
+            $_skip   = empty($indent) ? $skip : $indent;
+            $indent  =& $_indent;
+            $skip    =& $_skip;
         } else {
-            $params = [];
-            if (strlen((string) $db) > 0) {
+            $params = array();
+            if (strlen($db) > 0) {
                 $params['db'] = $db;
             }
-            if (strlen((string) $table) > 0) {
+            if (strlen($table) > 0) {
                 $params['table'] = $table;
             }
         }
@@ -71,15 +67,13 @@ class Url
             }
         } else {
             foreach ($skip as $skipping) {
-                if (! isset($params[$skipping])) {
-                    continue;
+                if (isset($params[$skipping])) {
+                    unset($params[$skipping]);
                 }
-
-                unset($params[$skipping]);
             }
         }
 
-        return self::getHiddenFields($params);
+        return Url::getHiddenFields($params);
     }
 
     /**
@@ -100,25 +94,24 @@ class Url
      * echo Url::getHiddenFields($values);
      *
      * // produces:
-     * <input type="hidden" name="aaa" Value="aaa">
-     * <input type="hidden" name="bbb[0]" Value="bbb_0">
-     * <input type="hidden" name="bbb[1]" Value="bbb_1">
-     * <input type="hidden" name="ccc[a]" Value="ccc_a">
-     * <input type="hidden" name="ccc[b]" Value="ccc_b">
+     * <input type="hidden" name="aaa" Value="aaa" />
+     * <input type="hidden" name="bbb[0]" Value="bbb_0" />
+     * <input type="hidden" name="bbb[1]" Value="bbb_1" />
+     * <input type="hidden" name="ccc[a]" Value="ccc_a" />
+     * <input type="hidden" name="ccc[b]" Value="ccc_b" />
      * </code>
      *
-     * @param array  $values   hidden values
-     * @param string $pre      prefix
-     * @param bool   $is_token if token already added in hidden input field
+     * @param array  $values hidden values
+     * @param string $pre    prefix
      *
      * @return string form fields of type hidden
      */
-    public static function getHiddenFields(array $values, $pre = '', $is_token = false)
+    public static function getHiddenFields(array $values, $pre = '')
     {
         $fields = '';
 
         /* Always include token in plain forms */
-        if ($is_token === false) {
+        if ($pre === '') {
             $values['token'] = $_SESSION[' PMA_token '];
         }
 
@@ -128,13 +121,13 @@ class Url
             }
 
             if (is_array($value)) {
-                $fields .= self::getHiddenFields($value, $name, true);
+                $fields .= Url::getHiddenFields($value, $name);
             } else {
                 // do not generate an ending "\n" because
                 // Url::getHiddenInputs() is sometimes called
                 // from a JS document.write()
-                $fields .= '<input type="hidden" name="' . htmlspecialchars((string) $name)
-                    . '" value="' . htmlspecialchars((string) $value) . '">';
+                $fields .= '<input type="hidden" name="' . htmlspecialchars($name)
+                    . '" value="' . htmlspecialchars($value) . '" />';
             }
         }
 
@@ -151,29 +144,30 @@ class Url
      * // note the missing ?
      * echo 'script.php' . Url::getCommon($params);
      * // produces with cookies enabled:
-     * // script.php?myparam=myvalue&db=mysql&table=rights
+     * // script.php?myparam=myvalue&amp;db=mysql&amp;table=rights
      * // with cookies disabled:
-     * // script.php?server=1&lang=en&myparam=myvalue&db=mysql
-     * // &table=rights
+     * // script.php?server=1&amp;lang=en&amp;myparam=myvalue&amp;db=mysql
+     * // &amp;table=rights
      *
      * // note the missing ?
      * echo 'script.php' . Url::getCommon();
      * // produces with cookies enabled:
      * // script.php
      * // with cookies disabled:
-     * // script.php?server=1&lang=en
+     * // script.php?server=1&amp;lang=en
      * </code>
      *
-     * @param array<string,int|string|bool> $params  optional, Contains an associative array with url params
-     * @param string                        $divider optional character to use instead of '?'
+     * @param mixed  $params  optional, Contains an associative array with url params
+     * @param string $divider optional character to use instead of '?'
      *
      * @return string   string with URL parameters
-     *
-     * @access public
+     * @access  public
      */
-    public static function getCommon(array $params = [], $divider = '?')
+    public static function getCommon($params = array(), $divider = '?')
     {
-        return self::getCommonRaw($params, $divider);
+        return htmlspecialchars(
+            Url::getCommonRaw($params, $divider)
+        );
     }
 
     /**
@@ -186,33 +180,32 @@ class Url
      * // note the missing ?
      * echo 'script.php' . Url::getCommon($params);
      * // produces with cookies enabled:
-     * // script.php?myparam=myvalue&db=mysql&table=rights
+     * // script.php?myparam=myvalue&amp;db=mysql&amp;table=rights
      * // with cookies disabled:
-     * // script.php?server=1&lang=en&myparam=myvalue&db=mysql
-     * // &table=rights
+     * // script.php?server=1&amp;lang=en&amp;myparam=myvalue&amp;db=mysql
+     * // &amp;table=rights
      *
      * // note the missing ?
      * echo 'script.php' . Url::getCommon();
      * // produces with cookies enabled:
      * // script.php
      * // with cookies disabled:
-     * // script.php?server=1&lang=en
+     * // script.php?server=1&amp;lang=en
      * </code>
      *
-     * @param array<string|int,int|string|bool> $params  optional, Contains an associative array with url params
-     * @param string                            $divider optional character to use instead of '?'
+     * @param mixed  $params  optional, Contains an associative array with url params
+     * @param string $divider optional character to use instead of '?'
      *
      * @return string   string with URL parameters
-     *
-     * @access public
+     * @access  public
      */
-    public static function getCommonRaw(array $params = [], $divider = '?')
+    public static function getCommonRaw($params = array(), $divider = '?')
     {
+        /** @var Config $PMA_Config */
         global $PMA_Config;
+        $separator = Url::getArgSeparator();
 
-        $separator = self::getArgSeparator();
-
-        // avoid overwriting when creating navigation panel links to servers
+        // avoid overwriting when creating navi panel links to servers
         if (isset($GLOBALS['server'])
             && $GLOBALS['server'] != $GLOBALS['cfg']['ServerDefault']
             && ! isset($params['server'])
@@ -221,15 +214,13 @@ class Url
             $params['server'] = $GLOBALS['server'];
         }
 
-        // Can be null when the user is missing an extension.
-        // See: Core::checkExtensions()
-        if ($PMA_Config !== null && empty($PMA_Config->getCookie('pma_lang')) && ! empty($GLOBALS['lang'])) {
+        if (empty($PMA_Config->getCookie('pma_lang')) && ! empty($GLOBALS['lang'])) {
             $params['lang'] = $GLOBALS['lang'];
         }
 
-        $query = http_build_query($params, '', $separator);
+        $query = http_build_query($params, null, $separator);
 
-        if (($divider !== '?' && $divider !== '&') || strlen($query) > 0) {
+        if ($divider != '?' || strlen($query) > 0) {
             return $divider . $query;
         }
 
@@ -240,26 +231,25 @@ class Url
      * Returns url separator
      *
      * extracted from arg_separator.input as set in php.ini
-     * we do not use arg_separator.output to avoid problems with & and &
+     * we do not use arg_separator.output to avoid problems with &amp; and &
      *
      * @param string $encode whether to encode separator or not,
-     *                       currently 'none' or 'html'
+     * currently 'none' or 'html'
      *
      * @return string  character used for separating url parts usually ; or &
-     *
-     * @access public
+     * @access  public
      */
     public static function getArgSeparator($encode = 'none')
     {
         static $separator = null;
         static $html_separator = null;
 
-        if ($separator === null) {
+        if (null === $separator) {
             // use separators defined by php, but prefer ';'
             // as recommended by W3C
             // (see https://www.w3.org/TR/1999/REC-html401-19991224/appendix
             // /notes.html#h-B.2.2)
-            $arg_separator = (string) ini_get('arg_separator.input');
+            $arg_separator = ini_get('arg_separator.input');
             if (mb_strpos($arg_separator, ';') !== false) {
                 $separator = ';';
             } elseif (strlen($arg_separator) > 0) {
@@ -271,21 +261,12 @@ class Url
         }
 
         switch ($encode) {
-            case 'html':
-                return $html_separator;
-            case 'text':
-            case 'none':
-            default:
-                return $separator;
+        case 'html':
+            return $html_separator;
+        case 'text' :
+        case 'none' :
+        default :
+            return $separator;
         }
-    }
-
-    /**
-     * @param string $route                Route to use
-     * @param array  $additionalParameters Additional URL parameters
-     */
-    public static function getFromRoute(string $route, array $additionalParameters = []): string
-    {
-        return 'index.php?route=' . $route . self::getCommon($additionalParameters, '&');
     }
 }

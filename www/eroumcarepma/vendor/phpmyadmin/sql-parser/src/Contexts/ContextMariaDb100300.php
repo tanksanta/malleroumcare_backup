@@ -1,6 +1,13 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * Context for MariaDB 10.3.
+ *
+ * This file was auto-generated from tools/contexts/*.txt.
+ * Use tools/run_generators.sh for update.
+ *
+ * @see https://mariadb.com/kb/en/the-mariadb-library/reserved-words/
+ */
 
 namespace PhpMyAdmin\SqlParser\Contexts;
 
@@ -10,10 +17,9 @@ use PhpMyAdmin\SqlParser\Token;
 /**
  * Context for MariaDB 10.3.
  *
- * This class was auto-generated from tools/contexts/*.txt.
- * Use tools/run_generators.sh for update.
+ * @category   Contexts
  *
- * @see https://mariadb.com/kb/en/the-mariadb-library/reserved-words/
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class ContextMariaDb100300 extends Context
 {
@@ -28,7 +34,7 @@ class ContextMariaDb100300 extends Context
      *
      * @var array
      */
-    public static $KEYWORDS = [
+    public static $KEYWORDS = array(
         'AT' => 1, 'DO' => 1, 'IO' => 1, 'NO' => 1, 'XA' => 1,
         'ANY' => 1, 'CPU' => 1, 'END' => 1, 'IPC' => 1, 'NDB' => 1, 'NEW' => 1,
         'ONE' => 1, 'ROW' => 1, 'XID' => 1,
@@ -342,5 +348,5 @@ class ContextMariaDb100300 extends Context
         'CHAR' => 43,
         'BINARY' => 43,
         'INTERVAL' => 43,
-    ];
+    );
 }

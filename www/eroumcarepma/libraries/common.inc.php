@@ -1,4 +1,5 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Misc stuff and REQUIRED by ALL the scripts.
  * MUST be included by every script
@@ -26,9 +27,9 @@
  * - loading of an authentication library
  * - db connection
  * - authentication work
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
 
 use PhpMyAdmin\Config;
 use PhpMyAdmin\Core;
@@ -37,24 +38,17 @@ use PhpMyAdmin\ErrorHandler;
 use PhpMyAdmin\LanguageManager;
 use PhpMyAdmin\Logging;
 use PhpMyAdmin\Message;
-use PhpMyAdmin\MoTranslator\Loader;
-use PhpMyAdmin\Plugins;
-use PhpMyAdmin\Profiling;
+use PhpMyAdmin\Plugins\AuthenticationPlugin;
 use PhpMyAdmin\Response;
-use PhpMyAdmin\Routing;
 use PhpMyAdmin\Session;
-use PhpMyAdmin\SqlParser\Lexer;
 use PhpMyAdmin\ThemeManager;
 use PhpMyAdmin\Tracker;
-
-global $containerBuilder, $error_handler, $PMA_Config, $server, $dbi;
-global $lang, $cfg, $isConfigLoading, $auth_plugin, $route, $PMA_Theme;
-global $url_params, $goto, $back, $db, $table, $sql_query, $token_mismatch;
+use PhpMyAdmin\Util;
 
 /**
  * block attempts to directly run this script
  */
-if (getcwd() == __DIR__) {
+if (getcwd() == dirname(__FILE__)) {
     die('Attack stopped');
 }
 
@@ -62,68 +56,49 @@ if (getcwd() == __DIR__) {
  * Minimum PHP version; can't call Core::fatalError() which uses a
  * PHP 5 function, so cannot easily localize this message.
  */
-if (PHP_VERSION_ID < 70103) {
+if (version_compare(PHP_VERSION, '5.5.0', 'lt')) {
     die(
-        '<p>PHP 7.1.3+ is required.</p>'
-        . '<p>Currently installed version is: ' . PHP_VERSION . '</p>'
+        'PHP 5.5+ is required. <br /> Currently installed version is: '
+        . phpversion()
     );
 }
 
-// phpcs:disable PSR1.Files.SideEffects
 /**
  * for verification in all procedural scripts under libraries
  */
 define('PHPMYADMIN', true);
-// phpcs:enable
 
 /**
  * Load vendor configuration.
  */
-require_once ROOT_PATH . 'libraries/vendor_config.php';
+require_once './libraries/vendor_config.php';
+
+/**
+ * Load hash polyfill.
+ */
+require_once './libraries/hash.lib.php';
 
 /**
  * Activate autoloader
  */
 if (! @is_readable(AUTOLOAD_FILE)) {
     die(
-        '<p>File <samp>' . AUTOLOAD_FILE . '</samp> missing or not readable.</p>'
-        . '<p>Most likely you did not run Composer to '
-        . '<a href="https://docs.phpmyadmin.net/en/latest/setup.html#installing-from-git">'
-        . 'install library files</a>.</p>'
+        'File <tt>' . AUTOLOAD_FILE . '</tt> missing or not readable. <br />'
+        . 'Most likely you did not run Composer to '
+        . '<a href="https://docs.phpmyadmin.net/en/latest/setup.html#installing-from-git">install library files</a>.'
     );
 }
 require_once AUTOLOAD_FILE;
 
 /**
- * (TCPDF workaround)
- * Avoid referring to nonexistent files (causes warnings when open_basedir is used)
- * This is defined to avoid the tcpdf code to search for a directory outside of open_basedir
- * See: https://github.com/phpmyadmin/phpmyadmin/issues/16709
- * This value if not used but is usefull, no header logic is used for PDF exports
- */
-if (! defined('K_PATH_IMAGES')) {
-    // phpcs:disable PSR1.Files.SideEffects
-    define('K_PATH_IMAGES', ROOT_PATH);
-    // phpcs:enable
-}
-
-$route = Routing::getCurrentRoute();
-
-if ($route === '/import-status') {
-    // phpcs:disable PSR1.Files.SideEffects
-    define('PMA_MINIMUM_COMMON', true);
-    // phpcs:enable
-}
-
-$containerBuilder = Core::getContainerBuilder();
-
-/**
  * Load gettext functions.
  */
-Loader::loadFunctions();
+PhpMyAdmin\MoTranslator\Loader::loadFunctions();
 
-/** @var ErrorHandler $error_handler */
-$error_handler = $containerBuilder->get('error_handler');
+/**
+ * initialize the error handler
+ */
+$GLOBALS['error_handler'] = new ErrorHandler();
 
 /**
  * Warning about missing PHP extensions.
@@ -135,30 +110,26 @@ Core::checkExtensions();
  */
 Core::configure();
 
+/******************************************************************************/
 /* start procedural code                       label_start_procedural         */
 
 Core::cleanupPathInfo();
 
+/******************************************************************************/
 /* parsing configuration file                  LABEL_parsing_config_file      */
 
-/** @var bool $isConfigLoading Indication for the error handler */
-$isConfigLoading = false;
-
 /**
- * Force reading of config file, because we removed sensitive values
- * in the previous iteration.
- *
- * @var Config $PMA_Config
+ * @global Config $GLOBALS['PMA_Config']
+ * force reading of config file, because we removed sensitive values
+ * in the previous iteration
  */
-$PMA_Config = $containerBuilder->get('config');
-
-register_shutdown_function([Config::class, 'fatalErrorHandler']);
+$GLOBALS['PMA_Config'] = new Config(CONFIG_FILE);
 
 /**
  * include session handling after the globals, to prevent overwriting
  */
 if (! defined('PMA_NO_SESSION')) {
-    Session::setUp($PMA_Config, $error_handler);
+    Session::setUp($GLOBALS['PMA_Config'], $GLOBALS['error_handler']);
 }
 
 /**
@@ -167,33 +138,125 @@ if (! defined('PMA_NO_SESSION')) {
 
 /**
  * holds parameters to be passed to next page
- *
- * @global array $url_params
+ * @global array $GLOBALS['url_params']
  */
-$url_params = [];
-$containerBuilder->setParameter('url_params', $url_params);
+$GLOBALS['url_params'] = array();
 
-Core::setGotoAndBackGlobals($containerBuilder, $PMA_Config);
+/**
+ * holds page that should be displayed
+ * @global string $GLOBALS['goto']
+ */
+$GLOBALS['goto'] = '';
+// Security fix: disallow accessing serious server files via "?goto="
+if (Core::checkPageValidity($_REQUEST['goto'])) {
+    $GLOBALS['goto'] = $_REQUEST['goto'];
+    $GLOBALS['url_params']['goto'] = $_REQUEST['goto'];
+} else {
+    $GLOBALS['PMA_Config']->removeCookie('goto');
+    unset($_REQUEST['goto'], $_GET['goto'], $_POST['goto']);
+}
 
-Core::checkTokenRequestParam();
+/**
+ * returning page
+ * @global string $GLOBALS['back']
+ */
+if (Core::checkPageValidity($_REQUEST['back'])) {
+    $GLOBALS['back'] = $_REQUEST['back'];
+} else {
+    $GLOBALS['PMA_Config']->removeCookie('back');
+    unset($_REQUEST['back'], $_GET['back'], $_POST['back']);
+}
 
-Core::setDatabaseAndTableFromRequest($containerBuilder);
+/**
+ * Check whether user supplied token is valid, if not remove any possibly
+ * dangerous stuff from request.
+ *
+ * remember that some objects in the session with session_start and __wakeup()
+ * could access this variables before we reach this point
+ * f.e. PhpMyAdmin\Config: fontsize
+ *
+ * Check for token mismatch only if the Request method is POST
+ * GET Requests would never have token and therefore checking
+ * mis-match does not make sense
+ *
+ * @todo variables should be handled by their respective owners (objects)
+ * f.e. lang, server in PhpMyAdmin\Config
+ */
+
+$token_mismatch = true;
+$token_provided = false;
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (Core::isValid($_POST['token'])) {
+        $token_provided = true;
+        $token_mismatch = ! @hash_equals($_SESSION[' PMA_token '], $_POST['token']);
+    }
+
+    if ($token_mismatch) {
+        /* Warn in case the mismatch is result of failed setting of session cookie */
+        if (isset($_POST['set_session']) && $_POST['set_session'] != session_id()) {
+            trigger_error(
+                __(
+                    'Failed to set session cookie. Maybe you are using '
+                    . 'HTTP instead of HTTPS to access phpMyAdmin.'
+                ),
+                E_USER_ERROR
+            );
+        }
+        /**
+         * We don't allow any POST operation parameters if the token is mismatched
+         * or is not provided
+         */
+        $whitelist = array('ajax_request');
+        PhpMyAdmin\Sanitize::removeRequestVars($whitelist);
+    }
+}
+
+
+/**
+ * current selected database
+ * @global string $GLOBALS['db']
+ */
+Core::setGlobalDbOrTable('db');
+
+/**
+ * current selected table
+ * @global string $GLOBALS['table']
+ */
+Core::setGlobalDbOrTable('table');
+
+/**
+ * Store currently selected recent table.
+ * Affect $GLOBALS['db'] and $GLOBALS['table']
+ */
+if (Core::isValid($_REQUEST['selected_recent_table'])) {
+    $recent_table = json_decode($_REQUEST['selected_recent_table'], true);
+
+    $GLOBALS['db']
+        = (array_key_exists('db', $recent_table) && is_string($recent_table['db'])) ?
+            $recent_table['db'] : '';
+    $GLOBALS['url_params']['db'] = $GLOBALS['db'];
+
+    $GLOBALS['table']
+        = (array_key_exists('table', $recent_table) && is_string($recent_table['table'])) ?
+            $recent_table['table'] : '';
+    $GLOBALS['url_params']['table'] = $GLOBALS['table'];
+}
 
 /**
  * SQL query to be executed
- *
- * @global string $sql_query
+ * @global string $GLOBALS['sql_query']
  */
-$sql_query = '';
+$GLOBALS['sql_query'] = '';
 if (Core::isValid($_POST['sql_query'])) {
-    $sql_query = $_POST['sql_query'];
+    $GLOBALS['sql_query'] = $_POST['sql_query'];
 }
-$containerBuilder->setParameter('sql_query', $sql_query);
 
 //$_REQUEST['set_theme'] // checked later in this file LABEL_theme_setup
 //$_REQUEST['server']; // checked later in this file
 //$_REQUEST['lang'];   // checked by LABEL_loading_language_file
 
+/******************************************************************************/
 /* loading language file                       LABEL_loading_language_file    */
 
 /**
@@ -206,8 +269,8 @@ $language->activate();
  * check for errors occurred while loading configuration
  * this check is done here after loading language files to present errors in locale
  */
-$PMA_Config->checkPermissions();
-$PMA_Config->checkErrors();
+$GLOBALS['PMA_Config']->checkPermissions();
+$GLOBALS['PMA_Config']->checkErrors();
 
 /* Check server configuration */
 Core::checkConfiguration();
@@ -215,54 +278,112 @@ Core::checkConfiguration();
 /* Check request for possible attacks */
 Core::checkRequest();
 
+/******************************************************************************/
 /* setup servers                                       LABEL_setup_servers    */
 
-$PMA_Config->checkServers();
+$GLOBALS['PMA_Config']->checkServers();
 
 /**
  * current server
- *
- * @global integer $server
+ * @global integer $GLOBALS['server']
  */
-$server = $PMA_Config->selectServer();
-$url_params['server'] = $server;
-$containerBuilder->setParameter('server', $server);
-$containerBuilder->setParameter('url_params', $url_params);
+$GLOBALS['server'] = $GLOBALS['PMA_Config']->selectServer();
+$GLOBALS['url_params']['server'] = $GLOBALS['server'];
 
 /**
  * BC - enable backward compatibility
- * exports all configuration settings into globals ($cfg global)
+ * exports all configuration settings into $GLOBALS ($GLOBALS['cfg'])
  */
-$PMA_Config->enableBc();
+$GLOBALS['PMA_Config']->enableBc();
 
+/******************************************************************************/
 /* setup themes                                          LABEL_theme_setup    */
 
-$PMA_Theme = ThemeManager::initializeTheme();
-
-/** @var DatabaseInterface $dbi */
-$dbi = null;
+ThemeManager::initializeTheme();
 
 if (! defined('PMA_MINIMUM_COMMON')) {
     /**
      * save some settings in cookies
-     *
      * @todo should be done in PhpMyAdmin\Config
      */
-    $PMA_Config->setCookie('pma_lang', (string) $lang);
+    $GLOBALS['PMA_Config']->setCookie('pma_lang', $GLOBALS['lang']);
 
     ThemeManager::getInstance()->setThemeCookie();
 
-    $dbi = DatabaseInterface::load();
-    $containerBuilder->set(DatabaseInterface::class, $dbi);
-    $containerBuilder->setAlias('dbi', DatabaseInterface::class);
-
     if (! empty($cfg['Server'])) {
-        $PMA_Config->getLoginCookieValidityFromCache($server);
 
-        $auth_plugin = Plugins::getAuthPlugin();
+        /**
+         * Loads the proper database interface for this server
+         */
+        DatabaseInterface::load();
+
+        // get LoginCookieValidity from preferences cache
+        // no generic solution for loading preferences from cache as some settings
+        // need to be kept for processing in
+        // PhpMyAdmin\Config::loadUserPreferences()
+        $cache_key = 'server_' . $GLOBALS['server'];
+        if (isset($_SESSION['cache'][$cache_key]['userprefs']['LoginCookieValidity'])
+        ) {
+            $value
+                = $_SESSION['cache'][$cache_key]['userprefs']['LoginCookieValidity'];
+            $GLOBALS['PMA_Config']->set('LoginCookieValidity', $value);
+            $GLOBALS['cfg']['LoginCookieValidity'] = $value;
+            unset($value);
+        }
+        unset($cache_key);
+
+        // Gets the authentication library that fits the $cfg['Server'] settings
+        // and run authentication
+
+        /**
+         * the required auth type plugin
+         */
+        $auth_class = 'PhpMyAdmin\\Plugins\\Auth\\Authentication' . ucfirst(strtolower($cfg['Server']['auth_type']));
+        if (! @class_exists($auth_class)) {
+            Core::fatalError(
+                __('Invalid authentication method set in configuration:')
+                . ' ' . $cfg['Server']['auth_type']
+            );
+        }
+        if (isset($_POST['pma_password']) && strlen($_POST['pma_password']) > 256) {
+            $_POST['pma_password'] = substr($_POST['pma_password'], 0, 256);
+        }
+        $auth_plugin = new $auth_class();
+
         $auth_plugin->authenticate();
 
-        Core::connectToDatabaseServer($dbi, $auth_plugin);
+        // Try to connect MySQL with the control user profile (will be used to
+        // get the privileges list for the current user but the true user link
+        // must be open after this one so it would be default one for all the
+        // scripts)
+        $controllink = false;
+        if ($cfg['Server']['controluser'] != '') {
+            $controllink = $GLOBALS['dbi']->connect(
+                DatabaseInterface::CONNECT_CONTROL
+            );
+        }
+
+        // Connects to the server (validates user's login)
+        /** @var DatabaseInterface $userlink */
+        $userlink = $GLOBALS['dbi']->connect(DatabaseInterface::CONNECT_USER);
+
+        if ($userlink === false) {
+            $auth_plugin->showFailure('mysql-denied');
+        }
+
+        if (! $controllink) {
+            /*
+             * Open separate connection for control queries, this is needed
+             * to avoid problems with table locking used in main connection
+             * and phpMyAdmin issuing queries to configuration storage, which
+             * is not locked by that time.
+             */
+            $controllink = $GLOBALS['dbi']->connect(
+                DatabaseInterface::CONNECT_USER,
+                null,
+                DatabaseInterface::CONNECT_CONTROL
+            );
+        }
 
         $auth_plugin->rememberCredentials();
 
@@ -271,37 +392,58 @@ if (! defined('PMA_MINIMUM_COMMON')) {
         /* Log success */
         Logging::logUser($cfg['Server']['user']);
 
-        if ($dbi->getVersion() < $cfg['MysqlMinVersion']['internal']) {
+        if ($GLOBALS['dbi']->getVersion() < $cfg['MysqlMinVersion']['internal']) {
             Core::fatalError(
                 __('You should upgrade to %s %s or later.'),
-                [
-                    'MySQL',
-                    $cfg['MysqlMinVersion']['human'],
-                ]
+                array('MySQL', $cfg['MysqlMinVersion']['human'])
             );
         }
 
         // Sets the default delimiter (if specified).
-        if (! empty($_REQUEST['sql_delimiter'])) {
-            Lexer::$DEFAULT_DELIMITER = $_REQUEST['sql_delimiter'];
+        if (!empty($_REQUEST['sql_delimiter'])) {
+            PhpMyAdmin\SqlParser\Lexer::$DEFAULT_DELIMITER = $_REQUEST['sql_delimiter'];
         }
 
         // TODO: Set SQL modes too.
+
     } else { // end server connecting
         $response = Response::getInstance();
         $response->getHeader()->disableMenuAndConsole();
         $response->getFooter()->setMinimal();
     }
 
-    $response = Response::getInstance();
+    /**
+     * check if profiling was requested and remember it
+     * (note: when $cfg['ServerDefault'] = 0, constant is not defined)
+     */
+    if (isset($_REQUEST['profiling'])
+        && Util::profilingSupported()
+    ) {
+        $_SESSION['profiling'] = true;
+    } elseif (isset($_REQUEST['profiling_form'])) {
+        // the checkbox was unchecked
+        unset($_SESSION['profiling']);
+    }
 
-    Profiling::check($dbi, $response);
+    /**
+     * Inclusion of profiling scripts is needed on various
+     * pages like sql, tbl_sql, db_sql, tbl_select
+     */
+    $response = Response::getInstance();
+    if (isset($_SESSION['profiling'])) {
+        $scripts  = $response->getHeader()->getScripts();
+        $scripts->addFile('chart.js');
+        $scripts->addFile('vendor/jqplot/jquery.jqplot.js');
+        $scripts->addFile('vendor/jqplot/plugins/jqplot.pieRenderer.js');
+        $scripts->addFile('vendor/jqplot/plugins/jqplot.highlighter.js');
+        $scripts->addFile('vendor/jquery/jquery.tablesorter.js');
+    }
 
     /*
      * There is no point in even attempting to process
      * an ajax request if there is a token mismatch
      */
-    if ($response->isAjax() && $_SERVER['REQUEST_METHOD'] === 'POST' && $token_mismatch) {
+    if ($response->isAjax() && $_SERVER['REQUEST_METHOD'] == 'POST' && $token_mismatch) {
         $response->setRequestStatus(false);
         $response->addJSON(
             'message',
@@ -309,22 +451,18 @@ if (! defined('PMA_MINIMUM_COMMON')) {
         );
         exit;
     }
-
-    $containerBuilder->set('response', Response::getInstance());
 }
 
 // load user preferences
-$PMA_Config->loadUserPreferences();
-
-$containerBuilder->set('theme_manager', ThemeManager::getInstance());
+$GLOBALS['PMA_Config']->loadUserPreferences();
 
 /* Tell tracker that it can actually work */
 Tracker::enable();
 
 if (! defined('PMA_MINIMUM_COMMON')
-    && ! empty($server)
-    && isset($cfg['ZeroConf'])
-    && $cfg['ZeroConf'] == true
+    && ! empty($GLOBALS['server'])
+    && isset($GLOBALS['cfg']['ZeroConf'])
+    && $GLOBALS['cfg']['ZeroConf'] == true
 ) {
-    $dbi->postConnectControl();
+    $GLOBALS['dbi']->postConnectControl();
 }

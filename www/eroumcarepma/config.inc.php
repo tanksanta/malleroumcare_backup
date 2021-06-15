@@ -112,10 +112,10 @@ $cfg['SaveDir'] = '';
  * uncomment the desired line:
  * default = 'en'
  */
-//$cfg['DefaultLang'] = 'en';
+$cfg['DefaultLang'] = 'en';
 //$cfg['DefaultLang'] = 'de';
-$cfg['Lang'] = 'en_US';
 
+$cfg['Lang'] = 'en-utf-8';
 /**
  * How many columns should be used for table display of a database?
  * (a value larger than 1 results in some information being hidden)

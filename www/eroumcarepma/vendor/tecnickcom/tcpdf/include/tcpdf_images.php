@@ -77,7 +77,10 @@ class TCPDF_IMAGES {
 			}
 		}
 		if (empty($type)) {
-            $type = strtolower(trim(pathinfo(parse_url($imgfile, PHP_URL_PATH), PATHINFO_EXTENSION)));
+			$fileinfo = pathinfo($imgfile);
+			if (isset($fileinfo['extension']) AND (!TCPDF_STATIC::empty_string($fileinfo['extension']))) {
+				$type = strtolower(trim($fileinfo['extension']));
+			}
 		}
 		if ($type == 'jpg') {
 			$type = 'jpeg';

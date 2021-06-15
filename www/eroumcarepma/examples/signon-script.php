@@ -1,15 +1,16 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Single signon for phpMyAdmin
  *
  * This is just example how to use script based single signon with
  * phpMyAdmin, it is not intended to be perfect code and look, only
  * shows how you can integrate this functionality in your application.
+ *
+ * @package    PhpMyAdmin
+ * @subpackage Example
  */
 
-declare(strict_types=1);
-
-// phpcs:disable Squiz.Functions.GlobalFunction
 
 /**
  * This function returns username and password.
@@ -23,16 +24,12 @@ declare(strict_types=1);
 function get_login_credentials($user)
 {
     /* Optionally we can use passed username */
-    if (! empty($user)) {
-        return [
-            $user,
-            'password',
-        ];
+    if (!empty($user)) {
+        return array($user, 'password');
     }
 
     /* Here we would retrieve the credentials */
-    return [
-        'root',
-        '',
-    ];
+    $credentials = array('root', '');
+
+    return $credentials;
 }

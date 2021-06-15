@@ -1,9 +1,8 @@
 <?php
+
 /**
  * Transaction statement.
  */
-
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Statements;
 
@@ -14,18 +13,26 @@ use PhpMyAdmin\SqlParser\TokensList;
 
 /**
  * Transaction statement.
+ *
+ * @category   Statements
+ *
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class TransactionStatement extends Statement
 {
     /**
      * START TRANSACTION and BEGIN.
+     *
+     * @var int
      */
-    public const TYPE_BEGIN = 1;
+    const TYPE_BEGIN = 1;
 
     /**
      * COMMIT and ROLLBACK.
+     *
+     * @var int
      */
-    public const TYPE_END = 2;
+    const TYPE_END = 2;
 
     /**
      * The type of this query.
@@ -53,7 +60,7 @@ class TransactionStatement extends Statement
      *
      * @var array
      */
-    public static $OPTIONS = [
+    public static $OPTIONS = array(
         'START TRANSACTION' => 1,
         'BEGIN' => 1,
         'COMMIT' => 1,
@@ -63,8 +70,8 @@ class TransactionStatement extends Statement
         'AND NO CHAIN' => 3,
         'AND CHAIN' => 3,
         'RELEASE' => 4,
-        'NO RELEASE' => 4,
-    ];
+        'NO RELEASE' => 4
+    );
 
     /**
      * @param Parser     $parser the instance that requests parsing
@@ -99,7 +106,6 @@ class TransactionStatement extends Statement
                  */
                 $ret .= ';' . $statement->build();
             }
-
             $ret .= ';' . $this->end->build();
         }
 

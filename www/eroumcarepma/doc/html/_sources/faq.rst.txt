@@ -18,7 +18,7 @@ Server
 1.1 My server is crashing each time a specific action is required or phpMyAdmin sends a blank page or a page full of cryptic characters to my browser, what can I do?
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Try to set the :config:option:`$cfg['OBGzip']` directive to ``false`` in your
+Try to set the :config:option:`$cfg['OBGzip']`  directive to ``false`` in your
 :file:`config.inc.php` file and the ``zlib.output_compression`` directive to
 ``Off`` in your php configuration file.
 
@@ -63,7 +63,7 @@ Please use instead the cookie authentication mode.
 
 This seems to be a PWS bug. Filippo Simoncini found a workaround (at
 this time there is no better fix): remove or comment the ``DOCTYPE``
-declarations (2 lines) from the scripts :file:`libraries/classes/Header.php`
+declarations (2 lines) from the scripts :file:`libraries/Header.class.php`
 and :file:`index.php`.
 
 .. _faq1_7:
@@ -167,14 +167,14 @@ to the latest version to take advantage of the new import features.
 
 The first things to check (or ask your host provider to check) are the values
 of ``max_execution_time``, ``upload_max_filesize``, ``memory_limit`` and
-``post_max_size`` in the :file:`php.ini` configuration file. All of these
+``post_max_size`` in the :file:`php.ini` configuration file. All of these three
 settings limit the maximum size of data that can be submitted and handled by
 PHP. Please note that ``post_max_size`` needs to be larger than
 ``upload_max_filesize``. There exist several workarounds if your upload is too
 big or your hosting provider is unwilling to change the settings:
 
 * Look at the :config:option:`$cfg['UploadDir']` feature. This allows one to upload a file to the server
-  via scp, FTP, or your favorite file transfer method. PhpMyAdmin is
+  via scp, ftp, or your favorite file transfer method. PhpMyAdmin is
   then able to import the files from the temporary directory. More
   information is available in the :ref:`config`  of this document.
 * Using a utility (such as `BigDump
@@ -280,7 +280,7 @@ can tell it to use specific path for this file using ``PHPIniDir`` directive:
 
 In some rare cases this problem can be also caused by other extensions loaded
 in PHP which prevent MySQL extensions to be loaded. If anything else fails, you
-can try commenting out extensions for other databases from :file:`php.ini`.
+can try commenting out extensions for other databses from :file:`php.ini`.
 
 .. _faq1_21:
 
@@ -355,7 +355,7 @@ PHP scripts. Of course you have to restart Apache.
 
 This is a permission problem. Right-click on the phpmyadmin folder and
 choose properties. Under the tab Security, click on "Add" and select
-the user "IUSR\_machine" from the list. Now set their permissions and it
+the user "IUSR\_machine" from the list. Now set his permissions and it
 should work.
 
 .. _faq1_27:
@@ -433,9 +433,7 @@ releases.
 PHP 7 is supported since phpMyAdmin 4.6, PHP 7.1 is supported since 4.6.5,
 PHP 7.2 is supported since 4.7.4.
 
-HHVM is supported up to phpMyAdmin 4.8.
-
-Since release 5.0, phpMyAdmin supports only PHP 7.1 and newer.
+phpMyAdmin also works fine with HHVM.
 
 .. _faq1_32:
 
@@ -463,22 +461,20 @@ Yes. This procedure was tested with phpMyAdmin 2.6.1, PHP 4.3.9 in
 
 .. _faq1_34:
 
-1.34 Can I directly access a database or table pages?
------------------------------------------------------
+1.34 Can I access directly to database or table pages?
+------------------------------------------------------
 
-Yes. Out of the box, you can use a :term:`URL` like
+Yes. Out of the box, you can use :term:`URL` like
 ``http://server/phpMyAdmin/index.php?server=X&db=database&table=table&target=script``.
-For ``server`` you can use the server number
-which refers to the numeric host index (from ``$i``) in
-:file:`config.inc.php`. The table and script parts are optional.
-
-If you want a URL like
-``http://server/phpMyAdmin/database[/table][/script]``, you need to do some additional configuration. The following
-lines apply only for the `Apache <https://httpd.apache.org>`_ web server.
-First, make sure that you have enabled some features within the Apache global
+For ``server`` you use the server number
+which refers to the order of the server paragraph in
+:file:`config.inc.php`. Table and script parts are optional. If you want
+``http://server/phpMyAdmin/database[/table][/script]`` :term:`URL`, you need to do some configuration. Following
+lines apply only for `Apache <https://httpd.apache.org>`_ web server.
+First make sure, that you have enabled some features within global
 configuration. You need ``Options SymLinksIfOwnerMatch`` and ``AllowOverride
 FileInfo`` enabled for directory where phpMyAdmin is installed and you
-need mod\_rewrite to be enabled. Then you just need to create the
+need mod\_rewrite to be enabled. Then you just need to create
 following :term:`.htaccess` file in root folder of phpMyAdmin installation (don't
 forget to change directory name inside of it):
 
@@ -490,13 +486,6 @@ forget to change directory name inside of it):
     RewriteRule ^([a-zA-Z0-9_]+)/([a-z_]+\.php)$ index.php?db=$1&target=$2 [R]
     RewriteRule ^([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)$ index.php?db=$1&table=$2 [R]
     RewriteRule ^([a-zA-Z0-9_]+)$ index.php?db=$1 [R]
-
-.. seealso:: :ref:`faq4_8`
-
-.. versionchanged:: 5.1.0
-
-    Support for using the ``target`` parameter was removed in phpMyAdmin 5.1.0.
-    Use the ``route`` parameter instead.
 
 .. _faq1_35:
 
@@ -525,8 +514,8 @@ error log file might give a clue.
 -----------------------------------------------------------------------------------------------------------
 
 If your cluster consist of different architectures, PHP code used for
-encryption/decryption won't work correctly. This is caused by use of
-pack/unpack functions in code. Only solution is to use openssl
+encryption/decryption won't work correct. This is caused by use of
+pack/unpack functions in code. Only solution is to use mcrypt
 extension which works fine in this case.
 
 .. _faq1_38:
@@ -697,30 +686,6 @@ A list of files and corresponding functionality which degrade gracefully when re
 * :file:`./sql/` (SQL scripts to configure advanced functionality)
 * :file:`./js/vendor/openlayers/` (GIS visualization)
 
-.. _faq1_45:
-
-1.45 I get an error message about unknown authentication method caching_sha2_password when trying to log in
------------------------------------------------------------------------------------------------------------
-
-When logging in using MySQL version 8 or newer, you may encounter an error message like this:
-
-    mysqli_real_connect(): The server requested authentication method unknown to the client [caching_sha2_password]
-
-    mysqli_real_connect(): (HY000/2054): The server requested authentication method unknown to the client
-
-This error is because of a version compatibility problem between PHP and MySQL. The MySQL project introduced a new authentication
-method (our tests show this began with version 8.0.11) however PHP did not include the ability to use that authentication method.
-PHP reports that this was fixed in PHP version 7.4.
-
-Users experiencing this are encouraged to upgrade their PHP installation, however a workaround exists. Your MySQL user account
-can be set to use the older authentication with a command such as
-
-.. code-block:: mysql
-
-  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'PASSWORD';
-
-.. seealso:: <https://github.com/phpmyadmin/phpmyadmin/issues/14220>, <https://stackoverflow.com/questions/49948350/phpmyadmin-on-mysql-8-0>, <https://bugs.php.net/bug.php?id=76243>
-
 .. _faqconfig:
 
 Configuration
@@ -858,14 +823,19 @@ Here are a few points to check:
 ---------------------------------
 
 To be able to see a progress bar during your uploads, your server must
-have the `uploadprogress <https://pecl.php.net/package/uploadprogress>`_ extension, and
+have the `APC <https://www.php.net/manual/en/book.apc.php>`_ extension, the
+`uploadprogress <https://pecl.php.net/package/uploadprogress>`_ one, or
 you must be running PHP 5.4.0 or higher. Moreover, the JSON extension
 has to be enabled in your PHP.
+
+If using APC, you must set ``apc.rfc1867`` to ``on`` in your :file:`php.ini`.
 
 If using PHP 5.4.0 or higher, you must set
 ``session.upload_progress.enabled`` to ``1`` in your :file:`php.ini`. However,
 starting from phpMyAdmin version 4.0.4, session-based upload progress has
 been temporarily deactivated due to its problematic behavior.
+
+.. seealso:: :rfc:`1867`
 
 .. _faqlimitations:
 
@@ -1152,7 +1122,7 @@ Starting with 2.2.5, in the user management page, you can enter a
 wildcard database name for a user (for example "joe%"), and put the
 privileges you want. For example, adding ``SELECT, INSERT, UPDATE,
 DELETE, CREATE, DROP, INDEX, ALTER`` would let a user create/manage
-their database(s).
+his/her database(s).
 
 .. _faq4_6:
 
@@ -1204,8 +1174,6 @@ or one of the host names present in the configuration file.
 
 For example, to jump directly to a particular database, a URL can be constructed as
 ``https://example.com/phpmyadmin/?db=sakila``.
-
-.. seealso:: :ref:`faq1_34`
 
 .. versionchanged:: 4.9.0
 
@@ -1311,7 +1279,7 @@ by the recent versions of the most browsers.
 5.12 Mac OS X Safari browser changes special characters to "?".
 ---------------------------------------------------------------
 
-This issue has been reported by a :term:`macOS` user, who adds that Chimera,
+This issue has been reported by a :term:`Mac OS X` user, who adds that Chimera,
 Netscape and Mozilla do not have this problem.
 
 .. _faq5_13:
@@ -1409,7 +1377,7 @@ This is usually caused by web application firewall doing requests filtering. It
 tries to prevent SQL injection, however phpMyAdmin is tool designed to execute
 SQL queries, thus it makes it unusable.
 
-Please allow phpMyAdmin scripts from the web application firewall settings
+Please whitelist phpMyAdmin scripts from the web application firewall settings
 or disable it completely for phpMyAdmin path.
 
 Programs known to cause these kind of errors:
@@ -1647,7 +1615,7 @@ It means "average".
   any) will be included in backup.
 * "Enclose table and column names with backquotes" ensures that column
   and table names formed with special characters are protected.
-* "Add into comments" includes column comments, relations, and media
+* "Add into comments" includes column comments, relations, and MIME
   types set in the pmadb in the dump as :term:`SQL` comments
   (*/\* xxx \*/*).
 
@@ -1713,7 +1681,7 @@ user-input situation. Instead you have to initialize mimetypes using
 functions or empty mimetype definitions.
 
 Plus, you have a whole overview of available mimetypes. Who knows all those
-mimetypes by heart so they can enter it at will?
+mimetypes by heart so he/she can enter it at will?
 
 .. _faqbookmark:
 
@@ -2235,7 +2203,7 @@ authentication to the Apache environment and it can be used in Apache
 logs. Currently there are two variables available:
 
 ``userID``
-    User name of currently active user (they do not have to be logged in).
+    User name of currently active user (he does not have to be logged in).
 ``userStatus``
     Status of currently active user, one of ``ok`` (user is logged in),
     ``mysql-denied`` (MySQL denied user login), ``allow-denied`` (user denied

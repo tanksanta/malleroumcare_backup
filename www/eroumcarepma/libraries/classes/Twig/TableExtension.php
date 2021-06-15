@@ -1,12 +1,20 @@
 <?php
-
-declare(strict_types=1);
-
+/* vim: set expandtab sw=4 ts=4 sts=4: */
+/**
+ * hold PhpMyAdmin\Twig\TableExtension class
+ *
+ * @package PhpMyAdmin\Twig
+ */
 namespace PhpMyAdmin\Twig;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
+/**
+ * Class TableExtension
+ *
+ * @package PhpMyAdmin\Twig
+ */
 class TableExtension extends AbstractExtension
 {
     /**
@@ -16,11 +24,11 @@ class TableExtension extends AbstractExtension
      */
     public function getFunctions()
     {
-        return [
+        return array(
             new TwigFunction(
-                'table_get',
+                'Table_get',
                 'PhpMyAdmin\Table::get'
             ),
-        ];
+        );
     }
 }

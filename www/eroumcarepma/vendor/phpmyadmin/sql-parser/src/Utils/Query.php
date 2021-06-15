@@ -1,9 +1,8 @@
 <?php
+
 /**
  * Statement utilities.
  */
-
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Utils;
 
@@ -33,24 +32,22 @@ use PhpMyAdmin\SqlParser\Statements\TruncateStatement;
 use PhpMyAdmin\SqlParser\Statements\UpdateStatement;
 use PhpMyAdmin\SqlParser\Token;
 use PhpMyAdmin\SqlParser\TokensList;
-use function array_flip;
-use function array_keys;
-use function count;
-use function in_array;
-use function is_string;
-use function trim;
 
 /**
  * Statement utilities.
+ *
+ * @category   Statement
+ *
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class Query
 {
     /**
      * Functions that set the flag `is_func`.
      *
-     * @var string[]
+     * @var array
      */
-    public static $FUNCTIONS = [
+    public static $FUNCTIONS = array(
         'SUM',
         'AVG',
         'STD',
@@ -58,11 +55,10 @@ class Query
         'MIN',
         'MAX',
         'BIT_OR',
-        'BIT_AND',
-    ];
+        'BIT_AND'
+    );
 
-    /** @var array<string,false> */
-    public static $ALLFLAGS = [
+    public static $ALLFLAGS = array(
         /*
          * select ... DISTINCT ...
          */
@@ -215,8 +211,8 @@ class Query
         /*
          * ... UNION ...
          */
-        'union' => false,
-    ];
+        'union' => false
+    );
 
     /**
      * Gets an array with flags select statement has.
@@ -264,7 +260,6 @@ class Query
                     $flags['is_func'] = true;
                 }
             }
-
             if (! empty($expr->subquery)) {
                 $flags['is_subquery'] = true;
             }
@@ -305,7 +300,7 @@ class Query
      */
     public static function getFlags($statement, $all = false)
     {
-        $flags = ['querytype' => false];
+        $flags = array('querytype' => false);
         if ($all) {
             $flags = self::$ALLFLAGS;
         }
@@ -382,7 +377,6 @@ class Query
             if (! empty($statement->limit)) {
                 $flags['limit'] = true;
             }
-
             if (! empty($statement->order)) {
                 $flags['order'] = true;
             }
@@ -422,18 +416,18 @@ class Query
         $ret['statement'] = $statement;
 
         if ($statement instanceof SelectStatement) {
-            $ret['select_tables'] = [];
-            $ret['select_expr'] = [];
+            $ret['select_tables'] = array();
+            $ret['select_expr'] = array();
 
             // Finding tables' aliases and their associated real names.
-            $tableAliases = [];
+            $tableAliases = array();
             foreach ($statement->from as $expr) {
                 if (isset($expr->table, $expr->alias) && ($expr->table !== '') && ($expr->alias !== '')
                 ) {
-                    $tableAliases[$expr->alias] = [
+                    $tableAliases[$expr->alias] = array(
                         $expr->table,
-                        $expr->database ?? null,
-                    ];
+                        isset($expr->database) ? $expr->database : null
+                    );
                 }
             }
 
@@ -445,13 +439,12 @@ class Query
                     if (isset($tableAliases[$expr->table])) {
                         $arr = $tableAliases[$expr->table];
                     } else {
-                        $arr = [
+                        $arr = array(
                             $expr->table,
-                            isset($expr->database) && ($expr->database !== '') ?
-                                $expr->database : null,
-                        ];
+                            (isset($expr->database) && ($expr->database !== '')) ?
+                                $expr->database : null
+                        );
                     }
-
                     if (! in_array($arr, $ret['select_tables'])) {
                         $ret['select_tables'][] = $arr;
                     }
@@ -466,11 +459,11 @@ class Query
             if (empty($ret['select_tables'])) {
                 foreach ($statement->from as $expr) {
                     if (isset($expr->table) && ($expr->table !== '')) {
-                        $arr = [
+                        $arr = array(
                             $expr->table,
-                            isset($expr->database) && ($expr->database !== '') ?
-                                $expr->database : null,
-                        ];
+                            (isset($expr->database) && ($expr->database !== '')) ?
+                                $expr->database : null
+                        );
                         if (! in_array($arr, $ret['select_tables'])) {
                             $ret['select_tables'][] = $arr;
                         }
@@ -491,12 +484,12 @@ class Query
      */
     public static function getTables($statement)
     {
-        $expressions = [];
+        $expressions = array();
 
         if (($statement instanceof InsertStatement)
             || ($statement instanceof ReplaceStatement)
         ) {
-            $expressions = [$statement->into->dest];
+            $expressions = array($statement->into->dest);
         } elseif ($statement instanceof UpdateStatement) {
             $expressions = $statement->tables;
         } elseif (($statement instanceof SelectStatement)
@@ -506,13 +499,12 @@ class Query
         } elseif (($statement instanceof AlterStatement)
             || ($statement instanceof TruncateStatement)
         ) {
-            $expressions = [$statement->table];
+            $expressions = array($statement->table);
         } elseif ($statement instanceof DropStatement) {
             if (! $statement->options->has('TABLE')) {
                 // No tables are dropped.
-                return [];
+                return array();
             }
-
             $expressions = $statement->fields;
         } elseif ($statement instanceof RenameStatement) {
             foreach ($statement->renames as $rename) {
@@ -520,7 +512,7 @@ class Query
             }
         }
 
-        $ret = [];
+        $ret = array();
         foreach ($expressions as $expr) {
             if (! empty($expr->table)) {
                 $expr->expr = null; // Force rebuild.
@@ -599,7 +591,7 @@ class Query
          *
          * @var int
          */
-        $clauseIdx = $clauses[$clauseType] ?? -1;
+        $clauseIdx = isset($clauses[$clauseType]) ? $clauses[$clauseType] : -1;
 
         $firstClauseIdx = $clauseIdx;
         $lastClauseIdx = $clauseIdx;
@@ -706,7 +698,7 @@ class Query
      * @param Statement  $statement the parsed query that has to be modified
      * @param TokensList $list      the list of tokens
      * @param array      $ops       Clauses to be replaced. Contains multiple
-     *                              arrays having two values: [$old, $new].
+     *                              arrays having two values: array($old, $new).
      *                              Clauses must be sorted.
      *
      * @return string
@@ -751,7 +743,9 @@ class Query
         }
 
         // Adding everything after the last replacement.
-        return $ret . static::getClause($statement, $list, $ops[$count - 1][0], 1);
+        $ret .= static::getClause($statement, $list, $ops[$count - 1][0], 1);
+
+        return $ret;
     }
 
     /**
@@ -802,11 +796,11 @@ class Query
         // No statement was found so we return the entire query as being the
         // remaining part.
         if (! $fullStatement) {
-            return [
+            return array(
                 null,
                 $query,
-                $delimiter,
-            ];
+                $delimiter
+            );
         }
 
         // At least one query was found so we have to build the rest of the
@@ -816,11 +810,11 @@ class Query
             $query .= $list->tokens[$list->idx]->token;
         }
 
-        return [
+        return array(
             trim($statement),
             $query,
-            $delimiter,
-        ];
+            $delimiter
+        );
     }
 
     /**

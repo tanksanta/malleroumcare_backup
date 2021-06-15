@@ -1,9 +1,8 @@
 <?php
+
 /**
  * `DELETE` statement.
  */
-
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Statements;
 
@@ -19,9 +18,6 @@ use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Statement;
 use PhpMyAdmin\SqlParser\Token;
 use PhpMyAdmin\SqlParser\TokensList;
-use function count;
-use function stripos;
-use function strlen;
 
 /**
  * `DELETE` statement.
@@ -45,6 +41,11 @@ use function strlen;
  *   FROM tbl_name[.*] [, tbl_name[.*]] ...
  *   USING table_references
  *   [WHERE where_condition]
+ *
+ *
+ * @category   Statements
+ *
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class DeleteStatement extends Statement
 {
@@ -53,11 +54,11 @@ class DeleteStatement extends Statement
      *
      * @var array
      */
-    public static $OPTIONS = [
+    public static $OPTIONS = array(
         'LOW_PRIORITY' => 1,
         'QUICK' => 2,
-        'IGNORE' => 3,
-    ];
+        'IGNORE' => 3
+    );
 
     /**
      * The clauses of this statement, in order.
@@ -66,41 +67,41 @@ class DeleteStatement extends Statement
      *
      * @var array
      */
-    public static $CLAUSES = [
-        'DELETE' => [
+    public static $CLAUSES = array(
+        'DELETE' => array(
             'DELETE',
             2,
-        ],
+        ),
         // Used for options.
-        '_OPTIONS' => [
+        '_OPTIONS' => array(
             '_OPTIONS',
             1,
-        ],
-        'FROM' => [
+        ),
+        'FROM' => array(
             'FROM',
             3,
-        ],
-        'PARTITION' => [
+        ),
+        'PARTITION' => array(
             'PARTITION',
             3,
-        ],
-        'USING' => [
+        ),
+        'USING' => array(
             'USING',
             3,
-        ],
-        'WHERE' => [
+        ),
+        'WHERE' => array(
             'WHERE',
             3,
-        ],
-        'ORDER BY' => [
+        ),
+        'ORDER BY' => array(
             'ORDER BY',
             3,
-        ],
-        'LIMIT' => [
+        ),
+        'LIMIT' => array(
             'LIMIT',
             3,
-        ],
-    ];
+        )
+    );
 
     /**
      * Table(s) used as sources for this statement.
@@ -165,31 +166,25 @@ class DeleteStatement extends Statement
     {
         $ret = 'DELETE ' . OptionsArray::build($this->options);
 
-        if ($this->columns !== null && count($this->columns) > 0) {
+        if (! is_null($this->columns) && count($this->columns) > 0) {
             $ret .= ' ' . ExpressionArray::build($this->columns);
         }
-
-        if ($this->from !== null && count($this->from) > 0) {
+        if (! is_null($this->from) && count($this->from) > 0) {
             $ret .= ' FROM ' . ExpressionArray::build($this->from);
         }
-
-        if ($this->join !== null && count($this->join) > 0) {
+        if (! is_null($this->join) && count($this->join) > 0) {
             $ret .= ' ' . JoinKeyword::build($this->join);
         }
-
-        if ($this->using !== null && count($this->using) > 0) {
+        if (! is_null($this->using) && count($this->using) > 0) {
             $ret .= ' USING ' . ExpressionArray::build($this->using);
         }
-
-        if ($this->where !== null && count($this->where) > 0) {
+        if (! is_null($this->where) && count($this->where) > 0) {
             $ret .= ' WHERE ' . Condition::build($this->where);
         }
-
-        if ($this->order !== null && count($this->order) > 0) {
+        if (! is_null($this->order) && count($this->order) > 0) {
             $ret .= ' ORDER BY ' . ExpressionArray::build($this->order);
         }
-
-        if ($this->limit !== null && strlen((string) $this->limit) > 0) {
+        if (! is_null($this->limit) && strlen($this->limit) > 0) {
             $ret .= ' LIMIT ' . Limit::build($this->limit);
         }
 

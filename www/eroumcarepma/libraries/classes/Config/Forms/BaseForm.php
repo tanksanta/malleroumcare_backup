@@ -1,15 +1,14 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Base class for preferences.
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Config\Forms;
 
 use PhpMyAdmin\Config\ConfigFile;
 use PhpMyAdmin\Config\FormDisplay;
-use function is_int;
 
 /**
  * Base form for user preferences
@@ -17,14 +16,16 @@ use function is_int;
 abstract class BaseForm extends FormDisplay
 {
     /**
-     * @param ConfigFile $cf       Config file instance
-     * @param int|null   $serverId 0 if new server, validation; >= 1 if editing a server
+     * Constructor
+     *
+     * @param ConfigFile $cf        Config file instance
+     * @param int|null   $server_id 0 if new server, validation; >= 1 if editing a server
      */
-    public function __construct(ConfigFile $cf, $serverId = null)
+    public function __construct(ConfigFile $cf, $server_id = null)
     {
         parent::__construct($cf);
-        foreach (static::getForms() as $formName => $form) {
-            $this->registerForm($formName, $form, $serverId);
+        foreach (static::getForms() as $form_name => $form) {
+            $this->registerForm($form_name, $form, $server_id);
         }
     }
 
@@ -45,13 +46,13 @@ abstract class BaseForm extends FormDisplay
      * End group blocks with:
      * ':group:end'
      *
-     * @return array
-     *
      * @todo This should be abstract, but that does not work in PHP 5
+     *
+     * @return array
      */
     public static function getForms()
     {
-        return [];
+        return array();
     }
 
     /**
@@ -67,16 +68,15 @@ abstract class BaseForm extends FormDisplay
                 $names[] = is_int($k) ? $v : $k;
             }
         }
-
         return $names;
     }
 
     /**
      * Returns name of the form
      *
-     * @return string
-     *
      * @todo This should be abstract, but that does not work in PHP 5
+     *
+     * @return string
      */
     public static function getName()
     {

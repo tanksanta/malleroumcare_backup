@@ -1,28 +1,19 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * phpMyAdmin theme manager
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin;
 
-use const DIRECTORY_SEPARATOR;
-use const E_USER_ERROR;
-use const E_USER_WARNING;
-use function array_key_exists;
-use function closedir;
-use function htmlspecialchars;
-use function is_dir;
-use function ksort;
-use function opendir;
-use function readdir;
-use function sprintf;
-use function trigger_error;
-use function trim;
+use PhpMyAdmin\Theme;
+use PhpMyAdmin\Url;
 
 /**
  * phpMyAdmin theme manager
+ *
+ * @package PhpMyAdmin
  */
 class ThemeManager
 {
@@ -33,42 +24,59 @@ class ThemeManager
      * @static
      * @var ThemeManager
      */
-    private static $instance;
+    private static $_instance;
 
     /**
      * @var string path to theme folder
      * @access protected
      */
-    private $themesPath = './themes/';
+    private $_themes_path = './themes/';
 
-    /** @var array available themes */
-    public $themes = [];
+    /**
+     * @var array available themes
+     */
+    var $themes = array();
 
-    /** @var string  cookie name */
-    public $cookieName = 'pma_theme';
+    /**
+     * @var string  cookie name
+     */
+    var $cookie_name = 'pma_theme';
 
-    /** @var bool */
-    public $perServer = false;
+    /**
+     * @var boolean
+     */
+    var $per_server = false;
 
-    /** @var string name of active theme */
-    public $activeTheme = '';
+    /**
+     * @var string name of active theme
+     */
+    var $active_theme = '';
 
-    /** @var Theme Theme active theme */
-    public $theme = null;
+    /**
+     * @var Theme Theme active theme
+     */
+    var $theme = null;
 
-    /** @var string */
-    public $themeDefault;
+    /**
+     * @var string
+     */
+    var $theme_default;
 
     /**
      * @const string The name of the fallback theme
      */
-    public const FALLBACK_THEME = 'pmahomme';
+    const FALLBACK_THEME = 'pmahomme';
 
+    /**
+     * Constructor for Theme Manager class
+     *
+     * @access public
+     */
     public function __construct()
     {
-        $this->themes = [];
-        $this->themeDefault = self::FALLBACK_THEME;
-        $this->activeTheme = '';
+        $this->themes = array();
+        $this->theme_default = self::FALLBACK_THEME;
+        $this->active_theme = '';
 
         if (! $this->setThemesPath('./themes/')) {
             return;
@@ -78,9 +86,7 @@ class ThemeManager
 
         $this->loadThemes();
 
-        $this->theme = new Theme();
-
-        $config_theme_exists = true;
+        $this->theme = new Theme;
 
         if (! $this->checkTheme($GLOBALS['cfg']['ThemeDefault'])) {
             trigger_error(
@@ -90,38 +96,35 @@ class ThemeManager
                 ),
                 E_USER_ERROR
             );
-            $config_theme_exists = false;
-        } else {
-            $this->themeDefault = $GLOBALS['cfg']['ThemeDefault'];
+            $GLOBALS['cfg']['ThemeDefault'] = false;
         }
+
+        $this->theme_default = $GLOBALS['cfg']['ThemeDefault'];
 
         // check if user have a theme cookie
         $cookie_theme = $this->getThemeCookie();
-        if ($cookie_theme && $this->setActiveTheme($cookie_theme)) {
-            return;
-        }
-
-        if ($config_theme_exists) {
-            // otherwise use default theme
-            $this->setActiveTheme($this->themeDefault);
-        } else {
-            // or fallback theme
-            $this->setActiveTheme(self::FALLBACK_THEME);
+        if (! $cookie_theme || ! $this->setActiveTheme($cookie_theme)) {
+            if ($GLOBALS['cfg']['ThemeDefault']) {
+                // otherwise use default theme
+                $this->setActiveTheme($this->theme_default);
+            } else {
+                // or fallback theme
+                $this->setActiveTheme(self::FALLBACK_THEME);
+            }
         }
     }
 
     /**
-     * Returns the singleton ThemeManager object
+     * Returns the singleton Response object
      *
-     * @return ThemeManager The instance
+     * @return Response object
      */
-    public static function getInstance(): ThemeManager
+    public static function getInstance()
     {
-        if (empty(self::$instance)) {
-            self::$instance = new ThemeManager();
+        if (empty(self::$_instance)) {
+            self::$_instance = new ThemeManager();
         }
-
-        return self::$instance;
+        return self::$_instance;
     }
 
     /**
@@ -129,57 +132,54 @@ class ThemeManager
      *
      * @param string $path path to themes folder
      *
-     * @return bool success
-     *
      * @access public
+     * @return boolean success
      */
-    public function setThemesPath($path): bool
+    public function setThemesPath($path)
     {
-        if (! $this->checkThemeFolder($path)) {
+        if (! $this->_checkThemeFolder($path)) {
             return false;
         }
 
-        $this->themesPath = trim($path);
-
+        $this->_themes_path = trim($path);
         return true;
     }
 
     /**
      * sets if there are different themes per server
      *
-     * @param bool $per_server Whether to enable per server flag
+     * @param boolean $per_server Whether to enable per server flag
      *
      * @access public
+     * @return void
      */
-    public function setThemePerServer($per_server): void
+    public function setThemePerServer($per_server)
     {
-        $this->perServer = (bool) $per_server;
+        $this->per_server  = (bool) $per_server;
     }
 
     /**
      * Sets active theme
      *
-     * @param string|null $theme theme name
-     *
-     * @return bool true on success
+     * @param string $theme theme name
      *
      * @access public
+     * @return bool true on success
      */
-    public function setActiveTheme(?string $theme): bool
+    public function setActiveTheme($theme = null)
     {
         if (! $this->checkTheme($theme)) {
             trigger_error(
                 sprintf(
                     __('Theme %s not found!'),
-                    htmlspecialchars((string) $theme)
+                    htmlspecialchars($theme)
                 ),
                 E_USER_ERROR
             );
-
             return false;
         }
 
-        $this->activeTheme = $theme;
+        $this->active_theme = $theme;
         $this->theme = $this->themes[$theme];
 
         // need to set later
@@ -192,28 +192,27 @@ class ThemeManager
      * Returns name for storing theme
      *
      * @return string cookie name
-     *
      * @access public
      */
     public function getThemeCookieName()
     {
         // Allow different theme per server
-        if (isset($GLOBALS['server']) && $this->perServer) {
-            return $this->cookieName . '-' . $GLOBALS['server'];
+        if (isset($GLOBALS['server']) && $this->per_server) {
+            return $this->cookie_name . '-' . $GLOBALS['server'];
         }
 
-        return $this->cookieName;
+        return $this->cookie_name;
     }
 
     /**
      * returns name of theme stored in the cookie
      *
-     * @return string|false theme name from cookie or false
-     *
+     * @return string  theme name from cookie
      * @access public
      */
     public function getThemeCookie()
     {
+        /** @var Config $PMA_Config */
         global $PMA_Config;
 
         $name = $this->getThemeCookieName();
@@ -227,22 +226,19 @@ class ThemeManager
     /**
      * save theme in cookie
      *
-     * @return true
-     *
+     * @return bool true
      * @access public
      */
-    public function setThemeCookie(): bool
+    public function setThemeCookie()
     {
-        $themeId = $this->theme !== null ? (string) $this->theme->id : '';
         $GLOBALS['PMA_Config']->setCookie(
             $this->getThemeCookieName(),
-            $themeId,
-            $this->themeDefault
+            $this->theme->id,
+            $this->theme_default
         );
         // force a change of a dummy session variable to avoid problems
         // with the caching of phpmyadmin.css.php
-        $GLOBALS['PMA_Config']->set('theme-update', $themeId);
-
+        $GLOBALS['PMA_Config']->set('theme-update', $this->theme->id);
         return true;
     }
 
@@ -251,9 +247,10 @@ class ThemeManager
      *
      * @param string $folder Folder name to test
      *
+     * @return boolean
      * @access private
      */
-    private function checkThemeFolder($folder): bool
+    private function _checkThemeFolder($folder)
     {
         if (! is_dir($folder)) {
             trigger_error(
@@ -263,7 +260,6 @@ class ThemeManager
                 ),
                 E_USER_ERROR
             );
-
             return false;
         }
 
@@ -273,29 +269,28 @@ class ThemeManager
     /**
      * read all themes
      *
+     * @return bool true
      * @access public
      */
-    public function loadThemes(): bool
+    public function loadThemes()
     {
-        $this->themes = [];
-        $handleThemes = opendir($this->themesPath);
+        $this->themes = array();
 
-        if ($handleThemes === false) {
+        if (false === ($handleThemes = opendir($this->_themes_path))) {
             trigger_error(
                 'phpMyAdmin-ERROR: cannot open themes folder: '
-                . $this->themesPath,
+                . $this->_themes_path,
                 E_USER_WARNING
             );
-
             return false;
         }
 
         // check for themes directory
-        while (($PMA_Theme = readdir($handleThemes)) !== false) {
+        while (false !== ($PMA_Theme = readdir($handleThemes))) {
             // Skip non dirs, . and ..
-            if ($PMA_Theme === '.'
-                || $PMA_Theme === '..'
-                || ! @is_dir(ROOT_PATH . $this->themesPath . $PMA_Theme)
+            if ($PMA_Theme == '.'
+                || $PMA_Theme == '..'
+                || ! @is_dir($this->_themes_path . $PMA_Theme)
             ) {
                 continue;
             }
@@ -303,64 +298,70 @@ class ThemeManager
                 continue;
             }
             $new_theme = Theme::load(
-                $this->themesPath . $PMA_Theme,
-                ROOT_PATH . $this->themesPath . $PMA_Theme . '/'
+                $this->_themes_path . $PMA_Theme
             );
-            if (! $new_theme) {
-                continue;
+            if ($new_theme) {
+                $new_theme->setId($PMA_Theme);
+                $this->themes[$PMA_Theme] = $new_theme;
             }
-
-            $new_theme->setId($PMA_Theme);
-            $this->themes[$PMA_Theme] = $new_theme;
-        }
+        } // end get themes
         closedir($handleThemes);
 
         ksort($this->themes);
-
         return true;
     }
 
     /**
      * checks if given theme name is a known theme
      *
-     * @param string|null $theme name fo theme to check for
+     * @param string $theme name fo theme to check for
      *
+     * @return bool
      * @access public
      */
-    public function checkTheme(?string $theme): bool
+    public function checkTheme($theme)
     {
-        return array_key_exists($theme ?? '', $this->themes);
+        return array_key_exists($theme, $this->themes);
     }
 
     /**
-     * returns HTML selectbox
+     * returns HTML selectbox, with or without form enclosed
      *
+     * @param boolean $form whether enclosed by from tags or not
+     *
+     * @return string
      * @access public
      */
-    public function getHtmlSelectBox(): string
+    public function getHtmlSelectBox($form = true)
     {
         $select_box = '';
 
-        $select_box .= '<form name="setTheme" method="post"';
-        $select_box .= ' action="index.php?route=/set-theme" class="disableAjax">';
-        $select_box .= Url::getHiddenInputs();
+        if ($form) {
+            $select_box .= '<form name="setTheme" method="post"';
+            $select_box .= ' action="index.php" class="disableAjax">';
+            $select_box .= Url::getHiddenInputs();
+        }
 
+        $theme_preview_path= './themes.php';
         $theme_preview_href = '<a href="'
-            . Url::getFromRoute('/themes') . '" target="themes" class="themeselect">';
+            . $theme_preview_path . '" target="themes" class="themeselect">';
         $select_box .=  $theme_preview_href . __('Theme:') . '</a>' . "\n";
 
         $select_box .=  '<select name="set_theme" lang="en" dir="ltr"'
             . ' class="autosubmit">';
         foreach ($this->themes as $each_theme_id => $each_theme) {
             $select_box .=  '<option value="' . $each_theme_id . '"';
-            if ($this->activeTheme === $each_theme_id) {
+            if ($this->active_theme === $each_theme_id) {
                 $select_box .=  ' selected="selected"';
             }
             $select_box .=  '>' . htmlspecialchars($each_theme->getName())
                 . '</option>';
         }
-        $select_box .= '</select>';
-        $select_box .= '</form>';
+        $select_box .=  '</select>';
+
+        if ($form) {
+            $select_box .=  '</form>';
+        }
 
         return $select_box;
     }
@@ -368,38 +369,88 @@ class ThemeManager
     /**
      * Renders the previews for all themes
      *
+     * @return string
      * @access public
      */
-    public function getPrintPreviews(): string
+    public function getPrintPreviews()
     {
         $retval = '';
         foreach ($this->themes as $each_theme) {
             $retval .= $each_theme->getPrintPreview();
-        }
-
+        } // end 'open themes'
         return $retval;
     }
 
-    public static function initializeTheme(): ?Theme
+    /**
+     * returns Theme object for fall back theme
+     *
+     * @return Theme fall back theme
+     * @access public
+     */
+    public function getFallBackTheme()
     {
-        $themeManager = self::getInstance();
+        if (isset($this->themes[self::FALLBACK_THEME])) {
+            return $this->themes[self::FALLBACK_THEME];
+        }
 
-        return $themeManager->theme;
+        return false;
     }
 
     /**
-     * Return the themes directory with a trailing slash
+     * prints css data
+     *
+     * @return bool
+     * @access public
      */
-    public static function getThemesFsDir(): string
+    public function printCss()
     {
-        return ROOT_PATH . 'themes' . DIRECTORY_SEPARATOR;
+        if ($this->theme->loadCss()) {
+            return true;
+        }
+
+        // if loading css for this theme failed, try default theme css
+        $fallback_theme = $this->getFallBackTheme();
+        if ($fallback_theme && $fallback_theme->loadCss()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
-     * Return the themes directory with a trailing slash as a relative public path
+     * Theme initialization
+     *
+     * @return void
+     * @access public
      */
-    public static function getThemesDir(): string
+    public static function initializeTheme()
     {
-        return './themes' . DIRECTORY_SEPARATOR;
+        $tmanager = self::getInstance();
+
+        /**
+         * the theme object
+         *
+         * @global Theme $GLOBALS['PMA_Theme']
+         */
+        $GLOBALS['PMA_Theme'] = $tmanager->theme;
+
+        // BC
+        /**
+         * the theme path
+         * @global string $GLOBALS['pmaThemePath']
+         */
+        $GLOBALS['pmaThemePath']    = $GLOBALS['PMA_Theme']->getPath();
+        /**
+         * the theme image path
+         * @global string $GLOBALS['pmaThemeImage']
+         */
+        $GLOBALS['pmaThemeImage']   = $GLOBALS['PMA_Theme']->getImgPath();
+
+        /**
+         * load layout file if exists
+         */
+        if (@file_exists($GLOBALS['PMA_Theme']->getLayoutFile())) {
+            include $GLOBALS['PMA_Theme']->getLayoutFile();
+        }
     }
 }

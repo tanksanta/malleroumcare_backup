@@ -1,25 +1,23 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * User preferences form
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Config\Forms\User;
 
 use PhpMyAdmin\Config\Forms\BaseFormList;
 
 class UserFormList extends BaseFormList
 {
-    /** @var array */
-    protected static $all = [
+    protected static $all = array(
         'Features',
         'Sql',
         'Navi',
         'Main',
-        'Export',
         'Import',
-    ];
-    /** @var string */
+        'Export',
+    );
     protected static $ns = '\\PhpMyAdmin\\Config\\Forms\\User\\';
 }

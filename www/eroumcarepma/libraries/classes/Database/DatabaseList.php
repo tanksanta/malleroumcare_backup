@@ -1,11 +1,20 @@
 <?php
-
-declare(strict_types=1);
-
+/* vim: set expandtab sw=4 ts=4 sts=4: */
+/**
+ * holds the PhpMyAdmin\Database\DatabaseList class
+ *
+ * @package PhpMyAdmin
+ *
+ */
 namespace PhpMyAdmin\Database;
 
 use PhpMyAdmin\ListDatabase;
 
+/**
+ * holds the DatabaseList class
+ *
+ * @package PhpMyAdmin
+ */
 class DatabaseList
 {
     /**
@@ -18,17 +27,16 @@ class DatabaseList
     /**
      * magic access to protected/inaccessible members/properties
      *
-     * @see https://www.php.net/language.oop5.overloading
-     *
      * @param string $param parameter name
      *
      * @return mixed
+     * @see https://www.php.net/language.oop5.overloading
      */
     public function __get($param)
     {
         switch ($param) {
-            case 'databases':
-                return $this->getDatabaseList();
+        case 'databases' :
+            return $this->getDatabaseList();
         }
 
         return null;
@@ -36,10 +44,12 @@ class DatabaseList
 
     /**
      * Accessor to PMA::$databases
+     *
+     * @return ListDatabase
      */
-    public function getDatabaseList(): ListDatabase
+    public function getDatabaseList()
     {
-        if ($this->databases === null) {
+        if (null === $this->databases) {
             $this->databases = new ListDatabase();
         }
 

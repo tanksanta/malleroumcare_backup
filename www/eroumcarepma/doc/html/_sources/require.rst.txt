@@ -12,7 +12,7 @@ web server (such as Apache, nginx, :term:`IIS`) to install phpMyAdmin's files in
 PHP
 ---
 
-* You need PHP 7.1.3 or newer, with ``session`` support, the Standard PHP Library
+* You need PHP 5.5.0 or newer, with ``session`` support, the Standard PHP Library
   (SPL) extension, hash, ctype, and JSON support.
 
 * The ``mbstring`` extension (see :term:`mbstring`) is strongly recommended
@@ -56,5 +56,5 @@ Web browser
 To access phpMyAdmin you need a web browser with cookies and JavaScript
 enabled.
 
-You need a browser which is supported by jQuery 2.0, see
+You need browser which is supported by jQuery 2.0, see
 <https://jquery.com/browser-support/>.

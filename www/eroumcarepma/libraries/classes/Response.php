@@ -1,36 +1,22 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Manages the rendering of pages in PMA
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin;
 
-use const JSON_ERROR_CTRL_CHAR;
-use const JSON_ERROR_DEPTH;
-use const JSON_ERROR_INF_OR_NAN;
-use const JSON_ERROR_NONE;
-use const JSON_ERROR_RECURSION;
-use const JSON_ERROR_STATE_MISMATCH;
-use const JSON_ERROR_SYNTAX;
-use const JSON_ERROR_UNSUPPORTED_TYPE;
-use const JSON_ERROR_UTF8;
-use const PHP_SAPI;
-use function defined;
-use function explode;
-use function headers_sent;
-use function http_response_code;
-use function in_array;
-use function is_array;
-use function json_encode;
-use function json_last_error;
-use function mb_strlen;
-use function register_shutdown_function;
-use function strlen;
+use PhpMyAdmin\Core;
+use PhpMyAdmin\Footer;
+use PhpMyAdmin\Header;
+use PhpMyAdmin\Message;
+use PhpMyAdmin\OutputBuffering;
 
 /**
  * Singleton class used to manage the rendering of pages in PMA
+ *
+ * @package PhpMyAdmin
  */
 class Response
 {
@@ -41,21 +27,21 @@ class Response
      * @static
      * @var Response
      */
-    private static $instance;
+    private static $_instance;
     /**
      * Header instance
      *
      * @access private
      * @var Header
      */
-    protected $header;
+    private $_header;
     /**
      * HTML data to be used in the response
      *
      * @access private
      * @var string
      */
-    private $HTML;
+    private $_HTML;
     /**
      * An array of JSON key-value pairs
      * to be sent back for ajax requests
@@ -63,28 +49,28 @@ class Response
      * @access private
      * @var array
      */
-    private $JSON;
+    private $_JSON;
     /**
      * PhpMyAdmin\Footer instance
      *
      * @access private
      * @var Footer
      */
-    protected $footer;
+    private $_footer;
     /**
      * Whether we are servicing an ajax request.
      *
      * @access private
      * @var bool
      */
-    protected $isAjax;
+    private $_isAjax;
     /**
      * Whether response object is disabled
      *
      * @access private
      * @var bool
      */
-    private $isDisabled;
+    private $_isDisabled;
     /**
      * Whether there were any errors during the processing of the request
      * Only used for ajax responses
@@ -92,84 +78,14 @@ class Response
      * @access private
      * @var bool
      */
-    protected $isSuccess;
-
+    private $_isSuccess;
     /**
-     * @see http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+     * Workaround for PHP bug
      *
-     * @var array<int, string>
+     * @access private
+     * @var string|bool
      */
-    protected static $httpStatusMessages = [
-        // Informational
-        100 => 'Continue',
-        101 => 'Switching Protocols',
-        102 => 'Processing',
-        103 => 'Early Hints',
-        // Success
-        200 => 'OK',
-        201 => 'Created',
-        202 => 'Accepted',
-        203 => 'Non-Authoritative Information',
-        204 => 'No Content',
-        205 => 'Reset Content',
-        206 => 'Partial Content',
-        207 => 'Multi-Status',
-        208 => 'Already Reported',
-        226 => 'IM Used',
-        // Redirection
-        300 => 'Multiple Choices',
-        301 => 'Moved Permanently',
-        302 => 'Found',
-        303 => 'See Other',
-        304 => 'Not Modified',
-        305 => 'Use Proxy',
-        307 => 'Temporary Redirect',
-        308 => 'Permanent Redirect',
-        // Client Error
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Timeout',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Payload Too Large',
-        414 => 'URI Too Long',
-        415 => 'Unsupported Media Type',
-        416 => 'Range Not Satisfiable',
-        417 => 'Expectation Failed',
-        421 => 'Misdirected Request',
-        422 => 'Unprocessable Entity',
-        423 => 'Locked',
-        424 => 'Failed Dependency',
-        425 => 'Too Early',
-        426 => 'Upgrade Required',
-        427 => 'Unassigned',
-        428 => 'Precondition Required',
-        429 => 'Too Many Requests',
-        430 => 'Unassigned',
-        431 => 'Request Header Fields Too Large',
-        451 => 'Unavailable For Legal Reasons',
-        // Server Error
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Timeout',
-        505 => 'HTTP Version Not Supported',
-        506 => 'Variant Also Negotiates',
-        507 => 'Insufficient Storage',
-        508 => 'Loop Detected',
-        509 => 'Unassigned',
-        510 => 'Not Extended',
-        511 => 'Network Authentication Required',
-    ];
+    private $_CWD;
 
     /**
      * Creates a new class instance
@@ -179,16 +95,17 @@ class Response
         if (! defined('TESTSUITE')) {
             $buffer = OutputBuffering::getInstance();
             $buffer->start();
-            register_shutdown_function([$this, 'response']);
+            register_shutdown_function(array($this, 'response'));
         }
-        $this->header = new Header();
-        $this->HTML   = '';
-        $this->JSON   = [];
-        $this->footer = new Footer();
+        $this->_header = new Header();
+        $this->_HTML   = '';
+        $this->_JSON   = array();
+        $this->_footer = new Footer();
 
-        $this->isSuccess  = true;
-        $this->isDisabled = false;
+        $this->_isSuccess  = true;
+        $this->_isDisabled = false;
         $this->setAjax(! empty($_REQUEST['ajax_request']));
+        $this->_CWD = getcwd();
     }
 
     /**
@@ -196,12 +113,14 @@ class Response
      * we are servicing an ajax request
      *
      * @param bool $isAjax Whether we are servicing an ajax request
+     *
+     * @return void
      */
-    public function setAjax(bool $isAjax): void
+    public function setAjax($isAjax)
     {
-        $this->isAjax = $isAjax;
-        $this->header->setAjax($this->isAjax);
-        $this->footer->setAjax($this->isAjax);
+        $this->_isAjax = (boolean) $isAjax;
+        $this->_header->setAjax($this->_isAjax);
+        $this->_footer->setAjax($this->_isAjax);
     }
 
     /**
@@ -211,11 +130,10 @@ class Response
      */
     public static function getInstance()
     {
-        if (empty(self::$instance)) {
-            self::$instance = new Response();
+        if (empty(self::$_instance)) {
+            self::$_instance = new Response();
         }
-
-        return self::$instance;
+        return self::$_instance;
     }
 
     /**
@@ -223,19 +141,35 @@ class Response
      * whether it is a success or an error
      *
      * @param bool $state Whether the request was successfully processed
+     *
+     * @return void
      */
-    public function setRequestStatus(bool $state): void
+    public function setRequestStatus($state)
     {
-        $this->isSuccess = ($state === true);
+        $this->_isSuccess = ($state == true);
     }
 
     /**
      * Returns true or false depending on whether
      * we are servicing an ajax request
+     *
+     * @return bool
      */
-    public function isAjax(): bool
+    public function isAjax()
     {
-        return $this->isAjax;
+        return $this->_isAjax;
+    }
+
+    /**
+     * Returns the path to the current working directory
+     * Necessary to work around a PHP bug where the CWD is
+     * reset after the initial script exits
+     *
+     * @return string
+     */
+    public function getCWD()
+    {
+        return $this->_CWD;
     }
 
     /**
@@ -246,9 +180,9 @@ class Response
      */
     public function disable()
     {
-        $this->header->disable();
-        $this->footer->disable();
-        $this->isDisabled = true;
+        $this->_header->disable();
+        $this->_footer->disable();
+        $this->_isDisabled = true;
     }
 
     /**
@@ -258,7 +192,7 @@ class Response
      */
     public function getHeader()
     {
-        return $this->header;
+        return $this->_header;
     }
 
     /**
@@ -268,7 +202,7 @@ class Response
      */
     public function getFooter()
     {
-        return $this->footer;
+        return $this->_footer;
     }
 
     /**
@@ -286,9 +220,9 @@ class Response
                 $this->addHTML($msg);
             }
         } elseif ($content instanceof Message) {
-            $this->HTML .= $content->getDisplay();
+            $this->_HTML .= $content->getDisplay();
         } else {
-            $this->HTML .= $content;
+            $this->_HTML .= $content;
         }
     }
 
@@ -310,11 +244,12 @@ class Response
             }
         } else {
             if ($value instanceof Message) {
-                $this->JSON[$json] = $value->getDisplay();
+                $this->_JSON[$json] = $value->getDisplay();
             } else {
-                $this->JSON[$json] = $value;
+                $this->_JSON[$json] = $value;
             }
         }
+
     }
 
     /**
@@ -322,16 +257,15 @@ class Response
      *
      * @return string
      */
-    private function getDisplay()
+    private function _getDisplay()
     {
         // The header may contain nothing at all,
         // if its content was already rendered
         // and, in this case, the header will be
         // in the content part of the request
-        $retval  = $this->header->getDisplay();
-        $retval .= $this->HTML;
-        $retval .= $this->footer->getDisplay();
-
+        $retval  = $this->_header->getDisplay();
+        $retval .= $this->_HTML;
+        $retval .= $this->_footer->getDisplay();
         return $retval;
     }
 
@@ -340,9 +274,9 @@ class Response
      *
      * @return void
      */
-    private function htmlResponse()
+    private function _htmlResponse()
     {
-        echo $this->getDisplay();
+        echo $this->_getDisplay();
     }
 
     /**
@@ -350,46 +284,41 @@ class Response
      *
      * @return void
      */
-    private function ajaxResponse()
+    private function _ajaxResponse()
     {
-        global $dbi;
-
         /* Avoid wrapping in case we're disabled */
-        if ($this->isDisabled) {
-            echo $this->getDisplay();
-
+        if ($this->_isDisabled) {
+            echo $this->_getDisplay();
             return;
         }
 
-        if (! isset($this->JSON['message'])) {
-            $this->JSON['message'] = $this->getDisplay();
-        } elseif ($this->JSON['message'] instanceof Message) {
-            $this->JSON['message'] = $this->JSON['message']->getDisplay();
+        if (! isset($this->_JSON['message'])) {
+            $this->_JSON['message'] = $this->_getDisplay();
+        } elseif ($this->_JSON['message'] instanceof Message) {
+            $this->_JSON['message'] = $this->_JSON['message']->getDisplay();
         }
 
-        if ($this->isSuccess) {
-            $this->JSON['success'] = true;
+        if ($this->_isSuccess) {
+            $this->_JSON['success'] = true;
         } else {
-            $this->JSON['success'] = false;
-            $this->JSON['error']   = $this->JSON['message'];
-            unset($this->JSON['message']);
+            $this->_JSON['success'] = false;
+            $this->_JSON['error']   = $this->_JSON['message'];
+            unset($this->_JSON['message']);
         }
 
-        if ($this->isSuccess) {
-            if (! isset($this->JSON['title'])) {
-                $this->addJSON('title', '<title>' . $this->getHeader()->getPageTitle() . '</title>');
-            }
+        if ($this->_isSuccess) {
+            $this->addJSON('_title', $this->getHeader()->getTitleTag());
 
-            if (isset($dbi)) {
+            if (isset($GLOBALS['dbi'])) {
                 $menuHash = $this->getHeader()->getMenu()->getHash();
-                $this->addJSON('menuHash', $menuHash);
-                $hashes = [];
+                $this->addJSON('_menuHash', $menuHash);
+                $hashes = array();
                 if (isset($_REQUEST['menuHashes'])) {
                     $hashes = explode('-', $_REQUEST['menuHashes']);
                 }
                 if (! in_array($menuHash, $hashes)) {
                     $this->addJSON(
-                        'menu',
+                        '_menu',
                         $this->getHeader()
                             ->getMenu()
                             ->getDisplay()
@@ -397,23 +326,23 @@ class Response
                 }
             }
 
-            $this->addJSON('scripts', $this->getHeader()->getScripts()->getFiles());
-            $this->addJSON('selflink', $this->getFooter()->getSelfUrl());
-            $this->addJSON('displayMessage', $this->getHeader()->getMessage());
+            $this->addJSON('_scripts', $this->getHeader()->getScripts()->getFiles());
+            $this->addJSON('_selflink', $this->getFooter()->getSelfUrl());
+            $this->addJSON('_displayMessage', $this->getHeader()->getMessage());
 
-            $debug = $this->footer->getDebugMessage();
+            $debug = $this->_footer->getDebugMessage();
             if (empty($_REQUEST['no_debug'])
                 && strlen($debug) > 0
             ) {
-                $this->addJSON('debug', $debug);
+                $this->addJSON('_debug', $debug);
             }
 
-            $errors = $this->footer->getErrorMessages();
+            $errors = $this->_footer->getErrorMessages();
             if (strlen($errors) > 0) {
-                $this->addJSON('errors', $errors);
+                $this->addJSON('_errors', $errors);
             }
             $promptPhpErrors = $GLOBALS['error_handler']->hasErrorsForPrompt();
-            $this->addJSON('promptPhpErrors', $promptPhpErrors);
+            $this->addJSON('_promptPhpErrors', $promptPhpErrors);
 
             if (empty($GLOBALS['error_message'])) {
                 // set current db, table and sql query in the querywindow
@@ -426,20 +355,20 @@ class Response
                     $query = $GLOBALS['sql_query'];
                 }
                 $this->addJSON(
-                    'reloadQuerywindow',
-                    [
+                    '_reloadQuerywindow',
+                    array(
                         'db' => Core::ifSetOr($GLOBALS['db'], ''),
                         'table' => Core::ifSetOr($GLOBALS['table'], ''),
-                        'sql_query' => $query,
-                    ]
+                        'sql_query' => $query
+                    )
                 );
                 if (! empty($GLOBALS['focus_querywindow'])) {
                     $this->addJSON('_focusQuerywindow', $query);
                 }
                 if (! empty($GLOBALS['reload'])) {
-                    $this->addJSON('reloadNavigation', 1);
+                    $this->addJSON('_reloadNavigation', 1);
                 }
-                $this->addJSON('params', $this->getHeader()->getJsParams());
+                $this->addJSON('_params', $this->getHeader()->getJsParams());
             }
         }
 
@@ -447,44 +376,45 @@ class Response
         // response correctly.
         Core::headerJSON();
 
-        $result = json_encode($this->JSON);
+        $result = json_encode($this->_JSON);
         if ($result === false) {
             switch (json_last_error()) {
                 case JSON_ERROR_NONE:
                     $error = 'No errors';
-                    break;
+                break;
                 case JSON_ERROR_DEPTH:
                     $error = 'Maximum stack depth exceeded';
-                    break;
+                break;
                 case JSON_ERROR_STATE_MISMATCH:
                     $error = 'Underflow or the modes mismatch';
-                    break;
+                break;
                 case JSON_ERROR_CTRL_CHAR:
                     $error = 'Unexpected control character found';
-                    break;
+                break;
                 case JSON_ERROR_SYNTAX:
                     $error = 'Syntax error, malformed JSON';
-                    break;
+                break;
                 case JSON_ERROR_UTF8:
                     $error = 'Malformed UTF-8 characters, possibly incorrectly encoded';
-                    break;
+                break;
                 case JSON_ERROR_RECURSION:
                     $error = 'One or more recursive references in the value to be encoded';
-                    break;
+                break;
                 case JSON_ERROR_INF_OR_NAN:
                     $error = 'One or more NAN or INF values in the value to be encoded';
-                    break;
+                break;
                 case JSON_ERROR_UNSUPPORTED_TYPE:
                     $error = 'A value of a type that cannot be encoded was given';
-                    break;
                 default:
                     $error = 'Unknown error';
-                    break;
+                break;
             }
-            echo json_encode([
-                'success' => false,
-                'error' => 'JSON encoding failed: ' . $error,
-            ]);
+            echo json_encode(
+                array(
+                    'success' => false,
+                    'error' => 'JSON encoding failed: ' . $error,
+                )
+            );
         } else {
             echo $result;
         }
@@ -497,14 +427,15 @@ class Response
      */
     public function response()
     {
+        chdir($this->getCWD());
         $buffer = OutputBuffering::getInstance();
-        if (empty($this->HTML)) {
-            $this->HTML = $buffer->getContents();
+        if (empty($this->_HTML)) {
+            $this->_HTML = $buffer->getContents();
         }
         if ($this->isAjax()) {
-            $this->ajaxResponse();
+            $this->_ajaxResponse();
         } else {
-            $this->htmlResponse();
+            $this->_htmlResponse();
         }
         $buffer->flush();
         exit;
@@ -519,7 +450,6 @@ class Response
      */
     public function header($text)
     {
-        // phpcs:ignore SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly
         header($text);
     }
 
@@ -548,25 +478,59 @@ class Response
     /**
      * Sets http response code.
      *
-     * @param int $responseCode will set the response code.
+     * @param int $response_code will set the response code.
+     *
+     * @return void
      */
-    public function setHttpResponseCode(int $responseCode): void
+    public function setHttpResponseCode($response_code)
     {
-        $this->httpResponseCode($responseCode);
-        $header = 'status: ' . $responseCode . ' ';
-        if (isset(static::$httpStatusMessages[$responseCode])) {
-            $header .= static::$httpStatusMessages[$responseCode];
-        } else {
-            $header .= 'Web server is down';
+        $this->httpResponseCode($response_code);
+        switch ($response_code) {
+            case 100: $httpStatusMsg = ' Continue'; break;
+            case 101: $httpStatusMsg = ' Switching Protocols'; break;
+            case 200: $httpStatusMsg = ' OK'; break;
+            case 201: $httpStatusMsg = ' Created'; break;
+            case 202: $httpStatusMsg = ' Accepted'; break;
+            case 203: $httpStatusMsg = ' Non-Authoritative Information'; break;
+            case 204: $httpStatusMsg = ' No Content'; break;
+            case 205: $httpStatusMsg = ' Reset Content'; break;
+            case 206: $httpStatusMsg = ' Partial Content'; break;
+            case 300: $httpStatusMsg = ' Multiple Choices'; break;
+            case 301: $httpStatusMsg = ' Moved Permanently'; break;
+            case 302: $httpStatusMsg = ' Moved Temporarily'; break;
+            case 303: $httpStatusMsg = ' See Other'; break;
+            case 304: $httpStatusMsg = ' Not Modified'; break;
+            case 305: $httpStatusMsg = ' Use Proxy'; break;
+            case 400: $httpStatusMsg = ' Bad Request'; break;
+            case 401: $httpStatusMsg = ' Unauthorized'; break;
+            case 402: $httpStatusMsg = ' Payment Required'; break;
+            case 403: $httpStatusMsg = ' Forbidden'; break;
+            case 404: $httpStatusMsg = ' Not Found'; break;
+            case 405: $httpStatusMsg = ' Method Not Allowed'; break;
+            case 406: $httpStatusMsg = ' Not Acceptable'; break;
+            case 407: $httpStatusMsg = ' Proxy Authentication Required'; break;
+            case 408: $httpStatusMsg = ' Request Time-out'; break;
+            case 409: $httpStatusMsg = ' Conflict'; break;
+            case 410: $httpStatusMsg = ' Gone'; break;
+            case 411: $httpStatusMsg = ' Length Required'; break;
+            case 412: $httpStatusMsg = ' Precondition Failed'; break;
+            case 413: $httpStatusMsg = ' Request Entity Too Large'; break;
+            case 414: $httpStatusMsg = ' Request-URI Too Large'; break;
+            case 415: $httpStatusMsg = ' Unsupported Media Type'; break;
+            case 500: $httpStatusMsg = ' Internal Server Error'; break;
+            case 501: $httpStatusMsg = ' Not Implemented'; break;
+            case 502: $httpStatusMsg = ' Bad Gateway'; break;
+            case 503: $httpStatusMsg = ' Service Unavailable'; break;
+            case 504: $httpStatusMsg = ' Gateway Time-out'; break;
+            case 505: $httpStatusMsg = ' HTTP Version not supported'; break;
+            default: $httpStatusMsg  = ' Web server is down'; break;
         }
-        if (PHP_SAPI === 'cgi-fcgi') {
-            return;
+        if (php_sapi_name() !== 'cgi-fcgi') {
+            $this->header('status: ' . $response_code . $httpStatusMsg);
         }
-
-        $this->header($header);
     }
 
-    /**
+   /**
      * Generate header for 303
      *
      * @param string $location will set location to redirect.
@@ -576,8 +540,8 @@ class Response
     public function generateHeader303($location)
     {
         $this->setHttpResponseCode(303);
-        $this->header('Location: ' . $location);
-        if (! defined('TESTSUITE')) {
+        $this->header('Location: '.$location);
+        if (!defined('TESTSUITE')) {
             exit;
         }
     }
@@ -594,7 +558,6 @@ class Response
             $this->setRequestStatus(false);
             // redirect_flag redirects to the login page
             $this->addJSON('redirect_flag', '1');
-
             return true;
         }
 
@@ -604,7 +567,6 @@ class Response
         $header->setTitle('phpMyAdmin');
         $header->disableMenuAndConsole();
         $header->disableWarnings();
-
         return false;
     }
 }

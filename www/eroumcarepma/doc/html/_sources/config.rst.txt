@@ -9,7 +9,7 @@ All configurable data is placed in :file:`config.inc.php` in phpMyAdmin's
 toplevel directory.  If this file does not exist, please refer to the
 :ref:`setup` section to create one. This file only needs to contain the
 parameters you want to change from their corresponding default value in
-:file:`libraries/config.default.php` (this file is not intended for changes).
+:file:`libraries/config.default.php` (this file is not inteded for changes).
 
 .. seealso::
 
@@ -20,7 +20,7 @@ the file. This file is for over-writing the defaults; if you wish to use the
 default value there's no need to add a line here.
 
 The parameters which relate to design (like colors) are placed in
-:file:`themes/themename/scss/_variables.scss`. You might also want to create
+:file:`themes/themename/layout.inc.php`. You might also want to create
 :file:`config.footer.inc.php` and :file:`config.header.inc.php` files to add
 your site specific code to be included on start and end of each page.
 
@@ -28,6 +28,15 @@ your site specific code to be included on start and end of each page.
 
     Some distributions (eg. Debian or Ubuntu) store :file:`config.inc.php` in
     ``/etc/phpmyadmin`` instead of within phpMyAdmin sources.
+
+.. warning::
+
+    :term:`Mac` users should note that if you are on a version before
+    :term:`Mac OS X`, PHP does not seem to
+    like :term:`Mac` end of lines character (``\r``). So
+    ensure you choose the option that allows to use the \*nix end of line
+    character (``\n``) in your text editor before saving a script you have
+    modified.
 
 Basic settings
 --------------
@@ -43,7 +52,7 @@ Basic settings
 
     Sets here the complete :term:`URL` (with full path) to your phpMyAdmin
     installation's directory. E.g.
-    ``https://www.example.net/path_to_your_phpMyAdmin_directory/``. Note also
+    ``https://www.example.net/path_to_your_phpMyAdmin_directory/``.  Note also
     that the :term:`URL` on most of web servers are case sensitive (even on
     Windows). Don’t forget the trailing slash at the end.
 
@@ -203,14 +212,12 @@ Basic settings
 
 .. config:option:: $cfg['AllowThirdPartyFraming']
 
-    :type: boolean|string
+    :type: boolean
     :default: false
 
     Setting this to ``true`` allows phpMyAdmin to be included inside a frame,
     and is a potential security hole allowing cross-frame scripting attacks or
-    clickjacking. Setting this to 'sameorigin' prevents phpMyAdmin to be
-    included from another document in a frame, unless that document belongs
-    to the same domain.
+    clickjacking.
 
 Server connection settings
 --------------------------
@@ -236,7 +243,7 @@ Server connection settings
         The :config:option:`$cfg['Servers']` array starts with
         $cfg['Servers'][1]. Do not use $cfg['Servers'][0]. If you want more
         than one server, just copy following section (including $i
-        increment) several times. There is no need to define full server
+        incrementation) serveral times. There is no need to define full server
         array, just define values you need to change.
 
 .. config:option:: $cfg['Servers'][$i]['host']
@@ -721,12 +728,6 @@ Server connection settings
     :type: string
     :default: ``'mysqli'``
 
-    .. deprecated:: 4.2.0
-
-        This setting was removed. The ``mysql`` extension will only be used when
-        the ``mysqli`` extension is not available. As of 5.0.0, only the
-        ``mysqli`` extension can be used.
-
     The PHP MySQL extension to use (``mysql`` or ``mysqli``).
 
     It is recommended to use ``mysqli`` in all installations.
@@ -1028,10 +1029,6 @@ Server connection settings
     :type: string or false
     :default: ``''``
 
-    The table used by phpMyAdmin to store user name information for associating with user groups.
-    See the next entry on :config:option:`$cfg['Servers'][$i]['usergroups']` for more details
-    and the suggested settings.
-
 .. config:option:: $cfg['Servers'][$i]['usergroups']
 
     :type: string or false
@@ -1039,7 +1036,7 @@ Server connection settings
 
     Since release 4.1.0 you can create different user groups with menu items
     attached to them. Users can be assigned to these groups and the logged in
-    user would only see menu items configured to the usergroup they are assigned to.
+    user would only see menu items configured to the usergroup he is assigned to.
     To do this it needs two tables "usergroups" (storing allowed menu items for each
     user group) and "users" (storing users and their assignments to user groups).
 
@@ -1357,11 +1354,11 @@ Server connection settings
     from all'`` if your rule order is set to ``'allow,deny'`` or
     ``'explicit'``.
 
-    For the :term:`IP Address` matching
+    For the :term:`IP address` matching
     system, the following work:
 
-    * ``xxx.xxx.xxx.xxx`` (an exact :term:`IP Address`)
-    * ``xxx.xxx.xxx.[yyy-zzz]`` (an :term:`IP Address` range)
+    * ``xxx.xxx.xxx.xxx`` (an exact :term:`IP address`)
+    * ``xxx.xxx.xxx.[yyy-zzz]`` (an :term:`IP address` range)
     * ``xxx.xxx.xxx.xxx/nn`` (CIDR, Classless Inter-Domain Routing type :term:`IP` addresses)
 
     But the following does not work:
@@ -1509,7 +1506,7 @@ Generic settings
     :default: true
 
     Enables check for latest versions using JavaScript on the main phpMyAdmin
-    page or by directly accessing `index.php?route=/version-check`.
+    page or by directly accessing :file:`version_check.php`.
 
     .. note::
 
@@ -1610,27 +1607,6 @@ Generic settings
         In some setups (like separate SSL proxy or load balancer) you might
         have to set :config:option:`$cfg['PmaAbsoluteUri']` for correct
         redirection.
-
-.. config:option:: $cfg['MysqlSslWarningSafeHosts']
-
-    :type: array
-    :default: ``['127.0.0.1', 'localhost']``
-
-    This search is case-sensitive and will match the exact string only.
-    If your setup does not use SSL but is safe because you are using a
-    local connection or private network, you can add your hostname or :term:`IP` to the list.
-    You can also remove the default entries to only include yours.
-
-    This check uses the value of :config:option:`$cfg['Servers'][$i]['host']`.
-
-    .. versionadded:: 5.1.0
-
-    Example configuration
-
-    .. code-block:: php
-
-        $cfg['MysqlSslWarningSafeHosts'] = ['127.0.0.1', 'localhost', 'mariadb.local'];
-
 
 .. config:option:: $cfg['ExecTimeLimit']
 
@@ -1760,15 +1736,6 @@ Generic settings
     Define whether phpMyAdmin will continue executing a multi-query
     statement if one of the queries fails. Default is to abort execution.
 
-.. config:option:: $cfg['enable_drag_drop_import']
-
-    :type: boolean
-    :default: true
-
-    Whether or not the drag and drop import feature is enabled.
-    When enabled, a user can drag a file in to their browser and phpMyAdmin will
-    attempt to import the file.
-
 Cookie authentication options
 -----------------------------
 
@@ -1795,22 +1762,6 @@ Cookie authentication options
         makes a bit weaker security as this generated secret is stored in
         session and furthermore it makes impossible to recall user name from
         cookie.
-
-.. config:option:: $cfg['CookieSameSite']
-
-    :type: string
-    :default: ``'Strict'``
-
-    .. versionadded:: 5.1.0
-
-    It sets SameSite attribute of the Set-Cookie :term:`HTTP` response header.
-    Valid values are:
-
-    * ``Lax``
-    * ``Strict``
-    * ``None``
-
-    .. seealso:: `rfc6265 bis <https://tools.ietf.org/id/draft-ietf-httpbis-rfc6265bis-03.html#rfc.section.5.3.7>`_
 
 .. config:option:: $cfg['LoginCookieRecall']
 
@@ -1880,7 +1831,7 @@ Cookie authentication options
     to the given regular expression. The regular expression must be enclosed
     with a delimiter character.
 
-    It is recommended to include start and end symbols in the regular
+    It is recommended to include start and end symbols in the regullar
     expression, so that you can avoid partial matches on the string.
 
     **Examples:**
@@ -1901,67 +1852,16 @@ Cookie authentication options
         The whole server name is matched, it can include port as well. Due to
         way MySQL is permissive in connection parameters, it is possible to use
         connection strings as ```server:3306-mysql```. This can be used to
-        bypass regular expression by the suffix, while connecting to another
+        bypass regullar expression by the suffix, while connecting to another
         server.
-
-.. config:option:: $cfg['CaptchaMethod']
-
-    :type: string
-    :default: ``'invisible'``
-
-    Valid values are:
-
-    * ``'invisible'`` Use an invisible captcha checking method;
-    * ``'checkbox'`` Use a checkbox to confirm the user is not a robot.
-
-    .. versionadded:: 5.0.3
-
-.. config:option:: $cfg['CaptchaApi']
-
-    :type: string
-    :default: ``'https://www.google.com/recaptcha/api.js'``
-
-    .. versionadded:: 5.1.0
-
-    The URL for the reCaptcha v2 service's API, either Google's or a compatible one.
-
-.. config:option:: $cfg['CaptchaCsp']
-
-    :type: string
-    :default: ``'https://apis.google.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://ssl.gstatic.com/'``
-
-    .. versionadded:: 5.1.0
-
-    The Content-Security-Policy snippet (URLs from which to allow embedded content)
-    for the reCaptcha v2 service, either Google's or a compatible one.
-
-.. config:option:: $cfg['CaptchaRequestParam']
-
-    :type: string
-    :default: ``'g-recaptcha'``
-
-    .. versionadded:: 5.1.0
-
-    The request parameter used for the reCaptcha v2 service.
-
-.. config:option:: $cfg['CaptchaResponseParam']
-
-    :type: string
-    :default: ``'g-recaptcha-response'``
-
-    .. versionadded:: 5.1.0
-
-    The response parameter used for the reCaptcha v2 service.
 
 .. config:option:: $cfg['CaptchaLoginPublicKey']
 
     :type: string
     :default: ``''``
 
-    The public key for the reCaptcha service that can be obtained from the
-    "Admin Console" on https://www.google.com/recaptcha/about/.
-
-    .. seealso:: <https://developers.google.com/recaptcha/docs/v3>
+    The public key for the reCaptcha service that can be obtained from
+    https://www.google.com/recaptcha/intro/v3.html.
 
     reCaptcha will be then used in :ref:`cookie`.
 
@@ -1970,23 +1870,10 @@ Cookie authentication options
     :type: string
     :default: ``''``
 
-    The private key for the reCaptcha service that can be obtained from the
-    "Admin Console" on https://www.google.com/recaptcha/about/.
-
-    .. seealso:: <https://developers.google.com/recaptcha/docs/v3>
+    The private key for the reCaptcha service that can be obtain from
+    https://www.google.com/recaptcha/intro/v3.html.
 
     reCaptcha will be then used in :ref:`cookie`.
-
-.. config:option:: $cfg['CaptchaSiteVerifyURL']
-
-    :type: string
-    :default: ``''``
-
-    The URL for the reCaptcha service to do siteverify action.
-
-    reCaptcha will be then used in :ref:`cookie`.
-
-    .. versionadded:: 5.1.0
 
 Navigation panel setup
 ----------------------
@@ -2100,12 +1987,10 @@ Navigation panel setup
     :type: string
     :default: ``'index.php'``
 
-    Enter the :term:`URL` where the logo in the navigation panel will point to.
+    Enter :term:`URL` where logo in the navigation panel will point to.
     For use especially with self made theme which changes this.
-    For relative/internal URLs, you need to have leading `` ./ `` or trailing characters `` ? `` such as ``'./index.php?route=/server/sql?'``.
+    For relative/internal URLs, you need to have leading `` ./ `` or trailing characters `` ? `` such as ``'./sql.php?'``.
     For external URLs, you should include URL protocol schemes (``http`` or ``https``) with absolute URLs.
-
-    You may want to make the link open in a new browser tab, for that you need to use :config:option:`$cfg['NavigationLogoLinkWindow']`
 
 .. config:option:: $cfg['NavigationLogoLinkWindow']
 
@@ -2115,9 +2000,6 @@ Navigation panel setup
     Whether to open the linked page in the main window (``main``) or in a
     new one (``new``). Note: use ``new`` if you are linking to
     ``phpmyadmin.net``.
-
-    To open the link in the main window you will need to add the value of :config:option:`$cfg['NavigationLogoLink']`
-    to :config:option:`$cfg['CSPAllow']` because of the :term:`Content Security Policy` header.
 
 .. config:option:: $cfg['NavigationTreeDisplayItemFilterMinimum']
 
@@ -2310,7 +2192,7 @@ Main panel
     :type: boolean
     :default: true
 
-    Defines whether to display information about the current Git revision (if
+    Defines whether to display informations about the current Git revision (if
     applicable) on the main panel.
 
 .. config:option:: $cfg['MysqlMinVersion']
@@ -2862,7 +2744,7 @@ Web server settings
 
     This can be useful when you want to include some external JavaScript files
     in :file:`config.footer.inc.php` or :file:`config.header.inc.php`, which
-    would be normally not allowed by :term:`Content Security Policy`.
+    would be normally not allowed by Content Security Policy.
 
     To allow some sites, just list them within the string:
 
@@ -2885,7 +2767,7 @@ Web server settings
 Theme settings
 --------------
 
-    Please directly modify :file:`themes/themename/scss/_variables.scss`, although
+    Please directly modify :file:`themes/themename/layout.inc.php`, although
     your changes will be overwritten with the next update.
 
 Design customization
@@ -2974,16 +2856,6 @@ Design customization
     comments are displayed using a CSS-formatted dashed-line below the
     name of the column. The comment is shown as a tool-tip for that
     column.
-
-.. config:option:: $cfg['FirstDayOfCalendar']
-
-    :type: integer
-    :default: 0
-
-    This will define the first day of week in the calendar. The number
-    can be set from 0 to 6, which represents the seven days of the week,
-    Sunday to Saturday respectively. This value can also be configured by the user
-    in server settings -> features -> general -> First Day calendar field.
 
 Text fields
 -----------
@@ -3129,7 +3001,7 @@ the files.
     :default: ``''``
 
     The name of the directory where :term:`SQL` files have been uploaded by
-    other means than phpMyAdmin (for example, FTP). Those files are available
+    other means than phpMyAdmin (for example, ftp). Those files are available
     under a drop-down box when you click the database or table name, then the
     Import tab.
 
@@ -3318,7 +3190,7 @@ Various display setting
 
     Contains names of configuration options (keys in ``$cfg`` array) that
     users can't set through user preferences. For possible values, refer
-    to classes under :file:`libraries/classes/Config/Forms/User/`.
+    to clases under :file:`libraries/classes/Config/Forms/User/`.
 
 .. config:option:: $cfg['UserprefsDeveloperTab']
 
@@ -3381,11 +3253,6 @@ Theme manager settings
 
     :type: string
     :default: '82%'
-
-    .. deprecated:: 5.0.0
-
-        This setting was removed as the browser is more efficient,
-        thus no need of this option.
 
     Font size to use, is applied in CSS.
 
@@ -3534,18 +3401,6 @@ Developer
 
     These settings might have huge effect on performance or security.
 
-.. config:option:: $cfg['environment']
-
-    :type: string
-    :default: ``'production'``
-
-    Sets the working environment.
-
-    This only needs to be changed when you are developing phpMyAdmin itself.
-    The ``development`` mode may display debug information in some places.
-
-    Possible values are ``'production'`` or ``'development'``.
-
 .. config:option:: $cfg['DBG']
 
     :type: array
@@ -3624,9 +3479,11 @@ This example uses :file:`examples/signon.php` to demonstrate usage of :ref:`auth
     <?php
     $i = 0;
     $i++;
+    $cfg['Servers'][$i]['extension']     = 'mysqli';
     $cfg['Servers'][$i]['auth_type']     = 'signon';
     $cfg['Servers'][$i]['SignonSession'] = 'SignonSession';
     $cfg['Servers'][$i]['SignonURL']     = 'examples/signon.php';
+    ?>`
 
 Example for IP address limited autologin
 ++++++++++++++++++++++++++++++++++++++++
@@ -3666,6 +3523,7 @@ following example shows two of them:
     $cfg['Servers'][$i]['auth_type'] = 'cookie';
     $cfg['Servers'][$i]['verbose']   = 'no1';
     $cfg['Servers'][$i]['host']      = 'localhost';
+    $cfg['Servers'][$i]['extension'] = 'mysqli';
     // more options for #1 ...
 
     $i++; // server 2 :
@@ -3674,12 +3532,14 @@ following example shows two of them:
     $cfg['Servers'][$i]['host']      = 'remote.host.addr';//or ip:'10.9.8.1'
     // this server must allow remote clients, e.g., host 10.9.8.%
     // not only in mysql.host but also in the startup configuration
+    $cfg['Servers'][$i]['extension'] = 'mysqli';
     // more options for #2 ...
 
     // end of server sections
     $cfg['ServerDefault'] = 0; // to choose the server on startup
 
     // further general options ...
+    ?>
 
 .. _example-google-ssl:
 
@@ -3687,9 +3547,9 @@ Google Cloud SQL with SSL
 +++++++++++++++++++++++++
 
 To connect to Google Could SQL, you currently need to disable certificate
-verification. This is caused by the certificate being issued for CN matching
+verification. This is caused by the certficate being issued for CN matching
 your instance name, but you connect to an IP address and PHP tries to match
-these two. With verification you end up with error message like:
+these two. With verfication you end up with error message like:
 
 .. code-block:: text
 
@@ -3727,21 +3587,3 @@ server certificates and tell phpMyAdmin to use them:
     :config:option:`$cfg['Servers'][$i]['ssl_ca']`,
     :config:option:`$cfg['Servers'][$i]['ssl_verify']`,
     <https://bugs.php.net/bug.php?id=72048>
-
-reCaptcha using hCaptcha
-++++++++++++++++++++++++
-
-.. code-block:: php
-
-    $cfg['CaptchaApi'] = 'https://www.hcaptcha.com/1/api.js';
-    $cfg['CaptchaCsp'] = 'https://hcaptcha.com https://*.hcaptcha.com';
-    $cfg['CaptchaRequestParam'] = 'h-captcha';
-    $cfg['CaptchaResponseParam'] = 'h-captcha-response';
-    $cfg['CaptchaSiteVerifyURL'] = 'https://hcaptcha.com/siteverify';
-    // This is the secret key from hCaptcha dashboard
-    $cfg['CaptchaLoginPrivateKey'] = '0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-    // This is the site key from hCaptcha dashboard
-    $cfg['CaptchaLoginPublicKey'] = 'xxx-xxx-xxx-xxx-xxxx';
-
-.. seealso:: `hCaptcha website <https://www.hcaptcha.com/>`_
-.. seealso:: `hCaptcha Developer Guide <https://docs.hcaptcha.com/>`_

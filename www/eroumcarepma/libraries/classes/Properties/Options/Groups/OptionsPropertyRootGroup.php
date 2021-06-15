@@ -1,13 +1,18 @@
 <?php
-
-declare(strict_types=1);
-
+/* vim: set expandtab sw=4 ts=4 sts=4: */
+/**
+ * Holds the PhpMyAdmin\Properties\Options\Groups\OptionsPropertyRootGroup class
+ *
+ * @package PhpMyAdmin
+ */
 namespace PhpMyAdmin\Properties\Options\Groups;
 
 use PhpMyAdmin\Properties\Options\OptionsPropertyGroup;
 
 /**
  * Group property item class of type root
+ *
+ * @package PhpMyAdmin
  */
 class OptionsPropertyRootGroup extends OptionsPropertyGroup
 {
@@ -23,6 +28,6 @@ class OptionsPropertyRootGroup extends OptionsPropertyGroup
      */
     public function getItemType()
     {
-        return 'root';
+        return "root";
     }
 }

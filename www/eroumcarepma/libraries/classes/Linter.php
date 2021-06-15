@@ -1,24 +1,21 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Analyzes a query and gives user feedback.
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin;
 
 use PhpMyAdmin\SqlParser\Lexer;
 use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\UtfString;
 use PhpMyAdmin\SqlParser\Utils\Error as ParserError;
-use function defined;
-use function htmlspecialchars;
-use function mb_strlen;
-use function sprintf;
-use function strlen;
 
 /**
  * The linter itself.
+ *
+ * @package PhpMyAdmin
  */
 class Linter
 {
@@ -31,9 +28,8 @@ class Linter
      */
     public static function getLines($str)
     {
-        if ((! ($str instanceof UtfString))
-            && defined('USE_UTF_STRINGS')
-            && USE_UTF_STRINGS
+        if ((!($str instanceof UtfString))
+            && (defined('USE_UTF_STRINGS')) && (USE_UTF_STRINGS)
         ) {
             // If the lexer uses UtfString for processing then the position will
             // represent the position of the character and not the position of
@@ -53,18 +49,15 @@ class Linter
         // first byte of the third character. The fourth and the last one
         // (which is actually a new line) aren't going to be processed at
         // all.
-        $len = $str instanceof UtfString ?
+        $len = ($str instanceof UtfString) ?
             $str->length() : strlen($str);
 
-        $lines = [0];
+        $lines = array(0);
         for ($i = 0; $i < $len; ++$i) {
-            if ($str[$i] !== "\n") {
-                continue;
+            if ($str[$i] === "\n") {
+                $lines[] = $i + 1;
             }
-
-            $lines[] = $i + 1;
         }
-
         return $lines;
     }
 
@@ -85,11 +78,7 @@ class Linter
             }
             $line = $lineNo;
         }
-
-        return [
-            $line,
-            $pos - $lines[$line],
-        ];
+        return array($line, $pos - $lines[$line]);
     }
 
     /**
@@ -103,8 +92,8 @@ class Linter
     {
         // Disabling lint for huge queries to save some resources.
         if (mb_strlen($query) > 10000) {
-            return [
-                [
+            return array(
+                array(
                     'message' => __(
                         'Linting is disabled for this query because it exceeds the '
                         . 'maximum length.'
@@ -114,8 +103,8 @@ class Linter
                     'toLine' => 0,
                     'toColumn' => 0,
                     'severity' => 'warning',
-                ],
-            ];
+                )
+            );
         }
 
         /**
@@ -137,14 +126,14 @@ class Linter
          *
          * @var array
          */
-        $errors = ParserError::get([$lexer, $parser]);
+        $errors = ParserError::get(array($lexer, $parser));
 
         /**
          * The response containing of all errors.
          *
          * @var array
          */
-        $response = [];
+        $response = array();
 
         /**
          * The starting position for each line.
@@ -158,34 +147,33 @@ class Linter
 
         // Building the response.
         foreach ($errors as $idx => $error) {
+
             // Starting position of the string that caused the error.
-            [$fromLine, $fromColumn] = static::findLineNumberAndColumn(
-                $lines,
-                $error[3]
+            list($fromLine, $fromColumn) = static::findLineNumberAndColumn(
+                $lines, $error[3]
             );
 
             // Ending position of the string that caused the error.
-            [$toLine, $toColumn] = static::findLineNumberAndColumn(
-                $lines,
-                $error[3] + mb_strlen((string) $error[2])
+            list($toLine, $toColumn) = static::findLineNumberAndColumn(
+                $lines, $error[3] + mb_strlen($error[2])
             );
 
             // Building the response.
-            $response[] = [
+            $response[] = array(
                 'message' => sprintf(
                     __('%1$s (near <code>%2$s</code>)'),
-                    htmlspecialchars((string) $error[0]),
-                    htmlspecialchars((string) $error[2])
+                    htmlspecialchars($error[0]), htmlspecialchars($error[2])
                 ),
                 'fromLine' => $fromLine,
                 'fromColumn' => $fromColumn,
                 'toLine' => $toLine,
                 'toColumn' => $toColumn,
                 'severity' => 'error',
-            ];
+            );
         }
 
         // Sending back the answer.
         return $response;
     }
+
 }

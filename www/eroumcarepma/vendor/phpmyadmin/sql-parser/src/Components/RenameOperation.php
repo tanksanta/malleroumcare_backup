@@ -1,9 +1,8 @@
 <?php
+
 /**
  * `RENAME TABLE` keyword parser.
  */
-
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Components;
 
@@ -11,11 +10,13 @@ use PhpMyAdmin\SqlParser\Component;
 use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Token;
 use PhpMyAdmin\SqlParser\TokensList;
-use function implode;
-use function is_array;
 
 /**
  * `RENAME TABLE` keyword parser.
+ *
+ * @category   Keywords
+ *
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class RenameOperation extends Component
 {
@@ -34,6 +35,8 @@ class RenameOperation extends Component
     public $new;
 
     /**
+     * Constructor.
+     *
      * @param Expression $old old expression
      * @param Expression $new new expression containing new name
      */
@@ -50,11 +53,11 @@ class RenameOperation extends Component
      *
      * @return RenameOperation[]
      */
-    public static function parse(Parser $parser, TokensList $list, array $options = [])
+    public static function parse(Parser $parser, TokensList $list, array $options = array())
     {
-        $ret = [];
+        $ret = array();
 
-        $expr = new static();
+        $expr = new self();
 
         /**
          * The state of the parser.
@@ -96,10 +99,10 @@ class RenameOperation extends Component
                 $expr->old = Expression::parse(
                     $parser,
                     $list,
-                    [
+                    array(
                         'breakOnAlias' => true,
-                        'parseField' => 'table',
-                    ]
+                        'parseField' => 'table'
+                    )
                 );
                 if (empty($expr->old)) {
                     $parser->error(
@@ -107,7 +110,6 @@ class RenameOperation extends Component
                         $token
                     );
                 }
-
                 $state = 1;
             } elseif ($state === 1) {
                 if ($token->type === Token::TYPE_KEYWORD && $token->keyword === 'TO') {
@@ -123,10 +125,10 @@ class RenameOperation extends Component
                 $expr->new = Expression::parse(
                     $parser,
                     $list,
-                    [
+                    array(
                         'breakOnAlias' => true,
-                        'parseField' => 'table',
-                    ]
+                        'parseField' => 'table'
+                    )
                 );
                 if (empty($expr->new)) {
                     $parser->error(
@@ -134,12 +136,11 @@ class RenameOperation extends Component
                         $token
                     );
                 }
-
                 $state = 3;
             } elseif ($state === 3) {
                 if (($token->type === Token::TYPE_OPERATOR) && ($token->value === ',')) {
                     $ret[] = $expr;
-                    $expr = new static();
+                    $expr = new self();
                     $state = 0;
                 } else {
                     break;
@@ -170,7 +171,7 @@ class RenameOperation extends Component
      *
      * @return string
      */
-    public static function build($component, array $options = [])
+    public static function build($component, array $options = array())
     {
         if (is_array($component)) {
             return implode(', ', $component);

@@ -1,11 +1,11 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * The top-level class of the "Options" subtree of the object-oriented
  * properties system (the other subtree is "Plugin").
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Properties\Options;
 
 use PhpMyAdmin\Properties\PropertyItem;
@@ -14,6 +14,8 @@ use PhpMyAdmin\Properties\PropertyItem;
  * Superclass for
  *  - PhpMyAdmin\Properties\Options\OptionsPropertyOneItem and
  *  - OptionsProperty Group
+ *
+ * @package PhpMyAdmin
  */
 abstract class OptionsPropertyItem extends PropertyItem
 {
@@ -22,34 +24,34 @@ abstract class OptionsPropertyItem extends PropertyItem
      *
      * @var string
      */
-    private $name;
+    private $_name;
     /**
      * Text
      *
      * @var string
      */
-    private $text;
+    private $_text;
     /**
      * What to force
      *
      * @var string
      */
-    private $force;
+    private $_force;
 
     /**
+     * constructor
+     *
      * @param string $name Item name
      * @param string $text Item text
      */
     public function __construct($name = null, $text = null)
     {
         if ($name) {
-            $this->name = $name;
+            $this->_name = $name;
         }
-        if (! $text) {
-            return;
+        if ($text) {
+            $this->_text = $text;
         }
-
-        $this->text = $text;
     }
 
     /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
@@ -61,7 +63,7 @@ abstract class OptionsPropertyItem extends PropertyItem
      */
     public function getName()
     {
-        return $this->name;
+        return $this->_name;
     }
 
     /**
@@ -73,7 +75,7 @@ abstract class OptionsPropertyItem extends PropertyItem
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->_name = $name;
     }
 
     /**
@@ -83,7 +85,7 @@ abstract class OptionsPropertyItem extends PropertyItem
      */
     public function getText()
     {
-        return $this->text;
+        return $this->_text;
     }
 
     /**
@@ -95,7 +97,7 @@ abstract class OptionsPropertyItem extends PropertyItem
      */
     public function setText($text)
     {
-        $this->text = $text;
+        $this->_text = $text;
     }
 
     /**
@@ -105,7 +107,7 @@ abstract class OptionsPropertyItem extends PropertyItem
      */
     public function getForce()
     {
-        return $this->force;
+        return $this->_force;
     }
 
     /**
@@ -117,7 +119,7 @@ abstract class OptionsPropertyItem extends PropertyItem
      */
     public function setForce($force)
     {
-        $this->force = $force;
+        $this->_force = $force;
     }
 
     /**
@@ -127,6 +129,6 @@ abstract class OptionsPropertyItem extends PropertyItem
      */
     public function getPropertyType()
     {
-        return 'options';
+        return "options";
     }
 }

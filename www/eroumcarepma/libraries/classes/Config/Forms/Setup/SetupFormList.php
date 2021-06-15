@@ -1,18 +1,17 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Setup preferences form
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Config\Forms\Setup;
 
 use PhpMyAdmin\Config\Forms\BaseFormList;
 
 class SetupFormList extends BaseFormList
 {
-    /** @var array */
-    protected static $all = [
+    protected static $all = array(
         'Config',
         'Export',
         'Features',
@@ -21,7 +20,6 @@ class SetupFormList extends BaseFormList
         'Navi',
         'Servers',
         'Sql',
-    ];
-    /** @var string */
+    );
     protected static $ns = '\\PhpMyAdmin\\Config\\Forms\\Setup\\';
 }

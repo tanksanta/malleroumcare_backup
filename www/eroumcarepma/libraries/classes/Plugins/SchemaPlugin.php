@@ -1,14 +1,15 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Abstract class for the schema export plugins
+ *
+ * @package PhpMyAdmin
  */
-
-declare(strict_types=1);
 
 namespace PhpMyAdmin\Plugins;
 
-use PhpMyAdmin\Properties\Options\Groups\OptionsPropertyMainGroup;
 use PhpMyAdmin\Properties\Options\Items\BoolPropertyItem;
+use PhpMyAdmin\Properties\Options\Groups\OptionsPropertyMainGroup;
 use PhpMyAdmin\Properties\Plugins\SchemaPluginProperties;
 
 /**
@@ -16,6 +17,8 @@ use PhpMyAdmin\Properties\Plugins\SchemaPluginProperties;
  * schema export plugins. Some of the plugins will also implement other public
  * methods, but those are not declared here, because they are not implemented
  * by all export plugins.
+ *
+ * @package PhpMyAdmin
  */
 abstract class SchemaPlugin
 {
@@ -43,7 +46,7 @@ abstract class SchemaPlugin
      *
      * @return void
      */
-    abstract protected function setProperties();
+    protected abstract function setProperties();
 
     /**
      * Exports the schema into the specified format.
@@ -52,12 +55,12 @@ abstract class SchemaPlugin
      *
      * @return bool Whether it succeeded
      */
-    abstract public function exportSchema($db);
+    public abstract function exportSchema($db);
 
     /**
      * Adds export options common to all plugins.
      *
-     * @param OptionsPropertyMainGroup $propertyGroup property group
+     * @param \PhpMyAdmin\Properties\Options\Groups\OptionsPropertyMainGroup $propertyGroup property group
      *
      * @return void
      */
@@ -76,7 +79,7 @@ abstract class SchemaPlugin
      */
     protected function getPaperSizeArray()
     {
-        $ret = [];
+        $ret = array();
         foreach ($GLOBALS['cfg']['PDFPageSizes'] as $val) {
             $ret[$val] = $val;
         }

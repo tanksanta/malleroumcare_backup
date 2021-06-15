@@ -1,9 +1,8 @@
 <?php
+
 /**
  * Miscellaneous utilities.
  */
-
-declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Utils;
 
@@ -12,6 +11,10 @@ use PhpMyAdmin\SqlParser\Statements\SelectStatement;
 
 /**
  * Miscellaneous utilities.
+ *
+ * @category   Misc
+ *
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class Misc
 {
@@ -29,12 +32,12 @@ class Misc
             || empty($statement->expr)
             || empty($statement->from)
         ) {
-            return [];
+            return array();
         }
 
-        $retval = [];
+        $retval = array();
 
-        $tables = [];
+        $tables = array();
 
         /**
          * Expressions that may contain aliases.
@@ -56,28 +59,27 @@ class Misc
                 continue;
             }
 
-            $thisDb = isset($expr->database) && ($expr->database !== '') ?
+            $thisDb = (isset($expr->database) && ($expr->database !== '')) ?
                 $expr->database : $database;
 
             if (! isset($retval[$thisDb])) {
-                $retval[$thisDb] = [
+                $retval[$thisDb] = array(
                     'alias' => null,
-                    'tables' => [],
-                ];
+                    'tables' => array()
+                );
             }
 
             if (! isset($retval[$thisDb]['tables'][$expr->table])) {
-                $retval[$thisDb]['tables'][$expr->table] = [
-                    'alias' => isset($expr->alias) && ($expr->alias !== '') ?
+                $retval[$thisDb]['tables'][$expr->table] = array(
+                    'alias' => (isset($expr->alias) && ($expr->alias !== '')) ?
                         $expr->alias : null,
-                    'columns' => [],
-                ];
+                    'columns' => array()
+                );
             }
 
             if (! isset($tables[$thisDb])) {
-                $tables[$thisDb] = [];
+                $tables[$thisDb] = array();
             }
-
             $tables[$thisDb][$expr->alias] = $expr->table;
         }
 
@@ -87,11 +89,12 @@ class Misc
                 continue;
             }
 
-            $thisDb = isset($expr->database) && ($expr->database !== '') ?
+            $thisDb = (isset($expr->database) && ($expr->database !== '')) ?
                 $expr->database : $database;
 
             if (isset($expr->table) && ($expr->table !== '')) {
-                $thisTable = $tables[$thisDb][$expr->table] ?? $expr->table;
+                $thisTable = isset($tables[$thisDb][$expr->table]) ?
+                    $tables[$thisDb][$expr->table] : $expr->table;
                 $retval[$thisDb]['tables'][$thisTable]['columns'][$expr->column] = $expr->alias;
             } else {
                 foreach ($retval[$thisDb]['tables'] as &$table) {

@@ -1,26 +1,24 @@
 <?php
-
-declare(strict_types=1);
-
+/* vim: set expandtab sw=4 ts=4 sts=4: */
+/**
+ * Holds the PhpMyAdmin\Database\Designer\DesignerTable class
+ *
+ * @package PhpMyAdmin-Designer
+ */
 namespace PhpMyAdmin\Database\Designer;
 
 use PhpMyAdmin\Util;
 
 /**
  * Common functions for Designer
+ *
+ * @package PhpMyAdmin-Designer
  */
 class DesignerTable
 {
-    /** @var string */
     private $tableName;
-
-    /** @var string */
     private $databaseName;
-
-    /** @var string */
     private $tableEngine;
-
-    /** @var string|null */
     private $displayField;
 
     /**
@@ -32,10 +30,10 @@ class DesignerTable
      * @param string|null $displayField The display field if available
      */
     public function __construct(
-        string $databaseName,
-        string $tableName,
-        string $tableEngine,
-        ?string $displayField
+        $databaseName,
+        $tableName,
+        $tableEngine,
+        $displayField
     ) {
         $this->databaseName = $databaseName;
         $this->tableName = $tableName;
@@ -45,49 +43,56 @@ class DesignerTable
 
     /**
      * The table engine supports or not foreign keys
+     *
+     * @return bool
      */
-    public function supportsForeignkeys(): bool
-    {
+    public function supportsForeignkeys() {
         return Util::isForeignKeySupported($this->tableEngine);
     }
 
     /**
      * Get the database name
+     *
+     * @return string
      */
-    public function getDatabaseName(): string
-    {
+    public function getDatabaseName() {
         return $this->databaseName;
     }
 
     /**
      * Get the table name
+     *
+     * @return string
      */
-    public function getTableName(): string
-    {
+    public function getTableName() {
         return $this->tableName;
     }
 
     /**
      * Get the table engine
+     *
+     * @return string
      */
-    public function getTableEngine(): string
-    {
+    public function getTableEngine() {
         return $this->tableEngine;
     }
 
     /**
      * Get the displayed field
+     *
+     * @return string
      */
-    public function getDisplayField(): ?string
+    public function getDisplayField()
     {
         return $this->displayField;
     }
 
     /**
      * Get the db and table separated with a dot
+     *
+     * @return string
      */
-    public function getDbTableString(): string
-    {
+    public function getDbTableString() {
         return $this->databaseName . '.' . $this->tableName;
     }
 }

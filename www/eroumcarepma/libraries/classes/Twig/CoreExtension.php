@@ -1,26 +1,35 @@
 <?php
-
-declare(strict_types=1);
-
+/* vim: set expandtab sw=4 ts=4 sts=4: */
+/**
+ * hold PhpMyAdmin\Twig\CoreExtension class
+ *
+ * @package PhpMyAdmin\Twig
+ */
 namespace PhpMyAdmin\Twig;
 
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
+use Twig\TwigFunction;
 
+/**
+ * Class CoreExtension
+ *
+ * @package PhpMyAdmin\Twig
+ */
 class CoreExtension extends AbstractExtension
 {
     /**
-     * Returns a list of filters to add to the existing list.
+     * Returns a list of functions to add to the existing list.
      *
-     * @return TwigFilter[]
+     * @return TwigFunction[]
      */
-    public function getFilters()
+    public function getFunctions()
     {
-        return [
-            new TwigFilter(
-                'link',
-                'PhpMyAdmin\Core::linkURL'
+        return array(
+            new TwigFunction(
+                'Core_mimeDefaultFunction',
+                'PhpMyAdmin\Core::mimeDefaultFunction',
+                array('is_safe' => array('html'))
             ),
-        ];
+        );
     }
 }

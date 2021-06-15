@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Implementation for UTF-8 strings.
  *
@@ -10,22 +11,18 @@
  * implemented.
  */
 
-declare(strict_types=1);
-
 namespace PhpMyAdmin\SqlParser;
-
-use ArrayAccess;
-use Exception;
-use function mb_check_encoding;
-use function mb_strlen;
-use function ord;
 
 /**
  * Implements array-like access for UTF-8 strings.
  *
  * In this library, this class should be used to parse UTF-8 queries.
+ *
+ * @category Misc
+ *
+ * @license  https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
-class UtfString implements ArrayAccess
+class UtfString implements \ArrayAccess
 {
     /**
      * The raw, multi-byte string.
@@ -68,6 +65,8 @@ class UtfString implements ArrayAccess
     public $charLen = 0;
 
     /**
+     * Constructor.
+     *
      * @param string $str the string
      */
     public function __construct($str)
@@ -122,7 +121,6 @@ class UtfString implements ArrayAccess
                 do {
                     $byte = ord($this->str[--$this->byteIdx]);
                 } while (($byte >= 128) && ($byte < 192));
-
                 --$this->charIdx;
             }
         }
@@ -143,11 +141,11 @@ class UtfString implements ArrayAccess
      * @param int    $offset the offset to be set
      * @param string $value  the value to be set
      *
-     * @throws Exception not implemented.
+     * @throws \Exception not implemented
      */
     public function offsetSet($offset, $value)
     {
-        throw new Exception('Not implemented.');
+        throw new \Exception('Not implemented.');
     }
 
     /**
@@ -155,11 +153,11 @@ class UtfString implements ArrayAccess
      *
      * @param int $offset the value to be unset
      *
-     * @throws Exception not implemented.
+     * @throws \Exception not implemented
      */
     public function offsetUnset($offset)
     {
-        throw new Exception('Not implemented.');
+        throw new \Exception('Not implemented.');
     }
 
     /**
@@ -169,9 +167,9 @@ class UtfString implements ArrayAccess
      * However, this implementation supports UTF-8 characters containing up to 6
      * bytes.
      *
-     * @see https://tools.ietf.org/html/rfc3629
-     *
      * @param string $byte the byte to be analyzed
+     *
+     * @see https://tools.ietf.org/html/rfc3629
      *
      * @return int
      */

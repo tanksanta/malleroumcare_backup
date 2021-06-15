@@ -1,6 +1,13 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * Context for MySQL 8.0.
+ *
+ * This file was auto-generated from tools/contexts/*.txt.
+ * Use tools/run_generators.sh for update.
+ *
+ * @see https://dev.mysql.com/doc/refman/8.0/en/keywords.html
+ */
 
 namespace PhpMyAdmin\SqlParser\Contexts;
 
@@ -10,10 +17,9 @@ use PhpMyAdmin\SqlParser\Token;
 /**
  * Context for MySQL 8.0.
  *
- * This class was auto-generated from tools/contexts/*.txt.
- * Use tools/run_generators.sh for update.
+ * @category   Contexts
  *
- * @see https://dev.mysql.com/doc/refman/8.0/en/keywords.html
+ * @license    https://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  */
 class ContextMySql80000 extends Context
 {
@@ -28,7 +34,7 @@ class ContextMySql80000 extends Context
      *
      * @var array
      */
-    public static $KEYWORDS = [
+    public static $KEYWORDS = array(
         'AT' => 1, 'DO' => 1, 'IO' => 1, 'NO' => 1, 'XA' => 1,
         'ANY' => 1, 'CPU' => 1, 'END' => 1, 'IPC' => 1, 'NDB' => 1, 'NEW' => 1,
         'ONE' => 1, 'ROW' => 1, 'XID' => 1,
@@ -343,5 +349,5 @@ class ContextMySql80000 extends Context
         'CHAR' => 43,
         'BINARY' => 43,
         'INTERVAL' => 43,
-    ];
+    );
 }
