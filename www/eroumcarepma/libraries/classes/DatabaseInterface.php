@@ -1482,13 +1482,13 @@ class DatabaseInterface
 
         /* Locale for messages */
         $locale = LanguageManager::getInstance()->getCurrentLanguage()->getMySQLLocale();
-        if (! empty($locale)) {
-            $this->query(
-                "SET lc_messages = '" . $locale . "';",
-                DatabaseInterface::CONNECT_USER,
-                self::QUERY_STORE
-            );
-        }
+        // if (! empty($locale)) {
+        //     $this->query(
+        //         "SET lc_messages = '" . $locale . "';",
+        //         DatabaseInterface::CONNECT_USER,
+        //         self::QUERY_STORE
+        //     );
+        // }
 
         // Set timezone for the session, if required.
         if ($GLOBALS['cfg']['Server']['SessionTimeZone'] != '') {
