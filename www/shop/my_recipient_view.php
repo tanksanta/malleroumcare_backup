@@ -3,6 +3,9 @@
 include_once("./_common.php");
 include_once("./_head.php");
 
+// 수급자 연결 끊음
+unset($_SESSION['recipient']);
+
 # 회원검사
 if(!$member["mb_id"])
   alert("접근 권한이 없습니다.");

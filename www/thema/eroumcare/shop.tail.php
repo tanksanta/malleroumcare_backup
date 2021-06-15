@@ -161,14 +161,16 @@ if($_GET['co_id']=="possession_manage"){ ?>
 <?php if ($_SESSION['recipient']) { ?>
 <div id="fixed_recipient">
 	<div class="info">
-		<h5>
-			<?php echo $_SESSION['recipient']['penNm']; ?>
-			(<?php echo substr($_SESSION['recipient']['penBirth'], 2, 2); ?>년생/<?php echo $_SESSION['recipient']['penGender']; ?>)
-		</h5>
-		<p>
-			<?php echo $_SESSION['recipient']["penLtmNum"]; ?>
-			(<?php echo $_SESSION['recipient']["penRecGraNm"]; ?><?php echo $pen_type_cd[$_SESSION['recipient']['penTypeCd']] ? '/' . $pen_type_cd[$_SESSION['recipient']['penTypeCd']] : ''; ?>)
-		</p>
+		<a href="<?php echo G5_SHOP_URL; ?>/my_recipient_view.php?id=<?=$_SESSION['recipient']['penId']?>">
+			<h5>
+				<?php echo $_SESSION['recipient']['penNm']; ?>
+				(<?php echo substr($_SESSION['recipient']['penBirth'], 2, 2); ?>년생/<?php echo $_SESSION['recipient']['penGender']; ?>)
+			</h5>
+			<p>
+				<?php echo $_SESSION['recipient']["penLtmNum"]; ?>
+				(<?php echo $_SESSION['recipient']["penRecGraNm"]; ?><?php echo $pen_type_cd[$_SESSION['recipient']['penTypeCd']] ? '/' . $pen_type_cd[$_SESSION['recipient']['penTypeCd']] : ''; ?>)
+			</p>
+		</a>
 	</div>
 	
 	<a href='<?php echo G5_SHOP_URL; ?>/connect_recipient.php' class="close" onClick="return confirm('<?php echo $_SESSION['recipient']['penNm']; ?> 수급자 연결을 해지하겠습니까?');">
