@@ -639,11 +639,11 @@
 			$("#zipAddrPopupWrap").hide();
 
 			$(".register-form select[name='penProRel']").change(function(){
-				$(".register-form input[name='penProRelEtc']").prop("readonly", true);
-				$(".register-form input[name='penProRelEtc']").val("");
-
 				if($(this).val() == "11"){
 					$(".register-form input[name='penProRelEtc']").prop("readonly", false);
+				} else {
+					$(".register-form input[name='penProRelEtc']").prop("readonly", true);
+					$(".register-form input[name='penProRelEtc']").val("");
 				}
 			});
 
@@ -656,14 +656,13 @@
 					if(val == '02') { // 요양보호사
 						$('#pro_rel_title').text('기관');
 						$('.register-form .penProRel').hide();
-						$(".register-form input[name='penProRelEtc']").val('');
 						$('.register-form input[name="penProRelEtc"]').prop('readonly', false);
 					} else {
 						$('#pro_rel_title').text('관계');
 						$('.register-form .penProRel').show();
-						$(".register-form input[name='penProRelEtc']").val('');
 						if($('.register-form select[name="penProRel"]').val() != '11') {
 							$(".register-form input[name='penProRelEtc']").prop("readonly", true);
+							$(".register-form input[name='penProRelEtc']").val('');
 						} else {
 							$('.register-form input[name="penProRelEtc"]').prop('readonly', false);
 						}

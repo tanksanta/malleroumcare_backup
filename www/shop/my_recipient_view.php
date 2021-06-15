@@ -76,7 +76,11 @@ $recs = get_recs_by_recipient($pen['penId']);
     </div>
     <div class="row">
       <div class="col-sm-2">·보호자</div>
-      <div class="col-sm-10">: <?=check_and_print($pen_pro_rel_cd[$pen['penProRel']], '(', ')')?><?=$pen['penProNm']?><?=check_and_print(substr($pen['penProBirth'], 2, 2), ', ', '년생')?><?=check_and_print($pen['penProConNum'], ', ')?><?=check_and_print($pen['penProConPNum'], ', ')?><?=check_and_print($pen['penProAddr'], ', ')?><?=check_and_print($pen['penProAddrDtl'], ' ')?></div>
+      <?php if($pen['penProTypeCd'] == '00') { // 보호자 없음 ?>
+      <div class="col-sm-10">: 없음</div>
+      <?php } else { ?>
+      <div class="col-sm-10">: <?php if($pen['penProTypeCd'] == '02') { echo '(요양보호사)'; } ?><?=check_and_print($pen_pro_rel_cd[$pen['penProRel']], '(', ')')?><?=$pen['penProNm']?><?=check_and_print(substr($pen['penProBirth'], 2, 2), ', ', '년생')?><?=check_and_print($pen['penProConNum'], ', ')?><?=check_and_print($pen['penProConPNum'], ', ')?><?=check_and_print($pen['penProAddr'], ', ')?><?=check_and_print($pen['penProAddrDtl'], ' ')?></div>
+      <?php } ?>
     </div>
     <div class="row">
       <div class="col-sm-2">·장기요양기록지</div>
