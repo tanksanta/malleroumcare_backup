@@ -42,9 +42,8 @@
                     array_push($barcode,$result_again[$k]['prodBarNum']);
                 }
             }
-			asort($barcode);
+            asort($barcode);
             $barcode2=[];
-            $barcode_string="";
             $y = 0;  
             foreach($barcode as $key=>$val)  
             {  
@@ -52,76 +51,26 @@
                 $barcode2[$new_key] = $val;  
                 $y++;  
             }
-            $k=0;
-            $k2=0;
-            $comma="";
-            for($y=0; $y<=count($barcode2); $y++){
-
-
-                if($barcode2[$y]-1 == $barcode2[$y-1]){
-                    $k++;
-                    //같음;
-                }else{
-                    //같지않음;
-                    if($y==0){
-                            #처음
-                            $k=0;
-                            $barcode_string .= $barcode2[$y];
-                            $start=false;
-                    }else{
-                        $k2++;
-                        if($y == count($barcode2)){
-                            #마지막
-                            //중간 끝 바코드가 현재 바코드와 같은경우
-                            if(substr($barcode_string, -12)==$barcode2[$y-1]){
-                                continue;
-                            }
-                            if($k>0){
-                                $barcode_string.="-".($barcode2[$y-1]);
-                                continue;
-                            }else{
-                                //끝문자가 ","로 끝나는 경우
-                                if(substr($barcode_string, -1)==","){
-                                    $barcode_string .= ($barcode2[$y-1]);
-                                    continue;
-                                }else{
-                                    $barcode_string.=",".($barcode2[$y-1]);
-                                    continue;
-                                }
-                            }
-                        }else{
-                            #중간
-                            $k=0;
-                            //처음과 같은경우
-                            if($barcode_string==$barcode2[$y-1]){
-                                $barcode_string.=",";
-                                continue;
-                            }
-                            //끝문자가 ","로 끝나는 경우
-                            if(substr($barcode_string, -1)==","){
-                                $barcode_string .= ($barcode2[$y-1]);
-                                continue;
-                            }
-                            //중간 끝 바코드가 현재 바코드와 같은경우
-                            if(substr($barcode_string, -12)==$barcode2[$y-1]){
-                                $barcode_string.=",";
-                                continue;
-                            }
-                            $barcode_string .= "-".($barcode2[$y-1]).", ".$barcode2[$y];
-                        }
+            $barcode_string="";
+            for($y=0; $y<count($barcode2); $y++){
+                #처음
+                if($y==0){
+                    $barcode_string .= $barcode2[$y];
+                    continue;
+                }
+                #현재 바코드 -1이 전바코드와 같지않음
+                if((int)($barcode2[$y]-1) !== (int)$barcode2[$y-1]){
+                    $barcode_string .= ",".$barcode2[$y];
+                }
+                #현재 바코드 -1이 전바코드와 같음
+                if((int)($barcode2[$y]-1) == (int)($barcode2[$y-1])){
+                    //다음번이 연속되지 않을 경우
+                    if((int)($barcode2[$y]+1) !== (int)$barcode2[$y+1]){
+                        $barcode_string .= "-".$barcode2[$y];
                     }
                 }
             }
-
-            //끊김없이 연속인 경우
-            if($k2 == 1){
-                $barcode_string=$barcode2[0]."-".$barcode2[count($barcode2)-1];
-            }
-            //바코드가 한개인 경우
-            if(count($barcode2) == 1 ){
-                $barcode_string=$barcode2[0];
-            }
-            $barcode_string.=" "; 
+            $barcode_string.=" ";
 
 
 			//할인적용 단가
