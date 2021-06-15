@@ -492,7 +492,7 @@
 <!-- 20210307 성훈작업 -->
 		<div class="text-center" style="margin-top: 30px;">
 			<button type="button" id="btn_submit" class="btn btn-color">수정</button>
-			<a href="./my.recipient.list.php" class="btn btn-black" role="button">취소</a>
+			<a href="./my_recipient_list.php" class="btn btn-black" role="button">취소</a>
 		</div>
 	</form>
 

@@ -188,12 +188,12 @@ scrollToTop();
 				<div class="mobileCate">
 					<div class="cate_head">복지용구통합관리</div>
 					<ul class="cate_menu">
-						<li><a href="/shop/my.recipient.list.php"  >수급자 관리</a></li>
-						<li><a href="/shop/claim_manage.php"  >청구/전자문서 관리</a></li>
-						<li><a href="/shop/sales_Inventory.php"  >보유재고 관리</a></li>
-						<li><a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송 관리</a></li>
-						<li><a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a></li>
-						<li><a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a></li>
+						<li><a href="/shop/my_recipient_list.php">수급자 관리</a></li>
+						<li><a href="/shop/claim_manage.php">청구/전자문서 관리</a></li>
+						<li><a href="/shop/sales_Inventory.php">보유재고 관리</a></li>
+						<li><a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php">주문/배송 관리</a></li>
+						<li><a href="<?php echo G5_SHOP_URL; ?>/cart.php">장바구니</a></li>
+						<li><a href="<?php echo G5_BBS_URL; ?>/mypage.php">마이페이지</a></li>
 					</ul>
 					<div class="cate_head">복지용구 품목</div>
 					<ul class="cate_menu">
@@ -291,7 +291,7 @@ scrollToTop();
 			<div class="logoWrap">
 				<a href="<?=G5_URL?>" class="logoTitle"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png"  ></a>
 				<ul class="nav nav-left">
-					<li><a href="/shop/my.recipient.list.php" >수급자</a></li>
+					<li><a href="/shop/my_recipient_list.php" >수급자</a></li>
 					<li><a href="/shop/claim_manage.php"  >청구/전자문서</a></li>
 					<li><a href="/shop/sales_Inventory.php" >보유재고</a></li>
 				</ul>
@@ -397,7 +397,7 @@ scrollToTop();
 					<div>
 						<ul class="listWrap">
 							<li>
-								<a href="/shop/my.recipient.list.php" title="수급자">
+								<a href="/shop/my_recipient_list.php" title="수급자">
 									<span>수급자</span>
 								</a>
 							</li>
