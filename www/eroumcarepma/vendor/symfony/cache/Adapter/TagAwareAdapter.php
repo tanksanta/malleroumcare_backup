@@ -13,6 +13,8 @@ namespace Symfony\Component\Cache\Adapter;
 
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Cache\PruneableInterface;
 use Symfony\Component\Cache\ResettableInterface;
@@ -23,12 +25,13 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterface, PruneableInterface, ResettableInterface
+class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterface, PruneableInterface, ResettableInterface, LoggerAwareInterface
 {
-    const TAGS_PREFIX = "\0tags\0";
+    public const TAGS_PREFIX = "\0tags\0";
 
-    use ProxyTrait;
     use ContractsTrait;
+    use LoggerAwareTrait;
+    use ProxyTrait;
 
     private $deferred = [];
     private $createCacheItem;
@@ -49,7 +52,6 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
                 $item = new CacheItem();
                 $item->key = $key;
                 $item->value = $value;
-                $item->defaultLifetime = $protoItem->defaultLifetime;
                 $item->expiry = $protoItem->expiry;
                 $item->poolHash = $protoItem->poolHash;
 
@@ -84,6 +86,7 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
                 $tagsByKey = [];
                 foreach ($deferred as $key => $item) {
                     $tagsByKey[$key] = $item->newMetadata[CacheItem::METADATA_TAGS] ?? [];
+                    $item->metadata = $item->newMetadata;
                 }
 
                 return $tagsByKey;
@@ -94,8 +97,7 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         $this->invalidateTags = \Closure::bind(
             static function (AdapterInterface $tagsAdapter, array $tags) {
                 foreach ($tags as $v) {
-                    $v->defaultLifetime = 0;
-                    $v->expiry = null;
+                    $v->expiry = 0;
                     $tagsAdapter->saveDeferred($v);
                 }
 
