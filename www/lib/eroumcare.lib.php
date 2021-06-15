@@ -427,6 +427,20 @@ $pen_rec_type_cd = array(
 	'01' => '유선'
 );
 
+// 보호자 관계 출력
+function get_pen_pro_rel($penProTypeCd, $penProRel) {
+	global $pen_pro_rel_cd;
+
+	switch($penProTypeCd) {
+		case '00': // 보호자없음
+			return '없음';
+		case '02': // 요양보호사
+			return '요양보호사';
+		default:
+			return $pen_pro_rel_cd[$penProRel];
+	}
+}
+
 $sale_product_table = array(
 	'ITM2021010800001' => '경사로(실내용)',
 	'ITM2020092200020' => '욕창예방매트리스',
