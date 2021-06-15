@@ -23,7 +23,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_SKIN_URL.'/style.css">', 
     			<span class="price">0원</span>
     		</p>
     		<p></p>
-    		
+    		<img class="img" style="display:none;width:128px;position:absolute;display:block;height:128px;top:10px;right:10px;">
 <!--    		<span class="removeBtn" data-target="0">X</span>-->
     	</a>
     <?php
@@ -97,6 +97,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_SKIN_URL.'/style.css">', 
 				$("#stv_link .name").text(name);
 				$("#stv_link .stock").text(stock);
 				$("#stv_link .price").text(price + "원");
+                $("#stv_link .img").attr('src', $(this).find('.prd_img img').attr('src'));
 				$("#stv_link .removeBtn").attr("data-target", $(this).attr("data-slick-index"));
 				$("#stv_link").attr("href", "/shop/item.php?it_id=" + id);
 				$("#stv_link").css("display", "table");
