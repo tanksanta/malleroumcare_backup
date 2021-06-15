@@ -172,17 +172,17 @@ $recs = get_recs_by_recipient($pen['penId']);
   </div>
   <div class="section_wrap grey">
     <div class="sub_section_wrap" style="text-align: center">
-      <a href="#" class="b_btn">신규등록</a>
+      <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}"?>" class="b_btn">신규등록</a>
     </div>
     <?php foreach($recs as $rec) { ?>
     <div class="memo_row">
       <div class="memo_body">
         <div class="memo_date"><?=date('Y년 m월 d일', dtmtotime($rec['regDtm']))?></div>
-        <div class="memo_content"><?=$rec['totalReview']?></div>
+        <div class="memo_content"><?=nl2br($rec['totalReview'])?></div>
       </div>
       <div class="memo_btn_wrap">
-        <button class="c_btn" data-id="<?=$rec['recId']?>">출력</button>
-        <button class="c_btn" data-id="<?=$rec['recId']?>">수정</button>
+        <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}&recId={$rec['recId']}"?>" class="c_btn" data-id="<?=$rec['recId']?>">수정</a>
+        <button class="btn_delete_rec c_btn" data-id="<?=$rec['recId']?>">삭제</button>
       </div>
     </div>
     <?php } ?>
@@ -256,7 +256,6 @@ $(function() {
 
   // 메모 삭제
   $(document).on('click', '.btn_delete_memo', function() {
-    var $row = $(this).closest('.memo_row');
     var me_id = $(this).data('id');
 
     if(confirm('메모를 삭제하시겠습니까?')) {
@@ -264,6 +263,25 @@ $(function() {
         id: '<?=$pen['penId']?>',
         me_id: me_id,
         del: true
+      }, 'json')
+      .done(function() {
+        location.reload();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    }
+  });
+
+  // 욕구사정기록지 삭제
+  $(document).on('click', '.btn_delete_rec', function() {
+    var recId = $(this).data('id');
+
+    if(confirm('욕구사정기록지를 삭제하시겠습니까?')) {
+      $.post('ajax.my.recipient.rec.delete.php', {
+        penId: '<?=$pen['penId']?>',
+        recId: recId,
       }, 'json')
       .done(function() {
         location.reload();

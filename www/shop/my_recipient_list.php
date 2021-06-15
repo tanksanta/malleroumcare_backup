@@ -196,7 +196,7 @@
 						<td style="text-align:center;">
 							<?php if ($data['recYn'] === 'N') { ?>
 								욕구사정기록지 미작성<br/>
-								<a href="#" class="btn eroumcare_btn2 small" title="작성하기">작성하기</a>
+								<a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2 small" title="작성하기">작성하기</a>
 							<?php } ?>
 						</td>
 					</tr>
