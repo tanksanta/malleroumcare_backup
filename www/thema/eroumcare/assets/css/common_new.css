@@ -869,9 +869,9 @@ pre{white-space: pre-wrap;}
 .productListWrap { width: 100%; }
 .productListWrap * { position: relative; }
 .productListWrap > ul { width: 100%; float: left; }
-.productListWrap > ul > li { width: 23.4%; height: 500px; float: left; margin-right: 2%; margin-bottom: 3%; }
+.productListWrap > ul > li { width: 23.4%; float: left; margin-right: 2%; margin-bottom: 3%; }
 .productListWrap > ul > li:nth-of-type(4n) { margin-right: 0; }
-.productListWrap > ul > li > a { width: 100%; float: left; }
+.productListWrap > ul > li > a { width: 100%; float: left; height: 500px; }
 .productListWrap > ul > li > a > p { width: 100%; float: left; margin: 0; }
 .productListWrap > ul > li > a p.img { padding-bottom: 101%; overflow: hidden;border:1px solid #f5f5f5; }
 .productListWrap > ul > li > a p.img > img { position: absolute !important; width: 100%; height: 100%; left: 0; top: 0; }
@@ -1163,8 +1163,9 @@ pre{white-space: pre-wrap;}
 
 	.m_switch_link { display: inline-block; }
 
-	.productListWrap > ul > li { width: 49%; height: auto; margin-bottom: 10%; }
+	.productListWrap > ul > li { width: 49%; margin-bottom: 10%; }
 	.productListWrap > ul > li:nth-of-type(2n) { margin-right: 0; }
+	.productListWrap > ul > li > a{height: auto; }
 	.productListWrap > ul > li > a > p.sup { width: 80px; height: 25px; line-height: 25px; font-size: 12px; border-radius: 5px; }
 
 	.item-head .item-image .supInfo { width: 80px; height: 25px; line-height: 25px; font-size: 12px; border-radius: 5px; }
