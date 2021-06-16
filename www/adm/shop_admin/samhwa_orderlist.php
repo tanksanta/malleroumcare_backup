@@ -278,6 +278,8 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                         <option value="od_name" <?php echo get_selected($sel_field, 'od_name'); ?>>주문자</option>
                         <option value="od_b_name" <?php echo get_selected($sel_field, 'od_b_name'); ?>>받는분</option>
                         <option value="it_name" <?php echo $sel_field == 'it_name' ? 'selected="selected"' : ''; ?>>상품명</option>
+                        <option value="it_admin_memo" <?php echo $sel_field == 'it_admin_memo' ? 'selected="selected"' : ''; ?>>관리자메모</option>
+                        <option value="it_maker" <?php echo $sel_field == 'it_maker' ? 'selected="selected"' : ''; ?>>제조사</option>
                         <option value="od_id" <?php echo get_selected($sel_field, 'od_id'); ?>>주문번호</option>
                         <option value="od_naver_orderid" <?php echo get_selected($sel_field, 'od_naver_orderid'); ?>>네이버페이주문번호</option> <!-- wetoz : naverpayorder -->
                         <option value="mb_id" <?php echo get_selected($sel_field, 'mb_id'); ?>>회원 ID</option>
