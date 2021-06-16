@@ -1,6 +1,5 @@
 <?php
 include_once('./_common.php');
-include_once('./eform/lib/eform.lib.php');
 
 if (!$is_member || !$member['mb_id']) json_response(400, '먼저 로그인 하세요.');
 

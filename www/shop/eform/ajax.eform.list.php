@@ -1,6 +1,5 @@
 <?php
 include_once("./_common.php");
-include_once('./lib/eform.lib.php');
 
 if(!$member['mb_entId']) {
   alert('로그인이 필요합니다.');

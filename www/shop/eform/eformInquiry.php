@@ -1,6 +1,5 @@
 <?php
 include_once("./_common.php");
-include_once('./lib/eform.lib.php');
 
 $dc_id = $_GET['id'];
 if(!$dc_id) alert('잘못된 접근입니다.');

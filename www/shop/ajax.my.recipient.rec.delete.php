@@ -1,7 +1,6 @@
 <?php
 
 include_once("./_common.php");
-include_once('./shop/eform/lib/eform.lib.php');
 
 # 회원검사
 if(!$member["mb_id"] || !$member['mb_entId'])

@@ -747,6 +747,7 @@ $is_demo = false;
 
 include_once(G5_LIB_PATH.'/samhwa.lib.php');
 include_once(G5_LIB_PATH.'/eroumcare.lib.php');
+include_once(G5_SHOP_PATH.'/eform/lib/eform.lib.php');
 
 // 방문자수의 접속을 남김
 include_once(G5_BBS_PATH.'/visit_insert.inc.php');
