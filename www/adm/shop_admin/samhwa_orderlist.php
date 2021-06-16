@@ -267,6 +267,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                         <span class="linear_span">직배송</span>
                         <input type="radio" id="ct_is_direct_delivery_all" name="ct_is_direct_delivery" value="" <?php echo option_array_checked('', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_all"> 전체</label>
                         <input type="radio" id="ct_is_direct_delivery_1" name="ct_is_direct_delivery" value="1" <?php echo option_array_checked('1', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_1"> 직배송</label>
+                        <input type="radio" id="ct_is_direct_delivery_0" name="ct_is_direct_delivery" value="0" <?php echo option_array_checked('0', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_0"> 직배송제외</label>
 				    </div>
                 </td>
             </tr>
