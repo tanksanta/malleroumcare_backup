@@ -89,7 +89,8 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                     <select name="sel_date_field" id="sel_date_field">
                         <option value="od_time" <?php echo get_selected($sel_date_field, 'od_time'); ?>>주문일</option>
                         <option value="od_receipt_time" <?php echo get_selected($sel_date_field, 'od_receipt_time'); ?>>입금일</option>
-                        <option value="od_ex_date" <?php echo get_selected($sel_date_field, 'od_ex_date'); ?>>희방출고일</option>
+                        <option value="od_ex_date" <?php echo get_selected($sel_date_field, 'od_ex_date'); ?>>희망출고일</option>
+                        <option value="ct_ex_date" <?php echo get_selected($sel_date_field, 'ct_ex_date'); ?>>출고완료일</option>
                     </select>
                     <div class="sch_last">
                         <input type="button" value="오늘" id="select_date_today" name="select_date" class="select_date newbutton" />

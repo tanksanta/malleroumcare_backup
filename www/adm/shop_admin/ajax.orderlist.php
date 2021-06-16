@@ -227,7 +227,10 @@ if ($od_escrow) {
 }
 
 if ($fr_date && $to_date) {
-    $where[] = " {$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
+    if($sel_date_field == 'ct_ex_date')
+        $where[] = " {$sel_date_field} between '$fr_date' and '$to_date' ";
+    else
+        $where[] = " {$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
 }
 
 $where[] = " od_del_yn = 'N' ";
@@ -309,7 +312,7 @@ if ($sort2 == "") $sort2 = "desc";
 
 // shop_cart 조인으로 수정
 // member 테이블 조인
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status ,ct_move_date from {$g5['g5_shop_cart_table']}) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status ,ct_move_date, ct_ex_date from {$g5['g5_shop_cart_table']}) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -357,13 +360,12 @@ $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
 //$sql = " select count(od_id) as cnt, ct_status $sql_common2 group by ct_status";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status from {$g5['g5_shop_cart_table']}) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_ex_date from {$g5['g5_shop_cart_table']}) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
         $sql_search2
         group by ct_status ";
-
 
 $result = sql_query($sql);
 
