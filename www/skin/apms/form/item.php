@@ -157,284 +157,281 @@ var ca_opt6_subject = new Array();
 						<input type="text" name="it_basic" value="<?php echo get_text(html_purifier($it['it_basic'])); ?>" id="it_basic" class="frm_input sl">
 					</td>
         </tr>
-		<tr>
-			<th scope="row"><label for="prodSym">재질</label></th>
-			<td>
-				<input type="text" name="prodSym" value="<?php echo get_text($it['prodSym']); ?>" id="prodSym" class="frm_input importantBorder" size="40">
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><label for="prodSizeDetail">사이즈 상세정보</label></th>
-			<td>
-				<input type="text" name="prodSizeDetail" value="<?php echo get_text($it['prodSizeDetail']); ?>" id="prodSizeDetail" class="frm_input importantBorder sl">
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><label for="prodWeig">중량</label></th>
-			<td>
-				<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input importantBorder" size="40">
-			</td>
-		</tr>
-		<tr>
-            <th scope="row"><label for="pt_tag">상품태그</label></th>
-            <td>
-                <?php echo help("등록할 상품태그를 콤마(,)로 구분해서 입력합니다."); ?>
-                <input type="text" name="pt_tag" value="<?php echo get_text($it['pt_tag']); ?>" id="pt_tag" class="frm_input sl">
-            </td>
+				<tr>
+					<th scope="row"><label for="prodSym">재질</label></th>
+					<td>
+						<input type="text" name="prodSym" value="<?php echo get_text($it['prodSym']); ?>" id="prodSym" class="frm_input importantBorder" size="40">
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="prodSizeDetail">사이즈 상세정보</label></th>
+					<td>
+						<input type="text" name="prodSizeDetail" value="<?php echo get_text($it['prodSizeDetail']); ?>" id="prodSizeDetail" class="frm_input importantBorder sl">
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="prodWeig">중량</label></th>
+					<td>
+						<input type="text" name="prodWeig" value="<?php echo get_text($it['prodWeig']); ?>" id="prodWeig" class="frm_input importantBorder" size="40">
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="pt_tag">상품태그</label></th>
+					<td>
+						<?php echo help("등록할 상품태그를 콤마(,)로 구분해서 입력합니다."); ?>
+						<input type="text" name="pt_tag" value="<?php echo get_text($it['pt_tag']); ?>" id="pt_tag" class="frm_input sl">
+					</td>
         </tr>
         <tr>
-            <th scope="row"><label for="entId">업체 아이디</label></th>
-            <td>
-            	<select name="entId" id="entId">
-            	<?php for($i = 0; $row = sql_fetch_array($entIdSQL); $i++){ ?>
-            		<option value="<?=$row["mb_entId"]?>" <?=(get_text($it["entId"] == $row["mb_entId"])) ? "selected" : ""?>><?=$row["mb_entId"]?></option>
-            	<?php } ?>
-            	</select>
-            </td>
+					<th scope="row"><label for="entId">업체 아이디</label></th>
+					<td>
+						<select name="entId" id="entId">
+						<?php for($i = 0; $row = sql_fetch_array($entIdSQL); $i++){ ?>
+							<option value="<?=$row["mb_entId"]?>" <?=(get_text($it["entId"] == $row["mb_entId"])) ? "selected" : ""?>><?=$row["mb_entId"]?></option>
+						<?php } ?>
+						</select>
+					</td>
         </tr>
         <tr>
-            <th scope="row"><label for="prodSupYn">유통구분</label></th>
-            <td>
-            	<select name="prodSupYn" id="prodSupYn">
-            		<option value="Y" <?=(get_text($it["prodSupYn"] == "Y")) ? "selected" : ""?>>유통</option>
-            		<option value="N" <?=(get_text($it["prodSupYn"] == "N")) ? "selected" : ""?>>비유통</option>
-            	</select>
-            </td>
+					<th scope="row"><label for="prodSupYn">유통구분</label></th>
+					<td>
+						<select name="prodSupYn" id="prodSupYn">
+							<option value="Y" <?=(get_text($it["prodSupYn"] == "Y")) ? "selected" : ""?>>유통</option>
+							<option value="N" <?=(get_text($it["prodSupYn"] == "N")) ? "selected" : ""?>>비유통</option>
+						</select>
+					</td>
         </tr>
         <tr>
-            <th scope="row"><label for="it_taxInfo">세무정보</label></th>
-            <td>
-            	<select name="it_taxInfo" id="it_taxInfo">
-            		<option value="영세" <?=(get_text($it["it_taxInfo"] == "영세")) ? "selected" : ""?>>영세</option>
-            		<option value="과세" <?=(get_text($it["it_taxInfo"] == "과세")) ? "selected" : ""?>>과세</option>
-            	</select>
-            </td>
+					<th scope="row"><label for="it_taxInfo">세무정보</label></th>
+					<td>
+						<select name="it_taxInfo" id="it_taxInfo">
+							<option value="영세" <?=(get_text($it["it_taxInfo"] == "영세")) ? "selected" : ""?>>영세</option>
+							<option value="과세" <?=(get_text($it["it_taxInfo"] == "과세")) ? "selected" : ""?>>과세</option>
+						</select>
+					</td>
         </tr>
         <tr>
-            <th scope="row"><label for="supId">공급자 아이디</label></th>
-            <td>
-                <input type="text" name="supId" value="<?php echo get_text($it['supId']); ?>" id="supId" class="frm_input sl">
-            </td>
+					<th scope="row"><label for="supId">공급자 아이디</label></th>
+					<td>
+							<input type="text" name="supId" value="<?php echo get_text($it['supId']); ?>" id="supId" class="frm_input sl">
+					</td>
         </tr>
         <tr>
-            <th scope="row"><label for="prodPayCode">제품코드</label></th>
-            <td>
-                <input type="text" name="prodPayCode" value="<?php echo get_text($it['ProdPayCode']); ?>" id="prodPayCode" class="frm_input importantBorder sl">
-            </td>
+					<th scope="row"><label for="prodPayCode">제품코드</label></th>
+					<td>
+							<input type="text" name="prodPayCode" value="<?php echo get_text($it['ProdPayCode']); ?>" id="prodPayCode" class="frm_input importantBorder sl">
+					</td>
         </tr>
-		<tr>
-			<th scope="row"><label for="pt_show">마이샵순서</label></th>
-			<td>
-				<?php echo help("숫자가 작을 수록 마이샵 상위에 출력되며, -2147483648 부터 2147483647 까지 입력가능합니다. 미입력시 자동으로 출력됩니다."); ?>
-				<input type="text" name="pt_show" value="<?php echo $it['pt_show']; ?>" id="pt_show" class="frm_input" size="12">
-			</td>
-		</tr>
-		<?php if($is_auth) { // 관리자일 때만 출력 ?>
-			<tr>
-				<th scope="row"><label for="it_order">출력순서</label></th>
-				<td>
-					<?php echo help("숫자가 작을 수록 상위에 출력되며, -2147483648 부터 2147483647 까지 입력가능합니다. 미입력시 자동으로 출력됩니다."); ?>
-					<input type="text" name="it_order" value="<?php echo $it['it_order']; ?>" id="it_order" class="frm_input" size="12">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">상품태그</th>
-				<td>
-					<?php echo help("메인화면에 유형별로 출력할때 사용합니다. 목록에서 유형별로 정렬할때 체크된 것이 가장 먼저 출력됩니다."); ?>
-					<input type="checkbox" name="it_type1" value="1" <?php echo ($it['it_type1'] ? "checked" : ""); ?> id="it_type1">
-					<label for="it_type1"><span style="color:<?php echo $default['de_it_type1_color']; ?>"><?php echo $default['de_it_type1_name']; ?></span></label>
-					&nbsp;
-					<input type="checkbox" name="it_type2" value="1" <?php echo ($it['it_type2'] ? "checked" : ""); ?> id="it_type2">
-					<label for="it_type2"><span style="color:<?php echo $default['de_it_type2_color']; ?>"><?php echo $default['de_it_type2_name']; ?></span></label>
-					&nbsp;
-					<input type="checkbox" name="it_type3" value="1" <?php echo ($it['it_type3'] ? "checked" : ""); ?> id="it_type3">
-					<label for="it_type3"><span style="color:<?php echo $default['de_it_type3_color']; ?>"><?php echo $default['de_it_type3_name']; ?></span></label>
-					&nbsp;
-					<input type="checkbox" name="it_type4" value="1" <?php echo ($it['it_type4'] ? "checked" : ""); ?> id="it_type4">
-					<label for="it_type4"><span style="color:<?php echo $default['de_it_type4_color']; ?>"><?php echo $default['de_it_type4_name']; ?></span></label>
-					&nbsp;
-					<input type="checkbox" name="it_type5" value="1" <?php echo ($it['it_type5'] ? "checked" : ""); ?> id="it_type5">
-					<label for="it_type5"><span style="color:<?php echo $default['de_it_type5_color']; ?>"><?php echo $default['de_it_type5_name']; ?></span></label>
-					&nbsp;
-					<input type="checkbox" name="pt_main" value="1" <?php echo ($it['pt_main'] ? "checked" : ""); ?> id="pt_main">
-					<label for="pt_main">메인</label>
+				<tr>
+					<th scope="row"><label for="pt_show">마이샵순서</label></th>
+					<td>
+						<?php echo help("숫자가 작을 수록 마이샵 상위에 출력되며, -2147483648 부터 2147483647 까지 입력가능합니다. 미입력시 자동으로 출력됩니다."); ?>
+						<input type="text" name="pt_show" value="<?php echo $it['pt_show']; ?>" id="pt_show" class="frm_input" size="12">
+					</td>
+				</tr>
+				<?php if($is_auth) { // 관리자일 때만 출력 ?>
+				<tr>
+					<th scope="row"><label for="it_order">출력순서</label></th>
+					<td>
+						<?php echo help("숫자가 작을 수록 상위에 출력되며, -2147483648 부터 2147483647 까지 입력가능합니다. 미입력시 자동으로 출력됩니다."); ?>
+						<input type="text" name="it_order" value="<?php echo $it['it_order']; ?>" id="it_order" class="frm_input" size="12">
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">상품태그</th>
+					<td>
+						<?php echo help("메인화면에 유형별로 출력할때 사용합니다. 목록에서 유형별로 정렬할때 체크된 것이 가장 먼저 출력됩니다."); ?>
+						<input type="checkbox" name="it_type1" value="1" <?php echo ($it['it_type1'] ? "checked" : ""); ?> id="it_type1">
+						<label for="it_type1"><span style="color:<?php echo $default['de_it_type1_color']; ?>"><?php echo $default['de_it_type1_name']; ?></span></label>
+						&nbsp;
+						<input type="checkbox" name="it_type2" value="1" <?php echo ($it['it_type2'] ? "checked" : ""); ?> id="it_type2">
+						<label for="it_type2"><span style="color:<?php echo $default['de_it_type2_color']; ?>"><?php echo $default['de_it_type2_name']; ?></span></label>
+						&nbsp;
+						<input type="checkbox" name="it_type3" value="1" <?php echo ($it['it_type3'] ? "checked" : ""); ?> id="it_type3">
+						<label for="it_type3"><span style="color:<?php echo $default['de_it_type3_color']; ?>"><?php echo $default['de_it_type3_name']; ?></span></label>
+						&nbsp;
+						<input type="checkbox" name="it_type4" value="1" <?php echo ($it['it_type4'] ? "checked" : ""); ?> id="it_type4">
+						<label for="it_type4"><span style="color:<?php echo $default['de_it_type4_color']; ?>"><?php echo $default['de_it_type4_name']; ?></span></label>
+						&nbsp;
+						<input type="checkbox" name="it_type5" value="1" <?php echo ($it['it_type5'] ? "checked" : ""); ?> id="it_type5">
+						<label for="it_type5"><span style="color:<?php echo $default['de_it_type5_color']; ?>"><?php echo $default['de_it_type5_name']; ?></span></label>
+						&nbsp;
+						<input type="checkbox" name="pt_main" value="1" <?php echo ($it['pt_main'] ? "checked" : ""); ?> id="pt_main">
+						<label for="pt_main">메인</label>
 
-					<br/>
-					<?php echo help("등록할 상품태그를 “태그명:색정보”로 입력하고 콤마(,)로 구분해서 입력합니다."); ?>
-					<input type="text" name="it_type" value="<?php echo get_text($it['it_type']); ?>" id="it_type" class="frm_input" size="40" placeholder="추가 태그 입력">
-				</td>
-			</tr>
-		<?php } // 관리자 끝 ?>
+						<br/>
+						<?php echo help("등록할 상품태그를 “태그명:색정보”로 입력하고 콤마(,)로 구분해서 입력합니다."); ?>
+						<input type="text" name="it_type" value="<?php echo get_text($it['it_type']); ?>" id="it_type" class="frm_input" size="40" placeholder="추가 태그 입력">
+					</td>
+				</tr>
+				<?php } // 관리자 끝 ?>
         <tr>
-            <th scope="row"><label for="it_maker">제조사</label></th>
-            <td>
-                <?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
-                <input type="text" name="it_maker" value="<?php echo get_text($it['it_maker']); ?>" id="it_maker" class="frm_input" size="40">
-            </td>
-        </tr>
-        <tr>
-            <th scope="row"><label for="it_origin">원산지</label></th>
-            <td>
-                <?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
-                <input type="text" name="it_origin" value="<?php echo get_text($it['it_origin']); ?>" id="it_origin" class="frm_input" size="40">
-            </td>
+					<th scope="row"><label for="it_maker">제조사</label></th>
+					<td>
+						<?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
+						<input type="text" name="it_maker" value="<?php echo get_text($it['it_maker']); ?>" id="it_maker" class="frm_input" size="40">
+					</td>
         </tr>
         <tr>
-            <th scope="row"><label for="it_brand">브랜드</label></th>
-            <td>
-                <?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
-                <input type="text" name="it_brand" value="<?php echo get_text($it['it_brand']); ?>" id="it_brand" class="frm_input" size="40">
-            </td>
+					<th scope="row"><label for="it_origin">원산지</label></th>
+					<td>
+						<?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
+						<input type="text" name="it_origin" value="<?php echo get_text($it['it_origin']); ?>" id="it_origin" class="frm_input" size="40">
+					</td>
         </tr>
         <tr>
-            <th scope="row"><label for="it_model">모델</label></th>
-            <td>
-                <?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
-                <input type="text" name="it_model" value="<?php echo get_text($it['it_model']); ?>" id="it_model" class="frm_input" size="40">
-            </td>
+					<th scope="row"><label for="it_brand">브랜드</label></th>
+					<td>
+						<?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
+						<input type="text" name="it_brand" value="<?php echo get_text($it['it_brand']); ?>" id="it_brand" class="frm_input" size="40">
+					</td>
         </tr>
-		<?php if($is_auth) { // 관리자일 때만 출력 ?>
-			<tr>
-				<th scope="row"><label for="it_tel_inq">전화문의</label></th>
-				<td>
-					<?php echo help("상품 금액 대신 전화문의로 표시됩니다."); ?>
-					<input type="checkbox" name="it_tel_inq" value="1" id="it_tel_inq" <?php echo ($it['it_tel_inq']) ? "checked" : ""; ?>> 예
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="it_nocoupon">쿠폰적용안함</label></th>
-				<td>
-					<?php echo help("설정에 체크하시면 쿠폰 생성 때 상품 검색 결과에 노출되지 않습니다."); ?>
-					<input type="checkbox" name="it_nocoupon" value="1" id="it_nocoupon" <?php echo ($it['it_nocoupon']) ? "checked" : ""; ?>> 예
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="it_use">포인트결제안함</label></th>
-				<td>
-					<?php echo help("설정에 체크하시면 주문시 본 상품이 포함된 경우 포인트 결제 또는 포인트 사용을 할 수 없습니다."); ?>
-					<label><input type="checkbox" name="pt_point" value="1" id="pt_point" <?php echo ($it['pt_point']) || !$w ? "checked" : ""; ?>> 예</label>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="ec_mall_pid">네이버쇼핑 상품ID</label></th>
-				<td colspan="2">
-					<?php echo help("네이버쇼핑에 입점한 경우 네이버쇼핑 상품ID를 입력하시면 네이버페이와 연동됩니다."); ?>
-					<input type="text" name="ec_mall_pid" value="<?php echo get_text($it['ec_mall_pid']); ?>" id="ec_mall_pid" class="frm_input" size="20">
-				</td>
-			</tr>
-		<?php } // 관리자 끝 ?>
-		<tr>
-            <th scope="row"><label for="it_use">판매가능</label></th>
-            <td>
-                <?php echo help("잠시 판매를 중단하거나 재고가 없을 경우에 체크를 해제해 놓으면 출력되지 않으며, 주문도 받지 않습니다."); ?>
-                <label><input type="checkbox" name="it_use" value="1" id="it_use" <?php echo ($it['it_use']) ? "checked" : ""; ?>> 예</label>
-            </td>
-		</tr>
-		<tr>
-            <th scope="row"><label for="it_use_partner">파트너몰 판매가능</label></th>
-            <td>
-                <?php echo help("파트너몰에서 잠시 판매를 중단하거나 재고가 없을 경우에 체크를 해제해 놓으면 출력되지 않으며, 주문도 받지 않습니다."); ?>
-                <label><input type="checkbox" name="it_use_partner" value="1" id="it_use_partner" <?php echo ($it['it_use_partner']) ? "checked" : ""; ?>> 예</label>
-            </td>
+        <tr>
+					<th scope="row"><label for="it_model">모델</label></th>
+					<td>
+						<?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
+						<input type="text" name="it_model" value="<?php echo get_text($it['it_model']); ?>" id="it_model" class="frm_input" size="40">
+					</td>
         </tr>
-		<tr>
-            <th scope="row"><label for="it_use_custom_order">주문제작 가능</label></th>
-            <td>
-                <?php echo help("체크하시면 관리자 주문내역에서 주문제작이 가능합니다."); ?>
-                <label><input type="checkbox" name="it_use_custom_order" value="1" id="it_use_custom_order" <?php echo ($it['it_use_custom_order']) ? "checked" : ""; ?>> 예</label>
-            </td>
+				<?php if($is_auth) { // 관리자일 때만 출력 ?>
+				<tr>
+					<th scope="row"><label for="it_tel_inq">전화문의</label></th>
+					<td>
+						<?php echo help("상품 금액 대신 전화문의로 표시됩니다."); ?>
+						<input type="checkbox" name="it_tel_inq" value="1" id="it_tel_inq" <?php echo ($it['it_tel_inq']) ? "checked" : ""; ?>> 예
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="it_nocoupon">쿠폰적용안함</label></th>
+					<td>
+						<?php echo help("설정에 체크하시면 쿠폰 생성 때 상품 검색 결과에 노출되지 않습니다."); ?>
+						<input type="checkbox" name="it_nocoupon" value="1" id="it_nocoupon" <?php echo ($it['it_nocoupon']) ? "checked" : ""; ?>> 예
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="it_use">포인트결제안함</label></th>
+					<td>
+						<?php echo help("설정에 체크하시면 주문시 본 상품이 포함된 경우 포인트 결제 또는 포인트 사용을 할 수 없습니다."); ?>
+						<label><input type="checkbox" name="pt_point" value="1" id="pt_point" <?php echo ($it['pt_point']) || !$w ? "checked" : ""; ?>> 예</label>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="ec_mall_pid">네이버쇼핑 상품ID</label></th>
+					<td colspan="2">
+						<?php echo help("네이버쇼핑에 입점한 경우 네이버쇼핑 상품ID를 입력하시면 네이버페이와 연동됩니다."); ?>
+						<input type="text" name="ec_mall_pid" value="<?php echo get_text($it['ec_mall_pid']); ?>" id="ec_mall_pid" class="frm_input" size="20">
+					</td>
+				</tr>
+				<?php } // 관리자 끝 ?>
+				<tr>
+					<th scope="row"><label for="it_use">판매가능</label></th>
+					<td>
+						<?php echo help("잠시 판매를 중단하거나 재고가 없을 경우에 체크를 해제해 놓으면 출력되지 않으며, 주문도 받지 않습니다."); ?>
+						<label><input type="checkbox" name="it_use" value="1" id="it_use" <?php echo ($it['it_use']) ? "checked" : ""; ?>> 예</label>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="it_use_partner">파트너몰 판매가능</label></th>
+					<td>
+						<?php echo help("파트너몰에서 잠시 판매를 중단하거나 재고가 없을 경우에 체크를 해제해 놓으면 출력되지 않으며, 주문도 받지 않습니다."); ?>
+						<label><input type="checkbox" name="it_use_partner" value="1" id="it_use_partner" <?php echo ($it['it_use_partner']) ? "checked" : ""; ?>> 예</label>
+					</td>
         </tr>
-		<tr>
-            <th scope="row"><label for="it_outsourcing_use">외부 발주</label></th>
-            <td>
-                <label><input type="checkbox" name="it_outsourcing_use" value="1" id="it_outsourcing_use" <?php echo ($it['it_outsourcing_use']) ? "checked" : ""; ?>> 사용하기</label><br/><br/>
-				<table class="it_outsourcing">
-					<tbody>
-						<tr>
-							<th>거래처ID</th>
-							<td>
-								<input type="text" name="it_outsourcing_id" value="<?php echo get_text($it['it_outsourcing_id']); ?>" id="it_outsourcing_id" class="frm_input" size="40">
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<p><b>- 주문 요청 시 선택사항 정보 (여러개일경우 콤마(,)로 추가해주세요.)</b></p>
-								<input type="text" name="it_outsourcing_option" value="<?php echo get_text($it['it_outsourcing_option']); ?>" id="it_outsourcing_option" class="frm_input" style="width:19%;" placeholder="옵션1">
-								<input type="text" name="it_outsourcing_option2" value="<?php echo get_text($it['it_outsourcing_option2']); ?>" id="it_outsourcing_option2" class="frm_input" style="width:19%;" placeholder="옵션2">
-								<input type="text" name="it_outsourcing_option3" value="<?php echo get_text($it['it_outsourcing_option3']); ?>" id="it_outsourcing_option3" class="frm_input" style="width:19%;" placeholder="옵션3">
-								<input type="text" name="it_outsourcing_option4" value="<?php echo get_text($it['it_outsourcing_option4']); ?>" id="it_outsourcing_option4" class="frm_input" style="width:19%;" placeholder="옵션4">
-								<input type="text" name="it_outsourcing_option5" value="<?php echo get_text($it['it_outsourcing_option5']); ?>" id="it_outsourcing_option5" class="frm_input" style="width:19%;" placeholder="옵션5">
-							</td>
-						</tr>
-					</tbody>
-				</table>
-            </td>
+				<tr>
+					<th scope="row"><label for="it_use_custom_order">주문제작 가능</label></th>
+					<td>
+						<?php echo help("체크하시면 관리자 주문내역에서 주문제작이 가능합니다."); ?>
+						<label><input type="checkbox" name="it_use_custom_order" value="1" id="it_use_custom_order" <?php echo ($it['it_use_custom_order']) ? "checked" : ""; ?>> 예</label>
+					</td>
         </tr>
-		<tr>
-            <th scope="row">상품설명</th>
-            <td>
-				<a href="<?php echo G5_BBS_URL;?>/helper.php" target="_blank" class="btn_frmline win_scrap">기능안내</a>
-				<a href="<?php echo G5_BBS_URL;?>/helper.php?act=map" target="_blank" class="btn_frmline win_scrap">구글지도</a>
-			</td>
-		</tr>
-		<tr>
-            <td colspan="2">
-				<?php echo editor_html('it_explan', get_text(html_purifier($it['it_explan']), 0)); ?>
-			</td>
-		</tr>
-		<tr>
-            <th scope="row">모바일 상품설명</th>
-            <td>
-				<a href="<?php echo G5_BBS_URL;?>/helper.php" target="_blank" class="btn_frmline win_scrap">기능안내</a>
-				<a href="<?php echo G5_BBS_URL;?>/helper.php?act=map" target="_blank" class="btn_frmline win_scrap">구글지도</a>
-			</td>
-        </tr>
-		<tr>
-            <td colspan="2" class="iframe">
-				<?php echo editor_html('it_mobile_explan', get_text(html_purifier($it['it_mobile_explan']), 0)); ?>
-			</td>
-        </tr>
-
-		<tr>
-            <th scope="row">작업시 참고사항</th>
-            <td>
-				작업지시서 하단에 출력됩니다.
-			</td>
-        </tr>
-		<tr>
-			<td colspan="2">
-				<?php echo editor_html('it_reference', get_text(html_purifier($it['it_reference']), 0)); ?>
-			</td>
-		</tr>
-		<?php if($is_auth) { // 관리자일 때만 출력 ?>
-			<tr>
-				<th scope="row">추천인 적립율</th>
-				<td>
-					<?php echo help("부가세를 제한 순판매액에 대해 추천인(마케터)에게 적립됩니다."); ?>
-					<input type="text" name="pt_marketer" value="<?php echo $it['pt_marketer']; ?>" id="pt_marketer" class="frm_input sm"> % 적립
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">파트너 아이디</th>
-				<td>
-					<?php echo help("미등록시 최고관리자 아이디로 모든 활동이 이루어집니다."); ?>
-					<input type="text" name="pt_id" value="<?php echo $it['pt_id']; ?>" id="pt_id" class="frm_input sm">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="it_sell_email">판매자 e-mail</label></th>
-				<td>
-					<?php echo help("운영자와 실제 판매자가 다른 경우 실제 판매자의 e-mail을 입력하면, 상품 주문 시점을 기준으로 실제 판매자에게도 주문서를 발송합니다."); ?>
-					<input type="text" name="it_sell_email" value="<?php echo get_sanitize_input($it['it_sell_email']); ?>" id="it_sell_email" class="frm_input sm">
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="it_shop_memo">상점메모</label></th>
-				<td><textarea name="it_shop_memo" id="it_shop_memo"><?php echo html_purifier($it['it_shop_memo']); ?></textarea></td>
-			</tr>
-		<?php } // 관리자 끝 ?>
-		</tbody>
-        </table>
+				<tr>
+					<th scope="row"><label for="it_outsourcing_use">외부 발주</label></th>
+					<td>
+						<label><input type="checkbox" name="it_outsourcing_use" value="1" id="it_outsourcing_use" <?php echo ($it['it_outsourcing_use']) ? "checked" : ""; ?>> 사용하기</label><br/><br/>
+						<table class="it_outsourcing">
+							<tbody>
+								<tr>
+									<th>거래처ID</th>
+									<td>
+										<input type="text" name="it_outsourcing_id" value="<?php echo get_text($it['it_outsourcing_id']); ?>" id="it_outsourcing_id" class="frm_input" size="40">
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<p><b>- 주문 요청 시 선택사항 정보 (여러개일경우 콤마(,)로 추가해주세요.)</b></p>
+										<input type="text" name="it_outsourcing_option" value="<?php echo get_text($it['it_outsourcing_option']); ?>" id="it_outsourcing_option" class="frm_input" style="width:19%;" placeholder="옵션1">
+										<input type="text" name="it_outsourcing_option2" value="<?php echo get_text($it['it_outsourcing_option2']); ?>" id="it_outsourcing_option2" class="frm_input" style="width:19%;" placeholder="옵션2">
+										<input type="text" name="it_outsourcing_option3" value="<?php echo get_text($it['it_outsourcing_option3']); ?>" id="it_outsourcing_option3" class="frm_input" style="width:19%;" placeholder="옵션3">
+										<input type="text" name="it_outsourcing_option4" value="<?php echo get_text($it['it_outsourcing_option4']); ?>" id="it_outsourcing_option4" class="frm_input" style="width:19%;" placeholder="옵션4">
+										<input type="text" name="it_outsourcing_option5" value="<?php echo get_text($it['it_outsourcing_option5']); ?>" id="it_outsourcing_option5" class="frm_input" style="width:19%;" placeholder="옵션5">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">상품설명</th>
+					<td>
+						<a href="<?php echo G5_BBS_URL;?>/helper.php" target="_blank" class="btn_frmline win_scrap">기능안내</a>
+						<a href="<?php echo G5_BBS_URL;?>/helper.php?act=map" target="_blank" class="btn_frmline win_scrap">구글지도</a>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<?php echo editor_html('it_explan', get_text(html_purifier($it['it_explan']), 0)); ?>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">모바일 상품설명</th>
+					<td>
+						<a href="<?php echo G5_BBS_URL;?>/helper.php" target="_blank" class="btn_frmline win_scrap">기능안내</a>
+						<a href="<?php echo G5_BBS_URL;?>/helper.php?act=map" target="_blank" class="btn_frmline win_scrap">구글지도</a>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="iframe">
+						<?php echo editor_html('it_mobile_explan', get_text(html_purifier($it['it_mobile_explan']), 0)); ?>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">작업시 참고사항</th>
+					<td>작업지시서 하단에 출력됩니다.</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<?php echo editor_html('it_reference', get_text(html_purifier($it['it_reference']), 0)); ?>
+					</td>
+				</tr>
+				<?php if($is_auth) { // 관리자일 때만 출력 ?>
+				<tr>
+					<th scope="row">추천인 적립율</th>
+					<td>
+						<?php echo help("부가세를 제한 순판매액에 대해 추천인(마케터)에게 적립됩니다."); ?>
+						<input type="text" name="pt_marketer" value="<?php echo $it['pt_marketer']; ?>" id="pt_marketer" class="frm_input sm"> % 적립
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">파트너 아이디</th>
+					<td>
+						<?php echo help("미등록시 최고관리자 아이디로 모든 활동이 이루어집니다."); ?>
+						<input type="text" name="pt_id" value="<?php echo $it['pt_id']; ?>" id="pt_id" class="frm_input sm">
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="it_sell_email">판매자 e-mail</label></th>
+					<td>
+						<?php echo help("운영자와 실제 판매자가 다른 경우 실제 판매자의 e-mail을 입력하면, 상품 주문 시점을 기준으로 실제 판매자에게도 주문서를 발송합니다."); ?>
+						<input type="text" name="it_sell_email" value="<?php echo get_sanitize_input($it['it_sell_email']); ?>" id="it_sell_email" class="frm_input sm">
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="it_shop_memo">상점메모</label></th>
+					<td><textarea name="it_shop_memo" id="it_shop_memo"><?php echo html_purifier($it['it_shop_memo']); ?></textarea></td>
+				</tr>
+				<?php } // 관리자 끝 ?>
+			</tbody>
+		</table>
 	</div>
 </section>
 
@@ -2372,9 +2369,9 @@ function fitemformcheck(f)
         sendData.append("prodPayCode", $("#prodPayCode").val()); // 제품코드
         sendData.append("prodSupYn", $("#prodSupYn").val()); //  유통 미유통
         sendData.append("prodSupPrice", $("#it_cust_price").val()); //  공급가격
-		 sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
-		 sendData.append("rentalPrice", $("#it_rental_price").val()); //  대여가격(1일)
-		 sendData.append("rentalPriceExtn", $("#it_rental_price").val()); //  대여연장가격(1일)
+				sendData.append("prodOflPrice", $("#it_price").val()); //  판매가격
+				sendData.append("rentalPrice", $("#it_rental_price").val()); //  대여가격(1일)
+				sendData.append("rentalPriceExtn", $("#it_rental_price").val()); //  대여연장가격(1일)
         sendData.append("prodStateCode", "03"); // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
         sendData.append("supId", $("#supId").val()); //  공급자아이디
         sendData.append("itemId", $("#it_thezone").val()); //  아이템 아이디
