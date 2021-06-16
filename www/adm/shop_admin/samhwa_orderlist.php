@@ -263,6 +263,11 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                         <input type="radio" id="od_release_1" name="od_release" value="1" <?php echo option_array_checked('1', $od_release); ?>><label for="od_release_1"> 외부출고</label>
                         <input type="radio" id="od_release_2" name="od_release" value="2" <?php echo option_array_checked('2', $od_release); ?>><label for="od_release_2"> 출고대기</label>
 				    </div>
+                    <div class="linear">
+                        <span class="linear_span">직배송</span>
+                        <input type="radio" id="ct_is_direct_delivery_all" name="ct_is_direct_delivery" value="" <?php echo option_array_checked('', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_all"> 전체</label>
+                        <input type="radio" id="ct_is_direct_delivery_1" name="ct_is_direct_delivery" value="1" <?php echo option_array_checked('1', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_1"> 직배송</label>
+				    </div>
                 </td>
             </tr>
             <tr>
@@ -495,7 +500,7 @@ function doSearch() {
 
     formdata['od_important'] = formdata['od_important']; // Assign new key
     // delete formdata['od_important[]']; // Delete old key
-	
+
 	formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
 
     var ajax = $.ajax({

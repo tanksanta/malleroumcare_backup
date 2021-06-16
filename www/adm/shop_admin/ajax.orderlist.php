@@ -95,6 +95,10 @@ if (gettype($od_important) == 'string' && $od_important !== '') {
     $where[] = " od_important = '$od_important' ";
 }
 
+if (gettype($ct_is_direct_delivery) == 'string' && $ct_is_direct_delivery !== '') {
+    $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
+}
+
 if (gettype($od_release) == 'string' && $od_release !== '') {
     if ($od_release == '0') { // 일반출고
         $where[] = " ( od_release_manager != 'no_release' AND od_release_manager != '-' ) ";
@@ -312,7 +316,7 @@ if ($sort2 == "") $sort2 = "desc";
 
 // shop_cart 조인으로 수정
 // member 테이블 조인
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status ,ct_move_date, ct_ex_date from {$g5['g5_shop_cart_table']}) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status ,ct_move_date, ct_ex_date, ct_is_direct_delivery from {$g5['g5_shop_cart_table']}) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -360,7 +364,7 @@ $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
 //$sql = " select count(od_id) as cnt, ct_status $sql_common2 group by ct_status";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_ex_date from {$g5['g5_shop_cart_table']}) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_ex_date, ct_is_direct_delivery from {$g5['g5_shop_cart_table']}) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
@@ -893,6 +897,7 @@ foreach($orderlist as $order) {
     $od_release_out = '-';
 
     $od_list_memo = $order['od_list_memo'] ? htmlspecialchars($order['od_list_memo']) : '없음';
+    if($order['ct_is_direct_delivery'] == '1') $od_list_memo = '직배송';
 
     $ret['right'] .= "
     <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']}\">
