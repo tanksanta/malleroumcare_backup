@@ -757,15 +757,15 @@ foreach($orderlist as $order) {
         }
         $sql = " select count(ct_id) as cnt, sum(ct_price*ct_qty) as ct_price, sum(ct_sendcost) as ct_sendcost, sum(ct_discount) as ct_discount
                 from
-                (select *
+                (select B.*, C.*, od_name, od_tel, od_hp, od_b_name, od_b_tel, od_b_hp, od_deposit_name, od_invoice, od_del_yn, it_admin_memo, it_maker 
                 from {$g5['g5_shop_cart_table']} B
-                    inner join (select od_id as order_od_id ,od_del_yn from {$g5['g5_shop_order_table']}) A
-                    on B.od_id = A.order_od_id
+                left join {$g5['g5_shop_item_table']} I on I.it_id = B.it_id
+                    inner join {$g5['g5_shop_order_table']} A
+                    on B.od_id = A.od_id
                     left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
                     on B.mb_id = C.mb_id_temp
                     group by B.ct_id ) as ct_id
                 $sql_search ";
-                
         $total_result = sql_fetch($sql);
         $total_result['price'] = number_format( $total_result['ct_price'] + $total_result['ct_sendcost'] - $total_result['ct_discount']);
         // print_r($sql);
