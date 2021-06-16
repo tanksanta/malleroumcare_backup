@@ -20,15 +20,23 @@ if($is_auth) { // 관리자일 때
 }
 $pg_anchor .='</ul>';
 
-	# 210208 entId목록
-	$entIdSQL = sql_query("SELECT mb_entId FROM g5_member WHERE mb_entId != '' AND mb_entId IS NOT NULL");
+# 210208 entId목록
+$entIdSQL = sql_query("SELECT mb_entId FROM g5_member WHERE mb_entId != '' AND mb_entId IS NOT NULL");
 
-	# 210208 분류코드 목록
-	$itemIdList = [];
-	$itemIdSQL = sql_query("SELECT ca_id, itemId FROM g5_shop_category");
-	for($i = 0; $row = sql_fetch_array($itemIdSQL); $i++){
-		$itemIdList[$row["ca_id"]] = $row["itemId"];
-	}
+# 210208 분류코드 목록
+$itemIdList = [];
+$itemIdSQL = sql_query("SELECT ca_id, itemId FROM g5_shop_category");
+for($i = 0; $row = sql_fetch_array($itemIdSQL); $i++){
+	$itemIdList[$row["ca_id"]] = $row["itemId"];
+}
+
+# 210616 관리자 메모 기능 추가
+if(!sql_query(" select it_admin_memo from {$g5['g5_shop_item_table']} limit 1 ", false)) {
+	sql_query("
+		ALTER TABLE `{$g5['g5_shop_item_table']}`
+		ADD `it_admin_memo` VARCHAR(900) NOT NULL DEFAULT '' AFTER `it_name` ", true
+	);
+}
 
 ?>
 <style>
@@ -47,100 +55,107 @@ $pg_anchor .='</ul>';
 <?php echo $pg_anchor; ?>
 
 <section id="anc_sitfrm_ini" class="anc-section">
-    <h2 class="h2_frm">기본정보</h2>
+	<h2 class="h2_frm">기본정보</h2>
 	<div class="tbl_frm01 tbl_wrap">
-        <table>
-        <caption>기본정보 입력</caption>
-        <colgroup>
-            <col class="grid_3">
-            <col>
-        </colgroup>
-        <tbody>
-        <tr>
-            <th scope="row"><label for="it_name">상품종류</label></th>
-            <td>
-				<?php echo help("상품종류에 따라 주문 및 결제후 이용방법이 달라집니다."); ?>
-				<select name="pt_it" id="pt_it" required class="importantBorder">
-					<option value="">선택해 주세요.</option>
-					<?php echo apms_pt_it($it['pt_it']); ?>
-				</select>
-            </td>
-        </tr>
-		<tr>
-            <th scope="row"><label for="ca_id">카테고리</label></th>
-            <td>
-                <?php if ($w == "") echo help("기본 분류를 선택하면, 판매/재고/HTML사용 등을, 선택한 분류의 기본값으로 설정합니다."); ?>
-                <?php echo help('각 분류는 기본 분류의 하위 분류 개념이 아니므로 기본 분류 선택시 해당 자료가 포함될 최하위 분류만 선택하시면 됩니다.'); ?>
-				<select name="ca_id" id="ca_id" onchange="categorychange(this.form)" class="importantBorder">
-                    <option value="">기본 분류 선택</option>
-                    <?php echo conv_selected_option($category_select, $it['ca_id']); ?>
-                </select>
-                <script>
-                    var ca_use = new Array();
-                    var ca_stock_qty = new Array();
-                    //var ca_explan_html = new Array();
-                    var ca_sell_email = new Array();
-                    var ca_opt1_subject = new Array();
-                    var ca_opt2_subject = new Array();
-                    var ca_opt3_subject = new Array();
-                    var ca_opt4_subject = new Array();
-                    var ca_opt5_subject = new Array();
-                    var ca_opt6_subject = new Array();
-                    <?php echo "\n$script"; ?>
-                </script>
-		        <?php for ($i=2; $i<=10; $i++) { ?>
-					<select name="ca_id<?php echo $i; ?>" id="ca_id<?php echo $i; ?>">
-						<option value=""><?php echo $i;?>차 분류 선택</option>
-						<?php echo conv_selected_option($category_select, $it['ca_id'.$i]); ?>
-					</select>
-					<?php echo $i ==5 ? '<br/>' : ''; ?>
+		<table>
+			<caption>기본정보 입력</caption>
+			<colgroup>
+				<col class="grid_3">
+				<col>
+			</colgroup>
+			<tbody>
+				<tr>
+					<th scope="row"><label for="it_name">상품종류</label></th>
+					<td>
+					<?php echo help("상품종류에 따라 주문 및 결제후 이용방법이 달라집니다."); ?>
+						<select name="pt_it" id="pt_it" required class="importantBorder">
+							<option value="">선택해 주세요.</option>
+							<?php echo apms_pt_it($it['pt_it']); ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="ca_id">카테고리</label></th>
+					<td>
+						<?php if ($w == "") echo help("기본 분류를 선택하면, 판매/재고/HTML사용 등을, 선택한 분류의 기본값으로 설정합니다."); ?>
+						<?php echo help('각 분류는 기본 분류의 하위 분류 개념이 아니므로 기본 분류 선택시 해당 자료가 포함될 최하위 분류만 선택하시면 됩니다.'); ?>
+						<select name="ca_id" id="ca_id" onchange="categorychange(this.form)" class="importantBorder">
+							<option value="">기본 분류 선택</option>
+							<?php echo conv_selected_option($category_select, $it['ca_id']); ?>
+						</select>
+<script>
+var ca_use = new Array();
+var ca_stock_qty = new Array();
+//var ca_explan_html = new Array();
+var ca_sell_email = new Array();
+var ca_opt1_subject = new Array();
+var ca_opt2_subject = new Array();
+var ca_opt3_subject = new Array();
+var ca_opt4_subject = new Array();
+var ca_opt5_subject = new Array();
+var ca_opt6_subject = new Array();
+<?php echo "\n$script"; ?>
+</script>
+						<?php for ($i=2; $i<=10; $i++) { ?>
+						<select name="ca_id<?php echo $i; ?>" id="ca_id<?php echo $i; ?>">
+							<option value=""><?php echo $i;?>차 분류 선택</option>
+							<?php echo conv_selected_option($category_select, $it['ca_id'.$i]); ?>
+						</select>
+						<?php echo $i ==5 ? '<br/>' : ''; ?>
 		        <?php } ?>
-			</td>
+					</td>
         </tr>
 
-		<tr>
-            <th scope="row">상품관리코드</th>
-            <td>
-                <?php if ($w == '') { // 추가 ?>
-                    <!-- 최근에 입력한 코드(자동 생성시)가 목록의 상단에 출력되게 하려면 아래의 코드로 대체하십시오. -->
-                    <!-- <input type=text class=required name=it_id value="<?php echo 10000000000-time()?>" size=12 maxlength=10 required> <a href='javascript:;' onclick="codedupcheck(document.all.it_id.value)"><img src='./img/btn_code.gif' border=0 align=absmiddle></a> -->
-                    <?php echo ($is_auth) ? help("상품관리코드는 10자리 숫자로 자동생성합니다. 직접 상품관리코드를 입력시 영문자, 숫자, - 만 입력 가능합니다.") : help("상품관리코드는 10자리 숫자로 자동생성합니다."); ?>
-                    <input type="text" name="it_id" value="<?php echo time(); ?>" id="it_id" required class="frm_input required importantBorder" size="20" maxlength="20" readonly>
-                    <!-- <?php if ($default['de_code_dup_use']) { ?><button type="button" class="btn_frmline" onclick="codedupcheck(document.all.it_id.value)">중복검사</a><?php } ?> -->
-                <?php } else { ?>
-                    <input type="hidden" name="it_id" id="it_id" value="<?php echo $it['it_id']; ?>">
-                    <span class="frm_ca_id"><?php echo $it['it_id']; ?></span>
-                    <a href="<?php echo G5_SHOP_URL; ?>/item.php?it_id=<?php echo $it_id; ?>" target="blank" class="btn_frmline">상품확인</a>
-                    <a href="./itemuselist.php?sfl=a.it_id&amp;stx=<?php echo $it_id; ?>" target="blank" class="btn_frmline">관련후기</a>
-                    <a href="./itemqalist.php?sfl=a.it_id&amp;stx=<?php echo $it_id; ?>" target="blank" class="btn_frmline">관련문의</a>
-                <?php } ?>
-            </td>
+				<tr>
+					<th scope="row">상품관리코드</th>
+					<td>
+						<?php if ($w == '') { // 추가 ?>
+						<!-- 최근에 입력한 코드(자동 생성시)가 목록의 상단에 출력되게 하려면 아래의 코드로 대체하십시오. -->
+						<!-- <input type=text class=required name=it_id value="<?php echo 10000000000-time()?>" size=12 maxlength=10 required> <a href='javascript:;' onclick="codedupcheck(document.all.it_id.value)"><img src='./img/btn_code.gif' border=0 align=absmiddle></a> -->
+						<?php echo ($is_auth) ? help("상품관리코드는 10자리 숫자로 자동생성합니다. 직접 상품관리코드를 입력시 영문자, 숫자, - 만 입력 가능합니다.") : help("상품관리코드는 10자리 숫자로 자동생성합니다."); ?>
+						<input type="text" name="it_id" value="<?php echo time(); ?>" id="it_id" required class="frm_input required importantBorder" size="20" maxlength="20" readonly>
+						<!-- <?php if ($default['de_code_dup_use']) { ?><button type="button" class="btn_frmline" onclick="codedupcheck(document.all.it_id.value)">중복검사</a><?php } ?> -->
+						<?php } else { ?>
+						<input type="hidden" name="it_id" id="it_id" value="<?php echo $it['it_id']; ?>">
+						<span class="frm_ca_id"><?php echo $it['it_id']; ?></span>
+						<a href="<?php echo G5_SHOP_URL; ?>/item.php?it_id=<?php echo $it_id; ?>" target="blank" class="btn_frmline">상품확인</a>
+						<a href="./itemuselist.php?sfl=a.it_id&amp;stx=<?php echo $it_id; ?>" target="blank" class="btn_frmline">관련후기</a>
+						<a href="./itemqalist.php?sfl=a.it_id&amp;stx=<?php echo $it_id; ?>" target="blank" class="btn_frmline">관련문의</a>
+						<?php } ?>
+					</td>
         </tr>
-		<tr>
-            <th scope="row"><label for="it_thezone">분류코드</label></th>
-            <td>
-                <input type="text" name="it_thezone" value="<?php echo $it['it_thezone']; ?>" id="it_thezone" class="frm_input importantBorder sl" readonly>
-            </td>
+				<tr>
+					<th scope="row"><label for="it_thezone">분류코드</label></th>
+					<td>
+						<input type="text" name="it_thezone" value="<?php echo $it['it_thezone']; ?>" id="it_thezone" class="frm_input importantBorder sl" readonly>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="it_thezone2">품목코드</label></th>
+					<td>
+						<input type="text" name="it_thezone2" value="<?php echo $it['it_thezone2']; ?>" id="it_thezone" class="frm_input importantBorder sl">
+					</td>
         </tr>
-		<tr>
-            <th scope="row"><label for="it_thezone2">품목코드</label></th>
-            <td>
-                <input type="text" name="it_thezone2" value="<?php echo $it['it_thezone2']; ?>" id="it_thezone" class="frm_input importantBorder sl">
-            </td>
+				<tr>
+					<th scope="row"><label for="it_name">상품명</label></th>
+					<td>
+						<?php echo help("HTML 입력이 불가합니다."); ?>
+						<input type="text" name="it_name" value="<?php echo get_text(cut_str($it['it_name'], 250, "")); ?>" id="it_name" required class="frm_input required importantBorder sl">
+					</td>
         </tr>
-		<tr>
-            <th scope="row"><label for="it_name">상품명</label></th>
-            <td>
-                <?php echo help("HTML 입력이 불가합니다."); ?>
-                <input type="text" name="it_name" value="<?php echo get_text(cut_str($it['it_name'], 250, "")); ?>" id="it_name" required class="frm_input required importantBorder sl">
-            </td>
+				<tr>
+					<th scope="row"><label for="it_name">관리자메모</label></th>
+					<td>
+						<?php echo help("상품 검색에 활용될 수 있습니다. HTML 입력이 불가합니다."); ?>
+						<input type="text" name="it_admin_memo" value="<?php echo get_text($it['it_admin_memo']); ?>" id="it_admin_memo" class="frm_input sl">
+					</td>
         </tr>
-		<tr>
-            <th scope="row"><label for="it_basic">기본설명</label></th>
-            <td>
-                <?php echo help("상품명 하단에 상품에 대한 추가적인 설명이 필요한 경우에 입력합니다. HTML 입력도 가능합니다."); ?>
-                <input type="text" name="it_basic" value="<?php echo get_text(html_purifier($it['it_basic'])); ?>" id="it_basic" class="frm_input sl">
-            </td>
+				<tr>
+					<th scope="row"><label for="it_basic">기본설명</label></th>
+					<td>
+						<?php echo help("상품명 하단에 상품에 대한 추가적인 설명이 필요한 경우에 입력합니다. HTML 입력도 가능합니다."); ?>
+						<input type="text" name="it_basic" value="<?php echo get_text(html_purifier($it['it_basic'])); ?>" id="it_basic" class="frm_input sl">
+					</td>
         </tr>
 		<tr>
 			<th scope="row"><label for="prodSym">재질</label></th>

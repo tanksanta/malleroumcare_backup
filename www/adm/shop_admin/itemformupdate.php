@@ -342,6 +342,7 @@ $it_name = strip_tags(clean_xss_attributes(trim($_POST['it_name'])));
 
 // KVE-2019-0708
 $check_sanitize_keys = array(
+'it_admin_memo',        // 관리자 메모
 'it_order',             // 출력순서
 'it_maker',             // 제조사
 'it_origin',            // 원산지
@@ -457,6 +458,7 @@ $sql_common = " ca_id               = '$ca_id',
                 ca_id9              = '$ca_id9',
                 ca_id10             = '$ca_id10',
                 it_name             = '$it_name',
+                it_admin_memo       = '$it_admin_memo',
                 it_maker            = '$it_maker',
                 it_origin           = '$it_origin',
                 it_brand            = '$it_brand',
