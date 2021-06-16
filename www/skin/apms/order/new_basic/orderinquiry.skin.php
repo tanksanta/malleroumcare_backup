@@ -368,7 +368,8 @@ if($header_skin)
 								<a href="<?php echo G5_SHOP_URL; ?>/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
 							<?php } ?>
 							<?php if($ct_status_text == "출고완료"){ ?>
-								<a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a>
+								<!-- 이카운트 등록오류 가능할 수 있어 임시로 삭제 
+									<a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a> -->
 							<?php } ?>
 							</div>
 						</li>
