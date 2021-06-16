@@ -266,7 +266,7 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
 				?>
 				<tr>
 					<td><?=$index?></td>
-				 	<td><a href="#"><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></a></td>
+				 	<td><a href="<?=G5_SHOP_URL?>/my_recipient_view.php?id=<?=$row['penId']?>"><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></a></td>
 				 	<td class="text_c start_date <?=($row['orig']['start_date'] != $row['start_date'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['start_date']?>"><?=$row['start_date']?></td>
 				 	<td class="text_r total_price <?=($row['orig']['total_price'] != $row['total_price'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price']?>"><?=number_format($row['total_price'])?>원</td>
 				 	<td class="text_r total_price_pen <?=($row['orig']['total_price_pen'] != $row['total_price_pen'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price_pen']?>"><?=number_format($row['total_price_pen'])?>원</td>
