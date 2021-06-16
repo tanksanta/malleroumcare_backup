@@ -1251,7 +1251,7 @@ pre{white-space: pre-wrap;}
 	#fixed_recipient {
 		width: 90%;
 		left: 5%;
-		bottom: 80px;
+		bottom: 150px;
 		box-sizing: border-box;
 	}
 	#fixed_recipient .info {
