@@ -539,21 +539,20 @@ foreach($orderlist as $order) {
     $od_release_select .='</select>';
     
 
-       //영업담당자
-        $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$order['mb_id']."'";
-        $result_manager = sql_fetch($sql_manager);
+    //영업담당자
+    $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$order['mb_id']."'";
+    $result_manager = sql_fetch($sql_manager);
 
-            //사업소명
-            if($result_manager['mb_entNm']){
-                $mb_entNm = $result_manager['mb_entNm'];
-            }else{
-                $mb_entNm = $order['od_name'];
-            }
+    //사업소명
+    if($result_manager['mb_entNm']){
+        $mb_entNm = $result_manager['mb_entNm'];
+    }else{
+        $mb_entNm = $order['od_name'];
+    }
 
-
-        $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
-        $result_manager = sql_fetch($sql_manager);
-        $sale_manager=$result_manager['mb_name'];
+    $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
+    $result_manager = sql_fetch($sql_manager);
+    $sale_manager=$result_manager['mb_name'];
 
 
     switch ($ct_status_text) {
@@ -847,22 +846,6 @@ foreach($orderlist as $order) {
     </tr>
     ";
 
-    $sale_manager = '';
-    $sale_manager = get_member($order['mb_id']);
-    $sale_manager = get_member($sale_manager['mb_manager'])['mb_name'];
-    //$sale_manager = get_sideview($sale_manager['mb_id'], get_text($sale_manager['mb_name']), $sale_manager['mb_email'], '');
-
-
-
-    /*$release_manager = '';
-    $release_manager = get_member($order['od_release_manager']);
-    $release_manager = get_sideview($release_manager['mb_id'], get_text($release_manager['mb_name']), $release_manager['mb_email'], '');
-    if ($order['od_release_manager'] == 'no_release') {
-        $release_manager = '<span style="color: #ff6600;">출고대기</span>';
-    }
-    if ($order['od_release_manager'] == '-') {
-        $release_manager = '외부출고';
-    }*/
     $important2_class = $order['od_important2'] ? 'on' : '';
 
     $pay_status = get_pay_step($order['od_pay_state']);
