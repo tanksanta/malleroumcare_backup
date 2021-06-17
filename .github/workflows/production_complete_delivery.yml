@@ -18,5 +18,6 @@ jobs:
           method: 'POST'
           accept: 200, 201
           timeout: 10000
+          is_debug: true
       - name: show api response
         run: echo ${{ steps.api.outputs.response }}
