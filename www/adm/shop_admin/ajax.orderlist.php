@@ -848,12 +848,13 @@ foreach($orderlist as $order) {
     ";
 
     $sale_manager = '';
-    $sale_manager = get_member($order['od_sales_manager']);
-    $sale_manager = get_sideview($sale_manager['mb_id'], get_text($sale_manager['mb_name']), $sale_manager['mb_email'], '');
+    $sale_manager = get_member($order['mb_id']);
+    $sale_manager = get_member($sale_manager['mb_manager'])['mb_name'];
+    //$sale_manager = get_sideview($sale_manager['mb_id'], get_text($sale_manager['mb_name']), $sale_manager['mb_email'], '');
 
 
 
-    $release_manager = '';
+    /*$release_manager = '';
     $release_manager = get_member($order['od_release_manager']);
     $release_manager = get_sideview($release_manager['mb_id'], get_text($release_manager['mb_name']), $release_manager['mb_email'], '');
     if ($order['od_release_manager'] == 'no_release') {
@@ -861,7 +862,7 @@ foreach($orderlist as $order) {
     }
     if ($order['od_release_manager'] == '-') {
         $release_manager = '외부출고';
-    }
+    }*/
     $important2_class = $order['od_important2'] ? 'on' : '';
 
     $pay_status = get_pay_step($order['od_pay_state']);
