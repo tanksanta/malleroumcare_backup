@@ -1783,12 +1783,17 @@ var od_id = '<?php echo $od['od_id']; ?>';
 
                 if ($cancel_request_row['od_id']) {
                 ?>
-                <span id="cancel_info"><?php echo $info ?></span> <button type="button" onclick="approveCancel()">승인</button>
+                <span id="cancel_info"><?php echo $info ?></span> <button type="button" onclick="approveCancel()">승인</button> <button type="button" class="btn" onclick="rejectCancel()">거절</button>
                 <?php } ?>
                 <script>
                     function approveCancel() {
                         if (confirm('승인처리 하시겠습니까?')) {
                             location.href = './orderinquirycancelapprove.php?od_id=<?php echo $od['od_id'] ?>';
+                        }
+                    }
+                    function rejectCancel() {
+                        if (confirm('거절처리 하시겠습니까?')) {
+                            location.href = './orderinquirycancelreject.php?od_id=<?php echo $od['od_id'] ?>';
                         }
                     }
                 </script>
