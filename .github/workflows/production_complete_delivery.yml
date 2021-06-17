@@ -14,7 +14,7 @@ jobs:
         uses: indiesdev/curl@v1
         id: api
         with:
-          url: https://eroumcare.com/cron/auto_complete_delivery.php
+          url: https://eroumcare.com/cron/complete_delivery.php
           method: 'POST'
           accept: 200, 201
           timeout: 10000
