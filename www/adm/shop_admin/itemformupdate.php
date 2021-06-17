@@ -342,6 +342,10 @@ $it_name = strip_tags(clean_xss_attributes(trim($_POST['it_name'])));
 
 // KVE-2019-0708
 $check_sanitize_keys = array(
+'it_rental_use_persisting_year', // 대여 내구연한 사용
+'it_rental_expiry_year', //  대여 판매가능기간
+'it_rental_persisting_year', // 대여 내구연한
+'it_rental_persisting_price', // 대여 내구연한 이후 대여금액
 'it_admin_memo',        // 관리자 메모
 'it_order',             // 출력순서
 'it_maker',             // 제조사
@@ -609,29 +613,34 @@ $sql_common = " ca_id               = '$ca_id',
                 it_sale_cnt             = '$it_sale_cnt',
                 it_sale_percent             = '$it_sale_percent',
                 it_sale_percent_great             = '$it_sale_percent_great',
-				  it_sale_cnt_02             = '$it_sale_cnt_02',
+                it_sale_cnt_02             = '$it_sale_cnt_02',
                 it_sale_percent_02             = '$it_sale_percent_02',
                 it_sale_percent_great_02             = '$it_sale_percent_great_02',
-				  it_sale_cnt_03             = '$it_sale_cnt_03',
+                it_sale_cnt_03             = '$it_sale_cnt_03',
                 it_sale_percent_03             = '$it_sale_percent_03',
                 it_sale_percent_great_03             = '$it_sale_percent_great_03',
-				  it_sale_cnt_04             = '$it_sale_cnt_04',
+                it_sale_cnt_04             = '$it_sale_cnt_04',
                 it_sale_percent_04             = '$it_sale_percent_04',
                 it_sale_percent_great_04             = '$it_sale_percent_great_04',
-				  it_sale_cnt_05             = '$it_sale_cnt_05',
+                it_sale_cnt_05             = '$it_sale_cnt_05',
                 it_sale_percent_05             = '$it_sale_percent_05',
                 it_sale_percent_great_05             = '$it_sale_percent_great_05',
-                
-					entId = '$entId',
-					prodSupYn = '$prodSupYn',
-					prodSizeDetail = '$prodSizeDetail',
-					it_taxInfo = '$it_taxInfo',
 
-					it_delivery_cnt = '{$_POST["it_delivery_cnt"]}',
-					it_delivery_price = '{$_POST["it_delivery_price"]}',
-                    it_delivery_min_cnt = '{$_POST["it_delivery_min_cnt"]}',
-					it_delivery_min_price = '{$_POST["it_delivery_min_price"]}',
-                    it_is_direct_delivery = '$it_is_direct_delivery'
+                entId = '$entId',
+                prodSupYn = '$prodSupYn',
+                prodSizeDetail = '$prodSizeDetail',
+                it_taxInfo = '$it_taxInfo',
+
+                it_delivery_cnt = '{$_POST["it_delivery_cnt"]}',
+                it_delivery_price = '{$_POST["it_delivery_price"]}',
+                it_delivery_min_cnt = '{$_POST["it_delivery_min_cnt"]}',
+                it_delivery_min_price = '{$_POST["it_delivery_min_price"]}',
+                it_is_direct_delivery = '$it_is_direct_delivery',
+
+                it_rental_use_persisting_year = '$it_rental_use_persisting_year',
+                it_rental_expiry_year = '$it_rental_expiry_year',
+                it_rental_persisting_year = '$it_rental_persisting_year',
+                it_rental_persisting_price = '$it_rental_persisting_price'
 				"; // APMS : 2014.07.20
 
                 // it_outsourcing_use  = '$it_outsourcing_use',

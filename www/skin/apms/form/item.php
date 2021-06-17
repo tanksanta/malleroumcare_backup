@@ -38,6 +38,16 @@ if(!sql_query(" select it_admin_memo from {$g5['g5_shop_item_table']} limit 1 ",
 	);
 }
 
+# 210617 대여제품 내구연한
+if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_table']} limit 1 ", false)) {
+	sql_query("
+		ALTER TABLE `{$g5['g5_shop_item_table']}`
+		ADD `it_rental_use_persisting_year` TINYINT NOT NULL DEFAULT 0 AFTER `it_is_direct_delivery`,
+		ADD `it_rental_expiry_year` INT NOT NULL DEFAULT 0 AFTER `it_rental_use_persisting_year`,
+		ADD `it_rental_persisting_year` INT NOT NULL DEFAULT 0 AFTER `it_rental_expiry_year`,
+		ADD `it_rental_persisting_price` INT NOT NULL DEFAULT 0 AFTER `it_rental_persisting_year` ", true
+	);
+}
 ?>
 <style>
 	.sl { width:100% }
@@ -505,6 +515,14 @@ var ca_opt6_subject = new Array();
 				<th scope="row"><label for="it_rental_price">대여금액(월)</label></th>
 				<td>
 					<input type="text" name="it_rental_price" value="<?php echo $it['it_rental_price']; ?>" id="it_rental_price" class="frm_input" size="8"> 원
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="it_rental_price">대여(내구연한설정)</label></th>
+				<td>
+				<label><input type="checkbox" name="it_rental_use_persisting_year" value="1" id="it_rental_use_persisting_year" <?php echo ($it['it_rental_use_persisting_year']) ? "checked" : ""; ?>> 사용</label><br>
+				판매가능기간: <input type="text" name="it_rental_expiry_year" value="<?php echo $it['it_rental_expiry_year']; ?>" id="it_rental_expiry_year" class="frm_input" size="2"> 년<br>
+				내구연한 설정 기간: <input type="text" name="it_rental_persisting_year" value="<?php echo $it['it_rental_persisting_year']; ?>" id="it_rental_persisting_year" class="frm_input" size="2"> 년 이후 월 대여금액 <input type="text" name="it_rental_persisting_price" value="<?php echo $it['it_rental_persisting_price']; ?>" id="it_rental_persisting_price" class="frm_input" size="8"> 원
 				</td>
 			</tr>
 		<?php } // 관리자 끝 ?>
