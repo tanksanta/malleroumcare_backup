@@ -672,7 +672,7 @@ if ($w == "")
 }
 else if ($w == "u")
 {
-    $gubun = substr($ca_id, 0, 2) == '10' ? '00' : '01';
+    $gubun = $cate_gubun_table[substr($ca_id, 0, 2)];
     $tax_info = $it_taxInfo == '영세' ? '01' : '02';
     $prod_color = [];
     $prod_size = [];
