@@ -791,7 +791,7 @@ pre{white-space: pre-wrap;}
 	display: table-cell; 
 	vertical-align: top; 
 }
-#mainTopSlidePCWrap > .listWrap { width: 18%; border: 1px solid #DDD; background-color: #FFF; border-top: 0; padding: 20px; z-index: 2; }
+#mainTopSlidePCWrap > .listWrap { width: 18%; border: 1px solid #DDD; background-color: #FFF;   padding: 20px; z-index: 2; }
 #mainTopSlidePCWrap > .listWrap > ul { width: 100%; float: left; }
 #mainTopSlidePCWrap > .listWrap > ul > li { width: 100%; float: left; margin-bottom: 5px; }
 #mainTopSlidePCWrap > .listWrap > ul:last-of-type > li:last-of-type { margin-bottom: 0; }
