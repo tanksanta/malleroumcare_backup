@@ -74,7 +74,7 @@ while( $row = sql_fetch_array($res) ) {
 $banks = explode(PHP_EOL, $default['de_bank_account']); 
 
 $is_index = '';
-if(defined('_INDEX_')) { // index에서만 실행
+if(defined('_INDEX_') && !defined('_MAIN_')) { // index에서만 실행
 	$is_index = 'is-index';
 }
 ?>

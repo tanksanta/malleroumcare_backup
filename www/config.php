@@ -67,6 +67,10 @@ define('EROUMCARE_API_SELECT_DETAIL_LIST',                       'https://system
 define('EROUMCARE_API_STOCK_UPDATE',                             'https://system.eroumcare.com:9901/api/stock/update');
 // 장바구니 정보
 define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do');
+// 상품 등록
+define('EROUMCARE_API_PROD_INSERT',                              'https://system.eroumcare.com/api/prod/insert');
+// 상품 업데이트
+define('EROUMCARE_API_PROD_UPDATE',                              'https://system.eroumcare.com/api/prod/update');
 // 수급자 등록
 define('EROUMCARE_API_RECIPIENT_INSERT',                         'https://system.eroumcare.com/api/recipient/insert');
 // 수급자 조회
