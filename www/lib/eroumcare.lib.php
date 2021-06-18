@@ -502,3 +502,10 @@ $cate_gubun_table = array(
 	'20' => '01', /* 대여 */
 	'70' => '02' /* 비급여 */
 );
+
+$recipient_state = array(
+	'wait' => '대기',
+	'request' => '욫청',
+	'link' => '연결',
+	'register' => '등록',
+);

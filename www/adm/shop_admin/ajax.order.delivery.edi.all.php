@@ -9,15 +9,33 @@ if (is_array($ct_id)) {
     $where = ' c.ct_id IN (\'' . implode('\',\'', $ct_id) . '\')';
 }
 
+if (!$ct_id || !is_array($ct_id)) {
+    $ret = array(
+        'result' => 'fail',
+        'msg' => '전송할 주문을 선택해주세요.',
+    );
+    echo json_encode($ret);
+    exit;
+}
+
+if (count($ct_id) > 99) {
+    $ret = array(
+        'result' => 'fail',
+        'msg' => '전송할 주문이 너무 많습니다. (최대 99개)',
+    );
+    echo json_encode($ret);
+    exit;
+}
+
 if ($type === 'resend') {
-    if (!$ct_id) {
-        $ret = array(
-            'result' => 'fail',
-            'msg' => '재전송할 주문을 선택해주세요.',
-        );
-        echo json_encode($ret);
-        exit;
-    }
+    // if (!$ct_id) {
+    //     $ret = array(
+    //         'result' => 'fail',
+    //         'msg' => '재전송할 주문을 선택해주세요.',
+    //     );
+    //     echo json_encode($ret);
+    //     exit;
+    // }
 } else {
     $where .= " AND c.ct_edi_result = 0 ";
 }
