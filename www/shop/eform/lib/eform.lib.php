@@ -8,7 +8,7 @@ function array_keys_exists(array $keys, array $arr) {
   return !array_diff($keys, array_keys($arr));
 }
 
-function json_response($code = 200, $message = null) {
+function json_response($code = 200, $message = null, $data = null) {
   http_response_code($code);
   header("Content-Type: application/json");
   $status = array(
@@ -17,10 +17,14 @@ function json_response($code = 200, $message = null) {
     500 => '500 Internal Server Error'
   );
   header('Status: '.$status[$code]);
-  echo json_encode(array(
+
+  $res = array(
     'status' => $code < 300, // success or not?
     'message' => $message
-  ));
+  );
+  if($data) $res['data'] = $data;
+
+  echo json_encode($res);
   exit;
 }
 
