@@ -509,3 +509,19 @@ $recipient_state = array(
 	'link' => '연결',
 	'register' => '등록',
 );
+
+function get_recipient($penId) {
+	global $member;
+
+	$result = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+		'usrId' => $member['mb_id'],
+		'entId' => $member['mb_entId'],
+		'penId' => $penId
+	));
+
+	$res = null;
+	if($result['errorYN'] == 'N' && $result['data'])
+		$res = $result['data'][0];
+
+	return $res;
+}
