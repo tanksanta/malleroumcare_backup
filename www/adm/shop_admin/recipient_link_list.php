@@ -59,6 +59,8 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
         <th scope="col" id="th_address">주소</th>
         <th scope="col" id="th_end">연결사업소</th>
         <th scope="col" id="th_state">상태</th>
+        <th scope="col" id="th_datetime">최근 수정 시간</th>
+        <th scope="col" id="th_edit" style="width:100px">비고</th>
     </tr>
     </thead>
     <tbody>
@@ -72,22 +74,25 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
     ?>
 
     <tr class="<?php echo $bg; ?>">
-        <td headers="th_id" rowspan="2" class="td_num"><?php echo $row['bn_id']; ?></td>
-        <td headers="th_dvc"><?php echo $bn_device; ?></td>
-        <td headers="th_loc"><?php echo $row['bn_position']; ?></td>
-        <td headers="th_st" class="td_datetime"><?php echo $bn_begin_time; ?></td>
-        <td headers="th_end" class="td_datetime"><?php echo $bn_end_time; ?></td>
-        <td headers="th_odr" class="td_num"><?php echo $row['bn_order']; ?></td>
-        <td headers="th_hit" class="td_num"><?php echo $row['bn_hit']; ?></td>
-        <td headers="th_mng" class="td_mng td_mns_m">
-            <a href="./bannerform.php?w=u&amp;bn_id=<?php echo $row['bn_id']; ?>" class="btn btn_03">수정</a>
-            <a href="./bannerformupdate.php?w=d&amp;bn_id=<?php echo $row['bn_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_02">삭제</a>
+        <td headers="th_id" class="td_num"><?php echo $row['rl_id']; ?></td>
+        <td headers="th_info">
+            <?php echo get_text($row['rl_name']); ?>
+            <?php echo $row['rl_ltm'] ? '(' . $row['rl_ltm'] . ')' : ''; ?>
         </td>
-    </tr>
-    <tr class="<?php echo $bg; ?>">
-        <td headers="th_img" colspan="7" class="td_img_view sbn_img">
-            <div class="sbn_image"><?php echo $bn_img; ?></div>
-            <button type="button" class="sbn_img_view btn_frmline">이미지확인</button>
+        <td headers="th_address">
+            <?php echo get_text($row['rl_addr1']); ?>
+            <?php echo get_text($row['rl_addr2']); ?>
+            <?php echo get_text($row['rl_addr3']); ?>
+        </td>
+        <td headers="th_end" class="">
+
+        </td>
+        <td headers="th_state" class="" style="text-align:center">
+            <?php echo $recipient_state[$row['rl_state']]; ?>
+        </td>
+        <td headers="th_datetime" class="td_datetime"><?php echo $row['rl_updated_at']; ?></td>
+        <td headers="th_edit" class="" style="text-align:center;">
+            <a target="_blank" href="./recipient_link_form.php?'.$qstr.'&amp;w=u&amp;rl_id=<?php echo $row['rl_id']; ?>" class="btn btn_03">수정</a>
         </td>
     </tr>
 
