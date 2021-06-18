@@ -11,11 +11,7 @@ if (!$is_development) {
     alert('준비중 입니다.');
 }
 
-// 상태 전체 선택시 unset
-if ($rl_state && count($rl_state) >= count($recipient_state)) {
-    unset($rl_state);
-}
-
+// 검색
 $sel_field = get_search_string($sel_field);
 if( !in_array($sel_field, array('rl.rl_name')) ){   //검색할 필드 대상이 아니면 값을 제거
     $sel_field = '';
@@ -29,6 +25,11 @@ if ($sel_field != "" && $search) {
 // 등록일
 if ($fr_datetime && $to_datetime) {
     $sql_search .= " and ( rl_created_at between '$fr_datetime 00:00:00' and '$to_datetime 23:59:59' )";
+}
+
+// 상태 전체 선택시 unset
+if ($rl_state && count($rl_state) >= count($recipient_state)) {
+    unset($rl_state);
 }
 
 if ($rl_state) {
@@ -116,7 +117,7 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
         <th scope="col" id="th_state">상태</th>
         <th scope="col" id="th_datetime">등록일</th>
         <th scope="col" id="th_datetime">최근 수정</th>
-        <th scope="col" id="th_edit" style="width:100px">비고</th>
+        <th scope="col" id="th_edit" style="width:130px">비고</th>
     </tr>
     </thead>
     <tbody>
@@ -154,7 +155,8 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
         <td headers="th_datetime" class="td_datetime"><?php echo $row['rl_created_at']; ?></td>
         <td headers="th_datetime" class="td_datetime"><?php echo $row['rl_updated_at']; ?></td>
         <td headers="th_edit" class="" style="text-align:center;">
-            <a target="_blank" href="./recipient_link_form.php?'.$qstr.'&amp;w=u&amp;rl_id=<?php echo $row['rl_id']; ?>" class="btn btn_03">수정</a>
+            <a href="./recipient_link_view.php?<?php echo $qstr ; ?>&amp;w=u&amp;rl_id=<?php echo $row['rl_id']; ?>" class="btn btn_03">자세히</a>
+            <a href="./recipient_link_form.php?<?php echo $qstr ; ?>&amp;w=u&amp;rl_id=<?php echo $row['rl_id']; ?>" class="btn btn_03">수정</a>
         </td>
     </tr>
 
@@ -173,29 +175,22 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
 <script>
 jQuery(function($) {
-    $(".sbn_img_view").on("click", function() {
-        $(this).closest(".td_img_view").find(".sbn_image").slideToggle();
-    });
-
+    // 상태 체크 박스
     $('.rl_state').click(function() {
-
-        if ($(this).attr('id') !== 'state-all') {
-            var parent = $(this).parent('div');
-            var total = $(parent).find('.rl_state_child').length;
-            var checkedTotal = $(parent).find('.rl_state_child:checked').length;
-
-            $("#state-all").prop('checked', total <= checkedTotal); 
-
+        if ($(this).attr('id') === 'state-all') {
+            var checked = $(this).is(":checked");
+            $(".rl_state").prop('checked', checked);
             return;
         }
 
-        if ($(this).is(":checked")) {
-            $(".rl_state").prop('checked', true); 
+        var parent = $(this).parent('div');
+        var total = $(parent).find('.rl_state_child').length;
+        var checkedTotal = $(parent).find('.rl_state_child:checked').length;
 
-        } else {
-            $(".rl_state").prop('checked', false);
-        }
-    })
+        $("#state-all").prop('checked', total <= checkedTotal); 
+
+        return;
+    });
 });
 </script>
 
