@@ -231,10 +231,7 @@ if ($od_escrow) {
 }
 
 if ($fr_date && $to_date) {
-    if($sel_date_field == 'ct_ex_date')
-        $where[] = " {$sel_date_field} between '$fr_date' and '$to_date' ";
-    else
-        $where[] = " {$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
+    $where[] = " {$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
 }
 
 $where[] = " od_del_yn = 'N' ";
