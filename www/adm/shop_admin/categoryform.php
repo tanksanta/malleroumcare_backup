@@ -8,6 +8,16 @@ auth_check($auth[$sub_menu], "w");
 // APMS - 2014.07.21
 include_once(G5_ADMIN_PATH.'/apms_admin/apms.admin.lib.php');
 
+# 210618 상품분류 내구연한
+if(!sql_query(" select ca_use_limit from {$g5['g5_shop_category_table']} limit 1 ", false)) {
+	sql_query("
+		ALTER TABLE `{$g5['g5_shop_category_table']}`
+		ADD `ca_use_limit` TINYINT NOT NULL DEFAULT 0 AFTER `ca_stock_qty`,
+		ADD `ca_limit_month` INT NOT NULL DEFAULT 0 AFTER `ca_use_limit`,
+		ADD `ca_limit_num` INT NOT NULL DEFAULT 0 AFTER `ca_limit_month`
+    ", true);
+}
+
 $flist = array();
 $flist = apms_form(1,0);
 
@@ -552,6 +562,15 @@ if(USE_G5_THEME) {
             <col>
         </colgroup>
         <tbody>
+        <tr>
+            <th scope="row"><label for="ca_persisting_year">내구연한</label></th>
+            <td>
+                <?php echo help("설정된 기간 동안 구매가능한 수량을 선택해주세요.<br>기간 내 추가 구매 시도시 알림이 표시됩니다."); ?>
+                <input type="checkbox" name="ca_use_limit" value="1" id="ca_use_limit" <?php if($ca['ca_use_limit']) echo 'checked="checked"'; ?>> 사용<br>
+                기간: <input type="text" name="ca_limit_month" value="<?php echo $ca['ca_limit_month']; ?>" id="ca_limit_month" class="frm_input" size="3"> 개월, 
+                구매가능 수량 <input type="text" name="ca_limit_num" value="<?php echo $ca['ca_limit_num']; ?>" id="ca_limit_num" class="frm_input" size="3"> 개
+            </td>
+        </tr>
         <tr>
             <th scope="row"><label for="ca_include_head">상단파일경로</label></th>
             <td>
