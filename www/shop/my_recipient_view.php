@@ -19,7 +19,7 @@ $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
   'penId' => $_GET['id']
 ));
 
-if(!$res || $res['errorYn'] == 'Y')
+if(!$res || $res['errorYN'] == 'Y')
   alert('서버 오류로 수급자 정보를 불러올 수 없습니다.');
 
 $pen = $res['data'][0];
