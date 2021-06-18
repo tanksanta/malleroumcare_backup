@@ -93,4 +93,7 @@ define('NAVER_WCS_WA', '');
 // 다음코드
 define('DAUM_HPT_INFO_ACCOUNT', '');
 define('DAUM_CONVERSION_ACCOUNT_ID', '');
+
+$is_production = true;
+$is_development = false;
 ?>

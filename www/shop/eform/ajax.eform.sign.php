@@ -1,6 +1,5 @@
 <?php
 include_once("./_common.php");
-include_once('./lib/eform.lib.php');
 include_once(G5_LIB_PATH.'/icode.lms.lib.php');
 include_once(G5_LIB_PATH.'/mailer.lib.php');
 

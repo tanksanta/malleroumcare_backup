@@ -19,7 +19,7 @@ $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
   'penId' => $_GET['id']
 ));
 
-if(!$res || $res['errorYn'] == 'Y')
+if(!$res || $res['errorYN'] == 'Y')
   alert('서버 오류로 수급자 정보를 불러올 수 없습니다.');
 
 $pen = $res['data'][0];
@@ -76,7 +76,11 @@ $recs = get_recs_by_recipient($pen['penId']);
     </div>
     <div class="row">
       <div class="col-sm-2">·보호자</div>
-      <div class="col-sm-10">: <?=check_and_print($pen_pro_rel_cd[$pen['penProRel']], '(', ')')?><?=$pen['penProNm']?><?=check_and_print(substr($pen['penProBirth'], 2, 2), ', ', '년생')?><?=check_and_print($pen['penProConNum'], ', ')?><?=check_and_print($pen['penProConPNum'], ', ')?><?=check_and_print($pen['penProAddr'], ', ')?><?=check_and_print($pen['penProAddrDtl'], ' ')?></div>
+      <?php if($pen['penProTypeCd'] == '00') { // 보호자 없음 ?>
+      <div class="col-sm-10">: 없음</div>
+      <?php } else { ?>
+      <div class="col-sm-10">: <?php if($pen['penProTypeCd'] == '02') { echo '(요양보호사)'; } ?><?=check_and_print($pen_pro_rel_cd[$pen['penProRel']], '(', ')')?><?=$pen['penProNm']?><?=check_and_print(substr($pen['penProBirth'], 2, 2), ', ', '년생')?><?=check_and_print($pen['penProConNum'], ', ')?><?=check_and_print($pen['penProConPNum'], ', ')?><?=check_and_print($pen['penProAddr'], ', ')?><?=check_and_print($pen['penProAddrDtl'], ' ')?></div>
+      <?php } ?>
     </div>
     <div class="row">
       <div class="col-sm-2">·장기요양기록지</div>
@@ -172,17 +176,17 @@ $recs = get_recs_by_recipient($pen['penId']);
   </div>
   <div class="section_wrap grey">
     <div class="sub_section_wrap" style="text-align: center">
-      <a href="#" class="b_btn">신규등록</a>
+      <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}"?>" class="b_btn">신규등록</a>
     </div>
     <?php foreach($recs as $rec) { ?>
     <div class="memo_row">
       <div class="memo_body">
         <div class="memo_date"><?=date('Y년 m월 d일', dtmtotime($rec['regDtm']))?></div>
-        <div class="memo_content"><?=$rec['totalReview']?></div>
+        <div class="memo_content"><?=nl2br($rec['totalReview'])?></div>
       </div>
       <div class="memo_btn_wrap">
-        <button class="c_btn" data-id="<?=$rec['recId']?>">출력</button>
-        <button class="c_btn" data-id="<?=$rec['recId']?>">수정</button>
+        <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}&recId={$rec['recId']}"?>" class="c_btn" data-id="<?=$rec['recId']?>">수정</a>
+        <button class="btn_delete_rec c_btn" data-id="<?=$rec['recId']?>">삭제</button>
       </div>
     </div>
     <?php } ?>
@@ -256,7 +260,6 @@ $(function() {
 
   // 메모 삭제
   $(document).on('click', '.btn_delete_memo', function() {
-    var $row = $(this).closest('.memo_row');
     var me_id = $(this).data('id');
 
     if(confirm('메모를 삭제하시겠습니까?')) {
@@ -264,6 +267,25 @@ $(function() {
         id: '<?=$pen['penId']?>',
         me_id: me_id,
         del: true
+      }, 'json')
+      .done(function() {
+        location.reload();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    }
+  });
+
+  // 욕구사정기록지 삭제
+  $(document).on('click', '.btn_delete_rec', function() {
+    var recId = $(this).data('id');
+
+    if(confirm('욕구사정기록지를 삭제하시겠습니까?')) {
+      $.post('ajax.my.recipient.rec.delete.php', {
+        penId: '<?=$pen['penId']?>',
+        recId: recId,
       }, 'json')
       .done(function() {
         location.reload();

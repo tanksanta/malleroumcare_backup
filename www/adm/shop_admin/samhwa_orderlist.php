@@ -72,7 +72,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
         <!-- <button id="dzexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">더존엑셀</button> -->
         <!-- <button id="handsabang" onClick="sanbang_order_send()">사방넷수동가져오기</button> -->
 		<!-- <button id="list_matching_cancel">매칭데이터취소</button> -->
-        <button id="delivery_edi_send_all">로젠 EDI 일괄 전송</button>
+        <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
         <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
         <button id="delivery_edi_return_all">송장리턴</button>
         <!-- <button class="orderExcel" data-type="1"><img src="/adm/shop_admin/img/btn_img_ex.gif">주문 엑셀 다운로드</button> -->
@@ -89,7 +89,8 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                     <select name="sel_date_field" id="sel_date_field">
                         <option value="od_time" <?php echo get_selected($sel_date_field, 'od_time'); ?>>주문일</option>
                         <option value="od_receipt_time" <?php echo get_selected($sel_date_field, 'od_receipt_time'); ?>>입금일</option>
-                        <option value="od_ex_date" <?php echo get_selected($sel_date_field, 'od_ex_date'); ?>>희방출고일</option>
+                        <option value="od_ex_date" <?php echo get_selected($sel_date_field, 'od_ex_date'); ?>>희망출고일</option>
+                        <option value="ct_ex_date" <?php echo get_selected($sel_date_field, 'ct_ex_date'); ?>>출고완료일</option>
                     </select>
                     <div class="sch_last">
                         <input type="button" value="오늘" id="select_date_today" name="select_date" class="select_date newbutton" />
@@ -262,6 +263,12 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                         <input type="radio" id="od_release_1" name="od_release" value="1" <?php echo option_array_checked('1', $od_release); ?>><label for="od_release_1"> 외부출고</label>
                         <input type="radio" id="od_release_2" name="od_release" value="2" <?php echo option_array_checked('2', $od_release); ?>><label for="od_release_2"> 출고대기</label>
 				    </div>
+                    <div class="linear">
+                        <span class="linear_span">직배송</span>
+                        <input type="radio" id="ct_is_direct_delivery_all" name="ct_is_direct_delivery" value="" <?php echo option_array_checked('', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_all"> 전체</label>
+                        <input type="radio" id="ct_is_direct_delivery_1" name="ct_is_direct_delivery" value="1" <?php echo option_array_checked('1', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_1"> 직배송</label>
+                        <input type="radio" id="ct_is_direct_delivery_0" name="ct_is_direct_delivery" value="0" <?php echo option_array_checked('0', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_0"> 직배송제외</label>
+				    </div>
                 </td>
             </tr>
             <tr>
@@ -272,6 +279,8 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                         <option value="od_name" <?php echo get_selected($sel_field, 'od_name'); ?>>주문자</option>
                         <option value="od_b_name" <?php echo get_selected($sel_field, 'od_b_name'); ?>>받는분</option>
                         <option value="it_name" <?php echo $sel_field == 'it_name' ? 'selected="selected"' : ''; ?>>상품명</option>
+                        <option value="it_admin_memo" <?php echo $sel_field == 'it_admin_memo' ? 'selected="selected"' : ''; ?>>관리자메모</option>
+                        <option value="it_maker" <?php echo $sel_field == 'it_maker' ? 'selected="selected"' : ''; ?>>제조사</option>
                         <option value="od_id" <?php echo get_selected($sel_field, 'od_id'); ?>>주문번호</option>
                         <option value="od_naver_orderid" <?php echo get_selected($sel_field, 'od_naver_orderid'); ?>>네이버페이주문번호</option> <!-- wetoz : naverpayorder -->
                         <option value="mb_id" <?php echo get_selected($sel_field, 'mb_id'); ?>>회원 ID</option>
@@ -494,7 +503,7 @@ function doSearch() {
 
     formdata['od_important'] = formdata['od_important']; // Assign new key
     // delete formdata['od_important[]']; // Delete old key
-	
+
 	formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
 
     var ajax = $.ajax({

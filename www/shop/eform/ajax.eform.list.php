@@ -1,6 +1,5 @@
 <?php
 include_once("./_common.php");
-include_once('./lib/eform.lib.php');
 
 if(!$member['mb_entId']) {
   alert('로그인이 필요합니다.');
@@ -98,7 +97,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 ?>
 <tr>
 <td><?=$index?></td>
-<td><?="{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})"?></td>
+<td><a href="<?=G5_SHOP_URL?>/my_recipient_view.php?id=<?=$row['penId']?>"><?="{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})"?></a></td>
 <td><?=$row["it_name"]?><?php if($row['it_count'] > 1) { echo ' 외 ' . ($row['it_count'] - 1) . '건'; } ?></td>
 <td>일반계약</td>
 <td class="text_c"><?=date('Y-m-d', strtotime($row['dc_sign_datetime']))?></td>

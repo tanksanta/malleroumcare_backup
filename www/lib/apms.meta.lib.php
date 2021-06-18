@@ -96,16 +96,16 @@ if(!$seometa['img']['src']) {
 <meta name="author" content="<?php echo $seometa['creator'];?>" />
 <meta name="robots" content="index,follow" />
 <meta name="keywords" content="<?php echo $seometa['keyword'];?>" />
-<meta name="description" content="<?php echo $seometa['description'];?>" />
+<meta name="description" content="복지용구 통합관리 시스템" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta property="og:title" content="<?php echo $seometa['title'];?>" />
+<meta property="og:title" content="이로움 E-ROUM 장기요양기관 시스템" />
 <meta property="og:site_name" content="<?php echo $seometa['publisher'];?>" />
 <meta property="og:author" content="<?php echo $seometa['creator'];?>" />
 <meta property="og:type" content="<?php echo $seometa['type'];?>" />
 <?php if($seometa['img']['src']) { ?>
 <meta property="og:image" content="<?php echo $seometa['img']['src'];?>" />
 <?php } ?>
-<meta property="og:description" content="<?php echo $seometa['description'];?>" />
+<meta property="og:description" content="복지용구 포탈 서비스, 복지용구 구입 및 대여, 복지용구 계약 체결 등" />
 <meta property="og:url" content="<?php echo $seometa['url'];?>" />
 <?php if($seometa['img']['src']) { ?>
 <link rel="image_src" href="<?php echo $seometa['img']['src'];?>" />

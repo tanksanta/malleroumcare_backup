@@ -106,6 +106,7 @@
 .recipient_rec_wrap .family_wrap .row .content { float: right; width: calc(100% - 155px); }
 .recipient_rec_wrap .family_wrap .row .content input { margin: 0 0 0 8px; }
 .recipient_rec_wrap .family_wrap .row .content input[type="text"] { width:80px; border: 1px solid #ddd; background-color: #fff;; }
+.recipient_rec_wrap .family_wrap .row .content input[type="text"][disabled] { background-color: #eee; }
 .recipient_rec_wrap .family_wrap .row .content label { margin: 0; }
 
 .recipient_rec_wrap .btn_wrap { padding: 20px 0; text-align: center; }

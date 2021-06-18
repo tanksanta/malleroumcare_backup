@@ -40,7 +40,7 @@ if( function_exists('pg_setting_check') ){
         <button id="deliveryExcelDownloadBtn">주문다운로드</button>
         <button id="deliveryExcelDownloadBtn2">배송업로드 다운받기</button>
         <button id="deliveryExcelUploadBtn">배송정보 일괄 업로드</button>
-        <button id="delivery_edi_send_all">로젠 EDI 일괄 전송</button>
+        <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
         <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
         <button id="delivery_edi_return_all">송장리턴</button>
     </div>

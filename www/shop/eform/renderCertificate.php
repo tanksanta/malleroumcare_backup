@@ -1,6 +1,5 @@
 <?php
 include_once("./_common.php");
-include_once("./lib/eform.lib.php");
 
 $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
 

@@ -250,15 +250,8 @@ if($_FILES['excelfile']['tmp_name']) {
 			}
 		}
 
-		$gubun = "00";
-		switch(substr($ca_id, 0, 2)){
-			case "10" :
-				$gubun = "00";
-				break;
-			case "20" :
-				$gubun = "01";
-				break;
-		}
+        $gubun = $cate_gubun_table[substr($ca_id, 0, 2)];
+        if(!$gubun) $gubun = "00";
 
 		$taxInfo = "01";
 		switch($it_taxInfo){

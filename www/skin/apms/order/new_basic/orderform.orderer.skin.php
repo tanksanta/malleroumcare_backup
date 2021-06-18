@@ -965,17 +965,7 @@ var array_box=[];
 
 		// 수급자 선택 함수-
 		function selected_recipient($penId) {
-
-			<?php $re = sql_fetch(" select * from {$g5['recipient_table']} where penId = '$penId' ");  ?>
-			// document.getElementById("penNm").value=$re['penNm'];
-			// document.getElementById("penExpiDtm").value=$re['penExpiDtm'];
-			// document.getElementById("penAppEdDtm").value=$re['penAppEdDtm'];
-			// document.getElementById("penConNum").value=$re['penConNum'];
-			// document.getElementById("penAddr").value=$re['penAddr'];
-			// document.getElementById("penTypeNm").value=$re['penTypeNm'];
-			// document.getElementById("penMoney").value=$re['penMoney'];
-
-            // 수급자 정보 iframe 에서 넘긴값 받기
+			// 수급자 정보 iframe 에서 넘긴값 받기
 			var recipient = $penId.split("|");
 			var list = {
 				"rn":recipient[0],

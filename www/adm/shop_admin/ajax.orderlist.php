@@ -16,7 +16,7 @@ $sort2 = in_array($sort2, array('desc', 'asc')) ? $sort2 : 'desc';
 $sel_field = get_search_string($sel_field);
 
 // wetoz : naverpayorder - , 'od_naver_orderid' 추가
-if( !in_array($sel_field, array('od_all', 'it_name', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'od_invoice', 'od_naver_orderid')) ){   //검색할 필드 대상이 아니면 값을 제거
+if( !in_array($sel_field, array('od_all', 'it_name', 'it_admin_memo', 'it_maker', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'od_invoice', 'od_naver_orderid')) ){   //검색할 필드 대상이 아니면 값을 제거
     $sel_field = '';
 }
 $ct_status=$od_status;
@@ -46,7 +46,7 @@ if ($search != "") {
 
 // 전체 검색
 if ($sel_field == 'od_all') {
-    $sel_arr = array('it_name', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'od_invoice');
+    $sel_arr = array('it_name', 'it_admin_memo', 'it_maker', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'od_invoice');
 
     foreach ($sel_arr as $key => $value) {
         $sel_arr[$key] = "$value like '%$search%'";
@@ -93,6 +93,10 @@ if (gettype($add_admin) == 'string' && $add_admin !== '') {
 if (gettype($od_important) == 'string' && $od_important !== '') {
     $od_important = $od_important;
     $where[] = " od_important = '$od_important' ";
+}
+
+if (gettype($ct_is_direct_delivery) == 'string' && $ct_is_direct_delivery !== '') {
+    $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
 }
 
 if (gettype($od_release) == 'string' && $od_release !== '') {
@@ -309,7 +313,7 @@ if ($sort2 == "") $sort2 = "desc";
 
 // shop_cart 조인으로 수정
 // member 테이블 조인
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status ,ct_move_date from {$g5['g5_shop_cart_table']}) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, it_maker, ct_status ,ct_move_date, ct_ex_date, ct_is_direct_delivery from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -357,13 +361,12 @@ $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
 //$sql = " select count(od_id) as cnt, ct_status $sql_common2 group by ct_status";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status from {$g5['g5_shop_cart_table']}) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, it_maker, ct_status, ct_ex_date, ct_is_direct_delivery from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
         $sql_search2
         group by ct_status ";
-
 
 $result = sql_query($sql);
 
@@ -533,21 +536,20 @@ foreach($orderlist as $order) {
     $od_release_select .='</select>';
     
 
-       //영업담당자
-        $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$order['mb_id']."'";
-        $result_manager = sql_fetch($sql_manager);
+    //영업담당자
+    $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$order['mb_id']."'";
+    $result_manager = sql_fetch($sql_manager);
 
-            //사업소명
-            if($result_manager['mb_entNm']){
-                $mb_entNm = $result_manager['mb_entNm'];
-            }else{
-                $mb_entNm = $order['od_name'];
-            }
+    //사업소명
+    if($result_manager['mb_entNm']){
+        $mb_entNm = $result_manager['mb_entNm'];
+    }else{
+        $mb_entNm = $order['od_name'];
+    }
 
-
-        $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
-        $result_manager = sql_fetch($sql_manager);
-        $sale_manager=$result_manager['mb_name'];
+    $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
+    $result_manager = sql_fetch($sql_manager);
+    $sale_manager=$result_manager['mb_name'];
 
 
     switch ($ct_status_text) {
@@ -751,15 +753,15 @@ foreach($orderlist as $order) {
         }
         $sql = " select count(ct_id) as cnt, sum(ct_price*ct_qty) as ct_price, sum(ct_sendcost) as ct_sendcost, sum(ct_discount) as ct_discount
                 from
-                (select *
+                (select B.*, C.*, od_name, od_tel, od_hp, od_b_name, od_b_tel, od_b_hp, od_deposit_name, od_invoice, od_del_yn, it_admin_memo, it_maker 
                 from {$g5['g5_shop_cart_table']} B
-                    inner join (select od_id as order_od_id ,od_del_yn from {$g5['g5_shop_order_table']}) A
-                    on B.od_id = A.order_od_id
+                left join {$g5['g5_shop_item_table']} I on I.it_id = B.it_id
+                    inner join {$g5['g5_shop_order_table']} A
+                    on B.od_id = A.od_id
                     left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
                     on B.mb_id = C.mb_id_temp
                     group by B.ct_id ) as ct_id
                 $sql_search ";
-                
         $total_result = sql_fetch($sql);
         $total_result['price'] = number_format( $total_result['ct_price'] + $total_result['ct_sendcost'] - $total_result['ct_discount']);
         // print_r($sql);
@@ -841,21 +843,6 @@ foreach($orderlist as $order) {
     </tr>
     ";
 
-    $sale_manager = '';
-    $sale_manager = get_member($order['od_sales_manager']);
-    $sale_manager = get_sideview($sale_manager['mb_id'], get_text($sale_manager['mb_name']), $sale_manager['mb_email'], '');
-
-
-
-    $release_manager = '';
-    $release_manager = get_member($order['od_release_manager']);
-    $release_manager = get_sideview($release_manager['mb_id'], get_text($release_manager['mb_name']), $release_manager['mb_email'], '');
-    if ($order['od_release_manager'] == 'no_release') {
-        $release_manager = '<span style="color: #ff6600;">출고대기</span>';
-    }
-    if ($order['od_release_manager'] == '-') {
-        $release_manager = '외부출고';
-    }
     $important2_class = $order['od_important2'] ? 'on' : '';
 
     $pay_status = get_pay_step($order['od_pay_state']);
@@ -891,6 +878,7 @@ foreach($orderlist as $order) {
     $od_release_out = '-';
 
     $od_list_memo = $order['od_list_memo'] ? htmlspecialchars($order['od_list_memo']) : '없음';
+    if($order['ct_is_direct_delivery'] == '1') $od_list_memo = '직배송';
 
     $ret['right'] .= "
     <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']}\">

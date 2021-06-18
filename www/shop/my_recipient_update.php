@@ -492,7 +492,7 @@
 <!-- 20210307 성훈작업 -->
 		<div class="text-center" style="margin-top: 30px;">
 			<button type="button" id="btn_submit" class="btn btn-color">수정</button>
-			<a href="./my.recipient.list.php" class="btn btn-black" role="button">취소</a>
+			<a href="./my_recipient_list.php" class="btn btn-black" role="button">취소</a>
 		</div>
 	</form>
 
@@ -639,11 +639,11 @@
 			$("#zipAddrPopupWrap").hide();
 
 			$(".register-form select[name='penProRel']").change(function(){
-				$(".register-form input[name='penProRelEtc']").prop("readonly", true);
-				$(".register-form input[name='penProRelEtc']").val("");
-
 				if($(this).val() == "11"){
 					$(".register-form input[name='penProRelEtc']").prop("readonly", false);
+				} else {
+					$(".register-form input[name='penProRelEtc']").prop("readonly", true);
+					$(".register-form input[name='penProRelEtc']").val("");
 				}
 			});
 
@@ -656,14 +656,13 @@
 					if(val == '02') { // 요양보호사
 						$('#pro_rel_title').text('기관');
 						$('.register-form .penProRel').hide();
-						$(".register-form input[name='penProRelEtc']").val('');
 						$('.register-form input[name="penProRelEtc"]').prop('readonly', false);
 					} else {
 						$('#pro_rel_title').text('관계');
 						$('.register-form .penProRel').show();
-						$(".register-form input[name='penProRelEtc']").val('');
 						if($('.register-form select[name="penProRel"]').val() != '11') {
 							$(".register-form input[name='penProRelEtc']").prop("readonly", true);
+							$(".register-form input[name='penProRelEtc']").val('');
 						} else {
 							$('.register-form input[name="penProRelEtc"]').prop('readonly', false);
 						}

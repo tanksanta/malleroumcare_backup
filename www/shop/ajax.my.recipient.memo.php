@@ -1,6 +1,5 @@
 <?php
 include_once("./_common.php");
-include_once('./eform/lib/eform.lib.php');
 
 if(!$member["mb_id"])
   json_response(400, '접근 권한이 없습니다.');

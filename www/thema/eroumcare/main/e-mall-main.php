@@ -32,7 +32,7 @@
 				<li style="width: 100%;" class="swiper-slide">
 
 					<a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=notice&wr_id=23">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_06.jpg" alt="">
+						<img src="<?=THEMA_URL?>/assets/img/main_banner_07.jpg" alt="">
 					</a>
 				</li>
 				<li style="width: 100%;" class="swiper-slide">

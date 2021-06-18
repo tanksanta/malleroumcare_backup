@@ -1,5 +1,6 @@
 <?php
 define("_INDEX_", TRUE);
+define("_MAIN_", TRUE);
 include_once('./_common.php');
 
 if(!$page_id) {

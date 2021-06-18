@@ -1,6 +1,5 @@
 <?php
 include_once("./_common.php");
-include_once('./lib/eform.lib.php');
 
 if(!$is_member) {
   alert('먼저 로그인하세요.');

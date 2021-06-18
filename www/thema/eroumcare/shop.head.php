@@ -74,7 +74,7 @@ while( $row = sql_fetch_array($res) ) {
 $banks = explode(PHP_EOL, $default['de_bank_account']); 
 
 $is_index = '';
-if(defined('_INDEX_')) { // index에서만 실행
+if(defined('_INDEX_') && !defined('_MAIN_')) { // index에서만 실행
 	$is_index = 'is-index';
 }
 ?>
@@ -188,12 +188,12 @@ scrollToTop();
 				<div class="mobileCate">
 					<div class="cate_head">복지용구통합관리</div>
 					<ul class="cate_menu">
-						<li><a href="/shop/my.recipient.list.php"  >수급자 관리</a></li>
-						<li><a href="/shop/claim_manage.php"  >청구/전자문서 관리</a></li>
-						<li><a href="/shop/sales_Inventory.php"  >보유재고 관리</a></li>
-						<li><a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송 관리</a></li>
-						<li><a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a></li>
-						<li><a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a></li>
+						<li><a href="/shop/my_recipient_list.php">수급자 관리</a></li>
+						<li><a href="/shop/claim_manage.php">청구/전자문서 관리</a></li>
+						<li><a href="/shop/sales_Inventory.php">보유재고 관리</a></li>
+						<li><a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php">주문/배송 관리</a></li>
+						<li><a href="<?php echo G5_SHOP_URL; ?>/cart.php">장바구니</a></li>
+						<li><a href="<?php echo G5_BBS_URL; ?>/mypage.php">마이페이지</a></li>
 					</ul>
 					<div class="cate_head">복지용구 품목</div>
 					<ul class="cate_menu">
@@ -284,14 +284,12 @@ scrollToTop();
 				.move_system a{padding:15px 20px 0 0;line-height:26px;color:#333;font-size:13px;font-weight:bold;float:left;color:#666;}
 			</style>
 			<div class="move_system">
-				<?php if($_SESSION[$member['mb_id']]&&($member["mb_level"] =="3" || $member["mb_level"] =="4")){ ?>dd
-				<a href="<?=G5_BBS_URL?>/gotoSystem.php" target="_blank"  >◀ 이로움 통합 시스템바로가기</a>
-				<?php } ?>
+				<!-- 바로가시 버튼 삭제 -->
 			</div>
 			<div class="logoWrap">
 				<a href="<?=G5_URL?>" class="logoTitle"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png"  ></a>
 				<ul class="nav nav-left">
-					<li><a href="/shop/my.recipient.list.php" >수급자</a></li>
+					<li><a href="/shop/my_recipient_list.php" >수급자</a></li>
 					<li><a href="/shop/claim_manage.php"  >청구/전자문서</a></li>
 					<li><a href="/shop/sales_Inventory.php" >보유재고</a></li>
 				</ul>
@@ -397,7 +395,7 @@ scrollToTop();
 					<div>
 						<ul class="listWrap">
 							<li>
-								<a href="/shop/my.recipient.list.php" title="수급자">
+								<a href="/shop/my_recipient_list.php" title="수급자">
 									<span>수급자</span>
 								</a>
 							</li>
@@ -572,6 +570,7 @@ scrollToTop();
 		<div class="at-body">
 			<?php if($col_name) { ?>
 				<div class="at-container">
+					<?php if($is_member) { // 로그인 전에는 숨김 ?>
 					<div class="scrollBannerListWrap left">
 						<ul>
 							<li>
@@ -607,6 +606,7 @@ scrollToTop();
 							<img src="<?php echo THEMA_URL; ?>/assets/img/btn_go_to_top.png" alt="" onclick="$('html, body').animate({ scrollTop : 0 }, 1000);" />
 						</div>
 					</div>
+					<?php } ?>
 				<?php if($col_name == "two") { ?>
 					<div class="row at-row">
 						<div class="col-md-<?php echo $col_content;?><?php echo ($at_set['side']) ? ' pull-right' : '';?> at-col at-main">		

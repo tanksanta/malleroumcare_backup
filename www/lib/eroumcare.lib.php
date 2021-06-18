@@ -497,6 +497,35 @@ $rental_product_cate_table = array(
 	'ITM2020092200012' => '2080'
 );
 
+$cate_gubun_table = array(
+	'10' => '00', /* 판매 */
+	'20' => '01', /* 대여 */
+	'70' => '02' /* 비급여 */
+);
+
+$recipient_state = array(
+	'wait' => '대기',
+	'request' => '요청',
+	'link' => '연결',
+	'register' => '등록',
+);
+
+function get_recipient($penId) {
+	global $member;
+
+	$result = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+		'usrId' => $member['mb_id'],
+		'entId' => $member['mb_entId'],
+		'penId' => $penId
+	));
+
+	$res = null;
+	if($result['errorYN'] == 'N' && $result['data'])
+		$res = $result['data'][0];
+
+	return $res;
+}
+
 // 비급여 상품 체크
 function is_benefit_item($item) {
     if (substr($item["ca_id"], 0, 2) == '70') {

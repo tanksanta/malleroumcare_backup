@@ -342,6 +342,11 @@ $it_name = strip_tags(clean_xss_attributes(trim($_POST['it_name'])));
 
 // KVE-2019-0708
 $check_sanitize_keys = array(
+'it_rental_use_persisting_year', // 대여 내구연한 사용
+'it_rental_expiry_year', //  대여 판매가능기간
+'it_rental_persisting_year', // 대여 내구연한
+'it_rental_persisting_price', // 대여 내구연한 이후 대여금액
+'it_admin_memo',        // 관리자 메모
 'it_order',             // 출력순서
 'it_maker',             // 제조사
 'it_origin',            // 원산지
@@ -457,6 +462,7 @@ $sql_common = " ca_id               = '$ca_id',
                 ca_id9              = '$ca_id9',
                 ca_id10             = '$ca_id10',
                 it_name             = '$it_name',
+                it_admin_memo       = '$it_admin_memo',
                 it_maker            = '$it_maker',
                 it_origin           = '$it_origin',
                 it_brand            = '$it_brand',
@@ -607,29 +613,34 @@ $sql_common = " ca_id               = '$ca_id',
                 it_sale_cnt             = '$it_sale_cnt',
                 it_sale_percent             = '$it_sale_percent',
                 it_sale_percent_great             = '$it_sale_percent_great',
-				  it_sale_cnt_02             = '$it_sale_cnt_02',
+                it_sale_cnt_02             = '$it_sale_cnt_02',
                 it_sale_percent_02             = '$it_sale_percent_02',
                 it_sale_percent_great_02             = '$it_sale_percent_great_02',
-				  it_sale_cnt_03             = '$it_sale_cnt_03',
+                it_sale_cnt_03             = '$it_sale_cnt_03',
                 it_sale_percent_03             = '$it_sale_percent_03',
                 it_sale_percent_great_03             = '$it_sale_percent_great_03',
-				  it_sale_cnt_04             = '$it_sale_cnt_04',
+                it_sale_cnt_04             = '$it_sale_cnt_04',
                 it_sale_percent_04             = '$it_sale_percent_04',
                 it_sale_percent_great_04             = '$it_sale_percent_great_04',
-				  it_sale_cnt_05             = '$it_sale_cnt_05',
+                it_sale_cnt_05             = '$it_sale_cnt_05',
                 it_sale_percent_05             = '$it_sale_percent_05',
                 it_sale_percent_great_05             = '$it_sale_percent_great_05',
-                
-					entId = '$entId',
-					prodSupYn = '$prodSupYn',
-					prodSizeDetail = '$prodSizeDetail',
-					it_taxInfo = '$it_taxInfo',
 
-					it_delivery_cnt = '{$_POST["it_delivery_cnt"]}',
-					it_delivery_price = '{$_POST["it_delivery_price"]}',
-                    it_delivery_min_cnt = '{$_POST["it_delivery_min_cnt"]}',
-					it_delivery_min_price = '{$_POST["it_delivery_min_price"]}',
-                    it_is_direct_delivery = '$it_is_direct_delivery'
+                entId = '$entId',
+                prodSupYn = '$prodSupYn',
+                prodSizeDetail = '$prodSizeDetail',
+                it_taxInfo = '$it_taxInfo',
+
+                it_delivery_cnt = '{$_POST["it_delivery_cnt"]}',
+                it_delivery_price = '{$_POST["it_delivery_price"]}',
+                it_delivery_min_cnt = '{$_POST["it_delivery_min_cnt"]}',
+                it_delivery_min_price = '{$_POST["it_delivery_min_price"]}',
+                it_is_direct_delivery = '$it_is_direct_delivery',
+
+                it_rental_use_persisting_year = '$it_rental_use_persisting_year',
+                it_rental_expiry_year = '$it_rental_expiry_year',
+                it_rental_persisting_year = '$it_rental_persisting_year',
+                it_rental_persisting_price = '$it_rental_persisting_price'
 				"; // APMS : 2014.07.20
 
                 // it_outsourcing_use  = '$it_outsourcing_use',
@@ -661,6 +672,70 @@ if ($w == "")
 }
 else if ($w == "u")
 {
+    $gubun = $cate_gubun_table[substr($ca_id, 0, 2)];
+    $tax_info = $it_taxInfo == '영세' ? '01' : '02';
+    $prod_color = [];
+    $prod_size = [];
+    $opt_subject_arr = explode(',', $it_option_subject);
+    if($option_count) {
+        $prod_color_idx = -1;
+        $prod_size_idx = -1;
+        for($i = 0; $i < count($opt_subject_arr); $i++) {
+            if($opt_subject_arr[$i] == '색상') {
+                $prod_color_idx = $i;
+            } else if($opt_subject_arr[$i] == '사이즈') {
+                $prod_size_idx = $i;
+            }
+        }
+        for($i=0; $i<$option_count; $i++) {
+            $opt_arr = explode(chr(30), $_POST['opt_id'][$i]);
+            if($prod_color_idx >= 0 && !in_array($opt_arr[$prod_color_idx], $prod_color)) {
+                $prod_color[] = $opt_arr[$prod_color_idx];
+            }
+            if($prod_size_idx >= 0 && !in_array($opt_arr[$prod_size_idx], $prod_size)) {
+                $prod_size[] = $opt_arr[$prod_size_idx];
+            }
+        }
+        $prod_color = implode('|', $prod_color);
+        $prod_size = implode('|', $prod_size);
+    }
+
+    $sendData = array(
+        'prodId' => $it_id,
+        'usrId' => $member["mb_id"],
+        'entId' => $entId,
+        'prodNm' => $it_name, // 제품 명
+        'prodSym' => $prodSym, // 재질
+        'prodWeig' => $prodWeig, // 중량
+        'prodColor' => $prod_color, // 컬러
+        'prodSize' => $prod_size, // 사이즈
+        'prodSizeDetail' => $prodSizeDetail, // 사이즈 상세정보
+        'prodDetail' => $it_explan, // 상세정보
+        'prodPayCode' => $ProdPayCode, // 제품코드
+        'prodSupYn' => $prodSupYn, //  유통 미유통
+        'prodSupPrice' => $it_cust_price, // 공급가격
+        'prodOflPrice' => $it_price, // 판매가격
+        'rentalPrice' => $it_rental_price, // 대여가격(1일)
+        'rentalPriceExtn' => $it_rental_price, //  대여연장가격(1일)
+        'prodStateCode' => '03', // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
+        'supId' => $supId, //  공급자아이디
+        'itemId' => $it_thezone, //  아이템 아이디
+        'subItem' => '', //  서브 아이템
+        'gubun' => $gubun, //  00=구매 01=대여
+        'taxInfoCd' => $tax_info, //  01=영세 02=과세
+        'file1' => $it_img1 ? new cURLFile($it_img_dir.'/'.$it_img1) : '',
+        'file2' => $it_img2 ? new cURLFile($it_img_dir.'/'.$it_img2) : '',
+        'file3' => $it_img3 ? new cURLFile($it_img_dir.'/'.$it_img3) : '',
+        'file4' => $it_img4 ? new cURLFile($it_img_dir.'/'.$it_img4) : '',
+        'file5' => $it_img5 ? new cURLFile($it_img_dir.'/'.$it_img5) : '',
+        'file6' => $it_img6 ? new cURLFile($it_img_dir.'/'.$it_img6) : '',
+        'file7' => $it_img7 ? new cURLFile($it_img_dir.'/'.$it_img7) : '',
+        'file8' => $it_img8 ? new cURLFile($it_img_dir.'/'.$it_img8) : '',
+        'file9' => $it_img9 ? new cURLFile($it_img_dir.'/'.$it_img9) : '',
+        'file10' => $it_img10 ? new cURLFile($it_img_dir.'/'.$it_img10) : ''
+    );
+    $result = post_formdata(EROUMCARE_API_PROD_UPDATE, $sendData);
+
     $sql_common .= " , it_update_time = '".G5_TIME_YMDHIS."' ";
     $sql = " update {$g5['g5_shop_item_table']}
                 set $sql_common

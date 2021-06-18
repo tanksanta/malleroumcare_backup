@@ -8,7 +8,7 @@ function array_keys_exists(array $keys, array $arr) {
   return !array_diff($keys, array_keys($arr));
 }
 
-function json_response($code = 200, $message = null) {
+function json_response($code = 200, $message = null, $data = null) {
   http_response_code($code);
   header("Content-Type: application/json");
   $status = array(
@@ -17,10 +17,14 @@ function json_response($code = 200, $message = null) {
     500 => '500 Internal Server Error'
   );
   header('Status: '.$status[$code]);
-  echo json_encode(array(
+
+  $res = array(
     'status' => $code < 300, // success or not?
     'message' => $message
-  ));
+  );
+  if($data) $res['data'] = $data;
+
+  echo json_encode($res);
   exit;
 }
 
@@ -53,17 +57,16 @@ function api_post_call($url, $data = null, $port = 9901) {
   return api_call($url, 'POST', $data, $port);
 }
 
-function api_firebase_call($url, $data) {
+function post_formdata($url, $data = null, $port = 9901) {
   $ch=curl_init();
+
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_PORT, $port);
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_POST, true);
-  if($data) curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+  if($data) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
-  
   curl_setopt($ch, CURLOPT_VERBOSE, true);
-  
   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
   

@@ -1,0 +1,23 @@
+name: Complete delivery orders
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "01 15 * * *" # 매일 새벽 12시 01분(UTC 15:01)
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: call api
+        uses: indiesdev/curl@v1
+        id: api
+        with:
+          url: https://eroumcare.com/cron/complete_delivery.php
+          method: 'POST'
+          accept: 200, 201
+          timeout: 10000
+          is_debug: true
+      - name: show api response
+        run: echo ${{ steps.api.outputs.response }}
