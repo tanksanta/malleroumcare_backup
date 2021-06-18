@@ -505,7 +505,7 @@ $cate_gubun_table = array(
 
 $recipient_state = array(
 	'wait' => '대기',
-	'request' => '욫청',
+	'request' => '요청',
 	'link' => '연결',
 	'register' => '등록',
 );

@@ -11,7 +11,34 @@ if (!$is_development) {
     alert('준비중 입니다.');
 }
 
-$sql_common = " from g5_recipient_link ";
+// 상태 전체 선택시 unset
+if ($rl_state && count($rl_state) >= count($recipient_state)) {
+    unset($rl_state);
+}
+
+$sel_field = get_search_string($sel_field);
+if( !in_array($sel_field, array('rl.rl_name')) ){   //검색할 필드 대상이 아니면 값을 제거
+    $sel_field = '';
+    $search = '';
+}
+
+if ($sel_field != "" && $search) {
+    $sql_search .= " AND $sel_field like '%$search%' ";
+}
+
+// 등록일
+if ($fr_datetime && $to_datetime) {
+    $sql_search .= " and ( rl_created_at between '$fr_datetime 00:00:00' and '$to_datetime 23:59:59' )";
+}
+
+if ($rl_state) {
+    foreach($rl_state as $state) {
+        if (!$recipient_state[$state]) continue;
+        $sql_search .= " and rl_state = '{$state}'";
+    }
+}
+
+$sql_common = " from g5_recipient_link as rl WHERE 1=1 ";
 $sql_common .= $sql_search;
 
 // 테이블의 전체 레코드수만 얻음
@@ -26,17 +53,44 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 ?>
 
 <div class="local_ov01 local_ov">
-    <form name="flist" class="local_sch01 local_sch">
-    <input type="hidden" name="page" value="<?php echo $page; ?>">
+    <form name="flist" class=" local_sch">
+        <input type="hidden" name="page" value="<?php echo $page; ?>">
+        <div class="local_sch03 local_sch">
+            <div class="sch_last">
+                <strong>등록일</strong>
+                <input type="text" id="fr_datetime" name="fr_datetime" value="<?php echo $fr_datetime; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off"> ~
+                <input type="text" id="to_datetime" name="to_datetime" value="<?php echo $to_datetime; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off">
+                <button type="button" onclick="javascript:set_date2('datetime', '오늘');">오늘</button>
+                <button type="button" onclick="javascript:set_date2('datetime', '어제');">어제</button>
+                <button type="button" onclick="javascript:set_date2('datetime', '3일');">3일</button>
+                <button type="button" onclick="javascript:set_date2('datetime', '일주일');">일주일</button>
+                <button type="button" onclick="javascript:set_date2('datetime', '이번주');">이번주</button>
+                <button type="button" onclick="javascript:set_date2('datetime', '이번달');">이번달</button>
+                <button type="button" onclick="javascript:set_date2('datetime', '지난주');">지난주</button>
+                <button type="button" onclick="javascript:set_date2('datetime', '지난달');">지난달</button>
+                <button type="button" onclick="javascript:set_date2('datetime', '전체');">전체</button>
+            </div>
+        </div>
+        
+        <div class="local_sch03 local_sch">
+            <div class="sch_last">
+                <strong>상태</strong>
+                <input type="checkbox" id="state-all" class="rl_state" name="rl_state[]" <?php echo !$rl_state ? 'checked="chekced"' : ''; ?>><label for="state-all"> 전체</label>
+                <?php foreach($recipient_state as $key => $state) { ?>
+                    <input type="checkbox" class="rl_state rl_state_child" id="state-<?php echo $key; ?>" name="rl_state[]" value="<?php echo $key; ?>" <?php echo !$rl_state || in_array($key, $rl_state) ? 'checked="chekced"' : ''; ?>>
+                    <label for="state-<?php echo $key; ?>"><?php echo $state; ?></label>
+                <?php } ?>
+            </div>
+        </div>
 
-    <select name="sel_field" id="sel_field">
-        <option value="it_name" <?php echo get_selected($sel_field, 'it_name'); ?>>수급자</option>
-        <option value="a.it_id" <?php echo get_selected($sel_field, 'a.it_id'); ?>>사업소</option>
-    </select>
+        <select name="sel_field" id="sel_field">
+            <option value="rl.rl_name" <?php echo get_selected($sel_field, 'rl.rl_name'); ?>>수급자명</option>
+            <option value="test" <?php echo get_selected($sel_field, 'test'); ?>>사업소명</option>
+        </select>
 
-    <label for="search" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-    <input type="text" name="search" value="<?php echo $search; ?>" id="search" required class="frm_input required">
-    <input type="submit" value="검색" class="btn_submit">
+        <label for="search" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+        <input type="text" name="search" value="<?php echo $search; ?>" id="search" class="frm_input">
+        <input type="submit" value="검색" class="btn_submit">
 
     </form>
 
@@ -57,17 +111,21 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
         <th scope="col" id="th_id">ID</th>
         <th scope="col" id="th_info">수급자정보</th>
         <th scope="col" id="th_address">주소</th>
+        <th scope="col" id="th_hp">연락처</th>
         <th scope="col" id="th_end">연결사업소</th>
         <th scope="col" id="th_state">상태</th>
-        <th scope="col" id="th_datetime">최근 수정 시간</th>
+        <th scope="col" id="th_datetime">등록일</th>
+        <th scope="col" id="th_datetime">최근 수정</th>
         <th scope="col" id="th_edit" style="width:100px">비고</th>
     </tr>
     </thead>
     <tbody>
     <?php
-    $sql = "SELECT * from g5_recipient_link $sql_search
-          order by rl_id desc
-          limit $from_record, $rows  ";
+    $sql = "SELECT * from g5_recipient_link as rl
+        WHERE 1=1 $sql_search
+        order by rl_id desc
+        limit $from_record, $rows
+    ";
     $result = sql_query($sql);
     for ($i=0; $row=sql_fetch_array($result); $i++) {
         $bg = 'bg'.($i%2);
@@ -84,12 +142,16 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
             <?php echo get_text($row['rl_addr2']); ?>
             <?php echo get_text($row['rl_addr3']); ?>
         </td>
+        <td headers="th_hp" class="">
+            <?php echo get_text($row['rl_hp']); ?>
+        </td>
         <td headers="th_end" class="">
 
         </td>
         <td headers="th_state" class="" style="text-align:center">
             <?php echo $recipient_state[$row['rl_state']]; ?>
         </td>
+        <td headers="th_datetime" class="td_datetime"><?php echo $row['rl_created_at']; ?></td>
         <td headers="th_datetime" class="td_datetime"><?php echo $row['rl_updated_at']; ?></td>
         <td headers="th_edit" class="" style="text-align:center;">
             <a target="_blank" href="./recipient_link_form.php?'.$qstr.'&amp;w=u&amp;rl_id=<?php echo $row['rl_id']; ?>" class="btn btn_03">수정</a>
@@ -114,6 +176,26 @@ jQuery(function($) {
     $(".sbn_img_view").on("click", function() {
         $(this).closest(".td_img_view").find(".sbn_image").slideToggle();
     });
+
+    $('.rl_state').click(function() {
+
+        if ($(this).attr('id') !== 'state-all') {
+            var parent = $(this).parent('div');
+            var total = $(parent).find('.rl_state_child').length;
+            var checkedTotal = $(parent).find('.rl_state_child:checked').length;
+
+            $("#state-all").prop('checked', total <= checkedTotal); 
+
+            return;
+        }
+
+        if ($(this).is(":checked")) {
+            $(".rl_state").prop('checked', true); 
+
+        } else {
+            $(".rl_state").prop('checked', false);
+        }
+    })
 });
 </script>
 
