@@ -571,8 +571,9 @@ $(function () {
       ct_id.push($(item[i]).val());
     }
 
-    if (type && type === 'resend' && !ct_id.length) {
-      alert('재전송할 주문을 선택해주세요.');
+    // if (type && type === 'resend' && !ct_id.length) {
+    if (!ct_id.length) {
+      alert('전송할 주문을 선택해주세요.');
       return;
     }
 
