@@ -570,6 +570,7 @@ scrollToTop();
 		<div class="at-body">
 			<?php if($col_name) { ?>
 				<div class="at-container">
+					<?php if($is_member) { // 로그인 전에는 숨김 ?>
 					<div class="scrollBannerListWrap left">
 						<ul>
 							<li>
@@ -605,6 +606,7 @@ scrollToTop();
 							<img src="<?php echo THEMA_URL; ?>/assets/img/btn_go_to_top.png" alt="" onclick="$('html, body').animate({ scrollTop : 0 }, 1000);" />
 						</div>
 					</div>
+					<?php } ?>
 				<?php if($col_name == "two") { ?>
 					<div class="row at-row">
 						<div class="col-md-<?php echo $col_content;?><?php echo ($at_set['side']) ? ' pull-right' : '';?> at-col at-main">		
