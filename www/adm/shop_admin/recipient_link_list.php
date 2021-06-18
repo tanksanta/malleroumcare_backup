@@ -26,7 +26,6 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 ?>
 
 <div class="local_ov01 local_ov">
-
     <form name="flist" class="local_sch01 local_sch">
     <input type="hidden" name="page" value="<?php echo $page; ?>">
 
@@ -41,10 +40,13 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
     </form>
 
+    <div style="text-align:right">
+        <a class="btn btn_01 btn" href="<?php echo G5_ADMIN_URL; ?>/shop_admin/recipient_link_form.php">등록</a>
+    </div>
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./bannerform.php" class="btn_01 btn">배너추가</a>
+    <a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/recipient_link_form.php" class="btn_01 btn">등록</a>
 </div>
 
 <div class="tbl_head01 tbl_wrap">
@@ -53,12 +55,10 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
     <thead>
     <tr>
         <th scope="col" id="th_id">ID</th>
-        <th scope="col" id="th_dvc">접속기기</th>
-        <th scope="col" id="th_loc">위치</th>
-        <th scope="col" id="th_st">시작일시</th>
-        <th scope="col" id="th_end">종료일시</th>
-        <th scope="col" id="th_odr">출력순서</th>
-        <th scope="col" id="th_hit">조회</th>
+        <th scope="col" id="th_info">수급자정보</th>
+        <th scope="col" id="th_address">주소</th>
+        <th scope="col" id="th_end">연결사업소</th>
+        <th scope="col" id="th_state">상태</th>
     </tr>
     </thead>
     <tbody>
