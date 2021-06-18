@@ -228,7 +228,7 @@ if($header_skin)
 	<?php if(IS_YC) { // 영카트 ?>
 		<br>
 		<!-- 최근 주문내역 시작 { -->
-		<section>
+		<!-- <section>
 			<h4>최근 주문내역</h4>
 			<?php
 				// 최근 주문내역
@@ -258,7 +258,7 @@ if($header_skin)
 			    <?php 
 				for ($i=0; $row=sql_fetch_array($result); $i++) {
 			        $uid = md5($row['od_id'].$row['od_time'].$row['od_ip']);
-
+		
 					// switch($row['od_status']) {
 					// 	case '주문' : $od_status = '입금확인중'; break;
 					// 	case '입금' : $od_status = '입금완료'; break;
@@ -294,7 +294,7 @@ if($header_skin)
 			<p class="text-right">
 				<a href="<?php echo G5_URL; ?>/shop/orderinquiry.php"><i class="fa fa-arrow-right"></i> 주문내역 더보기</a>
 			</p>
-		</section>
+		</section> -->
 		<!-- } 최근 주문내역 끝 -->
 
         <!-- <section>
