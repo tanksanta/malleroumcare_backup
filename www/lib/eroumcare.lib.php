@@ -496,3 +496,12 @@ $rental_product_cate_table = array(
 	'ITM2020092200013' => '2070',
 	'ITM2020092200012' => '2080'
 );
+
+// 비급여 상품 체크
+function is_benefit_item($item) {
+    if (substr($item["ca_id"], 0, 2) == '70') {
+        return true;
+    } else {
+        return false;
+    }
+}

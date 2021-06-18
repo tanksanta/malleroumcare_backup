@@ -68,7 +68,7 @@ $buy = [];
 $rent = [];
 while($item = sql_fetch_array($items)) {
   if($item['gubun'] == '00') array_push($buy, $item); // 판매 재고
-  else array_push($rent, $item); // 대여 재고
+  else if ($item['gubun'] == '01') array_push($rent, $item); // 대여 재고
 }
 ?>
 <!DOCTYPE html>

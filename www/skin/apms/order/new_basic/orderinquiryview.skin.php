@@ -384,7 +384,9 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 										<div class="img"><img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';"></div>
 										<div class="pro-info">
 											<div class="pro-icon">
+                                            <?php if(!is_benefit_item($item[$i])) { ?>
 												<i class="icon01"><?=($item[$i]["prodSupYn"] == "N") ? "비유통" : "유통"?></i>
+                                            <?php } ?>
 											<?php if(substr($item[$i]["ca_id"], 0, 2) == 10){ ?>
 												<i class="icon03">판매</i>
 											<?php } ?>
@@ -392,6 +394,10 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 											<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
 												<i class="icon02">대여</i>
 											<?php } ?>
+                                            
+                                            <?php if(is_benefit_item($item[$i])) { ?>
+                                                <i class="icon03">비급여</i>
+                                            <?php } ?>
 											</div>
 											<div class="name">
 											<?php echo $item[$i]['it_name']; ?>

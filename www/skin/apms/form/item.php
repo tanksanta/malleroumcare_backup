@@ -69,7 +69,7 @@ $pg_anchor .='</ul>';
 		<tr>
             <th scope="row"><label for="ca_id">카테고리</label></th>
             <td>
-                <?php if ($w == "") echo help("기본 분류를 선택하면, 판매/재고/HTML사용 등을, 선택한 분류의 기본값으로 설정합니다."); ?>
+                <?php if ($w == "") echo help("기본 분류를 선택하면,각 분류는 기본 분류의 하위 분류 개념이 아니므로 기본 분류 선택시 해당 자료가 포함될 최하위 분류만 선택하시면 됩니다. 판매/재고/HTML사용 등을, 선택한 분류의 기본값으로 설정합니다."); ?>
                 <?php echo help('각 분류는 기본 분류의 하위 분류 개념이 아니므로 기본 분류 선택시 해당 자료가 포함될 최하위 분류만 선택하시면 됩니다.'); ?>
 				<select name="ca_id" id="ca_id" onchange="categorychange(this.form)" class="importantBorder">
                     <option value="">기본 분류 선택</option>
