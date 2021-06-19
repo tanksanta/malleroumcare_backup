@@ -384,35 +384,18 @@ var array_box=[];
 					</div>
 				</div>
 				<div class="table-list3 table-list4" id="typereceipt1_view">
-				<?php
-					# 결제정보
-					$sendData_entInfo = [];
-					$sendData_entInfo["usrId"] = $member["mb_id"];
-
-					$oCurl = curl_init();
-					curl_setopt($oCurl, CURLOPT_PORT, 9901);
-					curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/ent/account");
-					curl_setopt($oCurl, CURLOPT_POST, 1);
-					curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-					curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData_entInfo, JSON_UNESCAPED_UNICODE));
-					curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-					curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-					$res = curl_exec($oCurl);
-					curl_close($oCurl);
-					$entInfo=json_decode($res,true);
-				?>
 					<ul>
 						<li>
 							<div class="list-con">
 								<strong>기업명</strong>
 								<div>
-									<input type="text" name="typereceipt_bname" value="<?php echo $entInfo['data']['entNm'] ?>" id="typereceipt_bname" maxlength="20">
+									<input type="text" name="typereceipt_bname" value="<?php echo $member['mb_entNm']; ?>" id="typereceipt_bname" maxlength="20">
 								</div>
 							</div>
 							<div class="list-con">
 								<strong>대표자명</strong>
 								<div>
-									<input type="text" name="typereceipt_boss_name" value="<?php echo $entInfo['data']['entCeoNm'] ?>" id="typereceipt_boss_name" maxlength="20">
+									<input type="text" name="typereceipt_boss_name" value="<?php echo $member['mb_giup_boss_name']; ?>" id="typereceipt_boss_name" maxlength="20">
 								</div>
 							</div>
 						</li>
@@ -426,7 +409,7 @@ var array_box=[];
 							<div class="list-con list-tel">
 								<strong>연락처</strong>
 								<div>
-									<input type="text" name="typereceipt_btel" value="<?php echo $entInfo['data']['entPnum'] ?>" id="typereceipt_btel" maxlength="20" style="margin-left: 0;">
+									<input type="text" name="typereceipt_btel" value="<?php echo $member['mb_tel'] ?>" id="typereceipt_btel" maxlength="20" style="margin-left: 0;">
 								</div>
 							</div>
 						</li>
@@ -450,13 +433,13 @@ var array_box=[];
 							<div class="list-con">
 								<strong>업태</strong>
 								<div>
-									<input type="text" name="typereceipt_buptae" value="<?php echo $entInfo['data']['entBusiCondition'] ?>" id="typereceipt_buptae" maxlength="20">
+									<input type="text" name="typereceipt_buptae" value="<?php echo $member['mb_giup_buptae']; ?>" id="typereceipt_buptae" maxlength="20">
 								</div>
 							</div>
 							<div class="list-con">
 								<strong>업종</strong>
 								<div>
-									<input type="text" name="typereceipt_bupjong" value="<?php echo $entInfo['data']['entBusiType'] ?>" id="typereceipt_bupjong" maxlength="20">
+									<input type="text" name="typereceipt_bupjong" value="<?php echo $member['mb_giup_bupjong']; ?>" id="typereceipt_bupjong" maxlength="20">
 								</div>
 							</div>
 						</li>
@@ -464,7 +447,7 @@ var array_box=[];
 							<div class="list-con">
 								<strong>이메일</strong>
 								<div>
-									<input type="text" name="typereceipt_email" value="<?php echo $entInfo['data']['entMail'] ?>" id="typereceipt_email" maxlength="20">
+									<input type="text" name="typereceipt_email" value="<?php echo $member['mb_email']; ?>" id="typereceipt_email" maxlength="20">
 								</div>
 							</div>
 							<?php
@@ -481,7 +464,7 @@ var array_box=[];
 							<div class="list-con">
 								<strong>담당자명</strong>
 								<div>
-									<input type="text" name="typereceipt_manager_name" value="<?php echo $entInfo['data']['entTaxCharger'] ?>" id="typereceipt_manager_name" maxlength="20">
+									<input type="text" name="typereceipt_manager_name" value="<?php echo $member['mb_giup_manager_name']; ?>" id="typereceipt_manager_name" maxlength="20">
 								</div>
 							</div>
 						</li>
