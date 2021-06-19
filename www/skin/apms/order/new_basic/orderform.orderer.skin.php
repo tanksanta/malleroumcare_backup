@@ -950,6 +950,15 @@ function selected_recipient($penId) {
     "penMoney":recipient[33]    //800,000원
   };
 
+  $.post('./ajax.category.limit.php', { od_id: '<?=$s_cart_id?>', penId: list.penId }, 'json')
+  .done(function(result) {
+    var data = result.data;
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
+
   //수급자 정보 컨트롤
   $('#Yrecipient').removeClass('none');
   $('#Yrecipient').addClass('block');
