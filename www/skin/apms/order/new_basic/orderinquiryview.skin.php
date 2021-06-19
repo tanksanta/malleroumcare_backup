@@ -147,19 +147,23 @@ if($od["od_penId"]) {
 
 		foreach($res["data"] as $it) {
 			$priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);
-			sql_query("INSERT INTO `eform_document_item` SET
-			`dc_id` = UNHEX('$dcId'),
-			`gubun` = '{$it["gubun"]}',
-			`ca_name` = '{$it["itemNm"]}',
-			`it_name` = '{$it["prodNm"]}',
-			`it_code` = '{$it["prodPayCode"]}',
-			`it_barcode` = '{$it["prodBarNum"]}',
-			`it_qty` = '1',
-			`it_date` = '{$it["contractDate"]}',
-			`it_price` = '{$it["prodPrice"]}',
-			`it_price_pen` = '{$it["penPrice"]}',
-			`it_price_ent` = '$priceEnt'
-			");
+            
+            // 비급여 품목은 계약서에서 제외
+			if ($it['gubun'] != '02') {
+                sql_query("INSERT INTO `eform_document_item` SET
+                    `dc_id` = UNHEX('$dcId'),
+                    `gubun` = '{$it["gubun"]}',
+                    `ca_name` = '{$it["itemNm"]}',
+                    `it_name` = '{$it["prodNm"]}',
+                    `it_code` = '{$it["prodPayCode"]}',
+                    `it_barcode` = '{$it["prodBarNum"]}',
+                    `it_qty` = '1',
+                    `it_date` = '{$it["contractDate"]}',
+                    `it_price` = '{$it["prodPrice"]}',
+                    `it_price_pen` = '{$it["penPrice"]}',
+                    `it_price_ent` = '$priceEnt'
+                ");
+            }
 		}
 	}
 }
@@ -384,7 +388,9 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 										<div class="img"><img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';"></div>
 										<div class="pro-info">
 											<div class="pro-icon">
+                                            <?php if(!is_benefit_item($item[$i])) { ?>
 												<i class="icon01"><?=($item[$i]["prodSupYn"] == "N") ? "비유통" : "유통"?></i>
+                                            <?php } ?>
 											<?php if(substr($item[$i]["ca_id"], 0, 2) == 10){ ?>
 												<i class="icon03">판매</i>
 											<?php } ?>
@@ -392,6 +398,10 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 											<?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
 												<i class="icon02">대여</i>
 											<?php } ?>
+                                            
+                                            <?php if(is_benefit_item($item[$i])) { ?>
+                                                <i class="icon03">비급여</i>
+                                            <?php } ?>
 											</div>
 											<div class="name">
 											<?php echo $item[$i]['it_name']; ?>

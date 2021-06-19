@@ -68,6 +68,9 @@ $list_page = $_SERVER['SCRIPT_NAME'].'?ca_id='.$ca_id.$ca_sub_url.$sort_url.$sup
 // 상품 정렬 주소 수정
 $list_sort_href = './list.php?ca_id='.$ca_id.$ca_sub_url.$sup_url.$q_url.'&sort=';
 $ca_sub_name_table = array();
+
+// 비급여 체크
+$isBenefit = substr($ca_id, 0, 2) == '70' ? true : false;
 ?>
 <div id="samhwa-list-banner">
 <?php
@@ -121,6 +124,7 @@ $ca_sub_name_table = array();
 			</div>
 		</li>
 		<?php } ?>
+        <?php if (!$isBenefit) { ?>
 		<li>
 			<div class="cate_head">유통여부</div>
 			<div class="cate_body">
@@ -130,6 +134,7 @@ $ca_sub_name_table = array();
 				class="<?php if(in_array($prodSupYn, array('N', 'all'))) echo 'active'; ?>">비유통품목</a>
 			</div>
 		</li>
+        <?php } ?>
 		<!--<li>
 			<div class="cate_head">기타</div>
 			<div class="cate_body"></div>
@@ -145,12 +150,14 @@ $ca_sub_name_table = array();
 		<?php if($q) { ?>
 			<a href="<?=$ca_url.$ca_sub_url.$sort_url.$sup_url?>"><?=$q?> <i class="fa fa-times" aria-hidden="true"></i></a>
 		<?php } ?>
-		<?php if(in_array($prodSupYn, array('Y', 'all'))) { ?>
-			<a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=N' : '').$q_url?>">유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
-		<?php } ?>
-		<?php if(in_array($prodSupYn, array('N', 'all'))) { ?>
-			<a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=Y' : '').$q_url?>">비유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
-		<?php } ?>
+        <?php if (!$isBenefit) { ?>
+            <?php if(in_array($prodSupYn, array('Y', 'all'))) { ?>
+                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=N' : '').$q_url?>">유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+            <?php } ?>
+            <?php if(in_array($prodSupYn, array('N', 'all'))) { ?>
+                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=Y' : '').$q_url?>">비유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+            <?php } ?>
+        <?php } ?>
 		<?php foreach($ca_sub as $sub) { ?>
 		<a href="<?=$ca_url.make_ca_sub_url(array_diff($ca_sub, [$sub])).$sort_url.$sup_url.$q_url?>"><?=$ca_sub_name_table[$sub]?> <i class="fa fa-times" aria-hidden="true"></i></a>
 		<?php } ?>
