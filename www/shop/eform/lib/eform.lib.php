@@ -22,7 +22,7 @@ function json_response($code = 200, $message = null, $data = null) {
     'status' => $code < 300, // success or not?
     'message' => $message
   );
-  if($data) $res['data'] = $data;
+  if(isset($data)) $res['data'] = $data;
 
   echo json_encode($res);
   exit;
