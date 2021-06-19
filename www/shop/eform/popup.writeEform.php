@@ -18,15 +18,15 @@ if(!$eform['uuid']) alert('전자계약서를 생성할 수 없는 상태입니�
 
 # 수급자 유효기간이 없으면
 if(!$eform['penExpiDtm']) {
-	$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
-		'usrId' => $od["mb_id"],
-		'entId' => $entData["mb_entId"],
-		'penId' => $od["od_penId"]
-	));
-	if(!$res["data"]) {
-		alert('존재하지 않는 수급자에 대한 주문입니다.');
-	}
-	$penData = $res["data"][0];
+  $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+    'usrId' => $od["mb_id"],
+    'entId' => $entData["mb_entId"],
+    'penId' => $od["od_penId"]
+  ));
+  if(!$res["data"]) {
+    alert('존재하지 않는 수급자에 대한 주문입니다.');
+  }
+  $penData = $res["data"][0];
 
   # 시스템 DB에도 수급자 유효기간이 없으면
   if(!$penData['penExpiDtm']) {
@@ -41,14 +41,27 @@ if(!$eform['penExpiDtm']) {
 }
 
 # 전자계약서 정보 업데이트(최신화) - 바코드 정보 새로 계속 가져오기
-# 여기 개선이 필요함. 바코드 정보가 변경이 안됐을 때는 새로 가져오지 만다든가..
+
+// 상품 분류별 내구연한 (구매가능 개수)
+$limit = get_pen_order_limit($od['od_penId'], $od['od_id']);
+$limit_msg = '구매제한 개수를 초과한 상품이 있습니다.\\n구매제한 개수를 초과한 상품은 계약서에 반영되지 않습니다.\\n\\n';
+
+$od_item_ca_id_table = [];
+$ca_id_limit_table = [];
+foreach($limit as $lm) {
+  foreach($lm['od_items'] as $od_item) {
+    $od_item_ca_id_table[$od_item] = $lm['ca_id'];
+  }
+  $limit_msg .= "{$lm['ca_name']}: {$lm['month']}개월 동안 {$lm['limit']}개 구매 가능 (현재 {$lm['current']}개 구매)\\n";
+}
+
 sql_query("DELETE FROM `eform_document_item` WHERE `dc_id` = UNHEX('{$eform["uuid"]}')");
 $res = api_post_call('https://system.eroumcare.com/api/eform/selectEform001', array('penOrdId' => $od["ordId"]));
 foreach($res["data"] as $it) {
   $priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);
     
-    // 비급여 품목은 계약서에서 제외
-  if ($it["gubun"] != '02') {
+  // 비급여 품목은 계약서에서 제외 & 상품분류별 내구연한으로 구매제한개수 초과 품목은 계약서에서 제외
+  if ($it["gubun"] != '02' && !$od_item_ca_id_table[$it['prodPayCode']]) {
     sql_query("INSERT INTO `eform_document_item` SET
       `dc_id` = UNHEX('{$eform["uuid"]}'),
       `gubun` = '{$it["gubun"]}',
@@ -82,7 +95,7 @@ while($item = sql_fetch_array($items)) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>계약서 생성</title>
   <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/common_new.css">
-	<link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/font.css">
+  <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/font.css">
   <link rel="shortcut icon" href="<?php echo THEMA_URL; ?>/assets/img/top_logo_icon.ico">
   <link rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="./css/writeeform.css">
@@ -230,6 +243,10 @@ while($item = sql_fetch_array($items)) {
   $(function(){
     $("#btnCloseEform").click(closePopup);
     $("#btnCancelEform").click(closePopup);
+
+    <?php if($limit) { ?>
+    alert('<?=$limit_msg?>');
+    <?php } ?>
 
     var initialStatus = {
       customCounter: 0,
