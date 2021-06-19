@@ -52,6 +52,8 @@ if ($w == '')
         SET
             {$sql_common}
     ");
+
+    $rl_id = sql_insert_id();
 }
 else if ($w == 'u')
 {
