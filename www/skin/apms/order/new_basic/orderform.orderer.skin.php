@@ -953,6 +953,16 @@ function selected_recipient($penId) {
   $.post('./ajax.category.limit.php', { od_id: '<?=$s_cart_id?>', penId: list.penId }, 'json')
   .done(function(result) {
     var data = result.data;
+    if(data.length && data.length > 0) {
+      var msg = list.penNm + ' 수급자는 구매제한 개수를 초과하였습니다.\n구매제한 개수를 초과한 주문은 계약서에 반영되지 않습니다.\n\n';
+      for(var i = 0; i < data.length; i++) {
+        msg += data[i]['ca_name'] + ': ' +
+        data[i]['month'] + '개월 동안 ' +
+        data[i]['limit'] + '개 구매가능 (현재 ' +
+        data[i]['current'] + '개 구매)\n';
+      }
+      alert(msg);
+    }
   })
   .fail(function($xhr) {
     var data = $xhr.responseJSON;

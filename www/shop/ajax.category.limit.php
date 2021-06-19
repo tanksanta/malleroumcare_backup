@@ -44,19 +44,21 @@ while($row = sql_fetch_array($result)) {
 
   if($lm) {
     $cur_cnt = sql_fetch("
-    SELECT COUNT(*) as cnt
-    FROM `eform_document` d
-    LEFT JOIN `eform_document_item` i ON d.dc_id = i.dc_id
-    LEFT JOIN `{$g5['g5_shop_item_table']}` x ON i.it_code = x.ProdPayCode
-    LEFT JOIN `{$g5['g5_shop_category_table']}` y ON x.ca_id = y.ca_id
-    WHERE penId = '{$_POST['penId']}'
-    AND (d.dc_datetime BETWEEN DATE_SUB(NOW(), INTERVAL {$lm['month']} MONTH) AND NOW())
-    AND y.ca_id = '{$row['ca_id']}'
+      SELECT COUNT(*) as cnt
+      FROM `eform_document` d
+      LEFT JOIN `eform_document_item` i ON d.dc_id = i.dc_id
+      LEFT JOIN `{$g5['g5_shop_item_table']}` x ON i.it_code = x.ProdPayCode
+      LEFT JOIN `{$g5['g5_shop_category_table']}` y ON x.ca_id = y.ca_id
+      WHERE penId = '{$_POST['penId']}'
+      AND (d.dc_datetime BETWEEN DATE_SUB(NOW(), INTERVAL {$lm['month']} MONTH) AND NOW())
+      AND y.ca_id = '{$row['ca_id']}'
     ")['cnt'];
 
     if($cur_cnt + $row['cnt'] > $lm['num']) { // 구매 가능한 수량 넘으면
-      $res[$row['ca_name']] = array(
+      $res[] = array(
+        'ca_name' => $row['ca_name'],
         'ca_id' => $row['ca_id'],
+        'month' => $lm['month'],
         'limit' => $lm['num'],
         'current' => $cur_cnt,
         'cnt' => $row['cnt']
