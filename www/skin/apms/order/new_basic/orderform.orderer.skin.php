@@ -450,17 +450,6 @@ var array_box=[];
 									<input type="text" name="typereceipt_email" value="<?php echo $member['mb_email']; ?>" id="typereceipt_email" maxlength="20">
 								</div>
 							</div>
-							<?php
-							$sql = "SELECT * FROM g5_member_giup_manager WHERE mb_id = '{$member['mb_id']}'";
-							$result = sql_query($sql);
-							$managers = array();
-							while( $m_row = sql_fetch_array($result) ) {
-								$managers[] = $m_row;
-							}
-							if (!count($managers)) {
-								array_push($managers, array());
-							}
-							?>
 							<div class="list-con">
 								<strong>담당자명</strong>
 								<div>
