@@ -58,19 +58,23 @@ function addItem($item, $gubun, $uuid) {
   $it_price_pen = intval(str_replace(",", "", $item['it_price_pen']));
   $it_price_ent = $it_price - $it_price_pen;
   if($gubun == '01') $item['it_date'] = $item['range_from'].'-'.$item['range_to'];
-  sql_query("INSERT INTO `eform_document_item` SET
-  `dc_id` = UNHEX('$uuid'),
-  `gubun` = '$gubun',
-  `ca_name` = '{$item['ca_name']}',
-  `it_name` = '{$item['it_name']}',
-  `it_code` = '{$item['it_code']}',
-  `it_barcode` = '{$item['it_barcode']}',
-  `it_qty` = '{$item['it_qty']}',
-  `it_date` = '{$item['it_date']}',
-  `it_price` = '$it_price',
-  `it_price_pen` = '$it_price_pen',
-  `it_price_ent` = '$it_price_ent'
-  ");
+  
+  // 비급여 품목은 계약서에서 제외
+  if ($gubun != '02') {
+    sql_query("INSERT INTO `eform_document_item` SET
+      `dc_id` = UNHEX('$uuid'),
+      `gubun` = '$gubun',
+      `ca_name` = '{$item['ca_name']}',
+      `it_name` = '{$item['it_name']}',
+      `it_code` = '{$item['it_code']}',
+      `it_barcode` = '{$item['it_barcode']}',
+      `it_qty` = '{$item['it_qty']}',
+      `it_date` = '{$item['it_date']}',
+      `it_price` = '$it_price',
+      `it_price_pen` = '$it_price_pen',
+      `it_price_ent` = '$it_price_ent'
+    ");
+  }
 }
 // 계약서 상 구매 물품 정보 추가
 foreach($status['buy']['customs'] as $item) {

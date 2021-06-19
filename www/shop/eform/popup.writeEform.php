@@ -46,19 +46,23 @@ sql_query("DELETE FROM `eform_document_item` WHERE `dc_id` = UNHEX('{$eform["uui
 $res = api_post_call('https://system.eroumcare.com/api/eform/selectEform001', array('penOrdId' => $od["ordId"]));
 foreach($res["data"] as $it) {
   $priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);
-  sql_query("INSERT INTO `eform_document_item` SET
-  `dc_id` = UNHEX('{$eform["uuid"]}'),
-  `gubun` = '{$it["gubun"]}',
-  `ca_name` = '{$it["itemNm"]}',
-  `it_name` = '{$it["prodNm"]}',
-  `it_code` = '{$it["prodPayCode"]}',
-  `it_barcode` = '{$it["prodBarNum"]}',
-  `it_qty` = '1',
-  `it_date` = '{$it["contractDate"]}',
-  `it_price` = '{$it["prodPrice"]}',
-  `it_price_pen` = '{$it["penPrice"]}',
-  `it_price_ent` = '$priceEnt'
-  ");
+    
+    // 비급여 품목은 계약서에서 제외
+  if ($it["gubun"] != '02') {
+    sql_query("INSERT INTO `eform_document_item` SET
+      `dc_id` = UNHEX('{$eform["uuid"]}'),
+      `gubun` = '{$it["gubun"]}',
+      `ca_name` = '{$it["itemNm"]}',
+      `it_name` = '{$it["prodNm"]}',
+      `it_code` = '{$it["prodPayCode"]}',
+      `it_barcode` = '{$it["prodBarNum"]}',
+      `it_qty` = '1',
+      `it_date` = '{$it["contractDate"]}',
+      `it_price` = '{$it["prodPrice"]}',
+      `it_price_pen` = '{$it["penPrice"]}',
+      `it_price_ent` = '$priceEnt'
+    ");
+  }
 }
 
 $items = sql_query("SELECT * FROM `eform_document_item` WHERE dc_id = UNHEX('{$eform["uuid"]}')");
