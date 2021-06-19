@@ -1,5 +1,5 @@
 <?php
-$sub_menu = "500051";
+$sub_menu = "500050";
 include_once("./_common.php");
 if ($w == 'u')
     check_demo();
