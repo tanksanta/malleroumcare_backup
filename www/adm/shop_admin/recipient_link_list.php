@@ -7,9 +7,11 @@ auth_check($auth[$sub_menu], "r");
 $g5['title'] = '수급자연결관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
+/*
 if (!$is_development) {
     alert('준비중 입니다.');
 }
+*/
 
 // 검색
 $sel_field = get_search_string($sel_field);
