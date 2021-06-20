@@ -215,12 +215,31 @@ if($sel_field && $search)
           echo "({$ent_ef_pens['cnt']}명)";
           ?>
         </td>
-        <td>최근3개월활동</td>
+        <td>
+          <?php
+          // 최근 3개월 동안 계약서 작성한 수급자 수 & 수급자별 평균 계약 금액
+          $ent_recent_ef_pens = sql_fetch("
+            SELECT COUNT(*) as cnt, FLOOR(AVG(r.sum)) as avg FROM
+            (
+              SELECT sum(CONVERT(it_price, UNSIGNED INTEGER)) as sum FROM `eform_document` d
+              LEFT JOIN `eform_document_item` i on d.dc_id = i.dc_id
+              WHERE entId = '{$row['mb_entId']}'
+              AND dc_status IN ('2', '3')
+              AND (d.dc_datetime BETWEEN DATE_SUB(NOW(), INTERVAL 3 MONTH) AND NOW())
+              GROUP BY penId
+            ) r
+          ");
+          $ent_recent_ef_pens['avg'] = number_format($ent_recent_ef_pens['avg']);
+          echo "{$ent_recent_ef_pens['cnt']}명 / 평균 {$ent_recent_ef_pens['avg']}원"
+          ?>
+        </td>
         <td>최근연결</td>
         <td>상태</td>
         <td><?=number_format($row['distance'])?>km</td>
         <td>연결여부</td>
-        <td>비고</td>
+        <td>
+          <!--비고-->
+        </td>
       </tr>
       <?php } ?>
     </tbody>
