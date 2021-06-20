@@ -16,7 +16,7 @@ $where = [];
 $where[] = " mb_level IN('3', '4') "; // 사업소 or 우수사업소
 $where[] = " (mb_entId is not null and mb_entId != '') ";
 
-$sel_field = get_search_string($sel_field);
+$search = get_search_string($search);
 if( !in_array($sel_field, array('mb_entNm')) ){   //검색할 필드 대상이 아니면 값을 제거
   $sel_field = '';
   $search = '';
