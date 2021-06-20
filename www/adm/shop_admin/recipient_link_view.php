@@ -77,7 +77,7 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
 $sql_limit = " limit $from_record, $page_rows ";
 
-// 경위도 구하는 함수
+// 경위도 사이 거리 구하는 함수
 sql_query("
   DROP FUNCTION IF EXISTS distance_between
 ");
@@ -158,7 +158,6 @@ if($sel_field && $search)
 
 <div class="local_ov01 local_ov">
     <form name="flist" class=" local_sch">
-        <input type="hidden" name="page" value="<?=$page?>">
         <input type="hidden" name="rl_id" value="<?=$rl['rl_id']?>">
         <select name="sel_field" id="sel_field">
           <option value="mb_entNm">사업소명</option>
@@ -193,7 +192,29 @@ if($sel_field && $search)
           <?=$row['mb_giup_addr2']?> 
           <?=$row['mb_giup_addr3']?>
         </td>
-        <td>관리수급자</td>
+        <td>
+          <?php
+          // 총 수급자 수
+          $ent_pens = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+            'usrId' => $row['mb_id'],
+            'entId' => $row['mb_entId']
+          ));
+          if($ent_pens['errorYN'] == 'N') echo count($ent_pens['data']).'명';
+          else '0명';
+
+          // 한 번 이상 계약서 작성한 수급자 수
+          $ent_ef_pens = sql_fetch("
+            SELECT COUNT(*) as cnt FROM
+            (
+              SELECT * FROM `eform_document`
+              WHERE entId = '{$row['mb_entId']}'
+              AND dc_status IN ('2', '3')
+              GROUP BY penId
+            ) r
+          ");
+          echo "({$ent_ef_pens['cnt']}명)";
+          ?>
+        </td>
         <td>최근3개월활동</td>
         <td>최근연결</td>
         <td>상태</td>
