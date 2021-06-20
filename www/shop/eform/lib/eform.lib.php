@@ -76,6 +76,29 @@ function post_formdata($url, $data = null, $port = 9901) {
   return json_decode($res, true);
 }
 
+// 카카오 디벨로퍼스 API 호출
+function kakao_api_call($url, $data = null, $method = "GET") {
+  if($method == 'GET') $url .= '?'.http_build_query($data);
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_URL, $url);
+  if($method == 'POST') {
+    curl_setopt($ch, CURLOPT_POST, 1);
+    if($data) curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
+  }
+  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+  curl_setopt($ch, CURLOPT_VERBOSE, true);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: KakaoAK ".KAKAO_DEVELOPERS_REST_API_KEY));
+  
+  $res = curl_exec($ch);
+  curl_close($ch);
+
+  return json_decode($res, true);
+}
+
 function get_url_content($url) {
   $oCurl = curl_init();
   curl_setopt($oCurl, CURLOPT_URL, $url);

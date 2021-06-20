@@ -618,3 +618,20 @@ function get_pen_order_limit($penId, $od_id) {
 
   return $res;
 }
+
+// 주소(string)로 경위도 가져오는 함수
+function get_lat_lng_by_address($address) {
+  $result = kakao_api_call('https://dapi.kakao.com/v2/local/search/address.json', array(
+    'query' => $address,
+    'page' => 1,
+    'size' => 1
+  ));
+
+  $res = [];
+  if($result['meta']['total_count'] > 0) {
+    $res['lat'] = $result['documents'][0]['y'];
+    $res['lng'] = $result['documents'][0]['x'];
+  }
+
+  return $res;
+}
