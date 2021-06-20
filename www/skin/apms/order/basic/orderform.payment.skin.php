@@ -245,7 +245,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 										<label for="typereceipt_bname">기업명</label>
 									</th>
 									<td colspan="3">
-										<input type="text" name="typereceipt_bname" value="<?php echo $member['mb_giup_bname'] ?>" id="typereceipt_bname" class="frm_input" size="30" maxlength="20">
+										<input type="text" name="typereceipt_bname" value="<?php echo $member['mb_entNm'] ?>" id="typereceipt_bname" class="frm_input" size="30" maxlength="20">
 									</td>
 								</tr>
 								<tr>

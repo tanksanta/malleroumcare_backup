@@ -503,7 +503,7 @@ $cate_gubun_table = array(
 	'70' => '02' /* 비급여 */
 );
 
-$recipient_state = array(
+$recipient_link_state = array(
 	'wait' => '대기',
 	'request' => '요청',
 	'link' => '연결',

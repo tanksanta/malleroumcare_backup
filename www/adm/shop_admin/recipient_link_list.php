@@ -28,13 +28,13 @@ if ($fr_datetime && $to_datetime) {
 }
 
 // 상태 전체 선택시 unset
-if ($rl_state && count($rl_state) >= count($recipient_state)) {
+if ($rl_state && count($rl_state) >= count($recipient_link_state)) {
     unset($rl_state);
 }
 
 if ($rl_state) {
     foreach($rl_state as $state) {
-        if (!$recipient_state[$state]) continue;
+        if (!$recipient_link_state[$state]) continue;
         $sql_search .= " and rl_state = '{$state}'";
     }
 }
@@ -77,7 +77,7 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
             <div class="sch_last">
                 <strong>상태</strong>
                 <input type="checkbox" id="state-all" class="rl_state" name="rl_state[]" <?php echo !$rl_state ? 'checked="chekced"' : ''; ?>><label for="state-all"> 전체</label>
-                <?php foreach($recipient_state as $key => $state) { ?>
+                <?php foreach($recipient_link_state as $key => $state) { ?>
                     <input type="checkbox" class="rl_state rl_state_child" id="state-<?php echo $key; ?>" name="rl_state[]" value="<?php echo $key; ?>" <?php echo !$rl_state || in_array($key, $rl_state) ? 'checked="chekced"' : ''; ?>>
                     <label for="state-<?php echo $key; ?>"><?php echo $state; ?></label>
                 <?php } ?>
@@ -150,12 +150,12 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
         </td>
         <td headers="th_state" class="" style="text-align:center">
-            <?php echo $recipient_state[$row['rl_state']]; ?>
+            <?php echo $recipient_link_state[$row['rl_state']]; ?>
         </td>
         <td headers="th_datetime" class="td_datetime"><?php echo $row['rl_created_at']; ?></td>
         <td headers="th_datetime" class="td_datetime"><?php echo $row['rl_updated_at']; ?></td>
         <td headers="th_edit" class="" style="text-align:center;">
-            <a href="./recipient_link_view.php?<?php echo $qstr ; ?>&amp;w=u&amp;rl_id=<?php echo $row['rl_id']; ?>" class="btn btn_03">자세히</a>
+            <a href="./recipient_link_view.php?rl_id=<?php echo $row['rl_id']; ?>" class="btn btn_03">자세히</a>
             <a href="./recipient_link_form.php?<?php echo $qstr ; ?>&amp;w=u&amp;rl_id=<?php echo $row['rl_id']; ?>" class="btn btn_03">수정</a>
         </td>
     </tr>
