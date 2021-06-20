@@ -42,7 +42,7 @@
 .main_top_wrap .slick-next:before {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;
-  font-size: 40px;
+  font-size: 80px;
   line-height: 1;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
@@ -87,28 +87,28 @@
         <div class="desc">복지용구 사업소 업무를 쉽고 간편하게</div>
         <h2>편리한 온라인 전자계약</h2>
       </div>
-      <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_01.png" alt="복지용구 통합관리 시스템">
+      <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_01.png"  >
     </div>
     <div class="main_slide">
       <div class="main_slide_head">
         <div class="desc">실시간 수급자 별 청구금액 확인</div>
         <h2>월별 청구관리 및 간편검증</h2>
       </div>
-      <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_01.png" alt="복지용구 통합관리 시스템">
+      <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_02.png" >
     </div>
     <div class="main_slide">
       <div class="main_slide_head">
         <div class="desc">쉽고 간편한 수급자 통합관리 시스템</div>
         <h2>간편관리 및 신규 수급자 추천</h2>
       </div>
-      <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_01.png" alt="복지용구 통합관리 시스템">
+      <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_03.png"  >
     </div>
     <div class="main_slide">
       <div class="main_slide_head">
         <div class="desc">현재 보유한 재고를 일괄업로드 후 관리</div>
         <h2>판매/대여(소독관리) 간편 관리</h2>
       </div>
-      <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_01.png" alt="복지용구 통합관리 시스템">
+      <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_04.png" >
     </div>
   </div>
 </div>
