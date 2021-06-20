@@ -327,7 +327,7 @@ pre{white-space: pre-wrap;}
 }
 
 .main_slider {
-	margin: 30px 0 20px 0;
+	margin: 30px auto 20px auto;
 }
 .main_slide {}
 .main_slide_head {
