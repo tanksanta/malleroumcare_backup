@@ -92,6 +92,9 @@ define('EROUMCARE_API_ENT_ACCOUNT',            'https://system.eroumcare.com/api
 // 회원조회2
 define('EROUMCARE_API_ACCOUNT_ENTLOGIN',            'https://system.eroumcare.com/api/account/entLogin');
 
+// 카카오 디벨로퍼스 REST API 연동
+define('KAKAO_DEVELOPERS_REST_API_KEY', '7a991b6e94ba43c5d266d9aa4a2edca1');
+
 // 로젠택배 EDI 연동 
 // dbconfig 파일에 작성하도록 수정
 // 실주소 : https://ilogen.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL
