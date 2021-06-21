@@ -76,6 +76,7 @@ WHERE
     -- AND c.ct_edi_result = 0 -- 위에서 처리
     AND c.ct_is_direct_delivery = 0 -- 직배송 아닌것
     -- and o.od_id = '2021042313174631'
+ORDER BY c.ct_move_date ASC, o.od_id ASC
 ";
 $cart_result = sql_query($sql);
 while ( $row2 = sql_fetch_array($cart_result) ) {
