@@ -143,7 +143,7 @@ $sub_menu = '400402';
       <span class="label">바코드 등록 미완료 만 보기</span>
     </label>
 
-      <input type="checkbox" id="cf_flag2">
+    <input type="checkbox" id="cf_flag2">
     <label for="cf_flag2">
       <span class="icon">
         <i class="fa fa-check"></i>
@@ -151,7 +151,7 @@ $sub_menu = '400402';
       <span class="label">내 담당만 보기</span>
     </label>
 
-      <input type="checkbox" id="cf_flag3">
+    <input type="checkbox" id="cf_flag3">
     <label for="cf_flag3">
       <span class="icon">
         <i class="fa fa-check"></i>
@@ -237,7 +237,7 @@ $sub_menu = '400402';
       if(result.data) {
         var html = "";
         $.each(result.data, function(key, row) {
-          html += '<ul>';
+          html += '<ul class="' + row.complate_flag + ' ' + row.complate_flag2 + ' '+ row.ct_manager + '">';
           html += '<li class="mainInfo">';
           html += '<p class="name">';
           html += '<span class="it_name">' + row.it_name + '</span>';
@@ -273,6 +273,7 @@ $sub_menu = '400402';
         });
     
         $("#listDataWrap").append(html);
+        cf_flag();
         itNameSizeSetting();
 
         $('#page').val(parseInt($('#page').val()) + 1);
@@ -432,17 +433,14 @@ $sub_menu = '400402';
 
   $("#cf_flag").change(function(){
     cf_flag();
-    doSearch();
   });
   $("#cf_flag2").change(function(){
     document.getElementById('cf_flag3').checked=false;
     cf_flag();
-    doSearch();
   });
   $("#cf_flag3").change(function(){
     document.getElementById('cf_flag2').checked=false;
     cf_flag();
-    doSearch();
   });
 
   //바코드 버튼 클릭
