@@ -118,6 +118,9 @@
 				<a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
 				<a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
 			</div>
+			<div class="r_btn_area mobile">
+				<a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
+			</div>
 		</form>
 
 		<div class="list_box pc">
