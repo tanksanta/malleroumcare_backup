@@ -24,21 +24,22 @@ $count = 0;
 
 while($result = sql_fetch_array($query)) {
     set_order_admin_log($result['od_id'], '상품 [' . $result['ct_option'] . '] 상태 출고완료후 3일 경과로, 배송완료 단계로 자동 변경');
-    sql_query("UPDATE g5_shop_cart SET
-        ct_status = '완료',
-        ct_move_date = NOW()
-    WHERE
-        ct_id = '{$result['ct_id']}'
-    ");
+    // sql_query("UPDATE g5_shop_cart SET
+    //     ct_status = '완료',
+    //     ct_move_date = NOW()
+    // WHERE
+    //     ct_id = '{$result['ct_id']}'
+    // ");
 
     $count++;
 }
 
-// sql_query("UPDATE g5_shop_cart SET
-//     ct_status = '완료'
-// WHERE
-//     {$where}
-// ");
+sql_query("UPDATE g5_shop_cart SET
+        ct_status = '완료',
+        ct_move_date = NOW()
+    WHERE
+        {$where}
+");
 
 if(!$count) {
     json_response(200, '배송완료 처리할 내용이 없습니다.');
