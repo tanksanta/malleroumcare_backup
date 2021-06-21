@@ -54,9 +54,6 @@ $sub_menu = '400402';
     #listSortWrap > label > .icon > i { position: absolute; left: 50%; top: 50%; margin-left: -6px; margin-top: -6px; font-size: 12px; color: #DC3333; opacity: 0; }
     #listSortWrap > label > .label { display: inline-block; font-size: 14px; color: #666; margin-right:10px;}
     #listSortWrap > input[type="checkbox"]:checked + label > .icon > i { opacity: 1; }
-    #listSortWrap > #listSortChangeBtn { height: 20px; line-height: 20px; float: right; border: 0; border-bottom: 1px solid #666; background-color: #FFF; cursor: pointer; }
-    #listSortWrap > #listSortChangeBtn > span { float: left; font-size: 13px; color: #666; font-weight: bold; display: none; }
-    #listSortWrap > #listSortChangeBtn > span.active { display: block; }
     
     /* 데이터목록 */
     #listDataWrap { width: 100%; float: left; }
@@ -158,11 +155,6 @@ $sub_menu = '400402';
       </span>
       <span class="label">미지정만 보기</span>
     </label>
-
-    <button type="button" id="listSortChangeBtn">
-      <span class="active" data-sort="od_time"></span>
-      <span data-sort="od_status">상태 정렬↓</span>
-    </button>
   </div>
     
   <!-- 데이터 목록 -->
@@ -224,9 +216,7 @@ $sub_menu = '400402';
     formdata["to_date"] = $("#search_to_date").val();
     formdata["search_option"] = $("#search_option").val();
     formdata["search_text"] = $("#search_text").val();
-    formdata["cust_sort"] = $("#listSortChangeBtn").find(".active").attr("data-sort");
     formdata['cf']=document.getElementById('cf_flag').checked;
-    // formdata['page']=parseInt(document.getElementById('page').value);
     formdata['page'] = page2;
     page2++;
     
@@ -319,23 +309,6 @@ $sub_menu = '400402';
       $("#page").val(1);
       $("#listDataWrap").html("");
       page2 = 1;
-      doSearch();
-    });
-
-    $("#listSortChangeBtn").click(function() {
-      var item = $(this).find("span");
-      var active = $(this).find(".active");
-      
-      $(item).removeClass("active");
-      
-      if($(active).next().length){
-        $(active).next().addClass("active");
-      } else {
-        $(item[0]).addClass("active");
-      }
-
-      $("#page").val(1);
-      $("#listDataWrap").html("");
       doSearch();
     });
 
