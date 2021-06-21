@@ -48,7 +48,7 @@ if ($rl_ltm) {
 
 if ($w == '')
 {   
-    sql_query("INSERT INTO g5_recipient_link
+    sql_query("INSERT INTO recipient_link
         SET
             {$sql_common}
     ");
@@ -58,13 +58,13 @@ if ($w == '')
 else if ($w == 'u')
 {
     
-    $sql = "SELECT * FROM g5_recipient_link WHERE rl_id = '{$rl_id}'";
+    $sql = "SELECT * FROM recipient_link WHERE rl_id = '{$rl_id}'";
     $rl = sql_fetch($sql);
 
     if (!$rl['rl_id'])
         alert('존재하지 않는 수급자입니다.');
 
-    sql_query("UPDATE g5_recipient_link SET
+    sql_query("UPDATE recipient_link SET
             {$sql_common}
             , rl_updated_at = now()
         WHERE rl_id = '{$rl_id}'

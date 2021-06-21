@@ -11,7 +11,7 @@ if ($w == '')
 }
 else if ($w == 'u')
 {
-    $sql = "SELECT * FROM g5_recipient_link WHERE rl_id = '{$rl_id}'";
+    $sql = "SELECT * FROM recipient_link WHERE rl_id = '{$rl_id}'";
     $rl = sql_fetch($sql);
 
     if (!$rl['rl_id'])

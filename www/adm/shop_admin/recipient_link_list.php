@@ -41,7 +41,7 @@ if ($rl_state) {
     }
 }
 
-$sql_common = " from g5_recipient_link as rl WHERE 1=1 ";
+$sql_common = " from recipient_link as rl WHERE 1=1 ";
 $sql_common .= $sql_search;
 
 // 테이블의 전체 레코드수만 얻음
@@ -124,7 +124,7 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
     </thead>
     <tbody>
     <?php
-    $sql = "SELECT * from g5_recipient_link as rl
+    $sql = "SELECT * from recipient_link as rl
         WHERE 1=1 $sql_search
         order by rl_id desc
         limit $from_record, $rows

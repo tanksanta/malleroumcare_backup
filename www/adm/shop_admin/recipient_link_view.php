@@ -7,7 +7,7 @@ auth_check($auth[$sub_menu], "w");
 $g5['title'] = '수급자연결관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
-$rl = sql_fetch("SELECT * FROM g5_recipient_link WHERE rl_id = '{$rl_id}'");
+$rl = sql_fetch("SELECT * FROM recipient_link WHERE rl_id = '{$rl_id}'");
 if(!$rl['rl_id'])
   alert('존재하지 않는 수급자입니다.');
 
@@ -16,7 +16,7 @@ if(!$rl['rl_addr_lat'] || !$rl['rl_addr_lng'] || $rl['rl_addr_lat'] == '0.000' |
   $lat_lng = get_lat_lng_by_address($rl['rl_addr1']);
   if($lat_lng) {
     sql_query("
-      UPDATE g5_recipient_link SET
+      UPDATE recipient_link SET
       rl_addr_lat = '{$lat_lng['lat']}',
       rl_addr_lng = '{$lat_lng['lng']}'
       WHERE rl_id = '{$rl['rl_id']}'
