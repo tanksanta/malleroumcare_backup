@@ -925,6 +925,10 @@ function fregisterform_submit() {
     $.ajax({
       type: 'POST',
       url : "<?=$api_url?>",
+      async : false,
+      cache : false,
+      processData : false,
+      contentType : false,
       data : sendData
     })
     .done(function(data) {
