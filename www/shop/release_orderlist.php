@@ -218,6 +218,8 @@ $sub_menu = '400402';
 
   //리스트 불러오기 ajax
   function doSearch(){
+    if(loading) return;
+
     formdata["fr_date"] = $("#search_fr_date").val();
     formdata["to_date"] = $("#search_to_date").val();
     formdata["search_option"] = $("#search_option").val();
@@ -227,7 +229,8 @@ $sub_menu = '400402';
     // formdata['page']=parseInt(document.getElementById('page').value);
     formdata['page'] = page2;
     page2++;
-
+    
+    loading = true;
     $.ajax({
       method: "POST",
       url: "<?=G5_URL?>/adm/shop_admin/ajax.release_orderlist.php",
@@ -342,7 +345,7 @@ $sub_menu = '400402';
     });
 
     $(window).scroll(function() {
-      if((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+      if((window.innerHeight + window.scrollY) >= document.body.offsetHeight / 2) {
         doSearch();
       }
     });
@@ -363,7 +366,7 @@ $sub_menu = '400402';
 
     // 내 담당만 보기
     if(show_mine_only) {
-      formdata['ct_manager'] = "<?=get_text($member['mb_id'])?>"
+      formdata['ct_manager'] = '<?=$member['mb_id']?>';
     } else {
       formdata['ct_manager'] = '';
     }
