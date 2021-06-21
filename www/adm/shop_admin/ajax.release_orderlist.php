@@ -258,14 +258,14 @@ $sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, 
                 $sql_search
                 group by cart_ct_id ";
 
-foreach($order_steps as $order_step) { 
+foreach(array_reverse($order_steps) as $order_step) { 
   if (!$order_step['deliverylist']) continue;
   $order_by_steps[] = "'".$order_step['val']."'";
 }
 
 $order_by_step = implode(' , ', $order_by_steps);
 
-$sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), B.ct_move_date desc, od_id desc ";
+$sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), B.ct_move_date asc, od_id asc ";
 
 $sql = " select count(od_id) as cnt " . $sql_common;
 
