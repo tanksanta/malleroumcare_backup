@@ -102,7 +102,7 @@ if( function_exists('pg_setting_check') ){
                                         <li><input type="checkbox" name="od_release_manager[]" id="no_release" value="no_release" title="no_release" <?php echo option_array_checked('no_release', $od_release_manager); ?>><label for="no_release">출고아님</label></li>
                                         <li><input type="checkbox" name="od_release_manager[]" id="out_release" value="-" title="out_release" <?php echo option_array_checked('-', $od_release_manager); ?>><label for="out_release">외부출고</label></li>
                                         <?php
-                                        $sql = "SELECT * FROM g5_auth WHERE au_menu = '400402' AND au_auth LIKE '%w%'";
+                                        $sql = "SELECT * FROM g5_auth WHERE au_menu = '400001' AND au_auth LIKE '%w%'";
                                         $auth_result = sql_query($sql);
                                         while($a_row = sql_fetch_array($auth_result)) {
                                             $a_mb = get_member($a_row['mb_id']);

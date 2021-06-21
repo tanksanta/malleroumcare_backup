@@ -35,39 +35,6 @@ if ($search != "") {
   }
 }
 
-if ( $od_sales_manager ) {
-  $where_od_sales_manager = array();
-  for($i=0;$i<count($od_sales_manager);$i++) {
-    $where_od_sales_manager[] = " od_sales_manager = '{$od_sales_manager[$i]}'";
-  }
-  if ( count($where_od_sales_manager) ) {
-    $where[] = " ( " . implode(' OR ', $where_od_sales_manager) . " ) ";
-  }
-}
-
-if ( $od_release_manager ) {
-  $where_od_release_manager = array();
-  for($i=0;$i<count($od_release_manager);$i++) {
-    $where_od_release_manager[] = " od_release_manager = '{$od_release_manager[$i]}'";
-  }
-  if ( count($where_od_release_manager) ) {
-    $where[] = " ( " . implode(' OR ', $where_od_release_manager) . " ) ";
-  }
-}
-
-if ( $od_delivery_type ) {
-  if ( is_array($od_delivery_type) ) {
-    $where_delivery_type = array();
-
-    foreach($od_delivery_type as $type) {
-      $where_delivery_type[] = " od_delivery_type = '$type'";
-    }
-    $where[] = ' ( '.implode(' or ', $where_delivery_type). ' ) ';
-  }else{
-    $where[] = " od_delivery_type = '$od_delivery_type' ";
-  }
-}
-
 if ( $price ) {
   $where[] = " (od_cart_price + od_send_cost + od_send_cost2 - od_cart_discount - od_cart_discount2) BETWEEN '{$price_s}' AND '{$price_e}' ";
 }
@@ -138,11 +105,24 @@ if ( $od_sales_manager ) {
 
 if ( $od_release_manager ) {
   $where_od_release_manager = array();
-  for($i=0;$i<count($od_release_manager);$i++) {
-    $where_od_release_manager[] = " od_release_manager = '{$od_release_manager[$i]}'";
+  for($i=0; $i<count($od_release_manager); $i++) {
+    $where_od_release_manager[] = " ct_manager = '{$od_release_manager[$i]}' ";
   }
   if ( count($where_od_release_manager) ) {
     $where[] = " ( " . implode(' OR ', $where_od_release_manager) . " ) ";
+  }
+}
+
+if ( $od_delivery_type ) {
+  if ( is_array($od_delivery_type) ) {
+    $where_delivery_type = array();
+
+    foreach($od_delivery_type as $type) {
+      $where_delivery_type[] = " od_delivery_type = '$type'";
+    }
+    $where[] = ' ( '.implode(' or ', $where_delivery_type). ' ) ';
+  } else {
+    $where[] = " od_delivery_type = '$od_delivery_type' ";
   }
 }
 
@@ -230,7 +210,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date from {$g5['g5_shop_cart_table']}) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date, ct_manager from {$g5['g5_shop_cart_table']}) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -270,7 +250,7 @@ if ( $where2 || $where ) {
 }
 $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status from {$g5['g5_shop_cart_table']}) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_manager from {$g5['g5_shop_cart_table']}) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
