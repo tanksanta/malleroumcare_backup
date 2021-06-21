@@ -383,15 +383,27 @@ $sub_menu = '400402';
     doSearch();
   }
 
-  $("#cf_flag").change(function() {
+  $("#cf_flag").click(function(e) {
+    if(loading) {
+      e.preventDefault();
+      return false;
+    }
     cf_flag();
   });
-  $("#cf_flag2").change(function() {
+  $("#cf_flag2").click(function(e) {
+    if(loading) {
+      e.preventDefault();
+      return false;
+    }
     if($(this).prop('checked'))
       $('#cf_flag3').prop('checked', false);
     cf_flag();
   });
-  $("#cf_flag3").change(function() {
+  $("#cf_flag3").click(function(e) {
+    if(loading) {
+      e.preventDefault();
+      return false;
+    }
     if($(this).prop('checked'))
       $('#cf_flag2').prop('checked', false);
     cf_flag();
