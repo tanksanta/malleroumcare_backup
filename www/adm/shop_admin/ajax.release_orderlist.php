@@ -291,16 +291,7 @@ foreach($order_steps as $order_step) {
 
 $order_by_step = implode(' , ', $order_by_steps);
 
-//$sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), od_id desc ";
-$sql_common .= " ORDER BY ";
-switch($cust_sort){
-	case "od_time" :
-		$sql_common .= "B.ct_move_date DESC, od_time DESC ";
-		break;
-	case "ct_status" :
-		$sql_common .= " FIELD ( ct_status, '출고준비', '완료' ) DESC ";
-		break;
-}
+$sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), B.ct_move_date desc, od_id desc ";
 
 $sql = " select count(od_id) as cnt " . $sql_common;
 

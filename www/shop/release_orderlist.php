@@ -1,8 +1,6 @@
 <?php
 include_once("./_common.php");
 $g5["title"] = "주문 내역 바코드 수정";
-$sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
-$od = sql_fetch($sql);
 $prodList = [];
 $prodListCnt = 0;
 $deliveryTotalCnt = 0;
@@ -11,7 +9,7 @@ $sub_menu = '400402';
 // alert('준비중입니다.',G5_URL);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -68,7 +66,7 @@ $sub_menu = '400402';
     #listDataWrap > ul > li.mainInfo { padding-right: 110px; }
     #listDataWrap > ul > li.mainInfo > p { width: 100%; float: left; }
     #listDataWrap > ul > li.mainInfo > .name { font-size: 17px; font-weight: bold; color: #000; }
-    #listDataWrap > ul > li.mainInfo > .name > span { float: left; overflow: hidden; text-overflow: ellipsis; white-space: ; }
+    #listDataWrap > ul > li.mainInfo > .name > span { float: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #listDataWrap > ul > li.mainInfo > .name > span.delivery { color: #FF690F; padding-left: 5px; }
     #listDataWrap > ul > li.mainInfo > .cnt { font-size: 13px; color: #999; margin-top: 2px; }
     #listDataWrap > ul > li.mainInfo > .date { font-size: 13px; color: #999; margin-top: 20px; }
@@ -174,6 +172,28 @@ $sub_menu = '400402';
   <input type="hidden" value="1" id="page">
 
   <script>
+  var od_status = '';
+  var od_step = "";
+  var page2= 1;
+  var loading = false;
+  var end = false;
+  var sel_field = 'od_id';
+  var sub_menu = '400402';
+  var last_step = '완료';
+  var sel_date_field = 'od_time';
+
+  var formdata= {};
+  formdata['last_step'] = "";
+  formdata['od_important'] = "";
+  formdata['od_release'] = "";
+  formdata['od_status'] = "";
+  formdata['od_step'] = "";
+  formdata['search'] = "";
+  formdata['sel_date_field'] = "od_time";
+  formdata['sel_field'] = "od_id";
+  formdata['sub_menu'] = "400402";
+  formdata['to_date'] = "";
+
   // 출처: https://cofs.tistory.com/363 [CofS]
 
   /* 210317 아이템 이름 넓이 조정 */
@@ -195,32 +215,6 @@ $sub_menu = '400402';
       $(item[i]).find(".mainInfo > .status").css("height", wrapHeight + "px")
     }
   }
-  itNameSizeSetting();
-    
-  var od_status = '';
-  var od_step = "";
-  var page= parseInt(document.getElementById('page').value);
-  var page2= 1;
-  var loading = false;
-  var end = false;
-  var sel_field = 'od_id';
-  var sub_menu = '400402';
-  var last_step = '완료';
-  var sel_date_field = 'od_time';
-
-  var formdata= {};
-  formdata['last_step'] = "";
-  formdata['od_important'] = "";
-  formdata['od_release'] = "";
-  formdata['od_status'] = "";
-  formdata['od_step'] = "";
-  formdata['search'] = "";
-  formdata['sel_date_field'] = "od_time";
-  formdata['sel_field'] = "od_id";
-  formdata['sub_menu'] = "400402";
-  formdata['to_date'] = "";
-  doSearch();
-
 
   //리스트 불러오기 ajax
   function doSearch(){
@@ -243,7 +237,7 @@ $sub_menu = '400402';
       if(result.data) {
         var html = "";
         $.each(result.data, function(key, row) {
-          html += '<ul class="' + row.complate_flag + ' ' + row.complate_flag2 + ' '+ row.ct_manager + '">';
+          html += '<ul>';
           html += '<li class="mainInfo">';
           html += '<p class="name">';
           html += '<span class="it_name">' + row.it_name + '</span>';
@@ -279,9 +273,9 @@ $sub_menu = '400402';
         });
     
         $("#listDataWrap").append(html);
-        cf_flag();
-    
-        document.getElementById("page").value = parseInt(document.getElementById("page").value) + 1;
+        itNameSizeSetting();
+
+        $('#page').val(parseInt($('#page').val()) + 1);
       } else {
         // alert('마지막 페이지입니다.');
       }
@@ -296,6 +290,8 @@ $sub_menu = '400402';
 
 
   $( document ).ready(function() {
+    $("#listDataWrap").html("");
+    doSearch();
 
     if(getCookie("cf_flag")){ document.getElementById('cf_flag').checked =true;}else{document.getElementById('cf_flag').checked =false; }
     if(getCookie("cf_flag2")){ document.getElementById('cf_flag2').checked =true;}else{document.getElementById('cf_flag2').checked =false; }
@@ -432,9 +428,6 @@ $sub_menu = '400402';
       $("#listDataWrap > ul.cf").addClass("type2");
       $("#listDataWrap > ul.cf").removeClass("type1");
     }
-
-    //doSearch();
-    itNameSizeSetting();
   }
 
   $("#cf_flag").change(function(){
@@ -461,7 +454,7 @@ $sub_menu = '400402';
     var it = $(this).attr("data-it");
     var stock = $(this).attr("data-stock");
     var option = encodeURIComponent($(this).attr("data-option"));
-      
+
     $.ajax({
       url : "/shop/ajax.release_orderview.check.php",
       type : "POST",
@@ -469,8 +462,6 @@ $sub_menu = '400402';
         ct_id : ct_id
       },
       success : function(result) {
-        // console.log(result);
-        // return false;
         if(result.error == "Y") {
           if(confirm("작업중입니다. 무시하고 진행 시 이전 작업자는 작업이 종료됩니다. 무시하시겠습니까?")) {
             location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&ct_id="+ct_id;
@@ -481,19 +472,6 @@ $sub_menu = '400402';
       }
     });
   });
-
-  //x 버튼 이동
-  // function x_btn(){
-  //     history.pushState(null, null, "#noback");
-
-  //         $(window).bind("hashchange", function(){
-
-  //             history.pushState(null, null, "#noback");
-
-  //             alert(1);
-
-  //         });
-  // }
   </script>
 </body>
 </html>
