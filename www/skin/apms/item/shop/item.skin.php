@@ -22,7 +22,7 @@ $btn2 = (isset($wset['btn2']) && $wset['btn2']) ? $wset['btn2'] : 'color';
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="'.$item_skin_url.'/style.css" media="screen">', 0);
 
-if($is_orderable) echo '<script src="'.$item_skin_url.'/shop.js"></script>'.PHP_EOL;
+if($is_orderable) echo '<script src="'.$item_skin_url.'/shop.js?v=20210621"></script>'.PHP_EOL;
 
 // 이미지처리
 $j=0;
