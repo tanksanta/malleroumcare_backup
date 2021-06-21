@@ -63,7 +63,8 @@ $sub_menu = '400402';
     #listDataWrap > ul > li.mainInfo { padding-right: 110px; }
     #listDataWrap > ul > li.mainInfo > p { width: 100%; float: left; }
     #listDataWrap > ul > li.mainInfo > .name { font-size: 17px; font-weight: bold; color: #000; }
-    #listDataWrap > ul > li.mainInfo > .name > span { float: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #listDataWrap > ul > li.mainInfo > .name > span{word-break: keep-all}
+    /* #listDataWrap > ul > li.mainInfo > .name > span { float: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } */
     #listDataWrap > ul > li.mainInfo > .name > span.delivery { color: #FF690F; padding-left: 5px; }
     #listDataWrap > ul > li.mainInfo > .cnt { font-size: 13px; color: #999; margin-top: 2px; }
     #listDataWrap > ul > li.mainInfo > .date { font-size: 13px; color: #999; margin-top: 20px; }
