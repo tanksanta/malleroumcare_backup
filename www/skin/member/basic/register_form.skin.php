@@ -925,7 +925,7 @@ function fregisterform_submit() {
     $.ajax({
       type: 'POST',
       url : "<?=$api_url?>",
-      data : sendData,
+      data : sendData
     })
     .done(function(data) {
       if(data.message == "SUCCESS"){
