@@ -17,6 +17,7 @@ if( !in_array($sel_field, array('od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 
 $ct_status = get_search_string($ct_status);
 $search = get_search_string($search);
 $ct_manager = get_search_string($ct_manager);
+$incompleted_barcode = get_search_string($incompleted_barcode) == 'true';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
 
@@ -161,7 +162,6 @@ if (gettype($od_release) == 'string' && $od_release !== '') {
   }
 }
 
-
 if ($od_misu) {
   $where[] = " od_misu != 0 ";
 }
@@ -232,6 +232,11 @@ if($ct_manager) {
   $where[] = " ct_manager = '{$ct_manager}' ";
 }
 
+// 바코드등록 미완료만 보기
+if($incompleted_barcode) {
+  $where[] = " ct_barcode_insert < ct_qty ";
+}
+
 if ($where) {
   $sql_search = ' where '.implode(' and ', $where);
 }
@@ -240,7 +245,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date from {$g5['g5_shop_cart_table']}) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date, ct_manager, ct_barcode_insert, ct_qty from {$g5['g5_shop_cart_table']}) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -278,10 +283,8 @@ if ( $where2 || $where ) {
     $sql_search2 = ' where '.implode(' and ', $where2);
   }
 }
-$sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
-
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status from {$g5['g5_shop_cart_table']}) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_manager, ct_barcode_insert, ct_qty from {$g5['g5_shop_cart_table']}) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp

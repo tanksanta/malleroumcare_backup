@@ -349,13 +349,24 @@ $sub_menu = '400402';
   });
 
   //미완료 바코드 작성만보기버튼
-  function cf_flag(){
+  function cf_flag() {
+    var show_incompleted_barcode_only = $('#cf_flag').prop('checked');
     var show_mine_only = $('#cf_flag2').prop('checked');
+
+    // 바코드만 등록 미완료만 보기
+    if(show_incompleted_barcode_only) {
+      formdata['incompleted_barcode'] = "true";
+    } else {
+      formdata['incompleted_barcode'] = "false";
+    }
+
+    // 내 담당만 보기
     if(show_mine_only) {
       formdata['ct_manager'] = "<?=get_text($member['mb_id'])?>"
     } else {
       formdata['ct_manager'] = '';
     }
+
     $("#listDataWrap").html("");
     page2 = 1;
     doSearch();
