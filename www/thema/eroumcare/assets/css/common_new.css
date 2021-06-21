@@ -1264,3 +1264,9 @@ pre{white-space: pre-wrap;}
 	#headerTopQuickMenuWrap .listWrap > li > a { font-size: 12px; }
 	.cate_wrap .form_cate .input_search { max-width: calc(100% - 80px); }
 }
+
+#form_search:after {
+	display: table;
+	content: '';
+	clear:both;
+}
