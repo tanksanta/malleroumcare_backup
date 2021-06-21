@@ -1,8 +1,8 @@
 <?php
 if(!$w){
-    if(!$_POST['agree']||! $_POST['agree2']){
-        alert('이용약관에 동의해주세요.',G5_BBS_URL.'/register.php');
-    }
+  if(!$_POST['agree']||! $_POST['agree2']){
+    alert('이용약관에 동의해주세요.',G5_BBS_URL.'/register.php');
+  }
 }
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
@@ -17,7 +17,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 ?>
 <script src="<?php echo G5_JS_URL ?>/jquery.register_form.js"></script>
 <?php if($config['cf_cert_use'] && ($config['cf_cert_ipin'] || $config['cf_cert_hp'])) { ?>
-    <script src="<?php echo G5_JS_URL ?>/certify.js?v=<?php echo APMS_SVER; ?>"></script>
+<script src="<?php echo G5_JS_URL ?>/certify.js?v=<?php echo APMS_SVER; ?>"></script>
 <?php } ?>
 <style>
 .register-form .panel {
@@ -83,375 +83,232 @@ add_javascript(G5_POSTCODE_JS, 0);
 	<?php }  ?>
 	-->
 
-	<div class="sub_section_tit">
-    <?php echo $w==''?'회원가입':'정보수정'; ?>
-	</div>
+    <div class="sub_section_tit">
+      <?php echo $w==''?'회원가입':'정보수정'; ?>
+    </div>
 
-	<div class="panel panel-default">
-		<div class="panel-heading"><strong>기본정보</strong></div>
-		<div class="panel-body">
+    <div class="panel panel-default">
+      <div class="panel-heading"><strong>기본정보</strong></div>
+      <div class="panel-body">
 
-			<div class="form-group has-feedback  ">
-				<label class="col-sm-2 control-label" for="reg_mb_id"><b>아이디</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" name="mb_id" value="<?php echo $member['mb_id'] ?>" id="reg_mb_id" <?php echo $required ?> <?php echo $readonly ?> class="form-control input-sm" minlength="3" maxlength="20">
-				</div>
-				<div class="desc_txt">
-					<span id="id_keyup"></span>
-				</div>
-                
-			</div>
+        <div class="form-group has-feedback  ">
+          <label class="col-sm-2 control-label" for="reg_mb_id"><b>아이디</b><strong class="sound_only">필수</strong></label>
+          <div class="col-sm-3">
+            <input type="text" name="mb_id" value="<?php echo $member['mb_id'] ?>" id="reg_mb_id" <?php echo $required ?> <?php echo $readonly ?> class="form-control input-sm" minlength="3" maxlength="20">
+          </div>
+          <div class="desc_txt">
+            <span id="id_keyup"></span>
+          </div>
+                  
+        </div>
 
-			<div class="form-group has-feedback">
-				<label class="col-sm-2 control-label" for="reg_mb_password"><b>비밀번호</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="password" name="mb_password" id="reg_mb_password" <?php echo $required ?> class="form-control input-sm" minlength="3" maxlength="20">
-					<div class="h15 hidden-lg hidden-md hidden-sm"></div>
-				</div>
-				<div class="desc_txt">
-					<span>*영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.</span>
-				</div>
-			</div>
-            <div class="form-group has-feedback">
-				<label class="col-sm-2 control-label" for="reg_mb_password_re"><b>비밀번호 확인</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="password" name="mb_password_re" id="reg_mb_password_re" <?php echo $required ?> class="form-control input-sm" minlength="3" maxlength="20">
-				</div>
-			</div>
-            
-			<div class="form-group has-feedback">
-				<label class="col-sm-2 control-label" for=""><b>분류</b><strong class="sound_only">필수</strong></label>
-				<div class="desc_txt">
-					<span>복지용구사업소</span>
-				</div>
-			</div>
-            <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_bname"><b>기업명</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_bname" name="mb_giup_bname" value="<?php echo get_text($member['mb_giup_bname']) ?>" class="form-control input-sm" size="10">
-				</div>
-			</div>
+        <div class="form-group has-feedback">
+          <label class="col-sm-2 control-label" for="reg_mb_password"><b>비밀번호</b><strong class="sound_only">필수</strong></label>
+          <div class="col-sm-3">
+            <input type="password" name="mb_password" id="reg_mb_password" <?php echo $required ?> class="form-control input-sm" minlength="3" maxlength="20">
+            <div class="h15 hidden-lg hidden-md hidden-sm"></div>
+          </div>
+          <div class="desc_txt">
+            <span>*영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.</span>
+          </div>
+        </div>
+        <div class="form-group has-feedback">
+          <label class="col-sm-2 control-label" for="reg_mb_password_re"><b>비밀번호 확인</b><strong class="sound_only">필수</strong></label>
+          <div class="col-sm-3">
+            <input type="password" name="mb_password_re" id="reg_mb_password_re" <?php echo $required ?> class="form-control input-sm" minlength="3" maxlength="20">
+          </div>
+        </div>
+              
+        <div class="form-group has-feedback">
+          <label class="col-sm-2 control-label" for=""><b>분류</b><strong class="sound_only">필수</strong></label>
+          <div class="desc_txt">
+            <span>복지용구사업소</span>
+          </div>
+        </div>
+        <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
+          <label class="col-sm-2 control-label" for="mb_giup_bname"><b>기업명</b><strong class="sound_only">필수</strong></label>
+          <div class="col-sm-3">
+            <input type="text" id="mb_giup_bname" name="mb_giup_bname" value="<?php echo get_text($member['mb_giup_bname']) ?>" class="form-control input-sm" size="10">
+          </div>
+        </div>
 
-            <?php if ($config['cf_use_hp'] || $config['cf_cert_hp']) {  ?>
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label" for="reg_mb_hp"><b>휴대폰번호</b><?php if ($config['cf_req_hp']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
-					<div class="col-sm-3">
-						<input type="hidden" name="mb_hp" id="reg_mb_hp">
-						<?php $mb_hp =explode('-',$member['mb_hp']); ?>
-                        <input type="text" class="form-control input-sm number_box1" name="mb_hp1" size="6" id="mb_hp1" title="전화번호(1)" maxlength="4"  value="<?=$mb_hp[0]?>" required>
-						<input type="text" class="form-control input-sm number_box2" name="mb_hp2" size="6" id="mb_hp2" title="전화번호(2)" maxlength="4"  value="<?=$mb_hp[1]?>" required>
-                        <input type="text" class="form-control input-sm number_box2" name="mb_hp3" size="6" id="mb_hp3" title="전화번호(3)" maxlength="4"  value="<?=$mb_hp[2]?>" required>
-						<?php if ($config['cf_cert_use'] && $config['cf_cert_hp']) { ?>
-							<input type="hidden" name="old_mb_hp" value="<?php echo get_text($member['mb_hp']) ?>">
-						<?php } ?>
-					</div>
-				</div>
-			<?php }  ?>
+        <?php if ($config['cf_use_hp'] || $config['cf_cert_hp']) {  ?>
+        <div class="form-group has-feedback">
+          <label class="col-sm-2 control-label" for="reg_mb_hp"><b>휴대폰번호</b><?php if ($config['cf_req_hp']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
+          <div class="col-sm-3">
+            <input type="hidden" name="mb_hp" id="reg_mb_hp">
+            <?php $mb_hp =explode('-',$member['mb_hp']); ?>
+            <input type="text" class="form-control input-sm number_box1" name="mb_hp1" size="6" id="mb_hp1" title="전화번호(1)" maxlength="4"  value="<?=$mb_hp[0]?>" required>
+            <input type="text" class="form-control input-sm number_box2" name="mb_hp2" size="6" id="mb_hp2" title="전화번호(2)" maxlength="4"  value="<?=$mb_hp[1]?>" required>
+            <input type="text" class="form-control input-sm number_box2" name="mb_hp3" size="6" id="mb_hp3" title="전화번호(3)" maxlength="4"  value="<?=$mb_hp[2]?>" required>
+            <?php if ($config['cf_cert_use'] && $config['cf_cert_hp']) { ?>
+            <input type="hidden" name="old_mb_hp" value="<?php echo get_text($member['mb_hp']) ?>">
+            <?php } ?>
+          </div>
+        </div>
+        <?php }  ?>
+              
+        <?php if ($config['cf_use_tel']) {  ?>
+        <div class="form-group has-feedback">
+        <label class="col-sm-2 control-label" for="reg_mb_tel"><b>전화번호</b><?php if ($config['cf_req_tel']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
+        <div class="col-sm-3">
+          <!-- <input type="text" name="mb_tel" value="<?php echo get_text($member['mb_tel']) ?>" id="reg_mb_tel" <?php echo $config['cf_req_tel']?"required":""; ?> class="form-control input-sm" maxlength="20"> -->
+          <select name="mb_tel1" id="mb_tel1" class="form-control input-sm number_box1">
+            <?php $mb_giup_btel =explode('-',$member['mb_giup_btel']); ?>
+            <option value="02" <?=($mb_giup_btel[0] =="02")? "selected": "" ; ?> >02</option>
+            <option value="010" <?=($mb_giup_btel[0] =="010")? "selected": "" ; ?>>010</option>
+            <option value="031" <?=($mb_giup_btel[0] =="031")? "selected": "" ; ?>>031</option>
+            <option value="032" <?=($mb_giup_btel[0] =="032")? "selected": "" ; ?>>032</option>
+            <option value="033" <?=($mb_giup_btel[0] =="033")? "selected": "" ; ?>>033</option>
+            <option value="041" <?=($mb_giup_btel[0] =="041")? "selected": "" ; ?>>041</option>
+            <option value="042" <?=($mb_giup_btel[0] =="042")? "selected": "" ; ?>>042</option>
+            <option value="043" <?=($mb_giup_btel[0] =="043")? "selected": "" ; ?>>043</option>
+            <option value="044" <?=($mb_giup_btel[0] =="044")? "selected": "" ; ?>>044</option>
+            <option value="051" <?=($mb_giup_btel[0] =="051")? "selected": "" ; ?>>051</option>
+            <option value="052" <?=($mb_giup_btel[0] =="052")? "selected": "" ; ?>>052</option>
+            <option value="053" <?=($mb_giup_btel[0] =="053")? "selected": "" ; ?>>053</option>
+            <option value="054" <?=($mb_giup_btel[0] =="054")? "selected": "" ; ?>>054</option>
+            <option value="055" <?=($mb_giup_btel[0] =="055")? "selected": "" ; ?>>055</option>
+            <option value="061" <?=($mb_giup_btel[0] =="061")? "selected": "" ; ?>>061</option>
+            <option value="062" <?=($mb_giup_btel[0] =="062")? "selected": "" ; ?>>062</option>
+            <option value="063" <?=($mb_giup_btel[0] =="063")? "selected": "" ; ?>>063</option>
+            <option value="064" <?=($mb_giup_btel[0] =="064")? "selected": "" ; ?>>064</option>
+            <option value="070" <?=($mb_giup_btel[0] =="070")? "selected": "" ; ?>>070</option>
+          </select>
+          <input type="text" class="form-control input-sm number_box2" name="mb_tel2" size="6" id="mb_tel2" title="전화번호(2)" maxlength="4"  value="<?=$mb_giup_btel[1]?>" required>
+          <input type="text" class="form-control input-sm number_box2" name="mb_tel3" size="6" id="mb_tel3" title="전화번호(3)" maxlength="4"  value="<?=$mb_giup_btel[2]?>" required>
+        </div>
+      </div>
+      <?php }  ?>
 
-            
-            <?php if ($config['cf_use_tel']) {  ?>
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label" for="reg_mb_tel"><b>전화번호</b><?php if ($config['cf_req_tel']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
-					<div class="col-sm-3">
-						<!-- <input type="text" name="mb_tel" value="<?php echo get_text($member['mb_tel']) ?>" id="reg_mb_tel" <?php echo $config['cf_req_tel']?"required":""; ?> class="form-control input-sm" maxlength="20"> -->
-                        <select name="mb_tel1" id="mb_tel1" class="form-control input-sm number_box1">
-                            <?php $mb_giup_btel =explode('-',$member['mb_giup_btel']); ?>
-                            <option value="02" <?=($mb_giup_btel[0] =="02")? "selected": "" ; ?> >02</option>
-                            <option value="010" <?=($mb_giup_btel[0] =="010")? "selected": "" ; ?>>010</option>
-                            <option value="031" <?=($mb_giup_btel[0] =="031")? "selected": "" ; ?>>031</option>
-                            <option value="032" <?=($mb_giup_btel[0] =="032")? "selected": "" ; ?>>032</option>
-                            <option value="033" <?=($mb_giup_btel[0] =="033")? "selected": "" ; ?>>033</option>
-                            <option value="041" <?=($mb_giup_btel[0] =="041")? "selected": "" ; ?>>041</option>
-                            <option value="042" <?=($mb_giup_btel[0] =="042")? "selected": "" ; ?>>042</option>
-                            <option value="043" <?=($mb_giup_btel[0] =="043")? "selected": "" ; ?>>043</option>
-                            <option value="044" <?=($mb_giup_btel[0] =="044")? "selected": "" ; ?>>044</option>
-                            <option value="051" <?=($mb_giup_btel[0] =="051")? "selected": "" ; ?>>051</option>
-                            <option value="052" <?=($mb_giup_btel[0] =="052")? "selected": "" ; ?>>052</option>
-                            <option value="053" <?=($mb_giup_btel[0] =="053")? "selected": "" ; ?>>053</option>
-                            <option value="054" <?=($mb_giup_btel[0] =="054")? "selected": "" ; ?>>054</option>
-                            <option value="055" <?=($mb_giup_btel[0] =="055")? "selected": "" ; ?>>055</option>
-                            <option value="061" <?=($mb_giup_btel[0] =="061")? "selected": "" ; ?>>061</option>
-                            <option value="062" <?=($mb_giup_btel[0] =="062")? "selected": "" ; ?>>062</option>
-                            <option value="063" <?=($mb_giup_btel[0] =="063")? "selected": "" ; ?>>063</option>
-                            <option value="064" <?=($mb_giup_btel[0] =="064")? "selected": "" ; ?>>064</option>
-                            <option value="070" <?=($mb_giup_btel[0] =="070")? "selected": "" ; ?>>070</option>
-                        </select>
-                        <input type="text" class="form-control input-sm number_box2" name="mb_tel2" size="6" id="mb_tel2" title="전화번호(2)" maxlength="4"  value="<?=$mb_giup_btel[1]?>" required>
-                        <input type="text" class="form-control input-sm number_box2" name="mb_tel3" size="6" id="mb_tel3" title="전화번호(3)" maxlength="4"  value="<?=$mb_giup_btel[2]?>" required>
-					</div>
-				</div>
-			<?php }  ?>
+      <div class="form-group has-feedback">
+        <label class="col-sm-2 control-label" for="reg_mb_fax"><b>팩스번호</b><?php if ($config['cf_reg_fax']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
+        <div class="col-sm-3">
+          <?php $mb_fax =explode('-',$member['mb_fax']); ?>
+          <!-- <input type="text" name="mb_fax" value="<?php echo get_text($member['mb_fax']) ?>" id="reg_mb_fax" <?php echo ($config['cf_reg_fax'])?"required":""; ?> class="form-control input-sm" maxlength="13"> -->
+          <input type="text" class="form-control input-sm number_box1" name="mb_fax1" size="6" id="mb_fax1" title="전화번호(1)" maxlength="4"  value="<?=$mb_fax[0]?>" required>
+          <input type="text" class="form-control input-sm number_box2" name="mb_fax2" size="6" id="mb_fax2" title="전화번호(2)" maxlength="4"  value="<?=$mb_fax[1]?>" required>
+          <input type="text" class="form-control input-sm number_box2" name="mb_fax3" size="6" id="mb_fax3" title="전화번호(3)" maxlength="4"  value="<?=$mb_fax[2]?>" required>
+        </div>
+      </div>
+      
+      <div class="form-group has-feedback<?php echo ($config['cf_use_email_certify']) ? ' text-gap' : '';?>">
+        <label class="col-sm-2 control-label" for="reg_mb_email"><b>이메일(세금계산서 수신용)</b><strong class="sound_only">필수</strong></label>
+        <div class="col-sm-5">
+          <input type="hidden" name="old_email" value="<?php echo $member['mb_email'] ?>">
+          <input type="text" name="mb_email" value="<?php echo isset($member['mb_email'])?$member['mb_email']:''; ?>" id="reg_mb_email" required class="form-control input-sm email" maxlength="100">
+        </div>
+      </div>
 
-			<div class="form-group has-feedback">
-				<label class="col-sm-2 control-label" for="reg_mb_fax"><b>팩스번호</b><?php if ($config['cf_reg_fax']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
-				<div class="col-sm-3">
-                    <?php $mb_fax =explode('-',$member['mb_fax']); ?>
-					<!-- <input type="text" name="mb_fax" value="<?php echo get_text($member['mb_fax']) ?>" id="reg_mb_fax" <?php echo ($config['cf_reg_fax'])?"required":""; ?> class="form-control input-sm" maxlength="13"> -->
-                    <input type="text" class="form-control input-sm number_box1" name="mb_fax1" size="6" id="mb_fax1" title="전화번호(1)" maxlength="4"  value="<?=$mb_fax[0]?>" required>
-                    <input type="text" class="form-control input-sm number_box2" name="mb_fax2" size="6" id="mb_fax2" title="전화번호(2)" maxlength="4"  value="<?=$mb_fax[1]?>" required>
-                    <input type="text" class="form-control input-sm number_box2" name="mb_fax3" size="6" id="mb_fax3" title="전화번호(3)" maxlength="4"  value="<?=$mb_fax[2]?>" required>
-                    
-				</div>
-			</div>
-        
-
-            <!-- <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_name"><b>관리자이름</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_name" name="mb_name" value="<?php echo get_text($member['mb_name']) ?>" class="form-control input-sm" size="10">
-				</div>
-			</div>
-            <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_sex"><b>관리자 성별</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-                <?php
-                    $mb_sex_check00="";
-                    $mb_sex_check02="";
-                    if($member['mb_sex'] =="00") $mb_sex_check00="checked";
-                    if($member['mb_sex'] =="01") $mb_sex_check01="checked";
-                ?>
-					남<input type="radio" id="mb_sex" name="mb_sex" value="00" <?=$mb_sex_check00?> class="input-sm" size="10">
-					여<input type="radio" id="mb_sex" name="mb_sex" value="01" <?=$mb_sex_check01?> class="input-sm" size="10">
-				</div>
-			</div>
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="penBirth"><b>관리자 생일</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-                        <select name="penBirth1" id="year" title="년도" class="form-control input-sm year" style="display:inline-block;width:32%;"></select>
-                        <select name="penBirth2" id="month" title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
-                        <select name="penBirth3" id="day" title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
-				</div>
-			</div> -->
-
-			<div class="form-group has-feedback<?php echo ($config['cf_use_email_certify']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="reg_mb_email"><b>이메일(세금계산서 수신용)</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-5">
-					<input type="hidden" name="old_email" value="<?php echo $member['mb_email'] ?>">
-					<input type="text" name="mb_email" value="<?php echo isset($member['mb_email'])?$member['mb_email']:''; ?>" id="reg_mb_email" required class="form-control input-sm email" maxlength="100">
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- <div class="panel panel-default">
-		<div class="panel-body">
-			
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_manager_name"><b>담당자명</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_manager_name" name="mb_giup_manager_name" value="<?php echo get_text($member['mb_giup_manager_name']) ?>"  class="form-control input-sm" size="10">
-				</div>
-			</div>
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_manager_hp"><b>휴대폰번호</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_manager_hp" name="mb_giup_manager_hp" value="<?php echo get_text($member['mb_giup_manager_hp']) ?>"  class="form-control input-sm" size="10">
-				</div>
-			</div>
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_manager_tel"><b>전화번호(선택)</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_manager_tel" name="mb_giup_manager_tel" value="<?php echo get_text($member['mb_giup_manager_tel']) ?>"  class="form-control input-sm" size="10">
-				</div>
-			</div>
-			
-		</div>
-	</div> -->
+    </div>
+  </div>
 	
-	<div class="panel panel-default">
+  <div class="panel panel-default">
 		<div class="panel-heading">
 			<strong>사업자 정보</strong>
-			<!--
-			<div class="giup">
-				<span>사업자정보 입력 ▶</span>
-				<label for="mb_giup" class="checkbox-inline">
-					<input type="checkbox" name="mb_giup" value="1" id="mb_giup"> 사용
-				</label>
-			</div>
-			-->
 		</div>
 		<div class="panel-body panel-giup">
-			<!--
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_type"><b>회원유형</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<label for="mb_giup_type_1" class="" style="margin-right:10px;">
-						<input type="radio" name="mb_giup_type" value="1" id="mb_giup_type_1" <?php echo $member['mb_giup_type'] == '1' ? ' checked ' : ''; ?>> 구매목적
-					</label>
-					<label for="mb_giup_type_2" class="">
-						<input type="radio" name="mb_giup_type" value="2" id="mb_giup_type_2" <?php echo $member['mb_giup_type'] == '2' ? ' checked ' : ''; ?>> 납품판매목적
-					</label>
-				</div>
-			</div>
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_bname"><b>기업명</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_bname" name="mb_giup_bname" value="<?php echo get_text($member['mb_giup_bname']) ?>" class="form-control input-sm" size="10">
-				</div>
-			</div>
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_btel"><b>연락처</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_btel" name="mb_giup_btel" value="<?php echo get_text($member['mb_giup_btel']) ?>" class="form-control input-sm" size="10" maxlength="13">
-				</div>
-			</div>
-			-->
-
-            <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
+      <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
 				<label class="col-sm-2 control-label" for="mb_giup_bnum"><b>사업자번호</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
-                    <label><input type="text" <?php echo $member['mb_giup_bnum'] ? 'readonly' : ''; ?> id="mb_giup_bnum" name="mb_giup_bnum" value="<?php echo get_text($member['mb_giup_bnum']) ?>" class="form-control input-sm" size="13" maxlength="12" ></label>
-                    <label><button type="button" id="mb_giup_bnum_check" class="btn btn-black btn-sm" onclick="check_giup_bnum('click');">중복확인</button></label>
-                    <div id="form-bnum-feed-text">
-                        <span style="display: none; color: #558ED5;" class="available">*사용 가능한 사업자번호 입니다.</span>
-                        <span style="display: none; color: #FF0000;" class="unavailable">*사용 불가능한 사업자번호 입니다. <br>종사업자가 있는 경우 <a style="text-decoration: underline; color: #0e5ea8; font-weight: bold" href="javascript:void(0);" onclick="enable_giup_sbnum()">여기</a>를 눌러주세요.</span>
-                    </div>
+          <label><input type="text" <?php echo $member['mb_giup_bnum'] ? 'readonly' : ''; ?> id="mb_giup_bnum" name="mb_giup_bnum" value="<?php echo get_text($member['mb_giup_bnum']) ?>" class="form-control input-sm" size="13" maxlength="12" ></label>
+          <label><button type="button" id="mb_giup_bnum_check" class="btn btn-black btn-sm" onclick="check_giup_bnum('click');">중복확인</button></label>
+          <div id="form-bnum-feed-text">
+            <span style="display: none; color: #558ED5;" class="available">*사용 가능한 사업자번호 입니다.</span>
+            <span style="display: none; color: #FF0000;" class="unavailable">*사용 불가능한 사업자번호 입니다. <br>종사업자가 있는 경우 <a style="text-decoration: underline; color: #0e5ea8; font-weight: bold" href="javascript:void(0);" onclick="enable_giup_sbnum()">여기</a>를 눌러주세요.</span>
+          </div>
 				</div>
 			</div>
 
-            <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
+      <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
 				<label class="col-sm-2 control-label" for="mb_giup_boss_name"><b>대표자명</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
 					<input type="text" id="mb_giup_boss_name" name="mb_giup_boss_name" value="<?php echo get_text($member['mb_giup_boss_name']) ?>" class="form-control input-sm" size="10">
 				</div>
 			</div>
-
-            <!-- <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_sbnum"><b>종사업장식별번호</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-                    <label><input type="text" id="mb_giup_sbnum" name="mb_giup_sbnum" value="<?php echo get_text($member['mb_giup_sbnum']) ?>" class="form-control input-sm" size="13" maxlength="4"></label>
-				</div>
-			</div> -->
             
-            <div class="form-group has-feedback">
+      <div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_giup_bupjong"><b>업종</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
 					<input type="text" id="mb_giup_bupjong" name="mb_giup_bupjong" value="<?php echo get_text($member['mb_giup_bupjong']) ?>" class="form-control input-sm" size="10" >
 					<div class="h15 hidden-lg hidden-md hidden-sm"></div>
 				</div>
 			</div>
-            <div class="form-group has-feedback">
+      <div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_giup_buptae"><b>업태</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
 					<input type="text" id="mb_giup_buptae" name="mb_giup_buptae" value="<?php echo get_text($member['mb_giup_buptae']) ?>" class="form-control input-sm" size="10" >
 					<div class="h15 hidden-lg hidden-md hidden-sm"></div>
 				</div>
 			</div>
-
 			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
 				<label class="col-sm-2 control-label" for="mb_giup_manager_name"><b>담당자명</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
 					<input type="text" id="mb_giup_manager_name" name="mb_giup_manager_name" value="<?php echo get_text($member['mb_giup_manager_name']) ?>" <?php echo $required ?> class="form-control input-sm" size="10">
 				</div>
 				<?php if($config['cf_cert_use']) { ?>
-					<div class="col-sm-7">
-						<div class="cert-btn">
-							<?php 
-								if($config['cf_cert_ipin'])
-									echo '<button type="button" id="win_ipin_cert" class="btn btn-black btn-sm">아이핀 본인확인</button>'.PHP_EOL;
-								if($config['cf_cert_hp'])
-									echo '<button type="button" id="win_hp_cert" class="btn btn-black btn-sm">휴대폰 본인확인</button>'.PHP_EOL;
-							?>
-						</div>
-					</div>
-				<?php } ?>
+        <div class="col-sm-7">
+          <div class="cert-btn">
+            <?php 
+              if($config['cf_cert_ipin'])
+                echo '<button type="button" id="win_ipin_cert" class="btn btn-black btn-sm">아이핀 본인확인</button>'.PHP_EOL;
+              if($config['cf_cert_hp'])
+                echo '<button type="button" id="win_hp_cert" class="btn btn-black btn-sm">휴대폰 본인확인</button>'.PHP_EOL;
+            ?>
+          </div>
+        </div>
+        <?php } ?>
 			</div>
-			
-
 
 			<?php if($config['cf_cert_use']) { ?>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-8 text-muted">
-						<?php
-						if ($config['cf_cert_use'] && $member['mb_certify']) {
-							if($member['mb_certify'] == 'ipin')
-								$mb_cert = '아이핀';
-							else
-								$mb_cert = '휴대폰';
-						?>
-							<span class="black" id="msg_certify">
-								[<strong><?php echo $mb_cert; ?> 본인확인</strong><?php if ($member['mb_adult']) { ?> 및 <strong>성인인증</strong><?php } ?> 완료]
-							</span>
-						<?php } ?>
-						아이핀 본인확인 후에는 이름이 자동 입력되고 휴대폰 본인확인 후에는 이름과 휴대폰번호가 자동 입력되어 수동으로 입력할수 없게 됩니다.
-						<noscript>본인확인을 위해서는 자바스크립트 사용이 가능해야합니다.</noscript>
-					</div>
-				</div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-8 text-muted">
+          <?php
+          if ($config['cf_cert_use'] && $member['mb_certify']) {
+            if($member['mb_certify'] == 'ipin')
+              $mb_cert = '아이핀';
+            else
+              $mb_cert = '휴대폰';
+          ?>
+          <span class="black" id="msg_certify">
+            [<strong><?php echo $mb_cert; ?> 본인확인</strong><?php if ($member['mb_adult']) { ?> 및 <strong>성인인증</strong><?php } ?> 완료]
+          </span>
+          <?php } ?>
+          아이핀 본인확인 후에는 이름이 자동 입력되고 휴대폰 본인확인 후에는 이름과 휴대폰번호가 자동 입력되어 수동으로 입력할수 없게 됩니다.
+          <noscript>본인확인을 위해서는 자바스크립트 사용이 가능해야합니다.</noscript>
+        </div>
+      </div>
 			<?php } ?>
 
 			<?php if ($req_nick) {  ?>
-				<!-- 닉네임 수정 못하도록 변경 -->
-				<?php if ($member['mb_id']) {  ?>
-					<input type="hidden" name="mb_nick_default" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>">
-					<input type="hidden" name="mb_nick" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>" id="reg_mb_nick" >
-				<?php }else{ ?>
-					<input type="hidden" name="mb_nick_default" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>">
-					<!-- <input type="hidden" name="mb_nick" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>" id="reg_mb_nick"> -->
-				<!--
-				<div class="form-group has-feedback text-gap">
-					<label class="col-sm-2 control-label" for="reg_mb_nick"><b>닉네임</b><strong class="sound_only">필수</strong></label>
-					<div class="col-sm-3">
-						<input type="hidden" name="mb_nick_default" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>">
-						<input type="text" name="mb_nick" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>" id="reg_mb_nick" required <?php echo $readonly ?> class="form-control input-sm nospace" size="10" maxlength="20">
-						<span class="fa fa-user form-control-feedback"></span>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-8 text-muted">
-						<div id="msg_mb_nick"></div>
-						공백없이 한글,영문,숫자만 입력 가능 (한글2자, 영문4자 이상)
-					</div>
-				</div>
-				-->
-				<?php } ?>
+        <!-- 닉네임 수정 못하도록 변경 -->
+        <?php if ($member['mb_id']) {  ?>
+        <input type="hidden" name="mb_nick_default" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>">
+        <input type="hidden" name="mb_nick" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>" id="reg_mb_nick" >
+        <?php } else { ?>
+        <input type="hidden" name="mb_nick_default" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>">
+        <?php } ?>
 			<?php }  ?>
 
 
 			<?php if ($config['cf_use_email_certify']) {  ?>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-8 text-muted">
-						<?php if ($w=='') { echo "E-mail 로 발송된 내용을 확인한 후 인증하셔야 회원가입이 완료됩니다."; }  ?>
-						<?php if ($w=='u') { echo "E-mail 주소를 변경하시면 다시 인증하셔야 합니다."; }  ?>
-					</div>
-				</div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-8 text-muted">
+          <?php if ($w=='') { echo "E-mail 로 발송된 내용을 확인한 후 인증하셔야 회원가입이 완료됩니다."; }  ?>
+          <?php if ($w=='u') { echo "E-mail 주소를 변경하시면 다시 인증하셔야 합니다."; }  ?>
+        </div>
+      </div>
 			<?php }  ?>
 
 			<?php if ($config['cf_use_homepage']) {  ?>
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label" for="reg_mb_homepage"><b>홈페이지</b><?php if ($config['cf_req_homepage']){ ?><strong class="sound_only">필수</strong><?php } ?></label>
-					<div class="col-sm-5">
-						<input type="text" name="mb_homepage" value="<?php echo get_text($member['mb_homepage']) ?>" id="reg_mb_homepage" <?php echo $config['cf_req_homepage']?"required":""; ?> class="form-control input-sm" size="70" maxlength="255">
-						<span class="fa fa-home form-control-feedback"></span>
-					</div>
-				</div>
+      <div class="form-group has-feedback">
+        <label class="col-sm-2 control-label" for="reg_mb_homepage"><b>홈페이지</b><?php if ($config['cf_req_homepage']){ ?><strong class="sound_only">필수</strong><?php } ?></label>
+        <div class="col-sm-5">
+          <input type="text" name="mb_homepage" value="<?php echo get_text($member['mb_homepage']) ?>" id="reg_mb_homepage" <?php echo $config['cf_req_homepage']?"required":""; ?> class="form-control input-sm" size="70" maxlength="255">
+          <span class="fa fa-home form-control-feedback"></span>
+        </div>
+      </div>
 			<?php }  ?>
-
-			<!-- <div class="form-group has-feedback">
-				<label class="col-sm-2 control-label" for="reg_mb_fax"><b>팩스번호</b></label>
-				<div class="col-sm-3">
-					<input type="text" name="mb_fax" value="<?php echo get_text($member['mb_fax']) ?>" id="reg_mb_fax" class="form-control input-sm" maxlength="13">
-					<span class="fa fa-fax form-control-feedback"></span>
-				</div>
-			</div> -->
-				
-			<!-- <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_tax_email"><b>세금계산서 이메일</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_tax_email" name="mb_giup_tax_email" value="<?php echo get_text($member['mb_giup_tax_email']) ?>"  class="form-control input-sm" size="10">
-				</div>
-			</div> -->
-
-            <!-- <div id="sbnum" class="form-group has-feedback" style="display: none;">
-                <label class="col-sm-2 control-label" for="mb_giup_sbnum"><b>종사업자번호</b><strong class="sound_only">필수</strong></label>
-                <div class="col-sm-3">
-                    <label><input type="text" id="mb_giup_sbnum" name="mb_giup_sbnum" value="<?php echo get_text($member['mb_giup_sbnum']) ?>" class="form-control input-sm" size="13" maxlength="4" <?php echo $member['mb_giup_sbnum'] ? 'readonly' : ''; ?>></label>
-                    <label><button type="button" id="mb_giup_sbnum_check" class="btn btn-black btn-sm" onclick="check_giup_sbnum('click');">중복확인</button></label>
-                    <input type="text" id="mb_giup_sbnum_explain" name="mb_giup_sbnum_explain" value="<?php echo get_text($member['mb_giup_sbnum_explain']) ?>" class="form-control input-sm" size="10" maxlength="80" placeholder="종사업자 관련 내용을 입력하세요.">
-                    <div id="form-sbnum-feed-text">
-                        <span style="display: none; color: #558ED5;" class="available">*사용 가능한 종사업자번호 입니다.</span>
-                        <span style="display: none; color: #FF0000;" class="unavailable">*사용 불가능한 종사업자번호 입니다.</span>
-                    </div>
-                </div>
-            </div> -->
 
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label"><b>주소</b><?php if ($config['cf_req_addr']) { ?><strong class="sound_only">필수</strong><?php }  ?></label>
@@ -483,24 +340,24 @@ add_javascript(G5_POSTCODE_JS, 0);
 				<label class="col-sm-2 control-label" for="mb_giup_file1 "><b>사업자등록증</b></label>
 				<div class="col-sm-8 mb_giup_file1">
 					<input type="file" name="crnFile" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file1">
-                    <?php if($member['crnFile']){ ?>
-                        <img style="max-width:100px; max-height:100px;"  src="<?=G5_DATA_URL?>/file/member/license/<?=$member['crnFile']?>" alt="">
-                    <?php }?>
-                    <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 10Mbyte 이하로 등록해주세요.</p>
+          <?php if($member['crnFile']){ ?>
+          <img style="max-width:100px; max-height:100px;"  src="<?=G5_DATA_URL?>/file/member/license/<?=$member['crnFile']?>" alt="">
+          <?php }?>
+          <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 10Mbyte 이하로 등록해주세요.</p>
 				</div>
 			</div>
-            <?php if($w){ ?>
+      <?php if($w) { ?>
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_giup_file2"><b>사업자직인 (계약서 날인)</b></label>
 				<div class="col-sm-8 mb_giup_file2">
 					<input type="file" name="sealFile" accept=".gif, .jpg, .png, .pdf" class="input-sm" id="mb_giup_file2">
-                    <?php if($member['sealFile']){ ?>
-                    <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/stamp/<?=$member['sealFile']?>" alt="">
-                    <?php }?>
-                    <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 10Mbyte 이하로 등록해주세요.</p>
+          <?php if($member['sealFile']){ ?>
+          <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/stamp/<?=$member['sealFile']?>" alt="">
+          <?php }?>
+          <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 10Mbyte 이하로 등록해주세요.</p>
 				</div>
 			</div>
-            <?php } ?>
+      <?php } ?>
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_entConAcc01"><b>특약사항1</b></label>
 				<div class="col-sm-8">
@@ -527,54 +384,34 @@ add_javascript(G5_POSTCODE_JS, 0);
 			</div>
 		</div>
 		<div class="panel-body">
-			<!--
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_manager_name"><b>담당자명</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_manager_name" name="mb_giup_manager_name" value="<?php echo get_text($member['mb_giup_manager_name']) ?>"  class="form-control input-sm" size="10">
-				</div>
-			</div>
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_manager_hp"><b>휴대폰번호</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_manager_hp" name="mb_giup_manager_hp" value="<?php echo get_text($member['mb_giup_manager_hp']) ?>"  class="form-control input-sm" size="10">
-				</div>
-			</div>
-			<div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
-				<label class="col-sm-2 control-label" for="mb_giup_manager_tel"><b>전화번호(선택)</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_manager_tel" name="mb_giup_manager_tel" value="<?php echo get_text($member['mb_giup_manager_tel']) ?>"  class="form-control input-sm" size="10">
-				</div>
-			</div>
-			-->
-            <?php if ($config['cf_use_addr']) { ?>
-				<div class="form-group has-feedback">
-					<label class="col-sm-2 control-label"><b>주소</b><?php if ($config['cf_req_addr']) { ?><strong class="sound_only">필수</strong><?php }  ?></label>
-					<div class="col-sm-8">
-						<label for="reg_mb_zip" class="sound_only">우편번호<?php echo $config['cf_req_addr']?'<strong class="sound_only"> 필수</strong>':''; ?></label>
-						<label>
-						<input type="text" name="mb_zip" value="<?php echo $member['mb_zip1'].$member['mb_zip2'] ?>" id="reg_mb_zip" <?php echo $config['cf_req_addr']?"required":""; ?> class="form-control input-sm" size="6" maxlength="6">
-						</label>
-						<label>
-			                <button type="button" class="btn btn-black btn-sm win_zip_find" style="margin-top:0px;" onclick="win_zip('fregisterform', 'mb_zip', 'mb_addr1', 'mb_addr2', 'mb_addr3', 'mb_addr_jibeon');">주소 검색</button>
-						</label>
+      <?php if ($config['cf_use_addr']) { ?>
+      <div class="form-group has-feedback">
+        <label class="col-sm-2 control-label"><b>주소</b><?php if ($config['cf_req_addr']) { ?><strong class="sound_only">필수</strong><?php }  ?></label>
+        <div class="col-sm-8">
+          <label for="reg_mb_zip" class="sound_only">우편번호<?php echo $config['cf_req_addr']?'<strong class="sound_only"> 필수</strong>':''; ?></label>
+          <label>
+            <input type="text" name="mb_zip" value="<?php echo $member['mb_zip1'].$member['mb_zip2'] ?>" id="reg_mb_zip" <?php echo $config['cf_req_addr']?"required":""; ?> class="form-control input-sm" size="6" maxlength="6">
+          </label>
+          <label>
+            <button type="button" class="btn btn-black btn-sm win_zip_find" style="margin-top:0px;" onclick="win_zip('fregisterform', 'mb_zip', 'mb_addr1', 'mb_addr2', 'mb_addr3', 'mb_addr_jibeon');">주소 검색</button>
+          </label>
 
-						<div class="addr-line">
-							<label class="sound_only" for="reg_mb_addr1">기본주소<?php echo $config['cf_req_addr']?'<strong class="sound_only"> 필수</strong>':''; ?></label>
-							<input type="text" name="mb_addr1" value="<?php echo get_text($member['mb_addr1']) ?>" id="reg_mb_addr1" <?php echo $config['cf_req_addr']?"required":""; ?> class="form-control input-sm" size="50" placeholder="기본주소">
-						</div>
+          <div class="addr-line">
+            <label class="sound_only" for="reg_mb_addr1">기본주소<?php echo $config['cf_req_addr']?'<strong class="sound_only"> 필수</strong>':''; ?></label>
+            <input type="text" name="mb_addr1" value="<?php echo get_text($member['mb_addr1']) ?>" id="reg_mb_addr1" <?php echo $config['cf_req_addr']?"required":""; ?> class="form-control input-sm" size="50" placeholder="기본주소">
+          </div>
 
-						<div class="addr-line">
-							<label class="sound_only" for="reg_mb_addr2">상세주소</label>
-							<input type="text" name="mb_addr2" value="<?php echo get_text($member['mb_addr2']) ?>" id="reg_mb_addr2" class="form-control input-sm" size="50" placeholder="상세주소">
-						</div>
+          <div class="addr-line">
+            <label class="sound_only" for="reg_mb_addr2">상세주소</label>
+            <input type="text" name="mb_addr2" value="<?php echo get_text($member['mb_addr2']) ?>" id="reg_mb_addr2" class="form-control input-sm" size="50" placeholder="상세주소">
+          </div>
 
-						<label class="sound_only" for="reg_mb_addr3">참고항목</label>
-						<input type="text" name="mb_addr3" value="<?php echo get_text($member['mb_addr3']) ?>" id="reg_mb_addr3" class="form-control input-sm" size="50" readonly="readonly" placeholder="참고항목">
-						<input type="hidden" name="mb_addr_jibeon" value="<?php echo get_text($member['mb_addr_jibeon']); ?>">
-					</div>
-				</div>
-			<?php }  ?>
+          <label class="sound_only" for="reg_mb_addr3">참고항목</label>
+          <input type="text" name="mb_addr3" value="<?php echo get_text($member['mb_addr3']) ?>" id="reg_mb_addr3" class="form-control input-sm" size="50" readonly="readonly" placeholder="참고항목">
+          <input type="hidden" name="mb_addr_jibeon" value="<?php echo get_text($member['mb_addr_jibeon']); ?>">
+        </div>
+      </div>
+			<?php } ?>
 		</div>
 	</div>
 
@@ -582,54 +419,12 @@ add_javascript(G5_POSTCODE_JS, 0);
 	<div class="text-center" style="margin:30px 0px;">
 		<button type="button" id="btn_submit" onclick="fregisterform_submit()"class="btn btn-color" accesskey="s"><?php echo $w==''?'회원가입':'정보수정'; ?></button>
 		<?php if(!$pim) { ?>
-			<a href="<?php echo G5_URL ?>" class="btn btn-black" role="button">취소</a>
+    <a href="<?php echo G5_URL ?>" class="btn btn-black" role="button">취소</a>
 		<?php } ?>
 	</div>
 </form>
 <script>
 
-$(document).ready(function () {
-                // setDateBox();
-            });
-    //생년월일
-    // function setDateBox() {
-    //     var dt = new Date();
-    //     var year = "";
-    //     var com_year = dt.getFullYear();
-    //     var selected1 ="";
-    //     var selected2 ="";
-    //     var selected3 ="";
-    //     // 발행 뿌려주기
-    //     $(".year").append("<option value=''>년도</option>");
-
-    //     // 올해 기준으로 -50년부터 +1년을 보여준다.
-    //     for (var y = (com_year - 100); y <= (com_year); y++) {
-    //     <?php if($w){ ?> if(y == <?=substr($member['mb_birth'], 0, 4)?>){selected1 = 'selected';} <?php } ?>
-    //     $(".year").append("<option value='" + y + "' " + selected1 + ">" + y + "</option>");
-    //     }
-
-    //     // 월 뿌려주기(1월부터 12월)
-    //     var month;
-    //     $(".month").append("<option value=''>월</option>");
-    //     for (var i = 1; i <= 12; i++) {
-    //     var first_num="";
-    //     if(i<10){first_num = 0;}
-    //     <?php if($w){ ?> if(first_num + i == <?=substr($member['mb_birth'], 4, 2)?>) {selected2 = 'selected';}<?php } ?>
-    //     $(".month").append("<option value='"+first_num + i + "' " + selected2 + ">"+first_num + i+"</option>");
-    //     }
-
-    //     // 일 뿌려주기(1일부터 31일)
-    //     var day;
-    //     $(".day").append("<option value=''>일</option>");
-    //     for (var i = 1; i <= 31; i++) {
-    //         var first_num="";
-    //     if(i<10){first_num = 0;}
-    //     <?php if($w){ ?> if(first_num + i == <?=substr($member['mb_birth'], 4, 2)?>) {selected3 = 'selected';}<?php } ?>
-    //     $(".day").append("<option value='" +first_num+ i + "'" + selected3 + ">" + first_num+i + "</option>");
-    //     }
-
-    // }
-            
 $(function() {
 
 	$('#mb_giup').click(function() {
@@ -638,7 +433,7 @@ $(function() {
 	$("#reg_zip_find").css("display", "inline-block");
 
 	<?php if ( $member['mb_giup_type'] > 0 ) { ?>
-		$('#mb_giup').click();
+  $('#mb_giup').click();
 	<?php } ?>
 
 	$('#mb_address_same').click(function() {
@@ -653,7 +448,7 @@ $(function() {
 		$('#reg_mb_addr2').val($('#mb_giup_addr2').val());
 		$('#reg_mb_addr3').val($('#mb_giup_addr3').val());
 		$('#mb_addr_jibeon').val($('#mb_giup_addr_jibeon').val());
-    });
+  });
 
 	<?php if($config['cf_cert_use'] && $config['cf_cert_ipin']) { ?>
 	// 아이핀인증
@@ -700,61 +495,59 @@ $(function() {
 	<?php } ?>
 
 
-    $('#mb_entBusiNum').on('keyup', function() {
-        var num = $('#mb_entBusiNum').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_entBusiNum').on('keyup', function() {
+    var num = $('#mb_entBusiNum').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-    $('#mb_entBusiNum').on('keyup', function() {
-        var num = $('#mb_entBusiNum').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_entBusiNum').on('keyup', function() {
+    var num = $('#mb_entBusiNum').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-    $('#mb_entBusiNum').on('keyup', function() {
-        var num = $('#mb_entBusiNum').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_entBusiNum').on('keyup', function() {
+    var num = $('#mb_entBusiNum').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-    $('#mb_entBusiNum').on('keyup', function() {
-        var num = $('#mb_entBusiNum').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_entBusiNum').on('keyup', function() {
+    var num = $('#mb_entBusiNum').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
 
-    $('#add_manager').on("click", function() {
-
+  $('#add_manager').on("click", function() {
 		var el = $('#manager_list_body');
 
 		var str = '<tr>';
 		str +=      '<td>';
-		str +=          '<input type="text" name="mm_name[]" value="" class="frm_input" size="30" maxlength="20" style="width:100%">';
+    str +=        '<input type="text" name="mm_name[]" value="" class="frm_input" size="30" maxlength="20" style="width:100%">';
 		str +=      '</td>';
 		str +=      '<td>';
-        str +=          '<input type="text" name="mm_part[]" value="" class="frm_input" size="10" maxlength="20">';
-        str +=      '</td>';
-        str +=      '<td>';
-        str +=          '<input type="text" name="mm_rank[]" value="" class="frm_input" size="10" maxlength="20">';
-        str +=      '</td>';
-        str +=      '<td>';
-        str +=          '<input type="text" name="mm_work[]" value="" class="frm_input" size="10" maxlength="20">';
-        str +=      '</td>';
+    str +=        '<input type="text" name="mm_part[]" value="" class="frm_input" size="10" maxlength="20">';
+    str +=      '</td>';
+    str +=      '<td>';
+    str +=        '<input type="text" name="mm_rank[]" value="" class="frm_input" size="10" maxlength="20">';
+    str +=      '</td>';
+    str +=      '<td>';
+    str +=        '<input type="text" name="mm_work[]" value="" class="frm_input" size="10" maxlength="20">';
+    str +=      '</td>';
 		str +=      '<td>';
-        str +=          '<input type="text" name="mm_hp[]" value="" class="frm_input" size="30" maxlength="20">';
-        str +=      '</td>';
-        str +=      '<td>';
-        str +=          '<input type="text" name="mm_hp_extension[]" value="" class="frm_input" size="10" maxlength="10">';
-        str +=      '</td>';
+    str +=        '<input type="text" name="mm_hp[]" value="" class="frm_input" size="30" maxlength="20">';
+    str +=      '</td>';
+    str +=      '<td>';
+    str +=        '<input type="text" name="mm_hp_extension[]" value="" class="frm_input" size="10" maxlength="10">';
+    str +=      '</td>';
 		str +=      '<td>';
-		str +=          '<input type="text" name="mm_tel[]" value="" class="frm_input" size="30" maxlength="20">';
+		str +=        '<input type="text" name="mm_tel[]" value="" class="frm_input" size="30" maxlength="20">';
 		str +=      '</td>';
 		str +=      '<td>';
-        //str +=          '<input type="text" name="mm_thezone[]" value="" class="frm_input" size="30" maxlength="20">';
-        str +=          '<input type="text" name="mm_email[]" value="" class="frm_input" size="30" maxlength="50">';
-        str +=      '</td>';
+    str +=        '<input type="text" name="mm_email[]" value="" class="frm_input" size="30" maxlength="50">';
+    str +=      '</td>';
 		str +=      '<td style="text-align:center;">';
-		str +=      '<button type="button" class="btn-black btn delete_manager">삭제</button>';
+		str +=        '<button type="button" class="btn-black btn delete_manager">삭제</button>';
 		str +=      '</td>';
-		str +=     '</tr>';
+		str +=    '</tr>';
 
 		$(el).append(str);
 
@@ -776,131 +569,121 @@ $(function() {
 	});
 
 	$('#mb_giup_bnum').on('keyup', function() {
-        disable_giup_sbnum(); // 사업자 재입력시 종사업자 리셋
-        $('#form-bnum-feed-text > span').hide();
-	    
-        var num = $('#mb_giup_bnum').val();
-        num.trim();
-        this.value = auto_saup_hypen(num) ;
+    disable_giup_sbnum(); // 사업자 재입력시 종사업자 리셋
+    $('#form-bnum-feed-text > span').hide();
+  
+    var num = $('#mb_giup_bnum').val();
+    num.trim();
+    this.value = auto_saup_hypen(num) ;
 	});
 
     
-    $('#mb_giup_sbnum').on('keyup', function() {
-        var num = $('#mb_giup_sbnum').val();
-        num.trim();
-        this.value = only_num(num) ;
-    });
+  $('#mb_giup_sbnum').on('keyup', function() {
+    var num = $('#mb_giup_sbnum').val();
+    num.trim();
+    this.value = only_num(num) ;
+  });
 
-    $('#mb_entBusiNum').on('keyup', function() {
-        var num = $('#mb_entBusiNum').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_entBusiNum').on('keyup', function() {
+    var num = $('#mb_entBusiNum').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
     
 	
 	$('#mb_giup_btel').on('keyup', function() {
-        var num = $('#mb_giup_btel').val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
+    var num = $('#mb_giup_btel').val();
+    num.trim();
+    this.value = auto_phone_hypen(num) ;
 	});
 	
 	$('input[name="mm_tel[]"]').on('keyup', function() {
-        var num = $(this).val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
+    var num = $(this).val();
+    num.trim();
+    this.value = auto_phone_hypen(num) ;
 	});
 
 	$('input[name="mm_hp[]"]').on('keyup', function() {
-        var num = $(this).val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
+    var num = $(this).val();
+    num.trim();
+    this.value = auto_phone_hypen(num) ;
 	});
 	
 	$('#reg_mb_hp').on('keyup', function() {
-        var num = $(this).val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
+    var num = $(this).val();
+    num.trim();
+    this.value = auto_phone_hypen(num) ;
 	});
 	
 	$('#reg_mb_fax').on('keyup', function() {
-        var num = $(this).val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
-    });
+    var num = $(this).val();
+    num.trim();
+    this.value = auto_phone_hypen(num) ;
+  });
 
-
-
-
-    //아이디 체크
-    $('#reg_mb_id').on('keyup', function() {
-        // alert($(this).val());
-        if($(this).val().length<3){
-            $('#id_keyup').html("아이디(은)는 3자 이상 입력하셔야합니다.");
-            $('#id_keyup').css( "color", "red" );
-            return false;
-        }
-        var msg = reg_mb_id_check();
-        if(msg){
-            $('#id_keyup').html("사용 불가능한 아이디 입니다.");
-            $('#id_keyup').css( "color", "red" );
-        }else{
-            $('#id_keyup').html("사용 가능한 아이디 입니다.");
-            $('#id_keyup').css( "color", "#54bbff" );
-        }
-    });
+  //아이디 체크
+  $('#reg_mb_id').on('keyup', function() {
+    // alert($(this).val());
+    if($(this).val().length<3){
+      $('#id_keyup').html("아이디(은)는 3자 이상 입력하셔야합니다.");
+      $('#id_keyup').css( "color", "red" );
+      return false;
+    }
+    var msg = reg_mb_id_check();
+    if(msg){
+      $('#id_keyup').html("사용 불가능한 아이디 입니다.");
+      $('#id_keyup').css( "color", "red" );
+    }else{
+      $('#id_keyup').html("사용 가능한 아이디 입니다.");
+      $('#id_keyup').css( "color", "#54bbff" );
+    }
+  });
     //전화번호 숫자만
-    $('#mb_hp1').on('keyup', function() {
-        var num = $('#mb_hp1').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_hp1').on('keyup', function() {
+    var num = $('#mb_hp1').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-    $('#mb_hp2').on('keyup', function() {
-        var num = $('#mb_hp2').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_hp2').on('keyup', function() {
+    var num = $('#mb_hp2').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-    $('#mb_hp3').on('keyup', function() {
-        var num = $('#mb_hp3').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_hp3').on('keyup', function() {
+    var num = $('#mb_hp3').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-    $('#mb_tel2').on('keyup', function() {
-        var num = $('#mb_tel2').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_tel2').on('keyup', function() {
+    var num = $('#mb_tel2').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-    $('#mb_tel3').on('keyup', function() {
-        var num = $('#mb_tel3').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_tel3').on('keyup', function() {
+    var num = $('#mb_tel3').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-    $('#mb_fax1').on('keyup', function() {
-        var num = $('#mb_fax1').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_fax1').on('keyup', function() {
+    var num = $('#mb_fax1').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-    $('#mb_fax2').on('keyup', function() {
-        var num = $('#mb_fax2').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_fax2').on('keyup', function() {
+    var num = $('#mb_fax2').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-    $('#mb_fax3').on('keyup', function() {
-        var num = $('#mb_fax3').val();
-        num.trim();
-        this.value = only_num(num) ;
+  $('#mb_fax3').on('keyup', function() {
+    var num = $('#mb_fax3').val();
+    num.trim();
+    this.value = only_num(num) ;
 	});
-
-
-
-
 });
 
-
-
 // submit 최종 폼체크
-function fregisterform_submit()
-{   
-    var f = document.getElementById("fregisterform");
+function fregisterform_submit() {
+  var f = document.getElementById("fregisterform");
 	// 회원아이디 검사
 	if (f.w.value == "") {
 		var msg = reg_mb_id_check();
@@ -911,428 +694,376 @@ function fregisterform_submit()
 		}
 	}
     
-    if (f.mb_password.value.length < 8 || f.mb_password.value.length > 12) {
-        alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
-        f.mb_password.focus();
-        return false;
-    }
+  if (f.mb_password.value.length < 8 || f.mb_password.value.length > 12) {
+    alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
+    f.mb_password.focus();
+    return false;
+  }
 
-    if (f.mb_password_re.value.length < 3 || f.mb_password_re.value.length > 12) {
-        alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
-        f.mb_password_re.focus();
-        return false;
-    }
+  if (f.mb_password_re.value.length < 3 || f.mb_password_re.value.length > 12) {
+    alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
+    f.mb_password_re.focus();
+    return false;
+  }
 
-    if(f.mb_password_re.value.search(/\s/) != -1){
-        alert("비밀번호는 공백 없이 입력해주세요.");
-        return false;
-    }
-    if (f.mb_password.value != f.mb_password_re.value) {
+  if(f.mb_password_re.value.search(/\s/) != -1){
+    alert("비밀번호는 공백 없이 입력해주세요.");
+    return false;
+  }
+  if (f.mb_password.value != f.mb_password_re.value) {
 		alert("비밀번호가 같지 않습니다.");
 		f.mb_password_re.focus();
 		return false;
 	}
+
+  var num = f.mb_password.value.search(/[0-9]/g);
+  var eng = f.mb_password.value.search(/[a-z]/ig);
+
+  if(num < 0 || eng < 0 ){
+    alert("비밀번호는 영문,숫자를 혼합하여 입력해주세요.");
+    return false;
+  }
+
+  if(!f.mb_giup_bname.value){
+    alert('기업명을 입력하세요.');
+    f.mb_giup_bname.focus();
+    return false;
+  }
+
+  var mb_hp = $("#mb_hp1").val() + "-" + $("#mb_hp2").val() + "-" + $("#mb_hp3").val();
+  if(!$("#mb_hp1").val()){
+    alert('휴대폰번호를 입력해주세요.');
+    $("#mb_hp1").focus();
+    return false;
+  }
+  if(!$("#mb_hp2").val()){
+    alert('휴대폰번호를 입력해주세요');
+    $("#mb_hp2").focus();
+    return false;
+  }
+  if(!$("#mb_hp3").val()){
+    alert('휴대폰번호를 입력해주세요');
+    $("#mb_hp3").focus();
+    return false;
+  }
+
+  var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
+  if(!$("#mb_tel1").val()){
+    alert('전화번호를 입력해주세요.');
+    $("#mb_tel1").focus();
+    return false;
+  }
+  if(!$("#mb_tel2").val()){
+    alert('전화번호를 입력해주세요');
+    $("#mb_tel2").focus();
+    return false;
+  }
+  if(!$("#mb_tel3").val()){
+    alert('전화번호를 입력해주세요');
+    $("#mb_tel3").focus();
+    return false;
+  }
+  //mb_fax
+  var mb_fax = $("#mb_fax1").val() + "-" + $("#mb_fax2").val() + "-" + $("#mb_fax3").val();
+  if(!$("#mb_fax1").val()){
+    alert('팩스를 입력해주세요.');
+    $("#mb_fax1").focus();
+    return false;
+  }
+  if(!$("#mb_fax2").val()){
+    alert('팩스를 입력해주세요.');
+    $("#mb_fax2").focus();
+    return false;
+  }
+  if(!$("#mb_fax3").val()){
+    alert('팩스를 입력해주세요.');
+    $("#mb_fax3").focus();
+    return false;
+  }
+  var msg = reg_mb_email_check();
+  if (msg) {
+    alert(msg);
+    f.reg_mb_email.select();
+    return false;
+  }
+  if(!f.mb_giup_bnum.value){
+    alert('사업자 번호를 입력하세요.');
+    f.mb_giup_bnum.focus();
+    return false;
+  }
+  if(!f.mb_giup_boss_name.value){
+    alert('대표자명을 입력하세요.');
+    f.mb_giup_boss_name.focus();
+    return false;
+  }
+  if(!f.mb_giup_bupjong.value){
+    alert('업종을 입력하세요.');
+    f.mb_giup_bupjong.focus();
+    return false;
+  }
+  if(!f.mb_giup_buptae.value){
+    alert('업태를 입력하세요.');
+    f.mb_giup_buptae.focus();
+    return false;
+  }
+  if(!f.mb_giup_manager_name.value){
+    alert('담당자명을 입력하세요.');
+    f.mb_giup_manager_name.focus();
+    return false;
+  }
+
+  if(!f.mb_giup_zip.value){
+    alert('(사업자정보) 우편번호를 입력하세요');
+    f.mb_giup_zip.focus();
+    return false;
+  }
+  if(!f.mb_giup_addr1.value){
+    alert('(사업자정보) 주소를 입력하세요');
+    f.mb_giup_addr1.focus();
+    return false;
+  }
+  if(!f.mb_giup_addr2.value&&!f.mb_giup_addr3.value){
+    alert('(사업자정보) 주소상세를 입력하세요');
+    f.mb_giup_addr2.focus();
+    return false;
+  }
+
+  if(!f.mb_zip.value){
+    alert('(배송지 주소) 우편번호를 입력하세요');
+    f.mb_zip.focus();
+    return false;
+  }
+  if(!f.mb_addr1.value){
+    alert('(배송지 주소) 주소를 입력하세요');
+    f.mb_addr1.focus();
+    return false;
+  }
+  if(!f.mb_addr2.value&&!f.mb_addr3.value){
+    alert('(배송지 주소) 주소상세를 입력하세요');
+    f.mb_addr2.focus();
+    return false;
+  }
+
+  //체크 끝
+
+
+  //통신
+  var sendData = new FormData();
+  var sendData2 = new FormData();
+
+  sendData.append("usrId", $("#reg_mb_id").val());//아이디
+  sendData.append("usrPw", $("#reg_mb_password").val());//비밀번호
+  sendData.append("entNm", $("#mb_giup_bname").val()); //사업체명
+  sendData.append("usrPnum", mb_hp);//관리자 휴대폰번호
+  sendData.append("entPnum", mb_tel); //사업소 전화번호
+  sendData.append("entFax", mb_fax); //사업소 팩스
+  sendData.append("usrMail", $("#reg_mb_email").val());//메일
+
+  <?php if($w) { ?> 
+  sendData.append("entId", "<?=$member['mb_entId']?>");
+  sendData.append("entUsrId", $("#reg_mb_id").val() );//entUsrId
+  <?php } ?>
     
+  sendData.append("entCrn", $("#mb_giup_bnum").val()); //사업자 등록번호
+  sendData.append("entCeoNm", $("#mb_giup_boss_name").val()); //사업소 대표
+  sendData.append("entBusiType",$("#mb_giup_bupjong").val()); //사업소 업종
+  sendData.append("entBusiCondition",$("#mb_giup_buptae").val()); //사업소 업태
+  sendData.append("entZip", $("#mb_giup_zip").val());  //사업소 우편번호
+  sendData.append("entAddr", $("#mb_giup_addr1").val()); //사업소 주소
+  sendData.append("entAddrDetail",$("#mb_giup_addr2").val() + $("#mb_giup_addr3").val() ); //사업소 주소 상세
+  sendData.append("entTaxCharger",$("#mb_giup_manager_name").val()); //담당자
+  sendData.append("entConAcco1",$("#mb_entConAcc01").val()); //특약사항1
+  sendData.append("entConAcco2",$("#mb_entConAcc02").val()); //특약사항2
 
-    var num = f.mb_password.value.search(/[0-9]/g);
-    var eng = f.mb_password.value.search(/[a-z]/ig);
+  sendData.append("usrZip", $("#reg_mb_zip").val()); //관리자 우편번호
+  sendData.append("usrAddr", $("#reg_mb_addr1").val());//관리자 주소
+  sendData.append("usrAddrDetail", $("#reg_mb_addr2").val())+$("#reg_mb_addr3").val();//관리자 주소 상세
+  sendData.append("entMail", $("#reg_mb_email").val());//메일
 
-    if(num < 0 || eng < 0 ){
-        alert("비밀번호는 영문,숫자를 혼합하여 입력해주세요.");
+  <?php if($w){ ?>
+  //직인파일
+  var imgFileItem2 = $(".mb_giup_file2 input[type='file']");
+  for(var i = 0; i < imgFileItem2.length; i++){
+    if($(imgFileItem2[i])[0].files[0]){
+      sendData.append("sealFile", $(imgFileItem2[i])[0].files[0]);
+      sendData2.append("sealFile", $(imgFileItem2[i])[0].files[0]);
+      if($(imgFileItem2[i])[0].files[0].size > 1024 * 1024 * 10){
+        alert('사업자직인 (계약서 날인) : 10MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem2[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
         return false;
+      }
     }
+  }
+  <?php } ?>
 
-    if(!f.mb_giup_bname.value){
-        alert('기업명을 입력하세요.');
-        f.mb_giup_bname.focus();
+  //사업자등록증
+  var flag ='<?=$member['crnFile']?>';
+  var imgFileItem1 = $(".mb_giup_file1 input[type='file']");
+  for(var i = 0; i < imgFileItem1.length; i++) {
+    if(!flag) {
+      if(!$(imgFileItem1[i])[0].files[0]) {
+        alert('사업자등록증을 첨부해주세요.');
         return false;
-    }
-
-    var mb_hp = $("#mb_hp1").val() + "-" + $("#mb_hp2").val() + "-" + $("#mb_hp3").val();
-    if(!$("#mb_hp1").val()){
-        alert('휴대폰번호를 입력해주세요.');
-        $("#mb_hp1").focus();
+      }
+      if($(imgFileItem1[i])[0].files[0].size > 1024 * 1024 * 10) {
+        alert('사업자등록증 : 10MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem1[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
         return false;
+      }
     }
-    if(!$("#mb_hp2").val()){
-        alert('휴대폰번호를 입력해주세요');
-        $("#mb_hp2").focus();
+    if($(imgFileItem1[i])[0].files[0]) {
+      sendData.append("crnFile", $(imgFileItem1[i])[0].files[0]);
+    }
+  }
+  <?php
+  if(!$w) {
+    $api_url = "https://system.eroumcare.com:9901/api/ent/insert";
+  } else {
+    $api_url = "https://system.eroumcare.com:9901/api/ent/update";
+  }
+  ?>
+  var info = "<?php echo $w==''?'회원가입 하시겠습니까?':'수정 하시겠습니까?'; ?>";
+  if(confirm(info)) {
+    $.ajax({
+      type: 'POST',
+      url : "<?=$api_url?>",
+      data : sendData,
+    })
+    .done(function(data) {
+      if(data.message == "SUCCESS"){
+        f.submit();
         return false;
-    }
-    if(!$("#mb_hp3").val()){
-        alert('휴대폰번호를 입력해주세요');
-        $("#mb_hp3").focus();
+      } else {
+        alert(data.message);
         return false;
-    }
-
-    var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
-    if(!$("#mb_tel1").val()){
-        alert('전화번호를 입력해주세요.');
-        $("#mb_tel1").focus();
-        return false;
-    }
-    if(!$("#mb_tel2").val()){
-        alert('전화번호를 입력해주세요');
-        $("#mb_tel2").focus();
-        return false;
-    }
-    if(!$("#mb_tel3").val()){
-        alert('전화번호를 입력해주세요');
-        $("#mb_tel3").focus();
-        return false;
-    }
-    //mb_fax
-    var mb_fax = $("#mb_fax1").val() + "-" + $("#mb_fax2").val() + "-" + $("#mb_fax3").val();
-    if(!$("#mb_fax1").val()){
-        alert('팩스를 입력해주세요.');
-        $("#mb_fax1").focus();
-        return false;
-    }
-    if(!$("#mb_fax2").val()){
-        alert('팩스를 입력해주세요.');
-        $("#mb_fax2").focus();
-        return false;
-    }
-    if(!$("#mb_fax3").val()){
-        alert('팩스를 입력해주세요.');
-        $("#mb_fax3").focus();
-        return false;
-    }
-    var msg = reg_mb_email_check();
-    if (msg) {
-        alert(msg);
-        f.reg_mb_email.select();
-        return false;
-    }
-    if(!f.mb_giup_bnum.value){
-        alert('사업자 번호를 입력하세요.');
-        f.mb_giup_bnum.focus();
-        return false;
-    }
-    if(!f.mb_giup_boss_name.value){
-        alert('대표자명을 입력하세요.');
-        f.mb_giup_boss_name.focus();
-        return false;
-    }
-    if(!f.mb_giup_bupjong.value){
-        alert('업종을 입력하세요.');
-        f.mb_giup_bupjong.focus();
-        return false;
-    }
-    if(!f.mb_giup_buptae.value){
-        alert('업태를 입력하세요.');
-        f.mb_giup_buptae.focus();
-        return false;
-    }
-    if(!f.mb_giup_manager_name.value){
-        alert('담당자명을 입력하세요.');
-        f.mb_giup_manager_name.focus();
-        return false;
-    }
-
-    if(!f.mb_giup_zip.value){
-        alert('(사업자정보) 우편번호를 입력하세요');
-        f.mb_giup_zip.focus();
-        return false;
-    }
-    if(!f.mb_giup_addr1.value){
-        alert('(사업자정보) 주소를 입력하세요');
-        f.mb_giup_addr1.focus();
-        return false;
-    }
-    if(!f.mb_giup_addr2.value&&!f.mb_giup_addr3.value){
-        alert('(사업자정보) 주소상세를 입력하세요');
-        f.mb_giup_addr2.focus();
-        return false;
-    }
-
-    if(!f.mb_zip.value){
-        alert('(배송지 주소) 우편번호를 입력하세요');
-        f.mb_zip.focus();
-        return false;
-    }
-    if(!f.mb_addr1.value){
-        alert('(배송지 주소) 주소를 입력하세요');
-        f.mb_addr1.focus();
-        return false;
-    }
-    if(!f.mb_addr2.value&&!f.mb_addr3.value){
-        alert('(배송지 주소) 주소상세를 입력하세요');
-        f.mb_addr2.focus();
-        return false;
-    }
-    // var msg = reg_mb_hp_check();
-	// if (msg) {
-	// 	alert(msg);
-	// 	f.reg_mb_hp.select();
-	// 	return false;
-	// }
-
-    // if (f.mb_name.value.length < 1) {
-    //     alert("관리자 이름을 입력하십시오.");
-    //     f.mb_name.focus();
-    //     return false;
-    // }
-
-    // if (!f.mb_sex.value) {
-    //     alert("성별을 선택해주세요");
-    //     f.mb_sex.focus();
-    //     return false;
-    // }
-    
-    // var mb_birth = $("#year").val() + $("#month").val() + $("#day").val();
-    // var mb_tel = $("#mb_tel1").val() + "-" + $("#mb_tel2").val() + "-" + $("#mb_tel3").val();
-
-    // if(!$("#year").val()){
-    //     alert('연도를 선택해주세요');
-    //     $("#year").focus();
-    //     return false;
-    // }
-    // if(!$("#month").val()){
-    //     alert('월 선택해주세요');
-    //     $("#month").focus();
-    //     return false;
-    // }
-    // if(!$("#day").val()){
-    //     alert('일을 선택해주세요');
-    //     $("#day").focus();
-    //     return false;
-    // }
-
-
-    //체크 끝
-
-
-    //통신
-    var sendData = new FormData();
-    var sendData2 = new FormData();
-
-    sendData.append("usrId", $("#reg_mb_id").val());//아이디
-    sendData.append("usrPw", $("#reg_mb_password").val());//비밀번호
-    sendData.append("entNm", $("#mb_giup_bname").val()); //사업체명
-    sendData.append("usrPnum", mb_hp);//관리자 휴대폰번호
-    sendData.append("entPnum", mb_tel); //사업소 전화번호
-    sendData.append("entFax", mb_fax); //사업소 팩스
-    sendData.append("usrMail", $("#reg_mb_email").val());//메일
-
-    <?php if($w){ ?> 
-            sendData.append("entId", "<?=$member['mb_entId']?>");
-    <?php } ?>
-    <?php if($w){ ?> 
-        sendData.append("entUsrId", $("#reg_mb_id").val() );//entUsrId
-    <?php } ?>
-    
-    sendData.append("entCrn", $("#mb_giup_bnum").val()); //사업자 등록번호
-    sendData.append("entCeoNm", $("#mb_giup_boss_name").val()); //사업소 대표
-    sendData.append("entBusiType",$("#mb_giup_bupjong").val()); //사업소 업종
-    sendData.append("entBusiCondition",$("#mb_giup_buptae").val()); //사업소 업태
-    sendData.append("entZip", $("#mb_giup_zip").val());  //사업소 우편번호
-    sendData.append("entAddr", $("#mb_giup_addr1").val()); //사업소 주소
-    sendData.append("entAddrDetail",$("#mb_giup_addr2").val() + $("#mb_giup_addr3").val() ); //사업소 주소 상세
-    sendData.append("entTaxCharger",$("#mb_giup_manager_name").val()); //담당자
-    sendData.append("entConAcco1",$("#mb_entConAcc01").val()); //특약사항1
-    sendData.append("entConAcco2",$("#mb_entConAcc02").val()); //특약사항2
-
-    sendData.append("usrZip", $("#reg_mb_zip").val()); //관리자 우편번호
-    sendData.append("usrAddr", $("#reg_mb_addr1").val());//관리자 주소
-    sendData.append("usrAddrDetail", $("#reg_mb_addr2").val())+$("#reg_mb_addr3").val();//관리자 주소 상세
-    sendData.append("entMail", $("#reg_mb_email").val());//메일
-
-
-
-    // sendData.append("usrNm", $("#mb_name").val()); //관리자이름
-    // sendData.append("usrBirth", mb_birth);//생년월일
-    // sendData.append("usrGender", $("#mb_sex").val());//성별
-    // sendData.append("entBusiNum",$("#mb_giup_sbnum").val()); //종사업장번호
-
-    <?php if($w){ ?>
-    //직인파일
-    var imgFileItem2 = $(".mb_giup_file2 input[type='file']");
-    for(var i = 0; i < imgFileItem2.length; i++){
-        if($(imgFileItem2[i])[0].files[0]){
-            sendData.append("sealFile", $(imgFileItem2[i])[0].files[0]);
-            sendData2.append("sealFile", $(imgFileItem2[i])[0].files[0]);
-
-            if($(imgFileItem2[i])[0].files[0].size > 1024 * 1024 * 10){
-                alert('사업자직인 (계약서 날인) : 10MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem2[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
-                return false;
-            }
-        }
-    }
-    <?php } ?>
-
-    //사업자등록증
-    var flag ='<?=$member['crnFile']?>';
-    var imgFileItem1 = $(".mb_giup_file1 input[type='file']");
-    for(var i = 0; i < imgFileItem1.length; i++){
-        if(!flag){
-            if(!$(imgFileItem1[i])[0].files[0]){
-                alert('사업자등록증을 첨부해주세요.');
-                return false;
-            }
-            if($(imgFileItem1[i])[0].files[0].size > 1024 * 1024 * 10){
-                alert('사업자등록증 : 10MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem1[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
-                return false;
-            }
-        }
-        if($(imgFileItem1[i])[0].files[0]){
-            sendData.append("crnFile", $(imgFileItem1[i])[0].files[0]);
-        }
-    }
-    <?php if(!$w){
-            $api_url = "https://system.eroumcare.com:9901/api/ent/insert";
-        }else{
-            $api_url = "https://system.eroumcare.com:9901/api/ent/update";
-        } 
-    ?>
-        var info = "<?php echo $w==''?'회원가입 하시겠습니까?':'수정 하시겠습니까?'; ?>";
-        if (confirm(info)) {
-            $.ajax({
-                    type: 'POST',
-                    url : "<?=$api_url?>",
-                    type : "POST",
-                    async : false,
-                    cache : false,
-                    processData : false,
-                    contentType : false,
-                    data : sendData,
-                }).done(function (data) {
-                    if(data.message == "SUCCESS"){
-                        f.submit();
-                        return false;
-                    }else{
-                        alert(data.message);
-                        return false;
-                    }
-            });
-        }
-        return false;
+      }
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  }
+  return false;
 }
 
 function check_giup_bnum(type) {
-    var msg = reg_mb_giup_bnum_check();
+  var msg = reg_mb_giup_bnum_check();
 
-    if (type == "click") {
-        if (msg === "") {
-            $('#form-bnum-feed-text > span').hide();
-            $('#form-bnum-feed-text > .available').show();
-            return true;
-        }
-        
-        if (msg === "이미 사용중인 사업자번호입니다.") {
-            $('#form-bnum-feed-text > span').hide();
-            $('#form-bnum-feed-text > .unavailable').show();
-            return false;
-        }
-        
-        if (msg === "사업자번호를 올바르게 입력해 주십시오.") {
-            $('#form-bnum-feed-text > span').hide();
-            alert("사업자번호를 올바르게 입력해 주십시오.")
-            return false;
-        }
-        
-        if (msg === "사업자번호를 입력해 주십시오.") {
-            $('#form-bnum-feed-text > span').hide();
-            alert("사업자번호를 입력해 주십시오.")
-            return false;
-        }
-    } else {
-        if (msg) {
-            alert(msg);
-            return false;
-        } else {
-            return true;
-        }
+  if (type == "click") {
+    if (msg === "") {
+      $('#form-bnum-feed-text > span').hide();
+      $('#form-bnum-feed-text > .available').show();
+      return true;
     }
+        
+    if (msg === "이미 사용중인 사업자번호입니다.") {
+      $('#form-bnum-feed-text > span').hide();
+      $('#form-bnum-feed-text > .unavailable').show();
+      return false;
+    }
+    
+    if (msg === "사업자번호를 올바르게 입력해 주십시오.") {
+      $('#form-bnum-feed-text > span').hide();
+      alert("사업자번호를 올바르게 입력해 주십시오.")
+      return false;
+    }
+        
+    if (msg === "사업자번호를 입력해 주십시오.") {
+      $('#form-bnum-feed-text > span').hide();
+      alert("사업자번호를 입력해 주십시오.")
+      return false;
+    }
+  } else {
+    if (msg) {
+      alert(msg);
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
 
 function check_giup_sbnum(type) {
-    var msg = reg_mb_giup_sbnum_check();
+  var msg = reg_mb_giup_sbnum_check();
 
-    if (type == "click") {
-        if (msg === "") {
-            $('#form-sbnum-feed-text > span').hide();
-            $('#form-sbnum-feed-text > .available').show();
-            return true;
-        }
-
-        else if (msg === "이미 사용중인 종사업자번호입니다.") {
-            $('#form-sbnum-feed-text > span').hide();
-            $('#form-sbnum-feed-text > .unavailable').show();
-            return false;
-        }
-
-        else if (msg === "종사업자번호를 올바르게 입력해 주십시오.") {
-            $('#form-sbnum-feed-text > span').hide();
-            alert("종사업자번호를 올바르게 입력해 주십시오.")
-            return false;
-        }
-
-        else if (msg === "종사업자번호를 입력해 주십시오.") {
-            $('#form-sbnum-feed-text > span').hide();
-            alert("종사업자번호를 입력해 주십시오.")
-            return false;
-        }
-        
-        else {
-            $('#form-sbnum-feed-text > span').hide();
-            alert(msg);
-            return false;
-        }
-    } else {
-        if (msg) {
-            alert(msg);
-            return false;
-        } else {
-            return true;
-        }
+  if (type == "click") {
+    if (msg === "") {
+      $('#form-sbnum-feed-text > span').hide();
+      $('#form-sbnum-feed-text > .available').show();
+      return true;
     }
+
+    else if (msg === "이미 사용중인 종사업자번호입니다.") {
+      $('#form-sbnum-feed-text > span').hide();
+      $('#form-sbnum-feed-text > .unavailable').show();
+      return false;
+    }
+
+    else if (msg === "종사업자번호를 올바르게 입력해 주십시오.") {
+      $('#form-sbnum-feed-text > span').hide();
+      alert("종사업자번호를 올바르게 입력해 주십시오.")
+      return false;
+    }
+
+    else if (msg === "종사업자번호를 입력해 주십시오.") {
+      $('#form-sbnum-feed-text > span').hide();
+      alert("종사업자번호를 입력해 주십시오.")
+      return false;
+    }
+    
+    else {
+      $('#form-sbnum-feed-text > span').hide();
+      alert(msg);
+      return false;
+    }
+  } else {
+    if (msg) {
+      alert(msg);
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
 
 function enable_giup_sbnum() {
-    $('#form-bnum-feed-text > span').hide();
-    $('#form-sbnum-feed-text > span').hide();
-    
-    $('#sbnum').show();
+  $('#form-bnum-feed-text > span').hide();
+  $('#form-sbnum-feed-text > span').hide();
+  
+  $('#sbnum').show();
 }
 
 function disable_giup_sbnum() {
-    $('#mb_giup_sbnum').val("");
-    $('#mb_giup_sbnum_explain').val("");
+  $('#mb_giup_sbnum').val("");
+  $('#mb_giup_sbnum_explain').val("");
 
-    $('#sbnum').hide();
+  $('#sbnum').hide();
 }
 
 <?php if ($w == "u") { ?>
 $(function () {
-    $('#mb_giup_bnum_check').hide();
-    $('#mb_giup_sbnum_check').hide();
-    
-    if ($('#mb_giup_sbnum').val()) {
-        $('#sbnum').show();
-    }
-})
+  $('#mb_giup_bnum_check').hide();
+  $('#mb_giup_sbnum_check').hide();
+  
+  if ($('#mb_giup_sbnum').val()) {
+    $('#sbnum').show();
+  }
+});
 
-function chkPW(pw){
-    var pw = pw;
-    var num = pw.search(/[0-9]/g);
-    var eng = pw.search(/[a-z]/ig);
-    if(pw.length < 8 || pw.length > 12){
+function chkPW(pw) {
+  var pw = pw;
+  var num = pw.search(/[0-9]/g);
+  var eng = pw.search(/[a-z]/ig);
+  if(pw.length < 8 || pw.length > 12) {
     alert("8자리 ~ 20자리 이내로 입력해주세요.");
     return false;
-    }else if(pw.search(/\s/) != -1){
+  } else if(pw.search(/\s/) != -1) {
     alert("비밀번호는 공백 없이 입력해주세요.");
     return false;
-    }else if(num < 0 || eng < 0 ){
+  } else if(num < 0 || eng < 0 ) {
     alert("영문,숫자를 혼합하여 입력해주세요.");
     return false;
-    }else {
-    console.log("통과"); 
+  } else {
     return true;
-    }
-
+  }
 }
-
-
 <?php } ?>
 </script>
