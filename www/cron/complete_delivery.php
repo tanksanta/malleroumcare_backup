@@ -34,9 +34,11 @@ while($result = sql_fetch_array($query)) {
     $count++;
 }
 
-sql_query("UPDATE g5_shop_cart SET
-        ct_status = '완료',
-        ct_move_date = NOW()
+sql_query("UPDATE g5_shop_cart as c
+    LEFT JOIN g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id
+    SET
+        c.ct_status = '완료',
+        c.ct_move_date = NOW()
     WHERE
         {$where}
 ");
