@@ -135,7 +135,7 @@ $sub_menu = '400402';
     
   <!-- 정렬 -->
   <div id="listSortWrap">
-    <input type="checkbox" id="cf_flag">
+    <input type="checkbox" id="cf_flag" <?php if($_COOKIE['cf_flag'] == 'true') echo 'checked'; ?>>
     <label for="cf_flag">
       <span class="icon">
         <i class="fa fa-check"></i>
@@ -143,7 +143,7 @@ $sub_menu = '400402';
       <span class="label">바코드 등록 미완료 만 보기</span>
     </label>
 
-    <input type="checkbox" id="cf_flag2">
+    <input type="checkbox" id="cf_flag2" <?php if($_COOKIE['cf_flag2'] == 'true') echo 'checked'; ?>>
     <label for="cf_flag2">
       <span class="icon">
         <i class="fa fa-check"></i>
@@ -151,7 +151,7 @@ $sub_menu = '400402';
       <span class="label">내 담당만 보기</span>
     </label>
 
-    <input type="checkbox" id="cf_flag3">
+    <input type="checkbox" id="cf_flag3" <?php if($_COOKIE['cf_flag3'] == 'true') echo 'checked'; ?>>
     <label for="cf_flag3">
       <span class="icon">
         <i class="fa fa-check"></i>
@@ -292,13 +292,8 @@ $sub_menu = '400402';
   }
 
 
-  $( document ).ready(function() {
-    $("#listDataWrap").html("");
-    doSearch();
-
-    if(getCookie("cf_flag")){ document.getElementById('cf_flag').checked =true;}else{document.getElementById('cf_flag').checked =false; }
-    if(getCookie("cf_flag2")){ document.getElementById('cf_flag2').checked =true;}else{document.getElementById('cf_flag2').checked =false; }
-    if(getCookie("cf_flag3")){ document.getElementById('cf_flag3').checked =true;}else{document.getElementById('cf_flag3').checked =false; }
+  $(function() {
+    cf_flag();
 
     $.datepicker.setDefaults({
       dateFormat : 'yy-mm-dd',
@@ -356,6 +351,10 @@ $sub_menu = '400402';
     var show_incompleted_barcode_only = $('#cf_flag').prop('checked');
     var show_mine_only = $('#cf_flag2').prop('checked');
     var show_unselected_only = $('#cf_flag3').prop('checked');
+
+    setCookie("cf_flag", show_incompleted_barcode_only, 1);
+    setCookie("cf_flag2", show_mine_only, 1);
+    setCookie("cf_flag3", show_unselected_only, 1);
 
     // 바코드만 등록 미완료만 보기
     if(show_incompleted_barcode_only) {
