@@ -174,7 +174,7 @@ $sub_menu = '400402';
   <script>
   var od_status = '';
   var od_step = "";
-  var page2= 1;
+  var page2 = 1;
   var loading = false;
   var end = false;
   var sel_field = 'od_id';
@@ -225,7 +225,7 @@ $sub_menu = '400402';
     formdata["cust_sort"] = $("#listSortChangeBtn").find(".active").attr("data-sort");
     formdata['cf']=document.getElementById('cf_flag').checked;
     // formdata['page']=parseInt(document.getElementById('page').value);
-    formdata['page']=page2;
+    formdata['page'] = page2;
     page2++;
 
     $.ajax({
@@ -237,7 +237,7 @@ $sub_menu = '400402';
       if(result.data) {
         var html = "";
         $.each(result.data, function(key, row) {
-          html += '<ul class="' + row.complate_flag + ' ' + row.complate_flag2 + ' '+ row.ct_manager + '">';
+          html += '<ul>';
           html += '<li class="mainInfo">';
           html += '<p class="name">';
           html += '<span class="it_name">' + row.it_name + '</span>';
@@ -273,7 +273,6 @@ $sub_menu = '400402';
         });
     
         $("#listDataWrap").append(html);
-        cf_flag();
         itNameSizeSetting();
 
         $('#page').val(parseInt($('#page').val()) + 1);
@@ -321,7 +320,7 @@ $sub_menu = '400402';
     $("#searchSubmitBtn").click(function() {
       $("#page").val(1);
       $("#listDataWrap").html("");
-      page2=1;
+      page2 = 1;
       doSearch();
     });
 
@@ -350,92 +349,22 @@ $sub_menu = '400402';
   });
 
   //미완료 바코드 작성만보기버튼
-  function cf_flag(){ 
-    //자신, 바코드
-    if(document.getElementById('cf_flag').checked&&document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked) {
-      setCookie("cf_flag", true, 1);
-      setCookie("cf_flag2", true, 1);
-      deleteCookie("cf_flag3");
-      $("#listDataWrap > ul").removeClass("type2");
-      $("#listDataWrap > ul").addClass("type1");
-      $("#listDataWrap > ul.<?=$member['mb_name']?>").removeClass("type1");
-      $("#listDataWrap > ul.<?=$member['mb_name']?>").addClass("type2");
-
-      $("#listDataWrap > ul.cf").addClass("type1");
-      $("#listDataWrap > ul.cf").removeClass("type2");
+  function cf_flag(){
+    var show_mine_only = $('#cf_flag2').prop('checked');
+    if(show_mine_only) {
+      formdata['ct_manager'] = "<?=get_text($member['mb_id'])?>"
+    } else {
+      formdata['ct_manager'] = '';
     }
-    //미지정, 바코드
-    if(document.getElementById('cf_flag').checked&&document.getElementById('cf_flag3').checked&&!document.getElementById('cf_flag2').checked) {
-      setCookie("cf_flag", true, 1);
-      deleteCookie("cf_flag2");
-      setCookie("cf_flag3", true, 1);
-
-      $("#listDataWrap > ul").removeClass("type2");
-      $("#listDataWrap > ul").addClass("type1");
-      $("#listDataWrap > ul.미지정").removeClass("type1");
-      $("#listDataWrap > ul.미지정").addClass("type2");
-
-      $("#listDataWrap > ul.cf").addClass("type1");
-      $("#listDataWrap > ul.cf").removeClass("type2");
-    }
-
-    //바코드 미완료만체크
-    if(document.getElementById('cf_flag').checked&&!document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked) {
-      setCookie("cf_flag", true, 1);
-      deleteCookie("cf_flag2");
-      deleteCookie("cf_flag3");
-
-      $("#listDataWrap > ul").removeClass("type1");
-      $("#listDataWrap > ul").addClass("type2");
-      
-      $("#listDataWrap > ul.cf").addClass("type1");
-      $("#listDataWrap > ul.cf").removeClass("type2");
-    }
-
-    //내담당만 체크
-    if(!document.getElementById('cf_flag').checked&&document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked) {
-      deleteCookie("cf_flag");
-      setCookie("cf_flag2", true, 1);
-      deleteCookie("cf_flag3");
-
-      $("#listDataWrap > ul.cf").addClass("type2");
-      $("#listDataWrap > ul.cf").removeClass("type1");
-
-      $("#listDataWrap > ul").removeClass("type2");
-      $("#listDataWrap > ul").addClass("type1");
-      $("#listDataWrap > ul.<?=$member['mb_name']?>").removeClass("type1");
-      $("#listDataWrap > ul.<?=$member['mb_name']?>").addClass("type2");
-    }
-    //미완료만 체크
-    if(!document.getElementById('cf_flag').checked&&document.getElementById('cf_flag3').checked&&!document.getElementById('cf_flag2').checked) {
-      deleteCookie("cf_flag");
-      deleteCookie("cf_flag2");
-      setCookie("cf_flag3", true, 1);
-
-      $("#listDataWrap > ul.cf").addClass("type2");
-      $("#listDataWrap > ul.cf").removeClass("type1");
-
-      $("#listDataWrap > ul").removeClass("type2");
-      $("#listDataWrap > ul").addClass("type1");
-      $("#listDataWrap > ul.미지정").removeClass("type1");
-      $("#listDataWrap > ul.미지정").addClass("type2");
-    }
-
-    //셋다 체크 x
-    if(!document.getElementById('cf_flag').checked&&!document.getElementById('cf_flag2').checked&&!document.getElementById('cf_flag3').checked) {
-      deleteCookie("cf_flag");
-      deleteCookie("cf_flag2");
-      deleteCookie("cf_flag3");
-      $("#listDataWrap > ul.cf").addClass("type2");
-      $("#listDataWrap > ul.cf").removeClass("type1");
-    }
+    $("#listDataWrap").html("");
+    page2 = 1;
+    doSearch();
   }
 
   $("#cf_flag").change(function(){
     cf_flag();
   });
   $("#cf_flag2").change(function(){
-    document.getElementById('cf_flag3').checked=false;
     cf_flag();
   });
   $("#cf_flag3").change(function(){
