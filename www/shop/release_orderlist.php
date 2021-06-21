@@ -52,7 +52,7 @@ $sub_menu = '400402';
     #listSortWrap > label { height: 20px; line-height: 20px; float: left; cursor: pointer; }
     #listSortWrap > label > .icon { display: inline-block; width: 14px; height: 14px; border: 1px solid #666; vertical-align: middle; top: -1px; margin-right: 5px; }
     #listSortWrap > label > .icon > i { position: absolute; left: 50%; top: 50%; margin-left: -6px; margin-top: -6px; font-size: 12px; color: #DC3333; opacity: 0; }
-    #listSortWrap > label > .label { display: inline-block; font-size: 14px; color: #666; }
+    #listSortWrap > label > .label { display: inline-block; font-size: 14px; color: #666; margin-right:10px;}
     #listSortWrap > input[type="checkbox"]:checked + label > .icon > i { opacity: 1; }
     #listSortWrap > #listSortChangeBtn { height: 20px; line-height: 20px; float: right; border: 0; border-bottom: 1px solid #666; background-color: #FFF; cursor: pointer; }
     #listSortWrap > #listSortChangeBtn > span { float: left; font-size: 13px; color: #666; font-weight: bold; display: none; }
@@ -110,9 +110,9 @@ $sub_menu = '400402';
       <li>
         <select name="search_option" id="search_option">
           <!-- <option value="">선택하세요</option> -->
-          <option value="it_name" selected>상품명</option>
+          <option value="od_b_name" selected>수화인</option>
+          <option value="it_name">상품명</option>
           <option value="od_name">사업소명</option>
-          <option value="od_b_name">수화인</option>
         </select>
         <input type="text" name="search_text" id="search_text" placeholder="검색명입력" >
       </li>
