@@ -352,12 +352,13 @@ $sub_menu = '400402';
   function cf_flag() {
     var show_incompleted_barcode_only = $('#cf_flag').prop('checked');
     var show_mine_only = $('#cf_flag2').prop('checked');
+    var show_unselected_only = $('#cf_flag3').prop('checked');
 
     // 바코드만 등록 미완료만 보기
     if(show_incompleted_barcode_only) {
-      formdata['incompleted_barcode'] = "true";
+      formdata['incompleted_barcode'] = 'true';
     } else {
-      formdata['incompleted_barcode'] = "false";
+      formdata['incompleted_barcode'] = 'false';
     }
 
     // 내 담당만 보기
@@ -367,19 +368,29 @@ $sub_menu = '400402';
       formdata['ct_manager'] = '';
     }
 
+    // 미지정만 보기
+    if(show_unselected_only) {
+      formdata['unselected_only'] = 'true'
+    } else {
+      formdata['unselected_only'] = 'false';
+    }
+
     $("#listDataWrap").html("");
     page2 = 1;
     doSearch();
   }
 
-  $("#cf_flag").change(function(){
+  $("#cf_flag").change(function() {
     cf_flag();
   });
-  $("#cf_flag2").change(function(){
+  $("#cf_flag2").change(function() {
+    if($(this).prop('checked'))
+      $('#cf_flag3').prop('checked', false);
     cf_flag();
   });
-  $("#cf_flag3").change(function(){
-    document.getElementById('cf_flag2').checked=false;
+  $("#cf_flag3").change(function() {
+    if($(this).prop('checked'))
+      $('#cf_flag2').prop('checked', false);
     cf_flag();
   });
 

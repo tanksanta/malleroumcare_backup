@@ -18,6 +18,7 @@ $ct_status = get_search_string($ct_status);
 $search = get_search_string($search);
 $ct_manager = get_search_string($ct_manager);
 $incompleted_barcode = get_search_string($incompleted_barcode) == 'true';
+$unselected_only = get_search_string($unselected_only) == 'true';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
 
@@ -230,6 +231,11 @@ if ( $ct_status == '작성' && $is_admin != 'super' ) {
 // 출고담당자 검색
 if($ct_manager) {
   $where[] = " ct_manager = '{$ct_manager}' ";
+}
+
+// 미지정만 보기
+else if($unselected_only) {
+  $where[] = " (ct_manager = '' or ct_manager is null) ";
 }
 
 // 바코드등록 미완료만 보기
