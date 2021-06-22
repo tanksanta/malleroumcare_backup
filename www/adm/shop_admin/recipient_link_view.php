@@ -116,7 +116,7 @@ if($sel_field && $search)
         <td>
           <?php
           if($rl['rl_ltm']) {
-            echo "L{$rl['rl_ltm']}";
+            echo "{$rl['rl_ltm']}";
           } else {
             echo '예비수급자';
           }

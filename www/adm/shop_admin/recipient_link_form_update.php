@@ -41,7 +41,7 @@ $sql_common = "
 
 // 수급자 번호 없으면 예비수급자
 if ($rl_ltm) {
-  $sql_common .= "rl_ltm = '{$rl_ltm}'";
+  $sql_common .= "rl_ltm = 'L{$rl_ltm}'";
 } else {
   $sql_common .= "rl_ltm = NULL";
 }
