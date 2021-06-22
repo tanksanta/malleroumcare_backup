@@ -412,7 +412,9 @@ label {
         <td colspan="3" class="mb_giup_file1">
             <input type="file" name="crnFile" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file1">
             <?php if($mb['crnFile']){ ?>
+              <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/file/member/license/{$mb['crnFile']}"))?>" target="_blank" class="view_image">
                 <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/license/<?=$mb['crnFile']?>" alt="">
+              </a>
             <?php }?>
         </td>
     </tr>
@@ -424,7 +426,9 @@ label {
         <td colspan="3" class="mb_giup_file2">
             <input type="file" name="sealFile" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file2">
             <?php if($mb['sealFile']){ ?>
+              <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/file/member/stamp/{$mb['sealFile']}"))?>" target="_blank" class="view_image">
                 <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/stamp/<?=$mb['sealFile']?>" alt="">
+              </a>
             <?php }?>
         </td>
     </tr>
