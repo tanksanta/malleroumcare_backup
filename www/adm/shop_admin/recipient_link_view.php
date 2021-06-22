@@ -12,21 +12,20 @@ if(!$rl['rl_id'])
   alert('존재하지 않는 수급자입니다.');
 
 // 수급자 주소 경위도 위치 비어있으면
-if(!$rl['rl_addr_lat'] || !$rl['rl_addr_lng'] || $rl['rl_addr_lat'] == '0.000' || $rl['rl_addr_lng'] == '0.000') {
+if(!$rl['rl_pen_addr_lat'] || !$rl['rl_pen_addr_lng'] || $rl['rl_pen_addr_lat'] == '0.000' || $rl['rl_pen_addr_lng'] == '0.000') {
   $lat_lng = get_lat_lng_by_address($rl['rl_pen_addr1']);
   if($lat_lng) {
     sql_query("
       UPDATE recipient_link SET
-      rl_addr_lat = '{$lat_lng['lat']}',
-      rl_addr_lng = '{$lat_lng['lng']}'
+      rl_pen_addr_lat = '{$lat_lng['lat']}',
+      rl_pen_addr_lng = '{$lat_lng['lng']}'
       WHERE rl_id = '{$rl['rl_id']}'
     ");
 
-    $rl['rl_addr_lat'] = $lat_lng['lat'];
-    $rl['rl_addr_lng'] = $lat_lng['lng'];
+    $rl['rl_pen_addr_lat'] = $lat_lng['lat'];
+    $rl['rl_pen_addr_lng'] = $lat_lng['lng'];
   }
 }
-
 
 // 검색
 $where = [];
@@ -55,6 +54,7 @@ $result = sql_query("
     mb_giup_addr_lng = 0
   )
 ");
+
 while($row = sql_fetch_array($result)) {
   $lat_lng = get_lat_lng_by_address($row['mb_giup_addr1']);
   if($lat_lng) {
@@ -86,7 +86,7 @@ sql_query("
     RETURN 6371 * 2 * ATAN2(SQRT(POW(SIN(RADIANS(to_lat - from_lat)/2), 2) + POW(SIN(RADIANS(to_lng - from_lng)/2), 2) * COS(RADIANS(from_lat)) * COS(RADIANS(to_lat))), SQRT(1 - POW(SIN(RADIANS(to_lat - from_lat)/2), 2) + POW(SIN(RADIANS(to_lng - from_lng)/2), 2) * COS(RADIANS(from_lat)) * COS(RADIANS(to_lat))))
 ");
 
-$result = sql_query(" select distance_between('{$rl['rl_addr_lat']}', '{$rl['rl_addr_lng']}', mb.mb_giup_addr_lat, mb.mb_giup_addr_lng) as distance, mb.* " . $sql_common . ' order by distance asc ' . $sql_limit);
+$result = sql_query(" select distance_between('{$rl['rl_pen_addr_lat']}', '{$rl['rl_pen_addr_lng']}', mb.mb_giup_addr_lat, mb.mb_giup_addr_lng) as distance, mb.* " . $sql_common . ' order by distance asc ' . $sql_limit);
 
 $qstr = "rl_id={$rl_id}";
 if($sel_field && $search)
