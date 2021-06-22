@@ -93,7 +93,7 @@ function excelform(url){
 
   <div class="list_box pc">
     <div class="table_box">  
-      <table >
+      <table>
         <tr>
           <th>No.</th>
           <th>수급자 정보</th>
@@ -277,16 +277,29 @@ function excelform(url){
   <div class="titleWrap" style="margin-bottom:10px;">
     대기중인 수급자
   </div>
-  <div class="no_content">
+  <!--<div class="no_content">
     내용이 없습니다
+  </div>-->
+  <div class="list_box pc">
+    <div class="table_box">  
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">No.</th>
+            <th scope="col">수급자명</th>
+            <th scope="col">인정정보</th>
+            <th scope="col">주소</th>
+            <th scope="col">연락처</th>
+            <th scope="col">보호자정보</th>
+            <th scope="col">연결일시(3일 후 자동취소)</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
   </div>
   <?php } ?>
 </div>
-
-<script type="text/javascript">
-$(function() {
-
-});
-</script>
 
 <?php include_once("./_tail.php"); ?>
