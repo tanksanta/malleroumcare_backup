@@ -13,7 +13,7 @@ if (!$is_development) {
 
 // 검색
 $sel_field = get_search_string($sel_field);
-if( !in_array($sel_field, array('rl.rl_name')) ) {   //검색할 필드 대상이 아니면 값을 제거
+if( !in_array($sel_field, array('rl.rl_pen_name')) ) {   //검색할 필드 대상이 아니면 값을 제거
   $sel_field = '';
   $search = '';
 }
@@ -85,7 +85,7 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
     </div>
 
     <select name="sel_field" id="sel_field">
-      <option value="rl.rl_name" <?php echo get_selected($sel_field, 'rl.rl_name'); ?>>수급자명</option>
+      <option value="rl.rl_pen_name" <?php echo get_selected($sel_field, 'rl.rl_pen_name'); ?>>수급자명</option>
       <option value="test" <?php echo get_selected($sel_field, 'test'); ?>>사업소명</option>
     </select>
 
@@ -135,16 +135,16 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
   <tr class="<?php echo $bg; ?>">
     <td headers="th_id" class="td_num"><?php echo $row['rl_id']; ?></td>
     <td headers="th_info">
-      <?php echo get_text($row['rl_name']); ?>
+      <?php echo get_text($row['rl_pen_name']); ?>
       <?php echo $row['rl_ltm'] ? '(' . $row['rl_ltm'] . ')' : ''; ?>
     </td>
     <td headers="th_address">
-      <?php echo get_text($row['rl_addr1']); ?>
-      <?php echo get_text($row['rl_addr2']); ?>
-      <?php echo get_text($row['rl_addr3']); ?>
+      <?php echo get_text($row['rl_pen_addr1']); ?>
+      <?php echo get_text($row['rl_pen_addr2']); ?>
+      <?php echo get_text($row['rl_pen_addr3']); ?>
     </td>
     <td headers="th_hp" class="">
-      <?php echo get_text($row['rl_hp']); ?>
+      <?php echo get_text($row['rl_pen_hp']); ?>
     </td>
     <td headers="th_end" class="">
 

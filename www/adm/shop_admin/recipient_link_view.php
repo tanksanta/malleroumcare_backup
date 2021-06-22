@@ -13,7 +13,7 @@ if(!$rl['rl_id'])
 
 // 수급자 주소 경위도 위치 비어있으면
 if(!$rl['rl_addr_lat'] || !$rl['rl_addr_lng'] || $rl['rl_addr_lat'] == '0.000' || $rl['rl_addr_lng'] == '0.000') {
-  $lat_lng = get_lat_lng_by_address($rl['rl_addr1']);
+  $lat_lng = get_lat_lng_by_address($rl['rl_pen_addr1']);
   if($lat_lng) {
     sql_query("
       UPDATE recipient_link SET
@@ -97,18 +97,18 @@ if($sel_field && $search)
     <table>
       <tr>
         <th scope="row">수급자명</th>
-        <td><?=get_text($rl['rl_name'])?></td>
+        <td><?=get_text($rl['rl_pen_name'])?></td>
       </tr>
       <tr>
         <th scope="row">연락처</th>
-        <td><?=get_text($rl['rl_hp'])?></td>
+        <td><?=get_text($rl['rl_pen_hp'])?></td>
       </tr>
       <tr>
         <th scope="row">주소</th>
         <td>
-          <?php echo get_text($rl['rl_addr1']); ?>
-          <?php echo get_text($rl['rl_addr2']); ?>
-          <?php echo get_text($rl['rl_addr3']); ?>
+          <?php echo get_text($rl['rl_pen_addr1']); ?>
+          <?php echo get_text($rl['rl_pen_addr2']); ?>
+          <?php echo get_text($rl['rl_pen_addr3']); ?>
         </td>
       </tr>
       <tr>

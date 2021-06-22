@@ -63,38 +63,38 @@ label {
   </colgroup>
   <tbody>
   <tr>
-    <th scope="row"><label for="rl_name">수급자명<strong class="sound_only">필수</strong></label></th>
+    <th scope="row"><label for="rl_pen_name">수급자명<strong class="sound_only">필수</strong></label></th>
     <td colspan="3">
-      <input type="text" name="rl_name" value="<?php echo $rl['rl_name'] ?>" id="rl_name" class="frm_input" size="15" maxlength="20">
+      <input type="text" name="rl_pen_name" value="<?php echo $rl['rl_pen_name'] ?>" id="rl_pen_name" class="frm_input" size="15" maxlength="20">
     </td>
   </tr>
   <tr>
-    <th scope="row"><label for="rl_hp">연락처</label></th>
+    <th scope="row"><label for="rl_pen_hp">연락처</label></th>
     <td colspan="3">
-      <?php $rl_hp =explode('-',$rl['rl_hp']); ?>
-      <input type="text" name="rl_hp1" value="<?=$rl_hp[0]?>" id="rl_hp1" class="frm_input"size="15" maxlength="3">
-      <input type="text" name="rl_hp2" value="<?=$rl_hp[1]?>" id="rl_hp2" class="frm_input" size="15" maxlength="4">
-      <input type="text" name="rl_hp3" value="<?=$rl_hp[2]?>" id="rl_hp3" class="frm_input" size="15" maxlength="4">
+      <?php $rl_pen_hp =explode('-',$rl['rl_pen_hp']); ?>
+      <input type="text" name="rl_pen_hp1" value="<?=$rl_pen_hp[0]?>" id="rl_pen_hp1" class="frm_input"size="15" maxlength="3">
+      <input type="text" name="rl_pen_hp2" value="<?=$rl_pen_hp[1]?>" id="rl_pen_hp2" class="frm_input" size="15" maxlength="4">
+      <input type="text" name="rl_pen_hp3" value="<?=$rl_pen_hp[2]?>" id="rl_pen_hp3" class="frm_input" size="15" maxlength="4">
     </td>
   </tr>
   <tr>
     <th scope="row">주소</th>
     <td colspan="3" class="td_addr_line">
       <label for="rl_zip" class="sound_only">우편번호</label>
-      <input type="text" name="rl_zip" value="<?php echo $rl['rl_zip1'].$rl['rl_zip2']; ?>" id="rl_zip" class="frm_input readonly" size="5" maxlength="6">
-      <button type="button" class="btn_frmline" onclick="win_zip('frecipient_link', 'rl_zip', 'rl_addr1', 'rl_addr2', 'rl_addr3', 'rl_addr_jibeon');">주소 검색</button><br>
-      <input type="text" name="rl_addr1" value="<?php echo $rl['rl_addr1'] ?>" id="rl_addr1" class="frm_input readonly" size="60">
-      <label for="rl_addr1">기본주소</label><br>
-      <input type="text" name="rl_addr2" value="<?php echo $rl['rl_addr2'] ?>" id="rl_addr2" class="frm_input" size="60">
-      <label for="rl_addr2">상세주소</label>
+      <input type="text" name="rl_zip" value="<?php echo $rl['rl_pen_zip1'].$rl['rl_pen_zip2']; ?>" id="rl_zip" class="frm_input readonly" size="5" maxlength="6">
+      <button type="button" class="btn_frmline" onclick="win_zip('frecipient_link', 'rl_zip', 'rl_pen_addr1', 'rl_pen_addr2', 'rl_pen_addr3', 'rl_pen_addr_jibeon');">주소 검색</button><br>
+      <input type="text" name="rl_pen_addr1" value="<?php echo $rl['rl_pen_addr1'] ?>" id="rl_pen_addr1" class="frm_input readonly" size="60">
+      <label for="rl_pen_addr1">기본주소</label><br>
+      <input type="text" name="rl_pen_addr2" value="<?php echo $rl['rl_pen_addr2'] ?>" id="rl_pen_addr2" class="frm_input" size="60">
+      <label for="rl_pen_addr2">상세주소</label>
       <br>
-      <input type="text" name="rl_addr3" value="<?php echo $rl['rl_addr3'] ?>" id="rl_addr3" class="frm_input" size="60">
-      <label for="rl_addr3">참고항목</label>
-      <input type="hidden" name="rl_addr_jibeon" value="<?php echo $rl['rl_addr_jibeon']; ?>"><br>
+      <input type="text" name="rl_pen_addr3" value="<?php echo $rl['rl_pen_addr3'] ?>" id="rl_pen_addr3" class="frm_input" size="60">
+      <label for="rl_pen_addr3">참고항목</label>
+      <input type="hidden" name="rl_pen_addr_jibeon" value="<?php echo $rl['rl_pen_addr_jibeon']; ?>"><br>
     </td>
   </tr>
   <tr>
-    <th scope="row"><label for="rl_hp">인정정보</label></th>
+    <th scope="row"><label for="rl_pen_hp">인정정보</label></th>
     <td colspan="3">
       <input type="radio" name="recipient" id="recipient_no" value="off" <?php echo $recipient_no; ?>>
       <label for="recipient_no">예비수급자</label>
@@ -104,7 +104,7 @@ label {
     </td>
   </tr>
   <tr>
-    <th scope="row"><label for="rl_hp">보호자 관계</label></th>
+    <th scope="row"><label for="rl_pen_hp">보호자 관계</label></th>
     <td colspan="3">
        <select class="frm_input form-control input-sm penProRel" name="rl_pen_pro_type" id="rl_pen_pro_type">
         <option value="00" <?=($rl["rl_pen_pro_type"] == "00") ? "selected" : ""?>>처</option>
@@ -130,7 +130,7 @@ label {
     </td>
   </tr>
   <tr>
-    <th scope="row"><label for="rl_hp">보호자 연락처</label></th>
+    <th scope="row"><label for="rl_pen_hp">보호자 연락처</label></th>
     <td colspan="3">
       <?php $rl_pen_pro_hp =explode('-',$rl['rl_pen_pro_hp']); ?>
       <input type="text" name="rl_pen_pro_hp1" value="<?=$rl_pen_pro_hp[0]?>" id="rl_pen_pro_hp1" class="frm_input" size="15" maxlength="3">
@@ -161,14 +161,14 @@ function frecipient_link_submit()
 {   
    var f = document.getElementById("frecipient_link");
 
-  if(!f.rl_name.value){
+  if(!f.rl_pen_name.value){
     alert('수급자명을 입력하세요.');
-    f.rl_name.focus();
+    f.rl_pen_name.focus();
     return false;
   }
-  if(!f.rl_hp1.value){
+  if(!f.rl_pen_hp1.value){
     alert('연락처를 입력하세요.');
-    f.rl_hp1.focus();
+    f.rl_pen_hp1.focus();
     return false;
   }
   if(!f.rl_zip.value){
