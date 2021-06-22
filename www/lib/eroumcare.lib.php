@@ -647,3 +647,23 @@ function get_recipient_link($rl_id, $mb_id) {
     AND mb_id = '$mb_id'
   ");
 }
+
+// 수급자연결관리 - 사업소 회원(mb_id)로 연결된 수급자들 가져오는 함수
+function get_recipient_links($mb_id) {
+  $res = [];
+  if(!$mb_id) return $res;
+
+  $result = sql_query("
+    SELECT * FROM recipient_link_rel r
+    LEFT JOIN recipient_link l ON r.rl_id = l.rl_id
+    WHERE mb_id = '$mb_id'
+    AND status <> 'wait'
+    ORDER BY r.rl_id desc
+  ");
+
+  while($row = sql_fetch_array($result)) {
+    $res[] = $row;
+  }
+
+  return $res;
+}

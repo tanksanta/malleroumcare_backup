@@ -99,7 +99,7 @@ while($item = sql_fetch_array($items)) {
   <link rel="shortcut icon" href="<?php echo THEMA_URL; ?>/assets/img/top_logo_icon.ico">
   <link rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="./css/writeeform.css">
-  <script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <?php include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php'); ?>
 </head>
 <body>
