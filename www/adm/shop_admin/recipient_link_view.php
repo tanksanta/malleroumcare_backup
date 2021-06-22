@@ -127,13 +127,13 @@ if($sel_field && $search)
         <th scope="row">보호자정보</th>
         <td>
           <?php
-          if($rl['rl_pen_type'] == '11') // 직접입력
-            echo get_text($rl['rl_pen_type_etc']);
+          if($rl['rl_pen_pro_type'] == '11') // 직접입력
+            echo get_text($rl['rl_pen_pro_type_etc']);
           else
-            echo $pen_pro_rel_cd[$rl['rl_pen_type']];
+            echo $pen_pro_rel_cd[$rl['rl_pen_pro_type']];
           ?> / 
-          <?=get_text($rl['rl_pen_name'])?> / 
-          <?=get_text($rl['rl_pen_hp'])?>
+          <?=get_text($rl['rl_pen_pro_name'])?> / 
+          <?=get_text($rl['rl_pen_pro_hp'])?>
         </td>
       </tr>
       <tr>

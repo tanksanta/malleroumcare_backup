@@ -106,36 +106,36 @@ label {
   <tr>
     <th scope="row"><label for="rl_hp">보호자 관계</label></th>
     <td colspan="3">
-       <select class="frm_input form-control input-sm penProRel" name="rl_pen_type" id="rl_pen_type">
-        <option value="00" <?=($rl["rl_pen_type"] == "00") ? "selected" : ""?>>처</option>
-        <option value="01" <?=($rl["rl_pen_type"] == "01") ? "selected" : ""?>>남편</option>
-        <option value="02" <?=($rl["rl_pen_type"] == "02") ? "selected" : ""?>>자</option>
-        <option value="03" <?=($rl["rl_pen_type"] == "03") ? "selected" : ""?>>자부</option>
-        <option value="04" <?=($rl["rl_pen_type"] == "04") ? "selected" : ""?>>사위</option>
-        <option value="05" <?=($rl["rl_pen_type"] == "05") ? "selected" : ""?>>형제</option>
-        <option value="06" <?=($rl["rl_pen_type"] == "06") ? "selected" : ""?>>자매</option>
-        <option value="07" <?=($rl["rl_pen_type"] == "07") ? "selected" : ""?>>손</option>
-        <option value="08" <?=($rl["rl_pen_type"] == "08") ? "selected" : ""?>>배우자 형제자매</option>
-        <option value="09" <?=($rl["rl_pen_type"] == "09") ? "selected" : ""?>>외손</option>
-        <option value="10" <?=($rl["rl_pen_type"] == "10") ? "selected" : ""?>>부모</option>
-        <option value="11" <?=($rl["rl_pen_type"] == "11") ? "selected" : ""?>>직접입력</option>
+       <select class="frm_input form-control input-sm penProRel" name="rl_pen_pro_type" id="rl_pen_pro_type">
+        <option value="00" <?=($rl["rl_pen_pro_type"] == "00") ? "selected" : ""?>>처</option>
+        <option value="01" <?=($rl["rl_pen_pro_type"] == "01") ? "selected" : ""?>>남편</option>
+        <option value="02" <?=($rl["rl_pen_pro_type"] == "02") ? "selected" : ""?>>자</option>
+        <option value="03" <?=($rl["rl_pen_pro_type"] == "03") ? "selected" : ""?>>자부</option>
+        <option value="04" <?=($rl["rl_pen_pro_type"] == "04") ? "selected" : ""?>>사위</option>
+        <option value="05" <?=($rl["rl_pen_pro_type"] == "05") ? "selected" : ""?>>형제</option>
+        <option value="06" <?=($rl["rl_pen_pro_type"] == "06") ? "selected" : ""?>>자매</option>
+        <option value="07" <?=($rl["rl_pen_pro_type"] == "07") ? "selected" : ""?>>손</option>
+        <option value="08" <?=($rl["rl_pen_pro_type"] == "08") ? "selected" : ""?>>배우자 형제자매</option>
+        <option value="09" <?=($rl["rl_pen_pro_type"] == "09") ? "selected" : ""?>>외손</option>
+        <option value="10" <?=($rl["rl_pen_pro_type"] == "10") ? "selected" : ""?>>부모</option>
+        <option value="11" <?=($rl["rl_pen_pro_type"] == "11") ? "selected" : ""?>>직접입력</option>
       </select>
-      <input type="text" name="rl_pen_type_etc" value="<?=$rl["rl_pen_type_etc"]?>" class=" frm_input form-control input-sm" <?=($rl["rl_pen_type"] == "11") ? "" : "style='display:none'"?>>
+      <input type="text" name="rl_pen_pro_type_etc" value="<?=$rl["rl_pen_pro_type_etc"]?>" class=" frm_input form-control input-sm" <?=($rl["rl_pen_pro_type"] == "11") ? "" : "style='display:none'"?>>
     </td>
   </tr>
   <tr>
-    <th scope="row"><label for="rl_pen_name">보호자명<strong class="sound_only">필수</strong></label></th>
+    <th scope="row"><label for="rl_pen_pro_name">보호자명<strong class="sound_only">필수</strong></label></th>
     <td colspan="3">
-      <input type="text" name="rl_pen_name" value="<?php echo $rl['rl_pen_name'] ?>" id="rl_pen_name" class="frm_input" size="15" maxlength="20">
+      <input type="text" name="rl_pen_pro_name" value="<?php echo $rl['rl_pen_pro_name'] ?>" id="rl_pen_pro_name" class="frm_input" size="15" maxlength="20">
     </td>
   </tr>
   <tr>
     <th scope="row"><label for="rl_hp">보호자 연락처</label></th>
     <td colspan="3">
-      <?php $rl_pen_hp =explode('-',$rl['rl_pen_hp']); ?>
-      <input type="text" name="rl_pen_hp1" value="<?=$rl_pen_hp[0]?>" id="rl_pen_hp1" class="frm_input" size="15" maxlength="3">
-      <input type="text" name="rl_pen_hp2" value="<?=$rl_pen_hp[1]?>" id="rl_pen_hp2" class="frm_input" size="15" maxlength="4">
-      <input type="text" name="rl_pen_hp3" value="<?=$rl_pen_hp[2]?>" id="rl_pen_hp3" class="frm_input" size="15" maxlength="4">
+      <?php $rl_pen_pro_hp =explode('-',$rl['rl_pen_pro_hp']); ?>
+      <input type="text" name="rl_pen_pro_hp1" value="<?=$rl_pen_pro_hp[0]?>" id="rl_pen_pro_hp1" class="frm_input" size="15" maxlength="3">
+      <input type="text" name="rl_pen_pro_hp2" value="<?=$rl_pen_pro_hp[1]?>" id="rl_pen_pro_hp2" class="frm_input" size="15" maxlength="4">
+      <input type="text" name="rl_pen_pro_hp3" value="<?=$rl_pen_pro_hp[2]?>" id="rl_pen_pro_hp3" class="frm_input" size="15" maxlength="4">
     </td>
   </tr>
   <tr>
@@ -176,14 +176,14 @@ function frecipient_link_submit()
     f.rl_zip.focus();
     return false;
   }
-  if(!f.rl_pen_name.value){
+  if(!f.rl_pen_pro_name.value){
     alert('보호자명을 입력하세요.');
-    f.rl_pen_name.focus();
+    f.rl_pen_pro_name.focus();
     return false;
   }
-  if(!f.rl_pen_hp1.value){
+  if(!f.rl_pen_pro_hp1.value){
     alert('보호자 연락처를 입력하세요.');
-    f.rl_pen_hp1.focus();
+    f.rl_pen_pro_hp1.focus();
     return false;
   }
 
@@ -200,14 +200,14 @@ $(function() {
   })
 
   
-  $("#rl_pen_type").change(function(){
+  $("#rl_pen_pro_type").change(function(){
     if($(this).val() == "11"){
-      $("#frecipient_link input[name='rl_pen_type_etc']").prop("readonly", false);
-      $("#frecipient_link input[name='rl_pen_type_etc']").show();
+      $("#frecipient_link input[name='rl_pen_pro_type_etc']").prop("readonly", false);
+      $("#frecipient_link input[name='rl_pen_pro_type_etc']").show();
     } else {
-      $("#frecipient_link input[name='rl_pen_type_etc']").prop("readonly", true);
-      $("#frecipient_link input[name='rl_pen_type_etc']").val("");
-      $("#frecipient_link input[name='rl_pen_type_etc']").hide();
+      $("#frecipient_link input[name='rl_pen_pro_type_etc']").prop("readonly", true);
+      $("#frecipient_link input[name='rl_pen_pro_type_etc']").val("");
+      $("#frecipient_link input[name='rl_pen_pro_type_etc']").hide();
     }
   });
 });

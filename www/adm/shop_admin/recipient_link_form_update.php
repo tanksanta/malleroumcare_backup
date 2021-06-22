@@ -17,10 +17,10 @@ $mb_email = isset($_POST['mb_email']) ? get_email_address(trim($_POST['mb_email'
 $rl_ltm = $recipient === 'on' ? trim($rl_ltm) : null;
 
 $rl_hp = $_POST['rl_hp1']."-".$_POST['rl_hp2']."-".$_POST['rl_hp3'];
-$rl_pen_hp = $_POST['rl_pen_hp1']."-".$_POST['rl_pen_hp2']."-".$_POST['rl_pen_hp3'];
+$rl_pen_pro_hp = $_POST['rl_pen_pro_hp1']."-".$_POST['rl_pen_pro_hp2']."-".$_POST['rl_pen_pro_hp3'];
 
-if ($rl_pen_type != '11') {
-  $rl_pen_type_etc = '';
+if ($rl_pen_pro_type != '11') {
+  $rl_pen_pro_type_etc = '';
 }
 
 $sql_common = "
@@ -32,10 +32,10 @@ $sql_common = "
   rl_addr_jibeon = '{$rl_addr_jibeon}',
   rl_zip1 = '{$rl_zip1}',
   rl_zip2 = '{$rl_zip2}',
-  rl_pen_type = '{$rl_pen_type}',
-  rl_pen_type_etc = '{$rl_pen_type_etc}',
-  rl_pen_name = '{$rl_pen_name}',
-  rl_pen_hp = '{$rl_pen_hp}',
+  rl_pen_pro_type = '{$rl_pen_pro_type}',
+  rl_pen_pro_type_etc = '{$rl_pen_pro_type_etc}',
+  rl_pen_pro_name = '{$rl_pen_pro_name}',
+  rl_pen_pro_hp = '{$rl_pen_pro_hp}',
   rl_request = '{$rl_request}', 
 ";
 

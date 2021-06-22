@@ -13,7 +13,7 @@ if (!$is_development) {
 
 // 검색
 $sel_field = get_search_string($sel_field);
-if( !in_array($sel_field, array('rl.rl_name')) ){   //검색할 필드 대상이 아니면 값을 제거
+if( !in_array($sel_field, array('rl.rl_name')) ) {   //검색할 필드 대상이 아니면 값을 제거
   $sel_field = '';
   $search = '';
 }
