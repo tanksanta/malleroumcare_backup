@@ -184,7 +184,11 @@ if($sel_field && $search)
       </tr>
     </thead>
     <tbody>
-      <?php while($row = sql_fetch_array($result)) { ?>
+      <?php
+      while($row = sql_fetch_array($result)) {
+        // 수급자-사업소 연결 가져오기
+        $link = get_recipient_link($rl['rl_id'], $row['mb_id']);
+      ?>
       <tr>
         <td><?=$row['mb_entNm']?></td>
         <td>
@@ -212,7 +216,7 @@ if($sel_field && $search)
               GROUP BY penId
             ) r
           ");
-          echo "({$ent_ef_pens['cnt']}명)";
+          echo "({$ent_ef_pens['cnt']}명 진행)";
           ?>
         </td>
         <td>
@@ -233,18 +237,104 @@ if($sel_field && $search)
           echo "{$ent_recent_ef_pens['cnt']}명 / 평균 {$ent_recent_ef_pens['avg']}원"
           ?>
         </td>
-        <td>최근연결</td>
-        <td>상태</td>
-        <td><?=number_format($row['distance'])?>km</td>
-        <td>연결여부</td>
+        <td style="text-align:center;">
+          <?php
+          // 최근 3개월 동안 이로움에서 연결해준 수급자 수
+          $ent_recent_links = sql_fetch("
+            SELECT COUNT(*) as cnt
+            FROM `recipient_link_rel`
+            WHERE mb_id = '{$row['mb_id']}'
+            AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 MONTH) AND NOW())
+          ");
+          echo "{$ent_recent_links['cnt']}명";
+          ?>
+        </td>
+        <td style="text-align:center;">
+          <?php
+          // 상태
+          $status = '대기';
+          switch($link['status']) {
+            case 'request':
+              $status = '요청중';
+              break;
+            case 'link':
+              $status = '연결완료';
+              break;
+            case 'done':
+              $status = '등록완료';
+              break;
+          }
+          echo $status;
+          ?>
+        </td>
+        <td style="text-align:center;"><?=number_format($row['distance'])?>km</td>
+        <td style="text-align:center;">
+          <?php
+          if(!$link || $link['status'] == 'wait') {
+          ?>
+          <button class="btn btn_03 btn_request" data-id="<?=$row['mb_id']?>">요청하기</button>
+          <?php
+          } else {
+          ?>
+          <button class="btn btn_01 btn_cancel" data-id="<?=$row['mb_id']?>">요청취소</button>
+          <?php
+          }
+          ?>
+        </td>
         <td>
-          <!--비고-->
+          <?php
+          // 비고
+          if($link && $link['status'] == 'wait') {
+            echo date('Y-m-d 연결기록',strtotime($link['updated_at']));
+          }
+          ?>
         </td>
       </tr>
       <?php } ?>
     </tbody>
   </table>
 </div>
+
+<script>
+$(function() {
+  // 요청하기 버튼
+  $(document).on('click', '.btn_request', function(e) {
+    var $this = $(this);
+    $.post('./ajax.recipient.link.php', {
+      mb_id: $this.data('id'),
+      rl_id: '<?=$rl['rl_id']?>'
+    }, 'json')
+    .done(function(data) {
+      $this.removeClass('btn_request btn_03')
+      .addClass('btn_cancel btn_01')
+      .text('요청취소');
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  // 요청취소 버튼
+  $(document).on('click', '.btn_cancel', function(e) {
+    var $this = $(this);
+    $.post('./ajax.recipient.link.php', {
+      mb_id: $this.data('id'),
+      rl_id: '<?=$rl['rl_id']?>',
+      w: 'd'
+    }, 'json')
+    .done(function(data) {
+      $this.removeClass('btn_cancel btn_01')
+      .addClass('btn_request btn_03')
+      .text('요청하기')
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+});
+</script>
 
 <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); ?>
 <?php

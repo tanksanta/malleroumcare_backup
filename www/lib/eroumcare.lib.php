@@ -635,3 +635,15 @@ function get_lat_lng_by_address($address) {
 
   return $res;
 }
+
+// 수급자연결관리 - 수급자연결에 등록된 수급자(rl_id)와 사업소 회원(mb_id) 연결상태 가져오는 함수
+function get_recipient_link($rl_id, $mb_id) {
+
+  if(!$rl_id || !$mb_id) return;
+
+  return sql_fetch("
+    SELECT * FROM recipient_link_rel
+    WHERE rl_id = '$rl_id'
+    AND mb_id = '$mb_id'
+  ");
+}
