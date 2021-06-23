@@ -2,8 +2,8 @@
 include_once('./_common.php');
 
 if(USE_G5_THEME && defined('G5_THEME_PATH')) {
-    require_once(G5_SHOP_PATH.'/yc/item.php');
-    return;
+  require_once(G5_SHOP_PATH.'/yc/item.php');
+  return;
 }
 
 include_once(G5_LIB_PATH.'/iteminfo.lib.php');
