@@ -644,7 +644,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     }
                 }
             }
-
+            
+            if ($it['it_delivery_cnt'] > 0) {
+                $sc_price_info .= "<br>* 본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.";
+            }
 			?>
 			<tr>
 				<th>
