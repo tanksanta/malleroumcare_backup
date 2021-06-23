@@ -131,6 +131,10 @@ if (gettype($od_important) == 'string' && $od_important !== '') {
   $where[] = " od_important = '$od_important' ";
 }
 
+if (gettype($ct_is_direct_delivery) == 'string' && $ct_is_direct_delivery !== '') {
+  $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
+}
+
 if (gettype($od_release) == 'string' && $od_release !== '') {
   if ($od_release == '0') { // 일반출고
     $where[] = " ( od_release_manager != 'no_release' AND od_release_manager != '-' ) ";
@@ -210,7 +214,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date, ct_manager from {$g5['g5_shop_cart_table']}) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date, ct_manager, ct_is_direct_delivery from {$g5['g5_shop_cart_table']}) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -250,7 +254,7 @@ if ( $where2 || $where ) {
 }
 $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_manager from {$g5['g5_shop_cart_table']}) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_manager, ct_is_direct_delivery from {$g5['g5_shop_cart_table']}) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
