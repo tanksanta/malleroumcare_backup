@@ -224,12 +224,16 @@ if($header_skin)
 			</div>
 
 			<div class="info-wrap">
-			<?php if($row["recipient_yn"] == "Y"){ ?>
+			<?php if($row["recipient_yn"] == "Y") { ?>
 				<div class="info-top">
 					<h5>수급자 정보 : <?=$row["od_penNm"]?> (<?=$row["od_penTypeNm"]?>)</h5>
 					<a href="javascript:;" style="display: none;">계약서</a>
 				</div>
-			<?php } ?>
+			<?php } else { ?>
+				<div class="info-top" style="background-color: #f5f5f5">
+					<h5>받으시는 분 : <?=$row['od_b_name']?></h5>
+				</div>
+      <?php } ?>
 			</div>
 			
 			<?php foreach($itemList as $item){ 
