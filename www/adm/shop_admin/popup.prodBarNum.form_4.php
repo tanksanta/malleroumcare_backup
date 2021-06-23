@@ -311,13 +311,12 @@ if($od["od_b_tel"]){
   ?>
 
   <script type="text/javascript">
-
-    //maxnum 지정
-    function maxLengthCheck(object){
-        if (object.value.length > object.maxLength){
-        object.value = object.value.slice(0, object.maxLength);
-        }
+  //maxnum 지정
+  function maxLengthCheck(object){
+    if (object.value.length > object.maxLength) {
+      object.value = object.value.slice(0, object.maxLength);
     }
+  }
 
   /* 바코드 입력란 설정 */
   function foldingBoxSetting(){
@@ -696,5 +695,5 @@ if($od["od_b_tel"]){
     $("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
   }
 
-</script>
- </body>
+  </script>
+</body>
