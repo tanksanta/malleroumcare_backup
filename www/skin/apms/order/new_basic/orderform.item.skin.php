@@ -95,8 +95,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 				# 바코드조회
 				$oCurl = curl_init();
-				curl_setopt($oCurl, CURLOPT_PORT, 9901);
-				curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectBarNumList");
+//				curl_setopt($oCurl, CURLOPT_PORT, 9901);
+//				curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectBarNumList");
+				curl_setopt($oCurl, CURLOPT_PORT, 9909);
+				curl_setopt($oCurl, CURLOPT_URL, "http://gudjsgh.iptime.org/api/stock/selectBarNumList");
 				curl_setopt($oCurl, CURLOPT_POST, 1);
 				curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));

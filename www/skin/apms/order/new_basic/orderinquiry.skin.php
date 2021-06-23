@@ -322,6 +322,30 @@ if($header_skin)
                             }?>
 						</li>
 						<li class="info-btn">
+                            <div class="barcode_preview">
+                                <ul>
+                                    <?php
+                                    // 바코드 5개 미리보기
+                                    $stoId_arr = array(
+                                            'stoId' => str_replace(',', '|', $row['stoId'])
+                                    );
+                                    $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $stoId_arr);
+                                    
+                                    $prodBarNum_arr = [];
+                                    for ($j = 0; $j < count($res['data']); $j++) {
+                                        if (!empty($res['data'][$j]['prodBarNum'])) {
+                                            $prodBarNum_arr[] =  $res['data'][$j]['prodBarNum'];
+                                        }
+                                    }
+                                    sort($prodBarNum_arr); // 오름차순 정렬
+                                    
+                                    $limit = count($prodBarNum_arr) > 5 ? 5 : count($prodBarNum_arr);
+                                    for ($j = 0; $j < $limit; $j++) {
+                                        echo "<li>{$prodBarNum_arr[$j]}</li>";
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
 							<div>
                             <?php
                                 $sendData = [];
