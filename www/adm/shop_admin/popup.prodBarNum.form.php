@@ -334,6 +334,7 @@ if($od["od_b_tel"]) {
   ?>
 
   <script type="text/javascript">
+  var need_reload = false;
 
   //maxnum 지정
   function maxLengthCheck(object){
@@ -531,6 +532,8 @@ if($od["od_b_tel"]) {
     }
 
     $("#prodBarNumSaveBtn").click(function() {
+      need_reload = true;
+
       var ordId = "<?=$od["ordId"]?>";
       var changeStatus = true;
       var insertBarCnt = 0;
@@ -741,7 +744,8 @@ if($od["od_b_tel"]) {
         <?php if($_GET['new']){ ?>
         history.back();
         <?php } else { ?>
-        opener.location.reload();
+        if(need_reload)
+          opener.location.reload();
         window.close();
         <?php }?>
       }
