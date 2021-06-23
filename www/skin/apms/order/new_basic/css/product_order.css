@@ -105,9 +105,6 @@ table {border-collapse: collapse;}
 .table-list .delivery {width: 15%;text-align: right;font-size: 14px;}
 .table-list .info-btn {width: 15%;text-align: right;}
 .table-list .info-btn div {display: inline-block;}
-.table-list .info-btn .barcode_preview {width: 100px}
-.table-list .info-btn .barcode_preview ul {width:100%; flex-direction: column; text-align: center}
-.table-list .info-btn .barcode_preview li {}
 
 .table-list.table-list2 {border-top: 1px solid #000;}
 .table-list.table-list2:last-child {border-bottom: 1px solid #000;}
@@ -380,11 +377,6 @@ table {border-collapse: collapse;}
     .table-list .pro-info .name,.table-list .pro-info .name b  {font-size: 12px;}
     .table-list .info-btn div {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
     .table-list .info-btn {margin-top: 10px;}
-    .table-list .info-btn .barcode_preview {width: 100%}
-    .table-list .info-btn .barcode_preview ul {display: flex; flex-direction: row; width: auto; flex-wrap: wrap}
-    .table-list .info-btn .barcode_preview li:last-of-type {width: 81px !important;}
-    .table-list .info-btn .barcode_preview li:not(:last-of-type) {width: 91px !important;}
-    .table-list .info-btn .barcode_preview li:not(:last-of-type):after {content: '/'; padding: 0 3px;}
     .table-list .list .btn-0 {width: 100%;margin: 0 3px;padding: 6px 0;}
     
     .detail-tab ul li span {width: 20px;height: 20px;}
