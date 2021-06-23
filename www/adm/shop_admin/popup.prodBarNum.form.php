@@ -68,7 +68,7 @@ if($od["od_b_tel"]) {
     body { padding-top: 60px; padding-bottom: 70px; }
     a { text-decoration: none; color: inherit; }
     ul, li { list-style: none; }
-    button { border: 0; font-family: "Noto Sans KR", sans-serif; }
+    button { border: 0; font-family: "Noto Sans KR", sans-serif; cursor: pointer;}
     input { font-family: "Noto Sans KR", sans-serif;  }
 
     /* 고정 상단 */
