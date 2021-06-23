@@ -1221,6 +1221,11 @@ table.list-table-style .drop_multi_sub a:after {
     border-top: 1px solid #dddddd;
     height: 75px;
 }
+#samhwa_order_form>.block .item_list table tr.top-border .btncol .more{
+	position:relative;
+}
+
+
 #samhwa_order_form>.block .item_list table tr.result td {
     background-color:#ddd;
     height:30px;
@@ -1327,7 +1332,7 @@ table.list-table-style .drop_multi_sub a:after {
     display:block;
     text-align:left;
     width:80px;
-    top:50px;
+    top:20px;
 }
 #samhwa_order_form>.block .item_list table td.item_outsourcing {
     text-align:left;
