@@ -663,7 +663,7 @@ function get_recipient_links($mb_id) {
       OR
       ( rl_state = 'wait' or rl_state = 'request' )
       )
-    ORDER BY r.rl_id desc
+    ORDER BY r.updated_at desc
   ");
 
   while($row = sql_fetch_array($result)) {
