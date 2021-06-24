@@ -49,6 +49,8 @@ if ($b_end_page > $total_page){
 }
 $total_block = ceil($total_page/$b_pageNum_listCnt);
 
+// 수급자 연결
+$links = get_recipient_links($member['mb_id']);
 ?>
 <script>
 function excelform(url){
@@ -59,14 +61,25 @@ function excelform(url){
 </script>
 
 <style>
-.no_content{
-  width:100%; padding: 50px 0; text-align:center;
+.no_content { width:100%; padding: 50px 0; text-align:center; }
+#myRecipientListWrap > .titleWrap > .link_notice_wrap {
+  position: absolute; top:-20px; right:0; font-weight: normal !important; font-size: 16px; line-height: 20px; height: 60px; padding: 20px 40px; text-align: center;
+  color: #fff; background-color: #ee8102; border-radius: 8px;
+}
+@media (max-width: 960px) {
+  #myRecipientListWrap > .titleWrap > .link_notice_wrap {
+    position: static; margin-bottom: 20px;
+  }
 }
 </style>
 
 <!-- 210204 수급자목록 -->
 <div id="myRecipientListWrap">
   <div class="titleWrap" style="margin-bottom:10px;">
+    <div class="link_notice_wrap">
+      <i class="fa fa-bell-o" aria-hidden="true"></i>
+      신규 수급자(<?=get_text($links[0]['rl_pen_name'])?>) 추천되었습니다.
+    </div>
     수급자관리
   </div>
 
@@ -274,7 +287,6 @@ function excelform(url){
   </div>
 
   <?php
-  $links = get_recipient_links($member['mb_id']);
   if($links) {
   ?>
   <div class="titleWrap" style="margin-bottom:10px;">

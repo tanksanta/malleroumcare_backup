@@ -176,7 +176,7 @@ function frecipient_link_submit()
     f.rl_zip.focus();
     return false;
   }
-  if(!f.rl_pen_pro_name.value){
+  /*if(!f.rl_pen_pro_name.value){
     alert('보호자명을 입력하세요.');
     f.rl_pen_pro_name.focus();
     return false;
@@ -185,7 +185,7 @@ function frecipient_link_submit()
     alert('보호자 연락처를 입력하세요.');
     f.rl_pen_pro_hp1.focus();
     return false;
-  }
+  }*/
 
   f.submit();
 

@@ -71,4 +71,4 @@ else if ($w == 'u')
   ");
 }
 
-alert('저장되었습니다.', './recipient_link_form.php?'.$qstr.'&amp;w=u&amp;rl_id='.$rl_id, false);
+alert('저장되었습니다.', './recipient_link_view.php?rl_id='.$rl_id, false);

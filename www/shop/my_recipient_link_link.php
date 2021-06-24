@@ -21,7 +21,7 @@
       </div>
       <div class="row">
         <div class="col-sm-2">·인정정보</div>
-        <div class="col-sm-10"><?=$rl['rl_pen_ltm_num'] ?: '예비수급자'?></div>
+        <div class="col-sm-10"><?=$rl['rl_pen_ltm_num'] ? 'L'.$rl['rl_pen_ltm_num'] : '예비수급자'?></div>
       </div>
       <div class="row">
         <div class="col-sm-2">·보호자정보</div>

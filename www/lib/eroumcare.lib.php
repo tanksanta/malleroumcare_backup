@@ -657,9 +657,12 @@ function get_recipient_links($mb_id) {
     SELECT * FROM recipient_link_rel r
     LEFT JOIN recipient_link l ON r.rl_id = l.rl_id
     WHERE mb_id = '$mb_id'
-    AND rl_ent_mb_id = '$mb_id'
-    AND status <> 'wait'
     AND status <> 'done'
+    AND (
+      ( rl_state = 'link' and rl_ent_mb_id = '$mb_id' )
+      OR
+      ( rl_state = 'wait' or rl_state = 'request' )
+      )
     ORDER BY r.rl_id desc
   ");
 
