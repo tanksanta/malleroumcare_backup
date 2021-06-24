@@ -33,10 +33,12 @@ if ($rl_state && count($rl_state) >= count($recipient_link_state)) {
 }
 
 if ($rl_state) {
+  $sql_state = ' 1 != 1 ';
   foreach($rl_state as $state) {
     if (!$recipient_link_state[$state]) continue;
-    $sql_search .= " and rl_state = '{$state}'";
+    $sql_state .= " or rl_state = '{$state}' ";
   }
+  $sql_search .= " and ($sql_state) ";
 }
 
 $sql_common = " from recipient_link as rl WHERE 1=1 ";
@@ -136,7 +138,7 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
     <td headers="th_id" class="td_num"><?php echo $row['rl_id']; ?></td>
     <td headers="th_info">
       <?php echo get_text($row['rl_pen_name']); ?>
-      <?php echo $row['rl_ltm'] ? '(' . $row['rl_ltm'] . ')' : ''; ?>
+      <?php echo $row['rl_pen_ltm_num'] ? '(L' . $row['rl_pen_ltm_num'] . ')' : ''; ?>
     </td>
     <td headers="th_address">
       <?php echo get_text($row['rl_pen_addr1']); ?>

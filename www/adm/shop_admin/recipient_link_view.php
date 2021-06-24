@@ -115,8 +115,8 @@ if($sel_field && $search)
         <th scope="row">인정정보</th>
         <td>
           <?php
-          if($rl['rl_ltm']) {
-            echo "{$rl['rl_ltm']}";
+          if($rl['rl_pen_ltm_num']) {
+            echo "L{$rl['rl_pen_ltm_num']}";
           } else {
             echo '예비수급자';
           }
@@ -274,10 +274,14 @@ if($sel_field && $search)
           ?>
           <button class="btn btn_03 btn_request" data-id="<?=$row['mb_id']?>">요청하기</button>
           <?php
-          } else {
+          } else if($link['status'] == 'request') {
           ?>
           <button class="btn btn_01 btn_cancel" data-id="<?=$row['mb_id']?>">요청취소</button>
           <?php
+          } else if($link['status'] == 'link') {
+            echo '연결완료';
+          } else if($link['status'] == 'done') {
+            echo '등록완료';
           }
           ?>
         </td>

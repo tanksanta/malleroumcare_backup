@@ -59,6 +59,9 @@ define('G5_PHPMAILER_DIR',  'PHPMailer');
 define('G5_SESSION_DIR',    'session');
 define('G5_THEME_DIR',      'theme');
 
+// 구글 파이어베이스 API
+define('GOOGLE_API_KEY', 'AAAAx6iZn-E:APA91bF0R-XCX6x5f9t7jBsuzDi7QqQ20L9ky1r-occvv8FdI47D8xD1oeVOt_AQmK1Axfp3H_-yTD4DzmxX5fFVlizXr1TT6fqERpAiEzwXHBnkMvVd6pX3XYHWYriKQGdWN5vbpOB4');
+
 // 이로움 API 
 define('EROUMCARE_API_PORT',                                     9901);
 // 15 재고 상세 목록
@@ -73,6 +76,8 @@ define('EROUMCARE_API_PROD_INSERT',                              'https://system
 define('EROUMCARE_API_PROD_UPDATE',                              'https://system.eroumcare.com/api/prod/update');
 // 수급자 등록
 define('EROUMCARE_API_RECIPIENT_INSERT',                         'https://system.eroumcare.com/api/recipient/insert');
+// 수급자 업데이트
+define('EROUMCARE_API_RECIPIENT_UPDATE',                         'https://system.eroumcare.com/api/recipient/update');
 // 수급자 조회
 define('EROUMCARE_API_RECIPIENT_SELECTLIST',                     'https://system.eroumcare.com/api/recipient/selectList');
 // 수급자별 품목 조회

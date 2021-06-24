@@ -18,6 +18,13 @@ $ent = get_member($mb_id);
 if(!$ent)
   json_response(500, '존재하지 않는 사업소 회원입니다.');
 
+if($rl['rl_state'] != 'wait')
+  json_response(500, '연결할 수 없는 상태의 수급자입니다.');
+
+// 예비수급자 연결 일단 막아놓음
+if(!$rl['rl_pen_ltm_num'])
+  json_response(500, '현재 예비수급자는 사업소에 연결할 수 없습니다.');
+
 $link = get_recipient_link($rl_id, $mb_id);
 $timestamp = time();
 $datetime = date('Y-m-d H:i:s', $timestamp);
@@ -25,11 +32,16 @@ $datetime = date('Y-m-d H:i:s', $timestamp);
 if($w == 'd') { // 요청취소
   if(!$link || $link['status'] == 'wait')
     json_response(500, '취소할 연결요청이 없습니다.');
+  
+  if($link['status'] != 'request')
+    json_response(500, '사업소와 연결이 된 수급자는 취소할 수 없습니다.');
+
   sql_query("
     DELETE FROM `recipient_link_rel`
     WHERE rl_id = '$rl_id'
     AND mb_id = '$mb_id'
   ");
+
   json_response(200, 'OK');
 }
 

@@ -314,6 +314,15 @@ scrollToTop();
 				<?php } ?>	
 			</div>
 
+      <div class="top_left_area">
+        <div class="search">
+					<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
+            <img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.png" >
+						<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
+						<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search"/>
+					</form>
+				</div>
+      </div>
 			<div class="top_right_area">
 				<div class="link_area">
                     <?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")){ ?>
@@ -347,14 +356,6 @@ scrollToTop();
                             <a href="https://signstand.co.kr/shop/list.php?ca_id=10">기업전용</a>
                         <?php } ?> -->
 				</div>
-
-				<!-- <div class="search">
-					<form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
-						<input type="hidden" name="url"	value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
-						<input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search" placeholder="Search"/>
-						<a href="#"><img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.png" ></a>
-					</form>
-				</div> -->
 			</div>
 			
 			<script type="text/javascript" charset="utf-8">
