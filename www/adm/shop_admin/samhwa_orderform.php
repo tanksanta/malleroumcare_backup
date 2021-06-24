@@ -477,7 +477,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 	                                                        [옵션] <?php echo $options[$k]['ct_option']; ?>
 	                                                    <?php } ?>
 	                                                    <?php if($carts[$i]["ct_stock_qty"]){ ?>
-	                                                    	<p style="color: #DC3333;">* <?=$$options[$k]["ct_stock_qty"]?>개 재고소진</p>
+	                                                    	<p style="color: #DC3333;">* <?=$options[$k]["ct_stock_qty"]?>개 재고소진</p>
 	                                                    <?php } ?>
 														<?php
 														  if($od['od_writer']=="openmarket"){
