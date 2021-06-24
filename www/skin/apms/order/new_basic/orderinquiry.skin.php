@@ -327,7 +327,7 @@ if($header_skin)
                                     <?php
                                     // 바코드 5개 미리보기
                                     $stoId_arr = array(
-                                            'stoId' => str_replace(',', '|', $row['stoId'])
+                                            'stoId' => $item['stoId']
                                     );
                                     $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $stoId_arr);
                                     
