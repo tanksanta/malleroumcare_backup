@@ -292,9 +292,6 @@ function excelform(url){
   <div class="titleWrap" style="margin-bottom:10px;">
     대기중인 수급자관리
   </div>
-  <!--<div class="no_content">
-    내용이 없습니다
-  </div>-->
   <div class="list_box pc">
     <div class="table_box">  
       <table id="tb_links">
@@ -317,7 +314,7 @@ function excelform(url){
           <tr data-id="<?=$rl['rl_id']?>">
             <td><?=count($links) - $i?></td>
             <td style="text-align:center;"><?=get_text($rl['rl_pen_name'])?></td>
-            <td style="text-align:center;"><?=get_text($rl['rl_pen_ltm_num']) ?: '예비'?></td>
+            <td style="text-align:center;"><?=$rl['rl_pen_ltm_num'] ? get_text('L'.$rl['rl_pen_ltm_num']) : '예비'?></td>
             <td style="max-width:300px;width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
               <?=get_text($rl['rl_pen_addr1'])?>
               <?=get_text($rl['rl_pen_addr2'])?>
@@ -343,12 +340,55 @@ function excelform(url){
       </table>
     </div>
   </div>
+  <div class="list_box mobile">
+    <ul id="ul_links" class="li_box">
+      <?php
+      for($i = 0; $i < count($links); $i++) {
+        $rl = $links[$i];
+      ?>
+      <li data-id="<?=$rl['rl_id']?>">
+        <div class="info">
+          <b>
+            <?=get_text($rl['rl_pen_name'])?>
+          </b>
+          <?php if ($rl['rl_pen_pro_name']) { ?>
+          <span class="li_box_protector">
+            * 보호자(<?=get_text($rl['rl_pen_pro_name'])?> / <?=get_text($rl['rl_pen_pro_hp'])?>)
+          </span>
+          <?php } ?>
+          <p>
+            <?=$rl['rl_pen_ltm_num'] ? get_text('L'.$rl['rl_pen_ltm_num']) : '예비'?>
+          </p>
+          <p>
+            <b>
+              <?=get_text($rl['rl_pen_addr1'])?>
+              <?=get_text($rl['rl_pen_addr2'])?>
+              <?=get_text($rl['rl_pen_addr3'])?>
+            </b>
+          </p>
+          <p>
+            <b>연결일시: </b>
+            <span style="font-size:0.9em;">
+              <?php
+              if($rl['status'] == 'request') {
+                echo '미연결';
+              } else {
+                echo date('Y-m-d', strtotime($rl['updated_at']));
+              }
+              ?>
+            </span>
+          </p>
+        </div>
+      </li>
+      <?php } ?>
+    </ul>
+  </div>
   <div id="popup_recipient_link">
     <div></div>
   </div>
   <style>
-  #tb_links td { cursor: pointer }
-  #tb_links tr:hover, #tb_links tr:active { background-color: #f5f5f5; }
+  #tb_links td, #ul_links li { cursor: pointer }
+  #tb_links tr:hover, #tb_links tr:active, #ul_links li:hover, #ul_links li:active { background-color: #f5f5f5; }
   #popup_recipient_link { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
   #popup_recipient_link > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
   #popup_recipient_link iframe { position: relative; width: 1024px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -512px; }
@@ -366,6 +406,16 @@ function excelform(url){
 
     $('#tb_links td').click(function(e) {
       var rl_id = $(this).closest('tr').data('id');
+      $("#popup_recipient_link > div").html("<iframe src='my_recipient_link.php?rl_id="+rl_id+"'>");
+      $("#popup_recipient_link iframe").removeClass('mini');
+      $("#popup_recipient_link iframe").load(function() {
+        $("body").addClass('modal-open');
+        $("#popup_recipient_link").show();
+      });
+    });
+
+    $('#ul_links li').click(function(e) {
+      var rl_id = $(this).data('id');
       $("#popup_recipient_link > div").html("<iframe src='my_recipient_link.php?rl_id="+rl_id+"'>");
       $("#popup_recipient_link iframe").removeClass('mini');
       $("#popup_recipient_link iframe").load(function() {
