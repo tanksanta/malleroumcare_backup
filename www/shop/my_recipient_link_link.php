@@ -6,6 +6,11 @@
     </div>
   </div>
   <div class="popupContentWrap">
+    <?php if($link['status'] == 'link') { ?>
+    <div class="link_info_wrap" style="color: #8a9600; font-weight: 500; border: 1px solid #c4d225; border-radius: 8px; font-size: 16px; text-align: center; padding: 20px 0; margin-bottom: 20px;">
+      영업 활동 시작 : <?=date('Y-m-d', strtotime($link['updated_at']))?> <span style="color: #727272; font-size: 12px;">(+3일 후 자동 연결취소됨)</span>
+    </div>
+    <?php } ?>
     <div class="pen_info_wrap">
       <div class="row">
         <div class="col-sm-2">·수급자명</div>
