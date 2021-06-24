@@ -33,10 +33,12 @@ if ($rl_state && count($rl_state) >= count($recipient_link_state)) {
 }
 
 if ($rl_state) {
+  $sql_state = ' 1 != 1 ';
   foreach($rl_state as $state) {
     if (!$recipient_link_state[$state]) continue;
-    $sql_search .= " and rl_state = '{$state}'";
+    $sql_state .= " or rl_state = '{$state}' ";
   }
+  $sql_search .= " and ($sql_state) ";
 }
 
 $sql_common = " from recipient_link as rl WHERE 1=1 ";
