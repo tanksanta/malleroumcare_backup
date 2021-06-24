@@ -41,9 +41,9 @@ $address = "{$rl['rl_pen_addr1']} {$rl['rl_pen_addr2']} {$rl['rl_pen_addr3']}";
 </head>
 <body>
 <?php
-if($link['status'] == 'request')
+if($link['status'] == 'request' || ($link['status'] == 'link' && $m != 'r'))
   require_once('./my_recipient_link_link.php');
-if($link['status'] == 'link')
+if($link['status'] == 'link' && $m == 'r')
   require_once('./my_recipient_link_register.php');
 ?>
 <script>

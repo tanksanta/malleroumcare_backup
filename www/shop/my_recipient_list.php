@@ -340,8 +340,9 @@ function excelform(url){
   #popup_recipient_link { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
   #popup_recipient_link > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
   #popup_recipient_link iframe { position: relative; width: 1024px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -512px; }
+  #popup_recipient_link iframe.mini { width: 600px; margin-left: -300px; }
   @media (max-width : 1240px){
-    #popup_recipient_link iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+    #popup_recipient_link iframe, #popup_recipient_link iframe.mini { width: 100%; height: 100%; left: 0; margin-left: 0; }
   }
   </style>
   <script>
@@ -354,7 +355,8 @@ function excelform(url){
     $('#tb_links td').click(function(e) {
       var rl_id = $(this).closest('tr').data('id');
       $("#popup_recipient_link > div").html("<iframe src='my_recipient_link.php?rl_id="+rl_id+"'>");
-      $("#popup_recipient_link iframe").load(function(){
+      $("#popup_recipient_link iframe").removeClass('mini');
+      $("#popup_recipient_link iframe").load(function() {
         $("body").addClass('modal-open');
         $("#popup_recipient_link").show();
       });

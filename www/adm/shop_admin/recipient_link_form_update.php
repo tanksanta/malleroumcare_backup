@@ -14,7 +14,7 @@ $rl_pen_name = isset($_POST['rl_pen_name']) ? trim(strip_tags($rl_pen_name)) : '
 
 $mb_email = isset($_POST['mb_email']) ? get_email_address(trim($_POST['mb_email'])) : '';
 
-$rl_ltm = $recipient === 'on' ? trim($rl_ltm) : null;
+$rl_pen_ltm_num = $recipient === 'on' ? trim($rl_pen_ltm_num) : null;
 
 $rl_pen_hp = $_POST['rl_pen_hp1']."-".$_POST['rl_pen_hp2']."-".$_POST['rl_pen_hp3'];
 $rl_pen_pro_hp = $_POST['rl_pen_pro_hp1']."-".$_POST['rl_pen_pro_hp2']."-".$_POST['rl_pen_pro_hp3'];
@@ -40,10 +40,10 @@ $sql_common = "
 ";
 
 // 수급자 번호 없으면 예비수급자
-if ($rl_ltm) {
-  $sql_common .= "rl_ltm = 'L{$rl_ltm}'";
+if ($rl_pen_ltm_num) {
+  $sql_common .= "rl_pen_ltm_num = '{$rl_pen_ltm_num}'";
 } else {
-  $sql_common .= "rl_ltm = NULL";
+  $sql_common .= "rl_pen_ltm_num = NULL";
 }
 
 if ($w == '')

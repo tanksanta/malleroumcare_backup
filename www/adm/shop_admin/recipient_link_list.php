@@ -136,7 +136,7 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
     <td headers="th_id" class="td_num"><?php echo $row['rl_id']; ?></td>
     <td headers="th_info">
       <?php echo get_text($row['rl_pen_name']); ?>
-      <?php echo $row['rl_ltm'] ? '(' . $row['rl_ltm'] . ')' : ''; ?>
+      <?php echo $row['rl_pen_ltm_num'] ? '(L' . $row['rl_pen_ltm_num'] . ')' : ''; ?>
     </td>
     <td headers="th_address">
       <?php echo get_text($row['rl_pen_addr1']); ?>

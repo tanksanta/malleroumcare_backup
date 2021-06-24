@@ -24,8 +24,8 @@ else
 
 
 // 인정정보
-$recipient_yes    =  $rl['rl_ltm']     ? 'checked="checked"' : '';
-$recipient_no     = !$rl['rl_ltm']     ? 'checked="checked"' : '';
+$recipient_yes    =  $rl['rl_pen_ltm_num']     ? 'checked="checked"' : '';
+$recipient_no     = !$rl['rl_pen_ltm_num']     ? 'checked="checked"' : '';
 
 $g5['title'] .= '수급자 연결 '.$html_title;
 include_once (G5_ADMIN_PATH.'/admin.head.php');
@@ -100,7 +100,7 @@ label {
       <label for="recipient_no">예비수급자</label>
       <input type="radio" name="recipient" id="recipient_yes" value="on" <?php echo $recipient_yes; ?>>
       <label for="recipient_yes">수급자정보:</label>
-      L <input type="text" name="rl_ltm" value="<?php echo $rl['rl_ltm'] ?>" id="rl_ltm" class="frm_input" size="15" maxlength="20">
+      L <input type="text" name="rl_pen_ltm_num" value="<?php echo $rl['rl_pen_ltm_num'] ?>" id="rl_pen_ltm_num" class="frm_input" size="15" maxlength="20">
     </td>
   </tr>
   <tr>
@@ -193,9 +193,9 @@ function frecipient_link_submit()
 }
 $(function() {
   $('#recipient_no').click(function() {
-    $('#rl_ltm').val('');
+    $('#rl_pen_ltm_num').val('');
   })
-  $('#rl_ltm').click(function() {
+  $('#rl_pen_ltm_num').click(function() {
     $("input:radio[name='recipient']:radio[value='on']").prop('checked', true);
   })
 

@@ -46,13 +46,24 @@
   </div>
   </div>
   <div class="popupFootWrap flex">
+    <?php if($link['status'] == 'request') { ?>
     <button id="btnSubmitEform">활동시작</button>
+    <?php } else if($link['status'] == 'link') { ?>
+    <button id="btnSubmitEform" style="background-color:#c0cf16;">수급자등록</button>
+    <?php } ?>
     <button id="btnCancelEform">연결취소</button>
   </div>
 </div>
 
 <script>
   $(function() {
+    <?php if($link['status'] == 'link') { ?>
+    // 수급자등록 버튼 클릭
+    $('#btnSubmitEform').click(function() {
+      $("#popup_recipient_link", window.parent.document).find("iframe").addClass('mini')
+      .attr('src', 'my_recipient_link.php?rl_id=<?=urlencode($rl_id)?>&m=r');
+    });
+    <?php } else if($link['status'] == 'request') { ?>
     // 활동시작 버튼 클릭
     $('#btnSubmitEform').click(function() {
       if(confirm('수급자 영업활동을 시작하시겠습니까?')) {
@@ -69,6 +80,7 @@
         });
       }
     });
+    <?php } ?>
 
     // 연결취소 버튼 클릭
     $('#btnCancelEform').click(function() {
