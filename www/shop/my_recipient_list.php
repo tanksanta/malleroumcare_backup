@@ -76,10 +76,12 @@ function excelform(url){
 <!-- 210204 수급자목록 -->
 <div id="myRecipientListWrap">
   <div class="titleWrap" style="margin-bottom:10px;">
+    <?php if($links) { ?>
     <div class="link_notice_wrap">
       <i class="fa fa-bell-o" aria-hidden="true"></i>
       신규 수급자(<?=get_text($links[0]['rl_pen_name'])?>) 추천되었습니다.
     </div>
+    <?php } ?>
     수급자관리
   </div>
 
