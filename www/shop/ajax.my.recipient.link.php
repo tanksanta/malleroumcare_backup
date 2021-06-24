@@ -8,7 +8,7 @@ $rl_id = $_POST['rl_id'];
 
 $link = get_recipient_link($rl_id, $member['mb_id']);
 if(!$link || $link['status'] == 'wait')
-  alert('유효하지 않은 요청입니다.');
+  json_response(400, '유효하지 않은 요청입니다.');
 
 $rl = sql_fetch("
   SELECT * FROM `recipient_link`
@@ -69,6 +69,68 @@ if($w == 's') {
     WHERE mb_id = '{$member['mb_id']}'
     AND rl_id = '$rl_id'
   ");
+  json_response(200, 'OK');
+}
+
+if($w == 'r') {
+  // 수급자등록 요청
+  if($link['status'] != 'link')
+    json_response(500, '수급자와 연결상태가 아닙니다.');
+
+  $data = array(
+    'penNm' => get_search_string($rl['rl_pen_name']),
+    'penAddr' => get_search_string($rl['rl_pen_addr1']),
+    'penAddrDtl' => get_search_string($rl['rl_pen_addr1'].$rl['rl_pen_addr2']),
+    'penZip' => get_search_string($rl['rl_pen_zip1'].$rl['rl_pen_zip2']),
+    'penBirth' => $_POST['penBirth'],
+    'penLtmNum' => get_search_string($rl['rl_pen_ltm_num']),
+    'penRecGraCd' => $_POST['penRecGraCd'],
+    'penTypeCd' => $_POST['penTypeCd'],
+    'penGender' => $_POST['penGender'],
+    'penConNum' => get_search_string($rl['rl_pen_hp']),
+    'entId' => $member["mb_entId"],
+    'entUsrId' => $member['mb_giup_boss_name'],
+    'appCd' => '01',
+    'usrId' => $member["mb_id"]
+  );
+
+  $proData = array(
+    'penProNm' => get_search_string($rl['rl_pen_pro_name']),
+    'penProRel' => $rl['rl_pen_pro_type'],
+    'penProRelEtc' => get_search_string($rl['rl_pen_pro_type_etc']),
+    'penProConNum' => get_search_string($rl['rl_pen_pro_hp'])
+  );
+
+  // 보호자가 있으면
+  if($proData['penProNm'])
+    $data = array_merge($data, $proData);
+
+  // 필드 무결성 체크
+  $valid = valid_recipient_input($data);
+  if($valid)
+    json_response(400, $valid);
+
+  // 필드 정규화
+  $data = normalize_recipient_input($data);
+
+  $result = api_post_call(EROUMCARE_API_RECIPIENT_INSERT, $data);
+  if(!$result || $result['errorYN'] == 'Y')
+    json_response(500, '오류 발생: '.$result['message']);
+  
+  sql_query("
+    UPDATE `recipient_link` SET
+    rl_state = 'done',
+    rl_updated_at = '$datetime'
+    WHERE rl_id = '$rl_id'
+  ");
+  sql_query("
+    UPDATE `recipient_link_rel` SET
+    status = 'done',
+    updated_at = '$datetime'
+    WHERE mb_id = '{$member['mb_id']}'
+    AND rl_id = '$rl_id'
+  ");
+
   json_response(200, 'OK');
 }
 ?>

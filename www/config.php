@@ -73,6 +73,8 @@ define('EROUMCARE_API_PROD_INSERT',                              'https://system
 define('EROUMCARE_API_PROD_UPDATE',                              'https://system.eroumcare.com/api/prod/update');
 // 수급자 등록
 define('EROUMCARE_API_RECIPIENT_INSERT',                         'https://system.eroumcare.com/api/recipient/insert');
+// 수급자 업데이트
+define('EROUMCARE_API_RECIPIENT_UPDATE',                         'https://system.eroumcare.com/api/recipient/update');
 // 수급자 조회
 define('EROUMCARE_API_RECIPIENT_SELECTLIST',                     'https://system.eroumcare.com/api/recipient/selectList');
 // 수급자별 품목 조회

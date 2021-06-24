@@ -507,7 +507,7 @@ $recipient_link_state = array(
 	'wait' => '대기',
 	'request' => '요청',
 	'link' => '연결',
-	'register' => '등록',
+	'done' => '등록',
 );
 
 function get_recipient($penId) {
@@ -657,7 +657,9 @@ function get_recipient_links($mb_id) {
     SELECT * FROM recipient_link_rel r
     LEFT JOIN recipient_link l ON r.rl_id = l.rl_id
     WHERE mb_id = '$mb_id'
+    AND rl_ent_mb_id = '$mb_id'
     AND status <> 'wait'
+    AND status <> 'done'
     ORDER BY r.rl_id desc
   ");
 

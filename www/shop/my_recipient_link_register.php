@@ -17,7 +17,10 @@
         <li><span style="color: red">*수급자 연결 완료는 수급자 수락 이후 진행해주세요.</span></li>
       </ul>
     </div>
-    <form action="">
+    <form id="form_register">
+      <input type="hidden" name="w" value="r">
+      <input type="hidden" name="rl_id" value="<?=$rl['rl_id']?>">
+      <input type="hidden" name="penBirth" value="">
       <label for="chk_agreement">
         <input type="checkbox" name="chk_agreement" id="chk_agreement"> 확인함
       </label>
@@ -89,30 +92,35 @@
 </div>
 
 <script>
+
 $(function() {
+  // 수급자 등록 시
+  $('#form_register').on('submit', function(e) {
+    e.preventDefault();
+
+    if(!$('#chk_agreement').prop('checked'))
+      return alert('알림사항을 확인 후 \'확인함\'에 체크해주세요.');
+
+    var params = $(this).serialize();
+    $.post('./ajax.my.recipient.link.php', params, 'json')
+    .done(function() {
+      alert('수급자 등록이 완료되었습니다.');
+      window.parent.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  // 생년월일 변경시
+  $('#year, #month, #day').change(function() {
+    $('input[name=penBirth]').val(
+      $('#year').val() + '-' + $('#month').val() + '-' + $('#day').val()
+    );
+  });
+
   setDateBox();
-
-  // 수급자등록 버튼 클릭
-  $('#btnSubmitEform').click(function() {
-  });
-
-  // 연결취소 버튼 클릭
-  $('#btnCancelEform').click(function() {
-    if(confirm('수급자와 연결을 취소하시겠습니까?')) {
-      $.post('./ajax.my.recipient.link.php', {
-        rl_id: '<?=get_text($rl_id)?>',
-        w: 'd'
-      }, 'json')
-      .done(function() {
-        alert('수급자 연결요청이 취소되었습니다.');
-        window.parent.location.reload();
-      })
-      .fail(function($xhr) {
-        var data = $xhr.responseJSON;
-        alert(data && data.message);
-      });
-    }
-  });
 });
 
 //생년월일

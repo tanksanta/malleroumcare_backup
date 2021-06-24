@@ -279,7 +279,7 @@ if($sel_field && $search)
           <button class="btn btn_01 btn_cancel" data-id="<?=$row['mb_id']?>">요청취소</button>
           <?php
           } else if($link['status'] == 'link') {
-            echo '연결됨';
+            echo '연결완료';
           } else if($link['status'] == 'done') {
             echo '등록완료';
           }
