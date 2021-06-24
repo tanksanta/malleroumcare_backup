@@ -83,7 +83,7 @@ if($w == 'r') {
     'penAddrDtl' => get_search_string($rl['rl_pen_addr1'].$rl['rl_pen_addr2']),
     'penZip' => get_search_string($rl['rl_pen_zip1'].$rl['rl_pen_zip2']),
     'penBirth' => $_POST['penBirth'],
-    'penLtmNum' => get_search_string($rl['rl_pen_ltm_num']),
+    'penLtmNum' => $_POST['penLtmNum'] ?  get_search_string($_POST['penLtmNum']) : get_search_string($rl['rl_pen_ltm_num']),
     'penRecGraCd' => $_POST['penRecGraCd'],
     'penTypeCd' => $_POST['penTypeCd'],
     'penGender' => $_POST['penGender'],

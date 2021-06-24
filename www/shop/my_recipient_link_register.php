@@ -54,7 +54,7 @@
           <div class="col-sm-2">·장기요양인정번호</div>
           <div class="col-sm-3">
             <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
-						<input type="number" maxlength="10" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=$rl['rl_pen_ltm_num']?>" disabled>
+						<input type="number" maxlength="10" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" <?php if($rl['rl_pen_ltm_num']) { ?> value="<?=$rl['rl_pen_ltm_num']?>" disabled <?php } ?>>
           </div>
         </div>
         <div class="row">

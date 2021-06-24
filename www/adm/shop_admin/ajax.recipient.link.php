@@ -21,10 +21,6 @@ if(!$ent)
 if($rl['rl_state'] != 'wait')
   json_response(500, '연결할 수 없는 상태의 수급자입니다.');
 
-// 예비수급자 연결 일단 막아놓음
-if(!$rl['rl_pen_ltm_num'])
-  json_response(500, '현재 예비수급자는 사업소에 연결할 수 없습니다.');
-
 $link = get_recipient_link($rl_id, $mb_id);
 $timestamp = time();
 $datetime = date('Y-m-d H:i:s', $timestamp);
