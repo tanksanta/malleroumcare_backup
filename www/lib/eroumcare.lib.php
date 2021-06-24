@@ -669,3 +669,162 @@ function get_recipient_links($mb_id) {
 
   return $res;
 }
+
+function send_notification($registration_ids, $notification)
+{
+    $registration_ids = array_values($registration_ids);
+
+    $url = 'https://fcm.googleapis.com/fcm/send';
+    $fields = array(
+        'registration_ids' => $registration_ids,
+        'notification' => $notification
+    );
+
+    $headers = array(
+        'Authorization:key =' . GOOGLE_API_KEY,
+        'Content-Type: application/json'
+    );
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+    $result = curl_exec($ch);
+    if ($result === FALSE) {
+        die('Curl failed: ' . curl_error($ch));
+    }
+    curl_close($ch);
+    return $result;
+}
+
+function send_notification_link($registration_ids, $notification, $link = '')
+{
+    $registration_ids = array_values($registration_ids);
+
+    $url = 'https://fcm.googleapis.com/fcm/send';
+    $fields = array(
+        'registration_ids' => $registration_ids, // token ids
+        'notification' => $notification, // 제목, 내용
+        'data' => array(
+            'link' => $link // 링크
+        )
+    );
+
+    $headers = array(
+        'Authorization:key =' . GOOGLE_API_KEY,
+        'Content-Type: application/json'
+    );
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+    $result = curl_exec($ch);
+    if ($result === FALSE) {
+        die('Curl failed: ' . curl_error($ch));
+    }
+    curl_close($ch);
+    return $result;
+}
+
+function add_fcmtoken($fcm_token) {
+  global $member;
+
+  if (!$fcm_token || $fcm_token == 'null') {
+    return;
+  }
+
+  $sql = "SELECT * FROM g5_firebase WHERE fcm_token = '{$fcm_token}'";
+  $mb_fcm = sql_fetch($sql);
+
+  // if ($mb_fcm['fcm_id'] && $member['mb_id'] && $mb_fcm['mb_id'] != $member['mb_id']) {
+  if ($mb_fcm['fcm_id'] && $member['mb_id']) {
+      $sql = "UPDATE g5_firebase SET mb_id = '{$member['mb_id']}' WHERE fcm_token = '{$fcm_token}'";
+      sql_query($sql);
+  }
+
+  if(!$mb_fcm['fcm_id']) {
+    $sql = " insert into `g5_firebase`
+      set fcm_token = '$fcm_token' 
+    ";
+
+    if($member['mb_id']) {
+      $sql .= ", mb_id = '{$member['mb_id']}'";
+    }
+    sql_query($sql);
+  }
+}
+
+function cancel_notification($uid) {
+  if (!$uid) return false;
+  $sql = "UPDATE g5_firebase_push SET fp_state = 3 WHERE fp_uid = '{$uid}' AND fp_state = 0";
+  sql_query($sql);
+  return true;
+}
+
+function add_notification($ids, $mb_ids= array(), $title, $body, $link='', $date='', $uid='') {
+  if (!$ids) {
+    $ids = array();
+  }
+  if (!$mb_ids) {
+    $mb_ids = array();
+  }
+  if (!is_array($ids)) {
+    $ids = array($ids);
+  }
+  if (!is_array($mb_ids)) {
+    $mb_ids = array($mb_ids);
+  }
+  if (!count($ids) && !count($mb_ids)) {
+    return false;
+  }
+
+  $json_ids = json_encode($ids);
+  $json_mb_ids = json_encode($mb_ids);
+
+  $sql = "INSERT INTO g5_firebase_push SET 
+    fp_ids = '{$json_ids}',
+    fp_mb_ids = '{$json_mb_ids}',
+    fp_title = '{$title}',
+    fp_body = '{$body}'
+  ";
+
+  if ($link) {
+    $sql .= ", fp_link = '{$link}'";
+  }
+
+  if ($date) {
+    $sql .= ", fp_date = '{$date}'";
+  }
+
+  if ($uid) {
+    $sql .= ", fp_uid = '{$uid}'";
+  }
+
+  sql_query($sql);
+  return true;
+}
+
+function get_token_by_id($mb_id) {
+
+  if (!$mb_id) return array();
+
+  $sql = "SELECT fcm_token FROM g5_firebase WHERE mb_id = '{$mb_id}'";
+  $result = sql_query($sql);
+
+  $tokens = array();
+
+  while ($row = sql_fetch_array($result)) {
+    $tokens[] = $row['fcm_token'];
+  }
+
+  return $tokens;
+}

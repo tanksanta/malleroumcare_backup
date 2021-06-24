@@ -59,6 +59,9 @@ define('G5_PHPMAILER_DIR',  'PHPMailer');
 define('G5_SESSION_DIR',    'session');
 define('G5_THEME_DIR',      'theme');
 
+// 구글 파이어베이스 API
+define('GOOGLE_API_KEY', 'AAAAx6iZn-E:APA91bF0R-XCX6x5f9t7jBsuzDi7QqQ20L9ky1r-occvv8FdI47D8xD1oeVOt_AQmK1Axfp3H_-yTD4DzmxX5fFVlizXr1TT6fqERpAiEzwXHBnkMvVd6pX3XYHWYriKQGdWN5vbpOB4');
+
 // 이로움 API 
 define('EROUMCARE_API_PORT',                                     9901);
 // 15 재고 상세 목록
