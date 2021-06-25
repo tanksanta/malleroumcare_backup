@@ -9,6 +9,7 @@ if(!$is_member){
 }
 
 $rows = 5;
+
 $page = $_GET["page"] ?? 1;
 
 $send_data = [];
@@ -25,7 +26,6 @@ if ($sel_field === 'penLtmNum') {
 if ($sel_field === 'penProNm') {
   $send_data['penProNm'] = $search;
 }
-
 $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
 
 $list = [];
@@ -37,6 +37,29 @@ if($res["data"]) {
 $total_count = $res["total"];
 $total_page = ceil( $total_count / $rows ); # 총 페이지
 $write_pages = 5; # 한 블록에 보여줄 페이지 갯수 5개
+
+
+// 예비 수급자
+$page_spare = $_GET["page_spare"] ?? 1;
+$send_data = [];
+$send_data["usrId"] = $member["mb_id"];
+$send_data["entId"] = $member["mb_entId"];
+$send_data["pageNum"] = $page_spare;
+$send_data["pageSize"] = $rows;
+if ($sel_field === 'penNm') {
+  $send_data['penNm'] = $search;
+}
+if ($sel_field === 'penProNm') {
+  $send_data['penProNm'] = $search;
+}
+$res = get_eroumcare(EROUMCARE_API_SPARE_RECIPIENT_SELECTLIST, $send_data);
+$list_spare = [];
+if($res["data"]) {
+  $list_spare = $res["data"];
+}
+$total_count_spare = $res["total"];
+$total_page_spare = ceil( $total_count / $rows ); # 총 페이지
+
 
 // 수급자 연결
 $links = get_recipient_links($member['mb_id']);
@@ -261,6 +284,86 @@ function excelform(url){
   <div class="list-paging">
     <ul class="pagination pagination-sm en">
       <?php echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page="); ?>
+    </ul>
+  </div>
+
+  <div class="titleWrap" style="margin-bottom:10px;">
+    예비수급자관리
+  </div>
+
+  <div class="list_box pc">
+    <div class="table_box">  
+      <table>
+        <tr>
+          <th>No.</th>
+          <th>수급자 정보</th>
+          <th>장기요양정보</th>
+          <th>비고</th>
+        </tr>
+        <?php $i = -1; ?>
+        <?php foreach($list_spare as $data){ ?>
+        <?php $i++; ?>
+        <tr>
+          <td>
+            <?php echo $total_count - (($page - 1) * $rows) - $i; ?>
+          </td>
+          <td>
+            <a href='#'>
+              <?php echo $data['penNm']; ?>
+              (<?php echo substr($data['penBirth'], 2, 2); ?>년생/<?php echo $data['penGender']; ?>)
+              <br/>
+              <?php if ($data['penProNm']) { ?>
+                보호자(<?php echo $data['penProNm']; ?><?php echo $data['penProConNum'] ? '/' . $data['penProConNum'] : ''; ?>)
+              <?php } ?>
+            </a>
+          </td>
+          <td>
+            예비수급자
+          </td>
+          <td style="text-align:center;">
+          </td>
+        </tr>
+        <?php } ?>
+      </table>
+    </div>
+  </div>
+
+  <?php if(!$list_spare){ ?>
+  <div class="no_content">
+    내용이 없습니다
+  </div>
+  <?php } ?>
+
+  <?php if($list_spare) { ?>
+  <div class="list_box mobile">
+    <ul class="li_box">
+      <?php foreach ($list_spare as $data) { ?>
+      <li>
+        <div class="info">
+          <a href='#'>
+            <b>
+              <?php echo $data['penNm']; ?>
+              (<?php echo substr($data['penBirth'], 2, 2); ?>년생/<?php echo $data['penGender']; ?>)
+            </b>
+            <?php if ($data['penProNm']) { ?>
+            <span class="li_box_protector">
+              * 보호자(<?php echo $data['penProNm']; ?><?php echo $data['penProTypeCd'] == '00' ? '/없음' : ''; ?><?php echo $data['penProTypeCd'] == '01' ? '/일반보호자' : ''; ?><?php echo $data['penProTypeCd'] == '02' ? '/요양보호사' : ''; ?>)
+            </span>
+            <?php } ?>
+            <p>
+              예비수급자
+            </p>
+          </a>
+        </div>
+      </li>
+      <?php } ?>
+    </ul>
+  </div>
+  <?php } ?>
+
+  <div class="list-paging">
+    <ul class="pagination pagination-sm en">
+      <?php echo apms_paging($write_pages, $page_spare, $total_page_spare, "?sel_field={$sel_field}&search={$search}&page_spare="); ?>
     </ul>
   </div>
 
