@@ -3029,10 +3029,10 @@ function thema_member($opt=''){
 			}
 		}
 		
-		if($is_chk_cart) {
+		/*if($is_chk_cart) {
 			cart_item_clean(); // 보관기간이 지난 상품 삭제
 			set_cart_id(''); // cart id 설정
-		}
+		}*/
 
 		$cart_id = get_session('ss_cart_id');
 
