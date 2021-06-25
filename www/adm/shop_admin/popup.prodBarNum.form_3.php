@@ -445,20 +445,8 @@ if($od["od_b_tel"]){
               sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
             })
             .fail(function($xhr) {
-              switch(device){
-                case "android" :
-                  /* android */
-                  window.EroummallApp.closeBarcode("");
-                  break;
-                case "ios" :
-                  /* ios */
-                  window.webkit.messageHandlers.closeBarcode.postMessage("");
-                  break;
-              }
               var data = $xhr.responseJSON;
-              setTimeout(function() {
-                alert(data && data.message);
-              }, 1000);
+              alert(data && data.message);
             });
           }
         }
