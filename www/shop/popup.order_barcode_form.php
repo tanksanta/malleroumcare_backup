@@ -320,38 +320,34 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 	}
 
 	var sendBarcodeTargetList = [];
-    function sendBarcode(text){
-		$.ajax({
-			url : "/shop/ajax.release_orderview.check.php",
-			type : "POST",
-			data : {
-				od_id : "<?=$od_id?>"
-			},
-			success : function(result){
-				if(result.error == "Y"){
-					switch(device){
-						case "android" :
-							/* android */
-							window.EroummallApp.closeBarcode("");
-							break;
-						case "ios" :
-							/* ios */
-							window.webkit.messageHandlers.closeBarcode.postMessage("");
-							break;
-					}
-					window.location.href = "/shop/release_orderlist.php";
-				} else {
-					if(sendBarcodeTargetList[0]){
-						var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
-						$(sendBarcodeTarget).val(text);
-						sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
-					}
-				}
-
-				notallLengthCheck();
-			}
-		});
-    }
+  function sendBarcode(text){
+		switch(device) {
+			case "android" :
+				/* android */
+				window.EroummallApp.closeBarcode("");
+				break;
+			case "ios" :
+				/* ios */
+				window.webkit.messageHandlers.closeBarcode.postMessage("");
+				break;
+		}
+		if(sendBarcodeTargetList[0]) {
+			$.post('/shop/ajax.check_barcode.php', {
+				it_id: '<?php echo $it_id; ?>',
+				barcode: text,
+			}, 'json')
+			.done(function(data) {
+				var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
+				$(sendBarcodeTarget).val(data.data.converted_barcode);
+				sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
+			})
+			.fail(function($xhr) {
+				var data = $xhr.responseJSON;
+				alert(data && data.message);
+			});
+		}
+		notallLengthCheck();
+  }
 
 	var sendInvoiceTarget;
     function sendInvoiceNum(text){
