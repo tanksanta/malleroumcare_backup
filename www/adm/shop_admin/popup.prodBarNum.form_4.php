@@ -261,7 +261,7 @@ if($od["od_b_tel"]){
                 <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" <?=$readonly?> placeholder="<?=$readonly_text?>"  data-frm-no="<?=$prodListCnt?>" maxlength="12">
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
-                <!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>"> -->
+                <!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>"> -->
               </li>
               <?php $prodListCnt++; } ?>
             </ul>
@@ -371,6 +371,9 @@ if($od["od_b_tel"]){
     }
   }
 
+  var cur_ct_id = null;
+  var cur_it_id = null;
+
   /* 기종체크 */
   var deviceUserAgent = navigator.userAgent.toLowerCase();
   var device;
@@ -407,10 +410,20 @@ if($od["od_b_tel"]){
           }
           window.location.href = "/shop/release_orderlist.php";
         } else {
-          if(sendBarcodeTargetList[0]){
-            var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
-            $(sendBarcodeTarget).val(text);
-            sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
+          if(sendBarcodeTargetList[0]) {
+            $.post('/shop/ajax.check_barcode.php', {
+              it_id: '<?php echo $ct['it_id']; ?>',
+              barcode: text,
+            }, 'json')
+            .done(function(data) {
+              var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
+              $(sendBarcodeTarget).val(data.data.converted_barcode);
+              sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
+            })
+            .fail(function($xhr) {
+              var data = $xhr.responseJSON;
+              alert(data && data.message);
+            });
           }
         }
 
@@ -643,6 +656,9 @@ if($od["od_b_tel"]){
       var frm_no = $(this).closest("li").find(".frm_input").attr("data-frm-no");
       var item = $(this).closest("ul").find(".frm_input");
       sendBarcodeTargetList = [];
+      
+      cur_ct_id = $(this).data('ct-id');
+      cur_it_id = $(this).data('it-id');
 
       for(var i = 0; i < item.length; i++){
         if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no){
