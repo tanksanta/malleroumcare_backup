@@ -2702,7 +2702,8 @@ $(document).ready(function() {
 				eformYn : eformYn,
 				staOrdCd : next_step_status,
 				lgsStoId : "",
-				prods : productList
+				prods : productList,
+                entId : "<?=get_ent_id_by_od_id($od_id)?>"
 			}
             // alert(next_step_status);
             // alert(stateCd);
@@ -2753,7 +2754,8 @@ $(document).ready(function() {
 
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
-				prods : prodsList
+				prods : prodsList,
+                entId : "<?=get_ent_id_by_od_id($od_id)?>"
 			}
 
 
@@ -2847,7 +2849,8 @@ $(document).ready(function() {
 				eformYn : "<?=$od["eformYn"]?>",
 				staOrdCd : "<?=$od["staOrdCd"]?>",
 				lgsStoId : "",
-				prods : productList
+				prods : productList,
+                entId : "<?=get_ent_id_by_od_id($od_id)?>"
 			}
 
 			$.ajax({
@@ -2881,7 +2884,8 @@ $(document).ready(function() {
 
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
-				prods : prodsList
+				prods : prodsList,
+                entId : "<?=get_ent_id_by_od_id($od_id)?>"
 			}
 
 			$.ajax({
@@ -2944,7 +2948,8 @@ $(document).ready(function() {
 				eformYn : "<?=$od["eformYn"]?>",
 				staOrdCd : "<?=$od["staOrdCd"]?>",
 				lgsStoId : "",
-				prods : productList
+				prods : productList,
+                entId : "<?=get_ent_id_by_od_id($od_id)?>"
 			}
 
 			$.ajax({
@@ -2990,7 +2995,8 @@ $(document).ready(function() {
 
 			var sendData = {
 				usrId : "<?=$od["mb_id"]?>",
-				prods : prodsList
+				prods : prodsList,
+                entId : "<?=get_ent_id_by_od_id($od_id)?>"
 			}
 
 			$.ajax({

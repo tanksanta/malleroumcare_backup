@@ -55,6 +55,7 @@ if($od["od_b_tel"]){
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>출고정보</title>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="/js/barcode_utils.js"></script>
   <link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
   <link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
 
@@ -507,6 +508,16 @@ if($od["od_b_tel"]){
     }
 
     $("#prodBarNumSaveBtn").click(function() {
+      var barcode_arr = [];
+      $('.inputbox li input').each(function(){
+          barcode_arr.push($(this).val());
+      });
+    
+      if (isDuplicate(barcode_arr)) {
+          alert("입력하신 바코드 중 중복 값이 있습니다.")
+          return false;
+      }
+      
       var ordId = "<?=$od["ordId"]?>";
       var changeStatus = true;
       var insertBarCnt = 0;
@@ -544,7 +555,8 @@ if($od["od_b_tel"]){
 
       var sendData = {
         usrId : "<?=$od["mb_id"]?>",
-        prods : prodsList
+        prods : prodsList,
+        entId : "<?=get_ent_id_by_od_id($od_id)?>"
       }
 
       $.ajax({
