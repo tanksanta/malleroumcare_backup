@@ -53,10 +53,12 @@ if ($sel_field === 'penProNm') {
   $send_data['penProNm'] = $search;
 }
 $res = get_eroumcare(EROUMCARE_API_SPARE_RECIPIENT_SELECTLIST, $send_data);
+
 $list_spare = [];
 if($res["data"]) {
   $list_spare = $res["data"];
 }
+
 $total_count_spare = $res["total"];
 $total_page_spare = ceil( $total_count / $rows ); # 총 페이지
 

@@ -150,8 +150,18 @@ input[type="number"]::-webkit-inner-spin-button {
   </div>
 
   <div class="panel panel-default">
-    <div class="panel-heading"><strong>장기요양정보</strong></div>
-    <div class="panel-body">
+    <div class="panel-heading clear">
+      <div class="l-heading-wrap"><strong>장기요양정보</strong></div>
+      <div class="r-heading-wrap">
+        <label class="checkbox-inline">
+          <input type="radio" class="radio_pen_spare" name="penSpare" value="0" style="vertical-align: middle; margin: 0 5px 0 0;" checked>일반수급자
+        </label>
+        <label class="checkbox-inline">
+          <input type="radio" class="radio_pen_spare" name="penSpare" value="1" style="vertical-align: middle; margin: 0 5px 0 0;">예비수급자
+        </label>
+      </div>
+    </div>
+    <div id="panel_ltm" class="panel-body">
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
           <b>장기요양인정번호</b>
@@ -159,7 +169,6 @@ input[type="number"]::-webkit-inner-spin-button {
         <div class="col-sm-3">
           <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
           <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);">
-          <i class="fa fa-check form-control-feedback"></i>
         </div>
       </div>
 
@@ -201,7 +210,6 @@ input[type="number"]::-webkit-inner-spin-button {
         <div class="col-sm-3">
           <input type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;"> ~
           <input type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;">
-          <i class="fa fa-check form-control-feedback"></i>
         </div>
       </div>
     </div>
@@ -381,7 +389,7 @@ input[type="number"]::-webkit-inner-spin-button {
   .dealing{  margin-left: 0px;}
   </style>
 
-  <div class="panel panel-default">
+  <div id="panel_product" class="panel panel-default">
     <div class="panel-heading"><strong>취급가능 제품</strong></div>
     <div class="panel-body">
       <div class="form-group has-feedback">
@@ -592,6 +600,21 @@ $(function(){
   $('.radio_pro_type').change(function() {
     onProTypeChange($(this));
   });
+  
+  function onPenSpareChange($this) {
+    var val = $this.val();
+
+    if(val == '1') { // 예비수급자
+      $('#panel_ltm').hide();
+      $('#panel_product').hide();
+    } else {
+      $('#panel_ltm').show();
+      $('#panel_product').hide();
+    }
+  }
+  $('.radio_pen_spare').change(function() {
+    onPenSpareChange($(this));
+  });
 
   $("#btn_submit").click(function() {
 
@@ -608,6 +631,7 @@ $(function(){
     var penJumin1 =  document.getElementById('penJumin1');
     var penJumin2 =  document.getElementById('penJumin2');
     var penLtmNum =  document.getElementById('penLtmNum');
+    var penSpare = $(".register-form input[name='penSpare']:checked").val();
     
     var penJumin = '';
     if(penJumin1.value && penJumin2.value) {
@@ -615,7 +639,9 @@ $(function(){
       if(penJumin2.value.length !== 7){  alert('주민번호 뒷자리는 7자리입니다.');  $(penJumin2).focus(); return false; }
       penJumin = penJumin1.value+penJumin2.value;
     }
-    if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penLtmNum).focus(); return false;}
+    if(penSpare != '1') {
+      if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penLtmNum).focus(); return false; }
+    }
     var penBirth = $(".register-form select[name='penBirth1']").val()+'-'
     + $(".register-form select[name='penBirth2']").val()+'-'
     + $(".register-form select[name='penBirth3']").val();
@@ -624,10 +650,10 @@ $(function(){
     + $(".register-form select[name='penProBirth2']").val()+'-'
     + $(".register-form select[name='penProBirth3']").val();
 
-    if(penBirth.length !== 10){ alert("주민번호를 확인하세요."); return false;}
-    if(penProBirth.length !== 10){ penProBirth=""; }
+    if(penBirth.length !== 10){ alert("생년월일을 확인하세요."); return false; }
+    if(penProBirth.length !== 10){ penProBirth = ''; }
 
-    var sendData = {
+    $.post('./ajax.my.recipient.write.php', {
       penNm : $(".register-form input[name='penNm']").val(),
       penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
       penRecGraCd : $(".register-form select[name='penRecGraCd']").val(),
@@ -665,64 +691,51 @@ $(function(){
       penRecTypeCd : $(".register-form select[name='penRecTypeCd']").val(),
       penRecTypeTxt : $(".register-form input[name='penRecTypeTxt']").val(),
       penRemark : $(".register-form input[name='penRemark']").val(),
-      entId : "<?=$member["mb_entId"]?>",
       entUsrId : $(".register-form input[name='entUsrId']").val(),
-      appCd : "01",
       caCenYn : $(".register-form input[name='caCenYn']:checked").val(),
-      usrId : "<?=$member["mb_id"]?>",
-      delYn : "N"
-    }
+      penSpare: penSpare
+    }, 'json')
+    .done(function(result) {
+      var data = result.data;
 
-    $.ajax({
-      url : "./ajax.my.recipient.write.php",
-      type : "POST",
-      async : false,
-      data : sendData,
-      success : function(result) {
-        result = JSON.parse(result);
+      if(data.isSpare)
+        return window.location.href = "./my_recipient_list.php";
+
+      var itemList=[];
+      //판매품목 값 넣기
+      for(var i=1; i<14; i++) {
+        var $sale_product_id = $('#sale_product_id'+i);
+        if($sale_product_id.prop('checked')) { itemList.push($sale_product_id.val()); }
+      }
+      //대여품목 값 넣기
+      for(var i=0; i<8; i++) {
+        var $rental_product_id = $('#rental_product_id'+i);
+        if($rental_product_id.prop('checked')) { itemList.push($rental_product_id.val()); }
+      }
+
+      $.post('./ajax.my.recipient.setItem.php', {
+        penId: data.penId,
+        itemList: itemList
+      }, 'json')
+      .done(function(result) {
         if(result.errorYN == "Y") {
           alert(result.message);
         } else {
-          penid=result['data']['penId'];
-          //취급품목
-          var sendData2 = {
-            penId : penid
-          }
-
-          var itemList=[];
-          var sale_product_id="";
-          var rental_product_id="";
-          //판매품목 값 넣기
-          for(var i=1; i<14; i++) {
-            eval("sale_product_id = document.getElementById('sale_product_id"+i+"')");
-            if(sale_product_id.checked==true){ itemList.push(sale_product_id.value); }
-          }
-          //대여품목 값 넣기
-          for(var i=0; i<8; i++) {
-            eval("rental_product_id = document.getElementById('rental_product_id"+i+"')");
-            if(rental_product_id.checked==true){ itemList.push(rental_product_id.value); }
-          }
-
-          sendData2['itemList']=itemList;
-          $.ajax({
-            url : "./ajax.my.recipient.setItem.php",
-            type : "POST",
-            async : false,
-            data : sendData2,
-            success : function(result) {
-              result = JSON.parse(result);
-              if(result.errorYN == "Y"){
-                alert(result.message);
-              } else {
-                alert('완료되었습니다');
-                window.location.href = "./my_recipient_list.php";
-              }
-            }
-          });
+          alert('완료되었습니다');
+          window.location.href = "./my_recipient_list.php";
         }
-      }
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
     });
   });
+
 });
 </script>
 
