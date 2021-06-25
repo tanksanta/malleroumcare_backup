@@ -345,17 +345,17 @@ if(function_exists('social_login_success_after')){
 }
 
 //영카트 회원 장바구니 처리
-/*if(defined('G5_USE_SHOP') && G5_USE_SHOP && function_exists('set_cart_id')){
+if(defined('G5_USE_SHOP') && G5_USE_SHOP && function_exists('set_cart_id')){
   $member = $mb;
 
   // 보관기간이 지난 상품 삭제
-  cart_item_clean();
+  //cart_item_clean();
   set_cart_id('');
   $s_cart_id = get_session('ss_cart_id');
   // 선택필드 초기화
   $sql = " update {$g5['g5_shop_cart_table']} set ct_select = '0' where od_id = '$s_cart_id' ";
   sql_query($sql);
-}*/
+}
 // return false;
 
 goto_url(G5_URL);
