@@ -29,7 +29,6 @@ $is_spare = $data['penSpare'] == '1';
 if($valid = valid_recipient_input($data, $is_spare)) {
   json_response(500, $valid);
 }
-
 $data = normalize_recipient_input($data);
 
 if($is_spare)
@@ -38,7 +37,7 @@ else
   $res = api_post_call(EROUMCARE_API_RECIPIENT_INSERT, $data);
 
 if(!$res || $res['errorYN'] != 'N')
-  json_response(500, $res['message']);
+  json_response(500, $res['message'] ?: '시스템서버가 응답하지 않습니다.');
 
 json_response(200, 'OK', array(
   'penId' => $res['data']['penId'],

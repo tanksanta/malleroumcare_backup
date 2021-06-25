@@ -10,14 +10,25 @@ if(!$member["mb_id"])
 if(!$_GET["id"])
   alert("정상적이지 않은 접근입니다.");
 
-# 수급자정보
-$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
-  'usrId' => $member['mb_id'],
-  'entId' => $member['mb_entId'],
-  'penId' => $_GET['id']
-));
+# 예비수급자 여부
+$is_spare = $_GET['penSpare'] == '1';
 
-if(!$res || $res['errorYn'] == 'Y')
+# 수급자정보
+if($is_spare) {
+  $res = api_post_call(EROUMCARE_API_SPARE_RECIPIENT_SELECTLIST, array(
+    'usrId' => $member['mb_id'],
+    'entId' => $member['mb_entId'],
+    'penId' => $_GET['id']
+  ));
+} else {
+  $res = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+    'usrId' => $member['mb_id'],
+    'entId' => $member['mb_entId'],
+    'penId' => $_GET['id']
+  ));
+}
+
+if(!$res || $res['errorYN'] != 'N')
   alert('서버 오류로 수급자 정보를 불러올 수 없습니다.');
 
 $data = $res["data"][0];
@@ -27,13 +38,15 @@ if(!$data)
 $data["penExpiDtm"] = explode(" ~ ", $data["penExpiDtm"]);
 
 // 수급자 취급가능 제품
+$data2 = [];
+if(!$is_spare) {
 $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST, array(
   'penId' => $data['penId']
 ));
 
-$data2 = [];
 if($res['data'])
   $data2 = $res["data"];
+}
 
 ?>
 
@@ -95,7 +108,6 @@ if($res['data'])
         <div class="col-sm-3">
           <input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" style="display: inline-block;width:47%;" value="<?=substr($data["penJumin"], 0, 6) ?>" > - 
           <input type="password" maxlength="7" oninput="maxLengthCheck(this)"id="penJumin2" name="penJumin2" min="0" class="form-control input-sm" style="display:inline-block;;width:48%;" value="<?=substr($data["penJumin"], 6, 7) ?>">
-          <qi class="fa fa-check form-control-feedback"></qi>
         </div>
       </div>
 
@@ -131,7 +143,6 @@ if($res['data'])
         </label>
         <div class="col-sm-3">
           <input type="text" name="penConNum" value="<?=$data["penConNum"]?>" class="form-control input-sm">
-          <i class="fa fa-check form-control-feedback"></i>
         </div>
       </div>
 
@@ -173,8 +184,18 @@ if($res['data'])
   </div>
 
   <div class="panel panel-default">
-    <div class="panel-heading"><strong>장기요양정보</strong></div>
-    <div class="panel-body">
+    <div class="panel-heading clear">
+      <div class="l-heading-wrap"><strong>장기요양정보</strong></div>
+      <div class="r-heading-wrap">
+        <label class="checkbox-inline">
+          <input type="radio" class="radio_pen_spare" name="penSpare" value="0" style="vertical-align: middle; margin: 0 5px 0 0;" <?php if(!$is_spare) echo 'checked'; ?>>일반수급자
+        </label>
+        <label class="checkbox-inline">
+          <input type="radio" class="radio_pen_spare" name="penSpare" value="1" style="vertical-align: middle; margin: 0 5px 0 0;" <?php if($is_spare) echo 'checked'; ?>>예비수급자
+        </label>
+      </div>
+    </div>
+    <div id="panel_ltm" class="panel-body">
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
           <b>장기요양인정번호</b>
@@ -182,7 +203,6 @@ if($res['data'])
         <div class="col-sm-3">
           <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
           <input type="number" maxlength="10" oninput="maxLengthCheck(this)"  id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>" >
-          <i class="fa fa-check form-control-feedback"></i>
         </div>
       </div>
 
@@ -224,7 +244,6 @@ if($res['data'])
         <div class="col-sm-3">
           <input type="text" name="penExpiStDtm" value="<?=$data["penExpiDtm"][0]?>" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;"> ~
           <input type="text" name="penExpiEdDtm" value="<?=$data["penExpiDtm"][1]?>" class="form-control input-sm" dateonly style="display: inline-block;width:48%;">
-          <i class="fa fa-check form-control-feedback"></i>
         </div>
       </div>
 
@@ -396,6 +415,7 @@ if($res['data'])
 
     </div>
   </div>
+
   <!-- 20210307 성훈작업 -->
   <style media="screen">
   input[type="checkbox"], input[type=checkbox] {margin: 4px 0 0; margin-top: 1px \9;line-height: normal;}
@@ -403,7 +423,7 @@ if($res['data'])
   .dealing{  margin-left: 0px;}
   </style>
 
-  <div class="panel panel-default">
+  <div id="panel_product" class="panel panel-default">
     <div class="panel-heading"><strong>취급가능 제품</strong></div>
     <div class="panel-body">
       <div class="form-group has-feedback">
@@ -482,21 +502,15 @@ var zipPopupDom = document.getElementById("zipAddrPopupIframe");
 $(document).ready(function() {
   setDateBox();
   //생년월일 세팅
-  var penJumin1 =  document.getElementById('penJumin1');
-  var penProBirth =  document.getElementById('penProBirth');
-  var year=penJumin1.value.substring(0,2);
-  var month=penJumin1.value.substring(2,4);
-  var day=penJumin1.value.substring(4,6);
+  var penBirth = "<?=get_text($data['penBirth'])?>".split('.');
+  var penProBirth = document.getElementById('penProBirth');
+  var year = penBirth[0];
+  var month = penBirth[1];
+  var day = penBirth[2];
 
-  var year2=penProBirth.value.substring(0,2);
-  var month2=penProBirth.value.substring(2,4);
-  var day2=penProBirth.value.substring(4,6);
-
-  if( year < <?=substr(date("Y"),2,2) ?> ) { 
-    year='20'+year; 
-  } else {
-    year='19'+year; 
-  }
+  var year2 = penProBirth.value.substring(0,2);
+  var month2 = penProBirth.value.substring(2,4);
+  var day2 = penProBirth.value.substring(4,6);
 
   if( year2 < <?=substr(date("Y"),2,2) ?> ) { 
     year2='20'+year2; 
@@ -653,6 +667,22 @@ $(function() {
     onProTypeChange($(this));
   });
 
+  function onPenSpareChange($this) {
+    var val = $this.val();
+
+    if(val == '1') { // 예비수급자
+      $('#panel_ltm').hide();
+      $('#panel_product').hide();
+    } else {
+      $('#panel_ltm').show();
+      $('#panel_product').hide();
+    }
+  }
+  onPenSpareChange($('.register-form input[name="penSpare"]:checked'));
+  $('.radio_pen_spare').change(function() {
+    onPenSpareChange($(this));
+  });
+
   $("#btn_submit").click(function() {
     var importantIcon = $(".register-form .form-control-feedback");
     for(var i = 0; i < importantIcon.length; i++) {
@@ -666,14 +696,17 @@ $(function() {
     var penJumin1 =  document.getElementById('penJumin1');
     var penJumin2 =  document.getElementById('penJumin2');
     var penLtmNum =  document.getElementById('penLtmNum');
+    var penSpare = $(".register-form input[name='penSpare']:checked").val();
 
-    if(!penJumin1.value){  alert('주민번호 앞자리를 입력해주새요.');  $(penJumin1).focus(); return false;}
-    if(penJumin1.value.length !== 6){  alert('주민번호 앞자리는 6자리입니다.'); $(penJumin1).focus(); return false;}
-    if(!penJumin2.value){  alert('주민번호 뒷자리를 입력해주새요.');  $(penJumin2).focus(); return false;}
-    if(penJumin2.value.length !== 7){  alert('주민번호 뒷자리는 7자리입니다.');  $(penJumin2).focus(); return false;}
-    if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penJumin2).focus(); return false;}
-
-    var penJumin = penJumin1.value+penJumin2.value;
+    var penJumin = '';
+    if(penJumin1.value && penJumin2.value) {
+      if(penJumin1.value.length !== 6){  alert('주민번호 앞자리는 6자리입니다.'); $(penJumin1).focus(); return false; }
+      if(penJumin2.value.length !== 7){  alert('주민번호 뒷자리는 7자리입니다.');  $(penJumin2).focus(); return false; }
+      penJumin = penJumin1.value+penJumin2.value;
+    }
+    if(penSpare != '1') {
+      if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penJumin2).focus(); return false;}
+    }
     var penBirth = $(".register-form select[name='penBirth1']").val()+'-'
     + $(".register-form select[name='penBirth2']").val()+'-'
     + $(".register-form select[name='penBirth3']").val();
@@ -682,8 +715,8 @@ $(function() {
     + $(".register-form select[name='penProBirth2']").val()+'-'
     + $(".register-form select[name='penProBirth3']").val();
 
-    if(penBirth.length !== 10) { alert("주민번호를 확인하세요."); return false; }
-    if(penProBirth.length !== 10) { penProBirth=""; }
+    if(penBirth.length !== 10) { alert("생년월일을 확인하세요."); return false; }
+    if(penProBirth.length !== 10) { penProBirth = ''; }
 
     var sendData = {
       penId : "<?=$data["penId"]?>",
@@ -724,61 +757,53 @@ $(function() {
       penRecTypeCd : $(".register-form select[name='penRecTypeCd']").val(),
       penRecTypeTxt : $(".register-form input[name='penRecTypeTxt']").val(),
       penRemark : $(".register-form input[name='penRemark']").val(),
-      entId : "<?=$member["mb_entId"]?>",
       entUsrId : $(".register-form input[name='entUsrId']").val(),
       appCd : "<?=$data["appCd"]?>",
       caCenYn : $(".register-form input[name='caCenYn']:checked").val(),
-      usrId : "<?=$member["mb_id"]?>",
-      delYn : "N"
+      delYn : "N",
+      isSpare: "<?=get_text($_GET['penSpare'])?>",
+      penSpare: penSpare
     }
 
-    $.ajax({
-      url : "./ajax.my.recipient.update.php",
-      type : "POST",
-      async : false,
-      data : sendData,
-      success : function(result) {
-        result = JSON.parse(result);
+    $.post('./ajax.my.recipient.update.php', sendData, 'json')
+    .done(function(result) {
+      var data = result.data;
+
+      if(data.isSpare)
+        return window.location.href = "./my_recipient_list.php";
+
+      var itemList=[];
+      //판매품목 값 넣기
+      for(var i=1; i<14; i++) {
+        var $sale_product_id = $('#sale_product_id'+i);
+        if($sale_product_id.prop('checked')) { itemList.push($sale_product_id.val()); }
+      }
+      //대여품목 값 넣기
+      for(var i=0; i<8; i++) {
+        var $rental_product_id = $('#rental_product_id'+i);
+        if($rental_product_id.prop('checked')) { itemList.push($rental_product_id.val()); }
+      }
+
+      $.post('./ajax.my.recipient.setItem.php', {
+        penId: data.penId,
+        itemList: itemList
+      }, 'json')
+      .done(function(result) {
         if(result.errorYN == "Y") {
           alert(result.message);
         } else {
-          //취급품목
-          var sendData2 = {
-            penId : "<?=$data["penId"]?>",
-          }
-
-          var itemList=[];
-          var sale_product_id="";
-          var rental_product_id="";
-          //판매품목 값 넣기
-          for(var i=1; i<14; i++) {
-            eval("sale_product_id = document.getElementById('sale_product_id"+i+"')");
-            if(sale_product_id.checked==true){ itemList.push(sale_product_id.value); }
-          }
-          //대여품목 값 넣기
-          for(var i=0; i<8; i++) {
-            eval("rental_product_id = document.getElementById('rental_product_id"+i+"')");
-            if(rental_product_id.checked==true){ itemList.push(rental_product_id.value); }
-          }
-
-          sendData2['itemList']=itemList;
-          $.ajax({
-            url : "./ajax.my.recipient.setItem.php",
-            type : "POST",
-            async : false,
-            data : sendData2,
-            success : function(result) {
-              result = JSON.parse(result);
-              if(result.errorYN == "Y"){
-                alert(result.message);
-              } else {
-                alert('완료되었습니다');
-                window.location.href = "./my_recipient_view.php?id=<?=$_GET['id']?>";
-              }
-            }
-          });
+          alert('완료되었습니다');
+          window.location.href = "./my_recipient_list.php";
         }
-      }
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
     });
   });
 });

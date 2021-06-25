@@ -267,7 +267,7 @@ function excelform(url){
             </p>
           </a>
           <?php if ($data['recYn'] === 'N') { ?>
-          <a href="#" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 작성</a>
+          <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 작성</a>
           <?php } ?>
         </div>
         <?php if ($data["penLtmNum"]) { ?>
@@ -310,7 +310,7 @@ function excelform(url){
             <?php echo $total_count - (($page - 1) * $rows) - $i; ?>
           </td>
           <td>
-            <a href='#'>
+            <a href="<?=G5_SHOP_URL?>/my_recipient_update.php?penSpare=1&id=<?=$data['penId']?>">
               <?php echo $data['penNm']; ?>
               (<?php echo substr($data['penBirth'], 2, 2); ?>년생/<?php echo $data['penGender']; ?>)
               <br/>
@@ -330,7 +330,7 @@ function excelform(url){
     </div>
   </div>
 
-  <?php if(!$list_spare){ ?>
+  <?php if(!$list_spare) { ?>
   <div class="no_content">
     내용이 없습니다
   </div>
@@ -342,7 +342,7 @@ function excelform(url){
       <?php foreach ($list_spare as $data) { ?>
       <li>
         <div class="info">
-          <a href='#'>
+          <a href="<?=G5_SHOP_URL?>/my_recipient_update.php?penSpare=1&id=<?=$data['penId']?>">
             <b>
               <?php echo $data['penNm']; ?>
               (<?php echo substr($data['penBirth'], 2, 2); ?>년생/<?php echo $data['penGender']; ?>)
