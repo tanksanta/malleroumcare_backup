@@ -543,7 +543,7 @@ if($od["od_b_tel"]) {
          return false;
       }
       
-      need_reload = false;
+      need_reload = true;
 
       var ordId = "<?=$od["ordId"]?>";
       var changeStatus = true;
