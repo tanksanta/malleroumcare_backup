@@ -657,7 +657,7 @@ $row = sql_fetch($sql);
                 ?>
               </span>
               <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>"  data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
-              <span class="name m_off"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
+              <span class="name m_off"><a href="<?=G5_SHOP_URL?>/my_recipient_update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
               <?php
               //날짜 변환
               $date1=$list[$i]['modifyDtm'];
@@ -671,7 +671,7 @@ $row = sql_fetch($sql);
                   <span class="pro-num <?=$prodBarNumCntBtn_2;?>"  data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                 </div>
                 <div class="info-m">
-                  <span class="name"><a href="<?=G5_SHOP_URL?>/my.recipient.update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
+                  <span class="name"><a href="<?=G5_SHOP_URL?>/my_recipient_update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
                   <span class="date"><?=$date2?></span>
                 </div>
               </div>
