@@ -414,11 +414,12 @@ if($od["od_b_tel"]){
 
   var sendBarcodeTargetList = [];
     function sendBarcode(text){
+    alert(text);
     $.ajax({
       url : "/shop/ajax.release_orderview.check.php",
       type : "POST",
       data : {
-        od_id : "<?=$od_id?>"
+        ct_id : cur_ct_id,
       },
       success : function(result){
         if(result.error == "Y"){
@@ -440,6 +441,7 @@ if($od["od_b_tel"]){
               barcode: text,
             }, 'json')
             .done(function(data) {
+              alert(data.data.converted_barcode);
               var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
               $(sendBarcodeTarget).val(data.data.converted_barcode);
               sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
