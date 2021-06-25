@@ -21,7 +21,7 @@ if (!$item['prod_pay_code']) {
 
 $converted_barcode = $barcode;
 
-if (strlen($barcode) > 12) {
+if (strlen($barcode) > 13) {
 	if (strpos($barcode, $item['prod_pay_code']) === false) {
 		json_response(500, '상품과 바코드의 제품코드가 잘못되었습니다.');
 	}
