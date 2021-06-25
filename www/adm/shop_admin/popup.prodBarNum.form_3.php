@@ -431,10 +431,20 @@ if($od["od_b_tel"]){
           }
           window.location.href = "/shop/release_orderlist.php";
         } else {
-          if(sendBarcodeTargetList[0]){
-            var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
-            $(sendBarcodeTarget).val(text);
-            sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
+          if(sendBarcodeTargetList[0]) {
+            $.post('/shop/ajax.check_barcode.php', {
+              it_id: '<?php echo $ct['it_id']; ?>',
+              barcode: text,
+            }, 'json')
+            .done(function(data) {
+              var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
+              $(sendBarcodeTarget).val(data.data.converted_barcode);
+              sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
+            })
+            .fail(function($xhr) {
+              var data = $xhr.responseJSON;
+              alert(data && data.message);
+            });
           }
         }
         notallLengthCheck();
