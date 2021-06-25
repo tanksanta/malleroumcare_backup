@@ -29,25 +29,14 @@ if ($sel_field === 'penProNm') {
 $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
 
 $list = [];
-if($res["data"]){
+if($res["data"]) {
   $list = $res["data"];
 }
 
 # 페이징
 $total_count = $res["total"];
-$pageNum = $page; # 페이지 번호
-$listCnt = $rows; # 리스트 갯수 default 15
-
-$b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
-$block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
-$b_start_page = ( ($block - 1) * $b_pageNum_listCnt ) + 1; # 블록 시작 페이지
-$b_end_page = $b_start_page + $b_pageNum_listCnt - 1;  # 블록 종료 페이지
-$total_page = ceil( $total_count / $listCnt ); # 총 페이지
-// 총 페이지 보다 블럭 수가 만을경우 블록의 마지막 페이지를 총 페이지로 변경
-if ($b_end_page > $total_page){
-  $b_end_page = $total_page;
-}
-$total_block = ceil($total_page/$b_pageNum_listCnt);
+$total_page = ceil( $total_count / $rows ); # 총 페이지
+$write_pages = 5; # 한 블록에 보여줄 페이지 갯수 5개
 
 // 수급자 연결
 $links = get_recipient_links($member['mb_id']);
@@ -269,22 +258,9 @@ function excelform(url){
   </div>
   <?php } ?>
 
-  <div class="list-page list-paging">
+  <div class="list-paging">
     <ul class="pagination pagination-sm en">
-      <li></li>
-      <?php if($block > 1){ ?>
-      <li><a href="?page=<?=($b_start_page-1)?>&sel_field=<?php echo $sel_field; ?>&search=<?php echo $search; ?>"><i class="fa fa-angle-left"></i></a></li>
-      <?php } ?>
-
-      <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?>
-      <li class="<?=($j == $pageNum) ? "active" : ""?>">
-        <a href="?page=<?=$j?>&sel_field=<?php echo $sel_field; ?>&search=<?php echo $search; ?>"><?=$j?></a>
-      </li>
-      <?php } ?>
-      <?php if($block < $total_block){ ?>
-      <li><a href="?page=<?=($b_end_page+1)?>&sel_field=<?php echo $sel_field; ?>&search=<?php echo $search; ?>"><i class="fa fa-angle-right"></i></a></li>
-      <?php } ?>
-      <li></li>
+      <?php echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page="); ?>
     </ul>
   </div>
 
@@ -403,8 +379,6 @@ function excelform(url){
   $(function() {
     $("#popup_recipient_link").hide();
 	  $("#popup_recipient_link").css("opacity", 1);
-
-
 
     $('#tb_links td').click(function(e) {
       var rl_id = $(this).closest('tr').data('id');
