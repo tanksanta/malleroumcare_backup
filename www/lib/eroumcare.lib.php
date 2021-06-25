@@ -826,3 +826,15 @@ function get_token_by_id($mb_id) {
 
   return $tokens;
 }
+
+function get_ent_id_by_od_id($od_id) {
+    global $g5;
+    
+    $sql = "SELECT * FROM {$g5['g5_shop_order_table']} WHERE od_id = '$od_id' ";
+    $od = sql_fetch($sql);
+    
+    $sql = "SELECT * FROM {$g5['member_table']} WHERE mb_id = '{$od['mb_id']}' ";
+    $mb = sql_fetch($sql);
+    
+    return $mb['mb_entId'];
+}
