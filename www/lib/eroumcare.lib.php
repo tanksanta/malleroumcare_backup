@@ -306,19 +306,24 @@ function recipient_preg_match($data, $key) {
 // 수급자 등록시 필드 정규화
 function normalize_recipient_input($data) {
 	$penBirth = recipient_preg_match($data, 'penBirth');
-	$data['penBirth'] = $penBirth[1].'-'.$penBirth[2].'-'.$penBirth[3];
+  if($penBirth)
+	  $data['penBirth'] = $penBirth[1].'-'.$penBirth[2].'-'.$penBirth[3];
 
 	$penLtmNum = recipient_preg_match($data, 'penLtmNum');
-	$data['penLtmNum'] = 'L'.$penLtmNum[1];
+  if($penLtmNum)
+	  $data['penLtmNum'] = 'L'.$penLtmNum[1];
 
 	$penRecGraCd = recipient_preg_match($data, 'penRecGraCd');
-	$data['penRecGraCd'] = $penRecGraCd[1];
+  if($penRecGraCd)
+	  $data['penRecGraCd'] = $penRecGraCd[1];
 
 	$penTypeCd = recipient_preg_match($data, 'penTypeCd');
-	$data['penTypeCd'] = $penTypeCd[1];
+  if($penTypeCd)
+	  $data['penTypeCd'] = $penTypeCd[1];
 
 	$penGender = recipient_preg_match($data, 'penGender');
-	$data['penGender'] = $penGender[1];
+  if($penGender)
+	  $data['penGender'] = $penGender[1];
 
 	$penExpiStDtm = recipient_preg_match($data, 'penExpiStDtm');
 	if($penExpiStDtm)
@@ -360,7 +365,7 @@ function normalize_recipient_input($data) {
 }
 
 // 수급자 등록시 필드 무결성 체크
-function valid_recipient_input($data) {
+function valid_recipient_input($data, $is_spare = false) {
 
 	if(!$data['penNm']) {
 		return '수급자명을 입력해주세요.';
@@ -368,24 +373,27 @@ function valid_recipient_input($data) {
 	if(!recipient_preg_match($data, 'penBirth')) {
 		return '생년월일을 확인해주세요.';
 	}
-	if(!recipient_preg_match($data, 'penLtmNum')) {
-		return '장기요양번호를 확인해주세요.';
-	}
-	if(!recipient_preg_match($data, 'penRecGraCd')) {
-		return '장기요양등급을 확인해주세요.';
-	}
-	if(!recipient_preg_match($data, 'penTypeCd')) {
-		return '본인부담율을 확인해주세요.';
-	}
-	# 기초수급자는 주민등록번호 입력 필수
-	if($data['penTypeCd'] == '04') {
-		if(!recipient_preg_match($data, 'penJumin')) {
-			return '주민등록번호를 확인해주세요.';
-		}
-	}
 	if(!recipient_preg_match($data, 'penGender')) {
 		return '성별을 확인해주세요.';
 	}
+
+  if(!$is_spare) {
+    if(!recipient_preg_match($data, 'penLtmNum')) {
+      return '장기요양번호를 확인해주세요.';
+    }
+    if(!recipient_preg_match($data, 'penRecGraCd')) {
+      return '장기요양등급을 확인해주세요.';
+    }
+    if(!recipient_preg_match($data, 'penTypeCd')) {
+      return '본인부담율을 확인해주세요.';
+    }
+    # 기초수급자는 주민등록번호 입력 필수
+    if($data['penTypeCd'] == '04') {
+      if(!recipient_preg_match($data, 'penJumin')) {
+        return '주민등록번호를 확인해주세요.';
+      }
+    }
+  }
 	if($data['penExpiStDtm']) {
 		if(!recipient_preg_match($data, 'penExpiStDtm')) {
 			return '유효기간(시작일)을 확인해주세요.';
