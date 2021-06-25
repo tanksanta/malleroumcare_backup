@@ -757,7 +757,7 @@ function add_fcmtoken($fcm_token) {
   $mb_fcm = sql_fetch($sql);
 
   if ($mb_fcm['fcm_id'] && $member['mb_id']) {
-		$sql = "UPDATE g5_firebase SET mb_id = '{$member['mb_id']}' WHERE fcm_token = '{$fcm_token}'";
+		$sql = "UPDATE g5_firebase SET mb_id = '{$member['mb_id']}', updated_at = now() WHERE fcm_token = '{$fcm_token}'";
 		return sql_query($sql);
   }
 
