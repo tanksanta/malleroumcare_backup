@@ -127,6 +127,6 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 <li></li>
 </ul>-->
 <ul class="pagination pagination-sm en">
-		<?php echo apms_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+  <?php echo apms_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
 </ul>
 </div>
