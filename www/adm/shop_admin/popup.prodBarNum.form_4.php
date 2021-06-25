@@ -412,7 +412,7 @@ if($od["od_b_tel"]){
         } else {
           if(sendBarcodeTargetList[0]) {
             $.post('/shop/ajax.check_barcode.php', {
-              it_id: '<?php echo $ct['it_id']; ?>',
+              it_id: cur_it_id,
               barcode: text,
             }, 'json')
             .done(function(data) {

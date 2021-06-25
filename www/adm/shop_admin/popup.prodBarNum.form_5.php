@@ -282,7 +282,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
   var cur_ct_id = null;
   var cur_it_id = null;
-	
+
 	/* 기종체크 */
 	var deviceUserAgent = navigator.userAgent.toLowerCase();
 	var device;
@@ -321,7 +321,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         } else {
           if(sendBarcodeTargetList[0]) {
             $.post('/shop/ajax.check_barcode.php', {
-              it_id: '<?php echo $ct['it_id']; ?>',
+              it_id: cur_it_id,
               barcode: text,
             }, 'json')
             .done(function(data) {
