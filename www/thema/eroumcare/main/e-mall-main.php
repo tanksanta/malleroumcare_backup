@@ -37,7 +37,7 @@
 				</li>
 				<li style="width: 100%;" class="swiper-slide">
 					<a href="<?php echo G5_URL; ?>/bbs/content.php?co_id=guide">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_03.jpg" alt="">
+						<img src="<?=THEMA_URL?>/assets/img/main_banner_08.png" alt="">
 					</a>
 				</li><!-- 
 				<li style="width: 33.33%;" class="swiper-slide">
