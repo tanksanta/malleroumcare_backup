@@ -370,14 +370,14 @@ function valid_recipient_input($data, $is_spare = false) {
 	if(!$data['penNm']) {
 		return '수급자명을 입력해주세요.';
 	}
-	if(!recipient_preg_match($data, 'penBirth')) {
-		return '생년월일을 확인해주세요.';
-	}
-	if(!recipient_preg_match($data, 'penGender')) {
-		return '성별을 확인해주세요.';
-	}
 
   if(!$is_spare) {
+    if(!recipient_preg_match($data, 'penBirth')) {
+      return '생년월일을 확인해주세요.';
+    }
+    if(!recipient_preg_match($data, 'penGender')) {
+      return '성별을 확인해주세요.';
+    }
     if(!recipient_preg_match($data, 'penLtmNum')) {
       return '장기요양번호를 확인해주세요.';
     }

@@ -650,7 +650,7 @@ $(function(){
     + $(".register-form select[name='penProBirth2']").val()+'-'
     + $(".register-form select[name='penProBirth3']").val();
 
-    if(penBirth.length !== 10){ alert("생년월일을 확인하세요."); return false; }
+    if(penBirth.length !== 10){ penBirth = ''; }
     if(penProBirth.length !== 10){ penProBirth = ''; }
 
     $.post('./ajax.my.recipient.write.php', {
