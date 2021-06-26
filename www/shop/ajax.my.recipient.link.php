@@ -82,11 +82,7 @@ if($w == 'r') {
     'penAddr' => get_search_string($rl['rl_pen_addr1']),
     'penAddrDtl' => get_search_string($rl['rl_pen_addr1'].$rl['rl_pen_addr2']),
     'penZip' => get_search_string($rl['rl_pen_zip1'].$rl['rl_pen_zip2']),
-    'penBirth' => $_POST['penBirth'],
-    'penLtmNum' => $_POST['penLtmNum'] ?  get_search_string($_POST['penLtmNum']) : get_search_string($rl['rl_pen_ltm_num']),
-    'penRecGraCd' => $_POST['penRecGraCd'],
-    'penTypeCd' => $_POST['penTypeCd'],
-    'penGender' => $_POST['penGender'],
+    'penLtmNum' => get_search_string($rl['rl_pen_ltm_num']),
     'penConNum' => get_search_string($rl['rl_pen_hp']),
     'entId' => $member["mb_entId"],
     'entUsrId' => $member['mb_giup_boss_name'],
@@ -106,14 +102,13 @@ if($w == 'r') {
     $data = array_merge($data, $proData);
 
   // 필드 무결성 체크
-  $valid = valid_recipient_input($data);
-  if($valid)
+  if($valid = valid_recipient_input($data, true))
     json_response(400, $valid);
 
   // 필드 정규화
   $data = normalize_recipient_input($data);
 
-  $result = api_post_call(EROUMCARE_API_RECIPIENT_INSERT, $data);
+  $result = api_post_call(EROUMCARE_API_SPARE_RECIPIENT_INSERT, $data);
   if(!$result || $result['errorYN'] == 'Y')
     json_response(500, '오류 발생: '.$result['message']);
   

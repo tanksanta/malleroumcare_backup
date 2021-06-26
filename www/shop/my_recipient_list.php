@@ -312,7 +312,14 @@ function excelform(url){
           <td>
             <a href="<?=G5_SHOP_URL?>/my_recipient_update.php?penSpare=1&id=<?=$data['penId']?>">
               <?php echo $data['penNm']; ?>
-              (<?php echo substr($data['penBirth'], 2, 2); ?>년생/<?php echo $data['penGender']; ?>)
+              <?php
+              $pen_desc_txt = '';
+              if(substr($data['penBirth'], 2, 2)) $pen_desc_txt .= substr($data['penBirth'], 2, 2).'년생';
+              if($pen_desc_txt) $pen_desc_txt .= '/';
+              if($data['penGender']) $pen_desc_txt .= $data['penGender'];
+              if($pen_desc_txt) $pen_desc_txt = ' (' . $pen_desc_txt . ')';
+              echo $pen_desc_txt;
+              ?>
               <br/>
               <?php if ($data['penProNm']) { ?>
                 보호자(<?php echo $data['penProNm']; ?><?php echo $data['penProConNum'] ? '/' . $data['penProConNum'] : ''; ?>)
@@ -345,7 +352,14 @@ function excelform(url){
           <a href="<?=G5_SHOP_URL?>/my_recipient_update.php?penSpare=1&id=<?=$data['penId']?>">
             <b>
               <?php echo $data['penNm']; ?>
-              (<?php echo substr($data['penBirth'], 2, 2); ?>년생/<?php echo $data['penGender']; ?>)
+              <?php
+              $pen_desc_txt = '';
+              if(substr($data['penBirth'], 2, 2)) $pen_desc_txt .= substr($data['penBirth'], 2, 2).'년생';
+              if($pen_desc_txt) $pen_desc_txt .= '/';
+              if($data['penGender']) $pen_desc_txt .= $data['penGender'];
+              if($pen_desc_txt) $pen_desc_txt = ' (' . $pen_desc_txt . ')';
+              echo $pen_desc_txt;
+              ?>
             </b>
             <?php if ($data['penProNm']) { ?>
             <span class="li_box_protector">
