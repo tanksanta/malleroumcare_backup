@@ -263,3 +263,20 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 <script type="text/javascript">
 wcs_do(); // wetoz : 2020-09-04
 </script> 
+
+<script>
+<?php if ($member['mb_id'] && preg_match('/\/bbs\/login.php/i', $_SERVER['HTTP_REFERER'])) { ?>
+if (navigator.userAgent.indexOf("Android") > - 1) {
+	window.EroummallApp.requestToken();
+} else if (navigator.userAgent.indexOf("iPhone") > - 1) {
+	window.webkit.messageHandlers.requestToken.postMessage();
+}
+<?php } ?>
+function pushKey(token) {
+	$.post('/api/register_token.php', {
+		token: token,
+	}, 'json')
+	.done(function(data) {
+	});
+}
+</script>
