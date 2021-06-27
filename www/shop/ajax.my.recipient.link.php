@@ -23,20 +23,20 @@ if($w == 'd') {
   // 연결취소 요청
   if($link['status'] == 'link') {
     // 연결상태에서 취소요청시
-    sql_query("
-      UPDATE `recipient_link` SET
-      rl_state = 'wait',
-      rl_ent_mb_id = '',
-      rl_updated_at = '$datetime'
-      WHERE rl_id = '$rl_id'
+    $result = sql_query("
+      UPDATE `recipient_link` l
+      LEFT JOIN `recipient_link_rel` r
+      ON l.rl_id = r.rl_id SET
+      l.rl_state = 'wait',
+      l.rl_ent_mb_id = '',
+      l.rl_updated_at = '$datetime',
+      r.status = 'wait',
+      r.updated_at = '$datetime'
+      WHERE r.rl_id = '$rl_id'
+      AND r.mb_id = '{$member['mb_id']}'
     ");
-    sql_query("
-      UPDATE `recipient_link_rel` SET
-      status = 'wait',
-      updated_at = '$datetime'
-      WHERE mb_id = '{$member['mb_id']}'
-      AND rl_id = '$rl_id'
-    ");
+    if(!$result)
+      json_response(500, '서버 오류로 연결을 취소할 수 없습니다.');
   } else {
     // 연결요청만 된 상태에서 취소요청시
     sql_query("
