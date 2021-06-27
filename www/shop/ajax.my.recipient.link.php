@@ -56,23 +56,21 @@ if($w == 's') {
     json_response(500, '이미 사업소와 연결된 수급자입니다.');
 
   $result = sql_query("
-    UPDATE `recipient_link` SET
-    rl_state = 'link',
-    rl_ent_mb_id = '{$member['mb_id']}',
-    rl_updated_at = '$datetime'
-    WHERE rl_id = '$rl_id'
-    AND rl_state = 'wait'
+    UPDATE `recipient_link` l
+    LEFT JOIN `recipient_link_rel` r
+    ON l.rl_id = r.rl_id SET
+    l.rl_state = 'link',
+    l.rl_ent_mb_id = '{$member['mb_id']}',
+    l.rl_updated_at = '$datetime',
+    r.status = 'link',
+    r.updated_at = '$datetime'
+    WHERE r.rl_id = '$rl_id'
+    AND r.mb_id = '{$member['mb_id']}'
+    AND l.rl_state = 'wait'
   ");
   if(!$result)
     json_response(500, '수급자와 연결할 수 없습니다.');
 
-  sql_query("
-    UPDATE `recipient_link_rel` SET
-    status = 'link',
-    updated_at = '$datetime'
-    WHERE mb_id = '{$member['mb_id']}'
-    AND rl_id = '$rl_id'
-  ");
   json_response(200, 'OK');
 }
 
