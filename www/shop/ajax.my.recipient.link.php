@@ -55,13 +55,17 @@ if($w == 's') {
   if($rl['rl_state'] != 'wait')
     json_response(500, '이미 사업소와 연결된 수급자입니다.');
 
-  sql_query("
+  $result = sql_query("
     UPDATE `recipient_link` SET
     rl_state = 'link',
     rl_ent_mb_id = '{$member['mb_id']}',
     rl_updated_at = '$datetime'
     WHERE rl_id = '$rl_id'
+    AND rl_state = 'wait'
   ");
+  if(!$result)
+    json_response(500, '수급자와 연결할 수 없습니다.');
+
   sql_query("
     UPDATE `recipient_link_rel` SET
     status = 'link',
