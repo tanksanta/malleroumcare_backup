@@ -223,12 +223,12 @@ label {
         <th scope="row"><label for="mb_password">비밀번호<?php echo $sound_only ?></label></th>
         <td><input type="password" name="mb_password" id="mb_password" <?php echo $required_mb_password ?> class="frm_input <?php echo $required_mb_password ?>" size="15" maxlength="20"></td>
     </tr>
-    <!-- <tr>
-        <th scope="row"><label for="mb_name">기업명<strong class="sound_only">필수</strong></label></th>
+    <tr>
+        <th scope="row"><label for="mb_name">이름<strong class="sound_only">필수</strong></label></th>
         <td><input type="text" name="mb_name" value="<?php echo $mb['mb_name'] ?>" id="mb_name" class="frm_input" size="15" maxlength="20"></td>
         <th scope="row"><label for="mb_nick">닉네임</label></th>
         <td><input type="text" name="mb_nick" value="<?php echo $mb['mb_nick'] ?>" id="mb_nick" class=" frm_input" size="15" maxlength="20"></td>
-    </tr> -->
+    </tr>
     <tr>
         <th scope="row"><label for="mb_level">회원 권한</label></th>
         <td><?php echo get_member_level_select('mb_level', 1, $member['mb_level'], $mb['mb_level']) ?></td>
