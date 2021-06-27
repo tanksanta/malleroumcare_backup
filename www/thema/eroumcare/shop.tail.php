@@ -267,9 +267,9 @@ wcs_do(); // wetoz : 2020-09-04
 <script>
 <?php if ($member['mb_id'] && preg_match('/\/bbs\/login.php/i', $_SERVER['HTTP_REFERER'])) { ?>
 if (navigator.userAgent.indexOf("Android") > - 1) {
-	window.EroummallApp.requestToken();
+	window.EroummallApp.requestToken("");
 } else if (navigator.userAgent.indexOf("iPhone") > - 1) {
-	window.webkit.messageHandlers.requestToken.postMessage();
+	window.webkit.messageHandlers.requestToken.postMessage("");
 }
 <?php } ?>
 function pushKey(token) {
