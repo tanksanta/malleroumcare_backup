@@ -681,6 +681,30 @@ function get_recipient_links($mb_id) {
   return $res;
 }
 
+// 수급자연결관리 - 연결기간(3일) 지난 수급자 연결해제
+function recipient_link_clean() {
+  global $member;
+
+  $timestamp = time();
+  $datetime = date('Y-m-d H:i:s', $timestamp);
+
+  sql_query("
+    UPDATE `recipient_link` l
+    LEFT JOIN `recipient_link_rel` r
+    ON l.rl_id = r.rl_id SET
+    l.rl_state = 'wait',
+    l.rl_ent_mb_id = '',
+    l.rl_updated_at = '$datetime',
+    r.status = 'wait',
+    r.updated_at = '$datetime'
+    WHERE l.rl_state = 'link'
+    AND l.rl_ent_mb_id = '{$member['mb_id']}'
+    AND r.mb_id = '{$member['mb_id']}'
+    AND r.status = 'link'
+    AND r.updated_at < DATE_SUB(NOW(), INTERVAL 3 DAY)
+  ");
+}
+
 function send_notification($registration_ids, $notification)
 {
 	$registration_ids = array_values($registration_ids);

@@ -8,6 +8,9 @@ if(!$is_member){
   exit;
 }
 
+// 연결기간(3일) 지난 수급자 연결해제
+recipient_link_clean();
+
 $rows = 5;
 
 $page = $_GET["page"] ?? 1;

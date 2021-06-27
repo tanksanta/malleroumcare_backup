@@ -356,7 +356,9 @@ if(defined('G5_USE_SHOP') && G5_USE_SHOP && function_exists('set_cart_id')){
   $sql = " update {$g5['g5_shop_cart_table']} set ct_select = '0' where od_id = '$s_cart_id' ";
   sql_query($sql);
 }
-// return false;
+
+// 연결기간(3일) 지난 수급자 연결해제
+recipient_link_clean();
 
 goto_url(G5_URL);
 ?>
