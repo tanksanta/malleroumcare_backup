@@ -669,7 +669,7 @@ function get_recipient_links($mb_id) {
     AND (
       ( rl_state = 'link' and rl_ent_mb_id = '$mb_id' )
       OR
-      ( rl_state = 'wait' or rl_state = 'request' )
+      ( (rl_state = 'wait' or rl_state = 'request') AND status = 'request' )
       )
     ORDER BY r.updated_at desc
   ");
