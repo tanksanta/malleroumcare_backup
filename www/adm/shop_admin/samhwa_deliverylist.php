@@ -519,7 +519,9 @@ $( document ).ready(function() {
     window.open("./deliveryexcel.php", "win_excel", opt);
     return false;
   });
-  
+
+  // 출고리스트 접속시 기본검색 적용 자동으로 눌러주기
+  $('#set_default_apply_button').click();
 });
 
 //출고담당자
