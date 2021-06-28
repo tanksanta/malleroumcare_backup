@@ -297,7 +297,7 @@ scrollToTop();
 					<li><a href="/shop/list.php?ca_id=10"  >판매품목</a></li>
 					<li><a href="/shop/list.php?ca_id=20" >대여품목</a></li>
 					<li class="catalog">
-						<a href="/thema/eroumcare/assets/catalog_2.pdf" target="_blank"  >
+						<a href="/thema/eroumcare/assets/eroum_catalog_2021_2_2.pdf" target="_blank"  >
 							<div class="catalogWrap">
 								<span>이달의 카달로그</span>
 								<img src="<?php echo THEMA_URL; ?>/assets/img/btn_catalogue_icon.png">
