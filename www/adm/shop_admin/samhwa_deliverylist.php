@@ -151,6 +151,7 @@ if( function_exists('pg_setting_check') ){
         <td>
           <select name="sel_field" id="sel_field">
             <option value="od_id" <?php echo get_selected($sel_field, 'od_id'); ?>>주문번호</option>
+            <option value="it_name" <?php echo get_selected($sel_field, 'it_name'); ?>>상품명</option>
             <option value="mb_id" <?php echo get_selected($sel_field, 'mb_id'); ?>>회원 ID</option>
             <option value="od_name" <?php echo get_selected($sel_field, 'od_name'); ?>>주문자</option>
             <option value="od_tel" <?php echo get_selected($sel_field, 'od_tel'); ?>>주문자전화</option>
@@ -449,7 +450,12 @@ $( document ).ready(function() {
     doSearch();
   });
 
-  $('#samhwa_order_list .order_tab li:eq(0)').click();
+  // 출고리스트 접속시 기본검색 적용 자동으로 눌러주기
+  $('#set_default_apply_button').click();
+
+  setTimeout(function() {
+    $('#samhwa_order_list .order_tab li:eq(0)').click();
+  }, 700);
 
   $(window).scroll(function() {
     if ($(window).scrollTop() == $(document).height() - $(window).height()) {
@@ -519,9 +525,6 @@ $( document ).ready(function() {
     window.open("./deliveryexcel.php", "win_excel", opt);
     return false;
   });
-
-  // 출고리스트 접속시 기본검색 적용 자동으로 눌러주기
-  $('#set_default_apply_button').click();
 });
 
 //출고담당자

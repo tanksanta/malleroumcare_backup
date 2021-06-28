@@ -11,10 +11,9 @@ $doc = strip_tags($doc);
 $sort1 = in_array($sort1, array('od_id', 'od_cart_price', 'od_receipt_price', 'od_cancel_price', 'od_misu', 'od_cash')) ? $sort1 : '';
 $sort2 = in_array($sort2, array('desc', 'asc')) ? $sort2 : 'desc';
 $sel_field = get_search_string($sel_field);
-if( !in_array($sel_field, array('od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'od_invoice')) ){   //검색할 필드 대상이 아니면 값을 제거
+if( !in_array($sel_field, array('od_id', 'it_name', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'od_invoice')) ){   //검색할 필드 대상이 아니면 값을 제거
   $sel_field = '';
 }
-
 
 $ct_status=$od_status;
 $ct_status = get_search_string($ct_status);
