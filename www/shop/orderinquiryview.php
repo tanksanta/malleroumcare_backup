@@ -513,7 +513,7 @@ if($is_inquiryview_sub) {
 <?php
 
 
-  if($_GET["result"] == "Y"&&$_SESSION["productList{$_GET["od_id"]}"]){
+  if($_GET["result"] == "writeEform"&&$_SESSION["productList{$_GET["od_id"]}"]){
     $reload = true;
     $insertProds = addslashes(htmlspecialchars(json_encode($_SESSION["productList{$_GET["od_id"]}"])));
     $staOrdCd = "00";

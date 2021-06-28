@@ -1502,7 +1502,7 @@ if($_POST["penId"]) {
         , uuid = '{$res["data"]["uuid"]}'
       WHERE od_id = '{$od_id}'
     ");
-    goto_url(G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}&result=writeEform");
+    goto_url(G5_SHOP_URL."/orderinquiryview.php?od_id={$od_id}&uid={$uid}&result=writeEform");
   } else {
     sql_query("
     DELETE FROM g5_shop_order
