@@ -534,12 +534,26 @@ if($od["od_b_tel"]){
 
     $("#prodBarNumSaveBtn").click(function() {
       var barcode_arr = [];
-      $('.inputbox li input').each(function(){
-          barcode_arr.push($(this).val());
+      var isDuplicated = false;
+
+      $('.imfomation_box .li_box').each(function(){
+          var temp_arr = [];
+          $(this).find('.inputbox li input').each(function(){
+              if ($(this).val() != "") {
+                  temp_arr.push($(this).val())
+              }
+          });
+          barcode_arr.push(temp_arr);
       });
-    
-      if (isDuplicate(barcode_arr)) {
-          alert("입력하신 바코드 중 중복 값이 있습니다.")
+
+      barcode_arr.forEach(function(arr) {
+          if (isDuplicate(arr)) {
+              isDuplicated = true;
+          }
+      });
+
+      if (isDuplicated) {
+          alert("입력하신 바코드 중 중복 값이 있습니다.");
           return false;
       }
       
