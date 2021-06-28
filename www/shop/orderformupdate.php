@@ -1135,8 +1135,6 @@ $sql = "update {$g5['g5_shop_cart_table']}
 $result = sql_query($sql, false);
 
 
-
-
 // 택배 선불이 아니면 카트에 있는 배송비 0으로 만들어주기
 if ( $od_delivery_type != 'delivery1' ) {
   $sql = "UPDATE {$g5['g5_shop_cart_table']} SET ct_sendcost = 0 WHERE od_id = '$od_id'";
@@ -1175,6 +1173,191 @@ if(!$result) {
   sql_query(" delete from {$g5['g5_shop_order_table']} where od_id = '$od_id' ");
 
   die('<p>고객님의 주문 정보를 처리하는 중 오류가 발생해서 주문이 완료되지 않았습니다.</p><p>'.strtoupper($od_pg).'를 이용한 전자결제(신용카드, 계좌이체, 가상계좌 등)은 자동 취소되었습니다.');
+}
+
+$redirect_dest_url = '';
+
+# 주문신청
+if($_POST["penId"]) {
+  $_SESSION["productList{$od_id}"] = $productList;
+  $_SESSION["deliveryTotalCnt{$od_id}"] = $deliveryTotalCnt;
+
+  $sendData = [];
+  $sendData["usrId"] = $member["mb_id"];
+
+  $sendData["penId"] = $_POST["penId"];
+  $sendData["delGbnCd"] = "";
+  $sendData["ordWayNum"] = "";
+  $sendData["delSerCd"] = "";
+  $sendData["ordNm"] = $_POST["od_b_name"];
+  $sendData["ordCont"] = ($_POST["od_b_hp"]) ? $_POST["od_b_hp"] : $_POST["od_b_tel"];
+  $sendData["ordMeno"] = $_POST["od_memo"];
+  $sendData["ordZip"] = $_POST["od_b_zip"];
+  $sendData["ordAddr"] = $_POST["od_b_addr1"];
+  $sendData["ordAddrDtl"] = $_POST["od_b_addr2"];
+  $sendData["finPayment"] = "{$order_price}";
+  $sendData["payMehCd"] = "0";
+  $sendData["regUsrId"] = $member["mb_id"];
+  $sendData["regUsrIp"] = $_SERVER["REMOTE_ADDR"];
+  $sendData["prods"] = $productList;
+  $sendData["documentId"] = ($_POST["penTypeCd"] == "04") ? "THK101_THK102_THK001_THK002_THK003" : "THK001_THK002_THK003";
+  $sendData["eformType"] = ($_POST["penTypeCd"] == "04") ? "21" : "00";
+  $sendData["conAcco1"] = $_POST["entConAcc01"];
+  $sendData["conAcco2"] = $_POST["entConAcc02"];
+  $sendData["returnUrl"] = G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}&documentId={$sendData["documentId"]}";
+
+  $oCurl = curl_init();
+  curl_setopt($oCurl, CURLOPT_PORT, 9901);
+  curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/order/insert");
+  curl_setopt($oCurl, CURLOPT_POST, 1);
+  curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+  curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+  curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+  $res = curl_exec($oCurl);
+  $res = json_decode($res, true);
+  curl_close($oCurl);
+
+  $stoIdList = [];
+  if($res["errorYN"] == "N") {
+    for($k=0;$k<count($res['data']['stockList']);$k++) {
+      array_push($stoIdList, $res['data']['stockList'][$k]["stoId"]);
+      $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data']['stockList'][$k]["stoId"]."|') where `ct_id` ='".$res['data']['stockList'][$k]["ct_id"]."'";
+      sql_query($sql_ct);
+    }
+    $stoIdList = implode(",", $stoIdList);
+
+    sql_query("
+      UPDATE g5_shop_order SET
+        stoId = '{$stoIdList}',
+        recipient_yn = 'Y'
+      WHERE od_id = '{$od_id}'
+    ");
+
+    $_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
+    $_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
+    sql_query("
+      UPDATE g5_shop_order SET
+        ordId = '{$res["data"]["penOrdId"]}',
+        uuid = '{$res["data"]["uuid"]}'
+      WHERE od_id = '{$od_id}'
+    ");
+    $redirect_dest_url = G5_SHOP_URL."/orderinquiryview.php?od_id={$od_id}&uid={$uid}&result=writeEform";
+  } else {
+    sql_query("
+    DELETE FROM g5_shop_order
+    WHERE od_id = '{$od_id}'
+    ");
+    alert($res["message"],G5_URL);
+  }
+}
+
+# 재고신청
+if(!$_POST["penId"]) {
+  $stoIdList = [];
+
+  $sendData = [];
+  $sendData["usrId"] = $member["mb_id"];
+  $sendData["entId"] = $member["mb_entId"];
+  $prodsSendData = [];
+  $prodsData = [];
+  foreach($productList as $key => $value){
+    $prodsData["prodId"] = $value["prodId"];
+    $prodsData["prodColor"] = $value["prodColor"];
+    $prodsData["prodSize"] = $value["prodSize"];
+    $prodsData["prodManuDate"] = $value["prodManuDate"];
+    $prodsData["prodBarNum"] = $value["prodBarNum"];
+    $prodsData["stoMemo"] = $value["stoMemo"];
+    $prodsData["ct_id"] = $value["ct_id"];
+    array_push($prodsSendData, $prodsData);
+  }
+
+  $sendData["prods"] = $prodsSendData;
+  $oCurl = curl_init();
+  curl_setopt($oCurl, CURLOPT_PORT, 9901);
+  curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/insert");
+  curl_setopt($oCurl, CURLOPT_POST, 1);
+  curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+  curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+  curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+  $res = curl_exec($oCurl);
+  $res = json_decode($res, true);
+  curl_close($oCurl);
+
+  if($res["errorYN"] == "N") {
+    for($k=0; $k<count($res['data']);$k++) {
+      array_push($stoIdList, $res['data'][$k]["stoId"]);
+      $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
+      sql_query($sql_ct);
+    }
+  } else {
+    sql_query("
+    DELETE FROM g5_shop_order
+    WHERE od_id = '{$od_id}'
+    ");
+    alert($res["message"],G5_URL);
+  }
+
+  $stoIdList = implode(",", $stoIdList);
+  sql_query("
+    UPDATE g5_shop_order SET
+      stoId = '{$stoIdList}'
+    WHERE od_id = '{$od_id}'
+  ");
+
+  # 210224 보유재고등록요청
+  if($_POST["od_stock_insert_yn"]) {
+    $stoIdDataList = explode(',',$stoIdList);
+    $stoIdDataList = array_filter($stoIdDataList);
+    $stoIdData = implode("|", $stoIdDataList);
+    $sendData["stoId"] = $stoIdData;
+    $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+    $result_again =$res['data'];
+    $new_sto_ids = array_map(function($data) {
+      return array(
+        'stoId' => $data['stoId'],
+        'prodBarNum' => $data['prodBarNum'],
+        'stateCd' => "01"
+      );
+    }, $result_again);
+
+    $api_data = array(
+      'usrId' => $member["mb_id"],
+      'entId' => $member["mb_entId"],
+      'prods' => $new_sto_ids
+    );
+    $res = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $api_data);
+
+    if($res["errorYN"] == "N") {
+      for($k=0; $k<count($res['data']);$k++){
+        $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|'), where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
+        sql_query($sql_ct);
+      }
+      sql_query("
+        UPDATE g5_shop_order SET
+          od_delivery_yn = 'N',
+          od_stock_insert_yn = 'Y',
+          staOrdCd = '01',
+          od_status = '완료'
+        WHERE od_id = '{$od_id}'
+      ");
+      sql_query("
+        UPDATE g5_shop_cart SET
+          `ct_status` = '보유재고등록',
+          `ct_price` = '0',
+          `ct_sendcost` = '0'
+        WHERE od_id = '{$od_id}'
+      ");
+    } else {
+      sql_query("
+        DELETE FROM g5_shop_order
+        WHERE od_id = '{$od_id}'
+      ");
+      alert($res["message"],G5_URL);
+    }
+  }
+  $redirect_dest_url = G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&amp;uid={$uid}";
 }
 
 // 회원이면서 포인트를 사용했다면 테이블에 사용을 추가
@@ -1437,194 +1620,7 @@ $push = array(
 apms_push($mb_list, $od_id, $od_id, G5_URL, $push);
 // ------------------------------------------------------------------
 
-# 주문신청
-if($_POST["penId"]) {
-  $_SESSION["productList{$od_id}"] = $productList;
-  $_SESSION["deliveryTotalCnt{$od_id}"] = $deliveryTotalCnt;
-
-  $sendData = [];
-  $sendData["usrId"] = $member["mb_id"];
-
-  $sendData["penId"] = $_POST["penId"];
-  $sendData["delGbnCd"] = "";
-  $sendData["ordWayNum"] = "";
-  $sendData["delSerCd"] = "";
-  $sendData["ordNm"] = $_POST["od_b_name"];
-  $sendData["ordCont"] = ($_POST["od_b_hp"]) ? $_POST["od_b_hp"] : $_POST["od_b_tel"];
-  $sendData["ordMeno"] = $_POST["od_memo"];
-  $sendData["ordZip"] = $_POST["od_b_zip"];
-  $sendData["ordAddr"] = $_POST["od_b_addr1"];
-  $sendData["ordAddrDtl"] = $_POST["od_b_addr2"];
-  $sendData["finPayment"] = "{$order_price}";
-  $sendData["payMehCd"] = "0";
-  $sendData["regUsrId"] = $member["mb_id"];
-  $sendData["regUsrIp"] = $_SERVER["REMOTE_ADDR"];
-  $sendData["prods"] = $productList;
-  $sendData["documentId"] = ($_POST["penTypeCd"] == "04") ? "THK101_THK102_THK001_THK002_THK003" : "THK001_THK002_THK003";
-  $sendData["eformType"] = ($_POST["penTypeCd"] == "04") ? "21" : "00";
-  $sendData["conAcco1"] = $_POST["entConAcc01"];
-  $sendData["conAcco2"] = $_POST["entConAcc02"];
-  $sendData["returnUrl"] = G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}&documentId={$sendData["documentId"]}";
-
-  $oCurl = curl_init();
-  curl_setopt($oCurl, CURLOPT_PORT, 9901);
-  curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/order/insert");
-  curl_setopt($oCurl, CURLOPT_POST, 1);
-  curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-  curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-  curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-  $res = curl_exec($oCurl);
-  $res = json_decode($res, true);
-  curl_close($oCurl);
-
-  $stoIdList = [];
-  if($res["errorYN"] == "N") {
-    for($k=0;$k<count($res['data']['stockList']);$k++) {
-      array_push($stoIdList, $res['data']['stockList'][$k]["stoId"]);
-      $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data']['stockList'][$k]["stoId"]."|') where `ct_id` ='".$res['data']['stockList'][$k]["ct_id"]."'";
-      sql_query($sql_ct);
-    }
-    $stoIdList = implode(",", $stoIdList);
-
-    sql_query("
-      UPDATE g5_shop_order SET
-        stoId = '{$stoIdList}'
-        , recipient_yn = 'Y'
-      WHERE od_id = '{$od_id}'
-    ");
-
-    $_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
-    $_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
-    sql_query("
-      UPDATE g5_shop_order SET
-        ordId = '{$res["data"]["penOrdId"]}'
-        , uuid = '{$res["data"]["uuid"]}'
-      WHERE od_id = '{$od_id}'
-    ");
-    goto_url(G5_SHOP_URL."/orderinquiryview.php?od_id={$od_id}&uid={$uid}&result=writeEform");
-  } else {
-    sql_query("
-    DELETE FROM g5_shop_order
-    WHERE od_id = '{$od_id}'
-    ");
-    alert($res["message"],G5_URL);
-  }
-}
-
-# 재고신청
-if(!$_POST["penId"]) {
-  $stoIdList = [];
-
-  $sendData = [];
-  $sendData["usrId"] = $member["mb_id"];
-  $sendData["entId"] = $member["mb_entId"];
-  $prodsSendData = [];
-  $prodsData = [];
-  foreach($productList as $key => $value){
-    $prodsData["prodId"] = $value["prodId"];
-    $prodsData["prodColor"] = $value["prodColor"];
-    $prodsData["prodSize"] = $value["prodSize"];
-    $prodsData["prodManuDate"] = $value["prodManuDate"];
-    $prodsData["prodBarNum"] = $value["prodBarNum"];
-    $prodsData["stoMemo"] = $value["stoMemo"];
-    $prodsData["ct_id"] = $value["ct_id"];
-    array_push($prodsSendData, $prodsData);
-  }
-
-  $sendData["prods"] = $prodsSendData;
-  $oCurl = curl_init();
-  curl_setopt($oCurl, CURLOPT_PORT, 9901);
-  curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/insert");
-  curl_setopt($oCurl, CURLOPT_POST, 1);
-  curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-  curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-  curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-  $res = curl_exec($oCurl);
-  $res = json_decode($res, true);
-  curl_close($oCurl);
-
-  if($res["errorYN"] == "N") {
-    for($k=0; $k<count($res['data']);$k++) {
-      array_push($stoIdList, $res['data'][$k]["stoId"]);
-      $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
-      sql_query($sql_ct);
-    }
-  } else {
-    sql_query("
-    DELETE FROM g5_shop_order
-    WHERE od_id = '{$od_id}'
-    ");
-    // echo print_r($res);
-    // return false;
-    // alert('시스템 오류, 주문이 불가능합니다.',G5_URL);
-    alert($res["message"],G5_URL);
-
-  }
-
-  $stoIdList = implode(",", $stoIdList);
-  sql_query("
-    UPDATE g5_shop_order SET
-      stoId = '{$stoIdList}'
-    WHERE od_id = '{$od_id}'
-  ");
-
-  # 210224 보유재고등록요청
-  if($_POST["od_stock_insert_yn"]) {
-    $stoIdDataList = explode(',',$stoIdList);
-    $stoIdDataList=array_filter($stoIdDataList);
-    $stoIdData = implode("|", $stoIdDataList);
-    $sendData["stoId"] = $stoIdData;
-    $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
-    $result_again =$res['data'];
-    $new_sto_ids = array_map(function($data) {
-      return array(
-        'stoId' => $data['stoId'],
-        'prodBarNum' => $data['prodBarNum'],
-        'stateCd' => "01"
-      );
-    }, $result_again);
-
-    $api_data = array(
-      'usrId' => $member["mb_id"],
-      'entId' => $member["mb_entId"],
-      'prods' => $new_sto_ids
-    );
-    $res = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $api_data);
-
-    if($res["errorYN"] == "N") {
-      for($k=0; $k<count($res['data']);$k++){
-        array_push($stoIdList, $res['data'][$k]["stoId"]);
-        $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|'), where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
-        sql_query($sql_ct);
-      }
-      sql_query("
-        UPDATE g5_shop_order SET
-            od_delivery_yn = 'N'
-          , od_stock_insert_yn = 'Y'
-          , staOrdCd = '01'
-          , od_status = '완료'
-        WHERE od_id = '{$od_id}'
-      ");
-      sql_query("
-        UPDATE g5_shop_cart SET
-                        `ct_status` = '보유재고등록',
-            `ct_price` = '0',
-            `ct_sendcost` = '0'
-        WHERE od_id = '{$od_id}'
-      ");
-    } else {
-      sql_query("
-      DELETE FROM g5_shop_order
-      WHERE od_id = '{$od_id}'
-      ");
-      alert($res["message"],G5_URL);
-    }
-  }
-  goto_url(G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&amp;uid={$uid}");
-}
-
+goto_url($redirect_dest_url);
 ?>
 
 <html>
