@@ -1439,21 +1439,6 @@ apms_push($mb_list, $od_id, $od_id, G5_URL, $push);
 
 # 주문신청
 if($_POST["penId"]) {
-  ///////// 테스트 목적 //////////
-  $use_new_eform = true;
-  /*if($member['mb_id'] == '123456789') {
-      $use_new_eform = true;
-  }*/
-  /////////////////////////////
-
-  if(!$use_new_eform) {
-    sql_query("
-        UPDATE g5_shop_order SET
-            od_del_yn = 'Y'
-        WHERE od_id = '{$od_id}'
-    ");
-  }
-
   $_SESSION["productList{$od_id}"] = $productList;
   $_SESSION["deliveryTotalCnt{$od_id}"] = $deliveryTotalCnt;
 
@@ -1511,17 +1496,13 @@ if($_POST["penId"]) {
 
     $_SESSION["uuid{$od_id}"] = $res["data"]["uuid"];
     $_SESSION["penOrdId{$od_id}"] = $res["data"]["penOrdId"];
-    if($use_new_eform) {
-      sql_query("
-        UPDATE g5_shop_order SET
-          ordId = '{$res["data"]["penOrdId"]}'
-          , uuid = '{$res["data"]["uuid"]}'
-        WHERE od_id = '{$od_id}'
-      ");
-      goto_url(G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}&result=writeEform");
-    } else {
-      goto_url(G5_SHOP_URL."/orderformupdateReturn.php?uuid={$res["data"]["uuid"]}&ordId={$res["data"]["penOrdId"]}&od_id={$od_id}&documentId={$sendData["documentId"]}");
-    }
+    sql_query("
+      UPDATE g5_shop_order SET
+        ordId = '{$res["data"]["penOrdId"]}'
+        , uuid = '{$res["data"]["uuid"]}'
+      WHERE od_id = '{$od_id}'
+    ");
+    goto_url(G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&uid={$uid}&result=writeEform");
   } else {
     sql_query("
     DELETE FROM g5_shop_order
