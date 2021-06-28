@@ -140,6 +140,56 @@ scrollToTop();
 </div>
 
 
+<div class="main_top_service_info">
+	<div class="top_area">
+		<div class="logo"><img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_logo_hd.png"  ></div>
+		<div class="btn_login"><a href="/bbs/login.php">통합관리시스템로그인 ▶</a></div>
+	</div>
+	<div class="service_desc">
+		<div class="txt_area">
+			<p><span class="line"> </span>
+				오직 <span>이로움</span>만의 <span>특별한 관리시스템</span></p>
+			<p>장기요양기관</p>
+			<p>통합관리시스템</p>
+			<p>이로움의 체계적인 관리시스템을 경험하세요.</p>
+		</div>
+		<div class="service_wrap">
+			<ul>
+				<li>
+					<img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_top_service_icon_01.png"  >
+					복지용구급여
+					<div class="desc_area">
+						
+					</div>
+				</li>
+				<li>
+					<img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_top_service_icon_02.png"  >
+					방문급여
+				</li>
+				<li>
+					<img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_top_service_icon_03.png"  >
+					주야간보호급여
+				</li>
+				<li>
+					<img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_top_service_icon_04.png"  >
+					시설급여
+				</li>
+				<li>
+					<img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_top_service_icon_05.png"  >
+					재무회계
+				</li>
+				<li>
+					<img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_top_service_icon_06.png"  >
+					시니어타운
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="service_footer">
+		이로움만의 장기요양기관 통합관리시스템으로 모든 것을 쉽고 편하게 관리해보세요.
+	</div>
+</div>
+
 <?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")&&$_COOKIE["viewType"]=="basic"){ ?>
         <div class="top_mode_area">
             <?=$mood_type_string;?> 모드 실행중 입니다.
