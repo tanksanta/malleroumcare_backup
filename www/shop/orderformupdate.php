@@ -34,32 +34,56 @@ $od_delivery_insert = 0;
 $od_delivery_total = 0;
 $error = "";
 // 장바구니 상품 재고 검사
-$sql = " select MT.it_id,
-                MT.ct_qty,
-                MT.it_name,
-                MT.io_id,
-                MT.io_type,
-                MT.ct_option,
-                MT.ct_qty,
-                MT.ct_id,
-                ( SELECT it_time FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_time,
-                ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn,
-                ( SELECT ProdPayCode FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodPayCode,
-                ( SELECT it_delivery_cnt FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_cnt,
-                ( SELECT it_delivery_price FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_price
-          from {$g5['g5_shop_cart_table']} MT
+$sql = " select C.it_id,
+                C.ct_qty,
+                C.it_name,
+                C.io_id,
+                C.io_type,
+                C.ct_option,
+                C.ct_qty,
+                C.ct_id,
+                I.it_time,
+                I.prodSupYn,
+                I.ProdPayCode as prodPayCode,
+                I.it_delivery_cnt,
+                I.it_delivery_price,
+                I.it_option_subject
+          from {$g5['g5_shop_cart_table']} C
+          left join {$g5['g5_shop_item_table']} I on C.it_id = I.it_id
           where od_id = '$tmp_cart_id'
           and ct_select = '1' ";
 
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++) {
+
+  # 옵션값 가져오기
+  $prodColor = $prodSize = $prodOption = null;
+  if($row["io_id"]) { // 옵션값이 있으면
+    $io_subjects = explode(',', $row['it_option_subject']);
+    $io_ids = explode(chr(30), $row["io_id"]);
+    for($io_idx = 0; $io_idx < count($io_subjects); $io_idx++) {
+      switch($io_subjects[$io_idx]) {
+        case '색상':
+          $prodColor = $io_ids[$io_idx];
+          break;
+        case '사이즈':
+          $prodSize = $io_ids[$io_idx];
+          break;
+        default:
+          $prodOption = $io_ids[$io_idx];
+          break;
+      }
+    }
+  }
+
   # 상품목록 수급자 주문 아니면
-  for($ii = 0; $ii < $row["ct_qty"]; $ii++) {
-    if(!$_POST["penId"]) {
+  if(!$_POST["penId"]) {
+    for($ii = 0; $ii < $row["ct_qty"]; $ii++) {
       $thisProductData = [];
       $thisProductData["prodId"] = $row["it_id"];
-      $thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
-      $thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
+      $thisProductData["prodColor"] = $prodColor;
+      $thisProductData["prodSize"] = $prodSize;
+      $thisProductData["prodOption"] = $prodOption;
       $thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
       $thisProductData["prodManuDate"] = date("Y-m-d");
       $thisProductData["stoMemo"] = $_POST["od_memo"];
@@ -131,8 +155,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
         for($ii = 0; $ii < $row["ct_qty"]; $ii++) {
           $thisProductData = [];
           $thisProductData["prodId"] = $row["it_id"];
-          $thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
-          $thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
+          $thisProductData["prodColor"] = $prodColor;
+          $thisProductData["prodSize"] = $prodSize;
+          $thisProductData["prodOption"] = $prodOption;
           $thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
           $thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
           $thisProductData["prodPayCode"] = $row["prodPayCode"];
@@ -165,8 +190,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
         for($ii = 0; $ii < $ct_stock_qty_v; $ii++) {
           $thisProductData = [];
           $thisProductData["prodId"] = $row["it_id"];
-          $thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
-          $thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
+          $thisProductData["prodColor"] = $prodColor;
+          $thisProductData["prodSize"] = $prodSize;
+          $thisProductData["prodOption"] = $prodOption;
           $thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
           $thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
           $thisProductData["prodPayCode"] = $row["prodPayCode"];
@@ -202,8 +228,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
         for($ii = 0; $ii < $ct_new_v; $ii++) {
           $thisProductData = [];
           $thisProductData["prodId"] = $row["it_id"];
-          $thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
-          $thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
+          $thisProductData["prodColor"] = $prodColor;
+          $thisProductData["prodSize"] = $prodSize;
+          $thisProductData["prodOption"] = $prodOption;
           $thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
           $thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
           $thisProductData["prodPayCode"] = $row["prodPayCode"];
@@ -227,8 +254,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
       for($ii = 0; $ii < $row["ct_qty"]; $ii++){
         $thisProductData = [];
         $thisProductData["prodId"] = $row["it_id"];
-        $thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
-        $thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
+        $thisProductData["prodColor"] = $prodColor;
+        $thisProductData["prodSize"] = $prodSize;
+        $thisProductData["prodOption"] = $prodOption;
         $thisProductData["prodBarNum"] = $_POST["prodBarNum_{$postProdBarNumCnt}"];
         $thisProductData["penStaSeq"] = "".(count($productList) + 1)."";
         $thisProductData["prodPayCode"] = $row["prodPayCode"];
@@ -1261,10 +1289,11 @@ if(!$_POST["penId"]) {
   $sendData["entId"] = $member["mb_entId"];
   $prodsSendData = [];
   $prodsData = [];
-  foreach($productList as $key => $value){
+  foreach($productList as $key => $value) {
     $prodsData["prodId"] = $value["prodId"];
     $prodsData["prodColor"] = $value["prodColor"];
     $prodsData["prodSize"] = $value["prodSize"];
+    $prodsData["prodOption"] = $value["prodOption"];
     $prodsData["prodManuDate"] = $value["prodManuDate"];
     $prodsData["prodBarNum"] = $value["prodBarNum"];
     $prodsData["stoMemo"] = $value["stoMemo"];
