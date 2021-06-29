@@ -325,7 +325,7 @@ if($od["od_b_tel"]){
   var this_index = $(this).closest('li').index();
 
   $(this).closest('ul').find('.barcode_add').hide();
-  if(last_index !== this_index)
+  if(last_index !== this_index && $(this).val().length == 12)
       $(this).closest('li').find('.barcode_add').show();
   });
 

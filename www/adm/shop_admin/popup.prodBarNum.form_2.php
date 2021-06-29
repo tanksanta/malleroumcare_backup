@@ -234,7 +234,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		var this_index = $(this).closest('li').index();
 
 		$(this).closest('ul').find('.barcode_add').hide();
-		if(last_index !== this_index)
+		if(last_index !== this_index && $(this).val().length == 12)
 			$(this).closest('li').find('.barcode_add').show();
 		});
 
