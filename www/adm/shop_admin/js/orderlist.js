@@ -596,6 +596,7 @@ $(function () {
           alert(data.msg);
         }
         if (data.result === 'success') {
+          alert('출고담당자가 지정되었습니다. ');
           location.reload();
         }
       });
