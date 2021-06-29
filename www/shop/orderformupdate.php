@@ -61,6 +61,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   if($row["io_id"]) { // 옵션값이 있으면
     $io_subjects = explode(',', $row['it_option_subject']);
     $io_ids = explode(chr(30), $row["io_id"]);
+
     for($io_idx = 0; $io_idx < count($io_subjects); $io_idx++) {
       switch($io_subjects[$io_idx]) {
         case '색상':
@@ -71,7 +72,6 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
           break;
         default:
           $prodOption = $io_ids[$io_idx];
-          break;
       }
     }
   }
@@ -1276,7 +1276,7 @@ if($_POST["penId"]) {
     DELETE FROM g5_shop_order
     WHERE od_id = '{$od_id}'
     ");
-    alert($res["message"],G5_URL);
+    alert(str_replace(array("\r\n", "\n", "\r"), ' ', $res["message"]),G5_URL);
   }
 }
 
@@ -1325,7 +1325,7 @@ if(!$_POST["penId"]) {
       DELETE FROM g5_shop_order
       WHERE od_id = '{$od_id}'
     ");
-    alert($res["message"],G5_URL);
+    alert(str_replace(array("\r\n", "\n", "\r"), ' ', $res["message"]),G5_URL);
   }
 
   $stoIdList = implode(",", $stoIdList);
@@ -1383,7 +1383,7 @@ if(!$_POST["penId"]) {
         DELETE FROM g5_shop_order
         WHERE od_id = '{$od_id}'
       ");
-      alert($res["message"],G5_URL);
+      alert(str_replace(array("\r\n", "\n", "\r"), ' ', $res["message"]),G5_URL);
     }
   }
   $redirect_dest_url = G5_SHOP_URL."/orderinquiryview.php?result=Y&od_id={$od_id}&amp;uid={$uid}";
