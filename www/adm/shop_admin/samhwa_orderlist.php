@@ -1109,7 +1109,7 @@ function orderListExcelDownload(type) {
 
 //출고담당자
 $(document).on("change", ".ct_manager", function(e){
-  if(confirm('출고담당자를 변경하시겠습니까?')) {
+  // if(confirm('출고담당자를 변경하시겠습니까?')) {
 
     var ct_manager = $(this).val();
     var ct_id = $(this).data('ct-id');
@@ -1130,9 +1130,9 @@ $(document).on("change", ".ct_manager", function(e){
         alert('실패하였습니다.');
       }
     });
-  } else {
+  // } else {
     // window.location.reload(); 
-  }
+  // }
 });
         
 </script>
