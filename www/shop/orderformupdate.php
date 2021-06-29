@@ -5,7 +5,7 @@ include_once(G5_LIB_PATH.'/mailer.lib.php');
 $od_receipt_bank = '';
 
 //이니시스 lpay 요청으로 왔다면 $default['de_pg_service'] 값을 이니시스로 변경합니다.
-if( $od_settle_case == 'lpay' ){
+if( $od_settle_case == 'lpay' ) {
   $default['de_pg_service'] = 'inicis';
 }
 
@@ -94,7 +94,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   }
 
   # 비유통상품 금액저장
-  if($row["prodSupYn"] == "N"){
+  if($row["prodSupYn"] == "N") {
     //    sql_query("
     //      UPDATE {$g5["g5_shop_cart_table"]} SET
     //        ct_price = 0
@@ -1293,8 +1293,8 @@ if(!$_POST["penId"]) {
     }
   } else {
     sql_query("
-    DELETE FROM g5_shop_order
-    WHERE od_id = '{$od_id}'
+      DELETE FROM g5_shop_order
+      WHERE od_id = '{$od_id}'
     ");
     alert($res["message"],G5_URL);
   }

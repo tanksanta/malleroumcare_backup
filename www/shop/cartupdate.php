@@ -152,7 +152,7 @@ else // 장바구니에 담기
     }
 
     // 본인인증, 성인인증체크
-    if(!$is_admin) {                          
+    if(!$is_admin) {
       $msg = shop_member_cert_check($it_id, 'item');
       if($msg)
         alert($msg, G5_SHOP_URL);

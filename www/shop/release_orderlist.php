@@ -96,7 +96,7 @@ $sub_menu = '400402';
 	<div id="popupHeaderTopWrap">
     <div class="title">출고리스트</div>
     <div class="close">
-    	<a href="javascript:history.back();">
+    	<a href="<?=G5_URL?>">
         &times;
     	</a>
     </div>
