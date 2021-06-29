@@ -282,7 +282,11 @@ scrollToTop();
 			$('#samhwa-m-menu .wrap').addClass('active');
 		});
 
-		$('#samhwa-m-menu .wrap .closer').click(function() {
+    $('#samhwa-m-menu .wrap').click(function(e) {
+      e.stopPropagation();
+    });
+
+		$('#samhwa-m-menu .wrap .closer, #samhwa-m-menu').click(function(e) {
 			$('#samhwa-m-menu').hide(100);
 			$('#samhwa-m-menu .wrap').removeClass('active');
 
