@@ -57,7 +57,7 @@ $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++) {
 
   # 옵션값 가져오기
-  $prodColor = $prodSize = $prodOption = null;
+  $prodColor = $prodSize = $prodOption = '';
   if($row["io_id"]) { // 옵션값이 있으면
     $io_subjects = explode(',', $row['it_option_subject']);
     $io_ids = explode(chr(30), $row["io_id"]);
