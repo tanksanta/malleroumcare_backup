@@ -247,8 +247,9 @@ scrollToTop();
 					</ul>
 					<div class="cate_head">복지용구 품목</div>
 					<ul class="cate_menu">
-						<li><a href="/shop/list.php?ca_id=10" title="판매품목">판매품목</a></li>
-						<li><a href="/shop/list.php?ca_id=20" title="대여품목">대여품목</a></li>
+						<li><a href="/shop/list.php?ca_id=10"  >판매품목</a></li>
+						<li><a href="/shop/list.php?ca_id=20"  >대여품목</a></li>
+						<li><a href="/shop/list.php?ca_id=70"  >비급여품목</a></li>
 					</ul>
 				<a href="/thema/eroumcare/assets/eroum_catalog_2021_2_2.pdf" class="cata_link" target="_blank" alt="이달의 카달로그">
 					<div class="catalogWrap">
@@ -350,6 +351,7 @@ scrollToTop();
 				<ul class="nav nav-right">
 					<li><a href="/shop/list.php?ca_id=10"  >판매품목</a></li>
 					<li><a href="/shop/list.php?ca_id=20" >대여품목</a></li>
+					<li><a href="/shop/list.php?ca_id=70" >비급여품목</a></li>
 					<li class="catalog">
 						<a href="/thema/eroumcare/assets/eroum_catalog_2021_2_2.pdf" target="_blank"  >
 							<div class="catalogWrap">

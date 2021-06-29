@@ -751,7 +751,7 @@ pre{white-space: pre-wrap;}
 .top_common_area > .logoWrap { position: absolute; left: 0; right: 0; top: 50px; }
 .top_common_area .nav { height: 40px; }
 .top_common_area .nav li { display:inline-block; }
-.top_common_area .nav li a{ color: #333; font-size: 18px; line-height: 20px; padding: 10px 24px; }
+.top_common_area .nav li a{ color: #333; font-size: 18px; line-height: 20px; padding: 10px 15px; }
 .top_common_area .nav li a:hover, .top_common_area .nav li a:focus { color: inherit; background: none; }
 .top_common_area .nav li.catalog a { padding: 0 20px; }
 .top_common_area .nav li.catalog a .catalogWrap { background-color: #828282; color: #fff; font-size: 14px; line-height: 16px; padding: 10px; margin: 2px 0; border-radius: 8px; }
