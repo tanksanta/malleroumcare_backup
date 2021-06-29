@@ -254,6 +254,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		p_num++;
 		$(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
 		}
+		notallLengthCheck();
 	});
 
         //maxnum 지정

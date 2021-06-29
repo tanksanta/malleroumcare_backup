@@ -251,9 +251,10 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 		}
 
 		for(var i = li_num+1; i<=li_last; i++){
-		p_num++;
-		$(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
-	}
+			p_num++;
+			$(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+		}
+		notallLengthCheck();
 	});
 
 

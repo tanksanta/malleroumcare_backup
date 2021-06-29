@@ -345,6 +345,7 @@ if($od["od_b_tel"]){
       p_num++;
       $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
   }
+  notallLengthCheck();
   });
 
 
