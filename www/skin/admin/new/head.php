@@ -128,8 +128,8 @@ function imageview(id, w, h)
 			<?php if(defined('G5_USE_SHOP')) { ?>
 			<li><a href="<?php echo G5_ADMIN_URL ?>/shop_admin/configform.php">쇼핑몰환경</a></li> -->
 			<li><a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/samhwa_orderlist.php" >통합주문리스트</a></li>
+			<li><a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/samhwa_deliverylist.php">출고리스트</a></li>
 			<li><a href="<?php echo G5_ADMIN_URL; ?>/member_list.php">회원리스트</a></li>
-			<li><a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/albank.php">무통장입금정보</a></li>
 			<li><a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/itemlist.php">상품정보</a></li>
 			<li><a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/outsourcinglist.php">외부발주</a></li>
 			<!-- <li><a href="<?php echo G5_SHOP_URL ?>/" target="_blank">쇼핑몰</a></li> -->
