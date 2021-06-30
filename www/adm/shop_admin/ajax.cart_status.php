@@ -55,10 +55,14 @@
         }
 
             //완료 판매완료로 바꿈
-            $stateCd="06";
+            // 재고 주문 일시 배송 완료 -> 01
+            // 수급자 신규 주문 일시 배송 완료 -> 02
+            $stateCd = "06";
             switch ($_POST['step']) {
-                case '배송':    $stateCd="01"; break;
-                case '완료':    $stateCd="01"; break;
+                case '배송':
+                case '완료':
+                    $stateCd = is_pen_order($od_id) ? "02" : "01";
+                    break;
             }
             $stoIdDataList = explode('|',$stoId);
             $stoIdDataList=array_filter($stoIdDataList);

@@ -870,3 +870,18 @@ function get_ent_id_by_od_id($od_id) {
     
     return $mb['mb_entId'];
 }
+
+function is_pen_order($od_id) {
+    global $g5;
+    
+    $sql = "SELECT * FROM {$g5['g5_shop_order_table']} WHERE od_id = '$od_id' ";
+    $od = sql_fetch($sql);
+    
+    $result = $od['od_penId'];
+    
+    if (empty($result)) {
+        return false;
+    } else {
+        return true;
+    }
+}
