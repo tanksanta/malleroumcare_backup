@@ -169,7 +169,7 @@ $order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
 // 설정값 불러오기
 @include_once($order_skin_path.'/config.skin.php');
 
-$g5['title'] = '주문내역조회';
+$g5['title'] = '판매재고상세';
 include_once('./_head.php');
 
 $sql = 'SELECT * FROM `g5_shop_item` WHERE `it_id`="'.$_GET['prodId'].'"';
