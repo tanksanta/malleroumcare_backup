@@ -294,8 +294,8 @@ label {
         </td>
     </tr>
     <tr>
-        <th scope="row"><label for="mb_email">이메일(세금계산서 수신용)<strong class="sound_only">필수</strong></label></th>
-        <td><input type="text" name="mb_email" value="<?php echo $mb['mb_email'] ?>" id="mb_email" maxlength="100" required class="required frm_input email" size="30"></td>
+        <th scope="row"><label for="reg_mb_email">이메일(세금계산서 수신용)<strong class="sound_only">필수</strong></label></th>
+        <td><input type="text" name="mb_email" value="<?php echo $mb['mb_email'] ?>" id="reg_mb_email" maxlength="100" required class="required frm_input email" size="30"></td>
         <!-- <th scope="row"><label for="mb_homepage">홈페이지</label></th>
         <td><input type="text" name="mb_homepage" value="<?php echo $mb['mb_homepage'] ?>" id="mb_homepage" class="frm_input" maxlength="255" size="15"></td> -->
     </tr>
@@ -1266,7 +1266,7 @@ function fmember_submit()
     sendData.append("usrPnum", mb_hp);//관리자 휴대폰번호
     sendData.append("entPnum", mb_tel); //사업소 전화번호
     sendData.append("entFax", mb_fax); //사업소 팩스
-    sendData.append("usrMail", $("#mb_email").val());//메일
+    sendData.append("usrMail", $("#reg_mb_email").val());//메일
 
     <?php if($w){ ?> 
             sendData.append("entId", "<?=$mb['mb_entId']?>");
@@ -1289,7 +1289,7 @@ function fmember_submit()
     sendData.append("usrZip", $("#mb_zip").val()); //관리자 우편번호
     sendData.append("usrAddr", $("#mb_addr1").val());//관리자 주소
     sendData.append("usrAddrDetail", $("#mb_addr2").val())+$("#mb_addr3").val();//관리자 주소 상세
-    sendData.append("entMail", $("#mb_email").val());//메일
+    sendData.append("entMail", $("#reg_mb_email").val());//메일
 
 
 

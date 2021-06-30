@@ -1273,8 +1273,8 @@ if($_POST["penId"]) {
     $redirect_dest_url = G5_SHOP_URL."/orderinquiryview.php?od_id={$od_id}&uid={$uid}&result=writeEform";
   } else {
     sql_query("
-    DELETE FROM g5_shop_order
-    WHERE od_id = '{$od_id}'
+      DELETE FROM g5_shop_order
+      WHERE od_id = '{$od_id}'
     ");
     alert(str_replace(array("\r\n", "\n", "\r"), ' ', $res["message"]),G5_URL);
   }
