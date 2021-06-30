@@ -122,7 +122,7 @@ if ( THEMA_KEY == 'partner') {
 // 주문폼 출력체크
 $is_orderform = 1;
 if($it['pt_order']) {
-    $is_orderable = false;
+  $is_orderable = false;
   $is_orderform = '';
 }
 if($is_orderable) {
@@ -932,8 +932,6 @@ function selected_recipient(penId){
   document.getElementById('penId_r').value=penId;
   document.getElementById('recipient_info').submit();
 }
-</script>
-<script type="text/javascript">
 $(function(){
   //바코드 클릭시 팝업
   $(document).on("click", ".prodBarNumCntBtn_2", function(e){

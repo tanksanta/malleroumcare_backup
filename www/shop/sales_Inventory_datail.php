@@ -1,6 +1,11 @@
 <?php
 include_once('./_common.php');
 
+// 비회원인 경우
+if (!$is_member) {
+  goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/orderinquiry.php'));
+}
+
 if(USE_G5_THEME && defined('G5_THEME_PATH')) {
   require_once(G5_SHOP_PATH.'/yc/item.php');
   return;
@@ -21,7 +26,6 @@ if(isset($type) && $type) {
   $type_where = " and it_type{$type} = '1'";
   $type_qstr = '&amp;type='.$type;
 }
-
 // 페이지 초기화
 $is_item = true;
 $itempage = $page;
@@ -49,12 +53,7 @@ for($i = 0; $row = sql_fetch_array($thisOptionQuery); $i++){
 $it["optionList"] = $thisOptionList;
 
 if (!$it['it_id'])
-    alert('자료가 없습니다.');
-
-// 멤버쉽 확인 ------------------------
-if (function_exists('apms_membership_item')) {
-  apms_membership_item($it['it_id']);
-}
+  alert('자료가 없습니다.');
 
 // 이용권한 확인 ------------------------
 $is_author = ($is_member && $it['pt_id'] && $it['pt_id'] == $member['mb_id']) ? true : false;
@@ -99,35 +98,11 @@ if ($is_admin || $is_author || $is_purchaser) {
   $it['pt_explan'] = $it['pt_mobile_explan'] = '';
 }
 
-// ----------------------------------------------------------
-
-// 공통쿼리
-if ( THEMA_KEY == 'partner') {
-  $it_sql_common = " it_use_partner = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";
-}else{
-  $it_sql_common = " it_use = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";
-}
-//$it_sql_common = " it_use = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";
-
-
-
-
 // 보안서버경로
 if (G5_HTTPS_DOMAIN)
-    $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/cartupdate.php';
+  $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/cartupdate.php';
 else
-    $action_url = './cartupdate.php';
-
-
-// 관련상품의 개수를 얻음
-$item_relation_count = 0;
-if($default['de_rel_list_use']) {
-  $sql = " select count(*) as cnt from {$g5['g5_shop_item_relation_table']} a left join {$g5['g5_shop_item_table']} b on (a.it_id2=b.it_id) where a.it_id = '{$it['it_id']}' and b.it_use='1' ";
-  $row = sql_fetch($sql);
-  $item_relation_count = $row['cnt'];
-}
-$is_relation = ($item_relation_count > 0) ? true : false;
-
+  $action_url = './cartupdate.php';
 
 // 상품품절체크
 if(G5_SOLDOUT_CHECK)
@@ -144,7 +119,6 @@ if ( THEMA_KEY == 'partner') {
     $is_orderable = false;
   }
 }
-
 // 주문폼 출력체크
 $is_orderform = 1;
 if($it['pt_order']) {
@@ -154,62 +128,32 @@ if($it['pt_order']) {
 if($is_orderable) {
   // 선택 옵션
   $option_item = get_item_options($it['it_id'], $it['it_option_subject'], '');
-
   // 추가 옵션
   $supply_item = get_item_supply($it['it_id'], $it['it_supply_subject'], '');
-
   // 상품 선택옵션 수
   $option_count = 0;
   if($it['it_option_subject']) {
     $temp = explode(',', $it['it_option_subject']);
     $option_count = count($temp);
   }
-
   // 상품 추가옵션 수
   $supply_count = 0;
   if($it['it_supply_subject']) {
     $temp = explode(',', $it['it_supply_subject']);
     $supply_count = count($temp);
   }
-
   include_once(G5_SHOP_PATH.'/settle_naverpay.inc.php');
 }
-
-
 
 // 스킨경로
 $item_skin = apms_itemview_skin($at['item'], $ca_id, $it['ca_id']);
 $item_skin_path = G5_SKIN_PATH.'/apms/item/'.$item_skin;
 $item_skin_url = G5_SKIN_URL.'/apms/item/'.$item_skin;
 $item_skin_file = $item_skin_path.'/item.skin2.php';
-?>
-
-
-<?php
-include_once('./_common.php');
-
-if(USE_G5_THEME && defined('G5_THEME_PATH')) {
-  require_once(G5_SHOP_PATH.'/yc/orderinquiry.php');
-  return;
-}
 
 define("_ORDERINQUIRY_", true);
 
 $od_pwd = get_encrypt_string($od_pwd);
-
-// 회원인 경우
-if ($is_member)
-{
-  $sql_common = " from {$g5['g5_shop_order_table']} where mb_id = '{$member['mb_id']}' AND od_del_yn = 'N' ";
-}
-else if ($od_id && $od_pwd) // 비회원인 경우 주문서번호와 비밀번호가 넘어왔다면
-{
-  $sql_common = " from {$g5['g5_shop_order_table']} where od_id = '$od_id' and od_pwd = '$od_pwd' AND od_del_yn = 'N' ";
-}
-else // 그렇지 않다면 로그인으로 가기
-{
-  goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/orderinquiry.php'));
-}
 
 // Page ID
 $pid = ($pid) ? $pid : 'inquiry';
@@ -222,44 +166,14 @@ $skin_name = $skin_row['order_'.MOBILE_.'skin'];
 $order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_name;
 $order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
-// 스킨 체크
-list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url);
-
-// 스킨설정
-$wset = array();
-if($skin_row['order_'.MOBILE_.'set']) {
-  $wset = apms_unpack($skin_row['order_'.MOBILE_.'set']);
-}
-
-// 데모
-if($is_demo) {
-  @include ($demo_setup_file);
-}
-
 // 설정값 불러오기
-$is_inquiry_sub = false;
 @include_once($order_skin_path.'/config.skin.php');
 
 $g5['title'] = '주문내역조회';
+include_once('./_head.php');
 
-if($is_inquiry_sub) {
-  include_once(G5_PATH.'/head.sub.php');
-  if(!USE_G5_THEME) @include_once(THEMA_PATH.'/head.sub.php');
-} else {
-  include_once('./_head.php');
-}
-
-$skin_path = $order_skin_path;
-$skin_url = $order_skin_url;
-
-// 셋업
-$setup_href = '';
-if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
-  $setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
-}
 $sql = 'SELECT * FROM `g5_shop_item` WHERE `it_id`="'.$_GET['prodId'].'"';
 $row = sql_fetch($sql);
-
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
 <section id="stock" class="wrap" >
@@ -398,70 +312,6 @@ $row = sql_fetch($sql);
           }
           $total_block = ceil($total_page/$b_pageNum_listCnt);
           ?>
-          <!-- 수급자신청 -->
-          <style>
-            /* .popup{display:none;} */
-            #order_recipientBox{
-              position:absolute;
-              /* top:20%; */
-              left:50%;
-              width:100px;
-              height:100px;
-              background:#f00;
-              margin:-50px 0 0 -50px;
-            }
-            #order_recipientBox { display:none;height:500px; }
-            #order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
-            #order_recipientBox iframe { position: relative; width: 700px; height: 500px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
-            @media (max-width : 750px){
-              #popup{width:100%; height:100%; }
-              #order_recipientBox { background-color:#fff;width: 100%; height: 100%; top:100px; left: 0; margin-left: 0; }
-              #order_recipientBox iframe { position: fixed; top:0;margin: 0 auto; left: 0; right:0; width: 100%; height: 100%;  }
-            }
-          </style>
-          <script>
-            $('#order_recipientBox').hide();
-            function popup_control(io_value_r_color,io_value_r_size,barcode_r){
-              $('#order_recipientBox').show();
-              wrapWindowByMask();
-              var io_value_r_v="";
-              if(io_value_r_color){io_value_r_v="색상:"+io_value_r_color; }
-              if(io_value_r_color&&io_value_r_size){io_value_r_color=io_value_r_color+""; }
-              if(io_value_r_color&&io_value_r_size){io_value_r_v=io_value_r_v+" / "; }
-              if(io_value_r_size){io_value_r_v=io_value_r_v+ "사이즈:"+io_value_r_size;}
-              document.getElementById('io_id_r').value=io_value_r_color+io_value_r_size;
-              document.getElementById('io_value_r').value=io_value_r_v;
-              document.getElementById('barcode_r').value=barcode_r;
-            }
-
-            function selected_recipient(penId){
-              document.getElementById('penId_r').value=penId;
-              document.getElementById('recipient_info').submit();
-            }
-          </script>
-
-          <div id="order_recipientBox">
-            <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php" style='z-index:9999' ></iframe>
-          </div>
-
-          <!-- 수급자 선택시 변경되어 넘어갈 값 -->
-          <form action="<?php echo $action_url; ?>"name="fitem" method="post" id="recipient_info"class="form item-form">
-            <input type="hidden" name="sw_direct" value="1" id="">                                              <!-- 바로가기 -->
-            <input type="hidden" name="it_id[]" value="<?php echo $it_id; ?>" id="it_id_r">                   <!-- 상품아이디 -->
-            <input type="hidden" name="io_type[<?php echo $it_id; ?>][]" value="0" it="io_type_r">            <!-- 옵션타입 -->
-            <input type="hidden" name="io_id[<?php echo $it_id; ?>][]" value="" id="io_id_r">                 <!-- 옵션 값 -->
-            <input type="hidden" name="io_value[<?php echo $it_id; ?>][]" value="" id="io_value_r">           <!-- 옵션 명 -->
-            <input type="hidden" class="io_price" value="0" id="io_price_r">                                  <!-- 가격 -->
-            <input type="hidden" class="io_stock" value="<?php echo $it['it_stock_qty']; ?>" id="io_stock_r"><!-- 재고 -->
-            <input type="hidden" name="ct_qty[<?php echo $it_id; ?>][]" value="1"id="ct_qty_r">               <!-- 수량 -->
-            <input type="hidden" name="barcode_r" value="1" id="barcode_r">                                       <!-- 바코드 -->
-            <input type="hidden" name="penId_r" value="1" id="penId_r">                                           <!-- penId -->
-            <input type="hidden" name="recipient_info" value="1" id="recipient_info">                            <!-- 구분 -->
-            <input type="hidden" name="it_msg1[]" value="<?php echo $it['pt_msg1']; ?>">
-            <input type="hidden" name="it_msg2[]" value="<?php echo $it['pt_msg2']; ?>">
-            <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
-          </form>
-          <!-- 수급자신청 -->
           <?php if(!$list) { ?>
           <li style="text-align:center" >
             자료가 없습니다.
@@ -696,38 +546,87 @@ $row = sql_fetch($sql);
     </div>
   </div>
 </section>
-<!-- 바코드 클릭 -->
-<style>
-  .listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
-  .listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
-  .listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
 
-  @media (max-width : 750px){
-    .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
-  }
-</style>
-<script type="text/javascript">
-  $(function(){
-    //바코드 클릭시 팝업
-    $(document).on("click", ".prodBarNumCntBtn_2", function(e){
-      e.preventDefault();
-      var stoId = $(this).attr("data-stoId");
-      var name = encodeURIComponent($(this).attr("data-name"));
-      $("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_5.php?stoId="+ stoId + "&name="+name+"'>");
-      $("#popupProdBarNumInfoBox iframe").load(function(){
-        $("#popupProdBarNumInfoBox").show();
-      });
-    });
-
-    $(".listPopupBoxWrap").hide();
-    $(".listPopupBoxWrap").css("opacity", 1);
-  });
-</script>
-<div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
+<!-- 수급자신청 -->
+<div id="order_recipientBox">
   <div>
+    <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php" style='z-index:9999' ></iframe>
   </div>
 </div>
+<!-- 수급자 선택시 변경되어 넘어갈 값 -->
+<form action="<?php echo $action_url; ?>"name="fitem" method="post" id="recipient_info"class="form item-form">
+  <input type="hidden" name="sw_direct" value="1" id="">                                              <!-- 바로가기 -->
+  <input type="hidden" name="it_id[]" value="<?php echo $it_id; ?>" id="it_id_r">                   <!-- 상품아이디 -->
+  <input type="hidden" name="io_type[<?php echo $it_id; ?>][]" value="0" it="io_type_r">            <!-- 옵션타입 -->
+  <input type="hidden" name="io_id[<?php echo $it_id; ?>][]" value="" id="io_id_r">                 <!-- 옵션 값 -->
+  <input type="hidden" name="io_value[<?php echo $it_id; ?>][]" value="" id="io_value_r">           <!-- 옵션 명 -->
+  <input type="hidden" class="io_price" value="0" id="io_price_r">                                  <!-- 가격 -->
+  <input type="hidden" class="io_stock" value="<?php echo $it['it_stock_qty']; ?>" id="io_stock_r"><!-- 재고 -->
+  <input type="hidden" name="ct_qty[<?php echo $it_id; ?>][]" value="1"id="ct_qty_r">               <!-- 수량 -->
+  <input type="hidden" name="barcode_r" value="1" id="barcode_r">                                       <!-- 바코드 -->
+  <input type="hidden" name="penId_r" value="1" id="penId_r">                                           <!-- penId -->
+  <input type="hidden" name="recipient_info" value="1" id="recipient_info">                            <!-- 구분 -->
+  <input type="hidden" name="it_msg1[]" value="<?php echo $it['pt_msg1']; ?>">
+  <input type="hidden" name="it_msg2[]" value="<?php echo $it['pt_msg2']; ?>">
+  <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
+</form>
 <!-- 바코드 클릭 -->
+<div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
+  <div></div>
+</div>
+<style>
+#order_recipientBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 1; }
+#order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+#order_recipientBox iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+@media (max-width : 750px) {
+  #order_recipientBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+#ui-datepicker-div { z-index: 999999 !important; }
+.state-btn1:hover{ color: #fff; }
+
+.listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+.listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+.listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+
+@media (max-width : 750px) {
+  .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+</style>
+<script>
+$('#order_recipientBox').hide();
+function popup_control(io_value_r_color,io_value_r_size,barcode_r){
+  $('#order_recipientBox').show();
+
+  var io_value_r_v="";
+  if(io_value_r_color){io_value_r_v="색상:"+io_value_r_color; }
+  if(io_value_r_color&&io_value_r_size){io_value_r_color=io_value_r_color+""; }
+  if(io_value_r_color&&io_value_r_size){io_value_r_v=io_value_r_v+" / "; }
+  if(io_value_r_size){io_value_r_v=io_value_r_v+ "사이즈:"+io_value_r_size;}
+  document.getElementById('io_id_r').value=io_value_r_color+io_value_r_size;
+  document.getElementById('io_value_r').value=io_value_r_v;
+  document.getElementById('barcode_r').value=barcode_r;
+}
+
+function selected_recipient(penId){
+  document.getElementById('penId_r').value=penId;
+  document.getElementById('recipient_info').submit();
+}
+$(function(){
+  //바코드 클릭시 팝업
+  $(document).on("click", ".prodBarNumCntBtn_2", function(e){
+    e.preventDefault();
+    var stoId = $(this).attr("data-stoId");
+    var name = encodeURIComponent($(this).attr("data-name"));
+    $("#popupProdBarNumInfoBox > div").append("<iframe src='/adm/shop_admin/popup.prodBarNum.form_5.php?stoId="+ stoId + "&name="+name+"'>");
+    $("#popupProdBarNumInfoBox iframe").load(function(){
+      $("#popupProdBarNumInfoBox").show();
+    });
+  });
+
+  $(".listPopupBoxWrap").hide();
+  $(".listPopupBoxWrap").css("opacity", 1);
+});
+</script>
 
 <script>
 //날짜 변환함수
@@ -775,16 +674,6 @@ function page_load2(page_n) {
   $("input:text[dateonly]").datepicker({});
 }
 
-function wrapWindowByMask() {
-  //화면의 높이와 너비를 구한다.
-  var maskHeight = $(document).height();
-  var maskWidth = $(window).width();
-  //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채운다.
-  $('#mask').css({'width':maskWidth,'height':maskHeight});
-  // $('html, body').css({'height':'100%','min-height':'100%','overflow':'hidden','touch-action':'none'});
-  //마스크의 투명도 처리
-  $('#mask').fadeTo("slow",0.8);
-}
 $("#thisPopupCloseBtn").click(function(e) {
   alert('z');
 });
@@ -818,10 +707,5 @@ function del_stoId(stoId) {
 
 </script>
 <?php
-if($is_inquiry_sub) {
-  if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');
-  include_once(G5_PATH.'/tail.sub.php');
-} else {
-  include_once('./_tail.php');
-}
+include_once('./_tail.php');
 ?>
