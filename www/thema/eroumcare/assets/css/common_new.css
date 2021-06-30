@@ -1270,6 +1270,8 @@ pre{white-space: pre-wrap;}
 	.main_top_service_info .service_desc .service_wrap ul > li img{width:100%;}
 	.main_top_service_info .service_footer{font-size: 12px;width: calc(100% - 40px);right: 20px;}
 	
+	.scrollBannerListWrap.left{display: none;}
+	
 }
 
 @media (max-width: 750px) {
