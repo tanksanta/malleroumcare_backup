@@ -43,6 +43,24 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
     <!-- <button id="dzexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">더존엑셀</button> -->
     <!-- <button id="handsabang" onClick="sanbang_order_send()">사방넷수동가져오기</button> -->
     <!-- <button id="list_matching_cancel">매칭데이터취소</button> -->
+
+    <select class="sb1" name="" id="ct_manager_sb">
+    <?php
+        //출고담당자 select
+        $od_release_select="";
+        $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '400001'";
+        $result_m = sql_query($sql_m);
+        $od_release_select .= '<option value="">선택</option>';
+        $od_release_select .= '<option value="미지정">미지정</option>';
+        for ($q=0; $row_m=sql_fetch_array($result_m); $q++){
+            $selected="";
+            $od_release_select .='<option value="'.$row_m['mb_id'].'" '.$selected.'>'.$row_m['mb_name'].'('.$row_m['mb_id'].')</option>';
+        }
+        echo $od_release_select;
+    ?>
+    </select>
+    <button id="ct_manager_send_all">출고담당자 선택변경</button>
+    
     <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
     <button id="delivery_edi_return_all">송장리턴</button>
@@ -1109,7 +1127,7 @@ function orderListExcelDownload(type) {
 
 //출고담당자
 $(document).on("change", ".ct_manager", function(e){
-  if(confirm('출고담당자를 변경하시겠습니까?')) {
+  // if(confirm('출고담당자를 변경하시겠습니까?')) {
 
     var ct_manager = $(this).val();
     var ct_id = $(this).data('ct-id');
@@ -1130,9 +1148,9 @@ $(document).on("change", ".ct_manager", function(e){
         alert('실패하였습니다.');
       }
     });
-  } else {
+  // } else {
     // window.location.reload(); 
-  }
+  // }
 });
         
 </script>

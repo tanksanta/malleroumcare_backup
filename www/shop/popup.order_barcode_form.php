@@ -342,20 +342,10 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 				sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
 			})
 			.fail(function($xhr) {
-				switch(device){
-					case "android" :
-						/* android */
-						window.EroummallApp.closeBarcode("");
-						break;
-					case "ios" :
-						/* ios */
-						window.webkit.messageHandlers.closeBarcode.postMessage("");
-						break;
-				}
 				var data = $xhr.responseJSON;
 				setTimeout(function() {
 					alert(data && data.message);
-				}, 500);
+				}, 100);
 			});
 		}
 		notallLengthCheck();

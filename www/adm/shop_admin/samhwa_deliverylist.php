@@ -39,6 +39,25 @@ if( function_exists('pg_setting_check') ){
   <a href="./orderdelivery.php" id="order_delivery" class="ov_a">엑셀배송처리</a>
   <?php } ?>
   <div class="right">
+
+
+  <select class="sb1" name="" id="ct_manager_sb">
+    <?php
+        //출고담당자 select
+        $od_release_select="";
+        $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '400001'";
+        $result_m = sql_query($sql_m);
+        $od_release_select .= '<option value="">선택</option>';
+        $od_release_select .= '<option value="미지정">미지정</option>';
+        for ($q=0; $row_m=sql_fetch_array($result_m); $q++){
+            $selected="";
+            $od_release_select .='<option value="'.$row_m['mb_id'].'" '.$selected.'>'.$row_m['mb_name'].'('.$row_m['mb_id'].')</option>';
+        }
+        echo $od_release_select;
+    ?>
+    </select>
+    <button id="ct_manager_send_all">출고담당자 선택변경</button>
+
     <button id="deliveryExcelDownloadBtn">주문다운로드</button>
     <button id="deliveryExcelDownloadBtn2">배송업로드 다운받기</button>
     <button id="deliveryExcelUploadBtn">배송정보 일괄 업로드</button>
