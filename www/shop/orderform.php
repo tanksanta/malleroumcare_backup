@@ -100,6 +100,7 @@ $sql = " select a.ct_id,
         a.ct_status,
         a.ct_send_cost,
         a.it_sc_type,
+        b.it_option_subject,
         b.pt_it,
         b.ca_id,
         b.ca_id2,
@@ -248,11 +249,30 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   $optionList = [];
   $optionSQL = sql_query("SELECT io_id, ct_qty, ct_id FROM {$g5["g5_shop_cart_table"]} WHERE od_id = '{$s_cart_id}' AND it_id = '{$row["it_id"]}' ORDER BY ct_id ASC");
   for($iii = 0; $optionRow = sql_fetch_array($optionSQL); $iii++) {
-    $thisRowData = [];
-    $optionRow["io_id"] = explode(chr(30), $optionRow["io_id"]);
+    $prodColor = $prodSize = $prodOption = '';
 
-    $thisRowData["color"] = $optionRow["io_id"][0];
-    $thisRowData["size"] = $optionRow["io_id"][1];
+    $io_subjects = explode(',', $row['it_option_subject']);
+    $io_ids = explode(chr(30), $optionRow["io_id"]);
+
+    for($io_idx = 0; $io_idx < count($io_subjects); $io_idx++) {
+      switch($io_subjects[$io_idx]) {
+        case '색상':
+          $prodColor = $io_ids[$io_idx];
+          break;
+        case '사이즈':
+          $prodSize = $io_ids[$io_idx];
+          break;
+        default:
+          $prodOption = $io_ids[$io_idx];
+          break;
+      }
+    }
+
+    $thisRowData = [];
+
+    $thisRowData["color"] = $prodColor;
+    $thisRowData["size"] = $prodSize;
+    $thisRowData["option"] = $prodOption;
     $thisRowData["qty"] = $optionRow["ct_qty"];
     $thisRowData["id"] = $optionRow["ct_id"];
 
