@@ -866,8 +866,8 @@ pre{white-space: pre-wrap;}
 #mainBannerWrap > .navWrap > li.active { background-color: #999; }
 
 /* 메인 상단 서비스 소개 */
-.main_top_service_info{width:100%;background: url(../img/main_bg_img.jpg) left ;background-size:cover;height: 960px;display: none;position:relative;}
-.main_top_service_info .top_area{width:100%;padding:20px;display:inline-block;margin-bottom:50px;}
+.main_top_service_info{width:100%;background: url(../img/main_bg_img.jpg) left ;background-size:cover;height: 937px;display: none;position:relative;}
+.main_top_service_info .top_area{width:100%;padding:20px;display:inline-block; }
 .main_top_service_info .top_area .logo{float: left;}
 .main_top_service_info .top_area .logo img{width:240px;}
 .main_top_service_info .btn_login{float: right;}
