@@ -31,10 +31,10 @@ for($i=1; $i<=10; $i++) {
 	if(!$it['it_img'.$i]) continue;
 
 	$org_url = G5_DATA_URL.'/item/'.$it['it_img'.$i];
-	$img = apms_thumbnail($org_url, 400, 400, false, true);
-	$thumb_url = ($img['src']) ? $img['src'] : $org_url;
+	//$img = apms_thumbnail($org_url, 400, 400, false, true);
+	//$thumb_url = ($img['src']) ? $img['src'] : $org_url;
 	$images[$j] = array(
-		'src' => $thumb_url,
+		'src' => $org_url,
 		'href' => G5_SHOP_URL.'/largeimage.php?it_id='.$it['it_id'].'&amp;ca_id='.$ca_id.'&amp;no='.$i
 	);
 	$j++;
