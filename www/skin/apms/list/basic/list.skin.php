@@ -238,9 +238,11 @@ while($wish_row = sql_fetch_array($wish_result)) {
             <span class="info">: <?=($list[$i]["prodWeig"]) ? $list[$i]["prodWeig"] : "-"?></span>
           </li>
         </ul>
-        <?php if($_COOKIE["viewType"] !== "basic"){ ?>
+        <?php if($_COOKIE["viewType"] !== "basic") { ?>
         <p class="discount">
+          <?php if($ca_id != '70') { // 비급여인 경우 급여가 숨김 ?>
           <?=number_format($list[$i]["it_cust_price"])?>원 (수급자 급여가)
+          <?php } ?>
         </p>
         <?php } ?>
         <p class="price">
