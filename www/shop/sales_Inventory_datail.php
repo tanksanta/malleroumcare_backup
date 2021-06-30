@@ -363,7 +363,7 @@ $row = sql_fetch($sql);
               ?>
               <span class="date m_off"><?=$date2?></span>
               <span class="order m_off">
-                <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodBarNum']?>')">수급자선택</a>
+                <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodOption']?>','<?=$list[$i]['prodBarNum']?>')">수급자선택</a>
               </span>
               <span class="del m_off">
                 <a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">
@@ -381,7 +381,7 @@ $row = sql_fetch($sql);
                 <div class="info-m">
                   <span class="date"><?=$date2?></span>
                   <span class="order">
-                    <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodBarNum']?>')" >수급자선택</a>
+                    <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodOption']?>','<?=$list[$i]['prodBarNum']?>')" >수급자선택</a>
                   </span>
                   <span class="order2">
                     <a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">삭제</a>
@@ -594,16 +594,37 @@ $row = sql_fetch($sql);
 </style>
 <script>
 $('#order_recipientBox').hide();
-function popup_control(io_value_r_color,io_value_r_size,barcode_r){
+function popup_control(prodColor, prodSize, prodOption, barcode_r) {
   $('#order_recipientBox').show();
 
-  var io_value_r_v="";
-  if(io_value_r_color){io_value_r_v="색상:"+io_value_r_color; }
-  if(io_value_r_color&&io_value_r_size){io_value_r_color=io_value_r_color+""; }
-  if(io_value_r_color&&io_value_r_size){io_value_r_v=io_value_r_v+" / "; }
-  if(io_value_r_size){io_value_r_v=io_value_r_v+ "사이즈:"+io_value_r_size;}
-  document.getElementById('io_id_r').value=io_value_r_color+io_value_r_size;
-  document.getElementById('io_value_r').value=io_value_r_v;
+  var io_id_r = [];
+  var io_value_r = [];
+
+  if(prodColor || prodSize || prodOption) { // 옵션 값이 있으면
+    var io_subjects = '<?=get_text($it['it_option_subject'])?>'.split(',');
+
+    for(var i = 0; i < io_subjects.length; i++) {
+      switch(io_subjects[i]) {
+        case '색상':
+          io_id_r.push(prodColor);
+          io_value_r.push('색상:'+prodColor);
+          break;
+        case '사이즈':
+          io_id_r.push(prodSize);
+          io_value_r.push('사이즈:'+prodSize);
+          break;
+        default:
+          io_id_r.push(prodOption);
+          io_value_r.push(io_subjects[i]+':'+prodOption);
+      }
+    }
+  }
+
+  io_id_r = io_id_r.join(String.fromCharCode(30));
+  io_value_r = io_value_r.join(' / ');
+
+  document.getElementById('io_id_r').value=io_id_r;
+  document.getElementById('io_value_r').value=io_value_r;
   document.getElementById('barcode_r').value=barcode_r;
 }
 
