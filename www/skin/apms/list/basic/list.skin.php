@@ -216,27 +216,33 @@ while($wish_row = sql_fetch_array($wish_result)) {
         <p class="info"><?=$list[$i]["it_model"]?></p>
         <?php } ?>
         <ul class="detailInfo">
+          <?php if(trim($list[$i]["prodSym"])) { ?>
           <li>
             <span class="infoLabel">
               <span>·</span>
               <span>재질</span>
             </span>
-            <span class="info">: <?=($list[$i]["prodSym"]) ? $list[$i]["prodSym"] : "-"?></span>
+            <span class="info">: <?=$list[$i]["prodSym"]?></span>
           </li>
+          <?php } ?>
+          <?php if(trim($list[$i]["prodSizeDetail"])) { ?>
           <li>
             <span class="infoLabel">
               <span>·</span>
               <span>사이즈</span>
             </span>
-            <span class="info">: <?=($list[$i]["prodSizeDetail"]) ? $list[$i]["prodSizeDetail"] : "-"?></span>
+            <span class="info">: <?=$list[$i]["prodSizeDetail"]?></span>
           </li>
+          <?php } ?>
+          <?php if(trim($list[$i]["prodWeig"])) { ?>
           <li>
             <span class="infoLabel">
               <span>·</span>
               <span>중량</span>
             </span>
-            <span class="info">: <?=($list[$i]["prodWeig"]) ? $list[$i]["prodWeig"] : "-"?></span>
+            <span class="info">: <?=$list[$i]["prodWeig"]?></span>
           </li>
+          <?php } ?>
         </ul>
         <?php if($_COOKIE["viewType"] !== "basic") { ?>
         <p class="discount">
