@@ -154,6 +154,21 @@ if($od["od_b_tel"]) {
     .imfomation_box a .li_box .folding_box > .inputbox > li > .barcode_add {
           width:30px; height:30px; position: absolute; right: 90px; display:none;
     }
+
+    .excel_btn{
+        float: left;
+        margin-top: 10px;
+        color: #fff;
+        font-size: 17px;
+        background-color: #494949;
+        border: 0px;
+        border-radius: 6px;
+        width: 18%;
+        height: 50px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 50px;
+    }
   </style>
 </head>
 
@@ -189,6 +204,8 @@ if($od["od_b_tel"]) {
         <span><?=$od["od_b_addr1"]?> <?=$od["od_b_addr2"]?></span>
       </p>
     </div>
+  <a href="./popup.prodBarNum.form.excel.php?od_id=<?=$od_id?>" class="excel_btn">엑셀다운로드</a>
+
   </div>
 
    <!-- 상품목록 -->
@@ -351,6 +368,8 @@ if($od["od_b_tel"]) {
         notallLengthCheck();
     });
 
+
+
     $('.notall').focus(function(){
 
         var last_index = $(this).closest('ul').find('li').last().index();
@@ -494,10 +513,20 @@ if($od["od_b_tel"]) {
               sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
             })
             .fail(function($xhr) {
+              switch(device){
+                case "android" :
+                  /* android */
+                  window.EroummallApp.closeBarcode("");
+                  break;
+                case "ios" :
+                  /* ios */
+                  window.webkit.messageHandlers.closeBarcode.postMessage("");
+                  break;
+              }
               var data = $xhr.responseJSON;
               setTimeout(function() {
                 alert(data && data.message);
-              }, 100);
+              }, 500);
             });
           }
         }
