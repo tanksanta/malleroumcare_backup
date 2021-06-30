@@ -303,12 +303,13 @@ $ret['main'] = "
           <th class=\"od_time\">주문일시</th>
           <th class=\"od_info\">주문정보</th>
           <th class=\"od_name\">받는분(주문자)</th>
-          <th class=\"od_type\">결제수단</th>
+          <th class=\"od_content\">상품요청
+          <th class=\"od_content\">배송요청사항
           <th class=\"od_barNum\">바코드</th>
           <th class=\"od_price\">결제금액</th>
           <th>출고담당자</th>
           <th class=\"od_delivery_info\">배송정보</th>
-          <th>출고예정일</th>
+          <th>출고완료일</th>
           <th>상태</th>
         </tr>
       </thead>
@@ -355,6 +356,10 @@ foreach($orderlist as $order) {
   $ct_it_id = $result_ct['it_id'];      
   $ct_ex_date = $result_ct['ct_ex_date'];      
   $ct_manager = $result_ct['ct_manager'];                                                                          //출고 담당자 아이디
+  $prodMemo = $result_ct['prodMemo'];                                                                          //출고 담당자 아이디
+
+
+
   //출고담당자 select
   $od_release_select="";
   $od_release_select = '<select class="ct_manager" data-ct-id="'.$order['cart_ct_id'].'">';
@@ -488,6 +493,8 @@ foreach($orderlist as $order) {
     if(!$result_ct['ct_barcode_insert']){
       $result_ct['ct_barcode_insert']=0;
     }
+
+    
     $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
     $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
     $class_c1 = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "complete1" : "";
@@ -510,12 +517,56 @@ foreach($orderlist as $order) {
         $delivery_insert++;
       }
     }
+
     $class_c2="";
-    if ($delivery_insert >= $delivery_all_insert) {
-      $deliveryCntBtnWord = '입력완료';
-      $class_c2 = 'complete2 ';
-      $deliveryCntBtnStatus = ' disable ';
+    $delivery_company="";
+    $ct_delivery_num="";
+
+    //직배송
+    if($result_ct['ct_is_direct_delivery']){
+        $deliveryCntBtnWord = '입력완료(직배송)';
+        $class_c2 = 'complete2 ';
+        $deliveryCntBtnStatus = ' disable ';
     }
+
+    //합포
+    if($result_ct['ct_combine_ct_id']){
+
+        $sql_ctd ="select `ct_delivery_company`,`ct_delivery_num` from `g5_shop_cart` where `ct_id` = '".$result_ct['ct_combine_ct_id']."'";
+        $result_ctd = sql_fetch($sql_ctd);
+
+        foreach($delivery_companys as $data){ 
+            if($result_ctd['ct_delivery_company'] == $data["val"] ){
+                $delivery_company=$data["name"];
+            }
+        }
+
+        if($result_ctd['ct_delivery_num']){
+            $ct_delivery_num=$result_ctd['ct_delivery_num'];
+        }else{
+            $ct_delivery_num="합포-미입력";
+        }
+
+        $deliveryCntBtnWord = '입력완료('.$delivery_company.' '.$ct_delivery_num.')';
+        $class_c2 = 'complete2 ';
+        $deliveryCntBtnStatus = ' disable ';
+    }
+
+    //입력
+    if($result_ct['ct_delivery_num']){
+
+        foreach($delivery_companys as $data){ 
+            if($result_ct['ct_delivery_company'] == $data["val"] ){
+                $delivery_company=$data["name"];
+            }
+        }
+        $ct_delivery_num=$result_ct['ct_delivery_num'];
+
+        $deliveryCntBtnWord = '입력완료('.$delivery_company.' '.$ct_delivery_num.')';
+        $class_c2 = 'complete2 ';
+        $deliveryCntBtnStatus = ' disable ';
+    }
+
   }
 
   $important2_class = $order['od_important2'] ? 'on' : '';
@@ -751,9 +802,12 @@ foreach($orderlist as $order) {
         <br/>
         {$mb_shorten_info}{$mb_entNm}
       </td>
-      <td align=\"center\" class=\"od_type\">
-        {$od_receipt_name}
+      <td align=\"center\" class=\"od_content\">
+        {$prodMemo}
       </td>
+      <td align=\"center\" class=\"od_content\">
+      {$order['od_memo']}
+    </td>
       <td align=\"center\" class=\"od_barNum\">
         <a href='#' class='prodBarNumCntBtn{$prodBarNumCntBtnStatus}' data-option='{$result_ct["ct_option"]}'  data-it='{$ct_it_id}' data-stock='{$stock_insert}'  data-od='{$order["od_id"]}'>{$prodBarNumCntBtnWord}</a>
       </td>
@@ -767,7 +821,7 @@ foreach($orderlist as $order) {
         <a href='#' class='deliveryCntBtn{$deliveryCntBtnStatus} wide' data-id='{$order["od_id"]}'  data-ct='{$order["cart_ct_id"]}' >{$deliveryCntBtnWord}</a>
       </td>
       <td align=\"center\">
-        <input type=\"text\" name=\"ct_ex_date\" class=\"ct_ex_date\" data-ct-id=\"{$order['cart_ct_id']}\" value=\"{$ct_ex_date}\" />
+        {$ct_ex_date}
       </td>
       <td align=\"center\">
         {$ct_status['name']}
