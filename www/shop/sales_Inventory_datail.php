@@ -321,10 +321,9 @@ $row = sql_fetch($sql);
             <?php for($i=0;$i<count($list);$i++) {
             $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
             if($list[$i]['prodColor']&&$list[$i]['prodSize']){ $div="/";} else { $div=""; }
-            ?>
-            <?php
+
             //유통 / 비유통 구분
-            $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%'";
+            $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%' order by od_id desc limit 1";
             $result_stock = sql_fetch($sql_stock);
             $stock_insert="1";
             if($result_stock['od_stock_insert_yn']=="Y"){
@@ -476,7 +475,7 @@ $row = sql_fetch($sql);
             ?>
             <?php
             //유통 / 비유통 구분
-            $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%'";
+            $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%' order by od_id desc limit 1";
             $result_stock = sql_fetch($sql_stock);
             $stock_insert="1";
             if($result_stock['od_stock_insert_yn']=="Y") {
@@ -526,7 +525,7 @@ $row = sql_fetch($sql);
                 </div>
               </div>
               <span class="check">
-                <a href="<?=$list[$i]['eformUrl']?>">확인</a>
+                <a href="<?=G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id']?>">확인</a>
               </span>
             </li>
             <?php } ?>

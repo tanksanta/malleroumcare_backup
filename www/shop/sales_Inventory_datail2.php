@@ -314,11 +314,29 @@ $row = sql_fetch($sql);
             $rental_btn=''; //대여 버튼
             $rental_btn2=''; //대여 버튼
             $water="";//소독중 표시
-            
+
+            //유통 / 비유통 구분
+            $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%' order by od_id desc limit 1";
+            $result_stock = sql_fetch($sql_stock);
+            $stock_insert="1";
+            if($result_stock['od_stock_insert_yn']=="Y") {
+              $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+              $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+              $stock_insert ="2";
+            } else {
+              if($_GET['prodSupYn'] == "N" ) {
+                $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
+                $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
+              } else {
+                $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
+                $prodBarNumCntBtn_2="";
+              }
+            }
+
             //상태 메뉴
             $state_menu_all="";
             $state_menu1='<li><a class="state-btn4" onclick="open_retal_period(this)" href="javascript:;">대여기간 수정</a></li>';
-            $state_menu2='<li><a href="'.$list[$i]['eformUrl'].'">계약서 확인</a></li>';
+            $state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id'].'">계약서 확인</a></li>';
             $state_menu3='<li class="p-btn01"><a href="javascript:;" onclick="open_designate_disinfection(this)">소독신청</a></li>';
             $state_menu4='<li><a href="javascript:;" onclick="retal_state_change2(\''.$list[$i]['stoId'].'\',\'01\',\'변경되었습니다.\')" >대여 가능상태</a></li>';
             $state_menu5='<li class="p-btn02" onclick="open_designate_result(this)"><a href="javascript:;">소독확인 신청</a></li>';
@@ -393,25 +411,6 @@ $row = sql_fetch($sql);
                 echo $name;
                 ?>
               </span>
-              <?php
-              //유통 / 비유통 구분
-              $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%'";
-              $result_stock = sql_fetch($sql_stock);
-              $stock_insert="1";
-              if($result_stock['od_stock_insert_yn']=="Y") {
-                $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
-                $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
-                $stock_insert ="2";
-              } else {
-                if($_GET['prodSupYn'] == "N" ) {
-                  $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
-                  $prodBarNumCntBtn_2="prodBarNumCntBtn_2";
-                } else {
-                  $style_prodSupYn='style="border-color: #0000;background-color: #0000; cursor :default;"';
-                  $prodBarNumCntBtn_2="";
-                }
-              }
-              ?>
               <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
               <?php
               //날짜 변환
@@ -739,7 +738,7 @@ $row = sql_fetch($sql);
             }
 
             //유통 / 비유통 구분
-            $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%'";
+            $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%' order by od_id desc limit 1";
             $result_stock = sql_fetch($sql_stock);
             $stock_insert="1";
             if($result_stock['od_stock_insert_yn']=="Y") {
