@@ -117,10 +117,10 @@ include_once('./_head.php');
             </tbody>
             </table>
         </div>
-        <p class="text-center">
+        <!--<p class="text-center">
 	        <button type="submit" class="btn btn-black btn-sm" onclick="return fwishlist_check(document.fwishlist,'');">장바구니 담기</button>
 	        <button type="submit" class="btn btn-color btn-sm" onclick="return fwishlist_check(document.fwishlist,'direct_buy');">주문하기</button>
-        </p>
+        </p>-->
     </form>
     <!-- 페이징 -->
     <div class="pg-wrap">
