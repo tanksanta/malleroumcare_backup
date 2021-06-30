@@ -319,6 +319,19 @@ if($od["od_b_tel"]){
 
   <script type="text/javascript">
 
+
+    $(".notall").keyup(function(){
+        var last_index = $(this).closest('ul').find('li').last().index();
+        var this_index = $(this).closest('li').index();
+
+        $(this).closest('ul').find('.barcode_add').hide();
+        if(last_index !== this_index && $(this).val().length == 12)
+            $(this).closest('li').find('.barcode_add').show();
+
+        notallLengthCheck();
+    });
+
+
   $('.notall').focus(function(){
 
   var last_index = $(this).closest('ul').find('li').last().index();
@@ -494,19 +507,19 @@ if($od["od_b_tel"]){
       }
     });
 
-    var $notall = $(".notall").keyup(function() {
-      $(this).val($(this).val().replace(/[^0-9]/g,""));
-      if($(this).val().length == 12){
-        var idx = $notall.index(this); // <- 변경된 코드
-        var num = idx+1;
+    // var $notall = $(".notall").keyup(function() {
+    //   $(this).val($(this).val().replace(/[^0-9]/g,""));
+    //   if($(this).val().length == 12){
+    //     var idx = $notall.index(this); // <- 변경된 코드
+    //     var num = idx+1;
 
-        var item = $(".notall");
-        if(num < item.length){
-          $notall[num].focus();
-        }
-      }
-      notallLengthCheck();
-    });
+    //     var item = $(".notall");
+    //     if(num < item.length){
+    //       $notall[num].focus();
+    //     }
+    //   }
+    //   notallLengthCheck();
+    // });
 
     var stoldList = [];
     var count=0;

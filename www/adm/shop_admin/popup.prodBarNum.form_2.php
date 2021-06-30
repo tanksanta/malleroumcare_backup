@@ -228,7 +228,19 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 ?>
 
 <script type="text/javascript">
-    $('.notall').focus(function(){
+
+		$(".notall").keyup(function(){
+			var last_index = $(this).closest('ul').find('li').last().index();
+			var this_index = $(this).closest('li').index();
+
+			$(this).closest('ul').find('.barcode_add').hide();
+			if(last_index !== this_index && $(this).val().length == 12)
+				$(this).closest('li').find('.barcode_add').show();
+
+			notallLengthCheck();
+		});
+
+    	$('.notall').focus(function(){
 
 		var last_index = $(this).closest('ul').find('li').last().index();
 		var this_index = $(this).closest('li').index();
@@ -396,20 +408,20 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 			$("#popupProdBarNumInfoBox", parent.document).find("iframe").remove();
         });
 
-	$(".notall").keyup(function(){
-			$(this).removeClass("active");
-			$(this).parent().find("i").removeClass("active");
-            $(this).val($(this).val().replace(/[^0-9]/g,""));
+	// $(".notall").keyup(function(){
+	// 		$(this).removeClass("active");
+	// 		$(this).parent().find("i").removeClass("active");
+    //         $(this).val($(this).val().replace(/[^0-9]/g,""));
 
-			var length = $(this).val().length;
-			if(length < 12 && length){
-				$(this).addClass("active");
-			}
+	// 		var length = $(this).val().length;
+	// 		if(length < 12 && length){
+	// 			$(this).addClass("active");
+	// 		}
 
-			if(length == 12){
-				$(this).parent().find("i").addClass("active");
-			}
-	});
+	// 		if(length == 12){
+	// 			$(this).parent().find("i").addClass("active");
+	// 		}
+	// });
 
     // 팝업열기
     function showPopup(multipleFilter) {
