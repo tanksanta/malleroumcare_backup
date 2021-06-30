@@ -24,35 +24,16 @@ if($member["mb_id"]) {
         $prodsData["prodId"] = $itemData["it_id"];
         $prodsData["prodColor"] = $optionData["color"];
         $prodsData["prodSize"] = $optionData["size"];
+        $prodsData["prodOption"] = $optionData["option"];
         array_push($prodsSendData, $prodsData);
 
         $sendData["prods"] = $prodsSendData;
 
         # 재고조회
-        $oCurl = curl_init();
-        curl_setopt($oCurl, CURLOPT_PORT, 9901);
-        curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectList");
-        curl_setopt($oCurl, CURLOPT_POST, 1);
-        curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-        curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-        $res = curl_exec($oCurl);
-        $stockCntList = json_decode($res, true);
-        curl_close($oCurl);
+        $stockCntList = api_post_call('https://system.eroumcare.com/api/stock/selectList', $sendData);
 
         # 바코드조회
-        $oCurl = curl_init();
-        curl_setopt($oCurl, CURLOPT_PORT, 9901);
-        curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectBarNumList");
-        curl_setopt($oCurl, CURLOPT_POST, 1);
-        curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-        curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-        $res = curl_exec($oCurl);
-        $stockBarList = json_decode($res, true);
-        curl_close($oCurl);
+        $stockBarList = api_post_call('https://system.eroumcare.com/api/stock/selectBarNumList', $sendData);
 
         # 재고목록
         $thisOptionBarSubList = [];
@@ -81,30 +62,10 @@ if($member["mb_id"]) {
       $sendData["prods"] = $prodsSendData;
 
       # 재고조회
-      $oCurl = curl_init();
-      curl_setopt($oCurl, CURLOPT_PORT, 9901);
-      curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectList");
-      curl_setopt($oCurl, CURLOPT_POST, 1);
-      curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-      curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-      curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-      $res = curl_exec($oCurl);
-      $stockCntList = json_decode($res, true);
-      curl_close($oCurl);
+      $stockCntList = api_post_call('https://system.eroumcare.com/api/stock/selectList', $sendData);
 
       # 바코드조회
-      $oCurl = curl_init();
-      curl_setopt($oCurl, CURLOPT_PORT, 9901);
-      curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectBarNumList");
-      curl_setopt($oCurl, CURLOPT_POST, 1);
-      curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-      curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-      curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-      $res = curl_exec($oCurl);
-      $stockBarList = json_decode($res, true);
-      curl_close($oCurl);
+      $stockBarList = api_post_call('https://system.eroumcare.com/api/stock/selectBarNumList', $sendData);
 
       # 재고목록
       $thisOptionBarSubList = [];

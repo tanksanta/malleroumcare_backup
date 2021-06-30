@@ -6,7 +6,7 @@
 
 <style>
 .main_slider {
-  max-width: 900px;
+  max-width: 1400px;
   margin: 30px auto 20px auto;
 }
 
@@ -74,7 +74,22 @@
 }
 </style>
 
+<script type="text/javascript">
+    $(function(){
+        $('.main_top_service_info').css( "display", "inline-block" );
+        $('.container_wrap').css( "display", "none" );
+        $('.mo_top').css( "display", "none" );
+        $('#headerTopQuickMenuWrap').css( "display", "none" );
+        $('.btn_top_scroll').css( "display", "none" );
+        $('body').css( "padding-top", "0px" );
+    });
+</script>
+
+
 <div class="main_top_wrap">
+	<div class="main_slider_tit">
+		<span>복지용구급여</span> 주요기능
+	</div>
   <div class="main_slider_nav">
     <div class="active" data-slide="0">온라인계약</div>
     <div data-slide="1">청구관리</div>
@@ -83,32 +98,33 @@
   </div>
   <div class="main_slider">
     <div class="main_slide">
-      <div class="main_slide_head">
-        <div class="desc">복지용구 사업소 업무를 쉽고 간편하게</div>
+    <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_01.png"  >
+      <div class="main_slide_desc">
         <h2>편리한 온라인 전자계약</h2>
+        <div class="desc">복지용구 사업소 업무를 쉽고 간편하게</div>
       </div>
-      <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_01.png"  >
+      
     </div>
     <div class="main_slide">
-      <div class="main_slide_head">
-        <div class="desc">실시간 수급자 별 청구금액 확인</div>
-        <h2>월별 청구관리 및 간편검증</h2>
-      </div>
       <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_02.png" >
+      <div class="main_slide_desc">
+        <h2>월별 청구관리 및 간편검증</h2>
+        <div class="desc">실시간 수급자 별 청구금액 확인</div>
+      </div>
     </div>
     <div class="main_slide">
-      <div class="main_slide_head">
-        <div class="desc">쉽고 간편한 수급자 통합관리 시스템</div>
-        <h2>간편관리 및 신규 수급자 추천</h2>
-      </div>
       <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_03.png"  >
+      <div class="main_slide_desc">
+        <h2>간편관리 및 신규 수급자 추천</h2>
+        <div class="desc">쉽고 간편한 수급자 통합관리 시스템</div>
+      </div>
     </div>
     <div class="main_slide">
-      <div class="main_slide_head">
-        <div class="desc">현재 보유한 재고를 일괄업로드 후 관리</div>
-        <h2>판매/대여(소독관리) 간편 관리</h2>
-      </div>
       <img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_service_info_04.png" >
+      <div class="main_slide_desc">
+        <h2>판매/대여(소독관리) 간편 관리</h2>
+        <div class="desc">현재 보유한 재고를 일괄업로드 후 관리</div>
+      </div>
     </div>
   </div>
 </div>
@@ -143,6 +159,23 @@ $(function() {
 
 <!-- 메인 최근게시글 -->
 <div id="mainBoardListWrap">
+  
+  
+  <div class="board">
+    <div class="title">
+      <span>공지사항</span> 
+      <a href="/bbs/board.php?bo_table=notice"  ><img src="<?=THEMA_URL?>/assets/img/btn_board_more.png" alt="" /></a>
+    </div>
+    <?php  echo latest('list_main', 'notice', 5, 25); ?>
+  </div>
+  
+  <div class="board">
+    <div class="title">
+      <span>자주하는 질문</span>
+      <a href="/bbs/board.php?bo_table=faq"  ><img src="<?=THEMA_URL?>/assets/img/btn_board_more.png" alt="" /></a>
+    </div>
+    <?php  echo latest('list_main', 'faq', 5, 25); ?>
+  </div>
   <div class="customer">
     <div class="title">
       <span>이로움 고객만족센터</span>
@@ -151,7 +184,7 @@ $(function() {
     <ul class="info">
       <li class="call">
         <img src="<?=THEMA_URL?>/assets/img/mainCallIcon.png" alt="">
-        <p>
+        <p class="call_info">
           <?php 
           $manager_hp="";
           $manager_name="";
@@ -163,7 +196,7 @@ $(function() {
           }
           if($manager_hp) {
           ?>
-          <span class="Label"><?=$manager_name?> <span style="font-size:11px;">(담당자)</span> </span>
+          <span class="Label"><?=$manager_name?> </span>
           <span class="value" ><?=$manager_hp?></span>
           <?php } else { ?>
           <span class="Label">주문안내</span>
@@ -175,8 +208,12 @@ $(function() {
           <span class="value">02-830-1301~2</span>
         </p>
       </li>
-      <li class="time">월~금 09:00~18:00 (점심시간 12시~13시)</li>
       <li class="etc">
+        <p>
+          <span>운영시간</span>
+          <span class="line"></span>
+          <span>월~금 09:00~18:00 (점심시간 12시~13시)</span>
+        </p>
         <p>
           <span>Email</span>
           <span class="line"></span>
@@ -189,21 +226,5 @@ $(function() {
         </p>
       </li>
     </ul>
-  </div>
-  
-  <div class="board">
-    <div class="title">
-      <span>공지사항</span> 
-      <a href="/bbs/board.php?bo_table=notice" title="더보기">더보기<i class="fa fa-plus-square-o"></i></a>
-    </div>
-    <?php  echo latest('list_main', 'notice', 5, 30); ?>
-  </div>
-  
-  <div class="board">
-    <div class="title">
-      <span>자주하는 질문</span>
-      <a href="/bbs/board.php?bo_table=faq" title="더보기">더보기<i class="fa fa-plus-square-o"></i></a>
-    </div>
-    <?php  echo latest('list_main', 'faq', 5, 30); ?>
   </div>
 </div>

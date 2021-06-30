@@ -7,7 +7,7 @@ if(!$is_member) {
 
 $sql = "SELECT * FROM {$g5['g5_shop_order_table']} WHERE `od_id` = '$od_id'";
 if($is_member && !$is_admin)
-    $sql .= " AND mb_id = '{$member['mb_id']}' ";
+  $sql .= " AND mb_id = '{$member['mb_id']}' ";
 $od = sql_fetch($sql);
 if(!$od['mb_id']) {
   alert('계약서를 생성할 권한이 없습니다.');
@@ -20,7 +20,7 @@ if(!$eform['uuid']) alert('전자계약서를 생성할 수 없는 상태입니�
 if(!$eform['penExpiDtm']) {
   $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
     'usrId' => $od["mb_id"],
-    'entId' => $entData["mb_entId"],
+    'entId' => $member["mb_entId"],
     'penId' => $od["od_penId"]
   ));
   if(!$res["data"]) {
@@ -57,6 +57,7 @@ foreach($limit as $lm) {
 
 sql_query("DELETE FROM `eform_document_item` WHERE `dc_id` = UNHEX('{$eform["uuid"]}')");
 $res = api_post_call('https://system.eroumcare.com/api/eform/selectEform001', array('penOrdId' => $od["ordId"]));
+
 foreach($res["data"] as $it) {
   $priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);
     

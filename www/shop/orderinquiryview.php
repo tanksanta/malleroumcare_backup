@@ -6,13 +6,6 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
   return;
 }
 $reload = false;
-if($_GET["result"] == "Y"){
-  sql_query("
-    UPDATE g5_shop_order SET
-      od_del_yn = 'N'
-    WHERE od_id = '{$_GET["od_id"]}'
-  ");
-}
 
 $od_id = isset($od_id) ? preg_replace('/[^A-Za-z0-9\-_]/', '', strip_tags($od_id)) : 0;
 
@@ -206,19 +199,19 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 
     $opt_msg = get_text($opt['ct_option']);
     if($opt['pt_msg1']) {
-          $opt_msg .= '<div class="text-muted">';
+      $opt_msg .= '<div class="text-muted">';
       if($row['pt_msg1']) $opt_msg .= $row['pt_msg1'].' : ';
-          $opt_msg .= get_text($opt['pt_msg1']).'</div>';
+      $opt_msg .= get_text($opt['pt_msg1']).'</div>';
     }
     if($opt['pt_msg2']) {
-          $opt_msg .= '<div class="text-muted">';
+      $opt_msg .= '<div class="text-muted">';
       if($row['pt_msg2']) $opt_msg .= $row['pt_msg2'].' : ';
-          $opt_msg .= get_text($opt['pt_msg2']).'</div>';
+      $opt_msg .= get_text($opt['pt_msg2']).'</div>';
     }
     if($opt['pt_msg3']) {
-          $opt_msg .= '<div class="text-muted">';
+      $opt_msg .= '<div class="text-muted">';
       if($row['pt_msg3']) $opt_msg .= $row['pt_msg3'].' : ';
-          $opt_msg .= get_text($opt['pt_msg3']).'</div>';
+      $opt_msg .= get_text($opt['pt_msg3']).'</div>';
     }
 
     $item[$i]['opt'][$k]['ct_option'] = $opt_msg;
@@ -241,8 +234,8 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $st_count1++;
     if($opt['ct_status'] == '주문')
       $st_count2++;
-        if($opt['ct_status'] == '입금')
-            $st_count3++;
+    if($opt['ct_status'] == '입금')
+      $st_count3++;
   }
 }
 
@@ -259,18 +252,18 @@ if($st_count1 > 0 && $st_count1 == $st_count2 && $od['od_status'] == '주문') {
 
 // 주문 상품의 상태가 입금완료(결제완료)여도 고객 취소 가능 (단 무통장은 제외)
 if(($custom_cancel == false) && ($st_count1 == $st_count3) && $od['od_status'] == '입금') {
-    if ($od['od_settle_case'] != "무통장")
-        $pay_complete_cancel = true;
-    if ($od['od_settle_case'] == "무통장")
-        $pay_complete_cancel2 = true;
+  if ($od['od_settle_case'] != "무통장")
+    $pay_complete_cancel = true;
+  if ($od['od_settle_case'] == "무통장")
+    $pay_complete_cancel2 = true;
 }
 
 if ($od['od_status'] == '준비' || $od['od_status'] == '출고준비') {
-    $preparation_cancel = true;
+  $preparation_cancel = true;
 }
 
 if ($od['od_status'] == '배송' || $od['od_status'] == '완료') {
-    $shipped_cancel = true;
+  $shipped_cancel = true;
 }
 
 
@@ -281,8 +274,7 @@ if ($od['od_status'] == '배송' || $od['od_status'] == '완료') {
 $tot_price += $od["od_send_cost"]+$od["od_send_cost2"];
 
 // 결제,배송정보
-$receipt_price  = $od['od_receipt_price']
-        + $od['od_receipt_point'];
+$receipt_price  = $od['od_receipt_price'] + $od['od_receipt_point'];
 $cancel_price   = $od['od_cancel_price'];
 
 // 결제 상태
@@ -432,8 +424,8 @@ if ($default['de_taxsave_use']) {
 // 가상계좌테스트
 $is_account_test = false;
 if ($od['od_settle_case'] == '가상계좌' && $od['od_misu'] > 0 && $default['de_card_test'] && $is_admin && $od['od_pg'] == 'kcp') {
-    preg_match("/\s{1}([^\s]+)\s?/", $od['od_bank_account'], $matchs);
-    $deposit_no = trim($matchs[1]);
+  preg_match("/\s{1}([^\s]+)\s?/", $od['od_bank_account'], $matchs);
+  $deposit_no = trim($matchs[1]);
   $is_accoutn_test = true;
 }
 
@@ -486,19 +478,19 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 
 // LG 현금영수증 JS
 if($od['od_pg'] == 'lg') {
-    if($default['de_card_test']) {
-    echo '<script language="JavaScript" src="http://pgweb.uplus.co.kr:7085/WEB_SERVER/js/receipt_link.js"></script>'.PHP_EOL;
-    } else {
-        echo '<script language="JavaScript" src="http://pgweb.uplus.co.kr/WEB_SERVER/js/receipt_link.js"></script>'.PHP_EOL;
-    }
+  if($default['de_card_test']) {
+  echo '<script language="JavaScript" src="http://pgweb.uplus.co.kr:7085/WEB_SERVER/js/receipt_link.js"></script>'.PHP_EOL;
+  } else {
+    echo '<script language="JavaScript" src="http://pgweb.uplus.co.kr/WEB_SERVER/js/receipt_link.js"></script>'.PHP_EOL;
+  }
 }
 
-    $typereceipt = get_typereceipt_step($od['od_id']);
-    $typereceipt_cate = get_typereceipt_cate($od['od_id']);
+$typereceipt = get_typereceipt_step($od['od_id']);
+$typereceipt_cate = get_typereceipt_cate($od['od_id']);
 
-    // 주문내역 스킨 불러오기
-    $sql_q = "select * from `g5_shop_order` where `od_id`= '".$_GET['od_id']."'";
-    $row_q= sql_fetch($sql_q);
+// 주문내역 스킨 불러오기
+$sql_q = "select * from `g5_shop_order` where `od_id`= '".$_GET['od_id']."'";
+$row_q= sql_fetch($sql_q);
 
 include_once($skin_path.'/orderinquiryview.skin.php');
 
@@ -512,110 +504,107 @@ if($is_inquiryview_sub) {
 
 <?php
 
+if($_GET["result"] == "writeEform" && $_SESSION["productList{$_GET["od_id"]}"]) {
+  $reload = true;
+  $insertProds = addslashes(htmlspecialchars(json_encode($_SESSION["productList{$_GET["od_id"]}"])));
 
-  if($_GET["result"] == "writeEform"&&$_SESSION["productList{$_GET["od_id"]}"]){
-    $reload = true;
-    $insertProds = addslashes(htmlspecialchars(json_encode($_SESSION["productList{$_GET["od_id"]}"])));
-    $staOrdCd = "00";
+  sql_query("
+    UPDATE g5_shop_order SET
+        eformYn = 'Y'
+      , payMehCd = '0'
+      , prods = '{$insertProds}'
+    WHERE od_id = '{$_GET["od_id"]}'
+  ");
+
+  $orderData = sql_fetch("SELECT * FROM g5_shop_order WHERE od_id = '{$_GET["od_id"]}'");
+
+  $productList = $_SESSION["productList{$_GET["od_id"]}"];
+
+  #모두 재고소진, 보유재고등록일 경우 배송비 - 0원 처리
+  $sql_up ="select * from `g5_shop_cart` where `od_id`='".$_GET["od_id"]."'";
+  $result_up=sql_query($sql_up);
+  $flag=true;
+  for ($i=0; $row=sql_fetch_array($result_up); $i++) {
+    if($row['ct_status']=="재고소진"||$row['ct_status']=="보유재고등록") {
+      continue;
+    } else {
+      $flag = false;
+    }
+  }
+  if($flag) {
     sql_query("
-      UPDATE g5_shop_order SET
-          eformYn = 'Y'
-        , payMehCd = '0'
-        , prods = '{$insertProds}'
-      WHERE od_id = '{$_GET["od_id"]}'
+    UPDATE g5_shop_order SET
+      od_send_cost = '0'
+    WHERE od_id = '{$_GET["od_id"]}'
     ");
+  }
 
-    $orderData = sql_fetch("SELECT * FROM g5_shop_order WHERE od_id = '{$_GET["od_id"]}'");
+  #판매, 대여로그 작성
+  $sendData2 = [];
+  $sendData2["uuid"] = $_SESSION["uuid{$_GET["od_id"]}"];
+  $sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
+  $oCurl = curl_init();
+  curl_setopt($oCurl, CURLOPT_PORT, 9901);
+  curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/order/selectList");
+  curl_setopt($oCurl, CURLOPT_POST, 1);
+  curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
+  curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+  curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+  $res2 = curl_exec($oCurl);
+  $res2 = json_decode($res2, true);
+  curl_close($oCurl);
+  $count=count($res2['data']);
+  if($count>0) {
+  
+    $sendData3=[];
+    $sendData3["usrId"] = $member["mb_id"];
+    $sendData3["entId"] = $member["mb_entId"];
+    $sendData3["pageNum"] = 1;
+    $sendData3["pageSize"] = 1;
+    $sendData3["penId"] = $res2['data'][0]['penId'];
 
-    $productList = $_SESSION["productList{$_GET["od_id"]}"];
-
-
-        #모두 재고소진, 보유재고등록일 경우 배송비 - 0원 처리
-        $sql_up ="select * from `g5_shop_cart` where `od_id`='".$_GET["od_id"]."'";
-        $result_up=sql_query($sql_up);
-        $flag=true;
-        for ($i=0; $row=sql_fetch_array($result_up); $i++) {
-            if($row['ct_status']=="재고소진"||$row['ct_status']=="보유재고등록"){
-                continue;
-            }else{
-                $flag=false;
-            }
-        }
-        if($flag){
-            sql_query("
-            UPDATE g5_shop_order SET
-                od_send_cost = '0'
-            WHERE od_id = '{$_GET["od_id"]}'
-            ");
-        }
-
-        #판매, 대여로그 작성
-    $sendData2 = [];
-    $sendData2["uuid"] = $_SESSION["uuid{$_GET["od_id"]}"];
-    $sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
     $oCurl = curl_init();
     curl_setopt($oCurl, CURLOPT_PORT, 9901);
-    curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/order/selectList");
+    curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
     curl_setopt($oCurl, CURLOPT_POST, 1);
     curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
+    curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData3, JSON_UNESCAPED_UNICODE));
     curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-    $res2 = curl_exec($oCurl);
-    $res2 = json_decode($res2, true);
+    $res_pen = curl_exec($oCurl);
+    $res_pen = json_decode($res_pen, true);
     curl_close($oCurl);
-    $count=count($res2['data']);
-        if($count>0){
+    $data = $res_pen["data"][0];
+    //수급자명
+    $ren_person=$data["penNm"];
+    $stoId=$res2['data'][0]['stoId'];
+    $penOrdId=$res2['data'][0]['penOrdId'];
+    $strdate=date("Y-m-d", strtotime($res2['data'][0]['ordLendStrDtm']));
+    $enddate=date("Y-m-d", strtotime($res2['data'][0]['ordLendEndDtm']));
+    $ren_eformUrl=$res2['data'][0]['eformUrl'];
+    for($i=0; $i<$count; $i++) {
+      $rental_log_Id="rental_log".round(microtime(true)).rand();
+      $stoId=$res2['data'][$i]['stoId'];
+      $penOrdId=$res2['data'][$i]['penOrdId'];
+      $strdate=date("Y-m-d", strtotime($res2['data'][$i]['ordLendStrDtm']));
+      $enddate=date("Y-m-d", strtotime($res2['data'][$i]['ordLendEndDtm']));
 
-                $sendData3=[];
-                $sendData3["usrId"] = $member["mb_id"];
-                $sendData3["entId"] = $member["mb_entId"];
-                $sendData3["pageNum"] = 1;
-                $sendData3["pageSize"] = 1;
-                $sendData3["penId"] = $res2['data'][0]['penId'];
-
-                $oCurl = curl_init();
-                curl_setopt($oCurl, CURLOPT_PORT, 9901);
-                curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
-                curl_setopt($oCurl, CURLOPT_POST, 1);
-                curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData3, JSON_UNESCAPED_UNICODE));
-                curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-                $res_pen = curl_exec($oCurl);
-                $res_pen = json_decode($res_pen, true);
-                curl_close($oCurl);
-                $data = $res_pen["data"][0];
-                //수급자명
-                $ren_person=$data["penNm"];
-                $stoId=$res2['data'][0]['stoId'];
-                $penOrdId=$res2['data'][0]['penOrdId'];
-                $strdate=date("Y-m-d", strtotime($res2['data'][0]['ordLendStrDtm']));
-                $enddate=date("Y-m-d", strtotime($res2['data'][0]['ordLendEndDtm']));
-                $ren_eformUrl=$res2['data'][0]['eformUrl'];
-                for($i=0; $i<$count; $i++){
-                    $rental_log_Id="rental_log".round(microtime(true)).rand();
-                    $stoId=$res2['data'][$i]['stoId'];
-                    $penOrdId=$res2['data'][$i]['penOrdId'];
-                    $strdate=date("Y-m-d", strtotime($res2['data'][$i]['ordLendStrDtm']));
-                    $enddate=date("Y-m-d", strtotime($res2['data'][$i]['ordLendEndDtm']));
-
-                    $dis_total_date=G5_TIME_YMDHIS;
-                    $sql = " insert into `g5_rental_log`
-                        set `rental_log_Id` = '$rental_log_Id',
-                            `stoId` = '$stoId',
-                            `ordId` = '$penOrdId',
-                            `strdate` = '$strdate',
-                            `enddate` = '$enddate',
-                            `dis_total_date` = '$dis_total_date',
-                            `ren_person` = '$ren_person',
-                            `ren_eformUrl` = '$ren_eformUrl',
-                            `rental_log_division` = '2';";
-                    sql_query($sql);
-
-                }
-            }
-        #대여로그 작성
+      $dis_total_date=G5_TIME_YMDHIS;
+      $sql = " insert into `g5_rental_log` set
+              `rental_log_Id` = '$rental_log_Id',
+              `stoId` = '$stoId',
+              `ordId` = '$penOrdId',
+              `strdate` = '$strdate',
+              `enddate` = '$enddate',
+              `dis_total_date` = '$dis_total_date',
+              `ren_person` = '$ren_person',
+              `ren_eformUrl` = '$ren_eformUrl',
+              `rental_log_division` = '2' ";
+      sql_query($sql);
+    }
+  }
+  #대여로그 작성
 
   if($od["od_penId"]) {
     #재고소진 상태값 변경
@@ -666,35 +655,28 @@ if($is_inquiryview_sub) {
     $api_result = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $sendData);
   }
 
-    unset($_SESSION["productList{$_GET["od_id"]}"]);
-    unset($_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]);
-    unset($_SESSION["uuid{$_GET["od_id"]}"]);
-    unset($_SESSION["penOrdId{$_GET["od_id"]}"]);
+  unset($_SESSION["productList{$_GET["od_id"]}"]);
+  unset($_SESSION["deliveryTotalCnt{$_GET["od_id"]}"]);
+  unset($_SESSION["uuid{$_GET["od_id"]}"]);
+  unset($_SESSION["penOrdId{$_GET["od_id"]}"]);
 
 ?>
 
-  <script type="text/javascript">
-    //cart 기준 barcode insert update
-    $.ajax({
-      url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
-      type : "POST",
-      async : false,
-      data : {
-        od_id : "<?=$_GET["od_id"]?>",
-      }
-    });
+<script type="text/javascript">
+//cart 기준 barcode insert update
+$.ajax({
+  url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
+  type : "POST",
+  async : false,
+  data : {
+    od_id : "<?=$_GET["od_id"]?>",
+  }
+});
 
-    <?php if($reload){ ?>
-      window.location.reload();
-    <?php } ?>
-    var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
-
-//    $.ajax({
-//      url : "/apiEroum/order/update.php",
-//      type : "POST",
-//      async : false,
-//      data : sendData
-//    });
-  </script>
+<?php if($reload) { ?>
+window.location.reload();
+<?php } ?>
+var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
+</script>
 
 <?php } ?>

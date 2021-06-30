@@ -138,8 +138,6 @@ if($od["od_b_tel"]) {
       /* background-image : url('<?php echo G5_IMG_URL?>/bacod_img.png');  */
       /* background-position:top right;  */
       /* background-repeat:no-repeat; */
-
-
     }
     .imfomation_box a .li_box .deliveryInfoWrap { width: 100%; float: left; background-color: #F1F1F1; border-radius: 5px; padding: 10px; margin-top: 15px; }
     .imfomation_box a .li_box .deliveryInfoWrap > select { width: 34%; height: 40px; float: left; margin-right: 1%; border: 1px solid #DDD; font-size: 17px; color: #666; padding-left: 10px; border-radius: 5px; }
@@ -151,6 +149,26 @@ if($od["od_b_tel"]) {
     #popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
     #popupFooterBtnWrap > .savebtn{ float: left; width: 75%; height: 100%; background-color:#000; color: #FFF; }
     #popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
+
+    /* 바코드 순차입력 버튼 */
+    .imfomation_box a .li_box .folding_box > .inputbox > li > .barcode_add {
+          width:30px; height:30px; position: absolute; right: 90px; display:none;
+    }
+
+    .excel_btn{
+        float: left;
+        margin-top: 10px;
+        color: #fff;
+        font-size: 17px;
+        background-color: #494949;
+        border: 0px;
+        border-radius: 6px;
+        width: 18%;
+        height: 50px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 50px;
+    }
   </style>
 </head>
 
@@ -186,6 +204,8 @@ if($od["od_b_tel"]) {
         <span><?=$od["od_b_addr1"]?> <?=$od["od_b_addr2"]?></span>
       </p>
     </div>
+  <a href="./popup.prodBarNum.form.excel.php?od_id=<?=$od_id?>" class="excel_btn">엑셀다운로드</a>
+
   </div>
 
    <!-- 상품목록 -->
@@ -251,6 +271,7 @@ if($od["od_b_tel"]) {
               <?php for($b = 0; $b< count($stoId_v); $b++){ ?>
               <li>
                 <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
                 <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
@@ -335,8 +356,52 @@ if($od["od_b_tel"]) {
   ?>
 
   <script type="text/javascript">
-  var need_reload = false;
 
+    $(".notall").keyup(function(){
+        var last_index = $(this).closest('ul').find('li').last().index();
+        var this_index = $(this).closest('li').index();
+
+        $(this).closest('ul').find('.barcode_add').hide();
+        if(last_index !== this_index && $(this).val().length == 12)
+            $(this).closest('li').find('.barcode_add').show();
+
+        notallLengthCheck();
+    });
+
+
+
+    $('.notall').focus(function(){
+
+        var last_index = $(this).closest('ul').find('li').last().index();
+        var this_index = $(this).closest('li').index();
+
+        $(this).closest('ul').find('.barcode_add').hide();
+        if(last_index !== this_index && $(this).val().length == 12)
+            $(this).closest('li').find('.barcode_add').show();
+    });
+    
+    $('.barcode_add').click(function() {
+        var ul = $(this).closest('ul');
+        var li_num = $(this).closest('li').index();
+        var li_val = $(this).closest('li').find('.notall').val();
+        var li_last = $(ul).find('li').last().index();
+        var p_num = 0;
+
+        if(li_val.length !== 12){
+            alert('바코드 12자리를 입력해주세요.');
+            return false;
+        }
+        
+        for(var i = li_num+1; i<=li_last; i++){
+            p_num++;
+            $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+        }
+        notallLengthCheck();
+    });
+
+
+
+  var need_reload = false;
   //maxnum 지정
   function maxLengthCheck(object){
     if (object.value.length > object.maxLength){
@@ -494,19 +559,19 @@ if($od["od_b_tel"]) {
       }
     });
 
-    var $notall = $(".notall").keyup(function(){
-      $(this).val($(this).val().replace(/[^0-9]/g,""));
-      if($(this).val().length == 12) {
-        var idx = $notall.index(this); // <- 변경된 코드
-        var num = idx+1;
+    // var $notall = $(".notall").keyup(function(){
+    //   $(this).val($(this).val().replace(/[^0-9]/g,""));
+    //   if($(this).val().length == 12) {
+    //     var idx = $notall.index(this); // <- 변경된 코드
+    //     var num = idx+1;
 
-        var item = $(".notall");
-        if(num < item.length){
-          $notall[num].focus();
-        }
-      }
-      notallLengthCheck();
-    });
+    //     var item = $(".notall");
+    //     if(num < item.length){
+    //       $notall[num].focus();
+    //     }
+    //   }
+    //   notallLengthCheck();
+    // });
 
     var stoldList = [];
     var count=0;

@@ -1,5 +1,5 @@
 <?php
-if(!$member["mb_id"]){alert('로그인을 해주세요',G5_BBS_URL.'/login.php?url=%2F');};
+if(!$member["mb_id"]){ alert('로그인을 해주세요', G5_BBS_URL.'/login.php?url=%2F'); };
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 //수급자 정보 필드추가

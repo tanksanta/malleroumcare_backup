@@ -147,6 +147,22 @@ if($od["od_b_tel"]){
     #popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
     #popupFooterBtnWrap > .savebtn{ float: left; width: 75%; height: 100%; background-color:#000; color: #FFF; }
     #popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
+
+    .excel_btn{
+        float: left;
+        margin-top: 10px;
+        color: #fff;
+        font-size: 13px;
+        background-color: #494949;
+        border: 0px;
+        border-radius: 6px;
+        width: 18%;
+        height: 50px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 50px;
+    }
+
   </style>
  </head>
 
@@ -181,6 +197,7 @@ if($od["od_b_tel"]){
         <span><?=$od["od_b_addr1"]?> <?=$od["od_b_addr2"]?></span>
       </p>
     </div>
+    <a href="./popup.prodBarNum.form.excel2.php?ct_id=<?=$ct_id?>" class="excel_btn">엑셀다운로드</a>
   </div>
 
    <!-- 상품목록 -->

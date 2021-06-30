@@ -265,7 +265,7 @@ wcs_do(); // wetoz : 2020-09-04
 </script> 
 
 <script>
-<?php if ($member['mb_id'] && preg_match('/\/bbs\/login.php/i', $_SERVER['HTTP_REFERER'])) { ?>
+<?php if ($member['mb_id']) { ?>
 if (navigator.userAgent.indexOf("Android") > - 1) {
 	window.EroummallApp.requestToken("");
 } else if (navigator.userAgent.indexOf("iPhone") > - 1) {

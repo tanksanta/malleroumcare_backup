@@ -1335,3 +1335,15 @@ a.btn_ov02:hover,a.ov_listall:hover{background:#3f51b5}
 #mb_info #total-search-price {
 	color: #009845;
 }
+
+.sb1{
+    height: 30px;
+    line-height: 30px !important;
+    padding: 0 13px;
+    vertical-align: top;
+    font-weight: bold;
+    letter-spacing: -1px;
+    background-color: white;
+    border: 1px solid #b5b5b5;
+    color: black !important;
+}
