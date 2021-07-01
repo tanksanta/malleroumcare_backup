@@ -122,12 +122,16 @@ foreach($carts as $cart) {
     $edi['fixTakeNo']		= $take_no;
 
     // 송하인
-    $edi['sndCustNm']		= $cart['od_name'];
-    $edi['sndCustAddr1']	= $cart['od_addr1'];
-    $edi['sndCustAddr2']	= $cart['od_addr2'];
-    $edi['sndTelNo']		= $cart['od_tel'] ? $cart['od_tel'] : $cart['od_hp'];
-    $edi['sndHandNo']		= $cart['od_hp'] ? $cart['od_hp'] : $cart['od_tel'];
-
+    // $edi['sndCustNm']		= $cart['od_name'];
+    // $edi['sndCustAddr1']	= $cart['od_addr1'];
+    // $edi['sndCustAddr2']	= $cart['od_addr2'];
+    // $edi['sndTelNo']		= $cart['od_tel'] ? $cart['od_tel'] : $cart['od_hp'];
+    // $edi['sndHandNo']		= $cart['od_hp'] ? $cart['od_hp'] : $cart['od_tel'];
+    $edi['sndCustNm']		= '이로움';
+    $edi['sndCustAddr1']	= '인천 서구 정서진 8로 5 ';
+    $edi['sndCustAddr2']	= '403동';
+    $edi['sndTelNo']		= '032-562-6608';
+    $edi['sndHandNo']		= '032-562-6608';
     
     // 수취인
     $edi['rcvCustNm']		= $cart['od_b_name'];
