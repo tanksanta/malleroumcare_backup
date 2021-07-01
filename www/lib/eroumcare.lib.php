@@ -932,9 +932,18 @@ function expired_rental_item_clean($prodId) {
       if(time() >= ( $inital_contract_time + ($item['it_rental_expiry_year'] * 365 * 24 * 60 * 60 ) )) {
         $stock_update[] = array(
           'stoId' => $stock['stoId'],
-          'prodBarNum' => $stock['prodBarNum'],
-          'prodId' => $stock['prodId'],
           'stateCd' => '05' // 05(기타)
+        );
+      }
+
+      // 내구연한 설정기간, 금액 없으면 무시
+      if(!$item['it_rental_persisting_year'] || !$item['it_rental_persisting_price']) continue;
+
+      // 내구연한 설정기간보다 지났으면
+      if(time() >= ( $inital_contract_time + ($item['it_rental_persisting_year'] * 365 * 24 * 60 * 60 ) )) {
+        $stock_update[] = array(
+          'stoId' => $stock['stoId'],
+          'customRentalPrice' => $item['it_rental_persisting_price']
         );
       }
     }

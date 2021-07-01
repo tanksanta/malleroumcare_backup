@@ -211,24 +211,25 @@ $(function() {
               <p><?php echo $item[$i]['ct_send_cost']; ?></p>
             </li>
             <li class="barcode barList" style="display: none;">
-            <?php
-              for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++){
-                for($iii = 0; $iii < $item[$i]["it_optionList"][$ii]["qty"]; $iii++){
-            ?>
-                <?php if($optionCntList[$item[$i]["it_id"]][$ii] > $iii){ ?>
-                  <input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)" class="prodStockBarBox<?=$ii?> prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
-                <?php } else { ?>
-                <?php
-                  if(substr($item[$i]["ca_id"], 0, 2) == 20){
-                    $itemPenIdStatus = false;
-                  }
-                ?>
-                  <input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)"class="hidden barcode_input prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
-                <?php } ?>
-            <?php
-                $postProdBarNumCnt++; }
+              <?php
+                for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++) {
+                  for($iii = 0; $iii < $item[$i]["it_optionList"][$ii]["qty"]; $iii++) {
+              ?>
+              <?php if($optionCntList[$item[$i]["it_id"]][$ii] > $iii){ ?>
+              <input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)" class="prodStockBarBox<?=$ii?> prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
+              <?php } else { ?>
+              <?php
+                if(substr($item[$i]["ca_id"], 0, 2) == 20){
+                  $itemPenIdStatus = false;
+                }
+              ?>
+              <input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)"class="hidden barcode_input prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
+              <?php } ?>
+              <?php
+                $postProdBarNumCnt++;
+                }
               }
-            ?>
+              ?>
             </li>
           </ul>
           <div class="list-btm">
