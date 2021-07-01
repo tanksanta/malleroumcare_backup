@@ -175,6 +175,11 @@ include_once('./_head.php');
 
 $sql = 'SELECT * FROM `g5_shop_item` WHERE `it_id`="'.$_GET['prodId'].'"';
 $row = sql_fetch($sql);
+
+if(!$_GET['prodId']) alert('유효하지 않은 접근입니다.');
+
+// 대여 내구연한: 판매가능기간 지난 재고 정리
+expired_rental_item_clean($_GET['prodId']);
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">

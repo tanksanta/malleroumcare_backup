@@ -24,6 +24,11 @@ if (!$tmp_cart_id)
 
 $tmp_cart_id = preg_replace('/[^a-z0-9_\-]/i', '', $tmp_cart_id);
 
+// 대여 내구연한: 판매가능기간 지난 재고 정리
+foreach($_POST['it_id'] as $prodId) {
+  expired_rental_item_clean($prodId);
+}
+
 // 레벨(권한)이 상품구입 권한보다 작다면 상품을 구입할 수 없음.
 if ($member['mb_level'] < $default['de_level_sell'])
 {

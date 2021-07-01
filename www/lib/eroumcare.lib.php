@@ -903,3 +903,46 @@ function get_stock($prodId, $prodBarNum = '') {
 
   return $res;
 }
+
+// 대여 내구연한: 판매가능기간 지났으면 재고상태 05(기타)로 변경하기
+function expired_rental_item_clean($prodId) {
+  global $g5, $member;
+
+  $item = sql_fetch(" SELECT * FROM {$g5['g5_shop_item_table']} WHERE it_id = '$prodId' ");
+
+  // 대여 내구연한 사용안하면 무시
+  if(!$item['it_rental_use_persisting_year'] || !$item['it_rental_expiry_year']) return;
+
+  $result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
+    'entId' => $member['mb_entId'],
+    'usrId' => $member['mb_id'],
+    'prodId' => $prodId,
+    'stateCd' => ['01']
+  ));
+  
+  if($result['errorYN'] == 'N' && $result['data']) {
+    $stock_update = [];
+    foreach($result['data'] as $stock) {
+      $inital_contract_time = strtotime($stock['initialContractDate']);
+
+      // 최초계약일 없으면 무시
+      if(!$inital_contract_time) continue;
+
+      // 최초계약일 + 설정한 판매가능기간보다 더 지났으면
+      if(time() >= ( $inital_contract_time + ($item['it_rental_expiry_year'] * 365 * 24 * 60 * 60 ) )) {
+        $stock_update[] = array(
+          'stoId' => $stock['stoId'],
+          'prodBarNum' => $stock['prodBarNum'],
+          'prodId' => $stock['prodId'],
+          'stateCd' => '05' // 05(기타)
+        );
+      }
+    }
+
+    api_post_call(EROUMCARE_API_STOCK_UPDATE, array(
+      'entId' => $member['mb_entId'],
+      'usrId' => $member['mb_id'],
+      'prods' => $stock_update,
+    ));
+  }
+}
