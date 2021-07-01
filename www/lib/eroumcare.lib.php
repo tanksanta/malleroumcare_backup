@@ -886,14 +886,14 @@ function is_pen_order($od_id) {
     }
 }
 
-function get_stock($prodId, $stoId = '') {
+function get_stock($prodId, $prodBarNum = '') {
   global $member;
 
   $result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
     'entId' => $member['mb_entId'],
     'usrId' => $member['mb_id'],
     'prodId' => $prodId,
-    'stoId' => $stoId
+    'prodBarNum' => $prodBarNum
   ));
 
   $res = [];
