@@ -2,8 +2,8 @@
 include_once('./_common.php');
 
 if(USE_G5_THEME && defined('G5_THEME_PATH')) {
-    require_once(G5_SHOP_PATH.'/yc/orderinquiry.php');
-    return;
+  require_once(G5_SHOP_PATH.'/yc/orderinquiry.php');
+  return;
 }
 
 define("_ORDERINQUIRY_", true);
@@ -28,12 +28,12 @@ list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_s
 // 스킨설정
 $wset = array();
 if($skin_row['order_'.MOBILE_.'set']) {
-	$wset = apms_unpack($skin_row['order_'.MOBILE_.'set']);
+  $wset = apms_unpack($skin_row['order_'.MOBILE_.'set']);
 }
 
 // 데모
 if($is_demo) {
-	@include ($demo_setup_file);
+  @include ($demo_setup_file);
 }
 
 // 설정값 불러오기
@@ -51,59 +51,59 @@ $skin_url = $order_skin_url;
 // 셋업
 $setup_href = '';
 if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
-	$setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
+  $setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
 }
 
 if(!$selected_month) $selected_month = date('Y-m-01');
 
 $entId = $member['mb_entId'];
 if(!$entId) {
-	alert('사업소 회원만 접근 가능합니다.');
+  alert('사업소 회원만 접근 가능합니다.');
 }
 
 $where = "";
 $search = get_search_string($search);
 if(in_array($searchtype, ['penNm', 'penLtmNum']) && $search) {
-	$where = " AND $searchtype LIKE '%$search%' ";
+  $where = " AND $searchtype LIKE '%$search%' ";
 }
 
 // 수급자만 모아보기
 if($penId) {
-	$where .= " AND penId = '$penId' ";
+  $where .= " AND penId = '$penId' ";
 }
 
 $eform_query = sql_query("
-SELECT
-	MIN(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d')) as start_date,
-	SUM(`it_price`) as total_price,
-	SUM(`it_price_pen`) as total_price_pen,
-	(SUM(`it_price`) - SUM(`it_price_pen`)) as total_price_ent,
-	penId, penNm, penLtmNum, penRecGraCd, penRecGraNm, penTypeCd, penTypeNm, penBirth
-FROM `eform_document` a
-LEFT JOIN `eform_document_item` b
-ON a.dc_id = b.dc_id
-WHERE
-	entId = '$entId'
-	AND dc_status = '2'
-	$where
-	AND
-	(
-		(
-			gubun = '00' AND
-			STR_TO_DATE(`it_date`, '%Y-%m-%d') BETWEEN '$selected_month' AND LAST_DAY('$selected_month')
-		)
-		OR
-		(
-			gubun = '01' AND
-			(
-				(STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <= '$selected_month')
-				AND
-				(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d') >= '$selected_month')
-			)
-		)
-	)
-GROUP BY `penId`
-ORDER BY `penNm` ASC
+  SELECT
+    MIN(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d')) as start_date,
+    SUM(`it_price`) as total_price,
+    SUM(`it_price_pen`) as total_price_pen,
+    (SUM(`it_price`) - SUM(`it_price_pen`)) as total_price_ent,
+    penId, penNm, penLtmNum, penRecGraCd, penRecGraNm, penTypeCd, penTypeNm, penBirth
+  FROM `eform_document` a
+  LEFT JOIN `eform_document_item` b
+  ON a.dc_id = b.dc_id
+  WHERE
+    entId = '$entId'
+    AND dc_status = '2'
+    $where
+    AND
+    (
+      (
+        gubun = '00' AND
+        STR_TO_DATE(`it_date`, '%Y-%m-%d') BETWEEN '$selected_month' AND LAST_DAY('$selected_month')
+      )
+      OR
+      (
+        gubun = '01' AND
+        (
+          (STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <= '$selected_month')
+          AND
+          (STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d') >= '$selected_month')
+        )
+      )
+    )
+  GROUP BY `penId`
+  ORDER BY `penNm` ASC
 ");
 
 $total_count = sql_num_rows($eform_query);
@@ -115,7 +115,7 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 $cl_query = sql_query("SELECT * FROM `claim_management` WHERE selected_month = '$selected_month' AND mb_id = '{$member['mb_id']}'");
 $cl = [];
 while($row = sql_fetch_array($cl_query)) {
-	$cl[] = $row;
+  $cl[] = $row;
 }
 
 $cur_year = intval(date('Y'));
@@ -127,214 +127,214 @@ $sel_month = intval(substr($selected_month, 5, 2));
 $has_prev = false;
 $has_next = false;
 if($sel_year <= $cur_year && $sel_year >= 2021) {
-	if($sel_year == 2021) {
-		if($sel_month > 6) {
-			$has_prev = true;
-			$prev_month = "2021-".str_pad($sel_month-1, 2, '0', STR_PAD_LEFT).'-01';
-		}
-		if($sel_month < $cur_month) {
-			$has_next = true;
-			$next_month = "2021-".str_pad($sel_month+1, 2, '0', STR_PAD_LEFT).'-01';
-		}
-	} else if($sel_year > 2021) {
-		$has_prev = true;
-		if($sel_year == $cur_year) {
-			if($sel_month < $cur_month) {
-				$has_next = true;
-				$next_month = "$sel_year-".str_pad($sel_month+1, 2, '0', STR_PAD_LEFT).'-01';
-			}
-		} else if($sel_year < $cur_year) {
-			$has_next = true;
-			if($sel_month == 12) {
-				$next_month = ($sel_year + 1).'-01-01';
-			} else {
-				$next_month = "$sel_year-".str_pad($sel_month+1, 2, '0', STR_PAD_LEFT).'-01';
-			}
-		}
-		if($sel_month == 1) {
-			$prev_month = ($sel_year - 1).'-12-01';
-		} else {
-			$prev_month = $sel_year.'-'.str_pad($sel_month-1, 2, '0', STR_PAD_LEFT).'-01';
-		}
-	}
+  if($sel_year == 2021) {
+    if($sel_month > 6) {
+      $has_prev = true;
+      $prev_month = "2021-".str_pad($sel_month-1, 2, '0', STR_PAD_LEFT).'-01';
+    }
+    if($sel_month < $cur_month) {
+      $has_next = true;
+      $next_month = "2021-".str_pad($sel_month+1, 2, '0', STR_PAD_LEFT).'-01';
+    }
+  } else if($sel_year > 2021) {
+    $has_prev = true;
+    if($sel_year == $cur_year) {
+      if($sel_month < $cur_month) {
+        $has_next = true;
+        $next_month = "$sel_year-".str_pad($sel_month+1, 2, '0', STR_PAD_LEFT).'-01';
+      }
+    } else if($sel_year < $cur_year) {
+      $has_next = true;
+      if($sel_month == 12) {
+        $next_month = ($sel_year + 1).'-01-01';
+      } else {
+        $next_month = "$sel_year-".str_pad($sel_month+1, 2, '0', STR_PAD_LEFT).'-01';
+      }
+    }
+    if($sel_month == 1) {
+      $prev_month = ($sel_year - 1).'-12-01';
+    } else {
+      $prev_month = $sel_year.'-'.str_pad($sel_month-1, 2, '0', STR_PAD_LEFT).'-01';
+    }
+  }
 }
 ?>
 
 <section class="wrap">
-	<div class="sub_section_tit">청구/전자문서관리</div>
-	<ul class="list_tab">
-		<li class="active"><a href="<?=G5_SHOP_URL?>/claim_manage.php">청구관리</a></li>
-		<li ><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<!--<span class="red_info">미작성: 1건</span>--></a></li>
-	</ul>
-	<div class="inner">
-		<form action="/shop/claim_manage.php" method="get">
-			<div class="date_wrap">
-				<div class="date_this">
-					<a href="?selected_month=<?=date('Y-m-01')?><?=$penId ? "&penId=$penId" : ''?>">이번달</a>
-				</div>
-				<div class="date_selected">
-					<a href="<?=$has_prev ? '?selected_month='.$prev_month.($penId ? "&penId=$penId" : '') : '#'?>" class="<?=$has_prev ? '' : 'disabled'?>">◀ 지난달</a>
-					<select name="selected_month" id="selected_month">
-						<?php
-						for($year = 2021; $year <= $cur_year; $year++) {
-							for($month = 1; $month <= 12; $month++) {
-								if($year == 2021 && $month < 6) { // 2021년 6월 이전은 무시 (신규계약서 적용 전)
-									continue;
-								}
+  <div class="sub_section_tit">청구/전자문서관리</div>
+  <ul class="list_tab">
+    <li class="active"><a href="<?=G5_SHOP_URL?>/claim_manage.php">청구관리</a></li>
+    <li ><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<!--<span class="red_info">미작성: 1건</span>--></a></li>
+  </ul>
+  <div class="inner">
+    <form action="/shop/claim_manage.php" method="get">
+      <div class="date_wrap">
+        <div class="date_this">
+          <a href="?selected_month=<?=date('Y-m-01')?><?=$penId ? "&penId=$penId" : ''?>">이번달</a>
+        </div>
+        <div class="date_selected">
+          <a href="<?=$has_prev ? '?selected_month='.$prev_month.($penId ? "&penId=$penId" : '') : '#'?>" class="<?=$has_prev ? '' : 'disabled'?>">◀ 지난달</a>
+          <select name="selected_month" id="selected_month">
+            <?php
+            for($year = 2021; $year <= $cur_year; $year++) {
+              for($month = 1; $month <= 12; $month++) {
+                if($year == 2021 && $month < 6) { // 2021년 6월 이전은 무시 (신규계약서 적용 전)
+                  continue;
+                }
 
-								if($year == $cur_year && $month > $cur_month) { // 현재 년/월 보다 미래는 무시
-									break;
-								}
+                if($year == $cur_year && $month > $cur_month) { // 현재 년/월 보다 미래는 무시
+                  break;
+                }
 
-								$leading_zero_month = str_pad($month, 2, '0', STR_PAD_LEFT);
+                $leading_zero_month = str_pad($month, 2, '0', STR_PAD_LEFT);
 
                 $option_value = "{$year}-{$leading_zero_month}-01";
-							?>
-							<option value="<?=$option_value?>"<?=$option_value == $selected_month ? ' selected' : ''?>><?="{$year}년 {$month}월"?></option>
-							<?php
-							}
-						}
-						?>
-					</select>
-					<a href="<?=$has_next ? '?selected_month='.$next_month.($penId ? "&penId=$penId" : '') : '#'?>" class="<?=$has_next ? '' : 'disabled'?>">다음달 ▶</a>
-				</div>
-			</div>
-			
-			<?php if(!$penId) { ?>
-			<div class="search_box">
-				<select name="searchtype" id="">
-					<option value="penNm">수급자명</option>
-					<option value="penLtmNum">요양인정번호</option>
-				</select>
-				<div class="input_search">
-					<input name="search" value="<?=$_GET["search"]?>" type="text">
-					<button type="submit"></button>
-				</div>
-			</div>
-			<?php } ?>
-		</form>
-	</div>
-	<div class="r_btn_area">
-		<!--<span>최신검증일 : 2021-03-01 13:35</span>
-		<a href="#" class="btn_nhis">건보 자료 업로드</a>-->
-		<a href="./claim_manage_excel.php?selected_month=<?=$selected_month?>&searchtype=<?=$searchtype?>&search=<?=$search?>&page=<?=$page?><?=$penId ? "&penId=$penId" : ''?>">엑셀다운로드</a>
-	</div>
-	<div class="list_box">
-		<div class="table_box">
-			<table>
-				 <tr>
-				 	<th>No.</th>
-				 	<th>수급자 정보</th>
-				 	<th>급여시작일</th>
-				 	<th>급여비용총액</th>
-				 	<th>본인부담금</th>
-				 	<th>청구액</th>
-				 	<th>검증상태</th>
-				 	<th>금액변경</th>
-				 </tr>
-				<?php 
-				for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
-					$index = $from_record + $i + 1;
-					$row['selected_month'] = $selected_month;
-					if(strtotime($row['start_date']) < strtotime($selected_month))
-						$row['start_date'] = $selected_month;
-					
-					$row['cl_status'] = '0';
+              ?>
+              <option value="<?=$option_value?>"<?=$option_value == $selected_month ? ' selected' : ''?>><?="{$year}년 {$month}월"?></option>
+              <?php
+              }
+            }
+            ?>
+          </select>
+          <a href="<?=$has_next ? '?selected_month='.$next_month.($penId ? "&penId=$penId" : '') : '#'?>" class="<?=$has_next ? '' : 'disabled'?>">다음달 ▶</a>
+        </div>
+      </div>
+      
+      <?php if(!$penId) { ?>
+      <div class="search_box">
+        <select name="searchtype" id="">
+          <option value="penNm">수급자명</option>
+          <option value="penLtmNum">요양인정번호</option>
+        </select>
+        <div class="input_search">
+          <input name="search" value="<?=$_GET["search"]?>" type="text">
+          <button type="submit"></button>
+        </div>
+      </div>
+      <?php } ?>
+    </form>
+  </div>
+  <div class="r_btn_area">
+    <!--<span>최신검증일 : 2021-03-01 13:35</span>
+    <a href="#" class="btn_nhis">건보 자료 업로드</a>-->
+    <a href="./claim_manage_excel.php?selected_month=<?=$selected_month?>&searchtype=<?=$searchtype?>&search=<?=$search?>&page=<?=$page?><?=$penId ? "&penId=$penId" : ''?>">엑셀다운로드</a>
+  </div>
+  <div class="list_box">
+    <div class="table_box">
+      <table>
+         <tr>
+           <th>No.</th>
+           <th>수급자 정보</th>
+           <th>급여시작일</th>
+           <th>급여비용총액</th>
+           <th>본인부담금</th>
+           <th>청구액</th>
+           <th>검증상태</th>
+           <th>금액변경</th>
+         </tr>
+        <?php 
+        for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
+          $index = $from_record + $i + 1;
+          $row['selected_month'] = $selected_month;
+          if(strtotime($row['start_date']) < strtotime($selected_month))
+            $row['start_date'] = $selected_month;
+          
+          $row['cl_status'] = '0';
 
-					$row['orig'] = array();
-					$row['orig']['start_date'] = $row['start_date'];
-					$row['orig']['total_price'] = $row['total_price'];
-					$row['orig']['total_price_pen'] = $row['total_price_pen'];
-					$row['orig']['total_price_ent'] = $row['total_price_ent'];
+          $row['orig'] = array();
+          $row['orig']['start_date'] = $row['start_date'];
+          $row['orig']['total_price'] = $row['total_price'];
+          $row['orig']['total_price_pen'] = $row['total_price_pen'];
+          $row['orig']['total_price_ent'] = $row['total_price_ent'];
 
-					foreach($cl as $val) {
-						if
-						(
-							$val['penId'] == $row['penId'] &&
-							$val['penNm'] == $row['penNm'] &&
-							$val['penLtmNum'] == $row['penLtmNum'] &&
-							$val['penRecGraCd'] == $row['penRecGraCd'] &&
-							$val['penTypeCd'] == $row['penTypeCd'] &&
-							$val['cl_status'] != 0
-						) {
-							$row['cl_status'] = $val['cl_status'];
-							$row['start_date'] = $val['start_date'];
-							$row['total_price'] = $val['total_price'];
-							$row['total_price_pen'] = $val['total_price_pen'];
-							$row['total_price_ent'] = $val['total_price_ent'];
-						}
-					}
-				?>
-				<tr>
-					<td><?=$index?></td>
-				 	<td><a href="<?=G5_SHOP_URL?>/my_recipient_view.php?id=<?=$row['penId']?>"><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></a></td>
-				 	<td class="text_c start_date <?=($row['orig']['start_date'] != $row['start_date'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['start_date']?>"><?=$row['start_date']?></td>
-				 	<td class="text_r total_price <?=($row['orig']['total_price'] != $row['total_price'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price']?>"><?=number_format($row['total_price'])?>원</td>
-				 	<td class="text_r total_price_pen <?=($row['orig']['total_price_pen'] != $row['total_price_pen'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price_pen']?>"><?=number_format($row['total_price_pen'])?>원</td>
-				 	<td class="text_r total_price_ent <?=($row['orig']['total_price_ent'] != $row['total_price_ent'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price_ent']?>"><?=number_format($row['total_price_ent'])?>원</td>
-				 	<td class="text_c status" data-status="<?=$row['cl_status']?>"><?=($row['cl_status'] == '0' ? '대기' : '변경')?></td>
-				 	<td class="text_c">
-						 <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
-					</td>
-				</tr>
-				<?php } ?>
-			</table>
-		</div>
+          foreach($cl as $val) {
+            if
+            (
+              $val['penId'] == $row['penId'] &&
+              $val['penNm'] == $row['penNm'] &&
+              $val['penLtmNum'] == $row['penLtmNum'] &&
+              $val['penRecGraCd'] == $row['penRecGraCd'] &&
+              $val['penTypeCd'] == $row['penTypeCd'] &&
+              $val['cl_status'] != 0
+            ) {
+              $row['cl_status'] = $val['cl_status'];
+              $row['start_date'] = $val['start_date'];
+              $row['total_price'] = $val['total_price'];
+              $row['total_price_pen'] = $val['total_price_pen'];
+              $row['total_price_ent'] = $val['total_price_ent'];
+            }
+          }
+        ?>
+        <tr>
+          <td><?=$index?></td>
+           <td><a href="<?=G5_SHOP_URL?>/my_recipient_view.php?id=<?=$row['penId']?>"><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></a></td>
+           <td class="text_c start_date <?=($row['orig']['start_date'] != $row['start_date'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['start_date']?>"><?=$row['start_date']?></td>
+           <td class="text_r total_price <?=($row['orig']['total_price'] != $row['total_price'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price']?>"><?=number_format($row['total_price'])?>원</td>
+           <td class="text_r total_price_pen <?=($row['orig']['total_price_pen'] != $row['total_price_pen'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price_pen']?>"><?=number_format($row['total_price_pen'])?>원</td>
+           <td class="text_r total_price_ent <?=($row['orig']['total_price_ent'] != $row['total_price_ent'] ? 'text_point' : '')?>" data-orig="<?=$row['orig']['total_price_ent']?>"><?=number_format($row['total_price_ent'])?>원</td>
+           <td class="text_c status" data-status="<?=$row['cl_status']?>"><?=($row['cl_status'] == '0' ? '대기' : '변경')?></td>
+           <td class="text_c">
+             <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
+          </td>
+        </tr>
+        <?php } ?>
+      </table>
+    </div>
 
-		<div class="list-paging">
-		</div>
-			 <!--<div class="subtit">
-			 	건강관리공단 미 매칭 자료 
-			 </div>
- 			<div class="table_box">
- 			<table >
-				 <tr>
-				 	<th>No.</th>
-				 	<th>수급자 정보</th>
-				 	<th>급여시작일</th>
-				 	<th>급여비용총액</th>
-				 	<th>본인부담금</th>
-				 	<th>청구액</th>
-				 	<th>검증상태</th>
-				 </tr>
-				 <tr>
-				 	<td>2</td>
-				 	<td>홍길동(L2233***** / 3등급 /기초0%)</td>
-				 	<td class="text_c">2021-02-02</td>
-				 	<td class="text_r">200,000원</td>
-				 	<td class="text_r">10,000원</td>
-				 	<td class="text_r">210,000원</td>
-				 	<td class="text_c text_gray">미매칭</td>
-				 </tr>
-				 <tr>
-				 	<td>1</td>
-				 	<td>홍길동(L2233***** / 3등급 /기초0%)</td>
-				 	<td class="text_c">2021-02-02</td>
-				 	<td class="text_r">200,000원</td>
-				 	<td class="text_r">10,000원</td>
-				 	<td class="text_r">210,000원</td>
-				 	<td class="text_c text_gray">미매칭</td>
-				 </tr>
-			 </table>
-			 </div>
-			 
-			 <div class="list-paging">
-			 	<ul class="pagination ">
-			 		<li> </li>
-			 		<li><a href="#"> &lt;</a></li>
-			 		<li class="active"><a href="#">1</a></li>
-			 		<li><a href="#">2</a></li>
-			 		<li><a href="#">3</a></li>
-			 		<li><a href="#">&gt;</a></li>
-			 		<li> </li>
-			 	</ul>
-			 </div>
- 		</div>-->
-	</div>
+    <div class="list-paging">
+    </div>
+       <!--<div class="subtit">
+         건강관리공단 미 매칭 자료 
+       </div>
+       <div class="table_box">
+       <table >
+         <tr>
+           <th>No.</th>
+           <th>수급자 정보</th>
+           <th>급여시작일</th>
+           <th>급여비용총액</th>
+           <th>본인부담금</th>
+           <th>청구액</th>
+           <th>검증상태</th>
+         </tr>
+         <tr>
+           <td>2</td>
+           <td>홍길동(L2233***** / 3등급 /기초0%)</td>
+           <td class="text_c">2021-02-02</td>
+           <td class="text_r">200,000원</td>
+           <td class="text_r">10,000원</td>
+           <td class="text_r">210,000원</td>
+           <td class="text_c text_gray">미매칭</td>
+         </tr>
+         <tr>
+           <td>1</td>
+           <td>홍길동(L2233***** / 3등급 /기초0%)</td>
+           <td class="text_c">2021-02-02</td>
+           <td class="text_r">200,000원</td>
+           <td class="text_r">10,000원</td>
+           <td class="text_r">210,000원</td>
+           <td class="text_c text_gray">미매칭</td>
+         </tr>
+       </table>
+       </div>
+       
+       <div class="list-paging">
+         <ul class="pagination ">
+           <li> </li>
+           <li><a href="#"> &lt;</a></li>
+           <li class="active"><a href="#">1</a></li>
+           <li><a href="#">2</a></li>
+           <li><a href="#">3</a></li>
+           <li><a href="#">&gt;</a></li>
+           <li> </li>
+         </ul>
+       </div>
+     </div>-->
+  </div>
 </section>
 
 <div id="popupEdit">
-	<div></div>
+  <div></div>
 </div>
 <style>
 td.status {color: #333;}
@@ -345,54 +345,54 @@ td.status[data-status="0"] {color: #bbb;}
 #popupEdit iframe { position: relative; width: 700px; height: 300px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
 
 @media (max-width : 800px){
-	#popupEdit iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+  #popupEdit iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 }
 
 body.modal-open {
-	overflow: hidden;
+  overflow: hidden;
 }
 </style>
 
 <script>
 function updateClaim(cl_id, data) {
-	var $tr = $('.btn_edit[data-id="'+cl_id+'"]').closest('tr');
-	var start_date = data['start_date'];
-	var total_price = data['total_price'];
-	var total_price_pen = data['total_price_pen'];
-	var total_price_ent = data['total_price_ent'];
+  var $tr = $('.btn_edit[data-id="'+cl_id+'"]').closest('tr');
+  var start_date = data['start_date'];
+  var total_price = data['total_price'];
+  var total_price_pen = data['total_price_pen'];
+  var total_price_ent = data['total_price_ent'];
 
-	var $start_date = $tr.find('.start_date');
-	var $total_price = $tr.find('.total_price');
-	var $total_price_pen = $tr.find('.total_price_pen');
-	var $total_price_ent = $tr.find('.total_price_ent');
+  var $start_date = $tr.find('.start_date');
+  var $total_price = $tr.find('.total_price');
+  var $total_price_pen = $tr.find('.total_price_pen');
+  var $total_price_ent = $tr.find('.total_price_ent');
 
-	// 값이 변경되면 초록색으로 표시
-	if($start_date.data('orig') != start_date)
-		$start_date.addClass('text_point');
-	else
-		$start_date.removeClass('text_point');
+  // 값이 변경되면 초록색으로 표시
+  if($start_date.data('orig') != start_date)
+    $start_date.addClass('text_point');
+  else
+    $start_date.removeClass('text_point');
 
-	if($total_price.data('orig') != total_price)
-		$total_price.addClass('text_point');
-	else
-		$total_price.removeClass('text_point');
+  if($total_price.data('orig') != total_price)
+    $total_price.addClass('text_point');
+  else
+    $total_price.removeClass('text_point');
 
-	if($total_price_pen.data('orig') != total_price_pen)
-		$total_price_pen.addClass('text_point');
-	else
-		$total_price_pen.removeClass('text_point');
+  if($total_price_pen.data('orig') != total_price_pen)
+    $total_price_pen.addClass('text_point');
+  else
+    $total_price_pen.removeClass('text_point');
 
-	if($total_price_ent.data('orig') != total_price_ent)
-		$total_price_ent.addClass('text_point');
-	else
-		$total_price_ent.removeClass('text_point');
+  if($total_price_ent.data('orig') != total_price_ent)
+    $total_price_ent.addClass('text_point');
+  else
+    $total_price_ent.removeClass('text_point');
 
 
-	$start_date.text(start_date);
-	$total_price.text(parseInt(total_price).toLocaleString('en-US')+'원');
-	$total_price_pen.text(parseInt(total_price_pen).toLocaleString('en-US')+'원');
-	$total_price_ent.text(parseInt(total_price_ent).toLocaleString('en-US')+'원');
-	$tr.find('.status').attr('data-status', '1').text('변경');
+  $start_date.text(start_date);
+  $total_price.text(parseInt(total_price).toLocaleString('en-US')+'원');
+  $total_price_pen.text(parseInt(total_price_pen).toLocaleString('en-US')+'원');
+  $total_price_ent.text(parseInt(total_price_ent).toLocaleString('en-US')+'원');
+  $tr.find('.status').attr('data-status', '1').text('변경');
 }
 
 function closePopup() {
@@ -403,39 +403,39 @@ function closePopup() {
 
 $(function() {
   $("#popupEdit").hide();
-	$("#popupEdit").css("opacity", 1);
-	$('#popupEdit > div').click(function (e) {
-		e.stopPropagation();
-		closePopup()
-	});
+  $("#popupEdit").css("opacity", 1);
+  $('#popupEdit > div').click(function (e) {
+    e.stopPropagation();
+    closePopup()
+  });
 
-	// 청구 달 선택
-	$('#selected_month').change(function() {
-		var selected_month = $(this).val();
-		location.href='./claim_manage.php?selected_month=' + selected_month;
-	});
+  // 청구 달 선택
+  $('#selected_month').change(function() {
+    var selected_month = $(this).val();
+    location.href='./claim_manage.php?selected_month=' + selected_month;
+  });
 
-	// 내용변경 버튼
-	$(document).on('click', '.btn_edit', function(e) {
-		e.preventDefault();
+  // 내용변경 버튼
+  $(document).on('click', '.btn_edit', function(e) {
+    e.preventDefault();
 
-		var $this = $(this);
-		var data = $this.data('json');
-		$.post('./ajax.claim_manage.write.php', JSON.stringify(data), 'json')
-		.done(function(data) {
-			var cl_id = data.message;
-			$this.attr('data-id', cl_id);
-			$("#popupEdit > div").html("<iframe src='./claim_manage_edit.php?cl_id="+cl_id+"'>");
-			$("#popupEdit iframe").load(function(){
-				$("body").addClass('modal-open');
-				$("#popupEdit").show();
-			});
-		})
-		.fail(function($xhr) {
-			var data = $xhr.responseJSON;
+    var $this = $(this);
+    var data = $this.data('json');
+    $.post('./ajax.claim_manage.write.php', JSON.stringify(data), 'json')
+    .done(function(data) {
+      var cl_id = data.message;
+      $this.attr('data-id', cl_id);
+      $("#popupEdit > div").html("<iframe src='./claim_manage_edit.php?cl_id="+cl_id+"'>");
+      $("#popupEdit iframe").load(function(){
+        $("body").addClass('modal-open');
+        $("#popupEdit").show();
+      });
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
       alert(data && data.message);
-		});
-	});
+    });
+  });
 });
 </script>
 
