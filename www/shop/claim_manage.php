@@ -188,8 +188,9 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
 
 								$leading_zero_month = str_pad($month, 2, '0', STR_PAD_LEFT);
 
+                $option_value = "{$year}-{$leading_zero_month}-01";
 							?>
-							<option value="<?="{$year}-{$leading_zero_month}-01"?>"<?=($year == $cur_year && $month == $cur_month) ? ' selected' : ''?>><?="{$year}년 {$month}월"?></option>
+							<option value="<?=$option_value?>"<?=$option_value == $selected_month ? ' selected' : ''?>><?="{$year}년 {$month}월"?></option>
 							<?php
 							}
 						}
