@@ -273,6 +273,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
               </span>
             </h1>
           </li>
+          <li>
+            <span style="font-size:13px; color:#ef7c00;">* 본 상품은 <?=$it['it_delivery_cnt']?>개 주문 시 한 박스로 포장됩니다.</span>
+          </li>
         </ul>
       </div>
       <!-- 본인부담금 -->
