@@ -926,7 +926,7 @@ function expired_rental_item_clean($prodId) {
       $inital_contract_time = strtotime($stock['initialContractDate']);
 
       // 최초계약일 없으면 무시
-      if(!$inital_contract_time) continue;
+      if(!$inital_contract_time || $inital_contract_time < 0) continue;
 
       // 최초계약일 + 설정한 판매가능기간보다 더 지났으면
       if(time() >= ( $inital_contract_time + ($item['it_rental_expiry_year'] * 365 * 24 * 60 * 60 ) )) {
