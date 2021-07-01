@@ -885,3 +885,21 @@ function is_pen_order($od_id) {
         return true;
     }
 }
+
+function get_stock($prodId, $stoId = '') {
+  global $member;
+
+  $result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
+    'entId' => $member['mb_entId'],
+    'usrId' => $member['mb_id'],
+    'prodId' => $prodId,
+    'stoId' => $stoId
+  ));
+
+  $res = [];
+  if($result['errorYN'] == 'N' && $result['data']) {
+    $res = $result['data'];
+  }
+
+  return $res;
+}
