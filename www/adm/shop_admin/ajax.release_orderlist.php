@@ -191,7 +191,14 @@ if ($fr_date && $to_date) {
   $where[] = " {$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
 }
 
-if ($search_option) {
+if ($search_option && strpos($search_option, ',') !== false) {
+  $search_options = explode(',', $search_option);
+  $s_where = [];
+  foreach($search_options as $s_option) {
+    $s_where[] = " $s_option like '%{$search_text}%' ";
+  }
+  $where[] = " ( " . implode(' OR ', $s_where) . " ) ";
+} else if ($search_option) {
   $where[] = " {$search_option} LIKE '%{$search_text}%' ";
 }
 

@@ -108,7 +108,8 @@ $sub_menu = '400402';
       <li>
         <select name="search_option" id="search_option">
           <!-- <option value="">선택하세요</option> -->
-          <option value="od_b_name" selected>수화인</option>
+          <option value="od_b_name,it_name,od_name" selected>전체</option>
+          <option value="od_b_name">수화인</option>
           <option value="it_name">상품명</option>
           <option value="od_name">사업소명</option>
         </select>
