@@ -76,6 +76,22 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     }
   }
 
+  # 요청사항 저장
+  sql_query("
+    UPDATE {$g5["g5_shop_cart_table"]} SET
+      prodMemo = '{$_POST["prodMemo_{$row["ct_id"]}"]}'
+    WHERE ct_id = '{$row["ct_id"]}'
+  ");
+
+  # 비유통상품 금액저장
+  if($row["prodSupYn"] == "N") {
+    //    sql_query("
+    //      UPDATE {$g5["g5_shop_cart_table"]} SET
+    //        ct_price = 0
+    //      WHERE ct_id = '{$row["ct_id"]}'
+    //    ");
+  }
+
   # 상품목록 수급자 주문 아니면
   if(!$_POST["penId"]) {
     for($ii = 0; $ii < $row["ct_qty"]; $ii++) {
@@ -100,34 +116,16 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     }
   }
 
-  # 요청사항 저장
-  sql_query("
-    UPDATE {$g5["g5_shop_cart_table"]} SET
-      prodMemo = '{$_POST["prodMemo_{$row["ct_id"]}"]}'
-    WHERE ct_id = '{$row["ct_id"]}'
-  ");
+  # 수급자 주문일경우
+  if($_POST["penId"]) {
 
-  # 대여기간저장
-  if($_POST["penId"]){
+    # 대여기간저장
     sql_query("
       UPDATE {$g5["g5_shop_cart_table"]} SET
         ordLendStrDtm = '{$_POST["ordLendStartDtm_{$row["ct_id"]}"]}',
         ordLendEndDtm = '{$_POST["ordLendEndDtm_{$row["ct_id"]}"]}'
       WHERE ct_id = '{$row["ct_id"]}'
     ");
-  }
-
-  # 비유통상품 금액저장
-  if($row["prodSupYn"] == "N") {
-    //    sql_query("
-    //      UPDATE {$g5["g5_shop_cart_table"]} SET
-    //        ct_price = 0
-    //      WHERE ct_id = '{$row["ct_id"]}'
-    //    ");
-  }
-
-  # 재고사용수량 저장
-  if($_POST["penId"]) {
 
     #수급자일 경우, 기존 ct_id 신규 주문과 재고소진 나누기
     //기존 ct_id select
