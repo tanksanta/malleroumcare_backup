@@ -96,7 +96,7 @@ WHERE
 		(
 			gubun = '01' AND
 			(
-				(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d') <= '$selected_month')
+				(STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <= '$selected_month')
 				AND
 				(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d') >= '$selected_month')
 			)
