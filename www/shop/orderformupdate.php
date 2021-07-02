@@ -58,6 +58,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 
   # 옵션값 가져오기
   $prodColor = $prodSize = $prodOption = '';
+  $prodOptions = [];
+
   if($row["io_id"]) { // 옵션값이 있으면
     $io_subjects = explode(',', $row['it_option_subject']);
     $io_ids = explode(chr(30), $row["io_id"]);
@@ -71,9 +73,14 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
           $prodSize = $io_ids[$io_idx];
           break;
         default:
-          $prodOption = $io_ids[$io_idx];
+          $prodOptions[] = $io_ids[$io_idx];
+          break;
       }
     }
+  }
+
+  if ($prodOptions && count($prodOptions)) {
+    $prodOption = implode('|', $prodOptions);
   }
 
   # 요청사항 저장

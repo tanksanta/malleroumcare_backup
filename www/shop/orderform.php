@@ -250,6 +250,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   $optionSQL = sql_query("SELECT io_id, ct_qty, ct_id FROM {$g5["g5_shop_cart_table"]} WHERE od_id = '{$s_cart_id}' AND it_id = '{$row["it_id"]}' ORDER BY ct_id ASC");
   for($iii = 0; $optionRow = sql_fetch_array($optionSQL); $iii++) {
     $prodColor = $prodSize = $prodOption = '';
+    $prodOptions = [];
 
     $io_subjects = explode(',', $row['it_option_subject']);
     $io_ids = explode(chr(30), $optionRow["io_id"]);
@@ -263,9 +264,13 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
           $prodSize = $io_ids[$io_idx];
           break;
         default:
-          $prodOption = $io_ids[$io_idx];
+          $prodOptions[] = $io_ids[$io_idx];
           break;
       }
+    }
+    
+    if ($prodOptions && count($prodOptions)) {
+      $prodOption = implode('|', $prodOptions);
     }
 
     $thisRowData = [];

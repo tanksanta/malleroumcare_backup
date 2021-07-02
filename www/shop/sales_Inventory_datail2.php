@@ -898,13 +898,15 @@ expired_rental_item_clean($_GET['prodId']);
 <script>
 $('#order_recipientBox').hide();
 
-function popup_control(prodColor, prodSize, prodOption, barcode_r) {
+function popup_control(prodColor, prodSize, prodOptions, barcode_r) {
   $('#order_recipientBox').show();
 
   var io_id_r = [];
   var io_value_r = [];
 
-  if(prodColor || prodSize || prodOption) { // 옵션 값이 있으면
+  prodOptions = prodOptions.split('|');
+
+  if(prodColor || prodSize || (prodOptions && prodOptions.length)) { // 옵션 값이 있으면
     var io_subjects = '<?=get_text($it['it_option_subject'])?>'.split(',');
 
     for(var i = 0; i < io_subjects.length; i++) {
@@ -918,6 +920,7 @@ function popup_control(prodColor, prodSize, prodOption, barcode_r) {
           io_value_r.push('사이즈:'+prodSize);
           break;
         default:
+          var prodOption = prodOptions.shift();
           io_id_r.push(prodOption);
           io_value_r.push(io_subjects[i]+':'+prodOption);
       }

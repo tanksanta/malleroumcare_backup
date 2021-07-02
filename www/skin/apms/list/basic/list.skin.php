@@ -77,6 +77,8 @@ for($i = 0; $i < $list_cnt; $i++) {
 
   foreach($list[$i]["optionList"] as $optionData) {
     $prodColor = $prodSize = $prodOption = '';
+    $prodOptions = [];
+
     $io_subjects = explode(',', $list[$i]['it_option_subject']);
     $io_ids = explode(chr(30), $optionData);
     for($io_idx = 0; $io_idx < count($io_subjects); $io_idx++) {
@@ -88,10 +90,15 @@ for($i = 0; $i < $list_cnt; $i++) {
           $prodSize = $io_ids[$io_idx];
           break;
         default:
-          $prodOption = $io_ids[$io_idx];
+          $prodOptions[] = $io_ids[$io_idx];
           break;
       }
     }
+    
+    if ($prodOptions && count($prodOptions)) {
+      $prodOption = implode('|', $prodOptions);
+    }
+    
     $prodsData = array(
       'prodId' => $list[$i]["it_id"],
       'prodColor' => $prodColor,
