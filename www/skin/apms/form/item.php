@@ -2260,31 +2260,31 @@ $(function() {
 
 function codedupcheck(id)
 {
-    if (!id) {
-        alert('상품관리코드를 입력하십시오.');
-        f.it_id.focus();
-        return;
-    }
+  if (!id) {
+    alert('상품관리코드를 입력하십시오.');
+    f.it_id.focus();
+    return;
+  }
 
-    var it_id = id.replace(/[A-Za-z0-9\-_]/g, "");
-    if(it_id.length > 0) {
-        alert("상품관리코드는 영문자, 숫자, -, _ 만 사용할 수 있습니다.");
+  var it_id = id.replace(/[A-Za-z0-9\-_]/g, "");
+  if(it_id.length > 0) {
+    alert("상품관리코드는 영문자, 숫자, -, _ 만 사용할 수 있습니다.");
+    return false;
+  }
+
+  $.post(
+    "./codedupcheck.php",
+    { it_id: id },
+    function(data) {
+      if(data.name) {
+        alert("코드 '"+data.code+"' 는 '".data.name+"' (으)로 이미 등록되어 있으므로\n\n사용하실 수 없습니다.");
         return false;
-    }
-
-    $.post(
-        "./codedupcheck.php",
-        { it_id: id },
-        function(data) {
-            if(data.name) {
-                alert("코드 '"+data.code+"' 는 '".data.name+"' (으)로 이미 등록되어 있으므로\n\n사용하실 수 없습니다.");
-                return false;
-            } else {
-                alert("'"+data.code+"' 은(는) 등록된 코드가 없으므로 사용하실 수 있습니다.");
-                document.fitemform.codedup.value = '';
-            }
-        }, "json"
-    );
+      } else {
+        alert("'"+data.code+"' 은(는) 등록된 코드가 없으므로 사용하실 수 있습니다.");
+        document.fitemform.codedup.value = '';
+      }
+    }, "json"
+  );
 }
 
 function fitemformcheck(f)
