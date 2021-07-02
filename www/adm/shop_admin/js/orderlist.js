@@ -585,7 +585,7 @@ $(function () {
   
       $.ajax({
         method: 'POST',
-        url: './ajax.order.ct_manager.sb.all.php',
+        url: './ajax.ct_manager.php',
         data: {
           ct_id: ct_id,
           ct_manager: sb1,
