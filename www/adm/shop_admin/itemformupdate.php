@@ -642,7 +642,73 @@ $sql_common = "
 
 if ($w == "")
 {
-  $it_id = $_POST['it_id'];
+  // 먼저 시스템에 등록
+  $gubun = $cate_gubun_table[substr($ca_id, 0, 2)];
+  $tax_info = $it_taxInfo == '영세' ? '01' : '02';
+  $prod_color = [];
+  $prod_size = [];
+  $opt_subject_arr = explode(',', $it_option_subject);
+  if($option_count) {
+    $prod_color_idx = -1;
+    $prod_size_idx = -1;
+    for($i = 0; $i < count($opt_subject_arr); $i++) {
+      if($opt_subject_arr[$i] == '색상') {
+        $prod_color_idx = $i;
+      } else if($opt_subject_arr[$i] == '사이즈') {
+        $prod_size_idx = $i;
+      }
+    }
+    for($i=0; $i<$option_count; $i++) {
+      $opt_arr = explode(chr(30), $_POST['opt_id'][$i]);
+      if($prod_color_idx >= 0 && !in_array($opt_arr[$prod_color_idx], $prod_color)) {
+        $prod_color[] = $opt_arr[$prod_color_idx];
+      }
+      if($prod_size_idx >= 0 && !in_array($opt_arr[$prod_size_idx], $prod_size)) {
+        $prod_size[] = $opt_arr[$prod_size_idx];
+      }
+    }
+  }
+  $prod_color = implode('|', $prod_color);
+  $prod_size = implode('|', $prod_size);
+
+  $result = post_formdata(EROUMCARE_API_PROD_INSERT, array(
+    'usrId' => $member["mb_id"],
+    'entId' => $entId,
+    'prodNm' => $it_name, // 제품 명
+    'prodSym' => $prodSym, // 재질
+    'prodWeig' => $prodWeig, // 중량
+    'prodColor' => $prod_color, // 컬러
+    'prodSize' => $prod_size, // 사이즈
+    'prodSizeDetail' => $prodSizeDetail, // 사이즈 상세정보
+    'prodDetail' => $it_explan, // 상세정보
+    'prodPayCode' => $ProdPayCode, // 제품코드
+    'prodSupYn' => $prodSupYn, //  유통 미유통
+    'prodSupPrice' => $it_cust_price, // 공급가격
+    'prodOflPrice' => $it_price, // 판매가격
+    'rentalPrice' => $it_rental_price, // 대여가격(1일)
+    'rentalPriceExtn' => $it_rental_price, //  대여연장가격(1일)
+    'prodStateCode' => '03', // 제품 등록상태 (01:등록신청 / 02:수정신청 / 03:등록)
+    'supId' => $supId, //  공급자아이디
+    'itemId' => $it_thezone, //  아이템 아이디
+    'subItem' => '', //  서브 아이템
+    'gubun' => $gubun, //  00=구매 01=대여
+    'taxInfoCd' => $tax_info, //  01=영세 02=과세
+    'file1' => $it_img1 ? new cURLFile($it_img_dir.'/'.$it_img1) : '',
+    'file2' => $it_img2 ? new cURLFile($it_img_dir.'/'.$it_img2) : '',
+    'file3' => $it_img3 ? new cURLFile($it_img_dir.'/'.$it_img3) : '',
+    'file4' => $it_img4 ? new cURLFile($it_img_dir.'/'.$it_img4) : '',
+    'file5' => $it_img5 ? new cURLFile($it_img_dir.'/'.$it_img5) : '',
+    'file6' => $it_img6 ? new cURLFile($it_img_dir.'/'.$it_img6) : '',
+    'file7' => $it_img7 ? new cURLFile($it_img_dir.'/'.$it_img7) : '',
+    'file8' => $it_img8 ? new cURLFile($it_img_dir.'/'.$it_img8) : '',
+    'file9' => $it_img9 ? new cURLFile($it_img_dir.'/'.$it_img9) : '',
+    'file10' => $it_img10 ? new cURLFile($it_img_dir.'/'.$it_img10) : ''
+  ));
+
+  if($result['errorYN'] != 'N' || !$result['data']['prodId'])
+    alert('시스템 오류 발생: ' . $result['message']);
+
+  $it_id = $result['data']['prodId'];
 
   if (!trim($it_id)) {
     alert('코드가 없으므로 추가하실 수 없습니다.');
@@ -652,7 +718,7 @@ if ($w == "")
   if($t_it_id)
     alert('코드는 영문자, 숫자, -, _ 만 사용할 수 있습니다.');
 
-$pt_num = time();
+  $pt_num = time();
   $sql_common .= " , it_time = '".G5_TIME_YMDHIS."' ";
   $sql_common .= " , it_update_time = '".G5_TIME_YMDHIS."' ";
   $sql = "
@@ -691,9 +757,9 @@ else if ($w == "u")
         $prod_size[] = $opt_arr[$prod_size_idx];
       }
     }
-    $prod_color = implode('|', $prod_color);
-    $prod_size = implode('|', $prod_size);
   }
+  $prod_color = implode('|', $prod_color);
+  $prod_size = implode('|', $prod_size);
 
   $sendData = array(
     'prodId' => $it_id,
