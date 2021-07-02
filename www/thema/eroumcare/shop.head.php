@@ -662,6 +662,19 @@ scrollToTop();
 						<div class="goToTopBtnWrap">
 							<img src="<?php echo THEMA_URL; ?>/assets/img/btn_go_to_top.png" alt="" onclick="$('html, body').animate({ scrollTop : 0 }, 1000);" />
 						</div>
+						<div class="btn_quick_area">
+							<a href="/shop/cart.php">
+								<?php if (get_boxcart_datas_count() > 0) { ?>
+								<span class="num_cart"><?php echo get_boxcart_datas_count(); ?></span>
+								<?php } ?>
+								<img src="<?php echo THEMA_URL; ?>/assets/img/btn_quick_icon_cart.png" alt="" /><br>
+								장바구니
+							</a>
+							<a href="/shop/wishlist.php">
+								<img src="<?php echo THEMA_URL; ?>/assets/img/btn_quick_icon_wish.png" alt="" /><br>
+								취급상품
+							</a>
+						</div>
 					</div>
 					<?php } ?>
 				<?php if($col_name == "two") { ?>

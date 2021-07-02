@@ -254,7 +254,7 @@ while($wish_row = sql_fetch_array($wish_result)) {
         <?php if($_COOKIE["viewType"] !== "basic") { ?>
         <p class="discount">
           <?php if($ca_id != '70') { // 비급여인 경우 급여가 숨김 ?>
-          <?=number_format($list[$i]["it_cust_price"])?>원 (수급자 급여가)
+          <?=number_format($list[$i]["it_cust_price"])?>원 <span class="txt_color_green">급여가</span>
           <?php } ?>
         </p>
         <?php } ?>
@@ -262,20 +262,20 @@ while($wish_row = sql_fetch_array($wish_result)) {
           <?php
           if($member["mb_id"]) {
             if($_COOKIE["viewType"] == "basic") {
-              echo number_format($list[$i]["it_cust_price"])."원 (수급자 급여가)";
+              echo number_format($list[$i]["it_cust_price"])."원 <span class='txt_color_green'>급여가</span>";
             } else {
               if($member["mb_level"] == "3") { 
                 //사업소 가격
-                echo number_format($list[$i]["it_price"])."원 (사업소 판매가)";
+                echo number_format($list[$i]["it_price"])."원 <span class='txt_color_orange'>판매가</span>";
               } else if($member["mb_level"] == "4") { 
                 //우수 사업소 가격
                 echo ($list[$i]["it_price_dealer2"]) ? number_format($list[$i]["it_price_dealer2"])."원" : number_format($list[$i]["it_price"])."원 (사업소 판매가)";
               } else { 
-                echo number_format($list[$i]["it_price"])."원 (사업소 판매가)";
+                echo number_format($list[$i]["it_price"])."원 <span class='txt_color_orange'>판매가</span>";
               } 
             }
           } else {
-            echo number_format($list[$i]["it_cust_price"]).'원 (사업소 판매가)';
+            echo number_format($list[$i]["it_cust_price"]).'원 <span class="txt_color_orange">판매가</span>';
           }
           ?>
         </p>
