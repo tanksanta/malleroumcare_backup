@@ -956,13 +956,7 @@ function expired_rental_item_clean($prodId) {
   }
 }
 
-function ct_manager_update($ct_id){
-
-    if( $_POST['ct_manager'] =="미지정"){
-        $ct_manager ="";
-    }else{
-        $ct_manager = $_POST['ct_manager'];
-    }
+function ct_manager_update($ct_id,$ct_manager){
 
     $sql = "SELECT * FROM `g5_shop_cart` WHERE ct_id = '{$ct_id}'";
     $cart = sql_fetch($sql);
