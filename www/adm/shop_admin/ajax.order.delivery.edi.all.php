@@ -198,7 +198,7 @@ foreach($carts as $cart) {
     }
 
     $edi['goodsName']       = $it_name;
-    // $edi['sndMsg']			= $od['od_memo'];
+    $edi['sndMsg']			= $cart['prodMemo'];
     $edi['sndMsg']			= '';
     $edi['inQty']			= $tot_ea;
     $edi['itemOption']		= "";
