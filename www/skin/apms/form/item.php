@@ -1476,15 +1476,15 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
 </section>
 
 <?php if($is_admin == 'super') { //최고관리자만 가능 ?>
-  <section id="anc_sitfrm_commission">
-    <h2 class="h2_frm">판매수수료/인센티브</h2>
+<section id="anc_sitfrm_commission">
+  <h2 class="h2_frm">판매수수료/인센티브</h2>
 
-    <div class="local_desc02 local_desc">
-      <p>파트너 기본설정 또는 파트너별 설정보다 <strong>상품의 개별설정이 우선</strong> 적용됩니다.</p>
-    </div>
+  <div class="local_desc02 local_desc">
+    <p>파트너 기본설정 또는 파트너별 설정보다 <strong>상품의 개별설정이 우선</strong> 적용됩니다.</p>
+  </div>
 
-    <div class="tbl_frm01 tbl_wrap">
-      <table>
+  <div class="tbl_frm01 tbl_wrap">
+    <table>
       <caption>판매수수료/인센티브 입력</caption>
       <colgroup>
         <col class="grid_3">
@@ -1506,9 +1506,9 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
           </td>
         </tr>
       </tbody>
-      </table>
-    </div>
-  </section>
+    </table>
+  </div>
+</section>
 <?php } ?>
 
 <?php echo $frm_submit; ?>
@@ -1516,57 +1516,57 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
 <?php echo $pg_anchor; ?>
 
 <section id="anc_sitfrm_img" class="anc-section">
-    <h2 class="h2_frm">이미지</h2>
+  <h2 class="h2_frm">이미지</h2>
   <div class="local_desc02 local_desc">
     {이미지:1}, {이미지:2} 와 같이 이미지 번호를 입력하면 해당 첨부이미지를 내용에 출력할 수 있습니다.
   </div>
 
   <div class="tbl_frm01 tbl_wrap tbl_img_frm">
-        <table>
-        <caption>이미지 업로드</caption>
-        <colgroup>
-            <col class="grid_3">
-            <col>
-        </colgroup>
-        <tbody>
-        <?php for($i=1; $i<=10; $i++) { ?>
-        <tr>
-            <th scope="row"><label for="it_img1">이미지 <?php echo $i; ?></label></th>
-            <td>
-                <input type="file" name="it_img<?php echo $i; ?>" id="it_img<?php echo $i; ?>">
-                <?php
-                $it_img = G5_DATA_PATH.'/item/'.$it['it_img'.$i];
-                if(is_file($it_img) && $it['it_img'.$i]) {
-                    $size = @getimagesize($it_img);
-                    $thumb = get_it_thumbnail($it['it_img'.$i], 25, 25);
-                ?>
-                <label for="it_img<?php echo $i; ?>_del"><span class="sound_only">이미지 <?php echo $i; ?> </span>파일삭제</label>
-                <input type="checkbox" name="it_img<?php echo $i; ?>_del" id="it_img<?php echo $i; ?>_del" value="1">
-                <span class="sit_wimg_limg<?php echo $i; ?>"><?php echo $thumb; ?></span>
-                <div id="limg<?php echo $i; ?>" class="banner_or_img">
-                    <img src="<?php echo G5_DATA_URL; ?>/item/<?php echo $it['it_img'.$i]; ?>" alt="" width="<?php echo $size[0]; ?>" height="<?php echo $size[1]; ?>">
-                    <button type="button" class="sit_wimg_close">닫기</button>
-                </div>
-                <script>
-                $('<button type="button" id="it_limg<?php echo $i; ?>_view" class="btn_frmline sit_wimg_view">이미지<?php echo $i; ?> 확인</button>').appendTo('.sit_wimg_limg<?php echo $i; ?>');
-                </script>
-                <?php } ?>
-            </td>
-        </tr>
-        <?php } ?>
-        <tr>
-            <th scope="row"><label for="it_img_3d">3D 이미지</label></th>
-            <td>
-                <input type="file" name="it_img_3d[]" id="it_img_3d" multiple>
-                <?php if($it['it_img_3d']){ ?>
-                    <label for="it_img<?php echo $i; ?>_del"><span class="sound_only">이미지 <?php echo $i; ?> </span>파일삭제</label>
-                    <input type="checkbox" name="it_img_3d_del" id="it_img_3d_del" value="1">
-                <?php } ?>
-            </td>
-        </tr>
-        </tbody>
-        </table>
-    </div>
+    <table>
+      <caption>이미지 업로드</caption>
+      <colgroup>
+        <col class="grid_3">
+        <col>
+      </colgroup>
+      <tbody>
+      <?php for($i=1; $i<=10; $i++) { ?>
+      <tr>
+        <th scope="row"><label for="it_img1">이미지 <?php echo $i; ?></label></th>
+        <td>
+          <input type="file" name="it_img<?php echo $i; ?>" id="it_img<?php echo $i; ?>">
+          <?php
+          $it_img = G5_DATA_PATH.'/item/'.$it['it_img'.$i];
+          if(is_file($it_img) && $it['it_img'.$i]) {
+            $size = @getimagesize($it_img);
+            $thumb = get_it_thumbnail($it['it_img'.$i], 25, 25);
+          ?>
+          <label for="it_img<?php echo $i; ?>_del"><span class="sound_only">이미지 <?php echo $i; ?> </span>파일삭제</label>
+          <input type="checkbox" name="it_img<?php echo $i; ?>_del" id="it_img<?php echo $i; ?>_del" value="1">
+          <span class="sit_wimg_limg<?php echo $i; ?>"><?php echo $thumb; ?></span>
+          <div id="limg<?php echo $i; ?>" class="banner_or_img">
+            <img src="<?php echo G5_DATA_URL; ?>/item/<?php echo $it['it_img'.$i]; ?>" alt="" width="<?php echo $size[0]; ?>" height="<?php echo $size[1]; ?>">
+            <button type="button" class="sit_wimg_close">닫기</button>
+          </div>
+          <script>
+          $('<button type="button" id="it_limg<?php echo $i; ?>_view" class="btn_frmline sit_wimg_view">이미지<?php echo $i; ?> 확인</button>').appendTo('.sit_wimg_limg<?php echo $i; ?>');
+          </script>
+          <?php } ?>
+        </td>
+      </tr>
+      <?php } ?>
+      <tr>
+        <th scope="row"><label for="it_img_3d">3D 이미지</label></th>
+        <td>
+          <input type="file" name="it_img_3d[]" id="it_img_3d" multiple>
+          <?php if($it['it_img_3d']) { ?>
+          <label for="it_img<?php echo $i; ?>_del"><span class="sound_only">이미지 <?php echo $i; ?> </span>파일삭제</label>
+          <input type="checkbox" name="it_img_3d_del" id="it_img_3d_del" value="1">
+          <?php } ?>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 <?php echo $frm_submit; ?>
@@ -1574,133 +1574,135 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
 <?php echo $pg_anchor; ?>
 
 <section id="anc_sitfrm_relation" class="srel anc-section">
-    <h2 class="h2_frm">관련상품</h2>
-    <div class="local_desc02 local_desc">
-        <p>
-            등록된 전체상품 목록에서 분류를 선택하면 해당 상품 리스트가 연이어 나타납니다.<br>
-            상품 리스트에서 관련상품으로 추가하시면 선택된 관련상품 목록에 <strong>함께</strong> 추가됩니다.<br>
-            예를 들어, A 상품에 B 상품을 관련상품으로 등록하면 B 상품에도 A 상품이 관련상품으로 자동 추가되며, <strong>확인 버튼을 누르셔야 정상 반영됩니다.</strong>
-        </p>
-    </div>
+  <h2 class="h2_frm">관련상품</h2>
+  <div class="local_desc02 local_desc">
+    <p>
+      등록된 전체상품 목록에서 분류를 선택하면 해당 상품 리스트가 연이어 나타납니다.<br>
+      상품 리스트에서 관련상품으로 추가하시면 선택된 관련상품 목록에 <strong>함께</strong> 추가됩니다.<br>
+      예를 들어, A 상품에 B 상품을 관련상품으로 등록하면 B 상품에도 A 상품이 관련상품으로 자동 추가되며, <strong>확인 버튼을 누르셔야 정상 반영됩니다.</strong>
+    </p>
+  </div>
 
-    <div class="compare_wrap">
-        <section class="compare_left">
-            <h3>등록된 전체상품 목록</h3>
-            <label for="sch_relation" class="sound_only">분류</label>
-            <span class="srel_pad">
-                <select id="sch_relation">
-                    <option value=''>분류별 상품</option>
+  <div class="compare_wrap">
+    <section class="compare_left">
+      <h3>등록된 전체상품 목록</h3>
+      <label for="sch_relation" class="sound_only">분류</label>
+      <span class="srel_pad">
+        <select id="sch_relation">
+          <option value=''>분류별 상품</option>
           <?php echo apms_it_category($is_auth, $is_partner);?>
-                </select>
-                <label for="sch_name" class="sound_only">상품명</label>
-                <input type="text" name="sch_name" id="sch_name" class="frm_input" size="15">
-                <button type="button" id="btn_search_item" class="btn_frmline">검색</button>
-            </span>
-            <div id="relation" class="srel_list">
-                <p>분류를 선택하거나 상품명 입력 후 검색해 주세요.</p>
-            </div>
-            <script>
-            $(function() {
-                $("#btn_search_item").click(function() {
-                    var ca_id = $("#sch_relation").val();
-                    var it_name = $.trim($("#sch_name").val());
-                    var $relation = $("#relation");
+        </select>
+        <label for="sch_name" class="sound_only">상품명</label>
+        <input type="text" name="sch_name" id="sch_name" class="frm_input" size="15">
+        <button type="button" id="btn_search_item" class="btn_frmline">검색</button>
+      </span>
+      <div id="relation" class="srel_list">
+        <p>분류를 선택하거나 상품명 입력 후 검색해 주세요.</p>
+      </div>
+      <script>
+        $(function() {
+          $("#btn_search_item").click(function() {
+            var ca_id = $("#sch_relation").val();
+            var it_name = $.trim($("#sch_name").val());
+            var $relation = $("#relation");
 
-                    if(ca_id == "" && it_name == "") {
-                        $relation.html("<p>분류를 선택하거나 상품명 입력 후 검색해 주세요.</p>");
-                        return false;
-                    }
+            if(ca_id == "" && it_name == "") {
+              $relation.html("<p>분류를 선택하거나 상품명 입력 후 검색해 주세요.</p>");
+              return false;
+            }
 
-                    $("#relation").load(
-                        "./itemformrelation.php",
-                        { it_id: "<?php echo $it_id; ?>", ca_id: ca_id, it_name: it_name }
-                    );
-                });
+            $("#relation").load(
+              "./itemformrelation.php",
+              { it_id: "<?php echo $it_id; ?>", ca_id: ca_id, it_name: it_name }
+            );
+          });
 
-                $(document).on("click", "#relation .add_item", function() {
-          // 이미 등록된 상품인지 체크
-                    var $li = $(this).closest("li");
-                    var it_id = $li.find("input:hidden").val();
-                    var it_id2;
-                    var dup = false;
-                    $("#reg_relation input[name='re_it_id[]']").each(function() {
-                        it_id2 = $(this).val();
-                        if(it_id == it_id2) {
-                            dup = true;
-                            return false;
-                        }
-                    });
-
-                    if(dup) {
-                        alert("이미 선택된 상품입니다.");
-                        return false;
-                    }
-
-                    var cont = "<li>"+$li.html().replace("add_item", "del_item").replace("추가", "삭제")+"</li>";
-                    var count = $("#reg_relation li").size();
-
-                    if(count > 0) {
-                        $("#reg_relation li:last").after(cont);
-                    } else {
-                        $("#reg_relation").html("<ul>"+cont+"</ul>");
-                    }
-
-                    $li.remove();
-                });
-
-                $(document).on("click", "#reg_relation .del_item", function() {
-          if(!confirm("관련상품을 삭제하시겠습니까?"))
-                        return false;
-
-                    $(this).closest("li").remove();
-
-                    var count = $("#reg_relation li").size();
-                    if(count < 1)
-                        $("#reg_relation").html("<p>선택된 상품이 없습니다.</p>");
-                });
+          $(document).on("click", "#relation .add_item", function() {
+            // 이미 등록된 상품인지 체크
+            var $li = $(this).closest("li");
+            var it_id = $li.find("input:hidden").val();
+            var it_id2;
+            var dup = false;
+            $("#reg_relation input[name='re_it_id[]']").each(function() {
+              it_id2 = $(this).val();
+              if(it_id == it_id2) {
+                dup = true;
+                return false;
+              }
             });
-            </script>
-        </section>
 
-        <section class="compare_right">
-            <h3>선택된 관련상품 목록</h3>
-            <span class="srel_pad"></span>
-            <div id="reg_relation" class="srel_sel">
-                <?php
-                $str = array();
-                $sql = " select b.ca_id, b.it_id, b.it_name, b.it_price
-                           from {$g5['g5_shop_item_relation_table']} a
-                           left join {$g5['g5_shop_item_table']} b on (a.it_id2=b.it_id)
-                          where a.it_id = '$it_id'
-                          order by ir_no asc ";
-                $result = sql_query($sql);
-                for($g=0; $row=sql_fetch_array($result); $g++)
-                {
-                    $it_name = get_it_image($row['it_id'], 50, 50).' '.$row['it_name'];
+            if(dup) {
+              alert("이미 선택된 상품입니다.");
+              return false;
+            }
 
-                    if($g==0)
-                        echo '<ul>';
-                ?>
-                    <li>
-                        <input type="hidden" name="re_it_id[]" value="<?php echo $row['it_id']; ?>">
-                        <div class="list_item"><?php echo $it_name; ?></div>
-                        <div class="list_item_btn"><button type="button" class="del_item btn_frmline">삭제</button></div>
-                    </li>
-                <?php
-                    $str[] = $row['it_id'];
-                }
-                $str = implode(",", $str);
+            var cont = "<li>"+$li.html().replace("add_item", "del_item").replace("추가", "삭제")+"</li>";
+            var count = $("#reg_relation li").size();
 
-                if($g > 0)
-                    echo '</ul>';
-                else
-                    echo '<p>선택된 상품이 없습니다.</p>';
-                ?>
-            </div>
-            <input type="hidden" name="it_list" value="<?php echo $str; ?>">
-        </section>
+            if(count > 0) {
+              $("#reg_relation li:last").after(cont);
+            } else {
+              $("#reg_relation").html("<ul>"+cont+"</ul>");
+            }
 
-    </div>
+            $li.remove();
+          });
+
+          $(document).on("click", "#reg_relation .del_item", function() {
+            if(!confirm("관련상품을 삭제하시겠습니까?"))
+              return false;
+
+            $(this).closest("li").remove();
+
+            var count = $("#reg_relation li").size();
+            if(count < 1)
+              $("#reg_relation").html("<p>선택된 상품이 없습니다.</p>");
+          });
+        });
+      </script>
+    </section>
+
+    <section class="compare_right">
+      <h3>선택된 관련상품 목록</h3>
+      <span class="srel_pad"></span>
+      <div id="reg_relation" class="srel_sel">
+        <?php
+        $str = array();
+        $sql = "
+          select b.ca_id, b.it_id, b.it_name, b.it_price
+            from {$g5['g5_shop_item_relation_table']} a
+            left join {$g5['g5_shop_item_table']} b on (a.it_id2=b.it_id)
+          where a.it_id = '$it_id'
+          order by ir_no asc
+        ";
+        $result = sql_query($sql);
+        for($g=0; $row=sql_fetch_array($result); $g++)
+        {
+          $it_name = get_it_image($row['it_id'], 50, 50).' '.$row['it_name'];
+
+          if($g==0)
+            echo '<ul>';
+        ?>
+          <li>
+            <input type="hidden" name="re_it_id[]" value="<?php echo $row['it_id']; ?>">
+            <div class="list_item"><?php echo $it_name; ?></div>
+            <div class="list_item_btn"><button type="button" class="del_item btn_frmline">삭제</button></div>
+          </li>
+        <?php
+          $str[] = $row['it_id'];
+        }
+        $str = implode(",", $str);
+
+        if($g > 0)
+          echo '</ul>';
+        else
+          echo '<p>선택된 상품이 없습니다.</p>';
+        ?>
+      </div>
+      <input type="hidden" name="it_list" value="<?php echo $str; ?>">
+    </section>
+
+  </div>
 
 </section>
 
@@ -1737,7 +1739,7 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
         </div>
         <script>
         $(function() {
-                  $(document).on("click", "#event_list .add_event", function() {
+          $(document).on("click", "#event_list .add_event", function() {
             // 이미 등록된 이벤트인지 체크
             var $li = $(this).closest("li");
             var ev_id = $li.find("input:hidden").val();
@@ -1766,7 +1768,7 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
             }
           });
 
-                  $(document).on("click", "#reg_event_list .del_event", function() {
+          $(document).on("click", "#reg_event_list .del_event", function() {
             if(!confirm("상품을 삭제하시겠습니까?"))
               return false;
 
@@ -1826,98 +1828,98 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
 <?php echo $pg_anchor; ?>
 
 <section id="anc_sitfrm_opt" class="anc-section">
-    <h2 class="h2_frm">옵션사항</h2>
+  <h2 class="h2_frm">옵션사항</h2>
   <div class="tbl_frm01 tbl_wrap">
-        <table>
-        <caption>옵션사항</caption>
-        <colgroup>
-            <col class="grid_3">
-            <col>
-        </colgroup>
-        <tbody>
-    <tr>
-            <th scope="row">추가 상품설명</th>
-            <td class="helper">
-        구매한 회원에게만 출력되는 추가 상품설명입니다.
-      </td>
-        </tr>
-    <tr>
-            <td colspan="2" class="iframe">
-        <?php echo editor_html('pt_explan', get_text(html_purifier($it['pt_explan']),0)); ?>
-      </td>
-        </tr>
-    <tr>
-            <th scope="row">모바일 추가 상품설명</th>
-            <td class="helper">
-        구매한 회원에게만 출력되는 모바일 추가 상품설명입니다.
-      </td>
-    </tr>
-    <tr>
-            <td colspan="2" class="iframe">
-        <?php echo editor_html('pt_mobile_explan', get_text(html_purifier($it['pt_mobile_explan']),0)); ?>
-      </td>
-    </tr>
-    <tr>
-      <th scope="row"><label for="pt_ccl">CCL</label></th>
-      <td>
-        <select id="pt_ccl" name="pt_ccl">
-          <option value="0"<?php echo get_selected('0', $it['pt_ccl']); ?>>표시안함</option>
-          <option value="1"<?php echo get_selected('1', $it['pt_ccl']); ?>>저작자표시</option>
-          <option value="2"<?php echo get_selected('2', $it['pt_ccl']); ?>>저작자표시-비영리</option>
-          <option value="3"<?php echo get_selected('3', $it['pt_ccl']); ?>>저작자표시-변경금지</option>
-          <option value="4"<?php echo get_selected('4', $it['pt_ccl']); ?>>저작자표시-동일조건변경허락</option>
-          <option value="5"<?php echo get_selected('5', $it['pt_ccl']); ?>>저작자표시-비영리-동일조건변경허락</option>
-          <option value="6"<?php echo get_selected('6', $it['pt_ccl']); ?>>저작자표시-비영리-변경금지</option>
-        </select>
-      </td>
-    </tr>
+    <table>
+      <caption>옵션사항</caption>
+      <colgroup>
+        <col class="grid_3">
+        <col>
+      </colgroup>
+      <tbody>
         <tr>
-            <th scope="row"><label for="pt_link1">유튜브링크</label></th>
-            <td>
-        <?php echo help("상품 리스트에 나오는 유튜브 링크입니다"); ?>
-                <input type="text" name="it_youtube_link" value="<?php echo get_text($it['it_youtube_link']); ?>" id="it_youtube_link" class="frm_input sl">
-            </td>
+          <th scope="row">추가 상품설명</th>
+          <td class="helper">
+            구매한 회원에게만 출력되는 추가 상품설명입니다.
+          </td>
         </tr>
         <tr>
-            <th scope="row"><label for="pt_link1">관련링크1</label></th>
-            <td>
-                <?php echo help("각 요소는 바(|)로 구분하며, \"주소|이름|FA아이콘명\" 순으로 입력하시면 됩니다."); ?>
-                <input type="text" name="pt_link1" value="<?php echo get_text($it['pt_link1']); ?>" id="pt_link1" class="frm_input sl">
-            </td>
+          <td colspan="2" class="iframe">
+            <?php echo editor_html('pt_explan', get_text(html_purifier($it['pt_explan']),0)); ?>
+          </td>
         </tr>
         <tr>
-            <th scope="row"><label for="pt_link2">관련링크2</label></th>
-            <td>
-                <?php echo help("ex) http://www.youtube.com|유튜브|youtube"); ?>
-                <input type="text" name="pt_link2" value="<?php echo get_text($it['pt_link2']); ?>" id="pt_link2" class="frm_input sl">
-            </td>
+          <th scope="row">모바일 추가 상품설명</th>
+          <td class="helper">
+            구매한 회원에게만 출력되는 모바일 추가 상품설명입니다.
+          </td>
         </tr>
-    <?php if($is_auth || $default['pt_review_use']) { ?>
-      <tr>
+        <tr>
+          <td colspan="2" class="iframe">
+            <?php echo editor_html('pt_mobile_explan', get_text(html_purifier($it['pt_mobile_explan']),0)); ?>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row"><label for="pt_ccl">CCL</label></th>
+          <td>
+            <select id="pt_ccl" name="pt_ccl">
+              <option value="0"<?php echo get_selected('0', $it['pt_ccl']); ?>>표시안함</option>
+              <option value="1"<?php echo get_selected('1', $it['pt_ccl']); ?>>저작자표시</option>
+              <option value="2"<?php echo get_selected('2', $it['pt_ccl']); ?>>저작자표시-비영리</option>
+              <option value="3"<?php echo get_selected('3', $it['pt_ccl']); ?>>저작자표시-변경금지</option>
+              <option value="4"<?php echo get_selected('4', $it['pt_ccl']); ?>>저작자표시-동일조건변경허락</option>
+              <option value="5"<?php echo get_selected('5', $it['pt_ccl']); ?>>저작자표시-비영리-동일조건변경허락</option>
+              <option value="6"<?php echo get_selected('6', $it['pt_ccl']); ?>>저작자표시-비영리-변경금지</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row"><label for="pt_link1">유튜브링크</label></th>
+          <td>
+            <?php echo help("상품 리스트에 나오는 유튜브 링크입니다"); ?>
+            <input type="text" name="it_youtube_link" value="<?php echo get_text($it['it_youtube_link']); ?>" id="it_youtube_link" class="frm_input sl">
+          </td>
+        </tr>
+        <tr>
+          <th scope="row"><label for="pt_link1">관련링크1</label></th>
+          <td>
+            <?php echo help("각 요소는 바(|)로 구분하며, \"주소|이름|FA아이콘명\" 순으로 입력하시면 됩니다."); ?>
+            <input type="text" name="pt_link1" value="<?php echo get_text($it['pt_link1']); ?>" id="pt_link1" class="frm_input sl">
+          </td>
+        </tr>
+        <tr>
+          <th scope="row"><label for="pt_link2">관련링크2</label></th>
+          <td>
+            <?php echo help("ex) http://www.youtube.com|유튜브|youtube"); ?>
+            <input type="text" name="pt_link2" value="<?php echo get_text($it['pt_link2']); ?>" id="pt_link2" class="frm_input sl">
+          </td>
+        </tr>
+        <?php if($is_auth || $default['pt_review_use']) { ?>
+        <tr>
         <th scope="row"><label for="pt_review_use">후기등록</label></th>
-        <td>
-                  <?php echo help("체크하시면 쇼핑몰 설정과 관계없이 후기등록이 가능합니다."); ?>
-          <label><input type="checkbox" name="pt_review_use" value="1" id="pt_review_use" <?php echo ($it['pt_review_use']) ? "checked" : ""; ?>> 구매와 상관없이 후기작성이 가능하도록 합니다.</label>
-        </td>
-      </tr>
-    <?php } ?>
-    <?php if($is_auth || $default['pt_comment_use']) { ?>
-      <tr>
-        <th scope="row"><label for="pt_comment_use">댓글등록</label></th>
-        <td>
-          <select name="pt_comment_use" id="pt_comment_use">
-            <option value="1"<?php echo get_selected('1', $it['pt_comment_use']); ?>>모두 등록가능</option>
-            <option value="2"<?php echo get_selected('2', $it['pt_comment_use']); ?>>나만 등록가능</option>
-            <?php if($is_auth || $default['pt_comment_use'] != "2") { ?>
+          <td>
+            <?php echo help("체크하시면 쇼핑몰 설정과 관계없이 후기등록이 가능합니다."); ?>
+            <label><input type="checkbox" name="pt_review_use" value="1" id="pt_review_use" <?php echo ($it['pt_review_use']) ? "checked" : ""; ?>> 구매와 상관없이 후기작성이 가능하도록 합니다.</label>
+          </td>
+        </tr>
+        <?php } ?>
+        <?php if($is_auth || $default['pt_comment_use']) { ?>
+        <tr>
+          <th scope="row"><label for="pt_comment_use">댓글등록</label></th>
+          <td>
+            <select name="pt_comment_use" id="pt_comment_use">
+              <option value="1"<?php echo get_selected('1', $it['pt_comment_use']); ?>>모두 등록가능</option>
+              <option value="2"<?php echo get_selected('2', $it['pt_comment_use']); ?>>나만 등록가능</option>
+              <?php if($is_auth || $default['pt_comment_use'] != "2") { ?>
               <option value="0"<?php echo get_selected('0', $it['pt_comment_use']); ?>>댓글 사용안함</option>
-            <?php } ?>
-          </select>
-        </td>
-      </tr>
-    <?php } ?>
+              <?php } ?>
+            </select>
+          </td>
+        </tr>
+        <?php } ?>
 
-    <?php if($is_auth || !$is_reserve_none) { ?>
-      <?php if($is_auth || $is_reserve) { // 관리자 일 때 ?>
+        <?php if($is_auth || !$is_reserve_none) { ?>
+        <?php if($is_auth || $is_reserve) { // 관리자 일 때 ?>
         <tr>
           <th scope="row"><label for="pt_reserve">판매예약</label></th>
           <td>
@@ -1968,56 +1970,56 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
             <?php } ?>
           </td>
         </tr>
-      <?php } ?>
-      <tr>
-        <th scope="row"><label for="pt_end">판매종료</label></th>
-        <td>
-          <?php if($is_reserve_none) echo help("판매종료는 파트너관리 > 기본설정에서 예약체크가 설정되어 있어야 작동합니다."); ?>
-          <input type="text" id="pt_end_date"  name="pt_end_date" value="<?php echo $pt_edate; ?>" class="frm_input" size="10" maxlength="10" readonly>
-          <script>
-            $(function(){
-              $("#pt_end_date").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-0:c+2" });
-            });
-          </script>
-          &nbsp;
-          <select name="pt_end_hour" id="pt_end_hour">
-            <?php for($i=0; $i < 24; $i++) { $im = sprintf("%02d", $i); ?>
+        <?php } ?>
+        <tr>
+          <th scope="row"><label for="pt_end">판매종료</label></th>
+          <td>
+            <?php if($is_reserve_none) echo help("판매종료는 파트너관리 > 기본설정에서 예약체크가 설정되어 있어야 작동합니다."); ?>
+            <input type="text" id="pt_end_date"  name="pt_end_date" value="<?php echo $pt_edate; ?>" class="frm_input" size="10" maxlength="10" readonly>
+            <script>
+              $(function(){
+                $("#pt_end_date").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-0:c+2" });
+              });
+            </script>
+            &nbsp;
+            <select name="pt_end_hour" id="pt_end_hour">
+              <?php for($i=0; $i < 24; $i++) { $im = sprintf("%02d", $i); ?>
               <option value="<?php echo $im;?>"<?php echo get_selected($im, $pt_ehour); ?>><?php echo $im;?>시</option>
-            <?php } ?>
-          </select>
-          &nbsp;
-          <select name="pt_end_minute" id="pt_end_minute">
-            <option value="00"<?php echo get_selected('00', $pt_eminute); ?>>00분</option>
-            <option value="05"<?php echo get_selected('05', $pt_eminute); ?>>05분</option>
-            <?php for($i=2; $i < 12; $i++) { $im = $i * 5; ?>
+              <?php } ?>
+            </select>
+            &nbsp;
+            <select name="pt_end_minute" id="pt_end_minute">
+              <option value="00"<?php echo get_selected('00', $pt_eminute); ?>>00분</option>
+              <option value="05"<?php echo get_selected('05', $pt_eminute); ?>>05분</option>
+              <?php for($i=2; $i < 12; $i++) { $im = $i * 5; ?>
               <option value="<?php echo $im;?>"<?php echo get_selected($im, $pt_eminute); ?>><?php echo $im;?>분</option>
-            <?php } ?>
-          </select>
-          &nbsp;
-          <button type="button" onclick="this.form.pt_end_date.value='';" class="btn_frmline">종료설정해제</button>
-        </td>
-      </tr>
-    <?php } // 예약 끝 ?>
-    <?php if($is_auth) { // 관리자일 때만 출력 ?>
-      <?php if ($w == "u") { ?>
-      <tr>
-        <th scope="row">입력일시</th>
-        <td colspan="2">
-          <?php echo help("상품을 처음 입력(등록)한 시간입니다."); ?>
-          <?php echo $it['it_time']; ?>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">수정일시</th>
-        <td colspan="2">
-          <?php echo help("상품을 최종 수정한 시간입니다."); ?>
-          <?php echo $it['it_update_time']; ?>
-        </td>
-      </tr>
-      <?php } ?>
-    <?php } // 관리자 끝 ?>
-    </tbody>
-        </table>
+              <?php } ?>
+            </select>
+            &nbsp;
+            <button type="button" onclick="this.form.pt_end_date.value='';" class="btn_frmline">종료설정해제</button>
+          </td>
+        </tr>
+        <?php } // 예약 끝 ?>
+        <?php if($is_auth) { // 관리자일 때만 출력 ?>
+        <?php if ($w == "u") { ?>
+        <tr>
+          <th scope="row">입력일시</th>
+          <td colspan="2">
+            <?php echo help("상품을 처음 입력(등록)한 시간입니다."); ?>
+            <?php echo $it['it_time']; ?>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">수정일시</th>
+          <td colspan="2">
+            <?php echo help("상품을 최종 수정한 시간입니다."); ?>
+            <?php echo $it['it_update_time']; ?>
+          </td>
+        </tr>
+        <?php } ?>
+        <?php } // 관리자 끝 ?>
+      </tbody>
+    </table>
   </div>
 </section>
 
@@ -2026,143 +2028,143 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
 <?php echo $pg_anchor; ?>
 
 <section id="anc_sitfrm_attach" class="anc-section">
-    <h2 class="h2_frm">파일첨부</h2>
-    <div class="tbl_frm01 tbl_wrap">
-        <table>
-        <caption>첨부파일 업로드</caption>
-        <colgroup>
-      <col class="grid_3">
-            <col>
-            <col class="grid_3">
-      <col class="grid_3">
-            <col class="grid_3">
-            <col class="grid_3">
-            <col class="grid_3">
-        </colgroup>
-        <tbody>
-    <tr>
-      <th>옵션설정안내</th>
+  <h2 class="h2_frm">파일첨부</h2>
+  <div class="tbl_frm01 tbl_wrap">
+    <table>
+      <caption>첨부파일 업로드</caption>
+      <colgroup>
+        <col class="grid_3">
+        <col>
+        <col class="grid_3">
+        <col class="grid_3">
+        <col class="grid_3">
+        <col class="grid_3">
+        <col class="grid_3">
+      </colgroup>
+      <tbody>
+        <tr>
+          <th>옵션설정안내</th>
           <td colspan="6">
-        "<strong>구매</strong>" 체크시 구매한 회원에게만 노출되며, "<strong>다운</strong>" 체크시 다운로드 가능하고, 오디오나 동영상은 "<strong>보기</strong>" 체크시 JWPlayer로 실행할 수 있습니다.
-      </td>
-      </tr>
-    <?php $attach = apms_get_file('item', $it['it_id']); ?>
-    <?php for ($i=0; $i < 10; $i++) { ?>
-      <tr>
-      <td>
-        <?php if($attach[$i]['file']) { ?>
-          <a href="<?php echo $attach[$i]['href'];?>"><?php echo $attach[$i]['source'];?> (<?php echo $attach[$i]['size'];?>)</a>
+            "<strong>구매</strong>" 체크시 구매한 회원에게만 노출되며, "<strong>다운</strong>" 체크시 다운로드 가능하고, 오디오나 동영상은 "<strong>보기</strong>" 체크시 JWPlayer로 실행할 수 있습니다.
+          </td>
+        </tr>
+        <?php $attach = apms_get_file('item', $it['it_id']); ?>
+        <?php for ($i=0; $i < 10; $i++) { ?>
+        <tr>
+          <td>
+            <?php if($attach[$i]['file']) { ?>
+            <a href="<?php echo $attach[$i]['href'];?>"><?php echo $attach[$i]['source'];?> (<?php echo $attach[$i]['size'];?>)</a>
+            <?php } ?>
+          </td>
+          <td>
+            <input type="file" name="pf_file[]" title="파일첨부 <?php echo $i+1 ?> : 용량 <?php echo $upload_max_filesize ?> 이하만 업로드 가능">
+          </td>
+          <td align="center">
+            <?php if($attach[$i]['file']) { ?>
+            <label><input type="checkbox" id="pf_file_del<?php echo $i ?>" name="pf_file_del[<?php echo $i;  ?>]" value="1"> 삭제</label>
+            <?php } ?>
+          </td>
+          <td align="center">
+            <label><input type="checkbox" id="pf_purchase<?php echo $i ?>" name="pf_purchase[<?php echo $i;  ?>]" value="1"<?php echo ($attach[$i]['purchase_use']) ? ' checked' : '';?>> 구매</label>
+          </td>
+          <td align="center">
+            <label><input type="checkbox" id="pf_download<?php echo $i ?>" name="pf_download[<?php echo $i;  ?>]" value="1"<?php echo ($attach[$i]['download_use']) ? ' checked' : '';?>> 다운</label>
+          </td>
+          <td align="center">
+            <label><input type="checkbox" id="pf_view<?php echo $i ?>" name="pf_view[<?php echo $i;  ?>]" value="1"<?php echo ($attach[$i]['view_use']) ? ' checked' : '';?>> 보기</label>
+          </td>
+          <td align="center">
+            <label><input type="checkbox" id="pf_guest<?php echo $i ?>" name="pf_guest[<?php echo $i;  ?>]" value="1"<?php echo ($attach[$i]['guest_use']) ? ' checked' : '';?>> 비회원</label>
+          </td>
+        </tr>
         <?php } ?>
-      </td>
-      <td>
-        <input type="file" name="pf_file[]" title="파일첨부 <?php echo $i+1 ?> : 용량 <?php echo $upload_max_filesize ?> 이하만 업로드 가능">
-      </td>
-      <td align="center">
-        <?php if($attach[$i]['file']) { ?>
-          <label><input type="checkbox" id="pf_file_del<?php echo $i ?>" name="pf_file_del[<?php echo $i;  ?>]" value="1"> 삭제</label>
-        <?php } ?>
-      </td>
-      <td align="center">
-        <label><input type="checkbox" id="pf_purchase<?php echo $i ?>" name="pf_purchase[<?php echo $i;  ?>]" value="1"<?php echo ($attach[$i]['purchase_use']) ? ' checked' : '';?>> 구매</label>
-      </td>
-      <td align="center">
-        <label><input type="checkbox" id="pf_download<?php echo $i ?>" name="pf_download[<?php echo $i;  ?>]" value="1"<?php echo ($attach[$i]['download_use']) ? ' checked' : '';?>> 다운</label>
-      </td>
-      <td align="center">
-        <label><input type="checkbox" id="pf_view<?php echo $i ?>" name="pf_view[<?php echo $i;  ?>]" value="1"<?php echo ($attach[$i]['view_use']) ? ' checked' : '';?>> 보기</label>
-      </td>
-      <td align="center">
-        <label><input type="checkbox" id="pf_guest<?php echo $i ?>" name="pf_guest[<?php echo $i;  ?>]" value="1"<?php echo ($attach[$i]['guest_use']) ? ' checked' : '';?>> 비회원</label>
-      </td>
-      </tr>
-    <?php } ?>
-        </tbody>
-        </table>
-    </div>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 <?php echo $frm_submit; ?>
 
 <?php if($is_auth) { // 관리자일 때만 출력 ?>
 
-  <?php echo $pg_anchor; ?>
+<?php echo $pg_anchor; ?>
 
-  <section id="anc_sitfrm_optional" class="anc-section">
-    <h2 class="h2_frm">상하단내용</h2>
-    <div class="tbl_frm01 tbl_wrap">
-      <table>
-      <caption>상하단내용설정</caption>
-      <colgroup>
-        <col class="grid_3">
-        <col>
-      </colgroup>
-      <tbody>
-      <tr>
-        <th scope="row">상단내용</th>
-        <td class="helper">상세설명 페이지 상단에 출력하는 HTML 내용입니다.</td>
-      </tr>
-      <tr>
-        <td colspan="2" class="iframe"><?php echo editor_html('it_head_html', get_text(html_purifier($it['it_head_html']), 0)); ?></td>
-      </tr>
-      <tr>
-        <th scope="row">하단내용</th>
-        <td class="helper">상세설명 페이지 하단에 출력하는 HTML 내용입니다.</td>
-      </tr>
-      <tr>
-        <td colspan="2" class="iframe"><?php echo editor_html('it_tail_html', get_text(html_purifier($it['it_tail_html']), 0)); ?></td>
-      </tr>
-      <tr>
-        <th scope="row">모바일 상단내용</th>
-        <td class="helper">모바일 상세설명 페이지 상단에 출력하는 HTML 내용입니다.</td>
-      </tr>
-      <tr>
-        <td colspan="2" class="iframe"><?php echo editor_html('it_mobile_head_html', get_text(html_purifier($it['it_mobile_head_html']), 0)); ?></td>
-      </tr>
-      <tr>
-        <th scope="row">모바일 하단내용</th>
-        <td class="helper">모바일 상세설명 페이지 하단에 출력하는 HTML 내용입니다.</td>
-      </tr>
-      <tr>
-        <td colspan="2" class="iframe"><?php echo editor_html('it_mobile_tail_html', get_text(html_purifier($it['it_mobile_tail_html']), 0)); ?></td>
-      </tr>
-      </tbody>
-      </table>
-    </div>
-  </section>
+<section id="anc_sitfrm_optional" class="anc-section">
+  <h2 class="h2_frm">상하단내용</h2>
+  <div class="tbl_frm01 tbl_wrap">
+    <table>
+    <caption>상하단내용설정</caption>
+    <colgroup>
+      <col class="grid_3">
+      <col>
+    </colgroup>
+    <tbody>
+    <tr>
+      <th scope="row">상단내용</th>
+      <td class="helper">상세설명 페이지 상단에 출력하는 HTML 내용입니다.</td>
+    </tr>
+    <tr>
+      <td colspan="2" class="iframe"><?php echo editor_html('it_head_html', get_text(html_purifier($it['it_head_html']), 0)); ?></td>
+    </tr>
+    <tr>
+      <th scope="row">하단내용</th>
+      <td class="helper">상세설명 페이지 하단에 출력하는 HTML 내용입니다.</td>
+    </tr>
+    <tr>
+      <td colspan="2" class="iframe"><?php echo editor_html('it_tail_html', get_text(html_purifier($it['it_tail_html']), 0)); ?></td>
+    </tr>
+    <tr>
+      <th scope="row">모바일 상단내용</th>
+      <td class="helper">모바일 상세설명 페이지 상단에 출력하는 HTML 내용입니다.</td>
+    </tr>
+    <tr>
+      <td colspan="2" class="iframe"><?php echo editor_html('it_mobile_head_html', get_text(html_purifier($it['it_mobile_head_html']), 0)); ?></td>
+    </tr>
+    <tr>
+      <th scope="row">모바일 하단내용</th>
+      <td class="helper">모바일 상세설명 페이지 하단에 출력하는 HTML 내용입니다.</td>
+    </tr>
+    <tr>
+      <td colspan="2" class="iframe"><?php echo editor_html('it_mobile_tail_html', get_text(html_purifier($it['it_mobile_tail_html']), 0)); ?></td>
+    </tr>
+    </tbody>
+    </table>
+  </div>
+</section>
 
-  <?php echo $frm_submit; ?>
+<?php echo $frm_submit; ?>
 
-  <?php echo $pg_anchor; ?>
+<?php echo $pg_anchor; ?>
 
-  <section id="anc_sitfrm_extra" class="anc-section">
-    <h2 class="h2_frm">여분필드 설정</h2>
-    <div class="tbl_frm01 tbl_wrap">
-      <table>
-      <colgroup>
-        <col class="grid_3">
-        <col>
-      </colgroup>
-      <tbody>
-      <?php for ($i=1; $i<=10; $i++) { ?>
-      <tr>
-        <th scope="row">여분필드<?php echo $i ?></th>
-        <td class="td_extra">
-          <label for="it_<?php echo $i ?>_subj">여분필드 <?php echo $i ?> 제목</label>
-          <input type="text" name="it_<?php echo $i ?>_subj" id="it_<?php echo $i ?>_subj" value="<?php echo get_text($it['it_'.$i.'_subj']) ?>" class="frm_input">
-          <label for="it_<?php echo $i ?>">여분필드 <?php echo $i ?> 값</label>
-          <input type="text" name="it_<?php echo $i ?>" value="<?php echo get_text($it['it_'.$i]) ?>" id="it_<?php echo $i ?>" class="frm_input">
-        </td>
-      </tr>
-      <?php } ?>
-      </tbody>
-      </table>
-    </div>
-  </section>
+<section id="anc_sitfrm_extra" class="anc-section">
+  <h2 class="h2_frm">여분필드 설정</h2>
+  <div class="tbl_frm01 tbl_wrap">
+    <table>
+    <colgroup>
+      <col class="grid_3">
+      <col>
+    </colgroup>
+    <tbody>
+    <?php for ($i=1; $i<=10; $i++) { ?>
+    <tr>
+      <th scope="row">여분필드<?php echo $i ?></th>
+      <td class="td_extra">
+        <label for="it_<?php echo $i ?>_subj">여분필드 <?php echo $i ?> 제목</label>
+        <input type="text" name="it_<?php echo $i ?>_subj" id="it_<?php echo $i ?>_subj" value="<?php echo get_text($it['it_'.$i.'_subj']) ?>" class="frm_input">
+        <label for="it_<?php echo $i ?>">여분필드 <?php echo $i ?> 값</label>
+        <input type="text" name="it_<?php echo $i ?>" value="<?php echo get_text($it['it_'.$i]) ?>" id="it_<?php echo $i ?>" class="frm_input">
+      </td>
+    </tr>
+    <?php } ?>
+    </tbody>
+    </table>
+  </div>
+</section>
 
 <?php } else { // 파트너 ?>
   <?php for ($i=1; $i<=10; $i++) { ?>
-    <input type="hidden" name="it_<?php echo $i ?>_subj" id="it_<?php echo $i ?>_subj" value="<?php echo get_text($it['it_'.$i.'_subj']) ?>">
-    <input type="hidden" name="it_<?php echo $i ?>" value="<?php echo get_text($it['it_'.$i]) ?>" id="it_<?php echo $i ?>">
+  <input type="hidden" name="it_<?php echo $i ?>_subj" id="it_<?php echo $i ?>_subj" value="<?php echo get_text($it['it_'.$i.'_subj']) ?>">
+  <input type="hidden" name="it_<?php echo $i ?>" value="<?php echo get_text($it['it_'.$i]) ?>" id="it_<?php echo $i ?>">
   <?php } ?>
 <?php } ?>
 
