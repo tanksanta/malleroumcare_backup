@@ -99,9 +99,9 @@ define('EROUMCARE_API_RECIPIENT_DELETE_REC',                     'https://system
 // 계약서 초기값 가져오기 (품목 별 본인부담률 계산한 값들 포함)
 define('EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST',          'https://system.eroumcare.com/api/eform/selectEform001');
 // 회원조회1
-define('EROUMCARE_API_ENT_ACCOUNT',            'https://system.eroumcare.com/api/ent/account');
+define('EROUMCARE_API_ENT_ACCOUNT',                              'https://system.eroumcare.com/api/ent/account');
 // 회원조회2
-define('EROUMCARE_API_ACCOUNT_ENTLOGIN',            'https://system.eroumcare.com/api/account/entLogin');
+define('EROUMCARE_API_ACCOUNT_ENTLOGIN',                         'https://system.eroumcare.com/api/account/entLogin');
 
 // 카카오 디벨로퍼스 REST API 연동
 define('KAKAO_DEVELOPERS_REST_API_KEY', '7a991b6e94ba43c5d266d9aa4a2edca1');
