@@ -1462,7 +1462,7 @@ apms_coupon_update($member['mb_id']);
 
 // SMS BEGIN --------------------------------------------------------
 // 주문고객과 쇼핑몰관리자에게 SMS 전송
-/*if($config['cf_sms_use'] && ($default['de_sms_use2'] || $default['de_sms_use3'])) {
+if($config['cf_sms_use'] && ($default['de_sms_use2'] || $default['de_sms_use3'])) {
   $is_sms_send = false;
 
   // 충전식일 경우 잔액이 있는지 체크
@@ -1491,7 +1491,7 @@ apms_coupon_update($member['mb_id']);
     $sms_count = 0;
     $sms_messages = array();
 
-    for($s=0; $s<count($sms_contents); $s++) {
+    /*for($s=0; $s<count($sms_contents); $s++) {
       $sms_content = $sms_contents[$s];
       $recv_number = preg_replace("/[^0-9]/", "", $recv_numbers[$s]);
       $send_number = preg_replace("/[^0-9]/", "", $send_numbers[$s]);
@@ -1510,7 +1510,7 @@ apms_coupon_update($member['mb_id']);
         $sms_messages[] = array('recv' => $recv_number, 'send' => $send_number, 'cont' => $sms_content);
         $sms_count++;
       }
-    }
+    }*/
 
     // 무통장 입금 때 고객에게 계좌정보 보냄
     if($od_settle_case == '무통장' && $default['de_sms_use2'] && $od_misu > 0) {
@@ -1571,7 +1571,7 @@ apms_coupon_update($member['mb_id']);
       }
     }
   }
-}*/
+}
 // SMS END   --------------------------------------------------------
 
 // orderview 에서 사용하기 위해 session에 넣고
