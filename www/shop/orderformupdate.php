@@ -1462,7 +1462,7 @@ apms_coupon_update($member['mb_id']);
 
 // SMS BEGIN --------------------------------------------------------
 // 주문고객과 쇼핑몰관리자에게 SMS 전송
-if($config['cf_sms_use'] && ($default['de_sms_use2'] || $default['de_sms_use3'])) {
+/*if($config['cf_sms_use'] && ($default['de_sms_use2'] || $default['de_sms_use3'])) {
   $is_sms_send = false;
 
   // 충전식일 경우 잔액이 있는지 체크
@@ -1571,7 +1571,7 @@ if($config['cf_sms_use'] && ($default['de_sms_use2'] || $default['de_sms_use3'])
       }
     }
   }
-}
+}*/
 // SMS END   --------------------------------------------------------
 
 // orderview 에서 사용하기 위해 session에 넣고
