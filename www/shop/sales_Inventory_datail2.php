@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+define('_INVENTORY_', true);
 
 // 비회원인 경우
 if (!$is_member) {

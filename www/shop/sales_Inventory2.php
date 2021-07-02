@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+define('_INVENTORY_', true);
 
 if(USE_G5_THEME && defined('G5_THEME_PATH')) {
     require_once(G5_SHOP_PATH.'/yc/orderinquiry.php');

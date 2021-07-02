@@ -1,5 +1,6 @@
 <?php
 include_once("./_common.php");
+define('_RECIPIENT_', true);
 
 if(!$member['mb_id'])
   alert('먼저 로그인하세요.');

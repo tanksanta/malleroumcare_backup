@@ -108,7 +108,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 			<li class="active">
 				<a href="/" title="홈">
 					<p class="img">
-						<img src="<?=THEMA_URL?>/assets/img/footerMoIconHomeActive.png" alt="홈" class="on">
+						<img src="<?=THEMA_URL?>/assets/img/footerMoIconHome<?php echo defined('_INDEX_') ? 'Active' : ''; ?>.png" alt="홈" class="on">
 					</p>
 					<p class="name">홈</p>
 				</a>
@@ -116,7 +116,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 			<li>
 				<a href="/shop/my_recipient_list.php" title="수급자">
 					<p class="img">
-						<img src="<?=THEMA_URL?>/assets/img/footerMoIconRecipient.png" alt="수급자" class="off">
+						<img src="<?=THEMA_URL?>/assets/img/footerMoIconRecipient<?php echo defined('_RECIPIENT_') ? 'Active' : ''; ?>.png" alt="수급자" class="off">
 					</p>
 					<p class="name">수급자</p>
 				</a>
@@ -125,7 +125,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 				<!-- <a href="/bbs/content.php?co_id=inventory_guide" title="보유재고"> -->
 				<a href="<?php echo G5_SHOP_URL?>/sales_Inventory.php" title="보유재고">
 					<p class="img">
-						<img src="<?=THEMA_URL?>/assets/img/footerMoIconStock.png" alt="보유재고" class="off">
+						<img src="<?=THEMA_URL?>/assets/img/footerMoIconStock<?php echo defined('_INVENTORY_') ? 'Active' : ''; ?>.png" alt="보유재고" class="off">
 					</p>
 					<p class="name">보유재고</p>
 				</a>
@@ -133,7 +133,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 			<li>
 				<a href="/shop/cart.php" title="장바구니">
 					<p class="img">
-						<img src="<?=THEMA_URL?>/assets/img/footerMoIconCart.png" alt="장바구니" class="off">
+						<img src="<?=THEMA_URL?>/assets/img/footerMoIconCart<?php echo defined('_CART_') ? 'Active' : ''; ?>.png" alt="장바구니" class="off">
 					</p>
 					<p class="name">장바구니</p>
 				</a>
@@ -141,7 +141,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 			<li>
 				<a href="/bbs/mypage.php" title="설정">
 					<p class="img">
-						<img src="<?=THEMA_URL?>/assets/img/footerMoIconMore.png" alt="설정" class="off">
+						<img src="<?=THEMA_URL?>/assets/img/footerMoIconMore<?php echo defined('_MYPAGE_') ? 'Active' : ''; ?>.png" alt="설정" class="off">
 					</p>
 					<p class="name">설정</p>
 				</a>

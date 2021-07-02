@@ -1,6 +1,7 @@
 <?php
-
 include_once("./_common.php");
+define('_RECIPIENT_', true);
+
 include_once("./_head.php");
 
 # 회원검사

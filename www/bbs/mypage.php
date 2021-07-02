@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+define('_MYPAGE_', true);
 
 if (!$is_member)
     goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_BBS_URL."/mypage.php"));

@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+define('_CART_', true);
 include_once(G5_SHOP_PATH.'/settle_naverpay.inc.php');
 
 if(USE_G5_THEME && defined('G5_THEME_PATH')) {
