@@ -41,7 +41,7 @@ if( function_exists('pg_setting_check') ){
   <div class="right">
 
 
-  <select class="sb1" name="" id="ct_manager_sb">
+    <select class="sb1" name="" id="ct_manager_sb">
     <?php
         //출고담당자 select
         $od_release_select="";
@@ -57,7 +57,7 @@ if( function_exists('pg_setting_check') ){
     ?>
     </select>
     <button id="ct_manager_send_all">출고담당자 선택변경</button>
-
+    
     <button id="deliveryExcelDownloadBtn">주문다운로드</button>
     <button id="deliveryExcelDownloadBtn2">배송업로드 다운받기</button>
     <button id="deliveryExcelUploadBtn">배송정보 일괄 업로드</button>
@@ -165,6 +165,7 @@ if( function_exists('pg_setting_check') ){
           </div>
         </td>
       </tr>
+
       <tr>
         <th>검색어</th>
         <td>
@@ -179,12 +180,35 @@ if( function_exists('pg_setting_check') ){
             <option value="od_b_tel" <?php echo get_selected($sel_field, 'od_b_tel'); ?>>받는분전화</option>
             <option value="od_b_hp" <?php echo get_selected($sel_field, 'od_b_hp'); ?>>받는분핸드폰</option>
             <option value="od_deposit_name" <?php echo get_selected($sel_field, 'od_deposit_name'); ?>>입금자</option>
-            <option value="od_invoice" <?php echo get_selected($sel_field, 'od_invoice'); ?>>운송장번호</option>
+            <option value="ct_delivery_num" <?php echo get_selected($sel_field, 'ct_delivery_num'); ?>>운송장번호</option>
           </select>
           <input type="text" name="search" value="<?php echo $search; ?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
           <span class="search_keyworld_msg">
             *주문번호, 회원아이디, 주문자, 주문자번호, 받는분, 받는분연락처, 입금자, 운송장번호로 검색이 가능합니다.
           </span>
+        </td>
+      </tr>
+
+      <tr>
+        <th>추가 검색어</th>
+        <td>
+          <select name="sel_field_add" id="sel_field_add">
+            <option value="od_name" <?php echo get_selected($sel_field_add, 'od_name'); ?>>주문자</option>
+            <option value="od_b_name" <?php echo get_selected($sel_field_add, 'od_b_name'); ?>>받는분</option>
+            <option value="it_name" <?php echo $sel_field_add == 'it_name' ? 'selected="selected"' : ''; ?>>상품명</option>
+            <option value="it_admin_memo" <?php echo $sel_field_add == 'it_admin_memo' ? 'selected="selected"' : ''; ?>>관리자메모</option>
+            <option value="it_maker" <?php echo $sel_field_add == 'it_maker' ? 'selected="selected"' : ''; ?>>제조사</option>
+            <option value="od_id" <?php echo get_selected($sel_field_add, 'od_id'); ?>>주문번호</option>
+            <option value="od_naver_orderid" <?php echo get_selected($sel_field_add, 'od_naver_orderid'); ?>>네이버페이주문번호</option> <!-- wetoz : naverpayorder -->
+            <option value="mb_id" <?php echo get_selected($sel_field_add, 'mb_id'); ?>>회원 ID</option>
+            <option value="od_tel" <?php echo get_selected($sel_field_add, 'od_tel'); ?>>주문자전화</option>
+            <option value="od_hp" <?php echo get_selected($sel_field_add, 'od_hp'); ?>>주문자핸드폰</option>
+            <option value="od_b_tel" <?php echo get_selected($sel_field_add, 'od_b_tel'); ?>>받는분전화</option>
+            <option value="od_b_hp" <?php echo get_selected($sel_field_add, 'od_b_hp'); ?>>받는분핸드폰</option>
+            <option value="od_deposit_name" <?php echo get_selected($sel_field_add, 'od_deposit_name'); ?>>입금자</option>
+            <option value="ct_delivery_num" <?php echo get_selected($sel_field_add, 'ct_delivery_num'); ?>>운송장번호</option>
+          </select>
+          <input type="text" name="search_add" value="<?php echo $search_add; ?>" id="search_add" class="frm_input" autocomplete="off" style="width:200px;">
         </td>
       </tr>
     </table>
