@@ -203,8 +203,8 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
       <?php if(!$penId) { ?>
       <div class="search_box">
         <select name="searchtype" id="">
-          <option value="penNm">수급자명</option>
-          <option value="penLtmNum">요양인정번호</option>
+          <option value="penNm" <?=get_selected($searchtype, 'penNm')?>>수급자명</option>
+          <option value="penLtmNum" <?=get_selected($searchtype, 'penLtmNum')?>>요양인정번호</option>
         </select>
         <div class="input_search">
           <input name="search" value="<?=$_GET["search"]?>" type="text">
@@ -386,7 +386,6 @@ function updateClaim(cl_id, data) {
     $total_price_ent.addClass('text_point');
   else
     $total_price_ent.removeClass('text_point');
-
 
   $start_date.text(start_date);
   $total_price.text(parseInt(total_price).toLocaleString('en-US')+'원');
