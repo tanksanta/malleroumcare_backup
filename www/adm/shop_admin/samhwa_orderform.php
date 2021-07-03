@@ -812,7 +812,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 										<?php if($od['od_writer']!="openmarket"){ ?>
 											<?php //if ( $k == 0 ) { ?>
                                             <div class="more">
-                                            <?php if($del_button){ ?>
+                                            <?php if($ct_status_text!=="출고완료" && $ct_status_text !== "배송완료"){ ?>
                                                 <img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_more_b.png" class="item_list_more" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" />
                                                 <ul class="openlayer">
                                                     <?php
