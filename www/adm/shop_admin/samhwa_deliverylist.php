@@ -183,15 +183,7 @@ if( function_exists('pg_setting_check') ){
             <option value="ct_delivery_num" <?php echo get_selected($sel_field, 'ct_delivery_num'); ?>>운송장번호</option>
           </select>
           <input type="text" name="search" value="<?php echo $search; ?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
-          <span class="search_keyworld_msg">
-            *주문번호, 회원아이디, 주문자, 주문자번호, 받는분, 받는분연락처, 입금자, 운송장번호로 검색이 가능합니다.
-          </span>
-        </td>
-      </tr>
-
-      <tr>
-        <th>추가 검색어</th>
-        <td>
+          , 추가 검색어
           <select name="sel_field_add" id="sel_field_add">
             <option value="od_id" <?php echo get_selected($sel_field, 'od_id'); ?>>주문번호</option>
             <option value="it_name" <?php echo get_selected($sel_field, 'it_name'); ?>>상품명</option>
@@ -208,6 +200,7 @@ if( function_exists('pg_setting_check') ){
           <input type="text" name="search_add" value="<?php echo $search_add; ?>" id="search_add" class="frm_input" autocomplete="off" style="width:200px;">
         </td>
       </tr>
+
     </table>
     <div class="submit">
       <button type="submit"><span>검색</span></button>
