@@ -932,6 +932,7 @@ function expired_rental_item_clean($prodId) {
       if(time() >= ( $inital_contract_time + ($item['it_rental_expiry_year'] * 365 * 24 * 60 * 60 ) )) {
         $stock_update[] = array(
           'stoId' => $stock['stoId'],
+          'prodBarNum' => $stock['prodBarNum'],
           'stateCd' => '05' // 05(기타)
         );
       }
@@ -943,6 +944,7 @@ function expired_rental_item_clean($prodId) {
       if(time() >= ( $inital_contract_time + ($item['it_rental_persisting_year'] * 365 * 24 * 60 * 60 ) )) {
         $stock_update[] = array(
           'stoId' => $stock['stoId'],
+          'prodBarNum' => $stock['prodBarNum'],
           'customRentalPrice' => $item['it_rental_persisting_price']
         );
       }
