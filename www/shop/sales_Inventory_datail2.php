@@ -1002,6 +1002,9 @@ function make_option_value(prodColor, prodSize, prodOptions) {
           io_id.push(prodSize);
           io_value.push('사이즈:'+prodSize);
           break;
+        case '':
+          // do nothing
+          break;
         default:
           var prodOption = prodOptions.shift();
           io_id.push(prodOption);
