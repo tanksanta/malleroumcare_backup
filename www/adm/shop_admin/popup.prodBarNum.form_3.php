@@ -761,6 +761,11 @@ if($od["od_b_tel"]){
         }
       }
 
+      if (confirm('PDA 스캔하시겠습니까?')) {
+        openWebBarcode(cnt);
+        return;
+      }
+
       try {
           switch (device) {
           case "android":

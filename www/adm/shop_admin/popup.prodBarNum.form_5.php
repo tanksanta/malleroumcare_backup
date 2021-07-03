@@ -638,6 +638,11 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 					cnt++;
 				}
 			}
+			
+      if (confirm('PDA 스캔하시겠습니까?')) {
+        openWebBarcode(cnt);
+        return;
+      }
 
       try {
           switch (device) {
