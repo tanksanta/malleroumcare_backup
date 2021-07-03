@@ -566,16 +566,23 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 				}
 			}
 
-			switch(device){
-				case "android" :
-					/* android */
-					window.EroummallApp.openBarcode("" + cnt + "");
-					break;
-				case "ios" :
-					/* ios */
-					window.webkit.messageHandlers.openBarcode.postMessage("" + cnt + "");
-					break;
-			}
+      try {
+          switch (device) {
+          case "android":
+            /* android */
+            window.EroummallApp.openBarcode("" + cnt + "");
+            break;
+          case "ios":
+            /* ios */
+            window.webkit.messageHandlers.openBarcode.postMessage("" + cnt + "");
+            break;
+          default:
+            openWebBarcode(cnt);
+            break;
+        }
+      }catch(e) {
+        openWebBarcode(cnt);
+      }
 		});
 
     })
@@ -622,5 +629,5 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         popup.classList.add('hide');
     }
 </script>
-    <!-- <hr color="#dddddd" size="1"> -->
- </body>
+<?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
+</body>

@@ -710,15 +710,22 @@ if($od["od_b_tel"]){
         }
       }
 
-      switch(device){
-        case "android" :
-          /* android */
-          window.EroummallApp.openBarcode("" + cnt + "");
-          break;
-        case "ios" :
-          /* ios */
-          window.webkit.messageHandlers.openBarcode.postMessage("" + cnt + "");
-          break;
+      try {
+          switch (device) {
+          case "android":
+            /* android */
+            window.EroummallApp.openBarcode("" + cnt + "");
+            break;
+          case "ios":
+            /* ios */
+            window.webkit.messageHandlers.openBarcode.postMessage("" + cnt + "");
+            break;
+          default:
+            openWebBarcode(cnt);
+            break;
+        }
+      }catch(e) {
+        openWebBarcode(cnt);
       }
     });
   });
@@ -767,4 +774,5 @@ if($od["od_b_tel"]){
   }
 
   </script>
+<?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
 </body>
