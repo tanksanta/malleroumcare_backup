@@ -185,7 +185,6 @@ expired_rental_item_clean($_GET['prodId']);
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <section id="stock" class="wrap">
-  <div class="list-more m_off"><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
   <h2>대여 재고 상세</h2>
   <div class="stock-view view2">
     <div class="product-view">
@@ -228,6 +227,10 @@ expired_rental_item_clean($_GET['prodId']);
       </div>
     </div>
     <div class="inner">
+      <div class="row">
+        <div class="list-more m_off"><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
+        <div class="list-more"><a href="#" id="btn_multi_submit">수급자선택</a></div>
+      </div>
       <?php
       //보유재고 리스트 보유재고 api 통신
       $sendLength = 5;
@@ -300,7 +303,12 @@ expired_rental_item_clean($_GET['prodId']);
 
         <ul>
           <li class="head cb">
-            <span class="num">No.</span>
+            <span class="num">
+              <label for="chk_stock_all">
+                No.
+                <input type="checkbox" name="chk_stock_all" id="chk_stock_all" value="1" style="margin-bottom: 8px;">
+              </label>
+            </span>
             <span class="product">상품(옵션)</span>
             <span class="pro-num">바코드</span>
             <span class="date">입고일</span>
@@ -406,7 +414,20 @@ expired_rental_item_clean($_GET['prodId']);
             ?>
             <li class="list cb <?=$bg?>">
               <!--pc용-->
-              <span class="num"><?=$number?></span>
+              <span class="num">
+                <?php if($list[$i]['stateCd'] == '01') { ?>
+                <label for="chk_stock_<?=$number?>">
+                  <?=$number?>
+                  <input
+                    data-color="<?=$list[$i]['prodColor']?>"
+                    data-size="<?=$list[$i]['prodSize']?>"
+                    data-options="<?=$list[$i]['prodOption']?>"
+                    data-barcode="<?=$list[$i]['prodBarNum']?>"
+                    type="checkbox" name="chk_stock_<?=$number?>" id="chk_stock_<?=$number?>" class="chk_stock" style="margin-bottom:8px;
+                  ">
+                </label>
+                <?php } else { echo $number; } ?>
+              </span>
               <span class="product m_off">
                 <?php
                 if($list[$i]['prodColor']||$list[$i]['prodSize']){
@@ -879,7 +900,7 @@ expired_rental_item_clean($_GET['prodId']);
   <div></div>
 </div>
 <style>
-#order_recipientBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 1; }
+#order_recipientBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 #order_recipientBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 #order_recipientBox iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
 @media (max-width : 750px) {
@@ -897,13 +918,74 @@ expired_rental_item_clean($_GET['prodId']);
 }
 </style>
 <script>
-$('#order_recipientBox').hide();
+var is_multi_submit = false;
+var cart_form = null;
 
-function popup_control(prodColor, prodSize, prodOptions, barcode_r) {
+function CartForm() {
+  this.data = [];
+  this.append('sw_direct', '1');
+  this.append('it_id[]', '<?=get_text($it_id)?>');
+  this.append('io_price', '0');
+  this.append('io_stock', '<?=get_text($it['it_stock_qty'])?>');
+  this.append('it_msg1[]', '<?=get_text($it['pt_msg1'])?>');
+  this.append('it_msg2[]', '<?=get_text($it['pt_msg2'])?>');
+  this.append('it_msg3[]', '<?=get_text($it['pt_msg3'])?>');
+}
+CartForm.prototype.append = function append(key, value) {
+  this.data.push({
+    key: key,
+    value: value
+  });
+}
+CartForm.prototype.addOption = function addOption(io_id, io_value) {
+  this.append('io_type[<?=get_text($it_id)?>][]', '0');
+  this.append('io_id[<?=get_text($it_id)?>][]', io_id);
+  this.append('io_value[<?=get_text($it_id)?>][]', io_value);
+  this.append('ct_qty[<?=get_text($it_id)?>][]', '1');
+}
+CartForm.prototype.submit = function submit() {
+  var form = $(document.createElement("form"))
+  .attr({"method": 'post', "action": '<?=$action_url?>'});
+
+  for(var i = 0; i < this.data.length; i++) {
+    var key = this.data[i].key;
+    var val = this.data[i].value;
+    $(document.createElement("input"))
+    .attr({ "type": "hidden", "name": key, "value": val })
+    .appendTo( form );
+  }
+
+  form.appendTo( document.body ).submit();
+}
+
+// 여러 상품 체크 주문 시
+function multi_submit() {
+  if($('.chk_stock:checked').length === 0)
+    return alert('선택한 재고가 없습니다.');
+
+  is_multi_submit = true;
+  cart_form = new CartForm();
+
+  var barcode_r = [];
+  $.each($('.chk_stock:checked'), function(index, item) {
+    var color = $(item).data('color');
+    var size = $(item).data('size');
+    var options = $(item).data('options');
+    var barcode = $(item).data('barcode');
+    barcode_r.push(barcode);
+
+    var option_value = make_option_value(color, size, options);
+    cart_form.addOption(option_value.io_id, option_value.io_value);
+  });
+
+  cart_form.append('barcode_r', barcode_r.join('|'));
+
   $('#order_recipientBox').show();
+}
 
-  var io_id_r = [];
-  var io_value_r = [];
+function make_option_value(prodColor, prodSize, prodOptions) {
+  var io_id = [];
+  var io_value = [];
 
   prodOptions = prodOptions.split('|');
 
@@ -913,34 +995,70 @@ function popup_control(prodColor, prodSize, prodOptions, barcode_r) {
     for(var i = 0; i < io_subjects.length; i++) {
       switch(io_subjects[i]) {
         case '색상':
-          io_id_r.push(prodColor);
-          io_value_r.push('색상:'+prodColor);
+          io_id.push(prodColor);
+          io_value.push('색상:'+prodColor);
           break;
         case '사이즈':
-          io_id_r.push(prodSize);
-          io_value_r.push('사이즈:'+prodSize);
+          io_id.push(prodSize);
+          io_value.push('사이즈:'+prodSize);
           break;
         default:
           var prodOption = prodOptions.shift();
-          io_id_r.push(prodOption);
-          io_value_r.push(io_subjects[i]+':'+prodOption);
+          io_id.push(prodOption);
+          io_value.push(io_subjects[i]+':'+prodOption);
       }
     }
   }
 
-  io_id_r = io_id_r.join(String.fromCharCode(30));
-  io_value_r = io_value_r.join(' / ');
+  io_id = io_id.join(String.fromCharCode(30));
+  io_value = io_value.join(' / ');
 
-  document.getElementById('io_id_r').value=io_id_r;
-  document.getElementById('io_value_r').value=io_value_r;
-  document.getElementById('barcode_r').value=barcode_r;
+  var res = {
+    io_id: io_id,
+    io_value: io_value
+  }
+
+  return res;
 }
 
-function selected_recipient(penId){
-  document.getElementById('penId_r').value=penId;
+function popup_control(prodColor, prodSize, prodOptions, barcode_r) {
+  is_multi_submit = false;
+  $('#order_recipientBox').show();
+
+  var option_value = make_option_value(prodColor, prodSize, prodOptions);
+
+  document.getElementById('io_id_r').value = option_value.io_id;
+  document.getElementById('io_value_r').value = option_value.io_value;
+  document.getElementById('barcode_r').value = barcode_r;
+}
+
+function selected_recipient(penId) {
+  if(is_multi_submit && cart_form) {
+    cart_form.append('penId_r', penId);
+    return cart_form.submit();
+  }
+
+  document.getElementById('penId_r').value = penId;
   document.getElementById('recipient_info').submit();
 }
-$(function(){
+$(function() {
+  $('#chk_stock_all').change(function() {
+    var checked = $(this).prop('checked');
+    $('.chk_stock').prop('checked', checked);
+  });
+
+  $('.chk_stock').change(function() {
+    var checked = false;
+    if($('.chk_stock').length === $('.chk_stock:checked').length)
+      checked = true;
+    $('#chk_stock_all').prop('checked', checked);
+  });
+
+  $('#btn_multi_submit').click(function(e) {
+    e.preventDefault();
+    multi_submit();
+  });
+
   //바코드 클릭시 팝업
   $(document).on("click", ".prodBarNumCntBtn_2", function(e){
     e.preventDefault();
@@ -952,6 +1070,8 @@ $(function(){
     });
   });
 
+  $('#order_recipientBox').hide();
+  $("#order_recipientBox").css("opacity", 1);
   $(".listPopupBoxWrap").hide();
   $(".listPopupBoxWrap").css("opacity", 1);
 });

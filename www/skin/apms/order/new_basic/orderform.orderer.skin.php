@@ -1998,12 +1998,15 @@ $(window).load(function () {
 ?>
 
 <script>
-<?php if($_GET['penId_r']){ //보유재고 관리에서 넘어오면 실행 ?>
+<?php if($_GET['penId_r']) { //보유재고 관리에서 넘어오면 실행 ?>
 $(document).ready(function() {
   $('#c_recipient').click();
   $("#order_recipientBox").hide();
   selected_recipient('<?=$_GET['penId_r']?>');
-  $('.prodBarSelectBox0 option[value="<?=$_GET['barcode_r']?>"]').attr('selected', 'selected');
+  var barcode_r = '<?=get_text($_GET['barcode_r'])?>'.split('|');
+  for(var i = 0; i < barcode_r.length; i++) {
+    $('.prodBarSelectBox'+i+' option[value="'+barcode_r[i]+'"]').attr('selected', 'selected');
+  }
   $('#ad_sel_addr_same').click();
 });
 <?php } ?>
