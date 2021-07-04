@@ -161,7 +161,7 @@ function receiveBarcode(tempBarcode) {
 
       if (barcode.length !== 12) {
         $.toast('\'' + barcode + '\'는 잘못된 바코드입니다. <br/> (12글자 아님)', {
-          sticky: true,
+          duration: 3000,
           type: 'danger'
         });
         return;
@@ -169,7 +169,7 @@ function receiveBarcode(tempBarcode) {
 
       if (isDuplicateBarcode(barcode)) {
         $.toast('\'' + barcode + '\'는 중복된 바코드입니다. <br/> 다시스캔해주세요.', {
-          sticky: true,
+          duration: 3000,
           type: 'danger'
         });
         return;
@@ -194,7 +194,7 @@ function receiveBarcode(tempBarcode) {
     .fail(function($xhr) {
       var data = $xhr.responseJSON;
       $.toast(data && data.message, {
-        sticky: true,
+        duration: 3000,
         type: 'danger'
       });
     });
