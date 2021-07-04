@@ -102,7 +102,7 @@ $eform_query = sql_query("
         )
       )
     )
-  GROUP BY `penId`
+  GROUP BY `penId`, `penTypeCd`
   ORDER BY `penNm` ASC
 ");
 
