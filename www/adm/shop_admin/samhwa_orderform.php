@@ -292,9 +292,21 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
 
 
 
-	$prodBarNumCntBtnWord = "바코드 ({$od["od_prodBarNum_insert"]}/{$od["od_prodBarNum_total"]})";
-	$prodBarNumCntBtnWord = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
-	$prodBarNumCntBtnStatus = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? " disable" : "";
+    $sql_ct = " select * from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+    $result_ct = sql_query($sql_ct);
+    $qty=0;
+    $insert_qty=0;
+    while($row_ct = sql_fetch_array($result_ct)) {
+        if($row_ct['ct_status'] !=="취소"&&$row_ct['ct_status'] !=="주문무효"){
+            $qty += $row_ct['ct_qty'];
+            if($row_ct['ct_barcode_insert'])
+            $insert_qty += $row_ct['ct_barcode_insert']; 
+        }
+    }
+
+    $prodBarNumCntBtnWord = $insert_qty."/".$qty;
+	$prodBarNumCntBtnWord = ($insert_qty >= $qty) ? "입력완료" : $prodBarNumCntBtnWord;
+	$prodBarNumCntBtnStatus = ($insert_qty >= $qty) ? " disable" : "";
 
 	$deliveryCntBtnWord = "배송정보 ({$delivery_insert}/{$od["od_delivery_total"]})";
 	$deliveryCntBtnWord = ($delivery_insert >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
