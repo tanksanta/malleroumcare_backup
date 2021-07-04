@@ -229,7 +229,7 @@ if($od["od_b_tel"]) {
           # 요청사항
           $prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
       ?>
-      <a href="javascript:void(0)">
+      <a href="javascript:void(0)" class="<?= $options[$k]['ct_status'] !== "취소" && $options[$k]['ct_status'] !== "주문무효" ? "" : "hide_area" ?> ">
         <li class="li_box">
           <div class="li_box_line1"   onclick="openCloseToc(this)">
             <p class="p1">
@@ -356,7 +356,8 @@ if($od["od_b_tel"]) {
   ?>
 
   <script type="text/javascript">
-
+    $(".hide_area").hide();
+    
     $(".notall").keyup(function(){
         var last_index = $(this).closest('ul').find('li').last().index();
         var this_index = $(this).closest('li').index();
@@ -824,6 +825,11 @@ if($od["od_b_tel"]) {
           sendBarcodeTargetList.push($(item[i]).attr("data-frm-no"));
           cnt++;
         }
+      }
+      
+      if (confirm('PDA 스캔하시겠습니까?')) {
+        openWebBarcode(cnt);
+        return;
       }
 
       try {

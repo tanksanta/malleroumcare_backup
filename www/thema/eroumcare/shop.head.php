@@ -655,7 +655,6 @@ scrollToTop();
 					
 					<div class="scrollBannerListWrap right">
 						<div class="todayViewWrap">
-							<div class="title">최근 본 상품</div>
 							<?php include(THEMA_PATH."/side/boxtodayview.skin.php"); ?>
 						</div>
 						

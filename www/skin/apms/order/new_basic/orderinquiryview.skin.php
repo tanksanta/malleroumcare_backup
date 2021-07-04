@@ -440,22 +440,41 @@ $(function() {
               </li>
               <li class="delivery-price m_none">
                 <p>
-                  <?php
-                  if($od["od_stock_insert_yn"] == "Y") {
-                    echo "등록완료";
-                  } else {
-                    if($item[$i]["prodSupYn"] == "N") {
+                    <?php
+                      if($od["od_stock_insert_yn"] == "Y"){
                       echo "등록완료";
-                    } else {
-                      $ct_status = get_step($od["od_status"]);
-                      echo $ct_status['name'];
-                    }
-                  }
-                  ?>
-                </p>
+                      }else{
+                        if($item[$i]["prodSupYn"] == "N"){
+                            echo "등록완료";
+                        }else{ 
+                            if($od["od_status"]=="주문무효"||$od["od_status"]=="주문취소"){
+                                echo $od["od_status"];
+                            }else{
+                                $ct_status_text="";
+                                switch ($item[$i]['opt'][$k]['ct_status']) {
+                                    case '보유재고등록': $ct_status_text="보유재고등록"; break;
+                                    case '재고소진': $ct_status_text="재고소진"; break;
+                                    case '작성': $ct_status_text="작성"; break;
+                                    case '주문무효': $ct_status_text="주문무효"; break;
+                                    case '취소': $ct_status_text="주문취소"; break;
+                                    case '주문': $ct_status_text="주문접수"; break;
+                                    case '입금': $ct_status_text="입금완료"; break;
+                                    case '준비': $ct_status_text="상품준비"; break;
+                                    case '출고준비': $ct_status_text="출고준비"; break;
+                                    case '배송': $ct_status_text="출고완료"; break;
+                                    case '완료': $ct_status_text="배송완료"; break;
+                                }
+                                echo $ct_status_text;
+                            }
+                        }
+                      }
+                    ?>
+                  </p>
               </li>
               <li class="barcode">
-                <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$od["od_id"]?>" data-ct-id="<?=$item[$i]['opt'][$k]["ct_id"]?>" ><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 확인</a>
+                <?php if($item[$i]['opt'][$k]['ct_status'] !== "취소" && $item[$i]['opt'][$k]['ct_status'] !== "주문무효"){ ?>
+                  <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$od["od_id"]?>" data-ct-id="<?=$item[$i]['opt'][$k]["ct_id"]?>" ><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 확인</a>
+                <?php } ?>
               </li>
             </ul>
             <div class="list-btm">

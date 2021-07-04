@@ -292,9 +292,21 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
 
 
 
-	$prodBarNumCntBtnWord = "바코드 ({$od["od_prodBarNum_insert"]}/{$od["od_prodBarNum_total"]})";
-	$prodBarNumCntBtnWord = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? "입력완료" : $prodBarNumCntBtnWord;
-	$prodBarNumCntBtnStatus = ($od["od_prodBarNum_insert"] >= $od["od_prodBarNum_total"]) ? " disable" : "";
+    $sql_ct = " select * from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+    $result_ct = sql_query($sql_ct);
+    $qty=0;
+    $insert_qty=0;
+    while($row_ct = sql_fetch_array($result_ct)) {
+        if($row_ct['ct_status'] !=="취소"&&$row_ct['ct_status'] !=="주문무효"){
+            $qty += $row_ct['ct_qty'];
+            if($row_ct['ct_barcode_insert'])
+            $insert_qty += $row_ct['ct_barcode_insert']; 
+        }
+    }
+
+    $prodBarNumCntBtnWord = $insert_qty."/".$qty;
+	$prodBarNumCntBtnWord = ($insert_qty >= $qty) ? "입력완료" : $prodBarNumCntBtnWord;
+	$prodBarNumCntBtnStatus = ($insert_qty >= $qty) ? " disable" : "";
 
 	$deliveryCntBtnWord = "배송정보 ({$delivery_insert}/{$od["od_delivery_total"]})";
 	$deliveryCntBtnWord = ($delivery_insert >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
@@ -343,9 +355,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
             ?>
             </h2>
             <div class="right">
-                <?php if($od['od_writer']!="openmarket"&&$del_button){ ?>
                 <input type="button" value="상품추가" class="btn shbtn" id="add_item">
-                <?php } ?>
                 <!--<input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
                 <!-- <?php 
                     $sql_cart ="select `ct_hide_control` from `g5_shop_cart` where `od_id` = '".$od['od_id']."'";
@@ -783,13 +793,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                         ?>
                                     </td>
                                     <td class="item_memo">
-                                        <?php if ( $k == 0 ) {
-                                            // $sql = "SELECT * FROM g5_shop_order_cart_memo WHERE od_id = '{$od_id}' AND it_id = '{$options[$k]['it_id']}'";
-                                            // $sql = "SELECT * FROM g5_shop_order_cart_memo WHERE od_id = '{$od_id}' AND ctm_uid = '{$options[$k]['ct_uid']}'";
-                                            // $item_memo = sql_fetch($sql);
-                                            // echo htmlspecialchars($item_memo['ctm_memo']);
+                                        <?php 
                                             echo $prodMemo;
-                                        }
                                         ?>
                                     </td>
                                     <td class="btncol">
@@ -817,7 +822,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 										<?php if($od['od_writer']!="openmarket"){ ?>
 											<?php //if ( $k == 0 ) { ?>
                                             <div class="more">
-                                            <?php if($del_button){ ?>
+                                            <?php if($ct_status_text!=="출고완료" && $ct_status_text !== "배송완료"){ ?>
                                                 <img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_more_b.png" class="item_list_more" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" />
                                                 <ul class="openlayer">
                                                     <?php

@@ -322,6 +322,7 @@ if($header_skin)
                             }?>
 						</li>
 						<li class="info-btn">
+							<?php if($item['ct_status'] !== "취소" && $item['ct_status'] !== "주문무효"){ ?>
                             <div class="barcode_preview">
                                 <ul>
                                     <?php
@@ -370,15 +371,19 @@ if($header_skin)
                             ?>
                                 <?php if($item["prodSupYn"] == "N"){ ?>
 
-                                    <!-- <li class="barInfo barcode_box  disable" data-id="2021052417305437" data-ct-id="48984"><span class="cnt">입력완료</span></li> -->
-                                    <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"> 
-                                    바코드 확인
-                                    </a>
-                                <?php } else { ?>
-                                    <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 
-                                    바코드
-                                    </a>
-                                <?php } ?>
+								<!-- <li class="barInfo barcode_box  disable" data-id="2021052417305437" data-ct-id="48984"><span class="cnt">입력완료</span></li> -->
+								<a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"> 
+								바코드 확인
+								</a>
+								<?php } else { 
+									if($limit>0){	
+								?>
+									<a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 
+									바코드
+									</a>
+								<?php   }
+								} 
+								?>
 							<?php if($row["od_delivery_insert"] && ($item["prodSupYn"] == "Y")){ ?>
 								<a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
 							<?php } ?>
@@ -400,9 +405,11 @@ if($header_skin)
 									<a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a> -->
 							<?php } ?>
 							</div>
+							<?php } ?>
 						</li>
 					</ul>
 				</div>
+
 			<?php } ?>
 		</div>
 	<?php } ?>
