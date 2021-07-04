@@ -343,9 +343,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
             ?>
             </h2>
             <div class="right">
-                <?php if($od['od_writer']!="openmarket"&&$del_button){ ?>
                 <input type="button" value="상품추가" class="btn shbtn" id="add_item">
-                <?php } ?>
                 <!--<input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
                 <!-- <?php 
                     $sql_cart ="select `ct_hide_control` from `g5_shop_cart` where `od_id` = '".$od['od_id']."'";
