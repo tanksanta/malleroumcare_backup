@@ -2865,3 +2865,17 @@ ul.div-ring p {
 .type4 { border: 1px solid #4e7bbe;color: #4e7bbe;}
 .type5 { border: 1px solid #5b74f6;color: #5b74f6;}
 .custom-index{clear: both}
+
+.grade-edit-log-wrapper li {
+	margin-top: 8px;
+}
+
+.grade-edit-log-wrapper li span {
+	display: inline-block;
+	width: 165px;
+}
+
+.grade-edit-log-wrapper li button {
+	margin-left: 15px;
+	font-size: 11px;
+}

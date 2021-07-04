@@ -27,9 +27,10 @@ $is_spare_current = $data['isSpare'] == '1';
 # 예비수급자로 변경할것인지 체크
 $is_spare = $data['penSpare'] == '1';
 
-if($valid = valid_recipient_input($data, $is_spare)) {
-  json_response(500, $valid);
+if ($data['update_type'] != 'grade_edit' && $valid = valid_recipient_input($data, $is_spare)) {
+    json_response(500, $valid);
 }
+
 $data = normalize_recipient_input($data);
 
 if($is_spare_current != $is_spare) {

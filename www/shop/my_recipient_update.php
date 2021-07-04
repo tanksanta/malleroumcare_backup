@@ -208,10 +208,10 @@ if($res['data'])
 
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
-          <b>인정등급</b>
+          <b>인정등급/본인부담율</b>
         </label>
         <div class="col-sm-3">
-          <select class="form-control input-sm" name="penRecGraCd">
+          <select class="form-control input-sm" name="penRecGraCd" style="margin-bottom: 5px">
             <option value="00" <?=($data["penRecGraCd"] == "00") ? "selected" : ""?>>등급외</option>
             <option value="01" <?=($data["penRecGraCd"] == "01") ? "selected" : ""?>>1등급</option>
             <option value="02" <?=($data["penRecGraCd"] == "02") ? "selected" : ""?>>2등급</option>
@@ -219,21 +219,36 @@ if($res['data'])
             <option value="04" <?=($data["penRecGraCd"] == "04") ? "selected" : ""?>>4등급</option>
             <option value="05" <?=($data["penRecGraCd"] == "05") ? "selected" : ""?>>5등급</option>
           </select>
-        </div>
-      </div>
-
-      <div class="form-group has-feedback">
-        <label class="col-sm-2 control-label">
-          <b>본인부담금율</b>
-        </label>
-        <div class="col-sm-3">
-          <select class="form-control input-sm" name="penTypeCd">
+          <select class="form-control input-sm" name="penTypeCd" style="margin-bottom: 5px">
             <option value="00" <?=($data["penTypeCd"] == "00") ? "selected" : ""?>>일반 15%</option>
             <option value="01" <?=($data["penTypeCd"] == "01") ? "selected" : ""?>>감경 9%</option>
             <option value="02" <?=($data["penTypeCd"] == "02") ? "selected" : ""?>>감경 6%</option>
             <option value="03" <?=($data["penTypeCd"] == "03") ? "selected" : ""?>>의료 6%</option>
             <option value="04" <?=($data["penTypeCd"] == "04") ? "selected" : ""?>>기초 0%</option>
           </select>
+          <input type="text" name="penGraEditDtm" value="" class="form-control input-sm" dateonly2 style="display: inline-block;width:100%; margin-bottom: 5px;" autocomplete="off">
+          <button type="button" id="grade_edit_submit_btn" class="btn btn-color" style="width: 100%;">적용</button>
+          <div class="grade-edit-log-wrapper">
+            <ul>
+              <?php
+              $sql = "SELECT *
+                      FROM recipient_grade_log
+                      WHERE
+                        pen_id = '{$data["penId"]}' AND del_yn = 'N'
+                      ORDER BY seq DESC ";
+              $result = sql_query($sql);
+              
+              while ($row = sql_fetch_array($result)) {
+                ?>
+                <li>
+                  <span><?=$row['pen_gra_edit_dtm']?> / <?=$row['pen_rec_gra_nm']?> / <?=$row['pen_type_nm']?></span>
+                  <button data-seq="<?=$row['seq']?>" type="button" class="grade_edit_del_btn btn btn-color">삭제</button>
+                </li>
+                <?php
+              }
+              ?>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -805,6 +820,78 @@ $(function() {
       var data = $xhr.responseJSON;
       alert(data && data.message);
     });
+  });
+
+  $("#grade_edit_submit_btn").click(function () {
+    var item = $('input[name="penGraEditDtm"]');
+
+    if (!$(item).val()) {
+      alert("필수값을 입력해주시길 바랍니다.");
+      $(item).focus();
+      return false;
+    }
+
+    var penSpare = $(".register-form input[name='penSpare']:checked").val();
+
+    var sendData = {
+      update_type: "grade_edit",
+      act: "log_insert",
+      penId: "<?=$data["penId"]?>",
+      penRecGraCd: $(".register-form select[name='penRecGraCd']").val(),
+      penRecGraNm: $(".register-form select[name='penRecGraCd'] option:selected").text(),
+      penTypeCd: $(".register-form select[name='penTypeCd']").val(),
+      penTypeNm: $(".register-form select[name='penTypeCd'] option:selected").text(),
+      penProTypeCd: $('.register-form input[name="penProTypeCd"]:checked').val(),
+      penGraEditDtm: $(".register-form input[name='penGraEditDtm']").val(),
+      delYn: "N",
+      isSpare: "<?=get_text($_GET['penSpare'])?>",
+      penSpare: penSpare
+    };
+
+    $.post('./ajax.my.recipient.update.php', sendData, 'json')
+      .done(function (result) {
+        var data = result.data;
+
+        $.post('./ajax.my.recipient.grade.log.update.php', sendData, 'json')
+          .done(function (result) {
+            alert("적용 되었습니다.");
+            if (data.isSpare)
+              window.location.href = "./my_recipient_list.php";
+            else
+              location.reload();
+          })
+          .fail(function ($xhr) {
+            var data = $xhr.responseJSON;
+            alert(data && data.message);
+          });
+        
+      })
+      .fail(function ($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+  });
+  
+  $('.grade_edit_del_btn').click(function () {
+    if (!confirm("기록을 삭제하시겠습니까?")) {
+      return false;
+    }
+    
+    var sendData = {
+      act: "log_del",
+      penId: "<?=$data["penId"]?>",
+      seq: $(this).data('seq'),
+    };
+
+    $.post('./ajax.my.recipient.grade.log.update.php', sendData, 'json')
+      .done(function (result) {
+        alert("기록이 삭제 되었습니다.");
+        location.reload();
+      })
+      .fail(function ($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
   });
 });
 </script>
