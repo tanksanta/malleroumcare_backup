@@ -233,7 +233,7 @@ $row = sql_fetch($sql);
     <div class="inner">
       <div class="row">
         <div class="list-more m_off"><a href="<?=G5_SHOP_URL?>/sales_Inventory.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
-        <div class="list-more"><a href="#" id="btn_multi_submit">수급자선택</a></div>
+        <div class="list-more m_off"><a href="#" id="btn_multi_submit">수급자선택</a></div>
       </div>
       <div class="table-wrap">
         <div class="tit_area">
@@ -360,7 +360,7 @@ $row = sql_fetch($sql);
                     data-size="<?=$list[$i]['prodSize']?>"
                     data-options="<?=$list[$i]['prodOption']?>"
                     data-barcode="<?=$list[$i]['prodBarNum']?>"
-                    type="checkbox" name="chk_stock_<?=$number?>" id="chk_stock_<?=$number?>" class="chk_stock" style="margin-bottom:8px;
+                    type="checkbox" name="chk_stock_<?=$number?>" id="chk_stock_<?=$number?>" class="chk_stock m_off" style="margin-bottom:8px;
                   ">
                 </label>
               </span>

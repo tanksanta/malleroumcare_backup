@@ -936,7 +936,8 @@ pre{white-space: pre-wrap;}
 .scrollBannerListWrap { position: absolute; width: 130px; top: 0; transition: transform 0.5s; transform: translateY(0); z-index: 100; }
 .scrollBannerListWrap * { position: relative; }
 .scrollBannerListWrap.left { width: 100px; left: -80px; }
-.scrollBannerListWrap.right { right: -120px; opacity: 0; }
+.scrollBannerListWrap.right { right: -120px;  }
+.scrollBannerListWrap.right .title{display: none;}
 .scrollBannerListWrap.right .btn_quick_area {width:100%;}
 .scrollBannerListWrap.right .btn_quick_area a{border:1px solid #ddd;display:inline-block;padding:10px 0;text-align:center;width:100%;position: relative;margin-bottom:10px;}
 .scrollBannerListWrap.right .btn_quick_area a .num_cart{position:absolute;background: #f27935;color:#fff;padding:0 8px;border-radius: 50px;font-size:11px;z-index:10;top:10px;left:70px;}

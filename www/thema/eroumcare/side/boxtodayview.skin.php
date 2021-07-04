@@ -12,8 +12,12 @@ $tv_div['img_length'] = 10; // 한번에 보여줄 이미지 수
 add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_SKIN_URL.'/style.css">', 0);
 ?>
 
+
+<div class="title">최근 본 상품</div>
+
 <!-- 오늘 본 상품 시작 { -->
 <div id="stv" class="op_area">
+	
 
     <?php if ($tv_datas) { // 오늘 본 상품이 1개라도 있을 때 ?>
     	<a href="#" id="stv_link">
@@ -86,7 +90,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_SKIN_URL.'/style.css">', 
                 prevArrow:"<button type='button' class='today-slick-prev'><i class='fa fa-angle-left' aria-hidden='true'></i></button>",
                 nextArrow:"<button type='button' class='today-slick-next'><i class='fa fa-angle-right' aria-hidden='true'></i></button>"
             });
-			$(".scrollBannerListWrap.right").css("opacity", 1);
+			$(".scrollBannerListWrap.right .title").css("display", "inline-block");
 			
 			$(".today-slick .slick-slide").mouseenter(function(){
 				var id = $(this).attr("data-id");
