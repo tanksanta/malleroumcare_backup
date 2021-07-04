@@ -36,10 +36,11 @@ CREATE TABLE IF NOT EXISTS `claim_nhis_upload` (
   KEY `mb_id` (`mb_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+
 -- 청구관리: 건보자료 업로드 내용 테이블
 DROP TABLE IF EXISTS `claim_nhis_content`;
 CREATE TABLE IF NOT EXISTS `claim_nhis_content` (
-  `cn_id` int(11) NOT NULL auto_increment,
+  `cc_id` int(11) NOT NULL auto_increment,
   `cu_id` int(11) NOT NULL, -- 건보자료 업로드 id
   `penType` varchar(30) NOT NULL default '', -- 일반/의료
   `penNm` varchar(255) NOT NULL default '', -- 수급자 이름
@@ -52,6 +53,6 @@ CREATE TABLE IF NOT EXISTS `claim_nhis_content` (
   `total_price` int(11) NOT NULL default 0, -- 급여비용총액
   `total_price_pen` int(11) NOT NULL default 0, -- 본인부담금
   `total_price_ent` int(11) NOT NULL default 0, -- 청구액
-  PRIMARY KEY (`cn_id`),
+  PRIMARY KEY (`cc_id`),
   KEY `cu_id` (`cu_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
