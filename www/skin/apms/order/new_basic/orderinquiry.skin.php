@@ -322,6 +322,7 @@ if($header_skin)
                             }?>
 						</li>
 						<li class="info-btn">
+							<?php if($item['ct_status'] !== "취소" && $item['ct_status'] !== "주문무효"){ ?>
                             <div class="barcode_preview">
                                 <ul>
                                     <?php
@@ -404,9 +405,11 @@ if($header_skin)
 									<a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a> -->
 							<?php } ?>
 							</div>
+							<?php } ?>
 						</li>
 					</ul>
 				</div>
+
 			<?php } ?>
 		</div>
 	<?php } ?>
