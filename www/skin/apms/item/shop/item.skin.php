@@ -268,8 +268,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
               }
               ?>
               <span style="font-size:13px;">
-                <?=($_COOKIE["viewType"] == "basic") ? "<span class='txt_color_green'>급여가</span>" : "<span class='txt_color_orange'>판매가</span>" ?>
-                <?=($it["it_price_dealer2"]) ? "VIP" : "" ?>
+                <?php if($_COOKIE["viewType"] == "basic") { ?>
+                <span class='txt_color_green'>급여가</span>
+                <?php } else { ?>
+                <?php if($member["mb_level"] == "4") { ?>
+                <span class='txt_color_orange'>VIP판매가</span>
+                <?php } else { ?>
+                  <span class='txt_color_orange'>판매가</span>
+                <?php }
+                }
+                ?>
               </span>
             </h1>
           </li>
@@ -386,8 +394,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
           }
           ?>
           <span style="font-size: 15px;">
-            <?=($_COOKIE["viewType"] == "basic") ? "<span class='txt_color_green'>급여가</span>" : "<span class='txt_color_orange'>판매가</span>" ?>
-            <?=($it["it_price_dealer2"]) ? "VIP" : "" ?>
+            <?php if($_COOKIE["viewType"] == "basic") { ?>
+            <span class='txt_color_green'>급여가</span>
+            <?php } else { ?>
+            <?php if($member["mb_level"] == "4") { ?>
+            <span class='txt_color_orange'>VIP판매가</span>
+            <?php } else { ?>
+              <span class='txt_color_orange'>판매가</span>
+            <?php }
+            }
+            ?>
           </span>
           <?php if(substr($it["ca_id"], 0, 2) == "20") { ?>
           <br><span style="font-weight: normal; font-size: 13px; margin-top: 15px; display: inline-block;">* 대여금액(월기준) : <?=number_format($it["it_rental_price"])?>원</span>
