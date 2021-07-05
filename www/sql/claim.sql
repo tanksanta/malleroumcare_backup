@@ -49,6 +49,8 @@ CREATE TABLE IF NOT EXISTS `claim_nhis_content` (
   `penRecGraNm` varchar(255) NOT NULL default '', -- 2등급
   -- 본인부담금율
   `penRate` int(11) NOT NULL default 0, -- 본인부담률 ex) 15 (퍼센트)
+  `penTypeCd` varchar(255) NOT NULL default '', -- 02
+  `penTypeNm` varchar(255) NOT NULL default '', -- 감경 6%
   `start_date` date NOT NULL, -- 급여 시작일
   `total_price` int(11) NOT NULL default 0, -- 급여비용총액
   `total_price_pen` int(11) NOT NULL default 0, -- 본인부담금
