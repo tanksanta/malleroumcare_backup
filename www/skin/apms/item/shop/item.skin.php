@@ -269,12 +269,12 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
               ?>
               <span style="font-size:13px;">
                 <?php if($_COOKIE["viewType"] == "basic") { ?>
-                <span class='txt_color_green'>급여가</span>
+                <span class='txt_color_green_box'>급여가</span>
                 <?php } else { ?>
                 <?php if($member["mb_level"] == "4") { ?>
-                <span class='txt_color_orange'>VIP판매가</span>
+                <span class='txt_color_gray_box'>VIP판매가</span>
                 <?php } else { ?>
-                  <span class='txt_color_orange'>판매가</span>
+                  <span class='txt_color_orange_box'>판매가</span>
                 <?php }
                 }
                 ?>
@@ -395,12 +395,12 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
           ?>
           <span style="font-size: 15px;">
             <?php if($_COOKIE["viewType"] == "basic") { ?>
-            <span class='txt_color_green'>급여가</span>
+            <span class='txt_color_green_box'>급여가</span>
             <?php } else { ?>
             <?php if($member["mb_level"] == "4") { ?>
-            <span class='txt_color_orange'>VIP판매가</span>
+            <span class='txt_color_gray_box'>VIP판매가</span>
             <?php } else { ?>
-              <span class='txt_color_orange'>판매가</span>
+              <span class='txt_color_orange_box'>판매가</span>
             <?php }
             }
             ?>
