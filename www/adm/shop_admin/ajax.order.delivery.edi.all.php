@@ -61,7 +61,8 @@ $sql = "SELECT
     o.od_b_hp,
     o.od_id,
     o.od_b_zip1,
-    o.od_b_zip2
+    o.od_b_zip2,
+    o.od_memo
 FROM 
     g5_shop_cart as c 
     LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
@@ -198,7 +199,7 @@ foreach($carts as $cart) {
     }
 
     $edi['goodsName']       = $it_name;
-    $edi['sndMsg']			= $cart['prodMemo'];
+    $edi['sndMsg']			= $cart['od_memo'];
     $edi['inQty']			= $tot_ea;
     $edi['itemOption']		= "";
 
