@@ -1,6 +1,8 @@
 <?php
 include_once("./_common.php");
 
+$barcode = preg_replace("/[^a-z0-9]/i", "", $barcode);
+
 if (!$it_id || !$barcode) {
 	json_response(400, '잘못된 요청입니다.');
 }
