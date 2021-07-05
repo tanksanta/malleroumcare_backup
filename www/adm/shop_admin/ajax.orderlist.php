@@ -16,7 +16,7 @@ $sort2 = in_array($sort2, array('desc', 'asc')) ? $sort2 : 'desc';
 $sel_field = get_search_string($sel_field);
 
 // wetoz : naverpayorder - , 'od_naver_orderid' 추가
-if( !in_array($sel_field, array('od_all', 'it_name', 'it_admin_memo', 'it_maker', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'od_naver_orderid')) ){   //검색할 필드 대상이 아니면 값을 제거
+if( !in_array($sel_field, array('od_all', 'it_name', 'it_admin_memo', 'it_maker', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'od_naver_orderid','barcode')) ){   //검색할 필드 대상이 아니면 값을 제거
     $sel_field = '';
 }
 $ct_status=$od_status;
@@ -35,10 +35,20 @@ $od_coupon = preg_replace('/[^0-9a-z]/i', '', $od_coupon);
 $sql_search = "";
 if ($search != "") {
     $search = trim($search);
-    if ($sel_field != "" && $sel_field != "od_all") {
-        $where[] = " $sel_field like '%$search%' ";
+    if($sel_field=="barcode"){
+        $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search."'";
+        $result_barcode_search = sql_query($sql_barcode_search);
+        $or="";
+        while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
+            $bacode_search .= $or." `stoId` like '%".$row_barcode['stoId']."%' ";
+            $or="or";
+        }
+        $where[] = $bacode_search;
+    }else{
+        if ($sel_field != "" && $sel_field != "od_all") {
+            $where[] = " $sel_field like '%$search%' ";
+        }
     }
-
     if ($save_search != $search) {
         // $page = 1;
     }
@@ -53,10 +63,25 @@ if ($search_add != "") {
 
 // 전체 검색
 if ($sel_field == 'od_all') {
-    $sel_arr = array('it_name', 'it_admin_memo', 'it_maker', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num');
+    $sel_arr = array('it_name', 'it_admin_memo', 'it_maker', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode');
 
     foreach ($sel_arr as $key => $value) {
-        $sel_arr[$key] = "$value like '%$search%'";
+        if($value=="barcode"){
+            $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search."'";
+            $result_barcode_search = sql_query($sql_barcode_search);
+            $or="";
+            while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
+                $bacode_search .= $or." `stoId` like '%".$row_barcode['stoId']."%' ";
+                $or="or";
+            }
+            if($bacode_search){
+                $sel_arr[$key] = $bacode_search;
+            }else{
+                $sel_arr[$key] = "stoId like '%$search%'";
+            }
+        }else{
+            $sel_arr[$key] = "$value like '%$search%'";
+        }
     }
 
     $where[] = "(".implode(' or ', $sel_arr).")";

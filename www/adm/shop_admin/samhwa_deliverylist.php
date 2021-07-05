@@ -181,6 +181,7 @@ if( function_exists('pg_setting_check') ){
             <option value="od_b_hp" <?php echo get_selected($sel_field, 'od_b_hp'); ?>>받는분핸드폰</option>
             <option value="od_deposit_name" <?php echo get_selected($sel_field, 'od_deposit_name'); ?>>입금자</option>
             <option value="ct_delivery_num" <?php echo get_selected($sel_field, 'ct_delivery_num'); ?>>운송장번호</option>
+            <option value="barcode" <?php echo get_selected($sel_field, 'barcode'); ?>>바코드</option>
           </select>
           <input type="text" name="search" value="<?php echo $search; ?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
           , 추가 검색어

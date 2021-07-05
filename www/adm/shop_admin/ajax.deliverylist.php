@@ -29,8 +29,23 @@ $od_coupon = preg_replace('/[^0-9a-z]/i', '', $od_coupon);
 
 $sql_search = "";
 if ($search != "") {
-  if ($sel_field != "") {
-    $where[] = " $sel_field like '%$search%' ";
+  $search = trim($search);
+  if($sel_field=="barcode"){
+      $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search."'";
+      $result_barcode_search = sql_query($sql_barcode_search);
+      $or="";
+      while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
+          $bacode_search .= $or." `stoId` like '%".$row_barcode['stoId']."%' ";
+          $or="or";
+      }
+      $where[] = '('.$bacode_search.')';
+  }else{
+      if ($sel_field != "" && $sel_field != "od_all") {
+          $where[] = " $sel_field like '%$search%' ";
+      }
+  }
+  if ($save_search != $search) {
+      // $page = 1;
   }
 }
 
