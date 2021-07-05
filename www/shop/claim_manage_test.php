@@ -28,6 +28,7 @@ function parse_pen_type($penType, $penRate) {
     case 0:
       if($penType === '의료')
         $penTypeCd = '04'; // 기초 0%
+      break;
   }
 
   return $penTypeCd;

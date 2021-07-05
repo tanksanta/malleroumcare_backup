@@ -75,13 +75,51 @@ if($penId) {
 $eform_query = sql_query("
   SELECT
     MIN(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d')) as start_date,
-    SUM(`it_price`) as total_price,
-    SUM(`it_price_pen`) as total_price_pen,
-    (SUM(`it_price`) - SUM(`it_price_pen`)) as total_price_ent,
+    SUM(
+      CASE WHEN gubun = '01' AND STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <> '$selected_month'
+      THEN (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1)
+      ELSE `it_price` END
+    ) as total_price,
+    SUM(
+      CASE WHEN gubun = '01' AND STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <> '$selected_month'
+      THEN
+        TRUNCATE(CASE
+          WHEN penTypeCd = '01'
+          THEN 0.09
+          WHEN penTypeCd = '02' or penTypeCd = '03'
+          THEN 0.06
+          WHEN penTypeCd = '04'
+          THEN 0
+          ELSE 0.15
+        END * (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1), -1)
+      ELSE `it_price_pen` END
+    ) as total_price_pen,
+    (
+      SUM(
+        CASE WHEN gubun = '01' AND STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <> '$selected_month'
+        THEN (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1)
+        ELSE `it_price` END
+      )
+      -
+      SUM(
+        CASE WHEN gubun = '01' AND STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <> '$selected_month'
+        THEN
+          TRUNCATE(CASE
+            WHEN penTypeCd = '01'
+            THEN 0.09
+            WHEN penTypeCd = '02' or penTypeCd = '03'
+            THEN 0.06
+            WHEN penTypeCd = '04'
+            THEN 0
+            ELSE 0.15
+          END * (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1), -1)
+        ELSE `it_price_pen` END
+      )
+    ) as total_price_ent,
     penId, penNm, penLtmNum, penRecGraCd, penRecGraNm, penTypeCd, penTypeNm, penBirth
-  FROM `eform_document` a
-  LEFT JOIN `eform_document_item` b
-  ON a.dc_id = b.dc_id
+  FROM
+    `eform_document` a
+    LEFT JOIN `eform_document_item` b ON a.dc_id = b.dc_id
   WHERE
     entId = '$entId'
     AND dc_status = '2'
@@ -96,10 +134,9 @@ $eform_query = sql_query("
       (
         gubun = '01' AND
         (
-          STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') = '$selected_month'
-          -- (STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <= '$selected_month')
-          -- AND
-          -- (STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d') >= '$selected_month')
+          (STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <= '$selected_month')
+          AND
+          (STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d') >= '$selected_month')
         )
       )
     )
