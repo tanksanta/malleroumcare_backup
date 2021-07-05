@@ -146,6 +146,9 @@ $flist = apms_form(1,0);
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
     <span class="btn_ov01"><span class="ov_txt">등록된 상품</span><span class="ov_num"> <?php echo $total_count; ?>건</span></span>
+    <div class="right">
+        <button id="itemexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">엑셀다운로드</button>
+    </div>
 </div>
 
 <form name="flist" class="local_sch01 local_sch">
@@ -476,6 +479,10 @@ $it = sql_fetch($sql);
 ?>
 
 <script>
+
+$("#itemexcel").click(function() {
+    $(location).attr('href',"./excel_item.php");
+});
 
 <?php if ($api_it_id) { ?>
 $(".banner_or_img").addClass("sit_wimg");
