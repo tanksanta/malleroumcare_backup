@@ -21,6 +21,9 @@ else
 if (get_cart_count($tmp_cart_id) == 0)// 장바구니에 담기
   alert('장바구니가 비어 있습니다.\\n\\n이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다.', G5_SHOP_URL.'/cart.php');
 
+if (!$od_b_hp)
+  alert('받으시는 분의 핸드폰 번호를 입력해주세요.');
+
 $it_ids = array();
 $productList = [];
 $productList2 = [];

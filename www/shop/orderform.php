@@ -1443,10 +1443,13 @@ if($is_mobile_order && $default['de_samsung_pay_use'] ){   //삼성페이 사용
 
     }
 
+    var od_b_hp = document.getElementById('od_b_hp');
+    if(!od_b_hp.value) {
+      alert('받으시는 분의 휴대폰 번호를 입력해주세요.'); return false;
+    }
+
     /* 210303 수급자주문 시 체크 */
     if($(".detail-tab ul li.on").attr("data-type") == "order_pen"){
-      var od_b_hp = document.getElementById('od_b_hp');
-      if(!od_b_hp.value){ alert('휴대폰번호를 입력해주세요.'); return false;} 
 
       if(!$("#penId").val()){
         alert("수급자 선택 후 주문이 가능합니다.");
