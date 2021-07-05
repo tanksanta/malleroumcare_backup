@@ -193,7 +193,7 @@ label {
         </th>
     </tr>
       <tr>
-        <th scope="row"><label for="mb_manager">영업당당자<?php echo $sound_only ?></label></th>
+        <th scope="row"><label for="mb_manager">영업담당자<?php echo $sound_only ?></label></th>
         <td>
         <select name="mb_manager" id="mb_manager">
             <?php
