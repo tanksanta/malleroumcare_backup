@@ -27,10 +27,6 @@ include_once('./_common.php');
   font-weight:bold;
 }
 
-.barcode_add {
-  display:none !important;
-}
-
 #web-barcode {
   display: none;
   position: fixed;
