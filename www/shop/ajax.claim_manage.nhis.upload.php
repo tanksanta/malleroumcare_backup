@@ -51,6 +51,11 @@ if($file = $_FILES['nhisfile']['tmp_name']) {
   $reader->setOutputEncoding('UTF-8');
   $reader->read($file);
 
+  $sheet_year = $reader->sheets[0]['cells'][2][17];
+  $sheet_month = $reader->sheets[0]['cells'][2][20];
+  if($selected_month != "{$sheet_year}-{$sheet_month}-01");
+    json_response(400, '현재 선택한 달('.date('Y년 m월', strtotime($selected_month)).')의 건보자료가 아닙니다.');
+
   $sheets_count = count($reader->sheets);
 
   for($i = 0; $i < $sheets_count; $i++) {
@@ -58,7 +63,7 @@ if($file = $_FILES['nhisfile']['tmp_name']) {
     $num_rows = $sheet['numRows'];
 
     // 값이 비어있으면 넘김
-    if($row[3] === '') continue;
+    if($sheet['cells'][$i == 0 ? 6 : 2][3] === '') continue;
 
     for($r = ($i == 0 ? 6 : 2); $r < $num_rows; $r++) {
       $row = $sheet['cells'][$r];
