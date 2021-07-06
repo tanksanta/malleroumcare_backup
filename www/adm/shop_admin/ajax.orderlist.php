@@ -542,9 +542,16 @@ foreach($orderlist as $order) {
     }else{
         $ct_count="";
     }
-    
-    $ct_price =number_format($result_ct['ct_price']*$result_ct['ct_qty']+$result_ct['ct_sendcost']-$result_ct['ct_discount']);//가격
-    if($result_ct['ct_status']=="보유재고등록"||$result_ct['ct_status']=="재고소진"){ $ct_price =$result_ct['ct_status'];}
+
+    $opt_price = 0;
+    if($result_ct['io_type'])
+      $opt_price = $result_ct['io_price'];
+    else
+      $opt_price = $result_ct['ct_price'] + $result_ct['io_price'];
+    $result_ct["opt_price"] = $opt_price;
+
+    $ct_price = number_format($opt_price*$result_ct['ct_qty']+$result_ct['ct_sendcost']-$result_ct['ct_discount']);//가격
+    if($result_ct['ct_status']=="보유재고등록"||$result_ct['ct_status']=="재고소진"){ $ct_price = $result_ct['ct_status'];}
     $ct_it_name =$result_ct['it_name'];                                                                             //상품이름
     $ct_option = ($result_ct["ct_option"] == $result_ct['it_name']) ? "" : "(".$result_ct['ct_option'].")";         //옵션
     $ct_it_name=$ct_it_name.$ct_option;                                                                             //상품이름 + 옵션
@@ -783,17 +790,27 @@ foreach($orderlist as $order) {
         }else{
             $sql_search = " where ct_status = '{$result_ct['ct_status']}' ";
         }
-        $sql = " select count(ct_id) as cnt, sum(ct_price*ct_qty) as ct_price, sum(ct_sendcost) as ct_sendcost, sum(ct_discount) as ct_discount
-                from
-                (select B.*, C.*, od_name, od_tel, od_hp, od_b_name, od_b_tel, od_b_hp, od_deposit_name, od_invoice, od_del_yn, it_admin_memo, it_maker 
-                from {$g5['g5_shop_cart_table']} B
-                left join {$g5['g5_shop_item_table']} I on I.it_id = B.it_id
-                    inner join {$g5['g5_shop_order_table']} A
-                    on B.od_id = A.od_id
-                    left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
-                    on B.mb_id = C.mb_id_temp
-                    group by B.ct_id ) as ct_id
-                $sql_search ";
+        $sql = "
+          select
+            count(ct_id) as cnt,
+            sum(
+              case
+                when io_type = 0
+                then ct_price + io_price
+                else ct_price
+              end * ct_qty
+            ) as ct_price,
+            sum(ct_sendcost) as ct_sendcost,
+            sum(ct_discount) as ct_discount
+          from
+            (select B.*, C.*, od_name, od_tel, od_hp, od_b_name, od_b_tel, od_b_hp, od_deposit_name, od_invoice, od_del_yn, it_admin_memo, it_maker 
+            from {$g5['g5_shop_cart_table']} B
+            left join {$g5['g5_shop_item_table']} I on I.it_id = B.it_id
+            inner join {$g5['g5_shop_order_table']} A on B.od_id = A.od_id
+            left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C on B.mb_id = C.mb_id_temp
+            group by B.ct_id ) as ct_id
+          $sql_search
+        ";
         $total_result = sql_fetch($sql);
         $total_result['price'] = number_format( $total_result['ct_price'] + $total_result['ct_sendcost'] - $total_result['ct_discount']);
         // print_r($sql);
