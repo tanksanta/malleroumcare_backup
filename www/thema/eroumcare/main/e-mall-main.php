@@ -323,7 +323,7 @@
 				<div class="item">
 					<a href="<?php echo G5_URL; ?>/bbs/content.php?co_id=guide">
 						<img src="<?=THEMA_URL?>/assets/img/main_footer_banner.png" alt="" class="pc_layout">
-						<img src="<?=THEMA_URL?>/assets/img/main_footer_banner_mo.jpg" alt="" class="mo_layout">
+						<img src="<?=THEMA_URL?>/assets/img/main_footer_banner_mo.png" alt="" class="mo_layout">
 					</a>
 				</div>
 			</div>

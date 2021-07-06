@@ -887,7 +887,17 @@ pre{white-space: pre-wrap;}
 .main_top_service_info .service_desc .txt_area p:nth-child(3){font-weight:bold;font-size:70px;color:#27140c;line-height: 60px;}
 .main_top_service_info .service_desc .txt_area p:nth-child(4){font-size:20px;color:#786e65; padding:10px;}
 .main_top_service_info .service_desc .service_wrap ul > li {margin-bottom:20px;float:left;width:180px;margin:10px;text-align:center;font-size:20px;color:#27140c;font-weight:bold;}
-.main_top_service_info .service_desc .service_wrap ul > li img{margin-bottom:10px;}
+.main_top_service_info .service_desc .service_wrap ul > li img{margin-bottom:10px;cursor:pointer;}
+.main_top_service_info .service_desc .service_wrap ul > li .desc_area{text-align:left;background: rgba(0,0,0,0.5);padding:100px;position:absolute;top:0;left:-50%;height: 937px;color:#fff;width:50%;transition-duration: 0.3s;}
+.main_top_service_info .service_desc .service_wrap ul > li:nth-child(1):hover .desc_area{left:0;}
+.main_top_service_info .service_desc .service_wrap ul > li:nth-child(2):hover .desc_area{left:0;}
+.main_top_service_info .service_desc .service_wrap ul > li:nth-child(3):hover .desc_area{left:0;}
+.main_top_service_info .service_desc .service_wrap ul > li:nth-child(4):hover .desc_area{left:0;}
+.main_top_service_info .service_desc .service_wrap ul > li:nth-child(5):hover .desc_area{left:0;}
+.main_top_service_info .service_desc .service_wrap ul > li:nth-child(6):hover .desc_area{left:0;}
+.main_top_service_info .service_desc .service_wrap ul > li .desc_area:before{content: ' ';background: #fff;width:40px;height: 5px;display:inline-block;margin-bottom:30px;}
+.main_top_service_info .service_desc .service_wrap ul > li .desc_area p{font-weight:100;line-height:36px;font-size:20px;}
+.main_top_service_info .service_desc .service_wrap ul > li .desc_area p.desc_tit{font-size:36px;font-weight:bold; margin-bottom:50px;}
 .main_top_service_info .service_footer{position:absolute;bottom:0;width:calc(100% - 100px);background: rgba(100,50,16,0.7);color:#fff;font-weight:bold;padding:10px 20px;right:50px;border-radius: 10px 10px 0 0;font-size:14px;text-align:right;}
 
 /* 210202 메인 추천 카테고리 */
@@ -1182,7 +1192,8 @@ pre{white-space: pre-wrap;}
 }
 
 @media (max-width: 960px){
-	
+	.main_top_service_info .service_desc .service_wrap ul > li .desc_area{display: none;}
+	.main_top_service_info .service_desc .txt_area p:nth-child(4){display:none;}
 	.is-pc .at-body{padding:0 10px}
 	.mo_menu{padding:0 10px}
 	
