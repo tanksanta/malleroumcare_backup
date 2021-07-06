@@ -119,16 +119,26 @@ foreach($pen_arr as $pen) {
     $pen['total_price_pen'],
     $pen['total_price_ent']
   );
-  $values[] = '('.implode(', ', $val).')';
+  $values[] = "('".implode("', '", $val)."')";
 }
 
-sql_query(
+$result = sql_query(
   "
   insert into `claim_nhis_content`
     (cu_id, penType, penNm, penLtmNum, penRecGraNm, penRate, penTypeCd, penTypeNm, start_date, total_price, total_price_pen, total_price_ent)
   values
   ".implode(', ', $values)
 );
+
+if(!$result) {
+  sql_query("DELETE FROM `claim_nhis_upload` WHERE cu_id = '$cu_id'");
+
+  json_response(500, '업로드에 실패했습니다.', "
+  insert into `claim_nhis_content`
+    (cu_id, penType, penNm, penLtmNum, penRecGraNm, penRate, penTypeCd, penTypeNm, start_date, total_price, total_price_pen, total_price_ent)
+  values
+  ".implode(', ', $values));
+}
 
 json_response(200, 'OK');
 ?>
