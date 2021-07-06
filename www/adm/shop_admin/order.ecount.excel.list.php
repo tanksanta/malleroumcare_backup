@@ -75,7 +75,11 @@
 
     //할인적용 단가
     if($od['od_cart_price']){
-      $price_d = ($it['ct_price']*$it["ct_qty"]-$it['ct_discount'])/$it["ct_qty"];
+      if($it['io_type'])
+        $opt_price = $it['io_price'];
+      else
+        $opt_price = $it['ct_price'] + $it['io_price'];
+      $price_d = ($opt_price*$it["ct_qty"]-$it['ct_discount'])/$it["ct_qty"];
     }
     //영세 과세 구분
     $sql_taxInfo = 'select `it_taxInfo` from `g5_shop_item` where `it_id` = "'.$it['it_id'].'"';
@@ -107,13 +111,6 @@
     $sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
     $result_manager = sql_fetch($sql_manager);
     $od_sales_manager = get_member($result_manager['mb_manager']);
-    
-    if($it['io_type'])
-      $opt_price = $it['io_price'];
-    else
-      $opt_price = $it['ct_price'] + $it['io_price'];
-
-    $it["opt_price"] = $opt_price;
 
     $thezone_code = $it['io_thezone2'] ?: $it['io_thezone'] ?: $it['it_thezone2'];
 
