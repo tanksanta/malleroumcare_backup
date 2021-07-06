@@ -8,7 +8,7 @@ if(!$is_member){
 }
 
 if(!$redirect)
-    $redirect = G5_SHOP_URL;
+    $redirect = G5_URL;
 
 $send_data = [];
 $send_data['usrId'] = $member['mb_id'];
