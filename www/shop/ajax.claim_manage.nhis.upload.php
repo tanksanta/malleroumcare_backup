@@ -133,11 +133,7 @@ $result = sql_query(
 if(!$result) {
   sql_query("DELETE FROM `claim_nhis_upload` WHERE cu_id = '$cu_id'");
 
-  json_response(500, '업로드에 실패했습니다.', "
-  insert into `claim_nhis_content`
-    (cu_id, penType, penNm, penLtmNum, penRecGraNm, penRate, penTypeCd, penTypeNm, start_date, total_price, total_price_pen, total_price_ent)
-  values
-  ".implode(', ', $values));
+  json_response(500, '업로드에 실패했습니다.');
 }
 
 json_response(200, 'OK');
