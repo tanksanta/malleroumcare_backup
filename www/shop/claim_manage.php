@@ -171,7 +171,7 @@ $eform_query = sql_query("
       )
     )
   GROUP BY `penId`, `penTypeCd`
-  ORDER BY `penNm` ASC
+  ORDER BY `penNm` ASC, start_date asc
 ");
 
 $cl_query = sql_query("SELECT * FROM `claim_management` WHERE selected_month = '$selected_month' AND mb_id = '{$member['mb_id']}'");
@@ -205,6 +205,11 @@ for($i = 0; $row = sql_fetch_array($nhis_query); $i++) {
   $row['matched'] = false;
 
   $nhis[] = $row;
+}
+
+$upload_date = '';
+if($nhis) {
+  $upload_date = $nhis[0]['created_at'];
 }
 
 // 청구내역 배열
@@ -263,6 +268,7 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
       $row['error'] = check_match_error($row, $match);
     } else {
       // 본인부담금율 다를 때
+      # 청구내역이 두줄이면
     }
   }
   unset($match);
@@ -413,7 +419,9 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
     </form>
   </div>
   <div class="r_btn_area">
-    <!--<span>마지막 업데이트 : 2021-03-01</span>-->
+    <?php if($upload_date) { ?>
+    <span>마지막 업데이트 : <?=date('Y-m-d', strtotime($upload_date))?></span>
+    <?php } ?>
     <a href="#" id="btn_nhis" class="btn_nhis" data-remodal-target="modal">건보자료 업로드</a>
   </div>
   <div class="list_box">
