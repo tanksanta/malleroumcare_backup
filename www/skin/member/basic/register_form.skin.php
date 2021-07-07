@@ -227,17 +227,18 @@ add_javascript(G5_POSTCODE_JS, 0);
 				</div>
 			</div>
             
-      <div class="form-group has-feedback">
-				<label class="col-sm-2 control-label" for="mb_giup_bupjong"><b>업종</b><strong class="sound_only">필수</strong></label>
-				<div class="col-sm-3">
-					<input type="text" id="mb_giup_bupjong" name="mb_giup_bupjong" value="<?php echo get_text($member['mb_giup_bupjong']) ?>" class="form-control input-sm" size="10" >
-					<div class="h15 hidden-lg hidden-md hidden-sm"></div>
-				</div>
-			</div>
+     
       <div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_giup_buptae"><b>업태</b><strong class="sound_only">필수</strong></label>
 				<div class="col-sm-3">
 					<input type="text" id="mb_giup_buptae" name="mb_giup_buptae" value="<?php echo get_text($member['mb_giup_buptae']) ?>" class="form-control input-sm" size="10" >
+					<div class="h15 hidden-lg hidden-md hidden-sm"></div>
+				</div>
+			</div>
+			 <div class="form-group has-feedback">
+				<label class="col-sm-2 control-label" for="mb_giup_bupjong"><b>종목</b><strong class="sound_only">필수</strong></label>
+				<div class="col-sm-3">
+					<input type="text" id="mb_giup_bupjong" name="mb_giup_bupjong" value="<?php echo get_text($member['mb_giup_bupjong']) ?>" class="form-control input-sm" size="10" >
 					<div class="h15 hidden-lg hidden-md hidden-sm"></div>
 				</div>
 			</div>

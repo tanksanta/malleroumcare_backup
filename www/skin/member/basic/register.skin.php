@@ -10,7 +10,7 @@
     
 </style>
 <div class="alert alert-info" role="alert">
-<div class="info_box"><b>복지용구사업소 회원가입</b></div>
+<div class="info_box"><b>신규 회원가입</b></div>
 <form  class="fregister" name="fregister" id="fregister" action="<?php echo G5_BBS_URL ?>/register_form.php" onsubmit="return fregister_submit(this);" method="POST" autocomplete="off" class="form" role="form">
 <input type="hidden" name="pim" value="<?php echo $pim;?>">
 	<div class="panel panel-default">
