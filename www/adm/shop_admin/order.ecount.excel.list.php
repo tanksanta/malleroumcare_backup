@@ -60,13 +60,13 @@
         continue;
       }
       #현재 바코드 -1이 전바코드와 같지않음
-      if((int)($barcode2[$y]-1) !== (int)$barcode2[$y-1]){
+      if(intval($barcode2[$y])-1 !== intval($barcode2[$y-1])){
         $barcode_string .= ",".$barcode2[$y];
       }
       #현재 바코드 -1이 전바코드와 같음
-      if((int)($barcode2[$y]-1) == (int)($barcode2[$y-1])){
+      if(intval($barcode2[$y])-1 == intval($barcode2[$y-1])){
         //다음번이 연속되지 않을 경우
-        if((int)($barcode2[$y]+1) !== (int)$barcode2[$y+1]){
+        if(intval($barcode2[$y])+1 !== intval($barcode2[$y+1])){
           $barcode_string .= "-".$barcode2[$y];
         }
       }
