@@ -352,15 +352,10 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
   }
 }
 
-// pagenation
-$total_count = sql_num_rows($eform_query);
-$page_rows = $config['cf_page_rows'];
-$total_page = ceil($total_count / $page_rows); // 전체 페이지 계산
-if ($page < 1) $page = 1;
-$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
-
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/remodal/remodal.css">', 11);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/remodal/remodal-default-theme.css">', 12);
+add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datatables.min.css">', 13);
+add_javascript('<script src="'.G5_PLUGIN_URL.'/DataTables/datatables.min.js"></script>', 9);
 add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
 ?>
 <section class="wrap">
@@ -423,48 +418,40 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
   </div>
   <div class="list_box">
     <div class="table_box">
-      <table>
-         <tr>
-           <th>No.</th>
-           <th>수급자 정보</th>
-           <th>급여시작일</th>
-           <th>급여비용총액</th>
-           <th>본인부담금</th>
-           <th>청구액</th>
-           <th>검증상태</th>
-           <!--<th>금액변경</th>-->
-         </tr>
-        <?php
-        if(!$claims) {
-        ?>
-        <tr>
-          <td colspan="7">청구내역이 없습니다.</td>
-        </tr>
-        <?php
-        }
-        $i = 1;
-        foreach($claims as $row) {
-          $index = $from_record + ($i++);
-        ?>
-        <tr>
-          <td><?=$index?></td>
-          <td><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></td>
-          <td class="text_c start_date" data-orig="<?=$row['orig']['start_date']?>"><?=$row['start_date']?></td>
-          <td class="text_r total_price" data-orig="<?=$row['orig']['total_price']?>"><?=number_format($row['total_price'])?>원</td>
-          <td class="text_r total_price_pen" data-orig="<?=$row['orig']['total_price_pen']?>"><?=number_format($row['total_price_pen'])?>원</td>
-          <td class="text_r total_price_ent" data-orig="<?=$row['orig']['total_price_ent']?>"><?=number_format($row['total_price_ent'])?>원</td>
-          <td class="text_c status" data-status="<?=$row['status']?>"><?=$row['status']?></td>
-           <!--<td class="text_c">
-             <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
-          </td>-->
-        </tr>
-        <?php } ?>
+      <table id="table_claim">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>수급자 정보</th>
+            <th>급여시작일</th>
+            <th>급여비용총액</th>
+            <th>본인부담금</th>
+            <th>청구액</th>
+            <th>검증상태</th>
+            <!--<th>금액변경</th>-->
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          $i = 1;
+          foreach($claims as $row) {
+            $index = $i++;
+          ?>
+          <tr>
+            <td><?=$index?></td>
+            <td><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></td>
+            <td class="text_c start_date" data-orig="<?=$row['orig']['start_date']?>"><?=$row['start_date']?></td>
+            <td class="text_r total_price" data-orig="<?=$row['orig']['total_price']?>"><?=number_format($row['total_price'])?>원</td>
+            <td class="text_r total_price_pen" data-orig="<?=$row['orig']['total_price_pen']?>"><?=number_format($row['total_price_pen'])?>원</td>
+            <td class="text_r total_price_ent" data-orig="<?=$row['orig']['total_price_ent']?>"><?=number_format($row['total_price_ent'])?>원</td>
+            <td class="text_c status" data-status="<?=$row['status']?>"><?=$row['status']?></td>
+            <!--<td class="text_c">
+              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
+            </td>-->
+          </tr>
+          <?php } ?>
+        </tbody>
       </table>
-    </div>
-    <div class="row" style="margin:20px 0 0 0">
-      <div class="r_btn_area">
-        <a href="./claim_manage_excel.php?selected_month=<?=$selected_month?>&searchtype=<?=$searchtype?>&search=<?=$search?>&page=<?=$page?><?=$penId ? "&penId=$penId" : ''?>">엑셀다운로드</a>
-      </div>
     </div>
 
     <?php if(!$where) { # 검색결과 보여줄땐 숨김 ?>
@@ -472,41 +459,40 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
       건강관리공단 미 매칭 자료 
     </div>
     <div class="table_box">
-      <table>
-        <tr>
-          <th>No.</th>
-          <th>수급자 정보</th>
-          <th>급여시작일</th>
-          <th>급여비용총액</th>
-          <th>본인부담금</th>
-          <th>청구액</th>
-          <th>검증상태</th>
-        </tr>
-        <?php
-        $i = 1;
-        for($n = 0; $n < count($nhis); $n++) {
-          $nh = $nhis[$n];
-          if($nh['matched'] == false) {
-            $index = $i++;
-        ?>
-        <tr>
-          <td><?=$index?></td>
-          <td><?="{$nh['penNm']}({$nh['penLtmNum']} / {$nh['penRecGraNm']} / {$nh['penTypeNm']})"?></td>
-          <td class="text_c"><?=$nh['start_date']?></td>
-          <td class="text_r"><?=number_format($nh['total_price'])?>원</td>
-          <td class="text_r"><?=number_format($nh['total_price_pen'])?></td>
-          <td class="text_r"><?=number_format($nh['total_price_ent'])?></td>
-          <td class="text_c text_gray">미매칭</td>
-        </tr>
-        <?php
+      <table id="table_unmatched">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>수급자 정보</th>
+            <th>급여시작일</th>
+            <th>급여비용총액</th>
+            <th>본인부담금</th>
+            <th>청구액</th>
+            <th>검증상태</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          $i = 1;
+          for($n = 0; $n < count($nhis); $n++) {
+            $nh = $nhis[$n];
+            if($nh['matched'] == false) {
+              $index = $i++;
+          ?>
+          <tr>
+            <td><?=$index?></td>
+            <td><?="{$nh['penNm']}({$nh['penLtmNum']} / {$nh['penRecGraNm']} / {$nh['penTypeNm']})"?></td>
+            <td class="text_c"><?=$nh['start_date']?></td>
+            <td class="text_r"><?=number_format($nh['total_price'])?>원</td>
+            <td class="text_r"><?=number_format($nh['total_price_pen'])?></td>
+            <td class="text_r"><?=number_format($nh['total_price_ent'])?></td>
+            <td class="text_c text_gray">미매칭</td>
+          </tr>
+          <?php
+            }
           }
-        }
-        ?>
-        <?php if(!count($nhis)) { ?>
-        <tr>
-          <td colspan="7">미 매칭 자료가 없습니다.</td>
-        </tr>
-        <?php } ?>
+          ?>
+        </tbody>
       </table>
     </div>
     <?php } ?>
@@ -531,6 +517,51 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
 
 <script>
 $(function() {
+  var dt_option = {
+    dom: 'rt<"bottom"p><"clear">',
+    drawCallback: function() {
+      var $api = this.api();
+      var pages = $api.page.info().pages;
+      if(pages <= 1) {
+        console.log()
+        this.parent().find('.bottom').css('display','none');
+      }
+    },
+    info: false,
+    lengthChange: false,
+    searching: false,
+    language: {
+      info: "_PAGE_ 페이지 ( 총 _PAGES_ 페이지 )",
+      infoEmpty: '',
+      emptyTable: '내역이 없습니다.',
+      paginate: {
+        first: '«',
+        previous: '‹',
+        next: '›',
+        last: '»'
+      },
+      aria: {
+        paginate: {
+          first: '처음',
+          previous: '이전',
+          next: '다음',
+          last: '마지막'
+        }
+      }
+    }
+  };
+
+  $('#table_unmatched').DataTable(dt_option);
+  dt_option.dom = 'rt<"#excel_row"><"bottom"p><"clear">';
+  $('#table_claim').DataTable(dt_option);
+  $('#excel_row').html('\
+    <div class="row" style="margin:20px 0 0 0">\
+      <div class="r_btn_area">\
+        <a href="./claim_manage_excel.php?selected_month=<?=$selected_month?>&searchtype=<?=$searchtype?>&search=<?=$search?><?=$penId ? "&penId=$penId" : ''?>">엑셀다운로드</a>\
+      </div>\
+    </div>\
+  ');
+
   $('#form_nhis').on('submit', function(e) {
     e.preventDefault();
     <?php if(!$is_development) { ?>
@@ -561,6 +592,9 @@ $(function() {
   <div></div>
 </div>
 <style>
+.table_box .row { margin: 0; }
+.table_box .clear { clear: both; }
+
 td.status {color: #bbb;}
 td.status[data-status="정상"] {color: #333;}
 td.status[data-status="오류"] {color: #ff0000;}
