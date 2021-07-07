@@ -180,6 +180,33 @@ while($row = sql_fetch_array($cl_query)) {
   $cl[] = $row;
 }
 
+// 건보자료 가져오기
+$nhis_query = sql_query("
+  SELECT *
+  FROM
+    (
+      SELECT *
+      FROM
+        `claim_nhis_upload`
+      WHERE
+        mb_id = '{$member['mb_id']}' AND
+        selected_month = '{$selected_month}'
+      ORDER BY created_at DESC
+      LIMIT 1
+    ) u
+    LEFT JOIN `claim_nhis_content` c ON u.cu_id = c.cu_id
+  ORDER BY c.cc_id ASC
+");
+
+$nhis = [];
+for($i = 0; $row = sql_fetch_array($nhis_query); $i++) {
+  # 청구내역에 매치되는 수급자 있는지 체크할 용도로 사용할 변수
+  # matched = false 인 값들은 미 매칭 자료에 뿌려줌
+  $row['matched'] = false;
+
+  $nhis[] = $row;
+}
+
 // 청구내역 배열
 $claims = [];
 for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
@@ -187,13 +214,13 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
   if(strtotime($row['start_date']) < strtotime($selected_month))
     $row['start_date'] = $selected_month;
   
-  $row['cl_status'] = '0';
-
   $row['orig'] = array();
   $row['orig']['start_date'] = $row['start_date'];
   $row['orig']['total_price'] = $row['total_price'];
   $row['orig']['total_price_pen'] = $row['total_price_pen'];
   $row['orig']['total_price_ent'] = $row['total_price_ent'];
+
+  $row['cl_status'] = '0';
 
   foreach($cl as $val) {
     if
@@ -212,7 +239,76 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
       $row['total_price_ent'] = $val['total_price_ent'];
     }
   }
+
+  $nhis_matched = [];
+  for($n = 0; $n < count($nhis); $n++) {
+    if (
+      ($nhis[$n]['penNm'] === $row['penNm']) &&
+      (substr($nhis[$n]['penLtmNum'], 0, 7) === substr($row['penLtmNum'], 0, 7))
+    ) {
+      $nhis_matched[] = &$nhis[$n];
+    }
+  }
+
+  $row['match'] = null;
+  $row['status'] = '대기';
+  foreach($nhis_matched as &$match) {
+    // 이미 매칭된 자료면 넘어감
+    if($match['matched'] == true) continue;
+
+    if($match['penTypeCd'] == $row['penTypeCd']) {
+      // 본인부담금율 같음
+      $match['matched'] = true;
+      $row['match'] = $match;
+      $row['error'] = check_match_error($row, $match);
+    } else {
+      // 본인부담금율 다를 때
+    }
+  }
+  unset($match);
+
+  if($row['match']) {
+    if($row['error'])
+      $row['status'] = '오류';
+    else if($row['cl_status'])
+      $row['status'] = '변경완료';
+    else
+      $row['status'] = '정상';
+  }
+  
   $claims[] = $row;
+}
+
+function check_match_error($row, $match) {
+  $error = [];
+
+  if(
+    $row['penTypeCd'] != $match['penTypeCd'] ||
+    $row['penRecGraNm'] != $match['penRecGraNm']
+  )
+    $error[] = 'pen';
+  
+  if(
+    $row['start_date'] != $match['start_date']
+  )
+    $error[] = 'start_date';
+  
+  if(
+    $row['total_price'] != $match['total_price']
+  )
+    $error[] = 'total_price';
+  
+  if(
+    $row['total_price_pen'] != $match['total_price_pen']
+  )
+    $error[] = 'total_price_pen';
+  
+  if(
+    $row['total_price_ent'] != $match['total_price_ent']
+  )
+    $error[] = 'total_price_ent';
+  
+  return $error;
 }
 
 $cur_year = intval(date('Y'));
@@ -352,12 +448,12 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
         ?>
         <tr>
           <td><?=$index?></td>
-           <td><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></td>
-           <td class="text_c start_date" data-orig="<?=$row['orig']['start_date']?>"><?=$row['start_date']?></td>
-           <td class="text_r total_price" data-orig="<?=$row['orig']['total_price']?>"><?=number_format($row['total_price'])?>원</td>
-           <td class="text_r total_price_pen" data-orig="<?=$row['orig']['total_price_pen']?>"><?=number_format($row['total_price_pen'])?>원</td>
-           <td class="text_r total_price_ent" data-orig="<?=$row['orig']['total_price_ent']?>"><?=number_format($row['total_price_ent'])?>원</td>
-           <td class="text_c status" data-status="<?=$row['cl_status']?>"><?=($row['cl_status'] == '0' ? '대기' : '변경')?></td>
+          <td><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></td>
+          <td class="text_c start_date" data-orig="<?=$row['orig']['start_date']?>"><?=$row['start_date']?></td>
+          <td class="text_r total_price" data-orig="<?=$row['orig']['total_price']?>"><?=number_format($row['total_price'])?>원</td>
+          <td class="text_r total_price_pen" data-orig="<?=$row['orig']['total_price_pen']?>"><?=number_format($row['total_price_pen'])?>원</td>
+          <td class="text_r total_price_ent" data-orig="<?=$row['orig']['total_price_ent']?>"><?=number_format($row['total_price_ent'])?>원</td>
+          <td class="text_c status" data-status="<?=$row['status']?>"><?=$row['status']?></td>
            <!--<td class="text_c">
              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
           </td>-->
@@ -371,44 +467,49 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
       </div>
     </div>
 
-      <div class="subtit">
-        건강관리공단 미 매칭 자료 
-      </div>
-      <div class="table_box">
-        <table>
-          <tr>
-            <th>No.</th>
-            <th>수급자 정보</th>
-            <th>급여시작일</th>
-            <th>급여비용총액</th>
-            <th>본인부담금</th>
-            <th>청구액</th>
-            <th>검증상태</th>
-          </tr>
-          <!--<tr>
-            <td>2</td>
-            <td>홍길동(L2233***** / 3등급 /기초0%)</td>
-            <td class="text_c">2021-02-02</td>
-            <td class="text_r">200,000원</td>
-            <td class="text_r">10,000원</td>
-            <td class="text_r">210,000원</td>
-            <td class="text_c text_gray">미매칭</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>홍길동(L2233***** / 3등급 /기초0%)</td>
-            <td class="text_c">2021-02-02</td>
-            <td class="text_r">200,000원</td>
-            <td class="text_r">10,000원</td>
-            <td class="text_r">210,000원</td>
-            <td class="text_c text_gray">미매칭</td>
-          </tr>-->
-          <tr>
-            <td colspan="7">미 매칭 자료가 없습니다.</td>
-          </tr>
-        </table>
-      </div>
+    <?php if(!$where) { # 검색결과 보여줄땐 숨김 ?>
+    <div class="subtit">
+      건강관리공단 미 매칭 자료 
     </div>
+    <div class="table_box">
+      <table>
+        <tr>
+          <th>No.</th>
+          <th>수급자 정보</th>
+          <th>급여시작일</th>
+          <th>급여비용총액</th>
+          <th>본인부담금</th>
+          <th>청구액</th>
+          <th>검증상태</th>
+        </tr>
+        <?php
+        $i = 1;
+        for($n = 0; $n < count($nhis); $n++) {
+          $nh = $nhis[$n];
+          if($nh['matched'] == false) {
+            $index = $i++;
+        ?>
+        <tr>
+          <td><?=$index?></td>
+          <td><?="{$nh['penNm']}({$nh['penLtmNum']} / {$nh['penRecGraNm']} / {$nh['penTypeNm']})"?></td>
+          <td class="text_c"><?=$nh['start_date']?></td>
+          <td class="text_r"><?=number_format($nh['total_price'])?>원</td>
+          <td class="text_r"><?=number_format($nh['total_price_pen'])?></td>
+          <td class="text_r"><?=number_format($nh['total_price_ent'])?></td>
+          <td class="text_c text_gray">미매칭</td>
+        </tr>
+        <?php
+          }
+        }
+        ?>
+        <?php if(!count($nhis)) { ?>
+        <tr>
+          <td colspan="7">미 매칭 자료가 없습니다.</td>
+        </tr>
+        <?php } ?>
+      </table>
+    </div>
+    <?php } ?>
   </div>
 </section>
 
@@ -460,8 +561,10 @@ $(function() {
   <div></div>
 </div>
 <style>
-td.status {color: #333;}
-td.status[data-status="0"] {color: #bbb;}
+td.status {color: #bbb;}
+td.status[data-status="정상"] {color: #333;}
+td.status[data-status="오류"] {color: #ff0000;}
+td.status[data-status="변경완료"] {color: #a9b329;}
 
 #popupEdit { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 #popupEdit > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
