@@ -821,7 +821,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
       <script>
         //엔터키 막기
-        $(document).keypress(function(e) { if (e.keyCode == 13) e.preventDefault(); });
+        // $(document).keypress(function(e) { if (e.keyCode == 13) e.preventDefault(); });
         
                 // 취급상품 등록 20210324 쇼핑몰기본 기능작업
                 function item_wish(f, it_id)
