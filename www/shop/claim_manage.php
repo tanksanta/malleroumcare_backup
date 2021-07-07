@@ -268,7 +268,22 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
       $row['error'] = check_match_error($row, $match);
     } else {
       // 본인부담금율 다를 때
-      # 청구내역이 두줄이면
+      if(
+        count(array_filter($nhis_matched,
+          function($nm) {
+            return $nm['matched'] == false;
+          }
+        )) > 1
+      ) {
+        # 일단 정렬순서 믿고 그냥 매칭시켜봄
+        $match['matched'] = true;
+        $row['match'] = $match;
+        $row['error'] = check_match_error($row, $match);
+      } else {
+        $match['matched'] = true;
+        $row['match'] = $match;
+        $row['error'] = check_match_error($row, $match);
+      }
     }
   }
   unset($match);
@@ -406,7 +421,7 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
       
       <?php if(!$penId) { ?>
       <div class="search_box">
-        <select name="searchtype" id="">
+        <select name="searchtype">
           <option value="penNm" <?=get_selected($searchtype, 'penNm')?>>수급자명</option>
           <option value="penLtmNum" <?=get_selected($searchtype, 'penLtmNum')?>>요양인정번호</option>
         </select>
@@ -445,14 +460,26 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
           foreach($claims as $row) {
             $index = $i++;
           ?>
-          <tr>
+          <tr class="<?=$row['error'] ? 'tr_err' : ''?>">
             <td><?=$index?></td>
-            <td><?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?></td>
-            <td class="text_c start_date" data-orig="<?=$row['orig']['start_date']?>"><?=$row['start_date']?></td>
-            <td class="text_r total_price" data-orig="<?=$row['orig']['total_price']?>"><?=number_format($row['total_price'])?>원</td>
-            <td class="text_r total_price_pen" data-orig="<?=$row['orig']['total_price_pen']?>"><?=number_format($row['total_price_pen'])?>원</td>
-            <td class="text_r total_price_ent" data-orig="<?=$row['orig']['total_price_ent']?>"><?=number_format($row['total_price_ent'])?>원</td>
-            <td class="text_c status" data-status="<?=$row['status']?>"><?=$row['status']?></td>
+            <td>
+              <?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?>
+            </td>
+            <td class="text_c start_date" data-orig="<?=$row['orig']['start_date']?>">
+              <?=$row['start_date']?>
+            </td>
+            <td class="text_r total_price" data-orig="<?=$row['orig']['total_price']?>">
+              <?=number_format($row['total_price'])?>원
+            </td>
+            <td class="text_r total_price_pen" data-orig="<?=$row['orig']['total_price_pen']?>">
+              <?=number_format($row['total_price_pen'])?>원
+            </td>
+            <td class="text_r total_price_ent" data-orig="<?=$row['orig']['total_price_ent']?>">
+              <?=number_format($row['total_price_ent'])?>원
+            </td>
+            <td class="text_c status" data-status="<?=$row['status']?>">
+              <?=$row['status']?>
+            </td>
             <!--<td class="text_c">
               <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
             </td>-->
@@ -603,6 +630,7 @@ $(function() {
 .table_box .row { margin: 0; }
 .table_box .clear { clear: both; }
 
+tr.tr_err { background-color: #f6f8e3; }
 td.status {color: #bbb;}
 td.status[data-status="정상"] {color: #333;}
 td.status[data-status="오류"] {color: #ff0000;}
