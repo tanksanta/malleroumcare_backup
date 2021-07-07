@@ -234,18 +234,24 @@ $(function() {
     <div class="list-more"><a href="./orderinquiry.php">목록</a></div>
   </h2>
   <div class="od_status">
-    <?php 
+    <?php
     $sql = "select *
         from g5_shop_order_cancel_request
-        where od_id = '{$od['od_id']}' and approved = 0";
-
+        where od_id = '{$od['od_id']}'";
+  
     $cancel_request_row = sql_fetch($sql);
     $info="";
     if ($cancel_request_row['request_type'] == 'cancel') {
       $info = "주문취소를 요청하셨습니다.";
+    
+      if ($cancel_request_row['approved'] == 1)
+        $info = "주문취소가 완료되었습니다.";
     }
     if ($cancel_request_row['request_type'] == 'return') {
       $info = "주문반품을 요청하셨습니다.";
+    
+      if ($cancel_request_row['approved'] == 1)
+        $info = "주문반품이 완료되었습니다.";
     }
     if(!$info) {
       if($od["od_stock_insert_yn"] == "Y") {
