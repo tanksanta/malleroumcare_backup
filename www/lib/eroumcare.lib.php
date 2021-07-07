@@ -971,13 +971,13 @@ function ct_manager_update($ct_id,$ct_manager){
     $order_member = get_member($cart['mb_id']);
     $giup_name = $order_member['mb_giup_bname'] ? "[" . $order_member['mb_giup_bname'] . "] " : "";
 
-    add_notification(
-        array(),
-        $ct_manager,
-        '신규 출고 담당자로 지정된 상품이 있습니다.',
-        $giup_name . $ct_it_name . " * " . $cart['ct_qty'] . "개",
-        // 'http://naver.com',
-    );
+    // add_notification(
+    //     array(),
+    //     $ct_manager,
+    //     '신규 출고 담당자로 지정된 상품이 있습니다.',
+    //     $giup_name . $ct_it_name . " * " . $cart['ct_qty'] . "개",
+    //     // 'http://naver.com',
+    // );
 
     $sql_ct = "UPDATE `g5_shop_cart` SET `ct_manager`='".$ct_manager."' where `ct_id` = '".$ct_id."'";
     sql_query($sql_ct);
