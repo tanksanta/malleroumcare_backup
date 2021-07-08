@@ -696,9 +696,6 @@ $(function() {
 
   $('#form_nhis').on('submit', function(e) {
     e.preventDefault();
-    <?php if(!$is_development) { ?>
-    return alert('개발 중입니다.');
-    <?php } ?>
     var fd = new FormData(document.getElementById("form_nhis"));
     fd.append('selected_month', '<?=$selected_month?>')
     $.ajax({
