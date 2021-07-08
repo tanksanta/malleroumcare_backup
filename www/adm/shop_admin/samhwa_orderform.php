@@ -355,7 +355,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
             ?>
             </h2>
             <div class="right">
+                <?php if(!$od['od_penId'] && $od_status['name'] === '작성') { ?>
                 <input type="button" value="상품추가" class="btn shbtn" id="add_item">
+                <?php } ?>
                 <!--<input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
                 <!-- <?php 
                     $sql_cart ="select `ct_hide_control` from `g5_shop_cart` where `od_id` = '".$od['od_id']."'";
@@ -828,10 +830,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                     <?php
                                                     $temp_ct_step = get_step($options[$k]['ct_status']);
                                                     ?>
-                                                    <?php if ($temp_ct_step['cart_editable']) { ?>
+                                                    <?php if ($temp_ct_step['cart_editable'] && !$od['od_penId'] && $od_status['name'] === '작성') { ?>
                                                     <li class="edit_item" data-od-id="<?php echo $od_id; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>"  data-memo="<?php echo $prodMemo; ?>">수정</li>
                                                     <?php } ?>
-                                                    <?php if ($temp_ct_step['cart_deletable']) { ?>
+                                                    <?php if ($temp_ct_step['cart_deletable'] && !$od['od_penId'] && $od_status['name'] === '작성') { ?>
                                                     <li class="delete_item" data-od-id="<?php echo $od_id; ?>" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>">삭제</li>
                                                     <?php } ?>
                                                 </ul>
