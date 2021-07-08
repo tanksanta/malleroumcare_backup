@@ -502,6 +502,8 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
               <span class="text_red">
                 <?=$row['match']['start_date']?>
               </span>
+              <br>
+              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
               <?php
               }
               ?>
@@ -522,6 +524,8 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
               <span class="text_red">
                 <?=number_format($row['match']['total_price'])?>원
               </span>
+              <br>
+              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
               <?php
               }
               ?>
@@ -542,6 +546,8 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
               <span class="text_red">
                 <?=number_format($row['match']['total_price_pen'])?>원
               </span>
+              <br>
+              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
               <?php
               }
               ?>
@@ -562,6 +568,8 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
               <span class="text_red">
                 <?=number_format($row['match']['total_price_ent'])?>원
               </span>
+              <br>
+              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
               <?php
               }
               ?>
