@@ -219,11 +219,12 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
   if(strtotime($row['start_date']) < strtotime($selected_month))
     $row['start_date'] = $selected_month;
   
-  $row['orig'] = array();
-  $row['orig']['start_date'] = $row['start_date'];
-  $row['orig']['total_price'] = $row['total_price'];
-  $row['orig']['total_price_pen'] = $row['total_price_pen'];
-  $row['orig']['total_price_ent'] = $row['total_price_ent'];
+  $row['orig'] = array(
+    'start_date' => $row['start_date'],
+    'total_price' => $row['total_price'],
+    'total_price_pen' => $row['total_price_pen'],
+    'total_price_ent' => $row['total_price_ent']
+  );
 
   $row['cl_status'] = '0';
 
@@ -257,6 +258,7 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
 
   $row['match'] = null;
   $row['status'] = '대기';
+  $row['error'] = [];
   foreach($nhis_matched as &$match) {
     // 이미 매칭된 자료면 넘어감
     if($match['matched'] == true) continue;
@@ -295,6 +297,15 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
       $row['status'] = '변경완료';
     else
       $row['status'] = '정상';
+  }
+
+  $row['change'] = [];
+  if($row['status'] == '변경완료') {
+    foreach($row['orig'] as $key => $val) {
+      if($row[$key] != $val) {
+        $row['change'][] = $key;
+      }
+    }
   }
   
   $claims[] = $row;
@@ -464,20 +475,98 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
             <td><?=$index?></td>
             <td>
               <?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?>
+              <?php
+              if(in_array('pen', $row['error'])) {
+              ?>
+              <br>
+              <span class="text_red">
+                <?="{$row['penNm']}({$row['penLtmNum']} / {$row['match']['penRecGraNm']} / {$row['match']['penTypeNm']})"?>
+              </span>
+              <?php
+              }
+              ?>
             </td>
             <td class="text_c start_date" data-orig="<?=$row['orig']['start_date']?>">
-              <?=$row['start_date']?>
+              <?php
+              if(in_array('start_date', $row['change'])) {
+                echo '<span class="text_point">';
+                echo $row['start_date'];
+                echo '</span>';
+              } else {
+                echo $row['start_date'];
+              }
+              
+              if(in_array('start_date', $row['error'])) {
+              ?>
+              <br>
+              <span class="text_red">
+                <?=$row['match']['start_date']?>
+              </span>
+              <?php
+              }
+              ?>
             </td>
-            <td class="text_r total_price" data-orig="<?=$row['orig']['total_price']?>">
-              <?=number_format($row['total_price'])?>원
+            <td class="total_price" data-orig="<?=$row['orig']['total_price']?>">
+              <?php
+              if(in_array('total_price', $row['change'])) {
+                echo '<span class="text_point">';
+                echo number_format($row['total_price']).'원';
+                echo '</span>';
+              } else {
+                echo number_format($row['total_price']).'원';
+              }
+
+              if(in_array('total_price', $row['error'])) {
+              ?>
+              <br>
+              <span class="text_red">
+                <?=number_format($row['match']['total_price'])?>원
+              </span>
+              <?php
+              }
+              ?>
             </td>
-            <td class="text_r total_price_pen" data-orig="<?=$row['orig']['total_price_pen']?>">
-              <?=number_format($row['total_price_pen'])?>원
+            <td class="total_price_pen" data-orig="<?=$row['orig']['total_price_pen']?>">
+              <?php
+              if(in_array('total_price_pen', $row['change'])) {
+                echo '<span class="text_point">';
+                echo number_format($row['total_price_pen']).'원';
+                echo '</span>';
+              } else {
+                echo number_format($row['total_price_pen']).'원';
+              }
+
+              if(in_array('total_price_pen', $row['error'])) {
+              ?>
+              <br>
+              <span class="text_red">
+                <?=number_format($row['match']['total_price_pen'])?>원
+              </span>
+              <?php
+              }
+              ?>
             </td>
-            <td class="text_r total_price_ent" data-orig="<?=$row['orig']['total_price_ent']?>">
-              <?=number_format($row['total_price_ent'])?>원
+            <td class="total_price_ent" data-orig="<?=$row['orig']['total_price_ent']?>">
+              <?php
+              if(in_array('total_price_ent', $row['change'])) {
+                echo '<span class="text_point">';
+                echo number_format($row['total_price_ent']).'원';
+                echo '</span>';
+              } else {
+                echo number_format($row['total_price_ent']).'원';
+              }
+              
+              if(in_array('total_price_ent', $row['error'])) {
+              ?>
+              <br>
+              <span class="text_red">
+                <?=number_format($row['match']['total_price_ent'])?>원
+              </span>
+              <?php
+              }
+              ?>
             </td>
-            <td class="text_c status" data-status="<?=$row['status']?>">
+            <td class="status" data-status="<?=$row['status']?>">
               <?=$row['status']?>
             </td>
             <!--<td class="text_c">
@@ -517,11 +606,11 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
           <tr>
             <td><?=$index?></td>
             <td><?="{$nh['penNm']}({$nh['penLtmNum']} / {$nh['penRecGraNm']} / {$nh['penTypeNm']})"?></td>
-            <td class="text_c"><?=$nh['start_date']?></td>
-            <td class="text_r"><?=number_format($nh['total_price'])?>원</td>
-            <td class="text_r"><?=number_format($nh['total_price_pen'])?></td>
-            <td class="text_r"><?=number_format($nh['total_price_ent'])?></td>
-            <td class="text_c text_gray">미매칭</td>
+            <td><?=$nh['start_date']?></td>
+            <td><?=number_format($nh['total_price'])?>원</td>
+            <td><?=number_format($nh['total_price_pen'])?></td>
+            <td><?=number_format($nh['total_price_ent'])?></td>
+            <td class="text_gray">미매칭</td>
           </tr>
           <?php
             }
@@ -629,6 +718,7 @@ $(function() {
 <style>
 .table_box .row { margin: 0; }
 .table_box .clear { clear: both; }
+.table_box td { vertical-align: top; text-align: center; }
 
 tr.tr_err { background-color: #f6f8e3; }
 td.status {color: #bbb;}
