@@ -252,8 +252,8 @@ while($item = sql_fetch_array($items)) {
     var initialStatus = {
       customCounter: 0,
       agreement: false,
-      entConAcc01: <?=json_encode($eform["entConAcc01"])?>,
-      entConAcc02: <?=json_encode($eform["entConAcc02"])?>,
+      entConAcc01: <?=json_encode($member['mb_entConAcc01'])?>,
+      entConAcc02: <?=json_encode($member['mb_entConAcc02'])?>,
       buy: {
         items: [<?php foreach($buy as $item) { ?>
           {

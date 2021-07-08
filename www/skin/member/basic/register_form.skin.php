@@ -362,14 +362,30 @@ add_javascript(G5_POSTCODE_JS, 0);
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_entConAcc01"><b>특약사항1</b></label>
 				<div class="col-sm-8">
-					<textarea name="mb_entConAcc01" id="mb_entConAcc01" class="form-control input-sm" style="height: 80px;"><?=$member["mb_entConAcc01"]?>본 계약은 국민건강보험 노인장기요양보험 급여상품의 공급계약을 체결함에 목적이 있다.</textarea>
+					<textarea name="mb_entConAcc01" id="mb_entConAcc01" class="form-control input-sm" style="height: 80px;">
+            <?php
+            if($w) {
+              echo $member["mb_entConAcc01"];
+            } else {
+              echo '본 계약은 국민건강보험 노인장기요양보험 급여상품의 공급계약을 체결함에 목적이 있다.';
+            }
+            ?>
+          </textarea>
 				</div>
 			</div>
 			
 			<div class="form-group has-feedback">
 				<label class="col-sm-2 control-label" for="mb_entConAcc02"><b>특약사항2</b></label>
 				<div class="col-sm-8">
-					<textarea name="mb_entConAcc02" id="mb_entConAcc02" class="form-control input-sm" style="height: 80px;"><?=$member["mb_entConAcc02"]?>본 계약서에 명시되지 아니한 사항이나 의견이 상이할 때에는 상호 협의하에 해결하는 것을 원칙으로 한다.</textarea>
+					<textarea name="mb_entConAcc02" id="mb_entConAcc02" class="form-control input-sm" style="height: 80px;">
+            <?php
+            if($w) {
+              echo $member["mb_entConAcc02"];
+            } else {
+              echo '본 계약서에 명시되지 아니한 사항이나 의견이 상이할 때에는 상호 협의하에 해결하는 것을 원칙으로 한다.';
+            }
+            ?>
+          </textarea>
 				</div>
 			</div>
 		</div>
