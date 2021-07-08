@@ -13,6 +13,10 @@ if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 }
 
+if (!$od['mb_id']) {
+    alert("사업소를 먼저 선택해주세요.");
+}
+
 // 분류
 $ca_list  = '<option value="">선택</option>'.PHP_EOL;
 $sql = " select * from {$g5['g5_shop_category_table']} ";
