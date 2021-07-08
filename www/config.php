@@ -101,7 +101,8 @@ define('EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST',          'https://system
 // 회원조회1
 define('EROUMCARE_API_ENT_ACCOUNT',                              'https://system.eroumcare.com/api/ent/account');
 // 회원조회2
-define('EROUMCARE_API_ACCOUNT_ENTLOGIN',                         'https://system.eroumcare.com/api/account/entLogin');
+define('EROUMCARE_API_ACCOUNT_ENT_LOGIN',                         'https://system.eroumcare.com/api/account/entLogin');
+define('EROUMCARE_API_ACCOUNT_ENT_UPDATE',                         'https://system.eroumcare.com/api/account/entUpdate');
 
 // 카카오 디벨로퍼스 REST API 연동
 define('KAKAO_DEVELOPERS_REST_API_KEY', '7a991b6e94ba43c5d266d9aa4a2edca1');

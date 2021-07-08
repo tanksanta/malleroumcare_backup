@@ -16,6 +16,8 @@ $mb_id = $_SESSION['ss_mb_reg'];
 if($w != "u"){
 	$sendData = [];
 	$sendData["usrId"] = $mb_id;
+  $sendData["entConAcco1"] = $_POST["mb_entConAcc01"];
+  $sendData["entConAcco2"] = $_POST["mb_entConAcc02"];
 
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);
@@ -142,6 +144,8 @@ if($w != "u"){
 	$sendData["entPnum"] = $_POST["mb_hp"];
 	$sendData["entMail"] = $_POST["mb_email"];
 	$sendData["pw"] = $_POST["mb_password"];
+  $sendData["entConAcc01"] = $_POST["mb_entConAcc01"];
+  $sendData["entConAcc02"] = $_POST["mb_entConAcc02"];
 
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);
@@ -185,18 +189,18 @@ if($w != "u"){
 				mb_tel = '{$resInfo["entPnum"]}',
 				mb_entId = '{$resInfo["entId"]}',
 				mb_entNm = '{$resInfo["entNm"]}',
-				 mb_zip1 = '{$resInfo["entZip01"]}',
-				 mb_zip2 = '{$resInfo["entZip02"]}',
-				 mb_addr1 = '{$resInfo["entAddr"]}',
-				 mb_addr2 = '{$resInfo["entAddrDetail"]}',
-				 mb_giup_bnum = '{$resInfo["entCrn"]}',
-				 mb_giup_zip1 = '{$resInfo["entZip01"]}',
-				 mb_giup_zip2 = '{$resInfo["entZip02"]}',
-				 mb_giup_addr1 = '{$resInfo["entAddr"]}',
-				 mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-				 mb_email = '{$resInfo["entMail"]}',
-				 mb_entConAcc01 = '{$_POST["mb_entConAcc01"]}',
-				 mb_entConAcc02 = '{$_POST["mb_entConAcc02"]}'
+        mb_zip1 = '{$resInfo["entZip01"]}',
+        mb_zip2 = '{$resInfo["entZip02"]}',
+        mb_addr1 = '{$resInfo["entAddr"]}',
+        mb_addr2 = '{$resInfo["entAddrDetail"]}',
+        mb_giup_bnum = '{$resInfo["entCrn"]}',
+        mb_giup_zip1 = '{$resInfo["entZip01"]}',
+        mb_giup_zip2 = '{$resInfo["entZip02"]}',
+        mb_giup_addr1 = '{$resInfo["entAddr"]}',
+        mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
+        mb_email = '{$resInfo["entMail"]}',
+        mb_entConAcc01 = '{$_POST["mb_entConAcc01"]}',
+        mb_entConAcc02 = '{$_POST["mb_entConAcc02"]}'
 			WHERE mb_id = '{$resInfo["usrId"]}'
 		");
 

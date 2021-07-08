@@ -707,13 +707,13 @@ function fregisterform_submit() {
 		}
 	}
     
-  if (f.mb_password.value.length < 8 || f.mb_password.value.length > 12) {
+  if (f.mb_password.value.length < 6 || f.mb_password.value.length > 12) {
     alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
     f.mb_password.focus();
     return false;
   }
 
-  if (f.mb_password_re.value.length < 3 || f.mb_password_re.value.length > 12) {
+  if (f.mb_password_re.value.length < 6 || f.mb_password_re.value.length > 12) {
     alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
     f.mb_password_re.focus();
     return false;
@@ -885,8 +885,13 @@ function fregisterform_submit() {
   sendData.append("entAddr", $("#mb_giup_addr1").val()); //사업소 주소
   sendData.append("entAddrDetail",$("#mb_giup_addr2").val() + $("#mb_giup_addr3").val() ); //사업소 주소 상세
   sendData.append("entTaxCharger",$("#mb_giup_manager_name").val()); //담당자
+  <?php if($w) { ?>
+  sendData.append("entConAcc01",$("#mb_entConAcc01").val()); //특약사항1
+  sendData.append("entConAcc02",$("#mb_entConAcc02").val()); //특약사항2
+  <?php } else { ?>
   sendData.append("entConAcco1",$("#mb_entConAcc01").val()); //특약사항1
   sendData.append("entConAcco2",$("#mb_entConAcc02").val()); //특약사항2
+  <?php } ?>
 
   sendData.append("usrZip", $("#reg_mb_zip").val()); //관리자 우편번호
   sendData.append("usrAddr", $("#reg_mb_addr1").val());//관리자 주소
@@ -1069,7 +1074,7 @@ function chkPW(pw) {
   var pw = pw;
   var num = pw.search(/[0-9]/g);
   var eng = pw.search(/[a-z]/ig);
-  if(pw.length < 8 || pw.length > 12) {
+  if(pw.length < 6 || pw.length > 12) {
     alert("8자리 ~ 20자리 이내로 입력해주세요.");
     return false;
   } else if(pw.search(/\s/) != -1) {

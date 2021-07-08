@@ -7,7 +7,7 @@ if($_POST["mb_id"] != "admin") {
   $sendData = [];
   $sendData["usrId"] = $_POST["mb_id"];
   $sendData["pw"] = $_POST["mb_password"];
-  $res = get_eroumcare(EROUMCARE_API_ACCOUNT_ENTLOGIN, $sendData);
+  $res = get_eroumcare(EROUMCARE_API_ACCOUNT_ENT_LOGIN, $sendData);
   if($res["errorYN"] == "Y") {
     //시스템 회원 정보가 아닐시
     $mb_id       = trim($_POST['mb_id']);
@@ -95,8 +95,6 @@ if($_POST["mb_id"] != "admin") {
         mb_giup_btel = '{$resInfo["entPnum"]}',
         mb_giup_tax_email = '{$resInfo["entMail"]}',
         mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
-        mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
-        mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
         mb_giup_bname = '{$resInfo["entNm"]}',
         sealFile = '".$sealFile_name."',
         crnFile = '".$crnFile_name."',
@@ -134,8 +132,6 @@ if($_POST["mb_id"] != "admin") {
         mb_giup_btel = '{$resInfo["entPnum"]}',
         mb_giup_tax_email = '{$resInfo["entMail"]}',
         mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
-        mb_entConAcc01 = '{$resInfo["entConAcco1"]}',
-        mb_entConAcc02 = '{$resInfo["entConAcco2"]}',
         mb_giup_bname = '{$resInfo["entNm"]}',
         WHERE mb_id = '{$resInfo["usrId"]}'
       ");

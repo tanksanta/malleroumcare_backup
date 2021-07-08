@@ -90,7 +90,7 @@ if ($w == "") {
 
     if ($member['mb_password'] != $tmp_password) {
       // 비밀번호 틀릴 경우 
-      $result = api_post_call(EROUMCARE_API_ACCOUNT_ENTLOGIN, array(
+      $result = api_post_call(EROUMCARE_API_ACCOUNT_ENT_LOGIN, array(
         'usrId' => $_POST['mb_id'],
         'pw' => $_POST['mb_password']
       ));
