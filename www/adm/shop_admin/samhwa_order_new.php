@@ -13,8 +13,8 @@ $od_status = '작성';
 
 $sql = " insert {$g5['g5_shop_order_table']}
             set od_id             = '$od_id',
-                mb_id             = '{$member['mb_id']}',
-                od_pwd            = '$od_pwd',
+                mb_id             = '',
+                od_pwd            = '',
                 od_time           = '".G5_TIME_YMDHIS."',
                 od_ip             = '$REMOTE_ADDR',
                 od_settle_case    = '무통장',
@@ -34,6 +34,6 @@ $result = sql_query($sql, false);
 set_order_admin_log($od_id, '주문서 관리자 등록');
 ?>
 <script>
-    alert('생성되었습니다.');
+    alert('생성되었습니다. 생성된 주문은 반드시 회원을 선택해주세요.');
     location.href="./samhwa_orderform.php?od_id=<?php echo $od_id; ?>";
 </script>
