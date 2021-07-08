@@ -293,6 +293,9 @@ for($i=0; $i<$count; $i++) {
                     }
                 }
             }
+
+            // 임시조치: 할인금액 마이너스면 0으로 초기화
+            if($ct_discount < 0) $ct_discount = 0;
             
             $sql3 = " update {$g5['g5_shop_cart_table']}
                         set ct_qty = ct_qty + '$ct_qty',
@@ -380,6 +383,9 @@ for($i=0; $i<$count; $i++) {
                     }
                 }
             }
+
+            // 임시조치: 할인금액 마이너스면 0으로 초기화
+            if($ct_discount < 0) $ct_discount = 0;
 
 
             // 배송정보 기본설정
