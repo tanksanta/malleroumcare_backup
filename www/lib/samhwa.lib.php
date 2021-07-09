@@ -1152,7 +1152,7 @@ function samhwa_order_calc($od_id) {
     $sql = "UPDATE {$g5['g5_shop_order_table']} SET 
                 od_cart_price = '{$result['od_price']}', 
                 od_cart_discount = '{$result['ct_discount']}',
-                od_misu = {$result['od_price']} + od_send_cost + od_send_cost2 - {$result['ct_discount']} - od_cancel_price - od_cart_discount2,
+                od_misu = {$result['od_price']} + od_send_cost + od_send_cost2 - {$result['ct_discount']} - od_cancel_price - od_cart_discount2 - od_sales_discount,
                 od_send_cost = '{$sendcost}'
             WHERE od_id = '{$od_id}'";
     sql_query($sql);
@@ -1247,7 +1247,7 @@ function samhwa_get_misu($mb_id) {
     }
 
     return array(
-        'misu' => ($total_result['od_cart_price'] + $total_result['od_send_cost'] + $total_result['od_send_cost2'] - $total_result['od_cart_discount']  - $total_result['od_cart_discount2']),
+        'misu' => ($total_result['od_cart_price'] + $total_result['od_send_cost'] + $total_result['od_send_cost2'] - $total_result['od_cart_discount'] - $total_result['od_cart_discount2'] - $total_result['od_sales_discount']),
         'misu_gang' => $misu_gang_result['gang_misu'],
     );
 

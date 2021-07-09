@@ -143,7 +143,7 @@ if ( $od_release_manager ) {
 }
 
 if ( $price ) {
-    $where[] = " (o.od_cart_price + o.od_send_cost + o.od_send_cost2 - o.od_cart_discount - o.od_cart_discount2) BETWEEN '{$price_s}' AND '{$price_e}' ";
+    $where[] = " (o.od_cart_price + o.od_send_cost + o.od_send_cost2 - o.od_cart_discount - o.od_cart_discount2 - o.od_sales_discount) BETWEEN '{$price_s}' AND '{$price_e}' ";
 }
 
 /*
@@ -545,7 +545,7 @@ foreach($datas as $row) {
     }else{
         //$settleprice = $row['od_cart_price'] - $row['od_cart_discount'] - $row['od_cart_discount2']; // 할인가격
         //$settleprice = $row['od_cart_price']; // 할인전가격
-        $settleprice = $row['od_cart_price'] - $row['od_cart_discount'] - $row['od_cart_discount2'] + $row['od_send_cost'] + $row['od_send_cost2']; // 할인 + 배송가격
+        $settleprice = $row['od_cart_price'] - $row['od_cart_discount'] - $row['od_cart_discount2'] - $row['od_sales_discount'] + $row['od_send_cost'] + $row['od_send_cost2']; // 할인 + 배송가격
     }
 
     $vat_fg = 0;
@@ -660,7 +660,7 @@ foreach($datas as $row) {
         }
 
         // 추가할인
-        $price = ($row['od_cart_discount'] + $row['od_cart_discount2']) * -1;
+        $price = ($row['od_cart_discount'] + $row['od_cart_discount2'] + $row['od_sales_discount']) * -1;
         if ($price !== 0) {
             $sprice = round($price / 1.1);
             $sprice2 = round($price / 11);

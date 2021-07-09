@@ -362,7 +362,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
   $outstanding_balance = number_format($outstanding_balance['misu']);
 
   $total_result2 = sql_fetch($sql);
-  $total_balance = number_format($total_result2['od_cart_price'] + $total_result2['od_send_cost'] + $total_result2['od_send_cost2'] - $total_result2['od_cart_discount']  - $total_result2['od_cart_discount2']);
+  $total_balance = number_format($total_result2['od_cart_price'] + $total_result2['od_send_cost'] + $total_result2['od_send_cost2'] - $total_result2['od_cart_discount'] - $total_result2['od_cart_discount2'] - $total_result2['od_sales_discount']);
   ?>
   <div id="mb_info">
     <div>

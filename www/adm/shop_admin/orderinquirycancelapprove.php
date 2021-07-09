@@ -73,6 +73,7 @@ if ($cancel_request_row['request_type'] == "cancel") {
     $sql = " update {$g5['g5_shop_order_table']}
             set od_send_cost = '0',
                 od_send_cost2 = '0',
+                od_sales_discount = '0',
                 od_receipt_price = '0',
                 od_receipt_point = '0',
                 od_misu = '0',
