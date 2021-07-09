@@ -11,13 +11,23 @@ CREATE TABLE IF NOT EXISTS `claim_management` (
   -- 장기요양등급
   `penRecGraCd` varchar(255) NOT NULL default '', -- 02
   `penRecGraNm` varchar(255) NOT NULL default '', -- 2등급
+  `cl_penRecGraCd` varchar(255) NOT NULL default '', -- 02
+  `cl_penRecGraNm` varchar(255) NOT NULL default '', -- 2등급
   -- 본인부담금율
   `penTypeCd` varchar(255) NOT NULL default '', -- 02
   `penTypeNm` varchar(255) NOT NULL default '', -- 감경 6%
+  `cl_penTypeCd` varchar(255) NOT NULL default '', -- 02
+  `cl_penTypeNm` varchar(255) NOT NULL default '', -- 감경 6%
+  -- 급여시작일
   `start_date` date NOT NULL, -- 급여 시작일
+  `cl_start_date` date NOT NULL, -- 급여 시작일
+  -- 급여비용
   `total_price` int(11) NOT NULL default 0, -- 급여비용총액
   `total_price_pen` int(11) NOT NULL default 0, -- 본인부담금
   `total_price_ent` int(11) NOT NULL default 0, -- 청구액
+  `cl_total_price` int(11) NOT NULL default 0, -- 급여비용총액
+  `cl_total_price_pen` int(11) NOT NULL default 0, -- 본인부담금
+  `cl_total_price_ent` int(11) NOT NULL default 0, -- 청구액
   `selected_month` date NOT NULL, -- 청구관리에서 선택된 달 (값: 선택된 달의 1일)
   PRIMARY KEY (`cl_id`),
   KEY `mb_id` (`mb_id`)
