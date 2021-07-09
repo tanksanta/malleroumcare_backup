@@ -723,7 +723,7 @@ $(function() {
 <style>
 <?php
 if(!$is_development)
-  echo '.btn_edit {display: none}';
+  echo '.btn_edit {display: none !important}';
 ?>
 .table_box .row { margin: 0; }
 .table_box .clear { clear: both; }
