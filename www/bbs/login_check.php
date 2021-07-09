@@ -356,5 +356,8 @@ if(defined('G5_USE_SHOP') && G5_USE_SHOP && function_exists('set_cart_id')){
 // 연결기간(3일) 지난 수급자 연결해제
 recipient_link_clean();
 
+// 로그인시 구매모드로 설정
+@setcookie('viewType', 'adm', time() + 86400 * 3650, "/");
+
 goto_url(G5_URL);
 ?>
