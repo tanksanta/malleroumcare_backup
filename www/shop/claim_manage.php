@@ -721,6 +721,10 @@ $(function() {
   <div></div>
 </div>
 <style>
+<?php
+if(!$is_development)
+  echo '.btn_edit {display: none}';
+?>
 .table_box .row { margin: 0; }
 .table_box .clear { clear: both; }
 .table_box td { vertical-align: top; text-align: center; }
