@@ -30,7 +30,7 @@ if (!$od['od_id']) {
 $od_member = get_member($od['mb_id']);
 
 $insert_ids = array();
-$ct_discount = (int)$ct_discount ? (int)$ct_discount : 0;
+$ct_discount = (int)$ct_discount ?: 0;
 
 $it_ids = $_POST['it_id'];
 //관리자가 등록한 코드
@@ -71,9 +71,6 @@ for($i=0; $i<count($it_ids); $i++) {
         // return false;
         $sql = "DELETE FROM {$g5['g5_shop_cart_table']} WHERE od_id = '$od_id' AND ct_uid = '$uid'";
         sql_query($sql);
-
-        
-        
     }
 
     // 상품정보
