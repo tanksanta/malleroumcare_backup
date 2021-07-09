@@ -511,6 +511,9 @@ if ($_SESSION['ss_mb_id'] && $member = get_member($_SESSION['ss_mb_id'])) {
                         // 세션에 회원아이디를 저장하여 로그인으로 간주
                         set_session('ss_mb_id', $tmp_mb_id);
 
+                        // 로그인시 구매모드로 설정
+                        @setcookie('viewType', 'adm', time() + 86400 * 3650, "/");
+
                         // 페이지를 재실행
                         echo "<script type='text/javascript'> window.location.reload(); </script>";
                         exit;
