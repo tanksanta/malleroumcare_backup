@@ -12,7 +12,7 @@ if (strlen($json_params) > 0 && is_valid_json($json_params))
 if(!$post || !array_keys_exists([
   'penId', 'penNm', 'penLtmNum', 'penRecGraCd', 'penRecGraNm', 'penTypeCd', 'penTypeNm',
   'start_date', 'total_price', 'total_price_pen', 'total_price_ent', 'selected_month'
-], $post)) json_response(400, '잘못된 요청입니다.'.json_encode($post));
+], $post)) json_response(400, '잘못된 요청입니다.');
 
 $check = sql_fetch("SELECT cl_id, cl_status FROM `claim_management` WHERE
   penId = '{$post['penId']}' AND
@@ -28,7 +28,7 @@ if($check['cl_id']) {
     UPDATE
       claim_management
     SET
-      start_date = '',
+      start_date = '{$post['start_date']}',
       total_price = '{$post['total_price']}',
       total_price_pen = '{$post['total_price_pen']}',
       total_price_ent = '{$post['total_price_ent']}'
