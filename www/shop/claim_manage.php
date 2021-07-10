@@ -786,28 +786,28 @@ function buildEditHtml(key, data) {
   var html = '';
   switch(key) {
     case 'start_date':
-      html = `
-        작성정보 : ${val}
-        <br>
-        공단정보 : ${match}
-        <br>
-        최종정보 : <input type="text" class="e_ipt" id="ipt_${key}">
-        <button class="e_btn" id="btn_${key}">확인</button>
-      `;
+      html = '\
+        작성정보 : '+val+'\
+        <br>\
+        공단정보 : '+match+'\
+        <br>\
+        최종정보 : <input type="text" class="e_ipt" id="ipt_'+key+'">\
+        <button class="e_btn" id="btn_'+key+'">확인</button>\
+      ';
       break;
     case 'total_price':
     case 'total_price_pen':
     case 'total_price_ent':
       val = parseInt(val).toLocaleString('en-US');
       match = parseInt(match).toLocaleString('en-US');
-      html = `
-        작성금액 : ${val}
-        <br>
-        공단금액 : ${match}
-        <br>
-        최종금액 : <input type="text" class="e_ipt" id="ipt_${key}">
-        <button class="e_btn" id="btn_${key}">확인</button>
-      `;
+      html = '\
+        작성금액 : '+val+'\
+        <br>\
+        공단금액 : '+match+'\
+        <br>\
+        최종금액 : <input type="text" class="e_ipt" id="ipt_'+key+'">\
+        <button class="e_btn" id="btn_'+key+'">확인</button>\
+      ';
       break;
   }
 
