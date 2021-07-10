@@ -182,10 +182,10 @@ $flist = apms_form(1,0);
                 <thead>
                     <tr>
                         <th>상품명</th>
-                        <th>모델명</th>
+                        <th>분류코드</th>
                         <th>판매가</th>
                         <!--<th>파트너가</th>-->
-                        <th>상태</th>
+                        <!--<th>상태</th>-->
                         <th>선택</th>
                     </tr>
                 </thead>
@@ -200,19 +200,27 @@ $flist = apms_form(1,0);
                                 <?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?>
                             </a>
                         </td>
-                        <td><?php echo $row['it_model']; ?></td>
+                        <td>
+                            <?php
+                                //echo $row['it_model']; 
+                                echo $row['it_thezone'];
+                            ?>
+                        </td>
                         <td style="text-align:left;padding-left:30px;">
                             <span class="popup_price">기</span><?php echo number_format($row['it_price']); ?>원<br/>
                             <span class="popup_price gray">파</span><?php echo number_format($row['it_price_partner'] ?$row['it_price_partner']:$row['it_price']); ?>원<br/>
-                            <span class="popup_price darkgray">딜</span><?php echo number_format($row['it_price_dealer'] ?$row['it_price_dealer']:$row['it_price']); ?>원<br/>
+                            <span class="popup_price gray">급</span><?php echo number_format($row['it_cust_price'] ?$row['it_cust_price']:$row['it_price']); ?>원<br/>
+                            <span class="popup_price darkgray">사</span><?php echo number_format($row['it_price_dealer'] ?$row['it_price_dealer']:$row['it_price']); ?>원<br/>
                             <span class="popup_price darkgray">우</span><?php echo number_format($row['it_price_dealer2'] ?$row['it_price_dealer2']:$row['it_price']); ?>원
                         </td>
                         <!--<td><?php echo number_format($row['it_price_partner'] ? $row['it_price_partner'] : $row['it_price']); ?>원</td>-->
+                        <!--
                         <td>
                             <input type="checkbox" name="it_use[<?php echo $i; ?>]" <?php echo ($row['it_use'] ? 'checked' : ''); ?> value="1" id="use_<?php echo $i; ?>" onclick="return false;">일반몰
                             <br/>
                             <input type="checkbox" name="it_use_partner[<?php echo $i; ?>]" <?php echo ($row['it_use_partner'] ? 'checked' : ''); ?> value="1" id="use_partner_<?php echo $i; ?>" onclick="return false;">파트너몰
                         </td>
+                        -->
                         <td>
                             <a href="./pop.order.item.add.option.php?od_id=<?php echo $od_id; ?>&it_id=<?php echo $row['it_id']; ?>" class="shbtn lineblue">선택</a>
                         </td>
