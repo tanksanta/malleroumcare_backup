@@ -13,7 +13,8 @@ if(!$post || !$post['cl_id'])
   json_response(400, '잘못된 요청입니다.');
 
 $keys = [
-  'penRecGraCd', 'penTypeCd',
+  'penRecGraCd', 'penRecGraNm',
+  'penTypeCd', 'penTypeNm',
   'start_date',
   'total_price', 'total_price_pen', 'total_price_ent'
 ];
@@ -22,7 +23,7 @@ $set = [];
 foreach($keys as $key) {
   if(isset($post[$key]) && $post[$key]) {
     $val = get_search_string($post[$key]);
-    $set[] = " {$key} = '{$val}' ";
+    $set[] = " cl_{$key} = '{$val}' ";
   }
 }
 
