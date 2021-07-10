@@ -27,8 +27,10 @@ $od = sql_fetch($sql);
 if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 }
+$od_member = get_member($od['mb_id']);
 
-$ct_discount = (int)$ct_discount ? (int)$ct_discount : 0;
+$insert_ids = array();
+$ct_discount = (int)$ct_discount ?: 0;
 
 $it_ids = $_POST['it_id'];
 //관리자가 등록한 코드
@@ -63,16 +65,12 @@ for($i=0; $i<count($it_ids); $i++) {
             $res = curl_exec($oCurl);
             curl_close($oCurl);
 
-
             //order 테이블에 stoId, barcodetotalcount 값 빼기
             sql_query("update `g5_shop_order` set `stoId` = replace(stoId, '$arr_d2', '') where `od_id` = '$od_id'");
         }
         // return false;
         $sql = "DELETE FROM {$g5['g5_shop_cart_table']} WHERE od_id = '$od_id' AND ct_uid = '$uid'";
         sql_query($sql);
-
-        
-        
     }
 
     // 상품정보
@@ -206,27 +204,19 @@ for($i=0; $i<count($it_ids); $i++) {
         $io_value = $io_value ? $io_value : addslashes($it['it_name']);
         $ct_admin_new_v = GenerateString(15);
         array_push($ct_admin_new,$ct_admin_new_v);
-        $sql .= $comma."( '$od_id', '{$od['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '작성', '{$it_price}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '', '$add_ct_discount', '$ct_price_type', '$uid', '$io_thezone','$ct_admin_new_v', '$ct_delivery_cnt', '$ct_delivery_price', '$ct_delivery_company', '$g5_shop_order_cart_memo' )";
-        $comma = ' , ';
+
+        $insert_sql = $sql . "( '$od_id', '{$od['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '작성', '{$it_price}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '', '$add_ct_discount', '$ct_price_type', '$uid', '$io_thezone','$ct_admin_new_v', '$ct_delivery_cnt', '$ct_delivery_price', '$ct_delivery_company', '$g5_shop_order_cart_memo' )";
+        sql_query($insert_sql);
+
+        $insert_ids[] = sql_insert_id();
         $ct_count++;
 
-        // echo '<pre>'. $sql . '</pre>';
         set_order_admin_log($od_id, '상품: ' . addslashes($it['it_name']) . ', ' . $io_id .' 상품 추가 또는 수정');
-
     }
-    
-    sql_query($sql);
-    //echo $it_id;
-    //print_r2($io_types);
 }
 
-// $sendcost = get_sendcost($od_id);
-// sql_query("UPDATE {$g5['g5_shop_order_table']} SET od_send_cost = '{$sendcost}' WHERE od_id = '{$od_id}'");
-
-
-// 주문페이지 계산하기
+// 주문 금액 계산
 samhwa_order_calc($od_id);
-
 
 // 비고
 // $sql = "DELETE FROM g5_shop_order_cart_memo WHERE od_id = '{$od_id}' AND it_id = '{$it_ids[0]}'";
@@ -245,92 +235,6 @@ $sql = "INSERT INTO g5_shop_order_cart_memo SET
         ";
 sql_query($sql);
 
-function get_int($val) {
-    return $val ? $val : 0;
-}
-
-// 주문제작
-if ( $frame_color == '기타' ) {
-    $frame_color = $frame_color_other;
-}
-
-$cs_type = get_int($cs_type);
-$size_width = get_int($size_width);
-$size_height = get_int($size_height);
-$frame_front_transparent_acrylic = get_int($frame_front_transparent_acrylic);
-$frame_front_optical_scatter = get_int($frame_front_optical_scatter);
-$frame_back_transparent_acrylic = get_int($frame_back_transparent_acrylic);
-$frame_back_mdf = get_int($frame_back_mdf);
-$frame_back_formax = get_int($frame_back_formax);
-$lightpanel_led_qty = get_int($lightpanel_led_qty);
-$lightpanel_led_ea = get_int($lightpanel_led_ea);
-$lightpanel_led_k = get_int($lightpanel_led_k);
-$holder_pipe_interval_1 = get_int($holder_pipe_interval_1);
-$holder_pipe_interval_2 = get_int($holder_pipe_interval_2);
-$holder_pipe_interval_3 = get_int($holder_pipe_interval_3);
-$holder_pipe_length = get_int($holder_pipe_length);
-
-$custom_querys .= "
-    cs_type                             = '{$cs_type}',
-    size_use                            = '{$size_use}',
-    size_width                          = '{$size_width}',
-    size_height                         = '{$size_height}',
-    frame_use                           = '{$frame_use}',
-    frame_standard                      = '{$frame_standard}',
-    frame_color                         = '{$frame_color}',
-    frame_front                         = '{$frame_front}',
-    frame_front_transparent_acrylic     = '{$frame_front_transparent_acrylic}',
-    frame_front_optical_scatter         = '{$frame_front_optical_scatter}',
-    frame_back                          = '{$frame_back}',
-    frame_back_transparent_acrylic      = '{$frame_back_transparent_acrylic}',
-    frame_back_mdf                      = '{$frame_back_mdf}',
-    frame_back_formax                   = '{$frame_back_formax}',
-    lightpanel_use                      = '{$lightpanel_use}',
-    lightpanel_led_direction           = '{$lightpanel_led_direction}',
-    lightpanel_led_qty                  = '{$lightpanel_led_qty}',
-    lightpanel_smps         = '{$lightpanel_smps}',
-    lightpanel_power_line         = '{$lightpanel_power_line}',
-    lightpanel_led_ea         = '{$lightpanel_led_ea}',
-    lightpanel_led_k         = '{$lightpanel_led_k}',
-    lightpanel_power_line_ac         = '{$lightpanel_power_line_ac}',
-    lightpanel_power_line_dc         = '{$lightpanel_power_line_dc}',
-    lightpanel_power_line_wire         = '{$lightpanel_power_line_wire}',
-    lightpanel_laser         = '{$lightpanel_laser}',
-    lightpanel_switch_use         = '{$lightpanel_switch_use}',
-    lightpanel_switch_explain         = '{$lightpanel_switch_explain}',
-    lightpanel_switch         = '{$lightpanel_switch}',
-    holder_use         = '{$holder_use}',
-    holder_class         = '{$holder_class}',
-    holder_pipe_interval_1         = '{$holder_pipe_interval_1}',
-    holder_pipe_interval_2         = '{$holder_pipe_interval_2}',
-    holder_pipe_interval_3         = '{$holder_pipe_interval_3}',
-    holder_pipe_length         = '{$holder_pipe_length}',
-    printout_use         = '{$printout_use}',
-    printout_printout         = '{$printout_printout}',
-    content_use         = '{$content_use}',
-    content_common         = '{$content_common}',
-    content_minart         = '{$content_minart}',
-    content_selmartec         = '{$content_selmartec}',
-    content_lp         = '{$content_lp}'
-";
-
-// if ( $cs_type ) {
-//     $data = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND it_id = '{$it_ids[0]}' ");
-//     if($data['odc_no']) {
-//         sql_query(" update g5_shop_order_custom set {$custom_querys} WHERE od_id = '{$od_id}' AND it_id = '{$it_ids[0]}' ");
-//     } else {
-//         sql_query(" insert g5_shop_order_custom set {$custom_querys}, od_id = '{$od_id}', it_id = '{$it_ids[0]}' ");
-//     }
-// }
-if ( $cs_type ) {
-    $data = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND odc_uid = '{$uid}' ");
-    if($data['odc_no']) {
-        sql_query(" update g5_shop_order_custom set {$custom_querys} WHERE od_id = '{$od_id}' AND odc_uid = '{$uid}' ");
-    } else {
-        sql_query(" insert g5_shop_order_custom set {$custom_querys}, od_id = '{$od_id}', odc_uid = '{$uid}' ");
-    }
-}
-
 // 상품수 수정
 $sql = " select COUNT(distinct it_id, ct_uid) as cart_count
             from {$g5['g5_shop_cart_table']} where od_id = '$od_id'  ";
@@ -340,188 +244,199 @@ sql_query("update {$g5['g5_shop_order_table']} set od_cart_count = '{$row['cart_
 
 $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
 
+// 재고 주문 API
+if (!$w) { // 상품 추가
+    // admin이 신규 주문한 주문 select
+    // $where_ct_admin_new = "";
+    // $or = "";
+    // foreach ($ct_admin_new as $key => $value) {
+    //     if($where_ct_admin_new) {
+    //         $or ="OR";
+    //     }
+    //     $where_ct_admin_new .= $or." `ct_admin_new` = '".$value."' ";
+    // }
 
+    $where_ct_admin_new = 'ct_id IN (' . implode(',', $insert_ids) . ')';
+    $sql = " select MT.it_id,
+                    MT.ct_qty,
+                    MT.it_name,
+                    MT.io_id,
+                    MT.io_type,
+                    MT.ct_option,
+                    MT.ct_qty,
+                    MT.ct_id,
+                    ( SELECT it_time FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_time,
+                    ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn,
+                    ( SELECT ProdPayCode FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodPayCode,
+                    ( SELECT it_delivery_cnt FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_cnt,
+                    ( SELECT it_delivery_price FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_price
+            from {$g5['g5_shop_cart_table']} MT
+            where od_id = '$od_id'
+                and ct_select = '1'  and ($where_ct_admin_new)";
+    $result = sql_query($sql);
+    $productList = [];
+    $od_prodBarNum_total = 0;
 
+    for ($i=0; $row=sql_fetch_array($result); $i++) {
+        # 옵션값 가져오기
+        $prodColor = $prodSize = $prodOption = '';
+        $prodOptions = [];
 
+        if ($row["io_id"]) { // 옵션값이 있으면
+            $io_subjects = explode(',', $row['it_option_subject']);
+            $io_ids = explode(chr(30), $row["io_id"]);
 
-
-
-
-
-
-
-
-
-#재고주문 stoId 업로드
-
-//업로드할 mb_id 와 mb_entid 구하기 (관리자가 작성하기 때문에 주문자 정보가 필요.)
-$sql_m = "select `mb_id`, `mb_entId` from `g5_member` where `mb_id` = '".$od['mb_id']."'";
-$result_m = sql_fetch($sql_m);
-
-//admin이 신규 주문한 주문 select
-$where_ct_admin_new = "";
-$or = "";
-foreach ($ct_admin_new as $key => $value) {
-    if($where_ct_admin_new){$or ="or";}
-    $where_ct_admin_new .= $or." `ct_admin_new` = '".$value."'";
-}
-$sql = " select MT.it_id,
-                MT.ct_qty,
-                MT.it_name,
-                MT.io_id,
-                MT.io_type,
-                MT.ct_option,
-                MT.ct_qty,
-                MT.ct_id,
-				( SELECT it_time FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_time,
-				( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn,
-				( SELECT ProdPayCode FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodPayCode,
-				( SELECT it_delivery_cnt FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_cnt,
-				( SELECT it_delivery_price FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_price
-           from {$g5['g5_shop_cart_table']} MT
-          where od_id = '$od_id'
-            and ct_select = '1'  and ($where_ct_admin_new)";
-$result = sql_query($sql);
-$productList = [];
-$od_prodBarNum_total =0;
-
-//통신하기 위한 정보 벼열에 담기.
-for ($i=0; $row=sql_fetch_array($result); $i++)
-{
-	# 상품목록
-	for($ii = 0; $ii < $row["ct_qty"]; $ii++){
-			$thisProductData = [];
-			$thisProductData["prodId"] = $row["it_id"];
-			$thisProductData["prodColor"] = explode(chr(30), $row["io_id"])[0];
-			$thisProductData["prodSize"] = explode(chr(30), $row["io_id"])[1];
-			$thisProductData["prodBarNum"] = "";
-			$thisProductData["prodManuDate"] = date("Y-m-d");
-			$thisProductData["stoMemo"] = $_POST["od_memo"];
-			$thisProductData["ct_id"] = $row["ct_id"];
-			array_push($productList, $thisProductData);
-            $od_prodBarNum_total++;
-	}
-}
-
-
-
-//통신하기 위한 배열준비
-$stoIdList = [];
-$sendData = [];
-$sendData["usrId"] = $result_m["mb_id"];
-$sendData["entId"] = $result_m["mb_entId"];
-$prodsSendData = [];
-$prodsData = [];
-foreach($productList as $key => $value){
-    $prodsData["prodId"] = $value["prodId"];
-    $prodsData["prodColor"] = $value["prodColor"];
-    $prodsData["prodSize"] = $value["prodSize"];
-    $prodsData["prodManuDate"] = $value["prodManuDate"];
-    $prodsData["prodBarNum"] = $value["prodBarNum"];
-    $prodsData["stoMemo"] = $value["stoMemo"];
-    $prodsData["ct_id"] = $value["ct_id"];
-    array_push($prodsSendData, $prodsData);
-}
-
-//통신
-$sendData["prods"] = $prodsSendData;
-$oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_PORT, 9901);
-curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/insert");
-curl_setopt($oCurl, CURLOPT_POST, 1);
-curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-$res = curl_exec($oCurl);
-$res = json_decode($res, true);
-curl_close($oCurl);
-
-
-//결과 값
-if($res["errorYN"] == "N"){
-    //성공시 ct_id에 업로드
-    for($k=0; $k<count($res['data']);$k++){
-        // ct_id에 업로드
-        if($w){
-            $ct_status = $ct_status_w;
-        }else{
-            $ct_status = "준비";
+            for ($io_idx = 0; $io_idx < count($io_subjects); $io_idx++) {
+                switch ($io_subjects[$io_idx]) {
+                    case '색상':
+                        $prodColor = $io_ids[$io_idx];
+                        break;
+                    case '사이즈':
+                        $prodSize = $io_ids[$io_idx];
+                        break;
+                    default:
+                        $prodOptions[] = $io_ids[$io_idx];
+                        break;
+                }
+            }
         }
-        array_push($stoIdList, $res['data'][$k]["stoId"]);
-        $sql_ct = "update `g5_shop_cart` set ct_status='".$ct_status."', `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
-        sql_query($sql_ct);
+    
+        if ($prodOptions && count($prodOptions)) {
+            $prodOption = implode('|', $prodOptions);
+        }
+
+
+        # 상품목록
+        for ($ii = 0; $ii < $row["ct_qty"]; $ii++) {
+            $thisProductData = [];
+            $thisProductData["prodId"] = $row["it_id"];
+            $thisProductData["prodColor"] = $prodColor;
+            $thisProductData["prodSize"] = $prodSize;
+            $thisProductData["prodOption"] = $prodOption;
+            $thisProductData["prodBarNum"] = "";
+            $thisProductData["prodManuDate"] = date("Y-m-d");
+            $thisProductData["stoMemo"] = $g5_shop_order_cart_memo;
+            $thisProductData["ct_id"] = $row["ct_id"];
+            array_push($productList, $thisProductData);
+            $od_prodBarNum_total++;
+        }
     }
-} else {
-    //실패시 ct_id 삭제
-    for($k=0; $k<count($res['data']);$k++){
-        //실패하면 ct_id 삭제
-        sql_query($sql_ct);
+
+    $stoIdList = [];
+    $sendData = [];
+    $sendData["usrId"] = $od_member["mb_id"];
+    $sendData["entId"] = $od_member["mb_entId"];
+    $prodsSendData = [];
+    $prodsData = [];
+    foreach ($productList as $key => $value) {
+        $prodsData["prodId"] = $value["prodId"];
+        $prodsData["prodColor"] = $value["prodColor"];
+        $prodsData["prodSize"] = $value["prodSize"];
+        $prodsData["prodOption"] = $value["prodOption"];
+        $prodsData["prodManuDate"] = $value["prodManuDate"];
+        $prodsData["prodBarNum"] = $value["prodBarNum"];
+        $prodsData["stoMemo"] = $value["stoMemo"];
+        $prodsData["ct_id"] = $value["ct_id"];
+        array_push($prodsSendData, $prodsData);
+    }
+    $sendData["prods"] = $prodsSendData;
+
+    $oCurl = curl_init();
+    curl_setopt($oCurl, CURLOPT_PORT, 9901);
+    curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/insert");
+    curl_setopt($oCurl, CURLOPT_POST, 1);
+    curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+    curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+    $res = curl_exec($oCurl);
+    $res = json_decode($res, true);
+    curl_close($oCurl);
+
+    //결과 값
+    if ($res["errorYN"] == "N") {
+        //성공시 ct_id에 업로드
+        for ($k=0; $k<count($res['data']);$k++) {
+            // ct_id에 업로드
+            if ($w) {
+                $ct_status = $ct_status_w;
+            } else {
+                $ct_status = "준비";
+            }
+            array_push($stoIdList, $res['data'][$k]["stoId"]);
+            $sql_ct = "update `g5_shop_cart` set ct_status='".$ct_status."', `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
+            sql_query($sql_ct);
+        }
+    } else {
+        //실패시 ct_id 삭제
+        for ($k=0; $k<count($res['data']);$k++) {
+            //실패하면 ct_id 삭제
+            sql_query($sql_ct);
             sql_query("
             DELETE FROM `g5_shop_cart`
             WHERE `ct_id` = '".$res['data'][$k]["ct_id"]."'
             ");
+        }
+        alert($res["message"], G5_URL);
+        return false;
     }
-    alert($res["message"],G5_URL);
-    return false;
-}
-//통신 성공시 order table 에 stoId 추가, total stoId 개수 갱신
-$stoIdList = implode(",", $stoIdList);
+    //통신 성공시 order table 에 stoId 추가, total stoId 개수 갱신
+    $stoIdList = implode(",", $stoIdList);
 
-$sql_q = "select `stoId` from `g5_shop_order` where `od_id` = '".$od_id."'";
-$result_q=sql_fetch($sql_q);
-
-//수정시 불필요한 , 정리
-$result_q['stoId'] = explode(',',$result_q['stoId']);
-$result_q['stoId']=array_filter($result_q['stoId']);
-$result_q['stoId']=implode(',',$result_q['stoId']);
-if($result_q['stoId']){
-    $stoIdList=$result_q['stoId'].','.$stoIdList;
-}
-
-//정리된 stoId update
-sql_query("
-UPDATE `g5_shop_order` SET
-    `stoId` = '".$stoIdList."'
-WHERE od_id = '{$od_id}'
-");
-//들어있는 바코드수 구하기
-$sto_imsi="";
-$sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
-$result_ct = sql_query($sql_ct);
-while($row_ct = sql_fetch_array($result_ct)) {
-    $sto_imsi .=$row_ct['stoId'];
-}
-
-$stoIdDataList = explode('|',$sto_imsi);
-$stoIdDataList=array_filter($stoIdDataList);
-$stoIdData = implode("|", $stoIdDataList);
-
-$count_b=0;
-$sendData["stoId"] = $stoIdData;
-$oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
-curl_setopt($oCurl, CURLOPT_POST, 1);
-curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-$res = curl_exec($oCurl);
-curl_close($oCurl);
-$result_again = json_decode($res, true);
-$result_again =$result_again['data'];
-for($k=0; $k < count($result_again); $k++){
-    if($result_again[$k]['prodBarNum']){
-        $count_b ++;
+    //수정시 불필요한 , 정리
+    $od['stoId'] = explode(',', $od['stoId']);
+    $od['stoId'] = array_filter($od['stoId']);
+    $od['stoId'] = implode(',', $od['stoId']);
+    if ($od['stoId']) {
+        $stoIdList = $od['stoId'].','.$stoIdList;
     }
-}
-//바코드 od_prodBarNum_insert 조정
-$sql = "update `g5_shop_order` set `od_prodBarNum_insert` = ".$count_b." where `od_id` = '".$od_id."'";
-sql_query($sql);
 
-//order total 수 조정
-$sql = "update `g5_shop_order` set `od_prodBarNum_total` = ".count($result_again)." where `od_id` = '".$od_id."'";
-sql_query($sql);
+    sql_query("
+        UPDATE `g5_shop_order` SET
+            `stoId` = '".$stoIdList."'
+        WHERE od_id = '{$od_id}'
+    ");
+}
+
+
+
+// //들어있는 바코드수 구하기
+// $sto_imsi="";
+// $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+// $result_ct = sql_query($sql_ct);
+// while($row_ct = sql_fetch_array($result_ct)) {
+//     $sto_imsi .=$row_ct['stoId'];
+// }
+
+// $stoIdDataList = explode('|',$sto_imsi);
+// $stoIdDataList=array_filter($stoIdDataList);
+// $stoIdData = implode("|", $stoIdDataList);
+
+// $count_b=0;
+// $sendData["stoId"] = $stoIdData;
+// $oCurl = curl_init();
+// curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
+// curl_setopt($oCurl, CURLOPT_POST, 1);
+// curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+// curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+// curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+// curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+// $res = curl_exec($oCurl);
+// curl_close($oCurl);
+// $result_again = json_decode($res, true);
+// $result_again =$result_again['data'];
+// for($k=0; $k < count($result_again); $k++){
+//     if($result_again[$k]['prodBarNum']){
+//         $count_b ++;
+//     }
+// }
+// //바코드 od_prodBarNum_insert 조정
+// $sql = "update `g5_shop_order` set `od_prodBarNum_insert` = ".$count_b." where `od_id` = '".$od_id."'";
+// sql_query($sql);
+
+// //order total 수 조정
+// $sql = "update `g5_shop_order` set `od_prodBarNum_total` = ".count($result_again)." where `od_id` = '".$od_id."'";
+// sql_query($sql);
 ?>
 <html>
 <head>
@@ -529,16 +444,11 @@ sql_query($sql);
 <link rel="stylesheet" href="<?php echo G5_ADMIN_URL; ?>/css/popup.css">
 </head>
 <script>
-
- alert('완료되었습니다.');
-
-try{
-
-    window.opener.document.location.href=window.opener.document.URL;
-    window.close();
-
-}catch(e){ 
-    window.close();
-}
-
+// alert('완료되었습니다.');
+// try{
+//     window.opener.document.location.href=window.opener.document.URL;
+//     window.close();
+// }catch(e){ 
+//     window.close();
+// }
 </script>

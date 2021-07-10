@@ -92,7 +92,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 }
 
 // 주문금액 = 상품구입금액 + 배송비 + 추가배송비 - 할인금액 - 추가할인금액
-$amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'];
+$amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'] - $od['od_sales_discount'];
 
 // 입금액 = 결제금액 + 포인트
 $amount['receipt'] = $od['od_receipt_price'] + $od['od_receipt_point'];

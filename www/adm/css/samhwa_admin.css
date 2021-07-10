@@ -1010,6 +1010,34 @@ table.list-table-style .drop_multi_sub a:after {
     font-weight:bold;
     font-size:15px;
 }
+#order_summarize .content .block ul.send_cost_sales_discount_wrapper {
+    background-color: #FFF;
+    border: 1px solid #BFBFBF;
+    padding: 10px;
+    margin-bottom: 20px;
+    color: #656565;
+}
+
+#order_summarize .content .block ul.send_cost_sales_discount_wrapper span {
+    display: inline-block;
+    width: 60px;
+}
+
+#order_summarize .content .block ul.send_cost_sales_discount_wrapper input {
+    border: 1px solid #BFBFBF;
+    width: 100px;
+    padding-left: 10px;
+}
+
+#order_summarize .content .block ul.send_cost_sales_discount_wrapper button {
+    width: 100%;
+    background-color: #454545;
+    color: #fff;
+    font-size: 13px;
+    padding: 6px 0;
+    margin-top: 15px;
+}
+
 #order_summarize .content .block .oneline {
     font-size:15px;
 }

@@ -372,9 +372,9 @@ $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
 // 총 금액
-$sql = " select sum(od_cart_price) as od_cart_price, sum(od_send_cost) as od_send_cost, sum(od_send_cost2) as od_send_cost2, sum(od_cart_discount) as od_cart_discount, sum(od_cart_discount2) as od_cart_discount2 " . $sql_common;
+$sql = " select sum(od_cart_price) as od_cart_price, sum(od_send_cost) as od_send_cost, sum(od_send_cost2) as od_send_cost2, sum(od_cart_discount) as od_cart_discount, sum(od_cart_discount2) as od_cart_discount2, sum(od_sales_discount) as od_sales_discount" . $sql_common;
 $row = sql_fetch($sql);
-$total_price = $row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2'] - $row['od_cart_discount'] - $row['od_cart_discount2'];
+$total_price = $row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2'] - $row['od_cart_discount'] - $row['od_cart_discount2'] - $row['od_sales_discount'];
 $show_total_price = number_format($total_price);
 
 
@@ -635,7 +635,7 @@ foreach($orderlist as $order) {
     //     $od_cart_count = '';
     // }
 
-    $od_price = number_format($order['od_cart_price'] + $order['od_send_cost'] + $order['od_send_cost2'] - $order['od_cart_discount'] - $order['od_cart_discount2'])."원";
+    $od_price = number_format($order['od_cart_price'] + $order['od_send_cost'] + $order['od_send_cost2'] - $order['od_cart_discount'] - $order['od_cart_discount2'] - $order['od_sales_discount'])."원";
     $od_price = $order['cart']['ct_price'];
     
 
