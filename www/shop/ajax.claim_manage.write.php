@@ -24,10 +24,22 @@ $check = sql_fetch("SELECT cl_id, cl_status FROM `claim_management` WHERE
 ");
 if($check['cl_id']) {
   // 이미 생성되어있는 변경지점이면 값을 새로 업데이트
+
+  $set = '';
+  if($check['cl_status'] == 0) {
+    $set = "
+      cl_start_date = '{$post['start_date']}',
+      cl_total_price = '{$post['total_price']}',
+      cl_total_price_pen = '{$post['total_price_pen']}',
+      cl_total_price_ent = '{$post['total_price_ent']}',
+    ";
+  }
+
   $result = sql_query("
     UPDATE
       claim_management
     SET
+      {$set}
       start_date = '{$post['start_date']}',
       total_price = '{$post['total_price']}',
       total_price_pen = '{$post['total_price_pen']}',
