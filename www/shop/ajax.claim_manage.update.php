@@ -19,7 +19,7 @@ $keys = [
   'total_price', 'total_price_pen', 'total_price_ent'
 ];
 
-$set = [];
+$set = [" cl_status = '1' "];
 foreach($keys as $key) {
   if(isset($post[$key]) && $post[$key]) {
     $val = get_search_string($post[$key]);
