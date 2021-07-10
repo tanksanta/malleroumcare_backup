@@ -504,7 +504,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
                 <?=$row['match']['start_date']?>
               </span>
               <br>
-              <a href="#" class="btn_edit e_btn" data-key="start_date" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</a>
+              <button class="btn_edit e_btn" data-key="start_date" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</button>
               <?php
               }
               ?>
@@ -526,7 +526,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
                 <?=number_format($row['match']['total_price'])?>원
               </span>
               <br>
-              <a href="#" class="btn_edit e_btn" data-key="total_price" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</a>
+              <button class="btn_edit e_btn" data-key="total_price" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</button>
               <?php
               }
               ?>
@@ -548,7 +548,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
                 <?=number_format($row['match']['total_price_pen'])?>원
               </span>
               <br>
-              <a href="#" class="btn_edit e_btn" data-key="total_price_pen" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</a>
+              <button class="btn_edit e_btn" data-key="total_price_pen" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</button>
               <?php
               }
               ?>
@@ -570,7 +570,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
                 <?=number_format($row['match']['total_price_ent'])?>원
               </span>
               <br>
-              <a href="#" class="btn_edit e_btn" data-key="total_price_ent" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</a>
+              <button class="btn_edit e_btn" data-key="total_price_ent" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</button>
               <?php
               }
               ?>
@@ -733,6 +733,7 @@ td.status[data-status="변경완료"] {color: #a9b329;}
 .e_btn { color: #666; padding: 2px 6px; border: 1px solid #ddd; background-color:#eee; line-height: 20px; }
 .e_ipt { border: 1px solid #ddd; line-height: 20px; padding: 2px; color: #333; width: 80px; }
 .popModal_content > div { color: #999; }
+.popModal .popModal_content { margin: 0 !important; }
 </style>
 
 <script>
@@ -832,7 +833,8 @@ $(function() {
       var cl_id = result.message;
       $this.popModal({
         html: buildEditHtml(key, data),
-        showCloseBut: false
+        showCloseBut: false,
+        placement: 'bottomCenter'
       });
     })
     .fail(function($xhr) {
