@@ -226,7 +226,7 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
     'total_price_ent' => $row['total_price_ent']
   );
 
-  $row['cl_status'] = '0';
+  $row['cl_status'] = '0'; // 0: 내용 수정 전, 1: 내용 수정 후
 
   foreach($cl as $val) {
     if
@@ -234,15 +234,15 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
       $val['penId'] == $row['penId'] &&
       $val['penNm'] == $row['penNm'] &&
       $val['penLtmNum'] == $row['penLtmNum'] &&
-      $val['penRecGraCd'] == $row['penRecGraCd'] &&
-      $val['penTypeCd'] == $row['penTypeCd'] &&
+      $val['penRecGraCd'] == $row['cl_penRecGraCd'] &&
+      $val['penTypeCd'] == $row['cl_penTypeCd'] &&
       $val['cl_status'] != 0
     ) {
       $row['cl_status'] = $val['cl_status'];
-      $row['start_date'] = $val['start_date'];
-      $row['total_price'] = $val['total_price'];
-      $row['total_price_pen'] = $val['total_price_pen'];
-      $row['total_price_ent'] = $val['total_price_ent'];
+      $row['start_date'] = $val['cl_start_date'];
+      $row['total_price'] = $val['cl_total_price'];
+      $row['total_price_pen'] = $val['cl_total_price_pen'];
+      $row['total_price_ent'] = $val['cl_total_price_ent'];
     }
   }
 
@@ -384,11 +384,13 @@ if($sel_year <= $cur_year && $sel_year >= 2021) {
   }
 }
 
+add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 8);
+add_javascript('<script src="'.G5_PLUGIN_URL.'/DataTables/datatables.min.js"></script>', 9);
+add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/remodal/remodal.css">', 11);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/remodal/remodal-default-theme.css">', 12);
 add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datatables.min.css">', 13);
-add_javascript('<script src="'.G5_PLUGIN_URL.'/DataTables/datatables.min.js"></script>', 9);
-add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
+add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 14);
 ?>
 <section class="wrap">
   <div class="sub_section_tit">청구/전자문서관리</div>
@@ -462,7 +464,6 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
             <th>본인부담금</th>
             <th>청구액</th>
             <th>검증상태</th>
-            <!--<th>금액변경</th>-->
           </tr>
         </thead>
         <tbody>
@@ -503,7 +504,7 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
                 <?=$row['match']['start_date']?>
               </span>
               <br>
-              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
+              <a href="#" class="btn_edit e_btn" data-key="start_date" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</a>
               <?php
               }
               ?>
@@ -525,7 +526,7 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
                 <?=number_format($row['match']['total_price'])?>원
               </span>
               <br>
-              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
+              <a href="#" class="btn_edit e_btn" data-key="total_price" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</a>
               <?php
               }
               ?>
@@ -547,7 +548,7 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
                 <?=number_format($row['match']['total_price_pen'])?>원
               </span>
               <br>
-              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
+              <a href="#" class="btn_edit e_btn" data-key="total_price_pen" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</a>
               <?php
               }
               ?>
@@ -569,7 +570,7 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
                 <?=number_format($row['match']['total_price_ent'])?>원
               </span>
               <br>
-              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
+              <a href="#" class="btn_edit e_btn" data-key="total_price_ent" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</a>
               <?php
               }
               ?>
@@ -577,9 +578,6 @@ add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
             <td class="status" data-status="<?=$row['status']?>">
               <?=$row['status']?>
             </td>
-            <!--<td class="text_c">
-              <a href="#" class="btn_edit w_100" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">변경</a>
-            </td>-->
           </tr>
           <?php } ?>
         </tbody>
@@ -717,9 +715,6 @@ $(function() {
 });
 </script>
 
-<div id="popupEdit">
-  <div></div>
-</div>
 <style>
 <?php
 if(!$is_development)
@@ -735,17 +730,9 @@ td.status[data-status="정상"] {color: #333;}
 td.status[data-status="오류"] {color: #ff0000;}
 td.status[data-status="변경완료"] {color: #a9b329;}
 
-#popupEdit { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
-#popupEdit > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
-#popupEdit iframe { position: relative; width: 700px; height: 300px; border: 0; background-color: #FFF; left: 50%; margin-left: -350px; }
-
-@media (max-width : 800px){
-  #popupEdit iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
-}
-
-body.modal-open {
-  overflow: hidden;
-}
+.e_btn { color: #666; padding: 2px 6px; border: 1px solid #ddd; background-color:#eee; line-height: 20px; }
+.e_ipt { border: 1px solid #ddd; line-height: 20px; padding: 2px; color: #333; width: 80px; }
+.popModal_content > div { color: #999; }
 </style>
 
 <script>
@@ -789,20 +776,44 @@ function updateClaim(cl_id, data) {
   $tr.find('.status').attr('data-status', '1').text('변경');
 }
 
-function closePopup() {
-    $("body").removeClass("modal-open");
-    $("#popupEdit").hide();
-    $("#popupEdit").find("iframe").remove();
+function buildEditHtml(key, data) {
+  console.log(data);
+  var val = data[key];
+  var match = val;
+  if(data.match)
+    match = data.match[key];
+  var html = '';
+  switch(key) {
+    case 'start_date':
+      html = `
+        작성정보 : ${val}
+        <br>
+        공단정보 : ${match}
+        <br>
+        최종정보 : <input type="text" class="e_ipt" id="ipt_${key}">
+        <button class="e_btn" id="btn_${key}">확인</button>
+      `;
+      break;
+    case 'total_price':
+    case 'total_price_pen':
+    case 'total_price_ent':
+      val = parseInt(val).toLocaleString('en-US');
+      match = parseInt(match).toLocaleString('en-US');
+      html = `
+        작성금액 : ${val}
+        <br>
+        공단금액 : ${match}
+        <br>
+        최종금액 : <input type="text" class="e_ipt" id="ipt_${key}">
+        <button class="e_btn" id="btn_${key}">확인</button>
+      `;
+      break;
+  }
+
+  return html;
 }
 
 $(function() {
-  $("#popupEdit").hide();
-  $("#popupEdit").css("opacity", 1);
-  $('#popupEdit > div').click(function (e) {
-    e.stopPropagation();
-    closePopup()
-  });
-
   // 청구 달 선택
   $('#selected_month').change(function() {
     var selected_month = $(this).val();
@@ -814,15 +825,14 @@ $(function() {
     e.preventDefault();
 
     var $this = $(this);
+    var key = $this.data('key');
     var data = $this.data('json');
     $.post('./ajax.claim_manage.write.php', JSON.stringify(data), 'json')
-    .done(function(data) {
-      var cl_id = data.message;
-      $this.attr('data-id', cl_id);
-      $("#popupEdit > div").html("<iframe src='./claim_manage_edit.php?cl_id="+cl_id+"'>");
-      $("#popupEdit iframe").load(function(){
-        $("body").addClass('modal-open');
-        $("#popupEdit").show();
+    .done(function(result) {
+      var cl_id = result.message;
+      $this.popModal({
+        html: buildEditHtml(key, data),
+        showCloseBut: false
       });
     })
     .fail(function($xhr) {
