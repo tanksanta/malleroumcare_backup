@@ -13,6 +13,10 @@ if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 }
 
+if ($od['mb_id']) {
+    alert('이미 선택된 사업소가 있습니다.');
+}
+
 $sql_common = " from {$g5['member_table']} ";
 
 $sql_search = " where (1) ";
