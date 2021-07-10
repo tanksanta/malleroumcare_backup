@@ -391,6 +391,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/remodal/remodal.css">
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/remodal/remodal-default-theme.css">', 12);
 add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datatables.min.css">', 13);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 14);
+
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 <section class="wrap">
   <div class="sub_section_tit">청구/전자문서관리</div>
@@ -836,6 +838,9 @@ $(function() {
         showCloseBut: false,
         placement: 'bottomCenter'
       });
+
+      if(key == 'start_date')
+        $('#ipt_start_date').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
     })
     .fail(function($xhr) {
       var data = $xhr.responseJSON;
