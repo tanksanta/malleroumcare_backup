@@ -48,9 +48,9 @@ for($i=0; $i<count($it_ids); $i++) {
         for($k=0; $row_k=sql_fetch_array($result_d); $k++) {
             //배열 정리
             $arr_d = explode('|',$row_k['stoId']);
-            $arr_d1=array_filter($arr_d);
-            $arr_d2=implode(',',$arr_d1);
-            $ct_status_w=$row_k['ct_status'];
+            $arr_d1 = array_filter($arr_d);
+            $arr_d2 = implode(',',$arr_d1);
+            $ct_status_w = $row_k['ct_status'];
             //시스템재고 삭제
             $sendData  = [];
             $sendData_stoId['stoId']=$arr_d1;
@@ -245,7 +245,7 @@ sql_query("update {$g5['g5_shop_order_table']} set od_cart_count = '{$row['cart_
 $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
 
 // 재고 주문 API
-if (!$w) { // 상품 추가
+// if (!$w) { // 상품 추가
     // admin이 신규 주문한 주문 select
     // $where_ct_admin_new = "";
     // $or = "";
@@ -353,6 +353,8 @@ if (!$w) { // 상품 추가
     $res = json_decode($res, true);
     curl_close($oCurl);
 
+    // print_r2($res);
+
     //결과 값
     if ($res["errorYN"] == "N") {
         //성공시 ct_id에 업로드
@@ -371,7 +373,6 @@ if (!$w) { // 상품 추가
         //실패시 ct_id 삭제
         for ($k=0; $k<count($res['data']);$k++) {
             //실패하면 ct_id 삭제
-            sql_query($sql_ct);
             sql_query("
             DELETE FROM `g5_shop_cart`
             WHERE `ct_id` = '".$res['data'][$k]["ct_id"]."'
@@ -396,47 +397,48 @@ if (!$w) { // 상품 추가
             `stoId` = '".$stoIdList."'
         WHERE od_id = '{$od_id}'
     ");
+// }
+
+
+
+//들어있는 바코드수 구하기
+$sto_imsi="";
+$sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+$result_ct = sql_query($sql_ct);
+while($row_ct = sql_fetch_array($result_ct)) {
+    $sto_imsi .=$row_ct['stoId'];
 }
 
+$stoIdDataList = explode('|',$sto_imsi);
+$stoIdDataList=array_filter($stoIdDataList);
+$stoIdData = implode("|", $stoIdDataList);
 
+$count_b=0;
+$sendData["stoId"] = $stoIdData;
+$oCurl = curl_init();
+curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
+curl_setopt($oCurl, CURLOPT_POST, 1);
+curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+$res = curl_exec($oCurl);
+curl_close($oCurl);
+$result_again = json_decode($res, true);
+$result_again =$result_again['data'];
+for($k=0; $k < count($result_again); $k++){
+    if($result_again[$k]['prodBarNum']){
+        $count_b ++;
+    }
+}
 
-// //들어있는 바코드수 구하기
-// $sto_imsi="";
-// $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
-// $result_ct = sql_query($sql_ct);
-// while($row_ct = sql_fetch_array($result_ct)) {
-//     $sto_imsi .=$row_ct['stoId'];
-// }
+//바코드 od_prodBarNum_insert, order total 조정
+$sql = "UPDATE `g5_shop_order` SET 
+    `od_prodBarNum_insert` = ".$count_b.",
+    `od_prodBarNum_total` = ".count($result_again)."
+WHERE `od_id` = '".$od_id."'";
+sql_query($sql);
 
-// $stoIdDataList = explode('|',$sto_imsi);
-// $stoIdDataList=array_filter($stoIdDataList);
-// $stoIdData = implode("|", $stoIdDataList);
-
-// $count_b=0;
-// $sendData["stoId"] = $stoIdData;
-// $oCurl = curl_init();
-// curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
-// curl_setopt($oCurl, CURLOPT_POST, 1);
-// curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-// curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-// curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-// curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-// $res = curl_exec($oCurl);
-// curl_close($oCurl);
-// $result_again = json_decode($res, true);
-// $result_again =$result_again['data'];
-// for($k=0; $k < count($result_again); $k++){
-//     if($result_again[$k]['prodBarNum']){
-//         $count_b ++;
-//     }
-// }
-// //바코드 od_prodBarNum_insert 조정
-// $sql = "update `g5_shop_order` set `od_prodBarNum_insert` = ".$count_b." where `od_id` = '".$od_id."'";
-// sql_query($sql);
-
-// //order total 수 조정
-// $sql = "update `g5_shop_order` set `od_prodBarNum_total` = ".count($result_again)." where `od_id` = '".$od_id."'";
-// sql_query($sql);
 ?>
 <html>
 <head>

@@ -21,7 +21,7 @@ if ( !$od_id || !$it_id || !$uid ) {
 $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
 if (!$od['od_id']) {
-        $ret = array(
+    $ret = array(
         'result' => 'fail',
         'msg' => '해당 주문번호로 주문서가 존재하지 않습니다.',
     );
@@ -29,6 +29,14 @@ if (!$od['od_id']) {
     exit;
 }
 
+if ($od['od_penId']) {
+    $ret = array(
+        'result' => 'fail',
+        'msg' => '수급자 주문은 삭제하실 수 없습니다.',
+    );
+    echo json_encode($ret);
+    exit;
+}
 
 
 
