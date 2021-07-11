@@ -728,6 +728,11 @@ td.status[data-status="변경완료"] {color: #a9b329;}
 <script>
 function formatValue(key, value) {
   switch(key) {
+    case 'pen':
+      return value.penNm + '('
+      + value.penLtmNum + ' / '
+      + value.penRecGraNm + ' / '
+      + value.penTypeNm + ')';
     case 'start_date':
       return value;
     case 'total_price':
@@ -753,7 +758,7 @@ function updateClaim(cl_id, key, value) {
     var match = json.match[key];
 
     json[key] = value;
-    $td.find('.btn_edit').attr('data-json', JSON.stringify(json));
+    $tr.find('.btn_edit').attr('data-json', JSON.stringify(json));
 
     if(value == match) {
       $td.html(
@@ -782,6 +787,13 @@ function updateClaim(cl_id, key, value) {
 }
 
 function buildEditHtml(key, data) {
+  // 수급자 수정일 경우
+  if(key == 'pen') {
+    return '\
+    작성정보 : \
+    ';
+  }
+
   var val = data[key];
   var match = val;
   if(data.match)
@@ -841,6 +853,8 @@ $(function() {
         showCloseBut: false,
         placement: 'bottomCenter'
       });
+
+      //if(key == 'pen')
 
       if(key == 'start_date')
         $('#ipt_start_date').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
