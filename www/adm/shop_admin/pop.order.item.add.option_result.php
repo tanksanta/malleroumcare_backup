@@ -53,7 +53,7 @@ for($i=0; $i<count($it_ids); $i++) {
             $ct_status_w = $row_k['ct_status'];
             //시스템재고 삭제
             $sendData  = [];
-            $sendData_stoId['stoId']=$arr_d1;
+            $sendData_stoId['stoId'] = $arr_d1;
             $oCurl = curl_init();
             curl_setopt($oCurl, CURLOPT_PORT, 9901);
             curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/deleteMulti");
@@ -446,11 +446,11 @@ sql_query($sql);
 <link rel="stylesheet" href="<?php echo G5_ADMIN_URL; ?>/css/popup.css">
 </head>
 <script>
-// alert('완료되었습니다.');
-// try{
-//     window.opener.document.location.href=window.opener.document.URL;
-//     window.close();
-// }catch(e){ 
-//     window.close();
-// }
+alert('완료되었습니다.');
+try{
+    window.opener.document.location.href=window.opener.document.URL;
+    window.close();
+}catch(e){ 
+    window.close();
+}
 </script>

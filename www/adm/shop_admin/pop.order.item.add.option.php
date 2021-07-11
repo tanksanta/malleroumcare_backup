@@ -4,9 +4,9 @@ include_once('./_common.php');
 
 // auth_check($auth[$sub_menu], "w");
 
-if (!$is_development) {
-    alert('작업중 입니다.');
-}
+// if (!$is_development) {
+//     alert('작업중 입니다.');
+// }
 
 
 //------------------------------------------------------------------------------
@@ -662,6 +662,16 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
                                             사용
                                         </div>
                                         <span id="it_tot_price_dealer2">0원</span>
+                                    </td>
+                                </tr>
+                                <tr style="display:none">
+                                    <th><label for="it_sale_cnt">묶음할인(쇼핑몰전용)</label></th>
+                                    <td>
+                                        <input type="hidden" id="it_sale_percent" value="<?php echo $it["it_sale_percent"]; ?>" data-toggle="<?=$it["it_sale_cnt"]?>" class="it_sale_percent">
+                                        <input type="hidden" id="it_sale_percent2" value="<?php echo $it["it_sale_percent_02"]; ?>" data-toggle="<?=$it["it_sale_cnt_02"]?>" class="it_sale_percent">
+                                        <input type="hidden" id="it_sale_percent3" value="<?php echo $it["it_sale_percent_03"]; ?>" data-toggle="<?=$it["it_sale_cnt_03"]?>" class="it_sale_percent">
+                                        <input type="hidden" id="it_sale_percent4" value="<?php echo $it["it_sale_percent_04"]; ?>" data-toggle="<?=$it["it_sale_cnt_04"]?>" class="it_sale_percent">
+                                        <input type="hidden" id="it_sale_percent5" value="<?php echo $it["it_sale_percent_05"]; ?>" data-toggle="<?=$it["it_sale_cnt_05"]?>" class="it_sale_percent">
                                     </td>
                                 </tr>
                                 <tr>
@@ -1348,7 +1358,11 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
                 </div>
             </div>
             <div class="addoptionbuttons">
-                <a href="./pop.order.item.add.php?od_id=<?php echo $od_id; ?>">
+                <?php if ($w) { ?>
+                    <a href='#' onclick="alert('상품을 추가시에만 선택하실 수 있습니다.')" >
+                <?php } else { ?>
+                    <a href="./pop.order.item.add.php?od_id=<?php echo $od_id; ?>">
+                <?php } ?>
                     <img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/icon_arrow_prev_w.png" />상품선택
                 </a>
                 <input type="submit" value="확인" />
