@@ -1,4 +1,4 @@
-$<?php
+<?php
 include_once('./_common.php');
 
 if (!$is_member || !$member['mb_id'])

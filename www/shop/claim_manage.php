@@ -234,8 +234,8 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
       $val['penId'] == $row['penId'] &&
       $val['penNm'] == $row['penNm'] &&
       $val['penLtmNum'] == $row['penLtmNum'] &&
-      $val['penRecGraCd'] == $row['cl_penRecGraCd'] &&
-      $val['penTypeCd'] == $row['cl_penTypeCd'] &&
+      $val['penRecGraCd'] == $row['penRecGraCd'] &&
+      $val['penTypeCd'] == $row['penTypeCd'] &&
       $val['cl_status'] != 0
     ) {
       $row['cl_status'] = $val['cl_status'];
@@ -476,7 +476,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           ?>
           <tr class="<?=$row['error'] ? 'tr_err' : ''?>">
             <td><?=$index?></td>
-            <td>
+            <td class="pen">
               <?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?>
               <?php
               if(in_array('pen', $row['error'])) {
@@ -489,14 +489,12 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               }
               ?>
             </td>
-            <td class="text_c start_date" data-orig="<?=$row['orig']['start_date']?>">
+            <td class="start_date">
               <?php
               if(in_array('start_date', $row['change'])) {
-                echo '<span class="text_point">';
-                echo $row['start_date'];
-                echo '</span>';
+                echo "<span class=\"text_point\">{$row['start_date']}</span>";
               } else {
-                echo $row['start_date'];
+                echo "<span class=\"val\">{$row['start_date']}</span>";
               }
               
               if(in_array('start_date', $row['error'])) {
@@ -511,14 +509,12 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               }
               ?>
             </td>
-            <td class="total_price" data-orig="<?=$row['orig']['total_price']?>">
+            <td class="total_price">
               <?php
               if(in_array('total_price', $row['change'])) {
-                echo '<span class="text_point">';
-                echo number_format($row['total_price']).'원';
-                echo '</span>';
+                echo "<span class=\"text_point\">" . number_format($row['total_price']).'원' . "</span>";
               } else {
-                echo number_format($row['total_price']).'원';
+                echo "<span class=\"val\">" . number_format($row['total_price']).'원' . "</span>";
               }
 
               if(in_array('total_price', $row['error'])) {
@@ -533,14 +529,12 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               }
               ?>
             </td>
-            <td class="total_price_pen" data-orig="<?=$row['orig']['total_price_pen']?>">
+            <td class="total_price_pen">
               <?php
               if(in_array('total_price_pen', $row['change'])) {
-                echo '<span class="text_point">';
-                echo number_format($row['total_price_pen']).'원';
-                echo '</span>';
+                echo "<span class=\"text_point\">" . number_format($row['total_price_pen']).'원' . "</span>";
               } else {
-                echo number_format($row['total_price_pen']).'원';
+                echo "<span class=\"val\">" . number_format($row['total_price_pen']).'원' . "</span>";
               }
 
               if(in_array('total_price_pen', $row['error'])) {
@@ -555,14 +549,12 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               }
               ?>
             </td>
-            <td class="total_price_ent" data-orig="<?=$row['orig']['total_price_ent']?>">
+            <td class="total_price_ent">
               <?php
               if(in_array('total_price_ent', $row['change'])) {
-                echo '<span class="text_point">';
-                echo number_format($row['total_price_ent']).'원';
-                echo '</span>';
+                echo "<span class=\"text_point\">" . number_format($row['total_price_ent']).'원' . "</span>";
               } else {
-                echo number_format($row['total_price_ent']).'원';
+                echo "<span class=\"val\">" . number_format($row['total_price_ent']).'원' . "</span>";
               }
               
               if(in_array('total_price_ent', $row['error'])) {
@@ -655,7 +647,6 @@ $(function() {
       var $api = this.api();
       var pages = $api.page.info().pages;
       if(pages <= 1) {
-        console.log()
         this.parent().find('.bottom').css('display','none');
       }
     },
@@ -739,48 +730,62 @@ td.status[data-status="변경완료"] {color: #a9b329;}
 </style>
 
 <script>
-function updateClaim(cl_id, data) {
-  var $tr = $('.btn_edit[data-id="'+cl_id+'"]').closest('tr');
-  var start_date = data['start_date'];
-  var total_price = data['total_price'];
-  var total_price_pen = data['total_price_pen'];
-  var total_price_ent = data['total_price_ent'];
+function formatValue(key, value) {
+  switch(key) {
+    case 'start_date':
+      return value;
+    case 'total_price':
+    case 'total_price_pen':
+    case 'total_price_ent':
+      return parseInt(value).toLocaleString('en-US')+'원';
+  }
+}
 
-  var $start_date = $tr.find('.start_date');
-  var $total_price = $tr.find('.total_price');
-  var $total_price_pen = $tr.find('.total_price_pen');
-  var $total_price_ent = $tr.find('.total_price_ent');
+function updateClaim(cl_id, key, value) {
+  var data = {
+    cl_id: cl_id
+  };
+  data[key] = value;
 
-  // 값이 변경되면 초록색으로 표시
-  if($start_date.data('orig') != start_date)
-    $start_date.addClass('text_point');
-  else
-    $start_date.removeClass('text_point');
+  $.post('./ajax.claim_manage.update.php', JSON.stringify(data), 'json')
+  .done(function(result) {
+    var $tr = $('#table_claim tr[data-id="'+cl_id+'"]');
+    var $td = $tr.find('td.'+key);
+    var json = $td.find('.btn_edit').data('json');
 
-  if($total_price.data('orig') != total_price)
-    $total_price.addClass('text_point');
-  else
-    $total_price.removeClass('text_point');
+    if(!json || !json.match) return;
+    var match = json.match[key];
 
-  if($total_price_pen.data('orig') != total_price_pen)
-    $total_price_pen.addClass('text_point');
-  else
-    $total_price_pen.removeClass('text_point');
+    json[key] = value;
+    $td.find('.btn_edit').attr('data-json', JSON.stringify(json));
 
-  if($total_price_ent.data('orig') != total_price_ent)
-    $total_price_ent.addClass('text_point');
-  else
-    $total_price_ent.removeClass('text_point');
+    if(value == match) {
+      $td.html(
+        '<span class="text_point">'
+        + formatValue(key, value) +
+        '</span>'
+      );
 
-  $start_date.text(start_date);
-  $total_price.text(parseInt(total_price).toLocaleString('en-US')+'원');
-  $total_price_pen.text(parseInt(total_price_pen).toLocaleString('en-US')+'원');
-  $total_price_ent.text(parseInt(total_price_ent).toLocaleString('en-US')+'원');
-  $tr.find('.status').attr('data-status', '1').text('변경');
+      // 정상 체크
+      if($tr.find('.text_red').length == 0) {
+        // 오류가 없으면
+        $tr.removeClass('tr_err')
+        .find('td.status')
+        .attr('data-status', '변경완료')
+        .text('변경완료');
+      }
+    } else {
+      $td.find('.val')
+      .text(formatValue(key, value));
+    }
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
 }
 
 function buildEditHtml(key, data) {
-  console.log(data);
   var val = data[key];
   var match = val;
   if(data.match)
@@ -833,6 +838,8 @@ $(function() {
     $.post('./ajax.claim_manage.write.php', JSON.stringify(data), 'json')
     .done(function(result) {
       var cl_id = result.message;
+      $this.closest('tr').attr('data-id', cl_id);
+
       $this.popModal({
         html: buildEditHtml(key, data),
         showCloseBut: false,
@@ -841,6 +848,17 @@ $(function() {
 
       if(key == 'start_date')
         $('#ipt_start_date').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
+
+
+      $('#btn_'+key).click(function() {
+        var val = $('#ipt_'+key).val();
+        if(!val)
+            return alert('값을 입력해주세요.');
+
+        updateClaim(cl_id, key, val);
+        $this.popModal('hide');
+      });
+
     })
     .fail(function($xhr) {
       var data = $xhr.responseJSON;
