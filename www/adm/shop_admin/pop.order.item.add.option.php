@@ -347,10 +347,6 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
     display:block;
 }
 #pop_add_item .content .list-group-item .row .col-sm-7 .it_opt_prc {
-    position: absolute;
-    right: 38px;
-    bottom: -28px;
-    font-size: 18px;
     font-weight: bold;
     color: #333;
 }
