@@ -220,6 +220,10 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
     $row['start_date'] = $selected_month;
   
   $row['orig'] = array(
+    'penRecGraCd' => $row['penRecGraCd'],
+    'penRecGraNm' => $row['penRecGraNm'],
+    'penTypeCd' => $row['penTypeCd'],
+    'penTypeNm' => $row['penTypeNm'],
     'start_date' => $row['start_date'],
     'total_price' => $row['total_price'],
     'total_price_pen' => $row['total_price_pen'],
@@ -238,6 +242,10 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
       $val['penTypeCd'] == $row['penTypeCd'] &&
       $val['cl_status'] != 0
     ) {
+      $row['penRecGraCd'] = $val['cl_penRecGraCd'];
+      $row['penRecGraNm'] = $val['cl_penRecGraNm'];
+      $row['penTypeCd'] = $val['cl_penTypeCd'];
+      $row['penTypeNm'] = $val['cl_penTypeNm'];
       $row['cl_status'] = $val['cl_status'];
       $row['start_date'] = $val['cl_start_date'];
       $row['total_price'] = $val['cl_total_price'];
@@ -307,7 +315,14 @@ for($i = 0; $row = sql_fetch_array($eform_query); $i++) {
       }
     }
   }
-  
+
+  if(array_intersect([
+    'penRecGraCd', 'penRecGraNm',
+    'penTypeCd', 'penTypeNm'
+  ], $row['change'])) {
+    $row['change'][] = 'pen';
+  }
+
   $claims[] = $row;
 }
 
@@ -477,14 +492,21 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <tr class="<?=$row['error'] ? 'tr_err' : ''?>">
             <td><?=$index?></td>
             <td class="pen">
-              <?="{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})"?>
               <?php
+              if(in_array('pen', $row['change'])) {
+                echo "<span class=\"text_point\">" . "{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})" . "</span>";
+              } else {
+                echo "<span class=\"val\">" . "{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})" . "</span>";
+              }
+
               if(in_array('pen', $row['error'])) {
               ?>
               <br>
               <span class="text_red">
                 <?="{$row['penNm']}({$row['penLtmNum']} / {$row['match']['penRecGraNm']} / {$row['match']['penTypeNm']})"?>
               </span>
+              <br>
+              <button class="btn_edit e_btn" data-key="pen" data-json="<?=htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8')?>">수정</button>
               <?php
               }
               ?>
@@ -746,13 +768,45 @@ function updateClaim(cl_id, key, value) {
   var data = {
     cl_id: cl_id
   };
-  data[key] = value;
+  if(key == 'pen') {
+    $.extend(data, value);
+  } else {
+    data[key] = value;
+  }
 
   $.post('./ajax.claim_manage.update.php', JSON.stringify(data), 'json')
   .done(function(result) {
     var $tr = $('#table_claim tr[data-id="'+cl_id+'"]');
     var $td = $tr.find('td.'+key);
     var json = $td.find('.btn_edit').data('json');
+
+    if(key == 'pen') {
+      var match = json.match;
+      match.penLtmNum = json.penLtmNum;
+      if(
+        value.penRecGraNm == match.penRecGraNm &&
+        value.penTypeNm == match.penTypeNm
+      ) {
+        $td.html(
+          '<span class="text_point">'
+          + formatValue(key, match) +
+          '</span>'
+        );
+
+        // 정상 체크
+        if($tr.find('.text_red').length == 0) {
+          // 오류가 없으면
+          $tr.removeClass('tr_err')
+          .find('td.status')
+          .attr('data-status', '변경완료')
+          .text('변경완료');
+        }
+      } else {
+        $td.find('.val')
+        .text(formatValue(key, match));
+      }
+      return;
+    }
 
     if(!json || !json.match) return;
     var match = json.match[key];
@@ -789,8 +843,16 @@ function updateClaim(cl_id, key, value) {
 function buildEditHtml(key, data) {
   // 수급자 수정일 경우
   if(key == 'pen') {
+    var match = data;
+    if(data.match)
+      match = data.match;
+    match.penLtmNum = data.penLtmNum;
     return '\
-    작성정보 : \
+    작성정보 : ' + formatValue(key, data) + '\
+    <br>\
+    공단정보 : ' + formatValue(key, match) + '\
+    <br>\
+    <button class="e_btn" id="btn_' + key + '" style="width: 100%;">수급자 정보 변경</button>\
     ';
   }
 
@@ -802,12 +864,12 @@ function buildEditHtml(key, data) {
   switch(key) {
     case 'start_date':
       html = '\
-        작성정보 : '+val+'\
+        작성정보 : ' + val + '\
         <br>\
-        공단정보 : '+match+'\
+        공단정보 : ' + match + '\
         <br>\
-        최종정보 : <input type="text" class="e_ipt" id="ipt_'+key+'">\
-        <button class="e_btn" id="btn_'+key+'">확인</button>\
+        최종정보 : <input type="text" class="e_ipt" id="ipt_' + key + '">\
+        <button class="e_btn" id="btn_' + key + '">확인</button>\
       ';
       break;
     case 'total_price':
@@ -816,12 +878,12 @@ function buildEditHtml(key, data) {
       val = parseInt(val).toLocaleString('en-US');
       match = parseInt(match).toLocaleString('en-US');
       html = '\
-        작성금액 : '+val+'\
+        작성금액 : ' + val + '\
         <br>\
-        공단금액 : '+match+'\
+        공단금액 : ' + match + '\
         <br>\
-        최종금액 : <input type="text" class="e_ipt" id="ipt_'+key+'">\
-        <button class="e_btn" id="btn_'+key+'">확인</button>\
+        최종금액 : <input type="text" class="e_ipt" id="ipt_' + key + '">\
+        <button class="e_btn" id="btn_' + key + '">확인</button>\
       ';
       break;
   }
@@ -854,7 +916,16 @@ $(function() {
         placement: 'bottomCenter'
       });
 
-      //if(key == 'pen')
+      if(key == 'pen') {
+        $('#btn_'+key).click(function() {
+          updateClaim(cl_id, key, {
+            penRecGraNm: data.match.penRecGraNm,
+            penTypeNm: data.match.penTypeNm
+          });
+          $this.popModal('hide');
+        });
+        return;
+      }
 
       if(key == 'start_date')
         $('#ipt_start_date').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });

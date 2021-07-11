@@ -19,15 +19,33 @@ $keys = [
   'total_price', 'total_price_pen', 'total_price_ent'
 ];
 
+if($post['penRecGraNm']) {
+  $pen_rec_gra_nm = array_flip($pen_rec_gra_cd);
+
+  if(!isset($pen_rec_gra_nm[$post['penRecGraNm']]))
+    json_response(400, '잘못된 요청입니다.');
+
+  $post['penRecGraCd'] = $pen_rec_gra_nm[$post['penRecGraNm']];
+}
+
+if($post['penTypeNm']) {
+  $pen_type_nm = array_flip($pen_type_cd);
+
+  if(!isset($pen_type_nm[$post['penTypeNm']]))
+    json_response(400, '잘못된 요청입니다.');
+
+  $post['penTypeCd'] = $pen_type_nm[$post['penTypeNm']];
+}
+
 $set = [" cl_status = '1' "];
 foreach($keys as $key) {
   if(isset($post[$key]) && $post[$key]) {
-    $val = get_search_string($post[$key]);
+    $val = sql_real_escape_string($post[$key]);
     $set[] = " cl_{$key} = '{$val}' ";
   }
 }
 
-$cl_id = get_search_string($post['cl_id']);
+$cl_id = sql_real_escape_string($post['cl_id']);
 $set = implode(', ', $set);
 
 $result = sql_query("
