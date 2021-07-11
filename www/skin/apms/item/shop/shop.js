@@ -508,7 +508,7 @@ function price_calculate() {
   var price,
     type,
     qty,
-    total_qty,
+    total_qty = 0,
     total = 0;
 
   $el_prc.each(function (index) {
@@ -530,6 +530,7 @@ function price_calculate() {
   var it_sale_percent = $('.it_sale_percent').get();
   $('#it_tot_price').html(number_format(String(total)) + '원');
   var count = 0;
+
   for (var i = 0; i < it_sale_percent.length; i++) {
     if (parseInt(it_sale_percent[i].getAttribute('data-toggle')) <= total_qty) {
       if (type == '0') {
