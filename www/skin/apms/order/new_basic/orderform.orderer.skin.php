@@ -575,12 +575,12 @@ $(function() {
             월 마감정산
           </a>
         </li>
-        <li>
+        <!--<li>
           <a href="#" data-for="od_settle_bank">
             <img src="<?=$SKIN_URL?>/image/icon_22.png" alt="">
             무통장입금
           </a>
-        </li>
+        </li>-->
       </ul>
     </div>
 
