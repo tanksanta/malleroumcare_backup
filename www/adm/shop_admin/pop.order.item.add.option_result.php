@@ -236,11 +236,11 @@ $sql = "INSERT INTO g5_shop_order_cart_memo SET
 sql_query($sql);
 
 // 상품수 수정
-$sql = " select COUNT(distinct it_id, ct_uid) as cart_count
+$sql = " select COUNT(distinct it_id, ct_uid) as cart_count, count(*) as delivery_count
             from {$g5['g5_shop_cart_table']} where od_id = '$od_id'  ";
 $row = sql_fetch($sql);
 
-sql_query("update {$g5['g5_shop_order_table']} set od_cart_count = '{$row['cart_count']}' where od_id = '$od_id' ");
+sql_query("update {$g5['g5_shop_order_table']} set od_cart_count = '{$row['cart_count']}', od_delivery_total = '{$row['delivery_count']}' where od_id = '$od_id' ");
 
 $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
 
