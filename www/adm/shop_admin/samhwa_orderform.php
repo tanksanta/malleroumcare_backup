@@ -304,7 +304,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
         }
     }
 
-    $prodBarNumCntBtnWord = $insert_qty."/".$qty;
+  $prodBarNumCntBtnWord = $insert_qty."/".$qty;
   $prodBarNumCntBtnWord = ($insert_qty >= $qty) ? "입력완료" : $prodBarNumCntBtnWord;
   $prodBarNumCntBtnStatus = ($insert_qty >= $qty) ? " disable" : "";
 
