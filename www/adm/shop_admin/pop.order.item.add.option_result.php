@@ -198,7 +198,7 @@ for($i=0; $i<count($it_ids); $i++) {
         $point = 0;
 
         $ct_delivery_cnt = $ct_qty;
-        $ct_delivery_price = (round($ct_qty / $it['it_delivery_cnt']) ?: 1) * $it['it_delivery_price'];
+        $ct_delivery_price = (@round($ct_qty / $it['it_delivery_cnt']) ?: 1) * $it['it_delivery_price'];
         $ct_delivery_company = 'ilogen';
 
         $io_value = $io_value ? $io_value : addslashes($it['it_name']);
