@@ -1958,7 +1958,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
             </div>
         </div>
         <div class="content">
-            <?php if ( $od_status['val'] == '작성' ) { ?>
+            <?php if ( $od_status['val'] == '작성' && !$mb['mb_id'] ) { ?>
             <div class="change_member" id="od_change_member">
                 <a><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_order_member.png" /></a>
             </div>
