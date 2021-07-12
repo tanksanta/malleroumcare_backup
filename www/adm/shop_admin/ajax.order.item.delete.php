@@ -7,12 +7,12 @@ auth_check($auth[$sub_menu], "w");
 header('Content-Type: application/json');
 
 if ( !$od_id || !$it_id || !$uid ) {
-    $ret = array(
-        'result' => 'fail',
-        'msg' => '정상적인 접근이 아닙니다.',
-    );
-    echo json_encode($ret);
-    exit;
+  $ret = array(
+    'result' => 'fail',
+    'msg' => '정상적인 접근이 아닙니다.',
+  );
+  echo json_encode($ret);
+  exit;
 }
 
 //------------------------------------------------------------------------------
@@ -21,28 +21,22 @@ if ( !$od_id || !$it_id || !$uid ) {
 $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
 if (!$od['od_id']) {
-    $ret = array(
-        'result' => 'fail',
-        'msg' => '해당 주문번호로 주문서가 존재하지 않습니다.',
-    );
-    echo json_encode($ret);
-    exit;
+  $ret = array(
+    'result' => 'fail',
+    'msg' => '해당 주문번호로 주문서가 존재하지 않습니다.',
+  );
+  echo json_encode($ret);
+  exit;
 }
 
 if ($od['od_penId']) {
-    $ret = array(
-        'result' => 'fail',
-        'msg' => '수급자 주문은 삭제하실 수 없습니다.',
-    );
-    echo json_encode($ret);
-    exit;
+  $ret = array(
+    'result' => 'fail',
+    'msg' => '수급자 주문은 삭제하실 수 없습니다.',
+  );
+  echo json_encode($ret);
+  exit;
 }
-
-
-
-
-
-
 
 // 상품정보
 $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
@@ -82,15 +76,16 @@ samhwa_order_calc($od_id);
 $sto_imsi="";
 $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
 $result_ct = sql_query($sql_ct);
+
 while($row_ct = sql_fetch_array($result_ct)) {
-    $sto_imsi .=$row_ct['stoId'];
+  $sto_imsi .=$row_ct['stoId'];
 }
 
 $stoIdDataList = explode('|',$sto_imsi);
 $stoIdDataList=array_filter($stoIdDataList);
 $stoIdData = implode("|", $stoIdDataList);
 
-$count_b=0;
+$count_b = 0;
 $sendData["stoId"] = $stoIdData;
 $oCurl = curl_init();
 curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do");
@@ -104,21 +99,41 @@ curl_close($oCurl);
 $result_again = json_decode($res, true);
 $result_again =$result_again['data'];
 for($k=0; $k < count($result_again); $k++){
-    if($result_again[$k]['prodBarNum']){
-        $count_b ++;
-    }
+  if($result_again[$k]['prodBarNum']){
+    $count_b++;
+  }
 }
-//바코드 od_prodBarNum_insert 조정
-$sql = "update `g5_shop_order` set `od_prodBarNum_insert` = ".$count_b." where `od_id` = '".$od_id."'";
-sql_query($sql);
 
+// 상품수 수정
+$sql = "
+  select
+    count(distinct it_id, ct_uid) as cart_count,
+    count(*) as delivery_count
+  from
+    {$g5['g5_shop_cart_table']}
+  where
+    od_id = '$od_id'
+";
+$row = sql_fetch($sql);
+
+//바코드 od_prodBarNum_insert 조정
 //order total 수 조정
-$sql = "update `g5_shop_order` set `od_prodBarNum_total` = ".count($result_again)." where `od_id` = '".$od_id."'";
+$sql = "
+  update
+    g5_shop_order
+  set
+    od_prodBarNum_insert = '{$count_b}',
+    od_prodBarNum_total = '".count($result_again)."',
+    od_cart_count = '{$row['cart_count']}',
+    od_delivery_total = '{$row['delivery_count']}'
+  where
+    od_id = '{$od_id}'
+";
 sql_query($sql);
 
 $ret = array(
-    'result' => 'success',
-    'msg' => '삭제되었습니다.',
+  'result' => 'success',
+  'msg' => '삭제되었습니다.',
 );
 echo json_encode($ret);
 exit;
