@@ -182,7 +182,7 @@ $(function() {
 
                 <?php
                   //소계 토탈 - 디스카운트
-                  $pirce_v = $tot_sell_price-$tot_sell_discount;
+                  $pirce_v = str_replace(',','',$item[$i]['total_price']);
                 ?>
                 <!--모바일용-->
                 <div class="info_pc_none">
@@ -190,7 +190,7 @@ $(function() {
                     <p><?php echo $item[$i]['qty']; ?>개</p>
                   </div>
                   <div>
-                    <p><?php echo number_format($pirce_v / intval($item[$i]['qty'])); ?></p>
+                    <p><?php echo $item[$i]['ct_price']; ?></p>
                   </div>
                   <div>
                     <p class="price_print"><?php echo number_format($pirce_v) ; ?></p>
@@ -202,10 +202,10 @@ $(function() {
               <p><?php echo $item[$i]['qty']; ?>개</p>
             </li>
             <li class="pro-price m_none">
-              <p><?php echo number_format($pirce_v / intval($item[$i]['qty'])); ?></p>
+              <p><?php echo $item[$i]['ct_price']; ?></p>
             </li>
             <li class="price m_none">
-              <p class="price_print"><?php echo number_format($pirce_v); ?></p>
+              <p class="price_print"><?php echo number_format($pirce_v) ; ?></p>
             </li>
             <li class="delivery-price m_none" style="width: 20%;">
               <p><?php echo $item[$i]['ct_send_cost']; ?></p>
