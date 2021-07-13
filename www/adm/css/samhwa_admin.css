@@ -553,7 +553,7 @@ table.list-table-style .drop_multi_sub a:after {
     width:10%;
 }
 #samhwa_order_list_table>div.table .od_info {
-    width:260px;
+    width:280px;
 }
 #samhwa_order_list_table>div.table .od_name {
     width:10%;
@@ -619,10 +619,8 @@ table.list-table-style .drop_multi_sub a:after {
     font-size:13px;
     font-weight:bold;
     vertical-align: middle;
-    max-width: 150px;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    max-width: 200px;
+    
     color:#000;
 }
 #samhwa_order_list_table>div.table td .order_info .goods_info .goods_name .notyet {
