@@ -496,9 +496,9 @@ $ret['main'] = "
                 <tr>
                     <th class=\"od_sales_manager\">영업담당자</th>
                     <th class=\"od_release_manager\">출고담당자</th>
-                    <th class=\"od_release_manager_star\">출담</th>
-                    <th class=\"od_pay_state\">결제여부</th>
-                    <th class=\"od_delivery_type\">출고방법</th>
+                    <!-- <th class=\"od_release_manager_star\">출담</th>
+                    
+                    <th class=\"od_delivery_type\">출고방법</th> -->
                     <th class=\"od_ex_date\">출고완료일</th>
                     <th class=\"od_step\">주문상태</th>
                     <th class=\"od_matching\">매칭여부</th>
@@ -937,7 +937,7 @@ foreach($orderlist as $order) {
         <td align=\"center\" class=\"od_release_manager\">
             {$od_release_select}
         </td>
-        <td align=\"center\" class=\"od_release_manager_star\">
+        <!-- <td align=\"center\" class=\"od_release_manager_star\">
             <span class=\"icon-star-gray hand list-important2 important-25 {$important2_class}\" data-od_id='{$order['od_id']}'></span>
         </td>
         <td align=\"center\" class=\"od_pay_state\">
@@ -945,7 +945,7 @@ foreach($orderlist as $order) {
         </td>
         <td align=\"center\" class=\"od_delivery_type\">
             {$show_od_delivery_type}
-        </td>
+        </td> -->
         <td align=\"center\" class=\"od_ex_date\">
             {$ct_ex_date}
         </td>

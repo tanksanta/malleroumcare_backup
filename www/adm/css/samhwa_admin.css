@@ -553,7 +553,7 @@ table.list-table-style .drop_multi_sub a:after {
     width:10%;
 }
 #samhwa_order_list_table>div.table .od_info {
-    width:280px;
+    width:320px;
 }
 #samhwa_order_list_table>div.table .od_name {
     width:10%;
@@ -619,7 +619,7 @@ table.list-table-style .drop_multi_sub a:after {
     font-size:13px;
     font-weight:bold;
     vertical-align: middle;
-    max-width: 200px;
+    max-width: 240px;
     
     color:#000;
 }
