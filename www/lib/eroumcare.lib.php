@@ -552,6 +552,46 @@ function is_benefit_item($item) {
     }
 }
 
+// 상품분류별 내구연한 - 카테고리 별 구매가능 개수 체크
+function get_pen_category_limit($penId, $ca_id) {
+  global $g5;
+
+  $limit = sql_fetch("
+    SELECT
+      ca_use_limit,
+      ca_name,
+      ca_limit_month as month,
+      ca_limit_num as num
+    FROM
+      {$g5['g5_shop_category_table']}
+    WHERE
+      ca_id = '$ca_id'
+  ");
+
+  if(!$limit['ca_use_limit'])
+    return null;
+  
+  $cur_cnt = sql_fetch("
+    SELECT
+      COUNT(*) as cnt
+    FROM
+      `eform_document` d
+      LEFT JOIN
+        `eform_document_item` i ON d.dc_id = i.dc_id
+      LEFT JOIN
+        `{$g5['g5_shop_item_table']}` x ON i.it_code = x.ProdPayCode
+      LEFT JOIN `{$g5['g5_shop_category_table']}` y ON x.ca_id = y.ca_id
+    WHERE
+      penId = '{$penId}' AND
+      (d.dc_datetime BETWEEN DATE_SUB(NOW(), INTERVAL {$limit['month']} MONTH) AND NOW()) AND
+      y.ca_id = '{$ca_id}'
+  ")['cnt'];
+
+  $limit['current'] = $cur_cnt;
+
+  return $limit;
+}
+
 // 상품분류별 내구연한 - 수급자 주문 별 구매가능 개수 체크
 function get_pen_order_limit($penId, $od_id) {
   global $g5;
