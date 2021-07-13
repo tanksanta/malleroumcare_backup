@@ -60,7 +60,7 @@ if(!$res || $res['errorYN'] != 'N')
   json_response(500, $res['message'] ?: '시스템서버가 응답하지 않습니다.');
 
 json_response(200, 'OK', array(
-  'penId' => $res['data']['penId'],
+  'penId' => $data['penId'],
   'isSpare' => $is_spare
 ));
 ?>
