@@ -610,7 +610,7 @@ $(function(){
       $('#panel_product').hide();
     } else {
       $('#panel_ltm').show();
-      $('#panel_product').hide();
+      $('#panel_product').show();
     }
   }
   $('.radio_pen_spare').change(function() {

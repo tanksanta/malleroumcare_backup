@@ -690,7 +690,7 @@ $(function() {
       $('#panel_product').hide();
     } else {
       $('#panel_ltm').show();
-      $('#panel_product').hide();
+      $('#panel_product').show();
     }
   }
   onPenSpareChange($('.register-form input[name="penSpare"]:checked'));
