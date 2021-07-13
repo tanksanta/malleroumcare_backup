@@ -233,7 +233,7 @@ $row = sql_fetch($sql);
     <div class="inner">
       <div class="row">
         <div class="list-more m_off"><a href="<?=G5_SHOP_URL?>/sales_Inventory.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
-        <div class="list-more m_off"><a href="#" id="btn_multi_submit">수급자선택</a></div>
+        <!--<div class="list-more m_off"><a href="#" id="btn_multi_submit">수급자선택</a></div>-->
       </div>
       <div class="table-wrap">
         <div class="tit_area">
@@ -261,15 +261,16 @@ $row = sql_fetch($sql);
         <ul>
           <li class="head cb">
             <span class="num">
-              <label for="chk_stock_all">
+              <!--<label for="chk_stock_all">
                 No.
                 <input type="checkbox" name="chk_stock_all" id="chk_stock_all" value="1" style="margin-bottom: 8px;">
-              </label>
+              </label>-->
+              No.
             </span>
-            <span class="product">상품(옵션)</span>
+            <span class="product" style="width: 43%;">상품(옵션)</span>
             <span class="pro-num">바코드</span>
             <span class="date">입고일</span>
-            <span class="order">판매</span>
+            <!--<span class="order">판매</span>-->
             <span class="del">삭제</span>
           </li>
           <?php
@@ -353,7 +354,7 @@ $row = sql_fetch($sql);
             <li class="list cb">
               <!--pc용-->
               <span class="num">
-                <label for="chk_stock_<?=$number?>">
+                <!--<label for="chk_stock_<?=$number?>">
                   <?=$number?>
                   <input
                     data-color="<?=$list[$i]['prodColor']?>"
@@ -362,9 +363,10 @@ $row = sql_fetch($sql);
                     data-barcode="<?=$list[$i]['prodBarNum']?>"
                     type="checkbox" name="chk_stock_<?=$number?>" id="chk_stock_<?=$number?>" class="chk_stock m_off" style="margin-bottom:8px;
                   ">
-                </label>
+                </label>-->
+                <?=$number?>
               </span>
-              <span class="product m_off">
+              <span class="product m_off" style="width: 43%;">
                 <?php 
                 if($list[$i]['prodColor']||$list[$i]['prodSize']) { 
                   $name= $list[$i]['prodNm'].'('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; 
@@ -381,9 +383,9 @@ $row = sql_fetch($sql);
               $date2=date("Y-m-d H:i", strtotime($date1));
               ?>
               <span class="date m_off"><?=$date2?></span>
-              <span class="order m_off">
+              <!--<span class="order m_off">
                 <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodOption']?>','<?=$list[$i]['prodBarNum']?>')">수급자선택</a>
-              </span>
+              </span>-->
               <span class="del m_off">
                 <a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">
                   삭제
@@ -399,9 +401,9 @@ $row = sql_fetch($sql);
                 </div>
                 <div class="info-m">
                   <span class="date"><?=$date2?></span>
-                  <span class="order">
+                  <!--<span class="order">
                     <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodOption']?>','<?=$list[$i]['prodBarNum']?>')" >수급자선택</a>
-                  </span>
+                  </span>-->
                   <span class="order2">
                     <a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">삭제</a>
                   </span>

@@ -304,10 +304,11 @@ expired_rental_item_clean($_GET['prodId']);
         <ul>
           <li class="head cb">
             <span class="num">
-              <label for="chk_stock_all">
+              <!--<label for="chk_stock_all">
                 No.
                 <input type="checkbox" name="chk_stock_all" id="chk_stock_all" value="1" style="margin-bottom: 8px;">
-              </label>
+              </label>-->
+              No.
             </span>
             <span class="product">상품(옵션)</span>
             <span class="pro-num">바코드</span>
@@ -415,7 +416,7 @@ expired_rental_item_clean($_GET['prodId']);
             <li class="list cb <?=$bg?>">
               <!--pc용-->
               <span class="num">
-                <?php if($list[$i]['stateCd'] == '01') { ?>
+                <?php /*if($list[$i]['stateCd'] == '01') { ?>
                 <label for="chk_stock_<?=$number?>">
                   <?=$number?>
                   <input
@@ -426,7 +427,7 @@ expired_rental_item_clean($_GET['prodId']);
                     type="checkbox" name="chk_stock_<?=$number?>" id="chk_stock_<?=$number?>" class="chk_stock" style="margin-bottom:8px;
                   ">
                 </label>
-                <?php } else { echo $number; } ?>
+                <?php } else { */echo $number; /*}*/ ?>
               </span>
               <span class="product m_off">
                 <?php
