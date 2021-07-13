@@ -229,7 +229,7 @@ expired_rental_item_clean($_GET['prodId']);
     <div class="inner">
       <div class="row">
         <div class="list-more m_off"><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php?&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>">목록</a></div>
-        <div class="list-more m_off"><a href="#" id="btn_multi_submit">수급자선택</a></div>
+        <!--<div class="list-more m_off"><a href="#" id="btn_multi_submit">수급자선택</a></div>-->
       </div>
       <?php
       //보유재고 리스트 보유재고 api 통신
