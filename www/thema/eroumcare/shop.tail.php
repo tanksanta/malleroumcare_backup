@@ -160,25 +160,88 @@ if($_GET['co_id']=="possession_manage"){ ?>
 
 <?php if ($_SESSION['recipient']) { ?>
 <div id="fixed_recipient">
-	<div class="info">
-		<a href="<?php echo G5_SHOP_URL; ?>/my_recipient_view.php?id=<?=$_SESSION['recipient']['penId']?>">
-			<h5>
-				<?php echo $_SESSION['recipient']['penNm']; ?>
-				(<?php echo substr($_SESSION['recipient']['penBirth'], 2, 2); ?>년생/<?php echo $_SESSION['recipient']['penGender']; ?>)
-			</h5>
-			<p>
-				<?php echo $_SESSION['recipient']["penLtmNum"]; ?>
-				(<?php echo $_SESSION['recipient']["penRecGraNm"]; ?><?php echo $pen_type_cd[$_SESSION['recipient']['penTypeCd']] ? '/' . $pen_type_cd[$_SESSION['recipient']['penTypeCd']] : ''; ?>)
-			</p>
-		</a>
-	</div>
-	
-	<a href='<?php echo G5_SHOP_URL; ?>/connect_recipient.php' class="close" onClick="return confirm('<?php echo $_SESSION['recipient']['penNm']; ?> 수급자 연결을 해지하겠습니까?');">
-		<i class="fa fa-times"></i>
-	</a>
-	<a href='<?php echo G5_SHOP_URL; ?>/cart.php' class="cart">
-		장바구니<br/><b><?php echo get_carts_by_recipient($_SESSION['recipient']['penId']); ?>개</b>
-	</a>
+  <div class="info_wrap">
+    <div class="info">
+      <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_view.php?id=<?=$_SESSION['recipient']['penId']?>">
+        <h5>
+          <?php echo $_SESSION['recipient']['penNm']; ?>
+          (<?php echo substr($_SESSION['recipient']['penBirth'], 2, 2); ?>년생/<?php echo $_SESSION['recipient']['penGender']; ?>)
+        </h5>
+        <p>
+          <?php echo $_SESSION['recipient']["penLtmNum"]; ?>
+          (<?php echo $_SESSION['recipient']["penRecGraNm"]; ?><?php echo $pen_type_cd[$_SESSION['recipient']['penTypeCd']] ? '/' . $pen_type_cd[$_SESSION['recipient']['penTypeCd']] : ''; ?>)
+        </p>
+      </a>
+    </div>
+    
+    <a href='<?php echo G5_SHOP_URL; ?>/connect_recipient.php' class="close" onClick="return confirm('<?php echo $_SESSION['recipient']['penNm']; ?> 수급자 연결을 해지하겠습니까?');">
+      <i class="fa fa-times"></i>
+    </a>
+    <a href='<?php echo G5_SHOP_URL; ?>/cart.php' class="cart">
+      장바구니<br/><b><?php echo get_carts_by_recipient($_SESSION['recipient']['penId']); ?>개</b>
+    </a>
+  </div>
+  <?php
+  $limit_status = $limit_txt = null;
+
+  if($it_id)
+    $ca_id = sql_fetch("
+      SELECT
+        ca_id
+      FROM
+        {$g5['g5_shop_item_table']}
+      WHERE
+        it_id = '$it_id'
+    ")['ca_id'];
+  if($ca_id && strlen($ca_id) == 2 && $ca_sub)
+    $ca_id .= $ca_sub[0];
+
+  if($ca_id && strlen($ca_id) == 4) {
+
+    // 수급자 취급품목인지 체크
+    $pen_items = get_items_by_recipient($_SESSION['recipient']['penId']);
+    $product_cate_table = $sale_product_cate_table + $rental_product_cate_table;
+
+    $pen_item_flag = false;
+    foreach($pen_items as $pen_item) {
+      if($product_cate_table[$pen_item['itemId']] == $ca_id) {
+        $pen_item_flag = true;
+        break;
+      }
+    }
+    
+    if(!$pen_item_flag) {
+      // 취급 품목이 아니면
+      $cate_product_table = array_flip($product_cate_table);
+      $product_table = $sale_product_table + $rental_product_table;
+      $limit_status = 'warn';
+      $limit_txt = "{$product_table[$cate_product_table[$ca_id]]} 구매 불가능";
+    } else {
+      // 내구연한(품목 별 구매가능 개수) 체크
+      $limit = get_pen_category_limit($_SESSION['recipient']['penId'], $ca_id);
+      if($limit) {
+        $cur = intval($limit['num']) - intval($limit['current']);
+        if($cur > 0) {
+          $limit_status = 'good';
+          $limit_txt = "{$limit['ca_name']} {$cur}개 구매가능";
+        } else {
+          $limit_status = 'warn';
+          $limit_txt = "{$limit['ca_name']} 구매 수 초과";
+        }
+      }
+    }
+  }
+
+  if($limit_status && $limit_txt) {
+  ?>
+  <div class="limit">
+    <span class="<?=$limit_status?>">
+      *<?=$limit_txt?>
+    </span>
+  </div>
+  <?php
+  }
+  ?>
 </div>
 <?php } ?>
 

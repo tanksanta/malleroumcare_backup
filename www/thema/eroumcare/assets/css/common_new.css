@@ -1066,6 +1066,11 @@ pre{white-space: pre-wrap;}
 	z-index: 99;
 	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
+#fixed_recipient .info_wrap:after {
+  display: table;
+  content: '';
+  clear: both;
+}
 #fixed_recipient .info {
 	float:left;
 	width:200px;
@@ -1092,6 +1097,11 @@ pre{white-space: pre-wrap;}
 	margin-left:15px;
 	line-height:41px;
 }
+#fixed_recipient .limit {
+  line-height: 1;
+}
+#fixed_recipient .limit .warn{color:#ff0000;}
+#fixed_recipient .limit .good{color:#a9b329;}
 
 /* 주문 */
 
