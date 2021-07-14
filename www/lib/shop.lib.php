@@ -1819,6 +1819,33 @@ function get_item_point($it, $io_id='', $trunc=10)
     return $it_point;
 }
 
+function get_sendcost_new($cart_id, $selected=1) {
+  global $g5;
+
+  // 배송비 renew 210506
+  $sql_send = "
+    select 
+      SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * (ct_qty - ct_stock_qty)))) as price,
+      SUM(ct_discount) as discount
+    from
+      {$g5['g5_shop_cart_table']}
+    where
+      od_id = '$cart_id' and
+      ct_send_cost = '0' and
+      ct_status IN ( '쇼핑', '주문', '입금', '출고준비', '준비', '배송', '완료', '작성' ) and
+      and ct_select = '$selected'
+  ";
+  $result_send = sql_fetch($sql_send);
+  $result_total = $result_send['price']-$result_send['discount'];
+
+  if($result_total >= 100000) {
+    $od_send_cost = 0;
+  } else {
+    $od_send_cost = 3000;
+  }
+
+  return $od_send_cost;
+}
 
 // 배송비 구함
 function get_sendcost($cart_id, $selected=1, $update=0)

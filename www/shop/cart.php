@@ -162,7 +162,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 
 // 배송비 계산
 if ($i > 0) {
-	$send_cost = get_sendcost2($s_cart_id, 0);
+	$send_cost = get_sendcost_new($s_cart_id, 0);
 }
 
 // 총계 = 주문상품금액합계 + 배송비
