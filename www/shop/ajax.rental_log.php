@@ -50,7 +50,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
   } else {
     $od_id = sql_fetch("select od_id from g5_shop_order where ordId = '{$row['ordId']}'")['od_id'];
     $content=$row['ren_person'].' 대여';
-    $document='<a href="'.G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$od_id.'" target="_blank">계약서</a>';
+    $document='<a href="'.G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$od_id.'">계약서</a>';
   }
   $list = $list.'<tr>
     <td>'.$number.'</td>
