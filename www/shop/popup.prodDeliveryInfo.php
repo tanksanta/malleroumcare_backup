@@ -116,10 +116,6 @@
 						<b>박스</b>
 						<span><?=number_format($options[$k]["ct_delivery_cnt"])?>개</span>
 					</p>
-					<p class="labelVal price">
-						<b>배송비</b>
-						<span><?=number_format($options[$k]["ct_delivery_price"])?>원</span>
-					</p>
 				<?php } ?>
 			</li>
 		</ul>
