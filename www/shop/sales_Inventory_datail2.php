@@ -601,8 +601,8 @@ expired_rental_item_clean($_GET['prodId']);
                   <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
                   <div class="table-box">
                     <div class="tti">
-                    <h4><?=$name?></h4>
-                        <span><?=$list[$i]['prodBarNum']?></span>
+                      <h4><?=$name?></h4>
+                      <span><?=$list[$i]['prodBarNum']?></span>
                     </div>
                     <table>
                       <colgroup>
