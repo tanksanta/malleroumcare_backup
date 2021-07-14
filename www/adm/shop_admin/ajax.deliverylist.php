@@ -117,7 +117,7 @@ if ($temp_where) {
 if ( $od_sales_manager ) {
   $where_od_sales_manager = array();
   for($i=0;$i<count($od_sales_manager);$i++) {
-    $where_od_sales_manager[] = " od_sales_manager = '{$od_sales_manager[$i]}'";
+    $where_od_sales_manager[] = " mb_manager = '{$od_sales_manager[$i]}'";
   }
   if ( count($where_od_sales_manager) ) {
     $where[] = " ( " . implode(' OR ', $where_od_sales_manager) . " ) ";
@@ -277,7 +277,7 @@ $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
 $sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, it_name, ct_status, ct_manager, ct_is_direct_delivery from {$g5['g5_shop_cart_table']}) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
-        left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
+        left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
         $sql_search2
         group by ct_status ";
