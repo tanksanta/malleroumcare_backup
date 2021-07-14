@@ -189,7 +189,7 @@
           '00043', // 품목코드(배송비)
           '',
           '',
-          $it["ct_qty"],
+          '1',
           $od['od_send_cost'], // 단가(vat포함)
           '',
           (int)($od['od_send_cost'] / 1.1), //공급가액
@@ -222,7 +222,7 @@
           '03245', // 품목코드(배송비)
           '',
           '',
-          $it["ct_qty"],
+          '1',
           $od['od_sales_discount'], // 단가(vat포함)
           '',
           (int)($od['od_sales_discount'] / 1.1), //공급가액
