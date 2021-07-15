@@ -23,7 +23,7 @@ if($header_skin)
 
 <?php // 주문서폼 시작 - id 변경불가 & 삭제하면 안됨 ?>
 
-<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?v=0604">
+<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?v=0715">
 <form name="forderform" id="forderform" method="post" action="<?php echo $action_url; ?>" autocomplete="off" role="form" class="form-horizontal">
     
     <input type="radio" id="od_settle_pay_end" name="od_settle_case" value="월 마감 정산" style="display: none;" checked>
