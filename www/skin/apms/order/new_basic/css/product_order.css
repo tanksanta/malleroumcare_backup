@@ -146,6 +146,8 @@ table {border-collapse: collapse;}
 .table-list2 .pro-price {width: 20%;}
 .table-list2 .price {width: 15%;} 
 .table-list2 .delivery-price {width: 20%;} 
+.table-list2 .basic-price {width: 10%;}
+.table-list2 .tax-price {width: 10%;}
 
 .table-list2 .head {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
 .table-list2 .head li {display: block; padding: 12px 0 12px 20px; background: #eee;text-align: center;font-size: 16px;}

@@ -191,6 +191,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 
   $point      = $sum['point'];
   $sell_price = $sum['price'];
+  $sell_price -= ($row["prodSupYn"] == "Y") ? $sum["discount"] : 0;
 
   // 쿠폰
   $cp_button = false;
@@ -318,8 +319,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   }
 
   $tot_point += $point;
+  
+  // $tot_sell_discount += ($row["prodSupYn"] == "Y") ? $sum["discount"] : 0;
   $tot_sell_price += ($row["prodSupYn"] == "Y") ? $sell_price : 0;
-  $tot_sell_discount += ($row["prodSupYn"] == "Y") ? $sum["discount"] : 0;
 } // for 끝
 
 if ($i == 0) {

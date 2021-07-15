@@ -132,6 +132,8 @@ $(function() {
           <li class="pro">상품(옵션)</li>
           <li class="num">수량</li>
           <li class="pro-price">단가</li>
+          <li class="basic-price">공급가액</li>
+          <li class="tax-price">부가세</li>
           <li class="price">총금액</li>
           <li class="delivery-price" style="width: 20%;">배송비</li>
           <li class="barcode" style="display: none;">바코드</li>
@@ -182,7 +184,8 @@ $(function() {
 
                 <?php
                   //소계 토탈 - 디스카운트
-                  $pirce_v = intval(str_replace(',','',$item[$i]['total_price'])) - intval(str_replace(',','',$item[$i]['ct_discount']));
+                  // $pirce_v = intval(str_replace(',','',$item[$i]['total_price'])) - intval(str_replace(',','',$item[$i]['ct_discount']));
+                  $pirce_v = intval(str_replace(',','',$item[$i]['total_price']));
                 ?>
                 <!--모바일용-->
                 <div class="info_pc_none">
@@ -202,10 +205,16 @@ $(function() {
               <p><?php echo $item[$i]['qty']; ?>개</p>
             </li>
             <li class="pro-price m_none">
-              <p><?php echo number_format($pirce_v / intval($item[$i]['qty'])); ?></p>
+              <p><?php echo number_format($pirce_v / intval($item[$i]['qty'])); ?>원</p>
+            </li>
+            <li class="basic-price">
+              <?php echo number_format(round($pirce_v / 1.1)); ?>원
+            </li>
+            <li class="tax-price">
+            <?php echo number_format(round($pirce_v / 11)); ?>원
             </li>
             <li class="price m_none">
-              <p class="price_print"><?php echo number_format($pirce_v); ?></p>
+              <p class="price_print"><?php echo number_format($pirce_v); ?>원</p>
             </li>
             <li class="delivery-price m_none" style="width: 20%;">
               <p><?php echo $item[$i]['ct_send_cost']; ?></p>
