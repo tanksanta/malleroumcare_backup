@@ -191,6 +191,13 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 
     // 소계
     $opt['ct_price_stotal'] = $opt_price * $opt['ct_qty'] - $opt['ct_discount'];
+    // 단가 역산
+    $opt["opt_price"] = round($opt['ct_price_stotal'] / ($opt["ct_qty"] - $opt["ct_stock_qty"]));
+    // 공급가액
+    $opt["basic_price"] = round($opt['ct_price_stotal'] / 1.1);
+    // 부가세
+    $opt["tax_price"] = round($opt['ct_price_stotal'] / 11);
+
     $opt['ct_point_stotal'] = $opt['ct_point'] * $opt['ct_qty'] - $opt['ct_discount'];
 
     if($opt["prodSupYn"] == "Y"){
@@ -384,11 +391,13 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <th class="item_name">상품</th>
                             <th class="item_qty">수량</th>
                             <th class="item_delivery_qty">배송수량</th>
-              <th class="item_barcode"></th>
-                            <th class="item_price">판매금액</th>
-                            <th class="item_discount">할인금액</th>
+                            <th class="item_barcode"></th>
+                            <th class="item_price">단가</th>
+                            <th class="item_basic_price">공급가액</th>
+                            <th class="item_tax_price">부가세</th>
+                            <!--<th class="item_discount">할인금액</th>-->
                             <!-- <th class="item_sendcost">배송비</th> -->
-                            <th class="item_stotal">결제금액</th>
+                            <th class="item_stotal">합계</th>
                             <th class="item_status">상태</th>
                             <th class="item_memo">요청사항</th>
                             <th class="item_memo">출고완료일</th>
@@ -409,55 +418,55 @@ var od_id = '<?php echo $od['od_id']; ?>';
 
                         for($i=0; $i<count($carts); $i++) {
 
-                # 요청사항
-                $prodMemo = "";
+                        # 요청사항
+                        $prodMemo = "";
 
-                # 대여기간
-                $ordLendDtm = "";
+                        # 대여기간
+                        $ordLendDtm = "";
 
-                # 배송수량
-                $deliveryCnt = 0;
-                if($carts[$i]["prodSupYn"] == "Y" && $carts[$i]["od_delivery_yn"] == "Y"){
-                  $deliveryCnt = $carts[$i]["ct_qty"] - $carts[$i]["ct_stock_qty"];
-                  $deliveryTotalCnt += $deliveryCnt;
-                }
+                        # 배송수량
+                        $deliveryCnt = 0;
+                        if($carts[$i]["prodSupYn"] == "Y" && $carts[$i]["od_delivery_yn"] == "Y"){
+                        $deliveryCnt = $carts[$i]["ct_qty"] - $carts[$i]["ct_stock_qty"];
+                        $deliveryTotalCnt += $deliveryCnt;
+                        }
 
-                            // 상품이미지
-                            $image = "<img src='/data/item/{$carts[$i]["it_img1"]}' onerror='this.src=\"/shop/img/no_image.gif\";' style='width: 50px; height: 50px;'>";
-                            $options = $carts[$i]['options'];
+                        // 상품이미지
+                        $image = "<img src='/data/item/{$carts[$i]["it_img1"]}' onerror='this.src=\"/shop/img/no_image.gif\";' style='width: 50px; height: 50px;'>";
+                        $options = $carts[$i]['options'];
 
-                            $chk_first = 0;
+                        $chk_first = 0;
 
-                            $tot_price += $carts[$i]['sum']['price'];
-                            $tot_qty += $carts[$i]['sum']['qty'];
-                            $tot_discount += $carts[$i]['sum']['discount'];
-                            $tot_sendcost += $carts[$i]['sum']['sendcost'];
-                            $tot_total += ($carts[$i]["prodSupYn"] == "Y") ? $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'] : 0;
+                        $tot_price += $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'];
+                        $tot_qty += $carts[$i]['sum']['qty'];
+                        // $tot_discount += $carts[$i]['sum']['discount'];
+                        $tot_sendcost += $carts[$i]['sum']['sendcost'];
+                        $tot_total += ($carts[$i]["prodSupYn"] == "Y") ? $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'] : 0;
 
-              $prodBarNum = $prodOptNum = '';
-              $option_array = array();
-              $barcode_array = array();
+                        $prodBarNum = $prodOptNum = '';
+                        $option_array = array();
+                        $barcode_array = array();
 
-                            for($k=0; $k<count($options); $k++) {
-                                # 요청사항
-                                $prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
-                                # 대여기간
-                                $ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($carts[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($carts[$i]["ordLendEndDtm"]));
-                                // $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND it_id = '{$carts[$i]['it_id']}' ");
-                                $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND odc_uid = '{$carts[$i]['ct_uid']}' ");
-                                // 파일
-                                $files = array();
-                                if ( $k == 0 ) {
-                                    // $sql = "SELECT * FROM g5_shop_order_cart_file WHERE od_id = '{$od_id}' AND it_id = '{$carts[$i]['it_id']}' AND ctf_type = 'order' ";
-                                    $sql = "SELECT * FROM g5_shop_order_cart_file WHERE od_id = '{$od_id}' AND ctf_uid = '{$carts[$i]['ct_uid']}' AND ctf_type = 'order' ";
-                                    $file_result = sql_query($sql);
-                                    while($file_row = sql_fetch_array($file_result)) {
-                                        $files[] = $file_row;
-                                    }
+                        for($k=0; $k<count($options); $k++) {
+                            # 요청사항
+                            $prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
+                            # 대여기간
+                            $ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($carts[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($carts[$i]["ordLendEndDtm"]));
+                            // $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND it_id = '{$carts[$i]['it_id']}' ");
+                            $cs = sql_fetch(" select * from g5_shop_order_custom where od_id = '{$od_id}' AND odc_uid = '{$carts[$i]['ct_uid']}' ");
+                            // 파일
+                            $files = array();
+                            if ( $k == 0 ) {
+                                // $sql = "SELECT * FROM g5_shop_order_cart_file WHERE od_id = '{$od_id}' AND it_id = '{$carts[$i]['it_id']}' AND ctf_type = 'order' ";
+                                $sql = "SELECT * FROM g5_shop_order_cart_file WHERE od_id = '{$od_id}' AND ctf_uid = '{$carts[$i]['ct_uid']}' AND ctf_type = 'order' ";
+                                $file_result = sql_query($sql);
+                                while($file_row = sql_fetch_array($file_result)) {
+                                    $files[] = $file_row;
                                 }
-                $option_array[] = $options[$k]['ct_option'];
-                $barcode_array[] = $options[$k]['ct_barcode'];
-                                ?>
+                            }
+                            $option_array[] = $options[$k]['ct_option'];
+                            $barcode_array[] = $options[$k]['ct_barcode'];
+                        ?>
                                 <tr class="<?php echo $k==0 ? 'top-border' : ''; ?>">
                                     <td rowspan="1" class="chkcbox">
                                         <label for="sit_sel_<?php echo $i; ?>_<?php echo $k; ?>" class="sound_only"><?php echo $carts[$i]['it_name']; ?> 옵션 전체선택</label>
@@ -480,17 +489,17 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                       <b>
                                                         <?php if($options[$k]['ct_status'] == "재고소진"){ echo "[재고소진]"; } ?>
                                                         <?php echo stripslashes($carts[$i]['it_name']); ?> <b style="color: #<?=($carts[$i]["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>;">(<?=($carts[$i]["prodSupYn"] == "Y") ? "유통" : "비유통"?>)</b>
-                                                      <?php if(substr($carts[$i]["ca_id"], 0, 2) == 20){ ?>
-                                  <b style="color: #FFA500;">(대여)</b>
-                                <?php } ?>
-                                                       <a href="./itemform.php?w=u&amp;it_id=<?php echo $carts[$i]['it_id']; ?>" class="name">보기</a></b><br>
-                                                      <span><?php echo $carts[$i]['it_model']; ?></span>
-                                                      <?php if ( $carts[$i]['it_name'] != $options[$k]['ct_option']) { ?>
-                                                          [옵션] <?php echo $options[$k]['ct_option']; ?>
-                                                      <?php } ?>
-                                                      <?php if($carts[$i]["ct_stock_qty"]){ ?>
-                                                        <p style="color: #DC3333;">* <?=$options[$k]["ct_stock_qty"]?>개 재고소진</p>
-                                                      <?php } ?>
+                                                        <?php if(substr($carts[$i]["ca_id"], 0, 2) == 20){ ?>
+                                                            <b style="color: #FFA500;">(대여)</b>
+                                                        <?php } ?>
+                                                        <a href="./itemform.php?w=u&amp;it_id=<?php echo $carts[$i]['it_id']; ?>" class="name">보기</a></b><br>
+                                                        <span><?php echo $carts[$i]['it_model']; ?></span>
+                                                        <?php if ( $carts[$i]['it_name'] != $options[$k]['ct_option']) { ?>
+                                                            [옵션] <?php echo $options[$k]['ct_option']; ?>
+                                                        <?php } ?>
+                                                        <?php if($carts[$i]["ct_stock_qty"]){ ?>
+                                                            <p style="color: #DC3333;">* <?=$options[$k]["ct_stock_qty"]?>개 재고소진</p>
+                                                        <?php } ?>
                             <?php
                               if($od['od_writer']=="openmarket"){
                                 if($carts[$i]['it_name']!=$carts[$i]['pt_old_name']){ ?>
@@ -761,6 +770,13 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <td class="item_price">
                                         <?php echo number_format($options[$k]['opt_price']); ?>원
                                     </td>
+                                    <td class="item_basic_price">
+                                        <?php echo number_format($options[$k]['basic_price']); ?>원
+                                    </td>
+                                    <td class="item_tax_price">
+                                        <?php echo number_format($options[$k]['tax_price']); ?>원
+                                    </td>
+                                    <!--
                                     <td class="item_discount">
 
                                         <?php if ( $options[$k]['ct_discount'] != 0 ) { ?>
@@ -769,6 +785,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                             -
                                         <?php } ?>
                                     </td>
+                                        -->
                                     <!-- <td class="item_sendcost">
                                         <?php echo number_format($options[$k]['ct_sendcost']); ?>원
                                     </td> -->
@@ -1013,14 +1030,20 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <td class="item_stock_qty">
                               <?=$total_ct_delivery_cnt?>
                             </td>
-              <td class="item_barcode">
+                            <td class="item_barcode">
+                            </td>
+                            <td class="item_basic_price">
+                            </td>
+                            <td class="item_tax_price">
                             </td>
                             <td class="item_price">
-                                <?php echo number_format($tot_price); ?>원
+                                <!--<?php echo number_format($tot_price); ?>원-->
                             </td>
+                            <!--
                             <td class="item_discount">
                                 - <?php echo number_format($tot_discount); ?>원
                             </td>
+                            -->
                             <!-- <td class="item_sendcost">
                              <?php echo number_format($tot_sendcost); ?>원
                              </td> -->
