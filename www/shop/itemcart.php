@@ -370,8 +370,30 @@ for($i=0; $i<$count; $i++) {
     }
 
     #묶음할인
+    // 기존 장바구니에 들어있던 동일한 상품들 가져옴
+    $cart_item_result = sql_query("
+      select
+        *
+      from
+        {$g5['g5_shop_cart_table']} c
+      where
+        od_id = '$tmp_cart_id' and
+        it_id = '$it_id' and
+        pt_msg1 = '{$pt_msg1}' and
+        pt_msg2 = '{$pt_msg2}' and
+        pt_msg3 = '{$pt_msg3}' and
+        ct_status = '쇼핑'
+    ");
+
     $ct_discount = 0;
     $ct_sale_qty = 0;
+
+    $cart_items = [];
+    while($cart_item_row = sql_fetch_array($cart_item_result)) {
+      $ct_sale_qty += $cart_item_row['ct_qty'];
+      $cart_items[] = $cart_item_row;
+    }
+
     $ct_sale_qty_list = $_POST["ct_qty"][$it_id];
     foreach($ct_sale_qty_list as $this_qty){
       $ct_sale_qty += $this_qty;
@@ -386,20 +408,36 @@ for($i=0; $i<$count; $i++) {
     }
 
     $itSaleCnt = 0;
+    $itSalePrice = 0;
 
     for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
       if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
-        if($itSaleCnt < $itSaleCntList[$saleCnt]){
-          $ct_discount2 = $itSalePriceList[$saleCnt] * $ct_qty;
-          $ct_discount = ($it['it_price'] * $ct_qty) - $ct_discount2;
+        if($itSaleCnt < $itSaleCntList[$saleCnt]) {
+          $itSalePrice = $itSalePriceList[$saleCnt];
           $itSaleCnt = $itSaleCntList[$saleCnt];
         }
       }
     }
 
-    // 임시조치: 할인금액 마이너스면 0으로 초기화
-    if($ct_discount < 0) $ct_discount = 0;
+    // 할인된 가격이 원래 상품 가격보다 작으면
+    if($itSalePrice > 0 && $itSalePrice < $it['it_price']) {
+      // 기존에 장바구니에 들어있던 상품 할인
+      foreach($cart_items as $cart_item) {
+        $cart_item_ct_discount = ($it['it_price'] * $cart_item['ct_qty']) - ($itSalePrice * $cart_item['ct_qty']);
 
+        sql_query("
+          UPDATE
+            {$g5['g5_shop_cart_table']}
+          SET
+            ct_discount = '$cart_item_ct_discount'
+          WHERE
+            ct_id = '{$cart_item['ct_id']}'
+        ");
+      }
+
+      // 신규 상품 할인
+      $ct_discount = ($it['it_price'] * $ct_qty) - ($itSalePrice * $ct_qty);
+    }
 
     // 배송정보 기본설정
     //최소값 적용이 있는 상품인 경우
