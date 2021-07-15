@@ -373,8 +373,10 @@ $(function() {
           <ul class="head">
             <li class="pro">상품(옵션)</li>
             <li class="num">수량</li>
-            <li class="pro-price">급여가</li>
-            <li class="price">상품금액</li>
+            <li class="pro-price">단가</li>
+            <li class="basic-price">공급가액</li>
+            <li class="tax-price">부가세</li>
+            <li class="price">총금액</li>
             <li class="delivery-price">주문상태</li>
             <li class="barcode">바코드</li>
           </ul>
@@ -439,10 +441,16 @@ $(function() {
                 <p><?php echo number_format($item[$i]['opt'][$k]['ct_qty']); ?>개</p>
               </li>
               <li class="pro-price m_none">
-                <p><?php echo number_format($item[$i]['opt'][$k]['opt_price']); ?></p>
+                <p><?php echo number_format($item[$i]['opt'][$k]['opt_price']); ?>원</p>
+              </li>
+              <li class="basic-price m_none">
+                <p><?php echo number_format($item[$i]['opt'][$k]['basic_price']); ?>원</p>
+              </li>
+              <li class="tax-price m_none">
+                <p><?php echo number_format($item[$i]['opt'][$k]['tax_price']); ?>원</p>
               </li>
               <li class="price m_none">
-                <p><?php echo number_format($item[$i]['opt'][$k]['sell_price']); ?></p>
+                <p><?php echo number_format($item[$i]['opt'][$k]['sell_price']); ?>원</p>
               </li>
               <li class="delivery-price m_none">
                 <p>
@@ -691,12 +699,14 @@ $(function() {
           <?php } ?>
 
           <?php if ($od['od_cart_discount'] > 0) { ?>
+          <!--
           <li>
             <div>
               <b>할인금액</b>
               <span><?php echo number_format($od['od_cart_discount']); ?> 원</span>
             </div>
           </li>
+          -->
           <?php } ?>
 
           <?php if ($od['od_cart_discount2'] > 0) { ?>
@@ -723,7 +733,8 @@ $(function() {
           </li>
         </ul>
         <?php 
-        $total_price = $tot_price - $od['od_cart_discount'] - $od['od_cart_discount2'] ;
+        // $total_price = $tot_price - $od['od_cart_discount'] - $od['od_cart_discount2'] ;
+        $total_price = $tot_price - $od['od_cart_discount2'] ;
         ?>
         <div class="all-info-price">
           <b>합계금액</b>

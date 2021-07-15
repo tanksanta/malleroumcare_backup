@@ -73,7 +73,8 @@ $sql = " select a.it_id,
         b.it_rental_price,
         a.ct_delivery_yn,
         a.ct_delivery_company,
-        a.ct_delivery_num
+        a.ct_delivery_num,
+        a.ct_discount
       from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
       where a.od_id = '$od_id'
       group by a.it_id, a.ct_uid
@@ -88,7 +89,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
   $item[$i] = $row;
   $item[$i]["thumbnail"] = $row["it_img1"];
 
-  $sql = " select ct_id, mb_id, it_name, ct_option, ct_qty, ct_stock_qty, ct_price, ct_point, ct_status, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_uid
+  $sql = " select ct_id, mb_id, it_name, ct_option, ct_qty, ct_stock_qty, ct_price, ct_point, ct_status, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_uid, ct_discount
         , ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
         from {$g5['g5_shop_cart_table']} MT
         where od_id = '$od_id'
@@ -221,13 +222,24 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     else
       $opt_price = $opt['ct_price'] + $opt['io_price'];
 
-    $sell_price = $opt_price * ($opt["ct_qty"] - $opt["ct_stock_qty"]);
+    // 총 금액
+    $sell_price = $opt_price * ($opt["ct_qty"] - $opt["ct_stock_qty"]) - $opt["ct_discount"]; // ct_discount를 빼고 보여줘야함.
+    // 단가 역산
+    $opt_price = round($sell_price / ($opt["ct_qty"] - $opt["ct_stock_qty"]));
+    // 공급가액
+    $basic_price = round($sell_price / 1.1);
+    // 부가세
+    $tax_price = round($sell_price / 11);
+
     $point = $opt['ct_point'] * $opt['ct_qty'];
 
     $item[$i]['opt'][$k]['opt_price'] = $opt_price;
     $item[$i]['opt'][$k]['sell_price'] = $sell_price;
     $item[$i]['opt'][$k]['point'] = $point;
     $tot_price += ($opt["prodSupYn"] == "Y") ? $sell_price : 0;
+
+    $item[$i]['opt'][$k]['basic_price'] = $basic_price;
+    $item[$i]['opt'][$k]['tax_price'] = $tax_price;
 
     $tot_point += $point;
 
@@ -271,7 +283,7 @@ if ($od['od_status'] == '배송' || $od['od_status'] == '완료') {
 //$tot_price = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2']
 //        - $od['od_cart_coupon'] - $od['od_coupon'] - $od['od_send_coupon']
 //        - $od['od_cancel_price'] - $od['od_cart_discount'] - $od['od_cart_discount2'];
-$tot_price += $od["od_send_cost"]+$od["od_send_cost2"];
+$tot_price += $od["od_send_cost"] + $od["od_send_cost2"] - $od['od_cart_coupon'] - $od['od_coupon'] - $od['od_send_coupon'];
 
 // 결제,배송정보
 $receipt_price  = $od['od_receipt_price'] + $od['od_receipt_point'];
