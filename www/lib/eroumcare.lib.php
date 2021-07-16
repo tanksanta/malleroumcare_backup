@@ -1043,7 +1043,7 @@ function get_recipient_grade($pen_id) {
 	return sql_fetch($sql);
 }
 
-function get_recipient_use_year($pen_id) {
+function get_recipient_grade_per_year($pen_id) {
 	if (!$pen_id) {
 		return false;
 	}
