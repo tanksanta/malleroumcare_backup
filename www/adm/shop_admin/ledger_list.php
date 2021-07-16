@@ -109,10 +109,38 @@ $sql_send_cost = "
     c.ct_qty - c.ct_stock_qty > 0 and
     o.od_send_cost > 0
     {$sql_search}
+  GROUP BY
+    o.od_id
 ";
 
 # 매출할인
 $sql_sales_discount = "
+  SELECT
+    o.od_time,
+    o.od_id,
+    m.mb_entNm,
+    (
+      SELECT mb_name from g5_member WHERE mb_id = m.mb_manager
+    ) as mb_manager,
+    '매출할인' as it_name,
+    '' as ct_option,
+    1 as ct_qty,
+    (-o.od_sales_discount) as price_d,
+    '과세' as tax_info,
+    o.od_b_name
+  FROM
+    g5_shop_order o
+  LEFT JOIN
+    g5_shop_cart c ON o.od_id = c.od_id
+  LEFT JOIN
+    g5_member m ON o.mb_id = m.mb_id
+  WHERE
+    c.ct_status = '완료' and
+    c.ct_qty - c.ct_stock_qty > 0 and
+    o.od_sales_discount > 0
+    {$sql_search}
+  GROUP BY
+    o.od_id
 ";
 
 # Todos: 이월잔액
@@ -123,6 +151,8 @@ FROM
     ({$sql_order})
     UNION ALL
     ({$sql_send_cost})
+    UNION ALL
+    ({$sql_sales_discount})
   ) u
 ";
 
