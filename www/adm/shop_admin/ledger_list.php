@@ -82,22 +82,63 @@ $sql_order = "
     c.ct_status = '완료' and
     c.ct_qty - c.ct_stock_qty > 0
     {$sql_search}
-  ORDER BY
-    o.od_time asc,
-    o.od_id asc
 ";
 # 배송비
 $sql_send_cost = "
+  SELECT
+    o.od_time,
+    o.od_id,
+    m.mb_entNm,
+    (
+      SELECT mb_name from g5_member WHERE mb_id = m.mb_manager
+    ) as mb_manager,
+    '배송비' as it_name,
+    '' as ct_option,
+    1 as ct_qty,
+    o.od_send_cost as price_d,
+    '과세' as tax_info,
+    o.od_b_name
+  FROM
+    g5_shop_order o
+  LEFT JOIN
+    g5_shop_cart c ON o.od_id = c.od_id
+  LEFT JOIN
+    g5_member m ON o.mb_id = m.mb_id
+  WHERE
+    c.ct_status = '완료' and
+    c.ct_qty - c.ct_stock_qty > 0 and
+    o.od_send_cost > 0
+    {$sql_search}
 ";
 
 # 매출할인
 $sql_sales_discount = "
 ";
 
-$result = sql_query($sql_order);
+# Todos: 이월잔액
+
+$sql_common = "
+FROM
+  (
+    ({$sql_order})
+    UNION ALL
+    ({$sql_send_cost})
+  ) u
+";
+
+# 구매액 합계 계산
+$total_price = sql_fetch("SELECT sum(price_d * ct_qty) as total_price {$sql_common}")['total_price'];
+
+$result = sql_query("
+  SELECT
+    *
+  {$sql_common}
+  ORDER BY
+    od_time asc,
+    od_id asc
+");
 
 $ledgers = [];
-$total_price = 0;
 while($row = sql_fetch_array($result)) {
   if($row['tax_info'] == '영세') {
     $row['price_d_p'] = $row['price_d'] * $row['ct_qty'];
@@ -108,7 +149,6 @@ while($row = sql_fetch_array($result)) {
   }
 
   $ledgers[] = $row;
-  $total_price += ($row['price_d'] * $row['ct_qty']);
 }
 
 # 잔액
@@ -199,7 +239,7 @@ $balance = 0;
       <tr>
         <td class="td_date"><?=date('y-m-d', strtotime($row['od_time']))?></td>
         <td class="td_odrnum2"><?=$row['od_id']?></td>
-        <td class="td_mbname"><?=$row['mb_entNm']?></td>
+        <td class="td_id"><?=$row['mb_entNm']?></td>
         <td class="td_payby"><?=$row['mb_manager']?></td>
         <td><?=$row['it_name']?><?=$row['ct_option'] ? "({$row['ct_option']})" : ''?></td>
         <td class="td_numsmall"><?=$row['ct_qty']?></td>
@@ -209,12 +249,16 @@ $balance = 0;
         <td class="td_price"><?=number_format($row['price_d'] * $row['ct_qty'])?></td>
         <td class="td_price">0</td>
         <td class="td_price"><?=number_format($balance += ($row['price_d'] * $row['ct_qty']))?></td>
-        <td class="td_mbname"><?=$row['od_b_name']?></td>
+        <td class="td_id"><?=$row['od_b_name']?></td>
       </tr>
       <?php } ?>
     </tbody>
   </table>
 </div>
+
+<style>
+.td_price { width: 100px; }
+</style>
 
 <script>
 function formatDate(date) {
