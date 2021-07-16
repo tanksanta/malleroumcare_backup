@@ -47,6 +47,15 @@ while($manager = sql_fetch_array($manager_result)) {
   $managers[$manager['mb_id']] = $manager['mb_name'];
 }
 
+# 금액
+$sel_price_field = in_array($sel_price_field, ['price_d', 'price_d_p', 'price_d_s', 'price_d*ct_qty']) ? $sel_price_field : '';
+$where_price = '';
+if($price && $sel_price_field && isset($price_s) && $price_s !== '' && isset($price_e) && $price_e !== '') {
+  $price_s = intval($price_s);
+  $price_e = intval($price_e);
+  $where_price = " where ({$sel_price_field} between {$price_s} and {$price_e}) ";
+}
+
 $sql_search = '';
 if($where) {
   $sql_search = ' and '.implode(' and ', $where);
@@ -75,8 +84,51 @@ $sql_order = "
       ) / (c.ct_qty - c.ct_stock_qty)
     ) as price_d,
     (
-      SELECT it_taxInfo from g5_shop_item WHERE it_id = c.it_id
-    ) as tax_info,
+      CASE
+        WHEN i.it_taxInfo = '영세'
+        THEN
+          (
+            (
+              (c.ct_qty - c.ct_stock_qty) *
+              CASE
+                WHEN c.io_type = 0
+                THEN c.ct_price + c.io_price
+                ELSE c.io_price
+              END - c.ct_discount
+            ) / (c.ct_qty - c.ct_stock_qty)
+          ) * (c.ct_qty - c.ct_stock_qty)
+        ELSE
+        (ROUND(
+          (
+            (c.ct_qty - c.ct_stock_qty) *
+            CASE
+              WHEN c.io_type = 0
+              THEN c.ct_price + c.io_price
+              ELSE c.io_price
+            END - c.ct_discount
+          ) / (c.ct_qty - c.ct_stock_qty) / 1.1
+        )) * (c.ct_qty - c.ct_stock_qty)
+      END
+    ) as price_d_p,
+    (
+      CASE
+        WHEN i.it_taxInfo = '영세'
+        THEN 0
+        ELSE
+          ROUND (
+            (
+              (
+                (c.ct_qty - c.ct_stock_qty) *
+                CASE
+                  WHEN c.io_type = 0
+                  THEN c.ct_price + c.io_price
+                  ELSE c.io_price
+                END - c.ct_discount
+              ) / (c.ct_qty - c.ct_stock_qty)
+            ) / 1.1 / 10
+          ) * (c.ct_qty - c.ct_stock_qty)
+      END
+    ) as price_d_s,
     o.od_b_name
   FROM
     g5_shop_order o
@@ -84,6 +136,8 @@ $sql_order = "
     g5_shop_cart c ON o.od_id = c.od_id
   LEFT JOIN
     g5_member m ON o.mb_id = m.mb_id
+  LEFT JOIN
+    g5_shop_item i ON i.it_id = c.it_id
   WHERE
     c.ct_status = '완료' and
     c.ct_qty - c.ct_stock_qty > 0
@@ -99,11 +153,12 @@ $sql_send_cost = "
     (
       SELECT mb_name from g5_member WHERE mb_id = m.mb_manager
     ) as mb_manager,
-    '배송비' as it_name,
+    '^배송비' as it_name,
     '' as ct_option,
     1 as ct_qty,
     o.od_send_cost as price_d,
-    '과세' as tax_info,
+    ROUND(o.od_send_cost / 1.1) as price_d_p,
+    ROUND(o.od_send_cost / 1.1 / 10) as price_d_s,
     o.od_b_name
   FROM
     g5_shop_order o
@@ -129,11 +184,12 @@ $sql_sales_discount = "
     (
       SELECT mb_name from g5_member WHERE mb_id = m.mb_manager
     ) as mb_manager,
-    '매출할인' as it_name,
+    '^매출할인' as it_name,
     '' as ct_option,
     1 as ct_qty,
     (-o.od_sales_discount) as price_d,
-    '과세' as tax_info,
+    ROUND(-o.od_sales_discount / 1.1) as price_d_p,
+    ROUND(-o.od_sales_discount / 1.1 / 10) as price_d_s,
     o.od_b_name
   FROM
     g5_shop_order o
@@ -164,12 +220,13 @@ FROM
 ";
 
 # 구매액 합계 계산
-$total_price = sql_fetch("SELECT sum(price_d * ct_qty) as total_price {$sql_common}")['total_price'];
+$total_price = sql_fetch("SELECT sum(price_d * ct_qty) as total_price {$sql_common} {$where_price}")['total_price'];
 
 $result = sql_query("
   SELECT
     *
   {$sql_common}
+  {$where_price}
   ORDER BY
     od_time asc,
     od_id asc
@@ -177,14 +234,6 @@ $result = sql_query("
 
 $ledgers = [];
 while($row = sql_fetch_array($result)) {
-  if($row['tax_info'] == '영세') {
-    $row['price_d_p'] = $row['price_d'] * $row['ct_qty'];
-    $row['price_d_s'] = 0;
-  } else {
-    $row['price_d_p'] = @round(($row['price_d'] ? $row['price_d'] : 0) / 1.1) * $row['ct_qty']; // 공급가액
-    $row['price_d_s'] = @round(($row['price_d'] ? $row['price_d'] : 0) / 1.1 / 10) * $row['ct_qty']; // 부가세
-  }
-
   $ledgers[] = $row;
 }
 
@@ -218,12 +267,16 @@ $balance = 0;
         <tr>
           <th>금액</th>
           <td>
+            <input type="checkbox" name="price" value="1" id="search_won" <?=$price ? 'checked' : ''?>><label for="search_won">&nbsp;</label>
             <select name="sel_price_field" id="sel_price_field">
-              <option value="it_price" selected="selected">단가</option>
+              <option value="price_d" <?=get_selected($sel_price_field, 'price_d')?>>단가</option>
+              <option value="price_d_p" <?=get_selected($sel_price_field, 'price_d_p')?>>공급가액</option>
+              <option value="price_d_s" <?=get_selected($sel_price_field, 'price_d_s')?>>부가세</option>
+              <option value="price_d*ct_qty" <?=get_selected($sel_price_field, 'price_d*ct_qty')?>>판매</option>
             </select>
-            <input type="text" name="price_s" value="" class="line" maxlength="10" style="width:80px">
+            <input type="text" name="price_s" value="<?=$price_s?>" class="line" maxlength="10" style="width:80px">
             원 ~
-            <input type="text" name="price_e" value="" class="line" maxlength="10" style="width:80px">
+            <input type="text" name="price_e" value="<?=$price_e?>" class="line" maxlength="10" style="width:80px">
             원
           </td>
         </tr>
