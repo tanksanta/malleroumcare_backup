@@ -50,7 +50,7 @@ while($manager = sql_fetch_array($manager_result)) {
 # 금액
 $sel_price_field = in_array($sel_price_field, ['price_d', 'price_d_p', 'price_d_s', 'price_d*ct_qty']) ? $sel_price_field : '';
 $where_price = '';
-if($price && $sel_price_field && isset($price_s) && $price_s !== '' && isset($price_e) && $price_e !== '') {
+if($price && $sel_price_field && $price_s <= $price_e) {
   $price_s = intval($price_s);
   $price_e = intval($price_e);
   $where_price = " where ({$sel_price_field} between {$price_s} and {$price_e}) ";
@@ -88,6 +88,15 @@ $sql_order = "
         WHEN i.it_taxInfo = '영세'
         THEN
           (
+            (c.ct_qty - c.ct_stock_qty) *
+            CASE
+              WHEN c.io_type = 0
+              THEN c.ct_price + c.io_price
+              ELSE c.io_price
+            END - c.ct_discount
+          )
+        ELSE
+          ROUND(
             (
               (c.ct_qty - c.ct_stock_qty) *
               CASE
@@ -95,19 +104,8 @@ $sql_order = "
                 THEN c.ct_price + c.io_price
                 ELSE c.io_price
               END - c.ct_discount
-            ) / (c.ct_qty - c.ct_stock_qty)
-          ) * (c.ct_qty - c.ct_stock_qty)
-        ELSE
-        (ROUND(
-          (
-            (c.ct_qty - c.ct_stock_qty) *
-            CASE
-              WHEN c.io_type = 0
-              THEN c.ct_price + c.io_price
-              ELSE c.io_price
-            END - c.ct_discount
-          ) / (c.ct_qty - c.ct_stock_qty) / 1.1
-        )) * (c.ct_qty - c.ct_stock_qty)
+            ) / 1.1
+          )
       END
     ) as price_d_p,
     (
@@ -124,9 +122,9 @@ $sql_order = "
                   THEN c.ct_price + c.io_price
                   ELSE c.io_price
                 END - c.ct_discount
-              ) / (c.ct_qty - c.ct_stock_qty)
+              )
             ) / 1.1 / 10
-          ) * (c.ct_qty - c.ct_stock_qty)
+          )
       END
     ) as price_d_s,
     o.od_b_name
