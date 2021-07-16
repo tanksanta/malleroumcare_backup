@@ -26,6 +26,8 @@ if ($data['act'] == 'log_del') {
             pen_type_cd = '{$data['penTypeCd']}',
             pen_type_nm = '{$data['penTypeNm']}',
             pen_gra_edit_dtm = '{$data['penGraEditDtm']}',
+            pen_gra_apply_month = '{$data['penGraApplyMonth']}',
+            pen_gra_apply_day = '{$data['penGraApplyDay']}',
             created_by = '{$member['mb_id']}' ";
   $row = sql_query($sql);
 }

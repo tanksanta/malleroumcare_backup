@@ -200,7 +200,7 @@ if($res['data'])
         <label class="col-sm-2 control-label">
           <b>장기요양인정번호</b>
         </label>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
           <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
           <input type="number" maxlength="10" oninput="maxLengthCheck(this)"  id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>" >
         </div>
@@ -210,7 +210,7 @@ if($res['data'])
         <label class="col-sm-2 control-label">
           <b>인정등급/본인부담율</b>
         </label>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
           <select class="form-control input-sm" name="penRecGraCd" style="margin-bottom: 5px">
             <option value="00" <?=($data["penRecGraCd"] == "00") ? "selected" : ""?>>등급외</option>
             <option value="01" <?=($data["penRecGraCd"] == "01") ? "selected" : ""?>>1등급</option>
@@ -226,7 +226,11 @@ if($res['data'])
             <option value="03" <?=($data["penTypeCd"] == "03") ? "selected" : ""?>>의료 6%</option>
             <option value="04" <?=($data["penTypeCd"] == "04") ? "selected" : ""?>>기초 0%</option>
           </select>
-          <input type="text" name="penGraEditDtm" value="" class="form-control input-sm" dateonly2 style="display: inline-block;width:100%; margin-bottom: 5px;" autocomplete="off">
+          <input type="text" name="penGraEditDtm" value="" class="form-control input-sm" dateonly2 style="display: inline-block;width:100%; margin-bottom: 5px;" autocomplete="off" placeholder="등급적용 시점">
+          <div style="margin-bottom: 5px;">
+            <select name="penGraApplyMonth"  title="월" class="form-control input-sm month" style="display:inline-block;width:50%;"></select>
+            <select name="penGraApplyDay"  title="일"  class="form-control input-sm day" style="display:inline-block;width:49%;"></select>
+          </div>
           <button type="button" id="grade_edit_submit_btn" class="btn btn-color" style="width: 100%;">적용</button>
           <div class="grade-edit-log-wrapper">
             <ul>
@@ -241,7 +245,12 @@ if($res['data'])
               while ($row = sql_fetch_array($result)) {
                 ?>
                 <li>
-                  <span><?=$row['pen_gra_edit_dtm']?> / <?=$row['pen_rec_gra_nm']?> / <?=$row['pen_type_nm']?></span>
+                  <span>
+                    <?=$row['pen_gra_edit_dtm']?>
+                    / <?=$row['pen_rec_gra_nm']?>
+                    / <?=$row['pen_type_nm']?>
+                    / 적용(<?php echo $row['pen_gra_apply_month']; ?>월 <?php echo $row['pen_gra_apply_day']; ?>일)
+                  </span>
                   <button data-seq="<?=$row['seq']?>" type="button" class="grade_edit_del_btn btn btn-color">삭제</button>
                 </li>
                 <?php
@@ -256,7 +265,7 @@ if($res['data'])
         <label class="col-sm-2 control-label">
           <b>유효기간</b>
         </label>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
           <input type="text" name="penExpiStDtm" value="<?=$data["penExpiDtm"][0]?>" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;"> ~
           <input type="text" name="penExpiEdDtm" value="<?=$data["penExpiDtm"][1]?>" class="form-control input-sm" dateonly style="display: inline-block;width:48%;">
         </div>
@@ -843,6 +852,8 @@ $(function() {
       penTypeNm: $(".register-form select[name='penTypeCd'] option:selected").text(),
       penProTypeCd: $('.register-form input[name="penProTypeCd"]:checked').val(),
       penGraEditDtm: $(".register-form input[name='penGraEditDtm']").val(),
+      penGraApplyMonth: $(".register-form select[name='penGraApplyMonth']").val(),
+      penGraApplyDay: $(".register-form select[name='penGraApplyDay']").val(),
       delYn: "N",
       isSpare: "<?=get_text($_GET['penSpare'])?>",
       penSpare: penSpare
