@@ -29,8 +29,19 @@
 	curl_close($oCurl);
 
 	$list = [];
-	if($res["data"]){
-		$list = $res["data"];
+	foreach($res['data'] as $data) {
+		if(!$data['penExpiDtm']) {
+			continue;
+		}
+
+		// 유효기간 만료일
+		$expired_dtm = substr($data['penExpiDtm'], -10);
+
+		if (strtotime(date("Y-m-d")) > strtotime($expired_dtm)) {
+			continue;
+		}
+
+		$list[] = $data;
 	}
 
 ?>
