@@ -24,6 +24,13 @@ if (!$pen_id || $res['errorYN'] === 'Y' || count($res['data']) < 1) {
     exit;
 }
 
+// 유효기간 만료일 체크
+$expired_dtm = substr($res['data'][0]['penExpiDtm'], -10);
+
+if (strtotime(date("Y-m-d")) > strtotime($expired_dtm)) {
+    alert('유효기간이 만료된 수급자입니다.');
+}
+
 $pen = $res['data'][0];
 
 set_session('recipient', $pen);
