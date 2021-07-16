@@ -172,7 +172,7 @@ function fitem_submit(f) {
 				alert(error.replace(/\\n/g, "\n"));
 				return false;
 			} else {
-				if(confirm("장바구니에 담겼습니다.\n\n바로 확인하시겠습니까?")) {
+				if(!confirm("장바구니에 담겼습니다.\n\n확인을 원하시면 '아니오'를 선택하세요")) {
 					document.location.href = "./cart.php";
 				}
 			}
