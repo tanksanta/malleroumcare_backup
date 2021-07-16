@@ -263,7 +263,7 @@ if ($od_escrow) {
 }
 
 if ($fr_date && $to_date) {
-    $where[] = " {$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
+    $where[] = " ({$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 }
 
 $where[] = " od_del_yn = 'N' ";
@@ -803,7 +803,7 @@ foreach($orderlist as $order) {
             sum(ct_sendcost) as ct_sendcost,
             sum(ct_discount) as ct_discount
           from
-            (select B.*, C.*, od_name, od_tel, od_hp, od_b_name, od_b_tel, od_b_hp, od_deposit_name, od_invoice, od_del_yn, it_admin_memo, it_maker 
+            (select B.*, C.*, od_name, od_tel, od_hp, od_b_name, od_b_tel, od_b_hp, od_deposit_name, od_invoice, od_del_yn, od_time, od_receipt_time, od_ex_date, it_admin_memo, it_maker 
             from {$g5['g5_shop_cart_table']} B
             left join {$g5['g5_shop_item_table']} I on I.it_id = B.it_id
             inner join {$g5['g5_shop_order_table']} A on B.od_id = A.od_id
