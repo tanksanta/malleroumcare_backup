@@ -9,11 +9,16 @@ if(!$is_development) alert('개발 중입니다.');
 $g5['title'] = '거래처원장';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
+$where = [];
+
 # 기간
+if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
+if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
 if(!$fr_date)
   $fr_date = date('Y-m-01');
 if(!$to_date)
   $to_date = date('Y-m-d');
+$where[] = " (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
 # 영업담당자
 if(!$mb_manager)
@@ -35,7 +40,79 @@ $managers = [];
 while($manager = sql_fetch_array($manager_result)) {
   $managers[$manager['mb_id']] = $manager['mb_name'];
 }
-# 
+
+$sql_search = '';
+if($where) {
+  $sql_search = ' and '.implode(' and ', $where);
+}
+
+# 매출
+$sql_order = "
+  SELECT
+    o.od_time,
+    o.od_id,
+    m.mb_entNm,
+    (
+      SELECT mb_name from g5_member WHERE mb_id = m.mb_manager
+    ) as mb_manager,
+    c.it_name,
+    c.ct_option,
+    (c.ct_qty - c.ct_stock_qty) as ct_qty,
+    (
+      (
+        (c.ct_qty - c.ct_stock_qty) *
+        CASE
+          WHEN c.io_type = 0
+          THEN c.ct_price + c.io_price
+          ELSE c.io_price
+        END - c.ct_discount
+      ) / (c.ct_qty - c.ct_stock_qty)
+    ) as price_d,
+    (
+      SELECT it_taxInfo from g5_shop_item WHERE it_id = c.it_id
+    ) as tax_info,
+    o.od_b_name
+  FROM
+    g5_shop_order o
+  LEFT JOIN
+    g5_shop_cart c ON o.od_id = c.od_id
+  LEFT JOIN
+    g5_member m ON o.mb_id = m.mb_id
+  WHERE
+    c.ct_status = '완료' and
+    c.ct_qty - c.ct_stock_qty > 0
+    {$sql_search}
+  ORDER BY
+    o.od_time asc,
+    o.od_id asc
+";
+# 배송비
+$sql_send_cost = "
+";
+
+# 매출할인
+$sql_sales_discount = "
+";
+
+$result = sql_query($sql_order);
+
+$ledgers = [];
+$total_price = 0;
+while($row = sql_fetch_array($result)) {
+  if($row['tax_info'] == '영세') {
+    $row['price_d_p'] = $row['price_d'] * $row['ct_qty'];
+    $row['price_d_s'] = 0;
+  } else {
+    $row['price_d_p'] = @round(($row['price_d'] ? $row['price_d'] : 0) / 1.1) * $row['ct_qty']; // 공급가액
+    $row['price_d_s'] = @round(($row['price_d'] ? $row['price_d'] : 0) / 1.1 / 10) * $row['ct_qty']; // 부가세
+  }
+
+  $ledgers[] = $row;
+  $total_price += ($row['price_d'] * $row['ct_qty']);
+}
+
+# 잔액
+$balance = 0;
 ?>
 <div class="new_form">
   <form method="get">
@@ -92,7 +169,7 @@ while($manager = sql_fetch_array($manager_result)) {
 <div class="tbl_head01 tbl_wrap">
   <div class="local_ov01" style="border:1px solid #e3e3e3;">
     <h1 style="border:0;padding:5px 0;margin:0;letter-spacing:0;">
-      구매액 합계: 9,900,000원 (공급가:9,000,000원, VAT:900,000원)
+      구매액 합계: <?=number_format($total_price)?>원 (공급가:<?=number_format((int)($total_price / 1.1))?>원, VAT:<?=number_format($total_price - (int)($total_price / 1.1))?>원)
     </h1>
     <div class="right">
       <button id="btn_ledger_excel"><img src="<?=G5_ADMIN_URL?>/shop_admin/img/btn_img_ex.gif">엑셀다운로드</button>
@@ -118,21 +195,23 @@ while($manager = sql_fetch_array($manager_result)) {
       </tr>
     </thead>
     <tbody>
+      <?php foreach($ledgers as $row) { ?>
       <tr>
-        <td class="td_date">21-07-16</td>
-        <td class="td_odrnum2">2021071612520649</td>
-        <td>동인메디텍</td>
-        <td class="td_payby">정연부</td>
-        <td>엘리트 트래블 워커</td>
-        <td class="td_numsmall">1</td>
-        <td class="td_price">135,000</td>
-        <td class="td_price">121,500</td>
-        <td class="td_price">13,500</td>
-        <td class="td_price">135,000</td>
+        <td class="td_date"><?=date('y-m-d', strtotime($row['od_time']))?></td>
+        <td class="td_odrnum2"><?=$row['od_id']?></td>
+        <td class="td_mbname"><?=$row['mb_entNm']?></td>
+        <td class="td_payby"><?=$row['mb_manager']?></td>
+        <td><?=$row['it_name']?><?=$row['ct_option'] ? "({$row['ct_option']})" : ''?></td>
+        <td class="td_numsmall"><?=$row['ct_qty']?></td>
+        <td class="td_price"><?=number_format($row['price_d'])?></td>
+        <td class="td_price"><?=number_format($row['price_d_p'])?></td>
+        <td class="td_price"><?=number_format($row['price_d_s'])?></td>
+        <td class="td_price"><?=number_format($row['price_d'] * $row['ct_qty'])?></td>
         <td class="td_price">0</td>
-        <td class="td_price">5,146,800</td>
-        <td>동인메디텍</td>
+        <td class="td_price"><?=number_format($balance += ($row['price_d'] * $row['ct_qty']))?></td>
+        <td class="td_mbname"><?=$row['od_b_name']?></td>
       </tr>
+      <?php } ?>
     </tbody>
   </table>
 </div>
