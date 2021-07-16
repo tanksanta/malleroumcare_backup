@@ -23,7 +23,13 @@ $where[] = " (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 # 영업담당자
 if(!$mb_manager)
   $mb_manager = [];
-
+$where_manager = [];
+if(!$mb_manager_all && $mb_manager) {
+  foreach($mb_manager as $man) {
+    $where_manager[] = " m.mb_manager = '$man' ";
+  }
+  $where[] = ' ( ' . implode(' or ', $where_manager) . ' ) ';
+}
 $manager_result = sql_query("
   SELECT
     a.mb_id,
@@ -83,6 +89,7 @@ $sql_order = "
     c.ct_qty - c.ct_stock_qty > 0
     {$sql_search}
 ";
+
 # 배송비
 $sql_send_cost = "
   SELECT
@@ -200,7 +207,7 @@ $balance = 0;
         <tr>
           <th>영업담당자</th>
           <td>
-            <input type="checkbox" name="mb_manager[]" value="all" id="chk_mb_manager_all" <?php if(!array_diff(array_keys($managers), $mb_manager)) echo 'checked'; ?>>
+            <input type="checkbox" name="mb_manager_all" value="1" id="chk_mb_manager_all" <?php if(!array_diff(array_keys($managers), $mb_manager)) echo 'checked'; ?>>
             <label for="chk_mb_manager_all">전체</label>
             <?php foreach($managers as $mb_id => $mb_name) { ?>
             <input type="checkbox" name="mb_manager[]" value="<?=$mb_id?>" id="manager_<?=$mb_id?>" class="chk_mb_manager" <?php if(in_array($mb_id, $mb_manager)) echo 'checked'; ?>>
