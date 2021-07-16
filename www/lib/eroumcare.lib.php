@@ -1031,3 +1031,56 @@ function ct_manager_update($ct_id,$ct_manager){
     $sql_ct = "UPDATE `g5_shop_cart` SET `ct_manager`='".$ct_manager."' where `ct_id` = '".$ct_id."'";
     sql_query($sql_ct);
 }
+
+function get_recipient_grade($pen_id) {
+	if (!$pen_id) {
+		return false;
+	}
+
+	$sql = "SELECT * FROM recipient_grade_log WHERE pen_id = '{$pen_id}'
+		ORDER BY seq DESC LIMIT 1
+	";
+	return sql_fetch($sql);
+}
+
+function get_recipient_grade_per_year($pen_id) {
+	if (!$pen_id) {
+		return false;
+	}
+
+	// 등급정보
+	$grade = get_recipient_grade($pen_id);
+
+	// 등급정보가 없으면 유효기간 시작일로 설정
+	if (!$grade) {
+		$send_data = [];
+		$send_data['usrId'] = $member['mb_id'];
+		$send_data['entId'] = $member['mb_entId'];
+		$send_data['penId'] = $pen_id;
+
+		$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
+
+		$exp_date = substr($res['data'][0]['penExpiStDtm'], 4, 4);
+	}
+
+	$exp_date = $grade['pen_gra_apply_month'] . $grade['pen_gra_apply_day'];
+	$exp_now = date('m') . date('d');
+	$exp_year = intval($exp_date) < intval($exp_now) ? intval(date('Y')) : intval(date('Y')) - 1; // 지금날짜보다 크면 올해, 작으면 작년
+
+	$exp_start = date('Y-m-d', strtotime($exp_year . $exp_date));
+	$exp_end = date('Y-m-d', strtotime('+ 1 years', strtotime($exp_start)));
+
+	// 계약건수, 금액
+	$contract = sql_fetch("SELECT count(*) as cnt, SUM(it_price) as sum_it_price from eform_document_item edi where edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$pen_id}' AND dc_status IN ('1', '2') and dc_datetime BETWEEN '{$exp_start}' AND '{$exp_end}')");
+	// 판매 건수
+	$contract_sell = sql_fetch("SELECT count(*) as cnt from eform_document_item edi where edi.gubun = '00' and edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$pen_id}' AND dc_status IN ('1', '2') and dc_datetime BETWEEN '{$exp_start}' AND '{$exp_end}')");
+	// 대여 건수
+	$contract_borrow = sql_fetch("SELECT count(*) as cnt from eform_document_item edi where edi.gubun = '01' and edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$pen_id}' AND dc_status IN ('1', '2') and dc_datetime BETWEEN '{$exp_start}' AND '{$exp_end}')");
+
+	return array(
+		'count' => $contract['cnt'],
+		'sum_price'	=> $contract['sum_it_price'],
+		'sell_count' => $contract_sell['cnt'],
+		'borrow_count' => $contract_borrow['cnt'],
+	);
+}
