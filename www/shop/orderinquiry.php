@@ -10,6 +10,11 @@ define("_ORDERINQUIRY_", true);
 
 $od_pwd = get_encrypt_string($od_pwd);
 
+if( !in_array($sel_field, array('all', 'o.od_id', 'i.it_name', 'o.od_b_name', 'o.od_penId')) ){   //검색할 필드 대상이 아니면 값을 제거
+	$sel_field = '';
+}
+$search = get_search_string($search);
+
 // 회원인 경우
 if ($is_member)
 {
@@ -82,6 +87,25 @@ for($i = 0; $row = sql_fetch_array($result); $i++){
 	}
 	
 	$total_count++;
+}
+
+// 검색
+if ($sel_field && $search) {
+	if ($sel_field === 'all') {
+		$where[] = "(
+			o.od_id like '%$search%' OR
+			i.it_name like '%$search%' OR
+			o.od_b_name like '%$search%' OR
+			o.od_penId like '%$search%'
+		)";
+	} else {
+		$where[] = " $sel_field like '%$search%' ";
+	}
+}
+
+if ($where) {
+	$where_query = $sql_search ? ' and ' : ' where ';
+  $sql_search = $where_query.implode(' and ', $where);
 }
 
 // 비회원 주문확인시 비회원의 모든 주문이 다 출력되는 오류 수정

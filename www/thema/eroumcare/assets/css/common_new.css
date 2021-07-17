@@ -562,7 +562,7 @@ pre{white-space: pre-wrap;}
 .search_box {margin:0 0 16px;font-size: 0; float: left;} 
 .search_box select {margin-right:6px;display: inline-block;padding:5px;border:1px solid #d7d7d7;border-radius: 3px;font-size: 14px;float: left;}
 .search_box .input_search {display: inline-block;width:176px;height:33px; position: relative;border: 1px solid #d7d7d7;border-radius: 3px; padding:0px;}
-.search_box .input_search input {width: calc(100% - 30px);font-size: 14px;border:0;}
+.search_box .input_search input {width: calc(100% - 30px);font-size: 14px;border:0;padding: 4px}
 .search_box .input_search button {position: absolute;top:0;right:0;z-index:1;width: 30px;height: 30px;background: url('/img/search_icon.png') no-repeat center top 50%/12px auto;}
 
 .date_wrap{margin:30px 0;padding:10px;text-align:center;}
