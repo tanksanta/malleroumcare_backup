@@ -56,6 +56,12 @@ if($price && $sel_price_field && $price_s <= $price_e) {
   $where_price = " where ({$sel_price_field} between {$price_s} and {$price_e}) ";
 }
 
+# 검색어
+$sel_field = in_array($sel_field, ['mb_entNm', 'o.od_id', 'c.it_name', 'o.od_b_name']) ? $sel_field : '';
+$search = get_search_string($search);
+if($search)
+  $where[] = " {$sel_field} LIKE '%{$search}%' ";
+
 $sql_search = '';
 if($where) {
   $sql_search = ' and '.implode(' and ', $where);
@@ -282,9 +288,12 @@ $balance = 0;
           <th>검색어</th>
           <td>
             <select name="sel_field" id="sel_field">
-              <option value="mb_entNm" selected="selected">사업소명</option>
+              <option value="mb_entNm" <?=get_selected($sel_field, 'mb_entNm')?>>사업소명</option>
+              <option value="o.od_id" <?=get_selected($sel_field, 'o.od_id')?>>주문번호</option>
+              <option value="c.it_name" <?=get_selected($sel_field, 'c.it_name')?>>품목명</option>
+              <option value="o.od_b_name" <?=get_selected($sel_field, 'o.od_b_name')?>>출고처</option>
             </select>
-            <input type="text" name="search" value="" id="search" class="frm_input" autocomplete="off" style="width:200px;">
+            <input type="text" name="search" value="<?=$search?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
           </td>
         </tr>
       </tbody>
