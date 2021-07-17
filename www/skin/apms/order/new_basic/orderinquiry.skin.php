@@ -180,6 +180,22 @@ if($header_skin)
 		</form>
 	</div>
 
+  <form id="form_search" method="get">
+    <div class="search_box">
+      <select name="sel_field" id="sel_field">
+        <option value="all"<?php if($sel_field == 'all') echo ' selected'; ?>>전체</option>
+				<option value="o.od_id"<?php if($sel_field == 'o.od_id') echo ' selected'; ?>>주문번호</option>
+				<option value="i.it_name"<?php if($sel_field == 'i.it_name') echo ' selected'; ?>>상품명</option>
+				<option value="o.od_b_name"<?php if($sel_field == 'o.od_b_name') echo ' selected'; ?>>수령인</option>
+				<option value="o.od_penId"<?php if($sel_field == 'o.od_penId') echo ' selected'; ?>>수급자 고유번호</option>
+      </select>
+      <div class="input_search">
+          <input name="search" id="search" value="<?=$search?>" type="text">
+          <button id="btn_search" type="submit"></button>
+      </div>
+    </div>
+  </form>
+
 	<div class="list-wrap">
     <?php if(!$list){ ?>
         <style>
