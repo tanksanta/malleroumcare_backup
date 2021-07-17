@@ -39,6 +39,25 @@ else
 if(!$res || $res['errorYN'] != 'N')
   json_response(500, $res['message'] ?: '시스템서버가 응답하지 않습니다.');
 
+// 등급 로그 추가
+$pen_gra_edit_dtm = $data['penExpiStDtm'];
+$pen_gra_apply_month = substr($data['penExpiStDtm'], 5, 2);
+$pen_gra_apply_day = substr($data['penExpiStDtm'], 8, 2);
+
+$sql = "INSERT INTO
+					recipient_grade_log
+				SET
+					pen_id = '{$res['data']['penId']}',
+					pen_rec_gra_cd = '{$data['penRecGraCd']}',
+					pen_rec_gra_nm = '{$data['penRecGraNm']}',
+					pen_type_cd = '{$data['penTypeCd']}',
+					pen_type_nm = '{$data['penTypeNm']}',
+					pen_gra_edit_dtm = '{$pen_gra_edit_dtm}',
+					pen_gra_apply_month = '{$pen_gra_apply_month}',
+					pen_gra_apply_day = '{$pen_gra_apply_day}',
+					created_by = '{$member['mb_id']}' ";
+sql_query($sql);
+
 json_response(200, 'OK', array(
   'penId' => $res['data']['penId'],
   'isSpare' => $is_spare
