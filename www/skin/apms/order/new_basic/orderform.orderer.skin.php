@@ -919,65 +919,54 @@ $(function() {
 <!-- 수급자 정보 iframe창 -->
 
 <script>
-// 수급자 선택 함수-
 function selected_recipient($penId) {
-  // 수급자 정보 iframe 에서 넘긴값 받기
-  var recipient = $penId.split("|");
-  var list = {
-    "rn":recipient[0],
-    "penId":recipient[1],      //PENID_19210105000002
-    "entId":recipient[2],      //ENT2020070900001
-    "penNm":recipient[3],      //심재성
-    "penLtmNum":recipient[4],    //L2147483647
-    "penRecGraCd":recipient[5],    //01
-    "penRecGraNm":recipient[6],    //1등급
-    "penTypeCd":recipient[7],    //00
-    "penTypeNm":recipient[8],    //일반 15%
-    "penExpiStDtm":recipient[9],  //2020-01-01
-    "penExpiEdDtm":recipient[10],  //2020-12-31
-    "penExpiDtm":recipient[11],    //2020-01-01 ~ 2020-12-31
-    "penExpiRemDay":recipient[12],  //375
-    "penGender":recipient[13],    //00
-    "penGenderNm":recipient[14],  //남
-    "penBirth":recipient[15],    //19800101
-    "penAge":recipient[16],      //41
-    "penAppEdDtm":recipient[17],  //2020-12-31
-    "penAddr":recipient[18],    //부산 금정구 부산대학로 63번길 2
-    "penAddrDtl":recipient[19],    //10
-    "penConNum":recipient[20],    //010-2631-3284
-    "penConPnum":recipient[21],    //051-780-8157
-    "penProNm":recipient[22],
-    "usrId":recipient[23],      //1000203000
-    "appCd":recipient[24],      //01
-    "appCdNm":recipient[25],    //등록완료
-    "caCenYn":recipient[26],    //N
-    "regDtm":recipient[27],      //1609811513000
-    "regDt":recipient[28],      //2021.01.05
-    "ordLendEndDtm":recipient[29],
-    "ordLendRemDay":recipient[30],
-    "usrNm":recipient[31],      //홍길동
-    "penAppRemDay":recipient[32],  //-10
-    "penMoney":recipient[33]    //800,000원
-  };
-
-  $.post('./ajax.category.limit.php', { od_id: '<?=$s_cart_id?>', penId: list.penId }, 'json')
+  var pen_id = $penId.split("|")[1] || $penId;
+  $.get('./ajax.get_recipient.php', {
+    pen_id: pen_id,
+  }, 'json')
   .done(function(result) {
-    var data = result.data;
-    if(data.length && data.length > 0) {
-      var msg = list.penNm + ' 수급자는 구매제한 개수를 초과하였습니다.\n구매제한 개수를 초과한 주문은 계약서에 반영되지 않습니다.\n\n';
-      for(var i = 0; i < data.length; i++) {
-        msg += data[i]['ca_name'] + ': ' +
-        data[i]['month'] + '개월 동안 ' +
-        data[i]['limit'] + '개 구매가능 (현재 ' +
-        data[i]['current'] + '개 구매)\n';
-      }
-      alert(msg);
+
+    var sum_price = parseInt(result.data.grade['sum_price']) || 0;
+    var good_mny = parseInt($('input[name="good_mny"]').val()) || 0;
+
+    if (sum_price + good_mny > 1600000) {
+      alert(
+        '수급자는 해당 주문을 포함하여, 1년 동안 구매금액 160만원을 초과하였습니다.\n구매금액을 초과한 주문은 계약서에 반영되지 않습니다.\n\n'
+        + '수급자 1년 구매액: ' + sum_price + '원\n'
+        + '해당 주문 금액: ' + good_mny + '원\n'
+      );
     }
+
+    $.post('./ajax.category.limit.php', { od_id: '<?=$s_cart_id?>', penId: result.data.penId }, 'json')
+    .done(function(result) {
+      var data = result.data;
+      if(data.length && data.length > 0) {
+        var msg = list.penNm + ' 수급자는 구매제한 개수를 초과하였습니다.\n구매제한 개수를 초과한 주문은 계약서에 반영되지 않습니다.\n\n';
+        for(var i = 0; i < data.length; i++) {
+          msg += data[i]['ca_name'] + ': ' +
+          data[i]['month'] + '개월 동안 ' +
+          data[i]['limit'] + '개 구매가능 (현재 ' +
+          data[i]['current'] + '개 구매)\n';
+        }
+        alert(msg);
+      }
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+
+    // 수급자 적용
+    apply_recipient(result.data);
+
   })
   .fail(function($xhr) {
     var data = $xhr.responseJSON;
     alert(data && data.message);
   });
+}
+
+function apply_recipient(list) {
 
   //수급자 정보 컨트롤
   $('#Yrecipient').removeClass('none');
@@ -1180,7 +1169,6 @@ function selected_recipient($penId) {
   $("#sod_frm_stock_status").hide();
   $(".barList input").val("");
   $('#ad_sel_addr_recipient').click();
-
 }
 
 
