@@ -926,7 +926,7 @@ function selected_recipient($penId) {
   }, 'json')
   .done(function(result) {
 
-    var sum_price = parseInt(result.data.grade['sum_price']) || 0;
+    var sum_price = parseInt(result.data.per_year['sum_price']) || 0;
     var good_mny = parseInt($('input[name="good_mny"]').val()) || 0;
 
     if (sum_price + good_mny > 1600000) {

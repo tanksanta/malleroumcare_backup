@@ -27,7 +27,8 @@ if (!$pen_id || $res['errorYN'] === 'Y' || count($res['data']) < 1) {
 }
 
 $ret = $res['data'][0];
-$ret['grade'] = get_recipient_grade_per_year($ret['penId']);
+$ret['grade'] = get_recipient_grade($ret['penId']);
+$ret['per_year'] = get_recipient_grade_per_year($ret['penId']);
 
 
 json_response(200, 'OK', $ret);
