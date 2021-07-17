@@ -18,7 +18,7 @@ if(!$fr_date)
   $fr_date = date('Y-m-01');
 if(!$to_date)
   $to_date = date('Y-m-d');
-$where[] = " (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+$where_time = " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
 # 영업담당자
 if(!$mb_manager)
@@ -145,7 +145,6 @@ $sql_order = "
   WHERE
     c.ct_status = '완료' and
     c.ct_qty - c.ct_stock_qty > 0
-    {$sql_search}
 ";
 
 # 배송비
@@ -174,9 +173,6 @@ $sql_send_cost = "
     c.ct_status = '완료' and
     c.ct_qty - c.ct_stock_qty > 0 and
     o.od_send_cost > 0
-    {$sql_search}
-  GROUP BY
-    o.od_id
 ";
 
 # 매출할인
@@ -205,26 +201,28 @@ $sql_sales_discount = "
     c.ct_status = '완료' and
     c.ct_qty - c.ct_stock_qty > 0 and
     o.od_sales_discount > 0
-    {$sql_search}
-  GROUP BY
-    o.od_id
 ";
-
-# Todos: 이월잔액
 
 $sql_common = "
 FROM
   (
-    ({$sql_order})
+    ({$sql_order} {$sql_search} {$where_time})
     UNION ALL
-    ({$sql_send_cost})
+    ({$sql_send_cost} {$sql_search} {$where_time} GROUP BY o.od_id)
     UNION ALL
-    ({$sql_sales_discount})
+    ({$sql_sales_discount} {$sql_search} {$where_time} GROUP BY o.od_id)
   ) u
 ";
 
 # 구매액 합계 계산
-$total_price = sql_fetch("SELECT sum(price_d * ct_qty) as total_price {$sql_common} {$where_price}")['total_price'];
+$total_result = sql_fetch("SELECT sum(price_d * ct_qty) as total_price, count(*) as cnt {$sql_common} {$where_price}");
+$total_price = $total_result['total_price'];
+$total_count = $total_result['cnt'];
+
+$page_rows = $config['cf_page_rows'];
+$total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
 $result = sql_query("
   SELECT
@@ -237,13 +235,38 @@ $result = sql_query("
 ");
 
 $ledgers = [];
+$balance = 0;
 while($row = sql_fetch_array($result)) {
+  $balance += ($row['price_d'] * $row['ct_qty']);
+  $row['balance'] = $balance;
   $ledgers[] = $row;
 }
 
+/*# 이월잔액
+$balance_carried = sql_fetch("
+  SELECT
+    sum(price_d * ct_qty) as balance
+  FROM
+    (
+      ({$sql_order} {$sql_search} and od_time < '$fr_date 00:00:00')
+      UNION ALL
+      ({$sql_send_cost} {$sql_search} and od_time < '$fr_date 00:00:00' GROUP BY o.od_id)
+      UNION ALL
+      ({$sql_sales_discount} {$sql_search} and od_time < '$fr_date 00:00:00' GROUP BY o.od_id)
+    ) u
+  {$where_price}
+")['balance'];
+
 # 잔액
-$balance = 0;
+$balance = $balance_carried;*/
+
+$qstr = "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_price_field}&amp;price_s={$price_s}&amp;price_e={$price_e}&amp;sel_field={$sel_field}&amp;search={$search}";
 ?>
+
+<style>
+.td_price { width: 100px; }
+</style>
+
 <div class="new_form">
   <form method="get">
     <table class="new_form_table">
@@ -332,7 +355,26 @@ $balance = 0;
       </tr>
     </thead>
     <tbody>
-      <?php foreach($ledgers as $row) { ?>
+      <!--<tr>
+        <td class="td_date"><?=date('y-m-d', strtotime($fr_date))?></td>
+        <td class="td_odrnum2"></td>
+        <td class="td_id"></td>
+        <td class="td_payby"></td>
+        <td>이월잔액</td>
+        <td class="td_numsmall"></td>
+        <td class="td_price"></td>
+        <td class="td_price"></td>
+        <td class="td_price"></td>
+        <td class="td_price"></td>
+        <td class="td_price"></td>
+        <td class="td_price"><?=number_format($balance)?></td>
+        <td class="td_id"></td>
+      </tr>-->
+      <?php
+      for($i = $from_record; $i < ($from_record + $page_rows); $i++) {
+        if(!isset($ledgers[$i])) break;
+        $row = $ledgers[$i];
+      ?>
       <tr>
         <td class="td_date"><?=date('y-m-d', strtotime($row['od_time']))?></td>
         <td class="td_odrnum2"><?=$row['od_id']?></td>
@@ -345,17 +387,14 @@ $balance = 0;
         <td class="td_price"><?=number_format($row['price_d_s'])?></td>
         <td class="td_price"><?=number_format($row['price_d'] * $row['ct_qty'])?></td>
         <td class="td_price">0</td>
-        <td class="td_price"><?=number_format($balance += ($row['price_d'] * $row['ct_qty']))?></td>
+        <td class="td_price"><?=number_format($row['balance'])?></td>
         <td class="td_id"><?=$row['od_b_name']?></td>
       </tr>
       <?php } ?>
     </tbody>
   </table>
+  <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
 </div>
-
-<style>
-.td_price { width: 100px; }
-</style>
 
 <script>
 function formatDate(date) {
@@ -366,6 +405,11 @@ function formatDate(date) {
 }
 
 $(function() {
+  // 수금관리 버튼
+  $('#btn_ledger_manage').click(function() {
+    location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_search.php";
+  });
+
   // 기간 - 이번달 버튼
   $('#select_date_thismonth').click(function() {
     var today = new Date(); // 오늘
