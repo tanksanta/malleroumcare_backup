@@ -129,6 +129,11 @@ $qstr .= "search={$search}";
       </tr>
     </thead>
     <tbody>
+      <?php if(!$ents) { ?>
+      <tr>
+        <td colspan="5" class="empty_table">자료가 없습니다.</td>
+      </tr>
+      <?php } ?>
       <?php foreach($ents as $ent) { ?>
       <tr>
         <td class="td_cntsmall"><?=$ent['index']?></td>
