@@ -60,23 +60,27 @@ $recs = get_recs_by_recipient($pen['penId']);
   </div>
   <div class="info_wrap">
     <div class="row">
-      <div class="col-sm-2">·연락처</div>
+      <div class="col-sm-2">· 연락처</div>
       <div class="col-sm-10">: <?=$pen['penConNum']?><?=($pen['penConPnum'] ? ", {$pen['penConPnum']}" : "")?></div>
     </div>
     <div class="row">
-      <div class="col-sm-2">·주소</div>
+      <div class="col-sm-2">· 주소</div>
       <div class="col-sm-10">: <?="{$pen['penAddr']} {$pen['penAddrDtl']}"?></div>
     </div>
     <div class="row">
-      <div class="col-sm-2">·장기요양정보</div>
+      <div class="col-sm-2">· 장기요양정보</div>
       <div class="col-sm-10">: <?=substr($pen['penLtmNum'], 0, 6)?>**** (<?=$pen['penRecGraNm']?>/<?=$pen['penTypeNm']?>)</div>
     </div>
     <div class="row">
-      <div class="col-sm-2">·유효기간</div>
+      <div class="col-sm-2">· 유효기간</div>
       <div class="col-sm-10">: <?=$pen['penExpiDtm']?></div>
     </div>
     <div class="row">
-      <div class="col-sm-2">·보호자</div>
+      <div class="col-sm-2">· 적용기간 기준일</div>
+      <div class="col-sm-10">: 반영대기중</div>
+    </div>
+    <div class="row">
+      <div class="col-sm-2">· 보호자</div>
       <?php if($pen['penProTypeCd'] == '00') { // 보호자 없음 ?>
       <div class="col-sm-10">: 없음</div>
       <?php } else { ?>
@@ -84,7 +88,7 @@ $recs = get_recs_by_recipient($pen['penId']);
       <?php } ?>
     </div>
     <div class="row">
-      <div class="col-sm-2">·장기요양기록지</div>
+      <div class="col-sm-2">· 장기요양기록지</div>
       <div class="col-sm-10">: 확인자(<?=$pen_cnm_type_cd[$pen['penCnmTypeCd']]?>), 수령방법(<?=$pen_rec_type_cd[$pen['penRecTypeCd']]?>) <?=$pen['penRecTypeTxt']?></div>
     </div>
     <a class="c_btn" href="./my_recipient_update.php?id=<?=$pen['penId']?>">기본정보 수정</a>

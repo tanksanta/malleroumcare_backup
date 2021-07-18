@@ -33,7 +33,7 @@
 .recipient_view_wrap .info_wrap { position: relative; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 15px 0; color: #666; }
 .recipient_view_wrap .info_wrap .c_btn { position: absolute; top:15px; right:5px; z-index: 100; }
 .recipient_view_wrap .info_wrap .col-sm-2 {max-width: 150px;}
-.recipient_view_wrap .tel_btn_wrap { position: absolute; bottom: 15px; right: 5px; }
+.recipient_view_wrap .tel_btn_wrap { position: absolute; bottom: 15px; right: 5px; display:none;}
 .recipient_view_wrap .tel_btn { display: inline-block; color: #333; font-size: 16px; line-height: 20px; height: 50px; padding: 15px 20px; border: 1px solid #ddd; border-radius: 3px; background-color: #fff; vertical-align: middle; }
 .recipient_view_wrap .tel_btn .fa { font-size: 20px; line-height: 20px; padding-right: 5px; vertical-align: middle; }
 .recipient_view_wrap .tel_btn + .tel_btn { margin-left: 5px; }
@@ -134,7 +134,7 @@
   .recipient_view_wrap .info_wrap .row { margin-bottom: 10px; }
   .recipient_view_wrap .info_wrap .row:last-child { margin-bottom: 0; }
   .recipient_view_wrap .info_wrap .c_btn { position: static; }
-  .recipient_view_wrap .tel_btn_wrap { position: static; margin-top: 20px; }
+  .recipient_view_wrap .tel_btn_wrap { position: static; margin-top: 20px; display:inline-block;}
   
   .recipient_view_wrap .sub_title { padding-bottom: 20px; }
   .recipient_view_wrap .sub_title_desc {left:5px; bottom: 10px;}

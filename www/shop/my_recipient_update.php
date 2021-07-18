@@ -228,6 +228,7 @@ if($res['data'])
           </select>
           <input type="text" name="penGraEditDtm" value="" class="form-control input-sm" dateonly2 style="display: inline-block;width:100%; margin-bottom: 5px;" autocomplete="off" placeholder="등급적용 시점">
           <div style="margin-bottom: 5px;">
+          	<p>적용기간 기준일</p>
             <select name="penGraApplyMonth"  title="월" class="form-control input-sm month" style="display:inline-block;width:50%;"></select>
             <select name="penGraApplyDay"  title="일"  class="form-control input-sm day" style="display:inline-block;width:49%;"></select>
           </div>
@@ -249,7 +250,7 @@ if($res['data'])
                     <?=$row['pen_gra_edit_dtm']?>
                     / <?=$row['pen_rec_gra_nm']?>
                     / <?=$row['pen_type_nm']?>
-                    / 적용(<?php echo $row['pen_gra_apply_month']; ?>월 <?php echo $row['pen_gra_apply_day']; ?>일)
+                    / 적용기간 기준일(<?php echo $row['pen_gra_apply_month']; ?>월 <?php echo $row['pen_gra_apply_day']; ?>일)
                   </span>
                   <button data-seq="<?=$row['seq']?>" type="button" class="grade_edit_del_btn btn btn-color">삭제</button>
                 </li>
