@@ -9,6 +9,7 @@ if(!$is_development) alert('개발 중입니다.');
 $g5['title'] = '거래처원장';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
+$qstr = "";
 $where = [];
 
 # 기간
@@ -26,6 +27,7 @@ if(!$mb_manager)
 $where_manager = [];
 if(!$mb_manager_all && $mb_manager) {
   foreach($mb_manager as $man) {
+    $qstr .= "mb_manager%5B%5D={$man}&amp;";
     $where_manager[] = " m.mb_manager = '$man' ";
   }
   $where[] = ' ( ' . implode(' or ', $where_manager) . ' ) ';
@@ -260,7 +262,7 @@ $balance_carried = sql_fetch("
 # 잔액
 $balance = $balance_carried;*/
 
-$qstr = "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_price_field}&amp;price_s={$price_s}&amp;price_e={$price_e}&amp;sel_field={$sel_field}&amp;search={$search}";
+$qstr .= "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_price_field}&amp;price_s={$price_s}&amp;price_e={$price_e}&amp;sel_field={$sel_field}&amp;search={$search}";
 ?>
 
 <style>
