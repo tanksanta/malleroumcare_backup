@@ -76,13 +76,20 @@ function excelform(url){
   window.open(url, "win_excel", opt);
   return false;
 }
+
+$(function() {
+    $(".BottomButton").click(function() {
+        $('html').animate({scrollTop : ($('.footer_area').offset().top)}, 600);
+    });
+});
+
 </script>
 
 <style>
 .no_content { width:100%; padding: 50px 0; text-align:center; }
 #myRecipientListWrap > .titleWrap > .link_notice_wrap {
   position: absolute; top:-20px; right:0; font-weight: normal !important; font-size: 16px; line-height: 20px; height: 60px; padding: 20px 40px; text-align: center;
-  color: #fff; background-color: #ee8102; border-radius: 8px;
+  color: #fff; background-color: #ee8102; border-radius: 8px;cursor: pointer;
 }
 @media (max-width: 960px) {
   #myRecipientListWrap > .titleWrap > .link_notice_wrap {
@@ -95,7 +102,7 @@ function excelform(url){
 <div id="myRecipientListWrap">
   <div class="titleWrap" style="margin-bottom:10px;">
     <?php if($links) { ?>
-    <div class="link_notice_wrap">
+    <div class="link_notice_wrap BottomButton">
       <i class="fa fa-bell-o" aria-hidden="true"></i>
       신규 수급자(<?=get_text($links[0]['rl_pen_name'])?>) 추천되었습니다.
     </div>
