@@ -1084,3 +1084,78 @@ function get_recipient_grade_per_year($pen_id) {
 		'borrow_count' => $contract_borrow['cnt'],
 	);
 }
+
+// 사업소별 미수금 구하는 함수
+function get_outstanding_balance($mb_id) {
+  # 매출
+  $sql_order = "
+    SELECT
+      (c.ct_qty - c.ct_stock_qty) as ct_qty,
+      (
+        (
+          (c.ct_qty - c.ct_stock_qty) *
+          CASE
+            WHEN c.io_type = 0
+            THEN c.ct_price + c.io_price
+            ELSE c.io_price
+          END - c.ct_discount
+        ) / (c.ct_qty - c.ct_stock_qty)
+      ) as price_d
+    FROM
+      g5_shop_order o
+    LEFT JOIN
+      g5_shop_cart c ON o.od_id = c.od_id
+    WHERE
+      c.ct_status = '완료' and
+      c.ct_qty - c.ct_stock_qty > 0
+  ";
+
+  # 배송비
+  $sql_send_cost = "
+    SELECT
+      1 as ct_qty,
+      o.od_send_cost as price_d
+    FROM
+      g5_shop_order o
+    LEFT JOIN
+      g5_shop_cart c ON o.od_id = c.od_id
+    WHERE
+      c.ct_status = '완료' and
+      c.ct_qty - c.ct_stock_qty > 0 and
+      o.od_send_cost > 0
+  ";
+
+  # 매출할인
+  $sql_sales_discount = "
+    SELECT
+      1 as ct_qty,
+      (-o.od_sales_discount) as price_d
+    FROM
+      g5_shop_order o
+    LEFT JOIN
+      g5_shop_cart c ON o.od_id = c.od_id
+    WHERE
+      c.ct_status = '완료' and
+      c.ct_qty - c.ct_stock_qty > 0 and
+      o.od_sales_discount > 0
+  ";
+
+  // 사업소 id로 검색
+  $sql_search = " and o.mb_id = '{$mb_id}' ";
+
+  $sql = "
+    SELECT
+      sum(price_d * ct_qty) as total_price
+    FROM
+    (
+      ({$sql_order} {$sql_search})
+      UNION ALL
+      ({$sql_send_cost} {$sql_search} GROUP BY o.od_id)
+      UNION ALL
+      ({$sql_sales_discount} {$sql_search} GROUP BY o.od_id)
+    ) u
+  ";
+
+  $result = sql_fetch($sql);
+  return $result['total_price'];
+}
