@@ -135,7 +135,7 @@ $qstr .= "search={$search}";
         <td><?=$ent['mb_entNm']?></td>
         <td class="td_payby"><?=$ent['mb_manager']?></td>
         <td class="td_numsum"><?=number_format($ent['balance'])?></td>
-        <td class="td_mng td_mng_s"><a href="<?=G5_ADMIN_URL?>/shop_admin/ledger_manage.php?mb_id=<?=$ent['mb_id']?>" class="btn btn_03">선택</a></td>
+        <td class="td_mng_s td_center"><a href="<?=G5_ADMIN_URL?>/shop_admin/ledger_manage.php?mb_id=<?=$ent['mb_id']?>" class="btn btn_03">선택</a></td>
       </tr>
       <?php } ?>
     </tbody>
