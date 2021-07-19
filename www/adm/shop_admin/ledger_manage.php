@@ -19,6 +19,49 @@ $manager = get_member($ent['mb_manager']);
 
 // 총 미수금
 $total_price = get_outstanding_balance($mb_id);
+
+// 입/출금 내역
+$sql_common = "
+  FROM
+    ledger_content l
+  WHERE
+    mb_id = '$mb_id'
+";
+
+// 총 개수 구하기
+$total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ")['cnt'];
+$page_rows = $config['cf_page_rows'];
+$total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
+
+$sql_limit = " limit {$from_record}, {$page_rows} ";
+
+$ledger_result = sql_query("
+  SELECT
+    l.*,
+    (
+      CASE
+        WHEN lc_type = 1
+        THEN '입금'
+        WHEN lc_type = 2
+        THEN '출금'
+      END
+    ) as lc_type_txt,
+    (
+      SELECT mb_name from g5_member WHERE mb_id = l.lc_created_by
+    ) as created_by
+  {$sql_common}
+  ORDER BY
+    lc_id DESC
+  {$sql_limit}
+");
+
+$ledger = [];
+for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
+  $row['index'] = $total_count - (($page - 1) * $page_rows) - $i;
+  $ledger[] = $row;
+}
 ?>
 <div class="local_ov01 local_ov fixed">
   <h1 style="border:0;padding:5px 0;margin:0;">수금등록</h1>
@@ -30,32 +73,35 @@ $total_price = get_outstanding_balance($mb_id);
   <div style="padding: 20px 20px;background-color: #fff;border-bottom: 1px solid #e1e2e2;">
     <h2 style="margin:0;padding:0;"><?=$ent['mb_entNm']?><?=$manager ? " ({$manager['mb_name']})" : ''?></h2>
   </div>
-  <table class="new_form_table">
-    <tbody>
-      <tr>
-        <th>분류</th>
-        <td>
-          <input type="radio" id="ct_is_direct_delivery_all" name="ct_is_direct_delivery" value="" checked="checked"><label for="ct_is_direct_delivery_all"> 입금</label>
-          <input type="radio" id="ct_is_direct_delivery_1" name="ct_is_direct_delivery" value="1"><label for="ct_is_direct_delivery_1"> 출금</label>
-        </td>
-      </tr>
-      <tr>
-        <th>금액</th>
-        <td>
-          <input type="text" name="price" value="" class="line" style="width:150px">
-        </td>
-      </tr>
-      <tr>
-        <th>메모</th>
-        <td>
-          <input type="text" name="memo" value="" id="memo" class="frm_input" autocomplete="off" style="width:400px;">
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="submit">
-    <button type="submit"><span>등록</span></button>
-  </div>
+  <form id="form_ledger">
+    <input type="hidden" name="mb_id" value="<?=$mb_id?>">
+    <table class="new_form_table">
+      <tbody>
+        <tr>
+          <th>분류</th>
+          <td>
+            <input type="radio" id="lc_type_1" name="lc_type" value="1" checked="checked"><label for="lc_type_1"> 입금</label>
+            <input type="radio" id="lc_type_2" name="lc_type" value="2"><label for="lc_type_2"> 출금</label>
+          </td>
+        </tr>
+        <tr>
+          <th>금액</th>
+          <td>
+            <input type="text" name="lc_amount" value="" class="line" style="width:150px;">
+          </td>
+        </tr>
+        <tr>
+          <th>메모</th>
+          <td>
+            <input type="text" name="lc_memo" value="" id="lc_memo" class="frm_input" autocomplete="off" style="width:400px;">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="submit">
+      <button type="submit"><span>등록</span></button>
+    </div>
+  </form>
 </div>
 
 <div class="tbl_head01 tbl_wrap">
@@ -64,6 +110,31 @@ $total_price = get_outstanding_balance($mb_id);
       총 미수금: <?=number_format($total_price)?>원 (공급가:<?=number_format((int)($total_price / 1.1))?>원, VAT:<?=number_format($total_price - (int)($total_price / 1.1))?>원)
     </h1>
   </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>일시</th>
+        <th>분류</th>
+        <th>금액</th>
+        <th>메모</th>
+        <th>등록</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach($ledger as $row) { ?>
+      <tr>
+        <td class="td_cntsmall"><?=$row['index']?></td>
+        <td class="td_datetime"><?=date('Y-m-d H:i', strtotime($row['lc_created_at']))?></td>
+        <td class="td_payby"><?=$row['lc_type_txt']?></td>
+        <td class="td_numsum td_itopt"><?=number_format($row['lc_amount'])?></td>
+        <td><?=get_text($memo)?></td>
+        <td class="td_payby"><?=$row['created_by']?></td>
+      </tr>
+      <?php } ?>
+    </tbody>
+  </table>
 </div>
 
 <script>
@@ -71,6 +142,27 @@ $(function() {
   // 목록 버튼
   $('#btn_list').click(function() {
     location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_search.php";
+  });
+
+  // 입금/출금 폼
+  $('#form_ledger').on('submit', function(e) {
+    e.preventDefault();
+
+    var params = $(this).serialize();
+    $.ajax({
+      type: 'POST',
+      url: './ajax.ledger.php',
+      data: params,
+      dataType: 'json'
+    })
+    .done(function(result) {
+      alert('완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
   });
 });
 </script>
