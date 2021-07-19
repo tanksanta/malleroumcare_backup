@@ -107,7 +107,7 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
 <div class="tbl_head01 tbl_wrap">
   <div class="local_ov01" style="border:1px solid #e3e3e3;">
     <h1 style="border:0;padding:5px 0;margin:0;letter-spacing:0;">
-      총 미수금: <?=number_format($total_price)?>원 (공급가:<?=number_format((int)($total_price / 1.1))?>원, VAT:<?=number_format($total_price - (int)($total_price / 1.1))?>원)
+      총 미수금: <?=number_format($total_price)?>원
     </h1>
   </div>
 
