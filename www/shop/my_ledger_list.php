@@ -46,10 +46,12 @@ include_once("./_head.php");
               <th>구매</th>
               <th>수금</th>
               <th>잔액</th>
+              <th>수령인</th>
             </tr>
             <tr>
               <td colspan="9">이월잔액</td>
               <td class="text_r">1,000,000원</td>
+              <td></td>
             </tr>
             <tr>
               <td class="text_c">2021-01-01</td>
@@ -62,6 +64,7 @@ include_once("./_head.php");
               <td class="text_r">220,000원</td>
               <td class="text_r">0</td>
               <td class="text_r">1,220,000원</td>
+              <td>홍길동</td>
             </tr>
           </table>
         
