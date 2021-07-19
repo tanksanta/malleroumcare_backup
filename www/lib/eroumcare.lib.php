@@ -1140,6 +1140,25 @@ function get_outstanding_balance($mb_id) {
       o.od_sales_discount > 0
   ";
 
+  # 입금/출금
+  $sql_ledger_deposit = "
+    SELECT
+      1 as ct_qty,
+      (
+        CASE
+          WHEN lc_type = 1
+          THEN (-lc_amount)
+          WHEN lc_type = 2
+          THEN (lc_amount)
+          ELSE 0
+        END
+      ) as price_d
+    FROM
+      ledger_content l
+    WHERE
+      mb_id = '{$mb_id}'
+  ";
+
   // 사업소 id로 검색
   $sql_search = " and o.mb_id = '{$mb_id}' ";
 
@@ -1153,6 +1172,8 @@ function get_outstanding_balance($mb_id) {
       ({$sql_send_cost} {$sql_search} GROUP BY o.od_id)
       UNION ALL
       ({$sql_sales_discount} {$sql_search} GROUP BY o.od_id)
+      UNION ALL
+      ({$sql_ledger_deposit})
     ) u
   ";
 
