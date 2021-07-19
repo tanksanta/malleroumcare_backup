@@ -314,7 +314,7 @@ $qstr .= "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_pr
               <option value="mb_entNm" <?=get_selected($sel_field, 'mb_entNm')?>>사업소명</option>
               <option value="o.od_id" <?=get_selected($sel_field, 'o.od_id')?>>주문번호</option>
               <option value="c.it_name" <?=get_selected($sel_field, 'c.it_name')?>>품목명</option>
-              <option value="o.od_b_name" <?=get_selected($sel_field, 'o.od_b_name')?>>출고처</option>
+              <option value="o.od_b_name" <?=get_selected($sel_field, 'o.od_b_name')?>>수령인</option>
             </select>
             <input type="text" name="search" value="<?=$search?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
           </td>
@@ -351,7 +351,7 @@ $qstr .= "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_pr
         <th>판매</th>
         <th>수금</th>
         <th>잔액</th>
-        <th>출고처</th>
+        <th>수령인</th>
       </tr>
     </thead>
     <tbody>
@@ -377,7 +377,11 @@ $qstr .= "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_pr
       ?>
       <tr>
         <td class="td_date"><?=date('y-m-d', strtotime($row['od_time']))?></td>
-        <td class="td_odrnum2"><?=$row['od_id']?></td>
+        <td class="td_odrnum2">
+          <?php if($row['od_id']) { ?>
+          <a href="<?=G5_ADMIN_URL?>/shop_admin/samhwa_orderform.php?od_id=<?=$row['od_id']?>"><?=$row['od_id']?></a>
+          <?php } ?>
+        </td>
         <td class="td_id"><?=$row['mb_entNm']?></td>
         <td class="td_payby"><?=$row['mb_manager']?></td>
         <td><?=$row['it_name']?><?=$row['ct_option'] ? "({$row['ct_option']})" : ''?></td>
