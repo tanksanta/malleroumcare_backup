@@ -1037,7 +1037,7 @@ function get_recipient_grade($pen_id) {
 		return false;
 	}
 
-	$sql = "SELECT * FROM recipient_grade_log WHERE pen_id = '{$pen_id}'
+	$sql = "SELECT * FROM recipient_grade_log WHERE pen_id = '{$pen_id}' AND del_yn = 'N'
 		ORDER BY seq DESC LIMIT 1
 	";
 	return sql_fetch($sql);
