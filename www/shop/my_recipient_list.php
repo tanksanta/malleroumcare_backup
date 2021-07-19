@@ -64,7 +64,7 @@ if($res["data"]) {
 }
 
 $total_count_spare = $res["total"];
-$total_page_spare = ceil( $total_count / $rows ); # 총 페이지
+$total_page_spare = ceil( $total_count_spare / $rows ); # 총 페이지
 
 
 // 수급자 연결
@@ -279,7 +279,7 @@ $(function() {
 
   <div class="list-paging">
     <ul class="pagination pagination-sm en">
-      <?php echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page="); ?>
+      <?php echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page="); ?>
     </ul>
   </div>
 
@@ -297,11 +297,11 @@ $(function() {
           <th>비고</th>
         </tr>
         <?php $i = -1; ?>
-        <?php foreach($list_spare as $data){ ?>
+        <?php foreach($list_spare as $data) { ?>
         <?php $i++; ?>
         <tr>
           <td>
-            <?php echo $total_count - (($page - 1) * $rows) - $i; ?>
+            <?php echo $total_count_spare - (($page_spare - 1) * $rows) - $i; ?>
           </td>
           <td>
             <a href="<?=G5_SHOP_URL?>/my_recipient_update.php?penSpare=1&id=<?=$data['penId']?>">
@@ -373,7 +373,7 @@ $(function() {
 
   <div class="list-paging">
     <ul class="pagination pagination-sm en">
-      <?php echo apms_paging($write_pages, $page_spare, $total_page_spare, "?sel_field={$sel_field}&search={$search}&page_spare="); ?>
+      <?php echo apms_paging($write_pages, $page_spare, $total_page_spare, "?sel_field={$sel_field}&search={$search}&page={$page}&page_spare="); ?>
     </ul>
   </div>
 
