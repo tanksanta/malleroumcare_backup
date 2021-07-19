@@ -134,7 +134,7 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
         <td class="td_datetime"><?=date('Y-m-d H:i', strtotime($row['lc_created_at']))?></td>
         <td class="td_payby"><?=$row['lc_type_txt']?></td>
         <td class="td_numsum td_itopt"><?=number_format($row['lc_amount'])?></td>
-        <td><?=get_text($memo)?></td>
+        <td><?=get_text($row['lc_memo'])?></td>
         <td class="td_payby"><?=$row['created_by']?></td>
       </tr>
       <?php } ?>
