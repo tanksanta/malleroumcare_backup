@@ -702,7 +702,7 @@ $(function(){
       var data = result.data;
 
       if(data.isSpare)
-        return window.location.href = "./my_recipient_list.php";
+        return window.location.href = "./my_recipient_view.php?id="+data.penId;
 
       var itemList=[];
       //판매품목 값 넣기
@@ -725,7 +725,7 @@ $(function(){
           alert(result.message);
         } else {
           alert('완료되었습니다');
-          window.location.href = "./my_recipient_list.php";
+          window.location.href = "./my_recipient_view.php?id="+data.penId;
         }
       })
       .fail(function($xhr) {
