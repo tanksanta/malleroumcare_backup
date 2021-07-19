@@ -47,6 +47,26 @@ $memos = get_memos_by_recipient($pen['penId']);
 
 // 욕구사정기록지 가져오기
 $recs = get_recs_by_recipient($pen['penId']);
+
+// 적용기간 기준일
+$pen_gra_apply_txt = '없음';
+$pen_gra_apply_result = sql_fetch("
+  SELECT
+    pen_gra_apply_month,
+    pen_gra_apply_day
+  FROM
+    recipient_grade_log
+  WHERE
+    pen_id = '{$_GET['id']}' and
+    del_yn = 'N'
+  ORDER BY
+    seq desc
+  LIMIT 1
+");
+$pen_gra_apply_month = $pen_gra_apply_result['pen_gra_apply_month'];
+$pen_gra_apply_day = $pen_gra_apply_result['pen_gra_apply_day'];
+if($pen_gra_apply_month && $pen_gra_apply_day)
+  $pen_gra_apply_txt = "{$pen_gra_apply_month}월 {$pen_gra_apply_day}일";
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL?>/my_recipient.css">
 <div class="recipient_view_wrap">
@@ -77,7 +97,7 @@ $recs = get_recs_by_recipient($pen['penId']);
     </div>
     <div class="row">
       <div class="col-sm-2">· 적용기간 기준일</div>
-      <div class="col-sm-10">: 반영대기중</div>
+      <div class="col-sm-10">: <?=$pen_gra_apply_txt?></div>
     </div>
     <div class="row">
       <div class="col-sm-2">· 보호자</div>
