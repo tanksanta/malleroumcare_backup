@@ -87,6 +87,8 @@ if ($cancel_request_row['request_type'] == "cancel") {
     
     sql_query($sql);
 
+    set_order_admin_log($od_id, '취소 요청 관리자 승인');
+
     // 주문취소 회원의 포인트를 되돌려 줌
     if ($od['od_receipt_point'] > 0)
         insert_point($member['mb_id'], $od['od_receipt_point'], "주문번호 $od_id 취소 요청 관리자 승인");

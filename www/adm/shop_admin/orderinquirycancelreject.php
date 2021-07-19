@@ -31,5 +31,7 @@ $sql = "update {$g5['g5_shop_order_table']}
         ";
 sql_query($sql);
 
+set_order_admin_log($od_id, '취소 요청 관리자 거절');
+
 goto_url($_SERVER['HTTP_REFERER']);
 ?>
