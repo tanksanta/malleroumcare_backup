@@ -9,6 +9,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $qstr = "";
 $where = [];
+$where_ledger = [];
 
 # 기간
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
@@ -18,6 +19,7 @@ if(!$fr_date)
 if(!$to_date)
   $to_date = date('Y-m-d');
 $where_time = " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+$where_ledger_time = " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
 # 영업담당자
 if(!$mb_manager)
@@ -29,6 +31,7 @@ if(!$mb_manager_all && $mb_manager) {
     $where_manager[] = " m.mb_manager = '$man' ";
   }
   $where[] = ' ( ' . implode(' or ', $where_manager) . ' ) ';
+  $where_ledger[] = ' ( ' . implode(' or ', $where_manager) . ' ) ';
 }
 $manager_result = sql_query("
   SELECT
@@ -59,12 +62,18 @@ if($price && $sel_price_field && $price_s <= $price_e) {
 # 검색어
 $sel_field = in_array($sel_field, ['mb_entNm', 'o.od_id', 'c.it_name', 'o.od_b_name']) ? $sel_field : '';
 $search = get_search_string($search);
-if($search)
+if($search) {
   $where[] = " {$sel_field} LIKE '%{$search}%' ";
+  if($sel_field == 'mb_entNm')
+    $where_ledger[] = " {$sel_field} LIKE '%{$search}%' ";
+}
 
 $sql_search = '';
 if($where) {
   $sql_search = ' and '.implode(' and ', $where);
+}
+if($where_ledger) {
+  $sql_ledger_search = ' and '.implode(' and ', $where_ledger);
 }
 
 # 매출
@@ -133,6 +142,7 @@ $sql_order = "
           )
       END
     ) as price_d_s,
+    0 as deposit,
     o.od_b_name
   FROM
     g5_shop_order o
@@ -162,6 +172,7 @@ $sql_send_cost = "
     o.od_send_cost as price_d,
     ROUND(o.od_send_cost / 1.1) as price_d_p,
     ROUND(o.od_send_cost / 1.1 / 10) as price_d_s,
+    0 as deposit,
     o.od_b_name
   FROM
     g5_shop_order o
@@ -190,6 +201,7 @@ $sql_sales_discount = "
     (-o.od_sales_discount) as price_d,
     ROUND(-o.od_sales_discount / 1.1) as price_d_p,
     ROUND(-o.od_sales_discount / 1.1 / 10) as price_d_s,
+    0 as deposit,
     o.od_b_name
   FROM
     g5_shop_order o
@@ -203,6 +215,57 @@ $sql_sales_discount = "
     o.od_sales_discount > 0
 ";
 
+# 입금/출금
+$sql_ledger = "
+  SELECT
+    lc_created_at as od_time,
+    '' as od_id,
+    m.mb_entNm,
+    (
+      SELECT mb_name from g5_member WHERE mb_id = m.mb_manager
+    ) as mb_manager,
+    (
+      CASE
+        WHEN lc_type = 1
+        THEN '입금'
+        WHEN lc_type = 2
+        THEN '출금'
+      END
+    ) as it_name,
+    '' as ct_option,
+    1 as ct_qty,
+    (
+      CASE
+        WHEN lc_type = 2
+        THEN lc_amount
+        ELSE 0
+      END
+    ) as price_d,
+    (
+      CASE
+        WHEN lc_type = 2
+        THEN lc_amount
+        ELSE 0
+      END
+    ) as price_d_p,
+    0 as price_d_s,
+    (
+      CASE
+        WHEN lc_type = 1
+        THEN lc_amount
+        ELSE 0
+      END
+    ) as deposit,
+    '' as od_b_name
+  FROM
+    ledger_content l
+  LEFT JOIN
+    g5_member m ON l.mb_id = m.mb_id
+  WHERE
+    1 = 1
+";
+
+
 $sql_common = "
 FROM
   (
@@ -211,12 +274,16 @@ FROM
     ({$sql_send_cost} {$sql_search} {$where_time} GROUP BY o.od_id)
     UNION ALL
     ({$sql_sales_discount} {$sql_search} {$where_time} GROUP BY o.od_id)
+    UNION ALL
+    ({$sql_ledger} {$sql_ledger_search} {$where_ledger_time})
   ) u
 ";
 
 # 구매액 합계 계산
-$total_result = sql_fetch("SELECT sum(price_d * ct_qty) as total_price, count(*) as cnt {$sql_common} {$where_price}");
+$total_result = sql_fetch("SELECT sum(price_d * ct_qty) as total_price, sum(price_d_p) as total_price_p, sum(price_d_s) as total_price_s, count(*) as cnt {$sql_common} {$where_price}");
 $total_price = $total_result['total_price'];
+$total_price_p = $total_result['total_price_p'];
+$total_price_s = $total_result['total_price_s'];
 $total_count = $total_result['cnt'];
 
 $page_rows = $config['cf_page_rows'];
@@ -238,6 +305,7 @@ $ledgers = [];
 $balance = 0;
 while($row = sql_fetch_array($result)) {
   $balance += ($row['price_d'] * $row['ct_qty']);
+  $balance -= ($row['deposit']);
   $row['balance'] = $balance;
   $ledgers[] = $row;
 }
@@ -329,7 +397,7 @@ $qstr .= "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_pr
 <div class="tbl_head01 tbl_wrap">
   <div class="local_ov01" style="border:1px solid #e3e3e3;">
     <h1 style="border:0;padding:5px 0;margin:0;letter-spacing:0;">
-      구매액 합계: <?=number_format($total_price)?>원 (공급가:<?=number_format((int)($total_price / 1.1))?>원, VAT:<?=number_format($total_price - (int)($total_price / 1.1))?>원)
+      구매액 합계: <?=number_format($total_price)?>원 (공급가:<?=number_format($total_price_p)?>원, VAT:<?=number_format($total_price_s)?>원)
     </h1>
     <div class="right">
       <button id="btn_ledger_excel"><img src="<?=G5_ADMIN_URL?>/shop_admin/img/btn_img_ex.gif">엑셀다운로드</button>
@@ -390,7 +458,7 @@ $qstr .= "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_pr
         <td class="td_price"><?=number_format($row['price_d_p'])?></td>
         <td class="td_price"><?=number_format($row['price_d_s'])?></td>
         <td class="td_price"><?=number_format($row['price_d'] * $row['ct_qty'])?></td>
-        <td class="td_price">0</td>
+        <td class="td_price"><?=number_format($row['deposit'])?></td>
         <td class="td_price"><?=number_format($row['balance'])?></td>
         <td class="td_id"><?=$row['od_b_name']?></td>
       </tr>

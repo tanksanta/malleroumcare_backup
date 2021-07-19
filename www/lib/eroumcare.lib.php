@@ -1141,7 +1141,7 @@ function get_outstanding_balance($mb_id) {
   ";
 
   # 입금/출금
-  $sql_ledger_deposit = "
+  $sql_ledger = "
     SELECT
       1 as ct_qty,
       (
@@ -1173,7 +1173,7 @@ function get_outstanding_balance($mb_id) {
       UNION ALL
       ({$sql_sales_discount} {$sql_search} GROUP BY o.od_id)
       UNION ALL
-      ({$sql_ledger_deposit})
+      ({$sql_ledger})
     ) u
   ";
 
