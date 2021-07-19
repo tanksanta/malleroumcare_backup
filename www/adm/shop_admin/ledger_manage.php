@@ -123,6 +123,11 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
       </tr>
     </thead>
     <tbody>
+      <?php if(!$ledger) { ?>
+      <tr>
+        <td colspan="6" class="empty_table">자료가 없습니다.</td>
+      </tr>
+      <?php } ?>
       <?php foreach($ledger as $row) { ?>
       <tr>
         <td class="td_cntsmall"><?=$row['index']?></td>
