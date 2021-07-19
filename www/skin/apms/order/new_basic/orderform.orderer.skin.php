@@ -135,7 +135,7 @@ $(function() {
           <li class="basic-price">공급가액</li>
           <li class="tax-price">부가세</li>
           <li class="price">총금액</li>
-          <li class="delivery-price" style="width: 20%;">배송비</li>
+          <!-- <li class="delivery-price" style="width: 20%;">배송비</li> -->
           <li class="barcode" style="display: none;">바코드</li>
         </ul>
 
@@ -216,9 +216,9 @@ $(function() {
             <li class="price m_none">
               <p class="price_print"><?php echo number_format($pirce_v); ?>원</p>
             </li>
-            <li class="delivery-price m_none" style="width: 20%;">
+            <!-- <li class="delivery-price m_none" style="width: 20%;">
               <p><?php echo $item[$i]['ct_send_cost']; ?></p>
-            </li>
+            </li> -->
             <li class="barcode barList" style="display: none;">
               <?php
                 for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++) {
