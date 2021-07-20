@@ -312,6 +312,8 @@ while($row = sql_fetch_array($result)) {
 }
 
 $qstr .= "fr_date={$fr_date}&to_date={$to_date}&price={$price}&sel_price_field={$sel_price_field}&price_s={$price_s}&price_e={$price_e}&sel_field={$sel_field}&search={$search}";
+
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
 <style>
@@ -325,8 +327,8 @@ $qstr .= "fr_date={$fr_date}&to_date={$to_date}&price={$price}&sel_price_field={
         <tr>
           <th>기간</th>
           <td>
-            <input type="text" id="fr_date" class="date hasDatepicker" name="fr_date" value="<?=$fr_date?>" size="10" maxlength="10"> ~
-            <input type="text" id="to_date" class="date hasDatepicker" name="to_date" value="<?=$to_date?>" size="10" maxlength="10">
+            <input type="text" id="fr_date" class="datepicker" name="fr_date" value="<?=$fr_date?>" size="10" maxlength="10"> ~
+            <input type="text" id="to_date" class="datepicker" name="to_date" value="<?=$to_date?>" size="10" maxlength="10">
             <input type="button" value="이번달" id="select_date_thismonth" name="select_date" class="select_date newbutton">
             <input type="button" value="저번달" id="select_date_lastmonth" name="select_date" class="select_date newbutton">
           </td>
@@ -467,6 +469,16 @@ $(function() {
   // 수금관리 버튼
   $('#btn_ledger_manage').click(function() {
     location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_search.php";
+  });
+
+  // 기간 - datepicker
+  $('.datepicker').datepicker({
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: "yy-mm-dd",
+    showButtonPanel: true,
+    yearRange: "c-99:c+99",
+    maxDate: "+0d"
   });
 
   // 기간 - 이번달 버튼

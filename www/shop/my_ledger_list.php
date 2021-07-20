@@ -241,6 +241,7 @@ while($row = sql_fetch_array($result)) {
   $ledgers[] = $row;
 }
 
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
 <section class="wrap">
@@ -248,7 +249,7 @@ while($row = sql_fetch_array($result)) {
   <form method="get">
     <div class="search_box">
       <div class="search_date">
-        <input type="text" name="fr_date" value="<?=$fr_date?>" id="fr_date"/> ~ <input type="text" name="to_date" value="<?=$to_date?>" id="to_date"/>
+        <input type="text" name="fr_date" value="<?=$fr_date?>" id="fr_date" class="datepicker"/> ~ <input type="text" name="to_date" value="<?=$to_date?>" id="to_date" class="datepicker"/>
         <a href="#" id="select_date_thismonth">이번달</a>
         <a href="#" id="select_date_lastmonth">저번달</a>
       </div>
@@ -339,6 +340,16 @@ function formatDate(date) {
 }
 
 $(function() {
+  // 기간 - datepicker
+  $('.datepicker').datepicker({
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: "yy-mm-dd",
+    showButtonPanel: true,
+    yearRange: "c-99:c+99",
+    maxDate: "+0d"
+  });
+
   // 기간 - 이번달 버튼
   $('#select_date_thismonth').click(function(e) {
     e.preventDefault();
