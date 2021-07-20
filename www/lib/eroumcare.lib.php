@@ -1186,5 +1186,5 @@ function get_outstanding_balance($mb_id, $fr_date = null) {
   ";
 
   $result = sql_fetch($sql);
-  return $result['total_price'];
+  return $result['total_price'] ?: 0;
 }

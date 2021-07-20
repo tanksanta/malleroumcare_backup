@@ -267,7 +267,7 @@ while($row = sql_fetch_array($result)) {
       <div class="subtit">
         검색 기간 내 구매액 : <?=number_format($total_price)?>원 <span>(공급가:<?=number_format($total_price_p)?>원, VAT:<?=number_format($total_price_s)?>원)</span>
         <div class="r_area">
-          <a href="#" class="btn_green_box">엑셀다운로드</a>
+          <a href="my_ledger_excel.php?fr_date=<?=$fr_date?>&amp;to_date=<?=$to_date?>" class="btn_green_box">엑셀다운로드</a>
         </div>
       </div>
       <div class="table_box">
@@ -288,7 +288,7 @@ while($row = sql_fetch_array($result)) {
             </tr>
           </thead>
           <tbody>
-            <?php if($page == 1) { ?>
+            <?php if($page == 1 && $carried_balance) { ?>
             <tr>
               <td colspan="9">이월잔액</td>
               <td class="text_r"><?=number_format($carried_balance)?></td>
