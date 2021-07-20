@@ -27,7 +27,7 @@ if(!$mb_manager)
 $where_manager = [];
 if(!$mb_manager_all && $mb_manager) {
   foreach($mb_manager as $man) {
-    $qstr .= "mb_manager%5B%5D={$man}&amp;";
+    $qstr .= "mb_manager%5B%5D={$man}&";
     $where_manager[] = " m.mb_manager = '$man' ";
   }
   $where[] = ' ( ' . implode(' or ', $where_manager) . ' ) ';
@@ -311,7 +311,7 @@ while($row = sql_fetch_array($result)) {
   $ledgers[] = $row;
 }
 
-$qstr .= "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_price_field}&amp;price_s={$price_s}&amp;price_e={$price_e}&amp;sel_field={$sel_field}&amp;search={$search}";
+$qstr .= "fr_date={$fr_date}&to_date={$to_date}&price={$price}&sel_price_field={$sel_price_field}&price_s={$price_s}&price_e={$price_e}&sel_field={$sel_field}&search={$search}";
 ?>
 
 <style>
@@ -448,7 +448,7 @@ $qstr .= "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_pr
       <?php } ?>
     </tbody>
   </table>
-  <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+  <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&page='); ?>
 </div>
 
 <script>
