@@ -1086,7 +1086,15 @@ function get_recipient_grade_per_year($pen_id) {
 }
 
 // 사업소별 미수금 구하는 함수
-function get_outstanding_balance($mb_id) {
+// fr_date 값이 있을 경우 해당 일 까지의 이월잔액
+function get_outstanding_balance($mb_id, $fr_date = null) {
+  $where_date = '';
+  $where_ledger_date = '';
+  if($fr_date) {
+    $where_date = " and od_time < '{$fr_date} 00:00:00' ";
+    $where_ledger_date = " and lc_created_at < '{$fr_date} 00:00:00' ";
+  }
+
   # 매출
   $sql_order = "
     SELECT
@@ -1167,13 +1175,13 @@ function get_outstanding_balance($mb_id) {
       sum(price_d * ct_qty) as total_price
     FROM
     (
-      ({$sql_order} {$sql_search})
+      ({$sql_order} {$sql_search} {$where_date})
       UNION ALL
-      ({$sql_send_cost} {$sql_search} GROUP BY o.od_id)
+      ({$sql_send_cost} {$sql_search} {$where_date} GROUP BY o.od_id)
       UNION ALL
-      ({$sql_sales_discount} {$sql_search} GROUP BY o.od_id)
+      ({$sql_sales_discount} {$sql_search} {$where_date} GROUP BY o.od_id)
       UNION ALL
-      ({$sql_ledger})
+      ({$sql_ledger} {$where_ledger_date})
     ) u
   ";
 

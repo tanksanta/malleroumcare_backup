@@ -310,24 +310,6 @@ while($row = sql_fetch_array($result)) {
   $ledgers[] = $row;
 }
 
-/*# 이월잔액
-$balance_carried = sql_fetch("
-  SELECT
-    sum(price_d * ct_qty) as balance
-  FROM
-    (
-      ({$sql_order} {$sql_search} and od_time < '$fr_date 00:00:00')
-      UNION ALL
-      ({$sql_send_cost} {$sql_search} and od_time < '$fr_date 00:00:00' GROUP BY o.od_id)
-      UNION ALL
-      ({$sql_sales_discount} {$sql_search} and od_time < '$fr_date 00:00:00' GROUP BY o.od_id)
-    ) u
-  {$where_price}
-")['balance'];
-
-# 잔액
-$balance = $balance_carried;*/
-
 $qstr .= "fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_price_field={$sel_price_field}&amp;price_s={$price_s}&amp;price_e={$price_e}&amp;sel_field={$sel_field}&amp;search={$search}";
 ?>
 
