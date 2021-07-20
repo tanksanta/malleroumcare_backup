@@ -59,7 +59,7 @@ include_once("./_head.php");
               <td class="text_c">2021-02-02</td>
               <td class="text_c">홍길동(L11111*****)</td>
               <td class="text_c text_green">대여</td>
-              <td>‘욕창예방메트리스’ 품목 1개 사용가능햇수가 7월 20일 만료됩니다. 만료 후 해당 품목 3개 주문이 가능합니다. </td>
+              <td>‘욕창예방메트리스’ 품목 1개 대여기간이 7월 20일 종료됩니다. 종료 후 해당 품목 3개 대여가 가능합니다. </td>
               <td class="text_c"><a href="#" class="btn_gray_box">확인취소</a></td>
             </tr>
           </tbody>
@@ -74,36 +74,7 @@ include_once("./_head.php");
   </div>
 </section>
 
-<script>
-function formatDate(date) {
-  var y = date.getFullYear();
-  var m = date.getMonth() + 1; // Month from 0 to 11
-  var d = date.getDate();
-  return '' + y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
-}
 
-$(function() {
-  // 기간 - 이번달 버튼
-  $('#select_date_thismonth').click(function(e) {
-    e.preventDefault();
-
-    var today = new Date(); // 오늘
-    $('#to_date').val(formatDate(today));
-    today.setDate(1); // 이번달 1일
-    $('#fr_date').val(formatDate(today));
-  });
-  // 기간 - 저번달 버튼
-  $('#select_date_lastmonth').click(function(e) {
-    e.preventDefault();
-
-    var today = new Date();
-    today.setDate(0); // 지난달 마지막일
-    $('#to_date').val(formatDate(today));
-    today.setDate(1); // 지난달 1일
-    $('#fr_date').val(formatDate(today));
-  });
-});
-</script>
 
 <?php
 include_once('./_tail.php');
