@@ -69,6 +69,7 @@ if($search) {
 }
 
 $sql_search = '';
+$sql_ledger_search = '';
 if($where) {
   $sql_search = ' and '.implode(' and ', $where);
 }
