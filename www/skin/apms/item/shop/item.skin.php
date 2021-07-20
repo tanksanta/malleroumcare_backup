@@ -210,12 +210,12 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
     </div>
     <div class="samhwa-item-info-mobile mobile">
       <div class="margin-left">
-        <h1 class="ca_info"><?=$it["ca_name"]?> <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p></h1>
+        <!-- <h1 class="ca_info"><?=$it["ca_name"]?> <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p></h1> -->
         <h1>
           <?php echo stripslashes($it['it_name']); // 상품명 ?>
           <span style="font-size: 15px;">(<?=$it["it_taxInfo"]?> 상품)</span>
         </h1>
-        <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p>
+        <!-- <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p> -->
         <p class="help-block">* 급여코드  <span style="padding-left:29px;">: <?php echo $it['ProdPayCode']; ?></span></p>
         <?php if($it['it_basic']) { // 기본설명 ?>
         <p class="help-block"><?php echo $it['it_basic']; ?></p>
@@ -409,7 +409,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
           <br><span style="font-weight: normal; font-size: 13px; margin-top: 15px; display: inline-block;">* 대여금액(월기준) : <?=number_format($it["it_rental_price"])?>원</span>
           <?php } ?>
         </p>
-        <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p>
+       <!--  <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p> -->
 
         <?php if($it['it_basic']) { // 기본설명 ?>
         <p class="help-block"><?php echo $it['it_basic']; ?></p>
