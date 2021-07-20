@@ -232,7 +232,7 @@ $sql_ledger = "
         THEN '출금'
       END
     ) as it_name,
-    '' as ct_option,
+    lc_memo as ct_option,
     1 as ct_qty,
     (
       CASE
