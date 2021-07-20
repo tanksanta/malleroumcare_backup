@@ -460,6 +460,10 @@ function formatDate(date) {
 }
 
 $(function() {
+  // 엑셀다운로드 버튼
+  $('#btn_ledger_excel').click(function() {
+    location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_excel.php?<?=$qstr?>";
+  });
   // 수금관리 버튼
   $('#btn_ledger_manage').click(function() {
     location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_search.php";
