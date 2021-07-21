@@ -225,7 +225,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     // 총 금액
     $sell_price = $opt_price * ($opt["ct_qty"] - $opt["ct_stock_qty"]) - $opt["ct_discount"]; // ct_discount를 빼고 보여줘야함.
     // 단가 역산
-    $opt_price = round($sell_price / ($opt["ct_qty"] - $opt["ct_stock_qty"]));
+    $opt_price = @round($sell_price / ($opt["ct_qty"] - $opt["ct_stock_qty"]));
     // 공급가액
     $basic_price = round($sell_price / 1.1);
     // 부가세
