@@ -202,6 +202,13 @@ if($header_skin)
 				</div> -->
 				<div class="col-xs-6">
 					<div class="form-group">
+						<a href="<?php echo G5_URL; ?>/shop/my_ledger_list.php" class="btn btn-lightgray btn-sm btn-block">
+							거래처원장
+						</a>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
 						<a href="<?php echo $at_href['edit'];?>" class="btn btn-lightgray btn-sm btn-block">
 							정보수정
 						</a>
