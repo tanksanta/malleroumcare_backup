@@ -521,8 +521,8 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
       <th scope="row"><label for="it_rental_price">대여(내구연한설정)</label></th>
       <td>
       <label><input type="checkbox" name="it_rental_use_persisting_year" value="1" id="it_rental_use_persisting_year" <?php echo ($it['it_rental_use_persisting_year']) ? "checked" : ""; ?>> 사용</label><br>
-      판매가능기간: <input type="text" name="it_rental_expiry_year" value="<?php echo $it['it_rental_expiry_year']; ?>" id="it_rental_expiry_year" class="frm_input" size="2"> 년<br>
-      내구연한 설정 기간: <input type="text" name="it_rental_persisting_year" value="<?php echo $it['it_rental_persisting_year']; ?>" id="it_rental_persisting_year" class="frm_input" size="2"> 년 이후 월 대여금액 <input type="text" name="it_rental_persisting_price" value="<?php echo $it['it_rental_persisting_price']; ?>" id="it_rental_persisting_price" class="frm_input" size="8"> 원
+      사용가능햇수: <input type="text" name="it_rental_expiry_year" value="<?php echo $it['it_rental_expiry_year']; ?>" id="it_rental_expiry_year" class="frm_input" size="2"> 년<br>
+      연장대여햇수: <input type="text" name="it_rental_persisting_year" value="<?php echo $it['it_rental_persisting_year']; ?>" id="it_rental_persisting_year" class="frm_input" size="2"> 년 / 월 대여금액 <input type="text" name="it_rental_persisting_price" value="<?php echo $it['it_rental_persisting_price']; ?>" id="it_rental_persisting_price" class="frm_input" size="8"> 원
       </td>
     </tr>
     <?php } // 관리자 끝 ?>

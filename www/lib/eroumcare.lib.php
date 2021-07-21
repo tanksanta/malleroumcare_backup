@@ -977,24 +977,21 @@ function expired_rental_item_clean($prodId) {
       // 최초계약일 없으면 무시
       if(!$inital_contract_time || $inital_contract_time < 0) continue;
 
-      // 최초계약일 + 설정한 판매가능기간보다 더 지났으면
-      if(time() >= ( $inital_contract_time + ($item['it_rental_expiry_year'] * 365 * 24 * 60 * 60 ) )) {
-        $stock_update[] = array(
-          'stoId' => $stock['stoId'],
-          'prodBarNum' => $stock['prodBarNum'],
-          'stateCd' => '05' // 05(기타)
-        );
-      }
-
-      // 내구연한 설정기간, 금액 없으면 무시
-      if(!$item['it_rental_persisting_year'] || !$item['it_rental_persisting_price']) continue;
-
-      // 내구연한 설정기간보다 지났으면
-      if(time() >= ( $inital_contract_time + ($item['it_rental_persisting_year'] * 365 * 24 * 60 * 60 ) )) {
+      // 사용가능햇수 지났으면 추가로 연장대여햇수동안 할인된 금액 적용
+      if(time() >= ( $inital_contract_time + ( $item['it_rental_expiry_year'] * 365 * 24 * 60 * 60 ) )) {
         $stock_update[] = array(
           'stoId' => $stock['stoId'],
           'prodBarNum' => $stock['prodBarNum'],
           'customRentalPrice' => $item['it_rental_persisting_price']
+        );
+      }
+
+      // 사용가능햇수+연장대여햇수 지나면 판매불가능 설정
+      if(time() >= ( $inital_contract_time + ( ($item['it_rental_expiry_year'] + $item['it_rental_persisting_price']) * 365 * 24 * 60 * 60 ) )) {
+        $stock_update[] = array(
+          'stoId' => $stock['stoId'],
+          'prodBarNum' => $stock['prodBarNum'],
+          'stateCd' => '05' // 05(기타)
         );
       }
     }
