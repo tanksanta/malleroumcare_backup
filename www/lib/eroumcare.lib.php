@@ -987,7 +987,7 @@ function expired_rental_item_clean($prodId) {
       }
 
       // 사용가능햇수+연장대여햇수 지나면 판매불가능 설정
-      if(time() >= ( $inital_contract_time + ( ($item['it_rental_expiry_year'] + $item['it_rental_persisting_price']) * 365 * 24 * 60 * 60 ) )) {
+      if(time() >= ( $inital_contract_time + ( ($item['it_rental_expiry_year'] + $item['it_rental_persisting_year']) * 365 * 24 * 60 * 60 ) )) {
         $stock_update[] = array(
           'stoId' => $stock['stoId'],
           'prodBarNum' => $stock['prodBarNum'],
