@@ -447,10 +447,11 @@ expired_rental_item_clean($_GET['prodId']);
                     $inital_contract_time = strtotime($inital_contract_date);
                     $now = time();
 
-                    //사용가능햇수 지나기 전이면
+
                     $rental_expiry_time = $inital_contract_time + ( $row['it_rental_expiry_year'] * 365 * 24 * 60 * 60 );
                     $rental_persisting_time = $rental_expiry_time + ( $row['it_rental_persisting_year'] * 365 * 24 * 60 * 60 );
 
+                    //사용가능햇수 지나기 전이면
                     if($now < $rental_expiry_time) {
                       $persisting_year_txt = '*사용가능 기간 ('.date('Y.m.d', $rental_expiry_time).' 종료)';
                     }
@@ -459,6 +460,11 @@ expired_rental_item_clean($_GET['prodId']);
                     else if($now < $rental_persisting_time) {
                       $custom_rental_price = $list[$i]['customRentalPrice'];
                       $persisting_year_txt = '*연장대여 기간 ('.number_format($custom_rental_price).'원 / '.date('Y.m.d', $rental_persisting_time).' 종료)';
+                    }
+
+                    //사용가능햇수+연장사용햇수 지났으면
+                    else {
+                      $persisting_year_txt = '*내구연한 종료';
                     }
                   } else {
                     // 수급자에게 공급 전 상품으로 최초계약일이 없는 상품
