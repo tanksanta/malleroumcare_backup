@@ -62,10 +62,12 @@ if($price && $sel_price_field && $price_s <= $price_e) {
 # 검색어
 $sel_field = in_array($sel_field, ['mb_entNm', 'o.od_id', 'c.it_name', 'o.od_b_name']) ? $sel_field : '';
 $search = get_search_string($search);
-if($search) {
+if($search && $sel_field) {
   $where[] = " {$sel_field} LIKE '%{$search}%' ";
   if($sel_field == 'mb_entNm')
     $where_ledger[] = " {$sel_field} LIKE '%{$search}%' ";
+  else
+    $where_ledger[] = " 1 != 1 ";
 }
 
 $sql_search = '';
