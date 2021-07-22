@@ -213,7 +213,7 @@ $total_result = sql_fetch("SELECT sum(price_d * ct_qty) as total_price, sum(pric
 $total_price = $total_result['total_price'];
 $total_price_p = $total_result['total_price_p'];
 $total_price_s = $total_result['total_price_s'];
-$total_count = $total_result['cnt']; // 이월잔액
+$total_count = $total_result['cnt'];
 
 $page_rows = $config['cf_page_rows'];
 $total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
@@ -241,6 +241,22 @@ while($row = sql_fetch_array($result)) {
   $ledgers[] = $row;
 }
 
+# 검색어
+$sel_field = in_array($sel_field, ['it_name', 'od_id']) ? $sel_field : '';
+$search = get_search_string($search);
+if($sel_field && $search) {
+  // 검색결과 필터링
+  $ledgers = array_values(array_filter($ledgers, function($v) {
+    global $sel_field, $search;
+    $pattern = '/.*'.preg_quote($search).'.*/i';
+    return preg_match($pattern, $v[$sel_field]);
+  }));
+
+  // 페이지 다시 계산
+  $total_count = count($ledgers);
+  $total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+}
+
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
@@ -253,12 +269,12 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <a href="#" id="select_date_thismonth">이번달</a>
         <a href="#" id="select_date_lastmonth">저번달</a>
       </div>
-      <select name="searchtype">
-        <option >품목명</option>
-        <option >주문번호</option>
+      <select name="sel_field" id="sel_field">
+        <option value="it_name" <?=get_selected($sel_field, 'it_name')?>>품목명</option>
+        <option value="od_id" <?=get_selected($sel_field, 'od_id')?>>주문번호</option>
       </select>
       <div class="input_search">
-        <input name="search" value="<?=$_GET["search"]?>" type="text">
+        <input name="search" value="<?=$search?>" type="text">
         <button type="submit"></button>
       </div>
     </div>
@@ -289,7 +305,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             </tr>
           </thead>
           <tbody>
-            <?php if($page == 1 && $carried_balance) { ?>
+            <?php if($page == 1 && $carried_balance && !($sel_field && $search)) { ?>
             <tr>
               <td colspan="9">이월잔액</td>
               <td class="text_r"><?=number_format($carried_balance)?></td>
