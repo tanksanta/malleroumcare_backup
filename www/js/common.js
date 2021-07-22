@@ -867,6 +867,7 @@ function show_eroumcare_popup(c) {
 		activeBtn: {
 			href: '/index.php',
 			text: '확인',
+            callback: null,
 		},
 		hideBtn: {
 			text: '닫기',
@@ -874,9 +875,10 @@ function show_eroumcare_popup(c) {
 	}
 
 	var config = $.extend({}, defaultConfig, c);
+    var randomClass = 'eroumcare-popup-' + Math.trunc(Math.random() * (1000 - 1) + 1);
 
 	$('body').append(''
-		+ '<div class="eroumcare-popup">'
+		+ '<div class="eroumcare-popup '+randomClass+'">'
 		+ 	'<i class="fa fa-close fa-lg eroumcare-popup-close close-eroumcare-popup"></i>'
 		+		'<div class="eroumcare-popup-content">'
 		+			'<h3>'
@@ -897,6 +899,14 @@ function show_eroumcare_popup(c) {
 		+	'</div>'
 	);
 
+    if (config.activeBtn.callback) {
+        $( document ).on( "click", '.' + randomClass + ' .eroumcare-popup-buttons .active', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            config.activeBtn.callback(e);
+        });
+    }
+
 	setTimeout(() => {
 		if ($('.eroumcare-popup') && $('.eroumcare-popup').length) {
 			$('.eroumcare-popup').fadeIn('fast');
@@ -906,11 +916,15 @@ function show_eroumcare_popup(c) {
 	return true;
 }
 
+function hide_eroumcare_popup() {
+    $('.eroumcare-popup').fadeOut('fast');
+}
+
 $(function(){
-	$('.close-eroumcare-popup').click(function(e) {
-		$('.eroumcare-popup').fadeOut('fast');
-		e.stopPropagation();
-		e.preventDefault();
+    $( document ).on( "click", '.close-eroumcare-popup', function(e) {
+		hide_eroumcare_popup();
+        e.stopPropagation();
+        e.preventDefault();
 	})
 
 	setTimeout(() => {
