@@ -1147,7 +1147,7 @@ function samhwa_order_calc($od_id) {
                 FROM {$g5['g5_shop_cart_table']} WHERE od_id = '{$od_id}'";
     $result = sql_fetch($sql);
 
-    $sendcost = get_sendcost($od_id, 1, 1); // 배송비 계산
+    $sendcost = get_sendcost_new($od_id, 1); // 배송비 계산
 
     $sql = "UPDATE {$g5['g5_shop_order_table']} SET 
                 od_cart_price = '{$result['od_price']}', 
