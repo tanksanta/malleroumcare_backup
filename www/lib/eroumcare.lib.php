@@ -1227,11 +1227,13 @@ function get_tutorials() {
 }
 
 function get_tutorial($type) {
+	global $g5, $member;
+
 	$sql = "SELECT * FROM tutorial WHERE mb_id = '{$member['mb_id']}' and t_type = '{$type}'";
 	return sql_fetch($sql);
 }
 
-function set_tutorial($type = 'recipient_add', $state = 0) {
+function set_tutorial($type = 'recipient_add', $state = 0, $data = null) {
 	global $g5, $member;
 
 	$sql = "REPLACE INTO tutorial SET
@@ -1240,6 +1242,10 @@ function set_tutorial($type = 'recipient_add', $state = 0) {
 		t_state = '{$state}',
 		updated_at = now()
 	";
+
+	if ($data) {
+		$sql .= ", t_data = '{$data}'";
+	}
 
 	return sql_query($sql);
 }
