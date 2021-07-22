@@ -162,10 +162,11 @@ $incompleted_eform_count = 0;
         </div>
       </div>
       <div class="r_btn_area">
-        <select name="sel_order" id="sel_order">
+        <select name="sel_order" id="sel_order" style="float: none;">
           <option value="dc_sign_datetime"<?php if(!$sel_order || $sel_order == 'dc_sign_datetime') echo ' selected'; ?>>작성일정렬</option>
           <option value="penNm"<?php if($sel_order == 'penNm') echo ' selected'; ?>>수급자정렬</option>
         </select>
+        <a href="<?=G5_SHOP_URL?>/eform/downloadReceipt.php">기본 거래영수증 다운로드</a>
       </div>
       <?php } ?>
     </form>
