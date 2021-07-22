@@ -1286,6 +1286,66 @@ pre{white-space: pre-wrap;}
 	background-repeat: no-repeat;
 }
 
+
+/* 210722 튜토리얼 팝업 */
+.eroumcare-popup {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	z-index:99;
+	width: 300px;
+	height: 220px;
+	background-color: white;
+	border: 1px solid #f5ab81;
+	-webkit-box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.2);
+	-moz-box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.2);
+	box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.2);
+	display: none;
+}
+.eroumcare-popup-close {
+	position:absolute;
+	top: 15px;
+	right: 15px;
+	color: #b0b0b0;
+	font-size: 1.5em;
+}
+.eroumcare-popup-content h3 {
+	padding-top:30px;
+	text-align: center;
+	color: #f27935;
+}
+.eroumcare-popup-content p {
+	color:#a7a7a7;
+	text-align: center;
+	line-height: 16px;
+	font-size: 1em;
+	font-weight: bold;
+}
+.eroumcare-popup-buttons {
+	margin-top:25px;
+	text-align: center;
+}
+.eroumcare-popup-buttons a {
+	display: inline-block;
+	height:40px;
+	line-height: 38px;
+	border: 1px solid #e3e3e3;
+	color:#8a8a8a;
+	padding: 0 15px;
+	text-align: center;
+	border-radius: 5px;
+	font-weight: bold;
+}
+.eroumcare-popup-buttons a + a {
+	margin-left:10px;
+}
+.eroumcare-popup-buttons a.active {
+	background-color: #f27935;
+	border:1px solid #f27935;
+	color: white;
+}
+
 @media (max-width: 1200px){
 	#mainTopSlidePCWrap { width: calc(100% + 40px); left: -20px; position: relative; }
 	.at-container { width: 100%; float: left; padding: 0 20px !important; }

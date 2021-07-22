@@ -1206,10 +1206,10 @@ function get_tutorials() {
 	while($row = sql_fetch_array($result)) {
 		$tutorials['step'][] = $row;
 
-		if ($row['state'] == 1) {
+		if ($row['t_state'] == 1) {
 			$completed_count++;
 		}
-		if ($row['t_type'] === '' && $row['state'] == 1) {
+		if ($row['t_type'] === '' && $row['t_state'] == 1) {
 			$completed = true;
 		}
 	}

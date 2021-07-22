@@ -857,3 +857,65 @@ function samhwaprint(returnData) {
         window.print();
     }
 }
+
+
+
+function show_eroumcare_popup(c) {
+	var defaultConfig = {
+		title: '타이틀',
+		content: '컨텐츠내용<br/>컨텐츠내용...',
+		activeBtn: {
+			href: '/index.php',
+			text: '확인',
+		},
+		hideBtn: {
+			text: '닫기',
+		}
+	}
+
+	var config = $.extend({}, defaultConfig, c);
+
+	$('body').append(''
+		+ '<div class="eroumcare-popup">'
+		+ 	'<i class="fa fa-close fa-lg eroumcare-popup-close close-eroumcare-popup"></i>'
+		+		'<div class="eroumcare-popup-content">'
+		+			'<h3>'
+		+ 			config.title
+		+			'</h3>'
+		+			'<p>'
+		+				config.content
+		+			'</p>'
+		+			'<div class="eroumcare-popup-buttons">'
+		+				'<a href="' + g5_url + config.activeBtn.href + '" class="active">'
+		+					config.activeBtn.text
+		+				'</a>'
+		+				'<a href="#" class="close-eroumcare-popup">'
+		+					config.hideBtn.text
+		+				'</a>'
+		+			'</div>'
+		+		'</div>'
+		+	'</div>'
+	);
+
+	setTimeout(() => {
+		if ($('.eroumcare-popup') && $('.eroumcare-popup').length) {
+			$('.eroumcare-popup').fadeIn('fast');
+		}
+	}, 500);
+
+	return true;
+}
+
+$(function(){
+	$('.close-eroumcare-popup').click(function(e) {
+		$('.eroumcare-popup').fadeOut('fast');
+		e.stopPropagation();
+		e.preventDefault();
+	})
+
+	setTimeout(() => {
+		if ($('.eroumcare-popup') && $('.eroumcare-popup').length) {
+			$('.eroumcare-popup').fadeIn('fast');
+		}
+	}, 0);
+});

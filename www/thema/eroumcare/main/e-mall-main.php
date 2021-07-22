@@ -411,3 +411,41 @@
     </ul>
   </div>
 </div>
+
+<!--
+<div class="eroumcare-popup">
+	<i class="fa fa-close fa-lg eroumcare-popup-close close-eroumcare-popup"></i>
+	<div class="eroumcare-popup-content">
+		<h3>
+			수급자 신규등록
+		</h3>
+		<p>
+			수급자 등록 체험을 위해<br/>체험용 수급자를 등록해보세요.
+		</p>
+		<div class="eroumcare-popup-buttons">
+			<a href="#" class="active">
+				수급자 주문하기
+			</a>
+			<a href="#" class="close-eroumcare-popup">
+				다음에
+			</a>
+		</div>
+	</div>
+</div>
+-->
+
+<?php if ($t_recipient_add_class === 'active') { ?>
+	<script>
+		show_eroumcare_popup({
+			title: '수급자 신규등록',
+			content: '수급자 등록 체험을 위해<br/>체험용 수급자를 등록해보세요.',
+			activeBtn: {
+				href: '/shop/my_recipient_write.php?tutorial=true',
+				text: '수급자 등록하기',
+			},
+			hideBtn: {
+				text: '다음에',
+			}
+		});
+	</script>
+<?php } ?>

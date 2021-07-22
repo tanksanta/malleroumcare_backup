@@ -611,6 +611,7 @@ scrollToTop();
 		$tutorials = get_tutorials();
 		if ($tutorials) {
 			$tutorial_percent = round($tutorials['completed_count'] / 8 * 100);
+			$tutorial_percent = $tutorial_percent < 5 ? 5 : $tutorial_percent;
 		?>
 		<div id="head_tutorial">
 			<div class="head_tutorial_info">
@@ -656,9 +657,7 @@ scrollToTop();
 				</li>
 			</ul>
 		</div>
-
 		<?php
-		print_r2($tutorials);
 		}
 		?>
 		
