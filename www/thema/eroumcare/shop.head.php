@@ -607,6 +607,60 @@ scrollToTop();
 				</div>
 			</div>
 		</div>
+		<?php
+		$tutorials = get_tutorials();
+		if ($tutorials) {
+			$tutorial_percent = round($tutorials['completed_count'] / 8 * 100);
+		?>
+		<div id="head_tutorial">
+			<div class="head_tutorial_info">
+				<h4>신규사업소 등록을 환영합니다.</h4>
+				<p>이로움 통합관리 서비스를 경험해보세요.</p>
+				<div class="head_tutorial_progress">
+					<div class="progress-bar">
+						<span class="progress-bar-fill" style="width: <?php echo $tutorial_percent; ?>%;">
+							<?php if ($tutorials['completed_count']) { ?>
+								<?php echo $tutorial_percent; ?>% <span class="pc_layout">완료</span>
+							<?php } ?>
+						</span>
+					</div>
+				</div>
+			</div>
+			<ul class="head_tutorial_step">
+				<?php 
+				$t_recipient_add_idx = array_search('recipient_add', array_column($tutorials['step'], 't_type'));
+				$t_recipient_add_class = $t_recipient_add_idx !== false ? ($tutorials['step'][$t_recipient_add_idx]['t_state'] ? 'complete' : 'active') : '';
+				?>
+				<li class="area <?php echo $t_recipient_add_class; ?>">
+					<a href='<?php echo G5_SHOP_URL; ?>/my_recipient_write.php?tutorial=true'>
+						수급자 신규등록
+					</a>
+				</li>
+				<li class="next">></li>
+				<li class="area">
+					<a href='#'>
+						수급자 주문체험
+					</a>
+				</li>
+				<li class="next">></li>
+				<li class="area">
+					<a href='#'>
+						전자문서 확인
+					</a>
+				</li>
+				<li class="next">></li>
+				<li class="area">
+					<a href='#'>
+						청구내역 확인
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<?php
+		print_r2($tutorials);
+		}
+		?>
 		
 		<div class="scroll_top">
 			<div class="scroll_top_menu">

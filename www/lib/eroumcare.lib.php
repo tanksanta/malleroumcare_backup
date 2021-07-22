@@ -1185,3 +1185,61 @@ function get_outstanding_balance($mb_id, $fr_date = null) {
   $result = sql_fetch($sql);
   return $result['total_price'] ?: 0;
 }
+
+function get_tutorials() {
+	global $g5, $member;
+	$completed = false;
+	
+	if (!$member['mb_id']) {
+		return false;
+	}
+
+	$tutorials = array(
+		'step' => array(),
+	);
+
+	$sql = "SELECT * FROM tutorial WHERE mb_id = '{$member['mb_id']}' ORDER BY created_at ASC";
+	$result = sql_query($sql);
+
+	$completed_count = 0;
+
+	while($row = sql_fetch_array($result)) {
+		$tutorials['step'][] = $row;
+
+		if ($row['state'] == 1) {
+			$completed_count++;
+		}
+		if ($row['t_type'] === '' && $row['state'] == 1) {
+			$completed = true;
+		}
+	}
+
+	// 튜토리얼 진행 안한경우 추가
+	if (!count($tutorials['step'])) {
+		set_tutorial();
+		return get_tutorials();
+	}
+
+	$tutorials['completed'] = $completed;
+	$tutorials['completed_count'] = $completed_count;
+
+	return $tutorials;
+}
+
+function get_tutorial($type) {
+	$sql = "SELECT * FROM tutorial WHERE mb_id = '{$member['mb_id']}' and t_type = '{$type}'";
+	return sql_fetch($sql);
+}
+
+function set_tutorial($type = 'recipient_add', $state = 0) {
+	global $g5, $member;
+
+	$sql = "REPLACE INTO tutorial SET
+		mb_id = '{$member['mb_id']}',
+		t_type = '{$type}',
+		t_state = '{$state}',
+		updated_at = now()
+	";
+
+	return sql_query($sql);
+}
