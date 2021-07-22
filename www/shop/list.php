@@ -154,6 +154,9 @@ if($prodSupYn) {
 	}
 }
 
+// 튜토리얼 상품 안보이게 수정
+$where .= " AND it_id NOT IN ('PRO2021072200013', 'PRO2021072200012') ";
+
 // 정렬
 $list_sort_href = './list.php?ca_id='.$ca_id.$qstr.'&amp;sort=';
 
