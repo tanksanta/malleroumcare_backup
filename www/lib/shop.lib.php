@@ -340,7 +340,8 @@ class item_list
         $sql_select = " select {$this->fields} ";
         $sql_common = " from `{$g5['g5_shop_item_table']}` ";
       }
-      $sql_where = " where " . implode(" and ", $where);
+      // 'PRO2021072200013', 'PRO2021072200012' 튜토리얼 상품
+      $sql_where = " where it_id NOT IN ('PRO2021072200013', 'PRO2021072200012') " . implode(" and ", $where);
       $sql_limit = " limit " . $this->from_record . " , " . ($this->list_mod * $this->list_row);
 
       $sql = $sql_select . $sql_common . $sql_where . $sql_order . $sql_limit;
