@@ -197,7 +197,8 @@ label {
         <td>
         <select name="mb_manager" id="mb_manager">
             <?php
-                $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '200100'";
+                //$sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '200100'";
+                $sql_m = " SELECT mb_name, mb_id FROM g5_member WHERE mb_level = 9 ";
                 $result_m = sql_query($sql_m);
                 echo '<option value="">영업 담당자를 선택하세요.</option>';
                 for ($k=0; $row_m=sql_fetch_array($result_m); $k++){
