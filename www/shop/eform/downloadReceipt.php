@@ -1,6 +1,9 @@
 <?php
 include_once('./_common.php');
 
+if(!$member['mb_entNm'])
+  alert('사업소 회원만 이용할 수 있습니다.');
+
 include_once(G5_LIB_PATH.'/PHPExcel.php');
 
 $reader = PHPExcel_IOFactory::createReader('Excel5');
