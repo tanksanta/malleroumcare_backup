@@ -30,6 +30,11 @@
 		<div class="viewWrap swiper-container">
 			<ul style="width: 100%;" class="swiper-wrapper">
 				<li style="width: 100%;" class="swiper-slide">
+					<a href="/bbs/board.php?bo_table=notice&wr_id=28">
+						<img src="<?=THEMA_URL?>/assets/img/main_banner_11.png" alt="">
+					</a>
+				</li>
+				<li style="width: 100%;" class="swiper-slide">
 					<a href="/shop/item.php?it_id=PRO2021022500198">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_10.png" alt="">
 					</a>
