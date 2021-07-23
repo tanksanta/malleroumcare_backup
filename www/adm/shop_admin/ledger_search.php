@@ -4,7 +4,7 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu], "r");
 
-$g5['title'] = '수금등록사업소 검색';
+$g5['title'] = '거래처원장';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $qstr = "";
@@ -82,6 +82,7 @@ $ents = [];
 $index = $from_record;
 while($row = sql_fetch_array($ent_result)) {
   $row['index'] = ++$index;
+  $row['sales'] = get_outstanding_balance($row['mb_id'], null, true);
   $row['balance'] = get_outstanding_balance($row['mb_id']);
   $ents[] = $row;
 }
@@ -124,6 +125,7 @@ $qstr .= "search={$search}";
         <th>No.</th>
         <th>사업소명</th>
         <th>영업담당자</th>
+        <th>총 구매액</th>
         <th>총 미수금</th>
         <th>선택</th>
       </tr>
@@ -139,6 +141,7 @@ $qstr .= "search={$search}";
         <td class="td_cntsmall"><?=$ent['index']?></td>
         <td><?=$ent['mb_entNm']?></td>
         <td class="td_payby"><?=$ent['mb_manager']?></td>
+        <td class="td_numsum"><?=number_format($ent['sales'])?></td>
         <td class="td_numsum"><?=number_format($ent['balance'])?></td>
         <td class="td_mng_s td_center"><a href="<?=G5_ADMIN_URL?>/shop_admin/ledger_manage.php?mb_id=<?=$ent['mb_id']?>" class="btn btn_03">선택</a></td>
       </tr>

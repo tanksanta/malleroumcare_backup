@@ -5,7 +5,7 @@ $menu['menu400'] = array (
     array('400000', '쇼핑몰관리', G5_ADMIN_URL.'/shop_admin/', 'shop_config'),
     array('400001', '출고담당자', G5_ADMIN_URL.'/shop_admin/samhwa_deliverylist.php', 'scf_order_delivery', 1),
     array('400100', '쇼핑몰설정', G5_ADMIN_URL.'/shop_admin/configform.php', 'scf_config'),
-    array('400460', '거래처원장', G5_ADMIN_URL.'/shop_admin/ledger_list.php', 'scf_ledger', 1),
+    array('400460', '거래처원장', G5_ADMIN_URL.'/shop_admin/ledger_search.php', 'scf_ledger', 1),
     array('400400', '주문내역', G5_ADMIN_URL.'/shop_admin/samhwa_orderlist.php', 'scf_order', 1),
     array('400402', '출고리스트', G5_ADMIN_URL.'/shop_admin/samhwa_deliverylist.php', 'scf_order_delivery', 1),
     array('400403', '반품관리', G5_ADMIN_URL.'/shop_admin/samhwa_cancellist.php', 'scf_order_cancel', 1),
