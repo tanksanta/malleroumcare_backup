@@ -1041,6 +1041,8 @@ function get_recipient_grade($pen_id) {
 }
 
 function get_recipient_grade_per_year($pen_id) {
+  global $member;
+
 	if (!$pen_id) {
 		return false;
 	}
@@ -1084,7 +1086,8 @@ function get_recipient_grade_per_year($pen_id) {
 
 // 사업소별 미수금 구하는 함수
 // fr_date 값이 있을 경우 해당 일 까지의 이월잔액
-function get_outstanding_balance($mb_id, $fr_date = null) {
+// total_price_only: true - 총 구매액, false - 총 미수금
+function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false) {
   $where_date = '';
   $where_ledger_date = '';
   if($fr_date) {
@@ -1105,7 +1108,8 @@ function get_outstanding_balance($mb_id, $fr_date = null) {
             ELSE c.io_price
           END - c.ct_discount
         ) / (c.ct_qty - c.ct_stock_qty)
-      ) as price_d
+      ) as price_d,
+      0 as deposit
     FROM
       g5_shop_order o
     LEFT JOIN
@@ -1119,7 +1123,8 @@ function get_outstanding_balance($mb_id, $fr_date = null) {
   $sql_send_cost = "
     SELECT
       1 as ct_qty,
-      o.od_send_cost as price_d
+      o.od_send_cost as price_d,
+      0 as deposit
     FROM
       g5_shop_order o
     LEFT JOIN
@@ -1134,7 +1139,8 @@ function get_outstanding_balance($mb_id, $fr_date = null) {
   $sql_sales_discount = "
     SELECT
       1 as ct_qty,
-      (-o.od_sales_discount) as price_d
+      (-o.od_sales_discount) as price_d,
+      0 as deposit
     FROM
       g5_shop_order o
     LEFT JOIN
@@ -1151,13 +1157,18 @@ function get_outstanding_balance($mb_id, $fr_date = null) {
       1 as ct_qty,
       (
         CASE
-          WHEN lc_type = 1
-          THEN (-lc_amount)
           WHEN lc_type = 2
-          THEN (lc_amount)
+          THEN lc_amount
           ELSE 0
         END
-      ) as price_d
+      ) as price_d,
+      (
+        CASE
+          WHEN lc_type = 1
+          THEN lc_amount
+          ELSE 0
+        END
+      ) as deposit
     FROM
       ledger_content l
     WHERE
@@ -1169,7 +1180,8 @@ function get_outstanding_balance($mb_id, $fr_date = null) {
 
   $sql = "
     SELECT
-      sum(price_d * ct_qty) as total_price
+      sum(price_d * ct_qty) as total_price,
+      sum(deposit) as total_deposit
     FROM
     (
       ({$sql_order} {$sql_search} {$where_date})
@@ -1183,7 +1195,14 @@ function get_outstanding_balance($mb_id, $fr_date = null) {
   ";
 
   $result = sql_fetch($sql);
-  return $result['total_price'] ?: 0;
+
+  $total_price = $result['total_price'] ?: 0;
+  $total_deposit = $result['total_deposit'] ?: 0;
+
+  if($total_price_only)
+    return $total_price;
+  else
+    return $total_price - $total_deposit;
 }
 
 function get_tutorials() {
