@@ -1157,6 +1157,33 @@ $(function() {
   <?php
   }
   ?>
+
+  <?php
+
+  // 튜토리얼 
+  $t_sql = "SELECT * FROM tutorial
+  WHERE 
+    t_data = '{$od_id}' AND 
+    mb_id = '{$member['mb_id']}' AND
+    t_type = 'recipient_order'
+  ";
+  $t_result = sql_fetch($t_sql);
+
+  $t_document = get_tutorial('document');
+  if ($t_result['t_id'] && $t_document['t_state'] == '0') {
+  ?>
+  show_eroumcare_popup({
+    title: '전자문서 확인',
+    content: '작성한 전자 계약서를<br/>확인하시겠습니까?',
+    activeBtn: {
+      text: '전자계약서확인',
+      href: '/shop/electronic_manage.php'
+    },
+    hideBtn: {
+      text: '다음에',
+    }
+  });
+  <?php } ?>
 });
 </script>
 <!-- 210512 전자계약서 팝업 -->
