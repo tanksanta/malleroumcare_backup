@@ -7,6 +7,16 @@ auth_check($auth[$sub_menu], "r");
 $where = [];
 $where_ledger = [];
 
+$mb_id = $_GET['mb_id'];
+if(!$mb_id)
+  alert('유효하지 않은 요청입니다.');
+
+$ent = get_member($mb_id);
+if(!$ent['mb_id'])
+  alert('존재하지 않는 사업소입니다.');
+
+$where_order = $where_ledger = " and m.mb_id = '$mb_id' ";
+
 # 기간
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
@@ -14,50 +24,8 @@ if(!$fr_date)
   $fr_date = date('Y-m-01');
 if(!$to_date)
   $to_date = date('Y-m-d');
-$where_time = " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
-$where_ledger_time = " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
-
-# 영업담당자
-if(!$mb_manager)
-  $mb_manager = [];
-$where_manager = [];
-if(!$mb_manager_all && $mb_manager) {
-  foreach($mb_manager as $man) {
-    $qstr .= "mb_manager%5B%5D={$man}&amp;";
-    $where_manager[] = " m.mb_manager = '$man' ";
-  }
-  $where[] = ' ( ' . implode(' or ', $where_manager) . ' ) ';
-  $where_ledger[] = ' ( ' . implode(' or ', $where_manager) . ' ) ';
-}
-
-# 금액
-$sel_price_field = in_array($sel_price_field, ['price_d', 'price_d_p', 'price_d_s', 'price_d*ct_qty']) ? $sel_price_field : '';
-$where_price = '';
-if($price && $sel_price_field && $price_s <= $price_e) {
-  $price_s = intval($price_s);
-  $price_e = intval($price_e);
-  $where_price = " where ({$sel_price_field} between {$price_s} and {$price_e}) ";
-}
-
-# 검색어
-$sel_field = in_array($sel_field, ['mb_entNm', 'o.od_id', 'c.it_name', 'o.od_b_name']) ? $sel_field : '';
-$search = get_search_string($search);
-if($search && $sel_field) {
-  $where[] = " {$sel_field} LIKE '%{$search}%' ";
-  if($sel_field == 'mb_entNm')
-    $where_ledger[] = " {$sel_field} LIKE '%{$search}%' ";
-  else
-    $where_ledger[] = " 1 != 1 ";
-}
-
-$sql_search = '';
-$sql_ledger_search = '';
-if($where) {
-  $sql_search = ' and '.implode(' and ', $where);
-}
-if($where_ledger) {
-  $sql_ledger_search = ' and '.implode(' and ', $where_ledger);
-}
+$where_order .= " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+$where_ledger .= " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
 # 매출
 $sql_order = "
@@ -240,49 +208,57 @@ $sql_ledger = "
 $sql_common = "
 FROM
   (
-    ({$sql_order} {$sql_search} {$where_time})
+    ({$sql_order} {$where_order})
     UNION ALL
-    ({$sql_send_cost} {$sql_search} {$where_time} GROUP BY o.od_id)
+    ({$sql_send_cost} {$where_order} GROUP BY o.od_id)
     UNION ALL
-    ({$sql_sales_discount} {$sql_search} {$where_time} GROUP BY o.od_id)
+    ({$sql_sales_discount} {$where_order} GROUP BY o.od_id)
     UNION ALL
-    ({$sql_ledger} {$sql_ledger_search} {$where_ledger_time})
+    ({$sql_ledger} {$where_ledger})
   ) u
 ";
 
 $result = sql_query("
   SELECT
-    *
+    u.*,
+    (price_d * ct_qty) as sales
   {$sql_common}
-  {$where_price}
   ORDER BY
     od_time asc,
     od_id asc
 ");
 
 $ledgers = [];
-$balance = 0;
-
-// 누계
-$total_qty = 0;
-$total_price_d = 0;
-$total_price_d_p = 0;
-$total_price_d_s = 0;
-$total_sales = 0;
-$total_deposit = 0;
+$carried_balance = get_outstanding_balance($mb_id, $fr_date);
+$balance = $carried_balance;
 
 while($row = sql_fetch_array($result)) {
-  $total_qty += $row['ct_qty'];
-  $total_price_d += $row['price_d'];
-  $total_price_d_p += $row['price_d_p'];
-  $total_price_d_s += $row['price_d_s'];
-  $total_sales += ($row['price_d'] * $row['ct_qty']);
-  $total_deposit += $row['deposit'];
-
   $balance += ($row['price_d'] * $row['ct_qty']);
   $balance -= ($row['deposit']);
   $row['balance'] = $balance;
   $ledgers[] = $row;
+}
+
+# 금액
+$sel_price_field = in_array($sel_price_field, ['price_d', 'price_d_p', 'price_d_s', 'sales']) ? $sel_price_field : '';
+if($price && $sel_price_field && $price_s <= $price_e) {
+  $price_s = intval($price_s);
+  $price_e = intval($price_e);
+  // 검색결과 필터링
+  $ledgers = array_values(array_filter($ledgers, function($v) {
+    global $sel_price_field, $price_s, $price_e;
+    return $v[$sel_price_field] >= $price_s && $v[$sel_price_field] <= $price_e;
+  }));
+}
+
+# 검색어
+if($sel_field && $search) {
+  // 검색결과 필터링
+  $ledgers = array_values(array_filter($ledgers, function($v) {
+    global $sel_field, $search;
+    $pattern = '/.*'.preg_quote($search).'.*/i';
+    return preg_match($pattern, $v[$sel_field]);
+  }));
 }
 
 if(! function_exists('column_char')) {
@@ -293,32 +269,60 @@ if(! function_exists('column_char')) {
 
 include_once(G5_LIB_PATH.'/PHPExcel.php');
 
-$title = ["회사명 : (주)티에이치케이컴퍼니/{$fr_date} ~ {$to_date}"];
-$headers = ['일자-주문번호', '사업소', '품목명[규격]', '수량', '단가(Vat포함)', '공급가액', '부가세', '판매', '수금', '잔액', '수령인'];
-$widths = [25, 20, 20, 6, 12, 12, 12, 12, 12, 12, 15];
+$title = ["회사명 : (주)티에이치케이컴퍼니/{$ent['mb_entNm']}/{$fr_date} ~ {$to_date}"];
+$headers = ['일자-주문번호', '품목명[규격]', '수량', '단가(Vat포함)', '공급가액', '부가세', '판매', '수금', '잔액', '수령인'];
+$widths = [25, 20, 6, 12, 12, 12, 12, 12, 12, 15];
 $last_char = column_char(count($headers) - 1);
 
 $rows = [];
+// 이월잔액부터 채움
+if($carried_balance && !($sel_field && $search) && !$price) {
+  $rows[] = [
+    '',
+    '이월잔액',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    $carried_balance,
+    ''
+  ];
+}
+
+// 누계
+$total_qty = 0;
+$total_price_d = 0;
+$total_price_d_p = 0;
+$total_price_d_s = 0;
+$total_sales = 0;
+$total_deposit = 0;
 
 foreach($ledgers as $row) {
   $rows[] = [
     date('y/m/d', strtotime($row['od_time'])).($row['od_id'] ? '-'.$row['od_id'] : ''),
-    $row['mb_entNm'],
     $row['it_name'].($row['ct_option'] ? " [{$row['ct_option']}]" : ''),
     $row['ct_qty'],
     $row['price_d'],
     $row['price_d_p'],
     $row['price_d_s'],
-    $row['price_d'] * $row['ct_qty'],
+    $row['sales'],
     $row['deposit'],
     $row['balance'],
     $row['od_b_name']
   ];
+
+  $total_qty += $row['ct_qty'];
+  $total_price_d += $row['price_d'];
+  $total_price_d_p += $row['price_d_p'];
+  $total_price_d_s += $row['price_d_s'];
+  $total_sales += ($row['price_d'] * $row['ct_qty']);
+  $total_deposit += $row['deposit'];
 }
 
 $totals = [
   '누계',
-  '',
   '',
   $total_qty,
   $total_price_d,
@@ -353,11 +357,11 @@ $excel->getDefaultStyle()->applyFromArray($styleArray);
 $excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(17);
 
 // 폰트&볼드 처리
-$excel->getActiveSheet()->getStyle('A1:K2')->getFont()->setSize(11);
-$excel->getActiveSheet()->getStyle('A1:K2')->getFont()->setBold(true);
+$excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setSize(11);
+$excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setBold(true);
 
 // number format 처리
-$excel->getActiveSheet()->getStyle('D3:J'.(count($rows) + 3))->getNumberFormat()->setFormatCode('#,##0_-');
+$excel->getActiveSheet()->getStyle('C3:I'.(count($rows) + 3))->getNumberFormat()->setFormatCode('#,##0_-');
 
 // 테두리 처리
 $styleArray = array(
@@ -367,7 +371,7 @@ $styleArray = array(
     )
   )
 );
-$excel->getActiveSheet()->getStyle('A2:K'.(count($rows) + 3))->applyFromArray($styleArray);
+$excel->getActiveSheet()->getStyle('A2:J'.(count($rows) + 3))->applyFromArray($styleArray);
 
 foreach($widths as $i => $w) $excel->setActiveSheetIndex(0)->getColumnDimension( column_char($i) )->setWidth($w);
 $excel->getActiveSheet()->fromArray($data);

@@ -7,10 +7,6 @@ auth_check($auth[$sub_menu], "r");
 $g5['title'] = '거래처원장';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
-$qstr = "";
-$where = [];
-$where_ledger = [];
-
 $mb_id = $_GET['mb_id'];
 if(!$mb_id)
   alert('유효하지 않은 요청입니다.');
@@ -225,7 +221,7 @@ FROM
 ";
 
 # 구매액 합계 계산
-$total_result = sql_fetch("SELECT sum(price_d * ct_qty) as total_price, sum(price_d_p) as total_price_p, sum(price_d_s) as total_price_s, count(*) as cnt {$sql_common} {$where_price}");
+$total_result = sql_fetch("SELECT sum(price_d * ct_qty) as total_price, sum(price_d_p) as total_price_p, sum(price_d_s) as total_price_s, count(*) as cnt {$sql_common}");
 $total_price = $total_result['total_price'];
 $total_price_p = $total_result['total_price_p'];
 $total_price_s = $total_result['total_price_s'];
@@ -259,7 +255,6 @@ while($row = sql_fetch_array($result)) {
 
 # 금액
 $sel_price_field = in_array($sel_price_field, ['price_d', 'price_d_p', 'price_d_s', 'sales']) ? $sel_price_field : '';
-$where_price = '';
 if($price && $sel_price_field && $price_s <= $price_e) {
   $price_s = intval($price_s);
   $price_e = intval($price_e);
@@ -288,7 +283,7 @@ if($sel_field && $search) {
   $total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
 }
 
-$qstr .= "mb_id={$mb_id}&fr_date={$fr_date}&to_date={$to_date}&price={$price}&sel_price_field={$sel_price_field}&price_s={$price_s}&price_e={$price_e}&sel_field={$sel_field}&search={$search}";
+$qstr = "mb_id={$mb_id}&fr_date={$fr_date}&to_date={$to_date}&price={$price}&sel_price_field={$sel_price_field}&price_s={$price_s}&price_e={$price_e}&sel_field={$sel_field}&search={$search}";
 
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
@@ -322,7 +317,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <option value="price_d" <?=get_selected($sel_price_field, 'price_d')?>>단가</option>
               <option value="price_d_p" <?=get_selected($sel_price_field, 'price_d_p')?>>공급가액</option>
               <option value="price_d_s" <?=get_selected($sel_price_field, 'price_d_s')?>>부가세</option>
-              <option value="price_d*ct_qty" <?=get_selected($sel_price_field, 'sales')?>>판매</option>
+              <option value="sales" <?=get_selected($sel_price_field, 'sales')?>>판매</option>
             </select>
             <input type="text" name="price_s" value="<?=$price_s?>" class="line" maxlength="10" style="width:80px">
             원 ~
