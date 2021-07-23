@@ -911,7 +911,7 @@ function show_eroumcare_popup(c) {
 		if ($('.eroumcare-popup') && $('.eroumcare-popup').length) {
 			$('.eroumcare-popup').fadeIn('fast');
 		}
-	}, 3000);
+	}, 1000);
 
 	return true;
 }
@@ -931,5 +931,5 @@ $(function(){
 		if ($('.eroumcare-popup') && $('.eroumcare-popup').length) {
 			$('.eroumcare-popup').fadeIn('fast');
 		}
-	}, 3000);
+	}, 1000);
 });
