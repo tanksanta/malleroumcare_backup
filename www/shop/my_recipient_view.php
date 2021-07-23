@@ -218,6 +218,29 @@ if($pen_gra_apply_month && $pen_gra_apply_day)
   </div>
 </div>
 
+<?php
+$t_recipient_order = get_tutorial('recipient_order');
+$t_recipient_add = get_tutorial('recipient_add');
+if ($t_recipient_order['t_state'] == '0' && $t_recipient_add['t_data'] == $pen['penId']) {
+?>
+<script>
+show_eroumcare_popup({
+  title: '수급자 주문하기',
+  content: '수급자 주문을 체험하시겠습니까?<br/>판매품목 1개, 대여품목1개<br/>선택되어 주문을 체험할 수 있습니다.',
+  activeBtn: {
+    text: '\'<?php echo htmlspecialchars($pen['penNm']); ?>\' 수급자로 주문체험하기',
+    href: '/shop/tutorial_order.php'
+  },
+  hideBtn: {
+    text: '다음에',
+  }
+});
+
+</script>
+<?php
+} 
+?>
+
 <script>
 $(function() {
 
