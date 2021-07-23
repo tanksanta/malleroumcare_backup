@@ -1042,6 +1042,9 @@ pre{white-space: pre-wrap;}
 #myRecipientListWrap > .titleWrap > .a2 { position: absolute; width: 100px; height: 35px; line-height: 35px; font-size: 12px; color: #FFF; background-color: #3366CC; text-align: center; font-weight: bold; top: 50%; margin-top: -17.5px; right: 0; }
 #myRecipientListWrap > .list-paging { width: 100%; margin-top: 20px; }
 
+.recipient_noti{position:relative;width:100%;padding:15px;border:1px solid #ee8102;color:#ee8102;font-size:14px;text-align:center;display:inline-block;margin-bottom:10px ;border-radius: 5px;}
+.recipient_noti a{position:absolute !important;top:10px;right:10px;background: #ee8102;color:#fff;border-radius: 3px;padding:5px 10px;}
+
 .btn.eroumcare_btn {
     width: 100px;
     height: 35px;
@@ -1369,6 +1372,11 @@ pre{white-space: pre-wrap;}
 }
 
 @media (max-width: 960px){
+	
+	.recipient_noti{line-height: 25px;}
+	.recipient_noti a{position:relative !important;width:100%;display: block;top:0;right:0}
+	
+	
 	.main_top_service_info .service_desc .service_wrap ul > li .desc_area{display: none;}
 	.main_top_service_info .service_desc .txt_area p:nth-child(4){display:none;}
 	.is-pc .at-body{padding:0 10px}

@@ -93,7 +93,7 @@ $(function() {
 }
 @media (max-width: 960px) {
   #myRecipientListWrap > .titleWrap > .link_notice_wrap {
-    position: static; margin-bottom: 20px;
+    position: static; margin-bottom: 20px;height:auto;
   }
 }
 </style>
@@ -121,6 +121,10 @@ $(function() {
           <input name="search" id="search" value="<?=$search?>" type="text">
           <button id="btn_search" type="submit"></button>
       </div>
+    </div>
+    <div class="recipient_noti" style="display: none;">
+    	신규 확인이 필요한 알림 1건이 있습니다.
+    	<a href="#">바로확인</a>
     </div>
     <div class="r_btn_area pc">
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
