@@ -58,6 +58,12 @@ $sql = "INSERT INTO
 					created_by = '{$member['mb_id']}' ";
 sql_query($sql);
 
+// 튜토리얼 
+if ($tutorial) {
+	set_tutorial('recipient_add', 1, $res['data']['penId']);
+	set_tutorial('recipient_order', 0);
+}
+
 json_response(200, 'OK', array(
   'penId' => $res['data']['penId'],
   'isSpare' => $is_spare
