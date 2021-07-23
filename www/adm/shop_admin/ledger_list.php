@@ -11,6 +11,19 @@ $qstr = "";
 $where = [];
 $where_ledger = [];
 
+$mb_id = $_GET['mb_id'];
+if(!$mb_id)
+  alert('유효하지 않은 요청입니다.');
+
+$ent = get_member($mb_id);
+if(!$ent['mb_id'])
+  alert('존재하지 않는 사업소입니다.');
+
+# 영업담당자
+$manager = get_member($ent['mb_manager']);
+
+$where_order = $where_ledger = " and m.mb_id = '$mb_id' ";
+
 # 기간
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
@@ -18,66 +31,8 @@ if(!$fr_date)
   $fr_date = date('Y-m-01');
 if(!$to_date)
   $to_date = date('Y-m-d');
-$where_time = " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
-$where_ledger_time = " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
-
-# 영업담당자
-if(!$mb_manager)
-  $mb_manager = [];
-$where_manager = [];
-if(!$mb_manager_all && $mb_manager) {
-  foreach($mb_manager as $man) {
-    $qstr .= "mb_manager%5B%5D={$man}&";
-    $where_manager[] = " m.mb_manager = '$man' ";
-  }
-  $where[] = ' ( ' . implode(' or ', $where_manager) . ' ) ';
-  $where_ledger[] = ' ( ' . implode(' or ', $where_manager) . ' ) ';
-}
-$manager_result = sql_query("
-  SELECT
-    a.mb_id,
-    m.mb_name
-  FROM
-    g5_auth a
-  LEFT JOIN
-    g5_member m ON a.mb_id = m.mb_id
-  WHERE
-    au_menu = '400400' and
-    au_auth LIKE '%w%'
-");
-$managers = [];
-while($manager = sql_fetch_array($manager_result)) {
-  $managers[$manager['mb_id']] = $manager['mb_name'];
-}
-
-# 금액
-$sel_price_field = in_array($sel_price_field, ['price_d', 'price_d_p', 'price_d_s', 'price_d*ct_qty']) ? $sel_price_field : '';
-$where_price = '';
-if($price && $sel_price_field && $price_s <= $price_e) {
-  $price_s = intval($price_s);
-  $price_e = intval($price_e);
-  $where_price = " where ({$sel_price_field} between {$price_s} and {$price_e}) ";
-}
-
-# 검색어
-$sel_field = in_array($sel_field, ['mb_entNm', 'o.od_id', 'c.it_name', 'o.od_b_name']) ? $sel_field : '';
-$search = get_search_string($search);
-if($search && $sel_field) {
-  $where[] = " {$sel_field} LIKE '%{$search}%' ";
-  if($sel_field == 'mb_entNm')
-    $where_ledger[] = " {$sel_field} LIKE '%{$search}%' ";
-  else
-    $where_ledger[] = " 1 != 1 ";
-}
-
-$sql_search = '';
-$sql_ledger_search = '';
-if($where) {
-  $sql_search = ' and '.implode(' and ', $where);
-}
-if($where_ledger) {
-  $sql_ledger_search = ' and '.implode(' and ', $where_ledger);
-}
+$where_order .= " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+$where_ledger .= " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
 # 매출
 $sql_order = "
@@ -85,9 +40,6 @@ $sql_order = "
     o.od_time,
     o.od_id,
     m.mb_entNm,
-    (
-      SELECT mb_name from g5_member WHERE mb_id = m.mb_manager
-    ) as mb_manager,
     c.it_name,
     c.ct_option,
     (c.ct_qty - c.ct_stock_qty) as ct_qty,
@@ -166,9 +118,6 @@ $sql_send_cost = "
     o.od_time,
     o.od_id,
     m.mb_entNm,
-    (
-      SELECT mb_name from g5_member WHERE mb_id = m.mb_manager
-    ) as mb_manager,
     '^배송비' as it_name,
     '' as ct_option,
     1 as ct_qty,
@@ -195,9 +144,6 @@ $sql_sales_discount = "
     o.od_time,
     o.od_id,
     m.mb_entNm,
-    (
-      SELECT mb_name from g5_member WHERE mb_id = m.mb_manager
-    ) as mb_manager,
     '^매출할인' as it_name,
     '' as ct_option,
     1 as ct_qty,
@@ -224,9 +170,6 @@ $sql_ledger = "
     lc_created_at as od_time,
     '' as od_id,
     m.mb_entNm,
-    (
-      SELECT mb_name from g5_member WHERE mb_id = m.mb_manager
-    ) as mb_manager,
     (
       CASE
         WHEN lc_type = 1
@@ -268,17 +211,16 @@ $sql_ledger = "
     1 = 1
 ";
 
-
 $sql_common = "
 FROM
   (
-    ({$sql_order} {$sql_search} {$where_time})
+    ({$sql_order} {$where_order})
     UNION ALL
-    ({$sql_send_cost} {$sql_search} {$where_time} GROUP BY o.od_id)
+    ({$sql_send_cost} {$where_order} GROUP BY o.od_id)
     UNION ALL
-    ({$sql_sales_discount} {$sql_search} {$where_time} GROUP BY o.od_id)
+    ({$sql_sales_discount} {$where_order} GROUP BY o.od_id)
     UNION ALL
-    ({$sql_ledger} {$sql_ledger_search} {$where_ledger_time})
+    ({$sql_ledger} {$where_ledger})
   ) u
 ";
 
@@ -296,16 +238,18 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
 $result = sql_query("
   SELECT
-    *
+    u.*,
+    (price_d * ct_qty) as sales
   {$sql_common}
-  {$where_price}
   ORDER BY
     od_time asc,
     od_id asc
 ");
 
 $ledgers = [];
-$balance = 0;
+$carried_balance = get_outstanding_balance($mb_id, $fr_date);
+$balance = $carried_balance;
+
 while($row = sql_fetch_array($result)) {
   $balance += ($row['price_d'] * $row['ct_qty']);
   $balance -= ($row['deposit']);
@@ -313,7 +257,38 @@ while($row = sql_fetch_array($result)) {
   $ledgers[] = $row;
 }
 
-$qstr .= "fr_date={$fr_date}&to_date={$to_date}&price={$price}&sel_price_field={$sel_price_field}&price_s={$price_s}&price_e={$price_e}&sel_field={$sel_field}&search={$search}";
+# 금액
+$sel_price_field = in_array($sel_price_field, ['price_d', 'price_d_p', 'price_d_s', 'sales']) ? $sel_price_field : '';
+$where_price = '';
+if($price && $sel_price_field && $price_s <= $price_e) {
+  $price_s = intval($price_s);
+  $price_e = intval($price_e);
+  // 검색결과 필터링
+  $ledgers = array_values(array_filter($ledgers, function($v) {
+    global $sel_price_field, $price_s, $price_e;
+    return $v[$sel_price_field] >= $price_s && $v[$sel_price_field] <= $price_e;
+  }));
+
+  // 페이지 다시 계산
+  $total_count = count($ledgers);
+  $total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+}
+
+# 검색어
+if($sel_field && $search) {
+  // 검색결과 필터링
+  $ledgers = array_values(array_filter($ledgers, function($v) {
+    global $sel_field, $search;
+    $pattern = '/.*'.preg_quote($search).'.*/i';
+    return preg_match($pattern, $v[$sel_field]);
+  }));
+
+  // 페이지 다시 계산
+  $total_count = count($ledgers);
+  $total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+}
+
+$qstr .= "mb_id={$mb_id}&fr_date={$fr_date}&to_date={$to_date}&price={$price}&sel_price_field={$sel_price_field}&price_s={$price_s}&price_e={$price_e}&sel_field={$sel_field}&search={$search}";
 
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
@@ -323,7 +298,11 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </style>
 
 <div class="new_form">
+  <div style="padding: 20px 20px;background-color: #fff;border-bottom: 1px solid #e1e2e2;">
+    <h2 style="margin:0;padding:0;"><?=$ent['mb_entNm']?><?=$manager ? " ({$manager['mb_name']})" : ''?></h2>
+  </div>
   <form method="get">
+    <input type="hidden" name="mb_id" value="<?=$mb_id?>">
     <table class="new_form_table">
       <tbody>
         <tr>
@@ -336,17 +315,6 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </td>
         </tr>
         <tr>
-          <th>영업담당자</th>
-          <td>
-            <input type="checkbox" name="mb_manager_all" value="1" id="chk_mb_manager_all" <?php if(!array_diff(array_keys($managers), $mb_manager)) echo 'checked'; ?>>
-            <label for="chk_mb_manager_all">전체</label>
-            <?php foreach($managers as $mb_id => $mb_name) { ?>
-            <input type="checkbox" name="mb_manager[]" value="<?=$mb_id?>" id="manager_<?=$mb_id?>" class="chk_mb_manager" <?php if(in_array($mb_id, $mb_manager)) echo 'checked'; ?>>
-            <label for="manager_<?=$mb_id?>"><?=$mb_name?></label>
-            <?php } ?>
-          </td>
-        </tr>
-        <tr>
           <th>금액</th>
           <td>
             <input type="checkbox" name="price" value="1" id="search_won" <?=$price ? 'checked' : ''?>><label for="search_won">&nbsp;</label>
@@ -354,7 +322,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <option value="price_d" <?=get_selected($sel_price_field, 'price_d')?>>단가</option>
               <option value="price_d_p" <?=get_selected($sel_price_field, 'price_d_p')?>>공급가액</option>
               <option value="price_d_s" <?=get_selected($sel_price_field, 'price_d_s')?>>부가세</option>
-              <option value="price_d*ct_qty" <?=get_selected($sel_price_field, 'price_d*ct_qty')?>>판매</option>
+              <option value="price_d*ct_qty" <?=get_selected($sel_price_field, 'sales')?>>판매</option>
             </select>
             <input type="text" name="price_s" value="<?=$price_s?>" class="line" maxlength="10" style="width:80px">
             원 ~
@@ -366,10 +334,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <th>검색어</th>
           <td>
             <select name="sel_field" id="sel_field">
-              <option value="mb_entNm" <?=get_selected($sel_field, 'mb_entNm')?>>사업소명</option>
-              <option value="o.od_id" <?=get_selected($sel_field, 'o.od_id')?>>주문번호</option>
-              <option value="c.it_name" <?=get_selected($sel_field, 'c.it_name')?>>품목명</option>
-              <option value="o.od_b_name" <?=get_selected($sel_field, 'o.od_b_name')?>>수령인</option>
+              <option value="od_id" <?=get_selected($sel_field, 'od_id')?>>주문번호</option>
+              <option value="it_name" <?=get_selected($sel_field, 'it_name')?>>품목명</option>
+              <option value="od_b_name" <?=get_selected($sel_field, 'od_b_name')?>>수령인</option>
             </select>
             <input type="text" name="search" value="<?=$search?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
           </td>
@@ -384,7 +351,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 <div class="tbl_head01 tbl_wrap">
   <div class="local_ov01" style="border:1px solid #e3e3e3;">
     <h1 style="border:0;padding:5px 0;margin:0;letter-spacing:0;">
-      구매액 합계: <?=number_format($total_price)?>원 (공급가:<?=number_format($total_price_p)?>원, VAT:<?=number_format($total_price_s)?>원)
+      [<?=$ent['mb_entNm']?>] 구매액 합계: <?=number_format($total_price)?>원 (공급가:<?=number_format($total_price_p)?>원, VAT:<?=number_format($total_price_s)?>원)
     </h1>
     <div class="right">
       <button id="btn_ledger_excel"><img src="<?=G5_ADMIN_URL?>/shop_admin/img/btn_img_ex.gif">엑셀다운로드</button>
@@ -410,7 +377,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       </tr>
     </thead>
     <tbody>
-      <!--<tr>
+      <?php if($page == 1 && $carried_balance && !($sel_field && $search) && !$price) { ?>
+      <tr>
         <td class="td_date"><?=date('y-m-d', strtotime($fr_date))?></td>
         <td class="td_odrnum2"></td>
         <td class="td_id"></td>
@@ -422,9 +390,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <td class="td_price"></td>
         <td class="td_price"></td>
         <td class="td_price"></td>
-        <td class="td_price"><?=number_format($balance)?></td>
+        <td class="td_price"><?=number_format($carried_balance)?></td>
         <td class="td_id"></td>
-      </tr>-->
+      </tr>
+      <?php } ?>
       <?php
       for($i = $from_record; $i < ($from_record + $page_rows); $i++) {
         if(!isset($ledgers[$i])) break;
@@ -438,13 +407,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <?php } ?>
         </td>
         <td class="td_id"><?=$row['mb_entNm']?></td>
-        <td class="td_payby"><?=$row['mb_manager']?></td>
+        <td class="td_payby"><?=$manager['mb_name']?></td>
         <td><?=$row['it_name']?><?=$row['ct_option'] ? "({$row['ct_option']})" : ''?></td>
         <td class="td_numsmall"><?=$row['ct_qty']?></td>
         <td class="td_price"><?=number_format($row['price_d'])?></td>
         <td class="td_price"><?=number_format($row['price_d_p'])?></td>
         <td class="td_price"><?=number_format($row['price_d_s'])?></td>
-        <td class="td_price"><?=number_format($row['price_d'] * $row['ct_qty'])?></td>
+        <td class="td_price"><?=number_format($row['sales'])?></td>
         <td class="td_price"><?=number_format($row['deposit'])?></td>
         <td class="td_price"><?=number_format($row['balance'])?></td>
         <td class="td_id"><?=$row['od_b_name']?></td>
@@ -470,7 +439,7 @@ $(function() {
   });
   // 수금관리 버튼
   $('#btn_ledger_manage').click(function() {
-    location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_search.php";
+    location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_manage.php?mb_id=<?=$mb_id?>";
   });
 
   // 기간 - datepicker
