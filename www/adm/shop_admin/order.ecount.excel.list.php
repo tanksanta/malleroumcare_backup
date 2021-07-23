@@ -10,14 +10,19 @@
   $count_number=0;
   $count_od_id="";
 
+  $checked = [];
   for($ii = 0; $ii < count($ct_id); $ii++) {
+    $this_ct_id = $ct_id[$ii];
+
+    if(isset($checked[$this_ct_id])) continue;
+    $checked[$this_ct_id] = true;
 
     $it = sql_fetch("
       SELECT cart.*, item.it_thezone2, o.io_thezone as io_thezone2
       FROM g5_shop_cart as cart
       INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
       LEFT JOIN g5_shop_item_option o ON (cart.it_id = o.it_id and cart.io_id = o.io_id)
-      WHERE cart.ct_id = '{$ct_id[$ii]}'
+      WHERE cart.ct_id = '{$this_ct_id}'
       ORDER BY cart.ct_id ASC
     ");
     
