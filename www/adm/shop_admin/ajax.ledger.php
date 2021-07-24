@@ -8,7 +8,7 @@ if($auth_check)
 
 $mb_id = sql_real_escape_string($_POST['mb_id']);
 $lc_type = intval($_POST['lc_type']);
-$lc_amount = intval($_POST['lc_amount']);
+$lc_amount = intval(str_replace(',', '', $_POST['lc_amount']));
 $lc_memo = sql_real_escape_string($_POST['lc_memo']);
 
 // 값 검증

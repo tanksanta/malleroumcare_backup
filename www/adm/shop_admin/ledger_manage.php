@@ -87,7 +87,7 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
         <tr>
           <th>금액</th>
           <td>
-            <input type="text" name="lc_amount" value="" class="line" style="width:150px;">
+            <input type="text" name="lc_amount" value="" id="lc_amount" class="line" style="width:150px;">
           </td>
         </tr>
         <tr>
@@ -147,6 +147,19 @@ $(function() {
   // 목록 버튼
   $('#btn_list').click(function() {
     location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_search.php";
+  });
+
+  // 금액 입력
+  $('#lc_amount').on('input propertychange paste', function(e) {
+    var input = $(this).val();
+    
+    input = input.replace(/[\D\s\._\-]+/g, "");
+    if(input !== '') {
+      input = input ? parseInt( input, 10 ) : 0;
+      $(this).val(input.toLocaleString('en-US'));
+    } else {
+      $(this).val('');
+    }
   });
 
   // 입금/출금 폼
