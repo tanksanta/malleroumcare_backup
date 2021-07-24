@@ -484,41 +484,48 @@ show_eroumcare_popup({
 <?php
 $t_document = get_tutorial('document');
 if ($t_document['t_state'] == '0') {
+	
+	$t_sql = "SELECT e.dc_status FROM tutorial as t INNER JOIN eform_document as e ON t.t_data = e.od_id
+	WHERE 
+		t.mb_id = '{$member['mb_id']}' AND
+		t.t_type = 'recipient_order'
+	";
+	$t_result = sql_fetch($t_sql);
+
+	if (($t_result['dc_status'] == '2' || $t_result['dc_status'] == '3')) {
 ?>
-<script>
-show_eroumcare_popup({
-	title: '전자문서 확인',
-	content: '작성한 전자 계약서를<br/>확인하시겠습니까?',
-	activeBtn: {
-		text: '전자계약서확인',
-		href: '/shop/electronic_manage.php'
-	},
-	hideBtn: {
-		text: '다음에',
-	}
-});
-</script>
+	<script>
+	show_eroumcare_popup({
+		title: '전자문서 확인',
+		content: '작성한 전자 계약서를<br/>확인하시겠습니까?',
+		activeBtn: {
+			text: '전자계약서확인',
+			href: '/shop/electronic_manage.php'
+		},
+		hideBtn: {
+			text: '다음에',
+		}
+	});
+	</script>
+	<?php } ?>
 <?php } ?>
 
 <?php
-/*
 $t_claim = get_tutorial('claim');
 if ($t_claim['t_state'] == '0') {
-  set_tutorial('claim', '1');
 ?>
 <script>
   show_eroumcare_popup({
-    title: '축하드립니다',
-    content: '성공적으로 체험을 완료하셨습니다.<br/>이로움 만의 특별한 관리시스템으로 편리하게 관리하세요.',
+    title: '청구내역 확인',
+    content: '수급자 주문 후 누적된 청구내역을<br/>확인 하시겠습니까?',
     activeBtn: {
-      text: '확인',
-      href: '/index.php'
+      text: '청구내역 확인',
+      href: '/shop/claim_manage.php'
     },
     hideBtn: {
-      text: '닫기',
+      text: '다음에',
     }
   });
 </script>
 <?php } 
-*/
 ?>

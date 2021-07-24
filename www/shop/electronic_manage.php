@@ -1,6 +1,12 @@
 <?php
 include_once('./_common.php');
 
+$t_document = get_tutorial('document');
+if ($t_document['t_state'] == '0') {
+    set_tutorial('document', '1');
+    set_tutorial('claim', '0');
+}
+
 if(USE_G5_THEME && defined('G5_THEME_PATH')) {
   require_once(G5_SHOP_PATH.'/yc/orderinquiry.php');
   return;
@@ -223,13 +229,6 @@ $(function() {
 </script>
 
 <?php
-$t_document = get_tutorial('document');
-if ($t_document['t_state'] == '0') {
-    set_tutorial('document', '1');
-    set_tutorial('claim', '0');
-}
-
-
 $t_claim = get_tutorial('claim');
 if ($t_claim['t_state'] == '0') { 
 ?>

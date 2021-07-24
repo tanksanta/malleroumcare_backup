@@ -1170,7 +1170,7 @@ $(function() {
   $t_result = sql_fetch($t_sql);
 
   $t_document = get_tutorial('document');
-  if ($t_result['t_id'] && $t_document['t_state'] == '0') {
+  if ($t_result['t_id'] && $t_document['t_state'] == '0' && ($eform['dc_status'] == '2' || $eform['dc_status'] == '3')) {
   ?>
   show_eroumcare_popup({
     title: '전자문서 확인',

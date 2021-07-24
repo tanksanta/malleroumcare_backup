@@ -22,6 +22,13 @@ $skin_name = $skin_row['order_'.MOBILE_.'skin'];
 $order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_name;
 $order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
+$is_tutorial_popup = false;
+$t_claim = get_tutorial('claim');
+if ($t_claim['t_state'] == '0') {
+  set_tutorial('claim', '1');
+  $is_tutorial_popup = true;
+}
+
 // 스킨 체크
 list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url);
 
@@ -951,9 +958,7 @@ $(function() {
 
 
 <?php
-$t_claim = get_tutorial('claim');
-if ($t_claim['t_state'] == '0') {
-  set_tutorial('claim', '1');
+if ($is_tutorial_popup) {
 ?>
 <script>
   show_eroumcare_popup({
