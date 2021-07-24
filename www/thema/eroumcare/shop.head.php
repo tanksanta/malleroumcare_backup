@@ -609,8 +609,8 @@ scrollToTop();
 		</div>
 		<?php
 		$tutorials = get_tutorials();
-		if ($tutorials) {
-			$tutorial_percent = round($tutorials['completed_count'] / 8 * 100);
+		if ($member['mb_id'] && $tutorials && $tutorials['completed_count'] < 4) {
+			$tutorial_percent = round($tutorials['completed_count'] / 4 * 100);
 			$tutorial_percent = $tutorial_percent < 5 ? 5 : $tutorial_percent;
 		?>
 		<div id="head_tutorial">
@@ -638,20 +638,32 @@ scrollToTop();
 					</a>
 				</li>
 				<li class="next">></li>
-				<li class="area">
-					<a href='#'>
+				<?php 
+				$t_recipient_order_idx = array_search('recipient_order', array_column($tutorials['step'], 't_type'));
+				$t_recipient_order_class = $t_recipient_order_idx !== false ? ($tutorials['step'][$t_recipient_order_idx]['t_state'] ? 'complete' : 'active') : '';
+				?>
+				<li class="area <?php echo $t_recipient_order_class; ?>">
+					<a href='<?php echo G5_SHOP_URL; ?>/tutorial_order.php'>
 						수급자 주문체험
 					</a>
 				</li>
 				<li class="next">></li>
-				<li class="area">
-					<a href='#'>
+				<?php 
+				$t_document_idx = array_search('document', array_column($tutorials['step'], 't_type'));
+				$t_document_class = $t_document_idx !== false ? ($tutorials['step'][$t_document_idx]['t_state'] ? 'complete' : 'active') : '';
+				?>
+				<li class="area <?php echo $t_document_class; ?>">
+					<a href='<?php echo G5_SHOP_URL; ?>/electronic_manage.php'>
 						전자문서 확인
 					</a>
 				</li>
 				<li class="next">></li>
-				<li class="area">
-					<a href='#'>
+				<?php 
+				$t_claim_idx = array_search('claim', array_column($tutorials['step'], 't_type'));
+				$t_claim_class = $t_claim_idx !== false ? ($tutorials['step'][$t_claim_idx]['t_state'] ? 'complete' : 'active') : '';
+				?>
+				<li class="area <?php echo $t_claim_class; ?>">
+					<a href='<?php echo G5_SHOP_URL; ?>/claim_manage.php'>
 						청구내역 확인
 					</a>
 				</li>
