@@ -223,5 +223,32 @@ $(function() {
 </script>
 
 <?php
+$t_document = get_tutorial('document');
+if ($t_document['t_state'] == '0') {
+    set_tutorial('document', '1');
+    set_tutorial('claim', '0');
+}
+
+
+$t_claim = get_tutorial('claim');
+if ($t_claim['t_state'] == '0') { 
+?>
+<script>
+  show_eroumcare_popup({
+    title: '청구내역 확인',
+    content: '수급자 주문 후 누적된 청구내역을<br/>확인 하시겠습니까?',
+    activeBtn: {
+      text: '청구내역 확인',
+      href: '/shop/claim_manage.php'
+    },
+    hideBtn: {
+      text: '다음에',
+    }
+  });
+</script>
+
+<?php } ?>
+
+<?php
 include_once('./_tail.php');
 ?>
