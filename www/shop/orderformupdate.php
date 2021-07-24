@@ -1227,7 +1227,9 @@ if($_POST["penId"]) {
   ";
   $t_result = sql_fetch($t_sql);
 
-  if ($t_result['t_id']) {
+  $t_recipient_order = get_tutorial('recipient_order');
+
+  if ($t_result['t_id'] && $t_recipient_order['t_state'] == '0') {
     set_tutorial('recipient_order', 1, $od_id);
     set_tutorial('document', 0);
     
