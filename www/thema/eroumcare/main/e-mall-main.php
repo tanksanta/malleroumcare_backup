@@ -416,3 +416,109 @@
     </ul>
   </div>
 </div>
+
+<!--
+<div class="eroumcare-popup">
+	<i class="fa fa-close fa-lg eroumcare-popup-close close-eroumcare-popup"></i>
+	<div class="eroumcare-popup-content">
+		<h3>
+			수급자 신규등록
+		</h3>
+		<p>
+			수급자 등록 체험을 위해<br/>체험용 수급자를 등록해보세요.
+		</p>
+		<div class="eroumcare-popup-buttons">
+			<a href="#" class="active">
+				수급자 주문하기
+			</a>
+			<a href="#" class="close-eroumcare-popup">
+				다음에
+			</a>
+		</div>
+	</div>
+</div>
+-->
+
+<?php 
+$t_recipient_add = get_tutorial('recipient_add');
+if ($t_recipient_add['t_state'] == '0') { 
+?>
+	<script>
+		show_eroumcare_popup({
+			title: '수급자 신규등록',
+			content: '수급자 등록 체험을 위해<br/>체험용 수급자를 등록해보세요.',
+			activeBtn: {
+				href: '/shop/my_recipient_write.php?tutorial=true',
+				text: '수급자 등록하기',
+			},
+			hideBtn: {
+				text: '다음에',
+			}
+		});
+	</script>
+<?php } ?>
+
+
+<?php
+$t_recipient_order = get_tutorial('recipient_order');
+if ($t_recipient_order['t_state'] == '0') {
+?>
+<script>
+show_eroumcare_popup({
+  title: '수급자 주문하기',
+  content: '수급자 주문을 체험하시겠습니까?<br/>판매품목 1개, 대여품목1개<br/>선택되어 주문을 체험할 수 있습니다.',
+  activeBtn: {
+    text: '주문체험하기',
+    href: '/shop/tutorial_order.php'
+  },
+  hideBtn: {
+    text: '다음에',
+  }
+});
+
+</script>
+<?php
+} 
+?>
+
+<?php
+$t_document = get_tutorial('document');
+if ($t_document['t_state'] == '0') {
+?>
+<script>
+show_eroumcare_popup({
+	title: '전자문서 확인',
+	content: '작성한 전자 계약서를<br/>확인하시겠습니까?',
+	activeBtn: {
+		text: '전자계약서확인',
+		href: '/shop/electronic_manage.php'
+	},
+	hideBtn: {
+		text: '다음에',
+	}
+});
+</script>
+<?php } ?>
+
+<?php
+/*
+$t_claim = get_tutorial('claim');
+if ($t_claim['t_state'] == '0') {
+  set_tutorial('claim', '1');
+?>
+<script>
+  show_eroumcare_popup({
+    title: '축하드립니다',
+    content: '성공적으로 체험을 완료하셨습니다.<br/>이로움 만의 특별한 관리시스템으로 편리하게 관리하세요.',
+    activeBtn: {
+      text: '확인',
+      href: '/index.php'
+    },
+    hideBtn: {
+      text: '닫기',
+    }
+  });
+</script>
+<?php } 
+*/
+?>

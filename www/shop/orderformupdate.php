@@ -1215,6 +1215,27 @@ $redirect_dest_url = '';
 
 # 주문신청
 if($_POST["penId"]) {
+
+  $result = 'writeEform';
+
+  // 튜토리얼
+  $t_sql = "SELECT * FROM tutorial
+  WHERE 
+    t_data = '{$_POST['penId']}' AND 
+    mb_id = '{$member['mb_id']}' AND
+    t_type = 'recipient_add'
+  ";
+  $t_result = sql_fetch($t_sql);
+
+  $t_recipient_order = get_tutorial('recipient_order');
+
+  if ($t_result['t_id'] && $t_recipient_order['t_state'] == '0') {
+    set_tutorial('recipient_order', 1, $od_id);
+    set_tutorial('document', 0);
+    
+    unset($_SESSION['recipient']); // 수급자 주문 종료 
+  }
+
   $_SESSION["productList{$od_id}"] = $productList;
   $_SESSION["deliveryTotalCnt{$od_id}"] = $deliveryTotalCnt;
 
@@ -1278,7 +1299,8 @@ if($_POST["penId"]) {
         uuid = '{$res["data"]["uuid"]}'
       WHERE od_id = '{$od_id}'
     ");
-    $redirect_dest_url = G5_SHOP_URL."/orderinquiryview.php?od_id={$od_id}&uid={$uid}&result=writeEform";
+
+    $redirect_dest_url = G5_SHOP_URL."/orderinquiryview.php?od_id={$od_id}&uid={$uid}&result=" . $result;
   } else {
     sql_query("
       DELETE FROM g5_shop_order

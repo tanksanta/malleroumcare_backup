@@ -1214,12 +1214,161 @@ pre{white-space: pre-wrap;}
 .item_image_slider .slick-dots li.slick-active button:before { opacity: .75; color: #ef7c00; }
 
 
+/* 프로그래스 */
+.progress-bar {
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 3px;
+	position: relative;
+}
+.progress-bar-fill {
+	display: block;
+	height: 22px;
+	background-color: #f08200;
+	border-radius: 3px;
+	transition: width 500ms ease-in-out;
+}
+
+/* 210722 튜토리얼 상단 */
+#head_tutorial {
+	background-color: #f6f0ea;
+	width: 1320px;
+	margin: 0 auto;
+	margin-bottom: 15px;
+	box-sizing: border-box;
+	padding: 25px 30px;
+}
+#head_tutorial::after {
+	content: "";
+	display: block;
+	clear: both;
+}
+.head_tutorial_info {
+	float:left;
+	width:30%;
+}
+.head_tutorial_info h4 {
+	margin: 0;
+}
+.head_tutorial_step {
+	float: right;
+	width: 60%;
+	display: flex;
+	justify-content: space-between;
+}
+.head_tutorial_step li {
+	line-height: 75px;
+	height:75px;
+	text-align: center;
+	display: inline-block;
+}
+.head_tutorial_step li.area {
+	background-color: #f5d8c6;
+	width: 21%;
+	border-radius: 10px;
+}
+.head_tutorial_step li.next {
+	color: #f38c54;
+	font-weight: bold;
+}
+.head_tutorial_step li.area a {
+	display: block;
+	color: white;
+	height:100%;
+	line-height: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.head_tutorial_step li.area.active {
+	background-color: #f27935;
+}
+.head_tutorial_step li.area.complete {
+	background-image: url('/img/icon_complete.png');
+	background-color: #999999;
+	background-repeat: no-repeat;
+}
+
+
+/* 210722 튜토리얼 팝업 */
+.eroumcare-popup {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	z-index:99;
+	width: 320px;
+	height: 220px;
+	background-color: white;
+	border: 1px solid #f5ab81;
+	-webkit-box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.2);
+	-moz-box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.2);
+	box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.2);
+	display: none;
+}
+.eroumcare-popup-close {
+	position:absolute;
+	top: 15px;
+	right: 15px;
+	color: #b0b0b0;
+	font-size: 1.5em;
+}
+.eroumcare-popup-content h3 {
+	padding-top:30px;
+	text-align: center;
+	color: #f27935;
+}
+.eroumcare-popup-content p {
+	color:#a7a7a7;
+	text-align: center;
+	line-height: 16px;
+	font-size: 1em;
+	font-weight: bold;
+}
+.eroumcare-popup-buttons {
+	margin-top:25px;
+	text-align: center;
+}
+.eroumcare-popup-buttons a {
+	display: inline-block;
+	height:40px;
+	line-height: 38px;
+	border: 1px solid #e3e3e3;
+	color:#8a8a8a;
+	padding: 0 15px;
+	text-align: center;
+	border-radius: 5px;
+	font-weight: bold;
+}
+.eroumcare-popup-buttons a + a {
+	margin-left:10px;
+}
+.eroumcare-popup-buttons a.active {
+	background-color: #f27935;
+	border:1px solid #f27935;
+	color: white;
+}
+
 @media (max-width: 1200px){
 	#mainTopSlidePCWrap { width: calc(100% + 40px); left: -20px; position: relative; }
 	.at-container { width: 100%; float: left; padding: 0 20px !important; }
 	.top_common_area > .searchWrap { width: 400px; margin-left: -200px; }
 	.footer_area > div { width: 100%; float: left; padding:0;}
 	.footer_area > div > div { padding: 45px 10px; }
+
+	#head_tutorial {
+		width: 100%;
+		clear: both;
+	}
+	.head_tutorial_info {
+		float: none;
+		width: 100%;
+	}
+	.head_tutorial_step {
+    float: none;
+    width: 100%;
+    margin-top: 43px;
+	}
 }
 
 @media (max-width: 960px){

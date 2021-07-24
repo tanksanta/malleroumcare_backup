@@ -10,6 +10,12 @@ if(!$member["mb_id"]){
   return false;
 }
 
+// 튜토리얼 검사
+$t_recipient_add = get_tutorial('recipient_add');
+if ($t_recipient_add['t_state'] == '1') {
+  alert('이미 완료한 튜토리얼입니다.\r\n다음단계를 진행하세요.', '/');
+}
+
 ?>
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -55,6 +61,7 @@ input[type="number"]::-webkit-inner-spin-button {
 </div>
 
 <form class="form-horizontal register-form">
+  <input type="hidden" maxlength="6" name="tutorial" class="form-control input-sm" value="<?php echo $tutorial ? 1 : 0; ?>">
   <div class="panel panel-default">
     <div class="panel-heading"><strong>기본정보</strong></div>
     <div class="panel-body">
@@ -655,6 +662,7 @@ $(function(){
     if(penProBirth.length !== 10){ penProBirth = ''; }
 
     $.post('./ajax.my.recipient.write.php', {
+      tutorial : $(".register-form input[name='tutorial']").val(),
       penNm : $(".register-form input[name='penNm']").val(),
       penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
       penRecGraCd: $(".register-form select[name='penRecGraCd']").val(),
@@ -738,6 +746,54 @@ $(function(){
       alert(data && data.message);
     });
   });
+
+  <?php if ($tutorial === 'true') { ?>
+    show_eroumcare_popup({
+			title: '수급자 신규등록',
+			content: '체험용 수급자 정보로<br/>바로 등록하시겠습니까?',
+			activeBtn: {
+				text: '홍길동 수급자 자동입력',
+        callback: function(e) {
+          $(".register-form input[name='penNm']").val('홍길동');
+          $(".register-form input[name='penLtmNum']").val(1234567891);
+          $(".register-form select[name='penRecGraCd']").val('00');
+
+          $(".register-form input[name='penJumin1']").val(581111);
+          $(".register-form input[name='penJumin2']").val(1111111);
+
+          var year=$(".register-form input[name='penJumin1']").val().substring(0,2);
+          var month=$(".register-form input[name='penJumin1']").val().substring(2,4);
+          var day=$(".register-form input[name='penJumin1']").val().substring(4,6);
+          if( year < 21 ) { 
+              year='20'+year; 
+          } else {
+            year='19'+year; 
+          }
+          $(".register-form select[name='penBirth1']").val(year);
+          $(".register-form select[name='penBirth2']").val(month);
+          $(".register-form select[name='penBirth3']").val(day);
+
+          $(".register-form input[name='penConNum']").val(01012345678);
+          $(".register-form input[name='penConPnum']").val(01012345678);
+
+          $(".register-form input[name='penZip']").val(12345);
+          $(".register-form input[name='penAddr']").val('튜토리얼 수급자 주소');
+          $(".register-form input[name='penAddrDtl']").val('홍길동 상세 주소');
+
+          $(".register-form input[name='penExpiStDtm']").val('2021-01-01');
+          $(".register-form input[name='penExpiEdDtm']").val('2029-12-31');
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          hide_eroumcare_popup();
+        }
+			},
+			hideBtn: {
+				text: '직접등록',
+			}
+		});
+  <?php } ?>
 
 });
 </script>

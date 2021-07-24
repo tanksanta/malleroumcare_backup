@@ -857,3 +857,79 @@ function samhwaprint(returnData) {
         window.print();
     }
 }
+
+
+
+function show_eroumcare_popup(c) {
+	var defaultConfig = {
+		title: '타이틀',
+		content: '컨텐츠내용<br/>컨텐츠내용...',
+		activeBtn: {
+			href: '/index.php',
+			text: '확인',
+            callback: null,
+		},
+		hideBtn: {
+			text: '닫기',
+		}
+	}
+
+	var config = $.extend({}, defaultConfig, c);
+    var randomClass = 'eroumcare-popup-' + Math.trunc(Math.random() * (1000 - 1) + 1);
+
+	$('body').append(''
+		+ '<div class="eroumcare-popup '+randomClass+'">'
+		+ 	'<i class="fa fa-close fa-lg eroumcare-popup-close close-eroumcare-popup"></i>'
+		+		'<div class="eroumcare-popup-content">'
+		+			'<h3>'
+		+ 			config.title
+		+			'</h3>'
+		+			'<p>'
+		+				config.content
+		+			'</p>'
+		+			'<div class="eroumcare-popup-buttons">'
+		+				'<a href="' + g5_url + config.activeBtn.href + '" class="active">'
+		+					config.activeBtn.text
+		+				'</a>'
+		+				'<a href="#" class="close-eroumcare-popup">'
+		+					config.hideBtn.text
+		+				'</a>'
+		+			'</div>'
+		+		'</div>'
+		+	'</div>'
+	);
+
+    if (config.activeBtn.callback) {
+        $( document ).on( "click", '.' + randomClass + ' .eroumcare-popup-buttons .active', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            config.activeBtn.callback(e);
+        });
+    }
+
+	setTimeout(() => {
+		if ($('.eroumcare-popup') && $('.eroumcare-popup').length) {
+			$('.eroumcare-popup').fadeIn('fast');
+		}
+	}, 1000);
+
+	return true;
+}
+
+function hide_eroumcare_popup() {
+    $('.eroumcare-popup').fadeOut('fast');
+}
+
+$(function(){
+    $( document ).on( "click", '.close-eroumcare-popup', function(e) {
+		hide_eroumcare_popup();
+        e.stopPropagation();
+        e.preventDefault();
+	})
+
+	setTimeout(() => {
+		if ($('.eroumcare-popup') && $('.eroumcare-popup').length) {
+			$('.eroumcare-popup').fadeIn('fast');
+		}
+	}, 1000);
+});
