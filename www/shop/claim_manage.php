@@ -951,5 +951,25 @@ $(function() {
 
 
 <?php
+$t_claim = get_tutorial('claim');
+if ($t_claim['t_state'] == '0') {
+  set_tutorial('claim', '1');
+?>
+<script>
+  show_eroumcare_popup({
+    title: '축하드립니다',
+    content: '성공적으로 체험을 완료하셨습니다.<br/>이로움 만의 특별한 관리시스템으로 편리하게 관리하세요.',
+    activeBtn: {
+      text: '확인',
+      href: '/index.php'
+    },
+    hideBtn: {
+      text: '닫기',
+    }
+  });
+</script>
+<?php } ?>
+
+<?php
 include_once('./_tail.php');
 ?>
