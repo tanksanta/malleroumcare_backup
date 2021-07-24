@@ -108,7 +108,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
   <?php } ?>
 </td>
 <td class="text_c">
-  <!-- <a href="#">거래영수증</a> -->
+  <a href="<?=G5_SHOP_URL?>/eform/downloadReceipt.php?od_id=<?=$row["od_id"]?>">거래영수증</a>
 </td>
 </tr>
 <?php
