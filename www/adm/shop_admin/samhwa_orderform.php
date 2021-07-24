@@ -2123,10 +2123,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <div class="right"><?php echo number_format($amount['receipt']); ?>원</div>
                     </li>
                     <li>
-                        <div class="left">쿠폰금액</div>
-                        <div class="right"><?php echo number_format($amount['coupon']); ?>원</div>
-                    </li>
-                    <li>
                         <div class="left">취소금액</div>
                         <div class="right"><?php echo number_format($amount['cancel']); ?>원</div>
                     </li>
@@ -2144,12 +2140,16 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <div class="right"><span class="red"> <?php echo number_format($tot_discount); ?>원</span></div>
                     </li>
                     <li>
+                        <div class="left">쿠폰할인</div>
+                        <div class="right"><span class="red"><?php echo number_format($amount['coupon']); ?>원</span></div>
+                    </li>
+                    <li>
                         <div class="left">매출할인</div>
                         <div class="right"><span class="red"> <?php echo number_format($od['od_sales_discount']); ?>원</span></div>
                     </li>
                     <li>
                         <div class="left"><b>총금액</b></div>
-                        <div class="right"><b><?php echo number_format($tot_total + $od['od_send_cost'] + $od['od_send_cost2'] + $od['od_cart_discount2'] - $od['od_sales_discount']); ?>원</b></div>
+                        <div class="right"><b><?php echo number_format($tot_total + $od['od_send_cost'] + $od['od_send_cost2'] + $od['od_cart_discount2'] - $od['od_sales_discount'] - $amount['coupon']); ?>원</b></div>
                     </li>
                 </ul>
             </div>

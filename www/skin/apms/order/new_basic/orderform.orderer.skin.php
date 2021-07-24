@@ -556,6 +556,7 @@ $(function() {
             </b>
             <span><span id="od_cp_price"><?php echo number_format($tot_sell_discount); ?></span>원</span>
           </div>
+					<input type="hidden" name="od_cp_id" value="">
 <!--
           <div class="coupon-on">
             <b>쿠폰적용</b>
