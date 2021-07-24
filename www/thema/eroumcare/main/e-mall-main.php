@@ -492,7 +492,7 @@ if ($t_document['t_state'] == '0') {
 	";
 	$t_result = sql_fetch($t_sql);
 
-	if (($t_result['dc_status'] == '2' || $t_result['dc_status'] == '3')) {
+	if ($t_result['dc_status'] == '2' || $t_result['dc_status'] == '3') {
 ?>
 	<script>
 	show_eroumcare_popup({

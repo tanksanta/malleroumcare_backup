@@ -22,11 +22,11 @@ $skin_name = $skin_row['order_'.MOBILE_.'skin'];
 $order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_name;
 $order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
-$is_tutorial_popup = false;
+$open_tutorial_popup = false;
 $t_claim = get_tutorial('claim');
 if ($t_claim['t_state'] == '0') {
   set_tutorial('claim', '1');
-  $is_tutorial_popup = true;
+  $open_tutorial_popup = true;
 }
 
 // 스킨 체크
@@ -958,7 +958,7 @@ $(function() {
 
 
 <?php
-if ($is_tutorial_popup) {
+if ($open_tutorial_popup) {
 ?>
 <script>
   show_eroumcare_popup({

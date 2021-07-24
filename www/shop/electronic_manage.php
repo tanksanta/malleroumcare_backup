@@ -3,8 +3,21 @@ include_once('./_common.php');
 
 $t_document = get_tutorial('document');
 if ($t_document['t_state'] == '0') {
+	$t_sql = "SELECT e.dc_status, e.od_id FROM tutorial as t INNER JOIN eform_document as e ON t.t_data = e.od_id
+	WHERE 
+		t.mb_id = '{$member['mb_id']}' AND
+		t.t_type = 'recipient_order'
+	";
+	$t_result = sql_fetch($t_sql);
+
+  if ($t_result['dc_status'] == '2' || $t_result['dc_status'] == '3') {
     set_tutorial('document', '1');
     set_tutorial('claim', '0');
+
+    $open_tutorial_popup = false;
+  } else if ($t_result['dc_status'] == 1 || !$t_result['dc_status']) {
+    $open_tutorial_popup = true;
+  }
 }
 
 if(USE_G5_THEME && defined('G5_THEME_PATH')) {
@@ -239,6 +252,26 @@ if ($t_claim['t_state'] == '0') {
     activeBtn: {
       text: '청구내역 확인',
       href: '/shop/claim_manage.php'
+    },
+    hideBtn: {
+      text: '다음에',
+    }
+  });
+</script>
+
+<?php } ?>
+
+
+<?php
+if ($open_tutorial_popup) { 
+?>
+<script>
+  show_eroumcare_popup({
+    title: '튜토리얼 알림',
+    content: '튜토리얼 진행중이시라면,<br/> 먼저 튜토리얼 주문의 계약서 작성을 완료해주세요.',
+    activeBtn: {
+      text: '확인',
+      href: '/shop/orderinquiryview.php?od_id=<?php echo $t_result['od_id']; ?>'
     },
     hideBtn: {
       text: '다음에',
