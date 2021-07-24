@@ -216,6 +216,26 @@ if($pen_gra_apply_month && $pen_gra_apply_day)
     </div>
     <?php } ?>
   </div>
+
+  <style>
+  .list-more a {
+    margin-top:50px;
+    font-weight: 400;
+    padding: 9px 49px;
+    display: inline-block;
+    font-size: 14px;
+    color: #232323;
+    border: 1px solid #ddd;
+  }
+  </style>
+
+  <div class="list-more">
+    <p><a href="javascript:void(0)" id="delete_recipient">수급자 삭제</a></p>
+    <p>
+      *대여중인 품목이 있는 경우 수급자 삭제가 불가능합니다.<br/>
+      *수급자를 삭제하시면 복구를 할 수 없습니다.
+    </p>
+  </div>
 </div>
 
 <?php
@@ -243,6 +263,24 @@ show_eroumcare_popup({
 
 <script>
 $(function() {
+
+  $(document).on('click', '#delete_recipient', function() {
+    if(!confirm('수급자 삭제하시면 복구를 할 수 없습니다.\r\n삭제하시겠습니까?')) {
+      return;
+    }
+
+    $.post('ajax.my.recipient.delete.php', {
+      id: '<?=$pen['penId']?>',
+    }, 'json')
+    .done(function() {
+      alert('삭제되었습니다.');
+      location.href = './my_recipient_list.php';
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
 
   // 메모 작성
   $(document).on('click', '.btn_write_memo', function() {
