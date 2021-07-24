@@ -1255,16 +1255,33 @@ function get_tutorial($type) {
 function set_tutorial($type = 'recipient_add', $state = 0, $data = null) {
 	global $g5, $member;
 
-	$sql = "REPLACE INTO tutorial SET
-		mb_id = '{$member['mb_id']}',
-		t_type = '{$type}',
-		t_state = '{$state}',
-		updated_at = now()
-	";
+	$sql = "SELECT * FROM tutorial WHERE mb_id = '{$member['mb_id']}' AND t_type = '{$type}'";
+	$result = sql_fetch($sql);
 
-	if ($data) {
-		$sql .= ", t_data = '{$data}'";
-	}
+	$sql = '';
+
+	if ($result['t_id']) {
+		$sql .= "UPDATE tutorial SET
+			mb_id = '{$member['mb_id']}',
+			t_type = '{$type}',
+			t_state = '{$state}',
+			updated_at = now()
+		";
+		if ($data) {
+			$sql .= ", t_data = '{$data}'";
+		}
+		$sql .= " WHERE t_id = '{$result['t_id']}' ";
+		
+	} else {
+    $sql .= "INSERT INTO tutorial SET
+			mb_id = '{$member['mb_id']}',
+			t_type = '{$type}',
+			t_state = '{$state}'
+		";
+		if ($data) {
+			$sql .= ", t_data = '{$data}'";
+		}
+  }
 
 	return sql_query($sql);
 }
