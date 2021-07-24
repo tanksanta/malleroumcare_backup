@@ -118,15 +118,6 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 </table>
 </div>
 <div class="list-paging">
-<!--<ul class="pagination ">
-<li></li>
-<li><a href="#">&lt;</a></li>
-<li class="active"><a href="#">1</a></li>
-<li><a href="#">2</a></li>
-<li><a href="#">3</a></li>
-<li><a href="#">&gt;</a></li>
-<li></li>
-</ul>-->
 <ul class="pagination pagination-sm en">
   <?php echo apms_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
 </ul>
