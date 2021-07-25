@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `stock_data_upload` (
   `sd_status` tinyint(1) NOT NULL default 0 COMMENT '0: 매칭대기 / 1: 매칭완료',
   `sd_gubun` varchar(30) NOT NULL COMMENT '00: 판매 / 01: 대여',
   `sd_pen_nm` varchar(255) NOT NULL default '' COMMENT '수급자 이름',
+  `sd_pen_type` varchar(255) NOT NULL default '' COMMENT '본인부담금율',
   `sd_pen_ltm_num` varchar(255) NOT NULL default '' COMMENT '수급자 장기요양번호',
   `sd_pen_jumin` varchar(255) NOT NULL default '' COMMENT '수급자 주민등록번호',
   `sd_ca_name` varchar(255) NOT NULL default '' COMMENT '품목명',
