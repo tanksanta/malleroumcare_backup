@@ -101,7 +101,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
               <td class="text_c"><?=$row['sd_contract_date']?></td>
               <td class="text_c"><?=$row['sd_sale_date']?><?=($row['sd_rent_date'] != '0000-00-00' ? " ~ {$row['sd_rent_date']}" : '')?></td>
               <td class="text_c"><?=$row['sd_status'] == 0 ? '대기' : '매칭완료'?></td>
-              <td class="text_c"><?php if($row['sd_status'] == 0) { ?><a href="#" class="btn_gray_box" data-id="<?=$row['sd_id']?>">삭제</a><?php } ?></td>
+              <td class="text_c"><?php if($row['sd_status'] == 0) { ?><a href="#" class="btn_gray_box btn_delete" data-id="<?=$row['sd_id']?>">삭제</a><?php } ?></td>
             </tr>
             <?php } ?>
           </tbody>
@@ -150,8 +150,26 @@ $(function() {
       contentType: false,
       dataType: 'json'
     })
-    .done(function(result) {
-      console.log(result);
+    .done(function() {
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  $(document).on('click', '.btn_delete', function(e) {
+    e.preventDefault();
+
+    if(!confirm('정말 삭제하시겠습니까?')) return;
+
+    var sd_id = $(this).data('id');
+    $.post('ajax.my_data_upload.delete.php', {
+      'sd_id': sd_id
+    }, 'json')
+    .done(function() {
+      window.location.reload();
     })
     .fail(function($xhr) {
       var data = $xhr.responseJSON;
