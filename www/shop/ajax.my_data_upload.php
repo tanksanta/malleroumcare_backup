@@ -94,7 +94,9 @@ foreach($data as $row) {
   $status = 0; // 0: 매칭대기, 1: 매칭완료
   
   # 2. 제품코드 매칭 체크
-  $code_result = sql_fetch(" SELECT it_id FROM g5_shop_item WHERE ProdPayCode = '{$row['it_code']}' ");
+  $ca_search = '10';
+  if($row['gubun'] == '01') $ca_search = '20';
+  $code_result = sql_fetch(" SELECT it_id FROM g5_shop_item WHERE ProdPayCode = '{$row['it_code']}' AND ca_id like '{$ca_search}%'");
   if($it_id = $code_result['it_id'])
     $status = 1;
   
