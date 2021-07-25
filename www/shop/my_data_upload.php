@@ -9,9 +9,15 @@ if(!$member['mb_id']) {
 $g5['title'] = "판매/대여 정보 등록관리";
 include_once("./_head.php");
 
-
-
+add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 5);
+add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 6);
 ?>
+
+<style>
+#upload_wrap { display: none; }
+.popModal #upload_wrap { display: block; }
+.popModal .popModal_content { margin: 0 !important; }
+</style>
 
 <section class="wrap">
   <div class="sub_section_tit">판매/대여 정보 등록관리</div>
@@ -33,7 +39,7 @@ include_once("./_head.php");
       <div class="subtit">
         목록
         <div class="r_area r_btn_area">
-          <a href="#" class="btn_nhis">건보 판매/대여 자료 업로드 </a>
+          <a href="#" id="btn_nhis" class="btn_nhis">건보 판매/대여 자료 업로드</a>
         </div>
       </div>
       <div class="table_box">
@@ -89,7 +95,50 @@ include_once("./_head.php");
   </div>
 </section>
 
+<div id="upload_wrap">
+  <form id="form_nhis" style="font-size: 14px;">
+    <div class="form-group">
+      <label for="datafile">판매/대여 자료 업로드</label>
+      <input type="file" name="datafile" id="datafile">
+      <p class="help-block">공단 판매/대여 자료를 업로드해주세요.</p>
+    </div>
+    <button type="submit" class="btn btn-primary">업로드</button>
+  </form>
+</div>
 
+<script>
+$(function() {
+  $('#btn_nhis').click(function(e) {
+    e.preventDefault();
+
+    $(this).popModal({
+      html: $('#form_nhis'),
+      placement: 'bottomRight'
+    });
+  });
+
+  $('#form_nhis').on('submit', function(e) {
+    e.preventDefault();
+
+    var fd = new FormData(document.getElementById("form_nhis"));
+    $.ajax({
+      url: 'ajax.my_data_upload.php',
+      type: 'POST',
+      data: fd,
+      processData: false,
+      contentType: false,
+      dataType: 'json'
+    })
+    .done(function(result) {
+      console.log(result);
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+});
+</script>
 
 <?php
 include_once('./_tail.php');
