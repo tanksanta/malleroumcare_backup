@@ -36,7 +36,7 @@ for($i = 3; $i < $num_rows; $i += 2) {
   $it_barcode = $cell_code[1];
 
   $cell_gubun = $sheet->getCell('E'.$i)->getValue();
-  if($cell_gubun == '판매')
+  if($cell_gubun == '판매')
     $gubun = '00';
   else if($cell_gubun == '대여')
     $gubun = '01'; 

@@ -9,6 +9,37 @@ if(!$member['mb_id']) {
 $g5['title'] = "판매/대여 정보 등록관리";
 include_once("./_head.php");
 
+$sql_common = "
+  FROM
+    stock_data_upload
+  WHERE
+    mb_id = '{$member['mb_id']}'
+";
+
+// 총 개수 구하기
+$total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ")['cnt'];
+$page_rows = $config['cf_page_rows'];
+$total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
+
+$sql_limit = " limit {$from_record}, {$page_rows} ";
+
+$result = sql_query("
+  SELECT
+    *
+  {$sql_common}
+  ORDER BY
+    sd_id DESC
+  {$sql_limit}
+");
+
+$uploads = [];
+for($i = 0; $row = sql_fetch_array($result); $i++) {
+  $row['index'] = $total_count - (($page - 1) * $page_rows) - $i;
+  $uploads[] = $row;
+}
+
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 5);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 6);
 ?>
@@ -59,36 +90,26 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             </tr>
           </thead>
           <tbody>
+            <?php foreach($uploads as $row) { ?>
             <tr>
-              <td class="text_c">2</td>
-              <td class="text_c">홍길동(L1709001651)</td>
-              <td class="text_c">000000-1*****</td>
-              <td class="text_c">욕창예방 매트리스/YB-1104A</td>
-              <td class="text_c">H12060031003-200200001435</td>
-              <td class="text_c text_orange">판매</td>
-              <td class="text_c">2020-08-24</td>
-              <td class="text_c">2020-08-24</td>
-              <td class="text_c">매칭완료</td>
-              <td class="text_c"><a href="#" class="btn_gray_box">삭제</a></td>
+              <td class="text_c"><?=$row['index']?></td>
+              <td class="text_c"><?=$row['sd_pen_nm']?>(<?=$row['sd_pen_ltm_num']?>)</td>
+              <td class="text_c"><?=$row['sd_pen_jumin']?></td>
+              <td class="text_c"><?="{$row['sd_ca_name']}/{$row['sd_it_name']}"?></td>
+              <td class="text_c"><?="{$row['sd_it_code']}-{$row['sd_it_barcode']}"?></td>
+              <td class="text_c text_<?=($row['sd_gubun'] == '00' ? 'orange' : 'green')?>"><?=($row['sd_gubun'] == '00' ? '판매' : '대여')?></td>
+              <td class="text_c"><?=$row['sd_contract_date']?></td>
+              <td class="text_c"><?=$row['sd_sale_date']?><?=($row['sd_rent_date'] != '0000-00-00' ? " ~ {$row['sd_rent_date']}" : '')?></td>
+              <td class="text_c"><?=$row['sd_status'] == 0 ? '대기' : '매칭완료'?></td>
+              <td class="text_c"><?php if($row['sd_status'] == 0) { ?><a href="#" class="btn_gray_box" data-id="<?=$row['sd_id']?>">삭제</a><?php } ?></td>
             </tr>
-            <tr>
-              <td class="text_c">1</td>
-              <td class="text_c">홍길동(L1709001651)</td>
-              <td class="text_c">000000-1*****</td>
-              <td class="text_c">욕창예방 매트리스/YB-1104A</td>
-              <td class="text_c">H12060031003-200200001435</td>
-              <td class="text_c text_green">대여</td>
-              <td class="text_c">2020-08-24</td>
-              <td class="text_c">2020-08-24 ~ 2020-08-24</td>
-              <td class="text_c">대기</td>
-              <td class="text_c"><a href="#" class="btn_gray_box">삭제</a></td>
-            </tr>
+            <?php } ?>
           </tbody>
         </table>
       </div>
       <div class="list-paging">
         <ul class="pagination pagination-sm en">
-          <?php echo apms_paging(5, $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+          <?php echo apms_paging(5, $page, $total_page, '?page='); ?>
         </ul>
       </div>
     </div>
