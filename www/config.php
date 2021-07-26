@@ -64,6 +64,8 @@ define('GOOGLE_API_KEY', 'AAAAx6iZn-E:APA91bF0R-XCX6x5f9t7jBsuzDi7QqQ20L9ky1r-oc
 
 // 이로움 API 
 define('EROUMCARE_API_PORT',                                     9901);
+// 주문 수정
+define('EROUMCARE_API_ORDER_UPDATE',                             'https://system.eroumcare.com/api/order/update');
 // 재고 상세 목록
 define('EROUMCARE_API_STOCK_SELECT_DETAIL_LIST',                 'https://system.eroumcare.com/api/stock/selectDetailList');
 // 재고 등록
