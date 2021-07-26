@@ -527,7 +527,7 @@ $row = sql_fetch($sql);
                 echo $name;
                 ?>
               </span>
-              <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>"  data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+              <span class="pro-num m_off" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
               <span class="name m_off"><a href="<?=G5_SHOP_URL?>/my_recipient_update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
               <?php
               //날짜 변환
@@ -539,7 +539,7 @@ $row = sql_fetch($sql);
               <div class="list-m">
                 <div class="info-m">
                   <span class="product"><?=$list[$i]['prodNm']?><?=$name;?></span>
-                  <span class="pro-num <?=$prodBarNumCntBtn_2;?>"  data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                  <span class="pro-num"  data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                 </div>
                 <div class="info-m">
                   <span class="name"><a href="<?=G5_SHOP_URL?>/my_recipient_update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
