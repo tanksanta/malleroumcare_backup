@@ -64,9 +64,11 @@ define('GOOGLE_API_KEY', 'AAAAx6iZn-E:APA91bF0R-XCX6x5f9t7jBsuzDi7QqQ20L9ky1r-oc
 
 // 이로움 API 
 define('EROUMCARE_API_PORT',                                     9901);
-// 15 재고 상세 목록
+// 재고 상세 목록
 define('EROUMCARE_API_STOCK_SELECT_DETAIL_LIST',                 'https://system.eroumcare.com/api/stock/selectDetailList');
-// 16 재고 수정
+// 재고 등록
+define('EROUMCARE_API_STOCK_INSERT',                             'https://system.eroumcare.com/api/stock/insert');
+// 재고 수정
 define('EROUMCARE_API_STOCK_UPDATE',                             'https://system.eroumcare.com/api/stock/update');
 // 장바구니 정보
 define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do');
@@ -101,8 +103,8 @@ define('EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST',          'https://system
 // 회원조회1
 define('EROUMCARE_API_ENT_ACCOUNT',                              'https://system.eroumcare.com/api/ent/account');
 // 회원조회2
-define('EROUMCARE_API_ACCOUNT_ENT_LOGIN',                         'https://system.eroumcare.com/api/account/entLogin');
-define('EROUMCARE_API_ACCOUNT_ENT_UPDATE',                         'https://system.eroumcare.com/api/account/entUpdate');
+define('EROUMCARE_API_ACCOUNT_ENT_LOGIN',                        'https://system.eroumcare.com/api/account/entLogin');
+define('EROUMCARE_API_ACCOUNT_ENT_UPDATE',                       'https://system.eroumcare.com/api/account/entUpdate');
 
 // 카카오 디벨로퍼스 REST API 연동
 define('KAKAO_DEVELOPERS_REST_API_KEY', '7a991b6e94ba43c5d266d9aa4a2edca1');

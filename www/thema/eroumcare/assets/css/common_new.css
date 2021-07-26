@@ -609,7 +609,7 @@ pre{white-space: pre-wrap;}
 .r_btn_area select{margin-right:6px;display: inline-block;padding:5px;border:1px solid #d7d7d7;border-radius: 3px;font-size: 14px;float: left;}
 
 
-.btn_basic{padding: 5px 8px;border:1px solid #ddd;border-radius:3px;display:inline-block;}
+.btn_basic{padding: 5px 8px;border:1px solid #ddd;border-radius:3px;display:inline-block;margin:2px;}
 .btn_point{padding: 5px 8px;background:#ee8102;border-radius:3px;display:inline-block;color:#fff;}
 .btn_point:hover{color:#fff;}
 .point_box{border:1px solid #ee8102;padding: 10px;}

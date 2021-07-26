@@ -83,7 +83,7 @@ $result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where
 <th>분류</th>
 <th>작성일</th>
 <th>전자문서</th>
-<th>현금영수증</th>
+<th>거래영수증</th>
 </tr>
 </thead>
 <tbody>
@@ -104,11 +104,11 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 <td class="text_c">
   <a href="<?=G5_SHOP_URL?>/eform/downloadEform.php?od_id=<?=$row["od_id"]?>" class="btn_basic">계약서 다운로드</a>
   <?php if($row['dc_status'] != '3') { // 이전 계약서는 감사추적인증서가 없음 ?>
-  <a href="<?=G5_SHOP_URL?>/eform/downloadCert.php?od_id=<?=$row["od_id"]?>" class="btn_basic">감사추적인증서</a>
+  <br><a href="<?=G5_SHOP_URL?>/eform/downloadCert.php?od_id=<?=$row["od_id"]?>" class="btn_basic">감사추적 인증서</a>
   <?php } ?>
 </td>
 <td class="text_c">
-  <a href="<?=G5_SHOP_URL?>/eform/downloadReceipt.php?od_id=<?=$row["od_id"]?>">거래영수증</a>
+  <a href="<?=G5_SHOP_URL?>/eform/downloadReceipt.php?od_id=<?=$row["od_id"]?>" class="btn_basic">거래영수증</a>
 </td>
 </tr>
 <?php

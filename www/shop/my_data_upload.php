@@ -9,9 +9,46 @@ if(!$member['mb_id']) {
 $g5['title'] = "판매/대여 정보 등록관리";
 include_once("./_head.php");
 
+$sql_common = "
+  FROM
+    stock_data_upload
+  WHERE
+    mb_id = '{$member['mb_id']}'
+";
 
+// 총 개수 구하기
+$total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ")['cnt'];
+$page_rows = $config['cf_page_rows'];
+$total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
+$sql_limit = " limit {$from_record}, {$page_rows} ";
+
+$result = sql_query("
+  SELECT
+    *
+  {$sql_common}
+  ORDER BY
+    sd_id DESC
+  {$sql_limit}
+");
+
+$uploads = [];
+for($i = 0; $row = sql_fetch_array($result); $i++) {
+  $row['index'] = $total_count - (($page - 1) * $page_rows) - $i;
+  $uploads[] = $row;
+}
+
+add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 5);
+add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 6);
 ?>
+
+<style>
+#upload_wrap { display: none; }
+.popModal #upload_wrap { display: block; }
+.popModal .popModal_content { margin: 0 !important; }
+</style>
 
 <section class="wrap">
   <div class="sub_section_tit">판매/대여 정보 등록관리</div>
@@ -33,7 +70,7 @@ include_once("./_head.php");
       <div class="subtit">
         목록
         <div class="r_area r_btn_area">
-          <a href="#" class="btn_nhis">건보 판매/대여 자료 업로드 </a>
+          <a href="#" id="btn_nhis" class="btn_nhis">건보 판매/대여 자료 업로드</a>
         </div>
       </div>
       <div class="table_box">
@@ -53,43 +90,94 @@ include_once("./_head.php");
             </tr>
           </thead>
           <tbody>
+            <?php foreach($uploads as $row) { ?>
             <tr>
-              <td class="text_c">2</td>
-              <td class="text_c">홍길동(L1709001651)</td>
-              <td class="text_c">000000-1*****</td>
-              <td class="text_c">욕창예방 매트리스/YB-1104A</td>
-              <td class="text_c">H12060031003-200200001435</td>
-              <td class="text_c text_orange">판매</td>
-              <td class="text_c">2020-08-24</td>
-              <td class="text_c">2020-08-24</td>
-              <td class="text_c">매칭완료</td>
-              <td class="text_c"><a href="#" class="btn_gray_box">삭제</a></td>
+              <td class="text_c"><?=$row['index']?></td>
+              <td class="text_c"><?=$row['sd_pen_nm']?>(<?=$row['sd_pen_ltm_num']?>)</td>
+              <td class="text_c"><?=$row['sd_pen_jumin']?></td>
+              <td class="text_c"><?="{$row['sd_ca_name']}/{$row['sd_it_name']}"?></td>
+              <td class="text_c"><?="{$row['sd_it_code']}-{$row['sd_it_barcode']}"?></td>
+              <td class="text_c text_<?=($row['sd_gubun'] == '00' ? 'orange' : 'green')?>"><?=($row['sd_gubun'] == '00' ? '판매' : '대여')?></td>
+              <td class="text_c"><?=$row['sd_contract_date']?></td>
+              <td class="text_c"><?=$row['sd_sale_date']?><?=($row['sd_rent_date'] != '0000-00-00' ? " ~ {$row['sd_rent_date']}" : '')?></td>
+              <td class="text_c"><?=$row['sd_status'] == 0 ? '대기' : '매칭완료'?></td>
+              <td class="text_c"><?php if($row['sd_status'] == 0) { ?><a href="#" class="btn_gray_box btn_delete" data-id="<?=$row['sd_id']?>">삭제</a><?php } ?></td>
             </tr>
-            <tr>
-              <td class="text_c">1</td>
-              <td class="text_c">홍길동(L1709001651)</td>
-              <td class="text_c">000000-1*****</td>
-              <td class="text_c">욕창예방 매트리스/YB-1104A</td>
-              <td class="text_c">H12060031003-200200001435</td>
-              <td class="text_c text_green">대여</td>
-              <td class="text_c">2020-08-24</td>
-              <td class="text_c">2020-08-24 ~ 2020-08-24</td>
-              <td class="text_c">대기</td>
-              <td class="text_c"><a href="#" class="btn_gray_box">삭제</a></td>
-            </tr>
+            <?php } ?>
           </tbody>
         </table>
       </div>
       <div class="list-paging">
         <ul class="pagination pagination-sm en">
-          <?php echo apms_paging(5, $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+          <?php echo apms_paging(5, $page, $total_page, '?page='); ?>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
+<div id="upload_wrap">
+  <form id="form_nhis" style="font-size: 14px;">
+    <div class="form-group">
+      <label for="datafile">판매/대여 자료 업로드</label>
+      <input type="file" name="datafile" id="datafile">
+      <p class="help-block">공단 판매/대여 자료를 업로드해주세요.</p>
+    </div>
+    <button type="submit" class="btn btn-primary">업로드</button>
+  </form>
+</div>
 
+<script>
+$(function() {
+  $('#btn_nhis').click(function(e) {
+    e.preventDefault();
+
+    $(this).popModal({
+      html: $('#form_nhis'),
+      placement: 'bottomRight'
+    });
+  });
+
+  $('#form_nhis').on('submit', function(e) {
+    e.preventDefault();
+
+    var fd = new FormData(document.getElementById("form_nhis"));
+    $.ajax({
+      url: 'ajax.my_data_upload.php',
+      type: 'POST',
+      data: fd,
+      processData: false,
+      contentType: false,
+      dataType: 'json'
+    })
+    .done(function() {
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  $(document).on('click', '.btn_delete', function(e) {
+    e.preventDefault();
+
+    if(!confirm('정말 삭제하시겠습니까?')) return;
+
+    var sd_id = $(this).data('id');
+    $.post('ajax.my_data_upload.delete.php', {
+      'sd_id': sd_id
+    }, 'json')
+    .done(function() {
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+});
+</script>
 
 <?php
 include_once('./_tail.php');
