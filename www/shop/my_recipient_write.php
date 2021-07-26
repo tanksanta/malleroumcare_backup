@@ -12,7 +12,7 @@ if(!$member["mb_id"]){
 
 // 튜토리얼 검사
 $t_recipient_add = get_tutorial('recipient_add');
-if ($t_recipient_add['t_state'] == '1') {
+if ($t_recipient_add['t_state'] == '1' && $tutorial == 'true') {
   alert('이미 완료한 튜토리얼입니다.\r\n다음단계를 진행하세요.', '/');
 }
 
