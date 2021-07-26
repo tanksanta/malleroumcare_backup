@@ -232,7 +232,7 @@ $(function() {
                   $itemPenIdStatus = false;
                 }
               ?>
-              <input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)"class="hidden barcode_input prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>"  name="prodBarNum_<?=$postProdBarNumCnt?>">
+              <input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)" class="hidden barcode_input prodStockBarBox<?=$ii?>" value="" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
               <?php } ?>
               <?php
                 $postProdBarNumCnt++;
@@ -320,7 +320,7 @@ $(function() {
             <strong>주소</strong>
             <div>
               <div>
-                <input type="text"  class="w-70"name="od_b_zip" id="od_b_zip" value="<?php echo $member['mb_zip1'].$member['mb_zip2'] ?>" required>
+                <input type="text" class="w-70" name="od_b_zip" id="od_b_zip" value="<?php echo $member['mb_zip1'].$member['mb_zip2'] ?>" required>
                 <button type="button" onclick="win_zip('forderform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">우편번호</button>
                 <input type="hidden" name="od_b_addr_jibeon" value="<?=$member['mb_hp']?>">
               </div>
@@ -408,7 +408,7 @@ $(function() {
             <strong>주소</strong>
             <div>
               <div>
-                <input type="text"  class="w-70"name="ot_location_zip" value="<?php echo get_text($member['mb_giup_zip1']).get_text($member['mb_giup_zip2']); ?>" id="ot_location_zip" required readonly>
+                <input type="text" class="w-70" name="ot_location_zip" value="<?php echo get_text($member['mb_giup_zip1']).get_text($member['mb_giup_zip2']); ?>" id="ot_location_zip" required readonly>
                 <button type="button" onclick="win_zip('forderform', 'ot_location_zip', 'ot_location_addr1', 'ot_location_addr2', 'ot_location_addr3', 'ot_location_jibeon');">우편번호</button>
                 <input type="hidden" name="ot_location_jibeon" value="">
               </div>
