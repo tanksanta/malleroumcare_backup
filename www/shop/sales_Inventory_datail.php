@@ -547,7 +547,9 @@ $row = sql_fetch($sql);
                 </div>
               </div>
               <span class="check">
+                <?php if($result_stock['od_id']) { ?>
                 <a href="<?=G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id']?>">확인</a>
+                <?php } ?>
               </span>
             </li>
             <?php } ?>
