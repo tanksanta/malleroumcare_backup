@@ -74,6 +74,7 @@ for($i = 3; $i < $num_rows; $i += 2) {
 
 $stock_insert = [];
 $stock_update = [];
+$rental_data_table = [];
 foreach($data as $row) {
   # 1. 업로드 테이블 중복 조회
   $where_check = " mb_id = '{$member['mb_id']}' and sd_it_code = '{$row['it_code']}' and sd_it_barcode = '{$row['it_barcode']}' ";
@@ -184,6 +185,13 @@ foreach($data as $row) {
         $stateCd = '02'; // 대여중
       }
 
+      // rental_data_table에 입력해둠 (나중에 재고 업데이트/등록 후 대여로그 작성하기 위해)
+      $rental_data_table["{$it_id}-{$row['it_barcode']}"] = array(
+        'strdate' => $row['sale_date'],
+        'enddate' => $row['rent_date'],
+        'ren_person' => $row['pen_nm']
+      );
+
       // 재고에 있는지 조회
       $stock_result = get_stock($it_id, $row['it_barcode']);
       if($stock_result) {
@@ -193,6 +201,7 @@ foreach($data as $row) {
         $initial_contract_date = $stock['initialContractDate'];
         $stock_data = array(
           'stoId' => $stock['stoId'],
+          'prodId' => $it_id,
           'prodBarNum' => $row['it_barcode'],
           'stateCd' => $stateCd
         );
@@ -226,6 +235,29 @@ if($stock_insert) {
   if($insert_result['errorYN'] != 'N') {
     json_response(500, $insert_result['message']);
   }
+
+  // 대여로그 작성
+  foreach($insert_result['data'] as $row) {
+    $rental_data = $rental_data_table["{$row['prodId']}-{$row['prodBarNum']}"];
+    if(!$rental_data) continue;
+
+    $rental_log_id = "rental_log".round(microtime(true)).rand();
+    $dis_total_date = G5_TIME_YMDHIS;
+
+    sql_query("
+      INSERT INTO
+        g5_rental_log
+      SET
+        rental_log_Id = '{$rental_log_id}',
+        stoId = '{$row['stoId']}',
+        ordId = '',
+        strdate = '{$rental_data['strdate']}',
+        enddate = '{$rental_data['enddate']}',
+        dis_total_date = '{$dis_total_date}',
+        ren_person = '{$rental_data['ren_person']}',
+        rental_log_division = '2'
+    ");
+  }
 }
 
 // 재고 update
@@ -237,6 +269,45 @@ if($stock_update) {
   ));
   if($update_result['errorYN'] != 'N') {
     json_response(500, $update_result['message']);
+  }
+
+  // 대여로그 작성
+  foreach($stock_update as $row) {
+    $rental_data = $rental_data_table["{$row['prodId']}-{$row['prodBarNum']}"];
+    if(!$rental_data) continue;
+
+    // 이미 같은 기간동안의 대여로그가 작성되어있는지 검색
+    $check_result = sql_fetch("
+      SELECT
+        rental_log_Id
+      FROM
+        g5_rental_log
+      WHERE
+        stoId = '{$row['stoId']}' and
+        strdate = '{$rental_data['strdate']}' and
+        enddate = '{$rental_data['enddate']}' and
+        rental_log_division = '2'
+    ");
+
+    // 이미 작성된 로그면 건너뜀
+    if($check_result['rental_log_Id']) continue;
+
+    $rental_log_id = "rental_log".round(microtime(true)).rand();
+    $dis_total_date = G5_TIME_YMDHIS;
+
+    sql_query("
+      INSERT INTO
+        g5_rental_log
+      SET
+        rental_log_Id = '{$rental_log_id}',
+        stoId = '{$row['stoId']}',
+        ordId = '',
+        strdate = '{$rental_data['strdate']}',
+        enddate = '{$rental_data['enddate']}',
+        dis_total_date = '{$dis_total_date}',
+        ren_person = '{$rental_data['ren_person']}',
+        rental_log_division = '2'
+    ");
   }
 }
 
