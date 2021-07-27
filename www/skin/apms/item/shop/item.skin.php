@@ -368,43 +368,58 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
           <img src="<?php echo THEMA_URL; ?>/assets/img/icon_arrow_down.png" class="arrow" />
         </div>
         <div class="top-info-wrap">
-          <ul class="top-info-list">
-            <li><?=$it["ca_name"]?></li>
-            <li><?=$it["it_taxInfo"]?>상품</li>
-          </ul>
-          <span style="vertical-align: middle;">급여코드 : <?php echo $it['ProdPayCode']; ?></span>
-        </div>
+	        <ul class="top-info-list">
+	          <img src="<?php echo THEMA_URL; ?>/assets/img/check-icon.png" style="vertical-align: middle; ">
+	          <li><?=$it["ca_name"]?></li>
+	          <li style="font-weight: 100;">|</li>
+	          <li><?=$it["it_taxInfo"]?>상품</li>
+	        </ul>
+	        <span style="vertical-align: middle; float: right;">급여코드 : <?php echo $it['ProdPayCode']; ?></span>
+	      </div>
+      
+      
+        
         <h1 class="item-head-title"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
-        <p style="font-size: 32px; margin: 5px 0 20px 0; font-weight: bold;">
-          <?php
+        <p class="price-type">
+        	<?php if($_COOKIE["viewType"] == "basic") { ?>
+            	급여가
+            <?php } else { ?>
+            <?php if($member["mb_level"] == "4") { ?>
+            	VIP판매가
+            <?php } else { ?>
+              	판매가
+            <?php }
+            }
+            ?>
+        </p>
+        <p class="price-num">
+        	<?php
           if($member["mb_id"]) {
             if($_COOKIE["viewType"] == "basic") {
-              echo number_format($it["it_cust_price"])."원";
+              echo number_format($it["it_cust_price"]);
             } else {
               if($member["mb_level"] == "3") {
                 //사업소 가격
-                echo number_format($it["it_price"])."원";
+                echo number_format($it["it_price"]);
               } else if($member["mb_level"] == "4") {
                 //우수 사업소 가격
-                echo ($it["it_price_dealer2"]) ? number_format($it["it_price_dealer2"])."원" : number_format($it["it_price"])."원";
+                echo ($it["it_price_dealer2"]) ? number_format($it["it_price_dealer2"]) : number_format($it["it_price"]);
               } else {
-                echo number_format($it["it_price"])."원";
+                echo number_format($it["it_price"]);
               }
             }
           }
           ?>
-          <span style="font-size: 15px;">
-            <?php if($_COOKIE["viewType"] == "basic") { ?>
-            <span class='txt_color_green_box'>급여가</span>
-            <?php } else { ?>
-            <?php if($member["mb_level"] == "4") { ?>
-            <span class='txt_color_gray_box'>VIP판매가</span>
-            <?php } else { ?>
-              <span class='txt_color_orange_box'>판매가</span>
-            <?php }
-            }
-            ?>
-          </span>
+        </p>
+        <p class="price-won">원</p>
+        <!-- <p class="price-block">주문가능 수량 : 9,999개</p> -->
+        <br>
+        
+        
+        
+        <p style="font-size: 32px; margin: 5px 0 20px 0; font-weight: bold;">
+          
+          
           <?php if(substr($it["ca_id"], 0, 2) == "20") { ?>
           <br><span style="font-weight: normal; font-size: 13px; margin-top: 15px; display: inline-block;">* 대여금액(월기준) : <?=number_format($it["it_rental_price"])?>원</span>
           <?php } ?>
