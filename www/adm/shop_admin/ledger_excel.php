@@ -154,6 +154,34 @@ $sql_sales_discount = "
     o.od_sales_discount > 0
 ";
 
+
+# 쿠폰할인
+$coupon_price = "(o.od_cart_coupon + o.od_coupon + o.od_send_coupon)";
+$sql_sales_coupon = "
+  SELECT
+    o.od_time,
+    o.od_id,
+    m.mb_entNm,
+    '^쿠폰할인' as it_name,
+    '' as ct_option,
+    1 as ct_qty,
+    (-$coupon_price) as price_d,
+    ROUND(-$coupon_price / 1.1) as price_d_p,
+    ROUND(-$coupon_price / 1.1 / 10) as price_d_s,
+    0 as deposit,
+    o.od_b_name
+  FROM
+    g5_shop_order o
+  LEFT JOIN
+    g5_shop_cart c ON o.od_id = c.od_id
+  LEFT JOIN
+    g5_member m ON o.mb_id = m.mb_id
+  WHERE
+    c.ct_status = '완료' and
+    c.ct_qty - c.ct_stock_qty > 0 and
+    $coupon_price > 0
+";
+
 # 입금/출금
 $sql_ledger = "
   SELECT
@@ -210,6 +238,8 @@ FROM
     ({$sql_send_cost} {$where_order} GROUP BY o.od_id)
     UNION ALL
     ({$sql_sales_discount} {$where_order} GROUP BY o.od_id)
+    UNION ALL
+    ({$sql_sales_coupon} {$where_order} GROUP BY o.od_id)
     UNION ALL
     ({$sql_ledger} {$where_ledger})
   ) u

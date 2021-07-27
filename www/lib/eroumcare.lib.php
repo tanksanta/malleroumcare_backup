@@ -1151,6 +1151,23 @@ function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = fa
       o.od_sales_discount > 0
   ";
 
+  # 쿠폰할인
+  $coupon_price = "(o.od_cart_coupon + o.od_coupon + o.od_send_coupon)";
+  $sql_sales_coupon = "
+    SELECT
+      1 as ct_qty,
+      (-$coupon_price) as price_d,
+      0 as deposit
+    FROM
+      g5_shop_order o
+    LEFT JOIN
+      g5_shop_cart c ON o.od_id = c.od_id
+    WHERE
+      c.ct_status = '완료' and
+      c.ct_qty - c.ct_stock_qty > 0 and
+      $coupon_price > 0
+  ";
+
   # 입금/출금
   $sql_ledger = "
     SELECT
@@ -1189,6 +1206,8 @@ function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = fa
       ({$sql_send_cost} {$sql_search} {$where_date} GROUP BY o.od_id)
       UNION ALL
       ({$sql_sales_discount} {$sql_search} {$where_date} GROUP BY o.od_id)
+      UNION ALL
+      ({$sql_sales_coupon} {$sql_search} {$where_date} GROUP BY o.od_id)
       UNION ALL
       ({$sql_ledger} {$where_ledger_date})
     ) u
