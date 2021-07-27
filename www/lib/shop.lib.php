@@ -1819,7 +1819,7 @@ function get_item_point($it, $io_id='', $trunc=10)
     return $it_point;
 }
 
-function get_sendcost_new($cart_id, $selected=1) {
+function get_sendcost_new($cart_id, $selected = 1) {
   global $g5;
 
   // 배송비 renew 210506
@@ -1841,7 +1841,27 @@ function get_sendcost_new($cart_id, $selected=1) {
   if($result_total >= 100000) {
     $od_send_cost = 0;
   } else {
-    $od_send_cost = 3000;
+    // 무료배송 체크
+    $check_result = sql_fetch("
+      SELECT
+        it_id
+      FROM
+        {$g5['g5_shop_cart_table']}
+      WHERE
+        od_id = '$cart_id' and
+        ct_send_cost = '0' and
+        ct_status IN ( '쇼핑', '주문', '입금', '출고준비', '준비', '배송', '완료', '작성' ) and
+        ct_select = '$selected' and
+        it_sc_type <> 1
+    ");
+
+    if($check_result['it_id']) {
+      // 무료배송 아닌게 하나라도 있으면
+      $od_send_cost = 3000;
+    } else {
+      // 전부 무료배송 상품이면
+      $od_send_cost = 0;
+    }
   }
 
   return $od_send_cost;
