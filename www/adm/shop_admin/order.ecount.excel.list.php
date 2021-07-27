@@ -224,7 +224,7 @@
           '',
           $it['prodMemo'],
           '',
-          '03245', // 품목코드(배송비)
+          '03245', // 품목코드(매출할인)
           '',
           '',
           '1',
@@ -232,6 +232,40 @@
           '',
           -((int)($od['od_sales_discount'] / 1.1)), //공급가액
           -($od['od_sales_discount'] - (int)($od['od_sales_discount'] / 1.1)), //부가세
+          $barcode_string, // 바코드
+          $delivery, // 로젠송장번호,
+          '통합관리플랫폼', //적요
+          '',
+        ];
+      }
+      
+      // 쿠폰할인
+      $coupon_price = $od['od_cart_coupon'] + $od['od_coupon'] + $od['od_send_coupon'];
+      if ($coupon_price > 0) {
+        $rows[] = [
+          $date,  //날짜
+          $count_number,
+          $mb['mb_thezone'],
+          '',
+          $od_sales_manager['mb_name'],
+          '',
+          '',
+          '',
+          '',
+          $od["od_b_name"],
+          $addr,
+          '',
+          '',
+          $it['prodMemo'],
+          '',
+          '04378', // 품목코드(쿠폰할인)
+          '',
+          '',
+          '1',
+          -($coupon_price), // 단가(vat포함)
+          '',
+          -((int)($coupon_price / 1.1)), //공급가액
+          -($coupon_price - (int)($coupon_price / 1.1)), //부가세
           $barcode_string, // 바코드
           $delivery, // 로젠송장번호,
           '통합관리플랫폼', //적요
