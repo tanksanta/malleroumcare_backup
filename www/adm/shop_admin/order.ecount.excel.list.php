@@ -228,10 +228,10 @@
           '',
           '',
           '1',
-          $od['od_sales_discount'], // 단가(vat포함)
+          -($od['od_sales_discount']), // 단가(vat포함)
           '',
-          (int)($od['od_sales_discount'] / 1.1), //공급가액
-          ($od['od_sales_discount'] - (int)($od['od_sales_discount'] / 1.1)), //부가세
+          -((int)($od['od_sales_discount'] / 1.1)), //공급가액
+          -($od['od_sales_discount'] - (int)($od['od_sales_discount'] / 1.1)), //부가세
           $barcode_string, // 바코드
           $delivery, // 로젠송장번호,
           '통합관리플랫폼', //적요
