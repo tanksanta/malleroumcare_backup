@@ -437,6 +437,7 @@ expired_rental_item_clean($_GET['prodId']);
                   $name = $list[$i]['prodNm'];
                 }
                 echo $name;
+                echo '<button class="btn" onclick="open_change_option(this, \''.$list[$i]['prodColor'].'\', \''.$list[$i]['prodSize'].'\', \''.$list[$i]['prodOption'].'\')" style="margin-left: 10px;">옵션변경</button>';
 
                 // 대여내구연한(사용가능기간) 설정 시
                 if($row['it_rental_use_persisting_year'] && $row['it_rental_expiry_year']) {
@@ -711,6 +712,28 @@ expired_rental_item_clean($_GET['prodId']);
                     </div>
                   </div>
                 </form>
+              </div>
+
+              <!-- 옵션변경 -->
+              <div class="popup01 popup5">
+                <div class="p-inner">
+                  <h2>옵션변경</h2>
+                  <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
+                  <form name="foption" class="form item-form form_change_option" role="form">
+                    <input type="hidden" name="stoId" value="<?=$list[$i]['stoId']?>">
+                    <input type="hidden" name="prodBarNum" value="<?=$list[$i]['prodBarNum']?>">
+                    <table class="table">
+                      <?php
+                      $option_1 = get_change_options($it['it_id'], $it['it_option_subject']);
+                      echo $option_1;
+                      ?>
+                    </table>
+                    <div class="popup-btn">
+                      <button type="submit">저장하기</button>
+                      <button type="button" class="p-cls-btn" onclick="close_popup(this)">취소</button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </li>
             <?php } //반복끝 ?>
@@ -1087,6 +1110,11 @@ function selected_recipient(penId) {
   document.getElementById('recipient_info').submit();
 }
 $(function() {
+  $('.form_change_option').on('submit', function(e) {
+    e.preventDefault();
+    change_option(this);
+  });
+
   $('#chk_stock_all').change(function() {
     var checked = $(this).prop('checked');
     $('.chk_stock').prop('checked', checked);
@@ -1129,7 +1157,7 @@ $(function() {
 function open_list(e) {
   $(".modalDialog").removeClass('on');
   $(e).find('ul').toggleClass('on');
-  $(e).parents('.list').siblings('.list').find('.').find('ul').removeClass('on');
+  $(e).parents('.list').siblings('.list').find('ul').removeClass('on');
 }
 
 // modal 다른곳 클릭하면 꺼지게
@@ -1184,6 +1212,76 @@ function open_log(e ,stoId,logid,page,pageid,num) {
   }
 }
 
+// 옵션변경 팝업
+function open_change_option(e, prodColor, prodSize, prodOptions) {
+  var $popup = $(e).parents('.list').find('.popup5').stop();
+
+  prodOptions = prodOptions.split('|');
+
+  if(prodColor || prodSize || (prodOptions && prodOptions[0] != '')) { // 옵션 값이 있으면
+    var io_subjects = '<?=get_text($it['it_option_subject'])?>'.split(',');
+
+    for(var i = 1; i <= io_subjects.length; i++) {
+      switch(io_subjects[i-1]) {
+        case '색상':
+          $popup.find('.opt_change_'+i).val(prodColor);
+          break;
+        case '사이즈':
+          $popup.find('.opt_change_'+i).val(prodSize);
+          break;
+        case '':
+          // do nothing
+          break;
+        default:
+          var prodOption = prodOptions.shift();
+          $popup.find('.opt_change_'+i).val(prodOption);
+      }
+    }
+  }
+
+  $popup.show();
+}
+
+function change_option(e) {
+  var $opt_change = $(e).find('.opt_change');
+  var stoId = $(e).find('input[name=stoId]').val();
+  var prodBarNum = $(e).find('input[name=prodBarNum]').val();
+
+  var prodColor = '';
+  var prodSize = '';
+  var prodOptions = [];
+  for(var i = 0; i < $opt_change.length; i++) {
+    var $sel = $opt_change.eq(i);
+    var subject = $sel.data('subject');
+    switch(subject) {
+      case '색상':
+        prodColor = $sel.val();
+        break;
+      case '사이즈':
+        prodSize = $sel.val();
+        break;
+      default:
+        prodOptions.push($sel.val());
+    }
+  }
+
+  $.post('ajax.stock.option.php', {
+    stoId: stoId,
+    prodBarNum: prodBarNum,
+    prodColor: prodColor,
+    prodSize: prodSize,
+    prodOption: prodOptions.join('|')
+  }, 'json')
+  .done(function() {
+    window.location.reload();
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
+
+  return false;
+}
 
 //소독업체지정 팝업
 function open_designate_disinfection(e){

@@ -1917,7 +1917,8 @@
     display:none;
 }
 .it_option,
-.it_supply {
+.it_supply,
+.opt_change {
     color: #999;
     border-radius: 0px;
     height: 40px !important;

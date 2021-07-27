@@ -14,7 +14,6 @@ br {font-family: sans-serif !important;}
 button { cursor: pointer; padding: 0;}
 button, input, textarea { border: none; background:transparent;font-family: 'Nanum Gothic', sans-serif;}
 button, :focus, :active { outline: 0;}
-button:focus, button:active { padding: 0;}
 button span, button img { position: relative;}
 table {border-collapse: collapse;}
 .hidden { text-indent: -99999px; overflow: hidden; font-size: 0; display: none;}

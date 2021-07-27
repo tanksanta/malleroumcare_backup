@@ -974,6 +974,99 @@ function session_check()
     goto_url(G5_SHOP_URL);
 }
 
+// 상품 선택옵션 변경
+function get_change_options($it_id, $subject, $is_div='', $sb = '')
+{
+    global $g5, $aslang;
+
+    if(!$it_id || !$subject)
+        return '';
+
+    $sb = $sb ? $sb : $aslang['io_select'];
+
+    $sql = " select * from {$g5['g5_shop_item_option_table']} where io_type = '0' and it_id = '$it_id' and io_use = '1' order by io_no asc ";
+    $result = sql_query($sql);
+    if(!sql_num_rows($result))
+        return '';
+
+    $str = '';
+    $subj = explode(',', $subject);
+    $subj_count = count($subj);
+
+    if($subj_count > 1) {
+        $options = array();
+
+        // 옵션항목 배열에 저장
+        for($i=0; $row=sql_fetch_array($result); $i++) {
+            $opt_id = explode(chr(30), $row['io_id']);
+
+            for($k=0; $k<$subj_count; $k++) {
+                if(!is_array($options[$k]))
+                    $options[$k] = array();
+
+                if($opt_id[$k] && !in_array($opt_id[$k], $options[$k]))
+                    $options[$k][] = $opt_id[$k];
+            }
+        }
+
+        // 옵션선택목록 만들기
+        for($i=0; $i<$subj_count; $i++) {
+            $opt = $options[$i];
+            $opt_count = count($opt);
+            if($opt_count) {
+                $seq = $i + 1;
+
+                if($is_div === 'div') {
+                    $str .= '<div class="get_item_options">'.PHP_EOL;
+                } else {
+                    $str .= '<tr>'.PHP_EOL;
+                }
+
+                $select = '<select class="opt_change_'.$seq.' opt_change form-control" data-subject="'.$subj[$i].'">'.PHP_EOL;
+                $select .= '<option value="">'.$subj[$i].' 선택하세요</option>'.PHP_EOL;
+                for($k=0; $k<$opt_count; $k++) {
+                    $opt_val = $opt[$k];
+                    if(strlen($opt_val)) {
+                        $select .= '<option value="'.$opt_val.'">'.$opt_val.'</option>'.PHP_EOL;
+                    }
+                }
+                $select .= '</select>'.PHP_EOL;
+
+                if($is_div === 'div') {
+                    $str .= '<span>'.$select.'</span>'.PHP_EOL;
+                    $str .= '</div>'.PHP_EOL;
+                } else {
+                    $str .= '<td>'.$select.'</td>'.PHP_EOL;
+                    $str .= '</tr>'.PHP_EOL;
+                }
+            }
+        }
+    } else {
+        if($is_div === 'div') {
+            $str .= '<div class="get_item_options">'.PHP_EOL;
+        } else {
+            $str .= '<tr>'.PHP_EOL;
+        }
+
+        $select = '<select class="opt_change_1 opt_change form-control">'.PHP_EOL;
+        $show_subj = $subj[0] ? $subj[0] : $subj;
+        $select .= '<option value="">'.$show_subj.' 선택하세요</option>'.PHP_EOL;
+        for($i=0; $row=sql_fetch_array($result); $i++) {
+          $select .= '<option value="'.$row['io_id'].'">'.$row['io_id'].'</option>'.PHP_EOL;
+        }
+        $select .= '</select>'.PHP_EOL;
+
+        if($is_div === 'div') {
+            $str .= '<span>'.$select.'</span>'.PHP_EOL;
+            $str .= '</div>'.PHP_EOL;
+        } else {
+            $str .= '<td>'.$select.'</td>'.PHP_EOL;
+            $str .= '</tr>'.PHP_EOL;
+        }
+  }
+
+    return $str;
+}
 
 // 상품 선택옵션
 function get_item_options($it_id, $subject, $is_div='', $sb = '')
