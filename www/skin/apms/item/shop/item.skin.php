@@ -519,7 +519,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         <input type="hidden" name="url">
 
 
-					<table class="div-table table pc">
+					<table class="table pc">
 						<tbody>
 							<tr>
 								<th scope="row">급여가(정가)</th>
@@ -715,7 +715,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
       <div id="item_option">
         <?php if($option_item) { ?>
           <p><b> 선택옵션</b></p>
-          <table class="div-table table samhwa-item-option-table">
+          <table class="table samhwa-item-option-table">
           <col width="120">
           <tbody>
           <?php echo $option_item; // 선택옵션  ?>
@@ -725,7 +725,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
         <?php if($supply_item) { ?>
           <p><b>추가옵션</b></p>
-          <table class="div-table table samhwa-item-option-table">
+          <table class="table samhwa-item-option-table">
           <col width="120">
           <tbody>
           <?php echo $supply_item; // 추가옵션 ?>
