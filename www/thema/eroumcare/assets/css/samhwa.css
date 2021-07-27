@@ -1861,6 +1861,7 @@
     width:60px;
     margin-bottom:8px;
     font-weight: 300 !important;
+    vertical-align: top;
 }
 
 #ct_sc_method_sel{
@@ -1873,6 +1874,7 @@
 
 .item-form .quality-text{
     font-weight: 300 !important;
+    vertical-align: top;
 }
 
 .item-form .item-price {
