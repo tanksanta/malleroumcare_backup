@@ -13,7 +13,7 @@
 .item-head { padding: 0 0 0 20px; border: 0px currentColor; border-image: none; margin:30px 0; width:100%; }
 .item-head h1 { font-weight:bold; padding:0 !important; border: 0px currentColor; border-image: none; color: rgb(59, 62, 67); line-height: 30px; font-size: 18px; letter-spacing:-1px; margin:0px; margin-bottom:10px; }
 .item-head ul.item-buy-btn { padding:0px; margin:0px; list-style:none; overflow:hidden; margin:0px -3px; }
-.item-head ul.item-buy-btn li { float:left; width:25%; padding:3px; }
+.item-head ul.item-buy-btn li { float:left; padding:3px; }
 .item-head .item-image { overflow:hidden; }
 .item-head .item-image a img { max-width:100%; margin:0 auto; }
 .item-head .item-thumb { overflow:hidden; margin-right:-8px; }
@@ -163,9 +163,11 @@
 }
 
 /* 210204 */
-.optionStockCntList { width: 100%; border: 1px solid #F28D0B; margin-top: 20px; padding-bottom: 10px; }
-.optionStockCntList > li { width: 100%; height: 20px; line-height: 20px; padding: 0 15px; margin-top: 10px; }
-.optionStockCntList > li > span { font-size: 12px; }
+.optionStockCntList { width: 100%; border: 1px solid #F28D0B; margin-top: 8px; padding-bottom: 10px; }
+.optionStockCntList:hover{  background-color: #f28e0b11;
+}
+.optionStockCntList > li { font-weight:500; width: 100%; height: 20px; line-height: 20px; padding: 0 15px; margin-top: 10px; font-size: 16px; color: #F28D0B; cursor: context-menu;}
+.optionStockCntList > li > span { font-size: 14px; }
 .optionStockCntList > li > span.name { float: left; }
 .optionStockCntList > li > span.cnt { float: right; font-weight: bold; }
 .item-head .item-image { position: relative; }
