@@ -429,37 +429,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         <?php if($it['it_basic']) { // 기본설명 ?>
         <p class="help-block"><?php echo $it['it_basic']; ?></p>
         <?php } ?>
-        <div clas="margin-leftm">
-          <ul class="detailInfo">
-            <?php if(trim($it["prodSym"])) { ?>
-            <li>
-              <span class="infoLabel">
-                <span>·</span>
-                <span>재질</span>
-              </span>
-              <span class="info">: <?=$it["prodSym"]?></span>
-            </li>
-            <?php } ?>
-            <?php if(trim($it["prodSizeDetail"])) { ?>
-            <li>
-              <span class="infoLabel">
-                <span>·</span>
-                <span>사이즈</span>
-              </span>
-              <span class="info">: <?=$it["prodSizeDetail"]?></span>
-            </li>
-            <?php } ?>
-            <?php if(trim($it["prodWeig"])) { ?>
-            <li>
-              <span class="infoLabel">
-                <span>·</span>
-                <span>중량</span>
-              </span>
-              <span class="info">: <?=$it["prodWeig"]?></span>
-            </li>
-            <?php } ?>
-          </ul>
-        </div>
+        
         
         <div class="it_type_box">
           <?php if($it['it_type1']){ ?><p class="p_box type1" > 일시품절</p><?php } ?>
@@ -493,6 +463,40 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
         <input type="hidden" name="sw_direct">
         <input type="hidden" name="url">
+
+
+					<table class="div-table table pc">
+						<tbody>
+							<tr>
+								<th scope="row">급여가(정가)</th>
+								<td><?php echo display_price($it['it_cust_price']); ?>
+								<p class="personal-price">
+									※ 본인부담금 15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)
+								</p></td>
+							</tr>
+
+							<tr>
+								<th scope="row">상품상세</th>
+								
+								<?php if(trim($it["prodSym"])) { ?>
+								<td><label class="quality-type">재질</label><label class="quality-text"><?=$it["prodSym"]?></label>
+								<?php } ?>
+					            <?php if(trim($it["prodSizeDetail"])) { ?>
+								<br>
+								<label class="quality-type">사이즈</label><label class="quality-text"><?=$it["prodSizeDetail"]?></label>
+								<?php } ?>
+						        <?php if(trim($it["prodWeig"])) { ?>
+								<br>
+								<label class="quality-type">중량</label><label class="quality-text"><?=$it["prodWeig"]?></label>
+						         <?php } ?>
+								<br>
+								</td>
+							</tr>
+							
+
+						</tbody>
+					</table>
+
 
         <table class="div-table table pc">
           <tbody>
@@ -622,7 +626,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
                 $sc_price_info = "";
                 if ($it['it_sc_type_partner'] != 1) {
-                    $sc_price_info = "* 배송비는 {$it['it_sc_qty_partner']}개당 배송비 부가 ({$it['it_sc_price_partner']}원)<br>* 도서산간지역은 추가배송비가 발생합니다.";
+                    $sc_price_info = "배송비는 {$it['it_sc_qty_partner']}개당 배송비 부가 ({$it['it_sc_price_partner']}원)<br>* 도서산간지역은 추가배송비가 발생합니다.";
                 }
 
                 if ($it['it_sc_type_partner'] == 0) { // 쇼핑몰 디폴트 셋팅 시
@@ -630,9 +634,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     $send_cost = get_item_sendcost_by_default_case($item_price);
 
                     if ($send_cost > 0) {
-                        $sc_price_info = "* 배송비 [{$send_cost}원]<br>* 도서산간지역 추가배송비 [".($send_cost + 2000)."원]";
+                        $sc_price_info = "배송비 [{$send_cost}원]<br>* 도서산간지역 추가배송비 [".($send_cost + 2000)."원]";
                     } else {
-                        $sc_price_info = "* 무료배송<br>* 도서산간지역은 추가배송비가 발생합니다.";
+                        $sc_price_info = "무료배송<br>* 도서산간지역은 추가배송비가 발생합니다.";
                     }
                 }
             } else { // 파트너 유저 아닐 시
@@ -677,7 +681,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
             }
             
             if ($it['it_delivery_cnt'] > 0) {
-                $sc_price_info .= "<br><span style=\"font-size:13px; color:#ef7c00;\">* 본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span>";
+                $sc_price_info .= "<br><span style=\"font-size:13px; color:#ef7c00;\">본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span>";
             }
       ?>
       <tr>
@@ -828,11 +832,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         </div>
       <?php } ?>
       </form>
-      <!-- 본인부담금 -->
+      <!-- 본인부담금 
       <div class="selfPriceInfo">
         <div class="title">본인부담금</div>
         <p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
-      </div>
+      </div>-->
 
       <script>
         //엔터키 막기
