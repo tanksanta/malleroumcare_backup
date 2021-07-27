@@ -593,6 +593,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
             <?php } ?>
             <?php
             $ct_send_cost_label = '배송';
+            $sc_price_info_spliter = '<span style="margin:0 8px 0 8px; font-size: 12px; font-weight: 100 !important; color: #d9d9d9;">|</span> ';
 
             if ($is_samhwa_partner) { // 파트너 유저 배송비
                 if ($it['it_sc_type_partner'] == 1)
@@ -627,9 +628,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     $send_cost = get_item_sendcost_by_default_case($item_price);
 
                     if ($send_cost > 0) {
-                        $sc_price_info = "배송비 [{$send_cost}원]<br>* 도서산간지역 추가배송비 [".($send_cost + 2000)."원]";
+                        $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
                     } else {
-                        $sc_price_info = "무료배송<br>* 도서산간지역은 추가배송비가 발생합니다.";
+                        $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
                     }
                 }
             } else { // 파트너 유저 아닐 시
@@ -656,7 +657,6 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                 }
 
                 $sc_price_info = "";
-                $sc_price_info_spliter = '<span style="margin:0 8px 0 8px; font-size: 12px; font-weight: 100 !important; color: #d9d9d9;">|</span> ';
                 if ($it['it_sc_type'] != 1) {
                     $number_cost=number_format($it['it_sc_price']);
                     $sc_price_info = "배송비 {$number_cost}원{$sc_price_info_spliter}도서산간지역은 ".number_format($it['it_sc_price'] + 2000)."원 추가됩니다.";
@@ -667,7 +667,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                     $send_cost = get_item_sendcost_by_default_case($item_price);
 
                     if ($send_cost > 0) {
-                        $sc_price_info = "배송비 [{$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
+                        $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
                     } else {
                         $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
                     }
