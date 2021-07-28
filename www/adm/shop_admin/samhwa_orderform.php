@@ -168,6 +168,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
   // 상품의 옵션정보
   $sql = " select ct_id, mb_id, ct_manager, ct_delivery_cnt, ct_combine_ct_id, it_id, ct_price, ct_point, ct_qty, ct_ex_date, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
         , ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
+        , ( SELECT it_taxInfo FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_taxInfo
               from {$g5['g5_shop_cart_table']} MT
               where od_id = '{$od['od_id']}'
                   and it_id = '{$row['it_id']}'
@@ -193,10 +194,17 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $opt['ct_price_stotal'] = $opt_price * $opt['ct_qty'] - $opt['ct_discount'];
     // 단가 역산
     $opt["opt_price"] = round($opt['ct_price_stotal'] / ($opt["ct_qty"] - $opt["ct_stock_qty"]));
+
     // 공급가액
-    $opt["basic_price"] = round($opt['ct_price_stotal'] / 1.1);
+    $opt["basic_price"] = $opt['ct_price_stotal'];
     // 부가세
-    $opt["tax_price"] = round($opt['ct_price_stotal'] / 11);
+    $opt["tax_price"] = 0;
+    if($opt['it_taxInfo'] != "영세" ) {
+      // 공급가액
+      $opt["basic_price"] = round($opt['ct_price_stotal'] / 1.1);
+      // 부가세
+      $opt["tax_price"] = round($opt['ct_price_stotal'] / 11);
+    }
 
     $opt['ct_point_stotal'] = $opt['ct_point'] * $opt['ct_qty'] - $opt['ct_discount'];
 

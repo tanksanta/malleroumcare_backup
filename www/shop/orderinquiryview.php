@@ -91,6 +91,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 
   $sql = " select ct_id, mb_id, it_name, ct_option, ct_qty, ct_stock_qty, ct_price, ct_point, ct_status, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_uid, ct_discount
         , ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
+        , ( SELECT it_taxInfo FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_taxInfo
         from {$g5['g5_shop_cart_table']} MT
         where od_id = '$od_id'
           and it_id = '{$row['it_id']}'
@@ -226,10 +227,15 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $sell_price = $opt_price * ($opt["ct_qty"] - $opt["ct_stock_qty"]) - $opt["ct_discount"]; // ct_discount를 빼고 보여줘야함.
     // 단가 역산
     $opt_price = @round($sell_price / ($opt["ct_qty"] - $opt["ct_stock_qty"]));
-    // 공급가액
-    $basic_price = round($sell_price / 1.1);
-    // 부가세
-    $tax_price = round($sell_price / 11);
+
+    $basic_price = $sell_price;
+    $tax_price = 0;
+    if($opt['it_taxInfo'] != "영세" ) {
+      // 공급가액
+      $basic_price = round($sell_price / 1.1);
+      // 부가세
+      $tax_price = round($sell_price / 11);
+    }
 
     $point = $opt['ct_point'] * $opt['ct_qty'];
 
