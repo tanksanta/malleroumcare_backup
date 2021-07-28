@@ -192,8 +192,11 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 
     // 소계
     $opt['ct_price_stotal'] = $opt_price * $opt['ct_qty'] - $opt['ct_discount'];
+    if($opt["prodSupYn"] == "Y") {
+      $opt["ct_price_stotal"] -= ($opt["ct_stock_qty"] * $opt_price);
+    }
     // 단가 역산
-    $opt["opt_price"] = round($opt['ct_price_stotal'] / ($opt["ct_qty"] - $opt["ct_stock_qty"]));
+    $opt["opt_price"] = $opt['ct_price_stotal'] ? @round($opt['ct_price_stotal'] / ($opt["ct_qty"] - $opt["ct_stock_qty"])) : 0;
 
     // 공급가액
     $opt["basic_price"] = $opt['ct_price_stotal'];
@@ -207,10 +210,6 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     }
 
     $opt['ct_point_stotal'] = $opt['ct_point'] * $opt['ct_qty'] - $opt['ct_discount'];
-
-    if($opt["prodSupYn"] == "Y"){
-      $opt["ct_price_stotal"] -= ($opt["ct_stock_qty"] * $opt_price);
-    }
 
     $row['options'][] = $opt;
   }
