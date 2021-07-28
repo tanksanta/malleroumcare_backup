@@ -552,7 +552,26 @@ function is_benefit_item($item) {
     }
 }
 
-// 상품분류별 내구연한 - 10일 전 알림
+// 수급자 활동 알림 - 알림 개수 가져오는 함수
+function get_recipient_noti_count() {
+  global $member;
+  
+  $cnt_sql = "
+    SELECT
+      COUNT(*) as cnt
+    FROM
+      recipient_noti
+    WHERE
+      mb_id = '{$member['mb_id']}' and
+      rn_checked_yn = 'N'
+  ";
+
+  $cnt_result = sql_fetch($cnt_sql);
+
+  return $cnt_result ? $cnt_result['cnt'] : 0;
+}
+
+// 상품분류별 내구연한 - 수급자 활동 알림 (10일 전 알림)
 function category_limit_noti() {
   global $member;
 
@@ -598,7 +617,7 @@ function category_limit_noti() {
     GROUP BY
       d.dc_id
   ";
-  $eform_result = sql_query($eform_sql, true);
+  $eform_result = sql_query($eform_sql);
   while($row = sql_fetch_array($eform_result)) {
     $check_result = sql_fetch(" SELECT rn_id FROM recipient_noti WHERE rn_type = 'eform' and dc_id = UNHEX('{$row['uuid']}') ");
     if($check_result && $check_result['rn_id']) {
@@ -619,7 +638,9 @@ function category_limit_noti() {
         ca_id = '{$row['ca_id']}',
         ca_name = '{$row['ca_name']}',
         qty = '{$row['qty']}',
-        end_date = '{$row['end_date']}'
+        end_date = '{$row['end_date']}',
+        rn_created_at = NOW(),
+        rn_updated_at = NOW()
     ");
   }
 
@@ -659,7 +680,7 @@ function category_limit_noti() {
     GROUP BY
       sd_id
   ";
-  $upload_result = sql_query($upload_sql, true);
+  $upload_result = sql_query($upload_sql);
   while($row = sql_fetch_array($upload_result)) {
     $check_result = sql_fetch(" SELECT rn_id FROM recipient_noti WHERE rn_type = 'upload' and sd_id = '{$row['sd_id']}' ");
     if($check_result && $check_result['rn_id']) {
@@ -680,7 +701,9 @@ function category_limit_noti() {
         ca_id = '{$row['ca_id']}',
         ca_name = '{$row['ca_name']}',
         qty = '{$row['qty']}',
-        end_date = '{$row['end_date']}'
+        end_date = '{$row['end_date']}',
+        rn_created_at = NOW(),
+        rn_updated_at = NOW()
     ");
   }
 }

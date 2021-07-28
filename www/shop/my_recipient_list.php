@@ -125,10 +125,12 @@ $(function() {
           <button id="btn_search" type="submit"></button>
       </div>
     </div>
-    <div class="recipient_noti" style="display: none;">
-    	신규 확인이 필요한 알림 1건이 있습니다.
-    	<a href="#">바로확인</a>
+    <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
+    <div class="recipient_noti">
+    	신규 확인이 필요한 알림 <?=$noti_count?>건이 있습니다.
+    	<a href="./my_recipient_noti.php">바로확인</a>
     </div>
+    <?php } ?>
     <div class="r_btn_area pc">
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
       <a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
