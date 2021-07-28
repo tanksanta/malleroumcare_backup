@@ -39,6 +39,8 @@ CREATE TABLE IF NOT EXISTS `recipient_noti` (
   `qty` int(11) NOT NULL DEFAULT 0,
   `end_date` date NOT NULL,
   `rn_checked_yn` enum('N', 'Y') NOT NULL default 'N',
+  `rn_created_at` datetime NOT NULL default '0000-00-00 00:00:00',
+  `rn_updated_at` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`rn_id`),
   UNIQUE KEY `type_dc_id_sd_id` (`rn_type`, `dc_id`, `sd_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
