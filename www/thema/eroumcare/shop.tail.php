@@ -184,15 +184,16 @@ if($_GET['co_id']=="possession_manage"){ ?>
   <?php
   $limit_status = $limit_txt = null;
 
-  if($it_id)
+  if($_GET['it_id']) {
     $ca_id = sql_fetch("
       SELECT
         ca_id
       FROM
         {$g5['g5_shop_item_table']}
       WHERE
-        it_id = '$it_id'
+        it_id = '{$_GET['it_id']}'
     ")['ca_id'];
+  }
   if($ca_id && strlen($ca_id) == 2 && $ca_sub)
     $ca_id .= $ca_sub[0];
 
