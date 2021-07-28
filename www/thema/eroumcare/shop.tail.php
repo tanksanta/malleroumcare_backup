@@ -218,7 +218,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
       $limit_txt = "{$product_table[$cate_product_table[$ca_id]]} 구매 불가능";
     } else {
       // 내구연한(품목 별 구매가능 개수) 체크
-      $limit = get_pen_category_limit($_SESSION['recipient']['penId'], $ca_id);
+      $limit = get_pen_category_limit($_SESSION['recipient']['penLtmNum'], $ca_id);
       if($limit) {
         $cur = intval($limit['num']) - intval($limit['current']);
         if($cur > 0) {

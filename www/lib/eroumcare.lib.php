@@ -552,9 +552,110 @@ function is_benefit_item($item) {
     }
 }
 
+// 상품분류별 내구연한 - 10일 전 알림
+function category_limit_noti() {
+  global $member;
+
+  if(!$member['mb_id'] || !$member['mb_entId'])
+    return;
+
+  // 판매일경우 판매일+내구연한개월수, 대여일경우 대여종료일
+  // 이 값이 현재일-내구연한개월수 보다 같거나 크면 구매가능개수에서 차감해야함
+  $end_date = "
+    CASE
+      WHEN i.gubun = '01'
+      THEN
+        STR_TO_DATE(SUBSTRING_INDEX(i.it_date, '-', -3), '%Y-%m-%d')
+      ELSE
+        DATE_ADD(STR_TO_DATE(SUBSTRING_INDEX(i.it_date, '-', -3), '%Y-%m-%d'), INTERVAL y.ca_limit_month MONTH)
+    END
+  ";
+  $eform_sql = "
+    SELECT
+      d.penLtmNum,
+      y.ca_id,
+      y.ca_name,
+      y.ca_limit_month as month,
+      y.ca_limit_num as num,
+      count(*) as current
+    FROM
+      eform_document d
+    LEFT JOIN
+      eform_document_item i ON d.dc_id = i.dc_id
+    LEFT JOIN
+      g5_shop_item x ON i.it_code = x.ProdPayCode and
+      (
+        ( i.gubun = '00' and x.ca_id like '10%' ) or
+        ( i.gubun = '01' and x.ca_id like '20%' )
+      )
+    LEFT JOIN
+      g5_shop_category y ON x.ca_id = y.ca_id
+    WHERE
+      d.entId = '{$member['mb_entId']}' and
+      y.ca_use_limit = 1 and
+      $end_date >= DATE_SUB(NOW(), INTERVAL y.ca_limit_month MONTH) and
+      DATEDIFF($end_date, NOW()) <= 10
+    GROUP BY
+      d.penId, y.ca_id
+  ";
+  $eform_result = sql_query($eform_sql);
+
+  $end_date = "
+    CASE
+      WHEN sd_gubun = '01'
+      THEN
+        sd_rent_date
+      ELSE
+        DATE_ADD(sd_sale_date, INTERVAL y.ca_limit_month MONTH)
+    END
+  ";
+  $upload_sql = "
+    SELECT
+      sd_pen_ltm_num as penLtmNum,
+      y.ca_id,
+      y.ca_name,
+      y.ca_limit_month as month,
+      y.ca_limit_num as num,
+      count(*) as current
+    FROM
+      stock_data_upload d
+    LEFT JOIN
+      g5_shop_item x ON sd_it_code = x.ProdPayCode and
+      (
+        ( sd_gubun = '00' and x.ca_id like '10%' ) or
+        ( sd_gubun = '01' and x.ca_id like '20%' )
+      )
+    LEFT JOIN
+      g5_shop_category y ON x.ca_id = y.ca_id
+    WHERE
+      d.mb_id = '{$member['mb_id']}' and
+      sd_status = 1 and
+      y.ca_use_limit = 1 and
+      $end_date >= DATE_SUB(NOW(), INTERVAL y.ca_limit_month MONTH) and
+      DATEDIFF($end_date, NOW()) <= 10
+    GROUP BY
+      sd_pen_ltm_num, y.ca_id
+  ";
+  $upload_result = sql_query($upload_sql);
+
+
+
+  while($row = sql_fetch_array($eform_result)) {
+
+  }
+
+  while($row = sql_fetch_array($upload_result)) {
+
+  }
+
+}
+
 // 상품분류별 내구연한 - 카테고리 별 구매가능 개수 체크
-function get_pen_category_limit($penId, $ca_id) {
-  global $g5;
+function get_pen_category_limit($penLtmNum, $ca_id) {
+  global $g5, $member;
+
+  if(!$member['mb_id'] || !$member['mb_entId'])
+    return null;
 
   $limit = sql_fetch("
     SELECT
@@ -571,23 +672,73 @@ function get_pen_category_limit($penId, $ca_id) {
   if(!$limit['ca_use_limit'])
     return null;
   
-  $cur_cnt = sql_fetch("
+  // 판매일경우 판매일+내구연한개월수, 대여일경우 대여종료일
+  // 이 값이 현재일-내구연한개월수 보다 같거나 크면 구매가능개수에서 차감해야함
+  $end_date = "
+    CASE
+      WHEN i.gubun = '01'
+      THEN
+        STR_TO_DATE(SUBSTRING_INDEX(i.it_date, '-', -3), '%Y-%m-%d')
+      ELSE
+        DATE_ADD(STR_TO_DATE(SUBSTRING_INDEX(i.it_date, '-', -3), '%Y-%m-%d'), INTERVAL y.ca_limit_month MONTH)
+    END
+  ";
+  $eform_result = sql_fetch("
     SELECT
-      COUNT(*) as cnt
+      COUNT(*) as current
     FROM
-      `eform_document` d
-      LEFT JOIN
-        `eform_document_item` i ON d.dc_id = i.dc_id
-      LEFT JOIN
-        `{$g5['g5_shop_item_table']}` x ON i.it_code = x.ProdPayCode
-      LEFT JOIN `{$g5['g5_shop_category_table']}` y ON x.ca_id = y.ca_id
+      eform_document d
+    LEFT JOIN
+      eform_document_item i ON d.dc_id = i.dc_id
+    LEFT JOIN
+      g5_shop_item x ON i.it_code = x.ProdPayCode and
+      (
+        ( i.gubun = '00' and x.ca_id like '10%' ) or
+        ( i.gubun = '01' and x.ca_id like '20%' )
+      )
+    LEFT JOIN
+      g5_shop_category y ON x.ca_id = y.ca_id
     WHERE
-      penId = '{$penId}' AND
-      (d.dc_datetime BETWEEN DATE_SUB(NOW(), INTERVAL {$limit['month']} MONTH) AND NOW()) AND
-      y.ca_id = '{$ca_id}'
-  ")['cnt'];
+      d.entId = '{$member['mb_entId']}' and
+      d.penLtmNum = '{$penLtmNum}' and
+      y.ca_id = '{$ca_id}' and
+      $end_date >= DATE_SUB(NOW(), INTERVAL y.ca_limit_month MONTH)
+  ");
 
-  $limit['current'] = $cur_cnt;
+  $end_date = "
+  CASE
+    WHEN sd_gubun = '01'
+    THEN
+      sd_rent_date
+    ELSE
+      DATE_ADD(sd_sale_date, INTERVAL y.ca_limit_month MONTH)
+  END
+  ";
+  $upload_result = sql_fetch("
+    SELECT
+      count(*) as current
+    FROM
+      stock_data_upload d
+    LEFT JOIN
+      g5_shop_item x ON sd_it_code = x.ProdPayCode and
+      (
+        ( sd_gubun = '00' and x.ca_id like '10%' ) or
+        ( sd_gubun = '01' and x.ca_id like '20%' )
+      )
+    LEFT JOIN
+      g5_shop_category y ON x.ca_id = y.ca_id
+    WHERE
+      d.mb_id = '{$member['mb_id']}' and
+      sd_status = 1 and
+      d.sd_pen_ltm_num = '{$penLtmNum}' and
+      y.ca_id = '{$ca_id}' and
+      $end_date >= DATE_SUB(NOW(), INTERVAL y.ca_limit_month MONTH)
+  ");
+
+  $eform_current = $eform_result ? $eform_result['current'] : 0;
+  $upload_current = $upload_result ? $upload_result['current'] : 0;
+
+  $limit['current'] = $eform_current + $upload_current;
 
   return $limit;
 }
