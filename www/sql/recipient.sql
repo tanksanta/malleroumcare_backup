@@ -40,6 +40,5 @@ CREATE TABLE IF NOT EXISTS `recipient_noti` (
   `end_date` date NOT NULL,
   `rn_checked_yn` enum('N', 'Y') NOT NULL default 'N',
   PRIMARY KEY (`rn_id`),
-  KEY `eform_dc_id` (`rn_type`, `dc_id`),
-  KEY `upload_sd_id` (`rn_type`, `sd_id`)
+  UNIQUE KEY `type_dc_id_sd_id` (`rn_type`, `dc_id`, `sd_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
