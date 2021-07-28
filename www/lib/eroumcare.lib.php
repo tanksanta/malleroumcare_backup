@@ -572,12 +572,13 @@ function category_limit_noti() {
   ";
   $eform_sql = "
     SELECT
+      HEX(d.dc_id) as uuid,
+      d.penNm,
       d.penLtmNum,
       y.ca_id,
       y.ca_name,
-      y.ca_limit_month as month,
-      y.ca_limit_num as num,
-      count(*) as current
+      $end_date as end_date,
+      count(*) as qty
     FROM
       eform_document d
     LEFT JOIN
@@ -593,12 +594,34 @@ function category_limit_noti() {
     WHERE
       d.entId = '{$member['mb_entId']}' and
       y.ca_use_limit = 1 and
-      $end_date >= DATE_SUB(NOW(), INTERVAL y.ca_limit_month MONTH) and
-      DATEDIFF($end_date, NOW()) <= 10
+      DATEDIFF($end_date, NOW()) BETWEEN 0 AND 10
     GROUP BY
-      d.penId, y.ca_id
+      d.dc_id
   ";
-  $eform_result = sql_query($eform_sql);
+  $eform_result = sql_query($eform_sql, true);
+  while($row = sql_fetch_array($eform_result)) {
+    $check_result = sql_fetch(" SELECT rn_id FROM recipient_noti WHERE rn_type = 'eform' and dc_id = UNHEX('{$row['uuid']}') ");
+    if($check_result && $check_result['rn_id']) {
+      // 이미 알림에 등록되어있으면 건너뜀
+      continue;
+    }
+
+    // 수급자알림 테이블에 등록
+    sql_query("
+      INSERT INTO
+        recipient_noti
+      SET
+        rn_type = 'eform',
+        dc_id = UNHEX('{$row['uuid']}'),
+        mb_id = '{$member['mb_id']}',
+        penNm = '{$row['penNm']}',
+        penLtmNum = '{$row['penLtmNum']}',
+        ca_id = '{$row['ca_id']}',
+        ca_name = '{$row['ca_name']}',
+        qty = '{$row['qty']}',
+        end_date = '{$row['end_date']}'
+    ");
+  }
 
   $end_date = "
     CASE
@@ -611,12 +634,13 @@ function category_limit_noti() {
   ";
   $upload_sql = "
     SELECT
+      sd_id,
+      sd_pen_nm as penNm,
       sd_pen_ltm_num as penLtmNum,
       y.ca_id,
       y.ca_name,
-      y.ca_limit_month as month,
-      y.ca_limit_num as num,
-      count(*) as current
+      $end_date as end_date,
+      count(*) as qty
     FROM
       stock_data_upload d
     LEFT JOIN
@@ -631,23 +655,34 @@ function category_limit_noti() {
       d.mb_id = '{$member['mb_id']}' and
       sd_status = 1 and
       y.ca_use_limit = 1 and
-      $end_date >= DATE_SUB(NOW(), INTERVAL y.ca_limit_month MONTH) and
-      DATEDIFF($end_date, NOW()) <= 10
+      DATEDIFF($end_date, NOW()) BETWEEN 0 AND 10
     GROUP BY
-      sd_pen_ltm_num, y.ca_id
+      sd_id
   ";
-  $upload_result = sql_query($upload_sql);
-
-
-
-  while($row = sql_fetch_array($eform_result)) {
-
-  }
-
+  $upload_result = sql_query($upload_sql, true);
   while($row = sql_fetch_array($upload_result)) {
+    $check_result = sql_fetch(" SELECT rn_id FROM recipient_noti WHERE rn_type = 'upload' and sd_id = '{$row['sd_id']}' ");
+    if($check_result && $check_result['rn_id']) {
+      // 이미 알림에 등록되어있으면 건너뜀
+      continue;
+    }
 
+    // 수급자알림 테이블에 등록
+    sql_query("
+      INSERT INTO
+        recipient_noti
+      SET
+        rn_type = 'upload',
+        sd_id = '{$row['sd_id']}',
+        mb_id = '{$member['mb_id']}',
+        penNm = '{$row['penNm']}',
+        penLtmNum = '{$row['penLtmNum']}',
+        ca_id = '{$row['ca_id']}',
+        ca_name = '{$row['ca_name']}',
+        qty = '{$row['qty']}',
+        end_date = '{$row['end_date']}'
+    ");
   }
-
 }
 
 // 상품분류별 내구연한 - 카테고리 별 구매가능 개수 체크

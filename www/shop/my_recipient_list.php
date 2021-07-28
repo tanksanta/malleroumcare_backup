@@ -12,6 +12,9 @@ if(!$is_member){
 // 연결기간(3일) 지난 수급자 연결해제
 recipient_link_clean();
 
+// 수급자 활동 알림
+category_limit_noti();
+
 $rows = 5;
 
 $page = $_GET["page"] ?? 1;
