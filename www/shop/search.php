@@ -12,6 +12,8 @@ $sql_common = " from {$g5['g5_shop_item_table']} a, {$g5['g5_shop_category_table
 
 $where = array();
 $where[] = " (a.ca_id = b.ca_id and a.it_use = 1 and b.ca_use = 1 and b.as_menu_show <> '1') ";
+// 체험상품 제외
+$where[] = " (a.it_id <> 'PRO2021072200012' and a.it_id <> 'PRO2021072200013' ) ";
 
 $search_all = true;
 // 상세검색 이라면
