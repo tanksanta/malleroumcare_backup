@@ -805,23 +805,11 @@ function get_pen_category_limit($penLtmNum, $ca_id) {
 function get_pen_order_limit($penId, $od_id) {
   global $g5;
 
-  $limit = [];
-  $result = sql_query("
-    SELECT ca_id, ca_name, ca_limit_month, ca_limit_num
-    FROM {$g5['g5_shop_category_table']}
-    WHERE ca_use_limit = 1
-  ");
-  while($row = sql_fetch_array($result)) {
-    $limit[$row['ca_id']] = array(
-      'ca_name' => $row['ca_name'],
-      'month' => $row['ca_limit_month'],
-      'num' => $row['ca_limit_num']
-    );
-  }
-  
-  if(!$limit)
+  $pen = get_recipient($penId);
+  if(!$pen) {
     return [];
-  
+  }
+
   $result = sql_query("
     select count(*) as cnt, x.ca_id, y.ca_name
     from (
@@ -838,30 +826,20 @@ function get_pen_order_limit($penId, $od_id) {
   
   $res = [];
   while($row = sql_fetch_array($result)) {
-    $lm = $limit[$row['ca_id']];
+    $limit = get_pen_category_limit($pen['penLtmNum'], $row['ca_id']);
   
-    if($lm) {
-      $cur_cnt = sql_fetch("
-        SELECT COUNT(*) as cnt
-        FROM `eform_document` d
-        LEFT JOIN `eform_document_item` i ON d.dc_id = i.dc_id
-        LEFT JOIN `{$g5['g5_shop_item_table']}` x ON i.it_code = x.ProdPayCode
-        LEFT JOIN `{$g5['g5_shop_category_table']}` y ON x.ca_id = y.ca_id
-        WHERE penId = '{$penId}'
-        AND (d.dc_datetime BETWEEN DATE_SUB(NOW(), INTERVAL {$lm['month']} MONTH) AND NOW())
-        AND y.ca_id = '{$row['ca_id']}'
-      ")['cnt'];
+    if($limit) {
   
-      if($cur_cnt + $row['cnt'] > $lm['num']) { // 구매 가능한 수량 넘으면
+      if($limit['current'] + $row['cnt'] > $limit['num']) { // 구매 가능한 수량 넘으면
         // 주문에서 해당 카테고리 아이템들 가져오기
         $item_query = sql_query("
-        select b.ProdPayCode
-        from {$g5['g5_shop_cart_table']} a
-        left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
-        where a.od_id = '{$od_id}'
-        and a.ct_select = '1' 
-        and b.ca_id = '{$row['ca_id']}'
-        group by a.it_id
+          select b.ProdPayCode
+          from {$g5['g5_shop_cart_table']} a
+          left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
+          where a.od_id = '{$od_id}'
+          and a.ct_select = '1' 
+          and b.ca_id = '{$row['ca_id']}'
+          group by a.it_id
         ");
 
         $od_items = []; // 주문에 있는 해당 카테고리의 아이템들
@@ -872,9 +850,9 @@ function get_pen_order_limit($penId, $od_id) {
         $res[] = array(
           'ca_name' => $row['ca_name'],
           'ca_id' => $row['ca_id'],
-          'month' => $lm['month'],
-          'limit' => $lm['num'],
-          'current' => $cur_cnt,
+          'month' => $limit['month'],
+          'limit' => $limit['num'],
+          'current' => $limit['current'],
           'cnt' => $row['cnt'],
           'od_items' => $od_items
         );

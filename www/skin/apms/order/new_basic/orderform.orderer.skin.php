@@ -927,6 +927,8 @@ function selected_recipient($penId) {
   }, 'json')
   .done(function(result) {
 
+    var penId = result.data.penId;
+    var penNm = result.data.penNm;
     var sum_price = parseInt(result.data.per_year['sum_price']) || 0;
     var good_mny = parseInt($('input[name="good_mny"]').val()) || 0;
 
@@ -938,11 +940,11 @@ function selected_recipient($penId) {
       );
     }
 
-    $.post('./ajax.category.limit.php', { od_id: '<?=$s_cart_id?>', penId: result.data.penId }, 'json')
+    $.post('./ajax.category.limit.php', { od_id: '<?=$s_cart_id?>', penId: penId }, 'json')
     .done(function(result) {
       var data = result.data;
       if(data.length && data.length > 0) {
-        var msg = list.penNm + ' 수급자는 구매제한 개수를 초과하였습니다.\n구매제한 개수를 초과한 주문은 계약서에 반영되지 않습니다.\n\n';
+        var msg = penNm + ' 수급자는 구매제한 개수를 초과하였습니다.\n구매제한 개수를 초과한 주문은 계약서에 반영되지 않습니다.\n\n';
         for(var i = 0; i < data.length; i++) {
           msg += data[i]['ca_name'] + ': ' +
           data[i]['month'] + '개월 동안 ' +
