@@ -61,7 +61,7 @@ for($i = 0; $row = sql_fetch_array($noti_result); $i++) {
       <div class="subtit">
         알림 목록
         <div class="r_area">
-          <a href="#" class="btn_gray_box">모두확인</a>
+          <a href="#" id="btn_check_all" class="btn_gray_box">모두확인</a>
         </div>
       </div>
       <div class="table_box">
@@ -78,7 +78,7 @@ for($i = 0; $row = sql_fetch_array($noti_result); $i++) {
           <tbody>
             <?php if(!$noti) { ?>
             <tr>
-              <td colspan="5" class="empty_table">자료가 없습니다.</td>
+              <td colspan="5" class="empty_table">알림이 없습니다.</td>
             </tr>
             <?php } ?>
             <?php
@@ -95,7 +95,7 @@ for($i = 0; $row = sql_fetch_array($noti_result); $i++) {
               <td class="text_c"><?=date('Y-m-d', strtotime($row['rn_created_at']))?></td>
               <td class="text_c text_<?=(substr($row['ca_id'], 0, 2) == '10' ? 'orange' : 'green')?>"><?=(substr($row['ca_id'], 0, 2) == '10' ? '판매' : '대여')?></td>
               <td>‘<?=$row['ca_name']?>’ 품목 <?=$row['qty']?>개 사용가능햇수가 <?=date('m월 d일', strtotime($row['end_date']))?> 만료됩니다. 만료 후 해당 품목 <?=$cur?>개 주문이 가능합니다.</td>
-              <td class="text_c"><a href="#" class="btn_gray_box btn_<?=($row['rn_checked_yn'] == 'Y' ? 'cancel' : 'check')?>"><?=($row['rn_checked_yn'] == 'Y' ? '확인취소' : '확인')?></a></td>
+              <td class="text_c"><a href="#" class="btn_gray_box btn_<?=($row['rn_checked_yn'] == 'Y' ? 'cancel' : 'check')?>" data-id="<?=$row['rn_id']?>"><?=($row['rn_checked_yn'] == 'Y' ? '확인취소' : '확인')?></a></td>
             </tr>
             <?php } ?>
             <!--<tr>
@@ -124,7 +124,62 @@ for($i = 0; $row = sql_fetch_array($noti_result); $i++) {
   </div>
 </section>
 
+<script>
 
+$(function() {
+  // 모두확인 버튼
+  $('#btn_check_all').click(function(e) {
+    e.preventDefault();
+    $.post('my_recipient_noti.php', {
+      m: 'a'
+    }, 'json')
+    .done(function() {
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  // 확인 버튼
+  $('.btn_check').click(function(e) {
+    e.preventDefault();
+
+    var rn_id = $(this).data('id');
+
+    $.post('my_recipient_noti.php', {
+      rn_id: rn_id
+    }, 'json')
+    .done(function() {
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  // 확인취소 버튼
+  $('.btn_cancel').click(function(e) {
+    e.preventDefault();
+
+    var rn_id = $(this).data('id');
+
+    $.post('my_recipient_noti.php', {
+      m: 'd',
+      rn_id: rn_id
+    }, 'json')
+    .done(function() {
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+});
+</script>
 
 <?php
 include_once('./_tail.php');
