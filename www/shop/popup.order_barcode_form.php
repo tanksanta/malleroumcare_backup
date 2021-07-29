@@ -435,7 +435,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
         // 저장
         $("#prodBarNumSaveBtn").click(function() {
-			$opener = is_mobile ? window.parent : (window.opener || window.open('', 'barcode_parent'));
+						$opener = is_mobile ? window.parent : (window.opener || window.open('', 'barcode_parent'));
 
             var parent = $opener.$('.list.item[data-code='+ it_id +']');
             var inputs = $(parent).find('.barcode_input');
