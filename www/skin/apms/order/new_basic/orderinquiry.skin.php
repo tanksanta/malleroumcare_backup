@@ -412,7 +412,7 @@ if($header_skin)
 								<?php   }
 								} 
 								?>
-							<?php if($row["od_delivery_insert"] && ($item["prodSupYn"] == "Y")){ ?>
+							<?php if(($item['ct_status'] == '배송' || $item['ct_status'] == '완료') && ($item["prodSupYn"] == "Y")){ ?>
 								<a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
 							<?php } ?>
                             <?php 
