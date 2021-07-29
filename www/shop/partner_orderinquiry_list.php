@@ -53,7 +53,7 @@ include_once("./_head.php");
       <div class="table_box">
         <table>
           <thead>
-            <tr>
+            <tr >
               <th>주문일</th>
               <th>주문번호</th>
               <th>사업소</th>
@@ -69,7 +69,7 @@ include_once("./_head.php");
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr onclick="location.href='partner_orderinquiry_view.php'" class="btn_link">
               <td class="text_c">2021-02-02</td>
               <td class="text_c">1234</td>
               <td class="text_c">ABC</td>
@@ -83,7 +83,7 @@ include_once("./_head.php");
               <td class="text_c">2021-02-02</td>
               <td class="text_c">2021-02-02</td>
             </tr>
-            <tr>
+            <tr onclick="location.href='partner_orderinquiry_view.php'" class="btn_link">
               <td class="text_c">2021-02-02</td>
               <td class="text_c">1234</td>
               <td class="text_c">ABC</td>
