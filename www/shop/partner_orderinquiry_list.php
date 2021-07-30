@@ -10,13 +10,26 @@ include_once("./_head.php");
 
 $where = [];
 
-// 주문상태
+# 기간
+if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
+if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
+if($fr_date && $to_date)
+  $where[] = " (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+
+# 주문상태
 $ct_status = $_GET['ct_status'];
 $ct_steps = ['준비', '출고준비', '배송', '완료'];
 if($ct_status) {
   $ct_steps = array_intersect($ct_steps, $ct_status);
 }
 $where[] = " ( ct_status = '".implode("' OR ct_status = '", $ct_steps)."' ) ";
+
+# 검색어
+$sel_field = in_array($sel_field, ['mb_entNm', 'it_name', 'c.od_id']) ? $sel_field : '';
+$search = get_search_string($search);
+if($sel_field && $search) {
+  $where[] = " {$sel_field} like '%{$search}%' ";
+}
 
 $sql_search = ' and '.implode(' and ', $where);
 
@@ -98,6 +111,8 @@ while($row = sql_fetch_array($result)) {
 
   $orders[] = $row;
 }
+
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
 <section class="wrap">
@@ -119,10 +134,10 @@ while($row = sql_fetch_array($result)) {
         <a href="#" id="select_date_thismonth">이번달</a>
         <a href="#" id="select_date_lastmonth">저번달</a>
       </div>
-      <select name="searchtype">
-        <option >사업소명</option>
-        <option >품목명</option>
-        <option >주문번호</option>
+      <select name="sel_field">
+        <option value="mb_entNm" <?=get_selected($sel_field, 'mb_entNm')?>>사업소명</option>
+        <option value="it_name" <?=get_selected($sel_field, 'it_name')?>>품목명</option>
+        <option value="c.od_id" <?=get_selected($sel_field, 'c.od_id')?>>주문번호</option>
       </select>
       <div class="input_search">
         <input name="search" value="<?=$_GET["search"]?>" type="text">
@@ -173,34 +188,6 @@ while($row = sql_fetch_array($result)) {
               <td class="text_c"><?=$row['ct_ex_date']?></td>
             </tr>
             <?php } ?>
-            <!--<tr onclick="location.href='partner_orderinquiry_view.php'" class="btn_link">
-              <td class="text_c">2021-02-02</td>
-              <td class="text_c">1234</td>
-              <td class="text_c">ABC</td>
-              <td>123(option)</td>
-              <td class="text_c">1</td>
-              <td class="text_c">주문접수</td>
-              <td class="text_c">배송</td>
-              <td>주문시 입력한 요청사항</td>
-              <td class="text_r">10,000원</td>
-              <td class="text_r">1,000원</td>
-              <td class="text_c">2021-02-02</td>
-              <td class="text_c">2021-02-02</td>
-            </tr>
-            <tr onclick="location.href='partner_orderinquiry_view.php'" class="btn_link">
-              <td class="text_c">2021-02-02</td>
-              <td class="text_c">1234</td>
-              <td class="text_c">ABC</td>
-              <td>123(option)</td>
-              <td class="text_c">1</td>
-              <td class="text_c">주문접수</td>
-              <td class="text_c">배송/설치</td>
-              <td> </td>
-              <td class="text_r">10,000원</td>
-              <td class="text_r">1,000원</td>
-              <td class="text_c">2021-02-02</td>
-              <td class="text_c">2021-02-02</td>
-            </tr>-->
           </tbody>
         </table>
       </div>
@@ -214,6 +201,13 @@ while($row = sql_fetch_array($result)) {
 </section>
 
 <script>
+function formatDate(date) {
+  var y = date.getFullYear();
+  var m = date.getMonth() + 1; // Month from 0 to 11
+  var d = date.getDate();
+  return '' + y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
+}
+
 $(function() {
   // 주문상태 체크박스
   $('input[name="ct_status[]"]').click(function() {
@@ -229,6 +223,36 @@ $(function() {
     if(!checked) {
       $('input[name="ct_status[]"][value="all"]').prop('checked', false);
     }
+  });
+
+  // 기간 - datepicker
+  $('.datepicker').datepicker({
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: "yy-mm-dd",
+    showButtonPanel: true,
+    yearRange: "c-99:c+99",
+    maxDate: "+0d"
+  });
+
+  // 기간 - 이번달 버튼
+  $('#select_date_thismonth').click(function(e) {
+    e.preventDefault();
+
+    var today = new Date(); // 오늘
+    $('#to_date').val(formatDate(today));
+    today.setDate(1); // 이번달 1일
+    $('#fr_date').val(formatDate(today));
+  });
+  // 기간 - 저번달 버튼
+  $('#select_date_lastmonth').click(function(e) {
+    e.preventDefault();
+
+    var today = new Date();
+    today.setDate(0); // 지난달 마지막일
+    $('#to_date').val(formatDate(today));
+    today.setDate(1); // 지난달 1일
+    $('#fr_date').val(formatDate(today));
   });
 });
 </script>
