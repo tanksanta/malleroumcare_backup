@@ -172,7 +172,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             </tr>
           </thead>
           <tbody>
-            <?php foreach($orders as $row) { ?>
+            <?php
+            if(!$orders) echo '<tr><td colspan="12" class="empty_table">내역이 없습니다.</td></tr>';
+            foreach($orders as $row) { 
+            ?>
             <tr onclick="window.location.href='partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>'" class="btn_link">
               <td class="text_c"><?=date('Y-m-d', strtotime($row['od_time']))?></td>
               <td class="text_c"><?=$row['od_id']?></td>
