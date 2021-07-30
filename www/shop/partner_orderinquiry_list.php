@@ -119,10 +119,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
   <div class="sub_section_tit">주문내역</div>
   <form method="get">
     <div class="search_box">
-      <label><input type="checkbox" name="ct_status[]" value="all" <?=option_array_checked('all', $ct_status)?>/> 전체</label>, 
-      <label><input type="checkbox" name="ct_status[]" value="준비" <?=option_array_checked('준비', $ct_status)?>/> 상품준비</label>, 
-      <label><input type="checkbox" name="ct_status[]" value="출고준비" <?=option_array_checked('출고준비', $ct_status)?>/> 출고준비</label>, 
-      <label><input type="checkbox" name="ct_status[]" value="배송" <?=option_array_checked('배송', $ct_status)?>/> 출고완료</label>, 
+      <label><input type="checkbox" id="chk_ct_status_all"/> 전체</label> 
+      <label><input type="checkbox" name="ct_status[]" value="준비" <?=option_array_checked('준비', $ct_status)?>/> 상품준비</label> 
+      <label><input type="checkbox" name="ct_status[]" value="출고준비" <?=option_array_checked('출고준비', $ct_status)?>/> 출고준비</label> 
+      <label><input type="checkbox" name="ct_status[]" value="배송" <?=option_array_checked('배송', $ct_status)?>/> 출고완료</label> 
       <label><input type="checkbox" name="ct_status[]" value="완료" <?=option_array_checked('완료', $ct_status)?>/> 배송완료</label><br>
       
       <div class="search_date">
@@ -208,21 +208,22 @@ function formatDate(date) {
   return '' + y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
 }
 
+function checkCtStatusAll() {
+  var total = $('input[name="ct_status[]"]').length;
+  var checkedTotal = $('input[name="ct_status[]"]:checked').length;
+  $("#chk_ct_status_all").prop('checked', total <= checkedTotal); 
+}
+
 $(function() {
+  checkCtStatusAll();
+  // 주문상태 전체 선택 체크박스
+  $('#chk_ct_status_all').click(function() {
+    var checked = $(this).is(':checked');
+    $('input[name="ct_status[]"]').prop('checked', checked);
+  });
   // 주문상태 체크박스
   $('input[name="ct_status[]"]').click(function() {
-    var val = $(this).val();
-    var checked = $(this).is(':checked');
-
-    // 전체
-    if(val == 'all') {
-      $('input[name="ct_status[]"]').prop('checked', checked);
-      return;
-    }
-
-    if(!checked) {
-      $('input[name="ct_status[]"][value="all"]').prop('checked', false);
-    }
+    checkCtStatusAll();
   });
 
   // 기간 - datepicker
