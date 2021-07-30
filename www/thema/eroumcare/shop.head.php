@@ -420,14 +420,19 @@ scrollToTop();
 			<div class="logoWrap">
 				<a href="<?=G5_URL?>" class="logoTitle"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png"  ></a>
 				<ul class="nav nav-left">
-					<li><a href="/shop/my_recipient_list.php" >수급자</a></li>
-					<li><a href="/shop/claim_manage.php"  >청구/전자문서</a></li>
+          <?php if($is_samhwa_partner) { ?>
+          <li><a href="/shop/partner_orderinquiry_list.php">주문내역</a></li>
+					<li><a href="/shop/partner_ledger_list.php">거래처원장</a></li>
+          <?php } else { ?>
+					<li><a href="/shop/my_recipient_list.php">수급자</a></li>
+					<li><a href="/shop/claim_manage.php">청구/전자문서</a></li>
 					<li><a href="/shop/sales_Inventory.php" >보유재고</a></li>
+          <?php } ?>
 				</ul>
 				<ul class="nav nav-right">
-					<li><a href="/shop/list.php?ca_id=10"  >판매품목</a></li>
-					<li><a href="/shop/list.php?ca_id=20" >대여품목</a></li>
-					<li><a href="/shop/list.php?ca_id=70" >비급여품목</a></li>
+					<li><a href="/shop/list.php?ca_id=10">판매품목</a></li>
+					<li><a href="/shop/list.php?ca_id=20">대여품목</a></li>
+					<li><a href="/shop/list.php?ca_id=70">비급여품목</a></li>
 					<li class="catalog">
 						<a href="/thema/eroumcare/assets/eroum_catalog_2021_2_2.pdf" target="_blank"  >
 							<div class="catalogWrap">
