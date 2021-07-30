@@ -128,6 +128,9 @@ if (gettype($od_important) == 'string' && $od_important !== '') {
 }
 
 if (gettype($ct_is_direct_delivery) == 'string' && $ct_is_direct_delivery !== '') {
+  if($ct_is_direct_delivery == '1')
+    $where[] = " (ct_is_direct_delivery = '1' or ct_is_direct_delivery = '2') ";
+  else
     $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
 }
 
@@ -927,7 +930,7 @@ foreach($orderlist as $order) {
     $od_release_out = '-';
 
     $od_list_memo = $order['od_list_memo'] ? htmlspecialchars($order['od_list_memo']) : '없음';
-    if($order['ct_is_direct_delivery'] == '1') $od_list_memo = '직배송';
+    if($order['ct_is_direct_delivery']) $od_list_memo = '직배송';
 
     $ret['right'] .= "
     <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']}\">

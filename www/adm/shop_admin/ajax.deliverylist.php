@@ -153,7 +153,10 @@ if (gettype($od_important) == 'string' && $od_important !== '') {
 }
 
 if (gettype($ct_is_direct_delivery) == 'string' && $ct_is_direct_delivery !== '') {
-  $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
+  if($ct_is_direct_delivery == '1')
+    $where[] = " (ct_is_direct_delivery = '1' or ct_is_direct_delivery = '2') ";
+  else
+    $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
 }
 
 if (gettype($od_release) == 'string' && $od_release !== '') {
