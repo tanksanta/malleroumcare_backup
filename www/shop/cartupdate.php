@@ -1,6 +1,16 @@
 <?php
 include_once('./_common.php');
 
+// 비회원 상품주문 불가능
+if(!$member['mb_id']) {
+  alert('비회원은 상품주문을 할 수 없습니다.');
+}
+
+// 파트너는 상품주문 불가능
+if($member['mb_type'] == 'partner') {
+  alert('파트너 회원은 상품주문을 할 수 없습니다.');
+}
+
 // 보관기간이 지난 상품 삭제
 //cart_item_clean();
 
