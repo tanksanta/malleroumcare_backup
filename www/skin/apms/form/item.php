@@ -1181,7 +1181,33 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
         <th scope="row"><label for="it_is_direct_delivery">직배송</label></th>
         <td>
           <?php echo help("체크하시면 로젠택배 EDI전송을 사용하지 않습니다."); ?>
-          <label><input type="checkbox" name="it_is_direct_delivery" value="1" id="it_is_direct_delivery" <?php echo ($it['it_is_direct_delivery']) ? "checked" : ""; ?>> 직배송 사용</label>
+          <label>
+            <input type="checkbox" name="it_is_direct_delivery" value="1" <?php echo ($it['it_is_direct_delivery'] == 1) ? "checked" : ""; ?>> 직배송
+          </label>
+          <select name="it_direct_delivery_partner1">
+            <?php
+            $partners = get_partner_members();
+            foreach($partners as $partner) {
+            ?>
+            <option value="">파트너선택</option>
+            <option value="<?=$partner['mb_id']?>"<?=get_selected($partner['mb_id'], $it['it_direct_delivery_partner'])?>><?=$partner['mb_name']?></option>
+            <?php } ?>
+          </select>
+          1개 <input type="text" name="it_direct_delivery_price1" value="<?=$it['it_direct_delivery_price']?>" class="frm_input" size="8">원 (VAT포함)
+          <br>
+          <label>
+            <input type="checkbox" name="it_is_direct_delivery" value="2" <?php echo ($it['it_is_direct_delivery'] == 2) ? "checked" : ""; ?>> 설치
+          </label>
+          <select name="it_direct_delivery_partner2">
+            <?php
+            $partners = get_partner_members();
+            foreach($partners as $partner) {
+            ?>
+            <option value="">파트너선택</option>
+            <option value="<?=$partner['mb_id']?>"<?=get_selected($partner['mb_id'], $it['it_direct_delivery_partner'])?>><?=$partner['mb_name']?></option>
+            <?php } ?>
+          </select>
+          1개 <input type="text" name="it_direct_delivery_price2" value="<?=$it['it_direct_delivery_price']?>" class="frm_input" size="8">원 (VAT포함)
         </td>
       </tr>
       <tr>
@@ -2429,6 +2455,16 @@ function categorychange(f)
 categorychange(document.fitemform);
 
 $(function() {
+  // 직배송 or 설치 둘 중 하나만 선택
+  $('input[name="it_is_direct_delivery"]').change(function(e) {
+    var val = $(this).val();
+    var checked = $(this).prop('checked');
+
+    if(checked) {
+      var another = (val == '1') ? '2' : '1';
+      $('input[name="it_is_direct_delivery"][value="'+another+'"]').prop('checked', false);
+    }
+  });
 
   /* 210208 */
   var itemIdList = <?=json_encode($itemIdList)?>;

@@ -448,6 +448,16 @@ $_POST["it_delivery_min_price"] = ($_POST["it_delivery_min_price"]) ? $_POST["it
 $it_rental_price = ($_POST["it_rental_price"]) ? $_POST["it_rental_price"] : 0;
 
 $it_is_direct_delivery = (int)$it_is_direct_delivery ?: 0;
+$it_direct_delivery_partner = '';
+$it_direct_delivery_price = 0;
+if($it_is_direct_delivery == 1) {
+  $it_direct_delivery_partner = $_POST['it_direct_delivery_partner1'] ?: '';
+  $it_direct_delivery_price = (int)$_POST['it_direct_delivery_price1'] ?: 0;
+}
+else if($it_is_direct_delivery == 2) {
+  $it_direct_delivery_partner = $_POST['it_direct_delivery_partner2'] ?: '';
+  $it_direct_delivery_price = (int)$_POST['it_direct_delivery_price2'] ?: 0;
+}
 
 $sql_common = "
   ca_id               = '$ca_id',
@@ -632,7 +642,10 @@ $sql_common = "
   it_delivery_price = '{$_POST["it_delivery_price"]}',
   it_delivery_min_cnt = '{$_POST["it_delivery_min_cnt"]}',
   it_delivery_min_price = '{$_POST["it_delivery_min_price"]}',
+
   it_is_direct_delivery = '$it_is_direct_delivery',
+  it_direct_delivery_partner = '$it_direct_delivery_partner',
+  it_direct_delivery_price = '$it_direct_delivery_price',
 
   it_rental_use_persisting_year = '$it_rental_use_persisting_year',
   it_rental_expiry_year = '$it_rental_expiry_year',

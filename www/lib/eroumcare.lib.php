@@ -1491,3 +1491,30 @@ function set_tutorial($type = 'recipient_add', $state = 0, $data = null) {
 
 	return sql_query($sql);
 }
+
+// 파트너 회원 목록 가져오기
+function get_partner_members() {
+  $sql = "
+    SELECT
+      *
+    FROM
+      g5_member
+    WHERE
+      mb_type = 'partner' and
+      mb_partner_auth = 1 and
+      mb_partner_date >= NOW()
+  ";
+
+  $result = sql_query($sql);
+
+  $ret = [];
+
+  if(!$result)
+    return $ret;
+
+  while($row = sql_fetch_array($result)) {
+    $ret[] = $row;
+  }
+
+  return $ret;
+}
