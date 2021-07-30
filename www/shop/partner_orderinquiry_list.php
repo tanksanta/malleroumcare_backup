@@ -1,26 +1,114 @@
 <?php
 include_once('./_common.php');
 
-if(!$member['mb_id']) {
-  alert("접근 권한이 없습니다.");
-  exit;
+if(!$is_samhwa_partner) {
+  alert("파트너 회원만 접근 가능한 페이지입니다.");
 }
 
 $g5['title'] = "파트너 주문내역";
 include_once("./_head.php");
 
+$where = [];
 
+// 주문상태
+$ct_status = $_GET['ct_status'];
+$ct_steps = ['준비', '출고준비', '배송', '완료'];
+if($ct_status) {
+  $ct_steps = array_intersect($ct_steps, $ct_status);
+}
+$where[] = " ( ct_status = '".implode("' OR ct_status = '", $ct_steps)."' ) ";
+
+$sql_search = ' and '.implode(' and ', $where);
+
+$sql_common = "
+  FROM
+    {$g5['g5_shop_cart_table']} c
+  LEFT JOIN
+    {$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
+  LEFT JOIN
+    {$g5['member_table']} m ON c.mb_id = m.mb_id
+  WHERE
+    od_del_yn = 'N' and
+    ct_is_direct_delivery IN(1, 2) and
+    ct_direct_delivery_partner = '{$member['mb_id']}'
+    {$sql_search}
+";
+
+// 총 개수 구하기
+$total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ")['cnt'];
+$page_rows = $config['cf_page_rows'];
+$total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
+
+$sql_limit = " limit {$from_record}, {$page_rows} ";
+
+$sql_order = " ORDER BY FIELD(ct_status, '" . implode("' , '", $ct_steps) . "' ), ct_move_date desc, od_id desc ";
+
+$result = sql_query("
+  SELECT
+    c.od_id,
+    od_time,
+    mb_entNm,
+    it_name,
+    ct_option,
+    ct_qty,
+    ct_status,
+    prodMemo,
+    ct_is_direct_delivery,
+    ct_direct_delivery_price,
+    ct_move_date,
+    ct_ex_date
+  {$sql_common}
+  {$sql_order}
+  {$sql_limit}
+", true);
+
+$orders = [];
+while($row = sql_fetch_array($result)) {
+  $ct_status_text = $row['ct_status'];
+  switch ($ct_status_text) {
+    case '보유재고등록': $ct_status_text="보유재고등록"; break;
+    case '재고소진': $ct_status_text="재고소진"; break;
+    case '주문무효': $ct_status_text="주문무효"; break;
+    case '취소': $ct_status_text="주문취소"; break;
+    case '주문': $ct_status_text="상품주문"; break;
+    case '입금': $ct_status_text="입금완료"; break;
+    case '준비': $ct_status_text="상품준비"; break;
+    case '출고준비': $ct_status_text="출고준비"; break;
+    case '배송': $ct_status_text="출고완료"; break;
+    case '완료': $ct_status_text="배송완료"; break;
+  }
+  $row['ct_status'] = $ct_status_text;
+
+  $ct_direct_delivery_text = '배송';
+  if($row['ct_is_direct_delivery'] == '2') {
+    $ct_direct_delivery_text = '배송/설치';
+  }
+  $row['ct_direct_delivery'] = $ct_direct_delivery_text;
+
+  $price = intval($row['ct_direct_delivery_price']) * intval($row['ct_qty']);
+  // 공급가액
+  $price_p = @round(($price ?: 0) / 1.1);
+  // 부가세
+  $price_s = @round(($price ?: 0) / 1.1 / 10);
+
+  $row['price_p'] = $price_p;
+  $row['price_s'] = $price_s;
+
+  $orders[] = $row;
+}
 ?>
 
 <section class="wrap">
   <div class="sub_section_tit">주문내역</div>
   <form method="get">
     <div class="search_box">
-      <label><input type="checkbox" name="" value="" id=""/> 전체</label>, 
-      <label><input type="checkbox" name="" value="" id=""/> 상품준비</label>, 
-      <label><input type="checkbox" name="" value="" id=""/> 출고준비</label>, 
-      <label><input type="checkbox" name="" value="" id=""/> 출고완료</label>, 
-      <label><input type="checkbox" name="" value="" id=""/> 배송완료</label><br>
+      <label><input type="checkbox" name="ct_status[]" value="all" <?=option_array_checked('all', $ct_status)?>/> 전체</label>, 
+      <label><input type="checkbox" name="ct_status[]" value="준비" <?=option_array_checked('준비', $ct_status)?>/> 상품준비</label>, 
+      <label><input type="checkbox" name="ct_status[]" value="출고준비" <?=option_array_checked('출고준비', $ct_status)?>/> 출고준비</label>, 
+      <label><input type="checkbox" name="ct_status[]" value="배송" <?=option_array_checked('배송', $ct_status)?>/> 출고완료</label>, 
+      <label><input type="checkbox" name="ct_status[]" value="완료" <?=option_array_checked('완료', $ct_status)?>/> 배송완료</label><br>
       
       <div class="search_date">
       	<select name="searchtype">
@@ -69,7 +157,23 @@ include_once("./_head.php");
             </tr>
           </thead>
           <tbody>
-            <tr onclick="location.href='partner_orderinquiry_view.php'" class="btn_link">
+            <?php foreach($orders as $row) { ?>
+            <tr onclick="window.location.href='partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>'" class="btn_link">
+              <td class="text_c"><?=date('Y-m-d', strtotime($row['od_time']))?></td>
+              <td class="text_c"><?=$row['od_id']?></td>
+              <td class="text_c"><?=$row['mb_entNm']?></td>
+              <td><?=$row['it_name'].($row['ct_option'] ? " ({$row['ct_option']})" : '')?></td>
+              <td class="text_c"><?=$row['ct_qty']?></td>
+              <td class="text_c"><?=$row['ct_status']?></td>
+              <td class="text_c"><?=$row['ct_direct_delivery']?></td>
+              <td><?=$row['prodMemo']?></td>
+              <td class="text_r"><?=number_format($row['price_p'])?>원</td>
+              <td class="text_r"><?=number_format($row['price_s'])?>원</td>
+              <td class="text_c"><?=date('Y-m-d', strtotime($row['ct_move_date']))?></td>
+              <td class="text_c"><?=$row['ct_ex_date']?></td>
+            </tr>
+            <?php } ?>
+            <!--<tr onclick="location.href='partner_orderinquiry_view.php'" class="btn_link">
               <td class="text_c">2021-02-02</td>
               <td class="text_c">1234</td>
               <td class="text_c">ABC</td>
@@ -96,7 +200,7 @@ include_once("./_head.php");
               <td class="text_r">1,000원</td>
               <td class="text_c">2021-02-02</td>
               <td class="text_c">2021-02-02</td>
-            </tr>
+            </tr>-->
           </tbody>
         </table>
       </div>
@@ -109,7 +213,25 @@ include_once("./_head.php");
   </div>
 </section>
 
+<script>
+$(function() {
+  // 주문상태 체크박스
+  $('input[name="ct_status[]"]').click(function() {
+    var val = $(this).val();
+    var checked = $(this).is(':checked');
 
+    // 전체
+    if(val == 'all') {
+      $('input[name="ct_status[]"]').prop('checked', checked);
+      return;
+    }
+
+    if(!checked) {
+      $('input[name="ct_status[]"][value="all"]').prop('checked', false);
+    }
+  });
+});
+</script>
 
 <?php
 include_once('./_tail.php');
