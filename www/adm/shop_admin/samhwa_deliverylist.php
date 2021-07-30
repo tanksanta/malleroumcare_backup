@@ -446,7 +446,6 @@ $( document ).ready(function() {
     var popupY= (window.screen.height / 2) - (popupHeight / 2);
     
     //아래로하면 cart기준으로 바꿈(상품하나씩)
-    // window.open("./popup.prodDeliveryInfo.form2.php?od_id=" + id +"&ct_id="+ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
     window.open("./popup.prodDeliveryInfo.form.php?od_id=" + id +"&ct_id="+ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
   });
 
