@@ -151,6 +151,9 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
 <script src="<?php echo G5_ADMIN_URL;?>/shop_admin/js/shop.js?v=<?php echo time(); ?>"></script>
 </head>
 <style>
+    .option-barcode {
+        display:none !important;
+    }
 </style>
 <div id="pop_add_item" class="admin_popup">
     <div class="header">
