@@ -178,6 +178,7 @@
                         <p class="p1">
                             <span class="span1">
                                 <?=stripslashes($it["it_name"])?>
+																<?php echo $option_name ? '(' . stripslashes($option_name) . ')' : ''; ?>
                             </span>
                             <span class="span2">
                                 <span class="<?=$add_class?>">0</span>/<?php echo count($barcodes); ?>
@@ -247,6 +248,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 	var is_mobile = navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1;
 
     var it_id = '<?php echo $it_id; ?>';
+		var uid = '<?php echo $uid; ?>';
     //maxnum 지정
     function maxLengthCheck(object){
         if (object.value.length > object.maxLength){
@@ -438,6 +440,9 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 						$opener = is_mobile ? window.parent : (window.opener || window.open('', 'barcode_parent'));
 
             var parent = $opener.$('.list.item[data-code='+ it_id +']');
+						if (uid) {
+							parent = $opener.$('.list.item[data-uid='+ uid +']')
+						}
             var inputs = $(parent).find('.barcode_input');
             var button = $(parent).find('.open_input_barcode');
 
