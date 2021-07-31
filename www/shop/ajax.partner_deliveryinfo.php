@@ -17,9 +17,6 @@ $ct_id = $_POST['ct_id'];
 if(!$ct_id || !is_array($ct_id))
   json_response(400, '유효하지 않은 요청입니다.');
 
-// 배송정보 입력 개수
-$od_delivery_insert = 0;
-
 foreach($ct_id as $id) {
   $id = get_search_string($id);
   $ct_delivery_company = get_search_string($_POST["ct_delivery_company_{$id}"]);
@@ -41,12 +38,22 @@ foreach($ct_id as $id) {
 
   if(!$result)
     json_response(500, 'DB 서버 오류 발생');
-  
-  if($ct_delivery_num)
-    $od_delivery_insert++;
+
 }
 
 // 배송정보 입력 개수 업데이트
+$count_result = sql_fetch("
+  SELECT
+    count(*) as cnt
+  FROM
+    {$g5['g5_shop_cart_table']}
+  WHERE
+    od_id = {$od_id} and
+    ct_delivery_num <> '' and
+    ct_delivery_num is not null
+");
+$od_delivery_insert = $count_result ? $count_result['cnt'] : 0;
+
 sql_query("
   UPDATE
     {$g5['g5_shop_order_table']}
@@ -54,7 +61,7 @@ sql_query("
     od_delivery_insert = '{$od_delivery_insert}'    
   WHERE
     od_id = {$od_id}
-", true);
+");
 
 json_response(200, 'OK');
 ?>
