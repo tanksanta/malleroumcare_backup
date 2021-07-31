@@ -44,12 +44,13 @@ if ($sca != "") {
     $sql_search .= " $where (a.ca_id like '$sca%' or a.ca_id2 like '$sca%' or a.ca_id3 like '$sca%') ";
 }
 
+$sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%') ";
+
 if ($sfl == "")  $sfl = "all";
 
-$sql_common = " from {$g5['g5_shop_item_table']} a ,
-                     {$g5['g5_shop_category_table']} b
-               where (a.ca_id = b.ca_id";
-$sql_common .= ") ";
+$sql_common = " from {$g5['g5_shop_item_table']} a
+                JOIN {$g5['g5_shop_category_table']} b ON a.ca_id = b.ca_id
+               where 1=1 ";
 $sql_common .= $sql_search;
 
 // 테이블의 전체 레코드수만 얻음
