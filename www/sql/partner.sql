@@ -9,8 +9,7 @@ CREATE TABLE IF NOT EXISTS `partner_install_report` (
   `ir_created_at` datetime NOT NULL default '0000-00-00 00:00:00',
   `ir_updated_at` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`ir_id`),
-  KEY `od_id` (`od_id`),
-  KEY `mb_id` (`mb_id`)
+  UNIQUE KEY `od_id_mb_id` (`od_id`, `mb_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 파트너 설치결과 보고서 설치사진 업로드 테이블
