@@ -186,6 +186,9 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
     <title>판매재고목록</title>
     <section id="stock" class="wrap stock-list">
         <div class="sub_section_tit">보유재고관리</div>
+        <div class="r_btn_area">
+            <a href="#" class="btn eroumcare_btn2 add_sales_inventory" title="품목추가">품목추가</a>
+        </div>
         <ul class="stock-tab">
             <li class="active"><a href="<?=G5_SHOP_URL?>/sales_Inventory.php">판매재고<i class="num">(<?=$sales_Inventory_total?>)</i></a></li>
             <li><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php">대여재고<i class="num">(<?=$sales_Inventory_total2?>)</i></a></li>
@@ -270,6 +273,32 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
         </div>
     </section>
 
+<div id="add_sales_inventory_popup">
+    <div class="add_sales_inventory_popup_close">
+        <i class="fa fa-times"></i>
+    </div>
+    <iframe name="iframe" id="add_sales_inventory_popup_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+</div>
+
+<script> 
+$(document).ready(function() {
+    // 상품 추가
+    $('#add_sales_inventory_popup').click(function(e) {
+        $('#add_sales_inventory_popup').hide();
+    });
+
+    $('.add_sales_inventory').click(function(e) {
+        e.preventDefault();
+
+        var url = './pop.stock.item.add.php';
+
+        var is_mobile = navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1;
+        $('#add_sales_inventory_popup_iframe').attr('src', url);
+
+        $('#add_sales_inventory_popup').show();
+    });
+});
+</script>
 <?php
 if($is_inquiry_sub) {
 	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');

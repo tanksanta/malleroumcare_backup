@@ -114,7 +114,7 @@ if ($api_result['errorYN'] === 'Y') {
 <body>
 <script>
 window.parent.$('#add_sales_inventory_popup').hide();
-alert('완료되었습니다.');
+alert('추가되었습니다.');
 window.parent.location.reload();
 </script>
 </body>
