@@ -131,6 +131,7 @@ else if($type == 'photo') {
 
     $photos = $_FILES['file_photo'] ? re_array_files($_FILES['file_photo']) : [];
     foreach($photos as $photo) {
+      if(!$photo['name']) continue;
       $src_name = get_search_string($photo['name']);
       $dest_name = img_file_name();
       if(!$src_name) $src_name = $dest_name;
@@ -146,6 +147,10 @@ else if($type == 'photo') {
           ip_photo_url = '{$dest_name}',
           ip_created_at = NOW()
       ");
+      if(!$result) {
+        @unlink($img_dir.'/'.$dest_name);
+        json_response(500, 'DB 서버 오류 발생');
+      }
     }
 
     $return = [];
