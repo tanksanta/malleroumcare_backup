@@ -189,6 +189,7 @@ $(function() {
                 */
 
                 $el_qty.val(this_qty);
+                qty_calculate($(this), this_qty);
                 price_calculate();
                 break;
 
@@ -202,6 +203,7 @@ $(function() {
                 }
                 */
                 $el_qty.val(this_qty);
+                qty_calculate($(this), this_qty);
                 price_calculate();
                 break;
 
@@ -233,6 +235,7 @@ $(function() {
                         return false;
                     }
                     $el.closest("li").remove();
+                    qty_calculate($(this), this_qty);
                     price_calculate();
                 }
                 break;
@@ -450,6 +453,13 @@ function add_sel_option(type, id, option, price, stock, price_partner, price_dea
 			opt += "<div style=\"margin-top:10px;\"><input type=\"text\" name=\"pt_msg3["+item_code+"][]\" class=\"form-control input-sm\" placeholder=\""+it_msg3+"\"></div>";
 		}
 	}
+
+    opt += "<div class=\"option-barcode barcode list item\" data-code=\""+item_code+"\" data-uid=\""+ item_code + "_" + Math.round(new Date().getTime() + (Math.random() * 100)) +"\">";
+    opt += "<div class=\"barList stockBarList\">";
+    opt += '<input type="number" placeholder="바코드" maxlength="12" class="barcode_input prodStockBarBox0" value="" data-code="0" data-this-code="0" data-name="0" name="barcode['+item_code+'][]">';
+    opt += '</div>';
+    opt += '<a class="prodBarNumCntBtn open_input_barcode" data-id="'+item_code+'">바코드 (0/1)</a>';
+    opt += '</div>';
 	opt += "</li>";
 
     if($("#it_sel_option > ul").size() < 1) {
@@ -529,8 +539,6 @@ function price_calculate(obj)
         price_dealer2 = parseInt($el_prc_dealer2.eq(index).val());
         price_partner = parseInt($el_prc_partner.eq(index).val());
 
-        // console.log(price);
-
         if(type == "0") { // 선택옵션
             if ($('.it_option').length) { // 선택옵션이 있을때
                 total += (it_price + price) * qty;
@@ -585,6 +593,27 @@ function price_calculate(obj)
     }
 
     $("#it_tot_pay_price").empty().html(number_format(String(total_pay_price))+"원");
+}
+
+function qty_calculate(node, qty) {
+
+    var parent = $(node).closest('.it_opt_list');
+    var item_code = parent.find('.option-barcode').data('code');
+
+    if (qty <= 0) {
+        parent.find('.option-barcode').hide();
+        return;
+    }
+    parent.find('.option-barcode').show();
+
+    var html = '';
+    for(var i=0; i<qty; i++) {
+        html += '<input type="number" placeholder="바코드" maxlength="12" class="barcode_input prodStockBarBox' + i + '" value="" data-code="' + i + '" data-this-code="' + i + '" data-name="' + i + '" name="barcode['+item_code+'][]">';
+    }
+
+    parent.find('.stockBarList').html(html);
+    parent.find('.prodBarNumCntBtn').text("바코드 (0/" + qty + ")");
+
 }
 
 // php chr() 대응
