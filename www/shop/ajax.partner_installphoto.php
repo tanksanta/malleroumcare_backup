@@ -95,6 +95,69 @@ if($type == 'cert') {
 
 else if($type == 'photo') {
   # 설치사진
+
+  if($m == 'd') {
+    # 파일 삭제
+
+    $ip_id = get_search_string($_POST['ip_id']);
+    $photo = sql_fetch("
+      SELECT * FROM partner_install_photo
+      WHERE ip_id = '{$ip_id}' and od_id = '{$od_id}' and mb_id = '{$member['mb_id']}'
+    ");
+
+    if(!$photo || !$photo['ip_id'])
+      json_response(400, '존재하지 않는 파일입니다.');
+
+    @unlink($img_dir.'/'.$photo['ip_photo_url']);
+    $result = sql_query("
+      DELETE FROM partner_install_photo
+      WHERE ip_id = '{$ip_id}' and od_id = '{$od_id}' and mb_id = '{$member['mb_id']}'
+    ");
+    if(!$result)
+      json_response(500, 'DB 서버 오류 발생');
+  }
+
+  else if($m == 'u') {
+    # 파일 업로드
+
+    function re_array_files($arr) {
+      foreach( $arr as $key => $all ){
+          foreach( $all as $i => $val ){
+              $new[$i][$key] = $val;   
+          }   
+      }
+      return $new;
+    }
+
+    $photos = $_FILES['file_photo'] ? re_array_files($_FILES['file_photo']) : [];
+    foreach($photos as $photo) {
+      $src_name = get_search_string($photo['name']);
+      $dest_name = img_file_name();
+      if(!$src_name) $src_name = $dest_name;
+      upload_file($photo['tmp_name'], $dest_name, $img_dir);
+
+      $result = sql_query("
+        INSERT INTO
+          partner_install_photo
+        SET
+          od_id = '{$od_id}',
+          mb_id = '{$member['mb_id']}',
+          ip_photo_name = '{$src_name}',
+          ip_photo_url = '{$dest_name}',
+          ip_created_at = NOW()
+      ");
+    }
+
+    $return = [];
+    $return_result = sql_query("
+      SELECT * FROM partner_install_photo
+      WHERE od_id = '{$od_id}' and mb_id = '{$member['mb_id']}'
+      ORDER BY ip_id ASC
+    ");
+    while($row = sql_fetch_array($return_result)) {
+      $return[] = $row;
+    }
+  }
 }
 
 json_response(200, 'OK', $return);

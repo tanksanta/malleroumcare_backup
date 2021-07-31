@@ -29,7 +29,8 @@ if($report && $report['od_id']) {
   // 설치사진 가져오기
   $photo_result = sql_query("
     SELECT * FROM partner_install_photo
-    WHERE ir_id = '{$report['ir_id']}'
+    WHERE od_id = '{$od_id}' and mb_id = '{$member['mb_id']}'
+    ORDER BY ip_id ASC
   ");
   while($row = sql_fetch_array($photo_result)) {
     $photos[] = $row;
@@ -131,23 +132,24 @@ if($report && $report['od_id']) {
       <tr>
         <th><div class="section_head">설치 사진 등록</div></th>
         <td>
-          <label for="file_photo" class="label_file">
-            파일찾기
-            <input type="file" name="file_photo" id="file_photo" class="ipt_file">
-          </label>
-          <ul class="list_file">
+          <form id="form_file_photo">
+            <input type="hidden" name="type" value="photo">
+            <input type="hidden" name="od_id" value="<?=$od_id?>">
+            <input type="hidden" name="m" value="u">
+            <label for="file_photo" class="label_file">
+              파일찾기
+              <input type="file" name="file_photo[]" id="file_photo" class="ipt_file" multiple>
+            </label>
+          </form>
+          <ul id="list_file_photo" class="list_file">
+            <?php foreach($photos as $photo) { ?>
             <li>
-              abc.jpg
-              <button class="btn_remove">
+              <?=$photo['ip_photo_name'] ?>
+              <button class="btn_remove" data-type="photo" data-id="<?=$photo['ip_id']?>">
                 <i class="fa fa-times" aria-hidden="true"></i>
               </button>
             </li>
-            <li>
-              abc.jpg
-              <button class="btn_remove">
-                <i class="fa fa-times" aria-hidden="true"></i>
-              </button>
-            </li>
+            <?php } ?>
           </ul>
         </td>
       </tr>
@@ -212,6 +214,44 @@ if($report && $report['od_id']) {
         });
       });
 
+      // 설치 사진 업로드
+      $('#file_photo').on('change', function() {
+        $('#form_file_photo').submit();
+      });
+      $('#form_file_photo').on('submit', function(e) {
+        e.preventDefault();
+
+        $.ajax({
+          url: 'ajax.partner_installphoto.php',
+          type: 'POST',
+          data: new FormData(this),
+          cache: false,
+          processData: false,
+          contentType: false,
+          dataType: 'json'
+        })
+        .done(function(result) {
+          var photos = result.data;
+          var list_photo_html = '';
+          for(var i = 0; i < photos.length; i++) {
+            var photo = photos[i];
+            list_photo_html += '\
+              <li>\
+                ' + photo['ip_photo_name'] + '\
+                <button class="btn_remove" data-type="photo" data-id="' + photo['ip_id'] + '">\
+                  <i class="fa fa-times" aria-hidden="true"></i>\
+                </button>\
+              </li>\
+            ';
+            $('#list_file_photo').html(list_photo_html);
+          }
+        })
+        .fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        });
+      });
+
       // 삭제버튼
       $(document).on('click', '.btn_remove', function() {
         if(!confirm('정말 파일을 삭제하시겠습니까?')) return;
@@ -219,13 +259,34 @@ if($report && $report['od_id']) {
         var type = $(this).data('type');
 
         if(type === 'cert') {
+          // 설치확인서
           $.post('ajax.partner_installphoto.php', {
             od_id: '<?=$od_id?>',
             type: 'cert',
-            m: 'd',
+            m: 'd'
           }, 'json')
           .done(function() {
             $('#list_file_cert').empty();
+          })
+          .fail(function($xhr) {
+            var data = $xhr.responseJSON;
+            alert(data && data.message);
+          });
+        }
+
+        else if(type === 'photo') {
+          var $li = $(this).closest('li');
+
+          // 설치사진
+          var ip_id = $(this).data('id');
+          $.post('ajax.partner_installphoto.php', {
+            od_id: '<?=$od_id?>',
+            type: 'photo',
+            m: 'd',
+            ip_id: ip_id
+          }, 'json')
+          .done(function(result) {
+            $li.remove();
           })
           .fail(function($xhr) {
             var data = $xhr.responseJSON;
