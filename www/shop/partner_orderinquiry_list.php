@@ -75,7 +75,7 @@ $result = sql_query("
   {$sql_common}
   {$sql_order}
   {$sql_limit}
-", true);
+");
 
 $orders = [];
 while($row = sql_fetch_array($result)) {
@@ -126,10 +126,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <label><input type="checkbox" name="ct_status[]" value="완료" <?=option_array_checked('완료', $ct_status)?>/> 배송완료</label><br>
       
       <div class="search_date">
-      	<select name="searchtype">
-	        <option >주문일</option>
-	        <option >출고완료일</option>
-	      </select>
+        <select name="searchtype">
+          <option >주문일</option>
+          <option >출고완료일</option>
+        </select>
         <input type="text" name="fr_date" value="<?=$fr_date?>" id="fr_date" class="datepicker"/> ~ <input type="text" name="to_date" value="<?=$to_date?>" id="to_date" class="datepicker"/>
         <a href="#" id="select_date_thismonth">이번달</a>
         <a href="#" id="select_date_lastmonth">저번달</a>
