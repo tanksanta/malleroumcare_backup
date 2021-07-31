@@ -45,9 +45,9 @@ while($row = sql_fetch_array($result)) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>배송정보</title>
   <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/common_new.css">
-	<link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/font.css">
-	<link rel="shortcut icon" href="<?php echo THEMA_URL; ?>/assets/img/top_logo_icon.ico">
-	<link rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/font.css">
+  <link rel="shortcut icon" href="<?php echo THEMA_URL; ?>/assets/img/top_logo_icon.ico">
+  <link rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
   <script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; position: relative; }
@@ -73,23 +73,23 @@ while($row = sql_fetch_array($result)) {
     .imfomation_box .li_box .deliveryInfoWrap > select { width: 34%; height: 40px; float: left; margin-right: 1%; border: 1px solid #DDD; font-size: 17px; color: #666; padding-left: 10px; border-radius: 5px; }
     .imfomation_box .li_box .deliveryInfoWrap > input[type="text"] { width: 65%; height: 40px; float: left; border: 1px solid #DDD; font-size: 17px; color: #666; padding: 0 40px 0 10px; border-radius: 5px; }
 
-		#popupFooterBtnWrap { position: fixed; width: 100%; height: 70px; background-color: #000; bottom: 0px; z-index: 10; }
-		#popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
-		#popupFooterBtnWrap > .savebtn{ float: left; width: 75%; height: 100%; background-color:#000; color: #FFF; }
-		#popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
+    #popupFooterBtnWrap { position: fixed; width: 100%; height: 70px; background-color: #000; bottom: 0px; z-index: 10; }
+    #popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
+    #popupFooterBtnWrap > .savebtn{ float: left; width: 75%; height: 100%; background-color:#000; color: #FFF; }
+    #popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
   </style>
 </head>
 <body>
   <div id="popupHeaderTopWrap">
-		<div class="title">배송정보</div>
-		<div class="close">
-			<a href="#" id="popupCloseBtn">
-				&times;
-			</a>
-		</div>
-	</div>
+    <div class="title">배송정보</div>
+    <div class="close">
+      <a href="#" id="popupCloseBtn">
+        &times;
+      </a>
+    </div>
+  </div>
 
-	<div id="itInfoWrap">
+  <div id="itInfoWrap">
     <form id="form_partner_deliveryinfo">
       <input type="hidden" name="od_id" value="<?=$od_id?>">
       <ul class="imfomation_box" id="imfomation_box">
@@ -114,30 +114,30 @@ while($row = sql_fetch_array($result)) {
         <?php } ?>
       </ul>
     </form>
-	</div>
+  </div>
 
   <div id="popupFooterBtnWrap">
-		<button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
-		<button type="button" class="cancelbtn" onclick="closePopup();">취소</button>
-	</div>
-	
-	<script type="text/javascript">
+    <button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
+    <button type="button" class="cancelbtn" onclick="closePopup();">취소</button>
+  </div>
+  
+  <script type="text/javascript">
     // 팝업 닫기
     function closePopup() {
       $("#popupProdDeliveryInfoBox", parent.document).hide();
       $("#popupProdDeliveryInfoBox", parent.document).find("iframe").remove();
     }
-		$(function() {
-			$("#popupCloseBtn").click(function(e) {
-				e.preventDefault();
-				
-				closePopup();
-			});
+    $(function() {
+      $("#popupCloseBtn").click(function(e) {
+        e.preventDefault();
+        
+        closePopup();
+      });
 
       $('#prodBarNumSaveBtn').click(function() {
         $('#form_partner_deliveryinfo').submit();
       });
-			
+      
       $('#form_partner_deliveryinfo').on('submit', function(e) {
         e.preventDefault();
 
@@ -151,7 +151,7 @@ while($row = sql_fetch_array($result)) {
           alert(data && data.message);
         });
       });
-		});
-	</script>
+    });
+  </script>
 </body>
 </html>
