@@ -146,6 +146,7 @@ $(function() {
       url: 'ajax.my_data_upload.php',
       type: 'POST',
       data: fd,
+      cache: false,
       processData: false,
       contentType: false,
       dataType: 'json'

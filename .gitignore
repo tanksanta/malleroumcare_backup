@@ -33,3 +33,6 @@ www/eroumcarepma/tmp/*
 www/eroumcarepma/tmp/twig/*/*.php
 www/data/eform
 www/data/eform/*
+www/data/partner
+www/data/partner/*
+
