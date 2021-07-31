@@ -1258,3 +1258,7 @@ display: none;
     text-align: center;
     cursor: pointer;
 }
+
+.stockBarList .barcode_input {
+    display: none;
+}

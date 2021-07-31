@@ -61,7 +61,7 @@ table {border-collapse: collapse;}
 /* #stock {margin-top: 74px;} */
 #stock h2 {padding-bottom:16px;font-size: 24px;text-align: left;font-weight:bold;}
 /* 재고 탭 */
-.stock-tab {display: -webkit-box; display: -ms-flexbox; display: flex;margin-bottom: 45px;}
+.stock-tab {clear:both; display: -webkit-box; display: -ms-flexbox; display: flex;margin-bottom: 45px;}
 .stock-tab li {-webkit-box-flex: 1; -ms-flex: 1; flex-grow: 1; border: 1px solid #ddd;}
 .stock-tab li.active {border-bottom:4px solid #ee8102;}
 .stock-tab li:nth-child(even) {border-left: none;}
@@ -159,6 +159,44 @@ table {border-collapse: collapse;}
 .state-btn2 ul li {border-bottom: 1px solid #ddd;font-size: 12px; padding: 5px 0;}
 .state-btn2 ul li:last-child{border-bottom: 0px}
 
+.stock-list {
+    position: relative;
+}
+.stock-list .r_btn_area {
+    position: absolute;
+    right: 0;
+    top: 20px;
+}
+
+#add_sales_inventory_popup {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index:9999;
+    background: rgba(0, 0, 0, 0.8);
+}
+#add_sales_inventory_popup_iframe {
+    width:500px;
+    height:700px;
+    max-height: 80%;
+    position: absolute; 
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+}
+.add_sales_inventory_popup_close {
+    position:absolute;
+    top:15px;
+    right: 15px;
+    color: white;
+    font-size: 2.5em;
+    cursor:pointer;
+}
+
 @media screen and (max-width: 1220px){
     /* .wrap {padding: 0 4%;} */
 }
@@ -172,6 +210,24 @@ table {border-collapse: collapse;}
     .table-wrap li span {font-size:13px;}
     .stock-view .info-btn .btn-01 {width: 160px;}
     .stock-view .info-btn .btn-02 {width: 160px;}
+
+    .stock-list .sub_section_tit {
+        float: left;
+    }
+    .stock-list .r_btn_area {
+        position: relative;
+        float: right;
+    }
+    
+    #add_sales_inventory_popup_iframe {
+        width: 100%;
+        height: 90%;
+        max-height:100%;
+        transform: none;
+        top: auto;
+        left: 0px;
+        bottom:0px;
+    }
 }
 @media screen and (max-width: 820px){
   .stock-view .inner .row { top:0; }
