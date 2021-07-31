@@ -91,6 +91,7 @@ while($row = sql_fetch_array($result)) {
 
 	<div id="itInfoWrap">
     <form id="form_partner_deliveryinfo">
+      <input type="hidden" name="od_id" value="<?=$od_id?>">
       <ul class="imfomation_box" id="imfomation_box">
         <?php foreach($carts as $row) { ?>
         <li class="li_box">
@@ -117,19 +118,39 @@ while($row = sql_fetch_array($result)) {
 
   <div id="popupFooterBtnWrap">
 		<button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
-		<button type="button" class="cancelbtn" onclick="do_cancel();">취소</button>
+		<button type="button" class="cancelbtn" onclick="closePopup();">취소</button>
 	</div>
 	
 	<script type="text/javascript">
+    // 팝업 닫기
+    function closePopup() {
+      $("#popupProdDeliveryInfoBox", parent.document).hide();
+      $("#popupProdDeliveryInfoBox", parent.document).find("iframe").remove();
+    }
 		$(function() {
-			
 			$("#popupCloseBtn").click(function(e) {
 				e.preventDefault();
 				
-				$("#popupProdDeliveryInfoBox", parent.document).hide();
-				$("#popupProdDeliveryInfoBox", parent.document).find("iframe").remove();
+				closePopup();
 			});
+
+      $('#prodBarNumSaveBtn').click(function() {
+        $('#form_partner_deliveryinfo').submit();
+      });
 			
+      $('#form_partner_deliveryinfo').on('submit', function(e) {
+        e.preventDefault();
+
+        var params = $(this).serialize();
+        $.post('ajax.partner_deliveryinfo.php', params, 'json')
+        .done(function() {
+          window.location.reload();
+        })
+        .fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        });
+      });
 		});
 	</script>
 </body>
