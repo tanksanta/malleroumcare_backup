@@ -821,7 +821,7 @@
   text-align: center;
 }
 
-#partner-order .install-report {
+#partner-order .item-list li.install-report {
   padding: 18px;
   background: #F5F5F5;
   margin-left: 46px;
