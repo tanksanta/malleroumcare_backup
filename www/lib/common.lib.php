@@ -2707,7 +2707,7 @@ class html_process {
                     continue;
 
 				$link[1] = str_replace('media="screen"', '', $link[1]);
-                $link[1] = preg_replace('#\.css([\'\"]?>)$#i', '.css?ver='.APMS_SVER.'$1', $link[1]);
+                $link[1] = preg_replace('#\.css([\'\"]?>)$#i', '.css?v='.APMS_SVER.'$1', $link[1]);
 
 				$stylesheet .= PHP_EOL.$link[1];
             }
