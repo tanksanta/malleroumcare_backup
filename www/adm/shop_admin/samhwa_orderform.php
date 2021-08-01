@@ -1,8 +1,8 @@
 <?php
-// $sub_menu = '400400';
+$sub_menu = '400400';
 include_once('./_common.php');
 
-// auth_check($auth[$sub_menu], "w");
+auth_check($auth[$sub_menu], "w");
 
 $g5['title'] = "주문 내역 수정";
 include_once(G5_ADMIN_PATH.'/admin.head.php');

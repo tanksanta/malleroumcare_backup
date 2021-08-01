@@ -32,7 +32,7 @@ $result = sql_query($sql);
 
 $carts = [];
 while($row = sql_fetch_array($result)) {
-  $row['it_name'] .= $row['ct_option'] ? " ({$row['ct_option']})" : '';
+  $row['it_name'] .= $row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " ({$row['ct_option']})" : '';
 
   $carts[] = $row;
 }

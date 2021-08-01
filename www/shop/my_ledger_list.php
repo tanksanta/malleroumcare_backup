@@ -352,7 +352,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 <a href="<?=G5_SHOP_URL?>/orderinquiryview.php?od_id=<?=$row['od_id']?>"><?=$row['od_id']?></a>
                 <?php } ?>
               </td>
-              <td><?=$row['it_name']?><?=$row['ct_option'] ? "({$row['ct_option']})" : ''?></td>
+              <td><?=$row['it_name']?><?=$row['ct_option'] && $row['ct_option'] != $row['it_name'] ? "({$row['ct_option']})" : ''?></td>
               <td class="text_c"><?=$row['ct_qty']?></td>
               <td class="text_r"><?=number_format($row['price_d'])?></td>
               <td class="text_r"><?=number_format($row['price_d_p'])?></td>

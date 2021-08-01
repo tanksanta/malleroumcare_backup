@@ -47,6 +47,7 @@ foreach($ct_id_arr as $ct_id) {
   ";
 
   $it_name = $cart['it_name'];
+  if($cart['ct_option'] && $cart['ct_option'] != $cart['it_name']) $it_name .= "({$cart['ct_option']})";
   switch ($ct_status) {
     case '준비': $ct_status_text="상품준비"; break;
     case '출고준비': $ct_status_text="출고준비"; break;

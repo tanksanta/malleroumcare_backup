@@ -329,7 +329,7 @@ $total_deposit = 0;
 foreach($ledgers as $row) {
   $rows[] = [
     date('y/m/d', strtotime($row['od_time'])).($row['od_id'] ? '-'.$row['od_id'] : ''),
-    $row['it_name'].($row['ct_option'] ? " [{$row['ct_option']}]" : ''),
+    $row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " [{$row['ct_option']}]" : ''),
     $row['ct_qty'],
     $row['price_d'],
     $row['price_d_p'],

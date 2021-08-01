@@ -180,7 +180,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <td class="text_c"><?=date('Y-m-d', strtotime($row['od_time']))?></td>
               <td class="text_c"><?=$row['od_id']?></td>
               <td class="text_c"><?=$row['mb_entNm']?></td>
-              <td><?=$row['it_name'].($row['ct_option'] ? " ({$row['ct_option']})" : '')?></td>
+              <td><?=$row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " ({$row['ct_option']})" : '')?></td>
               <td class="text_c"><?=$row['ct_qty']?></td>
               <td class="text_c"><?=$row['ct_status']?></td>
               <td class="text_c"><?=$row['ct_direct_delivery']?></td>

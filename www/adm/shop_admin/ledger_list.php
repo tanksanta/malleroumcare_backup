@@ -432,7 +432,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         </td>
         <td class="td_id"><?=$row['mb_entNm']?></td>
         <td class="td_payby"><?=$manager['mb_name']?></td>
-        <td><?=$row['it_name']?><?=$row['ct_option'] ? "({$row['ct_option']})" : ''?></td>
+        <td><?=$row['it_name']?><?=$row['ct_option'] && $row['ct_option'] != $row['it_name'] ? "({$row['ct_option']})" : ''?></td>
         <td class="td_numsmall"><?=$row['ct_qty']?></td>
         <td class="td_price"><?=number_format($row['price_d'])?></td>
         <td class="td_price"><?=number_format($row['price_d_p'])?></td>
