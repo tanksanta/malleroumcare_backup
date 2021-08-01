@@ -11,14 +11,6 @@ $m = $_POST['m'];
 if(!$od_id || !$type || !$m)
   json_response(400, '유효하지 않은 요청입니다.');
 
-$check_result = sql_fetch("
-  SELECT od_id FROM {$g5['g5_shop_cart_table']}
-  WHERE od_id = '{$od_id}' and ct_direct_delivery_partner = '{$member['mb_id']}'
-  LIMIT 1
-");
-if(!$check_result['od_id'])
-  json_response(400, '존재하지 않는 주문입니다.');
-
 $report = sql_fetch("
   SELECT * FROM partner_install_report
   WHERE od_id = '{$od_id}' and mb_id = '{$member['mb_id']}'

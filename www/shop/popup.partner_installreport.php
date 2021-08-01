@@ -155,10 +155,13 @@ if($report && $report['od_id']) {
       </tr>
     </tbody>
   </table>
-  <div class="issue_wrap">
-    <div class="section_head">이슈사항 작성</div>
-    <textarea name="" id="txt_issue" rows="7"></textarea>
-  </div>
+  <form id="form_partner_installreport">
+    <input type="hidden" name="od_id" value="<?=$od_id?>">
+    <div class="issue_wrap">
+      <div class="section_head">이슈사항 작성</div>
+      <textarea name="ir_issue" id="txt_issue" rows="7"><?=$report['ir_issue']?></textarea>
+    </div>
+  </form>
 
   <div id="popupFooterBtnWrap">
     <button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
@@ -168,18 +171,33 @@ if($report && $report['od_id']) {
   <script type="text/javascript">
     // 팝업 닫기
     function closePopup() {
-      $("#popupProdDeliveryInfoBox", parent.document).hide();
-      $("#popupProdDeliveryInfoBox", parent.document).find("iframe").remove();
+      $("#popup_installreport", parent.document).hide();
+      $("#popup_installreport", parent.document).find("iframe").remove();
     }
     $(function() {
       $("#popupCloseBtn").click(function(e) {
         e.preventDefault();
-        
+
         closePopup();
       });
 
       $('#prodBarNumSaveBtn').click(function() {
         $('#form_partner_installreport').submit();
+      });
+
+      // 설치 결과 등록
+      $('#form_partner_installreport').on('submit', function(e) {
+        e.preventDefault();
+
+        $.post('ajax.partner_installreport.php', $(this).serialize(), 'json')
+        .done(function() {
+          alert('저장이 완료되었습니다.');
+          closePopup();
+        })
+        .fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        });
       });
 
       // 설치 확인서 업로드
