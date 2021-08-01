@@ -21,6 +21,8 @@ foreach($ct_id_list as $ct_id) {
   $ct_delivery_combine = $_POST["ct_combine_{$ct_id}"];
   $ct_delivery_combine_ct_id = (int)$_POST["ct_combine_ct_id_{$ct_id}"];
 
+
+
   $ct_is_direct_delivery = (int)$_POST["ct_is_direct_delivery_{$ct_id}"] ?: 0;
   $ct_is_direct_delivery_sub = (int)$_POST["ct_is_direct_delivery_sub_{$ct_id}"] ?: 0;
   if($ct_is_direct_delivery && $ct_is_direct_delivery_sub) {
@@ -50,8 +52,7 @@ foreach($ct_id_list as $ct_id) {
         $combine_where
         ct_delivery_company = '{$ct_delivery_company}',
         ct_delivery_num = '{$ct_delivery_num}',
-        ct_edi_result = 0,
-        ct_is_direct_delivery = '{$ct_is_direct_delivery}'
+        ct_edi_result = 0
       WHERE ct_id = '{$ct_id}'
     ");
   } else {
