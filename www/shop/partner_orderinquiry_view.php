@@ -233,9 +233,9 @@ function trans_ct_status_text($ct_status_text) {
         배송정보
       </div>
       <div class="row no-gutter">
-        <div class="delivery-status-info col full-width text-center">
+        <a href="#" class="delivery-status-info col full-width text-center">
           배송정보 (<?=$count_delivery_inserted?>/<?=count($carts)?>)
-        </div>
+        </a>
       </div>
       <div class="delivery-info-list">
         <ul>
