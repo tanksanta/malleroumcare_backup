@@ -5,31 +5,31 @@ if(!$is_samhwa_partner) {
   alert("파트너 회원만 접근 가능한 페이지입니다.");
 }
 
-$od_id = get_search_string($_GET['od_id']);
-if(!$od_id) {
+$ct_id = get_search_string($_GET['ct_id']);
+if(!$ct_id) {
   alert('정상적인 접근이 아닙니다.');
 }
 $check_result = sql_fetch("
-  SELECT od_id FROM {$g5['g5_shop_cart_table']}
-  WHERE od_id = '{$od_id}' and ct_direct_delivery_partner = '{$member['mb_id']}'
+  SELECT ct_id FROM {$g5['g5_shop_cart_table']}
+  WHERE ct_id = '{$ct_id}' and ct_direct_delivery_partner = '{$member['mb_id']}'
   LIMIT 1
 ");
-if(!$check_result['od_id'])
+if(!$check_result['ct_id'])
   alert('존재하지 않는 주문입니다.');
 
 $report = sql_fetch("
   SELECT * FROM partner_install_report
-  WHERE od_id = '{$od_id}' and mb_id = '{$member['mb_id']}'
+  WHERE ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
 ");
 
 $photos = [];
-if($report && $report['od_id']) {
+if($report && $report['ct_id']) {
   // 이미 작성된 설치결과보고서가 있다면
 
   // 설치사진 가져오기
   $photo_result = sql_query("
     SELECT * FROM partner_install_photo
-    WHERE od_id = '{$od_id}' and mb_id = '{$member['mb_id']}'
+    WHERE ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
     ORDER BY ip_id ASC
   ");
   while($row = sql_fetch_array($photo_result)) {
@@ -39,7 +39,7 @@ if($report && $report['od_id']) {
   // 설치결과보고서 INSERT
   $insert_result = sql_query("
     INSERT INTO partner_install_report
-    SET od_id = '{$od_id}', mb_id = '{$member['mb_id']}',
+    SET ct_id = '{$ct_id}', mb_id = '{$member['mb_id']}',
     ir_issue = '', ir_created_at = NOW(), ir_updated_at = NOW()
   ");
   $report = array(
@@ -110,7 +110,7 @@ if($report && $report['od_id']) {
         <td>
           <form id="form_file_cert">
             <input type="hidden" name="type" value="cert">
-            <input type="hidden" name="od_id" value="<?=$od_id?>">
+            <input type="hidden" name="ct_id" value="<?=$ct_id?>">
             <input type="hidden" name="m" value="u">
             <label for="file_cert" class="label_file">
               파일찾기
@@ -134,7 +134,7 @@ if($report && $report['od_id']) {
         <td>
           <form id="form_file_photo">
             <input type="hidden" name="type" value="photo">
-            <input type="hidden" name="od_id" value="<?=$od_id?>">
+            <input type="hidden" name="ct_id" value="<?=$ct_id?>">
             <input type="hidden" name="m" value="u">
             <label for="file_photo" class="label_file">
               파일찾기
@@ -156,7 +156,7 @@ if($report && $report['od_id']) {
     </tbody>
   </table>
   <form id="form_partner_installreport">
-    <input type="hidden" name="od_id" value="<?=$od_id?>">
+    <input type="hidden" name="ct_id" value="<?=$ct_id?>">
     <div class="issue_wrap">
       <div class="section_head">이슈사항 작성</div>
       <textarea name="ir_issue" id="txt_issue" rows="7"><?=$report['ir_issue']?></textarea>
@@ -279,7 +279,7 @@ if($report && $report['od_id']) {
         if(type === 'cert') {
           // 설치확인서
           $.post('ajax.partner_installphoto.php', {
-            od_id: '<?=$od_id?>',
+            ct_id: '<?=$ct_id?>',
             type: 'cert',
             m: 'd'
           }, 'json')
@@ -298,7 +298,7 @@ if($report && $report['od_id']) {
           // 설치사진
           var ip_id = $(this).data('id');
           $.post('ajax.partner_installphoto.php', {
-            od_id: '<?=$od_id?>',
+            ct_id: '<?=$ct_id?>',
             type: 'photo',
             m: 'd',
             ip_id: ip_id
