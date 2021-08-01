@@ -137,9 +137,9 @@ include_once("./_head.php");
         배송정보
       </div>
       <div class="row no-gutter">
-        <div class="delivery-status-info col full-width text-center">
+        <a href="#" class="delivery-status-info col full-width text-center">
           배송정보 (1/2)
-        </div>
+        </a>
       </div>
       <div class="delivery-info-list">
         <ul>
