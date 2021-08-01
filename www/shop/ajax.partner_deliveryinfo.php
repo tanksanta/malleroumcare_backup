@@ -75,8 +75,10 @@ $count_result = sql_fetch("
     {$g5['g5_shop_cart_table']}
   WHERE
     od_id = '{$od_id}' and
-    ct_delivery_num <> '' and
-    ct_delivery_num is not null
+    (
+      (ct_delivery_num <> '' and ct_delivery_num is not null) or
+      (ct_combine_ct_id <> 0 and ct_combine_ct_id is not null)
+    )
 ");
 $od_delivery_insert = $count_result ? $count_result['cnt'] : 0;
 
