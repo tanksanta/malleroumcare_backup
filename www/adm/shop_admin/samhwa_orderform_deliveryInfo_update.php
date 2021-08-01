@@ -11,6 +11,8 @@ if($auth_check) {
 $ct_id_list = $_POST["ct_id"];
 $od_delivery_insert = 0;
 
+$direct_delivery_date = '';
+
 foreach($ct_id_list as $ct_id) {
   $ct_delivery_company = $_POST["ct_delivery_company_{$ct_id}"];
   $ct_delivery_num = $_POST["ct_delivery_num_{$ct_id}"];
@@ -25,6 +27,7 @@ foreach($ct_id_list as $ct_id) {
     $ct_is_direct_delivery = $ct_is_direct_delivery_sub;
     $ct_direct_delivery_partner = get_search_string($_POST["ct_direct_delivery_partner_{$ct_id}"]);
     $ct_direct_delivery_price = (int)$_POST["ct_direct_delivery_price_{$ct_id}"] ?: 0;
+    $direct_delivery_date = ' , ct_direct_delivery_date = CURDATE() ';
   } else {
     $ct_direct_delivery_partner = '';
     $ct_direct_delivery_price = 0;
@@ -63,6 +66,7 @@ foreach($ct_id_list as $ct_id) {
         ct_is_direct_delivery = '{$ct_is_direct_delivery}',
         ct_direct_delivery_partner = '{$ct_direct_delivery_partner}',
         ct_direct_delivery_price = '{$ct_direct_delivery_price}'
+        {$direct_delivery_date}
       WHERE ct_id = '{$ct_id}'
     ");
   }

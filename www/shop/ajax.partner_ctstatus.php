@@ -22,14 +22,14 @@ foreach($ct_id_arr as $ct_id) {
 
   if(!$cart || !$cart['ct_id'])
     json_response(400, '해당 상품의 주문상태를 변경할 수 있는 권한이 없습니다.');
-  
+
   $od_id = $cart['od_id'];
   $mb_id = $cart['mb_id'];
-  
+
   // 배송(출고완료) 상태는 배송정보가 입력되어야 변경할 수 있음
   if($ct_status == '배송' && !$cart['ct_delivery_num'])
     json_response(400, '배송정보를 입력해주세요.');
-  
+
   $set_sql = '';
   if($ct_status == '배송') {
     $sel_sql = ' , ct_ex_date = CURDATE() ';
@@ -76,11 +76,11 @@ if($sto_id) {
   ), 80);
   if(!$stock_result['data'])
     json_response(500, '시스템 서버 오류');
-  
+
   $stateCd = '06'; // 재고대기
   if($ct_status == '배송')
     $stateCd = is_pen_order($od_id) ? "02" : "01";
-  
+
   $prods = array_map(function($data) {
     global $stateCd;
 

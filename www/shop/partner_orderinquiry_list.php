@@ -187,7 +187,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <td><?=$row['prodMemo']?></td>
               <td class="text_r"><?=number_format($row['price_p'])?>원</td>
               <td class="text_r"><?=number_format($row['price_s'])?>원</td>
-              <td class="text_c"><?=date('Y-m-d', strtotime($row['ct_move_date']))?></td>
+              <td class="text_c"><?=$row['ct_direct_delivery_date']?></td>
               <td class="text_c"><?=$row['ct_ex_date']?></td>
             </tr>
             <?php } ?>
