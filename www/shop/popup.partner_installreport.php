@@ -203,7 +203,9 @@ if($report && $report['ct_id']) {
 
       // 설치 확인서 업로드
       $('#file_cert').on('change', function() {
-        $('#form_file_cert').submit();
+        if($(this).val()) {
+          $('#form_file_cert').submit();
+        }
       });
       $('#form_file_cert').on('submit', function(e) {
         e.preventDefault();
@@ -230,12 +232,17 @@ if($report && $report['ct_id']) {
         .fail(function($xhr) {
           var data = $xhr.responseJSON;
           alert(data && data.message);
+        })
+        .always(function() {
+          $('#file_cert').val('');
         });
       });
 
       // 설치 사진 업로드
       $('#file_photo').on('change', function() {
-        $('#form_file_photo').submit();
+        if($(this).val()) {
+          $('#form_file_photo').submit();
+        }
       });
       $('#form_file_photo').on('submit', function(e) {
         e.preventDefault();
@@ -268,6 +275,9 @@ if($report && $report['ct_id']) {
         .fail(function($xhr) {
           var data = $xhr.responseJSON;
           alert(data && data.message);
+        })
+        .always(function() {
+          $('#form_file_photo').val('');
         });
       });
 
