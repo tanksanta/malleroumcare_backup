@@ -176,7 +176,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
   $sql = "
     select
       ct_id, mb_id, ct_manager, ct_delivery_cnt, ct_combine_ct_id, it_id, ct_price, ct_point, ct_qty, ct_ex_date, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid,
-      ct_is_direct_delivery,
+      ct_is_direct_delivery, ct_direct_delivery_date,
       ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn,
       ( SELECT it_taxInfo FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_taxInfo
     from
@@ -430,6 +430,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <th class="item_stotal">합계</th>
                             <th class="item_status">상태</th>
                             <th class="item_memo">요청사항</th>
+                            <th class="item_memo">출고예정일</th>
                             <th class="item_memo">출고완료일</th>
                             <th class="item_memo">출고담당자</th>
                             <th class="btncol"></th>
@@ -846,6 +847,11 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                             echo $prodMemo;
                                         ?>
                                     </td>
+                                    <td class="btncol">
+                                    <!-- 출고예정일 -->
+                                    <?php echo $options[$k]['ct_is_direct_delivery'] ? $options[$k]['ct_direct_delivery_date'] : '';?>
+                                    <!-- 출고예정일 -->
+                                     </td>
                                     <td class="btncol">
                                     <!-- 출고완료일 -->
                                     <?php echo $options[$k]['ct_ex_date'];?>
