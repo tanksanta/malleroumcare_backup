@@ -114,7 +114,7 @@ if($report && $report['ct_id']) {
             <input type="hidden" name="m" value="u">
             <label for="file_cert" class="label_file">
               파일찾기
-              <input type="file" name="file_cert" id="file_cert" class="ipt_file">
+              <input type="file" name="file_cert" id="file_cert" class="ipt_file" accept="image/*">
             </label>
           </form>
           <ul id="list_file_cert" class="list_file">
@@ -138,7 +138,7 @@ if($report && $report['ct_id']) {
             <input type="hidden" name="m" value="u">
             <label for="file_photo" class="label_file">
               파일찾기
-              <input type="file" name="file_photo[]" id="file_photo" class="ipt_file" multiple>
+              <input type="file" name="file_photo[]" id="file_photo" class="ipt_file" accept="image/*" multiple>
             </label>
           </form>
           <ul id="list_file_photo" class="list_file">
