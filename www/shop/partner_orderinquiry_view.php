@@ -102,86 +102,85 @@ function trans_ct_status_text($ct_status_text) {
 
   <section class="row no-gutter justify-space-between">
     <div class="left-wrap">
-      <div class="top row no-gutter justify-space-between align-center">
-        <div class="col title">
-          <?=$od['od_name']?> (주문일시: <?=date('Y-m-d H:i:s', strtotime($od['od_time']))?>)
+      <form id="form_ct_status">
+        <div class="top row no-gutter justify-space-between align-center">
+          <div class="col title">
+            <?=$od['od_name']?> (주문일시: <?=date('Y-m-d H:i:s', strtotime($od['od_time']))?>)
+          </div>
+          <div class="col">
+            <select name="ct_status" class="order-status-select">
+              <option value="준비">상품준비</option>
+              <option value="출고준비">출고준비</option>
+              <option value="배송">출고완료</option>
+            </select>
+            <button type="button" id="btn_ct_status" class="order-status-btn">저장</button>
+          </div>
         </div>
-        <div class="col">
-          <select name="" class="order-status-select">
-            <option>상품준비</option>
-          </select>
-          <button type="button" class="order-status-btn">저장</button>
-        </div>
-      </div>
 
-      <div class="item-list">
-        <ul>
-          <?php foreach($carts as $cart) { ?>
-          <li class="item row align-center">
-            <div class="col checkbox-wrap text-center">
-              <input type="checkbox" name="ct_id[]" value="<?=$cart['ct_id']?>"/>
-            </div>
-            <div class="col item-img-wrap">
-              <div class="item-img">
-                <img src="/shop/img/no_image.gif" onerror="this.src='/shop/img/no_image.gif';">
+        <div class="item-list">
+          <ul>
+            <?php foreach($carts as $cart) { ?>
+            <li class="item row align-center">
+              <div class="col checkbox-wrap text-center">
+                <input type="checkbox" name="ct_id[]" value="<?=$cart['ct_id']?>"/>
               </div>
-            </div>
-            <div class="col item-info-wrap">
-              <div class="title full-width">
-                <?=$cart['it_name']?>
-              </div>
-              <div class="price full-width text-grey">
-                금액 : 공급가(<?=number_format($cart['price_p'])?>원), 부가세(<?=number_format($cart['price_s'])?>원)
-              </div>
-              <div class="qty full-width text-grey">
-                수량 : <?=$cart['ct_qty']?>개 / 위탁 : <?=$cart['ct_direct_delivery']?>
-              </div>
-            </div>
-            <div class="col delivery-wrap text-center">
-              <?=trans_ct_status_text($cart['ct_status'])?>
-            </div>
-            <div class="col barcode-wrap text-center">
-              <a href="#" class="barcode-btn popupProdBarNumInfoBtn" data-id="" data-ct-id="">
-                <img src="/skin/apms/order/new_basic/image/icon_02.png" alt="">
-                바코드
-              </a>
-            </div>
-          </li>
-          <li class="install-report">
-            <div class="top-wrap row no-gutter justify-space-between">
-              <span>설치 결과 보고서</span>
-              <button type="button" class="report-btn">결과보고서 작성</button>
-            </div>
-            <?php if($cart['report']) { ?>
-            <div class="row report-img-wrap">
-              <?php if($cart['report']['ir_cert_url']) { ?>
-              <div class="col">
-                <div class="report-img">
-                  <img src="<?=G5_DATA_URL.'/partner/img/'.$cart['report']['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+              <div class="col item-img-wrap">
+                <div class="item-img">
+                  <img src="/shop/img/no_image.gif" onerror="this.src='/shop/img/no_image.gif';">
                 </div>
               </div>
-              <?php
-              }
-              
-              foreach($cart['report']['photo'] as $photo) {
-              ?>
-              <div class="col">
-                <div class="report-img">
-                  <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+              <div class="col item-info-wrap">
+                <div class="title full-width">
+                  <?=$cart['it_name']?>
+                </div>
+                <div class="price full-width text-grey">
+                  금액 : 공급가(<?=number_format($cart['price_p'])?>원), 부가세(<?=number_format($cart['price_s'])?>원)
+                </div>
+                <div class="qty full-width text-grey">
+                  수량 : <?=$cart['ct_qty']?>개 / 위탁 : <?=$cart['ct_direct_delivery']?>
+                </div>
+              </div>
+              <div class="col delivery-wrap text-center">
+                <?=trans_ct_status_text($cart['ct_status'])?>
+              </div>
+              <div class="col barcode-wrap text-center">
+                <a href="#" class="barcode-btn popupProdBarNumInfoBtn" data-id="" data-ct-id="">
+                  <img src="/skin/apms/order/new_basic/image/icon_02.png" alt="">
+                  바코드
+                </a>
+              </div>
+            </li>
+            <li class="install-report">
+              <div class="top-wrap row no-gutter justify-space-between">
+                <span>설치 결과 보고서</span>
+                <button type="button" class="report-btn">결과보고서 작성</button>
+              </div>
+              <?php if($cart['report'] && $cart['report']['ir_cert_url']) { ?>
+              <div class="row report-img-wrap">
+                <div class="col">
+                  <div class="report-img">
+                    <img src="<?=G5_DATA_URL.'/partner/img/'.$cart['report']['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                  </div>
+                </div>
+                <?php foreach($cart['report']['photo'] as $photo) { ?>
+                <div class="col">
+                  <div class="report-img">
+                    <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                  </div>
+                </div>
+                <?php } ?>
+                <div class="col">
+                  <p class="issue">
+                    <?=nl2br($cart['report']['ir_issue'])?>
+                  </p>
                 </div>
               </div>
               <?php } ?>
-              <div class="col">
-                <p class="issue">
-                  <?=nl2br($cart['report']['ir_issue'])?>
-                </p>
-              </div>
-            </div>
+            </li>
             <?php } ?>
-          </li>
-          <?php } ?>
-        </ul>
-      </div>
+          </ul>
+        </div>
+      </form>
 
       <div class="row no-gutter">
         <div class="col title">배송정보</div>
@@ -291,6 +290,26 @@ function trans_ct_status_text($ct_status_text) {
   </section>
 </section>
 
+<script>
+$(function() {
+  $('#btn_ct_status').click(function() {
+    $('#form_ct_status').submit();
+  });
+  $('#form_ct_status').on('submit', function(e) {
+    e.preventDefault();
+
+    $.post('ajax.partner_ctstatus.php', $(this).serialize(), 'json')
+    .done(function() {
+      alert('변경이 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+});
+</script>
 
 <?php
 include_once('./_tail.php');

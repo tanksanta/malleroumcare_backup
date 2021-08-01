@@ -740,10 +740,6 @@
   width: calc(100% - 380px);
 }
 
-#partner-order .left-wrap > .top {
-  margin-bottom: 20px;
-}
-
 #partner-order .right-wrap {
   width: 340px;
 }
@@ -771,6 +767,7 @@
 #partner-order .item-list {
   border-bottom: 1px solid #DDDDDD;
   padding-bottom: 20px;
+  margin-top: 20px;
   margin-bottom: 40px;
 }
 
@@ -840,8 +837,8 @@
   vertical-align: middle;
 }
 
-#partner-order .install-report .top-wrap {
-  margin-bottom: 20px;
+#partner-order .install-report .report-img-wrap {
+  margin-top: 20px;
 }
 
 #partner-order .install-report .report-img {

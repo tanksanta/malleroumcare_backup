@@ -30,7 +30,7 @@ foreach($ct_id_arr as $ct_id) {
   if($ct_status == '배송' && !$cart['ct_delivery_num'])
     json_response(400, '배송정보를 입력해주세요.');
 
-  $set_sql = '';
+  $set_sql = ' , ct_ex_date = NULL ';
   if($ct_status == '배송') {
     $sel_sql = ' , ct_ex_date = CURDATE() ';
   }
@@ -74,9 +74,9 @@ foreach($ct_id_arr as $ct_id) {
 if($sto_id) {
   $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
     'stoId' => implode('|', $sto_id)
-  ), 80);
+  ), 443);
   if(!$stock_result['data'])
-    json_response(500, '시스템 서버 오류');
+    json_response(500, '시스템 서버 오류', $stock_result);
 
   $stateCd = '06'; // 재고대기
   if($ct_status == '배송')
