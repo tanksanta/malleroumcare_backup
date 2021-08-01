@@ -31,7 +31,7 @@ $count_delivery_inserted = 0; // 배송비 정보 입력된 숫자
 $carts = [];
 while($row = sql_fetch_array($cart_result)) {
   $row['report'] = null;
-  if($row['ct_is_direct_delivery'] == 2) {
+  if($row['ct_is_direct_delivery'] == 2) { // 배송+설치
     $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$row['ct_id']}' ");
     if($report['ct_id']) {
       $photo_result = sql_query("
@@ -151,6 +151,9 @@ function trans_ct_status_text($ct_status_text) {
                 </a>
               </div>
             </li>
+            <?php
+              if($cart['ct_is_direct_delivery'] == 2) {
+            ?>
             <li class="install-report">
               <div class="top-wrap row no-gutter justify-space-between">
                 <span>설치 결과 보고서</span>
@@ -178,7 +181,10 @@ function trans_ct_status_text($ct_status_text) {
               </div>
               <?php } ?>
             </li>
-            <?php } ?>
+            <?php
+              }
+            }
+            ?>
           </ul>
         </div>
       </form>
