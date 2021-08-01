@@ -154,7 +154,7 @@ function trans_ct_status_text($ct_status_text) {
             <li class="install-report">
               <div class="top-wrap row no-gutter justify-space-between">
                 <span>설치 결과 보고서</span>
-                <button type="button" class="report-btn">결과보고서 작성</button>
+                <button type="button" class="report-btn btn_install_report" data-id="<?=$cart['ct_id']?>">결과보고서 작성</button>
               </div>
               <?php if($cart['report'] && $cart['report']['ir_cert_url']) { ?>
               <div class="row report-img-wrap">
@@ -328,6 +328,16 @@ $(function() {
     e.preventDefault();
     $("body").addClass('modal-open');
     $("#popup_box > div").html('<iframe src="popup.partner_deliveryinfo.php?od_id=<?=$od_id?>">');
+    $("#popup_box iframe").load(function() {
+      $("#popup_box").show();
+    });
+  });
+
+  // 설치결과보고서 작성 버튼
+  $('.btn_install_report').click(function() {
+    var ct_id = $(this).data('id');
+    $("body").addClass('modal-open');
+    $("#popup_box > div").html('<iframe src="popup.partner_installreport.php?ct_id=' + ct_id + '">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });

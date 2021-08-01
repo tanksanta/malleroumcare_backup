@@ -193,7 +193,7 @@ if($report && $report['ct_id']) {
         $.post('ajax.partner_installreport.php', $(this).serialize(), 'json')
         .done(function() {
           alert('저장이 완료되었습니다.');
-          closePopup();
+          parent.window.location.reload();
         })
         .fail(function($xhr) {
           var data = $xhr.responseJSON;
