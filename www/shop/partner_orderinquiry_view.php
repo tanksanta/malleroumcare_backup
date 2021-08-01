@@ -8,6 +8,7 @@ if (!$member['mb_id']) {
 
 $g5['title'] = "파트너 주문상세";
 include_once("./_head.php");
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
 if(!$is_samhwa_partner)
   alert('파트너 회원만 접근가능합니다.');
@@ -243,28 +244,32 @@ function trans_ct_status_text($ct_status_text) {
         </a>
       </div>
       <div class="delivery-info-list">
-        <ul>
-          <?php
-          foreach($carts as $cart) {
-          ?>
-          <li class="delivery-info-item">
-            <div class="info-title text-weight-bold">
-              <?=$cart['it_name']?>
-            </div>
-            <div class="row">
-              <div class="col left">출고 예정일</div>
-              <div class="col right">
-                <input type="text" name="ct_direct_delivery_date_<?=$cart['ct_id']?>" value="<?=$cart['ct_direct_delivery_date']?>">
+        <form id="form_delivery_date">
+          <input type="hidden" name="od_id" value="<?=$od_id?>">
+          <ul>
+            <?php
+            foreach($carts as $cart) {
+            ?>
+            <li class="delivery-info-item">
+              <input type="hidden" name="ct_id[]" value="<?=$cart['ct_id']?>">
+              <div class="info-title text-weight-bold">
+                <?=$cart['it_name']?>
               </div>
-            </div>
-            <div class="row">
-              <div class="col left">출고 완료일</div>
-              <div class="col right"><?=$cart['ct_ex_date'] ?: '대기'?></div>
-            </div>
-          </li>
-          <?php } ?>
-        </ul>
-        <button type="button" class="delivery-save-btn">출고예정일 저장</button>
+              <div class="row">
+                <div class="col left">출고 예정일</div>
+                <div class="col right">
+                  <input type="text" class="datepicker" name="ct_direct_delivery_date_<?=$cart['ct_id']?>" value="<?=$cart['ct_direct_delivery_date']?>">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col left">출고 완료일</div>
+                <div class="col right"><?=$cart['ct_ex_date'] ?: '대기'?></div>
+              </div>
+            </li>
+            <?php } ?>
+          </ul>
+          <button type="button" id="btn_delivery_date" class="delivery-save-btn">출고예정일 저장</button>
+        </form>
       </div>
 
       <div class="order-settle-title title row no-gutter">
@@ -309,6 +314,15 @@ $(function() {
   $("#popup_box").hide();
   $("#popup_box").css("opacity", 1);
 
+  // 출고예정일 datepicker
+  $('.datepicker').datepicker({
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: "yy-mm-dd",
+    showButtonPanel: true,
+    yearRange: "c-99:c+99"
+  });
+
   // 배송정보 버튼
   $('#btn_delivery_info').click(function(e) {
     e.preventDefault();
@@ -327,6 +341,24 @@ $(function() {
     e.preventDefault();
 
     $.post('ajax.partner_ctstatus.php', $(this).serialize(), 'json')
+    .done(function() {
+      alert('변경이 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  // 출고예정일 변경
+  $('#btn_delivery_date').click(function() {
+    $('#form_delivery_date').submit();
+  });
+  $('#form_delivery_date').on('submit', function(e) {
+    e.preventDefault();
+
+    $.post('ajax.partner_deliverydate.php', $(this).serialize(), 'json')
     .done(function() {
       alert('변경이 완료되었습니다.');
       window.location.reload();

@@ -19,7 +19,7 @@ foreach($ct_id_arr as $ct_id) {
   
   $cart = sql_fetch("
     SELECT * FROM {$g5['g5_shop_cart_table']}
-    WHERE od_id = '{$od_id}' and ct_id = '{$id}'
+    WHERE od_id = '{$od_id}' and ct_id = '{$ct_id}'
   ");
 
   if($cart['ct_direct_delivery_partner'] != $member['mb_id'])
@@ -27,7 +27,7 @@ foreach($ct_id_arr as $ct_id) {
   
   $result = sql_query("
     UPDATE {$g5['g5_shop_cart_table']}
-    SET ct_direct_delivery_date_ = '{$ct_direct_delivery_date}'
+    SET ct_direct_delivery_date = '{$ct_direct_delivery_date}'
     WHERE ct_id = '{$ct_id}'
   ");
   if(!$result)
