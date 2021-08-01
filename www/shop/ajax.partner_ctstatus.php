@@ -100,7 +100,7 @@ if($sto_id) {
     }
   }
 
-  $ent_id = get_member($mb_id)['mb_entId'];
+  $ent_id = get_member($mb_id, 'mb_entId')['mb_entId'];
 
   $api_result = api_post_call(EROUMCARE_API_STOCK_UPDATE, array(
     'usrId' => $mb_id,
