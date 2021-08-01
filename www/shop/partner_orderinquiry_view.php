@@ -344,7 +344,9 @@ $(function() {
   });
 
   // 바코드 버튼
-  $('.btn_barcode_info').click(function() {
+  $('.btn_barcode_info').click(function(e) {
+    e.preventDefault();
+
     var ct_id = $(this).data('id');
     $("body").addClass('modal-open');
     $("#popup_box > div").html('<iframe src="popup.partner_barcodeinfo.php?ct_id=' + ct_id + '">');
