@@ -24,6 +24,14 @@ foreach($ct_id as $id) {
 
   if(!$ct_delivery_company)
     json_response(400, '유효하지 않은 요청입니다.');
+
+  $ct = sql_fetch("
+    SELECT * FROM {$g5['g5_shop_cart_table']}
+    WHERE od_id = '{$od_id}' and ct_id = '{$id}'
+  ");
+
+  if($ct['ct_direct_delivery_partner'] != $member['mb_id'])
+    json_response(400, '해당 상품의 배송정보를 변경할 수 있는 권한이 없습니다.');
   
   $result = sql_query("
     UPDATE
@@ -39,6 +47,24 @@ foreach($ct_id as $id) {
   if(!$result)
     json_response(500, 'DB 서버 오류 발생');
 
+  // 배송기록 작성
+  sql_query("
+    insert into
+      g5_delivery_log
+    set
+      od_id = '{$od_id}',
+      ct_id = '{$id}',
+      mb_id = '{$member['mb_id']}',
+      d_content = '',
+      ct_combine_ct_id = '',
+      ct_delivery_company = '{$ct_delivery_company}',
+      ct_delivery_num = '{$ct_delivery_num}',
+      ct_delivery_cnt = '{$ct['ct_delivery_cnt']}',
+      ct_delivery_price = '{$ct['ct_delivery_price']}',
+      ct_edi_result = '0',
+      ct_is_direct_delivery = '{$ct['ct_is_direct_delivery']}',
+      d_date = NOW()
+  ");
 }
 
 // 배송정보 입력 개수 업데이트
@@ -48,7 +74,7 @@ $count_result = sql_fetch("
   FROM
     {$g5['g5_shop_cart_table']}
   WHERE
-    od_id = {$od_id} and
+    od_id = '{$od_id}' and
     ct_delivery_num <> '' and
     ct_delivery_num is not null
 ");
