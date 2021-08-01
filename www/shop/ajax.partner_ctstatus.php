@@ -32,7 +32,7 @@ foreach($ct_id_arr as $ct_id) {
 
   $set_sql = ' , ct_ex_date = NULL ';
   if($ct_status == '배송') {
-    $sel_sql = ' , ct_ex_date = CURDATE() ';
+    $set_sql = ' , ct_ex_date = CURDATE() ';
   }
 
   $sql[] = "
