@@ -152,26 +152,32 @@ function trans_ct_status_text($ct_status_text) {
               <span>설치 결과 보고서</span>
               <button type="button" class="report-btn">결과보고서 작성</button>
             </div>
+            <?php if($cart['report']) { ?>
             <div class="row report-img-wrap">
+              <?php if($cart['report']['ir_cert_url']) { ?>
               <div class="col">
                 <div class="report-img">
-                  <img src="/shop/img/no_image.gif" onerror="this.src='/shop/img/no_image.gif';">
+                  <img src="<?=G5_DATA_URL.'/partner/img/'.$cart['report']['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
                 </div>
               </div>
+              <?php
+              }
+              
+              foreach($cart['report']['photo'] as $photo) {
+              ?>
               <div class="col">
                 <div class="report-img">
-                  <img src="/shop/img/no_image.gif" onerror="this.src='/shop/img/no_image.gif';">
+                  <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
                 </div>
               </div>
+              <?php } ?>
               <div class="col">
                 <p class="issue">
-                  관리자가 작성한 이슈가 보여집니다 관리자가 작성한 이슈가 보여집니다 관리자가 작성한 이슈가 보여집니다
-                  관리자가 작성한 이슈가 보여집니다 관리자가 작성한 이슈가 보여집니다 관리자가 작성한 이슈가 보여집니다
-                  관리자가 작성한 이슈가 보여집니다 관리자가 작성한 이슈가 보여집니다 관리자가 작성한 이슈가 보여집니다
-                  관리자가 작성한 이슈가 보여집니다 관리자가 작성한 이슈가 보여집니다 관리자가 작성한 이슈가 보여집니다
+                  <?=nl2br($cart['report']['ir_issue'])?>
                 </p>
               </div>
             </div>
+            <?php } ?>
           </li>
           <?php } ?>
         </ul>
@@ -240,26 +246,24 @@ function trans_ct_status_text($ct_status_text) {
       <div class="delivery-info-list">
         <ul>
           <?php
-          for ($i = 0; $i < 2; $i++) {
+          foreach($carts as $cart) {
           ?>
           <li class="delivery-info-item">
             <div class="info-title text-weight-bold">
-              품목명입니다. (옵션명)
+              <?=$cart['it_name']?>
             </div>
             <div class="row">
               <div class="col left">출고 예정일</div>
               <div class="col right">
-                <input type="text" name="" value="">
+                <input type="text" name="ct_direct_delivery_date_<?=$cart['ct_id']?>" value="<?=$cart['ct_direct_delivery_date']?>">
               </div>
             </div>
             <div class="row">
               <div class="col left">출고 완료일</div>
-              <div class="col right">대기</div>
+              <div class="col right"><?=$cart['ct_ex_date'] ?: '대기'?></div>
             </div>
           </li>
-          <?php
-          }
-          ?>
+          <?php } ?>
         </ul>
         <button type="button" class="delivery-save-btn">출고예정일 저장</button>
       </div>
