@@ -124,8 +124,9 @@ while($row = sql_fetch_array($result)) {
   <script type="text/javascript">
     // 팝업 닫기
     function closePopup() {
-      $("#popupProdDeliveryInfoBox", parent.document).hide();
-      $("#popupProdDeliveryInfoBox", parent.document).find("iframe").remove();
+      $("body", parent.document).removeClass('modal-open');
+      $("#popup_box", parent.document).hide();
+      $("#popup_box", parent.document).find("iframe").remove();
     }
     $(function() {
       $("#popupCloseBtn").click(function(e) {

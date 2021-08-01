@@ -238,7 +238,7 @@ function trans_ct_status_text($ct_status_text) {
         배송정보
       </div>
       <div class="row no-gutter">
-        <a href="#" class="delivery-status-info col full-width text-center">
+        <a href="#" id="btn_delivery_info" class="delivery-status-info col full-width text-center">
           배송정보 (<?=$count_delivery_inserted?>/<?=count($carts)?>)
         </a>
       </div>
@@ -290,8 +290,36 @@ function trans_ct_status_text($ct_status_text) {
   </section>
 </section>
 
+<style>
+#popup_box { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#popup_box > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+#popup_box iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+
+@media (max-width : 750px) {
+  #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+</style>
+
+<div id="popup_box">
+  <div></div>
+</div>
+
 <script>
 $(function() {
+  $("#popup_box").hide();
+  $("#popup_box").css("opacity", 1);
+
+  // 배송정보 버튼
+  $('#btn_delivery_info').click(function(e) {
+    e.preventDefault();
+    $("body").addClass('modal-open');
+    $("#popup_box > div").html('<iframe src="popup.partner_deliveryinfo.php?od_id=<?=$od_id?>">');
+    $("#popup_box iframe").load(function() {
+      $("#popup_box").show();
+    });
+  });
+
+  // 주문상태 변경
   $('#btn_ct_status').click(function() {
     $('#form_ct_status').submit();
   });

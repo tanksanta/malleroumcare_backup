@@ -7,8 +7,8 @@ if(!$is_samhwa_partner)
 $ct_status = in_array($_POST['ct_status'], ['준비', '출고준비', '배송']) ? $_POST['ct_status'] : '';
 $ct_id_arr = get_search_string($_POST['ct_id']);
 
-if(!$ct_status || !$ct_id_arr || !is_array($ct_id_arr) || !$ct_status)
-  json_response(400, '유효하지 않은 요청입니다.');
+if(!$ct_status || !$ct_id_arr || !is_array($ct_id_arr))
+  json_response(400, '주문상태를 변경할 상품을 선택해주세요.');
 
 $sto_id = [];
 $sql = [];

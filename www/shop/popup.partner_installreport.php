@@ -171,8 +171,9 @@ if($report && $report['ct_id']) {
   <script type="text/javascript">
     // 팝업 닫기
     function closePopup() {
-      $("#popup_installreport", parent.document).hide();
-      $("#popup_installreport", parent.document).find("iframe").remove();
+      $("body", parent.document).removeClass('modal-open');
+      $("#popup_box", parent.document).hide();
+      $("#popup_box", parent.document).find("iframe").remove();
     }
     $(function() {
       $("#popupCloseBtn").click(function(e) {
