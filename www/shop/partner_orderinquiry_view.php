@@ -145,7 +145,7 @@ function trans_ct_status_text($ct_status_text) {
                 <?=trans_ct_status_text($cart['ct_status'])?>
               </div>
               <div class="col barcode-wrap text-center">
-                <a href="#" class="barcode-btn popupProdBarNumInfoBtn" data-id="" data-ct-id="">
+                <a href="#" class="barcode-btn btn_barcode_info" data-id="<?=$cart['ct_id']?>">
                   <img src="/skin/apms/order/new_basic/image/icon_02.png" alt="">
                   바코드
                 </a>
@@ -338,6 +338,16 @@ $(function() {
     var ct_id = $(this).data('id');
     $("body").addClass('modal-open');
     $("#popup_box > div").html('<iframe src="popup.partner_installreport.php?ct_id=' + ct_id + '">');
+    $("#popup_box iframe").load(function() {
+      $("#popup_box").show();
+    });
+  });
+
+  // 바코드 버튼
+  $('.btn_barcode_info').click(function() {
+    var ct_id = $(this).data('id');
+    $("body").addClass('modal-open');
+    $("#popup_box > div").html('<iframe src="popup.partner_barcodeinfo.php?ct_id=' + ct_id + '">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });
