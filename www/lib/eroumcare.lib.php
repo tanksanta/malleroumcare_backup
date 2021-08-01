@@ -1116,7 +1116,7 @@ function is_pen_order($od_id) {
     $od = sql_fetch($sql);
     
     $result = $od['od_penId'];
-    
+
     if (empty($result)) {
         return false;
     } else {
