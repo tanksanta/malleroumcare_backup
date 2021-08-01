@@ -10,8 +10,10 @@ $filename = preg_replace('/[^A-Za-z0-9 _ .\-\/]/', '', $_GET['fn']);
 
 $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
-if ( ! preg_match('/(jpg|jpeg|png|gif|bmp)$/i', $extension) ){
-    alert_close('이미지 확장자가 아닙니다.');
+if( ! preg_match('/partner\/img\//i', $filename) ) {
+  if ( ! preg_match('/(jpg|jpeg|png|gif|bmp)$/i', $extension) ){
+      alert_close('이미지 확장자가 아닙니다.');
+  }
 }
 
 if(strpos($filename, G5_DATA_DIR.'/item')) {
@@ -25,6 +27,9 @@ if(strpos($filename, G5_DATA_DIR.'/item')) {
     $filepath = G5_DATA_PATH.'/'.$editor_file;
 } else if(strpos($filename, G5_DATA_DIR.'/file')) {
     $editor_file = strstr($filename, 'file');
+    $filepath = G5_DATA_PATH.'/'.$editor_file;
+} else if(strpos($filename, G5_DATA_DIR.'/partner')) {
+    $editor_file = strstr($filename, 'partner');
     $filepath = G5_DATA_PATH.'/'.$editor_file;
 } else {
     $editor_file = '';

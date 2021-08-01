@@ -17,9 +17,9 @@ $prodListCnt = 0;
 $deliveryTotalCnt = 0;
 $delivery_insert=0;
 if (!$od['od_id']) {
-    alert("해당 주문번호로 주문서가 존재하지 않습니다.");
+  alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 } else {
-  if($od["ordId"]){
+  if($od["ordId"]) {
     $sendData = [];
     $sendData["penOrdId"] = $od["ordId"];
     $sendData["uuid"] = $od["uuid"];
@@ -38,7 +38,7 @@ if (!$od['od_id']) {
     $result = json_decode($res, true);
     $result = $result["data"];
 
-    if($result){
+    if($result) {
       $ordZip = [];
       $ordZip[0] = substr($result[0]["ordZip"], 0, 3);
       $ordZip[1] = substr($result[0]["ordZip"], 3, 2);
@@ -62,7 +62,7 @@ if (!$od['od_id']) {
 
       $od = sql_fetch("SELECT * FROM {$g5["g5_shop_order_table"]} WHERE od_id = '{$od["od_id"]}'");
 
-      foreach($result as $data){
+      foreach($result as $data) {
         $thisProductData = [];
         $thisProductData["prodId"] = $data["prodId"];
         $thisProductData["prodColor"] = $data["prodColor"];
@@ -71,26 +71,24 @@ if (!$od['od_id']) {
         $thisProductData["penStaSeq"] = $data["penStaSeq"];
         array_push($prodList, $thisProductData);
       }
-
     }
   } else {
-            $sto_imsi="";
-            $sql_ct = " select * from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
-            $result_ct = sql_query($sql_ct);
-            //배송정보
+    $sto_imsi="";
+    $sql_ct = " select * from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+    $result_ct = sql_query($sql_ct);
+    //배송정보
 
-            while($row_ct = sql_fetch_array($result_ct)) {
-                $sto_imsi .=$row_ct['stoId'];
+    while($row_ct = sql_fetch_array($result_ct)) {
+      $sto_imsi .=$row_ct['stoId'];
 
-                //배송정보
-                if($row_ct['ct_combine_ct_id']||$row_ct['ct_delivery_num']){
-                    $delivery_insert++;
-                }
-
-            }
-            $stoIdDataList = explode('|',$sto_imsi);
-            $stoIdDataList=array_filter($stoIdDataList);
-            $stoIdData = implode("|", $stoIdDataList);
+      //배송정보
+      if($row_ct['ct_combine_ct_id']||$row_ct['ct_delivery_num']){
+        $delivery_insert++;
+      }
+    }
+    $stoIdDataList = explode('|',$sto_imsi);
+    $stoIdDataList=array_filter($stoIdDataList);
+    $stoIdData = implode("|", $stoIdDataList);
   }
 }
 $mb = get_member($od['mb_id']);
@@ -114,47 +112,56 @@ $od_penzip      = (isset($od['od_penId']) && $od['od_penId']) ? $od_penzip1.$od_
 $od_penAddr      = (isset($od['od_penId']) && $od['od_penId']) ? $od['od_penAddr'] : $od['od_addr1'].''.$od['od_addr2'].''.$od['od_addr3'];  //주소
 
 // 상품목록
-$sql = " select a.ct_id,
-                a.it_id,
-        a.it_name,
-            a.cp_price,
-                a.ct_notax,
-                a.ct_send_cost,
-                a.ct_sendcost,
-                a.it_sc_type,
-        a.pt_it,
-        a.pt_id,
-        b.ca_id,
-        b.ca_id2,
-        b.ca_id3,
-        b.pt_msg1,
-        b.pt_msg2,
-                b.pt_msg3,
-                a.ct_status,
-                b.it_model,
-                b.it_outsourcing_use,
-                b.it_outsourcing_company,
-                b.it_outsourcing_manager,
-                b.it_outsourcing_email,
-                b.it_outsourcing_option,
-                b.it_outsourcing_option2,
-                b.it_outsourcing_option3,
-                b.it_outsourcing_option4,
-                b.it_outsourcing_option5,
-        a.pt_old_name,
-                a.pt_old_opt,
-                a.ct_uid,
-        a.prodMemo,
-        a.prodSupYn,
-        a.ct_qty,
-        a.ct_stock_qty,
-        b.it_img1,
-        a.ordLendStrDtm,
-        a.ordLendEndDtm
-      from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
-      where a.od_id = '$od_id'
-      group by a.it_id, a.ct_uid
-      order by a.ct_id ";
+$sql = "
+  select
+    a.ct_id,
+    a.it_id,
+    a.it_name,
+    a.cp_price,
+    a.ct_notax,
+    a.ct_send_cost,
+    a.ct_sendcost,
+    a.it_sc_type,
+    a.pt_it,
+    a.pt_id,
+    b.ca_id,
+    b.ca_id2,
+    b.ca_id3,
+    b.pt_msg1,
+    b.pt_msg2,
+    b.pt_msg3,
+    a.ct_status,
+    b.it_model,
+    b.it_outsourcing_use,
+    b.it_outsourcing_company,
+    b.it_outsourcing_manager,
+    b.it_outsourcing_email,
+    b.it_outsourcing_option,
+    b.it_outsourcing_option2,
+    b.it_outsourcing_option3,
+    b.it_outsourcing_option4,
+    b.it_outsourcing_option5,
+    a.pt_old_name,
+    a.pt_old_opt,
+    a.ct_uid,
+    a.prodMemo,
+    a.prodSupYn,
+    a.ct_qty,
+    a.ct_stock_qty,
+    b.it_img1,
+    a.ordLendStrDtm,
+    a.ordLendEndDtm
+  from
+    {$g5['g5_shop_cart_table']} a
+  left join
+    {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
+  where
+    a.od_id = '$od_id'
+  group by
+    a.it_id, a.ct_uid
+  order by
+    a.ct_id
+";
 
 $result = sql_query($sql);
 
@@ -166,14 +173,21 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
   $cate_counts[$row['ct_status']] += 1;
 
   // 상품의 옵션정보
-  $sql = " select ct_id, mb_id, ct_manager, ct_delivery_cnt, ct_combine_ct_id, it_id, ct_price, ct_point, ct_qty, ct_ex_date, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid
-        , ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
-        , ( SELECT it_taxInfo FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_taxInfo
-              from {$g5['g5_shop_cart_table']} MT
-              where od_id = '{$od['od_id']}'
-                  and it_id = '{$row['it_id']}'
-                  and ct_uid = '{$row['ct_uid']}'
-              order by io_type asc, ct_id asc ";
+  $sql = "
+    select
+      ct_id, mb_id, ct_manager, ct_delivery_cnt, ct_combine_ct_id, it_id, ct_price, ct_point, ct_qty, ct_ex_date, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid,
+      ct_is_direct_delivery,
+      ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn,
+      ( SELECT it_taxInfo FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_taxInfo
+    from
+      {$g5['g5_shop_cart_table']} MT
+    where
+      od_id = '{$od['od_id']}' and
+      it_id = '{$row['it_id']}' and
+      ct_uid = '{$row['ct_uid']}'
+    order by
+      io_type asc, ct_id asc
+  ";
   $res = sql_query($sql);
 
   $row['options_span'] = sql_num_rows($res);
@@ -250,24 +264,22 @@ $amount['cancel'] = $od['od_cancel_price'];
 $s_receipt_way = ($od['pt_case']) ? $od['pt_case'] : $od['od_settle_case'];
 
 if($od['od_settle_case'] == '간편결제') {
-    switch($od['od_pg']) {
-        case 'lg':
-            $s_receipt_way = 'PAYNOW';
-            break;
-        case 'inicis':
-            $s_receipt_way = 'KPAY';
-            break;
-        case 'kcp':
-            $s_receipt_way = 'PAYCO';
-            break;
-        default:
-            $s_receipt_way = $row['od_settle_case'];
-            break;
-    }
+  switch($od['od_pg']) {
+    case 'lg':
+      $s_receipt_way = 'PAYNOW';
+      break;
+    case 'inicis':
+      $s_receipt_way = 'KPAY';
+      break;
+    case 'kcp':
+      $s_receipt_way = 'PAYCO';
+      break;
+    default:
+      $s_receipt_way = $row['od_settle_case'];
+      break;
+  }
 }
 
-//$sql = "SELECT * FROM g5_shop_order_typereceipt WHERE od_id = '{$od_id}'";
-//$typereceipt = sql_fetch($sql);
 $typereceipt = get_typereceipt_step($od_id);
 $typereceipt_cate = get_typereceipt_cate($od_id);
 
@@ -282,50 +294,61 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php'); // datepicker js
 $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
 $total_ct_delivery_cnt=0;
 //상품 옵션 개수별 바코드 필드추가
-sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}`
-                    ADD `ct_barcode` TEXT NOT NULL AFTER `ct_qty` ", false);
-
-  # 210121 배송시나리오 리뉴얼
-    //  $obStaOrdStatus = [];
-    //
-    //  $obStaOrdStatus["00"]["code"] = "00";
-    //  $obStaOrdStatus["00"]["name"] = "주문완료";
-    //  $obStaOrdStatus["00"]["next"] = "01";
-    //
-    //  $obStaOrdStatus["01"]["code"] = "01";
-    //  $obStaOrdStatus["01"]["name"] = "배송중";
-    //  $obStaOrdStatus["01"]["next"] = "02";
-    //
-    //  $obStaOrdStatus["02"]["code"] = "02";
-    //  $obStaOrdStatus["02"]["name"] = "배송완료";
-    //  $obStaOrdStatus["02"]["next"] = "03";
-    //
-    //  $obStaOrdStatus["03"]["code"] = "03";
-    //  $obStaOrdStatus["03"]["name"] = "주문확정";
-    //  $obStaOrdStatus["03"]["next"] = "";
+sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}` ADD `ct_barcode` TEXT NOT NULL AFTER `ct_qty` ", false);
 
 
+$sql_ct = " select * from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+$result_ct = sql_query($sql_ct);
+$qty=0;
+$insert_qty=0;
+while($row_ct = sql_fetch_array($result_ct)) {
+  if($row_ct['ct_status'] !== "취소"&&$row_ct['ct_status'] !== "주문무효"){
+    $qty += $row_ct['ct_qty'];
+    if($row_ct['ct_barcode_insert'])
+      $insert_qty += $row_ct['ct_barcode_insert']; 
+  }
+}
 
-    $sql_ct = " select * from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
-    $result_ct = sql_query($sql_ct);
-    $qty=0;
-    $insert_qty=0;
-    while($row_ct = sql_fetch_array($result_ct)) {
-        if($row_ct['ct_status'] !=="취소"&&$row_ct['ct_status'] !=="주문무효"){
-            $qty += $row_ct['ct_qty'];
-            if($row_ct['ct_barcode_insert'])
-            $insert_qty += $row_ct['ct_barcode_insert']; 
-        }
+$prodBarNumCntBtnWord = $insert_qty."/".$qty;
+$prodBarNumCntBtnWord = ($insert_qty >= $qty) ? "입력완료" : $prodBarNumCntBtnWord;
+$prodBarNumCntBtnStatus = ($insert_qty >= $qty) ? " disable" : "";
+
+$deliveryCntBtnWord = "배송정보 ({$delivery_insert}/{$od["od_delivery_total"]})";
+$deliveryCntBtnWord = ($delivery_insert >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
+$deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disable" : "";
+
+# 설치 결과 보고서
+$reports = [];
+$install_report_flag = false; // 현재 주문에 위탁: 설치/배송 상품이 있는지 여부
+foreach($carts as $cart) {
+  foreach($cart['options'] as $option) {
+    if($option['ct_is_direct_delivery'] != '2')
+      continue;
+
+    $install_report_flag = true;
+
+    $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$option['ct_id']}' ");
+    if($report['ct_id']) {
+      $report['it_name'] = $cart['it_name'];
+      if($option['ct_option'] != $cart['it_name'])
+        $report['it_name'] .= " ({$option['ct_option']})";
+
+      $photo_result = sql_query("
+        SELECT * FROM partner_install_photo
+        WHERE ct_id = '{$report['ct_id']}' and mb_id = '{$report['mb_id']}'
+        ORDER BY ip_id ASC
+      ");
+
+      $photos = [];
+      while($photo = sql_fetch_array($photo_result)) {
+        $photos[] = $photo;
+      }
+      $report['photo'] = $photos;
+
+      $reports[] = $report;
     }
-
-  $prodBarNumCntBtnWord = $insert_qty."/".$qty;
-  $prodBarNumCntBtnWord = ($insert_qty >= $qty) ? "입력완료" : $prodBarNumCntBtnWord;
-  $prodBarNumCntBtnStatus = ($insert_qty >= $qty) ? " disable" : "";
-
-  $deliveryCntBtnWord = "배송정보 ({$delivery_insert}/{$od["od_delivery_total"]})";
-  $deliveryCntBtnWord = ($delivery_insert >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
-  $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disable" : "";
-
+  }
+}
 ?>
 <script>
 var od_id = '<?php echo $od['od_id']; ?>';
@@ -1218,6 +1241,33 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <td><textarea name="od_send_admin_memo" rows="8" placeholder="관리자메모를 입력하세요." id="od_send_admin_memo"><?php echo get_text($od['od_send_admin_memo'], 1); ?></textarea></td>
                     </tr>
                     -->
+                    <?php if($install_report_flag) { ?>
+                    <tr>
+                      <th scope="row">설치 결과 보고</th>
+                      <td colspan="3">
+                        <ul id="list_ir">
+                          <?php foreach($reports as $report) { ?>
+                          <li>
+                            <div class="ir_title"><?=$report['it_name']?></div>
+                            <div class="ir_issue"><?=nl2br($report['ir_issue'])?></div>
+                            <div class="ir_img_wrap">
+                              <?php if($report['ir_cert_url']) { ?>
+                              <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"))?>" target="_blank" class="view_image">
+                                <img src="<?=G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"?>">
+                              </a>
+                              <?php } ?>
+                              <?php foreach($report['photo'] as $photo) { ?>
+                              <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"))?>" target="_blank" class="view_image">
+                                <img src="<?=G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"?>">
+                              </a>
+                              <?php } ?>
+                            </div>
+                          </li>
+                          <?php } ?>
+                        </ul>
+                      </td>
+                    </tr>
+                    <?php } ?>
                     <input type="hidden" name="od_send_admin_memo" value="<?php echo get_text($od['od_send_admin_memo'], 1); ?>" />
                     </tbody>
                     </table>
@@ -1913,61 +1963,63 @@ var od_id = '<?php echo $od['od_id']; ?>';
     </div>
     
     <div class="block">
-        <div class="header">
-            <h2>배송 기록</h2>
-            <div class="right">
-            </div>
+      <div class="header">
+        <h2>배송 기록</h2>
+        <div class="right">
         </div>
-        <div class="block-box gray logs">
+      </div>
+      <div class="block-box gray logs">
+        <?php
+        $logs = get_delivery_log($od['od_id']);
+        foreach($logs as $log) {
+          $log_mb = get_member($log['mb_id']);
+          //아이템 검색
+          $sql_ct = "select * from g5_shop_cart where ct_id = '".$log['ct_id']."'";
+          $result_ct = sql_fetch($sql_ct);
 
-            <?php
-            $logs = get_delivery_log($od['od_id']);
-            foreach($logs as $log) {
-                $log_mb = get_member($log['mb_id']);
-                //아이템 검색
-                $sql_ct ="select * from g5_shop_cart where ct_id = '".$log['ct_id']."'";
-                $result_ct=sql_fetch($sql_ct);
+          //아이템 이름
+          $it_name = $result_ct['it_name'];
+          if($result_ct['ct_option']) { $it_name .="(".$result_ct['ct_option'].")"; }
 
-                //아이템 이름
-                $it_name= $result_ct['it_name'];
-                if($result_ct['ct_option']){ $it_name .="(".$result_ct['ct_option'].")"; }
-
-                //택배사
-                $delivery_company="";
-                foreach($delivery_companys as $data){ 
-                    if($log["ct_delivery_company"] == $data["val"] ){
-                        $delivery_company="(".$data["name"].")";
-                    }
-                }
-                //직배송
-                $direct_delivery="";
-                if($log["ct_is_direct_delivery"]=="1"){
-                    $direct_delivery="[직배송]";
-                }
-
-                //합포
-                $combine="";
-                if($log["ct_combine_ct_id"]){
-                    //합포 검색
-                    $sql_ct_p ="select * from g5_shop_cart where ct_id = '".$log['ct_combine_ct_id']."'";
-                    $result_ct_p=sql_fetch($sql_ct_p);
-                    //합포 아이템 이름
-                    $it_name_p= $result_ct_p['it_name'];
-                    if($result_ct_p['ct_option']){ $it_name_p .="(".$result_ct_p['ct_option'].")"; }
-
-                    $combine="합포 - ".$it_name_p."";
-                }
-                if($log['ct_combine_ct_id']){
-                    echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' ['. $combine.'] '.$direct_delivery.'<br/>';
-                }else{
-                    echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' 송장번호['. $log['ct_delivery_num'].'] '.$direct_delivery.'<br/>';
-                }
+          //택배사
+          $delivery_company="";
+          foreach($delivery_companys as $data){ 
+            if($log["ct_delivery_company"] == $data["val"] ) {
+              $delivery_company = "(".$data["name"].")";
             }
-            if (!count($logs)) {
-                echo '기록이 없습니다.';
-            }
-            ?>
-        </div>
+          }
+          //직배송
+          $direct_delivery = "";
+          if($log["ct_is_direct_delivery"] == "1") {
+            $direct_delivery = "[위탁:배송]";
+          }
+          else if($log["ct_is_direct_delivery"] == "2") {
+            $direct_delivery = "[위탁:배송/설치]";
+          }
+
+          //합포
+          $combine="";
+          if($log["ct_combine_ct_id"]) {
+            //합포 검색
+            $sql_ct_p = "select * from g5_shop_cart where ct_id = '".$log['ct_combine_ct_id']."'";
+            $result_ct_p = sql_fetch($sql_ct_p);
+            //합포 아이템 이름
+            $it_name_p = $result_ct_p['it_name'];
+            if($result_ct_p['ct_option']){ $it_name_p .= "(".$result_ct_p['ct_option'].")"; }
+
+            $combine="합포 - ".$it_name_p."";
+          }
+          if($log['ct_combine_ct_id']) {
+            echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' ['. $combine.'] '.$direct_delivery.'<br/>';
+          } else {
+            echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' 송장번호['. $log['ct_delivery_num'].'] '.$direct_delivery.'<br/>';
+          }
+        }
+        if (!count($logs)) {
+          echo '기록이 없습니다.';
+        }
+        ?>
+      </div>
     </div>
     
     <div id="order_summarize">
