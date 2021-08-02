@@ -1178,7 +1178,7 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
     </colgroup>
     <tbody>
       <tr>
-        <th scope="row"><label for="it_is_direct_delivery">직배송</label></th>
+        <th scope="row"><label for="it_is_direct_delivery">위탁</label></th>
         <td>
           <?php echo help("체크하시면 로젠택배 EDI전송을 사용하지 않습니다."); ?>
           <label>
