@@ -18,4 +18,10 @@ if($header_skin)
 		<p>관리자 승인 후 서비스 이용이 가능합니다. </p>
 		<a href="/bbs/content.php?co_id=guide">서비스 이용안내</a>
 	</div>
+
+	<script>
+	$(document).ready(function() {
+		$('#head_tutorial').hide();
+	});
+	</script>
 <?php } ?>
