@@ -686,8 +686,8 @@
 }
 
 #partner-order .row {
-  margin-left: -7px;
-  margin-right: -7px;
+  margin-left: 0;
+  margin-right: 0;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -766,7 +766,6 @@
 
 #partner-order .item-list {
   border-bottom: 1px solid #DDDDDD;
-  padding-bottom: 20px;
   margin-top: 20px;
   margin-bottom: 40px;
 }
@@ -819,9 +818,10 @@
 }
 
 #partner-order .item-list li.install-report {
+  border-top: none;
   padding: 18px;
   background: #F5F5F5;
-  margin-left: 46px;
+  margin-left: 53px;
 }
 
 #partner-order .install-report .report-btn {
