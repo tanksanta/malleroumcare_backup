@@ -56,7 +56,7 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
 $sql_limit = " limit {$from_record}, {$page_rows} ";
 
-$sql_order = " ORDER BY FIELD(ct_status, '" . implode("' , '", $ct_steps) . "' ), ct_move_date desc, od_id desc ";
+$sql_order = " ORDER BY FIELD(ct_status, '" . implode("' , '", $ct_steps) . "' ), ct_direct_delivery_date asc, od_id desc ";
 
 $result = sql_query("
   SELECT
@@ -70,7 +70,7 @@ $result = sql_query("
     prodMemo,
     ct_is_direct_delivery,
     ct_direct_delivery_price,
-    ct_move_date,
+    ct_direct_delivery_date,
     ct_ex_date
   {$sql_common}
   {$sql_order}
