@@ -822,6 +822,7 @@
   padding: 18px;
   background: #F5F5F5;
   margin-left: 53px;
+  margin-bottom: 15px;
 }
 
 #partner-order .install-report .report-btn {
@@ -991,4 +992,122 @@
 
 #partner-order .text-weight-bold {
   font-weight: 700;
+}
+
+@media (max-width: 1220px) {
+  #partner-order {
+    padding: 30px 0 0;
+  }
+
+  #partner-order h2.title {
+    padding: 0;
+    margin-bottom: 40px !important;
+  }
+
+  #partner-order .container {
+    display: block;
+    width: 100%;
+    padding: 0;
+  }
+
+  #partner-order .left-wrap,
+  #partner-order .right-wrap {
+    width: 100%;
+  }
+
+  #partner-order #form_ct_status .top {
+    display: block;
+    width: 100%;
+  }
+
+  #partner-order #form_ct_status .top .title {
+    margin-bottom: 20px;
+  }
+
+  #partner-order .delivery-info-wrap {
+    padding: 15px 10px;
+  }
+
+  #partner-order .delivery-info-wrap .col {
+    padding: 0;
+  }
+
+  #partner-order .delivery-info-wrap .col.right {
+    width: calc(100% - 90px);
+  }
+
+  #partner-order .item-list li.item {
+    -webkit-box-lines: multiple;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+  }
+
+  #partner-order .item-list li .checkbox-wrap {
+    width: 10%;
+  }
+
+  #partner-order .item-list li .item-img-wrap {
+    width: 114px;
+  }
+
+  #partner-order .item-list li .item-info-wrap {
+    width: calc(100% - 10% - 114px);
+    font-size: 14px;
+  }
+
+  #partner-order .item-list li .item-info-wrap .title {
+    font-size: 15px;
+  }
+
+  #partner-order .item-list li .delivery-wrap {
+    width: 50%;
+    text-align: left;
+    padding-left: 40px;
+    margin-top: 10px;
+    font-weight: 700;
+  }
+
+  #partner-order .item-list li .barcode-wrap {
+    width: 50%;
+    margin-top: 13px;
+  }
+
+  #partner-order .item-list li .barcode-wrap .barcode-btn {
+    float: right;
+  }
+
+  #partner-order .item-list li.install-report {
+    margin-left: 40px;
+  }
+
+  #partner-order .item-list li.install-report .top-wrap {
+    -webkit-box-lines: multiple;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+  }
+
+  #partner-order .install-report .report-img-wrap {
+    -webkit-box-lines: multiple;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+  }
+
+  #partner-order .install-report .report-img-wrap .issue-wrap {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  #partner-order .install-report .report-btn {
+    width: 100%;
+    margin-top: 10px;
+    height: 38px;
+  }
+
+  #partner-order .right-wrap {
+    margin-top: 35px;
+  }
+
+  #partner-order .delivery-status-title {
+    margin-top: 15px !important;
+  }
 }

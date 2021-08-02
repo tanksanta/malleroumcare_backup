@@ -101,7 +101,7 @@ function trans_ct_status_text($ct_status_text) {
     주문상세
   </h2>
 
-  <section class="row no-gutter justify-space-between">
+  <section class="row no-gutter justify-space-between container">
     <div class="left-wrap">
       <form id="form_ct_status">
         <div class="top row no-gutter justify-space-between align-center">
@@ -173,7 +173,7 @@ function trans_ct_status_text($ct_status_text) {
                   </div>
                 </div>
                 <?php } ?>
-                <div class="col">
+                <div class="col issue-wrap">
                   <p class="issue">
                     <?=nl2br($cart['report']['ir_issue'])?>
                   </p>
