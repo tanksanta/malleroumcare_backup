@@ -145,7 +145,7 @@ function trans_ct_status_text($ct_status_text) {
                 <?=trans_ct_status_text($cart['ct_status'])?>
               </div>
               <div class="col barcode-wrap text-center">
-                <a href="#" class="barcode-btn btn_barcode_info" data-id="<?=$cart['ct_id']?>">
+                <a href="javascript:void(0);" class="barcode-btn btn_barcode_info" data-id="<?=$cart['ct_id']?>">
                   <img src="/skin/apms/order/new_basic/image/icon_02.png" alt="">
                   바코드
                 </a>
@@ -245,7 +245,7 @@ function trans_ct_status_text($ct_status_text) {
         배송정보
       </div>
       <div class="row no-gutter">
-        <a href="#" id="btn_delivery_info" class="delivery-status-info col full-width text-center">
+        <a href="javascript:void(0);" id="btn_delivery_info" class="delivery-status-info col full-width text-center">
           배송정보 (<?=$count_delivery_inserted?>/<?=count($carts)?>)
         </a>
       </div>
