@@ -685,6 +685,10 @@
   margin-bottom: 80px;
 }
 
+#partner-order .container {
+  width: 100%;
+}
+
 #partner-order .row {
   margin-left: 0;
   margin-right: 0;
