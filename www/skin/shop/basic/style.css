@@ -687,6 +687,7 @@
 
 #partner-order .container {
   width: 100%;
+  padding: 0;
 }
 
 #partner-order .row {
