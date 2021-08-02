@@ -11,10 +11,11 @@ include_once("./_head.php");
 $where = [];
 
 # 기간
+$sel_date = in_array($sel_date, ['od_time', 'ct_ex_date']) ? $sel_date : '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
-if($fr_date && $to_date)
-  $where[] = " (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+if($sel_date && $fr_date && $to_date)
+  $where[] = " ( {$sel_date} between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
 # 주문상태
 $ct_status = $_GET['ct_status'];
@@ -126,9 +127,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <label><input type="checkbox" name="ct_status[]" value="완료" <?=option_array_checked('완료', $ct_status)?>/> 배송완료</label><br>
       
       <div class="search_date">
-        <select name="searchtype">
-          <option >주문일</option>
-          <option >출고완료일</option>
+        <select name="sel_date">
+          <option value="od_time" <?=get_selected($sel_date, 'od_time')?>>주문일</option>
+          <option value="ct_ex_date" <?=get_selected($sel_date, 'ct_ex_date')?>>출고완료일</option>
         </select>
         <input type="text" name="fr_date" value="<?=$fr_date?>" id="fr_date" class="datepicker"/> ~ <input type="text" name="to_date" value="<?=$to_date?>" id="to_date" class="datepicker"/>
         <a href="#" id="select_date_thismonth">이번달</a>
