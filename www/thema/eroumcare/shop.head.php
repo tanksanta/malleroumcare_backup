@@ -777,7 +777,7 @@ scrollToTop();
 					<div class="scrollBannerListWrap left">
 						<ul>
 							<li>
-								<a href="/bbs/content.php?co_id=guide">
+								<a href="/bbs/board.php?bo_table=notice&wr_id=30">
 									<img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_01.jpg" alt="" />
 								</a>
 							</li>
