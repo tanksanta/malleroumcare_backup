@@ -239,7 +239,7 @@ function trans_ct_status_text($ct_status_text) {
 
     <div class="right-wrap">
       <div class="row no-gutter">
-        <a href="<?=G5_SHOP_URL?>/안전손잡이_설치확인서.xlsx" class="instructor-btn">작업지시서 다운로드</a>
+        <a href="<?=G5_SHOP_URL?>/installation_report.xlsx" class="instructor-btn">작업지시서 다운로드</a>
       </div>
       <div class="delivery-status-title row no-gutter title">
         배송정보
