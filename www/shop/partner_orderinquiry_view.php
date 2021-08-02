@@ -20,7 +20,7 @@ if(!$od['od_id'])
 
 $cart_result = sql_query("
   SELECT * FROM {$g5['g5_shop_cart_table']}
-  WHERE od_id = '{$od_id}' and ct_direct_delivery_partner = '{$member['mb_id']}'
+  WHERE od_id = '{$od_id}' and ct_direct_delivery_partner = '{$member['mb_id']}' and ct_status IN('준비', '출고준비', '배송', '완료')
   ORDER BY ct_id ASC
 ");
 
