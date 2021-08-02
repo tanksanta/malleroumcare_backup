@@ -1520,3 +1520,110 @@ function get_partner_members() {
 
   return $ret;
 }
+
+// 파트너 거래처원장
+function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '', $search = '') {
+
+  $where_order = [];
+
+  # 기간
+  if($fr_date && $to_date) {
+    $where_order[] = " (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+  }
+
+  $search_order = $where_order ? ' and '.implode(' and ', $where_order) : '';
+
+  $sql_order = "
+    SELECT
+      od_time,
+      c.od_id,
+      mb_entNm,
+      it_name,
+      ct_option,
+      ct_qty,
+      ct_direct_delivery_price as price_d,
+      0 as deposit
+    FROM
+      g5_shop_cart c
+    LEFT JOIN
+      g5_shop_order o ON c.od_id = o.od_id
+    LEFT JOIN
+      g5_member m ON c.mb_id = m.mb_id
+    WHERE
+      ct_status = '완료' and
+      od_del_yn = 'N' and
+      ct_is_direct_delivery IN(1, 2) and
+      ct_direct_delivery_partner = '{$mb_id}'
+      {$search_order}
+  ";
+
+  $result = sql_query($sql_order);
+
+  # 이월잔액
+  $carried_balance = get_partner_outstanding_balance($mb_id, $fr_date);
+
+  $ledger = [];
+  $balance = $carried_balance;
+  while($row = sql_fetch_array($result)) {
+    $balance += ($row['price_d'] * $row['ct_qty']);
+    $balance -= ($row['deposit']);
+    $row['balance'] = $balance;
+    $ledger[] = $row;
+  }
+
+  # 검색어
+  $sel_field = in_array($sel_field, ['mb_entNm', 'it_name', 'c.od_id']) ? $sel_field : '';
+  $search = get_search_string($search);
+  if($sel_field && $search) {
+    // 검색결과 필터링
+    $ledger = array_values(array_filter($ledger, function($v) {
+      global $sel_field, $search;
+      $pattern = '/.*'.preg_quote($search).'.*/i';
+      return preg_match($pattern, $v[$sel_field]);
+    }));
+  }
+
+  return array(
+    'carried_balance' => $carried_balance,
+    'ledger' => $ledger
+  );
+}
+
+// 파트너 거래처원장 - 미수금 합계
+// fr_date 값이 있을 경우 해당 일 까지의 이월잔액
+// total_price_only: true - 총 구매액, false - 총 미수금
+function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false) {
+  global $g5;
+
+  $sql_search = '';
+  if($fr_date) {
+    $sql_search = " and od_time < '{$fr_date} 00:00:00' ";
+  }
+
+  $sql_common = "
+    FROM
+      {$g5['g5_shop_cart_table']} c
+    LEFT JOIN
+      {$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
+    LEFT JOIN
+      {$g5['member_table']} m ON c.mb_id = m.mb_id
+    WHERE
+      ct_status = '완료' and
+      od_del_yn = 'N' and
+      ct_is_direct_delivery IN(1, 2) and
+      ct_direct_delivery_partner = '{$mb_id}'
+      {$sql_search}
+  ";
+
+  $sql = "
+    SELECT
+      sum(ct_qty * ct_direct_delivery_price) as total_price
+    {$sql_common}
+  ";
+
+  $result = sql_fetch($sql);
+
+  $total_price = $result['total_price'] ?: 0;
+
+  return $total_price;
+}
