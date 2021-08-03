@@ -47,5 +47,10 @@ $sql = "update {$g5['g5_shop_order_table']}
         ";
 sql_query($sql);
 
+// 관리자 배송 기록에 남게
+$type_text = '취소';
+if($to == 'return') $type_text = '반품';
+set_order_admin_log($od['od_id'], "{$type_text} 요청 ({$request_reason_type} - {$cancel_memo})");
+
 goto_url(G5_SHOP_URL."/orderinquiryview.php?od_id=$od_id&amp;uid=$uid");
 ?>
