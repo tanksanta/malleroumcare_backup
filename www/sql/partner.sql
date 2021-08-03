@@ -23,3 +23,17 @@ CREATE TABLE IF NOT EXISTS `partner_install_photo` (
   PRIMARY KEY (`ip_id`),
   KEY `ct_id_mb_id` (`ct_id`, `mb_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 파트너 수금등록 테이블
+DROP TABLE IF EXISTS `partner_ledger`;
+CREATE TABLE IF NOT EXISTS `partner_ledger` (
+  `pl_id` int(11) NOT NULL auto_increment,
+  `mb_id` varchar(30) NOT NULL default '',
+  `pl_type` tinyint(1) NOT NULL COMMENT '1: 입금 / 2: 출금',
+  `pl_amount` int(11) NOT NULL DEFAULT 0,
+  `pl_memo` varchar(255) NOT NULL DEFAULT '',
+  `pl_created_at` datetime NOT NULL default '0000-00-00 00:00:00',
+  `pl_created_by` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`pl_id`),
+  KEY `mb_id` (`mb_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
