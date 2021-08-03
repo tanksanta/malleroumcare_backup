@@ -19,9 +19,19 @@ if(!$od['od_id'])
   alert('존재하지 않는 주문입니다.');
 
 $cart_result = sql_query("
-  SELECT * FROM {$g5['g5_shop_cart_table']}
-  WHERE od_id = '{$od_id}' and ct_direct_delivery_partner = '{$member['mb_id']}' and ct_status IN('준비', '출고준비', '배송', '완료')
-  ORDER BY ct_id ASC
+  SELECT
+    c.*,
+    i.it_img1
+  FROM
+    {$g5['g5_shop_cart_table']} c
+  LEFT JOIN
+    {$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
+  WHERE
+    od_id = '{$od_id}' and
+    ct_direct_delivery_partner = '{$member['mb_id']}' and
+    ct_status IN('준비', '출고준비', '배송', '완료')
+  ORDER BY
+    ct_id ASC
 ");
 
 $total_price_p = 0; // 총 공급가 합계
@@ -127,7 +137,7 @@ function trans_ct_status_text($ct_status_text) {
               </div>
               <div class="col item-img-wrap">
                 <div class="item-img">
-                  <img src="/shop/img/no_image.gif" onerror="this.src='/shop/img/no_image.gif';">
+                  <img src="/data/item/<?=$cart["it_img1"]?>" onerror="this.src='/shop/img/no_image.gif';">
                 </div>
               </div>
               <div class="col item-info-wrap">
