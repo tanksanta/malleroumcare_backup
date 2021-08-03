@@ -527,7 +527,7 @@ else // 장바구니에 담기
 
       $ct_pen_sql = $_SESSION['recipient']['penId'] ? "'" . $_SESSION['recipient']['penId'] . "'" : "null";
 
-      $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it_sc_type}', '{$it_sc_method}', '{$it_sc_price}', '{$it_sc_minimum}', '{$it_sc_qty}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '$uid', '{$ct_discount}', '{$it["prodSupYn"]}', '{$io_thezone}', '$ct_delivery_cnt', '$ct_delivery_price', '$ct_delivery_company', '{$it['it_is_direct_delivery']}', '{$it['it_direct_delivery_partner']}', '{$it['it_direct_delivery_price']}', CURDATE(), {$ct_pen_sql} )";
+      $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it_sc_type}', '{$it_sc_method}', '{$it_sc_price}', '{$it_sc_minimum}', '{$it_sc_qty}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '$uid', '{$ct_discount}', '{$it["prodSupYn"]}', '{$io_thezone}', '$ct_delivery_cnt', '$ct_delivery_price', '$ct_delivery_company', '{$it['it_is_direct_delivery']}', '{$it['it_direct_delivery_partner']}', '{$it['it_direct_delivery_price']}', NOW(), {$ct_pen_sql} )";
       $comma = ' , ';
       $ct_count++;
     }

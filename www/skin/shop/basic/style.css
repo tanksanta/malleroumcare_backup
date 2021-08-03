@@ -947,14 +947,23 @@
 }
 
 #partner-order .delivery-info-list .right {
-  width: 135px;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex-grow: 1;
 }
 
 #partner-order .delivery-info-list .right input {
   background: #fff;
   border: 1px solid #ddd;
   text-align: center;
-  width: 100%;
+  width: 110px;
+}
+
+#partner-order .delivery-info-list .right select {
+  background: #fff;
+  border: 1px solid #ddd;
+  height: 24px;
+  width: 55px;
 }
 
 #partner-order .delivery-info-list .delivery-save-btn {

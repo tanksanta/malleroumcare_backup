@@ -12,9 +12,10 @@ if(!$ct_id_arr || !is_array($ct_id_arr))
 foreach($ct_id_arr as $ct_id) {
   $ct_id = get_search_string($ct_id);
   $ct_direct_delivery_date = get_search_string($_POST["ct_direct_delivery_date_{$ct_id}"]);
-  $ct_direct_delivery_date = date('Y-m-d', strtotime($ct_direct_delivery_date));
+  $ct_direct_delivery_time = get_search_string($_POST["ct_direct_delivery_time_{$ct_id}"]);
+  $ct_direct_delivery_date = date('Y-m-d H:i:s', strtotime($ct_direct_delivery_date.' '.$ct_direct_delivery_time.':00:00'));
 
-  if(!$ct_id || !$ct_direct_delivery_date)
+  if(!$ct_id || !$ct_direct_delivery_time || !$ct_direct_delivery_date)
     json_response(400, '유효하지 않은 요청입니다.');
   
   $cart = sql_fetch("

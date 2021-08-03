@@ -29,7 +29,7 @@ foreach($ct_id_list as $ct_id) {
     $ct_is_direct_delivery = $ct_is_direct_delivery_sub;
     $ct_direct_delivery_partner = get_search_string($_POST["ct_direct_delivery_partner_{$ct_id}"]);
     $ct_direct_delivery_price = (int)$_POST["ct_direct_delivery_price_{$ct_id}"] ?: 0;
-    $direct_delivery_date = ' , ct_direct_delivery_date = CURDATE() ';
+    $direct_delivery_date = ' , ct_direct_delivery_date = NOW() ';
   } else {
     $ct_direct_delivery_partner = '';
     $ct_direct_delivery_price = 0;

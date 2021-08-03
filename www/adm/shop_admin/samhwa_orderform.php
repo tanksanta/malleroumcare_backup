@@ -849,7 +849,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     </td>
                                     <td class="btncol">
                                     <!-- 출고예정일 -->
-                                    <?php echo $options[$k]['ct_is_direct_delivery'] ? $options[$k]['ct_direct_delivery_date'] : '';?>
+                                    <?php echo $options[$k]['ct_is_direct_delivery'] ? date('Y-m-d H시', strtotime($options[$k]['ct_direct_delivery_date'])) : '';?>
                                     <!-- 출고예정일 -->
                                      </td>
                                     <td class="btncol">

@@ -279,7 +279,16 @@ function trans_ct_status_text($ct_status_text) {
               <div class="row">
                 <div class="col left">출고 예정일</div>
                 <div class="col right">
-                  <input type="text" class="datepicker" name="ct_direct_delivery_date_<?=$cart['ct_id']?>" value="<?=$cart['ct_direct_delivery_date']?>">
+                  <input type="text" class="datepicker" name="ct_direct_delivery_date_<?=$cart['ct_id']?>" value="<?=date('Y-m-d', strtotime($cart['ct_direct_delivery_date']))?>">
+                  <select name="ct_direct_delivery_time_<?=$cart['ct_id']?>">
+                    <?php
+                    $ct_direct_delivery_time = date('H', strtotime($cart['ct_direct_delivery_date']));
+                    for($i = 0; $i < 24; $i++) {
+                      $time = str_pad($i, 2, '0', STR_PAD_LEFT); 
+                    ?>
+                    <option value="<?=$time?>" <?=get_selected($ct_direct_delivery_time, $time)?>><?=$time?>시</option>
+                    <?php } ?>
+                  </select>
                 </div>
               </div>
               <div class="row">
