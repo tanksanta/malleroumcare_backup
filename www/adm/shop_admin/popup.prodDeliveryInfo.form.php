@@ -231,7 +231,7 @@ $partners = get_partner_members();
                 style="width: 100px; margin-left: 40px;"
               >
                 <option value="1" <?=get_selected($options[$k]['ct_is_direct_delivery'], '1')?>>배송</option>
-                <option value="2" <?=get_selected($options[$k]['ct_is_direct_delivery'], '2')?>>배송/설치</option>
+                <option value="2" <?=get_selected($options[$k]['ct_is_direct_delivery'], '2')?>>설치</option>
               </select>
               <select
                 name="ct_direct_delivery_partner_<?=$options[$k]["ct_id"]?>"

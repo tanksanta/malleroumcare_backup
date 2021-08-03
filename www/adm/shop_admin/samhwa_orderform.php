@@ -2000,7 +2000,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
             $direct_delivery = "[위탁:배송]";
           }
           else if($log["ct_is_direct_delivery"] == "2") {
-            $direct_delivery = "[위탁:배송/설치]";
+            $direct_delivery = "[위탁:설치]";
           }
 
           //합포

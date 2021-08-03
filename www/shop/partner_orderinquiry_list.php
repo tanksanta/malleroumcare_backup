@@ -97,7 +97,7 @@ while($row = sql_fetch_array($result)) {
 
   $ct_direct_delivery_text = '배송';
   if($row['ct_is_direct_delivery'] == '2') {
-    $ct_direct_delivery_text = '배송/설치';
+    $ct_direct_delivery_text = '설치';
   }
   $row['ct_direct_delivery'] = $ct_direct_delivery_text;
 
