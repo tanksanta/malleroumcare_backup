@@ -54,6 +54,16 @@ if($_POST['ct_id']&&$_POST['step']) {
     $usrId = $result_ct_s['mb_id'];
     $entId = $result_ct_s['mb_entId'];
   }
+
+  // 취소 요청 체크
+  $cancel_sql = "select *
+  from g5_shop_order_cancel_request
+  where od_id = '$od_id' and approved = 0";
+  $cancel_request_row = sql_fetch($cancel_sql);
+  if ($cancel_request_row['od_id']) {
+    echo '취소요청이 있는 주문은 주문상태를 변경할 수 없습니다.';
+    exit;
+  }
   
   //완료 판매완료로 바꿈
   // 재고 주문 일시 배송 완료 -> 01

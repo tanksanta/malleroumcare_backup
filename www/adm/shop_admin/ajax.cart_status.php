@@ -31,6 +31,7 @@ if($_POST['ct_id'] && $_POST['step']) {
     $sql_ct_s = "select a.od_id, a.it_id, a.it_name, a.ct_option, a.mb_id, a.stoId, b.mb_entId from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id=$result_ct_s['od_id'];
+    
     $content=$result_ct_s['it_name'];
     if($result_ct_s['it_name'] !== $result_ct_s['ct_option']){
       $content = $content."(".$result_ct_s['ct_option'].")";
@@ -51,6 +52,16 @@ if($_POST['ct_id'] && $_POST['step']) {
     $stoId = $stoId.$result_ct_s['stoId'];
     $usrId = $result_ct_s['mb_id'];
     $entId = $result_ct_s['mb_entId'];
+  }
+
+  // 취소 요청 체크
+  $cancel_sql = "select *
+  from g5_shop_order_cancel_request
+  where od_id = '$od_id' and approved = 0";
+  $cancel_request_row = sql_fetch($cancel_sql);
+  if ($cancel_request_row['od_id']) {
+    echo '취소요청이 있는 주문은 주문상태를 변경할 수 없습니다.';
+    exit;
   }
 
   //완료 판매완료로 바꿈
