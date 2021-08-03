@@ -1,20 +1,25 @@
 <?php
 include_once('./_common.php');
 
-if (!$member['mb_id']) {
-  alert("접근 권한이 없습니다.");
-  exit;
-}
+if(!$is_samhwa_partner)
+  alert('파트너 회원만 접근가능합니다.');
 
 $g5['title'] = "파트너 주문상세";
 include_once("./_head.php");
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
-if(!$is_samhwa_partner)
-  alert('파트너 회원만 접근가능합니다.');
-
 $od_id = get_search_string($_GET['od_id']);
-$od = sql_fetch(" SELECT * FROM {$g5['g5_shop_order_table']} WHERE od_id = '{$od_id}' ");
+$od = sql_fetch("
+  SELECT
+    o.*,
+    mb_entNm
+  FROM
+    {$g5['g5_shop_order_table']} o
+  LEFT JOIN
+    {$g5['member_table']} m ON o.mb_id = m.mb_id
+  WHERE
+    od_id = '{$od_id}'
+");
 if(!$od['od_id'])
   alert('존재하지 않는 주문입니다.');
 
@@ -116,7 +121,7 @@ function trans_ct_status_text($ct_status_text) {
       <form id="form_ct_status">
         <div class="top row no-gutter justify-space-between align-center">
           <div class="col title">
-            <?=$od['od_name']?> (주문일시: <?=date('Y-m-d H:i:s', strtotime($od['od_time']))?>)
+            <?=$od['mb_entNm']?> (주문일시: <?=date('Y-m-d H:i:s', strtotime($od['od_time']))?>)
           </div>
           <div class="col">
             <select name="ct_status" class="order-status-select">
@@ -249,7 +254,7 @@ function trans_ct_status_text($ct_status_text) {
 
     <div class="right-wrap">
       <div class="row no-gutter">
-        <a href="<?=G5_SHOP_URL?>/installation_report.xlsx" class="instructor-btn">작업지시서 다운로드</a>
+        <a href="partner_orderinquiry_excel.php?od_id=<?=$od_id?>" class="instructor-btn">작업지시서 다운로드</a>
       </div>
       <div class="delivery-status-title row no-gutter title">
         배송정보
