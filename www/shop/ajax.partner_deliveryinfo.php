@@ -25,6 +25,14 @@ foreach($ct_id as $id) {
   if(!$ct_delivery_company)
     json_response(400, '유효하지 않은 요청입니다.');
 
+  if($ct_delivery_company == 'install') {
+    // 설치배송이면
+    $ct_delivery_num_name = get_search_string($_POST["ct_delivery_num_name_{$id}"]);
+    
+    if($ct_delivery_num)
+      $ct_delivery_num = $ct_delivery_num_name.' / '.$ct_delivery_num;
+  }
+
   $ct = sql_fetch("
     SELECT * FROM {$g5['g5_shop_cart_table']}
     WHERE od_id = '{$od_id}' and ct_id = '{$id}'

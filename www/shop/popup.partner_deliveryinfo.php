@@ -34,6 +34,19 @@ $carts = [];
 while($row = sql_fetch_array($result)) {
   $row['it_name'] .= $row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " ({$row['ct_option']})" : '';
 
+  $ct_delivery_num_name = '';
+  if($row['ct_delivery_company'] == 'install' && $row['ct_delivery_num']) {
+    // 설치배송이면
+    $name_num = explode(' / ', $row['ct_delivery_num']);
+    $name = array_shift($name_num);
+    $num = implode(' / ', $name_num);
+
+    $ct_delivery_num_name = $name;
+    $row['ct_delivery_num'] = $num;
+  }
+
+  $row['ct_delivery_num_name'] = $ct_delivery_num_name;
+
   $carts[] = $row;
 }
 ?>
@@ -71,7 +84,10 @@ while($row = sql_fetch_array($result)) {
     .imfomation_box .li_box .deliveryInfoWrap { width: 100%; margin-top: 15px; }
     .imfomation_box .li_box .deliveryInfoWrap:after { display: table; content: ''; clear: both; }
     .imfomation_box .li_box .deliveryInfoWrap > select { width: 34%; height: 40px; float: left; margin-right: 1%; border: 1px solid #DDD; font-size: 17px; color: #666; padding-left: 10px; border-radius: 5px; }
-    .imfomation_box .li_box .deliveryInfoWrap > input[type="text"] { width: 65%; height: 40px; float: left; border: 1px solid #DDD; font-size: 17px; color: #666; padding: 0 40px 0 10px; border-radius: 5px; }
+    .imfomation_box .li_box .deliveryInfoWrap > input[type="text"] { width: 65%; height: 40px; float: left; border: 1px solid #DDD; font-size: 17px; color: #666; padding: 0 10px; border-radius: 5px; }
+
+    .ct_delivery_num_name { display: none; width: 25% !important; margin-right: 1%; }
+    .ct_delivery_num.install { width: 39% !important; }
 
     #popupFooterBtnWrap { position: fixed; width: 100%; height: 70px; background-color: #000; bottom: 0px; z-index: 10; }
     #popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
@@ -103,12 +119,13 @@ while($row = sql_fetch_array($result)) {
 
           <div class="deliveryInfoWrap">
             <input type="hidden" name="ct_id[]" value="<?=$row['ct_id']?>">
-            <select name="ct_delivery_company_<?=$row['ct_id']?>">
+            <select name="ct_delivery_company_<?=$row['ct_id']?>" class="ct_delivery_company">
               <?php foreach($delivery_companys as $data) { ?>
               <option value="<?=$data["val"]?>" <?=get_selected($data['val'], $row['ct_delivery_company'])?>><?=$data["name"]?></option>
               <?php } ?>
             </select>
-            <input type="text" value="<?=$row['ct_delivery_num']?>" name="ct_delivery_num_<?=$row['ct_id']?>" placeholder="송장번호/연락처 입력">
+            <input type="text" value="<?=$row['ct_delivery_num_name']?>" name="ct_delivery_num_name_<?=$row['ct_id']?>" class="ct_delivery_num_name" placeholder="담당자명">
+            <input type="text" value="<?=$row['ct_delivery_num']?>" name="ct_delivery_num_<?=$row['ct_id']?>" class="ct_delivery_num" placeholder="송장번호/연락처 입력">
           </div>
         </li>
         <?php } ?>
@@ -128,11 +145,33 @@ while($row = sql_fetch_array($result)) {
       $("#popup_box", parent.document).hide();
       $("#popup_box", parent.document).find("iframe").remove();
     }
+
+    function changeDeliveryCompany() {
+      var $li = $(this).closest('.li_box');
+      var $ct_delivery_num_name = $li.find('.ct_delivery_num_name');
+      var $ct_delivery_num = $li.find('.ct_delivery_num');
+      // 설치배송 선택시
+      if($(this).val() === 'install') {
+        $ct_delivery_num_name.show();
+        $ct_delivery_num.addClass('install');
+      } else {
+        $ct_delivery_num_name.hide();
+        $ct_delivery_num.removeClass('install');
+      }
+    }
     $(function() {
+      $('.ct_delivery_company').each(function() {
+        changeDeliveryCompany.call(this);
+      });
+
       $("#popupCloseBtn").click(function(e) {
         e.preventDefault();
         
         closePopup();
+      });
+
+      $('.ct_delivery_company').change(function() {
+        changeDeliveryCompany.call(this);
       });
 
       $('#prodBarNumSaveBtn').click(function() {
