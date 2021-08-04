@@ -20,6 +20,10 @@
       opacity: 20%;
       cursor: pointer;
     }
+    #mainTopSlidePCWrap .sw-button-prev:hover,
+    #mainTopSlidePCWrap .sw-button-next:hover {
+      opacity: 70%;
+    }
     .sw-button-prev .fa,
     .sw-button-next .fa {
       width: 30px;
@@ -110,20 +114,14 @@
 				slidesPerView : "auto",
 				autoplay : {
 					delay : 5000,
+          disableOnInteraction: false
 				},
         navigation: {
           nextEl: '.sw-button-next',
           prevEl: '.sw-button-prev',
-        }
+        },
+        loop: true
 			});
-			
-      $('.swiper-container')
-      .mouseenter(function() {
-        $(this).find('.sw-button').css('opacity', 0.7);
-      })
-      .mouseleave(function() {
-        $(this).find('.sw-button').css('opacity', 0.2);
-      })
 		});
 	</script>
 	
