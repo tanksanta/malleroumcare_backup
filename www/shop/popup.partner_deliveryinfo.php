@@ -154,9 +154,11 @@ while($row = sql_fetch_array($result)) {
       if($(this).val() === 'install') {
         $ct_delivery_num_name.show();
         $ct_delivery_num.addClass('install');
+        $ct_delivery_num.attr('placeholder', '연락처 입력');
       } else {
         $ct_delivery_num_name.hide();
         $ct_delivery_num.removeClass('install');
+        $ct_delivery_num.attr('placeholder', '송장번호/연락처 입력');
       }
     }
     $(function() {
