@@ -34,7 +34,7 @@ $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array
 $barcodes = [];
 if($stock_result['data']) {
   foreach($stock_result['data'] as $data) {
-    $barcodes[] = $data['prodBarNum'];
+    $barcodes[] = $data;
   }
 }
 ?>
@@ -76,7 +76,8 @@ if($stock_result['data']) {
 
     #popupFooterBtnWrap { position: fixed; width: 100%; height: 70px; background-color: #000; bottom: 0px; z-index: 10; }
     #popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
-    #popupFooterBtnWrap > .cancelbtn{ float: right; width: 100%; height: 100%; color: #666; background-color: #DDD; }
+    #popupFooterBtnWrap > .savebtn{ float: left; width: 75%; height: 100%; background-color:#000; color: #FFF; }
+    #popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
   </style>
 </head>
 <body>
@@ -98,17 +99,22 @@ if($stock_result['data']) {
           </p>
         </div>
 
-        <div class="deliveryInfoWrap">
-          <?php foreach($barcodes as $barcode) { ?>
-          <input type="text" value="<?=$barcode ?: '없음' ?>" readonly>
-          <?php } ?>
-        </div>
+        <form id="form_partner_barcode">
+          <div class="deliveryInfoWrap">
+            <input type="hidden" name="ct_id" value="<?=$ct_id?>">
+            <?php foreach($barcodes as $barcode) { ?>
+            <input type="hidden" name="stoId[]" value="<?=$barcode['stoId']?>">
+            <input type="text" name="<?=$barcode['stoId']?>" value="<?=$barcode['prodBarNum'] ?: '없음' ?>" maxlength="12">
+            <?php } ?>
+          </div>
+        </form>
       </li>
     </ul>
   </div>
   
   <div id="popupFooterBtnWrap">
-    <button type="button" class="cancelbtn" onclick="closePopup();">닫기</button>
+    <button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
+    <button type="button" class="cancelbtn" onclick="closePopup();">취소</button>
   </div>
   
   <script type="text/javascript">
@@ -123,6 +129,25 @@ if($stock_result['data']) {
         e.preventDefault();
         
         closePopup();
+      });
+
+      $('#prodBarNumSaveBtn').click(function() {
+        $('#form_partner_barcode').submit();
+      });
+      
+      $('#form_partner_barcode').on('submit', function(e) {
+        e.preventDefault();
+
+        var params = $(this).serialize();
+        $.post('ajax.partner_barcode.php', params, 'json')
+        .done(function() {
+          alert('바코드가 저장되었습니다.');
+          parent.window.location.reload();
+        })
+        .fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        });
       });
     });
   </script>
