@@ -7,6 +7,35 @@
 	<link rel="stylesheet" href="<?php echo G5_URL; ?>/css/swiper.min.css">
 	<script src="<?php echo G5_URL; ?>/js/swiper.min.js"></script>
 
+  <style>
+    #mainTopSlidePCWrap .sw-button-prev,
+    #mainTopSlidePCWrap .sw-button-next {
+      position: absolute;
+      bottom: 10px;
+      background-color: #000;
+      color: #fff;
+      border-radius: 5px;
+      padding: 20px;
+      z-index: 100;
+      opacity: 20%;
+      cursor: pointer;
+    }
+    .sw-button-prev .fa,
+    .sw-button-next .fa {
+      width: 30px;
+      line-height: 30px;
+      font-size: 30px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .sw-button-prev {
+      left: 10px;
+    }
+    .sw-button-next {
+      right: 10px;
+    }
+  </style>
+
 	<!-- 메인 상단 슬라이드 -->
 	<div id="mainTopSlidePCWrap">
 		<div class="listWrap">
@@ -30,7 +59,6 @@
 		<div class="viewWrap swiper-container">
 			<ul style="width: 100%;" class="swiper-wrapper">
 				<li style="width: 100%;" class="swiper-slide">
-
 					<a href="/bbs/board.php?bo_table=notice&wr_id=23">
 						<img src="<?=THEMA_URL?>/assets/img/main_banner_12.png" alt="">
 					</a>
@@ -66,6 +94,12 @@
 					</a>
 				</li> -->
 			</ul>
+      <div class="sw-button-prev sw-button pc_only">
+        <i class="fa fa-angle-left" aria-hidden="true"></i>
+      </div>
+      <div class="sw-button-next sw-button pc_only">
+        <i class="fa fa-angle-right" aria-hidden="true"></i>
+      </div>
 		</div>
 	</div>
 	
@@ -77,9 +111,20 @@
 				autoplay : {
 					delay : 5000,
 				},
+        navigation: {
+          nextEl: '.sw-button-next',
+          prevEl: '.sw-button-prev',
+        }
 			});
 			
-		})
+      $('.swiper-container')
+      .mouseenter(function() {
+        $(this).find('.sw-button').css('opacity', 0.7);
+      })
+      .mouseleave(function() {
+        $(this).find('.sw-button').css('opacity', 0.2);
+      })
+		});
 	</script>
 	
 	<!-- 메인 추천 카테고리 -->

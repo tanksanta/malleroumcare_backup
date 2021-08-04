@@ -823,7 +823,7 @@ pre{white-space: pre-wrap;}
 .samhwa-item-info-opener { bottom: 70px; z-index: 11; }
 
 /* 210202 메인 상단 슬라이드 */
-#mainTopSlidePCWrap { width: 100%; height: 563px; float: left; overflow: hidden; display: table; table-layout: fixed; max-width:1400px;}
+#mainTopSlidePCWrap { width: 100%; height: 563px; overflow: hidden; display: table; table-layout: fixed; max-width:1400px;}
 #mainTopSlidePCWrap * { position: relative; }
 #mainTopSlidePCWrap > div { 
 	height: 100%; 
@@ -839,8 +839,8 @@ pre{white-space: pre-wrap;}
 #mainTopSlidePCWrap > .listWrap > ul > li.mainMenu > a > i { position: absolute; right: 0; top: 50%; margin-top: -7px; }
 #mainTopSlidePCWrap > .viewWrap { overflow: hidden; display: block; }
 #mainTopSlidePCWrap > .viewWrap > ul { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
-#mainTopSlidePCWrap > .viewWrap > ul > li { height: 100%; float: left; }
-#mainTopSlidePCWrap > .viewWrap > ul > li img { width: 100%; height: 100%; float: left; }
+#mainTopSlidePCWrap > .viewWrap > ul > li { height: 100%; }
+#mainTopSlidePCWrap > .viewWrap > ul > li img { width: 100%; height: 100%; }
 #mainTopSlidePCWrap > .viewWrap > i { position: absolute; z-index: 2; cursor: pointer; font-size: 74px; color: #666; top: 50%; margin-top: -37px; }
 #mainTopSlidePCWrap > .viewWrap > #mainTopSlidePrevBtn { left: 20px; }
 #mainTopSlidePCWrap > .viewWrap > #mainTopSlideNextBtn { right: 20px; }
