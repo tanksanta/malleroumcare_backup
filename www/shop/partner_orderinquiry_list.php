@@ -69,6 +69,7 @@ $result = sql_query("
     ct_qty,
     ct_status,
     prodMemo,
+    c.stoId,
     ct_is_direct_delivery,
     ct_direct_delivery_price,
     ct_direct_delivery_date,
@@ -109,6 +110,24 @@ while($row = sql_fetch_array($result)) {
 
   $row['price_p'] = $price_p;
   $row['price_s'] = $price_s;
+
+  // 바코드 정보 가져오기
+  $sto_id = [];
+  foreach(array_filter(explode('|', $row['stoId'])) as $id) {
+    $sto_id[] = $id;
+  }
+
+  $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
+    'stoId' => implode('|', $sto_id)
+  ), 443);
+
+  $barcode = [];
+  if($stock_result['data']) {
+    foreach($stock_result['data'] as $data) {
+      $barcode[] = $data['prodBarNum'];
+    }
+  }
+  $row['barcode'] = $barcode;
 
   $orders[] = $row;
 }
@@ -159,37 +178,52 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <thead>
             <tr >
               <th>주문일</th>
-              <th>주문번호</th>
+              <th>주문정보</th>
               <th>사업소</th>
-              <th>품목명</th>
-              <th>수량</th>
               <th>상태</th>
-              <th>위탁내용</th>
+              <th>위탁</th>
               <th>요청사항</th>
-              <th>공급가액</th>
-              <th>부가세</th>
-              <th>출고예정일</th>
-              <th>출고완료일</th>
+              <th>공급가액<br>(부가세)</th>
+              <th>출고일시</th>
+              <th>바코드</th>
             </tr>
           </thead>
           <tbody>
             <?php
-            if(!$orders) echo '<tr><td colspan="12" class="empty_table">내역이 없습니다.</td></tr>';
+            if(!$orders) echo '<tr><td colspan="9" class="empty_table">내역이 없습니다.</td></tr>';
             foreach($orders as $row) { 
             ?>
             <tr onclick="window.location.href='partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>'" class="btn_link">
               <td class="text_c"><?=date('Y-m-d', strtotime($row['od_time']))?></td>
-              <td class="text_c"><?=$row['od_id']?></td>
+              <td class="text_c">
+                <?=$row['od_id']?><br>
+                <?=$row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " ({$row['ct_option']})" : '')?> * <?=$row['ct_qty']?>
+              </td>
               <td class="text_c"><?=$row['mb_entNm']?></td>
-              <td><?=$row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " ({$row['ct_option']})" : '')?></td>
-              <td class="text_c"><?=$row['ct_qty']?></td>
               <td class="text_c"><?=$row['ct_status']?></td>
               <td class="text_c"><?=$row['ct_direct_delivery']?></td>
               <td><?=$row['prodMemo']?></td>
-              <td class="text_r"><?=number_format($row['price_p'])?>원</td>
-              <td class="text_r"><?=number_format($row['price_s'])?>원</td>
-              <td class="text_c"><?=$row['ct_direct_delivery_date']?></td>
-              <td class="text_c"><?=$row['ct_ex_date']?></td>
+              <td class="text_r">
+                <?=number_format($row['price_p'])?>원<br>
+                (<?=number_format($row['price_s'])?>원)
+              </td>
+              <td class="text_c">
+                (예정)<?=date('Y-m-d H시', strtotime($row['ct_direct_delivery_date']))?>
+                <?php
+                if($row['ct_ex_date'])
+                  echo '<br>(완료)'.$row['ct_ex_date']
+                ?>
+              </td>
+              <td class="text_c">
+                <?php
+                $barcode_index = 0;
+                foreach($row['barcode'] as $barcode) {
+                  echo $barcode;
+                  if($barcode_index > 0) echo '<br>';
+                  $barcode_index++;
+                }
+                ?>
+              </td>
             </tr>
             <?php } ?>
           </tbody>

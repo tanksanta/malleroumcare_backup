@@ -279,7 +279,6 @@ function trans_ct_status_text($ct_status_text) {
               <div class="info-title text-weight-bold">
                 <?=$cart['it_name']?>
               </div>
-              <?php if($cart['ct_is_direct_delivery'] != 2) { ?>
               <input type="hidden" name="ct_id[]" value="<?=$cart['ct_id']?>">
               <div class="row">
                 <div class="col left">출고 예정일</div>
@@ -296,7 +295,6 @@ function trans_ct_status_text($ct_status_text) {
                   </select>
                 </div>
               </div>
-              <?php } ?>
               <div class="row">
                 <div class="col left">출고 완료일</div>
                 <div class="col right"><?=$cart['ct_ex_date'] ?: '대기'?></div>
