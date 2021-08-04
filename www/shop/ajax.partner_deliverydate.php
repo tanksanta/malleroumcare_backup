@@ -7,7 +7,7 @@ if(!$is_samhwa_partner)
 $od_id = get_search_string($_POST['od_id']);
 $ct_id_arr = $_POST['ct_id'];
 if(!$ct_id_arr || !is_array($ct_id_arr))
-  json_response(400, '유효하지 않은 요청입니다.');
+  json_response(400, '출고예정일을 변경할 상품이 없습니다.');
 
 foreach($ct_id_arr as $ct_id) {
   $ct_id = get_search_string($ct_id);
