@@ -299,6 +299,21 @@ function trans_ct_status_text($ct_status_text) {
                 <div class="col left">출고 완료일</div>
                 <div class="col right"><?=$cart['ct_ex_date'] ?: '대기'?></div>
               </div>
+              <?php
+              if($cart['ct_delivery_num']) {
+                $delivery_company_name = '';
+                foreach($delivery_companys as $data) {
+                  if($data['val'] == $cart['ct_delivery_company']) {
+                    $delivery_company_name = $data['name'];
+                    break;
+                  }
+                } 
+              ?>
+                <div class="row">
+                <div class="col left">[<?=$delivery_company_name?>]</div>
+                <div class="col right"><?=$cart['ct_delivery_num']?></div>
+              </div>
+              <?php } ?>
             </li>
             <?php } ?>
           </ul>

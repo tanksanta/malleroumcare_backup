@@ -32,7 +32,7 @@ foreach($ct_id as $id) {
 
   if($ct['ct_direct_delivery_partner'] != $member['mb_id'])
     json_response(400, '해당 상품의 배송정보를 변경할 수 있는 권한이 없습니다.');
-  
+
   $result = sql_query("
     UPDATE
       {$g5['g5_shop_cart_table']}
