@@ -26,11 +26,12 @@ if($_POST['ct_id'] && $_POST['step']) {
 
   $sql = [];
   $sql_ct = [];
+  $sql_cp = [];
 
   for($i=0; $i<count($_POST['ct_id']); $i++) {
     $sql_ct_s = "select a.od_id, a.it_id, a.it_name, a.ct_option, a.mb_id, a.stoId, b.mb_entId from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
-    $od_id=$result_ct_s['od_id'];
+    $od_id = $result_ct_s['od_id'];
     
     $content=$result_ct_s['it_name'];
     if($result_ct_s['it_name'] !== $result_ct_s['ct_option']){
@@ -47,6 +48,16 @@ if($_POST['ct_id'] && $_POST['step']) {
     //상태 update
     if($_POST['step'] == "배송"){ $add_sql = ", `ct_ex_date` = '".$ct_ex_date."'"; }
     $sql_ct[$i] = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql.", `ct_move_date`='".$ct_move_date."' where `ct_id` = '".$_POST['ct_id'][$i]."'";
+
+    // 쿠폰 취소
+    if($_POST['step'] == '취소' || $_POST['step'] == '주문무효') {
+      $sql_cp[] = "
+        DELETE FROM
+          g5_shop_coupon_log
+        WHERE
+          od_id = '{$od_id}'
+      ";
+    }
 
     //시스템 상태값 변경
     $stoId = $stoId.$result_ct_s['stoId'];
@@ -106,6 +117,10 @@ if($_POST['ct_id'] && $_POST['step']) {
     for($i=0; $i<count($sql); $i++) {
       sql_query($sql[$i]);
       sql_query($sql_ct[$i]);
+    }
+
+    foreach($sql_cp as $sql) {
+      sql_query($sql);
     }
     
     $api_data = array(

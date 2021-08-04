@@ -92,6 +92,14 @@ if ($cancel_request_row['request_type'] == "cancel") {
     // 주문취소 회원의 포인트를 되돌려 줌
     if ($od['od_receipt_point'] > 0)
         insert_point($member['mb_id'], $od['od_receipt_point'], "주문번호 $od_id 취소 요청 관리자 승인");
+    
+    // 쿠폰 취소
+    sql_query("
+      DELETE FROM
+        g5_shop_coupon_log
+      WHERE
+        od_id = '{$od_id}'
+    ");
 }
 
 // 반품 처리
