@@ -104,7 +104,7 @@ if($stock_result['data']) {
             <input type="hidden" name="ct_id" value="<?=$ct_id?>">
             <?php foreach($barcodes as $barcode) { ?>
             <input type="hidden" name="stoId[]" value="<?=$barcode['stoId']?>">
-            <input type="text" name="<?=$barcode['stoId']?>" value="<?=$barcode['prodBarNum'] ?: '없음' ?>" maxlength="12">
+            <input type="text" name="<?=$barcode['stoId']?>" value="<?=$barcode['prodBarNum'] ?: '' ?>" placeholder="없음" maxlength="12">
             <?php } ?>
           </div>
         </form>
