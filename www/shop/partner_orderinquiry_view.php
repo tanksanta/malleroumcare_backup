@@ -178,13 +178,17 @@ function trans_ct_status_text($ct_status_text) {
               <div class="row report-img-wrap">
                 <div class="col">
                   <div class="report-img">
-                    <img src="<?=G5_DATA_URL.'/partner/img/'.$cart['report']['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                    <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$cart['report']['ir_cert_url']}"))?>" target="_blank" class="view_image">
+                      <img src="<?=G5_DATA_URL.'/partner/img/'.$cart['report']['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                    </a>
                   </div>
                 </div>
                 <?php foreach($cart['report']['photo'] as $photo) { ?>
                 <div class="col">
                   <div class="report-img">
-                    <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                    <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"))?>" target="_blank" class="view_image">
+                      <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                    </a>
                   </div>
                 </div>
                 <?php } ?>
