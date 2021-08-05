@@ -266,16 +266,25 @@ while($wish_row = sql_fetch_array($wish_result)) {
             } else {
               if($member["mb_level"] == "3") { 
                 //사업소 가격
-                echo number_format($list[$i]["it_price"])."원 <span class='txt_color_orange'>판매가</span>";
+                echo number_format($list[$i]["it_price"])."원";
+                if (!is_benefit_item($list[$i])) {
+                    echo "<span class='txt_color_orange'>판매가</span>";
+                }
               } else if($member["mb_level"] == "4") { 
                 //우수 사업소 가격
                 echo ($list[$i]["it_price_dealer2"]) ? number_format($list[$i]["it_price_dealer2"])."원" : number_format($list[$i]["it_price"])."원 (사업소 판매가)";
               } else { 
-                echo number_format($list[$i]["it_price"])."원 <span class='txt_color_orange'>판매가</span>";
+                echo number_format($list[$i]["it_price"])."원";
+                if (!is_benefit_item($list[$i])) {
+                  echo "<span class='txt_color_orange'>판매가</span>";
+                }
               } 
             }
           } else {
-            echo number_format($list[$i]["it_cust_price"]).'원 <span class="txt_color_orange">판매가</span>';
+            echo number_format($list[$i]["it_cust_price"]).'원';
+            if (!is_benefit_item($list[$i])) {
+              echo "<span class='txt_color_orange'>판매가</span>";
+            }
           }
           ?>
         </p>

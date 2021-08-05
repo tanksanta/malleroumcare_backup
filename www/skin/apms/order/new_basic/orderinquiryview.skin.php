@@ -491,7 +491,7 @@ $(function() {
                   </p>
               </li>
               <li class="barcode">
-                <?php if($item[$i]['opt'][$k]['ct_status'] !== "취소" && $item[$i]['opt'][$k]['ct_status'] !== "주문무효"){ ?>
+                <?php if($item[$i]['opt'][$k]['ct_status'] !== "취소" && $item[$i]['opt'][$k]['ct_status'] !== "주문무효" && !is_benefit_item($item[$i]) ){ ?>
                   <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$od["od_id"]?>" data-ct-id="<?=$item[$i]['opt'][$k]["ct_id"]?>" ><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 확인</a>
                 <?php } ?>
               </li>
