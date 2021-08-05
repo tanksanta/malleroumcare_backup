@@ -1279,7 +1279,22 @@ if($_POST["penId"]) {
   if($res["errorYN"] == "N") {
     for($k=0;$k<count($res['data']['stockList']);$k++) {
       array_push($stoIdList, $res['data']['stockList'][$k]["stoId"]);
-      $sql_ct = "update `g5_shop_cart` set `stoId` = CONCAT(`stoId`,'".$res['data']['stockList'][$k]["stoId"]."|') where `ct_id` ='".$res['data']['stockList'][$k]["ct_id"]."'";
+
+      // 튜토리얼 상품 주문무효 처리
+      $sql_ct_tutorial = "SELECT * FROM g5_shop_cart WHERE `ct_id` ='".$res['data']['stockList'][$k]["ct_id"]."'";
+      $ct_tutorial = sql_fetch($sql_ct_tutorial);
+      if (in_array($ct_tutorial['it_id'], array('PRO2021072200012', 'PRO2021072200013'))) {
+        $tutorial_item_sql = " ,
+          `ct_status` = '주문무효'
+        ";
+      }
+
+      $sql_ct = "
+      update `g5_shop_cart` set
+        `stoId` = CONCAT(`stoId`,'".$res['data']['stockList'][$k]["stoId"]."|') 
+        $tutorial_item_sql
+      where `ct_id` ='".$res['data']['stockList'][$k]["ct_id"]."'"
+      ;
       sql_query($sql_ct);
     }
     $stoIdList = implode(",", $stoIdList);
