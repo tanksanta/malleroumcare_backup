@@ -1523,16 +1523,15 @@ function get_partner_members() {
 
 // 파트너 거래처원장
 function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '', $search = '') {
-
-  $where_order = [];
+  $where_order = $where_ledger = '';
 
   # 기간
   if($fr_date && $to_date) {
-    $where_order[] = " (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+    $where_order = " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+    $where_ledger = " and (pl_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
   }
 
-  $search_order = $where_order ? ' and '.implode(' and ', $where_order) : '';
-
+  # 주문내역
   $sql_order = "
     SELECT
       od_time,
@@ -1554,10 +1553,70 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       od_del_yn = 'N' and
       ct_is_direct_delivery IN(1, 2) and
       ct_direct_delivery_partner = '{$mb_id}'
-      {$search_order}
+      {$where_order}
   ";
 
-  $result = sql_query($sql_order);
+  # 입금/출금
+  $sql_ledger = "
+    SELECT
+      pl_created_at as od_time,
+      '' as od_id,
+      m.mb_entNm,
+      (
+        CASE
+          WHEN pl_type = 1
+          THEN '입금'
+          WHEN pl_type = 2
+          THEN '환수'
+        END
+      ) as it_name,
+      pl_memo as ct_option,
+      1 as ct_qty,
+      (
+        CASE
+          WHEN pl_type = 2
+          THEN pl_amount
+          ELSE 0
+        END
+      ) as price_d,
+      (
+        CASE
+          WHEN pl_type = 1
+          THEN pl_amount
+          ELSE 0
+        END
+      ) as deposit
+    FROM
+      partner_ledger l
+    LEFT JOIN
+      g5_member m ON l.mb_id = m.mb_id
+    WHERE
+      l.mb_id = '{$mb_id}'
+      {$where_ledger}
+  ";
+
+  $sql_common = "
+  FROM
+    (
+      ({$sql_order} {$where_order})
+      UNION ALL
+      ({$sql_ledger} {$where_ledger})
+    ) u
+  ";
+
+  # 구매액 합계 계산
+  $total_result = sql_fetch("SELECT sum(price_d * ct_qty) as total_price, count(*) as cnt {$sql_common}", true);
+  $total_price = $total_result['total_price'];
+
+  $result = sql_query("
+    SELECT
+      u.*,
+      (price_d * ct_qty) as sales
+    {$sql_common}
+    ORDER BY
+      od_time asc,
+      od_id asc
+  ");
 
   # 이월잔액
   $carried_balance = get_partner_outstanding_balance($mb_id, $fr_date);
@@ -1572,7 +1631,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
   }
 
   # 검색어
-  $sel_field = in_array($sel_field, ['mb_entNm', 'it_name', 'c.od_id']) ? $sel_field : '';
+  $sel_field = in_array($sel_field, ['mb_entNm', 'it_name', 'od_id']) ? $sel_field : '';
   $search = get_search_string($search);
   if($sel_field && $search) {
     // 검색결과 필터링
@@ -1584,6 +1643,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
   }
 
   return array(
+    'total_price' => $total_price,
     'carried_balance' => $carried_balance,
     'ledger' => $ledger
   );
@@ -1605,7 +1665,7 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
   # 주문내역
   $sql_order = "
     SELECT
-      (c.ct_qty - c.ct_stock_qty) as ct_qty,
+      ct_qty,
       ct_direct_delivery_price as price_d,
       0 as deposit
     FROM
@@ -1614,7 +1674,6 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
       {$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
     WHERE
       ct_status = '완료' and
-      c.ct_qty - c.ct_stock_qty > 0 and
       od_del_yn = 'N' and
       ct_is_direct_delivery IN(1, 2) and
       ct_direct_delivery_partner = '{$mb_id}'

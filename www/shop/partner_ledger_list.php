@@ -7,7 +7,26 @@ if(!$is_samhwa_partner)
 $g5['title'] = "파트너 거래처원장";
 include_once("./_head.php");
 
+# 기간
+if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
+if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
+if(!$fr_date)
+  $fr_date = date('Y-m-01');
+if(!$to_date)
+  $to_date = date('Y-m-d');
 
+$ledger_result = get_partner_ledger($member['mb_id'], $fr_date, $to_date, $sel_field, $search);
+$total_price = $ledger_result['total_price'];
+$total_price_p = @round(($total_price ?: 0) / 1.1);
+$total_price_s = @round(($total_price ?: 0) / 1.1 / 10);
+$carried_balance = $ledger_result['carried_balance'];
+$ledgers = $ledger_result['ledger'];
+
+$total_count = count($ledgers);
+$page_rows = $config['cf_page_rows'];
+$total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 ?>
 
 <section class="wrap">
@@ -20,10 +39,10 @@ include_once("./_head.php");
         <a href="#" id="select_date_thismonth">이번달</a>
         <a href="#" id="select_date_lastmonth">저번달</a>
       </div>
-      <select name="searchtype">
-        <option >사업소명</option>
-        <option >품목명</option>
-        <option >주문번호</option>
+      <select name="sel_field">
+        <option value="mb_entNm" <?=get_selected($sel_field, 'mb_entNm')?>>사업소명</option>
+        <option value="it_name" <?=get_selected($sel_field, 'it_name')?>>품목명</option>
+        <option value="od_id" <?=get_selected($sel_field, 'od_id')?>>주문번호</option>
       </select>
       <div class="input_search">
         <input name="search" value="<?=$_GET["search"]?>" type="text">
@@ -34,7 +53,7 @@ include_once("./_head.php");
   <div class="inner">
     <div class="list_box">
       <div class="subtit">
-        검색 기간 내 구매액 : 9,900,000원 <span>(공급가 : 9,000,000원, VAT : 900,000원)</span>
+        검색 기간 내 구매액 : <?=number_format($total_price)?>원 <span>(공급가 : <?=number_format($total_price_p)?>원, VAT : <?=number_format($total_price_s)?>원)</span>
 
         <div class="r_area">
           <a href="#" class="btn_green_box">엑셀다운로드</a>
@@ -58,39 +77,49 @@ include_once("./_head.php");
             </tr>
           </thead>
           <tbody>
+            <?php if($page == 1 && $carried_balance && !($sel_field && $search) && !$price) { ?>
             <tr>
               <td class="text_r">-</td>
               <td class="text_c" colspan="6">이월잔액</td>
               <td class="text_r">-</td>
               <td class="text_r">-</td>
-              <td class="text_r">2,100,000원</td>
+              <td class="text_r"><?=number_format($carried_balance)?></td>
             </tr>
+            <?php } ?>
+            <?php
+            for($i = $from_record; $i < ($from_record + $page_rows); $i++) {
+              if(!isset($ledgers[$i])) break;
+              $row = $ledgers[$i];
+              
+              if(!$row['od_id']) {
+                // 입금 or 출금
+            ?>
             <tr>
-              <td class="text_c">2021-02-02</td>
-              <td class="text_c">1234</td>
-              <td class="text_c">ABC</td>
-              <td>123(option)</td>
-              <td class="text_c">1</td>
-              <td class="text_r">10,000원</td>
-              <td class="text_r">1,000원</td>
-              <td class="text_r">11,000원</td>
-              <td class="text_r">-</td>
-              <td class="text_r">2,111,000원</td>
+              <td class="text_r"><?=date('y-m-d', strtotime($row['od_time']))?></td>
+              <td class="text_c" colspan="6"><?=$row['it_name']?><?=$row['ct_option'] && $row['ct_option'] != $row['it_name'] ? "({$row['ct_option']})" : ''?></td>
+              <td class="text_r"><?=number_format($row['price_d'])?></td>
+              <td class="text_r"><?=number_format($row['deposit'])?></td>
+              <td class="text_r"><?=number_format($row['balance'])?></td>
             </tr>
+            <?php
+              } else {
+            ?>
             <tr>
-              <td class="text_r">2021-02-02</td>
-              <td class="text_c" colspan="6">입금(메모)</td>
-              <td class="text_r">-</td>
-              <td class="text_r">-</td>
-              <td class="text_r">2,100,000원</td>
+              <td class="text_c"><?=date('y-m-d', strtotime($row['od_time']))?></td>
+              <td class="text_c"><?=$row['od_id']?></td>
+              <td class="text_c"><?=$row['mb_entNm']?></td>
+              <td><?=$row['it_name']?><?=$row['ct_option'] && $row['ct_option'] != $row['it_name'] ? "({$row['ct_option']})" : ''?></td>
+              <td class="text_c"><?=$row['ct_qty']?></td>
+              <td class="text_r"><?=number_format(@round(($row['price_d'] ?: 0) / 1.1))?></td>
+              <td class="text_r"><?=number_format(@round(($row['price_d'] ?: 0) / 1.1 / 10))?></td>
+              <td class="text_r"><?=number_format($row['price_d'])?></td>
+              <td class="text_r"><?=number_format($row['deposit'])?></td>
+              <td class="text_r"><?=number_format($row['balance'])?></td>
             </tr>
-            <tr>
-              <td class="text_r">2021-02-02</td>
-              <td class="text_c" colspan="6">출금(메모)</td>
-              <td class="text_r">-</td>
-              <td class="text_r">-</td>
-              <td class="text_r">2,100,000원</td>
-            </tr>
+            <?php
+              }
+            }
+            ?>
           </tbody>
         </table>
       </div>
@@ -103,7 +132,36 @@ include_once("./_head.php");
   </div>
 </section>
 
+<script>
+function formatDate(date) {
+  var y = date.getFullYear();
+  var m = date.getMonth() + 1; // Month from 0 to 11
+  var d = date.getDate();
+  return '' + y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
+}
 
+$(function() {
+  // 기간 - 이번달 버튼
+  $('#select_date_thismonth').click(function(e) {
+    e.preventDefault();
+
+    var today = new Date(); // 오늘
+    $('#to_date').val(formatDate(today));
+    today.setDate(1); // 이번달 1일
+    $('#fr_date').val(formatDate(today));
+  });
+  // 기간 - 저번달 버튼
+  $('#select_date_lastmonth').click(function(e) {
+    e.preventDefault();
+
+    var today = new Date();
+    today.setDate(0); // 지난달 마지막일
+    $('#to_date').val(formatDate(today));
+    today.setDate(1); // 지난달 1일
+    $('#fr_date').val(formatDate(today));
+  });
+});
+</script>
 
 <?php
 include_once('./_tail.php');
