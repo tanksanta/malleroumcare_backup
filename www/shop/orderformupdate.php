@@ -1283,6 +1283,7 @@ if($_POST["penId"]) {
       // 튜토리얼 상품 주문무효 처리
       $sql_ct_tutorial = "SELECT * FROM g5_shop_cart WHERE `ct_id` ='".$res['data']['stockList'][$k]["ct_id"]."'";
       $ct_tutorial = sql_fetch($sql_ct_tutorial);
+      $tutorial_item_sql = '';
       if (in_array($ct_tutorial['it_id'], array('PRO2021072200012', 'PRO2021072200013'))) {
         $tutorial_item_sql = " ,
           `ct_status` = '주문무효'
