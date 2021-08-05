@@ -6,6 +6,7 @@ if(!$is_samhwa_partner)
 
 $g5['title'] = "파트너 거래처원장";
 include_once("./_head.php");
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
 # 기간
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
@@ -143,6 +144,16 @@ function formatDate(date) {
 }
 
 $(function() {
+  // 기간 datepicker
+  $('.datepicker').datepicker({
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: "yy-mm-dd",
+    showButtonPanel: true,
+    yearRange: "c-99:c+99",
+    maxDate: "+0d"
+  });
+
   // 기간 - 이번달 버튼
   $('#select_date_thismonth').click(function(e) {
     e.preventDefault();
