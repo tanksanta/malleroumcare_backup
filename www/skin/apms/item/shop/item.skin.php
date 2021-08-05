@@ -949,7 +949,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                 return false;
               } else {
                 if ($(f).find('.cart-ok') && $(f).find('.cart-ok').length) {
-                  $(f).find('.cart-ok').show();
+                  $(f).find('.cart-ok').show("slide", { direction: "down" }, 500);
+                  setTimeout(function() {
+                    hide_cart_ok($(f).find('.cart-ok'));
+                  }, 3000)
                   return false;
                 }
                 if(!confirm("장바구니에 담겼습니다.\n\n확인을 원하시면 '아니오'를 선택하세요")) {
@@ -963,9 +966,14 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
           }
         }
 
+        function hide_cart_ok(obj) {
+          $(obj).hide("slide", { direction: "down" }, 500);
+        }
+
         $(function() {
           $(".cart-ok-close").click(function(e) {
-            $(this).closest('.cart-ok').hide();
+            // $(this).closest('.cart-ok').hide("slide", { direction: "down" }, 500);
+            hide_cart_ok($(this).closest('.cart-ok'));
             e.preventDefault();
           })
         });
