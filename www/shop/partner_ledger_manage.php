@@ -85,7 +85,7 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
             <b>금액</b>
           </label>
           <div class="col-sm-3">
-            <input type="text" id="pl_amount" name="pl_amount" value="" class="form-control input-sm" style="width:150px;">
+            <input type="text" id="pl_amount" name="pl_amount" value="" class="form-control input-sm" style="width:150px;display:inline-block;text-align:right"> 원
           </div>
         </div>
 
