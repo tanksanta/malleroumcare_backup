@@ -1541,7 +1541,8 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       ct_option,
       ct_qty,
       ct_direct_delivery_price as price_d,
-      0 as deposit
+      0 as deposit,
+      od_b_name
     FROM
       g5_shop_cart c
     LEFT JOIN
@@ -1585,7 +1586,8 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
           THEN pl_amount
           ELSE 0
         END
-      ) as deposit
+      ) as deposit,
+      '' as od_b_name
     FROM
       partner_ledger l
     LEFT JOIN

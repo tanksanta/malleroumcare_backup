@@ -27,6 +27,8 @@ $page_rows = $config['cf_page_rows'];
 $total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
+
+$qstr = "fr_date={$fr_date}&to_date={$to_date}&sel_field={$sel_field}&search={$search}";
 ?>
 
 <section class="wrap">
@@ -56,7 +58,7 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
         검색 기간 내 구매액 : <?=number_format($total_price)?>원 <span>(공급가 : <?=number_format($total_price_p)?>원, VAT : <?=number_format($total_price_s)?>원)</span>
 
         <div class="r_area">
-          <a href="#" class="btn_green_box">엑셀다운로드</a>
+          <a href="partner_ledger_excel.php?<?=$qstr?>" class="btn_green_box">엑셀다운로드</a>
           <a href="partner_ledger_manage.php" class="btn_gray_box">수금등록</a>
         </div>
       </div>
@@ -110,9 +112,9 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
               <td class="text_c"><?=$row['mb_entNm']?></td>
               <td><?=$row['it_name']?><?=$row['ct_option'] && $row['ct_option'] != $row['it_name'] ? "({$row['ct_option']})" : ''?></td>
               <td class="text_c"><?=$row['ct_qty']?></td>
-              <td class="text_r"><?=number_format(@round(($row['price_d'] ?: 0) / 1.1))?></td>
-              <td class="text_r"><?=number_format(@round(($row['price_d'] ?: 0) / 1.1 / 10))?></td>
-              <td class="text_r"><?=number_format($row['price_d'])?></td>
+              <td class="text_r"><?=number_format(@round(($row['sales'] ?: 0) / 1.1))?></td>
+              <td class="text_r"><?=number_format(@round(($row['sales'] ?: 0) / 1.1 / 10))?></td>
+              <td class="text_r"><?=number_format($row['sales'])?></td>
               <td class="text_r"><?=number_format($row['deposit'])?></td>
               <td class="text_r"><?=number_format($row['balance'])?></td>
             </tr>
@@ -125,7 +127,7 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
       </div>
       <div class="list-paging">
         <ul class="pagination pagination-sm en">  
-          <?php echo apms_paging(5, $page, $total_page, '?page='); ?>
+          <?php echo apms_paging(5, $page, $total_page, '?'.$qstr.'&page='); ?>
         </ul>
       </div>
     </div>
