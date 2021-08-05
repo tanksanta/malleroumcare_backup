@@ -298,6 +298,11 @@ $(function() {
                 <a href="#" class="linkEformView eform-tab-link white" data-od="<?=$od["od_id"]?>">계약서 다운로드</a>
                 <?php } ?>
               </li>
+              <?php if ($eform['dc_send_sms'] === '1') { ?>
+              <li style="margin-top:5px">
+                * <?php echo $eform['penConNum']; ?> 번호로 계약서 전송 완료
+              </li>
+              <?php } ?>
             </ul>
           </li>
           <li>
@@ -593,6 +598,11 @@ $(function() {
                 <a href="#" class="linkEformView eform-tab-link white" data-od="<?=$od["od_id"]?>">계약서 다운로드</a>
                 <?php } ?>
               </li>
+              <?php if ($eform['dc_send_sms'] === '1') { ?>
+              <li style="margin-top:5px">
+                * <?php echo $eform['penConNum']; ?> 번호로 계약서 전송 완료
+              </li>
+              <?php } ?>
             </ul>
           </li>
           <li>

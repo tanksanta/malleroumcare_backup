@@ -80,6 +80,8 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   `dc_pdf_file` varchar(255) NOT NULL default '',
   -- 감사추적인증서 파일 이름
   `dc_cert_pdf_file` varchar(255) NOT NULL default '',
+  `dc_send_sms` tinyint(1) NOT NULL DEFAULT 0 COMMENT '문자 전송 여부',
+  `dc_send_email` tinyint(1) NOT NULL DEFAULT 0 COMMENT '이메일 전송 여부'
   PRIMARY KEY (`dc_id`),
   UNIQUE KEY `index1` (`dc_id`, `od_id`),
   KEY `dc_subject` (`dc_subject`),
