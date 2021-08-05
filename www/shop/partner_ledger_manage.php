@@ -136,6 +136,11 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
         </tbody>
       </table>
     </div>
+    <div class="list-paging">
+      <ul class="pagination pagination-sm en">  
+        <?php echo apms_paging(5, $page, $total_page, '?page='); ?>
+      </ul>
+    </div>
   </div>
 </section>
 
