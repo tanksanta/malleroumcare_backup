@@ -359,7 +359,16 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
     <div class="samhwa-item-info-opener mobile">
       <ul class="item-buy-btn">
         <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-color btn-block"></li>
-        <li class="cart"><input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-color btn-block"></li>
+        <li class="cart">
+          <div class="cart-ok">
+            <p>장바구니에 담았습니다.</p>
+            <ul>
+              <li><a href='#' class="cart-ok-close">쇼핑 계속하기</a></li>
+              <li><a class="bg" href='<?php echo G5_SHOP_URL; ?>/cart.php'>장바구니 보기</a></li>
+            </ul>
+          </div>
+          <input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-color btn-block">
+        </li>
       </ul>
     </div>
     <div class="samhwa-item-info">
@@ -808,8 +817,18 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
       <?php if ($is_orderable) { ?>
         <div style="text-align:center;" class="item-btns">
           <ul class="item-buy-btn">
-          <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block"></li>
-          <li class="cart"><input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-<?php echo $btn1;?> btn-block"></li>
+            <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block"></li>
+            <li class="cart">
+              <div class="cart-ok">
+                <p class="pc">선택하신 상품을 장바구니에 담았습니다.</p>
+                <p class="mobile">장바구니에 담았습니다.</p>
+                <ul>
+                  <li><a href='#' class="cart-ok-close">쇼핑 계속하기</a></li>
+                  <li><a class="bg" href='<?php echo G5_SHOP_URL; ?>/cart.php'>장바구니 보기</a></li>
+                </ul>
+              </div>
+              <input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-<?php echo $btn1;?> btn-block">
+            </li>
           </ul>
         </div>
         <?php if ( $it['it_10'] != "1") { ?> <!-- 여분필드 10에 네이버페이 노출 1로 할 경우 노출안됨 -->
@@ -929,6 +948,10 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                 alert(error.replace(/\\n/g, "\n"));
                 return false;
               } else {
+                if ($(f).find('.cart-ok') && $(f).find('.cart-ok').length) {
+                  $(f).find('.cart-ok').show();
+                  return false;
+                }
                 if(!confirm("장바구니에 담겼습니다.\n\n확인을 원하시면 '아니오'를 선택하세요")) {
                   document.location.href = "./cart.php";
                 }
@@ -939,6 +962,13 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
             return true;
           }
         }
+
+        $(function() {
+          $(".cart-ok-close").click(function(e) {
+            $(this).closest('.cart-ok').hide();
+            e.preventDefault();
+          })
+        });
 
         // Wishlist
         function apms_wishlist(it_id) {

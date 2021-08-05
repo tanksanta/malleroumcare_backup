@@ -2145,11 +2145,73 @@
 .item-head ul.item-buy-btn li {
 width: 50%;
 }
+.item-head ul.item-buy-btn li.cart {
+    display: block;
+}
 .item-head ul.item-buy-btn li.wish a,
 .item-head ul.item-buy-btn li.cart input[type="submit"] {
     background-color:#b3ca08;
     color:#fff !important;
 }
+.item-head ul.item-buy-btn li.cart .cart-ok {
+    display:none;
+    margin: 0 auto;
+    position: absolute;
+    width: 266px;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    overflow: visible;
+    top: -95px;
+    padding: 10px;
+}
+.item-head ul.item-buy-btn li.cart .cart-ok:before {
+    border: 15px solid;
+    border-color: #ddd transparent transparent transparent;
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.item-head ul.item-buy-btn li.cart .cart-ok:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 100%;
+    right: 50%;
+    transform: translateX(50%);
+    border: 14px solid;
+    border-color: #fff transparent transparent transparent;
+}
+
+.item-head ul.item-buy-btn li.cart p {
+    color: #666;
+}
+.item-head ul.item-buy-btn li.cart .cart-ok ul {
+    display: flex;
+    justify-content: space-between;
+    margin-top:10px;
+}
+.item-head ul.item-buy-btn li.cart .cart-ok ul li {
+    display: block;
+    float: none;
+    width:48%;
+    padding: 0;
+}
+.item-head ul.item-buy-btn li.cart .cart-ok ul li a {
+    display:block;
+    width:100%;
+    line-height:35px;
+    border: 1px solid #b3ca08;
+    color: #b3ca08;
+}
+.item-head ul.item-buy-btn li.cart .cart-ok ul li a.bg {
+    background-color: #b3ca08;
+    color: white;
+}
+
 .responsive #item-tab .nav-justified li a {
     border:0;
 }
@@ -2384,6 +2446,13 @@ ul.wait-partner-btns:after {
     }
     .item-head ul.item-buy-btn li.cart {
         width:50%;
+    }
+    .item-head ul.item-buy-btn li.cart .cart-ok {
+        width:50%;
+    } 
+    .item-head ul.item-buy-btn li.cart .cart-ok ul li a {
+        font-size: 0.9em;
+        letter-spacing: -1px;
     }
     .item-head ul.item-buy-btn li.wish {
         display:none;
