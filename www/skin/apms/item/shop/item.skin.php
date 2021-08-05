@@ -949,7 +949,12 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                 return false;
               } else {
                 if ($(f).find('.cart-ok') && $(f).find('.cart-ok').length) {
-                  $(f).find('.cart-ok').show("slide", { direction: "down" }, 500);
+                  $(f).find('.cart-ok').css('opacity', 0)
+                    .show("slide", { direction: "down" }, 500)
+                    .animate(
+                      { opacity: 1 },
+                      { queue: false, duration: 'slow' }
+                    );
                   setTimeout(function() {
                     hide_cart_ok($(f).find('.cart-ok'));
                   }, 3000)
@@ -967,7 +972,12 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         }
 
         function hide_cart_ok(obj) {
-          $(obj).hide("slide", { direction: "down" }, 500);
+          $(obj)
+            .hide("slide", { direction: "down" }, 500)
+            .animate(
+              { opacity: 0 },
+              { queue: false, duration: 'fast' }
+            );
         }
 
         $(function() {
