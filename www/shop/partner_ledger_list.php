@@ -38,7 +38,7 @@ include_once("./_head.php");
 
         <div class="r_area">
           <a href="#" class="btn_green_box">엑셀다운로드</a>
-          <a href="#" class="btn_gray_box">수금등록</a>
+          <a href="partner_ledger_manage.php" class="btn_gray_box">수금등록</a>
         </div>
       </div>
       <div class="table_box">

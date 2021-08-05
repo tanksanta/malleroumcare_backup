@@ -1595,35 +1595,74 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
 function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false) {
   global $g5;
 
-  $sql_search = '';
+  $where_date = '';
+  $where_ledger_date = '';
   if($fr_date) {
-    $sql_search = " and od_time < '{$fr_date} 00:00:00' ";
+    $where_date = " and od_time < '{$fr_date} 00:00:00' ";
+    $where_ledger_date = " and pl_created_at < '{$fr_date} 00:00:00' ";
   }
 
-  $sql_common = "
+  # 주문내역
+  $sql_order = "
+    SELECT
+      (c.ct_qty - c.ct_stock_qty) as ct_qty,
+      ct_direct_delivery_price as price_d,
+      0 as deposit
     FROM
       {$g5['g5_shop_cart_table']} c
     LEFT JOIN
       {$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
-    LEFT JOIN
-      {$g5['member_table']} m ON c.mb_id = m.mb_id
     WHERE
       ct_status = '완료' and
+      c.ct_qty - c.ct_stock_qty > 0 and
       od_del_yn = 'N' and
       ct_is_direct_delivery IN(1, 2) and
       ct_direct_delivery_partner = '{$mb_id}'
-      {$sql_search}
+  ";
+
+  # 입금/출금
+  $sql_ledger = "
+    SELECT
+      1 as ct_qty,
+      (
+        CASE
+          WHEN pl_type = 2
+          THEN pl_amount
+          ELSE 0
+        END
+      ) as price_d,
+      (
+        CASE
+          WHEN pl_type = 1
+          THEN pl_amount
+          ELSE 0
+        END
+      ) as deposit
+    FROM
+      partner_ledger l
+    WHERE
+      mb_id = '{$mb_id}'
   ";
 
   $sql = "
     SELECT
-      sum(ct_qty * ct_direct_delivery_price) as total_price
-    {$sql_common}
+      sum(ct_qty * price_d) as total_price,
+      sum(deposit) as total_deposit
+    FROM
+    (
+      ({$sql_order} {$where_date})
+      UNION ALL
+      ({$sql_ledger} {$where_ledger_date})
+    ) u
   ";
 
   $result = sql_fetch($sql);
 
   $total_price = $result['total_price'] ?: 0;
+  $total_deposit = $result['total_deposit'] ?: 0;
 
-  return $total_price;
+  if($total_price_only)
+    return $total_price;
+  else
+    return $total_price - $total_deposit;
 }
