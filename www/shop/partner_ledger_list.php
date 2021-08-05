@@ -80,6 +80,11 @@ $qstr = "fr_date={$fr_date}&to_date={$to_date}&sel_field={$sel_field}&search={$s
             </tr>
           </thead>
           <tbody>
+            <?php if(!$ledgers && !$carried_balance) { ?>
+            <tr>
+              <td colspan="10" class="empty_table">자료가 없습니다.</td>
+            </tr>
+            <?php } ?>
             <?php if($page == 1 && $carried_balance && !($sel_field && $search) && !$price) { ?>
             <tr>
               <td class="text_r">-</td>
