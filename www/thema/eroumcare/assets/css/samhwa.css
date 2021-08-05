@@ -2134,7 +2134,7 @@
     border: none !important;
     border-radius: 0px !important;
     cursor: pointer;
-
+    outline: none;
 }
 
 .item-head ul.item-buy-btn li input[type="submit"]:hover{
@@ -2152,6 +2152,7 @@ width: 50%;
 .item-head ul.item-buy-btn li.cart input[type="submit"] {
     background-color:#b3ca08;
     color:#fff !important;
+    outline: none;
 }
 .item-head ul.item-buy-btn li.cart .cart-ok {
     display:none;
