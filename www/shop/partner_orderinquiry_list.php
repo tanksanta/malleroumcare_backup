@@ -216,11 +216,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               </td>
               <td class="text_c">
                 <?php
-                $barcode_index = 0;
-                foreach($row['barcode'] as $barcode) {
-                  echo $barcode;
-                  if($barcode_index > 0) echo '<br>';
-                  $barcode_index++;
+                for($i = 0; $i < count($row['barcode']); $i++) {
+                  if($i > 0) echo '<br>';
+                  echo $row['barcode'][$i];
                 }
                 ?>
               </td>
