@@ -59,10 +59,11 @@ if ($w == "") {
                    is_subject = '$is_subject',
                    is_content = '$is_content',
                    is_time = '".G5_TIME_YMDHIS."',
-				   pt_it = '{$it['pt_it']}',
-				   pt_photo = '$is_photo',
-				   pt_id = '{$it['pt_id']}',
-                   is_ip = '{$_SERVER['REMOTE_ADDR']}' "; // APMS - 2014.07.21
+									 pt_it = '{$it['pt_it']}',
+									 pt_photo = '$is_photo',
+									 pt_id = '{$it['pt_id']}',
+                   is_ip = '{$_SERVER['REMOTE_ADDR']}'
+									 ";
     if (!$default['de_item_use_use'])
         $sql .= ", is_confirm = '1' ";
     sql_query($sql);
@@ -72,7 +73,7 @@ if ($w == "") {
     if ($default['de_item_use_use']) {
         $alert_msg = "글은 관리자가 확인한 후에 출력됩니다.";
     }  else {
-		//$alert_msg = "등록 되었습니다.";
+		$alert_msg = "등록 되었습니다.";
 
 		// 내글반응	등록
 		$it['pt_id'] = ($it['pt_id']) ? $it['pt_id'] : $config['cf_admin']; // 파트너 없으면 최고관리자에게 보냄
