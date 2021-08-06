@@ -7,7 +7,6 @@ if($_POST['ct_id'] && $_POST['step']) {
   $entId = "";
   $add_sql = "";
   $ct_ex_date = date("Y-m-d");
-  $ct_move_date = date("Y-m-d H:i:s");
   $flag = true;
   //상태값 치환
   switch ($_POST['step']) {
@@ -47,7 +46,7 @@ if($_POST['ct_id'] && $_POST['step']) {
     ";
     //상태 update
     if($_POST['step'] == "배송"){ $add_sql = ", `ct_ex_date` = '".$ct_ex_date."'"; }
-    $sql_ct[$i] = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql.", `ct_move_date`='".$ct_move_date."' where `ct_id` = '".$_POST['ct_id'][$i]."'";
+    $sql_ct[$i] = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql.", `ct_move_date`= NOW() where `ct_id` = '".$_POST['ct_id'][$i]."'";
 
     // 쿠폰 취소
     if($_POST['step'] == '취소' || $_POST['step'] == '주문무효') {
