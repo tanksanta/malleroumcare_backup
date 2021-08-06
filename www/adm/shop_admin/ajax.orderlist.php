@@ -484,8 +484,8 @@ $ret['main'] = "
                     <th class=\"od_info\">주문정보</th>
                     <th class=\"od_barNum\">바코드</th>
                     <th class=\"od_name\">받는분(주문자)</th>
+                    <th class=\"od_receipt_time\">변경일시</th>
                     <th class=\"od_type\">결제수단</th>
-                    <th class=\"od_receipt_time\">결제일시</th>
                     <th class=\"od_price\">결제금액</th>
                 </tr>
             </thead>
@@ -626,10 +626,16 @@ foreach($orderlist as $order) {
 
     $od_time = substr($order['od_time'],2,8) . '<br>' . '('. substr($order['od_time'],11,5) .')';
 
-    if($order['od_receipt_time'] != '0000-00-00 00:00:00') {
+    /*if($order['od_receipt_time'] != '0000-00-00 00:00:00') {
         $od_receipt_time = substr($order['od_receipt_time'],2,8) . '<br>' . '('. substr($order['od_receipt_time'],11,5) .')';
     }else{
         $od_receipt_time = '';
+    }*/
+    if($order['ct_move_date']) {
+      $ct_move_time = strtotime($order['ct_move_date']);
+      $od_receipt_time = date('Y-m-d', $ct_move_time).'<br>('.date('H:i:s', $ct_move_time).')';
+    } else {
+      $od_receipt_time = '';
     }
 
     // if( count($order['cart']) > 1 ) {
@@ -885,10 +891,10 @@ foreach($orderlist as $order) {
                 {$mb_shorten_info}{$mb_entNm}
             </a>
         </td>
+        <td align=\"center\" class=\"od_receipt_time\">{$od_receipt_time}</td>
         <td align=\"center\" class=\"od_type\">
             {$od_receipt_name}
         </td>
-        <td align=\"center\" class=\"od_receipt_time\">{$od_receipt_time} </td>
         <td align=\"center\" class=\"od_price\">
             <b>{$ct_price}</b>
         </td>
