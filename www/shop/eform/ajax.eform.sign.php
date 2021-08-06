@@ -98,16 +98,6 @@ $certfile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_cert_'.date("YmdHisw
 $certdir .= '/'.$certfile;
 include_once('./lib/rendercertpdf.lib.php');
 
-// 계약서 정보 업데이트
-sql_query("UPDATE `eform_document` SET
-`dc_status` = '2',
-`dc_sign_datetime` = '$datetime',
-`dc_sign_ip` = '$ip',
-`dc_pdf_file` = '$pdffile',
-`dc_cert_pdf_file` = '$certfile'
-WHERE `dc_id` = UNHEX('$uuid')
-");
-
 // 문자 발송
 $send_hp = '02-830-1301';
 $recv_hp = $eform['penConNum'];
@@ -118,6 +108,7 @@ $recv_hp = str_replace('-', '', $recv_hp);
 $link = G5_SHOP_URL.'/eform/eformInquiry.php?id='.$uuid;
 $msg = "[이로움]\n{$eform['penNm']}님 '".mb_substr($eform['entNm'], 0, 8, 'utf-8')."' 사업소와 전자계약이 체결되었습니다.\n\n* 문서확인 : {$link}";
 
+$dc_send_sms = 'FALSE';
 $port_setting = get_icode_port_type($config['cf_icode_id'], $config['cf_icode_pw']);
 if($port_setting !== false && $recv_hp) {
     $SMS = new LMS;
@@ -136,6 +127,8 @@ if($port_setting !== false && $recv_hp) {
     $res = $SMS->Add($strDest, $strCallBack, $strCaller, $strSubject, $strURL, $strData, $strDate, $nCount);
 
     $SMS->Send();
+
+    $dc_send_sms = 'TRUE';
 }
 
 // 메일 발송
@@ -153,6 +146,18 @@ $content = ob_get_contents();
 ob_end_clean();
 
 mailer('이로움', 'no-reply@eroumcare.com', $eform['entMail'], "[이로움] {$eform['penNm']}님 {$eform['entNm']}사업소와 전자계약이 체결되었습니다.", $content, 1, $file);
+
+// 계약서 정보 업데이트
+sql_query("UPDATE `eform_document` SET
+`dc_status` = '2',
+`dc_sign_datetime` = '$datetime',
+`dc_sign_ip` = '$ip',
+`dc_pdf_file` = '$pdffile',
+`dc_cert_pdf_file` = '$certfile',
+`dc_send_sms` = $dc_send_sms,
+`dc_send_email` = TRUE
+WHERE `dc_id` = UNHEX('$uuid')
+");
 
 json_response(200, 'OK');
 ?>

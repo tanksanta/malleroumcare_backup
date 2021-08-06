@@ -383,7 +383,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	          <li style="font-weight: 100;">|</li>
 	          <li><?=$it["it_taxInfo"]?>상품</li>
 	        </ul>
+          <?php if(!is_benefit_item($it)) { ?>
 	        <span style="vertical-align: middle; float: right;">급여코드 : <?php echo $it['ProdPayCode']; ?></span>
+          <?php } ?>
 	      </div>
       
       
@@ -531,11 +533,22 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 					<table class="table pc">
 						<tbody>
 							<tr>
-								<th scope="row">급여가(정가)</th>
-								<td><?php echo display_price($it['it_cust_price']); ?>
-								<p class="personal-price">
-									※ 본인부담금 15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)
-								</p></td>
+								<th scope="row">
+                  <?php if(!is_benefit_item($it)) { ?>
+                  급여가(정가)
+                  <?php } else { ?>
+                  정가
+                  <?php } ?>
+                </th>
+                <td>
+                  <?php echo display_price($it['it_cust_price']); ?>
+                  
+                  <?php if(!is_benefit_item($it)) { ?>
+                  <p class="personal-price">
+                    ※ 본인부담금 15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)
+                  </p>
+                  <?php } ?>
+                </td>
 							</tr>
 
 							<tr>

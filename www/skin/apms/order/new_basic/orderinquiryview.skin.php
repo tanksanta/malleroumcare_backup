@@ -298,6 +298,11 @@ $(function() {
                 <a href="#" class="linkEformView eform-tab-link white" data-od="<?=$od["od_id"]?>">계약서 다운로드</a>
                 <?php } ?>
               </li>
+              <?php if ($eform['dc_send_sms'] === '1') { ?>
+              <li style="margin-top:5px">
+                * <?php echo $eform['penConNum']; ?> 번호로 계약서 전송 완료
+              </li>
+              <?php } ?>
             </ul>
           </li>
           <li>
@@ -486,7 +491,7 @@ $(function() {
                   </p>
               </li>
               <li class="barcode">
-                <?php if($item[$i]['opt'][$k]['ct_status'] !== "취소" && $item[$i]['opt'][$k]['ct_status'] !== "주문무효"){ ?>
+                <?php if($item[$i]['opt'][$k]['ct_status'] !== "취소" && $item[$i]['opt'][$k]['ct_status'] !== "주문무효" && !is_benefit_item($item[$i]) ){ ?>
                   <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$od["od_id"]?>" data-ct-id="<?=$item[$i]['opt'][$k]["ct_id"]?>" ><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 확인</a>
                 <?php } ?>
               </li>
@@ -593,6 +598,11 @@ $(function() {
                 <a href="#" class="linkEformView eform-tab-link white" data-od="<?=$od["od_id"]?>">계약서 다운로드</a>
                 <?php } ?>
               </li>
+              <?php if ($eform['dc_send_sms'] === '1') { ?>
+              <li style="margin-top:5px">
+                * <?php echo $eform['penConNum']; ?> 번호로 계약서 전송 완료
+              </li>
+              <?php } ?>
             </ul>
           </li>
           <li>

@@ -532,7 +532,9 @@ foreach($orderlist as $order) {
 
 
     // cart_table  기준 정렬
-    $sql_ct = "select * from `g5_shop_cart` where `ct_id` ='".$order['cart_ct_id']."'";
+    $sql_ct = "select c.*, i.ca_id from `g5_shop_cart` as c 
+    INNER JOIN {$g5['g5_shop_item_table']} as i ON c.it_id = i.it_id
+    WHERE c.ct_id ='".$order['cart_ct_id']."'";
     $result_ct = sql_fetch($sql_ct);
 
 
@@ -725,6 +727,11 @@ foreach($orderlist as $order) {
 	$prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
 	$prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
 
+    $barcode_html = '';
+    if (!is_benefit_item($result_ct)) {
+        $barcode_html = "<a href='#' class='prodBarNumCntBtn{$prodBarNumCntBtnStatus}' data-option='{$result_ct["ct_option"]}'  data-it='{$ct_it_id}' data-stock='{$stock_insert}'  data-od='{$order["od_id"]}'>{$prodBarNumCntBtnWord}</a>";
+    }
+
 
     if ($od_cart_count > 0) {
         $show_od_cart_count = '| ' . $od_cart_count;
@@ -882,7 +889,7 @@ foreach($orderlist as $order) {
             </div>
         </td>
 		<td align=\"center\" class=\"od_barNum\">
-			<a href='#' class='prodBarNumCntBtn{$prodBarNumCntBtnStatus}' data-option='{$result_ct["ct_option"]}'  data-it='{$ct_it_id}' data-stock='{$stock_insert}'  data-od='{$order["od_id"]}'>{$prodBarNumCntBtnWord}</a>
+            {$barcode_html}
         </td>
         <td align=\"center\" class=\"od_name\">
             <a href='#' data-mb-id='{$order['mb_id']}' class='open_member_pop'>

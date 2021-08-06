@@ -300,7 +300,9 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 			<?php if($it['it_basic']) { // 기본설명 ?>
 				<p class="help-block"><?php echo $it['it_basic']; ?></p>
 			<?php } ?>
+        <?php if(!is_benefit_item($it)) { ?>
 				<p class="help-block" style=" color:#747474">급여코드 : <?php echo $it['ProdPayCode']; ?></p>
+				<?php } ?>
 			<ul class="detailInfo">
 				<li>
 					<span class="infoLabel">
