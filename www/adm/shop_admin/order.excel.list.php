@@ -21,6 +21,14 @@
                 SELECT * FROM g5_shop_order WHERE od_id = '".$it['od_id']."'
             ");
 
+            
+            //영업담당자
+            $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
+            $result_manager = sql_fetch($sql_manager);
+
+            $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
+            $result_manager = sql_fetch($sql_manager);
+            $sale_manager=$result_manager['mb_name'];
 
 			$it_name = $it["it_name"];
 			
@@ -36,6 +44,7 @@
 				$it["ct_qty"],
                 $it_name." / ".$it["ct_qty"].' EA',
 				$od["od_b_name"],
+                $sale_manager,
 				$addr,
 				$od["od_b_tel"],
 				$od["od_b_hp"],
@@ -44,7 +53,7 @@
 			];
 		}
 
-    $headers = array("일자-No.", "품목명[규격]", "수량", "품목&수량","성함(상호명)", "배송처", "연락처","휴대폰", "적요","배송지요청사항");
+    $headers = array("일자-No.", "품목명[규격]", "수량", "품목&수량","성함(상호명)", "영업담당자", "배송처", "연락처","휴대폰", "적요","배송지요청사항");
     $data = array_merge(array($headers), $rows);
     
     $widths  = array(20, 50, 10, 30, 50, 30, 50);
