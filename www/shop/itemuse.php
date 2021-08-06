@@ -2,16 +2,16 @@
 if (!defined('_GNUBOARD_')) {
 
     // wetoz : naverpayorder
-    if ($default['de_naverpayorder_AccessLicense'] && $default['de_naverpayorder_SecretKey']) {
-        include_once(G5_PLUGIN_PATH.'/wznaverpay/config.php');
-        $aor = new NHNAPIORDER();
-        $aor->PurchaseReviewClassType = 'GENERAL'; // 일반평가져오기
-        $aor->customersync_rotation('GetPurchaseReviewList-GENERAL');
+    // if ($default['de_naverpayorder_AccessLicense'] && $default['de_naverpayorder_SecretKey']) {
+    //     include_once(G5_PLUGIN_PATH.'/wznaverpay/config.php');
+    //     $aor = new NHNAPIORDER();
+    //     $aor->PurchaseReviewClassType = 'GENERAL'; // 일반평가져오기
+    //     $aor->customersync_rotation('GetPurchaseReviewList-GENERAL');
 
-        $aor = new NHNAPIORDER();
-        $aor->PurchaseReviewClassType = 'PREMIUM'; // 프리미엄평가져오기
-        $aor->customersync_rotation('GetPurchaseReviewList-PREMIUM');
-    }
+    //     $aor = new NHNAPIORDER();
+    //     $aor->PurchaseReviewClassType = 'PREMIUM'; // 프리미엄평가져오기
+    //     $aor->customersync_rotation('GetPurchaseReviewList-PREMIUM');
+    // }
     // wetoz : naverpayorder
 
 	$is_item = false;
@@ -78,7 +78,8 @@ if (!defined('_GNUBOARD_')) {
 // 후기권한 재설정
 $is_free_write = ($it['pt_review_use'] || !$default['de_item_use_write']) ? true : false;
 
-$total_count = (int)$it['it_use_cnt'];
+// $total_count = (int)$it['it_use_cnt'];
+$total_count = sql_fetch(" select count(*) as cnt from `{$g5['g5_shop_item_use_table']}` where it_id = '{$it_id}' and is_confirm = '1' ")['cnt'];
 
 $urows = (isset($urows) && $urows > 0) ? $urows : $itemrows['iuse_'.MOBILE_.'rows'];
 $urows = ($urows > 0) ? $urows : 15;
