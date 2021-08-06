@@ -2435,6 +2435,12 @@ function fitemformcheck(f)
   }
   ?>
 
+  var w = '<?php echo $w; ?>';
+  if(!f.it_img1.value && !w) {
+    alert("이미지를 등록해주세요.");
+    return false;
+  }
+
     return true;
 }
 
