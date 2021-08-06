@@ -149,8 +149,8 @@ if($sel_field && $search)
     </table>
   </div>
   <div style="text-align:right;">
-    <a class="btn btn_01" href="http://mall.eroumcare.doto.li/adm/shop_admin/recipient_link_form.php?w=u&rl_id=<?=$rl_id?>">정보수정</a>
-    <a class="btn btn_02" href="http://mall.eroumcare.doto.li/adm/shop_admin/recipient_link_list.php">목록</a>
+    <a class="btn btn_01" href="<?=G5_ADMIN_URL?>/shop_admin/recipient_link_form.php?w=u&rl_id=<?=$rl_id?>">정보수정</a>
+    <a class="btn btn_02" href="<?=G5_ADMIN_URL?>/shop_admin/recipient_link_list.php">목록</a>
   </div>
 </div>
 
