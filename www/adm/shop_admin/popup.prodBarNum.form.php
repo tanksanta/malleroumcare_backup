@@ -152,7 +152,12 @@ if($od["od_b_tel"]) {
 
     /* 바코드 순차입력 버튼 */
     .imfomation_box a .li_box .folding_box > .inputbox > li > .barcode_add {
-          width:30px; height:30px; position: absolute; right: 90px; display:none;
+      width:35px;
+      height:35px;
+      position: absolute;
+      top: 8px;
+      right: 90px;
+      display:none;
     }
 
     .excel_btn{
