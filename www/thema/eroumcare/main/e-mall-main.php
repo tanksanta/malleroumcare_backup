@@ -1,7 +1,19 @@
 <?php
+if(!defined("_GNUBOARD_")) exit;
 
-	if(!defined("_GNUBOARD_")) exit;
+// 메인 배너가져오기
+$banner_result = sql_query("
+  SELECT * FROM {$g5['g5_shop_banner_table']}
+  ORDER BY bn_order, bn_id DESC
+");
 
+$banners = [];
+while($row = sql_fetch_array($banner_result)) {
+  //$row['img'] = G5_DATA_URL.'/banner/'.$row['bn_id'];
+  $row['img'] = 'https://eroumcare.com/data/banner/'.$row['bn_id'];
+
+  $banners[] = $row;
+}
 ?>
 	
 	<link rel="stylesheet" href="<?php echo G5_URL; ?>/css/swiper.min.css">
@@ -62,41 +74,13 @@
 		
 		<div class="viewWrap swiper-container">
 			<ul style="width: 100%;" class="swiper-wrapper">
-				<li style="width: 100%;" class="swiper-slide">
-					<a href="/bbs/board.php?bo_table=notice&wr_id=23">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_13.jpg" alt="">
+        <?php foreach($banners as $banner) { ?>
+        <li style="width: 100%;" class="swiper-slide">
+					<a href="<?=$banner['bn_url']?>">
+						<img src="<?=$banner['img']?>">
 					</a>
 				</li>
-				<li style="width: 100%;" class="swiper-slide">
-					<a href="/bbs/board.php?bo_table=notice&wr_id=28">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_11.png" alt="">
-					</a>
-				</li>
-				<li style="width: 100%;" class="swiper-slide">
-					<a href="/shop/item.php?it_id=PRO2021022500198">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_10.png" alt="">
-					</a>
-				</li>
-				<li style="width: 100%;" class="swiper-slide">
-					<a href="/shop/item.php?it_id=PRO2021071500001&ca_id=70&page=1&sort=custom&page=1">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_09.png" alt="">
-					</a>
-				</li>
-				<li style="width: 100%;" class="swiper-slide">
-					<a href="<?php echo G5_URL; ?>/bbs/content.php?co_id=guide">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_08.png" alt="">
-					</a>
-				</li><!-- 
-				<li style="width: 33.33%;" class="swiper-slide">
-					<a href="/bbs/board.php?bo_table=notice&wr_id=11">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_01.jpg" alt="">
-					</a>
-				</li>
-				<li style="width: 33.33%;" class="swiper-slide">
-					<a href="/bbs/board.php?bo_table=notice&wr_id=11">
-						<img src="<?=THEMA_URL?>/assets/img/main_banner_02.jpg" alt="">
-					</a>
-				</li> -->
+        <?php } ?>
 			</ul>
       <div class="sw-button-prev sw-button pc_only">
         <i class="fa fa-angle-left" aria-hidden="true"></i>
