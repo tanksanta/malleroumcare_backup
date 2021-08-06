@@ -49,7 +49,7 @@ for($i = 3; $i < $num_rows; $i += 2) {
     $sale_date = date('Y-m-d', strtotime($cell_date[0]));
     $rent_date = date('Y-m-d', strtotime($cell_date[1]));
   } else {
-    $sale_date = date('Y-m-d', PHPExcel_Shared_Date::ExcelToPHP($cell_date));
+    $sale_date = date('Y-m-d', strtotime($cell_date));
     $rent_date = '0000-00-00';
   }
 
