@@ -18,7 +18,7 @@
     $checked[$this_ct_id] = true;
 
     $it = sql_fetch("
-      SELECT cart.*, item.it_thezone2, o.io_thezone as io_thezone2
+      SELECT cart.*, item.it_thezone2, o.io_thezone as io_thezone2, item.ca_id
       FROM g5_shop_cart as cart
       INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
       LEFT JOIN g5_shop_item_option o ON (cart.it_id = o.it_id and cart.io_id = o.io_id)
@@ -61,25 +61,27 @@
       $y++;  
     }
     $barcode_string="";
-    for($y=0; $y<count($barcode2); $y++) {
-      #처음
-      if($y==0){
-        $barcode_string .= $barcode2[$y];
-        continue;
+    if (!is_benefit_item($it)) {
+      for ($y=0; $y<count($barcode2); $y++) {
+          #처음
+          if ($y==0) {
+              $barcode_string .= $barcode2[$y];
+              continue;
+          }
+          #현재 바코드 -1이 전바코드와 같지않음
+          if (intval($barcode2[$y])-1 !== intval($barcode2[$y-1])) {
+              $barcode_string .= ",".$barcode2[$y];
+          }
+          #현재 바코드 -1이 전바코드와 같음
+          if (intval($barcode2[$y])-1 == intval($barcode2[$y-1])) {
+              //다음번이 연속되지 않을 경우
+              if (intval($barcode2[$y])+1 !== intval($barcode2[$y+1])) {
+                  $barcode_string .= "-".$barcode2[$y];
+              }
+          }
       }
-      #현재 바코드 -1이 전바코드와 같지않음
-      if(intval($barcode2[$y])-1 !== intval($barcode2[$y-1])){
-        $barcode_string .= ",".$barcode2[$y];
-      }
-      #현재 바코드 -1이 전바코드와 같음
-      if(intval($barcode2[$y])-1 == intval($barcode2[$y-1])){
-        //다음번이 연속되지 않을 경우
-        if(intval($barcode2[$y])+1 !== intval($barcode2[$y+1])){
-          $barcode_string .= "-".$barcode2[$y];
-        }
-      }
+      $barcode_string .= " ";
     }
-    $barcode_string.=" ";
 
     //할인적용 단가
     if($od['od_cart_price']){
