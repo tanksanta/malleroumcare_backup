@@ -51,6 +51,21 @@
 		#popupMemberProdDeliveryListWrap > .itemBox > li.info > p.labelVal { font-size: 13px; color: #333; display: table; table-layout: fixed; }
 		#popupMemberProdDeliveryListWrap > .itemBox > li.info > p.labelVal > * { display: table-cell; vertical-align: top; }
 		#popupMemberProdDeliveryListWrap > .itemBox > li.info > p.labelVal > b { width: 60px; }
+		#popupMemberProdDeliveryListWrap > .itemBox > li.logenbtn {
+			width:80px;
+		}
+		#popupMemberProdDeliveryListWrap > .itemBox > li.logenbtn a {
+			margin-bottom: 6px;
+			display: block;
+			vertical-align: top;
+			border: 1px solid #ddd;
+			background: #fff;
+			padding: 3px 0;
+			border-radius: 5px;
+			font-size: 14px;
+			text-align: center;
+			color:#000;
+		}
 
 	</style>
 </head>
@@ -118,6 +133,13 @@
 					</p>
 				<?php } ?>
 			</li>
+			<?php if ($options[$k]["ct_delivery_company"] === 'ilogen' && $options[$k]["ct_delivery_num"]) { ?>
+			<li class="logenbtn">
+				<a href="https://www.ilogen.com/web/personal/trace/<?php echo $options[$k]["ct_delivery_num"]; ?>?open_safari=1" target="_blank">
+					배송조회
+				</a>
+			</li>
+			<?php } ?>
 		</ul>
 		<?php } ?>
 	<?php } ?>
