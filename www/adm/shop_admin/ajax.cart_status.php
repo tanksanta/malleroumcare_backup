@@ -103,8 +103,8 @@ if($_POST['ct_id'] && $_POST['step']) {
 
   if($stateCd == "01") {
     for($k=0;$k<count($new_sto_ids);$k++) {
-      $result_confirm = sql_fetch("select `prodSupYn` from `g5_shop_item` where `it_id` ='".$new_sto_ids[$k]['prodId']."'");
-      if($result_confirm['prodSupYn'] == "Y"&&!$new_sto_ids[$k]['prodBarNum']) {
+      $result_confirm = sql_fetch("select prodSupYn, ca_id from `g5_shop_item` where `it_id` ='".$new_sto_ids[$k]['prodId']."'");
+      if($result_confirm['prodSupYn'] == "Y" && !$new_sto_ids[$k]['prodBarNum'] && !is_benefit_item($result_confirm)) {
         echo "유통상품의 모든 바코드가 입력되어야 출고가 가능합니다";
         $flag = false;
         return false;
