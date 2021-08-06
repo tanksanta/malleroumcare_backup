@@ -271,7 +271,7 @@ $row = sql_fetch($sql);
             <span class="pro-num">바코드</span>
             <span class="date">입고일</span>
             <!--<span class="order">판매</span>-->
-            <span class="del">삭제</span>
+            <span class="del"></span>
           </li>
           <?php
           //판매재고 리스트
@@ -369,9 +369,9 @@ $row = sql_fetch($sql);
               <span class="product m_off" style="width: 43%;">
                 <?php 
                 if($list[$i]['prodColor']||$list[$i]['prodSize']) { 
-                  $name= $list[$i]['prodNm'].'('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; 
+                  $name = $list[$i]['prodNm'].'('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; 
                 } else { 
-                  $name=$list[$i]['prodNm'];
+                  $name = $list[$i]['prodNm'];
                 } 
                 echo $name;
                 ?>
@@ -387,9 +387,13 @@ $row = sql_fetch($sql);
                 <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodOption']?>','<?=$list[$i]['prodBarNum']?>')">수급자선택</a>
               </span>-->
               <span class="del m_off">
-                <a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">
-                  삭제
-                </a>
+                <div class="state-btn2" onclick="open_list(this);">
+                  <b><img src="<?=G5_IMG_URL?>/icon_11.png" alt=""></b>
+                  <ul class="modalDialog">
+                    <li class="p-btn01"><a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">삭제</a></li>
+                    <li class="p-btn01"><a href="javascript:;" onclick="sell_stoId('<?=$list[$i]['stoId']?>', '<?=$list[$i]['prodBarNum']?>')">판매완료처리</a></li>
+                  </ul>
+                </div>
               </span>
               <!--mobile용-->
               <div class="list-m">
@@ -517,12 +521,12 @@ $row = sql_fetch($sql);
             <li class="list cb">
               <!--pc용-->
               <span class="num"><?=$number?></span>
-              <span class="product m_off"><?=$list[$i]['prodNm']?> 
+              <span class="product m_off">
                 <?php 
                 if($list[$i]['prodColor']||$list[$i]['prodSize']) {
-                  $name= $list[$i]['prodNm'].'('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; 
+                  $name = $list[$i]['prodNm'].'('.$list[$i]['prodColor'].$div.$list[$i]['prodSize'].')'; 
                 } else {
-                  $name=$list[$i]['prodNm'];
+                  $name = $list[$i]['prodNm'];
                 }
                 echo $name;
                 ?>
@@ -547,7 +551,9 @@ $row = sql_fetch($sql);
                 </div>
               </div>
               <span class="check">
+                <?php if($result_stock['od_id']) { ?>
                 <a href="<?=G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id']?>">확인</a>
+                <?php } ?>
               </span>
             </li>
             <?php } ?>
@@ -741,6 +747,20 @@ function selected_recipient(penId) {
   document.getElementById('recipient_info').submit();
 }
 
+//항목 펼치기
+function open_list(e) {
+  $(".modalDialog").removeClass('on');
+  $(e).find('ul').toggleClass('on');
+  $(e).parents('.list').siblings('.list').find('ul').removeClass('on');
+}
+
+// modal 다른곳 클릭하면 꺼지게
+$('body').click(function(event) {
+  if(!$(event.target).closest('.state-btn2').length && !$(event.target).is('.state-btn2')) {
+    $(".modalDialog").removeClass('on');
+  }
+});
+
 $(function() {
 
   $('#chk_stock_all').change(function() {
@@ -853,6 +873,25 @@ function del_stoId(stoId) {
       }
     });
   }
+}
+
+function sell_stoId(stoId, prodBarNum) {
+  if(!confirm("판매완료처리 후 다시 재고등록으로 변경은 불가능합니다.\n완료처리하시겠습니까?"))
+    return;
+
+  $.post('ajax.stock.sell.php', {
+    prodId: '<?=$it_id?>',
+    stoId: stoId,
+    prodBarNum: prodBarNum,
+  }, 'json')
+  .done(function(result) {
+    alert('완료되었습니다.');
+    window.location.reload();
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
 }
 
 </script>
