@@ -209,6 +209,13 @@ if($header_skin)
 				</div>
 				<div class="col-xs-6">
 					<div class="form-group">
+						<a href="<?php echo G5_URL; ?>/shop/my_data_upload.php" class="btn btn-lightgray btn-sm btn-block">
+							과거공단자료 업로드
+						</a>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
 						<a href="<?php echo $at_href['edit'];?>" class="btn btn-lightgray btn-sm btn-block">
 							정보수정
 						</a>
