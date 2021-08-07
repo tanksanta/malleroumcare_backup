@@ -121,6 +121,7 @@ body, input, textarea, select, button, table {
 					<td>유효기간 만료일</td>
 					<td><?=($data["penExpiDtm"]) ? $data["penExpiDtm"] : "-"?></td>
 				</tr>
+				<!--
 				<tr>
 					<td>적용구간 만료일</td>
 					<td><?=($data["penAppEdDtm"]) ? $data["penAppEdDtm"] : "-"?></td>
@@ -128,6 +129,11 @@ body, input, textarea, select, button, table {
 				<tr>
 					<td>대여기간 만료일</td>
 					<td><?=($data["regDt"]) ? $data["regDt"] : "-"?></td>
+				</tr>
+				-->
+				<tr>
+					<td>생년월일</td>
+					<td><?php echo $data["penBirth"] ? get_text($data["penBirth"]) : "-"; ?></td>
 				</tr>
 			</table>
 			<a href="#" class="sel_address" data-target="<?=$recipient?>" title="선택">선택</a>
