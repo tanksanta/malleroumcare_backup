@@ -437,12 +437,12 @@ while($item = sql_fetch_array($items)) {
         alert('계약서 작성 유의사항을 읽고 \'확인함\'에 체크해주세요.');
         return;
       }
-
-      if(!confirm('계약서를 생성하시겠습니까?')) return;
+      // 210806 계약서 생성 알림 삭제
+      // if(!confirm('계약서를 생성하시겠습니까?')) return;
       $.post('./ajax.eform.write.php', {status: JSON.stringify(status), uuid: '<?=$eform["uuid"]?>'}, 'json')
       .done(function(data) {
         // 생성 완료
-        alert('계약서 생성이 완료되었습니다.');
+        // alert('계약서 생성이 완료되었습니다.');
         parent.location.reload();
       })
       .fail(function($xhr) {
