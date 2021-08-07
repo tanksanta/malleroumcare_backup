@@ -108,6 +108,9 @@ if($res['data'])
         <div class="col-sm-3">
           <input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" style="display: inline-block;width:47%;" value="<?=substr($data["penJumin"], 0, 6) ?>" > - 
           <input type="password" maxlength="7" oninput="maxLengthCheck(this)"id="penJumin2" name="penJumin2" min="0" class="form-control input-sm" style="display:inline-block;;width:48%;" value="<?=substr($data["penJumin"], 6, 7) ?>">
+          <p style="margin:0; color:#ed9b43">
+            * 주민등록번호는 '기초0%' 제외 필수 입력사항이 아닙니다.
+          </p>
         </div>
       </div>
 
@@ -449,13 +452,17 @@ if($res['data'])
   </style>
 
   <div id="panel_product" class="panel panel-default">
-    <div class="panel-heading"><strong>취급가능 제품</strong></div>
+    <div class="panel-heading"><strong>취급가능 품목</strong></div>
     <div class="panel-body">
-      <div class="form-group has-feedback">
+      <div class="form-group has-feedback sale-product-form">
         <label class="col-sm-2 control-label">
           <b>판매품목</b>
         </label>
         <div class="col-sm-3 col-dealing">
+          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
+            <input type="checkbox" class="chk_sale_product chk_sale_product_all" data-isall="1">전체
+          </label>
+          <br/>
           <?php
           // $sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
           $sale_product_name1="경사로(실내용)"; $sale_product_id1="ITM2021010800001";
@@ -474,18 +481,22 @@ if($res['data'])
           for($i=1; $i<14; $i++) {
           ?>
           <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input type="checkbox" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
+            <input type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
           </label>
           <?php } ?>
         </div>
       </div>
 
 
-      <div class="form-group has-feedback">
+      <div class="form-group has-feedback rental-product-form">
         <label class="col-sm-2 control-label">
           <b>대여품목</b>
         </label>
         <div class="col-sm-3 col-dealing">
+          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
+            <input type="checkbox" class="chk_sale_product chk_sale_product_all" data-isall="1">전체
+          </label>
+          <br/>
           <?php
           $rental_product_name0="욕창예방매트리스"; $rental_product_id0="ITM2020092200019";
           $rental_product_name1="경사로(실외용)"; $rental_product_id1="ITM2020092200018";
@@ -498,7 +509,7 @@ if($res['data'])
           for($i=0; $i<8; $i++) {
           ?>
           <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input type="checkbox" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
+            <input type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
           </label>
           <?php } ?>
         </div>
@@ -525,6 +536,40 @@ if($res['data'])
 var zipPopupDom = document.getElementById("zipAddrPopupIframe");
 
 $(document).ready(function() {
+
+  setTimeout(function() {
+    var parent = $('.sale-product-form');
+    var total = $(parent).find('.chk_sale_product_child').length;
+    var checkedTotal = $(parent).find('.chk_sale_product_child:checked').length;
+    $(parent).find('.chk_sale_product_all').prop('checked', total <= checkedTotal); 
+  })
+  
+  setTimeout(function() {
+    var parent = $('.rental-product-form');
+    var total = $(parent).find('.chk_sale_product_child').length;
+    var checkedTotal = $(parent).find('.chk_sale_product_child:checked').length;
+    $(parent).find('.chk_sale_product_all').prop('checked', total <= checkedTotal); 
+  })
+
+  $('.chk_sale_product').click(function() {
+
+    var parent = $(this).closest('div');
+
+    if ($(this).data('isall')) {
+      var checked = $(this).is(":checked");
+      $(parent).find(".chk_sale_product").prop('checked', checked);
+      return;
+    }
+    
+    var total = $(parent).find('.chk_sale_product_child').length;
+    var checkedTotal = $(parent).find('.chk_sale_product_child:checked').length;
+
+    $(parent).find('.chk_sale_product_all').prop('checked', total <= checkedTotal); 
+
+    return;
+  });
+
+
   setDateBox();
   //생년월일 세팅
   var penBirth = "<?=get_text($data['penBirth'])?>".split('.');
