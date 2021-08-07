@@ -112,12 +112,17 @@ if (!$sst) {
     $sod = "desc";
 }
 
-if($sst == 'it_id') {
-	$pth = "a.pt_num desc,";
-	$ptt = "";
-} else {
-	$pth = "";
-	$ptt = ", a.pt_num desc";
+// if($sst == 'it_id') {
+// 	$pth = "a.pt_num desc,";
+// 	$ptt = "";
+// } else {
+// 	$pth = "";
+// 	$ptt = ", a.pt_num desc";
+// }
+
+if ($orderby === 'it_name') {
+    $sst = "it_name";
+    $sod = "asc";
 }
 
 $sql_order = "order by $pth $sst $sod $ptt";
@@ -206,6 +211,10 @@ $flist = apms_form(1,0);
 <input type="submit" value="검색" class="btn_submit">
 
 <div class="right">
+    <select name="orderby" id="orderby">
+        <option value="it_id" <?php echo $orderby == 'it_id' || !$orderby ? 'selected' : ''; ?>>최근등록순 정렬</option>
+        <option value="it_name" <?php echo $orderby == 'it_name' ? 'selected' : ''; ?>>가나다순 정렬</option>
+    </select>
     <select name="page_rows" id="page_rows">
         <option value="10" <?php echo $page_rows == '10' ? 'selected' : ''; ?>>10개씩보기</option>
         <option value="15" <?php echo $page_rows == '15' ? 'selected' : ''; ?>>15개씩보기</option>
@@ -731,7 +740,7 @@ $(function() {
         return false;
     });
 
-    $('#page_rows').change(function() {
+    $('#page_rows, #orderby').change(function() {
         document.flist.submit();
     })
 });
