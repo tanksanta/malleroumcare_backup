@@ -328,8 +328,8 @@ $ret['main'] = "
           <th class=\"od_time\">주문일시</th>
           <th class=\"od_info\">주문정보</th>
           <th class=\"od_name\">받는분(주문자)</th>
-          <th class=\"od_content\">상품요청
-          <th class=\"od_content\">배송요청사항
+          <th class=\"od_content\">상품요청</th>
+          <th class=\"od_content\">배송요청사항</th>
           <th class=\"od_barNum\">바코드</th>
           <th class=\"od_price\">결제금액</th>
           <th>출고담당자</th>
@@ -850,8 +850,8 @@ foreach($orderlist as $order) {
         {$prodMemo}
       </td>
       <td align=\"center\" class=\"od_content\">
-      {$order['od_memo']}
-    </td>
+        {$order['od_memo']}
+      </td>
       <td align=\"center\" class=\"od_barNum\">
         <a href='#' class='prodBarNumCntBtn{$prodBarNumCntBtnStatus}' data-option='{$result_ct["ct_option"]}'  data-it='{$ct_it_id}' data-stock='{$stock_insert}'  data-od='{$order["od_id"]}'>{$prodBarNumCntBtnWord}</a>
       </td>
