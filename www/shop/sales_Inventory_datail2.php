@@ -707,8 +707,7 @@ expired_rental_item_clean($_GET['prodId']);
                       </script>
                     </ul>
                     <div class="popup-btn">
-                      <!-- ordId,stoId,ordLendStrDtm,ordLendEndDtm -->
-                      <button type="button" onclick="retal_period_change('<?php echo $list[$i]['penOrdId']?>','<?=$list[$i]['stoId']?>','strDtm_<?=$list[$i]['stoId']?>','endDtm_<?=$list[$i]['stoId']?>')">확인</button>
+                      <button type="button" onclick="rental_period_change('<?=$list[$i]['stoId']?>')">확인</button>
                       <button type="button" class="p-cls-btn" onclick="close_popup(this)">취소</button>
                     </div>
                   </div>
@@ -1349,6 +1348,26 @@ function retal_state_change(stoId,stateCd) {
         window.location.reload();
       }
     }
+  });
+}
+
+// 대여기간 수정
+function rental_period_change(stoId) {
+  var start_date = $('#strDtm_' + stoId).val();
+  var end_date = $('#endDtm_' + stoId).val();
+
+  $.post('ajax.stock.rent_date.php', {
+    prodId: '<?=get_text($it_id)?>',
+    stoId: stoId,
+    start_date: start_date,
+    end_date: end_date
+  }, 'json')
+  .done(function() {
+    window.location.reload();
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
   });
 }
 
