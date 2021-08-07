@@ -532,7 +532,37 @@ $row = sql_fetch($sql);
                 ?>
               </span>
               <span class="pro-num m_off" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
-              <span class="name m_off"><a href="<?=G5_SHOP_URL?>/my_recipient_update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
+              <span class="name m_off">
+                <?php
+                if(!$list[$i]['penId']) {
+                  // 재고에 수급자 주문 정보가 없으면 공단자료업로드 DB에서 매칭된 수급자 정보를 찾아봄
+                  $my_data_result = sql_fetch("
+                    SELECT
+                      sd_pen_ltm_num as ltm_num
+                    FROM
+                      stock_data_upload
+                    WHERE
+                      sd_status = 1 and sd_gubun = '00' and
+                      sd_it_code = '{$row['ProdPayCode']}' and sd_it_barcode = '{$list[$i]['prodBarNum']}'
+                  ");
+                  if($my_data_result['ltm_num']) {
+                    $pen_result = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+                      'usrId' => $member['mb_id'],
+                      'entId' => $member['mb_entId'],
+                      'penLtmNum' => $my_data_result['ltm_num']
+                    ));
+                    if($pen_result['errorYN'] == 'N') {
+                      $pen_result = $pen_result['data'] ? $pen_result['data'][0] : null;
+                      if($pen_result) {
+                        $list[$i]['penId'] = $pen_result['penId'];
+                        $list[$i]['penNm'] = $pen_result['penNm'];
+                      }
+                    }
+                  }
+                }
+                ?>
+                <a href="<?=G5_SHOP_URL?>/my_recipient_update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a>
+              </span>
               <?php
               //날짜 변환
               $date1=$list[$i]['modifyDtm'];
