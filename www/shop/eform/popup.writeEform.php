@@ -137,7 +137,7 @@ while($item = sql_fetch_array($items)) {
       <div id="prodRow" class="row">
         <div class="flex">
           <h3>공급물품</h3>
-          <div class="right">
+          <div class="right" id="agreeAddProd">
             <span class="notice">*계약서 작성을 위해 추가하는 물품은 통합시스템에서 관리되지 않고 계약서 작성에만 활용됩니다.</span>
             <label class="checkbox"><input id="chkConfirm" type="checkbox">확인함</label>
           </div>
@@ -387,6 +387,11 @@ while($item = sql_fetch_array($items)) {
     $(document).on('click', '.btnDelProd', function() { // 물품 삭제 버튼
       if(!confirm('해당 물품을 삭제하시겠습니까?')) return;
 
+      var cnt = status['buy'].customs.length + status['rent'].customs.length;
+      if (cnt <= 1) {
+        $('#agreeAddProd').hide();
+      }
+
       if($(this).data('type') === 'item') { // 실제로 구매/대여한 물품이면
         var items = status[$(this).data('gubun')].items;
         var it_id = $(this).data('id');
@@ -424,6 +429,7 @@ while($item = sql_fetch_array($items)) {
         range_to: ''
       });
       repaintForm();
+      $('#agreeAddProd').show();
     };
     $('#btnAddBuyProd').click(function() { // 구매물품 추가
       addProd('buy');
@@ -432,8 +438,10 @@ while($item = sql_fetch_array($items)) {
       addProd('rent');
     });
     $('#btnSubmitEform').click(function() { // 계약서 생성
+      
+      var cnt = status['buy'].customs.length + status['rent'].customs.length;
       // todo: 폼 무결성 체크
-      if(!status.agreement) {
+      if(cnt && !status.agreement) {
         alert('계약서 작성 유의사항을 읽고 \'확인함\'에 체크해주세요.');
         return;
       }

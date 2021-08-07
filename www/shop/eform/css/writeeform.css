@@ -229,3 +229,7 @@ button { display: inline-block; }
   background-color: #787878;
   width: 130px;
 }
+
+#agreeAddProd {
+  display: none;
+}
