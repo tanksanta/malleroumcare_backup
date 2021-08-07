@@ -518,10 +518,11 @@ function doSearch() {
     if ( page === 1 ) {
       $('#samhwa_order_ajax_list_table').html(html.main);
     }
-    $('#samhwa_order_list_table>div.table:first-child tbody').append(html.left);
-    $('#samhwa_order_list_table>div.table:last-child tbody').append(html.right);
+    $('#samhwa_order_list_table>div.table tbody').append(html.data);
+    // $('#samhwa_order_list_table>div.table:first-child tbody').append(html.left);
+    // $('#samhwa_order_list_table>div.table:last-child tbody').append(html.right);
 
-    if ( !html.left ) {
+    if ( !html.data ) {
       end = true;
     }
     if (html.counts) {

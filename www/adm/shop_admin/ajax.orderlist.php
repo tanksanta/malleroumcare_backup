@@ -474,37 +474,25 @@ $ret['counts'] = $cate_counts;
 //분류
 $ret['main'] = "
 <div id=\"samhwa_order_list_table\">
-    <div class=\"table list-table-style\">
+    <div class=\"table wide-table list-table-style\">
         <table>
             <thead>
                 <tr>
                     <th class=\"check\">선택</th>
                     <th class=\"balhaeng\">발행</th>
                     <th class=\"od_time\">주문일시</th>
-                    <th class=\"od_info\">주문정보</th>
+                    <th class=\"od_info\" style='width:20%'>주문정보</th>
                     <th class=\"od_barNum\">바코드</th>
                     <th class=\"od_name\">받는분(주문자)</th>
                     <th class=\"od_receipt_time\">변경일시</th>
-                    <th class=\"od_type\">결제수단</th>
+                    <th class=\"od_content\">상품요청</th>
+                    <th class=\"od_content\">배송요청사항</th>
                     <th class=\"od_price\">결제금액</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-    <div class=\"table list-table-style\">
-        <table class=\"scrollable\">
-            <thead>
-                <tr>
                     <th class=\"od_sales_manager\">영업담당자</th>
                     <th class=\"od_release_manager\">출고담당자</th>
-                    <!-- <th class=\"od_release_manager_star\">출담</th>
-                    
-                    <th class=\"od_delivery_type\">출고방법</th> -->
                     <th class=\"od_ex_date\">출고완료일</th>
                     <th class=\"od_step\">주문상태</th>
-                    <th class=\"od_matching\">매칭여부</th>
+                    <!--<th class=\"od_matching\">매칭여부</th>-->
                     <th class=\"od_list_memo\">메모</th>
                 </tr>
             </thead>
@@ -568,7 +556,7 @@ foreach($orderlist as $order) {
     
     //출고담당자 select
     $od_release_select="";
-    $od_release_select = '<select class="ct_manager" data-ct-id="'.$order['cart_ct_id'].'">';
+    $od_release_select = '<select class="ct_manager" data-ct-id="'.$order['cart_ct_id'].'" style="width:70px">';
         $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '400001'";
         $result_m = sql_query($sql_m);
         $od_release_select .= '<option value="미지정">미지정</option>';
@@ -772,35 +760,6 @@ foreach($orderlist as $order) {
 
 
 
-        $ret['left'] .= "
-        <tr class=\"step\">
-            <td colspan=\"10\" class=\"ltr-bg-step-{$ct_status_info['step']}\">
-                {$show_ct_status}
-            </td>
-        </tr>
-        <tr class=\"btns\">
-            <td colspan=\"10\">
-                <ul class=\"left-btns\">
-                    <li class=\"order-catalog-step-btns\">
-                        <span class=\"custom-select-box-btn btn drop_multi_main\" data-value=\"select\"><a href=\"javascript:;\">전체선택</a></span><span class=\"custom-select-box-btn btn drop_multi_sub\"><a href=\"javascript:;\"></a></span>
-                        <ul class=\"list-select custom-select-box-multi\" name=\"select_25\" rows=\"4\" onchange=\"list_select(this)\" style=\"display: none;\">
-                            <li data-value=\"select\">전체선택</li>
-                            <li data-value=\"not-select\">선택안함</li>
-                            <li data-value=\"important\">별표선택</li>
-                            <li data-value=\"not-important\">별표없음</li>
-                        </ul>
-                    </li>
-                    <li class=\"order-catalog-step-btns\">
-                        {$show_next_status}
-                        {$show_prev_status}
-                        <!-- <span class=\"btn large\"><button id=\"list_order_prints\">선택 작업지시서 출력</button></span> -->
-                        <span class=\"btn large\"><button id=\"change_to_invalid_step\" >주문무효</button></span>
-                    </li>
-                </ul>
-            </td>
-        </tr>
-        ";
-
         if ( $where ) {
             $sql_search = ' where '.implode(' and ', $where) . " and ct_status = '{$result_ct['ct_status']}' ";
         }else{
@@ -832,24 +791,80 @@ foreach($orderlist as $order) {
         // print_r($sql);
         // return false;
         if($ct_status_info['name']=="재고소진"||$ct_status_info['name']=="보유재고등록"){ $status_info = "총 {$total_result['cnt']}건";}else{$status_info = "총 {$total_result['cnt']}건 / 합계: ₩ {$total_result['price']}원";}
-        $ret['right'] .= "
+
+        
+        $ret['data'] .= "
         <tr class=\"step\">
             <td colspan=\"10\" class=\"ltr-bg-step-{$ct_status_info['step']}\">
-                {$status_info}
+                {$show_ct_status}
+            </td>
+            <td colspan=\"6\" class=\"ltr-bg-step-{$ct_status_info['step']}\" style=\"text-align:right;\">
+                {$status_info} 
             </td>
         </tr>
         <tr class=\"btns\">
-            <td colspan=\"10\">
-                <!--
-                <span class=\"btn large\"><button name=\"excel_down\" onclick=\"excel_down('25')\"><img src=\"/adm/shop_admin/img/btn_img_ex.gif\" align=\"absmiddle\"> 엑셀다운로드</button></span>
-                -->
+            <td colspan=\"16\">
+                <ul class=\"left-btns\">
+                    <li class=\"order-catalog-step-btns\">
+                        <span class=\"custom-select-box-btn btn drop_multi_main\" data-value=\"select\"><a href=\"javascript:;\">전체선택</a></span><span class=\"custom-select-box-btn btn drop_multi_sub\"><a href=\"javascript:;\"></a></span>
+                        <ul class=\"list-select custom-select-box-multi\" name=\"select_25\" rows=\"4\" onchange=\"list_select(this)\" style=\"display: none;\">
+                            <li data-value=\"select\">전체선택</li>
+                            <li data-value=\"not-select\">선택안함</li>
+                            <li data-value=\"important\">별표선택</li>
+                            <li data-value=\"not-important\">별표없음</li>
+                        </ul>
+                    </li>
+                    <li class=\"order-catalog-step-btns\">
+                        {$show_next_status}
+                        {$show_prev_status}
+                        <!-- <span class=\"btn large\"><button id=\"list_order_prints\">선택 작업지시서 출력</button></span> -->
+                        <span class=\"btn large\"><button id=\"change_to_invalid_step\" >주문무효</button></span>
+                    </li>
+                </ul>
             </td>
         </tr>
         ";
         $now_step = $result_ct['ct_status'];
     }
 
-    $ret['left'] .= "
+    $important2_class = $order['od_important2'] ? 'on' : '';
+
+    $pay_status = get_pay_step($order['od_pay_state']);
+    $od_pay_state = '<span class="" style="color:'. $pay_status['color'] .'">'.$pay_status['name'] .'</span>';
+
+    $od_ex_date = $order['od_ex_date'] === '0000-00-00' ? '-' : $order['od_ex_date'];
+
+    //상품준비, 출고준비, 값 0000-00-00 이면, 출고예정
+    if($ct_ex_date === '0000-00-00'){
+        $ct_ex_date = "출고예정";
+    }
+    // if($ct_status_info['name']=="상품준비"||$ct_status_info['name']=="출고준비"){
+    //     $od_ex_date = "출고예정";
+    // }
+    // //주문취소, 주문무효이면 상태값표시
+    // if($ct_status_info['name']=="주문취소"||$ct_status_info['name']=="주문무효"){
+    //     $ct_ex_date = $ct_status_info['name'];
+    // }
+    // $od_ex_date=$result_ct['ct_status'];
+    // if ($cancel_request_row['od_id']) {
+    //     $ct_status = get_canel_request($cancel_request_row['request_type']);
+    // } else {
+    //     $ct_status = get_step($result_ct['ct_status']);
+    // }
+
+    $od_delivery_type = get_delivery_step($order['od_delivery_type']);
+
+    $show_od_delivery_type = $od_delivery_type['name'];
+    if ($od_delivery_type['type'] == 'delivery') {
+        $show_od_delivery_type .= "<br>" . ( $order['od_edi_result'] == '1' ? '<span style="color:#236ec6">전송</span>' : '<span style="color:#c72102">미전송</span>' );
+    }
+
+    $od_release_out = '-';
+
+    $od_list_memo = $order['od_list_memo'] ? htmlspecialchars($order['od_list_memo']) : '없음';
+    if($order['ct_is_direct_delivery']) $od_list_memo = '직배송';
+
+    $ret['data'] .= "
     <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']}\">
         <td align=\"center\" class=\"check\">
             <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['cart_ct_id']}\" value=\"{$order['cart_ct_id']}\" accumul_mark=\"Y\">
@@ -899,54 +914,15 @@ foreach($orderlist as $order) {
             </a>
         </td>
         <td align=\"center\" class=\"od_receipt_time\">{$od_receipt_time}</td>
-        <td align=\"center\" class=\"od_type\">
-            {$od_receipt_name}
+        <td align=\"center\" class=\"od_content\">
+            {$prodMemo}
+        </td>
+        <td align=\"center\" class=\"od_content\">
+            {$order['od_memo']}
         </td>
         <td align=\"center\" class=\"od_price\">
             <b>{$ct_price}</b>
         </td>
-    </tr>
-    ";
-
-    $important2_class = $order['od_important2'] ? 'on' : '';
-
-    $pay_status = get_pay_step($order['od_pay_state']);
-    $od_pay_state = '<span class="" style="color:'. $pay_status['color'] .'">'.$pay_status['name'] .'</span>';
-
-    $od_ex_date = $order['od_ex_date'] === '0000-00-00' ? '-' : $order['od_ex_date'];
-
-    //상품준비, 출고준비, 값 0000-00-00 이면, 출고예정
-    if($ct_ex_date === '0000-00-00'){
-        $ct_ex_date = "출고예정";
-    }
-    // if($ct_status_info['name']=="상품준비"||$ct_status_info['name']=="출고준비"){
-    //     $od_ex_date = "출고예정";
-    // }
-    // //주문취소, 주문무효이면 상태값표시
-    // if($ct_status_info['name']=="주문취소"||$ct_status_info['name']=="주문무효"){
-    //     $ct_ex_date = $ct_status_info['name'];
-    // }
-    // $od_ex_date=$result_ct['ct_status'];
-    // if ($cancel_request_row['od_id']) {
-    //     $ct_status = get_canel_request($cancel_request_row['request_type']);
-    // } else {
-    //     $ct_status = get_step($result_ct['ct_status']);
-    // }
-
-    $od_delivery_type = get_delivery_step($order['od_delivery_type']);
-
-    $show_od_delivery_type = $od_delivery_type['name'];
-    if ($od_delivery_type['type'] == 'delivery') {
-        $show_od_delivery_type .= "<br>" . ( $order['od_edi_result'] == '1' ? '<span style="color:#236ec6">전송</span>' : '<span style="color:#c72102">미전송</span>' );
-    }
-
-    $od_release_out = '-';
-
-    $od_list_memo = $order['od_list_memo'] ? htmlspecialchars($order['od_list_memo']) : '없음';
-    if($order['ct_is_direct_delivery']) $od_list_memo = '직배송';
-
-    $ret['right'] .= "
-    <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']}\">
         <td align=\"center\" class=\"od_sales_manager\">
             {$sale_manager}
         </td>
@@ -968,7 +944,7 @@ foreach($orderlist as $order) {
         <td align=\"center\" class=\"od_step\">
             {$ct_status_text}
         </td>
-        <td align=\"center\" class=\"od_matching\"><b>{$goods_maching}</b></td>
+        <!--<td align=\"center\" class=\"od_matching\"><b>{$goods_maching}</b></td>-->
         <td align=\"center\" class=\"od_list_memo\">
             <span class=\"open_list_memo_layer_popup list_memo_{$order['od_id']} \" data-od-id=\"{$order['od_id']}\">
                 {$od_list_memo}

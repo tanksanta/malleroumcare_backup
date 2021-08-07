@@ -405,16 +405,18 @@ button {
     box-sizing:border-box;
     min-height:500px;
 }
-#samhwa_order_list_table>div.table:first-child {
+#samhwa_order_list_table>div.table {
+    width: 100%;
+}
+/* #samhwa_order_list_table>div.table:first-child {
     width:60%;
     border-right:none;
 }
 #samhwa_order_list_table>div.table:last-child {
     width:40%;
     width:calc(40% / 2 * 2);
-    /*overflow-x:scroll;*/
     border-left:none;
-}
+} */
 #samhwa_order_list_table>div.table thead tr {
     display:inline-table;
     position:absolute;
@@ -428,12 +430,12 @@ button {
     top: 153px;
     z-index:2;
 }
-#samhwa_order_list_table>div.table:first-child thead tr {
+/* #samhwa_order_list_table>div.table:first-child thead tr {
     width:60%;
 }
 #samhwa_order_list_table>div.table:last-child thead tr {
     width:40%;
-}
+} */
 #samhwa_order_list_table>div.table:first-child thead tr.fixed {
     width: calc(60% - 20px);
 }
@@ -533,7 +535,6 @@ table.list-table-style .drop_multi_sub a:after {
     background-color:#fafafa;
 }
 #samhwa_order_list_table>div.table:last-child tr.step td {
-    text-align:right;
     padding-right:15px;
     font-weight:normal;
     height:44px;
@@ -562,10 +563,10 @@ table.list-table-style .drop_multi_sub a:after {
     width:8%;
 }
 #samhwa_order_list_table>div.table .od_matching {
-    width:8%;
+    width:3%;
 }
 #samhwa_order_list_table>div.table .od_list_memo {
-    width:8%;
+    width:5%;
 }
 #samhwa_order_list_table>div.table .od_receipt_time {
     width:8%;
@@ -579,6 +580,12 @@ table.list-table-style .drop_multi_sub a:after {
 #samhwa_order_list_table>div.table td.od_price {
     color:black;
     font-size:13px;
+}
+#samhwa_order_list_table>div.table .od_barNum {
+    width: 8%;
+}
+#samhwa_order_list_table>div.table .od_content {
+    width: 7%;
 }
 #samhwa_order_list_table>div.table .open_member_pop {
     display: inline-block;
@@ -2048,10 +2055,10 @@ ul.upload_files li .filelink {
 }
 
 #samhwa_order_list_table>div.table .od_sales_manager {
-    width:130px;
+    width:7%;
 }
 #samhwa_order_list_table>div.table .od_release_manager {
-    width:130px;
+    width:7%;
 }
 #samhwa_order_list_table>div.table .od_release_manager_star {
     width:80px;
@@ -2063,13 +2070,13 @@ ul.upload_files li .filelink {
     width:130px;
 }
 #samhwa_order_list_table>div.table .od_ex_date {
-    width:130px;
+    width:5%;
 }
 #samhwa_order_list_table>div.table .od_release_out {
     width:130px;
 }
 #samhwa_order_list_table>div.table .od_step {
-    width:130px;
+    width:7%;
 }
 .mb_shorten_info {
     padding:1px 3px;
