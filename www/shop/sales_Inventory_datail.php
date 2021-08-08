@@ -607,7 +607,7 @@ $row = sql_fetch($sql);
 <!-- 수급자신청 -->
 <div id="order_recipientBox">
   <div>
-    <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php" style='z-index:9999' ></iframe>
+    <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php?ca_id=<?=get_search_string($ca_id)?>" style='z-index:9999' ></iframe>
   </div>
 </div>
 <!-- 수급자 선택시 변경되어 넘어갈 값 -->

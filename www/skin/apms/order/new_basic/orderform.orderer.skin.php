@@ -867,7 +867,14 @@ $(function() {
 <?php //if($itemPenIdStatus){ ?>
 <div id="order_recipientBox">
   <div>
-    <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php"></iframe>
+    <?php
+    $ca_id_arr = [];
+    foreach($item as $it) {
+      $ca_id_arr[] = $it['ca_id'];
+    }
+    $ca_id_txt = implode('|', $ca_id_arr);
+    ?>
+    <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php?ca_id=<?=$ca_id_txt?>"></iframe>
   </div>
 </div>
 <div id="order_submitCheckBox">

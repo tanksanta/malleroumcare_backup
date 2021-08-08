@@ -1,7 +1,8 @@
 <?php
-
 	include_once("./_common.php");
 	if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
+
+  $ca_id_arr = array_filter(explode('|', $_GET['ca_id']));
 
 	$sendData = [];
 	$sendData["usrId"] = $member["mb_id"];
@@ -97,9 +98,24 @@ body, input, textarea, select, button, table {
 </div>
 <div class="pop_list">
 	<ul id="recipient_list">
-	<?php if($list){ ?>
-		<?php foreach($list as $data){ ?>
+	<?php if($list) { ?>
+		<?php foreach($list as $data) { ?>
 		<?php
+      $warning = [];
+      if(is_array($ca_id_arr)) {
+        foreach($ca_id_arr as $ca_id) {
+          $limit = get_pen_category_limit($data["penLtmNum"], $ca_id);
+          if($limit) {
+            $cur = intval($limit['num']) - intval($limit['current']);
+            if($cur <= 0) {
+              // 구매불가능
+              $warning_text = "\"{$limit['ca_name']}\" 구매가능 개수가 초과되었습니다.";
+              if(!in_array($warning_text, $warning))
+                $warning[] = $warning_text;
+            }
+          }
+        }
+      }
 			$recipient = $data["rn"]."|".$data["penId"]."|".$data["entId"]."|".$data["penNm"]."|".$data["penLtmNum"]."|".$data["penRecGraCd"]."|".$data["penRecGraNm"]."|".$data["penTypeCd"]."|".$data["penTypeNm"]."|".$data["penExpiStDtm"]."|".$data["penExpiEdDtm"]."|".$data["penExpiDtm"]."|".$data["penExpiRemDay"]."|".$data["penGender"]."|".$data["penGenderNm"]."|".$data["penBirth"]."|".$data["penAge"]."|".$data["penAppEdDtm"]."|".$data["penAddr"]."|".$data["penAddrDtl"]."|".$data["penConNum"]."|".$data["penConPnum"]."|".$data["penProNm"]."|".$data["usrId"]."|".$data["appCd"]."|".$data["appCdNm"]."|".$data["caCenYn"]."|".$data["regDtm"]."|".$data["regDt"]."|".$data["ordLendEndDtm"]."|".$data["ordLendRemDay"]."|".$data["usrNm"]."|".$data["penAppRemDay"]."|800,000원";
 		?>
 			<li>
@@ -135,8 +151,17 @@ body, input, textarea, select, button, table {
 					<td>생년월일</td>
 					<td><?php echo $data["penBirth"] ? get_text($data["penBirth"]) : "-"; ?></td>
 				</tr>
+        <?php foreach($warning as $warning_text) { ?>
+        <tr>
+					<td colspan="2" style="color: red"><?=$warning_text?></td>
+        </tr>
+        <?php } ?>
 			</table>
+      <?php if($warning) { ?>
+      <div class="warning">구매가능초과</div>
+      <?php } else { ?>
 			<a href="#" class="sel_address" data-target="<?=$recipient?>" title="선택">선택</a>
+      <?php } ?>
 			</li>
 		<?php } ?>
 	<?php } else { ?>

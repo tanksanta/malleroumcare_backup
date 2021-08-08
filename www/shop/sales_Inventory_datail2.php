@@ -938,7 +938,7 @@ expired_rental_item_clean($_GET['prodId']);
 <!------------------------------------------------------- 대여신청 ------------------------------------------------------->
 <div id="order_recipientBox">
   <div>
-    <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php" style='z-index:9999' id="recipient_iframe"></iframe>
+    <iframe src="<?php echo G5_SHOP_URL;?>/pop_recipient.php?ca_id=<?=get_search_string($ca_id)?>" style='z-index:9999' id="recipient_iframe"></iframe>
   </div>
 </div>
 <!-- 수급자 선택시 변경되어 넘어갈 값 -->
