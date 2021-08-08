@@ -1146,11 +1146,48 @@ function get_stock($prodId, $prodBarNum = '') {
 }
 
 // 대여 내구연한: 판매가능기간 지났으면 재고상태 05(기타)로 변경하기
+// + 대여중인상품(02) 대여기간 종료되면 자동으로 대여가능(01)로 변경하기
 function expired_rental_item_clean($prodId) {
   global $g5, $member;
 
   $item = sql_fetch(" SELECT * FROM {$g5['g5_shop_item_table']} WHERE it_id = '$prodId' ");
 
+  /* 
+  * 대여중인상품(02) 대여기간 종료되면 자동으로 대여가능(01)로 변경하기
+  */
+  $result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
+    'entId' => $member['mb_entId'],
+    'usrId' => $member['mb_id'],
+    'prodId' => $prodId,
+    'stateCd' => ['02']
+  ));
+  if($result['errorYN'] == 'N' && $result['data']) {
+    $stock_update = [];
+    $now = time();
+    foreach($result['data'] as $stock) {
+      $end_time = strtotime($stock['ordLendEndDtm']);
+
+      if(!$stock['ordLendEndDtm'] || !$end_time) continue;
+
+      // 대여기간이 지났으면
+      if($now >= $end_time) {
+        $stock_update[] = array(
+          'stoId' => $stock['stoId'],
+          'prodBarNum' => $stock['prodBarNum'],
+          'stateCd' => '01'
+        );
+      }
+    }
+    api_post_call(EROUMCARE_API_STOCK_UPDATE, array(
+      'entId' => $member['mb_entId'],
+      'usrId' => $member['mb_id'],
+      'prods' => $stock_update,
+    ));
+  }
+  
+  /* 
+  * 대여 내구연한: 판매가능기간 지났으면 재고상태 05(기타)로 변경하기
+  */
   // 대여 내구연한 사용안하면 무시
   if(!$item['it_rental_use_persisting_year'] || !$item['it_rental_expiry_year']) return;
 
