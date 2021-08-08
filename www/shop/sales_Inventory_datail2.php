@@ -350,8 +350,7 @@ expired_rental_item_clean($_GET['prodId']);
 
             //상태 메뉴
             $state_menu_all="";
-            //$state_menu1='<li><a class="state-btn4" onclick="open_retal_period(this)" href="javascript:;">대여기간 수정</a></li>';
-            $state_menu1='';
+            $state_menu1='<li><a class="state-btn4" onclick="open_retal_period(this)" href="javascript:;">대여기간 수정</a></li>';
             $state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id'].'">계약서 확인</a></li>';
             $state_menu3='<li class="p-btn01"><a href="javascript:;" onclick="open_designate_disinfection(this)">소독신청</a></li>';
             $state_menu4='<li><a href="javascript:;" onclick="retal_state_change2(\''.$list[$i]['stoId'].'\',\'01\',\'변경되었습니다.\')" >대여 가능상태</a></li>';

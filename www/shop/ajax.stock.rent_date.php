@@ -14,8 +14,8 @@ if(!$stoId || !$start_date || !$end_date)
 
 $start_time = strtotime($start_date);
 $end_time = strtotime($end_date);
-if(!$start_time || $end_time)
-  json_response('선택한 날짜가 유효하지 않습니다.');
+if(!$start_time || !$end_time)
+  json_response(400, '선택한 날짜가 유효하지 않습니다.');
 $start_date = date('Y-m-d', $start_time);
 $end_date = date('Y-m-d', $end_time);
 
@@ -28,7 +28,7 @@ $stock_result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
   'stateCd' => ['02']
 ));
 
-if(!$stock_result['errorYN'] != 'N')
+if($stock_result['errorYN'] != 'N')
   json_response(500, '시스템 서버 오류 발생 : '.$stock_result['message']);
 
 $stock = $stock_result['data'] ? $stock_result['data'][0] : null;
@@ -48,9 +48,35 @@ if($penOrdId) {
 
   if($result['errorYN'] != 'N')
     json_response(500, '시스템 서버 오류 발생 : '.$stock_result['message']);
+
+  # 쇼핑몰 주문 변경
+  $result = sql_query("
+    UPDATE
+      {$g5['g5_shop_cart_table']}
+    SET
+      ordLendStrDtm = '{$start_date}',
+      ordLendEndDtm	= '{$end_date}'
+    WHERE
+      stoId like '%{$stoId}%'
+  ");
+
+  if(!$result)
+    json_response(500, 'DB 서버 오류 발생');
 }
 
 # 대여 로그 변경
+$result = sql_query("
+  UPDATE
+    g5_rental_log
+  SET
+    strdate = '{$start_date}',
+    enddate	= '{$end_date}'
+  WHERE
+    stoId = '{$stoId}' and
+    ordId = '{$penOrdId}'
+");
+if(!$result)
+  json_response(500, 'DB 서버 오류 발생');
 
-
+json_response(200, 'OK');
 ?>
