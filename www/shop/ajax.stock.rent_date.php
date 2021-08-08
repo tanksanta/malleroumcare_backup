@@ -37,6 +37,9 @@ if(!$stock || $stock['stoId'] != $stoId)
 
 $penOrdId = $stock['penOrdId'];
 
+if(!$penOrdId)
+  json_response(400, '대여기간을 변경할 수 없는 재고입니다. 대여기간을 수동으로 종료해주세요.');
+
 if($penOrdId) {
   # 시스템 주문 변경
   $result = api_post_call(EROUMCARE_API_ORDER_UPDATE, array(
