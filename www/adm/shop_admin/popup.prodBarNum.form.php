@@ -64,28 +64,29 @@ if($od["od_b_tel"]) {
   <link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
 
   <style>
-    * { margin: 0; padding: 0; position: relative; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); outline: none; }
-    html, body { width: 100%; float: left; font-family: "Noto Sans KR", sans-serif; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); outline: none; }
+    html, body { width: 100%; font-family: "Noto Sans KR", sans-serif; }
     body { padding-top: 60px; padding-bottom: 70px; }
     a { text-decoration: none; color: inherit; }
     ul, li { list-style: none; }
-    button { border: 0; font-family: "Noto Sans KR", sans-serif; cursor: pointer;}
+    button { border: 0; font-family: "Noto Sans KR", sans-serif; }
     input { font-family: "Noto Sans KR", sans-serif;  }
 
     /* 고정 상단 */
     #popupHeaderTopWrap { position: fixed; width: 100%; height: 60px; left: 0; top: 0; z-index: 10; background-color: #333; padding: 0 20px; }
+    #popupHeaderTopWrap:after { display: block; content: ''; clear: both; }
     #popupHeaderTopWrap > div { height: 100%; line-height: 60px; }
     #popupHeaderTopWrap > .title { float: left; font-weight: bold; color: #FFF; font-size: 22px; }
     #popupHeaderTopWrap > .close { float: right; }
     #popupHeaderTopWrap > .close > a { color: #FFF; font-size: 40px; top: -2px; }
 
     /* 상품기본정보 */
-    #itInfoWrap { width: 100%; float: left; padding: 20px; border-bottom: 1px solid #DFDFDF; }
-    #itInfoWrap > .name { width: 100%; float: left; font-weight: bold; font-size: 17px; }
+    #itInfoWrap { width: 100%; padding: 20px; border-bottom: 1px solid #DFDFDF; }
+    #itInfoWrap > .name { width: 100%; font-weight: bold; font-size: 17px; }
     #itInfoWrap > .name > .delivery { color: #FF690F; }
-    #itInfoWrap > .date { width: 100%; float: left; font-size: 13px; color: #666; }
-    #itInfoWrap > .deliveryInfo { width: 100%; float: left; border-radius: 5px; padding: 10px 15px; background-color: #F1F1F1; margin-top: 20px; }
-    #itInfoWrap > .deliveryInfo > p { width: 100%; float: left; color: #000; font-size: 13px; }
+    #itInfoWrap > .date { width: 100%; font-size: 13px; color: #666; }
+    #itInfoWrap > .deliveryInfo { width: 100%; border-radius: 5px; padding: 10px 15px; background-color: #F1F1F1; margin-top: 20px; }
+    #itInfoWrap > .deliveryInfo > p { width: 100%; color: #000; font-size: 13px; }
     #itInfoWrap > .deliveryInfo > p.title { color: #666; font-size: 15px; font-weight: bold; margin-bottom: 10px; }
 
     /* 팝업 */
@@ -97,25 +98,27 @@ if($od["od_b_tel"]) {
     #popup .closepop { width: 100%; height: 40px; cursor: pointer; color:#fff; background-color:#000; border-radius:6px; margin-top: 10px; }
 
     /* 상품목록 */
-    #submitForm { width: 100%; float: left; }
-    .imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto; float: left; }
-    .imfomation_box > a { width: 100%; float: left; }
-    .imfomation_box > a > li { width: 100%; float: left; padding: 20px; border-bottom: 1px solid #DDD; }
-    .imfomation_box a .li_box{ width:100%;  height:auto;text-align:center;}
-    .imfomation_box a .li_box .li_box_line1{ width: 100%;  height:auto; margin:auto; float:left;color:#000; }
-    .imfomation_box a .li_box .li_box_line1 .p1{ width:100%; float:left; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
+    #submitForm { width: 100%; }
+    .imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto;  }
+    .imfomation_box > a { width: 100%; }
+    .imfomation_box > a > li { width: 100%; padding: 20px; border-bottom: 1px solid #DDD; }
+    .imfomation_box a .li_box{ width:100%; height:auto;text-align:center;}
+    .imfomation_box a .li_box .li_box_line1{ width: 100%; height:auto; margin:auto; color:#000; }
+    .imfomation_box a .li_box .li_box_line1 .p1{ width:100%; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
     .imfomation_box a .li_box .li_box_line1 .p1 > span { height: 100%; display: table-cell; vertical-align: middle; }
-    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; }
+    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; word-break: keep-all }
+    /* .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; } */
     .imfomation_box a .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
-    .imfomation_box a .li_box .li_box_line1 .cartProdMemo { width: 100%; float: left; font-size: 13px; margin-top: 2px; text-align: left; color: #FF690F; }
+    .imfomation_box a .li_box .li_box_line1 .cartProdMemo { width: 100%; font-size: 13px; margin-top: 2px; text-align: left; color: #FF690F; }
     /* display:none; */
-    .imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle;width:100%; padding-top: 20px; display:none; float: left; box-sizing: border-box; }
-    .imfomation_box a .li_box .folding_box > span { width: 100%; float: left; }
-    .imfomation_box a .li_box .folding_box > .inputbox { width: 100%; float: left; position: relative; padding: 0; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li { width: 100%; float: left; position: relative; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input { width: 100%; height: 50px; float: left; padding-right: 85px; box-sizing: border-box; padding-left: 20px; font-size: 17px; border: 1px solid #E4E4E4; }
+    .imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle; width:100%; padding-top: 20px; display:none; box-sizing: border-box; }
+    .imfomation_box a .li_box .folding_box > span { display: block; width: 100%; }
+    .imfomation_box a .li_box .folding_box > span:after { display: block; content: ''; clear: both; }
+    .imfomation_box a .li_box .folding_box > .inputbox { width: 100%; position: relative; padding: 0; }
+    .imfomation_box a .li_box .folding_box > .inputbox > li { width: 100%; position: relative; }
+    .imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input { width: 100%; height: 50px; padding-right: 85px; box-sizing: border-box; padding-left: 20px; font-size: 17px; border: 1px solid #E4E4E4; }
     .imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input.active { border-color: #FF5858; }
     .imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input::placeholder { font-size: 16px; color: #AAA; }
     .imfomation_box a .li_box .folding_box > .inputbox > li > img { position: absolute; width: 30px; right: 15px; top: 11px; z-index: 2; cursor: pointer; }
@@ -132,14 +135,17 @@ if($od["od_b_tel"]) {
     .imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
 
     .imfomation_box a .li_box .folding_box .barNumCustomSubmitBtn{float:left;margin-left:10px;color:#fff;font-size:17px;background-color:#494949; border:0px;border-radius: 6px;width:18%; height:50px; font-weight: bold; }
-    .imfomation_box a .li_box .folding_box .barNumGuideOpenBtn{float:left;margin-left:10px;width:35px; cursor: pointer; top: 8px; }
+    .imfomation_box a .li_box .folding_box .barNumGuideOpenBtn{float:left; position: relative; margin-left:10px;width:35px; cursor: pointer; top: 8px; }
     .imfomation_box a .li_box .folding_box .notall{
-      margin-bottom:5px;font-size:20px;text-align:left;float:left;height:50px;width:90%; border-radius: 6px; background-color:#fff;  color:#666666; border:0px; ; border: 1px solid #c0c0c0;;
+      margin-bottom:5px;font-size:20px;text-align:left;height:50px;width:90%; border-radius: 6px; background-color:#fff;  color:#666666; border:0px; ; border: 1px solid #c0c0c0;;
       /* background-image : url('<?php echo G5_IMG_URL?>/bacod_img.png');  */
       /* background-position:top right;  */
       /* background-repeat:no-repeat; */
+
+
     }
-    .imfomation_box a .li_box .deliveryInfoWrap { width: 100%; float: left; background-color: #F1F1F1; border-radius: 5px; padding: 10px; margin-top: 15px; }
+    .imfomation_box a .li_box .deliveryInfoWrap { width: 100%; position: relative; background-color: #F1F1F1; border-radius: 5px; padding: 10px; margin-top: 15px; }
+    .imfomation_box a .li_box .deliveryInfoWrap:after { display: block; content: ''; clear: both; }
     .imfomation_box a .li_box .deliveryInfoWrap > select { width: 34%; height: 40px; float: left; margin-right: 1%; border: 1px solid #DDD; font-size: 17px; color: #666; padding-left: 10px; border-radius: 5px; }
     .imfomation_box a .li_box .deliveryInfoWrap > input[type="text"] { width: 65%; height: 40px; float: left; border: 1px solid #DDD; font-size: 17px; color: #666; padding: 0 40px 0 10px; border-radius: 5px; }
     .imfomation_box a .li_box .deliveryInfoWrap > img { position: absolute; width: 30px; right: 15px; top: 50%; margin-top: -15px; z-index: 2; cursor: pointer; }
@@ -149,7 +155,6 @@ if($od["od_b_tel"]) {
     #popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
     #popupFooterBtnWrap > .savebtn{ float: left; width: 75%; height: 100%; background-color:#000; color: #FFF; }
     #popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
-
     /* 바코드 순차입력 버튼 */
     .imfomation_box a .li_box .folding_box > .inputbox > li > .barcode_add {
       width:35px;
@@ -160,19 +165,19 @@ if($od["od_b_tel"]) {
       display:none;
     }
 
-    .excel_btn{
-        float: left;
-        margin-top: 10px;
-        color: #fff;
-        font-size: 17px;
-        background-color: #494949;
-        border: 0px;
-        border-radius: 6px;
-        width: 18%;
-        height: 50px;
-        font-weight: bold;
-        text-align: center;
-        line-height: 50px;
+    .excel_btn {
+      display: inline-block;
+      margin-top: 10px;
+      color: #fff;
+      font-size: 17px;
+      background-color: #494949;
+      border: 0px;
+      border-radius: 6px;
+      width: 18%;
+      height: 50px;
+      font-weight: bold;
+      text-align: center;
+      line-height: 50px;
     }
   </style>
 </head>
@@ -365,19 +370,20 @@ if($od["od_b_tel"]) {
 
   <script type="text/javascript">
     $(".hide_area").hide();
+
+    var keyupTimer;
     
-    $(".notall").keyup(function(){
-        var last_index = $(this).closest('ul').find('li').last().index();
-        var this_index = $(this).closest('li').index();
+    $(".notall").keyup(function() {
+      var last_index = $(this).closest('ul').find('li').last().index();
+      var this_index = $(this).closest('li').index();
 
-        $(this).closest('ul').find('.barcode_add').hide();
-        if(last_index !== this_index && $(this).val().length == 12)
-            $(this).closest('li').find('.barcode_add').show();
+      $(this).closest('ul').find('.barcode_add').hide();
+      if(last_index !== this_index && $(this).val().length == 12)
+          $(this).closest('li').find('.barcode_add').show();
 
-        notallLengthCheck();
+      if(keyupTimer) clearTimeout(keyupTimer);
+      keyupTimer = setTimeout(notallLengthCheck, 200);
     });
-
-
 
     $('.notall').focus(function(){
 
@@ -449,24 +455,30 @@ if($od["od_b_tel"]) {
     $(".imfomation_box a .li_box .folding_box > .inputbox > li > i").removeClass("active");
     $(".imfomation_box a .li_box .folding_box > .inputbox > li > .overlap").removeClass("active");
 
-    for(var i = 0; i < item.length; i++){
+    var dataTable = {};
+
+    for(var i = 0; i < item.length; i++) {
       var length = $(item[i]).val().length;
-      if(length < 12 && length) {
+      if(length < 12 && length){
         $(item[i]).addClass("active");
       }
-
       if(length == 12) {
         $(item[i]).parent().find("i").addClass("active");
+        
+        if(!dataTable[$(item[i]).val()])
+          dataTable[$(item[i]).val()] = [];
+        dataTable[$(item[i]).val()].push(i);
+      }
+    }
 
-        var index = $(item[i]).parent("li").index();
-        var prodItem = $(item[i]).closest(".inputbox").find("li");
-        for(var ii = 0; ii < prodItem.length; ii++){
-          if($(prodItem[ii]).index() != index){
-            if($(prodItem[ii]).find(".notall").val() == $(item[i]).val()){
-              $(item[i]).parent().find("i").removeClass("active");
-              $(item[i]).parent().find(".overlap").addClass("active");
-            }
-          }
+    var keys = Object.keys(dataTable);
+    for(var i = 0; i < keys.length; i++) {
+      var val = dataTable[keys[i]];
+      if(val.length > 1) {
+        for(var j = 0; j < val.length; j++) {
+          var idx = val[j];
+          $(item[idx]).parent().find("i").removeClass("active");
+          $(item[idx]).parent().find(".overlap").addClass("active");
         }
       }
     }
