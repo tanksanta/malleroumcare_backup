@@ -542,6 +542,7 @@ $row = sql_fetch($sql);
                     FROM
                       stock_data_upload
                     WHERE
+                      mb_id = '{$member['mb_id']}' and
                       sd_status = 1 and sd_gubun = '00' and
                       sd_it_code = '{$row['ProdPayCode']}' and sd_it_barcode = '{$list[$i]['prodBarNum']}'
                   ");
