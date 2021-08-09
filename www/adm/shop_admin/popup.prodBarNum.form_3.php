@@ -537,7 +537,17 @@ if($od["od_b_tel"]){
     notallLengthCheck();
     foldingBoxSetting();
 
-    var stoldList = <?=json_encode($result_again)?>;
+    <?php
+    $stock_list = [];
+    foreach($result_again as $stock) {
+      $stock_list[] = array(
+        'prodId' => $stock['prodId'],
+        'stoId' => $stock['stoId'],
+        'prodBarNum' => $stock['prodBarNum']
+      );
+    }
+    ?>
+    var stoldList = <?=json_encode($stock_list)?>;
 
     $(".nativeDeliveryPopupOpenBtn").click(function(){
       sendInvoiceTarget = $(this).parent().find("input[type='text']");
@@ -591,20 +601,15 @@ if($od["od_b_tel"]){
         data : $("#submitForm").serialize()
       });
       var prodsList = {};
-      var flag=false;
-      $.each(stoldList, function(key, value){
+      var flag = false;
+      $.each(stoldList, function(key, value) {
         if($("." + value.stoId).val()&&$("." + value.stoId).val().length !=12){ flag =true;}
         var prodBarNum = ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "";
         prodBarNum = (prodBarNum) ?  prodBarNum : $(".2" + value.stoId).val();
         prodsList[key] = {
           stoId : value.stoId,
           prodId : value.prodId,
-          prodColor : value.prodColor,
-          prodSize : value.prodSize,
-          prodBarNum : prodBarNum,
-          prodManuDate : value.prodManuDate,
-          stateCd : value.stateCd,
-          stoMemo : (value.stoMemo) ? value.stoMemo : ""
+          prodBarNum : prodBarNum
         }
         if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false;}
         if($("." + value.stoId).val()){
