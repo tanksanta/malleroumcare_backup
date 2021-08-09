@@ -264,18 +264,22 @@ if($od["od_b_tel"]){
             </span>
             <?php } ?>
             <ul class="inputbox">
-              <?php for($b = 0; $b< count($result_again); $b++){ ?>
-                <?php if (!is_benefit_item($ct)) { ?>
-                  <li>
-                    <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
-                    <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
-                    <i class="fa fa-check"></i>
-                    <span class="overlap">중복</span>
-                    <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
-                  </li>
-                  <?php  $prodListCnt++; ?>
-                <?php } ?>
-              <?php } ?>
+              <?php
+              for($b = 0; $b< count($result_again); $b++){ 
+                if (!is_benefit_item($ct)) {
+              ?>
+              <li>
+                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>" class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
+                <i class="fa fa-check"></i>
+                <span class="overlap">중복</span>
+                <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
+              </li>
+              <?php
+                  $prodListCnt++; 
+                }
+              }
+              ?>
             </ul>
           </div>
 
@@ -353,42 +357,41 @@ if($od["od_b_tel"]){
 
   <script type="text/javascript">
 
-    $(".notall").keyup(function(){
-        var last_index = $(this).closest('ul').find('li').last().index();
-        var this_index = $(this).closest('li').index();
+  $(".notall").keyup(function() {
+    var last_index = $(this).closest('ul').find('li').last().index();
+    var this_index = $(this).closest('li').index();
 
-        $(this).closest('ul').find('.barcode_add').hide();
-        if(last_index !== this_index && $(this).val().length == 12)
-            $(this).closest('li').find('.barcode_add').show();
+    $(this).closest('ul').find('.barcode_add').hide();
+    if(last_index !== this_index && $(this).val().length == 12)
+      $(this).closest('li').find('.barcode_add').show();
 
-        notallLengthCheck();
-    });
+    notallLengthCheck();
+  });
 
-    $('.notall').focus(function(){
+  $('.notall').focus(function() {
+    var last_index = $(this).closest('ul').find('li').last().index();
+    var this_index = $(this).closest('li').index();
 
-      var last_index = $(this).closest('ul').find('li').last().index();
-      var this_index = $(this).closest('li').index();
+    $(this).closest('ul').find('.barcode_add').hide();
+    if(last_index !== this_index && $(this).val().length == 12)
+      $(this).closest('li').find('.barcode_add').show();
+  });
 
-      $(this).closest('ul').find('.barcode_add').hide();
-      if(last_index !== this_index && $(this).val().length == 12)
-          $(this).closest('li').find('.barcode_add').show();
-      });
-
-      $('.barcode_add').click(function() {
-      var ul = $(this).closest('ul');
-      var li_num = $(this).closest('li').index();
-      var li_val = $(this).closest('li').find('.notall').val();
-      var li_last = $(ul).find('li').last().index();
-      var p_num = 0;
+  $('.barcode_add').click(function() {
+    var ul = $(this).closest('ul');
+    var li_num = $(this).closest('li').index();
+    var li_val = $(this).closest('li').find('.notall').val();
+    var li_last = $(ul).find('li').last().index();
+    var p_num = 0;
 
     if(li_val.length !== 12){
-        alert('바코드 12자리를 입력해주세요.');
-        return false;
+      alert('바코드 12자리를 입력해주세요.');
+      return false;
     }
 
     for(var i = li_num+1; i<=li_last; i++){
-        p_num++;
-        $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+      p_num++;
+      $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
     }
     notallLengthCheck();
   });
@@ -424,30 +427,37 @@ if($od["od_b_tel"]){
   }
 
   /* 바코드 입력글자 수 체크 */
-  function notallLengthCheck(){
+  function notallLengthCheck() {
     var item = $(".notall");
 
     $(item).removeClass("active");
     $(".imfomation_box a .li_box .folding_box > .inputbox > li > i").removeClass("active");
     $(".imfomation_box a .li_box .folding_box > .inputbox > li > .overlap").removeClass("active");
 
-    for(var i = 0; i < item.length; i++){
+    var dataTable = {};
+
+    for(var i = 0; i < item.length; i++) {
       var length = $(item[i]).val().length;
       if(length < 12 && length){
         $(item[i]).addClass("active");
       }
-      if(length == 12){
+      if(length == 12) {
         $(item[i]).parent().find("i").addClass("active");
+        
+        if(!dataTable[$(item[i]).val()])
+          dataTable[$(item[i]).val()] = [];
+        dataTable[$(item[i]).val()].push(i);
+      }
+    }
 
-        var index = $(item[i]).parent("li").index();
-        var prodItem = $(item[i]).closest(".inputbox").find("li");
-        for(var ii = 0; ii < prodItem.length; ii++){
-          if($(prodItem[ii]).index() != index){
-            if($(prodItem[ii]).find(".notall").val() == $(item[i]).val()){
-              $(item[i]).parent().find("i").removeClass("active");
-              $(item[i]).parent().find(".overlap").addClass("active");
-            }
-          }
+    var keys = Object.keys(dataTable);
+    for(var i = 0; i < keys.length; i++) {
+      var val = dataTable[keys[i]];
+      if(val.length > 1) {
+        for(var j = 0; j < val.length; j++) {
+          var idx = val[j];
+          $(item[idx]).parent().find("i").removeClass("active");
+          $(item[idx]).parent().find(".overlap").addClass("active");
         }
       }
     }
@@ -520,8 +530,9 @@ if($od["od_b_tel"]){
     $(sendInvoiceTarget).val(text);
   }
 
-  $(function(){
+  $(function() {
     notallLengthCheck();
+    foldingBoxSetting();
 
     $(".nativeDeliveryPopupOpenBtn").click(function(){
       sendInvoiceTarget = $(this).parent().find("input[type='text']");
@@ -537,48 +548,6 @@ if($od["od_b_tel"]){
           break;
       }
     });
-
-    // var $notall = $(".notall").keyup(function(){
-    //   $(this).val($(this).val().replace(/[^0-9]/g,""));
-    //   if($(this).val().length == 12){
-    //       var idx = $notall.index(this); // <- 변경된 코드
-    //       var num = idx+1;
-
-    //       var item = $(".notall");
-    //       if(num < item.length){
-    //         $notall[num].focus();
-    //       }
-    //   }
-    //   notallLengthCheck();
-    // });
-
-    var stoldList = [];
-    var count=0;
-    var stoIdData = "<?=$stoIdData?>";
-    if(stoIdData){
-      var sendData = {
-        stoId : stoIdData
-      }
-      $.ajax({
-        url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
-        type : "POST",
-        dataType : "json",
-        contentType : "application/json; charset=utf-8;",
-        data : JSON.stringify(sendData),
-        success : function(res) {
-          $.each(res.data, function(key, value){
-            $("." + value.stoId).val(value.prodBarNum);
-          });
-          if(res.data){
-            stoldList = res.data;
-          }
-          notallLengthCheck();
-          foldingBoxSetting();
-        }
-      });
-    } else {
-      foldingBoxSetting();
-    }
 
     $("#prodBarNumSaveBtn").click(function() {
       var barcode_arr = [];
@@ -856,5 +825,6 @@ if($od["od_b_tel"]){
     popup.classList.add('hide');
   }
   </script>
+
 <?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
 </body>
