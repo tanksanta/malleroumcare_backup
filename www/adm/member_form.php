@@ -295,7 +295,7 @@ label {
         </td>
     </tr>
     <tr>
-        <th scope="row"><label for="reg_mb_email">이메일(세금계산서 수신용)<strong class="sound_only">필수</strong></label></th>
+        <th scope="row"><label for="reg_mb_email">이메일<strong class="sound_only">필수</strong></label></th>
         <td><input type="text" name="mb_email" value="<?php echo $mb['mb_email'] ?>" id="reg_mb_email" maxlength="100" required class="required frm_input email" size="30"></td>
         <!-- <th scope="row"><label for="mb_homepage">홈페이지</label></th>
         <td><input type="text" name="mb_homepage" value="<?php echo $mb['mb_homepage'] ?>" id="mb_homepage" class="frm_input" maxlength="255" size="15"></td> -->
@@ -408,7 +408,7 @@ label {
     </tr>
     <tr>
         <th scope="row">
-            <label for="mb_partner_date_auto_buy_cnt">사업자등록증</label>
+            <label for="mb_giup_file1">사업자등록증</label>
         </th>
         <td colspan="3" class="mb_giup_file1">
             <input type="file" name="crnFile" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file1">
@@ -436,7 +436,7 @@ label {
     <?php } ?>
     <tr>
         <th scope="row">
-            <label for="mb_giup_tax_email">세금계산서이메일</label>
+            <label for="mb_giup_tax_email">이메일(세금계산서 수신용)</label>
         </th>
         <td colspan="3">
             <input type="text" name="mb_giup_tax_email" value="<?php echo $mb['mb_giup_tax_email'] ?>" id="mb_giup_tax_email" class="frm_input" size="30" maxlength="30">
@@ -1093,9 +1093,9 @@ function fmember_submit()
 		}
 	}
     if(!f.mb_giup_bname.value){
-        alert('기업명을 입력하세요.');
+        /*alert('기업명을 입력하세요.');
         f.mb_giup_bname.focus();
-        return false;
+        return false;*/
     }
 
     var mb_hp = $("#mb_hp1").val() + "-" + $("#mb_hp2").val() + "-" + $("#mb_hp3").val();
@@ -1290,7 +1290,7 @@ function fmember_submit()
     sendData.append("usrZip", $("#mb_zip").val()); //관리자 우편번호
     sendData.append("usrAddr", $("#mb_addr1").val());//관리자 주소
     sendData.append("usrAddrDetail", $("#mb_addr2").val())+$("#mb_addr3").val();//관리자 주소 상세
-    sendData.append("entMail", $("#reg_mb_email").val());//메일
+    sendData.append("entMail", $("#mb_giup_tax_email").val());//메일
 
 
 
@@ -1316,11 +1316,10 @@ function fmember_submit()
     //사업자등록증
     var flag ='<?=$mb['crnFile']?>';
     var imgFileItem1 = $(".mb_giup_file1 input[type='file']");
-    for(var i = 0; i < imgFileItem1.length; i++){
-        if(!flag){
+    for(var i = 0; i < imgFileItem1.length; i++) {
+        if(!flag) {
             if(!$(imgFileItem1[i])[0].files[0]){
-                alert('사업자등록증을 첨부해주세요.');
-                return false;
+              continue;
             }
             if($(imgFileItem1[i])[0].files[0].size > 1024 * 1024 * 2){
                 alert('사업자등록증 : 2MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem1[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
@@ -1376,17 +1375,13 @@ function fmember_submit()
         return false;
     }
 
-    if ($('input[name="mb_giup_type"]:checked').val() > 0) {
+    /*if ($('input[name="mb_giup_type"]:checked').val() > 0) {
         if (!$('#mb_giup_bname').val()) {
 			alert("기업명을 입력하십시오.");
 			return false;
         }
         if (!$('#mb_giup_boss_name').val()) {
 			alert("대표자명을 입력하십시오.");
-			return false;
-        }
-        if (!$('#mb_giup_bnum').val()) {
-			alert("사업자번호를 입력하십시오.");
 			return false;
         }
         if (!$('#mb_giup_zip').val()) {
@@ -1397,7 +1392,7 @@ function fmember_submit()
 			alert("세금계산서 이메일을 입력하십시오.");
 			return false;
 		}
-    }
+    }*/
 
     return true;
 }
