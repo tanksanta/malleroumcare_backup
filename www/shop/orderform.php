@@ -1230,6 +1230,10 @@ if($is_mobile_order && $default['de_samsung_pay_use'] ){   //삼성페이 사용
 
 
   function forderform_check(f) {
+    if(
+      $('#has_non_supply_item').length > 0 && $('#has_non_supply_item').val() == '1' &&
+      !confirm('비유통 상품은 수급자 주문 시 계약서 작성을 위해 제공되는 기능입니다. 주문하시겠습니까?')
+    ) return false;
 
     /* 210224 보유재고등록요청 */
     if($("#od_stock_insert_yn").prop("checked")){

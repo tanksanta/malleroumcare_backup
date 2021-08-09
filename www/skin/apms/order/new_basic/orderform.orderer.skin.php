@@ -139,7 +139,11 @@ $(function() {
           <li class="barcode" style="display: none;">바코드</li>
         </ul>
 
-        <?php for($i=0; $i < count($item); $i++) { ?>
+        <?php
+        $has_non_supply_item = false; // 비유통 포함 여부
+        for($i=0; $i < count($item); $i++) {
+          if(($item[$i]["prodSupYn"] == "N")) $has_non_supply_item = true;
+        ?>
         <div class="list item" data-code="<?=$item[$i]["it_id"]?>" data-sup="<?=$item[$i]["prodSupYn"]?>" data-ca="<?=(substr($item[$i]["ca_id"], 0, 2))?>">
           <ul class="cb">
             <li class="pro">
@@ -260,14 +264,23 @@ $(function() {
             </div>
             <?php } ?>
             <div>
+              <?php if($item[$i]["prodSupYn"] == "N") { ?>
+              <span style="color: red">비유통상품은 배송되지 않습니다. 수급자 주문 시 계약서 작성을 위해 등록된 상품입니다.</span>
+              <?php } else { ?>
               <span class="btm-tti">요청사항</span>
               <span class="list-textarea">
                 <textarea name="prodMemo_<?=$item[$i]["ct_id"]?>" placeholder="추가 구매 사항이나 상품관련 요청사항을 입력하세요." ></textarea>
               </span>
+              <?php } ?>
             </div>
           </div>
         </div>
-        <?php } ?>
+        <?php
+        }
+        if($has_non_supply_item) {
+          echo '<input type="hidden" name="has_non_supply_item" id="has_non_supply_item" value="1">';
+        }
+        ?>
       </div>
     </div>
 
