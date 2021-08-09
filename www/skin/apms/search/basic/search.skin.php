@@ -127,18 +127,21 @@ include_once($skin_path.'/search.skin.form.php');
 	<ul>
 	<?php for($i=0; $i < $list_cnt; $i++){ ?>
 	<?php
-										  
-		$img = apms_it_thumbnail($list[$i], 400, 400, false, true);
+  $img = apms_it_thumbnail($list[$i], 400, 400, false, true);
 
-		if(!$img["src"] && $list[$i]["it_img1"]){
-			$img["src"] = G5_DATA_URL."/item/{$list[$i]["it_img1"]}";
-			$img["org"] = G5_DATA_URL."/item/{$list[$i]["it_img1"]}";
-		}
+  if(!$img["src"] && $list[$i]["it_img1"]) {
+    $img["src"] = G5_DATA_URL."/item/{$list[$i]["it_img1"]}";
+    $img["org"] = G5_DATA_URL."/item/{$list[$i]["it_img1"]}";
+  }
 
-		if(!$img["src"]){
-			$img["src"] = G5_URL."/shop/img/no_image.gif";
-		}
-										  
+  if(!$img["src"]) {
+    $img["src"] = G5_URL."/shop/img/no_image.gif";
+  }
+
+  $gubun = $cate_gubun_table[substr($list[$i]["ca_id"], 0, 2)];
+  $gubun_text = '판매';
+  if($gubun == '01') $gubun_text = '대여';
+  else if($gubun == '02') $gubun_text = '비급여';
 	?>
 		<li class="<?=$list[$i]["it_id"]?>" data-ca="<?=substr($list[$i]["ca_id"], 0, 2)?>">
 			<a href="<?=$list[$i]["href"]?>">
@@ -150,7 +153,8 @@ include_once($skin_path.'/search.skin.form.php');
 					<img src="<?=$img["src"]?>" alt="<?=$list[$i]["it_name"]?>_상품이미지">
 				<?php } ?>
 				</p>
-				<p class="name"><?=$list[$i]["it_name"]  ?> <?=(substr($list[$i]["ca_id"],0,2)=="10" ? "(판매)" : "(대여)") ?></p>
+				<p class="name">
+          <?=$list[$i]["it_name"]?> <?="({$gubun_text})"?></p>
 			<?php if($list[$i]["it_model"]){ ?>
 				<p class="info"><?=$list[$i]["it_model"]?></p>
 			<?php } ?>
