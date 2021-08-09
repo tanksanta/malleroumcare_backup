@@ -534,6 +534,8 @@ if($od["od_b_tel"]){
     notallLengthCheck();
     foldingBoxSetting();
 
+    var stoldList = <?=json_encode($result_again)?>;
+
     $(".nativeDeliveryPopupOpenBtn").click(function(){
       sendInvoiceTarget = $(this).parent().find("input[type='text']");
 
