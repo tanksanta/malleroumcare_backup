@@ -6,196 +6,229 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 
 // 목록헤드
 if(isset($wset['ihead']) && $wset['ihead']) {
-	add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/head/'.$wset['ihead'].'.css" media="screen">', 0);
-	$head_class = 'list-head';
+  add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/head/'.$wset['ihead'].'.css" media="screen">', 0);
+  $head_class = 'list-head';
 } else {
-	$head_class = (isset($wset['icolor']) && $wset['icolor']) ? 'tr-head border-'.$wset['icolor'] : 'tr-head border-black';
+  $head_class = (isset($wset['icolor']) && $wset['icolor']) ? 'tr-head border-'.$wset['icolor'] : 'tr-head border-black';
 }
 
 // 헤더 출력
 if($header_skin)
-	include_once('./header.php');
+  include_once('./header.php');
 
-	# 스킨경로	
-	$SKIN_URL = G5_SKIN_URL.'/apms/order/'.$skin_name;
+  # 스킨경로  
+  $SKIN_URL = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
 ?>
 
 <link rel="stylesheet" href="<?=$SKIN_URL?>/css/jquery-ui.min.css">
-<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order.css">
+<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order.css?v=20210810">
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
    
 <script>
-	$( function() {
-		//캘린더
-		$("#date1").datepicker({
-			dateFormat : 'yy-mm-dd',
-			prevText: '이전달',
-			nextText: '다음달',
-			monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
-			monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
-			dayNames: ['일', '월', '화', '수', '목', '금', '토'],
-			dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-			dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-			showMonthAfterYear: true,
-			changeMonth: true,
-			changeYear: true,
-			showOn: "both",
-			buttonImage: "<?=$SKIN_URL?>/image/icon_17.png",
-			buttonImageOnly: true,
-			buttonText: "Select date"
-		});
-		$("#date2").datepicker({
-			dateFormat : 'yy-mm-dd',
-			prevText: '이전달',
-			nextText: '다음달',
-			monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
-			monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
-			dayNames: ['일', '월', '화', '수', '목', '금', '토'],
-			dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-			dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-			showMonthAfterYear: true,
-			changeMonth: true,
-			changeYear: true,
-			showOn: "both",
-			buttonImage: "<?=$SKIN_URL?>/image/icon_17.png",
-			buttonImageOnly: true,
-			buttonText: "Select date"
-		});
+  $( function() {
+    //캘린더
+    $("#date1").datepicker({
+      dateFormat : 'yy-mm-dd',
+      prevText: '이전달',
+      nextText: '다음달',
+      monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+      monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+      dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+      dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+      dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+      showMonthAfterYear: true,
+      changeMonth: true,
+      changeYear: true,
+      showOn: "both",
+      buttonImage: "<?=$SKIN_URL?>/image/icon_17.png",
+      buttonImageOnly: true,
+      buttonText: "Select date"
+    });
+    $("#date2").datepicker({
+      dateFormat : 'yy-mm-dd',
+      prevText: '이전달',
+      nextText: '다음달',
+      monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+      monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+      dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+      dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+      dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+      showMonthAfterYear: true,
+      changeMonth: true,
+      changeYear: true,
+      showOn: "both",
+      buttonImage: "<?=$SKIN_URL?>/image/icon_17.png",
+      buttonImageOnly: true,
+      buttonText: "Select date"
+    });
 
-		//셀렉트(주문+재고, 전체 상태)
-		$('.order-date .list-select .select').find('p').each(function(){
-			$(this).on('click',function(){
-				$(this).siblings('ul').stop().slideToggle();
-				$(this).parent('.select').siblings('.select').find('ul').stop().slideUp();
-				$(this).siblings('ul').find('li a ').on('click',function(){
-					let textVal = $(this).text();
-					$(this).parents('ul').siblings('p').text(textVal);
-					$(this).parents('ul').stop().slideUp();
+    //셀렉트(주문+재고, 전체 상태)
+    $('.order-date .list-select .select').find('p').each(function(){
+      $(this).on('click',function(){
+        $(this).siblings('ul').stop().slideToggle();
+        $(this).parent('.select').siblings('.select').find('ul').stop().slideUp();
+        $(this).siblings('ul').find('li a ').on('click',function(){
+          let textVal = $(this).text();
+          $(this).parents('ul').siblings('p').text(textVal);
+          $(this).parents('ul').stop().slideUp();
 
-				});
-			});
-		});
-	} );
+        });
+      });
+    });
+  } );
 </script>
   
    <!-- 210326 재고조회팝업 -->
-	<div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
-		<div>
-		</div>
-	</div>
-  	<!-- 210326 재고조회팝업 -->
+  <div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
+    <div>
+    </div>
+  </div>
+    <!-- 210326 재고조회팝업 -->
    
    <!-- 210326 배송정보팝업 -->
-	<div id="popupProdDeliveryInfoBox" class="listPopupBoxWrap">
-		<div>
-		</div>
-	</div>
+  <div id="popupProdDeliveryInfoBox" class="listPopupBoxWrap">
+    <div>
+    </div>
+  </div>
    
     <style>
-		.listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
-		.listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
-		.listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+    .listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+    .listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+    .listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
 
-		@media (max-width : 750px){
-			.listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
-		}
-	</style>
+    @media (max-width : 750px){
+      .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+    }
+  </style>
   
-	<script type="text/javascript">
-		$(function(){
+  <script type="text/javascript">
+    $(function(){
 
-			$(".listPopupBoxWrap").hide();
-			$(".listPopupBoxWrap").css("opacity", 1);
-			
-			$(".popupDeliveryInfoBtn").click(function(e){
-				e.preventDefault();
-				
-				var od = $(this).attr("data-od");
-				$("#popupProdDeliveryInfoBox > div").append("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od + "'>");
-				$("#popupProdDeliveryInfoBox iframe").load(function(){
-					$("#popupProdDeliveryInfoBox").show();
-				});
-			});
-			
-			$(".popupProdBarNumInfoBtn").click(function(e){
-				e.preventDefault();
-				var od_id = $(this).attr("data-id");
-				var ct_id = $(this).attr("data-ct-id");
-				$("#popupProdBarNumInfoBox > div").append("<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
-				$("#popupProdBarNumInfoBox iframe").load(function(){
-					$("#popupProdBarNumInfoBox").show();
-				});
-			});
-			
-		})
-	</script>
+      $(".listPopupBoxWrap").hide();
+      $(".listPopupBoxWrap").css("opacity", 1);
+      
+      $(".popupDeliveryInfoBtn").click(function(e){
+        e.preventDefault();
+        
+        var od = $(this).attr("data-od");
+        $("#popupProdDeliveryInfoBox > div").append("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od + "'>");
+        $("#popupProdDeliveryInfoBox iframe").load(function(){
+          $("#popupProdDeliveryInfoBox").show();
+        });
+      });
+      
+      $(".popupProdBarNumInfoBtn").click(function(e){
+        e.preventDefault();
+        var od_id = $(this).attr("data-id");
+        var ct_id = $(this).attr("data-ct-id");
+        $("#popupProdBarNumInfoBox > div").append("<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
+        $("#popupProdBarNumInfoBox iframe").load(function(){
+          $("#popupProdBarNumInfoBox").show();
+        });
+      });
+      
+    })
+  </script>
    <!-- 210326 배송정보팝업 -->
     
 <section id="pro-order" class="wrap order-list">
-	<h2 class="tti">주문내역</h2>
-	<div class="order-date">
-		<div class="list-text">
-			<div>
-				<span><img src="<?=$SKIN_URL?>/image/icon_13.png" alt="">상품준비 <b><?=$item_wait_count?>건</b></span>
-			</div>
-			<div>
-				<span><img src="<?=$SKIN_URL?>/image/icon_14.png" alt="">배송중 <b><?=$delivery_ing_count?>건</b></span>
-			</div>
-		</div>
-		<form class="date-box cb" style="width: 100%;" method="get">
-			<div class="list-date">
-				<input type="text" name="s_date" value="<?=$_GET["s_date"]?>" id="date1" /> 
-				~ 
-				<input type="text" name="e_date" value="<?=$_GET["e_date"]?>" id="date2" /> 
-			</div>
-			<div class="list-tab">
-				<a href="javascript:;" onclick="searchDateSetting('1week');">일주일</a>
-				<a href="javascript:;" onclick="searchDateSetting('1month');">이번달</a>
-				<a href="javascript:;" onclick="searchDateSetting('3month');">3개월</a>
-			</div>
-			<div class="list-select">
-				<div class="select">
-					<input type="hidden" name="od_stock" value="<?=$_GET["od_stock"]?>">
-					<p><?=$search_od_stock?></p>
-					<ul>
-						<li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="">주문+재고</a></li>
-					<?php for($i = 0; $i < count($order_stocks); $i++){ ?>
-						<li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="<?=$order_stocks[$i]["val"]?>"><?=$order_stocks[$i]["name"]?></a></li>
-					<?php } ?>
-					</ul>
-				</div>
-				<div class="select">
-					<input type="hidden" name="od_status" value="<?=$_GET["od_status"]?>">
-					<p><?=$search_od_status?></p>
-					<ul>
-						<li><a href="javscript:;" class="hiddenChange" data-target="od_status" data-val="">전체 상태</a></li>
-					<?php for($i = 0; $i < count($order_steps); $i++){ ?>
-						<li><a href="javscript:;" class="hiddenChange" data-target="od_status" data-val="<?=$order_steps[$i]["val"]?>"><?=$order_steps[$i]["name"]?></a></li>
-					<?php } ?>
-					</ul>
-				</div>
-				<button type="submit">검색</button>
-			</div>
-		</form>
-	</div>
+  <div class="sub_section_tit">주문내역</div>
+  <div class="r_btn_area">
+    <a href="javascript:void(0)" id="btn_hidden_order" class="btn eroumcare_btn2" title="숨김처리한 주문">숨김처리한 주문</a>
+  </div>
+  <div id="hidden_order">
+    <div class="hidden_order_title">숨김처리한 주문</div>
+    <ul>
+      <?php
+      $hidden_order_result = sql_query("
+        SELECT o.*, c.it_name, c.ct_option, count(*) as cnt FROM {$g5['g5_shop_order_table']} o
+        INNER JOIN {$g5['g5_shop_cart_table']} c ON o.od_id = c.od_id
+        WHERE o.mb_id = '{$member['mb_id']}' and od_hide_control = '1'
+        GROUP BY o.od_id
+        ORDER BY o.od_id desc
+      ");
+      $total_hidden_order = sql_num_rows($hidden_order_result);
+      if(!$total_hidden_order) {
+        echo '<div class="hidden_order_empty">숨긴 주문이 없습니다.</div>';
+      }
+      while($hidden_order = sql_fetch_array($hidden_order_result)) {
+        $hidden_order['it_name'] .= ($hidden_order['ct_option'] != $hidden_order['it_name'] ? '('.$hidden_order['ct_option'].')' : '');
+        $hidden_order['it_name'] .= ($hidden_order['cnt'] > 1 ? ' 외 '.$hidden_order['cnt'].'건' : '');
+      ?>
+      <li>
+        <div class="hidden_order_info">
+          <div class="row">주문번호 : <?=$hidden_order['od_id']?></div>
+          <div class="row">주문일시 : <?=date('Y.m.d (H:i)', strtotime($hidden_order['od_time']))?></div>
+          <div class="row">주문상품 : <?=$hidden_order['it_name']?></div>
+        </div>
+        <button class="btn_cancel btn_cancel_hide" data-id="<?=$hidden_order['od_id']?>">취소</button>
+      </li>
+      <?php } ?>
+    </ul>
+  </div>
+  <div class="order-date">
+    <div class="list-text">
+      <div>
+        <span><img src="<?=$SKIN_URL?>/image/icon_13.png" alt="">상품준비 <b><?=$item_wait_count?>건</b></span>
+      </div>
+      <div>
+        <span><img src="<?=$SKIN_URL?>/image/icon_14.png" alt="">배송중 <b><?=$delivery_ing_count?>건</b></span>
+      </div>
+    </div>
+    <form class="date-box cb" style="width: 100%;" method="get">
+      <div class="list-date">
+        <input type="text" name="s_date" value="<?=$_GET["s_date"]?>" id="date1" /> 
+        ~ 
+        <input type="text" name="e_date" value="<?=$_GET["e_date"]?>" id="date2" /> 
+      </div>
+      <div class="list-tab">
+        <a href="javascript:;" onclick="searchDateSetting('1week');">일주일</a>
+        <a href="javascript:;" onclick="searchDateSetting('1month');">이번달</a>
+        <a href="javascript:;" onclick="searchDateSetting('3month');">3개월</a>
+      </div>
+      <div class="list-select">
+        <div class="select">
+          <input type="hidden" name="od_stock" value="<?=$_GET["od_stock"]?>">
+          <p><?=$search_od_stock?></p>
+          <ul>
+            <li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="">주문+재고</a></li>
+          <?php for($i = 0; $i < count($order_stocks); $i++){ ?>
+            <li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="<?=$order_stocks[$i]["val"]?>"><?=$order_stocks[$i]["name"]?></a></li>
+          <?php } ?>
+          </ul>
+        </div>
+        <div class="select">
+          <input type="hidden" name="od_status" value="<?=$_GET["od_status"]?>">
+          <p><?=$search_od_status?></p>
+          <ul>
+            <li><a href="javscript:;" class="hiddenChange" data-target="od_status" data-val="">전체 상태</a></li>
+          <?php for($i = 0; $i < count($order_steps); $i++){ ?>
+            <li><a href="javscript:;" class="hiddenChange" data-target="od_status" data-val="<?=$order_steps[$i]["val"]?>"><?=$order_steps[$i]["name"]?></a></li>
+          <?php } ?>
+          </ul>
+        </div>
+        <button type="submit">검색</button>
+      </div>
+    </form>
+  </div>
 
   <form id="form_search" method="get">
     <div class="search_box">
       <select name="sel_field" id="sel_field">
         <option value="all"<?php if($sel_field == 'all') echo ' selected'; ?>>전체</option>
-				<option value="o.od_id"<?php if($sel_field == 'o.od_id') echo ' selected'; ?>>주문번호</option>
-				<option value="i.it_name"<?php if($sel_field == 'i.it_name') echo ' selected'; ?>>상품명</option>
-				<option value="o.od_b_name"<?php if($sel_field == 'o.od_b_name') echo ' selected'; ?>>수령인</option>
+        <option value="o.od_id"<?php if($sel_field == 'o.od_id') echo ' selected'; ?>>주문번호</option>
+        <option value="i.it_name"<?php if($sel_field == 'i.it_name') echo ' selected'; ?>>상품명</option>
+        <option value="o.od_b_name"<?php if($sel_field == 'o.od_b_name') echo ' selected'; ?>>수령인</option>
       </select>
       <div class="input_search">
-          <input name="search" id="search" value="<?=$search?>" type="text">
+          <input name="search" value="<?=$search?>" type="text">
           <button id="btn_search" type="submit"></button>
       </div>
     </div>
   </form>
 
-	<div class="list-wrap">
+  <div class="list-wrap">
     <?php if(!$list){ ?>
         <style>
             .no_content{
@@ -206,52 +239,52 @@ if($header_skin)
             내용이 없습니다
         </div>
         <?php } ?>
-	<?php for ($i = 0; $i < count($list); $i++){ $row = $list[$i]; ?>
-	<?php
-		$itemList = [];
+  <?php for ($i = 0; $i < count($list); $i++){ $row = $list[$i]; ?>
+  <?php
+    $itemList = [];
         $stock_insert ="1";
-		$itemSQL = sql_query("
-			SELECT a.*
-				, ( SELECT it_img1 FROM {$g5["g5_shop_item_table"]} WHERE it_id = a.it_id ) AS it_img
-				, ( SELECT prodSupYn FROM {$g5["g5_shop_item_table"]} WHERE it_id = a.it_id ) AS prodSupYn
-			FROM {$g5["g5_shop_cart_table"]} a
-			WHERE od_id = '{$row["od_id"]}'
-		");
-											  
-		for($ii = 0; $item = sql_fetch_array($itemSQL); $ii++){
-			array_push($itemList, $item);
-		}
-	?>
-		<div class="table-list table-list2">
-			<div class="top">
-				<span> <i class="m_none">주문번호 :</i> <a href="<?=$row["od_href"]?>"><?=$row["od_id"]?></a> </span>
-				<span> <?=display_price($row["od_total_price"])?> </span>
-				<span class="m_none"> <?=date("Y.m.d(H:i)", strtotime($row["od_time"]))?></span>
-			<?php if($row["recipient_yn"] == "Y"){ ?>
-				<span class="btn-pro"> <img src="<?=$SKIN_URL?>/image/icon_15.png" alt=""> 수급자 주문 </span>
-			<?php }else if($row["od_stock_insert_yn"] == "Y"){ 
+    $itemSQL = sql_query("
+      SELECT a.*
+        , ( SELECT it_img1 FROM {$g5["g5_shop_item_table"]} WHERE it_id = a.it_id ) AS it_img
+        , ( SELECT prodSupYn FROM {$g5["g5_shop_item_table"]} WHERE it_id = a.it_id ) AS prodSupYn
+      FROM {$g5["g5_shop_cart_table"]} a
+      WHERE od_id = '{$row["od_id"]}'
+    ");
+                        
+    for($ii = 0; $item = sql_fetch_array($itemSQL); $ii++){
+      array_push($itemList, $item);
+    }
+  ?>
+    <div class="table-list table-list2">
+      <div class="top">
+        <span> <i class="m_none">주문번호 :</i> <a href="<?=$row["od_href"]?>"><?=$row["od_id"]?></a> </span>
+        <span> <?=display_price($row["od_total_price"])?> </span>
+        <span class="m_none"> <?=date("Y.m.d(H:i)", strtotime($row["od_time"]))?></span>
+      <?php if($row["recipient_yn"] == "Y"){ ?>
+        <span class="btn-pro"> <img src="<?=$SKIN_URL?>/image/icon_15.png" alt=""> 수급자 주문 </span>
+      <?php }else if($row["od_stock_insert_yn"] == "Y"){ 
                 $stock_insert ="2";
             ?>
-				<span class="btn-pro on"> 보유재고등록 </span>
-			<?php } else { ?>
-				<span class="btn-pro on"> <img src="<?=$SKIN_URL?>/image/icon_16.png" alt=""> 상품 주문 </span>
-			<?php } ?>
-			</div>
-
-			<div class="info-wrap">
-			<?php if($row["recipient_yn"] == "Y") { ?>
-				<div class="info-top">
-					<h5>수급자 정보 : <?=$row["od_penNm"]?> (<?=$row["od_penTypeNm"]?>)</h5>
-					<a href="javascript:;" style="display: none;">계약서</a>
-				</div>
-			<?php } else { ?>
-				<div class="info-top" style="background-color: #f5f5f5">
-					<h5>받으시는 분 : <?=$row['od_b_name']?></h5>
-				</div>
+        <span class="btn-pro on"> 보유재고등록 </span>
+      <?php } else { ?>
+        <span class="btn-pro on"> <img src="<?=$SKIN_URL?>/image/icon_16.png" alt=""> 상품 주문 </span>
       <?php } ?>
-			</div>
-			
-			<?php foreach($itemList as $item){ 
+      </div>
+
+      <div class="info-wrap">
+      <?php if($row["recipient_yn"] == "Y") { ?>
+        <div class="info-top">
+          <h5>수급자 정보 : <?=$row["od_penNm"]?> (<?=$row["od_penTypeNm"]?>)</h5>
+          <a href="javascript:;" style="display: none;">계약서</a>
+        </div>
+      <?php } else { ?>
+        <div class="info-top" style="background-color: #f5f5f5">
+          <h5>받으시는 분 : <?=$row['od_b_name']?></h5>
+        </div>
+      <?php } ?>
+      </div>
+      
+      <?php foreach($itemList as $item){ 
                 // //바코드 개수 구하기
                 // $sendData2=[];
                 // // $sendData2["stateCd"] =['01','02','08','09'];
@@ -270,46 +303,46 @@ if($header_skin)
                 // $res = json_decode($res, true);
                 // curl_close($oCurl);
                 // // print_r($res["data"][0]['prodBarNum']);
-                // $barcode_c=0;		
+                // $barcode_c=0;    
                 // for($k=0;$k<count($res["data"]); $k++){
                 //     if($res["data"][$k]['prodBarNum']) $barcode_c++;
                 // }
                 // print_r($item['ct_qty']);
             ?>
 
-				<div class="list">
-					<ul class="cb">
-						<li class="pro">
-							<div class="img" style="min-width:100px; min-height:100px;">
-							<?php if($item["it_img"]){ ?>
-								<a href="<?=$row["od_href"]?>"><img src="/data/item/<?=$item["it_img"]?>" onerror="this.src='/img/no_img.png';"></a>
-							<?php } ?>
-							</div>
-							<div class="pro-info">
-							<?php if($row["recipient_yn"] == "Y"){ ?>
-								<div class="day">
-								<?php if($item["ordLendStrDtm"] && $item["ordLendStrDtm"] != "0000-00-00 00:00:00"){ ?>
-									<i>대여</i>
-									<?=date("Y.m.d", strtotime($item["ordLendStrDtm"]))?> ~ <?=date("Y.m.d", strtotime($item["ordLendEndDtm"]))?>
-								<?php } else { ?>
-									<i class="on-order">주문</i>
-								<?php } ?>
-								</div>
-							<?php } ?>
-								<div class="name">
-									<a href="<?=$row["od_href"]?>">
+        <div class="list">
+          <ul class="cb">
+            <li class="pro">
+              <div class="img" style="min-width:100px; min-height:100px;">
+              <?php if($item["it_img"]){ ?>
+                <a href="<?=$row["od_href"]?>"><img src="/data/item/<?=$item["it_img"]?>" onerror="this.src='/img/no_img.png';"></a>
+              <?php } ?>
+              </div>
+              <div class="pro-info">
+              <?php if($row["recipient_yn"] == "Y"){ ?>
+                <div class="day">
+                <?php if($item["ordLendStrDtm"] && $item["ordLendStrDtm"] != "0000-00-00 00:00:00"){ ?>
+                  <i>대여</i>
+                  <?=date("Y.m.d", strtotime($item["ordLendStrDtm"]))?> ~ <?=date("Y.m.d", strtotime($item["ordLendEndDtm"]))?>
+                <?php } else { ?>
+                  <i class="on-order">주문</i>
+                <?php } ?>
+                </div>
+              <?php } ?>
+                <div class="name">
+                  <a href="<?=$row["od_href"]?>">
                                     <?php $option_v = $item["ct_option"];?>
-									<?=$item["it_name"]?> <?=($item["ct_option"] && $item["ct_option"] != $item["it_name"]) ? "({$item["ct_option"]})" : ""?>
-									<?=($item["prodSupYn"] == "N") ? "<b>비유통</b>" : ""?>
-									</a>
-								</div>
-								<div>
-									<em>수량 : <?=$item["ct_qty"]?></em>
-								<?php if($item["ct_stock_qty"]){ ?>
-									<em>, 재고소진 : <?=$item["ct_stock_qty"]?></em>
-								<?php } ?>
-								</div>
-								<div class="pc_none">
+                  <?=$item["it_name"]?> <?=($item["ct_option"] && $item["ct_option"] != $item["it_name"]) ? "({$item["ct_option"]})" : ""?>
+                  <?=($item["prodSupYn"] == "N") ? "<b>비유통</b>" : ""?>
+                  </a>
+                </div>
+                <div>
+                  <em>수량 : <?=$item["ct_qty"]?></em>
+                <?php if($item["ct_stock_qty"]){ ?>
+                  <em>, 재고소진 : <?=$item["ct_stock_qty"]?></em>
+                <?php } ?>
+                </div>
+                <div class="pc_none">
                   <?php
                   $sql = "select *
                           from g5_shop_order_cancel_request
@@ -343,10 +376,10 @@ if($header_skin)
                     }
                   }
                   ?>
-								</div>
-							</div>
-						</li>
-						<li class="delivery m_none">
+                </div>
+              </div>
+            </li>
+            <li class="delivery m_none">
               <?php
               if (!empty($cancel_request_row)) {
                 if ($cancel_request_row['request_type'] == 'cancel')
@@ -361,9 +394,9 @@ if($header_skin)
                 }
               }
               ?>
-						</li>
-						<li class="info-btn">
-							<?php if($item['ct_status'] !== "취소" && $item['ct_status'] !== "주문무효"){ ?>
+            </li>
+            <li class="info-btn">
+              <?php if($item['ct_status'] !== "취소" && $item['ct_status'] !== "주문무효"){ ?>
                             <div class="barcode_preview">
                                 <ul>
                                     <?php
@@ -388,7 +421,7 @@ if($header_skin)
                                     ?>
                                 </ul>
                             </div>
-							<div>
+              <div>
                             <?php
                                 $sendData = [];
                                 $sendData["penOrdId"] = $item["ordId"];
@@ -412,22 +445,22 @@ if($header_skin)
                             ?>
                                 <?php if($item["prodSupYn"] == "N"){ ?>
 
-								<!-- <li class="barInfo barcode_box  disable" data-id="2021052417305437" data-ct-id="48984"><span class="cnt">입력완료</span></li> -->
-								<a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"> 
-								바코드 확인
-								</a>
-								<?php } else { 
-									if($limit>0){	
-								?>
-									<a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 
-									바코드
-									</a>
-								<?php   }
-								} 
-								?>
-							<?php if(($item['ct_status'] == '배송' || $item['ct_status'] == '완료') && ($item["prodSupYn"] == "Y")){ ?>
-								<a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
-							<?php } ?>
+                <!-- <li class="barInfo barcode_box  disable" data-id="2021052417305437" data-ct-id="48984"><span class="cnt">입력완료</span></li> -->
+                <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"> 
+                바코드 확인
+                </a>
+                <?php } else { 
+                  if($limit>0){  
+                ?>
+                  <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 
+                  바코드
+                  </a>
+                <?php   }
+                } 
+                ?>
+              <?php if(($item['ct_status'] == '배송' || $item['ct_status'] == '완료') && ($item["prodSupYn"] == "Y")){ ?>
+                <a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
+              <?php } ?>
                             <?php 
                                 $sql_v= "SELECT `ca_id` FROM `g5_shop_item` WHERE `it_id` = '".$item["it_id"]."'";
                                 $result_v=sql_fetch($sql_v);
@@ -438,106 +471,122 @@ if($header_skin)
                                     $path ="sales_Inventory_datail.php";
                                 }
                             ?>
-							<?php if($row["od_status"] == "배송완료"){ ?>
-								<a href="<?php echo G5_SHOP_URL; ?>/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
-							<?php } ?>
-							<?php if($ct_status_text == "출고완료"){ ?>
-								<!-- 이카운트 등록오류 가능할 수 있어 임시로 삭제 
-									<a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a> -->
-							<?php } ?>
-							</div>
-							<?php } ?>
-						</li>
-					</ul>
-				</div>
+              <?php if($row["od_status"] == "배송완료"){ ?>
+                <a href="<?php echo G5_SHOP_URL; ?>/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
+              <?php } ?>
+              <?php if($ct_status_text == "출고완료"){ ?>
+                <!-- 이카운트 등록오류 가능할 수 있어 임시로 삭제 
+                  <a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a> -->
+              <?php } ?>
+              </div>
+              <?php } ?>
+            </li>
+          </ul>
+        </div>
 
-			<?php } ?>
-		</div>
-	<?php } ?>
-	</div>
+      <?php } ?>
+    </div>
+  <?php } ?>
+  </div>
 
 </section>
 
 <div class="text-center">
-	<ul class="pagination pagination-sm en">
-		<?php echo apms_paging($write_pages, $page, $total_page, $list_page); ?>
-	</ul>
+  <ul class="pagination pagination-sm en">
+    <?php echo apms_paging($write_pages, $page, $total_page, $list_page); ?>
+  </ul>
 </div>
 
 <?php if($setup_href) { ?>
-	<p class="text-center">
-		<a class="btn btn-color btn-sm win_memo" href="<?php echo $setup_href;?>">
-			<i class="fa fa-cogs"></i> 스킨설정
-		</a>
-	</p>
+  <p class="text-center">
+    <a class="btn btn-color btn-sm win_memo" href="<?php echo $setup_href;?>">
+      <i class="fa fa-cogs"></i> 스킨설정
+    </a>
+  </p>
 <?php } ?>
 
 <script type="text/javascript">
-    function hide_control(od_id){
-        $.ajax({
-				method: "POST",
-				url: "./ajax.hide_control.php",
-				data: {
-					od_id: od_id
-				}
-			}).done(function(data) {
-                if(data=="S"){
-                    alert('삭제가 완료되었습니다.');
-                    window.location.reload(); 
-                }
-			})
+
+function searchDateSetting(type){
+  switch(type){
+    case "1week" :
+      $("#date1").val("<?=date("Y-m-d", strtotime("- 7 days"))?>");
+      break;
+    case "1month" :
+      $("#date1").val("<?=date("Y-m-01")?>");
+      break;
+    case "3month" :
+      $("#date1").val("<?=date("Y-m-d", strtotime("- 3 month"))?>");
+      break;
+  }
+
+  $("#date2").val("<?=date("Y-m-d")?>");
+}
+
+$(function() {
+  $(document).click(function(event) {
+    if(
+      !$(event.target).closest('#hidden_order').length &&
+      !$(event.target).is('#hidden_order') &&
+      !$(event.target).is('#btn_hidden_order') &&
+      !$('#hidden_order').is(':hidden')
+    ) {
+      $('#hidden_order').hide();
     }
+  });
+  $('#btn_hidden_order').click(function() {
+    if($('#hidden_order').is(':hidden'))
+      $('#hidden_order').show();
+    else
+      $('#hidden_order').hide();
+  });
+  $('.btn_cancel_hide').click(function() {
+    var od_id = $(this).data('id');
 
-	function searchDateSetting(type){
-		switch(type){
-			case "1week" :
-				$("#date1").val("<?=date("Y-m-d", strtotime("- 7 days"))?>");
-				break;
-			case "1month" :
-				$("#date1").val("<?=date("Y-m-01")?>");
-				break;
-			case "3month" :
-				$("#date1").val("<?=date("Y-m-d", strtotime("- 3 month"))?>");
-				break;
-		}
+    $.post('ajax.order.cancel_hide.php', {
+      od_id: od_id
+    }, 'json')
+    .done(function() {
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
 
-		$("#date2").val("<?=date("Y-m-d")?>");
-	}
-	
-	$(function(){
-		
-		$(".hiddenChange").click(function(){
-			var target = $(this).attr("data-target");
-			var val = $(this).attr("data-val");
-			
-			$(this).closest("form").find("input[name='" + target + "']").val(val);
-		});
+  $(".hiddenChange").click(function(){
+    var target = $(this).attr("data-target");
+    var val = $(this).attr("data-val");
+    
+    $(this).closest("form").find("input[name='" + target + "']").val(val);
+  });
 
-		$('.delivery_ok').click(function(e) {
+  $('.delivery_ok').click(function(e) {
 
-			e.preventDefault();
+    e.preventDefault();
 
-			var od_id = $(this).data('od-id');
-			var ct_id = $(this).data('ct-id');
+    var od_id = $(this).data('od-id');
+    var ct_id = $(this).data('ct-id');
 
-			$.ajax({
-				method: "POST",
-				dataType:"json",
-				url: "./ajax.order.delivery.ok.php",
-				data: {
-					od_id: od_id,
-					ct_id: ct_id
-				}
-			}).done(function(data) {
-				console.log(data);
-				if ( data.msg ) {
-					alert(data.msg);
-				}
-				if (data.result === 'success') {
-					location.reload(true);
-				}
-			})
-		})
-		
-	})
+    $.ajax({
+      method: "POST",
+      dataType:"json",
+      url: "./ajax.order.delivery.ok.php",
+      data: {
+        od_id: od_id,
+        ct_id: ct_id
+      }
+    }).done(function(data) {
+      console.log(data);
+      if ( data.msg ) {
+        alert(data.msg);
+      }
+      if (data.result === 'success') {
+        location.reload(true);
+      }
+    })
+  })
+  
+});
 </script>
