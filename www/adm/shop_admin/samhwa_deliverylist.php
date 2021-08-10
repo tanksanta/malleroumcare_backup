@@ -170,6 +170,7 @@ if( function_exists('pg_setting_check') ){
         <th>검색어</th>
         <td>
           <select name="sel_field" id="sel_field">
+            <option value="od_all" <?php echo get_selected($sel_field, 'od_all'); ?>>전체</option>
             <option value="od_id" <?php echo get_selected($sel_field, 'od_id'); ?>>주문번호</option>
             <option value="it_name" <?php echo get_selected($sel_field, 'it_name'); ?>>상품명</option>
             <option value="mb_id" <?php echo get_selected($sel_field, 'mb_id'); ?>>회원 ID</option>

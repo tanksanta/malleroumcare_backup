@@ -11,7 +11,7 @@ $doc = strip_tags($doc);
 $sort1 = in_array($sort1, array('od_id', 'od_cart_price', 'od_receipt_price', 'od_cancel_price', 'od_misu', 'od_cash')) ? $sort1 : '';
 $sort2 = in_array($sort2, array('desc', 'asc')) ? $sort2 : 'desc';
 $sel_field = get_search_string($sel_field);
-if( !in_array($sel_field, array('od_id', 'it_name', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode')) ){   //검색할 필드 대상이 아니면 값을 제거
+if( !in_array($sel_field, array('od_all', 'od_id', 'it_name', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode')) ){   //검색할 필드 대상이 아니면 값을 제거
   $sel_field = '';
 }
 
@@ -54,6 +54,32 @@ if ($search_add != "") {
     if ($sel_field_add != "" && $sel_field_add != "od_all") {
         $where[] = "$sel_field_add like '%$search_add%'";
     }
+}
+
+// 전체 검색
+if ($sel_field == 'od_all' && $search != "") {
+  $sel_arr = array('it_name', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode');
+
+  foreach ($sel_arr as $key => $value) {
+      if($value=="barcode"){
+          $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search."'";
+          $result_barcode_search = sql_query($sql_barcode_search);
+          $or="";
+          while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
+              $bacode_search .= $or." `stoId` like '%".$row_barcode['stoId']."%' ";
+              $or="or";
+          }
+          if($bacode_search){
+              $sel_arr[$key] = $bacode_search;
+          }else{
+              $sel_arr[$key] = "stoId like '%$search%'";
+          }
+      }else{
+          $sel_arr[$key] = "$value like '%$search%'";
+      }
+  }
+
+  $where[] = "(".implode(' or ', $sel_arr).")";
 }
 
 if ( $price ) {
