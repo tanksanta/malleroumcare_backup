@@ -553,6 +553,7 @@ foreach($orderlist as $order) {
     $ct_it_id = $result_ct['it_id'];      
     $ct_ex_date = $result_ct['ct_ex_date'];                                                                          //출고완료일
     $ct_manager = $result_ct['ct_manager'];                                                                          //출고 담당자 아이디
+    $prodMemo = $result_ct['prodMemo'];
     
     //출고담당자 select
     $od_release_select="";
