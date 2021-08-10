@@ -1421,7 +1421,8 @@ if(!$_POST["penId"]) {
         UPDATE g5_shop_cart SET
           `ct_status` = '보유재고등록',
           `ct_price` = '0',
-          `ct_sendcost` = '0'
+          `ct_sendcost` = '0',
+          `ct_discount` = '0'
         WHERE od_id = '{$od_id}'
       ");
     } else {
