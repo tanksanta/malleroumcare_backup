@@ -371,7 +371,7 @@ $flist = apms_form(1,0);
         <td rowspan="3" class="td_num">
             <input type="text" name="it_stock_qty[<?php echo $i; ?>]" value="<?php echo $row['it_stock_qty']; ?>" id="it_stock_qty_<?php echo $i; ?>" class="frm_input" size="3">
         </td>
-        <td rowspan="3" class="td_mngsmall" style="min-width:100px">
+        <td rowspan="3" class="td_mngsmall" style="min-width:150px">
             <input type="checkbox" name="it_type1[<?php echo $i; ?>]" value="1" <?php echo ($row['it_type1'] ? "checked" : ""); ?> id="it_type1_<?php echo $i; ?>">
             <label for="it_type1_<?php echo $i; ?>"><span style="border:1px solid <?php echo $default['de_it_type1_color']; ?>;color:<?php echo $default['de_it_type1_color']; ?>"><?php echo $default['de_it_type1_name']; ?></span></label>
             <br/>
