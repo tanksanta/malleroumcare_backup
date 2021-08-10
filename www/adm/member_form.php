@@ -414,8 +414,9 @@ label {
             <input type="file" name="crnFile" accept=".gif, .jpg, .png, .pdf" class="input-sm " id="mb_giup_file1">
             <?php if($mb['crnFile']){ ?>
               <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/file/member/license/{$mb['crnFile']}"))?>" target="_blank" class="view_image">
-                <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/license/<?=$mb['crnFile']?>" alt="">
+                <img style="width:100px; height:100px;" src="<?=G5_DATA_URL?>/file/member/license/<?=$mb['crnFile']?>" alt="" onerror="this.src='/shop/img/no_image.gif';">
               </a>
+              <a href="<?=G5_DATA_URL."/file/member/license/{$mb['crnFile']}"?>" target="_blank" class="btn btn_submit">파일확인</a>
             <?php }?>
         </td>
     </tr>
