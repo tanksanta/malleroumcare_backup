@@ -11,7 +11,7 @@ $doc = strip_tags($doc);
 $sort1 = in_array($sort1, array('od_id', 'od_cart_price', 'od_receipt_price', 'od_cancel_price', 'od_misu', 'od_cash')) ? $sort1 : '';
 $sort2 = in_array($sort2, array('desc', 'asc')) ? $sort2 : 'desc';
 $sel_field = get_search_string($sel_field);
-if( !in_array($sel_field, array('od_all', 'od_id', 'it_name', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode')) ){   //검색할 필드 대상이 아니면 값을 제거
+if( !in_array($sel_field, array('od_all', 'od_id', 'it_name', 'it_admin_memo', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode')) ){   //검색할 필드 대상이 아니면 값을 제거
   $sel_field = '';
 }
 
@@ -58,7 +58,7 @@ if ($search_add != "") {
 
 // 전체 검색
 if ($sel_field == 'od_all' && $search != "") {
-  $sel_arr = array('it_name', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode');
+  $sel_arr = array('it_name', 'it_admin_memo', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode');
 
   foreach ($sel_arr as $key => $value) {
       if($value=="barcode"){
@@ -264,7 +264,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date, ct_delivery_num, ct_manager, ct_is_direct_delivery from {$g5['g5_shop_cart_table']}) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, ct_status, ct_move_date, ct_delivery_num, ct_manager, ct_is_direct_delivery from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -304,7 +304,7 @@ if ( $where2 || $where ) {
 }
 $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, it_name, ct_status, ct_manager, ct_is_direct_delivery from {$g5['g5_shop_cart_table']}) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, X.it_name, it_admin_memo, ct_status, ct_manager, ct_is_direct_delivery from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp

@@ -173,6 +173,7 @@ if( function_exists('pg_setting_check') ){
             <option value="od_all" <?php echo get_selected($sel_field, 'od_all'); ?>>전체</option>
             <option value="od_id" <?php echo get_selected($sel_field, 'od_id'); ?>>주문번호</option>
             <option value="it_name" <?php echo get_selected($sel_field, 'it_name'); ?>>상품명</option>
+            <option value="it_admin_memo" <?php echo get_selected($sel_field, 'it_admin_memo'); ?>>관리자메모</option>
             <option value="mb_id" <?php echo get_selected($sel_field, 'mb_id'); ?>>회원 ID</option>
             <option value="od_name" <?php echo get_selected($sel_field, 'od_name'); ?>>주문자</option>
             <option value="od_tel" <?php echo get_selected($sel_field, 'od_tel'); ?>>주문자전화</option>
@@ -189,6 +190,7 @@ if( function_exists('pg_setting_check') ){
           <select name="sel_field_add" id="sel_field_add">
             <option value="od_id" <?php echo get_selected($sel_field, 'od_id'); ?>>주문번호</option>
             <option value="it_name" <?php echo get_selected($sel_field, 'it_name'); ?>>상품명</option>
+            <option value="it_admin_memo" <?php echo get_selected($sel_field, 'it_admin_memo'); ?>>관리자메모</option>
             <option value="mb_id" <?php echo get_selected($sel_field, 'mb_id'); ?>>회원 ID</option>
             <option value="od_name" <?php echo get_selected($sel_field, 'od_name'); ?>>주문자</option>
             <option value="od_tel" <?php echo get_selected($sel_field, 'od_tel'); ?>>주문자전화</option>
