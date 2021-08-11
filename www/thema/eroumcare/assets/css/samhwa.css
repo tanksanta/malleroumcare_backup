@@ -1916,6 +1916,9 @@
 .samhwa-item-option-table th {
     display:none;
 }
+.samhwa-item-option-table tr {
+  border: none;
+}
 .it_option,
 .it_supply,
 .opt_change {

@@ -125,7 +125,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
   }
   @media (max-width: 991px) {
     #samhwa-mobile-tail { display:none; }
-    .margin-leftm{ margin-left:15px; }
+    .margin-leftm{ margin: 0 15px; }
     .samhwa-item-info .selfPriceInfo { display: none; }
   }
   @media (max-width: 960px){
