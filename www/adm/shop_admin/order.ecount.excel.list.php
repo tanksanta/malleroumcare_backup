@@ -159,10 +159,10 @@
       '',
       '',
       $it["ct_qty"],
-      $price_d ? $price_d : 0, // 단가(판매가)
+      $price_d ?: '0', // 단가(판매가)
       '',
-      $price_d_p, //공급가액
-      $price_d_s, //부가세
+      $price_d_p ?: '0', //공급가액
+      $price_d_s ?: '0', //부가세
       $barcode_string, // 바코드
       $delivery, // 로젠송장번호,
       '통합관리플랫폼', //적요
