@@ -303,8 +303,8 @@ pre{white-space: pre-wrap;}
 ================================================= */
 
 .main_top_wrap{
-	text-align: center;	
-	border-bottom: 1px solid #ccc;margin-top:80px;
+	text-align: center;
+  margin-top: 80px;
 }
 .main_top_wrap .main_slider_tit{font-size:40px;color:#463837;height: 70px;}
 .main_top_wrap .main_slider_tit span{font-weight:bold;}
@@ -362,11 +362,30 @@ pre{white-space: pre-wrap;}
 	margin-top:20px;
 }
 
-.service_info{margin:50px 0 ;width:100%;text-align: center;}
-.service_info .service_tit{font-size:40px;color:#333;font-weight:500;text-align:center;}
+.service_info{
+  float:left;
+  width:100%;
+  text-align: center;
+  line-height: 1;
+  background: url(../img/main_bg_qa_img.jpg) right;
+  background-size: cover;
+  height: 400px;
+  margin-bottom: 60px;
+}
+.service_info .text_box {
+  position: absolute;
+  top: 130px;
+  left: 0;
+}
+.service_info .service_tit{
+  font-size:40px;
+  color:#27140d;
+  font-weight:bold;
+  text-align:center;
+}
 .service_info .service_tit p{
 	font-size:18px;
-	color:#333;
+	color:#27140d;
 	font-weight:100;
 	margin-top:30px;
 }
@@ -375,9 +394,8 @@ pre{white-space: pre-wrap;}
 	display: inline-block;
 	font-size:18px;
 	color:#fff;
-	background-color:#ef7c00;
-	padding: 12px 40px;
-	border-radius: 30px;
+	background-color:#ff5600;
+	padding: 16px 60px;
 }
 .service_info ul{margin:30px 0 0; display: inline-block;}
 .service_info ul > li{position:relative;min-height:200px;float:left;width:calc(100% / 3 - 10px);margin-right:15px;margin-bottom:15px;border:1px solid #ddd;border-radius:10px;padding:10px 20px;}
@@ -395,9 +413,19 @@ pre{white-space: pre-wrap;}
 	.main_slide_desc{padding: 20px 0;	width:80%;margin-top: 10px;}
 	.main_slide_desc h2{font-size: 30px;}
 	.main_slide_desc .desc{font-size: 18px;}
-	.service_info .service_tit{font-size:30px;}
-	.service_info .service_tit p span{display: block;}
-	.service_info ul > li{width:100%;margin-right:0px;min-height: auto;padding:20px;}
+
+  .service_info {
+    background: url(../img/main_bg_qa_mo_img.jpg) center top;
+    height: 700px;
+  }
+  .service_info .text_box {
+    position:static;
+    margin: 100px auto 0 auto;
+    padding: 0 20px;
+  }
+	.service_info .service_link{
+    padding: 20px 80px;
+  }
 	
 	.main_top_wrap .main_slider_tit{font-size:28px;height: auto;}
 }
