@@ -227,7 +227,7 @@ $(function() {
 </script>
 <!-- 210326 배송정보팝업 -->
 
-<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?edited=2106041957">
+<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?v=210811">
 <section id="pro-order2" class="wrap order-list">
   <h2 class="tti">
     주문상세
