@@ -146,5 +146,19 @@ $(function() {
     $('.main_slider_nav > div').removeClass('active');
     $('.main_slider_nav > div').eq(nextSlide).addClass('active');
   });
+
+  $('.main_top_service_info .service_wrap li').click(function() {
+    if(window.innerWidth > 960) return;
+
+    $(this).find('.desc_area').addClass('on');
+    $('body').addClass('desc-open');
+    $('#btn_close_service_desc').show();
+  });
+
+  $('#btn_close_service_desc').click(function() {
+    $('.main_top_service_info .service_wrap .desc_area').removeClass('on');
+    $('body').removeClass('desc-open');
+    $(this).hide();
+  });
 });
 </script>

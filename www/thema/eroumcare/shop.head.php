@@ -141,6 +141,9 @@ scrollToTop();
 
 
 <div class="main_top_service_info">
+  <button id="btn_close_service_desc">
+    <i class="fa fa-times" aria-hidden="true"></i>
+  </button>
 	<div class="top_area">
 		<div class="logo"><img src="<?=G5_URL?>/thema/eroumcare/assets/img/main_logo_hd.png"  ></div>
 		<div class="btn_login"><a href="/bbs/login.php">통합관리시스템로그인 ▶</a></div>
