@@ -90,7 +90,7 @@ $colspan = 9;
         <th scope="col">적용대상</th>
         <th scope="col"><?php echo subject_sort_link('mb_id') ?>회원아이디</a></th>
         <th scope="col"><?php echo subject_sort_link('cp_end') ?>사용기한</a></th>
-        <th scope="col">사용회수</th>
+        <th scope="col">사용완료</th>
         <th scope="col">관리</th>
     </tr>
     </thead>
