@@ -387,11 +387,16 @@ $(function() {
           </ul>
 
           <?php
+          $isReceiverEdit = true;
           for($i=0; $i < count($item); $i++) {
             $prodMemo = ""; $ordLendDtm = "";
             for($k=0; $k < count($item[$i]['opt']); $k++) {
               $prodMemo = ($prodMemo) ? $prodMemo : $item[$i]["prodMemo"];
               $ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($item[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($item[$i]["ordLendEndDtm"]));
+
+              if ($item[$i]['opt'][$k]['ct_status'] != '준비') {
+                $isReceiverEdit = false;
+              }
 
               $rowspan = (substr($item[$i]["ca_id"], 0, 2) == 20) ? 3 : 1;
           ?>
@@ -524,11 +529,100 @@ $(function() {
         </div>
       </div>
 
+      <style>
+        #frmorderinquiryviewdeliveryform .shbtn {
+          border: 1px solid #cccccc;
+          font-size: 12px;
+          cursor: pointer;
+          padding: 0 13px;
+          height: 29px;
+          line-height: 29px;
+          display: inline-block;
+          color: #656565;
+          background-color: white;
+          vertical-align: middle;
+        }
+
+        #frmorderinquiryviewdeliveryform tbody td input[type="text"] {
+          background-color: white !important;
+          padding: 0px 8px;
+          height: 28px;
+          min-width: 150px;
+          background: none !important;
+          vertical-align: middle;
+        }
+
+        #frmorderinquiryviewdeliveryform #delivery_info_btn {
+          margin: 20px auto;
+          color: white;
+          background-color: #454545;
+          border: none;
+          display: block;
+          font-size: 15px;
+          padding: 8px 15px;
+          font-weight: bold;
+        }
+      </style>
+
+      <?php add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js ?>
       <?php if($od["od_stock_insert_yn"] == "N") { ?>
       <div class="order-info">
         <div class="top">
           <h5>받으시는 분</h5>
         </div>
+        <?php if ($isReceiverEdit) { ?>
+
+        <form id="frmorderinquiryviewdeliveryform" name="frmorderinquiryviewdeliveryform" action="./orderinquiryview_delivery.php" method="POST">
+          <div class="tbl_frm01">
+              <table>
+              <colgroup>
+                  <col class="grid_4">
+                  <col>
+              </colgroup>
+              <tbody>
+              <tr>
+                  <th scope="row"><label for="od_b_name"><span class="sound_only">받으시는 분 </span>이름</label></th>
+                  <td colspan="3"><input type="text" name="od_b_name" value="<?php echo get_text($od['od_b_name']); ?>" id="od_b_name" required class="frm_input required"></td>
+              </tr>
+              <tr>
+                  <th scope="row"><label for="od_b_tel"><span class="sound_only">받으시는 분 </span>전화번호</label></th>
+                  <td colspan="3"><input type="text" name="od_b_tel" value="<?php echo get_text($od['od_b_tel']); ?>" id="od_b_tel" required class="frm_input required"></td>
+              </tr>
+              <tr>
+                  <th scope="row"><label for="od_b_hp"><span class="sound_only">받으시는 분 </span>핸드폰</label></th>
+                  <td colspan="3"><input type="text" name="od_b_hp" value="<?php echo get_text($od['od_b_hp']); ?>" id="od_b_hp" class="frm_input required"></td>
+              </tr>
+              <tr>
+                  <th scope="row"><span class="sound_only">받으시는 분 </span>주소</th>
+                  <td class="od_b_address" colspan="3">
+                  <label for="od_b_zip" class="sound_only">우편번호</label>
+                  <input type="text" name="od_b_zip" value="<?php echo get_text($od['od_b_zip1']).get_text($od['od_b_zip2']); ?>" id="od_b_zip" required class="frm_input required" size="35">
+                  <button type="button" class="shbtn" onclick="win_zip('frmorderinquiryviewdeliveryform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">주소 검색</button><br>
+                  <input type="text" name="od_b_addr1" value="<?php echo get_text($od['od_b_addr1']); ?>" id="od_b_addr1" required class="frm_input required" size="35" placeholder="기본주소" readonly>
+                  <input type="text" name="od_b_addr2" value="<?php echo get_text($od['od_b_addr2']); ?>" id="od_b_addr2" class="frm_input" size="35" placeholder="상세주소">
+                  <br/><input type="hidden" name="od_b_addr3" value="<?php echo get_text($od['od_b_addr3']); ?>" id="od_b_addr3" class="frm_input" size="35" placeholder="참고항목" readonly >
+                  <input type="hidden" name="od_b_addr_jibeon" value="<?php echo get_text($od['od_b_addr_jibeon']); ?>">
+                  <?php
+                  $szip = get_text($od['od_b_zip1']).get_text($od['od_b_zip2']);
+                  $sql = "SELECT * FROM g5_shop_sendcost WHERE sc_zip1 <= '{$szip}' AND sc_zip2 >= '{$szip}'";
+                  $szip_result = sql_fetch($sql);
+
+                  if ( $szip_result['sc_id'] ) {
+                  ?>
+                  <div class="add_sendcost_address">
+                      <span class="red">* 도서산간지역</span>
+                  </div>
+                  <?php } ?>
+                  </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <input type="hidden" name="od_id" value="<?php echo $od['od_id']; ?>">
+          <button id="delivery_info_btn">배송정보 수정</button>
+        </form>
+        
+        <?php } else { ?>
         <div class="table-list3">
           <ul>
             <li>
@@ -563,8 +657,10 @@ $(function() {
             </li>
           </ul>
         </div>
+        <?php } ?>
       </div>
       <?php } ?>
+
       <?php 
       $sql_od ="select `od_hide_control` from `g5_shop_order` where `od_id` = '".$od['od_id']."'";
       $result_od = sql_fetch($sql_od);
