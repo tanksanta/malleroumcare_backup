@@ -297,16 +297,12 @@ $total_ct_delivery_cnt=0;
 sql_query(" ALTER TABLE `{$g5['g5_shop_cart_table']}` ADD `ct_barcode` TEXT NOT NULL AFTER `ct_qty` ", false);
 
 
-$sql_ct = " 
-select c.*, i.ca_id from 
-    {$g5['g5_shop_cart_table']} as c 
-    INNER JOIN {$g5['g5_shop_item_table']} as i ON c.it_id = i.it_id
-where c.od_id = '$od_id' ";
+$sql_ct = " select * from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
 $result_ct = sql_query($sql_ct);
 $qty=0;
 $insert_qty=0;
 while($row_ct = sql_fetch_array($result_ct)) {
-  if($row_ct['ct_status'] !== "취소" && $row_ct['ct_status'] !== "주문무효" && !is_benefit_item($row_ct)) {
+  if($row_ct['ct_status'] !== "취소"&&$row_ct['ct_status'] !== "주문무효"){
     $qty += $row_ct['ct_qty'];
     if($row_ct['ct_barcode_insert'])
       $insert_qty += $row_ct['ct_barcode_insert']; 
@@ -409,9 +405,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 <?php }else{ ?>
                     <a href="#" class="orderHide disable" onclick="hide_control('<?=$od['od_id'] ?>', '1')">주문내역 숨김</a>
                 <?php }?> -->
-                <?php if ($qty > 0) { ?>
                 <a href="#" class="prodBarNumCntBtn<?=$prodBarNumCntBtnStatus?>"><?=$prodBarNumCntBtnWord?></a>
-                <?php } ?>
             </div>
         </div>
         <div class="item_list">

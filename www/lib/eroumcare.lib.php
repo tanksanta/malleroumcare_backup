@@ -150,10 +150,7 @@ function get_carts_by_od_id($od_id, $delivery_yn = null) {
             a.ct_direct_delivery_partner,
             a.ct_direct_delivery_price,
 						( SELECT prodSupYn FROM g5_shop_item WHERE it_id = a.it_id ) AS prodSupYn,
-						prodMemo,
-            b.ca_id,
-            b.ca_id2,
-            b.ca_id3
+						prodMemo
 					from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 					where a.od_id = '{$od_id}'
 						and a.it_id = '{$row['it_id']}'

@@ -279,17 +279,14 @@ if($od["od_b_tel"]) {
             <?php } ?>
             <ul class="inputbox">
               <?php for($b = 0; $b< count($stoId_v); $b++){ ?>
-                <?php if (!is_benefit_item($options[$k])) { ?>
-                  <li>
-                    <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
-                    <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
-                    <i class="fa fa-check"></i>
-                    <span class="overlap">중복</span>
-                    <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
-                  </li>
-                  <?php $prodListCnt++; ?>
-                <?php } ?>
-              <?php } ?>
+              <li>
+                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
+                <i class="fa fa-check"></i>
+                <span class="overlap">중복</span>
+                <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
+              </li>
+              <?php $prodListCnt++; } ?>
             </ul>
           </div>
 

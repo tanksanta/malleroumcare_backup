@@ -5,9 +5,7 @@ $g5["title"] = "주문 내역 바코드 수정";
 // include_once(G5_ADMIN_PATH."/admin.head.php");
   $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
-$sql = "SELECT c.*, i.ca_id from `g5_shop_cart` as c 
-INNER JOIN {$g5['g5_shop_item_table']} as i ON c.it_id = i.it_id
-where c.ct_id = '$ct_id' ";
+$sql = " select * from {$g5['g5_shop_cart_table']} where `ct_id` = '$ct_id' ";
 $ct = sql_fetch($sql);
 $prodList = [];
 $prodListCnt = 0;
@@ -264,22 +262,15 @@ if($od["od_b_tel"]){
             </span>
             <?php } ?>
             <ul class="inputbox">
-              <?php
-              for($b = 0; $b< count($result_again); $b++){ 
-                if (!is_benefit_item($ct)) {
-              ?>
+              <?php for($b = 0; $b< count($result_again); $b++){ ?>
               <li>
-                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>" class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
                 <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
                 <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
               </li>
-              <?php
-                  $prodListCnt++; 
-                }
-              }
-              ?>
+              <?php  $prodListCnt++;  } ?>
             </ul>
           </div>
 
