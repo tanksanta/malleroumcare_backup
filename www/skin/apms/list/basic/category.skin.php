@@ -128,10 +128,10 @@ $isBenefit = substr($ca_id, 0, 2) == '70' ? true : false;
 		<li>
 			<div class="cate_head">유통여부</div>
 			<div class="cate_body">
-				<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'N' ? 'all' : 'Y').$q_url?>"
-				class="<?php if(in_array($prodSupYn, array('Y', 'all'))) echo 'active'; ?>">유통품목</a>
-        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'Y' ? 'all' : 'N').$q_url?>"
-				class="<?php if(in_array($prodSupYn, array('N', 'all'))) echo 'active'; ?>">비유통품목</a>
+				<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'N' ? 'Y' : ($prodSupYn == 'all' ? 'Y' : 'all')).$q_url?>"
+				class="<?php if(in_array($prodSupYn, array('Y'))) echo 'active'; ?>">유통품목</a>
+        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'Y' ? 'N' : ($prodSupYn == 'all' ? 'N' : 'all')).$q_url?>"
+				class="<?php if(in_array($prodSupYn, array('N'))) echo 'active'; ?>">비유통품목</a>
 			</div>
 		</li>
         <?php } ?>
@@ -151,11 +151,11 @@ $isBenefit = substr($ca_id, 0, 2) == '70' ? true : false;
 			<a href="<?=$ca_url.$ca_sub_url.$sort_url.$sup_url?>"><?=$q?> <i class="fa fa-times" aria-hidden="true"></i></a>
 		<?php } ?>
         <?php if (!$isBenefit) { ?>
-            <?php if(in_array($prodSupYn, array('Y', 'all'))) { ?>
-                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=N' : '').$q_url?>">유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+            <?php if(in_array($prodSupYn, array('Y'))) { ?>
+                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'Y' ? '&prodSupYn=all' : '').$q_url?>">유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
             <?php } ?>
-            <?php if(in_array($prodSupYn, array('N', 'all'))) { ?>
-                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'all' ? '&prodSupYn=Y' : '').$q_url?>">비유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+            <?php if(in_array($prodSupYn, array('N'))) { ?>
+                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'N' ? '&prodSupYn=all' : '').$q_url?>">비유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
             <?php } ?>
         <?php } ?>
 		<?php foreach($ca_sub as $sub) { ?>
