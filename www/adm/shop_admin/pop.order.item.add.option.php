@@ -15,11 +15,18 @@ include_once('./_common.php');
 $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
 if (!$od['od_id']) {
-    alert("해당 주문번호로 주문서가 존재하지 않습니다.");
+    alert_close("해당 주문번호로 주문서가 존재하지 않습니다.");
 }
 
 if (!$od['mb_id']) {
-    alert("사업소를 먼저 선택해주세요.");
+    alert_close("사업소를 먼저 선택해주세요.");
+}
+
+if ($w || $uid) {
+    $result = sql_fetch("SELECT count(*) as cnt FROM {$g5['g5_shop_cart_table']} WHERE od_id = '{$od['od_id']}' AND ct_status != '준비'");
+    if ($result['cnt']) {
+        alert_close('주문상태가 상품준비 상태가 아닌 상품이 있습니다.\n주문상태가 모두 상품준비단계여야 수정 가능합니다.');
+    }
 }
 
 if(!$uid) {
