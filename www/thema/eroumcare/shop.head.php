@@ -139,7 +139,7 @@ scrollToTop();
 	</a>
 </div>
 
-
+<?php if($is_main && !$is_member) { ?>
 <div class="main_top_service_info">
   <button id="btn_close_service_desc">
     <i class="fa fa-times" aria-hidden="true"></i>
@@ -268,6 +268,7 @@ scrollToTop();
 		이로움만의 장기요양기관 통합관리시스템으로 모든 것을 쉽고 편하게 관리해보세요.
 	</div>
 </div>
+<?php } ?>
 
 <?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")&&$_COOKIE["viewType"]=="basic"){ ?>
         <div class="top_mode_area">
