@@ -56,7 +56,7 @@ foreach($limit as $lm) {
 }
 
 sql_query("DELETE FROM `eform_document_item` WHERE `dc_id` = UNHEX('{$eform["uuid"]}')");
-$res = api_post_call('https://system.eroumcare.com/api/eform/selectEform001', array('penOrdId' => $od["ordId"]));
+$res = api_post_call('EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST', array('penOrdId' => $od["ordId"]));
 
 foreach($res["data"] as $it) {
   $priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);

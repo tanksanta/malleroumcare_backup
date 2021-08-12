@@ -78,81 +78,43 @@ if(in_array($searchtype, ['penNm', 'penLtmNum']) && $search) {
 if($penId) {
   $where .= " AND penId = '$penId' ";
 }
-
+$rental_price = " (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code AND ca_id like '20%' limit 1) ";
+$str_date = " STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d') ";
+$end_date = " STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d') ";
+$price_query = "
+  CASE WHEN gubun = '01' AND STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <> '$selected_month'
+  THEN
+    CASE WHEN STR_TO_DATE(CONCAT(SUBSTRING(`it_date`, 12, 7), '-01'), '%Y-%m-%d') = '$selected_month' -- 마지막 달이면
+    THEN RENTAL_PRICE_END_MONTH( $rental_price, $end_date )
+    ELSE $rental_price END
+  ELSE
+    CASE WHEN gubun = '01' THEN RENTAL_PRICE_STR_MONTH( $rental_price, $str_date )
+    ELSE it_price END
+  END
+";
+$price_pen_query = "
+  CASE WHEN gubun = '01' THEN
+    TRUNCATE(
+      $price_query
+      *
+      CASE
+        WHEN penTypeCd = '01'
+        THEN 0.09
+        WHEN penTypeCd = '02' or penTypeCd = '03'
+        THEN 0.06
+        WHEN penTypeCd = '04'
+        THEN 0
+        ELSE 0.15
+      END
+    , -1)
+  ELSE it_price_pen END
+";
 $eform_query = sql_query("
   SELECT
-    MIN(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '3'), '%Y-%m-%d')) as start_date,
-    SUM(
-      CASE WHEN gubun = '01' AND STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <> '$selected_month'
-      THEN
-        CASE WHEN STR_TO_DATE(CONCAT(SUBSTRING(`it_date`, 12, 7), '-01'), '%Y-%m-%d') = '$selected_month' -- 마지막 달이면
-        THEN TRUNCATE(
-          (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1) * ( SUBSTRING_INDEX(`it_date`, '-', '-1') / DATE_FORMAT(LAST_DAY(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d')), '%d') )
-          , -1)
-        ELSE (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1) END
-      ELSE `it_price` END
-    ) as total_price,
-    SUM(
-      CASE WHEN gubun = '01' AND STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <> '$selected_month'
-      THEN
-        TRUNCATE(
-          CASE
-            WHEN STR_TO_DATE(CONCAT(SUBSTRING(`it_date`, 12, 7), '-01'), '%Y-%m-%d') = '$selected_month'
-          THEN
-            TRUNCATE((SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1) * ( SUBSTRING_INDEX(`it_date`, '-', '-1') / DATE_FORMAT(LAST_DAY(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d')), '%d') ), -1)
-          ELSE
-            (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1)
-          END
-          *
-          CASE
-            WHEN penTypeCd = '01'
-            THEN 0.09
-            WHEN penTypeCd = '02' or penTypeCd = '03'
-            THEN 0.06
-            WHEN penTypeCd = '04'
-            THEN 0
-            ELSE 0.15
-          END
-        , -1)
-      ELSE `it_price_pen` END
-    ) as total_price_pen,
-    (
-      SUM(
-        CASE WHEN gubun = '01' AND STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <> '$selected_month'
-        THEN
-          CASE WHEN STR_TO_DATE(CONCAT(SUBSTRING(`it_date`, 12, 7), '-01'), '%Y-%m-%d') = '$selected_month' -- 마지막 달이면
-          THEN TRUNCATE(
-            (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1) * ( SUBSTRING_INDEX(`it_date`, '-', '-1') / DATE_FORMAT(LAST_DAY(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d')), '%d') )
-            , -1)
-          ELSE (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1) END
-        ELSE `it_price` END
-      )
-      -
-      SUM(
-        CASE WHEN gubun = '01' AND STR_TO_DATE(CONCAT(SUBSTRING_INDEX(`it_date`, '-', '2'), '-01'), '%Y-%m-%d') <> '$selected_month'
-        THEN
-          TRUNCATE(
-            CASE
-              WHEN STR_TO_DATE(CONCAT(SUBSTRING(`it_date`, 12, 7), '-01'), '%Y-%m-%d') = '$selected_month'
-            THEN
-              TRUNCATE((SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1) * ( SUBSTRING_INDEX(`it_date`, '-', '-1') / DATE_FORMAT(LAST_DAY(STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', '-3'), '%Y-%m-%d')), '%d') ), -1)
-            ELSE
-              (SELECT `it_rental_price` FROM `g5_shop_item` WHERE ProdPayCode = b.it_code limit 1)
-            END
-            *
-            CASE
-              WHEN penTypeCd = '01'
-              THEN 0.09
-              WHEN penTypeCd = '02' or penTypeCd = '03'
-              THEN 0.06
-              WHEN penTypeCd = '04'
-              THEN 0
-              ELSE 0.15
-            END
-          , -1)
-        ELSE `it_price_pen` END
-      )
-    ) as total_price_ent,
+    MIN($str_date) as start_date,
+    SUM($price_query) as total_price,
+    SUM($price_pen_query) as total_price_pen,
+    (SUM($price_query) - SUM($price_pen_query)) as total_price_ent,
     penId, penNm, penLtmNum, penRecGraCd, penRecGraNm, penTypeCd, penTypeNm, penBirth
   FROM
     `eform_document` a
