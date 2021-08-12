@@ -698,7 +698,7 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
           <tr>
             <th scope="row">
               <label for="opt1_subject">옵션1</label>
-              <input type="text" name="opt1_subject" value="<?php echo $opt_subject[0]; ?>" id="opt1_subject" class="frm_input" size="15" <?php echo $w === 'u' ? 'readonly' : ''; ?>>
+              <input type="text" name="opt1_subject" value="<?php echo $opt_subject[0]; ?>" id="opt1_subject" class="frm_input" size="15">
             </th>
             <td>
               <label for="opt1"><b>옵션1 항목</b></label>
@@ -708,7 +708,7 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
           <tr>
             <th scope="row">
               <label for="opt2_subject">옵션2</label>
-              <input type="text" name="opt2_subject" value="<?php echo $opt_subject[1]; ?>" id="opt2_subject" class="frm_input" size="15" <?php echo $w === 'u' ? 'readonly' : ''; ?>>
+              <input type="text" name="opt2_subject" value="<?php echo $opt_subject[1]; ?>" id="opt2_subject" class="frm_input" size="15">
             </th>
             <td>
               <label for="opt2"><b>옵션2 항목</b></label>
@@ -718,7 +718,7 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
            <tr>
             <th scope="row">
               <label for="opt3_subject">옵션3</label>
-              <input type="text" name="opt3_subject" value="<?php echo $opt_subject[2]; ?>" id="opt3_subject" class="frm_input" size="15" <?php echo $w === 'u' ? 'readonly' : ''; ?>>
+              <input type="text" name="opt3_subject" value="<?php echo $opt_subject[2]; ?>" id="opt3_subject" class="frm_input" size="15">
             </th>
             <td>
               <label for="opt3"><b>옵션3 항목</b></label>
