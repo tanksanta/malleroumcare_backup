@@ -51,6 +51,14 @@ if(!$link) {
     created_at = '$datetime',
     updated_at = '$datetime'
   ");
+  
+  add_notification(
+    array(),
+    $mb_id,
+    '[이로움] 신규 수급자 추천',
+    '추천된 수급자를 확인하세요.',
+    G5_URL . '/shop/my_recipient_list.php',
+  );
 } else {
   // 수급자-사업소 관계가 있을 때 (이미 요청한 적이 있을때)
   if($link['status'] != 'wait')

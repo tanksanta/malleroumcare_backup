@@ -36,6 +36,7 @@ if($_POST['ct_id'] && $_POST['step']) {
     if($result_ct_s['it_name'] !== $result_ct_s['ct_option']){
       $content = $content."(".$result_ct_s['ct_option'].")";
     }
+    $it_name = $content;
     $content = $content."-".$ct_status_text." 변경";
     //로그 insert
     $sql[$i] = "INSERT INTO g5_shop_order_admin_log SET
@@ -56,6 +57,16 @@ if($_POST['ct_id'] && $_POST['step']) {
         WHERE
           od_id = '{$od_id}'
       ";
+    }
+
+    if ($_POST['step'] === '배송') {
+      add_notification(
+        array(),
+        $result_ct_s['mb_id'],
+        '[이로움] 주문상품 배송 시작',
+        $it_name . ' 배송이 시작되었습니다.',
+        G5_URL . '/shop/orderinquiryview.php?od_id=' . $result_ct_s['od_id'],
+      );
     }
 
     //시스템 상태값 변경

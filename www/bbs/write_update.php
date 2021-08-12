@@ -365,6 +365,25 @@ if ($w == '' || $w == 'r') {
 
     $wr_id = sql_insert_id();
 
+    // 공지사항 푸시
+    if ($w == '' && $bo_table === 'notice') {
+        // 모든 토큰 구하기
+        $all_tokens = array();
+        $fb_result = sql_query("SELECT * FROM g5_firebase");
+        while($fb_row = sql_fetch_array($fb_result)) {
+            $all_tokens[] = $fb_row['fcm_token'];
+        }
+
+        // 전송
+        add_notification(
+            $all_tokens,
+            array(),
+            '[이로움] 공지사항 알림',
+            $wr_subject,
+            G5_URL . '/bbs/board.php?bo_table=notice&wr_id=' . $wr_id,
+        );
+    }
+
     // 부모 아이디에 UPDATE
     sql_query(" update $write_table set wr_parent = '$wr_id' where wr_id = '$wr_id' ");
 

@@ -681,12 +681,22 @@ $(".accept").click(function(){
         contentType : false,
         data : sendData,
     }).done(function (data) {
-        // console.log(sendData);
-        // console.log(data);
-        // return false;
         if(data.message == "SUCCESS"){
+            
             alert('승인되었습니다.');
-            location.reload();
+            
+            $.ajax({
+                type: 'POST',
+                url : "./member_accept.php",
+                type : "POST",
+                async : false,
+                cache : false,
+                processData : false,
+                contentType : false,
+                data : sendData,
+            }).done(function (data) {
+                location.reload();
+            });
         }
         // console.log(data.message);
     });
