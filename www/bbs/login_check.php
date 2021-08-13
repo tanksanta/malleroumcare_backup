@@ -22,16 +22,6 @@ if($_POST["mb_id"] != "admin") {
     //쇼핑몰에 등록이 되어 있지 않으면, 메세지출력
     if (!check_password($mb_password, $mb['mb_password'])) {
       alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
-    } else {
-      // 쇼핑몰 비밀번호는 맞는데 시스템 비밀번호가 틀린 경우
-      // -> 비밀번호찾기로 비밀번호 변경된 경우임. 시스템 비밀번호 변경시킴
-      $change_pw_result = api_post_call(EROUMCARE_API_ENT_UPDATE, array(
-        'entId' => $mb['mb_entId'],
-        'usrId' => $mb['mb_id'],
-        'usrPw' => $mb_password
-      ));
-      if($change_pw_result == 'N')
-        alert('최근에 비밀번호가 변경되었습니다. 변경된 비밀번호로 다시 로그인해주세요.');
     }
 
     //관리자 승인 대기인 경우 : 로그인 시키고 - 결과페이지로 이동, 상품보기 불가능
