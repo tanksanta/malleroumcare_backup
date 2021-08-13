@@ -185,14 +185,14 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 	</div>
 
 	<div class="form-group">
-		<label class="col-sm-2 control-label" for="wr_1">이벤트 기간</label>
+		<label class="col-sm-2 control-label" for="wr_1">이벤트 시작일</label>
 		<div class="col-sm-10">
 			<input type="text" name="wr_1" id="wr_1" value="<?php echo $write['wr_1']; ?>" class="form-control input-sm" size="50">
 		</div>
 	</div>
 	
 	<div class="form-group">
-		<label class="col-sm-2 control-label" for="wr_2">이벤트 기간</label>
+		<label class="col-sm-2 control-label" for="wr_2">이벤트 종료일</label>
 		<div class="col-sm-10">
 			<input type="text" name="wr_2" id="wr_2" value="<?php echo $write['wr_2']; ?>" class="form-control input-sm" size="50">
 		</div>
