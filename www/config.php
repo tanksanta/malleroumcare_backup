@@ -104,7 +104,7 @@ define('EROUMCARE_API_RECIPIENT_DELETE_REC',                     'https://system
 define('EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST',          'https://system.eroumcare.com/api/eform/selectEform001');
 // 회원조회1
 define('EROUMCARE_API_ENT_ACCOUNT',                              'https://system.eroumcare.com/api/ent/account');
-define('EROUMCARE_API_ENT_UPDATE',                              'https://system.eroumcare.com/api/ent/update');
+define('EROUMCARE_API_ENT_UPDATE',                               'https://system.eroumcare.com/api/ent/update');
 // 회원조회2
 define('EROUMCARE_API_ACCOUNT_ENT_LOGIN',                        'https://system.eroumcare.com/api/account/entLogin');
 define('EROUMCARE_API_ACCOUNT_ENT_UPDATE',                       'https://system.eroumcare.com/api/account/entUpdate');

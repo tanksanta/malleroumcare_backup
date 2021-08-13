@@ -592,7 +592,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                   }
                   ?>">
             <?php } ?>
-            <?php if ($config['cf_use_point']) { // 포인트 사용한다면 ?>
+            <?php /* if ($config['cf_use_point']) { // 포인트 사용한다면 ?>
             <tr>
               <th scope="row">포인트</th>
               <td>
@@ -606,7 +606,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
               ?>
               </td>
             </tr>
-            <?php } ?>
+            <?php } */ ?>
             <?php if($it['it_buy_min_qty']) { ?>
             <tr><th>최소구매수량</th><td><?php echo number_format($it['it_buy_min_qty']); ?> 개</td></tr>
             <?php } ?>
@@ -701,10 +701,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         <td>
           <?php
           echo $sc_method;
-          if ($it['it_sc_minimum']) {
-            $sc_price = ((int)$it['it_sc_minimum'] / 10000);
+          //if ($it['it_sc_minimum']) {
+            //$sc_price = ((int)$it['it_sc_minimum'] / 10000);
+            $sc_price = 10;
             $sc_price_info = number_format($sc_price).'만원 이상 무료배송<br>'.$sc_price_info;
-          }
+          //}
           if ($it['it_delivery_cnt'] > 0) {
             $sc_price_info = "<span style=\"font-size:13px; color:#ef7c00;\">본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span><br>".$sc_price_info;
           }
