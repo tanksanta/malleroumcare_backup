@@ -144,9 +144,7 @@ $list_cnt = count($list);
 							<div class="clearfix"></div>
 							-->
 							<p>
-								<?php if ($list[$i]['wr_1'] && $list[$i]['wr_2']) { ?>
-								기간: <?php echo get_text($list[$i]['wr_1']); ?> ~ <?php echo get_text($list[$i]['wr_2']); ?>
-								<?php } ?>
+								<?php echo get_text($list[$i]['wr_1']); ?>
 								&nbsp;
 							</p>
 						</div>

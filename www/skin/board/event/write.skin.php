@@ -185,31 +185,11 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 	</div>
 
 	<div class="form-group">
-		<label class="col-sm-2 control-label" for="wr_1">이벤트 시작일</label>
+		<label class="col-sm-2 control-label" for="wr_1">설명</label>
 		<div class="col-sm-10">
 			<input type="text" name="wr_1" id="wr_1" value="<?php echo $write['wr_1']; ?>" class="form-control input-sm" size="50">
 		</div>
 	</div>
-	
-	<div class="form-group">
-		<label class="col-sm-2 control-label" for="wr_2">이벤트 종료일</label>
-		<div class="col-sm-10">
-			<input type="text" name="wr_2" id="wr_2" value="<?php echo $write['wr_2']; ?>" class="form-control input-sm" size="50">
-		</div>
-	</div>
-
-	<style>
-		#ui-datepicker-div {
-			z-index:5;
-		}
-	</style>
-
-	<script>
-	$( document ).ready(function() {
-		$("#wr_2, #wr_1").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99", maxDate: "+1y" });
-	});
-
-	</script>
 
 	<?php if($is_admin || ($boset['tag'] && $member['mb_level'] >= $boset['tag'])) { //태그 ?>
 		<div class="form-group">

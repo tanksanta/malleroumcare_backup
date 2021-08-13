@@ -123,37 +123,6 @@
 #autosave_pop a { display:block; float:left; }
 #autosave_pop span { display:block;; float:right; }
 
-.event-category {
-	width: 100%;
-	margin-bottom:20px;
-}
-.event-category ul {
-	width: 100%;
-	display: flex;
-}
-.event-category li {
-	width:33%;
-	box-sizing: border-box;
-	border-left: 1px solid #ddd;
-	border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
-}
-.event-category li:last-child {
-	width:34%;
-	border-right: 1px solid #ddd;
-}
-.event-category li a {
-	width:100%;
-	display:block;
-	text-align: center;
-	height: 60px;
-	line-height:60px;
-	box-sizing: border-box;
-}
-.event-category li a.active {
-	border-bottom: 3px solid #f27935;
-}
-
 .img-wrap .img-item img {
 	height: auto !important;
 }

@@ -6,6 +6,16 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 
 ?>
 
+<?php if ($bo_table === 'event_board') { ?>
+<section class="event-category">
+	<ul>
+		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event" class="<?php echo $bo_table === 'event' ? 'active' : ''; ?>">진행중인 이벤트</a></li>
+		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event_ended" class="<?php echo $bo_table === 'event_ended' ? 'active' : ''; ?>">종료된 이벤트</a></li>
+		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event_board" class="<?php echo $bo_table === 'event_board' ? 'active' : ''; ?>">이벤트 공지</a></li>
+	</ul>
+</section>
+<?php } ?>
+
 <section class="board-list<?php echo (G5_IS_MOBILE) ? ' font-14' : '';?>"> 
 <div class="sub_section_tit">
 	<?php echo $board['bo_subject'] ?>
