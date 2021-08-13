@@ -261,7 +261,7 @@ $stx=$stx2;
         <th scope="col" id="mb_list_mailr"><?php echo subject_sort_link('mb_mailling', '', 'desc') ?>메일수신</a></th>
         -->
         <th scope="col" id="mb_list_auth">상태</th>
-        <th scope="col" id="mb_list_misu">미수금</th>
+        <th scope="col" id="mb_list_misu">-</th>
         <th scope="col" id="mb_list_mobile">휴대폰</th>
         <th scope="col" id="mb_list_partnermall">파트너몰 회원 여부</th>
         <th scope="col" id="mb_list_lastcall"><?php echo subject_sort_link('mb_today_login', '', 'desc') ?>최종접속</a></th>
@@ -446,15 +446,15 @@ $stx=$stx2;
             ?>
             (<?php echo $row['mb_giup_type'] ? '기업' : '개인'; ?>)
         </td>
-        <td headers="mb_list_misu" class="td_mbstat">
-            <?php
+        <td headers="mb_list_misu" class="td_mbstat"> -
+           <!--  <?php
             $misu = samhwa_get_misu($row['mb_id']);
             echo number_format($misu['misu']) . '원';
-
+            
             if ( $row['mb_type'] == 'partner' && $misu['misu'] ) {
                 echo '&nbsp;&nbsp;&nbsp;<a href="'. G5_ADMIN_URL .'/shop_admin/partnerpayform.php?mb_id='.$row['mb_id'].'" class="btn btn_02">결제하기</a>';
             }
-            ?>
+            ?> -->
 
         </td>
         <td headers="mb_list_mobile" class="td_tel"><?php echo get_text($row['mb_hp']); ?></td>

@@ -388,11 +388,16 @@ $(function() {
 
           <?php
           $isReceiverEdit = true;
+          $isDeliveryInfo = false;
           for($i=0; $i < count($item); $i++) {
             $prodMemo = ""; $ordLendDtm = "";
             for($k=0; $k < count($item[$i]['opt']); $k++) {
               $prodMemo = ($prodMemo) ? $prodMemo : $item[$i]["prodMemo"];
               $ordLendDtm = ($ordLendDtm) ? $ordLendDtm : date("Y-m-d", strtotime($item[$i]["ordLendStrDtm"]))." ~ ".date("Y-m-d", strtotime($item[$i]["ordLendEndDtm"]));
+              
+              if ($item[$i]['opt'][$k]['ct_delivery_num']) {
+                $isDeliveryInfo = true;
+              }
 
               if ($item[$i]['opt'][$k]['ct_status'] != '준비') {
                 $isReceiverEdit = false;
@@ -562,6 +567,19 @@ $(function() {
           padding: 8px 15px;
           font-weight: bold;
         }
+
+        .popupDeliveryInfoBtn {
+          margin-bottom: 6px;
+          display: block;
+          vertical-align: top;
+          width: 100px;
+          border: 1px solid #ddd;
+          padding: 3px 0;
+          border-radius: 5px;
+          font-size: 14px;
+          text-align: center;
+          background: #ddd;
+        }
       </style>
 
       <?php add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js ?>
@@ -569,6 +587,9 @@ $(function() {
       <div class="order-info">
         <div class="top">
           <h5>받으시는 분</h5>
+          <?php if ($isDeliveryInfo) { ?>
+            <a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?php echo $od['od_id']; ?>">배송정보</a>
+          <?php } ?>
         </div>
         <?php if ($isReceiverEdit) { ?>
 
