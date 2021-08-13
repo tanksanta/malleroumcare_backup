@@ -236,6 +236,17 @@ label {
         <th scope="row">포인트</th>
         <td><a href="./point_list.php?sfl=mb_id&amp;stx=<?php echo $mb['mb_id'] ?>" target="_blank"><?php echo number_format($mb['mb_point']) ?></a> 점</td>
     </tr>
+    <tr>
+        <th scope="row"><label for="mb_level">회원 등급</label></th>
+        <td colspan="3">
+            <select id="mb_grade" name="mb_grade">
+                <?php echo option_selected(0, $mb['mb_grade'], $default['de_it_grade0_name'] . ' (적립:' . $default['de_it_grade0_discount'] . '%)'); ?>
+                <?php echo option_selected(1, $mb['mb_grade'], $default['de_it_grade1_name'] . ' (적립:' . $default['de_it_grade1_discount'] . '%)'); ?>
+                <?php echo option_selected(2, $mb['mb_grade'], $default['de_it_grade2_name'] . ' (적립:' . $default['de_it_grade2_discount'] . '%)'); ?>
+                <?php echo option_selected(3, $mb['mb_grade'], $default['de_it_grade3_name'] . ' (적립:' . $default['de_it_grade3_discount'] . '%)'); ?>
+            </select>
+        </td>
+    </tr>
 	<?php if($mb['as_date']) { ?>
 		<tr>
 			<th scope="row"><label for="mb_level">이용 기간</label></th>
