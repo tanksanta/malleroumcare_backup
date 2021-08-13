@@ -553,19 +553,19 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 							<tr>
 								<th scope="row">상품상세</th>
-								
-								<?php if(trim($it["prodSym"])) { ?>
-								<td><label class="quality-type">재질</label><label class="quality-text"><?=$it["prodSym"]?></label>
-								<?php } ?>
-					            <?php if(trim($it["prodSizeDetail"])) { ?>
-								<br>
-								<label class="quality-type">사이즈</label><label class="quality-text"><?=$it["prodSizeDetail"]?></label>
-								<?php } ?>
-						        <?php if(trim($it["prodWeig"])) { ?>
-								<br>
-								<label class="quality-type">중량</label><label class="quality-text"><?=$it["prodWeig"]?></label>
-						         <?php } ?>
-								<br>
+								<td>
+                  <?php if(trim($it["prodSym"])) { ?>
+                  <label class="quality-type">재질</label><label class="quality-text"><?=$it["prodSym"]?></label>
+                  <br>
+								  <?php } ?>
+                  <?php if(trim($it["prodSizeDetail"])) { ?>
+								  <label class="quality-type">사이즈</label><label class="quality-text"><?=$it["prodSizeDetail"]?></label>
+                  <br>
+								  <?php } ?>
+                  <?php if(trim($it["prodWeig"])) { ?>
+								  <label class="quality-type">중량</label><label class="quality-text"><?=$it["prodWeig"]?></label>
+                  <br>
+                  <?php } ?>
 								</td>
 							</tr>
             <?php if (!$it[$it_use]) { // 판매가능이 아닐 경우 ?>
