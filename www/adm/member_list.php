@@ -206,6 +206,7 @@ $stx=$stx2;
     <option value="mb_name"<?php echo get_selected($_GET['sfl'], "mb_name"); ?>>이름</option>
     <option value="mb_giup_bnum"<?php echo get_selected($_GET['sfl'], "mb_giup_bnum"); ?>>사업자번호</option>
     <option value="mb_level"<?php echo get_selected($_GET['sfl'], "mb_level"); ?>>권한</option>
+    <option value="mb_grade"<?php echo get_selected($_GET['sfl'], "mb_grade"); ?>>등급</option>
     <option value="mb_email"<?php echo get_selected($_GET['sfl'], "mb_email"); ?>>E-MAIL</option>
     <option value="mb_tel"<?php echo get_selected($_GET['sfl'], "mb_tel"); ?>>전화번호</option>
     <option value="mb_hp"<?php echo get_selected($_GET['sfl'], "mb_hp"); ?>>휴대폰번호</option>
@@ -249,6 +250,7 @@ $stx=$stx2;
         <th scope="col" id="mb_list_id" colspan="2"><?php echo subject_sort_link('mb_id') ?>아이디</a></th>
         <!--<th scope="col" rowspan="2" id="mb_list_cert"><?php echo subject_sort_link('mb_certify', '', 'desc') ?>본인확인</a></th>-->
         <th scope="col" rowspan="2" id="mb_list_level">권한</th>
+        <th scope="col" rowspan="2" id="mb_list_level">등급</th>
         <th scope="col" rowspan="2" id="mb_list_email">이메일</th>
         <th scope="col" rowspan="2" id="mb_list_thezone">고객(거래처)코드</th>
         <th scope="col" rowspan="2" id="mb_giup_bnum">사업자번호</th>
@@ -388,6 +390,10 @@ $stx=$stx2;
             <?php echo $row['mb_level']; ?>
             <?php echo $row['mb_level'] == '3' ? '(딜러)' : ''; ?>
             <?php echo $row['mb_level'] == '4' ? '(우수딜러)' : ''; ?>
+        </td>
+        <td headers="mb_list_level"  rowspan="2" class="td_mblevel" style="text-align:center;">
+            <?php echo $default['de_it_grade' . $row['mb_grade'] . '_name']; ?>
+            (<?php echo $default['de_it_grade' . $row['mb_grade'] . '_discount']; ?>%적립)
         </td>
         <td headers="mb_list_email"  rowspan="2" class="td_mbemail" style="">
             <?php echo $row['mb_email']; ?>

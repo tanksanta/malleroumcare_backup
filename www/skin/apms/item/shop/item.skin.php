@@ -392,7 +392,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         
         <h1 class="item-head-title"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
-        	<?php if($_COOKIE["viewType"] == "basic") { ?>
+        	<?php if($_COOKIE["viewType"] == "basic" || $member['mb_type'] === 'partner') { ?>
             	급여가
             <?php } else { ?>
             <?php if($member["mb_level"] == "4") { ?>
@@ -406,7 +406,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         <p class="price-num">
         	<?php
           if($member["mb_id"]) {
-            if($_COOKIE["viewType"] == "basic") {
+            if($_COOKIE["viewType"] == "basic" || $member['mb_type'] === 'partner') {
               echo number_format($it["it_cust_price"]);
             } else {
               if($member["mb_level"] == "3") {

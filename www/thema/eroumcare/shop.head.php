@@ -423,6 +423,7 @@ scrollToTop();
 			</div>
 			<div class="logoWrap">
 				<a href="<?=G5_URL?>" class="logoTitle"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png"  ></a>
+				<?php if (get_session('approve')) { ?>
 				<ul class="nav nav-left">
           <?php if($is_samhwa_partner) { ?>
           <li><a href="/shop/partner_orderinquiry_list.php">주문내역</a></li>
@@ -446,6 +447,7 @@ scrollToTop();
 						</a>
 					</li>
 				</ul>
+				<?php } ?>
 			</div>
 			<div class="bottomWrap">
 				<?php if($member["mb_level"] == "3"||$member["mb_level"] == "4"){ ?>
