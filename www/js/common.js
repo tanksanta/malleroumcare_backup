@@ -926,7 +926,7 @@ function show_eroumcare_popup(c) {
 
   var config = $.extend({}, defaultConfig, c);
   var randomClass =
-    'eroumcare-popup-' + Math.trunc(Math.random() * (1000 - 1) + 1);
+    'eroumcare-popup-' + Math.floor(Math.random() * (1000 - 1) + 1);
 
   $('body').append(
     '' +
