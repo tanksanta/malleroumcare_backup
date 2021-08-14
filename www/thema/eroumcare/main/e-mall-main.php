@@ -444,7 +444,10 @@ while($row = sql_fetch_array($banner_result)) {
   </div>
 </div>
 
-<?php if ($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials) { ?>
+<?php 
+$tutorials = get_tutorials();
+if ($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials) { 
+?>
 	<?php 
 	$t_recipient_add = get_tutorial('recipient_add');
 	if ($t_recipient_add['t_state'] == '0') { 
