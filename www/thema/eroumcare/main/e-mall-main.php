@@ -444,115 +444,95 @@ while($row = sql_fetch_array($banner_result)) {
   </div>
 </div>
 
-<!--
-<div class="eroumcare-popup">
-	<i class="fa fa-close fa-lg eroumcare-popup-close close-eroumcare-popup"></i>
-	<div class="eroumcare-popup-content">
-		<h3>
-			수급자 신규등록
-		</h3>
-		<p>
-			수급자 등록 체험을 위해<br/>체험용 수급자를 등록해보세요.
-		</p>
-		<div class="eroumcare-popup-buttons">
-			<a href="#" class="active">
-				수급자 주문하기
-			</a>
-			<a href="#" class="close-eroumcare-popup">
-				다음에
-			</a>
-		</div>
-	</div>
-</div>
--->
+<?php if ($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials) { ?>
+	<?php 
+	$t_recipient_add = get_tutorial('recipient_add');
+	if ($t_recipient_add['t_state'] == '0') { 
+	?>
+		<script>
+			show_eroumcare_popup({
+				title: '수급자 신규등록',
+				content: '수급자 등록 체험을 위해<br/>체험용 수급자를 등록해보세요.',
+				activeBtn: {
+					href: '/shop/my_recipient_write.php?tutorial=true',
+					text: '수급자 등록하기',
+				},
+				hideBtn: {
+					text: '다음에',
+				}
+			});
+		</script>
+	<?php } ?>
 
-<?php 
-$t_recipient_add = get_tutorial('recipient_add');
-if ($t_recipient_add['t_state'] == '0') { 
-?>
+
+	<?php
+	$t_recipient_order = get_tutorial('recipient_order');
+	if ($t_recipient_order['t_state'] == '0') {
+	?>
 	<script>
+	show_eroumcare_popup({
+	title: '수급자 주문하기',
+	content: '수급자 주문을 체험하시겠습니까?<br/>판매품목 1개, 대여품목1개<br/>선택되어 주문을 체험할 수 있습니다.',
+	activeBtn: {
+		text: '주문체험하기',
+		href: '/shop/tutorial_order.php'
+	},
+	hideBtn: {
+		text: '다음에',
+	}
+	});
+
+	</script>
+	<?php
+	} 
+	?>
+
+	<?php
+	$t_document = get_tutorial('document');
+	if ($t_document['t_state'] == '0') {
+		
+		$t_sql = "SELECT e.dc_status FROM tutorial as t INNER JOIN eform_document as e ON t.t_data = e.od_id
+		WHERE 
+			t.mb_id = '{$member['mb_id']}' AND
+			t.t_type = 'recipient_order'
+		";
+		$t_result = sql_fetch($t_sql);
+
+		if ($t_result['dc_status'] == '2' || $t_result['dc_status'] == '3') {
+	?>
+		<script>
 		show_eroumcare_popup({
-			title: '수급자 신규등록',
-			content: '수급자 등록 체험을 위해<br/>체험용 수급자를 등록해보세요.',
+			title: '전자문서 확인',
+			content: '작성한 전자 계약서를<br/>확인하시겠습니까?',
 			activeBtn: {
-				href: '/shop/my_recipient_write.php?tutorial=true',
-				text: '수급자 등록하기',
+				text: '전자계약서확인',
+				href: '/shop/electronic_manage.php'
 			},
 			hideBtn: {
 				text: '다음에',
 			}
 		});
-	</script>
-<?php } ?>
+		</script>
+		<?php } ?>
+	<?php } ?>
 
-
-<?php
-$t_recipient_order = get_tutorial('recipient_order');
-if ($t_recipient_order['t_state'] == '0') {
-?>
-<script>
-show_eroumcare_popup({
-  title: '수급자 주문하기',
-  content: '수급자 주문을 체험하시겠습니까?<br/>판매품목 1개, 대여품목1개<br/>선택되어 주문을 체험할 수 있습니다.',
-  activeBtn: {
-    text: '주문체험하기',
-    href: '/shop/tutorial_order.php'
-  },
-  hideBtn: {
-    text: '다음에',
-  }
-});
-
-</script>
-<?php
-} 
-?>
-
-<?php
-$t_document = get_tutorial('document');
-if ($t_document['t_state'] == '0') {
-	
-	$t_sql = "SELECT e.dc_status FROM tutorial as t INNER JOIN eform_document as e ON t.t_data = e.od_id
-	WHERE 
-		t.mb_id = '{$member['mb_id']}' AND
-		t.t_type = 'recipient_order'
-	";
-	$t_result = sql_fetch($t_sql);
-
-	if ($t_result['dc_status'] == '2' || $t_result['dc_status'] == '3') {
-?>
+	<?php
+	$t_claim = get_tutorial('claim');
+	if ($t_claim['t_state'] == '0') {
+	?>
 	<script>
 	show_eroumcare_popup({
-		title: '전자문서 확인',
-		content: '작성한 전자 계약서를<br/>확인하시겠습니까?',
+		title: '청구내역 확인',
+		content: '수급자 주문 후 누적된 청구내역을<br/>확인 하시겠습니까?',
 		activeBtn: {
-			text: '전자계약서확인',
-			href: '/shop/electronic_manage.php'
+		text: '청구내역 확인',
+		href: '/shop/claim_manage.php'
 		},
 		hideBtn: {
-			text: '다음에',
+		text: '다음에',
 		}
 	});
 	</script>
-	<?php } ?>
+	<?php } 
+	?>
 <?php } ?>
-
-<?php
-$t_claim = get_tutorial('claim');
-if ($t_claim['t_state'] == '0') {
-?>
-<script>
-  show_eroumcare_popup({
-    title: '청구내역 확인',
-    content: '수급자 주문 후 누적된 청구내역을<br/>확인 하시겠습니까?',
-    activeBtn: {
-      text: '청구내역 확인',
-      href: '/shop/claim_manage.php'
-    },
-    hideBtn: {
-      text: '다음에',
-    }
-  });
-</script>
-<?php } 
-?>
