@@ -28,7 +28,22 @@ if($_POST['ct_id'] && $_POST['step']) {
   $sql_cp = [];
 
   for($i=0; $i<count($_POST['ct_id']); $i++) {
-    $sql_ct_s = "select a.od_id, a.it_id, a.it_name, a.ct_option, a.mb_id, a.stoId, b.mb_entId from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
+    $sql_ct_s = "select
+      a.od_id,
+      a.it_id,
+      a.it_name,
+      a.ct_option,
+      a.mb_id,
+      a.stoId,
+      b.mb_entId,
+      a.io_type,
+      a.ct_price,
+      a.io_price,
+      a.ct_qty,
+      a.ct_discount,
+      a.prodSupYn,
+      a.ct_stock_qty
+    from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
     
@@ -67,6 +82,28 @@ if($_POST['ct_id'] && $_POST['step']) {
         $it_name . ' 배송이 시작되었습니다.',
         G5_URL . '/shop/orderinquiryview.php?od_id=' . $result_ct_s['od_id'],
       );
+    }
+
+    if ($_POST['step'] === '완료') {
+      
+      if($result_ct_s['io_type'])
+        $opt_price = $result_ct_s['io_price'];
+      else
+        $opt_price = $result_ct_s['ct_price'] + $result_ct_s['io_price'];
+
+      $result_ct_s["opt_price"] = $opt_price;
+
+      // 소계
+      $result_ct_s['ct_price_stotal'] = $opt_price * $result_ct_s['ct_qty'] - $result_ct_s['ct_discount'];
+      if($result_ct_s["prodSupYn"] == "Y") {
+        $result_ct_s["ct_price_stotal"] -= ($result_ct_s["ct_stock_qty"] * $opt_price);
+      }
+
+      $point_receiver = get_member($result_ct_s['mb_id']);
+      $point = (int)($result_ct_s["ct_price_stotal"] / 100 * $default['de_it_grade' . $point_receiver['mb_grade'] . '_discount']);
+      $point_content = "주문({$od_id}) {$it_name} 상품 배송완료 포인트 적립 ({$default['de_it_grade' . $point_receiver['mb_grade'] . '_name']} / {$default['de_it_grade' . $point_receiver['mb_grade'] . '_discount']}%)";
+
+      insert_point($point_receiver['mb_id'], $point, $point_content, 'order_completed', $_POST['ct_id'][$i], $point_receiver['mb_id']);
     }
 
     //시스템 상태값 변경
