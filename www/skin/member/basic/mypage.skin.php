@@ -221,6 +221,13 @@ if($header_skin)
 						</a>
 					</div>
 				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<a href="<?php echo G5_URL; ?>/shop/tutorial_reset.php" class="btn btn-lightgray btn-sm btn-block">
+							서비스 다시체험
+						</a>
+					</div>
+				</div>
 				<!-- <div class="col-xs-6">
 					<div class="form-group">
 						<?php if ( $member['mb_type'] == 'partner' ) { ?>
