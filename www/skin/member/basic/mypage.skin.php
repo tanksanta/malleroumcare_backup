@@ -221,6 +221,10 @@ if($header_skin)
 						</a>
 					</div>
 				</div>
+				<?php 
+				$tutorials = get_tutorials(); 
+				if ($tutorials['completed_count'] >= 4) {
+				?>
 				<div class="col-xs-6">
 					<div class="form-group">
 						<a href="<?php echo G5_URL; ?>/shop/tutorial_reset.php" class="btn btn-lightgray btn-sm btn-block">
@@ -228,6 +232,7 @@ if($header_skin)
 						</a>
 					</div>
 				</div>
+				<?php } ?>
 				<!-- <div class="col-xs-6">
 					<div class="form-group">
 						<?php if ( $member['mb_type'] == 'partner' ) { ?>
