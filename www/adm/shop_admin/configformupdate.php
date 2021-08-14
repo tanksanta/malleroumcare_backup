@@ -252,6 +252,14 @@ $check_sanitize_keys = array(
 'de_delivery_type_nationwidehuamul2',
 'de_delivery_type_bus1',
 'de_delivery_type_bus2',
+'it_grade0_name',
+'it_grade0_discount',
+'it_grade1_name',
+'it_grade1_discount',
+'it_grade2_name',
+'it_grade2_discount',
+'it_grade3_name',
+'it_grade3_discount',
 );
 
 foreach( $check_sanitize_keys as $key ){
@@ -466,7 +474,15 @@ $sql = " update {$g5['g5_shop_default_table']}
                 de_delivery_type_nationwidehuamul1          = '{$de_delivery_type_nationwidehuamul1}',
                 de_delivery_type_nationwidehuamul2          = '{$de_delivery_type_nationwidehuamul2}',
                 de_delivery_type_bus1                       = '{$de_delivery_type_bus1}',
-                de_delivery_type_bus1                       = '{$de_delivery_type_bus2}'
+                de_delivery_type_bus1                       = '{$de_delivery_type_bus2}',
+                de_it_grade0_name                           = '{$it_grade0_name}',
+                de_it_grade0_discount                       = '{$it_grade0_discount}',
+                de_it_grade1_name                           = '{$it_grade1_name}',
+                de_it_grade1_discount                       = '{$it_grade1_discount}',
+                de_it_grade2_name                           = '{$it_grade2_name}',
+                de_it_grade2_discount                       = '{$it_grade2_discount}',
+                de_it_grade3_name                           = '{$it_grade3_name}',
+                de_it_grade3_discount                       = '{$it_grade3_discount}'
 				";
 sql_query($sql);
 

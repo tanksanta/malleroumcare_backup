@@ -1317,6 +1317,35 @@ if( function_exists('pg_setting_check') ){
             </td>
         </tr>
         <tr>
+            <th scope="row">등급 설정</th>
+            <td>
+                <label for="it_grade0_name">등급명:</label>
+                <input type="text" name="it_grade0_name" value="<?php echo $default['de_it_grade0_name']; ?>" id="it_grade0_name" class="frm_input" size="20" placeholder="권한0 이름">
+                &nbsp;&nbsp;&nbsp;
+                <label for="it_grade0_discount">포인트적립율:</label>
+                <input type="text" name="it_grade0_discount" value="<?php echo $default['de_it_grade0_discount']; ?>" id="it_grade0_discount" class="frm_input" size="20" placeholder="권한0 적립율">
+                <br/>
+                <label for="it_grade1_name">등급명:</label>
+                <input type="text" name="it_grade1_name" value="<?php echo $default['de_it_grade1_name']; ?>" id="it_grade1_name" class="frm_input" size="20" placeholder="권한1 이름">
+                &nbsp;&nbsp;&nbsp;
+                <label for="it_grade1_discount">포인트적립율:</label>
+                <input type="text" name="it_grade1_discount" value="<?php echo $default['de_it_grade1_discount']; ?>" id="it_grade1_discount" class="frm_input" size="20" placeholder="권한1 적립율">
+                <br/>
+                <label for="it_grade2_name">등급명:</label>
+                <input type="text" name="it_grade2_name" value="<?php echo $default['de_it_grade2_name']; ?>" id="it_grade2_name" class="frm_input" size="20" placeholder="권한2 이름">
+                &nbsp;&nbsp;&nbsp;
+                <label for="it_grade2_discount">포인트적립율:</label>
+                <input type="text" name="it_grade2_discount" value="<?php echo $default['de_it_grade2_discount']; ?>" id="it_grade2_discount" class="frm_input" size="20" placeholder="권한2 적립율">
+                <br/>
+                <label for="it_grade3_name">등급명:</label>
+                <input type="text" name="it_grade3_name" value="<?php echo $default['de_it_grade3_name']; ?>" id="it_grade3_name" class="frm_input" size="20" placeholder="권한3 이름">
+                &nbsp;&nbsp;&nbsp;
+                <label for="it_grade3_discount">포인트적립율:</label>
+                <input type="text" name="it_grade3_discount" value="<?php echo $default['de_it_grade3_discount']; ?>" id="it_grade3_discount" class="frm_input" size="20" placeholder="권한3 적립율">
+                <br/>
+            </td>
+        </tr>
+        <tr>
             <th scope="row">관련상품출력</th>
             <td>
                 <?php echo help("관련상품의 경우 등록된 상품은 모두 출력하므로 '출력할 줄 수'는 설정하지 않습니다. 이미지높이를 0으로 설정하면 상품이미지를 이미지폭에 비례하여 생성합니다."); ?>
