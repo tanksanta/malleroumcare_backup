@@ -2126,7 +2126,19 @@ function apms_coupon_update($mb_id) {
 	if(!$mb_id)
 		return;
 
-	$sql = " select cp_id from {$g5['g5_shop_coupon_table']} where mb_id IN ('{$mb_id}', '전체회원') and cp_start <= '".G5_TIME_YMD."' and cp_end >= '".G5_TIME_YMD."'";
+  $sql = "
+    select cp_id
+    from {$g5['g5_shop_coupon_table']} c
+    left join g5_shop_coupon_member m on c.cp_no = m.cp_no
+    where
+      (
+        c.mb_id IN ( '{$mb_id}', '전체회원' ) or
+        m.mb_id = '{$mb_id}'
+      )
+      and cp_start <= '".G5_TIME_YMD."'
+      and cp_end >= '".G5_TIME_YMD."'
+    group by c.cp_no
+  ";
 	$result = sql_query($sql);
 
 	$k = 0;

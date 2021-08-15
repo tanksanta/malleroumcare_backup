@@ -4,14 +4,14 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu], "r");
 
-$sql_common = " from {$g5['g5_shop_coupon_table']} ";
+$sql_common = " from {$g5['g5_shop_coupon_table']} c left join g5_shop_coupon_member m on c.cp_no = m.cp_no ";
 
 $sql_search = " where (1) ";
 if ($stx) {
     $sql_search .= " and ( ";
     switch ($sfl) {
         case 'mb_id' :
-            $sql_search .= " ({$sfl} = '{$stx}') ";
+            $sql_search .= " (c.mb_id = '{$stx}' or m.mb_id = '{$stx}') ";
             break;
         default :
             $sql_search .= " ({$sfl} like '%{$stx}%') ";
@@ -26,11 +26,17 @@ if (!$sst) {
 }
 $sql_order = " order by {$sst} {$sod} ";
 
-$sql = " select count(*) as cnt
-            {$sql_common}
-            {$sql_search}
-            {$sql_order} ";
-$row = sql_fetch($sql);
+$sql = "
+  select count(*) as cnt
+  from (
+    select c.*
+    {$sql_common}
+    {$sql_search}
+    group by c.cp_no
+    {$sql_order}
+  ) u
+";
+$row = sql_fetch($sql, true);
 $total_count = $row['cnt'];
 
 $rows = $config['cf_page_rows'];
@@ -38,11 +44,14 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
-$sql = " select *
-            {$sql_common}
-            {$sql_search}
-            {$sql_order}
-            limit {$from_record}, {$rows} ";
+$sql = "
+  select c.*, count(*) as cnt, m.mb_id as mb_id_sub
+  {$sql_common}
+  {$sql_search}
+  group by c.cp_no
+  {$sql_order}
+  limit {$from_record}, {$rows}
+";
 $result = sql_query($sql);
 
 $g5['title'] = '쿠폰관리';
@@ -140,7 +149,16 @@ $colspan = 9;
         <td><?php echo $row['cp_id']; ?></td>
         <td class="td_left"><?php echo $row['cp_subject']; ?></td>
         <td><?php echo $cp_target; ?></td>
-        <td class="td_name sv_use"><div><?php echo $row['mb_id']; ?></div></td>
+        <td class="td_name sv_use"><div><?php
+          if($row['cnt'] > 1) {
+            echo $row['mb_id'].' 외 '.($row['cnt'] - 1).'명';
+          } else {
+            if($row['mb_id_sub'])
+              echo $row['mb_id_sub'];
+            else
+              echo $row['mb_id'];
+          }
+        ?></div></td>
         <td class="td_datetime"><?php echo substr($row['cp_start'], 2, 8); ?> ~ <?php echo substr($row['cp_end'], 2, 8); ?></td>
         <td class="td_cntsmall"><?php echo number_format($used_count); ?></td>
         <td class="td_mng td_mng_s">

@@ -11,11 +11,19 @@ if (!$is_member)
 
 // 쿠폰
 $cp_count = 0;
-$sql = " select cp_id
-            from {$g5['g5_shop_coupon_table']}
-            where mb_id IN ( '{$member['mb_id']}', '전체회원' )
-              and cp_start <= '".G5_TIME_YMD."'
-              and cp_end >= '".G5_TIME_YMD."' ";
+$sql = "
+  select cp_id
+  from {$g5['g5_shop_coupon_table']} c
+  left join g5_shop_coupon_member m on c.cp_no = m.cp_no
+  where
+    (
+      c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or
+      m.mb_id = '{$member['mb_id']}'
+    )
+    and cp_start <= '".G5_TIME_YMD."'
+    and cp_end >= '".G5_TIME_YMD."'
+  group by c.cp_no
+";
 $res = sql_query($sql);
 
 for($k=0; $cp=sql_fetch_array($res); $k++) {

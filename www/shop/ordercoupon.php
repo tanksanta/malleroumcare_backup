@@ -17,13 +17,21 @@ if($price <= 0)
 $list = array();
 
 // 쿠폰정보
-$sql = " select *
-            from {$g5['g5_shop_coupon_table']}
-            where mb_id IN ( '{$member['mb_id']}', '전체회원' )
-              and cp_method = '2'
-              and cp_start <= '".G5_TIME_YMD."'
-              and cp_end >= '".G5_TIME_YMD."'
-              and cp_minimum <= '$price' ";
+$sql = "
+  select c.*
+  from {$g5['g5_shop_coupon_table']} c
+  left join g5_shop_coupon_member m on c.cp_no = m.cp_no
+  where
+    (
+      c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or
+      m.mb_id = '{$member['mb_id']}'
+    )
+    and cp_method = '2'
+    and cp_start <= '".G5_TIME_YMD."'
+    and cp_end >= '".G5_TIME_YMD."'
+    and cp_minimum <= '$price'
+  group by c.cp_no
+";
 $result = sql_query($sql);
 $count = sql_num_rows($result);
 $z = 0;

@@ -32,12 +32,20 @@ if($is_coupon_sub) {
 $skin_path = $member_skin_path;
 $skin_url = $member_skin_url;
 
-$sql = " select cp_id, cp_subject, cp_method, cp_target, cp_start, cp_end, cp_type, cp_price
-            from {$g5['g5_shop_coupon_table']}
-            where mb_id IN ( '{$member['mb_id']}', '전체회원' )
-              and cp_start <= '".G5_TIME_YMD."'
-              and cp_end >= '".G5_TIME_YMD."'
-            order by cp_no ";
+$sql = "
+  select cp_id, cp_subject, cp_method, cp_target, cp_start, cp_end, cp_type, cp_price
+  from {$g5['g5_shop_coupon_table']} c
+  left join g5_shop_coupon_member m on c.cp_no = m.cp_no
+  where
+    (
+      c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or
+      m.mb_id = '{$member['mb_id']}'
+    )
+    and cp_start <= '".G5_TIME_YMD."'
+    and cp_end >= '".G5_TIME_YMD."'
+  group by c.cp_no
+  order by c.cp_no
+";
 $result = sql_query($sql);
 
 $cp = array();

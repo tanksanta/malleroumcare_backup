@@ -13,8 +13,8 @@ $sql_common = " from {$g5['member_table']} ";
 $sql_where = " where mb_id <> '{$config['cf_admin']}' and mb_leave_date = '' and mb_intercept_date ='' ";
 
 if($mb_name){
-    $mb_name = preg_replace('/\!\?\*$#<>()\[\]\{\}/i', '', strip_tags($mb_name));
-    $sql_where .= " and mb_name like '%".sql_real_escape_string($mb_name)."%' ";
+  $mb_name = preg_replace('/\!\?\*$#<>()\[\]\{\}/i', '', strip_tags($mb_name));
+  $sql_where .= " and mb_name like '%".sql_real_escape_string($mb_name)."%' ";
 }
 
 // 테이블의 전체 레코드수만 얻음
@@ -37,60 +37,148 @@ $result = sql_query($sql);
 $qstr1 = 'mb_name='.urlencode($mb_name);
 ?>
 
+<style>
+body {
+  margin-bottom: 60px !important;
+}
+
+.btn_wrap {
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  background-color: #fff;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+.btn_wrap button {
+  font-size: 16px;
+  font-weight: bold;
+  border: 0;
+}
+
+#btn_submit {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  background-color: #383838;
+  color: #fff;
+}
+#btn_close {
+  width: 100px;
+}
+</style>
+
 <div id="sch_member_frm" class="new_win scp_new_win">
-    <h1>쿠폰 적용 회원선택</h1>
+  <h1>쿠폰 적용 회원선택</h1>
 
-    <form name="fmember" method="get">
-    <div id="scp_list_find">
-        <label for="mb_name">회원이름</label>
-        <input type="text" name="mb_name" id="mb_name" value="<?php echo get_text($mb_name); ?>" class="frm_input required" required size="20">
-        <input type="submit" value="검색" class="btn_frmline">
-    </div>
-    <div class="tbl_head01 tbl_wrap new_win_con">
-        <table>
-        <caption>검색결과</caption>
-        <thead>
+  <form id="form_member" name="fmember" method="get">
+  <div id="scp_list_find">
+    <label for="mb_name">회원이름</label>
+    <input type="text" name="mb_name" id="mb_name" value="<?php echo get_text($mb_name); ?>" class="frm_input" size="20">
+    <input type="submit" value="검색" class="btn_frmline">
+  </div>
+  <div id="tbl_member" class="tbl_head01 tbl_wrap new_win_con">
+    <table>
+      <caption>검색결과</caption>
+      <thead>
         <tr>
-            <th>회원이름</th>
-            <th>회원아이디</th>
-            <th>선택</th>
+          <th>회원이름</th>
+          <th>회원아이디</th>
+          <th>선택</th>
         </tr>
-        </thead>
-        <tbody>
-        <?php
-        for($i=0; $row=sql_fetch_array($result); $i++) {
-        ?>
-        <tr>
-            <td class="td_mbname"><?php echo get_text($row['mb_name']); ?></td>
-            <td class="td_left"><?php echo $row['mb_id']; ?></td>
-            <td class="scp_find_select td_mng td_mng_s"><button type="button" class="btn btn_03" onclick="sel_member_id('<?php echo $row['mb_id']; ?>');">선택</button></td>
-        </tr>
-        <?php
-        }
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  </form>
 
-        if($i ==0)
-            echo '<tr><td colspan="3" class="empty_table">검색된 자료가 없습니다.</td></tr>';
-        ?>
-        </tbody>
-        </table>
-    </div>
-    </form>
+  <div id="paging"></div>
 
-    <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr1.'&amp;page='); ?>
-
-    <div class="btn_confirm01 btn_confirm win_btn">
-        <button type="button" onclick="window.close();" class="btn_close btn">닫기</button>
-    </div>
+  <div class="btn_wrap">
+    <button id="btn_submit">선택</button>
+    <button id="btn_close" onclick="window.close();">취소</button>
+  </div>
 </div>
 
 <script>
-function sel_member_id(id)
-{
+var selected = [];
+
+function sel_member_id(id) {
+  for(var i = 0; i < selected.length; i++) {
+    if(selected[i] === id)
+      return;
+  }
+
+  selected.push(id);
+  update_submit_button();
+  update_select_button();
+}
+
+function update_submit_button() {
+  $('#btn_submit').text(selected.length + '명 등록');
+}
+
+function update_select_button() {
+  var dataTable = {};
+  for(var i = 0; i < selected.length; i++) {
+    var mb_id = selected[i];
+    dataTable[mb_id] = true;
+  }
+
+  $('.btn_03').each(function() {
+    var mb_id = $(this).data('id');
+    if(dataTable[mb_id]) {
+      $(this).css({
+        'background': '#888'
+      });
+    }
+  });
+}
+
+function get_members(data) {
+  $.post('ajax.couponmember.php', data, 'json')
+  .done(function(result) {
+    $('#tbl_member tbody').html(result.data.html);
+    $('#paging').html(result.data.paging);
+    update_select_button();
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
+}
+
+$(function() {
+  get_members();
+  update_submit_button();
+
+  $(document).on('click', '#paging a', function(e) {
+    e.preventDefault();
+
+    get_members($(this).attr('href'));
+  });
+
+  $('#form_member').on('submit', function(e) {
+    e.preventDefault();
+
+    get_members({
+      mb_name: $('#mb_name').val()
+    });
+  });
+
+  $('#btn_submit').on('click', function() {
     var f = window.opener.document.fcouponform;
+    var id = selected.join(',');
     f.mb_id.value = id;
 
     window.close();
-}
+  });
+});
 </script>
 
 <?php

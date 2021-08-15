@@ -382,13 +382,22 @@ if($is_member) {
   for($i=0; $i<$it_cp_cnt; $i++) {
     $cid = $_POST['cp_id'][$i];
     $it_id = $_POST['it_id'][$i];
-    $sql = " select cp_id, cp_method, cp_target, cp_type, cp_price, cp_trunc, cp_minimum, cp_maximum
-              from {$g5['g5_shop_coupon_table']}
-              where cp_id = '$cid'
-              and mb_id IN ( '{$member['mb_id']}', '전체회원' )
-              and cp_start <= '".G5_TIME_YMD."'
-              and cp_end >= '".G5_TIME_YMD."'
-              and cp_method IN ( 0, 1 ) ";
+    $sql = "
+      select cp_id, cp_method, cp_target, cp_type, cp_price, cp_trunc, cp_minimum, cp_maximum
+      from {$g5['g5_shop_coupon_table']} c
+      left join g5_shop_coupon_member m on c.cp_no = m.cp_no
+      where
+        cp_id = '$cid'
+        and
+        (
+          c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or
+          m.mb_id = '{$member['mb_id']}'
+        )
+        and cp_start <= '".G5_TIME_YMD."'
+        and cp_end >= '".G5_TIME_YMD."'
+        and cp_method IN ( 0, 1 )
+      group by c.cp_no
+    ";
     $cp = sql_fetch($sql);
     if(!$cp['cp_id'])
       continue;
@@ -447,13 +456,22 @@ if($is_member) {
 
   // 주문쿠폰
   if($_POST['od_cp_id']) {
-    $sql = " select cp_id, cp_type, cp_price, cp_trunc, cp_minimum, cp_maximum
-              from {$g5['g5_shop_coupon_table']}
-              where cp_id = '{$_POST['od_cp_id']}'
-              and mb_id IN ( '{$member['mb_id']}', '전체회원' )
-              and cp_start <= '".G5_TIME_YMD."'
-              and cp_end >= '".G5_TIME_YMD."'
-              and cp_method = '2' ";
+    $sql = "
+      select cp_id, cp_type, cp_price, cp_trunc, cp_minimum, cp_maximum
+      from {$g5['g5_shop_coupon_table']} c
+      left join g5_shop_coupon_member m on c.cp_no = m.cp_no
+      where
+        cp_id = '{$_POST['od_cp_id']}'
+        and
+        (
+          c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or
+          m.mb_id = '{$member['mb_id']}'
+        )
+        and cp_start <= '".G5_TIME_YMD."'
+        and cp_end >= '".G5_TIME_YMD."'
+        and cp_method = '2'
+      group by c.cp_no
+    ";
     $cp = sql_fetch($sql);
 
     // 사용한 쿠폰인지
@@ -496,13 +514,22 @@ $tot_sc_cp_price = 0;
 if($is_member && $send_cost > 0) {
   // 배송쿠폰
   if($_POST['sc_cp_id']) {
-    $sql = " select cp_id, cp_type, cp_price, cp_trunc, cp_minimum, cp_maximum
-              from {$g5['g5_shop_coupon_table']}
-              where cp_id = '{$_POST['sc_cp_id']}'
-              and mb_id IN ( '{$member['mb_id']}', '전체회원' )
-              and cp_start <= '".G5_TIME_YMD."'
-              and cp_end >= '".G5_TIME_YMD."'
-              and cp_method = '3' ";
+    $sql = "
+      select cp_id, cp_type, cp_price, cp_trunc, cp_minimum, cp_maximum
+      from {$g5['g5_shop_coupon_table']} c
+      left join g5_shop_coupon_member m on c.cp_no = m.cp_no
+      where
+        cp_id = '{$_POST['sc_cp_id']}'
+        and
+        (
+          c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or
+          m.mb_id = '{$member['mb_id']}'
+        )
+        and cp_start <= '".G5_TIME_YMD."'
+        and cp_end >= '".G5_TIME_YMD."'
+        and cp_method = '3'
+      group by c.cp_no
+    ";
     $cp = sql_fetch($sql);
 
     // 사용한 쿠폰인지

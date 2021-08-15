@@ -17,7 +17,16 @@ for ($i=0; $i<$count; $i++)
     // 실제 번호를 넘김
     $k = $_POST['chk'][$i];
 
-    $sql = " delete from {$g5['g5_shop_coupon_table']} where cp_id = '".preg_replace('/[^a-z0-9_\-]/i', '', $_POST['cp_id'][$k])."' ";
+    $cp_id = preg_replace('/[^a-z0-9_\-]/i', '', $_POST['cp_id'][$k]);
+
+    $cp = sql_fetch(" select from  {$g5['g5_shop_coupon_table']} where cp_id = '{$cp_id}' ");
+    if(!$cp || !$cp['cp_no'])
+      alert('존재하지 않는 쿠폰입니다.');
+
+    $sql = " delete from {$g5['g5_shop_coupon_table']} where cp_id = '{$cp_id}' ";
+    sql_query($sql);
+
+    $sql = " delete from g5_shop_coupon_member where cp_no = '{$cp['cp_no']}' ";
     sql_query($sql);
 }
 
