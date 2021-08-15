@@ -9,8 +9,24 @@ $g5['title'] = '쿠폰관리';
 if ($w == 'u') {
     $html_title = '쿠폰 수정';
 
-    $sql = " select * from {$g5['g5_shop_coupon_table']} where cp_id = '$cp_id' ";
-    $cp = sql_fetch($sql);
+    $sql = "
+      select c.*, m.mb_id as mb_id_sub
+      from {$g5['g5_shop_coupon_table']} c
+      left join g5_shop_coupon_member m on c.cp_no = m.cp_no
+      where cp_id = '$cp_id'
+    ";
+    $cp_result = sql_query($sql);
+    $mb_id_arr = [];
+    $cp;
+    while($row = sql_fetch_array($cp_result)) {
+      if(!$mb_id_arr)
+        $mb_id_arr[] = $row['mb_id'];
+      if($row['mb_id_sub'] && !in_array($row['mb_id_sub'], $mb_id_arr))
+        $mb_id_arr[] = $row['mb_id_sub'];
+      $cp = $row;
+    }
+    $cp['mb_id'] = implode(',', $mb_id_arr);
+
     if (!$cp['cp_id']) alert('등록된 자료가 없습니다.');
 }
 else
