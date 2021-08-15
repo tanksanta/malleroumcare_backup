@@ -154,7 +154,7 @@ if($w == '') {
 
 if($mb_id !== '전체회원') {
   $member_sql = " insert into g5_shop_coupon_member(cp_no, mb_id) values ";
-  for($i = 0; $i < count($mb_id_arr); $i++) {
+  for($i = 1; $i < count($mb_id_arr); $i++) {
     $mb_id = $mb_id_arr[$i];
     $member_sql .= " ('{$cp_no}', '{$mb_id}') ";
     if($i < count($mb_id_arr) - 1)
