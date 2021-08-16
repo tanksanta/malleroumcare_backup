@@ -99,8 +99,8 @@ body, input, textarea, select, button, table {
 <div class="pop_list">
 	<ul id="recipient_list">
 	<?php if($list) { ?>
-		<?php foreach($list as $data) { ?>
 		<?php
+    foreach($list as $data) {
       $warning = [];
       if(is_array($ca_id_arr)) {
         foreach($ca_id_arr as $ca_id) {
@@ -116,6 +116,7 @@ body, input, textarea, select, button, table {
           }
         }
       }
+      $grade_year_info = get_recipient_grade_per_year($data['penId']);
 			$recipient = $data["rn"]."|".$data["penId"]."|".$data["entId"]."|".$data["penNm"]."|".$data["penLtmNum"]."|".$data["penRecGraCd"]."|".$data["penRecGraNm"]."|".$data["penTypeCd"]."|".$data["penTypeNm"]."|".$data["penExpiStDtm"]."|".$data["penExpiEdDtm"]."|".$data["penExpiDtm"]."|".$data["penExpiRemDay"]."|".$data["penGender"]."|".$data["penGenderNm"]."|".$data["penBirth"]."|".$data["penAge"]."|".$data["penAppEdDtm"]."|".$data["penAddr"]."|".$data["penAddrDtl"]."|".$data["penConNum"]."|".$data["penConPnum"]."|".$data["penProNm"]."|".$data["usrId"]."|".$data["appCd"]."|".$data["appCdNm"]."|".$data["caCenYn"]."|".$data["regDtm"]."|".$data["regDt"]."|".$data["ordLendEndDtm"]."|".$data["ordLendRemDay"]."|".$data["usrNm"]."|".$data["penAppRemDay"]."|800,000원";
 		?>
 			<li>
@@ -151,6 +152,10 @@ body, input, textarea, select, button, table {
 					<td>생년월일</td>
 					<td><?php echo $data["penBirth"] ? get_text($data["penBirth"]) : "-"; ?></td>
 				</tr>
+        <tr>
+					<td>연 사용금액</td>
+					<td><?php echo number_format($grade_year_info['sum_price']); ?></td>
+				</tr>
         <?php foreach($warning as $warning_text) { ?>
         <tr>
 					<td colspan="2" style="color: red"><?=$warning_text?></td>
@@ -159,6 +164,8 @@ body, input, textarea, select, button, table {
 			</table>
       <?php if($warning) { ?>
       <div class="warning">구매가능초과</div>
+      <?php } else if($grade_year_info['sum_price'] > 1600000) { ?>
+      <div class="warning">사용금액초과</div>
       <?php } else { ?>
 			<a href="#" class="sel_address" data-target="<?=$recipient?>" title="선택">선택</a>
       <?php } ?>
