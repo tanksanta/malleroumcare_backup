@@ -154,7 +154,7 @@ body, input, textarea, select, button, table {
 				</tr>
         <tr>
 					<td>연 사용금액</td>
-					<td><?php echo number_format($grade_year_info['sum_price']); ?></td>
+					<td><?php echo number_format($grade_year_info['sum_price']); ?>원</td>
 				</tr>
         <?php foreach($warning as $warning_text) { ?>
         <tr>
