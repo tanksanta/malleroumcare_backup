@@ -142,6 +142,7 @@ $colspan = ($is_membership) ? 18 : 17;
 
 <?php
 //영업담당자 이름표시
+$original_stx = $stx;
 $stx=$stx2;
 ?>
 <div class="local_ov01 local_ov">
@@ -219,7 +220,7 @@ $stx=$stx2;
     <option value="mb_manager"<?php echo get_selected($_GET['sfl'], "mb_manager"); ?>>영업담당자</option>
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-<input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
+<input type="text" name="stx" value="<?php echo $original_stx ?? $stx ?>" id="stx" class="frm_input">
 <input type="submit" class="btn_submit" value="검색">
 <!-- <button type="submit" class="btn_submit" name="manager" value="1">영업담당자 검색</button> -->
 </form>
@@ -588,6 +589,118 @@ $stx=$stx2;
 </form>
 
 <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+
+
+<style>
+
+#admin-member-search {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index:9999;
+    background: rgba(0, 0, 0, 0.8);
+}
+.admin-member-search-content {
+    width:400px;
+    max-height: 80%;
+    position: absolute; 
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+	padding: 15px 20px;
+}
+.admin-member-search-close {
+    position:absolute;
+    top:15px;
+    right: 15px;
+    color: white;
+    font-size: 2.5em;
+    cursor:pointer;
+}
+.admin-member-search-inputs {
+	display:flex;
+	justify-content:space-between;
+}
+.admin-member-search-input {
+	background-color: white;
+    color: #5f5f5f;
+    border: 1px solid #ccc;
+    height: 34px;
+    width: 65%;
+    box-sizing: border-box;
+	padding: 0 10px;
+}
+.admin-member-search-submit {
+	background-color: rgba(24,24,24,0.6);
+    color: #ccc;
+    border: 1px solid #ccc;
+    height: 34px;
+    width: 30%;
+    box-sizing: border-box;
+}
+
+</style>
+
+
+<div id="admin-member-search">
+    <div class="admin-member-search-close">
+        <i class="fa fa-times"></i>
+    </div>
+    <div class="admin-member-search-content">
+		<form id="fpopupmembersearch" name="fpopupmembersearch" method="get">
+			<input type="hidden" name="sfl" value="all" />
+			<p>
+				회원정보(이름/아이디)를 검색하세요.
+			</p>
+			<div class="admin-member-search-inputs">
+				<input type="text" class="admin-member-search-input" name="stx" />
+				<input type="submit" class="admin-member-search-submit" value="검색" />
+			</div>
+		</form>
+	</div>
+</div>
+
+<script> 
+$(document).ready(function() {
+    // 회원 검색
+	$('.admin-member-search-close').click(function() {
+		$('#admin-member-search').hide();
+	})
+    $('#admin-member-search').click(function(e) {
+        $('#admin-member-search').hide();
+    }).children().click(function(e) {
+		return false;
+	});
+	$(document).on("keyup", function(event){
+		// input 제외
+		if ($(event.target).is('input')) {
+			return;
+		}
+
+		// esc 닫기
+		if (event.keyCode === 27) {
+			$('.admin-member-search-close').click();
+			return;
+		} 
+
+		$('#admin-member-search').show();
+		$('.admin-member-search-input').focus();
+	});
+	$(".admin-member-search-input").on("keyup", function(event){
+		if(event.keyCode === 13) {
+			$('#fpopupmembersearch').submit();
+        }
+	});
+	$('.admin-member-search-submit').click(function() {
+		$('#fpopupmembersearch').submit();
+	});
+});
+</script>
+
 
 <script>
 function fmemberlist_submit(f)
