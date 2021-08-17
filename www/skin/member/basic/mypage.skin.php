@@ -209,7 +209,7 @@ if($header_skin)
 				</div>
 				<div class="col-xs-6">
 					<div class="form-group">
-						<a href="<?php echo G5_URL; ?>/bbs/mypage.php" class="btn btn-lightgray btn-sm btn-block">
+						<a href="<?php echo G5_URL; ?>/bbs/qalist.php" class="btn btn-lightgray btn-sm btn-block">
 							1:1문의 게시판
 						</a>
 					</div>
