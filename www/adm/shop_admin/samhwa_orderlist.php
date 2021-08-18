@@ -1134,7 +1134,42 @@ function orderListExcelDownload(type) {
   html += "</form>";
   
   if(!od_id.length){
-    alert("선택된 주문내역이 존재하지 않습니다.");
+    if(!confirm('선택한 주문이 없습니다.\n검색결과 내 모든 주문내역을 다운로드하시겠습니까?')) return false;
+
+    var formdata = $.extend({}, {
+      click_status: od_status,
+      od_step: od_step,
+      page: page,
+      sub_menu: sub_menu,
+      last_step: last_step,
+    },$('#frmsamhwaorderlist').serializeObject());
+
+    // form object rename
+    formdata['od_settle_case'] = formdata['od_settle_case[]']; // Assign new key
+    delete formdata['od_settle_case[]']; // Delete old key
+
+    if (formdata['od_status[]'] != undefined) {
+      formdata['od_status'] = formdata['od_status[]']; // Assign new key
+      delete formdata['od_status[]']; // Delete old key
+    }
+
+    formdata['od_openmarket'] = formdata['od_openmarket[]']; // Assign new key
+    delete formdata['od_openmarket[]']; // Delete old key
+
+    formdata['add_admin'] = formdata['add_admin']; // Assign new key
+    // delete formdata['add_admin[]']; // Delete old key
+
+    formdata['od_important'] = formdata['od_important']; // Assign new key
+    // delete formdata['od_important[]']; // Delete old key
+
+    formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
+
+    var queryString = $.param(formdata);
+    if (type === 'excel') {
+      window.location.href = "./order.excel.list.php?" + queryString;
+    } else if (type === 'ecount') {
+      window.location.href = "./order.ecount.excel.list.php?" + queryString;
+    }
     return false;
   }
   
