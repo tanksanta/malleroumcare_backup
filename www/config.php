@@ -114,6 +114,12 @@ define('EROUMCARE_API_ENT_UPDATE',                               'https://system
 define('EROUMCARE_API_ACCOUNT_ENT_LOGIN',                        'https://system.eroumcare.com/api/account/entLogin');
 define('EROUMCARE_API_ACCOUNT_ENT_UPDATE',                       'https://system.eroumcare.com/api/account/entUpdate');
 
+// 비즈톡 API 연동
+define('BIZTALK_API_HOST', 'https://www.biztalk-api.com');
+define('BIZTALK_API_BS_ID', 'thkc1300');
+define('BIZTALK_API_BS_PWD', 'd267d7b9d328031338f3bdffc9c1a7345b182ef8');
+define('BIZTALK_API_SENDER_KEY', '34fbabc21279a4883a334bbe8509cc90f0c373a3');
+
 // 카카오 디벨로퍼스 REST API 연동
 define('KAKAO_DEVELOPERS_REST_API_KEY', '7a991b6e94ba43c5d266d9aa4a2edca1');
 
