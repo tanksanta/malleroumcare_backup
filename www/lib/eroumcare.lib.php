@@ -1764,3 +1764,58 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
   else
     return $total_price - $total_deposit;
 }
+
+// 비즈톡 API 요청 함수
+function biztalk_api_call($url, $data = null, $token  = null) {
+  $ch = curl_init();
+
+  curl_setopt($ch, CURLOPT_URL, BIZTALK_API_HOST.$url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_POST, 1);
+  if($data) curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+  $header = [
+    'Accept: application/json',
+    'Content-Type: application/json'
+  ];
+  if($token) $header[] = 'bt-token: '.$token;
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+  $res = curl_exec($ch);
+  curl_close($ch);
+
+  return json_decode($res, true);
+}
+
+// 비즈톡 토큰 발급
+function get_biztalk_token() {
+  $result = biztalk_api_call('/v2/auth/getToken', array(
+    'bsid' => BIZTALK_API_BS_ID,
+    'passwd' => BIZTALK_API_BS_PWD
+  ));
+
+  return $result['token'] ?: null;
+}
+
+// 비즈톡 알림톡 전송
+function send_alim_talk($msgIdx, $recipient, $tmpltCode, $message, $attach = null) {
+  $token = get_biztalk_token();
+
+  if(!$token) return null;
+
+  $data = array(
+    'msgIdx' => $msgIdx,
+    'countryCode' => '82',
+    'recipient' => $recipient,
+    'senderKey' => BIZTALK_API_SENDER_KEY,
+    'resMethod' => 'PUSH',
+    'tmpltCode' => $tmpltCode,
+    'message' => $message
+  );
+
+  if($attach) $data['attach'] = $attach;
+
+  $result = biztalk_api_call('/v2/kko/sendAlimTalk', $data, $token);
+
+  return $result;
+}
