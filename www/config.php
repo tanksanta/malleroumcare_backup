@@ -34,12 +34,7 @@ define('G5_HTTPS_DOMAIN', '');
 www.sir.kr 과 sir.kr 도메인은 서로 다른 도메인으로 인식합니다. 쿠키를 공유하려면 .sir.kr 과 같이 입력하세요.
 이곳에 입력이 없다면 www 붙은 도메인과 그렇지 않은 도메인은 쿠키를 공유하지 않으므로 로그인이 풀릴 수 있습니다.
 */
-function getBaseDomain($dom) {
-    $matches = array();
-    preg_match('/[^\.]+\.([^\.]{4}|[^\.]{3}|(co|or|pe|ne|re|go|hs|ms|es|kg|sc|ac)\.[^\.]{2}|[^\.]{2})$/i', $dom, $matches);
-    return $matches[0];
-}
-define('G5_COOKIE_DOMAIN', '.' . getBaseDomain($_SERVER['HTTP_HOST']));
+define('G5_COOKIE_DOMAIN',  '');
 
 define('G5_ADMIN_DIR',      'adm');
 define('G5_BBS_DIR',        'bbs');
