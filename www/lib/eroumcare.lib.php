@@ -1771,8 +1771,10 @@ function biztalk_api_call($url, $data = null, $token  = null) {
 
   curl_setopt($ch, CURLOPT_URL, BIZTALK_API_HOST.$url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_POST, 1);
-  if($data) curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
+  if($data) {
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
+  }
   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
   $header = [
     'Accept: application/json',
@@ -1816,6 +1818,17 @@ function send_alim_talk($msgIdx, $recipient, $tmpltCode, $message, $attach = nul
   if($attach) $data['attach'] = $attach;
 
   $result = biztalk_api_call('/v2/kko/sendAlimTalk', $data, $token);
+
+  return $result;
+}
+
+// 비즈톡 전송 결과 확인
+function get_biztalk_result() {
+  $token = get_biztalk_token();
+
+  if(!$token) return null;
+
+  $result = biztalk_api_call('/v2/kko/getResultAll', null, $token);
 
   return $result;
 }
