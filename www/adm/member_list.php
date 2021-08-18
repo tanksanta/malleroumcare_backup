@@ -675,21 +675,21 @@ $(document).ready(function() {
     }).children().click(function(e) {
 		return false;
 	});
-	$(document).on("keyup", function(event){
-		// input 제외
-		if ($(event.target).is('input')) {
-			return;
-		}
+	// $(document).on("keyup", function(event){
+	// 	// input 제외
+	// 	if ($(event.target).is('input')) {
+	// 		return;
+	// 	}
 
-        //alt, ctrl, shift
-        if (event.keyCode === 16 || event.keyCode === 17 || event.keyCode === 18 || event.ctrlKey || event.shiftKey || event.altKey) {
-			return;
-		}
+    //     //alt, ctrl, shift
+    //     if (event.keyCode === 16 || event.keyCode === 17 || event.keyCode === 18 || event.ctrlKey || event.shiftKey || event.altKey) {
+	// 		return;
+	// 	}
 
-		$('#admin-member-search').show();
-        $('.admin-member-search-input').val('');
-		$('.admin-member-search-input').focus();
-	});
+	// 	$('#admin-member-search').show();
+    //     $('.admin-member-search-input').val('');
+	// 	$('.admin-member-search-input').focus();
+	// });
 	$(".admin-member-search-input").on("keyup", function(event){
 		// esc 닫기
 		if (event.keyCode === 27) {
