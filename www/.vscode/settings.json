@@ -8,5 +8,6 @@
       "ie >= 9",
       "not ie < 9"
     ],
+    "cascade": false,
   },
 }
