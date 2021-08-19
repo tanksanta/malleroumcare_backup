@@ -440,7 +440,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         <div class="item-info-arrowbtn mobile">
           <img src="<?php echo THEMA_URL; ?>/assets/img/icon_arrow_down.png" class="arrow" />
         </div>
-        <div class="top-info-wrap">
+        <div class="top-info-wrap pc">
 	        <ul class="top-info-list">
 	          <img src="<?php echo THEMA_URL; ?>/assets/img/check-icon.png" style="vertical-align: middle; ">
 	          <li><?=$it["ca_name"]?></li>
@@ -451,10 +451,8 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 	        <span style="vertical-align: middle; float: right;">급여코드 : <?php echo $it['ProdPayCode']; ?></span>
           <?php } ?>
 	      </div>
-      
-      
-        
-        <h1 class="item-head-title"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
+
+        <h1 class="item-head-title pc"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
         	<?php if($_COOKIE["viewType"] == "basic" || $member['mb_type'] === 'partner') { ?>
             	급여가
@@ -571,9 +569,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 
       <!-- 재고수량 -->
       <?php if($_COOKIE["viewType"] != "basic") { ?>
+      <div class="pc">
       <ul class="optionStockCntList" style="display: none;">
         <li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "My 보유 대여 재고" : "My 보유 재고"?></li>
       </ul>
+      </div>
       <?php } ?>
       <?php if ( $it['it_model'] ) { ?>
       <p class="item-model">
