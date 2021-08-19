@@ -209,7 +209,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
       <div class="h30 visible-xs"></div>
     </div>
     <div class="samhwa-item-info-mobile mobile">
-      <div class="margin-left">
+      <div class="margin-left" style="zoom: 0.8;">
         <div class="top-info-wrap">
           <ul class="top-info-list">
             <img src="<?php echo THEMA_URL; ?>/assets/img/check-icon.png" style="vertical-align: middle; ">
@@ -222,7 +222,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
           <?php } ?>
         </div>
         <!-- <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p> -->
-        <h1 class="item-head-title"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
+        <h1 class="item-head-title" style="font-size: 42px;"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
         	<?php if($_COOKIE["viewType"] == "basic" || $member['mb_type'] === 'partner') { ?>
             	급여가
