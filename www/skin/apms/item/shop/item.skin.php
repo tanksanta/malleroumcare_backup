@@ -210,140 +210,204 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
     </div>
     <div class="samhwa-item-info-mobile mobile">
       <div class="margin-left">
-        <!-- <h1 class="ca_info"><?=$it["ca_name"]?> <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p></h1> -->
-        <h1>
-          <?php echo stripslashes($it['it_name']); // 상품명 ?>
-          <span style="font-size: 15px;">(<?=$it["it_taxInfo"]?> 상품)</span>
-        </h1>
+        <div class="top-info-wrap">
+          <ul class="top-info-list">
+            <img src="<?php echo THEMA_URL; ?>/assets/img/check-icon.png" style="vertical-align: middle; ">
+	          <li><?=$it["ca_name"]?></li>
+	          <li style="font-weight: 100;">|</li>
+	          <li><?=$it["it_taxInfo"]?>상품</li>
+          </ul>
+          <?php if(!is_benefit_item($it)) { ?>
+	        <span style="vertical-align: middle; float: right;">급여코드 : <?php echo $it['ProdPayCode']; ?></span>
+          <?php } ?>
+        </div>
         <!-- <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p> -->
-        <p class="help-block">* 급여코드  <span style="padding-left:29px;">: <?php echo $it['ProdPayCode']; ?></span></p>
+        <h1 class="item-head-title"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
+        <p class="price-type">
+        	<?php if($_COOKIE["viewType"] == "basic" || $member['mb_type'] === 'partner') { ?>
+            	급여가
+          <?php } else { ?>
+            <?php if($member["mb_level"] == "4") { ?>
+            	VIP판매가
+            <?php } else { ?>
+              판매가
+          <?php }
+          }
+          ?>
+        </p>
+        <p class="price-num">
+        	<?php
+          if($member["mb_id"]) {
+            if($_COOKIE["viewType"] == "basic" || $member['mb_type'] === 'partner') {
+              echo number_format($it["it_cust_price"]);
+            } else {
+              if($member["mb_level"] == "3") {
+                //사업소 가격
+                echo number_format($it["it_price"]);
+              } else if($member["mb_level"] == "4") {
+                //우수 사업소 가격
+                echo ($it["it_price_dealer2"]) ? number_format($it["it_price_dealer2"]) : number_format($it["it_price"]);
+              } else {
+                echo number_format($it["it_price"]);
+              }
+            }
+          }
+          ?>
+        </p>
+        <p class="price-won">원</p>
+        <?php
+        $sale_cnt_txt = [];
+        if($_COOKIE["viewType"] != "basic") {
+          if($member['mb_level'] == "3" || !$it['it_sale_percent_great']) {
+            if($it["it_sale_cnt"]) {
+              $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
+            }
+            if($it["it_sale_cnt_02"]) {
+              $sale_cnt_txt[] = $it["it_sale_cnt_02"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent_02"]) . '원';
+            }
+            if($it["it_sale_cnt_03"]) {
+              $sale_cnt_txt[] = $it["it_sale_cnt_03"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent_03"]) . '원';
+            }
+            if($it["it_sale_cnt_04"]) {
+              $sale_cnt_txt[] = $it["it_sale_cnt_04"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent_04"]) . '원';
+            }
+            if($it["it_sale_cnt_05"]) {
+              $sale_cnt_txt[] = $it["it_sale_cnt_05"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent_05"]) . '원';
+            }
+          } else if($member['mb_level'] == "4" && $it['it_sale_percent_great']) {
+            if($it["it_sale_cnt"]) {
+              $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent_great"]) . '원';
+            }
+            if($it["it_sale_cnt_02"]) {
+              $sale_cnt_txt[] = $it["it_sale_cnt_02"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent_great_02"]) . '원';
+            }
+            if($it["it_sale_cnt_03"]) {
+              $sale_cnt_txt[] = $it["it_sale_cnt_03"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent_great_03"]) . '원';
+            }
+            if($it["it_sale_cnt_04"]) {
+              $sale_cnt_txt[] = $it["it_sale_cnt_04"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent_great_04"]) . '원';
+            }
+            if($it["it_sale_cnt_05"]) {
+              $sale_cnt_txt[] = $it["it_sale_cnt_05"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent_great_05"]) . '원';
+            }
+          }
+        }
+
+        foreach($sale_cnt_txt as $txt_row) {
+          echo '<br><span class="bottom-info-line">└</span>';
+          echo '<span class="bottom-info">';
+          echo $txt_row;
+          echo '</span>';
+        }
+        ?>
         <?php if($it['it_basic']) { // 기본설명 ?>
         <p class="help-block"><?php echo $it['it_basic']; ?></p>
         <?php } ?>
-        <ul class="detailInfo">
-          <?php if(trim($it["prodSym"])) { ?>
-          <li>
-            <span class="infoLabel">
-              <span>·</span>
-              <span>재질</span>
-            </span>
-            <span class="info">: <?=$it["prodSym"]?></span>
-          </li>
-          <?php } ?>
-          <?php if(trim($it["prodSizeDetail"])) { ?>
-          <li>
-            <span class="infoLabel">
-              <span>·</span>
-              <span>사이즈</span>
-            </span>
-            <span class="info">: <?=$it["prodSizeDetail"]?></span>
-          </li>
-          <?php } ?>
-          <?php if(trim($it["prodWeig"])) { ?>
-          <li>
-            <span class="infoLabel">
-              <span>·</span>
-              <span>중량</span>
-            </span>
-            <span class="info">: <?=$it["prodWeig"]?></span>
-          </li>
-          <?php } ?>
-          <li>
-            <h1>
-              <?php
-              if($member["mb_id"]) {
-                if($_COOKIE["viewType"] == "basic") {
-                  echo number_format($it["it_cust_price"])."원";
+        <table class="table item-form">
+          <tbody>
+            <tr>
+              <th scope="row">
+                <?php if(!is_benefit_item($it)) { ?>
+                급여가(정가)
+                <?php } else { ?>
+                정가
+                <?php } ?>
+              </th>
+              <td>
+                <?php echo display_price($it['it_cust_price']); ?>
+                
+                <?php if(!is_benefit_item($it)) { ?>
+                <p class="personal-price">
+                  ※ 본인부담금 15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)
+                </p>
+                <?php } ?>
+              </td>
+            </tr>
+
+            <tr>
+              <th scope="row">상품상세</th>
+              <td>
+                <?php if(trim($it["prodSym"])) { ?>
+                <label class="quality-type">재질</label><label class="quality-text"><?=$it["prodSym"]?></label>
+                <br>
+                <?php } ?>
+                <?php if(trim($it["prodSizeDetail"])) { ?>
+                <label class="quality-type">사이즈</label><label class="quality-text"><?=$it["prodSizeDetail"]?></label>
+                <br>
+                <?php } ?>
+                <?php if(trim($it["prodWeig"])) { ?>
+                <label class="quality-type">중량</label><label class="quality-text"><?=$it["prodWeig"]?></label>
+                <br>
+                <?php } ?>
+              </td>
+            </tr>
+            <?php if (!$it[$it_use]) { // 판매가능이 아닐 경우 ?>
+            <tr><th scope="row">판매</th><td>판매중지</td></tr>
+            <?php } else if ($it['it_tel_inq']) { // 전화문의일 경우 ?>
+            <tr><th scope="row">판매</th><td>전화문의</td></tr>
+            <?php } ?>
+            <?php if($it['it_buy_min_qty']) { ?>
+            <tr><th>최소구매수량</th><td><?php echo number_format($it['it_buy_min_qty']); ?> 개</td></tr>
+            <?php } ?>
+            <?php if($it['it_buy_max_qty']) { ?>
+            <tr><th>최대구매수량</th><td><?php echo number_format($it['it_buy_max_qty']); ?> 개</td></tr>
+            <?php } ?>
+            <?php
+            $ct_send_cost_label = '배송';
+            $sc_price_info_spliter = '<span style="margin:0 8px 0 8px; font-size: 12px; font-weight: 100 !important; color: #d9d9d9;">|</span> ';
+
+            if ($is_samhwa_partner) { // 파트너 유저 배송비
+              $sc_price_info = "";
+              if ($it['it_sc_type_partner'] != 1) {
+                $sc_price_info = "배송비는 {$it['it_sc_qty_partner']}개당 배송비 부가 ({$it['it_sc_price_partner']}원)<br>* 도서산간지역은 추가배송비가 발생합니다.";
+              }
+
+              if ($it['it_sc_type_partner'] == 0) { // 쇼핑몰 디폴트 셋팅 시
+                $item_price = samhwa_price($it, THEMA_KEY);
+                $send_cost = get_item_sendcost_by_default_case($item_price);
+
+                if ($send_cost > 0) {
+                  $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
                 } else {
-                  if($member["mb_level"] == "3") {
-                    //사업소 가격
-                    echo number_format($it["it_price"])."원";
-                  } else if($member["mb_level"] == "4") {
-                    //우수 사업소 가격
-                    echo ($it["it_price_dealer2"]) ? number_format($it["it_price_dealer2"])."원" : number_format($it["it_price"])."원";
-                  } else {
-                    echo number_format($it["it_price"])."원";
-                  }
+                  $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
                 }
               }
-              ?>
-              <span style="font-size:13px;">
-                <?php if($_COOKIE["viewType"] == "basic") { ?>
-                <span class='txt_color_green_box'>급여가</span>
-                <?php } else { ?>
-                <?php if($member["mb_level"] == "4") { ?>
-                <span class='txt_color_gray_box'>VIP판매가</span>
-                <?php } else { ?>
-                  <span class='txt_color_orange_box'>판매가</span>
-                <?php }
+            } else { // 파트너 유저 아닐 시
+              $sc_price_info = "";
+              if ($it['it_sc_type'] != 1) {
+                $number_cost=number_format($it['it_sc_price']);
+                $sc_price_info = "배송비 {$number_cost}원{$sc_price_info_spliter}도서산간지역은 ".number_format($it['it_sc_price'] + 2000)."원 추가됩니다.";
+              }
+
+              if ($it['it_sc_type'] == 0) { // 쇼핑몰 디폴트 셋팅 시
+                $item_price = samhwa_price($it, THEMA_KEY);
+                $send_cost = get_item_sendcost_by_default_case($item_price);
+
+                if ($send_cost > 0) {
+                  $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
+                } else {
+                  $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
+                }
+              }
+            }
+            ?>
+            <tr>
+              <th><?php echo $ct_send_cost_label; ?></th>
+              <td>
+                <?php
+                $sc_price = 10;
+                $sc_price_info = number_format($sc_price).'만원 이상 무료배송<br>'.$sc_price_info;
+                if ($it['it_delivery_cnt'] > 0) {
+                  $sc_price_info = "<span style=\"font-size:13px; color:#ef7c00;\">본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span><br>".$sc_price_info;
                 }
                 ?>
-              </span>
-            </h1>
-          </li>
-          <li>
-            <span style="font-size:13px; color:#ef7c00;">* 본 상품은 <?=$it['it_delivery_cnt']?>개 주문 시 한 박스로 포장됩니다.</span>
-          </li>
-        </ul>
-      </div>
-      <!-- 본인부담금 -->
-      <div class="selfPriceInfo" style="margin-top: 20px;">
-        <div class="title">본인부담금</div>
-        <p>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</p>
-      </div>
-
-      <!-- 재고수량 -->
-      <div class="margin-left">
-        <?php if($_COOKIE["viewType"] != "basic") { ?>
-        <ul class="optionStockCntList" style="display: none;">
-          <li style="font-weight: bold; color: #F28D0B;"><?=(substr($it["ca_id"], 0, 2) == "20") ? "My 보유 대여 재고" : "My 보유 재고"?></li>
-        </ul>
-        <?php } ?>
-        <?php if($_COOKIE["viewType"] != "basic") { ?>
-        <?php if($member['mb_level'] == "3"||!$it['it_sale_percent_great']) { ?>
-        <?php if($it["it_sale_cnt"]) { ?>
-        <p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent"])?>원</p>
-        <?php } ?>
-        <?php if($it["it_sale_cnt_02"]) { ?>
-        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_02"])?>원</p>
-        <?php } ?>
-        <?php if($it["it_sale_cnt_03"]) { ?>
-        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_03"])?>원</p>
-        <?php } ?>
-        <?php if($it["it_sale_cnt_04"]) { ?>
-        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_04"])?>원</p>
-        <?php } ?>
-        <?php if($it["it_sale_cnt_05"]) { ?>
-        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_05"])?>원</p>
-        <?php } ?>
-        <?php } else if($member['mb_level'] == "4"&&$it['it_sale_percent_great']) { ?>
-        <?php if($it["it_sale_cnt"]) { ?>
-        <p style="color: #DC3333;">* <?=$it["it_sale_cnt"]?>개 이상 <?=number_format($it["it_sale_percent_great"])?>원</p>
-        <?php } ?>
-        <?php if($it["it_sale_cnt_02"]) { ?>
-        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_02"]?>개 이상 <?=number_format($it["it_sale_percent_great_02"])?>원</p>
-        <?php } ?>
-        <?php if($it["it_sale_cnt_03"]) { ?>
-        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_03"]?>개 이상 <?=number_format($it["it_sale_percent_great_03"])?>원</p>
-        <?php } ?>
-        <?php if($it["it_sale_cnt_04"]) { ?>
-        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_04"]?>개 이상 <?=number_format($it["it_sale_percent_great_04"])?>원</p>
-        <?php } ?>
-        <?php if($it["it_sale_cnt_05"]) { ?>
-        <p style="color: #DC3333;">* <?=$it["it_sale_cnt_05"]?>개 이상 <?=number_format($it["it_sale_percent_great_05"])?>원</p>
-        <?php } ?>
-        <?php }?>
-        <?php } ?>
-
-        <?php if ( $it['it_model'] ) { ?>
-        <p class="item-model">
-          <?php echo str_replace(';', '<br/>', $it['it_model']); ?>
-        </p>
-        <?php } ?>
-
-        <?php if ($is_tag) { // 태그 ?>
-        <p class="item-tag"><?php echo $tag_list;?></p>
-        <?php } ?>
+                <p class="sc_price_info" style="font-size: 13px">
+                  <?php echo $sc_price_info; ?>
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <script>
