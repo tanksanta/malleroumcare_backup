@@ -133,6 +133,7 @@
                     mb_giup_bname = '{$resInfo["entNm"]}',
                     sealFile = '".$sealFile_name."',
                     crnFile = '".$crnFile_name."',
+			        mb_ent_num = '{$mb_ent_num}',
                     mb_datetime = '".G5_TIME_YMDHIS."'
             ");
         } else {
@@ -171,7 +172,8 @@
                     mb_entConAcc02 = '{$_POST["mb_entConAcc02"]}',
                     mb_giup_bname = '{$resInfo["entNm"]}',
                     sealFile = '".$sealFile_name."',
-                    crnFile = '".$crnFile_name."'
+                    crnFile = '".$crnFile_name."',
+                    mb_ent_num = '{$mb_ent_num}'
                 WHERE mb_id = '{$resInfo["usrId"]}'
             ");
         }
