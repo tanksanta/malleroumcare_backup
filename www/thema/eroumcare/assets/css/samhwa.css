@@ -804,7 +804,7 @@
 	margin-top:20px;
 }
 .at-body .at-container {
-	padding:0 20px;
+	padding:0 10px;
 }
 
 .at-container-service {
@@ -1745,6 +1745,7 @@
 
 .item-head h1.item-head-title {
     letter-spacing: -2px;
+    line-height: 1;
     color: #000;
     margin-top: 22px;
     margin-bottom:40px;
