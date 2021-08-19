@@ -776,7 +776,7 @@ foreach($orderlist as $order) {
             from {$g5['g5_shop_cart_table']} B
             left join {$g5['g5_shop_item_table']} I on I.it_id = B.it_id
             inner join {$g5['g5_shop_order_table']} A on B.od_id = A.od_id
-            left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C on B.mb_id = C.mb_id_temp
+            left join (select mb_id as mb_id_temp, mb_level, mb_type, mb_manager from {$g5['member_table']}) C on B.mb_id = C.mb_id_temp
             group by B.ct_id ) as ct_id
           $sql_search
         ";
