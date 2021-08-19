@@ -25,7 +25,7 @@
         <th scope="col" colspan="2">장기요양인정번호</th>
         <td colspan="3"><?=$eform['penLtmNum']?></td>
         <th scope="col">장기요양기관번호</th>
-        <td><?=$eform['entCrn']?></td>
+        <td><?=$eform['entNum']?></td>
       </tr>
       <tr>
         <th scope="col" colspan="2">인정등급</th>
