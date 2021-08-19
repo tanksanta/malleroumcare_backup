@@ -9,7 +9,7 @@ if($_POST['ct_id']&&$_POST['step']) {
   $entId="";
   $add_sql="";
   $ct_ex_date = date("Y-m-d");
-  $stateCd;
+  $state_cd_table = array();
   $flag = true;
   //상태값 치환
   switch ($_POST['step']) {
@@ -31,6 +31,29 @@ if($_POST['ct_id']&&$_POST['step']) {
     $sql_ct_s = "select a.od_id, a.it_id, a.it_name, a.ct_option, a.mb_id, a.stoId, b.mb_entId from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
+
+    // 배송되면 재고 상태 판매완료로 바꿈
+    // 재고 주문 일시 배송대기(06) -> 판매가능(01)
+    // 수급자 신규 주문 일시 배송대기(06) -> 판매완료(02)
+    $state_cd = '06';
+    if(in_array($_POST['step'], ['배송', '완료'])) {
+      $state_cd = is_pen_order($od_id) ? "02" : "01";
+    }
+    $sto_id_list = array_filter(explode('|', $result_ct_s['stoId']));
+    foreach($sto_id_list as $sto_id) {
+      $state_cd_table[$sto_id] = $state_cd;
+    }
+
+    // 취소 요청 체크
+    $cancel_sql = "select *
+    from g5_shop_order_cancel_request
+    where od_id = '$od_id' and approved = 0";
+    $cancel_request_row = sql_fetch($cancel_sql);
+    if ($cancel_request_row['od_id']) {
+      echo '취소요청이 있는 주문은 주문상태를 변경할 수 없습니다.';
+      exit;
+    }
+
     $content = $result_ct_s['it_name'];
     if($result_ct_s['it_name'] !== $result_ct_s['ct_option']){
       $content = $content."(".$result_ct_s['ct_option'].")";
@@ -53,27 +76,7 @@ if($_POST['ct_id']&&$_POST['step']) {
     $usrId = $result_ct_s['mb_id'];
     $entId = $result_ct_s['mb_entId'];
   }
-
-  // 취소 요청 체크
-  $cancel_sql = "select *
-  from g5_shop_order_cancel_request
-  where od_id = '$od_id' and approved = 0";
-  $cancel_request_row = sql_fetch($cancel_sql);
-  if ($cancel_request_row['od_id']) {
-    echo '취소요청이 있는 주문은 주문상태를 변경할 수 없습니다.';
-    exit;
-  }
   
-  //완료 판매완료로 바꿈
-  // 재고 주문 일시 배송 완료 -> 01
-  // 수급자 신규 주문 일시 배송 완료 -> 02
-  $stateCd = "06";
-  switch ($_POST['step']) {
-    case '배송':
-    case '완료':
-      $stateCd = is_pen_order($od_id) ? "02" : "01";
-      break;
-  }
   $stoIdDataList = explode('|',$stoId);
   $stoIdDataList = array_filter($stoIdDataList);
   $stoIdData = implode("|", $stoIdDataList);
@@ -81,19 +84,19 @@ if($_POST['ct_id']&&$_POST['step']) {
   $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
   $result_again = $res['data'];
   $new_sto_ids = array_map(function($data) {
-    global $stateCd;
+    global $state_cd_table;
     return array(
       'stoId' => $data['stoId'],
       'prodBarNum' => $data['prodBarNum'],
       'prodId' => $data['prodId'],
-      'stateCd' => $stateCd
+      'stateCd' => $state_cd_table[$data['stoId']]
     );
   }, $result_again);
 
-  if($stateCd == "01") {
+  if(in_array($_POST['step'], ['배송', '완료'])) {
     for($k=0; $k<count($new_sto_ids); $k++) {
       $result_confirm = sql_fetch("select `prodSupYn` from `g5_shop_item` where `it_id` ='".$new_sto_ids[$k]['prodId']."'");
-      if($result_confirm['prodSupYn'] == "Y"&&!$new_sto_ids[$k]['prodBarNum']){
+      if($result_confirm['prodSupYn'] == "Y" && !$new_sto_ids[$k]['prodBarNum']) {
         echo "유통상품의 모든 바코드가 입력되어야 출고가 가능합니다";
         $flag = false;
         return false;
