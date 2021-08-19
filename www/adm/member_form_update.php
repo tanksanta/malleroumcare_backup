@@ -233,7 +233,8 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_partner_pay_type = '{$_POST['mb_partner_pay_type']}',
                  mb_partner_remark = '{$_POST['mb_partner_remark']}',
                  mb_manager = '{$_POST['mb_manager']}',
-                 mb_update_date = now()
+                 mb_update_date = now(),
+                 mb_ent_num = '{$mb_ent_num}'
                   ";
 
 if ($w == '')

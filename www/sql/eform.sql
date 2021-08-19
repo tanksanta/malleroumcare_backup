@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS `eform_document` (
   `entNm` varchar(255) NOT NULL default '', -- 이로움사업소1
   -- 사업자등록번호
   `entCrn` varchar(255) NOT NULL default '', -- 사업자번호 todo: system.eroumcare.com 이랑 연동할지 알아봐야함
+  -- 장기요양기관번호
+  `entNum` varchar(30) NOT NULL default '',
   -- 사업소이메일
   `entMail` varchar(255) NOT NULL default '',
   -- 대표자명

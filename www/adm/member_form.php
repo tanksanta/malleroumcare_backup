@@ -352,6 +352,14 @@ label {
             <!-- *관리자 권한으로 사업자번호가 중복되어도 입력이 가능합니다. -->
         </td>
     </tr>
+    <tr>
+        <th scope="row">
+            <label for="mb_ent_num">장기요양기관번호</label>
+        </th>
+        <td colspan="3">
+            <input type="text" name="mb_ent_num" value="<?php echo $mb['mb_ent_num'] ?>" id="mb_ent_num" class="frm_input" size="30" maxlength="20">
+        </td>
+    </tr>
     <!-- <tr>
         <th scope="row">
             <label for="mb_giup_sbnum">종사업자번호</label>
