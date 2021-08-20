@@ -1196,16 +1196,19 @@ function orderListExcelDownload(type) {
   formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
 
   var queryString = $.param(formdata);
-  var href = "./order.excel.list.php?" + queryString;
+  var href = "./order.excel.list.php";
   if (type === 'ecount') {
-    href = "./order.ecount.excel.list.php?" + queryString;
+    href = "./order.ecount.excel.list.php";
   }
   
   $('#loading_excel').show();
-  excel_downloader = $.fileDownload(href)
-    .always(function() {
-      $('#loading_excel').hide();
-    });
+  excel_downloader = $.fileDownload(href, {
+    httpMethod: "POST",
+    data: queryString
+  })
+  .always(function() {
+    $('#loading_excel').hide();
+  });
   
   return false;
 }
