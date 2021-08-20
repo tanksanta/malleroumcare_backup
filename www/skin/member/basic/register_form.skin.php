@@ -221,7 +221,7 @@ add_javascript(G5_POSTCODE_JS, 0);
       <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
         <label class="col-sm-2 control-label" for="mb_gi"><b>장기요양기관번호</b><strong class="sound_only">필수</strong></label>
         <div class="col-sm-3">
-          <input type="text" id="mb_ent_num" name="mb_ent_num" value="<?php echo get_text($member['mb_ent_num']) ?>" <?php echo $member['mb_ent_num'] ? 'readonly' : ''; ?> class="form-control input-sm" size="10">
+          <input type="text" id="mb_ent_num" name="mb_ent_num" value="<?php echo get_text($member['mb_ent_num']) ?>" class="form-control input-sm" size="10">
         </div>
       </div>
 
