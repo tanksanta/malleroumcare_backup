@@ -102,7 +102,7 @@ $seal_dir = G5_DATA_PATH.'/file/member/stamp';
 if(!$seal_file) {
   json_response(400, '회원정보에 직인 이미지를 등록해주세요.');
 }
-$seal_data = file_get_contents($seal_dir.'/'.$seal_file);
+$seal_data = @file_get_contents($seal_dir.'/'.$seal_file);
 $signdir = G5_DATA_PATH.'/eform/sign';
 if(!is_dir($signdir)) {
   @mkdir($signdir, G5_DIR_PERMISSION, true);
