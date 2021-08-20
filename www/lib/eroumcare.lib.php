@@ -1480,8 +1480,9 @@ function get_tutorials() {
 
 	// 튜토리얼 진행 안한경우 추가
 	if (!count($tutorials['step'])) {
-		set_tutorial();
-		return get_tutorials();
+		// set_tutorial();
+		// return get_tutorials();
+    return false;
 	}
 
 	$tutorials['completed'] = $completed;

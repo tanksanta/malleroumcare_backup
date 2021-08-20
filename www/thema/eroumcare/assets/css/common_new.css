@@ -1394,6 +1394,14 @@ pre{white-space: pre-wrap;}
 	color: white;
 }
 
+.eroumcare-popup-week {
+	padding-top: 5px;
+	margin-left: 28px;
+}
+.eroumcare-popup-week input {
+	margin-top: 0;
+}
+
 @media (max-width: 1200px){
 	#mainTopSlidePCWrap { width: calc(100% + 40px); left: -20px; position: relative; }
 	.at-container { width: 100%; float: left; padding: 0 20px !important; }

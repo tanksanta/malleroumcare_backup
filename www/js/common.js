@@ -912,6 +912,7 @@ function samhwaprint(returnData) {
 
 function show_eroumcare_popup(c) {
   var defaultConfig = {
+    id: '',
     title: '타이틀',
     content: '컨텐츠내용<br/>컨텐츠내용...',
     activeBtn: {
@@ -922,39 +923,61 @@ function show_eroumcare_popup(c) {
     hideBtn: {
       text: '닫기',
     },
+    hideOneWeekBtn: false,
   };
 
   var config = $.extend({}, defaultConfig, c);
   var randomClass =
     'eroumcare-popup-' + Math.floor(Math.random() * (1000 - 1) + 1);
 
-  $('body').append(
-    '' +
-      '<div class="eroumcare-popup ' +
-      randomClass +
-      '">' +
-      '<i class="fa fa-close fa-lg eroumcare-popup-close close-eroumcare-popup"></i>' +
-      '<div class="eroumcare-popup-content">' +
-      '<h3>' +
-      config.title +
-      '</h3>' +
-      '<p>' +
-      config.content +
-      '</p>' +
-      '<div class="eroumcare-popup-buttons">' +
-      '<a href="' +
-      g5_url +
-      config.activeBtn.href +
-      '" class="active">' +
-      config.activeBtn.text +
-      '</a>' +
-      '<a href="#" class="close-eroumcare-popup">' +
-      config.hideBtn.text +
-      '</a>' +
-      '</div>' +
-      '</div>' +
-      '</div>'
-  );
+  if (get_cookie('eroumcare_popup_week_hide_' + config.id) === '1') {
+    return;
+  }
+
+  var html = '' +
+  '<div class="eroumcare-popup ' +
+  randomClass +
+  '">' +
+  '<i class="fa fa-close fa-lg eroumcare-popup-close close-eroumcare-popup"></i>' +
+  '<div class="eroumcare-popup-content">' +
+  '<h3>' +
+  config.title +
+  '</h3>' +
+  '<p>' +
+  config.content +
+  '</p>' +
+  '<div class="eroumcare-popup-buttons">' +
+  '<a href="' +
+  g5_url +
+  config.activeBtn.href +
+  '" class="active">' +
+  config.activeBtn.text +
+  '</a>' +
+  '<a href="#" class="close-eroumcare-popup">' +
+  config.hideBtn.text +
+  '</a>' +
+  '</div>' +
+  '</div>'
+  ;
+
+  if (config.hideOneWeekBtn) {
+    html += '<div class="eroumcare-popup-week">';
+    html += '<label class="checkbox" for="eroumcare-popup-week-btn-' + randomClass  + '"><input id="eroumcare-popup-week-btn-' + randomClass  + '" class="eroumcare-popup-week-btn" type="checkbox">1주일동안 보지 않기</label>'
+    html += '</div>';
+
+    $(document).on(
+      'click',
+      '.' + randomClass + ' .eroumcare-popup-week-btn',
+      function () {
+        set_cookie('eroumcare_popup_week_hide_' + config.id, 1, 24 * 7, g5_cookie_domain);
+        hide_eroumcare_popup();
+      }
+    );
+  }
+
+  html += '</div>';
+
+  $('body').append(html);
 
   if (config.activeBtn.callback) {
     $(document).on(
