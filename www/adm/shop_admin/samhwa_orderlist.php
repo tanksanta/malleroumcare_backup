@@ -1158,6 +1158,9 @@ var excel_downloader = null;
 function orderListExcelDownload(type) {
   var od_id = [];
   var item = $("input[name='od_id[]']:checked");
+  for(var i = 0; i < item.length; i++){
+    od_id.push($(item[i]).val());
+  }
 
   if(!od_id.length) {
     if(!confirm('선택한 주문이 없습니다.\n검색결과 내 모든 주문내역을 다운로드하시겠습니까?')) return false;
