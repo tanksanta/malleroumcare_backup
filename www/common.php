@@ -848,4 +848,6 @@ $html_process = new html_process();
 if (!$_COOKIE['right_menu_area']) {
     $_COOKIE['right_menu_area'] = 'on';
 }
+
+require G5_PATH . '/vendor/autoload.php';
 ?>
