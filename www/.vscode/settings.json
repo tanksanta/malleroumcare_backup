@@ -1,0 +1,13 @@
+{
+  // "autoprefixer.formatOnSave": true,
+  "autoprefixer.options": {
+    "overrideBrowserslist": [
+      "> 1%",
+      "last 3 version",
+      "Chrome >= 59",
+      "ie >= 9",
+      "not ie < 9"
+    ],
+    "cascade": false,
+  },
+}

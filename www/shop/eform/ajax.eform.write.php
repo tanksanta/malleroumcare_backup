@@ -33,13 +33,76 @@ if($error = valid_status_input($status)) {
   json_response(400, $error);
 }
 
+$member_update_sql = '';
+//서버 최대 용량 10Mb
+$max_file_size = 1024*1024*10;
+
+if($_FILES['sealFile']['tmp_name']){
+  // 변수 정리
+  $uploads_dir = G5_DATA_PATH.'/file/member/stamp';
+  $error = $_FILES['sealFile']['error'];
+  $name = $_FILES['sealFile']['name'];
+  $allowed_ext = array('jpg', 'png', 'jpeg', 'gif', 'bmp');
+  $ext = array_pop(explode('.', $name));
+  $temp = explode(".", $_FILES["sealFile"]["name"]);
+  $sealFile_name = $member['mb_id'].'_'.round(microtime(true)) . '.' . end($temp);
+  $sealFile = "$uploads_dir/$sealFile_name";
+  // 오류 확인
+  if( $error != UPLOAD_ERR_OK ) {
+    switch( $error ) {
+      case UPLOAD_ERR_INI_SIZE:
+      case UPLOAD_ERR_FORM_SIZE:
+        json_response(400, '파일이 너무 큽니다.');
+        break;
+      default:
+        json_response(400, '파일을 첨부해주세요.');
+    }
+    exit;
+  }
+  if($file['size'] >= $max_file_size) {
+    json_response(400, '10Mb 까지만 업로드 가능합니다.');
+  }
+  // 확장자 확인
+  if(!in_array($ext, $allowed_ext)) {
+    json_response(400, '허용되지 않는 확장자입니다.');
+  }
+  move_uploaded_file( $_FILES['sealFile']['tmp_name'], $sealFile);
+  $member_update_sql .= " sealFile = '".$sealFile_name."' ";
+}
+
+if ($mb_ent_num) {
+  if ($_FILES['sealFile']['tmp_name']) {
+    $member_update_sql .= ', ';
+  }
+
+  $member_update_sql .= " mb_ent_num = '{$mb_ent_num}' ";
+}
+
+if ($member_update_sql) {
+  // 사용자 업데이트
+  sql_query("
+    UPDATE {$g5["member_table"]} SET
+      {$member_update_sql}
+    WHERE mb_id = '{$member["mb_id"]}'
+  ");
+  $member = get_member($member['mb_id']);
+
+  // 계약서 업데이트
+  sql_query("
+    UPDATE `eform_document` SET 
+      `entNum` = '{$member["mb_ent_num"]}'
+    WHERE `dc_id` = UNHEX('$uuid')
+  ");
+  $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
+}
+
 // 직인 파일 사본 저장
 $seal_file = $member['sealFile'];
 $seal_dir = G5_DATA_PATH.'/file/member/stamp';
 if(!$seal_file) {
   json_response(400, '회원정보에 직인 이미지를 등록해주세요.');
 }
-$seal_data = file_get_contents($seal_dir.'/'.$seal_file);
+$seal_data = @file_get_contents($seal_dir.'/'.$seal_file);
 $signdir = G5_DATA_PATH.'/eform/sign';
 if(!is_dir($signdir)) {
   @mkdir($signdir, G5_DIR_PERMISSION, true);

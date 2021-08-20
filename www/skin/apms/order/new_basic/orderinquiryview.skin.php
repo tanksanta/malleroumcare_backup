@@ -120,6 +120,7 @@ if($od["od_penId"]) {
       `entId` = '{$entData["mb_entId"]}',
       `entNm` = '{$entData["mb_entNm"]}',
       `entCrn` = '{$entData["mb_giup_bnum"]}',
+      `entNum` = '{$member["mb_ent_num"]}',
       `entMail` = '{$entData["mb_email"]}',
       `entCeoNm` = '{$entData["mb_giup_boss_name"]}',
       `entConAcc01` = '{$entData["mb_entConAcc01"]}',

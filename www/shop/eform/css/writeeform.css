@@ -37,8 +37,6 @@ button { display: inline-block; }
   padding: 0 6px;
 }
 
-.popupHeadWrap .menu {
-}
 
 .popupContentWrap {
   position: absolute;
@@ -68,6 +66,18 @@ button { display: inline-block; }
 
 #popupWrap .row {
   padding: 0 18px;
+}
+
+#popupWrap .row.orange {
+  border:1px solid #ee8102;
+  padding:10px;
+  margin: 15px 18px;
+}
+#popupWrap .row.orange h4 {
+  padding: 0;
+  margin-top: 0;
+  margin-bottom:10px;
+  color:#ee8102;
 }
 
 #popupWrap h3 {
@@ -232,4 +242,29 @@ button { display: inline-block; }
 
 #agreeAddProd {
   display: none;
+}
+
+#tableInfoRow {
+  width: 100%;
+}
+
+#tableInfoRow th {
+  text-align: left;
+  font-weight: normal;
+  width: 20%;
+  max-width: 180px;
+}
+
+#tableInfoRow td {
+  width: 80%;
+  line-height: 2.5em;
+}
+
+#tableInfoRow input[type="text"] {
+  width: 100%;
+  max-width: 300px;
+  height: 28px;
+  border: 1px solid #ddd;
+  text-align: left;
+  padding: 3px 7px;
 }

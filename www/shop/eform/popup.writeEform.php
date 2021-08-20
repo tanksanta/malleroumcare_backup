@@ -99,7 +99,7 @@ while($item = sql_fetch_array($items)) {
   <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/font.css">
   <link rel="shortcut icon" href="<?php echo THEMA_URL; ?>/assets/img/top_logo_icon.ico">
   <link rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="./css/writeeform.css">
+  <link rel="stylesheet" href="./css/writeeform.css?v=2">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <?php include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php'); ?>
 </head>
@@ -113,6 +113,29 @@ while($item = sql_fetch_array($items)) {
       </div>
     </div>
     <div class="popupContentWrap">
+      <?php if (!$member['mb_ent_num'] || !$member['sealFile']) { ?>
+      <div id="infoRow" class="row orange">
+        <h4>계약서 생성시 필수정보가 필요합니다.</h4>
+        <table id="tableInfoRow">
+          <?php if (!$member['mb_ent_num']) { ?>
+          <tr>
+            <th>장기요양기관번호</th>
+            <td>
+              <input type="text" class="mb_ent_num" id="mb_ent_num">
+            </td>
+          </tr>
+          <?php } ?>
+          <?php if (!$member['sealFile']) { ?>
+          <tr>
+            <th>사업자직인(계약서날인)</th>
+            <td>
+              <input type="file" name="sealFile" id="sealFile">
+            </td>
+          </tr>
+          <?php } ?>
+        </table>
+      </div>
+      <?php } ?>
       <div id="penRow" class="row">
         <h3>수급자정보</h3>
         <table id="tablePenInfo">
@@ -447,7 +470,35 @@ while($item = sql_fetch_array($items)) {
       }
       // 210806 계약서 생성 알림 삭제
       // if(!confirm('계약서를 생성하시겠습니까?')) return;
-      $.post('./ajax.eform.write.php', {status: JSON.stringify(status), uuid: '<?=$eform["uuid"]?>'}, 'json')
+
+      var formData = new FormData();
+      formData.append('status', JSON.stringify(status));
+      formData.append('uuid', '<?=$eform["uuid"]?>');
+
+      if ($('#sealFile').length) {
+        if (!$('#sealFile').val()) {
+          alert('사업자직인(계약서날인)을 업로드 해주세요.');
+          return;
+        }
+        formData.append('sealFile', $('#sealFile')[0].files[0]);
+      }
+
+      if ($('#mb_ent_num').length) {
+        if (!$('#mb_ent_num').val()) {
+          alert('장기요양기관번호를 입력해주세요.');
+          return;
+        }
+        formData.append('mb_ent_num', $('#mb_ent_num').val());
+      }
+
+      $.ajax({
+        url: './ajax.eform.write.php',
+        type: 'post',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+      })
       .done(function(data) {
         // 생성 완료
         // alert('계약서 생성이 완료되었습니다.');
