@@ -18,6 +18,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
   ", true);
 }
 
+add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 ?>
 <style>
 #text_size {
@@ -25,6 +26,40 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
 }
 .page_title {
   display:none;
+}
+#loading_excel {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.3);
+}
+#loading_excel .loading_modal {
+  position: absolute;
+  width: 400px;
+  padding: 30px 20px;
+  background: #fff;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#loading_excel .loading_modal p {
+  padding: 0;
+  font-size: 16px;
+}
+#loading_excel .loading_modal img {
+  display: block;
+  margin: 20px auto;
+}
+#loading_excel .loading_modal button {
+  padding: 10px 30px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 </style>
 <script src="<?php echo G5_ADMIN_URL; ?>/shop_admin/js/orderlist.js?ver=<?php echo time(); ?>"></script>
@@ -66,6 +101,15 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
     <button id="delivery_edi_return_all">송장리턴</button>
     <!-- <button class="orderExcel" data-type="1"><img src="/adm/shop_admin/img/btn_img_ex.gif">주문 엑셀 다운로드</button> -->
     <!-- <button class="orderExcel" data-type="2"><img src="/adm/shop_admin/img/btn_img_ex.gif">출고 엑셀 다운로드</button> -->
+  </div>
+</div>
+
+<div id="loading_excel">
+  <div class="loading_modal">
+    <p>엑셀파일 다운로드 중입니다.</p>
+    <p>잠시만 기다려주세요.</p>
+    <img src="/shop/img/loading.gif" alt="loading">
+    <button onclick="cancelExcelDownload();" class="btn_cancel_excel">취소</button>
   </div>
 </div>
 
@@ -512,8 +556,6 @@ function doSearch() {
     data: formdata,
   })
   .done(function(html) {
-    console.log(html);
-    
     if ( page === 1 ) {
       $('#samhwa_order_ajax_list_table').html(html.main);
     }
@@ -1111,69 +1153,64 @@ if( function_exists('pg_setting_check') ){
 </form>
 
 <script>
+var excel_downloader = null;
+
 function orderListExcelDownload(type) {
-  $("#excelForm").remove();
-
-  var html;
-  if (type === 'excel') {
-    html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
-  } else if (type === 'ecount') {
-    html = "<form id='excelForm' method='post' action='./order.ecount.excel.list.php'>";
-  }
-
   var od_id = [];
   var item = $("input[name='od_id[]']:checked");
-  
-  for(var i = 0; i < item.length; i++){
-    od_id.push($(item[i]).val());
-    
-    html += "<input type='hidden' name='od_id[]' value='" + $(item[i]).val() + "'>";
-  }
-  
-  html += "</form>";
-  
-  if(!od_id.length){
+
+  if(!od_id.length) {
     if(!confirm('선택한 주문이 없습니다.\n검색결과 내 모든 주문내역을 다운로드하시겠습니까?')) return false;
+  }
 
-    var formdata = $.extend({}, {
-      click_status: od_status,
-      od_step: od_step,
-      page: page,
-      sub_menu: sub_menu,
-      last_step: last_step,
-    },$('#frmsamhwaorderlist').serializeObject());
+  var formdata = $.extend({}, {
+    click_status: od_status,
+    od_step: od_step,
+    page: page,
+    sub_menu: sub_menu,
+    last_step: last_step
+  },$('#frmsamhwaorderlist').serializeObject());
 
-    // form object rename
-    formdata['od_settle_case'] = formdata['od_settle_case[]']; // Assign new key
-    delete formdata['od_settle_case[]']; // Delete old key
+  // form object rename
+  formdata['od_settle_case'] = formdata['od_settle_case[]']; // Assign new key
+  delete formdata['od_settle_case[]']; // Delete old key
 
-    if (formdata['od_status[]'] != undefined) {
-      formdata['od_status'] = formdata['od_status[]']; // Assign new key
-      delete formdata['od_status[]']; // Delete old key
-    }
+  if (formdata['od_status[]'] != undefined) {
+    formdata['od_status'] = formdata['od_status[]']; // Assign new key
+    delete formdata['od_status[]']; // Delete old key
+  }
 
-    formdata['od_openmarket'] = formdata['od_openmarket[]']; // Assign new key
-    delete formdata['od_openmarket[]']; // Delete old key
+  formdata['od_openmarket'] = formdata['od_openmarket[]']; // Assign new key
+  delete formdata['od_openmarket[]']; // Delete old key
 
-    formdata['add_admin'] = formdata['add_admin']; // Assign new key
-    // delete formdata['add_admin[]']; // Delete old key
+  formdata['add_admin'] = formdata['add_admin']; // Assign new key
+  // delete formdata['add_admin[]']; // Delete old key
 
-    formdata['od_important'] = formdata['od_important']; // Assign new key
-    // delete formdata['od_important[]']; // Delete old key
+  formdata['od_important'] = formdata['od_important']; // Assign new key
+  // delete formdata['od_important[]']; // Delete old key
 
-    formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
+  formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
 
-    var queryString = $.param(formdata);
-    if (type === 'excel') {
-      window.location.href = "./order.excel.list.php?" + queryString;
-    } else if (type === 'ecount') {
-      window.location.href = "./order.ecount.excel.list.php?" + queryString;
-    }
-    return false;
+  var queryString = $.param(formdata);
+  var href = "./order.excel.list.php?" + queryString;
+  if (type === 'ecount') {
+    href = "./order.ecount.excel.list.php?" + queryString;
   }
   
-  $("body").append(html);
-  $("#excelForm").submit();
+  $('#loading_excel').show();
+  excel_downloader = $.fileDownload(href)
+    .always(function() {
+      $('#loading_excel').hide();
+    });
+  
+  return false;
+}
+
+function cancelExcelDownload() {
+  if(excel_downloader) {
+    excel_downloader.abort();
+  }
+  $('#loading_excel').hide();
 }
 
 //출고담당자

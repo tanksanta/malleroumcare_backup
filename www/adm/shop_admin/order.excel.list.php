@@ -390,6 +390,7 @@
   header("Content-Type: application/octet-stream");
   header("Content-Disposition: attachment; filename=\"orderexcel-".date("ymd", time()).".xls\"");
   header("Cache-Control: max-age=0");
+  header('Set-Cookie: fileDownload=true; path=/');
 
   $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
   $writer->save('php://output');
