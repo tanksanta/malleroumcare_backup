@@ -1158,7 +1158,7 @@ var excel_downloader = null;
 function orderListExcelDownload(type) {
   var od_id = [];
   var item = $("input[name='od_id[]']:checked");
-  for(var i = 0; i < item.length; i++){
+  for(var i = 0; i < item.length; i++) {
     od_id.push($(item[i]).val());
   }
 
@@ -1171,7 +1171,8 @@ function orderListExcelDownload(type) {
     od_step: od_step,
     page: page,
     sub_menu: sub_menu,
-    last_step: last_step
+    last_step: last_step,
+    od_id: od_id
   },$('#frmsamhwaorderlist').serializeObject());
 
   // form object rename
