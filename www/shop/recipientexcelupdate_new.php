@@ -135,6 +135,19 @@ if($sheetData) {
             created_by = '{$member['mb_id']}' ";
         $row = sql_query($sql);
 
+        // 취급상품 모두 등록
+        $setItemData = [];
+        $setItemData['penId'] = $res['data']['penId'];
+        $setItemData['itemList'] = [];
+        foreach(array_keys($sale_product_table) as $item) {
+            $setItemData['itemList'][] = $item;
+        }
+        foreach(array_keys($rental_product_table) as $item) {
+            $setItemData['itemList'][] = $item;
+        }
+
+        get_eroumcare(EROUMCARE_API_RECIPIENT_ITEM_INSERT, $setItemData);
+
     }
     
     alert('완료되었습니다.');
