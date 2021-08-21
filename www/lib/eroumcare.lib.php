@@ -376,7 +376,7 @@ function normalize_recipient_input($data) {
 }
 
 // 수급자 등록시 필드 무결성 체크
-function valid_recipient_input($data, $is_spare = false) {
+function valid_recipient_input($data, $is_spare = false, $b_company = false) {
 
 	if(!$data['penNm']) {
 		return '수급자명을 입력해주세요.';
@@ -395,11 +395,11 @@ function valid_recipient_input($data, $is_spare = false) {
     if(!recipient_preg_match($data, 'penRecGraCd')) {
       return '장기요양등급을 확인해주세요.';
     }
-    if(!recipient_preg_match($data, 'penTypeCd')) {
+    if(!$b_company && !recipient_preg_match($data, 'penTypeCd')) {
       return '본인부담율을 확인해주세요.';
     }
     # 기초수급자는 주민등록번호 입력 필수
-    if($data['penTypeCd'] == '04') {
+    if(!$b_company && $data['penTypeCd'] == '04') {
       if(!recipient_preg_match($data, 'penJumin')) {
         return '주민등록번호를 확인해주세요.';
       }
