@@ -19,8 +19,8 @@ include_once('./_common.php');
 
 <div id="barcode-selector">
   <input type="hidden" id="scanner-count" value="0" />
-	<i id="barcode-selector-close" class="fa fa-times"></i>
   <div class="barcode-selector-content">
+	  <i id="barcode-selector-close" class="fa fa-times"></i>
     <h4>스캔 방법을 선택하세요.</h4>
     <ul>
       <li class="orange" id="barcode-scanner-opener">바코드 스캔</li>
@@ -46,10 +46,10 @@ include_once('./_common.php');
 
 #barcode-selector-close {
   position: absolute;
-  color: white;
+  color: black;
   top: 15px;
-  left: 20px;
-  font-size: 40px;
+  right: 15px;
+  font-size: 20px;
   cursor: pointer;
 }
 
@@ -62,7 +62,7 @@ include_once('./_common.php');
   transform: translate(-50%, -50%);
   position: absolute;
   background: white;
-  padding: 20px 30px;
+  padding: 30px 30px 20px 30px;
   width: 80%;
 }
 
@@ -257,6 +257,9 @@ function receiveBarcode(tempBarcode) {
           type: 'success'
         });
         return;
+      } else {
+        // 자동 추가 버튼 추가
+        $(target).closest('li').find('.barcode_add').show();
       }
     })
     .fail(function($xhr) {
@@ -272,7 +275,10 @@ function receiveBarcode(tempBarcode) {
 
 $(function(){
 
-  $(document).on('touchstart, click', '#barcode-selector-close', function(e) {
+  $(document).on('touchstart, click', '#barcode-selector, #barcode-selector-close', function(e) {
+    if ($(e.target).is('.barcode-selector-content')) {
+      return;
+    }
     $('#barcode-selector').fadeOut();
   });
 
