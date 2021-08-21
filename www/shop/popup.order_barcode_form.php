@@ -570,29 +570,9 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 					cnt++;
 				}
 			}
-			
-      if (confirm('PDA 스캔하시겠습니까?')) {
-        openWebBarcode(cnt);
-        return;
-      }
 
-      try {
-          switch (device) {
-          case "android":
-            /* android */
-            window.EroummallApp.openBarcode("" + cnt + "");
-            break;
-          case "ios":
-            /* ios */
-            window.webkit.messageHandlers.openBarcode.postMessage("" + cnt + "");
-            break;
-          default:
-            openWebBarcode(cnt);
-            break;
-        }
-      }catch(e) {
-        openWebBarcode(cnt);
-      }
+      $('#scanner-count').val(cnt);
+      $('#barcode-selector').fadeIn();
 		});
 
     })

@@ -17,7 +17,79 @@ include_once('./_common.php');
   </div>
 </div>
 
+<div id="barcode-selector">
+  <input type="hidden" id="scanner-count" value="0" />
+	<i id="barcode-selector-close" class="fa fa-times"></i>
+  <div class="barcode-selector-content">
+    <h4>스캔 방법을 선택하세요.</h4>
+    <ul>
+      <li class="orange" id="barcode-scanner-opener">바코드 스캔</li>
+      <li id="pda-scanner-opener">PDA 스캔</li>
+    </ul>
+    <p>
+      PDA스캔은 PDA기기 이용자만 선택해주세요.
+    </p>
+  </div>
+</div>
+
 <style>
+#barcode-selector {
+  display: none;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+}
+
+#barcode-selector-close {
+  position: absolute;
+  color: white;
+  top: 15px;
+  left: 20px;
+  font-size: 40px;
+  cursor: pointer;
+}
+
+.barcode-selector-content {
+  margin: auto;
+  color: black;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  background: white;
+  padding: 20px 30px;
+  width: 80%;
+}
+
+.barcode-selector-content ul {
+  display:-webkit-box;
+  display:-ms-flexbox;
+  display:flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+.barcode-selector-content ul li {
+  width: 48%;
+  border-radius: 5px;
+  color: white;
+  background-color: #5f5f5f;
+  line-height:45px;
+  cursor:pointer;
+}
+.barcode-selector-content ul li.orange {
+  background-color:#ee8102;
+}
+.barcode-selector-content p {
+  font-size: 0.8em;
+}
+
 .toast {
   width: 98% !important;
   left: 0 !important;
@@ -199,6 +271,40 @@ function receiveBarcode(tempBarcode) {
 }
 
 $(function(){
+
+  $(document).on('touchstart, click', '#barcode-selector-close', function(e) {
+    $('#barcode-selector').fadeOut();
+  });
+
+  $(document).on('touchstart, click', '#pda-scanner-opener', function(e) {
+    var cnt = $('#scanner-count').val();
+    $('#barcode-selector').hide();
+    setTimeout(() => {
+      openWebBarcode(cnt);
+    }, 500);
+  });
+
+  $(document).on('touchstart, click', '#barcode-scanner-opener', function(e) {
+    var cnt = $('#scanner-count').val();
+    $('#barcode-selector').hide();
+    try {
+      switch (device) {
+        case "android":
+          /* android */
+          window.EroummallApp.openBarcode("" + cnt + "");
+          break;
+        case "ios":
+          /* ios */
+          window.webkit.messageHandlers.openBarcode.postMessage("" + cnt + "");
+          break;
+        default:
+          throw new Error();
+          break;
+      }
+    }catch(e) {
+      alert('오류가 발생하였습니다.');
+    }
+  });
 
   $(document).on('touchstart, click', '#web-barcode-close', function(e) {
     alert('바코드스캔을 종료합니다');
