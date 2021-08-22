@@ -271,20 +271,25 @@ if($is_main && !$is_member) {
               <?php } ?>
             </div>
             <div class="point_info flex-justify">
+              <?php if($member['mb_point'] > 0) { ?>
               <div class="point">
                 포인트 : <?=number_format($member['mb_point']);?>원
                 <a href="<?=$at_href['point']?>" target="_blank" class="btn_small win_point"><i class="fa fa-list" aria-hidden="true"></i></a>
               </div>
+              <?php } ?>
+              <?php if($cp_count > 0) { ?>
               <div class="coupon">
                 쿠폰
                 <a href="<?=$at_href['coupon']?>" target="_blank" class="btn_small win_point"><?=$cp_count?></a>
               </div>
+              <?php } ?>
             </div>
             <?php if($manager = get_member($member['mb_manager'])) { ?>
             <div class="manager_info">
               이로움 관리 담당자 : <?="{$manager['mb_name']} ({$manager['mb_hp']})"?>
             </div>
             <?php } ?>
+            <?php if($balance > 0) { ?>
             <div class="balance_info flex-justify">
               <div class="balance_title">신용거래</div>
               <div class="balance"><?=number_format($balance)?>원</div>
@@ -293,6 +298,7 @@ if($is_main && !$is_member) {
               <div class="order">이번달 <?=number_format($order_count)?>건</div>
               <a href="<?php if($member['mb_type'] == 'partner') echo '/shop/partner_ledger_list.php'; else echo '/shop/my_ledger_list.php'; ?>" class="btn_small">거래처 원장</a>
             </div>
+            <?php } ?>
             <?php if($event_count) { ?>
             <a class="event_noti" href="/bbs/board.php?bo_table=event">
               진행중인 이벤트
