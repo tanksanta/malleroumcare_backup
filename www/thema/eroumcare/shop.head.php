@@ -261,9 +261,11 @@ if($is_main && !$is_member) {
                 if($member['mb_type'] == 'partner') echo '파트너';
                 ?>
               </div>
+              <?php if($member['mb_grade'] > 0) { ?>
               <div class="btn_small primary">
                 <?php echo "{$default['de_it_grade' . $member['mb_grade'] . '_name']} ({$default['de_it_grade' . $member['mb_grade'] . '_discount']}%적립)"; ?>
               </div>
+              <?php } ?>
             </div>
             <div class="point_info flex-justify">
               <div class="point">
