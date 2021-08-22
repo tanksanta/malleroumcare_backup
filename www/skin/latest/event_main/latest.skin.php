@@ -17,7 +17,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$latest_skin_url.'/event.main.css
     for ($i = 0; $i < count($list); $i++) {
       // 썸네일
       $list[$i]['no_img'] = $board_skin_url.'/img/no-img.jpg'; // No-Image
-      $img = apms_wr_thumbnail($bo_table, $list[$i], 541, 329, false, true);
+      $img = apms_wr_thumbnail($bo_table, $list[$i], 600, 365, false, true);
     ?>
     <a href="<?=$list[$i]['href']?>" class="event">
       <img src="<?=$img['src']?>">
