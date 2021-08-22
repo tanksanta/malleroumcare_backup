@@ -25,6 +25,9 @@ include_once(THEMA_PATH.'/assets/thema.php');
 $is_approved = false;
 
 if($member['mb_id']) {
+  // 수급자 활동 알림
+  category_limit_noti();
+
   // 승인여부
   $res = api_post_call(EROUMCARE_API_ENT_ACCOUNT, array(
     'usrId' => $member['mb_id']
@@ -347,6 +350,17 @@ if($is_main && !$is_member) {
                   수급자관리
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
+                <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
+                <a class="noti_pen" href="/shop/my_recipient_noti.php">
+                  수급자 알림이 있습니다.
+                  <span class="value"><?=$noti_count?>건</span>
+                </a>
+                <?php } ?>
+                <?php if($pen_links = get_recipient_links($member['mb_id'])) { ?>
+                <a class="noti_pen link" href="/shop/my_recipient_list.php">
+                  ‘<?=$pen_links[0]['rl_pen_name']?>’ <?php $pen_links_count = count($pen_links); if($pen_links_count > 1) { echo '외 '.($pen_links_count - 1).'명 '; } ?>수급자 추천이 있습니다.
+                </a>
+                <?php } ?>
               </li>
               <li>
                 <a href="/shop/sales_Inventory.php">

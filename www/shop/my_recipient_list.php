@@ -13,7 +13,7 @@ if(!$is_member){
 recipient_link_clean();
 
 // 수급자 활동 알림
-category_limit_noti();
+// category_limit_noti();
 
 $rows = 5;
 
