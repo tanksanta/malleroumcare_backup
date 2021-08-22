@@ -27,4 +27,4 @@ add_stylesheet('<link rel="stylesheet" href="'.$latest_skin_url.'/event.main.css
     <?php } ?>
   </div>
 </div>
-<? } ?>
+<?php } ?>
