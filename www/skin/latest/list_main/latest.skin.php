@@ -12,7 +12,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$latest_skin_url.'/style.css">', 
             <?php
             //if ($list[$i]['icon_secret']) echo "<i class=\"fa fa-lock\" aria-hidden=\"true\"></i><span class=\"sound_only\">비밀글</span> ";
 
-            //if ($list[$i]['icon_new']) echo "<img src=\"/thema/eroumcare/assets/img/boardNew.png\"  >";
+            if ($list[$i]['icon_new']) echo "<img src=\"/thema/eroumcare/assets/img/boardNew.png\"  >";
 
             //if ($list[$i]['icon_hot']) echo "<span class=\"hot_icon\">H<span class=\"sound_only\">인기글</span></span>";
 

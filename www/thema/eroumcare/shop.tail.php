@@ -179,12 +179,12 @@ if($_GET['co_id']=="possession_manage"){ ?>
 
 </div><!-- .wrapper -->
 
-<div class="at-go">
+<!--<div class="at-go">
 	<div id="go-btn" class="go-btn">
 		<span class="go-top cursor"><i class="fa fa-chevron-up"></i></span>
 		<span class="go-bottom cursor"><i class="fa fa-chevron-down"></i></span>
 	</div>
-</div>
+</div>-->
 
 <?php if ($_SESSION['recipient']) { ?>
 <div id="fixed_recipient">
@@ -303,6 +303,18 @@ if($_GET['co_id']=="possession_manage"){ ?>
 	<?php } ?>
 	
 	$(function(){
+    $('#btn_mo_menu').click(function() {
+      $('html, body').addClass('modal-open');
+      $('.side_menu_area').show(10);
+      $('.mobile_menu_backdrop').show();
+      $('.side_menu_area .scrollable_wrap').scrollTop(0);
+    });
+
+    $('.btn_close_side_menu, .mobile_menu_backdrop').click(function() {
+      $('html, body').removeClass('modal-open');
+      $('.side_menu_area').hide(100);
+      $('.mobile_menu_backdrop').hide();
+    });
 		
 		<?php if($member["mb_level"] == "3"||$member["mb_level"] =="4"){ ?>
 		$(".modeBtn").click(function(e){

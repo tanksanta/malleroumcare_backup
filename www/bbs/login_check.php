@@ -3,7 +3,6 @@ include_once('./_common.php');
 $g5['title'] = "로그인 검사";
 # 210131 이로움 계정검사
 
-set_session('approve', true);
 if($_POST["mb_id"] != "admin") {
   $sendData = [];
   $sendData["usrId"] = $_POST["mb_id"];
@@ -45,8 +44,6 @@ if($_POST["mb_id"] != "admin") {
       set_session('ss_mb_id', $mb['mb_id']);
       // FLASH XSS 공격에 대응하기 위하여 회원의 고유키를 생성해 놓는다. 관리자에서 검사함 - 110106
       set_session('ss_mb_key', md5($mb['mb_datetime'] . get_real_client_ip() . $_SERVER['HTTP_USER_AGENT']));
-      // 미승인 세션 추가
-      set_session('approve', false);
       //이로움 통합시스템 이동
       alert('관리자 승인이 대기중입니다.',G5_BBS_URL."/register_result.php");
     }

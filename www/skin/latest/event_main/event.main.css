@@ -1,0 +1,15 @@
+.event_main_wrap { line-height: 1; margin: 20px 0; }
+.event_main_wrap h3 { padding: 5px; margin: 0; color: #333333; font-size: 18px; font-weight: 600; line-height: 35px; }
+.event_main_wrap .link_wrap { font-size: 12px; }
+.event_main_wrap .link_wrap .btn_default { display: block; }
+.event_main_wrap .event { display: block; max-width: 50%; }
+.event_main_wrap .event:first-child { margin-right: 10px; }
+.event_main_wrap .event img { display: block; width: 100%; height: auto; margin-bottom: 10px; }
+.event_main_wrap .event p { margin: 0; line-height: 1.25; }
+.event_main_wrap .event p.title { margin-bottom: 5px; font-size: 18px; font-weight: 600; color: #333333; }
+.event_main_wrap .event p.period { font-size: 14px; color: #999999; }
+
+@media (max-width: 960px) {
+  .event_main_wrap .event_wrap { display: block; }
+  .event_main_wrap .event { max-width: 100%; width: 100%; margin-bottom: 20px; }
+}

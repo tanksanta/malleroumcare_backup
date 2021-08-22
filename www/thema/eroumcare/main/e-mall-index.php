@@ -76,6 +76,7 @@
 
 <script type="text/javascript">
     $(function(){
+        $('.top_common_area').css('display', 'none');
         $('.main_top_service_info').css( "display", "inline-block" );
         $('.container_wrap').css( "display", "none" );
         $('.mo_top').css( "display", "none" );

@@ -176,28 +176,6 @@ function slickSlide() {
 }
 
 $(document).ready(function () {
-  /* 210203 사이드 스크롤배너 */
-  $(window).scroll(function () {
-    var scrollTop = $(window).scrollTop();
-    var top = scrollTop - 237;
-    var maxTop = $('body').innerHeight() - 1200;
-    var plusTop = $('#headerTopQuickMenuWrap').length ? 100 : 20;
-    top = top > maxTop ? maxTop : top;
-
-    if (maxTop < 0) {
-      return false;
-    }
-
-    if (scrollTop >= 237) {
-      $('.scrollBannerListWrap').css(
-        'transform',
-        'translateY(' + (top + plusTop) + 'px)'
-      );
-    } else if (scrollTop < 237) {
-      $('.scrollBannerListWrap').css('transform', 'translateY(0)');
-    }
-  });
-
   // 즐겨찾기
   $('.favorite').on('click', function (e) {
     var bookmarkURL = window.location.href;

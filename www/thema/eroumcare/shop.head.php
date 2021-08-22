@@ -22,26 +22,67 @@ document.addEventListener("message", function(e){
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가 
 include_once(THEMA_PATH.'/assets/thema.php');
 
-// 카테고리
-$category = array();
-$head_category = array();
-$sql = "SELECT * FROM g5_shop_category where length(ca_id) = '2' and ca_use = '1' and ca_main_use = '1' ORDER BY ca_order, ca_id ASC";
-$res = sql_query($sql);
-while( $row = sql_fetch_array($res) ) {
-  $sql = "SELECT * FROM g5_shop_category where  length(ca_id) = '4' and ca_id like '{$row['ca_id']}%' and ca_use = '1' and ca_main_use = '1'  ORDER BY ca_order, ca_id ASC";
-  $res2 = sql_query($sql);
-  while( $row2 = sql_fetch_array($res2) ) {
-    $sql = "SELECT * FROM g5_shop_category where  length(ca_id) = '6' and ca_id like '{$row2['ca_id']}%' and ca_use = '1' and ca_main_use = '1' ORDER BY ca_order, ca_id ASC";
-    $res3 = sql_query($sql);
-    while( $row3 = sql_fetch_array($res3) ) {
-      $row2['sub'][] = $row3;
-    }
-    $row['sub'][] = $row2;
+$is_approved = false;
+
+if($member['mb_id']) {
+  // 승인여부
+  $res = api_post_call(EROUMCARE_API_ENT_ACCOUNT, array(
+    'usrId' => $member['mb_id']
+  ));
+  if($res['data']['entConfirmCd'] == '01' || $member['mb_level'] >= 5 || $is_samhwa_partner ) {
+    $is_approved = true;
   }
-  $category[] = $row;
-  if ( $row['ca_head_use'] ) {
-    $head_category[] = $row;
+
+  // 쿠폰
+  $cp_count = 0;
+  $sql = "
+    select cp_id
+    from {$g5['g5_shop_coupon_table']} c
+    left join g5_shop_coupon_member m on c.cp_no = m.cp_no
+    where
+      (
+        c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or
+        m.mb_id = '{$member['mb_id']}'
+      )
+      and cp_start <= '".G5_TIME_YMD."'
+      and cp_end >= '".G5_TIME_YMD."'
+    group by c.cp_no
+  ";
+  $res = sql_query($sql, true);
+  for($k=0; $cp=sql_fetch_array($res); $k++) {
+    if(!is_used_coupon($member['mb_id'], $cp['cp_id']))
+    $cp_count++;
   }
+
+  // 미수금
+  if($member['mb_type'] == 'partner') $balance = get_partner_outstanding_balance($member['mb_id']);
+  else $balance = get_outstanding_balance($member['mb_id']);
+
+  // 주문건수
+  if($member['mb_type'] == 'partner') {
+    $result = sql_fetch("
+      SELECT count(*) as cnt
+      FROM {$g5['g5_shop_cart_table']}
+      WHERE
+        ct_status = '완료' and
+        ct_is_direct_delivery IN(1, 2) and
+        ct_direct_delivery_partner = '{$member['mb_id']}'
+    ");
+  } else {
+    $result = sql_fetch("
+      SELECT count(*) as cnt
+      FROM {$g5['g5_shop_cart_table']}
+      WHERE
+        mb_id = '{$member['mb_id']}' and
+        ct_status = '완료' and
+        ct_qty - ct_stock_qty > 0
+    ");
+  }
+  $order_count = $result['cnt'] ?: 0;
+
+  // 진행중인 이벤트 개수
+  $result = sql_fetch(" select count(*) as cnt from g5_write_event where wr_is_comment = 0 ");
+  $event_count = $result['cnt'] ?: 0;
 }
 
 $banks = explode(PHP_EOL, $default['de_bank_account']); 
@@ -59,24 +100,12 @@ $(document).ready(function() {
 scrollToTop();
 </script>
 
-<?php if ( $_COOKIE['right_menu_area'] == 'on' ) { ?>
-<!-- 오른쪽 메뉴 닫기 열기 -->
-<style>
-.right_menu_area {
-  right:-180px;
-}
-</style>
-<?php } ?>
-<style>
-  .mo_top > .modeBtn { position: absolute; font-weight: bold; font-size: 16px; top: 32px; right: 70px; display: none; }
-</style>
 <!-- 모드바 스타일링 -->
 <style>
   .top_mode_area{ position:fixed; top :0;z-index:9999999; display:block; width:100%; height:50px; text-align:center; background-color: rgba(0,0,0,0.7);  color : #fff; font-size: 20px; line-height:50px; opacity:70%;}
-  @media screen and (max-width: 960px){
+  @media screen and (max-width: 1200px){
     .top_mode_area{font-size:10px;display:none;}
   }
-  .mode_div{ position: absolute; width: 140px; right: 85px; top: 30px; font-size:16px;}
 </style>
 <div id="mask" style="position:absolute; left:0;top:0; background-color:#000; z-index:300"></div> 
 
@@ -124,456 +153,71 @@ if($is_main && !$is_member) {
 </div>
 <?php } ?>
 
-<div class="mo_top <?php echo $is_index; ?>">
-  <div class="logoWrap">
-    <a href="<?=G5_URL?>"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png" alt="이로움 로고"></a>
+<div class="mo_top">
+  <div class="logo_wrap">
+    <a href="<?=G5_URL?>" class="logo_title"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png"></a>
   </div>
-  <div class="mode_div">
-    <?php
-    if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) {
-      if($_COOKIE["viewType"] == "adm") {
-        echo '<a href="#" class="modeBtn" data-type="basic"><b>구매모드</b></a>';
-      } else {
-        echo '<a href="#" class="modeBtn" data-type="adm"><b>급여안내모드</b></a>';
-      }
+  <?php
+  if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) {
+    if($_COOKIE["viewType"] == "adm") {
+      echo '<a href="#" class="modeBtn" data-type="basic">구매모드</a>';
+    } else {
+      echo '<a href="#" class="modeBtn" data-type="adm">급여안내모드</a>';
     }
-    ?>
+  }
+  ?>
+  <div id="btn_mo_menu">
+    <img src="<?=THEMA_URL?>/assets/img/btn_hamburger.png" alt="메뉴">
   </div>
-  <img src="<?=THEMA_URL?>/assets/img/btn_mo_menu_new.png" alt="" class="header-hamburger-btn">
 </div>
 
 <div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?> <?php echo $is_index ?>">
-  <div id="samhwa-m-menu" >
-    <div class="wrap"<?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
-      <div class="closer">
-        <img src="<?php echo THEMA_URL; ?>/assets/img/btn_mo_menu_close.png" />
-      </div>
-      <div class="logo_area">
-        <div class="ent_name"><?=($member["mb_entNm"] ? $member["mb_entNm"] : '이로움')?></div>
-        <?php if($member['mb_level'] >= 9) { ?>
-        <style>
-          .or_manage{ width: 100%; height: 50px; line-height: 50px; text-align:center; margin-bottom:10px; color: #fff; background-color: #ef7c00; border-radius: 10px; }
-        </style>
-        <div class="or_manage">
-          <a href="<?php echo G5_SHOP_URL?>/release_orderlist.php">관리자 주문 출고 관리</a> 
-        </div>
-        <?php } ?>
-      </div>
-      <div class="scrollable-wrap">
-
-        <div class="mobileCate">
-          <div class="cate_head">복지용구통합관리</div>
-          <ul class="cate_menu">
-            <li><a href="/shop/my_recipient_list.php">수급자 관리</a></li>
-            <li><a href="/shop/claim_manage.php">청구/전자문서 관리</a></li>
-            <li><a href="/shop/sales_Inventory.php">보유재고 관리</a></li>
-            <li><a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php">주문/배송 관리</a></li>
-            <li><a href="<?php echo G5_SHOP_URL; ?>/cart.php">장바구니</a></li>
-            <li><a href="<?php echo G5_BBS_URL; ?>/mypage.php">마이페이지</a></li>
-          </ul>
-          <div class="cate_head">복지용구 품목</div>
-          <ul class="cate_menu">
-            <li><a href="/shop/list.php?ca_id=10"  >판매품목</a></li>
-            <li><a href="/shop/list.php?ca_id=20"  >대여품목</a></li>
-            <li><a href="/shop/list.php?ca_id=70"  >비급여품목</a></li>
-          </ul>
-        <a href="/thema/eroumcare/assets/eroum_catalog_2021_2_2.pdf" class="cata_link" target="_blank" alt="이달의 카달로그">
-          <div class="catalogWrap">
-            <span>이달의 카달로그</span>
-            <img src="<?php echo THEMA_URL; ?>/assets/img/btn_catalogue_icon.png">
-          </div>
-        </a>
-        <div class="cate_msg">
-          <p>보다 나은 세상을 위해</p>
-          <p class="bold">이로움이 함께합니다.</p>
-        </div>
-        <?php if($is_member) { // 로그인 상태 ?>
-          <a href="<?php echo $at_href['logout'];?>">로그아웃</a>
-        <?php }else{ ?>
-          <a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
-        <?php } ?>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script>
-  $(document).ready(function() {
-
-    $('.header-system-move-btn').click(function() {
-      location.href = "https://system.eroumcare.com/cmm/cmm2000/cmm2000/selectCmm2003View.do";
-    });
-
-    $('.header-hamburger-btn').click(function() {
-      // $('#samhwa-m-menu').toggle();
-      $('#samhwa-m-menu').show(10);
-      $('#samhwa-m-menu .wrap').addClass('active');
-    });
-
-    $('#samhwa-m-menu .wrap').click(function(e) {
-      e.stopPropagation();
-    });
-
-    $('#samhwa-m-menu .wrap .closer, #samhwa-m-menu').click(function(e) {
-      $('#samhwa-m-menu').hide(100);
-      $('#samhwa-m-menu .wrap').removeClass('active');
-
-    });
-
-    $('#samhwa-m-menu .wrap .scrollable-wrap ul.mobile-cate>li').click(function() {
-      $('#samhwa-m-menu .wrap .scrollable-wrap ul.mobile-cate>li').removeClass('on');
-      $(this).addClass('on');
-      //return false;
-    });
-    $('#samhwa-m-menu .wrap .scrollable-wrap ul.mobile-cate>li>a').dblclick(function() {
-      console.log('aaa');
-      window.location = this.href;
-      //return false;
-    });
-  });
-  </script>
-
   <div id="wrap">
-    <div class="container_wrap txt_center top_common_area"<?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")&&$_COOKIE["viewType"]=="basic"){ ?>style="margin-top:50px;"<?php } ?>>
-      <style>
-        .move_system{position:absolute; left:0; top:0; text-align:right;}
-        .move_system a{padding:15px 20px 0 0;line-height:26px;color:#333;font-size:13px;font-weight:bold;float:left;color:#666;}
-      </style>
-      <div class="move_system">
-        <!-- 바로가시 버튼 삭제 -->
+    <div class="top_common_area" <?php if(($member["mb_level"] == "3" || $member["mb_level"] == "4") && $_COOKIE["viewType"] == "basic") { echo'style="margin-top:50px;"'; } ?>>
+      <div class="logo_wrap">
+        <a href="<?=G5_URL?>" class="logo_title"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png"></a>
       </div>
-      <div class="logoWrap">
-        <a href="<?=G5_URL?>" class="logoTitle"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png"  ></a>
-        <?php if (get_session('approve')) { ?>
-        <ul class="nav nav-left">
-          <?php if($is_samhwa_partner) { ?>
-          <li><a href="/shop/partner_orderinquiry_list.php">주문내역</a></li>
-          <li><a href="/shop/partner_ledger_list.php">거래처원장</a></li>
-          <?php } else { ?>
-          <li><a href="/shop/my_recipient_list.php">수급자</a></li>
-          <li><a href="/shop/claim_manage.php">청구/전자문서</a></li>
-          <li><a href="/shop/sales_Inventory.php" >보유재고</a></li>
-          <?php } ?>
-        </ul>
-        <ul class="nav nav-right">
-          <li><a href="/shop/list.php?ca_id=10">판매품목</a></li>
-          <li><a href="/shop/list.php?ca_id=20">대여품목</a></li>
-          <li><a href="/shop/list.php?ca_id=70">비급여품목</a></li>
-          <li class="catalog">
-            <a href="/thema/eroumcare/assets/eroum_catalog_2021_2_2.pdf" target="_blank"  >
-              <div class="catalogWrap">
-                <span>이달의 카달로그</span>
-                <img src="<?php echo THEMA_URL; ?>/assets/img/btn_catalogue_icon.png">
-              </div>
-            </a>
-          </li>
-        </ul>
+      <?php if($is_approved) { ?>
+      <div class="search_wrap">
+        <form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
+          <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
+          <input type="hidden" name="url" value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
+          <input type="text" name="stx" class="ipt_search" value="<?php echo get_text($stx); ?>" id="search" placeholder="품목명/급여코드 검색" />
+        </form>
+      </div>
+      <ul class="nav">
+        <?php if($is_samhwa_partner) { ?>
+        <li><a href="/shop/partner_orderinquiry_list.php">주문내역</a></li>
+        <li><a href="/shop/partner_ledger_list.php">거래처원장</a></li>
+        <?php } else { ?>
+        <li><a href="/shop/list.php?ca_id=10">판매품목</a></li>
+        <li><a href="/shop/list.php?ca_id=20">대여품목</a></li>
+        <li><a href="/shop/list.php?ca_id=70">비급여품목</a></li>
         <?php } ?>
-      </div>
-      <div class="bottomWrap">
-        <?php if($member["mb_level"] == "3"||$member["mb_level"] == "4"){ ?>
-        <div class="link_area"  style="float:right; padding:0px;">
-            <a href="javascript:void(0)" style="cursor:default;"><?=$member["mb_entNm"]?></a>
-        </div>
-        <?php } ?>  
-      </div>
-
-      <div class="top_left_area">
-        <div class="search">
-          <form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
-            <img src="<?php echo THEMA_URL; ?>/assets/img//btn_search.png" >
-            <input type="hidden" name="url"  value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
-            <input type="text" name="stx" value="<?php echo get_text($stx); ?>" id="search"/>
-          </form>
-        </div>
-      </div>
+      </ul>
+      <?php } ?>  
       <div class="top_right_area">
         <div class="link_area">
-                    <?php if(($member["mb_level"] =="3"||$member["mb_level"] =="4")){ ?>
-                        <?php if($_COOKIE["viewType"] == "adm"){ ?>
-                            <a href="#" class="modeBtn" data-type="basic">구매모드</a>
-                        <?php } else { ?>
-                            <a href="#" class="modeBtn" data-type="adm">급여안내모드</a>
-                        <?php } ?>
-                    <?php } ?>
-                        
-                        <?php if($is_member) { // 로그인 상태 ?>
-                            <!-- <a href="<?php echo G5_SHOP_URL; ?>/search.php" >상품검색</a> -->
-                            <a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a>
-                            <a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a>
-                            <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송</a>
-                            <?php if($member['admin']) {?>
-                                <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
-                            <?php } ?>
-                            <?php if($is_samhwa_admin && !$member['admin']) {?>
-                                <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
-                            <?php } ?>
-                            <a href="<?php echo G5_BBS_URL; ?>/logout.php" >로그아웃</a>
-                        <?php }else{ ?>
-                            <a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
-                            <a href="<?=G5_BBS_URL?>/register.php"  >회원가입</a>
-                    <!--            <a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>-->
-                        <?php } ?>
-                        <!-- <?php if ( $member['mb_type'] == 'partner' ) { ?>
-                            <a href="https://signstand.co.kr/shop/list.php?ca_id=10">파트너전용</a>
-                        <?php }else{ ?>
-                            <a href="https://signstand.co.kr/shop/list.php?ca_id=10">기업전용</a>
-                        <?php } ?> -->
-        </div>
-      </div>
-      
-      <script type="text/javascript" charset="utf-8">
-          function pagePrintPreview(){
- 
-          var browser = navigator.userAgent.toLowerCase();
-          if ( -1 != browser.indexOf('chrome') ){
-                     window.print();
-          }else if ( -1 != browser.indexOf('trident') ){
-                     try{
-                              //참고로 IE 5.5 이상에서만 동작함
- 
-                              //웹 브라우저 컨트롤 생성
-                              var webBrowser = '<OBJECT ID="previewWeb" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
- 
-                              //웹 페이지에 객체 삽입
-                              document.body.insertAdjacentHTML('beforeEnd', webBrowser);
- 
-                              //ExexWB 메쏘드 실행 (7 : 미리보기 , 8 : 페이지 설정 , 6 : 인쇄하기(대화상자))
-                              previewWeb.ExecWB(7, 1);
- 
-                              //객체 해제
-                              previewWeb.outerHTML = "";
-                     }catch (e) {
-                              alert("- 도구 > 인터넷 옵션 > 보안 탭 > 신뢰할 수 있는 사이트 선택\n   1. 사이트 버튼 클릭 > 사이트 추가\n   2. 사용자 지정 수준 클릭 > 스크립팅하기 안전하지 않은 것으로 표시된 ActiveX 컨트롤 (사용)으로 체크\n\n※ 위 설정은 프린트 기능을 사용하기 위함임");
-                     }
-                    
-                }
-                
-                }           
-          
-      </script>
-      
-    </div>
-    
-      <div id="headerTopQuickMenuWrap" class="<?=$is_index?>">
-        <div>
-          <div>
-            <ul class="listWrap">
-              <li>
-                <a href="/shop/my_recipient_list.php" title="수급자">
-                  <span>수급자</span>
-                </a>
-              </li>
-              <li>
-                <a href="/shop/claim_manage.php" title="청구/전자문서">
-                  <span>청구/전자문서</span>
-                </a>
-              </li>
-              <li>
-                <a href="<?php echo G5_SHOP_URL?>/sales_Inventory.php" title="보유재고">
-                  <span>보유재고</span>
-                </a>
-              </li>
-              <li class="marginDisable">
-                <a href="/shop/list.php?ca_id=10" title="판매/대여품목">
-                  <span>판매/대여품목</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-  
-    <div class="top_menu_wrap" style="display: none;">
-      <div class="menu_wrap">
-        <div class="menu"><div class="top_menu_all"><img src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu2.png" ><span>전체 상품 카테고리</span></div>
-        </div>
-        <div class="main_menu">
-          <table >
-            <tr>
-            <?php foreach($head_category as $cate) { ?>
-              <td>
-                <a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$cate['ca_id']; ?>' class='title'><?php echo $cate['ca_name']; ?></a>
-                <div class="select_menu">
-                <?php foreach($cate['sub'] as $i=>$sub) { ?>
-                  <a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='cate_02 <?php echo $sub['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub['ca_name']; ?></a>
-                  <?php if (!empty($sub['sub'])) { ?>
-                    <?php foreach($sub['sub'] as $sub2) { ?>
-                      <a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub2['ca_id']; ?>' class='cate_03 <?php echo $sub2['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub2['ca_name']; ?></a>
-                    <?php } ?>
-                  <?php } ?>
-                <?php } ?>
-                </div>
-              </td>
+          <?php
+          if( ($member["mb_level"] == "3" || $member["mb_level"] == "4" ) && $is_approved) {
+            if($_COOKIE["viewType"] == "adm") {
+              echo '<a href="#" class="modeBtn" data-type="basic">구매모드</a>';
+            } else {
+              echo '<a href="#" class="modeBtn" data-type="adm">급여안내모드</a>';
+            }
+          }
+          ?>
+
+          <?php if($is_member) { // 로그인 상태 ?>
+            <?php if($member['admin'] || $is_samhwa_admin) { ?>
+            <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
             <?php } ?>
-              <td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=60">추천상품</a></td>
-              <td><a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=30">신상품</a></td>
-            </tr>
-          </table>
-        </div>
-        <div class="catalogueWrap">
-          <a href="/thema/eroumcare/assets/catalog_2.pdf" target="_blank">
-            <span>이로움 카달로그(2호)</span>
-            <img src="<?php echo THEMA_URL; ?>/assets/img/btn_catalogue_icon.png" >
-          </a>
-        </div>
-      </div>
-      
-      <div class="all_menu_wrap">
-        <div class="all_menu">
-          <table>
-            <?php for($i=0;$i<count($category);$i++) { ?>
-              <?php if ( $i == 0 ) echo '<tr>'; ?>
-              <td>
-                <div class="tit"><a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$category[$i]['ca_id']; ?>' class='sub-title'><?php echo $category[$i]['ca_name']; ?></a></div>
-                <?php if ( $category[$i]['sub'] ) { ?>
-                  <?php foreach($category[$i]['sub'] as $sub) { ?>
-                    <a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='sub-title'><?php echo $sub['ca_name']; ?></a>
-                  <?php } ?>
-                <?php } ?>
-              </td>
-              <?php if ( $i != 0 && $i % 5 == 4 ) echo '</tr><tr>'; ?>
-              <?php if ( $i == count($category)-1 ) echo '</tr>'; ?>
-            <?php } ?>
-          </table>
+            <a href="<?php echo G5_BBS_URL; ?>/logout.php" class="btn_default">로그아웃</a>
+          <?php } ?>
         </div>
       </div>
     </div>
-    <?php
-    $tutorials = get_tutorials();
-    if (($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials && $tutorials['completed_count'] < 4) || $open_tutorial_popup) {
-      $tutorial_percent = round($tutorials['completed_count'] / 4 * 100);
-      $tutorial_percent = $tutorial_percent < 5 ? 5 : $tutorial_percent;
-    ?>
-    <div id="head_tutorial">
-      <div class="head_tutorial_info">
-        <h4>신규사업소 등록을 환영합니다.</h4>
-        <p>이로움 통합관리 서비스를 경험해보세요.</p>
-        <div class="head_tutorial_progress">
-          <div class="progress-bar">
-            <span class="progress-bar-fill" style="width: <?php echo $tutorial_percent; ?>%;">
-              <?php if ($tutorials['completed_count']) { ?>
-                <?php echo $tutorial_percent; ?>% <span class="pc_layout">완료</span>
-              <?php } ?>
-            </span>
-          </div>
-        </div>
-      </div>
-      <ul class="head_tutorial_step">
-        <?php 
-        $t_recipient_add_idx = array_search('recipient_add', array_column($tutorials['step'], 't_type'));
-        $t_recipient_add_class = $t_recipient_add_idx !== false ? ($tutorials['step'][$t_recipient_add_idx]['t_state'] ? 'complete' : 'active') : '';
-        ?>
-        <li class="area <?php echo $t_recipient_add_class; ?>">
-          <a href='<?php echo G5_SHOP_URL; ?>/my_recipient_write.php?tutorial=true'>
-            수급자 신규등록
-          </a>
-        </li>
-        <li class="next">></li>
-        <?php 
-        $t_recipient_order_idx = array_search('recipient_order', array_column($tutorials['step'], 't_type'));
-        $t_recipient_order_class = $t_recipient_order_idx !== false ? ($tutorials['step'][$t_recipient_order_idx]['t_state'] ? 'complete' : 'active') : '';
-        ?>
-        <li class="area <?php echo $t_recipient_order_class; ?>">
-          <a href='<?php echo G5_SHOP_URL; ?>/tutorial_order.php'>
-            수급자 주문체험
-          </a>
-        </li>
-        <li class="next">></li>
-        <?php 
-        $t_document_idx = array_search('document', array_column($tutorials['step'], 't_type'));
-        $t_document_class = $t_document_idx !== false ? ($tutorials['step'][$t_document_idx]['t_state'] ? 'complete' : 'active') : '';
-        ?>
-        <li class="area <?php echo $t_document_class; ?>">
-          <a href='<?php echo G5_SHOP_URL; ?>/electronic_manage.php'>
-            전자문서 확인
-          </a>
-        </li>
-        <li class="next">></li>
-        <?php 
-        $t_claim_idx = array_search('claim', array_column($tutorials['step'], 't_type'));
-        $t_claim_class = $t_claim_idx !== false ? ($tutorials['step'][$t_claim_idx]['t_state'] ? 'complete' : 'active') : '';
-        ?>
-        <li class="area <?php echo $t_claim_class; ?>">
-          <a href='<?php echo G5_SHOP_URL; ?>/claim_manage.php'>
-            청구내역 확인
-          </a>
-        </li>
-      </ul>
-    </div>
-    <?php
-    }
-    ?>
-    
-    <div class="scroll_top">
-      <div class="scroll_top_menu">
-        <div class="scroll_top_menu_wrap">
-          <div class="scroll_top_menu">
-            <a href="<?php echo G5_URL; ?>"><img src="<?php echo THEMA_URL; ?>/assets/img//top_logo_s.png"></a>
-            <div class="menu_area">
-              <?php if($is_member) { // 로그인 상태 ?>
-                <a href="<?php echo G5_SHOP_URL; ?>/cart.php" >장바구니</a>
-                <a href="<?php echo G5_BBS_URL; ?>/mypage.php" >마이페이지</a>
-                <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" >주문/배송</a>
-                <?php if($member['admin']) {?>
-                  <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
-                <?php } ?>
-                <?php if($is_samhwa_admin && !$member['admin']) {?>
-                  <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
-                <?php } ?>
-                <a href="<?php echo G5_BBS_URL; ?>/logout.php" >로그아웃</a>
-              <?php }else{ ?>
-                <a href="<?php echo $at_href['login'];?>" class="green">로그인</a>
-                <a href="<?php echo $at_href['reg'];?>">회원가입</a>
-                <a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기</a>
-              <?php } ?>
-              <?php if ( $member['mb_type'] == 'partner' ) { ?>
-              <a href="#">파트너전용</a>
-              <?php }else{ ?>
-              <a href="#">기업전용</a>
-              <?php } ?>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="top_menu_wrap ">
-        <div class="menu_wrap">
-          <div class="menu"><button class="top_menu_all"><span>전체카테고리</span> <img src="<?php echo THEMA_URL; ?>/assets/img//btn_top_menu.png" ></button></div>
-          <div class="main_menu">
-            <table >
-              <tr>
-                <?php foreach($head_category as $cate) { ?>
-                  <td>
-                    <a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$cate['ca_id']; ?>' class='title'><?php echo $cate['ca_name']; ?></a>
-                    <div class="select_menu">
-                      <table class="menu_area">
-                        <?php foreach($cate['sub'] as $i=>$sub) { ?>
-                          <?php if ( $i == 0 ) echo '<tr>'; ?>
-                            <td <?php echo $i == count($cate['sub'])-1 && count($cate['sub']) % 3 ? 'colspan="'.(4-count($cate['sub'])%3).'"' : ''; ?>>
-                              <a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub['ca_id']; ?>' class='cate_02 <?php echo $sub['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub['ca_name']; ?></a>
-                              <?php if (!empty($sub['sub'])) { ?>
-                                <?php foreach($sub['sub'] as $sub2) { ?>
-                                  <a href='<?php echo G5_SHOP_URL . '/list.php?ca_id=' .$sub2['ca_id']; ?>' class='cate_03 <?php echo $sub2['ca_id'] == $ca_id ? 'on' : ''; ?>'><?php echo $sub2['ca_name']; ?></a>
-                                <?php } ?>
-                              <?php } ?>
-                            </td>
-                          <?php if ( $i != 0 && $i % 3 == 2 ) echo '</tr><tr>'; ?>
-                          <?php if ( $i == count($cate['sub'])-1 ) echo '</tr>'; ?>
-                        <?php } ?>
-                      </table>
-                      
-                      <img src="<?php echo G5_DATA_URL; ?>/category/<?php echo $cate['ca_id']; ?>" alt="" />
-                    </div>
-                  </td>
-                <?php } ?>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </div>
-      
-      
-    </div>
-    
+
     <?php if($page_title) { // 페이지 타이틀 ?>
       <div class="at-title">
         <div class="at-container">
@@ -591,67 +235,276 @@ if($is_main && !$is_member) {
         </div>
       </div>
     <?php } ?>
-    
-    <?php if ( $is_main ) { ?>
-    <?php @include(THEMA_PATH . '/main/samhwa-main.php'); ?>
-    <?php } ?>
 
-    <div class="at-body">
-      <?php if($col_name) { ?>
-        <div class="at-container">
-          <?php if($is_member) { // 로그인 전에는 숨김 ?>
-          <div class="scrollBannerListWrap left">
+    <div class="at-body <?php if($is_main && !$is_member) echo 'is-index'; ?>">
+      <?php if($is_member && $is_approved) { // 로그인 전에는 숨김 ?>
+      <div class="mobile_menu_backdrop" style="display: none;"></div>
+      <div class="side_menu_area">
+        <div class="fixed_wrap">
+          <div class="btn_close_side_menu">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="scrollable_wrap">
+          <div class="user_info_area">
+            <a href="<?=$at_href['edit'];?>" class="btn_small btn_edit">정보수정</a>
+            <div class="user_name"><?=$member['mb_entNm'] ?: $member['mb_name']?></div>
+            <div class="grade_info">
+              <div class="btn_small">
+                <?php
+                if($member['mb_level'] == 3) echo '사업소';
+                else if($member['mb_level'] == 4) echo '우수사업소';
+                else if($member['mb_level'] >= 9) echo '관리자';
+                if($member['mb_type'] == 'partner') echo '파트너';
+                ?>
+              </div>
+              <div class="btn_small primary">
+                <?php echo "{$default['de_it_grade' . $member['mb_grade'] . '_name']} ({$default['de_it_grade' . $member['mb_grade'] . '_discount']}%적립)"; ?>
+              </div>
+            </div>
+            <div class="point_info flex-justify">
+              <div class="point">
+                포인트 : <?=number_format($member['mb_point']);?>원
+                <a href="<?=$at_href['point']?>" target="_blank" class="btn_small win_point"><i class="fa fa-list" aria-hidden="true"></i></a>
+              </div>
+              <div class="coupon">
+                쿠폰
+                <a href="<?=$at_href['coupon']?>" target="_blank" class="btn_small win_point"><?=$cp_count?></a>
+              </div>
+            </div>
+            <?php if($manager = get_member($member['mb_manager'])) { ?>
+            <div class="manager_info">
+              이로움 관리 담당자 : <?="{$manager['mb_name']} ({$manager['mb_hp']})"?>
+            </div>
+            <?php } ?>
+            <div class="balance_info flex-justify">
+              <div class="balance_title">신용거래</div>
+              <div class="balance"><?=number_format($balance)?>원</div>
+            </div>
+            <div class="order_info flex-justify">
+              <div class="order">이번달 <?=number_format($order_count)?>건</div>
+              <a href="<?php if($member['mb_type'] == 'partner') echo '/shop/partner_ledger_list.php'; else echo '/shop/my_ledger_list.php'; ?>" class="btn_small">거래처 원장</a>
+            </div>
+            <?php if($event_count) { ?>
+            <a class="event_noti" href="/bbs/board.php?bo_table=event">
+              진행중인 이벤트
+              <span class="value"><?=$event_count?>건</span>
+              <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </a>
+            <?php } ?>
+          </div>
+
+          <div class="notice_area">
+            <div class="title">
+              <a href="/bbs/board.php?bo_table=notice">공지사항</a>
+            </div>
+            <?php  echo latest('list_main', 'notice', 5, 25); ?>
+          </div>
+
+          <div class="catalog_area">
+            <a href="/thema/eroumcare/assets/eroum_catalog_2021_2_2.pdf" class="catalog">
+              <img src="<?php echo THEMA_URL; ?>/assets/img/icon_catalog.png">
+              이달의 카달로그
+              <div class="btn_small">다운로드</div>
+            </a>
+          </div>
+
+          <div class="side_nav_area">
+            <div class="div_title">주문관리</div>
             <ul>
               <li>
-                <a href="/bbs/board.php?bo_table=notice&wr_id=30">
-                  <img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_01.jpg" alt="" />
+                <a href="#">
+                  전체 상품보기
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>
               <li>
-                <a href="/bbs/board.php?bo_table=faq&wr_id=6" >
-                  <img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_02.jpg" alt="" />
+                <a href="/shop/orderinquiry.php">
+                  주문/배송 내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>
               <li>
-                <a href="<?=THEMA_URL?>/assets/티에이치케이컴퍼니_사업자등록증.pdf" target="_blank">
-                  <img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_04.jpg" alt="" />
+                <a href="/shop/cart.php">
+                  장바구니
+                  <?php if (get_boxcart_datas_count() > 0) { ?>
+                  <span class="value">상품 (<?php echo get_boxcart_datas_count(); ?>)</span>
+                  <?php } ?>
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+            <div class="div_title">운영관리</div>
+            <ul>
+              <li>
+                <a href="/shop/claim_manage.php">
+                  청구내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>
               <li>
-                <a href="<?=THEMA_URL?>/assets/img/eroum_account.jpg" target="_blank">
-                  <img src="<?=THEMA_URL?>/assets/img/scroll_left_visual_03.jpg" alt="" />
+                <a href="/shop/my_recipient_list.php">
+                  수급자관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/sales_Inventory.php">
+                  보유재고관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+            <div class="div_title">기타/편의</div>
+            <ul class="etc">
+              <li>
+                <a href="/shop/my_data_upload.php">
+                  과거공단자료 업로드
+                </a>
+              </li>
+              <li>
+                <a href="/bbs/qalist.php">
+                  고객센터(1:1문의)
+                </a>
+              </li>
+              <li>
+                <a href="/bbs/board.php?bo_table=faq">
+                  자주하는 질문
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0);">
+                  제안하기
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0);">
+                  이로움 연구소
                 </a>
               </li>
             </ul>
           </div>
-          
-          <div class="scrollBannerListWrap right">
-            <div class="todayViewWrap">
-              <?php include(THEMA_PATH."/side/boxtodayview.skin.php"); ?>
-            </div>
-            
-            <div class="goToTopBtnWrap">
-              <img src="<?php echo THEMA_URL; ?>/assets/img/btn_go_to_top.png" alt="" onclick="$('html, body').animate({ scrollTop : 0 }, 1000);" />
-            </div>
-            <div class="btn_quick_area">
-              <a href="/shop/cart.php">
-                <?php if (get_boxcart_datas_count() > 0) { ?>
-                <span class="num_cart"><?php echo get_boxcart_datas_count(); ?></span>
-                <?php } ?>
-                <img src="<?php echo THEMA_URL; ?>/assets/img/btn_quick_icon_cart.png" alt="" /><br>
-                장바구니
-              </a>
-              <a href="/shop/wishlist.php">
-                <img src="<?php echo THEMA_URL; ?>/assets/img/btn_quick_icon_wish.png" alt="" /><br>
-                취급상품
-              </a>
-            </div>
+
+          <div class="btn_info_area">
+            <a href="/bbs/board.php?bo_table=notice&wr_id=30">
+              <img src="<?=THEMA_URL?>/assets/img/btn_businesshour.png" alt="이로움 주문마감 안내 확인" />
+            </a>
+            <a href="/bbs/board.php?bo_table=faq&wr_id=6" >
+              <img src="<?=THEMA_URL?>/assets/img/btn_installinfo.png" alt="안전손잡이 설치 안내" />
+            </a>
           </div>
-          <?php } ?>
+
+          <div class="account_info_area">
+            <a href="<?=THEMA_URL?>/assets/img/eroum_account.jpg" target="_blank">
+              <img src="<?=THEMA_URL?>/assets/img/icon_account.png">
+              통장사본
+              <div class="btn_small">다운로드</div>
+            </a>
+            <a href="<?=THEMA_URL?>/assets/티에이치케이컴퍼니_사업자등록증.pdf" target="_blank">
+              <img src="<?=THEMA_URL?>/assets/img/icon_cert.png">
+              사업자등록증
+              <div class="btn_small">다운로드</div>
+            </a>
+          </div>
+
+          <div class="call_info_area">
+            <div class="title">이로움 고객만족센터</div>
+            <div class="info">
+              <img src="<?=THEMA_URL?>/assets/img/mainCallIcon.png">
+              <div class="call">
+                <p>주문안내 : <span>032-562-6608</span></p>
+                <p>시스템안내 : <span>02-830-1301~2</span></p>
+              </div>
+            </div>
+            <ul>
+              <li>
+                <div>· 운영시간</div>
+                <div>월~금 09:00~18:00 (점심시간 12시~13시)</div>
+              </li>
+              <li>
+                <div>· Email</div>
+                <div>ceyoon2066@thkc.co.kr</div>
+              </li>
+              <li>
+                <div>· Fax</div>
+                <div>02-830-1308</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <?php } ?>
+      <?php if($col_name) { ?>
+      <div class="at-container">
         <?php if($col_name == "two") { ?>
           <div class="row at-row">
             <div class="col-md-<?php echo $col_content;?><?php echo ($at_set['side']) ? ' pull-right' : '';?> at-col at-main">    
         <?php } else { ?>
           <div class="at-content">
+            <?php
+            $tutorials = get_tutorials();
+            if (($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials && $tutorials['completed_count'] < 4) || $open_tutorial_popup) {
+              $tutorial_percent = round($tutorials['completed_count'] / 4 * 100);
+              $tutorial_percent = $tutorial_percent < 5 ? 5 : $tutorial_percent;
+            ?>
+            <div id="head_tutorial">
+              <div class="head_tutorial_info">
+                <h4>신규사업소 등록을 환영합니다.</h4>
+                <p>이로움 통합관리 서비스를 경험해보세요.</p>
+                <div class="head_tutorial_progress">
+                  <div class="progress-bar">
+                    <span class="progress-bar-fill" style="width: <?php echo $tutorial_percent; ?>%;">
+                      <?php if ($tutorials['completed_count']) { ?>
+                        <?php echo $tutorial_percent; ?>% <span class="pc_layout">완료</span>
+                      <?php } ?>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <ul class="head_tutorial_step">
+                <?php 
+                $t_recipient_add_idx = array_search('recipient_add', array_column($tutorials['step'], 't_type'));
+                $t_recipient_add_class = $t_recipient_add_idx !== false ? ($tutorials['step'][$t_recipient_add_idx]['t_state'] ? 'complete' : 'active') : '';
+                ?>
+                <li class="area <?php echo $t_recipient_add_class; ?>">
+                  <a href='<?php echo G5_SHOP_URL; ?>/my_recipient_write.php?tutorial=true'>
+                    수급자 신규등록
+                  </a>
+                </li>
+                <li class="next">></li>
+                <?php 
+                $t_recipient_order_idx = array_search('recipient_order', array_column($tutorials['step'], 't_type'));
+                $t_recipient_order_class = $t_recipient_order_idx !== false ? ($tutorials['step'][$t_recipient_order_idx]['t_state'] ? 'complete' : 'active') : '';
+                ?>
+                <li class="area <?php echo $t_recipient_order_class; ?>">
+                  <a href='<?php echo G5_SHOP_URL; ?>/tutorial_order.php'>
+                    수급자 주문체험
+                  </a>
+                </li>
+                <li class="next">></li>
+                <?php 
+                $t_document_idx = array_search('document', array_column($tutorials['step'], 't_type'));
+                $t_document_class = $t_document_idx !== false ? ($tutorials['step'][$t_document_idx]['t_state'] ? 'complete' : 'active') : '';
+                ?>
+                <li class="area <?php echo $t_document_class; ?>">
+                  <a href='<?php echo G5_SHOP_URL; ?>/electronic_manage.php'>
+                    전자문서 확인
+                  </a>
+                </li>
+                <li class="next">></li>
+                <?php 
+                $t_claim_idx = array_search('claim', array_column($tutorials['step'], 't_type'));
+                $t_claim_class = $t_claim_idx !== false ? ($tutorials['step'][$t_claim_idx]['t_state'] ? 'complete' : 'active') : '';
+                ?>
+                <li class="area <?php echo $t_claim_class; ?>">
+                  <a href='<?php echo G5_SHOP_URL; ?>/claim_manage.php'>
+                    청구내역 확인
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <?php
+            }
+            ?>
         <?php } ?>
       <?php } ?>
