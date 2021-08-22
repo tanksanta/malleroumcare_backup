@@ -102,6 +102,8 @@ define('EROUMCARE_API_RECIPIENT_UPDATE_REC',                     'https://system
 define('EROUMCARE_API_RECIPIENT_DELETE_REC',                     'https://system.eroumcare.com/api/recipient/deleteRec');
 // 계약서 초기값 가져오기 (품목 별 본인부담률 계산한 값들 포함)
 define('EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST',          'https://system.eroumcare.com/api/eform/selectEform001');
+// 수급자 취급상품 등록
+define('EROUMCARE_API_RECIPIENT_ITEM_INSERT',                    'https://system.eroumcare.com/api/recipient/setItem');
 // 회원조회1
 define('EROUMCARE_API_ENT_ACCOUNT',                              'https://system.eroumcare.com/api/ent/account');
 define('EROUMCARE_API_ENT_UPDATE',                               'https://system.eroumcare.com/api/ent/update');

@@ -709,29 +709,9 @@ if($od["od_b_tel"]){
           cnt++;
         }
       }
-      
-      if (confirm('PDA 스캔하시겠습니까?')) {
-        openWebBarcode(cnt);
-        return;
-      }
 
-      try {
-          switch (device) {
-          case "android":
-            /* android */
-            window.EroummallApp.openBarcode("" + cnt + "");
-            break;
-          case "ios":
-            /* ios */
-            window.webkit.messageHandlers.openBarcode.postMessage("" + cnt + "");
-            break;
-          default:
-            openWebBarcode(cnt);
-            break;
-        }
-      }catch(e) {
-        openWebBarcode(cnt);
-      }
+      $('#scanner-count').val(cnt);
+      $('#barcode-selector').fadeIn();
     });
   });
 

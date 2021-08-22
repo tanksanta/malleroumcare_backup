@@ -138,7 +138,7 @@ var thema_url = "<?php echo THEMA_URL; ?>";
 <script src="<?php echo G5_JS_URL ?>/jquery-ui.min.js"></script>
 <script src="<?php echo G5_JS_URL ?>/jquery-migrate-1.2.1.min.js"></script>
 <script src="<?php echo APMS_LANG_URL ?>/lang.js?ver=<?php echo APMS_SVER; ?>"></script>
-<script src="<?php echo G5_JS_URL ?>/common.js?ver=<?php echo APMS_SVER; ?>3"></script>
+<script src="<?php echo G5_JS_URL ?>/common.js?ver=<?php echo APMS_SVER; ?>4"></script>
 <script src="<?php echo G5_JS_URL ?>/wrest.js?ver=<?php echo APMS_SVER; ?>"></script>
 <script src="<?php echo G5_JS_URL ?>/placeholders.min.js"></script>
 <script src="<?php echo G5_JS_URL ?>/apms.js?ver=<?php echo APMS_SVER; ?>"></script>

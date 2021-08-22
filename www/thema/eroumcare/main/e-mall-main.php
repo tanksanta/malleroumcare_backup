@@ -241,6 +241,29 @@ $(function() {
 
 <?php 
 $tutorials = get_tutorials();
+?>
+
+<?php 
+if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials) { 
+?>
+	<script>
+		show_eroumcare_popup({
+			id: 'tutorial_start',
+			title: '서비스 체험',
+			content: '이로움 통합관리시스템을<br/>한번에 체험할 수 있습니다.',
+			activeBtn: {
+				href: '/shop/tutorial_start.php',
+				text: '체험시작하기',
+			},
+			hideBtn: {
+				text: '다음에',
+			},
+			hideOneWeekBtn: true,
+		});
+	</script>
+<?php } ?>
+
+<?php 
 if ($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials) { 
 ?>
 	<?php 

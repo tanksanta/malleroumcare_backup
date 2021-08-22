@@ -1332,6 +1332,14 @@ pre{white-space: pre-wrap;}
 	color: white;
 }
 
+.eroumcare-popup-week {
+	padding-top: 5px;
+	margin-left: 28px;
+}
+.eroumcare-popup-week input {
+	margin-top: 0;
+}
+
 @media (max-width: 1200px) {
   .mo_top { display: block; }
   .top_common_area { display: block; height: unset; margin-top: 100px !important; }

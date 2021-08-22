@@ -15,16 +15,15 @@ include_once('../common.php');
         <p>
             엑셀파일을 이용하여 수급자를 일괄등록할 수 있습니다.<br>
             형식은 <strong>수급자 일괄등록 엑셀파일</strong>을 다운로드하여 수급자 정보를 입력하시면 됩니다.<br>
-            수정 완료 후 엑셀파일을 업로드하시면 수급자가 일괄등록됩니다.<br>
-            엑셀파일을 저장하실 때는 <strong>Excel 97 - 2003 통합문서 (*.xls)</strong> 로 저장하셔야 합니다.
+            수정 완료 후 엑셀파일을 업로드하시면 수급자가 일괄등록됩니다.
         </p>
 
         <p>
-            <a href="<?php echo G5_SHOP_URL; ?>/recipientExcel.xls" class="excelBtn">수급자등록용 엑셀파일 다운로드</a>
+            <a href="<?php echo G5_SHOP_URL; ?>/recipientExcel_new.xlsx" class="excelBtn">수급자등록용 엑셀파일 다운로드</a>
         </p>
     </div>
 
-    <form name="fitemexcel" method="post" action="./recipientexcelupdate.php" enctype="MULTIPART/FORM-DATA" autocomplete="off">
+    <form name="fitemexcel" method="post" action="./recipientexcelupdate_new.php" enctype="MULTIPART/FORM-DATA" autocomplete="off">
 
     <div id="excelfile_upload">
         <label for="excelfile">파일선택</label>
