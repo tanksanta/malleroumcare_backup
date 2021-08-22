@@ -189,7 +189,7 @@ if($is_main && !$is_member) {
         </form>
       </div>
       <ul class="nav">
-        <?php if($is_samhwa_partner) { ?>
+        <?php if($member['mb_type'] == 'partner') { ?>
         <li><a href="/shop/partner_orderinquiry_list.php">주문내역</a></li>
         <li><a href="/shop/partner_ledger_list.php">거래처원장</a></li>
         <?php } else { ?>
@@ -312,6 +312,25 @@ if($is_main && !$is_member) {
             </a>
           </div>
 
+          <?php if($member['mb_type'] == 'partner') { ?>
+          <div class="side_nav_area">
+            <div class="div_title">파트너</div>
+            <ul>
+              <li>
+                <a href="/shop/partner_orderinquiry_list.php">
+                  주문내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/partner_ledger_list.php">
+                  거래처원장
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <?php } else { ?>
           <div class="side_nav_area">
             <div class="div_title">주문관리</div>
             <ul>
@@ -398,6 +417,7 @@ if($is_main && !$is_member) {
               </li>
             </ul>
           </div>
+          <?php } ?>
 
           <div class="btn_info_area">
             <a href="/bbs/board.php?bo_table=notice&wr_id=30">
