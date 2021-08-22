@@ -67,7 +67,7 @@ $(function(){
   <div class="flex">
     <h3 class="grow">베스트 상품소개</h3>
     <div class="link_wrap">
-      <a href="javascript:void(0);" class="btn_default">전체상품 보기</a>
+      <a href="/shop/list.php?ca_id=10" class="btn_default">전체상품 보기</a>
     </div>
   </div>
   <div class="nav_container swiper-container">

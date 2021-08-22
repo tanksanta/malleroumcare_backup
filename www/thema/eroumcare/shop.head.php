@@ -313,8 +313,8 @@ if($is_main && !$is_member) {
             <div class="div_title">주문관리</div>
             <ul>
               <li>
-                <a href="#">
-                  전체 상품보기
+                <a href="/shop/list.php?ca_id=10">
+                  전체상품 보기
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>
