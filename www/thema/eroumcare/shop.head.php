@@ -378,6 +378,12 @@ if($is_main && !$is_member) {
                 </a>
               </li>
               <li>
+                <a href="/shop/electronic_manage.php">
+                  전자문서관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
                 <a href="/shop/my_recipient_list.php">
                   수급자관리
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
