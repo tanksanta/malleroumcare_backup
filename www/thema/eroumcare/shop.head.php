@@ -105,7 +105,7 @@ scrollToTop();
 
 <!-- 모드바 스타일링 -->
 <style>
-  .top_mode_area{ position:fixed; top :0;z-index:9999999; display:block; width:100%; height:50px; text-align:center; background-color: rgba(0,0,0,0.7);  color : #fff; font-size: 20px; line-height:50px; opacity:70%;}
+  .top_mode_area{ position:fixed; top :0;z-index:9999999; display:block; width:100%; height:50px; text-align:center; background-color: #666;  color : #fff; font-size: 20px; line-height:50px; }
   @media screen and (max-width: 1200px){
     .top_mode_area{font-size:10px;display:none;}
   }
@@ -175,48 +175,50 @@ if($is_main && !$is_member) {
 </div>
 
 <div id="thema_wrapper" class="wrapper <?php echo $is_thema_layout;?> <?php echo $is_thema_font;?> <?php echo $is_index ?>">
-  <div id="wrap">
-    <div class="top_common_area" <?php if(($member["mb_level"] == "3" || $member["mb_level"] == "4") && $_COOKIE["viewType"] == "basic") { echo'style="margin-top:50px;"'; } ?>>
-      <div class="logo_wrap">
-        <a href="<?=G5_URL?>" class="logo_title"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png"></a>
-      </div>
-      <?php if($is_approved) { ?>
-      <div class="search_wrap">
-        <form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
-          <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
-          <input type="hidden" name="url" value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
-          <input type="text" name="stx" class="ipt_search" value="<?php echo get_text($stx); ?>" id="search" placeholder="품목명/급여코드 검색" />
-        </form>
-      </div>
-      <ul class="nav">
-        <?php if($member['mb_type'] == 'partner') { ?>
-        <li><a href="/shop/partner_orderinquiry_list.php">주문내역</a></li>
-        <li><a href="/shop/partner_ledger_list.php">거래처원장</a></li>
-        <?php } else { ?>
-        <li><a href="/shop/list.php?ca_id=10">판매품목</a></li>
-        <li><a href="/shop/list.php?ca_id=20">대여품목</a></li>
-        <li><a href="/shop/list.php?ca_id=70">비급여품목</a></li>
-        <?php } ?>
-      </ul>
-      <?php } ?>  
-      <div class="top_right_area">
-        <div class="link_area">
-          <?php
-          if( ($member["mb_level"] == "3" || $member["mb_level"] == "4" ) && $is_approved) {
-            if($_COOKIE["viewType"] == "adm") {
-              echo '<a href="#" class="modeBtn" data-type="basic">구매모드</a>';
-            } else {
-              echo '<a href="#" class="modeBtn" data-type="adm">급여안내모드</a>';
-            }
-          }
-          ?>
-
-          <?php if($is_member) { // 로그인 상태 ?>
-            <?php if($member['admin'] || $is_samhwa_admin) { ?>
-            <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
-            <?php } ?>
-            <a href="<?php echo G5_BBS_URL; ?>/logout.php" class="btn_default">로그아웃</a>
+  <div id="wrap" <?php if(($member["mb_level"] == "3" || $member["mb_level"] == "4") && $_COOKIE["viewType"] == "basic") { echo'style="margin-top:50px;"'; } ?>>
+    <div class="top_fixed_wrap" <?php if(($member["mb_level"] == "3" || $member["mb_level"] == "4") && $_COOKIE["viewType"] == "basic") { echo'style="margin-top:50px;"'; } ?>>
+      <div class="top_common_area">
+        <div class="logo_wrap">
+          <a href="<?=G5_URL?>" class="logo_title"><img src="<?=THEMA_URL?>/assets/img/hd_logo.png"></a>
+        </div>
+        <?php if($is_approved) { ?>
+        <div class="search_wrap">
+          <form name="tsearch" method="get" onsubmit="return tsearch_submit(this);" role="form" class="form">
+            <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
+            <input type="hidden" name="url" value="<?php echo (IS_YC) ? $at_href['isearch'] : $at_href['search'];?>">
+            <input type="text" name="stx" class="ipt_search" value="<?php echo get_text($stx); ?>" id="search" placeholder="품목명/급여코드 검색" />
+          </form>
+        </div>
+        <ul class="nav">
+          <?php if($member['mb_type'] == 'partner') { ?>
+          <li><a href="/shop/partner_orderinquiry_list.php">주문내역</a></li>
+          <li><a href="/shop/partner_ledger_list.php">거래처원장</a></li>
+          <?php } else { ?>
+          <li><a href="/shop/list.php?ca_id=10">판매품목</a></li>
+          <li><a href="/shop/list.php?ca_id=20">대여품목</a></li>
+          <li><a href="/shop/list.php?ca_id=70">비급여품목</a></li>
           <?php } ?>
+        </ul>
+        <?php } ?>  
+        <div class="top_right_area">
+          <div class="link_area">
+            <?php
+            if( ($member["mb_level"] == "3" || $member["mb_level"] == "4" ) && $is_approved) {
+              if($_COOKIE["viewType"] == "adm") {
+                echo '<a href="#" class="modeBtn" data-type="basic">구매모드</a>';
+              } else {
+                echo '<a href="#" class="modeBtn" data-type="adm">급여안내모드</a>';
+              }
+            }
+            ?>
+
+            <?php if($is_member) { // 로그인 상태 ?>
+              <?php if($member['admin'] || $is_samhwa_admin) { ?>
+              <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리</a>
+              <?php } ?>
+              <a href="<?php echo G5_BBS_URL; ?>/logout.php" class="btn_default">로그아웃</a>
+            <?php } ?>
+          </div>
         </div>
       </div>
     </div>
