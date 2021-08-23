@@ -145,6 +145,15 @@
 		#popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
 		#popupFooterBtnWrap > .savebtn{ float: left; width: 75%; height: 100%; background-color:#000; color: #FFF; }
 		#popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
+		/* 바코드 순차입력 버튼 */
+    .imfomation_box a .li_box .folding_box > .inputbox > li > .barcode_add {
+      width:35px;
+      height:35px;
+      position: absolute;
+      top: 8px;
+      right: 90px;
+      display:none;
+    }
 	</style>
  </head>
 
@@ -201,6 +210,7 @@
                                 <?php for($b = 0; $b< count($barcodes); $b++){ ?>
                                     <li>
                                         <input type="number" maxlength="12" oninput="maxLengthCheck(this)" value="<?php echo $barcodes[$b]; ?>" class="notall frm_input frm_input_<?=$prodListCnt?> required barcode_input" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+																				<img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
                                         <i class="fa fa-check"></i>
                                         <span class="overlap">중복</span>
                                         <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>">
@@ -247,14 +257,57 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 	var $opener;
 	var is_mobile = navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1;
 
-    var it_id = '<?php echo $it_id; ?>';
-		var uid = '<?php echo $uid; ?>';
-    //maxnum 지정
-    function maxLengthCheck(object){
-        if (object.value.length > object.maxLength){
-        object.value = object.value.slice(0, object.maxLength);
-        }
+	var it_id = '<?php echo $it_id; ?>';
+	var uid = '<?php echo $uid; ?>';
+
+  var keyupTimer;
+
+  $(".notall").keyup(function() {
+    var last_index = $(this).closest('ul').find('li').last().index();
+    var this_index = $(this).closest('li').index();
+
+    $(this).closest('ul').find('.barcode_add').hide();
+    if(last_index !== this_index && $(this).val().length == 12)
+      $(this).closest('li').find('.barcode_add').show();
+
+    if(keyupTimer) clearTimeout(keyupTimer);
+    keyupTimer = setTimeout(notallLengthCheck, 200);
+  });
+
+  $('.notall').focus(function() {
+    var last_index = $(this).closest('ul').find('li').last().index();
+    var this_index = $(this).closest('li').index();
+
+    $(this).closest('ul').find('.barcode_add').hide();
+    if(last_index !== this_index && $(this).val().length == 12)
+      $(this).closest('li').find('.barcode_add').show();
+  });
+
+  $('.barcode_add').click(function() {
+    var ul = $(this).closest('ul');
+    var li_num = $(this).closest('li').index();
+    var li_val = $(this).closest('li').find('.notall').val();
+    var li_last = $(ul).find('li').last().index();
+    var p_num = 0;
+
+    if(li_val.length !== 12){
+      alert('바코드 12자리를 입력해주세요.');
+      return false;
     }
+
+    for(var i = li_num+1; i<=li_last; i++){
+      p_num++;
+      $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+    }
+    notallLengthCheck();
+  });
+
+	//maxnum 지정
+	function maxLengthCheck(object){
+			if (object.value.length > object.maxLength){
+			object.value = object.value.slice(0, object.maxLength);
+			}
+	}
 
 	/* 바코드 입력란 설정 */
 	function foldingBoxSetting(){
