@@ -417,12 +417,12 @@ if($is_main && !$is_member) {
                 </a>
               </li>
               <li>
-                <a href="javascript:void(0);">
+                <a href="/bbs/board.php?bo_table=proposal">
                   제안하기
                 </a>
               </li>
-              <li>
-                <a href="javascript:void(0);">
+              <li style="display: none;">
+                <a href="/bbs/board.php?bo_table=lab">
                   이로움 연구소
                 </a>
               </li>
