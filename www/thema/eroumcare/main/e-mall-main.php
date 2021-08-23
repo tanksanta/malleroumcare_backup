@@ -18,11 +18,27 @@ while($row = sql_fetch_array($banner_result)) {
 
   $banners[] = $row;
 }
+
+// 최근 주문내역 건수
+$result = sql_fetch("
+  SELECT
+    count(*) as cnt
+  FROM
+    g5_shop_cart c
+  LEFT JOIN
+    g5_shop_order o ON c.od_id = o.od_id
+  WHERE
+    c.mb_id = '{$member['mb_id']}' and
+    c.ct_status IN ('준비', '출고준비', '배송', '완료') and
+    o.od_del_yn = 'N' and
+    o.od_time >= DATE(NOW() - INTERVAL 3 MONTH)
+");
+$latest_order_count = $result['cnt'] ?: 0;
 ?>
 
 <link rel="stylesheet" href="<?php echo G5_URL; ?>/css/swiper.min.css">
 <script src="<?php echo G5_URL; ?>/js/swiper.min.js"></script>
-<link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/main.css">
+<link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/main.css?v=08231805">
 
 <!-- 메인 상단 슬라이드 -->
 <div id="mainTopSlidePCWrap">
@@ -199,42 +215,140 @@ $(function() {
 </script>
 
 <!-- 메인 최근 주문내역 -->
-<div class="latest_order_area" style="display: none;">
+<?php if($latest_order_count > 0) { ?>
+<div class="latest_order_area">
   <div class="flex">
     <h3>최근 주문내역</h3>
-    <div class="order_desc grow">총 9건 <span class="grey">(최근 3개월간의 내역을 조회합니다.)</span></div>
+    <div class="order_desc grow">총 <?=$latest_order_count?>건 <span class="grey">(최근 3개월간의 내역을 조회합니다.)</span></div>
     <div class="link_wrap">
       <a href="/shop/orderinquiry.php" class="btn_default">전체주문 보기</a>
     </div>
   </div>
   <ul class="list_tab">
-    <li class="active"><a href="javascript:void(0);">주문내역</a></li>
-    <li><a href="javascript:void(0);">취소/환불</a></li>
+    <li class="active" data-tab="0"><a href="javascript:void(0);">주문내역</a></li>
+    <li data-tab="1"><a href="javascript:void(0);">취소/환불</a></li>
   </ul>
   <div class="latest_order">
     <div class="latest_order_head flex">
-      <a href="javascript:void(0);" class="step active">
-        <div class="num">1</div>
-        <div class="desc">상품준비</div>
-      </a>
-      <div class="next">></div>
-      <a href="javascript:void(0);" class="step">
-        <div class="num">0</div>
-        <div class="desc">출고준비</div>
-      </a>
-      <div class="next">></div>    
-      <a href="javascript:void(0);" class="step">
-        <div class="num">12</div>
-        <div class="desc">출고완료</div>
-      </a>
-      <div class="next">></div>
-      <a href="javascript:void(0);" class="step">
-        <div class="num">93</div>
-        <div class="desc">배송완료</div>
-      </a>
     </div>
   </div>
+  <ul class="latest_order_list">
+  </ul>
 </div>
+
+<div id="popupProdBarNumInfoBox" class="listPopupBoxWrap"><div></div></div>
+<!-- 210326 재고조회팝업 -->
+   
+<!-- 210326 배송정보팝업 -->
+<div id="popupProdDeliveryInfoBox" class="listPopupBoxWrap"><div></div></div>
+
+<script>
+$(function() {
+  var step_list = ['준비', '출고준비', '배송', '완료'];
+  var step_name = {
+    '준비': '상품준비',
+    '출고준비' : '출고준비',
+    '배송': '출고완료',
+    '완료': '배송완료'
+  }
+  var step = '준비';
+  var tab = 0; // 0: 주문내역 / 1: 취소/환불
+
+  get_latest_order_count();
+
+  function get_latest_order_count() {
+    step = '준비';
+    $('.latest_order_head').hide();
+    $('.latest_order_list').html('<li style="padding: 50px 0; text-align:center;"><img src="/shop/img/loading.gif"></li>');
+
+    $.get('/shop/ajax.order.latest.count.php', {}, 'json')
+    .done(function(result) {
+      var data = result.data;
+
+      $('.latest_order_head').show().empty();
+
+      for(var i = 0; i < step_list.length; i++) {
+        var cur_step = step_list[i];
+        var count = data[cur_step] ? data[cur_step] : 0;
+
+        if(step === '준비' && count > 0)
+          step = cur_step;
+
+        var next_html = i === (step_list.length - 1) ? '' : '<div class="next">></div>';
+        $('.latest_order_head')
+        .append('\
+          <a href="javascript:void(0);" class="step" data-step="'+cur_step+'">\
+            <div class="num">' + count + '</div>\
+            <div class="desc">' + step_name[cur_step] + '</div>\
+          </a>\
+        ')
+        .append(next_html);
+      }
+
+      update_latest_order();
+    });
+  }
+
+  function update_latest_order() {
+    $('.latest_order_head .step').removeClass('active');
+    $('.latest_order_head .step[data-step="'+step+'"]').addClass('active');
+    $('.latest_order_list').html('<li style="padding: 50px 0; text-align:center;"><img src="/shop/img/loading.gif"></li>');
+    $.post('/shop/ajax.order.latest.list.php', {
+      ct_status: step
+    }, 'json')
+    .done(function(result) {
+      $('.latest_order_list').html(result.data);
+    });
+  }
+
+  $(document).on('click', '.latest_order_head .step', function() {
+    if($(this).find('.num').text() > 0) {
+      step = $(this).data('step');
+      update_latest_order();
+    }
+  });
+
+  $(document).on('click', '.latest_order_area .list_tab li', function() {
+    $('.latest_order_area .list_tab li').removeClass('active');
+    $(this).addClass('active');
+    tab = parseInt($(this).data('tab'));
+
+    if(tab === 0) {
+      // 주문내역
+      $('.latest_order_head').show();
+      get_latest_order_count();
+    }
+    else if(tab === 1) {
+      // 취소/환불
+      $('.latest_order_head').hide();
+      step = '취소';
+      update_latest_order();
+    }
+  });
+
+  $('.listPopupBoxWrap').hide().css('opacity', 1);
+  $(document).on('click', '.popupDeliveryInfoBtn', function(e) {
+    e.preventDefault();
+        
+    var od = $(this).attr("data-od");
+    $("#popupProdDeliveryInfoBox > div").html("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od + "'>");
+    $("#popupProdDeliveryInfoBox iframe").load(function() {
+      $("#popupProdDeliveryInfoBox").show();
+    });
+  });
+
+  $(document).on('click', '.popupProdBarNumInfoBtn', function(e) {
+    e.preventDefault();
+    var od_id = $(this).attr("data-id");
+    var ct_id = $(this).attr("data-ct-id");
+    $("#popupProdBarNumInfoBox > div").html("<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
+    $("#popupProdBarNumInfoBox iframe").load(function(){
+      $("#popupProdBarNumInfoBox").show();
+    });
+  });
+});
+</script>
+<?php } ?>
 
 <!-- 메인 진행중인 이벤트 -->
 <?php  echo latest('event_main', 'event', 2); ?>
