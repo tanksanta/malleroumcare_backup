@@ -88,6 +88,19 @@ if($member['mb_id']) {
   // 진행중인 이벤트 개수
   $result = sql_fetch(" select count(*) as cnt from g5_write_event where wr_is_comment = 0 ");
   $event_count = $result['cnt'] ?: 0;
+
+  // 파트너회원: 거래가 1개라도 배정된 적이 있는 경우에만 메뉴 출력
+  $show_partner_menu = true;
+  if($member['mb_type'] == 'partner') {
+    $result = sql_fetch("
+      SELECT count(*) as cnt
+      FROM {$g5['g5_shop_cart_table']}
+      WHERE
+        ct_is_direct_delivery IN(1, 2) and
+        ct_direct_delivery_partner = '{$member['mb_id']}'
+    ");
+    if(!$result['cnt']) $show_partner_menu = false;
+  }
 }
 
 $banks = explode(PHP_EOL, $default['de_bank_account']); 
@@ -255,6 +268,7 @@ if($is_main && !$is_member) {
             <a href="<?=$at_href['edit'];?>" class="btn_small btn_edit">정보수정</a>
             <div class="user_name"><?=$member['mb_entNm'] ?: $member['mb_name']?></div>
             <div class="grade_info">
+              <?php if($show_partner_menu) { ?>
               <div class="btn_small">
                 <?php
                 if($member['mb_level'] == 3) echo '사업소';
@@ -263,6 +277,7 @@ if($is_main && !$is_member) {
                 if($member['mb_type'] == 'partner') echo '파트너';
                 ?>
               </div>
+              <?php } ?>
               <?php if($member['mb_grade'] > 0) { ?>
               <div class="btn_small primary">
                 <?php echo "{$default['de_it_grade' . $member['mb_grade'] . '_name']} ({$default['de_it_grade' . $member['mb_grade'] . '_discount']}%적립)"; ?>
@@ -288,7 +303,7 @@ if($is_main && !$is_member) {
               이로움 관리 담당자 : <?="{$manager['mb_name']} ({$manager['mb_hp']})"?>
             </div>
             <?php } ?>
-            <?php if($balance > 0) { ?>
+            <?php if($balance > 0 && $show_partner_menu) { ?>
             <div class="balance_info flex-justify">
               <div class="balance_title">신용거래</div>
               <div class="balance"><?=number_format($balance)?>원</div>
@@ -322,7 +337,10 @@ if($is_main && !$is_member) {
             </a>
           </div>
 
-          <?php if($member['mb_type'] == 'partner') { ?>
+          <?php
+          if($member['mb_type'] == 'partner') {
+            if($show_partner_menu) {
+          ?>
           <div class="side_nav_area">
             <div class="div_title">파트너</div>
             <ul>
@@ -340,7 +358,10 @@ if($is_main && !$is_member) {
               </li>
             </ul>
           </div>
-          <?php } else { ?>
+          <?php
+            }
+          } else {
+          ?>
           <div class="side_nav_area">
             <div class="div_title">주문관리</div>
             <ul>
