@@ -105,7 +105,7 @@ $(function(){
     <div class="best_item_list" style="display: block;">
       <div class="flex">
         <div class="video_wrap">
-          <iframe width="100%" src="https://www.youtube.com/embed/6-0W0oPmo70?autoplay=1&amp;mute=1" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+          <iframe width="100%" src="https://www.youtube.com/embed/6-0W0oPmo70" data-src="https://www.youtube.com/embed/6-0W0oPmo70" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
         </div>
         <div class="info_wrap">
           <div class="flex">
@@ -133,7 +133,7 @@ $(function(){
     <div class="best_item_list">
       <div class="flex">
         <div class="video_wrap">
-          <iframe width="100%" src="https://www.youtube.com/embed/8_7jTlvt2g8?autoplay=1&amp;mute=1" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+          <iframe width="100%" src="https://www.youtube.com/embed/8_7jTlvt2g8" data-src="https://www.youtube.com/embed/8_7jTlvt2g8" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
         </div>
         <div class="info_wrap">
           <div class="flex">
@@ -161,7 +161,7 @@ $(function(){
     <div class="best_item_list">
       <div class="flex">
         <div class="video_wrap">
-          <iframe width="100%" src="https://www.youtube.com/embed/Fje8iKlvCaQ?autoplay=1&amp;mute=1" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+          <iframe width="100%" src="https://www.youtube.com/embed/Fje8iKlvCaQ" data-src="https://www.youtube.com/embed/Fje8iKlvCaQ" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
         </div>
         <div class="info_wrap">
           <div class="flex">
@@ -202,16 +202,24 @@ $(function() {
     },
     loop: true,
     on: {
-      slideChange: function() {
-        var current_slide = best_item_nav.realIndex;
-        var _video = $('.best_item_list').hide().eq(current_slide).show().find('.video_wrap iframe');
-        var video_w = _video.width();
-        var video_h = video_w * (9 / 16);
-        _video.css('height', video_h);
-        _video.attr("src", _video.attr("src"));
-      }
+      slideChange: onSlideChange
     }
   });
+
+  function onSlideChange() {
+    $('.best_item_list .video_wrap iframe').each(function() {
+      $(this).attr("src", $(this).data("src"));
+    });
+
+    var current_slide = best_item_nav.realIndex;
+    var _video = $('.best_item_list').hide().eq(current_slide).show().find('.video_wrap iframe');
+    var video_w = _video.width();
+    var video_h = video_w * (9 / 16);
+    _video.css('height', video_h);
+    _video.attr("src", _video.data("src") + '?autoplay=1&amp;mute=1');
+  }
+
+  onSlideChange();
 });
 </script>
 

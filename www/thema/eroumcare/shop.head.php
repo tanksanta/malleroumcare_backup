@@ -69,7 +69,8 @@ if($member['mb_id']) {
       WHERE
         ct_status = '완료' and
         ct_is_direct_delivery IN(1, 2) and
-        ct_direct_delivery_partner = '{$member['mb_id']}'
+        ct_direct_delivery_partner = '{$member['mb_id']}' and
+        ct_select_time >= '".date('Y-m-01')." 00:00:00'
     ");
   } else {
     $result = sql_fetch("
@@ -78,7 +79,8 @@ if($member['mb_id']) {
       WHERE
         mb_id = '{$member['mb_id']}' and
         ct_status = '완료' and
-        ct_qty - ct_stock_qty > 0
+        ct_qty - ct_stock_qty > 0 and
+        ct_select_time >= '".date('Y-m-01')." 00:00:00'
     ");
   }
   $order_count = $result['cnt'] ?: 0;
@@ -190,16 +192,11 @@ if($is_main && !$is_member) {
           </form>
         </div>
         <ul class="nav">
-          <?php if($member['mb_type'] == 'partner') { ?>
-          <li><a href="/shop/partner_orderinquiry_list.php">주문내역</a></li>
-          <li><a href="/shop/partner_ledger_list.php">거래처원장</a></li>
-          <?php } else { ?>
           <li><a href="/shop/list.php?ca_id=10">판매품목</a></li>
           <li><a href="/shop/list.php?ca_id=20">대여품목</a></li>
           <li><a href="/shop/list.php?ca_id=70">비급여품목</a></li>
-          <?php } ?>
         </ul>
-        <?php } ?>  
+        <?php } ?>
         <div class="top_right_area">
           <div class="link_area">
             <?php
