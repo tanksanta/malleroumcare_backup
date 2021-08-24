@@ -105,7 +105,7 @@ $(function(){
     <div class="best_item_list" style="display: block;">
       <div class="flex">
         <div class="video_wrap">
-          <iframe width="100%" src="https://www.youtube.com/embed/6-0W0oPmo70" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+          <iframe width="100%" src="https://www.youtube.com/embed/6-0W0oPmo70?autoplay=1&amp;mute=1" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
         </div>
         <div class="info_wrap">
           <div class="flex">
@@ -133,7 +133,7 @@ $(function(){
     <div class="best_item_list">
       <div class="flex">
         <div class="video_wrap">
-          <iframe width="100%" src="https://www.youtube.com/embed/8_7jTlvt2g8" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+          <iframe width="100%" src="https://www.youtube.com/embed/8_7jTlvt2g8?autoplay=1&amp;mute=1" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
         </div>
         <div class="info_wrap">
           <div class="flex">
@@ -161,7 +161,7 @@ $(function(){
     <div class="best_item_list">
       <div class="flex">
         <div class="video_wrap">
-          <iframe width="100%" src="https://www.youtube.com/embed/Fje8iKlvCaQ" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+          <iframe width="100%" src="https://www.youtube.com/embed/Fje8iKlvCaQ?autoplay=1&amp;mute=1" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
         </div>
         <div class="info_wrap">
           <div class="flex">
@@ -208,6 +208,7 @@ $(function() {
         var video_w = _video.width();
         var video_h = video_w * (9 / 16);
         _video.css('height', video_h);
+        _video.attr("src", _video.attr("src"));
       }
     }
   });
