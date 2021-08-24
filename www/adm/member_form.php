@@ -1068,8 +1068,8 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
 <script>
 $("#accept").click(function() {
   $.post('member_accept.php', {
-    usrId: '<?=$mb['mb_entId']?>',
-    entId: '<?=$mb['mb_id']?>'
+    usrId: '<?=$mb['mb_id']?>',
+    entId: '<?=$mb['mb_entId']?>'
   }, 'json')
   .done(function() {
     alert('승인되었습니다.');

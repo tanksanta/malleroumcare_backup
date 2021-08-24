@@ -59,6 +59,9 @@ if(!$link) {
     '추천된 수급자를 확인하세요.',
     G5_URL . '/shop/my_recipient_list.php',
   );
+
+  // 알림톡 발송
+  send_alim_talk('ENT_LINK_'.$usrId, $ent['mb_hp'], 'ent_recipient_link', "[이로움]\n\n신규 예비수급자 매칭이 요청되었습니다.\n\n예비수급자 정보\n{$rl['rl_pen_name']} 님\n({$rl['rl_pen_hp']})");
 } else {
   // 수급자-사업소 관계가 있을 때 (이미 요청한 적이 있을때)
   if($link['status'] != 'wait')

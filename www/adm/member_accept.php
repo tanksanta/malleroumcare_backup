@@ -28,4 +28,8 @@ add_notification(
   G5_URL,
 );
 
+// 알림톡 발송
+$ent = get_member($usrId);
+send_alim_talk('ENT_REGISTER_'.$usrId, $ent['mb_hp'], 'ent_register_accept', "[이로움]\n\n가입승인이 완료되었습니다.\n\n플랫폼 이용문의 : 02-830-1301");
+
 json_response(200, 'OK');

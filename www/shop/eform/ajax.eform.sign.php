@@ -147,6 +147,20 @@ ob_end_clean();
 
 mailer('이로움', 'no-reply@eroumcare.com', $eform['entMail'], "[이로움] {$eform['penNm']}님 {$eform['entNm']}사업소와 전자계약이 체결되었습니다.", $content, 1, $file);
 
+$ent = sql_fetch(" SELECT * FROM g5_member WHERE mb_entId = '{$eform['entId']}' ");
+
+// 알림톡 발송
+send_alim_talk('PEN_EFORM_'.$uuid, $eform['penConNum'], 'pen_eform_result', "[이로움]\n\n{$eform['penNm']}님,\n{$eform['entNm']} 사업소와 전자계약이 체결되었습니다.", array(
+  'button' => [
+    array(
+      'name' => '문서확인',
+      'type' => 'WL',
+      'url_mobile' => 'https://eroumcare.com/eform/eformInquiry.php?id='.$uuid
+    )
+  ]
+));
+send_alim_talk('ENT_EFORM_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.");
+
 // 계약서 정보 업데이트
 sql_query("UPDATE `eform_document` SET
 `dc_status` = '2',
