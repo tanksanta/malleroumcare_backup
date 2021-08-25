@@ -144,8 +144,8 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     <ul>
       <li>
         <select name="add_search_option" id="add_search_option">
-          <option value="it_name">상품명</option>
           <option value="od_name">사업소명</option>
+          <option value="it_name">상품명</option>
         </select>
         <input type="text" name="add_search_text" id="add_search_text" placeholder="검색명입력" >
       </li>
