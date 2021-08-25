@@ -215,7 +215,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date, ct_manager, ct_barcode_insert, ct_qty from {$g5['g5_shop_cart_table']}) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date, ct_manager, ct_barcode_insert, ct_qty, io_type, ct_price, io_price, ct_sendcost, ct_discount from {$g5['g5_shop_cart_table']}) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -237,9 +237,22 @@ $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
 // 총 금액
-$sql = " select sum(od_cart_price) as od_cart_price, sum(od_send_cost) as od_send_cost, sum(od_send_cost2) as od_send_cost2, sum(od_cart_discount) as od_cart_discount, sum(od_cart_discount2) as od_cart_discount2, sum(od_sales_discount) as od_sales_discount " . $sql_common;
+$sql = "
+  SELECT
+    sum(
+      case
+        when io_type = 0
+        then ct_price + io_price
+        else ct_price
+      end * ct_qty
+    ) as ct_price,
+    sum(ct_sendcost) as ct_sendcost,
+    sum(ct_discount) as ct_discount
+  FROM
+    ( SELECT * {$sql_common} ) u
+";
 $row = sql_fetch($sql);
-$total_price = $row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2'] - $row['od_cart_discount'] - $row['od_cart_discount2'] - $row['od_sales_discount'];
+$total_price = $row['ct_price'] + $row['ct_sendcost'] - $row['ct_discount'];
 $show_total_price = number_format($total_price);
 
 
@@ -469,6 +482,8 @@ foreach($orderlist as $order) {
 }
 
 $ret['last_step'] = $now_step;
+
+$ret['total_price'] = $show_total_price;
 
 header('Content-Type: application/json');
 //$json = str_replace("\u0022","\\\\\"",json_encode( $ret ,JSON_HEX_QUOT)); 

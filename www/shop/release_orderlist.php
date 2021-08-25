@@ -85,6 +85,9 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
 
     #manager_option, #ct_status_option{ width: 150px; height: 50px; float: left;  border-radius: 5px; border: 1px solid #E0E0E0; font-size: 14px; text-align:center;}
     #ct_status_option{width: calc(100% - 160px);margin-left:10px;}
+
+    .total_price_wrap { text-align: left !important; font-weight: bold; }
+    #total_price { display: inline-block; float: right; }
 	</style>
 </head>
  
@@ -102,6 +105,9 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
 	
 	<!-- 검색 -->
 	<div id="listSearchWrap">
+  <ul>
+    <li class="total_price_wrap">총 주문금액: <span id="total_price"></span></li>
+  </ul>
   <ul>
       <li>
         <select name="manager_option" id="manager_option">
@@ -252,6 +258,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     .done(function(result) {
       if(result.data) {
         var html = "";
+        $('#total_price').text(result.total_price + '원');
         $.each(result.data, function(key, row) {
           html += '<ul>';
           html += '<li class="mainInfo">';
