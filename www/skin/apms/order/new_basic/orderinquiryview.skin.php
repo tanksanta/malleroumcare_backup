@@ -975,7 +975,7 @@ $(function() {
 </div>
 
 <style>
-#send_statementBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#send_statementBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 5000; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 #send_statementBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 #send_statementBox iframe { position: relative; width: 730px; height: 800px; border: 0; background-color: #FFF; left: 50%; margin-left: -365px; }
 
