@@ -637,6 +637,10 @@ $(function() {
                   <?php } ?>
                   </td>
               </tr>
+              <tr>
+                  <th scope="row"><label for="od_memo"><span class="sound_only">받으시는 분 </span>배송요청사항</label></th>
+                  <td colspan="3"><input type="text" name="od_memo" value="<?php echo get_text($od['od_memo']); ?>" id="od_memo" class="frm_input"></td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -669,6 +673,12 @@ $(function() {
               <strong>주소</strong>
               <div>
                 <p><?php echo get_text(sprintf("(%s%s)", $od['od_b_zip1'], $od['od_b_zip2']).' '.print_address($od['od_b_addr1'], $od['od_b_addr2'], $od['od_b_addr3'], $od['od_b_addr_jibeon'])); ?></p>
+              </div>
+            </li>
+            <li>
+              <strong>배송요청사항</strong>
+              <div>
+                <p><?php echo get_text($od['od_memo']); ?></p>
               </div>
             </li>
             <li>

@@ -1,6 +1,7 @@
 <?php
 include_once('./_common.php');
 
+$od_id = get_search_string($od_id);
 if (!$od_id) {
   alert('잘못된 접근입니다.');
 }
@@ -14,6 +15,14 @@ if ($result['cnt']) {
 $od_b_zip1 = preg_replace('/[^0-9]/', '', substr($_POST['od_b_zip'], 0, 3));
 $od_b_zip2 = preg_replace('/[^0-9]/', '', substr($_POST['od_b_zip'], 3));
 
+$od_b_name = sql_real_escape_string($od_b_name);
+$od_b_tel = sql_real_escape_string($od_b_tel);
+$od_b_hp = sql_real_escape_string($od_b_hp);
+$od_b_addr1 = sql_real_escape_string($od_b_addr1);
+$od_b_addr2 = sql_real_escape_string($od_b_addr2);
+$od_b_addr3 = sql_real_escape_string($od_b_addr3);
+$od_b_addr_jibeon = sql_real_escape_string($od_b_addr_jibeon);
+$od_memo = sql_real_escape_string($od_memo);
 
 $sql = " update {$g5['g5_shop_order_table']}
                 set 
@@ -25,7 +34,8 @@ $sql = " update {$g5['g5_shop_order_table']}
                     od_b_addr1 = '$od_b_addr1',
                     od_b_addr2 = '$od_b_addr2',
                     od_b_addr3 = '$od_b_addr3',
-                    od_b_addr_jibeon = '$od_b_addr_jibeon'
+                    od_b_addr_jibeon = '$od_b_addr_jibeon',
+                    od_memo = '$od_memo'
                     ";
 $sql .= " where od_id = '$od_id' ";
 sql_query($sql);
