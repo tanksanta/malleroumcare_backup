@@ -137,6 +137,14 @@ if ($od_escrow) {
   $where[] = " od_escrow = 1 ";
 }
 
+if($manager_option) {
+  $where[] = " mb_manager = '{$manager_option}' ";
+}
+
+if($ct_status_option) {
+  $ct_status = explode(',', $ct_status_option);
+}
+
 if ($fr_date && $to_date) {
   $where[] = " {$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
 }
@@ -154,7 +162,6 @@ if ($search_option && strpos($search_option, ',') !== false) {
 
 
 $where[] = " od_del_yn = 'N' ";
-$where[] = " ct_status != '완료' ";
 
 if ($where) {
   $where2 = $where;
@@ -381,8 +388,9 @@ foreach($orderlist as $order) {
     }
   }
 
-  if($ct_status['name']=="출고완료"){$od_status_name="출고<br>완료"; $class_type1="type4"; $class_type2= ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : ""; }
-  if($ct_status['name']=="배송완료"){$od_status_name="배송<br>완료"; $class_type1="type5"; }
+  if($ct_status['name']=="상품준비"){ $od_status_name="상품<br>준비"; $class_type1="type2"; }
+  if($ct_status['name']=="출고완료"){ $od_status_name="출고<br>완료"; $class_type1="type4"; $class_type2= ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : ""; }
+  if($ct_status['name']=="배송완료"){ $od_status_name="배송<br>완료"; $class_type1="type5"; }
 
   if(strpos($prodBarNumCntBtnWord, "입력완료") !== false) { 
     $complate_flag="cf"; 

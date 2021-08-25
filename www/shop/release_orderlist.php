@@ -1,12 +1,7 @@
 <?php
 include_once("./_common.php");
-$g5["title"] = "주문 내역 바코드 수정";
-$prodList = [];
-$prodListCnt = 0;
-$deliveryTotalCnt = 0;
+
 if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
-$sub_menu = '400402';
-// alert('준비중입니다.',G5_URL);
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,7 +9,7 @@ $sub_menu = '400402';
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>출고목록</title>
+	<title>관리자 주문내역 관리</title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
@@ -87,6 +82,9 @@ $sub_menu = '400402';
     
     #search_option{ width: 80px; height: 50px; float: left;  border-radius: 5px; border: 1px solid #E0E0E0; font-size: 14px; text-align:center;}
     #search_text{width:calc(100% - 90px) !important;margin-left:10px;}
+
+    #manager_option, #ct_status_option{ width: 150px; height: 50px; float: left;  border-radius: 5px; border: 1px solid #E0E0E0; font-size: 14px; text-align:center;}
+    #ct_status_option{width: calc(100% - 160px);margin-left:10px;}
 	</style>
 </head>
  
@@ -94,7 +92,7 @@ $sub_menu = '400402';
 
 	<!-- 고정 상단 -->
 	<div id="popupHeaderTopWrap">
-    <div class="title">출고리스트</div>
+    <div class="title">관리자 주문내역 관리</div>
     <div class="close">
     	<a href="<?=G5_URL?>">
         &times;
@@ -104,6 +102,27 @@ $sub_menu = '400402';
 	
 	<!-- 검색 -->
 	<div id="listSearchWrap">
+  <ul>
+      <li>
+        <select name="manager_option" id="manager_option">
+          <option value="" selected>영업사원 전체</option>
+          <?php
+          $sql = "SELECT * FROM g5_auth WHERE au_menu = '400400' AND au_auth LIKE '%w%'";
+          $auth_result = sql_query($sql);
+          while($a_row = sql_fetch_array($auth_result)) {
+              $a_mb = get_member($a_row['mb_id']);
+          ?>
+          <option value="<?=$a_mb['mb_id']?>"><?=$a_mb['mb_name']?></option>
+          <?php } ?>
+        </select>
+        <select name="ct_status_option" id="ct_status_option">
+          <option value="출고준비,배송" selected>출고준비/출고완료</option>
+          <option value="준비,출고준비,배송,완료">전체</option>
+          <option value="준비">상품준비</option>
+          <option value="배송">출고완료</option>
+        </select>
+      </li>
+    </ul>
     <ul>
       <li>
         <select name="search_option" id="search_option">
@@ -216,6 +235,8 @@ $sub_menu = '400402';
 
     formdata["fr_date"] = $("#search_fr_date").val();
     formdata["to_date"] = $("#search_to_date").val();
+    formdata["manager_option"] = $("#manager_option").val();
+    formdata["ct_status_option"] = $("#ct_status_option").val();
     formdata["search_option"] = $("#search_option").val();
     formdata["search_text"] = $("#search_text").val();
     formdata['cf']=document.getElementById('cf_flag').checked;

@@ -262,7 +262,7 @@ if($is_main && !$is_member) {
         </div>
         <div class="scrollable_wrap">
           <?php if($member['mb_level'] >= 9) { ?>
-          <a href="/shop/release_orderlist.php" class="btn_orderlist">관리자 주문 출고 관리</a>
+          <a href="/shop/release_orderlist.php" class="btn_orderlist">관리자 주문내역 관리</a>
           <?php } ?>
           <div class="user_info_area">
             <a href="<?=$at_href['edit'];?>" class="btn_small btn_edit">정보수정</a>
