@@ -80,8 +80,8 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     #listDataWrap > ul > li.barInfo.disable { border-color: #B8B8B8; background-color: #B8B8B8; }
     #listDataWrap > ul > li.barInfo.disable > .cnt { color: #FFF; }
     
-    #search_option{ width: 80px; height: 50px; float: left;  border-radius: 5px; border: 1px solid #E0E0E0; font-size: 14px; text-align:center;}
-    #search_text{width:calc(100% - 90px) !important;margin-left:10px;}
+    #search_option, #add_search_option{ width: 80px; height: 50px; float: left;  border-radius: 5px; border: 1px solid #E0E0E0; font-size: 14px; text-align:center;}
+    #search_text, #add_search_text{width:calc(100% - 90px) !important;margin-left:10px;}
 
     #manager_option, #ct_status_option{ width: 150px; height: 50px; float: left;  border-radius: 5px; border: 1px solid #E0E0E0; font-size: 14px; text-align:center;}
     #ct_status_option{width: calc(100% - 160px);margin-left:10px;}
@@ -113,7 +113,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
         <select name="manager_option" id="manager_option">
           <option value="" selected>영업사원 전체</option>
           <?php
-          $sql = "SELECT * FROM g5_auth WHERE au_menu = '400400' AND au_auth LIKE '%w%'";
+          $sql = "SELECT * FROM g5_auth WHERE au_menu = '999001' AND au_auth LIKE '%w%'";
           $auth_result = sql_query($sql);
           while($a_row = sql_fetch_array($auth_result)) {
               $a_mb = get_member($a_row['mb_id']);
@@ -139,6 +139,15 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
           <option value="od_name">사업소명</option>
         </select>
         <input type="text" name="search_text" id="search_text" placeholder="검색명입력" >
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <select name="add_search_option" id="add_search_option">
+          <option value="it_name">상품명</option>
+          <option value="od_name">사업소명</option>
+        </select>
+        <input type="text" name="add_search_text" id="add_search_text" placeholder="검색명입력" >
       </li>
     </ul>
     <ul>
@@ -172,7 +181,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
       <span class="icon">
         <i class="fa fa-check"></i>
       </span>
-      <span class="label">내 담당만 보기</span>
+      <span class="label">내 출고담당만 보기</span>
     </label>
 
     <input type="checkbox" id="cf_flag3" <?php if($_COOKIE['cf_flag3'] == 'true') echo 'checked'; ?>>
@@ -245,6 +254,8 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     formdata["ct_status_option"] = $("#ct_status_option").val();
     formdata["search_option"] = $("#search_option").val();
     formdata["search_text"] = $("#search_text").val();
+    formdata["add_search_option"] = $("#add_search_option").val();
+    formdata["add_search_text"] = $("#add_search_text").val();
     formdata['cf']=document.getElementById('cf_flag').checked;
     formdata['page'] = page2;
     page2++;
