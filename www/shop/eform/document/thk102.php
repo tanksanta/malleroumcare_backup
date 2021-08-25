@@ -104,7 +104,7 @@
           <td colspan="2">&nbsp;</td>
           <td class="right"><?=number_format($item['it_price'])?></td>
           <td colspan="2"><?=$eform['entNm']?></td>
-          <td><?=$eform['entCrn']?></td>
+          <td><?=$eform['entNum']?></td>
         </tr>
         <?php
           $total_buy_price += intval($item['it_price']);
@@ -122,7 +122,7 @@
           <td colspan="2"><?=$item['it_date']?></td>
           <td class="right"><?=number_format($item['it_price'])?></td>
           <td colspan="2"><?=$eform['entNm']?></td>
-          <td><?=$eform['entCrn']?></td>
+          <td><?=$eform['entNum']?></td>
         </tr>
         <?php
           $total_rent_price += intval($item['it_price']);

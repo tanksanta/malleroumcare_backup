@@ -30,7 +30,7 @@
       </tr>
       <tr>
         <td colspan="2"><?=$eform['entNm']?></td>
-        <td colspan="2"><?=$eform['entCrn']?></td>
+        <td colspan="2"><?=$eform['entNum']?></td>
       </tr>
     </table>
     <table class="item_table">
