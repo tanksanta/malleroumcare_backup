@@ -152,6 +152,13 @@ function imageview(id, w, h)
 			$gnb_index_class = ($is_index) ? ' gnb_1dli_air' : '';
 
 			foreach($amenu as $key=>$value) {
+        if($key == '999') {
+          foreach($menu['menu'.$key] as $m_row) {
+            $auth_menu[$m_row[0]] = $m_row[1];
+          }
+          continue;
+        }
+
 				$href1 = $href2 = '';
 				if ($menu['menu'.$key][0][2]) {
 					//$board_class = $menu['menu'.$key][0][1] == '게시판관리' ? 'gnb_1da_board' : '';
