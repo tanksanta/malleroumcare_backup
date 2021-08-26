@@ -1,5 +1,69 @@
 <?php
     include_once('./_common.php');
+
+    $mb_zip1 = substr($_POST['mb_zip'], 0, 3);
+    $mb_zip2 = substr($_POST['mb_zip'], 3);
+
+    if ($mb_type === 'normal') {
+        if ($w) {
+            $sql = "
+                UPDATE {$g5["member_table"]} SET
+                    mb_name = '{$mb_giup_bname}',
+                    mb_nick = '{$mb_giup_bname}',
+                    mb_giup_bname = '{$mb_giup_bname}',
+                    mb_hp = '{$mb_hp1}-{$mb_hp2}-{$mb_hp3}',
+                    mb_tel = '{$mb_tel1}-{$mb_tel2}-{$mb_tel3}',
+                    mb_giup_btel = '{$mb_tel1}-{$mb_tel2}-{$mb_tel3}',
+                    mb_type = '{$mb_type}',
+                    mb_password = '".get_encrypt_string($mb_password)."',
+                    mb_email = '{$mb_email}',
+                    mb_fax = '{$mb_fax1}-{$mb_fax2}-{$mb_fax3}',
+                    sealFile = '".$sealFile_name."',
+                    crnFile = '".$crnFile_name."',
+                    mb_zip1 = '{$mb_zip1}',
+                    mb_zip2 = '{$mb_zip2}',
+                    mb_addr1 = '{$mb_addr1}',
+                    mb_addr2 = '{$mb_addr2}',
+                    mb_addr3 = '{$mb_addr3}',
+                    mb_addr_jibeon = '{$mb_addr_jibeon}',
+                    mb_datetime = '".G5_TIME_YMDHIS."'
+                WHERE mb_id = '{$member["mb_id"]}'
+            ";
+            sql_query($sql);
+            alert('회원 정보 수정이 완료되었습니다.', G5_URL);
+        } else {
+            $sql = "
+                INSERT INTO {$g5["member_table"]} SET
+                    mb_id = '{$mb_id}',
+                    mb_name = '{$mb_giup_bname}',
+                    mb_nick = '{$mb_giup_bname}',
+                    mb_giup_bname = '{$mb_giup_bname}',
+                    mb_hp = '{$mb_hp1}-{$mb_hp2}-{$mb_hp3}',
+                    mb_tel = '{$mb_tel1}-{$mb_tel2}-{$mb_tel3}',
+                    mb_giup_btel = '{$mb_tel1}-{$mb_tel2}-{$mb_tel3}',
+                    mb_type = '{$mb_type}',
+                    mb_level = '1',
+                    mb_password = '".get_encrypt_string($mb_password)."',
+                    mb_email = '{$mb_email}',
+                    mb_fax = '{$mb_fax1}-{$mb_fax2}-{$mb_fax3}',
+                    sealFile = '".$sealFile_name."',
+                    crnFile = '".$crnFile_name."',
+                    mb_zip1 = '{$mb_zip1}',
+                    mb_zip2 = '{$mb_zip2}',
+                    mb_addr1 = '{$mb_addr1}',
+                    mb_addr2 = '{$mb_addr2}',
+                    mb_addr3 = '{$mb_addr3}',
+                    mb_addr_jibeon = '{$mb_addr_jibeon}',
+                    mb_datetime = '".G5_TIME_YMDHIS."'
+            ";
+            sql_query($sql);
+            alert('회원가입이 완료되었습니다.',G5_BBS_URL."/register_result.php");
+        }
+        exit;
+    }
+
+
+
     $sendData=[];
     $sendData['usrId'] =$_POST['mb_id'];
     $resInfo = get_eroumcare(EROUMCARE_API_ENT_ACCOUNT, $sendData);
@@ -102,7 +166,7 @@
                     mb_nick = '{$resInfo["entNm"]}',
                     mb_hp = '{$resInfo["usrPnum"]}',
                     mb_tel = '{$resInfo["usrPnum"]}',
-                    mb_type = '{$resInfo["type"]}',
+                    mb_type = '{$mb_type}',
                     mb_entId = '{$resInfo["entId"]}',
                     mb_entNm = '{$resInfo["entNm"]}',
                     mb_level = '3',
@@ -143,7 +207,7 @@
                     mb_nick = '{$resInfo["entNm"]}',
                     mb_hp = '{$resInfo["usrPnum"]}',
                     mb_tel = '{$resInfo["usrPnum"]}',
-                    mb_type = '{$resInfo["type"]}',
+                    mb_type = '{$mb_type}',
                     mb_entId = '{$resInfo["entId"]}',
                     mb_entNm = '{$resInfo["entNm"]}',
                     mb_password = '".get_encrypt_string($mb_password)."',
