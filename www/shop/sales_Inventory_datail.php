@@ -176,7 +176,7 @@ include_once('./_head.php');
 $sql = 'SELECT * FROM `g5_shop_item` WHERE `it_id`="'.$_GET['prodId'].'"';
 $row = sql_fetch($sql);
 ?>
-<link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
+<link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css?v=20210826">
 <section id="stock" class="wrap" >
   <h2>판매 재고 상세</h2>
   <div class="stock-view">
@@ -391,7 +391,7 @@ $row = sql_fetch($sql);
                   <b><img src="<?=G5_IMG_URL?>/icon_11.png" alt=""></b>
                   <ul class="modalDialog">
                     <li class="p-btn01"><a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">삭제</a></li>
-                    <li class="p-btn01"><a href="javascript:;" onclick="sell_stoId('<?=$list[$i]['stoId']?>', '<?=$list[$i]['prodBarNum']?>')">판매완료처리</a></li>
+                    <li class="p-btn01"><a href="javascript:;" onclick="open_sell_popup(this)">판매완료처리</a></li>
                   </ul>
                 </div>
               </span>
@@ -411,6 +411,39 @@ $row = sql_fetch($sql);
                   <span class="order2">
                     <a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">삭제</a>
                   </span>
+                </div>
+              </div>
+
+              <!-- 판매완료처리 -->
+              <div class="popup01 popup_sell">
+                <div class="p-inner">
+                  <h2>판매완료처리</h2>
+                  <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
+                  <form name="form_sell" class="form_sell" role="form">
+                    <input type="hidden" name="stoId" value="<?=$list[$i]['stoId']?>">
+                    <input type="hidden" name="prodBarNum" value="<?=$list[$i]['prodBarNum']?>">
+                    <ul style="padding: 20px 0;">
+                      <li>
+                        <b>수급자명</b>
+                        <div class="input-box">
+                          <input type="text" name="penNm">
+                          <button type="button" onclick="click_x(this)" ><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                        </div>
+                      </li>
+                    </ul>
+                    <label class="label_confirm">
+                      <input type="checkbox" name="chk_confirm" class=".chk_confirm">
+                      확인함
+                    </label>
+                    <div class="sell_desc">
+                      직접 판매완료 처리하는 경우 등록된 수급자의<br>
+                      청구관리 및 계약정보에 반영되지 않습니다.
+                    </div>
+                    <div class="popup-btn">
+                      <button type="submit">확인</button>
+                      <button type="button" class="p-cls-btn" onclick="close_popup(this)">취소</button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </li>
@@ -561,8 +594,15 @@ $row = sql_fetch($sql);
                     }
                   }
                 }
+
+                if($list[$i]['penId']) {
+                  echo '<a href="'.G5_SHOP_URL.'/my_recipient_update.php?id='.$list[$i]['penId'].'">'.$list[$i]['penNm'].'</a>';
+                } else {
+                  // 직접 판매완료처리한 상품인지 조회
+                  $custom_order_result = sql_fetch(" select * from stock_custom_order where sc_stoId = '{$list[$i]['stoId']}' ");
+                  echo $custom_order_result['sc_penNm'] ?: '';
+                }
                 ?>
-                <a href="<?=G5_SHOP_URL?>/my_recipient_update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a>
               </span>
               <?php
               //날짜 변환
@@ -826,6 +866,7 @@ $(function() {
   $("#order_recipientBox").css("opacity", 1);
   $(".listPopupBoxWrap").hide();
   $(".listPopupBoxWrap").css("opacity", 1);
+
 });
 </script>
 
@@ -906,7 +947,37 @@ function del_stoId(stoId) {
   }
 }
 
-function sell_stoId(stoId, prodBarNum) {
+function click_x(this_click){
+  $(this_click).closest("li").find("input").val("");
+}
+
+//닫기
+function close_popup(e){
+  $(e).parents('.popup01').stop().hide();
+}
+
+function open_sell_popup(e, stoId, prodBarNum) {
+  var $popup = $(e).parents('.list').find('.popup_sell').stop();
+  $popup.show();
+}
+
+$(function() {
+  $('.form_sell').on('submit', function(e) {
+    e.preventDefault();
+
+    var confirmed = $(this).find('input[name=chk_confirm]').prop('checked');
+    if(!confirmed) {
+      return alert('판매완료처리 안내사항을 확인해주세요.');
+    }
+    var stoId = $(this).find('input[name=stoId]').val();
+    var prodBarNum = $(this).find('input[name=prodBarNum]').val();
+    var penNm = $(this).find('input[name=penNm]').val();
+
+    sell_stoId(stoId, prodBarNum, penNm);
+  });
+});
+
+function sell_stoId(stoId, prodBarNum, penNm) {
   if(!confirm("판매완료처리 후 다시 재고등록으로 변경은 불가능합니다.\n완료처리하시겠습니까?"))
     return;
 
@@ -914,6 +985,7 @@ function sell_stoId(stoId, prodBarNum) {
     prodId: '<?=$it_id?>',
     stoId: stoId,
     prodBarNum: prodBarNum,
+    penNm: penNm
   }, 'json')
   .done(function(result) {
     alert('완료되었습니다.');

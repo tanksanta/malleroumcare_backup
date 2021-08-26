@@ -57,6 +57,9 @@ table {border-collapse: collapse;}
 .popup01 .table-box table td a:hover {border-color:#ee8102;color: #ee8102;}
 .popup01.popup2 .p-inner ul li b {width: 120px;}
 .popup01 .pop_tit{padding: 20px; background: #eee; font-size: 24px;}
+.popup01 .label_confirm { display: block; color: #000; font-weight: bold; }
+.popup01 .label_confirm .chk_confirm { vertical-align: top; margin-right: 5px; }
+.popup01 .sell_desc { color: #666; margin: 20px 0; }
 
 /* #stock {margin-top: 74px;} */
 #stock h2 {padding-bottom:16px;font-size: 24px;text-align: left;font-weight:bold;}
