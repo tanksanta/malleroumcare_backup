@@ -364,6 +364,7 @@ if($is_main && !$is_member) {
           } else {
           ?>
           <div class="side_nav_area">
+            <?php if ($member['mb_type'] !== 'normal') { ?>
             <div class="div_title">주문관리</div>
             <ul>
               <li>
@@ -388,7 +389,6 @@ if($is_main && !$is_member) {
                 </a>
               </li>
             </ul>
-            <?php if ($member['mb_type'] !== 'normal') { ?>
             <div class="div_title">운영관리</div>
             <ul>
               <li>
