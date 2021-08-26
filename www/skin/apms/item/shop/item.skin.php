@@ -10,7 +10,7 @@ $resInfo = get_eroumcare(EROUMCARE_API_ENT_ACCOUNT, $sendData);
 if(!$member['mb_id']){
   alert('회원만 이용 가능합니다.',G5_BBS_URL.'/login.php');
 }
-if($member['mb_level']<5){ //관리자나 매니저 아이디는 시스템에 등록되어 있지 않음
+if($member['mb_level']<5 && $member['mb_type'] !== 'normal'){ //관리자나 매니저 아이디는 시스템에 등록되어 있지 않음
   if($resInfo['data']['entConfirmCd']=="02"||!$resInfo['data']['entConfirmCd']){
     alert('승인된 회원만 이용 가능합니다.',G5_BBS_URL.'/login.php');
   }

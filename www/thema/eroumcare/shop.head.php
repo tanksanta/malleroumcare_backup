@@ -32,7 +32,7 @@ if($member['mb_id']) {
   $res = api_post_call(EROUMCARE_API_ENT_ACCOUNT, array(
     'usrId' => $member['mb_id']
   ));
-  if($res['data']['entConfirmCd'] == '01' || $member['mb_level'] >= 5 || $is_samhwa_partner ) {
+  if($res['data']['entConfirmCd'] == '01' || $member['mb_level'] >= 5 || $is_samhwa_partner || $member['mb_type'] === 'normal' ) {
     $is_approved = true;
   }
 
@@ -275,6 +275,7 @@ if($is_main && !$is_member) {
                 else if($member['mb_level'] == 4) echo '우수사업소';
                 else if($member['mb_level'] >= 9) echo '관리자';
                 if($member['mb_type'] == 'partner') echo '파트너';
+                if($member['mb_type'] == 'normal') echo '일반수급자';
                 ?>
               </div>
               <?php } ?>
@@ -387,6 +388,7 @@ if($is_main && !$is_member) {
                 </a>
               </li>
             </ul>
+            <?php if ($member['mb_type'] !== 'normal') { ?>
             <div class="div_title">운영관리</div>
             <ul>
               <li>
@@ -425,13 +427,16 @@ if($is_main && !$is_member) {
                 </a>
               </li>
             </ul>
+            <?php } ?>
             <div class="div_title">기타/편의</div>
             <ul class="etc">
+              <?php if ($member['mb_type'] !== 'normal') { ?>
               <li>
                 <a href="/shop/my_data_upload.php">
                   과거공단자료 업로드
                 </a>
               </li>
+              <?php } ?>
               <li>
                 <a href="/bbs/qalist.php">
                   고객센터(1:1문의)

@@ -3,7 +3,9 @@ include_once('./_common.php');
 $g5['title'] = "로그인 검사";
 # 210131 이로움 계정검사
 
-if($_POST["mb_id"] != "admin") {
+$check_member = get_member($_POST["mb_id"]);
+
+if($_POST["mb_id"] != "admin" && $check_member['mb_type'] !== 'normal') {
   $sendData = [];
   $sendData["usrId"] = $_POST["mb_id"];
   $sendData["pw"] = $_POST["mb_password"];
