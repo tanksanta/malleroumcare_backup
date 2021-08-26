@@ -362,15 +362,26 @@ expired_rental_item_clean($_GET['prodId']);
             $state_menu_del='<li><a href="javascript:;" onclick="del_stoId(\''.$list[$i]['stoId'].'\')">삭제</a></li>';
             //대여 날짜 변환
             $rental_date="";
-            $ordLendStrDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendStrDtm']));
-            $ordLendEndDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendEndDtm']));
+            if($list[$i]['ordLendStrDtm'] && $list[$i]['ordLendEndDtm']) {
+              $ordLendStrDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendStrDtm']));
+              $ordLendEndDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendEndDtm']));
+            } else {
+              // 대여기간정보가 없는 경우 대여완료처리 테이블 조회
+              $custom_order_result = sql_fetch(" SELECT * FROM stock_custom_order WHERE sc_stoId = '{$list[$i]['stoId']}' and sc_rent_state = 'rent' ");
+              if($custom_order_result['sc_sale_date']) {
+                $ordLendStrDtm_date = $custom_order_result['sc_sale_date'];
+                $ordLendEndDtm_date = $custom_order_result['sc_rent_date'];
+              }
+            }
             //메뉴 선택  01: 재고(대여가능) 02: 재고소진(대여중) 08: 소독중 09: 대여종료
             switch ($list[$i]['stateCd']) {
               case '01':
                 $state="대여가능";
                 $state_menu_all = $state_menu3.$state_menu8;
-                $rental_btn='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodOption'].'\',\''.$list[$i]['prodBarNum'].'\')">대여</a>'; //대여 버튼
-                $rental_btn2='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodOption'].'\',\''.$list[$i]['prodBarNum'].'\')">대여하기</a>'; //대여 버튼
+                $rental_btn = '<a class="state-btn1" href="javascript:;" onclick="open_rent_popup(this)">대여</a>';
+                $rental_btn2 = '<a class="state-btn1" href="javascript:;" onclick="open_rent_popup(this)">대여하기</a>';
+                //$rental_btn='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodOption'].'\',\''.$list[$i]['prodBarNum'].'\')">대여</a>'; //대여 버튼
+                //$rental_btn2='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodOption'].'\',\''.$list[$i]['prodBarNum'].'\')">대여하기</a>'; //대여 버튼
                 break;
               case '02':
                 $state="대여중";
@@ -559,6 +570,60 @@ expired_rental_item_clean($_GET['prodId']);
                     <button type="submit" onclick="designate_disinfection('<?=$list[$i]['stoId']?>','dis_detail_<?=$list[$i]['stoId']?>','dis_perosn_<?=$list[$i]['stoId']?>','dis_phone_<?=$list[$i]['stoId']?>','08')" >확인</button>
                     <button type="button" class="p-cls-btn" onclick="close_popup(this)">취소</button>
                   </div>
+                </div>
+              </div>
+
+              <!-- 대여 팝업 -->
+              <div class="popup01 popup_rent">
+                <div class="p-inner">
+                  <h2>대여완료처리</h2>
+                  <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
+                  <div class="rent_wrap">
+                    등록 수급자 선택 후 처리
+                    <button type="button" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodOption']?>','<?=$list[$i]['prodBarNum']?>')">확인</button>
+                  </div>
+                  <div class="sell_desc">
+                    수급자 선택없이 대여완료 처리
+                  </div>
+                  <form name="form_rent" class="form_rent" role="form">
+                    <input type="hidden" name="stoId" value="<?=$list[$i]['stoId']?>">
+                    <input type="hidden" name="prodBarNum" value="<?=$list[$i]['prodBarNum']?>">
+                    <ul style="padding: 0 0 20px 0;">
+                      <li>
+                        <b>수급자명</b>
+                        <div class="input-box">
+                          <input type="text" name="penNm">
+                          <button type="button" onclick="click_x(this)" ><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                        </div>
+                      </li>
+                      <li>
+                        <b>대여시작일</b>
+                        <div class="input-box">
+                          <input type="text" class="ipt_date" name="strDate">
+                          <button type="button" onclick="click_x(this)" ><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                        </div>
+                      </li>
+                      <li>
+                        <b>대여종료일</b>
+                        <div class="input-box">
+                          <input type="text" class="ipt_date" name="endDate">
+                          <button type="button" onclick="click_x(this)" ><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
+                        </div>
+                      </li>
+                    </ul>
+                    <label class="label_confirm">
+                      <input type="checkbox" name="chk_confirm" class=".chk_confirm">
+                      확인함
+                    </label>
+                    <div class="sell_desc">
+                      직접 대여완료 처리하는 경우 등록된 수급자의<br>
+                      청구관리 및 계약정보에 반영되지 않습니다.
+                    </div>
+                    <div class="popup-btn">
+                      <button type="submit">확인</button>
+                      <button type="button" class="p-cls-btn" onclick="close_popup(this)">취소</button>
+                    </div>
+                  </form>
                 </div>
               </div>
 
@@ -1109,6 +1174,39 @@ function selected_recipient(penId) {
   document.getElementById('recipient_info').submit();
 }
 $(function() {
+  // 대여완료처리
+  $('.ipt_date').datepicker({});
+  $('.form_rent').on('submit', function(e) {
+    e.preventDefault();
+
+    var confirmed = $(this).find('input[name=chk_confirm]').prop('checked');
+    if(!confirmed) {
+      return alert('대여완료처리 안내사항을 확인해주세요.');
+    }
+    var stoId = $(this).find('input[name=stoId]').val();
+    var prodBarNum = $(this).find('input[name=prodBarNum]').val();
+    var penNm = $(this).find('input[name=penNm]').val();
+    var strDate = $(this).find('input[name=strDate]').val();
+    var endDate = $(this).find('input[name=endDate]').val();
+
+    $.post('ajax.stock.rent.php', {
+      prodId: '<?=$it_id?>',
+      stoId: stoId,
+      prodBarNum: prodBarNum,
+      penNm: penNm,
+      strDate: strDate,
+      endDate: endDate
+    }, 'json')
+    .done(function(result) {
+      alert('완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
   $('.form_change_option').on('submit', function(e) {
     e.preventDefault();
     change_option(this);
@@ -1167,6 +1265,11 @@ $('body').click(function(event) {
 });
 
 //##팝업
+//대여완료처리
+function open_rent_popup(e) {
+  $(e).parents('.list').find('.popup_rent').stop().show();
+}
+
 //대여기간 수정
 function open_retal_period(e) {
   $(e).parents('.list').find('.popup4').stop().show();

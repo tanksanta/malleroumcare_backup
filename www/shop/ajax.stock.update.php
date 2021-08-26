@@ -1,5 +1,21 @@
 <?php
-
+  $prods = $_POST['prods'];
+  if(is_array($prods)) {
+    foreach($prods as $prod) {
+      if($prod['stateCd'] == '09') { // 대여종료
+        sql_query("
+          UPDATE
+            stock_custom_order
+          SET
+            sc_rent_state = 'done',
+            sc_updated_at = NOW()
+          WHERE
+            sc_stoId = '{$prod['stoId']}' and
+            sc_rent_state = 'rent'
+        ");
+      }
+    }
+  }
 	// header("Content-Type: application/json");
 
 	$oCurl = curl_init();

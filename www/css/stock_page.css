@@ -59,7 +59,10 @@ table {border-collapse: collapse;}
 .popup01 .pop_tit{padding: 20px; background: #eee; font-size: 24px;}
 .popup01 .label_confirm { display: block; color: #000; font-weight: bold; }
 .popup01 .label_confirm .chk_confirm { vertical-align: top; margin-right: 5px; }
-.popup01 .sell_desc { color: #666; margin: 20px 0; }
+.popup01 .sell_desc { color: #999; margin: 20px 0; }
+.popup01 .rent_wrap { border-bottom: 1px solid #ccc; padding-bottom: 20px; font-weight: bold; line-height: 40px; }
+.popup01 .rent_wrap:after { display: table; content: ''; clear: both; }
+.popup01 .rent_wrap button { float: right; display: block; width: 90px; height: 40px; padding: 10px 0; background: #ee8102;font-size: 14px;color: #fff; line-height: 1; }
 
 /* #stock {margin-top: 74px;} */
 #stock h2 {padding-bottom:16px;font-size: 24px;text-align: left;font-weight:bold;}
