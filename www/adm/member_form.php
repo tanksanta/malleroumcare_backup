@@ -247,18 +247,18 @@ label {
             </select>
         </td>
     </tr>
-	<?php if($mb['as_date']) { ?>
-		<tr>
-			<th scope="row"><label for="mb_level">이용 기간</label></th>
-			<td colspan="3">
-				<?php echo date("Y년 m월 d일 H시 i분 s초", $mb['as_date']);?>까지
-				:
-				± <input type="text" name="as_date_plus" value="" id="as_date_plus" maxlength="20" class="frm_input" size="4"> 일 증감하기
-				&nbsp;
-				<label><input type="checkbox" value="1" name="as_leave" id="as_leave"> 멤버쉽 해제하기(※주의! 체크시 이용기간이 초기화됨)</label>
-			</td>
-		</tr>
-	<?php } ?>
+  <?php if($mb['as_date']) { ?>
+    <tr>
+      <th scope="row"><label for="mb_level">이용 기간</label></th>
+      <td colspan="3">
+        <?php echo date("Y년 m월 d일 H시 i분 s초", $mb['as_date']);?>까지
+        :
+        ± <input type="text" name="as_date_plus" value="" id="as_date_plus" maxlength="20" class="frm_input" size="4"> 일 증감하기
+        &nbsp;
+        <label><input type="checkbox" value="1" name="as_leave" id="as_leave"> 멤버쉽 해제하기(※주의! 체크시 이용기간이 초기화됨)</label>
+      </td>
+    </tr>
+  <?php } ?>
     <tr>
         <th scope="row"><label for="mb_hp">휴대폰번호</label></th>
         <td>
@@ -1084,15 +1084,15 @@ $("#accept").click(function() {
 function fmember_submit()
 {   
      var f = document.getElementById("fmember");
-	// 회원아이디 검사
-	if (f.w.value == "") {
-		var msg = reg_mb_id_check();
-		if (msg) {
-			alert(msg);
-			f.mb_id.select();
-			return false;
-		}
-	}
+  // 회원아이디 검사
+  if (f.w.value == "") {
+    var msg = reg_mb_id_check();
+    if (msg) {
+      alert(msg);
+      f.mb_id.select();
+      return false;
+    }
+  }
     if(!f.mb_giup_bname.value){
         /*alert('기업명을 입력하세요.');
         f.mb_giup_bname.focus();
@@ -1150,14 +1150,14 @@ function fmember_submit()
     //     return false;
     // }
     // E-mail 검사
-	if ((f.w.value == "") || (f.w.value == "u" && f.mb_email.defaultValue != f.mb_email.value)) {
-		var msg = reg_mb_email_check();
-		if (msg) {
-			alert(msg);
-			f.reg_mb_email.select();
-			return false;
-		}
-	}
+  if ((f.w.value == "") || (f.w.value == "u" && f.mb_email.defaultValue != f.mb_email.value)) {
+    var msg = reg_mb_email_check();
+    if (msg) {
+      alert(msg);
+      f.reg_mb_email.select();
+      return false;
+    }
+  }
     // if(!f.mb_giup_bnum.value){
     //     alert('사업자 번호를 입력하세요.');
     //     f.mb_giup_bnum.focus();
@@ -1216,11 +1216,11 @@ function fmember_submit()
     //     return false;
     // }
     // var msg = reg_mb_hp_check();
-	// if (msg) {
-	// 	alert(msg);
-	// 	f.reg_mb_hp.select();
-	// 	return false;
-	// }
+  // if (msg) {
+  //   alert(msg);
+  //   f.reg_mb_hp.select();
+  //   return false;
+  // }
 
     // if (f.mb_name.value.length < 1) {
     //     alert("관리자 이름을 입력하십시오.");
@@ -1337,62 +1337,67 @@ function fmember_submit()
     // }
     // return false;
 
-    <?php if(!$w){
-            $api_url = "https://system.eroumcare.com:9901/api/ent/insert";
-        }else{
-            $api_url = "https://system.eroumcare.com:9901/api/ent/update";
-        } 
+    <?php
+    if(!$w) {
+      $api_url = "https://system.eroumcare.com:9901/api/ent/insert";
+    } else {
+      $api_url = "https://system.eroumcare.com:9901/api/ent/update";
+    }
     ?>
-        var info = "<?php echo $w==''?'회원가입 하시겠습니까?':'수정 하시겠습니까?'; ?>";
-        if (confirm(info)) {
-            $.ajax({
-                    type: 'POST',
-                    url : "<?=$api_url?>",
-                    type : "POST",
-                    async : false,
-                    cache : false,
-                    processData : false,
-                    contentType : false,
-                    data : sendData,
-                }).done(function (data) {
-                    if(data.message == "SUCCESS"){
-                        f.submit();
-                        return false;
-                    }else{
-                        alert(data.message);
-                        return false;
-                    }
-            });
+    var info = "<?php echo $w==''?'회원가입 하시겠습니까?':'수정 하시겠습니까?'; ?>";
+    if (confirm(info)) {
+      if(!sendData.get('entId')) {
+        return f.submit();
+      }
+
+      $.ajax({
+        type: 'POST',
+        url : "<?=$api_url?>",
+        type : "POST",
+        async : false,
+        cache : false,
+        processData : false,
+        contentType : false,
+        data : sendData,
+      }).done(function (data) {
+        if(data.message == "SUCCESS") {
+          f.submit();
+          return false;
+        } else {
+          alert(data.message);
+          return false;
         }
-        return false;
+      });
+    }
+    return false;
 
     if (!f.mb_icon.value.match(/\.(gif|jpe?g|png)$/i) && f.mb_icon.value) {
-        alert('아이콘은 이미지 파일만 가능합니다.');
-        return false;
+      alert('아이콘은 이미지 파일만 가능합니다.');
+      return false;
     }
 
     if (!f.mb_img.value.match(/\.(gif|jpe?g|png)$/i) && f.mb_img.value) {
-        alert('회원이미지는 이미지 파일만 가능합니다.');
-        return false;
+      alert('회원이미지는 이미지 파일만 가능합니다.');
+      return false;
     }
 
     /*if ($('input[name="mb_giup_type"]:checked').val() > 0) {
         if (!$('#mb_giup_bname').val()) {
-			alert("기업명을 입력하십시오.");
-			return false;
+      alert("기업명을 입력하십시오.");
+      return false;
         }
         if (!$('#mb_giup_boss_name').val()) {
-			alert("대표자명을 입력하십시오.");
-			return false;
+      alert("대표자명을 입력하십시오.");
+      return false;
         }
         if (!$('#mb_giup_zip').val()) {
-			alert("주소를 입력하십시오.");
-			return false;
+      alert("주소를 입력하십시오.");
+      return false;
         }
         if (!$('#mb_giup_tax_email').val()) {
-			alert("세금계산서 이메일을 입력하십시오.");
-			return false;
-		}
+      alert("세금계산서 이메일을 입력하십시오.");
+      return false;
+    }
     }*/
 
     return true;
@@ -1454,50 +1459,50 @@ $(function() {
     });
 
     $(document).on("click", '.delete_manager', function() {
-        $(this).closest('tr').remove();
+      $(this).closest('tr').remove();
     });
 
     $('#mb_hp').on('keyup', function(){
-        var num = $(this).val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
+      var num = $(this).val();
+      num.trim();
+      this.value = auto_phone_hypen(num) ;
     });
 
     $('#mb_tel').on('keyup', function(){
-        var num = $(this).val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
+      var num = $(this).val();
+      num.trim();
+      this.value = auto_phone_hypen(num) ;
     });
 
     $('#mb_fax').on('keyup', function(){
-        var num = $(this).val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
+      var num = $(this).val();
+      num.trim();
+      this.value = auto_phone_hypen(num) ;
     });
 
     $('#mb_giup_btel').on('keyup', function(){
-        var num = $(this).val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
+      var num = $(this).val();
+      num.trim();
+      this.value = auto_phone_hypen(num) ;
     });
 
-	$('#mb_giup_bnum').on('keyup', function(){
-        var num = $('#mb_giup_bnum').val();
-        num.trim();
-        this.value = auto_saup_hypen(num) ;
+    $('#mb_giup_bnum').on('keyup', function(){
+      var num = $('#mb_giup_bnum').val();
+      num.trim();
+      this.value = auto_saup_hypen(num) ;
     });
 
-	$('input[name="mm_tel[]"]').on('keyup', function(){
-        var num = $(this).val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
-	});
+    $('input[name="mm_tel[]"]').on('keyup', function(){
+      var num = $(this).val();
+      num.trim();
+      this.value = auto_phone_hypen(num) ;
+    });
 
     $('input[name="mm_hp[]"]').on('keyup', function(){
-        var num = $(this).val();
-        num.trim();
-        this.value = auto_phone_hypen(num) ;
-	});
+      var num = $(this).val();
+      num.trim();
+      this.value = auto_phone_hypen(num) ;
+    });
 });
 
 function check_giup_bnum() {

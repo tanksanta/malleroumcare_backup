@@ -582,10 +582,6 @@ if( $w == '' || $w == 'u' ){
         alert('저장되었습니다.');
         goto_url('./member_form.php?'.$qstr.'&amp;w=u&amp;mb_id='.$mb_id, false);
     }else{
-        //실패시 지움
-        // $sql="DELETE FROM `g5_member` WHERE mb_id='".$_POST['mb_id']."'";
-        sql_query($sql);
-        //실패 이동
         //성공 결과 페이지 이동
         alert('회원정보 저장에 실패하였습니다..',G5_URL."/member_list.php");
     }
