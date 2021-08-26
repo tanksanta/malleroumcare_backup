@@ -54,7 +54,7 @@ $where = "
     AND ocr.od_id IS NULL
 ";
 
-$query = sql_query("SELECT * FROM g5_shop_cart as c
+$query = sql_query("SELECT *, c.od_id, c.mb_id FROM g5_shop_cart as c
     LEFT JOIN g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id -- 취소 요청
     WHERE
         {$where}
@@ -71,6 +71,30 @@ while($result = sql_fetch_array($query)) {
     // WHERE
     //     ct_id = '{$result['ct_id']}'
     // ");
+
+    $it_name = $result['it_name'];
+    if($result['it_name'] !== $result['ct_option']){
+      $it_name = $it_name."(".$result['ct_option'].")";
+    }
+
+    if($result['io_type'])
+        $opt_price = $result['io_price'];
+    else
+        $opt_price = $result['ct_price'] + $result['io_price'];
+
+    $result["opt_price"] = $opt_price;
+
+    // 소계
+    $result['ct_price_stotal'] = $opt_price * $result['ct_qty'] - $result['ct_discount'];
+    if($result["prodSupYn"] == "Y") {
+        $result["ct_price_stotal"] -= ($result["ct_stock_qty"] * $opt_price);
+    }
+
+    $point_receiver = get_member($result['mb_id']);
+    $point = (int)($result["ct_price_stotal"] / 100 * $default['de_it_grade' . $point_receiver['mb_grade'] . '_discount']);
+    $point_content = "주문({$result['od_id']}) {$it_name} 상품 배송완료 포인트 적립 ({$default['de_it_grade' . $point_receiver['mb_grade'] . '_name']} / {$default['de_it_grade' . $point_receiver['mb_grade'] . '_discount']}%)";
+
+    insert_point($point_receiver['mb_id'], $point, $point_content, 'order_completed', $result['ct_id'], $point_receiver['mb_id']);
 
     $count++;
 }
