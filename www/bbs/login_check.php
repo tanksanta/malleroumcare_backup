@@ -48,7 +48,7 @@ if($_POST["mb_id"] != "admin") {
       alert('관리자 승인이 대기중입니다.',G5_BBS_URL."/register_result.php");
     }
 
-    if($mb['mb_level']<5) {
+    if($mb['mb_level'] < 5) {
       if($res['message'] == '계정 정보가 잘못되었습니다.' && check_password($mb_password, $mb['mb_password'])) {
         // 쇼핑몰 비밀번호는 맞는데 시스템 비밀번호가 틀린 경우
         // -> 비밀번호찾기로 비밀번호 변경된 경우임. 시스템 비밀번호 변경시킴
@@ -58,16 +58,14 @@ if($_POST["mb_id"] != "admin") {
           'entUsrId' => $mb['mb_id'],
           'usrPw' => $mb_password
         ));
-        if($change_pw_result['errorYN'] == 'N')
-          alert('최근에 비밀번호가 변경되었습니다. 변경된 비밀번호로 다시 로그인해주세요.');
-        else
+        if($change_pw_result['errorYN'] != 'N')
           alert($change_pw_result['message']);
+      } else {
+        alert($res['message']);
       }
-      alert($res['message']);
     }
 
   } else if($res["errorYN"] == "N") {
-    $_SESSION[$mb_id]=$res['data']['pw'];
     $mbCheck = sql_fetch("SELECT mb_id FROM {$g5["member_table"]} WHERE mb_id = '{$_POST["mb_id"]}'")["mb_id"];
     $resInfo = get_eroumcare(EROUMCARE_API_ENT_ACCOUNT, $sendData);
     $resInfo = $resInfo["data"];

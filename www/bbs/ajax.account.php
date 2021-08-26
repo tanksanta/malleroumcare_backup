@@ -207,8 +207,6 @@
             set_session('ss_mb_id', $mb['mb_id']);
             // FLASH XSS 공격에 대응하기 위하여 회원의 고유키를 생성해 놓는다. 관리자에서 검사함 - 110106
             set_session('ss_mb_key', md5($mb['mb_datetime'] . get_real_client_ip() . $_SERVER['HTTP_USER_AGENT']));
-            //이로움 통합시스템 이동
-            $_SESSION[$mb_id]=$mb_password;
             alert('회원가입이 완료되었습니다.',G5_BBS_URL."/register_result.php");
             }
     }else{
