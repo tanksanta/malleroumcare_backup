@@ -360,6 +360,17 @@ label {
             <input type="text" name="mb_ent_num" value="<?php echo $mb['mb_ent_num'] ?>" id="mb_ent_num" class="frm_input" size="30" maxlength="20">
         </td>
     </tr>
+    <tr>
+        <th scope="row">회원유형</th>
+        <td colspan="3">
+            <select class="frm_input" name="mb_type">
+                <option value="default" <?php echo $mb['mb_type'] == 'default' ? 'selected' : ''; ?>>일반사업소</option>
+                <option value="consignment" <?php echo $mb['mb_type'] == 'consignment' ? 'selected' : ''; ?>>위탁(직배송, 설치, 소독) </option>
+                <option value="normal" <?php echo $mb['mb_type'] == 'normal' ? 'selected' : ''; ?>>일반수급자</option>
+                <option value="partner" <?php echo $mb['mb_type'] == 'partner' ? 'selected' : ''; ?>>파트너</option>
+            </select>
+        </td>
+    </tr>
     <!-- <tr>
         <th scope="row">
             <label for="mb_giup_sbnum">종사업자번호</label>
@@ -863,15 +874,6 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
                 <h2 style="margin:0;padding:0;">파트너몰 정보</h2>
             </div>
         </th>
-    </tr>
-    <tr>
-        <th scope="row">파트너몰 회원 여부</th>
-        <td colspan="3">
-            <select class="frm_input" name="mb_type">
-                <option value="default" <?php echo $mb['mb_type'] == 'default' ? 'selected' : ''; ?>>일반몰</option>
-                <option value="partner" <?php echo $mb['mb_type'] == 'partner' ? 'selected' : ''; ?>>파트너몰</option>
-            </select>
-        </td>
     </tr>
     <tr>
         <th scope="row">파트너 승인 여부</th>
