@@ -104,6 +104,16 @@ if($_POST['ct_id'] && $_POST['step']) {
       $point_content = "주문({$od_id}) {$it_name} 상품 배송완료 포인트 적립 ({$default['de_it_grade' . $point_receiver['mb_grade'] . '_name']} / {$default['de_it_grade' . $point_receiver['mb_grade'] . '_discount']}%)";
 
       insert_point($point_receiver['mb_id'], $point, $point_content, 'order_completed', $_POST['ct_id'][$i], $point_receiver['mb_id']);
+    } else {
+      $po_cancel_sql = " select * from {$g5['point_table']}
+      where mb_id = '{$result_ct_s['mb_id']}'
+        and po_rel_table = 'order_completed'
+        and po_rel_id = '{$_POST['ct_id'][$i]}'
+        and po_rel_action = '{$result_ct_s['mb_id']}' ";
+      $po_cancel_row = sql_fetch($po_cancel_sql);
+      if ($po_cancel_row['po_id']) {
+        insert_point($po_cancel_row['mb_id'], $po_cancel_row['po_point'] * -1, $po_cancel_row['po_content'] . ' 취소 (포인트환수)', 'order_completed_cancel', $po_cancel_row['po_rel_id'], $po_cancel_row['po_rel_action']);
+      }
     }
 
     //시스템 상태값 변경
