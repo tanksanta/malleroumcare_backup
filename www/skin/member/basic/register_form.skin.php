@@ -62,12 +62,8 @@ add_javascript(G5_POSTCODE_JS, 0);
 .register-form .panel .panel-body.panel-giup .control-label {
   padding-top: 3px;
 }
-.register-form input[type="radio"] {
+.register-form .panel .panel-body.panel-giup input[type="radio"] {
   margin:0;
-  margin-top: -5px;
-}
-.register-form label {
-  margin-right: 5px;
 }
 #ui-datepicker-div { z-index: 999 !important; }
 </style>
@@ -132,12 +128,7 @@ add_javascript(G5_POSTCODE_JS, 0);
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label" for=""><b>분류</b><strong class="sound_only">필수</strong></label>
         <div class="desc_txt">
-          <input type="radio" name="mb_type" value="default" id="mb_type_default">
-          <label for="mb_type_default">복지용구사업소</label>
-          <input type="radio" name="mb_type" value="consignment" id="mb_type_consignment">
-          <label for="mb_type_consignment">위탁(직배송, 설치, 소독)</label>
-          <input type="radio" name="mb_type" value="normal" id="mb_type_normal">
-          <label for="mb_type_normal">일반수급자</label>
+          <span>복지용구사업소</span>
         </div>
       </div>
       <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
@@ -726,11 +717,6 @@ function fregisterform_submit() {
       return false;
     }
   }
-  
-  if(!$('input[name=mb_type]:checked').val()) {
-    alert("회원 분류를 선택해주세요.");
-    return false;
-  }
     
   if (f.mb_password.value.length < 6 || f.mb_password.value.length > 12) {
     alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
@@ -824,72 +810,69 @@ function fregisterform_submit() {
     f.reg_mb_email.select();
     return false;
   }
-
-  var mb_type = $('input[name=mb_type]:checked').val();
-  if (mb_type === 'default' || mb_type === 'consignment') {
-    if (!f.mb_giup_tax_email.value) {
-        alert('세금계산서 수신용 이메일을 입력하세요.');
-        f.mb_giup_tax_email.focus();
-        return false;
-    }
-    if (!f.mb_giup_bnum.value) {
-        alert('사업자 번호를 입력하세요.');
-        f.mb_giup_bnum.focus();
-        return false;
-    }
-    if (!f.mb_giup_boss_name.value) {
-        alert('대표자명을 입력하세요.');
-        f.mb_giup_boss_name.focus();
-        return false;
-    }
-    if (!f.mb_giup_bupjong.value) {
-        alert('업종을 입력하세요.');
-        f.mb_giup_bupjong.focus();
-        return false;
-    }
-    if (!f.mb_giup_buptae.value) {
-        alert('업태를 입력하세요.');
-        f.mb_giup_buptae.focus();
-        return false;
-    }
-    if (!f.mb_giup_manager_name.value) {
-        alert('담당자명을 입력하세요.');
-        f.mb_giup_manager_name.focus();
-        return false;
-    }
-
-    if (!f.mb_giup_zip.value) {
-        alert('(사업자정보) 우편번호를 입력하세요');
-        f.mb_giup_zip.focus();
-        return false;
-    }
-    if (!f.mb_giup_addr1.value) {
-        alert('(사업자정보) 주소를 입력하세요');
-        f.mb_giup_addr1.focus();
-        return false;
-    }
-    if (!f.mb_giup_addr2.value&&!f.mb_giup_addr3.value) {
-        alert('(사업자정보) 주소상세를 입력하세요');
-        f.mb_giup_addr2.focus();
-        return false;
-    }
-
-    if (!f.mb_zip.value) {
-        alert('(배송지 주소) 우편번호를 입력하세요');
-        f.mb_zip.focus();
-        return false;
-    }
-    if (!f.mb_addr1.value) {
-        alert('(배송지 주소) 주소를 입력하세요');
-        f.mb_addr1.focus();
-        return false;
-    }
-    if (!f.mb_addr2.value&&!f.mb_addr3.value) {
-        alert('(배송지 주소) 주소상세를 입력하세요');
-        f.mb_addr2.focus();
-        return false;
-    }
+  if(!f.mb_giup_tax_email.value) {
+    alert('세금계산서 수신용 이메일을 입력하세요.');
+    f.mb_giup_tax_email.focus();
+    return false;
   }
+  if(!f.mb_giup_bnum.value){
+    alert('사업자 번호를 입력하세요.');
+    f.mb_giup_bnum.focus();
+    return false;
+  }
+  if(!f.mb_giup_boss_name.value){
+    alert('대표자명을 입력하세요.');
+    f.mb_giup_boss_name.focus();
+    return false;
+  }
+  if(!f.mb_giup_bupjong.value){
+    alert('업종을 입력하세요.');
+    f.mb_giup_bupjong.focus();
+    return false;
+  }
+  if(!f.mb_giup_buptae.value){
+    alert('업태를 입력하세요.');
+    f.mb_giup_buptae.focus();
+    return false;
+  }
+  if(!f.mb_giup_manager_name.value){
+    alert('담당자명을 입력하세요.');
+    f.mb_giup_manager_name.focus();
+    return false;
+  }
+
+  if(!f.mb_giup_zip.value){
+    alert('(사업자정보) 우편번호를 입력하세요');
+    f.mb_giup_zip.focus();
+    return false;
+  }
+  if(!f.mb_giup_addr1.value){
+    alert('(사업자정보) 주소를 입력하세요');
+    f.mb_giup_addr1.focus();
+    return false;
+  }
+  if(!f.mb_giup_addr2.value&&!f.mb_giup_addr3.value){
+    alert('(사업자정보) 주소상세를 입력하세요');
+    f.mb_giup_addr2.focus();
+    return false;
+  }
+
+  if(!f.mb_zip.value){
+    alert('(배송지 주소) 우편번호를 입력하세요');
+    f.mb_zip.focus();
+    return false;
+  }
+  if(!f.mb_addr1.value){
+    alert('(배송지 주소) 주소를 입력하세요');
+    f.mb_addr1.focus();
+    return false;
+  }
+  if(!f.mb_addr2.value&&!f.mb_addr3.value){
+    alert('(배송지 주소) 주소상세를 입력하세요');
+    f.mb_addr2.focus();
+    return false;
+  }
+
   //체크 끝
 
 
@@ -904,7 +887,6 @@ function fregisterform_submit() {
   sendData.append("entPnum", mb_tel); //사업소 전화번호
   sendData.append("entFax", mb_fax); //사업소 팩스
   sendData.append("usrMail", $("#reg_mb_email").val());//메일
-  sendData.append("mbType", $('input[name=mb_type]:checked').val());//회원유형
 
   <?php if($w) { ?> 
   sendData.append("entId", "<?=$member['mb_entId']?>");
@@ -951,29 +933,20 @@ function fregisterform_submit() {
   var flag ='<?=$member['crnFile']?>';
   var imgFileItem1 = $(".mb_giup_file1 input[type='file']");
   for(var i = 0; i < imgFileItem1.length; i++) {
-    
-    if (mb_type === 'default' || mb_type === 'consignment') {
-      if(!flag) {
-        if(!$(imgFileItem1[i])[0].files[0]) {
-          alert('사업자등록증을 첨부해주세요.');
-          return false; 
-        }
-        if($(imgFileItem1[i])[0].files[0].size > 1024 * 1024 * 10) {
-          alert('사업자등록증 : 10MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem1[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
-          return false;
-        }
+    if(!flag) {
+      if(!$(imgFileItem1[i])[0].files[0]) {
+        alert('사업자등록증을 첨부해주세요.');
+        return false;
       }
-      if($(imgFileItem1[i])[0].files[0]) {
-        sendData.append("crnFile", $(imgFileItem1[i])[0].files[0]);
+      if($(imgFileItem1[i])[0].files[0].size > 1024 * 1024 * 10) {
+        alert('사업자등록증 : 10MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem1[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
+        return false;
       }
     }
+    if($(imgFileItem1[i])[0].files[0]) {
+      sendData.append("crnFile", $(imgFileItem1[i])[0].files[0]);
+    }
   }
-
-  if (mb_type === 'normal') {
-    f.submit();
-    return;
-  }
-
   <?php
   if(!$w) {
     $api_url = "https://system.eroumcare.com:9901/api/ent/insert";
