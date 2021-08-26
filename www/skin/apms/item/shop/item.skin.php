@@ -422,6 +422,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
       });
     });
     </script>
+    <?php if ($is_orderable && $member['mb_type'] !== 'normal') { ?>
     <div class="samhwa-item-info-opener mobile">
       <ul class="item-buy-btn">
         <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-color btn-block"></li>
@@ -437,6 +438,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         </li>
       </ul>
     </div>
+    <?php } ?>
     <div class="samhwa-item-info">
       <div class="margin-leftm">
         <div class="item-info-arrowbtn mobile">
@@ -896,7 +898,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         <p id="sit_ov_soldout">재고가 부족하여 구매할 수 없습니다.</p>
       <?php } ?>
 
-      <?php if ($is_orderable) { ?>
+      <?php if ($is_orderable && $member['mb_type'] !== 'normal') { ?>
         <div style="text-align:center;" class="item-btns">
           <ul class="item-buy-btn">
             <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block"></li>
