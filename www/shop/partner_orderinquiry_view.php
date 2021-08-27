@@ -238,16 +238,8 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
               <div class="col left">전달메시지</div>
               <div class="col right">
                 <?php
-                $prod_memo_text = '';
-                foreach($carts as $cart) {
-                  if($cart['prodMemo']) {
-                    $prod_memo_text .= '<b>'.$cart['it_name'].' : </b>';
-                    $prod_memo_text .= $cart['prodMemo'];
-                    $prod_memo_text .= '<br>';
-                  }
-                }
-                if($prod_memo_text)
-                  echo $prod_memo_text;
+                if($od['od_memo'])
+                  echo $od['od_memo'];
                 else 
                   echo '없음';
                 ?>

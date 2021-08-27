@@ -75,17 +75,9 @@ $sheet->setCellValue('AE7', $od['od_b_hp'] ?: $od['od_b_tel']);
 $sheet->setCellValue('L9', sprintf("(%s%s)", $od['od_b_zip1'], $od['od_b_zip2']).' '.print_address($od['od_b_addr1'], $od['od_b_addr2'], $od['od_b_addr3'], $od['od_b_addr_jibeon']));
 
 $total_qty = 0;
-$prod_memo_text = '';
 $data_index = 0;
 foreach($carts as $cart) {
   if($data_index > 5) break;
-
-  // 배송요청사항
-  if($cart['prodMemo']) {
-    $prod_memo_text .= $cart['it_name'].' : ';
-    $prod_memo_text .= $cart['prodMemo'];
-    $prod_memo_text .= ', ';
-  }
 
   // 데이터 입력
   $sheet->setCellValue('A'.(13 + $data_index), $cart['it_name']);
@@ -96,7 +88,7 @@ foreach($carts as $cart) {
   $total_qty += $cart['ct_qty'];
   $data_index++;
 }
-$sheet->setCellValue('L10', $prod_memo_text);
+$sheet->setCellValue('L10', $od['od_memo']);
 $sheet->setCellValue('G19', $total_qty.'개');
 
 header("Content-Type: application/octet-stream");
