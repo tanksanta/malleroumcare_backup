@@ -202,7 +202,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <td class="text_c"><?=$row['mb_entNm']?></td>
               <td class="text_c"><?=$row['ct_status']?></td>
               <td class="text_c"><?=$row['ct_direct_delivery']?></td>
-              <td><?=$row['prodMemo']?></td>
+              <td style="width: 200px; white-space: normal"><?=$row['prodMemo']?></td>
               <td class="text_r">
                 <?=number_format($row['price_p'])?>원<br>
                 (<?=number_format($row['price_s'])?>원)

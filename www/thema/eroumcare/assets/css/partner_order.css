@@ -196,6 +196,10 @@
   margin-right: 5px;
 }
 
+#partner-order .delivery-info-wrap li .right {
+  max-width: calc(100% - 90px);
+}
+
 #partner-order .delivery-info-wrap li .right:before {
   content: ':';
   margin-right: 5px;
