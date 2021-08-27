@@ -380,10 +380,6 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 <section class="wrap">
   <div class="sub_section_tit">청구관리</div>
-<!--   <ul class="list_tab"> 
-    <li class="active"><a href="<?=G5_SHOP_URL?>/claim_manage.php">청구관리</a></li>
-    <li ><a href="<?=G5_SHOP_URL?>/electronic_manage.php">전자문서관리<!--<span class="red_info">미작성: 1건</span>--></a></li>
-  </ul>-->
   <div class="inner">
     <form action="/shop/claim_manage.php" method="get">
       <div class="date_wrap">
