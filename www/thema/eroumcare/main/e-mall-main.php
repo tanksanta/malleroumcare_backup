@@ -40,11 +40,12 @@ $latest_order_count = $result['cnt'] ?: 0;
 <script src="<?php echo G5_URL; ?>/js/swiper.min.js"></script>
 <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/main.css?v=08231805">
 
+<?php if ($member['mb_type'] !== 'normal') { ?>
 <!-- 메인 상단 슬라이드 -->
 <div id="mainTopSlidePCWrap">
   <div class="viewWrap swiper-container">
     <ul style="width: 100%;" class="swiper-wrapper">
-      <?php foreach($banners as $banner) { ?>
+      <?php foreach ($banners as $banner) { ?>
       <li style="width: 100%;" class="swiper-slide">
         <a href="<?=$banner['bn_url']?>">
           <img src="<?=$banner['img']?>">
@@ -77,6 +78,7 @@ $(function(){
   });
 });
 </script>
+<?php } ?>
 
 <!-- 메인 베스트 상품소개 -->
 <div class="best_item_wrap">
@@ -360,7 +362,9 @@ $(function() {
 <?php } ?>
 
 <!-- 메인 진행중인 이벤트 -->
-<?php  echo latest('event_main', 'event', 2); ?>
+<?php if ($member['mb_type'] !== 'normal') { ?>
+  <?php  echo latest('event_main', 'event', 2); ?>
+<?php } ?>
 
 <?php 
 $tutorials = get_tutorials();

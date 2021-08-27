@@ -285,50 +285,61 @@ if($is_main && !$is_member) {
               </div>
               <?php } ?>
             </div>
-            <div class="point_info flex-justify">
-              <?php if($member['mb_point'] > 0) { ?>
-              <div class="point">
-                포인트 : <?=number_format($member['mb_point']);?>원
-                <a href="<?=$at_href['point']?>" target="_blank" class="btn_small win_point"><i class="fa fa-list" aria-hidden="true"></i></a>
+            <?php if ($member['mb_type'] !== 'normal') { ?>
+              <div class="point_info flex-justify">
+                <?php if($member['mb_point'] > 0) { ?>
+                <div class="point">
+                  포인트 : <?=number_format($member['mb_point']);?>원
+                  <a href="<?=$at_href['point']?>" target="_blank" class="btn_small win_point"><i class="fa fa-list" aria-hidden="true"></i></a>
+                </div>
+                <?php } ?>
+                <?php if($cp_count > 0) { ?>
+                <div class="coupon">
+                  쿠폰
+                  <a href="<?=$at_href['coupon']?>" target="_blank" class="btn_small win_point"><?=$cp_count?></a>
+                </div>
+                <?php } ?>
+              </div>
+              <?php if($manager = get_member($member['mb_manager'])) { ?>
+              <div class="manager_info">
+                이로움 관리 담당자 : <?="{$manager['mb_name']} ({$manager['mb_hp']})"?>
               </div>
               <?php } ?>
-              <?php if($cp_count > 0) { ?>
-              <div class="coupon">
-                쿠폰
-                <a href="<?=$at_href['coupon']?>" target="_blank" class="btn_small win_point"><?=$cp_count?></a>
+              <?php if($balance > 0 && $show_partner_menu) { ?>
+              <div class="balance_info flex-justify">
+                <div class="balance_title">신용거래</div>
+                <div class="balance"><?=number_format($balance)?>원</div>
+              </div>
+              <div class="order_info flex-justify">
+                <div class="order">이번달 <?=number_format($order_count)?>건</div>
+                <a href="<?php if($member['mb_type'] == 'partner') echo '/shop/partner_ledger_list.php'; else echo '/shop/my_ledger_list.php'; ?>" class="btn_small">거래처 원장</a>
               </div>
               <?php } ?>
-            </div>
-            <?php if($manager = get_member($member['mb_manager'])) { ?>
-            <div class="manager_info">
-              이로움 관리 담당자 : <?="{$manager['mb_name']} ({$manager['mb_hp']})"?>
-            </div>
-            <?php } ?>
-            <?php if($balance > 0 && $show_partner_menu) { ?>
-            <div class="balance_info flex-justify">
-              <div class="balance_title">신용거래</div>
-              <div class="balance"><?=number_format($balance)?>원</div>
-            </div>
-            <div class="order_info flex-justify">
-              <div class="order">이번달 <?=number_format($order_count)?>건</div>
-              <a href="<?php if($member['mb_type'] == 'partner') echo '/shop/partner_ledger_list.php'; else echo '/shop/my_ledger_list.php'; ?>" class="btn_small">거래처 원장</a>
-            </div>
-            <?php } ?>
-            <?php if($event_count) { ?>
-            <a class="event_noti" href="/bbs/board.php?bo_table=event">
-              진행중인 이벤트
-              <span class="value"><?=$event_count?>건</span>
-              <i class="fa fa-angle-right" aria-hidden="true"></i>
-            </a>
+              <?php if($event_count) { ?>
+              <a class="event_noti" href="/bbs/board.php?bo_table=event">
+                진행중인 이벤트
+                <span class="value"><?=$event_count?>건</span>
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+              <?php } ?>
             <?php } ?>
           </div>
 
-          <div class="notice_area">
-            <div class="title">
-              <a href="/bbs/board.php?bo_table=notice">공지사항</a>
+          <?php if ($member['mb_type'] === 'normal') { ?>
+            <div class="notice_area">
+              <div class="title">
+                <a href="/bbs/board.php?bo_table=notice_user">공지사항</a>
+              </div>
+              <?php  echo latest('list_main', 'notice_user', 5, 25); ?>
             </div>
-            <?php  echo latest('list_main', 'notice', 5, 25); ?>
-          </div>
+          <?php } else { ?>
+            <div class="notice_area">
+              <div class="title">
+                <a href="/bbs/board.php?bo_table=notice">공지사항</a>
+              </div>
+              <?php  echo latest('list_main', 'notice', 5, 25); ?>
+            </div>
+          <?php } ?>
 
           <div class="catalog_area">
             <a href="/thema/eroumcare/assets/eroum_catalog_2021_2_2.pdf" class="catalog">
@@ -363,104 +374,105 @@ if($is_main && !$is_member) {
             }
           } else {
           ?>
-          <div class="side_nav_area">
             <?php if ($member['mb_type'] !== 'normal') { ?>
-            <div class="div_title">주문관리</div>
-            <ul>
-              <li>
-                <a href="/shop/list.php?ca_id=10">
-                  전체상품 보기
-                  <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </a>
-              </li>
-              <li>
-                <a href="/shop/orderinquiry.php">
-                  주문/배송 내역
-                  <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </a>
-              </li>
-              <li>
-                <a href="/shop/cart.php">
-                  장바구니
-                  <?php if (get_boxcart_datas_count() > 0) { ?>
-                  <span class="value">상품 (<?php echo get_boxcart_datas_count(); ?>)</span>
+            <div class="side_nav_area">
+              <div class="div_title">주문관리</div>
+              <ul>
+                <li>
+                  <a href="/shop/list.php?ca_id=10">
+                    전체상품 보기
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="/shop/orderinquiry.php">
+                    주문/배송 내역
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="/shop/cart.php">
+                    장바구니
+                    <?php if (get_boxcart_datas_count() > 0) { ?>
+                    <span class="value">상품 (<?php echo get_boxcart_datas_count(); ?>)</span>
+                    <?php } ?>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                  </a>
+                </li>
+              </ul>
+              <div class="div_title">운영관리</div>
+              <ul>
+                <li>
+                  <a href="/shop/claim_manage.php">
+                    청구내역
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="/shop/electronic_manage.php">
+                    전자문서관리
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="/shop/my_recipient_list.php">
+                    수급자관리
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                  </a>
+                  <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
+                  <a class="noti_pen" href="/shop/my_recipient_noti.php">
+                    수급자 알림이 있습니다.
+                    <span class="value"><?=$noti_count?>건</span>
+                  </a>
                   <?php } ?>
-                  <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </a>
-              </li>
-            </ul>
-            <div class="div_title">운영관리</div>
-            <ul>
-              <li>
-                <a href="/shop/claim_manage.php">
-                  청구내역
-                  <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </a>
-              </li>
-              <li>
-                <a href="/shop/electronic_manage.php">
-                  전자문서관리
-                  <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </a>
-              </li>
-              <li>
-                <a href="/shop/my_recipient_list.php">
-                  수급자관리
-                  <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </a>
-                <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
-                <a class="noti_pen" href="/shop/my_recipient_noti.php">
-                  수급자 알림이 있습니다.
-                  <span class="value"><?=$noti_count?>건</span>
-                </a>
+                  <?php if($pen_links = get_recipient_links($member['mb_id'])) { ?>
+                  <a class="noti_pen link" href="/shop/my_recipient_list.php">
+                    ‘<?=$pen_links[0]['rl_pen_name']?>’ <?php $pen_links_count = count($pen_links); if($pen_links_count > 1) { echo '외 '.($pen_links_count - 1).'명 '; } ?>수급자 추천이 있습니다.
+                  </a>
+                  <?php } ?>
+                </li>
+                <li>
+                  <a href="/shop/sales_Inventory.php">
+                    보유재고관리
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                  </a>
+                </li>
+              </ul>
+              <div class="div_title">기타/편의</div>
+              <ul class="etc">
+                <?php if ($member['mb_type'] !== 'normal') { ?>
+                <li>
+                  <a href="/shop/my_data_upload.php">
+                    과거공단자료 업로드
+                  </a>
+                </li>
                 <?php } ?>
-                <?php if($pen_links = get_recipient_links($member['mb_id'])) { ?>
-                <a class="noti_pen link" href="/shop/my_recipient_list.php">
-                  ‘<?=$pen_links[0]['rl_pen_name']?>’ <?php $pen_links_count = count($pen_links); if($pen_links_count > 1) { echo '외 '.($pen_links_count - 1).'명 '; } ?>수급자 추천이 있습니다.
-                </a>
-                <?php } ?>
-              </li>
-              <li>
-                <a href="/shop/sales_Inventory.php">
-                  보유재고관리
-                  <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </a>
-              </li>
-            </ul>
+                <li>
+                  <a href="/bbs/qalist.php">
+                    고객센터(1:1문의)
+                  </a>
+                </li>
+                <li>
+                  <a href="/bbs/board.php?bo_table=faq">
+                    자주하는 질문
+                  </a>
+                </li>
+                <li>
+                  <a href="/bbs/board.php?bo_table=proposal">
+                    제안하기
+                  </a>
+                </li>
+                <li style="display: none;">
+                  <a href="/bbs/board.php?bo_table=lab">
+                    이로움 연구소
+                  </a>
+                </li>
+              </ul>
+            </div>
             <?php } ?>
-            <div class="div_title">기타/편의</div>
-            <ul class="etc">
-              <?php if ($member['mb_type'] !== 'normal') { ?>
-              <li>
-                <a href="/shop/my_data_upload.php">
-                  과거공단자료 업로드
-                </a>
-              </li>
-              <?php } ?>
-              <li>
-                <a href="/bbs/qalist.php">
-                  고객센터(1:1문의)
-                </a>
-              </li>
-              <li>
-                <a href="/bbs/board.php?bo_table=faq">
-                  자주하는 질문
-                </a>
-              </li>
-              <li>
-                <a href="/bbs/board.php?bo_table=proposal">
-                  제안하기
-                </a>
-              </li>
-              <li style="display: none;">
-                <a href="/bbs/board.php?bo_table=lab">
-                  이로움 연구소
-                </a>
-              </li>
-            </ul>
-          </div>
           <?php } ?>
 
+          <?php if ($member['mb_type'] !== 'normal') { ?>
           <div class="btn_info_area">
             <a href="/bbs/board.php?bo_table=notice&wr_id=30">
               <img src="<?=THEMA_URL?>/assets/img/btn_businesshour.png" alt="이로움 주문마감 안내 확인" />
@@ -482,6 +494,7 @@ if($is_main && !$is_member) {
               <div class="btn_small">다운로드</div>
             </a>
           </div>
+          <?php } ?>
 
           <div class="call_info_area">
             <div class="title">이로움 고객만족센터</div>
