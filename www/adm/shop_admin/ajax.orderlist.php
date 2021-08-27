@@ -349,7 +349,7 @@ if ($sort2 == "") $sort2 = "desc";
 
 // shop_cart 조인으로 수정
 // member 테이블 조인
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, ct_delivery_num, it_admin_memo, it_maker, ct_status ,ct_move_date, ct_ex_date, ct_is_direct_delivery, ct_direct_delivery_partner from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, ct_delivery_num, it_admin_memo, it_maker, ct_status ,ct_move_date, ct_ex_date, ct_is_direct_delivery, ct_direct_delivery_partner, ct_is_delivery_excel_downloaded from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -397,7 +397,7 @@ $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
 //$sql = " select count(od_id) as cnt, ct_status $sql_common2 group by ct_status";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id,ct_delivery_num, X.it_name, it_admin_memo, it_maker, ct_status, ct_ex_date, ct_is_direct_delivery, ct_direct_delivery_partner from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id,ct_delivery_num, X.it_name, it_admin_memo, it_maker, ct_status, ct_ex_date, ct_is_direct_delivery, ct_direct_delivery_partner, ct_is_delivery_excel_downloaded from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
@@ -858,6 +858,9 @@ foreach($orderlist as $order) {
         break;
       default:
         $direct_delivery_text = '';
+    }
+    if($order['ct_is_delivery_excel_downloaded']) {
+      $direct_delivery_text .= '<br><span style="color: #FF6600">엑셀 다운로드 완료</span>';
     }
 
     $ret['data'] .= "
