@@ -251,7 +251,7 @@ while($wish_row = sql_fetch_array($wish_result)) {
           </li>
           <?php } ?>
         </ul>
-        <?php if($_COOKIE["viewType"] !== "basic" && $member['mb_type'] != 'partner') { ?>
+        <?php if($_COOKIE["viewType"] !== "basic" && !in_array($member['mb_type'], ['partner', 'normal'])) { ?>
         <p class="discount">
           <?php if($ca_id != '70') { // 비급여인 경우 급여가 숨김 ?>
           <?=number_format($list[$i]["it_cust_price"])?>원 <span class="txt_color_green">급여가</span>
@@ -261,7 +261,7 @@ while($wish_row = sql_fetch_array($wish_result)) {
         <p class="price">
           <?php
           if($member["mb_id"]) {
-            if($_COOKIE["viewType"] == "basic" || $member['mb_type'] == 'partner') {
+            if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
               echo number_format($list[$i]["it_cust_price"])."원 <span class='txt_color_green'>급여가</span>";
             } else {
               if($member["mb_level"] == "3") { 
