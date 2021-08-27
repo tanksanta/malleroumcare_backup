@@ -286,7 +286,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0
             <span class="linear_span">위탁</span>
             <input type="radio" id="ct_is_direct_delivery_all" name="ct_is_direct_delivery" value="" <?php echo option_array_checked('', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_all"> 전체</label>
             <input type="radio" id="ct_is_direct_delivery_1" name="ct_is_direct_delivery" value="1" <?php echo option_array_checked('1', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_1"> 배송</label>
-            <input type="radio" id="ct_is_direct_delivery_1" name="ct_is_direct_delivery" value="2" <?php echo option_array_checked('2', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_2"> 설치</label>
+            <input type="radio" id="ct_is_direct_delivery_2" name="ct_is_direct_delivery" value="2" <?php echo option_array_checked('2', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_2"> 설치</label>
             <select name="ct_direct_delivery_partner" id="ct_direct_delivery_partner">
               <option value="">전체</option>
               <?php
