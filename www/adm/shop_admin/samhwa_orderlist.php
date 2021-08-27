@@ -1126,6 +1126,7 @@ if( function_exists('pg_setting_check') ){
   <a href="./samhwa_order_new.php" id="order_add" class="btn btn_01">주문서 추가</a>
   <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload('excel')" class="btn btn_02">
   <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn btn_03">
+  <input type="button" value="위탁 엑셀다운로드" onclick="orderListExcelDownload('partner')" class="btn btn_03">
 </div>
 
 <div class="btn_fixed_top2">
@@ -1159,6 +1160,8 @@ function orderListExcelDownload(type) {
   }
 
   if(!od_id.length) {
+    if(type === 'partner') return alert('선택한 주문이 없습니다.');
+
     if(!confirm('선택한 주문이 없습니다.\n검색결과 내 모든 주문내역을 다운로드하시겠습니까?')) return false;
   }
 
@@ -1196,15 +1199,30 @@ function orderListExcelDownload(type) {
   if (type === 'ecount') {
     href = "./order.ecount.excel.list.php";
   }
+  else if (type === 'partner') {
+    href = './order.partner.excel.php';
+  }
   
   $('#loading_excel').show();
-  excel_downloader = $.fileDownload(href, {
-    httpMethod: "POST",
-    data: queryString
-  })
-  .always(function() {
-    $('#loading_excel').hide();
-  });
+
+  if(type === 'partner') {
+    excel_downloader = $.fileDownload(href, {
+      httpMethod: "POST",
+      data: queryString
+    })
+    .always(function() {
+      $('#loading_excel').hide();
+      window.location.reload();
+    });
+  } else {
+    excel_downloader = $.fileDownload(href, {
+      httpMethod: "POST",
+      data: queryString
+    })
+    .always(function() {
+      $('#loading_excel').hide();
+    });
+  }
   
   return false;
 }
