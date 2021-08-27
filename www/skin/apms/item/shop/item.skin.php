@@ -644,7 +644,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                 <?=$sale_percent_input?>
                 <input type="hidden" id="it_price" value="<?php
                   if($member["mb_id"]) {
-                    if($_COOKIE["viewType"] == "basic" || $member['mb_type']  === 'partner') {
+                    if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
                       echo $it["it_cust_price"];
                     } else {
                       if($member["mb_level"] == "3") {
