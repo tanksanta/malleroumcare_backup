@@ -474,6 +474,7 @@ $(function() {
       $('.giup').show();
     }
   })
+  $('#mb_type_default').click();
   <?php } ?>
 
   $('#mb_giup').click(function() {
