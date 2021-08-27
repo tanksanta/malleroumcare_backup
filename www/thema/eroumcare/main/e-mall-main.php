@@ -266,7 +266,7 @@ $(function() {
   get_latest_order_count();
 
   function get_latest_order_count() {
-    step = '준비';
+    step = '';
     $('.latest_order_head').hide();
     $('.latest_order_list').html('<li style="padding: 50px 0; text-align:center;"><img src="/shop/img/loading.gif"></li>');
 
@@ -280,7 +280,7 @@ $(function() {
         var cur_step = step_list[i];
         var count = data[cur_step] ? data[cur_step] : 0;
 
-        if(step === '준비' && count > 0)
+        if(step === '' && count > 0)
           step = cur_step;
 
         var next_html = i === (step_list.length - 1) ? '' : '<div class="next">></div>';
