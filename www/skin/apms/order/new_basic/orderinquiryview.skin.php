@@ -34,17 +34,8 @@ if($header_skin)
     $result = $result["data"];
 
     if($result) {
-      sql_query("
-        UPDATE {$g5["g5_shop_order_table"]} SET
-            od_penId = '{$result[0]["penId"]}'
-          , staOrdCd = '{$result[0]["staOrdCd"]}'
-        WHERE od_id = '{$od["od_id"]}'
-      ");
-      $od = sql_fetch("SELECT * FROM {$g5["g5_shop_order_table"]} WHERE od_id = '{$od["od_id"]}'");
-
       foreach($result as $data){
         $thisProductData = [];
-
         $thisProductData["prodId"] = $data["prodId"];
         $thisProductData["prodColor"] = $data["prodColor"];
         $thisProductData["prodBarNum"] = $data["prodBarNum"];
