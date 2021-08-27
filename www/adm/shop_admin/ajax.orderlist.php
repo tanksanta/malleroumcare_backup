@@ -868,10 +868,6 @@ foreach($orderlist as $order) {
         </td>
         <td align=\"left\" class=\"od_info\">
             <div class=\"order_info\">
-                <div class=\"time_info\">
-                  주문일시 : {$od_time}<br>
-                  변경일시 : {$od_receipt_time}
-                </div>
                 <div class=\"goods_info\">
                     <div class=\"goods_name\" title=\"{$goods_name_alt}\">
                         {$ct_it_name}(".($ct_qty)."개)
@@ -880,8 +876,9 @@ foreach($orderlist as $order) {
                         
                     </div> -->
                     <div class=\"order_num\">
-                    <!-- 상품 주문번호 ({$order['cart_ct_id']})<br> -->
-                        <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">주문번호&nbsp;<span>({$order['od_id']})</span></a>
+                      주문일시 : {$od_time}<br>
+                      변경일시 : {$od_receipt_time}<br>
+                      <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">주문번호&nbsp;<span>({$order['od_id']})</span></a>
                     </div>
                     {$od_send_admin_memo}
                 </div>
