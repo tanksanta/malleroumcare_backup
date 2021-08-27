@@ -34,30 +34,6 @@ if($header_skin)
     $result = $result["data"];
 
     if($result) {
-      $ordZip = [];
-      $ordZip[0] = substr($result[0]["ordZip"], 0, 3);
-      $ordZip[1] = substr($result[0]["ordZip"], 3, 2);
-
-      sql_query("
-        UPDATE {$g5["g5_shop_order_table"]} SET
-            mb_id = '{$result[0]["usrId"]}'
-          , od_penId = '{$result[0]["penId"]}'
-          , od_delivery_text = '{$result[0]["ordWayNum"]}'
-          , od_delivery_company = '{$result[0]["delSerCd"]}'
-          , od_b_name = '{$result[0]["ordNm"]}'
-          , od_b_tel = '{$result[0]["ordCont"]}'
-          , od_memo = '{$result[0]["ordMeno"]}'
-          , od_b_zip1 = '{$ordZip[0]}'
-          , od_b_zip2 = '{$ordZip[1]}'
-          , od_b_addr1 = '{$result[0]["ordAddr"]}'
-          , od_b_addr2 = '{$result[0]["ordAddrDtl"]}'
-          , payMehCd = '{$result[0]["payMehCd"]}'
-          , eformYn = '{$result[0]["eformYn"]}'
-          , staOrdCd = '{$result[0]["staOrdCd"]}'
-        WHERE od_id = '{$od["od_id"]}'
-      ");
-      $od = sql_fetch("SELECT * FROM {$g5["g5_shop_order_table"]} WHERE od_id = '{$od["od_id"]}'");
-
       foreach($result as $data){
         $thisProductData = [];
 
