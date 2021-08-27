@@ -162,6 +162,18 @@
 }
 
 #partner-order .install-report .report-img-wrap {
+  -webkit-box-lines: multiple;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+#partner-order .install-report .report-img-wrap .col {
+  padding: 5px;
+}
+
+#partner-order .install-report .report-img-wrap .issue-wrap {
+  width: 100%;
   margin-top: 20px;
 }
 
@@ -420,17 +432,6 @@
     -webkit-box-lines: multiple;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-  }
-
-  #partner-order .install-report .report-img-wrap {
-    -webkit-box-lines: multiple;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-  }
-
-  #partner-order .install-report .report-img-wrap .issue-wrap {
-    width: 100%;
-    margin-top: 20px;
   }
 
   #partner-order .install-report .report-btn {

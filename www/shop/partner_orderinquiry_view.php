@@ -110,7 +110,7 @@ function trans_ct_status_text($ct_status_text) {
   return $ct_status_text;
 }
 
-add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_order.css">', 0);
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_order.css?v=0827">', 0);
 ?>
 
 <section id="partner-order" class="wrap">
