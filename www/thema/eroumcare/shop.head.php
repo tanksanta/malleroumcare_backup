@@ -507,6 +507,9 @@ if($is_main && !$is_member) {
               </li>
             </ul>
           </div>
+          <div class="btn_logout_mo">
+          	<a href="<?php echo G5_BBS_URL; ?>/logout.php" class="btn_default">로그아웃</a>
+          </div>
         </div>
       </div>
       <?php } ?>
