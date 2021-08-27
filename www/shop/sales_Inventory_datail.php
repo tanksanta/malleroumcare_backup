@@ -419,6 +419,13 @@ $row = sql_fetch($sql);
                 <div class="p-inner">
                   <h2>판매완료처리</h2>
                   <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
+                  <div class="rent_wrap">
+                    등록 수급자 선택 후 처리
+                    <button type="button" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodOption']?>','<?=$list[$i]['prodBarNum']?>')">확인</button>
+                  </div>
+                  <div class="sell_desc">
+                    수급자 선택없이 판매완료 처리
+                  </div>
                   <form name="form_sell" class="form_sell" role="form">
                     <input type="hidden" name="stoId" value="<?=$list[$i]['stoId']?>">
                     <input type="hidden" name="prodBarNum" value="<?=$list[$i]['prodBarNum']?>">
