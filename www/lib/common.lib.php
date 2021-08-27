@@ -188,7 +188,7 @@ function alert($msg='', $url='', $error=true, $post=false)
 
 
 // 경고메세지 출력후 창을 닫음
-function alert_close($msg, $error=true)
+function alert_close($msg, $error=true, $parent_reload = false)
 {
     global $g5;
 

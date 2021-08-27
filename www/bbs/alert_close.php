@@ -17,6 +17,11 @@ if($error) {
 
 <script>
 alert("<?php echo $msg; ?>");
+<?php if ($parent_reload) { ?>
+try{
+  window.opener.document.location.href=window.opener.document.URL;
+}catch(e){}
+<?php } ?>
 window.close();
 </script>
 

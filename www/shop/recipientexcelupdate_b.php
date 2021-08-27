@@ -116,10 +116,10 @@ if($sheetData) {
         }
 
         get_eroumcare(EROUMCARE_API_RECIPIENT_ITEM_INSERT, $setItemData);
-
     }
-    
-    alert('완료되었습니다.');
+
+    alert_close("{$total_count}명의 수급자가 등록되었습니다.", false, true);
 } else {
-    alert('파일을 읽을 수 없습니다.');
+    alert_close('파일을 읽을 수 없습니다.');
 }
+?>
