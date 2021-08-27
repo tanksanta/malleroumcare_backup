@@ -283,23 +283,19 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0
             </div>
           </div>
           <div class="linear">
-            <span class="linear_span">계산서발행</span>
-            <input type="radio" id="od_important_all" name="od_important" value="" <?php echo option_array_checked('', $od_important); ?>><label for="od_important_all"> 전체</label>
-            <input type="radio" id="od_important_0" name="od_important" value="0" <?php echo option_array_checked('0', $od_important); ?>><label for="od_important_0"> 미발행</label>
-            <input type="radio" id="od_important_1" name="od_important" value="1" <?php echo option_array_checked('1', $od_important); ?>><label for="od_important_1"> 발행</label>
-          </div>
-          <div class="linear">
-            <span class="linear_span">출고</span>
-            <input type="radio" id="od_release_all" name="od_release" value="" <?php echo option_array_checked('', $od_release); ?>><label for="od_release_all"> 전체</label>
-            <input type="radio" id="od_release_0" name="od_release" value="0" <?php echo option_array_checked('0', $od_release); ?>><label for="od_release_0"> 일반출고</label>
-            <input type="radio" id="od_release_1" name="od_release" value="1" <?php echo option_array_checked('1', $od_release); ?>><label for="od_release_1"> 외부출고</label>
-            <input type="radio" id="od_release_2" name="od_release" value="2" <?php echo option_array_checked('2', $od_release); ?>><label for="od_release_2"> 출고대기</label>
-          </div>
-          <div class="linear">
-            <span class="linear_span">직배송</span>
+            <span class="linear_span">위탁</span>
             <input type="radio" id="ct_is_direct_delivery_all" name="ct_is_direct_delivery" value="" <?php echo option_array_checked('', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_all"> 전체</label>
-            <input type="radio" id="ct_is_direct_delivery_1" name="ct_is_direct_delivery" value="1" <?php echo option_array_checked('1', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_1"> 직배송</label>
-            <input type="radio" id="ct_is_direct_delivery_0" name="ct_is_direct_delivery" value="0" <?php echo option_array_checked('0', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_0"> 직배송제외</label>
+            <input type="radio" id="ct_is_direct_delivery_1" name="ct_is_direct_delivery" value="1" <?php echo option_array_checked('1', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_1"> 배송</label>
+            <input type="radio" id="ct_is_direct_delivery_1" name="ct_is_direct_delivery" value="2" <?php echo option_array_checked('2', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_2"> 설치</label>
+            <select name="ct_direct_delivery_partner" id="ct_direct_delivery_partner">
+              <option value="">전체</option>
+              <?php
+              $partner_result = sql_query(" SELECT * FROM g5_member WHERE mb_type = 'partner' ");
+              while($partner = sql_fetch_array($partner_result)) {
+                echo '<option value="'.$partner['mb_id'].'" '.get_selected($ct_direct_delivery_partner, $partner['mb_id']).'>'.$partner['mb_name'].'</option>';
+              }
+              ?>
+            </select>
           </div>
         </td>
       </tr>

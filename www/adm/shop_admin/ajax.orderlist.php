@@ -128,10 +128,11 @@ if (gettype($od_important) == 'string' && $od_important !== '') {
 }
 
 if (gettype($ct_is_direct_delivery) == 'string' && $ct_is_direct_delivery !== '') {
-  if($ct_is_direct_delivery == '1')
-    $where[] = " (ct_is_direct_delivery = '1' or ct_is_direct_delivery = '2') ";
-  else
     $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
+}
+
+if($ct_direct_delivery_partner = get_search_string($ct_direct_delivery_partner)) {
+  $where[] = " ct_direct_delivery_partner = '$ct_direct_delivery_partner' ";
 }
 
 if (gettype($od_release) == 'string' && $od_release !== '') {
@@ -348,7 +349,7 @@ if ($sort2 == "") $sort2 = "desc";
 
 // shop_cart 조인으로 수정
 // member 테이블 조인
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, ct_delivery_num, it_admin_memo, it_maker, ct_status ,ct_move_date, ct_ex_date, ct_is_direct_delivery from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, ct_delivery_num, it_admin_memo, it_maker, ct_status ,ct_move_date, ct_ex_date, ct_is_direct_delivery, ct_direct_delivery_partner from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -396,7 +397,7 @@ $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
 //$sql = " select count(od_id) as cnt, ct_status $sql_common2 group by ct_status";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id,ct_delivery_num, X.it_name, it_admin_memo, it_maker, ct_status, ct_ex_date, ct_is_direct_delivery from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id,ct_delivery_num, X.it_name, it_admin_memo, it_maker, ct_status, ct_ex_date, ct_is_direct_delivery, ct_direct_delivery_partner from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
@@ -479,21 +480,18 @@ $ret['main'] = "
             <thead>
                 <tr>
                     <th class=\"check\">선택</th>
-                    <th class=\"balhaeng\">발행</th>
-                    <th class=\"od_time\">주문일시</th>
                     <th class=\"od_info\" style='width:20%'>주문정보</th>
                     <th class=\"od_barNum\">바코드</th>
                     <th class=\"od_name\">받는분(주문자)</th>
-                    <th class=\"od_receipt_time\">변경일시</th>
                     <th class=\"od_content\">상품요청</th>
                     <th class=\"od_content\">배송요청사항</th>
                     <th class=\"od_price\">결제금액</th>
                     <th class=\"od_sales_manager\">영업담당자</th>
                     <th class=\"od_release_manager\">출고담당자</th>
                     <th class=\"od_ex_date\">출고완료일</th>
+                    <th class=\"od_content\">위탁</th>
                     <th class=\"od_step\">주문상태</th>
                     <!--<th class=\"od_matching\">매칭여부</th>-->
-                    <th class=\"od_list_memo\">메모</th>
                 </tr>
             </thead>
             <tbody>
@@ -613,16 +611,11 @@ foreach($orderlist as $order) {
         $is_order_cancel_requested = "cancel_requested";
     }
 
-    $od_time = substr($order['od_time'],2,8) . '<br>' . '('. substr($order['od_time'],11,5) .')';
+    $od_time = substr($order['od_time'],0,10) . ' ('. substr($order['od_time'],11,8) .')';
 
-    /*if($order['od_receipt_time'] != '0000-00-00 00:00:00') {
-        $od_receipt_time = substr($order['od_receipt_time'],2,8) . '<br>' . '('. substr($order['od_receipt_time'],11,5) .')';
-    }else{
-        $od_receipt_time = '';
-    }*/
     if($order['ct_move_date']) {
       $ct_move_time = strtotime($order['ct_move_date']);
-      $od_receipt_time = date('Y-m-d', $ct_move_time).'<br>('.date('H:i:s', $ct_move_time).')';
+      $od_receipt_time = date('Y-m-d', $ct_move_time).' ('.date('H:i:s', $ct_move_time).')';
     } else {
       $od_receipt_time = '';
     }
@@ -855,8 +848,17 @@ foreach($orderlist as $order) {
 
     $od_release_out = '-';
 
-    $od_list_memo = $order['od_list_memo'] ? htmlspecialchars($order['od_list_memo']) : '없음';
-    if($order['ct_is_direct_delivery']) $od_list_memo = '직배송';
+    $direct_delivery_partner_text = $order['ct_direct_delivery_partner'] ? " ({$order['ct_direct_delivery_partner']})" : '';
+    switch($order['ct_is_direct_delivery']) {
+      case 1:
+        $direct_delivery_text = '배송'.$direct_delivery_partner_text;
+        break;
+      case 2:
+        $direct_delivery_text = '설치'.$direct_delivery_partner_text;
+        break;
+      default:
+        $direct_delivery_text = '';
+    }
 
     $ret['data'] .= "
     <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']}\">
@@ -864,14 +866,12 @@ foreach($orderlist as $order) {
             <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['cart_ct_id']}\" value=\"{$order['cart_ct_id']}\" accumul_mark=\"Y\">
             <label for=\"check_{$order['cart_ct_id']}\">&nbsp;</label>
         </td>
-        <td align=\"center\" class=\"balhaeng\">
-            <span class=\"icon-star-gray hand list-important important-25 {$important_class}\" data-od_id='{$order['od_id']}'></span>
-        </td>
-        <td align=\"center\" class=\"od_time\">
-            {$od_time}
-        </td>
         <td align=\"left\" class=\"od_info\">
             <div class=\"order_info\">
+                <div class=\"time_info\">
+                  주문일시 : {$od_time}<br>
+                  변경일시 : {$od_receipt_time}
+                </div>
                 <div class=\"goods_info\">
                     <div class=\"goods_name\" title=\"{$goods_name_alt}\">
                         {$ct_it_name}(".($ct_qty)."개)
@@ -907,7 +907,6 @@ foreach($orderlist as $order) {
                 {$mb_shorten_info}{$mb_entNm}
             </a>
         </td>
-        <td align=\"center\" class=\"od_receipt_time\">{$od_receipt_time}</td>
         <td align=\"center\" class=\"od_content\">
             {$prodMemo}
         </td>
@@ -935,15 +934,13 @@ foreach($orderlist as $order) {
         <td align=\"center\" class=\"od_ex_date\">
             {$ct_ex_date}
         </td>
+        <td align=\"center\" class=\"od_content\">
+            {$direct_delivery_text}
+        </td>
         <td align=\"center\" class=\"od_step\">
             {$ct_status_text}
         </td>
         <!--<td align=\"center\" class=\"od_matching\"><b>{$goods_maching}</b></td>-->
-        <td align=\"center\" class=\"od_list_memo\">
-            <span class=\"open_list_memo_layer_popup list_memo_{$order['od_id']} \" data-od-id=\"{$order['od_id']}\">
-                {$od_list_memo}
-            </span>
-        </td>
     </tr>
     ";
 

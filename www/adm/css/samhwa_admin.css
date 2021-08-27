@@ -647,6 +647,9 @@ table.list-table-style .drop_multi_sub a:after {
     padding: 3px;
     font-size: 12px;
 }
+#samhwa_order_list_table>div.table td .order_info .time_info {
+  margin-bottom:5px;
+}
 #samhwa_order_list_table>div.table td .order_info .goods_info .goods_ea {
     display:inline-block;
     margin-left:5px;

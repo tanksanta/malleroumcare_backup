@@ -86,7 +86,6 @@ $incompleted_eform_count = 0;
 ?>
 
 <!-- 내용 -->
-<title>판매재고목록</title>
 <section class="wrap">
   <div class="sub_section_tit">전자문서관리</div>
   <div class="inner">
