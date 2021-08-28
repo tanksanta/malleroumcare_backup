@@ -89,7 +89,7 @@ function print_name_and_value($name, $val) {
       </div>
     </div>
   </div>
-  <?php if ($is_development) { ?>
+  <?php if ($is_development || $member['mb_id'] === 'hula1202') { ?>
   <div class="detail-tab">
     <ul>
       <li class="on" data-type="order">
