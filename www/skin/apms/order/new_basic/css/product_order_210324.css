@@ -227,17 +227,18 @@ table {border-collapse: collapse;}
 
 .detail-price h5 {padding-bottom: 18px; font-size: 16px;color: #232323;}
 .coupon-icon {display: inline-block;padding: 2px 9px;border-radius: 5px;border:1px solid #ddd;background:#eee;font-style: normal; cursor: pointer; }
-.detail-price .all-info {margin-bottom: 40px;}
-.detail-price .all-info ul {padding: 10px; border: 1px solid #666;border-bottom-color: #ddd;}
+.detail-price .all-info {border: 1px solid #666; margin-bottom: 40px;}
+.detail-price .all-info ul {padding: 10px; border-bottom: 1px solid #ddd;}
 .detail-price .all-info ul li div {padding-bottom: 12px; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;font-size: 14px;}
 .detail-price .all-info ul li:last-child div {padding-bottom: 0;}
 .detail-price .all-info ul li b {font-weight: normal;}
 .detail-price .all-info ul li span {font-weight: bold;}
 .detail-price .all-info ul li .coupon-on {padding-left: 25px;} 
 .detail-price .all-info ul li .coupon-on b::before {margin-right: 4px; content: '';width: 12px;height: 15px;border: 1px solid #ddd;border-right: none;border-top: none;display: inline-block;vertical-align: super;}
-.detail-price .all-info-price {padding: 13px 10px; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;border: 1px solid #666;border-top: none;}
+.detail-price .all-info-price {padding: 13px 10px; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
 .detail-price .all-info-price b,
 .detail-price .all-info-price span {font-weight: bold;font-size: 16px;}
+.detail-price .all-info-price input { border: 1px solid #ddd; padding: 5px; height: 30px; text-align: right; width: 100px; margin-right: 5px; }
 
 .payment-tab {margin-bottom: 40px;}
 .payment-tab ul {display: -webkit-box; display: -ms-flexbox; display: flex;}

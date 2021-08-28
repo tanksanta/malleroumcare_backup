@@ -289,7 +289,7 @@ if ($od['od_status'] == '배송' || $od['od_status'] == '완료') {
 //$tot_price = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2']
 //        - $od['od_cart_coupon'] - $od['od_coupon'] - $od['od_send_coupon']
 //        - $od['od_cancel_price'] - $od['od_cart_discount'] - $od['od_cart_discount2'];
-$tot_price += $od["od_send_cost"] + $od["od_send_cost2"] - $od['od_cart_coupon'] - $od['od_coupon'] - $od['od_send_coupon'];
+$tot_price += $od["od_send_cost"] + $od["od_send_cost2"] - $od['od_cart_coupon'] - $od['od_coupon'] - $od['od_send_coupon'] - $od['od_receipt_point'];
 
 // 결제,배송정보
 $receipt_price  = $od['od_receipt_price'] + $od['od_receipt_point'];

@@ -801,6 +801,7 @@ else if ($od_settle_case == "KAKAOPAY")
 else if ($od_settle_case == "월 마감 정산")
 {
   $od_status = "준비";
+  $od_receipt_point = $i_temp_point;
   $od_misu = 0;
 }
 else

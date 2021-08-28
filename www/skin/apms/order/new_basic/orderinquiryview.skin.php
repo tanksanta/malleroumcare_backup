@@ -203,7 +203,7 @@ $(function() {
 </script>
 <!-- 210326 배송정보팝업 -->
 
-<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?v=210811">
+<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?v=210828">
 <section id="pro-order2" class="wrap order-list">
   <h2 class="tti">
     주문상세
@@ -807,6 +807,15 @@ $(function() {
             <div>
               <b>쿠폰할인</b>
               <span><?php echo number_format($od['od_coupon']); ?> 원</span>
+            </div>
+          </li>
+          <?php } ?>
+
+          <?php if($od['od_receipt_point'] > 0) { ?>
+          <li>
+            <div>
+              <b>포인트결제</b>
+              <span><?php echo number_format($od['od_receipt_point']); ?> 원</span>
             </div>
           </li>
           <?php } ?>

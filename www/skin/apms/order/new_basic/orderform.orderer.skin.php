@@ -588,6 +588,11 @@ $(function() {
         <b>합계금액</b>
         <span id="ct_tot_price" class="print_price"><?php echo number_format($tot_price); ?> 원</span>
       </div>
+      <div class="all-info-price">
+        <input type="hidden" name="max_temp_point" value="<?=$temp_point?>">
+        <b>포인트결제</b>
+        <span class="print_price"><input type="text" name="od_temp_point" id="od_temp_point" value="0"> 원</span>
+      </div>
     </div>
     <h5 class="stock_insert_none">결제방법</h5>
     <div class="payment-tab stock_insert_none">
