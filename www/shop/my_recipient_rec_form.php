@@ -89,6 +89,24 @@ function print_name_and_value($name, $val) {
       </div>
     </div>
   </div>
+  <?php if ($is_development) { ?>
+  <div class="detail-tab">
+    <ul>
+      <li class="on" data-type="order">
+        <a href="./my_recipient_rec_form.php?id=<?php echo $id; ?>">
+          <span></span>
+          <h4>간략 기록지</h4>
+        </a>
+      </li>
+      <li data-type="order_pen" id="c_recipient">
+        <a href="./my_recipient_rec_detail_form.php?id=<?php echo $id; ?>">
+          <span></span>
+          <h4>전체 기록지</h4>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <?php } ?>
 
   <form action="my_recipient_rec_post.php" method="post">
     <?php if($rec) { ?>
