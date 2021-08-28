@@ -151,11 +151,12 @@
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
+  vertical-align: middle;
 }
 
 .recipient_rec_wrap input[type="submit"] {
   margin-right: 10px;
-  background-color: #ee8102;
+  background-color: #ee8102 !important;
   width: 160px;
 }
 
