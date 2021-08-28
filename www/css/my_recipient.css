@@ -88,7 +88,12 @@
 
 .recipient_rec_wrap .table_wrap { margin-top: 10px; }
 .recipient_rec_wrap .table_wrap.flex {
-  display:flex; justify-content: space-between;
+  display:-webkit-box;
+  display:-ms-flexbox;
+  display:flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
 }
 .recipient_rec_wrap .table_wrap:after { display: block; content: ' '; clear: both; }
 .recipient_rec_wrap .table_wrap table { width: 49%; float: left; }
@@ -98,6 +103,9 @@
 .recipient_rec_wrap table th,
 .recipient_rec_wrap table td { border: 1px solid #ddd; padding: 5px 10px; text-align: center; color: #666; font-weight: normal; }
 .recipient_rec_wrap.wide .table_wrap table td { text-align: left; padding-left: 10px; }
+.recipient_rec_wrap.wide .table_wrap table td.text-center {
+  text-align: center;
+}
 .recipient_rec_wrap.wide .table_wrap table td input[type=radio], 
 .recipient_rec_wrap.wide .table_wrap table td input[type=checkbox] {
   margin:0 5px 0 0;
