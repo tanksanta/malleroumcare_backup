@@ -46,7 +46,7 @@ $rec_regex = array(
 foreach($rec_regex as $key => $val) {
   $matches = [];
   if(!preg_match($rec_regex[$key], $_POST[$key], $matches)) {
-    json_response(400, '입력값을 확인해주세요.\\n오류 : '.$rec_key_cd[$key]);
+    json_response(400, '입력값을 확인해주세요.'.PHP_EOL.'오류: '.$rec_key_cd[$key]);
   }
   $_POST[$key] = $matches[1];
 }
