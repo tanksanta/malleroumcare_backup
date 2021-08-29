@@ -132,15 +132,15 @@ function print_name_and_value($name, $val) {
             <th>영양상태</th>
             <td>
               <label for="nutrition_0">
-                <input type="radio" id="nutrition_0" <?=print_name_and_value("nutrition", "0")?>>양호 : 건강 및 섭식, 영양 등에 문제가 없는 상태
+                <input type="radio" id="nutrition_0" <?=print_name_and_value("nutrition", "00")?>>양호 : 건강 및 섭식, 영양 등에 문제가 없는 상태
               </label>
               <br/>
               <label for="nutrition_1">
-                <input type="radio" id="nutrition_1" <?=print_name_and_value("nutrition", "1")?>>불량 : 건강, 섭식, 영양 등에 문제가 있어 세심한 관찰이 요구
+                <input type="radio" id="nutrition_1" <?=print_name_and_value("nutrition", "01")?>>불량 : 건강, 섭식, 영양 등에 문제가 있어 세심한 관찰이 요구
               </label>
               <br/>
               <label for="nutrition_2">
-                <input type="radio" id="nutrition_2" <?=print_name_and_value("nutrition", "2")?>>심한불량 : 극도의 건강, 섭식, 영양 등에 문제가 있어 치료적 처치가 필요한 상태
+                <input type="radio" id="nutrition_2" <?=print_name_and_value("nutrition", "02")?>>심한불량 : 극도의 건강, 섭식, 영양 등에 문제가 있어 치료적 처치가 필요한 상태
               </label>
             </td>
           </tr>
@@ -148,58 +148,58 @@ function print_name_and_value($name, $val) {
             <th>식사형태</th>
             <td>
               <label for="meal_0">
-                <input type="radio" id="meal_0" <?=print_name_and_value("meal", "0")?>>일반식
+                <input type="radio" id="meal_0" <?=print_name_and_value("meal", "00")?>>일반식
               </label>
               <label for="meal_1">
-                <input type="radio" id="meal_1" <?=print_name_and_value("meal", "1")?>>다진식
+                <input type="radio" id="meal_1" <?=print_name_and_value("meal", "01")?>>다진식
               </label>
               <label for="meal_2">
-                <input type="radio" id="meal_2" <?=print_name_and_value("meal", "2")?>>죽
+                <input type="radio" id="meal_2" <?=print_name_and_value("meal", "02")?>>죽
               </label>
               <label for="meal_3">
-                <input type="radio" id="meal_3" <?=print_name_and_value("meal", "3")?>>미음
+                <input type="radio" id="meal_3" <?=print_name_and_value("meal", "03")?>>미음
               </label>
               <label for="meal_4">
-                <input type="radio" id="meal_4" <?=print_name_and_value("meal", "4")?>>경관식
-              </label>              
-              <label for="meal_5">
-                <input type="radio" id="meal_5" <?=print_name_and_value("meal", "5")?>>기타
+                <input type="radio" id="meal_4" <?=print_name_and_value("meal", "04")?>>경관식
               </label>
-              (<input type="text" />)
+              <label for="meal_5">
+                <input type="radio" id="meal_5" <?=print_name_and_value("meal", "05")?>>기타
+              </label>
+              (<input type="text" name="meal_etc" />)
             </td>
           </tr>
           <tr>
             <th>소화상태</th>
             <td>
               <label for="digestion_0">
-                <input type="radio" id="digestion_0" <?=print_name_and_value("psclState1", "0")?>>저작곤란
-              </label>              
+                <input type="radio" id="digestion_0" <?=print_name_and_value("digestion", "00")?>>저작곤란
+              </label>
               <label for="digestion_1">
-                <input type="radio" id="digestion_1" <?=print_name_and_value("psclState1", "1")?>>소화불량
-              </label>              
+                <input type="radio" id="digestion_1" <?=print_name_and_value("digestion", "01")?>>소화불량
+              </label>
               <label for="digestion_2">
-                <input type="radio" id="digestion_2" <?=print_name_and_value("psclState1", "2")?>>오심·구토
-              </label>              
+                <input type="radio" id="digestion_2" <?=print_name_and_value("digestion", "02")?>>오심·구토
+              </label>
               <label for="digestion_3">
-                <input type="radio" id="digestion_3" <?=print_name_and_value("psclState1", "3")?>>기타
-              </label>              
-              (<input type="text" />)
+                <input type="radio" id="digestion_3" <?=print_name_and_value("digestion", "03")?>>기타
+              </label>
+              (<input type="text" name="digestion_etc" />)
             </td>
           </tr>
           <tr>
             <th>연하상태</th>
             <td>
               <label for="swallow_0">
-                <input type="radio" id="swallow_0" <?=print_name_and_value("swallow", "0")?>>양호
-              </label>              
+                <input type="radio" id="swallow_0" <?=print_name_and_value("swallow", "00")?>>양호
+              </label>
               <label for="swallow_1">
-                <input type="radio" id="swallow_1" <?=print_name_and_value("swallow", "1")?>>가끔 사레걸림
-              </label>              
+                <input type="radio" id="swallow_1" <?=print_name_and_value("swallow", "01")?>>가끔 사레걸림
+              </label>
               <label for="swallow_2">
-                <input type="radio" id="swallow_2" <?=print_name_and_value("swallow", "2")?>>자주 사레걸림
-              </label>              
+                <input type="radio" id="swallow_2" <?=print_name_and_value("swallow", "02")?>>자주 사레걸림
+              </label>
               <label for="swallow_3">
-                <input type="radio" id="swallow_3" <?=print_name_and_value("swallow", "3")?>>연하곤란
+                <input type="radio" id="swallow_3" <?=print_name_and_value("swallow", "03")?>>연하곤란
               </label>
             </td>
           </tr>
@@ -207,20 +207,20 @@ function print_name_and_value($name, $val) {
             <th>구강상태</th>
             <td>
               <label for="oral_0">
-                <input type="radio" id="oral_0" <?=print_name_and_value("oral", "0")?>>양호
-              </label>              
+                <input type="radio" id="oral_0" <?=print_name_and_value("oral", "00")?>>양호
+              </label>
               <label for="oral_1">
-                <input type="radio" id="oral_1" <?=print_name_and_value("oral", "1")?>>청결불량
+                <input type="radio" id="oral_1" <?=print_name_and_value("oral", "01")?>>청결불량
               </label>              
               <label for="oral_2">
-                <input type="radio" id="oral_2" <?=print_name_and_value("oral", "2")?>>치아약함
-              </label>              
+                <input type="radio" id="oral_2" <?=print_name_and_value("oral", "02")?>>치아약함
+              </label>
               <label for="oral_3">
-                <input type="radio" id="oral_3" <?=print_name_and_value("oral", "3")?>>틀니
-              </label>              
+                <input type="radio" id="oral_3" <?=print_name_and_value("oral", "03")?>>틀니
+              </label>
               <label for="oral_4">
-                <input type="radio" id="oral_4" <?=print_name_and_value("oral", "4")?>>잔존치아 없음
-              </label>              
+                <input type="radio" id="oral_4" <?=print_name_and_value("oral", "04")?>>잔존치아 없음
+              </label>
             </td>
           </tr>
           <tr>
@@ -230,19 +230,19 @@ function print_name_and_value($name, $val) {
             <th>소변상태</th>
             <td>
               <label for="pee_0">
-                <input type="radio" id="pee_0" <?=print_name_and_value("pee", "0")?>>양호
-              </label>              
+                <input type="radio" id="pee_0" <?=print_name_and_value("pee", "00")?>>양호
+              </label>
               <label for="pee_1">
-                <input type="radio" id="pee_1" <?=print_name_and_value("pee", "1")?>>요실금
-              </label>              
+                <input type="radio" id="pee_1" <?=print_name_and_value("pee", "01")?>>요실금
+              </label>
               <label for="pee_2">
-                <input type="radio" id="pee_2" <?=print_name_and_value("pee", "2")?>>배뇨곤란
-              </label>              
+                <input type="radio" id="pee_2" <?=print_name_and_value("pee", "02")?>>배뇨곤란
+              </label>
               <label for="pee_3">
-                <input type="radio" id="pee_3" <?=print_name_and_value("pee", "3")?>>기저귀
-              </label>              
+                <input type="radio" id="pee_3" <?=print_name_and_value("pee", "03")?>>기저귀
+              </label>
               <label for="pee_4">
-                <input type="radio" id="pee_4" <?=print_name_and_value("pee", "4")?>>유치도뇨·방광루
+                <input type="radio" id="pee_4" <?=print_name_and_value("pee", "04")?>>유치도뇨·방광루
               </label>             
             </td>
           </tr>
@@ -251,19 +251,19 @@ function print_name_and_value($name, $val) {
             <td>
               <label for="feces_0">
                 <input type="radio" id="feces_0" <?=print_name_and_value("feces", "00")?>>양호
-              </label>              
+              </label>
               <label for="feces_1">
-                <input type="radio" id="feces_1" <?=print_name_and_value("feces", "00")?>>지속적인 설사
-              </label>              
+                <input type="radio" id="feces_1" <?=print_name_and_value("feces", "01")?>>지속적인 설사
+              </label>
               <label for="feces_2">
-                <input type="radio" id="feces_2" <?=print_name_and_value("feces", "00")?>>변비
-              </label>              
+                <input type="radio" id="feces_2" <?=print_name_and_value("feces", "02")?>>변비
+              </label>
               <label for="feces_3">
-                <input type="radio" id="feces_3" <?=print_name_and_value("feces", "00")?>>기저귀
-              </label>              
+                <input type="radio" id="feces_3" <?=print_name_and_value("feces", "03")?>>기저귀
+              </label>
               <label for="feces_4">
-                <input type="radio" id="feces_4" <?=print_name_and_value("feces", "00")?>>장루
-              </label>             
+                <input type="radio" id="feces_4" <?=print_name_and_value("feces", "04")?>>장루
+              </label>
             </td>
           </tr>
           <tr>
@@ -273,72 +273,72 @@ function print_name_and_value($name, $val) {
                 <input type="radio" id="walking_0" <?=print_name_and_value("walking", "00")?>>단독보행
               </label>              
               <label for="walking_1">
-                <input type="radio" id="walking_1" <?=print_name_and_value("walking", "00")?>>보조기사용
+                <input type="radio" id="walking_1" <?=print_name_and_value("walking", "01")?>>보조기사용
               </label>              
               (
               <label for="walking_2">
-                <input type="radio" id="walking_2" <?=print_name_and_value("walking", "00")?>>지팡이
+                <input type="checkbox" id="walking_2" <?=print_name_and_value("walking_sub[]", "00")?>>지팡이
               </label>              
               <label for="walking_3">
-                <input type="radio" id="walking_3" <?=print_name_and_value("walking", "00")?>>보행기
+                <input type="checkbox" id="walking_3" <?=print_name_and_value("walking_sub[]", "01")?>>보행기
               </label>
               <label for="walking_4">
-                <input type="radio" id="walking_4" <?=print_name_and_value("walking", "00")?>>휠체어
+                <input type="checkbox" id="walking_4" <?=print_name_and_value("walking_sub[]", "02")?>>휠체어
               </label>
               )
               <label for="walking_5">
-                <input type="radio" id="walking_5" <?=print_name_and_value("walking", "00")?>>부축도움
+                <input type="radio" id="walking_5" <?=print_name_and_value("walking", "02")?>>부축도움
               </label>
               <label for="walking_6">
-                <input type="radio" id="walking_6" <?=print_name_and_value("walking", "00")?>>보행불가능
+                <input type="radio" id="walking_6" <?=print_name_and_value("walking", "03")?>>보행불가능
               </label>
               <label for="walking_7">
-                <input type="radio" id="walking_7" <?=print_name_and_value("walking", "00")?>>기타
+                <input type="radio" id="walking_7" <?=print_name_and_value("walking", "04")?>>기타
               </label>
-              (<input type="text" />)
+              (<input type="text" name="walking_etc" />)
             </td>
           </tr>
           <tr>
             <th colspan="2">치매</th>
             <td>
               <label for="dementia_0">
-                <input type="radio" id="dementia_0" <?=print_name_and_value("dementia", "0")?>>기억력저하
+                <input type="radio" id="dementia_0" <?=print_name_and_value("dementia", "00")?>>기억력저하
               </label>              
               <label for="dementia_1">
-                <input type="radio" id="dementia_1" <?=print_name_and_value("dementia", "1")?>>기억력저하 + 행동변화증상
+                <input type="radio" id="dementia_1" <?=print_name_and_value("dementia", "01")?>>기억력저하 + 행동변화증상
               </label>              
               <label for="dementia_2">
-                <input type="radio" id="dementia_2" <?=print_name_and_value("dementia", "2")?>>기타
+                <input type="radio" id="dementia_2" <?=print_name_and_value("dementia", "02")?>>기타
               </label>
-              (<input type="text" />)
+              (<input type="text" name="dementia_etc" />)
             </td>
           </tr>
           <tr>
             <th colspan="2">치매증상<br>행동변화</th>
             <td>
               <label for="dementia2_0">
-                <input type="radio" id="dementia2_0" <?=print_name_and_value("dementia2", "0")?>>배회
+                <input type="checkbox" id="dementia2_0" <?=print_name_and_value("dementia_sub[]", "00")?>>배회
               </label>              
               <label for="dementia2_1">
-                <input type="radio" id="dementia2_1" <?=print_name_and_value("dementia2", "1")?>>야간수면장애
+                <input type="checkbox" id="dementia2_1" <?=print_name_and_value("dementia_sub[]", "01")?>>야간수면장애
               </label>              
               <label for="dementia2_2">
-                <input type="radio" id="dementia2_2" <?=print_name_and_value("dementia2", "2")?>>망상·환각
+                <input type="checkbox" id="dementia2_2" <?=print_name_and_value("dementia_sub[]", "02")?>>망상·환각
               </label>              
               <label for="dementia2_3">
-                <input type="radio" id="dementia2_3" <?=print_name_and_value("dementia2", "3")?>>폭력성
+                <input type="checkbox" id="dementia2_3" <?=print_name_and_value("dementia_sub[]", "03")?>>폭력성
               </label>              
               <label for="dementia2_4">
-                <input type="radio" id="dementia2_4" <?=print_name_and_value("dementia2", "4")?>>우울·불안
+                <input type="checkbox" id="dementia2_4" <?=print_name_and_value("dementia_sub[]", "04")?>>우울·불안
               </label>
               <label for="dementia2_5">
-                <input type="radio" id="dementia2_5" <?=print_name_and_value("dementia2", "5")?>>거부
+                <input type="checkbox" id="dementia2_5" <?=print_name_and_value("dementia_sub[]", "05")?>>거부
               </label>
               <label for="dementia2_6">
-                <input type="radio" id="dementia2_6" <?=print_name_and_value("dementia2", "6")?>>성적행동
+                <input type="checkbox" id="dementia2_6" <?=print_name_and_value("dementia_sub[]", "06")?>>성적행동
               </label>
               <label for="dementia2_7">
-                <input type="radio" id="dementia2_7" <?=print_name_and_value("dementia2", "7")?>>기타
+                <input type="checkbox" id="dementia2_7" <?=print_name_and_value("dementia_sub[]", "07")?>>기타
               </label>
             </td>
           </tr>
@@ -346,23 +346,23 @@ function print_name_and_value($name, $val) {
             <th colspan="2">시력상태</th>
             <td>
               <label for="eyesight_0">
-                <input type="radio" id="eyesight_0" <?=print_name_and_value("eyesight", "0")?>>정상(안경 사용 포함)
+                <input type="radio" id="eyesight_0" <?=print_name_and_value("eyesight", "00")?>>정상(안경 사용 포함)
               </label>              
               <br>
               <label for="eyesight_1">
-                <input type="radio" id="eyesight_1" <?=print_name_and_value("eyesight", "1")?>>1미터 정도 떨어진 글씨는 읽을 수 있다
+                <input type="radio" id="eyesight_1" <?=print_name_and_value("eyesight", "01")?>>1미터 정도 떨어진 글씨는 읽을 수 있다
               </label>              
               <br>
               <label for="eyesight_2">
-                <input type="radio" id="eyesight_2" <?=print_name_and_value("eyesight", "2")?>>눈 앞에 근접한 글씨만  읽을 수 있다.
+                <input type="radio" id="eyesight_2" <?=print_name_and_value("eyesight", "02")?>>눈 앞에 근접한 글씨만  읽을 수 있다.
               </label>              
               <br>
               <label for="eyesight_3">
-                <input type="radio" id="eyesight_3" <?=print_name_and_value("eyesight", "3")?>>거의 보이지 않는다
+                <input type="radio" id="eyesight_3" <?=print_name_and_value("eyesight", "03")?>>거의 보이지 않는다
               </label>              
               <br>
               <label for="eyesight_4">
-                <input type="radio" id="eyesight_4" <?=print_name_and_value("eyesight", "4")?>>보이는지 판단 불능
+                <input type="radio" id="eyesight_4" <?=print_name_and_value("eyesight", "04")?>>보이는지 판단 불능
               </label>
             </td>
           </tr>
@@ -370,23 +370,23 @@ function print_name_and_value($name, $val) {
             <th colspan="2">청력상태</th>
             <td>
               <label for="hearing_0">
-                <input type="radio" id="hearing_0" <?=print_name_and_value("hearing", "0")?>>정상(보청기 사용 포함)
+                <input type="radio" id="hearing_0" <?=print_name_and_value("hearing", "00")?>>정상(보청기 사용 포함)
               </label>              
               <br>
               <label for="hearing_1">
-                <input type="radio" id="hearing_1" <?=print_name_and_value("hearing", "1")?>>가까운 곳에서 대화는 가능하나 먼곳의 말소리는 듣지 못한다
+                <input type="radio" id="hearing_1" <?=print_name_and_value("hearing", "01")?>>가까운 곳에서 대화는 가능하나 먼곳의 말소리는 듣지 못한다
               </label>              
               <br>
               <label for="hearing_2">
-                <input type="radio" id="hearing_2" <?=print_name_and_value("hearing", "2")?>>큰소리만 들을 수 있다.
+                <input type="radio" id="hearing_2" <?=print_name_and_value("hearing", "02")?>>큰소리만 들을 수 있다.
               </label>              
               <br>
               <label for="hearing_3">
-                <input type="radio" id="hearing_3" <?=print_name_and_value("hearing", "3")?>>소리에 거의 반응이 없다.
+                <input type="radio" id="hearing_3" <?=print_name_and_value("hearing", "03")?>>소리에 거의 반응이 없다.
               </label>              
               <br>
               <label for="hearing_4">
-                <input type="radio" id="hearing_4" <?=print_name_and_value("hearing", "4")?>>들리는지 판단 불능  
+                <input type="radio" id="hearing_4" <?=print_name_and_value("hearing", "04")?>>들리는지 판단 불능  
               </label>
             </td>
           </tr>
@@ -396,7 +396,7 @@ function print_name_and_value($name, $val) {
 
     <div class="sub_title_wrap">
       <div class="sub_title">
-        2. 일반상태
+        2. 주요질병상태
       </div>
       <div class="sub_title_desc">* □에 체크 후 주요질병은 종합의견에 서술</div>
     </div>
@@ -413,149 +413,149 @@ function print_name_and_value($name, $val) {
             <th>만성질환</th>
             <td>
               <label for="chronic_0">
-                <input type="radio" id="chronic_0" <?=print_name_and_value("chronic", "0")?>>당뇨
+                <input type="checkbox" id="chronic_0" <?=print_name_and_value("chronic[]", "00")?>>당뇨
               </label>
               <label for="chronic_1">
-                <input type="radio" id="chronic_1" <?=print_name_and_value("chronic", "1")?>>고혈압
+                <input type="checkbox" id="chronic_1" <?=print_name_and_value("chronic[]", "01")?>>고혈압
               </label>
               <label for="chronic_2">
-                <input type="radio" id="chronic_2" <?=print_name_and_value("chronic", "2")?>>만성호흡기질환
+                <input type="checkbox" id="chronic_2" <?=print_name_and_value("chronic[]", "02")?>>만성호흡기질환
               </label>
               <label for="chronic_3">
-                <input type="radio" id="chronic_3" <?=print_name_and_value("chronic", "3")?>>암
+                <input type="checkbox" id="chronic_3" <?=print_name_and_value("chronic[]", "03")?>>암
               </label>
-              (<input type="text" />)
+              (<input type="text" name="chronic_etc" />)
             </td>
           </tr>
           <tr>
             <th>순환기계</th>
             <td>
               <label for="circulatory_0">
-                <input type="radio" id="circulatory_0" <?=print_name_and_value("circulatory", "0")?>>뇌경색
+                <input type="checkbox" id="circulatory_0" <?=print_name_and_value("circulatory[]", "00")?>>뇌경색
               </label>
               <label for="circulatory_1">
-                <input type="radio" id="circulatory_1" <?=print_name_and_value("circulatory", "1")?>>뇌출혈
+                <input type="checkbox" id="circulatory_1" <?=print_name_and_value("circulatory[]", "01")?>>뇌출혈
               </label>
               <label for="circulatory_2">
-                <input type="radio" id="circulatory_2" <?=print_name_and_value("circulatory", "2")?>>협심증
+                <input type="checkbox" id="circulatory_2" <?=print_name_and_value("circulatory[]", "02")?>>협심증
               </label>
               <label for="circulatory_3">
-                <input type="radio" id="circulatory_3" <?=print_name_and_value("circulatory", "3")?>>심근경색증
+                <input type="checkbox" id="circulatory_3" <?=print_name_and_value("circulatory[]", "03")?>>심근경색증
               </label>
               <label for="circulatory_4">
-                <input type="radio" id="circulatory_4" <?=print_name_and_value("circulatory", "3")?>>기타
+                <input type="checkbox" id="circulatory_4" <?=print_name_and_value("circulatory[]", "04")?>>기타
               </label>
-              (<input type="text" />)
+              (<input type="text" name="circulatory_etc" />)
             </td>
           </tr>
           <tr>
             <th>신경계</th>
             <td>
               <label for="nervous_0">
-                <input type="radio" id="nervous_0" <?=print_name_and_value("nervous", "0")?>>치매
+                <input type="checkbox" id="nervous_0" <?=print_name_and_value("nervous[]", "00")?>>치매
               </label>
               <label for="nervous_1">
-                <input type="radio" id="nervous_1" <?=print_name_and_value("nervous", "1")?>>파키슨병
+                <input type="checkbox" id="nervous_1" <?=print_name_and_value("nervous[]", "01")?>>파키슨병
               </label>
               <label for="nervous_2">
-                <input type="radio" id="nervous_2" <?=print_name_and_value("nervous", "2")?>>간질
+                <input type="checkbox" id="nervous_2" <?=print_name_and_value("nervous[]", "02")?>>간질
               </label>
               <label for="nervous_3">
-                <input type="radio" id="nervous_3" <?=print_name_and_value("nervous", "3")?>>기타
+                <input type="checkbox" id="nervous_3" <?=print_name_and_value("nervous[]", "03")?>>기타
               </label>
-              (<input type="text" />)
+              (<input type="text" name="nervous_etc" />)
             </td>
           </tr>
           <tr>
             <th>근골격계</th>
             <td>
               <label for="musculoskeletal_0">
-                <input type="radio" id="musculoskeletal_0" <?=print_name_and_value("musculoskeletal", "0")?>>관절염
+                <input type="checkbox" id="musculoskeletal_0" <?=print_name_and_value("musculoskeletal[]", "00")?>>관절염
               </label>
               <label for="musculoskeletal_1">
-                <input type="radio" id="musculoskeletal_1" <?=print_name_and_value("musculoskeletal", "1")?>>요통, 좌골통
+                <input type="checkbox" id="musculoskeletal_1" <?=print_name_and_value("musculoskeletal[]", "01")?>>요통, 좌골통
               </label>
               <label for="musculoskeletal_2">
-                <input type="radio" id="musculoskeletal_2" <?=print_name_and_value("musculoskeletal", "2")?>>골절 등 후유증
+                <input type="checkbox" id="musculoskeletal_2" <?=print_name_and_value("musculoskeletal[]", "02")?>>골절 등 후유증
               </label>
               <label for="musculoskeletal_3">
-                <input type="radio" id="musculoskeletal_3" <?=print_name_and_value("musculoskeletal", "3")?>>기타
+                <input type="checkbox" id="musculoskeletal_3" <?=print_name_and_value("musculoskeletal[]", "03")?>>기타
               </label>
-              (<input type="text" />)
+              (<input type="text" name="musculoskeletal_etc" />)
             </td>
           </tr>
           <tr>
             <th>정신, 행동장애</th>
             <td>
               <label for="mental_0">
-                <input type="radio" id="mental_0" <?=print_name_and_value("mental", "0")?>>우울증
+                <input type="checkbox" id="mental_0" <?=print_name_and_value("mental[]", "00")?>>우울증
               </label>
               <label for="mental_1">
-                <input type="radio" id="mental_1" <?=print_name_and_value("mental", "1")?>>수면장애
+                <input type="checkbox" id="mental_1" <?=print_name_and_value("mental[]", "01")?>>수면장애
               </label>
               <label for="mental_2">
-                <input type="radio" id="mental_2" <?=print_name_and_value("mental", "2")?>>정신질환
+                <input type="checkbox" id="mental_2" <?=print_name_and_value("mental[]", "02")?>>정신질환
               </label>
               <label for="mental_3">
-                <input type="radio" id="mental_3" <?=print_name_and_value("mental", "3")?>>심근경색증
+                <input type="checkbox" id="mental_3" <?=print_name_and_value("mental[]", "03")?>>심근경색증
               </label>
               <label for="mental_4">
-                <input type="radio" id="mental_4" <?=print_name_and_value("mental", "4")?>>기타
+                <input type="checkbox" id="mental_4" <?=print_name_and_value("mental[]", "04")?>>기타
               </label>
-              (<input type="text" />)
+              (<input type="text" name="mental_etc" />)
             </td>
           </tr>
           <tr>
             <th>호흡기계</th>
             <td>
               <label for="breath_0">
-                <input type="radio" id="breath_0" <?=print_name_and_value("breath", "0")?>>호흡곤란
+                <input type="checkbox" id="breath_0" <?=print_name_and_value("breath[]", "00")?>>호흡곤란
               </label>
               <label for="breath_1">
-                <input type="radio" id="breath_1" <?=print_name_and_value("breath", "1")?>>결핵
+                <input type="checkbox" id="breath_1" <?=print_name_and_value("breath[]", "01")?>>결핵
               </label>
               <label for="breath_2">
-                <input type="radio" id="breath_2" <?=print_name_and_value("breath", "2")?>>기타
+                <input type="checkbox" id="breath_2" <?=print_name_and_value("breath[]", "02")?>>기타
               </label>
-              (<input type="text" />)
+              (<input type="text" name="breath_etc" />)
             </td>
           </tr>
           <tr>
             <th>만성신장질환</th>
             <td>
-              <label for="chronic_kidney_0">
-                <input type="radio" id="chronic_kidney_0" <?=print_name_and_value("chronic_kidney", "0")?>>만성신부증
+              <label for="kidney_0">
+                <input type="checkbox" id="chronic_kidney_0" <?=print_name_and_value("kidney[]", "00")?>>만성신부증
               </label>
               (
               <label for="chronic_kidney_1">
-                <input type="radio" id="chronic_kidney_1" <?=print_name_and_value("chronic_kidney", "1")?>>복막투석
+                <input type="radio" id="chronic_kidney_1" <?=print_name_and_value("kidney_sub", "00")?>>복막투석
               </label>
               <label for="chronic_kidney_2">
-                <input type="radio" id="chronic_kidney_2" <?=print_name_and_value("chronic_kidney", "2")?>>혈액투석
+                <input type="radio" id="chronic_kidney_2" <?=print_name_and_value("kidney_sub", "01")?>>혈액투석
               </label>
               )
               <label for="chronic_kidney_3">
-                <input type="radio" id="chronic_kidney_3" <?=print_name_and_value("chronic_kidney", "3")?>>기타
+                <input type="checkbox" id="chronic_kidney_3" <?=print_name_and_value("kidney[]", "01")?>>기타
               </label>
-              (<input type="text" />)
+              (<input type="text" name="kidney_etc" />)
             </td>
           </tr>
           <tr>
             <th>기타질환</th>
             <td>
               <label for="disease_etc_0">
-                <input type="radio" id="disease_etc_0" <?=print_name_and_value("disease_etc", "0")?>>알레르기
+                <input type="checkbox" id="disease_etc_0" <?=print_name_and_value("other", "00")?>>알레르기
               </label>
               (
               <label for="disease_etc_1">
-                <input type="radio" id="disease_etc_1" <?=print_name_and_value("disease_etc", "1")?>>식품
+                <input type="checkbox" id="disease_etc_1" <?=print_name_and_value("other", "01")?>>식품
               </label>
-              (<input type="text" />)
-              )
+              (<input type="text" name="other_etc1" />)
               <label for="disease_etc_2">
-                <input type="radio" id="disease_etc_2" <?=print_name_and_value("disease_etc", "2")?>>기타
+                <input type="checkbox" id="disease_etc_2" <?=print_name_and_value("other", "02")?>>기타
               </label>
-              (<input type="text" />)
+              (<input type="text" name="other_etc2" />)
+              )
             </td>
           </tr>
         </tbody>
