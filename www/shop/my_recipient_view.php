@@ -68,7 +68,7 @@ $pen_gra_apply_day = $pen_gra_apply_result['pen_gra_apply_day'];
 if($pen_gra_apply_month && $pen_gra_apply_day)
   $pen_gra_apply_txt = "{$pen_gra_apply_month}월 {$pen_gra_apply_day}일";
 ?>
-<link rel="stylesheet" href="<?=G5_CSS_URL?>/my_recipient.css">
+<link rel="stylesheet" href="<?=G5_CSS_URL?>/my_recipient.css?v=210829">
 <div class="recipient_view_wrap">
   <div class="title_wrap">
     <div class="sub_section_tit">
@@ -210,6 +210,7 @@ if($pen_gra_apply_month && $pen_gra_apply_day)
         <div class="memo_content"><?=nl2br($rec['totalReview'])?></div>
       </div>
       <div class="memo_btn_wrap">
+        <button class="btn_print_rec c_btn primary" data-id="<?=$rec['recId']?>">인쇄</button>
         <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}&recId={$rec['recId']}"?>" class="c_btn" data-id="<?=$rec['recId']?>">수정</a>
         <button class="btn_delete_rec c_btn" data-id="<?=$rec['recId']?>">삭제</button>
       </div>
@@ -236,6 +237,11 @@ if($pen_gra_apply_month && $pen_gra_apply_day)
       *수급자를 삭제하시면 복구를 할 수 없습니다.
     </p>
   </div>
+</div>
+
+<!-- 인쇄 팝업 -->
+<div id="popup_rec">
+  <div></div>
 </div>
 
 <?php
@@ -383,6 +389,17 @@ $(function() {
     }
   });
 
+  // 욕구사정기록지 인쇄
+  $(document).on('click', '.btn_print_rec', function() {
+    var recId = $(this).data('id');
+
+    $("#popup_rec > div").html("<iframe src='my_recipient_rec_print.php?id=<?=$pen['penId']?>&recId="+recId+"'>");
+    $("#popup_rec iframe").removeClass('mini');
+    $("#popup_rec iframe").load(function() {
+      $("html,body").addClass('modal-open');
+      $("#popup_rec").show();
+    });
+  });
 });
 </script>
 

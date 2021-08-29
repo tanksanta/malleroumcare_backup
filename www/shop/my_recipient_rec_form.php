@@ -1,7 +1,8 @@
 <?php
-
-include_once("./_common.php");
-include_once("./_head.php");
+if(!defined('_PRINT_REC_')) {
+  include_once("./_common.php");
+  include_once("./_head.php");
+}
 
 # 회원검사
 if(!$member["mb_id"])
@@ -67,6 +68,10 @@ function print_name_and_value($name, $val) {
     }
   }
 
+  if(defined('_PRINT_REC_')) {
+    $res .= ' onclick="javascript: return false;"';
+  }
+
   return $res;
 }
 ?>
@@ -89,7 +94,7 @@ function print_name_and_value($name, $val) {
       </div>
     </div>
   </div>
-  <?php if ($is_development || $member['mb_id'] === 'hula1202') { ?>
+  <?php if (($is_development || $member['mb_id'] === 'hula1202') && !defined('_PRINT_REC_')) { ?>
   <div class="detail-tab">
     <ul>
       <li class="on" data-type="order">
@@ -273,10 +278,12 @@ function print_name_and_value($name, $val) {
     </div>
     <textarea name="totalReview"><?= $rec['totalReview'] ?: '' ?></textarea>
 
+    <?php if(!defined('_PRINT_REC_')) { ?> 
     <div class="btn_wrap">
       <input type="submit" value="등록">
       <a href="<?=G5_SHOP_URL?>/my_recipient_view.php?id=<?=$pen['penId']?>">취소</a>
     </div>
+    <?php } ?>
   </form>
 </div>
 
@@ -293,4 +300,8 @@ function print_name_and_value($name, $val) {
   });
 </script>
 
-<?php include_once("./_tail.php"); ?>
+<?php
+if(!defined('_PRINT_REC_')) {
+  include_once("./_tail.php");
+}
+?>

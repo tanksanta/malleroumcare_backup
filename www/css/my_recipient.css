@@ -178,6 +178,22 @@
     width: 100% !important;
 }
 
+#popup_rec {
+  display: none;
+  position: fixed;
+  top:0;
+  left:0;
+  height: 100%;
+  width: 100%;
+  z-index: 20000;
+}
+
+#popup_rec > div,
+#popup_rec iframe {
+  width: 100%;
+  height: 100%;
+}
+
 @media (max-width: 768px) {
   .recipient_view_wrap .info_wrap .row { margin-bottom: 10px; }
   .recipient_view_wrap .info_wrap .row:last-child { margin-bottom: 0; }
