@@ -153,7 +153,18 @@ $(function() {
           <th>비고</th>
         </tr>
         <?php $i = -1; ?>
-        <?php foreach($list as $data){ ?>
+        <?php
+        foreach($list as $data) {
+          // 욕구사정기록지 작성 체크
+          $data['recYn'] = 'N';
+          $rec_count = sql_fetch("
+            SELECT count(*) as cnt
+            FROM recipient_rec_simple
+            WHERE penId = '{$data['penId']}' and mb_id = '{$member['mb_id']}'
+          ");
+          if($rec_count['cnt'] > 0)
+            $data['recYn'] = 'Y';
+        ?>
         <?php $i++; ?>
         <tr>
           <td>

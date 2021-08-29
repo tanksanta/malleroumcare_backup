@@ -25,19 +25,12 @@ if(!$pen)
   alert('수급자 정보가 존재하지 않습니다.');
 
 $rec = null;
-if($_GET['recId']) {
-  $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_REC_LIST, array(
-    'recId' => $_GET["recId"],
-    'usrId' => $member['mb_id'],
-    'entId' => $member['mb_entId'],
-    'penId' => $_GET['id']
-  ));
-
-  if(!$res || $res['errorYn'] == 'Y')
-    alert('서버 오류로 욕구사정기록지를 불러올 수 없습니다.');
-  
-  $rec = $res['data'][0];
-  if(!$rec)
+if($rs_id = get_search_string($_GET['rs_id'])) {
+  $rec = sql_fetch("
+    SELECT * FROM recipient_rec_simple
+    WHERE rs_id = '{$rs_id}' and mb_id = '{$member['mb_id']}'
+  ");
+  if(!$rec['rs_id'])
     alert('욕구사정기록지가 존재하지 않습니다.');
   $rec['inmate'] = explode(',', $rec['inmate']);
 }
@@ -51,11 +44,11 @@ function print_name_and_value($name, $val) {
       if(in_array($val, $rec['inmate'])) {
         $res .= ' checked';
       }
-    } else if($name == 'helperTypeEtc') {
-      if($rec['helperType'] != '05') {
+    } else if($name == 'helper_type_etc') {
+      if($rec['helper_type'] != '05') {
         $res .= ' disabled';
       } else {
-        $res = "name=\"{$name}\" value=\"{$rec['helperTypeEtc']}\"";
+        $res = "name=\"{$name}\" value=\"{$rec['helper_type_etc']}\"";
       }
     } else if($name == 'child') {
       $res = "name=\"{$name}\" value=\"{$rec['child']}\"";
@@ -63,7 +56,7 @@ function print_name_and_value($name, $val) {
       $res .= ' checked';
     }
   } else {
-    if($name == 'helperTypeEtc') {
+    if($name == 'helper_type_etc') {
       $res .= ' disabled';
     }
   }
@@ -113,9 +106,9 @@ function print_name_and_value($name, $val) {
   </div>
   <?php } ?>
 
-  <form action="my_recipient_rec_post.php" method="post">
+  <form id="rec_form" action="my_recipient_rec_post.php" method="post">
     <?php if($rec) { ?>
-    <input type="hidden" name="recId" value="<?=$rec['recId']?>">
+    <input type="hidden" name="rs_id" value="<?=$rec['rs_id']?>">
     <?php  } ?>
     <input type="hidden" name="penId" value="<?=$pen['penId']?>">
     <div class="sub_title_wrap">
@@ -143,21 +136,21 @@ function print_name_and_value($name, $val) {
         <tbody>
           <tr>
             <th>옷 벗고 입기</th>
-            <td><input type="radio" <?=print_name_and_value("psclState1", "00")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState1", "01")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState1", "02")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state1", "00")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state1", "01")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state1", "02")?>></td>
           </tr>
           <tr>
             <th>식사 하기</th>
-            <td><input type="radio" <?=print_name_and_value("psclState3", "00")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState3", "01")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState3", "02")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state3", "00")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state3", "01")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state3", "02")?>></td>
           </tr>
           <tr>
             <th>목욕 하기</th>
-            <td><input type="radio" <?=print_name_and_value("psclState5", "00")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState5", "01")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState5", "02")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state5", "00")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state5", "01")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state5", "02")?>></td>
           </tr>
         </tbody>
       </table>
@@ -179,27 +172,27 @@ function print_name_and_value($name, $val) {
         <tbody>
           <tr>
             <th>일어나 앉기</th>
-            <td><input type="radio" <?=print_name_and_value("psclState2", "00")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState2", "01")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState2", "02")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state2", "00")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state2", "01")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state2", "02")?>></td>
           </tr>
           <tr>
             <th>방밖으로 나오기</th>
-            <td><input type="radio" <?=print_name_and_value("psclState4", "00")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState4", "01")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState4", "02")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state4", "00")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state4", "01")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state4", "02")?>></td>
           </tr>
           <tr>
             <th>화장실 사용하기</th>
-            <td><input type="radio" <?=print_name_and_value("psclState6", "00")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState6", "01")?>></td>
-            <td><input type="radio" <?=print_name_and_value("psclState6", "02")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state6", "00")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state6", "01")?>></td>
+            <td><input type="radio" <?=print_name_and_value("pscl_state6", "02")?>></td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="textarea_head">판단근거</div>
-    <textarea name="psclReason"><?= $rec['psclReason'] ?: '' ?></textarea>
+    <textarea name="pscl_reason"><?= $rec['pscl_reason'] ?: '' ?></textarea>
 
     <div class="sub_title_wrap">
       <div class="sub_title">
@@ -207,7 +200,7 @@ function print_name_and_value($name, $val) {
       </div>
     </div>
     <div class="textarea_head">판단근거</div>
-    <textarea name="recogReason"><?= $rec['recogReason'] ?: '' ?></textarea>
+    <textarea name="recog_reason"><?= $rec['recog_reason'] ?: '' ?></textarea>
 
     <div class="sub_title_wrap">
       <div class="sub_title">
@@ -219,20 +212,20 @@ function print_name_and_value($name, $val) {
       <div class="row">
         <div class="head">주수발자</div>
         <div class="content">
-          <label for="careyes_select"><input type="radio" id="careyes_select" <?=print_name_and_value("helperYn", "Y")?>> 유</label>
-          <label for="careno_select"><input type="radio" id="careno_select" <?=print_name_and_value("helperYn", "N")?>> 무</label>
+          <label for="careyes_select"><input type="radio" id="careyes_select" <?=print_name_and_value("helper_yn", "Y")?>> 유</label>
+          <label for="careno_select"><input type="radio" id="careno_select" <?=print_name_and_value("helper_yn", "N")?>> 무</label>
         </div>
       </div>
       <div class="row">
         <div class="head">주수발자 관계</div>
         <div class="content">
-          <label for="spouse_select"><input type="radio" id="spouse_select" <?=print_name_and_value("helperType", "00")?>> 배우자</label>
-          <label for="children_select"><input type="radio" id="children_select" <?=print_name_and_value("helperType", "01")?>> 자녀</label>
-          <label for="soninlow_select"><input type="radio" id="soninlow_select" <?=print_name_and_value("helperType", "02")?>> 사위</label>
-          <label for="sibling_select"><input type="radio" id="sibling_select" <?=print_name_and_value("helperType", "03")?>> 형제자매</label>
-          <label for="kin_select"><input type="radio" id="kin_select" <?=print_name_and_value("helperType", "04")?>> 친척</label>
-          <label for="etc_select"><input type="radio" id="etc_select" <?=print_name_and_value("helperType", "05")?>> 기타</label>
-          <input type="text" id="helperTypeEtc" <?=print_name_and_value("helperTypeEtc", "")?>>
+          <label for="spouse_select"><input type="radio" id="spouse_select" <?=print_name_and_value("helper_type", "00")?>> 배우자</label>
+          <label for="children_select"><input type="radio" id="children_select" <?=print_name_and_value("helper_type", "01")?>> 자녀</label>
+          <label for="soninlow_select"><input type="radio" id="soninlow_select" <?=print_name_and_value("helper_type", "02")?>> 사위</label>
+          <label for="sibling_select"><input type="radio" id="sibling_select" <?=print_name_and_value("helper_type", "03")?>> 형제자매</label>
+          <label for="kin_select"><input type="radio" id="kin_select" <?=print_name_and_value("helper_type", "04")?>> 친척</label>
+          <label for="etc_select"><input type="radio" id="etc_select" <?=print_name_and_value("helper_type", "05")?>> 기타</label>
+          <input type="text" id="helperTypeEtc" <?=print_name_and_value("helper_type_etc", "")?>>
         </div>
       </div>
       <div class="row">
@@ -244,17 +237,17 @@ function print_name_and_value($name, $val) {
       <div class="row">
         <div class="head">거주환경</div>
         <div class="content">
-          <label for="apt_select"><input type="radio" id="apt_select" <?=print_name_and_value("homeEnv", "00")?>> 아파트</label>
-          <label for="villa_select"><input type="radio" id="villa_select" <?=print_name_and_value("homeEnv", "01")?>> 연립/빌라</label>
-          <label for="house_select"><input type="radio" id="house_select" <?=print_name_and_value("homeEnv", "02")?>> 단독주택</label>
+          <label for="apt_select"><input type="radio" id="apt_select" <?=print_name_and_value("home_env", "00")?>> 아파트</label>
+          <label for="villa_select"><input type="radio" id="villa_select" <?=print_name_and_value("home_env", "01")?>> 연립/빌라</label>
+          <label for="house_select"><input type="radio" id="house_select" <?=print_name_and_value("home_env", "02")?>> 단독주택</label>
         </div>
       </div>
       <div class="row">
         <div class="head">거주형태</div>
         <div class="content">
-          <label for="onehome_select"><input type="radio" id="onehome_select" <?=print_name_and_value("homeType", "00")?>> 자가</label>
-          <label for="jeonse_select"><input type="radio" id="jeonse_select" <?=print_name_and_value("homeType", "01")?>> 전세</label>
-          <label for="rent_select"><input type="radio" id="rent_select" <?=print_name_and_value("homeType", "02")?>> 월세</label>
+          <label for="onehome_select"><input type="radio" id="onehome_select" <?=print_name_and_value("home_type", "00")?>> 자가</label>
+          <label for="jeonse_select"><input type="radio" id="jeonse_select" <?=print_name_and_value("home_type", "01")?>> 전세</label>
+          <label for="rent_select"><input type="radio" id="rent_select" <?=print_name_and_value("home_type", "02")?>> 월세</label>
         </div>
       </div>
       <div class="row">
@@ -276,7 +269,7 @@ function print_name_and_value($name, $val) {
         4.총평
       </div>
     </div>
-    <textarea name="totalReview"><?= $rec['totalReview'] ?: '' ?></textarea>
+    <textarea name="total_review"><?= $rec['total_review'] ?: '' ?></textarea>
 
     <?php if(!defined('_PRINT_REC_')) { ?> 
     <div class="btn_wrap">
@@ -289,13 +282,27 @@ function print_name_and_value($name, $val) {
 
 <script>
   $(function() {
-    $('input[name="helperType"]').change(function() {
+    $('input[name="helper_type"]').change(function() {
       console.log($(this).val());
       if($(this).val() == '05') {
         $('#helperTypeEtc').prop('disabled', false);
       } else {
         $('#helperTypeEtc').prop('disabled', true);
       }
+    });
+
+    $('#rec_form').on('submit', function(e) {
+      e.preventDefault();
+
+      $.post($(this).attr('action'), $(this).serialize(), 'json')
+      .done(function() {
+        alert('작성이 완료되었습니다.');
+        window.location.href = '<?=G5_SHOP_URL?>/my_recipient_view.php?id=<?=$pen['penId']?>';
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
     });
   });
 </script>

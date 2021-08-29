@@ -260,16 +260,17 @@ function get_memos_by_recipient($penId) {
 function get_recs_by_recipient($penId) {
 	global $member;
 
-	$result = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_REC_LIST, array(
-		'usrId' => $member['mb_id'],
-		'entId' => $member['mb_entId'],
-		'penId' => $penId
-	));
+  $penId = get_search_string($penId);
 
-	$res = [];
-	if($result['errorYN'] == 'N' && $result['data']) {
-		$res = $result['data'];
-	}
+  $result = sql_query("
+    SELECT * FROM recipient_rec_simple
+    WHERE penId = '{$penId}' and mb_id = '{$member['mb_id']}'
+  ");
+
+  $res = [];
+  while($row = sql_fetch_array($result)) {
+    $res[] = $row;
+  }
 
 	return $res;
 }

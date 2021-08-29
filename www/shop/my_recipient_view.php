@@ -206,13 +206,13 @@ if($pen_gra_apply_month && $pen_gra_apply_day)
     <?php foreach($recs as $rec) { ?>
     <div class="memo_row">
       <div class="memo_body">
-        <div class="memo_date"><?=date('Y년 m월 d일', dtmtotime($rec['regDtm']))?></div>
-        <div class="memo_content"><?=nl2br($rec['totalReview'])?></div>
+        <div class="memo_date"><?=date('Y년 m월 d일', strtotime($rec['created_at']))?></div>
+        <div class="memo_content"><?=nl2br($rec['total_review'])?></div>
       </div>
       <div class="memo_btn_wrap">
-        <button class="btn_print_rec c_btn primary" data-id="<?=$rec['recId']?>">인쇄</button>
-        <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}&recId={$rec['recId']}"?>" class="c_btn" data-id="<?=$rec['recId']?>">수정</a>
-        <button class="btn_delete_rec c_btn" data-id="<?=$rec['recId']?>">삭제</button>
+        <button class="btn_print_rec c_btn primary" data-id="<?=$rec['rs_id']?>">인쇄</button>
+        <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}&rs_id={$rec['rs_id']}"?>" class="c_btn" data-id="<?=$rec['rs_id']?>">수정</a>
+        <button class="btn_delete_rec c_btn" data-id="<?=$rec['rs_id']?>">삭제</button>
       </div>
     </div>
     <?php } ?>
@@ -372,12 +372,12 @@ $(function() {
 
   // 욕구사정기록지 삭제
   $(document).on('click', '.btn_delete_rec', function() {
-    var recId = $(this).data('id');
+    var rs_id = $(this).data('id');
 
     if(confirm('욕구사정기록지를 삭제하시겠습니까?')) {
       $.post('ajax.my.recipient.rec.delete.php', {
         penId: '<?=$pen['penId']?>',
-        recId: recId,
+        rs_id: rs_id,
       }, 'json')
       .done(function() {
         location.reload();
@@ -391,9 +391,9 @@ $(function() {
 
   // 욕구사정기록지 인쇄
   $(document).on('click', '.btn_print_rec', function() {
-    var recId = $(this).data('id');
+    var rs_id = $(this).data('id');
 
-    $("#popup_rec > div").html("<iframe src='my_recipient_rec_print.php?id=<?=$pen['penId']?>&recId="+recId+"'>");
+    $("#popup_rec > div").html("<iframe src='my_recipient_rec_print.php?id=<?=$pen['penId']?>&rs_id="+rs_id+"'>");
     $("#popup_rec iframe").removeClass('mini');
     $("#popup_rec iframe").load(function() {
       $("html,body").addClass('modal-open');
