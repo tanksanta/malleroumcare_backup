@@ -316,7 +316,7 @@ label {
         <td colspan="3">
             <select class="frm_input" name="mb_type">
                 <option value="default" <?php echo $mb['mb_type'] == 'default' ? 'selected' : ''; ?>>일반사업소</option>
-                <option value="normal" <?php echo $mb['mb_type'] == 'normal' ? 'selected' : ''; ?>>일반수급자</option>
+                <option value="normal" <?php echo $mb['mb_type'] == 'normal' ? 'selected' : ''; ?>>일반회원</option>
                 <option value="partner" <?php echo $mb['mb_type'] == 'partner' ? 'selected' : ''; ?>>파트너(직배송, 설치, 소독)</option>
             </select>
         </td>
