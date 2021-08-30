@@ -178,19 +178,19 @@ if ($od_openmarket) {
 
         $od_openmarket_where = array();
         foreach($od_openmarket as $s) {
-		  if($s=="my"){
+      if($s=="my"){
             $od_openmarket_where[] = " od_writer != 'openmarket'";
-		  }else{
+      }else{
             $od_openmarket_where[] = " sabang_market = '{$s}'";
-		  }
+      }
         }
         $where[] = ' ( '.implode(' OR ', $od_openmarket_where).' ) ';
     } else {
-	  if($od_openmarket=="my"){
+    if($od_openmarket=="my"){
         $where[] = " od_writer != 'openmarket'";
-	  }else{
+    }else{
         $where[] = " sabang_market = '{$od_openmarket}'";
-	  }
+    }
     }
 }
 
@@ -239,7 +239,7 @@ if ($temp_where) {
 //////////////////
 
 if($_POST["od_recipient"]){
-	$where[] = " recipient_yn = '{$_POST["od_recipient"]}'";
+  $where[] = " recipient_yn = '{$_POST["od_recipient"]}'";
 }
 
 if ($od_misu) {
@@ -658,54 +658,54 @@ foreach($orderlist as $order) {
     }
 
     // $goods_name .= $order['cart'][0]['it_name'] ? $order['cart'][0]['it_name'] : '<span class="notyet">없음(관리자 작성중)</span>';
-	$goods_name .= "[".($order["recipient_yn"] == "Y" ? "주문" : "재고")."] ";
-    $goods_name .= $order['cart'][0]['it_name'] ? $order['cart'][0]['it_name'] : '<span class="notyet">없음(관리자 작성중)</span>';
-	
+  $goods_name .= "[".($order["recipient_yn"] == "Y" ? "주문" : "재고")."] ";
+  $goods_name .= $order['cart'][0]['it_name'] ? $order['cart'][0]['it_name'] : '<span class="notyet">없음(관리자 작성중)</span>';
+  
 //     $goods_ct = $order['cart'][0]['ct_qty']  ? $order['cart'][0]['ct_qty']  : '0';
 //     $goods_ct = count((array)$order['cart']);
 
-    $od_cart_count = 0;
-    $saved_uid = '';
-    $goods_ct = 0;
-	
-	$prodSupYqty = 0;
-	$prodSupNqty = 0;
-	$prodStockqty = 0;
-	$prodDelivery = 0;
-	
-    foreach($order['cart'] as $cart) {
+  $od_cart_count = 0;
+  $saved_uid = '';
+  $goods_ct = 0;
+  
+  $prodSupYqty = 0;
+  $prodSupNqty = 0;
+  $prodStockqty = 0;
+  $prodDelivery = 0;
+  
+  foreach($order['cart'] as $cart) {
         
-        $od_cart_count += $cart['ct_qty'];
-        if ($saved_uid != $cart['ct_uid']) {
-            $goods_ct++;
-            $saved_uid = $cart['ct_uid'];
-        }
-		
-		if($cart["prodSupYn"] == "Y"){
-			$prodSupYqty += $cart["ct_qty"];
-			$prodStockqty += $cart["ct_stock_qty"];
-			$prodDelivery += $cart["ct_qty"];
-			$prodDelivery -= $cart["ct_stock_qty"];
-		}
-		
-		if($cart["prodSupYn"] == "N"){
-			$prodSupNqty += $cart["ct_qty"];
-		}
+    $od_cart_count += $cart['ct_qty'];
+    if ($saved_uid != $cart['ct_uid']) {
+      $goods_ct++;
+      $saved_uid = $cart['ct_uid'];
     }
-	
-	if($order["od_delivery_yn"] == "N"){
-		$prodDelivery = 0;
-	}
-	
-	$prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
-	$prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
-	
-    if(!$result_ct['ct_barcode_insert']){
-        $result_ct['ct_barcode_insert']=0;
+    
+    if($cart["prodSupYn"] == "Y"){
+      $prodSupYqty += $cart["ct_qty"];
+      $prodStockqty += $cart["ct_stock_qty"];
+      $prodDelivery += $cart["ct_qty"];
+      $prodDelivery -= $cart["ct_stock_qty"];
     }
-    $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
-	$prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
-	$prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
+    
+    if($cart["prodSupYn"] == "N"){
+      $prodSupNqty += $cart["ct_qty"];
+    }
+  }
+  
+  if($order["od_delivery_yn"] == "N"){
+    $prodDelivery = 0;
+  }
+  
+  $prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
+  $prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
+  
+  if(!$result_ct['ct_barcode_insert']){
+    $result_ct['ct_barcode_insert']=0;
+  }
+  $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
+  $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
+  $prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
 
 
     if ($od_cart_count > 0) {
@@ -713,7 +713,7 @@ foreach($orderlist as $order) {
     }
     $show_goods_ct = $goods_ct > 1 ? '외 ' . ($goods_ct - 1) . '종' : '';
 
-	$goods_data = get_goods($order['od_id']);
+  $goods_data = get_goods($order['od_id']);
 
     if ( $result_ct['ct_status'] == '오픈마켓' ) {
         $goods_maching = ($goods_data['it_id'])?"매칭":"비매칭";
@@ -859,6 +859,16 @@ foreach($orderlist as $order) {
       default:
         $direct_delivery_text = '';
     }
+    if($result_ct['ct_delivery_num'] && $order['ct_direct_delivery_partner']) {
+      $delivery_company_name = '';
+      foreach($delivery_companys as $company) {
+        if($company['val'] == $result_ct['ct_delivery_company']) {
+          $delivery_company_name = $company['name'];
+          break;
+        }
+      }
+      $direct_delivery_text .= "<br>[{$delivery_company_name}] {$result_ct['ct_delivery_num']}";
+    }
     if($order['ct_is_delivery_excel_downloaded']) {
       $direct_delivery_text .= '<br><span style="color: #FF6600">엑셀 다운로드 완료</span>';
     }
@@ -888,17 +898,17 @@ foreach($orderlist as $order) {
 
 
                 <div class=\"buttons\">
-	                <div class=\"ct_count\">
-	                    {$ct_count}
-	                </div>
+                  <div class=\"ct_count\">
+                      {$ct_count}
+                  </div>
                     <a href=\"javascript:printOrderView('{$order['od_id']}')\"><img src=\"/adm/shop_admin/img/printer.png\" align=\"absmiddle\"></a>
                     <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\" target=\"_blank\"><span><img src=\"/adm/shop_admin/img/window.png\" align=\"absmiddle\"></span></a>
                     <span class=\"btn-direct-open\" onclick=\"btn_direct_open(this);\"></span>
                 </div>
             </div>
         </td>
-		<td align=\"center\" class=\"od_barNum\">
-			<a href='#' class='prodBarNumCntBtn{$prodBarNumCntBtnStatus}' data-option='{$result_ct["ct_option"]}'  data-it='{$ct_it_id}' data-stock='{$stock_insert}'  data-od='{$order["od_id"]}'>{$prodBarNumCntBtnWord}</a>
+    <td align=\"center\" class=\"od_barNum\">
+      <a href='#' class='prodBarNumCntBtn{$prodBarNumCntBtnStatus}' data-option='{$result_ct["ct_option"]}'  data-it='{$ct_it_id}' data-stock='{$stock_insert}'  data-od='{$order["od_id"]}'>{$prodBarNumCntBtnWord}</a>
         </td>
         <td align=\"center\" class=\"od_name\">
             <a href='#' data-mb-id='{$order['mb_id']}' class='open_member_pop'>
