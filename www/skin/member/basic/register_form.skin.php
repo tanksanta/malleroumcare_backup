@@ -128,7 +128,8 @@ add_javascript(G5_POSTCODE_JS, 0);
           <input type="text" name="mb_email" value="<?php echo isset($member['mb_email'])?$member['mb_email']:''; ?>" id="reg_mb_email" required class="form-control input-sm email" maxlength="100">
         </div>
       </div>
-              
+
+      <?php if($w == '') { ?>
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label" for=""><b>분류</b><strong class="sound_only">필수</strong></label>
         <div class="desc_txt">
@@ -140,6 +141,7 @@ add_javascript(G5_POSTCODE_JS, 0);
           <label for="mb_type_normal">일반회원</label>
         </div>
       </div>
+      <?php } ?>
       <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
         <label class="col-sm-2 control-label" for="mb_giup_bname"><b>기업명</b><strong class="sound_only">필수</strong></label>
         <div class="col-sm-3">
@@ -744,10 +746,12 @@ function fregisterform_submit() {
     }
   }
   
+  <?php if($w == '') { ?>
   if(!$('input[name=mb_type]:checked').val()) {
     alert("회원 분류를 선택해주세요.");
     return false;
   }
+  <?php } ?>
     
   if (f.mb_password.value.length < 6 || f.mb_password.value.length > 12) {
     alert("영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.");
@@ -842,7 +846,11 @@ function fregisterform_submit() {
     return false;
   }
 
+  <?php if($w) { ?>
+  var mb_type = '<?=$member['mb_type']?>';
+  <?php } else { ?>
   var mb_type = $('input[name=mb_type]:checked').val();
+  <?php } ?>
   if (mb_type === 'default' || mb_type === 'consignment') {
     if (!f.mb_giup_tax_email.value) {
         alert('세금계산서 수신용 이메일을 입력하세요.');
@@ -921,7 +929,7 @@ function fregisterform_submit() {
   sendData.append("entPnum", mb_tel); //사업소 전화번호
   sendData.append("entFax", mb_fax); //사업소 팩스
   sendData.append("usrMail", $("#reg_mb_email").val());//메일
-  sendData.append("mbType", $('input[name=mb_type]:checked').val());//회원유형
+  sendData.append("mbType", mb_type);//회원유형
 
   <?php if($w) { ?> 
   sendData.append("entId", "<?=$member['mb_entId']?>");

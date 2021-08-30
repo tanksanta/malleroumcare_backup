@@ -4,6 +4,10 @@
     $mb_zip1 = substr($_POST['mb_zip'], 0, 3);
     $mb_zip2 = substr($_POST['mb_zip'], 3);
 
+    if($w) {
+      $mb_type = $member['mb_type'];
+    }
+
     if ($mb_type === 'normal') {
         if ($w) {
             $sql = "
