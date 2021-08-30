@@ -275,7 +275,7 @@ if($is_main && !$is_member) {
                 else if($member['mb_level'] == 4) echo '우수사업소';
                 else if($member['mb_level'] >= 9) echo '관리자';
                 if($member['mb_type'] == 'partner') echo '파트너';
-                if($member['mb_type'] == 'normal') echo '일반수급자';
+                if($member['mb_type'] == 'normal') echo '일반회원';
                 ?>
               </div>
               <?php } ?>
