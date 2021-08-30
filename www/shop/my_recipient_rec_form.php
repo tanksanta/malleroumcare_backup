@@ -283,7 +283,6 @@ function print_name_and_value($name, $val) {
 <script>
   $(function() {
     $('input[name="helper_type"]').change(function() {
-      console.log($(this).val());
       if($(this).val() == '05') {
         $('#helperTypeEtc').prop('disabled', false);
       } else {
