@@ -32,7 +32,7 @@ table {border-collapse: collapse;}
 .pg-wrap div a.on {color:#333}
 
 
-.order-list {padding-top: 66px;}
+/* .order-list {padding-top: 66px;} */
 .order-list .od_status{padding:20px;font-size:20px;width:100%;border-radius:5px;height: 60px;line-height: 20px;margin-bottom:20px;text-align:center;font-weight:bold;border:1px solid #ddd;}
 .pc_none,.info_pc_none {display: none !important;}
 .m_barcode {display: none;}
@@ -147,12 +147,12 @@ table {border-collapse: collapse;}
 .table-list2 .tax-price {width: 10%;}
 
 .table-list2 .head {display: -webkit-box; display: -ms-flexbox; display: flex;}
-.table-list2 .head li {display: block; padding: 10px; background: #eee;text-align: center;font-size: 14px;}
+.table-list2 .head li {display: block; padding: 5px; background: #eee;text-align: center;font-size: 14px;}
 
 .table-list2 .list {padding: 10px 0;border-bottom: 1px solid #ddd;font-size: 14px;}
 .table-list2 .list:last-child {border-bottom: none;}
 .table-list2 .list ul {display: -webkit-box; display: -ms-flexbox; display: flex;}
-.table-list2 .list ul > li {display: block;text-align: center;}
+.table-list2 .list ul > li {display: block;text-align: center;font-size: 12px;}
 .table-list2 .list .pro {display: -webkit-box; display: -ms-flexbox; display: flex;}
 .table-list2 .pro .img {width: 100px;min-width:100px;max-width:100px;height: 100px;border: 1px solid #ddd;}
 .table-list2 .pro .img img{width:100%;height: 100%;}
@@ -227,7 +227,7 @@ table {border-collapse: collapse;}
 
 .detail-price h5 {padding-bottom: 18px; font-size: 16px;color: #232323;}
 .coupon-icon {display: inline-block;padding: 2px 9px;border-radius: 5px;border:1px solid #ddd;background:#eee;font-style: normal; cursor: pointer; }
-.detail-price .all-info {border: 1px solid #666; margin-bottom: 40px;}
+.detail-price .all-info {border: 1px solid #ddd; margin-bottom: 40px;}
 .detail-price .all-info ul {padding: 10px; border-bottom: 1px solid #ddd;}
 .detail-price .all-info ul li div {padding-bottom: 12px; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;font-size: 14px;}
 .detail-price .all-info ul li:last-child div {padding-bottom: 0;}
@@ -264,8 +264,8 @@ table {border-collapse: collapse;}
 .tab-2 .table-list2 .list-btm .check-ac > label > input[type="radio"]:checked:after {content: ''; display: block; position: absolute;  display: block; left: 50%; top:50%; margin: -5px 0 0 -5px; width: 10px; height: 10px; border-radius: 50%; background: #ee8102;}
 .tab-2 .table-list2 .list-btm .check-ac > select { height: 30px; border: 1px solid #DDD; padding-left: 5px; margin-left: -15px; } 
 .tab-2 .detail-price .all-info.all-info2 ul li div {-webkit-box-pack: start; -ms-flex-pack: start; justify-content: start;}
-.tab-2 .detail-price .all-info.all-info2 ul {border: none;border-top: 2px solid #ccc;border-bottom: 1px solid #ccc;}
-.tab-2 .detail-price .all-info.all-info2 ul li b {width: 140px;font-weight: bold;}
+.tab-2 .detail-price .all-info.all-info2 ul {border: none;}
+.tab-2 .detail-price .all-info.all-info2 ul li b {width: 80px;font-weight: bold;}
 .tab-2 .detail-price .all-info.all-info2 ul li span {font-weight: normal;}
 .num-select {position: relative; font-size: 14px;color: #666;width: 60px;}
 .num-select p {cursor: pointer; border:1px solid #ddd; padding: 5px 0 5px 12px; background: url('../image/icon_18.png') no-repeat right 10px top 50%/8px auto;}
@@ -299,7 +299,7 @@ table {border-collapse: collapse;}
 #pro-order2 .name-top.gray div a {border-color: #333;color: #333;}
 #pro-order2 .barcode b {display: inline-block;vertical-align: middle; padding: 7px 14px 7px 36px; cursor: pointer; border: 1px solid #fff; background: #fff url('../image/icon_02.png') no-repeat left 14px top 50%/16px auto;font-weight: normal;}
 #pro-order2 .barcode b:hover {border-color:#ddd;}
-#pro-order2 .table-list2 .pro {width: 30%;}
+#pro-order2 .table-list2 .pro {width: 43%;}
 #pro-order2 .table-list2 .barcode {width: 20%;} 
 #pro-order2 .table-list2 .list:last-child {border-bottom: 1px solid #ddd;}
 #pro-order2 .table-list2 .list-btm {display: -webkit-box; display: -ms-flexbox; display: flex;}
@@ -309,7 +309,7 @@ table {border-collapse: collapse;}
 #pro-order2 .all-info-price {background: #eee;}
 #pro-order2 .all-info-price b {font-weight: 400;}
 #pro-order2 .all-info-price b,
-#pro-order2 .all-info-price span {color: #cc0000;}
+#pro-order2 .all-info-price span {color: #f08606;}
 
 .pay-btn2 {text-align: center;}
 .pay-btn2 button {display: inline-block;vertical-align: top;padding: 0 5px;height: 24px;background: #999;color: #fff;font-size: 12px;}
@@ -381,7 +381,7 @@ table {border-collapse: collapse;}
 
 	.tab-2 .table-list2 .barcode { width: 100%; padding-left: 84px; }
 	.tab-2 .table-list2 .barcode > * { width: 120px !important; display: block; }
-    .order-list {padding-top: 60px;}
+    /* .order-list {padding-top: 60px;} */
     .tti {font-size: 21px;} 
     .order-date {padding: 20px 4%;margin-bottom: 33px;}
     .order-date .list-date {display: none;}
