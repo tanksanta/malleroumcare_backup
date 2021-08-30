@@ -210,9 +210,15 @@ if($pen_gra_apply_month && $pen_gra_apply_day)
         <div class="memo_content"><?=nl2br($rec['total_review'])?></div>
       </div>
       <div class="memo_btn_wrap">
-        <button class="btn_print_rec c_btn primary" data-id="<?=$rec['rs_id']?>">인쇄</button>
-        <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}&rs_id={$rec['rs_id']}"?>" class="c_btn" data-id="<?=$rec['rs_id']?>">수정</a>
-        <button class="btn_delete_rec c_btn" data-id="<?=$rec['rs_id']?>">삭제</button>
+        <?php if($rec['type'] == 'simple') { ?>
+        <button class="btn_print_rec c_btn primary" data-type="simple" data-id="<?=$rec['recId']?>">인쇄</button>
+        <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}&rs_id={$rec['recId']}"?>" class="c_btn" data-id="<?=$rec['recId']?>">수정</a>
+        <button class="btn_delete_rec c_btn" data-type="simple" data-id="<?=$rec['recId']?>">삭제</button>
+        <?php } else if($rec['type'] == 'detail') { ?>
+        <button class="btn_print_rec c_btn primary" data-type="detail" data-id="<?=$rec['recId']?>">인쇄</button>
+        <a href="<?=G5_SHOP_URL."/my_recipient_rec_detail_form.php?id={$pen['penId']}&rd_id={$rec['recId']}"?>" class="c_btn" data-id="<?=$rec['recId']?>">수정</a>
+        <button class="btn_delete_rec c_btn" data-type="detail" data-id="<?=$rec['recId']?>">삭제</button>
+        <?php } ?>
       </div>
     </div>
     <?php } ?>
@@ -372,12 +378,14 @@ $(function() {
 
   // 욕구사정기록지 삭제
   $(document).on('click', '.btn_delete_rec', function() {
-    var rs_id = $(this).data('id');
+    var recId = $(this).data('id');
+    var type = $(this).data('type');
 
     if(confirm('욕구사정기록지를 삭제하시겠습니까?')) {
       $.post('ajax.my.recipient.rec.delete.php', {
         penId: '<?=$pen['penId']?>',
-        rs_id: rs_id,
+        recId: rs_id,
+        type: type
       }, 'json')
       .done(function() {
         location.reload();
@@ -391,9 +399,10 @@ $(function() {
 
   // 욕구사정기록지 인쇄
   $(document).on('click', '.btn_print_rec', function() {
-    var rs_id = $(this).data('id');
+    var recId = $(this).data('id');
+    var type = $(this).data('type');
 
-    $("#popup_rec > div").html("<iframe src='my_recipient_rec_print.php?id=<?=$pen['penId']?>&rs_id="+rs_id+"'>");
+    $("#popup_rec > div").html("<iframe src='my_recipient_rec_print.php?id=<?=$pen['penId']?>&type="+type+"&recId="+recId+"'>");
     $("#popup_rec iframe").removeClass('mini');
     $("#popup_rec iframe").load(function() {
       $("html,body").addClass('modal-open');

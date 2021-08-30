@@ -1,5 +1,4 @@
 <?php
-
 include_once("./_common.php");
 
 # 회원검사
@@ -12,9 +11,6 @@ if(!$_POST["penId"])
 if($_POST['inmate']) {
   $_POST['inmate'] = implode(',', ($_POST['inmate']));
 }
-
-$_POST['usrId'] = $member['mb_id'];
-$_POST['entId'] = $member['mb_entId'];
 
 // 값 검증
 $rec_key_cd = array(

@@ -263,8 +263,36 @@ function get_recs_by_recipient($penId) {
   $penId = get_search_string($penId);
 
   $result = sql_query("
-    SELECT * FROM recipient_rec_simple
-    WHERE penId = '{$penId}' and mb_id = '{$member['mb_id']}'
+    SELECT * FROM
+    (
+      (
+        SELECT
+          rs_id as recId,
+          'simple' as type,
+          total_review,
+          created_at,
+          updated_at
+        FROM
+          recipient_rec_simple
+        WHERE
+          penId = '{$penId}' and mb_id = '{$member['mb_id']}'
+      )
+      UNION ALL
+      (
+        SELECT
+          rd_id as recId,
+          'detail' as type,
+          total_review,
+          created_at,
+          updated_at
+        FROM
+          recipient_rec_detail
+        WHERE
+          penId = '{$penId}' and mb_id = '{$member['mb_id']}'
+      )
+    ) u
+    ORDER BY
+      created_at DESC
   ");
 
   $res = [];

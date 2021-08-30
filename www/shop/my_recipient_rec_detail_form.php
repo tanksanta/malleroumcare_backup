@@ -1,7 +1,8 @@
 <?php
-
-include_once("./_common.php");
-include_once("./_head.php");
+if(!defined('_PRINT_REC_')) {
+  include_once("./_common.php");
+  include_once("./_head.php");
+}
 
 # 회원검사
 if(!$member["mb_id"])
@@ -23,22 +24,62 @@ $pen = $res['data'][0];
 if(!$pen)
   alert('수급자 정보가 존재하지 않습니다.');
 
-$rec = null;
-if($_GET['recId']) {
-  $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_REC_LIST, array(
-    'recId' => $_GET["recId"],
-    'usrId' => $member['mb_id'],
-    'entId' => $member['mb_entId'],
-    'penId' => $_GET['id']
-  ));
+$multi_check_member = [
+  'walking_sub',
+  'dementia_sub',
+  'chronic',
+  'circulatory',
+  'nervous',
+  'musculoskeletal',
+  'mental',
+  'breath',
+  'kidney',
+  'other',
+  'exercise',
+  'joint',
+  'walking_disorder',
+  'nurse_breath',
+  'nurse_nutrition',
+  'nurse_excretion',
+  'nurse_wound',
+  'nurse_bedsore_step',
+  'nurse_bedsore_part',
+  'nurse_ache',
+  'nurse_ache_cancer',
+  'nurse_ache_normal',
+  'observe',
+  'observe_orientation',
+  'observe_memory',
+  'observe_wender',
+  'observe_hallucination',
+  'observe_inappropriate',
+  'observe_violent',
+  'observe_eating',
+  'observe_unrest',
+  'observe_depressed',
+  'family_inmate',
+  'family_resource',
+  'family_resource_sub',
+  'welfare',
+  'welfare_sub',
+  'etc_daily',
+  'etc_training',
+  'etc_emotional',
+  'etc_family_helper_mitigate'
+];
 
-  if(!$res || $res['errorYn'] == 'Y')
-    alert('서버 오류로 욕구사정기록지를 불러올 수 없습니다.');
-  
-  $rec = $res['data'][0];
-  if(!$rec)
+$rec = null;
+if($rd_id = get_search_string($_GET['rd_id'])) {
+  $rec = sql_fetch("
+    SELECT * FROM recipient_rec_detail
+    WHERE rd_id = '{$rd_id}' and mb_id = '{$member['mb_id']}'
+  ");
+  if(!$rec['rd_id'])
     alert('욕구사정기록지가 존재하지 않습니다.');
-  $rec['inmate'] = explode(',', $rec['inmate']);
+  
+  foreach($multi_check_member as $key) {
+    $rec[$key] = explode(',', $rec[$key]);
+  }
 }
 
 function print_name_and_value($name, $val) {
@@ -46,25 +87,17 @@ function print_name_and_value($name, $val) {
 
   $res = "name=\"{$name}\" value=\"{$val}\"";
   if($rec) {
-    if($name == 'inmate[]') {
-      if(in_array($val, $rec['inmate'])) {
+    if(preg_match('/^(.+)\[\]$/', $name, $matches)) {
+      if(in_array($val, $rec[$matches[1]])) {
         $res .= ' checked';
       }
-    } else if($name == 'helperTypeEtc') {
-      if($rec['helperType'] != '05') {
-        $res .= ' disabled';
-      } else {
-        $res = "name=\"{$name}\" value=\"{$rec['helperTypeEtc']}\"";
-      }
-    } else if($name == 'child') {
-      $res = "name=\"{$name}\" value=\"{$rec['child']}\"";
     } else if($rec[$name] == $val) {
       $res .= ' checked';
     }
-  } else {
-    if($name == 'helperTypeEtc') {
-      $res .= ' disabled';
-    }
+  }
+
+  if(defined('_PRINT_REC_')) {
+    $res .= ' onclick="javascript: return false;"';
   }
 
   return $res;
@@ -89,7 +122,7 @@ function print_name_and_value($name, $val) {
       </div>
     </div>
   </div>
-
+  <?php if (!$rec && !defined('_PRINT_REC_')) { ?>
   <div class="detail-tab">
     <ul>
       <li>
@@ -106,10 +139,11 @@ function print_name_and_value($name, $val) {
       </li>
     </ul>
   </div>
+  <?php } ?>
 
   <form id="rec_detail_form" action="my_recipient_rec_detail_post.php" method="post">
     <?php if($rec) { ?>
-    <input type="hidden" name="recId" value="<?=$rec['recId']?>">
+    <input type="hidden" name="rd_id" value="<?=$rec['rd_id']?>">
     <?php  } ?>
     <input type="hidden" name="penId" value="<?=$pen['penId']?>">
     <div class="sub_title_wrap">
@@ -544,15 +578,15 @@ function print_name_and_value($name, $val) {
             <th>기타질환</th>
             <td>
               <label for="other_0">
-                <input type="checkbox" id="other_0" <?=print_name_and_value("other", "00")?>>알레르기
+                <input type="checkbox" id="other_0" <?=print_name_and_value("other[]", "00")?>>알레르기
               </label>
               (
               <label for="other_1">
-                <input type="checkbox" id="other_1" <?=print_name_and_value("other", "01")?>>식품
+                <input type="checkbox" id="other_1" <?=print_name_and_value("other[]", "01")?>>식품
               </label>
               (<input type="text" name="other_etc1" value="<?=$rec['other_etc1'] ?: ''?>" />)
               <label for="other_2">
-                <input type="checkbox" id="other_2" <?=print_name_and_value("other", "02")?>>기타
+                <input type="checkbox" id="other_2" <?=print_name_and_value("other[]", "02")?>>기타
               </label>
               (<input type="text" name="other_etc2" value="<?=$rec['other_etc2'] ?: ''?>" />)
               )
@@ -1117,11 +1151,11 @@ function print_name_and_value($name, $val) {
               <label for="nurse_nutrition_3">
                 <input type="checkbox" id="nurse_nutrition_3" <?=print_name_and_value("nurse_nutrition[]", "01")?>>치료식이
               </label>
-              (<input type="text" />)
+              (<input type="text" name="nurse_nutrition_etc1" value="<?=$rec['nurse_nutrition_etc1'] ?: ''?>" />)
               <label for="nurse_nutrition_4">
                 <input type="checkbox" id="nurse_nutrition_4" <?=print_name_and_value("nurse_nutrition[]", "02")?>>기타
               </label>
-              (<input type="text" name="nurse_nutrition_etc" value="<?=$rec['nurse_nutrition_etc'] ?: ''?>" />)
+              (<input type="text" name="nurse_nutrition_etc2" value="<?=$rec['nurse_nutrition_etc2'] ?: ''?>" />)
             </td>
           </tr>
           <tr>
@@ -1694,7 +1728,7 @@ function print_name_and_value($name, $val) {
               <label for="family_children_1">
                 <input type="radio" id="family_children_1" <?=print_name_and_value("family_children", "01")?>>유
               </label>
-              (아들<input type="text" name="family_children_son" value="<?=$rec['family_children_son'] ?: ''?>" />명, 딸<input type="text" name="family_children_daughter" value="<?=$rec['family_children_daughter'] ?: ''?>" />명)
+              (아들<input type="text" name="family_children_son" value="<?=$rec['family_children_son'] ?: '0'?>" />명, 딸<input type="text" name="family_children_daughter" value="<?=$rec['family_children_daughter'] ?: '0'?>" />명)
             </td>
           </tr>
           <tr>
@@ -2275,11 +2309,35 @@ function print_name_and_value($name, $val) {
     </div>
     <textarea name="total_review"><?= $rec['total_review'] ?: '' ?></textarea>
 
+    <?php if(!defined('_PRINT_REC_')) { ?> 
     <div class="btn_wrap">
       <input type="submit" value="등록">
       <a href="<?=G5_SHOP_URL?>/my_recipient_view.php?id=<?=$pen['penId']?>">취소</a>
     </div>
+    <?php } ?>
   </form>
 </div>
 
-<?php include_once("./_tail.php"); ?>
+<script>
+  $(function() {
+    $('#rec_detail_form').on('submit', function(e) {
+      e.preventDefault();
+
+      $.post($(this).attr('action'), $(this).serialize(), 'json')
+      .done(function() {
+        alert('작성이 완료되었습니다.');
+        window.location.href = '<?=G5_SHOP_URL?>/my_recipient_view.php?id=<?=$pen['penId']?>';
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    });
+  });
+</script>
+
+<?php
+if(!defined('_PRINT_REC_')) {
+  include_once("./_tail.php");
+}
+?>

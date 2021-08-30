@@ -87,7 +87,7 @@ function print_name_and_value($name, $val) {
       </div>
     </div>
   </div>
-  <?php if (($is_development || $member['mb_id'] === 'hula1202') && !defined('_PRINT_REC_')) { ?>
+  <?php if (!$rec && !defined('_PRINT_REC_')) { ?>
   <div class="detail-tab">
     <ul>
       <li class="on" data-type="order">

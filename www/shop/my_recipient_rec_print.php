@@ -43,7 +43,13 @@ body { margin: 10px; }
 </style>
 
 <?php
-include_once('./my_recipient_rec_form.php');
+if($_GET['type'] == 'simple') {
+  $_GET['rs_id'] = $_GET['recId'];
+  include_once('./my_recipient_rec_form.php');
+} else if($_GET['type'] == 'detail') {
+  $_GET['rd_id'] = $_GET['recId'];
+  include_once('./my_recipient_rec_detail_form.php');
+}
 ?>
 
 <div id="printBtns" class="noprint">
