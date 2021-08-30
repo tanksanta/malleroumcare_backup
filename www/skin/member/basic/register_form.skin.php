@@ -135,7 +135,7 @@ add_javascript(G5_POSTCODE_JS, 0);
           <input type="radio" name="mb_type" value="default" id="mb_type_default" <?php echo $member['mb_type'] === 'default' ? 'checked' : ''; ?> <?php echo $w ? 'readonly onclick="return(false);"' : ''; ?>>
           <label for="mb_type_default">복지용구사업소</label>
           <input type="radio" name="mb_type" value="consignment" id="mb_type_consignment" <?php echo $member['mb_type'] === 'consignment' ? 'checked' : ''; ?> <?php echo $w ? 'readonly onclick="return(false);"' : ''; ?>>
-          <label for="mb_type_consignment">위탁(직배송, 설치, 소독)</label>
+          <label for="mb_type_consignment">파트너(직배송, 설치, 소독)</label>
           <input type="radio" name="mb_type" value="normal" id="mb_type_normal" <?php echo $member['mb_type'] === 'normal' ? 'checked' : ''; ?> <?php echo $w ? 'readonly onclick="return(false);"' : ''; ?>>
           <label for="mb_type_normal">일반회원</label>
         </div>
