@@ -20,6 +20,9 @@ foreach($ct_id_arr as $ct_id) {
     WHERE ct_id = '{$ct_id}' and ct_direct_delivery_partner = '{$member['mb_id']}'
   ");
 
+  if($cart['ct_status'] == $ct_status) // 변경하려는 상태가 기존 상태랑 똑같은경우
+    continue;
+
   if(!$cart || !$cart['ct_id'])
     json_response(400, '해당 상품의 주문상태를 변경할 수 있는 권한이 없습니다.');
   
