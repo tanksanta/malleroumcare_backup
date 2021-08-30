@@ -133,11 +133,11 @@ add_javascript(G5_POSTCODE_JS, 0);
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label" for=""><b>분류</b><strong class="sound_only">필수</strong></label>
         <div class="desc_txt">
-          <input type="radio" name="mb_type" value="default" id="mb_type_default" <?php echo $member['mb_type'] === 'default' ? 'checked' : ''; ?> <?php echo $w ? 'readonly onclick="return(false);"' : ''; ?>>
+          <input type="radio" name="mb_type" value="default" id="mb_type_default" <?php echo $member['mb_type'] === 'default' ? 'checked' : ''; ?>>
           <label for="mb_type_default">복지용구사업소</label>
-          <input type="radio" name="mb_type" value="consignment" id="mb_type_consignment" <?php echo $member['mb_type'] === 'consignment' ? 'checked' : ''; ?> <?php echo $w ? 'readonly onclick="return(false);"' : ''; ?>>
-          <label for="mb_type_consignment">파트너(직배송, 설치, 소독)</label>
-          <input type="radio" name="mb_type" value="normal" id="mb_type_normal" <?php echo $member['mb_type'] === 'normal' ? 'checked' : ''; ?> <?php echo $w ? 'readonly onclick="return(false);"' : ''; ?>>
+          <input type="radio" name="mb_type" value="partner" id="mb_type_partner" <?php echo $member['mb_type'] === 'partner' ? 'checked' : ''; ?>>
+          <label for="mb_type_partner">파트너(직배송, 설치, 소독)</label>
+          <input type="radio" name="mb_type" value="normal" id="mb_type_normal" <?php echo $member['mb_type'] === 'normal' ? 'checked' : ''; ?>>
           <label for="mb_type_normal">일반회원</label>
         </div>
       </div>
@@ -851,7 +851,7 @@ function fregisterform_submit() {
   <?php } else { ?>
   var mb_type = $('input[name=mb_type]:checked').val();
   <?php } ?>
-  if (mb_type === 'default' || mb_type === 'consignment') {
+  if (mb_type === 'default' || mb_type === 'partner') {
     if (!f.mb_giup_tax_email.value) {
         alert('세금계산서 수신용 이메일을 입력하세요.');
         f.mb_giup_tax_email.focus();
@@ -977,7 +977,7 @@ function fregisterform_submit() {
   var imgFileItem1 = $(".mb_giup_file1 input[type='file']");
   for(var i = 0; i < imgFileItem1.length; i++) {
     
-    if (mb_type === 'default' || mb_type === 'consignment') {
+    if (mb_type === 'default' || mb_type === 'partner') {
       if(!flag) {
         if(!$(imgFileItem1[i])[0].files[0]) {
           alert('사업자등록증을 첨부해주세요.');
