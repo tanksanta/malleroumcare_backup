@@ -141,6 +141,25 @@ add_javascript(G5_POSTCODE_JS, 0);
           <label for="mb_type_normal">일반회원</label>
         </div>
       </div>
+      <?php } else { ?>
+      <div class="form-group has-feedback">
+        <label class="col-sm-2 control-label" for=""><b>분류</b></label>
+        <div class="desc_txt">
+          <?php
+          switch($member['mb_type']) {
+            case 'default':
+              echo '복지용구사업소';
+              break;
+            case 'partner':
+              echo '파트너(직배송, 설치, 소독)';
+              break;
+            case 'normal':
+              echo '일반회원';
+              break;
+          }
+          ?>
+        </div>
+      </div>
       <?php } ?>
       <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
         <label class="col-sm-2 control-label" for="mb_giup_bname"><b>기업명</b><strong class="sound_only">필수</strong></label>
