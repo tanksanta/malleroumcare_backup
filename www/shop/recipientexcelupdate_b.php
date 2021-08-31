@@ -23,6 +23,35 @@ if($sheetData) {
         $sendData = [];
         $sendData['penNm'] = addslashes($sheetData[$i]['C']); //수급자명
         $sendData['penGender'] = addslashes($sheetData[$i]['D']); // 성별
+        $sendData['penTypeBiz'] = addslashes($sheetData[$i]['E']); // 대상자 구분
+        
+        $sendData['penTypeNm'] = '';
+        $sendData['penTypeCd'] = '';
+        switch($sendData['penTypeBiz']) {
+            case '일반수급자' :
+                $sendData['penTypeCd'] = '00';
+                $sendData['penTypeNm'] = '일반 15%';
+                break;
+            case '감경(9%)' :
+                $sendData['penTypeCd'] = '01';
+                $sendData['penTypeNm'] = '감경 9%';
+                break;
+            case '감경(6%)' :
+            case '감경자' :
+                $sendData['penTypeCd'] = '02';
+                $sendData['penTypeNm'] = '감경 6%';
+                break;
+            case '의료(6%)' :
+            case '의료급여자' :
+                $sendData['penTypeCd'] = '03';
+                $sendData['penTypeNm'] = '의료 6%';
+                break;
+            case '기초생활수급자' :
+                $sendData['penTypeCd'] = '04';
+                $sendData['penTypeNm'] = '기초 0%';
+                break;
+        }
+
         //생년월일
         $sendData['penBirth'] = addslashes(
             '19' 
@@ -96,8 +125,8 @@ if($sheetData) {
             pen_id = '{$res['data']['penId']}',
             pen_rec_gra_cd = '{$input['penRecGraCd']}',
             pen_rec_gra_nm = '{$penRecGraNm}',
-            pen_type_cd = '',
-            pen_type_nm = '본인부담율 없음',
+            pen_type_cd = '{$input['penTypeCd']}',
+            pen_type_nm = '{$input['penTypeNm']}',
             pen_gra_edit_dtm = '{$penGraApplyDtm}',
             pen_gra_apply_month = '{$penGraApplyMonth}',
             pen_gra_apply_day = '{$penGraApplyDay}',
