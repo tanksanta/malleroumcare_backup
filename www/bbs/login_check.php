@@ -44,8 +44,6 @@ if($_POST["mb_id"] != "admin" && $check_member['mb_type'] !== 'normal') {
       }
       // 회원아이디 세션 생성
       set_session('ss_mb_id', $mb['mb_id']);
-      // FLASH XSS 공격에 대응하기 위하여 회원의 고유키를 생성해 놓는다. 관리자에서 검사함 - 110106
-      set_session('ss_mb_key', md5($mb['mb_datetime'] . get_real_client_ip() . $_SERVER['HTTP_USER_AGENT']));
       //이로움 통합시스템 이동
       alert('관리자 승인이 대기중입니다.',G5_BBS_URL."/register_result.php");
     }
@@ -68,90 +66,21 @@ if($_POST["mb_id"] != "admin" && $check_member['mb_type'] !== 'normal') {
     }
 
   } else if($res["errorYN"] == "N") {
-    $mbCheck = sql_fetch("SELECT mb_id FROM {$g5["member_table"]} WHERE mb_id = '{$_POST["mb_id"]}'")["mb_id"];
-    $resInfo = get_eroumcare(EROUMCARE_API_ENT_ACCOUNT, $sendData);
-    $resInfo = $resInfo["data"];
-    $resInfo["usrZip01"] = substr($resInfo["usrZip"], 0, 3);
-    $resInfo["usrZip02"] = substr($resInfo["usrZip"], 3, 2);
-    $resInfo["entZip01"] = substr($resInfo["entZip"], 0, 3);
-    $resInfo["entZip02"] = substr($resInfo["entZip"], 3, 2);
-    if(!$mbCheck) {
-      sql_query("
-        INSERT INTO {$g5["member_table"]} SET
-        mb_id = '{$resInfo["usrId"]}',
-        mb_name = '{$resInfo["entNm"]}',
-        mb_nick = '{$resInfo["entNm"]}',
-        mb_hp = '{$resInfo["usrPnum"]}',
-        mb_tel = '{$resInfo["usrPnum"]}',
-        mb_type = '{$resInfo["type"]}',
-        mb_entId = '{$resInfo["entId"]}',
-        mb_entNm = '{$resInfo["entNm"]}',
-        mb_level = '3',
-        mb_password = '".get_encrypt_string($mb_password)."',
-        mb_zip1 = '{$resInfo["usrZip01"]}',
-        mb_zip2 = '{$resInfo["usrZip02"]}',
-        mb_addr1 = '{$resInfo["usrAddr"]}',
-        mb_addr2 = '{$resInfo["usrAddrDetail"]}',
-        mb_giup_bnum = '{$resInfo["entCrn"]}',
-        mb_giup_zip1 = '{$resInfo["entZip01"]}',
-        mb_giup_zip2 = '{$resInfo["entZip02"]}',
-        mb_giup_addr1 = '{$resInfo["entAddr"]}',
-        mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-        mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
-        mb_email = '{$resInfo["usrMail"]}',
-        mb_fax = '{$resInfo["entFax"]}',
-        mb_authCd = '{$resInfo["authCd"]}',
-        mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
-        mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
-        mb_giup_bupjong = '{$resInfo["entBusiType"]}',
-        mb_sex = '{$resInfo["usrGender"]}',
-        mb_birth = '{$resInfo["usrBirth"]}',
-        mb_giup_btel = '{$resInfo["entPnum"]}',
-        mb_giup_tax_email = '{$resInfo["entMail"]}',
-        mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
-        mb_giup_bname = '{$resInfo["entNm"]}',
-        sealFile = '".$sealFile_name."',
-        crnFile = '".$crnFile_name."',
-        mb_datetime = '".G5_TIME_YMDHIS."'
-      ");
-    } else {
-      sql_query("
-        UPDATE {$g5["member_table"]} SET
-        mb_name = '{$resInfo["entNm"]}',
-        mb_nick = '{$resInfo["entNm"]}',
-        mb_hp = '{$resInfo["usrPnum"]}',
-        mb_tel = '{$resInfo["usrPnum"]}',
-        mb_type = '{$resInfo["type"]}',
-        mb_entId = '{$resInfo["entId"]}',
-        mb_entNm = '{$resInfo["entNm"]}',
-        mb_password = '".get_encrypt_string($mb_password)."',
-        mb_zip1 = '{$resInfo["usrZip01"]}',
-        mb_zip2 = '{$resInfo["usrZip02"]}',
-        mb_addr1 = '{$resInfo["usrAddr"]}',
-        mb_addr2 = '{$resInfo["usrAddrDetail"]}',
-        mb_giup_bnum = '{$resInfo["entCrn"]}',
-        mb_giup_zip1 = '{$resInfo["entZip01"]}',
-        mb_giup_zip2 = '{$resInfo["entZip02"]}',
-        mb_giup_addr1 = '{$resInfo["entAddr"]}',
-        mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-        mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
-        mb_email = '{$resInfo["usrMail"]}',
-        mb_fax = '{$resInfo["entFax"]}',
-        mb_authCd = '{$resInfo["authCd"]}',
-        mb_giup_manager_name = '{$resInfo["entTaxCharger"]}',
-        mb_giup_buptae = '{$resInfo["entBusiCondition"]}',
-        mb_giup_bupjong = '{$resInfo["entBusiType"]}',
-        mb_sex = '{$resInfo["usrGender"]}',
-        mb_birth = '{$resInfo["usrBirth"]}',
-        mb_giup_btel = '{$resInfo["entPnum"]}',
-        mb_giup_tax_email = '{$resInfo["entMail"]}',
-        mb_giup_sbnum = '{$resInfo["entBusiNum"]}',
-        mb_giup_bname = '{$resInfo["entNm"]}',
-        WHERE mb_id = '{$resInfo["usrId"]}'
-      ");
+    //계정정보 불러오기
+    $mb = get_member($mb_id);
+
+    //쇼핑몰에 등록이 되어 있지 않으면, 메세지출력
+    if (!check_password($mb_password, $mb['mb_password'])) {
+      alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
     }
   } else {
     alert("시스템 서버가 응답하지 않습니다.");
+  }
+} else {
+  $mb_id = trim($_POST['mb_id']);
+  $mb = get_member($mb_id);
+  if(!login_password_check($mb, $mb_password, $mb['mb_password'])) {
+    alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
   }
 }
 // 아미나빌더 소셜로그인
