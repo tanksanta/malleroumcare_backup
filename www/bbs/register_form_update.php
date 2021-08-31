@@ -176,7 +176,6 @@ $sendData = array(
   'usrMail' => $mb_email,
   'entMail' => $mb_giup_tax_email,
   'mbType' => $mb_type,
-  'entCrn' => $mb_giup_bnum,
   'entCeoNm' => $mb_giup_boss_name,
   'entBusiType' => $mb_giup_bupjong,
   'entBusiCondition' => $mb_giup_buptae,
@@ -190,6 +189,7 @@ $sendData = array(
 );
 
 if ($w == '') { // 회원가입
+  $sendData['entCrn'] = $mb_giup_bnum;
   $sendData['entConAcco1'] = $mb_entConAcc01;
   $sendData['entConAcco2'] = $mb_entConAcc02;
 
@@ -279,7 +279,7 @@ if ($w == '') { // 회원가입
   $sendData['entUsrId'] = $mb_id;
 
   if($mb_type !== 'normal') { // 일반회원이 아니면
-    // 시스템 먼저 회원가입
+    // 시스템 먼저 업데이트
     $result = post_formdata(EROUMCARE_API_ENT_UPDATE, $sendData);
     if($result['errorYN'] !== 'N')
       alert($result['message']);
@@ -302,7 +302,6 @@ if ($w == '') { // 회원가입
       mb_addr1 = '{$mb_addr1}',
       mb_addr1 = '{$mb_addr2}',
       mb_addr3 = '{$mb_addr3}',
-      mb_giup_bnum = '{$mb_giup_bnum}',
       mb_giup_zip1 = '{$mb_giup_zip1}',
       mb_giup_zip2 = '{$mb_giup_zip2}',
       mb_giup_addr1 = '{$mb_giup_addr1}',
