@@ -1,9 +1,4 @@
 <?php
-if(!$w){
-  if(!$_POST['agree']||! $_POST['agree2']){
-    alert('이용약관에 동의해주세요.',G5_BBS_URL.'/register.php');
-  }
-}
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
@@ -71,7 +66,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 }
 #ui-datepicker-div { z-index: 999 !important; }
 </style>
-<form class="form-horizontal register-form" role="form" id="fregisterform" name="fregisterform" action="<?=G5_BBS_URL?>/ajax.account.php" onsubmit="return fregisterform_submit();" method="post" enctype="multipart/form-data" autocomplete="off">
+<form class="form-horizontal register-form" role="form" id="fregisterform" name="fregisterform" action="<?=$register_action_url?>" onsubmit="return fregisterform_submit();" method="post" enctype="multipart/form-data" autocomplete="off">
   <input type="hidden" name="w" value="<?php echo $w ?>">
   <input type="hidden" name="url" value="<?php echo $urlencode ?>">
   <input type="hidden" name="pim" value="<?php echo $pim;?>"> 
@@ -385,7 +380,7 @@ add_javascript(G5_POSTCODE_JS, 0);
           <?php if($member['crnFile']){ ?>
           <img style="max-width:100px; max-height:100px;"  src="<?=G5_DATA_URL?>/file/member/license/<?=$member['crnFile']?>" alt="">
           <?php }?>
-          <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 10Mbyte 이하로 등록해주세요.</p>
+          <p>*파일은 pdf, png, jpg, jpeg, gif 만 등록가능하며 10Mbyte 이하로 등록해주세요.</p>
         </div>
       </div>
       <?php if($w) { ?>
@@ -396,7 +391,7 @@ add_javascript(G5_POSTCODE_JS, 0);
           <?php if($member['sealFile']){ ?>
           <img style="max-width:100px; max-height:100px;" src="<?=G5_DATA_URL?>/file/member/stamp/<?=$member['sealFile']?>" alt="">
           <?php }?>
-          <p>*파일은 pdf, png, jpg, jepg, gif 만 등록가능하며 10Mbyte 이하로 등록해주세요.</p>
+          <p>*파일은 png, jpg, jpeg, gif 만 등록가능하며 10Mbyte 이하로 등록해주세요.</p>
         </div>
       </div>
       <?php } ?>
@@ -936,53 +931,11 @@ function fregisterform_submit() {
   }
   //체크 끝
 
-
-  //통신
-  var sendData = new FormData();
-  var sendData2 = new FormData();
-
-  sendData.append("usrId", $("#reg_mb_id").val());//아이디
-  sendData.append("usrPw", $("#reg_mb_password").val());//비밀번호
-  sendData.append("entNm", $("#mb_giup_bname").val()); //사업체명
-  sendData.append("usrPnum", mb_hp);//관리자 휴대폰번호
-  sendData.append("entPnum", mb_tel); //사업소 전화번호
-  sendData.append("entFax", mb_fax); //사업소 팩스
-  sendData.append("usrMail", $("#reg_mb_email").val());//메일
-  sendData.append("mbType", mb_type);//회원유형
-
-  <?php if($w) { ?> 
-  sendData.append("entId", "<?=$member['mb_entId']?>");
-  sendData.append("entUsrId", $("#reg_mb_id").val() );//entUsrId
-  <?php } ?>
-    
-  sendData.append("entCrn", $("#mb_giup_bnum").val()); //사업자 등록번호
-  sendData.append("entCeoNm", $("#mb_giup_boss_name").val()); //사업소 대표
-  sendData.append("entBusiType",$("#mb_giup_bupjong").val()); //사업소 업종
-  sendData.append("entBusiCondition",$("#mb_giup_buptae").val()); //사업소 업태
-  sendData.append("entZip", $("#mb_giup_zip").val());  //사업소 우편번호
-  sendData.append("entAddr", $("#mb_giup_addr1").val()); //사업소 주소
-  sendData.append("entAddrDetail",$("#mb_giup_addr2").val() + $("#mb_giup_addr3").val() ); //사업소 주소 상세
-  sendData.append("entTaxCharger",$("#mb_giup_manager_name").val()); //담당자
-  <?php if($w) { ?>
-  sendData.append("entConAcc01",$("#mb_entConAcc01").val()); //특약사항1
-  sendData.append("entConAcc02",$("#mb_entConAcc02").val()); //특약사항2
-  <?php } else { ?>
-  sendData.append("entConAcco1",$("#mb_entConAcc01").val()); //특약사항1
-  sendData.append("entConAcco2",$("#mb_entConAcc02").val()); //특약사항2
-  <?php } ?>
-
-  sendData.append("usrZip", $("#reg_mb_zip").val()); //관리자 우편번호
-  sendData.append("usrAddr", $("#reg_mb_addr1").val());//관리자 주소
-  sendData.append("usrAddrDetail", $("#reg_mb_addr2").val())+$("#reg_mb_addr3").val();//관리자 주소 상세
-  sendData.append("entMail", $("#reg_mb_giup_tax_email").val());//메일
-
   <?php if($w){ ?>
   //직인파일
   var imgFileItem2 = $(".mb_giup_file2 input[type='file']");
   for(var i = 0; i < imgFileItem2.length; i++){
     if($(imgFileItem2[i])[0].files[0]){
-      sendData.append("sealFile", $(imgFileItem2[i])[0].files[0]);
-      sendData2.append("sealFile", $(imgFileItem2[i])[0].files[0]);
       if($(imgFileItem2[i])[0].files[0].size > 1024 * 1024 * 10){
         alert('사업자직인 (계약서 날인) : 10MB 이하 파일만 등록할 수 있습니다.\n\n' + '현재파일 용량 : ' + (Math.round($(imgFileItem2[i])[0].files[0].size / 1024 / 1024 * 100) / 100) + 'MB');
         return false;
@@ -1007,48 +960,12 @@ function fregisterform_submit() {
           return false;
         }
       }
-      if($(imgFileItem1[i])[0].files[0]) {
-        sendData.append("crnFile", $(imgFileItem1[i])[0].files[0]);
-      }
     }
   }
 
-  if (mb_type === 'normal') {
-    f.submit();
-    return;
-  }
-
-  <?php
-  if(!$w) {
-    $api_url = "https://system.eroumcare.com:9901/api/ent/insert";
-  } else {
-    $api_url = "https://system.eroumcare.com:9901/api/ent/update";
-  }
-  ?>
   var info = "<?php echo $w==''?'회원가입 하시겠습니까?':'수정 하시겠습니까?'; ?>";
   if(confirm(info)) {
-    $.ajax({
-      type: 'POST',
-      url : "<?=$api_url?>",
-      async : false,
-      cache : false,
-      processData : false,
-      contentType : false,
-      data : sendData
-    })
-    .done(function(data) {
-      if(data.message == "SUCCESS"){
-        f.submit();
-        return false;
-      } else {
-        alert(data.message);
-        return false;
-      }
-    })
-    .fail(function($xhr) {
-      var data = $xhr.responseJSON;
-      alert(data && data.message);
-    });
+    f.submit();
   }
   return false;
 }

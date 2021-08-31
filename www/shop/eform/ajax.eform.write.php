@@ -59,7 +59,7 @@ if($_FILES['sealFile']['tmp_name']){
     }
     exit;
   }
-  if($file['size'] >= $max_file_size) {
+  if($_FILES['sealFile']['size'] >= $max_file_size) {
     json_response(400, '10Mb 까지만 업로드 가능합니다.');
   }
   // 확장자 확인

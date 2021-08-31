@@ -479,18 +479,7 @@ if ($_SESSION['ss_mb_id'] && $member = get_member($_SESSION['ss_mb_id'])) {
             $is_first_login = true;
         }
     } 
-} else if ($query_mb_id = strip_tags($_GET['usrId'])) {
-    set_session('ss_mb_id', $query_mb_id);
-
-    if ($member = get_member($_SESSION['ss_mb_id'])) {
-        echo "<script type='text/javascript'> window.location.reload(); </script>";
-    } else {
-        set_session('ss_mb_reg', $query_mb_id);
-        // $register_url = G5_BBS_URL.'/register.php?url='.urlencode(G5_ADMIN_URL);
-        $register_url = G5_BBS_URL.'/register.php';
-        echo "<script>location.href='$register_url';</script>"; 
-    }
- } else {
+} else {
     // 자동로그인 ---------------------------------------
     // 회원아이디가 쿠키에 저장되어 있다면 (3.27)
     if ($tmp_mb_id = get_cookie('ck_mb_id')) {
