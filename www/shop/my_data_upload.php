@@ -51,7 +51,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 </style>
 
 <section class="wrap">
-  <div class="sub_section_tit">판매/대여 정보 등록관리</div>
+  <div class="sub_section_tit">과거공단자료 업로드</div>
   <form method="get">
     <div class="search_box">
       
@@ -70,7 +70,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
       <div class="subtit">
         목록
         <div class="r_area r_btn_area">
-          <a href="#" id="btn_nhis" class="btn_nhis">건보 판매/대여 자료 업로드</a>
+          <a href="#" id="btn_nhis" class="btn_nhis">공단 판매/대여 자료 엑셀업로드</a>
         </div>
       </div>
       <div class="table_box">
@@ -80,8 +80,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
               <th>No.</th>
               <th>수급자</th>
               <th>주문등록번호</th>
-              <th>품목명/제품명</th>
-              <th>제품코드</th>
+              <th>품목명/제품명/제품코드</th>
+              <!-- <th>제품코드</th> -->
               <th>급여</th>
               <th>계약등록일</th>
               <th>판매일자/대여기간</th>
@@ -95,8 +95,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
               <td class="text_c"><?=$row['index']?></td>
               <td class="text_c"><?=$row['sd_pen_nm']?>(<?=$row['sd_pen_ltm_num']?>)</td>
               <td class="text_c"><?=$row['sd_pen_jumin']?></td>
-              <td class="text_c"><?="{$row['sd_ca_name']}/{$row['sd_it_name']}"?></td>
-              <td class="text_c"><?="{$row['sd_it_code']}-{$row['sd_it_barcode']}"?></td>
+              <td class="text_c"><?="{$row['sd_ca_name']}/{$row['sd_it_name']}"?> <br><?="{$row['sd_it_code']}-{$row['sd_it_barcode']}"?></td>
+              <!-- <td class="text_c"><?="{$row['sd_it_code']}-{$row['sd_it_barcode']}"?></td> -->
               <td class="text_c text_<?=($row['sd_gubun'] == '00' ? 'orange' : 'green')?>"><?=($row['sd_gubun'] == '00' ? '판매' : '대여')?></td>
               <td class="text_c"><?=$row['sd_contract_date']?></td>
               <td class="text_c"><?=$row['sd_sale_date']?><?=($row['sd_rent_date'] != '0000-00-00' ? " ~ {$row['sd_rent_date']}" : '')?></td>
