@@ -504,6 +504,18 @@ $(function() {
               </div>
               <?php } ?>
             </div>
+            <?php
+              if($item[$i]['opt'][$k]['ct_is_direct_delivery'] == 2 && $item[$i]['opt'][$k]['ct_direct_delivery_date'] && $item[$i]['opt'][$k]['ct_delivery_num'] && !in_array($item[$i]['opt'][$k]['ct_status'], ['취소', '주문무효'])) {
+                $delivery_company_name = '';
+                foreach($delivery_companys as $company) {
+                  if($company['val'] == $item[$i]['opt'][$k]['ct_delivery_company']) {
+                    $delivery_company_name = $company['name'];
+                    break;
+                  }
+                }
+                echo '<div style="background-color: #f3f3f3; color: #666; font-size: 14px;padding: 8px;">설치 예정일 : '.date('Y-m-d H시', strtotime($item[$i]['opt'][$k]['ct_direct_delivery_date'])).', 배송정보 : ['.$delivery_company_name.'] '.$item[$i]['opt'][$k]['ct_delivery_num'].'</div>';
+            ?>
+            <?php } ?>
           </div>
           <?php } ?>
           <?php } ?>
