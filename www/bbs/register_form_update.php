@@ -296,7 +296,6 @@ if ($w == '') { // 회원가입
       mb_tel = '{$mb_tel}',
       mb_giup_btel = '{$mb_tel}',
       mb_fax = '{$mb_fax}',
-      mb_entId = '{$mb_entId}',
       mb_entNm = '{$mb_giup_bname}',
       mb_zip1 = '{$mb_zip1}',
       mb_zip2 = '{$mb_zip2}',
