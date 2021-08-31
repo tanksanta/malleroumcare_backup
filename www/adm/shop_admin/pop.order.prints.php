@@ -369,36 +369,7 @@ $index++;
 
 <script type="text/javascript">
 	$(function(){
-
-		var stoldList = [];
-		var stoIdData = "<?=$stoIdData?>";
-		if(stoIdData){
-			var sendData = {
-				stoId : stoIdData
-			}
-
-			$.ajax({
-				url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json; charset=utf-8;",
-				data : JSON.stringify(sendData),
-				success : function(res){
-					$.each(res.data, function(key, value){
-						$("." + value.stoId).text(value.prodBarNum);
-					});
-
-					if(res.data){
-						stoldList = res.data;
-					}
-
-					document.execCommand("print", false, null) || window.print();
-				}
-			});
-		} else {
-			document.execCommand("print", false, null) || window.print();
-		}
-
+		document.execCommand("print", false, null) || window.print();
 	})
 </script>
 

@@ -1660,58 +1660,7 @@ if($is_mobile_order && $default['de_samsung_pay_use'] ){   //삼성페이 사용
     if(f.pay_method.value != "무통장" && f.pay_method.value != "포인트") {
       jsf__pay( f );
     } else {
-
-      /*
-      if(f.penId.value){
-
-        var url = 'https://system.eroumcare.com/pen/pen5000/pen5000/insertPen5000AjaxByShop.do';
-        var dataList = {
-          'searchUsrId' : f.searchUsrId.value,  //123456789
-          'shoBasSeq' : f.shoBasSeq.value,    //12
-          'prodBarNum' : f.prodBarNum.value,    //
-          'ordNm' : f.ordNm.value,        //김예비
-          'ordCont' : f.ordCont.value,      //010-2551-8080
-          'ordZip' : f.ordZip.value,        //46241
-          'ordAddr' : f.ordAddr.value,      //부산 금정구 부산대학로63번길 2
-          'ordAddrDtl' : f.ordAddrDtl.value,    //(장전동) 1
-          'ordMemo' : f.ordMemo.value,      //
-          'payMehCd' : f.payMehCd.value      //00
-        };
-
-      }else{
-        var url = 'https://system.eroumcare.com/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
-        var dataList = {
-          'searchUsrId' : f.searchUsrId.value,  //123456789
-          'shoBasSeq' : f.shoBasSeq.value,    //12
-          'prodBarNum' : f.prodBarNum.value,    //
-          'ordNm' : f.ordNm.value,        //김예비
-          'ordCont' : f.ordCont.value,      //010-2551-8080
-          'ordZip' : f.ordZip.value,        //46241
-          'ordAddr' : f.ordAddr.value,      //부산 금정구 부산대학로63번길 2
-          'ordAddrDtl' : f.ordAddrDtl.value,    //(장전동) 1
-          'ordMemo' : f.ordMemo.value,      //
-          'payMehCd' : f.payMehCd.value      //00
-        };
-      }
-
-      $.ajax({
-        type : "post",
-        url : url,
-        data: dataList,
-        dataType : "json",
-        success : function(data){
-          if(data.errorYN == 'Y'){
-            alert(data.message);
-            return false;
-          }else{
-            f.submit();
-          }
-        }
-      });
-      */
-
       f.submit();
-
     }
     <?php } ?>
     <?php if($default['de_pg_service'] == 'lg') { ?>

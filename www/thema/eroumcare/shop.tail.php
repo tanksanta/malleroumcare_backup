@@ -316,7 +316,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
       $('.mobile_menu_backdrop').hide();
     });
 		
-		<?php if($member["mb_level"] == "3"||$member["mb_level"] =="4"){ ?>
+		<?php if($member["mb_level"] == "3"||$member["mb_level"] =="4") { ?>
 		$(".modeBtn").click(function(e){
 			e.preventDefault();
 			
@@ -332,16 +332,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 			});
 		});
 		<?php } ?>
-		
-		$(".registerBtn").click(function(e){
-			e.preventDefault();
-			
-			if(confirm("회원가입은 이로움시스템을 통해서만 등록이 가능합니다.\n회원가입하시겠습니까?")){
-				window.location.href = "https://system.eroumcare.com/cmm/cmm4000/cmm4000/selectCmm4000View.do";
-			}
-		});
-		
-	})
+	});
 </script>
 
 <script>
