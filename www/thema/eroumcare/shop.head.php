@@ -60,7 +60,7 @@ if($member['mb_id']) {
   // 미수금
   if($member['mb_type'] == 'partner') $balance = get_partner_outstanding_balance($member['mb_id']);
   else $balance = get_outstanding_balance($member['mb_id']);
-
+  
   // 주문건수
   if($member['mb_type'] == 'partner') {
     $result = sql_fetch("
@@ -306,9 +306,9 @@ if($is_main && !$is_member) {
                 시스템문의 : 02-830-1301 (월~금 09:00~18:00)
               </div>
               <?php } ?>
-              <?php if($balance > 0 && $show_partner_menu) { ?>
+              <?php if($show_partner_menu) { ?>
               <div class="balance_info flex-justify">
-                <div class="balance_title">신용거래</div>
+                <div class="balance_title">신용거래 (<?php echo date('n');?>월)</div>
                 <div class="balance"><?=number_format($balance)?>원</div>
               </div>
               <div class="order_info flex-justify">
