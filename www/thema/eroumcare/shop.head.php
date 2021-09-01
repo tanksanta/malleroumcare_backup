@@ -302,7 +302,8 @@ if($is_main && !$is_member) {
               </div>
               <?php if($manager = get_member($member['mb_manager'])) { ?>
               <div class="manager_info">
-                이로움 관리 담당자 : <?="{$manager['mb_name']} ({$manager['mb_hp']})"?>
+                <!-- 이로움 관리 담당자 : <?="{$manager['mb_name']} ({$manager['mb_hp']})"?> -->
+                시스템문의 : 02-830-1301 (월~금 09:00~18:00)
               </div>
               <?php } ?>
               <?php if($balance > 0 && $show_partner_menu) { ?>
