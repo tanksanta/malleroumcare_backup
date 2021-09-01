@@ -246,8 +246,8 @@ $flist = apms_form(1,0);
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
         <th scope="col" rowspan="3"><?php echo subject_sort_link('it_id', 'sca='.$sca); ?>상품ID</a></th>
-        <th scope="col" colspan="8">분류</th>
-        <th scope="col" rowspan="3"><?php echo subject_sort_link('pt_main', 'sca='.$sca); ?>메인</a></th>
+        <th scope="col" colspan="7">분류</th>
+		<th scope="col" rowspan="3">관리자메모</th>
 		<th scope="col" rowspan="3"><?php echo subject_sort_link('it_order', 'sca='.$sca); ?>순서</a></th>
         <th scope="col" rowspan="3"><?php echo subject_sort_link('it_use', 'sca='.$sca, 1); ?>판매</a></th>
         <th scope="col" rowspan="3"><?php echo subject_sort_link('it_soldout', 'sca='.$sca, 1); ?>품절</a></th>
@@ -292,8 +292,8 @@ $flist = apms_form(1,0);
 			<th scope="col" id="th_icnt"><?php echo subject_sort_link('pt_incentive', 'sca='.$sca); ?>인센티브(%)</a></th>
 			<th scope="col" id="th_end"><?php echo subject_sort_link('pt_end', 'sca='.$sca); ?>종료일</a></th>
             -->
-	        <!--<th scope="col" id="th_cmt">댓글사용</th>-->
-            <th scope="col" id="th_cmt">상품종류</th>
+	        <!--<th scope="col" id="th_cmt">댓글사용</th>
+            <th scope="col" id="th_cmt">상품종류</th>-->
 		<!-- // -->
     </tr>
     </thead>
@@ -326,7 +326,7 @@ $flist = apms_form(1,0);
 			<?php } ?>
         </td>
 		<!-- // -->
-		<td colspan="8" class="td_sort">
+		<td colspan="7" class="td_sort">
             <label for="ca_id_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['it_name']); ?> 기본분류</label>
             <select name="ca_id[<?php echo $i; ?>]" id="ca_id_<?php echo $i; ?>" required>
                 <?php echo conv_selected_option($ca_list, $row['ca_id']); ?>
@@ -348,9 +348,10 @@ $flist = apms_form(1,0);
                 <?php echo conv_selected_option($ca_list, $row['ca_id5']); ?>
             </select>
         </td>
-        <td rowspan="3" class="td_mngsmall">
-            <label for="main_<?php echo $i; ?>" class="sound_only">메인상품</label>
-            <input type="checkbox" name="pt_main[<?php echo $i; ?>]" <?php echo ($row['pt_main'] ? 'checked' : ''); ?> value="1" id="main_<?php echo $i; ?>">
+       
+		<td rowspan="3" class="td_mngsmall">
+            <label for="order_<?php echo $i; ?>" class="sound_only">관리자메모</label>
+            <?php echo get_text($row['it_admin_memo']); ?>
         </td>
 		<td rowspan="3" class="td_mngsmall">
             <label for="order_<?php echo $i; ?>" class="sound_only">순서</label>
@@ -428,13 +429,6 @@ $flist = apms_form(1,0);
             <input type="text" name="it_price_dealer2[<?php echo $i; ?>]" value="<?php echo $row['it_price_dealer2']; ?>" id="it_price_dealer2_<?php echo $i; ?>" class="frm_input sit_amt" size="7">
 		</td>
 
-		<td headers="th_amt" class="td_numbig td_input">
-			<?php if(!$row['pt_it']) $row['pt_it'] = 1; ?>
-			<select name="pt_it[<?php echo $i; ?>]" id="pt_it_[<?php echo $i; ?>]">
-				<option value="">종류선택</option>
-				<?php echo apms_pt_it($row['pt_it']); ?>
-			</select>
-		</td>
     </tr>
     <tr class="<?php echo $bg; ?>">
         <!--
