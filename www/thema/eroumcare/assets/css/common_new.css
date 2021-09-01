@@ -1009,7 +1009,7 @@ pre{white-space: pre-wrap;}
 .productListWrap > ul > li > a > .detailInfo > li {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 .productListWrap:after { content: ' '; display: block; clear: both; }
 .productListWrap > ul:after { content: ' '; display: block; clear: both; }
-.it_type_box{padding:5px;margin-bottom:10px;display:inline-block;}
+.it_type_box{ margin-top:10px; display:inline-block; }
 .m_switch_link { display: none; float:right; font-size: 16px; }
 #sort-wrapper .dropdown {border: none !important;}
 

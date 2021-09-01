@@ -288,6 +288,13 @@ while($wish_row = sql_fetch_array($wish_result)) {
           }
           ?>
         </p>
+        <div class="it_type_box">
+          <?php if($list[$i]['it_type1']){ ?><p class="p_box type1" > 일시품절</p><?php } ?>
+          <?php if($list[$i]['it_type2']){ ?><p class="p_box type2"> 일부옵션품절</p><?php } ?>
+          <?php if($list[$i]['it_type3']){ ?><p class="p_box type3">주문제작</p><?php } ?>
+          <?php if($list[$i]['it_type4']){ ?><p class="p_box type4"> 예약가능</p><?php } ?>
+          <?php if($list[$i]['it_type5']){ ?><p class="p_box type5"> 특가할인</p><?php } ?>
+        </div>
         <?php
         $tag_list = apms_get_text($list[$i]['pt_tag']);
         if($tag_list) {
@@ -304,15 +311,6 @@ while($wish_row = sql_fetch_array($wish_result)) {
         }
         ?>
       </a>
-
-      <div class="it_type_box">
-        <?php if($list[$i]['it_type1']){ ?><p class="p_box type1" > 일시품절</p><?php } ?>
-        <?php if($list[$i]['it_type2']){ ?><p class="p_box type2"> 일부옵션품절</p><?php } ?>
-        <?php if($list[$i]['it_type3']){ ?><p class="p_box type3">주문제작</p><?php } ?>
-        <?php if($list[$i]['it_type4']){ ?><p class="p_box type4"> 예약가능</p><?php } ?>
-        <?php if($list[$i]['it_type5']){ ?><p class="p_box type5"> 특가할인</p><?php } ?>
-      </div>
-
     </li>
   <?php } ?>
   </ul>
