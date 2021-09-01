@@ -66,13 +66,13 @@ if($_POST["mb_id"] != "admin" && $check_member['mb_type'] !== 'normal') {
     }
 
   } else if($res["errorYN"] == "N") {
-    //계정정보 불러오기
+    /*//계정정보 불러오기
     $mb = get_member($mb_id);
 
     //쇼핑몰에 등록이 되어 있지 않으면, 메세지출력
     if (!check_password($mb_password, $mb['mb_password'])) {
       alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
-    }
+    }*/
   } else {
     alert("시스템 서버가 응답하지 않습니다.");
   }
