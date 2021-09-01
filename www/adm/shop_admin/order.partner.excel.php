@@ -8,6 +8,7 @@ if(!is_array($ct_id_arr))
   alert('선택한 주문이 없습니다.');
 
 $data = [];
+$index = 1;
 foreach($ct_id_arr as $ct_id) {
   $ct = sql_fetch("
     SELECT
@@ -35,6 +36,7 @@ foreach($ct_id_arr as $ct_id) {
   $ct['it_name'] .= $ct['ct_option'] && $ct['ct_option'] != $ct['it_name'] ? " ({$ct['ct_option']})" : '';
   
   $data[] = [
+    $index,
     $ct['it_name'],
     $ct['ct_qty'],
     $ct['od_b_name'],
@@ -48,6 +50,8 @@ foreach($ct_id_arr as $ct_id) {
     SET ct_is_delivery_excel_downloaded = 1
     WHERE ct_id = '{$ct_id}'
   ");
+
+  $index++;
 }
 
 include_once(G5_LIB_PATH."/PHPExcel.php");
@@ -55,7 +59,59 @@ $reader = PHPExcel_IOFactory::createReader('Excel2007');
 $excel = $reader->load(G5_DATA_PATH.'/purchase_order_form.xlsx');
 $sheet = $excel->getActiveSheet();
 
-$sheet->fromArray($data,NULL,'C12');
+$last_row = count($data) + 11;
+if($last_row < 21) $last_row = 21;
+
+// 테두리 처리
+$styleArray = array(
+  'font' => array(
+    'size' => 10,
+    'name' => 'Malgun Gothic'
+  ),
+  'borders' => array(
+    'allborders' => array(
+      'style' => PHPExcel_Style_Border::BORDER_THIN
+    )
+  ),
+  'alignment' => array(
+    'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
+  )
+);
+$sheet->getStyle('B11:H'.$last_row)->applyFromArray($styleArray);
+
+// 열 높이
+for($i = 11; $i <= $last_row; $i++) {
+  $sheet->getRowDimension($i)->setRowHeight(35);
+}
+
+// 가운데 정렬
+$sheet->getStyle('B11:B'.$last_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+$sheet->getStyle('D11:D'.$last_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+// 겉 굵은 테두리
+$sheet->getStyle('B11:B'.$last_row)->applyFromArray(array(
+  'borders' => array(
+    'left' => array(
+      'style' => PHPExcel_Style_Border::BORDER_MEDIUM
+    )
+  )
+));
+$sheet->getStyle('H11:H'.$last_row)->applyFromArray(array(
+  'borders' => array(
+    'right' => array(
+      'style' => PHPExcel_Style_Border::BORDER_MEDIUM
+    )
+  )
+));
+$sheet->getStyle('B'.$last_row.':H'.$last_row)->applyFromArray(array(
+  'borders' => array(
+    'bottom' => array(
+      'style' => PHPExcel_Style_Border::BORDER_MEDIUM
+    )
+  )
+));
+
+$sheet->fromArray($data,NULL,'B12');
 $sheet->setCellValue('B9', date('Y년 m월 d일'));
 
 header("Content-Type: application/octet-stream");
