@@ -328,6 +328,10 @@ if ($w == '') { // 회원가입
 
 if ($w == '') {
   set_session('ss_mb_id', $mb_id);
+
+  if($mb_type === 'normal') { // 일반회원이면 메인으로 이동
+    goto_url(G5_URL);
+  }
   goto_url(G5_HTTP_BBS_URL.'/register_result.php');
 } else if ($w == 'u') {
   alert('회원 정보 수정이 완료되었습니다.', G5_URL);
