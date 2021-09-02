@@ -578,7 +578,7 @@ pre{white-space: pre-wrap;}
 .r_btn_area{float: right;}
 .r_btn_area span{font-size:11px;margin-right:10px;}
 .r_btn_area a{ padding:5px;border:1px solid #ddd;border-radius:3px;}
-.r_btn_area .btn_nhis{background: url('/img/icon_nhis.png') no-repeat left center;background-size:20px;padding:5px 5px 5px 20px;}
+.r_btn_area .btn_nhis{background: url('/img/icon_nhis.png') no-repeat left center;background-size:20px;padding:7px 5px 7px 20px;position: relative;display: inline-block;}
 .list_box{width: 100%; display: inline-block;}
 .list_box .table_box{overflow-x: auto;}
 .list_box .table_box .btn_link{cursor: pointer;}
@@ -1069,7 +1069,7 @@ pre{white-space: pre-wrap;}
 	width:auto;
 	padding:0 10px;
 	height: 25px;
-    line-height: 25px;
+  line-height: 25px;
 }
 .btn.eroumcare_btn2 {
     color: #666;
@@ -1077,10 +1077,75 @@ pre{white-space: pre-wrap;}
     padding: 0px 15px;
     line-height: 35px;
     border-radius: 8px !important;
+		position: relative;
 }
 .btn.eroumcare_btn2.small {
 	line-height:25px;
 	padding: 0px 7px;
+}
+
+.eroumcare_btn2 .question,
+.btn_nhis .question {
+	color:white;
+	background-color: #747474;
+	padding:3px 7px;
+	margin-left:5px;
+	border-radius:5px;
+	margin-right: 0;
+}
+
+.r_btn_area .tooltip_btn {
+	display:inline-block;
+	position: relative;
+}
+
+.r_btn_area .tooltip_btn:hover .btn_tooltip {
+	display: block;
+}
+
+.btn_tooltip {
+	display: none;
+	position: absolute !important;
+	z-index: 2;
+	right: 0;
+	width: 300px;
+	padding: 20px 20px;
+	background: #333;
+	color: white;
+	border-radius:10px;
+	top: 100%;
+	font-weight: normal;
+	font-size: 14px;
+}
+.btn_tooltip:before {
+	border: 7px solid;
+	border-color: #333 transparent transparent transparent;
+	content: "";
+	position: absolute;
+	bottom: 100%;
+	right: 32%;
+	/* transform: translateX(-50%); */
+	transform: rotate(180deg);
+}
+.btn_tooltip:after {
+	content: "";
+	position: absolute;
+	width: 0;
+	height: 0;
+	bottom: 100%;
+	right: 50%;
+	transform: translateX(50%);
+	border: 1px solid;
+	border-color: #333 transparent transparent transparent;
+}
+.btn_tooltip a.blog {
+	border:none;
+	color:#efde0c;
+	padding:0;
+	text-decoration:underline;
+}
+.btn_tooltip a.blog img {
+	padding-left:10px;
 }
 
 /* 수급자 fixed */
