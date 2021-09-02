@@ -1761,7 +1761,7 @@
 }
 .item-head .samhwa-item-image .item-image,
 .item-head .samhwa-item-image .item-image .item_image_slider {
-    height: 100%;
+    /* height: 100%; */
 }
 .item-head .samhwa-item-image .slick-dots {
     position: absolute;
