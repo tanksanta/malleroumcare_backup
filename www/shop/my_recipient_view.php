@@ -67,6 +67,9 @@ $pen_gra_apply_month = $pen_gra_apply_result['pen_gra_apply_month'];
 $pen_gra_apply_day = $pen_gra_apply_result['pen_gra_apply_day'];
 if($pen_gra_apply_month && $pen_gra_apply_day)
   $pen_gra_apply_txt = "{$pen_gra_apply_month}월 {$pen_gra_apply_day}일";
+
+// 수급자 연결아이디
+$pen_ent = get_pen_ent_by_pen_id($pen['penId']);
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL?>/my_recipient.css?v=210829">
 <div class="recipient_view_wrap">
@@ -110,6 +113,19 @@ if($pen_gra_apply_month && $pen_gra_apply_day)
     <div class="row">
       <div class="col-sm-2">· 장기요양기록지</div>
       <div class="col-sm-10">: 확인자(<?=$pen_cnm_type_cd[$pen['penCnmTypeCd']]?>), 수령방법(<?=$pen_rec_type_cd[$pen['penRecTypeCd']]?>) <?=$pen['penRecTypeTxt']?></div>
+    </div>
+    <div class="row">
+      <div class="col-sm-2">· 연결 ID</div>
+      <div class="col-sm-10">: 
+        <?php
+        if($pen_ent) {
+          $pen_mb = get_member($pen_ent['pen_mb_id'], 'mb_name');
+          echo "{$pen_mb['mb_name']} ({$pen_ent['pen_mb_id']})";
+        } else {
+          echo '없음';
+        }
+        ?>
+      </div>
     </div>
     <a class="c_btn" href="./my_recipient_update.php?id=<?=$pen['penId']?>">기본정보 수정</a>
     <div class="tel_btn_wrap">
