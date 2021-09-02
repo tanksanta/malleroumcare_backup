@@ -189,7 +189,7 @@ $pen_ent = get_pen_ent_by_pen_id($data['penId']);
 
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
-          <b>연결아이디</b>
+          <b>연결 ID</b>
         </label>
 
         <div class="col-sm-4">
