@@ -812,6 +812,7 @@ table.list-table-style .drop_multi_sub a:after {
 #order_summarize .header {
     background-color:#0aa2cd;
     position:relative;
+    z-index:2;
 }
 #order_summarize .header h1 {
     border-bottom:none;
