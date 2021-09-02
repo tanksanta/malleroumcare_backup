@@ -782,7 +782,7 @@ pre{white-space: pre-wrap;}
 .at-body { width: 100%; display: -webkit-box; display: -ms-flexbox; display: flex; max-width: 1400px; margin: 0 auto; }
 .at-body.is-index { display: block !important; max-width:none; float:left; background: #fff; }
 
-.side_menu_area { width: 302px; }
+.side_menu_area { width: 302px; -ms-flex-negative: 0; flex-shrink: 0; }
 
 .side_menu_area .btn_close_side_menu { display: none; cursor: pointer; font-size: 25px; line-height: 30px; position: absolute; top: 10px; right: 20px; color: #333; }
 

@@ -354,14 +354,14 @@ if($is_main && !$is_member) {
               <div class="title">
                 <a href="/bbs/board.php?bo_table=notice_user">공지사항</a>
               </div>
-              <?php  echo latest('list_main', 'notice_user', 5, 23); ?>
+              <?php  echo latest('list_main', 'notice_user', 5, 25); ?>
             </div>
           <?php } else { ?>
             <div class="notice_area">
               <div class="title">
                 <a href="/bbs/board.php?bo_table=notice">공지사항</a>
               </div>
-              <?php  echo latest('list_main', 'notice', 5, 23); ?>
+              <?php  echo latest('list_main', 'notice', 5, 25); ?>
             </div>
           <?php } ?>
 
