@@ -196,6 +196,7 @@ $pen_ent = get_pen_ent_by_pen_id($data['penId']);
           if($pen_ent['pen_mb_id']) {
             $pen_mb = get_member($pen_ent['pen_mb_id'], 'mb_name')
           ?>
+          <input type="hidden" id="pen_mb_id" value="<?=$pen_ent['pen_mb_id']?>">
           <span style="margin-right: 10px;"><?="{$pen_mb['mb_name']} ({$pen_ent['pen_mb_id']})"?></span>
           <button type="button" id="btn_pen_ent_del" class="btn btn-color btn-sm">연결해지</button>
           <?php } else { ?>
