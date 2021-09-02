@@ -1343,8 +1343,8 @@ function get_recipient_grade_per_year($pen_id) {
 // fr_date 값이 있을 경우 해당 일 까지의 이월잔액
 // total_price_only: true - 총 구매액, false - 총 미수금
 function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false) {
-  $where_date = '';
-  $where_ledger_date = '';
+  $where_date = ' and MONTH(od_time) = MONTH(CURRENT_DATE()) ';
+  $where_ledger_date = ' and MONTH(pl_created_at) = MONTH(CURRENT_DATE()) ';
   if($fr_date) {
     $where_date = " and od_time < '{$fr_date} 00:00:00' ";
     $where_ledger_date = " and lc_created_at < '{$fr_date} 00:00:00' ";
@@ -1742,8 +1742,8 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
 function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false) {
   global $g5;
 
-  $where_date = '';
-  $where_ledger_date = '';
+  $where_date = ' and MONTH(od_time) = MONTH(CURRENT_DATE()) ';
+  $where_ledger_date = ' and MONTH(pl_created_at) = MONTH(CURRENT_DATE()) ';
   if($fr_date) {
     $where_date = " and od_time < '{$fr_date} 00:00:00' ";
     $where_ledger_date = " and pl_created_at < '{$fr_date} 00:00:00' ";
