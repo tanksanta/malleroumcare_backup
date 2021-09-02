@@ -77,13 +77,12 @@ input[type="number"]::-webkit-inner-spin-button {
 
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
-          <b>주민등록번호</b>
+          <b>주민등록번호(앞자리)</b>
         </label>
         <div class="col-sm-3">
-          <input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" style="display: inline-block;width:47%;"> - 
-          <input type="password" maxlength="7" oninput="maxLengthCheck(this)"id="penJumin2" name="penJumin2" min="0" class="form-control input-sm" style="display:inline-block;;width:48%;">
+          <input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm">
           <p style="margin:0; color:#ed9b43">
-            * 주민등록번호는 '기초0%' 제외 필수 입력사항이 아닙니다.
+            * ‘기초0%’ 수급자만 필수 입력 사항입니다.
           </p>
         </div>
       </div>
@@ -529,10 +528,11 @@ function setDateBox() {
 }
 //주민번호 체크
 $('#penJumin1').on('keyup', function() {
-  if(this.value.length == 6 ) {
-      var year=this.value.substring(0,2);
-      var month=this.value.substring(2,4);
-      var day=this.value.substring(4,6);
+  var value = $('#penJumin1').val();
+  if(value.length == 6 ) {
+      var year= value.substring(0,2);
+      var month= value.substring(2,4);
+      var day= value.substring(4,6);
       if( year < <?=substr(date("Y"),2,2) ?> ) { 
           year='20'+year; 
       } else {
@@ -664,17 +664,9 @@ $(function(){
       }
     }
 
-    var penJumin1 =  document.getElementById('penJumin1');
-    var penJumin2 =  document.getElementById('penJumin2');
+    var penJumin =  document.getElementById('penJumin1').value;
     var penLtmNum =  document.getElementById('penLtmNum');
     var penSpare = $(".register-form input[name='penSpare']:checked").val();
-    
-    var penJumin = '';
-    if(penJumin1.value && penJumin2.value) {
-      if(penJumin1.value.length !== 6){  alert('주민번호 앞자리는 6자리입니다.'); $(penJumin1).focus(); return false; }
-      if(penJumin2.value.length !== 7){  alert('주민번호 뒷자리는 7자리입니다.');  $(penJumin2).focus(); return false; }
-      penJumin = penJumin1.value+penJumin2.value;
-    }
     if(penSpare != '1') {
       if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penLtmNum).focus(); return false; }
     }
@@ -787,7 +779,6 @@ $(function(){
           $(".register-form select[name='penRecGraCd']").val('00');
 
           $(".register-form input[name='penJumin1']").val(581111);
-          $(".register-form input[name='penJumin2']").val(1111111);
 
           var year=$(".register-form input[name='penJumin1']").val().substring(0,2);
           var month=$(".register-form input[name='penJumin1']").val().substring(2,4);

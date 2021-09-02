@@ -106,13 +106,12 @@ $pen_ent = get_pen_ent_by_pen_id($data['penId']);
 
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
-          <b>주민등록번호</b>
+          <b>주민등록번호(앞자리)</b>
         </label>
         <div class="col-sm-3">
-          <input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" style="display: inline-block;width:47%;" value="<?=substr($data["penJumin"], 0, 6) ?>" > - 
-          <input type="password" maxlength="7" oninput="maxLengthCheck(this)"id="penJumin2" name="penJumin2" min="0" class="form-control input-sm" style="display:inline-block;;width:48%;" value="<?=substr($data["penJumin"], 6, 7) ?>">
+          <input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" value="<?=substr($data["penJumin"], 0, 6) ?>" >
           <p style="margin:0; color:#ed9b43">
-            * 주민등록번호는 '기초0%' 제외 필수 입력사항이 아닙니다.
+            * ‘기초0%’ 수급자만 필수 입력 사항입니다.
           </p>
         </div>
       </div>
@@ -785,17 +784,11 @@ $(function() {
         return false;
       }
     }
-    var penJumin1 =  document.getElementById('penJumin1');
+    var penJumin =  document.getElementById('penJumin1').value;
     var penJumin2 =  document.getElementById('penJumin2');
     var penLtmNum =  document.getElementById('penLtmNum');
     var penSpare = $(".register-form input[name='penSpare']:checked").val();
 
-    var penJumin = '';
-    if(penJumin1.value && penJumin2.value) {
-      if(penJumin1.value.length !== 6){  alert('주민번호 앞자리는 6자리입니다.'); $(penJumin1).focus(); return false; }
-      if(penJumin2.value.length !== 7){  alert('주민번호 뒷자리는 7자리입니다.');  $(penJumin2).focus(); return false; }
-      penJumin = penJumin1.value+penJumin2.value;
-    }
     if(penSpare != '1') {
       if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penJumin2).focus(); return false;}
     }
