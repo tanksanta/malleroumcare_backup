@@ -149,7 +149,9 @@ $partners = get_partner_members();
               <input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
               <?=stripslashes($carts[$i]["it_name"])?>
               <?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]) { ?>
-                (<?=$options[$k]["ct_option"]?>)
+                (<?=$options[$k]["ct_option"]?>) (<?=$carts[$i]["ct_qty"]?>개)
+              <?php } else { ?>
+                (<?=$carts[$i]["ct_qty"]?>개)
               <?php } ?>
             </td>
             <td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">

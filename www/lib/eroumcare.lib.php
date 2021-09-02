@@ -1343,12 +1343,18 @@ function get_recipient_grade_per_year($pen_id) {
 // 사업소별 미수금 구하는 함수
 // fr_date 값이 있을 경우 해당 일 까지의 이월잔액
 // total_price_only: true - 총 구매액, false - 총 미수금
-function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false) {
+// current_month_only: true - 이번달 미수금 내역만 가져오기
+function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false, $current_month_only = false) {
   $where_date = '';
   $where_ledger_date = '';
   if($fr_date) {
     $where_date = " and od_time < '{$fr_date} 00:00:00' ";
     $where_ledger_date = " and lc_created_at < '{$fr_date} 00:00:00' ";
+  }
+
+  if($current_month_only) {
+    $where_date = ' and MONTH(od_time) = MONTH(CURRENT_DATE()) ';
+  	$where_ledger_date = ' and MONTH(pl_created_at) = MONTH(CURRENT_DATE()) ';
   }
 
   # 매출
@@ -1740,7 +1746,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
 // 파트너 거래처원장 - 미수금 합계
 // fr_date 값이 있을 경우 해당 일 까지의 이월잔액
 // total_price_only: true - 총 구매액, false - 총 미수금
-function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false) {
+function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false, $current_month_only = false) {
   global $g5;
 
   $where_date = '';
@@ -1748,6 +1754,11 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
   if($fr_date) {
     $where_date = " and od_time < '{$fr_date} 00:00:00' ";
     $where_ledger_date = " and pl_created_at < '{$fr_date} 00:00:00' ";
+  }
+
+  if($current_month_only) {
+    $where_date = ' and MONTH(od_time) = MONTH(CURRENT_DATE()) ';
+  	$where_ledger_date = ' and MONTH(pl_created_at) = MONTH(CURRENT_DATE()) ';
   }
 
   # 주문내역
