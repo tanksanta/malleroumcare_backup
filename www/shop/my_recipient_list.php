@@ -134,7 +134,22 @@ $(function() {
     <div class="r_btn_area pc">
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
       <a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
-      <a href="./recipientexcel_b.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="B사 엑셀 일괄등록">B사 엑셀 일괄등록</a>
+      <div class="tooltip_btn">
+        <a href="./recipientexcel_b.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="B사 엑셀 일괄등록">
+          B사 엑셀 일괄등록
+          <span class="question">?</span>
+        </a>
+        <div class="btn_tooltip">
+          B사 수급자 목록 일괄등록 방법<br>
+          <br>
+          1. B사 복지용구프로그램 로그인<br>
+          2. (고객관리 > 고객등록 > 조회) 메뉴 선택 <br>
+          3. 엑셀(F8) 클릭 후 엑셀 다운로드<br>
+          4. 다운로드된 엑셀파일<br>
+          <br>
+          <a href="#" class="blog" target="_blank">도움말보기<img src="<?php echo G5_URL; ?>/img/icon_blog_naver.png" /></a>
+        </div>
+      </div>
     </div>
     <div class="r_btn_area mobile">
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
