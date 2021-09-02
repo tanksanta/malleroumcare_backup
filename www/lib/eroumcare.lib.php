@@ -318,7 +318,8 @@ function get_items_by_recipient($penId) {
 }
 
 $recipient_input_regex = array(
-	'penJumin' => '/([1-9][0-9]{5})-?([1-9][0-9]{6})/',
+	// 'penJumin' => '/([1-9][0-9]{5})-?([1-9][0-9]{6})/',
+  'penJumin' => '/([1-9][0-9]{5})/',
 	'penBirth' => '/([1-9][0-9]{3})-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/',
 	'penLtmNum' => '/L?([0-9]{10})/',
 	'penRecGraCd' => '/(0[0-5])/',
