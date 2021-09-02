@@ -37,7 +37,7 @@ if(!$data)
 
 $data["penExpiDtm"] = explode(" ~ ", $data["penExpiDtm"]);
 
-// 수급자 취급가능 제품
+# 수급자 취급가능 제품
 $data2 = [];
 if(!$is_spare) {
 $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST, array(
@@ -47,6 +47,9 @@ $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST, array(
 if($res['data'])
   $data2 = $res["data"];
 }
+
+# 수급자 연결아이디 (이로움 계정 연결 정보)
+$pen_ent = get_pen_ent_by_pen_id($data['penId']);
 
 ?>
 
@@ -158,7 +161,7 @@ if($res['data'])
         </div>
       </div>
 
-      <div class="form-group has-feedback" style="margin-bottom: 0;">
+      <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
           <b>주소</b>
         </label>
@@ -181,6 +184,25 @@ if($res['data'])
             <label class="sound_only">상세주소</label>
             <input type="text" name="penAddrDtl" value="<?=$data["penAddrDtl"]?>" class="form-control input-sm" placeholder="상세주소">
           </div>
+        </div>
+      </div>
+
+      <div class="form-group has-feedback">
+        <label class="col-sm-2 control-label">
+          <b>연결아이디</b>
+        </label>
+
+        <div class="col-sm-4">
+          <?php
+          if($pen_ent['pen_mb_id']) {
+            $pen_mb = get_member($pen_ent['pen_mb_id'], 'mb_name')
+          ?>
+          <span style="margin-right: 10px;"><?="{$pen_mb['mb_name']} ({$pen_ent['pen_mb_id']})"?></span>
+          <button type="button" id="btn_pen_ent_del" class="btn btn-color btn-sm">연결해지</button>
+          <?php } else { ?>
+          <input type="text" id="pen_mb_id" value="" class="form-control input-sm" style="display: inline-block; width: 47%">
+          <button type="button" id="btn_pen_ent_link" class="btn btn-color btn-sm">조회</button>
+          <?php } ?>
         </div>
       </div>
     </div>
@@ -949,6 +971,40 @@ $(function() {
         var data = $xhr.responseJSON;
         alert(data && data.message);
       });
+  });
+
+  $('#btn_pen_ent_link').click(function() {
+    $.post('./ajax.my.recipient.pen.ent.php', {
+      pen_mb_id: $('#pen_mb_id').val(),
+      penId: "<?=$data["penId"]?>"
+    }, 'json')
+    .done(function() {
+      alert('등록이 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function ($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  $('#btn_pen_ent_del').click(function() {
+    if(!confirm('연결을 해지하시겠습니까?'))
+      return false;
+    
+    $.post('./ajax.my.recipient.pen.ent.php', {
+      w: 'd',
+      pen_mb_id: $('#pen_mb_id').val(),
+      penId: "<?=$data["penId"]?>"
+    }, 'json')
+    .done(function() {
+      alert('수급자 아이디 연결이 해지되었습니다.');
+      window.location.reload();
+    })
+    .fail(function ($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
   });
 });
 </script>

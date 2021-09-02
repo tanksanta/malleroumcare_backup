@@ -1880,3 +1880,39 @@ function get_biztalk_result() {
 
   return $result;
 }
+
+// 수급자 연결아이디 가져오기 (penId)
+function get_pen_ent_by_pen_id($penId, $ent_mb_id = null) {
+  global $member;
+
+  if(!$penId)
+    return null;
+
+  if(!$ent_mb_id)
+    $ent_mb_id = $member['mb_id'];
+
+  $result = sql_fetch(" SELECT * FROM recipient_ent WHERE ent_mb_id = '{$ent_mb_id}' AND penId = '{$penId}' ");
+  if($result['pen_mb_id'])
+    return $result;
+
+  return null;
+}
+
+// 수급자 연결아이디 가져오기 (pen_mb_id)
+function get_pen_ent_by_pen_mb_id($pen_mb_id, $ent_mb_id = null) {
+  global $member;
+
+  $pen_mb_id = get_search_string($pen_mb_id);
+
+  if(!$pen_mb_id)
+    return null;
+
+  if(!$ent_mb_id)
+    $ent_mb_id = $member['mb_id'];
+
+  $result = sql_fetch(" SELECT * FROM recipient_ent WHERE ent_mb_id = '{$ent_mb_id}' AND pen_mb_id = '{$pen_mb_id}' ");
+  if($result['pen_mb_id'])
+    return $result;
+
+  return null;
+}
