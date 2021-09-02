@@ -83,7 +83,9 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
               3. 우측 상단 “엑셀” 클릭하여 파일 엑셀 다운로드<br>
               4. 다운로드된 엑셀파일<br>
               <br>
+              <!--
               <a href="#" class="blog" target="_blank">도움말보기<img src="<?php echo G5_URL; ?>/img/icon_blog_naver.png" /></a>
+              -->
             </div>
           </div>
         </div>
