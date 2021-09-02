@@ -70,10 +70,25 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
       <div class="subtit">
         목록
         <div class="r_area r_btn_area">
-          <a href="#" id="btn_nhis" class="btn_nhis">공단 판매/대여 자료 엑셀업로드</a>
+          <div class="tooltip_btn">
+            <a href="#" id="btn_nhis" class="btn_nhis">
+              공단 판매/대여 자료 엑셀업로드
+              <span class="question">?</span>
+            </a>
+            <div class="btn_tooltip" style="width:350px;">
+              과거공단자료 업로드 방법<br>
+              <br>
+              1. 장기요양정보시스템 로그인<br>
+              2. 복지용구계약 > 계약내역 > 복지용구 계약내역 조회<br>
+              3. 우측 상단 “엑셀” 클릭하여 파일 엑셀 다운로드<br>
+              4. 다운로드된 엑셀파일<br>
+              <br>
+              <a href="#" class="blog" target="_blank">도움말보기<img src="<?php echo G5_URL; ?>/img/icon_blog_naver.png" /></a>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="table_box">
+      <div class="table_box" style="clear:both">
         <table>
           <thead>
             <tr>
