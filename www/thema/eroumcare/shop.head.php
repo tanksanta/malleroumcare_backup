@@ -101,6 +101,11 @@ if($member['mb_id']) {
     ");
     if(!$result['cnt']) $show_partner_menu = false;
   }
+
+  // 일반회원(수급자회원)
+  if($member['mb_type'] == 'normal') {
+    $pen_ents = get_pen_ent_by_pen_mb_id($member['mb_id']);
+  }
 }
 
 $banks = explode(PHP_EOL, $default['de_bank_account']); 
@@ -268,14 +273,29 @@ if($is_main && !$is_member) {
             <a href="<?=$at_href['edit'];?>" class="btn_small btn_edit">정보수정</a>
             <div class="user_name"><?=$member['mb_entNm'] ?: $member['mb_name']?></div>
             <div class="grade_info">
-              <?php if($show_partner_menu) { ?>
+              <?php if($member['mb_type'] === 'normal') { ?>
+                <select id="sel_pen_ent">
+                  <option value="">사업소 선택</option>
+                  <?php
+                  $ss_ent_mb_id = get_session('ss_ent_mb_id');
+                  if(count($pen_ents) === 1 && !$ss_ent_mb_id) {
+                    // 연결된 사업소가 1개인데 선택된 사업소가 없다면 강제로 사업소 연결
+                    goto_url(G5_SHOP_URL."/connect_ent.php?ent_mb_id={$pen_ents[0]['ent_mb_id']}");
+                  }
+
+                  foreach($pen_ents as $pen_ent) {
+                    $ent_mb = get_member($pen_ent['ent_mb_id']);
+                    echo "<option value=\"{$ent_mb['mb_id']}\" ".get_selected($ss_ent_mb_id, $ent_mb['mb_id']).">{$ent_mb['mb_name']}</option>";
+                  }
+                  ?>
+                </select>
+              <?php } else if($show_partner_menu) { ?>
               <div class="btn_small">
                 <?php
                 if($member['mb_level'] == 3) echo '사업소';
                 else if($member['mb_level'] == 4) echo '우수사업소';
                 else if($member['mb_level'] >= 9) echo '관리자';
                 if($member['mb_type'] == 'partner') echo '파트너';
-                if($member['mb_type'] == 'normal') echo '일반회원';
                 ?>
               </div>
               <?php } ?>

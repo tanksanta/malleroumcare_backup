@@ -806,6 +806,7 @@ pre{white-space: pre-wrap;}
 .side_menu_area .user_info_area .event_noti { position: relative; display: block; margin: 10px 0; padding: 15px; border-radius: 5px; background: #f08606; font-size: 14px; color: #fff; }
 .side_menu_area .user_info_area .event_noti .fa { position: absolute; font-size: 20px; line-height: 20px; top: 15px; right: 15px; }
 .side_menu_area .user_info_area .event_noti span.value { display: block; position: absolute; top: 15px; right: 35px; }
+#sel_pen_ent { padding: 5px; border: 1px solid #e6e1d7; width: 100%; }
 
 .side_menu_area .notice_area { border-top: 1px solid #e0e0e0; padding: 10px 5px; }
 .side_menu_area .notice_area .title { margin-bottom: 10px; }

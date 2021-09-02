@@ -1908,8 +1908,16 @@ function get_pen_ent_by_pen_mb_id($pen_mb_id, $ent_mb_id = null) {
   if(!$pen_mb_id)
     return null;
 
-  if(!$ent_mb_id)
-    $ent_mb_id = $member['mb_id'];
+  if(!$ent_mb_id) {
+    $result = sql_query(" SELECT * FROM recipient_ent WHERE pen_mb_id = '{$pen_mb_id}' ");
+    $data = [];
+    while($row = sql_fetch_array($result)) {
+      $data[] = $row;
+    }
+    return $data;
+  }
+
+  $ent_mb_id = get_search_string($ent_mb_id);
 
   $result = sql_fetch(" SELECT * FROM recipient_ent WHERE ent_mb_id = '{$ent_mb_id}' AND pen_mb_id = '{$pen_mb_id}' ");
   if($result['pen_mb_id'])

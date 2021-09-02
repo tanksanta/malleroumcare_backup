@@ -315,6 +315,15 @@ if($_GET['co_id']=="possession_manage"){ ?>
       $('.side_menu_area').hide(100);
       $('.mobile_menu_backdrop').hide();
     });
+
+    <?php if($member['mb_type'] === 'normal') { ?>
+    $('#sel_pen_ent').change(function() {
+      var ent_mb_id = $(this).val();
+      if(ent_mb_id) {
+        window.location.href = '/shop/connect_ent.php?ent_mb_id=' + $(this).val();
+      }
+    });
+    <?php } ?>
 		
 		<?php if($member["mb_level"] == "3"||$member["mb_level"] =="4") { ?>
 		$(".modeBtn").click(function(e){

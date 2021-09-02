@@ -33,7 +33,7 @@ if($w == 'd') {
   if($pen_mb['mb_type'] !== 'normal')
     json_response(500, '해당 회원이 없습니다. 아이디를 다시 입력해주세요.');
 
-  $pen_ent = get_pen_ent_by_pen_mb_id($pen_mb_id);
+  $pen_ent = get_pen_ent_by_pen_mb_id($pen_mb_id, $member['mb_id']);
   if($pen_ent)
     json_response(500, '이미 연결되어있는 수급자입니다.');
 
