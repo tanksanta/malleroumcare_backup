@@ -72,15 +72,6 @@ $ca_sub_name_table = array();
 // 비급여 체크
 $isBenefit = substr($ca_id, 0, 2) == '70' ? true : false;
 ?>
-<div id="samhwa-list-banner">
-<?php
-	$bimg_str = "";
-	$bimg = G5_DATA_PATH."/category/{$cate_result['ca_id']}";
-	if (file_exists($bimg)) {
-		// echo '<img src="'.G5_DATA_URL.'/category/'.$cate_result['ca_id'].'">';
-	}
-?>
-</div>
 <div class="sub_section_tit">
 	<a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=<?php echo $one_cate_result['ca_id']; ?>">
 		<?php echo $one_cate_result['ca_name']; ?>
