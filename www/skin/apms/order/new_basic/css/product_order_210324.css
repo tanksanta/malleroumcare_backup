@@ -276,7 +276,7 @@ table {border-collapse: collapse;}
 .icon-tti {position: relative;}
 .icon-tti a {position: absolute;right: 0;top: 0;z-index: 1; padding:5px 4px;border-radius: 5px;font-weight: 300; background: #666;color: #fff;font-size: 12px;}
 
-.eform-tab {border:0 !important;padding:10px !important;margin:0 -10px 10px -10px !important;background-color:#f6f6f6;}
+.eform-tab {border:0 !important;padding:10px !important;margin:-10px -10px 10px -10px !important;background-color:#f6f6f6;}
 .eform-tab-head {font-size:16px;font-weight:500;}
 .eform-tab-desc {color:#999;padding:6px 0;}
 .eform-tab-links {}
