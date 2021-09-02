@@ -275,8 +275,11 @@ if($is_main && !$is_member) {
             <div class="grade_info">
               <?php if($member['mb_type'] === 'normal') { ?>
                 <select id="sel_pen_ent">
-                  <option value="">사업소 선택</option>
                   <?php
+                  if(!$pen_ents) {
+                    echo '<option value="">연결된 사업소가 없습니다.</option>';
+                  }
+
                   $ss_ent_mb_id = get_session('ss_ent_mb_id');
                   if(count($pen_ents) === 1 && !$ss_ent_mb_id) {
                     // 연결된 사업소가 1개인데 선택된 사업소가 없다면 강제로 사업소 연결
