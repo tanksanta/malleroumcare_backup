@@ -281,8 +281,8 @@ if($is_main && !$is_member) {
                   }
 
                   $ss_ent_mb_id = get_session('ss_ent_mb_id');
-                  if(count($pen_ents) === 1 && !$ss_ent_mb_id) {
-                    // 연결된 사업소가 1개인데 선택된 사업소가 없다면 강제로 사업소 연결
+                  if(count($pen_ents) > 0 && !$ss_ent_mb_id) {
+                    // 연결된 사업소가 1개 이상인데 선택된 사업소가 없다면 강제로 첫번째 사업소 연결
                     goto_url(G5_SHOP_URL."/connect_ent.php?ent_mb_id={$pen_ents[0]['ent_mb_id']}");
                   }
 
