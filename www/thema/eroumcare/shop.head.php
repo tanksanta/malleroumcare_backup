@@ -58,8 +58,8 @@ if($member['mb_id']) {
   }
 
   // 미수금
-  if($member['mb_type'] == 'partner') $balance = get_partner_outstanding_balance($member['mb_id']);
-  else $balance = get_outstanding_balance($member['mb_id']);
+  if($member['mb_type'] == 'partner') $balance = get_partner_outstanding_balance($member['mb_id'], null, false, true);
+  else $balance = get_outstanding_balance($member['mb_id'], null, false, true);
   
   // 주문건수
   if($member['mb_type'] == 'partner') {
