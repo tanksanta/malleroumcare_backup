@@ -100,7 +100,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             $('.tooltip_btn .btn_tooltip').fadeOut(1000, function() {
               $('.tooltip_btn .btn_tooltip').css('display', '');
             });
-          }, 3000);
+          }, 4000);
         });
       </script>
       <?php } ?>
