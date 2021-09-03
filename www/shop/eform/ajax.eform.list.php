@@ -1,10 +1,6 @@
 <?php
 include_once("./_common.php");
 
-if(!$member['mb_entId']) {
-  alert('로그인이 필요합니다.');
-}
-
 // 검색처리
 $select = array();
 $where = array();
@@ -13,6 +9,17 @@ $penId = isset($_GET['penId']) ? get_search_string($_GET['penId']) : '';
 $search = isset($_GET['search']) ? get_search_string($_GET['search']) : '';
 $sel_field = isset($_GET['sel_field']) && in_array($_GET['sel_field'], array('penNm', 'it_name')) ? $_GET['sel_field'] : '';
 $sel_order = isset($_GET['sel_order']) && in_array($_GET['sel_order'], array('dc_sign_datetime', 'penNm')) ? $_GET['sel_order'] : '';
+
+if($member['mb_type'] === 'normal') {
+  $penId = get_session('ss_pen_id');
+  $entId = get_session('ss_ent_id');
+  if(!$penId || !$entId)
+    alert('선택된 사업소가 없습니다.');
+} else {
+  $entId = $member['mb_entId'];
+  if(!$entId)
+    alert('로그인이 필요합니다.');
+}
 
 $qstr = '';
 
@@ -56,7 +63,7 @@ $select[] = "E.*";
 $sql_select = "HEX(E.dc_id) as uuid, ".implode(', ', $select);
 
 // where 배열 처리
-$sql_where = " WHERE E.entId = '{$member['mb_entId']}' ";
+$sql_where = " WHERE E.entId = '{$entId}' ";
 if($where) {
   $sql_where .= ' AND '.implode(' AND ', $where);
 }
@@ -89,6 +96,9 @@ $result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where
 <tbody>
 <?php
 $num_rows = sql_num_rows($result);
+if(!$num_rows) {
+  echo '<tr><td colspan="7" class="empty_table">자료가 없습니다.</td></tr>';
+}
 for($i = 0; $row = sql_fetch_array($result); $i++) {
   $index = $from_record + $i + 1;
   if($index_order == 'DESC') {

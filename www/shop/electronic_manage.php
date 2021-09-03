@@ -20,65 +20,11 @@ if ($t_document['t_state'] == '0') {
   }
 }
 
-if(USE_G5_THEME && defined('G5_THEME_PATH')) {
-  require_once(G5_SHOP_PATH.'/yc/orderinquiry.php');
-  return;
-}
-
-define("_ORDERINQUIRY_", true);
-
-// 회원인 경우
-if ($is_member)
-{
-  $sql_common = " from {$g5['g5_shop_order_table']} where mb_id = '{$member['mb_id']}' AND od_del_yn = 'N' ";
-}
-else // 그렇지 않다면 로그인으로 가기
-{
+if (!$is_member)
   goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/electronic_manage.php'));
-}
-
-// Page ID
-$pid = ($pid) ? $pid : 'inquiry';
-$at = apms_page_thema($pid);
-include_once(G5_LIB_PATH.'/apms.thema.lib.php');
-
-$skin_row = array();
-$skin_row = apms_rows('order_'.MOBILE_.'skin, order_'.MOBILE_.'set');
-$skin_name = $skin_row['order_'.MOBILE_.'skin'];
-$order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_name;
-$order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
-
-// 스킨 체크
-list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url);
-
-// 스킨설정
-$wset = array();
-if($skin_row['order_'.MOBILE_.'set']) {
-  $wset = apms_unpack($skin_row['order_'.MOBILE_.'set']);
-}
-
-// 데모
-if($is_demo) {
-  @include ($demo_setup_file);
-}
-
-// 설정값 불러오기
-$is_inquiry_sub = false;
-@include_once($order_skin_path.'/config.skin.php');
 
 $g5['title'] = '전자문서관리';
-
-
 include_once('./_head.php');
-
-$skin_path = $order_skin_path;
-$skin_url = $order_skin_url;
-
-// 셋업
-$setup_href = '';
-if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
-  $setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
-}
 
 // 미작성 내역 일단 숨기기
 $incompleted_eform_count = get_incompleted_eform_count();
@@ -165,6 +111,7 @@ $incompleted_eform_count = 0;
       <?php if($penId) { ?>
       <input type="hidden" name="penId" value="<?=$penId ? $penId : ''?>">
       <?php } else { ?>
+      <?php if($member['mb_type'] !== 'normal') { ?>
       <div class="search_box">
         <select name="sel_field" id="sel_field">
           <option value="penNm"<?php if($sel_field == 'penNm' || $sel_field == 'all') echo ' selected'; ?>>수급자</option>
@@ -175,12 +122,15 @@ $incompleted_eform_count = 0;
           <button id="btn_search" type="submit"></button>
         </div>
       </div>
+      <?php } ?>
       <div class="r_btn_area">
         <select name="sel_order" id="sel_order" style="float: none;">
           <option value="dc_sign_datetime"<?php if(!$sel_order || $sel_order == 'dc_sign_datetime') echo ' selected'; ?>>작성일정렬</option>
           <option value="penNm"<?php if($sel_order == 'penNm') echo ' selected'; ?>>수급자정렬</option>
         </select>
+        <?php if($member['mb_type'] !== 'normal') { ?>
         <a href="<?=G5_SHOP_URL?>/eform/downloadReceipt.php">기본 거래영수증 다운로드</a>
+        <?php } ?>
       </div>
       <?php } ?>
     </form>
