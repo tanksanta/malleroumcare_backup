@@ -1354,7 +1354,7 @@ function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = fa
 
   if($current_month_only) {
     $where_date = ' and MONTH(od_time) = MONTH(CURRENT_DATE()) ';
-  	$where_ledger_date = ' and MONTH(pl_created_at) = MONTH(CURRENT_DATE()) ';
+  	$where_ledger_date = ' and MONTH(lc_created_at) = MONTH(CURRENT_DATE()) ';
   }
 
   # 매출
