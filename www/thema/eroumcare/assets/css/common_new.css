@@ -836,13 +836,12 @@ pre{white-space: pre-wrap;}
 .side_menu_area .btn_info_area a { display: block; margin: 10px 0; }
 .side_menu_area .btn_info_area a img { width: 100%; }
 
-.side_menu_area .account_info_area { margin-bottom: 20px; }
 .side_menu_area .account_info_area a { display: block; padding: 10px 5px; font-size: 14px; color: #666; }
 .side_menu_area .account_info_area a:after { display: table; content: ' '; clear: both; }
 .side_menu_area .account_info_area a img { vertical-align: middle; margin-right: 8px; }
 .side_menu_area .account_info_area a .btn_small { float: right; }
 
-.side_menu_area .call_info_area { padding: 10px 0; }
+.side_menu_area .call_info_area { padding: 10px 0; margin-top: 20px; }
 .side_menu_area .call_info_area .title { font-size: 18px; color: #333; font-weight: 600; padding: 0 5px 10px 5px; margin-bottom: 10px; border-bottom: 1px solid #e0e0e0; }
 .side_menu_area .call_info_area .info { padding: 10px; }
 .side_menu_area .call_info_area .info img { width: 50px; height: 50px; display: inline-block; vertical-align: top; }
