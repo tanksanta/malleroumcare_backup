@@ -226,11 +226,11 @@ add_javascript(G5_POSTCODE_JS, 0);
       </div>
       <?php }  ?>
 
-      <div class="form-group has-feedback">
-        <label class="col-sm-2 control-label" for="reg_mb_fax"><b>팩스번호</b><?php if ($config['cf_reg_fax']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
+      <div id="mb_fax_form" class="form-group has-feedback">
+        <label class="col-sm-2 control-label" for="reg_mb_fax"><b>팩스번호</b><?php if ($member['mb_type'] !== 'normal' && $config['cf_reg_fax']) { ?><strong class="sound_only">필수</strong><?php } ?></label>
         <div class="col-sm-3">
           <?php $mb_fax =explode('-',$member['mb_fax']); ?>
-          <!-- <input type="text" name="mb_fax" value="<?php echo get_text($member['mb_fax']) ?>" id="reg_mb_fax" <?php echo ($config['cf_reg_fax'])?"required":""; ?> class="form-control input-sm" maxlength="13"> -->
+          <!-- <input type="text" name="mb_fax" value="<?php echo get_text($member['mb_fax']) ?>" id="reg_mb_fax" <?php echo ($member['mb_type'] !== 'normal' && $config['cf_reg_fax'])?"required":""; ?> class="form-control input-sm" maxlength="13"> -->
           <input type="text" class="form-control input-sm number_box1" name="mb_fax1" size="6" id="mb_fax1" title="전화번호(1)" maxlength="4"  value="<?=$mb_fax[0]?>" required>
           <input type="text" class="form-control input-sm number_box2" name="mb_fax2" size="6" id="mb_fax2" title="전화번호(2)" maxlength="4"  value="<?=$mb_fax[1]?>" required>
           <input type="text" class="form-control input-sm number_box2" name="mb_fax3" size="6" id="mb_fax3" title="전화번호(3)" maxlength="4"  value="<?=$mb_fax[2]?>" required>
@@ -493,6 +493,7 @@ $(function() {
   <?php if ($w && $member['mb_type'] === 'normal') { ?>
     $('#panel-business').hide();
     $('.giup').hide();
+    $('#mb_fax_form').hide();
   <?php } ?>
   <?php if (!$w) { ?>
   $('input[name="mb_type"]').click(function() {
@@ -500,10 +501,12 @@ $(function() {
       $('#mb_name_label').text('이름');
       $('#panel-business').hide();
       $('.giup').hide();
+      $('#mb_fax_form').hide();
     } else {
       $('#mb_name_label').text('기업명');
       $('#panel-business').show();
       $('.giup').show();
+      $('#mb_fax_form').show();
     }
   })
   $('#mb_type_default').click();
@@ -852,23 +855,6 @@ function fregisterform_submit() {
     $("#mb_tel3").focus();
     return false;
   }
-  //mb_fax
-  var mb_fax = $("#mb_fax1").val() + "-" + $("#mb_fax2").val() + "-" + $("#mb_fax3").val();
-  if(!$("#mb_fax1").val()){
-    alert('팩스를 입력해주세요.');
-    $("#mb_fax1").focus();
-    return false;
-  }
-  if(!$("#mb_fax2").val()){
-    alert('팩스를 입력해주세요.');
-    $("#mb_fax2").focus();
-    return false;
-  }
-  if(!$("#mb_fax3").val()){
-    alert('팩스를 입력해주세요.');
-    $("#mb_fax3").focus();
-    return false;
-  }
   var msg = reg_mb_email_check();
   if (msg) {
     alert(msg);
@@ -882,6 +868,23 @@ function fregisterform_submit() {
   var mb_type = $('input[name=mb_type]:checked').val();
   <?php } ?>
   if (mb_type === 'default' || mb_type === 'partner') {
+    //mb_fax
+    var mb_fax = $("#mb_fax1").val() + "-" + $("#mb_fax2").val() + "-" + $("#mb_fax3").val();
+    if(!$("#mb_fax1").val()){
+      alert('팩스를 입력해주세요.');
+      $("#mb_fax1").focus();
+      return false;
+    }
+    if(!$("#mb_fax2").val()){
+      alert('팩스를 입력해주세요.');
+      $("#mb_fax2").focus();
+      return false;
+    }
+    if(!$("#mb_fax3").val()){
+      alert('팩스를 입력해주세요.');
+      $("#mb_fax3").focus();
+      return false;
+    }
     if (!f.mb_giup_tax_email.value) {
         alert('세금계산서 수신용 이메일을 입력하세요.');
         f.mb_giup_tax_email.focus();
