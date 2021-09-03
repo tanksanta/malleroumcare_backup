@@ -69,7 +69,8 @@ function latest($skin_dir='', $bo_table, $rows=10, $subject_len=40, $cache_time=
         $bo_subject = get_text($board['bo_subject']);
 
         $tmp_write_table = $g5['write_prefix'] . $bo_table; // 게시판 테이블 전체이름
-        $sql = " select * from {$tmp_write_table} where wr_is_comment = 0 order by wr_num limit 0, {$rows} ";
+        // $sql = " select * from {$tmp_write_table} where wr_is_comment = 0 order by wr_num limit 0, {$rows} ";
+        $sql = " select * from {$tmp_write_table} where wr_is_comment = 0 order by wr_num ";
         $result = sql_query($sql);
         for ($i=0; $row = sql_fetch_array($result); $i++) {
             try {
@@ -83,6 +84,19 @@ function latest($skin_dir='', $bo_table, $rows=10, $subject_len=40, $cache_time=
             }
             $list[$i] = get_list($row, $board, $latest_skin_url, $subject_len);
         }
+
+        //공지이면 맨 앞으로
+        $temp_list = $list;
+        for ($m=0; $m < count($temp_list); $m++) {
+            $row = $temp_list[$m];
+            if ($row['is_notice']) {
+                unset($list[$m]);
+                array_unshift($list, $row);
+            }
+        }
+
+        //노출 갯수
+        $list = array_slice($list, 0, $rows);
 
         if($cache_fwrite) {
             $handle = fopen($cache_file, 'w');
