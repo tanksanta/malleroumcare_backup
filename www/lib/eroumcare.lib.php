@@ -1504,7 +1504,7 @@ function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = fa
     return $total_price - $total_deposit;
 }
 
-function get_tutorials() {
+function get_tutorials($all = false) {
 	global $g5, $member;
 	$completed = false;
 	
@@ -1516,7 +1516,22 @@ function get_tutorials() {
 		'step' => array(),
 	);
 
-	$sql = "SELECT * FROM tutorial WHERE mb_id = '{$member['mb_id']}' ORDER BY created_at ASC";
+  $t_type_sql = "";
+
+  if (!$all) {
+    $t_type_sql = " AND t_type IN (
+      'recipient_add',
+      'recipient_order',
+      'document',
+      'claim'
+    ) ";
+  }
+
+	$sql = "SELECT * FROM tutorial
+  WHERE
+    mb_id = '{$member['mb_id']}'
+    {$t_type_sql}
+  ORDER BY created_at ASC";
 	$result = sql_query($sql);
 
 	$completed_count = 0;

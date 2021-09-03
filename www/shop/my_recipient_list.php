@@ -156,6 +156,22 @@ $(function() {
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
     </div>
   </form>
+  
+  <?php
+  if (!get_tutorial('recipient_list_tooltip')) { 
+    set_tutorial('recipient_list_tooltip', 1);
+  ?>
+  <script>
+    $(document).ready(function(){
+      $('.tooltip_btn .btn_tooltip').fadeIn(1000);
+      setTimeout(function() {
+        $('.tooltip_btn .btn_tooltip').fadeOut(1000, function() {
+          $('.tooltip_btn .btn_tooltip').css('display', '');
+        });
+      }, 4000);
+    });
+  </script>
+  <?php } ?>
 
   <div class="list_box pc">
     <div class="table_box">  

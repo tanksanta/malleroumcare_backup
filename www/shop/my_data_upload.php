@@ -84,11 +84,27 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
               4. 다운로드된 엑셀파일<br>
               <br>
               <a href="https://blog.naver.com/poongki_/222493460005" class="blog" target="_blank">도움말보기<img src="<?php echo G5_URL; ?>/img/icon_blog_naver.png" /></a>
-              
             </div>
           </div>
         </div>
       </div>
+          
+      <?php
+      if (!get_tutorial('satin_list_tooltip')) { 
+        set_tutorial('satin_list_tooltip', 1);
+      ?>
+      <script>
+        $(document).ready(function(){
+          $('.tooltip_btn .btn_tooltip').fadeIn(1000);
+          setTimeout(function() {
+            $('.tooltip_btn .btn_tooltip').fadeOut(1000, function() {
+              $('.tooltip_btn .btn_tooltip').css('display', '');
+            });
+          }, 4000);
+        });
+      </script>
+      <?php } ?>
+
       <div class="table_box" style="clear:both">
         <table>
           <thead>

@@ -28,6 +28,7 @@ $sql = " select a.it_id,
 				b.pt_msg2,
                 b.pt_msg3,
                 a.ct_status,
+                a.ct_ex_date,
                 b.it_model
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 		  where a.od_id = '$od_id'
@@ -98,6 +99,9 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     if ( !$od['od_send_cost'] ) {
         $od['od_send_cost'] += $sum['ct_send_cost'];
     }
+
+    //출고일 저장
+    $od['ct_ex_date'] = $row['ct_ex_date'];
 
     $carts[] = $row;
 }
@@ -263,8 +267,10 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 		
 		<table width="100%" cellpadding="0" cellspacing="0" border="0">
 		<tr>
-            <td colspan="2"><span style="font-size:16px;letter-spacing:3px;"><u><input type="text" name="time" value="<?php echo $est['est_time'] ? $est['est_time'] : date('Y년 m월 d일', time()); ?>" style="font-size:16px;letter-spacing:3px; width:230px; border:0;text-decoration:inherit;"></u></span></td>
-		</tr>
+<!--             <td colspan="2"><span style="font-size:16px;letter-spacing:3px;"><u><input type="text" name="time" value="<?php echo $est['est_time'] ? $est['est_time'] : date('Y년 m월 d일', time()); ?>" style="font-size:16px;letter-spacing:3px; width:230px; border:0;text-decoration:inherit;"></u></span></td>
+ -->		
+            <td colspan="2"><span style="font-size:16px;letter-spacing:3px;"><u><input type="text" name="time" value="<?php echo $od['ct_ex_date'] ? date('Y년 m월 d일', strtotime($od['ct_ex_date'])) : '출고준비중'; ?>" style="font-size:16px;letter-spacing:3px; width:230px; border:0;text-decoration:inherit;"></u></span></td>
+        </tr>
 		<tr><td height="30"></td></tr>
 		<tr>
             <td width="230"><u><input type="text" name="name" value="<?php echo $est['est_name'] ? $est['est_name'] : $od['od_name']; ?>" style="border:0px; font-weight:bold; font-size:14px; width:230px;"></u></td>
