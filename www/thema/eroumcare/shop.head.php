@@ -274,24 +274,24 @@ if($is_main && !$is_member) {
             <div class="user_name"><?=$member['mb_entNm'] ?: $member['mb_name']?></div>
             <div class="grade_info">
               <?php if($member['mb_type'] === 'normal') { ?>
-                <select id="sel_pen_ent">
-                  <?php
-                  if(!$pen_ents) {
-                    echo '<option value="">연결된 사업소가 없습니다.</option>';
-                  }
+              <select id="sel_pen_ent">
+                <?php
+                if(!$pen_ents) {
+                  echo '<option value="">연결된 사업소가 없습니다.</option>';
+                }
 
-                  $ss_ent_mb_id = get_session('ss_ent_mb_id');
-                  if(count($pen_ents) > 0 && !$ss_ent_mb_id) {
-                    // 연결된 사업소가 1개 이상인데 선택된 사업소가 없다면 강제로 첫번째 사업소 연결
-                    goto_url(G5_SHOP_URL."/connect_ent.php?ent_mb_id={$pen_ents[0]['ent_mb_id']}");
-                  }
+                $ss_ent_mb_id = get_session('ss_ent_mb_id');
+                if(count($pen_ents) > 0 && !$ss_ent_mb_id) {
+                  // 연결된 사업소가 1개 이상인데 선택된 사업소가 없다면 강제로 첫번째 사업소 연결
+                  goto_url(G5_SHOP_URL."/connect_ent.php?ent_mb_id={$pen_ents[0]['ent_mb_id']}");
+                }
 
-                  foreach($pen_ents as $pen_ent) {
-                    $ent_mb = get_member($pen_ent['ent_mb_id']);
-                    echo "<option value=\"{$ent_mb['mb_id']}\" ".get_selected($ss_ent_mb_id, $ent_mb['mb_id']).">{$ent_mb['mb_name']}</option>";
-                  }
-                  ?>
-                </select>
+                foreach($pen_ents as $pen_ent) {
+                  $ent_mb = get_member($pen_ent['ent_mb_id']);
+                  echo "<option value=\"{$ent_mb['mb_id']}\" ".get_selected($ss_ent_mb_id, $ent_mb['mb_id']).">{$ent_mb['mb_name']}</option>";
+                }
+                ?>
+              </select>
               <?php } else if($show_partner_menu) { ?>
               <div class="btn_small">
                 <?php
@@ -308,45 +308,52 @@ if($is_main && !$is_member) {
               </div>
               <?php } ?>
             </div>
-            <?php if ($member['mb_type'] !== 'normal') { ?>
-              <div class="point_info flex-justify">
-                <?php if($member['mb_point'] > 0) { ?>
-                <div class="point">
-                  포인트 : <?=number_format($member['mb_point']);?>원
-                  <a href="<?=$at_href['point']?>" target="_blank" class="btn_small win_point"><i class="fa fa-list" aria-hidden="true"></i></a>
-                </div>
-                <?php } ?>
-                <?php if($cp_count > 0) { ?>
-                <div class="coupon">
-                  쿠폰
-                  <a href="<?=$at_href['coupon']?>" target="_blank" class="btn_small win_point"><?=$cp_count?></a>
-                </div>
-                <?php } ?>
-              </div>
-              <?php if($manager = get_member($member['mb_manager'])) { ?>
-              <div class="manager_info">
-                <!-- 이로움 관리 담당자 : <?="{$manager['mb_name']} ({$manager['mb_hp']})"?> -->
-                시스템문의 : 02-830-1301 (월~금 09:00~18:00)
-              </div>
-              <?php } ?>
-              <?php if($show_partner_menu) { ?>
-              <div class="balance_info flex-justify">
-                <div class="balance_title">신용거래 (<?php echo date('n');?>월)</div>
-                <div class="balance"><?=number_format($balance)?>원</div>
-              </div>
-              <div class="order_info flex-justify">
-                <div class="order">이번달 <?=number_format($order_count)?>건</div>
-                <a href="<?php if($member['mb_type'] == 'partner') echo '/shop/partner_ledger_list.php'; else echo '/shop/my_ledger_list.php'; ?>" class="btn_small">거래처 원장</a>
-              </div>
-              <?php } ?>
-              <?php if($event_count) { ?>
-              <a class="event_noti" href="/bbs/board.php?bo_table=event">
-                진행중인 이벤트
-                <span class="value"><?=$event_count?>건</span>
-                <i class="fa fa-angle-right" aria-hidden="true"></i>
-              </a>
-              <?php } ?>
+            <?php if($member['mb_type'] === 'normal' && $ent_mb = get_member(get_session('ss_ent_mb_id'))) { // 연결된 사업소가 있으면 ?>
+            <div class="manager_info" style="margin-bottom: 0;">
+              사업소 담당자 : <?="{$ent_mb['mb_giup_manager_name']} ({$ent_mb['mb_hp']})"?>
+            </div>
             <?php } ?>
+            <?php if ($member['mb_type'] !== 'normal') { ?>
+            <div class="point_info flex-justify">
+              <?php if($member['mb_point'] > 0) { ?>
+              <div class="point">
+                포인트 : <?=number_format($member['mb_point']);?>원
+                <a href="<?=$at_href['point']?>" target="_blank" class="btn_small win_point"><i class="fa fa-list" aria-hidden="true"></i></a>
+              </div>
+              <?php } ?>
+              <?php if($cp_count > 0) { ?>
+              <div class="coupon">
+                쿠폰
+                <a href="<?=$at_href['coupon']?>" target="_blank" class="btn_small win_point"><?=$cp_count?></a>
+              </div>
+              <?php } ?>
+            </div>
+            <?php if($manager = get_member($member['mb_manager'])) { ?>
+            <div class="manager_info">
+              <!-- 이로움 관리 담당자 : <?="{$manager['mb_name']} ({$manager['mb_hp']})"?> -->
+              시스템문의 : 02-830-1301 (월~금 09:00~18:00)
+            </div>
+            <?php } ?>
+            <?php if($show_partner_menu) { ?>
+            <div class="balance_info flex-justify">
+              <div class="balance_title">신용거래 (<?php echo date('n');?>월)</div>
+              <div class="balance"><?=number_format($balance)?>원</div>
+            </div>
+            <div class="order_info flex-justify">
+              <div class="order">이번달 <?=number_format($order_count)?>건</div>
+              <a href="<?php if($member['mb_type'] == 'partner') echo '/shop/partner_ledger_list.php'; else echo '/shop/my_ledger_list.php'; ?>" class="btn_small">거래처 원장</a>
+            </div>
+            <?php } ?>
+            <?php if($event_count) { ?>
+            <a class="event_noti" href="/bbs/board.php?bo_table=event">
+              진행중인 이벤트
+              <span class="value"><?=$event_count?>건</span>
+              <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </a>
+            <?php
+              }
+            }
+            ?>
           </div>
 
           <?php if ($member['mb_type'] === 'normal') { ?>
