@@ -396,104 +396,118 @@ if($is_main && !$is_member) {
           </div>
           <?php
             }
+          } else if($member['mb_type'] === 'normal') {
+            if(get_session('ss_pen_id')) { // 연결된 사업소가 있는 경우
+          ?>
+          <div class="side_nav_area">
+            <div class="div_title">수급자</div>
+            <ul>
+              <li>
+                <a href="/shop/recipient_cart.php">
+                  공급제품 보관함
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <?php
+            }
           } else {
           ?>
-            <?php if ($member['mb_type'] !== 'normal') { ?>
-            <div class="side_nav_area">
-              <div class="div_title">주문관리</div>
-              <ul>
-                <li>
-                  <a href="/shop/list.php?ca_id=10">
-                    전체상품 보기
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                  </a>
-                </li>
-                <li>
-                  <a href="/shop/orderinquiry.php">
-                    주문/배송 내역
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                  </a>
-                </li>
-                <li>
-                  <a href="/shop/cart.php">
-                    장바구니
-                    <?php if (get_boxcart_datas_count() > 0) { ?>
-                    <span class="value">상품 (<?php echo get_boxcart_datas_count(); ?>)</span>
-                    <?php } ?>
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                  </a>
-                </li>
-              </ul>
-              <div class="div_title">운영관리</div>
-              <ul>
-                <li>
-                  <a href="/shop/claim_manage.php">
-                    청구내역
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                  </a>
-                </li>
-                <li>
-                  <a href="/shop/electronic_manage.php">
-                    전자문서관리
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                  </a>
-                </li>
-                <li>
-                  <a href="/shop/my_recipient_list.php">
-                    수급자관리
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                  </a>
-                  <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
-                  <a class="noti_pen" href="/shop/my_recipient_noti.php">
-                    수급자 알림이 있습니다.
-                    <span class="value"><?=$noti_count?>건</span>
-                  </a>
+          <div class="side_nav_area">
+            <div class="div_title">주문관리</div>
+            <ul>
+              <li>
+                <a href="/shop/list.php?ca_id=10">
+                  전체상품 보기
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/orderinquiry.php">
+                  주문/배송 내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/cart.php">
+                  장바구니
+                  <?php if (get_boxcart_datas_count() > 0) { ?>
+                  <span class="value">상품 (<?php echo get_boxcart_datas_count(); ?>)</span>
                   <?php } ?>
-                  <?php if($pen_links = get_recipient_links($member['mb_id'])) { ?>
-                  <a class="noti_pen link" href="/shop/my_recipient_list.php">
-                    ‘<?=$pen_links[0]['rl_pen_name']?>’ <?php $pen_links_count = count($pen_links); if($pen_links_count > 1) { echo '외 '.($pen_links_count - 1).'명 '; } ?>수급자 추천이 있습니다.
-                  </a>
-                  <?php } ?>
-                </li>
-                <li>
-                  <a href="/shop/sales_Inventory.php">
-                    보유재고관리
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                  </a>
-                </li>
-              </ul>
-              <div class="div_title">기타/편의</div>
-              <ul class="etc">
-                <?php if ($member['mb_type'] !== 'normal') { ?>
-                <li>
-                  <a href="/shop/my_data_upload.php">
-                    과거공단자료 업로드
-                  </a>
-                </li>
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+            <div class="div_title">운영관리</div>
+            <ul>
+              <li>
+                <a href="/shop/claim_manage.php">
+                  청구내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/electronic_manage.php">
+                  전자문서관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/my_recipient_list.php">
+                  수급자관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+                <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
+                <a class="noti_pen" href="/shop/my_recipient_noti.php">
+                  수급자 알림이 있습니다.
+                  <span class="value"><?=$noti_count?>건</span>
+                </a>
                 <?php } ?>
-                <li>
-                  <a href="/bbs/qalist.php">
-                    고객센터(1:1문의)
-                  </a>
-                </li>
-                <li>
-                  <a href="/bbs/board.php?bo_table=faq">
-                    자주하는 질문
-                  </a>
-                </li>
-                <li>
-                  <a href="/bbs/board.php?bo_table=proposal">
-                    제안하기
-                  </a>
-                </li>
-                <li style="display: none;">
-                  <a href="/bbs/board.php?bo_table=lab">
-                    이로움 연구소
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <?php } ?>
+                <?php if($pen_links = get_recipient_links($member['mb_id'])) { ?>
+                <a class="noti_pen link" href="/shop/my_recipient_list.php">
+                  ‘<?=$pen_links[0]['rl_pen_name']?>’ <?php $pen_links_count = count($pen_links); if($pen_links_count > 1) { echo '외 '.($pen_links_count - 1).'명 '; } ?>수급자 추천이 있습니다.
+                </a>
+                <?php } ?>
+              </li>
+              <li>
+                <a href="/shop/sales_Inventory.php">
+                  보유재고관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+            <div class="div_title">기타/편의</div>
+            <ul class="etc">
+              <?php if ($member['mb_type'] !== 'normal') { ?>
+              <li>
+                <a href="/shop/my_data_upload.php">
+                  과거공단자료 업로드
+                </a>
+              </li>
+              <?php } ?>
+              <li>
+                <a href="/bbs/qalist.php">
+                  고객센터(1:1문의)
+                </a>
+              </li>
+              <li>
+                <a href="/bbs/board.php?bo_table=faq">
+                  자주하는 질문
+                </a>
+              </li>
+              <li>
+                <a href="/bbs/board.php?bo_table=proposal">
+                  제안하기
+                </a>
+              </li>
+              <li style="display: none;">
+                <a href="/bbs/board.php?bo_table=lab">
+                  이로움 연구소
+                </a>
+              </li>
+            </ul>
+          </div>
           <?php } ?>
 
           <?php if ($member['mb_type'] !== 'normal') { ?>
