@@ -1,5 +1,5 @@
 <?php
-echo "work!";
+echo "work!!";
 // phpinfo();
 
 // $pass= "admin";
