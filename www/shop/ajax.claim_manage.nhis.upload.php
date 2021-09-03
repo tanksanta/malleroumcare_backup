@@ -4,6 +4,9 @@ include_once('./_common.php');
 if(!$member['mb_id'])
   json_response(400, '먼저 로그인하세요.');
 
+if($member['mb_type'] !== 'default')
+  json_response(400, '사업소 회원만 이용할 수 있습니다.');
+
 $selected_month = $_POST['selected_month'];
 
 if(!$selected_month)

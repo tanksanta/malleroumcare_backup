@@ -4,6 +4,9 @@ include_once('./_common.php');
 if (!$is_member || !$member['mb_id'])
   json_response(400, '먼저 로그인 하세요.');
 
+if($member['mb_type'] !== 'default')
+  json_response(400, '사업소 회원만 이용할 수 있습니다.');
+
 $json_params = file_get_contents("php://input");
 $post = [];
 if (strlen($json_params) > 0 && is_valid_json($json_params))

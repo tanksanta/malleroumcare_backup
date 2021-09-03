@@ -1,26 +1,8 @@
 <?php
 include_once('./_common.php');
 
-if(USE_G5_THEME && defined('G5_THEME_PATH')) {
-  require_once(G5_SHOP_PATH.'/yc/orderinquiry.php');
-  return;
-}
-
-define("_ORDERINQUIRY_", true);
-
 // 회원이 아닌 경우
 if (!$is_member) goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/claim_manage.php'));
-
-// Page ID
-$pid = ($pid) ? $pid : 'inquiry';
-$at = apms_page_thema($pid);
-include_once(G5_LIB_PATH.'/apms.thema.lib.php');
-
-$skin_row = array();
-$skin_row = apms_rows('order_'.MOBILE_.'skin, order_'.MOBILE_.'set');
-$skin_name = $skin_row['order_'.MOBILE_.'skin'];
-$order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_name;
-$order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
 $open_tutorial_popup = false;
 $t_claim = get_tutorial('claim');
@@ -29,43 +11,22 @@ if ($t_claim['t_state'] == '0') {
   $open_tutorial_popup = true;
 }
 
-// 스킨 체크
-list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url);
-
-// 스킨설정
-$wset = array();
-if($skin_row['order_'.MOBILE_.'set']) {
-  $wset = apms_unpack($skin_row['order_'.MOBILE_.'set']);
-}
-
-// 데모
-if($is_demo) {
-  @include ($demo_setup_file);
-}
-
-// 설정값 불러오기
-$is_inquiry_sub = false;
-@include_once($order_skin_path.'/config.skin.php');
-
 $g5['title'] = '청구관리';
-
-
 include_once('./_head.php');
-
-$skin_path = $order_skin_path;
-$skin_url = $order_skin_url;
-
-// 셋업
-$setup_href = '';
-if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
-  $setup_href = './skin.setup.php?skin=order&amp;name='.urlencode($skin_name).'&amp;ts='.urlencode(THEMA);
-}
 
 if(!$selected_month) $selected_month = date('Y-m-01');
 
-$entId = $member['mb_entId'];
-if(!$entId) {
-  alert('사업소 회원만 접근 가능합니다.');
+if($member['mb_type'] === 'normal') {
+  $entId = get_session('ss_ent_id');
+  $mb_id = get_session('ss_ent_mb_id');
+  $penId = get_session('ss_pen_id');
+  if(!$entId || !$mb_id || !$penId)
+    alert('연결된 사업소가 없습니다.');
+} else {
+  $entId = $member['mb_entId'];
+  $mb_id = $member['mb_id'];
+  if(!$entId || !$mb_id)
+    alert('사업소 회원만 접근 가능합니다.');
 }
 
 $where = "";
@@ -143,7 +104,7 @@ $eform_query = sql_query("
   ORDER BY `penNm` ASC, start_date asc
 ");
 
-$cl_query = sql_query("SELECT * FROM `claim_management` WHERE selected_month = '$selected_month' AND mb_id = '{$member['mb_id']}'");
+$cl_query = sql_query("SELECT * FROM `claim_management` WHERE selected_month = '$selected_month' AND mb_id = '{$mb_id}'");
 $cl = [];
 while($row = sql_fetch_array($cl_query)) {
   $cl[] = $row;
@@ -158,7 +119,7 @@ $nhis_query = sql_query("
       FROM
         `claim_nhis_upload`
       WHERE
-        mb_id = '{$member['mb_id']}' AND
+        mb_id = '{$mb_id}' AND
         selected_month = '{$selected_month}'
       ORDER BY created_at DESC
       LIMIT 1
@@ -432,7 +393,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     <?php if($upload_date) { ?>
     <span>마지막 업데이트 : <?=date('Y-m-d', strtotime($upload_date))?></span>
     <?php } ?>
+    <?php if($member['mb_type'] !== 'normal') { ?>
     <a href="#" id="btn_nhis" class="btn_nhis" data-remodal-target="modal">건보자료 업로드</a>
+    <?php } ?>
   </div>
   <div class="list_box">
     <div class="table_box">
@@ -464,7 +427,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 echo "<span class=\"val\">" . "{$row['penNm']}({$row['penLtmNum']} / {$row['penRecGraNm']} / {$row['penTypeNm']})" . "</span>";
               }
 
-              if(in_array('pen', $row['error'])) {
+              if(in_array('pen', $row['error']) && $member['mb_type'] !== 'normal') {
               ?>
               <br>
               <span class="text_red">
@@ -484,7 +447,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 echo "<span class=\"val\">{$row['start_date']}</span>";
               }
               
-              if(in_array('start_date', $row['error'])) {
+              if(in_array('start_date', $row['error']) && $member['mb_type'] !== 'normal') {
               ?>
               <br>
               <span class="text_red">
@@ -504,7 +467,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 echo "<span class=\"val\">" . number_format($row['total_price']).'원' . "</span>";
               }
 
-              if(in_array('total_price', $row['error'])) {
+              if(in_array('total_price', $row['error']) && $member['mb_type'] !== 'normal') {
               ?>
               <br>
               <span class="text_red">
@@ -524,7 +487,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 echo "<span class=\"val\">" . number_format($row['total_price_pen']).'원' . "</span>";
               }
 
-              if(in_array('total_price_pen', $row['error'])) {
+              if(in_array('total_price_pen', $row['error']) && $member['mb_type'] !== 'normal') {
               ?>
               <br>
               <span class="text_red">
@@ -544,7 +507,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 echo "<span class=\"val\">" . number_format($row['total_price_ent']).'원' . "</span>";
               }
               
-              if(in_array('total_price_ent', $row['error'])) {
+              if(in_array('total_price_ent', $row['error']) && $member['mb_type'] !== 'normal') {
               ?>
               <br>
               <span class="text_red">

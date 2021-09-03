@@ -410,6 +410,12 @@ if($is_main && !$is_member) {
             <div class="div_title">수급자</div>
             <ul>
               <li>
+                <a href="/shop/claim_manage.php">
+                  청구내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
                 <a href="/shop/recipient_cart.php">
                   공급제품 보관함
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
