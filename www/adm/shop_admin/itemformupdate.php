@@ -519,6 +519,7 @@ $sql_common = "
   it_sc_qty_partner           = '$it_sc_qty_partner',
   it_buy_min_qty      = '$it_buy_min_qty',
   it_buy_max_qty      = '$it_buy_max_qty',
+  it_buy_inc_qty      = '$it_buy_inc_qty',
   it_head_html        = '$it_head_html',
   it_tail_html        = '$it_tail_html',
   it_mobile_head_html = '$it_mobile_head_html',

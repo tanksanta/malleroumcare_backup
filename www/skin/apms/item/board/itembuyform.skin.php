@@ -21,6 +21,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 				<input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
 				<input type="hidden" name="sw_direct">
 				<input type="hidden" name="url">
+        <input type="hidden" id="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
 
 				<table class="div-table table item-table">
 				<tbody>
@@ -133,6 +134,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 							if(!$option_item) {
 								if(!$it['it_buy_min_qty'])
 									$it['it_buy_min_qty'] = 1;
+                if($it['it_buy_inc_qty'] > $it['it_buy_min_qty'])
+                  $it['it_buy_min_qty'] = $it['it_buy_inc_qty'];
 							?>
 								<ul id="it_opt_added" class="list-group">
 									<li class="it_opt_list list-group-item">
@@ -157,6 +160,11 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 														<button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus-circle fa-lg"></i><span class="sound_only">감소</span></button>
 													</div>
 												</div>
+                        <?php
+                        if($it['it_buy_inc_qty'] > 1) {
+                          echo '<span class="inc_desc">'.$it['it_buy_inc_qty'].'개씩 증가</span>';
+                        }
+                        ?>
 											</div>
 										</div>
 										<?php if($it['pt_msg1']) { ?>

@@ -22,7 +22,7 @@ $btn2 = (isset($wset['btn2']) && $wset['btn2']) ? $wset['btn2'] : 'color';
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="'.$item_skin_url.'/style.css" media="screen">', 0);
 
-if($is_orderable) echo '<script src="'.$item_skin_url.'/shop.js?v=20210621"></script>'.PHP_EOL;
+if($is_orderable) echo '<script src="'.$item_skin_url.'/shop.js?v=20210904"></script>'.PHP_EOL;
 
 // 이미지처리
 $j=0;
@@ -596,6 +596,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
         <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
         <input type="hidden" name="sw_direct">
         <input type="hidden" name="url">
+        <input type="hidden" id="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
 
 
 					<table class="table pc">
@@ -832,6 +833,8 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
             if(!$option_item) {
               if(!$it['it_buy_min_qty'])
                 $it['it_buy_min_qty'] = 1;
+              if($it['it_buy_inc_qty'] > $it['it_buy_min_qty'])
+                $it['it_buy_min_qty'] = $it['it_buy_inc_qty'];
             ?>
               <ul id="it_opt_added" class="list-group">
                 <li class="it_opt_list list-group-item <?php echo !$option_item && !$supply_item ? 'alone ' : ''; ?>">
@@ -858,6 +861,11 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
                           <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus-circle fa-lg"></i><span class="sound_only">증가</span></button>
                         </div>
                       </div>
+                      <?php
+                      if($it['it_buy_inc_qty'] > 1) {
+                        echo '<span class="inc_desc">'.$it['it_buy_inc_qty'].'개씩 증가</span>';
+                      }
+                      ?>
                     </div>
                   </div>
                   <?php if($it['pt_msg1']) { ?>

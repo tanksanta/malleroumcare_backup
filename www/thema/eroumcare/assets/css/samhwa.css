@@ -2027,11 +2027,19 @@
     width:100%;
     padding:0;
 }
+#item_option .list-group-item .row .col-sm-5 .inc_desc {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 6px;
+  font-size: 13px;
+  color: #636363;
+}
 #item_option .list-group-item .row .col-sm-5 .input-group {
     border: 1px solid #dce0e3;
-    display: block;
+    display: inline-block;
     width: 115px;
     background-color: #f0f2f4;
+    vertical-align: middle;
 }
 #item_option .list-group-item .row .col-sm-5 .input-group input {
     border:0;

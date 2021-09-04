@@ -175,10 +175,14 @@ $(function () {
       min_qty = 1;
     var $el_qty = $(this).closest('li').find('input[name^=ct_qty]');
     var stock = parseInt($(this).closest('li').find('input.io_stock').val());
+    var it_buy_inc_qty = parseInt($('#it_buy_inc_qty').val());
+    if (it_buy_inc_qty < 1) it_buy_inc_qty = 1;
+    if (it_buy_inc_qty > min_qty) min_qty = it_buy_inc_qty;
 
     switch (mode) {
       case '증가':
-        this_qty = parseInt($el_qty.val().replace(/[^0-9]/, '')) + 1;
+        this_qty =
+          parseInt($el_qty.val().replace(/[^0-9]/, '')) + it_buy_inc_qty;
         if (this_qty > stock) {
           alert('재고수량 보다 많은 수량을 구매할 수 없습니다.');
           this_qty = stock;
@@ -196,7 +200,8 @@ $(function () {
         break;
 
       case '감소':
-        this_qty = parseInt($el_qty.val().replace(/[^0-9]/, '')) - 1;
+        this_qty =
+          parseInt($el_qty.val().replace(/[^0-9]/, '')) - it_buy_inc_qty;
         if (this_qty < min_qty) {
           this_qty = min_qty;
           alert(
@@ -364,6 +369,8 @@ function add_sel_option(type, id, option, price, stock) {
   var it_msg2 = $("input[name='it_msg2[]']").val();
   var it_msg3 = $("input[name='it_msg3[]']").val();
   var product_price = Number($('#it_price').val());
+  var it_buy_inc_qty = Number($('#it_buy_inc_qty').val());
+  if (it_buy_inc_qty < 1) it_buy_inc_qty = 1;
 
   var opt = '';
   var li_class = 'it_opt_list';
@@ -418,11 +425,17 @@ function add_sel_option(type, id, option, price, stock) {
   opt +=
     '<input type="text" name="ct_qty[' +
     item_code +
-    '][]" value="1" class="form-control input-sm" size="5">';
+    '][]" value="' +
+    it_buy_inc_qty +
+    '" class="form-control input-sm" size="5">';
   opt += '<div class="input-group-btn">';
   opt +=
     '<button type="button" class="it_qty_plus btn btn-sm btn-lightgray"><i class="fa fa-plus-circle fa-lg"></i><span class="sound_only">증가</span></button>';
-  opt += '</div></div></div></div>';
+  opt += '</div></div>';
+  if (it_buy_inc_qty > 1) {
+    opt += '<span class="inc_desc">' + it_buy_inc_qty + '개씩 증가</span>';
+  }
+  opt += '</div></div>';
   if (!type) {
     if (it_msg1) {
       opt +=

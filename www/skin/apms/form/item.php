@@ -671,6 +671,13 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
       </td>
     </tr>
     <tr>
+      <th scope="row"><label for="it_buy_max_qty">수량증가단위</label></th>
+      <td>
+        <?php echo help("상품 구매시 증가하는 단위를 설정합니다."); ?>
+        <input type="text" name="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>" id="it_buy_inc_qty" class="frm_input" size="8"> 개
+      </td>
+    </tr>
+    <tr>
       <th scope="row"><label for="it_notax">상품과세 유형</label></th>
       <td>
         <?php echo help("상품의 과세유형(과세, 비과세)을 설정합니다."); ?>
