@@ -369,7 +369,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
             ?>
             </h2>
             <div class="right">
-                <?php if(!$od['od_penId'] && $mb['mb_id']) { ?>
+                <?php if($mb['mb_id'] && !$options[$k]['ct_stock_qty']) { ?>
                 <input type="button" value="상품추가" class="btn shbtn" id="add_item">
                 <?php } ?>
                 <!--<input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
@@ -851,26 +851,36 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                      </td>
 
                                     <td class="btncol">
-                    <?php if($od['od_writer']!="openmarket"){ ?>
-                      <?php //if ( $k == 0 ) { ?>
+                                        <?php if($od['od_writer']!="openmarket"){ ?>
                                             <div class="more">
                                                 <?php
                                                 $temp_ct_step = get_step($options[$k]['ct_status']);
-                                                if($temp_ct_step['cart_editable'] || $temp_ct_step['cart_deletable']){ 
+                                                if(($temp_ct_step['cart_editable'] || $temp_ct_step['cart_deletable']) && !$options[$k]['ct_stock_qty']){ 
                                                 ?>
                                                     <img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_more_b.png" class="item_list_more" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" />
                                                     <ul class="openlayer">
-                                                        <?php if ($temp_ct_step['cart_editable'] && !$od['od_penId']) { ?>
-                                                        <li class="edit_item" data-od-id="<?php echo $od_id; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>"  data-memo="<?php echo $prodMemo; ?>">수정</li>
+                                                        <?php if ($temp_ct_step['cart_editable']) { ?>
+                                                        <li
+                                                            class="edit_item"
+                                                            data-od-id="<?php echo $od_id; ?>"
+                                                            data-it-id="<?php echo $options[$k]['it_id']; ?>"
+                                                            data-uid="<?php echo $options[$k]['ct_uid']; ?>"
+                                                            data-memo="<?php echo $prodMemo; ?>"
+                                                        >수정</li>
                                                         <?php } ?>
-                                                        <?php if ($temp_ct_step['cart_deletable'] && !$od['od_penId']) { ?>
-                                                        <li class="delete_item" data-od-id="<?php echo $od_id; ?>" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" data-it-id="<?php echo $options[$k]['it_id']; ?>" data-uid="<?php echo $options[$k]['ct_uid']; ?>">삭제</li>
+                                                        <?php if ($temp_ct_step['cart_deletable']) { ?>
+                                                        <li
+                                                            class="delete_item"
+                                                            data-od-id="<?php echo $od_id; ?>"
+                                                            data-ct-id="<?php echo $options[$k]['ct_id']; ?>"
+                                                            data-it-id="<?php echo $options[$k]['it_id']; ?>"
+                                                            data-uid="<?php echo $options[$k]['ct_uid']; ?>"
+                                                        >삭제</li>
                                                         <?php } ?>
                                                     </ul>
                                                 <?php } ?>
                                             </div>
-                      <?php } ?>
-                    <?php //} ?>
+                                        <?php } ?>
                                     </td>
 
                                 </tr>
@@ -1067,6 +1077,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             </td>
                             <td class="item_memo"></td>
                             <td class="item_memo"></td>
+                            <td class="btncol"></td>
                             <td class="btncol"></td>
                             <td class="btncol"></td>
                         </tr>
@@ -3192,6 +3203,22 @@ $(document).ready(function() {
         var it_id = $(this).data('it-id');
         var uid = $(this).data('uid');
         var ct_id = $(this).data('ct-id');
+
+        var remove = true;
+        <?php
+            if ($od['od_penId']) {
+                $ed = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '{$od['od_id']}' AND penId = '{$od['od_penId']}'");
+                if ($ed['dc_status'] !== null) {
+                    echo "remove = confirm('계약서가 작성되어있어서 변경 시 기존에 생성된 계약서가 삭제됩니다. 삭제하시겠습니까?');";
+                }
+            }
+        ?>
+
+        
+        if (!remove) {
+            return false;
+        }
+
         $.ajax({
             method: "POST",
             url: "./ajax.order.item.delete.php",

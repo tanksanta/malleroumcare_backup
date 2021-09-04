@@ -104,6 +104,10 @@ if ( $w ) {
     $option['ct_send_cost'] = $row2['ct_send_cost'];
 
     for($i=0; $row=sql_fetch_array($result); $i++) {
+
+        $ordLendStartDtm = $row['ordLendStartDtm'];
+        $ordLendEndDtm = $row['ordLendEndDtm'];
+
         if(!$row['io_id'])
             $it_stock_qty = get_it_stock_qty($row['it_id']);
         else
@@ -143,7 +147,6 @@ if ( $w ) {
         $custom_item_price = $row['ct_price'];
     }
 }
-
 $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
 ?>
 <html>
@@ -156,6 +159,7 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
 <!--<script src="<?php echo G5_URL;?>/skin/apms/order/basic/shop.js"></script>-->
 <script src="<?php echo G5_JS_URL;?>/common.js"></script>
 <script src="<?php echo G5_ADMIN_URL;?>/shop_admin/js/shop.js?v=<?php echo time(); ?>"></script>
+<?php include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php'); ?>
 </head>
 <style>
     .option-barcode {
@@ -209,6 +213,7 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
                         <input type="hidden" id="it_price_dealer2" value="<?php echo $it['it_price_dealer2'] ? $it['it_price_dealer2'] : $it['it_price']; ?>">
                         <!--<input type="hidden" name="ct_send_cost" value="<?php echo $option['ct_send_cost']; ?>">-->
                         <input type="hidden" name="sw_direct">
+                        <input type="hidden" id="remove_eform_document" name="remove_eform_document" value="0" />
                         <?php if($option_1) { ?>
                             <p class="option_title"><b>선택옵션</b></p>
                             <table class="opt-tbl">
@@ -359,6 +364,21 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
                                     <th>총 금액</th>
                                     <td id="it_tot_pay_price">0원</td>
                                 </tr>
+                                <?php if (substr( $it['ca_id'], 0, 2) === '20') { ?>
+                                <tr>
+                                    <th>대여기간</th>
+									<td class="list-day">
+										<input type="text" class="ordLendDtmInput ordLendStartDtm dateonly" style="min-width: 44%;width:40%;" name="ordLendStartDtm" data-default="<?=date("Y-m-d")?>" value="<?=date("Y-m-d")?>" value="<?php echo $ordLendStartDtm; ?>">
+                                        ~
+                                        <input type="text" class="ordLendDtmInput ordLendEndDtm dateonly" style="min-width: 44%;width:40%;" name="ordLendEndDtm" data-default="<?=date("Y-m-d", strtotime("+ 364 days"))?>" readonly value="<?=date("Y-m-d", strtotime("+ 364 days"))?>">
+										<ul>
+											<li><a href="#" class="dateBtn" data-month="6">6개월</a></li>
+											<li><a href="#" class="dateBtn" data-month="12">1년</a></li>
+											<li><a href="#" class="dateBtn" data-month="24">2년</a></li>
+										</ul>
+                                    </td>
+                                </tr>
+                                <?php } ?>
                                 <tr class="head-line">
                                     <th>첨부파일</th>
                                     <td>
@@ -416,6 +436,10 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
                         <p style="padding-top:20px;text-align:left;margin-left:25%;padding-bottom:0px;">
                             3.&nbsp;&nbsp;해당 주문에 대한 관리자 확인을 위한<br>
                             &emsp; 메모를 남길 수 있습니다.
+                        </p>    
+                        <p style="padding-top:20px;text-align:left;margin-left:25%;padding-bottom:0px;">
+                            4.&nbsp;&nbsp;수급자 주문인경우<br/>
+                            &emsp; 상품 수정시 바코드내용이 사라집니다.
                         </p>    
                 </div>
                 <input type="hidden" value="" name="cs_type" id="cs_type" />
@@ -1402,6 +1426,64 @@ $(function() {
 
     });
 
+    $.datepicker.setDefaults({
+        dateFormat : 'yy-mm-dd',
+        prevText: '이전달',
+        nextText: '다음달',
+        monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+        monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+        dayNames: ["일", "월", "화", "수", "목", "금", "토"],
+        dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
+        dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
+        showMonthAfterYear: true,
+        changeMonth: true,
+        changeYear: true
+    });
+
+    $(".dateonly").datepicker({
+        onSelect : function(dateText){
+            if($(this).hasClass("ordLendStartDtm")){
+                var dateList = $(this).val().split("-");
+                var date = new Date(dateList[0], dateList[1], dateList[2]);
+
+                date.setDate(date.getDate() + 364);
+
+                var year = date.getFullYear();
+                var month = date.getMonth();
+                var day = date.getDate();
+
+                month = (month < 10) ? "0" + month : month;
+                day = (day < 10) ? "0" + day : day;
+
+                $(this).closest(".list-day").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
+            }
+        }
+    });
+
+    $(".dateBtn").click(function(e){
+        e.preventDefault();
+
+        if(!$(this).closest(".list-day").find(".ordLendStartDtm").val()){
+            $(this).closest(".list-day").find(".ordLendStartDtm").val($(this).closest(".list-day").find(".ordLendStartDtm").attr("data-default"));
+        }
+
+        var month = Number($(this).attr("data-month"));
+        var dateList = $(this).closest(".list-day").find(".ordLendStartDtm").val().split("-");
+        var date = new Date(dateList[0], dateList[1], dateList[2]);
+
+        date.setMonth(date.getMonth() + month);
+        date.setDate(date.getDate() - 1);
+
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+
+        month = (month < 10) ? "0" + month : month;
+        day = (day < 10) ? "0" + day : day;
+
+        $(this).closest(".list-day").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
+    });
+
     <?php if ( $ct_price_type ) { ?>
     var ct_price_type = '<?php echo $ct_price_type; ?>';
     if ( ct_price_type === '1' ) {
@@ -1465,6 +1547,21 @@ function formcheck(f) {
     if(max_qty > 0 && sum_qty > max_qty) {
         alert("선택옵션 개수 총합 "+number_format(String(max_qty))+"개 이하로 주문해 주십시오.");
         return false;
+    }
+
+    var remove = false;
+
+    <?php
+        if ($od['od_penId']) {
+            $ed = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '{$od['od_id']}' AND penId = '{$od['od_penId']}'");
+            if ($ed['dc_status'] !== null) {
+                echo "remove = confirm('계약서가 작성되어있어서 변경 시 기존에 생성된 계약서가 삭제됩니다. 삭제하시겠습니까?');";
+            }
+        }
+    ?>
+
+    if (remove) {
+      $('#remove_eform_document').val('1');
     }
 
     return true;

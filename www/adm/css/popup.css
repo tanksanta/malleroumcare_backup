@@ -1262,3 +1262,28 @@ display: none;
 .stockBarList .barcode_input {
     display: none;
 }
+
+.list-day ul {
+    font-size: 0;
+    padding:0;
+    margin-top:5px;
+}
+.list-day ul li {
+    margin-right: 6px;
+    display: inline-block;
+    width: 50px;
+    line-height:22px;
+    border: 1px solid #ddd;
+    background: #eee;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+}
+.list-day ul li a {
+    color: black;
+    display:block;
+    width:100%;
+}
+.list-day ul li:last-child {margin-right: 0;}
+.list-day ul li:hover {background: #666;}
+.list-day ul li:hover a {color: #fff;}

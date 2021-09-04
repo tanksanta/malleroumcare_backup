@@ -33,6 +33,12 @@ $insert_ids = array();
 $ct_discount = (int)$ct_discount ?: 0;
 
 $it_ids = $_POST['it_id'];
+
+// 계약서 삭제
+if ($od['od_penId'] && $remove_eform_document) {
+  sql_query("DELETE FROM `eform_document` WHERE od_id = '{$od['od_id']}' AND penId = '{$od['od_penId']}'");
+}
+
 //관리자가 등록한 코드
 $ct_admin_new=[];
 for($i=0; $i<count($it_ids); $i++) {
@@ -119,8 +125,55 @@ for($i=0; $i<count($it_ids); $i++) {
 
   $comma = '';
   $sql = " INSERT INTO {$g5['g5_shop_cart_table']}
-                  ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3, ct_history, ct_discount, ct_price_type, ct_uid, io_thezone, ct_admin_new, ct_delivery_cnt, ct_delivery_price, ct_delivery_company, ct_is_direct_delivery, ct_direct_delivery_partner, ct_direct_delivery_price, ct_direct_delivery_date, prodMemo )
-              VALUES ";
+    ( od_id,
+      mb_id,
+      it_id,
+      it_name,
+      it_sc_type,
+      it_sc_method,
+      it_sc_price,
+      it_sc_minimum,
+      it_sc_qty,
+      ct_status,
+      ct_price,
+      ct_point,
+      ct_point_use,
+      ct_stock_use,
+      ct_option,
+      ct_qty,
+      ct_notax,
+      io_id,
+      io_type,
+      io_price,
+      ct_time,
+      ct_ip,
+      ct_send_cost,
+      ct_direct,
+      ct_select,
+      ct_select_time,
+      pt_it,
+      pt_msg1,
+      pt_msg2,
+      pt_msg3,
+      ct_history,
+      ct_discount,
+      ct_price_type,
+      ct_uid,
+      io_thezone,
+      ct_admin_new,
+      ct_delivery_cnt,
+      ct_delivery_price,
+      ct_delivery_company,
+      ct_is_direct_delivery,
+      ct_direct_delivery_partner,
+      ct_direct_delivery_price,
+      ct_direct_delivery_date,
+      prodMemo,
+      ordLendStrDtm,
+      ordLendEndDtm,
+      ct_pen_id
+    )
+  VALUES ";
 
   $ct_select = 1;
   $ct_select_time = G5_TIME_YMDHIS;
@@ -228,7 +281,71 @@ for($i=0; $i<count($it_ids); $i++) {
     $ct_admin_new_v = GenerateString(15);
     array_push($ct_admin_new,$ct_admin_new_v);
 
-    $insert_sql = $sql . "( '$od_id', '{$od['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '작성', '{$it_price}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3', '', '$add_ct_discount', '$ct_price_type', '$uid', '$io_thezone','$ct_admin_new_v', '$ct_delivery_cnt', '$ct_delivery_price', '$ct_delivery_company', '{$it['it_is_direct_delivery']}', '{$it['it_direct_delivery_partner']}', '{$it['it_direct_delivery_price']}', NOW(), '$g5_shop_order_cart_memo' )";
+    // 대여기간
+    $sqlOrdLendStrDtm = 'NULL';
+    $sqlOrdLendEndDtm = 'NULL';
+    if ($ordLendStartDtm && $ordLendEndDtm) {
+      $sqlOrdLendStrDtm = "'{$ordLendStartDtm}'";
+      $sqlOrdLendEndDtm = "'{$ordLendEndDtm}'";
+    }
+
+    // 수급자 여부
+    $sql_ct_pen_id = 'NULL';
+    if ($od['od_penId']) {
+      $sql_ct_pen_id = "'{$od['od_penId']}'";
+    }
+
+
+    $insert_sql = $sql . "
+    (
+      '$od_id',
+      '{$od['mb_id']}',
+      '{$it['it_id']}',
+      '".addslashes($it['it_name'])."',
+      '{$it['it_sc_type']}',
+      '{$it['it_sc_method']}',
+      '{$it['it_sc_price']}',
+      '{$it['it_sc_minimum']}',
+      '{$it['it_sc_qty']}',
+      '작성',
+      '{$it_price}',
+      '$point',
+      '0',
+      '0',
+      '$io_value',
+      '$ct_qty',
+      '{$it['it_notax']}',
+      '$io_id',
+      '$io_type',
+      '$io_price',
+      '".G5_TIME_YMDHIS."',
+      '$remote_addr',
+      '$ct_send_cost',
+      '$sw_direct',
+      '$ct_select',
+      '$ct_select_time',
+      '{$it['pt_it']}',
+      '$pt_msg1',
+      '$pt_msg2',
+      '$pt_msg3',
+      '',
+      '$add_ct_discount',
+      '$ct_price_type',
+      '$uid',
+      '$io_thezone',
+      '$ct_admin_new_v',
+      '$ct_delivery_cnt',
+      '$ct_delivery_price',
+      '$ct_delivery_company',
+      '{$it['it_is_direct_delivery']}',
+      '{$it['it_direct_delivery_partner']}',
+      '{$it['it_direct_delivery_price']}',
+      NOW(),
+      '$g5_shop_order_cart_memo',
+      $sqlOrdLendStrDtm,
+      $sqlOrdLendEndDtm,
+      $sql_ct_pen_id
+    )";
     sql_query($insert_sql);
 
     $insert_ids[] = sql_insert_id();
@@ -278,8 +395,11 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
     //     }
     //     $where_ct_admin_new .= $or." `ct_admin_new` = '".$value."' ";
     // }
-
-    $where_ct_admin_new = 'ct_id IN (' . implode(',', $insert_ids) . ')';
+    if (!$od['od_penId']) {
+      $where_ct_admin_new = 'ct_id IN (' . implode(',', $insert_ids) . ')';
+    } else {
+      $where_ct_admin_new = '1=1';
+    }
     $sql = " select MT.it_id,
                     MT.ct_qty,
                     MT.it_name,
@@ -292,7 +412,9 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
                     ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn,
                     ( SELECT ProdPayCode FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodPayCode,
                     ( SELECT it_delivery_cnt FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_cnt,
-                    ( SELECT it_delivery_price FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_price
+                    ( SELECT it_delivery_price FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_price,
+                    MT.ordLendStrDtm,
+                    MT.ordLendEndDtm
             from {$g5['g5_shop_cart_table']} MT
             where od_id = '$od_id'
                 and ct_select = '1'  and ($where_ct_admin_new)";
@@ -328,7 +450,6 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
         $prodOption = implode('|', $prodOptions);
       }
 
-
       # 상품목록
       for ($ii = 0; $ii < $row["ct_qty"]; $ii++) {
         $thisProductData = [];
@@ -340,6 +461,16 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
         $thisProductData["prodManuDate"] = date("Y-m-d");
         $thisProductData["stoMemo"] = $g5_shop_order_cart_memo;
         $thisProductData["ct_id"] = $row["ct_id"];
+
+        $it_name = $row['it_name'];
+        if($row['it_name'] !== $row['ct_option']){
+          $it_name = $it_name."(".$row['ct_option'].")";
+        }
+        $thisProductData["itemNm"] = $it_name;
+        if ($row['ordLendStrDtm'] && $row['ordLendEndDtm']) {
+          $thisProductData["ordLendStrDtm"] = date("Y-m-d", strtotime($row['ordLendStrDtm']));
+          $thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($row['ordLendEndDtm']));
+        }
         array_push($productList, $thisProductData);
         $od_prodBarNum_total++;
       }
@@ -360,24 +491,84 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
       $prodsData["prodBarNum"] = $value["prodBarNum"];
       $prodsData["stoMemo"] = $value["stoMemo"];
       $prodsData["ct_id"] = $value["ct_id"];
+      $prodsData["itemNm"] = $value["itemNm"];
+      // var_dump(strlen($value['ordLendStrDtm']));
+      if (strlen($value['ordLendStrDtm']) === 10) {
+        $prodsData["ordLendStrDtm"] = $value['ordLendStrDtm'];
+        $prodsData["ordLendEndDtm"] = $value['ordLendEndDtm'];
+      }
       array_push($prodsSendData, $prodsData);
+    }
+    if ($od['od_penId']) {
+        $sendData["penId"] = $od['od_penId'];
     }
     $sendData["prods"] = $prodsSendData;
 
-    $oCurl = curl_init();
-    curl_setopt($oCurl, CURLOPT_PORT, 9901);
-    curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/insert");
-    curl_setopt($oCurl, CURLOPT_POST, 1);
-    curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-    curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-    $res = curl_exec($oCurl);
-    $res = json_decode($res, true);
-    curl_close($oCurl);
+    if ($od['od_penId']) {
 
-    // print_r2($res);
+      $ent_pen = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+        'usrId' => $od_member['mb_id'],
+        'entId' => $od_member['mb_entId'],
+        'penId' => $od['od_penId'],
+      ));
+      $ent_pen = $ent_pen['data'][0];
 
+      // print_r2($od);
+
+      // 기존 주문 삭제
+      $delete = api_post_call(EROUMCARE_API_ORDER_DELETE, array(
+        'usrId' => $od_member['mb_id'],
+        'penOrdId' => $od["ordId"],
+      ));
+      
+      // 새 주문 생성
+      $sendData["penOrdId"] = $od["ordId"];
+			$sendData["uuid"] = $od["uuid"];
+      $sendData["penId"] = $od["od_penId"];
+      $sendData["delGbnCd"] = "";
+      $sendData["ordWayNum"] = "";
+      $sendData["delSerCd"] = "";
+      $sendData["ordNm"] = $od["od_b_name"];
+      $sendData["ordCont"] = ($od["od_b_hp"]) ? $od["od_b_hp"] : $od["od_b_tel"];
+      $sendData["ordMeno"] = $od["od_memo"];
+      $sendData["ordZip"] = $od["od_b_zip1"] . $od["od_b_zip2"];
+      $sendData["ordAddr"] = $od["od_b_addr1"];
+      $sendData["ordAddrDtl"] = $od["od_b_addr2"];
+      $sendData["finPayment"] = strval(calc_order_price($od['od_id']));
+      $sendData["payMehCd"] = "0";
+      $sendData["regUsrId"] = $member["mb_id"];
+      $sendData["regUsrIp"] = $_SERVER["REMOTE_ADDR"];
+      $sendData["prods"] = $prodsSendData;
+      $sendData["documentId"] = ($ent_pen["penTypeCd"] == "04") ? "THK101_THK102_THK001_THK002_THK003" : "THK001_THK002_THK003";
+      $sendData["eformType"] = ($ent_pen["penTypeCd"] == "04") ? "21" : "00";
+      $sendData["conAcco1"] = $od_member["entConAcc01"];
+      $sendData["conAcco2"] = $od_member["entConAcc02"];
+      $sendData["returnUrl"] = "NULL";
+
+      $res = api_post_call(EROUMCARE_API_ORDER_INSERT, $sendData);
+
+      // 새로운 시스템 주문 아이디 등록
+      sql_query("
+        UPDATE g5_shop_order SET
+          ordId = '{$res["data"]["penOrdId"]}',
+          uuid = '{$res["data"]["uuid"]}'
+        WHERE od_id = '{$od_id}'
+      ");
+    } else {
+      $oCurl = curl_init();
+      curl_setopt($oCurl, CURLOPT_PORT, 9901);
+      curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/insert");
+      curl_setopt($oCurl, CURLOPT_POST, 1);
+      curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
+      curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+      $res = curl_exec($oCurl);
+      $res = json_decode($res, true);
+      curl_close($oCurl);
+    }
+
+            
     //결과 값
     if ($res["errorYN"] == "N") {
       //성공시 ct_id에 업로드
@@ -421,8 +612,6 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
       WHERE od_id = '{$od_id}'
     ");
 // }
-
-
 
 //들어있는 바코드수 구하기
 $sto_imsi="";

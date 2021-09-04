@@ -1951,3 +1951,100 @@ function get_pen_ent_by_pen_mb_id($pen_mb_id, $ent_mb_id = null) {
 
   return null;
 }
+
+function calc_order_price($od_id)
+{
+  global $g5;
+
+  $sql = "SELECT * FROM {$g5['g5_shop_cart_table']} where od_id = {$od_id}";
+  $od = sql_fetch($sql);
+
+  $sql = " select C.it_id,
+              C.ct_qty,
+              C.it_name,
+              C.io_id,
+              C.io_type,
+              C.ct_option,
+              C.ct_qty,
+              C.ct_id,
+              I.it_time,
+              I.prodSupYn,
+              I.ProdPayCode as prodPayCode,
+              I.it_delivery_cnt,
+              I.it_delivery_price,
+              I.it_option_subject
+        from {$g5['g5_shop_cart_table']} C
+        left join {$g5['g5_shop_item_table']} I on C.it_id = I.it_id
+        where od_id = '$od_id'
+        and ct_select = '1' ";
+    
+  $result = sql_query($sql);
+  $carts = [];
+  $it_ids = [];
+  for ($i=0; $row=sql_fetch_array($result); $i++) {
+    $carts[] = $row;
+
+    if (!in_array($row['it_id'], $it_ids)) {
+      $it_ids[] = $row['it_id'];
+    }
+  }
+
+  $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * (ct_qty - ct_stock_qty)))) as od_price,
+    COUNT(distinct it_id) as cart_count,
+    SUM(ct_discount) as od_discount,
+    ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
+    from {$g5['g5_shop_cart_table']} MT where od_id = '$od_id' and ct_select = '1' ";
+  $row = sql_fetch($sql);
+
+  $od_member = get_member($od['mb_id']);
+
+  $tot_ct_price = $row['od_price'];
+  $tot_ct_discount = ($row["od_discount"]) ? $row["od_discount"] : 0;
+  $cart_count = $row['cart_count'];
+  $tot_od_price = $tot_ct_price;
+
+  $send_cost = get_sendcost($od_id, 1, 1);
+
+  $zipcode = $od['od_b_zip1'] . $od['od_b_zip2'];
+  $sql = " select sc_id, sc_price from {$g5['g5_shop_sendcost_table']} where sc_zip1 <= '$zipcode' and sc_zip2 >= '$zipcode' ";
+  $tmp = sql_fetch($sql);
+  if (!$tmp['sc_id']) {
+    $send_cost2 = 0;
+  } else {
+
+    $total_item_sc_price = 0;
+
+    $it_sc_add_sendcost = 'it_sc_add_sendcost';
+    if ($od_member['mb_type'] == 'partner') {
+      $it_sc_add_sendcost = 'it_sc_add_sendcost_partner';
+    }
+
+    if($it_ids) {
+      foreach($it_ids as $it_id) {
+        $sql = "SELECT * FROM {$g5['g5_shop_item_table']} WHERE it_id = {$it_id}";
+        $result = sql_fetch($sql);
+
+        if ($result[$it_sc_add_sendcost] > -1) { // 추가배송비가 설정되어 있는 경우
+          $total_item_sc_price += $result[$it_sc_add_sendcost];
+        } else { // 없는경우 기본 관리자에 있는걸 가져온다.
+          $total_item_sc_price += $tmp['sc_price'];
+        }
+      }
+    }
+
+    if ($total_item_sc_price) {
+      $send_cost2 = $total_item_sc_price;
+    }else{
+      $send_cost2 = (int)$tmp['sc_price'];
+    }
+  }
+
+  if ( $od['od_delivery_type'] != 'delivery1' ) {
+    $send_cost = 0;
+    $send_cost2 = 0;
+  }
+
+  $order_price = $tot_od_price + $send_cost + $send_cost2 - $od['od_send_coupon'] - $od['od_receipt_point'];
+
+  return $order_price;
+}
