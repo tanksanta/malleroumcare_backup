@@ -809,8 +809,9 @@ pre{white-space: pre-wrap;}
 #sel_pen_ent { padding: 5px; border: 1px solid #e6e1d7; width: 100%; }
 
 .side_menu_area .notice_area { border-top: 1px solid #e0e0e0; padding: 10px 5px; }
-.side_menu_area .notice_area .title { margin-bottom: 10px; }
+.side_menu_area .notice_area .title { margin-bottom: 10px; position:relative;}
 .side_menu_area .notice_area .title a { font-size: 14px; color: #333; font-weight: 600; }
+.side_menu_area .notice_area .title .btn_more{position:absolute;top:0;text-decoration: underline;font-weight:100;right:5px;font-size:12px;color:#666;}
 .side_menu_area .notice_area li { font-size: 14px; color: #333; }
 
 .side_menu_area .catalog_area { padding: 10px 5px; }
