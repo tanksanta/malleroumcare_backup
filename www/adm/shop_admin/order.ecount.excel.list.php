@@ -454,7 +454,7 @@
       $mb['mb_thezone'],
       '',
       $od_sales_manager['mb_name'],
-      '',
+      $it['ct_warehouse'], // 출하창고
       '',
       '',
       '',
@@ -492,7 +492,7 @@
           $mb['mb_thezone'],
           '',
           $od_sales_manager['mb_name'],
-          '',
+          $it['ct_warehouse'], // 출하창고
           '',
           '',
           '',

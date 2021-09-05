@@ -34,6 +34,7 @@ foreach($ct_id_list as $ct_id) {
     $ct_direct_delivery_partner = '';
     $ct_direct_delivery_price = 0;
   }
+  $ct_warehouse = get_search_string($_POST["ct_warehouse_{$ct_id}"]);
   
   
   if($ct_delivery_num||$ct_delivery_combine){
@@ -64,6 +65,7 @@ foreach($ct_id_list as $ct_id) {
         ct_delivery_cnt = '{$ct_delivery_cnt}',
         ct_delivery_price = '{$ct_delivery_price}',
         ct_edi_result = 0,
+        ct_warehouse = '{$ct_warehouse}',
         ct_is_direct_delivery = '{$ct_is_direct_delivery}',
         ct_direct_delivery_partner = '{$ct_direct_delivery_partner}',
         ct_direct_delivery_price = '{$ct_direct_delivery_price}'
@@ -82,11 +84,16 @@ foreach($ct_id_list as $ct_id) {
     $combine_where2 = "ct_combine_ct_id = '',";
   }
 
+  $d_content = '';
+  if($ct_warehouse) {
+    $d_content = "출하창고: {$ct_warehouse}";
+  }
+
   $sql = " insert into `g5_delivery_log`
   set od_id = '{$od_id}',
       ct_id = '{$ct_id}',
       mb_id = '{$mb_id}',
-      d_content = '',
+      d_content = '{$d_content}',
       $combine_where2
       ct_delivery_company = '{$ct_delivery_company}',
       ct_delivery_num = '{$ct_delivery_num}',

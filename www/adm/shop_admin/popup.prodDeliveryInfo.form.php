@@ -119,10 +119,11 @@ $partners = get_partner_members();
         <col width="">
         <col width="10%">
         <col width="130px">
-        <col width="15%">
+        <col width="100px">
         <col width="20%">
         <col width="70px">
         <col width="70px">
+        <col width="100px">
       </colgroup>
       
       <thead>
@@ -132,8 +133,9 @@ $partners = get_partner_members();
           <th>배송비</th>
           <th>분류</th>
           <th>송장번호</th>
-          <th>합포여부</th>
+          <th>합포</th>
           <th>위탁</th>
+          <th>출하창고</th>
         </tr>
       </thead>
       
@@ -219,13 +221,20 @@ $partners = get_partner_members();
                 위탁
               </label>
             </td>
+            <td style="text-align:center;">
+              <select name="ct_warehouse_<?=$options[$k]["ct_id"]?>" class="frm_input ct_warehouse">
+                <option value="청라창고" <?=get_selected($options[$k]["ct_warehouse"], '청라창고')?>>청라창고</option>
+                <option value="A창고" <?=get_selected($options[$k]["ct_warehouse"], 'A창고')?>>A창고</option>
+                <option value="B창고" <?=get_selected($options[$k]["ct_warehouse"], 'B창고')?>>B창고</option>
+              </select>
+            </td>
           </tr>
           <tr
             id="tr_direct_delivery_<?=$options[$k]["ct_id"]?>"
             class="tr_direct_delivery <?=($options[$k]['ct_is_direct_delivery'] ? 'active' : '')?>"
             style="background-color:#e3e3e3;"
           >
-            <td colspan="7">
+            <td colspan="8">
               위탁
               <select
                 name="ct_is_direct_delivery_sub_<?=$options[$k]["ct_id"]?>"
