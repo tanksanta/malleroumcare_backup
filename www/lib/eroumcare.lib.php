@@ -406,47 +406,61 @@ function normalize_recipient_input($data) {
 }
 
 // 수급자 등록시 필드 무결성 체크
-function valid_recipient_input($data, $is_spare = false, $b_company = false) {
+// $is_spare = true: 예비수급자, false: 수급자
+// $valid_exist_input_only = true: 값이 존재할때만 무결성 체크함(값이 비어있으면 무결성 체크 통과), false: 값이 비어있으면 무결성 체크결과 오류
+function valid_recipient_input($data, $is_spare = false, $valid_exist_input_only = false) {
+  global $exist_input_only;
+  $exist_input_only = $valid_exist_input_only;
 
 	if(!$data['penNm']) {
 		return '수급자명을 입력해주세요.';
 	}
 
+  // $valid_exist_input_only = true 인 경우 값이 비어있으면 무결성 체크 통과시킴
+  function _recipient_preg_match($data, $key) {
+    global $exist_input_only;
+    
+    if($exist_input_only && !$data[$key])
+      return true;
+    
+    return recipient_preg_match($data, $key);
+  }
+
   if(!$is_spare) {
-    if(!recipient_preg_match($data, 'penBirth')) {
+    if(!_recipient_preg_match($data, 'penBirth')) {
       return '생년월일을 확인해주세요.';
     }
-    if(!recipient_preg_match($data, 'penGender')) {
+    if(!_recipient_preg_match($data, 'penGender')) {
       return '성별을 확인해주세요.';
     }
-    if(!recipient_preg_match($data, 'penLtmNum')) {
+    if(!recipient_preg_match($data, 'penLtmNum')) { // 장기요양번호는 필수값 ($valid_exist_input_only 여부 상관없이)
       return '장기요양번호를 확인해주세요.';
     }
-    if(!recipient_preg_match($data, 'penRecGraCd')) {
+    if(!_recipient_preg_match($data, 'penRecGraCd')) {
       return '장기요양등급을 확인해주세요.';
     }
-    if(!$b_company && !recipient_preg_match($data, 'penTypeCd')) {
+    if(!_recipient_preg_match($data, 'penTypeCd')) {
       return '본인부담율을 확인해주세요.';
     }
     # 기초수급자는 주민등록번호 입력 필수
-    if(!$b_company && $data['penTypeCd'] == '04') {
-      if(!recipient_preg_match($data, 'penJumin')) {
+    if($data['penTypeCd'] == '04') {
+      if(!_recipient_preg_match($data, 'penJumin')) {
         return '주민등록번호를 확인해주세요.';
       }
     }
   }
 	if($data['penExpiStDtm']) {
-		if(!recipient_preg_match($data, 'penExpiStDtm')) {
+		if(!_recipient_preg_match($data, 'penExpiStDtm')) {
 			return '유효기간(시작일)을 확인해주세요.';
 		}
-		if(!recipient_preg_match($data, 'penExpiEdDtm')) {
+		if(!_recipient_preg_match($data, 'penExpiEdDtm')) {
 			return '유효기간(종료일)을 확인해주세요.';
 		}
 	}
-	if($data['penConNum'] && !recipient_preg_match($data, 'penConNum')) {
+	if($data['penConNum'] && !_recipient_preg_match($data, 'penConNum')) {
 		return '휴대폰번호를 확인해주세요.';
 	}
-	if($data['penConPnum'] && !recipient_preg_match($data, 'penConPnum')) {
+	if($data['penConPnum'] && !_recipient_preg_match($data, 'penConPnum')) {
 		return '일반전화번호를 확인해주세요.';
 	}
 	return false;

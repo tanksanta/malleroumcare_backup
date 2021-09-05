@@ -71,7 +71,7 @@ if($sheetData) {
         $sendData['usrId'] = $member["mb_id"];
         $sendData['delYn'] = "N";
 
-        if($valid = valid_recipient_input($sendData)) {
+        if($valid = valid_recipient_input($sendData, false, true)) {
             // 입력값 오류 발생
             alert("{$sendData['penNm']} 수급자\\n오류 : ".$valid);
             // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;

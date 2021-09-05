@@ -17,6 +17,9 @@ if ($data['act'] == 'log_del') {
             seq = '{$data['seq']}' AND pen_id = '{$data['penId']}' ";
   $row = sql_query($sql);
 } else {
+  $data['penRecGraNm'] = $pen_rec_gra_cd[$data['penRecGraCd']];
+  $data['penTypeNm'] = $pen_type_cd[$data['penTypeCd']];
+
   $sql = "INSERT INTO
             recipient_grade_log
           SET

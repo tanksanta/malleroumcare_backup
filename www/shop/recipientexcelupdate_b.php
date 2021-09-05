@@ -13,6 +13,14 @@ $file = $_FILES['excelfile']['tmp_name'];
 $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
 $sheetData = $spreadsheet->getSheet(0)->toArray(null, true, true, true);
 
+function parse_birth($ymd) {
+  $date = DateTime::createFromFormat('ymd', $ymd);
+
+  if(!$date) return '';
+
+  return $date->format('Y-m-d');
+}
+
 if($sheetData) {
     $total_count = 0;
     $inputs = [];
@@ -53,14 +61,8 @@ if($sheetData) {
         }
 
         //생년월일
-        $sendData['penBirth'] = addslashes(
-            '19' 
-            . substr($sheetData[$i]['F'],0,2) 
-            . '-' 
-            . substr($sheetData[$i]['F'],2,2) 
-            . '-' 
-            . substr($sheetData[$i]['F'],4,2)
-        );
+        $sendData['penBirth'] = addslashes(parse_birth($sheetData[$i]['F']));
+        $sendData['penJumin'] = addslashes($sheetData[$i]['F']);
         $sendData['penLtmNum'] = addslashes($sheetData[$i]['G']); //장기요양번호
         $sendData['penExpiStDtm'] = addslashes($sheetData[$i]['H']); // 유효기간 시작일
         $sendData['penExpiEdDtm'] = addslashes($sheetData[$i]['I']); // 유효기간 종료일
@@ -71,14 +73,7 @@ if($sheetData) {
         $sendData['penProRelEtc'] = addslashes($sheetData[$i]['N']); // 보호자 관계
         $sendData['penProNm'] = addslashes($sheetData[$i]['O']);//보호자명
         // 보호자 생년월일
-        $sendData['penProBirth'] = addslashes(
-            '19' 
-            . substr($sheetData[$i]['P'],0,2) 
-            . '-' 
-            . substr($sheetData[$i]['P'],2,2) 
-            . '-' 
-            . substr($sheetData[$i]['P'],4,2)
-        );
+        $sendData['penProBirth'] = addslashes(parse_birth($sheetData[$i]['P']));
         $sendData['penProConNum'] = addslashes($sheetData[$i]['Q']); // 보호자 휴대전화
         
         $sendData['penZip'] = addslashes(str_replace('-', '', $sheetData[$i]['R'])); // 우편번호
@@ -92,6 +87,8 @@ if($sheetData) {
 
         if($valid = valid_recipient_input($sendData, false, true)) {
             // 입력값 오류 발생
+            var_dump($sendData);
+            exit;
             alert("{$sendData['penNm']} 수급자\\n오류 : ".$valid);
             // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;
         }
@@ -116,22 +113,24 @@ if($sheetData) {
 
         // 등급기준일
         $penGraApplyDtm = $input['penExpiStDtm'];
-        $penGraApplyMonth = explode('-', $input['penExpiStDtm'])[1];
-        $penGraApplyDay = explode('-', $input['penExpiStDtm'])[2];
+        if($penGraApplyDtm) {
+          $penGraApplyMonth = explode('-', $input['penExpiStDtm'])[1];
+          $penGraApplyDay = explode('-', $input['penExpiStDtm'])[2];
 
-        $sql = "INSERT INTO
-            recipient_grade_log
-        SET
-            pen_id = '{$res['data']['penId']}',
-            pen_rec_gra_cd = '{$input['penRecGraCd']}',
-            pen_rec_gra_nm = '{$penRecGraNm}',
-            pen_type_cd = '{$input['penTypeCd']}',
-            pen_type_nm = '{$input['penTypeNm']}',
-            pen_gra_edit_dtm = '{$penGraApplyDtm}',
-            pen_gra_apply_month = '{$penGraApplyMonth}',
-            pen_gra_apply_day = '{$penGraApplyDay}',
-            created_by = '{$member['mb_id']}' ";
-        $row = sql_query($sql);
+          $sql = "INSERT INTO
+              recipient_grade_log
+          SET
+              pen_id = '{$res['data']['penId']}',
+              pen_rec_gra_cd = '{$input['penRecGraCd']}',
+              pen_rec_gra_nm = '{$penRecGraNm}',
+              pen_type_cd = '{$input['penTypeCd']}',
+              pen_type_nm = '{$input['penTypeNm']}',
+              pen_gra_edit_dtm = '{$penGraApplyDtm}',
+              pen_gra_apply_month = '{$penGraApplyMonth}',
+              pen_gra_apply_day = '{$penGraApplyDay}',
+              created_by = '{$member['mb_id']}' ";
+          $row = sql_query($sql);
+        }
         
         // 취급상품 모두 등록
         $setItemData = [];

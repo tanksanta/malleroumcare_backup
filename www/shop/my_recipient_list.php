@@ -37,7 +37,40 @@ $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
 
 $list = [];
 if($res["data"]) {
-  $list = $res["data"];
+  foreach($res['data'] as $data) {
+    // 수급자 필수정보 입력 체크
+    $checklist = ['penRecGraCd', 'penTypeCd', 'penExpiDtm', 'penBirth'];
+    $is_incomplete = false;
+    foreach($checklist as $check) {
+      if(!$data[$check])
+        $is_incomplete = true;
+    }
+    if(!in_array($data['penGender'], ['남', '여']))
+      $is_incomplete = true;
+    if($data['penTypeCd'] == '04' && !$data['penJumin'])
+      $is_incomplete = true;
+    $data['incomplete'] = $is_incomplete;
+
+    // 욕구사정기록지 작성 체크
+    $data['recYn'] = 'N';
+    $rec_count = sql_fetch("
+      SELECT count(*) as cnt
+      FROM recipient_rec_simple
+      WHERE penId = '{$data['penId']}' and mb_id = '{$member['mb_id']}'
+    ");
+    if($rec_count['cnt'] > 0)
+      $data['recYn'] = 'Y';
+    
+    // 수급자 설명 텍스트 (00년생/남|여)
+    $pen_desc_txt = [];
+    if(substr($data['penBirth'], 2, 2)) $pen_desc_txt[] = substr($data['penBirth'], 2, 2).'년생';
+    if($data['penGender']) $pen_desc_txt[] = $data['penGender'];
+    if($pen_desc_txt) $pen_desc_txt = ' (' . implode('/', $pen_desc_txt) . ')';
+    else $pen_desc_txt = '';
+    $data['desc_text'] = $pen_desc_txt;
+    
+    $list[] = $data;
+  }
 }
 
 # 페이징
@@ -63,7 +96,17 @@ $res = get_eroumcare(EROUMCARE_API_SPARE_RECIPIENT_SELECTLIST, $send_data);
 
 $list_spare = [];
 if($res["data"]) {
-  $list_spare = $res["data"];
+  foreach($res['data'] as $data) {
+    // 수급자 설명 텍스트 (00년생/남|여)
+    $pen_desc_txt = [];
+    if(substr($data['penBirth'], 2, 2)) $pen_desc_txt[] = substr($data['penBirth'], 2, 2).'년생';
+    if($data['penGender']) $pen_desc_txt[] = $data['penGender'];
+    if($pen_desc_txt) $pen_desc_txt = ' (' . implode('/', $pen_desc_txt) . ')';
+    else $pen_desc_txt = '';
+    $data['desc_text'] = $pen_desc_txt;
+    
+    $list_spare[] = $data;
+  }
 }
 
 $total_count_spare = $res["total"];
@@ -185,18 +228,7 @@ $(function() {
           <th>비고</th>
         </tr>
         <?php $i = -1; ?>
-        <?php
-        foreach($list as $data) {
-          // 욕구사정기록지 작성 체크
-          $data['recYn'] = 'N';
-          $rec_count = sql_fetch("
-            SELECT count(*) as cnt
-            FROM recipient_rec_simple
-            WHERE penId = '{$data['penId']}' and mb_id = '{$member['mb_id']}'
-          ");
-          if($rec_count['cnt'] > 0)
-            $data['recYn'] = 'Y';
-        ?>
+        <?php foreach($list as $data) { ?>
         <?php $i++; ?>
         <tr>
           <td>
@@ -204,8 +236,8 @@ $(function() {
           </td>
           <td>
             <a href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId']; ?>'>
-              <?php echo $data['penNm']; ?>
-              (<?php echo substr($data['penBirth'], 2, 2); ?>년생/<?php echo $data['penGender']; ?>)
+              <?php echo $data['penNm'].$data['desc_text']; ?>
+              <?php if($data['incomplete']) echo '<img src="'.THEMA_URL.'/assets/img/icon_notice_recipient.png" style="vertical-align:bottom;">'; ?>
               <br/>
               <?php if ($data['penProNm']) { ?>
                 보호자(<?php echo $data['penProNm']; ?><?php echo $data['penProConNum'] ? '/' . $data['penProConNum'] : ''; ?>)
@@ -266,8 +298,8 @@ $(function() {
         <div class="info">
           <a href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId']; ?>'>
             <b>
-              <?php echo $data['penNm']; ?>
-              (<?php echo substr($data['penBirth'], 2, 2); ?>년생/<?php echo $data['penGender']; ?>)
+              <?php echo $data['penNm'].$data['desc_text']; ?>
+              <?php if($data['incomplete']) echo '<img src="'.THEMA_URL.'/assets/img/icon_notice_recipient.png" style="vertical-align:bottom;">'; ?>
             </b>
             <?php if ($data['penProNm']) { ?>
             <span class="li_box_protector">
@@ -358,15 +390,7 @@ $(function() {
           </td>
           <td>
             <a href="<?=G5_SHOP_URL?>/my_recipient_update.php?penSpare=1&id=<?=$data['penId']?>">
-              <?php echo $data['penNm']; ?>
-              <?php
-              $pen_desc_txt = '';
-              if(substr($data['penBirth'], 2, 2)) $pen_desc_txt .= substr($data['penBirth'], 2, 2).'년생';
-              if($pen_desc_txt) $pen_desc_txt .= '/';
-              if($data['penGender']) $pen_desc_txt .= $data['penGender'];
-              if($pen_desc_txt) $pen_desc_txt = ' (' . $pen_desc_txt . ')';
-              echo $pen_desc_txt;
-              ?>
+              <?php echo $data['penNm'].$data['desc_text']; ?>
               <br/>
               <?php if ($data['penProNm']) { ?>
                 보호자(<?php echo $data['penProNm']; ?><?php echo $data['penProConNum'] ? '/' . $data['penProConNum'] : ''; ?>)
@@ -398,15 +422,7 @@ $(function() {
         <div class="info">
           <a href="<?=G5_SHOP_URL?>/my_recipient_update.php?penSpare=1&id=<?=$data['penId']?>">
             <b>
-              <?php echo $data['penNm']; ?>
-              <?php
-              $pen_desc_txt = '';
-              if(substr($data['penBirth'], 2, 2)) $pen_desc_txt .= substr($data['penBirth'], 2, 2).'년생';
-              if($pen_desc_txt) $pen_desc_txt .= '/';
-              if($data['penGender']) $pen_desc_txt .= $data['penGender'];
-              if($pen_desc_txt) $pen_desc_txt = ' (' . $pen_desc_txt . ')';
-              echo $pen_desc_txt;
-              ?>
+              <?php echo $data['penNm'].$data['desc_text']; ?>
             </b>
             <?php if ($data['penProNm']) { ?>
             <span class="li_box_protector">

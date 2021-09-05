@@ -28,7 +28,7 @@ $is_spare_current = $data['isSpare'] == '1';
 $is_spare = $data['penSpare'] == '1';
 
 if ($data['update_type'] != 'grade_edit' && $valid = valid_recipient_input($data, $is_spare)) {
-    json_response(500, $valid);
+  json_response(400, $valid);
 }
 
 $data = normalize_recipient_input($data);
