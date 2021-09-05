@@ -96,12 +96,12 @@ $(function() {
             <span class="penExpiDtm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
           </div>
         </li>
-        <li>
+        <!--<li>
           <div>
             <b>적용기간</b>
             <span class="penAppEdDtm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
           </div>
-        </li>
+        </li>-->
         <li>
           <div>
             <b>전화번호</b>
@@ -527,12 +527,12 @@ $(function() {
             <span class="penExpiDtm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
           </div>
         </li>
-        <li>
+        <!--<li>
           <div>
             <b>적용기간</b>
             <span class="penAppEdDtm_print" style="color: #CCC;">수급자를 선택해주세요.</span>
           </div>
-        </li>
+        </li>-->
         <li>
           <div>
             <b>전화번호</b>
@@ -1009,7 +1009,7 @@ function apply_recipient(list) {
   document.getElementById("penRecGraNm").value=list['penRecGraNm'];    //안전등급
   document.getElementById("penTypeNm").value=list['penTypeNm'];    //본인부담금율
   document.getElementById("penExpiDtm").value=list['penExpiDtm'];    //유효기간
-  document.getElementById("penAppEdDtm").value=list['penAppEdDtm'];  //적용기간
+  //document.getElementById("penAppEdDtm").value=list['penAppEdDtm'];  //적용기간
   document.getElementById("penConNum").value=list['penConNum'];    //휴대전화
   document.getElementById("penConPnum").value=list['penConPnum'];    //전화번호
   document.getElementById("penAddr").value=list['penAddr'];      //주소
@@ -1021,7 +1021,7 @@ function apply_recipient(list) {
   $(".penTypeNm_print").text(list['penTypeNm']);        //수급자명
   $(".penLtmNum_print").text(list['penLtmNum']);        //장기요양번호
   $(".penExpiDtm_print").text(list['penExpiDtm']);        //유효기간
-  $(".penAppEdDtm_print").text(list['penAppEdDtm']);        //적용기간
+  //$(".penAppEdDtm_print").text(list['penAppEdDtm']);        //적용기간
   $(".penConNum_print").text(list['penConNum']);        //휴대전화
   $(".penConPnum_print").text(list['penConPnum']);        //전화번호
   $(".penAddr_print").text(list['penAddr']);        //주소
