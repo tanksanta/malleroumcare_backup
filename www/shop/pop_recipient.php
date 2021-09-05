@@ -31,15 +31,6 @@ curl_close($oCurl);
 
 $list = [];
 foreach($res['data'] as $data) {
-  if($data['penExpiDtm']) {
-    // 유효기간 만료일
-    $expired_dtm = substr($data['penExpiDtm'], -10);
-
-    if (strtotime(date("Y-m-d")) > strtotime($expired_dtm)) {
-      continue;
-    }
-  }
-
   $checklist = ['penRecGraCd', 'penTypeCd', 'penExpiDtm', 'penBirth'];
   $is_incomplete = false;
   foreach($checklist as $check) {
@@ -50,6 +41,14 @@ foreach($res['data'] as $data) {
     $is_incomplete = true;
   if($data['penTypeCd'] == '04' && !$data['penJumin'])
     $is_incomplete = true;
+  if($data['penExpiDtm']) {
+    // 유효기간 만료일 지난 수급자는 유효기간 입력 후 주문하게 함
+    $expired_dtm = substr($data['penExpiDtm'], -10);
+    if (strtotime(date("Y-m-d")) > strtotime($expired_dtm)) {
+      $data['penExpiDtm'] = '';
+      $is_incomplete = true;
+    }
+  }
 
   $data['incomplete'] = $is_incomplete;
 
