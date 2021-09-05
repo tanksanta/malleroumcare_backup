@@ -418,13 +418,15 @@ function valid_recipient_input($data, $is_spare = false, $valid_exist_input_only
 	}
 
   // $valid_exist_input_only = true 인 경우 값이 비어있으면 무결성 체크 통과시킴
-  function _recipient_preg_match($data, $key) {
-    global $exist_input_only;
-    
-    if($exist_input_only && !$data[$key])
-      return true;
-    
-    return recipient_preg_match($data, $key);
+  if (!function_exists('_recipient_preg_match')) {
+    function _recipient_preg_match($data, $key) {
+      global $exist_input_only;
+
+      if($exist_input_only && !$data[$key])
+        return true;
+      
+      return recipient_preg_match($data, $key);
+    }
   }
 
   if(!$is_spare) {
