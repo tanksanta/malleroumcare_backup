@@ -22,57 +22,60 @@ function parse_birth($ymd) {
 }
 
 if($sheetData) {
-    $total_count = 0;
     $inputs = [];
-    for ($i = 3; $i <= count($sheetData); $i++) {
-        $total_count++;
-        $j = 1;
-        $sendData = [];
-        $sendData['penNm'] = addslashes($sheetData[$i]['A']); //수급자명
-        $sendData['penJumin'] = addslashes($sheetData[$i]['B']); //주민등록번호 앞자리
-        $sendData['penBirth'] = addslashes(parse_birth($sheetData[$i]['C'])); //생년월일
-        $penGender = addslashes($sheetData[$i]['D']);
-        $sendData['penGender'] = $penGender == '1' ? '남' : ($penGender == '2' ? '여' : ''); //남 여
-        $sendData['penConNum'] = addslashes($sheetData[$i]['E']); // 휴대번호
-        $sendData['penConPnum'] = addslashes($sheetData[$i]['F']); // 일반번호
-        $sendData['penZip'] = addslashes($sheetData[$i]['G']); // 우편번호
-        $sendData['penAddr'] = addslashes($sheetData[$i]['H']);//주소
-        $sendData['penAddrDtl'] = addslashes($sheetData[$i]['I']);//상세주소
-        $sendData['penLtmNum'] = addslashes($sheetData[$i]['J']); //장기요양번호
-        $sendData['penRecGraCd'] = $sheetData[$i]['K'] ? addslashes(str_pad($sheetData[$i]['K'], 2, '0', STR_PAD_LEFT)) : ''; //인정등급
-        $sendData['penTypeCd'] = $sheetData[$i]['L'] ? addslashes(str_pad($sheetData[$i]['L'] - 1, 2, '0', STR_PAD_LEFT)) : ''; //본인부담율 일반 15% = 00/ 감경 9% =01 / 감경 6%=02 / 의료 6% =03 / 기초 0% =04
-        // 유효기간 시작일
-        $sendData['penExpiStDtm'] = addslashes(parse_birth($sheetData[$i]['M']));
-        // 유효기간 종료일
-        $sendData['penExpiEdDtm'] = addslashes(parse_birth($sheetData[$i]['N']));
-        $sendData['penGraApplyDate'] = addslashes($sheetData[$i]['O']);//적용기간 기준일
-        $sendData['penProRel'] = addslashes($sheetData[$i]['P']); // 보호자 관계
-        $sendData['penProNm'] = addslashes($sheetData[$i]['Q']);//보호자명
-        $sendData['penProBirth'] = addslashes(parse_birth($sheetData[$i]['R']));//생년월일
-        $sendData['penProEmail'] = addslashes($sheetData[$i]['S']);//이메일
-        $sendData['penProConNum'] = addslashes($sheetData[$i]['T']);//휴대전화
-        $sendData['penProConPnum'] = addslashes($sheetData[$i]['U']);//일반전화
-        $sendData['penProZip'] = addslashes($sheetData[$i]['V']);//우편번호
-        $sendData['penProAddr'] = addslashes($sheetData[$i]['W']);//주소
-        $sendData['penProAddrDtl'] = addslashes($sheetData[$i]['X']);//상세주소
-        $penCnmTypeCd = addslashes($sheetData[$i]['Y']);
-        $sendData['penCnmTypeCd'] = $penCnmTypeCd == '1' ? '00' : ($penCnmTypeCd == '2' ? '01' : ''); // 장기요양급여 제공기록지 00: 수급자, 01: 보호자
-        $penRecTypeCd = addslashes($sheetData[$i]['Z']);
-        $sendData['penCnmTypeCd'] = $penRecTypeCd == '1' ? '00' : ($penRecTypeCd == '2' ? '01' : ''); // 장기요양급여 제공기록지 수령방법 00: 방문, 01: 유선
-        $sendData['penRemark'] = addslashes($sheetData[$i]['AA']); // 특이사항
+    $num_rows = count($sheetData);
+    for ($i = 3; $i <= $num_rows; $i++) {
+      $sendData = [];
+      $sendData['penNm'] = addslashes($sheetData[$i]['A']); //수급자명
+      if($i == $num_rows && !$sendData['penNm']) {
+        // 마지막줄인데 수급자명이 비어져있는 경우, 입력 오류로 판단하고 마지막줄 무시
+        continue;
+      }
 
-        
-        $sendData['entId'] = $member["mb_entId"];
-        $sendData['appCd'] = "01";
-        $sendData['usrId'] = $member["mb_id"];
-        $sendData['delYn'] = "N";
+      $sendData['penJumin'] = addslashes($sheetData[$i]['B']); //주민등록번호 앞자리
+      $sendData['penBirth'] = addslashes(parse_birth($sheetData[$i]['C'])); //생년월일
+      $penGender = addslashes($sheetData[$i]['D']);
+      $sendData['penGender'] = $penGender == '1' ? '남' : ($penGender == '2' ? '여' : ''); //남 여
+      $sendData['penConNum'] = addslashes($sheetData[$i]['E']); // 휴대번호
+      $sendData['penConPnum'] = addslashes($sheetData[$i]['F']); // 일반번호
+      $sendData['penZip'] = addslashes($sheetData[$i]['G']); // 우편번호
+      $sendData['penAddr'] = addslashes($sheetData[$i]['H']);//주소
+      $sendData['penAddrDtl'] = addslashes($sheetData[$i]['I']);//상세주소
+      $sendData['penLtmNum'] = addslashes($sheetData[$i]['J']); //장기요양번호
+      $sendData['penRecGraCd'] = $sheetData[$i]['K'] ? addslashes(str_pad($sheetData[$i]['K'], 2, '0', STR_PAD_LEFT)) : ''; //인정등급
+      $sendData['penTypeCd'] = $sheetData[$i]['L'] ? addslashes(str_pad($sheetData[$i]['L'] - 1, 2, '0', STR_PAD_LEFT)) : ''; //본인부담율 일반 15% = 00/ 감경 9% =01 / 감경 6%=02 / 의료 6% =03 / 기초 0% =04
+      // 유효기간 시작일
+      $sendData['penExpiStDtm'] = addslashes(parse_birth($sheetData[$i]['M']));
+      // 유효기간 종료일
+      $sendData['penExpiEdDtm'] = addslashes(parse_birth($sheetData[$i]['N']));
+      $sendData['penGraApplyDate'] = addslashes($sheetData[$i]['O']);//적용기간 기준일
+      $sendData['penProRel'] = addslashes($sheetData[$i]['P']); // 보호자 관계
+      $sendData['penProNm'] = addslashes($sheetData[$i]['Q']);//보호자명
+      $sendData['penProBirth'] = addslashes(parse_birth($sheetData[$i]['R']));//생년월일
+      $sendData['penProEmail'] = addslashes($sheetData[$i]['S']);//이메일
+      $sendData['penProConNum'] = addslashes($sheetData[$i]['T']);//휴대전화
+      $sendData['penProConPnum'] = addslashes($sheetData[$i]['U']);//일반전화
+      $sendData['penProZip'] = addslashes($sheetData[$i]['V']);//우편번호
+      $sendData['penProAddr'] = addslashes($sheetData[$i]['W']);//주소
+      $sendData['penProAddrDtl'] = addslashes($sheetData[$i]['X']);//상세주소
+      $penCnmTypeCd = addslashes($sheetData[$i]['Y']);
+      $sendData['penCnmTypeCd'] = $penCnmTypeCd == '1' ? '00' : ($penCnmTypeCd == '2' ? '01' : ''); // 장기요양급여 제공기록지 00: 수급자, 01: 보호자
+      $penRecTypeCd = addslashes($sheetData[$i]['Z']);
+      $sendData['penCnmTypeCd'] = $penRecTypeCd == '1' ? '00' : ($penRecTypeCd == '2' ? '01' : ''); // 장기요양급여 제공기록지 수령방법 00: 방문, 01: 유선
+      $sendData['penRemark'] = addslashes($sheetData[$i]['AA']); // 특이사항
 
-        if($valid = valid_recipient_input($sendData, false, true)) {
-            // 입력값 오류 발생
-            alert("{$sendData['penNm']} 수급자\\n오류 : ".$valid);
-            // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;
-        }
-        $inputs[] = normalize_recipient_input($sendData);
+      
+      $sendData['entId'] = $member["mb_entId"];
+      $sendData['appCd'] = "01";
+      $sendData['usrId'] = $member["mb_id"];
+      $sendData['delYn'] = "N";
+
+      if($valid = valid_recipient_input($sendData, false, true)) {
+          // 입력값 오류 발생
+          alert("{$sendData['penNm']} 수급자\\n오류 : ".$valid);
+          // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;
+      }
+      $inputs[] = normalize_recipient_input($sendData);
     }
     
     foreach($inputs as $input) {
@@ -143,6 +146,7 @@ if($sheetData) {
         get_eroumcare(EROUMCARE_API_RECIPIENT_ITEM_INSERT, $setItemData);
     }
     
+    $total_count = count($inputs);
     alert_close("{$total_count}명의 수급자가 등록되었습니다.", false, true);
 } else {
     alert_close('파일을 읽을 수 없습니다.');
