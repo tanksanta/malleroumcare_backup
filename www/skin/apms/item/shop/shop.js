@@ -518,53 +518,51 @@ function price_calculate() {
   var $el_prc = $('input.io_price');
   var $el_qty = $('input[name^=ct_qty]');
   var $el_type = $('input[name^=io_type]');
+  var $el_sale_prc = $('input.it_sale_percent');
+  var $el_prc_txt = $('span.it_opt_prc');
   var price,
     type,
     qty,
-    total_qty = 0,
     total = 0;
+
+  var total_qty = 0;
+  $el_qty.each(function (index) {
+    qty = parseInt($(this).val());
+    type = $el_type.eq(index).val();
+    if (type == '0') {
+      // 선택옵션
+      total_qty += qty;
+    }
+  });
+
+  // 수량별 할인가 적용
+  $el_sale_prc.each(function () {
+    var toggle = parseInt($(this).data('toggle'));
+    if (total_qty >= toggle) {
+      it_price = parseInt($(this).val());
+    }
+  });
 
   $el_prc.each(function (index) {
     price = parseInt($(this).val());
     qty = parseInt($el_qty.eq(index).val());
-    total_qty += qty;
     type = $el_type.eq(index).val();
 
     if (type == '0') {
       // 선택옵션
       total += (it_price + price) * qty;
+      $el_prc_txt
+        .eq(index)
+        .text(number_format(String(it_price + price)) + '원');
     } else {
       // 추가옵션
       total += price * qty;
     }
   });
 
-  //할인가 적용 나타내기 --성훈완료
-  var it_sale_percent = $('.it_sale_percent').get();
-  $('#it_tot_price').html(number_format(String(total)) + '원');
-  var count = 0;
-
-  for (var i = 0; i < it_sale_percent.length; i++) {
-    if (parseInt(it_sale_percent[i].getAttribute('data-toggle')) <= total_qty) {
-      if (type == '0') {
-        // 선택옵션
-        total = parseInt(it_sale_percent[i].value) * total_qty;
-        count++;
-      } else {
-        // 추가옵션
-        total = parseInt(it_sale_percent[i].value) * total_qty;
-        count++;
-      }
-      $('.it_opt_prc').html(
-        number_format(String(parseInt(it_sale_percent[i].value))) + '원'
-      );
-      $('#it_tot_price').html(number_format(String(total)) + '원');
-    }
-    //할인가 적용 나타내기 --성훈완료
-  }
-  if (!count) {
-    $('.it_opt_prc').html(number_format(String(it_price)) + '원');
-  }
+  $('#it_tot_price')
+    .empty()
+    .html(number_format(String(total)) + '원');
 }
 
 // php chr() 대응
