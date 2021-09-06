@@ -67,7 +67,7 @@ if($sheetData) {
 
       if($valid = valid_recipient_input($sendData, false, true)) {
           // 입력값 오류 발생
-          alert("({$i}열) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
+          alert("({$i}행) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
           // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;
       }
       $inputs[] = normalize_recipient_input($sendData);
