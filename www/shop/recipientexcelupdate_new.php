@@ -23,15 +23,10 @@ function parse_birth($ymd) {
 
 if($sheetData) {
     $inputs = [];
-    $num_rows = count($sheetData);
+    $num_rows = $spreadsheet->getSheet(0)->getHighestDataRow('A');
     for ($i = 3; $i <= $num_rows; $i++) {
       $sendData = [];
       $sendData['penNm'] = addslashes($sheetData[$i]['A']); //수급자명
-      if($i == $num_rows && !$sendData['penNm']) {
-        // 마지막줄인데 수급자명이 비어져있는 경우, 입력 오류로 판단하고 마지막줄 무시
-        continue;
-      }
-
       $sendData['penJumin'] = addslashes($sheetData[$i]['B']); //주민등록번호 앞자리
       $sendData['penBirth'] = addslashes(parse_birth($sheetData[$i]['C'])); //생년월일
       $penGender = addslashes($sheetData[$i]['D']);
@@ -72,7 +67,7 @@ if($sheetData) {
 
       if($valid = valid_recipient_input($sendData, false, true)) {
           // 입력값 오류 발생
-          alert("{$sendData['penNm']} 수급자\\n오류 : ".$valid);
+          alert("{$i}번째 {$sendData['penNm']} 수급자\\n오류 : ".$valid);
           // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;
       }
       $inputs[] = normalize_recipient_input($sendData);
@@ -145,7 +140,7 @@ if($sheetData) {
 
         get_eroumcare(EROUMCARE_API_RECIPIENT_ITEM_INSERT, $setItemData);
     }
-    
+
     $total_count = count($inputs);
     alert_close("{$total_count}명의 수급자가 등록되었습니다.", false, true);
 } else {
