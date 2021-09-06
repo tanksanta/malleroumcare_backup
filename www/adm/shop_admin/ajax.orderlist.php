@@ -703,9 +703,12 @@ foreach($orderlist as $order) {
   if(!$result_ct['ct_barcode_insert']){
     $result_ct['ct_barcode_insert']=0;
   }
+  $prodBarNumCntBtnStatus = '';
   $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
-  $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
-  $prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
+  if($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty'] || $result_ct['io_type'] == '1') {
+    $prodBarNumCntBtnWord = '입력완료';
+    $prodBarNumCntBtnStatus = " disable";
+  }
 
 
     if ($od_cart_count > 0) {

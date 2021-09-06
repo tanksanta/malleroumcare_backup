@@ -113,11 +113,12 @@ $sql = " select a.ct_id,
         b.it_model,
         a.prodSupYn,
         b.it_img1,
-        b.it_rental_price
+        b.it_rental_price,
+        a.io_type
        from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
       where a.od_id = '$s_cart_id'
       and a.ct_select = '1' ";
-$sql .= " group by a.it_id ";
+$sql .= " group by a.it_id, a.io_type ";
 $sql .= " order by a.ct_id ";
 $result = sql_query($sql);
 
@@ -155,6 +156,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
           SUM(ct_qty) as qty
           from {$g5['g5_shop_cart_table']}
           where it_id = '{$row['it_id']}'
+          and io_type = '{$row['io_type']}'
           and od_id = '$s_cart_id' ";
   $sum = sql_fetch($sql);
 
@@ -257,7 +259,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 
   # 210130 옵션목록
   $optionList = [];
-  $optionSQL = sql_query("SELECT io_id, ct_qty, ct_id FROM {$g5["g5_shop_cart_table"]} WHERE od_id = '{$s_cart_id}' AND it_id = '{$row["it_id"]}' ORDER BY ct_id ASC");
+  $optionSQL = sql_query("SELECT io_id, ct_qty, ct_id FROM {$g5["g5_shop_cart_table"]} WHERE od_id = '{$s_cart_id}' AND it_id = '{$row["it_id"]}' AND io_type = 0 ORDER BY ct_id ASC");
   for($iii = 0; $optionRow = sql_fetch_array($optionSQL); $iii++) {
     $prodColor = $prodSize = $prodOption = '';
     $prodOptions = [];
@@ -304,6 +306,13 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   $item[$i]['hidden_cp_id'] = '';
   $item[$i]['hidden_cp_price'] = 0;
   $item[$i]['hidden_it_notax'] = $row['it_notax'];
+  if($item[$i]['io_type'] == '0') {
+    // 선택옵션
+    $item[$i]['hidden_ct_price'] = $item[$i]['ct_price'] + $item[$i]['io_price'];
+  } else {
+    // 추가옵션
+    $item[$i]['hidden_ct_price'] = $item[$i]['io_price'];
+  }
   $item[$i]['it_name'] = $it_name;
   $item[$i]['it_options'] = $it_options;
   $item[$i]['it_optionList'] = $optionList;

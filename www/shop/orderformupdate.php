@@ -26,7 +26,6 @@ if (!$od_b_hp)
 
 $it_ids = array();
 $productList = [];
-$productList2 = [];
 $postProdBarNumCnt = 0;
 $deliveryTotalCnt = 0;
 
@@ -102,8 +101,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     //    ");
   }
 
-  # 상품목록 수급자 주문 아니면
-  if(!$_POST["penId"]) {
+  # 상품목록
+  // 수급자 주문 아니면 & 추가옵션상품이 아니면
+  if(!$_POST["penId"] && $row['io_type'] != '1') {
     for($ii = 0; $ii < $row["ct_qty"]; $ii++) {
       $thisProductData = [];
       $thisProductData["prodId"] = $row["it_id"];
@@ -174,7 +174,6 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
           $thisProductData["ordLendEndDtm"] = date("Y-m-d", strtotime($_POST["ordLendEndDtm_{$row["ct_id"]}"]));
           $thisProductData["ct_id"] = $row["ct_id"];
           array_push($productList, $thisProductData);
-          array_push($productList2, $thisProductData);
           $od_prodBarNum_total++;
           if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
             $od_prodBarNum_insert++;
@@ -210,7 +209,6 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
           $thisProductData["ct_id"] = $row["ct_id"];
 
           array_push($productList, $thisProductData);
-          array_push($productList2, $thisProductData);
 
           $od_prodBarNum_total++;
           if($_POST["prodBarNum_{$postProdBarNumCnt}"]){
@@ -257,7 +255,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
           $postProdBarNumCnt++;
         }
       }
-    } else {
+    } else if($row['io_type'] != '1') { // 추가옵션상품은 재고추가 X
       //신규주문만 있으면 그대로 보냄
       for($ii = 0; $ii < $row["ct_qty"]; $ii++){
         $thisProductData = [];

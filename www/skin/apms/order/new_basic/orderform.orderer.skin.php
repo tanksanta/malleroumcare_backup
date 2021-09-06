@@ -172,7 +172,7 @@ $(function() {
                   <input type="hidden" name="it_discount[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_sell_discount']; ?>">
                   <input type="hidden" name="cp_id[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_cp_id']; ?>">
                   <input type="hidden" name="cp_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_cp_price']; ?>">
-                  <input type="hidden" name="ct_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['ct_price']; ?>">
+                  <input type="hidden" name="ct_price[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_ct_price']; ?>">
                   <input type="hidden" name="it_qty[<?php echo $i; ?>]" value="<?php echo $item[$i]['qty']; ?>">
                   <?php for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++){ ?>
                     <input type="hidden" class="it_option_stock_cnt" name="it_option_stock_cnt_<?=$item[$i]["it_optionList"][$ii]["id"]?>" value="0">
@@ -223,6 +223,9 @@ $(function() {
             <!-- <li class="delivery-price m_none" style="width: 20%;">
               <p><?php echo $item[$i]['ct_send_cost']; ?></p>
             </li> -->
+            <?php
+            if($item[$i]['io_type'] != '1') { // 추가옵션상품이면 바코드 정보 X
+            ?>
             <li class="barcode barList" style="display: none;">
               <?php
                 for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++) {
@@ -244,6 +247,11 @@ $(function() {
               }
               ?>
             </li>
+            <?php
+            } else {
+              echo '<li class="barcode" style="display: none;"> - </li>';
+            }
+            ?>
           </ul>
           <div class="list-btm">
             <?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
@@ -1127,7 +1135,7 @@ function apply_recipient(list) {
     $("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
     $("input[name='it_discount[" + key + "]']").val(change_discount);
     $("input[name='od_discount']").val(change_discount);
-    $(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
+    $(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price) + '원');
 
     var has_barcode_text = $(itemDom).find('.barcode.barList').find('input[type="text"]').length;
     var has_barcode_button = $(itemDom).find('.barcode.barList').find('.open_input_barcode').length;
@@ -1265,7 +1273,7 @@ $(function() {
       });
 
       $("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
-      $(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
+      $(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price) + '원');
     });
 
     var it_price = $("input[name^=it_price]");
@@ -1331,7 +1339,7 @@ $(function() {
       }
 
       $("input[name='it_price[" + key + "]']").val(price);
-      $(itemDom).find(".price_print").text(number_format(price));
+      $(itemDom).find(".price_print").text(number_format(price) + '원');
       
       // 보유재고 바코드          
       var has_barcode_text = $(itemDom).find('.barcode.barList').find('.barcode_input').length;
@@ -1799,7 +1807,7 @@ $(function(){
       });
       $("input[name='it_discount[" + key + "]']").val(change_discount);
       $("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
-      $(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
+      $(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price) + '원');
     });
 
     var it_price = $("input[name^=it_price]");
@@ -1942,7 +1950,7 @@ $(function(){
       });
                 
       $("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
-      $(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price));
+      $(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price) + '원');
     });
 
     var it_price = $("input[name^=it_price]");
