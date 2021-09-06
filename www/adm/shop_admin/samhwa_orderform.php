@@ -2359,7 +2359,7 @@ $(document).ready(function() {
   $(document).on("click", ".deliveryCntBtn", function(e){
     e.preventDefault();
 
-    var popupWidth = 900;
+    var popupWidth = 1000;
     var popupHeight = 700;
 
     var popupX = (window.screen.width / 2) - (popupWidth / 2);
