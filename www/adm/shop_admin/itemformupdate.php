@@ -389,6 +389,8 @@ foreach( $check_sanitize_keys as $key ) {
   $$key = isset($_POST[$key]) ? strip_tags(clean_xss_attributes($_POST[$key])) : '';
 }
 
+$it_buy_inc_qty = get_search_string($_POST['it_buy_inc_qty']) ?: 1; // 수량증가단위
+
 if ($it_name == "")
   alert("제목 또는 상품명을 입력해 주십시오.");
 
