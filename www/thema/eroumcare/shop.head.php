@@ -525,6 +525,11 @@ if($is_main && !$is_member) {
                 </a>
               </li>
               <li>
+                <a href="/bbs/board.php?bo_table=event">
+                  이벤트
+                </a>
+              </li>
+              <li>
                 <a href="/bbs/board.php?bo_table=faq">
                   자주하는 질문
                 </a>
