@@ -224,8 +224,9 @@ $partners = get_partner_members();
             <td style="text-align:center;">
               <select name="ct_warehouse_<?=$options[$k]["ct_id"]?>" class="frm_input ct_warehouse">
                 <option value="청라창고" <?=get_selected($options[$k]["ct_warehouse"], '청라창고')?>>청라창고</option>
-                <option value="A창고" <?=get_selected($options[$k]["ct_warehouse"], 'A창고')?>>A창고</option>
-                <option value="B창고" <?=get_selected($options[$k]["ct_warehouse"], 'B창고')?>>B창고</option>
+                <option value="김해창고" <?=get_selected($options[$k]["ct_warehouse"], '김해창고')?>>김해창고</option>
+                <option value="설치창고" <?=get_selected($options[$k]["ct_warehouse"], '설치창고')?>>설치창고</option>
+                <option value="F5창고" <?=get_selected($options[$k]["ct_warehouse"], 'F5창고')?>>F5창고</option>
               </select>
             </td>
           </tr>
