@@ -35,7 +35,8 @@ if($_POST["mb_id"] != "admin" && $check_member['mb_type'] !== 'normal') {
       // 차단된 아이디인가?
       if ($mb['mb_intercept_date'] && $mb['mb_intercept_date'] <= date("Ymd", G5_SERVER_TIME)) {
         $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $mb['mb_intercept_date']);
-        alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date);
+        // alert('관리자 승인이 대기중입니다.',G5_BBS_URL."/register_result.php");
+        alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date, G5_BBS_URL."/member_intercept.php");
       }
       // 탈퇴한 아이디인가?
       if ($mb['mb_leave_date'] && $mb['mb_leave_date'] <= date("Ymd", G5_SERVER_TIME)) {
@@ -148,7 +149,8 @@ if ($_POST["mb_id"] == "admin" && !$is_social_password_check && (!$mb['mb_id'] |
 // 차단된 아이디인가?
 if ($mb['mb_intercept_date'] && $mb['mb_intercept_date'] <= date("Ymd", G5_SERVER_TIME)) {
   $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $mb['mb_intercept_date']);
-  alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date);
+  // alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date);
+  alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date, G5_BBS_URL."/member_intercept.php");
 }
 
 // 탈퇴한 아이디인가?
