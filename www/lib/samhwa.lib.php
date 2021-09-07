@@ -910,6 +910,13 @@ $delivery_companys = array(
   )
 );
 
+$warehouse_list = [
+  '청라창고',
+  '김해창고',
+  '설치창고',
+  'F5창고'
+];
+
 $refund_types = array(
     '0' => array(
         'name' => '계좌입금',

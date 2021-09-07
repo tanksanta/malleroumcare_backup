@@ -461,6 +461,8 @@ else if($it_is_direct_delivery == 2) {
   $it_direct_delivery_price = (int)$_POST['it_direct_delivery_price2'] ?: 0;
 }
 
+$it_default_warehouse = in_array($_POST['it_default_warehouse'], $warehouse_list) ? $_POST['it_default_warehouse'] : '';
+
 $sql_common = "
   ca_id               = '$ca_id',
   ca_id2              = '$ca_id2',
@@ -635,6 +637,7 @@ $sql_common = "
   it_sale_cnt_05             = '$it_sale_cnt_05',
   it_sale_percent_05             = '$it_sale_percent_05',
   it_sale_percent_great_05             = '$it_sale_percent_great_05',
+  it_default_warehouse = '$it_default_warehouse',
 
   entId = '$entId',
   prodSupYn = '$prodSupYn',
