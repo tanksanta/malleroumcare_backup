@@ -960,7 +960,7 @@ if($result_total >=100000){
     }
   }
   if($flag) {
-    $od_send_cost = 3000;
+    $od_send_cost = 3300;
   } else {
     $od_send_cost = 0;
   }

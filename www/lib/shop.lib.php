@@ -1950,7 +1950,7 @@ function get_sendcost_new($cart_id, $selected = 1) {
 
     if($check_result['it_id']) {
       // 무료배송 아닌게 하나라도 있으면
-      $od_send_cost = 3000;
+      $od_send_cost = 3300;
     } else {
       // 전부 무료배송 상품이면
       $od_send_cost = 0;
