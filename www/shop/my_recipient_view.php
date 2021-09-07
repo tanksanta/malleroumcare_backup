@@ -114,19 +114,16 @@ $pen_ent = get_pen_ent_by_pen_id($pen['penId']);
       <div class="col-sm-2">· 장기요양기록지</div>
       <div class="col-sm-10">: 확인자(<?=$pen_cnm_type_cd[$pen['penCnmTypeCd']]?>), 수령방법(<?=$pen_rec_type_cd[$pen['penRecTypeCd']]?>) <?=$pen['penRecTypeTxt']?></div>
     </div>
+    <?php
+    if($pen_ent) {
+      $pen_mb = get_member($pen_ent['pen_mb_id'], 'mb_name');
+    ?>
     <div class="row">
       <div class="col-sm-2">· 연결 ID</div>
-      <div class="col-sm-10">: 
-        <?php
-        if($pen_ent) {
-          $pen_mb = get_member($pen_ent['pen_mb_id'], 'mb_name');
-          echo "{$pen_mb['mb_name']} ({$pen_ent['pen_mb_id']})";
-        } else {
-          echo '없음';
-        }
-        ?>
+      <div class="col-sm-10">: <?="{$pen_mb['mb_name']} ({$pen_ent['pen_mb_id']})"?>
       </div>
     </div>
+    <?php } ?>
     <a class="c_btn" href="./my_recipient_update.php?id=<?=$pen['penId']?>">기본정보 수정</a>
     <div class="tel_btn_wrap">
       <a href="tel:<?=$pen['penConNum'] ?: $pen['penConPNum']?>" class="tel_btn"><i class="fa fa-phone" aria-hidden="true"></i>수급자 전화연결</a>
