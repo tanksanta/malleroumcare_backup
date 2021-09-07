@@ -2776,6 +2776,11 @@ function hyphen_hp_number($hp)
     return preg_replace("/([0-9]{3})([0-9]{3,4})([0-9]{4})$/", "\\1-\\2-\\3", $hp);
 }
 
+// 연락처 하이픈
+function hyphen_tel_number($tel) {
+  $tel = preg_replace("/[^0-9]/", "", $tel);
+  return preg_replace("/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})$/", "\\1-\\2-\\3", $tel);
+}
 
 // 로그인 후 이동할 URL
 function login_url($url='')

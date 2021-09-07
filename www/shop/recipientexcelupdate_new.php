@@ -14,7 +14,7 @@ $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
 $sheetData = $spreadsheet->getSheet(0)->toArray(null, true, true, true);
 
 function parse_birth($ymd) {
-  $date = DateTime::createFromFormat('ymd', $ymd);
+  $date = DateTime::createFromFormat('Ymd', $ymd);
 
   if(!$date) return '';
 
@@ -67,7 +67,7 @@ if($sheetData) {
 
       if($valid = valid_recipient_input($sendData, false, true)) {
           // 입력값 오류 발생
-          alert("({$i}열) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
+          alert("({$i}행) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
           // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;
       }
       $inputs[] = normalize_recipient_input($sendData);
@@ -108,10 +108,15 @@ if($sheetData) {
                 break;
         }
 
-        // 등급기준일
-        $penGraApplyDtm = date("Y") . '-' . $input['penGraApplyDate'];
+        // 적용기간 기준일
         $penGraApplyMonth = explode('-', $input['penGraApplyDate'])[0];
         $penGraApplyDay = explode('-', $input['penGraApplyDate'])[1];
+
+        // 등급적용 시점
+        $pen_gra_edit_dtm = date('Y-m-d');
+        if($sendData['penExpiStDtm']) {
+          $pen_gra_edit_dtm = $sendData['penExpiStDtm'];
+        }
 
         $sql = "INSERT INTO
             recipient_grade_log
@@ -121,7 +126,7 @@ if($sheetData) {
             pen_rec_gra_nm = '{$penRecGraNm}',
             pen_type_cd = '{$input['penTypeCd']}',
             pen_type_nm = '{$penTypeNm}',
-            pen_gra_edit_dtm = '{$penGraApplyDtm}',
+            pen_gra_edit_dtm = '{$pen_gra_edit_dtm}',
             pen_gra_apply_month = '{$penGraApplyMonth}',
             pen_gra_apply_day = '{$penGraApplyDay}',
             created_by = '{$member['mb_id']}' ";

@@ -373,7 +373,9 @@ foreach($orderlist as $order) {
       $result_ct['ct_barcode_insert']=0;
     }
     $prodBarNumCntBtnWord = "출고관리 ".$result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
-    $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
+    if($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty'] || $result_ct['io_type'] == '1') {
+      $prodBarNumCntBtnWord = "입력완료";
+    }
   }
 
   $ct_status = get_step($order['ct_status']);

@@ -552,11 +552,13 @@ foreach($orderlist as $order) {
       $result_ct['ct_barcode_insert']=0;
     }
 
-    
+    $class_c1 = $prodBarNumCntBtnStatus = '';
     $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
-    $prodBarNumCntBtnWord = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "입력완료" : $prodBarNumCntBtnWord;
-    $class_c1 = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? "complete1" : "";
-    $prodBarNumCntBtnStatus = ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) ? " disable" : "";
+    if($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty'] || $result_ct['io_type'] == '1') {
+      $prodBarNumCntBtnWord = "입력완료";
+      $class_c1 = 'complete1';
+      $prodBarNumCntBtnStatus = 'disable';
+    }
 
     $deliveryCntBtnWord = " 입력 ({$delivery_input_cnt}/". $cart_cnt .")";
     $deliveryCntBtnWord .= ", 전송 ({$edi_success_cnt}/". $cart_cnt .")";

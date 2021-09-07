@@ -22,12 +22,10 @@ function parse_birth($ymd) {
 }
 
 if($sheetData) {
-    $total_count = 0;
     $inputs = [];
-    for ($i = 2; $i <= count($sheetData); $i++) {
+    $num_rows = $spreadsheet->getSheet(0)->getHighestDataRow('A');
+    for ($i = 2; $i <= $num_rows; $i++) {
         if (!$sheetData[$i]['C']) continue;
-        $total_count++;
-        $j = 1;
         $sendData = [];
         $sendData['penNm'] = addslashes($sheetData[$i]['C']); //수급자명
         $sendData['penGender'] = addslashes($sheetData[$i]['D']); // 성별
@@ -67,14 +65,14 @@ if($sheetData) {
         $sendData['penExpiStDtm'] = addslashes($sheetData[$i]['H']); // 유효기간 시작일
         $sendData['penExpiEdDtm'] = addslashes($sheetData[$i]['I']); // 유효기간 종료일
         $sendData['penRecGraCd'] = addslashes(str_pad($sheetData[$i]['K'][0], 2, '0', STR_PAD_LEFT)); //인정등급
-        $sendData['penConNum'] = addslashes($sheetData[$i]['L']); // 휴대번호
-        $sendData['penConPnum'] = addslashes($sheetData[$i]['M']); // 일반번호
+        $sendData['penConNum'] = hyphen_tel_number($sheetData[$i]['L']); // 휴대번호
+        $sendData['penConPnum'] = hyphen_tel_number($sheetData[$i]['M']); // 일반번호
         $sendData['penProRel'] = '11'; // 보호자 관계
         $sendData['penProRelEtc'] = addslashes($sheetData[$i]['N']); // 보호자 관계
         $sendData['penProNm'] = addslashes($sheetData[$i]['O']);//보호자명
         // 보호자 생년월일
         $sendData['penProBirth'] = addslashes(parse_birth($sheetData[$i]['P']));
-        $sendData['penProConNum'] = addslashes($sheetData[$i]['Q']); // 보호자 휴대전화
+        $sendData['penProConNum'] = hyphen_tel_number($sheetData[$i]['Q']); // 보호자 휴대전화
         
         $sendData['penZip'] = addslashes(str_replace('-', '', $sheetData[$i]['R'])); // 우편번호
         $sendData['penAddr'] = addslashes($sheetData[$i]['S']); //주소
@@ -87,9 +85,7 @@ if($sheetData) {
 
         if($valid = valid_recipient_input($sendData, false, true)) {
             // 입력값 오류 발생
-            var_dump($sendData);
-            exit;
-            alert("{$sendData['penNm']} 수급자\\n오류 : ".$valid);
+            alert("({$i}행) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
             // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;
         }
         $inputs[] = normalize_recipient_input($sendData);
@@ -146,6 +142,7 @@ if($sheetData) {
         get_eroumcare(EROUMCARE_API_RECIPIENT_ITEM_INSERT, $setItemData);
     }
 
+    $total_count = count($inputs);
     alert_close("{$total_count}명의 수급자가 등록되었습니다.", false, true);
 } else {
     alert_close('파일을 읽을 수 없습니다.');
