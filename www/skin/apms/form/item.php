@@ -1222,7 +1222,6 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
         <td>
           <?php echo help("기본으로 지정될 출하창고를 설정합니다."); ?>
           <select name="it_default_warehouse" id="it_default_warehouse">
-            <option value="">출하창고 선택</option>
             <?php
             foreach($warehouse_list as $warehouse) {
               echo '<option value="'.$warehouse.'" '.get_selected($it['it_default_warehouse'], $warehouse).'>'.$warehouse.'</option>';
