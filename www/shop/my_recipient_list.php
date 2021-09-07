@@ -175,6 +175,7 @@ $(function() {
     </div>
     <?php } ?>
     <div class="r_btn_area pc">
+      <a href="./my_recipient_excel.php" class="btn eroumcare_btn2" title="수급자 엑셀 다운로드">수급자 엑셀 다운로드</a>
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
       <a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
       <div class="tooltip_btn">
