@@ -114,7 +114,8 @@ $sql = " select a.ct_id,
         a.prodSupYn,
         b.it_img1,
         b.it_rental_price,
-        a.io_type
+        a.io_type,
+        a.ct_option
        from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
       where a.od_id = '$s_cart_id'
       and a.ct_select = '1' ";

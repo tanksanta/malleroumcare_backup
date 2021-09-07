@@ -180,7 +180,13 @@ $(function() {
                   <?php if($default['de_tax_flag_use']) { ?>
                     <input type="hidden" name="it_notax[<?php echo $i; ?>]" value="<?php echo $item[$i]['hidden_it_notax']; ?>">
                   <?php } ?>
-                  <?php echo $item[$i]['it_name']; ?>
+                  <?php
+                  echo $item[$i]['it_name'];
+                  if($item[$i]['io_type'] == '1') {
+                    // 추가옵션이면
+                    echo ' ('.$item[$i]['ct_option'].')';
+                  }
+                  ?>
                 </div>
                 <?php if($item[$i]['it_options']) { ?>
                   <div class="text"><?php echo $item[$i]['it_options'];?></div>
