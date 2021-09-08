@@ -224,7 +224,7 @@ if ($auto_login) {
   // 3.27
   // 자동로그인 ---------------------------
   // 쿠키 한달간 저장->일년
-  $key = md5($_SERVER['SERVER_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . $mb['mb_password']);
+  $key = hash('sha256', md5($mb['mb_id'].$_SERVER['HTTP_USER_AGENT'].$mb['mb_password']));
   set_cookie('ck_mb_id', $mb['mb_id'], 86400 * 31 * 12);
   set_cookie('ck_auto', $key, 86400 * 31  * 12);
   // 자동로그인 end ---------------------------

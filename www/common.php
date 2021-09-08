@@ -489,7 +489,7 @@ if ($_SESSION['ss_mb_id'] && $member = get_member($_SESSION['ss_mb_id'])) {
             $sql = " select mb_password, mb_intercept_date, mb_leave_date, mb_email_certify from {$g5['member_table']} where mb_id = '{$tmp_mb_id}' ";
             $row = sql_fetch($sql);
             if($row['mb_password']){
-                $key = md5($_SERVER['SERVER_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . $row['mb_password']);
+                $key = hash('sha256', md5($tmp_mb_id.$_SERVER['HTTP_USER_AGENT'].$row['mb_password']));
                 // 쿠키에 저장된 키와 같다면
                 $tmp_key = get_cookie('ck_auto');
                 if ($tmp_key === $key && $tmp_key) {
