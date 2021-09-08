@@ -79,7 +79,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 
 	<?php if ($is_torrent) echo apms_addon('torrent-basic'); // 토렌트 파일정보 ?>
 
-	<?php
+	<!-- <?php
 		// 이미지 상단 출력
 		$v_img_count = count($view['file']);
 		if($v_img_count && $is_img_head) {
@@ -91,7 +91,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 			}
 			echo '</div>'.PHP_EOL;
 		}
-	 ?>
+	 ?> -->
 
 	<div class="view-content">
 		<?php echo get_view_thumbnail($view['content']); ?>
@@ -103,7 +103,8 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 			echo '<div class="view-img">'.PHP_EOL;
 			for ($i=0; $i<=count($view['file']); $i++) {
 				if ($view['file'][$i]['view']) {
-					echo get_view_thumbnail($view['file'][$i]['view']);
+					echo $view['file'][$i]['view'];
+					//echo get_view_thumbnail($view['file'][$i]['view']);
 				}
 			}
 			echo '</div>'.PHP_EOL;
