@@ -81,7 +81,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 
 	<?php
 		// 이미지 상단 출력
-		$v_img_count = count($view['file']);
+		/*$v_img_count = count($view['file']);
 		if($v_img_count && $is_img_head) {
 			echo '<div class="view-img">'.PHP_EOL;
 			for ($i=0; $i<=count($view['file']); $i++) {
@@ -90,7 +90,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 				}
 			}
 			echo '</div>'.PHP_EOL;
-		}
+		}*/
   ?>
 
 	<div class="view-content">
