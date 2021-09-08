@@ -4,20 +4,25 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu], "r");
 
-$sql_common = " from {$g5['g5_shop_coupon_table']} c left join g5_shop_coupon_member m on c.cp_no = m.cp_no ";
+$sql_common = "
+  from {$g5['g5_shop_coupon_table']} c
+  left join g5_shop_coupon_member cm on c.cp_no = cm.cp_no
+  left join g5_member m on cm.mb_id = m.mb_id
+  left join g5_member x on c.mb_id = x.mb_id
+";
 
-$sql_search = " where (1) ";
+$where = [];
 if ($stx) {
-    $sql_search .= " and ( ";
-    switch ($sfl) {
-        case 'mb_id' :
-            $sql_search .= " (c.mb_id = '{$stx}' or m.mb_id = '{$stx}') ";
-            break;
-        default :
-            $sql_search .= " ({$sfl} like '%{$stx}%') ";
-            break;
-    }
-    $sql_search .= " ) ";
+  if($sfl === 'mb_id' || $sfl === 'all') {
+    $where[] = " ( c.mb_id like '%{$stx}%' or m.mb_id like '%{$stx}%' ) ";
+  }
+  if($sfl === 'mb_name' || $sfl === 'all') {
+    $where[] = " ( x.mb_name like '%{$stx}%' or m.mb_name like '%{$stx}%' ) ";
+  }
+}
+$sql_search = ' where (1) ';
+if($where) {
+  $sql_search .= ' and (' . implode(' or ', $where) . ') ';
 }
 
 if (!$sst) {
@@ -45,14 +50,14 @@ if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
 $sql = "
-  select c.*, count(*) as cnt, m.mb_id as mb_id_sub
+  select c.*, x.mb_name as mb_name
   {$sql_common}
   {$sql_search}
   group by c.cp_no
   {$sql_order}
   limit {$from_record}, {$rows}
 ";
-$result = sql_query($sql);
+$result = sql_query($sql, true);
 
 $g5['title'] = '쿠폰관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
@@ -65,12 +70,12 @@ $colspan = 9;
 <form name="fsearch" id="fsearch" class="local_sch01 local_sch" method="get">
 
 <select name="sfl" title="검색대상">
-    <option value="mb_id"<?php echo get_selected($_GET['sfl'], "mb_id"); ?>>회원아이디</option>
-    <option value="cp_subject"<?php echo get_selected($_GET['sfl'], "cp_subject"); ?>>쿠폰이름</option>
-    <option value="cp_id"<?php echo get_selected($_GET['sfl'], "cp_id"); ?>>쿠폰코드</option>
+  <option value="all"<?php echo get_selected($_GET['sfl'], "all"); ?>>전체</option>
+  <option value="mb_name"<?php echo get_selected($_GET['sfl'], "mb_name"); ?>>회원명</option>
+  <option value="mb_id"<?php echo get_selected($_GET['sfl'], "mb_id"); ?>>회원아이디</option>
 </select>
-<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-<input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
+<label for="stx" class="sound_only">검색어</label>
+<input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
 <input type="submit" class="btn_submit" value="검색">
 </form>
 
@@ -150,13 +155,11 @@ $colspan = 9;
         <td class="td_left"><?php echo $row['cp_subject']; ?></td>
         <td><?php echo $cp_target; ?></td>
         <td class="td_name sv_use"><div><?php
-          if($row['cnt'] > 1) {
-            echo $row['mb_id'].' 외 '.($row['cnt'] - 1).'명';
-          } else {
-            if($row['mb_id_sub'])
-              echo $row['mb_id_sub'];
-            else
-              echo $row['mb_id'];
+          $cm_result = sql_query(" select m.mb_id, m.mb_name from g5_shop_coupon_member cm left join g5_member m on cm.mb_id = m.mb_id where cp_no = '{$row['cp_no']}' ");
+          if(!sql_num_rows($cm_result))
+            echo "{$row['mb_name']}({$row['mb_id']})";
+          while($cm_row = sql_fetch_array($cm_result)) {
+            echo "{$cm_row['mb_name']}({$cm_row['mb_id']})<br>";
           }
         ?></div></td>
         <td class="td_datetime"><?php echo substr($row['cp_start'], 2, 8); ?> ~ <?php echo substr($row['cp_end'], 2, 8); ?></td>
