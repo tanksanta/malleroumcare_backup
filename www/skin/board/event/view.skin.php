@@ -93,7 +93,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 		}*/
   ?>
 
-	<div class="view-content">
+	<div class="view-content" style="overflow: auto">
 		<?php echo $view['content']; ?>
 	</div>
 
