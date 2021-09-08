@@ -62,7 +62,7 @@
 .view-img img { display:block; max-width:100%; margin:0 auto 15px; border:0; height:auto; }
 .view-content { padding:0px 15px 20px }
 .view-mobile .view-content { padding:0px 0px 20px; }
-.view-content img { width:auto; height:auto; max-width:100%; }
+.view-content img { width:100%; height:auto; max-width:100%; }
 .view-content p { padding:0; margin:0; line-height:22px; }
 .view-good-box { text-align:center; }
 .view-good-box span { margin:15px 6px; width:80px; height:80px; display:inline-block; }
@@ -135,6 +135,9 @@
 }
 
 /* 반응형 공통 */
+@media all and (max-width:960px) {
+	.view-content img{width:auto;max-width:none;}
+}
 @media all and (max-width:460px) {
 	.responsive .list-btn { text-align:center; margin:0px auto; }
 	.responsive .pull-right.list-btn { float:none !important; margin-bottom:14px; }

@@ -47,9 +47,6 @@
 	.header-bar {
 		display:none;
 	}
-	.at-container img {
-		max-width:100%;
-	}
 }
 
 .pc-header .header-search .btn {
