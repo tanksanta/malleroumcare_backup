@@ -442,7 +442,7 @@ $( document ).ready(function() {
     var id = $(this).attr("data-id");
     var ct_id = $(this).attr("data-ct");
     
-    var popupWidth = 700;
+    var popupWidth = 1200;
     var popupHeight = 700;
 
     var popupX = (window.screen.width / 2) - (popupWidth / 2);
