@@ -380,7 +380,7 @@ function apms_wishlist(it_id, $this) {
       return false;
     });
 
-  <?php if($member["mb_id"]&&$_COOKIE["viewType"] != "basic"){ ?>
+  <?php if($member["mb_id"] && $_COOKIE["viewType"] != "basic" && $_COOKIE['SHOW_MY_STOCK'] !== 'OFF'){ ?>
     var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
     $.ajax({

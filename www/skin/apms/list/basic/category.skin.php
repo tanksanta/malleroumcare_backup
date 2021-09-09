@@ -81,10 +81,26 @@ $isBenefit = substr($ca_id, 0, 2) == '70' ? true : false;
 			<?php echo $two_cate_result['ca_name']; ?>
 		</a>
 	</span>
-	<?php if(in_array($ca_id, ['10', '20'])) { ?> 
-	<a href="/shop/list.php?ca_id=<?=($ca_id == '10' ? '20' : '10')?>" class="m_switch_link"><?=($ca_id == '10' ? '대여' : '판매')?>품목 <i class="fa fa-chevron-right" aria-hidden="true"></i></a>
-	<?php } ?>
+  <div class="toggle_stock_wrap">
+    My 보유재고 표시
+    <button type="button" id="btn_toggle_stock" class="<?=($_COOKIE['SHOW_MY_STOCK'] !== 'OFF') ? 'active' : ''?>"><?=($_COOKIE['SHOW_MY_STOCK'] !== 'OFF') ? 'ON' : 'OFF'?></button>
+  </div>
 </div>
+<script>
+$(function() {
+  // My 보유재고 표시
+  $('#btn_toggle_stock').click(function() {
+    var show = $(this).hasClass('active');
+    if(show) {
+      $.cookie('SHOW_MY_STOCK', 'OFF', { expires: 365 });
+      window.location.reload();
+    } else {
+      $.removeCookie('SHOW_MY_STOCK');
+      window.location.reload();
+    }
+  });
+});
+</script>
 <div class="cate_wrap">
 	<ul>
 		<li>

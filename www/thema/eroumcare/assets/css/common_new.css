@@ -1017,6 +1017,9 @@ pre{white-space: pre-wrap;}
 .it_type_box{ margin-top:10px; display:inline-block; }
 .m_switch_link { display: none; float:right; font-size: 16px; }
 #sort-wrapper .dropdown {border: none !important;}
+.toggle_stock_wrap { float: right; font-size: 14px; font-weight: normal; color: #666; }
+.toggle_stock_wrap button { display: inline-block; background-color: #888; color: #fff; font-size: 14px; line-height: 20px; vertical-align: middle; margin-left: 4px; padding: 5px 10px; border-radius: 5px; width: 55px; text-align: center; }
+.toggle_stock_wrap button.active { background-color: #ef7c00; }
 
 .mo_menu { width: 100%; float: left; top: 0; padding: 0; }
 
