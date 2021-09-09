@@ -47,6 +47,13 @@ for($i = 2; $i <= $num_rows; $i++) {
 
   if($msg)
     json_response(400, "({$i}열) {$msg}");
+  
+  if($ct['ct_combine_ct_id']) {
+    // 합포 체크된 상품이면 합포 대상 상품의 배송정보를 변경함
+    $update_ct_id = $ct['ct_combine_ct_id'];
+  } else {
+    $update_ct_id = $ct_id;
+  }
 
   // 배송정보 입력
   $result = sql_query("
@@ -57,7 +64,7 @@ for($i = 2; $i <= $num_rows; $i++) {
       ct_delivery_num = '{$ct_delivery_num}',
       ct_edi_result = '0'
     WHERE
-      ct_id = '{$ct_id}'
+      ct_id = '{$update_ct_id}'
   ");
 
   // 배송로그 입력
