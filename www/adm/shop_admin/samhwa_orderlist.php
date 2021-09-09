@@ -19,6 +19,8 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
 }
 
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
+add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
 ?>
 <style>
 #text_size {
@@ -61,6 +63,13 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0
   border: 1px solid #ddd;
   border-radius: 5px;
 }
+#upload_wrap { display: none; }
+.popModal #upload_wrap { display: block; }
+.popModal .popModal_content { margin: 0 !important; }
+.popModal .form-group { margin-bottom: 15px; }
+.popModal label { display: inline-block; max-width: 100%; margin-bottom: 5px; font-weight: 700; }
+.popModal input[type=file] { display: block; }
+.popModal .help-block { padding: 0; display: block; margin-top: 5px; margin-bottom: 10px; color: #737373; }
 </style>
 <script src="<?php echo G5_ADMIN_URL; ?>/shop_admin/js/orderlist.js?ver=<?php echo time(); ?>"></script>
 
@@ -78,7 +87,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0
     <!-- <button id="dzexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">더존엑셀</button> -->
     <!-- <button id="handsabang" onClick="sanbang_order_send()">사방넷수동가져오기</button> -->
     <!-- <button id="list_matching_cancel">매칭데이터취소</button> -->
-
+    <button id="delivery_excel_upload">택배정보 일괄 업로드</button>
     <select class="sb1" name="" id="ct_manager_sb">
     <?php
         //출고담당자 select
@@ -102,6 +111,20 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0
     <!-- <button class="orderExcel" data-type="1"><img src="/adm/shop_admin/img/btn_img_ex.gif">주문 엑셀 다운로드</button> -->
     <!-- <button class="orderExcel" data-type="2"><img src="/adm/shop_admin/img/btn_img_ex.gif">출고 엑셀 다운로드</button> -->
   </div>
+</div>
+
+<div id="upload_wrap">
+  <form id="form_delivery_excel_upload" style="font-size: 14px;">
+    <div class="form-group">
+      <label for="datafile">택배정보 일괄 업로드</label>
+      <input type="file" name="datafile" id="datafile">
+      <p class="help-block">
+        주문내역 엑셀에 택배정보를 작성해서 업로드해주세요.<br>
+        택배회사 목록 : <?php foreach($delivery_companys as $company) { echo $company['name'].', '; } ?>
+      </p>
+    </div>
+    <button type="submit" class="btn btn-primary">업로드</button>
+  </form>
 </div>
 
 <div id="loading_excel">
@@ -1262,6 +1285,36 @@ $(document).on("change", ".ct_manager", function(e){
   // }
 });
         
+// 배송정보 일괄 업로드
+$('#delivery_excel_upload').click(function() {
+  $(this).popModal({
+    html: $('#form_delivery_excel_upload'),
+    placement: 'bottomRight',
+    showCloseBut: false
+  });
+});
+$('#form_delivery_excel_upload').submit(function(e) {
+  e.preventDefault();
+
+  var fd = new FormData(document.getElementById("form_delivery_excel_upload"));
+  $.ajax({
+      url: 'ajax.delivery.excel.upload.php',
+      type: 'POST',
+      data: fd,
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType: 'json'
+    })
+    .done(function() {
+      alert('업로드가 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+});
 </script>
 
 <?php
