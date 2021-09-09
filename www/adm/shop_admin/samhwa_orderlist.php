@@ -1285,7 +1285,7 @@ $(document).on("change", ".ct_manager", function(e){
   // }
 });
         
-// 배송정보 일괄 업로드
+// 택배정보 일괄 업로드
 $('#delivery_excel_upload').click(function() {
   $(this).popModal({
     html: $('#form_delivery_excel_upload'),

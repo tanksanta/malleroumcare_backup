@@ -29,7 +29,55 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
 if( function_exists('pg_setting_check') ){
   pg_setting_check(true);
 }
+
+add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
+add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
 ?>
+
+<style>
+#loading_excel {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.3);
+}
+#loading_excel .loading_modal {
+  position: absolute;
+  width: 400px;
+  padding: 30px 20px;
+  background: #fff;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#loading_excel .loading_modal p {
+  padding: 0;
+  font-size: 16px;
+}
+#loading_excel .loading_modal img {
+  display: block;
+  margin: 20px auto;
+}
+#loading_excel .loading_modal button {
+  padding: 10px 30px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+#upload_wrap { display: none; }
+.popModal #upload_wrap { display: block; }
+.popModal .popModal_content { margin: 0 !important; }
+.popModal .form-group { margin-bottom: 15px; }
+.popModal label { display: inline-block; max-width: 100%; margin-bottom: 5px; font-weight: 700; }
+.popModal input[type=file] { display: block; }
+.popModal .help-block { padding: 0; display: block; margin-top: 5px; margin-bottom: 10px; color: #737373; }
+</style>
 
 <script src="<?php echo G5_ADMIN_URL; ?>/shop_admin/js/orderlist.js?ver=<?php echo time(); ?>"></script>
 
@@ -39,8 +87,7 @@ if( function_exists('pg_setting_check') ){
   <a href="./orderdelivery.php" id="order_delivery" class="ov_a">엑셀배송처리</a>
   <?php } ?>
   <div class="right">
-
-
+    <button id="delivery_excel_upload">택배정보 일괄 업로드</button>
     <select class="sb1" name="" id="ct_manager_sb">
     <?php
         //출고담당자 select
@@ -59,11 +106,32 @@ if( function_exists('pg_setting_check') ){
     <button id="ct_manager_send_all">출고담당자 선택변경</button>
     
     <button id="deliveryExcelDownloadBtn">주문다운로드</button>
-    <button id="deliveryExcelDownloadBtn2">배송업로드 다운받기</button>
-    <button id="deliveryExcelUploadBtn">배송정보 일괄 업로드</button>
     <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
     <button id="delivery_edi_return_all">송장리턴</button>
+  </div>
+</div>
+
+<div id="upload_wrap">
+  <form id="form_delivery_excel_upload" style="font-size: 14px;">
+    <div class="form-group">
+      <label for="datafile">택배정보 일괄 업로드</label>
+      <input type="file" name="datafile" id="datafile">
+      <p class="help-block">
+        주문내역 엑셀에 택배정보를 작성해서 업로드해주세요.<br>
+        택배회사 목록 : <?php foreach($delivery_companys as $company) { echo $company['name'].', '; } ?>
+      </p>
+    </div>
+    <button type="submit" class="btn btn-primary">업로드</button>
+  </form>
+</div>
+
+<div id="loading_excel">
+  <div class="loading_modal">
+    <p>엑셀파일 다운로드 중입니다.</p>
+    <p>잠시만 기다려주세요.</p>
+    <img src="/shop/img/loading.gif" alt="loading">
+    <button onclick="cancelExcelDownload();" class="btn_cancel_excel">취소</button>
   </div>
 </div>
 
@@ -393,32 +461,14 @@ $("#complete2").change(function(){
   complete();
 });
 
+function cancelExcelDownload() {
+  if(excel_downloader) {
+    excel_downloader.abort();
+  }
+  $('#loading_excel').hide();
+}
+
 $( document ).ready(function() {
-  
-  $("#deliveryExcelDownloadBtn2").click(function() {
-    $("#excelForm").remove();
-    
-    var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
-    
-    var od_id = [];
-    var item = $("input[name='od_id[]']:checked");
-    
-    for(var i = 0; i < item.length; i++){
-      od_id.push($(item[i]).val());
-      
-      html += "<input type='hidden' name='od_id[]' value='" + $(item[i]).val() + "'>";
-    }
-    
-    html += "</form>";
-    
-    if(!od_id.length){
-      alert("선택된 주문내역이 존재하지 않습니다.");
-      return false;
-    }
-    
-    $("body").append(html);
-    $("#excelForm").submit();
-  });
   
   $(document).on("click", ".prodBarNumCntBtn", function(e){
     e.preventDefault();
@@ -529,36 +579,92 @@ $( document ).ready(function() {
       }
     })
   });
+
+  // 택배정보 일괄 업로드
+  $('#delivery_excel_upload').click(function() {
+    $(this).popModal({
+      html: $('#form_delivery_excel_upload'),
+      placement: 'bottomRight',
+      showCloseBut: false
+    });
+  });
+  $('#form_delivery_excel_upload').submit(function(e) {
+    e.preventDefault();
+
+    var fd = new FormData(document.getElementById("form_delivery_excel_upload"));
+    $.ajax({
+        url: 'ajax.delivery.excel.upload.php',
+        type: 'POST',
+        data: fd,
+        cache: false,
+        processData: false,
+        contentType: false,
+        dataType: 'json'
+      })
+      .done(function() {
+        alert('업로드가 완료되었습니다.');
+        window.location.reload();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+  });
   
   /* 210226 주문다운로드 */
   $("#deliveryExcelDownloadBtn").click(function(){
-    $("#excelForm").remove();
-    
-    var html = "<form id='excelForm' method='post' action='./order.delivery.excel.list.php'>";
-    
     var od_id = [];
     var item = $("input[name='od_id[]']:checked");
-    
-    for(var i = 0; i < item.length; i++){
+    for(var i = 0; i < item.length; i++) {
       od_id.push($(item[i]).val());
-      
-      html += "<input type='hidden' name='od_id[]' value='" + $(item[i]).val() + "'>";
     }
-    
-    html += "</form>";
-    
-    if(!od_id.length){
-      alert("선택된 주문내역이 존재하지 않습니다.");
-      return false;
+
+    if(!od_id.length) {
+      if(!confirm('선택한 주문이 없습니다.\n검색결과 내 모든 주문내역을 다운로드하시겠습니까?')) return false;
     }
+
+    var formdata = $.extend({}, {
+      click_status: od_status,
+      od_step: od_step,
+      page: page,
+      sub_menu: sub_menu,
+      last_step: last_step,
+      od_id: od_id
+    },$('#frmsamhwaorderlist').serializeObject());
+
+    // form object rename
+    formdata['od_settle_case'] = formdata['od_settle_case[]']; // Assign new key
+    delete formdata['od_settle_case[]']; // Delete old key
+
+    if (formdata['od_status[]'] != undefined) {
+      formdata['od_status'] = formdata['od_status[]']; // Assign new key
+      delete formdata['od_status[]']; // Delete old key
+    }
+
+    formdata['od_openmarket'] = formdata['od_openmarket[]']; // Assign new key
+    delete formdata['od_openmarket[]']; // Delete old key
+
+    formdata['add_admin'] = formdata['add_admin']; // Assign new key
+    // delete formdata['add_admin[]']; // Delete old key
+
+    formdata['od_important'] = formdata['od_important']; // Assign new key
+    // delete formdata['od_important[]']; // Delete old key
+
+    formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
+
+    var queryString = $.param(formdata);
+    var href = "./order.excel.list.php";
     
-    $("body").append(html);
-    $("#excelForm").submit();
-  });
-  
-  $("#deliveryExcelUploadBtn").click(function(){
-    var opt = "width=600,height=450,left=10,top=10";
-    window.open("./deliveryexcel.php", "win_excel", opt);
+    $('#loading_excel').show();
+
+    excel_downloader = $.fileDownload(href, {
+      httpMethod: "POST",
+      data: queryString
+    })
+    .always(function() {
+      $('#loading_excel').hide();
+    });
+    
     return false;
   });
 });
