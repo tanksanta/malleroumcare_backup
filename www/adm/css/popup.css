@@ -56,6 +56,7 @@ margin: 0.67em 0;
 */
 
 hr {
+-webkit-box-sizing: content-box;
 box-sizing: content-box; /* 1 */
 height: 0; /* 1 */
 overflow: visible; /* 2 */
@@ -90,6 +91,7 @@ background-color: transparent;
 abbr[title] {
 border-bottom: none; /* 1 */
 text-decoration: underline; /* 2 */
+-webkit-text-decoration: underline dotted;
 text-decoration: underline dotted; /* 2 */
 }
 
@@ -243,6 +245,7 @@ padding: 0.35em 0.75em 0.625em;
 */
 
 legend {
+-webkit-box-sizing: border-box;
 box-sizing: border-box; /* 1 */
 color: inherit; /* 2 */
 display: table; /* 1 */
@@ -274,6 +277,7 @@ overflow: auto;
 
 [type="checkbox"],
 [type="radio"] {
+-webkit-box-sizing: border-box;
 box-sizing: border-box; /* 1 */
 padding: 0; /* 2 */
 }
@@ -357,6 +361,10 @@ display: none;
     cursor: not-allowed;
     background-color: #eee;
     opacity: 1;
+}
+
+* {
+    font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', Pretendard, Roboto, 'Noto Sans KR', 'Segoe UI', 'Malgun Gothic', sans-serif;
 }
 
 
@@ -469,7 +477,8 @@ display: none;
 .admin_popup input {
     vertical-align: middle;
 }
-.admin_popup input[type="text"] {
+.admin_popup input[type="text"],
+.admin_popup input[type="number"] {
     background-color: white !important;
     padding: 0px 8px;
     height: 29px;
@@ -503,6 +512,10 @@ display: none;
     color:#656565;
     vertical-align: middle;
     background-color:white;
+}
+
+.admin_popup .shbtn.small {
+    padding: 5px 7px;
 }
 
 .admin_popup .shbtn:hover {
@@ -571,6 +584,7 @@ display: none;
 #pop_add_item .add_item_header li {
     width:45%;
     float:left;
+    -webkit-box-sizing:border-box;
     box-sizing:border-box;
     text-align:center;
     color:#999999;
@@ -673,6 +687,7 @@ display: none;
     background-color:#a5a5a5;
     text-align:center;
     line-height:50px;
+    -webkit-box-sizing:border-box;
     box-sizing:border-box;
     cursor:pointer;
 }
@@ -713,6 +728,7 @@ display: none;
     min-width: 0;
     font-size: 12px;
     border-radius: 0;
+    -webkit-box-shadow: none;
     box-shadow: none;
     text-align: center;
 }
@@ -731,6 +747,7 @@ display: none;
 #pop_add_item .content {
     position:relative;
     width:100%;
+    -webkit-box-sizing:border-box;
     box-sizing:border-box;
     margin:0 !important;
     padding:0 20px;
@@ -738,6 +755,7 @@ display: none;
 #pop_add_item .content .item_options {
     float:left;
     width:30%;
+    -webkit-box-sizing:border-box;
     box-sizing:border-box;
     padding-right:10px;
     border-right:1px solid #ddd;
@@ -746,6 +764,7 @@ display: none;
 #pop_add_item .content #custom_order {
     width:68%;
     float:right;
+    -webkit-box-sizing:border-box;
     box-sizing:border-box;
     padding-right:20px;
 }
@@ -771,6 +790,7 @@ display: none;
 #pop_add_item .content .item_options .item_info a p span.model {
     color:#08a2cd;
 }
+#popup_buttom, 
 #pop_add_item .content .addoptionbuttons {
     clear:both;
     position:fixed;
@@ -782,6 +802,7 @@ display: none;
     font-size:15px;
     font-weight:bold;
 }
+#popup_buttom input[type="submit"], 
 #pop_add_item .content .addoptionbuttons input[type="submit"] {
     display:block;
     width:80%;
@@ -793,7 +814,9 @@ display: none;
     font-weight:bold;
     color:white;
     cursor:pointer;
+    line-height: 50px;
 }
+#popup_buttom .addoptionbuttons a,
 #pop_add_item .content .addoptionbuttons a {
     display:block;
     float:left;
@@ -804,12 +827,19 @@ display: none;
     text-align:left;
     line-height:50px;
     padding-left:25px;
+    -webkit-box-sizing:border-box;
     box-sizing:border-box;
 }
+#popup_buttom .addoptionbuttons a:hover,
+#pop_add_item .content .addoptionbuttons a:hover {
+    text-decoration: none;
+}
+#popup_buttom .addoptionbuttons a img,
 #pop_add_item .content .addoptionbuttons a img {
     vertical-align:middle;
     margin-top: -3px;
 }
+#popup_buttom .addoptionbuttons:after,
 #pop_add_item .content .addoptionbuttons:after {
     clear:both;
     display:block;
@@ -972,6 +1002,11 @@ display: none;
     width: 100%;
 }
 
+#pop_add_item .itm-option-group > .option-price-wrapper input:-moz-read-only {
+    background-color: #f1f1f1 !important;
+    color: #a0a0a0;
+}
+
 #pop_add_item .itm-option-group > .option-price-wrapper input:read-only {
     background-color: #f1f1f1 !important;
     color: #a0a0a0;
@@ -1017,6 +1052,7 @@ display: none;
 #g5_shop_order_cart_memo {
     width: 100%;
     background-color: white;
+    -webkit-box-sizing: border-box;
     box-sizing: border-box;
     padding: 15px;
     height: 65px;
@@ -1062,6 +1098,7 @@ display: none;
 #custom_order {
     height:770px;
     overflow-y:scroll;
+    -webkit-box-sizing:border-box;
     box-sizing:border-box;
 }
 #custom_order .ask {
