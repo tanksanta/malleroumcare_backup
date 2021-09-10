@@ -197,24 +197,6 @@ $(function() {
                   // $pirce_v = intval(str_replace(',','',$item[$i]['total_price'])) - intval(str_replace(',','',$item[$i]['ct_discount']));
                   $pirce_v = intval(str_replace(',','',$item[$i]['total_price']));
                 ?>
-                <!--모바일용-->
-                <div class="info_pc_none">
-                  <div>
-                    <p><?php echo $item[$i]['qty']; ?>개</p>
-                  </div>
-                  <div>
-                    단가: <p><?php echo number_format($pirce_v / intval($item[$i]['qty'])); ?>원</p>
-                  </div>
-                  <div>
-                    공급가액: <p><?php echo number_format(round($pirce_v / 1.1)); ?>원</p>
-                  </div>
-                  <div>
-                    부가세: <p><?php echo number_format(round($pirce_v / 11)); ?>원</p>
-                  </div>
-                  <div>
-                    총액: <p class="price_print"><?php echo number_format($pirce_v); ?>원</p>
-                  </div>
-                </div>
               </div>
             </li>
             <li class="num m_none">
@@ -265,6 +247,24 @@ $(function() {
             }
             ?>
           </ul>
+          <!--모바일용-->
+          <div class="info_pc_none">
+            <div>
+              수량<p><?php echo $item[$i]['qty']; ?>개</p>
+            </div>
+            <div>
+              단가<p><?php echo number_format($pirce_v / intval($item[$i]['qty'])); ?>원</p>
+            </div>
+            <div>
+              공급가액<p><?php echo number_format(round($pirce_v / 1.1)); ?>원</p>
+            </div>
+            <div>
+              부가세<p><?php echo number_format(round($pirce_v / 11)); ?>원</p>
+            </div>
+            <div>
+              총액<p class="price_print"><?php echo number_format($pirce_v); ?>원</p>
+            </div>
+          </div>
           <div class="list-btm">
             <?php if(substr($item[$i]["ca_id"], 0, 2) == 20){ ?>
             <div class="stock_insert_none order_none" style="display: none;">
@@ -1062,8 +1062,9 @@ function apply_recipient(list) {
     var discountCnt = 0;
     var price = Number($("input[name='ct_price[" + key + "]']").val().replace(/,/gi, ""));
     var cnt = Number($("input[name='it_qty[" + key + "]']").val().replace(/,/gi, ""));
-    var change_discount = 0;
     $(itemDom).find(".barList").find("input").attr("type", "text");
+
+    var total_sales_qty = 0;
 
     $.each(itemList, function(subKey, subDom){
       var dataBarCnt = Number($(subDom).attr("data-bar-cnt"));
@@ -1094,7 +1095,7 @@ function apply_recipient(list) {
       //20210306성훈추가 - 바코드허용개수
       renew_num = $(itemDom).find(".prodBarSelectBox" + subKey).length;
 
-      for(var i = 0; i < item.length; i++){
+      for(var i = 0; i < item.length; i++) {
         var name = $(item[i]).attr("name");
         var dataCode = $(item[i]).attr("data-code");
         var dataThisCode = $(item[i]).attr("data-this-code");
@@ -1126,28 +1127,27 @@ function apply_recipient(list) {
       $(stockCntItem[subKey]).val(stockCntItemCnt);
 
       //할인율 계산
-      sendData_discount=[];
-      //it_id, 주문수량 - 재고수량
-      sendData_discount = {
-        "it_id" : $(itemDom).data('code'),
-        "ct_sale_qty" : dataBarCnt-dataStockCnt
-      };
-      $.ajax({
-        url : "./ajax.change_discount.php",
-        type : "POST",
-        async : false,
-        data : sendData_discount,
-        success : function(result){
-          change_discount=change_discount+parseInt(result);
-        }
-      });
+      total_sales_qty += dataBarCnt - dataStockCnt;
+    });
+
+    var change_discount = 0;
+    $.ajax({
+      url : "./ajax.change_discount.php",
+      type : "POST",
+      async : false,
+      data : {
+        it_id: $(itemDom).data('code'),
+        ct_sale_qty: total_sales_qty
+      },
+      success : function(result){
+        change_discount = parseInt(result);
+      }
     });
 
     //전체개수 - 재고 코드개수 : 가격넣기
     $("input[name='it_price[" + key + "]']").val((cnt - discountCnt) * price);
     $("input[name='it_discount[" + key + "]']").val(change_discount);
-    $("input[name='od_discount']").val(change_discount);
-    $(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price) + '원');
+    $(itemDom).find(".price_print").text(number_format((cnt - discountCnt) * price - change_discount) + '원');
 
     var has_barcode_text = $(itemDom).find('.barcode.barList').find('input[type="text"]').length;
     var has_barcode_button = $(itemDom).find('.barcode.barList').find('.open_input_barcode').length;
@@ -1504,35 +1504,31 @@ $(function() {
 //상품주문 클릭시 할인금액 계산
 function discount_for_order() {
   var prodItemList = $(".table-list2 .list.item");      //아이템정보2
-  var change_discount=0;
-  $.each(prodItemList, function(key, itemDom){
+  var change_discount = 0;
+  $.each(prodItemList, function(key, itemDom) {
     var code = $(itemDom).attr("data-code");
     var itemList = $(itemDom).find(".pro > .pro-info > .text li");
+    var total_sales_qty = 0;
 
-    $.each(itemList, function(subKey, subDom){
+    $.each(itemList, function(subKey, subDom) {
       var dataBarCnt = Number($(subDom).attr("data-bar-cnt"));
-      //할인율 계산
-      sendData_discount=[];
-      //it_id, 주문수량 - 재고수량
-      sendData_discount = {
-        "it_id" : code,
-        "ct_sale_qty" : dataBarCnt
-      };
-      $.ajax({
-        url : "./ajax.change_discount.php",
-        type : "POST",
-        async : false,
-        data : sendData_discount,
-        success : function(result){
-          //console.log(sendData_discount);
-          //console.log(result);
-          change_discount=change_discount+parseInt(result);
-        }
-      });
+      total_sales_qty += dataBarCnt;
+    });
+
+    $.ajax({
+      url : "./ajax.change_discount.php",
+      type : "POST",
+      async : false,
+      data : {
+        it_id: code,
+        ct_sale_qty: total_sales_qty
+      },
+      success : function(result){
+        change_discount += parseInt(result);
+      }
     });
   });
   $("input[name='od_discount']").val(change_discount);
-  $("#od_cp_price").text(number_format(change_discount));
 }
 
 $(function(){
@@ -1728,6 +1724,7 @@ $(function(){
 
   //수급자 -> select 박스 클릭시 돌아가는 함수
   $(document).on("change", ".recipientBox select", function(){
+    console.log(1);
     if($(this).parent(".recipientBox").find("input[type='radio']:checked").attr("data-type") != "use"){
       return false;
     }
@@ -1862,6 +1859,7 @@ $(function(){
 
   //수급자신청 재고소진 or 신규주문 
   $(document).on("change", ".recipientBox input[type='radio']", function(){
+    console.log(2);
     var code = $(this).closest(".recipientBox").attr("data-code");
     var parent = $(this).closest(".list.item");
     var type = $(this).attr("data-type");
