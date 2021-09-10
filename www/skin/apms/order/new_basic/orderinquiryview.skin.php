@@ -384,7 +384,11 @@ $(function() {
           <div class="list">
             <ul class="cb">
               <li class="pro">
-                <div class="img"><img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';"></div>
+                <div class="img">
+                  <a href="<?=G5_SHOP_URL?>/item.php?it_id=<?=$item[$i]['it_id']?>&ca_id=<?=substr($item[$i]["ca_id"], 0, 2) ?>">
+                    <img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';">
+                  </a>
+                </div>
                 <div class="pro-info">
                   <div class="pro-icon">
                     <?php if(!is_benefit_item($item[$i])) { ?>
@@ -401,8 +405,10 @@ $(function() {
                     <?php } ?>
                   </div>
                   <div class="name">
-                    <?php echo $item[$i]['it_name']; ?>
-                    <?php if($item[$i]['opt'][$k]['ct_stock_qty']) echo '[재고소진]'; ?>
+                    <a href="<?=G5_SHOP_URL?>/item.php?it_id=<?=$item[$i]['it_id']?>&ca_id=<?=substr($item[$i]["ca_id"], 0, 2) ?>">
+                      <?php echo $item[$i]['it_name']; ?>
+                      <?php if($item[$i]['opt'][$k]['ct_stock_qty']) echo '[재고소진]'; ?>
+                    </a>
                   </div>
                   <?php if($item[$i]['opt'][$k]['ct_option'] != $item[$i]['it_name']) { ?>
                   <div class="text"><?=$item[$i]['opt'][$k]['ct_option']?></div>
