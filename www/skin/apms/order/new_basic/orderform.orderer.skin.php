@@ -203,10 +203,16 @@ $(function() {
                     <p><?php echo $item[$i]['qty']; ?>개</p>
                   </div>
                   <div>
-                    <p><?php echo number_format($pirce_v / intval($item[$i]['qty'])); ?></p>
+                    단가: <p><?php echo number_format($pirce_v / intval($item[$i]['qty'])); ?>원</p>
                   </div>
                   <div>
-                    <p class="price_print"><?php echo number_format($pirce_v); ?></p>
+                    공급가액: <p><?php echo number_format(round($pirce_v / 1.1)); ?>원</p>
+                  </div>
+                  <div>
+                    부가세: <p><?php echo number_format(round($pirce_v / 11)); ?>원</p>
+                  </div>
+                  <div>
+                    총액: <p class="price_print"><?php echo number_format($pirce_v); ?>원</p>
                   </div>
                 </div>
               </div>
@@ -217,10 +223,10 @@ $(function() {
             <li class="pro-price m_none">
               <p><?php echo number_format($pirce_v / intval($item[$i]['qty'])); ?>원</p>
             </li>
-            <li class="basic-price">
+            <li class="basic-price m_none">
               <?php echo number_format(round($pirce_v / 1.1)); ?>원
             </li>
-            <li class="tax-price">
+            <li class="tax-price m_none">
             <?php echo number_format(round($pirce_v / 11)); ?>원
             </li>
             <li class="price m_none">
