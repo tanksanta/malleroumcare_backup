@@ -23,8 +23,11 @@ for($i = 2; $i <= $num_rows; $i++) {
   $ct_delivery_company = sql_real_escape_string(trim($sheet->getCell('N'.$i)->getValue()));
   $ct_delivery_num = sql_real_escape_string(trim($sheet->getCell('O'.$i)->getValue()));
 
-  if(!$ct_delivery_company || !$ct_delivery_num)
-    continue;
+  // 택배사가 비어있으면 기본값 (로젠택배 세팅)
+  if(!$ct_delivery_company) {
+    $ct_delivery_company = '로젠택배';
+    $ct_delivery_num = '';
+  }
 
   $msg = '';
   if(!$ct_id)
