@@ -562,11 +562,11 @@ $sendData["prods"] = $prodsSendData;
         
         
         <div class="it_type_box">
-          <?php if($it['it_type1']){ ?><p class="p_box type1" > 일시품절</p><?php } ?>
-          <?php if($it['it_type2']){ ?><p class="p_box type2"> 일부옵션품절</p><?php } ?>
-          <?php if($it['it_type3']){ ?><p class="p_box type3"> 주문제작</p><?php } ?>
-          <?php if($it['it_type4']){ ?><p class="p_box type4"> 예약가능</p><?php } ?>
-          <?php if($it['it_type5']){ ?><p class="p_box type5"> 특가할인</p><?php } ?>
+          <?php if($it['it_type1']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type1_color']?>; color:<?=$default['de_it_type1_color']?>;"><?=$default['de_it_type1_name']?></p><?php } ?>
+          <?php if($it['it_type2']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type2_color']?>; color:<?=$default['de_it_type2_color']?>;"><?=$default['de_it_type2_name']?></p><?php } ?>
+          <?php if($it['it_type3']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type3_color']?>; color:<?=$default['de_it_type3_color']?>;"><?=$default['de_it_type3_name']?></p><?php } ?>
+          <?php if($it['it_type4']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type4_color']?>; color:<?=$default['de_it_type4_color']?>;"><?=$default['de_it_type4_name']?></p><?php } ?>
+          <?php if($it['it_type5']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type5_color']?>; color:<?=$default['de_it_type5_color']?>;"><?=$default['de_it_type5_name']?></p><?php } ?>
         </div>
       </div>
 
