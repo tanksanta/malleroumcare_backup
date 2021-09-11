@@ -329,9 +329,23 @@ $partners = get_partner_members();
         async : false,
         data : $("#prodBarNumFormWrap").serialize(),
         success : function(result){
-          alert("저장이 완료되었습니다.");
-
-          opener.location.reload();
+          var data = result.data;
+          if(data && window.opener.$('#samhwa_order_list_table').length > 0) {
+            for(var i = 0; i < data.length; i++) {
+              var row = data[i];
+              var $tr = window.opener.$('.tr_'+row['ct_id']);
+              if(row['status'] === 'disable') {
+                $tr.addClass('complete2');
+                $tr.find('a.deliveryCntBtn').addClass('disable').text(row['text']);
+              } else {
+                $tr.removeClass('complete2');
+                $tr.find('a.deliveryCntBtn').removeClass('disable').text(row['text']);
+              }
+            }
+          } else {
+            window.opener.location.reload();
+            alert("저장이 완료되었습니다.");
+          }
           window.close();
         }
       });
