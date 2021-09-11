@@ -5,7 +5,7 @@ include_once("./_common.php");
 $sub_menu = '400400';
 $auth_check = auth_check($auth[$sub_menu], 'w', true);
 if($auth_check) {
-  die("권한이 없습니다.");
+  json_response(400, "권한이 없습니다.");
 }
 
 $ct_id_list = $_POST["ct_id"];
@@ -13,6 +13,7 @@ $od_delivery_insert = 0;
 
 $direct_delivery_date = '';
 
+$result = [];
 foreach($ct_id_list as $ct_id) {
   $ct_delivery_company = $_POST["ct_delivery_company_{$ct_id}"];
   $ct_delivery_num = $_POST["ct_delivery_num_{$ct_id}"];
@@ -20,8 +21,6 @@ foreach($ct_id_list as $ct_id) {
   $ct_delivery_price = $_POST["ct_delivery_price_{$ct_id}"];
   $ct_delivery_combine = $_POST["ct_combine_{$ct_id}"];
   $ct_delivery_combine_ct_id = (int)$_POST["ct_combine_ct_id_{$ct_id}"];
-
-
 
   $ct_is_direct_delivery = (int)$_POST["ct_is_direct_delivery_{$ct_id}"] ?: 0;
   $ct_is_direct_delivery_sub = (int)$_POST["ct_is_direct_delivery_sub_{$ct_id}"] ?: 0;
@@ -104,6 +103,32 @@ foreach($ct_id_list as $ct_id) {
       d_date = '{$data}'
   ";
   sql_query($sql);
+
+  $result_status = '';
+  $result_text = '배송정보';
+  if($ct_is_direct_delivery) {
+    $result_status = 'disable';
+    $result_text = '입력완료(직배송)';
+  }
+  if($ct_delivery_combine) {
+    $result_status = 'disable';
+    $result_text = '입력완료(합포)';
+  }
+  if($ct_delivery_num) {
+    foreach($delivery_companys as $company){ 
+      if($ct_delivery_company == $company["val"] ){
+        $result_company = $company["name"];
+        break;
+      }
+    }
+    $result_status = 'disable';
+    $result_text = "입력완료({$result_company} {$ct_delivery_num})";
+  }
+  $result[] = array(
+    'ct_id' => $ct_id,
+    'status' => $result_status,
+    'text' => $result_text,
+  );
 }
 
 sql_query("
@@ -112,4 +137,5 @@ sql_query("
   WHERE od_id = '{$_POST["od_id"]}'
 ");
 
+json_response(200, 'OK', $result);
 ?>

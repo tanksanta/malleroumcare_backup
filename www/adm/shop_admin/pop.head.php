@@ -15,7 +15,18 @@
 <script type="text/javascript" src="<?php echo G5_JS_URL ?>/datetime_components/moment.min.js"></script>
 <script type="text/javascript" src="<?php echo G5_JS_URL ?>/datetime_components/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?php echo G5_JS_URL ?>/datetime_components/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="<?php echo G5_JS_URL ?>/datetime_components/ko.js"></script>
 <link rel="stylesheet" href="<?php echo G5_JS_URL ?>/datetime_components/bootstrap.min.css" />
 <link rel="stylesheet" href="<?php echo G5_JS_URL ?>/datetime_components/bootstrap-datetimepicker.min.css" />
+<link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/jquery.flexdatalist.css" />
+<script type="text/javascript" src="<?php echo G5_JS_URL ?>/jquery.flexdatalist.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+<script>
+function addComma(num)
+{
+  var regexp = /\B(?=(\d{3})+(?!\d))/g;
+  return num.toString().replace(regexp, ',');
+}
+</script>
 </head>
 <body>

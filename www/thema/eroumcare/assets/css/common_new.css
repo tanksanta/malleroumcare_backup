@@ -1006,7 +1006,7 @@ pre{white-space: pre-wrap;}
 .productListWrap > ul > li > a .img_3d { position: absolute !important; width: 50px; height: 40px; margin-top:5px; line-height: 38px; z-index: 4; top: 5px; right: 10px; cursor: pointer; border-radius: 10px; background-color: #FFF; border: 1px solid #E2E2E2; text-align: center; font-weight: bold; font-size: 13px; }
 .productListWrap > ul > li > a .btn_wishlist { position: absolute; bottom: 10px; right: 10px; font-size: 30px; color: #ddd; }
 .productListWrap > ul > li > a .btn_wishlist.active { color: #f4b133; }
-.productListWrap > ul > li > a > p.cnt {position: absolute;top: 10px;left: 10px;width: auto;border-radius: 5px;height: 30px;line-height: 30px;background-color: #F28D08;color: #fff;padding: 0 10px;font-size: 12px;}
+.productListWrap > ul > li > a .img_wrap p.cnt { display: block; margin: 0; position: absolute; bottom: 10px; left: 10px;width: auto;border-radius: 5px;height: 30px;line-height: 30px;background-color: #F28D08;color: #fff;padding: 0 10px;font-size: 12px;}
 .productListWrap > ul > li > a > p.tag { color: #1ca2ff; margin-top: 10px; white-space: nowrap; overflow: hidden; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
 .productListWrap > ul > li > a > p.tag .hash-tag { font-weight: 100; }
 .productListWrap > ul > li > a > p.tag .hash-tag + .hash-tag { margin-left: 10px; }
@@ -1017,6 +1017,9 @@ pre{white-space: pre-wrap;}
 .it_type_box{ margin-top:10px; display:inline-block; }
 .m_switch_link { display: none; float:right; font-size: 16px; }
 #sort-wrapper .dropdown {border: none !important;}
+.toggle_stock_wrap { float: right; font-size: 14px; font-weight: normal; color: #666; }
+.toggle_stock_wrap button { display: inline-block; background-color: #888; color: #fff; font-size: 14px; line-height: 20px; vertical-align: middle; margin-left: 4px; padding: 5px 10px; border-radius: 5px; width: 55px; text-align: center; }
+.toggle_stock_wrap button.active { background-color: #ef7c00; }
 
 .mo_menu { width: 100%; float: left; top: 0; padding: 0; }
 

@@ -1151,6 +1151,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
         <div class="header">
             <h2>배송정보</h2>
             <div class="right">
+                <input type="button" value="배송지 목록" class="btn shbtn" id="address_list">
                 <input type="button" value="기본정보 반영" class="btn shbtn" id="reset_od_info">
                 <input type="button" value="출고 리스트" class="btn shbtn" id="release_list" onclick="location.href='./samhwa_deliverylist.php';">
             </div>
@@ -3811,6 +3812,13 @@ $(document).ready(function() {
                 location.reload();
             }
         });
+    });
+
+    // 배송지 목록
+    $('#address_list').click(function() {
+      var url = "<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderaddress.php?mb_id=<?=$od['mb_id']?>";
+      window.open(url, "win_address", "left=100,top=100,width=800,height=600,scrollbars=1");
+      return false;
     });
 
 });

@@ -19,7 +19,7 @@ if($sel_date && $fr_date && $to_date)
 
 # 주문상태
 $ct_status = $_GET['ct_status'];
-$ct_steps = ['준비', '출고준비', '배송', '완료'];
+$ct_steps = ['준비', '출고준비', '배송', '완료', '취소', '주문무효'];
 if($ct_status) {
   $ct_steps = array_intersect($ct_steps, $ct_status);
 }
@@ -143,7 +143,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <label><input type="checkbox" name="ct_status[]" value="준비" <?=option_array_checked('준비', $ct_status)?>/> 상품준비</label> 
       <label><input type="checkbox" name="ct_status[]" value="출고준비" <?=option_array_checked('출고준비', $ct_status)?>/> 출고준비</label> 
       <label><input type="checkbox" name="ct_status[]" value="배송" <?=option_array_checked('배송', $ct_status)?>/> 출고완료</label> 
-      <label><input type="checkbox" name="ct_status[]" value="완료" <?=option_array_checked('완료', $ct_status)?>/> 배송완료</label><br>
+      <label><input type="checkbox" name="ct_status[]" value="완료" <?=option_array_checked('완료', $ct_status)?>/> 배송완료</label>
+      <label><input type="checkbox" name="ct_status[]" value="취소" <?=option_array_checked('취소', $ct_status)?>/> 주문취소</label> 
+      <label><input type="checkbox" name="ct_status[]" value="주문무효" <?=option_array_checked('주문무효', $ct_status)?>/> 주문무효</label> 
+      <br>
       
       <div class="search_date">
         <select name="sel_date">

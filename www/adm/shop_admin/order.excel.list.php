@@ -348,7 +348,14 @@
     $addr="";
     if($od_b_zip1){$addr= "(".$od_b_zip1.$od_b_zip2.")";}
     $addr = $addr.$od["od_b_addr1"].' '.$od["od_b_addr2"].' '.$od["od_b_addr3"];
+    $ct_delivery_company = $it['ct_delivery_company'];
+		foreach($delivery_companys as $companyInfo) {
+			if($companyInfo["val"] == $ct_delivery_company){
+				$ct_delivery_company = $companyInfo["name"];
+			}
+		}
     $rows[] = [ 
+      ' '.$it['od_id'],
       date("Y-m-d", strtotime($od["od_time"]))."-".($i),
       $it_name,
       $it["ct_qty"],
@@ -359,14 +366,17 @@
       $od["od_b_tel"],
       $od["od_b_hp"],
       $it["prodMemo"],
-      $od["od_memo"]
+      $od["od_memo"],
+      $it['ct_id'],
+      $ct_delivery_company,
+      $it['ct_delivery_num']
     ];
   }
 
-  $headers = array("일자-No.", "품목명[규격]", "수량", "품목&수량","성함(상호명)", "영업담당자", "배송처", "연락처","휴대폰", "적요","배송지요청사항");
+  $headers = array("주문번호", "일자-No.", "품목명[규격]", "수량", "품목&수량","성함(상호명)", "영업담당자", "배송처", "연락처","휴대폰", "적요", "배송지요청사항", "카트ID", "택배사", "송장번호");
   $data = array_merge(array($headers), $rows);
     
-  $widths  = array(20, 50, 10, 30, 50, 30, 50);
+  $widths  = array(20, 20, 50, 10, 30, 50, 30, 50, 20, 20, 10, 20, 10, 15, 20);
   $header_bgcolor = 'FFABCDEF';
   $last_char = column_char(count($headers) - 1);
 

@@ -539,6 +539,25 @@ if($is_main && !$is_member) {
                   제안하기
                 </a>
               </li>
+              <?php 
+              $tutorials = get_tutorials(); 
+              if ($tutorials['completed_count'] >= 4) {
+              ?>
+              <li>
+                <a href="<?php echo G5_URL; ?>/shop/tutorial_reset.php" >
+                  서비스 다시체험 (튜토리얼)
+                </a>
+              </li>
+              <?php } ?>
+              <?php 
+              if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials) { 
+              ?>
+              <li>
+                <a href="<?php echo G5_URL; ?>/shop/tutorial_start.php" >
+                  서비스 체험 (튜토리얼)
+                </a>
+              </li>
+              <?php } ?>
               <li style="display: none;">
                 <a href="/bbs/board.php?bo_table=lab">
                   이로움 연구소

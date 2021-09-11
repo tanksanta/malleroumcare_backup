@@ -40,7 +40,7 @@ foreach($ct_id_arr as $ct_id) {
     $ct['it_name'],
     $ct['ct_qty'],
     $ct['od_b_name'],
-    sprintf("(%s%s)", $ct['od_b_zip1'], $ct['od_b_zip2']).' '.print_address($ct['od_b_addr1'], $ct['od_b_addr2'], $ct['od_b_addr3'], $ct['od_b_addr_jibeon']),
+    print_address($ct['od_b_addr1'], $ct['od_b_addr2'], $ct['od_b_addr3'], $ct['od_b_addr_jibeon']),
     $ct['od_b_hp'] ?: $ct['od_b_tel'],
     $ct['prodMemo']
   ];

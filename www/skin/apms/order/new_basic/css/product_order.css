@@ -92,7 +92,7 @@ table {border-collapse: collapse;}
 
 .tti {padding: 0 0 16px 16px; font-size: 24px;}
 .tti p {padding-top: 10px; font-size: 16px;font-weight: 300;}
-.order-date {clear: both; margin-bottom: 30px; padding:14px 58px 25px;background: #f3f3f3;border:1px solid #e7e7e7;}
+.order-date {clear: both; margin-bottom: 30px; padding:10px;background: #f3f3f3;border:1px solid #e7e7e7;}
 .order-date .date-box {margin-top: 25px; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
 .order-date .list-text {display: -webkit-box; display: -ms-flexbox; display: flex;}
 .order-date .list-text div {width: 50%;text-align: center;}

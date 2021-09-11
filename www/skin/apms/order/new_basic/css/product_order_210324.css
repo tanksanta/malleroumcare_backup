@@ -379,7 +379,7 @@ table {border-collapse: collapse;}
     .m_none {display: none !important;}
     .pc_none {display: block !important;}
 
-	.tab-2 .table-list2 .barcode { width: 100%; padding-left: 84px; }
+	.tab-2 .table-list2 .barcode { width: 130px; padding-left: 10px; }
 	.tab-2 .table-list2 .barcode > * { width: 120px !important; display: block; }
     /* .order-list {padding-top: 60px;} */
     .tti {font-size: 21px;} 
@@ -420,10 +420,12 @@ table {border-collapse: collapse;}
     #pro-order2 .table-list3 ul li div p,
     #pro-order2 .name-top div,
     .num-select {font-size: 12px;}
+    .table-list2 .list .pro { -webkit-box-flex: 1; -ms-flex: 1; flex-grow: 1; width: unset; }
     .table-list2 .pro .img {width: 72px;height: 72px;}
-    .table-list2 .pro-info .info_pc_none {display: -webkit-box !important; display: -ms-flexbox !important; display: flex !important;}
-    .table-list2 .pro-info .info_pc_none div:first-child p{display:inline-block;width:30px;}
-
+    .table-list2 .pro-info { -webkit-box-flex: 1; -ms-flex: 1; flex-grow: 1; }
+    .table-list2 .info_pc_none { display: block !important; }
+    .table-list2 .info_pc_none > div:after { display: table; content: ' '; clear: both; }
+    .table-list2 .info_pc_none > div > p { margin: 0; float: right; }
 }
 
 @media screen and (max-width: 500px){

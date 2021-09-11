@@ -60,33 +60,32 @@ if ( THEMA_KEY == 'partner' && !$member['mb_id'] ) {
 
 include_once(THEMA_PATH.'/side/list-cate-side.php');
 
-  # 210131 재고수량 조회
-  $sendData = [];
-  $sendData["usrId"] = $member["mb_id"];
-  $sendData["entId"] = $member["mb_entId"];
-  if(substr($it["ca_id"], 0, 2) == "20") {
-    $sendData["status02"] = true;
-  }
-  $prodsSendData = [];
+# 210131 재고수량 조회
+$sendData = [];
+$sendData["usrId"] = $member["mb_id"];
+$sendData["entId"] = $member["mb_entId"];
+if(substr($it["ca_id"], 0, 2) == "20") {
+  $sendData["status02"] = true;
+}
+$prodsSendData = [];
 
-  if($it["optionList"]) {
-    foreach($it["optionList"] as $optionData) {
-      $prodsData = [];
-      $prodsData["prodId"] = $it["it_id"];
-      $prodsData["prodColor"] = $optionData["color"];
-      $prodsData["prodSize"] = $optionData["size"];
-      array_push($prodsSendData, $prodsData);
-    }
-  } else {
+if($it["optionList"]) {
+  foreach($it["optionList"] as $optionData) {
     $prodsData = [];
     $prodsData["prodId"] = $it["it_id"];
-    $prodsData["prodColor"] = "";
-    $prodsData["prodSize"] = "";
+    $prodsData["prodColor"] = $optionData["color"];
+    $prodsData["prodSize"] = $optionData["size"];
     array_push($prodsSendData, $prodsData);
   }
+} else {
+  $prodsData = [];
+  $prodsData["prodId"] = $it["it_id"];
+  $prodsData["prodColor"] = "";
+  $prodsData["prodSize"] = "";
+  array_push($prodsSendData, $prodsData);
+}
 
-  $sendData["prods"] = $prodsSendData;
-
+$sendData["prods"] = $prodsSendData;
 ?>
 
 
@@ -1530,7 +1529,7 @@ include_once(THEMA_PATH.'/side/list-cate-side.php');
 <script>
 $(function() {
 
-  <?php if($member["mb_id"]){ ?>
+  <?php if($member["mb_id"] && $_COOKIE['SHOW_MY_STOCK'] !== 'OFF'){ ?>
     var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
     $.ajax({

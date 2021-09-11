@@ -203,6 +203,7 @@ $pen_ent = get_pen_ent_by_pen_id($data['penId']);
           <input type="text" id="pen_mb_id" value="" class="form-control input-sm" style="display: inline-block; width: 47%">
           <button type="button" id="btn_pen_ent_link" class="btn btn-color btn-sm">조회</button>
           <?php } ?>
+          <p>*수급자 회원계정 연결 시 활동내역이 공유됩니다.</p>
         </div>
       </div>
     </div>

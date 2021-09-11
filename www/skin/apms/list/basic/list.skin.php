@@ -214,9 +214,9 @@ while($wish_row = sql_fetch_array($wish_result)) {
             <img src="<?=G5_IMG_URL?>/item3dviewVisual.jpg">
           </div>
           <?php } ?>
-          <?php if($member["mb_id"]) { ?>
+          <?php if($member["mb_id"]) { /* ?>
           <button class="btn_wishlist <?=($wishlist[$list[$i]['it_id']] ? 'active' : '')?>" data-id="<?=$list[$i]['it_id']?>"><i class="fa fa-star" aria-hidden="true"></i></button>
-          <?php } ?>
+          <?php */ } ?>
         </div>
         <p class="name"><?=$list[$i]["it_name"]?></p>
         <?php if($list[$i]["it_model"]) { ?>
@@ -380,7 +380,7 @@ function apms_wishlist(it_id, $this) {
       return false;
     });
 
-  <?php if($member["mb_id"]&&$_COOKIE["viewType"] != "basic"){ ?>
+  <?php if($member["mb_id"] && $_COOKIE["viewType"] != "basic" && $_COOKIE['SHOW_MY_STOCK'] !== 'OFF'){ ?>
     var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
     $.ajax({
@@ -396,7 +396,7 @@ function apms_wishlist(it_id, $this) {
             label = "내 대여 재고";
           }
 
-          $("." + it_id).find(".it_link").append('<p class="cnt"><span>' + label + ' : ' + cnt + '개</span></p>');
+          $("." + it_id).find(".it_link .img_wrap").append('<p class="cnt"><span>' + label + ' : ' + cnt + '개</span></p>');
         });
       }
     });
