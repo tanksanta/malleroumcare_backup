@@ -1780,7 +1780,10 @@
     text-align:center;
 }
 .item-head .item-expected-warehousing-date {
-    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: red;
     background-color: white;
     padding: 10px 20px;
