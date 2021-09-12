@@ -374,6 +374,7 @@ $sql = " select MT.it_id,
                 ( SELECT ProdPayCode FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodPayCode,
                 ( SELECT it_delivery_cnt FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_cnt,
                 ( SELECT it_delivery_price FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_delivery_price,
+                ( SELECT it_option_subject FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_option_subject,
                 MT.ordLendStrDtm,
                 MT.ordLendEndDtm
         from {$g5['g5_shop_cart_table']} MT
