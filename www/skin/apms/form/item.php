@@ -156,7 +156,7 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
         <tr>
           <th scope="row"><label for="it_expected_warehousing_date">입고예정일 알림</label></th>
           <td>
-            <input type="text" name="it_expected_warehousing_date" value="<?php echo get_text(cut_str($it['it_expected_warehousing_date'], 250, "")); ?>" id="it_expected_warehousing_date" required class="frm_input sl">
+            <input type="text" name="it_expected_warehousing_date" value="<?php echo get_text(cut_str($it['it_expected_warehousing_date'], 250, "")); ?>" id="it_expected_warehousing_date" class="frm_input sl">
           </td>
         </tr>
         <tr>
