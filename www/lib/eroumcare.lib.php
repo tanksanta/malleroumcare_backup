@@ -1366,7 +1366,7 @@ function get_recipient_contract_sell($pen_id) {
 	}
 
 	// 판매 건수
-	$contract_sell = sql_fetch("SELECT count(*) as cnt from eform_document_item edi where edi.gubun = '00' and edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$pen_id}' AND dc_status IN ('1', '2'));");
+	$contract_sell = sql_fetch("SELECT count(*) as cnt from g5_shop_order where od_penId = '{$pen_id}' and od_del_yn = 'N';");
 
 	return array(
 		'sell_count' => $contract_sell['cnt']
