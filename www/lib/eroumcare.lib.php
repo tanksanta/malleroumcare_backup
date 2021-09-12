@@ -1357,6 +1357,22 @@ function get_recipient_grade_per_year($pen_id) {
 	);
 }
 
+//수급자 판매 건수 가져오기
+function get_recipient_contract_sell($pen_id) {
+  global $member;
+
+	if (!$pen_id) {
+		return false;
+	}
+
+	// 판매 건수
+	$contract_sell = sql_fetch("SELECT count(*) as cnt from eform_document_item edi where edi.gubun = '00' and edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$pen_id}' AND dc_status IN ('1', '2'));");
+
+	return array(
+		'sell_count' => $contract_sell['cnt']
+	);
+}
+
 // 사업소별 미수금 구하는 함수
 // fr_date 값이 있을 경우 해당 일 까지의 이월잔액
 // total_price_only: true - 총 구매액, false - 총 미수금

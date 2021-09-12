@@ -129,6 +129,81 @@ $(function() {
     });
 });
 
+function check_all_list(f)
+{
+  var chk = document.getElementsByName("chk[]");
+
+  for (i=0; i<chk.length; i++)
+      chk[i].checked = f.chkall.checked;
+}
+
+function check_all_list_spare(f)
+{
+  var chk = document.getElementsByName("spare_chk[]");
+
+  for (i=0; i<chk.length; i++)
+      chk[i].checked = f.chkall.checked;
+}
+
+function form_check(act) {
+  var requests = [];
+  if (act == "seldelete")
+  {
+    var delete_count = $("input[name^=chk]:checked").size();
+    if(delete_count < 1) {
+      alert("삭제하실 항목을 하나이상 선택해 주십시오.");
+      return false;
+    }
+
+    $("input[name^=chk]:checked").each(function() {
+      var chk_value = this.value.split("|");
+      var penId = chk_value[0];
+      var sell_count = chk_value[1];
+      if (sell_count > 0) {
+        alert("선택한 수급자 중 주문이 있는 수급자는 일괄삭제가 불가능합니다. 삭제를 원하시면 상세화면에서 삭제해주시기 바랍니다.");
+        requests = [];
+        return false;  
+      }
+      requests.push(
+        $.ajax({
+          type: 'POST',
+          url: './ajax.my.recipient.list.update.php',
+          data: {penId : penId, delYn : 'Y'}
+        })
+      );
+    });
+  }
+  else if (act == "spare_seldelete")
+  {
+    var delete_count = $("input[name^=spare_chk]:checked").size();
+    if(delete_count < 1) {
+      alert("삭제하실 항목을 하나이상 선택해 주십시오.");
+      return false;
+    }
+
+    $("input[name^=spare_chk]:checked").each(function() {
+      requests.push(
+        $.ajax({
+          type: 'POST',
+          url: './ajax.my.recipient.list.update.php',
+          data: {penId : this.value, delYn : 'Y', isSpare : 'Y'}
+        })
+      );
+    });
+  }
+
+  if (requests.length > 0) {
+    $.when.apply($, requests).then(() => {
+      alert('완료되었습니다');
+      window.location.reload();
+    }, error => {
+      alert(error.message)
+    });
+    return true;
+  }
+  return false;
+}
+
 </script>
 
 <style>
@@ -170,8 +245,8 @@ $(function() {
     </div>
     <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
     <div class="recipient_noti">
-    	신규 확인이 필요한 알림 <?=$noti_count?>건이 있습니다.
-    	<a href="./my_recipient_noti.php">바로확인</a>
+      신규 확인이 필요한 알림 <?=$noti_count?>건이 있습니다.
+      <a href="./my_recipient_noti.php">바로확인</a>
     </div>
     <?php } ?>
     <div class="r_btn_area pc">
@@ -218,9 +293,14 @@ $(function() {
   <?php } ?>
 
   <div class="list_box pc">
+    <form name="fmemberlist" id="fmemberlist" action="#" onsubmit="return fmemberlist_submit(this);" method="post">
     <div class="table_box">  
       <table>
         <tr>
+          <th id="mb_list_chk">
+            <label for="chkall" class="sound_only">수급자 전체</label>
+            <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all_list(this.form)">
+          </th>
           <th>No.</th>
           <th>수급자 정보</th>
           <th>장기요양정보</th>
@@ -232,6 +312,14 @@ $(function() {
         <?php foreach($list as $data) { ?>
         <?php $i++; ?>
         <tr>
+          <td headers="mb_list_chk" id="mb_list_chk">
+            <?php
+            $contract_sell = get_recipient_contract_sell($data['penId']);
+            ?>
+            <input type="hidden" name="chk[<?php echo $i ?>]" value="<?php echo $row['mb_id'] ?>" id="chk_<?php echo $i ?>" class="chk_input">
+            <label for="spare_chk_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['mb_name']); ?> <?php echo get_text($row['mb_nick']); ?>님</label>
+            <input type="checkbox" name="chk[]" value="<?php echo $data['penId'] . '|' . $contract_sell['sell_count'] ?>" id="chk_<?php echo $i ?>">
+          </td>
           <td>
             <?php echo $total_count - (($page - 1) * $rows) - $i; ?>
           </td>
@@ -283,7 +371,9 @@ $(function() {
         <?php } ?>
       </table>
     </div>
+    </form>
   </div>
+
 
   <?php if(!$list){ ?>
   <div class="no_content">
@@ -369,15 +459,26 @@ $(function() {
     </ul>
   </div>
 
+  <div class="l_btn_area pc" style="margin-bottom:10px;">
+    <button type="button" class="btn eroumcare_btn2" onclick="return form_check('seldelete');">선택삭제</a>
+    <!-- <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">본인부담금</a> -->
+  </div>
+  <br/><br/><br/>
+
   <div class="titleWrap" style="margin-bottom:10px;">
     예비수급자관리
   </div>
 
   <div class="list_box pc">
+    <form name="fsparememberlist" id="fsparememberlist" action="#" method="post">
     <div class="table_box">  
       <table>
         <tr>
-          <th>No.</th>
+          <th id="mb_list_chk">
+            <label for="chkall" class="sound_only">예비수급자 전체</label>
+            <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all_list_spare(this.form)">
+          </th>
+          <th class="number_area">No.</th>
           <th>수급자 정보</th>
           <th>장기요양정보</th>
           <th>비고</th>
@@ -386,6 +487,11 @@ $(function() {
         <?php foreach($list_spare as $data) { ?>
         <?php $i++; ?>
         <tr>
+          <td headers="mb_list_spare_chk" id="mb_list_spare_chk">
+            <input type="hidden" name="spare_chk[<?php echo $i ?>]" value="<?php echo $row['mb_id'] ?>" id="spare_chk_<?php echo $i ?>" class="spare_chk_input">
+            <label for="spare_chk_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['mb_name']); ?> <?php echo get_text($row['mb_nick']); ?>님</label>
+            <input type="checkbox" name="spare_chk[]" value="<?php echo $data['penId'] ?>" id="spare_chk_<?php echo $i ?>">
+          </td>
           <td>
             <?php echo $total_count_spare - (($page_spare - 1) * $rows) - $i; ?>
           </td>
@@ -407,6 +513,7 @@ $(function() {
         <?php } ?>
       </table>
     </div>
+  </form>
   </div>
 
   <?php if(!$list_spare) { ?>
@@ -440,11 +547,13 @@ $(function() {
     </ul>
   </div>
   <?php } ?>
-
   <div class="list-paging">
     <ul class="pagination pagination-sm en">
       <?php echo apms_paging($write_pages, $page_spare, $total_page_spare, "?sel_field={$sel_field}&search={$search}&page={$page}&page_spare="); ?>
     </ul>
+  </div>
+  <div class="l_btn_area pc">
+    <button type="button" class="btn eroumcare_btn2" onclick="return form_check('spare_seldelete');">선택삭제</a>
   </div>
 
   <?php
@@ -561,7 +670,7 @@ $(function() {
   <script>
   $(function() {
     $("#popup_recipient_link").hide();
-	  $("#popup_recipient_link").css("opacity", 1);
+    $("#popup_recipient_link").css("opacity", 1);
 
     $('#tb_links td').click(function(e) {
       var rl_id = $(this).closest('tr').data('id');
