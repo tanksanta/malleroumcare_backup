@@ -173,6 +173,28 @@ function form_check(act) {
       );
     });
   }
+  else if (act == "selupdate") {
+    var update_count = $("input[name^=chk]:checked").size();
+    if(update_count < 1) {
+      alert("수정하실 항목을 하나이상 선택해 주십시오.");
+      return false;
+    }
+
+    $("input[name^=chk]:checked").each(function() {
+      var chk_value = this.value.split("|");
+      var penId = chk_value[0];
+
+      var penRecGraCd = $("#sel_grade option:selected").val();
+      var penTypeCd = $("#sel_type_cd option:selected").val();
+      requests.push(
+        $.ajax({
+          type: 'POST',
+          url: './ajax.my.recipient.list.update.php',
+          data: {penId : penId, penRecGraCd : penRecGraCd, penTypeCd : penTypeCd}
+        })
+      );
+    });
+  }
   else if (act == "spare_seldelete")
   {
     var delete_count = $("input[name^=spare_chk]:checked").size();
@@ -460,7 +482,28 @@ function form_check(act) {
   </div>
 
   <div class="l_btn_area pc" style="margin-bottom:10px;">
-    <button type="button" class="btn eroumcare_btn2" onclick="return form_check('seldelete');">선택삭제</a>
+    <button type="button" class="btn eroumcare_btn2" onclick="return form_check('seldelete');">선택삭제</button>
+    &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 일괄수정 : &nbsp;&nbsp;&nbsp;
+    <select name="sel_grade" id="sel_grade">
+      <optgroup label = "등급">
+        <option value="00">등급외</option>
+        <option value="01">1등급</option>
+        <option value="02">2등급</option>
+        <option value="03">3등급</option>
+        <option value="04">4등급</option>
+        <option value="05">5등급</option>     
+      </optgroup>   
+    </select>
+    <select name="sel_type_cd" id="sel_type_cd">
+      <optgroup label = "본인부담금">
+        <option value="00">일반 15%</option>
+        <option value="01">감경 9%</option>
+        <option value="02">감경 6%</option>
+        <option value="03">의료 6%</option>
+        <option value="04">기초 0%</option>
+      </optgroup>   
+    </select>
+    <button type="button" class="btn eroumcare_btn2" onclick="return form_check('selupdate');">선택수정</button>
     <!-- <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">본인부담금</a> -->
   </div>
   <br/><br/><br/>
