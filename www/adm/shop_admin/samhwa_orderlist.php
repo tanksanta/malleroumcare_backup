@@ -526,7 +526,53 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
   </div>
 </div>
 
+<style>
+#popup_order_add {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.6);
+  display:none;
+}
+#popup_order_add > div {
+  width: 1000px;
+  max-width: 80%;
+  height: 80%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#popup_order_add > div iframe {
+  width:100%;
+  height:100%;
+  border: 0;
+  background-color: #FFF;
+}
+
+</style>
+<div id="popup_order_add">
+  <div>dd</div>
+</div>
+
 <script>
+$(function() {
+  
+  $(document).on("click", "#order_add", function (e) {
+    e.preventDefault();
+
+    $("#popup_order_add > div").html("<iframe src='./pop.order.add.php'></iframe>");
+    $("#popup_order_add iframe").load(function(){
+      $("#popup_order_add").show();
+      $('#hd').css('z-index', 3);
+      $('#popup_order_add iframe').contents().find('.mb_id_flexdatalist').focus();
+    });
+    
+  });
+});
 
 var od_status = '';
 var od_step = 0;
