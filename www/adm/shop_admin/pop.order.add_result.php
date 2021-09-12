@@ -163,7 +163,19 @@ for($i=0; $i<count($it_ids); $i++) {
   for($k=0;$k< 1;$k++) {
     $io_id = preg_replace(G5_OPTION_ID_FILTER, '', $_POST['io_id'][$i]);
     $io_type = preg_replace('#[^01]#', '', 0);
-    $io_value = $_POST['io_value'][$it_id][$k];
+    // $io_value = $_POST['io_value'][$it_id][$k];
+
+    $io_value = '';
+    if ($io_id) {
+      $it_option_subjects = explode(',', $it['it_option_subject']);
+      $io_ids = explode(chr(30), $io_id);
+      for($g = 0; $g< count($io_ids); $g++) {
+        if ($g > 0) {
+          $io_value .= ' / ';
+        }
+        $io_value .= $it_option_subjects[$g] . ':' . $io_ids[$g];
+      }
+    }
 
     $pt_msg1 = get_text($_POST['pt_msg1'][$it_id][$k]);
     $pt_msg2 = get_text($_POST['pt_msg2'][$it_id][$k]);
