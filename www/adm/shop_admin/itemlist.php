@@ -7,31 +7,6 @@ auth_check($auth[$sub_menu], "r");
 $g5['title'] = '상품관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
-// API상품등록을 위한 필드 추가
-if(!sql_query(" select prodId from {$g5['g5_shop_item_table']} limit 1", false)) {
-	sql_query(" ALTER TABLE `{$g5['g5_shop_item_table']}`
-		ADD `prodId` varchar(20) NOT NULL DEFAULT '' COMMENT '제품아이디' AFTER `it_10`,
-		ADD `gubun` varchar(10) NOT NULL DEFAULT '0' COMMENT '구분' AFTER `prodId`,
-		ADD `prodNm` varchar(20) NOT NULL DEFAULT '' COMMENT '제품명' AFTER `gubun`,
-		ADD `itemId` varchar(20) NOT NULL DEFAULT '' COMMENT '품목 아이디' AFTER `prodNm`,
-		ADD `subItem` text NOT NULL COMMENT '하위품목' AFTER `itemId`,
-		ADD `prodSupPrice` varchar(20) NOT NULL DEFAULT '' COMMENT '공급가격' AFTER `subItem`,
-		ADD `prodOflPrice` varchar(20) NOT NULL DEFAULT '' COMMENT '판매금액' AFTER `prodSupPrice`,
-		ADD `ProdPayCode` varchar(20) NOT NULL DEFAULT '' COMMENT '급여코드' AFTER `prodOflPrice`,
-		ADD `supId` varchar(20) NOT NULL DEFAULT '' COMMENT '공급업체 아이디' AFTER `ProdPayCode`,
-		ADD `prodColor` varchar(20) NOT NULL DEFAULT '' COMMENT '색상' AFTER `supId`,
-		ADD `prodSym` varchar(20) NOT NULL DEFAULT '' COMMENT '재질' AFTER `prodColor`,
-		ADD `prodWeig` varchar(20) NOT NULL DEFAULT '' COMMENT '중량' AFTER `prodSym`,
-		ADD `prodSize` varchar(20) NOT NULL DEFAULT '' COMMENT '사이즈' AFTER `prodWeig`,
-		ADD `prodQty` varchar(20) NOT NULL DEFAULT '' COMMENT '주문가능수량' AFTER `prodSize`,
-		ADD `prodDetail` varchar(20) NOT NULL DEFAULT '' COMMENT '상세정보' AFTER `prodQty`,
-		ADD `regDtm` varchar(20) NOT NULL DEFAULT '' COMMENT '최초등록일시' AFTER `prodDetail`,
-		ADD `regUsrId` varchar(20) NOT NULL DEFAULT '' COMMENT '최초등록자 ID' AFTER `regDtm`,
-		ADD `regUsrIp` varchar(20) NOT NULL DEFAULT '' COMMENT '최초등록자 IP' AFTER `regUsrId`,
-		ADD `supNm` varchar(20) NOT NULL DEFAULT '' COMMENT '공급업체 이름' AFTER `regUsrIp`,
-		ADD `prodImgAttr` text NOT NULL COMMENT '첨부파일 이름' AFTER `supNm` ", true);
-}
-
 // 분류
 $ca_list  = '<option value="">선택</option>'.PHP_EOL;
 $sql = " select * from {$g5['g5_shop_category_table']} ";
@@ -63,6 +38,18 @@ if ($stx != "") {
     }
     if ($save_stx != $stx)
         $page = 1;
+}
+
+// 상품태그
+$it_type_where = [];
+for($i = 1; $i <= 5; $i++) {
+  $it_type = 'it_type'.$i;
+  if($_GET[$it_type]) {
+    $it_type_where[] = " {$it_type} = 1 ";
+  }
+}
+if($it_type_where) {
+  $sql_search .= ' AND (' . implode(' AND ', $it_type_where) . ') ';
 }
 
 if($_GET["searchProdSupYN"] != ""){
@@ -157,43 +144,68 @@ $flist = apms_form(1,0);
 </div>
 
 <form name="flist" class="local_sch01 local_sch">
-<input type="hidden" name="save_stx" value="<?php echo $stx; ?>">
+  <div class="local_sch03 local_sch">
+    <div class="sch_last">
+      <strong>상품태그</strong>
+      <label>
+        <input type="checkbox" name="it_type1" value="1" <?=get_checked($it_type1, 1)?>>
+        <span style="display:inline-block; border:1px solid <?=$default['de_it_type1_color']?>;color:<?=$default['de_it_type1_color']?>"><?=$default['de_it_type1_name']?></span>
+      </label>
+      <label>
+        <input type="checkbox" name="it_type2" value="1" <?=get_checked($it_type2, 1)?>>
+        <span style="display:inline-block; border:1px solid <?=$default['de_it_type2_color']?>;color:<?=$default['de_it_type2_color']?>"><?=$default['de_it_type2_name']?></span>
+      </label>
+      <label>
+        <input type="checkbox" name="it_type3" value="1" <?=get_checked($it_type3, 1)?>>
+        <span style="display:inline-block; border:1px solid <?=$default['de_it_type3_color']?>;color:<?=$default['de_it_type3_color']?>"><?=$default['de_it_type3_name']?></span>
+      </label>
+      <label>
+        <input type="checkbox" name="it_type4" value="1" <?=get_checked($it_type4, 1)?>>
+        <span style="display:inline-block; border:1px solid <?=$default['de_it_type4_color']?>;color:<?=$default['de_it_type4_color']?>"><?=$default['de_it_type4_name']?></span>
+      </label>
+      <label>
+        <input type="checkbox" name="it_type5" value="1" <?=get_checked($it_type5, 1)?>>
+        <span style="display:inline-block; border:1px solid <?=$default['de_it_type5_color']?>;color:<?=$default['de_it_type5_color']?>"><?=$default['de_it_type5_name']?></span>
+      </label>
+    </div>
+  </div>
+  <input type="hidden" name="save_stx" value="<?php echo $stx; ?>">
 
-<label for="sca" class="sound_only">분류선택</label>
-<select name="sca" id="sca">
+  <label for="sca" class="sound_only">분류선택</label>
+  <select name="sca" id="sca">
     <option value="">전체분류</option>
     <?php
     $sql1 = " select ca_id, ca_name, as_line from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
     $result1 = sql_query($sql1);
     for ($i=0; $row1=sql_fetch_array($result1); $i++) {
-        $len = strlen($row1['ca_id']) / 2 - 1;
-        $nbsp = '';
-        for ($i=0; $i<$len; $i++) $nbsp .= '&nbsp;&nbsp;&nbsp;';
+      $len = strlen($row1['ca_id']) / 2 - 1;
+      $nbsp = '';
+      for ($i=0; $i<$len; $i++) $nbsp .= '&nbsp;&nbsp;&nbsp;';
 
-		if($row1['as_line']) {
-			echo "<option value=\"\">".$nbsp."------------</option>\n";
-		}
+      if($row1['as_line']) {
+        echo "<option value=\"\">".$nbsp."------------</option>\n";
+      }
 
-		echo '<option value="'.$row1['ca_id'].'" '.get_selected($sca, $row1['ca_id']).'>'.$nbsp.$row1['ca_name'].'</option>'.PHP_EOL;
+      echo '<option value="'.$row1['ca_id'].'" '.get_selected($sca, $row1['ca_id']).'>'.$nbsp.$row1['ca_name'].'</option>'.PHP_EOL;
     }
     ?>
-</select>
+  </select>
 
-<label for="searchProdSupYN" class="sound_only">유통구분</label>
-<select name="searchProdSupYN" id="searchProdSupYN">
+  <label for="searchProdSupYN" class="sound_only">유통구분</label>
+  <select name="searchProdSupYN" id="searchProdSupYN">
     <option value="">유통구분 전체</option>
     <option value="Y" <?=($_GET["searchProdSupYN"] == "Y") ? "selected" : ""?>>유통</option>
     <option value="N" <?=($_GET["searchProdSupYN"] == "N") ? "selected" : ""?>>비유통</option>
-</select>
+  </select>
 
-<script>
-    $( '#searchProdSupYN' ).change( function(){
-        $('#searchProdSupYN2').val($(this).val());
-    });
-</script>
+  <script>
+  $( '#searchProdSupYN' ).change( function(){
+    $('#searchProdSupYN2').val($(this).val());
+  });
+  </script>
 
-<label for="sfl" class="sound_only">검색대상</label>
-<select name="sfl" id="sfl">
+  <label for="sfl" class="sound_only">검색대상</label>
+  <select name="sfl" id="sfl">
     <option value="it_thezone" <?php echo get_selected($sfl, 'it_thezone'); ?>>분류코드</option>
     <option value="it_name" <?php echo get_selected($sfl, 'it_name'); ?>>상품명</option>
     <option value="it_model" <?php echo get_selected($sfl, 'it_model'); ?>>모델명</option>
@@ -201,29 +213,29 @@ $flist = apms_form(1,0);
     <option value="it_maker" <?php echo get_selected($sfl, 'it_maker'); ?>>제조사</option>
     <option value="it_origin" <?php echo get_selected($sfl, 'it_origin'); ?>>원산지</option>
     <option value="it_sell_email" <?php echo get_selected($sfl, 'it_sell_email'); ?>>판매자 e-mail</option>
-	<!-- APMS - 2014.07.20 -->
-	    <option value="pt_id" <?php echo get_selected($sfl, 'pt_id'); ?>>파트너 아이디</option>
-	<!-- // -->
-</select>
+    <!-- APMS - 2014.07.20 -->
+    <option value="pt_id" <?php echo get_selected($sfl, 'pt_id'); ?>>파트너 아이디</option>
+    <!-- // -->
+  </select>
 
-<label for="stx" class="sound_only">검색어</label>
-<input type="text" name="stx" value="<?php echo $stx; ?>" id="stx" class="frm_input">
-<input type="submit" value="검색" class="btn_submit">
+  <label for="stx" class="sound_only">검색어</label>
+  <input type="text" name="stx" value="<?php echo $stx; ?>" id="stx" class="frm_input">
+  <input type="submit" value="검색" class="btn_submit">
 
-<div class="right">
+  <div class="right">
     <select name="orderby" id="orderby">
-        <option value="it_id" <?php echo $orderby == 'it_id' || !$orderby ? 'selected' : ''; ?>>최근등록순 정렬</option>
-        <option value="it_name" <?php echo $orderby == 'it_name' ? 'selected' : ''; ?>>가나다순 정렬</option>
+      <option value="it_id" <?php echo $orderby == 'it_id' || !$orderby ? 'selected' : ''; ?>>최근등록순 정렬</option>
+      <option value="it_name" <?php echo $orderby == 'it_name' ? 'selected' : ''; ?>>가나다순 정렬</option>
     </select>
     <select name="page_rows" id="page_rows">
-        <option value="10" <?php echo $page_rows == '10' ? 'selected' : ''; ?>>10개씩보기</option>
-        <option value="15" <?php echo $page_rows == '15' ? 'selected' : ''; ?>>15개씩보기</option>
-        <option value="20" <?php echo $page_rows == '20' ? 'selected' : ''; ?>>20개씩보기</option>
-        <option value="50" <?php echo $page_rows == '50' ? 'selected' : ''; ?>>50개씩보기</option>
-        <option value="100" <?php echo $page_rows == '100' ? 'selected' : ''; ?>>100개씩보기</option>
-        <option value="200" <?php echo $page_rows == '200' ? 'selected' : ''; ?>>200개씩보기</option>
+      <option value="10" <?php echo $page_rows == '10' ? 'selected' : ''; ?>>10개씩보기</option>
+      <option value="15" <?php echo $page_rows == '15' ? 'selected' : ''; ?>>15개씩보기</option>
+      <option value="20" <?php echo $page_rows == '20' ? 'selected' : ''; ?>>20개씩보기</option>
+      <option value="50" <?php echo $page_rows == '50' ? 'selected' : ''; ?>>50개씩보기</option>
+      <option value="100" <?php echo $page_rows == '100' ? 'selected' : ''; ?>>100개씩보기</option>
+      <option value="200" <?php echo $page_rows == '200' ? 'selected' : ''; ?>>200개씩보기</option>
     </select>
-</div>
+  </div>
 </form>
 
 <form id="fitemlistupdate" name="fitemlistupdate" method="post" action="./itemlistupdate.php" onsubmit="return fitemlist_submit(this);" autocomplete="off">
