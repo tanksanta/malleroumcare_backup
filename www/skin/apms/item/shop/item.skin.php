@@ -171,6 +171,10 @@ $sendData["prods"] = $prodsSendData;
           <img id="item_image" src="<?php echo $item_image;?>" alt="">
         </a>-->
         <?php if($wset['shadow']) echo apms_shadow($wset['shadow']); //그림자 ?>
+
+        <?php if($it["it_expected_warehousing_date"] !== ""){ ?>
+        <div class="item-expected-warehousing-date"><?php echo $it["it_expected_warehousing_date"];?></div>
+        <?php } ?>
       </div>
       <!--<div class="item-thumb text-center">
         <?php
@@ -212,22 +216,22 @@ $sendData["prods"] = $prodsSendData;
         <div class="top-info-wrap">
           <ul class="top-info-list">
             <img src="<?php echo THEMA_URL; ?>/assets/img/check-icon.png" style="vertical-align: middle; ">
-	          <li><?=$it["ca_name"]?></li>
-	          <li style="font-weight: 100;">|</li>
-	          <li><?=$it["it_taxInfo"]?>상품</li>
+            <li><?=$it["ca_name"]?></li>
+            <li style="font-weight: 100;">|</li>
+            <li><?=$it["it_taxInfo"]?>상품</li>
           </ul>
           <?php if(!is_benefit_item($it)) { ?>
-	        <span style="vertical-align: middle; float: right;">급여코드 : <?php echo $it['ProdPayCode']; ?></span>
+          <span style="vertical-align: middle; float: right;">급여코드 : <?php echo $it['ProdPayCode']; ?></span>
           <?php } ?>
         </div>
         <!-- <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p> -->
         <h1 class="item-head-title" style="font-size: 42px;"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
-        	<?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) { ?>
-            	급여가
+          <?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) { ?>
+              급여가
           <?php } else { ?>
             <?php if($member["mb_level"] == "4") { ?>
-            	VIP판매가
+              VIP판매가
             <?php } else { ?>
               판매가
           <?php }
@@ -235,7 +239,7 @@ $sendData["prods"] = $prodsSendData;
           ?>
         </p>
         <p class="price-num">
-        	<?php
+          <?php
           if($member["mb_id"]) {
             if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
               echo number_format($it["it_cust_price"]);
@@ -444,32 +448,32 @@ $sendData["prods"] = $prodsSendData;
           <img src="<?php echo THEMA_URL; ?>/assets/img/icon_arrow_down.png" class="arrow" />
         </div>
         <div class="top-info-wrap pc">
-	        <ul class="top-info-list">
-	          <img src="<?php echo THEMA_URL; ?>/assets/img/check-icon.png" style="vertical-align: middle; ">
-	          <li><?=$it["ca_name"]?></li>
-	          <li style="font-weight: 100;">|</li>
-	          <li><?=$it["it_taxInfo"]?>상품</li>
-	        </ul>
+          <ul class="top-info-list">
+            <img src="<?php echo THEMA_URL; ?>/assets/img/check-icon.png" style="vertical-align: middle; ">
+            <li><?=$it["ca_name"]?></li>
+            <li style="font-weight: 100;">|</li>
+            <li><?=$it["it_taxInfo"]?>상품</li>
+          </ul>
           <?php if(!is_benefit_item($it)) { ?>
-	        <span style="vertical-align: middle; float: right;">급여코드 : <?php echo $it['ProdPayCode']; ?></span>
+          <span style="vertical-align: middle; float: right;">급여코드 : <?php echo $it['ProdPayCode']; ?></span>
           <?php } ?>
-	      </div>
+        </div>
 
         <h1 class="item-head-title pc"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
-        	<?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) { ?>
-            	급여가
+          <?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) { ?>
+              급여가
             <?php } else { ?>
             <?php if($member["mb_level"] == "4") { ?>
-            	VIP판매가
+              VIP판매가
             <?php } else { ?>
-              	판매가
+                판매가
             <?php }
             }
             ?>
         </p>
         <p class="price-num">
-        	<?php
+          <?php
           if($member["mb_id"]) {
             if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
               echo number_format($it["it_cust_price"]);
@@ -598,10 +602,10 @@ $sendData["prods"] = $prodsSendData;
         <input type="hidden" id="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
 
 
-					<table class="table pc">
-						<tbody>
-							<tr>
-								<th scope="row">
+          <table class="table pc">
+            <tbody>
+              <tr>
+                <th scope="row">
                   <?php if(!is_benefit_item($it)) { ?>
                   급여가(정가)
                   <?php } else { ?>
@@ -617,25 +621,25 @@ $sendData["prods"] = $prodsSendData;
                   </p>
                   <?php } ?>
                 </td>
-							</tr>
+              </tr>
 
-							<tr>
-								<th scope="row">상품상세</th>
-								<td>
+              <tr>
+                <th scope="row">상품상세</th>
+                <td>
                   <?php if(trim($it["prodSym"])) { ?>
                   <label class="quality-type">재질</label><label class="quality-text"><?=$it["prodSym"]?></label>
                   <br>
-								  <?php } ?>
+                  <?php } ?>
                   <?php if(trim($it["prodSizeDetail"])) { ?>
-								  <label class="quality-type">사이즈</label><label class="quality-text"><?=$it["prodSizeDetail"]?></label>
-                  <br>
-								  <?php } ?>
-                  <?php if(trim($it["prodWeig"])) { ?>
-								  <label class="quality-type">중량</label><label class="quality-text"><?=$it["prodWeig"]?></label>
+                  <label class="quality-type">사이즈</label><label class="quality-text"><?=$it["prodSizeDetail"]?></label>
                   <br>
                   <?php } ?>
-								</td>
-							</tr>
+                  <?php if(trim($it["prodWeig"])) { ?>
+                  <label class="quality-type">중량</label><label class="quality-text"><?=$it["prodWeig"]?></label>
+                  <br>
+                  <?php } ?>
+                </td>
+              </tr>
             <?php if (!$it[$it_use]) { // 판매가능이 아닐 경우 ?>
             <tr><th scope="row">판매</th><td>판매중지</td></tr>
             <?php } else if ($it['it_tel_inq']) { // 전화문의일 경우 ?>

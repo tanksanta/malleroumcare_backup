@@ -278,7 +278,7 @@ $flist = apms_form(1,0);
         <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_dealer2', 'sca='.$sca); ?>우수사업소가격</a></th>
         <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_partner', 'sca='.$sca); ?>파트너가격</a></th> -->
 
-        <th scope="col" rowspan="2" id="th_pc_title"><?php echo subject_sort_link('it_name', 'sca='.$sca); ?>상품정보 (모델명 / 상품코드 / 상품명)</a></th>
+        <th scope="col" rowspan="2" id="th_pc_title"><?php echo subject_sort_link('it_name', 'sca='.$sca); ?>상품정보 (모델명 / 입고예정일알림 / 상품명)</a></th>
 		<th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price', 'sca='.$sca); ?>판매가격</a></th>
         <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_cust_price', 'sca='.$sca); ?>급여가</a></th>
         <th scope="col" rowspan="2" id="th_amt"><?php echo subject_sort_link('it_price_dealer', 'sca='.$sca); ?>사업소가격</a></th>
@@ -415,8 +415,8 @@ $flist = apms_form(1,0);
             <label for="model_<?php echo $i; ?>" class="sound_only">모델명</label>
             <input type="text" name="it_model[<?php echo $i; ?>]" value="<?php echo htmlspecialchars2(cut_str($row['it_model'],250, "")); ?>" id="model_<?php echo $i; ?>" class="frm_input" size="30" placeholder="모델명" style="width:50%">
 
-            <label for="thezone_<?php echo $i; ?>" class="sound_only">상품코드</label>
-            <input type="text" name="it_thezone[<?php echo $i; ?>]" value="<?php echo htmlspecialchars2(cut_str($row['it_thezone'],250, "")); ?>" id="thezone_<?php echo $i; ?>" class="frm_input" size="30" placeholder="상품코드" style="width:50%">
+            <label for="expectedwarehousingdate_<?php echo $i; ?>" class="sound_only">입고 예정일 알림</label>
+            <input type="text" name="it_expected_warehousing_date[<?php echo $i; ?>]" value="<?php echo htmlspecialchars2(cut_str($row['it_expected_warehousing_date'],250, "")); ?>" id="expectedwarehousingdate_<?php echo $i; ?>" class="frm_input" size="30" placeholder="입고 예정일 알림" style="width:50%">
 
             <label for="name_<?php echo $i; ?>" class="sound_only">상품명</label>
             <input type="text" name="it_name[<?php echo $i; ?>]" value="<?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?>" id="name_<?php echo $i; ?>" required class="frm_input required" size="30">

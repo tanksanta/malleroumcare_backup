@@ -638,6 +638,7 @@ $sql_common = "
   it_sale_percent_05             = '$it_sale_percent_05',
   it_sale_percent_great_05             = '$it_sale_percent_great_05',
   it_default_warehouse = '$it_default_warehouse',
+  it_expected_warehousing_date = '$it_expected_warehousing_date',
 
   entId = '$entId',
   prodSupYn = '$prodSupYn',
