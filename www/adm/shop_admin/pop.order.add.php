@@ -344,7 +344,7 @@ $(function() {
         e.preventDefault();
 
         $('#popup_order_add', parent.document).hide();
-        $('#hd').css('z-index', 10);
+        $('#hd', parent.document).css('z-index', 10);
     });
 
     $(document).on("change keyup paste", ".it_option select, input[name='qty[]'], input[name='it_price[]']", function (e) {
