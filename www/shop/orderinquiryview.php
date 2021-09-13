@@ -188,6 +188,26 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 
   for($k=0; $opt=sql_fetch_array($res); $k++) {
 
+    // 위탁정보
+    $opt['report'] = null;
+    if($opt['ct_is_direct_delivery'] == 2) { // 배송+설치
+      $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$opt['ct_id']}' ");
+      if($report['ct_id']) {
+        $photo_result = sql_query("
+          SELECT * FROM partner_install_photo
+          WHERE ct_id = '{$report['ct_id']}' and mb_id = '{$report['mb_id']}'
+          ORDER BY ip_id ASC
+        ");
+  
+        $photos = [];
+        while($photo = sql_fetch_array($photo_result)) {
+          $photos[] = $photo;
+        }
+        $report['photo'] = $photos;
+        $opt['report'] = $report;
+      }
+    }
+
     // 구매회원 아이디 체크
     if($od['mb_id'] && $od['mb_id'] != $opt['mb_id']) {
       sql_query(" update {$g5['g5_shop_cart_table']} set mb_id = '{$od['mb_id']}' where od_id = '{$od_id}' and ct_id = '{$opt['ct_id']}' ", false);

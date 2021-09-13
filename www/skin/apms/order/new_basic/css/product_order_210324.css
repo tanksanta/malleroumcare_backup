@@ -315,6 +315,61 @@ table {border-collapse: collapse;}
 .pay-btn2 button {display: inline-block;vertical-align: top;padding: 0 5px;height: 24px;background: #999;color: #fff;font-size: 12px;}
 .pay-btn2 a {display: inline-block;vertical-align: top; padding: 0 5px;height: 24px;line-height: 22px; background: #eee;font-size: 12px;border: 1px solid #ddd;}
 
+.install-report {
+  border-top: none;
+  padding: 18px;
+  background: #F5F5F5;
+}
+.install-report .row {
+  margin-left: 0;
+  margin-right: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.install-report .row:before,
+.install-report .row:after {
+  display: none;
+  content: none;
+}
+.install-report .top-wrap {
+  -webkit-box-lines: multiple;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+
+}
+.install-report .row.no-gutter {
+  margin: 0
+}
+.install-report .report-img-wrap {
+  -webkit-box-lines: multiple;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.install-report .report-img-wrap .col {
+  padding: 5px;
+}
+.install-report .report-img {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  height: 100px;
+}
+.install-report img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.install-report .report-img-wrap .issue-wrap {
+  width: 100%;
+  margin-top: 20px;
+}
+
+
+
 @media screen and (max-width: 1220px){
     .wrap {padding: 0 4%;}
     .order-date .date-box {display: block;}

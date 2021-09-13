@@ -203,7 +203,7 @@ $(function() {
 </script>
 <!-- 210326 배송정보팝업 -->
 
-<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?v=210910">
+<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?v=210913">
 <section id="pro-order2" class="wrap order-list">
   <h2 class="tti">
     주문상세
@@ -511,17 +511,52 @@ $(function() {
               <?php } ?>
             </div>
             <?php
-              if($item[$i]['opt'][$k]['ct_is_direct_delivery'] == 2 && $item[$i]['opt'][$k]['ct_direct_delivery_date'] && $item[$i]['opt'][$k]['ct_delivery_num'] && !in_array($item[$i]['opt'][$k]['ct_status'], ['취소', '주문무효'])) {
-                $delivery_company_name = '';
-                foreach($delivery_companys as $company) {
-                  if($company['val'] == $item[$i]['opt'][$k]['ct_delivery_company']) {
-                    $delivery_company_name = $company['name'];
-                    break;
-                  }
+            if($item[$i]['opt'][$k]['ct_is_direct_delivery'] == 2 && $item[$i]['opt'][$k]['ct_direct_delivery_date'] && $item[$i]['opt'][$k]['ct_delivery_num'] && !in_array($item[$i]['opt'][$k]['ct_status'], ['취소', '주문무효'])) {
+              $delivery_company_name = '';
+              foreach($delivery_companys as $company) {
+                if($company['val'] == $item[$i]['opt'][$k]['ct_delivery_company']) {
+                  $delivery_company_name = $company['name'];
+                  break;
                 }
-                echo '<div style="background-color: #f3f3f3; color: #666; font-size: 14px;padding: 8px;">설치 예정일 : '.date('Y-m-d H시', strtotime($item[$i]['opt'][$k]['ct_direct_delivery_date'])).', 배송정보 : ['.$delivery_company_name.'] '.$item[$i]['opt'][$k]['ct_delivery_num'].'</div>';
+              }
+              echo '<div style="background-color: #f3f3f3; color: #666; font-size: 14px;padding: 8px;">설치 예정일 : '.date('Y-m-d H시', strtotime($item[$i]['opt'][$k]['ct_direct_delivery_date'])).', 배송정보 : ['.$delivery_company_name.'] '.$item[$i]['opt'][$k]['ct_delivery_num'].'</div>';
+            }
             ?>
-            <?php } ?>
+            <?php
+            if($item[$i]['opt'][$k]['report'] && $item[$i]['opt'][$k]['report']['ir_cert_url']) {
+            ?>
+            <div class="install-report">
+              <div class="top-wrap row no-gutter">
+                <div class="install-title">설치 정보</div>
+                <div class="install-date">출고예정일 : <?=date('Y-m-d (H시)', strtotime($item[$i]['opt'][$k]['ct_direct_delivery_date']))?></div>
+              </div>
+              <div class="row report-img-wrap">
+                <div class="col">
+                  <div class="report-img">
+                    <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$item[$i]['opt'][$k]['report']['ir_cert_url']}"))?>" target="_blank" class="view_image">
+                      <img src="<?=G5_DATA_URL.'/partner/img/'.$item[$i]['opt'][$k]['report']['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                    </a>
+                  </div>
+                </div>
+                <?php foreach($item[$i]['opt'][$k]['report']['photo'] as $photo) { ?>
+                <div class="col">
+                  <div class="report-img">
+                    <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"))?>" target="_blank" class="view_image">
+                      <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                    </a>
+                  </div>
+                </div>
+                <?php } ?>
+                <div class="col issue-wrap">
+                  <p class="issue">
+                    <?=nl2br($item[$i]['opt'][$k]['report']['ir_issue'])?>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <?php
+            }
+            ?>
           </div>
           <?php } ?>
           <?php } ?>
