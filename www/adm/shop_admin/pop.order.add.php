@@ -398,10 +398,8 @@ $(function() {
     $(document).on('keypress', '.item_flexdatalist', function(e) {
         var code = e.keyCode || e.which;
         if(code === 13) {
-            if (!$(this).val()) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
+            e.preventDefault();
+            e.stopPropagation();
         }
     });
     
