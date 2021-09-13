@@ -143,7 +143,7 @@ include_once('./pop.head.php');
             <a href='#' class="order_add_close">
                 취소
             </a>
-            <input type="submit" value="생성" />
+            <input type="submit" value="생성 (F8)" />
         </div>
     </div>
 </div>
@@ -402,6 +402,12 @@ $(function() {
                 e.preventDefault();
                 e.stopPropagation();
             }
+        }
+    });
+    
+    $(document).keypress(function(e) {
+        if((e.which || e.keyCode) == 119) { // F8
+            $('#popup_buttom input[type="submit"]').click();
         }
     });
 
