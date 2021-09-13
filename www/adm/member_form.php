@@ -768,6 +768,12 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
         </th>
         <td colspan="3">
             <style>
+            .mm_form {
+              padding: 10px 0;
+            }
+            .mm_form input {
+              margin-right: 5px;
+            }
             .manager_list {
                 padding:0;
                 width:100%;
@@ -775,95 +781,60 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
             .manager_list th {
                 text-align:center;
             }
-            .manager_list #mm_name {
-                width:50%;
-            }
-            .manager_list #mm_tel {
-                width:20%;
-            }
-            .manager_list #mm_thezone {
-                width:20%;
-            }
-            .manager_list #mm_del {
-                width:10%;
-            }
+            #manager_list_body input[type="text"],
+            #manager_list_body input[type="password"] { width: 100%; }
             </style>
             <div class="tbl_head02 tbl_wrap manager_list">
-                <button type="button" id="add_manager" class="btn_submit btn">담당자 추가</button><br/><br/>
-                <table>
-                    <caption>담당자 목록</caption>
-                    <thead>
-                        <tr>
-                            <th scope="col" id="mm_name" >이름</th>
-                            <th scope="col" id="mm_part" >부서명</th>
-                            <th scope="col" id="mm_rank" >직급</th>
-                            <th scope="col" id="mm_work" >업무</th>
-                            <th scope="col" id="mm_hp" >전화번호</th>
-                            <th scope="col" id="mm_hp_extension" >내선번호</th>
-                            <th scope="col" id="mm_tel" >핸드폰</th>
-                            <th scope="col" id="mm_thezone" >더존코드</th>
-                            <th scope="col" id="mm_email" >이메일</th>
-                            <th scope="col" id="mm_del" >삭제여부</th>
-                        </tr>
-                    </thead>
-                    <tbody id="manager_list_body">
-                        <?php
-                        $sql = "SELECT * FROM g5_member_giup_manager WHERE mb_id = '{$mb['mb_id']}'";
-                        $result = sql_query($sql);
-                        $managers = array();
-                        while( $m_row = sql_fetch_array($result) ) {
-                            $managers[] = $m_row;
-                        }
-                        if (!count($managers)) {
-                            // $ma
-                            array_push($managers, array());
-                        }
-                        //foreach($manages as $manager) {
-                        for($m=0;$m<count($managers); $m++) {
-                        ?>
-                        <tr>
-                            <td>
-                                <input type="hidden" name="mm_no[]" value="<?php echo $managers[$m]['mm_no'] ?>" />
-                                <input type="text" name="mm_name[]" value="<?php echo $managers[$m]['mm_name'] ?>" id="mm_name_<?php echo $m; ?>" class="frm_input" size="30" maxlength="20" style="">
-                            </td>
-                            <td>
-                                <input type="text" name="mm_part[]" value="<?php echo $managers[$m]['mm_part'] ?>" id="mm_part_<?php echo $m; ?>" class="frm_input" size="10" maxlength="20">
-                            </td>
-                            <td>
-                                <input type="text" name="mm_rank[]" value="<?php echo $managers[$m]['mm_rank'] ?>" id="mm_rank_<?php echo $m; ?>" class="frm_input" size="10" maxlength="20">
-                            </td>
-                            <td>
-                                <input type="text" name="mm_work[]" value="<?php echo $managers[$m]['mm_work'] ?>" id="mm_work_<?php echo $m; ?>" class="frm_input" size="10" maxlength="20">
-                            </td>
-                            <td>
-                                <input type="text" name="mm_hp[]" value="<?php echo $managers[$m]['mm_hp'] ?>" id="mm_hp_<?php echo $m; ?>" class="frm_input" size="30" maxlength="20">
-                            </td>
-                            <td>
-                                <input type="text" name="mm_hp_extension[]" value="<?php echo $managers[$m]['mm_hp_extension'] ?>" id="mm_hp_extension_<?php echo $m; ?>" class="frm_input" size="10" maxlength="10">
-                            </td>
-                            <td>
-                                <input type="text" name="mm_tel[]" value="<?php echo $managers[$m]['mm_tel'] ?>" id="mm_tel_<?php echo $m; ?>" class="frm_input" size="30" maxlength="20">
-                            </td>
-                            
-                            <td>
-                                <input type="text" name="mm_thezone[]" value="<?php echo $managers[$m]['mm_thezone'] ?>" id="mm_thezone_<?php echo $m; ?>" class="frm_input" size="30" maxlength="20">
-                            </td>
-                           
-                            <td>
-                                <input type="text" name="mm_email[]" value="<?php echo $managers[$m]['mm_email'] ?>" id="mm_email_<?php echo $m; ?>" class="frm_input" size="30" maxlength="50">
-                            </td>
-                            <td style="text-align:center;">
-                                <?php if ( $m == 0 ) { ?>
-                                필수
-                                <?php }else{ ?>
-                                    <button type="button" class="btn_submit btn delete_manager">삭제</button>
-                                <?php } ?>
-                            </td>
-                        </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
+              <div class="mm_form">
+                <input type="text" id="mm_id" class="frm_input" size="20" maxlength="20" placeholder="아이디">
+                <input type="password" id="mm_pw" class="frm_input" size="20" maxlength="20" placeholder="비밀번호">
+                <input type="text" id="mm_name" class="frm_input" size="20" maxlength="20" placeholder="이름">
+                <input type="text" id="mm_email" class="frm_input" size="30" maxlength="50" placeholder="이메일주소">
+                <input type="text" id="mm_memo" class="frm_input" size="30" maxlength="50" placeholder="메모">
+                <button type="button" id="add_manager" class="btn_submit btn">담당자 추가</button>
+              </div>
+              <table>
+                <caption>담당자 목록</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">아이디</th>
+                    <th scope="col">비밀번호</th>
+                    <th scope="col">이름</th>
+                    <th scope="col">이메일주소</th>
+                    <th scope="col">메모</th>
+                    <th scope="col" style="width: 100px;">정보수정</th>
+                    <th scope="col" style="width: 100px;">담당자삭제</th>
+                  </tr>
+                </thead>
+                <tbody id="manager_list_body">
+                  <?php
+                  $mm_sql = "
+                    SELECT * FROM
+                      {$g5["member_table"]}
+                    WHERE
+                      mb_type = 'manager' and
+                      mb_manager = '{$mb['mb_id']}'
+                  ";
+                  $mm_result = sql_query($mm_sql);
+
+                  while($mm = sql_fetch_array($mm_result)) {
+                  ?>
+                  <tr>
+                    <td>
+                      <input type="hidden" class="mm_id" value="<?=$mm['mb_id']?>">
+                      <?=$mm['mb_id']?>
+                    </td>
+                    <td><input type="password" class="frm_input mm_pw" placeholder="비밀번호"></td>
+                    <td><input type="text" class="frm_input mm_name" placeholder="이름" value="<?=$mm['mb_name']?>"></td>
+                    <td><input type="text" class="frm_input mm_email" placeholder="이메일" value="<?=$mm['mb_email']?>"></td>
+                    <td><input type="text" class="frm_input mm_memo" placeholder="메모" value="<?=$mm['mb_memo']?>"></td>
+                    <td class="td_center"><button type="button" class="btn_submit btn btn_mm_edit" data-id="<?=$mm['mb_id']?>">수정하기</button></td>
+                    <td class="td_center"><button type="button" class="btn_submit btn btn_mm_delete" data-id="<?=$mm['mb_id']?>">삭제</button></td>
+                  </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+          </div>
         </td>
     </tr> 
 
@@ -1416,47 +1387,60 @@ $(function() {
     });
 
     $('#add_manager').on("click", function() {
+      $.post('ajax.member_manager.php', {
+        mb_id: '<?=$mb['mb_id']?>',
+        mm_id: $('#mm_id').val(),
+        mm_pw: $('#mm_pw').val(),
+        mm_name: $('#mm_name').val(),
+        mm_email: $('#mm_email').val(),
+        mm_memo: $('#mm_memo').val()
+      }, 'json')
+      .done(function() {
+        alert('담당자 등록이 완료되었습니다.');
+        window.location.reload();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    });
 
-        var el = $('#manager_list_body');
+    $('.btn_mm_edit').on('click', function() {
+      $tr = $(this).closest('tr');
+      $.post('ajax.member_manager.php', {
+        w: 'u',
+        mb_id: '<?=$mb['mb_id']?>',
+        mm_id: $tr.find('.mm_id').val(),
+        mm_pw: $tr.find('.mm_pw').val(),
+        mm_name: $tr.find('.mm_name').val(),
+        mm_email: $tr.find('.mm_email').val(),
+        mm_memo: $tr.find('.mm_memo').val()
+      }, 'json')
+      .done(function() {
+        alert('담당자 수정이 완료되었습니다.');
+        window.location.reload();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    });
 
-        var str = '<tr>';
-        str +=      '<td>';
-        str +=          '<input type="text" name="mm_name[]" value="" class="frm_input" size="30" maxlength="20" style="width:100%">';
-        str +=      '</td>';
-        str +=      '<td>';
-        str +=          '<input type="text" name="mm_part[]" value="" class="frm_input" size="10" maxlength="20">';
-        str +=      '</td>';
-        str +=      '<td>';
-        str +=          '<input type="text" name="mm_rank[]" value="" class="frm_input" size="10" maxlength="20">';
-        str +=      '</td>';
-        str +=      '<td>';
-        str +=          '<input type="text" name="mm_work[]" value="" class="frm_input" size="10" maxlength="20">';
-        str +=      '</td>';
-        str +=      '<td>';
-        str +=          '<input type="text" name="mm_hp[]" value="" class="frm_input" size="30" maxlength="20">';
-        str +=      '</td>';
-        str +=      '<td>';
-        str +=          '<input type="text" name="mm_hp_extension[]" value="" class="frm_input" size="10" maxlength="10">';
-        str +=      '</td>';
-        str +=      '<td>';
-        str +=          '<input type="text" name="mm_tel[]" value="" class="frm_input" size="30" maxlength="20">';
-        str +=      '</td>';
-        str +=      '<td>';
-        //str +=          '<input type="text" name="mm_thezone[]" value="" class="frm_input" size="30" maxlength="20">';
-        str +=          '<input type="text" name="mm_email[]" value="" class="frm_input" size="30" maxlength="50">';
-        str +=      '</td>';
-        str +=      '<td style="text-align:center;">';
-        str +=      '<button type="button" class="btn_submit btn delete_manager">삭제</button>';
-        str +=      '</td>';
-        str +=     '</tr>';
-
-        $(el).append(str);
-
-        $('input[name="mm_tel[]"]').on('keyup', function(){
-            var num = $(this).val();
-            num.trim();
-            this.value = auto_phone_hypen(num) ;
-        });
+    $('.btn_mm_delete').on('click', function() {
+      $tr = $(this).closest('tr');
+      $.post('ajax.member_manager.php', {
+        w: 'd',
+        mb_id: '<?=$mb['mb_id']?>',
+        mm_id: $tr.find('.mm_id').val()
+      }, 'json')
+      .done(function() {
+        alert('담당자 삭제가 완료되었습니다.');
+        window.location.reload();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
     });
 
     $(document).on("click", '.delete_manager', function() {
