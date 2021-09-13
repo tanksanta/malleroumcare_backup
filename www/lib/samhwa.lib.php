@@ -868,6 +868,10 @@ $delivery_companys = array(
     'name' => '한진택배',
     'val' => 'hanjin'
   ),
+  '11' => array(
+    'name' => '건영택배',
+    'val' => 'kunyoung'
+  ),
   '1' => array(
     'name' => '대한통운',
     'val' => 'cjlogistics'
@@ -904,7 +908,7 @@ $delivery_companys = array(
     'name' => '기타배송',
     'val' => 'etc'
   ),
-  '11' => array(
+  '12' => array(
     'name' => '설치배송',
     'val' => 'install'
   )
