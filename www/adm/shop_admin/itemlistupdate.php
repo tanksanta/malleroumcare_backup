@@ -60,7 +60,7 @@ if ($_POST['act_button'] == "선택수정") {
         $p_it_type5 = is_array($_POST['it_type5']) ? strip_tags($_POST['it_type5'][$k]) : '';
 
         $it_model = is_array($_POST['it_model']) ? strip_tags($_POST['it_model'][$k]) : '';
-        $it_thezone = is_array($_POST['it_thezone']) ? strip_tags($_POST['it_thezone'][$k]) : '';
+        $it_expected_warehousing_date = is_array($_POST['it_expected_warehousing_date']) ? strip_tags($_POST['it_expected_warehousing_date'][$k]) : '';
         /*
         $sql = "update {$g5['g5_shop_item_table']}
                    set ca_id          = '".sql_real_escape_string($p_ca_id)."',
@@ -117,7 +117,7 @@ if ($_POST['act_button'] == "선택수정") {
             it_type4       = '".sql_real_escape_string($p_it_type4)."',
             it_type5       = '".sql_real_escape_string($p_it_type5)."',
             it_model       = '".sql_real_escape_string($it_model)."',
-            it_thezone       = '".sql_real_escape_string($it_thezone)."',
+            it_expected_warehousing_date       = '".sql_real_escape_string($it_expected_warehousing_date)."',
             it_update_time = '".G5_TIME_YMDHIS."'
         where it_id   = '".preg_replace('/[^a-z0-9_\-]/i', '', $_POST['it_id'][$k])."' "; // APMS - 2014.07.20
         sql_query($sql);

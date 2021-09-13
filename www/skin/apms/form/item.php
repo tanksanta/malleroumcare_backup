@@ -154,6 +154,12 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
           </td>
         </tr>
         <tr>
+          <th scope="row"><label for="it_expected_warehousing_date">입고예정일 알림</label></th>
+          <td>
+            <input type="text" name="it_expected_warehousing_date" value="<?php echo get_text(cut_str($it['it_expected_warehousing_date'], 250, "")); ?>" id="it_expected_warehousing_date" class="frm_input sl">
+          </td>
+        </tr>
+        <tr>
           <th scope="row"><label for="it_name">관리자메모</label></th>
           <td>
             <?php echo help("상품 검색에 활용될 수 있습니다. HTML 입력이 불가합니다."); ?>
