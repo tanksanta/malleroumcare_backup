@@ -24,6 +24,8 @@ if (get_cart_count($tmp_cart_id) == 0)// 장바구니에 담기
 if (!$od_b_hp)
   alert('받으시는 분의 핸드폰 번호를 입력해주세요.');
 
+
+$it_direct_delivery = array(); //partner01 에게 푸쉬 보내기 위한 상품 저장, ct_is_direct_delivery > 0
 $it_ids = array();
 $productList = [];
 $postProdBarNumCnt = 0;
@@ -44,6 +46,8 @@ $sql = " select C.it_id,
                 C.ct_option,
                 C.ct_qty,
                 C.ct_id,
+                C.ct_is_direct_delivery,
+                C.ct_direct_delivery_partner,
                 I.it_time,
                 I.prodSupYn,
                 I.ProdPayCode as prodPayCode,
@@ -57,6 +61,9 @@ $sql = " select C.it_id,
 
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++) {
+  if($row['ct_is_direct_delivery'] > 0) {
+    array_push($it_direct_delivery, $row);
+  }
 
   # 옵션값 가져오기
   $prodColor = $prodSize = $prodOption = '';
@@ -1708,6 +1715,30 @@ if($is_member && $od_b_name) {
 
   sql_query($sql);
 }
+
+
+
+// partner01 푸쉬키 가져오기
+$partner01_tokens = array();
+$fb_result = sql_query("SELECT * FROM g5_firebase WHERE mb_id = 'partner01'");
+while($fb_row = sql_fetch_array($fb_result)) {
+    array_push($partner01_tokens, $fb_row['fcm_token']);
+}
+
+// partner01 푸쉬 보내기
+if (count($partner01_tokens) > 0 && count($it_direct_delivery) > 0) {
+  foreach ($it_direct_delivery as $row) {
+    $msg = '위탁내용 : ' . ($row['ct_is_direct_delivery'] == 1 ? '배송' : '설치');   
+    add_notification(
+        $partner01_tokens,
+        array(),
+        $row['it_name'] . '주문 신규추가',
+        $msg,
+        G5_URL . '/shop/partner_orderinquiry_view.php?od_id=' . $od_id
+    ); 
+  }  
+}
+
 
 // Push - 최고관리자에게 보냄 ---------------------------------------
 $mb_list = $config['cf_admin'].','.$config['as_admin'];
