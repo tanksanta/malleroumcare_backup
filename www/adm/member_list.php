@@ -22,7 +22,7 @@ if($sfl=="mb_manager"){
   $flag_m=true;
 }
 
-$sql_search = " where (1) ";
+$sql_search = " where (mb_type <> 'manager') ";
 if ($stx) {
   $sql_search .= " and ( ";
   switch ($sfl) {
