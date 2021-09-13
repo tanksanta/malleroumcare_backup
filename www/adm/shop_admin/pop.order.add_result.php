@@ -573,7 +573,7 @@ if ($res["errorYN"] == "N") {
     WHERE `ct_id` = '".$res['data'][$k]["ct_id"]."'
     ");
   }
-  alert($res["message"], G5_URL);
+  alert($res["message"], './pop.order.add.php');
   return false;
 }
 //통신 성공시 order table 에 stoId 추가, total stoId 개수 갱신

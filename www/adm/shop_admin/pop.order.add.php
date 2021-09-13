@@ -151,6 +151,8 @@ include_once('./pop.head.php');
 
 <script>
 
+var loading = false;
+
 function formcheck(f) {
     var val, io_type, result = true;
 
@@ -209,6 +211,12 @@ function formcheck(f) {
         return false;
     }
 
+    if (loading) {
+        alert('주문서 생성중입니다.');
+        return false;
+    }
+    
+    loading = true;
     return true;
 }
 
