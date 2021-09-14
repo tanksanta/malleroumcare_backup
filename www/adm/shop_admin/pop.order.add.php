@@ -299,7 +299,7 @@ $(function() {
         cache: true, // cache
         searchContain: true, // %검색어%
         noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
-        visibleProperties: ["mb_name", "mb_id"],
+        visibleProperties: ["mb_name", "mb_giup_addr"],
         searchIn: ["mb_id","mb_name","mb_nick","mb_tel", "mb_hp","mb_email"],
         selectionRequired: true,
         focusFirstResult: true,
