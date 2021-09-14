@@ -145,10 +145,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
 <style>
-.td_od_info { width: unset !important; text-align: left !important; }
+.td_od_info { width: unset !important; text-align: left !important; position: relative; }
 .td_od_info p { margin: 0; font-size: 12px; color: #666; line-height: 1.25; }
 .td_od_info p.info_head { font-size: 14px; color: #333; font-weight: bold; line-height: 1.5; }
 .td_od_info span.info_delivery { display: inline-block; vertical-align: bottom; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.td_od_info img.icon_link { display: none; position: absolute; width: 24px; height: 24px; top: 50%; right: 10px; transform: translateY(-50%); }
+tr.hover .td_od_info img.icon_link { display: block; }
+tr.hover { background-color: #fbf9f7 !important; }
 
 .td_operation { width: 150px }
 .td_operation a + a { margin-top: 5px; }
@@ -220,7 +223,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             if(!$orders) echo '<tr><td colspan="5" class="empty_table">내역이 없습니다.</td></tr>';
             foreach($orders as $row) { 
             ?>
-            <tr onclick="window.location.href='partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>'" class="btn_link">
+            <tr onclick="window.location.href='partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>'" class="btn_link" data-id="<?=$row['od_id']?>">
               <td class="td_od_info">
                 <p class="info_head">
                   <?=$row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " ({$row['ct_option']})" : '')?> (<?=$row['ct_qty']?>개)
@@ -242,6 +245,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 <p>
                   주문번호(<?=$row['od_id']?>)
                 </p>
+                <img src="<?=THEMA_URL?>/assets/img/icon_link_orderlist.png" class="icon_link">
               </td>
               <td class="td_od_info td_delivery_info">
                 <p class="info_head">
@@ -256,12 +260,14 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                   </span>
                   )
                 </p>
+                <?php if($row['prodMemo']) { ?>
                 <p>
                   요청사항 : 
                   <span class="info_delivery">
                     <?=$row['prodMemo']?>
                   </span>
                 </p>
+                <?php } ?>
               </td>
               <td class="text_c">
                 <span style="<?php
@@ -391,6 +397,20 @@ $(function() {
       $("#popup_box").show();
     });
   });
+
+  // 마우스 오버시 같은 주문 강조
+  $('tr.btn_link').hover(
+    function() {
+      var od_id = $(this).data('id');
+      var $tr = $('tr.btn_link[data-id="' + od_id + '"]');
+      if($tr.length >= 2)
+        $tr.addClass('hover');
+    },
+    function() {
+      var od_id = $(this).data('id');
+      $('tr.btn_link[data-id="' + od_id + '"]').removeClass('hover');
+    }
+  );
 });
 </script>
 
