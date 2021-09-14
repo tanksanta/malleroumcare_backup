@@ -15,15 +15,14 @@ recipient_link_clean();
 // 수급자 활동 알림
 // category_limit_noti();
 
-$rows = 5;
-
+$page_rows = $_COOKIE["recipient_page_rows"] ? $_COOKIE["recipient_page_rows"] : 10;
 $page = $_GET["page"] ?? 1;
 
 $send_data = [];
 $send_data["usrId"] = $member["mb_id"];
 $send_data["entId"] = $member["mb_entId"];
 $send_data["pageNum"] = $page;
-$send_data["pageSize"] = $rows;
+$send_data["pageSize"] = $page_rows;
 if ($sel_field === 'penNm') {
   $send_data['penNm'] = $search;
 }
@@ -75,17 +74,17 @@ if($res["data"]) {
 
 # 페이징
 $total_count = $res["total"];
-$total_page = ceil( $total_count / $rows ); # 총 페이지
-$write_pages = 5; # 한 블록에 보여줄 페이지 갯수 5개
+$total_page = ceil( $total_count / $page_rows ); # 총 페이지
 
 
 // 예비 수급자
+$rows_spare = 5;
 $page_spare = $_GET["page_spare"] ?? 1;
 $send_data = [];
 $send_data["usrId"] = $member["mb_id"];
 $send_data["entId"] = $member["mb_entId"];
 $send_data["pageNum"] = $page_spare;
-$send_data["pageSize"] = $rows;
+$send_data["pageSize"] = $rows_spare;
 if ($sel_field === 'penNm') {
   $send_data['penNm'] = $search;
 }
@@ -110,7 +109,7 @@ if($res["data"]) {
 }
 
 $total_count_spare = $res["total"];
-$total_page_spare = ceil( $total_count_spare / $rows ); # 총 페이지
+$total_page_spare = ceil( $total_count_spare / $rows_spare ); # 총 페이지
 
 
 // 수급자 연결
@@ -129,6 +128,13 @@ $(function() {
     });
 });
 
+$(document.body).on('change','#page_rows',function(){
+  var recipient_page_rows = $("#page_rows option:selected").val();
+  console.log(recipient_page_rows);
+  $.cookie('recipient_page_rows', recipient_page_rows, { expires: 365 })
+  window.location.reload();
+})
+
 function check_all_list(f)
 {
   var chk = document.getElementsByName("chk[]");
@@ -142,7 +148,7 @@ function check_all_list_spare(f)
   var chk = document.getElementsByName("spare_chk[]");
 
   for (i=0; i<chk.length; i++)
-      chk[i].checked = f.chkall.checked;
+      chk[i].checked = f.chkall_spare.checked;
 }
 
 function form_check(act) {
@@ -251,6 +257,20 @@ function form_check(act) {
     </div>
     <?php } ?>
     수급자관리
+    <div class="page_rows">
+        <!-- <select name="orderby" id="orderby">
+            <option value="it_id" <?php echo $orderby == 'it_id' || !$orderby ? 'selected' : ''; ?>>최근등록순 정렬</option>
+            <option value="it_name" <?php echo $orderby == 'it_name' ? 'selected' : ''; ?>>가나다순 정렬</option>
+        </select> -->
+        <select name="page_rows" id="page_rows" style="font-weight: normal;">
+            <option value="10" <?php echo $page_rows == '10' ? 'selected' : ''; ?>>10개씩보기</option>
+            <option value="15" <?php echo $page_rows == '15' ? 'selected' : ''; ?>>15개씩보기</option>
+            <option value="20" <?php echo $page_rows == '20' ? 'selected' : ''; ?>>20개씩보기</option>
+            <option value="50" <?php echo $page_rows == '50' ? 'selected' : ''; ?>>50개씩보기</option>
+            <option value="100" <?php echo $page_rows == '100' ? 'selected' : ''; ?>>100개씩보기</option>
+            <option value="200" <?php echo $page_rows == '200' ? 'selected' : ''; ?>>200개씩보기</option>
+        </select>
+    </div>
   </div>
 
   <form id="form_search" method="get">
@@ -343,7 +363,7 @@ function form_check(act) {
             <input type="checkbox" name="chk[]" value="<?php echo $data['penId'] . '|' . $contract_sell['sell_count'] ?>" id="chk_<?php echo $i ?>">
           </td>
           <td>
-            <?php echo $total_count - (($page - 1) * $rows) - $i; ?>
+            <?php echo $total_count - (($page - 1) * $page_rows) - $i; ?>
           </td>
           <td>
             <a href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId']; ?>'>
@@ -477,7 +497,7 @@ function form_check(act) {
 
   <div class="list-paging">
     <ul class="pagination pagination-sm en">
-      <?php echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page="); ?>
+      <?php echo apms_paging($page_rows, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page="); ?>
     </ul>
   </div>
 
@@ -517,7 +537,7 @@ function form_check(act) {
         <tr>
           <th id="mb_list_chk">
             <label for="chkall" class="sound_only">예비수급자 전체</label>
-            <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all_list_spare(this.form)">
+            <input type="checkbox" name="chkall" value="1" id="chkall_spare" onclick="check_all_list_spare(this.form)">
           </th>
           <th class="number_area">No.</th>
           <th>수급자 정보</th>
@@ -534,7 +554,7 @@ function form_check(act) {
             <input type="checkbox" name="spare_chk[]" value="<?php echo $data['penId'] ?>" id="spare_chk_<?php echo $i ?>">
           </td>
           <td>
-            <?php echo $total_count_spare - (($page_spare - 1) * $rows) - $i; ?>
+            <?php echo $total_count_spare - (($page_spare - 1) * $rows_spare) - $i; ?>
           </td>
           <td>
             <a href="<?=G5_SHOP_URL?>/my_recipient_update.php?penSpare=1&id=<?=$data['penId']?>">
@@ -590,10 +610,10 @@ function form_check(act) {
   <?php } ?>
   <div class="list-paging">
     <ul class="pagination pagination-sm en">
-      <?php echo apms_paging($write_pages, $page_spare, $total_page_spare, "?sel_field={$sel_field}&search={$search}&page={$page}&page_spare="); ?>
+      <?php echo apms_paging($rows_spare, $page_spare, $total_page_spare, "?sel_field={$sel_field}&search={$search}&page={$page}&page_spare="); ?>
     </ul>
   </div>
-  <div class="l_btn_area pc">
+  <div class="l_btn_area pc" style="margin-bottom: 30px;">
     <button type="button" class="btn eroumcare_btn2" onclick="return form_check('spare_seldelete');">선택삭제</a>
   </div>
 

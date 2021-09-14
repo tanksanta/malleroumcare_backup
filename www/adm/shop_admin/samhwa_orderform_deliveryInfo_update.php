@@ -8,6 +8,25 @@ if($auth_check) {
   json_response(400, "권한이 없습니다.");
 }
 
+// partner01 푸쉬키 가져오기
+$partner01_tokens = array();
+$fb_result = sql_query("SELECT * FROM g5_firebase WHERE mb_id = 'partner01'");
+while($fb_row = sql_fetch_array($fb_result)) {
+    array_push($partner01_tokens, $fb_row['fcm_token']);
+}
+
+// partner01 푸쉬 보내기
+function send_push($tokens, $it_name, $ct_is_direct_delivery, $od_id) {
+  $msg = '위탁내용 : ' . ($ct_is_direct_delivery == 1 ? '배송' : '설치');
+  add_notification(
+      $tokens,
+      array(),
+      $it_name . '주문 신규추가',
+      $msg,
+      G5_URL . '/shop/partner_orderinquiry_view.php?od_id=' . $od_id
+  );
+}
+
 $ct_id_list = $_POST["ct_id"];
 $od_delivery_insert = 0;
 
@@ -15,6 +34,7 @@ $direct_delivery_date = '';
 
 $result = [];
 foreach($ct_id_list as $ct_id) {
+  $ct_it_name = $_POST["ct_it_name_{$ct_id}"];
   $ct_delivery_company = $_POST["ct_delivery_company_{$ct_id}"];
   $ct_delivery_num = $_POST["ct_delivery_num_{$ct_id}"];
   $ct_delivery_cnt = $_POST["ct_delivery_cnt_{$ct_id}"];
@@ -129,6 +149,12 @@ foreach($ct_id_list as $ct_id) {
     'status' => $result_status,
     'text' => $result_text,
   );
+
+  // partner01 위탁인 경우 푸쉬 전송
+  if ($ct_is_direct_delivery > 0 && $ct_direct_delivery_partner == 'partner01') {
+    if (count($partner01_tokens) > 0)
+      send_push($partner01_tokens, $ct_it_name, $ct_is_direct_delivery, $od_id);
+  }
 }
 
 sql_query("

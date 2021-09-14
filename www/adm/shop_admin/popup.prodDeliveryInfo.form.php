@@ -149,6 +149,7 @@ $partners = get_partner_members();
           <tr data-price="<?=$options[$k]["it_delivery_price"]?>" data-cnt="<?=$options[$k]["it_delivery_cnt"]?>">
             <td>
               <input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
+              <input type="hidden" name="ct_it_name_<?=$options[$k]["ct_id"]?>" value="<?=$carts[$i]["it_name"]?>">
               <?=stripslashes($carts[$i]["it_name"])?>
               <?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]) { ?>
                 (<?=$options[$k]["ct_option"]?>) (<?=$carts[$i]["ct_qty"]?>개)
