@@ -1787,9 +1787,10 @@
     color: #fff;
     font-weight:bold;
     background-color: white;
-    padding: 10px 20px;
+    padding: 20px;
     font-size:18px;
     background: red;
+    width: 80%;
 }
 .item-head .item-image a img {
     width:100%;
