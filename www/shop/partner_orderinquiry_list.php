@@ -61,6 +61,7 @@ $sql_order = " ORDER BY FIELD(ct_status, '" . implode("' , '", $ct_steps) . "' )
 
 $result = sql_query("
   SELECT
+    ct_id,
     c.od_id,
     od_time,
     mb_entNm,
@@ -117,23 +118,25 @@ while($row = sql_fetch_array($result)) {
   $row['price_p'] = $price_p;
   $row['price_s'] = $price_s;
 
-  // 바코드 정보 가져오기
-  $sto_id = [];
-  foreach(array_filter(explode('|', $row['stoId'])) as $id) {
-    $sto_id[] = $id;
-  }
+  // 배송정보
+  $total_cnt_result = sql_fetch("
+    SELECT count(*) as cnt
+    FROM {$g5['g5_shop_cart_table']}
+    WHERE
+    od_id = '{$row['od_id']}' and
+    ct_direct_delivery_partner = '{$member['mb_id']}'
+  ");
+  $row['total_cnt'] = $total_cnt_result['cnt'] ?: 0;
 
-  $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
-    'stoId' => implode('|', $sto_id)
-  ), 443);
-
-  $barcode = [];
-  if($stock_result['data']) {
-    foreach($stock_result['data'] as $data) {
-      $barcode[] = $data['prodBarNum'];
-    }
-  }
-  $row['barcode'] = $barcode;
+  $inserted_cnt_result = sql_fetch("
+    SELECT count(*) as cnt
+    FROM {$g5['g5_shop_cart_table']}
+    WHERE
+    od_id = '{$row['od_id']}' and
+    ct_direct_delivery_partner = '{$member['mb_id']}' and
+    ct_delivery_num <> '' and ct_delivery_num is not null
+  ");
+  $row['inserted_cnt'] = $inserted_cnt_result['cnt'] ?: 0;
 
   $orders[] = $row;
 }
@@ -146,6 +149,18 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 .td_od_info p { margin: 0; font-size: 12px; color: #666; line-height: 1.25; }
 .td_od_info p.info_head { font-size: 14px; color: #333; font-weight: bold; line-height: 1.5; }
 .td_od_info span.info_delivery { display: inline-block; vertical-align: bottom; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.td_operation { width: 150px }
+.td_operation a + a { margin-top: 5px; }
+.td_operation a { display: block; border: 1px solid #ddd; background: #fff; padding: 5px 8px; color: #666; border-radius: 3px; font-size: 12px; text-align: center; line-height: 15px; }
+
+#popup_box { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#popup_box > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+#popup_box iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+
+@media (max-width : 750px) {
+  #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
 </style>
 
 <section class="wrap">
@@ -197,7 +212,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <th>위탁정보</th>
               <th>상태</th>
               <th>수수료</th>
-              <th>바코드</th>
+              <th>관리</th>
             </tr>
           </thead>
           <tbody>
@@ -259,13 +274,15 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <td class="text_r">
                 <?=number_format($row['price'])?>원
               </td>
-              <td class="text_c">
-                <?php
-                for($i = 0; $i < count($row['barcode']); $i++) {
-                  if($i > 0) echo '<br>';
-                  echo $row['barcode'][$i];
-                }
-                ?>
+              <td class="td_operation">
+                <a href="partner_orderinquiry_excel.php?od_id=<?=$row['od_id']?>" class="btn_instructor">작업지시서 다운로드</a>
+                <a href="javascript:void(0);" class="btn_delivery_info" data-id="<?=$row['od_id']?>">
+                  배송정보 (<?=$row['inserted_cnt']?>/<?=$row['total_cnt']?>)
+                </a>
+                <a href="javascript:void(0);" class="btn_barcode_info" data-id="<?=$row['ct_id']?>">
+                  <img src="/skin/apms/order/new_basic/image/icon_02.png" alt="">
+                  바코드
+                </a>
               </td>
             </tr>
             <?php } ?>
@@ -280,6 +297,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     </div>
   </div>
 </section>
+
+<div id="popup_box">
+  <div></div>
+</div>
 
 <script>
 function formatDate(date) {
@@ -296,6 +317,9 @@ function checkCtStatusAll() {
 }
 
 $(function() {
+  $("#popup_box").hide();
+  $("#popup_box").css("opacity", 1);
+
   checkCtStatusAll();
   // 주문상태 전체 선택 체크박스
   $('#chk_ct_status_all').click(function() {
@@ -335,6 +359,37 @@ $(function() {
     $('#to_date').val(formatDate(today));
     today.setDate(1); // 지난달 1일
     $('#fr_date').val(formatDate(today));
+  });
+
+  // 작업지시서 버튼
+  $('.btn_instructor').click(function(e) {
+    e.stopPropagation();
+  });
+
+  // 배송정보 버튼
+  $('.btn_delivery_info').click(function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var od_id = $(this).data('id');
+    $("body").addClass('modal-open');
+    $("#popup_box > div").html('<iframe src="popup.partner_deliveryinfo.php?od_id=' + od_id + '">');
+    $("#popup_box iframe").load(function() {
+      $("#popup_box").show();
+    });
+  });
+
+  // 바코드 버튼
+  $('.btn_barcode_info').click(function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var ct_id = $(this).data('id');
+    $("body").addClass('modal-open');
+    $("#popup_box > div").html('<iframe src="popup.partner_barcodeinfo.php?ct_id=' + ct_id + '">');
+    $("#popup_box iframe").load(function() {
+      $("#popup_box").show();
+    });
   });
 });
 </script>
