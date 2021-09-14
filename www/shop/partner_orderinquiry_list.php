@@ -64,6 +64,11 @@ $result = sql_query("
     c.od_id,
     od_time,
     mb_entNm,
+    od_b_name,
+    od_b_addr1,
+    od_b_addr2,
+    od_b_addr3,
+    od_b_addr_jibeon,
     it_name,
     ct_option,
     ct_qty,
@@ -108,6 +113,7 @@ while($row = sql_fetch_array($result)) {
   // 부가세
   $price_s = @round(($price ?: 0) / 1.1 / 10);
 
+  $row['price'] = $price;
   $row['price_p'] = $price_p;
   $row['price_s'] = $price_s;
 
@@ -134,6 +140,13 @@ while($row = sql_fetch_array($result)) {
 
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
+
+<style>
+.td_od_info { width: unset !important; text-align: left !important; }
+.td_od_info p { margin: 0; font-size: 12px; color: #666; line-height: 1.25; }
+.td_od_info p.info_head { font-size: 14px; color: #333; font-weight: bold; line-height: 1.5; }
+.td_od_info span.info_delivery { display: inline-block; vertical-align: bottom; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+</style>
 
 <section class="wrap">
   <div class="sub_section_tit">주문내역</div>
@@ -180,42 +193,71 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <table>
           <thead>
             <tr >
-              <th>주문일</th>
               <th>주문정보</th>
-              <th>사업소</th>
+              <th>위탁정보</th>
               <th>상태</th>
-              <th>위탁</th>
-              <th>요청사항</th>
-              <th>공급가액<br>(부가세)</th>
-              <th>출고일시</th>
+              <th>수수료</th>
               <th>바코드</th>
             </tr>
           </thead>
           <tbody>
             <?php
-            if(!$orders) echo '<tr><td colspan="9" class="empty_table">내역이 없습니다.</td></tr>';
+            if(!$orders) echo '<tr><td colspan="5" class="empty_table">내역이 없습니다.</td></tr>';
             foreach($orders as $row) { 
             ?>
             <tr onclick="window.location.href='partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>'" class="btn_link">
-              <td class="text_c"><?=date('Y-m-d', strtotime($row['od_time']))?></td>
-              <td class="text_c">
-                <?=$row['od_id']?><br>
-                <?=$row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " ({$row['ct_option']})" : '')?> * <?=$row['ct_qty']?>
+              <td class="td_od_info">
+                <p class="info_head">
+                  <?=$row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " ({$row['ct_option']})" : '')?> (<?=$row['ct_qty']?>개)
+                </p>
+                <p>
+                  주문일시 : 
+                  <?=date('Y-m-d', strtotime($row['od_time']))?>
+                </p>
+                <p>
+                  출고예정 : 
+                  <?=date('Y-m-d H시', strtotime($row['ct_direct_delivery_date']))?>
+                </p>
+                <?php if($row['ct_ex_date']) { ?>
+                <p>
+                  출고완료 : 
+                  <?=$row['ct_ex_date']?>
+                </p>
+                <?php } ?>
+                <p>
+                  주문번호(<?=$row['od_id']?>)
+                </p>
               </td>
-              <td class="text_c"><?=$row['mb_entNm']?></td>
-              <td class="text_c"><?=$row['ct_status']?></td>
-              <td class="text_c"><?=$row['ct_direct_delivery']?></td>
-              <td style="width: 200px; white-space: normal"><?=$row['prodMemo']?></td>
+              <td class="td_od_info td_delivery_info">
+                <p class="info_head">
+                  사업소 : 
+                  <?=$row['mb_entNm']?>
+                </p>
+                <p>
+                  위탁내용 (
+                  <span class="info_delivery">
+                    <?=$row['ct_direct_delivery']?> : <?=$row['od_b_name']?> / 
+                    <?=print_address($row['od_b_addr1'], $row['od_b_addr2'], $row['od_b_addr3'], $row['od_b_addr_jibeon'])?>
+                  </span>
+                  )
+                </p>
+                <p>
+                  요청사항 : 
+                  <span class="info_delivery">
+                    <?=$row['prodMemo']?>
+                  </span>
+                </p>
+              </td>
+              <td class="text_c">
+                <span style="<?php
+                if(in_array($row['ct_status'], ['주문취소', '주문무효']))
+                  echo 'color: #ff0000;';
+                ?>">
+                  <?=$row['ct_status']?>
+                </span>
+              </td>
               <td class="text_r">
-                <?=number_format($row['price_p'])?>원<br>
-                (<?=number_format($row['price_s'])?>원)
-              </td>
-              <td class="text_c">
-                (예정)<?=date('Y-m-d H시', strtotime($row['ct_direct_delivery_date']))?>
-                <?php
-                if($row['ct_ex_date'])
-                  echo '<br>(완료)'.$row['ct_ex_date']
-                ?>
+                <?=number_format($row['price'])?>원
               </td>
               <td class="text_c">
                 <?php
