@@ -1418,10 +1418,15 @@ jQuery.fn.flexdatalist = function (_option, _value) {
                 var $li = $('<li>').data('item', item).addClass('item'),
                     options = _this.options.get(),
                     visibleProperties = options.visibleProperties,
-                    visibleCallback = options.visibleCallback;
+                    visibleCallback = options.visibleCallback,
+                    visibleClassName = options.visibleClassName;
 
                 if (visibleCallback) {
                     return visibleCallback($li, item, options);
+                }
+
+                if (visibleClassName) {
+                    $li.addClass(visibleClassName);
                 }
 
                 for (var index = 0; index < visibleProperties.length; index++) {

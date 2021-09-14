@@ -12,6 +12,15 @@ include_once('./pop.head.php');
 .flexdatalist-results li {
     font-size:12px;
 }
+.flexdatalist-results li.mb_id {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.flexdatalist-results span:not(:first-child):not(.highlight) {
+    font-size: 80%;
+    color: rgba(0, 0, 0, 0.50);
+}
 
 .flexdatalist-results li .item-it_price:after {
     content: '원';
@@ -300,6 +309,7 @@ $(function() {
         searchContain: true, // %검색어%
         noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
         visibleProperties: ["mb_name", "mb_giup_addr"],
+        visibleClassName: 'mb_id',
         searchIn: ["mb_id","mb_name","mb_nick","mb_tel", "mb_hp","mb_email"],
         selectionRequired: true,
         focusFirstResult: true,
