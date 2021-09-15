@@ -66,6 +66,8 @@ $result = sql_query("
     od_time,
     mb_entNm,
     od_b_name,
+    od_b_hp,
+    od_b_tel,
     od_b_addr1,
     od_b_addr2,
     od_b_addr3,
@@ -253,12 +255,12 @@ tr.hover { background-color: #fbf9f7 !important; }
                   <?=$row['mb_entNm']?>
                 </p>
                 <p>
-                  위탁내용 (
-                  <span class="info_delivery">
-                    <?=$row['ct_direct_delivery']?> : <?=$row['od_b_name']?> / 
-                    <?=print_address($row['od_b_addr1'], $row['od_b_addr2'], $row['od_b_addr3'], $row['od_b_addr_jibeon'])?>
-                  </span>
-                  )
+                  위탁정보 : 
+                  [<?=$row['ct_direct_delivery']?>] <?=$row['od_b_name']?> / <?=$row['od_b_hp'] ?: $row['od_b_tel']?>
+                </p>
+                <p>
+                  배송주소 : 
+                  <?=print_address($row['od_b_addr1'], $row['od_b_addr2'], $row['od_b_addr3'], $row['od_b_addr_jibeon'])?>
                 </p>
                 <?php if($row['prodMemo']) { ?>
                 <p>
