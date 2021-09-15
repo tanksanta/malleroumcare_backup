@@ -255,16 +255,16 @@ tr.hover { background-color: #fbf9f7 !important; }
                   <?=$row['mb_entNm']?>
                 </p>
                 <p>
-                  위탁정보 : 
+                  - 위탁정보 : 
                   [<?=$row['ct_direct_delivery']?>] <?=$row['od_b_name']?> / <?=$row['od_b_hp'] ?: $row['od_b_tel']?>
                 </p>
                 <p>
-                  배송주소 : 
+                  - 배송주소 : 
                   <?=print_address($row['od_b_addr1'], $row['od_b_addr2'], $row['od_b_addr3'], $row['od_b_addr_jibeon'])?>
                 </p>
                 <?php if($row['prodMemo']) { ?>
                 <p>
-                  요청사항 : 
+                  - 요청사항 : 
                   <span class="info_delivery">
                     <?=$row['prodMemo']?>
                   </span>
