@@ -49,11 +49,35 @@ $g5['title'] = "관리권한설정";
 include_once('./admin.head.php');
 
 $colspan = 5;
+
+add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">', -1);
+add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>', 0);
 ?>
 
+<style>
+.flexdatalist-results li {
+  font-size:12px;
+}
+.flexdatalist-results span:not(:first-child):not(.highlight) {
+  font-size: 80%;
+  color: rgba(0, 0, 0, 0.50);
+}
+#auth_update_list {}
+#auth_update_list span.auth {
+  display: inline-block;
+  margin: 5px 5px 0 0;
+  font-size: 12px;
+  padding: 5px 8px;
+  color: #333;
+  background-color: #eee;
+  border-radius: 3px;
+  cursor: pointer;
+}
+</style>
+
 <div class="local_ov01 local_ov">
-    <?php echo $listall ?>
-    <span class="btn_ov01"><span class="ov_txt">설정된 관리권한</span><span class="ov_num"><?php echo number_format($total_count) ?>건</span></span>
+  <?php echo $listall ?>
+  <span class="btn_ov01"><span class="ov_txt">설정된 관리권한</span><span class="ov_num"><?php echo number_format($total_count) ?>건</span></span>
 </div>
 
 <form name="fsearch" id="fsearch" class="local_sch01 local_sch" method="get">
@@ -74,74 +98,74 @@ $colspan = 5;
 <input type="hidden" name="token" value="">
 
 <div class="tbl_head01 tbl_wrap">
-    <table>
+  <table>
     <caption><?php echo $g5['title']; ?> 목록</caption>
     <thead>
     <tr>
-        <th scope="col">
-            <label for="chkall" class="sound_only">현재 페이지 회원 전체</label>
-            <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
-        </th>
-        <th scope="col"><?php echo subject_sort_link('a.mb_id') ?>회원아이디</a></th>
-        <th scope="col"><?php echo subject_sort_link('mb_nick') ?>닉네임</a></th>
-        <th scope="col">메뉴</th>
-        <th scope="col">권한</th>
+      <th scope="col">
+        <label for="chkall" class="sound_only">현재 페이지 회원 전체</label>
+        <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
+      </th>
+      <th scope="col"><?php echo subject_sort_link('a.mb_id') ?>회원아이디</a></th>
+      <th scope="col"><?php echo subject_sort_link('mb_nick') ?>닉네임</a></th>
+      <th scope="col">메뉴</th>
+      <th scope="col">권한</th>
     </tr>
     </thead>
     <tbody>
-    <?php
-    $count = 0;
-    for ($i=0; $row=sql_fetch_array($result); $i++)
-    {
+      <?php
+      $count = 0;
+      for ($i=0; $row=sql_fetch_array($result); $i++)
+      {
         $is_continue = false;
         // 회원아이디가 없는 메뉴는 삭제함
         if($row['mb_id'] == '' && $row['mb_nick'] == '') {
-            sql_query(" delete from {$g5['auth_table']} where au_menu = '{$row['au_menu']}' ");
-            $is_continue = true;
+          sql_query(" delete from {$g5['auth_table']} where au_menu = '{$row['au_menu']}' ");
+          $is_continue = true;
         }
 
         // 메뉴번호가 바뀌는 경우에 현재 없는 저장된 메뉴는 삭제함
         if (!isset($auth_menu[$row['au_menu']]))
         {
-            sql_query(" delete from {$g5['auth_table']} where au_menu = '{$row['au_menu']}' ");
-            $is_continue = true;
+          sql_query(" delete from {$g5['auth_table']} where au_menu = '{$row['au_menu']}' ");
+          $is_continue = true;
         }
 
         if($is_continue)
-            continue;
+          continue;
 
         $mb_nick = get_sideview($row['mb_id'], $row['mb_nick'], $row['mb_email'], $row['mb_homepage']);
 
         $bg = 'bg'.($i%2);
-    ?>
-    <tr class="<?php echo $bg; ?>">
+      ?>
+      <tr class="<?php echo $bg; ?>">
         <td class="td_chk">
-            <input type="hidden" name="au_menu[<?php echo $i ?>]" value="<?php echo $row['au_menu'] ?>">
-            <input type="hidden" name="mb_id[<?php echo $i ?>]" value="<?php echo $row['mb_id'] ?>">
-            <label for="chk_<?php echo $i; ?>" class="sound_only"><?php echo $row['mb_nick'] ?>님 권한</label>
-            <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
+          <input type="hidden" name="au_menu[<?php echo $i ?>]" value="<?php echo $row['au_menu'] ?>">
+          <input type="hidden" name="mb_id[<?php echo $i ?>]" value="<?php echo $row['mb_id'] ?>">
+          <label for="chk_<?php echo $i; ?>" class="sound_only"><?php echo $row['mb_nick'] ?>님 권한</label>
+          <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
         </td>
         <td class="td_mbid"><a href="?sfl=a.mb_id&amp;stx=<?php echo $row['mb_id'] ?>"><?php echo $row['mb_id'] ?></a></td>
         <td class="td_auth_mbnick"><?php echo $mb_nick ?></td>
         <td class="td_menu">
-            <?php echo $row['au_menu'] ?>
-            <?php echo $auth_menu[$row['au_menu']] ?>
+          <?php echo $row['au_menu'] ?>
+          <?php echo $auth_menu[$row['au_menu']] ?>
         </td>
         <td class="td_auth"><?php echo $row['au_auth'] ?></td>
-    </tr>
-    <?php
+      </tr>
+      <?php
         $count++;
-    }
+      }
 
-    if ($count == 0)
+      if ($count == 0)
         echo '<tr><td colspan="'.$colspan.'" class="empty_table">자료가 없습니다.</td></tr>';
-    ?>
+      ?>
     </tbody>
-    </table>
+  </table>
 </div>
 
 <div class="btn_list01 btn_list">
-    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
+  <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
 </div>
 
 <?php
@@ -149,9 +173,9 @@ $colspan = 5;
 //    echo '<script>document.fsearch.sfl.value = "'.$sfl.'";</script>'."\n";
 
 if (strstr($sfl, 'mb_id'))
-    $mb_id = $stx;
+  $mb_id = $stx;
 else
-    $mb_id = '';
+  $mb_id = '';
 ?>
 </form>
 
@@ -161,90 +185,178 @@ echo $pagelist;
 ?>
 
 <form name="fauthlist2" id="fauthlist2" action="./auth_update.php" method="post" autocomplete="off">
-<input type="hidden" name="sfl" value="<?php echo $sfl ?>">
-<input type="hidden" name="stx" value="<?php echo $stx ?>">
-<input type="hidden" name="sst" value="<?php echo $sst ?>">
-<input type="hidden" name="sod" value="<?php echo $sod ?>">
-<input type="hidden" name="page" value="<?php echo $page ?>">
-<input type="hidden" name="token" value="">
+  <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
+  <input type="hidden" name="stx" value="<?php echo $stx ?>">
+  <input type="hidden" name="sst" value="<?php echo $sst ?>">
+  <input type="hidden" name="sod" value="<?php echo $sod ?>">
+  <input type="hidden" name="page" value="<?php echo $page ?>">
+  <input type="hidden" name="token" value="">
 
-<section id="add_admin">
+  <section id="add_admin">
     <h2 class="h2_frm">관리권한 추가</h2>
 
     <div class="local_desc01 local_desc">
-        <p>
-            다음 양식에서 회원에게 관리권한을 부여하실 수 있습니다.<br>
-            권한 <strong>r</strong>은 읽기권한, <strong>w</strong>는 쓰기권한, <strong>d</strong>는 삭제권한입니다.
-        </p>
+      <p>
+        다음 양식에서 회원에게 관리권한을 부여하실 수 있습니다.<br>
+        권한 <strong>r</strong>은 읽기권한, <strong>w</strong>는 쓰기권한, <strong>d</strong>는 삭제권한입니다.
+      </p>
     </div>
 
     <div class="tbl_frm01 tbl_wrap">
         <table>
         <colgroup>
-            <col class="grid_4">
-            <col>
+          <col class="grid_4">
+          <col>
         </colgroup>
         <tbody>
         <tr>
-            <th scope="row"><label for="mb_id">회원아이디<strong class="sound_only">필수</strong></label></th>
-            <td>
-                <strong id="msg_mb_id" class="msg_sound_only"></strong>
-                <input type="text" name="mb_id" value="<?php echo $mb_id ?>" id="mb_id" required class="required frm_input">
-            </td>
+          <th scope="row"><label for="mb_id">회원아이디<strong class="sound_only">필수</strong></label></th>
+          <td>
+            <strong id="msg_mb_id" class="msg_sound_only"></strong>
+            <input type="text" name="mb_id" value="<?php echo $mb_id ?>" id="mb_id" required class="required frm_input">
+          </td>
         </tr>
         <tr>
-            <th scope="row"><label for="au_menu">접근가능메뉴<strong class="sound_only">필수</strong></label></th>
-            <td>
-                <select id="au_menu" name="au_menu" required class="required">
-                    <option value=''>선택하세요</option>ㅋ
-                    <?php
-                    foreach($auth_menu as $key=>$value)
-                    {
-                        if (!(substr($key, -3) == '000' || $key == '-' || !$key))
-                            echo '<option value="'.$key.'">'.$key.' '.$value.'</option>';
-                    }
-                    ?>
-                </select>
-            </td>
+          <th scope="row">권한지정</th>
+          <td>
+            <input type="checkbox" name="r" value="r" id="r" checked>
+            <label for="r">r (읽기)</label>
+            <input type="checkbox" name="w" value="w" id="w" checked>
+            <label for="w">w (쓰기)</label>
+            <input type="checkbox" name="d" value="d" id="d" checked>
+            <label for="d">d (삭제)</label>
+          </td>
         </tr>
         <tr>
-            <th scope="row">권한지정</th>
-            <td>
-                <input type="checkbox" name="r" value="r" id="r" checked>
-                <label for="r">r (읽기)</label>
-                <input type="checkbox" name="w" value="w" id="w">
-                <label for="w">w (쓰기)</label>
-                <input type="checkbox" name="d" value="d" id="d">
-                <label for="d">d (삭제)</label>
-            </td>
+          <th scope="row"><label for="au_menu">접근가능메뉴</label></th>
+          <td>
+            <select id="au_menu" name="au_menu">
+              <option value=''>선택하세요</option>
+              <?php
+              foreach($auth_menu as $key=>$value)
+              {
+                if (!(substr($key, -3) == '000' || $key == '-' || !$key))
+                  echo '<option value="'.$key.'">'.$key.' '.$value.'</option>';
+              }
+              ?>
+            </select>
+            <div id="auth_update_list"></div>
+          </td>
         </tr>
         </tbody>
         </table>
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="추가" class="btn_submit btn">
+      <input type="submit" value="추가" class="btn_submit btn">
     </div>
-</section>
+  </section>
 
 </form>
 
 <script>
 function fauthlist_submit(f)
 {
-    if (!is_checked("chk[]")) {
-        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
-        return false;
-    }
+  if (!is_checked("chk[]")) {
+    alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+    return false;
+  }
 
-    if(document.pressed == "선택삭제") {
-        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
-            return false;
-        }
+  if(document.pressed == "선택삭제") {
+    if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+      return false;
     }
+  }
 
-    return true;
+  return true;
 }
+
+$(function() {
+  var auths = [];
+  var auth_table = {}; // 관리권한 중복 여부 확인용
+  function repaint_auths() {
+    var $auth_list = $('#auth_update_list').empty();
+    for(var i = 0; i < auths.length; i++) {
+      var auth = auths[i];
+      var $auth = $('<span>').addClass('auth').html(auth.text + ' (' + auth.au_auth + ') <i class="fa fa-times" aria-hidden="true"></i>');
+      $auth.attr('data-index', i);
+      $auth_list.append($auth);
+    }
+  }
+
+  $('#stx').flexdatalist({
+    minLength: 1,
+    url: '/adm/ajax.get_admin_mb_id.php',
+    cache: true, // cache
+    searchContain: true, // %검색어%
+    noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
+    visibleProperties: ["mb_name", "mb_id"],
+    searchIn: ["mb_id","mb_name"],
+    selectionRequired: true,
+    focusFirstResult: true,
+  });
+
+  $('#mb_id').flexdatalist({
+    minLength: 1,
+    url: '/adm/ajax.get_admin_mb_id.php',
+    cache: true, // cache
+    searchContain: true, // %검색어%
+    noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
+    visibleProperties: ["mb_name", "mb_id"],
+    searchIn: ["mb_id","mb_name"],
+    selectionRequired: true,
+    focusFirstResult: true,
+  }).on("select:flexdatalist",function(event, obj, options){
+  });
+
+  $('#au_menu').change(function() {
+    var au_menu = $(this).val();
+    if(auth_table[au_menu]) return;
+
+    auth_table[au_menu] = true;
+
+    var au_auth = [];
+    var rwd = ['r', 'w', 'd'];
+    for(var i = 0; i < rwd.length; i++) {
+      if($('#' + rwd[i]).prop('checked'))
+        au_auth.push(rwd[i]);
+    }
+    auths.push({
+      au_menu: au_menu,
+      au_auth: au_auth.join(','),
+      text: $(this).find('option:selected').text()
+    });
+    repaint_auths();
+  });
+
+  $(document).on('click', '#auth_update_list span.auth', function() {
+    var index = $(this).data('index');
+    var au_menu = auths[index].au_menu;
+
+    auth_table[au_menu] = false;
+
+    if(index > -1)
+      auths.splice(index, 1);
+    repaint_auths();
+  });
+
+  $('#fauthlist2').on('submit', function(e) {
+    e.preventDefault();
+
+    $.post('/adm/ajax.auth_update.php', {
+      mb_id: $('#mb_id').val(),
+      auths: auths
+    }, 'json')
+    .done(function() {
+      alert('관리권한 추가가 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+});
 </script>
 
 <?php
