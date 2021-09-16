@@ -277,7 +277,7 @@ $(function() {
             }
 
             $(parent).find('input[name="qty[]"]').val(1);
-            $(parent).find('input[name="it_price[]"]').val(it_price);
+            $(parent).find('input[name="it_price[]"]').val(addComma(it_price));
 
             // 공급가액, 부가세
             $(parent).find('.basic_price').text(addComma(Math.round(it_price / 1.1)) + "원");
@@ -365,7 +365,7 @@ $(function() {
         // var io_price = $(this).find('option:selected').data('price');
         var io_price = $(parent).find('.it_option option:selected').data('price');
         var price = $(parent).find('.price').val();
-        var it_price = String((price || 0) + (io_price || 0)).replace(/[\D\s\._\-]+/g, "");
+        var it_price = parseInt(price || 0) + parseInt(io_price || 0);
         it_price = it_price ? parseInt( it_price, 10 ) : 0;
         var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
         qty = qty ? parseInt( qty, 10 ) : 0;
