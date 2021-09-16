@@ -19,7 +19,7 @@ if($sel_date && $fr_date && $to_date)
 
 # 주문상태
 $ct_status = $_GET['ct_status'];
-$ct_steps = ['준비', '출고준비', '배송', '완료', '취소', '주문무효'];
+$ct_steps = ['출고준비', '배송', '완료', '취소', '주문무효'];
 if($ct_status) {
   $ct_steps = array_intersect($ct_steps, $ct_status);
 }
@@ -173,7 +173,6 @@ tr.hover { background-color: #fbf9f7 !important; }
   <form method="get">
     <div class="search_box">
       <label><input type="checkbox" id="chk_ct_status_all"/> 전체</label> 
-      <label><input type="checkbox" name="ct_status[]" value="준비" <?=option_array_checked('준비', $ct_status)?>/> 상품준비</label> 
       <label><input type="checkbox" name="ct_status[]" value="출고준비" <?=option_array_checked('출고준비', $ct_status)?>/> 출고준비</label> 
       <label><input type="checkbox" name="ct_status[]" value="배송" <?=option_array_checked('배송', $ct_status)?>/> 출고완료</label> 
       <label><input type="checkbox" name="ct_status[]" value="완료" <?=option_array_checked('완료', $ct_status)?>/> 배송완료</label>

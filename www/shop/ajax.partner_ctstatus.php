@@ -26,7 +26,7 @@ foreach($ct_id_arr as $ct_id) {
   if(!$cart || !$cart['ct_id'])
     json_response(400, '해당 상품의 주문상태를 변경할 수 있는 권한이 없습니다.');
   
-  if(!in_array($cart['ct_status'], ['준비', '출고준비', '배송']))
+  if(!in_array($cart['ct_status'], ['출고준비', '배송']))
     json_response(400, '해당 상품의 주문상태를 변경할 수 없습니다.');
 
   $od_id = $cart['od_id'];

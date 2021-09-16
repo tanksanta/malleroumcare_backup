@@ -34,7 +34,7 @@ $cart_result = sql_query("
   WHERE
     od_id = '{$od_id}' and
     ct_direct_delivery_partner = '{$member['mb_id']}' and
-    ct_status IN('준비', '출고준비', '배송', '완료', '취소', '주문무효')
+    ct_status IN('출고준비', '배송', '완료', '취소', '주문무효')
   ORDER BY
     ct_id ASC
 ");
@@ -127,9 +127,8 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
           </div>
           <div class="col">
             <select name="ct_status" class="order-status-select">
-              <option value="준비">상품준비</option>
               <option value="출고준비">출고준비</option>
-              <option value="배송">출고완료</option>
+              <option value="배송" selected>출고완료</option>
             </select>
             <button type="button" id="btn_ct_status" class="order-status-btn">저장</button>
           </div>
