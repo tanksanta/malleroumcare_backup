@@ -426,7 +426,7 @@ $(function() {
         }
     });
     
-    $(document).keypress(function(e) {
+    $(document).keydown(function(e) {
         if((e.which || e.keyCode) == 119) { // F8
             $('#popup_buttom input[type="submit"]').click();
         }
