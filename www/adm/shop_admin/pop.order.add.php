@@ -126,10 +126,10 @@ include_once('./pop.head.php');
                     </div>
                 </td>
                 <td>
-                    <input type="number" name="qty[]" class="frm_input" value="1">
+                    <input type="text" name="qty[]" class="frm_input" value="1">
                 </td>
                 <td>
-                    <input type="number" name="it_price[]" class="frm_input" value="0">
+                    <input type="text" name="it_price[]" class="frm_input" value="0">
                 </td>
                 <td class="basic_price">
                     0원
@@ -172,7 +172,8 @@ function formcheck(f) {
     }
 
     $("input[name^=qty]").each(function(index) {
-        val = $(this).val();
+        val = $(this).val().replace(/[\D\s\._\-]+/g, "");
+        val = val ? parseInt( val, 10 ) : 0;
 
         if(val.length < 1) {
             alert("수량을 입력해 주십시오.");
@@ -195,7 +196,8 @@ function formcheck(f) {
 
     
     $("input[name^=it_price]").each(function(index) {
-        val = $(this).val();
+        val = $(this).val().replace(/[\D\s\._\-]+/g, "");
+        val = val ? parseInt( val, 10 ) : 0;
 
         if(val.length < 1) {
             alert("단가를 입력해 주십시오.");
@@ -363,14 +365,17 @@ $(function() {
         // var io_price = $(this).find('option:selected').data('price');
         var io_price = $(parent).find('.it_option option:selected').data('price');
         var price = $(parent).find('.price').val();
-        var it_price = parseInt(price || 0) + parseInt(io_price || 0);
-        var qty = $(parent).find('input[name="qty[]"]').val();
+        var it_price = String((price || 0) + (io_price || 0)).replace(/[\D\s\._\-]+/g, "");
+        it_price = it_price ? parseInt( it_price, 10 ) : 0;
+        var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
+        qty = qty ? parseInt( qty, 10 ) : 0;
 
         // 단가
         if ($(this).attr('name') === 'it_price[]') {
-            it_price = $(parent).find('input[name="it_price[]"]').val();
+            it_price = $(parent).find('input[name="it_price[]"]').val().replace(/[\D\s\._\-]+/g, "");
+            it_price = it_price ? parseInt( it_price, 10 ) : 0;
         }
-        $(parent).find('input[name="it_price[]"]').val(it_price || 0);
+        $(parent).find('input[name="it_price[]"]').val(addComma(it_price || 0));
 
         // 공급가액, 부가세
         $(parent).find('.basic_price').text(addComma(Math.round(it_price * qty / 1.1) || 0) + "원");
@@ -424,6 +429,20 @@ $(function() {
     $(document).keypress(function(e) {
         if((e.which || e.keyCode) == 119) { // F8
             $('#popup_buttom input[type="submit"]').click();
+        }
+    });
+
+    //input 변경시 스타일 적용
+    $(document).on('input propertychange paste', 'input[name="qty[]"], input[name="it_price[]"]', function() {
+        var input = $(this).val();
+
+        input = input.replace(/[\D\s\._\-]+/g, "");
+
+        if(input !== '') {
+            input = input ? parseInt( input, 10 ) : 0;
+            $(this).val(input.toLocaleString());
+        } else {
+            $(this).val('');
         }
     });
 

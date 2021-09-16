@@ -209,9 +209,11 @@ for($i=0; $i<count($it_ids); $i++) {
     $io_price = 0;
     $io_thezone = $opt_list[$io_type][$io_id]['io_thezone'];
     
-    $ct_qty = (int)$_POST['qty'][$i][$k];
+    $ct_qty = $_POST['qty'][$i];
+    $ct_qty = (int)preg_replace("/[^\d]/","", $ct_qty);
     // $it_price = $it['it_price'];
-    $it_price = (int)$_POST['it_price'][$i];
+    $it_price = $_POST['it_price'][$i];
+    $it_price = (int)preg_replace("/[^\d]/","", $it_price);
 
 
     $sql2 = " select ct_id, io_type, ct_qty
