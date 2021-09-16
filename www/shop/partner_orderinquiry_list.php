@@ -147,6 +147,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
 <style>
+form.clear:after { display: table; content: ' '; clear: both; }
+.r_area { font-size: 12px; font-weight: normal; }
+.r_area select { border-radius: 3px; border: 1px solid #ddd; width: 100px; height: 30px; font-size: 12px; color: #555; padding-left: 10px; margin-left: 5px; }
+.r_area .btn_blk { background: #333; color: #fff; width: 85px; padding: 3px 0; border-radius: 3px; margin-left: 5px; font-size: 12px; }
+
+.list_box table td:first-child { padding: 0; width: 40px; }
+
 .td_od_info { width: unset !important; text-align: left !important; position: relative; }
 .td_od_info p { margin: 0; font-size: 12px; color: #666; line-height: 1.25; }
 .td_od_info p.info_head { font-size: 14px; color: #333; font-weight: bold; line-height: 1.5; }
@@ -170,7 +177,7 @@ tr.hover { background-color: #fbf9f7 !important; }
 
 <section class="wrap">
   <div class="sub_section_tit">주문내역</div>
-  <form method="get">
+  <form method="get" class="clear">
     <div class="search_box">
       <label><input type="checkbox" id="chk_ct_status_all"/> 전체</label> 
       <label><input type="checkbox" name="ct_status[]" value="출고준비" <?=option_array_checked('출고준비', $ct_status)?>/> 출고준비</label> 
@@ -201,17 +208,26 @@ tr.hover { background-color: #fbf9f7 !important; }
     </div>
   </form>
   <div class="inner">
+    <form id="form_ct_status">
     <div class="list_box">
       <div class="subtit">
         목록
         <div class="r_area">
-          <!-- <a href="#" class="btn_gray_box">모두확인</a> -->
+          선택한 주문 상태 변경
+          <select name="ct_status">
+            <option value="출고준비">출고준비</option>
+            <option value="배송" selected>출고완료</option>
+          </select>
+          <button type="button" id="btn_ct_status" class="btn_blk">변경하기</button>
         </div>
       </div>
       <div class="table_box">
         <table>
           <thead>
-            <tr >
+            <tr>
+              <th>
+                <input type="checkbox" id="chk_all">
+              </th>
               <th>주문정보</th>
               <th>위탁정보</th>
               <th>상태</th>
@@ -225,6 +241,9 @@ tr.hover { background-color: #fbf9f7 !important; }
             foreach($orders as $row) { 
             ?>
             <tr onclick="window.location.href='partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>'" class="btn_link" data-id="<?=$row['od_id']?>">
+              <td class="td_chk">
+                <input type="checkbox" name="ct_id[]" value="<?=$row['ct_id']?>">
+              </td>
               <td class="td_od_info">
                 <p class="info_head">
                   <?=$row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " ({$row['ct_option']})" : '')?> (<?=$row['ct_qty']?>개)
@@ -302,6 +321,7 @@ tr.hover { background-color: #fbf9f7 !important; }
         </ul>
       </div>
     </div>
+    </form>
   </div>
 </section>
 
@@ -412,6 +432,45 @@ $(function() {
       $('tr.btn_link[data-id="' + od_id + '"]').removeClass('hover');
     }
   );
+
+  // 체크박스 클릭
+  $('#chk_all').click(function() {
+    if($(this).prop('checked')) {
+      $('input[name="ct_id[]"]').prop('checked', true);
+    } else {
+      $('input[name="ct_id[]"]').prop('checked', false);
+    }
+  });
+  $('input[name="ct_id[]"]').click(function() {
+    var $chk_all = $('#chk_all');
+    if($('input[name="ct_id[]"]').length === $('input[name="ct_id[]"]:checked').length)
+      $chk_all.prop('checked', true);
+    else
+      $chk_all.prop('checked', false);
+  });
+  $('.td_chk').click(function(e) {
+    e.stopPropagation();
+    if(e.target !== $(this).find('input[name="ct_id[]"]')[0])
+      $(this).find('input[name="ct_id[]"]').click();
+  });
+
+  // 주문상태 변경
+  $('#btn_ct_status').click(function() {
+    $('#form_ct_status').submit();
+  });
+  $('#form_ct_status').on('submit', function(e) {
+    e.preventDefault();
+
+    $.post('ajax.partner_ctstatus.php', $(this).serialize(), 'json')
+    .done(function() {
+      alert('변경이 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
 });
 </script>
 

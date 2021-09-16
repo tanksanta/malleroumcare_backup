@@ -12,8 +12,8 @@ if(!$ct_status || !$ct_id_arr || !is_array($ct_id_arr))
 
 $sto_id = [];
 $sql = [];
-$od_id;
 $mb_id;
+$sto_id_od_id_table = [];
 foreach($ct_id_arr as $ct_id) {
   $cart = sql_fetch("
     SELECT * FROM {$g5['g5_shop_cart_table']}
@@ -73,6 +73,7 @@ foreach($ct_id_arr as $ct_id) {
 
   foreach(array_filter(explode('|', $cart['stoId'])) as $id) {
     $sto_id[] = $id;
+    $sto_id_od_id_table[$id] = $od_id;
   }
 }
 
@@ -84,12 +85,12 @@ if($sto_id) {
   if(!$stock_result['data'])
     json_response(500, '시스템 서버 오류', $stock_result);
 
-  $stateCd = '06'; // 재고대기
-  if($ct_status == '배송')
-    $stateCd = is_pen_order($od_id) ? "02" : "01";
-
   $prods = array_map(function($data) {
-    global $stateCd;
+    global $ct_status, $sto_id_od_id_table;
+
+    $stateCd = '06'; // 재고대기
+    if($ct_status == '배송')
+      $stateCd = is_pen_order($sto_id_od_id_table[$data['stoId']]) ? "02" : "01";
 
     return array(
       'stoId' => $data['stoId'],
@@ -107,11 +108,9 @@ if($sto_id) {
     }
   }
 
-  $ent_id = get_member($mb_id, 'mb_entId')['mb_entId'];
-
   $api_result = api_post_call(EROUMCARE_API_STOCK_UPDATE, array(
-    'usrId' => $mb_id,
-    'entId' => $ent_id,
+    'usrId' => $member['mb_id'],
+    'entId' => $member['mb_entId'],
     'prods' => $prods
   ));
 

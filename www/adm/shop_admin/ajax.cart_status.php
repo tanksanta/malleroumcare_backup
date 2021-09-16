@@ -179,7 +179,7 @@ if($_POST['ct_id'] && $_POST['step']) {
     foreach($sql_cp as $sql) {
       sql_query($sql);
     }
-    
+
     $api_data = array(
       'usrId' => $usrId,
       'entId' => $entId,
