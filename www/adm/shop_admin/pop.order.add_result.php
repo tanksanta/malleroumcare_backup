@@ -119,9 +119,9 @@ for($i=0; $i<count($it_ids); $i++) {
       $lst_count++;
   }
 
-  if (!$uid) {
+  // if (!$uid) {
     $uid = uuidv4();
-  }
+  // }
 
   $comma = '';
   $sql = " INSERT INTO {$g5['g5_shop_cart_table']}
