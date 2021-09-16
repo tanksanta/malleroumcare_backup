@@ -144,13 +144,16 @@ while($row = sql_fetch_array($result)) {
 }
 
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
+add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 ?>
 
 <style>
 form.clear:after { display: table; content: ' '; clear: both; }
 .r_area { font-size: 12px; font-weight: normal; }
-.r_area select { border-radius: 3px; border: 1px solid #ddd; width: 100px; height: 30px; font-size: 12px; color: #555; padding-left: 10px; margin-left: 5px; }
-.r_area .btn_blk { background: #333; color: #fff; width: 85px; padding: 3px 0; border-radius: 3px; margin-left: 5px; font-size: 12px; }
+.r_area span { margin-right: 5px; }
+.r_area select { border-radius: 3px; border: 1px solid #ddd; width: 100px; height: 30px; font-size: 12px; color: #555; padding-left: 10px; }
+.r_area .btn_blk { background: #333; color: #fff; width: 85px; padding: 4px 0; height: 30px; border-radius: 3px; margin: 0 5px; font-size: 12px; }
+.r_area .btn_wht { background: #fff; border: 1px solid #ddd; color: #666; width: 100px; padding: 4px 0; height: 30px; border-radius: 3px; font-size: 12px; }
 
 .list_box table td:first-child { padding: 0; width: 40px; }
 
@@ -213,12 +216,13 @@ tr.hover { background-color: #fbf9f7 !important; }
       <div class="subtit">
         목록
         <div class="r_area">
-          선택한 주문 상태 변경
+          <span>선택한 주문 상태 변경</span>
           <select name="ct_status">
             <option value="출고준비">출고준비</option>
             <option value="배송" selected>출고완료</option>
           </select>
           <button type="button" id="btn_ct_status" class="btn_blk">변경하기</button>
+          <button type="button" id="btn_excel" class="btn_wht">엑셀다운로드</button>
         </div>
       </div>
       <div class="table_box">
@@ -471,6 +475,26 @@ $(function() {
       alert(data && data.message);
     });
   });
+
+  // 엑셀 다운로드
+  $('#btn_excel').click(function() {
+    var ct_id = [];
+    var $item = $("input[name='ct_id[]']:checked");
+    $item.each(function() {
+      ct_id.push($(this).val());
+    });
+
+    if(!ct_id.length)
+      return alert('선택한 주문이 없습니다.');
+    
+    $.fileDownload('partner_order_excel.php', {
+      httpMethod: "POST",
+      data: {
+        ct_id: ct_id
+      }
+    });
+  });
+
 });
 </script>
 
