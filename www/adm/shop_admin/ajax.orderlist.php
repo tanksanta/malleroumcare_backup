@@ -873,7 +873,7 @@ foreach($orderlist as $order) {
       $direct_delivery_text .= "<br>[{$delivery_company_name}] {$result_ct['ct_delivery_num']}";
     }
     if($order['ct_is_delivery_excel_downloaded']) {
-      $direct_delivery_text .= '<br><span style="color: #FF6600">엑셀 다운로드 완료</span>';
+      $direct_delivery_text .= '<br><span class="excel_done" style="color: #FF6600">엑셀 다운로드 완료</span>';
     }
 
     $ret['data'] .= "
@@ -947,7 +947,7 @@ foreach($orderlist as $order) {
         <td align=\"center\" class=\"od_ex_date\">
             {$ct_ex_date}
         </td>
-        <td align=\"center\" class=\"od_content\">
+        <td align=\"center\" class=\"od_content od_direct_delivery\">
             {$direct_delivery_text}
         </td>
         <td align=\"center\" class=\"od_step\">

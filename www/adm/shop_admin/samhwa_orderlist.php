@@ -1281,7 +1281,10 @@ function orderListExcelDownload(type) {
     })
     .always(function() {
       $('#loading_excel').hide();
-      window.location.reload();
+      item.each(function() {
+        if($(this).closest('tr').find('td.od_direct_delivery span.excel_done').length === 0)
+          $(this).closest('tr').find('td.od_direct_delivery').append('<br><span class="excel_done" style="color: #FF6600">엑셀 다운로드 완료</span>');
+      });
     });
   } else {
     excel_downloader = $.fileDownload(href, {
