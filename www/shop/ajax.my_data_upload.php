@@ -112,8 +112,24 @@ foreach($data as $row) {
       json_response(500, '서버 오류가 발생했습니다.');
     $pen_result = $pen_result['data'] ? $pen_result['data'][0] : null;
 
-    if(!$pen_result || $pen_result['penLtmNum'] != $row['pen_ltm_num'])
-      $status = 0;
+    if(!$pen_result || $pen_result['penLtmNum'] != $row['pen_ltm_num']) {
+      // 수급자가 없는 경우 이름, 장기요양번호만으로 수급자 등록
+      $pen_input = array(
+        'penNm' => $row['pen_nm'],
+        'penLtmNum' => $row['pen_ltm_num']
+      );
+      if($valid = valid_recipient_input($pen_input, false, true)) {
+        // 수급자 등록 오류 발생시 매칭 대기(입력값 검증 오류)
+        $status = 0;
+      } else {
+        $pen_insert = api_post_call(EROUMCARE_API_SPARE_RECIPIENT_INSERT, normalize_recipient_input($pen_input));
+
+        if($pen_insert['errorYN'] != 'N') {
+          // 수급자 등록 오류 발생시 매칭 대기(시스템 서버 오류)
+          $status = 0;
+        }
+      }
+    }
   }
   
   # 4. 업로드 테이블 INSERT
