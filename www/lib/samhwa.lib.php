@@ -1266,40 +1266,41 @@ function samhwa_get_misu($mb_id) {
 
 }
 
-function samhwa_get_mb_shorten_info($mb_id) {
-
-    $mb = get_member($mb_id);
-
-    if ( !$mb ) {
-        $ret = '<span class="mb_shorten_info no_login">비</span>';
-        return $ret;
-    }
-
-    $ret = '';
-    
-    if ($mb['mb_type'] == 'partner') { // 파트너
-        $ret .= '<span class="mb_shorten_info partner">파</span>';
-    }
-    if ($mb['mb_level'] == 3) { // 딜러
-        $ret .= '<span class="mb_shorten_info dealer dealer_1">사</span>';
-    }
-    if ($mb['mb_level'] == 4) { // 우수딜러
-        $ret .= '<span class="mb_shorten_info dealer dealer_2">우</span>';
-    }
-    if ($mb['mb_giup_type'] > 0) { // 기업
-        $ret .= '<span class="mb_shorten_info giup">기</span>';
-    }
-    /*
-    if ($mb['mb_giup_type'] == 1) { // 구매목적
-        $ret .= '<span class="mb_shorten_info giup giup_buy">구</span>';
-    }
-    if ($mb['mb_giup_type'] == 1) { // 납품/판매목적
-        $ret .= '<span class="mb_shorten_info giup giup_sell">납</span>';
-    }
-    */
-
+function samhwa_get_mb_shorten_info_by_mb($mb) {
+  if ( !$mb ) {
+    $ret = '<span class="mb_shorten_info no_login">비</span>';
     return $ret;
+  }
 
+  $ret = '';
+
+  if ($mb['mb_type'] == 'partner') { // 파트너
+    $ret .= '<span class="mb_shorten_info partner">파</span>';
+  }
+  if ($mb['mb_level'] == 3) { // 딜러
+    $ret .= '<span class="mb_shorten_info dealer dealer_1">사</span>';
+  }
+  if ($mb['mb_level'] == 4) { // 우수딜러
+    $ret .= '<span class="mb_shorten_info dealer dealer_2">우</span>';
+  }
+  if ($mb['mb_giup_type'] > 0) { // 기업
+    $ret .= '<span class="mb_shorten_info giup">기</span>';
+  }
+  /*
+  if ($mb['mb_giup_type'] == 1) { // 구매목적
+    $ret .= '<span class="mb_shorten_info giup giup_buy">구</span>';
+  }
+  if ($mb['mb_giup_type'] == 1) { // 납품/판매목적
+    $ret .= '<span class="mb_shorten_info giup giup_sell">납</span>';
+  }
+  */
+
+  return $ret;
+}
+
+function samhwa_get_mb_shorten_info($mb_id) {
+  $mb = get_member($mb_id);
+  return samhwa_get_mb_shorten_info_by_mb($mb);
 }
 
 // XP Level Icon
