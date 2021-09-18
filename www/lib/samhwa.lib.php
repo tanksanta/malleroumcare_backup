@@ -675,6 +675,17 @@ function set_order_admin_log($od_id, $content) {
 
     return sql_query($sql);
 }
+function set_send_ledger_log($mb_id, $send_type, $receiver = "") {
+
+    $sql = "INSERT INTO g5_send_ledger_history SET
+                mb_id = '{$mb_id}',
+                send_type = '{$send_type}',
+                receiver = '{$receiver}',
+                send_date = now()
+                ";
+
+    return sql_query($sql);
+}
 
 $typereceipt_types = array(
     '0' => array(
