@@ -237,6 +237,29 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_ent_num = '{$mb_ent_num}'
                   ";
 
+$sendData = array(
+    'usrId' => $mb_id,
+    'usrPw' => $mb_password,
+    'entNm' => $mb_giup_bname,
+    'usrPnum' => $mb_hp,
+    'entPnum' => $mb_tel,
+    'entFax' => $mb_fax,
+    'usrMail' => $mb_email,
+    'entMail' => $mb_giup_tax_email,
+    'mbType' => $mb_type,
+    'entCeoNm' => $mb_giup_boss_name,
+    'entBusiType' => $mb_giup_bupjong,
+    'entBusiCondition' => $mb_giup_buptae,
+    'entZip' => $mb_giup_zip1 . $mb_giup_zip2,
+    'entAddr' => $mb_giup_addr1,
+    'entAddrDetail' => $mb_giup_addr2 . $mb_giup_addr3,
+    'entTaxCharger' => $mb_giup_manager_name,
+    'usrZip' => $mb_zip1 . $mb_zip2,
+    'usrAddr' => $mb_addr1,
+    'usrAddrDetail' => $mb_addr2 . $mb_addr3
+);
+
+
 if ($w == '')
 {
     $mb = get_member($mb_id);
@@ -254,6 +277,29 @@ if ($w == '')
     $row = sql_fetch($sql);
     if ($row['mb_id'])
         alert('이미 존재하는 이메일입니다.\\nＩＤ : '.$row['mb_id'].'\\n이름 : '.$row['mb_name'].'\\n닉네임 : '.$row['mb_nick'].'\\n메일 : '.$row['mb_email']);
+
+    $sendData['entCrn'] = $mb_giup_bnum;
+    $sendData['entConAcco1'] = '본 계약은 국민건강보험 노인장기요양보험 급여상품의 공급계약을 체결함에 목적이 있다.';
+    $sendData['entConAcco2'] = '본 계약서에 명시되지 아니한 사항이나 의견이 상이할 때에는 상호 협의하에 해결하는 것을 원칙으로 한다.';
+    
+    if($mb_type !== 'normal') { // 일반회원이 아니면
+        // $mb_level = 3;
+        // 시스템 먼저 회원가입
+        $result = post_formdata(EROUMCARE_API_ENT_INSERT, $sendData);
+        if($result['errorYN'] !== 'N')
+            alert($result['message']);
+    
+        $mb_entId = $result['data']['entId'];
+        if(!$mb_entId)
+            alert('시스템서버 오류로 회원가입에 실패했습니다.');
+
+        $sql_common .= "
+            , mb_entId = '{$mb_entId}'
+            , mb_entConAcc01 = '{$sendData['entConAcco1']}'
+            , mb_entConAcc02 = '{$sendData['entConAcco2']}'
+        ";
+    }
+    
 
     sql_query("insert into {$g5['member_table']}
                     set
@@ -292,6 +338,23 @@ else if ($w == 'u')
     $row = sql_fetch($sql);
     if ($row['mb_id'])
         alert('이미 존재하는 이메일입니다.\\nＩＤ : '.$row['mb_id'].'\\n이름 : '.$row['mb_name'].'\\n닉네임 : '.$row['mb_nick'].'\\n메일 : '.$row['mb_email']);
+
+    
+    $sendData['entConAcc01'] = $mb['mb_entConAcc01'];
+    $sendData['entConAcc02'] = $mb['mb_entConAcc02'];
+    $sendData['entId'] = $mb['mb_entId'];
+    $sendData['entUsrId'] = $mb['mb_id'];
+    if($mb_type !== 'normal' && $mb['mb_entId']) { // 일반회원이 아니고 전용아이디가 아닌경우
+        // 시스템 먼저 업데이트
+        $result = post_formdata(EROUMCARE_API_ENT_UPDATE, $sendData);
+        if($result['errorYN'] !== 'N')
+        alert($result['message']);
+        
+        $sql_common .= "
+            , mb_entConAcc01 = '{$sendData['entConAcco1']}'
+            , mb_entConAcc02 = '{$sendData['entConAcco2']}'
+        ";
+    }
 
 	//이용기간 체크
 	$sql_as_date = '';
