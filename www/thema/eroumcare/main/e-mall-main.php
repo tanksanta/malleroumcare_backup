@@ -263,7 +263,8 @@ var step_name = {
 }
 var step = '준비';
 var tab = 0; // 0: 주문내역 / 1: 취소/환불
-function update_latest_order(page = 1) {
+function update_latest_order(page) {
+  page = page || 1;
   $('.latest_order_head .step').removeClass('active');
   $('.latest_order_head .step[data-step="'+step+'"]').addClass('active');
   $('.latest_order_list').html('<li style="padding: 50px 0; text-align:center;"><img src="/shop/img/loading.gif"></li>');
