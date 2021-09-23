@@ -254,17 +254,28 @@ $(function() {
 <div id="popupProdDeliveryInfoBox" class="listPopupBoxWrap"><div></div></div>
 
 <script>
+var step_list = ['준비', '출고준비', '배송', '완료'];
+var step_name = {
+  '준비': '상품준비',
+  '출고준비' : '출고준비',
+  '배송': '출고완료',
+  '완료': '배송완료'
+}
+var step = '준비';
+var tab = 0; // 0: 주문내역 / 1: 취소/환불
+function update_latest_order(page = 1) {
+  $('.latest_order_head .step').removeClass('active');
+  $('.latest_order_head .step[data-step="'+step+'"]').addClass('active');
+  $('.latest_order_list').html('<li style="padding: 50px 0; text-align:center;"><img src="/shop/img/loading.gif"></li>');
+  $.post('/shop/ajax.order.latest.list.php', {
+    ct_status: step,
+    page: page,
+  }, 'json')
+  .done(function(result) {
+    $('.latest_order_list').html(result.data);
+  });
+}
 $(function() {
-  var step_list = ['준비', '출고준비', '배송', '완료'];
-  var step_name = {
-    '준비': '상품준비',
-    '출고준비' : '출고준비',
-    '배송': '출고완료',
-    '완료': '배송완료'
-  }
-  var step = '준비';
-  var tab = 0; // 0: 주문내역 / 1: 취소/환불
-
   get_latest_order_count();
 
   function get_latest_order_count() {
@@ -297,18 +308,6 @@ $(function() {
       }
 
       update_latest_order();
-    });
-  }
-
-  function update_latest_order() {
-    $('.latest_order_head .step').removeClass('active');
-    $('.latest_order_head .step[data-step="'+step+'"]').addClass('active');
-    $('.latest_order_list').html('<li style="padding: 50px 0; text-align:center;"><img src="/shop/img/loading.gif"></li>');
-    $.post('/shop/ajax.order.latest.list.php', {
-      ct_status: step
-    }, 'json')
-    .done(function(result) {
-      $('.latest_order_list').html(result.data);
     });
   }
 

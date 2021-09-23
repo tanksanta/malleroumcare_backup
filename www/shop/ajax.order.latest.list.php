@@ -24,6 +24,7 @@ $sql_common = "
 
 $total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ")['cnt'] ?: 0;
 
+$write_pages = G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'];
 $page_rows = 5;
 $total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
@@ -209,6 +210,15 @@ foreach($list as $row) {
 }
 
 if($html) $html .= '</li>';
+
+
+$html .= '<div class="text-center">
+  <ul class="pagination pagination-sm en">';
+$html .= eroumcare_ajax_paging('update_latest_order', $write_pages, $page, $total_page, $list_page);
+$html .= '
+  </ul>
+</div>
+';
 
 json_response(200, 'OK', $html);
 ?>

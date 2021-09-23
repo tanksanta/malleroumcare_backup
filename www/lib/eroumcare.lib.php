@@ -2081,3 +2081,63 @@ function calc_order_price($od_id)
 
   return $order_price;
 }
+
+function eroumcare_ajax_paging($function_name, $write_pages, $cur_page, $total_page, $url, $add='', $first='<i class="fa fa-angle-double-left"></i>', $prev='<i class="fa fa-angle-left"></i>', $next='<i class="fa fa-angle-right"></i>', $last='<i class="fa fa-angle-double-right"></i>') {
+
+	$url = preg_replace('#&amp;page=[0-9]*(&amp;page=)$#', '$1', $url);
+	//$url = preg_replace('#(&amp;)?page=[0-9]*#', '', $url);
+	//$url .= substr($url, -1) === '?' ? 'page=' : '&amp;page=';
+
+	if(!$cur_page) $cur_page = 1;
+	if(!$total_page) $total_page = 1;
+
+	$ajax = ($css) ? ' class="'.$css.'"' : ''; // Ajax용 클래스
+
+	$str = '';
+	if($first) {
+		if ($cur_page < 2) {
+			$str .= '<li class="disabled"><a>'.$first.'</a></li>';
+		} else {
+			$str .= '<li><a href="javascript:;" onclick="'.$function_name.'(\''.$url.'1'.$add.'\', \'1\');">'.$first.'</a></li>';
+		}
+	}
+
+	$start_page = (((int)(($cur_page - 1 ) / $write_pages)) * $write_pages) + 1;
+	$end_page = $start_page + $write_pages - 1;
+
+	if ($end_page >= $total_page) { 
+		$end_page = $total_page;
+	}
+
+	if ($start_page > 1) { 
+		$str .= '<li><a href="javascript:;" onclick="'.$function_name.'(\''.$url.($start_page-1).$add.'\', \'1\');">'.$prev.'</a></li>';
+	} else {
+		$str .= '<li class="disabled"><a>'.$prev.'</a></li>'; 
+	}
+
+	if ($total_page > 0){
+		for ($k=$start_page;$k<=$end_page;$k++){
+			if ($cur_page != $k) {
+				$str .= '<li><a href="javascript:;" onclick="'.$function_name.'(\''.$url.$k.$add.'\', \'1\');">'.$k.'</a></li>';
+			} else {
+				$str .= '<li class="active"><a>'.$k.'</a></li>';
+			}
+		}
+	}
+
+	if ($total_page > $end_page) {
+		$str .= '<li><a href="javascript:;" onclick="'.$function_name.'(\''.$url.($end_page+1).$add.'\', \'1\');">'.$next.'</a></li>';
+	} else {
+		$str .= '<li class="disabled"><a>'.$next.'</a></li>';
+	}
+
+	if($last) {
+		if ($cur_page < $total_page) {
+			$str .= '<li><a href="javascript:;" onclick="'.$function_name.'(\''.$url.($total_page).$add.'\', \'1\');">'.$last.'</a></li>';
+		} else {
+			$str .= '<li class="disabled"><a>'.$last.'</a></li>';
+		}
+	}
+
+	return $str;
+}
