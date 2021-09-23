@@ -49,7 +49,7 @@ for($i = 1; $i <= 5; $i++) {
   }
 }
 if($it_type_where) {
-  $sql_search .= ' AND (' . implode(' AND ', $it_type_where) . ') ';
+  $sql_search .= ' AND (' . implode(' OR ', $it_type_where) . ') ';
 }
 
 if($_GET["searchProdSupYN"] != ""){
