@@ -24,6 +24,7 @@ $replace_table = array(
 $sel_field = $replace_table[$sel_field] ?: $sel_field;
 $sel_field_add = $replace_table[$sel_field_add] ?: $sel_field_add;
 
+$ct_status = $od_status;
 $ct_status = get_search_string($ct_status);
 $search = get_search_string($search);
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
