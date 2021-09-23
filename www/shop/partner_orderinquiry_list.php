@@ -145,6 +145,8 @@ while($row = sql_fetch_array($result)) {
 
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
+add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
 ?>
 
 <style>
@@ -165,9 +167,19 @@ form.clear:after { display: table; content: ' '; clear: both; }
 tr.hover .td_od_info img.icon_link { display: block; }
 tr.hover { background-color: #fbf9f7 !important; }
 
+.td_od_info .btn_change { display: inline-block; vertical-align: middle; font-size: 12px; line-height: 1; padding: 5px 8px; border-radius: 3px; border: 1px solid #e6e1d7; color: #666; background: #fff; }
+
 .td_operation { width: 150px }
 .td_operation a + a { margin-top: 5px; }
 .td_operation a { display: block; border: 1px solid #ddd; background: #fff; padding: 5px 8px; color: #666; border-radius: 3px; font-size: 12px; text-align: center; line-height: 15px; }
+
+#change_wrap { display: none; }
+.popModal { font-size: 12px; line-height: 22px; padding: 10px; cursor: default; }
+.popModal .popModal_content { margin: 0; }
+.popModal .title { color: #666; margin-bottom: 5px; }
+.popModal input[type="text"] { background: #fff; color: #666; border: 1px solid #ddd; text-align: center; width: 110px; }
+.popModal select { background: #fff; color: #666; border: 1px solid #ddd; height: 24px; width: 55px; }
+.popModal .btn_submit { display: block; padding: 4px; border-radius: 3px; background: #f1a73a; color: #fff; margin: 5px auto 0 auto; width: 100px; }
 
 #popup_box { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 #popup_box > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
@@ -244,7 +256,7 @@ tr.hover { background-color: #fbf9f7 !important; }
             if(!$orders) echo '<tr><td colspan="5" class="empty_table">내역이 없습니다.</td></tr>';
             foreach($orders as $row) { 
             ?>
-            <tr onclick="window.location.href='partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>'" class="btn_link" data-id="<?=$row['od_id']?>">
+            <tr data-link="partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_link" data-id="<?=$row['od_id']?>">
               <td class="td_chk">
                 <input type="checkbox" name="ct_id[]" value="<?=$row['ct_id']?>">
               </td>
@@ -259,6 +271,7 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <p>
                   출고예정 : 
                   <?=date('Y-m-d H시', strtotime($row['ct_direct_delivery_date']))?>
+                  <button type="button" class="btn_change" data-date="<?=date('Y-m-d', strtotime($row['ct_direct_delivery_date']))?>" data-time="<?=date('H', strtotime($row['ct_direct_delivery_date']))?>" data-odid="<?=$row['od_id']?>" data-ctid="<?=$row['ct_id']?>">변경</button>
                 </p>
                 <?php if($row['ct_ex_date']) { ?>
                 <p>
@@ -329,6 +342,24 @@ tr.hover { background-color: #fbf9f7 !important; }
   </div>
 </section>
 
+<div id="change_wrap">
+  <form id="form_change_date">
+    <div class="title">출고예정일시</div>
+    <input type="hidden" name="od_id">
+    <input type="hidden" name="ct_id">
+    <input type="text" name="ct_direct_delivery_date" class="change_datepicker">
+    <select name="ct_direct_delivery_time">
+      <?php
+      for($i = 0; $i < 24; $i++) {
+        $time = str_pad($i, 2, '0', STR_PAD_LEFT);
+        echo '<option value="'.$time.'">'.$time.'시</option>';
+      }
+      ?>
+    </select>
+    <button class="btn_submit">확인</button>
+  </form>
+</div>
+
 <div id="popup_box">
   <div></div>
 </div>
@@ -360,6 +391,63 @@ $(function() {
   // 주문상태 체크박스
   $('input[name="ct_status[]"]').click(function() {
     checkCtStatusAll();
+  });
+
+  // 클릭 시 주문상세 이동
+  $('tr.btn_link').click(function(e) {
+    if($('.popModal').has(e.target).length)
+      return;
+
+    var link = $(this).data('link');
+    window.location.href = link;
+  });
+
+  // 출고예정일 변경 datepicker
+  $('.change_datepicker').datepicker({
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: "yy-mm-dd",
+    showButtonPanel: true,
+    yearRange: "c-99:c+99"
+  });
+
+  // 출고예정일 변경
+  $('.btn_change').click(function(e) {
+    e.stopPropagation();
+
+    $form = $('#form_change_date');
+    $form.find('input[name="od_id"]').val($(this).data('odid'));
+    $form.find('input[name="ct_id"]').val($(this).data('ctid'));
+    $form.find('input[name="ct_direct_delivery_date"]').val($(this).data('date'));
+    $form.find('select[name="ct_direct_delivery_time"]').val($(this).data('time')).change();
+
+    $(this).popModal({
+      html: $form,
+      placement: 'bottomLeft',
+      showCloseBut: false
+    });
+  });
+  $('#form_change_date').submit(function(e) {
+    e.preventDefault();
+
+    var od_id = $(this).find('input[name="od_id"]').val();
+    var ct_id = $(this).find('input[name="ct_id"]').val();
+
+    var send_data = {};
+    send_data['od_id'] = od_id;
+    send_data['ct_id'] = [ ct_id ];
+    send_data['ct_direct_delivery_date_' + ct_id] = $(this).find('input[name="ct_direct_delivery_date"]').val();
+    send_data['ct_direct_delivery_time_' + ct_id] = $(this).find('select[name="ct_direct_delivery_time"]').val();
+
+    $.post('ajax.partner_deliverydate.php', send_data, 'json')
+    .done(function() {
+      alert('변경이 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
   });
 
   // 기간 - datepicker

@@ -26,6 +26,9 @@ foreach($ct_id_arr as $ct_id) {
   if($cart['ct_direct_delivery_partner'] != $member['mb_id'])
     json_response(400, '해당 상품의 배송정보를 변경할 수 있는 권한이 없습니다.');
   
+  if($cart['ct_direct_delivery_date'] === $ct_direct_delivery_date)
+    continue;
+
   $result = sql_query("
     UPDATE {$g5['g5_shop_cart_table']}
     SET ct_direct_delivery_date = '{$ct_direct_delivery_date}'
@@ -33,7 +36,7 @@ foreach($ct_id_arr as $ct_id) {
   ");
   if(!$result)
     json_response(500, 'DB 서버 오류 발생');
-  
+
   $it_name = $cart['it_name'];
   if($cart['ct_option'] && $cart['ct_option'] != $cart_it_name)
     $it_name .= "({$cart['ct_option']})";
