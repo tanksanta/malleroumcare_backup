@@ -140,6 +140,13 @@ while($row = sql_fetch_array($result)) {
   ");
   $row['inserted_cnt'] = $inserted_cnt_result['cnt'] ?: 0;
 
+  // 설치결과보고서
+  $row['report'] = null;
+  $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$row['ct_id']}' ");
+  if($report['ct_id']) {
+    $row['report'] = $report;
+  }
+
   $orders[] = $row;
 }
 
@@ -167,7 +174,8 @@ form.clear:after { display: table; content: ' '; clear: both; }
 tr.hover .td_od_info img.icon_link { display: block; }
 tr.hover { background-color: #fbf9f7 !important; }
 
-.td_od_info .btn_change { display: inline-block; vertical-align: middle; font-size: 12px; line-height: 1; padding: 5px 8px; border-radius: 3px; border: 1px solid #e6e1d7; color: #666; background: #fff; }
+.td_od_info .btn_change, .btn_install_report { display: inline-block; vertical-align: middle; font-size: 12px; line-height: 1; padding: 5px 8px; border-radius: 3px; border: 1px solid #e6e1d7; color: #666; background: #fff; }
+.btn_install_report.done { background: #f3f3f3; }
 
 .td_operation { width: 150px }
 .td_operation a + a { margin-top: 5px; }
@@ -305,6 +313,13 @@ tr.hover { background-color: #fbf9f7 !important; }
                   </span>
                 </p>
                 <?php } ?>
+                <p style="margin-top: 5px;">
+                  <?php if($row['report'] && $row['report']['ir_cert_url']) { ?>
+                  <button type="button" class="report-btn btn_install_report done" data-id="<?=$row['ct_id']?>">설치결과보고서 완료</button>
+                  <?php } else { ?>
+                  <button type="button" class="report-btn btn_install_report" data-id="<?=$row['ct_id']?>">설치결과보고서 등록</button>
+                  <?php } ?>
+                </p>
               </td>
               <td class="text_c">
                 <span style="<?php
@@ -478,6 +493,19 @@ $(function() {
     $('#to_date').val(formatDate(today));
     today.setDate(1); // 지난달 1일
     $('#fr_date').val(formatDate(today));
+  });
+
+  // 설치결과보고서 작성 버튼
+  $('.btn_install_report').click(function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var ct_id = $(this).data('id');
+    $("body").addClass('modal-open');
+    $("#popup_box > div").html('<iframe src="popup.partner_installreport.php?ct_id=' + ct_id + '">');
+    $("#popup_box iframe").load(function() {
+      $("#popup_box").show();
+    });
   });
 
   // 작업지시서 버튼
