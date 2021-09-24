@@ -312,6 +312,8 @@ if($sel_field && $search) {
   $total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
 }
 
+$qstr = "fr_date={$fr_date}&to_date={$to_date}&sel_field={$sel_field}&search={$search}";
+
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
