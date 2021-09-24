@@ -299,9 +299,13 @@ if($header_skin)
     $ct_where = [];
     $ct_where[] = " od_id = '{$row["od_id"]}' ";
     // if ($ct_status) {
-    //   $ct_where[] = " a.ct_status = '{$ct_status}' ";
+    //   if ( $ct_status === '주문무효') {
+    //     $where[] = " a.ct_status IN ('주문무효', '취소') ";	
+    //   } else {
+    //     $where[] = " a.ct_status = '{$ct_status}' ";
+    //   }
     // } else {
-    //   $ct_where[] = " a.ct_status IN ('준비', '출고준비', '배송', '완료') ";
+    //   // $ct_where[] = " a.ct_status IN ('준비', '출고준비', '배송', '완료') ";
     // }
     
     if ($ct_where) {

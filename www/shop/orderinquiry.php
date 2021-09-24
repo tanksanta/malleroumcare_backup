@@ -256,7 +256,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 }
 
 $write_pages = G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'];
-$list_page = $_SERVER['SCRIPT_NAME'].'?'.$qstr."&amp;od_stock={$_GET["od_stock"]}&amp;od_status={$_GET["od_status"]}&amp;s_date={$_GET["s_date"]}&amp;e_date={$_GET["e_date"]}&amp;page=";
+$list_page = $_SERVER['SCRIPT_NAME'].'?'.$qstr."&amp;od_stock={$_GET["od_stock"]}&amp;od_status={$_GET["od_status"]}&amp;s_date={$_GET["s_date"]}&amp;e_date={$_GET["e_date"]}&amp;ct_status={$_GET["ct_status"]}&amp;page=";
 
 // Page ID
 $pid = ($pid) ? $pid : 'inquiry';
