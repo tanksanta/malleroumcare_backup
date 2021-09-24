@@ -70,6 +70,34 @@ if($_GET["od_stock"]){
 	}
 }
 
+// 검색
+if ($sel_field && $search) {
+	if ($sel_field === 'all') {
+		$where[] = "(
+			o.od_id like '%$search%' OR
+			i.it_name like '%$search%' OR
+			o.od_b_name like '%$search%' OR
+			o.od_penId like '%$search%'
+		)";
+	} else {
+		$where[] = " $sel_field like '%$search%' ";
+	}
+}
+
+
+if ($ct_status) {
+	// $sql_search = $sql_search ? $sql_search : ' 1 = 1 ';
+	$where[] = " c.ct_status = '{$ct_status}' ";
+} else {
+	$where[] = " c.ct_status IN ('준비', '출고준비', '배송', '완료') ";
+}
+
+if ($where) {
+	$where_query = $sql_search ? ' and ' : ' where ';
+  $sql_search = $where_query.implode(' and ', $where);
+}
+
+
 // 테이블의 전체 레코드수만 얻음
 $item_wait_count = 0;
 $delivery_ing_count = 0;
@@ -87,25 +115,6 @@ for($i = 0; $row = sql_fetch_array($result); $i++){
 	}
 	
 	$total_count++;
-}
-
-// 검색
-if ($sel_field && $search) {
-	if ($sel_field === 'all') {
-		$where[] = "(
-			o.od_id like '%$search%' OR
-			i.it_name like '%$search%' OR
-			o.od_b_name like '%$search%' OR
-			o.od_penId like '%$search%'
-		)";
-	} else {
-		$where[] = " $sel_field like '%$search%' ";
-	}
-}
-
-if ($where) {
-	$where_query = $sql_search ? ' and ' : ' where ';
-  $sql_search = $where_query.implode(' and ', $where);
 }
 
 // 비회원 주문확인시 비회원의 모든 주문이 다 출력되는 오류 수정
@@ -137,6 +146,35 @@ if (!$is_member)
 }
 
 $list = array();
+
+
+$sql = "
+SELECT
+  count(*) as cnt,
+  ct_status
+FROM
+  g5_shop_cart c
+LEFT JOIN
+  g5_shop_order o ON c.od_id = o.od_id
+WHERE
+  c.mb_id = '{$member['mb_id']}' AND
+	o.od_del_yn = 'N'
+GROUP BY
+  ct_status
+";
+
+$count_result = sql_query($sql);
+
+$list_count = array(
+	'준비' => 0,
+	'출고준비' => 0,
+	'배송' => 0,
+	'완료' => 0
+);
+while($row = sql_fetch_array($count_result)) {
+	$list_count[$row['ct_status']] = $row['cnt'];
+}
+
 
 $limit = " limit $from_record, $rows ";
 $sql = " select o.*, i.it_model, i.it_name

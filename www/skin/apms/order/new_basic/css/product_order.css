@@ -93,7 +93,7 @@ table {border-collapse: collapse;}
 .tti {padding: 0 0 16px 16px; font-size: 24px;}
 .tti p {padding-top: 10px; font-size: 16px;font-weight: 300;}
 .order-date {clear: both; margin-bottom: 30px; padding:10px;background: #f3f3f3;border:1px solid #e7e7e7;}
-.order-date .date-box {margin-top: 25px; display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
+.order-date .date-box {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
 .order-date .list-text {display: -webkit-box; display: -ms-flexbox; display: flex;}
 .order-date .list-text div {width: 50%;text-align: center;}
 .order-date .list-text div:last-child {border-left: 1px solid #ddd;}
@@ -115,6 +115,28 @@ table {border-collapse: collapse;}
 .order-date .list-select .select ul li:last-child a {border-bottom: none;}
 
 .order-date .list-select button {width: 116px;height: 40px; font-size: 14px;color:#fff;background: #333;text-align: center;}
+
+.orderinquiry-head .latest_order_head { max-width: 700px; margin: 0 auto; padding: 25px 0; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
+.orderinquiry-head .latest_order_head .step { display: block; width: 21%; text-align: center; }
+.orderinquiry-head .latest_order_head .step .num { font-size: 40px; line-height: 1; color: #333; font-weight: bold; opacity: 0.2; }
+.orderinquiry-head .latest_order_head .step .desc { font-size: 14px; color: #333; font-weight: 600; opacity: 0.2; }
+.orderinquiry-head .latest_order_head .step.active .num,
+.orderinquiry-head .latest_order_head .step.active .desc { opacity: 1; }
+.orderinquiry-head .latest_order_head .next { color: #aaaaaa; font-size: 20px; font-weight: bold; }
+
+.orderinquiry-head .list_tab { margin-bottom: 0; }
+.orderinquiry-head .list_tab li a { font-size: 16px; color: #666; }
+.orderinquiry-head .list_tab li.active a { color: #ee8102; font-weight: 600;}
+
+.orderinquiry-list-table .pen_info { padding-top: 15px; line-height: 30px; font-size: 14px; color: #666666; }
+.orderinquiry-list-table .pen_info .btn_pen { display: inline-block; margin-right: 7px; vertical-align: top; padding: 5px 7px; font-size: 14px; line-height: 20px; border-radius: 5px; border: 1px solid #ee8102; color: #ee8102; height: 30px; }
+
+.orderinquiry-list-table .order_info { padding-top: 15px; font-size: 12px; color: #666666; }
+.orderinquiry-list-table .order_info span { display: inline-block; }
+.orderinquiry-list-table .order_info span:after { display: inline-block; margin: 0 5px; content: '|'; }
+.orderinquiry-list-table .order_info span:last-child:after { display: none; }
+.orderinquiry-list-table .order_info .pc { display: inline-block; font-style: normal; }
+.orderinquiry-list-table .pc_none { display: none; }
 
 .list-wrap {}
 .list-wrap .top {margin: 24px 0 16px;}
@@ -161,9 +183,9 @@ table {border-collapse: collapse;}
 .table-list .info-btn .barcode_preview {width: 100px}
 .table-list .info-btn .barcode_preview ul {width:100%; flex-direction: column; text-align: center}
 
-.table-list.table-list2 {border-top: 1px solid #000;}
+.table-list.table-list2 {border-top: 1px solid #ddd;}
 .table-list.table-list2:last-child {border-bottom: 1px solid #000;}
-.table-list.table-list2 .list {border-top: 1px solid #ddd;}
+/*.table-list.table-list2 .list {border-top: 1px solid #ddd;}*/
 
 /* 주문신청 */
 .detail-tab {margin-bottom: 44px;}
@@ -205,7 +227,7 @@ table {border-collapse: collapse;}
 .table-list2 .head {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
 .table-list2 .head li {display: block; padding: 12px 0 12px 20px; background: #eee;text-align: center;font-size: 16px;}
 
-.table-list2 .list {padding: 15px 16px;font-size: 14px;}
+.table-list2 .list {padding: 15px 0px;font-size: 14px;}
 .table-list2 .list:last-child {border-bottom: none;}
 .table-list2 .list ul {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;}
 .table-list2 .list ul > li {display: block;text-align: right;}
@@ -388,6 +410,9 @@ table {border-collapse: collapse;}
 
 @media screen and (max-width: 960px) {
   .table-list2 .head li {font-size: 12px;}
+
+  .orderinquiry-list-table .order_desc span.grey { display: none; }
+  .orderinquiry-list-table .order_info .pc { display: none; }
 }
 
 @media screen and (max-width: 860px) {

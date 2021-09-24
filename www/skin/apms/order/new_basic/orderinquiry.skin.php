@@ -22,7 +22,7 @@ if($header_skin)
 ?>
 
 <link rel="stylesheet" href="<?=$SKIN_URL?>/css/jquery-ui.min.css">
-<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order.css?v=20210810">
+<link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order.css?v=20210923">
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
    
 <script>
@@ -168,7 +168,7 @@ if($header_skin)
     </ul>
   </div>
   <div class="order-date">
-    <div class="list-text">
+    <div class="list-text" style="display:none">
       <div>
         <span><img src="<?=$SKIN_URL?>/image/icon_13.png" alt="">상품준비 <b><?=$item_wait_count?>건</b></span>
       </div>
@@ -188,6 +188,7 @@ if($header_skin)
         <a href="javascript:;" onclick="searchDateSetting('3month');">3개월</a>
       </div>
       <div class="list-select">
+        <input type="hidden" name="ct_status" value="<?=$_GET["ct_status"]?>">
         <div class="select">
           <input type="hidden" name="od_stock" value="<?=$_GET["od_stock"]?>">
           <p><?=$search_od_stock?></p>
@@ -228,6 +229,57 @@ if($header_skin)
     </div>
   </form>
 
+  <div class="orderinquiry-head">
+    <ul class="list_tab">
+      <li class="<?php echo $ct_status !== '주문무효' ? 'active' : ''; ?>" data-tab="0"><a href="javascript:void(0);">주문내역</a></li>
+      <li class="<?php echo $ct_status === '주문무효' ? 'active' : ''; ?>" data-tab="1"><a href="javascript:void(0);">취소/환불</a></li>
+    </ul>
+    <?php if ($od_status !== '주문무효') { ?>
+    <div class="latest_order_head flex" style="display: flex;">
+      <a href="javascript:void(0);" class="step <?php echo $ct_status === '준비' ? 'active' : ''; ?>" data-step="준비">
+        <div class="num"><?php echo $list_count['준비']; ?></div>
+        <div class="desc">상품준비</div>
+      </a>
+      <div class="next">&gt;</div>
+      <a href="javascript:void(0);" class="step <?php echo $ct_status === '출고준비' ? 'active' : ''; ?>" data-step="출고준비">
+        <div class="num"><?php echo $list_count['출고준비']; ?></div>
+        <div class="desc">출고준비</div>
+      </a>
+      <div class="next">&gt;</div>
+      <a href="javascript:void(0);" class="step <?php echo $ct_status === '배송' ? 'active' : ''; ?>" data-step="배송">
+        <div class="num"><?php echo $list_count['배송']; ?></div>
+        <div class="desc">출고완료</div>
+      </a>
+      <div class="next">&gt;</div>
+      <a href="javascript:void(0);" class="step <?php echo $ct_status === '완료' ? 'active' : ''; ?>" data-step="완료">
+        <div class="num"><?php echo $list_count['완료']; ?></div>
+        <div class="desc">배송완료</div>
+      </a>
+    </div>
+    <?php } ?>
+  </div>
+  <script>
+
+    
+  $(function() {
+      
+    $(document).on('click', '.list_tab li', function() {
+      tab = parseInt($(this).data('tab'));
+      if (tab === 0) {
+        $('input[name="ct_status"]').val('');
+      }else {
+        $('input[name="ct_status"]').val('주문무효');
+      }
+      $('.date-box').submit();
+    });
+
+    $(document).on('click', '.latest_order_head .step', function() {
+      var step = $(this).data('step');
+      $('input[name="ct_status"]').val(step);
+      $('.date-box').submit();
+    });
+  });
+  </script>
   <div class="list-wrap">
     <?php if(!$list){ ?>
         <style>
@@ -243,19 +295,35 @@ if($header_skin)
   <?php
     $itemList = [];
         $stock_insert ="1";
+
+    $ct_sql_search = '';
+    $ct_where = [];
+    $ct_where[] = " od_id = '{$row["od_id"]}' ";
+    // if ($ct_status) {
+    //   $ct_where[] = " a.ct_status = '{$ct_status}' ";
+    // } else {
+    //   $ct_where[] = " a.ct_status IN ('준비', '출고준비', '배송', '완료') ";
+    // }
+    
+    if ($ct_where) {
+      $ct_where_query = $ct_sql_search ? ' and ' : ' where ';
+      $ct_sql_search = $ct_where_query.implode(' and ', $ct_where);
+    }
+
     $itemSQL = sql_query("
       SELECT a.*
         , ( SELECT it_img1 FROM {$g5["g5_shop_item_table"]} WHERE it_id = a.it_id ) AS it_img
         , ( SELECT prodSupYn FROM {$g5["g5_shop_item_table"]} WHERE it_id = a.it_id ) AS prodSupYn
       FROM {$g5["g5_shop_cart_table"]} a
-      WHERE od_id = '{$row["od_id"]}'
+		  {$ct_sql_search}
     ");
                         
     for($ii = 0; $item = sql_fetch_array($itemSQL); $ii++){
       array_push($itemList, $item);
     }
   ?>
-    <div class="table-list table-list2">
+    <div class="table-list table-list2 orderinquiry-list-table">
+      <!--
       <div class="top">
         <span> <i class="m_none">주문번호 :</i> <a href="<?=$row["od_href"]?>"><?=$row["od_id"]?></a> </span>
         <span> <?=display_price($row["od_total_price"])?> </span>
@@ -282,6 +350,33 @@ if($header_skin)
           <h5>받으시는 분 : <?=$row['od_b_name']?></h5>
         </div>
       <?php } ?>
+      </div>
+      -->
+      <?php
+      
+      // 수급자 정보
+      if($row['recipient_yn'] == 'Y') {
+        echo '
+          <div class="pen_info">
+            <div class="btn_pen">
+              <img src="'.THEMA_URL.'/assets/img/icon_pen.png">
+              수급자 주문
+            </div>
+            수급자 정보 : '.$row["od_penNm"].' ('.$row["od_penTypeNm"].')
+          </div>
+        ';
+      }
+    ?>
+      <div class="order_info">
+        <span>
+          <i class="pc">주문번호 :</i>
+          <a href="<?php echo $row['od_href']; ?>"><?php echo $row["od_id"]; ?></a>
+        </span>
+        <span><?php echo display_price($row["od_total_price"]); ?></span>
+        <span><?php echo date('n월.j일 (H:i)', strtotime($row['od_time'])); ?></span>
+        <?php if ($row['od_b_name']) { ?>
+        <span>배송 : <?php echo $row['od_b_name']; ?></span>
+        <?php } ?>
       </div>
       
       <?php foreach($itemList as $item){ 
