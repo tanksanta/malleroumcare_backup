@@ -228,13 +228,12 @@ if($header_skin)
       </div>
     </div>
   </form>
-
   <div class="orderinquiry-head">
     <ul class="list_tab">
       <li class="<?php echo $ct_status !== '주문무효' ? 'active' : ''; ?>" data-tab="0"><a href="javascript:void(0);">주문내역</a></li>
       <li class="<?php echo $ct_status === '주문무효' ? 'active' : ''; ?>" data-tab="1"><a href="javascript:void(0);">취소/환불</a></li>
     </ul>
-    <?php if ($od_status !== '주문무효') { ?>
+    <?php if ($_GET['ct_status'] !== '주문무효') { ?>
     <div class="latest_order_head flex" style="display: flex;">
       <a href="javascript:void(0);" class="step <?php echo $ct_status === '준비' ? 'active' : ''; ?>" data-step="준비">
         <div class="num"><?php echo $list_count['준비']; ?></div>

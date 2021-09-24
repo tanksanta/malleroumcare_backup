@@ -18,11 +18,17 @@ $search = get_search_string($search);
 // 회원인 경우
 if ($is_member)
 {
-    $sql_common = " from {$g5['g5_shop_order_table']} where mb_id = '{$member['mb_id']}' AND od_del_yn = 'N' ";
+    $sql_common = " from {$g5['g5_shop_order_table']} as o
+		LEFT JOIN g5_shop_cart as c ON o.od_id = c.od_id
+		LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
+		where o.mb_id = '{$member['mb_id']}' AND od_del_yn = 'N' ";
 }
 else if ($od_id && $od_pwd) // 비회원인 경우 주문서번호와 비밀번호가 넘어왔다면
 {
-    $sql_common = " from {$g5['g5_shop_order_table']} where od_id = '$od_id' and od_pwd = '$od_pwd' AND od_del_yn = 'N' ";
+    $sql_common = " from {$g5['g5_shop_order_table']} as o
+		LEFT JOIN g5_shop_cart as c ON o.od_id = c.od_id
+		LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
+		where od_id = '$od_id' and od_pwd = '$od_pwd' AND od_del_yn = 'N' ";
 }
 else // 그렇지 않다면 로그인으로 가기
 {
@@ -87,9 +93,14 @@ if ($sel_field && $search) {
 
 if ($ct_status) {
 	// $sql_search = $sql_search ? $sql_search : ' 1 = 1 ';
-	$where[] = " c.ct_status = '{$ct_status}' ";
+	if ( $ct_status === '주문무효') {
+		$where[] = " c.ct_status IN ('주문무효', '취소') ";	
+	} else {
+		$where[] = " c.ct_status = '{$ct_status}' ";
+	}
 } else {
-	$where[] = " c.ct_status IN ('준비', '출고준비', '배송', '완료') ";
+	// $where[] = " c.ct_status IN ('준비', '출고준비', '배송', '완료') ";
+	$where[] = " c.ct_status NOT IN ('주문무효', '취소') ";
 }
 
 if ($where) {
@@ -103,7 +114,8 @@ $item_wait_count = 0;
 $delivery_ing_count = 0;
 $total_count = 0;
 $sql = " select * " . $sql_common . " {$sql_search} ";
-$sql .= " GROUP BY od_id ";
+$sql .= " GROUP BY o.od_id ";
+
 $result = sql_query($sql);
 for($i = 0; $row = sql_fetch_array($result); $i++){
 	if($row["od_status"] == "준비"){
