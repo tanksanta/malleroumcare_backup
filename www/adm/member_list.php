@@ -365,6 +365,9 @@ $stx=$stx2;
           </td>
           <td headers="mb_list_id" colspan="2" class="td_name sv_use">
             <?php echo $mb_id ?>
+            <?php if ($row['mb_temp']) { ?>
+            <a class="btn_back">임시계정</a>
+            <?php } ?>
             <?php
             //소셜계정이 있다면
             if(function_exists('social_login_link_account')){
@@ -502,7 +505,13 @@ $stx=$stx2;
           <td headers="mb_list_mng" rowspan="2" class="td_mng td_mng_s">
             <?php
             if(!$row['mb_entId']) {
-              echo "쇼핑몰 전용 아이디";
+              $temp = sql_fetch("SELECT * FROM `{$g5['member_table']}` WHERE mb_giup_bnum = '{$row['mb_giup_bnum']}' AND mb_temp = TRUE");
+              if ($temp['mb_id']) {
+                echo '<button type="button" class="btn btn_02 temp_accept" data-id="'.$row['mb_id'].'"">임시계정연결</button>';
+                echo '<button type="button" class="btn btn_01 temp_reject" data-id="'.$row['mb_id'].'"">거절</button>';
+              } else {
+                echo "쇼핑몰 전용 아이디";
+              }
             } else {
               $resInfo = api_post_call(EROUMCARE_API_ENT_ACCOUNT, array(
                 'usrId' => $row['mb_id']
@@ -770,6 +779,39 @@ $( document ).ready(function() {
     }
     document.body.appendChild(form);
     form.submit();
+  });
+
+  $(".temp_accept").click(function() {
+    var mb_id = $(this).data('id');
+
+    $.post('member_temp_accept.php', {
+      mb_id: mb_id,
+    }, 'json')
+    .done(function() {
+      alert('연결되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  
+  $(".temp_reject").click(function() {
+    var mb_id = $(this).data('id');
+
+    $.post('member_temp_reject.php', {
+      mb_id: mb_id,
+    }, 'json')
+    .done(function() {
+      alert('거절되었습니다. 해당 계정은 삭제되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
   });
 });
 

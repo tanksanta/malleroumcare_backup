@@ -200,7 +200,7 @@ function exist_mb_giup_bnum($reg_mb_giup_bnum)
     $reg_mb_giup_bnum = trim($reg_mb_giup_bnum);
     if ($reg_mb_giup_bnum == "") return "";
     
-    $sql = " select count(*) as cnt from `{$g5['member_table']}` where mb_giup_bnum = '$reg_mb_giup_bnum' ";
+    $sql = " select count(*) as cnt from `{$g5['member_table']}` where mb_giup_bnum = '$reg_mb_giup_bnum' and mb_temp = 0 ";
     $row = sql_fetch($sql);
     if ($row['cnt'])
         return aslang('alert', 'reg_giup_bnum_exist'); //이미 사용 중인 사업자번호 입니다.

@@ -72,6 +72,13 @@ if($check_member['mb_type'] === 'manager') {
       //이로움 통합시스템 이동
       alert('관리자 승인이 대기중입니다.',G5_BBS_URL."/register_result.php");
     }
+    
+    // 임시계정이 있을때
+    $temp = sql_fetch("SELECT * FROM `{$g5['member_table']}` WHERE mb_giup_bnum = '{$mb['mb_giup_bnum']}' AND mb_temp = TRUE");
+    if ($temp['mb_id']) {
+      //이로움 통합시스템 이동
+      alert('관리자 승인이 대기중입니다.',G5_BBS_URL."/register_result.php");
+    }
 
     if($mb['mb_level'] < 5) {
       if($res['message'] == '계정 정보가 잘못되었습니다.' && check_password($mb_password, $mb['mb_password'])) {

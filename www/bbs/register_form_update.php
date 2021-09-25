@@ -196,7 +196,9 @@ if ($w == '') { // 회원가입
   $mb_level = 1;
   $mb_entId = '';
 
-  if($mb_type !== 'normal') { // 일반회원이 아니면
+  $temp = sql_fetch("SELECT * FROM `{$g5['member_table']}` WHERE mb_giup_bnum = '{$mb_giup_bnum}' AND mb_temp = TRUE");
+
+  if($mb_type !== 'normal' && !$temp['mb_id']) { // 일반회원이 아니거나 임시계정이 없는경우
     $mb_level = 3;
     // 시스템 먼저 회원가입
     $result = post_formdata(EROUMCARE_API_ENT_INSERT, $sendData);
