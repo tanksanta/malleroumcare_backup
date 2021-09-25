@@ -219,7 +219,10 @@ label {
             $show_mb_id = $mb['mb_id'] ? $mb['mb_id'] : 'CS' . substr(date("Ymd"), 2, 6) . $cs_cnt;
             ?>
             <input type="text" name="mb_id" value="<?php echo $show_mb_id ?>" id="mb_id" <?php echo $required_mb_id ?> class="frm_input <?php echo $required_mb_id_class ?>" size="15" minlength="3" maxlength="20">
-            <?php if ($w=='u'){ ?><a href="./boardgroupmember_form.php?mb_id=<?php echo $mb['mb_id'] ?>">접근가능그룹보기</a><?php } ?>
+            <?php if ($w=='u'){ ?><a href="./boardgroupmember_form.php?mb_id=<?php echo $mb['mb_id'] ?>">접근가능그룹보기</a>, <?php } ?>
+            <br/>
+            <input type="checkbox" value="1" id="mb_temp" name="mb_temp" <?php echo $mb['mb_temp'] ? "checked" : ""; ?> >
+            <label for="mb_temp">임시계정 (아이디 및 비밀번호를 지정할 수 없습니다.)</label>
         </td>
         <th scope="row"><label for="mb_password">비밀번호<?php echo $sound_only ?></label></th>
         <td><input type="password" name="mb_password" id="mb_password" <?php echo $required_mb_password ?> class="frm_input <?php echo $required_mb_password ?>" size="15" maxlength="20"></td>
@@ -1376,6 +1379,16 @@ function fmember_submit()
 }
 </script>
 <script>
+function generate_password(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
 $(function() {
     $(".datepicker").datepicker({
         changeMonth: true,
@@ -1385,6 +1398,27 @@ $(function() {
         yearRange: "c-99:c+99",
         maxDate: "+10y"
     });
+
+    $('#mb_temp').on("click", function() {
+        <?php if ($w === 'u') { ?>
+            return false;
+        <?php } ?>
+        if($(this).is(":checked") == true){
+            $('#mb_id').val('<?php echo $show_mb_id; ?>');
+            $('#mb_password').val(generate_password(16));
+            $("#mb_id").attr("readonly", true);
+            $('#mb_password').attr("readonly", true);
+        } else {
+            $('#mb_password').val('');
+            $("#mb_id").attr("readonly", false);
+            $('#mb_password').attr("readonly", false);
+        }
+    });
+    <?php if ($w === 'u') { ?>
+    $("#mb_temp").bind("click",false);
+    $("#mb_id").attr("readonly", true);
+    $('#mb_password').attr("readonly", true);
+    <?php } ?>
 
     $('#add_manager').on("click", function() {
       $.post('ajax.member_manager.php', {
