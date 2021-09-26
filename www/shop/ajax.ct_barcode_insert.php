@@ -22,7 +22,18 @@ if($_POST['od_id']) {
         $count_a++;
       }
     }
-    sql_query('UPDATE `g5_shop_cart` SET `ct_barcode_insert`="'.$count_a.'" where `ct_id` = "'.$row['ct_id'].'"');
+
+    $sql = "SELECT c.*, i.ca_id FROM
+      {$g5['g5_shop_cart_table']} as c
+      INNER JOIN {$g5['g5_shop_item_table']} as i ON c.it_id = i.it_id
+    where `ct_id` = '{$row['ct_id']}' ";
+    $ct = sql_fetch($sql);
+    $gubun = $cate_gubun_table[substr($ct['ca_id'], 0, 2)];
+
+    // 비급여 제품 아닐때만 
+    if ($gubun != '02') {
+      sql_query('UPDATE `g5_shop_cart` SET `ct_barcode_insert`="'.$count_a.'" where `ct_id` = "'.$row['ct_id'].'"');
+    }
   }
   echo "success";
 } else {

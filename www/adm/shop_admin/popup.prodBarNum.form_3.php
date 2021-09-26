@@ -3,9 +3,12 @@
 include_once("./_common.php");
 $g5["title"] = "주문 내역 바코드 수정";
 // include_once(G5_ADMIN_PATH."/admin.head.php");
-  $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
+$sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
-$sql = " select * from {$g5['g5_shop_cart_table']} where `ct_id` = '$ct_id' ";
+$sql = "SELECT c.*, i.ca_id FROM
+  {$g5['g5_shop_cart_table']} as c
+  INNER JOIN {$g5['g5_shop_item_table']} as i ON c.it_id = i.it_id
+where `ct_id` = '$ct_id' ";
 $ct = sql_fetch($sql);
 $prodList = [];
 $prodListCnt = 0;
@@ -107,6 +110,17 @@ if($od["od_b_tel"]){
     .imfomation_box a .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
+    .imfomation_box a .li_box .li_box_line1 .p1 .span3 {
+      text-align:right;
+      font-size:0.8em;
+      color:#9b9b9b;
+    }
+    .imfomation_box a .li_box .li_box_line1 .p1 .span3 label {
+      color: #000;
+    }
+    .imfomation_box a .li_box .li_box_line1 .p1 .span3 input {
+      vertical-align:middle;
+    }
     .imfomation_box a .li_box .li_box_line1 .cartProdMemo { width: 100%; font-size: 13px; margin-top: 2px; text-align: left; color: #FF690F; }
     /* display:none; */
     .imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle; width:100%; padding-top: 20px; display:none; box-sizing: border-box; }
@@ -224,6 +238,9 @@ if($od["od_b_tel"]){
         $prodSupYn_count++;
       }
 
+      # 카테고리 구분
+      $gubun = $cate_gubun_table[substr($ct['ca_id'], 0, 2)];
+
 
       if($ct['prodSupYn']==="N"){ $prodSupYn_count++; }
       # 요청사항
@@ -231,7 +248,11 @@ if($od["od_b_tel"]){
       ?>
       <a href="javascript:void(0)">
         <li class="li_box">
-          <div class="li_box_line1"   onclick="openCloseToc(this)">
+          <div class="li_box_line1"
+            <?php if ($gubun != '02') { ?>
+              onclick="openCloseToc(this)"
+            <?php } ?>
+          >
             <p class="p1">
               <span class="span1">
                 <!-- 상품명 -->
@@ -242,11 +263,29 @@ if($od["od_b_tel"]){
                 (<?=$ct["ct_option"]?>)
                 <?php } ?>
               </span>
+              <?php if ($gubun != '02') { ?>
               <span class="span2">
                 <span class="<?=$add_class?> c_num">0</span>/<?=$ct["ct_qty"]?>
                 <img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
                 <img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
               </span>
+              <?php } else { ?>
+                <span class="span3">
+                  비급여 상품 바코드 미입력&nbsp;
+                  <input 
+                    type="checkbox"
+                    name="chk_pass_barcode_<?php echo $ct['ct_id']; ?>"
+                    value="1"
+                    id="chk_pass_barcode_<?php echo $ct['ct_id']; ?>"
+                    <?php if ($ct['ct_qty'] == $ct['ct_barcode_insert']) { ?>
+                      checked="checked"
+                    <?php } ?>
+                    class="chk_pass_barcode"
+                    data-ct-id="<?php echo $ct['ct_id']; ?>"
+                  >
+                  <label for="chk_pass_barcode_<?php echo $ct['ct_id']; ?>">확인함</label>
+                </span>
+              <?php } ?>
             </p>
 
             <?php if($prodMemo){ ?>
@@ -254,6 +293,7 @@ if($od["od_b_tel"]){
             <?php } ?>
           </div>
 
+          <?php if ($gubun != '02') { ?>
           <div class="folding_box">
             <?php if($ct["ct_qty"] >= 2){ ?>
             <span>
@@ -276,6 +316,7 @@ if($od["od_b_tel"]){
               <?php  $prodListCnt++;  } ?>
             </ul>
           </div>
+          <?php } ?>
 
           <div class="deliveryInfoWrap">
             <?php if ($ct['ct_combine_ct_id']) { ?>
@@ -613,10 +654,18 @@ if($od["od_b_tel"]){
 
       if(flag){ return false;}
 
+      var pass = [];
+      $.each($('.chk_pass_barcode'), function(index, value) {
+        if ($(this).is(":checked")) {
+          pass.push($(this).data('ct-id'));
+        }
+      });
+
       var sendData = {
         usrId : "<?=$od["mb_id"]?>",
         prods : prodsList,
-        entId : "<?=get_ent_id_by_od_id($od_id)?>"
+        entId : "<?=get_ent_id_by_od_id($od_id)?>",
+        pass: pass,
       }
 
       $.ajax({

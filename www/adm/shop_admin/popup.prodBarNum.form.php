@@ -111,6 +111,17 @@ if($od["od_b_tel"]) {
     .imfomation_box a .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
+    .imfomation_box a .li_box .li_box_line1 .p1 .span3 {
+      text-align:right;
+      font-size:0.8em;
+      color:#9b9b9b;
+    }
+    .imfomation_box a .li_box .li_box_line1 .p1 .span3 label {
+      color: #000;
+    }
+    .imfomation_box a .li_box .li_box_line1 .p1 .span3 input {
+      vertical-align:middle;
+    }
     .imfomation_box a .li_box .li_box_line1 .cartProdMemo { width: 100%; font-size: 13px; margin-top: 2px; text-align: left; color: #FF690F; }
     /* display:none; */
     .imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle; width:100%; padding-top: 20px; display:none; box-sizing: border-box; }
@@ -238,10 +249,16 @@ if($od["od_b_tel"]) {
 
           # 요청사항
           $prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
+          # 카테고리 구분
+          $gubun = $cate_gubun_table[substr($options[$k]['ca_id'], 0, 2)];
       ?>
       <a href="javascript:void(0)" class="<?= $options[$k]['ct_status'] !== "취소" && $options[$k]['ct_status'] !== "주문무효" && $options[$k]['io_type'] == 0 ? "" : "hide_area" ?> ">
         <li class="li_box">
-          <div class="li_box_line1"   onclick="openCloseToc(this)">
+          <div class="li_box_line1"
+            <?php if ($gubun != '02') { ?>
+              onclick="openCloseToc(this)"
+            <?php } ?>
+            >
             <p class="p1">
               <span class="span1">
                 <!-- 상품명 -->
@@ -251,6 +268,7 @@ if($od["od_b_tel"]) {
                 (<?=$options[$k]["ct_option"]?>)
                 <?php } ?>
               </span>
+              <?php if ($gubun != '02') { ?>
               <span class="span2">
                 <?php
                 $add_class="";
@@ -263,14 +281,32 @@ if($od["od_b_tel"]) {
                 <img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
                 <img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
               </span>
+              <?php } else { ?>
+                <span class="span3">
+                  비급여 상품 바코드 미입력&nbsp;
+                  <input 
+                    type="checkbox"
+                    name="chk_pass_barcode_<?php echo $options[$k]['ct_id']; ?>"
+                    value="1"
+                    id="chk_pass_barcode_<?php echo $options[$k]['ct_id']; ?>"
+                    <?php if ($options[$k]['ct_qty'] == $options[$k]['ct_barcode_insert']) { ?>
+                      checked="checked"
+                    <?php } ?>
+                    class="chk_pass_barcode"
+                    data-ct-id="<?php echo $options[$k]['ct_id']; ?>"
+                  >
+                  <label for="chk_pass_barcode_<?php echo $options[$k]['ct_id']; ?>">확인함</label>
+                </span>
+              <?php } ?>
             </p>
             <?php if($prodMemo){ ?>
             <p class="cartProdMemo"><?=$prodMemo?></p>
             <?php } ?>
           </div>
 
+          <?php if ($gubun != '02') { ?>
           <div class="folding_box">
-            <?php if($options[$k]["ct_qty"] >= 2){ ?>
+            <?php if ($options[$k]["ct_qty"] >= 2) { ?>
             <span>
             <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
             <button type="button" class="barNumCustomSubmitBtn">등록</button>
@@ -278,7 +314,7 @@ if($od["od_b_tel"]) {
             </span>
             <?php } ?>
             <ul class="inputbox">
-              <?php for($b = 0; $b< count($stoId_v); $b++){ ?>
+              <?php for ($b = 0; $b< count($stoId_v); $b++) { ?>
               <li>
                 <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
                 <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
@@ -289,6 +325,7 @@ if($od["od_b_tel"]) {
               <?php $prodListCnt++; } ?>
             </ul>
           </div>
+          <?php } ?>
 
           <div class="deliveryInfoWrap">
             <?php if ($options[$k]['ct_combine_ct_id']) { ?>
@@ -699,10 +736,19 @@ if($od["od_b_tel"]) {
         }
       });
       if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false; }
+
+      var pass = [];
+      $.each($('.chk_pass_barcode'), function(index, value) {
+        if ($(this).is(":checked")) {
+          pass.push($(this).data('ct-id'));
+        }
+      });
+
       var sendData = {
         usrId : "<?=$od["mb_id"]?>",
         prods : prodsList,
-        entId : "<?=get_ent_id_by_od_id($od_id)?>"
+        entId : "<?=get_ent_id_by_od_id($od_id)?>",
+        pass: pass,
       }
 
       $.ajax({

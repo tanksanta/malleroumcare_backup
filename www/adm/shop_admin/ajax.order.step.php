@@ -11,6 +11,7 @@ if($_POST['ct_id']&&$_POST['step']) {
   $ct_ex_date = date("Y-m-d");
   $state_cd_table = array();
   $flag = true;
+  $stoIdList = array();
   //상태값 치환
   switch ($_POST['step']) {
     case '보유재고등록': $ct_status_text="보유재고등록"; break;
@@ -43,7 +44,8 @@ if($_POST['ct_id']&&$_POST['step']) {
       a.ct_qty,
       a.ct_discount,
       a.prodSupYn,
-      a.ct_stock_qty
+      a.ct_stock_qty,
+      a.ct_id
     from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
@@ -91,6 +93,11 @@ if($_POST['ct_id']&&$_POST['step']) {
     $stoId = $stoId.$result_ct_s['stoId'];
     $usrId = $result_ct_s['mb_id'];
     $entId = $result_ct_s['mb_entId'];
+    foreach( explode('|', $result_ct_s['stoId']) as $temp_sto_id) {
+      if ($temp_sto_id) {
+        $stoIdList[$temp_sto_id] = $result_ct_s['ct_id'];
+      }
+    }
 
     
     if ($_POST['step'] === '완료') {
@@ -149,6 +156,13 @@ if($_POST['ct_id']&&$_POST['step']) {
   if(in_array($_POST['step'], ['배송', '완료'])) {
     for($k=0; $k<count($new_sto_ids); $k++) {
       $result_confirm = sql_fetch("select `prodSupYn` from `g5_shop_item` where `it_id` ='".$new_sto_ids[$k]['prodId']."'");
+      
+      // 비급여 바코드 미입력 체크된 경우 패스
+      $ct_result = sql_fetch("SELECT * FROM g5_shop_cart WHERE ct_id = '{$stoIdList[$new_sto_ids[$k]['stoId']]}'");
+      if ($ct_result['ct_barcode_insert'] === $ct_result['ct_qty']) {
+        continue;
+      }
+
       if($result_confirm['prodSupYn'] == "Y" && !$new_sto_ids[$k]['prodBarNum']) {
         echo "유통상품의 모든 바코드가 입력되어야 출고가 가능합니다";
         $flag = false;
