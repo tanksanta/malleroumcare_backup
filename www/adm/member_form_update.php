@@ -156,8 +156,7 @@ $_POST['mb_dealer'] = $_POST['mb_dealer'] ? (int)$_POST['mb_dealer'] : 0;
 
 if ($msg = valid_mb_nick($mb_nick))     alert($msg, "", true, true);
 
-
-
+$mb_temp = $mb_temp ? 1 : 0;
 
 $mb_hp = $_POST['mb_hp1']."-".$_POST['mb_hp2']."-".$_POST['mb_hp3'];
 $mb_fax = $_POST['mb_fax1']."-".$_POST['mb_fax2']."-".$_POST['mb_fax3'];
@@ -234,7 +233,8 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_partner_remark = '{$_POST['mb_partner_remark']}',
                  mb_manager = '{$_POST['mb_manager']}',
                  mb_update_date = now(),
-                 mb_ent_num = '{$mb_ent_num}'
+                 mb_ent_num = '{$mb_ent_num}',
+                 mb_temp = '{$mb_temp}'
                   ";
 
 $sendData = array(
@@ -258,6 +258,12 @@ $sendData = array(
     'usrAddr' => $mb_addr1,
     'usrAddrDetail' => $mb_addr2 . $mb_addr3
 );
+
+$sql = " select count(*) as cnt from `{$g5['member_table']}` where mb_giup_bnum = '{$mb_giup_bnum}' and mb_temp = 0 and mb_id != '{$mb_id}'";
+$row = sql_fetch($sql);
+if ($row['cnt']) {
+    alert('이미 존재하는 사업자 번호 입니다.');
+}
 
 
 if ($w == '')

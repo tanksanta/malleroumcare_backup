@@ -112,6 +112,7 @@ define('EROUMCARE_API_RECIPIENT_ITEM_INSERT',                    'https://system
 define('EROUMCARE_API_ENT_ACCOUNT',                              'https://system.eroumcare.com/api/ent/account');
 define('EROUMCARE_API_ENT_INSERT',                               'https://system.eroumcare.com/api/ent/insert');
 define('EROUMCARE_API_ENT_UPDATE',                               'https://system.eroumcare.com/api/ent/update');
+define('EROUMCARE_API_ENT_UPDATE_USRID',                         'https://system.eroumcare.com/api/ent/updateUsrId');
 // 회원조회2
 define('EROUMCARE_API_ACCOUNT_ENT_LOGIN',                        'https://system.eroumcare.com/api/account/entLogin');
 define('EROUMCARE_API_ACCOUNT_ENT_UPDATE',                       'https://system.eroumcare.com/api/account/entUpdate');

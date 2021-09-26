@@ -60,6 +60,35 @@ if ($stx) {
   $sql_search .= " ) ";
 }
 
+if ($button_type) {
+  $sql_search .= " and ( ";
+  switch ($button_type) {
+    case 'temp' :
+      $sql_search .= "
+        (
+          mb_giup_bnum IN
+          (
+            SELECT mb_giup_bnum FROM g5_member WHERE mb_temp = TRUE
+          )
+          AND mb_temp = false
+        )
+      ";
+      break;
+    case 'partner' :
+      $sql_search .= " (mb_type = 'partner') ";
+      break;
+    case 'default' :
+      $sql_search .= " (mb_type = 'default' AND mb_level = 3) ";
+      break;
+    case 'vip' :
+      $sql_search .= " (mb_type = 'default' AND mb_level = 4) ";
+      break;
+    case 'normal' :
+      $sql_search .= " (mb_type = 'normal') ";
+      break;
+  }
+  $sql_search .= " ) ";
+}
 
 if ($fr_datetime && $to_datetime) {
   $sql_search .= " and ( mb_datetime between '$fr_datetime 00:00:00' and '$to_datetime 23:59:59' )";
@@ -122,6 +151,45 @@ $sql = " select count(*) as cnt {$sql_common} {$sql_search} and mb_intercept_dat
 $row = sql_fetch($sql);
 $intercept_count = $row['cnt'];
 
+// 임시계정 승인요청 수
+$sql = " select count(*) as cnt {$sql_common} WHERE (
+  mb_giup_bnum IN
+  (
+    SELECT mb_giup_bnum FROM g5_member WHERE mb_temp = TRUE
+  )
+  AND mb_temp = false
+)";
+$row = sql_fetch($sql);
+$temp_count = $row['cnt'];
+
+// 파트너 수
+$sql = " select count(*) as cnt {$sql_common} WHERE (
+  mb_type = 'partner'
+)";
+$row = sql_fetch($sql);
+$partner_count = $row['cnt'];
+
+// 사업소 수
+$sql = " select count(*) as cnt {$sql_common} WHERE (
+  mb_type = 'default'
+)";
+$row = sql_fetch($sql);
+$default_count = $row['cnt'];
+
+// VIP 사업소 수
+$sql = " select count(*) as cnt {$sql_common} WHERE (
+  mb_type = 'default' AND mb_level = 4
+)";
+$row = sql_fetch($sql);
+$vip_count = $row['cnt'];
+
+// 일반회원 수
+$sql = " select count(*) as cnt {$sql_common} WHERE (
+  mb_type = 'normal'
+)";
+$row = sql_fetch($sql);
+$normal_count = $row['cnt'];
+
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 
 $g5['title'] = '회원관리';
@@ -135,7 +203,7 @@ $sql_search = " where b.au_menu ='200100' ";
 $sql = " select * {$sql_common} {$sql_search} {$sql_order} limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
-$colspan = ($is_membership) ? 18 : 17;
+$colspan = ($is_membership) ? 21 : 20;
 
 
 ?>
@@ -159,7 +227,20 @@ $stx=$stx2;
 </div>
 
 <form id="fsearch" name="fsearch" class="local_sch01 local_sch" method="get">
-
+<style>
+  .local_sch03 button.active {
+    background:#ff1464;
+  }
+</style>
+<div class="local_sch03 local_sch">
+  <input type="hidden" name="button_type" value="<?php echo $mb_button; ?>">
+  <button type="button" class="mb_button <?php echo !$button_type ? 'active' : ''; ?>" data-value="">전체</button>
+  <button type="button" class="mb_button <?php echo $button_type === 'temp' ? 'active' : ''; ?>" data-value="temp">임시계정 승인요청 (<?php echo $temp_count; ?>)</button>
+  <button type="button" class="mb_button <?php echo $button_type === 'partner' ? 'active' : ''; ?>" data-value="partner">파트너 (<?php echo $partner_count; ?>)</button>
+  <button type="button" class="mb_button <?php echo $button_type === 'default' ? 'active' : ''; ?>" data-value="default">사업소 (<?php echo $default_count; ?>)</button>
+  <button type="button" class="mb_button <?php echo $button_type === 'vip' ? 'active' : ''; ?>" data-value="vip">VIP사업소 (<?php echo $vip_count; ?>)</button>
+  <button type="button" class="mb_button <?php echo $button_type === 'normal' ? 'active' : ''; ?>" data-value="normal">일반회원 (<?php echo $normal_count; ?>)</button>
+</div>
 
 <div class="local_sch03 local_sch">
   <div class="sch_last">
@@ -365,6 +446,9 @@ $stx=$stx2;
           </td>
           <td headers="mb_list_id" colspan="2" class="td_name sv_use">
             <?php echo $mb_id ?>
+            <?php if ($row['mb_temp']) { ?>
+            <a class="btn_back">임시계정</a>
+            <?php } ?>
             <?php
             //소셜계정이 있다면
             if(function_exists('social_login_link_account')){
@@ -502,7 +586,13 @@ $stx=$stx2;
           <td headers="mb_list_mng" rowspan="2" class="td_mng td_mng_s">
             <?php
             if(!$row['mb_entId']) {
-              echo "쇼핑몰 전용 아이디";
+              $temp = sql_fetch("SELECT * FROM `{$g5['member_table']}` WHERE mb_giup_bnum = '{$row['mb_giup_bnum']}' AND mb_temp = TRUE");
+              if ($temp['mb_id']) {
+                echo '<button type="button" class="btn btn_02 temp_accept" data-id="'.$row['mb_id'].'"">임시계정연결</button>';
+                echo '<button type="button" class="btn btn_01 temp_reject" data-id="'.$row['mb_id'].'"">계정연결거절</button>';
+              } else {
+                echo "쇼핑몰 전용 아이디";
+              }
             } else {
               $resInfo = api_post_call(EROUMCARE_API_ENT_ACCOUNT, array(
                 'usrId' => $row['mb_id']
@@ -771,6 +861,39 @@ $( document ).ready(function() {
     document.body.appendChild(form);
     form.submit();
   });
+
+  $(".temp_accept").click(function() {
+    var mb_id = $(this).data('id');
+
+    $.post('member_temp_accept.php', {
+      mb_id: mb_id,
+    }, 'json')
+    .done(function() {
+      alert('연결되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  
+  $(".temp_reject").click(function() {
+    var mb_id = $(this).data('id');
+
+    $.post('member_temp_reject.php', {
+      mb_id: mb_id,
+    }, 'json')
+    .done(function() {
+      alert('거절되었습니다. 해당 계정은 삭제되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
 });
 
 $(".accept").click(function() {
@@ -789,6 +912,13 @@ $(".accept").click(function() {
     var data = $xhr.responseJSON;
     alert(data && data.message);
   });
+});
+
+
+$(".mb_button").click(function() {
+  var value = $(this).data('value');
+  $('input[name="button_type"]').val(value);
+  $('.btn_submit')[0].click();
 });
 </script>
 

@@ -29,7 +29,7 @@ while($date_index <= 3) {
     }
 
     $is_holiday = false;
-    foreach ($day_offs[$year_month] as $holiday) {
+    foreach ($day_offs[$year_month]['item'] as $holiday) {
         if ($holiday['locdate'] == date('Ymd', $time_index)) {
             $is_holiday = true;
             break;
@@ -109,7 +109,7 @@ sql_query("UPDATE g5_shop_cart as c
 ");
 
 if(!$count) {
-    json_response(200, '배송완료 처리할 내용이 없습니다.');
+    json_response(200, $sub_day . '까지 배송완료 처리할 내용이 없습니다.');
 }
 
-json_response(201, 'OK');
+json_response(201, $sub_day . '까지 OK');
