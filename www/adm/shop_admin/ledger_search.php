@@ -251,12 +251,13 @@ function get_ledger_history_recent($mb_id) {
         <?php $ledger_this_month = get_ledger_history_thismonth($ent['mb_id'])?>
         <?php $ledger_recent = get_ledger_history_recent($ent['mb_id'])?>
         <?php $btn_value_str = htmlspecialchars(json_encode(array("index" => $ent['index'], "ent_name" => $ent['mb_entNm'], "mb_manager" => $ent['mb_manager'], "ent_id" => $ent['mb_id'])))?>
+      <?php $ent_mb = get_member($ent['mb_id']); ?>
       <tr>
         <td class="td_chk" id="mb_list_spare_chk">
           <input type="checkbox" name="ent_chk[]" value="<?=$ent['index']?>" class="ent_chk">
         </td>
         <td class="td_cntsmall"><?=$ent['index']?></td>
-        <td><?=$ent['mb_entNm']?></td>
+        <td><?php echo $ent['mb_entNm'] ?: $ent_mb['mb_giup_bname'] ?: $ent_mb['mb_name']; ?></td>
         <td class="td_payby"><?=$ent['mb_manager']?></td>
         <td class="td_numsum"><?=number_format($ent['sales'])?></td>
         <td class="td_numsum"><?=number_format($ent['balance'])?></td>
