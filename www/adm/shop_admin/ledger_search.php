@@ -218,6 +218,7 @@ function get_ledger_history_recent($mb_id) {
   </form>
 </div>
 <div class="r_btn_area" style="margin: 0px 20px 20px 0px;">
+	<span style="color:#FF6600">	*이번달 10일까지는 지난달 거래처 원장이 발송됩니다. </span>
   <a href="javascript::" onclick="save_send_type()" style="padding: 8px 12px 8px 12px;">선택한 전송방법 저장</a>
   <a href="javascript::" onclick="send_all_at_once()" style="padding: 8px 12px 8px 12px; margin-left: 8px; background-color: #666; color: white;">선택한 거래처 일괄전송</a>
 </div>
