@@ -259,6 +259,12 @@ $sendData = array(
     'usrAddrDetail' => $mb_addr2 . $mb_addr3
 );
 
+$sql = " select count(*) as cnt from `{$g5['member_table']}` where mb_giup_bnum = '{$mb_giup_bnum}' and mb_temp = 0 and mb_id != '{$mb_id}'";
+$row = sql_fetch($sql);
+if ($row['cnt']) {
+    alert('이미 존재하는 사업자 번호 입니다.');
+}
+
 
 if ($w == '')
 {
