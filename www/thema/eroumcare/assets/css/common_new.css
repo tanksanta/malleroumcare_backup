@@ -1012,6 +1012,20 @@ pre{white-space: pre-wrap;}
 .productListWrap > ul > li > a .btn_wishlist { position: absolute; bottom: 10px; right: 10px; font-size: 30px; color: #ddd; }
 .productListWrap > ul > li > a .btn_wishlist.active { color: #f4b133; }
 .productListWrap > ul > li > a .img_wrap p.cnt { display: block; margin: 0; position: absolute; bottom: 10px; left: 10px;width: auto;border-radius: 5px;height: 30px;line-height: 30px;background-color: #F28D08;color: #fff;padding: 0 10px;font-size: 12px;}
+.productListWrap > ul > li > a .img_wrap .item-expected-warehousing-date {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-weight: bold;
+  background-color: white;
+  padding: 6px;
+  font-size: 14px;
+  background: red;
+  width: 80%;
+  text-align: center;
+}
 .productListWrap > ul > li > a > p.tag { color: #1ca2ff; margin-top: 10px; white-space: nowrap; overflow: hidden; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
 .productListWrap > ul > li > a > p.tag .hash-tag { font-weight: 100; }
 .productListWrap > ul > li > a > p.tag .hash-tag + .hash-tag { margin-left: 10px; }
