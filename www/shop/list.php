@@ -17,6 +17,7 @@ if( isset($sort) && ! in_array($sort, array('custom', 'it_sum_qty', 'it_price', 
 }
 
 if(!$ca_sub) $ca_sub = [];
+if(!$it_type) $it_type = [];
 
 $sql = " select * from {$g5['g5_shop_category_table']} where ca_id = '$ca_id' and ca_use = '1'  ";
 $ca = sql_fetch($sql);
@@ -86,7 +87,7 @@ if(isset($q) && $q) {
 }
 // $where .= " and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%')";
 $ca_sub_orderby = '';
-$where .= " and ( 1 != 1 ";
+$where .= " and ( 1 <> 1 ";
 if($ca_sub) {
 	$ca_sub_orderby = " case ";
 	$ca_sub_idx = 1;
@@ -152,6 +153,15 @@ if($prodSupYn) {
 	if($prodSupYn == "Y" || $prodSupYn == "N"){
 		$where .= " AND prodSupYn = '{$prodSupYn}'";
 	}
+}
+
+// 기타설정(태그선택)
+if($it_type) {
+  $where .= ' and ( 1 <> 1 ';
+  foreach($it_type as $type) {
+    $where .= ' or it_type'.$type.' = 1 ';
+  }
+  $where .= ' ) ';
 }
 
 // 튜토리얼 상품 안보이게 수정
