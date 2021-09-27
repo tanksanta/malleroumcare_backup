@@ -12,6 +12,7 @@ $ent = get_member($mb_id);
 if(!$ent['mb_id'])
   alert('존재하지 않는 사업소입니다.');
 
+$mb_manager = sql_fetch("SELECT mb_name from g5_member WHERE mb_id = '{$ent['mb_manager']}'")['mb_name'];
 $where_order = $where_ledger = " and m.mb_id = '$mb_id' ";
 
 # 기간
@@ -325,9 +326,9 @@ if(! function_exists('column_char')) {
 
 include_once(G5_LIB_PATH.'/PHPExcel.php');
 
-$title = ["회사명 : (주)티에이치케이컴퍼니/{$ent['mb_entNm']}/{$fr_date} ~ {$to_date}"];
 $headers = ['일자-주문번호', '품목명[규격]', '수량', '단가(Vat포함)', '공급가액', '부가세', '판매', '수금', '잔액', '수령인'];
 $widths = [25, 20, 6, 12, 12, 12, 12, 12, 12, 15];
+$heights = [50, 36, 36, 36, 36, 36, 36, 20, 20, 20, 20, 20, 20, 20, 20];
 $last_char = column_char(count($headers) - 1);
 
 $rows = [];
@@ -397,7 +398,7 @@ else
   $date = date('Y/m/d', $now).'  오후 '.date('h:i:s', $now);
 $dates = [$date];
 
-$data = array_merge([$title], [$headers], $rows, [$totals], [$dates]);
+$data = array_merge([$headers], $rows, [$totals], [$dates]);
 
 $excel = new PHPExcel();
 $styleArray = array(
@@ -410,14 +411,19 @@ $styleArray = array(
   )
 );
 $excel->getDefaultStyle()->applyFromArray($styleArray);
-$excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(17);
+$excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(20);
 
 // 폰트&볼드 처리
-$excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setSize(11);
-$excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setBold(true);
+// $excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setSize(11);
+
+// 볼드처리
+$excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+$excel->getActiveSheet()->getStyle('A3:A7')->getFont()->setBold(true);
+$excel->getActiveSheet()->getStyle('D3:D5')->getFont()->setBold(true);
+$excel->getActiveSheet()->getStyle('A8:J8')->getFont()->setBold(true);
 
 // number format 처리
-$excel->getActiveSheet()->getStyle('C3:I'.(count($rows) + 3))->getNumberFormat()->setFormatCode('#,##0_-');
+$excel->getActiveSheet()->getStyle('C9:I'.(count($rows) + 9))->getNumberFormat()->setFormatCode('#,##0_-');
 
 // 테두리 처리
 $styleArray = array(
@@ -427,10 +433,55 @@ $styleArray = array(
     )
   )
 );
-$excel->getActiveSheet()->getStyle('A2:J'.(count($rows) + 3))->applyFromArray($styleArray);
+$excel->getActiveSheet()->getStyle('A2:J'.(count($rows) + 9))->applyFromArray($styleArray);
 
 foreach($widths as $i => $w) $excel->setActiveSheetIndex(0)->getColumnDimension( column_char($i) )->setWidth($w);
-$excel->getActiveSheet()->fromArray($data);
+for ($i=0; $i < count($heights); $i++) {
+  $row = $i+1;
+  $excel->getActiveSheet()->getRowDimension("{$row}")->setRowHeight($heights[$i]);  
+}
+$entNm = $ent['mb_entNm'] ?: $ent_mb['mb_giup_bname'] ?: $ent_mb['mb_name'];
+$excel->getActiveSheet()->setCellValue("A1", "[{$entNm}] 거래원장");
+$excel->getActiveSheet()->mergeCells('A1:J1');
+$excel->getActiveSheet()->getStyle('A1:J1')->getFont()->setSize(18);
+$excel->getActiveSheet()->getStyle('A1:J1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+//회사정보 영역 폰트 사이즈
+$excel->getActiveSheet()->getStyle('A2:J7')->getFont()->setSize(12);
+
+// 회사명/담당자
+$excel->getActiveSheet()->setCellValue("A2", "회사명 : (주)티에이치케이컴퍼니 / 담당 : {$mb_manager}");
+$excel->getActiveSheet()->mergeCells('A2:G2');
+
+// 기간
+$excel->getActiveSheet()->setCellValue("H2", "{$fr_date} ~ {$to_date}");
+$excel->getActiveSheet()->mergeCells('H2:J2');
+$excel->getActiveSheet()->getStyle('H2:J2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+//회사정보
+$excel->getActiveSheet()->mergeCells('B3:C3');
+$excel->getActiveSheet()->mergeCells('D3:E3');
+$excel->getActiveSheet()->mergeCells('B4:C4');
+$excel->getActiveSheet()->mergeCells('D4:E4');
+$excel->getActiveSheet()->mergeCells('B5:C5');
+$excel->getActiveSheet()->mergeCells('D5:E5');
+$excel->getActiveSheet()->mergeCells('B6:J6');
+$excel->getActiveSheet()->mergeCells('B7:J7');
+$excel->getActiveSheet()->mergeCells('F3:J3');
+$excel->getActiveSheet()->mergeCells('F4:J4');
+$excel->getActiveSheet()->mergeCells('F5:J5');
+$excel->getActiveSheet()->getStyle('B4')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+
+$giup_info_title_cells = ['A3', 'D3', 'A4', 'D4', 'A5', 'D5', 'A6', 'A7'];
+$giup_info_titles = ['사업자번호', '대표자', '여신한도', '전화번호', 'E-mail', '팩스번호', '주소', '적요'];
+$giup_info_value_cells = ['B3', 'F3', 'B4', 'F4', 'B5', 'F5', 'B6', 'B7'];
+$giup_info_values = [$ent['mb_giup_bnum'], $ent['mb_giup_boss_name'], '0', $ent['mb_tel'], $ent['mb_email'], $ent['mb_fax'], $ent['mb_addr1'], ''];
+for ($i=0; $i < 8; $i++) { 
+  $excel->getActiveSheet()->setCellValue($giup_info_title_cells[$i], $giup_info_titles[$i]);
+  $excel->getActiveSheet()->setCellValue($giup_info_value_cells[$i], $giup_info_values[$i]);
+}
+
+$excel->getActiveSheet()->fromArray($data, null, 'A8');
 
 header("Content-Type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"거래처원장.xls\"");
