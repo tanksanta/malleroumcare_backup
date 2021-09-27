@@ -17,6 +17,14 @@ function getExcelFile($mb_id) {
       $fr_date = date('Y-m-01');
     if(!$to_date)
       $to_date = date('Y-m-d');
+
+    //원장 보내는 날짜가 10일 전이면 이전달 내용을 보내기
+    if (date('j') <= 10) {
+      $firstdayofmonth = mktime(0,0,0, date('m'), 1, date('Y'));
+      $prev_month = strtotime('-1 month', $firstdayofmonth);
+      $fr_date = date('Y-m-01', $prev_month);
+      $to_date = date('Y-m-t', $prev_month);
+    }
     $where_order .= " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
     $where_ledger .= " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
@@ -321,9 +329,9 @@ function getExcelFile($mb_id) {
 
     include_once(G5_LIB_PATH.'/PHPExcel.php');
 
-    $title = ["회사명 : (주)티에이치케이컴퍼니/{$ent['mb_entNm']}/{$fr_date} ~ {$to_date}"];
     $headers = ['일자-주문번호', '품목명[규격]', '수량', '단가(Vat포함)', '공급가액', '부가세', '판매', '수금', '잔액', '수령인'];
     $widths = [25, 20, 6, 12, 12, 12, 12, 12, 12, 15];
+    $heights = [50, 36, 36, 36, 36, 36, 36, 20, 20, 20, 20, 20, 20, 20, 20];
     $last_char = column_char(count($headers) - 1);
 
     $rows = [];
@@ -393,7 +401,7 @@ function getExcelFile($mb_id) {
       $date = date('Y/m/d', $now).'  오후 '.date('h:i:s', $now);
     $dates = [$date];
 
-    $data = array_merge([$title], [$headers], $rows, [$totals], [$dates]);
+    $data = array_merge([$headers], $rows, [$totals], [$dates]);
 
     $excel = new PHPExcel();
     $styleArray = array(
@@ -406,14 +414,19 @@ function getExcelFile($mb_id) {
       )
     );
     $excel->getDefaultStyle()->applyFromArray($styleArray);
-    $excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(17);
+    $excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(20);
 
     // 폰트&볼드 처리
-    $excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setSize(11);
-    $excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setBold(true);
+    // $excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setSize(11);
+
+    // 볼드처리
+    $excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+    $excel->getActiveSheet()->getStyle('A3:A7')->getFont()->setBold(true);
+    $excel->getActiveSheet()->getStyle('D3:D5')->getFont()->setBold(true);
+    $excel->getActiveSheet()->getStyle('A8:J8')->getFont()->setBold(true);
 
     // number format 처리
-    $excel->getActiveSheet()->getStyle('C3:I'.(count($rows) + 3))->getNumberFormat()->setFormatCode('#,##0_-');
+    $excel->getActiveSheet()->getStyle('C9:I'.(count($rows) + 9))->getNumberFormat()->setFormatCode('#,##0_-');
 
     // 테두리 처리
     $styleArray = array(
@@ -423,10 +436,55 @@ function getExcelFile($mb_id) {
         )
       )
     );
-    $excel->getActiveSheet()->getStyle('A2:J'.(count($rows) + 3))->applyFromArray($styleArray);
+    $excel->getActiveSheet()->getStyle('A2:J'.(count($rows) + 9))->applyFromArray($styleArray);
 
     foreach($widths as $i => $w) $excel->setActiveSheetIndex(0)->getColumnDimension( column_char($i) )->setWidth($w);
-    $excel->getActiveSheet()->fromArray($data);
+    for ($i=0; $i < count($heights); $i++) {
+      $row = $i+1;
+      $excel->getActiveSheet()->getRowDimension("{$row}")->setRowHeight($heights[$i]);  
+    }
+    $excel->getActiveSheet()->setCellValue("A1", "[{$ent['mb_entNm']}] 거래원장");
+    $excel->getActiveSheet()->mergeCells('A1:J1');
+    $excel->getActiveSheet()->getStyle('A1:J1')->getFont()->setSize(18);
+    $excel->getActiveSheet()->getStyle('A1:J1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+    //회사정보 영역 폰트 사이즈
+    $excel->getActiveSheet()->getStyle('A2:J7')->getFont()->setSize(12);
+
+    // 회사명/담당자
+    $excel->getActiveSheet()->setCellValue("A2", "회사명 : (주)티에이치케이컴퍼니 / 담당 : {$ent['mb_giup_manager_name']}");
+    $excel->getActiveSheet()->mergeCells('A2:G2');
+
+    // 기간
+    $excel->getActiveSheet()->setCellValue("H2", "{$fr_date} ~ {$to_date}");
+    $excel->getActiveSheet()->mergeCells('H2:J2');
+    $excel->getActiveSheet()->getStyle('H2:J2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+    //회사정보
+    $excel->getActiveSheet()->mergeCells('B3:C3');
+    $excel->getActiveSheet()->mergeCells('D3:E3');
+    $excel->getActiveSheet()->mergeCells('B4:C4');
+    $excel->getActiveSheet()->mergeCells('D4:E4');
+    $excel->getActiveSheet()->mergeCells('B5:C5');
+    $excel->getActiveSheet()->mergeCells('D5:E5');
+    $excel->getActiveSheet()->mergeCells('B6:J6');
+    $excel->getActiveSheet()->mergeCells('B7:J7');
+    $excel->getActiveSheet()->mergeCells('F3:J3');
+    $excel->getActiveSheet()->mergeCells('F4:J4');
+    $excel->getActiveSheet()->mergeCells('F5:J5');
+    $excel->getActiveSheet()->getStyle('B4')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+
+    $giup_info_title_cells = ['A3', 'D3', 'A4', 'D4', 'A5', 'D5', 'A6', 'A7'];
+    $giup_info_titles = ['사업자번호', '대표자', '여신한도', '전화번호', 'E-mail', '팩스번호', '주소', '적요'];
+    $giup_info_value_cells = ['B3', 'F3', 'B4', 'F4', 'B5', 'F5', 'B6', 'B7'];
+    $giup_info_values = [$ent['mb_giup_bnum'], $ent['mb_giup_boss_name'], '0', $ent['mb_tel'], $ent['mb_email'], $ent['mb_fax'], $ent['mb_addr1'], ''];
+    for ($i=0; $i < 8; $i++) { 
+      $excel->getActiveSheet()->setCellValue($giup_info_title_cells[$i], $giup_info_titles[$i]);
+      $excel->getActiveSheet()->setCellValue($giup_info_value_cells[$i], $giup_info_values[$i]);
+    }
+
+    $excel->getActiveSheet()->fromArray($data, null, 'A8');
+
 
     // header("Content-Type: application/octet-stream");
     // header("Content-Disposition: attachment; filename=\"ledger.xls\"");
@@ -463,16 +521,26 @@ foreach($send_data as $data) {
     if ($send_type == 'E') {
         $fr_date = date('Y-m-01');
         $to_date = date('Y-m-d');
+
+        //원장 보내는 날짜가 10일 전이면 이전달 내용을 보내기
+        if (date('j') <= 10) {
+          $firstdayofmonth = mktime(0,0,0, date('m'), 1, date('Y'));
+          $prev_month = strtotime('-1 month', $firstdayofmonth);
+          $fr_date = date('Y-m-01', $prev_month);
+          $to_date = date('Y-m-t', $prev_month);
+        }
+
         $mail_contents = '
             <div style="background-color:#f9f9f9;width:100%;max-width:800px;padding:30px;">
             <div style="padding-bottom:30px;border-bottom:1px solid #cfcfcf;">
                 <div style="color:#333333;position:relative;width:70%;float:left;">
-                    <p style="font-size:42px;padding:0;margin:0;"><b style="font-size:30px;">' . date('m월') . ' 거래처원장</p>
+                    <p style="font-size:20px;padding:0;margin:0;">이로움 장기요양기관 통합관리플랫폼</p>
+                    <b style="font-size:30px;">' . date('Y년 m월') . ' 거래처원장</p>
                 </div>
                 <div style="clear:both;"></div>
             </div>
             <div style="margin-top:50px;border-bottom:1px solid #cfcfcf;padding-bottom:20px;text-align: center;">
-                <p style="margin:0;text-align:center;padding-bottom:30px;">안녕하세요. 이로움 ' . $mb_manager . ' 담당자입니다.<br>항상 저희 이로움 플랫폼을 이용해 주셔서 진심으로 감사드립니다.<br><br>' . $ent_name . ' 사업소에서 거래하신 내역을 송부하였으니 확인 바랍니다.<br>더욱더 노력하는 이로움플랫폼이 되겠습니다.<br><br></p>
+                <p style="font-size:18px;margin:0;text-align:left;padding-bottom:30px;">안녕하세요. 이로움 ' . $mb_manager . ' 담당자입니다.<br>항상 저희 이로움 플랫폼을 이용해 주셔서 진심으로 감사드립니다.<br><br>' . $ent_name . ' 사업소에서 거래하신 내역을 송부하였으니 확인 바랍니다.<br>더욱더 노력하는 이로움플랫폼이 되겠습니다.<br><br></p>
                 <a href="' . G5_ADMIN_URL . '/shop_admin/ledger_excel.php?mb_id=' . $ent_id . '&fr_date=' . $fr_date . '&to_date=' . $to_date . '" target="_blank" style="background-color:#0aa2cd;display:inline-block;text-align:center;padding: 12px 60px;color:white;text-decoration:none;margin:20px auto;font-size:18px;">거래처원장 다운로드</a>
             </div>
             <p style="font-size:12px;color:#656565;margin:30px auto;text-align:center;">
