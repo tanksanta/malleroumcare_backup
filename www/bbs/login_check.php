@@ -106,14 +106,7 @@ if($check_member['mb_type'] === 'manager') {
 
     //쇼핑몰에 등록이 되어 있지 않으면, 메세지출력
     if (!check_password($mb_password, $mb['mb_password'])) {
-      // 시스템 비밀번호는 맞는데 쇼핑몰 비밀번호가 틀린경우
-      // 임시로 쇼핑몰 비밀번호를 시스템 비밀번호와 동기화시킴
-      sql_query("
-        UPDATE {$g5["member_table"]}
-        SET mb_password = '".get_encrypt_string($mb_password)."'
-        WHERE mb_id = '$mb_id'
-      ");
-      //alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
+      alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
     }
   } else {
     alert("시스템 서버가 응답하지 않습니다.");
