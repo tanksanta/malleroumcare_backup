@@ -302,7 +302,7 @@ if ($w == '') { // 회원가입
       mb_zip1 = '{$mb_zip1}',
       mb_zip2 = '{$mb_zip2}',
       mb_addr1 = '{$mb_addr1}',
-      mb_addr1 = '{$mb_addr2}',
+      mb_addr2 = '{$mb_addr2}',
       mb_addr3 = '{$mb_addr3}',
       mb_giup_zip1 = '{$mb_giup_zip1}',
       mb_giup_zip2 = '{$mb_giup_zip2}',
