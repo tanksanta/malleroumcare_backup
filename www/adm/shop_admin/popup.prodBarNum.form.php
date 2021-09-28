@@ -483,39 +483,44 @@ if($od["od_b_tel"]) {
 
   /* 바코드 입력글자 수 체크 */
   function notallLengthCheck() {
-    var item = $(".notall");
+    var $foldingBox = $('.folding_box');
 
-    $(item).removeClass("active");
     $(".imfomation_box a .li_box .folding_box > .inputbox > li > i").removeClass("active");
     $(".imfomation_box a .li_box .folding_box > .inputbox > li > .overlap").removeClass("active");
 
-    var dataTable = {};
+    $foldingBox.each(function() {
+      var $item = $(this).find('.notall');
+      $item.removeClass("active");
 
-    for(var i = 0; i < item.length; i++) {
-      var length = $(item[i]).val().length;
-      if(length < 12 && length){
-        $(item[i]).addClass("active");
-      }
-      if(length == 12) {
-        $(item[i]).parent().find("i").addClass("active");
-        
-        if(!dataTable[$(item[i]).val()])
-          dataTable[$(item[i]).val()] = [];
-        dataTable[$(item[i]).val()].push(i);
-      }
-    }
+      var dataTable = {};
+      $item.each(function(i) {
+        var $cur = $(this);
+        var barcode = $cur.val();
+        var length = barcode.length;
+        if(length < 12 && length) {
+          $cur.addClass("active");
+        }
+        if(length == 12) {
+          $cur.parent().find("i").addClass("active");
+          
+          if(!dataTable[barcode])
+            dataTable[barcode] = [];
+          dataTable[barcode].push(i);
+        }
+      });
 
-    var keys = Object.keys(dataTable);
-    for(var i = 0; i < keys.length; i++) {
-      var val = dataTable[keys[i]];
-      if(val.length > 1) {
-        for(var j = 0; j < val.length; j++) {
-          var idx = val[j];
-          $(item[idx]).parent().find("i").removeClass("active");
-          $(item[idx]).parent().find(".overlap").addClass("active");
+      var keys = Object.keys(dataTable);
+      for(var i = 0; i < keys.length; i++) {
+        var val = dataTable[keys[i]];
+        if(val.length > 1) {
+          for(var j = 0; j < val.length; j++) {
+            var idx = val[j];
+            $($item[idx]).parent().find("i").removeClass("active");
+            $($item[idx]).parent().find(".overlap").addClass("active");
+          }
         }
       }
-    }
+    });
   }
 
   var cur_ct_id = null;
