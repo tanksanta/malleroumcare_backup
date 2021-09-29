@@ -1,63 +1,7 @@
 <?php
 include_once("./_common.php");
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
-
-$ca_id_arr = array_filter(explode('|', $_GET['ca_id']));
-
-$sendData = [];
-$sendData["usrId"] = $member["mb_id"];
-$sendData["entId"] = $member["mb_entId"];
-$sendData["appCd"] = "01";
-
-if($_GET["penNm"]){
-  $sendData["penNm"] = $_GET["penNm"];
-}
-
-if($_GET["penTypeCd"]&&$_GET["penTypeCd"]!=="수급자구분"){
-  $sendData["penTypeCd"] = $_GET["penTypeCd"];
-}
-
-$oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_PORT, 9901);
-curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
-curl_setopt($oCurl, CURLOPT_POST, 1);
-curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-$res = curl_exec($oCurl);
-$res = json_decode($res, true);
-curl_close($oCurl);
-
-$list = [];
-foreach($res['data'] as $data) {
-  $checklist = ['penRecGraCd', 'penTypeCd', 'penExpiDtm', 'penBirth'];
-  $is_incomplete = false;
-  foreach($checklist as $check) {
-    if(!$data[$check])
-      $is_incomplete = true;
-  }
-  if(!in_array($data['penGender'], ['남', '여']))
-    $is_incomplete = true;
-  if($data['penTypeCd'] == '04' && !$data['penJumin'])
-    $is_incomplete = true;
-  if($data['penExpiDtm']) {
-    // 유효기간 만료일 지난 수급자는 유효기간 입력 후 주문하게 함
-    $expired_dtm = substr($data['penExpiDtm'], -10);
-    if (strtotime(date("Y-m-d")) > strtotime($expired_dtm)) {
-      $data['penExpiDtm'] = '';
-      $is_incomplete = true;
-    }
-  }
-
-  $data['incomplete'] = $is_incomplete;
-
-  $list[] = $data;
-}
-
 ?>
-
-
 <!doctype html>
 <html lang="ko">
 <head>
@@ -135,175 +79,6 @@ foreach($res['data'] as $data) {
 </div>
 <div class="pop_list">
   <ul id="recipient_list">
-    <?php
-    if($list) {
-      foreach($list as $data) {
-        $warning = [];
-        if(is_array($ca_id_arr)) {
-          foreach($ca_id_arr as $ca_id) {
-            $limit = get_pen_category_limit($data["penLtmNum"], $ca_id);
-            if($limit) {
-              $cur = intval($limit['num']) - intval($limit['current']);
-              if($cur <= 0) {
-                // 구매불가능
-                $warning_text = "\"{$limit['ca_name']}\" 구매가능 개수가 초과되었습니다.";
-                if(!in_array($warning_text, $warning))
-                  $warning[] = $warning_text;
-              }
-            }
-          }
-        }
-        $grade_year_info = get_recipient_grade_per_year($data['penId']);
-        $recipient = $data["rn"]."|".$data["penId"]."|".$data["entId"]."|".$data["penNm"]."|".$data["penLtmNum"]."|".$data["penRecGraCd"]."|".$data["penRecGraNm"]."|".$data["penTypeCd"]."|".$data["penTypeNm"]."|".$data["penExpiStDtm"]."|".$data["penExpiEdDtm"]."|".$data["penExpiDtm"]."|".$data["penExpiRemDay"]."|".$data["penGender"]."|".$data["penGenderNm"]."|".$data["penBirth"]."|".$data["penAge"]."|".$data["penAppEdDtm"]."|".$data["penAddr"]."|".$data["penAddrDtl"]."|".$data["penConNum"]."|".$data["penConPnum"]."|".$data["penProNm"]."|".$data["usrId"]."|".$data["appCd"]."|".$data["appCdNm"]."|".$data["caCenYn"]."|".$data["regDtm"]."|".$data["regDt"]."|".$data["ordLendEndDtm"]."|".$data["ordLendRemDay"]."|".$data["usrNm"]."|".$data["penAppRemDay"]."|800,000원";
-    ?>
-    <li>
-      <form class="form_recipient" autocomplete="off">
-        <input type="hidden" name="penId" value="<?=$data['penId']?>">
-        <input type="hidden" name="penNm" value="<?=$data['penNm']?>">
-        <input type="hidden" name="penLtmNum" value="<?=$data['penLtmNum']?>">
-        <table>
-          <tr>
-            <td>수급자명</td>
-            <td>
-              <?php
-              echo $data["penNm"];
-              if($data['incomplete']) {
-                echo '<span class="notice_incom"><img src="'.THEMA_URL.'/assets/img/icon_notice_recipient.png"> 필수정보 입력 후 선택가능</span>';
-              }
-              ?>
-            </td>
-          </tr>
-          <tr>
-            <td>성별</td>
-            <td>
-              <?php
-              if(in_array($data["penGender"], ['남', '여'])) {
-                echo $data["penGender"];
-                echo '<input type="hidden" name="penGender" value="'.$data["penGender"].'">';
-              } else {
-                echo '
-                  <label class="checkbox-inline">
-                    <input type="radio" name="penGender" value="남" style="vertical-align: middle; margin: 0 5px 0 0;">남
-                  </label>
-                  <label class="checkbox-inline">
-                    <input type="radio" name="penGender" value="여" style="vertical-align: middle; margin: 0 5px 0 0;">여
-                  </label>
-                ';
-              }
-              ?>
-            </td>
-          </tr>
-          <tr>
-            <td>장기요양번호</td>
-            <td><?=($data["penLtmNum"]) ? $data["penLtmNum"] : '-'?></td>
-          </tr>
-          <tr>
-            <td>인정등급</td>
-            <td>
-              <?php
-              if($data["penRecGraNm"]) {
-                echo $data["penRecGraNm"];
-                echo '<input type="hidden" name="penRecGraCd" value="'.$data["penRecGraCd"].'">';
-              } else {
-                echo '
-                  <select name="penRecGraCd">
-                    <option value="00">등급외</option>
-                    <option value="01">1등급</option>
-                    <option value="02">2등급</option>
-                    <option value="03">3등급</option>
-                    <option value="04">4등급</option>
-                    <option value="05">5등급</option>
-                  </select>
-                ';
-              }
-              ?>
-            </td>
-          </tr>
-          <tr>
-            <td>본인부담금율</td>
-            <td>
-              <?php
-              if($data['penTypeNm']) {
-                echo $data["penTypeNm"];
-                echo '<input type="hidden" name="penTypeCd" value="'.$data["penTypeCd"].'">';
-              } else {
-                echo '
-                <select name="penTypeCd">
-                  <option value="00">일반 15%</option>
-                  <option value="01">감경 9%</option>
-                  <option value="02">감경 6%</option>
-                  <option value="03">의료 6%</option>
-                  <option value="04">기초 0%</option>
-                </select>
-                ';
-              }
-              ?>
-            </td>
-          </tr>
-          <tr>
-            <td>유효기간</td>
-            <td>
-              <?php
-              if($data["penExpiDtm"]) {
-                $penExpiDtm = explode(' ~ ', $data["penExpiDtm"]);
-                echo $data["penExpiDtm"];
-                echo '<input type="hidden" name="penExpiStDtm" value="'.$penExpiDtm[0].'">';
-                echo '<input type="hidden" name="penExpiEdDtm" value="'.$penExpiDtm[1].'">';
-              } else {
-                echo '
-                  <input type="text" name="penExpiStDtm" class="datepicker">
-                  ~
-                  <input type="text" name="penExpiEdDtm" class="datepicker">
-                ';
-              }
-              ?>
-            </td>
-          </tr>
-          <tr>
-            <td>생년월일</td>
-            <td>
-              <?php
-              if($data["penBirth"] && !($data['penTypeCd'] == '04' && !$data['penJumin'])) {
-                $penBirth = preg_replace("/[^0-9]/", "", $data["penBirth"]);
-                $penBirth = DateTime::createFromFormat('Ymd', $penBirth);
-                $penBirth = $penBirth->format('Y-m-d');
-
-                echo $penBirth;
-                echo '<input type="hidden" name="penBirth" value="'.$penBirth.'">';
-                echo '<input type="hidden" name="penJumin" value="'.$data["penJumin"].'">';
-              } else {
-                echo '<input type="text" name="penBirth" class="datepicker">';
-              }
-              ?>
-            </td>
-          </tr>
-          <tr>
-            <td>연 사용금액</td>
-            <td><?php echo number_format($grade_year_info['sum_price']); ?> 원</td>
-          </tr>
-          <?php foreach($warning as $warning_text) { ?>
-          <tr>
-            <td colspan="2" style="color: red"><?=$warning_text?></td>
-          </tr>
-          <?php } ?>
-        </table>
-        <?php if($warning) { ?>
-        <div class="warning">구매가능초과</div>
-        <?php } else if($grade_year_info['sum_price'] > 1600000) { ?>
-        <div class="warning">사용금액초과</div>
-        <?php } else { ?>
-        <a href="javascript:void(0)" class="sel_address" data-target="<?=$recipient?>" data-incomplete="<?=$data['incomplete'] ? 'true' : 'false'?>" title="선택">선택</a>
-        <?php } ?>
-      </form>
-    </li>
-    <?php
-      }
-    } else {
-    ?>
-    <div class="empty_list">
-      수급자가 없습니다.
-    </div>
-    <?php } ?>
   </ul>
 </div>
 </body>
@@ -311,6 +86,57 @@ foreach($res['data'] as $data) {
 
 <script>
 $(function() {
+  var page = 1;
+  var loading = false;
+  var is_last = false;
+  var ca_id = '<?=get_text($_GET["ca_id"])?>';
+  var penNm = '<?=get_text($_GET["penNm"])?>';
+  var penTypeCd = '<?=get_text($_GET["penTypeCd"])?>';
+
+  load_recipient();
+
+  function load_recipient() {
+    if(loading || is_last)
+      return;
+
+    if(page === 1) {
+      // 첫페이지면 비움
+      $('#recipient_list').html('');
+    }
+
+    loading = true;
+    $.get('ajax.pop_recipient.php', {
+      page: page
+    })
+    .done(function(result) {
+      var data = result.data;
+
+      is_last = data.is_last;
+      $html = $(data.html);
+      $html.find('.datepicker').datepicker();
+      if($('#recipient_list').html() === '') {
+        $('#recipient_list').html($html);
+      } else if(!is_last) {
+        $('#recipient_list').append($html);
+      }
+      
+      page += 1;
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    })
+    .always(function() {
+      loading = false;
+    });
+  }
+
+  $(window).scroll(function() {
+    if((window.innerHeight + window.scrollY) >= document.body.offsetHeight / 2) {
+      load_recipient();
+    }
+  });
+
   $.fn.serializeObject = function() {
     "use strict"
     var result = {}
@@ -345,9 +171,8 @@ $(function() {
     changeYear: true,
     yearRange : "-150:+10"
   });
-  $('.datepicker').datepicker();
 
-  $(".sel_address").on("click", function() {
+  $(document).on("click", ".sel_address", function() {
     var $this = $(this);
 
     if($this.prop('disabled'))
