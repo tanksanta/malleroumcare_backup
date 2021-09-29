@@ -81,7 +81,10 @@ if($type == 'cert') {
     if(!$result)
       json_response(500, 'DB 서버 오류 발생');
     
-    $return = $src_name;
+    $return = array(
+      'name' => $src_name,
+      'url' => $dest_name
+    );
   }
 }
 

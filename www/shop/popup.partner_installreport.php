@@ -74,13 +74,18 @@ if($report && $report['ct_id']) {
     #table_ir { width: 100%; }
     #table_ir .ipt_file { display: none; }
     #table_ir .label_file { display: inline-block; border: 1px solid #d7d7d7; color: #666; border-radius: 3px; padding: 10px 30px; cursor: pointer; }
-    #table_ir tr { border-bottom: 1px solid #ccc; }
+    #table_ir .tr_content { border-bottom: 1px solid #ccc; }
+    #table_ir .tr_head { border: none; }
     #table_ir th, #table_ir td, .issue_wrap { padding: 15px; text-align: left; vertical-align: top; }
+    #table_ir .tr_head th, #table_ir .tr_head td { padding-bottom: 0; }
+    #table_ir .tr_content th, #table_ir .tr_content td { padding-top: 0; }
     .section_head { font-weight: 700; padding: 5px 0 0 5px; }
     #txt_issue { width: 100%; margin-top: 15px; border: 1px solid #d7d7d7; border-radius: 3px; padding: 6px; resize: vertical; }
 
     .list_file { padding-top: 10px; }
     .list_file li { padding: 5px; vertical-align: middle; }
+    .list_file li a.view_image { display: block; width: 100px; min-width: 100px; max-width: 100px; height: 100px; }
+    .list_file li a.view_image img { width: 100%; height: 100%; }
     .btn_remove { margin-left: 10px; width: 25px; height: 25px; background-color: #000; border-radius: 3px; color: #fff; font-size: 15px; }
 
     #popupFooterBtnWrap { position: fixed; width: 100%; height: 70px; background-color: #000; bottom: 0px; z-index: 10; }
@@ -105,7 +110,7 @@ if($report && $report['ct_id']) {
       <col>
     </colgroup>
     <tbody>
-      <tr>
+      <tr class="tr_head">
         <th><div class="section_head">설치 확인서 등록</div></th>
         <td>
           <form id="form_file_cert">
@@ -117,9 +122,16 @@ if($report && $report['ct_id']) {
               <input type="file" name="file_cert" id="file_cert" class="ipt_file" accept="image/*">
             </label>
           </form>
+        </td>
+      </tr>
+      <tr class="tr_content">
+        <td colspan="2">
           <ul id="list_file_cert" class="list_file">
             <?php if($report['ir_cert_url']) { ?>
             <li>
+              <a href="<?=G5_BBS_URL?>/view_image.php?open_safari=1&fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"))?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+              </a>
               <?=$report['ir_cert_name']?>
               <button class="btn_remove" data-type="cert">
                 <i class="fa fa-times" aria-hidden="true"></i>
@@ -129,7 +141,7 @@ if($report && $report['ct_id']) {
           </ul>
         </td>
       </tr>
-      <tr>
+      <tr class="tr_head">
         <th><div class="section_head">설치 사진 등록</div></th>
         <td>
           <form id="form_file_photo">
@@ -141,10 +153,17 @@ if($report && $report['ct_id']) {
               <input type="file" name="file_photo[]" id="file_photo" class="ipt_file" accept="image/*" multiple>
             </label>
           </form>
+        </td>
+      </tr>
+      <tr class="tr_content">
+        <td colspan="2">
           <ul id="list_file_photo" class="list_file">
             <?php foreach($photos as $photo) { ?>
             <li>
-              <?=$photo['ip_photo_name'] ?>
+              <a href="<?=G5_BBS_URL?>/view_image.php?open_safari=1&fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"))?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+              </a>
+              <?=$photo['ip_photo_name']?>
               <button class="btn_remove" data-type="photo" data-id="<?=$photo['ip_id']?>">
                 <i class="fa fa-times" aria-hidden="true"></i>
               </button>
@@ -220,9 +239,13 @@ if($report && $report['ct_id']) {
           dataType: 'json'
         })
         .done(function(result) {
+          var photo = result.data;
           $('#list_file_cert').html('\
             <li>\
-              ' + result.data + '\
+              <a href="/bbs/view_image.php?open_safari=1&fn=' + encodeURIComponent('/data/partner/img/' + photo['url']) + '" target="_blank" class="view_image">\
+                <img src="' + ('/data/partner/img/' + photo['url']) + '" onerror="this.src=\'/shop/img/no_image.gif\';">\
+              </a>\
+              ' + photo.name + '\
               <button class="btn_remove" data-type="cert">\
                 <i class="fa fa-times" aria-hidden="true"></i>\
               </button>\
@@ -263,6 +286,9 @@ if($report && $report['ct_id']) {
             var photo = photos[i];
             list_photo_html += '\
               <li>\
+                <a href="/bbs/view_image.php?open_safari=1&fn=' + encodeURIComponent('/data/partner/img/' + photo['ip_photo_url']) + '" target="_blank" class="view_image">\
+                  <img src="' + ('/data/partner/img/' + photo['ip_photo_url']) + '" onerror="this.src=\'/shop/img/no_image.gif\';">\
+                </a>\
                 ' + photo['ip_photo_name'] + '\
                 <button class="btn_remove" data-type="photo" data-id="' + photo['ip_id'] + '">\
                   <i class="fa fa-times" aria-hidden="true"></i>\
