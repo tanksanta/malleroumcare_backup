@@ -651,6 +651,12 @@ foreach($orderlist as $order) {
       }
     }
     $direct_delivery_text .= "<br>[{$delivery_company_name}] {$order['ct_delivery_num']}";
+
+    // 위탁배송상품 출고예정일 출력
+    if($order['ct_direct_delivery_date']) {
+      $direct_delivery_date = date('Y-m-d (H시)', strtotime($order['ct_direct_delivery_date']));
+      $ct_ex_date = "예정 : {$direct_delivery_date}<br>" . $ct_ex_date;
+    }
   }
   if($order['ct_is_delivery_excel_downloaded']) {
     $direct_delivery_text .= '<br><span class="excel_done" style="color: #FF6600">엑셀 다운로드 완료</span>';
