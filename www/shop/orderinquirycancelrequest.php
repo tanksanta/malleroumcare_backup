@@ -20,6 +20,11 @@ if (!($to == "cancel" || $to == "return")) {
     alert("올바른 요청이 아닙니다.");
 }
 
+// 준비 상태가 아닌 주문이 있는 경우 취소요청할 수 없음
+$status_check = sql_fetch(" select count(*) as cnt from {$g5['g5_shop_cart_table']} where od_id = '{$od_id}' and ct_status <> '준비' ");
+if($status_check['cnt'] > 0)
+  alert('주문이 취소 가능한 상태가 아닙니다.');
+
 if ($to == "cancel")
     $status = "취소 대기중";
 if ($to == "return")
