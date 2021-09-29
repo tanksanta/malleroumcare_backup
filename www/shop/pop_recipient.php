@@ -106,7 +106,10 @@ $(function() {
 
     loading = true;
     $.get('ajax.pop_recipient.php', {
-      page: page
+      page: page,
+      ca_id: ca_id,
+      penNm: penNm,
+      penTypeCd: penTypeCd
     })
     .done(function(result) {
       var data = result.data;
