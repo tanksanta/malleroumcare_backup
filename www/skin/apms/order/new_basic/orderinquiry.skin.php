@@ -167,64 +167,66 @@ if($header_skin)
       <?php } ?>
     </ul>
   </div>
-  <div class="order-date">
-    <div class="list-text" style="display:none">
-      <div>
-        <span><img src="<?=$SKIN_URL?>/image/icon_13.png" alt="">상품준비 <b><?=$item_wait_count?>건</b></span>
+  <form id="form_order_search" method="get">
+    <div class="order-date">
+      <div class="list-text" style="display:none">
+        <div>
+          <span><img src="<?=$SKIN_URL?>/image/icon_13.png" alt="">상품준비 <b><?=$item_wait_count?>건</b></span>
+        </div>
+        <div>
+          <span><img src="<?=$SKIN_URL?>/image/icon_14.png" alt="">배송중 <b><?=$delivery_ing_count?>건</b></span>
+        </div>
       </div>
-      <div>
-        <span><img src="<?=$SKIN_URL?>/image/icon_14.png" alt="">배송중 <b><?=$delivery_ing_count?>건</b></span>
+      <div class="date-box cb" style="width: 100%;" method="get">
+        <div class="list-date">
+          <input type="text" name="s_date" value="<?=$_GET["s_date"]?>" id="date1" /> 
+          ~ 
+          <input type="text" name="e_date" value="<?=$_GET["e_date"]?>" id="date2" /> 
+        </div>
+        <div class="list-tab">
+          <a href="javascript:;" onclick="searchDateSetting('1week');">일주일</a>
+          <a href="javascript:;" onclick="searchDateSetting('1month');">이번달</a>
+          <a href="javascript:;" onclick="searchDateSetting('3month');">3개월</a>
+        </div>
+        <div class="list-select">
+          <input type="hidden" name="ct_status" value="<?=$_GET["ct_status"]?>">
+          <div class="select">
+            <input type="hidden" name="od_stock" value="<?=$_GET["od_stock"]?>">
+            <p><?=$search_od_stock?></p>
+            <ul>
+              <li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="">주문+재고</a></li>
+            <?php for($i = 0; $i < count($order_stocks); $i++){ ?>
+              <li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="<?=$order_stocks[$i]["val"]?>"><?=$order_stocks[$i]["name"]?></a></li>
+            <?php } ?>
+            </ul>
+          </div>
+          <div class="select">
+            <input type="hidden" name="od_status" value="<?=$_GET["od_status"]?>">
+            <p><?=$search_od_status?></p>
+            <ul>
+              <li><a href="javscript:;" class="hiddenChange" data-target="od_status" data-val="">전체 상태</a></li>
+            <?php for($i = 0; $i < count($order_steps); $i++){ ?>
+              <li><a href="javscript:;" class="hiddenChange" data-target="od_status" data-val="<?=$order_steps[$i]["val"]?>"><?=$order_steps[$i]["name"]?></a></li>
+            <?php } ?>
+            </ul>
+          </div>
+          <button type="submit">검색</button>
+        </div>
       </div>
     </div>
-    <form class="date-box cb" style="width: 100%;" method="get">
-      <div class="list-date">
-        <input type="text" name="s_date" value="<?=$_GET["s_date"]?>" id="date1" /> 
-        ~ 
-        <input type="text" name="e_date" value="<?=$_GET["e_date"]?>" id="date2" /> 
-      </div>
-      <div class="list-tab">
-        <a href="javascript:;" onclick="searchDateSetting('1week');">일주일</a>
-        <a href="javascript:;" onclick="searchDateSetting('1month');">이번달</a>
-        <a href="javascript:;" onclick="searchDateSetting('3month');">3개월</a>
-      </div>
-      <div class="list-select">
-        <input type="hidden" name="ct_status" value="<?=$_GET["ct_status"]?>">
-        <div class="select">
-          <input type="hidden" name="od_stock" value="<?=$_GET["od_stock"]?>">
-          <p><?=$search_od_stock?></p>
-          <ul>
-            <li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="">주문+재고</a></li>
-          <?php for($i = 0; $i < count($order_stocks); $i++){ ?>
-            <li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="<?=$order_stocks[$i]["val"]?>"><?=$order_stocks[$i]["name"]?></a></li>
-          <?php } ?>
-          </ul>
-        </div>
-        <div class="select">
-          <input type="hidden" name="od_status" value="<?=$_GET["od_status"]?>">
-          <p><?=$search_od_status?></p>
-          <ul>
-            <li><a href="javscript:;" class="hiddenChange" data-target="od_status" data-val="">전체 상태</a></li>
-          <?php for($i = 0; $i < count($order_steps); $i++){ ?>
-            <li><a href="javscript:;" class="hiddenChange" data-target="od_status" data-val="<?=$order_steps[$i]["val"]?>"><?=$order_steps[$i]["name"]?></a></li>
-          <?php } ?>
-          </ul>
-        </div>
-        <button type="submit">검색</button>
-      </div>
-    </form>
-  </div>
 
-  <form id="form_search" method="get">
-    <div class="search_box">
-      <select name="sel_field" id="sel_field">
-        <option value="all"<?php if($sel_field == 'all') echo ' selected'; ?>>전체</option>
-        <option value="o.od_id"<?php if($sel_field == 'o.od_id') echo ' selected'; ?>>주문번호</option>
-        <option value="i.it_name"<?php if($sel_field == 'i.it_name') echo ' selected'; ?>>상품명</option>
-        <option value="o.od_b_name"<?php if($sel_field == 'o.od_b_name') echo ' selected'; ?>>수령인</option>
-      </select>
-      <div class="input_search">
-          <input name="search" value="<?=$search?>" type="text">
-          <button id="btn_search" type="submit"></button>
+    <div class="cb">
+      <div class="search_box">
+        <select name="sel_field" id="sel_field">
+          <option value="all"<?php if($sel_field == 'all') echo ' selected'; ?>>전체</option>
+          <option value="o.od_id"<?php if($sel_field == 'o.od_id') echo ' selected'; ?>>주문번호</option>
+          <option value="i.it_name"<?php if($sel_field == 'i.it_name') echo ' selected'; ?>>상품명</option>
+          <option value="o.od_b_name"<?php if($sel_field == 'o.od_b_name') echo ' selected'; ?>>수령인</option>
+        </select>
+        <div class="input_search">
+            <input name="search" value="<?=$search?>" type="text">
+            <button id="btn_search" type="submit"></button>
+        </div>
       </div>
     </div>
   </form>
@@ -269,13 +271,13 @@ if($header_skin)
       }else {
         $('input[name="ct_status"]').val('주문무효');
       }
-      $('.date-box').submit();
+      $('#form_order_search').submit();
     });
 
     $(document).on('click', '.latest_order_head .step', function() {
       var step = $(this).data('step');
       $('input[name="ct_status"]').val(step);
-      $('.date-box').submit();
+      $('#form_order_search').submit();
     });
   });
   </script>
