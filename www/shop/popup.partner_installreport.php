@@ -84,7 +84,7 @@ if($report && $report['ct_id']) {
 
     .list_file { padding-top: 10px; }
     .list_file li { padding: 5px; vertical-align: middle; }
-    .list_file li a.view_image { display: block; width: 100px; min-width: 100px; max-width: 100px; height: 100px; }
+    .list_file li a.view_image { display: block; width: 100px; min-width: 100px; max-width: 100px; height: 100px; border: 1px solid #ddd; margin-bottom: 3px; }
     .list_file li a.view_image img { width: 100%; height: 100%; }
     .btn_remove { margin-left: 10px; width: 25px; height: 25px; background-color: #000; border-radius: 3px; color: #fff; font-size: 15px; }
 

@@ -79,58 +79,72 @@ if($header_skin)
   } );
 </script>
   
-   <!-- 210326 재고조회팝업 -->
-  <div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
-    <div>
-    </div>
-  </div>
-    <!-- 210326 재고조회팝업 -->
-   
-   <!-- 210326 배송정보팝업 -->
-  <div id="popupProdDeliveryInfoBox" class="listPopupBoxWrap">
-    <div>
-    </div>
-  </div>
-   
-    <style>
-    .listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
-    .listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
-    .listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+<style>
+.listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+.listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+.listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
 
-    @media (max-width : 750px){
-      .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
-    }
-  </style>
+@media (max-width : 750px){
+  .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+</style>
+
+<!-- 210326 재고조회팝업 -->
+<div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
+  <div>
+  </div>
+</div>
+<!-- 210326 재고조회팝업 -->
   
-  <script type="text/javascript">
-    $(function(){
+<!-- 210326 배송정보팝업 -->
+<div id="popupProdDeliveryInfoBox" class="listPopupBoxWrap">
+  <div>
+  </div>
+</div>
 
-      $(".listPopupBoxWrap").hide();
-      $(".listPopupBoxWrap").css("opacity", 1);
-      
-      $(".popupDeliveryInfoBtn").click(function(e){
-        e.preventDefault();
-        
-        var od = $(this).attr("data-od");
-        $("#popupProdDeliveryInfoBox > div").append("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od + "'>");
-        $("#popupProdDeliveryInfoBox iframe").load(function(){
-          $("#popupProdDeliveryInfoBox").show();
-        });
-      });
-      
-      $(".popupProdBarNumInfoBtn").click(function(e){
-        e.preventDefault();
-        var od_id = $(this).attr("data-id");
-        var ct_id = $(this).attr("data-ct-id");
-        $("#popupProdBarNumInfoBox > div").append("<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
-        $("#popupProdBarNumInfoBox iframe").load(function(){
-          $("#popupProdBarNumInfoBox").show();
-        });
-      });
-      
-    })
-  </script>
-   <!-- 210326 배송정보팝업 -->
+<div id="popup_box" class="listPopupBoxWrap">
+  <div></div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+
+  $(".listPopupBoxWrap").hide();
+  $(".listPopupBoxWrap").css("opacity", 1);
+  
+  $(".popupDeliveryInfoBtn").click(function(e){
+    e.preventDefault();
+    
+    var od = $(this).attr("data-od");
+    $("#popupProdDeliveryInfoBox > div").append("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od + "'>");
+    $("#popupProdDeliveryInfoBox iframe").load(function(){
+      $("#popupProdDeliveryInfoBox").show();
+    });
+  });
+  
+  $(".popupProdBarNumInfoBtn").click(function(e){
+    e.preventDefault();
+    var od_id = $(this).attr("data-id");
+    var ct_id = $(this).attr("data-ct-id");
+    $("#popupProdBarNumInfoBox > div").append("<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
+    $("#popupProdBarNumInfoBox iframe").load(function(){
+      $("#popupProdBarNumInfoBox").show();
+    });
+  });
+
+  $(".btn_install_report").click(function(e){
+    e.preventDefault();
+    var ct_id = $(this).data('id');
+    $("body").addClass('modal-open');
+    $("#popup_box > div").html('<iframe src="/shop/popup.install_report.php?ct_id=' + ct_id + '">');
+    $("#popup_box iframe").load(function() {
+      $("#popup_box").show();
+    });
+  });
+  
+});
+</script>
+<!-- 210326 배송정보팝업 -->
     
 <section id="pro-order" class="wrap order-list">
   <div class="sub_section_tit">주문내역</div>
@@ -295,14 +309,14 @@ if($header_skin)
   <?php for ($i = 0; $i < count($list); $i++){ $row = $list[$i]; ?>
   <?php
     $itemList = [];
-        $stock_insert ="1";
+    $stock_insert ="1";
 
     $ct_sql_search = '';
     $ct_where = [];
     $ct_where[] = " od_id = '{$row["od_id"]}' ";
     // if ($ct_status) {
     //   if ( $ct_status === '주문무효') {
-    //     $where[] = " a.ct_status IN ('주문무효', '취소') ";	
+    //     $where[] = " a.ct_status IN ('주문무효', '취소') ";  
     //   } else {
     //     $where[] = " a.ct_status = '{$ct_status}' ";
     //   }
@@ -320,10 +334,16 @@ if($header_skin)
         , ( SELECT it_img1 FROM {$g5["g5_shop_item_table"]} WHERE it_id = a.it_id ) AS it_img
         , ( SELECT prodSupYn FROM {$g5["g5_shop_item_table"]} WHERE it_id = a.it_id ) AS prodSupYn
       FROM {$g5["g5_shop_cart_table"]} a
-		  {$ct_sql_search}
+      {$ct_sql_search}
     ");
                         
     for($ii = 0; $item = sql_fetch_array($itemSQL); $ii++){
+      // 설치결과보고서
+      $item['report'] = null;
+      $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$item['ct_id']}' ", true);
+      if($report['ct_id']) {
+        $item['report'] = $report;
+      }
       array_push($itemList, $item);
     }
   ?>
@@ -384,7 +404,7 @@ if($header_skin)
         <?php } ?>
       </div>
       
-      <?php foreach($itemList as $item){ 
+      <?php foreach($itemList as $item){
                 // //바코드 개수 구하기
                 // $sendData2=[];
                 // // $sendData2["stateCd"] =['01','02','08','09'];
@@ -561,23 +581,28 @@ if($header_skin)
               <?php if(($item['ct_status'] == '배송' || $item['ct_status'] == '완료') && ($item["prodSupYn"] == "Y")){ ?>
                 <a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
               <?php } ?>
-                            <?php 
-                                $sql_v= "SELECT `ca_id` FROM `g5_shop_item` WHERE `it_id` = '".$item["it_id"]."'";
-                                $result_v=sql_fetch($sql_v);
-                                $str = substr($result_v['ca_id'],0 , 2);
-                                if($str=="20"){
-                                    $path ="sales_Inventory_datail2.php";
-                                }else{
-                                    $path ="sales_Inventory_datail.php";
-                                }
-                            ?>
-              <?php if($row["od_status"] == "배송완료"){ ?>
+              <?php if($row["od_status"] == "배송완료") {
+                $sql_v= "SELECT `ca_id` FROM `g5_shop_item` WHERE `it_id` = '".$item["it_id"]."'";
+                $result_v=sql_fetch($sql_v);
+                $str = substr($result_v['ca_id'],0 , 2);
+                if($str=="20"){
+                    $path ="sales_Inventory_datail2.php";
+                }else{
+                    $path ="sales_Inventory_datail.php";
+                }
+              ?>
                 <a href="<?php echo G5_SHOP_URL; ?>/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
               <?php } ?>
               <?php if($ct_status_text == "출고완료"){ ?>
                 <!-- 이카운트 등록오류 가능할 수 있어 임시로 삭제 
                   <a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a> -->
               <?php } ?>
+              </div>
+              <?php } ?>
+
+              <?php if($item['report'] && $item['report']['ir_cert_url']) { ?>
+              <div style="margin-top: 6px;">
+                <a href="#" class="btn-01 btn-0 btn_install_report" style="font-size: 12px; color: #666" data-id="<?=$item["ct_id"]?>">설치결과보고서</a>
               </div>
               <?php } ?>
             </li>
