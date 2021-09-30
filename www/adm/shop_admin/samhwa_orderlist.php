@@ -159,6 +159,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
           </div>
         </td>
       </tr>
+      <!--
       <tr>
         <th>결제금액</th>
         <td>
@@ -176,6 +177,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
           </div>
         </td>
       </tr>
+      -->
 <!--
       <tr>
         <th>결제수단</th>
@@ -237,6 +239,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
       $member_level_flag = ($member_level_s && count($member_level_s) >= 2);
       $is_member_flag = ($is_member_s && count($is_member_s) >= 2);
       ?>
+      <!--
       <tr>
         <th>등급</th>
         <td>
@@ -258,6 +261,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
           <input type="radio" id="od_recipient_Y" name="od_recipient" value="Y" <?=($_GET["od_recipient"] == "Y") ? "checked" : ""?>><label for="od_recipient_Y"> 상품주문</label>
         </td>
       </tr>
+      -->
       <tr>
         <th>기타설정</th>
         <td>

@@ -391,7 +391,7 @@ $ret['main'] = "
             <th class=\"od_price\">결제금액</th>
             <th class=\"od_sales_manager\">영업담당자</th>
             <th class=\"od_release_manager\">출고담당자</th>
-            <th class=\"od_ex_date\">출고완료일</th>
+            <!--<th class=\"od_ex_date\">출고완료일</th>-->
             <th class=\"od_content\">위탁</th>
             <th class=\"od_step\">주문상태</th>
           </tr>
@@ -578,7 +578,7 @@ foreach($orderlist as $order) {
 
     $ret['data'] .= "
       <tr class=\"step\">
-        <td colspan=\"10\" class=\"ltr-bg-step-{$ct_status_info['step']}\">
+        <td colspan=\"8\" class=\"ltr-bg-step-{$ct_status_info['step']}\">
           {$show_ct_status}
         </td>
         <td colspan=\"6\" class=\"ltr-bg-step-{$ct_status_info['step']}\" style=\"text-align:right;\">
@@ -685,8 +685,10 @@ foreach($orderlist as $order) {
             <div class=\"ct_count\">
                 {$ct_count}
             </div>
+            <!--
             <a href=\"javascript:printOrderView('{$order['od_id']}')\"><img src=\"/adm/shop_admin/img/printer.png\" align=\"absmiddle\"></a>
             <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\" target=\"_blank\"><span><img src=\"/adm/shop_admin/img/window.png\" align=\"absmiddle\"></span></a>
+            -->
             <span class=\"btn-direct-open\" onclick=\"btn_direct_open(this);\"></span>
           </div>
         </div>
@@ -716,9 +718,11 @@ foreach($orderlist as $order) {
       <td align=\"center\" class=\"od_release_manager\">
         {$od_release_select}
       </td>
+      <!--
       <td align=\"center\" class=\"od_ex_date\">
         {$ct_ex_date}
       </td>
+      -->
       <td align=\"center\" class=\"od_content od_direct_delivery\">
         {$direct_delivery_text}
       </td>
