@@ -54,7 +54,7 @@ if($is_demo) {
 $is_inquiry_sub = false;
 @include_once($order_skin_path.'/config.skin.php');
 
-$g5['title'] = '주문내역조회';
+$g5['title'] = '보유재고관리';
 
 if($is_inquiry_sub) {
 	include_once(G5_PATH.'/head.sub.php');
@@ -73,41 +73,20 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 }
 
 //판매재고 토탈
-$sendData = [];
-$sendData["usrId"] = $member["mb_id"];
-$sendData["entId"] = $member["mb_entId"];
-$sendData["gubun"] = "00";
+$res = api_post_call(EROUMCARE_API_ACCOUNT_STOCK_LIST, array(
+    'usrId' => $member["mb_id"],
+    'entId' => $member["mb_entId"],
+    'gubun' => '00',
+));
 
-$oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_PORT, 9901);
-curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectNotEmptyListForEnt");
-curl_setopt($oCurl, CURLOPT_POST, 1);
-curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-$res = curl_exec($oCurl);
-$res = json_decode($res, true);
-curl_close($oCurl);
 $sales_Inventory_total=$res['total'];//대여재고 토탈
 
 //대여재고 토탈
-$sendData = [];
-$sendData["usrId"] = $member["mb_id"];
-$sendData["entId"] = $member["mb_entId"];
-$sendData["gubun"] = "01";
-
-$oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_PORT, 9901);
-curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectNotEmptyListForEnt");
-curl_setopt($oCurl, CURLOPT_POST, 1);
-curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-$res = curl_exec($oCurl);
-$res = json_decode($res, true);
-curl_close($oCurl);
+$res = api_post_call(EROUMCARE_API_ACCOUNT_STOCK_LIST, array(
+    'usrId' => $member["mb_id"],
+    'entId' => $member["mb_entId"],
+    'gubun' => '01',
+));
 $sales_Inventory_total2=$res['total'];//대여재고 토탈
 
 
@@ -118,14 +97,13 @@ $sales_Inventory_total2=$res['total'];//대여재고 토탈
 
 
 //대여재고 리스트
-$sendLength = 10;
+$send_length = (int)$send_length ?: 10;
 $sendData = [];
 $sendData["usrId"] = $member["mb_id"];
 $sendData["entId"] = $member["mb_entId"];
 $sendData["gubun"] = "01";
 $sendData["pageNum"] = ($_GET["page"]) ? $_GET["page"] : 1;
-$sendData["pageSize"] = 3;
-$sendData["pageSize"] = $sendLength;
+$sendData["pageSize"] = $send_length;
 
 if($_GET['searchtype']){
     if($_GET['searchtype']=="1"){
@@ -135,18 +113,7 @@ if($_GET['searchtype']){
     }
 }
 
-
-$oCurl = curl_init();
-curl_setopt($oCurl, CURLOPT_PORT, 9901);
-curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectNotEmptyListForEnt");
-curl_setopt($oCurl, CURLOPT_POST, 1);
-curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-$res = curl_exec($oCurl);
-$res = json_decode($res, true);
-curl_close($oCurl);
+$res = api_post_call(EROUMCARE_API_ACCOUNT_STOCK_LIST, $sendData);
 
 $list = [];
 if($res["data"]){
@@ -157,7 +124,7 @@ if($res["data"]){
 # 페이징
 $totalCnt = $res["total"];
 $pageNum = $sendData["pageNum"]; # 페이지 번호
-$listCnt = $sendLength; # 리스트 갯수 default 10
+$listCnt = $send_length; # 리스트 갯수 default 10
 
 $b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
 $block = ceil($pageNum/$b_pageNum_listCnt); # 총 블록 갯수 구하기
@@ -184,7 +151,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
             <li class="active"><a href="<?=G5_SHOP_URL?>/sales_Inventory2.php">대여재고<i class="num">(<?=$sales_Inventory_total2?>)</i></a></li>
         </ul>
         <div class="inner">
-            <form action="">
+            <form action="" method="get" class="stock-form" name="stock_form" onsubmit="return stockFormSubmit()">
                 <div class="search-box">
                     <select name="searchtype" id="">
                         <option value="1" <?=$_GET['searchtype'] == "1" ? 'selected' : '' ?> >상품명</option>
@@ -194,6 +161,19 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <input name="searchtypeText" value="<?=$_GET["searchtypeText"]?>" type="text">
                         <button  type="submit"></button>
                     </div>
+                </div>
+                <div class="right-box">
+                    <input type="checkbox" name="no_image" <?php echo $no_image?'checked':''; ?> value="1" id="no_image">
+                    <label for="no_image">간략보기</label>
+                    <select name="send_length" id="send_length">
+                        <option value="10" <?php echo $send_length == '10' ? 'selected="selected"' : ''; ?>>10개씩 보기</option>
+                        <option value="20" <?php echo $send_length == '20' ? 'selected="selected"' : ''; ?>>20개씩 보기</option>
+                        <option value="30" <?php echo $send_length == '30' ? 'selected="selected"' : ''; ?>>30개씩 보기</option>
+                        <option value="50" <?php echo $send_length == '50' ? 'selected="selected"' : ''; ?>>50개씩 보기</option>
+                        <option value="100" <?php echo $send_length == '100' ? 'selected="selected"' : ''; ?>>100개씩 보기</option>
+                    </select>
+                    <input type="hidden" value="01" name="gubun" />
+                    <a href="#" class="btn eroumcare_btn2 small" id="excel_download" style="border-radius: 0 !important;padding: 1px 7px;" title="엑셀다운로드">엑셀다운로드</a>
                 </div>
             </form>
             <div class="table-wrap">
@@ -223,9 +203,11 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <span class="num"><?=$number?></span><!-- 넘버링 -->
                         <span class="product">
                             <div class="info">
+                                <?php if (!$no_image) { ?>
                                 <div class="img"  style="min-width:90px; min-height:90px;">
-                                    <img src="/data/item/<?=$row["it_img1"]?>" alt=""><!-- 이미지 -->
+                                    <img src="/data/item/<?=$row["it_img1"]?>" alt="">
                                 </div>
+                                <?php } ?>
                                 <div class="text">
                                     <div class="info-01">
                                         <i>[<?=$list[$i]['itemNm']?>]</i><!--품목명 -->
@@ -254,11 +236,11 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
             </div>
             <div class="pg-wrap">
                 <div>
-                    <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="?page=1"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
-                    <?php if($block > 1){ ?><a href="?page=<?=($b_start_page-1)?>"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
-                    <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="?page=<?=$j?>"><?=$j?></a><?php } ?>
-                    <?php if($block < $total_block){ ?><a href="?page=<?=($b_end_page+1)?>"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
-                    <?php if($block < $total_block){ ?><a href="?page=<?=$last_page?>"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
+                <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&no_image=<?php echo $no_image; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=1"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
+                    <?php if($block > 1){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&no_image=<?php echo $no_image; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=($b_start_page-1)?>"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
+                    <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&no_image=<?php echo $no_image; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=$j?>"><?=$j?></a><?php } ?>
+                    <?php if($block < $total_block){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&no_image=<?php echo $no_image; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=($b_end_page+1)?>"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
+                    <?php if($block < $total_block){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&no_image=<?php echo $no_image; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=$total_page?>"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
                 </div>
             </div>
         </div>
@@ -288,7 +270,22 @@ $(document).ready(function() {
 
         $('#add_sales_inventory_popup').show();
     });
+
+    $('#excel_download').click(function() {
+        var form = document['stock_form'];
+        form.action = "./sales_inventory_excel.php";
+        form.submit();
+    });
+    $('#no_image, #send_length').change(function() {
+        stockFormSubmit();
+    });
+
 });
+function stockFormSubmit() {
+    var form = document['stock_form'];
+    form.action = "";
+    form.submit();
+}
 </script>
 <?php
 if($is_inquiry_sub) {

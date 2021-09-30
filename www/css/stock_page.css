@@ -19,12 +19,41 @@ table {border-collapse: collapse;}
 .hidden { text-indent: -99999px; overflow: hidden; font-size: 0; display: none;}
 .cb:after { clear: both; display: block; content: '';}
 
+.stock-form {
+    display: flex;
+    align-content: space-between;
+    width: 100%;
+}
 /* 검색폼 */
-.search-box {font-size: 0;text-align: left;padding-bottom:10px;} 
+.search-box {
+    flex:1;
+    font-size: 0;
+    text-align: left;
+    padding-bottom:10px;
+} 
 .search-box select {margin-right:6px;display: inline-block;vertical-align: top;width:97px;height:30px;border:1px solid #d7d7d7;border-radius: 6px;font-size: 14px;}
 .search-box .input-search {display: inline-block;vertical-align: top; width:176px;height:30px;overflow: hidden;position: relative;border: 1px solid #d7d7d7;border-radius: 6px;}
 .search-box .input-search input {width: calc(100% - 30px); height: 28px;font-size: 14px;border:0;padding:0 5px;}
 .search-box .input-search button {position: absolute;top:0;right:0;z-index:1;width: 30px;height: 30px;background: url('/img/search_icon.png') no-repeat center top 50%/12px auto;}
+.right-box {
+    flex:1;
+    text-align: right;
+}
+.right-box input[type="checkbox"] {
+    margin: 0;
+    vertical-align: middle;
+}
+.right-box label {
+    vertical-align: middle;
+    margin: 0;
+}
+.right-box select {
+    border: 1px solid #ddd;
+    color: #494949;
+    padding: 3px 5px;
+    vertical-align: middle;
+    margin-left: 5px;
+}
 /* 페이징 */
 .pg-wrap {margin: 20px 0 0;}
 .pg-wrap div {text-align: center;font-size: 0;}

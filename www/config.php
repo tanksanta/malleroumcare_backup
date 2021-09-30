@@ -117,6 +117,9 @@ define('EROUMCARE_API_ENT_UPDATE_USRID',                         'https://system
 define('EROUMCARE_API_ACCOUNT_ENT_LOGIN',                        'https://system.eroumcare.com/api/account/entLogin');
 define('EROUMCARE_API_ACCOUNT_ENT_UPDATE',                       'https://system.eroumcare.com/api/account/entUpdate');
 
+// 재고
+define('EROUMCARE_API_ACCOUNT_STOCK_LIST',                       'https://system.eroumcare.com/api/stock/selectNotEmptyListForEnt');
+
 // 비즈톡 API 연동
 define('BIZTALK_API_HOST', 'https://www.biztalk-api.com');
 define('BIZTALK_API_BS_ID', 'thkc1300');
