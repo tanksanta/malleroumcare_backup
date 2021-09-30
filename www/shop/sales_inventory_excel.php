@@ -32,7 +32,7 @@ $cells = array(
   'F' => array(20, 'cust_price', '급여가')
 );
 
-$res = api_post_call(EROUMCARE_API_ACCOUNT_STOCK_LIST, $sendData);
+$res = api_post_call(EROUMCARE_API_STOCK_LIST, $sendData);
 $list = [];
 if($res["data"]){
     // $list = $res["data"];

@@ -80,7 +80,7 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 
 
 //판매재고 토탈
-$res = api_post_call(EROUMCARE_API_ACCOUNT_STOCK_LIST, array(
+$res = api_post_call(EROUMCARE_API_STOCK_LIST, array(
     'usrId' => $member["mb_id"],
     'entId' => $member["mb_entId"],
     'gubun' => '00',
@@ -89,7 +89,7 @@ $res = api_post_call(EROUMCARE_API_ACCOUNT_STOCK_LIST, array(
 $sales_Inventory_total=$res['total'];//대여재고 토탈
 
 //대여재고 토탈
-$res = api_post_call(EROUMCARE_API_ACCOUNT_STOCK_LIST, array(
+$res = api_post_call(EROUMCARE_API_STOCK_LIST, array(
     'usrId' => $member["mb_id"],
     'entId' => $member["mb_entId"],
     'gubun' => '01',
@@ -126,7 +126,7 @@ if($_GET['searchtype']){
     }
 }
 
-$res = api_post_call(EROUMCARE_API_ACCOUNT_STOCK_LIST, $sendData);
+$res = api_post_call(EROUMCARE_API_STOCK_LIST, $sendData);
 
 $list = [];
 if($res["data"]){
