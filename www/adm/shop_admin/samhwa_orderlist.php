@@ -206,6 +206,22 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
       </tr>
 -->
       <tr>
+        <th>주문상태</th>
+        <td class="step_before">
+          <input type="checkbox" name="od_status[]" value="all" id="step_all0" <?php echo option_array_checked('all', $od_status); ?>>
+          <label for="step_all0">전체</label>
+
+          <?php
+          foreach($order_steps as $order_step) {
+              if (!$order_step['orderlist']) continue;
+          ?>
+          <input type="checkbox" name="od_status[]" value="<?php echo $order_step['val']; ?>" id="step_<?php echo $order_step['val']; ?>" <?php echo option_array_checked($order_step['val'], $od_status); ?>>
+          <label for="step_<?php echo $order_step['val']; ?>"><?php echo $order_step['name']; ?></label>
+          <?php } ?>
+        </td>
+      </tr>
+      <!--
+      <tr>
         <th>주문상태 출고 전</th>
         <td class="step_before">
           <input type="checkbox" name="od_status[]" value="all" id="step_all0" <?php echo option_array_checked('all', $od_status); ?>>
@@ -234,6 +250,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
           <?php } ?>
         </td>
       </tr>
+          -->
       <?php
       $member_type_flag = ($member_type_s && count($member_type_s) >= 1);
       $member_level_flag = ($member_level_s && count($member_level_s) >= 2);
