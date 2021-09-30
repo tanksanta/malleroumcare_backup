@@ -67,7 +67,13 @@ if($res["data"]) {
     if($pen_desc_txt) $pen_desc_txt = ' (' . implode('/', $pen_desc_txt) . ')';
     else $pen_desc_txt = '';
     $data['desc_text'] = $pen_desc_txt;
-    
+
+    // 수급자 1년 계약 건수
+    $data['per_year'] = get_recipient_grade_per_year($data['penId'], $data['penExpiStDtm']);
+
+    // 장바구니 개수
+    $data['carts'] = get_carts_by_recipient($data['penId']);
+
     $list[] = $data;
   }
 }
@@ -386,17 +392,13 @@ function form_check(act) {
             <?php } ?>
           </td>
           <td style="text-align:center;">
-            <?php
-            $grade_year_info = get_recipient_grade_per_year($data['penId'])
-            ?>
-            <span class="<?php echo $grade_year_info['sum_price'] > 1400000 ? 'red' : ''; ?>"><?php echo number_format($grade_year_info['sum_price']); ?>원</span>
+            <span class="<?php echo $data['per_year']['sum_price'] > 1400000 ? 'red' : ''; ?>"><?php echo number_format($data['per_year']['sum_price']); ?>원</span>
             <br/>
-            계약 <?php echo $grade_year_info['count']; ?>건, 판매 <?php echo $grade_year_info['sell_count']; ?>건, 대여 <?php echo $grade_year_info['borrow_count']; ?>건
+            계약 <?php echo $data['per_year']['count']; ?>건, 판매 <?php echo $data['per_year']['sell_count']; ?>건, 대여 <?php echo $data['per_year']['borrow_count']; ?>건
           </td>
           <td style="text-align:center;">
             <?php
-              $cart_count = get_carts_by_recipient($data['penId']);
-              echo $cart_count . '개';
+              echo $data['carts'] . '개';
             ?>
             <br/>
             <?php if ($data["penLtmNum"]) { ?>
@@ -450,31 +452,13 @@ function form_check(act) {
               <?php } ?>
             </p>
             <p>
+            <br/>
               <b>
                 1년사용: 
-                <?php
-                // 유효기간
-                $exp_date = substr($data['penExpiStDtm'], 4, 4);
-                $exp_now = date('m') . date('d');
-                $exp_year = intval($exp_date) < intval($exp_now) ? intval(date('Y')) : intval(date('Y')) - 1; // 지금날짜보다 크면 올해, 작으면 작년
-
-                $exp_start = date('Y-m-d', strtotime($exp_year . $exp_date));
-                $exp_end = date('Y-m-d', strtotime('+ 1 years', strtotime($exp_start)));
-
-                // $count = sql_fetch("SELECT COUNT(*) AS cnt FROM `eform_document` WHERE penId = '{$data['penId']}' AND dc_status IN ('1', '2')")['cnt'];
-
-                // 계약건수, 금액
-                $contract = sql_fetch("SELECT count(*) as cnt, SUM(it_price) as sum_it_price from eform_document_item edi where edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$data['penId']}' AND dc_status IN ('1', '2') and dc_datetime BETWEEN '{$exp_start}' AND '{$exp_end}')");
-                // 판매 건수
-                $contract_sell = sql_fetch("SELECT count(*) as cnt from eform_document_item edi where edi.gubun = '00' and edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$data['penId']}' AND dc_status IN ('1', '2') and dc_datetime BETWEEN '{$exp_start}' AND '{$exp_end}')");
-                // 대여 건수
-                $contract_borrow = sql_fetch("SELECT count(*) as cnt from eform_document_item edi where edi.gubun = '01' and edi.dc_id in (SELECT dc_id FROM `eform_document` WHERE penId = '{$data['penId']}' AND dc_status IN ('1', '2') and dc_datetime BETWEEN '{$exp_start}' AND '{$exp_end}')");
-
-                ?>
-                <span class="<?php echo $contract['sum_it_price'] > 1400000 ? 'red' : ''; ?>"><?php echo number_format($contract['sum_it_price']); ?>원</span>
+                <span class="<?php echo $data['per_year']['sum_price'] > 1400000 ? 'red' : ''; ?>"><?php echo number_format($data['per_year']['sum_price']); ?>원</span>
               </b>
               <span style="font-size:0.9em;">
-                계약 <?php echo $contract['cnt']; ?>건, 판매 <?php echo $contract_sell['cnt']; ?>건, 대여 <?php echo $contract_borrow['cnt']; ?>건
+                계약 <?php echo $data['per_year']['count']; ?>건, 판매 <?php echo $data['per_year']['sell_count']; ?>건, 대여 <?php echo $data['per_year']['borrow_count']; ?>건
               </span>
             </p>
           </a>
@@ -486,7 +470,7 @@ function form_check(act) {
         <a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>" class="li_box_right_btn" title="추가하기">
           장바구니
           <br/>
-          <b><?php echo get_carts_by_recipient($data['penId']) . '개'; ?></b>
+          <b><?php echo $data['carts'] . '개'; ?></b>
         </a>
         <?php } ?>
       </li>

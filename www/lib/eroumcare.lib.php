@@ -1315,7 +1315,7 @@ function get_recipient_grade($pen_id) {
 	return sql_fetch($sql);
 }
 
-function get_recipient_grade_per_year($pen_id) {
+function get_recipient_grade_per_year($pen_id, $penExpiStDtm = null) {
   global $member;
 
 	if (!$pen_id) {
@@ -1327,17 +1327,21 @@ function get_recipient_grade_per_year($pen_id) {
 
 	// 등급정보가 없으면 유효기간 시작일로 설정
 	if (!$grade) {
-		$send_data = [];
-		$send_data['usrId'] = $member['mb_id'];
-		$send_data['entId'] = $member['mb_entId'];
-		$send_data['penId'] = $pen_id;
+    if(!$penExpiStDtm) {
+      $send_data = [];
+      $send_data['usrId'] = $member['mb_id'];
+      $send_data['entId'] = $member['mb_entId'];
+      $send_data['penId'] = $pen_id;
 
-		$res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
+      $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
+      $penExpiStDtm = $res['data'][0]['penExpiStDtm'];
+    }
 
-		$exp_date = substr($res['data'][0]['penExpiStDtm'], 4, 4);
-	}
+		$exp_date = substr($penExpiStDtm, 4, 4);
+	} else {
+    $exp_date = $grade['pen_gra_apply_month'] . $grade['pen_gra_apply_day'];
+  }
 
-	$exp_date = $grade['pen_gra_apply_month'] . $grade['pen_gra_apply_day'];
 	$exp_now = date('m') . date('d');
 	$exp_year = intval($exp_date) < intval($exp_now) ? intval(date('Y')) : intval(date('Y')) - 1; // 지금날짜보다 크면 올해, 작으면 작년
 
