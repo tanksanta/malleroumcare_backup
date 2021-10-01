@@ -175,8 +175,8 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                     </div>
                 </div>
                 <div class="right-box">
-                    <input type="checkbox" name="no_image" <?php echo $no_image?'checked':''; ?> value="1" id="no_image">
-                    <label for="no_image">간략보기</label>
+                    <input type="checkbox" name="show_simple" <?php echo $show_simple?'checked':''; ?> value="1" id="show_simple">
+                    <label for="show_simple">간략보기</label>
                     <select name="send_length" id="send_length">
                         <option value="10" <?php echo $send_length == '10' ? 'selected="selected"' : ''; ?>>10개씩 보기</option>
                         <option value="20" <?php echo $send_length == '20' ? 'selected="selected"' : ''; ?>>20개씩 보기</option>
@@ -214,16 +214,20 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <span class="num"><?=$number?></span><!-- 넘버링 -->
                         <span class="product" >
                             <div class="info">
-                                <?php if (!$no_image) { ?>
+                                <?php if (!$show_simple) { ?>
                                 <div class="img"  style="min-width:90px; min-height:90px;">
                                     <img src="/data/item/<?=$row["it_img1"]?>" alt="">
                                 </div>
                                 <?php } ?>
                                 <div class="text">
                                     <div class="info-01">
+                                    <?php if ($show_simple) { ?>
+                                        <i>[<?=$list[$i]['itemNm']?>] <b><?=$list[$i]['prodNm']?></b></i><!--품목명 -->
+                                    <?php } else { ?>
                                         <i>[<?=$list[$i]['itemNm']?>]</i><!--품목명 -->
                                         <p><?=$list[$i]['prodNm']?></p><!-- 제품명 -->
                                         <p><?=$list[$i]['prodSupYn'] == "Y" ? '유통' : '비유통' ?>/<?=$row["it_taxInfo"]?></p><!--유통/과세 -->
+                                    <?php } ?>
                                     </div>
                                     <!--mobile 용-->
                                     <div class="info-02">
@@ -247,11 +251,11 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
             </div>
             <div class="pg-wrap">
                 <div>
-                    <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&no_image=<?php echo $no_image; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=1"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
-                    <?php if($block > 1){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&no_image=<?php echo $no_image; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=($b_start_page-1)?>"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
-                    <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&no_image=<?php echo $no_image; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=$j?>"><?=$j?></a><?php } ?>
-                    <?php if($block < $total_block){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&no_image=<?php echo $no_image; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=($b_end_page+1)?>"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
-                    <?php if($block < $total_block){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&no_image=<?php echo $no_image; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=$total_page?>"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
+                    <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=1"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
+                    <?php if($block > 1){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=($b_start_page-1)?>"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
+                    <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=$j?>"><?=$j?></a><?php } ?>
+                    <?php if($block < $total_block){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=($b_end_page+1)?>"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
+                    <?php if($block < $total_block){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=$total_page?>"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
                 </div>
             </div>
         </div>
@@ -287,7 +291,7 @@ $(document).ready(function() {
         form.action = "./sales_inventory_excel.php";
         form.submit();
     });
-    $('#no_image, #send_length').change(function() {
+    $('#show_simple, #send_length').change(function() {
         stockFormSubmit();
     });
 
