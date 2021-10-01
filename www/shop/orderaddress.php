@@ -15,7 +15,27 @@ if($w == 'd') {
     goto_url($_SERVER['SCRIPT_NAME']);
 }
 
+$where = " AND ";
+$sql_search = "";
+if ($stx != "") {
+	if ($sfl != "" && $sfl != 'all' && $sfl != 'ad_addr') {
+			$sql_search .= " $where $sfl like '%$stx%' ";
+			$where = " and ";
+	}
+	if ($sfl == 'all') {
+		$sql_search .= " $where ( ad_subject like '%$stx%' OR ad_name like '%$stx%' OR ad_addr1 like '%$stx%' OR ad_addr2 like '%$stx%' OR ad_addr3 like '%$stx%' ) ";
+		$where = " and ";
+	}
+	if ($sfl == 'ad_addr') {
+			$sql_search .= " $where ( ad_addr1 like '%$stx%' OR ad_addr2 like '%$stx%' OR ad_addr3 like '%$stx%' ) ";
+			$where = " and ";
+	}
+	if ($save_stx != $stx)
+			$page = 1;
+}
+
 $sql_common = " from {$g5['g5_shop_order_address_table']} where mb_id = '{$member['mb_id']}' ";
+$sql_common .= $sql_search;
 
 $sql = " select count(ad_id) as cnt " . $sql_common;
 $row = sql_fetch($sql);
@@ -33,8 +53,8 @@ $sql = " select *
 
 $result = sql_query($sql);
 
-if(!sql_num_rows($result))
-    alert_close('배송지 목록 자료가 없습니다.');
+// if(!sql_num_rows($result))
+//     alert_close('배송지 목록 자료가 없습니다.');
 
 $list = array();
 

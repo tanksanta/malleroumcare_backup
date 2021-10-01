@@ -11,73 +11,96 @@ if(isset($wset['ahead']) && $wset['ahead']) {
 } else {
 	$head_class = (isset($wset['acolor']) && $wset['acolor']) ? 'tr-head border-'.$wset['acolor'] : 'tr-head border-black';
 }
-
 ?>
+<link rel="stylesheet" href="<?php echo G5_ADMIN_URL; ?>/css/popup.css?v=<?php echo time(); ?>">
+<div class="popup">
+    <div class="head">
+        <form class="form-horizontal popadditemsearch" role="form" name="popadditemsearch" action="./orderaddress.php" onsubmit="return true;" method="get" autocomplete="off">
+            <select name="sfl" id="sfl">
+                <option value="all">전체</option>
+                <option value="ad_subject">배송지명</option>
+                <option value="ad_name">이름</option>
+                <option value="ad_addr">주소</option>
+            </select>
 
-<form class="form" role="form" name="forderaddress" method="post" action="<?php echo $action_url; ?>" autocomplete="off">
-<div id="sod_addr">
-	<div class="table-responsive">
-		<table class="div-table table">
-		<tbody>
-		<tr class="<?php echo $head_class;?>">
-            <th scope="col">
-                <label for="chk_all" class="sound_only">전체선택</label>
-                <span><input type="checkbox" name="chk_all" id="chk_all"></span>
-            </th>
-            <th scope="col"><span>배송지명</span></th>
-            <th scope="col"><span>기본</span></th>
-            <th scope="col"><span>이름</span></th>
-            <th scope="col"><span>전화번호</span></th>
-            <th scope="col"><span>주소</span></th>
-            <th scope="col"><span class="last">관리</span></th>
-        </tr>
-        <?php for($i=0; $i < count($list); $i++) { ?>
-			<tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
-				<td class="text-center">
-					<input type="hidden" name="ad_id[<?php echo $i; ?>]" value="<?php echo $list[$i]['ad_id'];?>">
-					<label for="chk_<?php echo $i;?>" class="sound_only">배송지선택</label>
-					<input type="checkbox" name="chk[]" value="<?php echo $i;?>" id="chk_<?php echo $i;?>">
-				</td>
-				<td class="text-center">
-					<label for="ad_subject<?php echo $i;?>" class="sound_only">배송지명</label>
-					<input type="text" name="ad_subject[<?php echo $i; ?>]" id="ad_subject<?php echo $i;?>" class="form-control input-sm" size="12" maxlength="20" value="<?php echo $list[$i]['ad_subject']; ?>">
-				</td>
-				<td class="text-center">
-					<label for="ad_default<?php echo $i;?>" class="sound_only">기본배송지</label>
-					<input type="radio" name="ad_default" value="<?php echo $list[$i]['ad_id'];?>" id="ad_default<?php echo $i;?>" <?php if($list[$i]['ad_default']) echo 'checked="checked"';?>>
-				</td>
-				<td class="text-center"><?php echo $list[$i]['ad_name']; ?></td>
-				<td class="text-center"><?php echo $list[$i]['ad_tel']; ?><br><?php echo $list[$i]['ad_hp']; ?></td>
-				<td><?php echo $list[$i]['print_addr']; ?></td>
-				<td class="text-center">
-					<input type="hidden" value="<?php echo $list[$i]['addr']; ?>">
-					<button type="button" class="sel_address btn btn-color btn-xs" title="선택"><i class="fa fa-check fa-lg"></i><span class="sound_only">선택</span></button>
-					<a href="<?php echo $list[$i]['del_href']; ?>" class="del_address btn btn-black btn-xs" title="삭제"><i class="fa fa-times fa-lg"></i><span class="sound_only">삭제</span></a>
-				</td>
-			</tr>
-        <?php } ?>
-        </tbody>
-        </table>
+            <label for="stx" class="sound_only">검색어</label>
+            <input type="text" name="stx" value="<?php echo $stx; ?>" id="stx" class="frm_input" style="width: calc(100% - 155px);">
+            <input type="submit" value="검색" class="btn_submit shbtn">
+        </form>
     </div>
+        
+    <form class="form" role="form" name="forderaddress" method="post" action="<?php echo $action_url; ?>" autocomplete="off">
+    <div id="sod_addr">
+        <div class="table-responsive">
+            <table class="div-table table">
+            <tbody>
+            <tr class="<?php echo $head_class;?>">
+                <th scope="col" style="width:50px;">
+                    <label for="chk_all" class="sound_only">전체선택</label>
+                    <span><input type="checkbox" name="chk_all" id="chk_all"></span>
+                </th>
+                <th scope="col"><span>배송지명</span></th>
+                <th scope="col"><span>기본</span></th>
+                <th scope="col"><span>이름</span></th>
+                <th scope="col"><span>전화번호</span></th>
+                <th scope="col"><span>주소</span></th>
+                <th scope="col"><span class="last">관리</span></th>
+            </tr>
+            <?php for($i=0; $i < count($list); $i++) { ?>
+                <tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
+                    <td class="text-center">
+                        <input type="hidden" name="ad_id[<?php echo $i; ?>]" value="<?php echo $list[$i]['ad_id'];?>">
+                        <label for="chk_<?php echo $i;?>" class="sound_only">배송지선택</label>
+                        <input type="checkbox" name="chk[]" value="<?php echo $i;?>" id="chk_<?php echo $i;?>">
+                    </td>
+                    <td class="text-center">
+                        <label for="ad_subject<?php echo $i;?>" class="sound_only">배송지명</label>
+                        <input type="text" name="ad_subject[<?php echo $i; ?>]" id="ad_subject<?php echo $i;?>" class="form-control input-sm" size="12" maxlength="20" value="<?php echo $list[$i]['ad_subject']; ?>">
+                    </td>
+                    <td class="text-center">
+                        <label for="ad_default<?php echo $i;?>" class="sound_only">기본배송지</label>
+                        <input type="radio" name="ad_default" value="<?php echo $list[$i]['ad_id'];?>" id="ad_default<?php echo $i;?>" <?php if($list[$i]['ad_default']) echo 'checked="checked"';?>>
+                    </td>
+                    <td class="text-center"><?php echo $list[$i]['ad_name']; ?></td>
+                    <td class="text-center"><?php echo $list[$i]['ad_tel']; ?><br><?php echo $list[$i]['ad_hp']; ?></td>
+                    <td><?php echo $list[$i]['print_addr']; ?></td>
+                    <td class="text-center" style="min-width:100px;">
+                        <input type="hidden" value="<?php echo $list[$i]['addr']; ?>">
+                        <button type="button" class="sel_address btn btn-color btn-xs" title="선택"><i class="fa fa-check fa-lg"></i><span class="sound_only">선택</span></button>
+                        <a href="<?php echo $list[$i]['del_href']; ?>" class="del_address btn btn-black btn-xs" title="삭제"><i class="fa fa-times fa-lg"></i><span class="sound_only">삭제</span></a>
+                    </td>
+                </tr>
+            <?php } ?>
+            <?php if (!count($list)) { ?>
+                <tr>
+                    <td colspan=7 class="text-center">
+                        <div style="padding:50px 0;">검색 결과가 없습니다.</div>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+            </table>
+        </div>
 
-	<div style="margin:0px 20px 20px;">
-		<div class="pull-left">
-			<input type="submit" name="act_button" value="선택수정" id="btn_submit" class="btn btn-color btn-sm">
-			<button type="button" onclick="self.close();" class="btn btn-black btn-sm">닫기</button>
-		</div>
+        <div style="margin:0px 20px 20px;">
+            <div class="pull-left">
+                <input type="submit" name="act_button" value="선택수정" id="btn_submit" class="btn btn-color btn-sm">
+                <button type="button" onclick="self.close();" class="btn btn-black btn-sm">닫기</button>
+            </div>
 
-		<?php if($total_count > 0) { ?>
-			<div class="pull-right">
-				<ul class="pagination pagination-sm" style="margin-top:0; padding-top:0;">
-					<?php echo apms_paging($write_pages, $page, $total_page, $list_page); ?>
-				</ul>
-			</div>
-		<?php } ?>
+            <?php if($total_count > 0) { ?>
+                <div class="pull-right">
+                    <ul class="pagination pagination-sm" style="margin-top:0; padding-top:0;">
+                        <?php echo apms_paging($write_pages, $page, $total_page, $list_page); ?>
+                    </ul>
+                </div>
+            <?php } ?>
 
-		<div class="clearfix"></div>
-	</div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    </form>
 </div>
-</form>
 
 <script>
 $(function() {
