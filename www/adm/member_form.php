@@ -1416,7 +1416,10 @@ $(function() {
     });
     <?php if ($w === 'u') { ?>
     $("#mb_temp").bind("click",false);
-    $("#mb_id").attr("readonly", true);
+        <?php if ($mb['mb_temp']) { ?>
+            $("#mb_id").attr("readonly", true);
+            $('#mb_password').attr("readonly", true);
+        <?php } ?>
     <?php } ?>
 
     $('#add_manager').on("click", function() {
