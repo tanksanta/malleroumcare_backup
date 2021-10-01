@@ -60,6 +60,7 @@ if($report && $report['ct_id']) {
   <link rel="shortcut icon" href="<?php echo THEMA_URL; ?>/assets/img/top_logo_icon.ico">
   <link rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
   <script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>
+  <script src="<?php echo G5_JS_URL ?>/common.js?v=1"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; position: relative; }
     html, body { width: 100%; min-width: 100%; float: left; margin: 0 !important; padding: 0; font-family: "Noto Sans KR", sans-serif; font-size: 13px; }
@@ -92,6 +93,13 @@ if($report && $report['ct_id']) {
     #popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
     #popupFooterBtnWrap > .savebtn{ float: left; width: 75%; height: 100%; background-color:#000; color: #FFF; }
     #popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
+
+    input[type="checkbox"], label {
+      vertical-align: middle;
+    }
+    label {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -103,13 +111,29 @@ if($report && $report['ct_id']) {
       </a>
     </div>
   </div>
-
   <table id="table_ir">
     <colgroup>
       <col style="width: 150px;">
       <col>
     </colgroup>
     <tbody>
+      <tr class="tr_content">
+        <th>
+          <div class="section_head" style="padding-top:15px;">이슈사항</div>
+        </th>
+        <td colspan="2">
+          <form id="form_partner_installreport2">
+            <div style="padding: 15px 10px 0 10px;">
+              <input type="checkbox" name="ir_is_issue_1" <?php echo $report['ir_is_issue_1']?'checked':''; ?> value="1" id="ir_is_issue_1">
+              <label for="ir_is_issue_1">상품변경</label>
+              <input type="checkbox" name="ir_is_issue_2" <?php echo $report['ir_is_issue_2']?'checked':''; ?> value="1" id="ir_is_issue_2">
+              <label for="ir_is_issue_2">상품추가</label>
+              <input type="checkbox" name="ir_is_issue_3" <?php echo $report['ir_is_issue_3']?'checked':''; ?> value="1" id="ir_is_issue_3">
+              <label for="ir_is_issue_3">미설치</label>
+            </div>
+          </form>
+        </td>
+      </tr>
       <tr class="tr_head">
         <th><div class="section_head">설치 확인서 등록</div></th>
         <td>
@@ -209,7 +233,12 @@ if($report && $report['ct_id']) {
       $('#form_partner_installreport').on('submit', function(e) {
         e.preventDefault();
 
-        $.post('ajax.partner_installreport.php', $(this).serialize(), 'json')
+        var data = $.extend(
+          $('#form_partner_installreport2').serializeObject(), 
+          $(this).serializeObject(),
+        );
+
+        $.post('ajax.partner_installreport.php', data, 'json')
         .done(function() {
           alert('저장이 완료되었습니다.');
           parent.window.location.reload();

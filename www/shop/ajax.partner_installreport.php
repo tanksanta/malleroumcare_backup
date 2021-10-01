@@ -19,10 +19,17 @@ if(!$report['ir_cert_url'])
   json_response(400, '설치 확인서 파일을 등록해주세요.');
 
 $ir_issue = sql_real_escape_string($_POST['ir_issue']);
+$ir_is_issue_1 = (int)$ir_is_issue_1;
+$ir_is_issue_2 = (int)$ir_is_issue_2;
+$ir_is_issue_3 = (int)$ir_is_issue_3;
 
 $result = sql_query("
   UPDATE partner_install_report
-  SET ir_issue = '{$ir_issue}'
+  SET
+    ir_issue = '{$ir_issue}',
+    ir_is_issue_1 = '{$ir_is_issue_1}',
+    ir_is_issue_2 = '{$ir_is_issue_2}',
+    ir_is_issue_3 = '{$ir_is_issue_3}'
   WHERE ct_id = {$ct_id} and mb_id = '{$member['mb_id']}'
 ");
 if(!$result)
