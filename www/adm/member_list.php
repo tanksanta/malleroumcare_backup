@@ -668,7 +668,8 @@ $stx=$stx2;
   <div class="btn_fixed_top">
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
     <?php if ($is_admin == 'super') { ?>
-    <a href="./member_form.php" id="member_add" class="btn btn_01">회원추가</a>
+      <a href="./member_form.php" id="member_add" class="btn btn_01">회원추가</a>
+      <a href="./temp_member_excel.php" onclick="return excelform(this.href);" target="_blank" class="btn btn_02">임시회원일괄등록</a>
     <?php } ?>
   </div>
 </form>
@@ -920,6 +921,13 @@ $(".mb_button").click(function() {
   $('input[name="button_type"]').val(value);
   $('.btn_submit')[0].click();
 });
+
+function excelform(url)
+{
+    var opt = "width=600,height=450,left=10,top=10";
+    window.open(url, "win_excel", opt);
+    return false;
+}
 </script>
 
 <?php
