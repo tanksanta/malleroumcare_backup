@@ -6,7 +6,18 @@ include_once('./_common.php');
 set_time_limit (0);
 ini_set('memory_limit', '100M');
 
-function generateRandomString($length = 10) {
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+$file = $_FILES['excelfile']['tmp_name'];
+if (!$file) {
+    alert('파일을 업로드해주세요.');
+}
+
+$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
+$sheetData = $spreadsheet->getSheet(0)->toArray(null, true, true, true);
+
+function generate_random_string($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
     $randomString = '';
@@ -16,28 +27,13 @@ function generateRandomString($length = 10) {
     return $randomString;
 }
 
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
-$file = $_FILES['excelfile']['tmp_name'];
-$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
-$sheetData = $spreadsheet->getSheet(0)->toArray(null, true, true, true);
-
-function parse_birth($ymd) {
-  $date = DateTime::createFromFormat('Ymd', $ymd);
-
-  if(!$date) return '';
-
-  return $date->format('Y-m-d');
-}
-
 if($sheetData) {
     $inputs = [];
     $num_rows = $spreadsheet->getSheet(0)->getHighestDataRow('A');
     for ($i = 2; $i <= $num_rows; $i++) {
 
         // 아이디
-        $mb_id = 'CS' . substr(date("Ymd"), 2, 6) . generateRandomString(10);
+        $mb_id = 'CS' . substr(date("Ymd"), 2, 6) . generate_random_string(10);
 
         $thezone_code = str_replace('-', '', addslashes($sheetData[$i]['A'])); // 거래처 코드
         // 사업자번호
@@ -67,7 +63,7 @@ if($sheetData) {
                 
         $inputs[] = array(
             'usrId' => $mb_id,
-            'usrPw' => generateRandomString(16),
+            'usrPw' => generate_random_string(16),
             'entNm' => $mb_giup_bname,
             'usrPnum' => $mb_tel,
             'entPnum' => $mb_tel,
