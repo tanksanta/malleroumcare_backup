@@ -347,6 +347,16 @@ var od_id = '<?php echo $od['od_id']; ?>';
 
   .prodBarNumCntBtn { height: 29px; line-height: 29px; font-size: 11px; }
 
+  .td_od_info .btn_change, .btn_install_report { display: inline-block; vertical-align: middle; font-size: 12px; line-height: 1; padding: 5px 8px; border-radius: 3px; border: 1px solid #e6e1d7; color: #666; background: #fff; }
+  .btn_install_report.done { background: #f3f3f3; }
+
+  #popup_box { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+  #popup_box > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+  #popup_box iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+
+  @media (max-width : 750px) {
+    #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+  }
 </style>
 <div id="samhwa_order_form">
     <div class="block">
@@ -1243,7 +1253,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <ul id="list_ir">
                           <?php foreach($reports as $report) { ?>
                           <li>
-                            <div class="ir_title"><?=$report['it_name']?></div>
+                            <div class="ir_title">
+                                <?=$report['it_name']?>
+                                <button type="button" class="report-btn btn_install_report" data-id="<?php echo $report['ct_id']; ?>">설치결과보고서</button>
+                            </div>
                             <div class="ir_issue"><?=nl2br($report['ir_issue'])?></div>
                             <div class="ir_img_wrap">
                               <?php if($report['ir_cert_url']) { ?>
@@ -2286,6 +2299,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
     <a href="#" class="btn btn_01 order_prints">작업지시서 출력</a>
     <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload(1)" class="btn btn_02">
     <input type="button" value="바코드 엑셀다운로드" onclick="orderListExcelDownload(2)" class="btn btn_02">
+</div>
+
+<div id="popup_box">
+  <div></div>
 </div>
 
 <script>
@@ -3820,6 +3837,24 @@ $(document).ready(function() {
       window.open(url, "win_address", "left=100,top=100,width=800,height=600,scrollbars=1");
       return false;
     });
+
+    // 설치결과보고서 작성 버튼
+    $("#popup_box").hide();
+    $("#popup_box").css("opacity", 1);
+
+    $('.btn_install_report').click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $('#hd').css('z-index', 3);
+
+        var ct_id = $(this).data('id');
+        $("body").addClass('modal-open');
+        $("#popup_box > div").html('<iframe src="/shop/popup.partner_installreport.php?ct_id=' + ct_id + '">');
+        $("#popup_box iframe").load(function() {
+            $("#popup_box").show();
+        });
+    });
+
 
 });
 

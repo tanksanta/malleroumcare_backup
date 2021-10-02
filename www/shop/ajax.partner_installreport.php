@@ -1,8 +1,12 @@
 <?php
 include_once('./_common.php');
 
-if(!$is_samhwa_partner)
+if(!$is_samhwa_partner && !$is_admin)
   json_response(400, '파트너 회원만 접근가능합니다.');
+
+if (!$is_admin) {
+  $check_member = "and ct_direct_delivery_partner = '{$member['mb_id']}'";
+}
 
 $ct_id = get_search_string($_POST['ct_id']);
 if(!$ct_id)
@@ -10,7 +14,7 @@ if(!$ct_id)
 
 $report = sql_fetch("
   SELECT * FROM partner_install_report
-  WHERE ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
+  WHERE ct_id = '{$ct_id}' {$check_member}
 ");
 if(!$report || !$report['ct_id'])
   json_response(400, '설치보고서가 존재하지 않습니다.');
@@ -30,7 +34,7 @@ $result = sql_query("
     ir_is_issue_1 = '{$ir_is_issue_1}',
     ir_is_issue_2 = '{$ir_is_issue_2}',
     ir_is_issue_3 = '{$ir_is_issue_3}'
-  WHERE ct_id = {$ct_id} and mb_id = '{$member['mb_id']}'
+  WHERE ct_id = {$ct_id} {$check_member}
 ");
 if(!$result)
   json_response(500, 'DB 서버 오류 발생');

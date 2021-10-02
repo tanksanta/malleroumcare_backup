@@ -1,7 +1,7 @@
 <?php
 include_once("./_common.php");
 
-if(!$is_samhwa_partner) {
+if(!$is_samhwa_partner && !$is_admin) {
   alert("파트너 회원만 접근 가능한 페이지입니다.");
 }
 
@@ -9,9 +9,12 @@ $ct_id = get_search_string($_GET['ct_id']);
 if(!$ct_id) {
   alert('정상적인 접근이 아닙니다.');
 }
+if (!$is_admin) {
+  $check_member = "and ct_direct_delivery_partner = '{$member['mb_id']}'";
+}
 $check_result = sql_fetch("
-  SELECT ct_id FROM {$g5['g5_shop_cart_table']}
-  WHERE ct_id = '{$ct_id}' and ct_direct_delivery_partner = '{$member['mb_id']}'
+  SELECT ct_id, mb_id FROM {$g5['g5_shop_cart_table']}
+  WHERE ct_id = '{$ct_id}' {$check_member}
   LIMIT 1
 ");
 if(!$check_result['ct_id'])
@@ -19,7 +22,7 @@ if(!$check_result['ct_id'])
 
 $report = sql_fetch("
   SELECT * FROM partner_install_report
-  WHERE ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
+  WHERE ct_id = '{$ct_id}' {$check_member}
 ");
 
 $photos = [];
@@ -29,7 +32,7 @@ if($report && $report['ct_id']) {
   // 설치사진 가져오기
   $photo_result = sql_query("
     SELECT * FROM partner_install_photo
-    WHERE ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
+    WHERE ct_id = '{$ct_id}' {$check_member}
     ORDER BY ip_id ASC
   ");
   while($row = sql_fetch_array($photo_result)) {
@@ -39,7 +42,7 @@ if($report && $report['ct_id']) {
   // 설치결과보고서 INSERT
   $insert_result = sql_query("
     INSERT INTO partner_install_report
-    SET ct_id = '{$ct_id}', mb_id = '{$member['mb_id']}',
+    SET ct_id = '{$ct_id}', mb_id = '{$check_result['mb_id']}',
     ir_issue = '', ir_created_at = NOW(), ir_updated_at = NOW()
   ");
   $report = array(
@@ -214,6 +217,9 @@ if($report && $report['ct_id']) {
   <script type="text/javascript">
     // 팝업 닫기
     function closePopup() {
+      try {
+        $('#hd', parent.document).css('z-index', 10);
+      } catch (e) {}
       $("body", parent.document).removeClass('modal-open');
       $("#popup_box", parent.document).hide();
       $("#popup_box", parent.document).find("iframe").remove();
