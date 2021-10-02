@@ -478,6 +478,107 @@ add_javascript(G5_POSTCODE_JS, 0);
     </div>
   </div>
 
+  <?php if ($member['mb_id'] && in_array($member['mb_type'], ['default', 'partner'])) { ?>
+  <div class="panel panel-default" id="panel-business">
+    <div class="panel-heading">
+      <strong>담당자 관리</strong>
+    </div>
+    <div class="panel-body">
+      <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
+        <label class="col-sm-2 control-label" for="mm_id"><b>아이디</b></label>
+        <div class="col-sm-3">
+          <input type="text" id="mm_id" name="mm_id" value="" class="form-control input-sm" size="10">
+        </div>
+      </div>
+      <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
+        <label class="col-sm-2 control-label" for="mm_pw"><b>패스워드</b></label>
+        <div class="col-sm-3">
+          <input type="password" id="mm_pw" name="mm_pw" value="" class="form-control input-sm" size="10">
+        </div>
+      </div>
+      <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
+        <label class="col-sm-2 control-label" for="mm_name"><b>이름</b></label>
+        <div class="col-sm-3">
+          <input type="text" id="mm_name" name="mm_name" value="" class="form-control input-sm" size="10">
+        </div>
+      </div>
+      <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
+        <label class="col-sm-2 control-label" for="mm_email"><b>이메일</b></label>
+        <div class="col-sm-3">
+          <input type="text" id="mm_email" name="mm_email" value="" class="form-control input-sm" size="10">
+        </div>
+      </div>
+      <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
+        <label class="col-sm-2 control-label" for="mm_memo"><b>메모</b></label>
+        <div class="col-sm-3">
+          <input type="text" id="mm_memo" name="mm_memo" value="" class="form-control input-sm" size="10">
+        </div>
+      </div>
+      <div>
+        <button type="button" id="add_member_manager" class="btn btn-black">담당자 추가</button>
+      </div>
+      <style>
+        .manager_list {
+          width: 100%;
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+        .manager_list table {
+          width: auto;
+          min-width: 100%;
+        }
+        #add_member_manager {
+          width: 100%;
+          margin-bottom: 20px;
+        }
+      </style>
+      <div class="tbl_head01 manager_list">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">아이디</th>
+              <th scope="col">비밀번호</th>
+              <th scope="col">이름</th>
+              <th scope="col">이메일주소</th>
+              <th scope="col">메모</th>
+              <th scope="col" style="width: 100px;">설정</th>
+            </tr>
+          </thead>
+          <tbody id="manager_list_body">
+          <?php
+          $mm_sql = "
+            SELECT * FROM
+              {$g5["member_table"]}
+            WHERE
+              mb_type = 'manager' and
+              mb_manager = '{$member['mb_id']}'
+          ";
+          $mm_result = sql_query($mm_sql);
+
+          while ($mm = sql_fetch_array($mm_result)) {
+          ?>
+            <tr>
+              <td>
+                <input type="hidden" class="mm_id" value="<?=$mm['mb_id']?>">
+                <?=$mm['mb_id']?>
+              </td>
+              <td><input type="password" class="frm_input mm_pw" placeholder="비밀번호"></td>
+              <td><input type="text" class="frm_input mm_name" placeholder="이름" value="<?=$mm['mb_name']?>"></td>
+              <td><input type="text" class="frm_input mm_email" placeholder="이메일" value="<?=$mm['mb_email']?>"></td>
+              <td><input type="text" class="frm_input mm_memo" placeholder="메모" value="<?=$mm['mb_memo']?>"></td>
+              <td class="td_center">
+                <button type="button" class="btn btn-black btn-sm btn_mm_edit" data-id="<?=$mm['mb_id']?>">수정하기</button>
+                <button type="button" class="btn btn-black btn-sm btn_mm_delete" data-id="<?=$mm['mb_id']?>">삭제</button>
+              </td>
+            </tr>
+            <?php } ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <?php } ?>
+
 
   <div class="text-center" style="margin:30px 0px;">
     <button type="button" id="btn_submit" onclick="fregisterform_submit()"class="btn btn-color" accesskey="s"><?php echo $w==''?'회원가입':'정보수정'; ?></button>
@@ -489,6 +590,64 @@ add_javascript(G5_POSTCODE_JS, 0);
 <script>
 
 $(function() {
+  
+  $('#add_member_manager').on("click", function() {
+    $.post('/bbs/ajax.member_manager.php', {
+      mm_id: $('#mm_id').val(),
+      mm_pw: $('#mm_pw').val(),
+      mm_name: $('#mm_name').val(),
+      mm_email: $('#mm_email').val(),
+      mm_memo: $('#mm_memo').val()
+    }, 'json')
+    .done(function() {
+      alert('담당자 등록이 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  $('.btn_mm_edit').on('click', function() {
+    $tr = $(this).closest('tr');
+    $.post('/bbs/ajax.member_manager.php', {
+      w: 'u',
+      mm_id: $tr.find('.mm_id').val(),
+      mm_pw: $tr.find('.mm_pw').val(),
+      mm_name: $tr.find('.mm_name').val(),
+      mm_email: $tr.find('.mm_email').val(),
+      mm_memo: $tr.find('.mm_memo').val()
+    }, 'json')
+    .done(function() {
+      alert('담당자 수정이 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  $('.btn_mm_delete').on('click', function() {
+    $tr = $(this).closest('tr');
+    $.post('/bbs/ajax.member_manager.php', {
+      w: 'd',
+      mm_id: $tr.find('.mm_id').val()
+    }, 'json')
+    .done(function() {
+      alert('담당자 삭제가 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  $(document).on("click", '.delete_manager', function() {
+    $(this).closest('tr').remove();
+  });
   
   <?php if ($w && $member['mb_type'] === 'normal') { ?>
     $('#panel-business').hide();
