@@ -110,6 +110,16 @@ if ( $od_release_manager ) {
   }
 }
 
+if ($partner_issue) {
+  $where_partner_issue = array();
+  for($i=0;$i<count($partner_issue);$i++) {
+    $where_partner_issue[] = " pir.ir_is_issue_{$partner_issue[$i]} = TRUE ";
+  }
+  if ( count($where_partner_issue) ) {
+    $where[] = " ( " . implode(' OR ', $where_partner_issue) . " ) ";
+  }
+}
+
 if ( $od_pay_state && is_array($od_pay_state) ) {
   foreach($od_pay_state as $s) {
     $s = (int)$s;
@@ -295,6 +305,8 @@ $sql_common = "
     {$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
   LEFT JOIN
     {$g5['member_table']} m ON c.mb_id = m.mb_id
+  LEFT JOIN
+    partner_install_report pir ON c.ct_id = pir.ct_id
 ";
 
 $sql_counts = "

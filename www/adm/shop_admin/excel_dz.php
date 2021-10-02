@@ -142,6 +142,16 @@ if ( $od_release_manager ) {
     }
 }
 
+if ($partner_issue) {
+    $where_partner_issue = array();
+    for($i=0;$i<count($partner_issue);$i++) {
+        $where_partner_issue[] = " pir.ir_is_issue_{$partner_issue[$i]} = TRUE ";
+    }
+    if ( count($where_partner_issue) ) {
+        $where[] = " ( " . implode(' OR ', $where_partner_issue) . " ) ";
+    }
+}
+
 if ( $price ) {
     $where[] = " (o.od_cart_price + o.od_send_cost + o.od_send_cost2 - o.od_cart_discount - o.od_cart_discount2 - o.od_sales_discount) BETWEEN '{$price_s}' AND '{$price_e}' ";
 }
@@ -481,6 +491,7 @@ if ( $ret_od_id ) {
         LEFT JOIN g5_member_giup_manager as g ON g.mm_no = o.od_giup_manager 
         LEFT JOIN g5_shop_order_typereceipt as t ON o.od_id = t.od_id 
         LEFT JOIN g5_shop_item as i ON i.it_id = c.it_id 
+        LEFT JOIN partner_install_report pir ON c.ct_id = pir.ct_id 
         $sql_search
         ";
 
@@ -491,6 +502,7 @@ if ( $ret_od_id ) {
         LEFT JOIN g5_member_giup_manager as g ON g.mm_no = o.od_giup_manager 
         LEFT JOIN g5_shop_order_typereceipt as t ON o.od_id = t.od_id 
         LEFT JOIN g5_shop_item as i ON i.it_id = c.it_id 
+        LEFT JOIN partner_install_report pir ON c.ct_id = pir.ct_id 
         $sql_common
         ";
 

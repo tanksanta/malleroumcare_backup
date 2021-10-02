@@ -105,6 +105,16 @@
         $where[] = " ( " . implode(' OR ', $where_od_release_manager) . " ) ";
       }
     }
+
+    if ($partner_issue) {
+      $where_partner_issue = array();
+      for($i=0;$i<count($partner_issue);$i++) {
+        $where_partner_issue[] = " pir.ir_is_issue_{$partner_issue[$i]} = TRUE ";
+      }
+      if ( count($where_partner_issue) ) {
+        $where[] = " ( " . implode(' OR ', $where_partner_issue) . " ) ";
+      }
+    }
     
     if ( $od_pay_state && is_array($od_pay_state) ) {
       foreach($od_pay_state as $s) {
@@ -294,6 +304,7 @@
                     inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                     left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                     on A.mb_id = C.mb_id_temp
+                    LEFT JOIN partner_install_report pir ON B.cart_ct_id = pir.ct_id
                     $sql_search
                     group by cart_ct_id ";
 

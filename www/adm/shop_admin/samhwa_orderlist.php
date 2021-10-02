@@ -341,6 +341,12 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
               ?>
             </select>
           </div>
+          <div class="linear">
+            <span class="linear_span">설치결과이슈사항</span>
+            <input type="checkbox" name="partner_issue[]" id="partner_issue_1" value="1" title="" <?php echo option_array_checked('1', $partner_issue); ?>><label for="partner_issue_1">상품변경</label>
+            <input type="checkbox" name="partner_issue[]" id="partner_issue_2" value="2" title="" <?php echo option_array_checked('2', $partner_issue); ?>><label for="partner_issue_2">상품추가</label>
+            <input type="checkbox" name="partner_issue[]" id="partner_issue_3" value="3" title="" <?php echo option_array_checked('3', $partner_issue); ?>><label for="partner_issue_3">미설치</label>
+          </div>
         </td>
       </tr>
 
