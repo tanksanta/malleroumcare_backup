@@ -323,6 +323,13 @@ foreach($carts as $cart) {
       $report['photo'] = $photos;
 
       $reports[] = $report;
+    } else {
+        $report['it_name'] = $cart['it_name'];
+        if($option['ct_option'] != $cart['it_name'])
+          $report['it_name'] .= " ({$option['ct_option']})";
+        $report['ct_id'] = $option['ct_id'];
+
+        $reports[] = $report;
     }
   }
 }
@@ -1264,10 +1271,12 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                 <img src="<?=G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"?>">
                               </a>
                               <?php } ?>
+                              <?php if ($report['photo']) { ?>
                               <?php foreach($report['photo'] as $photo) { ?>
                               <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"))?>" target="_blank" class="view_image">
                                 <img src="<?=G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"?>">
                               </a>
+                              <?php } ?>
                               <?php } ?>
                             </div>
                           </li>

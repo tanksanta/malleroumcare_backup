@@ -13,7 +13,7 @@ if (!$is_admin) {
   $check_member = "and ct_direct_delivery_partner = '{$member['mb_id']}'";
 }
 $check_result = sql_fetch("
-  SELECT ct_id, mb_id FROM {$g5['g5_shop_cart_table']}
+  SELECT ct_id, mb_id, ct_direct_delivery_partner FROM {$g5['g5_shop_cart_table']}
   WHERE ct_id = '{$ct_id}' {$check_member}
   LIMIT 1
 ");
@@ -22,7 +22,7 @@ if(!$check_result['ct_id'])
 
 $report = sql_fetch("
   SELECT * FROM partner_install_report
-  WHERE ct_id = '{$ct_id}' {$check_member}
+  WHERE ct_id = '{$ct_id}'
 ");
 
 $photos = [];
@@ -32,7 +32,7 @@ if($report && $report['ct_id']) {
   // 설치사진 가져오기
   $photo_result = sql_query("
     SELECT * FROM partner_install_photo
-    WHERE ct_id = '{$ct_id}' {$check_member}
+    WHERE ct_id = '{$ct_id}'
     ORDER BY ip_id ASC
   ");
   while($row = sql_fetch_array($photo_result)) {
@@ -42,7 +42,7 @@ if($report && $report['ct_id']) {
   // 설치결과보고서 INSERT
   $insert_result = sql_query("
     INSERT INTO partner_install_report
-    SET ct_id = '{$ct_id}', mb_id = '{$check_result['mb_id']}',
+    SET ct_id = '{$ct_id}', mb_id = '{$check_result['ct_direct_delivery_partner']}',
     ir_issue = '', ir_created_at = NOW(), ir_updated_at = NOW()
   ");
   $report = array(

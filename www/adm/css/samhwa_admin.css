@@ -2262,6 +2262,9 @@ table.it_outsourcing td span {
   padding: 10px;
   border-bottom: 1px solid #ccc;
 }
+#list_ir li:last-child {
+  border-bottom: none;
+}
 
 #list_ir .ir_title {
   font-weight: bold;

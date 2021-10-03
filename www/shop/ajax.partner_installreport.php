@@ -5,7 +5,7 @@ if(!$is_samhwa_partner && !$is_admin)
   json_response(400, '파트너 회원만 접근가능합니다.');
 
 if (!$is_admin) {
-  $check_member = "and ct_direct_delivery_partner = '{$member['mb_id']}'";
+  $check_member = "and mb_id = '{$member['mb_id']}'";
 }
 
 $ct_id = get_search_string($_POST['ct_id']);

@@ -1,8 +1,13 @@
 <?php
 include_once('./_common.php');
 
-if(!$is_samhwa_partner)
+if(!$is_samhwa_partner && !$is_admin)
   json_response(400, '파트너 회원만 접근가능합니다.');
+
+
+if (!$is_admin) {
+  $check_member = "and mb_id = '{$member['mb_id']}'";
+}
 
 $ct_id = get_search_string($_POST['ct_id']);
 $type = $_POST['type'];
@@ -13,7 +18,7 @@ if(!$ct_id || !$type || !$m)
 
 $report = sql_fetch("
   SELECT * FROM partner_install_report
-  WHERE ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
+  WHERE ct_id = '{$ct_id}' {$check_member}
 ");
 if(!$report || !$report['ct_id'])
   json_response(400, '설치보고서가 존재하지 않습니다.');
@@ -53,7 +58,7 @@ if($type == 'cert') {
     $result = sql_query("
       UPDATE partner_install_report
       SET ir_cert_name = '', ir_cert_url = '', ir_updated_at = NOW()
-      WHERE ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
+      WHERE ct_id = '{$ct_id}' {$check_member}
     ");
     if(!$result)
       json_response(500, 'DB 서버 오류 발생');
@@ -76,7 +81,7 @@ if($type == 'cert') {
     $result = sql_query("
       UPDATE partner_install_report
       SET ir_cert_name = '{$src_name}', ir_cert_url = '{$dest_name}', ir_updated_at = NOW()
-      WHERE ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
+      WHERE ct_id = '{$ct_id}' {$check_member}
     ");
     if(!$result)
       json_response(500, 'DB 서버 오류 발생');
@@ -97,7 +102,7 @@ else if($type == 'photo') {
     $ip_id = get_search_string($_POST['ip_id']);
     $photo = sql_fetch("
       SELECT * FROM partner_install_photo
-      WHERE ip_id = '{$ip_id}' and ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
+      WHERE ip_id = '{$ip_id}' and ct_id = '{$ct_id}' {$check_member}
     ");
 
     if(!$photo || !$photo['ip_id'])
@@ -106,7 +111,7 @@ else if($type == 'photo') {
     @unlink($img_dir.'/'.$photo['ip_photo_url']);
     $result = sql_query("
       DELETE FROM partner_install_photo
-      WHERE ip_id = '{$ip_id}' and ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
+      WHERE ip_id = '{$ip_id}' and ct_id = '{$ct_id}' {$check_member}
     ");
     if(!$result)
       json_response(500, 'DB 서버 오류 발생');
@@ -137,7 +142,7 @@ else if($type == 'photo') {
           partner_install_photo
         SET
           ct_id = '{$ct_id}',
-          mb_id = '{$member['mb_id']}',
+          mb_id = '{$report['mb_id']}',
           ip_photo_name = '{$src_name}',
           ip_photo_url = '{$dest_name}',
           ip_created_at = NOW()
@@ -151,7 +156,7 @@ else if($type == 'photo') {
     $return = [];
     $return_result = sql_query("
       SELECT * FROM partner_install_photo
-      WHERE ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
+      WHERE ct_id = '{$ct_id}' {$check_member}
       ORDER BY ip_id ASC
     ");
     while($row = sql_fetch_array($return_result)) {
