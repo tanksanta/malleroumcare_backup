@@ -55,7 +55,7 @@ if($sheetData) {
         $mb_giup_addr1 = addslashes($sheetData[$i]['F']); // 기본주소
         $mb_giup_addr2 = addslashes($sheetData[$i]['G']); // 상세주소
                 
-        $sql = " select count(*) as cnt from `{$g5['member_table']}` where mb_giup_bnum = '{$mb_giup_bnum}' and mb_temp = 0 and mb_id != '{$mb_id}'";
+        $sql = " select count(*) as cnt from `{$g5['member_table']}` where mb_giup_bnum = '{$mb_giup_bnum}'";
         $row = sql_fetch($sql);
         if ($row['cnt']) {
             // alert( $mb_giup_bname . '(' . $mb_giup_bnum . ')은 이미 존재하는 사업자 번호 입니다.');
@@ -92,8 +92,9 @@ if($sheetData) {
 
     foreach ($inputs as $input) {
         $result = post_formdata(EROUMCARE_API_ENT_INSERT, $input);
-        if($result['errorYN'] !== 'N')
-            alert($result['message']);
+        if ($result['errorYN'] !== 'N') {
+            continue;
+        }
     
         $mb_entId = $result['data']['entId'];
         if(!$mb_entId) {
