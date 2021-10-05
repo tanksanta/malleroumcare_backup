@@ -683,7 +683,7 @@ if($_GET["result"] == "writeEform" && $_SESSION["productList{$_GET["od_id"]}"]) 
     $sendData_order["staOrdCd"] = "02";
     $sendData_order["lgsStoId"] = "";
     $sendData_order["prods"] = $productList2;
-    $api_result1 = get_eroumcare("https://eroumcare.com/api/order/update", $sendData_order);
+    $api_result1 = get_eroumcare("https://system.eroumcare.com/api/order/update", $sendData_order);
 
     //누실된 바코드가 있을 수 있으로 stock_update 다시 진행
     $sendData = [];
