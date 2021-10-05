@@ -1,6 +1,6 @@
 <?php
 echo "work!!";
-// phpinfo();
+phpinfo();
 
 // $pass= "admin";
 
