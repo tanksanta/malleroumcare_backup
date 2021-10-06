@@ -1346,6 +1346,26 @@ if( function_exists('pg_setting_check') ){
             </td>
         </tr>
         <tr>
+          <th scope="row">박스규격</th>
+          <td>
+            <?php
+            for($i = 0; $i < 6; $i++) {
+              $index = ($i + 1);
+              $box_size = explode(chr(30), $default['de_box_size'.($index)]);
+            ?>
+            <label for="de_box_size<?=$index?>_name">박스명:</label>
+            <input type="text" name="de_box_size<?=$index?>_name" value="<?=$box_size[0]?>" id="de_box_size<?=$index?>_name" class="frm_input" size="15">, 
+            <label for="de_box_size<?=$index?>_width">가로:</label>
+            <input type="text" name="de_box_size<?=$index?>_width" value="<?=$box_size[1]?>" id="de_box_size<?=$index?>_width" class="frm_input" size="5">
+            <label for="de_box_size<?=$index?>_length">세로:</label>
+            <input type="text" name="de_box_size<?=$index?>_length" value="<?=$box_size[2]?>" id="de_box_size<?=$index?>_length" class="frm_input" size="5">
+            <label for="de_box_size<?=$index?>_height">높이:</label>
+            <input type="text" name="de_box_size<?=$index?>_height" value="<?=$box_size[3]?>" id="de_box_size<?=$index?>_height" class="frm_input" size="5">
+            <br>
+            <?php } ?>
+          </td>
+        </tr>
+        <tr>
             <th scope="row">관련상품출력</th>
             <td>
                 <?php echo help("관련상품의 경우 등록된 상품은 모두 출력하므로 '출력할 줄 수'는 설정하지 않습니다. 이미지높이를 0으로 설정하면 상품이미지를 이미지폭에 비례하여 생성합니다."); ?>
