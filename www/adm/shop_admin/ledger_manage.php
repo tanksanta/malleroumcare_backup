@@ -91,6 +91,12 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
           </td>
         </tr>
         <tr>
+          <th>기준일</th>
+          <td>
+            <input type="text" name="lc_base_date" value="<?=date('Y-m-d')?>" id="lc_base_date" class="line" style="width:150px;">
+          </td>
+        </tr>
+        <tr>
           <th>메모</th>
           <td>
             <input type="text" name="lc_memo" value="" id="lc_memo" class="frm_input" autocomplete="off" style="width:400px;">
@@ -118,6 +124,7 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
         <th>일시</th>
         <th>분류</th>
         <th>금액</th>
+        <th>기준일</th>
         <th>메모</th>
         <th>등록</th>
       </tr>
@@ -134,6 +141,7 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
         <td class="td_datetime"><?=date('Y-m-d H:i', strtotime($row['lc_created_at']))?></td>
         <td class="td_payby"><?=$row['lc_type_txt']?></td>
         <td class="td_numsum td_itopt"><?=number_format($row['lc_amount'])?></td>
+        <td class="td_datetime"><?=$row['lc_base_date']?></td>
         <td><?=get_text($row['lc_memo'])?></td>
         <td class="td_payby"><?=$row['created_by']?></td>
       </tr>
