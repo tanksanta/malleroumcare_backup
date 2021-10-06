@@ -15,6 +15,8 @@ if($member['mb_level']<5 && $member['mb_type'] !== 'normal'){ //관리자나 매
     alert('승인된 회원만 이용 가능합니다.',G5_BBS_URL.'/login.php');
   }
 }
+$is_admin = is_admin($member['mb_id']);
+
 // 버튼컬러
 $btn1 = (isset($wset['btn1']) && $wset['btn1']) ? $wset['btn1'] : 'black';
 $btn2 = (isset($wset['btn2']) && $wset['btn2']) ? $wset['btn2'] : 'color';
@@ -261,7 +263,7 @@ $sendData["prods"] = $prodsSendData;
         <?php
         $sale_cnt_txt = [];
         if($_COOKIE["viewType"] != "basic") {
-          if($member['mb_level'] == "3" || !$it['it_sale_percent_great']) {
+          if(($is_admin == "super" || $member['mb_level'] == "3")||!$it['it_sale_percent_great']) {
             if($it["it_sale_cnt"]) {
               $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
             }
@@ -497,7 +499,7 @@ $sendData["prods"] = $prodsSendData;
         $sale_cnt_txt = [];
         $sale_percent_input = "";
         if($_COOKIE["viewType"] != "basic") {
-          if($member['mb_level'] == "3"||!$it['it_sale_percent_great']) {
+          if(($is_admin == "super" || $member['mb_level'] == "3")||!$it['it_sale_percent_great']) {
             if($it["it_sale_cnt"]) {
               $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
               $sale_percent_input .= '<input type="hidden" id="it_sale_percent" value="' . $it["it_sale_percent"] . '" data-toggle="' . $it["it_sale_cnt"] . '" class="it_sale_percent">';
