@@ -1422,7 +1422,7 @@ pre{white-space: pre-wrap;}
 	transform: translate(-50%, -50%);
 	z-index:99;
 	width: 320px;
-	height: 220px;
+  min-height: 220px;
 	background-color: white;
 	border: 1px solid #f5ab81;
 	-webkit-box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.2);
@@ -1473,11 +1473,30 @@ pre{white-space: pre-wrap;}
 }
 
 .eroumcare-popup-week {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  -moz-justify-content: space-between;
+  -ms-justify-content: space-between;
+  justify-content: space-between;
+  -ms-flex-pack: space-between;
+  align-items: center;
 	padding-top: 5px;
 	margin-left: 28px;
+  margin-right: 8px;
 }
 .eroumcare-popup-week input {
 	margin-top: 0;
+}
+.eroumcare-popup-end-btn {
+  display:block;
+  text-decoration: underline !important;
+  line-height: 12px;
+  font-size: 12px;
+  min-height: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 @media (max-width: 1200px) {
