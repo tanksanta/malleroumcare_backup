@@ -382,7 +382,10 @@ $check_sanitize_keys = array(
   'it_thezone',           // 더존코드
   'it_thezone2',           // 더존코드
   'it_sc_add_sendcost',           // 산간지역 추가 배송비
-  'it_sc_add_sendcost_partner'    // 파트너 산간지역 추가 배송비
+  'it_sc_add_sendcost_partner',    // 파트너 산간지역 추가 배송비
+  'it_box_size_width', // 박스 규격 (가로)
+  'it_box_size_length', // 박스 규격 (세로)
+  'it_box_size_height' // 박스 규격 (높이)
 );
 
 foreach( $check_sanitize_keys as $key ) {
@@ -462,6 +465,14 @@ else if($it_is_direct_delivery == 2) {
 }
 
 $it_default_warehouse = in_array($_POST['it_default_warehouse'], $warehouse_list) ? $_POST['it_default_warehouse'] : '';
+
+// 박스 규격
+$it_box_size = [
+  $it_box_size_width,
+  $it_box_size_length,
+  $it_box_size_height
+];
+$it_box_size = implode(chr(30), $it_box_size);
 
 $sql_common = "
   ca_id               = '$ca_id',
@@ -657,7 +668,8 @@ $sql_common = "
   it_rental_use_persisting_year = '$it_rental_use_persisting_year',
   it_rental_expiry_year = '$it_rental_expiry_year',
   it_rental_persisting_year = '$it_rental_persisting_year',
-  it_rental_persisting_price = '$it_rental_persisting_price'
+  it_rental_persisting_price = '$it_rental_persisting_price',
+  it_box_size = '$it_box_size'
 "; // APMS : 2014.07.20
 
 if ($w == "")
