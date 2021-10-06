@@ -607,7 +607,7 @@ if($is_main && !$is_member) {
               </li>
               <li>
                 <div>· Email</div>
-                <div>ceyoon2066@thkc.co.kr</div>
+                <div><?php echo $default['de_admin_info_email']; ?></div>
               </li>
               <li>
                 <div>· Fax</div>
