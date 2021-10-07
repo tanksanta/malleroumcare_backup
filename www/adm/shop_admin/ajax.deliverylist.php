@@ -56,6 +56,24 @@ if ($search_add != "") {
     }
 }
 
+// 작업상태 검색
+if($complete1) {
+  // 바코드 미완료만 검색
+  $where[] = " ( ct_barcode_insert < ct_qty and io_type = '0' ) ";
+}
+else if($not_complete1) {
+  // 바코드 완료만 검색
+  $where[] = " ( ct_barcode_insert >= ct_qty or io_type = '1' ) ";
+}
+if($complete2) {
+  // 배송정보 미완료만 검색
+  $where[] = " ( ( ct_delivery_num is null or ct_delivery_num = '' ) and ct_is_direct_delivery = 0 and ( ct_combine_ct_id is null or ct_combine_ct_id = 0 ) ) ";
+}
+else if($not_complete2) {
+  // 배송정보 완료만 검색
+  $where[] = " ( ( ct_delivery_num is not null and ct_delivery_num <> '' ) or ct_is_direct_delivery > 0 or ( ct_combine_ct_id is not null and ct_combine_ct_id <> 0 ) ) ";
+}
+
 // 전체 검색
 if ($sel_field == 'od_all' && $search != "") {
   $sel_arr = array('it_name', 'it_admin_memo', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode');
@@ -264,7 +282,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, ct_status, ct_move_date, ct_delivery_num, ct_manager, ct_is_direct_delivery from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, ct_status, ct_move_date, ct_delivery_num, ct_manager, ct_is_direct_delivery, ct_barcode_insert, ct_qty, io_type, ct_combine_ct_id from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -304,7 +322,7 @@ if ( $where2 || $where ) {
 }
 $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, X.it_name, it_admin_memo, ct_status, ct_manager, ct_is_direct_delivery from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, X.it_name, it_admin_memo, ct_status, ct_manager, ct_is_direct_delivery, ct_barcode_insert, ct_qty, io_type, ct_combine_ct_id from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
