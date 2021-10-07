@@ -431,6 +431,7 @@ function doSearch() {
 function complete() {
   page = 1;
   end = false;
+  last_step = '';
   doSearch();
 }
 
