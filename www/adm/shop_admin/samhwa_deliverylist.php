@@ -228,8 +228,10 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         <th>작업상태</th>
         <td>
           <div class="list">
-            <input type="checkbox" id="complete1" name="complete1" value="1" <?php echo option_array_checked('1', $complete1); ?>><label for="complete1"> 바코드 미 완료 내역만 보기</label>
-            <input type="checkbox" id="complete2" name="complete2" value="1" <?php echo option_array_checked('1', $complete2); ?>><label for="complete2"> 배송정보 미 입력 내역만 보기</label>
+            <input type="checkbox" id="complete1" name="complete1" value="1" <?php echo option_array_checked('1', $complete1); ?>><label for="complete1"> 바코드 미완료 내역만 보기</label>
+            <input type="checkbox" id="complete2" name="complete2" value="1" <?php echo option_array_checked('1', $complete2); ?>><label for="complete2"> 배송정보 미입력 내역만 보기</label>
+            <input type="checkbox" id="not_complete1" name="not_complete1" value="1" <?php echo option_array_checked('1', $not_complete1); ?>><label for="not_complete1"> 바코드 완료 내역만 보기</label>
+            <input type="checkbox" id="not_complete2" name="not_complete2" value="1" <?php echo option_array_checked('1', $not_complete2); ?>><label for="not_complete2"> 배송정보 입력완료 내역만 보기</label>
           </div>
         </td>
       </tr>
@@ -374,7 +376,6 @@ function doSearch() {
       $('#samhwa_order_ajax_list_table').html(html.main);
     }
     $('#samhwa_order_list_table>div.table tbody').append(html.data);
-    complete();
     $(".ct_ex_date").datepicker({
       changeMonth: true, 
       changeYear: true, 
@@ -425,39 +426,40 @@ function doSearch() {
   .always(function() {
     loading = false;
   });
-
-  if(document.getElementById('complete1').checked){
-    $('.complete1').hide(); 
-  } else {
-    $('.complete1').show();
-  }
 }
 
-function complete(){
-  $('.complete1').show();
-  $('.complete2').show();
-  
-  //바코드 o 배송 체크 o
-  if(document.getElementById('complete1').checked&&document.getElementById('complete2').checked){
-    $('.complete1').hide(); 
-    $('.complete2').hide(); 
-  }
-
-  //바코드 x 배송 체크 o
-  if(!document.getElementById('complete1').checked&&document.getElementById('complete2').checked){
-    $('.complete2').hide(); 
-  }
-
-  //바코드 o 배송 체크 x
-  if(document.getElementById('complete1').checked&&!document.getElementById('complete2').checked){
-    $('.complete1').hide(); 
-  }
+function complete() {
+  page = 1;
+  end = false;
+  doSearch();
 }
 
-$("#complete1").change(function(){
+$("#complete1").click(function() {
+  if ( loading === true ) return false;
+  if($(this).prop('checked')) {
+    $('#not_complete1').prop('checked', false);
+  }
   complete();
 });
-$("#complete2").change(function(){
+$('#not_complete1').click(function() {
+  if ( loading === true ) return false;
+  if($(this).prop('checked')) {
+    $('#complete1').prop('checked', false);
+  }
+  complete();
+});
+$("#complete2").click(function() {
+  if ( loading === true ) return false;
+  if($(this).prop('checked')) {
+    $('#not_complete2').prop('checked', false);
+  }
+  complete();
+});
+$('#not_complete2').click(function() {
+  if ( loading === true ) return false;
+  if($(this).prop('checked')) {
+    $('#complete2').prop('checked', false);
+  }
   complete();
 });
 
