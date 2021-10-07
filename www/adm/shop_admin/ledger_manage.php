@@ -62,6 +62,8 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
   $row['index'] = $total_count - (($page - 1) * $page_rows) - $i;
   $ledger[] = $row;
 }
+
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 <div class="local_ov01 local_ov fixed">
   <h1 style="border:0;padding:5px 0;margin:0;">수금등록</h1>
@@ -91,9 +93,15 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
           </td>
         </tr>
         <tr>
-          <th>메모</th>
+          <th>메모</th>
           <td>
             <input type="text" name="lc_memo" value="" id="lc_memo" class="frm_input" autocomplete="off" style="width:400px;">
+          </td>
+        </tr>
+        <tr>
+          <th>기준일</th>
+          <td>
+            <input type="text" name="lc_datetime" value="<?php echo date('Y-m-d', time()); ?>" id="lc_datetime" class="frm_input" autocomplete="off" style="width:150px;">
           </td>
         </tr>
       </tbody>
@@ -145,6 +153,8 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
 
 <script>
 $(function() {
+  $("#lc_datetime").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99", maxDate: "+365d" });
+
   // 목록 버튼
   $('#btn_list').click(function() {
     location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_search.php";

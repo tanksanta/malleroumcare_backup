@@ -27,8 +27,10 @@ if(!in_array($lc_type, [1, 2])) // 1: 입금, 2: 출금
 if($lc_amount <= 0)
   json_response(400, '금액을 입력해주세요.');
 
-$timestamp = time();
-$datetime = date('Y-m-d H:i:s', $timestamp);
+$datetime = $lc_datetime ?: date('Y-m-d H:i:s', time());
+if ($datetime === date('Y-m-d', time())) {
+  $datetime = date('Y-m-d H:i:s', time());
+}
 
 $result = sql_query("
   INSERT INTO
