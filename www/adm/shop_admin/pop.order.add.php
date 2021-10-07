@@ -122,6 +122,7 @@ include_once('./pop.head.php');
                 </td>
                 <td>
                     <div class="it_option">
+                        <input type="hidden" name="io_id[]">
                         -
                     </div>
                 </td>
@@ -272,7 +273,8 @@ $(function() {
                     $(parent).find('.it_option select').focus();
                 }, 10);
             } else {
-                $(parent).find('.it_option').text('-');
+                var option_html = "<input type=\"hidden\" name=\"io_id[]\" value=\"\">";
+                $(parent).find('.it_option').html(option_html).append('-');
                 $(parent).find('input[name="qty[]"]').focus();
             }
 
