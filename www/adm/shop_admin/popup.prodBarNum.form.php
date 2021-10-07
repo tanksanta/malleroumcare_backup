@@ -742,11 +742,9 @@ if($od["od_b_tel"]) {
       });
       if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false; }
 
-      var pass = [];
+      var pass = {};
       $.each($('.chk_pass_barcode'), function(index, value) {
-        if ($(this).is(":checked")) {
-          pass.push($(this).data('ct-id'));
-        }
+        pass[$(this).data('ct-id')] = $(this).is(":checked");
       });
 
       var sendData = {
