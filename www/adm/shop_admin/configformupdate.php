@@ -266,7 +266,7 @@ foreach( $check_sanitize_keys as $key ){
   $$key = isset($_POST[$key]) ? strip_tags(clean_xss_attributes($_POST[$key])) : '';
 }
 
-for($i = 1; $i <= 6; $i++) {
+for($i = 1; $i <= 15; $i++) {
   $box_size = "de_box_size{$i}";
   $de_box_size_name = "{$box_size}_name";
   $de_box_size_width = "{$box_size}_width";

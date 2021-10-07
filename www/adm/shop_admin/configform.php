@@ -1349,18 +1349,17 @@ if( function_exists('pg_setting_check') ){
           <th scope="row">박스규격</th>
           <td>
             <?php
-            for($i = 0; $i < 6; $i++) {
-              $index = ($i + 1);
-              $box_size = explode(chr(30), $default['de_box_size'.($index)]);
+            for($i = 1; $i <= 15; $i++) {
+              $box_size = explode(chr(30), $default['de_box_size'.($i)]);
             ?>
-            <label for="de_box_size<?=$index?>_name">박스명:</label>
-            <input type="text" name="de_box_size<?=$index?>_name" value="<?=$box_size[0]?>" id="de_box_size<?=$index?>_name" class="frm_input" size="15">, 
-            <label for="de_box_size<?=$index?>_width">가로:</label>
-            <input type="text" name="de_box_size<?=$index?>_width" value="<?=$box_size[1]?>" id="de_box_size<?=$index?>_width" class="frm_input" size="5">
-            <label for="de_box_size<?=$index?>_length">세로:</label>
-            <input type="text" name="de_box_size<?=$index?>_length" value="<?=$box_size[2]?>" id="de_box_size<?=$index?>_length" class="frm_input" size="5">
-            <label for="de_box_size<?=$index?>_height">높이:</label>
-            <input type="text" name="de_box_size<?=$index?>_height" value="<?=$box_size[3]?>" id="de_box_size<?=$index?>_height" class="frm_input" size="5">
+            <label for="de_box_size<?=$i?>_name">박스명:</label>
+            <input type="text" name="de_box_size<?=$i?>_name" value="<?=$box_size[0]?>" id="de_box_size<?=$i?>_name" class="frm_input" size="15">, 
+            <label for="de_box_size<?=$i?>_width">가로:</label>
+            <input type="text" name="de_box_size<?=$i?>_width" value="<?=$box_size[1]?>" id="de_box_size<?=$i?>_width" class="frm_input" size="5">
+            <label for="de_box_size<?=$i?>_length">세로:</label>
+            <input type="text" name="de_box_size<?=$i?>_length" value="<?=$box_size[2]?>" id="de_box_size<?=$i?>_length" class="frm_input" size="5">
+            <label for="de_box_size<?=$i?>_height">높이:</label>
+            <input type="text" name="de_box_size<?=$i?>_height" value="<?=$box_size[3]?>" id="de_box_size<?=$i?>_height" class="frm_input" size="5">
             <br>
             <?php } ?>
           </td>
