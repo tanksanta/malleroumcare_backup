@@ -599,6 +599,9 @@ $stx=$stx2;
               ));
               if($resInfo['data']['entConfirmCd'] == "01") {
                 echo "<span>승인완료</span>";
+                echo '<button type="button" class="btn accept-rollback" style="border: 1px solid #b5b5b5;
+                padding: 0px 3px;
+                font-size: 0.95em;" data-id="'.$row['mb_id'].'" data-entid="'.$row['mb_entId'].'">승인취소</button>';
               } else {
                 echo '<button type="button" class="btn btn_02 accept" data-id="'.$row['mb_id'].'" data-entid="'.$row['mb_entId'].'">승인</button>';
               }
@@ -907,6 +910,24 @@ $(".accept").click(function() {
   }, 'json')
   .done(function() {
     alert('승인되었습니다.');
+    window.location.reload();
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
+});
+
+$(".accept-rollback").click(function() {
+  var usrId = $(this).data('id');
+  var entId = $(this).data('entid');
+
+  $.post('member_accept_rollback.php', {
+    usrId: usrId,
+    entId: entId
+  }, 'json')
+  .done(function() {
+    alert('승인취소되었습니다.');
     window.location.reload();
   })
   .fail(function($xhr) {
