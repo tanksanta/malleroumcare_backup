@@ -242,11 +242,11 @@ $(function() {
             noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
             selectionRequired: true,
             focusFirstResult: true,
-            searchIn: ["it_name","it_model","id"],
+            searchIn: ["it_name","it_model","id", "it_name_no_space"],
             visibleCallback: function($li, item, options) {
                 var $item = {};
                 $item = $('<span>')
-                    .html(item.it_name + " (" + item.it_price + "원)");
+                    .html("[" + item.gubun + "] " + item.it_name + " (" + item.it_price + "원)");
 
                 $item.appendTo($li);
                 return $li;
@@ -314,7 +314,7 @@ $(function() {
         noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
         visibleProperties: ["mb_name", "mb_nick"],
         visibleClassName: 'mb_id',
-        searchIn: ["mb_id","mb_name","mb_nick","mb_tel", "mb_hp","mb_email"],
+        searchIn: ["mb_id","mb_name","mb_nick","mb_tel", "mb_hp","mb_email", "mb_name_no_space", "mb_nick_no_space"],
         selectionRequired: true,
         focusFirstResult: true,
     }).on("select:flexdatalist",function(event, obj, options){

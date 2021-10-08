@@ -171,6 +171,7 @@ for($i=0; $i<count($it_ids); $i++) {
       prodMemo,
       ordLendStrDtm,
       ordLendEndDtm,
+      prodSupYn,
       ct_pen_id
     )
   VALUES ";
@@ -299,6 +300,10 @@ for($i=0; $i<count($it_ids); $i++) {
       $sql_ct_pen_id = "'{$od['od_penId']}'";
     }
 
+    // 비유통상품 가격
+    if($it['prodSupYn'] == 'N') {
+      $it_price = 0;
+    }
 
     $insert_sql = $sql . "
     (
@@ -348,6 +353,7 @@ for($i=0; $i<count($it_ids); $i++) {
       '$memo[$i]',
       $sqlOrdLendStrDtm,
       $sqlOrdLendEndDtm,
+      '{$it['prodSupYn']}',
       $sql_ct_pen_id
     )";
 

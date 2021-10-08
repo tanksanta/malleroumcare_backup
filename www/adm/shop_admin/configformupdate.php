@@ -266,6 +266,8 @@ foreach( $check_sanitize_keys as $key ){
   $$key = isset($_POST[$key]) ? strip_tags(clean_xss_attributes($_POST[$key])) : '';
 }
 
+$sql_de_box_size = [];
+
 for($i = 1; $i <= 15; $i++) {
   $box_size = "de_box_size{$i}";
   $de_box_size_name = "{$box_size}_name";
@@ -280,7 +282,10 @@ for($i = 1; $i <= 15; $i++) {
   );
 
   $$box_size = implode(chr(30), $$box_size);
+  $sql_de_box_size[] = " {$box_size} = '{$$box_size}' ";
 }
+
+$sql_de_box_size = implode(' , ', $sql_de_box_size);
 
 //
 // 영카트 default
@@ -499,12 +504,7 @@ $sql = " update {$g5['g5_shop_default_table']}
                 de_it_grade2_discount                       = '{$it_grade2_discount}',
                 de_it_grade3_name                           = '{$it_grade3_name}',
                 de_it_grade3_discount                       = '{$it_grade3_discount}',
-                de_box_size1 = '$de_box_size1',
-                de_box_size2 = '$de_box_size2',
-                de_box_size3 = '$de_box_size3',
-                de_box_size4 = '$de_box_size4',
-                de_box_size5 = '$de_box_size5',
-                de_box_size6 = '$de_box_size6'
+                $sql_de_box_size
         ";
 sql_query($sql);
 
