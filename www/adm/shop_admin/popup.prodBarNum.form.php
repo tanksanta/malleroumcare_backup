@@ -922,14 +922,15 @@ if($od["od_b_tel"]) {
         <?php if($_GET['new']){ ?>
         history.back();
         <?php } else { ?>
+        <?php if ($no_refresh != 1) { ?>
         if(need_reload)
           opener.location.reload();
+        <?php } ?>
         window.close();
         <?php }?>
       }
     });
   }
-
   function openCloseToc(click) {
     if($(click).closest('li').children('.folding_box').css("display")=="none"){
       $(click).closest('li').children('.folding_box').css("display", "block");
