@@ -555,6 +555,10 @@ if ($od['od_penId']) {
 //결과 값
 if ($res["errorYN"] == "N") {
   //성공시 ct_id에 업로드
+  if($od['od_penId'])
+    $data = $res['data']['stockList'];
+  else
+    $data = $res['data'];
   for ($k=0; $k<count($res['data']);$k++) {
     // ct_id에 업로드
     if ($w) {
@@ -562,8 +566,8 @@ if ($res["errorYN"] == "N") {
     } else {
       $ct_status = "준비";
     }
-    array_push($stoIdList, $res['data'][$k]["stoId"]);
-    $sql_ct = "update `g5_shop_cart` set ct_status='".$ct_status."', `stoId` = CONCAT(`stoId`,'".$res['data'][$k]["stoId"]."|') where `ct_id` ='".$res['data'][$k]["ct_id"]."'";
+    array_push($stoIdList, $data[$k]["stoId"]);
+    $sql_ct = "update `g5_shop_cart` set ct_status='".$ct_status."', `stoId` = CONCAT(`stoId`,'".$data[$k]["stoId"]."|') where `ct_id` ='".$data[$k]["ct_id"]."'";
     sql_query($sql_ct);
   }
 } else {
