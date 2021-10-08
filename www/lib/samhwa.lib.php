@@ -871,55 +871,59 @@ $delivery_types = array(
 );
 
 $delivery_companys = array(
-  '0' => array(
+  array(
     'name' => '로젠택배',
     'val' => 'ilogen'
   ),
-  '10' => array(
+  array(
     'name' => '한진택배',
     'val' => 'hanjin'
   ),
-  '11' => array(
+  array(
     'name' => '건영택배',
     'val' => 'kunyoung'
   ),
-  '1' => array(
+  array(
     'name' => '대한통운',
     'val' => 'cjlogistics'
   ),
-  '2' => array(
+  array(
     'name' => '경동택배',
     'val' => 'kdexp'
   ),
-  '3' => array(
+  array(
+    'name' => '일양택배',
+    'val' => 'ilyanglogis'
+  ),
+  array(
     'name' => '대신택배',
     'val' => 'ds3211'
   ),
-  '4' => array(
+  array(
     'name' => '합동택배',
     'val' => 'hdexp'
   ),
-  '5' => array(
+  array(
     'name' => '롯데택배',
     'val' => 'lotteglogis'
   ),
-  '6' => array(
+  array(
     'name' => '천일택배',
     'val' => 'chunilps'
   ),
-  '7' => array(
+  array(
     'name' => '화물배송',
     'val' => 'hwamul'
   ),
-  '8' => array(
+  array(
     'name' => '퀵배송',
     'val' => 'quick'
   ),
-  '9' => array(
+  array(
     'name' => '기타배송',
     'val' => 'etc'
   ),
-  '12' => array(
+  array(
     'name' => '설치배송',
     'val' => 'install'
   )
