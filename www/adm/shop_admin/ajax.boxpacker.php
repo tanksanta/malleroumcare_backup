@@ -23,10 +23,10 @@ for($i = 1; $i <= 15; $i++) {
   if(!($name && $width && $length && $depth))
     continue;
   
-  // cm -> mm 변환, 소수점 올림
-  $width = (int) ceil($width * 10);
-  $length = (int) ceil($length * 10);
-  $depth = (int) ceil($depth * 10);
+  // cm -> mm 변환, 소수점 내림
+  $width = (int) floor($width * 10);
+  $length = (int) floor($length * 10);
+  $depth = (int) floor($depth * 10);
 
   $packer->addBox(new TestBox($name, $width, $length, $depth, 0, $width, $length, $depth, 1000));
 }
