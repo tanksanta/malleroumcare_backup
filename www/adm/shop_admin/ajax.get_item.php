@@ -1,7 +1,9 @@
 <?php
 include_once('./_common.php');
 
-$sql = "SELECT it_id as id, it_id, it_name, it_model, it_price 
+$keyword = str_replace(' ', '', trim($keyword));
+
+$sql = "SELECT it_id as id, it_id, it_name, it_model, it_price, REPLACE(a.it_name, ' ', '') as it_name_no_space
   FROM
     {$g5['g5_shop_item_table']} a
   WHERE
@@ -9,7 +11,8 @@ $sql = "SELECT it_id as id, it_id, it_name, it_model, it_price
         a.it_model like '%$keyword%' OR 
         a.it_name like '%$keyword%' OR 
         a.it_id like '%$keyword%' OR 
-        a.pt_id like '%$keyword%'
+        a.pt_id like '%$keyword%' OR
+        REPLACE(a.it_name, ' ', '') LIKE '%$keyword%'
       )
       AND
       (
