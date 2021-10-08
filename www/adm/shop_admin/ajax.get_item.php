@@ -1,7 +1,15 @@
 <?php
 include_once('./_common.php');
 
-$sql = "SELECT it_id as id, it_id, it_name, it_model, it_price 
+$keyword = str_replace(' ', '', trim($keyword));
+
+$sql = "SELECT 
+  it_id as id,
+  it_id,
+  it_name,
+  it_model,
+  it_price, REPLACE(a.it_name, ' ', '') as it_name_no_space,
+  ca_id
   FROM
     {$g5['g5_shop_item_table']} a
   WHERE
@@ -9,7 +17,8 @@ $sql = "SELECT it_id as id, it_id, it_name, it_model, it_price
         a.it_model like '%$keyword%' OR 
         a.it_name like '%$keyword%' OR 
         a.it_id like '%$keyword%' OR 
-        a.pt_id like '%$keyword%'
+        a.pt_id like '%$keyword%' OR
+        REPLACE(a.it_name, ' ', '') LIKE '%$keyword%'
       )
       AND
       (
@@ -38,6 +47,13 @@ while ( $row = sql_fetch_array($result) ) {
   while ($option_row = sql_fetch_array($option_result)) {
     $row['options'][] = $option_row;
   }
+
+  $gubun = $cate_gubun_table[substr($row["ca_id"], 0, 2)];
+  $gubun_text = '판매';
+  if($gubun == '01') $gubun_text = '대여';
+  else if($gubun == '02') $gubun_text = '비급여';
+
+  $row['gubun'] = $gubun_text;
 
   $rows[] = $row;
 }
