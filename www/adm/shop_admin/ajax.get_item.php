@@ -13,7 +13,8 @@ $sql = "SELECT it_id as id, it_id, it_name, it_model, it_price
       )
       AND
       (
-        a.ca_id LIKE '10%' or
+        a.ca_id LIKE '10%' OR
+        a.ca_id LIKE '20%' OR
         a.ca_id LIKE '70%'
       )
 ";
