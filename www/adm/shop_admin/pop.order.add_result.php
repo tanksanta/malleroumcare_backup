@@ -559,7 +559,7 @@ if ($res["errorYN"] == "N") {
     $data = $res['data']['stockList'];
   else
     $data = $res['data'];
-  for ($k=0; $k<count($res['data']);$k++) {
+  for ($k=0; $k<count($data);$k++) {
     // ct_id에 업로드
     if ($w) {
       $ct_status = $ct_status_w;
