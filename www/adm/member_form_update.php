@@ -148,7 +148,7 @@ $mb_giup_addr_jibeon = preg_match("/^(N|R)$/", $mb_giup_addr_jibeon) ? $mb_giup_
 
 $mb_thezone = isset($_POST['mb_thezone'])             ? trim($_POST['mb_thezone'])           : "";
 if ($w == '') {
-    $mb_thezone = get_uniqid_member();
+    // $mb_thezone = get_uniqid_member();
 }
 $mb_partner_date_pay_date = isset($_POST['mb_partner_date_pay_date'])             ? trim($_POST['mb_partner_date_pay_date'])           : "";
 
