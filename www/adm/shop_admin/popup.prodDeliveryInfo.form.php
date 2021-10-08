@@ -68,6 +68,20 @@ $partners = get_partner_members();
     font-weight: normal;
     padding-left: 10px;
   }
+  #prodBarNumFormWrap > .titleWrap .btn_boxpacker {
+    display: block;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 8px 12px;
+    background: #3366cc;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+  }
+  .boxpacker_load{ width: 100px; }
+  .boxpacker_wr { display: none; text-align: center; }
+  #boxpacker_ta { border: 1px solid #ddd; padding: 10px; color: #333; }
   
   #prodBarNumFormWrap > .tableWrap { width: 100%; float: left; }
   #prodBarNumFormWrap > .tableWrap > table { width: 100%; float: left; table-layout: fixed; }
@@ -111,6 +125,12 @@ $partners = get_partner_members();
     <span>
       <?php echo $deliveryCntBtnWord; ?>
     </span>
+    <button type="button" class="btn_boxpacker">합포 자동계산</button>
+  </div>
+
+  <div class="boxpacker_wr">
+    <img src="img/ajax-loading.gif" class="boxpacker_load" />
+    <textarea id="boxpacker_ta" cols="30" rows="10"></textarea>
   </div>
   
   <div class="tableWrap">
@@ -349,6 +369,25 @@ $partners = get_partner_members();
           }
           window.close();
         }
+      });
+    });
+
+    // 합포 자동계산
+    $('.btn_boxpacker').click(function() {
+      $('.boxpacker_load').show();
+      $('#boxpacker_ta').hide();
+      $('.boxpacker_wr').show();
+
+      $.post('ajax.boxpacker.php?od_id=<?=$od_id?>')
+      .done(function(result) {
+        $('#boxpacker_ta').val(result.data).show();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      })
+      .always(function() {
+        $('.boxpacker_load').hide();
       });
     });
   });
