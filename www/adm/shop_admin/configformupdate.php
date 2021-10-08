@@ -73,197 +73,213 @@ foreach($check_skin_keys as $key){
 
 //KVE-2019-0689, KVE-2019-0691, KVE-2019-0694
 $check_sanitize_keys = array(
-'de_admin_company_name',        //회사명
-'de_admin_company_saupja_no',   //사업자등록번호
-'de_admin_company_owner',       //대표자명
-'de_admin_company_tel',         //대표전화번호
-'de_admin_company_fax',         //팩스번호
-'de_admin_tongsin_no',          //통신판매업 신고번호
-'de_admin_buga_no',             //부가통신 사업자번호
-'de_admin_company_zip',         //사업자우편번호
-'de_admin_company_addr',        //사업장주소
-'de_admin_info_name',           //정보관리책임자명
-'de_admin_info_email',          //정보책임자e-mail
-'de_type1_list_mod',            //히트상품출력 이미지수
-'de_type1_list_row',            //히트상품출력 줄수
-'de_type1_img_width',           //히트상품출력 이미지 폭
-'de_type1_img_height',          //히트상품출력 이미지 높이
-'de_type2_list_mod',            //추천상품출력 이미지 수
-'de_type2_list_row',            //추천상품출력 줄수
-'de_type2_img_width',           //추천상품출력 이미지 폭
-'de_type2_img_height',          //추천상품출력 이미지 높이
-'de_type3_list_mod',            //최신상품출력 이미지 수
-'de_type3_list_row',            //최신상품출력 줄수
-'de_type3_img_width',           //최신상품출력 이미지 폭
-'de_type3_img_height',          //최신상품출력 이미지 높이
-'de_type4_list_mod',            //인기상품출력 이미지 수
-'de_type4_list_row',            //인기상품출력 줄수
-'de_type4_img_width',           //인기상품출력 이미지 폭
-'de_type4_img_height',          //인기상품출력 이미지 높이
-'de_type5_list_mod',            //할인상품출력 이미지 수
-'de_type5_list_row',            //할인상품출력 줄수
-'de_type5_img_width',           //할인상품출력 이미지 폭
-'de_type5_img_height',          //할인상품출력 이미지 높이
-'de_mobile_type1_list_mod',     //모바일 히트상품출력 이미지수
-'de_mobile_type1_list_row',     //모바일 히트상품출력 줄수
-'de_mobile_type1_img_width',    //모바일 히트상품출력 이미지 폭
-'de_mobile_type1_img_height',   //모바일 히트상품출력 이미지 높이
-'de_mobile_type2_list_mod',     //모바일 추천상품출력 이미지수
-'de_mobile_type2_list_row',     //모바일 추천상품출력 줄수
-'de_mobile_type2_img_width',    //모바일 추천상품출력 이미지 폭
-'de_mobile_type2_img_height',   //모바일 추천상품출력 이미지 높이
-'de_mobile_type3_list_mod',     //모바일 최신상품출력 이미지수
-'de_mobile_type3_list_row',     //모바일 최신상품출력 줄수
-'de_mobile_type3_img_width',    //모바일 최신상품출력 이미지 폭
-'de_mobile_type3_img_height',   //모바일 최신상품출력 이미지 높이
-'de_mobile_type4_list_mod',     //모바일 인기상품출력 이미지수
-'de_mobile_type4_list_row',     //모바일 인기상품출력 줄수
-'de_mobile_type4_img_width',    //모바일 인기상품출력 이미지 폭
-'de_mobile_type4_img_height',   //모바일 인기상품출력 이미지 높이
-'de_mobile_type5_list_mod',     //모바일 할인상품출력 이미지수
-'de_mobile_type5_list_row',     //모바일 할인상품출력 줄수
-'de_mobile_type5_img_width',    //모바일 할인상품출력 이미지 폭
-'de_mobile_type5_img_height',   //모바일 할인상품출력 이미지 높이
-'de_bank_use',                  //무통장입금사용
-'de_bank_account',              //은행계좌번호
-'de_iche_use',                  //계좌이체 결제사용
-'de_vbank_use',                 //가상계좌 결제사용
-'de_hp_use',                    //휴대폰결제 결제사용
-'de_card_use',                  //신용카드 결제사용
-'de_card_noint_use',            //신용카드 무이자할부사용
-'de_easy_pay_use',              //PG사 간편결제 버튼 사용
-'de_taxsave_use',               //현금영수증 발끕사용
-'cf_use_point',                 //포인트 사용
-'de_settle_min_point',          //결제 최소포인트
-'de_settle_max_point',          //최대 결제포인트
-'de_settle_point_unit',         //결제 포인트단위
-'de_card_point',                //포인트부여
-'de_point_days',                //주문완료 포인트
-'de_pg_service',                //결제대행사
-'de_kcp_mid',                   //KCP SITE CODE
-'de_kcp_site_key',              //NHN KCP SITE KEY
-'cf_lg_mid',                    //LG유플러스 상점아이디
-'cf_lg_mert_key',               //LG유플러스 MERT KEY
-'de_inicis_mid',                //KG이니시스 상점아이디
-'de_inicis_admin_key',          //KG이니시스 키패스워드
-'de_inicis_sign_key',           //KG이니시스 웹결제 사인키
-'de_samsung_pay_use',           //KG이니시스 삼성페이 사용
-'de_inicis_lpay_use',           //KG이니시스 Lpay 사용
-'de_inicis_cartpoint_use',      //KG이니시스 신용카드 포인트 결제
-'de_kakaopay_mid',              //카카오페이 상점MID
-'de_kakaopay_key',              //카카오페이 상점키
-'de_kakaopay_enckey',           //카카오페이 상점 EncKey
-'de_kakaopay_hashkey',          //카카오페이 상점 HashKey
-'de_kakaopay_cancelpwd',        //카카오페이 결제취소 비밀번호
-'de_naverpay_mid',              //네이버페이 가맹점 아이디
-'de_naverpay_cert_key',         //네이버페이 가맹점 인증키
-'de_naverpay_button_key',       //네이버페이 버튼 인증키
-'de_naverpay_test',             //네이버페이 결제테스트
-'de_naverpay_mb_id',            //네이버페이 결제테스트 아이디
-'de_naverpay_sendcost',         //네이버페이 추가배송비 안내
-'de_escrow_use',                //에스크로 사용
-'de_card_test',                 //결제 테스트
-'de_tax_flag_use',              //복합과세 결제
-'de_delivery_company',          //배송업체
-'de_send_cost_case',            //배송비유형
-'de_send_cost_limit',           //배송비상한가
-'de_send_cost_list',            //배송비
+  'de_admin_company_name',        //회사명
+  'de_admin_company_saupja_no',   //사업자등록번호
+  'de_admin_company_owner',       //대표자명
+  'de_admin_company_tel',         //대표전화번호
+  'de_admin_company_fax',         //팩스번호
+  'de_admin_tongsin_no',          //통신판매업 신고번호
+  'de_admin_buga_no',             //부가통신 사업자번호
+  'de_admin_company_zip',         //사업자우편번호
+  'de_admin_company_addr',        //사업장주소
+  'de_admin_info_name',           //정보관리책임자명
+  'de_admin_info_email',          //정보책임자e-mail
+  'de_type1_list_mod',            //히트상품출력 이미지수
+  'de_type1_list_row',            //히트상품출력 줄수
+  'de_type1_img_width',           //히트상품출력 이미지 폭
+  'de_type1_img_height',          //히트상품출력 이미지 높이
+  'de_type2_list_mod',            //추천상품출력 이미지 수
+  'de_type2_list_row',            //추천상품출력 줄수
+  'de_type2_img_width',           //추천상품출력 이미지 폭
+  'de_type2_img_height',          //추천상품출력 이미지 높이
+  'de_type3_list_mod',            //최신상품출력 이미지 수
+  'de_type3_list_row',            //최신상품출력 줄수
+  'de_type3_img_width',           //최신상품출력 이미지 폭
+  'de_type3_img_height',          //최신상품출력 이미지 높이
+  'de_type4_list_mod',            //인기상품출력 이미지 수
+  'de_type4_list_row',            //인기상품출력 줄수
+  'de_type4_img_width',           //인기상품출력 이미지 폭
+  'de_type4_img_height',          //인기상품출력 이미지 높이
+  'de_type5_list_mod',            //할인상품출력 이미지 수
+  'de_type5_list_row',            //할인상품출력 줄수
+  'de_type5_img_width',           //할인상품출력 이미지 폭
+  'de_type5_img_height',          //할인상품출력 이미지 높이
+  'de_mobile_type1_list_mod',     //모바일 히트상품출력 이미지수
+  'de_mobile_type1_list_row',     //모바일 히트상품출력 줄수
+  'de_mobile_type1_img_width',    //모바일 히트상품출력 이미지 폭
+  'de_mobile_type1_img_height',   //모바일 히트상품출력 이미지 높이
+  'de_mobile_type2_list_mod',     //모바일 추천상품출력 이미지수
+  'de_mobile_type2_list_row',     //모바일 추천상품출력 줄수
+  'de_mobile_type2_img_width',    //모바일 추천상품출력 이미지 폭
+  'de_mobile_type2_img_height',   //모바일 추천상품출력 이미지 높이
+  'de_mobile_type3_list_mod',     //모바일 최신상품출력 이미지수
+  'de_mobile_type3_list_row',     //모바일 최신상품출력 줄수
+  'de_mobile_type3_img_width',    //모바일 최신상품출력 이미지 폭
+  'de_mobile_type3_img_height',   //모바일 최신상품출력 이미지 높이
+  'de_mobile_type4_list_mod',     //모바일 인기상품출력 이미지수
+  'de_mobile_type4_list_row',     //모바일 인기상품출력 줄수
+  'de_mobile_type4_img_width',    //모바일 인기상품출력 이미지 폭
+  'de_mobile_type4_img_height',   //모바일 인기상품출력 이미지 높이
+  'de_mobile_type5_list_mod',     //모바일 할인상품출력 이미지수
+  'de_mobile_type5_list_row',     //모바일 할인상품출력 줄수
+  'de_mobile_type5_img_width',    //모바일 할인상품출력 이미지 폭
+  'de_mobile_type5_img_height',   //모바일 할인상품출력 이미지 높이
+  'de_bank_use',                  //무통장입금사용
+  'de_bank_account',              //은행계좌번호
+  'de_iche_use',                  //계좌이체 결제사용
+  'de_vbank_use',                 //가상계좌 결제사용
+  'de_hp_use',                    //휴대폰결제 결제사용
+  'de_card_use',                  //신용카드 결제사용
+  'de_card_noint_use',            //신용카드 무이자할부사용
+  'de_easy_pay_use',              //PG사 간편결제 버튼 사용
+  'de_taxsave_use',               //현금영수증 발끕사용
+  'cf_use_point',                 //포인트 사용
+  'de_settle_min_point',          //결제 최소포인트
+  'de_settle_max_point',          //최대 결제포인트
+  'de_settle_point_unit',         //결제 포인트단위
+  'de_card_point',                //포인트부여
+  'de_point_days',                //주문완료 포인트
+  'de_pg_service',                //결제대행사
+  'de_kcp_mid',                   //KCP SITE CODE
+  'de_kcp_site_key',              //NHN KCP SITE KEY
+  'cf_lg_mid',                    //LG유플러스 상점아이디
+  'cf_lg_mert_key',               //LG유플러스 MERT KEY
+  'de_inicis_mid',                //KG이니시스 상점아이디
+  'de_inicis_admin_key',          //KG이니시스 키패스워드
+  'de_inicis_sign_key',           //KG이니시스 웹결제 사인키
+  'de_samsung_pay_use',           //KG이니시스 삼성페이 사용
+  'de_inicis_lpay_use',           //KG이니시스 Lpay 사용
+  'de_inicis_cartpoint_use',      //KG이니시스 신용카드 포인트 결제
+  'de_kakaopay_mid',              //카카오페이 상점MID
+  'de_kakaopay_key',              //카카오페이 상점키
+  'de_kakaopay_enckey',           //카카오페이 상점 EncKey
+  'de_kakaopay_hashkey',          //카카오페이 상점 HashKey
+  'de_kakaopay_cancelpwd',        //카카오페이 결제취소 비밀번호
+  'de_naverpay_mid',              //네이버페이 가맹점 아이디
+  'de_naverpay_cert_key',         //네이버페이 가맹점 인증키
+  'de_naverpay_button_key',       //네이버페이 버튼 인증키
+  'de_naverpay_test',             //네이버페이 결제테스트
+  'de_naverpay_mb_id',            //네이버페이 결제테스트 아이디
+  'de_naverpay_sendcost',         //네이버페이 추가배송비 안내
+  'de_escrow_use',                //에스크로 사용
+  'de_card_test',                 //결제 테스트
+  'de_tax_flag_use',              //복합과세 결제
+  'de_delivery_company',          //배송업체
+  'de_send_cost_case',            //배송비유형
+  'de_send_cost_limit',           //배송비상한가
+  'de_send_cost_list',            //배송비
 
-'de_send_conditional',          //일정가격 이상 구매시 무료배송(추가)
+  'de_send_conditional',          //일정가격 이상 구매시 무료배송(추가)
 
-'de_hope_date_use',             //희망배송일사용
-'de_hope_date_after',           //희망배송일지정
-'de_rel_img_width',             //관련상품출력 이미지폭
-'de_rel_img_height',            //관련상품출력 이미지높이
-'de_rel_list_mod',              //관련상품출력 1줄당 이미지 수
-'de_rel_list_use',              //관련상품출력 출력여부
-'de_mobile_rel_img_width',      //모바일 관련상품출력 이미지폭
-'de_mobile_rel_img_height',     //모바일 관련상품출력 이미지높이
-'de_mobile_rel_list_mod',       //모바일 관련상품출력 1줄당 이미지 수
-'de_mobile_rel_list_use',       //모바일 관련상품출력 출력여부
-'de_search_img_width',          //검색상품출력 이미지폭
-'de_search_img_height',         //검색상품출력 이미지높이
-'de_search_list_mod',           //검색상품출력 1줄당 이미지 수
-'de_search_list_row',           //검색상품출력 출력할 줄 수
-'de_mobile_search_img_width',   //모바일 검색상품출력 이미지폭
-'de_mobile_search_img_height',  //모바일 검색상품출력 이미지높이
-'de_mobile_search_list_mod',    //모바일 검색상품출력 1줄당 이미지 수
-'de_mobile_search_list_row',    //모바일 검색상품출력 출력할 줄 수
-'de_listtype_img_width',        //유형별 상품리스트 이미지폭
-'de_listtype_list_mod',         //유형별 상품리스트 1줄당 이미지 수
-'de_listtype_list_row',         //유형별 상품리스트 출력할 줄 수
-'de_mobile_listtype_img_width', //모바일 유형별 상품리스트 이미지폭
-'de_mobile_listtype_img_height',//모바일 유형별 상품리스트 이미지높이
-'de_mobile_listtype_list_mod',  //모바일 유형별 상품리스트 1줄당 이미지 수
-'de_mobile_listtype_list_row',  //모바일 유형별 상품리스트 출력할 줄 수
-'de_simg_width',                //이미지(소) 폭
-'de_simg_height',               //이미지(소) 높이
-'de_mimg_width',                //이미지(중) 폭
-'de_mimg_height',               //이미지(중) 높이
-'de_item_use_write',            //사용후기 작성
-'de_item_use_use',              //사용후기
-'de_level_sell',                //상품구입 권한
-'de_code_dup_use',              //코드 중복검사
-'de_cart_keep_term',            //장바구니 보관기간
-'de_guest_cart_use',            //비회원 장바구니
-'de_member_reg_coupon_use',     //신규회원 쿠폰발행 여부
-'de_member_reg_coupon_price',   //신규회원 쿠폰발행 쿠폰할인금액
-'de_member_reg_coupon_minimum', //주문최소금액
-'de_member_reg_coupon_term',    //쿠폰유효기간
-'cf_sms_use',                   //SMS 사용
-'cf_sms_type',                  //SMS 전송유형
-'de_sms_hp',                    //관리자 휴대폰번호
-'cf_icode_id',                  //아이코드 회원아이디
-'cf_icode_pw',                  //아이코드 비밀번호
-'de_sms_use1',                  //SMS 회원가입시 고객님께 발송
-'de_sms_use2',                  //SMS 주문시 고객님께 발송
-'de_sms_use3',                  //SMS 주문시 주문시 관리자에게 발송
-'de_sms_use4',                  //SMS 입금확인시 고객님께 발송
-'de_sms_use5',                  //SMS 상품배송시 고객님께 발송
-'cf_icode_server_ip',           // 아이코드 ip
-'cf_icode_server_port',         // 아이코드 port
-'de_root_index_use',			// 인덱스 루트
-'as_point',						// 포인트 결제
-'it_type1_name',
-'it_type1_color',
-'it_type2_name',
-'it_type2_color',
-'it_type3_name',
-'it_type3_color',
-'it_type4_name',
-'it_type4_color',
-'it_type5_name',
-'it_type5_color',
-'de_item_qa_level',
-'de_delivery_type_delivery1',
-'de_delivery_type_delivery2',
-'de_delivery_type_quick1',
-'de_delivery_type_quick2',
-'de_delivery_type_store',
-'de_delivery_type_autobike1',
-'de_delivery_type_autobike2',
-'de_delivery_type_damas1',
-'de_delivery_type_damas2',
-'de_delivery_type_huamul1',
-'de_delivery_type_huamul2',
-'de_delivery_type_gdhuamul1',
-'de_delivery_type_gdhuamul2',
-'de_delivery_type_nationwidehuamul1',
-'de_delivery_type_nationwidehuamul2',
-'de_delivery_type_bus1',
-'de_delivery_type_bus2',
-'it_grade0_name',
-'it_grade0_discount',
-'it_grade1_name',
-'it_grade1_discount',
-'it_grade2_name',
-'it_grade2_discount',
-'it_grade3_name',
-'it_grade3_discount',
+  'de_hope_date_use',             //희망배송일사용
+  'de_hope_date_after',           //희망배송일지정
+  'de_rel_img_width',             //관련상품출력 이미지폭
+  'de_rel_img_height',            //관련상품출력 이미지높이
+  'de_rel_list_mod',              //관련상품출력 1줄당 이미지 수
+  'de_rel_list_use',              //관련상품출력 출력여부
+  'de_mobile_rel_img_width',      //모바일 관련상품출력 이미지폭
+  'de_mobile_rel_img_height',     //모바일 관련상품출력 이미지높이
+  'de_mobile_rel_list_mod',       //모바일 관련상품출력 1줄당 이미지 수
+  'de_mobile_rel_list_use',       //모바일 관련상품출력 출력여부
+  'de_search_img_width',          //검색상품출력 이미지폭
+  'de_search_img_height',         //검색상품출력 이미지높이
+  'de_search_list_mod',           //검색상품출력 1줄당 이미지 수
+  'de_search_list_row',           //검색상품출력 출력할 줄 수
+  'de_mobile_search_img_width',   //모바일 검색상품출력 이미지폭
+  'de_mobile_search_img_height',  //모바일 검색상품출력 이미지높이
+  'de_mobile_search_list_mod',    //모바일 검색상품출력 1줄당 이미지 수
+  'de_mobile_search_list_row',    //모바일 검색상품출력 출력할 줄 수
+  'de_listtype_img_width',        //유형별 상품리스트 이미지폭
+  'de_listtype_list_mod',         //유형별 상품리스트 1줄당 이미지 수
+  'de_listtype_list_row',         //유형별 상품리스트 출력할 줄 수
+  'de_mobile_listtype_img_width', //모바일 유형별 상품리스트 이미지폭
+  'de_mobile_listtype_img_height',//모바일 유형별 상품리스트 이미지높이
+  'de_mobile_listtype_list_mod',  //모바일 유형별 상품리스트 1줄당 이미지 수
+  'de_mobile_listtype_list_row',  //모바일 유형별 상품리스트 출력할 줄 수
+  'de_simg_width',                //이미지(소) 폭
+  'de_simg_height',               //이미지(소) 높이
+  'de_mimg_width',                //이미지(중) 폭
+  'de_mimg_height',               //이미지(중) 높이
+  'de_item_use_write',            //사용후기 작성
+  'de_item_use_use',              //사용후기
+  'de_level_sell',                //상품구입 권한
+  'de_code_dup_use',              //코드 중복검사
+  'de_cart_keep_term',            //장바구니 보관기간
+  'de_guest_cart_use',            //비회원 장바구니
+  'de_member_reg_coupon_use',     //신규회원 쿠폰발행 여부
+  'de_member_reg_coupon_price',   //신규회원 쿠폰발행 쿠폰할인금액
+  'de_member_reg_coupon_minimum', //주문최소금액
+  'de_member_reg_coupon_term',    //쿠폰유효기간
+  'cf_sms_use',                   //SMS 사용
+  'cf_sms_type',                  //SMS 전송유형
+  'de_sms_hp',                    //관리자 휴대폰번호
+  'cf_icode_id',                  //아이코드 회원아이디
+  'cf_icode_pw',                  //아이코드 비밀번호
+  'de_sms_use1',                  //SMS 회원가입시 고객님께 발송
+  'de_sms_use2',                  //SMS 주문시 고객님께 발송
+  'de_sms_use3',                  //SMS 주문시 주문시 관리자에게 발송
+  'de_sms_use4',                  //SMS 입금확인시 고객님께 발송
+  'de_sms_use5',                  //SMS 상품배송시 고객님께 발송
+  'cf_icode_server_ip',           // 아이코드 ip
+  'cf_icode_server_port',         // 아이코드 port
+  'de_root_index_use',      // 인덱스 루트
+  'as_point',            // 포인트 결제
+  'it_type1_name',
+  'it_type1_color',
+  'it_type2_name',
+  'it_type2_color',
+  'it_type3_name',
+  'it_type3_color',
+  'it_type4_name',
+  'it_type4_color',
+  'it_type5_name',
+  'it_type5_color',
+  'de_item_qa_level',
+  'de_delivery_type_delivery1',
+  'de_delivery_type_delivery2',
+  'de_delivery_type_quick1',
+  'de_delivery_type_quick2',
+  'de_delivery_type_store',
+  'de_delivery_type_autobike1',
+  'de_delivery_type_autobike2',
+  'de_delivery_type_damas1',
+  'de_delivery_type_damas2',
+  'de_delivery_type_huamul1',
+  'de_delivery_type_huamul2',
+  'de_delivery_type_gdhuamul1',
+  'de_delivery_type_gdhuamul2',
+  'de_delivery_type_nationwidehuamul1',
+  'de_delivery_type_nationwidehuamul2',
+  'de_delivery_type_bus1',
+  'de_delivery_type_bus2',
+  'it_grade0_name',
+  'it_grade0_discount',
+  'it_grade1_name',
+  'it_grade1_discount',
+  'it_grade2_name',
+  'it_grade2_discount',
+  'it_grade3_name',
+  'it_grade3_discount',
 );
 
 foreach( $check_sanitize_keys as $key ){
-    $$key = isset($_POST[$key]) ? strip_tags(clean_xss_attributes($_POST[$key])) : '';
+  $$key = isset($_POST[$key]) ? strip_tags(clean_xss_attributes($_POST[$key])) : '';
+}
+
+for($i = 1; $i <= 15; $i++) {
+  $box_size = "de_box_size{$i}";
+  $de_box_size_name = "{$box_size}_name";
+  $de_box_size_width = "{$box_size}_width";
+  $de_box_size_length = "{$box_size}_length";
+  $de_box_size_height = "{$box_size}_height";
+  $$box_size = array(
+    clean_xss_tags($$de_box_size_name),
+    clean_xss_tags($$de_box_size_width),
+    clean_xss_tags($$de_box_size_length),
+    clean_xss_tags($$de_box_size_height)
+  );
+
+  $$box_size = implode(chr(30), $$box_size);
 }
 
 //
@@ -281,7 +297,7 @@ $sql = " update {$g5['g5_shop_default_table']}
                 de_admin_info_name            = '{$de_admin_info_name}',
                 de_admin_info_email           = '{$de_admin_info_email}',
                 de_root_index_use             = '{$de_root_index_use}',
-				de_shop_skin                  = '{$de_shop_skin}',
+                de_shop_skin                  = '{$de_shop_skin}',
                 de_shop_mobile_skin           = '{$de_shop_mobile_skin}',
                 de_type1_list_use             = '{$_POST['de_type1_list_use']}',
                 de_type1_list_skin            = '{$_POST['de_type1_list_skin']}',
@@ -446,7 +462,7 @@ $sql = " update {$g5['g5_shop_default_table']}
                 de_member_reg_coupon_term     = '{$de_member_reg_coupon_term}',
                 de_member_reg_coupon_price    = '{$de_member_reg_coupon_price}',
                 de_member_reg_coupon_minimum  = '{$de_member_reg_coupon_minimum}',
-                as_point					  = '{$as_point}',
+                as_point            = '{$as_point}',
                 de_it_type1_name              = '{$it_type1_name}',
                 de_it_type1_color              = '{$it_type1_color}',
                 de_it_type2_name              = '{$it_type2_name}',
@@ -482,8 +498,14 @@ $sql = " update {$g5['g5_shop_default_table']}
                 de_it_grade2_name                           = '{$it_grade2_name}',
                 de_it_grade2_discount                       = '{$it_grade2_discount}',
                 de_it_grade3_name                           = '{$it_grade3_name}',
-                de_it_grade3_discount                       = '{$it_grade3_discount}'
-				";
+                de_it_grade3_discount                       = '{$it_grade3_discount}',
+                de_box_size1 = '$de_box_size1',
+                de_box_size2 = '$de_box_size2',
+                de_box_size3 = '$de_box_size3',
+                de_box_size4 = '$de_box_size4',
+                de_box_size5 = '$de_box_size5',
+                de_box_size6 = '$de_box_size6'
+        ";
 sql_query($sql);
 
 // 환경설정 > 포인트 사용

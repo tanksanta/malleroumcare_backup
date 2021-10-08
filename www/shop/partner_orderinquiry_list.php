@@ -81,7 +81,8 @@ $result = sql_query("
     ct_is_direct_delivery,
     ct_direct_delivery_price,
     ct_direct_delivery_date,
-    ct_ex_date
+    ct_ex_date,
+    ct_barcode_insert
   {$sql_common}
   {$sql_order}
   {$sql_limit}
@@ -119,6 +120,8 @@ while($row = sql_fetch_array($result)) {
   $row['price'] = $price;
   $row['price_p'] = $price_p;
   $row['price_s'] = $price_s;
+
+  $row['ct_barcode_insert'] = $row['ct_barcode_insert'] ?: 0;
 
   // 배송정보
   $total_cnt_result = sql_fetch("
@@ -180,6 +183,9 @@ tr.hover { background-color: #fbf9f7 !important; }
 .td_operation { width: 150px }
 .td_operation a + a { margin-top: 5px; }
 .td_operation a { display: block; border: 1px solid #ddd; background: #fff; padding: 5px 8px; color: #666; border-radius: 3px; font-size: 12px; text-align: center; line-height: 15px; }
+.td_operation a.disabled {
+  background-color:#ddd;
+}
 
 #change_wrap { display: none; }
 .popModal { font-size: 12px; line-height: 22px; padding: 10px; cursor: default; }
@@ -334,12 +340,13 @@ tr.hover { background-color: #fbf9f7 !important; }
               </td>
               <td class="td_operation">
                 <a href="partner_orderinquiry_excel.php?od_id=<?=$row['od_id']?>" class="btn_instructor">작업지시서 다운로드</a>
-                <a href="javascript:void(0);" class="btn_delivery_info" data-id="<?=$row['od_id']?>">
-                  배송정보 (<?=$row['inserted_cnt']?>/<?=$row['total_cnt']?>)
+                <a href="javascript:void(0);" class="btn_delivery_info <?php echo $row['total_cnt'] === $row['inserted_cnt'] ? 'disabled' : ''; ?>" data-id="<?=$row['od_id']?>">
+                  배송정보
+                  <?php echo $row['inserted_cnt'] < $row['total_cnt'] ? "({$row['inserted_cnt']}/{$row['total_cnt']})" : '입력완료'; ?>
                 </a>
-                <a href="javascript:void(0);" class="btn_barcode_info" data-id="<?=$row['ct_id']?>">
+                <a href="javascript:void(0);" class="btn_barcode_info <?php echo $row['ct_barcode_insert'] === $row['ct_qty'] ? 'disabled' : ''; ?>" data-id="<?=$row['ct_id']?>">
                   <img src="/skin/apms/order/new_basic/image/icon_02.png" alt="">
-                  바코드
+                  바코드 <?php echo $row['ct_barcode_insert'] < $row['ct_qty'] ? "({$row['ct_barcode_insert']}/{$row['ct_qty']})" : '입력완료'; ?>
                 </a>
               </td>
             </tr>

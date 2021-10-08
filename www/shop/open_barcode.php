@@ -243,6 +243,14 @@ function receiveBarcode(tempBarcode) {
         return;
       }
 
+      if(isNaN(barcode)) {
+        $.toast('\'' + barcode + '\'는 숫자 이외의 문자가 포함되어있습니다. <br/> 다시스캔해주세요.', {
+          duration: 3000,
+          type: 'danger'
+        });
+        return;
+      }
+
       target.val(barcode);
       $.toast('\'' + barcode + '\'가 등록되었습니다.', {
         duration: 2000,

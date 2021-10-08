@@ -1294,6 +1294,21 @@ if(!sql_query(" select it_rental_use_persisting_year from {$g5['g5_shop_item_tab
           <input type="text" name="it_sc_add_sendcost" value="<?php echo $w == 'u' ? $it['it_sc_add_sendcost'] : '-1'; ?>" id="it_sc_add_sendcost" class="frm_input" size="8">원
         </td>
       </tr>
+      <tr>
+        <th scope="row"><label for="it_box_size_width">박스 규격</label></th>
+        <td>
+          <?php
+          echo help("합포장 자동계산이 필요한 경우 규격을 입력해주세요. 미 입력 시 계산에 포함되지 않습니다.");
+          $it_box_size = $w == 'u' ? explode(chr(30), $it['it_box_size']) : [];
+          ?>
+          <label for="it_box_size_width">가로:</label>
+          <input type="text" name="it_box_size_width" value="<?php echo $it_box_size[0] ?? ''; ?>" id="it_box_size_width" class="frm_input" size="5">
+          <label for="it_box_size_length">세로:</label>
+          <input type="text" name="it_box_size_length" value="<?php echo $it_box_size[1] ?? ''; ?>" id="it_box_size_length" class="frm_input" size="5">
+          <label for="it_box_size_height">높이:</label>
+          <input type="text" name="it_box_size_height" value="<?php echo $it_box_size[2] ?? ''; ?>" id="it_box_size_height" class="frm_input" size="5">
+        </td>
+      </tr>
     </tbody>
     </table>
   </div>

@@ -654,11 +654,9 @@ if($od["od_b_tel"]){
 
       if(flag){ return false;}
 
-      var pass = [];
+      var pass = {};
       $.each($('.chk_pass_barcode'), function(index, value) {
-        if ($(this).is(":checked")) {
-          pass.push($(this).data('ct-id'));
-        }
+        pass[$(this).data('ct-id')] = $(this).is(":checked");
       });
 
       var sendData = {

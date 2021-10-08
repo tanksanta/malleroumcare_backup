@@ -62,6 +62,8 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
   $row['index'] = $total_count - (($page - 1) * $page_rows) - $i;
   $ledger[] = $row;
 }
+
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 <div class="local_ov01 local_ov fixed">
   <h1 style="border:0;padding:5px 0;margin:0;">수금등록</h1>
@@ -91,15 +93,15 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
           </td>
         </tr>
         <tr>
-          <th>기준일</th>
+          <th>메모</th>
           <td>
-            <input type="text" name="lc_base_date" value="<?=date('Y-m-d')?>" id="lc_base_date" class="line" style="width:150px;">
+            <input type="text" name="lc_memo" value="" id="lc_memo" class="frm_input" autocomplete="off" style="width:400px;">
           </td>
         </tr>
         <tr>
-          <th>메모</th>
+          <th>기준일</th>
           <td>
-            <input type="text" name="lc_memo" value="" id="lc_memo" class="frm_input" autocomplete="off" style="width:400px;">
+            <input type="text" name="lc_datetime" value="<?php echo date('Y-m-d', time()); ?>" id="lc_datetime" class="frm_input" autocomplete="off" style="width:150px;">
           </td>
         </tr>
       </tbody>
@@ -124,7 +126,6 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
         <th>일시</th>
         <th>분류</th>
         <th>금액</th>
-        <th>기준일</th>
         <th>메모</th>
         <th>등록</th>
       </tr>
@@ -141,7 +142,6 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
         <td class="td_datetime"><?=date('Y-m-d H:i', strtotime($row['lc_created_at']))?></td>
         <td class="td_payby"><?=$row['lc_type_txt']?></td>
         <td class="td_numsum td_itopt"><?=number_format($row['lc_amount'])?></td>
-        <td class="td_datetime"><?=$row['lc_base_date']?></td>
         <td><?=get_text($row['lc_memo'])?></td>
         <td class="td_payby"><?=$row['created_by']?></td>
       </tr>
@@ -153,6 +153,8 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
 
 <script>
 $(function() {
+  $("#lc_datetime").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99", maxDate: "+365d" });
+
   // 목록 버튼
   $('#btn_list').click(function() {
     location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_search.php";

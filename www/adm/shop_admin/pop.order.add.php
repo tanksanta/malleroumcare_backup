@@ -122,6 +122,7 @@ include_once('./pop.head.php');
                 </td>
                 <td>
                     <div class="it_option">
+                        <input type="hidden" name="io_id[]">
                         -
                     </div>
                 </td>
@@ -272,7 +273,8 @@ $(function() {
                     $(parent).find('.it_option select').focus();
                 }, 10);
             } else {
-                $(parent).find('.it_option').text('-');
+                var option_html = "<input type=\"hidden\" name=\"io_id[]\" value=\"\">";
+                $(parent).find('.it_option').html(option_html).append('-');
                 $(parent).find('input[name="qty[]"]').focus();
             }
 
@@ -310,7 +312,7 @@ $(function() {
         cache: true, // cache
         searchContain: true, // %검색어%
         noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
-        visibleProperties: ["mb_name", "mb_giup_addr"],
+        visibleProperties: ["mb_name", "mb_nick"],
         visibleClassName: 'mb_id',
         searchIn: ["mb_id","mb_name","mb_nick","mb_tel", "mb_hp","mb_email"],
         selectionRequired: true,

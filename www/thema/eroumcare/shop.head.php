@@ -607,7 +607,7 @@ if($is_main && !$is_member) {
               </li>
               <li>
                 <div>· Email</div>
-                <div>ceyoon2066@thkc.co.kr</div>
+                <div><?php echo $default['de_admin_info_email']; ?></div>
               </li>
               <li>
                 <div>· Fax</div>
@@ -630,7 +630,7 @@ if($is_main && !$is_member) {
           <div class="at-content">
             <?php
             $tutorials = get_tutorials();
-            if (($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials && $tutorials['completed_count'] < 4) || $open_tutorial_popup) {
+            if (($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials && $tutorials['completed_count'] < 4 && !$is_admin) || $open_tutorial_popup) {
               $tutorial_percent = round($tutorials['completed_count'] / 4 * 100);
               $tutorial_percent = $tutorial_percent < 5 ? 5 : $tutorial_percent;
             ?>

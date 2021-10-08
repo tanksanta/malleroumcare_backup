@@ -2069,7 +2069,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
             <div class="block">
                 <?php if($mb['mb_id']) { ?>
                 <a href="<?php echo G5_ADMIN_URL; ?>/member_form.php?&w=u&mb_id=<?php echo $mb['mb_id']; ?>" target="_blank" class="h2">
-                    <?php echo $mb['mb_name']; ?><span>(<?php echo $mb['mb_id']; ?>)</span>
+                    <?php echo $mb['mb_name']; ?><span>(<?php echo $mb['mb_temp'] ? '임시회원' : $mb['mb_id']; ?>)</span>
                 </a>
                 <?php }else{ ?>
                     <a href="#" class="h2">비회원</a>

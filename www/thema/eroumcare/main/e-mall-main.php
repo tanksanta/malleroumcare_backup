@@ -371,7 +371,7 @@ $tutorials = get_tutorials();
 ?>
 
 <?php 
-if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials) { 
+if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials && !$is_admin) { 
 ?>
 	<script>
 		show_eroumcare_popup({
@@ -391,7 +391,7 @@ if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials) {
 <?php } ?>
 
 <?php 
-if ($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials) { 
+if ($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials && !$is_admin) {
 ?>
 	<?php 
 	$t_recipient_add = get_tutorial('recipient_add');

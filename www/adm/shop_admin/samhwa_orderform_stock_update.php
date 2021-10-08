@@ -2,10 +2,10 @@
 include_once("./_common.php");
 
 if ($pass) {
-	foreach($pass as $ct_id) {
+	foreach($pass as $ct_id => $is_pass) {
 		sql_query("
 			UPDATE g5_shop_cart SET
-				ct_barcode_insert = ct_qty
+				ct_barcode_insert = " . ($is_pass === 'true' ? 'ct_qty' : '0') . "
 			WHERE ct_id = '{$ct_id}'
 		");
 	}

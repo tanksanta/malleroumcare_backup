@@ -923,7 +923,7 @@ function show_eroumcare_popup(c) {
     hideBtn: {
       text: '닫기',
     },
-    hideOneWeekBtn: false,
+    hideOneWeekBtn: true,
   };
 
   var config = $.extend({}, defaultConfig, c);
@@ -934,43 +934,69 @@ function show_eroumcare_popup(c) {
     return;
   }
 
-  var html = '' +
-  '<div class="eroumcare-popup ' +
-  randomClass +
-  '">' +
-  '<i class="fa fa-close fa-lg eroumcare-popup-close close-eroumcare-popup"></i>' +
-  '<div class="eroumcare-popup-content">' +
-  '<h3>' +
-  config.title +
-  '</h3>' +
-  '<p>' +
-  config.content +
-  '</p>' +
-  '<div class="eroumcare-popup-buttons">' +
-  '<a href="' +
-  g5_url +
-  config.activeBtn.href +
-  '" class="active">' +
-  config.activeBtn.text +
-  '</a>' +
-  '<a href="#" class="close-eroumcare-popup">' +
-  config.hideBtn.text +
-  '</a>' +
-  '</div>' +
-  '</div>'
-  ;
-
+  var html =
+    '' +
+    '<div class="eroumcare-popup ' +
+    randomClass +
+    '">' +
+    '<i class="fa fa-close fa-lg eroumcare-popup-close close-eroumcare-popup"></i>' +
+    '<div class="eroumcare-popup-content">' +
+    '<h3>' +
+    config.title +
+    '</h3>' +
+    '<p>' +
+    config.content +
+    '</p>' +
+    '<div class="eroumcare-popup-buttons">' +
+    '<a href="' +
+    g5_url +
+    config.activeBtn.href +
+    '" class="active">' +
+    config.activeBtn.text +
+    '</a>' +
+    '<a href="#" class="close-eroumcare-popup">' +
+    config.hideBtn.text +
+    '</a>' +
+    '</div>' +
+    '</div>';
   if (config.hideOneWeekBtn) {
     html += '<div class="eroumcare-popup-week">';
-    html += '<label class="checkbox" for="eroumcare-popup-week-btn-' + randomClass  + '"><input id="eroumcare-popup-week-btn-' + randomClass  + '" class="eroumcare-popup-week-btn" type="checkbox">1주일동안 보지 않기</label>'
+    html +=
+      '<label class="checkbox" for="eroumcare-popup-week-btn-' +
+      randomClass +
+      '"><input id="eroumcare-popup-week-btn-' +
+      randomClass +
+      '" class="eroumcare-popup-week-btn" type="checkbox">1주일동안 보지 않기</label>';
+    html += '<a href="#" class="eroumcare-popup-end-btn">체험프로세스 중단</a>';
     html += '</div>';
 
     $(document).on(
       'click',
       '.' + randomClass + ' .eroumcare-popup-week-btn',
       function () {
-        set_cookie('eroumcare_popup_week_hide_' + config.id, 1, 24 * 7, g5_cookie_domain);
+        set_cookie(
+          'eroumcare_popup_week_hide_' + config.id,
+          1,
+          24 * 7,
+          g5_cookie_domain
+        );
         hide_eroumcare_popup();
+      }
+    );
+
+    $(document).on(
+      'click',
+      '.' + randomClass + ' .eroumcare-popup-end-btn',
+      function () {
+        if (!confirm('모든 체험프로세스를 중단하시겠습니까?')) return;
+        $.post('/shop/ajax.tutorial.end.php')
+          .done(function () {
+            window.location.reload();
+          })
+          .fail(function ($xhr) {
+            var data = $xhr.responseJSON;
+            alert(data && data.message);
+          });
       }
     );
   }
@@ -1018,22 +1044,22 @@ $(function () {
   }, 1000);
 });
 
-$.fn.serializeObject = function() {
-  "use strict"
-  var result = {}
-  var extend = function(i, element) {
-    var node = result[element.name]
-    if ("undefined" !== typeof node && node !== null) {
+$.fn.serializeObject = function () {
+  'use strict';
+  var result = {};
+  var extend = function (i, element) {
+    var node = result[element.name];
+    if ('undefined' !== typeof node && node !== null) {
       if ($.isArray(node)) {
-        node.push(element.value)
+        node.push(element.value);
       } else {
-        result[element.name] = [node, element.value]
+        result[element.name] = [node, element.value];
       }
     } else {
-      result[element.name] = element.value
+      result[element.name] = element.value;
     }
-  }
+  };
 
-  $.each(this.serializeArray(), extend)
-  return result
-}
+  $.each(this.serializeArray(), extend);
+  return result;
+};
