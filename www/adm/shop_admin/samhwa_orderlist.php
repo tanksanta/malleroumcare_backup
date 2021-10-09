@@ -347,6 +347,11 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <input type="checkbox" name="partner_issue[]" id="partner_issue_2" value="2" title="" <?php echo option_array_checked('2', $partner_issue); ?>><label for="partner_issue_2">상품추가</label>
             <input type="checkbox" name="partner_issue[]" id="partner_issue_3" value="3" title="" <?php echo option_array_checked('3', $partner_issue); ?>><label for="partner_issue_3">미설치</label>
           </div>
+          <div class="linear">
+            <span class="linear_span">이슈사항</span>
+            <input type="checkbox" name="issue_1" id="issue_1" value="1" title="" <?php echo option_array_checked('1', $issue_1); ?>><label for="issue_1">출고준비 3일 경과</label>
+            <input type="checkbox" name="issue_2" id="issue_2" value="1" title="" <?php echo option_array_checked('1', $issue_2); ?>><label for="issue_2">취소/반품 요청</label>
+          </div>
         </td>
       </tr>
 

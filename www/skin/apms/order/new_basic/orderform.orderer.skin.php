@@ -2025,6 +2025,10 @@ $(function() {
       $('.quick_explain').hide();
     }
   });
+
+  $('#order_recipientBox').click(function(e) {
+    $("#order_recipientBox").hide();
+  });
 });
 </script>
 
