@@ -13,7 +13,8 @@ $sql = "SELECT
   mb_hp,
   CONCAT(mb_giup_addr1, mb_giup_addr2) as mb_giup_addr,
   REPLACE(mb_name, ' ', '') as mb_name_no_space,
-  REPLACE(mb_nick, ' ', '') as mb_nick_no_space
+  REPLACE(mb_nick, ' ', '') as mb_nick_no_space,
+  mb_level
 FROM
   g5_member
 WHERE

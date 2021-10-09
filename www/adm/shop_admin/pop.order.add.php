@@ -66,11 +66,11 @@ include_once('./pop.head.php');
                 <col width="5%" />
                 <col />
                 <col width="15%" />
-                <col width="9%" />
-                <col width="10%" />
-                <col width="10%" />
                 <col width="7%" />
-                <col width="20%" />
+                <col width="10%" />
+                <col width="8%" />
+                <col width="8%" />
+                <col width="13%" />
                 <col width="30px" />
             </colgroup>
             <thead>
@@ -148,6 +148,82 @@ include_once('./pop.head.php');
         </tbody>
     </table>
 
+    <div class="pop_order_delivery">
+        <div class="header">
+            <h5 class="h5_header">배송정보</h5>
+        </div>
+        <div class="pop_order_delivery_table">
+            <table>
+                <colgroup>
+                    <col width="7%" />
+                    <col width="10%" />
+                    <col width="15%" />
+                    <col />
+                    <col width="40px" />
+                </colgroup>
+                <thead>
+                    <tr class="head">
+                        <th>
+                            배송지명
+                        </th>
+                        <th>
+                            이름
+                        </th>
+                        <th>
+                            전화번호
+                        </th>
+                        <th>
+                            주소
+                        </th>
+                        <th>
+                            선택
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="5">
+                            <p style="text-align:center; padding: 100px 0;">
+                                사업소를 먼저 검색해주세요.
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pop_order_address">
+        <table>
+            <tbody>
+                <tr>
+                    <th>이름</th>
+                    <td>
+                        <div>
+                            <input type="text" name="od_b_name" value="" class="frm_input">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>연락처</th>
+                    <td>
+                        <div>
+                            <input type="text" name="od_b_tel" value="" class="frm_input">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>주소</th>
+                    <td>
+                        <div>
+                            <input type="text" name="od_b_addr1" value="" class="frm_input wide">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <div id="popup_buttom">
         <div class="addoptionbuttons">
             <a href='#' class="order_add_close">
@@ -163,11 +239,33 @@ include_once('./pop.head.php');
 
 var loading = false;
 
+// 기본 설정
+var mb_level = 3;
+var item_sale_obj = {};
+
 function formcheck(f) {
     var val, io_type, result = true;
 
     if (!$("input[name^=mb_id]").val()) {
         alert("사업소를 입력하세요.");
+        result = false;
+        return false;
+    }
+
+    if (!$("input[name^=od_b_name]").val()) {
+        alert("이름을 입력하세요.");
+        result = false;
+        return false;
+    }
+
+    if (!$("input[name^=od_b_tel]").val()) {
+        alert("연락처를 입력하세요.");
+        result = false;
+        return false;
+    }
+
+    if (!$("input[name^=od_b_addr1]").val()) {
+        alert("주소를 입력하세요.");
         result = false;
         return false;
     }
@@ -288,6 +386,31 @@ $(function() {
             // 기본가격 저장
             $(parent).find('.price').val(obj.it_price);
 
+            // 묶음 할인 저장
+            item_sale_obj[obj.id] = {
+                it_sale_cnt: [
+                    obj.it_sale_cnt,
+                    obj.it_sale_cnt_02,
+                    obj.it_sale_cnt_03,
+                    obj.it_sale_cnt_04,
+                    obj.it_sale_cnt_05,
+                ],
+                it_sale_percent: [
+                    obj.it_sale_percent,
+                    obj.it_sale_percent_02,
+                    obj.it_sale_percent_03,
+                    obj.it_sale_percent_04,
+                    obj.it_sale_percent_05,
+                ],
+                it_sale_percent_great: [
+                    obj.it_sale_percent_great,
+                    obj.it_sale_percent_great_02,
+                    obj.it_sale_percent_great_03,
+                    obj.it_sale_percent_great_04,
+                    obj.it_sale_percent_great_05
+                ],
+            }
+
             if ($(parent).index() + 1 >= $('.pop_order_add_item_table tbody tr').length) {
                 $('.add_cart').click();
             }
@@ -313,15 +436,78 @@ $(function() {
         searchContain: true, // %검색어%
         noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
         visibleProperties: ["mb_name", "mb_nick"],
-        visibleClassName: 'mb_id',
+        // visibleClassName: 'mb_id',
         searchIn: ["mb_id","mb_name","mb_nick","mb_tel", "mb_hp","mb_email", "mb_name_no_space", "mb_nick_no_space"],
         selectionRequired: true,
         focusFirstResult: true,
+        visibleCallback: function($li, item, options) {
+            var $item = {};
+            $item = $('<span>')
+                .html(item.mb_name + " (" + item.mb_nick + ")");
+
+            $item.appendTo($li);
+            return $li;
+        },
     }).on("select:flexdatalist",function(event, obj, options){
         $('#mb_id_flexdatalist_result').text(
             obj.mb_name + "(" + obj.mb_id + ")" + " / HP: " + obj.mb_hp + " / Tel: " + obj.mb_tel
-        )
+        );
+
+        mb_level = obj.mb_level;
+        
+        // 수급자 정보
+        var ajax = $.ajax({
+            method: "GET",
+            url: '/adm/ajax.get_member_address.php',
+            data: {
+                mb_id: obj.mb_id,
+            },
+        })
+        .done(function(data) {
+            if (data.data.length) {
+                $('.pop_order_delivery_table tbody').html('');
+            } else {
+                $('.pop_order_delivery_table tbody').html("<tr><td colspan=5><p style='text-align:center; padding: 100px 0;'>내용이 없습니다</p></td></tr>");
+            }
+
+            var html = "";
+
+            $.each(data.data, function(index, item){
+                html += "<tr>";
+                html += "<td class='ad_subject'>" + (item.ad_subject || '-') + "</td>";
+                html += "<td class='ad_name'>" + (item.ad_name || '-') + "</td>";
+                html += "<td class='ad_tel'>" + (auto_phone_hypen(item.ad_tel)) + "<br>" + (item.ad_hp || '-') + "</td>";
+                html += "<td class='ad_addr'>" + ((item.ad_addr1 + item.ad_addr2) || '-') + "</td>";
+                html += "<td><input type='button' class='shbtn small apply_address' value='선택' data-name='" + item.ad_name + "' data-tel='" + item.ad_tel + "' data-addr='" + (item.ad_addr1 + item.ad_addr2) + "'></td>";
+                html += "</tr>";
+            });
+
+            $('.pop_order_delivery_table tbody').html(html);
+
+            // 사업소 기본 회원정보 클릭
+            try {
+                setTimeout(function() {
+                    $('.apply_address')[0].click();
+                }, 100);
+            } catch (e) {}
+
+            $('.pop_order_delivery_table').show();
+
+        });
+
         $('.item_flexdatalist').first().next().focus();
+    });
+
+    $(document).on("click", ".apply_address", function (e) {
+        e.preventDefault();
+
+        var name = $(this).data('name');
+        var tel = $(this).data('tel');
+        var addr = $(this).data('addr');
+
+        $('input[name="od_b_name"]').val(name);
+        $('input[name="od_b_tel"]').val(tel);
+        $('input[name="od_b_addr1"]').val(addr);
     });
 
     $(document).on("click", ".delete_cart", function () {
@@ -371,6 +557,31 @@ $(function() {
         it_price = it_price ? parseInt( it_price, 10 ) : 0;
         var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
         qty = qty ? parseInt( qty, 10 ) : 0;
+
+        if ($(this).attr('name') === 'qty[]') {
+
+            var it_id = $(parent).find('input[name="it_id[]"]').val();
+            var it_sale_cnt = 0;
+
+            // 묶음 할인
+            if (item_sale_obj[it_id]['it_sale_cnt']) {
+                for(var sale_cnt = 0; sale_cnt < item_sale_obj[it_id]['it_sale_cnt'].length; sale_cnt++){
+                    var temp = parseInt(item_sale_obj[it_id]['it_sale_cnt'][sale_cnt])
+                    if(temp <= qty){
+                        if(it_sale_cnt < temp){
+                            it_sale_cnt = temp;
+                            it_price = mb_level === 4 ? item_sale_obj[it_id]['it_sale_percent_great'][sale_cnt] : item_sale_obj[it_id]['it_sale_percent'][sale_cnt];
+                        }
+                    }
+                }
+            }
+            
+            if (parseInt(it_price, 10) !== parseInt($(parent).find('input[name="it_price[]"]').val().replace(/[\D\s\._\-]+/g, ""), 10)) {
+                $(parent).find('input[name="it_price[]"]').animate({'opacity': 0} ,50 , function () {
+                    $(parent).find('input[name="it_price[]"]').animate({'opacity': 1}, 50);
+                });
+            }
+        }
 
         // 단가
         if ($(this).attr('name') === 'it_price[]') {
@@ -446,6 +657,12 @@ $(function() {
         } else {
             $(this).val('');
         }
+    });
+
+    $('input[name="od_b_tel"]').on('keyup', function() {
+      var num = $(this).val();
+      num.trim();
+      this.value = auto_phone_hypen(num) ;
     });
 
     // 초기

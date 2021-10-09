@@ -8,8 +8,24 @@ $sql = "SELECT
   it_id,
   it_name,
   it_model,
-  it_price, REPLACE(a.it_name, ' ', '') as it_name_no_space,
-  ca_id
+  it_price,
+  REPLACE(a.it_name, ' ', '') as it_name_no_space,
+  ca_id,
+  it_sale_cnt,
+  it_sale_cnt_02,
+  it_sale_cnt_03,
+  it_sale_cnt_04,
+  it_sale_cnt_05,
+  it_sale_percent,
+  it_sale_percent_02,
+  it_sale_percent_03,
+  it_sale_percent_04,
+  it_sale_percent_05,
+  it_sale_percent_great,
+  it_sale_percent_great_02,
+  it_sale_percent_great_03,
+  it_sale_percent_great_04,
+  it_sale_percent_great_05
   FROM
     {$g5['g5_shop_item_table']} a
   WHERE
@@ -27,8 +43,6 @@ $sql = "SELECT
         a.ca_id LIKE '70%'
       )
 ";
-// 대여제품은 선택 불가
-// OR a.ca_id LIKE '20%'
 
 $result = sql_query($sql);
 
