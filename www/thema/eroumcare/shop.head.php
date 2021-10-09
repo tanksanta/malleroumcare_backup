@@ -346,6 +346,12 @@ if($is_main && !$is_member) {
               시스템문의 : 02-830-1301 (월~금 09:00~18:00)
             </div>
             <?php } ?>
+            <?php if($member['mb_type'] === 'default') { ?>
+            <a href="https://988.co.kr" target="_blank" class="remote_link">
+              원격지원 바로가기
+              <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </a>
+            <?php } ?>
             <?php if($show_partner_menu) { ?>
             <div class="balance_info flex-justify">
               <div class="balance_title">신용거래 (<?php echo date('n');?>월)</div>

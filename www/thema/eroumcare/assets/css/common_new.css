@@ -806,6 +806,7 @@ pre{white-space: pre-wrap;}
 .side_menu_area .user_info_area .point_info { padding: 5px 0; color: #666; font-size: 12px; }
 .side_menu_area .user_info_area .point_info .point .win_point { padding: 5px; color: #959594; }
 .side_menu_area .user_info_area .manager_info { margin: 5px 0 10px 0; padding: 5px; border-radius: 3px; background-color: #f1efea; font-size: 12px; text-align: center; color: #333; }
+.side_menu_area .user_info_area .remote_link { display: block; margin: 10px 0; padding: 5px; border-radius: 3px; border: 1px solid #ddd; font-size: 14px; text-align: center; color:#666; }
 .side_menu_area .user_info_area .balance_info { font-size: 14px; color: #333; padding: 10px 0; border-top: 1px solid #e0e0e0; }
 .side_menu_area .user_info_area .balance_info .balance_title { font-weight: 600; }
 .side_menu_area .user_info_area .order_info { font-size: 12px; color: #333; }
