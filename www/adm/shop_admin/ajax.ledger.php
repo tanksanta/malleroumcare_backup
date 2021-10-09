@@ -10,6 +10,7 @@ $mb_id = sql_real_escape_string($_POST['mb_id']);
 $lc_type = intval($_POST['lc_type']);
 $lc_amount = intval(str_replace(',', '', $_POST['lc_amount']));
 $lc_memo = sql_real_escape_string($_POST['lc_memo']);
+$lc_base_date = sql_real_escape_string($_POST['lc_base_date']);
 
 // 값 검증
 if(!$mb_id)
@@ -41,7 +42,8 @@ $result = sql_query("
     lc_amount = '{$lc_amount}',
     lc_memo = '{$lc_memo}',
     lc_created_at = '{$datetime}',
-    lc_created_by = '{$member['mb_id']}'
+    lc_created_by = '{$member['mb_id']}',
+    lc_base_date = '{$lc_base_date}'
 ");
 
 if(!$result)

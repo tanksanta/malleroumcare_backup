@@ -19,8 +19,8 @@ $report = sql_fetch("
 if(!$report || !$report['ct_id'])
   json_response(400, '설치보고서가 존재하지 않습니다.');
 
-if(!$report['ir_cert_url'])
-  json_response(400, '설치 확인서 파일을 등록해주세요.');
+// if(!$report['ir_cert_url'])
+//   json_response(400, '설치 확인서 파일을 등록해주세요.');
 
 $ir_issue = sql_real_escape_string($_POST['ir_issue']);
 $ir_is_issue_1 = (int)$ir_is_issue_1;

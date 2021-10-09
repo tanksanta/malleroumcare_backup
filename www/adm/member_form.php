@@ -478,12 +478,12 @@ label {
     <tr>
         <?php
         if ($w != 'u') {
-            $mb_thezone_placeholder = "등록 시 자동으로 발급됩니다.";
+            // $mb_thezone_placeholder = "등록 시 자동으로 발급됩니다.";
         }
         ?>
         <th scope="row">고객(거래처)코드</th>
         <td colspan="3">
-            <input type="text" name="mb_thezone" value="<?php echo $mb['mb_thezone'] ?>" id="mb_thezone" class="frm_input" size="35" maxlength="50" placeholder="<?php echo $mb_thezone_placeholder ?>" <?php echo $w == '' ? 'readonly' : '' ?>>
+            <input type="text" name="mb_thezone" value="<?php echo $mb['mb_thezone'] ?>" id="mb_thezone" class="frm_input" size="30" maxlength="50" placeholder="<?php echo $mb_thezone_placeholder ?>">
         </td>
     </tr>
     

@@ -289,8 +289,19 @@ function get_ledger_history_recent($mb_id) {
   </table>
   <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
 </div>
+<div class="l_btn_area" style="margin: 20px;">
+  <a href="./downloadledgerexcel.php" style="padding: 8px 12px 8px 12px;">수금등록 일괄 업로드 양식 다운로드</a>
+  <a href="./uploadledgerexcel.php" onclick="return excelform(this.href);" target="_blank" style="padding: 8px 12px 8px 12px;">수금등록 일괄 업로드</a>
+</div>
 
 <script>
+function excelform(url)
+{
+    var opt = "width=600,height=450,left=10,top=10";
+    window.open(url, "win_excel", opt);
+    return false;
+}
+
 $(function() {
   // 영업담당자 - 전체 버튼
   $('#chk_mb_manager_all').change(function() {
@@ -459,6 +470,28 @@ function send_fax(btn) {
 }
 
 function request_ajax_send(send_data) {
+  $.ajax({
+      method: "POST",
+      url: "/adm/shop_admin/ajax.ledger.send.php",
+      data: {
+          'send_data': send_data
+      },
+      beforeSend : function() {
+          $('.ajax-loader').css("visibility", "visible");
+      },
+  })
+  .done(function(data) {
+    $('.ajax-loader').css("visibility", "hidden");
+    if ( data.msg ) {
+        alert(data.msg);
+    }
+    if ( data.result === 'success' ) {
+        location.reload();
+    }
+  })
+}
+
+function upload_ledger_excel(send_data) {
   $.ajax({
       method: "POST",
       url: "/adm/shop_admin/ajax.ledger.send.php",
