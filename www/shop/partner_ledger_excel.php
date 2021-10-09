@@ -25,8 +25,8 @@ if(! function_exists('column_char')) {
 include_once(G5_LIB_PATH.'/PHPExcel.php');
 
 $title = ["회사명 : (주)티에이치케이컴퍼니/{$member['mb_entNm']}/{$fr_date} ~ {$to_date}"];
-$headers = ['일자-주문번호', '품목명[규격]', '수량', '단가(Vat포함)', '공급가액', '부가세', '판매', '수금', '잔액', '수령인'];
-$widths = [25, 20, 6, 12, 12, 12, 12, 12, 12, 15];
+$headers = ['일자-주문번호', '품목명[규격]', '수량', '단가(Vat포함)', '공급가액', '부가세', '판매', '수금', '잔액', '수령인', '설치정보(배송자명/연락처/바코드)'];
+$widths = [25, 20, 6, 12, 12, 12, 12, 12, 12, 15, 30];
 $last_char = column_char(count($headers) - 1);
 
 $rows = [];
@@ -42,6 +42,7 @@ if($carried_balance && !($sel_field && $search) && !$price) {
     '',
     '',
     $carried_balance,
+    '',
     ''
   ];
 }
@@ -55,6 +56,40 @@ $total_sales = 0;
 $total_deposit = 0;
 
 foreach($ledgers as $row) {
+  $install_info = '';
+
+  if($row['ct_id']) {
+    $sql = "
+      SELECT * FROM {$g5['g5_shop_cart_table']} 
+      WHERE ct_id = '{$row['ct_id']}' and ct_direct_delivery_partner = '{$member['mb_id']}'
+    ";
+    $ct = sql_fetch($sql);
+
+    // 설치배송이면
+    if($ct['ct_delivery_company'] === 'install') {
+      $install_info = $ct['ct_delivery_num'];
+
+      $sto_id = [];
+      foreach(array_filter(explode('|', $ct['stoId'])) as $id) {
+        $sto_id[] = $id;
+      }
+    
+      $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
+        'stoId' => implode('|', $sto_id)
+      ), 443);
+    
+      $barcodes = [];
+      if($stock_result['data']) {
+        foreach($stock_result['data'] as $data) {
+          $barcodes[] = $data['prodBarNum'];
+        }
+      }
+      $barcodes = implode(',', $barcodes);
+
+      $install_info .= ' / ' . $barcodes;
+    }
+  }
+
   $rows[] = [
     date('y/m/d', strtotime($row['od_time'])).($row['od_id'] ? '-'.$row['od_id'] : ''),
     $row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " [{$row['ct_option']}]" : ''),
@@ -65,7 +100,8 @@ foreach($ledgers as $row) {
     $row['sales'],
     $row['deposit'],
     $row['balance'],
-    $row['od_b_name']
+    $row['od_b_name'],
+    $install_info
   ];
 
   $total_qty += $row['ct_qty'];
@@ -112,8 +148,8 @@ $excel->getDefaultStyle()->applyFromArray($styleArray);
 $excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(17);
 
 // 폰트&볼드 처리
-$excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setSize(11);
-$excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setBold(true);
+$excel->getActiveSheet()->getStyle('A1:K2')->getFont()->setSize(11);
+$excel->getActiveSheet()->getStyle('A1:K2')->getFont()->setBold(true);
 
 // number format 처리
 $excel->getActiveSheet()->getStyle('C3:I'.(count($rows) + 3))->getNumberFormat()->setFormatCode('#,##0_-');
@@ -126,7 +162,7 @@ $styleArray = array(
     )
   )
 );
-$excel->getActiveSheet()->getStyle('A2:J'.(count($rows) + 3))->applyFromArray($styleArray);
+$excel->getActiveSheet()->getStyle('A2:K'.(count($rows) + 3))->applyFromArray($styleArray);
 
 foreach($widths as $i => $w) $excel->setActiveSheetIndex(0)->getColumnDimension( column_char($i) )->setWidth($w);
 $excel->getActiveSheet()->fromArray($data);
