@@ -87,6 +87,16 @@ if ($sel_field == 'od_all' && $search != "") {
   $where[] = "(".implode(' or ', $sel_arr).")";
 }
 
+// 출고준비 3일경과만 보기
+if($issue_1) {
+  $where[] = " ( ct_status = '출고준비' and DATE(ct_move_date) <= (CURDATE() - INTERVAL 3 DAY ) ) ";
+}
+
+// 취소/반품요청 있는 주문만 보기
+if($issue_2) {
+  $where[] = " ( select count(*) from g5_shop_order_cancel_request where approved = 0 and od_id = o.od_id ) > 0 ";
+}
+
 if ( $od_sales_manager ) {
   $where_od_sales_manager = array();
   for($i=0;$i<count($od_sales_manager);$i++) {
@@ -672,6 +682,17 @@ foreach($orderlist as $order) {
   }
   if($order['ct_is_delivery_excel_downloaded']) {
     $direct_delivery_text .= '<br><span class="excel_done" style="color: #FF6600">엑셀 다운로드 완료</span>';
+  }
+
+  // 출고준비로 변경 후 3일 지난 주문 강조
+  if($order['ct_status'] === '출고준비') {
+    $today = new DateTime(date('Y-m-d'));
+    $target = new DateTime(date('Y-m-d', strtotime($order['ct_move_date'])));
+    $daysbetween = intval($today->diff($target)->format('%a'));
+
+    if($daysbetween >= 3) {
+      $ct_status_text .= '<br><span style="color: red">3일경과</span>';
+    }
   }
 
   $ret['data'] .= "
