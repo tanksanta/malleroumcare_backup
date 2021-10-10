@@ -1484,6 +1484,10 @@ display: none;
     font-size: 1.15em;
 }
 
+.pop_order_address {
+    margin-bottom: 50px;
+}
+
 .pop_order_address table {
     width: 100%;
     font-size: 12px;
