@@ -17,12 +17,14 @@ if ( $depth >= 4 ) {
   $two_cate_result = sql_fetch($sql);
 }
 
-$next_category = array();
 $sql = "SELECT * FROM g5_shop_category where ( length(ca_id) = 4 and ca_id like '"
     . substr($ca_id, 0, 2)
     . "%' ) ORDER BY ca_order, ca_id ASC";
-
 $res3 = sql_query($sql);
+
+$ca_sub_name_table = [];
+$categories = [];
+$sub_categories = [];
 while( $row3 = sql_fetch_array($res3) ) {
   // 해당 분류에 속한 상품의 수
   /*$sql1 = " select COUNT(*) as cnt from {$g5['g5_shop_item_table']}
@@ -35,7 +37,19 @@ while( $row3 = sql_fetch_array($res3) ) {
   $row1 = sql_fetch($sql1);
   $row3['cnt'] = $row1['cnt'];*/
 
-  $next_category[] = $row3;
+  // 3 depth 서브 카테고리 조회
+  $sql = " SELECT * FROM g5_shop_category WHERE ( length(ca_id) = 6 and ca_id like '{$row3['ca_id']}%' ) ORDER BY ca_order, ca_id ASC ";
+  $sub_result = sql_query($sql);
+  while($sub = sql_fetch_array($sub_result)) {
+    if(!$sub_categories[$row3['ca_id']])
+      $sub_categories[$row3['ca_id']] = [];
+    $sub_categories[$row3['ca_id']][] = $sub;
+
+    $ca_sub_name_table[substr($sub['ca_id'], 2)] = $row3['ca_name'].'('.$sub['ca_name'].')';
+  }
+
+  $ca_sub_name_table[substr($row3['ca_id'], 2)] = $row3['ca_name'];
+  $categories[] = $row3;
 }
 
 /*$prodCount = sql_fetch("
@@ -68,7 +82,6 @@ if($sort) $sort_url .= "&sort=$sort";
 if($sortodr) $sort_url .= "&sortodr=$sortodr";
 $sup_url = "";
 if($prodSupYn) $sup_url .= "&prodSupYn=$prodSupYn";
-// print_r2($next_category);
 $q_url = "";
 if($q) $q_url .= "&q=$q";
 
@@ -76,7 +89,6 @@ if($q) $q_url .= "&q=$q";
 $list_page = $_SERVER['SCRIPT_NAME'].'?ca_id='.$ca_id.$ca_sub_url.$sort_url.$sup_url.$q_url.$it_type_url.'&page=';
 // 상품 정렬 주소 수정
 $list_sort_href = './list.php?ca_id='.$ca_id.$ca_sub_url.$sup_url.$q_url.$it_type_url.'&sort=';
-$ca_sub_name_table = array();
 
 // 비급여 체크
 $isBenefit = substr($ca_id, 0, 2) == '70' ? true : false;
@@ -125,21 +137,42 @@ $(function() {
         </form>
       </div>
     </li>
-    <?php if($next_category) { ?>
     <li>
       <div class="cate_head">상품분류</div>
       <div class="cate_body">
-        <?php foreach($next_category as $cate) {
-          $ca_sub_name_table[substr($cate['ca_id'], 2)] = $cate['ca_name'];
+        <?php
+        foreach($categories as $cate) {
+          $ca_sub_name = null;
+          foreach($ca_sub as $sub) {
+            if(strlen($sub) == 4 && substr($sub, 0, 2) == substr($cate['ca_id'], 2)) {
+              $ca_sub_name = $ca_sub_name_table[$sub];
+            }
+          }
         ?>
-        <a href="<?php echo $ca_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? make_ca_sub_url(array_diff($ca_sub, [substr($cate['ca_id'], 2)])) : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2)).$sort_url.$sup_url ;?>"
-          class="<?php if(in_array(substr($cate['ca_id'], 2), $ca_sub)) echo 'active'; ?>">
-          <?php echo $cate['ca_name']; ?>
-        </a>
+        <div class="cate">
+          <a href="<?php echo $ca_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? '' : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2)).$sort_url.$sup_url ;?>"
+            class="<?php if(in_array(substr($cate['ca_id'], 2), $ca_sub) || $ca_sub_name) echo 'active'; ?>">
+            <?php
+            if($ca_sub_name)
+              echo $ca_sub_name;
+            else
+              echo $cate['ca_name'];
+            ?>
+          </a>
+          <?php if($sub_categories[$cate['ca_id']]) { ?>
+          <div class="cate_sub">
+            <?php foreach($sub_categories[$cate['ca_id']] as $sub) { ?>
+            <a href="<?php echo $ca_url.(in_array(substr($sub['ca_id'], 2), $ca_sub) ? '&ca_sub%5B%5D='.substr($sub['ca_id'], 2, 2) : '&ca_sub%5B%5D='.substr($sub['ca_id'], 2)).$sort_url.$sup_url ;?>"
+              class="<?php if(in_array(substr($sub['ca_id'], 2), $ca_sub)) echo 'active'; ?>">
+              <?php echo $sub['ca_name']; ?>
+            </a>
+            <?php } ?>
+          </div>
+          <?php } ?>
+        </div>
         <?php } ?>
       </div>
     </li>
-    <?php } ?>
     <?php if (!$isBenefit) { ?>
     <li>
       <div class="cate_head">유통여부</div>
@@ -169,6 +202,7 @@ $(function() {
     </li>-->
   </ul>
 </div>
+
 <?php if($q || $ca_sub || $prodSupYn) { ?>
 <div class="cate_selected">
   <div class="selected_head">
