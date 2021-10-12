@@ -22,8 +22,12 @@ if (!$od['od_id']) {
       $sto_imsi .=$row_ct['stoId'];
   }
   $stoIdDataList = explode('|',$sto_imsi);
-  $stoIdDataList=array_filter($stoIdDataList);
+  $stoIdDataList = array_filter($stoIdDataList);
   $stoIdData = implode("|", $stoIdDataList);
+  $res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
+    'stoId' => $stoIdData
+  ), 443);
+  $result_again = $res['data'];
 }
 
 $carts = get_carts_by_od_id($od_id);
@@ -305,7 +309,7 @@ if($od["od_b_tel"]) {
           </div>
 
           <?php if ($gubun != '02') { ?>
-          <div class="folding_box">
+          <div class="folding_box" data-id="<?php echo $options[$k]['ct_id']; ?>">
             <?php if ($options[$k]["ct_qty"] >= 2) { ?>
             <span>
             <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
@@ -602,7 +606,23 @@ if($od["od_b_tel"]) {
   }
 
   $(function() {
+    <?php
+    $stock_list = [];
+    foreach($result_again as $stock) {
+      $stock_list[] = array(
+        'prodId' => $stock['prodId'],
+        'stoId' => $stock['stoId'],
+        'prodBarNum' => $stock['prodBarNum']
+      );
+    }
+    ?>
+    var stoldList = <?=json_encode($stock_list)?>;
+    $.each(stoldList, function() {
+      $('.' + this.stoId).val(this.prodBarNum)
+    });
+
     notallLengthCheck();
+    foldingBoxSetting();
 
     $(".nativeDeliveryPopupOpenBtn").click(function() {
       sendInvoiceTarget = $(this).parent().find("input[type='text']");
@@ -618,69 +638,6 @@ if($od["od_b_tel"]) {
           break;
       }
     });
-
-    // var $notall = $(".notall").keyup(function(){
-    //   $(this).val($(this).val().replace(/[^0-9]/g,""));
-    //   if($(this).val().length == 12) {
-    //     var idx = $notall.index(this); // <- 변경된 코드
-    //     var num = idx+1;
-
-    //     var item = $(".notall");
-    //     if(num < item.length){
-    //       $notall[num].focus();
-    //     }
-    //   }
-    //   notallLengthCheck();
-    // });
-
-    var stoldList = [];
-    var count=0;
-    var stoIdData = "<?=$stoIdData?>";
-    if(stoIdData) {
-      var sendData = {
-        stoId : stoIdData
-      }
-
-      $.ajax({
-        url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
-        type : "POST",
-        dataType : "json",
-        contentType : "application/json; charset=utf-8;",
-        data : JSON.stringify(sendData),
-        success : function(res) {
-          console.log(res);
-          //here2
-          $.each(res.data, function(key, value) {
-            $("." + value.stoId).val(value.prodBarNum);
-            //완료된 숫자 세고 집어넣기
-            if(value.prodBarNum){
-              // var number=$("." + value.stoId+"_v").html();
-              // var number_v=parseInt(number)+1
-              // $("." + value.stoId+"_v").html(number_v);
-              // count++;
-            }
-          });
-
-          console.log(res.data);
-          // $.each(res.data, function(key, value){
-          //     //완료된 숫자 세고 집어넣기
-          //     if(value.prodBarNum){
-          //         console.log();
-          //         // $("." + value.stoId+"_img").html('z');
-          //     }
-          // });
-
-          if(res.data){
-            stoldList = res.data;
-          }
-
-          notallLengthCheck();
-          foldingBoxSetting();
-        }
-      });
-    } else {
-      foldingBoxSetting();
-    }
 
     $("#prodBarNumSaveBtn").click(function() {
       var barcode_arr = [];
@@ -728,14 +685,8 @@ if($od["od_b_tel"]) {
         prodsList[key] = {
           stoId : value.stoId,
           prodId : value.prodId,
-          prodColor : value.prodColor,
-          prodSize : value.prodSize,
           prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
-          prodManuDate : value.prodManuDate,
-          stateCd : value.stateCd,
-          stoMemo : (value.stoMemo) ? value.stoMemo : ""
         }
-
         if($("." + value.stoId).val()){
           insertBarCnt++;
         }
@@ -925,6 +876,22 @@ if($od["od_b_tel"]) {
         <?php if ($no_refresh != 1) { ?>
         if(need_reload)
           opener.location.reload();
+        <?php } ?>
+        <?php if ($orderlist) { ?>
+        foldingBoxSetting();
+        $('.folding_box').each(function() {
+          var ct_id = $(this).data('id');
+          var cnt_txt = $(this).parent().find('.p1 .span2').text().trim().split('/');
+          var $chk = $(opener.document).find('#check_' + ct_id);
+          var $barcode = $chk.closest('tr').find('.prodBarNumCntBtn');
+
+          if(cnt_txt[0] !== cnt_txt[1]) {
+            $barcode.removeClass('disable').text(cnt_txt.join('/'));
+          } else {
+            // 입력완료
+            $barcode.addClass('disable').text('입력완료');
+          }
+        });
         <?php } ?>
         window.close();
         <?php }?>
