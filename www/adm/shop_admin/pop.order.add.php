@@ -271,20 +271,7 @@ function formcheck(f) {
     }
 
     $("input[name^=qty]").each(function(index) {
-        val = $(this).val().replace(/[\D\s\._\-]+/g, "");
-        val = val ? parseInt( val, 10 ) : 0;
-
-        if(val.length < 1) {
-            alert("수량을 입력해 주십시오.");
-            result = false;
-            return false;
-        }
-
-        if(val.replace(/[0-9]/g, "").length > 0) {
-            alert("수량은 숫자로 입력해 주십시오.");
-            result = false;
-            return false;
-        }
+        val = $(this).val();
 
         if(parseInt(val.replace(/[^0-9]/g, "")) < 1) {
             alert("수량은 1이상 입력해 주십시오.");
@@ -295,20 +282,7 @@ function formcheck(f) {
 
     
     $("input[name^=it_price]").each(function(index) {
-        val = $(this).val().replace(/[\D\s\._\-]+/g, "");
-        val = val ? parseInt( val, 10 ) : 0;
-
-        if(val.length < 1) {
-            alert("단가를 입력해 주십시오.");
-            result = false;
-            return false;
-        }
-
-        if(val.replace(/[0-9]/g, "").length > 0) {
-            alert("단가는 숫자로 입력해 주십시오.");
-            result = false;
-            return false;
-        }
+        val = $(this).val();
 
         if(parseInt(val.replace(/[^0-9]/g, "")) < 0) {
             alert("단가는 0이상 입력해 주십시오.");
@@ -325,7 +299,7 @@ function formcheck(f) {
         alert('주문서 생성중입니다.');
         return false;
     }
-    
+
     loading = true;
     return true;
 }
