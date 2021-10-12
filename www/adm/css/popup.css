@@ -1434,6 +1434,9 @@ display: none;
     justify-content: space-between;
 }
 
+.pop_order_delivery {
+  margin-bottom: 50px;
+}
 .pop_order_delivery_table {
     height: 230px;
     overflow-y: auto;
@@ -1485,7 +1488,7 @@ display: none;
 }
 
 .pop_order_address {
-    margin-bottom: 50px;
+    margin-bottom: 10px;
 }
 
 .pop_order_address table {

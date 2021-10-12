@@ -148,10 +148,41 @@ include_once('./pop.head.php');
         </tbody>
     </table>
 
-    <div class="pop_order_delivery">
+    <div class="pop_order_address">
         <div class="header">
             <h5 class="h5_header">배송정보</h5>
         </div>
+        <table>
+            <tbody>
+                <tr>
+                    <th>이름</th>
+                    <td>
+                        <div>
+                            <input type="text" name="od_b_name" value="" class="frm_input">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>연락처</th>
+                    <td>
+                        <div>
+                            <input type="text" name="od_b_tel" value="" class="frm_input">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>주소</th>
+                    <td>
+                        <div>
+                            <input type="text" name="od_b_addr1" value="" class="frm_input wide">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pop_order_delivery">
         <div class="pop_order_delivery_table">
             <table>
                 <colgroup>
@@ -191,37 +222,6 @@ include_once('./pop.head.php');
                 </tbody>
             </table>
         </div>
-    </div>
-
-    <div class="pop_order_address">
-        <table>
-            <tbody>
-                <tr>
-                    <th>이름</th>
-                    <td>
-                        <div>
-                            <input type="text" name="od_b_name" value="" class="frm_input">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>연락처</th>
-                    <td>
-                        <div>
-                            <input type="text" name="od_b_tel" value="" class="frm_input">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>주소</th>
-                    <td>
-                        <div>
-                            <input type="text" name="od_b_addr1" value="" class="frm_input wide">
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 
     <div id="popup_buttom">
