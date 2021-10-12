@@ -76,7 +76,7 @@ else if($not_complete2) {
 
 // 전체 검색
 if ($sel_field == 'od_all' && $search != "") {
-  $sel_arr = array('it_name', 'it_admin_memo', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode');
+  $sel_arr = array('it_name', 'it_admin_memo', 'od_id', 'mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num','barcode');
 
   foreach ($sel_arr as $key => $value) {
       if($value=="barcode"){
@@ -284,7 +284,7 @@ if ($sort2 == "") $sort2 = "desc";
 
 $sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, ct_status, ct_move_date, ct_delivery_num, ct_manager, ct_is_direct_delivery, ct_barcode_insert, ct_qty, io_type, ct_combine_ct_id from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
-                left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
+                left join (select mb_id as mb_id_temp, mb_nick, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
                 $sql_search
                 group by cart_ct_id ";
@@ -317,7 +317,7 @@ $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
 $sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, X.it_name, it_admin_memo, ct_status, ct_manager, ct_is_direct_delivery, ct_barcode_insert, ct_qty, io_type, ct_combine_ct_id from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
-        left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
+        left join (select mb_id as mb_id_temp, mb_nick, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
         $sql_search2
         group by ct_status ";
@@ -772,7 +772,7 @@ foreach($orderlist as $order) {
       from {$g5['g5_shop_cart_table']} B
           inner join (select od_id as order_od_id ,od_del_yn from {$g5['g5_shop_order_table']}) A
           on B.od_id = A.order_od_id
-          left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
+          left join (select mb_id as mb_id_temp, mb_nick, mb_level, mb_type from {$g5['member_table']}) C
           on B.mb_id = C.mb_id_temp
           group by B.ct_id ) as ct_id
       $sql_search
