@@ -19,7 +19,7 @@ function sendFax($send_fax_arr) {
     $FaxService = new FaxService($LinkID, $SecretKey);
 
     // 연동환경 설정값, 개발용(true), 상업용(false)
-    $FaxService->IsTest(true);
+    $FaxService->IsTest(false);
 
     // 인증토큰에 대한 IP제한기능 사용여부, 권장(true)
     $FaxService->IPRestrictOnOff(true);
@@ -73,9 +73,11 @@ function sendFax($send_fax_arr) {
     // 1~36자리로 구성. 영문, 숫자, 하이픈(-), 언더바(_)를 조합하여 팝빌 회원별로 중복되지 않도록 할당.
     $requestNum = '';
 
+    // echo 'console.log("' . var_dump($send_fax_arr) . '")';
     foreach($send_fax_arr as $data) {
       $FileData[] = array('fileName' => 'ledger.xls', 'fileData' => $data['excel']);
       $Receiver[] = array('rcv' => $data['rcv'], 'rcvnm' => $data['rcvnm']);
+
       $FaxService->SendFAXBinary($testCorpNum, $Sender, $Receiver, $FileData, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requestNum);
     }
 
