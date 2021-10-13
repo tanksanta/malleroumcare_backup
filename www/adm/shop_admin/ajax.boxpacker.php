@@ -35,7 +35,8 @@ for($i = 1; $i <= 15; $i++) {
 $sql = "
   select
     c.*,
-    i.it_box_size
+    i.it_box_size,
+    i.it_delivery_cnt
   from
     g5_shop_cart c
   left join
@@ -47,6 +48,7 @@ $sql = "
 ";
 $result = sql_query($sql);
 
+$compPacked = []; // 완전포장
 while($row = sql_fetch_array($result)) {
   $box_size = explode(chr(30), $row['it_box_size']);
   list($width, $length, $depth) = $box_size;
@@ -65,29 +67,51 @@ while($row = sql_fetch_array($result)) {
   }
   $box_qty = $row['ct_qty'] - $row['ct_stock_qty'];
 
-  $packer->addItem(new TestItem($name, $width, $length, $depth, 0, false), $box_qty);
+  if($row['it_delivery_cnt'] > 1) {
+    $comp_qty = (int) floor( $box_qty / $row['it_delivery_cnt'] );
+    $box_qty = $box_qty % $row['it_delivery_cnt'];
+
+    if($comp_qty > 0) {
+      $compPacked[$name . " ({$row['it_delivery_cnt']}개)"] = $comp_qty;
+    }
+  }
+
+  if($box_qty > 0)
+    $packer->addItem(new TestItem($name, $width, $length, $depth, 0, false), $box_qty);
 }
 
 $packedBoxes = $packer->pack();
 
 $ret = '';
-foreach ($packedBoxes as $packedBox) {
-  $boxType = $packedBox->getBox();
-  $ret .= "{$boxType->getReference()} : " . PHP_EOL;
 
-  $items = [];
-  $packedItems = $packedBox->getItems();
-  foreach ($packedItems as $packedItem) {
-    $key = $packedItem->getItem()->getDescription();
-    if(!$items[$key]) $items[$key] = 0;
-    $items[$key]++;
+if($compPacked) {
+  $ret .= '[완전포장]' . PHP_EOL;
+  foreach($compPacked as $key => $qty) {
+    $ret .= "{$key} * {$qty}" . PHP_EOL;
   }
-
-  foreach($items as $key => $val) {
-    $ret .= "{$key} * {$val}" . PHP_EOL;
-  }
-
   $ret .= PHP_EOL;
+}
+
+if($packedBoxes->count()) {
+  $ret .= '[합포추천]' . PHP_EOL;
+  foreach($packedBoxes as $packedBox) {
+    $boxType = $packedBox->getBox();
+    $ret .= "{$boxType->getReference()} : " . PHP_EOL;
+
+    $items = [];
+    $packedItems = $packedBox->getItems();
+    foreach ($packedItems as $packedItem) {
+      $key = $packedItem->getItem()->getDescription();
+      if(!$items[$key]) $items[$key] = 0;
+      $items[$key]++;
+    }
+
+    foreach($items as $key => $val) {
+      $ret .= "{$key} * {$val}" . PHP_EOL;
+    }
+
+    $ret .= PHP_EOL;
+  }
 }
 
 if(!$ret) {
