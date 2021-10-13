@@ -49,23 +49,28 @@ $sql = "
 $result = sql_query($sql);
 
 $compPacked = []; // 완전포장
+$unPacked = []; // 단일포장
+$joinPacked = []; // 합포추천
 while($row = sql_fetch_array($result)) {
   $box_size = explode(chr(30), $row['it_box_size']);
   list($width, $length, $depth) = $box_size;
-
-  if(!($width && $length && $depth))
-    continue;
-  
-  // cm -> mm 변환, 소수점 올림
-  $width = (int) ceil($width * 10);
-  $length = (int) ceil($length * 10);
-  $depth = (int) ceil($depth * 10);
 
   $name = $row['it_name'];
   if($name != $row['ct_option']) {
     $name .= " ({$row['ct_option']})";
   }
   $box_qty = $row['ct_qty'] - $row['ct_stock_qty'];
+
+  // 상품 규격 입력 안되어있으면 단일포장
+  if(!($width && $length && $depth)) {
+    $unPacked[$name] = $box_qty;
+    continue;
+  }
+
+  // cm -> mm 변환, 소수점 올림
+  $width = (int) ceil($width * 10);
+  $length = (int) ceil($length * 10);
+  $depth = (int) ceil($depth * 10);
 
   if($row['it_delivery_cnt'] > 1) {
     $comp_qty = (int) floor( $box_qty / $row['it_delivery_cnt'] );
@@ -82,6 +87,27 @@ while($row = sql_fetch_array($result)) {
 
 $packedBoxes = $packer->pack();
 
+foreach($packedBoxes as $packedBox) {
+  $boxType = $packedBox->getBox();
+
+  $items = [];
+  $packedItems = $packedBox->getItems();
+  foreach ($packedItems as $packedItem) {
+    $key = $packedItem->getItem()->getDescription();
+    if(!$items[$key]) $items[$key] = 0;
+    $items[$key]++;
+  }
+
+  // 박스에 단일상품밖에 없으면 단일포장
+  if(count($items) === 1) {
+    foreach($items as $key => $qty) {
+      $unPacked[$key] = $qty;
+    }
+  } else {
+    $joinPacked[$boxType->getReference()] = $items;
+  }
+}
+
 $ret = '';
 
 if($compPacked) {
@@ -92,22 +118,35 @@ if($compPacked) {
   $ret .= PHP_EOL;
 }
 
-if($packedBoxes->count()) {
+$unpackedItems = $packer->getUnpackedItems();
+if($unPacked || $unpackedItems->count()) {
+  $ret .= '[단일상품]' . PHP_EOL;
+
+  foreach($unPacked as $key => $qty) {
+    $ret .= "{$key} * {$qty}" . PHP_EOL;
+  }
+
+  $items = [];
+  foreach($unpackedItems as $unpackedItem) {
+    $key = $packedItem->getItem()->getDescription();
+    if(!$items[$key]) $items[$key] = 0;
+    $items[$key]++;
+  }
+
+  foreach($items as $key => $val) {
+    $ret .= "{$key} * {$val}" . PHP_EOL;
+  }
+
+  $ret .= PHP_EOL;
+}
+
+if($joinPacked) {
   $ret .= '[합포추천]' . PHP_EOL;
-  foreach($packedBoxes as $packedBox) {
-    $boxType = $packedBox->getBox();
-    $ret .= "{$boxType->getReference()} : " . PHP_EOL;
+  foreach($joinPacked as $box => $items) {
+    $ret .= "{$box} : " . PHP_EOL;
 
-    $items = [];
-    $packedItems = $packedBox->getItems();
-    foreach ($packedItems as $packedItem) {
-      $key = $packedItem->getItem()->getDescription();
-      if(!$items[$key]) $items[$key] = 0;
-      $items[$key]++;
-    }
-
-    foreach($items as $key => $val) {
-      $ret .= "{$key} * {$val}" . PHP_EOL;
+    foreach($items as $key => $qty) {
+      $ret .= "{$key} * {$qty}" . PHP_EOL;
     }
 
     $ret .= PHP_EOL;
