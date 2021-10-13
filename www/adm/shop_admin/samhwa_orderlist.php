@@ -690,6 +690,33 @@ function sanbang_order_send(){
 }
 
 $( document ).ready(function() {
+
+  var last_click_index = 0;
+  // 체크박스 범위선택 (shift + 클릭)
+  $(document).on('click', 'input[name="od_id[]"]',  function(e) {
+    var $tr = $('#samhwa_order_list_table table tr');
+    var index = $tr.index($(this).closest('tr'));
+
+    if((e.shiftKey) && last_click_index > 0) {
+      var start_index, end_index;
+      if(last_click_index < index) {
+        start_index = last_click_index;
+        end_index = index;
+      } else {
+        start_index = index;
+        end_index = last_click_index;
+      }
+      for(var i = start_index; i <= end_index; i++) {
+        $tr.eq(i).find('input[name="od_id[]"]').prop('checked', true);
+      }
+    } else {
+      if($(this).prop('checked')) {
+        last_click_index = index;
+      } else {
+        last_click_index = 0;
+      }
+    }
+  });
   
   $(document).on("click", ".prodBarNumCntBtn", function(e) {
     e.preventDefault();

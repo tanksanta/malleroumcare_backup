@@ -682,12 +682,12 @@ $( document ).ready(function() {
   });
 
   var last_click_index = 0;
-  // 체크박스 범위선택 (Ctrl + 클릭)
+  // 체크박스 범위선택 (shift + 클릭)
   $(document).on('click', 'input[name="od_id[]"]',  function(e) {
     var $tr = $('#samhwa_order_list_table table tr');
     var index = $tr.index($(this).closest('tr'));
 
-    if((e.ctrlKey || e.metaKey) && last_click_index > 0) {
+    if((e.shiftKey) && last_click_index > 0) {
       var start_index, end_index;
       if(last_click_index < index) {
         start_index = last_click_index;
