@@ -346,12 +346,6 @@ if($is_main && !$is_member) {
               시스템문의 : 02-830-1301 (월~금 09:00~18:00)
             </div>
             <?php } ?>
-            <?php if($member['mb_type'] === 'default') { ?>
-            <a href="https://988.co.kr" target="_blank" class="remote_link">
-              원격지원 바로가기
-              <i class="fa fa-angle-right" aria-hidden="true"></i>
-            </a>
-            <?php } ?>
             <?php if($show_partner_menu) { ?>
             <div class="balance_info flex-justify">
               <div class="balance_title">신용거래 (<?php echo date('n');?>월)</div>
@@ -399,6 +393,12 @@ if($is_main && !$is_member) {
               <div class="btn_small">다운로드</div>
             </a>
           </div>
+
+          <?php if($member['mb_type'] == 'default' && $member['mb_id'] == 'hula1202') { ?>
+          <div class="conv_area">
+            <a href="#" class="pen_item_msg">수급자에게 품목/정보 전달</a>
+          </div>
+          <?php } ?>
 
           <?php
           if($member['mb_type'] == 'partner') {
@@ -621,6 +621,12 @@ if($is_main && !$is_member) {
               </li>
             </ul>
           </div>
+          <?php if($member['mb_type'] === 'default') { ?>
+            <a href="https://www.988.co.kr/thkc" target="_blank" class="remote_link">
+              원격지원 바로가기
+              <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </a>
+          <?php } ?>
           <div class="btn_logout_mo">
           	<a href="<?php echo G5_BBS_URL; ?>/logout.php" class="btn_default">로그아웃</a>
           </div>
