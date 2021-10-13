@@ -197,10 +197,11 @@ if (gettype($od_important) == 'string' && $od_important !== '') {
 }
 
 if (gettype($ct_is_direct_delivery) == 'string' && $ct_is_direct_delivery !== '') {
-  if($ct_is_direct_delivery == '1')
-    $where[] = " (ct_is_direct_delivery = '1' or ct_is_direct_delivery = '2') ";
-  else
-    $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
+  $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
+}
+
+if(($ct_direct_delivery_partner = get_search_string($ct_direct_delivery_partner)) && $ct_is_direct_delivery !== '0') {
+  $where[] = " ct_direct_delivery_partner = '$ct_direct_delivery_partner' ";
 }
 
 if (gettype($od_release) == 'string' && $od_release !== '') {
@@ -282,7 +283,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, ct_status, ct_move_date, ct_delivery_num, ct_manager, ct_is_direct_delivery, ct_barcode_insert, ct_qty, io_type, ct_combine_ct_id from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, ct_status, ct_move_date, ct_delivery_num, ct_manager, ct_is_direct_delivery, ct_direct_delivery_partner, ct_barcode_insert, ct_qty, io_type, ct_combine_ct_id from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_nick, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -315,7 +316,7 @@ if ( $where2 || $where ) {
 }
 $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, X.it_name, it_admin_memo, ct_status, ct_manager, ct_is_direct_delivery, ct_barcode_insert, ct_qty, io_type, ct_combine_ct_id from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, X.it_name, it_admin_memo, ct_status, ct_manager, ct_is_direct_delivery, ct_direct_delivery_partner, ct_barcode_insert, ct_qty, io_type, ct_combine_ct_id from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_nick, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp

@@ -151,7 +151,7 @@ if (gettype($ct_is_direct_delivery) == 'string' && $ct_is_direct_delivery !== ''
   $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
 }
 
-if($ct_direct_delivery_partner = get_search_string($ct_direct_delivery_partner)) {
+if(($ct_direct_delivery_partner = get_search_string($ct_direct_delivery_partner)) && $ct_is_direct_delivery !== '0') {
   $where[] = " ct_direct_delivery_partner = '$ct_direct_delivery_partner' ";
 }
 
