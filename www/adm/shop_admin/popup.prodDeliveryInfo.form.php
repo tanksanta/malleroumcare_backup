@@ -171,7 +171,7 @@ $partners = get_partner_members();
           for($k = 0; $k < count($options); $k++) {
         ?>
           <tr data-price="<?=$options[$k]["it_delivery_price"]?>" data-cnt="<?=$options[$k]["it_delivery_cnt"]?>">
-            <td><?php echo $options[$k]['ct_status']; ?></td>
+            <td><?php echo get_custom_ct_status_text($options[$k]['ct_status']); ?></td>
             <td>
               <input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
               <input type="hidden" name="ct_it_name_<?=$options[$k]["ct_id"]?>" value="<?=$carts[$i]["it_name"]?>">
