@@ -172,7 +172,7 @@ if($unPacked) {
 if($joinPacked) {
   $ret .= '[합포추천]' . PHP_EOL;
   foreach($joinPacked as $box => $items) {
-    $ret .= "{$box} : " . PHP_EOL;
+    $ret .= "● {$box}" . PHP_EOL;
 
     foreach($items as $ct_id => $item) {
       $ret .= "{$item['name']} * {$item['qty']}" . PHP_EOL;
