@@ -248,11 +248,11 @@ function get_ledger_history_recent($mb_id) {
       </tr>
       <?php } ?>
       <?php foreach($ents as $ent) { ?>
+        <?php $ent_mb = get_member($ent['mb_id']); ?>
         <?php $ledger_last_month = get_ledger_history_lastmonth($ent['mb_id'])?>
         <?php $ledger_this_month = get_ledger_history_thismonth($ent['mb_id'])?>
         <?php $ledger_recent = get_ledger_history_recent($ent['mb_id'])?>
         <?php $btn_value_str = htmlspecialchars(json_encode(array("index" => $ent['index'], "ent_name" => $ent['mb_entNm'] ?: $ent_mb['mb_giup_bname'] ?: $ent_mb['mb_name'], "mb_manager" => $ent['mb_manager'], "ent_id" => $ent['mb_id'])))?>
-      <?php $ent_mb = get_member($ent['mb_id']); ?>
       <tr>
         <td class="td_chk" id="mb_list_spare_chk">
           <input type="checkbox" name="ent_chk[]" value="<?=$ent['index']?>" class="ent_chk">
@@ -470,6 +470,8 @@ function send_fax(btn) {
 }
 
 function request_ajax_send(send_data) {
+  // window.open("/adm/shop_admin/ledger_fax_excel.php");
+  // return;
   $.ajax({
       method: "POST",
       url: "/adm/shop_admin/ajax.ledger.send.php",
