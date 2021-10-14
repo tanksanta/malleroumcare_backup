@@ -44,7 +44,7 @@ include_once('./pop.head.php');
                 <th>사업소정보</th>
                 <td>
                     <div>
-                        <input type="text" name="mb_id" value=""class="frm_input mb_id_flexdatalist" style="width: 300px;">
+                        <input type="text" name="mb_id" value=""class="frm_input mb_id_flexdatalist">
                         <span id="mb_id_flexdatalist_result">
                             사업소를 검색하세요.
                         </span>
