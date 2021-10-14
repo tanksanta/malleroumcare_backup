@@ -136,6 +136,7 @@ $partners = get_partner_members();
   <div class="tableWrap">
     <table>
       <colgroup>
+        <col width="70px">
         <col width="">
         <col width="10%">
         <col width="130px">
@@ -148,6 +149,7 @@ $partners = get_partner_members();
       
       <thead>
         <tr>
+          <th>상태</th>
           <th>상품(옵션)</th>
           <th>박스수량</th>
           <th>배송비</th>
@@ -167,6 +169,7 @@ $partners = get_partner_members();
           for($k = 0; $k < count($options); $k++) {
         ?>
           <tr data-price="<?=$options[$k]["it_delivery_price"]?>" data-cnt="<?=$options[$k]["it_delivery_cnt"]?>">
+            <td><?php echo $options[$k]['ct_status']; ?></td>
             <td>
               <input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
               <input type="hidden" name="ct_it_name_<?=$options[$k]["ct_id"]?>" value="<?=$carts[$i]["it_name"]?>">
