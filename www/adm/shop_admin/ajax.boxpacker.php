@@ -11,7 +11,7 @@ if(!$od_id)
 
 use DVDoug\BoxPacker\InfalliblePacker;
 use DVDoug\BoxPacker\Test\TestBox;  // use your own `Box` implementation
-use DVDoug\BoxPacker\Test\TestItem; // use your own `Item` implementation
+use DVDoug\BoxPacker\EroumItem;
 
 $packer = new InfalliblePacker();
 
@@ -31,7 +31,6 @@ for($i = 1; $i <= 15; $i++) {
   $packer->addBox(new TestBox($name, $width, $length, $depth, 0, $width, $length, $depth, 1000));
 }
 
-// 위탁 상품은 제외
 $sql = "
   select
     c.*,
@@ -43,15 +42,18 @@ $sql = "
     g5_shop_item i ON c.it_id = i.it_id
   where
     c.od_id = '{$od_id}' and
-    c.prodSupYn = 'Y' and
-    c.ct_is_direct_delivery = 0
+    c.prodSupYn = 'Y'
 ";
 $result = sql_query($sql);
 
 $compPacked = []; // 완전포장
 $unPacked = []; // 단일포장
 $joinPacked = []; // 합포추천
+$dirPacked = []; // 위탁상품
 while($row = sql_fetch_array($result)) {
+
+  $ct_id = $row['ct_id'];
+
   $box_size = explode(chr(30), $row['it_box_size']);
   list($width, $length, $depth) = $box_size;
 
@@ -59,11 +61,23 @@ while($row = sql_fetch_array($result)) {
   if($name != $row['ct_option']) {
     $name .= " ({$row['ct_option']})";
   }
-  $box_qty = $row['ct_qty'] - $row['ct_stock_qty'];
+  $ct_qty = $row['ct_qty'] - $row['ct_stock_qty'];
+
+  // 위탁배송인 경우
+  if($row['ct_is_direct_delivery']) {
+    $dirPacked[$ct_id] = array(
+      'name' => $name,
+      'qty' => $ct_qty
+    );
+    continue;
+  }
 
   // 상품 규격 입력 안되어있으면 단일포장
   if(!($width && $length && $depth)) {
-    $unPacked[$name] = $box_qty;
+    $unPacked[$ct_id] = array(
+      'name' => $name,
+      'qty' => $ct_qty
+    );
     continue;
   }
 
@@ -73,16 +87,19 @@ while($row = sql_fetch_array($result)) {
   $depth = (int) ceil($depth * 10);
 
   if($row['it_delivery_cnt'] > 1) {
-    $comp_qty = (int) floor( $box_qty / $row['it_delivery_cnt'] );
-    $box_qty = $box_qty % $row['it_delivery_cnt'];
+    $comp_qty = (int) floor( $ct_qty / $row['it_delivery_cnt'] );
+    $ct_qty = $ct_qty % $row['it_delivery_cnt'];
 
     if($comp_qty > 0) {
-      $compPacked[$name . " ({$row['it_delivery_cnt']}개)"] = $comp_qty;
+      $compPacked[$ct_id] = array(
+        'name' => $name . " ({$row['it_delivery_cnt']}개)",
+        'qty' => $comp_qty
+      );
     }
   }
 
-  if($box_qty > 0)
-    $packer->addItem(new TestItem($name, $width, $length, $depth, 0, false), $box_qty);
+  if($ct_qty > 0)
+    $packer->addItem(new EroumItem($name, $ct_id, $width, $length, $depth, 0, false), $ct_qty);
 }
 
 $packedBoxes = $packer->pack();
@@ -93,48 +110,58 @@ foreach($packedBoxes as $packedBox) {
   $items = [];
   $packedItems = $packedBox->getItems();
   foreach ($packedItems as $packedItem) {
-    $key = $packedItem->getItem()->getDescription();
-    if(!$items[$key]) $items[$key] = 0;
-    $items[$key]++;
+    $ct_id = $packedItem->getItem()->getCtId();
+    $name = $packedItem->getItem()->getDescription();
+    if(!$items[$ct_id])
+      $items[$ct_id] = array(
+        'name' => $name,
+        'qty' => 0
+      );
+    $items[$ct_id]['qty']++;
   }
 
   // 박스에 단일상품밖에 없으면 단일포장
   if(count($items) === 1) {
-    foreach($items as $key => $qty) {
-      $unPacked[$key] = $qty;
+    foreach($items as $ct_id => $item) {
+      $unPacked[$ct_id] = array(
+        'name' => $item['name'],
+        'qty' => $item['qty']
+      );
     }
   } else {
     $joinPacked[$boxType->getReference()] = $items;
   }
 }
 
+// 포장 불가능한 상품은 단일상품에 추가
+$unpackedItems = $packer->getUnpackedItems();
+foreach($unpackedItems as $unpackedItem) {
+  $ct_id = $packedItem->getItem()->getCtId();
+  $name = $packedItem->getItem()->getDescription();
+  if(!$unPacked[$ct_id])
+    $unPacked[$ct_id] = array(
+      'name' => $name,
+      'qty' => 0
+    );
+
+  $unPacked[$ct_id]['qty']++;
+}
+
 $ret = '';
 
 if($compPacked) {
   $ret .= '[완전포장]' . PHP_EOL;
-  foreach($compPacked as $key => $qty) {
-    $ret .= "{$key} * {$qty}" . PHP_EOL;
+  foreach($compPacked as $ct_id => $item) {
+    $ret .= "{$item['name']} * {$item['qty']}" . PHP_EOL;
   }
   $ret .= PHP_EOL;
 }
 
-$unpackedItems = $packer->getUnpackedItems();
-if($unPacked || $unpackedItems->count()) {
+if($unPacked) {
   $ret .= '[단일상품]' . PHP_EOL;
 
-  foreach($unPacked as $key => $qty) {
-    $ret .= "{$key} * {$qty}" . PHP_EOL;
-  }
-
-  $items = [];
-  foreach($unpackedItems as $unpackedItem) {
-    $key = $packedItem->getItem()->getDescription();
-    if(!$items[$key]) $items[$key] = 0;
-    $items[$key]++;
-  }
-
-  foreach($items as $key => $val) {
-    $ret .= "{$key} * {$val}" . PHP_EOL;
+  foreach($unPacked as $ct_id => $item) {
+    $ret .= "{$item['name']} * {$item['qty']}" . PHP_EOL;
   }
 
   $ret .= PHP_EOL;
@@ -145,16 +172,31 @@ if($joinPacked) {
   foreach($joinPacked as $box => $items) {
     $ret .= "{$box} : " . PHP_EOL;
 
-    foreach($items as $key => $qty) {
-      $ret .= "{$key} * {$qty}" . PHP_EOL;
+    foreach($items as $ct_id => $item) {
+      $ret .= "{$item['name']} * {$item['qty']}" . PHP_EOL;
     }
 
     $ret .= PHP_EOL;
   }
 }
 
+if($dirPacked) {
+  $ret .= '[위탁상품]' . PHP_EOL;
+  foreach($dirPacked as $ct_id => $item) {
+    $ret .= "{$item['name']} * {$item['qty']}" . PHP_EOL;
+  }
+  $ret .= PHP_EOL;
+}
+
 if(!$ret) {
   json_response(500, '합포가 가능한 상품이 없습니다.');
 }
 
-json_response(200, 'OK', $ret);
+json_response(200, 'OK', array(
+  'html' => $ret,
+
+  'compPacked' => $compPacked, // 완전포장 { ct_id: { name, qty } }
+  'unPacked' => $unPacked, // 단일포장 { ct_id: { name, qty } }
+  'joinPacked' => $joinPacked, //합포추천 { box: { ct_id: { name, qty } } }
+  'dirPacked' => $dirPacked, //위탁상품 { ct_id: { name, qty } }
+));
