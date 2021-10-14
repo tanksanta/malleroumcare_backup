@@ -1375,6 +1375,10 @@ display: none;
     width: 100%;
 }
 
+.mb_id_flexdatalist {
+    width: 400px;
+}
+
 #mb_id_flexdatalist_result {
     margin-left: 15px;
 }
