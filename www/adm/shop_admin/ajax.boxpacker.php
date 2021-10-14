@@ -31,6 +31,7 @@ for($i = 1; $i <= 15; $i++) {
   $packer->addBox(new TestBox($name, $width, $length, $depth, 0, $width, $length, $depth, 1000));
 }
 
+// 출고준비 단계만 계산
 $sql = "
   select
     c.*,
@@ -42,7 +43,8 @@ $sql = "
     g5_shop_item i ON c.it_id = i.it_id
   where
     c.od_id = '{$od_id}' and
-    c.prodSupYn = 'Y'
+    c.prodSupYn = 'Y' and
+    c.ct_status = '출고준비'
 ";
 $result = sql_query($sql);
 
