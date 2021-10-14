@@ -451,8 +451,8 @@ $(function() {
                 html += "<td class='ad_subject'>" + (item.ad_subject || '-') + "</td>";
                 html += "<td class='ad_name'>" + (item.ad_name || '-') + "</td>";
                 html += "<td class='ad_tel'>" + (auto_phone_hypen(item.ad_tel)) + "<br>" + (item.ad_hp || '-') + "</td>";
-                html += "<td class='ad_addr'>" + ((item.ad_addr1 + item.ad_addr2) || '-') + "</td>";
-                html += "<td><input type='button' class='shbtn small apply_address' value='선택' data-name='" + item.ad_name + "' data-tel='" + item.ad_tel + "' data-addr='" + (item.ad_addr1 + item.ad_addr2) + "'></td>";
+                html += "<td class='ad_addr'>" + ((item.ad_addr1 + " " + item.ad_addr2) || '-') + "</td>";
+                html += "<td><input type='button' class='shbtn small apply_address' value='선택' data-name='" + item.ad_name + "' data-tel='" + item.ad_tel + "' data-addr='" + (item.ad_addr1 + " " + item.ad_addr2) + "'></td>";
                 html += "</tr>";
             });
 
