@@ -380,7 +380,7 @@ $partners = get_partner_members();
 
       $.post('ajax.boxpacker.php?od_id=<?=$od_id?>')
       .done(function(result) {
-        $('#boxpacker_ta').val(result.data).show();
+        $('#boxpacker_ta').val(result.data.html).show();
       })
       .fail(function($xhr) {
         var data = $xhr.responseJSON;
