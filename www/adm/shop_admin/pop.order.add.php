@@ -532,7 +532,7 @@ $(function() {
         var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
         qty = qty ? parseInt( qty, 10 ) : 0;
 
-        if ($(this).attr('name') === 'qty[]') {
+        if ($(this).attr('name') === 'qty[]' || $(this).attr('name') === 'io_id[]') {
 
             var it_id = $(parent).find('input[name="it_id[]"]').val();
             var it_sale_cnt = 0;
