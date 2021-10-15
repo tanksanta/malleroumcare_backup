@@ -367,7 +367,7 @@ $order_by_step = implode(' , ', $order_by_steps);
 $sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), ct_move_date desc, o.od_id desc ";
 
 $sql  = "
-  select *, c.ct_id as ct_id, c.mb_id as mb_id, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
+  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
   $sql_common
   limit $from_record, $rows
 ";
