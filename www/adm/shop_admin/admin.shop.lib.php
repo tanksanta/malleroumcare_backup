@@ -357,6 +357,11 @@ function get_packed_boxes($od_id) {
       }
     }
 
+    // cm -> mm 변환, 소수점 올림
+    $width = (int) ceil($width * 10);
+    $length = (int) ceil($length * 10);
+    $depth = (int) ceil($depth * 10);
+
     foreach($row['opt'] as $opt) {
       $opt_name = $name;
       if($opt_name != $opt['ct_option']) {
@@ -366,11 +371,6 @@ function get_packed_boxes($od_id) {
       $ct_id = $opt['ct_id'];
 
       $opt_qty = $opt['ct_qty'] - $opt['ct_stock_qty'];
-
-      // cm -> mm 변환, 소수점 올림
-      $width = (int) ceil($width * 10);
-      $length = (int) ceil($length * 10);
-      $depth = (int) ceil($depth * 10);
 
       if($opt_qty > 0)
         $packer->addItem(new EroumItem($opt_name, $ct_id, $width, $length, $depth, 0, false), $opt_qty);
