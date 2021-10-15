@@ -207,10 +207,10 @@ foreach($carts as $cart) {
             throw new Exception();
         }
         $data = get_packed_boxes($cart['od_id']);
-        foreach ($data['joinPacked'] as $box => $array1) {
-            foreach ($array1 as $box_ct_id => $array2) {
+        foreach ($data['joinPacked'] as $box) {
+            foreach ($box['items'] as $box_ct_id => $box_item) {
                 if ($box_ct_id == $cart['ct_id']) {
-                    $it_name .= ' #' . "[{$box}]";
+                    $it_name .= ' #' . "[{$box['name']}]";
                 }
             }
         }

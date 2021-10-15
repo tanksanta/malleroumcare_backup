@@ -389,11 +389,11 @@ $partners = get_partner_members();
       .done(function(result) {
         if(apply) { // 합포 적용
           var boxes = result.data.joinPacked; // 합포추천 박스들
-          $.each(boxes, function(box, items) {
+          $.each(boxes, function(index, box) {
             var greatest = 0, target = null;
 
             // 먼저 가장 박스수량이 많은 상품을 찾아 합포 대상으로 설정
-            $.each(items, function(ct_id, item) {
+            $.each(box.items, function(ct_id, item) {
               var box_qty = $('input[name="ct_delivery_cnt_' + ct_id + '"]').val();
               if(box_qty > greatest) {
                 greatest = box_qty;
@@ -402,7 +402,7 @@ $partners = get_partner_members();
             });
 
             // 합포 대상에 합포 적용
-            $.each(items, function(ct_id, item) {
+            $.each(box.items, function(ct_id, item) {
               if(ct_id === target) return;
 
               var $chk_combine = $('input[name="ct_combine_' + ct_id+ '"]');

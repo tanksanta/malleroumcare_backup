@@ -404,7 +404,11 @@ function get_packed_boxes($od_id) {
         );
       }
     } else {
-      $joinPacked[$boxType->getReference()] = $items;
+      $joinPacked[] = array(
+        'name' => $boxType->getReference(),
+        'price' => $boxType->getPrice(),
+        'items' => $items
+      );
     }
   }
 
@@ -444,10 +448,10 @@ function get_packed_boxes($od_id) {
 
   if($joinPacked) {
     $ret .= '[합포추천]' . PHP_EOL;
-    foreach($joinPacked as $box => $items) {
-      $ret .= "● {$box}" . PHP_EOL;
+    foreach($joinPacked as $box) {
+      $ret .= "● {$box['name']}" . PHP_EOL;
 
-      foreach($items as $ct_id => $item) {
+      foreach($box['items'] as $ct_id => $item) {
         $ret .= "{$item['name']} * {$item['qty']}" . PHP_EOL;
       }
 
@@ -472,7 +476,7 @@ function get_packed_boxes($od_id) {
 
     'compPacked' => $compPacked, // 완전포장 { it_id: { name, qty } }
     'unPacked' => $unPacked, // 단일포장 { ct_id: { name, qty } }
-    'joinPacked' => $joinPacked, //합포추천 { box: { ct_id: { name, qty } } }
+    'joinPacked' => $joinPacked, //합포추천 [ { name: 박스이름, price: 박스가격, items: { ct_id: { name: 상품명, qty: 상품개수 } } } ]
     'dirPacked' => $dirPacked, //위탁상품 { ct_id: { name, qty } }
   );
 
