@@ -296,6 +296,26 @@ function form_check(act) {
     </div>
   </div>
 
+  <?php if ($is_development || $member['mb_id'] === 'hula1202') { ?>
+  <div class="recipient_security">
+    <div>
+      <img src="<?php echo G5_SHOP_URL; ?>/img/icon_security.png" />
+    </div>
+    <div class="recipient_security_content">
+      <h4>이로움 정보 보안관리 시스템</h4>
+      <p>
+        수급자 정보(이름, 요양인정번호, 연락처)는 암호화되어 저장됩니다.<br/>
+        수급자계약서 체결 및 엑셀다운로드 시 본인 인증 확인(동일IP확인 및 비밀번호 확인) 후 진행됩니다.
+      </p>
+      <a href="#">[온라인 개인정보 처리방침 자세히보기]</a>
+    </div>
+    <div class="recipient_security_check">
+      <img src="<?php echo G5_SHOP_URL; ?>/img/icon_security_check.png" />
+      <span><?php echo $member['mb_name']; ?> 확인됨</span>
+    </div>
+  </div>
+  <?php } ?>
+
   <form id="form_search" method="get">
     <div class="search_box">
       <select name="sel_field" id="sel_field">
@@ -757,7 +777,6 @@ function form_check(act) {
   </script>
   <?php } ?>
 </div>
-
 <div class="ajax-loader">
   <div class="loader-wr">
     <img src="<?php echo G5_URL; ?>/shop/img/loading.gif">
@@ -790,5 +809,43 @@ function excelPost(action, data) {
   });
 }
 </script>
+<div id="popup_recipient">
+  <div></div>
+</div>
+<style>
+#popup_recipient { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#popup_recipient > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+#popup_recipient iframe { position: relative; width: 1024px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -512px; }
+#popup_recipient iframe.mini { width: 600px; margin-left: -300px; }
+#popup_recipient iframe.security {
+  width: 600px;
+  margin-left: -300px;
+  max-height: 500px;
+}
+@media (max-width : 1240px){
+  #popup_recipient iframe,
+  #popup_recipient iframe.mini,
+  #popup_recipient iframe.security {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    margin-left: 0;
+  }
+}
+</style>
+<script>
+  $(function() {
+    $("#popup_recipient").hide();
+    $("#popup_recipient").css("opacity", 1);
 
+    $('.recipient_security_check').click(function(e) {
+      $("#popup_recipient > div").html("<iframe src='my_recipient_security.php'>");
+      $("#popup_recipient iframe").addClass('security');
+      $("#popup_recipient iframe").load(function() {
+        $("body").addClass('modal-open');
+        $("#popup_recipient").show();
+      });
+    });
+  });
+</script>
 <?php include_once("./_tail.php"); ?>
