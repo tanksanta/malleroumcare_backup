@@ -186,8 +186,10 @@ foreach($carts as $cart) {
 
     $it_name .= ' ' . $cart['ct_qty'] . '개';
 
+    // 합포
     $sql = "SELECT * FROM g5_shop_cart WHERE ct_combine_ct_id = '{$cart['ct_id']}'";
     $combine_result = sql_query($sql);
+    $combine = false;
     while ($combine_row = sql_fetch_array($combine_result)) {
         
         $combine_it_name = $combine_row["it_name"];
@@ -196,6 +198,23 @@ foreach($carts as $cart) {
         }
         $combine_it_name .= " ".$combine_row['ct_qty']."개";
         $it_name .= ' #' . $combine_it_name;
+        $combine = true;
+    }
+
+    // 합포 박스
+    try {
+        if (!$combine) {
+            throw new Exception();
+        }
+        $data = get_packed_boxes($cart['od_id']);
+        foreach ($data['joinPacked'] as $box => $array1) {
+            foreach ($array1 as $box_ct_id => $array2) {
+                if ($box_ct_id == $cart['ct_id']) {
+                    $it_name .= ' #' . "[{$box}]";
+                }
+            }
+        }
+    } catch(Exception $e) {
     }
 
     $edi['goodsName']       = $it_name;
