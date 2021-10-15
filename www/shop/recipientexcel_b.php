@@ -3,6 +3,7 @@ $sub_menu = '400300';
 include_once('../common.php');
 ?>
 <link rel="stylesheet" href="https://eroumcare.com/skin/admin/new/css/admin.css">
+<script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>
 
 <style>
 	.excelBtn { background-color: #333; color: #FFF; font-weight: bold; padding: 5px 15px; display: inline-block; }
@@ -22,7 +23,7 @@ include_once('../common.php');
         -->
     </div>
 
-    <form name="fitemexcel" method="post" action="./recipientexcelupdate_b.php" enctype="MULTIPART/FORM-DATA" autocomplete="off">
+    <form name="fitemexcel" id="form_upload" method="post" action="./recipientexcelupdate_b.php" enctype="MULTIPART/FORM-DATA" autocomplete="off">
 
     <div id="excelfile_upload">
         <label for="excelfile">파일선택</label>
@@ -37,6 +38,15 @@ include_once('../common.php');
     </form>
 
 </div>
+
+<script>
+$('#form_upload').on('submit', function(e) {
+  e.preventDefault();
+  var fd = new FormData(document.getElementById("form_upload"));
+  window.opener.excelPost($(this).attr('action'), fd);
+  window.close();
+});
+</script>
 
 <?php
 include_once(G5_PATH.'/tail.sub.php');
