@@ -245,7 +245,9 @@ function get_packed_boxes($od_id) {
     $length = (int) floor($length * 10);
     $depth = (int) floor($depth * 10);
 
-    $packer->addBox(new EroumBox($name, $price ?: 0, $width, $length, $depth, 0, $width, $length, $depth, 1000));
+    $price = $price ? (int) $price : 0;
+
+    $packer->addBox(new EroumBox($name, $price, $width, $length, $depth, 0, $width, $length, $depth, 1000));
   }
 
   // 출고준비 단계만 계산
