@@ -13,12 +13,12 @@ if (!$is_admin) {
   $check_member = "and ct_direct_delivery_partner = '{$member['mb_id']}'";
 }
 $check_result = sql_fetch("
-  SELECT ct_id, mb_id, ct_direct_delivery_partner FROM {$g5['g5_shop_cart_table']}
+  SELECT ct_id, mb_id, ct_direct_delivery_partner, od_id, it_id FROM {$g5['g5_shop_cart_table']}
   WHERE ct_id = '{$ct_id}' {$check_member}
   LIMIT 1
 ");
-if(!$check_result['ct_id'])
-  alert('존재하지 않는 주문입니다.');
+// if(!$check_result['ct_id'])
+//   alert('존재하지 않는 주문입니다.');
 
 $report = sql_fetch("
   SELECT * FROM partner_install_report
@@ -42,8 +42,14 @@ if($report && $report['ct_id']) {
   // 설치결과보고서 INSERT
   $insert_result = sql_query("
     INSERT INTO partner_install_report
-    SET ct_id = '{$ct_id}', mb_id = '{$check_result['ct_direct_delivery_partner']}',
-    ir_issue = '', ir_created_at = NOW(), ir_updated_at = NOW()
+    SET
+      od_id = '{$check_result['od_id']}',
+      it_id = '{$check_result['it_id']}',
+      ct_id = '{$ct_id}',
+      mb_id = '{$check_result['ct_direct_delivery_partner']}',
+      ir_issue = '',
+      ir_created_at = NOW(),
+      ir_updated_at = NOW()
   ");
   $report = array(
     'ir_cert_name' => '',
@@ -107,7 +113,7 @@ if($report && $report['ct_id']) {
 </head>
 <body>
   <div id="popupHeaderTopWrap">
-    <div class="title">설치결과등록</div>
+    <div class="title">설치결과등록 <?php echo !$check_result['ct_id'] ? '(미매칭)' : ''; ?></div>
     <div class="close">
       <a href="#" id="popupCloseBtn">
         &times;
