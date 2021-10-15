@@ -235,7 +235,7 @@ function get_packed_boxes($od_id) {
   // 쇼핑몰 박스규격 설정
   for($i = 1; $i <= 15; $i++) {
     $box_size = explode(chr(30), $default['de_box_size'.($i)]);
-    list($name, $width, $length, $depth) = $box_size;
+    list($name, $width, $length, $depth, $price) = $box_size;
 
     if(!($name && $width && $length && $depth))
       continue;

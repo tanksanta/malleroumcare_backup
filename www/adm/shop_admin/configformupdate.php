@@ -273,12 +273,14 @@ for($i = 1; $i <= 15; $i++) {
   $de_box_size_name = "{$box_size}_name";
   $de_box_size_width = "{$box_size}_width";
   $de_box_size_length = "{$box_size}_length";
-  $de_box_size_height = "{$box_size}_height";
+  $de_box_size_depth = "{$box_size}_depth";
+  $de_box_size_price = "{$box_size}_price";
   $$box_size = array(
     clean_xss_tags($$de_box_size_name),
     clean_xss_tags($$de_box_size_width),
     clean_xss_tags($$de_box_size_length),
-    clean_xss_tags($$de_box_size_height)
+    clean_xss_tags($$de_box_size_depth),
+    clean_xss_tags($$de_box_size_price)
   );
 
   $$box_size = implode(chr(30), $$box_size);
