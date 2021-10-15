@@ -298,6 +298,8 @@ if ( $od_status == '작성' && $is_admin != 'super' ) {
     $where[] = " o.od_writer = '{$member['mb_id']}' ";
 }
 
+$where[] = " (m.mb_intercept_date = '' OR m.mb_intercept_date IS NULL) ";
+
 if ($where) {
     $sql_search = ' where '.implode(' and ', $where);
 }
