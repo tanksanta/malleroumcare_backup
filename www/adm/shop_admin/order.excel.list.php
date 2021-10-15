@@ -293,6 +293,8 @@
     if ( $ct_status == '작성' && $is_admin != 'super' ) {
       $where[] = " od_writer = '{$member['mb_id']}' ";
     }
+
+    $where[] = " (C.mb_intercept_date = '' OR C.mb_intercept_date IS NULL) ";
     
     if ($where) {
       $sql_search = ' where '.implode(' and ', $where);
@@ -302,7 +304,7 @@
     // member 테이블 조인
     $sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, ct_delivery_num, it_admin_memo, it_maker, ct_status ,ct_move_date, ct_ex_date, ct_is_direct_delivery from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} I on I.it_id = X.it_id ) B
                     inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
-                    left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
+                    left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type, mb_intercept_date from {$g5['member_table']}) C
                     on A.mb_id = C.mb_id_temp
                     LEFT JOIN partner_install_report pir ON B.cart_ct_id = pir.ct_id
                     $sql_search
