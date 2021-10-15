@@ -68,7 +68,7 @@ $partners = get_partner_members();
     font-weight: normal;
     padding-left: 10px;
   }
-  #prodBarNumFormWrap > .titleWrap .btn_boxpacker {
+  #prodBarNumFormWrap > .titleWrap .btn_boxpacker, .btn_boxpacker_apply {
     display: block;
     position: absolute;
     top: 15px;
@@ -79,6 +79,7 @@ $partners = get_partner_members();
     color: #fff;
     font-size: 16px;
   }
+  .btn_boxpacker_apply { background: #333; right: 145px; }
   .boxpacker_load{ width: 100px; }
   .boxpacker_wr { display: none; text-align: center; }
   #boxpacker_ta { border: 1px solid #ddd; padding: 10px; color: #333; }
@@ -125,6 +126,7 @@ $partners = get_partner_members();
     <span>
       <?php echo $deliveryCntBtnWord; ?>
     </span>
+    <button type="button" class="btn_boxpacker_apply" data-apply="1">합포 적용</button>
     <button type="button" class="btn_boxpacker">합포 자동계산</button>
   </div>
 
@@ -136,6 +138,7 @@ $partners = get_partner_members();
   <div class="tableWrap">
     <table>
       <colgroup>
+        <col width="70px">
         <col width="">
         <col width="10%">
         <col width="130px">
@@ -148,6 +151,7 @@ $partners = get_partner_members();
       
       <thead>
         <tr>
+          <th>상태</th>
           <th>상품(옵션)</th>
           <th>박스수량</th>
           <th>배송비</th>
@@ -167,6 +171,7 @@ $partners = get_partner_members();
           for($k = 0; $k < count($options); $k++) {
         ?>
           <tr data-price="<?=$options[$k]["it_delivery_price"]?>" data-cnt="<?=$options[$k]["it_delivery_cnt"]?>">
+            <td><?php echo get_custom_ct_status_text($options[$k]['ct_status']); ?></td>
             <td>
               <input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
               <input type="hidden" name="ct_it_name_<?=$options[$k]["ct_id"]?>" value="<?=$carts[$i]["it_name"]?>">
@@ -257,7 +262,7 @@ $partners = get_partner_members();
             class="tr_direct_delivery <?=($options[$k]['ct_is_direct_delivery'] ? 'active' : '')?>"
             style="background-color:#e3e3e3;"
           >
-            <td colspan="8">
+            <td colspan="9">
               위탁
               <select
                 name="ct_is_direct_delivery_sub_<?=$options[$k]["ct_id"]?>"
@@ -373,14 +378,44 @@ $partners = get_partner_members();
     });
 
     // 합포 자동계산
-    $('.btn_boxpacker').click(function() {
+    $('.btn_boxpacker, .btn_boxpacker_apply').click(function() {
       $('.boxpacker_load').show();
       $('#boxpacker_ta').hide();
       $('.boxpacker_wr').show();
 
+      var apply = $(this).data('apply');
+
       $.post('ajax.boxpacker.php?od_id=<?=$od_id?>')
       .done(function(result) {
-        $('#boxpacker_ta').val(result.data).show();
+        if(apply) { // 합포 적용
+          var boxes = result.data.joinPacked; // 합포추천 박스들
+          $.each(boxes, function(box, items) {
+            var greatest = 0, target = null;
+
+            // 먼저 가장 박스수량이 많은 상품을 찾아 합포 대상으로 설정
+            $.each(items, function(ct_id, item) {
+              var box_qty = $('input[name="ct_delivery_cnt_' + ct_id + '"]').val();
+              if(box_qty > greatest) {
+                greatest = box_qty;
+                target = ct_id;
+              }
+            });
+
+            // 합포 대상에 합포 적용
+            $.each(items, function(ct_id, item) {
+              if(ct_id === target) return;
+
+              var $chk_combine = $('input[name="ct_combine_' + ct_id+ '"]');
+              var $sel_combine = $('select[name="ct_combine_ct_id_' + ct_id + '"]');
+
+              $sel_combine.val(target).change();
+              if(!$chk_combine.prop('checked'))
+                $chk_combine.click();
+            });
+          });
+        }
+
+        $('#boxpacker_ta').val(result.data.html).show();
       })
       .fail(function($xhr) {
         var data = $xhr.responseJSON;

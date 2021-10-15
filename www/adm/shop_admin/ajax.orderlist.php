@@ -294,6 +294,8 @@ if ($click_status) {
   }
 }
 
+$where[] = " (m.mb_intercept_date = '' OR m.mb_intercept_date IS NULL) ";
+
 $sql_search = '';
 if ($where) {
   $sql_search = ' where '.implode(' and ', $where);

@@ -251,6 +251,23 @@ function form_check(act) {
     position: static; margin-bottom: 20px;height:auto;
   }
 }
+.ajax-loader {
+  display: none;
+  background-color: rgba(255,255,255,0.7);
+  position: absolute;
+  z-index: 90;
+  width: 100%;
+  height:100%;
+  top: 0;
+  left: 0;
+  text-align: center;
+  padding-top: 25%;
+}
+
+.ajax-loader p {
+  margin: 20px;
+  color: #666;
+}
 </style>
 
 <!-- 210204 수급자목록 -->
@@ -740,5 +757,38 @@ function form_check(act) {
   </script>
   <?php } ?>
 </div>
+
+<div class="ajax-loader">
+  <div class="loader-wr">
+    <img src="<?php echo G5_URL; ?>/shop/img/loading.gif">
+    <p>수급자 일괄 등록 중입니다...</p>
+  </div>
+</div>
+
+<script>
+// 엑셀 일괄등록, 로딩
+function excelPost(action, data) {
+  $('.ajax-loader').show();
+  $.ajax({
+    url: action,
+    type: 'POST',
+    data: data,
+    processData: false,
+    contentType: false,
+    dataType: 'json'
+  })
+  .done(function(result) {
+    alert(result.message);
+    window.location.reload();
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  })
+  .always(function() {
+    $('.ajax-loader').hide();
+  });
+}
+</script>
 
 <?php include_once("./_tail.php"); ?>

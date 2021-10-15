@@ -85,7 +85,7 @@ if($sheetData) {
 
         if($valid = valid_recipient_input($sendData, false, true)) {
             // 입력값 오류 발생
-            alert("({$i}행) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
+            json_response(400, "({$i}행) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
             // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;
         }
         $inputs[] = normalize_recipient_input($sendData);
@@ -94,11 +94,10 @@ if($sheetData) {
     foreach($inputs as $input) {
         $res = get_eroumcare(EROUMCARE_API_RECIPIENT_INSERT, $input);
         if($res['errorYN'] != 'N') {
-            echo "{$input['penNm']} 수급자를 업로드 하는 도중 오류가 발생했습니다.<br>";
-            echo "{$input['penNm']} 수급자부터 다시 등록해주세요.<br><br>";
-            echo "오류 내용 : ";
-            var_dump($res);
-            exit;
+            $error = "{$input['penNm']} 수급자를 업로드 하는 도중 오류가 발생했습니다.".PHP_EOL;
+            $error .= "{$input['penNm']} 수급자부터 다시 등록해주세요.".PHP_EOL;
+            $error .= "오류 내용 : ";
+            json_response(500, $error);
         }
 
         if ($input['penRecGraCd'] == '00') {
@@ -143,8 +142,8 @@ if($sheetData) {
     }
 
     $total_count = count($inputs);
-    alert_close("{$total_count}명의 수급자가 등록되었습니다.", false, true);
+    json_response(200, "{$total_count}명의 수급자가 등록되었습니다.");
 } else {
-    alert_close('파일을 읽을 수 없습니다.');
+    json_response(400, '파일을 읽을 수 없습니다.');
 }
 ?>

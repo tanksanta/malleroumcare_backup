@@ -44,7 +44,7 @@ include_once('./pop.head.php');
                 <th>사업소정보</th>
                 <td>
                     <div>
-                        <input type="text" name="mb_id" value=""class="frm_input mb_id_flexdatalist" style="width: 300px;">
+                        <input type="text" name="mb_id" value=""class="frm_input mb_id_flexdatalist">
                         <span id="mb_id_flexdatalist_result">
                             사업소를 검색하세요.
                         </span>
@@ -451,8 +451,8 @@ $(function() {
                 html += "<td class='ad_subject'>" + (item.ad_subject || '-') + "</td>";
                 html += "<td class='ad_name'>" + (item.ad_name || '-') + "</td>";
                 html += "<td class='ad_tel'>" + (auto_phone_hypen(item.ad_tel)) + "<br>" + (item.ad_hp || '-') + "</td>";
-                html += "<td class='ad_addr'>" + ((item.ad_addr1 + item.ad_addr2) || '-') + "</td>";
-                html += "<td><input type='button' class='shbtn small apply_address' value='선택' data-name='" + item.ad_name + "' data-tel='" + item.ad_tel + "' data-addr='" + (item.ad_addr1 + item.ad_addr2) + "'></td>";
+                html += "<td class='ad_addr'>" + ((item.ad_addr1 + " " + item.ad_addr2) || '-') + "</td>";
+                html += "<td><input type='button' class='shbtn small apply_address' value='선택' data-name='" + item.ad_name + "' data-tel='" + item.ad_tel + "' data-addr='" + (item.ad_addr1 + " " + item.ad_addr2) + "'></td>";
                 html += "</tr>";
             });
 
@@ -532,7 +532,7 @@ $(function() {
         var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
         qty = qty ? parseInt( qty, 10 ) : 0;
 
-        if ($(this).attr('name') === 'qty[]') {
+        if ($(this).attr('name') === 'qty[]' || $(this).attr('name') === 'io_id[]') {
 
             var it_id = $(parent).find('input[name="it_id[]"]').val();
             var it_sale_cnt = 0;

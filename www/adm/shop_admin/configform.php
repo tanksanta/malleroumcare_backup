@@ -1351,15 +1351,18 @@ if( function_exists('pg_setting_check') ){
             <?php
             for($i = 1; $i <= 15; $i++) {
               $box_size = explode(chr(30), $default['de_box_size'.($i)]);
+              list($name, $width, $length, $depth, $price) = $box_size;
             ?>
             <label for="de_box_size<?=$i?>_name">박스명:</label>
-            <input type="text" name="de_box_size<?=$i?>_name" value="<?=$box_size[0]?>" id="de_box_size<?=$i?>_name" class="frm_input" size="15">, 
+            <input type="text" name="de_box_size<?=$i?>_name" value="<?=$name?>" id="de_box_size<?=$i?>_name" class="frm_input" size="15">, 
             <label for="de_box_size<?=$i?>_width">가로:</label>
-            <input type="text" name="de_box_size<?=$i?>_width" value="<?=$box_size[1]?>" id="de_box_size<?=$i?>_width" class="frm_input" size="5">
+            <input type="text" name="de_box_size<?=$i?>_width" value="<?=$width?>" id="de_box_size<?=$i?>_width" class="frm_input" size="5">
             <label for="de_box_size<?=$i?>_length">세로:</label>
-            <input type="text" name="de_box_size<?=$i?>_length" value="<?=$box_size[2]?>" id="de_box_size<?=$i?>_length" class="frm_input" size="5">
-            <label for="de_box_size<?=$i?>_height">높이:</label>
-            <input type="text" name="de_box_size<?=$i?>_height" value="<?=$box_size[3]?>" id="de_box_size<?=$i?>_height" class="frm_input" size="5">
+            <input type="text" name="de_box_size<?=$i?>_length" value="<?=$length?>" id="de_box_size<?=$i?>_length" class="frm_input" size="5">
+            <label for="de_box_size<?=$i?>_depth">높이:</label>
+            <input type="text" name="de_box_size<?=$i?>_depth" value="<?=$depth?>" id="de_box_size<?=$i?>_depth" class="frm_input" size="5">
+            <label for="de_box_size<?=$i?>_price">배송비:</label>
+            <input type="text" name="de_box_size<?=$i?>_price" value="<?=$price?>" id="de_box_size<?=$i?>_price" class="frm_input" size="8">
             <br>
             <?php } ?>
           </td>
