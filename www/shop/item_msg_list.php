@@ -1,0 +1,139 @@
+<?php
+include_once("./_common.php");
+
+if($member['mb_type'] !== 'default')
+  alert('접근할 수 없습니다.');
+
+$g5['title'] = '품목/정보 메시지 전달';
+include_once("./_head.php");
+
+$sql_common = "
+  FROM
+    recipient_item_msg
+  WHERE
+    mb_id = '{$member['mb_id']}'
+";
+
+// 총 개수 구하기
+$total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ")['cnt'];
+$page_rows = $config['cf_page_rows'];
+$total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
+
+$sql_limit = " limit {$from_record}, {$page_rows} ";
+
+$msg_result = sql_query("
+  SELECT *
+  {$sql_common}
+  ORDER BY ms_id desc
+  {$sql_limit}
+");
+
+$list = [];
+for($i = 0; $row = sql_fetch_array($msg_result); $i++) {
+  // 순번 부여하기
+  $row['index'] = $total_count - (($page - 1) * $page_rows) - $i;
+
+  // 품목 정보 가져오기
+  $row['items'] = [];
+  $sql = "
+    SELECT * FROM recipient_item_msg_item
+    WHERE ms_id = '{$row['ms_id']}'
+  ";
+  $item_result = sql_query($sql);
+  while($item = sql_fetch_array($item_result)) {
+    $row['items'][] = $item;
+  }
+
+  // 마지막 전송일 가져오기
+  $sql = "
+    SELECT * FROM recipient_item_msg_log
+    WHERE ms_id = '{$row['ms_id']}'
+    ORDER BY ml_id desc
+    limit 0, 1
+  ";
+  $last_log_result = sql_fetch($sql);
+  $row['last_sent_at'] = $last_log_result['ml_sent_at'];
+
+  $list[] = $row;
+}
+
+if(!$list) {
+  // 목록이 비었다면 바로 작성페이지로 이동
+  goto_url('item_msg_write.php');
+}
+
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css">', 0);
+?>
+
+<section class="wrap">
+  <div class="sub_section_tit">품목/정보 메시지 전달</div>
+  <div class="inner">
+    <div class="im_desc_wr">
+      <a href="item_msg_write.php" class="btn_im_send">수급자에게 품목/정보 전달</a>
+      <div class="im_desc">
+        <p>수급자에게 제공할 품목을 선택한 후 휴대폰 정보를 입력하면</p>
+        <p>추천하는 품목목록이 수급자/보호자에게 메시지로 전달됩니다.</p>
+      </div>
+    </div>
+
+    <form method="GET">
+      <div class="search_box">
+        <select name="searchtype">
+          <option value="penNm" <?=get_selected($searchtype, 'it_name')?>>상품명</option>
+          <option value="penLtmNum" <?=get_selected($searchtype, 'penNm')?>>수급자명</option>
+        </select>
+        <div class="input_search">
+          <input name="search" value="<?=$_GET["search"]?>" type="text">
+          <button type="submit"></button>
+        </div>
+      </div>
+    </form>
+
+    <div class="list_box">
+      <div class="table_box">
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>수급자정보</th>
+              <th>품목</th>
+              <th>전송일</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach($list as $row) { ?>
+            <tr>
+              <td><?=$row['index']?></td>
+              <td><?="{$row['ms_pen_nm']} ({$row['ms_pen_hp']})"?></td>
+              <td>
+                <?php
+                foreach($row['items'] as $item) {
+                  if($item['gubun'] === '00')
+                    echo '(판매) ';
+                  else if($item['gubun'] === '01')
+                    echo '(대여) ';
+                  else if($item['gubun'] === '02')
+                    echo '(비급여) ';
+                  echo $item['it_name'];
+                  echo '<br>';
+                }
+                ?>
+              </td>
+              <td><?=date('Y년 m월 d일 (H:i)', strtotime($row['last_sent_at']))?></td>
+            </tr>
+            <?php } ?>
+          </tbody>
+        </table>
+      </div>
+      <div class="list-paging">
+        <ul class="pagination pagination-sm en">  
+          <?php echo apms_paging(5, $page, $total_page, '?page='); ?>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<?php include_once("./_tail.php"); ?>
