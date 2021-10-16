@@ -87,7 +87,7 @@
 
 .im_write_list > li {
   position: relative;
-  padding: 15px 5px 15px 120px;
+  padding: 15px 65px 15px 120px;
   border-bottom: 1px solid #ddd;
   height: 130px;
 }
@@ -124,7 +124,9 @@
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 3px;
-  padding: 5px 15px;
+  padding: 5px;
+  width: 55px;
   height: 35px;
+  text-align: center;
   line-height: 25px;
 }
