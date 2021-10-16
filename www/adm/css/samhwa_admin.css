@@ -1230,6 +1230,14 @@ table.list-table-style .drop_multi_sub a:after {
 #samhwa_order_form>.block .shbtn:hover {
     background-color:#fafafa;
 }
+#samhwa_order_form>.block .shbtn:disabled {
+    background-color: #f4f4f4;
+    color: #979797;
+    cursor: default;
+}
+#samhwa_order_form>.block .shbtn:disabled:hover {
+    background-color:#f4f4f4;
+}
 #samhwa_order_form>.block .shbtn.green {
     background-color: #0aa2cd;
     border:1px solid #0aa2cd;
@@ -1246,6 +1254,10 @@ table.list-table-style .drop_multi_sub a:after {
     width: 120px;
     height: 28px;
     vertical-align:middle;
+}
+#samhwa_order_form>.block select:disabled {
+    background-color: #f4f4f4;
+    color: #979797;
 }
 #samhwa_order_form>.block select::-ms-expand {display:none}
 #samhwa_order_form>.block .item_list {
@@ -1817,6 +1829,10 @@ table.list-table-style .drop_multi_sub a:after {
     border: 1px solid #ddd;
     font-size: 1em;
 }
+#cancel_memo_content:disabled {
+    color: #979797;
+    background-color: #f4f4f4;
+}
 .hidden_form {
     display:none;
 }
@@ -2284,4 +2300,37 @@ table.it_outsourcing td span {
   width: 50px;
   height: 50px;
   margin: 5px;
+}
+
+.cancel .refund h3 {
+    color: #333;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+.cancel .refund li {
+    line-height: 35px;
+}
+.cancel .refund textarea {
+    width: calc(100% - 60px);
+    background-color: white;
+    box-sizing: border-box;
+    padding: 10px;
+    height: 29px;
+    color: #656565;
+    border: 1px solid #ddd;
+    font-size: 1em;
+}
+.cancel .refund input[type="text"] {
+    background-color: white !important;
+    padding: 0px 8px;
+    height: 28px;
+    background: none !important;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    width: 120px;
+    font-size: 0.9em;
+}
+.cancel .refund input[type="text"]:disabled {
+    background-color: #f4f4f4 !important;
+    color: #979797;
 }

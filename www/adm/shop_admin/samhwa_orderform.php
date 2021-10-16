@@ -1911,18 +1911,18 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 <?php
                 $sql = "select *
                         from g5_shop_order_cancel_request
-                        where od_id = '{$od['od_id']}' and approved = 0";
+                        where od_id = '{$od['od_id']}'";
 
                 $cancel_request_row = sql_fetch($sql);
 
                 if ($cancel_request_row['request_type'] == 'cancel') {
-                    $info = "* 취소 요청이 있습니다. 승인 시 주문이 취소됩니다.";
+                    $info = "* 환불 요청이 있습니다. 승인 시 환불이 진행됩니다. ";
                 }
                 if ($cancel_request_row['request_type'] == 'return') {
                     $info = "* 반품 요청이 있습니다. 승인 시 반품 단계로 이동됩니다.";
                 }
 
-                if ($cancel_request_row['od_id']) {
+                if ($cancel_request_row['od_id'] && $cancel_request_row['approved'] == 0) {
                 ?>
                 <span id="cancel_info"><?php echo $info ?></span> <button type="button" onclick="approveCancel()">승인</button> <button type="button" class="btn" onclick="rejectCancel()">거절</button>
                 <?php } ?>
@@ -1944,7 +1944,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
             <div class="block-box cancel">
                 <div class="om_cancel_write_box">
                     <div class="om_cancel_header">
-                        <select name="od_cancel_reason">
+                        <select name="od_cancel_reason" <?php echo $cancel_request_row['approved'] == 1 ? 'disabled="disabled"' : ''; ?>>
                             <option value="단순변심" <?php echo $od['od_cancel_reason'] == '단순변심' ? 'selected' : ''; ?>>단순변심</option>
                             <option value="제품파손" <?php echo $od['od_cancel_reason'] == '제품파손' ? 'selected' : ''; ?>>제품파손</option>
                             <option value="제품하자" <?php echo $od['od_cancel_reason'] == '기타' ? 'selected' : ''; ?>>제품하자</option>
@@ -1954,7 +1954,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <option value="기타" <?php echo $od['od_cancel_reason'] == '기타' ? 'selected' : ''; ?>>기타</option>
                         </select>
                         <div id="g5_shop_order_cancel_file">
-                            <button type="button" class="shbtn uploadbtn">찾아보기</button>
+                            <?php if ($cancel_request_row['approved'] != 1) { ?>
+                                <button type="button" class="shbtn uploadbtn">찾아보기</button>
+                            <?php } ?>
                             <ul class="upload_files upload_files_cancel_apply">
                                 <?php
                                 $sql = "SELECT ctf_no as no, ctf_name as file_name, ctf_real_name as real_name FROM g5_shop_order_cart_file WHERE od_id = '{$od_id}' AND ctf_type = 'cancel_apply'";
@@ -1969,7 +1971,35 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             </ul>
                         </div>
                     </div>
-                    <input name="od_cancel_memo" rows="8" placeholder="입력한 메모내용이 보여집니다." value="<?php echo get_text($od['od_cancel_memo']); ?>" id="cancel_memo_content" />
+                    <input name="od_cancel_memo" rows="8" placeholder="입력한 메모내용이 보여집니다." value="<?php echo get_text($od['od_cancel_memo']); ?>" id="cancel_memo_content" <?php echo $cancel_request_row['approved'] == 1 ? 'disabled="disabled"' : ''; ?> />
+                    <?php if ($cancel_request_row['approved'] == 1) { ?>
+                        <div class="refund">
+                            <h3>환불진행</h3>
+                            <textarea name="refund_memo" rows="8" placeholder="메모를 입력하세요."><?php echo $cancel_request_row['refund_memo']; ?></textarea>
+                            <ul>
+                                <li>
+                                    <span>- 진행상태:</span>
+                                    <select name="refund_status">
+                                        <option value="" <?php echo !$cancel_request_row['refund_status'] ? 'selected="selected"' : ''; ?>>없음</option>
+                                        <option value="회수요청" <?php echo $cancel_request_row['refund_status'] === '회수요청' ? 'selected="selected"' : ''; ?>>회수요청</option>
+                                        <option value="회수완료 및 검수" <?php echo $cancel_request_row['refund_status'] === '회수완료 및 검수' ? 'selected="selected"' : ''; ?>>회수완료 및 검수</option>
+                                        <option value="검수완료" <?php echo $cancel_request_row['refund_status'] === '검수완료' ? 'selected="selected"' : ''; ?>>검수완료</option>
+                                    </select>
+                                    * 검수완료시 환불금액만큼 청구내역에서 차감됩니다. 
+                                </li>
+                                <li>
+                                    <span>- 환불금액:</span>
+                                    <input type="text" name="refund_price" value="<?php echo number_format($cancel_request_row['refund_price']); ?>" /> 원
+                                    &nbsp;&nbsp;&nbsp;
+                                    <input type="checkbox" name="refund_price_all" id="refund_price_all" value="<?php echo $tot_total; ?>" <?php echo $tot_total == $cancel_request_row['refund_price'] ? 'checked="checked"' : ''; ?>>
+                                    <label for="refund_price_all">전액환불(배송비 제외)</label>
+                                </li>
+                            </ul>
+                        </div>
+                        <div style="text-align:right;">
+                            <input type="button" value="적용" class="btn shbtn" id="refund_submit">
+                        </div>
+                    <?php } ?>
                     <!--<input type="button" value="반영" class="btn shbtn" id="cancel_submit">-->
                 </div>
             </div>
@@ -3901,8 +3931,7 @@ $(document).ready(function() {
         });
     });
 
-
-    
+    // 미매칭
     $('.install_report_match').click(function(e) {
         var before_ct_id = $(this).data('ct-id');
         var after_ct_id = $(this).closest('li').find('select').val();
@@ -3922,9 +3951,86 @@ $(document).ready(function() {
         .fail(function() {
             alert('반영에 실패하였습니다.');
         })
-
     });
+
+    // 환불
+    $(document).on("click", "#refund_price_all", function (e) {
+        if ($(this).is(":checked")) {
+            $('input[name="refund_price"]').val(addComma($(this).val()));
+            return;
+        }
+        $('input[name="refund_price"]').val(0);
+    });
+
+    $(document).on("input propertychange paste", "input[name='refund_price']", function (e) {
+        var input = $(this).val().replace(/[\D\s\._\-]+/g, "");
+        
+        if(input !== '') {
+            input = input ? parseInt( input, 10 ) : 0;
+            $(this).val(input.toLocaleString());
+        } else {
+            $(this).val('');
+        }
+    });
+
+    $(document).on("click", "#refund_submit", function(e) {
+        if (!$('textarea[name="refund_memo"]').val()) {
+            alert('메모를 입력하세요.');
+            return;
+        }
+        if (!$('select[name="refund_status"]').val()) {
+            alert('환불상태를 선택하세요.');
+            return;
+        }
+        var refund_price = $('input[name="refund_price"]').val().replace(/[\D\s\._\-]+/g, "");
+        refund_price = refund_price ? parseInt(refund_price, 10) : 0;
+        if (refund_price < 0) {
+            alert('환불금액은 0이상 되어야합니다.');
+            return;
+        }
+        var ajax = $.ajax({
+            method: "POST",
+            url: './ajax.refund.php',
+            data: {
+                od_id: od_id,
+                refund_memo: $('textarea[name="refund_memo"]').val(),
+                refund_status: $('select[name="refund_status"]').val(),
+                refund_price: $('input[name="refund_price"]').val().replace(/[\D\s\._\-]+/g, ""),
+            },
+        })
+        .done(function(data) {
+            alert('환불내용이 변경되었습니다.');
+            window.location.reload(); 
+        });
+    })
+
+    $(document).on("change keyup paste", "select[name='refund_status']", function (e) {
+        reset_refund_price();
+    });
+
+    reset_refund_price();
+
+
 });
+
+function reset_refund_price() {
+    var select_val = $("select[name='refund_status']").val();
+    if ( select_val === '회수완료 및 검수' || select_val === '검수완료') {
+        $('input[name="refund_price"]').attr("disabled", false);
+        $('#refund_price_all').attr("disabled", false);
+        return;
+    }
+    $('input[name="refund_price"]').val("0");
+    $('input[name="refund_price"]').attr("disabled", true);
+    $('#refund_price_all').attr("disabled", true);
+    $('#refund_price_all').prop("checked", false)
+}
+
+function addComma(num)
+{
+  var regexp = /\B(?=(\d{3})+(?!\d))/g;
+  return num.toString().replace(regexp, ',');
+}
 
 function showKcpWindow()
 {
