@@ -23,8 +23,16 @@ if (!$od['mb_id']) {
 }
 
 if ($w || $uid) {
-    $result = sql_fetch("SELECT count(*) as cnt FROM {$g5['g5_shop_cart_table']} WHERE ct_uid = '{$uid}' AND ct_status NOT IN ('작성', '준비')");
-    if ($result['cnt']) {
+    $result = sql_fetch("SELECT
+        i.*,
+        c.ct_status
+    FROM
+        {$g5['g5_shop_cart_table']} as c 
+        INNER JOIN {$g5['g5_shop_item_table']} as i ON c.it_id = i.it_id
+    WHERE c.ct_uid = '{$uid}'
+    ");
+
+    if (!$result['it_type3'] && !in_array($result['ct_status'], ['준비', '작성'])) {
         alert_close('주문상태가 작성 또는 상품준비 상태여야만 수정가능합니다.');
     }
 }

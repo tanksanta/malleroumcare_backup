@@ -152,18 +152,20 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
   // 상품의 옵션정보
   $sql = "
     select
-      ct_id, mb_id, ct_manager, ct_delivery_cnt, ct_combine_ct_id, it_id, ct_price, ct_point, ct_qty, ct_ex_date, ct_stock_qty, ct_barcode, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, ct_sendcost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_discount, ct_uid,
-      ct_is_direct_delivery, ct_direct_delivery_date,
-      ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn,
-      ( SELECT it_taxInfo FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_taxInfo
+      MT.*,
+      b.prodSupYn,
+      b.it_taxInfo,
+      b.it_type3
     from
       {$g5['g5_shop_cart_table']} MT
+      left join
+        {$g5['g5_shop_item_table']} b on ( MT.it_id = b.it_id )
     where
-      od_id = '{$od['od_id']}' and
-      it_id = '{$row['it_id']}' and
-      ct_uid = '{$row['ct_uid']}'
+      MT.od_id = '{$od['od_id']}' and
+      MT.it_id = '{$row['it_id']}' and
+      MT.ct_uid = '{$row['ct_uid']}'
     order by
-      io_type asc, ct_id asc
+      MT.io_type asc, MT.ct_id asc
   ";
   $res = sql_query($sql);
 
@@ -296,13 +298,14 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
 
 # 설치 결과 보고서
 $reports = [];
-$install_report_flag = false; // 현재 주문에 위탁: 설치/배송 상품이 있는지 여부
-foreach($carts as $cart) {
-  foreach($cart['options'] as $option) {
+// $install_report_flag = false; // 현재 주문에 위탁: 설치/배송 상품이 있는지 여부
+$install_report_flag = true;
+foreach($carts as $cart_id => $cart) {
+  foreach($cart['options'] as $cart_key => $option) {
     if($option['ct_is_direct_delivery'] != '2')
       continue;
 
-    $install_report_flag = true;
+    // $install_report_flag = true;
 
     $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$option['ct_id']}' ");
     if($report['ct_id']) {
@@ -331,7 +334,22 @@ foreach($carts as $cart) {
 
         $reports[] = $report;
     }
+
+    $carts[$cart_id]['options'][$cart_key]['report'] = $report;
   }
+}
+
+$install_report_not_matches = [];
+$install_report_not_match_query = sql_query("SELECT pir.*, i.it_name FROM
+    partner_install_report pir
+    LEFT JOIN g5_shop_cart c ON pir.ct_id = c.ct_id
+    LEFT JOIN g5_shop_item i ON pir.it_id = i.it_id
+    WHERE
+        pir.od_id = '{$od_id}'
+        AND c.ct_id IS NULL
+");
+while($install_report_not_match_row = sql_fetch_array($install_report_not_match_query)) {
+    $install_report_not_matches[] = $install_report_not_match_row;
 }
 ?>
 <script>
@@ -872,11 +890,11 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                             <div class="more">
                                                 <?php
                                                 $temp_ct_step = get_step($options[$k]['ct_status']);
-                                                if(($temp_ct_step['cart_editable'] || $temp_ct_step['cart_deletable']) && !$options[$k]['ct_stock_qty']){ 
+                                                if($options[$k]['it_type3'] || ($temp_ct_step['cart_editable'] || $temp_ct_step['cart_deletable']) && !$options[$k]['ct_stock_qty']){ 
                                                 ?>
                                                     <img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_more_b.png" class="item_list_more" data-ct-id="<?php echo $options[$k]['ct_id']; ?>" />
                                                     <ul class="openlayer">
-                                                        <?php if ($temp_ct_step['cart_editable']) { ?>
+                                                        <?php if ($options[$k]['it_type3'] || $temp_ct_step['cart_editable']) { ?>
                                                         <li
                                                             class="edit_item"
                                                             data-od-id="<?php echo $od_id; ?>"
@@ -885,7 +903,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                             data-memo="<?php echo $prodMemo; ?>"
                                                         >수정</li>
                                                         <?php } ?>
-                                                        <?php if ($temp_ct_step['cart_deletable']) { ?>
+                                                        <?php if ($options[$k]['it_type3'] || $temp_ct_step['cart_deletable']) { ?>
                                                         <li
                                                             class="delete_item"
                                                             data-od-id="<?php echo $od_id; ?>"
@@ -1282,6 +1300,25 @@ var od_id = '<?php echo $od['od_id']; ?>';
                           </li>
                           <?php } ?>
                         </ul>
+                        <?php if (count($install_report_not_matches)) { ?>
+                            <ul style="border-top: 1px solid #ddd;padding-top:5px;margin-top:5px;">
+                                <?php foreach($install_report_not_matches as $not_match) { ?>
+                                    <li>
+                                        <span>미매칭</span> &nbsp;
+                                        <select name="after_ct_id">
+                                            <?php foreach($carts as $cart) { ?>
+                                                <?php foreach($cart['options'] as $options) { ?>
+                                                    <?php if ($options['report']['od_id']) continue; ?>
+                                                    <option value="<?php echo $options['ct_id']; ?>"><?php echo $options['it_name']; ?></option>
+                                                <?php } ?>
+                                            <?php } ?>
+                                        </select>
+                                        <input type="button" value="매칭" class="btn shbtn install_report_match" data-ct-id="<?php echo $not_match['ct_id']; ?>">
+                                        <button type="button" class="report-btn btn_install_report btn shbtn" data-id="<?php echo $not_match['ct_id']; ?>">설치결과보고서</button>
+                                    </li>
+                                <?php } ?>
+                            </ul>
+                        <?php } ?>
                       </td>
                     </tr>
                     <?php } ?>
@@ -3865,6 +3902,28 @@ $(document).ready(function() {
     });
 
 
+    
+    $('.install_report_match').click(function(e) {
+        var before_ct_id = $(this).data('ct-id');
+        var after_ct_id = $(this).closest('li').find('select').val();
+
+        $.ajax({
+            method: "POST",
+            url: "./ajax.report.match.php",
+            data: {
+                before_ct_id: before_ct_id,
+                after_ct_id: after_ct_id,
+            },
+        })
+        .done(function (data) {
+            alert('매칭되었습니다.');
+            location.reload();
+        })
+        .fail(function() {
+            alert('반영에 실패하였습니다.');
+        })
+
+    });
 });
 
 function showKcpWindow()
