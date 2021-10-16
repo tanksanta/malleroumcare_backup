@@ -13,7 +13,7 @@ $sql_common = "
   FROM
     recipient_noti
   WHERE
-    mb_id = {$member['mb_id']}
+    mb_id = '{$member['mb_id']}'
 ";
 
 // 총 개수 구하기

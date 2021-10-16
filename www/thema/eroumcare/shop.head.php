@@ -396,7 +396,7 @@ if($is_main && !$is_member) {
 
           <?php if($member['mb_type'] == 'default' && $member['mb_id'] == 'hula1202') { ?>
           <div class="conv_area">
-            <a href="#" class="pen_item_msg">수급자에게 품목/정보 전달</a>
+            <a href="/shop/item_msg_list.php" class="pen_item_msg">수급자에게 품목/정보 전달</a>
           </div>
           <?php } ?>
 

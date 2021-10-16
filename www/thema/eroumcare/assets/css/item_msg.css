@@ -1,0 +1,130 @@
+/*
+ * 품목/정보 메시지 전달 스타일시트
+ */
+
+.im_desc_wr {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.im_desc p {
+  color: #666;
+  margin: 0; 
+}
+.btn_im_send {
+  display: inline-block;
+  margin: 10px 0;
+  padding: 25px;
+  text-align: center;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 5px;
+  background: #8abf63;
+}
+.btn_im_send:hover, .btn_im_send:focus {
+  color: #fff;
+}
+
+.panel-default {
+  border-radius: 5px;
+}
+
+.form-group .control-label {
+  max-width: 120px;
+}
+
+.form-group .form-control {
+  display: inline-block;
+  width: 150px;
+  margin-right: 10px;
+  border-radius: 3px !important;
+}
+.form-group .radio_wr {
+  margin-bottom: 10px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group .form_desc {
+  white-space: nowrap;
+}
+
+.im_sch_wr {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.im_sch_hd {
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.ipt_im_sch {
+  display: block;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  line-height: 1.5;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex-grow: 1;
+}
+
+.im_write_list {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.im_write_list > li {
+  position: relative;
+  padding: 15px 5px 15px 120px;
+  border-bottom: 1px solid #ddd;
+  height: 130px;
+}
+
+.im_write_list .it_img {
+  position: absolute;
+  top: 15px;
+  left: 5px;
+  display: block;
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  height: 100px;
+  border: 1px solid #ddd;
+}
+
+.im_write_list .it_info {
+
+}
+
+.im_write_list .it_info > p {
+  margin: 10px 0;
+}
+
+.im_write_list .it_info .it_name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.im_write_list .btn_del_item {
+  position: absolute;
+  top: 47.5px;
+  right: 5px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 5px 15px;
+  height: 35px;
+  line-height: 25px;
+}
