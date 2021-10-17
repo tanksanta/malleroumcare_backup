@@ -121,7 +121,21 @@ $total_page_spare = ceil( $total_count_spare / $rows_spare ); # 총 페이지
 // 수급자 연결
 $links = get_recipient_links($member['mb_id']);
 ?>
+<script src="<?php echo G5_JS_URL; ?>/client.min.js"></script>
+<script src="<?php echo G5_JS_URL; ?>/recipient_device_security.js"></script>
 <script>
+function get_fingerprint() {
+  var client = new ClientJS(); // Create A New Client Object
+  // var fingerprint = client.getFingerprint(); // Get Client's Fingerprint
+
+  var ua = client.getBrowserData().ua;
+	var canvasPrint = client.getCanvasPrint();
+  var fingerprint = client.getCustomFingerprint(ua, canvasPrint);
+
+  console.log( fingerprint );
+  return fingerprint;
+}
+
 function excelform(url){
   var opt = "width=600,height=450,left=10,top=10";
   window.open(url, "win_excel", opt);
@@ -190,6 +204,10 @@ function form_check(act) {
     if(update_count < 1) {
       alert("수정하실 항목을 하나이상 선택해 주십시오.");
       return false;
+    }
+
+    if (check_device_security_val() == false) {
+      return;
     }
 
     $("input[name^=chk]:checked").each(function() {
@@ -296,8 +314,8 @@ function form_check(act) {
     </div>
   </div>
 
-  <?php if ($is_development || $member['mb_id'] === 'hula1202') { ?>
   <div class="recipient_security">
+    <input type="hidden" value="N" class="device_security">
     <div>
       <img src="<?php echo G5_SHOP_URL; ?>/img/icon_security.png" />
     </div>
@@ -311,10 +329,10 @@ function form_check(act) {
     </div>
     <div class="recipient_security_check">
       <img src="<?php echo G5_SHOP_URL; ?>/img/icon_security_check.png" />
-      <span><?php echo $member['mb_name']; ?> 확인됨</span>
+      <span class="recipient_security_authorized"><?php echo $member['mb_name']; ?> 확인됨</span>
+      <span class="recipient_security_not_authorized" style="color:white;opacity:80%"><?php echo $member['mb_name']; ?> 미확인(해당기기 본인 확인 필요)</span>
     </div>
   </div>
-  <?php } ?>
 
   <form id="form_search" method="get">
     <div class="search_box">
@@ -335,7 +353,7 @@ function form_check(act) {
     </div>
     <?php } ?>
     <div class="r_btn_area pc">
-      <a href="./my_recipient_excel.php" class="btn eroumcare_btn2" title="수급자 엑셀 다운로드">수급자 엑셀 다운로드</a>
+      <a href="javascript::" class="btn eroumcare_btn2" id="recipient_excel_download" title="수급자 엑셀 다운로드">수급자 엑셀 다운로드</a>
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
       <a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
       <div class="tooltip_btn">
@@ -409,7 +427,8 @@ function form_check(act) {
             <?php echo $total_count - (($page - 1) * $page_rows) - $i; ?>
           </td>
           <td>
-            <a href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId']; ?>'>
+            <!-- <a href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId'];?>'> -->
+            <a onclick='return check_device_security_val()' href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId'];?>'>
               <?php echo $data['penNm'].$data['desc_text']; ?>
               <?php if($data['incomplete']) echo '<img src="'.THEMA_URL.'/assets/img/icon_notice_recipient.png" style="vertical-align:bottom;">'; ?>
               <br/>
@@ -468,7 +487,7 @@ function form_check(act) {
       <?php foreach ($list as $data) { ?>
       <li>
         <div class="info">
-          <a href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId']; ?>'>
+        <a onclick='return check_device_security_val()' href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId'];?>'>
             <b>
               <?php echo $data['penNm'].$data['desc_text']; ?>
               <?php if($data['incomplete']) echo '<img src="'.THEMA_URL.'/assets/img/icon_notice_recipient.png" style="vertical-align:bottom;">'; ?>
@@ -838,12 +857,30 @@ function excelPost(action, data) {
     $("#popup_recipient").hide();
     $("#popup_recipient").css("opacity", 1);
 
-    $('.recipient_security_check').click(function(e) {
-      $("#popup_recipient > div").html("<iframe src='my_recipient_security.php'>");
-      $("#popup_recipient iframe").addClass('security');
-      $("#popup_recipient iframe").load(function() {
-        $("body").addClass('modal-open');
-        $("#popup_recipient").show();
+    $('#recipient_excel_download').click(function(e) {
+      if (check_device_security_val() == true) {
+        window.location.href="./my_recipient_excel.php";
+      }
+    });
+
+    $(document).ready(function(){
+      var fingerprint = get_fingerprint();
+      $.ajax({
+        type: 'POST',
+        url: './ajax.check_fingerprint.php',
+        data: {fingerprint : fingerprint, type : 'check'}
+      })
+      .done(function(result) {
+        console.log("done");
+        $('.recipient_security_check img').show();
+        $('.recipient_security_authorized').show();
+        $('.device_security').val("A");
+      })
+      .fail(function(result) {
+        console.log("fail");
+        console.log(result.responseJSON);
+        $('.recipient_security_not_authorized').show();
+        $('.device_security').val(result.responseJSON.data);
       });
     });
   });
