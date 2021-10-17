@@ -240,6 +240,10 @@ legend {position:absolute;width:0;height:0;font-size:0;line-height:0;text-indent
 
 /* 페이지 내 검색 */
 
+.quick_link_area{border-bottom:1px solid #ddd;display:block;margin:10px 0;padding: 10px 0;}
+.quick_link_area a{border: 1px solid #ddd;padding:10px 15px;font-size:14px;display: inline-block;}
+
+
 .local_sch {min-width:960px}
 
 .local_sch .btn_submit {padding:0 5px;height:24px;border:0;color:#fff;font-size:0.95em;vertical-align:middle;cursor:pointer}

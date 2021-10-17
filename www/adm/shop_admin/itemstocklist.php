@@ -77,6 +77,17 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <input type="hidden" name="sort2" value="<?php echo $sort2; ?>">
 <input type="hidden" name="page" value="<?php echo $page; ?>">
 
+<div class="quick_link_area">
+	<a href="#">김해창고(2122개)</a>
+	<a href="#">부산공장(122개)</a>
+	<a href="#">설치창고(12개)</a>
+	<a href="#">용인창고(0개)</a>
+	<a href="#">직송창고(0개)</a>
+	<a href="#">청라창고(6312개)</a>
+	<a href="#">F5창고(0개)</a>
+</div>
+
+
 <label for="sel_ca_id" class="sound_only">분류선택</label>
 <select name="sel_ca_id" id="sel_ca_id">
     <option value=''>전체분류</option>
@@ -130,14 +141,23 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         <th scope="col"><a href="<?php echo title_sort("it_id") . "&amp;$qstr1"; ?>">상품코드</a></th>
         <th scope="col"><a href="<?php echo title_sort("it_name") . "&amp;$qstr1"; ?>">상품명</a></th>
         <th scope="col"><a href="<?php echo title_sort("it_stock_qty") . "&amp;$qstr1"; ?>">창고재고</a></th>
+        <th scope="col">김해창고</th>
+        <th scope="col">부산공장</th>
+        <th scope="col">설치창고</th>
+        <th scope="col">용인창고</th>
+        <th scope="col">직송창고</th>
+        <th scope="col">청라창고</th>
+        <th scope="col">F5창고</th>
         <th scope="col">주문대기</th>
         <th scope="col">가재고</th>
-        <th scope="col">재고수정</th>
-        <th scope="col">통보수량</th>
+        <th scope="col">입고예정일알림</th>
+        <!-- <th scope="col">재고수정</th>
+        <th scope="col">통보수량</th> -->
         <th scope="col"><a href="<?php echo title_sort("it_use") . "&amp;$qstr1"; ?>">판매</a></th>
         <th scope="col"><a href="<?php echo title_sort("it_soldout") . "&amp;$qstr1"; ?>">품절</a></th>
         <th scope="col"><a href="<?php echo title_sort("it_stock_sms") . "&amp;$qstr1"; ?>">재입고알림</a></th>
-        <th scope="col">관리</th>
+        <th scope="col">입/출고관리</th>
+        <th scope="col">상품관리</th>
     </tr>
     </thead>
     <tbody>
@@ -187,16 +207,24 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 		<!-- // -->
         <td class="td_left"><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
         <td class="td_num<?php echo $it_stock_qty_st; ?>"><?php echo $it_stock_qty; ?></td>
+        <td class="td_num">0개</td>
+        <td class="td_num">0개</td>
+        <td class="td_num">0개</td>
+        <td class="td_num">0개</td>
+        <td class="td_num">0개</td>
+        <td class="td_num">0개</td>
+        <td class="td_num">0개</td>
         <td class="td_num"><?php echo number_format($wait_qty); ?></td>
         <td class="td_num"><?php echo number_format($temporary_qty); ?></td>
-        <td class="td_num">
+        <td class="td_num"><input type="text" name="" value="" id="" class="frm_input" /></td>
+        <!-- <td class="td_num">
             <label for="stock_qty_<?php echo $i; ?>" class="sound_only">재고수정</label>
             <input type="text" name="it_stock_qty[<?php echo $i; ?>]" value="<?php echo $row['it_stock_qty']; ?>" id="stock_qty_<?php echo $i; ?>" class="frm_input" size="10" autocomplete="off">
-        </td>
+        </td> 
         <td class="td_num">
             <label for="noti_qty_<?php echo $i; ?>" class="sound_only">통보수량</label>
             <input type="text" name="it_noti_qty[<?php echo $i; ?>]" value="<?php echo $row['it_noti_qty']; ?>" id="noti_qty_<?php echo $i; ?>" class="frm_input" size="10" autocomplete="off">
-        </td>
+        </td>-->
         <td class="td_chk2">
             <label for="use_<?php echo $i; ?>" class="sound_only">판매</label>
             <input type="checkbox" name="it_use[<?php echo $i; ?>]" value="1" id="use_<?php echo $i; ?>" <?php echo ($row['it_use'] ? "checked" : ""); ?>>
@@ -209,6 +237,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <label for="stock_sms_<?php echo $i; ?>" class="sound_only">재입고 알림</label>
             <input type="checkbox" name="it_stock_sms[<?php echo $i; ?>]" value="1" id="stock_sms_<?php echo $i; ?>" <?php echo ($row['it_stock_sms'] ? "checked" : ""); ?>>
         </td>
+        <td class="td_mng td_mng_s"><a href="#" class="btn btn_03">상세관리</a></td>
         <td class="td_mng td_mng_s"><a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03">수정</a></td>
     </tr>
     <?php
@@ -221,9 +250,11 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./optionstocklist.php" class="btn btn_02">상품옵션재고</a>
+    <!-- <a href="./optionstocklist.php" class="btn btn_02">상품옵션재고</a> -->
     <a href="./itemsellrank.php"  class="btn btn_02">상품판매순위</a>
     <input type="submit" value="일괄수정" class="btn_submit btn">
+    <a href="#"  class="btn btn_submit">재고등록</a>
+    <a href="#"  class="btn btn_02">재고일괄등록</a>
 </div>
 </form>
 
