@@ -319,6 +319,8 @@ $sql_common = "
     {$g5['member_table']} m ON c.mb_id = m.mb_id
   LEFT JOIN
     partner_install_report pir ON c.ct_id = pir.ct_id
+  LEFT JOIN
+    g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id
 ";
 
 $sql_counts = "
@@ -367,7 +369,7 @@ $order_by_step = implode(' , ', $order_by_steps);
 $sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), ct_move_date desc, o.od_id desc ";
 
 $sql  = "
-  select *, c.ct_id as ct_id, c.mb_id as mb_id, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
+  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
   $sql_common
   limit $from_record, $rows
 ";
@@ -521,6 +523,11 @@ foreach($orderlist as $order) {
     case '출고준비': $ct_status_text="출고준비"; break;
     case '배송': $ct_status_text="출고완료"; break;
     case '완료': $ct_status_text="배송완료"; break;
+  }
+
+  $ct_sub_status_text = '';
+  if ($order['refund_status']) {
+    $ct_sub_status_text = "<br><span style='color:red'>({$order['refund_status']})</span>";
   }
   $stock_insert=1;
     
@@ -763,6 +770,7 @@ foreach($orderlist as $order) {
       </td>
       <td align=\"center\" class=\"od_step\">
         {$ct_status_text}
+        {$ct_sub_status_text}
       </td>
     </tr>
   ";

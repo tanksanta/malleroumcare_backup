@@ -389,12 +389,12 @@ $partners = get_partner_members();
       .done(function(result) {
         if(apply) { // 합포 적용
           var boxes = result.data.joinPacked; // 합포추천 박스들
-          $.each(boxes, function(box, items) {
+          $.each(boxes, function(index, box) {
             var greatest = 0, target = null;
 
             // 먼저 가장 박스수량이 많은 상품을 찾아 합포 대상으로 설정
-            $.each(items, function(ct_id, item) {
-              var box_qty = $('input[name="ct_delivery_cnt_' + ct_id + '"]').val();
+            $.each(box.items, function(ct_id, item) {
+              var box_qty = parseInt($('input[name="ct_delivery_cnt_' + ct_id + '"]').val());
               if(box_qty > greatest) {
                 greatest = box_qty;
                 target = ct_id;
@@ -402,8 +402,32 @@ $partners = get_partner_members();
             });
 
             // 합포 대상에 합포 적용
-            $.each(items, function(ct_id, item) {
-              if(ct_id === target) return;
+            $.each(box.items, function(ct_id, item) {
+              var $box_qty = $('input[name="ct_delivery_cnt_' + ct_id + '"]');
+              var $price = $('input[name="ct_delivery_price_' + ct_id + '"]');
+
+              var box_qty = parseInt($box_qty.val());
+              var price = parseInt($price.val());
+
+              if(box_qty > 1 || ct_id === target) {
+                // 박스수량이 여러개인 경우 마지막 한 박스만 합포. 나머지 박스들은 완포임
+
+                var unit_price = parseInt(price / box_qty); // 단가
+
+                // 합포될 배송박스의 수량 및 가격을 뺀다
+                box_qty -= 1;
+                price = unit_price * box_qty;
+                $box_qty.val( box_qty );
+                $price.val( price );
+
+                if(ct_id === target) {
+                  // 박스가 합포 대상이면 합포박스의 수량 및 배송비를 더함
+                  $box_qty.val( box_qty + 1 );
+                  $price.val( price + parseInt(box.price) );
+                }
+
+                return;
+              }
 
               var $chk_combine = $('input[name="ct_combine_' + ct_id+ '"]');
               var $sel_combine = $('select[name="ct_combine_ct_id_' + ct_id + '"]');

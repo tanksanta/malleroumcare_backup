@@ -220,7 +220,7 @@ function check_order_inicis_tmps(){
 }   //end function check_order_inicis_tmps
 
 use DVDoug\BoxPacker\InfalliblePacker;
-use DVDoug\BoxPacker\Test\TestBox;  // use your own `Box` implementation
+use DVDoug\BoxPacker\EroumBox;
 use DVDoug\BoxPacker\EroumItem;
 
 // 박스 합포 계산
@@ -239,13 +239,15 @@ function get_packed_boxes($od_id) {
 
     if(!($name && $width && $length && $depth))
       continue;
-    
+
     // cm -> mm 변환, 소수점 내림
     $width = (int) floor($width * 10);
     $length = (int) floor($length * 10);
     $depth = (int) floor($depth * 10);
 
-    $packer->addBox(new TestBox($name, $width, $length, $depth, 0, $width, $length, $depth, 1000));
+    $price = $price ? (int) $price : 0;
+
+    $packer->addBox(new EroumBox($name, $price, $width, $length, $depth, 0, $width, $length, $depth, 1000));
   }
 
   // 출고준비 단계만 계산
@@ -262,6 +264,8 @@ function get_packed_boxes($od_id) {
       c.od_id = '{$od_id}' and
       c.prodSupYn = 'Y' and
       c.ct_status = '출고준비'
+    group by
+      c.it_id
   ";
   $result = sql_query($sql);
 
@@ -271,33 +275,86 @@ function get_packed_boxes($od_id) {
   $dirPacked = []; // 위탁상품
   while($row = sql_fetch_array($result)) {
 
-    $ct_id = $row['ct_id'];
-
     $box_size = explode(chr(30), $row['it_box_size']);
     list($width, $length, $depth) = $box_size;
 
     $name = $row['it_name'];
-    if($name != $row['ct_option']) {
-      $name .= " ({$row['ct_option']})";
-    }
-    $ct_qty = $row['ct_qty'] - $row['ct_stock_qty'];
 
-    // 위탁배송인 경우
-    if($row['ct_is_direct_delivery']) {
-      $dirPacked[$ct_id] = array(
-        'name' => $name,
-        'qty' => $ct_qty
-      );
-      continue;
+    $sql = "
+      select * from g5_shop_cart
+      where od_id = '{$od_id}' and prodSupYn = 'Y' and ct_status = '출고준비' and it_id = '{$row['it_id']}'
+      order by ct_id asc
+    ";
+    $res = sql_query($sql);
+
+    $ct_qty = 0; // 소계
+    $row['opt'] = [];
+    while($opt = sql_fetch_array($res)) {
+      $opt_name = $name;
+      if($opt_name != $opt['ct_option']) {
+        $opt_name .= " ({$opt['ct_option']})";
+      }
+
+      $ct_id = $opt['ct_id'];
+
+      $opt_qty = $opt['ct_qty'] - $opt['ct_stock_qty'];
+
+      // 위탁배송인 경우
+      if($opt['ct_is_direct_delivery'])
+      {
+        $dirPacked[$ct_id] = array(
+          'name' => $opt_name,
+          'qty' => $opt_qty
+        );
+      }
+
+      // 상품 규격 입력 안되어있으면 단일포장
+      else if(!($width && $length && $depth))
+      {
+        $unPacked[$ct_id] = array(
+          'name' => $opt_name,
+          'qty' => $opt_qty
+        );
+      }
+
+      else
+      {
+        $ct_qty += $opt_qty;
+        $row['opt'][] = $opt;
+      }
     }
 
-    // 상품 규격 입력 안되어있으면 단일포장
-    if(!($width && $length && $depth)) {
-      $unPacked[$ct_id] = array(
-        'name' => $name,
-        'qty' => $ct_qty
-      );
+    // 합포 계산할 상품이 없으면 continue
+    if(!$row['opt'])
       continue;
+
+    if($row['it_delivery_cnt'] > 1) {
+      $it_id = $row['it_id'];
+      $div = $row['it_delivery_cnt'];
+      $comp_qty = (int) floor( $ct_qty / $div ); // 몫
+      $sub = $comp_qty * $div;
+
+      if($comp_qty > 0) {
+        // 완전포장은 it_id 기준 (다른 포장은 ct_id 기준)
+        $compPacked[$it_id] = array(
+          'name' => $name . " ({$row['it_delivery_cnt']}개)",
+          'qty' => $comp_qty
+        );
+
+        foreach($row['opt'] as &$opt) {
+          $opt_qty = $opt['ct_qty'] - $opt['ct_stock_qty'];
+
+          if($sub > $opt_qty) {
+            $sub -= $opt_qty;
+            $opt['ct_qty'] = $opt['ct_stock_qty'];
+          } else {
+            // 끝
+            $opt['ct_qty'] = $opt_qty - $sub + $opt['ct_stock_qty'];
+            break;
+          }
+        }
+        unset($opt);
+      }
     }
 
     // cm -> mm 변환, 소수점 올림
@@ -305,20 +362,19 @@ function get_packed_boxes($od_id) {
     $length = (int) ceil($length * 10);
     $depth = (int) ceil($depth * 10);
 
-    if($row['it_delivery_cnt'] > 1) {
-      $comp_qty = (int) floor( $ct_qty / $row['it_delivery_cnt'] );
-      $ct_qty = $ct_qty % $row['it_delivery_cnt'];
-
-      if($comp_qty > 0) {
-        $compPacked[$ct_id] = array(
-          'name' => $name . " ({$row['it_delivery_cnt']}개)",
-          'qty' => $comp_qty
-        );
+    foreach($row['opt'] as $opt) {
+      $opt_name = $name;
+      if($opt_name != $opt['ct_option']) {
+        $opt_name .= " ({$opt['ct_option']})";
       }
-    }
 
-    if($ct_qty > 0)
-      $packer->addItem(new EroumItem($name, $ct_id, $width, $length, $depth, 0, false), $ct_qty);
+      $ct_id = $opt['ct_id'];
+
+      $opt_qty = $opt['ct_qty'] - $opt['ct_stock_qty'];
+
+      if($opt_qty > 0)
+        $packer->addItem(new EroumItem($opt_name, $ct_id, $width, $length, $depth, 0, false), $opt_qty);
+    }
   }
 
   $packedBoxes = $packer->pack();
@@ -348,7 +404,11 @@ function get_packed_boxes($od_id) {
         );
       }
     } else {
-      $joinPacked[$boxType->getReference()] = $items;
+      $joinPacked[] = array(
+        'name' => $boxType->getReference(),
+        'price' => $boxType->getPrice(),
+        'items' => $items
+      );
     }
   }
 
@@ -388,10 +448,10 @@ function get_packed_boxes($od_id) {
 
   if($joinPacked) {
     $ret .= '[합포추천]' . PHP_EOL;
-    foreach($joinPacked as $box => $items) {
-      $ret .= "● {$box}" . PHP_EOL;
+    foreach($joinPacked as $box) {
+      $ret .= "● {$box['name']}" . PHP_EOL;
 
-      foreach($items as $ct_id => $item) {
+      foreach($box['items'] as $ct_id => $item) {
         $ret .= "{$item['name']} * {$item['qty']}" . PHP_EOL;
       }
 
@@ -414,9 +474,9 @@ function get_packed_boxes($od_id) {
   return array(
     'html' => $ret,
 
-    'compPacked' => $compPacked, // 완전포장 { ct_id: { name, qty } }
+    'compPacked' => $compPacked, // 완전포장 { it_id: { name, qty } }
     'unPacked' => $unPacked, // 단일포장 { ct_id: { name, qty } }
-    'joinPacked' => $joinPacked, //합포추천 { box: { ct_id: { name, qty } } }
+    'joinPacked' => $joinPacked, //합포추천 [ { name: 박스이름, price: 박스가격, items: { ct_id: { name: 상품명, qty: 상품개수 } } } ]
     'dirPacked' => $dirPacked, //위탁상품 { ct_id: { name, qty } }
   );
 
