@@ -273,7 +273,7 @@ for($i=0; $i<count($it_ids); $i++) {
     } else {
       //없으면 큰박스로만 진행
       $ct_delivery_cnt = $it['it_delivery_cnt'] ? ceil($ct_qty / $it['it_delivery_cnt']) : 0;
-      $ct_delivery_price = $it['it_delivery_cnt'] ? ((@round($ct_qty / $it['it_delivery_cnt']) ?: 1) * $it['it_delivery_price']) : 0;
+      $ct_delivery_price = $ct_delivery_cnt * $it['it_delivery_price'];
     }
 
     $ct_delivery_company = 'ilogen';
