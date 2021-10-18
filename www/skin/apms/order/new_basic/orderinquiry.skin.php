@@ -191,7 +191,7 @@ $(function(){
           <span><img src="<?=$SKIN_URL?>/image/icon_14.png" alt="">배송중 <b><?=$delivery_ing_count?>건</b></span>
         </div>
       </div>
-      <div class="date-box cb" style="width: 100%;" method="get">
+      <div class="date-box" style="width: 100%;" method="get">
         <div class="list-date">
           <input type="text" name="s_date" value="<?=$_GET["s_date"]?>" id="date1" /> 
           ~ 
@@ -214,6 +214,7 @@ $(function(){
             <?php } ?>
             </ul>
           </div>
+          <?php /*
           <div class="select">
             <input type="hidden" name="od_status" value="<?=$_GET["od_status"]?>">
             <p><?=$search_od_status?></p>
@@ -224,6 +225,7 @@ $(function(){
             <?php } ?>
             </ul>
           </div>
+          */ ?>
           <button type="submit">검색</button>
         </div>
       </div>
