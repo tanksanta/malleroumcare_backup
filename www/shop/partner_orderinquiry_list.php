@@ -153,6 +153,13 @@ while($row = sql_fetch_array($result)) {
   $orders[] = $row;
 }
 
+$qstr = "?sel_date={$sel_date}&amp;fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_field={$sel_field}&amp;search={$search}";
+if($ct_status) {
+  foreach($ct_status as $status) {
+    $qstr .= "&amp;ct_status%5B%5D={$status}";
+  }
+}
+
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
@@ -356,7 +363,7 @@ tr.hover { background-color: #fbf9f7 !important; }
       </div>
       <div class="list-paging">
         <ul class="pagination pagination-sm en">  
-          <?php echo apms_paging(5, $page, $total_page, '?page='); ?>
+          <?php echo apms_paging(5, $page, $total_page, $qstr.'&amp;page='); ?>
         </ul>
       </div>
     </div>
