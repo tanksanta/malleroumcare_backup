@@ -110,12 +110,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
               <td>
                 <?php
                 foreach($row['items'] as $item) {
-                  if($item['gubun'] === '00')
-                    echo '(판매) ';
-                  else if($item['gubun'] === '01')
-                    echo '(대여) ';
-                  else if($item['gubun'] === '02')
-                    echo '(비급여) ';
+                  echo "({$item['gubun']}) ";
                   echo $item['it_name'];
                   echo '<br>';
                 }

@@ -16,11 +16,11 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
   <div class="sub_section_tit">품목/정보 메시지 작성</div>
   <div class="inner">
 
-    <form class="form-horizontal" onsubmit="return false;">
+    <form action="item_msg_update.php" method="POST" class="form-horizontal" onsubmit="return false;">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="form-group">
-            <label for="penNm" class="col-sm-2 control-label">
+            <label for="ms_pen_nm" class="col-sm-2 control-label">
               <strong>수급자명</strong>
             </label>
             <div class="col-sm-8">
@@ -54,8 +54,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
         <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="품목명">
       </div>
 
-      <ul class="im_write_list">
-        <?php for($i = 0; $i < 3; $i++) { ?> 
+      <ul id="im_write_list" class="im_write_list">
+        <?php /* ?>
         <li>
           <input type="hidden" name="it_id[]" value="">
           <input type="hidden" name="it_name[]" value="">
@@ -67,11 +67,11 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           </div>
           <button type="button" class="btn_del_item">삭제</button>
         </li>
-        <?php } ?>
+        <?php */ ?>
       </ul>
 
       <div class="im_desc_wr" style="border: none;">
-        <a style="width: 250px;" href="javascript:void();" class="btn_im_send">메시지 전달</a>
+        <button type="submit" style="width: 250px;" href="javascript:void();" class="btn_im_send">메시지 전달</button>
         <div class="im_desc">
           <p>현재 <strong><?=number_format($member['mb_point']);?></strong>포인트가 있습니다. 1회 전송 시 <strong>10</strong>포인트가 차감됩니다.</p>
           <p style="color: #ef7d01;">*(무료이벤트) 2021년 12월 31일까지 포인트가 차감되지 않습니다.</p>
@@ -170,8 +170,24 @@ $(function() {
   }).on("select:flexdatalist", function(event, obj, options) {
     // it_id
     //$(parent).find('input[name="it_id[]"]').val(obj.it_id);
-
+    var $li = $('<li>');
+    $li.append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">');
+    $li.append('<input type="hidden" name="it_name[]" value="' + obj.it_name + '">');
+    $li.append('<input type="hidden" name="gubun[]" value="' + obj.gubun + '">');
+    $li.append('<img class="it_img" src="/data/item/' + obj.it_img + '" onerror="this.src=\'/img/no_img.png\';">');
+    $('<div class="it_info">')
+      .append(
+        '<p class="it_name">' + obj.it_name + ' (' + obj.gubun + ')' + '</p>',
+        '<p class="it_price">급여가 : ' + parseInt(obj.it_price).toLocaleString('en-US') + '원</p>'
+      )
+      .appendTo($li);
+    $li.append('<button type="button" class="btn_del_item">삭제</button>');
+    $li.appendTo('#im_write_list');
     $('#ipt_im_sch').val('').next().focus();
+  });
+
+  $(document).on('click', '.btn_del_item', function() {
+    $(this).closest('li').remove();
   });
 });
 </script>
