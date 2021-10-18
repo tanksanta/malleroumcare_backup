@@ -93,9 +93,13 @@ $(function() {
     noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
     visibleProperties: ["penNm"],
     searchIn: ["penNm"],
-    selectionRequired: true,
     focusFirstResult: true,
-  }).on("select:flexdatalist", function(event, obj, options) {
+  })
+  .on('change:flexdatalist', function() {
+    $('#ms_pen_id').val('');
+    $('#pen_id_flexdatalist_result').text('');
+  })
+  .on("select:flexdatalist", function(event, obj, options) {
     pen = obj;
 
     var prefix = [];
