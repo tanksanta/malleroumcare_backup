@@ -46,6 +46,7 @@ for($i = 1; $i <= 5; $i++) {
   $it_type = 'it_type'.$i;
   if($_GET[$it_type]) {
     $it_type_where[] = " {$it_type} = 1 ";
+    $qstr .= "&amp;{$it_type}=1";
   }
 }
 if($it_type_where) {
@@ -121,7 +122,7 @@ $sql  = " select *
 $result = sql_query($sql);
 
 //$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page;
-$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page.'&amp;page_rows='.$page_rows.'&amp;save_stx='.$stx."&amp;searchProdSupYN=".$_GET["searchProdSupYN"];
+$qstr .= '&amp;sca='.$sca.'&amp;page='.$page.'&amp;page_rows='.$page_rows.'&amp;save_stx='.$stx."&amp;searchProdSupYN=".$_GET["searchProdSupYN"];
 if($api_it_id) $qstr  .= '&amp;api_it_id='.$api_it_id;
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';

@@ -271,8 +271,6 @@
       $where[] = " od_writer = '{$member['mb_id']}' ";
     }
     
-    $where_count = $where;
-    
     if ($click_status) {
       $where[] = " ct_status = '{$click_status}'";
     } else {
