@@ -19,12 +19,14 @@ $sql_common = "
 $searchtype = get_search_string($_GET['searchtype']);
 $search = get_search_string($_GET['search']);
 
+$qstr = '';
 if($searchtype && $search) {
   if($searchtype === 'it_name') {
     $sql_common .= " and ( it_name LIKE '%{$search}%' OR REPLACE(it_name, ' ', '') LIKE '%{$search}%' ) ";
   } else if($searchtype === 'pen_nm') {
     $sql_common .= " and ms_pen_nm LIKE '%{$search}%' ";
   }
+  $qstr .= "searchtype={$searchtype}&amp;search={$search}&amp;";
 }
 
 // 총 개수 구하기
@@ -147,7 +149,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
       </div>
       <div class="list-paging">
         <ul class="pagination pagination-sm en">  
-          <?php echo apms_paging(5, $page, $total_page, '?page='); ?>
+          <?php echo apms_paging(5, $page, $total_page, "?{$qstr}page="); ?>
         </ul>
       </div>
     </div>
