@@ -29,7 +29,10 @@ $where[] = " ( ct_status = '".implode("' OR ct_status = '", $ct_steps)."' ) ";
 $sel_field = in_array($sel_field, ['mb_entNm', 'it_name', 'c.od_id']) ? $sel_field : '';
 $search = get_search_string($search);
 if($sel_field && $search) {
-  $where[] = " {$sel_field} like '%{$search}%' ";
+  if($sel_field == 'mb_entNm')
+    $where[] = " ( {$sel_field} like '%{$search}%' or (mb_temp = TRUE and mb_name like '%{$search}%') ) ";
+  else
+    $where[] = " {$sel_field} like '%{$search}%' ";
 }
 
 $sql_search = ' and '.implode(' and ', $where);
@@ -64,6 +67,8 @@ $result = sql_query("
     ct_id,
     c.od_id,
     od_time,
+    m.mb_temp,
+    m.mb_name,
     mb_entNm,
     od_b_name,
     od_b_hp,
@@ -148,6 +153,11 @@ while($row = sql_fetch_array($result)) {
   $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$row['ct_id']}' ");
   if($report['ct_id']) {
     $row['report'] = $report;
+  }
+
+  // 임시회원의경우 mb_entNm 대신 mb_name 출력
+  if($row['mb_temp']) {
+    $row['mb_entNm'] = $row['mb_name'];
   }
 
   $orders[] = $row;
