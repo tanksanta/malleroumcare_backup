@@ -9,10 +9,23 @@ include_once("./_head.php");
 
 $sql_common = "
   FROM
-    recipient_item_msg
+    recipient_item_msg ms
+  LEFT JOIN
+    recipient_item_msg_item mi ON ms.ms_id = mi.ms_id
   WHERE
     mb_id = '{$member['mb_id']}'
 ";
+
+$searchtype = get_search_string($_GET['searchtype']);
+$search = get_search_string($_GET['search']);
+
+if($searchtype && $search) {
+  if($searchtype === 'it_name') {
+    $sql_common .= " and ( it_name LIKE '%{$search}%' OR REPLACE(it_name, ' ', '') LIKE '%{$search}%' ) ";
+  } else if($searchtype === 'pen_nm') {
+    $sql_common .= " and ms_pen_nm LIKE '%{$search}%' ";
+  }
+}
 
 // 총 개수 구하기
 $total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ")['cnt'];
@@ -26,7 +39,8 @@ $sql_limit = " limit {$from_record}, {$page_rows} ";
 $msg_result = sql_query("
   SELECT *
   {$sql_common}
-  ORDER BY ms_id desc
+  GROUP BY ms.ms_id
+  ORDER BY ms.ms_id desc
   {$sql_limit}
 ");
 
@@ -59,7 +73,7 @@ for($i = 0; $row = sql_fetch_array($msg_result); $i++) {
   $list[] = $row;
 }
 
-if(!$list) {
+if(!$list && !($searchtype && $search)) {
   // 목록이 비었다면 바로 작성페이지로 이동
   goto_url('item_msg_write.php');
 }
@@ -81,8 +95,8 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
     <form method="GET">
       <div class="search_box">
         <select name="searchtype">
-          <option value="penNm" <?=get_selected($searchtype, 'it_name')?>>상품명</option>
-          <option value="penLtmNum" <?=get_selected($searchtype, 'penNm')?>>수급자명</option>
+          <option value="it_name" <?=get_selected($searchtype, 'it_name')?>>상품명</option>
+          <option value="pen_nm" <?=get_selected($searchtype, 'pen_nm')?>>수급자명</option>
         </select>
         <div class="input_search">
           <input name="search" value="<?=$_GET["search"]?>" type="text">
@@ -103,6 +117,11 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
             </tr>
           </thead>
           <tbody>
+            <?php
+            if(!$list) {
+              echo '<tr><td colspan="4" class="empty_table">검색 결과가 없습니다</td></tr>';
+            }
+            ?>
             <?php foreach($list as $row) { ?>
             <tr>
               <td><?=$row['index']?></td>
