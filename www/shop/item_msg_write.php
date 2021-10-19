@@ -16,7 +16,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
   <div class="sub_section_tit">품목/정보 메시지 작성</div>
   <div class="inner">
 
-    <form action="item_msg_update.php" method="POST" class="form-horizontal" onsubmit="return false;">
+    <form id="form_item_msg" action="item_msg_update.php" method="POST" class="form-horizontal" onsubmit="return false;">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="form-group">
@@ -71,7 +71,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
       </ul>
 
       <div class="im_desc_wr" style="border: none;">
-        <button type="submit" style="width: 250px;" href="javascript:void();" class="btn_im_send">메시지 전달</button>
+        <button type="submit" style="width: 250px;" href="javascript:void();" id="btn_im_send" class="btn_im_send">메시지 전달</button>
         <div class="im_desc">
           <p>현재 <strong><?=number_format($member['mb_point']);?></strong>포인트가 있습니다. 1회 전송 시 <strong>10</strong>포인트가 차감됩니다.</p>
           <p style="color: #ef7d01;">*(무료이벤트) 2021년 12월 31일까지 포인트가 차감되지 않습니다.</p>
@@ -192,6 +192,27 @@ $(function() {
 
   $(document).on('click', '.btn_del_item', function() {
     $(this).closest('li').remove();
+  });
+
+  var loading = false;
+  $('#btn_im_send').on('click', function() {
+    if(loading)
+      return alert('전송 중입니다. 잠시만 기다려주세요.');
+
+    loading = true;
+    $form = $('#form_item_msg');
+    $.post($form.attr('action'), $form.serialize(), 'json')
+    .done(function(result) {
+      var ms_id = result.data;
+      window.location.href = 'item_msg_view.php?ms_id=' + ms_id;
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    })
+    .always(function() {
+      loading = false;
+    });
   });
 });
 </script>

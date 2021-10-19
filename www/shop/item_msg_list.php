@@ -106,7 +106,11 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
             <?php foreach($list as $row) { ?>
             <tr>
               <td><?=$row['index']?></td>
-              <td><?="{$row['ms_pen_nm']} ({$row['ms_pen_hp']})"?></td>
+              <td>
+                <a href="item_msg_view.php?ms_id=<?=$row['ms_id']?>">
+                  <?="{$row['ms_pen_nm']} ({$row['ms_pen_hp']})"?>
+                </a>
+              </td>
               <td>
                 <?php
                 foreach($row['items'] as $item) {

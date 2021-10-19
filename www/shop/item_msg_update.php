@@ -1,5 +1,5 @@
 <?php
-include('./_common.php');
+include_once('./_common.php');
 
 // 메세지 전송할 때 필요한 포인트
 $msg_point = 0; // 메세지 무료 이벤트
@@ -93,4 +93,4 @@ send_alim_talk('ITEM_MSG_'.$ms_id, $ms_pen_hp, 'pen_item_msg', "[이로움 장�
   ]
 ));
 
-json_response(200, 'OK');
+json_response(200, 'OK', $ms_id);
