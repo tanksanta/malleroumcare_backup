@@ -83,6 +83,14 @@ sql_query($sql);
 
 // 알림톡 발송
 $msg_url = "eroumcare.com/shop/item_msg.php?url={$ms_url}";
-send_alim_talk('ITEM_MSG_'.$ms_id, $ms_pen_hp, 'pen_item_msg', "[이로움 장기요양기관 통합관리시스템]\n\n{$ms_pen_nm}님에게 {$member['mb_entNm']} 사업소에서 추천 품목이 전송되었습니다.\n전송된 품목을 확인해주세요.\n\n전송 링크 : https://{$msg_url}");
+send_alim_talk('ITEM_MSG_'.$ms_id, $ms_pen_hp, 'pen_item_msg', "[이로움 장기요양기관 통합관리시스템]\n\n{$ms_pen_nm}님에게 {$member['mb_entNm']} 사업소에서 추천 품목이 전송되었습니다.\n전송된 품목을 확인해주세요.\n\n전송 링크 : https://{$msg_url}", array(
+  'button' => [
+    array(
+      'name' => '품목 확인하기',
+      'type' => 'WL',
+      'url_mobile' => 'https://'.$msg_url
+    )
+  ]
+));
 
 json_response(200, 'OK');
