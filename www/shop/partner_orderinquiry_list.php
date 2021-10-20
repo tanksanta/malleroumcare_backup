@@ -26,7 +26,7 @@ if($ct_status) {
 $where[] = " ( ct_status = '".implode("' OR ct_status = '", $ct_steps)."' ) ";
 
 # 검색어
-$sel_field = in_array($sel_field, ['mb_entNm', 'it_name', 'c.od_id']) ? $sel_field : '';
+$sel_field = in_array($sel_field, ['mb_entNm', 'it_name', 'c.od_id', 'od_b_name']) ? $sel_field : '';
 $search = get_search_string($search);
 if($sel_field && $search) {
   if($sel_field == 'mb_entNm')
@@ -246,6 +246,7 @@ tr.hover { background-color: #fbf9f7 !important; }
         <option value="mb_entNm" <?=get_selected($sel_field, 'mb_entNm')?>>사업소명</option>
         <option value="it_name" <?=get_selected($sel_field, 'it_name')?>>품목명</option>
         <option value="c.od_id" <?=get_selected($sel_field, 'c.od_id')?>>주문번호</option>
+        <option value="od_b_name" <?=get_selected($sel_field, 'od_b_name')?>>받는분</option>
       </select>
       <div class="input_search">
         <input name="search" value="<?=$_GET["search"]?>" type="text">
