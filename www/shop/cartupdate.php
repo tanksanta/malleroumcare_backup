@@ -379,8 +379,9 @@ else // 장바구니에 담기
         $tmp_ct_qty_array = $_POST["ct_qty"][$it_id];
         $ct_sale_qty_list = $tmp_ct_qty_array;
               
-        foreach($ct_sale_qty_list as $this_qty){
-          $ct_sale_qty += $this_qty;
+        for($tmp_i = 0; $tmp_i < count($_POST["ct_qty"][$it_id]); $tmp_i++) {
+          if (!$_POST["io_type"][$it_id][$tmp_i])
+            $ct_sale_qty += $_POST["ct_qty"][$it_id][$tmp_i];
         }
         //기존 장바구니 개수 + 주문개수
         $ct_sale_qty = $row3['ct_qty']+$ct_sale_qty;
@@ -396,12 +397,14 @@ else // 장바구니에 담기
         //기존 + 신규주문 개수
         $ct_qty2=$row2['ct_qty']+$ct_qty;
         //할인율 적용
-        for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
-          if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
-            if($itSaleCnt < $itSaleCntList[$saleCnt]){
-              $ct_discount = $itSalePriceList[$saleCnt] * $ct_qty2;
-              $ct_discount = ($it['it_price'] * $ct_qty2) - $ct_discount;
-              $itSaleCnt = $itSaleCntList[$saleCnt];
+        if (!$io_type) {
+          for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
+            if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
+              if($itSaleCnt < $itSaleCntList[$saleCnt]){
+                $ct_discount = $itSalePriceList[$saleCnt] * $ct_qty2;
+                $ct_discount = ($it['it_price'] * $ct_qty2) - $ct_discount;
+                $itSaleCnt = $itSaleCntList[$saleCnt];
+              }
             }
           }
         }
@@ -471,8 +474,9 @@ else // 장바구니에 담기
       $ct_discount = 0;
       $ct_sale_qty = 0;
       $ct_sale_qty_list = $_POST["ct_qty"][$it_id];
-      foreach($ct_sale_qty_list as $this_qty){
-        $ct_sale_qty += $this_qty;
+      for($tmp_i = 0; $tmp_i < count($_POST["ct_qty"][$it_id]); $tmp_i++) {
+        if (!$_POST["io_type"][$it_id][$tmp_i])
+          $ct_sale_qty += $_POST["ct_qty"][$it_id][$tmp_i];
       }
           
       $itSaleCntList = [$it["it_sale_cnt"], $it["it_sale_cnt_02"], $it["it_sale_cnt_03"], $it["it_sale_cnt_04"], $it["it_sale_cnt_05"]];
@@ -484,12 +488,14 @@ else // 장바구니에 담기
       $itSaleCnt = 0;
         
 
-      for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++) {
-        if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
-          if($itSaleCnt < $itSaleCntList[$saleCnt]){
-            $ct_discount = $itSalePriceList[$saleCnt] * $ct_qty;
-            $ct_discount = ($it['it_price'] * $ct_qty) - $ct_discount;
-            $itSaleCnt = $itSaleCntList[$saleCnt];
+      if (!$io_type) {
+        for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++) {
+          if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
+            if($itSaleCnt < $itSaleCntList[$saleCnt]){
+              $ct_discount = $itSalePriceList[$saleCnt] * $ct_qty;
+              $ct_discount = ($it['it_price'] * $ct_qty) - $ct_discount;
+              $itSaleCnt = $itSaleCntList[$saleCnt];
+            }
           }
         }
       }
