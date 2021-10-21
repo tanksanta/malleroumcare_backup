@@ -1305,11 +1305,11 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                 <?php foreach($install_report_not_matches as $not_match) { ?>
                                     <li>
                                         <span>미매칭</span> &nbsp;
-                                        <select name="after_ct_id">
+                                        <select name="after_ct_id" style="width: 200px;">
                                             <?php foreach($carts as $cart) { ?>
                                                 <?php foreach($cart['options'] as $options) { ?>
                                                     <?php if ($options['report']['od_id']) continue; ?>
-                                                    <option value="<?php echo $options['ct_id']; ?>"><?php echo $options['it_name']; ?></option>
+                                                    <option value="<?php echo $options['ct_id']; ?>"><?php echo $options['it_name']; ?> <?php echo $options['ct_option'] != $options['it_name'] ? "({$options['ct_option']})" : ''; ?></option>
                                                 <?php } ?>
                                             <?php } ?>
                                         </select>
