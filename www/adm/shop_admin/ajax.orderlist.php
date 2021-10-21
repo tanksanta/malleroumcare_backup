@@ -577,7 +577,7 @@ foreach($orderlist as $order) {
   }
   $prodBarNumCntBtnStatus = '';
   $prodBarNumCntBtnWord = $order['ct_barcode_insert']."/".$order['ct_qty'];
-  if($order['ct_barcode_insert'] >= $order['ct_qty'] || $order['io_type'] == '1') {
+  if($order['ct_barcode_insert'] >= $order['ct_qty']) {
     $prodBarNumCntBtnWord = '입력완료';
     $prodBarNumCntBtnStatus = " disable";
   }

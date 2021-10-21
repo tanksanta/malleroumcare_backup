@@ -105,7 +105,7 @@ if($od["od_b_tel"]){
     .imfomation_box a .li_box .li_box_line1{ width: 100%; height:auto; margin:auto; color:#000; }
     .imfomation_box a .li_box .li_box_line1 .p1{ width:100%; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
     .imfomation_box a .li_box .li_box_line1 .p1 > span { height: 100%; display: table-cell; vertical-align: middle; }
-    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; word-break: keep-all }
+    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; word-break: keep-all; width: 60%; }
     /* .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; } */
     .imfomation_box a .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
@@ -249,7 +249,7 @@ if($od["od_b_tel"]){
       <a href="javascript:void(0)">
         <li class="li_box">
           <div class="li_box_line1"
-            <?php if ($gubun != '02') { ?>
+            <?php if ($gubun != '02' && $ct['io_type'] == 0) { ?>
               onclick="openCloseToc(this)"
             <?php } ?>
           >
@@ -257,13 +257,14 @@ if($od["od_b_tel"]){
               <span class="span1">
                 <!-- 상품명 -->
                 <?php if($ct['ct_stock_qty']){ echo '[재고소진]'; } ?>
+                <?php echo $ct['io_type'] == 1 ? '[추가옵션] ' : ''; ?>
                 <?=stripslashes($ct["it_name"])?>
                 <!-- 옵션 -->
                 <?php if($ct["it_name"] != $ct["ct_option"]){ ?>
                 (<?=$ct["ct_option"]?>)
                 <?php } ?>
               </span>
-              <?php if ($gubun != '02') { ?>
+              <?php if ($gubun != '02' && $ct['io_type'] == 0) { ?>
               <span class="span2">
                 <span class="<?=$add_class?> c_num">0</span>/<?=$ct["ct_qty"]?>
                 <img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
@@ -271,7 +272,7 @@ if($od["od_b_tel"]){
               </span>
               <?php } else { ?>
                 <span class="span3">
-                  비급여 상품 바코드 미입력&nbsp;
+                <?php echo $gubun == '02' ? '비급여' : '추가옵션'; ?> 상품 바코드 미입력&nbsp;
                   <input 
                     type="checkbox"
                     name="chk_pass_barcode_<?php echo $ct['ct_id']; ?>"

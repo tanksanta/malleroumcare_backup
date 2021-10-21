@@ -281,7 +281,7 @@ $result_ct = sql_query($sql_ct);
 $qty=0;
 $insert_qty=0;
 while($row_ct = sql_fetch_array($result_ct)) {
-  if($row_ct['ct_status'] !== "취소" && $row_ct['ct_status'] !== "주문무효" && $row_ct['io_type'] != '1') {
+  if($row_ct['ct_status'] !== "취소" && $row_ct['ct_status'] !== "주문무효") {
     $qty += $row_ct['ct_qty'];
     if($row_ct['ct_barcode_insert'])
       $insert_qty += $row_ct['ct_barcode_insert']; 
