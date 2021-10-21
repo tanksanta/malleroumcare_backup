@@ -119,7 +119,7 @@ $sql = " select a.ct_id,
        from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
       where a.od_id = '$s_cart_id'
       and a.ct_select = '1' ";
-$sql .= " group by a.it_id, a.io_type ";
+// $sql .= " group by a.it_id, a.io_type ";
 $sql .= " order by a.ct_id ";
 $result = sql_query($sql);
 
@@ -151,14 +151,16 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   }
 
   // 합계금액 계산
-  $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
-          SUM(ct_point * ct_qty) as point,
-          SUM(ct_discount) as discount,
-          SUM(ct_qty) as qty
-          from {$g5['g5_shop_cart_table']}
-          where it_id = '{$row['it_id']}'
-          and io_type = '{$row['io_type']}'
-          and od_id = '$s_cart_id' ";
+  $sql = "SELECT
+            SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
+            SUM(ct_point * ct_qty) as point,
+            SUM(ct_discount) as discount,
+            SUM(ct_qty) as qty
+          FROM {$g5['g5_shop_cart_table']}
+          WHERE
+            ct_id = '{$row['ct_id']}'
+            AND od_id = '$s_cart_id'
+          ";
   $sum = sql_fetch($sql);
 
   if (!$goods) {
