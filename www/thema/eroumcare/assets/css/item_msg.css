@@ -141,6 +141,48 @@
 
 .im_list_wr {}
 
+.im_tab_wr {
+  padding: 0 10px;
+}
+.im_tab {
+  display: block;
+  width: 50%;
+  text-align: center;
+  padding: 15px 0;
+  background: #d3d3d3;
+  color: #fff;
+}
+.im_tab.active {
+  background: #5b5b5b;
+}
+
+.im_sum_row {
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  font-size: 16px;
+  padding: 15px;
+}
+.im_sum_name {
+  font-weight: bold;
+}
+.im_sum_price {
+
+}
+.im_sum_total {
+  border-top: 1px solid #ddd;
+  margin: 0 15px 30px 15px;
+  padding: 15px 0;
+  text-align: right;
+}
+.total_price {
+  color: #f18c0a;
+  font-size: 20px;
+}
+.personal_price {
+  font-size: 12px;
+}
+
 .im_item {
   position: relative;
   padding: 10px;
