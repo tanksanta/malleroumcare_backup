@@ -930,7 +930,7 @@ $delivery_companys = array(
 );
 
 function get_warehouses() {
-  $sql = " select wh_name from warehouse order by wh_id asc ";
+  $sql = " select wh_name from warehouse where wh_use_yn = 'Y' order by wh_id asc ";
   $result = sql_query($sql);
 
   $list = [];
