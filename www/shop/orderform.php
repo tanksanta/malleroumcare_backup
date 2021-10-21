@@ -1135,7 +1135,7 @@ if($is_mobile_order && $default['de_samsung_pay_use'] ){   //삼성페이 사용
         var point_unit = parseInt(<?php echo $default['de_settle_point_unit']; ?>);
         temp_point = parseInt(f.od_temp_point.value);
 
-        if (temp_point > <?php echo (int)$member['mb_point']; ?>) {
+        if (temp_point > <?php echo (int)$member['mb_point'] > 0 ? (int)$member['mb_point'] : 0; ?>) {
           alert("회원님의 포인트보다 많이 결제할 수 없습니다.");
           f.od_temp_point.select();
           return false;
@@ -1422,7 +1422,7 @@ if($is_mobile_order && $default['de_samsung_pay_use'] ){   //삼성페이 사용
         var point_unit = parseInt(<?php echo $default['de_settle_point_unit']; ?>);
         temp_point = parseInt(f.od_temp_point.value);
 
-        if (temp_point > <?php echo (int)$member['mb_point']; ?>) {
+        if (temp_point > <?php echo (int)$member['mb_point'] > 0 ? (int)$member['mb_point'] : 0; ?>) {
           alert("회원님의 포인트보다 많이 결제할 수 없습니다.");
           f.od_temp_point.select();
           return false;
