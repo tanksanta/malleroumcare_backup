@@ -929,12 +929,17 @@ $delivery_companys = array(
   )
 );
 
-$warehouse_list = [
-  '청라창고',
-  '김해창고',
-  '설치창고',
-  'F5창고'
-];
+function get_warehouses() {
+  $sql = " select wh_name from warehouse order by wh_id asc ";
+  $result = sql_query($sql);
+
+  $list = [];
+  while($row = sql_fetch_array($result)) {
+    $list[] = $row['wh_name'];
+  }
+
+  return $list;
+}
 
 $refund_types = array(
     '0' => array(

@@ -1368,6 +1368,27 @@ if( function_exists('pg_setting_check') ){
           </td>
         </tr>
         <tr>
+          <th scope="row">창고관리</th>
+          <td>
+            <div class="wh_new_wr">
+              <input type="text" id="ipt_wh_new" class="frm_input" size="15" placeholder="창고명 입력">
+              <button type="button" id="btn_wh_new" class="btn_frmline">등록</button>
+              <button type="button" id="btn_wh_edit" class="btn_frmline" style="margin-left: 20px; border: 1px solid #ddd; background: #fff; color: #333 !important;">창고명 수정</button>
+            </div>
+            <table id="tb_wh" style="max-width: 900px; margin-top: 10px;">
+              <thead>
+                <tr>
+                  <th>창고명</th>
+                  <th>보유재고수량</th>
+                  <th>삭제</th>
+                  <th>사용여부</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
             <th scope="row">관련상품출력</th>
             <td>
                 <?php echo help("관련상품의 경우 등록된 상품은 모두 출력하므로 '출력할 줄 수'는 설정하지 않습니다. 이미지높이를 0으로 설정하면 상품이미지를 이미지폭에 비례하여 생성합니다."); ?>
@@ -2099,6 +2120,80 @@ $(function() {
             }
         });
     });
+
+  // 창고 등록, 수정, 조회
+  function post_warehouse(w, wh_name) {
+    var url = 'ajax.warehouse.php';
+    var data = {};
+
+    if(w === 'w') {
+      // 작성
+      data = {
+        w: w,
+        wh_name: $('#ipt_wh_new').val()
+      };
+    }
+
+    else if(w === 'u') {
+      // 수정
+
+      var wh_id = [];
+      var wh_name = [];
+      var wh_use_yn = [];
+
+      $('input[name="wh_name[]"]').each(function() {
+        wh_name.push($(this).val());
+        wh_id.push($(this).data('id'));
+        wh_use_yn.push($('input[name="wh_use_yn_'+$(this).data('id')+'"]:checked').val());
+      });
+
+      data = {
+        w: w,
+        wh_id: wh_id,
+        wh_name: wh_name,
+        wh_use_yn: wh_use_yn
+      };
+    }
+
+    else if(w === 'd') {
+      // 삭제
+
+      data = {
+        w: 'd',
+        wh_name: wh_name
+      };
+    }
+
+    $.post(url, data, 'json')
+    .done(function(result) {
+      var data = result.data;
+      $('#tb_wh tbody').html(data);
+
+      $('#ipt_wh_new').val('');
+      if(w)
+        alert('완료되었습니다.');
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  }
+  
+  $('#btn_wh_new').click(function() {
+    post_warehouse('w');
+  });
+
+  $('#btn_wh_edit').click(function() {
+    post_warehouse('u');
+  });
+
+  $(document).on('click', '.btn_wh_del', function() {
+    if(!confirm('정말 ' + $(this).data('name') + '를 삭제하시겠습니까?')) return;
+
+    post_warehouse('d', $(this).data('name'));
+  });
+
+  post_warehouse();
 });
 </script>
 

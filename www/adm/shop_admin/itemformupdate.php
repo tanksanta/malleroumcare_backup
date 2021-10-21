@@ -464,7 +464,7 @@ else if($it_is_direct_delivery == 2) {
   $it_direct_delivery_price = (int)$_POST['it_direct_delivery_price2'] ?: 0;
 }
 
-$it_default_warehouse = in_array($_POST['it_default_warehouse'], $warehouse_list) ? $_POST['it_default_warehouse'] : '';
+$it_default_warehouse = in_array($_POST['it_default_warehouse'], get_warehouses()) ? $_POST['it_default_warehouse'] : '';
 
 // 박스 규격
 $it_box_size = [
