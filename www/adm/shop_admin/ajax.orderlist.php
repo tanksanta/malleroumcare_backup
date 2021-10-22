@@ -705,7 +705,7 @@ foreach($orderlist as $order) {
   }
 
   $ret['data'] .= "
-    <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']}\">
+    <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']} order_tr\" data-od-id=\"{$order['od_id']}\">
       <td align=\"center\" class=\"check\">
         <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['ct_id']}\" value=\"{$order['ct_id']}\" accumul_mark=\"Y\">
         <label for=\"check_{$order['ct_id']}\">&nbsp;</label>

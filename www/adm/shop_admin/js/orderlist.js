@@ -751,6 +751,23 @@ $(function () {
       }
     }
   );
+
+  // 주문리스트, 출고리스트 마우스 오버시 같은 주문 강조
+  $(document).on('mouseenter', 'tr.order_tr',
+    function() {
+      var od_id = $(this).data('od-id');
+      var $tr = $('tr.order_tr[data-od-id="' + od_id + '"]');
+      if($tr.length >= 1)
+        $tr.addClass('hover');
+    },
+  );
+  $(document).on('mouseleave', 'tr.order_tr',
+    function() {
+      var od_id = $(this).data('od-id');
+      $('tr.order_tr[data-od-id="' + od_id + '"]').removeClass('hover');
+    },
+  );
+
 });
 
 function changeDeliverySelect(x) {
