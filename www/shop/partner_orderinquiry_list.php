@@ -87,7 +87,9 @@ $result = sql_query("
     ct_direct_delivery_price,
     ct_direct_delivery_date,
     ct_ex_date,
-    ct_barcode_insert
+    ct_barcode_insert,
+    m.mb_tel,
+    m.mb_hp
   {$sql_common}
   {$sql_order}
   {$sql_limit}
@@ -320,6 +322,7 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <p class="info_head">
                   사업소 : 
                   <?=$row['mb_entNm']?>
+                  <span style="font-weight: normal">(<?php echo $row['mb_tel']; ?>)</span>
                 </p>
                 <p>
                   - 위탁정보 : 
@@ -344,6 +347,11 @@ tr.hover { background-color: #fbf9f7 !important; }
                   <button type="button" class="report-btn btn_install_report" data-id="<?=$row['ct_id']?>">설치결과보고서 등록</button>
                   <?php } ?>
                 </p>
+                <?php if($row['report'] && $row['report']['ir_issue']) { ?>
+                <p style="width: 80%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;margin-top: 3px;">
+                  <?php echo htmlspecialchars($row['report']['ir_issue']); ?>
+                </p>
+                <?php } ?>
               </td>
               <td class="text_c">
                 <span style="<?php
