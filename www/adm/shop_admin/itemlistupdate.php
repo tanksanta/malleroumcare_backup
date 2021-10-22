@@ -39,7 +39,6 @@ if ($_POST['act_button'] == "선택수정") {
         $p_it_price_partner = is_array($_POST['it_price_partner']) ? strip_tags($_POST['it_price_partner'][$k]) : '';
         $p_it_price_dealer = is_array($_POST['it_price_dealer']) ? strip_tags($_POST['it_price_dealer'][$k]) : '';
         $p_it_price_dealer2 = is_array($_POST['it_price_dealer2']) ? strip_tags($_POST['it_price_dealer2'][$k]) : '';
-        $p_it_stock_qty = is_array($_POST['it_stock_qty']) ? strip_tags($_POST['it_stock_qty'][$k]) : '';
         //$p_it_skin = is_array($_POST['it_skin']) ? strip_tags($_POST['it_skin'][$k]) : '';
         //$p_it_mobile_skin = is_array($_POST['it_mobile_skin']) ? strip_tags($_POST['it_mobile_skin'][$k]) : '';
         $p_it_use = is_array($_POST['it_use']) ? strip_tags($_POST['it_use'][$k]) : '';
@@ -104,7 +103,6 @@ if ($_POST['act_button'] == "선택수정") {
             it_price_partner       = '".sql_real_escape_string($p_it_price_partner)."',
             it_price_dealer       = '".sql_real_escape_string($p_it_price_dealer)."',
             it_price_dealer2       = '".sql_real_escape_string($p_it_price_dealer2)."',
-            it_stock_qty   = '".sql_real_escape_string($p_it_stock_qty)."',
             it_use         = '".sql_real_escape_string($p_it_use)."',
             it_use_partner = '".sql_real_escape_string($p_it_use_partner)."',
             it_soldout     = '".sql_real_escape_string($p_it_soldout)."',

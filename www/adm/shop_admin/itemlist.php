@@ -265,7 +265,6 @@ $flist = apms_form(1,0);
         <th scope="col" rowspan="3"><?php echo subject_sort_link('it_use', 'sca='.$sca, 1); ?>판매</a></th>
         <th scope="col" rowspan="3"><?php echo subject_sort_link('it_soldout', 'sca='.$sca, 1); ?>품절</a></th>
         <th scope="col" rowspan="3"><?php echo subject_sort_link('it_hit', 'sca='.$sca, 1); ?>조회</a></th>
-        <th scope="col" rowspan="3">재고수량</th>
         <th scope="col" rowspan="3">상품태그</th>
         <th scope="col" rowspan="3">관리</th>
     </tr>
@@ -382,9 +381,6 @@ $flist = apms_form(1,0);
             <input type="checkbox" name="it_soldout[<?php echo $i; ?>]" <?php echo ($row['it_soldout'] ? 'checked' : ''); ?> value="1" id="soldout_<?php echo $i; ?>">
         </td>
         <td rowspan="3" class="td_num"><?php echo $row['it_hit']; ?></td>
-        <td rowspan="3" class="td_num">
-            <input type="text" name="it_stock_qty[<?php echo $i; ?>]" value="<?php echo $row['it_stock_qty']; ?>" id="it_stock_qty_<?php echo $i; ?>" class="frm_input" size="3">
-        </td>
         <td rowspan="3" class="td_mngsmall" style="min-width:150px">
             <input type="checkbox" name="it_type1[<?php echo $i; ?>]" value="1" <?php echo ($row['it_type1'] ? "checked" : ""); ?> id="it_type1_<?php echo $i; ?>">
             <label for="it_type1_<?php echo $i; ?>"><span style="border:1px solid <?php echo $default['de_it_type1_color']; ?>;color:<?php echo $default['de_it_type1_color']; ?>"><?php echo $default['de_it_type1_name']; ?></span></label>
