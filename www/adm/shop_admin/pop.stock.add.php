@@ -315,6 +315,7 @@ $(function() {
     // 초기
     $('.add_cart').click();
     $('.add_cart').click();
+    $('.pop_order_add_item_table tbody tr').eq(0).find('.item_flexdatalist').focus();
 });
 
 </script>
