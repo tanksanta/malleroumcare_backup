@@ -43,19 +43,23 @@ if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이�
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
 // APMS - 2014.07.20
-$sql  = " select it_id,
-                 it_name,
-                 it_use,
-                 it_stock_qty,
-                 it_stock_sms,
-                 it_noti_qty,
-                 it_soldout,
-				 ca_id,
-				 pt_it,
-				 pt_id
-           $sql_common
-          order by $sort1 $sort2
-          limit $from_record, $rows ";
+$sql  = "
+  select
+    it_id,
+    it_name,
+    it_use,
+    it_stock_qty,
+    it_stock_sms,
+    it_noti_qty,
+    it_soldout,
+    ca_id,
+    pt_it,
+    pt_id,
+    it_expected_warehousing_date
+  $sql_common
+  order by $sort1 $sort2
+  limit $from_record, $rows
+";
 $result = sql_query($sql);
 
 $qstr1 = 'sel_ca_id='.$sel_ca_id.'&amp;sel_field='.$sel_field.'&amp;search='.$search;
@@ -216,7 +220,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         <td class="td_num">0개</td>
         <td class="td_num"><?php echo number_format($wait_qty); ?></td>
         <td class="td_num"><?php echo number_format($temporary_qty); ?></td>
-        <td class="td_num"><input type="text" name="" value="" id="" class="frm_input" /></td>
+        <td class="td_num"><input type="text" name="it_expected_warehousing_date[<?php echo $i; ?>]" value="<?php echo get_text(cut_str($row['it_expected_warehousing_date'], 250, "")); ?>" class="frm_input" /></td>
         <!-- <td class="td_num">
             <label for="stock_qty_<?php echo $i; ?>" class="sound_only">재고수정</label>
             <input type="text" name="it_stock_qty[<?php echo $i; ?>]" value="<?php echo $row['it_stock_qty']; ?>" id="stock_qty_<?php echo $i; ?>" class="frm_input" size="10" autocomplete="off">

@@ -16,7 +16,8 @@ for ($i=0; $i<count($_POST['it_id']); $i++)
                    it_noti_qty     = '".sql_real_escape_string($_POST['it_noti_qty'][$i])."',
                    it_use          = '".sql_real_escape_string($_POST['it_use'][$i])."',
                    it_soldout      = '".sql_real_escape_string($_POST['it_soldout'][$i])."',
-                   it_stock_sms    = '".sql_real_escape_string($_POST['it_stock_sms'][$i])."'
+                   it_stock_sms    = '".sql_real_escape_string($_POST['it_stock_sms'][$i])."',
+                   it_expected_warehousing_date = '".sql_real_escape_string($_POST['it_expected_warehousing_date'][$i])."'
              where it_id = '".sql_real_escape_string($_POST['it_id'][$i])."' ";
     sql_query($sql);
 }
