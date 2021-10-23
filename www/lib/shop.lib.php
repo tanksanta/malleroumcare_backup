@@ -1292,15 +1292,14 @@ function print_item_options($it_id, $cart_id, $pt_msg1='', $pt_msg2='', $pt_msg3
 
   $display = "block";
   $list = [];
-  $sql = " select it_name, ct_option, ct_qty, io_price, pt_msg1, pt_msg2, pt_msg3
-              from {$g5['g5_shop_cart_table']} where it_id = '$it_id' and od_id = '$cart_id' $ct_status order by io_type asc, ct_id asc ";
-  $result = sql_query($sql);
-
+    $sql = " select it_name, ct_option, ct_qty, io_price, pt_msg1, pt_msg2, pt_msg3
+                from {$g5['g5_shop_cart_table']} where it_id = '$it_id' and od_id = '$cart_id' $ct_status order by io_type asc, ct_id asc ";
+    $result = sql_query($sql);
   for($i=0; $row=sql_fetch_array($result); $i++) {
-    if(get_text($row["ct_option"]) == $row["it_name"]){
-      continue;
-    }
     array_push($list, $row);
+    if(get_text($row["ct_option"]) == $row["it_name"]){
+      $display = "none";
+    }
   }
 
     $str = '';
