@@ -850,7 +850,7 @@ foreach($orderlist as $order) {
 
 
   $ret['data'] .= "
-    <tr class=\"tr_{$order['cart_ct_id']} {$class_c1} {$class_c2} order_tr\" data-od-id=\"{$order['od_id']}\">
+    <tr class=\"tr_{$order['cart_ct_id']} {$class_c1} {$class_c2} order_tr\" data-od-id=\"{$order['od_id']}\" data-href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">
       <td align=\"center\" class=\"check\">
         <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['cart_ct_id']}\" value=\"{$order['cart_ct_id']}\" accumul_mark=\"Y\">
         <label for=\"check_{$order['cart_ct_id']}\">&nbsp;</label>
@@ -875,11 +875,14 @@ foreach($orderlist as $order) {
             <div class=\"ct_count\">
               {$ct_count}
             </div>
+            <!--
             <a href=\"javascript:printOrderView('{$order['od_id']}')\"><img src=\"/adm/shop_admin/img/printer.png\" align=\"absmiddle\"></a>
             <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\" target=\"_blank\"><span><img src=\"/adm/shop_admin/img/window.png\" align=\"absmiddle\"></span></a>
+            -->
             <span class=\"btn-direct-open\" onclick=\"btn_direct_open(this);\"></span>
           </div>
         </div>
+        <img src=\"/thema/eroumcare/assets/img/icon_link_orderlist.png\" class=\"icon_link\">
       </td>
       <td align=\"center\" class=\"od_name\">
         {$order['od_b_name']}

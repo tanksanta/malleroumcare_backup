@@ -118,10 +118,8 @@ $sql = " select a.ct_id,
         a.ct_option
        from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
       where a.od_id = '$s_cart_id'
-      and a.ct_select = '1' 
-      and a.io_type = 0
-      ";
-$sql .= " group by a.it_id ";
+      and a.ct_select = '1' ";
+// $sql .= " group by a.it_id, a.io_type ";
 $sql .= " order by a.ct_id ";
 $result = sql_query($sql);
 
