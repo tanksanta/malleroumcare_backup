@@ -1,7 +1,7 @@
 <?php
 include_once('./_common.php');
 
-if(!$is_samhwa_partner) {
+if(!$is_samhwa_partner && !($member['mb_type'] === 'supplier')) {
   alert("파트너 회원만 접근 가능한 페이지입니다.");
 }
 
