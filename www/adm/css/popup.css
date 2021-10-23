@@ -1526,3 +1526,77 @@ display: none;
 .popup .head {
     margin-bottom: 10px;
 }
+
+.popup.layer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 80px 10px;
+    overflow-y: auto;
+}
+
+.pop_head {
+    position: fixed;
+    height: 80px;
+    padding: 10px 20px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+}
+
+.pop_foot {
+    position: fixed;
+    height: 80px;
+    padding: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid #ddd;
+    background-color: #fff;
+}
+
+.pop_foot .menu_wr {
+    padding: 10px 20px 0 20px;
+    height: 40px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.pop_foot .page_wr {
+    height: 30px;
+    text-align: center;
+}
+
+#btn_close_popup {
+    display: block;
+}
+
+.td_ad_info .info {
+    font-weight: bold;
+}
+
+.td_ad_info .address {
+    color: #666;
+}
+
+.btn_address {
+    display: block;
+    padding: 0 10px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
