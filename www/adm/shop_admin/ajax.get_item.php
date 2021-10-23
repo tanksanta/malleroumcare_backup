@@ -42,6 +42,7 @@ $sql = "SELECT
         a.ca_id LIKE '20%' OR
         a.ca_id LIKE '70%'
       )
+      AND it_id <> 'PRO2021022500102' -- 21.10.23. 533-900은 리스트에 안뜨게 수정
 ";
 
 $result = sql_query($sql);
