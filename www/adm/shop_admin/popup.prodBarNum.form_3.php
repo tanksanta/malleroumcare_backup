@@ -31,13 +31,79 @@ if (!$od['od_id']) {
   $result_again = $res['data'];
 }
 
-$carts = get_carts_by_od_id($od_id, null, "
-  AND (
-    ct_id = '$ct_id'
-    OR ct_combine_ct_id = '$ct_id'
-    OR ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
-  )
-", "a.ct_combine_ct_id, a.ct_id");
+$carts = [];
+$sql = " select a.ct_id,
+					a.it_id,
+					a.it_name,
+					a.cp_price,
+					a.ct_notax,
+					a.ct_send_cost,
+					a.ct_sendcost,
+					a.it_sc_type,
+					a.pt_it,
+					a.pt_id,
+					b.ca_id,
+					b.ca_id2,
+					b.ca_id3,
+					b.pt_msg1,
+					b.pt_msg2,
+					b.pt_msg3,
+					a.ct_status,
+					b.it_model,
+					b.it_outsourcing_use,
+					b.it_outsourcing_company,
+					b.it_outsourcing_manager,
+					b.it_outsourcing_email,
+					b.it_outsourcing_option,
+					b.it_outsourcing_option2,
+					b.it_outsourcing_option3,
+					b.it_outsourcing_option4,
+					b.it_outsourcing_option5,
+					a.pt_old_name,
+					a.pt_old_opt,
+					a.ct_uid,
+					a.prodMemo,
+					a.prodSupYn,
+					a.ct_qty,
+					a.ct_stock_qty,
+					b.it_img1,
+					a.ct_delivery_company,
+					a.ct_delivery_num,
+					a.ct_combine_ct_id,
+					b.it_delivery_cnt,
+					b.it_delivery_price,
+					a.ct_delivery_cnt,
+					a.ct_delivery_price,
+					a.ct_is_direct_delivery,
+          b.it_name,
+          a.ct_status,
+          a.io_type,
+          a.stoId,
+          ct_option,
+          ct_barcode_insert
+			  from {$g5['g5_shop_cart_table']} a 
+        left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
+			  where a.od_id = '$od_id'
+        AND (
+          ct_id = '$ct_id'
+          OR ct_combine_ct_id = '$ct_id'
+          OR ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
+        )
+			  order by a.ct_combine_ct_id, a.ct_id";
+
+$result = sql_query($sql);
+
+$combine_it_name = '';
+for ($i=0; $row=sql_fetch_array($result); $i++) {
+  $carts[] = $row;
+  if ($i === 0) {
+    $combine_it_name = $row['it_name'];
+    if ($row['it_name'] != $row['ct_option']) {
+      $combine_it_name .= "({$row['ct_option']})";
+    }
+  }
+
+}
 
 # 210317 추가정보
 $moreInfo = sql_fetch("
@@ -255,61 +321,50 @@ if($od["od_b_tel"]) {
 
         $options = $carts[$i]["options"];
 
-        for($k = 0; $k < count($options); $k++) {
           $stoId_v=[];
-          $stoId_v = explode('|',$options[$k]['stoId']);
+          $stoId_v = explode('|',$carts[$i]['stoId']);
           $stoId_v=array_filter($stoId_v);
 
           # 요청사항
           $prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
           # 카테고리 구분
-          $gubun = $cate_gubun_table[substr($options[$k]['ca_id'], 0, 2)];
+          $gubun = $cate_gubun_table[substr($carts[$i]['ca_id'], 0, 2)];
       ?>
-      <?php if ($options[$k]['ct_combine_ct_id']) { ?>
+      <?php if ($carts[$i]['ct_combine_ct_id']) { ?>
         <div style="margin:20px;margin-bottom:0px;background-color:#ff6105;color:white;text-align:center;border-radius:3px;padding:10px;font-size:13px;">
         <?php
-        // 합포 상품 찾기
-        foreach($carts as $c) {
-          foreach($c['options'] as $o) {
-            if($options[$k]['ct_combine_ct_id'] === $o['ct_id']) {
-              echo stripslashes($c["it_name"]);
-              if($c["it_name"] != $o["ct_option"]){
-                echo '(' . $o["ct_option"] . ')';
-              }
-              echo ' 상품과 같이 배송 됩니다.';
-            }
-          }
-        }
+        echo stripslashes($combine_it_name);
+        echo ' 상품과 같이 배송 됩니다.';
         ?>
         </div>
       <?php } ?>
-      <a href="javascript:void(0)" class="<?= $options[$k]['ct_status'] !== "취소" && $options[$k]['ct_status'] !== "주문무효" ? "" : "hide_area" ?> ">
+      <a href="javascript:void(0)" class="<?= $carts[$i]['ct_status'] !== "취소" && $carts[$i]['ct_status'] !== "주문무효" ? "" : "hide_area" ?> ">
         <li class="li_box">
           <div class="li_box_line1"
-            <?php if ($gubun != '02' && $options[$k]['io_type'] == 0) { ?>
+            <?php if ($gubun != '02' && $carts[$i]['io_type'] == 0) { ?>
               onclick="openCloseToc(this)"
             <?php } ?>
             >
-            <p class="p1" data-qty="<?=$options[$k]["ct_qty"]?>">
+            <p class="p1" data-qty="<?=$carts[$i]["ct_qty"]?>">
               <span class="span1">
                 <!-- 상품명 -->
-                <?php echo $options[$k]['io_type'] == 1 ? '[추가옵션] ' : ''; ?>
+                <?php echo $carts[$i]['io_type'] == 1 ? '[추가옵션] ' : ''; ?>
                 <?=stripslashes($carts[$i]["it_name"])?>
                 <!-- 옵션 -->
-                <?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
-                (<?=$options[$k]["ct_option"]?>)
+                <?php if($carts[$i]["it_name"] != $carts[$i]["ct_option"]){ ?>
+                (<?=$carts[$i]["ct_option"]?>)
                 <?php } ?>
               </span>
-              <?php if ($gubun != '02' && $options[$k]['io_type'] == 0) { ?>
+              <?php if ($gubun != '02' && $carts[$i]['io_type'] == 0) { ?>
               <span class="span2">
                 <?php
                 $add_class="";
-                for($b = 0; $b< $options[$k]["ct_qty"]; $b++){
+                for($b = 0; $b< $carts[$i]["ct_qty"]; $b++){
                   $add_class=$add_class.' '.$stoIdDataList[$prodListCnt2].'_v';
                   $prodListCnt2++;
                 }
                 ?>
-                <span class="<?=$add_class?> c_num">0</span>/<?=$options[$k]["ct_qty"]?>
+                <span class="<?=$add_class?> c_num">0</span>/<?=$carts[$i]["ct_qty"]?>
                 <img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
                 <img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
               </span>
@@ -318,16 +373,16 @@ if($od["od_b_tel"]) {
                   <?php echo $gubun == '02' ? '비급여' : '추가옵션'; ?> 상품 바코드 미입력&nbsp;
                   <input 
                     type="checkbox"
-                    name="chk_pass_barcode_<?php echo $options[$k]['ct_id']; ?>"
+                    name="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>"
                     value="1"
-                    id="chk_pass_barcode_<?php echo $options[$k]['ct_id']; ?>"
-                    <?php if ($options[$k]['ct_qty'] == $options[$k]['ct_barcode_insert']) { ?>
+                    id="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>"
+                    <?php if ($carts[$i]['ct_qty'] == $carts[$i]['ct_barcode_insert']) { ?>
                       checked="checked"
                     <?php } ?>
                     class="chk_pass_barcode"
-                    data-ct-id="<?php echo $options[$k]['ct_id']; ?>"
+                    data-ct-id="<?php echo $carts[$i]['ct_id']; ?>"
                   >
-                  <label for="chk_pass_barcode_<?php echo $options[$k]['ct_id']; ?>">확인함</label>
+                  <label for="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>">확인함</label>
                 </span>
               <?php } ?>
             </p>
@@ -337,8 +392,8 @@ if($od["od_b_tel"]) {
           </div>
 
           <?php if ($gubun != '02') { ?>
-          <div class="folding_box" data-id="<?php echo $options[$k]['ct_id']; ?>">
-            <?php if ($options[$k]["ct_qty"] >= 2) { ?>
+          <div class="folding_box" data-id="<?php echo $carts[$i]['ct_id']; ?>">
+            <?php if ($carts[$i]["ct_qty"] >= 2) { ?>
             <span>
             <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
             <button type="button" class="barNumCustomSubmitBtn">등록</button>
@@ -361,22 +416,21 @@ if($od["od_b_tel"]) {
           </div>
           <?php } ?>
 
-          <?php if (!$options[$k]['ct_combine_ct_id']) { ?>
+          <?php if (!$carts[$i]['ct_combine_ct_id']) { ?>
           <div class="deliveryInfoWrap">
-            <input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
-            <select name="ct_delivery_company_<?=$options[$k]["ct_id"]?>">
+            <input type="hidden" name="ct_id[]" value="<?=$carts[$i]["ct_id"]?>">
+            <select name="ct_delivery_company_<?=$carts[$i]["ct_id"]?>">
               <?php foreach($delivery_companys as $data){ ?>
-              <option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+              <option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
               <?php } ?>
             </select>
-            <input type="text" value="<?=$options[$k]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>" placeholder="송장번호 입력">
+            <input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>" placeholder="송장번호 입력">
             <img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
           </div>
           <?php } ?>
         </li>
       </a>
       <?php
-        }
       }
       ?>
     </ul>
