@@ -30,7 +30,7 @@ if (!$od['od_id']) {
   $result_again = $res['data'];
 }
 
-$carts = get_carts_by_od_id($od_id);
+$carts = get_carts_by_od_id($od_id, null, null, "a.ct_combine_ct_id, a.ct_id");
 
 # 210317 추가정보
 $moreInfo = sql_fetch("

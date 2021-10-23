@@ -43,7 +43,7 @@ function dtmtotime($dtm) {
   return strtotime("$Y-$m-$d $H:$i:$s");
 }
 
-function get_carts_by_od_id($od_id, $delivery_yn = null) {
+function get_carts_by_od_id($od_id, $delivery_yn = null, $where = null, $order_by = "a.ct_id") {
 
 	// 유통 비유통 구분시
 	if ($delivery_yn) {
@@ -100,8 +100,9 @@ function get_carts_by_od_id($od_id, $delivery_yn = null) {
 			  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
 			  $delivery_where
+        $where
 			  group by a.it_id, a.ct_uid
-			  order by a.ct_id ";
+			  order by $order_by";
 
 	$result = sql_query($sql);
 
