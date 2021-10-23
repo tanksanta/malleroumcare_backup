@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+  eroumcare:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eroumcare
+    volumes:
+      - ../www:/var/www/html/
+    ports:
+      - 80:80
+    environment:
+      PHP_EXTENSION_XDEBUG: 1
