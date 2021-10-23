@@ -119,9 +119,9 @@ $sql = " select a.ct_id,
        from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
       where a.od_id = '$s_cart_id'
       and a.ct_select = '1' 
-      -- and a.io_type = 0
+      and a.io_type = 0
       ";
-// $sql .= " group by a.it_id ";
+$sql .= " group by a.it_id ";
 $sql .= " order by a.ct_id ";
 $result = sql_query($sql);
 
@@ -185,7 +185,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   }
 
   $it_name = stripslashes($row['it_name']);
-  $it_options = print_item_options($row['it_id'], $s_cart_id, $row['pt_msg1'], $row['pt_msg2'], $row['pt_msg3'], '', '', $row['ct_id']);
+  $it_options = print_item_options($row['it_id'], $s_cart_id, $row['pt_msg1'], $row['pt_msg2'], $row['pt_msg3']);
 
   // 복합과세금액
   if($default['de_tax_flag_use']) {
