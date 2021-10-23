@@ -8,6 +8,47 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 <br>
 
+<!-- 팝업 박스 시작 -->
+<style>
+#popup_box { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#popup_box > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+#popup_box iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+
+@media (max-width : 750px) {
+  #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+</style>
+
+<div id="popup_box">
+  <div></div>
+</div>
+
+<script>
+$(function() {
+  $("#popup_box").hide();
+  $("#popup_box").css("opacity", 1);
+
+  $('#popup_box').click(function() {
+      close_popup_box();
+  });
+});
+
+function open_popup_box(url) {
+    $('html, body').addClass('modal-open');
+    $("#popup_box > div").html('<iframe src="' + url + '">');
+    $("#popup_box iframe").load(function() {
+        $("#popup_box").show();
+    });
+  }
+
+  function close_popup_box() {
+    $('html, body').removeClass('modal-open');
+    $('#popup_box').hide();
+    $('#popup_box').find('iframe').remove();
+  }
+</script>
+
+<!-- 팝업 박스 끝 -->
 
 <style>
 #barcode_popup_iframe {
@@ -358,7 +399,7 @@ $(function() {
     // 배송지목록
     $("#order_address").on("click", function() {
         var url = "<?php echo G5_SHOP_URL;?>/orderaddress.php";
-        window.open(url, "win_address", "left=100,top=100,width=800,height=600,scrollbars=1");
+        open_popup_box(url);
         return false;
     });
 
