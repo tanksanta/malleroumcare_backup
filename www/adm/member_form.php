@@ -109,6 +109,10 @@ $mb_partner_auth_n         = !$mb['mb_partner_auth']       ? 'checked="checked"'
 $mb_dealer_y        =  $mb['mb_dealer']       ? 'checked="checked"' : '';
 $mb_dealer_n         = !$mb['mb_dealer']       ? 'checked="checked"' : '';
 
+// 거래명세서 전송방법
+$mb_transaction_e        =  $mb['send_transaction'] == 'A' || $mb['send_transaction'] == 'E'       ? 'checked="checked"' : '';
+$mb_transaction_f         = $mb['send_transaction'] == 'A' || $mb['send_transaction'] == 'F'       ? 'checked="checked"' : '';
+
 // 파트너 자동 계약 갱신 여부
 $mb_partner_date_auto_y         =  $mb['mb_partner_date_auto']       ? 'checked="checked"' : '';
 $mb_partner_date_auto_n         = !$mb['mb_partner_date_auto']       ? 'checked="checked"' : '';
@@ -496,6 +500,15 @@ label {
             <label for="mb_dealer_n">딜러아님</label>
             <input type="radio" name="mb_dealer" value="1" id="mb_dealer_y" <?php echo $mb_dealer_y; ?>>
             <label for="mb_dealer_y">딜러회원</label>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">거래내역 전송방법</th>
+        <td colspan="3">
+            <input type="checkbox" name="mb_transaction_e" value="mb_transaction_e" id="mb_transaction_e" <?php echo $mb_transaction_e; ?>>
+            <label for="mb_transaction_e">이메일(<?=$mb['mb_email']?>)</label>
+            <input type="checkbox" name="mb_transaction_f" value="mb_transaction_f" id="mb_transaction_f" <?php echo $mb_transaction_f; ?>>
+            <label for="mb_transaction_f">팩스(<?=$mb['mb_fax']?>)</label>
         </td>
     </tr>
      <tr>
@@ -1269,8 +1282,6 @@ function fmember_submit()
     sendData.append("usrAddr", $("#mb_addr1").val());//관리자 주소
     sendData.append("usrAddrDetail", $("#mb_addr2").val())+$("#mb_addr3").val();//관리자 주소 상세
     sendData.append("entMail", $("#mb_giup_tax_email").val());//메일
-
-
 
     // sendData.append("usrNm", $("#mb_name").val()); //관리자이름
     // sendData.append("usrBirth", mb_birth);//생년월일
