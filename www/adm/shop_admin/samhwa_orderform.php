@@ -1281,6 +1281,14 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <div class="ir_title">
                                 <?=$report['it_name']?>
                                 <button type="button" class="report-btn btn_install_report" data-id="<?php echo $report['ct_id']; ?>">설치결과보고서</button>
+                                <?php
+                                if($report['ir_is_issue_1'])
+                                    echo '<span class="ir_issue_tag1">변경</span>';
+                                if($report['ir_is_issue_2'])
+                                    echo '<span class="ir_issue_tag2">추가</span>';
+                                if($report['ir_is_issue_3'])
+                                    echo '<span class="ir_issue_tag3">미설치</span>';
+                                ?>
                             </div>
                             <div class="ir_issue"><?=nl2br($report['ir_issue'])?></div>
                             <div class="ir_img_wrap">
