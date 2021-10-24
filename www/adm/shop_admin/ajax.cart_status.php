@@ -27,7 +27,7 @@ if($_POST['ct_id'] && $_POST['step']) {
   $sql = [];
   $sql_ct = [];
   $sql_cp = [];
-  $orders = [];
+  $combine_orders = []; // 자동 합포적용
 
   for($i=0; $i<count($_POST['ct_id']); $i++) {
     $sql_ct_s = "select
@@ -89,12 +89,12 @@ if($_POST['ct_id'] && $_POST['step']) {
     }
 
     if ($_POST['step'] === '출고준비') {
-      if(!isset($orders[$od_id]))
-        $orders[$od_id] = true;
+      if(!isset($combine_orders[$od_id]))
+        $combine_orders[$od_id] = true;
       
       // 이미 수동으로 합포적용된 상품이 있으면 자동 합포적용 하지 않음
       if($result_ct_s['ct_combine_ct_id'])
-        $orders[$od_id] = false;
+        $combine_orders[$od_id] = false;
     }
 
     if ($_POST['step'] === '완료') {
@@ -215,7 +215,7 @@ if($_POST['ct_id'] && $_POST['step']) {
     if ($api_result['errorYN'] === 'N') {
       // 자동 합포적용
 
-      foreach($orders as $od_id => $need_combine) {
+      foreach($combine_orders as $od_id => $need_combine) {
         if(!$need_combine) continue;
 
         $carts_result = sql_query("

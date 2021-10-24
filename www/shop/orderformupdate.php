@@ -973,6 +973,7 @@ if($result_total >=100000){
   }
 }
 
+$od_time = G5_TIME_YMDHIS;
 
 $sql = " insert {$g5['g5_shop_order_table']}
           set od_id             = '$od_id',
@@ -1036,7 +1037,7 @@ $sql = " insert {$g5['g5_shop_order_table']}
               od_status         = '$od_status',
               od_shop_memo      = '',
               od_hope_date      = '$od_hope_date',
-              od_time           = '".G5_TIME_YMDHIS."',
+              od_time           = '$od_time',
               od_ip             = '$REMOTE_ADDR',
               od_settle_case    = '$od_settle_case',
               od_test           = '{$default['de_card_test']}',
@@ -1648,6 +1649,13 @@ if($config['cf_sms_use'] && ($default['de_sms_use2'] || $default['de_sms_use3'])
   }
 }
 // SMS END   --------------------------------------------------------
+
+// 알림톡 발송
+$carts_result = sql_fetch(" select count(*) as cnt, it_name from g5_shop_cart where od_id = '$od_id' group by od_id ");
+$it_name_txt = $carts_result['it_name'];
+if($carts_result['cnt'] > 1)
+  $it_name_txt .= ' 외 ' . ($carts_result['cnt'] - 1) . '건';
+send_alim_talk('OD_RESULT_'.$od_id, $member["mb_hp"], 'ent_order_result', "[주문접수 안내]\n{$member['mb_entNm']}님, 주문해주셔서 감사합니다\n고객님의 소중한 주문이 정상 접수되어 상품준비중입니다.\n\n■ 주문일시 : ".date('Y/m/d H:i', strtotime($od_time))."\n■ 주문번호 : {$od_id}\n■ 주문내역 : {$it_name_txt}\n■ 배송지 : {$od_b_addr1} {$od_b_addr2} {$od_b_addr3} {$od_b_addr_jibeon}");
 
 // orderview 에서 사용하기 위해 session에 넣고
 $uid = md5($od_id.G5_TIME_YMDHIS.$REMOTE_ADDR);

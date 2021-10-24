@@ -28,7 +28,9 @@ if($_POST['ct_id']&&$_POST['step']) {
   }
   $sql = [];
   $sql_ct = [];
-  $orders = [];
+  $combine_orders = []; // 자동 합포적용
+  $alim_orders = []; // 알림톡 보낼 주문들
+  
   for($i=0;$i<count($_POST['ct_id']); $i ++) {
     // $sql_ct_s = "select a.od_id, a.it_id, a.it_name, a.ct_option, a.mb_id, a.stoId, b.mb_entId from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $sql_ct_s = "select
@@ -58,6 +60,11 @@ if($_POST['ct_id']&&$_POST['step']) {
     $state_cd = '06';
     if(in_array($_POST['step'], ['배송', '완료'])) {
       $state_cd = is_pen_order($od_id) ? "02" : "01";
+
+      // 알림톡 발송 목록에 추가
+      if(!isset($alim_orders[$od_id])) {
+        $alim_orders[$od_id] = true;
+      }
     }
     $sto_id_list = array_filter(explode('|', $result_ct_s['stoId']));
     foreach($sto_id_list as $sto_id) {
@@ -102,12 +109,12 @@ if($_POST['ct_id']&&$_POST['step']) {
     }
 
     if ($_POST['step'] === '출고준비') {
-      if(!isset($orders[$od_id]))
-        $orders[$od_id] = true;
+      if(!isset($combine_orders[$od_id]))
+        $combine_orders[$od_id] = true;
       
       // 이미 수동으로 합포적용된 상품이 있으면 자동 합포적용 하지 않음
       if($result_ct_s['ct_combine_ct_id'])
-        $orders[$od_id] = false;
+        $combine_orders[$od_id] = false;
     }
 
     if ($_POST['step'] === '완료') {
@@ -195,9 +202,42 @@ if($_POST['ct_id']&&$_POST['step']) {
     );
     $api_result = get_eroumcare(EROUMCARE_API_STOCK_UPDATE, $api_data);
     if ($api_result['errorYN'] === 'N') {
+      // 알림톡 발송
+
+      /*
+
+      foreach($alim_orders as $od_id => $flag) {
+        $tot_count = sql_fetch("
+          select count(*) as cnt from g5_shop_cart
+          where od_id = '$od_id' and ct_status not in ('취소', '주문무효')
+          and ct_is_direct_delivery = 0
+        ");
+
+        $done_count = sql_fetch("
+          select count(*) as cnt from g5_shop_cart
+          where od_id = '$od_id' and ct_status in ('배송', '완료')
+          and ct_is_direct_delivery = 0
+        ");
+
+        if($tot_count['cnt'] == $done_count['cnt']) {
+          // 모든 상품이 출고완료 이후의 상태면 알림톡 발송
+          $od = get_order($od_id);
+          $mb = get_member($od['mb_id']);
+
+          $carts_result = sql_fetch(" select count(*) as cnt, it_name from g5_shop_cart where od_id = '$od_id' group by od_id ");
+          $it_name_txt = $carts_result['it_name'];
+          if($carts_result['cnt'] > 1)
+              $it_name_txt .= ' 외 ' . ($carts_result['cnt'] - 1) . '건';
+          
+          send_alim_talk('OD_DELIVERY_'.$od_id, $mb["mb_hp"], 'ent_order_delivery', "[출고완료 안내]\n{$mb['mb_entNm']}님, 주문하신 상품이 출고완료 되었습니다.\n\n택배물품의 경우 택배사 사정에따라 2~3일 소요됩니다.\n■ 주문일시 : ".date('Y/m/d H:i', strtotime($od['od_time']))."\n■ 주문번호 : {$od_id}\n■ 주문내역 : {$it_name_txt}\n■ 배송지 : {$od['od_b_addr1']} {$od['od_b_addr2']} {$od['od_b_addr3']} {$od['od_b_addr_jibeon']}", array());
+        }
+      }
+
+      */
+
       // 자동 합포적용
 
-      foreach($orders as $od_id => $need_combine) {
+      foreach($combine_orders as $od_id => $need_combine) {
         if(!$need_combine) continue;
 
         $carts_result = sql_query("

@@ -1,5 +1,8 @@
 <?php
+$sub_menu = '400400';
 include_once('./_common.php');
+
+auth_check($auth[$sub_menu], 'w');
 
 $od = sql_fetch(" select * from {$g5['g5_shop_order_table']} where od_id = '$od_id'");
 
@@ -32,6 +35,8 @@ sql_query($sql);
 if ($cancel_request_row['request_type'] == "cancel") {
 
     // 장바구니 자료 취소
+
+    $mb = get_member($od['mb_id']);
 
     //시스템 취소
     $stateCd ="06";
@@ -100,6 +105,13 @@ if ($cancel_request_row['request_type'] == "cancel") {
       WHERE
         od_id = '{$od_id}'
     ");
+
+    // 알림톡 발송
+    $carts_result = sql_fetch(" select count(*) as cnt, it_name from g5_shop_cart where od_id = '$od_id' group by od_id ");
+    $it_name_txt = $carts_result['it_name'];
+    if($carts_result['cnt'] > 1)
+        $it_name_txt .= ' 외 ' . ($carts_result['cnt'] - 1) . '건';
+    send_alim_talk('OD_CANCEL_'.$od_id, $mb["mb_hp"], 'ent_order_cancel', "[주문취소 안내]\n{$mb['mb_entNm']}님, 고객님의 주문이 정상 취소처리 되었습니다.\n\n■ 주문일시 : ".date('Y/m/d H:i', strtotime($od['od_time']))."\n■ 주문번호 : {$od_id}\n■ 주문내역 : {$it_name_txt}\n■ 배송지 : {$od['od_b_addr1']} {$od['od_b_addr2']} {$od['od_b_addr3']} {$od['od_b_addr_jibeon']}");
 }
 
 // 반품 처리
