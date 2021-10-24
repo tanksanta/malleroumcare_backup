@@ -146,6 +146,19 @@ $mb_giup_addr2       = clean_xss_tags($mb_giup_addr2);
 $mb_giup_addr3       = clean_xss_tags($mb_giup_addr3);
 $mb_giup_addr_jibeon = preg_match("/^(N|R)$/", $mb_giup_addr_jibeon) ? $mb_giup_addr_jibeon : '';
 
+$send_transaction = "A";
+$send_transaction_e = $_POST["mb_transaction_e"] ? "E" : "";
+$send_transaction_f = $_POST["mb_transaction_f"] ? "F" : "";
+if ($send_transaction_e == "E" && $send_transaction_f == "") {
+    $send_transaction = "E";
+}
+else if ($send_transaction_e == "" && $send_transaction_f == "F") {
+    $send_transaction = "F";
+}
+else {
+    $send_transaction = "N";
+}
+
 $mb_thezone = isset($_POST['mb_thezone'])             ? trim($_POST['mb_thezone'])           : "";
 if ($w == '') {
     // $mb_thezone = get_uniqid_member();
@@ -234,7 +247,8 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_manager = '{$_POST['mb_manager']}',
                  mb_update_date = now(),
                  mb_ent_num = '{$mb_ent_num}',
-                 mb_temp = '{$mb_temp}'
+                 mb_temp = '{$mb_temp}',
+                 send_transaction = '{$send_transaction}'
                   ";
 
 $sendData = array(
