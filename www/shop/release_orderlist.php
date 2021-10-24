@@ -474,10 +474,14 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     device = "ios";
   }
 
-  var sendInvoiceTarget;
+  function sendInvoiceNum(text){
+    $('#search_text').val(text);
+    $('#search_option').val('ct_delivery_num');
+    $('#searchSubmitBtn').click();
+  }
+
   $(".nativeDeliveryPopupOpenBtn").click(function(e) {
     e.preventDefault();
-    sendInvoiceTarget = $('#search_text');
 
     switch(device) {
       case "android" :
@@ -489,12 +493,6 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
         window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
         break;
     }
-
-    $('#search_text').change(function() {
-      $('#search_text').unbind('change');
-      $('#search_option').val('ct_delivery_num');
-      $('#searchSubmitBtn').click();
-    });
   });
   </script>
 </body>
