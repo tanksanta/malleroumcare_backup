@@ -326,7 +326,7 @@ function form_check(act) {
         수급자 정보(이름, 요양인정번호, 연락처)는 암호화되어 저장됩니다.<br/>
         수급자계약서 체결 및 엑셀다운로드 시 본인 인증 확인(동일IP확인 및 비밀번호 확인) 후 진행됩니다.
       </p>
-      <a href="#">[온라인 개인정보 처리방침 자세히보기]</a>
+      <a href="/bbs/content.php?co_id=privacy">[온라인 개인정보 처리방침 자세히보기]</a>
     </div>
     <div class="recipient_security_check">
       <img src="<?php echo G5_SHOP_URL; ?>/img/icon_security_check.png" />

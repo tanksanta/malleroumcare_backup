@@ -111,12 +111,15 @@ $sales_Inventory_total2=$res['total'];//대여재고 토탈
 
 //판매재고 리스트
 $send_length = (int)$send_length ?: 10;
+$send_sort = $send_sort ?: "add";
+
 $sendData = [];
 $sendData["usrId"] = $member["mb_id"];
 $sendData["entId"] = $member["mb_entId"];
 $sendData["gubun"] = "00";
 $sendData["pageNum"] = ($_GET["page"]) ? $_GET["page"] : 1;
 $sendData["pageSize"] = $send_length;
+$sendData["sort"] = $send_sort;
 
 if($_GET['searchtype']){
     if($_GET['searchtype']=="1"){
@@ -156,6 +159,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
     <section id="stock" class="wrap stock-list">
         <div class="sub_section_tit">보유재고관리</div>
         <div class="r_btn_area">
+            <a href="#" class="btn eroumcare_btn2" id="excel_download" title="엑셀다운로드">엑셀다운로드</a>
             <a href="#" class="btn eroumcare_btn2 add_sales_inventory" title="품목추가">품목추가</a>
         </div>
         <ul class="stock-tab">
@@ -184,8 +188,16 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <option value="50" <?php echo $send_length == '50' ? 'selected="selected"' : ''; ?>>50개씩 보기</option>
                         <option value="100" <?php echo $send_length == '100' ? 'selected="selected"' : ''; ?>>100개씩 보기</option>
                     </select>
+
+                    <select name="send_sort" id="send_sort">
+                        <option value="add" <?php echo $send_sort == 'add' ? 'selected="selected"' : ''; ?>>최근구매순</option>
+                        <option value="itemNm" <?php echo $send_sort == 'itemNm' ? 'selected="selected"' : ''; ?>>품목순</option>
+                        <option value="prodNm" <?php echo $send_sort == 'prodNm' ? 'selected="selected"' : ''; ?>>품명순</option>
+                        <option value="qty" <?php echo $send_sort == 'qty' ? 'selected="selected"' : ''; ?>>재고수량순</option>
+                    </select>
+
                     <input type="hidden" value="00" name="gubun" />
-                    <a href="#" class="btn eroumcare_btn2 small" id="excel_download" style="border-radius: 0 !important;padding: 1px 7px;" title="엑셀다운로드">엑셀다운로드</a>
+<!--                    <a href="#" class="btn eroumcare_btn2 small" id="excel_download" style="border-radius: 0 !important;padding: 1px 7px;" title="엑셀다운로드">엑셀다운로드</a>-->
                 </div>
             </form>
             <div class="table-wrap">
@@ -251,11 +263,11 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
             </div>
             <div class="pg-wrap">
                 <div>
-                    <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=1"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
-                    <?php if($block > 1){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=($b_start_page-1)?>"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
-                    <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=$j?>"><?=$j?></a><?php } ?>
-                    <?php if($block < $total_block){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=($b_end_page+1)?>"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
-                    <?php if($block < $total_block){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&page=<?=$total_page?>"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
+                    <?php if($pageNum >$b_pageNum_listCnt){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&send_sort=<?php echo $send_sort; ?>&page=1"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
+                    <?php if($block > 1){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&send_sort=<?php echo $send_sort; ?>&page=<?=($b_start_page-1)?>"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
+                    <?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&send_sort=<?php echo $send_sort; ?>&page=<?=$j?>"><?=$j?></a><?php } ?>
+                    <?php if($block < $total_block){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&send_sort=<?php echo $send_sort; ?>&page=<?=($b_end_page+1)?>"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
+                    <?php if($block < $total_block){ ?><a href="?searchtype=<?php echo $searchtype; ?>&searchtypeText=<?php echo $searchtypeText; ?>&show_simple=<?php echo $show_simple; ?>&gubun=<?php echo $gubun; ?>&send_length=<?php echo $send_length; ?>&send_sort=<?php echo $send_sort; ?>&page=<?=$total_page?>"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
                 </div>
             </div>
         </div>
@@ -291,7 +303,7 @@ $(document).ready(function() {
         form.action = "./sales_inventory_excel.php";
         form.submit();
     });
-    $('#show_simple, #send_length').change(function() {
+    $('#show_simple, #send_length, #send_sort').change(function() {
         stockFormSubmit();
     });
 
