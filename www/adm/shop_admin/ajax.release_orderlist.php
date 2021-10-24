@@ -317,7 +317,7 @@ $ret['counts'] = $cate_counts;
 if ( !$total_count ) {
     $ret['main'] .= "
     <div class=\"samhwa_order_list_table_no_item\">
-        <h1>자료가 없습니다.</h1>
+        <h1>주문내역이 없습니다.</h1>
     </div>
     ";
 }

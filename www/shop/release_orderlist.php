@@ -91,6 +91,9 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
 
     .nativeDeliveryPopupOpenBtn { display: inline-block; font-weight: bold; float: right; }
     .nativeDeliveryPopupOpenBtn img { display: inline-block; width: 30px; height: 30px; vertical-align: middle; }
+
+    .samhwa_order_list_table_no_item { padding: 50px 0; }
+    .samhwa_order_list_table_no_item h1 { font-size: 16px; font-weight: normal; color: #666; text-align: center;  }
 	</style>
 </head>
  
@@ -322,6 +325,9 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
         $('#page').val(parseInt($('#page').val()) + 1);
       } else {
         // alert('마지막 페이지입니다.');
+        if(page2 == 2) {
+          $('#listDataWrap').html(result.main);
+        }
       }
     })
     .fail(function() {
