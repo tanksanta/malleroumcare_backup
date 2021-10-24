@@ -81,6 +81,9 @@ input[type="submit"].popup_recipient_security_form_button {
 }
 </style>
 
+<input type="hidden" value="<?=$member['mb_name']?>" class="entNm">
+<input type="hidden" value="<?=$member['mb_email']?>" class="u_email">
+
 <button id="popup_recipient" class="close_popup" style="font-size: 20px;"><i class="fa fa-times" aria-hidden="true"></i></button>
 
 <div class="popup_recipient_security">
@@ -92,26 +95,97 @@ input[type="submit"].popup_recipient_security_form_button {
 
   <form class="popup_recipient_security_form">
     <p style="font-size:1.2em;">비밀번호 입력</p>
-    <input type="password" />
+    <input type="password" id="popup_password_input" />
     <input type="checkbox" id="popup_recipient_security_form_check">
     <label for="popup_recipient_security_form_check" class="popup_recipient_security_form_check">확인함</label>
     <p>
       개인정보 보호정책에 따라 가입자가 아닌 경우 해당기기 사용은 제한됩니다.
     </p>
     <div class="popup_recipient_security_form_buttons">
-      <input type="submit" class="popup_recipient_security_form_button" value="확인" />
+      <input type="submit" class="popup_recipient_security_form_button" onclick="return registDevice();" value="확인" />
       <input type="button" class="popup_recipient_security_form_button close_popup" value="취소" />
     </div>
   </form>
 </div>
 
 
+<script src="<?php echo G5_JS_URL; ?>/client.min.js"></script>
 <script>
+var client = new ClientJS(); // Create A New Client Object
+
+function get_fingerprint() {
+  // var fingerprint = client.getFingerprint(); // Get Client's Fingerprint
+  var ua = client.getBrowserData().ua;
+	var canvasPrint = client.getCanvasPrint();
+  var fingerprint = client.getCustomFingerprint(ua, canvasPrint);
+  console.log( fingerprint );
+  return fingerprint;
+}
 function closePopup() {
   $("body", window.parent.document).removeClass("modal-open");
   $("#popup_recipient", window.parent.document).hide();
   $("#popup_recipient", window.parent.document).find("iframe").remove();
 }
+function registDevice() {
+  if ($("#popup_recipient_security_form_check").is(":checked") == false) {
+    alert("확인함에 체크해 주세요.");
+    return;
+  }
+
+  var password = $("#popup_password_input").val();
+  if (password == "") {
+    alert("비밀번호를 입력하세요.");
+    return;
+  }
+
+  var fingerprint = get_fingerprint();
+  $.ajax({
+    type: 'POST',
+    url: './ajax.check_fingerprint.php',
+    data: {fingerprint : fingerprint, type : 'regist', password: password}
+  })
+  .done(function(result) {
+    console.log("registDevice done");
+    console.log(result);
+    // closePopup();
+    // alert("기기가 등록되었습니다.");
+    // window.parent.location.reload();
+    var data = result.data;
+    sendSecurityEmail(data);
+  })
+  .fail(function(result) {
+    console.log("fail");
+    console.log(result.responseJSON);
+    alert(result.responseJSON.message);
+  });
+
+  return false;
+}
+
+function sendSecurityEmail(data) {
+  var deviceInfo = client.getUserAgent();
+  var entNm = $('.entNm').val();
+  var u_email = $('.u_email').val();
+  var insert_id = data.insert_id;
+  var re_req = data.type == 'insert' ? 'N' : 'Y';
+  $.ajax({
+    type: 'POST',
+    url: './ajax.send_security_email.php',
+    data: {entNm : entNm, deviceInfo : deviceInfo, re_req : re_req, u_email: u_email, insert_id : insert_id}
+  })
+  .done(function(result) {
+    console.log("sendSecurityEmail done");
+    // closePopup();
+    alert("기기가 등록되었습니다.");
+    window.parent.location.reload();
+  })
+  .fail(function(result) {
+    console.log("fail");
+    console.log(result.responseJSON);
+    alert(result.responseJSON.message);
+  });
+}
+
 $(function() {
   // 창닫기 버튼
   $('.close_popup').click(closePopup);

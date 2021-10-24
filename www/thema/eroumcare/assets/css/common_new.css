@@ -1566,15 +1566,17 @@ pre{white-space: pre-wrap;}
 	bottom: 10px;
 	right: 10px;
 	color: #fdeb1b;
-	cursor: pointer;
+	/* cursor: pointer; */
 }
 .recipient_security_check img {
 	vertical-align: middle;
+	display: none;
 }
 .recipient_security_check span {
 	vertical-align: middle;
 	letter-spacing: -1px;
 	font-weight: 300;
+	display: none;
 }
 
 @media (max-width: 1200px) {
