@@ -458,14 +458,20 @@
 
     $delivery = '';
     //송장번호 출력
+    if ($it['ct_delivery_company']) {
+      $delivery = '(' . get_delivery_company_step($it['ct_delivery_company'])['name'] . ') ';
+    }
     if ($it['ct_delivery_num']) {
-      $delivery = '(' . get_delivery_company_step($it['ct_delivery_company'])['name'] . ') ' . $it['ct_delivery_num'];
+      $delivery .= $it['ct_delivery_num'];
     }
     //합포 송장번호 출력
     if ($it['ct_combine_ct_id']) {
       $sql_ct ="select `ct_delivery_company`, `ct_delivery_num` from g5_shop_cart where `ct_id` = '".$it['ct_combine_ct_id']."'";
       $result_ct = sql_fetch($sql_ct);
-      $delivery = '(' . get_delivery_company_step($result_ct['ct_delivery_company'])['name'] . ') ' . $result_ct['ct_delivery_num'];
+      $delivery = '';
+      if($result_ct['ct_delivery_company'])
+        $delivery = '(' . get_delivery_company_step($result_ct['ct_delivery_company'])['name'] . ') ';
+      $delivery .= $result_ct['ct_delivery_num'];
     }
     $date = "출고전";
     if($it["ct_ex_date"] && $it["ct_ex_date"] !== "0000-00-00") {
