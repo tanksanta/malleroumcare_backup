@@ -242,6 +242,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <input type="checkbox" id="complete2" name="complete2" value="1" <?php echo option_array_checked('1', $complete2); ?>><label for="complete2"> 배송정보 미입력 내역만 보기</label>
             <input type="checkbox" id="not_complete1" name="not_complete1" value="1" <?php echo option_array_checked('1', $not_complete1); ?>><label for="not_complete1"> 바코드 완료 내역만 보기</label>
             <input type="checkbox" id="not_complete2" name="not_complete2" value="1" <?php echo option_array_checked('1', $not_complete2); ?>><label for="not_complete2"> 배송정보 입력완료 내역만 보기</label>
+            <input type="checkbox" id="not_complete3" name="not_complete3" value="1" <?php echo option_array_checked('1', $not_complete3); ?>><label for="not_complete3"> 합포 미적용 내역만 보기</label>
           </div>
         </td>
       </tr>
