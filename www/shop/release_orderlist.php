@@ -87,7 +87,10 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     #ct_status_option{width: calc(100% - 160px);margin-left:10px;}
 
     .total_price_wrap { text-align: left !important; font-weight: bold; }
-    #total_price { display: inline-block; float: right; }
+    #total_price { display: inline-block; }
+
+    .nativeDeliveryPopupOpenBtn { display: inline-block; font-weight: bold; float: right; }
+    .nativeDeliveryPopupOpenBtn img { display: inline-block; width: 30px; height: 30px; vertical-align: middle; }
 	</style>
 </head>
  
@@ -107,6 +110,12 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
 	<div id="listSearchWrap">
   <ul>
     <li class="total_price_wrap">총 주문금액: <span id="total_price"></span></li>
+    <li>
+      <a href="javascript:void(0);" class="nativeDeliveryPopupOpenBtn">
+        주문찾기
+        <img src="<?=G5_IMG_URL?>/bacod_img.png">
+      </a>
+    </li>
   </ul>
   <ul>
       <li>
@@ -133,10 +142,11 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
       <li>
         <select name="search_option" id="search_option">
           <!-- <option value="">선택하세요</option> -->
-          <option value="od_b_name,it_name,od_name" selected>전체</option>
+          <option value="od_b_name,it_name,od_name,ct_delivery_num" selected>전체</option>
           <option value="od_b_name">수화인</option>
           <option value="it_name">상품명</option>
           <option value="od_name">사업소명</option>
+          <option value="ct_delivery_num">송장번호</option>
         </select>
         <input type="text" name="search_text" id="search_text" placeholder="검색명입력" >
       </li>
@@ -447,6 +457,29 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
           location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&ct_id="+ct_id;
         }
       }
+    });
+  });
+
+  var sendInvoiceTarget;
+  $(".nativeDeliveryPopupOpenBtn").click(function(e) {
+    e.preventDefault();
+    sendInvoiceTarget = $('#search_text');
+
+    switch(device) {
+      case "android" :
+        /* android */
+        window.EroummallApp.openInvoiceNum("");
+        break;
+      case "ios" :
+        /* ios */
+        window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
+        break;
+    }
+
+    $('#search_text').change(function() {
+      $('#search_text').unbind('change');
+      $('#search_option').val('ct_delivery_num');
+      $('#searchSubmitBtn').click();
     });
   });
   </script>
