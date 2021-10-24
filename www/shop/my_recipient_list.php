@@ -398,7 +398,7 @@ function form_check(act) {
 
   <div class="list_box pc">
     <form name="fmemberlist" id="fmemberlist" action="#" onsubmit="return fmemberlist_submit(this);" method="post">
-    <div class="table_box">  
+    <div class="table_box" style="display:none;">  
       <table>
         <tr>
           <th id="mb_list_chk">
@@ -430,17 +430,17 @@ function form_check(act) {
           <td>
             <!-- <a href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId'];?>'> -->
             <a onclick='return check_device_security_val()' href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId'];?>'>
-              <?php echo $data['penNm'].$data['desc_text']; ?>
+              <span class="data_name"><?=$data['penNm']?></span><?=$data['desc_text']; ?>
               <?php if($data['incomplete']) echo '<img src="'.THEMA_URL.'/assets/img/icon_notice_recipient.png" style="vertical-align:bottom;">'; ?>
               <br/>
               <?php if ($data['penProNm']) { ?>
-                보호자(<?php echo $data['penProNm']; ?><?php echo $data['penProConNum'] ? '/' . $data['penProConNum'] : ''; ?>)
+                보호자(<span class="data_name"><?php echo $data['penProNm']; ?></span><span class="data_phone"><?php echo $data['penProConNum'] ? '/' . $data['penProConNum'] : ''; ?></span>)
               <?php } ?>
             </a>
           </td>
-          <td>
+          <td class="recipient_info">
             <?php if ($data["penLtmNum"]) { ?>
-              <?php echo $data["penLtmNum"]; ?>
+              <span class="data_penNum"><?php echo $data["penLtmNum"]; ?></span>
               (<?php echo $data["penRecGraNm"]; ?><?php echo $pen_type_cd[$data['penTypeCd']] ? '/' . $pen_type_cd[$data['penTypeCd']] : ''; ?>)
               <br/>
               <?php echo $data['penExpiDtm']; ?>
@@ -854,6 +854,135 @@ function excelPost(action, data) {
 }
 </style>
 <script>
+  let maskingFunc = {
+    checkNull : function (str){
+      if(typeof str == "undefined" || str == null || str == ""){
+        return true;
+      }
+      else{
+        return false;
+      }
+    },
+    /*
+    ※ 이메일 마스킹
+    ex1) 원본 데이터 : abcdefg12345@naver.com
+      변경 데이터 : ab**********@naver.com
+    ex2) 원본 데이터 : abcdefg12345@naver.com
+        변경 데이터 : ab**********@nav******
+    */
+    email : function(str){
+      let originStr = str;
+      let emailStr = originStr.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
+      let strLength;
+      
+      if(this.checkNull(originStr) == true || this.checkNull(emailStr) == true){
+        return originStr;
+      }else{
+        strLength = emailStr.toString().split('@')[0].length - 3;
+        
+        // ex1) abcdefg12345@naver.com => ab**********@naver.com
+        // return originStr.toString().replace(new RegExp('.(?=.{0,' + strLength + '}@)', 'g'), '*');
+
+        // ex2) abcdefg12345@naver.com => ab**********@nav******
+        return originStr.toString().replace(new RegExp('.(?=.{0,' + strLength + '}@)', 'g'), '*').replace(/.{6}$/, "******");
+      }
+    },
+    /* 
+    ※ 휴대폰 번호 마스킹
+    ex1) 원본 데이터 : 01012345678, 변경 데이터 : 010****5678
+    ex2) 원본 데이터 : 010-1234-5678, 변경 데이터 : 010-****-5678
+    ex3) 원본 데이터 : 0111234567, 변경 데이터 : 011***4567
+    ex4) 원본 데이터 : 011-123-4567, 변경 데이터 : 011-***-4567
+    */
+    phone : function(str){
+      let originStr = str;
+      let phoneStr;
+      let maskingStr;
+      
+      if(this.checkNull(originStr) == true){
+        return originStr;
+      }
+      
+      if (originStr.toString().split('-').length != 3)
+      { // 1) -가 없는 경우
+        phoneStr = originStr.length < 11 ? originStr.match(/\d{10}/gi) : originStr.match(/\d{11}/gi);
+        if(this.checkNull(phoneStr) == true){
+          return originStr;
+        }
+        
+        if(originStr.length < 11)
+        { // 1.1) 0110000000
+          maskingStr = originStr.toString().replace(phoneStr, phoneStr.toString().replace(/(\d{3})(\d{3})(\d{4})/gi,'$1$2*****$3'));
+        }
+        else
+        { // 1.2) 01000000000
+          maskingStr = originStr.toString().replace(phoneStr, phoneStr.toString().replace(/(\d{3})(\d{4})(\d{4})/gi,'$1$2******$3'));
+        }
+      }else
+      { // 2) -가 있는 경우
+        phoneStr = originStr.match(/\d{2,3}-\d{3,4}-\d{4}/gi);
+        if(this.checkNull(phoneStr) == true){
+          return originStr;
+        }
+        
+        if(/-[0-9]{3}-/.test(phoneStr))
+        { // 2.1) 00-000-0000
+          maskingStr = originStr.toString().replace(phoneStr, phoneStr.toString().replace(/(\d{3})-(\d{1})\d{2}-\d{3}(\d{1})/gi, "$1-$2**-***$3"));
+        } else if(/-[0-9]{4}-/.test(phoneStr))
+        { // 2.2) 00-0000-0000
+          // maskingStr = originStr.toString().replace(phoneStr, phoneStr.toString().replace(/-[0-9]{4}-/g, "-****-"));
+          maskingStr = originStr.toString().replace(phoneStr, phoneStr.toString().replace(/(\d{3})-(\d{1})\d{3}-\d{3}(\d{1})/gi, "$1-$2***-***$3"));
+        }
+      }
+      
+      return maskingStr;
+    },
+    /*
+    ※ 이름 마스킹
+    ex1) 원본 데이터 : 갓댐희, 변경 데이터 : 갓댐*
+    ex2) 원본 데이터 : 하늘에수, 변경 데이터 : 하늘**
+    ex3) 원본 데이터 : 갓댐, 변경 데이터 : 갓*
+    */
+    name : function(str){
+      let originStr = str;
+      let maskingStr;
+      let strLength;
+      
+      if(this.checkNull(originStr) == true){
+        return originStr;
+      }
+      
+      strLength = originStr.length;
+      
+      if(strLength < 3){
+        maskingStr = originStr.replace(/(?<=.{1})./gi, "*");
+      }else {
+        maskingStr = originStr.replace(/(?<=.{2})./gi, "*");
+      }
+      
+      return maskingStr;
+    },
+    /*
+    ※ 요양번호 마스킹
+    ex1) 원본 데이터 : L1234567890, 변경 데이터 : L12345*****
+    */
+    penNum : function(str){
+      let originStr = str;
+      let maskingStr;
+      let strLength;
+      
+      if(this.checkNull(originStr) == true){
+        return originStr;
+      }
+      
+      strLength = originStr.length;
+
+      maskingStr = originStr.replace(/(?<=.{6})./gi, "*");
+
+      return maskingStr;
+    }
+}
+
   $(function() {
     $("#popup_recipient").hide();
     $("#popup_recipient").css("opacity", 1);
@@ -876,12 +1005,29 @@ function excelPost(action, data) {
         $('.recipient_security_check img').show();
         $('.recipient_security_authorized').show();
         $('.device_security').val("A");
+        $(".table_box").show();
       })
       .fail(function(result) {
         console.log("fail");
         console.log(result.responseJSON);
         $('.recipient_security_not_authorized').show();
         $('.device_security').val(result.responseJSON.data);
+        $(".data_name").each(function() {
+          // $(this).text("***");
+          var name = $(this).text();
+          $(this).text(maskingFunc.name(name));
+        });
+        $(".data_phone").each(function() {
+          // $(this).text("***");
+          var phone = $(this).text();
+          $(this).text(maskingFunc.phone(phone));
+        });
+        $(".data_penNum").each(function() {
+          // $(this).text("***");
+          var penNum = $(this).text();
+          $(this).text(maskingFunc.penNum(penNum));
+        });
+        $(".table_box").show();
       });
     });
   });
