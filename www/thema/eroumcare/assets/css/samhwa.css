@@ -2568,3 +2568,24 @@ ul.wait-partner-btns:after {
         font-size: 16px;
     }
 }
+
+.ir_issue_tag1, .ir_issue_tag2, .ir_issue_tag3 {
+    margin-left: 4px;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1;
+    padding: 5px 8px;
+    border-radius: 3px;
+    color: #fff;
+}
+.ir_issue_tag1 {
+    background: #8abf63;
+}
+.ir_issue_tag2 {
+    background: #ef7c00;
+}
+.ir_issue_tag3 {
+    background: #666666;
+}
