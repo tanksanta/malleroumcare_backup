@@ -544,6 +544,22 @@ table.list-table-style .drop_multi_sub a:after {
     font-size:13px;
     margin-left:5px;
 }
+#samhwa_order_list_table>div.table .order_tr.hover td {
+    background-color: #fbf9f7 !important;
+    cursor: pointer;
+}
+#samhwa_order_list_table>div.table td.od_info .icon_link {
+    display: none;
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 30px;
+    right: 50px;
+    transform: translateY(-50%);
+}
+#samhwa_order_list_table>div.table .order_tr.hover .icon_link {
+    display:block !important;
+}
 #samhwa_order_list_table>div.table .check {
     width:4%;
 }
@@ -555,6 +571,7 @@ table.list-table-style .drop_multi_sub a:after {
 }
 #samhwa_order_list_table>div.table .od_info {
     width:320px;
+    position: relative;
 }
 #samhwa_order_list_table>div.table .od_name {
     width:10%;

@@ -12,6 +12,8 @@ $od_id = get_search_string($_GET['od_id']);
 $od = sql_fetch("
   SELECT
     o.*,
+    m.mb_temp,
+    m.mb_name,
     mb_entNm
   FROM
     {$g5['g5_shop_order_table']} o
@@ -22,6 +24,11 @@ $od = sql_fetch("
 ");
 if(!$od['od_id'])
   alert('존재하지 않는 주문입니다.');
+
+// 임시회원의경우 mb_entNm 대신 mb_name 출력
+if($od['mb_temp']) {
+  $od['mb_entNm'] = $od['mb_name'];
+}
 
 $cart_result = sql_query("
   SELECT

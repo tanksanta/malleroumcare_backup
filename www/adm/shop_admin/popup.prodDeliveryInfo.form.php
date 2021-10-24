@@ -17,6 +17,8 @@ $delivery_input_cnt = 0; // 입력
 $edi_success_cnt = 0; // 전송
 $edi_return_cnt = 0; // 송장
 
+$warehouse_list = get_warehouses();
+
 foreach($carts as $c) { 
   foreach($c['options'] as $opt) {
     if (!$opt['ct_combine_ct_id']) {

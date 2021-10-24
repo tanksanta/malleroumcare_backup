@@ -321,6 +321,8 @@ label {
                 <option value="default" <?php echo $mb['mb_type'] == 'default' ? 'selected' : ''; ?>>일반사업소</option>
                 <option value="normal" <?php echo $mb['mb_type'] == 'normal' ? 'selected' : ''; ?>>일반회원</option>
                 <option value="partner" <?php echo $mb['mb_type'] == 'partner' ? 'selected' : ''; ?>>파트너(직배송, 설치, 소독)</option>
+                <option value="supplier" <?php echo $mb['mb_type'] == 'supplier' ? 'selected' : ''; ?>>물품공급업체</option>
+                <option value="center" <?php echo $mb['mb_type'] == 'center' ? 'selected' : ''; ?>>방문급여센터</option>
             </select>
         </td>
     </tr>

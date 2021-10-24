@@ -46,6 +46,7 @@ for($i = 1; $i <= 5; $i++) {
   $it_type = 'it_type'.$i;
   if($_GET[$it_type]) {
     $it_type_where[] = " {$it_type} = 1 ";
+    $qstr .= "&amp;{$it_type}=1";
   }
 }
 if($it_type_where) {
@@ -121,7 +122,7 @@ $sql  = " select *
 $result = sql_query($sql);
 
 //$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page;
-$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page.'&amp;page_rows='.$page_rows.'&amp;save_stx='.$stx."&amp;searchProdSupYN=".$_GET["searchProdSupYN"];
+$qstr .= '&amp;sca='.$sca.'&amp;page='.$page.'&amp;page_rows='.$page_rows.'&amp;save_stx='.$stx."&amp;searchProdSupYN=".$_GET["searchProdSupYN"];
 if($api_it_id) $qstr  .= '&amp;api_it_id='.$api_it_id;
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
@@ -264,7 +265,6 @@ $flist = apms_form(1,0);
         <th scope="col" rowspan="3"><?php echo subject_sort_link('it_use', 'sca='.$sca, 1); ?>판매</a></th>
         <th scope="col" rowspan="3"><?php echo subject_sort_link('it_soldout', 'sca='.$sca, 1); ?>품절</a></th>
         <th scope="col" rowspan="3"><?php echo subject_sort_link('it_hit', 'sca='.$sca, 1); ?>조회</a></th>
-        <th scope="col" rowspan="3">재고수량</th>
         <th scope="col" rowspan="3">상품태그</th>
         <th scope="col" rowspan="3">관리</th>
     </tr>
@@ -381,9 +381,6 @@ $flist = apms_form(1,0);
             <input type="checkbox" name="it_soldout[<?php echo $i; ?>]" <?php echo ($row['it_soldout'] ? 'checked' : ''); ?> value="1" id="soldout_<?php echo $i; ?>">
         </td>
         <td rowspan="3" class="td_num"><?php echo $row['it_hit']; ?></td>
-        <td rowspan="3" class="td_num">
-            <input type="text" name="it_stock_qty[<?php echo $i; ?>]" value="<?php echo $row['it_stock_qty']; ?>" id="it_stock_qty_<?php echo $i; ?>" class="frm_input" size="3">
-        </td>
         <td rowspan="3" class="td_mngsmall" style="min-width:150px">
             <input type="checkbox" name="it_type1[<?php echo $i; ?>]" value="1" <?php echo ($row['it_type1'] ? "checked" : ""); ?> id="it_type1_<?php echo $i; ?>">
             <label for="it_type1_<?php echo $i; ?>"><span style="border:1px solid <?php echo $default['de_it_type1_color']; ?>;color:<?php echo $default['de_it_type1_color']; ?>"><?php echo $default['de_it_type1_name']; ?></span></label>

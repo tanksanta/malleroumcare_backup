@@ -30,7 +30,7 @@ if (!$od['od_id']) {
   $result_again = $res['data'];
 }
 
-$carts = get_carts_by_od_id($od_id);
+$carts = get_carts_by_od_id($od_id, null, null, "a.ct_combine_ct_id, a.ct_id");
 
 # 210317 추가정보
 $moreInfo = sql_fetch("
@@ -110,7 +110,7 @@ if($od["od_b_tel"]) {
     .imfomation_box a .li_box .li_box_line1{ width: 100%; height:auto; margin:auto; color:#000; }
     .imfomation_box a .li_box .li_box_line1 .p1{ width:100%; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
     .imfomation_box a .li_box .li_box_line1 .p1 > span { height: 100%; display: table-cell; vertical-align: middle; }
-    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; word-break: keep-all }
+    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; word-break: keep-all; width: 60%; }
     /* .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; } */
     .imfomation_box a .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
@@ -256,23 +256,24 @@ if($od["od_b_tel"]) {
           # 카테고리 구분
           $gubun = $cate_gubun_table[substr($options[$k]['ca_id'], 0, 2)];
       ?>
-      <a href="javascript:void(0)" class="<?= $options[$k]['ct_status'] !== "취소" && $options[$k]['ct_status'] !== "주문무효" && $options[$k]['io_type'] == 0 ? "" : "hide_area" ?> ">
+      <a href="javascript:void(0)" class="<?= $options[$k]['ct_status'] !== "취소" && $options[$k]['ct_status'] !== "주문무효" ? "" : "hide_area" ?> ">
         <li class="li_box">
           <div class="li_box_line1"
-            <?php if ($gubun != '02') { ?>
+            <?php if ($gubun != '02' && $options[$k]['io_type'] == 0) { ?>
               onclick="openCloseToc(this)"
             <?php } ?>
             >
-            <p class="p1">
+            <p class="p1" data-qty="<?=$options[$k]["ct_qty"]?>">
               <span class="span1">
                 <!-- 상품명 -->
+                <?php echo $options[$k]['io_type'] == 1 ? '[추가옵션] ' : ''; ?>
                 <?=stripslashes($carts[$i]["it_name"])?>
                 <!-- 옵션 -->
                 <?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
                 (<?=$options[$k]["ct_option"]?>)
                 <?php } ?>
               </span>
-              <?php if ($gubun != '02') { ?>
+              <?php if ($gubun != '02' && $options[$k]['io_type'] == 0) { ?>
               <span class="span2">
                 <?php
                 $add_class="";
@@ -287,7 +288,7 @@ if($od["od_b_tel"]) {
               </span>
               <?php } else { ?>
                 <span class="span3">
-                  비급여 상품 바코드 미입력&nbsp;
+                  <?php echo $gubun == '02' ? '비급여' : '추가옵션'; ?> 상품 바코드 미입력&nbsp;
                   <input 
                     type="checkbox"
                     name="chk_pass_barcode_<?php echo $options[$k]['ct_id']; ?>"
@@ -886,14 +887,25 @@ if($od["od_b_tel"]) {
           var $barcode = $chk.closest('tr').find('.prodBarNumCntBtn');
 
           if(cnt_txt[0] !== cnt_txt[1]) {
-            $barcode.removeClass('disable').text(cnt_txt.join('/'));
+            var txt = cnt_txt.join('/');
+            if (txt) {
+              $barcode.removeClass('disable').text(cnt_txt.join('/'));
+            } else { // 상품바코드 미입력 체크일때
+              if ($(this).parent().find('.p1 .chk_pass_barcode').is(":checked") == true) {
+                $barcode.addClass('disable').text('입력완료');
+              } else {
+                $barcode.removeClass('disable').text(
+                  "0/" + $(this).parent().find('.p1').data('qty')
+                );
+              }
+            }
           } else {
             // 입력완료
             $barcode.addClass('disable').text('입력완료');
           }
         });
         <?php } ?>
-        window.close();
+        // window.close();
         <?php }?>
       }
     });

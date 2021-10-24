@@ -900,8 +900,7 @@ $(function() {
 </section>
 <!-- } 주문하시는 분 입력 끝 -->
 
-
-  <!-- 수급자 정보 iframe창 -->
+<!-- 수급자 정보 iframe창 -->
 <?php //if($itemPenIdStatus){ ?>
 <div id="order_recipientBox">
   <div>

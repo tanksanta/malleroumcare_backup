@@ -577,7 +577,7 @@ foreach($orderlist as $order) {
   }
   $prodBarNumCntBtnStatus = '';
   $prodBarNumCntBtnWord = $order['ct_barcode_insert']."/".$order['ct_qty'];
-  if($order['ct_barcode_insert'] >= $order['ct_qty'] || $order['io_type'] == '1') {
+  if($order['ct_barcode_insert'] >= $order['ct_qty']) {
     $prodBarNumCntBtnWord = '입력완료';
     $prodBarNumCntBtnStatus = " disable";
   }
@@ -705,7 +705,7 @@ foreach($orderlist as $order) {
   }
 
   $ret['data'] .= "
-    <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']}\">
+    <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']} order_tr\" data-od-id=\"{$order['od_id']}\" data-href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">
       <td align=\"center\" class=\"check\">
         <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['ct_id']}\" value=\"{$order['ct_id']}\" accumul_mark=\"Y\">
         <label for=\"check_{$order['ct_id']}\">&nbsp;</label>
@@ -733,6 +733,7 @@ foreach($orderlist as $order) {
             -->
             <span class=\"btn-direct-open\" onclick=\"btn_direct_open(this);\"></span>
           </div>
+          <img src=\"/thema/eroumcare/assets/img/icon_link_orderlist.png\" class=\"icon_link\">
         </div>
       </td>
       <td align=\"center\" class=\"od_barNum\">

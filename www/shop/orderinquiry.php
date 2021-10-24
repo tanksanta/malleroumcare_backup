@@ -54,6 +54,7 @@ if($_GET["e_date"]){
 	$sql_search .= " AND od_time <= '{$_GET["e_date"]} 23:59:59' ";
 }
 
+/*
 $search_od_status = "전체 상태";
 if($_GET["od_status"]){
 	$sql_search .= " AND od_status = '{$_GET["od_status"]}' ";
@@ -64,6 +65,7 @@ if($_GET["od_status"]){
 		}
 	}
 }
+*/
 
 $search_od_stock = "주문+재고";
 if($_GET["od_stock"]){

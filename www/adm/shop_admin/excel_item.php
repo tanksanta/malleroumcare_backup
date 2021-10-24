@@ -82,7 +82,7 @@
             $prodSupYn,
             $row['it_taxInfo'],
             $row['supId'],
-            $row['prodPayCode'],
+            $row['ProdPayCode'],
             $row['it_maker'],
             $row['it_origin'],
             $it_use,

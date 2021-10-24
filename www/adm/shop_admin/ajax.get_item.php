@@ -42,6 +42,7 @@ $sql = "SELECT
         a.ca_id LIKE '20%' OR
         a.ca_id LIKE '70%'
       )
+      AND prodSupYn = 'Y'
 ";
 
 $result = sql_query($sql);

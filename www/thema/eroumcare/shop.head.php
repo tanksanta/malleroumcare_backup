@@ -387,7 +387,7 @@ if($is_main && !$is_member) {
           <?php } ?>
 
           <div class="catalog_area">
-            <a href="/thema/eroumcare/assets/eroum_catalog_2021_3.pdf" class="catalog" target="_blank">
+            <a href="/thema/eroumcare/assets/eroum_catalog_2021_3_2.pdf" class="catalog" target="_blank">
               <img src="<?php echo THEMA_URL; ?>/assets/img/icon_catalog.png">
               이달의 카달로그
               <div class="btn_small">다운로드</div>
@@ -451,6 +451,141 @@ if($is_main && !$is_member) {
           </div>
           <?php
             }
+          } else if($member['mb_type'] === 'supplier') {
+          ?>
+          <div class="side_nav_area">
+            <div class="div_title">공급관리</div>
+            <ul>
+              <li>
+                <a href="/shop/partner_orderinquiry_list.php">
+                  발주내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/partner_ledger_list.php">
+                  거래처원장
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <?php
+          } else if($member['mb_type'] === 'center') {
+          ?>
+          <div class="side_nav_area">
+            <div class="div_title">방문관리</div>
+            <ul>
+              <li>
+                <a href="/shop/center_visit_list.php">
+                  방문내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+            <div class="div_title">운영관리</div>
+            <ul>
+              <li>
+                <a href="/shop/claim_manage.php">
+                  청구내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/electronic_manage.php">
+                  전자문서관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/my_recipient_list.php">
+                  수급자관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+                <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
+                <a class="noti_pen" href="/shop/my_recipient_noti.php">
+                  수급자 알림이 있습니다.
+                  <span class="value"><?=$noti_count?>건</span>
+                </a>
+                <?php } ?>
+                <?php if($pen_links = get_recipient_links($member['mb_id'])) { ?>
+                <a class="noti_pen link" href="/shop/my_recipient_list.php">
+                  ‘<?=$pen_links[0]['rl_pen_name']?>’ <?php $pen_links_count = count($pen_links); if($pen_links_count > 1) { echo '외 '.($pen_links_count - 1).'명 '; } ?>수급자 추천이 있습니다.
+                </a>
+                <?php } ?>
+              </li>
+              <li>
+                <a href="/shop/sales_Inventory.php">
+                  보유재고관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+            <div class="div_title">센터관리</div>
+            <ul>
+              <li>
+                <a href="/shop/center_member_list.php">
+                  직원관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/center_meet_list.php">
+                  회의관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/center_case_list.php">
+                  사례관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/center_education_list.php">
+                  교육관리
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/center_story_list.php">
+                  센터이야기
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+            <div class="div_title">기타/편의</div>
+            <ul class="etc">
+              <?php if ($member['mb_type'] !== 'normal') { ?>
+              <li>
+                <a href="/shop/my_data_upload.php">
+                  과거공단자료 업로드
+                </a>
+              </li>
+              <?php } ?>
+              <li>
+                <a href="/bbs/qalist.php">
+                  고객센터(1:1문의)
+                </a>
+              </li>
+              <li>
+                <a href="/bbs/board.php?bo_table=event">
+                  이벤트
+                </a>
+              </li>
+              <li>
+                <a href="/bbs/board.php?bo_table=faq">
+                  자주하는 질문
+                </a>
+              </li>
+              <li>
+                <a href="/bbs/board.php?bo_table=proposal">
+                  제안하기
+                </a>
+              </li>
+            </ul>
+          </div>
+          <?php
           } else {
           ?>
           <div class="side_nav_area">

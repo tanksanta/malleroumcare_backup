@@ -64,7 +64,12 @@ if (G5_IS_MOBILE) {
     echo '<meta name="HandheldFriendly" content="true">'.PHP_EOL;
     echo '<meta name="format-detection" content="telephone=no">'.PHP_EOL;
 }
-echo '<meta name="viewport" content="initial-scale=1.0,user-scalable=yes,maximum-scale=2,width=device-width" />';
+$request_uri = $_SERVER['REQUEST_URI'];
+if(strpos($request_uri, "item.php") !== false || defined('G5_IS_ADMIN')) {
+  echo '<meta name="viewport" content="initial-scale=1.0,user-scalable=yes,maximum-scale=2,width=device-width" />'.PHP_EOL;
+} else {
+  echo '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">'.PHP_EOL;
+}
 echo '<meta http-equiv="imagetoolbar" content="no">'.PHP_EOL;
 echo '<meta http-equiv="X-UA-Compatible" content="IE=Edge">'.PHP_EOL;
 if(APMS_PRINT){  //프린트 상태일 때는 검색엔진에서 제외합니다.
@@ -160,13 +165,6 @@ if(!defined('G5_IS_ADMIN') && $config['cf_add_script']) {
     echo $config['cf_add_script'].PHP_EOL;
 }
 ?>
-
-<?php 
-    $request_uri = $_SERVER['REQUEST_URI'];
-    if(strpos($request_uri, "item.php") !== false) {} else {  
-?>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<?php } ?> 
 
 </head>
 <body<?php echo (isset($g5['body_script']) && $g5['body_script']) ? $g5['body_script'].' ' : ''; ?> class="<?php echo (_RESPONSIVE_) ? '' : 'no-';?>responsive <?php echo $body_mode;?>">

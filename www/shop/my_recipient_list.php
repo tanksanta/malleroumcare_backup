@@ -15,6 +15,7 @@ recipient_link_clean();
 // 수급자 활동 알림
 // category_limit_noti();
 
+$write_pages = 5;
 $page_rows = $_COOKIE["recipient_page_rows"] ? $_COOKIE["recipient_page_rows"] : 10;
 $page = $_GET["page"] ?? 1;
 
@@ -537,7 +538,7 @@ function form_check(act) {
 
   <div class="list-paging">
     <ul class="pagination pagination-sm en">
-      <?php echo apms_paging($page_rows, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page="); ?>
+      <?php echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page="); ?>
     </ul>
   </div>
 
@@ -650,7 +651,7 @@ function form_check(act) {
   <?php } ?>
   <div class="list-paging">
     <ul class="pagination pagination-sm en">
-      <?php echo apms_paging($rows_spare, $page_spare, $total_page_spare, "?sel_field={$sel_field}&search={$search}&page={$page}&page_spare="); ?>
+      <?php echo apms_paging($write_pages, $page_spare, $total_page_spare, "?sel_field={$sel_field}&search={$search}&page={$page}&page_spare="); ?>
     </ul>
   </div>
   <div class="l_btn_area pc" style="margin-bottom: 30px;">

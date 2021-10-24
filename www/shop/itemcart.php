@@ -288,8 +288,9 @@ for($i=0; $i<$count; $i++) {
       $tmp_ct_qty_array = $_POST["ct_qty"][$it_id];
       $ct_sale_qty_list = $tmp_ct_qty_array;
       
-      foreach($ct_sale_qty_list as $this_qty){
-        $ct_sale_qty += $this_qty;
+      for($tmp_i = 0; $tmp_i < count($_POST["ct_qty"][$it_id]); $tmp_i++) {
+        if (!$_POST["io_type"][$it_id][$tmp_i])
+          $ct_sale_qty += $_POST["ct_qty"][$it_id][$tmp_i];
       }
       //기존 장바구니 개수 + 주문개수
       $ct_sale_qty = $row3['ct_qty'] + $ct_sale_qty;
@@ -308,12 +309,14 @@ for($i=0; $i<$count; $i++) {
       $ct_qty2=$row2['ct_qty']+$ct_qty;
 
       //할인율 적용
-      for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++) {
-        if($itSaleCntList[$saleCnt] <= $ct_sale_qty) {
-          if($itSaleCnt < $itSaleCntList[$saleCnt]) {
-            $ct_discount = $itSalePriceList[$saleCnt] * $ct_qty2;
-            $ct_discount = ($it['it_price'] * $ct_qty2) - $ct_discount;
-            $itSaleCnt = $itSaleCntList[$saleCnt];
+      if (!$io_type) {
+        for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++) {
+          if($itSaleCntList[$saleCnt] <= $ct_sale_qty) {
+            if($itSaleCnt < $itSaleCntList[$saleCnt]) {
+              $ct_discount = $itSalePriceList[$saleCnt] * $ct_qty2;
+              $ct_discount = ($it['it_price'] * $ct_qty2) - $ct_discount;
+              $itSaleCnt = $itSaleCntList[$saleCnt];
+            }
           }
         }
       }
@@ -405,8 +408,9 @@ for($i=0; $i<$count; $i++) {
     }
 
     $ct_sale_qty_list = $_POST["ct_qty"][$it_id];
-    foreach($ct_sale_qty_list as $this_qty){
-      $ct_sale_qty += $this_qty;
+    for($tmp_i = 0; $tmp_i < count($_POST["ct_qty"][$it_id]); $tmp_i++) {
+      if (!$_POST["io_type"][$it_id][$tmp_i])
+        $ct_sale_qty += $_POST["ct_qty"][$it_id][$tmp_i];
     }
 
     $itSaleCntList = [$it["it_sale_cnt"], $it["it_sale_cnt_02"], $it["it_sale_cnt_03"], $it["it_sale_cnt_04"], $it["it_sale_cnt_05"]];
@@ -419,12 +423,13 @@ for($i=0; $i<$count; $i++) {
 
     $itSaleCnt = 0;
     $itSalePrice = 0;
-
-    for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
-      if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
-        if($itSaleCnt < $itSaleCntList[$saleCnt]) {
-          $itSalePrice = $itSalePriceList[$saleCnt];
-          $itSaleCnt = $itSaleCntList[$saleCnt];
+    if (!$io_type) {
+      for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
+        if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
+          if($itSaleCnt < $itSaleCntList[$saleCnt]) {
+            $itSalePrice = $itSalePriceList[$saleCnt];
+            $itSaleCnt = $itSaleCntList[$saleCnt];
+          }
         }
       }
     }
@@ -473,9 +478,10 @@ for($i=0; $i<$count; $i++) {
     } else {
       //없으면 큰박스로만 진행
       $ct_delivery_cnt = $result_i['it_delivery_cnt'] ? ceil($ct_qty / $result_i['it_delivery_cnt']) : 0;
-      $ct_delivery_price = $result_i['it_delivery_cnt'] ? ((@round($ct_qty / $result_i['it_delivery_cnt']) ?: 1) * $result_i['it_delivery_price']) : 0;
+      $ct_delivery_price = $ct_delivery_cnt * $result_i['it_delivery_price'];
     }
-    $ct_delivery_company = 'ilogen';
+    // $ct_delivery_company = 'ilogen';
+    $ct_delivery_company = '';
 
     $ct_pen_sql = $_SESSION['recipient']['penId'] ? "'" . $_SESSION['recipient']['penId'] . "'" : "null";
 

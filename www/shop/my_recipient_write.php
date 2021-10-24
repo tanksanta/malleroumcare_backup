@@ -70,7 +70,7 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>수급자명</b>
         </label>
         <div class="col-sm-3">
-          <input type="text" name="penNm" class="form-control input-sm">
+          <input type="text" name="penNm" value="<?=get_text($_GET['penNm']) ?: ''?>" class="form-control input-sm">
           <i class="fa fa-check form-control-feedback"></i>
         </div>
       </div>
@@ -118,7 +118,7 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>휴대폰</b>
         </label>
         <div class="col-sm-3">
-          <input type="text" name="penConNum" value="" class="form-control input-sm">
+          <input type="text" name="penConNum" value="<?=get_text($_GET['penConNum']) ?: ''?>" class="form-control input-sm">
         </div>
       </div>
 
@@ -299,7 +299,7 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>휴대폰</b>
         </label>
         <div class="col-sm-3">
-          <input type="text" name="penProConNum" value="" class="form-control input-sm">
+          <input type="text" name="penProConNum" value="<?=get_text($_GET['penProConNum']) ?: ''?>" class="form-control input-sm">
         </div>
       </div>
 

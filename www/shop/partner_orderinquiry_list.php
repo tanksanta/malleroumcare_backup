@@ -1,7 +1,7 @@
 <?php
 include_once('./_common.php');
 
-if(!$is_samhwa_partner) {
+if(!$is_samhwa_partner && !($member['mb_type'] === 'supplier')) {
   alert("파트너 회원만 접근 가능한 페이지입니다.");
 }
 
@@ -26,10 +26,13 @@ if($ct_status) {
 $where[] = " ( ct_status = '".implode("' OR ct_status = '", $ct_steps)."' ) ";
 
 # 검색어
-$sel_field = in_array($sel_field, ['mb_entNm', 'it_name', 'c.od_id']) ? $sel_field : '';
+$sel_field = in_array($sel_field, ['mb_entNm', 'it_name', 'c.od_id', 'od_b_name']) ? $sel_field : '';
 $search = get_search_string($search);
 if($sel_field && $search) {
-  $where[] = " {$sel_field} like '%{$search}%' ";
+  if($sel_field == 'mb_entNm')
+    $where[] = " ( {$sel_field} like '%{$search}%' or (mb_temp = TRUE and mb_name like '%{$search}%') ) ";
+  else
+    $where[] = " {$sel_field} like '%{$search}%' ";
 }
 
 $sql_search = ' and '.implode(' and ', $where);
@@ -64,6 +67,8 @@ $result = sql_query("
     ct_id,
     c.od_id,
     od_time,
+    m.mb_temp,
+    m.mb_name,
     mb_entNm,
     od_b_name,
     od_b_hp,
@@ -82,7 +87,9 @@ $result = sql_query("
     ct_direct_delivery_price,
     ct_direct_delivery_date,
     ct_ex_date,
-    ct_barcode_insert
+    ct_barcode_insert,
+    m.mb_tel,
+    m.mb_hp
   {$sql_common}
   {$sql_order}
   {$sql_limit}
@@ -150,7 +157,19 @@ while($row = sql_fetch_array($result)) {
     $row['report'] = $report;
   }
 
+  // 임시회원의경우 mb_entNm 대신 mb_name 출력
+  if($row['mb_temp']) {
+    $row['mb_entNm'] = $row['mb_name'];
+  }
+
   $orders[] = $row;
+}
+
+$qstr = "?sel_date={$sel_date}&amp;fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_field={$sel_field}&amp;search={$search}";
+if($ct_status) {
+  foreach($ct_status as $status) {
+    $qstr .= "&amp;ct_status%5B%5D={$status}";
+  }
 }
 
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
@@ -229,6 +248,7 @@ tr.hover { background-color: #fbf9f7 !important; }
         <option value="mb_entNm" <?=get_selected($sel_field, 'mb_entNm')?>>사업소명</option>
         <option value="it_name" <?=get_selected($sel_field, 'it_name')?>>품목명</option>
         <option value="c.od_id" <?=get_selected($sel_field, 'c.od_id')?>>주문번호</option>
+        <option value="od_b_name" <?=get_selected($sel_field, 'od_b_name')?>>받는분</option>
       </select>
       <div class="input_search">
         <input name="search" value="<?=$_GET["search"]?>" type="text">
@@ -302,6 +322,7 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <p class="info_head">
                   사업소 : 
                   <?=$row['mb_entNm']?>
+                  <span style="font-weight: normal">(<?php echo $row['mb_tel']; ?>)</span>
                 </p>
                 <p>
                   - 위탁정보 : 
@@ -326,6 +347,11 @@ tr.hover { background-color: #fbf9f7 !important; }
                   <button type="button" class="report-btn btn_install_report" data-id="<?=$row['ct_id']?>">설치결과보고서 등록</button>
                   <?php } ?>
                 </p>
+                <?php if($row['report'] && $row['report']['ir_issue']) { ?>
+                <p style="width: 80%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;margin-top: 3px;">
+                  <?php echo htmlspecialchars($row['report']['ir_issue']); ?>
+                </p>
+                <?php } ?>
               </td>
               <td class="text_c">
                 <span style="<?php
@@ -356,7 +382,7 @@ tr.hover { background-color: #fbf9f7 !important; }
       </div>
       <div class="list-paging">
         <ul class="pagination pagination-sm en">  
-          <?php echo apms_paging(5, $page, $total_page, '?page='); ?>
+          <?php echo apms_paging(5, $page, $total_page, $qstr.'&amp;page='); ?>
         </ul>
       </div>
     </div>

@@ -1,8 +1,9 @@
 <?php
 include_once('./_common.php');
 
-if(!$is_samhwa_partner)
+if (!$is_samhwa_partner && !($member['mb_type'] === 'supplier')) {
   alert('파트너 회원만 접근가능합니다.');
+}
 
 $g5['title'] = "파트너 거래처원장";
 include_once("./_head.php");

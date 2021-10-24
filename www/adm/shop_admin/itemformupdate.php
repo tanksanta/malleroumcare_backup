@@ -464,6 +464,8 @@ else if($it_is_direct_delivery == 2) {
   $it_direct_delivery_price = (int)$_POST['it_direct_delivery_price2'] ?: 0;
 }
 
+$warehouse_list = get_warehouses();
+$it_warehousing_warehouse = in_array($_POST['it_warehousing_warehouse'], $warehouse_list) ? $_POST['it_warehousing_warehouse'] : '';
 $it_default_warehouse = in_array($_POST['it_default_warehouse'], $warehouse_list) ? $_POST['it_default_warehouse'] : '';
 
 // 박스 규격
@@ -648,6 +650,7 @@ $sql_common = "
   it_sale_cnt_05             = '$it_sale_cnt_05',
   it_sale_percent_05             = '$it_sale_percent_05',
   it_sale_percent_great_05             = '$it_sale_percent_great_05',
+  it_warehousing_warehouse = '$it_warehousing_warehouse',
   it_default_warehouse = '$it_default_warehouse',
   it_expected_warehousing_date = '$it_expected_warehousing_date',
 

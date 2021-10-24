@@ -1,31 +1,109 @@
 <?php
 
 include_once("./_common.php");
+
 $g5["title"] = "주문 내역 바코드 수정";
 // include_once(G5_ADMIN_PATH."/admin.head.php");
-$sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
+
+$sql = " select * from {$g5['g5_shop_order_table']} where od_id = ( SELECT od_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id') ";
 $od = sql_fetch($sql);
-$sql = "SELECT c.*, i.ca_id FROM
-  {$g5['g5_shop_cart_table']} as c
-  INNER JOIN {$g5['g5_shop_item_table']} as i ON c.it_id = i.it_id
-where `ct_id` = '$ct_id' ";
-$ct = sql_fetch($sql);
+$od_id = $od['od_id'];
 $prodList = [];
 $prodListCnt = 0;
+$prodListCnt2 = 0;
 $deliveryTotalCnt = 0;
-  $prodSupYn_count=0;
-if (!$ct['ct_id']) {
+
+if (!$od['od_id']) {
   alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 } else {
-  $sto_imsi=$ct['stoId'];
+  $sto_imsi="";
+  $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+  $result_ct = sql_query($sql_ct);
+  while($row_ct = sql_fetch_array($result_ct)) {
+      $sto_imsi .=$row_ct['stoId'];
+  }
   $stoIdDataList = explode('|',$sto_imsi);
-  $stoIdDataList=array_filter($stoIdDataList);
+  $stoIdDataList = array_filter($stoIdDataList);
   $stoIdData = implode("|", $stoIdDataList);
-  $sendData["stoId"] = $stoIdData;
-  $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
-  $result_again =$res['data'];
+  $res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
+    'stoId' => $stoIdData
+  ), 443);
+  $result_again = $res['data'];
 }
-$carts = get_carts_by_od_id($od_id);
+
+$carts = [];
+$sql = " select a.ct_id,
+					a.it_id,
+					a.it_name,
+					a.cp_price,
+					a.ct_notax,
+					a.ct_send_cost,
+					a.ct_sendcost,
+					a.it_sc_type,
+					a.pt_it,
+					a.pt_id,
+					b.ca_id,
+					b.ca_id2,
+					b.ca_id3,
+					b.pt_msg1,
+					b.pt_msg2,
+					b.pt_msg3,
+					a.ct_status,
+					b.it_model,
+					b.it_outsourcing_use,
+					b.it_outsourcing_company,
+					b.it_outsourcing_manager,
+					b.it_outsourcing_email,
+					b.it_outsourcing_option,
+					b.it_outsourcing_option2,
+					b.it_outsourcing_option3,
+					b.it_outsourcing_option4,
+					b.it_outsourcing_option5,
+					a.pt_old_name,
+					a.pt_old_opt,
+					a.ct_uid,
+					a.prodMemo,
+					a.prodSupYn,
+					a.ct_qty,
+					a.ct_stock_qty,
+					b.it_img1,
+					a.ct_delivery_company,
+					a.ct_delivery_num,
+					a.ct_combine_ct_id,
+					b.it_delivery_cnt,
+					b.it_delivery_price,
+					a.ct_delivery_cnt,
+					a.ct_delivery_price,
+					a.ct_is_direct_delivery,
+          b.it_name,
+          a.ct_status,
+          a.io_type,
+          a.stoId,
+          ct_option,
+          ct_barcode_insert
+			  from {$g5['g5_shop_cart_table']} a 
+        left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
+			  where a.od_id = '$od_id'
+        AND (
+          ct_id = '$ct_id'
+          OR ct_combine_ct_id = '$ct_id'
+          OR ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
+        )
+			  order by a.ct_combine_ct_id, a.ct_id";
+
+$result = sql_query($sql);
+
+$combine_it_name = '';
+for ($i=0; $row=sql_fetch_array($result); $i++) {
+  $carts[] = $row;
+  if ($i === 0) {
+    $combine_it_name = $row['it_name'];
+    if ($row['it_name'] != $row['ct_option']) {
+      $combine_it_name .= "({$row['ct_option']})";
+    }
+  }
+
+}
 
 # 210317 추가정보
 $moreInfo = sql_fetch("
@@ -45,14 +123,14 @@ if($moreInfo["totalCnt"]){
 # 210319 배송정보
 $odDeliveryNameTel = "";
 $odDeliveryNameTel .= $od["od_b_name"];
-if($od["od_b_tel"]){
+if($od["od_b_tel"]) {
   $odDeliveryNameTel .= " / {$od["od_b_tel"]}";
 }
 
 ?>
 <!DOCTYPE html>
- <html lang="ko">
- <head>
+<html lang="ko">
+<head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -105,7 +183,7 @@ if($od["od_b_tel"]){
     .imfomation_box a .li_box .li_box_line1{ width: 100%; height:auto; margin:auto; color:#000; }
     .imfomation_box a .li_box .li_box_line1 .p1{ width:100%; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
     .imfomation_box a .li_box .li_box_line1 .p1 > span { height: 100%; display: table-cell; vertical-align: middle; }
-    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; word-break: keep-all }
+    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; word-break: keep-all; width: 60%; }
     /* .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; } */
     .imfomation_box a .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
     .imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
@@ -133,9 +211,10 @@ if($od["od_b_tel"]){
     .imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input::placeholder { font-size: 16px; color: #AAA; }
     .imfomation_box a .li_box .folding_box > .inputbox > li > .btn_bacod { position: absolute; width: 30px; right: 50px; top: 11px; z-index: 2; cursor: pointer; }
     .imfomation_box a .li_box .folding_box > .inputbox > li > .btn_pda { position: absolute; width: 30px; right: 15px; top: 11px; z-index: 2; cursor: pointer; }
+    .imfomation_box a .li_box .folding_box > .inputbox > li > img { position: absolute; width: 30px; right: 15px; top: 11px; z-index: 2; cursor: pointer; }
     .imfomation_box a .li_box .folding_box > .inputbox > li > i { position: absolute; right: 100px; top: 17px; z-index: 2; font-size: 19px; color: #FF6105; opacity: 0; }
     .imfomation_box a .li_box .folding_box > .inputbox > li > i.active { opacity: 1; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > .overlap { position: absolute; right: 100px; top: 15px; z-index: 2; font-size: 14px; color: #DC3333; opacity: 0; font-weight: bold; }
+    .imfomation_box a .li_box .folding_box > .inputbox > li > .overlap { position: absolute; right: 55px; top: 15px; z-index: 2; font-size: 14px; color: #DC3333; opacity: 0; font-weight: bold; }
     .imfomation_box a .li_box .folding_box > .inputbox > li > .overlap.active { opacity: 1; }
 
     .imfomation_box a .li_box .folding_box .span{margin-left :20px;width:90%;}
@@ -172,19 +251,34 @@ if($od["od_b_tel"]){
       height:35px;
       position: absolute;
       top: 8px;
-      right: 130px;
+      right: 90px;
       display:none;
     }
+
+    .excel_btn {
+      display: inline-block;
+      margin-top: 10px;
+      color: #fff;
+      font-size: 17px;
+      background-color: #494949;
+      border: 0px;
+      border-radius: 6px;
+      width: 18%;
+      height: 50px;
+      font-weight: bold;
+      text-align: center;
+      line-height: 50px;
+    }
   </style>
- </head>
+</head>
 
- <body>
+<body>
 
-   <!-- 고정 상단 -->
+  <!-- 고정 상단 -->
   <div id="popupHeaderTopWrap">
-    <div class="title">바코드</div>
+    <div class="title">바코드입력</div>
     <div class="close">
-      <a href="#" class="popupCloseBtn" onclick="member_cancel();">
+      <a href="javascript:member_cancel();">
         &times;
       </a>
     </div>
@@ -193,7 +287,8 @@ if($od["od_b_tel"]){
   <!-- 상품기본정보 -->
   <div id="itInfoWrap">
     <p class="name">
-      [<?=($od["recipient_yn"] == "Y") ? "주문" : "재고"?>] <?=$ct["it_name"]?>
+      [<?=($od["recipient_yn"] == "Y") ? "주문" : "재고"?>] <?=$moreInfo["it_name"]?> <?=$moreInfoDisplayCnt?>
+      <!-- <span class="delivery">(배송 : <?=$od_cart_count?>개)</span> -->
     </p>
 
     <p class="date">
@@ -207,9 +302,10 @@ if($od["od_b_tel"]){
         <span><?=$odDeliveryNameTel?></span>
         <?=($odDeliveryNameTel) ? "<br>" : ""?>
         <span><?=$od["od_b_addr1"]?> <?=$od["od_b_addr2"]?></span>
-        <p><?=$od["od_memo"]?></p>
       </p>
     </div>
+  <!--<a href="./popup.prodBarNum.form.excel.php?od_id=<?=$od_id?>" class="excel_btn">엑셀다운로드</a>-->
+
   </div>
 
    <!-- 상품목록 -->
@@ -218,135 +314,125 @@ if($od["od_b_tel"]){
     <input type="hidden" name="update_type" value="popup">
     <ul class="imfomation_box" id="imfomation_box">
       <?php
-      # 요청사항
-      $prodMemo = "";
-      //보유재고 (무조건 입력) / 유통(미입력) 비유통(입력)
-      $readonly = "";
-      if($_GET['stock_insert']=="1"){
-        if($ct['prodSupYn']=="N"){
-          $barcode_placeholder ="바코드를 입력하세요.";
-        }else{
-          $barcode_placeholder ="바코드가 입력되지 않았습니다.";
-          $readonly="readonly";
-        }
-      }else{
-          $barcode_placeholder ="바코드를 입력하세요.";
-          $prodSupYn_count++;
-      }
-      if($member['mb_id']=="admin") {
-        $readonly = "";
-        $prodSupYn_count++;
-      }
+      for($i = 0; $i < count($carts); $i++) {
 
-      # 카테고리 구분
-      $gubun = $cate_gubun_table[substr($ct['ca_id'], 0, 2)];
+        # 요청사항
+        $prodMemo = "";
 
+        $options = $carts[$i]["options"];
 
-      if($ct['prodSupYn']==="N"){ $prodSupYn_count++; }
-      # 요청사항
-      $prodMemo = $ct["prodMemo"];
+          $stoId_v=[];
+          $stoId_v = explode('|',$carts[$i]['stoId']);
+          $stoId_v=array_filter($stoId_v);
+
+          # 요청사항
+          $prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
+          # 카테고리 구분
+          $gubun = $cate_gubun_table[substr($carts[$i]['ca_id'], 0, 2)];
       ?>
-      <a href="javascript:void(0)">
+      <?php if ($carts[$i]['ct_combine_ct_id']) { ?>
+        <div style="margin:20px;margin-bottom:0px;background-color:#ff6105;color:white;text-align:center;border-radius:3px;padding:10px;font-size:13px;">
+        <?php
+        echo stripslashes($combine_it_name);
+        echo ' 상품과 같이 배송 됩니다.';
+        ?>
+        </div>
+      <?php } ?>
+      <a href="javascript:void(0)" class="<?= $carts[$i]['ct_status'] !== "취소" && $carts[$i]['ct_status'] !== "주문무효" ? "" : "hide_area" ?> ">
         <li class="li_box">
           <div class="li_box_line1"
-            <?php if ($gubun != '02') { ?>
+            <?php if ($gubun != '02' && $carts[$i]['io_type'] == 0) { ?>
               onclick="openCloseToc(this)"
             <?php } ?>
-          >
-            <p class="p1">
+            >
+            <p class="p1" data-qty="<?=$carts[$i]["ct_qty"]?>">
               <span class="span1">
                 <!-- 상품명 -->
-                <?php if($ct['ct_stock_qty']){ echo '[재고소진]'; } ?>
-                <?=stripslashes($ct["it_name"])?>
+                <?php echo $carts[$i]['io_type'] == 1 ? '[추가옵션] ' : ''; ?>
+                <?=stripslashes($carts[$i]["it_name"])?>
                 <!-- 옵션 -->
-                <?php if($ct["it_name"] != $ct["ct_option"]){ ?>
-                (<?=$ct["ct_option"]?>)
+                <?php if($carts[$i]["it_name"] != $carts[$i]["ct_option"]){ ?>
+                (<?=$carts[$i]["ct_option"]?>)
                 <?php } ?>
               </span>
-              <?php if ($gubun != '02') { ?>
+              <?php if ($gubun != '02' && $carts[$i]['io_type'] == 0) { ?>
               <span class="span2">
-                <span class="<?=$add_class?> c_num">0</span>/<?=$ct["ct_qty"]?>
+                <?php
+                $add_class="";
+                for($b = 0; $b< $carts[$i]["ct_qty"]; $b++){
+                  $add_class=$add_class.' '.$stoIdDataList[$prodListCnt2].'_v';
+                  $prodListCnt2++;
+                }
+                ?>
+                <span class="<?=$add_class?> c_num">0</span>/<?=$carts[$i]["ct_qty"]?>
                 <img class="up" src="<?=G5_IMG_URL?>/img_up.png" alt="">
                 <img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
               </span>
               <?php } else { ?>
                 <span class="span3">
-                  비급여 상품 바코드 미입력&nbsp;
+                  <?php echo $gubun == '02' ? '비급여' : '추가옵션'; ?> 상품 바코드 미입력&nbsp;
                   <input 
                     type="checkbox"
-                    name="chk_pass_barcode_<?php echo $ct['ct_id']; ?>"
+                    name="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>"
                     value="1"
-                    id="chk_pass_barcode_<?php echo $ct['ct_id']; ?>"
-                    <?php if ($ct['ct_qty'] == $ct['ct_barcode_insert']) { ?>
+                    id="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>"
+                    <?php if ($carts[$i]['ct_qty'] == $carts[$i]['ct_barcode_insert']) { ?>
                       checked="checked"
                     <?php } ?>
                     class="chk_pass_barcode"
-                    data-ct-id="<?php echo $ct['ct_id']; ?>"
+                    data-ct-id="<?php echo $carts[$i]['ct_id']; ?>"
                   >
-                  <label for="chk_pass_barcode_<?php echo $ct['ct_id']; ?>">확인함</label>
+                  <label for="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>">확인함</label>
                 </span>
               <?php } ?>
             </p>
-
             <?php if($prodMemo){ ?>
             <p class="cartProdMemo"><?=$prodMemo?></p>
             <?php } ?>
           </div>
 
           <?php if ($gubun != '02') { ?>
-          <div class="folding_box">
-            <?php if($ct["ct_qty"] >= 2){ ?>
+          <div class="folding_box" data-id="<?php echo $carts[$i]['ct_id']; ?>">
+            <?php if ($carts[$i]["ct_qty"] >= 2) { ?>
             <span>
-              <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
-              <button type="button" class="barNumCustomSubmitBtn">등록</button>
-              <img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
+            <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
+            <button type="button" class="barNumCustomSubmitBtn">등록</button>
+            <img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
             </span>
             <?php } ?>
             <ul class="inputbox">
-              <?php for($b = 0; $b< count($result_again); $b++){ ?>
+              <?php for ($b = 0; $b< count($stoId_v); $b++) { ?>
               <li>
-                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$result_again[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$result_again[$b]["stoId"]?> <?=$result_again[$b]["stoId"]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
                 <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
-                <!-- <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>"> -->
+                
                 <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn btn_bacod" data-type="native" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
                 <img src="<?php echo G5_IMG_URL?>/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
               </li>
-              <?php  $prodListCnt++;  } ?>
+              <?php $prodListCnt++; } ?>
             </ul>
           </div>
           <?php } ?>
 
+          <?php if (!$carts[$i]['ct_combine_ct_id']) { ?>
           <div class="deliveryInfoWrap">
-            <?php if ($ct['ct_combine_ct_id']) { ?>
-            <?php
-              // 합포 상품 찾기
-              foreach($carts as $c) {
-                foreach($c['options'] as $o) {
-                  if($ct['ct_combine_ct_id'] === $o['ct_id']) {
-                    echo stripslashes($c["it_name"]);
-                    if($c["it_name"] != $o["ct_option"]){
-                      echo '(' . $o["ct_option"] . ')';
-                    }
-                    echo ' 상품과 같이 배송 됩니다.';
-                  }
-                }
-              }
-            ?>
-            <?php } else { ?>
-            <input type="hidden" name="ct_id[]" value="<?=$ct["ct_id"]?>">
-            <select name="ct_delivery_company_<?=$ct["ct_id"]?>">
+            <input type="hidden" name="ct_id[]" value="<?=$carts[$i]["ct_id"]?>">
+            <select name="ct_delivery_company_<?=$carts[$i]["ct_id"]?>">
               <?php foreach($delivery_companys as $data){ ?>
-              <option value="<?=$data["val"]?>" <?=($ct["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+              <option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
               <?php } ?>
             </select>
-            <input type="text" value="<?=$ct["ct_delivery_num"]?>" name="ct_delivery_num_<?=$ct["ct_id"]?>" placeholder="송장번호 입력">
+            <input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>" placeholder="송장번호 입력">
             <img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
-            <?php } ?>
           </div>
+          <?php } ?>
         </li>
       </a>
+      <?php
+      }
+      ?>
     </ul>
   </form>
 
@@ -375,76 +461,80 @@ if($od["od_b_tel"]){
     <button class="closepop" onclick="closePopup()">닫기</button>
     </div>
   </div>
+
   <!-- 고정 하단 -->
-  <?php if($prodSupYn_count){ ?>
   <div id="popupFooterBtnWrap">
     <button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
-    <button type="button" class="cancelbtn popupCloseBtn"  onclick="member_cancel();">취소</button>
+    <button type="button" class="cancelbtn" onclick="member_cancel();">취소</button>
   </div>
-  <?php } ?>
+
   <?php
 
   if(!$member['mb_id']){alert('접근이 불가합니다.');}
   //접속시 db- >id 부과
-  sql_query("update {$g5['g5_shop_cart_table']} set `ct_edit_member` = '".$member['mb_id']."' where `ct_id` = '{$ct_id}'");
-
+  sql_query("update {$g5['g5_shop_cart_table']} set `ct_edit_member` = '".$member['mb_id']."' where `od_id` = '{$od_id}'");
   ?>
 
   <script type="text/javascript">
+    $(".hide_area").hide();
 
-  var keyupTimer;
+    var keyupTimer;
+    
+    $(".notall").keyup(function() {
+      var last_index = $(this).closest('ul').find('li').last().index();
+      var this_index = $(this).closest('li').index();
 
-  $(".notall").keyup(function() {
-    var last_index = $(this).closest('ul').find('li').last().index();
-    var this_index = $(this).closest('li').index();
+      $(this).closest('ul').find('.barcode_add').hide();
+      if(last_index !== this_index && $(this).val().length == 12)
+          $(this).closest('li').find('.barcode_add').show();
 
-    $(this).closest('ul').find('.barcode_add').hide();
-    if(last_index !== this_index && $(this).val().length == 12)
-      $(this).closest('li').find('.barcode_add').show();
+      if(keyupTimer) clearTimeout(keyupTimer);
+      keyupTimer = setTimeout(notallLengthCheck, 200);
+    });
 
-    if(keyupTimer) clearTimeout(keyupTimer);
-    keyupTimer = setTimeout(notallLengthCheck, 200);
-  });
+    $('.notall').focus(function(){
 
-  $('.notall').focus(function() {
-    var last_index = $(this).closest('ul').find('li').last().index();
-    var this_index = $(this).closest('li').index();
+        var last_index = $(this).closest('ul').find('li').last().index();
+        var this_index = $(this).closest('li').index();
 
-    $(this).closest('ul').find('.barcode_add').hide();
-    if(last_index !== this_index && $(this).val().length == 12)
-      $(this).closest('li').find('.barcode_add').show();
-  });
+        $(this).closest('ul').find('.barcode_add').hide();
+        if(last_index !== this_index && $(this).val().length == 12)
+            $(this).closest('li').find('.barcode_add').show();
+    });
+    
+    $('.barcode_add').click(function() {
+        var ul = $(this).closest('ul');
+        var li_num = $(this).closest('li').index();
+        var li_val = $(this).closest('li').find('.notall').val();
+        var li_last = $(ul).find('li').last().index();
+        var p_num = 0;
 
-  $('.barcode_add').click(function() {
-    var ul = $(this).closest('ul');
-    var li_num = $(this).closest('li').index();
-    var li_val = $(this).closest('li').find('.notall').val();
-    var li_last = $(ul).find('li').last().index();
-    var p_num = 0;
+        if(li_val.length !== 12){
+            alert('바코드 12자리를 입력해주세요.');
+            return false;
+        }
+        
+        for(var i = li_num+1; i<=li_last; i++){
+            p_num++;
+            $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+        }
+        notallLengthCheck();
+    });
 
-    if(li_val.length !== 12){
-      alert('바코드 12자리를 입력해주세요.');
-      return false;
-    }
 
-    for(var i = li_num+1; i<=li_last; i++){
-      p_num++;
-      $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
-    }
-    notallLengthCheck();
-  });
 
+  var need_reload = false;
   //maxnum 지정
   function maxLengthCheck(object){
-    if (object.value.length > object.maxLength) {
+    if (object.value.length > object.maxLength){
       object.value = object.value.slice(0, object.maxLength);
     }
   }
 
   /* 바코드 입력란 설정 */
-  function foldingBoxSetting(){
+  function foldingBoxSetting() {
     var item = $(".folding_box");
-    for(var i = 0; i < item.length; i++){
+    for(var i = 0; i < item.length; i++) {
       var openStatus = true;
       var d_count=0;
       var notalls = $(item[i]).find(".notall");
@@ -466,39 +556,44 @@ if($od["od_b_tel"]){
 
   /* 바코드 입력글자 수 체크 */
   function notallLengthCheck() {
-    var item = $(".notall");
+    var $foldingBox = $('.folding_box');
 
-    $(item).removeClass("active");
     $(".imfomation_box a .li_box .folding_box > .inputbox > li > i").removeClass("active");
     $(".imfomation_box a .li_box .folding_box > .inputbox > li > .overlap").removeClass("active");
 
-    var dataTable = {};
+    $foldingBox.each(function() {
+      var $item = $(this).find('.notall');
+      $item.removeClass("active");
 
-    for(var i = 0; i < item.length; i++) {
-      var length = $(item[i]).val().length;
-      if(length < 12 && length){
-        $(item[i]).addClass("active");
-      }
-      if(length == 12) {
-        $(item[i]).parent().find("i").addClass("active");
-        
-        if(!dataTable[$(item[i]).val()])
-          dataTable[$(item[i]).val()] = [];
-        dataTable[$(item[i]).val()].push(i);
-      }
-    }
+      var dataTable = {};
+      $item.each(function(i) {
+        var $cur = $(this);
+        var barcode = $cur.val();
+        var length = barcode.length;
+        if(length < 12 && length) {
+          $cur.addClass("active");
+        }
+        if(length == 12) {
+          $cur.parent().find("i").addClass("active");
+          
+          if(!dataTable[barcode])
+            dataTable[barcode] = [];
+          dataTable[barcode].push(i);
+        }
+      });
 
-    var keys = Object.keys(dataTable);
-    for(var i = 0; i < keys.length; i++) {
-      var val = dataTable[keys[i]];
-      if(val.length > 1) {
-        for(var j = 0; j < val.length; j++) {
-          var idx = val[j];
-          $(item[idx]).parent().find("i").removeClass("active");
-          $(item[idx]).parent().find(".overlap").addClass("active");
+      var keys = Object.keys(dataTable);
+      for(var i = 0; i < keys.length; i++) {
+        var val = dataTable[keys[i]];
+        if(val.length > 1) {
+          for(var j = 0; j < val.length; j++) {
+            var idx = val[j];
+            $($item[idx]).parent().find("i").removeClass("active");
+            $($item[idx]).parent().find(".overlap").addClass("active");
+          }
         }
       }
-    }
+    });
   }
 
   var cur_ct_id = null;
@@ -519,15 +614,15 @@ if($od["od_b_tel"]){
   }
 
   var sendBarcodeTargetList = [];
-    function sendBarcode(text){
+  function sendBarcode(text) {
     $.ajax({
       url : "/shop/ajax.release_orderview.check.php",
       type : "POST",
       data : {
-        ct_id : cur_ct_id,
+        od_id : "<?=$od_id?>"
       },
-      success : function(result){
-        if(result.error == "Y"){
+      success : function(result) {
+        if(result.error == "Y") {
           switch(device){
             case "android" :
               /* android */
@@ -551,17 +646,28 @@ if($od["od_b_tel"]){
               sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
             })
             .fail(function($xhr) {
+              switch(device){
+                case "android" :
+                  /* android */
+                  window.EroummallApp.closeBarcode("");
+                  break;
+                case "ios" :
+                  /* ios */
+                  window.webkit.messageHandlers.closeBarcode.postMessage("");
+                  break;
+              }
               var data = $xhr.responseJSON;
               setTimeout(function() {
                 alert(data && data.message);
-              }, 100);
+              }, 500);
             });
           }
         }
+
         notallLengthCheck();
       }
     });
-    }
+  }
 
   var sendInvoiceTarget;
   function sendInvoiceNum(text){
@@ -569,9 +675,6 @@ if($od["od_b_tel"]){
   }
 
   $(function() {
-    notallLengthCheck();
-    foldingBoxSetting();
-
     <?php
     $stock_list = [];
     foreach($result_again as $stock) {
@@ -583,11 +686,17 @@ if($od["od_b_tel"]){
     }
     ?>
     var stoldList = <?=json_encode($stock_list)?>;
+    $.each(stoldList, function() {
+      $('.' + this.stoId).val(this.prodBarNum)
+    });
 
-    $(".nativeDeliveryPopupOpenBtn").click(function(){
+    notallLengthCheck();
+    foldingBoxSetting();
+
+    $(".nativeDeliveryPopupOpenBtn").click(function() {
       sendInvoiceTarget = $(this).parent().find("input[type='text']");
 
-      switch(device){
+      switch(device) {
         case "android" :
           /* android */
           window.EroummallApp.openInvoiceNum("");
@@ -624,6 +733,8 @@ if($od["od_b_tel"]){
           return false;
       }
       
+      need_reload = true;
+
       var ordId = "<?=$od["ordId"]?>";
       var changeStatus = true;
       var insertBarCnt = 0;
@@ -635,24 +746,21 @@ if($od["od_b_tel"]){
         async : false,
         data : $("#submitForm").serialize()
       });
+
       var prodsList = {};
-      var flag = false;
+      var flag=false;
       $.each(stoldList, function(key, value) {
         if($("." + value.stoId).val()&&$("." + value.stoId).val().length !=12){ flag =true;}
-        var prodBarNum = ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "";
-        prodBarNum = (prodBarNum) ?  prodBarNum : $(".2" + value.stoId).val();
         prodsList[key] = {
           stoId : value.stoId,
           prodId : value.prodId,
-          prodBarNum : prodBarNum
+          prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
         }
-        if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false;}
         if($("." + value.stoId).val()){
           insertBarCnt++;
         }
       });
-
-      if(flag){ return false;}
+      if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false; }
 
       var pass = {};
       $.each($('.chk_pass_barcode'), function(index, value) {
@@ -676,6 +784,7 @@ if($od["od_b_tel"]){
           if(result.errorYN == "Y") {
             alert(result.message);
           } else {
+            alert("저장이 완료되었습니다.");
             //cart 기준 barcode insert update
             $.ajax({
               url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
@@ -685,8 +794,16 @@ if($od["od_b_tel"]){
                 od_id : "<?=$od_id?>",
               }
             });
+            $.ajax({
+              url : "/shop/ajax.order.prodBarNum.cnt.php",
+              type : "POST",
+              async : false,
+              data : {
+                od_id : "<?=$od_id?>",
+                cnt : insertBarCnt
+              }
+            });
             member_cancel();
-            location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
           }
         }
       });
@@ -706,8 +823,9 @@ if($od["od_b_tel"]){
       });
     });
 
+
     //넘버 검사
-    $(".barNumCustomSubmitBtn").click(function(){
+    $(".barNumCustomSubmitBtn").click(function() {
       var val = $(this).closest(".folding_box").find(".all").val();
       var target = $(this).closest(".folding_box").find(".notall");
       var barList = [];
@@ -717,10 +835,10 @@ if($od["od_b_tel"]){
         return false;
       }
 
-      for(var i = 0; i < target.length; i++){
-        if(i > 0){
-          if($(target[i]).find("input").val()){
-            if(!confirm("이미 등록된 바코드가 있습니다.\n무시하고 적용하시겠습니까?")){
+      for(var i = 0; i < target.length; i++) {
+        if(i > 0) {
+          if($(target[i]).find("input").val()) {
+            if(!confirm("이미 등록된 바코드가 있습니다.\n무시하고 적용하시겠습니까?")) {
               return false;
             } else {
               break;
@@ -728,13 +846,12 @@ if($od["od_b_tel"]){
           }
         }
       }
-
       if(val) {
         val = val.split("^");
         var first = val[0];
         var secList = val[1].split(",");
         for(var i = 0; i < secList.length; i++) {
-          if(secList[i].indexOf("-") == -1){
+          if(secList[i].indexOf("-") == -1) {
             barList.push(first + secList[i]);
           } else {
             var secData = secList[i].split("-");
@@ -746,7 +863,7 @@ if($od["od_b_tel"]){
               var barData = ii;
               if(String(barData).length < secData0Len){
                 var iiiCnt = secData0Len - String(barData).length;
-                for(var iii = 0; iii < iiiCnt; iii++) {
+                for(var iii = 0; iii < iiiCnt; iii++){
                   barData = "0" + barData;
                 }
               }
@@ -758,6 +875,7 @@ if($od["od_b_tel"]){
 
         notallLengthCheck();
         for(var i = 0; i < target.length; i++) {
+
           $(target[i]).val(barList[i]);
           if(barList[i].length!==12) {
             alert('바코드는 12자리 입력이 되어야합니다.');
@@ -766,14 +884,15 @@ if($od["od_b_tel"]){
           }
         }
       }
+
       notallLengthCheck();
     });
 
-    $(".barNumGuideBox .closeBtn").click(function() {
+    $(".barNumGuideBox .closeBtn").click(function(){
       $(this).closest(".barNumGuideBox").hide();
     });
 
-    $(".barNumGuideOpenBtn").click(function() {
+    $(".barNumGuideOpenBtn").click(function(){
       $(this).next().toggle();
     });
 
@@ -808,6 +927,7 @@ if($od["od_b_tel"]){
     });
   });
 
+
   //종료시 멤버 수정중없에기
   function member_cancel(){
 
@@ -816,10 +936,10 @@ if($od["od_b_tel"]){
       type : "POST",
       async : false,
       data : {
-        ct_id : "<?=$ct_id?>"
+        od_id : "<?=$od_id?>"
       }
     });
-
+        
     $.ajax({
       url : "/shop/ajax.order.prodBarNum.cnt.php",
       type : "POST",
@@ -828,14 +948,13 @@ if($od["od_b_tel"]){
         od_id : "<?=$od_id?>",
         cancel : "y"
       },
-      success : function(result){
+      success : function(result) {
         location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
       }
     });
   }
-
   function openCloseToc(click) {
-    if($(click).closest('li').children('.folding_box').css("display")=="none") {
+    if($(click).closest('li').children('.folding_box').css("display")=="none"){
       $(click).closest('li').children('.folding_box').css("display", "block");
       $(click).find('.p1 .span2 .up').css("display", "inline-block");
       $(click).find('.p1 .span2 .down').css("display", "none");
@@ -864,7 +983,6 @@ if($od["od_b_tel"]){
     const popup = document.querySelector('#popup');
     popup.classList.add('hide');
   }
-  </script>
-
+</script>
 <?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
 </body>

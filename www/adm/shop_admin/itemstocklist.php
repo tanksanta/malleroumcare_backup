@@ -10,6 +10,7 @@ $sort2 = in_array($sort2, array('desc', 'asc')) ? $sort2 : 'desc';
 $sel_ca_id = get_search_string($sel_ca_id);
 $sel_field = get_search_string($sel_field);
 $search = get_search_string($search);
+$wh_name = get_search_string($wh_name);
 
 $g5['title'] = '상품재고관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
@@ -23,6 +24,10 @@ if ($search != "") {
 
 if ($sel_ca_id != "") {
     $sql_search .= " and ca_id like '$sel_ca_id%' ";
+}
+
+if ($wh_name != '') {
+  $sql_search .= " and ( select sum(ws_qty) from warehouse_stock where wh_name = '$wh_name' ) > 0 ";
 }
 
 if ($sel_field == "")  $sel_field = "it_name";
@@ -43,25 +48,46 @@ if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이�
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
 // APMS - 2014.07.20
-$sql  = " select it_id,
-                 it_name,
-                 it_use,
-                 it_stock_qty,
-                 it_stock_sms,
-                 it_noti_qty,
-                 it_soldout,
-				 ca_id,
-				 pt_it,
-				 pt_id
-           $sql_common
-          order by $sort1 $sort2
-          limit $from_record, $rows ";
+$sql  = "
+  select
+    it_id,
+    it_name,
+    it_use,
+    it_stock_qty,
+    it_stock_sms,
+    it_noti_qty,
+    it_soldout,
+    ca_id,
+    pt_it,
+    pt_id,
+    it_expected_warehousing_date
+  $sql_common
+  order by $sort1 $sort2
+  limit $from_record, $rows
+";
 $result = sql_query($sql);
 
-$qstr1 = 'sel_ca_id='.$sel_ca_id.'&amp;sel_field='.$sel_field.'&amp;search='.$search;
+$colspan = 11;
+
+$warehouse_list = get_warehouses();
+foreach($warehouse_list as &$warehouse) {
+  $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '$warehouse' ";
+  $result_total = sql_fetch($sql);
+
+  $warehouse = [
+    'name' => $warehouse,
+    'total' => $result_total['total'] ?: 0
+  ];
+
+  $colspan++;
+}
+unset($warehouse);
+
+$qstr1 = 'sel_ca_id='.$sel_ca_id.'&amp;sel_field='.$sel_field.'&amp;search='.$search.'&amp;wh_name='.$wh_name;
 $qstr = $qstr1.'&amp;sort1='.$sort1.'&amp;sort2='.$sort2.'&amp;page='.$page;
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
+
 ?>
 
 <script src="<?php echo G5_ADMIN_URL;?>/apms_admin/apms.admin.js"></script>
@@ -76,6 +102,13 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <input type="hidden" name="sort1" value="<?php echo $sort1; ?>">
 <input type="hidden" name="sort2" value="<?php echo $sort2; ?>">
 <input type="hidden" name="page" value="<?php echo $page; ?>">
+
+<div class="quick_link_area">
+  <?php foreach($warehouse_list as $warehouse) { ?>
+    <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?wh_name='.$warehouse['name']; ?>"><?php echo $warehouse['name']; ?>(<?php echo $warehouse['total']; ?>개)</a>
+  <?php } ?>
+</div>
+
 
 <label for="sel_ca_id" class="sound_only">분류선택</label>
 <select name="sel_ca_id" id="sel_ca_id">
@@ -130,14 +163,19 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         <th scope="col"><a href="<?php echo title_sort("it_id") . "&amp;$qstr1"; ?>">상품코드</a></th>
         <th scope="col"><a href="<?php echo title_sort("it_name") . "&amp;$qstr1"; ?>">상품명</a></th>
         <th scope="col"><a href="<?php echo title_sort("it_stock_qty") . "&amp;$qstr1"; ?>">창고재고</a></th>
+        <?php foreach($warehouse_list as $warehouse) { ?>
+        <th scope="col"><?=$warehouse['name']?></th>
+        <?php } ?>
         <th scope="col">주문대기</th>
         <th scope="col">가재고</th>
-        <th scope="col">재고수정</th>
-        <th scope="col">통보수량</th>
+        <th scope="col">입고예정일알림</th>
+        <!-- <th scope="col">재고수정</th>
+        <th scope="col">통보수량</th> -->
         <th scope="col"><a href="<?php echo title_sort("it_use") . "&amp;$qstr1"; ?>">판매</a></th>
         <th scope="col"><a href="<?php echo title_sort("it_soldout") . "&amp;$qstr1"; ?>">품절</a></th>
         <th scope="col"><a href="<?php echo title_sort("it_stock_sms") . "&amp;$qstr1"; ?>">재입고알림</a></th>
-        <th scope="col">관리</th>
+        <th scope="col">입/출고관리</th>
+        <th scope="col">상품관리</th>
     </tr>
     </thead>
     <tbody>
@@ -187,16 +225,24 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 		<!-- // -->
         <td class="td_left"><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
         <td class="td_num<?php echo $it_stock_qty_st; ?>"><?php echo $it_stock_qty; ?></td>
+        <?php
+        foreach($warehouse_list as $warehouse) {
+          $sql = " select sum(ws_qty) as stock from warehouse_stock where wh_name = '{$warehouse['name']}' ";
+          $stock = sql_fetch($sql)['stock'] ?: 0;
+          echo '<td class="td_num">'.number_format($stock).'</td>';
+        }
+        ?>
         <td class="td_num"><?php echo number_format($wait_qty); ?></td>
         <td class="td_num"><?php echo number_format($temporary_qty); ?></td>
-        <td class="td_num">
+        <td class="td_num"><input type="text" name="it_expected_warehousing_date[<?php echo $i; ?>]" value="<?php echo get_text(cut_str($row['it_expected_warehousing_date'], 250, "")); ?>" class="frm_input" /></td>
+        <!-- <td class="td_num">
             <label for="stock_qty_<?php echo $i; ?>" class="sound_only">재고수정</label>
             <input type="text" name="it_stock_qty[<?php echo $i; ?>]" value="<?php echo $row['it_stock_qty']; ?>" id="stock_qty_<?php echo $i; ?>" class="frm_input" size="10" autocomplete="off">
-        </td>
+        </td> 
         <td class="td_num">
             <label for="noti_qty_<?php echo $i; ?>" class="sound_only">통보수량</label>
             <input type="text" name="it_noti_qty[<?php echo $i; ?>]" value="<?php echo $row['it_noti_qty']; ?>" id="noti_qty_<?php echo $i; ?>" class="frm_input" size="10" autocomplete="off">
-        </td>
+        </td>-->
         <td class="td_chk2">
             <label for="use_<?php echo $i; ?>" class="sound_only">판매</label>
             <input type="checkbox" name="it_use[<?php echo $i; ?>]" value="1" id="use_<?php echo $i; ?>" <?php echo ($row['it_use'] ? "checked" : ""); ?>>
@@ -209,21 +255,24 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <label for="stock_sms_<?php echo $i; ?>" class="sound_only">재입고 알림</label>
             <input type="checkbox" name="it_stock_sms[<?php echo $i; ?>]" value="1" id="stock_sms_<?php echo $i; ?>" <?php echo ($row['it_stock_sms'] ? "checked" : ""); ?>>
         </td>
+        <td class="td_mng td_mng_s"><a href="#" class="btn btn_03">상세관리</a></td>
         <td class="td_mng td_mng_s"><a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03">수정</a></td>
     </tr>
     <?php
     }
     if (!$i)
-        echo '<tr><td colspan="11" class="empty_table"><span>자료가 없습니다.</span></td></tr>';
+        echo '<tr><td colspan="'.$colspan.'" class="empty_table"><span>자료가 없습니다.</span></td></tr>';
     ?>
     </tbody>
     </table>
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./optionstocklist.php" class="btn btn_02">상품옵션재고</a>
+    <!-- <a href="./optionstocklist.php" class="btn btn_02">상품옵션재고</a> -->
     <a href="./itemsellrank.php"  class="btn btn_02">상품판매순위</a>
     <input type="submit" value="일괄수정" class="btn_submit btn">
+    <a href="#"  class="btn btn_submit">재고등록</a>
+    <a href="#"  class="btn btn_02">재고일괄등록</a>
 </div>
 </form>
 
