@@ -460,6 +460,20 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     });
   });
 
+  /* 기종체크 */
+  var deviceUserAgent = navigator.userAgent.toLowerCase();
+  var device;
+
+  if(deviceUserAgent.indexOf("android") > -1) {
+    /* android */
+    device = "android";
+  }
+
+  if(deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1) {
+    /* ios */
+    device = "ios";
+  }
+
   var sendInvoiceTarget;
   $(".nativeDeliveryPopupOpenBtn").click(function(e) {
     e.preventDefault();
