@@ -854,7 +854,7 @@ foreach($orderlist as $order) {
   
   $auto_combined_text = '';
   if($order['ct_is_auto_combined']) {
-    $auto_combined_text = '<span style="color: #ff6600;">(합포완료)</span>';
+    $auto_combined_text = '<span class="combine_done" style="color: #ff6600;">(합포완료)</span>';
   }
 
   $ret['data'] .= "
@@ -918,7 +918,7 @@ foreach($orderlist as $order) {
       <td align=\"center\">
         {$ct_ex_date}
       </td>
-      <td align=\"center\">
+      <td align=\"center\" class=\"od_step\">
         {$ct_status['name']}
         {$auto_combined_text}
       </td>
