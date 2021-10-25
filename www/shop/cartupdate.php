@@ -529,8 +529,7 @@ else // 장바구니에 담기
         $ct_delivery_cnt = $result_i['it_delivery_cnt'] ? ceil($ct_qty / $result_i['it_delivery_cnt']) : 0;
         $ct_delivery_price = $ct_delivery_cnt * $result_i['it_delivery_price'];
       }
-      // $ct_delivery_company = 'ilogen';
-      $ct_delivery_company = '';
+      $ct_delivery_company = 'ilogen';
 
       $ct_pen_sql = $_SESSION['recipient']['penId'] ? "'" . $_SESSION['recipient']['penId'] . "'" : "null";
 
