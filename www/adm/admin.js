@@ -132,9 +132,19 @@ $(function() {
         url: "/adm/ajax.alarm.count.php",
     }).done(function(data) {
 
+        var bbs_count = 0;
+        // 1:1문의
+        if(data.qa.total_count) {
+            $('.gnb_2da_qa').append('<span class="board_cnt">' + data.qa.total_count + '</span>');
+            bbs_count += data.qa.total_count;
+        }
+
         // 게시판
         if ( data.bbs.total_count ) {
-            $('.gnb_1da_board').append('<span class="board_cnt">' + data.bbs.total_count + '</span>');
+            bbs_count += data.bbs.total_count;
+        }
+        if(bbs_count > 0) {
+            $('.gnb_1da_board').append('<span class="board_cnt">' + bbs_count + '</span>');
         }
 
         $('.get_board_cnt').each(function(index, item) {
