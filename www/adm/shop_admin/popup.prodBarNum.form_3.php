@@ -408,8 +408,8 @@ if($od["od_b_tel"]) {
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
                 
-                <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn btn_bacod" data-type="native" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
-                <img src="<?php echo G5_IMG_URL?>/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
+                <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn btn_bacod" data-type="native" data-code="<?=$b?>" data-ct-id="<?php echo $carts[$i]['ct_id']; ?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>">
+                <img src="<?php echo G5_IMG_URL?>/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" data-code="<?=$b?>" data-ct-id="<?php echo $carts[$i]['ct_id']; ?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>">
               </li>
               <?php $prodListCnt++; } ?>
             </ul>
