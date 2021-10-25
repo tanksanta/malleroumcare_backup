@@ -47,6 +47,11 @@ while( $row = sql_fetch_array($result) ) {
     $shop_use_count++;
 }
 
+// 1:1문의
+$sql = " select count(*) as cnt from {$g5['qa_content_table']} where qa_type = 0 and qa_status = 0 ";
+$result = sql_fetch($sql);
+$qa_count = $result['cnt'] ? (int) $result['cnt'] : 0;
+
 
 $ret = array(
     'result' => 'success',
@@ -62,6 +67,9 @@ $ret = array(
         'data' => $shop_use,
         'total_count' => $shop_use_count,
     ),
+    'qa' => array(
+        'total_count' => $qa_count
+    )
 );
 
 $json = json_encode($ret);
