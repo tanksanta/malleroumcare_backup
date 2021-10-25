@@ -349,7 +349,12 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     </form>
   </div>
 </div>
-<div class="btn_fixed_top3">
+
+<div class="btn_fixed_top">
+  <input type="button" value="합포적용" onclick="applyCombine()" class="btn btn_01">
+</div>
+
+<div class="btn_fixed_top2">
   <input type="button" value="더보기" onclick="doSearch()" class="btn btn_02">
 </div>
 <script>
@@ -737,6 +742,34 @@ $(document).on("change", ".ct_manager", function(e) {
       // window.location.reload(); 
   }
 });
+
+// 합포 적용
+function applyCombine() {
+  var ct_id = [];
+  var item = $("input[name='od_id[]']:checked");
+  for(var i = 0; i < item.length; i++) {
+    ct_id.push($(item[i]).val());
+  }
+
+  if(!ct_id.length) {
+    return alert('선택한 주문이 없습니다.');
+  }
+
+  $.post('ajax.combine.php', {
+    ct_id: ct_id
+  }, 'json')
+  .done(function() {
+    item.each(function() {
+      if($(this).closest('tr').find('td.od_step span.combine_done').length === 0)
+        $(this).closest('tr').find('td.od_step').append('<br><span class="combine_done" style="color: #ff6600">(합포완료)</span>');
+    });
+    alert('완료되었습니다.');
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
+}
 
 </script>
 <style>

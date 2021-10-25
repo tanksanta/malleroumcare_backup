@@ -32,6 +32,7 @@ function print_menu2($key, $no) {
 
 		$gnb_item_qa = $menu[$key][$i][1] == '상품문의' ? 'gnb_2da_itemqa' : '';
 		$gnb_item_use = $menu[$key][$i][1] == '사용후기' ? 'gnb_2da_itemuse' : '';
+		$gnb_item_use = $menu[$key][$i][1] == '1:1문의설정' ? 'gnb_2da_qa' : '';
         $str .= '<li class="gnb_2dli"><a href="'.$menu[$key][$i][2].'" class="gnb_2da '.$gnb_grp_style.' '.$gnb_grp_div.$gnb_on.' '.$gnb_item_qa.$gnb_item_use.'">'.$menu[$key][$i][1].'</a></li>';
 
         $auth_menu[$menu[$key][$i][0]] = $menu[$key][$i][1];

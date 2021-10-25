@@ -15,20 +15,6 @@ $deliveryTotalCnt = 0;
 
 if (!$od['od_id']) {
   alert("해당 주문번호로 주문서가 존재하지 않습니다.");
-} else {
-  $sto_imsi="";
-  $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
-  $result_ct = sql_query($sql_ct);
-  while($row_ct = sql_fetch_array($result_ct)) {
-      $sto_imsi .=$row_ct['stoId'];
-  }
-  $stoIdDataList = explode('|',$sto_imsi);
-  $stoIdDataList = array_filter($stoIdDataList);
-  $stoIdData = implode("|", $stoIdDataList);
-  $res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
-    'stoId' => $stoIdData
-  ), 443);
-  $result_again = $res['data'];
 }
 
 $carts = [];
@@ -88,11 +74,13 @@ $sql = " select a.ct_id,
           ct_id = '$ct_id'
           OR ct_combine_ct_id = '$ct_id'
           OR ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
+          OR ct_combine_ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
         )
 			  order by a.ct_combine_ct_id, a.ct_id";
 
 $result = sql_query($sql);
 
+$sto_imsi = '';
 $combine_it_name = '';
 for ($i=0; $row=sql_fetch_array($result); $i++) {
   $carts[] = $row;
@@ -103,7 +91,16 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     }
   }
 
+  $sto_imsi .= $row['stoId'];
 }
+
+$stoIdDataList = explode('|',$sto_imsi);
+$stoIdDataList = array_filter($stoIdDataList);
+$stoIdData = implode("|", $stoIdDataList);
+$res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
+  'stoId' => $stoIdData
+), 443);
+$result_again = $res['data'];
 
 # 210317 추가정보
 $moreInfo = sql_fetch("
@@ -251,7 +248,7 @@ if($od["od_b_tel"]) {
       height:35px;
       position: absolute;
       top: 8px;
-      right: 90px;
+      right: 130px;
       display:none;
     }
 
@@ -408,8 +405,8 @@ if($od["od_b_tel"]) {
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
                 
-                <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn btn_bacod" data-type="native" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
-                <img src="<?php echo G5_IMG_URL?>/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
+                <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn btn_bacod" data-type="native" data-code="<?=$b?>" data-ct-id="<?php echo $carts[$i]['ct_id']; ?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>">
+                <img src="<?php echo G5_IMG_URL?>/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" data-code="<?=$b?>" data-ct-id="<?php echo $carts[$i]['ct_id']; ?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>">
               </li>
               <?php $prodListCnt++; } ?>
             </ul>
