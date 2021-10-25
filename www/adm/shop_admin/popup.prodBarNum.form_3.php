@@ -262,7 +262,7 @@ if($od["od_b_tel"]) {
       height:35px;
       position: absolute;
       top: 8px;
-      right: 90px;
+      right: 130px;
       display:none;
     }
 
