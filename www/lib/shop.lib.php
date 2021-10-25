@@ -1924,12 +1924,11 @@ function get_sendcost_new($cart_id, $selected = 1) {
       {$g5['g5_shop_cart_table']}
     where
       od_id = '$cart_id' and
-      ct_send_cost = '0' and
       ct_status IN ( '쇼핑', '주문', '입금', '출고준비', '준비', '배송', '완료', '작성' ) and
       ct_select = '$selected'
   ";
   $result_send = sql_fetch($sql_send);
-  $result_total = $result_send['price']-$result_send['discount'];
+  $result_total = $result_send['price'] - $result_send['discount'];
 
   if($result_total >= 100000) {
     $od_send_cost = 0;

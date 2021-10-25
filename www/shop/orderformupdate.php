@@ -955,7 +955,7 @@ $result_send = sql_fetch($sql_send);
 $result_total = $result_send['price']-$result_send['discount'];
 
 $od_send_cost2=0;
-if($result_total >=100000){
+if($result_total >= 100000){
   $od_send_cost=0;
 } else {
   $flag = false;
