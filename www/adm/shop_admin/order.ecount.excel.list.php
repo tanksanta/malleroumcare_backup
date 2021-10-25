@@ -357,6 +357,10 @@
       WHERE cart.ct_id = '{$this_ct_id}'
       ORDER BY cart.ct_id ASC
     ");
+
+    if($new_only && $it['ct_is_ecount_excel_downloaded']) {
+      continue;
+    }
     
     $od = sql_fetch(" 
       SELECT * FROM g5_shop_order WHERE od_id = '".$it['od_id']."'
@@ -651,6 +655,13 @@
         ];
       }
     }
+
+    // 이카운트 엑셀 다운로드 표시
+    sql_query("
+      update g5_shop_cart
+      set ct_is_ecount_excel_downloaded = 1
+      where ct_id = '{$this_ct_id}'
+    ");
   }
   $headers = array("일자", "순서", "거래처코드", "거래처명","담당자", "출하창고", "거래유형","통화", "환율","성명(상호명)", "배송처", "전잔액", "후잔액", "특이사항", "참고사항", "부서", "품목코드", "품목명", "규격", "수량", "단가(vat포함)", "외화금액", "공급가액", "부가세", "바코드", "로젠 송장번호", "적요", "생산전표생성");
   $data = array_merge(array($headers), $rows);
