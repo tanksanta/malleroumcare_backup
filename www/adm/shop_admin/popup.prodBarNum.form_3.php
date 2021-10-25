@@ -17,8 +17,18 @@ if (!$od['od_id']) {
   alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 } else {
   $sto_imsi="";
-  $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+  $sql_ct = "SELECT `stoId` FROM {$g5['g5_shop_cart_table']}
+  WHERE 
+    od_id = '$od_id'
+    AND (
+      ct_id = '$ct_id'
+      OR ct_combine_ct_id = '$ct_id'
+      OR ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
+      OR ct_combine_ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
+    )
+	ORDER BY ct_combine_ct_id, ct_id";
   $result_ct = sql_query($sql_ct);
+
   while($row_ct = sql_fetch_array($result_ct)) {
       $sto_imsi .=$row_ct['stoId'];
   }
@@ -252,7 +262,7 @@ if($od["od_b_tel"]) {
       height:35px;
       position: absolute;
       top: 8px;
-      right: 90px;
+      right: 130px;
       display:none;
     }
 
