@@ -237,6 +237,7 @@ if($_POST['ct_id']&&$_POST['step']) {
 
       // 자동 합포적용
 
+      /*
       foreach($combine_orders as $od_id => $need_combine) {
         if(!$need_combine) continue;
 
@@ -316,6 +317,7 @@ if($_POST['ct_id']&&$_POST['step']) {
           // 합포 오류 발생
         }
       }
+      */
 
       echo "success";
     } else {
