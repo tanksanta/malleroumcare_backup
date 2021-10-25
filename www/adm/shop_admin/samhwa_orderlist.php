@@ -1327,6 +1327,8 @@ function orderListExcelDownload(type) {
   var href = "./order.excel.list.php";
   if (type === 'ecount') {
     href = "./order.ecount.excel.list.php";
+    if(confirm('이미 다운로드한 상품은 제외하고 다운받으시겠습니까?'))
+      queryString += "&new_only=1";
   }
   else if (type === 'partner') {
     href = './order.partner.excel.php';
@@ -1345,6 +1347,22 @@ function orderListExcelDownload(type) {
         if($(this).closest('tr').find('td.od_direct_delivery span.excel_done').length === 0)
           $(this).closest('tr').find('td.od_direct_delivery').append('<br><span class="excel_done" style="color: #FF6600">엑셀 다운로드 완료</span>');
       });
+    });
+  } else if(type === 'ecount') {
+    excel_downloader = $.fileDownload(href, {
+      httpMethod: "POST",
+      data: queryString
+    })
+    .always(function() {
+      $('#loading_excel').hide();
+      if(!od_id.length) {
+        window.location.reload();
+      } else {
+        item.each(function() {
+          if($(this).closest('tr').find('td.od_step span.excel_done').length === 0)
+            $(this).closest('tr').find('td.od_step').append('<br><span class="excel_done" style="color: #77933c">이카운트 : 엑셀받기 완료</span>');
+        });
+      }
     });
   } else {
     excel_downloader = $.fileDownload(href, {
