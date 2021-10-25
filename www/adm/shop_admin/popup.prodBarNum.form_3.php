@@ -88,6 +88,7 @@ $sql = " select a.ct_id,
           ct_id = '$ct_id'
           OR ct_combine_ct_id = '$ct_id'
           OR ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
+          OR ct_combine_ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
         )
 			  order by a.ct_combine_ct_id, a.ct_id";
 
