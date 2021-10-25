@@ -1005,21 +1005,6 @@ function excelPost(action, data) {
         $('.recipient_security_check img').show();
         $('.recipient_security_authorized').show();
         $('.device_security').val("A");
-        $(".data_name").each(function() {
-          // $(this).text("***");
-          var name = $(this).text();
-          $(this).text(maskingFunc.name(name));
-        });
-        $(".data_phone").each(function() {
-          // $(this).text("***");
-          var phone = $(this).text();
-          $(this).text(maskingFunc.phone(phone));
-        });
-        $(".data_penNum").each(function() {
-          // $(this).text("***");
-          var penNum = $(this).text();
-          $(this).text(maskingFunc.penNum(penNum));
-        });
         $(".table_box").show();
       })
       .fail(function(result) {
