@@ -387,7 +387,7 @@ if($is_main && !$is_member) {
           <?php } ?>
 
           <div class="catalog_area">
-            <a href="/thema/eroumcare/assets/eroum_catalog_2021_3_2.pdf" class="catalog" target="_blank">
+            <a href="/thema/eroumcare/assets/eroum_catalog_2021_3_3.pdf" class="catalog" target="_blank">
               <img src="<?php echo THEMA_URL; ?>/assets/img/icon_catalog.png">
               이달의 카달로그
               <div class="btn_small">다운로드</div>
