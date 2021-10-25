@@ -526,8 +526,11 @@ foreach($orderlist as $order) {
   }
 
   $ct_sub_status_text = '';
+  if ($order['ct_is_ecount_excel_downloaded']) {
+    $ct_sub_status_text .= '<br><span class="excel_done" style="color:#77933c">이카운트 : 엑셀받기 완료</span>';
+  }
   if ($order['refund_status']) {
-    $ct_sub_status_text = "<br><span style='color:red'>({$order['refund_status']})</span>";
+    $ct_sub_status_text .= "<br><span style='color:red'>({$order['refund_status']})</span>";
   }
   $stock_insert=1;
     
