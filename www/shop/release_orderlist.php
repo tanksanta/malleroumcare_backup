@@ -258,7 +258,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
   }
 
   //리스트 불러오기 ajax
-  function doSearch(){
+  function doSearch(is_invoice_scan) {
     if(loading) return;
 
     formdata["fr_date"] = $("#search_fr_date").val();
@@ -283,6 +283,18 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
       if(result.data) {
         var html = "";
         $('#total_price').text(result.total_price + '원');
+
+        if(is_invoice_scan) {
+          if(result.data.length == 1) {
+            // 검색 결과가 단 하나인경우 바로 이동
+            var data = result.data[0];
+            window.location.href = "<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id=" + data.od_id + "&ct_id=" + data.ct_id;
+            return;
+          } else {
+            alert('해당 주문이 여러개가 있습니다.');
+          }
+        }
+
         $.each(result.data, function(key, row) {
           html += '<ul>';
           html += '<li class="mainInfo">';
@@ -327,6 +339,11 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
         // alert('마지막 페이지입니다.');
         if(page2 == 2) {
           $('#listDataWrap').html(result.main);
+
+          if(is_invoice_scan) {
+            alert('해당 주문이 없습니다.');
+            open_invoice_scan(); // 다시 스캔
+          }
         }
       }
     })
@@ -466,28 +483,29 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     });
   });
 
-  /* 기종체크 */
-  var deviceUserAgent = navigator.userAgent.toLowerCase();
-  var device;
-
-  if(deviceUserAgent.indexOf("android") > -1) {
-    /* android */
-    device = "android";
-  }
-
-  if(deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1) {
-    /* ios */
-    device = "ios";
-  }
-
   function sendInvoiceNum(text){
     $('#search_text').val(text);
     $('#search_option').val('ct_delivery_num');
-    $('#searchSubmitBtn').click();
+    $("#page").val(1);
+    $("#listDataWrap").html("");
+    page2 = 1;
+    doSearch(true);
   }
 
-  $(".nativeDeliveryPopupOpenBtn").click(function(e) {
-    e.preventDefault();
+  function open_invoice_scan() {
+    /* 기종체크 */
+    var deviceUserAgent = navigator.userAgent.toLowerCase();
+    var device;
+
+    if(deviceUserAgent.indexOf("android") > -1) {
+      /* android */
+      device = "android";
+    }
+
+    if(deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1) {
+      /* ios */
+      device = "ios";
+    }
 
     switch(device) {
       case "android" :
@@ -499,6 +517,12 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
         window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
         break;
     }
+  }
+
+  $(".nativeDeliveryPopupOpenBtn").click(function(e) {
+    e.preventDefault();
+
+    open_invoice_scan();
   });
   </script>
 </body>
