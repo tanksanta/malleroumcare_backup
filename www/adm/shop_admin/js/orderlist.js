@@ -767,16 +767,6 @@ $(function () {
       $('tr.order_tr[data-od-id="' + od_id + '"]').removeClass('hover');
     },
   );
-  $(document).on('click', 'tr.order_tr',
-  function(e) {
-    var tagName = $(e.target).prop('tagName');
-    if (['DIV', 'TD'].indexOf(tagName) === -1) {
-      return;
-    }
-    var href = $(this).data('href');
-    window.location.href = href;
-  },
-);
 
 });
 
