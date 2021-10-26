@@ -202,6 +202,7 @@ $(function() {
                 $(parent).find('input[name="qty[]"]').focus();
             }
 
+            // 기본 출고창고
             $(parent).find('select[name="wh_name[]"]').val(obj.it_warehousing_warehouse);
             $(parent).find('input[name="qty[]"]').val(1);
 
