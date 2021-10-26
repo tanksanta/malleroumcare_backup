@@ -23,7 +23,8 @@ $insert_sql = "
         mb_id,
         ws_memo,
         wh_name,
-        ws_created_at
+        ws_created_at,
+        ws_updated_at
     )
     values
 ";
@@ -72,6 +73,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
             '{$member['mb_id']}',
             '$ws_memo',
             '$wh_name',
+            NOW(),
             NOW()
         )
     ";
