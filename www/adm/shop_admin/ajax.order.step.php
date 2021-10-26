@@ -7,8 +7,6 @@ if($_POST['ct_id']&&$_POST['step']) {
   $stoId="";
   $usrId="";
   $entId="";
-  $add_sql="";
-  $ct_ex_date = date("Y-m-d");
   $state_cd_table = array();
   $flag = true;
   $stoIdList = array();
@@ -95,7 +93,10 @@ if($_POST['ct_id']&&$_POST['step']) {
     ";
     
     //상태 update
-    if($_POST['step'] == "배송"){ $add_sql = ", `ct_ex_date` = '".$ct_ex_date."'"; }
+    $add_sql = '';
+    if($_POST['step'] == "배송") { $add_sql .= ", `ct_ex_date` = 'NOW()'"; }
+    if($_POST['step'] == "출고준비") { $add_sql .= ", `ct_rdy_date` = 'NOW()'"; }
+
     $sql_ct[$i] = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql.", `ct_move_date`= NOW() where `ct_id` = '".$_POST['ct_id'][$i]."'";
 
     //시스템 상태값 변경
