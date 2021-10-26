@@ -27,14 +27,14 @@ if ($sel_ca_id != "") {
 }
 
 if ($wh_name != '') {
-  $sql_search .= " and ( select sum(ws_qty) from warehouse_stock where wh_name = '$wh_name' ) > 0 ";
+  $sql_search .= " and ( select sum(ws_qty) from warehouse_stock s where i.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' ) > 0 ";
 }
 
 if ($sel_field == "")  $sel_field = "it_name";
 if ($sort1 == "") $sort1 = "it_stock_qty";
 if ($sort2 == "") $sort2 = "asc";
 
-$sql_common = "  from {$g5['g5_shop_item_table']} ";
+$sql_common = "  from {$g5['g5_shop_item_table']} i ";
 $sql_common .= $sql_search;
 
 // 테이블의 전체 레코드수만 얻음
@@ -71,7 +71,7 @@ $colspan = 11;
 
 $warehouse_list = get_warehouses();
 foreach($warehouse_list as &$warehouse) {
-  $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '$warehouse' ";
+  $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '$warehouse' and ws_del_yn = 'N' ";
   $result_total = sql_fetch($sql);
 
   $warehouse = [
@@ -227,7 +227,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         <td class="td_num<?php echo $it_stock_qty_st; ?>"><?php echo $it_stock_qty; ?></td>
         <?php
         foreach($warehouse_list as $warehouse) {
-          $sql = " select sum(ws_qty) as stock from warehouse_stock where wh_name = '{$warehouse['name']}' and it_id = '{$row['it_id']}' ";
+          $sql = " select sum(ws_qty) as stock from warehouse_stock where it_id = '{$row['it_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' ";
           $stock = sql_fetch($sql)['stock'] ?: 0;
           echo '<td class="td_num">'.number_format($stock).'</td>';
         }
@@ -255,7 +255,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <label for="stock_sms_<?php echo $i; ?>" class="sound_only">재입고 알림</label>
             <input type="checkbox" name="it_stock_sms[<?php echo $i; ?>]" value="1" id="stock_sms_<?php echo $i; ?>" <?php echo ($row['it_stock_sms'] ? "checked" : ""); ?>>
         </td>
-        <td class="td_mng td_mng_s"><a href="#" class="btn btn_03">상세관리</a></td>
+        <td class="td_mng td_mng_s"><a href="./itemstockview.php?it_id=<?php echo $row['it_id']; ?>" class="btn btn_03">상세관리</a></td>
         <td class="td_mng td_mng_s"><a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03">수정</a></td>
     </tr>
     <?php
