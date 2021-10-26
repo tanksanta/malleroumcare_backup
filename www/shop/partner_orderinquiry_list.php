@@ -86,6 +86,7 @@ $result = sql_query("
     ct_is_direct_delivery,
     ct_direct_delivery_price,
     ct_direct_delivery_date,
+    ct_rdy_date,
     ct_ex_date,
     ct_barcode_insert,
     m.mb_tel,
@@ -302,6 +303,12 @@ tr.hover { background-color: #fbf9f7 !important; }
                   주문일시 : 
                   <?=date('Y-m-d', strtotime($row['od_time']))?>
                 </p>
+                <?php if($row['ct_rdy_date']) { ?>
+                <p>
+                  출고준비 : 
+                  <?=date('Y-m-d (H:i)', strtotime($row['ct_rdy_date']))?>
+                </p>
+                <?php } ?>
                 <p>
                   출고예정 : 
                   <?=$row['ct_direct_delivery_date'] ? date('Y-m-d H시', strtotime($row['ct_direct_delivery_date'])) : ''?>
