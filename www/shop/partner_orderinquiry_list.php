@@ -304,8 +304,8 @@ tr.hover { background-color: #fbf9f7 !important; }
                 </p>
                 <p>
                   출고예정 : 
-                  <?=date('Y-m-d H시', strtotime($row['ct_direct_delivery_date']))?>
-                  <button type="button" class="btn_change" data-date="<?=date('Y-m-d', strtotime($row['ct_direct_delivery_date']))?>" data-time="<?=date('H', strtotime($row['ct_direct_delivery_date']))?>" data-odid="<?=$row['od_id']?>" data-ctid="<?=$row['ct_id']?>">변경</button>
+                  <?=$row['ct_direct_delivery_date'] ? date('Y-m-d H시', strtotime($row['ct_direct_delivery_date'])) : ''?>
+                  <button type="button" class="btn_change" data-date="<?=date('Y-m-d', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>" data-time="<?=date('H', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>" data-odid="<?=$row['od_id']?>" data-ctid="<?=$row['ct_id']?>">변경</button>
                 </p>
                 <?php if($row['ct_ex_date']) { ?>
                 <p>
