@@ -109,6 +109,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
     <button id="delivery_edi_return_all">송장리턴</button>
+    <button onclick="applyCombine();">합포적용</button>
   </div>
 </div>
 
@@ -350,11 +351,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
   </div>
 </div>
 
-<div class="btn_fixed_top">
-  <input type="button" value="합포적용" onclick="applyCombine()" class="btn btn_01">
-</div>
-
-<div class="btn_fixed_top2">
+<div class="btn_fixed_top3">
   <input type="button" value="더보기" onclick="doSearch()" class="btn btn_02">
 </div>
 <script>
