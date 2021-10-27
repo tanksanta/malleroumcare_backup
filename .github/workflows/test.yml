@@ -15,7 +15,6 @@ jobs:
           url: https://eroumcare.com/cron/test.php
           method: 'POST'
           accept: 200, 201
-          headers: '{ "content-type": "application/x-www-form-urlencoded" }'
           body: '{ "test": "abcdefghijklmn" }'
           timeout: 10000
           is_debug: true
