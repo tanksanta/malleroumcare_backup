@@ -47,34 +47,50 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="im_sch_wr">
-        <div class="im_sch_hd">품목 목록</div>
-        <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="품목명">
-      </div>
-
-      <ul id="im_write_list" class="im_write_list">
-        <?php /* ?>
-        <li>
-          <input type="hidden" name="it_id[]" value="">
-          <input type="hidden" name="it_name[]" value="">
-          <input type="hidden" name="gubun[]" value="">
-          <img class="it_img" src="/data/item/" onerror="this.src='/img/no_img.png';">
-          <div class="it_info">
-            <p class="it_name">ABC품목 (대여)</p>
-            <p class="it_price">급여가 : 17,000원</p>
+        <div class="im_send_wr im_desc_wr" style="border: none;">
+          <button type="submit" style="width: 250px;" href="javascript:void();" id="btn_im_send" class="btn_im_send">알림 메시지 전달</button>
+          <div class="im_desc">
+            <p>보유 <strong><?=number_format($member['mb_point']);?></strong>포인트, 1회 전송 시 <strong>10</strong>포인트 차감</p>
           </div>
-          <button type="button" class="btn_del_item">삭제</button>
-        </li>
-        <?php */ ?>
-      </ul>
+        </div>
+      </div>
 
-      <div class="im_desc_wr" style="border: none;">
-        <button type="submit" style="width: 250px;" href="javascript:void();" id="btn_im_send" class="btn_im_send">메시지 전달</button>
-        <div class="im_desc">
-          <p>현재 <strong><?=number_format($member['mb_point']);?></strong>포인트가 있습니다. 1회 전송 시 <strong>10</strong>포인트가 차감됩니다.</p>
-          <p style="color: #ef7d01;">*(무료이벤트) 2021년 12월 31일까지 포인트가 차감되지 않습니다.</p>
+      <div class="im_flex space-between">
+        <div class="im_item_wr">
+          <div class="im_tel_wr im_flex space-between">
+            <div class="im_sch_hd">전화번호 공개</div>
+            <div class="im_switch">
+              <input type="checkbox" name="show_tel" value="1">
+              <div class="im_switch_slider">
+                <span class="on">공개</span>
+                <span class="off">숨김</span>
+              </div>
+            </div>
+          </div>
+          <div class="im_sch_wr">
+            <div class="im_sch_hd">품목 목록</div>
+            <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="품목명">
+          </div>
+          <ul id="im_write_list" class="im_write_list">
+            <?php /* ?>
+            <li>
+              <input type="hidden" name="it_id[]" value="">
+              <input type="hidden" name="it_name[]" value="">
+              <input type="hidden" name="gubun[]" value="">
+              <img class="it_img" src="/data/item/" onerror="this.src='/img/no_img.png';">
+              <div class="it_info">
+                <p class="it_name">ABC품목 (대여)</p>
+                <p class="it_price">급여가 : 17,000원</p>
+              </div>
+              <button type="button" class="btn_del_item">삭제</button>
+            </li>
+            <?php */ ?>
+          </ul>
+        </div>
+        <div class="im_preview_wr">
+          <div class="im_preview_hd">
+            수급자에게 전송되는 화면 미리보기
+          </div>
         </div>
       </div>
     </form>
@@ -213,6 +229,28 @@ $(function() {
     .always(function() {
       loading = false;
     });
+  });
+
+  // 스위치
+  function check_im_switches() {
+    $('.im_switch').each(function() {
+      var $checkbox = $(this).find('input[type="checkbox"]');
+
+      if($checkbox.prop('checked'))
+        $(this).addClass('on');
+      else
+        $(this).removeClass('on');
+    });
+  }
+
+  check_im_switches();
+
+  $('.im_switch').click(function() {
+    var $checkbox = $(this).find('input[type="checkbox"]');
+    var checked = $checkbox.prop('checked');
+
+    $checkbox.prop('checked', !checked);
+    check_im_switches();
   });
 });
 </script>
