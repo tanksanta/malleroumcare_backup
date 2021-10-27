@@ -14,6 +14,10 @@ $key = $_POST['key'];
 if($key !== $key_check)
     json_response(400, '인증에 실패했습니다.');
 
+$token = get_biztalk_token();
+if(!$token)
+    json_response(500, '비즈톡 토큰 발급 오류');
+
 $sql = "
     select c.*, count(*) as cnt from g5_shop_cart c
     where ct_status = '배송' and ct_alim = 0
@@ -32,10 +36,6 @@ while($ct = sql_fetch_array($result)) {
     // 주문조회 주소 생성
     $uid = md5($od['od_id'].$od['od_time'].$od['od_ip']);
     $url = "https://eroumcare.com/shop/orderinquiryview.php?od_id={$od['od_id']}&uid={$uid}";
-
-    $token = get_biztalk_token();
-    if(!$token)
-        json_response(500, '비즈톡 토큰 발급 오류');
 
     send_alim_talk(
         'OD_DELIVERY_'.$od['od_id'],
