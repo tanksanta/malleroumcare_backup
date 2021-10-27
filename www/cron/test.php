@@ -1,4 +1,5 @@
 <?php
+include_once('./_common.php');
 
 $test = $_POST['test'];
 
