@@ -26,6 +26,7 @@ if($_POST['ct_id']&&$_POST['step']) {
   }
   $sql = [];
   $sql_ct = [];
+  $sql_stock = [];
   $combine_orders = []; // 자동 합포적용
   $alim_orders = []; // 알림톡 보낼 주문들
   
@@ -39,6 +40,7 @@ if($_POST['ct_id']&&$_POST['step']) {
       a.mb_id,
       a.stoId,
       b.mb_entId,
+      a.io_id,
       a.io_type,
       a.ct_price,
       a.io_price,
@@ -47,7 +49,8 @@ if($_POST['ct_id']&&$_POST['step']) {
       a.prodSupYn,
       a.ct_stock_qty,
       a.ct_id,
-      a.ct_combine_ct_id
+      a.ct_combine_ct_id,
+      a.ct_warehouse
     from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
@@ -98,6 +101,40 @@ if($_POST['ct_id']&&$_POST['step']) {
     if($_POST['step'] == "출고준비") { $add_sql .= ", `ct_rdy_date` = NOW()"; }
 
     $sql_ct[$i] = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql.", `ct_move_date`= NOW() where `ct_id` = '".$_POST['ct_id'][$i]."'";
+
+    // 재고관리 변경
+    if($_POST['step'] == '배송') {
+      $ws_qty = $result_ct_s['ct_qty'] - $result_ct_s['ct_stock_qty'];
+      if($result_ct_s['io_type'] != 1) {
+        $sql_stock[] = "
+          insert into
+            warehouse_stock
+          set
+            it_id = '{$result_ct_s['it_id']}',
+            io_id = '{$result_ct_s['io_id']}',
+            io_type = '{$result_ct_s['io_type']}',
+            it_name = '{$result_ct_s['it_name']}',
+            ws_option = '{$result_ct_s['ct_option']}',
+            ws_qty = '-{$ws_qty}',
+            mb_id = '{$result_ct_s['mb_id']}',
+            ws_memo = '주문 출고완료({$od_id})',
+            wh_name = '{$result_ct_s['ct_warehouse']}',
+            od_id = '$od_id',
+            ct_id = '{$_POST['ct_id'][$i]}',
+            ws_created_at = NOW(),
+            ws_updated_at = NOW()
+        ";
+      }
+    }
+    if($_POST['step'] == '취소' || $_POST['step'] == '주문무효') {
+      $sql_stock[] = "
+        delete from
+          warehouse_stock
+        where
+          od_id = '$od_id' and
+          ct_id = '{$_POST['ct_id'][$i]}'
+      ";
+    }
 
     //시스템 상태값 변경
     $stoId = $stoId.$result_ct_s['stoId'];
@@ -194,6 +231,10 @@ if($_POST['ct_id']&&$_POST['step']) {
     for($i=0; $i<count($sql); $i++) {
       sql_query($sql[$i]);
       sql_query($sql_ct[$i]);
+    }
+
+    foreach($sql_stock as $sql) {
+      sql_query($sql);
     }
 
     $api_data = array(
