@@ -57,7 +57,7 @@ $sql_common = "
 $qstr = "it_id=$it_id";
 $where = [];
 
-$sel_field = in_array($_GET['sel_field'], ['od_id', 'wh_memo']) ? $_GET['sel_field'] : '';
+$sel_field = in_array($_GET['sel_field'], ['od_id', 'ws_memo']) ? $_GET['sel_field'] : '';
 $search = clean_xss_tags($_GET['search']);
 
 if($sel_field && $search) {
@@ -159,7 +159,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
           <td>
             <select name="sel_field" id="sel_field">
               <option value="od_id" <?=get_selected($sel_field, 'od_id')?>>주문번호</option>
-              <option value="od_id" <?=get_selected($sel_field, 'wh_memo')?>>메모</option>
+              <option value="ws_memo" <?=get_selected($sel_field, 'ws_memo')?>>메모</option>
             </select>
             <input type="text" name="search" value="<?=$search?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
           </td>
