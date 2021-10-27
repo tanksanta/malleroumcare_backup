@@ -17,7 +17,6 @@ jobs:
           url: https://eroumcare.com/cron/alim_delivery.php
           method: 'POST'
           accept: 200, 201
-          headers: '{ "content-type": "application/x-www-form-urlencoded" }'
           body: '{ "key": "2xBkK#4fKR9hPp=x+J9dDWr9fxR5Nt*2^e@D-!AL" }'
           timeout: 180000
           is_debug: true
