@@ -6,9 +6,10 @@ include_once('./_common.php');
  * 매일 오후 12시, 오후 6시 두번 보냄
  * ct_alim: 0 = 알림톡 미전송, 1 = 알림톡 전송완료
  */
+$data = json_decode(file_get_contents('php://input'), true);
 
 $key_check = "2xBkK#4fKR9hPp=x+J9dDWr9fxR5Nt*2^e@D-!AL";
-$key = $_POST['key'];
+$key = $data['key'];
 
 // 키 인증
 if($key !== $key_check)
