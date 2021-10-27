@@ -28,7 +28,8 @@ $result = sql_query($sql);
 
 while($ct = sql_fetch_array($result)) {
     $mb = get_member($ct['mb_id']);
-    $od = get_order($ct['od_id']);
+    $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '{$ct['od_id']}' ";
+    $od = sql_fetch($sql);
 
     $it_name_txt = $ct['it_name'];
     if($ct['cnt'] > 1)
