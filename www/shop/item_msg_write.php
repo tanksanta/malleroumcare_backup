@@ -70,13 +70,13 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
         <div class="im_item_wr">
           <div class="im_tel_wr im_flex space-between">
             <div class="im_sch_hd">전화번호 공개</div>
-            <div class="im_switch">
-              <input type="checkbox" name="show_tel" value="1">
+            <input class="im_switch" id="ms_ent_tel" type="checkbox" name="ms_ent_tel" value="<?=get_text($member['mb_tel'])?>">
+            <label for="ms_ent_tel">
               <div class="im_switch_slider">
                 <span class="on">공개</span>
                 <span class="off">숨김</span>
               </div>
-            </div>
+            </label>
           </div>
           <div class="im_sch_wr">
             <div class="im_sch_hd">품목 목록</div>
@@ -109,25 +109,25 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                 <div class="im_rec_desc">
                   초기 수급자가 꼭 알아야하는 10가지 정보를 공유합니다.
                 </div>
-                <div class="im_switch">
-                  <input type="checkbox" name="ms_rec_1" value="1">
+                <input class="im_switch" id="ms_rec_1" type="checkbox" name="ms_rec_1" value="1">
+                <label for="ms_rec_1">
                   <div class="im_switch_slider">
                     <span class="on">선택</span>
                     <span class="off">미선택</span>
                   </div>
-                </div>
+                </label>
               </li>
               <li>
                 <div class="im_rec_desc">
                   보호자가 숙지해야 하는 정보와 건강보험공단 자료실 활용방법을 소개합니다.
                 </div>
-                <div class="im_switch">
-                  <input type="checkbox" name="ms_rec_2" value="1">
+                <input class="im_switch" id="ms_rec_2" type="checkbox" name="ms_rec_2" value="1">
+                <label for="ms_rec_2">
                   <div class="im_switch_slider">
                     <span class="on">선택</span>
                     <span class="off">미선택</span>
                   </div>
-                </div>
+                </label>
               </li>
             </ul>
           </div>
@@ -287,28 +287,6 @@ $(function() {
     .always(function() {
       loading = false;
     });
-  });
-
-  // 스위치
-  function check_im_switches() {
-    $('.im_switch').each(function() {
-      var $checkbox = $(this).find('input[type="checkbox"]');
-
-      if($checkbox.prop('checked'))
-        $(this).addClass('on');
-      else
-        $(this).removeClass('on');
-    });
-  }
-
-  check_im_switches();
-
-  $('.im_switch').click(function() {
-    var $checkbox = $(this).find('input[type="checkbox"]');
-    var checked = $checkbox.prop('checked');
-
-    $checkbox.prop('checked', !checked);
-    check_im_switches();
   });
 
   // 품목찾기 팝업
