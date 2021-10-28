@@ -56,7 +56,10 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           </div>
         </div>
         <div class="im_send_wr im_desc_wr" style="border: none;">
-          <button type="submit" style="width: 250px;" href="javascript:void();" id="btn_im_send" class="btn_im_send">알림 메시지 전달</button>
+          <button type="submit" href="javascript:void();" id="btn_im_send" class="btn_im_send">
+            <img src="<?=THEMA_URL?>/assets/img/icon_kakao.png" alt="">
+            알림 메시지 전달
+          </button>
           <div class="im_desc">
             <p>보유 <strong><?=number_format($member['mb_point']);?></strong>포인트, 1회 전송 시 <strong>10</strong>포인트 차감</p>
           </div>
