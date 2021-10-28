@@ -46,6 +46,14 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
               <span class="form_desc">* 입력된 휴대폰 번호로 메시지가 전송됩니다.</span>
             </div>
           </div>
+          <div class="form-group">
+            <label for="ms_pen_nm" class="col-sm-2 control-label" style="padding-top: 0;">
+              <strong>전송 URL</strong>
+            </label>
+            <div class="col-sm-8 url">
+              저장 시 생성됩니다.
+            </div>
+          </div>
         </div>
         <div class="im_send_wr im_desc_wr" style="border: none;">
           <button type="submit" style="width: 250px;" href="javascript:void();" id="btn_im_send" class="btn_im_send">알림 메시지 전달</button>
@@ -86,6 +94,39 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             </li>
             <?php */ ?>
           </ul>
+          <button type="button" id="btn_im_save">저장</button>
+          <div class="im_rec_wr">
+            <div class="im_rec_hd im_flex space-between">
+              <div class="im_sch_hd">추천정보</div>
+              <div class="im_rec_desc">선택한 정보는 전송 시 함께 전달됩니다.</div>
+            </div>
+            <ul class="im_rec_list">
+              <li>
+                <div class="im_rec_desc">
+                  초기 수급자가 꼭 알아야하는 10가지 정보를 공유합니다.
+                </div>
+                <div class="im_switch">
+                  <input type="checkbox" name="ms_rec_1" value="1">
+                  <div class="im_switch_slider">
+                    <span class="on">선택</span>
+                    <span class="off">미선택</span>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="im_rec_desc">
+                  보호자가 숙지해야 하는 정보와 건강보험공단 자료실 활용방법을 소개합니다.
+                </div>
+                <div class="im_switch">
+                  <input type="checkbox" name="ms_rec_2" value="1">
+                  <div class="im_switch_slider">
+                    <span class="on">선택</span>
+                    <span class="off">미선택</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
         <div class="im_preview_wr">
           <div class="im_preview_hd">
