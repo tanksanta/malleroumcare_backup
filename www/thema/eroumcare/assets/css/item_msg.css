@@ -25,7 +25,8 @@
 .btn_im_send {
   display: inline-block;
   margin: 10px 0;
-  padding: 20px;
+  padding: 10px;
+  width: 250px;
   text-align: center;
   color: #fff;
   font-size: 18px;
@@ -447,7 +448,7 @@
   cursor:pointer;
 }
 
-@media screen and (max-width: 1020px) {
+@media (max-width: 1020px) {
   #popup_box iframe {
     width: 100%;
     height: 90%;
@@ -456,6 +457,51 @@
     top: auto;
     left: 0px;
     bottom:0px;
+  }
+}
+
+@media (max-width: 960px) {
+  .im_send_wr {
+    position: fixed;
+    top: unset;
+    right: unset;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    width: 100%;
+    z-index: 10;
+  }
+
+  .im_send_wr .btn_im_send {
+    margin: 0;
+    width: 100%;
+    padding: 20px 0 40px 0;
+    border-radius: 0;
+  }
+
+  .im_send_wr .im_desc {
+    position: absolute;
+    left: 0;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .im_send_wr .im_desc p {
+    color: #fff;
+  }
+
+  #form_item_msg > .im_flex {
+    display: block;
+  }
+
+  .im_item_wr {
+    width: 100%;
+  }
+
+  .im_preview_wr {
+    width: 100%;
+    margin-bottom: 100px;
   }
 }
 
