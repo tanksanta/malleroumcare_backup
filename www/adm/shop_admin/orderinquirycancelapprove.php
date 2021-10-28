@@ -123,6 +123,8 @@ if ($cancel_request_row['request_type'] == "return") {
             od_id = '{$od_id}'
         ";
     sql_query($sql);
+    
+    set_order_admin_log($od_id, '반품 요청 관리자 승인 (회수요청)');
 }
 
 // PG 결제 취소

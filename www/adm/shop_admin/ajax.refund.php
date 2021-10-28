@@ -55,7 +55,7 @@ if (!$cancel_request['od_id']) {
 
   sql_query($sql);
   
-  set_order_admin_log($od_id, "{$request_type_text}신청 선택");
+  set_order_admin_log($od_id, "{$request_type_text} 신청 선택");
 
   json_response(200, 'OK');
 }
@@ -122,6 +122,6 @@ WHERE od_id = '{$od_id}'
 ";
 sql_query($sql);
 
-set_order_admin_log($od_id, "{$request_type_text}진행 수정 ({$refund_status}, " . number_format($refund_price) . "원)");
+set_order_admin_log($od_id, "{$request_type_text} 진행 수정 ({$refund_status}, " . number_format($refund_price) . "원)");
 
 json_response(200, 'OK', $rows);
