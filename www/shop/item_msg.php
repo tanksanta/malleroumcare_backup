@@ -30,24 +30,14 @@ while($row = sql_fetch_array($result)) {
   <title>이로움 : 추천품목</title>
   <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/item_msg.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <link rel="stylesheet" href="<?php echo G5_JS_URL ?>/font-awesome/css/font-awesome.min.css">
   <?php
   echo '<link rel="stylesheet" href="'.G5_CSS_URL.'/'.(G5_IS_MOBILE?'mobile':'default').$shop_css.'.css?v='.APMS_SVER.'">'.PHP_EOL;
   ?>
   <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/font.css">
 </head>
 <body>
-<div class="im_wr">
-  <div class="im_hd">
-    <img src="<?=THEMA_URL?>/assets/img/hd_logo.png">
-  </div>
-  <div class="im_msg_wr">
-    <p><?php echo $ms['ms_pen_nm']; ?>님에게</p>
-    <p><?php echo $ms['mb_entNm']; ?> 사업소에서 추천 품목이 전송되었습니다.</p>
-  </div>
-  <div class="im_list_wr">
-    <?php require_once('./item_msg_render.php'); ?>
-  </div>
-</div>
+<?php require_once('./item_msg_render.php'); ?>
 </body>
 
 <script>
