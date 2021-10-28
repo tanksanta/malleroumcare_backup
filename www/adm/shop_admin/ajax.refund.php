@@ -19,6 +19,47 @@ from g5_shop_order_cancel_request
 where od_id = '{$od['od_id']}'";
 $cancel_request = sql_fetch($sql);
 
+$request_type = $cancel_request['request_type'] ?: $to;
+$request_type_text = $request_type === 'cancel' ? '환불' : '반품';
+
+if (!$cancel_request['od_id']) {
+  
+  if (!in_array($to, ['cancel', 'return'])) {
+    json_response(400, '정상적인 접근이 아닙니다.');
+  }
+  
+  if ($to == "cancel")
+    $status = "취소 대기중";
+  if ($to == "return")
+    $status = "반품 대기중";
+
+  $time =  date('Y-m-d H:i:s', time());
+  $sql = "INSERT INTO g5_shop_order_cancel_request
+          SET
+              od_id = '{$od['od_id']}',
+              mb_id = '{$member['mb_id']}',
+              request_type = '{$to}',
+              request_status = '{$status}',
+              request_reason_type = '{$request_reason_type}',
+              request_reason = '{$cancel_memo}',
+              requested_at = '{$time}'
+          ";
+  sql_query($sql);
+
+  $sql = "UPDATE {$g5['g5_shop_order_table']} SET
+    od_cancel_reason = '{$request_reason_type}',
+    od_cancel_memo = '{$cancel_memo}',
+    od_cancel_time = now()
+  WHERE od_id = '$od_id' 
+  ";
+
+  sql_query($sql);
+  
+  set_order_admin_log($od_id, "{$request_type_text}신청 선택");
+
+  json_response(200, 'OK');
+}
+
 $refund_price = (int)$refund_price ?: 0;
 $refund_status = htmlspecialchars($refund_status);
 $refund_memo = htmlspecialchars($refund_memo);
@@ -81,6 +122,6 @@ WHERE od_id = '{$od_id}'
 ";
 sql_query($sql);
 
-set_order_admin_log($od_id, "환불진행 수정 ({$refund_status}, " . number_format($refund_price) . "원)");
+set_order_admin_log($od_id, "{$request_type_text}진행 수정 ({$refund_status}, " . number_format($refund_price) . "원)");
 
 json_response(200, 'OK', $rows);
