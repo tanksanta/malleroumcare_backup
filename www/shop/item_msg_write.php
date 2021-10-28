@@ -51,7 +51,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
               <strong>전송 URL</strong>
             </label>
             <div class="col-sm-8 url">
-              저장 시 생성됩니다.
+              품목선택 후 저장 시 생성됩니다.
             </div>
           </div>
         </div>
@@ -136,6 +136,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           <div class="im_preview_hd">
             수급자에게 전송되는 화면 미리보기
           </div>
+          <div class="im_preview"><div class="empty">품목선택 후 저장 시 생성됩니다.</div></div>
         </div>
       </div>
     </form>

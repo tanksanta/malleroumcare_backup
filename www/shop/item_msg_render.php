@@ -15,8 +15,6 @@ foreach($items as $item) {
   $list[] = $it;
   $total += $it['it_cust_price'];
 }
-
-$ms['ms_ent_tel'] = '02-2222-3333';
 ?>
 <div class="im_wr">
   <div class="im_hd">
@@ -25,10 +23,12 @@ $ms['ms_ent_tel'] = '02-2222-3333';
   <div class="im_msg_wr">
     <p class="pen_nm"><?php echo $ms['ms_pen_nm']; ?>님</p>
     <p><?php echo $ms['mb_entNm']; ?> 사업소에서 자료가 전송되었습니다.</p>
+    <?php if($ms['ms_ent_tel']) { ?>
     <a href="tel:<?php echo $ms['ms_ent_tel'] ?>" class="btn_im_tel">
       <i class="fa fa-phone" aria-hidden="true"></i>
       <?php echo $ms['ms_ent_tel']; ?> 전화연결
     </a>
+    <?php } ?>
   </div>
   <div class="im_list_wr">
     <div class="im_tab_hd">요약정보</div>

@@ -11,6 +11,7 @@ $ms_pen_id = trim(clean_xss_tags($_POST['ms_pen_id']));
 $ms_pen_nm = clean_xss_tags($_POST['ms_pen_nm']);
 $ms_pro_yn = clean_xss_tags($_POST['ms_pro_yn']);
 $ms_pen_hp = clean_xss_tags($_POST['ms_pen_hp']);
+$ms_ent_tel = clean_xss_tags($_POST['ms_ent_tel']);
 
 if(!($ms_pen_nm && $ms_pro_yn && $ms_pen_hp))
   json_response(400, '수급자 정보를 입력해주세요.');
@@ -25,47 +26,115 @@ $gubun_arr = $_POST['gubun'];
 if(!($it_id_arr && $it_name_arr && $gubun_arr))
   json_response(400, '품목을 선택해주세요.');
 
-if($msg_point > 0 && $member['mb_point'] < $msg_point)
-  json_response(400, '포인트가 부족합니다.');
+if($w == 'u') {
+  // 수정
 
-// 랜덤 url 생성
-list($usec, $sec) = explode(" ", microtime());
-$datestr = date("YmdHis", $sec) . substr($usec, 2, 3); //YYYYMMDDHHMMSSSSS
-$bytes = random_bytes(16);
-$ms_url = hash('sha256', $datestr . bin2hex($bytes));
+  $ms_id = get_search_string($_POST['ms_id']);
+  if(!$ms_id)
+    json_response(400, '유효하지 않은 요청입니다.');
 
-$sql = "
-  INSERT INTO
-    recipient_item_msg
-  SET
-    mb_id = '{$member['mb_id']}',
-    ms_pen_id = '{$ms_pen_id}',
-    ms_pro_yn = '{$ms_pro_yn}',
-    ms_pen_nm = '{$ms_pen_nm}',
-    ms_pen_hp = '{$ms_pen_hp}',
-    ms_url = '{$ms_url}',
-    ms_created_at = NOW(),
-    ms_updated_at = NOW()
-";
-$result = sql_query($sql);
-$ms_id = sql_insert_id();
-
-if(!$result)
-  json_response(500, '메세지 전송에 실패했습니다. 잠시 후 다시 시도해주세요.');
-
-foreach($it_id_arr as $idx => $it_id) {
   $sql = "
-    INSERT INTO
+    SELECT * FROM
+      recipient_item_msg
+    WHERE
+      ms_id = '{$ms_id}' and
+      mb_id = '{$member['mb_id']}'
+  ";
+  $ms = sql_fetch($sql);
+
+  if(!$ms['ms_id'])
+    json_response(400, '저장할 메시지를 찾을 수 없습니다.');
+
+  // 먼저 품목 삭제
+  $sql = "
+    DELETE FROM
       recipient_item_msg_item
-    SET
-      ms_id = '{$ms_id}',
-      gubun = '{$gubun_arr[$idx]}',
-      it_id = '{$it_id}',
-      it_name = '{$it_name_arr[$idx]}',
-      mi_created_at = NOW()
+    WHERE
+      ms_id = '{$ms_id}'
   ";
   sql_query($sql);
+
+  $sql = "
+    UPDATE
+      recipient_item_msg
+    SET
+      ms_pen_id = '{$ms_pen_id}',
+      ms_pro_yn = '{$ms_pro_yn}',
+      ms_pen_nm = '{$ms_pen_nm}',
+      ms_pen_hp = '{$ms_pen_hp}',
+      ms_ent_tel = '{$ms_ent_tel}',
+      ms_updated_at = NOW()
+    WHERE
+      ms_id = '{$ms_id}' and
+      mb_id = '{$member['mb_id']}'
+  ";
+  $result = sql_query($sql);
+
+  if(!$result)
+    json_response(500, '메세지 저장에 실패했습니다. 잠시 후 다시 시도해주세요.');
+
+  foreach($it_id_arr as $idx => $it_id) {
+    $sql = "
+      INSERT INTO
+        recipient_item_msg_item
+      SET
+        ms_id = '{$ms_id}',
+        gubun = '{$gubun_arr[$idx]}',
+        it_id = '{$it_id}',
+        it_name = '{$it_name_arr[$idx]}',
+        mi_created_at = NOW()
+    ";
+    sql_query($sql);
+  }
+} else {
+  // 작성
+
+  // 랜덤 url 생성
+  list($usec, $sec) = explode(" ", microtime());
+  $datestr = date("YmdHis", $sec) . substr($usec, 2, 3); //YYYYMMDDHHMMSSSSS
+  $bytes = random_bytes(16);
+  $ms_url = base64_encode(hash('sha256', $datestr . bin2hex($bytes)));
+  $ms_url = str_replace(['+', '/', '='], ['-', '_', ''], $ms_url);
+
+  $sql = "
+    INSERT INTO
+      recipient_item_msg
+    SET
+      mb_id = '{$member['mb_id']}',
+      ms_pen_id = '{$ms_pen_id}',
+      ms_pro_yn = '{$ms_pro_yn}',
+      ms_pen_nm = '{$ms_pen_nm}',
+      ms_pen_hp = '{$ms_pen_hp}',
+      ms_ent_tel = '{$ms_ent_tel}',
+      ms_url = '{$ms_url}',
+      ms_created_at = NOW(),
+      ms_updated_at = NOW()
+  ";
+  $result = sql_query($sql);
+  $ms_id = sql_insert_id();
+
+  if(!$result)
+    json_response(500, '메세지 저장에 실패했습니다. 잠시 후 다시 시도해주세요.');
+
+  foreach($it_id_arr as $idx => $it_id) {
+    $sql = "
+      INSERT INTO
+        recipient_item_msg_item
+      SET
+        ms_id = '{$ms_id}',
+        gubun = '{$gubun_arr[$idx]}',
+        it_id = '{$it_id}',
+        it_name = '{$it_name_arr[$idx]}',
+        mi_created_at = NOW()
+    ";
+    sql_query($sql);
+  }
 }
+json_response(200, 'OK', $ms_id);
+
+/*
+if($msg_point > 0 && $member['mb_point'] < $msg_point)
+  json_response(400, '포인트가 부족합니다.');
 
 // 포인트 차감
 if($msg_point > 0)
@@ -92,5 +161,4 @@ send_alim_talk('ITEM_MSG_'.$ms_id, $ms_pen_hp, 'pen_item_msg', "[이로움 장�
     )
   ]
 ));
-
-json_response(200, 'OK', $ms_id);
+*/
