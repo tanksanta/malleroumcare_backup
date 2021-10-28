@@ -5,6 +5,7 @@ if ($member['mb_type'] !== 'default') {
     alert("사업소 회원만 접근 가능합니다.");
 }
 
+$action = 'pop.item.select.php';
 $no_option = $_GET['no_option'];
 
 $where = " and ";
@@ -109,7 +110,8 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         </ul>
     </div>
     <div class="content">
-        <form class="form-horizontal popadditemsearch" role="form" name="popadditemsearch" action="./pop.item.select.php" onsubmit="return true;" method="get" autocomplete="off">
+        <form class="form-horizontal popadditemsearch" role="form" name="popadditemsearch" action="<?=$action?>" onsubmit="return true;" method="get" autocomplete="off">
+            <input type="hidden" name="no_option" value="<?=$no_option?>">
             <label for="sca" class="sound_only">분류선택</label>
 
             <label for="sfl" class="sound_only">검색대상</label>
@@ -135,11 +137,18 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <tbody>
                 <?php
                 for ($i=0; $row=sql_fetch_array($result); $i++) {
+                    $gubun = $cate_gubun_table[substr($row["ca_id"], 0, 2)];
+                    $gubun_text = '판매';
+                    if($gubun == '01') $gubun_text = '대여';
+                    else if($gubun == '02') $gubun_text = '비급여';
+
+                    $row['gubun'] = $gubun_text;
                 ?>
                 <tr>
                     <td class="td-left image">
                         <a href="./item.php?it_id=<?php echo $row['it_id']; ?>" target="_blank">
                             <?php echo get_it_image($row['it_id'], 50, 50); ?>
+                            <?php echo "[{$row['gubun']}] "; ?>
                             <?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?>
                         </a>
                     </td>

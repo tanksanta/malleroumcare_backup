@@ -78,6 +78,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           <div class="im_sch_wr">
             <div class="im_sch_hd">품목 목록</div>
             <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="품목명">
+            <button class="btn_im_sel">품목찾기</button>
           </div>
           <ul id="im_write_list" class="im_write_list">
             <?php /* ?>
@@ -138,7 +139,35 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
   </div>
 </section>
 
+<div id="popup_box">
+    <div class="popup_box_close">
+        <i class="fa fa-times"></i>
+    </div>
+    <iframe name="iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+</div>
+
 <script>
+function select_item(obj) {
+  $('body').removeClass('modal-open');
+  $('#popup_box').hide();
+
+  // it_id
+  var $li = $('<li>');
+  $li.append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">');
+  $li.append('<input type="hidden" name="it_name[]" value="' + obj.it_name + '">');
+  $li.append('<input type="hidden" name="gubun[]" value="' + obj.gubun + '">');
+  $li.append('<img class="it_img" src="/data/item/' + obj.it_img + '" onerror="this.src=\'/img/no_img.png\';">');
+  $('<div class="it_info">')
+    .append(
+      '<p class="it_name">' + obj.it_name + ' (' + obj.gubun + ')' + '</p>',
+      '<p class="it_price">급여가 : ' + parseInt(obj.it_price).toLocaleString('en-US') + '원</p>'
+    )
+    .appendTo($li);
+  $li.append('<button type="button" class="btn_del_item">삭제</button>');
+  $li.appendTo('#im_write_list');
+  $('#ipt_im_sch').val('').next().focus();
+}
+
 $(function() {
   var pen = null;
 
@@ -229,22 +258,7 @@ $(function() {
       return $li;
     },
   }).on("select:flexdatalist", function(event, obj, options) {
-    // it_id
-    //$(parent).find('input[name="it_id[]"]').val(obj.it_id);
-    var $li = $('<li>');
-    $li.append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">');
-    $li.append('<input type="hidden" name="it_name[]" value="' + obj.it_name + '">');
-    $li.append('<input type="hidden" name="gubun[]" value="' + obj.gubun + '">');
-    $li.append('<img class="it_img" src="/data/item/' + obj.it_img + '" onerror="this.src=\'/img/no_img.png\';">');
-    $('<div class="it_info">')
-      .append(
-        '<p class="it_name">' + obj.it_name + ' (' + obj.gubun + ')' + '</p>',
-        '<p class="it_price">급여가 : ' + parseInt(obj.it_price).toLocaleString('en-US') + '원</p>'
-      )
-      .appendTo($li);
-    $li.append('<button type="button" class="btn_del_item">삭제</button>');
-    $li.appendTo('#im_write_list');
-    $('#ipt_im_sch').val('').next().focus();
+    select_item(obj);
   });
 
   $(document).on('click', '.btn_del_item', function() {
@@ -293,6 +307,20 @@ $(function() {
     $checkbox.prop('checked', !checked);
     check_im_switches();
   });
+
+  // 품목찾기 팝업
+  $('#popup_box').click(function() {
+    $('body').removeClass('modal-open');
+    $('#popup_box').hide();
+  });
+  $('.btn_im_sel').click(function(e) {
+    var url = 'pop.item.select.php?no_option=1';
+
+    $('#popup_box iframe').attr('src', url);
+    $('body').addClass('modal-open');
+    $('#popup_box').show();
+  });
+
 });
 </script>
 
