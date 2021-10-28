@@ -123,6 +123,14 @@ if ($cancel_request_row['request_type'] == "return") {
             od_id = '{$od_id}'
         ";
     sql_query($sql);
+
+    $sql = "UPDATE g5_shop_order_cancel_request SET
+        refund_status = '회수요청'
+    WHERE
+        od_id = '{$od_id}'
+    ";
+
+    sql_query($sql);
     
     set_order_admin_log($od_id, '반품 요청 관리자 승인 (회수요청)');
 }
