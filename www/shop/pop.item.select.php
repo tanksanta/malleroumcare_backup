@@ -6,7 +6,7 @@ if ($member['mb_type'] !== 'default') {
 }
 
 $action = 'pop.item.select.php';
-$no_option = $_GET['no_option'];
+$no_option = $_GET['no_option'] ?: '';
 
 $where = " and ";
 $sql_search = "";
@@ -76,7 +76,7 @@ $sql  = " select
            limit $from_record, $rows ";
 $result = sql_query($sql);
 
-$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page.'&amp;save_stx='.$stx;
+$qstr = "no_option={$no_option}&sfl={$sfl}&stx={$stx}&save_stx={$stx}&sca={$sca}";
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 
@@ -172,7 +172,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
                 <?php } ?>
             </tbody>
         </table>
-        <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;od_id='.$od_id.'&amp;page='); ?>
+        <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
     </div>
 </div>
 
