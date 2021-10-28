@@ -1243,8 +1243,16 @@ table.list-table-style .drop_multi_sub a:after {
     background-color: white;
     vertical-align: middle;
 }
+#samhwa_order_form>.block .shbtn.black {
+    background-color: #000;
+    color: white;
+    border: 1px solid #000;
+}
 #samhwa_order_form>.block .shbtn:hover {
     background-color:#fafafa;
+}
+#samhwa_order_form>.block .shbtn.black:hover {
+    background-color:#404040;
 }
 #samhwa_order_form>.block .shbtn:disabled {
     background-color: #f4f4f4;
