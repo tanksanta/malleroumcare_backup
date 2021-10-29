@@ -133,7 +133,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
               <input type="hidden" name="gubun[]" value="<?=$item['gubun']?>">
               <img class="it_img" src="/data/item/<?=$item['it_img']?>" onerror="this.src='/img/no_img.png';">
               <div class="it_info">
-                <p class="it_name"><?=get_text($item['it_name']) . " ({$item['gubun']})"?> (대여)</p>
+                <p class="it_name"><?=get_text($item['it_name']) . " ({$item['gubun']})"?></p>
                 <p class="it_price">급여가 : <?=number_format($item['it_cust_price'])?>원</p>
               </div>
               <button type="button" class="btn_del_item">삭제</button>
