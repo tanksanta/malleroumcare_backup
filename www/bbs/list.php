@@ -173,10 +173,14 @@ if ($sst) {
     $sql_order = " order by {$sql_apms_orderby} {$sst} {$sod} ";
 }
 
+if(in_array($bo_table, ['center_meet', 'center_case', 'center_education', 'center_story'])){
+    $sql_search .= " and mb_id = '{$member['mb_id']}' ";
+}
+
 if ($is_search_bbs) {
     $sql = " select distinct wr_parent from {$write_table} where {$sql_search} {$sql_order} limit {$from_record}, $page_rows ";
 } else {
-    $sql = " select * from {$write_table} where wr_is_comment = 0 {$sql_apms_where} ";
+    $sql = " select * from {$write_table} where wr_is_comment = 0 {$sql_apms_where} {$sql_search}";
     if(!$is_notice_list && $notice_count)
         $sql .= " and wr_id not in (".implode(', ', $arr_notice).") ";
     $sql .= " {$sql_order} limit {$from_record}, $page_rows ";
