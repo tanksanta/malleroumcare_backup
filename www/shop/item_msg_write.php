@@ -94,14 +94,17 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             <label for="ms_pen_url" class="col-sm-2 control-label" style="padding-top: 0;">
               <strong>전송 URL</strong>
             </label>
-            <div class="col-sm-8 url" id="ms_pen_url">
-              <?php
-              if($ms['ms_url']) {
-                echo 'https://eroumcare.com/shop/item_msg.php?url='.$ms['ms_url'];
-              } else {
-                echo '품목선택 후 저장 시 생성됩니다.';
-              }
-              ?>
+            <div class="col-sm-6 url">
+              <span id="ms_pen_url">
+                <?php
+                if($ms['ms_url']) {
+                  echo 'https://eroumcare.com/shop/item_msg.php?url='.$ms['ms_url'];
+                } else {
+                  echo '품목선택 후 저장 시 생성됩니다.';
+                }
+                ?>
+              </span>
+              <button class="btn_im_copy" onclick="copy_to_clipboard('#ms_pen_url');">주소복사</button>
             </div>
           </div>
         </div>
@@ -213,6 +216,17 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 </div>
 
 <script>
+// 클립보드 복사
+function copy_to_clipboard(selector) {
+  var url = $(selector).text();
+  $("body").append("<input type='text' id='copyTextBox' value='" + url + "'>");
+  $("#copyTextBox").select();
+  document.execCommand("copy");
+  $("#copyTextBox").remove();
+
+  alert('복사되었습니다.');
+}
+
 // 품목 선택
 function select_item(obj) {
   $('body').removeClass('modal-open');

@@ -540,13 +540,18 @@
   }
 }
 
-.btn_im_sel {
+.btn_im_sel, .btn_im_copy {
   border: 1px solid #ddd;
   border-radius: 3px;
   line-height: 1.5;
   padding: 5px 15px;
   margin-left: 10px;
   text-align: center;
+}
+
+.btn_im_copy {
+  display: inline-block;
+  margin: 0;
 }
 
 #btn_im_save {
