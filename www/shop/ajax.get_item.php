@@ -16,6 +16,7 @@ $sql = "
     it_name,
     it_model,
     it_price,
+    it_cust_price,
     REPLACE(a.it_name, ' ', '') as it_name_no_space,
     ca_id,
     it_img1 as it_img

@@ -69,6 +69,7 @@ $sql  = " select
            it_name,
            it_model,
            it_price,
+           it_cust_price,
            a. ca_id,
            it_img1 as it_img
            $sql_common
