@@ -70,7 +70,8 @@ for($i = 0; $row = sql_fetch_array($msg_result); $i++) {
     limit 0, 1
   ";
   $last_log_result = sql_fetch($sql);
-  $row['last_sent_at'] = $last_log_result['ml_sent_at'];
+  if($last_log_result['ml_sent_at'])
+    $row['last_sent_at'] = $last_log_result['ml_sent_at'];
 
   $list[] = $row;
 }
@@ -141,7 +142,14 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
                 }
                 ?>
               </td>
-              <td><?=date('Y년 m월 d일 (H:i)', strtotime($row['last_sent_at']))?></td>
+              <td>
+                <?php
+                if($row['last_sent_at'])
+                  echo date('Y년 m월 d일 (H:i)', strtotime($row['last_sent_at']));
+                else
+                  echo '';
+                ?>
+              </td>
             </tr>
             <?php } ?>
           </tbody>
