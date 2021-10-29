@@ -430,7 +430,7 @@ $sendData["prods"] = $prodsSendData;
     <?php if ($is_orderable && $member['mb_type'] !== 'normal') { ?>
     <div class="samhwa-item-info-opener mobile">
       <ul class="item-buy-btn">
-        <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-color btn-block"></li>
+        <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-color btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
         <li class="cart">
           <div class="cart-ok">
             <p>장바구니에 담았습니다.</p>
@@ -914,7 +914,7 @@ $sendData["prods"] = $prodsSendData;
       <?php if ($is_orderable && $member['mb_type'] !== 'normal') { ?>
         <div style="text-align:center;" class="item-btns">
           <ul class="item-buy-btn">
-            <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block"></li>
+            <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
             <li class="cart">
               <div class="cart-ok">
                 <p class="pc">선택하신 상품을 장바구니에 담았습니다.</p>
@@ -979,7 +979,13 @@ $sendData["prods"] = $prodsSendData;
           if (document.pressed == "장바구니") {
             f.sw_direct.value = 0;
           } else { // 상품주문
-            f.sw_direct.value = 1;
+            f.sw_direct.value = 1;  
+
+            var prod_sup_yn = <?php echo $it['prodSupYn'] === 'Y' ? 'true' : 'false'; ?>;
+            if (!prod_sup_yn) {
+              alert('비유통상품은 수급자 계약 시 정보활용에만 사용되므로 상품주문이 불가능합니다.');
+              return false;
+            }
           }
 
           // 판매가격이 0 보다 작다면
