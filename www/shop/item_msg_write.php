@@ -14,6 +14,9 @@ if($w && $ms_id) {
   $sql = " select * from recipient_item_msg where ms_id = '$ms_id' and mb_id = '{$member['mb_id']}' ";
   $ms = sql_fetch($sql);
 
+  if(!$ms['ms_id'])
+    alert('존재하지 않는 메시지입니다.');
+
   if($ms['ms_pen_id']) {
     $pen = get_recipient($ms['ms_pen_id']);
     $filters = ['penId', 'penNm', 'penLtmNum', 'penRecGraNm', 'penTypeNm', 'penBirth', 'penGender', 'penConNum', 'penProConNum'];
@@ -56,6 +59,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
   <div class="inner">
 
     <form id="form_item_msg" action="item_msg_update.php" method="POST" class="form-horizontal" onsubmit="return false;">
+      <input type="hidden" name="w" value="<?=$w?>">
+      <input type="hidden" name="ms_id" value="<?=$ms_id?>">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="form-group">
@@ -89,7 +94,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             <label for="ms_pen_url" class="col-sm-2 control-label" style="padding-top: 0;">
               <strong>전송 URL</strong>
             </label>
-            <div class="col-sm-8 url">
+            <div class="col-sm-8 url" id="ms_pen_url">
               품목선택 후 저장 시 생성됩니다.
             </div>
           </div>
@@ -143,7 +148,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             }
             ?>
           </ul>
-          <button type="button" id="btn_im_save">저장</button>
+          <button type="button" id="btn_im_save" onclick="save_item_msg();">저장</button>
           <div class="im_rec_wr">
             <div class="im_rec_hd im_flex space-between">
               <div class="im_sch_hd">추천정보</div>
@@ -219,8 +224,27 @@ function select_item(obj) {
 }
 
 // 저장
+var loading = false;
 function save_item_msg() {
-  
+  if(loading)
+    return alert('저장 중입니다. 잠시만 기다려주세요.');
+
+  loading = true;
+  $form = $('#form_item_msg');
+  $.post($form.attr('action'), $form.serialize(), 'json')
+  .done(function(result) {
+    var data = result.data;
+    $('input[name="w"]').val('u');
+    $('input[name="ms_id"]').val(data.ms_id);
+    $('#ms_pen_url').text('https://eroumcare.com/shop/item_msg.php?url=' + data.ms_url);
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  })
+  .always(function() {
+    loading = false;
+  });
 }
 
 $(function() {
@@ -232,6 +256,12 @@ $(function() {
   <?php } ?>
 
   function update_pen_info() {
+    if(!pen) {
+      $('#ms_pen_id').val('');
+      $('#pen_id_flexdatalist_result').text('');
+      return;
+    }
+
     var prefix = [];
 
     if(pen.penBirth)
@@ -274,8 +304,8 @@ $(function() {
     focusFirstResult: true,
   })
   .on('change:flexdatalist', function() {
-    $('#ms_pen_id').val('');
-    $('#pen_id_flexdatalist_result').text('');
+    pen = null;
+    update_pen_info();
   })
   .on("select:flexdatalist", function(event, obj, options) {
     pen = obj;
@@ -329,6 +359,7 @@ $(function() {
     $(this).closest('li').remove();
   });
 
+  /*
   var loading = false;
   $('#btn_im_send').on('click', function() {
     if(loading)
@@ -349,6 +380,7 @@ $(function() {
       loading = false;
     });
   });
+  */
 
   // 품목찾기 팝업
   $('#popup_box').click(function() {
