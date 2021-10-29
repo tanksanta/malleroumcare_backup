@@ -9,6 +9,8 @@ $ms_pen_nm = clean_xss_tags($_POST['ms_pen_nm']);
 $ms_pro_yn = clean_xss_tags($_POST['ms_pro_yn']);
 $ms_pen_hp = clean_xss_tags($_POST['ms_pen_hp']);
 $ms_ent_tel = clean_xss_tags($_POST['ms_ent_tel']);
+$ms_rec_1 = clean_xss_tags($_POST['ms_rec_1']) ?: 0;
+$ms_rec_2 = clean_xss_tags($_POST['ms_rec_2']) ?: 0;
 
 if(!($ms_pen_nm && $ms_pro_yn && $ms_pen_hp))
   json_response(400, '수급자 정보를 입력해주세요.');
@@ -41,15 +43,8 @@ if($w == 'u') {
 
   if(!$ms['ms_id'])
     json_response(400, '저장할 메시지를 찾을 수 없습니다.');
-
-  // 먼저 품목 삭제
-  $sql = "
-    DELETE FROM
-      recipient_item_msg_item
-    WHERE
-      ms_id = '{$ms_id}'
-  ";
-  sql_query($sql);
+  
+  $ms_url = $ms['ms_url'];
 
   $sql = "
     UPDATE
@@ -60,6 +55,8 @@ if($w == 'u') {
       ms_pen_nm = '{$ms_pen_nm}',
       ms_pen_hp = '{$ms_pen_hp}',
       ms_ent_tel = '{$ms_ent_tel}',
+      ms_rec_1 = '{$ms_rec_1}',
+      ms_rec_2 = '{$ms_rec_2}',
       ms_updated_at = NOW()
     WHERE
       ms_id = '{$ms_id}' and
@@ -70,18 +67,30 @@ if($w == 'u') {
   if(!$result)
     json_response(500, '메세지 저장에 실패했습니다. 잠시 후 다시 시도해주세요.');
 
-  foreach($it_id_arr as $idx => $it_id) {
+  $no_items = $_POST['no_items'];
+  if(!$no_items) {
+    // 먼저 품목 삭제
     $sql = "
-      INSERT INTO
+      DELETE FROM
         recipient_item_msg_item
-      SET
-        ms_id = '{$ms_id}',
-        gubun = '{$gubun_arr[$idx]}',
-        it_id = '{$it_id}',
-        it_name = '{$it_name_arr[$idx]}',
-        mi_created_at = NOW()
+      WHERE
+        ms_id = '{$ms_id}'
     ";
     sql_query($sql);
+
+    foreach($it_id_arr as $idx => $it_id) {
+      $sql = "
+        INSERT INTO
+          recipient_item_msg_item
+        SET
+          ms_id = '{$ms_id}',
+          gubun = '{$gubun_arr[$idx]}',
+          it_id = '{$it_id}',
+          it_name = '{$it_name_arr[$idx]}',
+          mi_created_at = NOW()
+      ";
+      sql_query($sql);
+    }
   }
 } else {
   // 작성
@@ -103,6 +112,8 @@ if($w == 'u') {
       ms_pen_nm = '{$ms_pen_nm}',
       ms_pen_hp = '{$ms_pen_hp}',
       ms_ent_tel = '{$ms_ent_tel}',
+      ms_rec_1 = '{$ms_rec_1}',
+      ms_rec_2 = '{$ms_rec_2}',
       ms_url = '{$ms_url}',
       ms_created_at = NOW(),
       ms_updated_at = NOW()

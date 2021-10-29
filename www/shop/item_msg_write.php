@@ -95,7 +95,13 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
               <strong>전송 URL</strong>
             </label>
             <div class="col-sm-8 url" id="ms_pen_url">
-              품목선택 후 저장 시 생성됩니다.
+              <?php
+              if($ms['ms_url']) {
+                echo 'https://eroumcare.com/shop/item_msg.php?url='.$ms['ms_url'];
+              } else {
+                echo '품목선택 후 저장 시 생성됩니다.';
+              }
+              ?>
             </div>
           </div>
         </div>
@@ -159,7 +165,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                 <div class="im_rec_desc">
                   초기 수급자가 꼭 알아야하는 10가지 정보를 공유합니다.
                 </div>
-                <input class="im_switch" id="ms_rec_1" type="checkbox" name="ms_rec_1" value="1">
+                <input class="im_switch" id="ms_rec_1" type="checkbox" name="ms_rec_1" value="1" <?=get_checked($ms['ms_rec_1'], 1)?>>
                 <label for="ms_rec_1">
                   <div class="im_switch_slider">
                     <span class="on">선택</span>
@@ -171,7 +177,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                 <div class="im_rec_desc">
                   보호자가 숙지해야 하는 정보와 건강보험공단 자료실 활용방법을 소개합니다.
                 </div>
-                <input class="im_switch" id="ms_rec_2" type="checkbox" name="ms_rec_2" value="1">
+                <input class="im_switch" id="ms_rec_2" type="checkbox" name="ms_rec_2" value="1" <?=get_checked($ms['ms_rec_2'], 1)?>>
                 <label for="ms_rec_2">
                   <div class="im_switch_slider">
                     <span class="on">선택</span>
@@ -186,7 +192,13 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           <div class="im_preview_hd">
             수급자에게 전송되는 화면 미리보기
           </div>
-          <div class="im_preview"><div class="empty">품목선택 후 저장 시 생성됩니다.</div></div>
+          <div id="im_preview" class="im_preview">
+            <?php if($ms['ms_url']) { ?>
+            <iframe src="item_msg.php?url=<?=$ms['ms_url']?>" frameborder="0"></iframe>
+            <?php } else { ?>
+            <div class="empty">품목선택 후 저장 시 생성됩니다.</div>
+            <?php } ?>
+          </div>
         </div>
       </div>
     </form>
@@ -225,18 +237,23 @@ function select_item(obj) {
 
 // 저장
 var loading = false;
-function save_item_msg() {
+function save_item_msg(no_items) {
   if(loading)
     return alert('저장 중입니다. 잠시만 기다려주세요.');
 
   loading = true;
   $form = $('#form_item_msg');
-  $.post($form.attr('action'), $form.serialize(), 'json')
+  var query = $form.serialize();
+  if(no_items)
+    query += '&no_items=1';
+  $.post($form.attr('action'), query, 'json')
   .done(function(result) {
     var data = result.data;
+    var ms_url = 'item_msg.php?url=' + data.ms_url;
     $('input[name="w"]').val('u');
     $('input[name="ms_id"]').val(data.ms_id);
-    $('#ms_pen_url').text('https://eroumcare.com/shop/item_msg.php?url=' + data.ms_url);
+    $('#ms_pen_url').text('https://eroumcare.com/shop/' + ms_url);
+    $('#im_preview').empty().append($('<iframe>').attr('src', ms_url).attr('frameborder', 0));
   })
   .fail(function($xhr) {
     var data = $xhr.responseJSON;
@@ -325,12 +342,14 @@ $(function() {
       $('#ms_pro_yn_y').prop('checked', true);
       $('#ms_pro_yn_n').prop('checked', false);
 
-      $('#ms_pen_hp').val(pen ? pen.penProConNum : '');
+      if(pen)
+        $('#ms_pen_hp').val(pen.penProConNum);
     } else {
       $('#ms_pro_yn_y').prop('checked', false);
       $('#ms_pro_yn_n').prop('checked', true);
 
-      $('#ms_pen_hp').val(pen ? pen.penConNum : '');
+      if(pen)
+        $('#ms_pen_hp').val(pen.penConNum);
     }
   }
 
@@ -359,28 +378,33 @@ $(function() {
     $(this).closest('li').remove();
   });
 
-  /*
-  var loading = false;
+  var sending = false;
   $('#btn_im_send').on('click', function() {
-    if(loading)
+    if(sending)
       return alert('전송 중입니다. 잠시만 기다려주세요.');
+    
+    var ms_id = $('input[name="ms_id"]').val();
 
-    loading = true;
+    if(!ms_id)
+      return alert('먼저 품목 선택 후 저장을 해주세요.');
+
+    sending = true;
     $form = $('#form_item_msg');
-    $.post($form.attr('action'), $form.serialize(), 'json')
+    $.post('item_msg_send.php', {
+      ms_id: ms_id
+    }, 'json')
     .done(function(result) {
-      var ms_id = result.data;
-      window.location.href = 'item_msg_view.php?ms_id=' + ms_id;
+      alert('전송이 완료되었습니다.');
+      window.location.href = 'item_msg_write.php?w=u&ms_id=' + ms_id;
     })
     .fail(function($xhr) {
       var data = $xhr.responseJSON;
       alert(data && data.message);
     })
     .always(function() {
-      loading = false;
+      sending = false;
     });
   });
-  */
 
   // 품목찾기 팝업
   $('#popup_box').click(function() {
@@ -393,6 +417,20 @@ $(function() {
     $('#popup_box iframe').attr('src', url);
     $('body').addClass('modal-open');
     $('#popup_box').show();
+  });
+
+  // 스위치 변경시
+  $('.im_switch').click(function(e) {
+    if(loading) return false;
+
+    var ms_id = $('input[name="ms_id"]').val();
+
+    if(!ms_id) {
+      alert('먼저 품목 선택 후 저장을 해주세요.');
+      return false;
+    }
+
+    save_item_msg(true);
   });
 
 });
