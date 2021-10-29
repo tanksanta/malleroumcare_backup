@@ -2159,6 +2159,12 @@
     outline: none;
 }
 
+.item-head ul.item-buy-btn li input[type="submit"].disabled {
+    pointer-events: auto;
+    opacity: 1;
+    background-color: #ffddb8;
+}
+
 .item-head ul.item-buy-btn li input[type="submit"]:hover{
     box-shadow:266px 0 0 0 rgba(255,255,255,0.2) inset;
     transition: 0.2s;
