@@ -7,6 +7,45 @@ if($member['mb_type'] !== 'default')
 $g5['title'] = '품목/정보 메시지 작성';
 include_once("./_head.php");
 
+$w = get_search_string($_GET['w']);
+$ms_id = get_search_string($_GET['ms_id']);
+
+if($w && $ms_id) {
+  $sql = " select * from recipient_item_msg where ms_id = '$ms_id' and mb_id = '{$member['mb_id']}' ";
+  $ms = sql_fetch($sql);
+
+  if($ms['ms_pen_id']) {
+    $pen = get_recipient($ms['ms_pen_id']);
+    $filters = ['penId', 'penNm', 'penLtmNum', 'penRecGraNm', 'penTypeNm', 'penBirth', 'penGender', 'penConNum', 'penProConNum'];
+    $filtered_pen = [];
+    foreach($filters as $filter) {
+      $filtered_pen[$filter] = $pen[$filter];
+    }
+    $pen = $filtered_pen;
+    unset($filtered_pen);
+  }
+
+  $sql = "
+    SELECT
+      m.*,
+      it_img1 as it_img,
+      it_cust_price
+    FROM
+      recipient_item_msg_item m
+    LEFT JOIN
+      g5_shop_item i ON m.it_id = i.it_id
+    WHERE
+      ms_id = '{$ms['ms_id']}'
+    ORDER BY
+      mi_id ASC ";
+  $result = sql_query($sql);
+
+  $items = [];
+  while($row = sql_fetch_array($result)) {
+    $items[] = $row;
+  }
+}
+
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
@@ -24,8 +63,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
               <strong>수급자명</strong>
             </label>
             <div class="col-sm-8">
-              <input type="hidden" name="ms_pen_id" id="ms_pen_id">
-              <input type="text" name="ms_pen_nm" id="ms_pen_nm" class="form-control input-sm pen_id_flexdatalist" placeholder="수급자명">
+              <input type="hidden" name="ms_pen_id" id="ms_pen_id" value="<?=$ms['ms_pen_id'] ?: ''?>">
+              <input type="text" name="ms_pen_nm" id="ms_pen_nm" class="form-control input-sm pen_id_flexdatalist" value="<?=$ms['ms_pen_nm'] ?: ''?>" placeholder="수급자명">
               <span id="pen_id_flexdatalist_result" class="form_desc"></span>
             </div>
           </div>
@@ -36,18 +75,18 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             <div class="col-sm-8">
               <div class="radio_wr">
                 <label class="radio-inline">
-                  <input type="radio" name="ms_pro_yn" id="ms_pro_yn_n" value="N" checked> 수급자
+                  <input type="radio" name="ms_pro_yn" id="ms_pro_yn_n" value="N" <?=option_array_checked($ms['ms_pro_yn_n'], ['', 'N'])?>> 수급자
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" name="ms_pro_yn" id="ms_pro_yn_y" value="Y"> 보호자
+                  <input type="radio" name="ms_pro_yn" id="ms_pro_yn_y" value="Y" <?=option_array_checked($ms['ms_pro_yn_n'], ['Y'])?>> 보호자
                 </label>
               </div>
-              <input type="text" name="ms_pen_hp" id="ms_pen_hp" class="form-control input-sm" placeholder="휴대폰번호">
+              <input type="text" name="ms_pen_hp" id="ms_pen_hp" class="form-control input-sm" value="<?=$ms['ms_pen_hp'] ?: ''?>" placeholder="휴대폰번호">
               <span class="form_desc">* 입력된 휴대폰 번호로 메시지가 전송됩니다.</span>
             </div>
           </div>
           <div class="form-group">
-            <label for="ms_pen_nm" class="col-sm-2 control-label" style="padding-top: 0;">
+            <label for="ms_pen_url" class="col-sm-2 control-label" style="padding-top: 0;">
               <strong>전송 URL</strong>
             </label>
             <div class="col-sm-8 url">
@@ -70,7 +109,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
         <div class="im_item_wr">
           <div class="im_tel_wr im_flex space-between">
             <div class="im_sch_hd">전화번호 공개</div>
-            <input class="im_switch" id="ms_ent_tel" type="checkbox" name="ms_ent_tel" value="<?=get_text($member['mb_tel'])?>">
+            <input class="im_switch" id="ms_ent_tel" type="checkbox" name="ms_ent_tel" value="<?=get_text($member['mb_tel'])?>" <?=get_checked($ms['ms_ent_tel'], get_text($member['mb_tel']))?>>
             <label for="ms_ent_tel">
               <div class="im_switch_slider">
                 <span class="on">공개</span>
@@ -84,19 +123,25 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             <button class="btn_im_sel">품목찾기</button>
           </div>
           <ul id="im_write_list" class="im_write_list">
-            <?php /* ?>
+            <?php
+            if(isset($items) && is_array($items)) {
+              foreach($items as $item) {
+            ?>
             <li>
-              <input type="hidden" name="it_id[]" value="">
-              <input type="hidden" name="it_name[]" value="">
-              <input type="hidden" name="gubun[]" value="">
-              <img class="it_img" src="/data/item/" onerror="this.src='/img/no_img.png';">
+              <input type="hidden" name="it_id[]" value="<?=$item['it_id']?>">
+              <input type="hidden" name="it_name[]" value="<?=get_text($item['it_name'])?>">
+              <input type="hidden" name="gubun[]" value="<?=$item['gubun']?>">
+              <img class="it_img" src="/data/item/<?=$item['it_img']?>" onerror="this.src='/img/no_img.png';">
               <div class="it_info">
-                <p class="it_name">ABC품목 (대여)</p>
-                <p class="it_price">급여가 : 17,000원</p>
+                <p class="it_name"><?=get_text($item['it_name']) . " ({$item['gubun']})"?> (대여)</p>
+                <p class="it_price">급여가 : <?=number_format($item['it_cust_price'])?>원</p>
               </div>
               <button type="button" class="btn_del_item">삭제</button>
             </li>
-            <?php */ ?>
+            <?php
+              }
+            }
+            ?>
           </ul>
           <button type="button" id="btn_im_save">저장</button>
           <div class="im_rec_wr">
@@ -151,6 +196,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 </div>
 
 <script>
+// 품목 선택
 function select_item(obj) {
   $('body').removeClass('modal-open');
   $('#popup_box').hide();
@@ -164,7 +210,7 @@ function select_item(obj) {
   $('<div class="it_info">')
     .append(
       '<p class="it_name">' + obj.it_name + ' (' + obj.gubun + ')' + '</p>',
-      '<p class="it_price">급여가 : ' + parseInt(obj.it_price).toLocaleString('en-US') + '원</p>'
+      '<p class="it_price">급여가 : ' + parseInt(obj.it_cust_price).toLocaleString('en-US') + '원</p>'
     )
     .appendTo($li);
   $li.append('<button type="button" class="btn_del_item">삭제</button>');
@@ -172,8 +218,50 @@ function select_item(obj) {
   $('#ipt_im_sch').val('').next().focus();
 }
 
+// 저장
+function save_item_msg() {
+  
+}
+
 $(function() {
+  <?php if(isset($pen) && $pen) { ?>
+  var pen = <?=json_encode($pen)?>;
+  update_pen_info();
+  <?php } else { ?>
   var pen = null;
+  <?php } ?>
+
+  function update_pen_info() {
+    var prefix = [];
+
+    if(pen.penBirth)
+      prefix.push( pen.penBirth.substring(2, 4) + '년생' );
+    if(pen.penGender)
+      prefix.push( pen.penGender );
+
+    if(prefix.length > 0)
+      prefix = '(' + prefix.join('/') + ') ';
+    else
+      prefix = '';
+    
+    var postfix = [];
+
+    if(pen.penRecGraNm)
+      postfix.push( pen.penRecGraNm );
+    if(pen.penTypeNm)
+      postfix.push( pen.penTypeNm );
+    
+    if(postfix.length > 0)
+      postfix = ' (' + postfix.join('/') + ')';
+    else
+      postfix = '';
+
+    $('#pen_id_flexdatalist_result').text(
+      prefix + pen.penLtmNum + postfix
+    );
+
+    $('#ms_pen_id').val(pen.penId);
+  }
 
   $('.pen_id_flexdatalist').flexdatalist({
     minLength: 1,
@@ -192,35 +280,7 @@ $(function() {
   .on("select:flexdatalist", function(event, obj, options) {
     pen = obj;
 
-    var prefix = [];
-
-    if(obj.penBirth)
-      prefix.push( obj.penBirth.substring(2, 4) + '년생' );
-    if(obj.penGender)
-      prefix.push( obj.penGender );
-
-    if(prefix.length > 0)
-      prefix = '(' + prefix.join('/') + ') ';
-    else
-      prefix = '';
-    
-    var postfix = [];
-
-    if(obj.penRecGraNm)
-      postfix.push( obj.penRecGraNm );
-    if(obj.penTypeNm)
-      postfix.push( obj.penTypeNm );
-    
-    if(postfix.length > 0)
-      postfix = ' (' + postfix.join('/') + ')';
-    else
-      postfix = '';
-
-    $('#pen_id_flexdatalist_result').text(
-      prefix + obj.penLtmNum + postfix
-    );
-
-    $('#ms_pen_id').val(obj.penId);
+    update_pen_info();
     setPenHp('N');
 
     $('#ipt_im_sch').next().focus();
@@ -256,7 +316,7 @@ $(function() {
     visibleCallback: function($li, item, options) {
       var $item = {};
       $item = $('<span>')
-        .html("[" + item.gubun + "] " + item.it_name + " (" + item.it_price + "원)");
+        .html("[" + item.gubun + "] " + item.it_name + " (" + item.it_cust_price + "원)");
 
       $item.appendTo($li);
       return $li;
