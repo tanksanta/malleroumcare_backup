@@ -79,6 +79,15 @@ foreach($items as $item) {
       <button class="im_btn_more">상세정보 펼쳐보기 ▼</button>
     </div>
     <?php } ?>
+    <?php if($ms['ms_rec_1'] || $ms['ms_rec_2']) { ?>
+    <div class="im_tab_hd">추천정보</div>
+    <?php if($ms['ms_rec_1']) { ?>
+    <p>초기 수급자가 꼭 알아야하는 10가지 정보를 공유합니다.</p>
+    <?php } ?>
+    <?php if($ms['ms_rec_2']) { ?>
+    <p>보호자가 숙지해야 하는 정보와 건강보험공단 자료실 활용방법을 소개합니다.</p>
+    <?php } ?>
+    <?php } ?>
   </div>
 </div>
 

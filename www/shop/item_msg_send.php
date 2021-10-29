@@ -2,7 +2,7 @@
 include_once('./_common.php');
 
 // 메세지 전송할 때 필요한 포인트
-$msg_point = 0; // 메세지 무료 이벤트
+$msg_point = 10; // 메세지 무료 이벤트
 
 $ms_id = get_search_string($_POST['ms_id']);
 

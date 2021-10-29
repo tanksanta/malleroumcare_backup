@@ -171,7 +171,6 @@
 
 .im_preview {
   height: 700px;
-  overflow-y: auto;
 }
 
 .im_preview .empty {
@@ -180,6 +179,12 @@
   color: #666;
   padding: 20px;
   text-align: center;
+}
+
+.im_preview iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .im_wr { max-width: 900px; margin: 0 auto; font-family:'Noto Sans KR', sans-serif;font-size:14px;color:#333; }
