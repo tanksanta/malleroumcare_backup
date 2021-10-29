@@ -1186,14 +1186,18 @@ if ( $ot_typereceipt ) {
 $cart_status = $od_status;
 $sql_card_point = "";
 if ($od_receipt_price > 0 && !$default['de_card_point']) {
-  $sql_card_point = " , ct_point = '0' ";
+  $sql_card_point = " , c.ct_point = '0' ";
 }
-$sql = "update {$g5['g5_shop_cart_table']}
-           set od_id = '$od_id',
-               ct_status = '$cart_status'
-               $sql_card_point
-         where od_id = '$tmp_cart_id'
-           and ct_select = '1' ";
+
+// 위탁 설치 상품중 자동출고준비 상품이면 출고준비로 바로 변경
+$sql = "UPDATE {$g5['g5_shop_cart_table']} c 
+          INNER JOIN {$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
+        SET
+          c.od_id = '$od_id',
+          c.ct_status = IF(i.it_is_direct_release_ready = TRUE, '출고준비', '$cart_status')
+          $sql_card_point
+         where c.od_id = '$tmp_cart_id'
+           and c.ct_select = '1' ";
 $result = sql_query($sql, false);
 
 

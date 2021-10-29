@@ -1237,6 +1237,10 @@ $warehouse_list = get_warehouses();
             <?php } ?>
           </select>
           1개 <input type="text" name="it_direct_delivery_price2" value="<?=$it['it_direct_delivery_price']?>" class="frm_input" size="8">원 (VAT포함)
+          &nbsp;
+          <label>
+            <input type="checkbox" name="it_is_direct_release_ready" value="1" <?php echo ($it['it_is_direct_release_ready']) ? "checked" : ""; ?>> 주문접수 시 바로 출고준비 단계로 이동
+          </label>
         </td>
       </tr>
       <tr>
@@ -2527,6 +2531,15 @@ $(function() {
       var another = (val == '1') ? '2' : '1';
       $('input[name="it_is_direct_delivery"][value="'+another+'"]').prop('checked', false);
     }
+
+    setTimeout(function() {
+      if ($($("input[name='it_is_direct_delivery']")[0]).is(":checked")) {
+        $('input[name="it_is_direct_release_ready"]').prop("checked", false);
+        $('input[name="it_is_direct_release_ready"]').prop("disabled", true);
+      } else {
+        $('input[name="it_is_direct_release_ready"]').prop("disabled", false);
+      }
+    }, 0);
   });
 
   /* 210208 */
