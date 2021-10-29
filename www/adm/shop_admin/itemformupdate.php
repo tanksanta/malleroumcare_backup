@@ -453,6 +453,7 @@ $_POST["it_delivery_min_price"] = ($_POST["it_delivery_min_price"]) ? $_POST["it
 $it_rental_price = ($_POST["it_rental_price"]) ? $_POST["it_rental_price"] : 0;
 
 $it_is_direct_delivery = (int)$it_is_direct_delivery ?: 0;
+$it_is_direct_release_ready = (int)$it_is_direct_release_ready ?: 0;
 $it_direct_delivery_partner = '';
 $it_direct_delivery_price = 0;
 if($it_is_direct_delivery == 1) {
@@ -667,6 +668,7 @@ $sql_common = "
   it_is_direct_delivery = '$it_is_direct_delivery',
   it_direct_delivery_partner = '$it_direct_delivery_partner',
   it_direct_delivery_price = '$it_direct_delivery_price',
+  it_is_direct_release_ready = '$it_is_direct_release_ready',
 
   it_rental_use_persisting_year = '$it_rental_use_persisting_year',
   it_rental_expiry_year = '$it_rental_expiry_year',
