@@ -273,7 +273,8 @@ $(function() {
 		var org_price = $("input[name=org_od_price]").val();
         var item_coupon = parseInt($("input[name=item_coupon]").val());
         $("input[name=od_price]").val(org_price - item_coupon);
-        $("input[name=sc_cp_id]").val("");
+        $("input[name=od_cp_id]").val('');
+        $("input[name=sc_cp_id]").val('');
         $("input[name=od_coupon]").val(0);
         $("input[name=od_send_coupon]").val(0);
         $("#od_cp_price").text(0);
