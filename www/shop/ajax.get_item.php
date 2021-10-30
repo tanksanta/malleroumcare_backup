@@ -16,10 +16,26 @@ $sql = "
     it_name,
     it_model,
     it_price,
+    it_price_dealer2,
     it_cust_price,
     REPLACE(a.it_name, ' ', '') as it_name_no_space,
     ca_id,
-    it_img1 as it_img
+    it_img1 as it_img,
+    it_sale_cnt,
+    it_sale_cnt_02,
+    it_sale_cnt_03,
+    it_sale_cnt_04,
+    it_sale_cnt_05,
+    it_sale_percent,
+    it_sale_percent_02,
+    it_sale_percent_03,
+    it_sale_percent_04,
+    it_sale_percent_05,
+    it_sale_percent_great,
+    it_sale_percent_great_02,
+    it_sale_percent_great_03,
+    it_sale_percent_great_04,
+    it_sale_percent_great_05
   FROM
     {$g5['g5_shop_item_table']} a
   WHERE
