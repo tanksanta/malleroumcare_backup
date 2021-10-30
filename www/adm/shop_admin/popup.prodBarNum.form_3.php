@@ -945,6 +945,17 @@ if($od["od_b_tel"]) {
     });
   });
 
+  function getUrlParams() {     
+    var params = {};  
+    
+    window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, 
+      function(str, key, value) { 
+          params[key] = decodeURI(value);
+        }
+    );     
+    
+    return params; 
+  }
 
   //종료시 멤버 수정중없에기
   function member_cancel(){
@@ -967,7 +978,13 @@ if($od["od_b_tel"]) {
         cancel : "y"
       },
       success : function(result) {
-        location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
+
+        var params = getUrlParams();
+        delete params.od_id;
+        delete params.ct_id;
+        var query_string = decodeURI($.param(params));
+
+        location.href = "<?=G5_SHOP_URL?>/release_orderlist.php?" + query_string;
       }
     });
   }
