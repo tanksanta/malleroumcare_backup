@@ -65,7 +65,7 @@ add_javascript(G5_POSTCODE_JS, 0);
             <div class="col-sm-8">
               <input type="text" name="od_temp_point" id="od_temp_point" class="form-control input-sm" value="0">
               <label for="chk_point_all">
-                <input type="checkbox" id="chk_point_all">
+                <input type="checkbox" id="chk_point_all" data-point="<?=($member['mb_point'] ?: 0)?>">
                 전액사용 (보유: <strong><?=number_format($member['mb_point']);?></strong>P)
               </label>
             </div>
@@ -468,6 +468,38 @@ function calculate_sendcost() {
 }
 
 $(function() {
+  // 포인트 전액 사용
+  $('#chk_point_all').click(function() {
+    var $point = $('#od_temp_point');
+    var total_point = $(this).data('point');
+
+    if($point.val() == total_point) {
+      $(this).prop('checked', true);
+      return false;
+    }
+
+    var checked = $(this).prop('checked');
+    if(checked) {
+      $point.val($(this).data('point'));
+    }
+  });
+  // 포인트 입력
+  $('#od_temp_point').on('change paste keyup', function() {
+    var $chk_all = $('#chk_point_all');
+    var total_point = $chk_all.data('point');
+
+    var point = $(this).val().replace(/[\D\s\._\-]+/g, "");
+    if(point < 0) point = 0;
+    if(point > total_point) point = total_point;
+
+    if(point == total_point)
+      $chk_all.prop('checked', true);
+    else
+      $chk_all.prop('checked', false);
+    
+    $(this).val(point);
+  });
+
   // 상품수량변경
   $(document).on('click', '.it_qty_wr button', function() {
     var mode = $(this).text();
