@@ -91,7 +91,7 @@ add_javascript(G5_POSTCODE_JS, 0);
         <div class="so_sch_wr flex space-between">
           <div class="so_sch_hd">품목 목록</div>
           <div class="so_sch_ipt">
-            <input type="text" class="ipt_so_sch">
+            <input type="text" class="ipt_so_sch" placeholder="품목명">
           </div>
           <button type="button" class="btn_so_sch">품목찾기</button>
         </div>
@@ -99,10 +99,17 @@ add_javascript(G5_POSTCODE_JS, 0);
         <ul id="so_item_list" class="so_item_list">
           <?php for($i = 0; $i < 2; $i++) { ?>
           <li class="flex">
+            <input type="hidden" name="it_id[]" value="">
+            <input type="hidden" name="it_price[]" value="">
             <div class="it_info_wr">
               <img class="it_img" src="/img/no_img.png" onerror="this.src='/img/no_img.png';">
               <div class="it_info">
-                <p class="it_name">ASH-120 (설치) (판매)</p>
+                <p class="it_name">
+                  ASH-120 (설치) (판매)
+                  <select name="io_id[]">
+                    <option data-price="" value="">연분홍 > XXL(110)</option>
+                  </select>
+                </p>
                 <p class="it_price">
                   판매가 : 30,800원
                   <br>└5개 이상 구매 시 26,800원
@@ -115,7 +122,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                 <div class="input-group-btn">
                   <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>
                 </div>
-                <input type="text" name="ct_qty[PRO2021022500562][]" value="1" id="ct_qty_0" class="form-control input-sm" size="5">
+                <input type="text" name="ct_qty[]" value="1" class="form-control input-sm">
                 <div class="input-group-btn">
                   <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>
                 </div>
@@ -461,7 +468,26 @@ function calculate_sendcost() {
 }
 
 $(function() {
-  //쿠폰
+  // 상품수량변경
+  $(document).on('click', '.it_qty_wr button', function() {
+    var mode = $(this).text();
+    var this_qty;
+    var $ct_qty = $(this).closest('.it_qty_wr').find('input[name^=ct_qty]');
+
+    switch(mode) {
+      case '증가':
+        this_qty = parseInt($ct_qty.val().replace(/[^0-9]/, "")) + 1;
+        $ct_qty.val(this_qty);
+        break;
+      case '감소':
+        this_qty = parseInt($ct_qty.val().replace(/[^0-9]/, "")) - 1;
+        if(this_qty < 1) this_qty = 1
+        $ct_qty.val(this_qty);
+        break;
+    }
+  })
+
+  // 쿠폰
   $("#od_coupon_btn").click(function() {
 		$('#couponModal').modal('show');
     var $this = $(this);
@@ -519,7 +545,7 @@ $(function() {
     $(this).remove();
   });
 
-  //배송지선택
+  // 배송지선택
   $('.add-ac').find('p').on('click',function(){
     $(this).siblings('ul').stop().toggle();
 

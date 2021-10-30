@@ -824,6 +824,7 @@ pre{white-space: pre-wrap;}
 .side_menu_area .conv_area { margin-top: -10px; padding: 0 5px; }
 .side_menu_area .conv_area > a { display: block; margin: 10px 0; padding: 25px 0; text-align: center; color: #fff; font-size: 18px; font-weight: bold; border-radius: 5px; }
 .side_menu_area .conv_area > a.pen_item_msg { background: #8abf63; }
+.side_menu_area .conv_area > a.simple_eform { background: #6e9254; }
 .side_menu_area .conv_area > a.simple_order { background: #ef8505; }
 
 .side_menu_area .catalog_area { padding: 10px 5px; }

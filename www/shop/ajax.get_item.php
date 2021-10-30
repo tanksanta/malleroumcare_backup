@@ -58,6 +58,19 @@ $result = sql_query($sql);
 
 $rows = [];
 while ( $row = sql_fetch_array($result) ) {
+  $option_sql = "SELECT *
+    FROM
+      {$g5['g5_shop_item_option_table']}
+    WHERE
+        it_id = '{$row['it_id']}'
+        and io_type = 0 -- 선택옵션
+  ";
+  $option_result = sql_query($option_sql);
+
+  $row['options'] = [];
+  while ($option_row = sql_fetch_array($option_result)) {
+    $row['options'][] = $option_row;
+  }
 
   $gubun = $cate_gubun_table[substr($row["ca_id"], 0, 2)];
   $gubun_text = '판매';
@@ -65,6 +78,12 @@ while ( $row = sql_fetch_array($result) ) {
   else if($gubun == '02') $gubun_text = '비급여';
 
   $row['gubun'] = $gubun_text;
+
+  // 우수사업소 가격
+  if($member['mb_level'] == 4 && $row['it_price_dealer2']) {
+    $row['it_price'] = $row['it_price_dealer2'];
+  }
+  unset($row['it_price_dealer2']);
 
   $rows[] = $row;
 }
