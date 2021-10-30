@@ -109,7 +109,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           </div>
         </div>
         <div class="im_send_wr im_desc_wr" style="border: none;">
-          <button type="submit" href="javascript:void();" id="btn_im_send" class="btn_im_send">
+          <button type="submit" id="btn_im_send" class="btn_im_send">
             <img src="<?=THEMA_URL?>/assets/img/icon_kakao.png" alt="">
             알림 메시지 전달
           </button>
