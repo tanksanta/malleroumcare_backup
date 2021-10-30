@@ -483,6 +483,10 @@
   cursor:pointer;
 }
 
+.im_wr_content {
+  padding: 10px;
+}
+
 @media (max-width: 1020px) {
   #popup_box iframe {
     width: 100%;
