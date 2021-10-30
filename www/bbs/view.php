@@ -5,7 +5,7 @@ if($board['as_code']) {
 	apms_script('code');
 }
 
-if(in_array($bo_table, ['center_meet', 'center_case', 'center_education', 'center_story']) && $board['mb_id'] !== $member['mb_id'] && !$is_admin) {
+if(in_array($bo_table, ['center_meet', 'center_case', 'center_education', 'center_story']) && $write['mb_id'] !== $member['mb_id'] && !$is_admin) {
 	alert('자신의 글만 읽을 수 있습니다.');
 }
 
