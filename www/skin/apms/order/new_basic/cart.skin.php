@@ -46,7 +46,6 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
 </div>
 
 <form name="frmcartlist" id="sod_bsk_list" method="post" action="<?php echo $action_url; ?>" class="form" role="form">
-    <input type="hidden" name="only_recipient" value="0" />
     <div class="table-responsive">
         <table class="div-table table bsk-tbl bg-white">
         <tbody>
@@ -92,7 +91,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
                     <a href="./item.php?it_id=<?php echo $item[$i]['it_id'];?>">
                         <b><?php echo stripslashes($item[$i]['it_name']); ?></b>
                     <?php if($item[$i]["prodSupYn"] == "N"){ ?>
-                        <b class="sup_n" style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
+                        <b style="position: relative; display: inline-block; width: 50px; height: 20px; line-height: 20px; top: -1px; border-radius: 5px; text-align: center; color: #FFF; font-size: 11px; background-color: #DC3333;">비유통</b>
                     <?php } ?>
                     </a>
                     <?php if($item[$i]['it_options']) { ?>
@@ -146,7 +145,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
                     <div class="form-group">
-                        <button type="button" onclick="return form_check('buy');" class="btn btn-black btn-block btn-lg"> 주문하기</button> 
+                        <button type="button" onclick="return form_check('buy');" class="btn btn-black btn-block btn-lg"> 주문하기</button>
                     </div>
                 </div>
             </div>
@@ -190,68 +189,6 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         <a id="send_estimate">견적서 출력</a>
     </div>
 
-<style>
-.pop_sup {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    z-index:99;
-    width: 320px;
-    min-height: 220px;
-    background-color: white;
-    border: 1px solid #f5ab81;
-    -webkit-box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.2);
-    box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.2);
-    display: none;
-    padding: 15px;
-}
-.pop_sup .close {
-	position:absolute;
-	top: 15px;
-	right: 15px;
-	color: #b0b0b0;
-	font-size: 1.5em;
-}
-.pop_sup h3 {
-    text-align: left;
-    color: #f27935;
-    font-size: 13px;
-    margin: 0;
-    padding-bottom: 20px;
-    font-weight: bold;
-}
-.pop_sup p {
-    text-align: center;
-    font-size: 13px;
-    padding-top: 20px;
-}
-.pop_sup .sub_n_btn {
-    background-color: #f08606;
-    color: white;
-    font-size: 14px;
-}
-.pop_sup .recipient_btn {
-    margin-top: 10px;
-    display: block;
-    text-align: center;
-    text-decoration: underline;
-}
-</style>
-
-    <div class="pop_sup">
-        <i class="fa fa-close fa-lg close"></i>
-        <h3>주문알림</h3>
-        <p>
-        주문 품목 중 비유통 품목이 있습니다.<br>
-        비유통 품목은 수급자 계약을 위한 주문만 가능합니다.
-        </p>
-        <button type="button" class="btn btn-block btn-lg sub_n_btn">비유통 품목 제외 후 상품주문</button>
-        <a href="#" class="btn recipient_btn" onclick="return form_check('sup_recipient');">수급자 계약을 위한 주문하기</a>
-    </div>
-
 </form>
 
 <?php if($setup_href) { ?>
@@ -263,22 +200,6 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
 <?php } ?>
 
 <script>
-
-    $('.pop_sup .close').click(function() {
-        $('.pop_sup').fadeOut();
-    });
-
-    $('.sub_n_btn').click(function() {
-        // 비유통 상품 체크 해제
-        var parents = $('input.check_cart:checked').closest('tr');
-        for(var i=0; i<parents.length; i++) {
-            if ($($(parents)[i]).find('.sup_n').length) {
-                $($(parents)[i]).find('input.check_cart').prop("checked", false);
-            }
-        }
-
-        form_check('buy');
-    })
 
     //클릭시 총 상품금액 변경
     $(".check_cart").click(function() {
@@ -391,23 +312,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
                 return false;
             }
 
-            // 비유통 상품 있는지 체크
-            var parents = $('input.check_cart:checked').closest('tr');
-            for(var i=0; i<parents.length; i++) {
-                if ($($(parents)[i]).find('.sup_n').length) {
-                    $('.pop_sup').fadeIn();
-                    return false;
-                }
-            }
-
             f.act.value = act;
-            f.submit();
-        }
-        // 무조건 수급자 주문
-        else if (act == "sup_recipient")
-        {
-            f.only_recipient.value = '1';
-            f.act.value = 'buy';
             f.submit();
         }
         else if (act == "alldelete")

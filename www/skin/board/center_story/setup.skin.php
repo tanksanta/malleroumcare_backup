@@ -2,10 +2,6 @@
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 // input의 name을 boset[배열키] 형태로 등록
-
-if($boset['gap_r'] == "") $boset['gap_r'] = 15;
-if($boset['gap_b'] == "") $boset['gap_b'] = 30;
-
 ?>
 
 <div class="tbl_head01 tbl_wrap">
@@ -23,11 +19,20 @@ if($boset['gap_b'] == "") $boset['gap_b'] = 30;
 	</thead>
 	<tbody>
 	<tr>
-		<td align="center">간격설정</td>
+		<td align="center">이미지출력</td>
 		<td>
-			<input type="text" name="boset[gap_r]" value="<?php echo ($boset['gap_r']);?>" size="4" class="frm_input"> px 좌우간격
+			<label><input type="checkbox" name="boset[img]" value="1"<?php echo ($boset['img']) ? ' checked' : '';?>> PC 출력</label>
 			&nbsp;
-			<input type="text" name="boset[gap_b]" value="<?php echo ($boset['gap_b']);?>" size="4" class="frm_input"> px 상하간격
+			<label><input type="checkbox" name="boset[mimg]" value="1"<?php echo ($boset['mimg']) ? ' checked' : '';?>> 모바일 출력</label>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">이미지없음</td>
+		<td>
+			<input type="text" name="boset[icon]" id="micon" value="<?php echo ($boset['icon']);?>" size="20" class="frm_input"> 
+			<a href="<?php echo G5_BBS_URL;?>/icon.php?fid=micon" class="btn_frmline win_scrap">아이콘 선택</a>
+			&nbsp;
+			<label><input type="checkbox" name="boset[photo]" value="1"<?php echo ($boset['photo']) ? ' checked' : '';?>> 회원사진 출력</label>
 		</td>
 	</tr>
 	<tr>
@@ -54,12 +59,9 @@ if($boset['gap_b'] == "") $boset['gap_b'] = 30;
 	<tr>
 		<td align="center">출력설정</td>
 		<td>
-			<select name="boset[shadow]">
-				<?php echo apms_shadow_options($boset['shadow']);?>
-			</select>
+			<label><input type="checkbox" name="boset[sort]" value="1" <?php echo ($boset['sort']) ? ' checked' : '';?>> 글정렬버튼</label>
 			&nbsp;
-			<label><input type="checkbox" name="boset[sort]" value="1"<?php echo ($boset['sort']) ? ' checked' : '';?>> 글정렬버튼</label>
-
+			<label><input type="checkbox" name="boset[cateshow]" value="1" <?php echo ($boset['cateshow']) ? ' checked' : '';?>> PC에서 전체에서만 분류 출력 - 개별 분류에서는 숨김</label>
 		</td>
 	</tr>
 	<tr>
