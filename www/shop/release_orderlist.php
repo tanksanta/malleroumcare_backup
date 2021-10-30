@@ -108,7 +108,8 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     	</a>
     </div>
 	</div>
-	
+
+	<form name="release_search_form">
 	<!-- 검색 -->
 	<div id="listSearchWrap">
   <ul>
@@ -130,14 +131,14 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
           while($a_row = sql_fetch_array($auth_result)) {
               $a_mb = get_member($a_row['mb_id']);
           ?>
-          <option value="<?=$a_mb['mb_id']?>"><?=$a_mb['mb_name']?></option>
+          <option value="<?=$a_mb['mb_id']?>" <?php echo $manager_option == $a_mb['mb_id'] ? 'selected' : ''; ?>><?=$a_mb['mb_name']?></option>
           <?php } ?>
         </select>
         <select name="ct_status_option" id="ct_status_option">
-          <option value="출고준비,배송" selected>출고준비/출고완료</option>
-          <option value="준비,출고준비,배송,완료">전체</option>
-          <option value="준비">상품준비</option>
-          <option value="배송">출고완료</option>
+          <option value="출고준비,배송" <?php echo !$ct_status_option ? 'selected' : ''; ?>>출고준비/출고완료</option>
+          <option value="준비,출고준비,배송,완료" <?php echo $ct_status_option == '준비,출고준비,배송,완료' ? 'selected' : ''; ?>>전체</option>
+          <option value="준비" <?php echo $ct_status_option == '준비' ? 'selected' : ''; ?>>상품준비</option>
+          <option value="배송" <?php echo $ct_status_option == '배송' ? 'selected' : ''; ?>>출고완료</option>
         </select>
       </li>
     </ul>
@@ -145,33 +146,33 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
       <li>
         <select name="search_option" id="search_option">
           <!-- <option value="">선택하세요</option> -->
-          <option value="od_b_name,it_name,od_name,ct_delivery_num" selected>전체</option>
-          <option value="od_b_name">수화인</option>
-          <option value="it_name">상품명</option>
-          <option value="od_name">사업소명</option>
-          <option value="ct_delivery_num">송장번호</option>
+          <option value="od_b_name,it_name,od_name,ct_delivery_num" <?php echo !$search_option ? "selected" : ''; ?>>전체</option>
+          <option value="od_b_name" <?php echo $search_option == 'od_b_name' ? 'selected' : ''; ?>>수화인</option>
+          <option value="it_name" <?php echo $search_option == 'it_name' ? 'selected' : ''; ?>>상품명</option>
+          <option value="od_name" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>사업소명</option>
+          <option value="ct_delivery_num" <?php echo $search_option == 'ct_delivery_num' ? 'selected' : ''; ?>>송장번호</option>
         </select>
-        <input type="text" name="search_text" id="search_text" placeholder="검색명입력" >
+        <input type="text" name="search_text" id="search_text" placeholder="검색명입력" value="<?php echo $search_text; ?>">
       </li>
     </ul>
     <ul>
       <li>
         <select name="add_search_option" id="add_search_option">
-          <option value="od_name">사업소명</option>
-          <option value="it_name">상품명</option>
+          <option value="od_name" <?php echo !$add_search_option ? "selected" : ''; ?>>사업소명</option>
+          <option value="it_name" <?php echo $add_search_option == 'it_name' ? 'selected' : ''; ?>>상품명</option>
         </select>
-        <input type="text" name="add_search_text" id="add_search_text" placeholder="검색명입력" >
+        <input type="text" name="add_search_text" id="add_search_text" placeholder="검색명입력" value="<?php echo $add_search_text; ?>">
       </li>
     </ul>
     <ul>
     	<li>
-        <input type="text" id="search_fr_date" placeholder="시작일자" dateonly>
+        <input type="text" id="search_fr_date" name="search_fr_date" placeholder="시작일자" dateonly value="<?php echo $search_fr_date; ?>">
     	</li>
     	<li style="width: 25px;">
         <span>~</span>
     	</li>
     	<li>
-        <input type="text" id="search_to_date" placeholder="종료일자" dateonly>
+        <input type="text" id="search_to_date" name="search_to_date" placeholder="종료일자" dateonly value="<?php echo $search_to_date; ?>">
     	</li>
     	<li style="width: 90px; padding-left: 20px;">
         <button type="button" id="searchSubmitBtn">검색</button>
@@ -181,7 +182,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     
   <!-- 정렬 -->
   <div id="listSortWrap">
-    <input type="checkbox" id="cf_flag" <?php if($_COOKIE['cf_flag'] == 'true') echo 'checked'; ?>>
+    <input type="checkbox" id="cf_flag" <?php if($_COOKIE['cf_flag'] == 'true' || $cf_flag) echo 'checked'; ?>>
     <label for="cf_flag">
       <span class="icon">
         <i class="fa fa-check"></i>
@@ -189,7 +190,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
       <span class="label">바코드 등록 미완료 만 보기</span>
     </label>
 
-    <input type="checkbox" id="cf_flag2" <?php if($_COOKIE['cf_flag2'] == 'true') echo 'checked'; ?>>
+    <input type="checkbox" id="cf_flag2" <?php if($_COOKIE['cf_flag2'] == 'true' || $cf_flag2) echo 'checked'; ?>>
     <label for="cf_flag2">
       <span class="icon">
         <i class="fa fa-check"></i>
@@ -197,7 +198,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
       <span class="label">내 출고담당만 보기</span>
     </label>
 
-    <input type="checkbox" id="cf_flag3" <?php if($_COOKIE['cf_flag3'] == 'true') echo 'checked'; ?>>
+    <input type="checkbox" id="cf_flag3" <?php if($_COOKIE['cf_flag3'] == 'true' || $cf_flag3) echo 'checked'; ?>>
     <label for="cf_flag3">
       <span class="icon">
         <i class="fa fa-check"></i>
@@ -205,6 +206,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
       <span class="label">미지정만 보기</span>
     </label>
   </div>
+  </form>
     
   <!-- 데이터 목록 -->
   <div id="listDataWrap">
@@ -465,6 +467,8 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     var stock = $(this).attr("data-stock");
     var option = encodeURIComponent($(this).attr("data-option"));
 
+    var search_params = $("form[name='release_search_form']").serialize();
+
     $.ajax({
       url : "/shop/ajax.release_orderview.check.php",
       type : "POST",
@@ -474,10 +478,10 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
       success : function(result) {
         if(result.error == "Y") {
           if(confirm("작업중입니다. 무시하고 진행 시 이전 작업자는 작업이 종료됩니다. 무시하시겠습니까?")) {
-            location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&ct_id="+ct_id;
+            location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&ct_id="+ct_id + "&" + search_params;
           }
         } else {
-          location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&ct_id="+ct_id;
+          location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&ct_id="+ct_id + "&" + search_params;
         }
       }
     });
