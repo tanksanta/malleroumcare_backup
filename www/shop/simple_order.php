@@ -22,14 +22,16 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_ord
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 add_javascript(G5_POSTCODE_JS, 0);
+
 ?>
 
 <section class="wrap">
   <div class="sub_section_tit">주문신청</div>
   <div class="inner">
-    <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post">
+    <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post" onsubmit="return form_submit(this);">
       <input type="hidden" name="org_od_price" value="0">
       <input type="hidden" name="od_price" value="0">
+      <input type="hidden" name="od_settle_case" value="월 마감 정산">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="form-group">
@@ -454,6 +456,7 @@ function close_popup_box() {
 var item_sale_obj = {};
 var zipcode = '';
 var mb_level = <?=$member['mb_level']?>;
+var min_point = <?=$default['de_settle_min_point']?>;
 
 // 구매자 정보와 동일합니다.
 function gumae2baesong() {
@@ -466,6 +469,36 @@ function gumae2baesong() {
   f.od_b_addr1.value = f.od_addr1.value;
   f.od_b_addr2.value = f.od_addr2.value;
   calculate_sendcost(String(f.od_b_zip.value));
+}
+
+// 폼 전송
+function form_submit(form) {
+
+  var point = parseInt( $('#od_temp_point').val() || 0 );
+  if(point > 0 && point < min_point) {
+    alert('포인트는 최소 ' + min_point + 'P 이상이어야 사용할 수 있습니다.');
+    return false;
+  }
+
+  var result = false;
+
+  $.ajax({
+    url: 'ajax.simple_order.php',
+    async: false,
+    method: 'POST',
+    cache: false,
+    data: $(form).serialize(),
+    dataType: 'json',
+    success: function() {
+      result = true;
+    },
+    error: function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    }
+  });
+
+  return result;
 }
 
 // 주문금액계산
@@ -487,17 +520,26 @@ function calculate_order_price() {
     }
 
     // 묶음할인 적용
+    var sale_qty = 0;
+    for(var i = 0; i < $li.length; i++) {
+      var this_it_id = $($li).eq(i).find('input[name="it_id[]"]').val();
+      if(this_it_id !== it_id) continue;
+
+      var this_qty = parseInt( $li.eq(i).find('input[name="ct_qty[]"]').val() );
+      if( this_qty > 0 ) {
+        sale_qty += this_qty;
+      }
+    }
     var it_sale_cnt = 0;
     if(item_sale_obj[it_id] && item_sale_obj[it_id].it_sale_cnt) {
       for(var i = 0; i < item_sale_obj[it_id].it_sale_cnt.length; i++) {
         var sale_cnt = parseInt(item_sale_obj[it_id].it_sale_cnt[i]);
-        if(ct_qty >= sale_cnt && sale_cnt > it_sale_cnt) {
+        if(sale_qty >= sale_cnt && sale_cnt > it_sale_cnt) {
           it_sale_cnt = sale_cnt;
           it_price = parseInt( mb_level === 4 ? item_sale_obj[it_id].it_sale_percent_great[i] : item_sale_obj[it_id].it_sale_percent[i] );
         }
       }
     }
-
 
     var ct_price = ( it_price + io_price ) * ct_qty;
     $(this).find('.it_price_wr .it_price').text(number_format(ct_price) + '원');
@@ -589,7 +631,9 @@ function select_item(obj, io_id, ct_qty) {
   var $li = $('<li class="flex">');
   $li.append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
   .append('<input type="hidden" name="it_price[]" value="' + obj.it_price + '">')
-  .append('<input type="hidden" name="it_sc_type[]" value="' + obj.it_sc_type + '">');
+  .append('<input type="hidden" name="it_sc_type[]" value="' + obj.it_sc_type + '">')
+  .append('<input type="hidden" name="cp_id[]" value="">')
+  .append('<input type="hidden" name="cp_price[]" value="">');
 
   var $info_wr = $('<div class="it_info_wr">');
   $info_wr.append('<img class="it_img" src="/data/item/' + obj.it_img + '" onerror="this.src=\'/img/no_img.png\';">');
@@ -761,6 +805,9 @@ $(function() {
     calculate_order_price();
   });
   $(document).on('change paste keyup', 'input[name="ct_qty[]"]', function() {
+    if($(this).val() < 1)
+      $(this).val(1);
+
     calculate_order_price();
   });
 
