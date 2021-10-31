@@ -13,6 +13,36 @@
   justify-content: space-between;
 }
 
+/* 품목찾기 팝업 */
+#item_popup_box {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index:9999;
+  background: rgba(0, 0, 0, 0.8);
+}
+#item_popup_box iframe {
+  width:500px;
+  height:700px;
+  max-height: 80%;
+  position: absolute; 
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+}
+.popup_box_close {
+  position:absolute;
+  top:15px;
+  right: 15px;
+  color: white;
+  font-size: 2.5em;
+  cursor:pointer;
+}
+
 /* 상단 폼 */
 .panel-default {
   position: relative;

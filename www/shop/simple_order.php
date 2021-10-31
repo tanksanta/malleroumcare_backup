@@ -401,6 +401,14 @@ add_javascript(G5_POSTCODE_JS, 0);
   </div>
 </div>
 
+<!-- 품목찾기 팝업 -->
+<div id="item_popup_box">
+  <div class="popup_box_close">
+    <i class="fa fa-times"></i>
+  </div>
+  <iframe name="iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+</div>
+
 <!-- 팝업 박스 시작 -->
 <style>
 #popup_box { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
@@ -427,18 +435,18 @@ $(function() {
 });
 
 function open_popup_box(url) {
-    $('html, body').addClass('modal-open');
-    $("#popup_box > div").html('<iframe src="' + url + '">');
-    $("#popup_box iframe").load(function() {
-        $("#popup_box").show();
-    });
-  }
+  $('html, body').addClass('modal-open');
+  $("#popup_box > div").html('<iframe src="' + url + '">');
+  $("#popup_box iframe").load(function() {
+    $("#popup_box").show();
+  });
+}
 
-  function close_popup_box() {
-    $('html, body').removeClass('modal-open');
-    $('#popup_box').hide();
-    $('#popup_box').find('iframe').remove();
-  }
+function close_popup_box() {
+  $('html, body').removeClass('modal-open');
+  $('#popup_box').hide();
+  $('#popup_box').find('iframe').remove();
+}
 </script>
 <!-- 팝업 박스 끝 -->
 
@@ -538,10 +546,21 @@ function calculate_sendcost() {
 }
 
 // 품목 선택
-function select_item(obj, opt) {
-  $('body').removeClass('modal-open');
-  $('#popup_box').hide();
 
+function select_items(obj, items) {
+  $('body').removeClass('modal-open');
+  $('#item_popup_box').hide();
+
+  if(items.length) {
+    for(var i = 0; i < items.length; i++) {
+      var item = items[i];
+
+      select_item(obj, item.io_id, item.ct_qty);
+    }
+  }
+}
+
+function select_item(obj, io_id, ct_qty) {
   // 묶음 할인 저장
   item_sale_obj[obj.it_id] = {
     it_sale_cnt: [
@@ -640,6 +659,14 @@ function select_item(obj, opt) {
   .appendTo($li);
 
   $('#so_item_list').append($li);
+
+  if(io_id) {
+    $li.find('select[name="io_id[]"]').val(io_id);
+  }
+
+  if(ct_qty) {
+    $li.find('input[name="ct_qty[]"]').val(ct_qty);
+  }
 
   calculate_order_price();
   $('#ipt_so_sch').val('').next().focus();
@@ -846,6 +873,19 @@ $(function() {
     var url = "<?php echo G5_SHOP_URL;?>/orderaddress.php";
     open_popup_box(url);
     return false;
+  });
+
+    // 품목찾기 팝업
+  $('#item_popup_box').click(function() {
+    $('body').removeClass('modal-open');
+    $('#item_popup_box').hide();
+  });
+  $('.btn_so_sch').click(function(e) {
+    var url = 'pop.item.select.php';
+
+    $('#item_popup_box iframe').attr('src', url);
+    $('body').addClass('modal-open');
+    $('#item_popup_box').show();
   });
 });
 </script>
