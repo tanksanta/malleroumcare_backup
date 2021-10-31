@@ -54,6 +54,9 @@ $sql = "
       a.ca_id LIKE '20%' OR
       a.ca_id LIKE '70%'
     )
+    AND a.it_id NOT IN ('PRO2021072200013', 'PRO2021072200012') -- 체험상품 제외
+    AND a.it_name NOT LIKE 'test%' -- 테스트상품 제외
+    AND a.it_use = 1 -- 판매상품
     AND a.prodSupYn = 'Y'
 ";
 
