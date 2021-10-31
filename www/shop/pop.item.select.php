@@ -70,7 +70,7 @@ $sql  = " select
            it_model,
            it_price,
            it_cust_price,
-           a. ca_id,
+           a.ca_id,
            it_img1 as it_img
            $sql_common
            $sql_order
@@ -155,7 +155,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
                     </td>
                     <td>
                         <?php if(!$no_option) { ?>
-                        <a href="./pop.stock.item.add.option.php?it_id=<?php echo $row['it_id']; ?>" class="shbtn lineblue">선택</a>
+                        <a href="./pop.item.select.option.php?it_id=<?php echo $row['it_id']; ?>" class="shbtn lineblue">선택</a>
                         <?php } else { ?>
                         <a href="javascript:void(0);" data-item="<?php echo get_text(json_encode($row)); ?>" class="shbtn lineblue" onclick="select_item(this);">선택</a>
                         <?php } ?>
