@@ -245,11 +245,11 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         <i class="fa fa-close fa-lg close"></i>
         <h3>주문알림</h3>
         <p>
-        주문 품목 중 비유통 품목이 있습니다.<br>
-        비유통 품목은 수급자 계약을 위한 주문만 가능합니다.
+        비유통 품목은 재고등록 후<br>
+        수급자 계약서 작성만 가능합니다.
         </p>
         <button type="button" class="btn btn-block btn-lg sub_n_btn">비유통 품목 제외 후 상품주문</button>
-        <a href="#" class="btn recipient_btn" onclick="return form_check('sup_recipient');">수급자 계약을 위한 주문하기</a>
+        <a href="#" class="btn recipient_btn" onclick="return form_check('sup_recipient');">수급자 계약서 작성하기</a>
     </div>
 
 </form>
