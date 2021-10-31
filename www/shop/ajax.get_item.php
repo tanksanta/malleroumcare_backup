@@ -21,6 +21,7 @@ $sql = "
     REPLACE(a.it_name, ' ', '') as it_name_no_space,
     ca_id,
     it_img1 as it_img,
+    it_delivery_cnt,
     it_sale_cnt,
     it_sale_cnt_02,
     it_sale_cnt_03,
