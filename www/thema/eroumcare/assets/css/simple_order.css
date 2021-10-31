@@ -145,6 +145,7 @@
   -webkit-box-flex: 1;
   -ms-flex: 1;
   flex-grow: 1; 
+  min-height: 100px;
 }
 .it_info_wr .it_img {
   position: absolute;
@@ -191,7 +192,6 @@
   line-height: 1.25;
   color: #666;
   width: 120px;
-  padding: 0 4px;
   margin: 4px auto 0 auto;
 }
 .it_price_wr {

@@ -91,13 +91,13 @@ add_javascript(G5_POSTCODE_JS, 0);
         <div class="so_sch_wr flex space-between">
           <div class="so_sch_hd">품목 목록</div>
           <div class="so_sch_ipt">
-            <input type="text" class="ipt_so_sch" placeholder="품목명">
+            <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="품목명">
           </div>
           <button type="button" class="btn_so_sch">품목찾기</button>
         </div>
 
         <ul id="so_item_list" class="so_item_list">
-          <?php for($i = 0; $i < 2; $i++) { ?>
+          <?php /* ?>
           <li class="flex">
             <input type="hidden" name="it_id[]" value="">
             <input type="hidden" name="it_price[]" value="">
@@ -136,7 +136,7 @@ add_javascript(G5_POSTCODE_JS, 0);
               <button type="button" class="btn_del_item">삭제</button>
             </div>
           </li>
-          <?php } ?>
+          <?php */ ?>
         </ul>
 
       </div>
@@ -220,7 +220,7 @@ add_javascript(G5_POSTCODE_JS, 0);
       </section>
       <!-- } 주문하시는 분 입력 끝 -->
 
-      <div class="order-info" style="margin-top: 20px;">
+      <div class="order-info" style="margin-top: 40px;">
         <div class="top">
           <h5>배송정보</h5>
           <div class="add-ac">
@@ -442,7 +442,9 @@ function open_popup_box(url) {
 <!-- 팝업 박스 끝 -->
 
 <script>
+var item_sale_obj = {};
 var zipcode = '';
+var mb_level = <?=$member['mb_level']?>;
 
 // 구매자 정보와 동일합니다.
 function gumae2baesong() {
@@ -467,7 +469,134 @@ function calculate_sendcost() {
   // do nothing;
 }
 
+// 품목 선택
+function select_item(obj, opt) {
+  $('body').removeClass('modal-open');
+  $('#popup_box').hide();
+
+  // 묶음 할인 저장
+  item_sale_obj[obj.id] = {
+    it_sale_cnt: [
+      obj.it_sale_cnt,
+      obj.it_sale_cnt_02,
+      obj.it_sale_cnt_03,
+      obj.it_sale_cnt_04,
+      obj.it_sale_cnt_05,
+    ],
+    it_sale_percent: [
+      obj.it_sale_percent,
+      obj.it_sale_percent_02,
+      obj.it_sale_percent_03,
+      obj.it_sale_percent_04,
+      obj.it_sale_percent_05,
+    ],
+    it_sale_percent_great: [
+      obj.it_sale_percent_great,
+      obj.it_sale_percent_great_02,
+      obj.it_sale_percent_great_03,
+      obj.it_sale_percent_great_04,
+      obj.it_sale_percent_great_05
+    ],
+  }
+
+  var $li = $('<li class="flex">');
+  $li.append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
+  .append('<input type="hidden" name="it_price[]" value="' + obj.it_price + '">');
+
+  var $info_wr = $('<div class="it_info_wr">');
+  $info_wr.append('<img class="it_img" src="/data/item/' + obj.it_img + '" onerror="this.src=\'/img/no_img.png\';">');
+
+  var $info = $('<div class="it_info">');
+  var $it_name = $('<p class="it_name">');
+  $it_name.append(obj.it_name + ' (' + obj.gubun + ')');
+  var it_price = parseInt(obj.it_price);
+  var ct_price = it_price;
+  if (obj.options.length) {
+    var option_html = "<select name=\"io_id[]\">";
+    for(var i = 0; i < obj.options.length; i++) {
+      if (i === 0) {
+        ct_price += parseInt(obj.options[i]['io_price']);
+      }
+      option_html += "<option data\-price=\"" + obj.options[i]['io_price'] + "\" value=\"" + obj.options[i]['io_id'] + "\">" + obj.options[i]['io_id'].replace(//gi, " > ") + "</option>";
+    }
+    option_html += "</select>";
+    $it_name.append(option_html);
+  } else {
+    var option_html = "<input type=\"hidden\" name=\"io_id[]\" value=\"\">";
+    $it_name.append(option_html);
+  }
+  var $it_price = $('<p class="it_price">');
+  $it_price.append('판매가 : ' + number_format(it_price));
+
+  if(item_sale_obj[obj.id].it_sale_cnt && item_sale_obj[obj.id].it_sale_cnt.length) {
+    for(var i = 0; i <= item_sale_obj[obj.id].it_sale_cnt.length; i++) {
+      var it_sale_cnt = parseInt(item_sale_obj[obj.id].it_sale_cnt[i]);
+      if(it_sale_cnt) {
+        var it_sale_price = mb_level === 4 ? item_sale_obj[obj.id].it_sale_percent_great[i] : item_sale_obj[obj.id].it_sale_percent[i];
+        $it_price.append('<br>└' + it_sale_cnt + '개  이상 구매 시 ' + number_format(it_sale_price) + '원');
+      }
+    } 
+  }
+
+  console.log($info);
+
+  $info.append($it_name)
+  .append($it_price)
+  .appendTo($info_wr);
+  $li.append($info_wr);
+
+  var $qty_wr = $('<div class="it_qty_wr">');
+  $qty_wr.append('\
+    <div class="input-group">\
+      <div class="input-group-btn">\
+          <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>\
+      </div>\
+      <input type="text" name="ct_qty[]" value="1" class="form-control input-sm">\
+      <div class="input-group-btn">\
+          <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>\
+      </div>\
+  </div>\
+  ')
+  .append('\
+    <div class="it_qty_desc">\
+      본 상품은 ' + obj.it_delivery_cnt + '개 주문 시 한 박스로 포장됩니다.\
+    </div>\
+  ')
+  .appendTo($li);
+
+  var $price_wr = $('<div class="it_price_wr flex space-between">');
+  $price_wr.append('<p class="it_price">' + number_format(ct_price) + '원</p>')
+  .append('<input type="hidden" name="ct_price[]" value="' + ct_price + '">')
+  .append('<button type="button" class="btn_del_item">삭제</button>')
+  .appendTo($li);
+
+  $('#so_item_list').append($li);
+}
+
 $(function() {
+  // 품목 검색
+  $('#ipt_so_sch').flexdatalist({
+    minLength: 1,
+    url: 'ajax.get_item.php',
+    cache: true, // cache
+    searchContain: true, // %검색어%
+    noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
+    selectionRequired: true,
+    focusFirstResult: true,
+    searchIn: ["it_name","it_model","id", "it_name_no_space"],
+    visibleCallback: function($li, item, options) {
+      var $item = {};
+      $item = $('<span>')
+        .html("[" + item.gubun + "] " + item.it_name + " (" + item.it_cust_price + "원)");
+
+      $item.appendTo($li);
+      return $li;
+    },
+  })
+  .on("select:flexdatalist", function(event, obj, options) {
+    select_item(obj);
+  });
+
   // 포인트 전액 사용
   $('#chk_point_all').click(function() {
     var $point = $('#od_temp_point');
