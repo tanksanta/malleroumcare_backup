@@ -22,6 +22,7 @@ $sql = "
     ca_id,
     it_img1 as it_img,
     it_delivery_cnt,
+    it_sc_type,
     it_sale_cnt,
     it_sale_cnt_02,
     it_sale_cnt_03,
