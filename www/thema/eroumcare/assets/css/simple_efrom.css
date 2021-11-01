@@ -209,7 +209,7 @@
   border: 1px solid #ddd;
 }
 .se_item_list .it_info {
-  margin: 10px 0;
+  margin-bottom: 10px;
 }
 .se_item_list .it_info > p {
   margin: 0;

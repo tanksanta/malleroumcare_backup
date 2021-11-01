@@ -26,9 +26,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
               <strong>수급자명</strong>
             </label>
             <div class="col-md-3">
-              <input type="hidden" name="penId" id="penId" value="">
               <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="" placeholder="수급자명">
-              <span id="pen_id_flexdatalist_result" class="form_desc"></span>
             </div>
           </div>
           <div class="form-group">
@@ -94,11 +92,11 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             </div>
           </div>
           <div class="form-group">
-            <label for="penJumin1" class="col-md-2 control-label">
+            <label for="penJumin" class="col-md-2 control-label">
               <strong>주민번호(앞자리)</strong>
             </label>
             <div class="col-md-3">
-              <input type="text" name="penJumin1" id="penJumin1" class="form-control input-sm pen_id_flexdatalist" value="">
+              <input type="text" name="penJumin" id="penJumin" class="form-control input-sm" value="">
             </div>
           </div>
         </div>
@@ -167,6 +165,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             수급자와 작성할 계약서 미리보기
           </div>
           <div id="se_preview" class="se_preview">
+            <div class="empty">품목선택 시 생성됩니다.</div>
           </div>
         </div>
       </div>
@@ -180,5 +179,34 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
     </div>
     <iframe name="iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
 </div>
+
+<script>
+$('.pen_id_flexdatalist').flexdatalist({
+  minLength: 1,
+  url: 'ajax.get_pen_id.php',
+  cache: true, // cache
+  searchContain: true, // %검색어%
+  noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
+  visibleProperties: ["penNm"],
+  searchIn: ["penNm"],
+  focusFirstResult: true,
+})
+.on('change:flexdatalist', function() {
+  // 이름 변경됨
+})
+.on("select:flexdatalist", function(event, obj, options) {
+  $('#penLtmNum').val(obj.penLtmNum);
+  if(obj.penGender == '남' || obj.penGender == '여')
+    $('input[name="penGender"][value="' + obj.penGender + '"]').prop('checked', true);
+  if(obj.penRecGraCd)
+    $('#penRecGraCd').val(obj.penRecGraCd);
+  if(obj.penTypeCd)
+    $('#penTypeCd').val(obj.penTypeCd);
+  $('#penBirth').val(obj.penBirth);
+  $('#penExpiStDtm').val(obj.penExpiStDtm);
+  $('#penExpiEdDtm').val(obj.penExpiEdDtm);
+  $('#penJumin').val(obj.penJumin);
+});
+</script>
 
 <?php include_once("./_tail.php"); ?>
