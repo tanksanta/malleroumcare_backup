@@ -1623,6 +1623,10 @@ pre{white-space: pre-wrap;}
     width: 100%;
     margin-top: 43px;
 	}
+
+	.is-pc .at-body {
+		padding: 0 10px;
+	}
 }
 
 @media (max-width: 960px) {

@@ -261,6 +261,7 @@
     margin: 0;
   }
   .it_info_wr .it_info .it_name select {
+    display: block;
     margin: 10px 0 0 0;
   }
   .it_qty_wr .it_qty_desc {
