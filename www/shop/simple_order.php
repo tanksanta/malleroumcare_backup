@@ -7,12 +7,6 @@ if($member['mb_type'] !== 'default')
 $g5['title'] = '주문신청';
 include_once("./_head.php");
 
-/*
-set_cart_id(1);
-set_session("ss_direct", 1);
-$tmp_cart_id = get_session('ss_cart_direct');
-*/
-
 $skin_row = array();
 $skin_row = apms_rows('order_'.MOBILE_.'skin, order_'.MOBILE_.'set');
 $skin_name = $skin_row['order_'.MOBILE_.'skin'];
