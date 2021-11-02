@@ -273,7 +273,7 @@ function select_item(obj) {
     $it_ipt.append('\
       <div class="flex">\
         <div class="it_ipt_hd">계약기간</div>\
-        <div class="it_ipt">\
+        <div class="it_date_wr it_ipt">\
           <input type="hidden" name="it_date[]">\
           <input type="text" class="datepicker inline" data-range="from"> ~ <input type="text" class="datepicker inline" data-range="to">\
         </div>\
@@ -312,6 +312,26 @@ function select_item(obj) {
 var loading = false;
 function save_eform() {
   if(loading) return;
+
+  // 바코드 값 적용
+  $('.it_barcode_wr').each(function() {
+    var it_barcode = [];
+    $(this).find('.it_barcode').each(function() {
+      it_barcode.push($(this).val());
+    });
+
+    $(this).find('input[name="it_barcode[]"]').val(it_barcode.join(String.fromCharCode(30)));
+  });
+
+  // 대여제품 계약기간 값 적용
+  $('.it_date_wr').each(function() {
+    var from = $(this).find('input[data-range="from"]').val();
+    var to = $(this).find('input[data-range="to"]').val();
+
+    if(from && to) {
+      $(this).find('input[name="it_date[]"]').val(from + '-' + to);
+    }
+  });
 
   loading = true;
   var $form = $('#form_simple_eform');
