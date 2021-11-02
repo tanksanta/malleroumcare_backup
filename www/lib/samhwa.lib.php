@@ -876,6 +876,10 @@ $delivery_companys = array(
     'val' => 'ilogen'
   ),
   array(
+    'name' => '롯데택배',
+    'val' => 'lotteglogis'
+  ),
+  array(
     'name' => '한진택배',
     'val' => 'hanjin'
   ),
@@ -902,10 +906,6 @@ $delivery_companys = array(
   array(
     'name' => '합동택배',
     'val' => 'hdexp'
-  ),
-  array(
-    'name' => '롯데택배',
-    'val' => 'lotteglogis'
   ),
   array(
     'name' => '천일택배',
