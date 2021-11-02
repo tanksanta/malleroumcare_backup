@@ -112,6 +112,7 @@ input[type="submit"].popup_recipient_security_form_button {
 <script src="<?php echo G5_JS_URL; ?>/client.min.js"></script>
 <script>
 var client = new ClientJS(); // Create A New Client Object
+var ajaxIsRunning = false;
 
 function get_fingerprint() {
   // var fingerprint = client.getFingerprint(); // Get Client's Fingerprint
@@ -127,6 +128,8 @@ function closePopup() {
   $("#popup_recipient", window.parent.document).find("iframe").remove();
 }
 function registDevice() {
+  if (ajaxIsRunning) return;
+
   if ($("#popup_recipient_security_form_check").is(":checked") == false) {
     alert("확인함에 체크해 주세요.");
     return;
@@ -138,6 +141,7 @@ function registDevice() {
     return;
   }
 
+  ajaxIsRunning = true;
   var fingerprint = get_fingerprint();
   $.ajax({
     type: 'POST',
@@ -157,6 +161,7 @@ function registDevice() {
     console.log("fail");
     console.log(result.responseJSON);
     alert(result.responseJSON.message);
+    ajaxIsRunning = false;
   });
 
   return false;
@@ -178,11 +183,13 @@ function sendSecurityEmail(data) {
     // closePopup();
     alert("기기가 등록되었습니다.");
     window.parent.location.reload();
+    ajaxIsRunning = false;
   })
   .fail(function(result) {
     console.log("fail");
     console.log(result.responseJSON);
     alert(result.responseJSON.message);
+    ajaxIsRunning = false;
   });
 }
 
