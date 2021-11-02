@@ -84,13 +84,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>생년월일</strong>
             </label>
             <div class="col-md-3">
-              <input type="text" name="penBirth" id="penBirth" class="form-control input-sm" value="">
+              <input type="text" name="penBirth" id="penBirth" class="birthpicker form-control input-sm" value="">
             </div>
             <label for="penExpiStDtm" class="col-md-2 control-label">
               <strong>유효기간</strong>
             </label>
             <div class="col-md-5">
-              <input type="text" name="penExpiStDtm" id="penExpiStDtm" class="form-control input-sm" value=""> ~ <input type="text" name="penExpiEdDtm" id="penExpiEdDtm" class="form-control input-sm" value="">
+              <input type="text" name="penExpiStDtm" id="penExpiStDtm" class="datepicker form-control input-sm" value=""> ~ <input type="text" name="penExpiEdDtm" id="penExpiEdDtm" class="datepicker form-control input-sm" value="">
             </div>
           </div>
           <div class="form-group">
@@ -119,7 +119,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </div>
           <div class="se_item_hd">판매품목</div>
           <ul id="buy_list" class="se_item_list">
-            <?php for($i = 0; $i < 2; $i ++) { ?>
+            <?php /* ?>
             <li>
               <input type="hidden" name="it_id[]" value="">
               <input type="hidden" name="it_gubun[]" value="판매">
@@ -160,11 +160,11 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 </div>
               </div>
             </li>
-            <?php } ?>
+            <?php */ ?>
           </ul>
           <div class="se_item_hd">대여품목</div>
           <ul id="rent_list" class="se_item_list">
-            <?php for($i = 0; $i < 2; $i ++) { ?>
+            <?php /* ?>
             <li>
               <input type="hidden" name="it_id[]" value="">
               <input type="hidden" name="it_gubun[]" value="대여">
@@ -206,7 +206,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 </div>
               </div>
             </li>
-            <?php } ?>
+            <?php */ ?>
           </ul>
         </div>
         <div class="se_preview_wr">
@@ -234,6 +234,76 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 function select_item(obj) {
   $('body').removeClass('modal-open');
   $('#popup_box').hide();
+
+  var $li = $('<li>')
+    .append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
+    .append('<input type="hidden" name="it_gubun[]" value="' + obj.gubun + '">');
+  
+  var $it_info = $('<div class="it_info">')
+    .append(
+      '<img class="it_img" src="/data/item/' + obj.it_img + '" onerror="this.src=\'/img/no_img.png\';">',
+      '<p class="it_cate">' + obj.ca_name + '</p>',
+      '<p class="it_name">' + obj.it_name + ' (' + obj.gubun + ')' + '</p>',
+      '<p class="it_price">급여가 : ' + parseInt(obj.it_cust_price).toLocaleString('en-US') + '원</p>'
+      )
+  $li.append($it_info);
+
+  $li.append('\
+    <div class="it_btn_wr flex align-items space-between">\
+      <div class="it_qty">\
+        <div class="input-group">\
+        <div class="input-group-btn">\
+          <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>\
+        </div>\
+        <input type="text" name="it_qty[]" value="1" class="form-control input-sm">\
+        <div class="input-group-btn">\
+          <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>\
+        </div>\
+        </div>\
+      </div>\
+      <button type="button" class="btn_del_item">삭제</button>\
+    </div>\
+  ');
+
+  var $it_ipt = $('<div class="it_ipt_wr">');
+  if(obj.gubun == '대여') {
+    var id = obj.it_id + Date.now();
+    $it_ipt.append('\
+      <div class="flex">\
+        <div class="it_ipt_hd">계약기간</div>\
+        <div class="it_ipt">\
+          <input type="hidden" name="it_date[]">\
+          <input type="text" class="datepicker inline" data-range="from"> ~ <input type="text" class="datepicker inline" data-range="to">\
+        </div>\
+      </div>\
+    ');
+  } else {
+    $it_ipt.append('\
+      <div class="flex">\
+        <div class="it_ipt_hd">판매계약일</div>\
+        <div class="it_ipt">\
+        <input type="text" name="it_date[]" class="datepicker inline">\
+        </div>\
+      </div>\
+    ');
+  }
+  $it_ipt.find('.datepicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
+  $it_ipt.append('\
+    <div class="flex">\
+        <div class="it_ipt_hd">바코드</div>\
+        <div class="it_barcode_wr it_ipt">\
+        <input type="hidden" name="it_barcode[]">\
+        <input type="text" class="it_barcode">\
+        </div>\
+    </div>\
+  ');
+  $li.append($it_ipt);
+
+  if(obj.gubun == '대여') {
+    $('#rent_list').append($li);
+  } else {
+    $('#buy_list').append($li);
+  }
 }
 
 // 바코드 필드 개수 업데이트
@@ -258,6 +328,10 @@ function update_barcode_field() {
     });
   });
 }
+
+// datepicker
+$('.birthpicker').datepicker({ changeMonth: true, changeYear: true, yearRange: 'c-120:c+0', maxDate: '+0d', dateFormat: 'yy.mm.dd' });
+$('.datepicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
 
 // 수급자 검색
 $('.pen_id_flexdatalist').flexdatalist({

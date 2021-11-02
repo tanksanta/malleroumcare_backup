@@ -187,62 +187,62 @@ if($w == 'u') {
         json_response(500, 'DB 서버 오류로 계약서를 저장하지 못했습니다.');
 }
 
-for($i = 0; $i < count($it_id_arr); $i++) {
-    $it_id = clean_xss_tags($it_id_arr[$i]);
-    $it_gubun = clean_xss_tags($it_gubun_arr[$i]);
-    $it_qty = intval(clean_xss_tags($it_qty_arr[$i]) ?: 0);
-    $it_date = clean_xss_tags($it_date_arr[$i]);
-    $it_barcode = clean_xss_tags($it_barcode_arr[$i]);
-    $it_barcode = explode(chr(30), $it_barcode);
+    for($i = 0; $i < count($it_id_arr); $i++) {
+        $it_id = clean_xss_tags($it_id_arr[$i]);
+        $it_gubun = clean_xss_tags($it_gubun_arr[$i]);
+        $it_qty = intval(clean_xss_tags($it_qty_arr[$i]) ?: 0);
+        $it_date = clean_xss_tags($it_date_arr[$i]);
+        $it_barcode = clean_xss_tags($it_barcode_arr[$i]);
+        $it_barcode = explode(chr(30), $it_barcode);
 
-    if(!$it_id) continue;
+        if(!$it_id) continue;
 
-    $it = sql_fetch("
-        select i.*, ( select ca_name from g5_shop_category where ca_id = i.ca_id ) as ca_name
-        from g5_shop_item i where it_id = '$it_id'
-    ");
-    if(!$it['it_id']) continue;
+        $it = sql_fetch("
+            select i.*, ( select ca_name from g5_shop_category where ca_id = i.ca_id ) as ca_name
+            from g5_shop_item i where it_id = '$it_id'
+        ");
+        if(!$it['it_id']) continue;
 
-    if($it_gubun === '판매') {
-        $gubun = '00';
-        $it_price = $it['it_cust_price']; // 급여가
-    } else if($it_gubun === '대여') {
-        $gubun = '01';
-        $str_date = explode('-', $it_date)[0];
-        $end_date = explode('-', $it_date)[1];
+        if($it_gubun === '판매') {
+            $gubun = '00';
+            $it_price = $it['it_cust_price']; // 급여가
+        } else if($it_gubun === '대여') {
+            $gubun = '01';
+            $str_date = substr($it_date, 0, 10);
+            $end_date = substr($it_date, 11, 10);
 
-        if(!$str_date || !$end_date) {
-            sql_query(" DELETE FROM eform_document WHERE dc_id = UNHEX('$dc_id') ");
-            json_response(400, '대여상품의 계약기간을 입력해주세요.');
+            if(!$str_date || !$end_date) {
+                sql_query(" DELETE FROM eform_document WHERE dc_id = UNHEX('$dc_id') ");
+                json_response(400, '대여상품의 계약기간을 입력해주세요.');
+            }
+
+            $it_price = calc_rental_price($str_date, $end_date, $it['it_rental_price']);
+        } else {
+            continue;
         }
 
-        $it_price = calc_rental_price($str_date, $end_date, $it['it_rental_price']);
-    } else {
-        continue;
-    }
+        for($x = 0; $x < $it_qty; $x++) {
+            $it_price_pen = calc_pen_price($penTypeCd, $price);
+            $it_price_ent = $price - $it_price_pen;
 
-    for($x = 0; $x < $it_qty; $x++) {
-        $it_price_pen = calc_pen_price($penTypeCd, $price);
-        $it_price_ent = $price - $it_price_pen;
-
-        $sql = "
-            INSERT INTO eform_document_item SET
-                dc_id = UNHEX('$dc_id'),
-                gubun = '$gubun',
-                ca_name = '{$it['ca_name']}',
-                it_name = '{$it['it_name']}',
-                it_code = '{$it['ProdPayCode']}',
-                it_barcode = '{$it_barcode[$x]}',
-                it_qty = '1',
-                it_date = '$it_date',
-                it_price = '$it_price',
-                it_price_pen = '$it_price_pen',
-                it_price_ent = '$it_price_ent'
-        ";
-        $result = sql_query($sql);
-        if(!$result)
-            json_response(500, 'DB 오류로 계약서의 품목을 추가하지 못했습니다.');
+            $sql = "
+                INSERT INTO eform_document_item SET
+                    dc_id = UNHEX('$dc_id'),
+                    gubun = '$gubun',
+                    ca_name = '{$it['ca_name']}',
+                    it_name = '{$it['it_name']}',
+                    it_code = '{$it['ProdPayCode']}',
+                    it_barcode = '{$it_barcode[$x]}',
+                    it_qty = '1',
+                    it_date = '$it_date',
+                    it_price = '$it_price',
+                    it_price_pen = '$it_price_pen',
+                    it_price_ent = '$it_price_ent'
+            ";
+            $result = sql_query($sql);
+            if(!$result)
+                json_response(500, 'DB 오류로 계약서의 품목을 추가하지 못했습니다.');
+        }
     }
-}
 
 json_response(200, 'OK', $dc_id);
