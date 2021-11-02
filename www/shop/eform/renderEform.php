@@ -1,13 +1,28 @@
 <?php
 include_once("./_common.php");
 
-$timestamp = intval($_GET['timestamp']);
-$datetime = date('Y-m-d H:i:s', $timestamp);
+$dc_id = get_search_string($_GET['dc_id']);
+if($dc_id) {
+  $timestamp = time();
+  $datetime = date('Y-m-d H:i:s', $timestamp);
 
-$eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
+  $uuid = $dc_id;
+  $eform = sql_fetch("
+    SELECT HEX(`dc_id`) as uuid, e.*
+    FROM `eform_document` as e
+    WHERE dc_id = UNHEX('$dc_id') and entId = '{$member['mb_entId']}' and dc_status = '10' ");
+  if(!$eform['uuid']) {
+    die('계약서를 확인할 수 없습니다.');
+  }
+} else {
+  $timestamp = intval($_GET['timestamp']);
+  $datetime = date('Y-m-d H:i:s', $timestamp);
 
-if($eform['uuid'] !== $uuid || $eform['entId'] !== $entId || $eform['penId'] !== $penId) {
-  alert('계약서를 확인할 수 없습니다.');
+  $eform = sql_fetch("SELECT HEX(`dc_id`) as uuid, e.* FROM `eform_document` as e WHERE od_id = '$od_id'");
+
+  if($eform['uuid'] !== $uuid || $eform['entId'] !== $entId || $eform['penId'] !== $penId) {
+    alert('계약서를 확인할 수 없습니다.');
+  }
 }
 
 $items = sql_query("SELECT * FROM `eform_document_item` WHERE dc_id = UNHEX('{$eform["uuid"]}')");

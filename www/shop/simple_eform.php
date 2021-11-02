@@ -1,11 +1,29 @@
 <?php
 include_once('./_common.php');
 
-if($member['mb_type'] !== 'default')
-  alert('접근할 수 없습니다.');
+if($member['mb_type'] !== 'default' || !$member['mb_entId'])
+  alert('사업소 회원만 접근할 수 있습니다.');
 
 $g5['title'] = '계약서 작성';
 include_once("./_head.php");
+
+// 이전에 저장했던 간편계약서 삭제
+$sql = "
+  select hex(dc_id) as uuid
+  from eform_document
+  where dc_status = '10' and entId = '{$member['mb_entId']}'
+";
+$result = sql_query($sql);
+while($row = sql_fetch_array($result)) {
+  $dc_id = $row['uuid'];
+
+  $sql = " DELETE FROM eform_document_item WHERE dc_id = UNHEX('$dc_id') ";
+  sql_query($sql);
+  $sql = " DELETE FROM eform_document_log WHERE dc_id = UNHEX('$dc_id') ";
+  sql_query($sql);
+  $sql = " DELETE FROM eform_document WHERE dc_id = UNHEX('$dc_id') ";
+  sql_query($sql);
+}
 
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_efrom.css">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
@@ -341,7 +359,8 @@ function save_eform() {
       $('input[name="w"]').val('u');
       $('input[name="dc_id"]').val(dc_id);
 
-      // todo: 계약서 미리보기
+      var preview_url = '/shop/eform/renderEform.php?dc_id=' + dc_id;
+      $('#se_preview').empty().append($('<iframe>').attr('src', preview_url).attr('frameborder', 0));
     })
     .fail(function ($xhr) {
       var data = $xhr.responseJSON;
