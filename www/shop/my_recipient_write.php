@@ -652,7 +652,13 @@ $(function(){
     onPenSpareChange($(this));
   });
 
+  var loading = false;
   $("#btn_submit").click(function() {
+
+    if(loading) {
+      alert('등록 중입니다. 잠시만 기다려주세요.');
+      return false;
+    }
 
     var importantIcon = $(".register-form .form-control-feedback");
     for(var i = 0; i < importantIcon.length; i++){
@@ -680,6 +686,8 @@ $(function(){
 
     if(penBirth.length !== 10){ penBirth = ''; }
     if(penProBirth.length !== 10){ penProBirth = ''; }
+
+    loading = true;
 
     $.post('./ajax.my.recipient.write.php', {
       tutorial : $(".register-form input[name='tutorial']").val(),
@@ -759,9 +767,13 @@ $(function(){
       .fail(function($xhr) {
         var data = $xhr.responseJSON;
         alert(data && data.message);
+      })
+      .always(function() {
+        loading = false;
       });
     })
     .fail(function($xhr) {
+      loading = false;
       var data = $xhr.responseJSON;
       alert(data && data.message);
     });

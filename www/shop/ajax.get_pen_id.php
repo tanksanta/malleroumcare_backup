@@ -20,16 +20,22 @@ $result = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
 $list = [];
 if($result['errorYN'] === 'N') {
   foreach($result['data'] as $pen) {
+    $penExpiDtm = explode(' ~ ', $pen["penExpiDtm"]);
     $list[] = array(
       'penId' => $pen['penId'],
       'penNm' => $pen['penNm'],
       'penLtmNum' => substr($pen['penLtmNum'], 0, 6) . '*****',
+      'penRecGraCd' => $pen['penRecGraCd'],
       'penRecGraNm' => $pen['penRecGraNm'],
+      'penTypeCd' => $pen['penTypeCd'],
       'penTypeNm' => $pen['penTypeNm'],
       'penBirth' => $pen['penBirth'],
       'penGender' => $pen['penGender'],
       'penConNum' => $pen['penConNum'],
       'penProConNum' => $pen['penProConNum'],
+      'penExpiStDtm' => $penExpiDtm[0] ?: '',
+      'penExpiEdDtm' => $penExpiDtm[1] ?: '',
+      'penJumin' => substr($pen["penJumin"], 0, 6),
     );
   }
 }

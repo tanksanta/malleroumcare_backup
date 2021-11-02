@@ -1917,8 +1917,9 @@ function get_biztalk_token() {
 }
 
 // 비즈톡 알림톡 전송
-function send_alim_talk($msgIdx, $recipient, $tmpltCode, $message, $attach = null) {
-  $token = get_biztalk_token();
+function send_alim_talk($msgIdx, $recipient, $tmpltCode, $message, $attach = null, $token = null) {
+  if(!$token)
+    $token = get_biztalk_token();
 
   if(!$token) return null;
 

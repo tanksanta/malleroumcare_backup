@@ -32,8 +32,8 @@ if ($w || $uid) {
     WHERE c.ct_uid = '{$uid}'
     ");
 
-    if (!$result['it_type3'] && !in_array($result['ct_status'], ['준비', '작성'])) {
-        alert_close('주문상태가 작성 또는 상품준비 상태여야만 수정가능합니다.');
+    if (!$result['it_type3'] && !in_array($result['ct_status'], ['준비', '작성', '출고준비'])) {
+        alert_close('주문상태가 작성, 상품준비, 출고준비 상태여야만 수정가능합니다.');
     }
 }
 

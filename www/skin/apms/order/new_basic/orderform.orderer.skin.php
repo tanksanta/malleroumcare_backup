@@ -2087,6 +2087,18 @@ $(document).ready(function() {
     $('#pro-order-loading').hide();
     $('#pro-order').show();
   }, 500);
+
+  <?php if($only_recipient){ // 무조건 수급자주문만 가능하게 ?>
+    $(document).ready(function() {
+      $('#c_recipient').click();
+      // $("#order_recipientBox").hide();
+    
+      // 수급자 주문외 다른 버튼 안보이도록 변경
+      $('.detail-tab ul li').hide();
+      $('#c_recipient').show();
+      $('#c_recipient').addClass('only');
+    });
+  <?php } ?>
 });
 </script>
 

@@ -1,0 +1,24 @@
+name: Send Alim Talks for delivered orders
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "01 3,9 * * *" # 매일 오후 12시 01분, 오후 6시 01분(UTC 03:01, 09:01)
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: call api
+        uses: indiesdev/curl@v1
+        id: api
+        with:
+          url: https://eroumcare.com/cron/alim_delivery.php
+          method: 'POST'
+          accept: 200, 201
+          body: '{ "key": "2xBkK#4fKR9hPp=x+J9dDWr9fxR5Nt*2^e@D-!AL" }'
+          timeout: 180000
+          is_debug: true
+      - name: show api response
+        run: echo ${{ steps.api.outputs.response }}

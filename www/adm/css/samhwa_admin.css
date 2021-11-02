@@ -546,7 +546,6 @@ table.list-table-style .drop_multi_sub a:after {
 }
 #samhwa_order_list_table>div.table .order_tr.hover td {
     background-color: #fbf9f7 !important;
-    cursor: pointer;
 }
 #samhwa_order_list_table>div.table td.od_info .icon_link {
     display: none;
@@ -1244,8 +1243,16 @@ table.list-table-style .drop_multi_sub a:after {
     background-color: white;
     vertical-align: middle;
 }
+#samhwa_order_form>.block .shbtn.black {
+    background-color: #000;
+    color: white;
+    border: 1px solid #000;
+}
 #samhwa_order_form>.block .shbtn:hover {
     background-color:#fafafa;
+}
+#samhwa_order_form>.block .shbtn.black:hover {
+    background-color:#404040;
 }
 #samhwa_order_form>.block .shbtn:disabled {
     background-color: #f4f4f4;

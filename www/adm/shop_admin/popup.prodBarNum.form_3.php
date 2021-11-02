@@ -707,17 +707,38 @@ if($od["od_b_tel"]) {
 
     $("#prodBarNumSaveBtn").click(function() {
       var barcode_arr = [];
+      var error_arr = [];
+      var $ipt_error = null;
       var isDuplicated = false;
 
-      $('.imfomation_box .li_box').each(function(){
+      $('.imfomation_box .li_box').each(function() {
+          var empty_count = 0;
           var temp_arr = [];
-          $(this).find('.inputbox li input').each(function(){
+          $(this).find('.inputbox li input').each(function() {
               if ($(this).val() != "") {
                   temp_arr.push($(this).val())
+              } else {
+                  if(!$ipt_error)
+                    $ipt_error = $(this);
+                  empty_count++;
               }
           });
           barcode_arr.push(temp_arr);
+          
+          if(temp_arr.length !== 0 && empty_count !== 0) {
+              // 바코드가 일부만 입력되어있는 경우
+              error_arr.push($(this).find('.p1 .span1').text().replace(/(\\n|\s\s)/g, ''));
+          } else {
+              if(error_arr.length === 0)
+                $ipt_error = null;
+          }
       });
+
+      if(error_arr.length > 0) {
+          alert( error_arr.join(', ') + ' 품목의 모든 바코드가 입력되지 않아 저장할 수 없습니다.' );
+          $ipt_error.focus();
+          return false;
+      }
 
       barcode_arr.forEach(function(arr) {
           if (isDuplicate(arr)) {
@@ -924,6 +945,17 @@ if($od["od_b_tel"]) {
     });
   });
 
+  function getUrlParams() {     
+    var params = {};  
+    
+    window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, 
+      function(str, key, value) { 
+          params[key] = decodeURI(value);
+        }
+    );     
+    
+    return params; 
+  }
 
   //종료시 멤버 수정중없에기
   function member_cancel(){
@@ -946,7 +978,13 @@ if($od["od_b_tel"]) {
         cancel : "y"
       },
       success : function(result) {
-        location.href = "<?=G5_SHOP_URL?>/release_orderlist.php";
+
+        var params = getUrlParams();
+        delete params.od_id;
+        delete params.ct_id;
+        var query_string = decodeURI($.param(params));
+
+        location.href = "<?=G5_SHOP_URL?>/release_orderlist.php?" + query_string;
       }
     });
   }

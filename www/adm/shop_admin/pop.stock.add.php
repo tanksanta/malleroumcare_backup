@@ -1,5 +1,5 @@
 <?php
-// $sub_menu = '400400';
+// $sub_menu = '400620';
 include_once('./_common.php');
 include_once(G5_ADMIN_PATH.'/apms_admin/apms.admin.lib.php');
 
@@ -202,6 +202,7 @@ $(function() {
                 $(parent).find('input[name="qty[]"]').focus();
             }
 
+            // 기본 출고창고
             $(parent).find('select[name="wh_name[]"]').val(obj.it_warehousing_warehouse);
             $(parent).find('input[name="qty[]"]').val(1);
 

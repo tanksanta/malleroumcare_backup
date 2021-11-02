@@ -141,20 +141,20 @@ $(function() {
 
         // 게시판
         if ( data.bbs.total_count ) {
-            bbs_count += data.bbs.total_count;
+            // bbs_count += data.bbs.total_count;
         }
         if(bbs_count > 0) {
             $('.gnb_1da_board').append('<span class="board_cnt">' + bbs_count + '</span>');
         }
 
-        $('.get_board_cnt').each(function(index, item) {
-            var bo_table = $(item).data('bo-table');
-            var value = data.bbs.data[bo_table] || 0;
+        // $('.get_board_cnt').each(function(index, item) {
+        //     var bo_table = $(item).data('bo-table');
+        //     var value = data.bbs.data[bo_table] || 0;
 
-            if ( value === 0 ) return true;
+        //     if ( value === 0 ) return true;
 
-            $(item).append('<span class="board_cnt">' + value + '</span>');
-        });
+        //     $(item).append('<span class="board_cnt">' + value + '</span>');
+        // });
 
         var shop_count = 0;
         // 상품문의

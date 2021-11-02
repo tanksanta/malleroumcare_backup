@@ -88,6 +88,8 @@ $od_penzip      = (isset($od['od_penId']) && $od['od_penId']) ? $od_penzip1.$od_
 
 $od_penAddr      = (isset($od['od_penId']) && $od['od_penId']) ? $od['od_penAddr'] : $od['od_addr1'].''.$od['od_addr2'].''.$od['od_addr3'];  //주소
 
+$avail_request_return = false;
+
 // 상품목록
 $sql = "
   select
@@ -203,6 +205,11 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     }
 
     $opt['ct_point_stotal'] = $opt['ct_point'] * $opt['ct_qty'] - $opt['ct_discount'];
+
+    // 한개라도 출고완료 있으면 관리자가 반품신청 가능하도록 함.
+    if ($opt['ct_status'] === '배송') {
+        $avail_request_return = true;
+    }
 
     $row['options'][] = $opt;
   }
@@ -1934,6 +1941,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 ?>
                 <span id="cancel_info"><?php echo $info ?></span> <button type="button" onclick="approveCancel()">승인</button> <button type="button" class="btn" onclick="rejectCancel()">거절</button>
                 <?php } ?>
+                <?php if (!$cancel_request_row['od_id'] && $avail_request_return) { ?>
+                    <button type="button" class="btn shbtn black" onclick="applyCancel('return')">반품신청</button>
+                <?php } ?>
                 <script>
                     function approveCancel() {
                         if (confirm('승인처리 하시겠습니까?')) {
@@ -1944,6 +1954,26 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         if (confirm('거절처리 하시겠습니까?')) {
                             location.href = './orderinquirycancelreject.php?od_id=<?php echo $od['od_id'] ?>';
                         }
+                    }
+                    function applyCancel(to) {
+                        if (!$('input[name="od_cancel_memo"]').val()) {
+                            alert('사유를 입력해주세요.');
+                            return;
+                        }
+                        var ajax = $.ajax({
+                            method: "POST",
+                            url: './ajax.refund.php',
+                            data: {
+                                od_id: '<?php echo $od['od_id'] ?>',
+                                to: to,
+                                cancel_memo: $('input[name="od_cancel_memo"]').val(),
+                                request_reason_type: $('select[name="od_cancel_reason"]').val(),
+                            },
+                        })
+                        .done(function(data) {
+                            alert('반품신청되었습니다.');
+                            window.location.reload(); 
+                        });
                     }
                 </script>
             </div>

@@ -5,6 +5,10 @@ if($board['as_code']) {
 	apms_script('code');
 }
 
+if(in_array($bo_table, ['center_meet', 'center_case', 'center_education', 'center_story']) && $write['mb_id'] !== $member['mb_id'] && !$is_admin) {
+	alert('자신의 글만 읽을 수 있습니다.');
+}
+
 // 게시판에서 두단어 이상 검색 후 검색된 게시물에 코멘트를 남기면 나오던 오류 수정
 $sop = strtolower($sop);
 if ($sop != 'and' && $sop != 'or')

@@ -27,14 +27,14 @@ if ($sel_ca_id != "") {
 }
 
 if ($wh_name != '') {
-  $sql_search .= " and ( select sum(ws_qty) from warehouse_stock where wh_name = '$wh_name' ) > 0 ";
+  $sql_search .= " and ( select sum(ws_qty) from warehouse_stock s where i.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' ) > 0 ";
 }
 
 if ($sel_field == "")  $sel_field = "it_name";
 if ($sort1 == "") $sort1 = "it_stock_qty";
 if ($sort2 == "") $sort2 = "asc";
 
-$sql_common = "  from {$g5['g5_shop_item_table']} ";
+$sql_common = "  from {$g5['g5_shop_item_table']} i ";
 $sql_common .= $sql_search;
 
 // 테이블의 전체 레코드수만 얻음
@@ -71,7 +71,7 @@ $colspan = 11;
 
 $warehouse_list = get_warehouses();
 foreach($warehouse_list as &$warehouse) {
-  $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '$warehouse' ";
+  $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '$warehouse' and ws_del_yn = 'N' ";
   $result_total = sql_fetch($sql);
 
   $warehouse = [
@@ -137,8 +137,8 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 	<!-- // -->
 </select>
 
-<label for="search" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-<input type="text" name="search" id="search" value="<?php echo $search; ?>" required class="frm_input required">
+<label for="search" class="sound_only">검색어</label>
+<input type="text" name="search" id="search" value="<?php echo $search; ?>" class="frm_input">
 <input type="submit" value="검색" class="btn_submit">
 
 </form>
@@ -227,7 +227,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         <td class="td_num<?php echo $it_stock_qty_st; ?>"><?php echo $it_stock_qty; ?></td>
         <?php
         foreach($warehouse_list as $warehouse) {
-          $sql = " select sum(ws_qty) as stock from warehouse_stock where wh_name = '{$warehouse['name']}' ";
+          $sql = " select sum(ws_qty) as stock from warehouse_stock where it_id = '{$row['it_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' ";
           $stock = sql_fetch($sql)['stock'] ?: 0;
           echo '<td class="td_num">'.number_format($stock).'</td>';
         }
@@ -255,7 +255,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <label for="stock_sms_<?php echo $i; ?>" class="sound_only">재입고 알림</label>
             <input type="checkbox" name="it_stock_sms[<?php echo $i; ?>]" value="1" id="stock_sms_<?php echo $i; ?>" <?php echo ($row['it_stock_sms'] ? "checked" : ""); ?>>
         </td>
-        <td class="td_mng td_mng_s"><a href="#" class="btn btn_03">상세관리</a></td>
+        <td class="td_mng td_mng_s"><a href="./itemstockview.php?it_id=<?php echo $row['it_id']; ?>" class="btn btn_03">상세관리</a></td>
         <td class="td_mng td_mng_s"><a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03">수정</a></td>
     </tr>
     <?php
@@ -271,12 +271,58 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <!-- <a href="./optionstocklist.php" class="btn btn_02">상품옵션재고</a> -->
     <a href="./itemsellrank.php"  class="btn btn_02">상품판매순위</a>
     <input type="submit" value="일괄수정" class="btn_submit btn">
-    <a href="#"  class="btn btn_submit">재고등록</a>
+    <a href="#" id="btn_stock_add" class="btn btn_submit">재고등록</a>
     <a href="#"  class="btn btn_02">재고일괄등록</a>
 </div>
 </form>
 
 <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); ?>
+
+<style>
+#popup_order_add {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.6);
+  display:none;
+}
+#popup_order_add > div {
+  width: 1000px;
+  max-width: 80%;
+  height: 80%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#popup_order_add > div iframe {
+  width:100%;
+  height:100%;
+  border: 0;
+  background-color: #FFF;
+}
+</style>
+<div id="popup_order_add">
+  <div></div>
+</div>
+
+<script>
+$(function() {
+    $('#btn_stock_add').click(function(e) {
+        e.preventDefault();
+
+        $("#popup_order_add > div").html("<iframe src='./pop.stock.add.php'></iframe>");
+        $("#popup_order_add iframe").load(function(){
+            $("#popup_order_add").show();
+            $('#hd').css('z-index', 3);
+        });
+
+    });
+});
+</script>
 
 <?php
 include_once (G5_ADMIN_PATH.'/admin.tail.php');

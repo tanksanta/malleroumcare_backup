@@ -111,7 +111,7 @@ if ($cancel_request_row['request_type'] == "cancel") {
     $it_name_txt = $carts_result['it_name'];
     if($carts_result['cnt'] > 1)
         $it_name_txt .= ' 외 ' . ($carts_result['cnt'] - 1) . '건';
-    send_alim_talk('OD_CANCEL_'.$od_id, $mb["mb_hp"], 'ent_order_cancel', "[주문취소 안내]\n{$mb['mb_entNm']}님, 고객님의 주문이 정상 취소처리 되었습니다.\n\n■ 주문일시 : ".date('Y/m/d H:i', strtotime($od['od_time']))."\n■ 주문번호 : {$od_id}\n■ 주문내역 : {$it_name_txt}\n■ 배송지 : {$od['od_b_addr1']} {$od['od_b_addr2']} {$od['od_b_addr3']} {$od['od_b_addr_jibeon']}");
+    send_alim_talk('OD_CANCEL_'.$od_id, $mb["mb_hp"], 'ent_order_cancel2', "[주문취소 안내]\n{$mb['mb_entNm']}님, 고객님의 주문이 정상 취소처리 되었습니다.\n\n■ 주문일시 : ".date('Y/m/d H:i', strtotime($od['od_time']))."\n■ 주문번호 : {$od_id}\n■ 주문내역 : {$it_name_txt}\n■ 배송지명 : {$od['od_b_name']}\n■ 배송주소 : {$od['od_b_addr1']} {$od['od_b_addr2']} {$od['od_b_addr3']} {$od['od_b_addr_jibeon']}");
 }
 
 // 반품 처리
@@ -123,6 +123,16 @@ if ($cancel_request_row['request_type'] == "return") {
             od_id = '{$od_id}'
         ";
     sql_query($sql);
+
+    $sql = "UPDATE g5_shop_order_cancel_request SET
+        refund_status = '회수요청'
+    WHERE
+        od_id = '{$od_id}'
+    ";
+
+    sql_query($sql);
+    
+    set_order_admin_log($od_id, '반품 요청 관리자 승인 (회수요청)');
 }
 
 // PG 결제 취소
