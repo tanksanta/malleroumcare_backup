@@ -1,8 +1,7 @@
 <?php
 include_once("./_common.php");
 
-// $barcode = preg_replace("/[^a-z0-9]/i", "", $barcode);
-$barcode = preg_replace("/[^0-9]/i", "", $barcode); //바코드는 숫자로만 되어있음. 211102
+$barcode = preg_replace("/[^a-z0-9]/i", "", $barcode);
 
 if (!$it_id || !$barcode) {
 	json_response(400, '잘못된 요청입니다.');
@@ -30,6 +29,10 @@ if (strlen($barcode) > 13) {
 	}
 
 	$converted_barcode = explode($item['prod_pay_code'], $barcode)[1];
+}
+
+if (!is_numeric($converted_barcode)) {
+	json_response(500, '바코드가 정상적으로 인식되지 않았습니다.');
 }
 
 $return_data = array(
