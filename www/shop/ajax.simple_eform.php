@@ -112,7 +112,7 @@ if($w == 'u') {
 
     $dc_id = clean_xss_tags($_POST['dc_id']);
 
-    $dc = sql_fetch(" select * from eform_document where dc_id = UNHEX('$dc_id') ");
+    $dc = sql_fetch(" select * from eform_document where dc_id = UNHEX('$dc_id') and dc_status = '10' ");
     if(!$dc['entId'] || $dc['entId'] != $member['mb_entId'])
         json_response(400, '유효하지 않은 요청입니다.');
 
@@ -153,6 +153,11 @@ if($w == 'u') {
     sql_query($sql);
 } else {
     // 작성
+    $seal_file = $member['sealFile'];
+    if(!$seal_file) {
+        json_response(400, '회원정보에 직인 이미지를 등록해주세요.');
+    }
+
     $dc_id = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
 
     $sql = "
@@ -185,64 +190,110 @@ if($w == 'u') {
 
     if(!$result)
         json_response(500, 'DB 서버 오류로 계약서를 저장하지 못했습니다.');
+
+    // 직인 파일 사본 저장
+    $seal_dir = G5_DATA_PATH.'/file/member/stamp';
+    $seal_data = @file_get_contents($seal_dir.'/'.$seal_file);
+    $signdir = G5_DATA_PATH.'/eform/sign';
+    if(!is_dir($signdir)) {
+    @mkdir($signdir, G5_DIR_PERMISSION, true);
+    @chmod($signdir, G5_DIR_PERMISSION);
+    }
+    $filename = $dc_id."_".$member['mb_entId']."_".date("YmdHisw").".png";
+    file_put_contents("$signdir/$filename", $seal_data);
+
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+    $timestamp = time();
+    $datetime = date('Y-m-d H:i:s', $timestamp);
+
+    // 문서 제목 생성
+    $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$dc_id')");
+    $subject = $eform["entNm"]."_".str_replace('-', '', $eform["entCrn"])."_".$eform["penNm"].substr($eform["penLtmNum"], 0, 6)."_".date("Ymd")."_";
+    $subject_count_postfix = sql_fetch("SELECT COUNT(`dc_id`) as cnt FROM `eform_document` WHERE `dc_subject` LIKE '{$subject}%'")["cnt"];
+    $subject_count_postfix = str_pad($subject_count_postfix + 1, 3, '0', STR_PAD_LEFT); // zerofill
+    $subject .= $subject_count_postfix;
+
+    // 계약서 정보 업데이트
+    sql_query("
+        UPDATE `eform_document` SET
+            `dc_subject` = '$subject',
+            `dc_datetime` = '$datetime',
+            `dc_ip` = '$ip',
+            `dc_signUrl` = '/data/eform/sign/$filename',
+            `entConAcc01` = '{$member['mb_entConAcc01']}',
+            `entConAcc02` = '{$member['mb_entConAcc02']}'
+        WHERE `dc_id` = UNHEX('$dc_id')
+    ");
+
+    // 계약서 로그 작성
+    $log = '전자계약서를 생성했습니다.';
+
+    sql_query("INSERT INTO `eform_document_log` SET
+        `dc_id` = UNHEX('$dc_id'),
+        `dl_log` = '$log',
+        `dl_ip` = '$ip',
+        `dl_browser` = '$browser',
+        `dl_datetime` = '$datetime'
+    ");
 }
 
-    for($i = 0; $i < count($it_id_arr); $i++) {
-        $it_id = clean_xss_tags($it_id_arr[$i]);
-        $it_gubun = clean_xss_tags($it_gubun_arr[$i]);
-        $it_qty = intval(clean_xss_tags($it_qty_arr[$i]) ?: 0);
-        $it_date = clean_xss_tags($it_date_arr[$i]);
-        $it_barcode = clean_xss_tags($it_barcode_arr[$i]);
-        $it_barcode = explode(chr(30), $it_barcode);
+for($i = 0; $i < count($it_id_arr); $i++) {
+    $it_id = clean_xss_tags($it_id_arr[$i]);
+    $it_gubun = clean_xss_tags($it_gubun_arr[$i]);
+    $it_qty = intval(clean_xss_tags($it_qty_arr[$i]) ?: 0);
+    $it_date = clean_xss_tags($it_date_arr[$i]);
+    $it_barcode = clean_xss_tags($it_barcode_arr[$i]);
+    $it_barcode = explode(chr(30), $it_barcode);
 
-        if(!$it_id) continue;
+    if(!$it_id) continue;
 
-        $it = sql_fetch("
-            select i.*, ( select ca_name from g5_shop_category where ca_id = i.ca_id ) as ca_name
-            from g5_shop_item i where it_id = '$it_id'
-        ");
-        if(!$it['it_id']) continue;
+    $it = sql_fetch("
+        select i.*, ( select ca_name from g5_shop_category where ca_id = i.ca_id ) as ca_name
+        from g5_shop_item i where it_id = '$it_id'
+    ");
+    if(!$it['it_id']) continue;
 
-        if($it_gubun === '판매') {
-            $gubun = '00';
-            $it_price = $it['it_cust_price']; // 급여가
-        } else if($it_gubun === '대여') {
-            $gubun = '01';
-            $str_date = substr($it_date, 0, 10);
-            $end_date = substr($it_date, 11, 10);
+    if($it_gubun === '판매') {
+        $gubun = '00';
+        $it_price = $it['it_cust_price']; // 급여가
+    } else if($it_gubun === '대여') {
+        $gubun = '01';
+        $str_date = substr($it_date, 0, 10);
+        $end_date = substr($it_date, 11, 10);
 
-            if(!$str_date || !$end_date) {
-                sql_query(" DELETE FROM eform_document WHERE dc_id = UNHEX('$dc_id') ");
-                json_response(400, '대여상품의 계약기간을 입력해주세요.');
-            }
-
-            $it_price = calc_rental_price($str_date, $end_date, $it['it_rental_price']);
-        } else {
-            continue;
+        if(!$str_date || !$end_date) {
+            sql_query(" DELETE FROM eform_document WHERE dc_id = UNHEX('$dc_id') ");
+            json_response(400, '대여상품의 계약기간을 입력해주세요.');
         }
 
-        for($x = 0; $x < $it_qty; $x++) {
-            $it_price_pen = calc_pen_price($penTypeCd, $price);
-            $it_price_ent = $price - $it_price_pen;
-
-            $sql = "
-                INSERT INTO eform_document_item SET
-                    dc_id = UNHEX('$dc_id'),
-                    gubun = '$gubun',
-                    ca_name = '{$it['ca_name']}',
-                    it_name = '{$it['it_name']}',
-                    it_code = '{$it['ProdPayCode']}',
-                    it_barcode = '{$it_barcode[$x]}',
-                    it_qty = '1',
-                    it_date = '$it_date',
-                    it_price = '$it_price',
-                    it_price_pen = '$it_price_pen',
-                    it_price_ent = '$it_price_ent'
-            ";
-            $result = sql_query($sql);
-            if(!$result)
-                json_response(500, 'DB 오류로 계약서의 품목을 추가하지 못했습니다.');
-        }
+        $it_price = calc_rental_price($str_date, $end_date, $it['it_rental_price']);
+    } else {
+        continue;
     }
+
+    for($x = 0; $x < $it_qty; $x++) {
+        $it_price_pen = calc_pen_price($penTypeCd, $price);
+        $it_price_ent = $price - $it_price_pen;
+
+        $sql = "
+            INSERT INTO eform_document_item SET
+                dc_id = UNHEX('$dc_id'),
+                gubun = '$gubun',
+                ca_name = '{$it['ca_name']}',
+                it_name = '{$it['it_name']}',
+                it_code = '{$it['ProdPayCode']}',
+                it_barcode = '{$it_barcode[$x]}',
+                it_qty = '1',
+                it_date = '$it_date',
+                it_price = '$it_price',
+                it_price_pen = '$it_price_pen',
+                it_price_ent = '$it_price_ent'
+        ";
+        $result = sql_query($sql);
+        if(!$result)
+            json_response(500, 'DB 오류로 계약서의 품목을 추가하지 못했습니다.');
+    }
+}
 
 json_response(200, 'OK', $dc_id);

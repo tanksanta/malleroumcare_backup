@@ -17,9 +17,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
   <div class="sub_section_tit">계약서 작성</div>
   <div class="inner">
 
-    <form id="form_simple_eform" method="POST" class="form-horizontal" onsubmit="return false;">
-      <input type="hidden" name="w" value="<?=$w?>">
-      <input type="hidden" name="dc_id" value="<?=$dc_id?>">
+    <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
+      <input type="hidden" name="w" value="">
+      <input type="hidden" name="dc_id" value="">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="form-group">
@@ -208,13 +208,14 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             </li>
             <?php */ ?>
           </ul>
+          <button type="button" id="btn_se_save" onclick="save_eform();">저장</button>
         </div>
         <div class="se_preview_wr">
           <div class="se_preview_hd">
             수급자와 작성할 계약서 미리보기
           </div>
           <div id="se_preview" class="se_preview">
-            <div class="empty">품목선택 시 생성됩니다.</div>
+            <div class="empty">품목선택 후 저장 시 생성됩니다.</div>
           </div>
         </div>
       </div>
@@ -232,6 +233,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 <script>
 // 품목 선택
 function select_item(obj) {
+
   $('body').removeClass('modal-open');
   $('#popup_box').hide();
 
@@ -304,6 +306,30 @@ function select_item(obj) {
   } else {
     $('#buy_list').append($li);
   }
+}
+
+// 계약서 저장
+var loading = false;
+function save_eform() {
+  if(loading) return;
+
+  loading = true;
+  var $form = $('#form_simple_eform');
+  $.post('ajax.simple_eform.php', $form.serialize(), 'json')
+    .done(function(result) {
+      var dc_id = result.data;
+      $('input[name="w"]').val('u');
+      $('input[name="dc_id"]').val(dc_id);
+
+      // todo: 계약서 미리보기
+    })
+    .fail(function ($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    })
+    .always(function() {
+      loading = false;
+    });
 }
 
 // 바코드 필드 개수 업데이트
