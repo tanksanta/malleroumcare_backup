@@ -10,6 +10,7 @@ include_once("./_head.php");
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_efrom.css">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
 <section class="wrap">
@@ -120,6 +121,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             <?php for($i = 0; $i < 2; $i ++) { ?>
             <li>
               <div class="it_info">
+                <input type="hidden" name="it_id[]">
                 <img class="it_img" src="/img/no_img.png" onerror="this.src='/img/no_img.png';">
                 <p class="it_cate">안전손잡이</p>
                 <p class="it_name">ASH-120 (설치) (판매)</p>
@@ -143,14 +145,15 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                 <div class="flex">
                   <div class="it_ipt_hd">판매계약일</div>
                   <div class="it_ipt">
-                    <input type="text" name="it_date[]" class="inline">
+                    <input type="text" name="it_date[]" class="datepicker inline">
                   </div>
                 </div>
                 <div class="flex">
                   <div class="it_ipt_hd">바코드</div>
                   <div class="it_barcode_wr it_ipt">
-                    <input type="text" name="it_barcode[]">
-                    <input type="text" name="it_barcode[]">
+                    <input type="hidden" name="it_barcode[]">
+                    <input type="text" class="it_barcode">
+                    <input type="text" class="it_barcode">
                   </div>
                 </div>
               </div>
@@ -162,6 +165,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             <?php for($i = 0; $i < 2; $i ++) { ?>
             <li>
               <div class="it_info">
+                <input type="hidden" name="it_id[]">
                 <img class="it_img" src="/img/no_img.png" onerror="this.src='/img/no_img.png';">
                 <p class="it_cate">안전손잡이</p>
                 <p class="it_name">ASH-120 (설치) (판매)</p>
@@ -185,14 +189,16 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                 <div class="flex">
                   <div class="it_ipt_hd">계약기간</div>
                   <div class="it_ipt">
-                    <input type="text" name="it_date_from[]" class="inline"> ~ <input type="text" name="it_date_to[]" class="inline">
+                    <input type="hidden" name="it_date[]">
+                    <input type="text" class="datepicker inline" data-range="from"> ~ <input type="text" class="datepicker inline" data-range="to">
                   </div>
                 </div>
                 <div class="flex">
                   <div class="it_ipt_hd">바코드</div>
                   <div class="it_barcode_wr it_ipt">
-                    <input type="text" name="it_barcode[]">
-                    <input type="text" name="it_barcode[]">
+                  <input type="hidden" name="it_barcode[]">
+                    <input type="text" class="it_barcode">
+                    <input type="text" class="it_barcode">
                   </div>
                 </div>
               </div>
@@ -236,7 +242,7 @@ function update_barcode_field() {
 
       // 먼저 기존에 입력된 바코드값 저장
       var barcodes = [];
-      var $barcode = $(this).find('input[name="it_barcode[]"]');
+      var $barcode = $(this).find('input.it_barcode');
       $barcode.each(function() {
         barcodes.push($(this).val() || '');
       });
@@ -244,7 +250,7 @@ function update_barcode_field() {
       var $barcode_wr = $(this).find('.it_barcode_wr').empty();
       for(var i = 0; i < it_qty; i++) {
         var val = barcodes.shift() || '';
-        $barcode_wr.append('<input type="text" name="it_barcode[]" value="' + val + '">');
+        $barcode_wr.append('<input type="text" class="it_barcode" value="' + val + '">');
       }
     });
   });
@@ -323,6 +329,11 @@ $(document).on('change paste keyup', 'input[name="it_qty[]"]', function() {
   if($(this).val() < 1)
     $(this).val(1);
   update_barcode_field();
+});
+
+// 품목 삭제
+$(document).on('click', '.btn_del_item', function() {
+  $(this).closest('li').remove();
 });
 </script>
 
