@@ -148,7 +148,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                 </div>
                 <div class="flex">
                   <div class="it_ipt_hd">바코드</div>
-                  <div class="it_ipt">
+                  <div class="it_barcode_wr it_ipt">
                     <input type="text" name="it_barcode[]">
                     <input type="text" name="it_barcode[]">
                   </div>
@@ -158,7 +158,47 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             <?php } ?>
           </ul>
           <div class="se_item_hd">대여품목</div>
-          <ul id="rent_list" class="se_item_list"></ul>
+          <ul id="rent_list" class="se_item_list">
+            <?php for($i = 0; $i < 2; $i ++) { ?>
+            <li>
+              <div class="it_info">
+                <img class="it_img" src="/img/no_img.png" onerror="this.src='/img/no_img.png';">
+                <p class="it_cate">안전손잡이</p>
+                <p class="it_name">ASH-120 (설치) (판매)</p>
+                <p class="it_price">급여가 : 44,500원</p>
+              </div>
+              <div class="it_btn_wr flex align-items space-between">
+                <div class="it_qty">
+                  <div class="input-group">
+                    <div class="input-group-btn">
+                      <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>
+                    </div>
+                    <input type="text" name="it_qty[]" value="1" class="form-control input-sm">
+                    <div class="input-group-btn">
+                      <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn_del_item">삭제</button>
+              </div>
+              <div class="it_ipt_wr">
+                <div class="flex">
+                  <div class="it_ipt_hd">계약기간</div>
+                  <div class="it_ipt">
+                    <input type="text" name="it_date_from[]" class="inline"> ~ <input type="text" name="it_date_to[]" class="inline">
+                  </div>
+                </div>
+                <div class="flex">
+                  <div class="it_ipt_hd">바코드</div>
+                  <div class="it_barcode_wr it_ipt">
+                    <input type="text" name="it_barcode[]">
+                    <input type="text" name="it_barcode[]">
+                  </div>
+                </div>
+              </div>
+            </li>
+            <?php } ?>
+          </ul>
         </div>
         <div class="se_preview_wr">
           <div class="se_preview_hd">
@@ -181,6 +221,36 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 </div>
 
 <script>
+// 품목 선택
+function select_item(obj) {
+  $('body').removeClass('modal-open');
+  $('#popup_box').hide();
+}
+
+// 바코드 필드 개수 업데이트
+function update_barcode_field() {
+  $('.se_item_list').each(function() {
+    $(this).find('li').each(function() {
+      // 상품 개수
+      var it_qty = $(this).find('input[name="it_qty[]"]').val();
+
+      // 먼저 기존에 입력된 바코드값 저장
+      var barcodes = [];
+      var $barcode = $(this).find('input[name="it_barcode[]"]');
+      $barcode.each(function() {
+        barcodes.push($(this).val() || '');
+      });
+
+      var $barcode_wr = $(this).find('.it_barcode_wr').empty();
+      for(var i = 0; i < it_qty; i++) {
+        var val = barcodes.shift() || '';
+        $barcode_wr.append('<input type="text" name="it_barcode[]" value="' + val + '">');
+      }
+    });
+  });
+}
+
+// 수급자 검색
 $('.pen_id_flexdatalist').flexdatalist({
   minLength: 1,
   url: 'ajax.get_pen_id.php',
@@ -206,6 +276,53 @@ $('.pen_id_flexdatalist').flexdatalist({
   $('#penExpiStDtm').val(obj.penExpiStDtm);
   $('#penExpiEdDtm').val(obj.penExpiEdDtm);
   $('#penJumin').val(obj.penJumin);
+});
+
+// 품목 검색
+$('#ipt_se_sch').flexdatalist({
+  minLength: 1,
+  url: 'ajax.get_item.php',
+  cache: true, // cache
+  searchContain: true, // %검색어%
+  noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
+  selectionRequired: true,
+  focusFirstResult: true,
+  searchIn: ["it_name","it_model","it_id", "it_name_no_space"],
+  visibleCallback: function($li, item, options) {
+    var $item = {};
+    $item = $('<span>')
+      .html("[" + item.gubun + "] " + item.it_name + " (" + item.it_cust_price + "원)");
+
+    $item.appendTo($li);
+    return $li;
+  },
+}).on("select:flexdatalist", function(event, obj, options) {
+  select_item(obj);
+});
+
+// 상품수량변경
+$(document).on('click', '.it_qty button', function() {
+  var mode = $(this).text();
+  var this_qty;
+  var $it_qty = $(this).closest('.it_qty').find('input[name="it_qty[]"]');
+
+  switch(mode) {
+    case '증가':
+      this_qty = parseInt($it_qty.val().replace(/[^0-9]/, "")) + 1;
+      $it_qty.val(this_qty);
+      break;
+    case '감소':
+      this_qty = parseInt($it_qty.val().replace(/[^0-9]/, "")) - 1;
+      if(this_qty < 1) this_qty = 1
+      $it_qty.val(this_qty);
+      break;
+  }
+  update_barcode_field();
+});
+$(document).on('change paste keyup', 'input[name="it_qty[]"]', function() {
+  if($(this).val() < 1)
+    $(this).val(1);
+  update_barcode_field();
 });
 </script>
 
