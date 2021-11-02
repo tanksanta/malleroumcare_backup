@@ -19,7 +19,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
     <form id="form_simple_eform" method="POST" class="form-horizontal" onsubmit="return false;">
       <input type="hidden" name="w" value="<?=$w?>">
-      <input type="hidden" name="ms_id" value="<?=$ms_id?>">
+      <input type="hidden" name="dc_id" value="<?=$dc_id?>">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="form-group">
@@ -27,6 +27,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>수급자명</strong>
             </label>
             <div class="col-md-3">
+              <input type="hidden" name="penId" id="penId" value="">
               <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="" placeholder="수급자명">
             </div>
           </div>
@@ -120,8 +121,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <ul id="buy_list" class="se_item_list">
             <?php for($i = 0; $i < 2; $i ++) { ?>
             <li>
+              <input type="hidden" name="it_id[]" value="">
+              <input type="hidden" name="it_gubun[]" value="판매">
               <div class="it_info">
-                <input type="hidden" name="it_id[]">
                 <img class="it_img" src="/img/no_img.png" onerror="this.src='/img/no_img.png';">
                 <p class="it_cate">안전손잡이</p>
                 <p class="it_name">ASH-120 (설치) (판매)</p>
@@ -164,8 +166,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <ul id="rent_list" class="se_item_list">
             <?php for($i = 0; $i < 2; $i ++) { ?>
             <li>
+              <input type="hidden" name="it_id[]" value="">
+              <input type="hidden" name="it_gubun[]" value="대여">
               <div class="it_info">
-                <input type="hidden" name="it_id[]">
                 <img class="it_img" src="/img/no_img.png" onerror="this.src='/img/no_img.png';">
                 <p class="it_cate">안전손잡이</p>
                 <p class="it_name">ASH-120 (설치) (판매)</p>
@@ -269,8 +272,10 @@ $('.pen_id_flexdatalist').flexdatalist({
 })
 .on('change:flexdatalist', function() {
   // 이름 변경됨
+  $('#penId').val('');
 })
 .on("select:flexdatalist", function(event, obj, options) {
+  $('#penId').val(obj.penId);
   $('#penLtmNum').val(obj.penLtmNum);
   if(obj.penGender == '남' || obj.penGender == '여')
     $('input[name="penGender"][value="' + obj.penGender + '"]').prop('checked', true);
