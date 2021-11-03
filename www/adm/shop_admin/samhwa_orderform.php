@@ -2132,12 +2132,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
 
             $combine="합포 - ".$it_name_p."";
           }
-          if($log['ct_combine_ct_id']) {
-            echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' ['. $combine.'] '.$direct_delivery.'<br/>';
-          } else {
-            echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' 송장번호['. $log['ct_delivery_num'].'] '.$direct_delivery.'<br/>';
-          }
 
+          /*
           // 이전 로그와 비교
           if($last_log[$log['ct_id']]) {
             // 합포비교
@@ -2168,6 +2164,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
               }
             }
           } else {
+          */
             // 비교할 이전 로그가 없으면 자체 정보로 비교
             if(!$log['was_combined'] && $log['ct_combine_ct_id']) {
               // 합포적용
@@ -2190,6 +2187,12 @@ var od_id = '<?php echo $od['od_id']; ?>';
               // 위탁해지
               echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 위탁정보 입력 : {$it_name} 상품을 위탁 해지했습니다.<br/>";
             }
+          /*}*/
+
+          if($log['ct_combine_ct_id']) {
+            echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' ['. $combine.'] '.$direct_delivery.'<br/>';
+          } else {
+            echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' 송장번호['. $log['ct_delivery_num'].'] '.$direct_delivery.'<br/>';
           }
 
           $last_log[$log['ct_id']] = $log;
