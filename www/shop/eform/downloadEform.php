@@ -1,17 +1,30 @@
 <?php
 include_once("./_common.php");
 
-if($dc_id && $penLtmNum && $penNm && $penBirth) {
-  $sql = "select * from `eform_document` where
-          dc_id = UNHEX('$dc_id') and
-          penLtmNum = '$penLtmNum' and
-          penNm = '$penNm' and
-          penBirth = '$penBirth' and
-          (dc_status = '2' or dc_status = '3')";
+$dc_id = get_search_string($_GET['dc_id']);
+if($dc_id) {
+  if($penLtmNum && $penNm && $penBirth) {
+    $sql = "select * from `eform_document` where
+            dc_id = UNHEX('$dc_id') and
+            penLtmNum = '$penLtmNum' and
+            penNm = '$penNm' and
+            penBirth = '$penBirth' and
+            (dc_status = '2' or dc_status = '3')";
 
-  $eform = sql_fetch($sql);
+    $eform = sql_fetch($sql);
 
-  if(!$eform['dc_id']) alert('존재하지 않는 계약서입니다.');
+    if(!$eform['dc_id']) alert('존재하지 않는 계약서입니다.');
+  } else {
+    $eform = sql_fetch("
+    SELECT HEX(`dc_id`) as uuid, e.*
+    FROM `eform_document` as e
+    WHERE dc_id = UNHEX('$dc_id') and entId = '{$member['mb_entId']}' and dc_status = '3' ");
+    if(!$eform['uuid']) {
+      die('계약서를 확인할 수 없습니다.');
+    }
+
+    $is_simple_eform = true;
+  }
 
 } else {
   if(!$is_member) {
@@ -36,7 +49,7 @@ if($dc_id && $penLtmNum && $penNm && $penBirth) {
 $pdfdir = G5_DATA_PATH.'/eform/pdf';
 $pdffile = $eform['dc_pdf_file'];
 
-if($eform['dc_status'] == '3') {
+if($eform['dc_status'] == '3' && !$is_simple_eform) {
   // 마이그레이션한 이전 계약서
   $pdfdir = G5_DATA_PATH.'/eform/legacy';
   $pdffile .= '/ALL.pdf';

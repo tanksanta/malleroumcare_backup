@@ -8,8 +8,8 @@ $w = $_POST['w'];
 
 $penId = clean_xss_tags($_POST['penId']) ?: '';
 $penNm = clean_xss_tags($_POST['penNm']);
-$penBirth = clean_xss_tags($_POST['penBirth']);
 $penLtmNum = clean_xss_tags($_POST['penLtmNum']);
+$penConNum = clean_xss_tags($_POST['penConNum']);
 $penBirth = clean_xss_tags($_POST['penBirth']);
 $penRecGraCd = clean_xss_tags($_POST['penRecGraCd']);
 $penRecGraNm = $pen_type_cd[$penRecGraCd];
@@ -23,7 +23,7 @@ if($penExpiStDtm && $penExpiEdDtm) {
 }
 $penJumin = clean_xss_tags($_POST['penJumin']) ?: '';
 
-if( !( $penNm && $penLtmNum && $penBirth && $penRecGraCd && $penTypeCd && $penExpiDtm ) )
+if( !( $penNm && $penLtmNum && $penConNum && $penBirth && $penRecGraCd && $penTypeCd && $penExpiDtm ) )
     json_response(400, '수급자 정보를 입력해주세요.');
 
 if( $penTypeCd == '04' && !$penJumin )
@@ -177,6 +177,7 @@ if($w == 'u') {
             entConAcc02 = '{$member["mb_entConAcc02"]}',
             penId = '$penId',
             penNm = '$penNm',
+            penConNum = '$penConNum',
             penBirth = '$penBirth',
             penLtmNum = '$penLtmNum',
             penRecGraCd = '$penRecGraCd', # 장기요양등급

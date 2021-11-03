@@ -112,13 +112,27 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 <td>일반계약</td>
 <td class="text_c"><?=date('Y-m-d', strtotime($row['dc_sign_datetime']))?></td>
 <td class="text_c">
-  <a href="<?=G5_SHOP_URL?>/eform/downloadEform.php?od_id=<?=$row["od_id"]?>" class="btn_basic">계약서 다운로드</a>
-  <?php if($row['dc_status'] != '3') { // 이전 계약서는 감사추적인증서가 없음 ?>
-  <br><a href="<?=G5_SHOP_URL?>/eform/downloadCert.php?od_id=<?=$row["od_id"]?>" class="btn_basic">감사추적 인증서</a>
-  <?php } ?>
+  <?php
+  if($row['dc_status'] == '3' && !$row['od_id']) {
+    echo '<a href="' . G5_SHOP_URL . '/eform/downloadEform.php?dc_id=' . $row["uuid"] . '" class="btn_basic">계약서 다운로드</a>';
+  } else {
+    echo '<a href="' . G5_SHOP_URL . '/eform/downloadEform.php?od_id=' . $row["od_id"] . '" class="btn_basic">계약서 다운로드</a>';
+  }
+  ?>
+  <?php
+  if($row['dc_status'] != '3') { // 이전 계약서는 감사추적인증서가 없음
+    echo '<br><a href="' . G5_SHOP_URL . '/eform/downloadCert.php?od_id=' . $row["od_id"] . '" class="btn_basic">감사추적 인증서</a>';
+  } else if(!$row['od_id']) {
+    echo '<br><a href="' . G5_SHOP_URL . '/eform/downloadCert.php?dc_id=' . $row["uuid"] . '" class="btn_basic">감사추적 인증서</a>';
+  }
+  ?>
 </td>
 <td class="text_c">
-  <a href="<?=G5_SHOP_URL?>/eform/downloadReceipt.php?od_id=<?=$row["od_id"]?>" class="btn_basic">거래영수증</a>
+  <?php
+  if($row['od_id']) {
+    echo '<a href="' . G5_SHOP_URL . '/eform/downloadReceipt.php?od_id=' . $row["od_id"] . '" class="btn_basic">거래영수증</a>';
+  }
+  ?>
 </td>
 </tr>
 <?php

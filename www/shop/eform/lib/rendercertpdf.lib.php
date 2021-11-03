@@ -28,6 +28,9 @@ foreach($options as $key => $val) {
   if($val !== null) $args .= ' '.$val;
 }
 
-exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/eform/renderCertificate.php?od_id={$eform['od_id']}&uuid={$uuid}&entId={$eform['entId']}&penId={$eform['penId']}\" \"{$certdir}\"");
+if($is_simple_efrom)
+  exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/eform/renderCertificate.php?dc_id={$uuid}&entId={$eform['entId']}&penId={$eform['penId']}\" \"{$certdir}\"");
+else
+  exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/eform/renderCertificate.php?od_id={$eform['od_id']}&uuid={$uuid}&entId={$eform['entId']}&penId={$eform['penId']}\" \"{$certdir}\"");
 
 ?>
