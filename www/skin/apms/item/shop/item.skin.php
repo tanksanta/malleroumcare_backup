@@ -372,16 +372,19 @@ $sendData["prods"] = $prodsSendData;
                 $send_cost = get_item_sendcost_by_default_case($item_price);
 
                 if ($send_cost > 0) {
-                  $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
+                  // $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
+                  $sc_price_info = "배송비 {$send_cost}원";
                 } else {
-                  $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
+                  // $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
+                  $sc_price_info = "무료배송";
                 }
               }
             } else { // 파트너 유저 아닐 시
               $sc_price_info = "";
               if ($it['it_sc_type'] != 1) {
                 $number_cost=number_format($it['it_sc_price']);
-                $sc_price_info = "배송비 {$number_cost}원{$sc_price_info_spliter}도서산간지역은 ".number_format($it['it_sc_price'] + 2000)."원 추가됩니다.";
+                // $sc_price_info = "배송비 {$number_cost}원{$sc_price_info_spliter}도서산간지역은 ".number_format($it['it_sc_price'] + 2000)."원 추가됩니다.";
+                $sc_price_info = "배송비 {$number_cost}원";
               }
 
               if ($it['it_sc_type'] == 0) { // 쇼핑몰 디폴트 셋팅 시
@@ -389,9 +392,11 @@ $sendData["prods"] = $prodsSendData;
                 $send_cost = get_item_sendcost_by_default_case($item_price);
 
                 if ($send_cost > 0) {
-                  $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
+                  // $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
+                  $sc_price_info = "배송비 {$send_cost}원";
                 } else {
-                  $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
+                  // $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
+                  $sc_price_info = "무료배송";
                 }
               }
             }
@@ -724,9 +729,11 @@ $sendData["prods"] = $prodsSendData;
                     $send_cost = get_item_sendcost_by_default_case($item_price);
 
                     if ($send_cost > 0) {
-                        $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
+                      // $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
+                      $sc_price_info = "배송비 {$send_cost}원";
                     } else {
-                        $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
+                      // $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
+                      $sc_price_info = "무료배송";
                     }
                 }
             } else { // 파트너 유저 아닐 시
@@ -755,7 +762,8 @@ $sendData["prods"] = $prodsSendData;
                 $sc_price_info = "";
                 if ($it['it_sc_type'] != 1) {
                     $number_cost=number_format($it['it_sc_price']);
-                    $sc_price_info = "배송비 {$number_cost}원{$sc_price_info_spliter}도서산간지역은 ".number_format($it['it_sc_price'] + 2000)."원 추가됩니다.";
+                    // $sc_price_info = "배송비 {$number_cost}원{$sc_price_info_spliter}도서산간지역은 ".number_format($it['it_sc_price'] + 2000)."원 추가됩니다.";
+                    $sc_price_info = "배송비 {$number_cost}원";
                 }
 
                 if ($it['it_sc_type'] == 0) { // 쇼핑몰 디폴트 셋팅 시
@@ -763,9 +771,11 @@ $sendData["prods"] = $prodsSendData;
                     $send_cost = get_item_sendcost_by_default_case($item_price);
 
                     if ($send_cost > 0) {
-                        $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
+                      // $sc_price_info = "배송비 {$send_cost}원{$sc_price_info_spliter}도서산간지역은 ".($send_cost + 2000)."원 추가됩니다.";
+                      $sc_price_info = "배송비 {$send_cost}원";
                     } else {
-                        $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
+                      // $sc_price_info = "무료배송{$sc_price_info_spliter}도서산간지역은 추가배송비가 발생합니다.";
+                      $sc_price_info = "무료배송";
                     }
                 }
             }
