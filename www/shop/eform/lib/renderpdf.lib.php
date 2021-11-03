@@ -25,6 +25,9 @@ foreach($options as $key => $val) {
 }
 
 $G5_URL = G5_URL;
-exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/eform/renderEform.php?od_id={$eform['od_id']}&uuid={$uuid}&entId={$eform['entId']}&penId={$eform['penId']}&timestamp={$timestamp}\" \"{$pdfdir}\"");
+if($is_simple_efrom)
+  exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/eform/renderEform.php?dc_id={$uuid}&entId={$eform['entId']}&penId={$eform['penId']}&timestamp={$timestamp}\" \"{$pdfdir}\"");
+else
+  exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/eform/renderEform.php?od_id={$eform['od_id']}&uuid={$uuid}&entId={$eform['entId']}&penId={$eform['penId']}&timestamp={$timestamp}\" \"{$pdfdir}\"");
 
 ?>

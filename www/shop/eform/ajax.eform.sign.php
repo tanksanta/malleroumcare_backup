@@ -18,20 +18,26 @@ if(!$eform['dc_id']) {
   json_response(500, '서명할 계약서를 찾을 수 없습니다.');
 }
 
-$sql = "SELECT * FROM {$g5['g5_shop_order_table']} WHERE `od_id` = '{$eform['od_id']}'";
-if($is_member && !$is_admin)
-    $sql .= " AND mb_id = '{$member['mb_id']}' ";
-$od = sql_fetch($sql);
-if(!$od['mb_id']) {
-  json_response(400, '계약서에 서명할 권한이 없습니다.');
-}
+if($eform['dc_status'] == '10') {
+  $is_simple_efrom = true;
+} else {
+  $is_simple_efrom = false;
 
-if($eform['dc_status'] == '2') {
-  json_response(400, '이미 서명이 완료된 계약서입니다.');
-}
+  $sql = "SELECT * FROM {$g5['g5_shop_order_table']} WHERE `od_id` = '{$eform['od_id']}'";
+  if($is_member && !$is_admin)
+      $sql .= " AND mb_id = '{$member['mb_id']}' ";
+  $od = sql_fetch($sql);
+  if(!$od['mb_id']) {
+    json_response(400, '계약서에 서명할 권한이 없습니다.');
+  }
 
-if($eform['dc_status'] != '1') {
-  json_response(400, '계약서가 서명할 수 없는 상태입니다.');
+  if($eform['dc_status'] == '2') {
+    json_response(400, '이미 서명이 완료된 계약서입니다.');
+  }
+
+  if($eform['dc_status'] != '1') {
+    json_response(400, '계약서가 서명할 수 없는 상태입니다.');
+  }
 }
 
 // 서명 파일 사본 저장할 경로
@@ -161,9 +167,13 @@ send_alim_talk('PEN_EFORM_'.$uuid, $eform['penConNum'], 'pen_eform_result', "[�
 ));
 send_alim_talk('ENT_EFORM_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.");
 
+$dc_status = '2';
+if($is_simple_efrom)
+  $dc_status = '3';
+
 // 계약서 정보 업데이트
 sql_query("UPDATE `eform_document` SET
-`dc_status` = '2',
+`dc_status` = '$dc_status',
 `dc_sign_datetime` = '$datetime',
 `dc_sign_ip` = '$ip',
 `dc_pdf_file` = '$pdffile',

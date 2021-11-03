@@ -57,17 +57,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="" placeholder="L**********">
             </div>
             <label for="penGender" class="col-md-2 control-label">
-              <strong>성별</strong>
+              <strong>휴대폰번호</strong>
             </label>
             <div class="col-md-3">
-              <div class="radio_wr">
-                <label class="radio-inline">
-                  <input type="radio" name="penGender" id="penGender_0" value="남" checked> 남
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="penGender" id="penGender_1" value="여"> 여
-                </label>
-              </div>
+              <input type="text" name="penConNum" id="penConNum" class="form-control input-sm" value="">
             </div>
           </div>
           <div class="form-group">
@@ -121,7 +114,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </div>
         </div>
         <div class="se_btn_wr">
-          <button type="submit" class="btn_se_submit">
+          <button type="submit" id="btn_se_submit" class="btn_se_submit">
             <img src="<?=THEMA_URL?>/assets/img/icon_contract.png" alt="">
             계약서 작성
           </button>
@@ -359,7 +352,7 @@ function save_eform() {
       $('input[name="w"]').val('u');
       $('input[name="dc_id"]').val(dc_id);
 
-      var preview_url = '/shop/eform/renderEform.php?dc_id=' + dc_id;
+      var preview_url = '/shop/eform/renderEform.php?preview=1&dc_id=' + dc_id;
       $('#se_preview').empty().append($('<iframe>').attr('src', preview_url).attr('frameborder', 0));
     })
     .fail(function ($xhr) {
@@ -370,6 +363,21 @@ function save_eform() {
       loading = false;
     });
 }
+
+// 계약서 작성
+$('#btn_se_submit').on('click', function() {
+  if(loading) {
+    alert('계약서 저장 중입니다. 잠시 기다려주세요.');
+    return false;
+  }
+
+  var dc_id = $('input[name="dc_id"]').val();
+
+  if(!dc_id)
+      return alert('먼저 품목 선택 후 저장을 해주세요.');
+  
+  window.location.href = '/shop/eform/signEform.php?dc_id=' + dc_id;
+});
 
 // 바코드 필드 개수 업데이트
 function update_barcode_field() {
@@ -416,8 +424,7 @@ $('.pen_id_flexdatalist').flexdatalist({
 .on("select:flexdatalist", function(event, obj, options) {
   $('#penId').val(obj.penId);
   $('#penLtmNum').val(obj.penLtmNum);
-  if(obj.penGender == '남' || obj.penGender == '여')
-    $('input[name="penGender"][value="' + obj.penGender + '"]').prop('checked', true);
+  $('#penConNum').val(obj.penConNum);
   if(obj.penRecGraCd)
     $('#penRecGraCd').val(obj.penRecGraCd);
   if(obj.penTypeCd)

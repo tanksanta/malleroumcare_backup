@@ -2,15 +2,22 @@
 include_once("./_common.php");
 
 $dc_id = get_search_string($_GET['dc_id']);
+$preview = get_search_string($_GET['preview']);
 if($dc_id) {
-  $timestamp = time();
+  if($preview) {
+    $timestamp = time();
+    $entId = $member['mb_entId'];
+  } else {
+    $timestamp = intval($_GET['timestamp']);
+  }
   $datetime = date('Y-m-d H:i:s', $timestamp);
 
   $uuid = $dc_id;
+
   $eform = sql_fetch("
     SELECT HEX(`dc_id`) as uuid, e.*
     FROM `eform_document` as e
-    WHERE dc_id = UNHEX('$dc_id') and entId = '{$member['mb_entId']}' and dc_status = '10' ");
+    WHERE dc_id = UNHEX('$dc_id') and entId = '$entId' and dc_status = '10' ");
   if(!$eform['uuid']) {
     die('계약서를 확인할 수 없습니다.');
   }
