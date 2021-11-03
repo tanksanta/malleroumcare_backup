@@ -71,6 +71,7 @@ $sql  = " select
            it_price,
            it_cust_price,
            a.ca_id,
+           ca_name,
            it_img1 as it_img
            $sql_common
            $sql_order
