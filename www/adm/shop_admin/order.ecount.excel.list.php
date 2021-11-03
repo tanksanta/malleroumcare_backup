@@ -486,6 +486,12 @@
     if($it["ct_ex_date"] && $it["ct_ex_date"] !== "0000-00-00") {
       $date =date("Ymd", strtotime($it["ct_ex_date"]));
     }
+
+    $abstract = '통합관리플랫폼'; // 적요
+    if($it['prodMemo']) {
+      $abstract .= " ({$it['prodMemo']})";
+    }
+
     $rows[] = [
       $date,  //날짜
       $count_number,
@@ -513,7 +519,7 @@
       $price_d_s ?: '0', //부가세
       $barcode_string, // 바코드
       $delivery, // 로젠송장번호,
-      '통합관리플랫폼', //적요
+      $abstract, //적요
       '',
     ];
 
@@ -552,7 +558,7 @@
           ($od['od_send_cost'] - (int)($od['od_send_cost'] / 1.1)), //부가세
           $barcode_string, // 바코드
           $delivery, // 로젠송장번호,
-          '통합관리플랫폼', //적요
+          $abstract, //적요
           '',
         ];
       }
@@ -586,7 +592,7 @@
           -($od['od_sales_discount'] - (int)($od['od_sales_discount'] / 1.1)), //부가세
           '', // 바코드
           '', // 로젠송장번호,
-          '통합관리플랫폼', //적요
+          $abstract, //적요
           '',
         ];
       }
@@ -621,7 +627,7 @@
           -($coupon_price - (int)($coupon_price / 1.1)), //부가세
           '', // 바코드
           '', // 로젠송장번호,
-          '통합관리플랫폼', //적요
+          $abstract, //적요
           '',
         ];
       }
@@ -655,7 +661,7 @@
           -($od['od_receipt_point'] - (int)($od['od_receipt_point'] / 1.1)), //부가세
           '', // 바코드
           '', // 로젠송장번호,
-          '통합관리플랫폼', //적요
+          $abstract, //적요
           '',
         ];
       }
