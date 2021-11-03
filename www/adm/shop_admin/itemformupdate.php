@@ -385,7 +385,8 @@ $check_sanitize_keys = array(
   'it_sc_add_sendcost_partner',    // 파트너 산간지역 추가 배송비
   'it_box_size_width', // 박스 규격 (가로)
   'it_box_size_length', // 박스 규격 (세로)
-  'it_box_size_height' // 박스 규격 (높이)
+  'it_box_size_height', // 박스 규격 (높이)
+  'it_standard' // 규격
 );
 
 foreach( $check_sanitize_keys as $key ) {
@@ -674,7 +675,8 @@ $sql_common = "
   it_rental_expiry_year = '$it_rental_expiry_year',
   it_rental_persisting_year = '$it_rental_persisting_year',
   it_rental_persisting_price = '$it_rental_persisting_price',
-  it_box_size = '$it_box_size'
+  it_box_size = '$it_box_size',
+  it_standard = '$it_standard'
 "; // APMS : 2014.07.20
 
 if ($w == "")
@@ -911,11 +913,11 @@ if($option_count) {
   $comma = '';
   $sql = "
     INSERT INTO {$g5['g5_shop_item_option_table']}
-    ( `io_id`, `io_type`, `it_id`, `io_price`, `io_stock_qty`, `io_noti_qty`, `io_use`, `io_price_partner`, `io_price_dealer`, `io_price_dealer2`, `io_thezone` )
+    ( `io_id`, `io_type`, `it_id`, `io_price`, `io_stock_qty`, `io_noti_qty`, `io_use`, `io_price_partner`, `io_price_dealer`, `io_price_dealer2`, `io_thezone`, `io_standard` )
     VALUES
   ";
   for($i=0; $i<$option_count; $i++) {
-    $sql .= $comma . " ( '{$_POST['opt_id'][$i]}', '0', '$it_id', '{$_POST['opt_price'][$i]}', '{$_POST['opt_stock_qty'][$i]}', '{$_POST['opt_noti_qty'][$i]}', '{$_POST['opt_use'][$i]}', '{$_POST['opt_price_partner'][$i]}', '{$_POST['opt_price_dealer'][$i]}', '{$_POST['opt_price_dealer2'][$i]}', '{$_POST['opt_thezone'][$i]}' )";
+    $sql .= $comma . " ( '{$_POST['opt_id'][$i]}', '0', '$it_id', '{$_POST['opt_price'][$i]}', '{$_POST['opt_stock_qty'][$i]}', '{$_POST['opt_noti_qty'][$i]}', '{$_POST['opt_use'][$i]}', '{$_POST['opt_price_partner'][$i]}', '{$_POST['opt_price_dealer'][$i]}', '{$_POST['opt_price_dealer2'][$i]}', '{$_POST['opt_thezone'][$i]}', '{$_POST['opt_standard'][$i]}' )";
     $comma = ' , ';
   }
 

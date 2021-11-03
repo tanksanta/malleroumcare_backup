@@ -208,6 +208,12 @@ $warehouse_list = get_warehouses();
           </td>
         </tr>
         <tr>
+          <th scope="row"><label for="it_standard">규격</label></th>
+          <td>
+            <input type="text" name="it_standard" value="<?php echo get_text($it['it_standard']); ?>" id="it_standard" class="frm_input" size="40">
+          </td>
+        </tr>
+        <tr>
           <th scope="row"><label for="pt_tag">상품태그</label></th>
           <td>
             <?php echo help("등록할 상품태그를 콤마(,)로 구분해서 입력합니다."); ?>

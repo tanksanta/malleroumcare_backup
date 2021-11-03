@@ -65,6 +65,7 @@ if($po_run) {
         <th scope="col">통보수량</th>
         <th scope="col">사용여부</th>
         <th scope="col">품목코드</th>
+        <th scope="col">규격</th>
     </tr>
     </thead>
     <tbody>
@@ -83,6 +84,7 @@ if($po_run) {
             $opt_noti_qty = $row['io_noti_qty'];
             $opt_use = $row['io_use'];
             $opt_thezone = $row['io_thezone'];
+            $opt_standard = $row['io_standard'];
             $opt_price_partner = $row['io_price_partner'];
             $opt_price_dealer = $row['io_price_dealer'];
             $opt_price_dealer2 = $row['io_price_dealer2'];
@@ -119,6 +121,10 @@ if($po_run) {
         <td class="td_num">
             <label for="opt_thezone_<?php echo $i; ?>" class="sound_only"></label>
             <input type="text" name="opt_thezone[]" value="<?php echo $opt_thezone; ?>" id="opt_thezone_<?php echo $i; ?>" class="frm_input" size="5">
+        </td>
+        <td class="td_num">
+            <label for="opt_standard_<?php echo $i; ?>" class="sound_only"></label>
+            <input type="text" name="opt_standard[]" value="<?php echo $opt_standard; ?>" id="opt_standard_<?php echo $i; ?>" class="frm_input" size="5">
         </td>
     </tr>
     <?php

@@ -70,7 +70,7 @@
       $sel_arr = array('i.it_name', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
     
       foreach ($sel_arr as $key => $value) {
-        if($value=="barcode") {
+        if($value=="barcode") { 
           $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search."'";
           $result_barcode_search = sql_query($sql_barcode_search);
           $or = "";
@@ -350,7 +350,7 @@
     $checked[$this_ct_id] = true;
 
     $it = sql_fetch("
-      SELECT cart.*, item.it_thezone2, o.io_thezone as io_thezone2, item.ca_id
+      SELECT cart.*, item.it_thezone2, o.io_thezone as io_thezone2, item.ca_id, it_standard, io_standard
       FROM g5_shop_cart as cart
       INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
       LEFT JOIN g5_shop_item_option o ON (cart.it_id = o.it_id and cart.io_id = o.io_id)
@@ -463,6 +463,7 @@
     $od_sales_manager = get_member($result_manager['mb_manager']);
 
     $thezone_code = $it['io_thezone2'] ?: $it['io_thezone'] ?: $it['it_thezone2'];
+    $standard = $it['io_standard'] ?: $it['it_standard']; // 규격
 
     $delivery = '';
     //송장번호 출력
@@ -504,7 +505,7 @@
       '',
       $thezone_code, // 품목코드
       '',
-      '',
+      $standard,
       $it["ct_qty"],
       $price_d ?: '0', // 단가(판매가)
       '',
