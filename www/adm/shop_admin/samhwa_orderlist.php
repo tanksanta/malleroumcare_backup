@@ -363,6 +363,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <option value="od_all" <?php echo $sel_field == 'od_all' ? 'selected="selected"' : ''; ?>>전체</option>
             <option value="od_name" <?php echo get_selected($sel_field, 'od_name'); ?>>주문자</option>
             <option value="od_b_name" <?php echo get_selected($sel_field, 'od_b_name'); ?>>받는분</option>
+            <option value="prodMemo" <?php echo get_selected($sel_field, 'prodMemo'); ?>>상품요청사항</option>
+            <option value="od_memo" <?php echo get_selected($sel_field, 'od_memo'); ?>>배송요청사항</option>
             <option value="it_name" <?php echo $sel_field == 'it_name' ? 'selected="selected"' : ''; ?>>상품명</option>
             <option value="it_admin_memo" <?php echo $sel_field == 'it_admin_memo' ? 'selected="selected"' : ''; ?>>관리자메모</option>
             <option value="it_maker" <?php echo $sel_field == 'it_maker' ? 'selected="selected"' : ''; ?>>제조사</option>
@@ -381,6 +383,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
           	<select name="sel_field_add" id="sel_field_add">
             <option value="od_name" <?php echo get_selected($sel_field_add, 'od_name'); ?>>주문자</option>
             <option value="od_b_name" <?php echo get_selected($sel_field_add, 'od_b_name'); ?>>받는분</option>
+            <option value="prodMemo" <?php echo get_selected($sel_field_add, 'prodMemo'); ?>>상품요청사항</option>
+            <option value="od_memo" <?php echo get_selected($sel_field_add, 'od_memo'); ?>>배송요청사항</option>
             <option value="it_name" <?php echo $sel_field_add == 'it_name' ? 'selected="selected"' : ''; ?>>상품명</option>
             <option value="it_admin_memo" <?php echo $sel_field_add == 'it_admin_memo' ? 'selected="selected"' : ''; ?>>관리자메모</option>
             <option value="it_maker" <?php echo $sel_field_add == 'it_maker' ? 'selected="selected"' : ''; ?>>제조사</option>
