@@ -351,6 +351,8 @@ if($od["od_b_tel"]) {
                 <?php if($carts[$i]["it_name"] != $carts[$i]["ct_option"]){ ?>
                 (<?=$carts[$i]["ct_option"]?>)
                 <?php } ?>
+                <!-- 수량 -->
+                <?php echo " ({$carts[$i]["ct_qty"]}개)"; ?>
               </span>
               <?php if ($gubun != '02' && $carts[$i]['io_type'] == 0) { ?>
               <span class="span2">
