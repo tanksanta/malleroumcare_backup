@@ -2093,6 +2093,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
       <div class="block-box gray logs">
         <?php
         $logs = get_delivery_log($od['od_id']);
+        $last_log = [];
         foreach($logs as $log) {
           $log_mb = get_member($log['mb_id']);
           //아이템 검색
@@ -2136,6 +2137,62 @@ var od_id = '<?php echo $od['od_id']; ?>';
           } else {
             echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' 송장번호['. $log['ct_delivery_num'].'] '.$direct_delivery.'<br/>';
           }
+
+          // 이전 로그와 비교
+          if($last_log[$log['ct_id']]) {
+            // 합포비교
+            if($last_log[$log['ct_id']]['ct_combine_ct_id'] != $log['ct_combine_ct_id']) {
+              if($log['ct_combine_ct_id']) {
+                // 합포적용
+                echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 합포정보 입력 : {$it_name} 상품을 {$it_name_p} 상품에 합포적용했습니다.<br/>";
+              } else {
+                // 합포해지
+                echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 합포정보 입력 : {$it_name} 상품을 합포해지했습니다.<br/>";
+              }
+            }
+
+            // 위탁비교
+            if($last_log[$log['ct_id']]['ct_is_direct_delivery'] != $log['ct_is_direct_delivery']) {
+              if($log['ct_is_direct_delivery']) {
+                // 위탁 적용
+                $direct_delivery_type = '';
+                if($log["ct_is_direct_delivery"] == "1") {
+                  $direct_delivery_type = '배송';
+                } else if($log["ct_is_direct_delivery"] == "2") {
+                  $direct_delivery_type = '설치';
+                }
+                echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 위탁정보 입력 : {$it_name} 상품을 위탁 적용했습니다. ({$direct_delivery_type}/{$log['ct_direct_delivery_partner']}/1개당 {$log['ct_direct_delivery_price']}원)<br/>";
+              } else {
+                // 위탁해지
+                echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 위탁정보 입력 : {$it_name} 상품을 위탁 해지했습니다.<br/>";
+              }
+            }
+          } else {
+            // 비교할 이전 로그가 없으면 자체 정보로 비교
+            if(!$log['was_combined'] && $log['ct_combine_ct_id']) {
+              // 합포적용
+              echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 합포정보 입력 : {$it_name} 상품을 {$it_name_p} 상품에 합포적용했습니다.<br/>";
+            } else if($log['was_combined'] && !$log['ct_combine_ct_id']) {
+              // 합포해지
+              echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 합포정보 입력 : {$it_name} 상품을 합포해지했습니다.<br/>";
+            }
+  
+            if(!$log['was_direct_delivery'] && $log['ct_is_direct_delivery']) {
+              // 위탁적용
+              $direct_delivery_type = '';
+              if($log["ct_is_direct_delivery"] == "1") {
+                $direct_delivery_type = '배송';
+              } else if($log["ct_is_direct_delivery"] == "2") {
+                $direct_delivery_type = '설치';
+              }
+              echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 위탁정보 입력 : {$it_name} 상품을 위탁 적용했습니다. ({$direct_delivery_type}/{$log['ct_direct_delivery_partner']}/1개당 {$log['ct_direct_delivery_price']}원)<br/>";
+            } else if($log['was_direct_delivery'] && !$log['ct_is_direct_delivery']) {
+              // 위탁해지
+              echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 위탁정보 입력 : {$it_name} 상품을 위탁 해지했습니다.<br/>";
+            }
+          }
+
+          $last_log[$log['ct_id']] = $log;
         }
         if (!count($logs)) {
           echo '기록이 없습니다.';

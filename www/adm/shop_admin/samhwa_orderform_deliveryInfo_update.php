@@ -57,6 +57,10 @@ foreach($ct_id_list as $ct_id) {
     $od_delivery_insert++;
   }
 
+  $ct = sql_fetch(" select * from g5_shop_cart where ct_id = '$ct_id' ");
+  $was_combined = $ct['ct_combine_ct_id'] ? 1 : 0;
+  $was_direct_delivery = $ct['ct_is_direct_delivery'] > 0 ? 1 : 0;
+
   if ($ct_delivery_combine) {
     $combine_where = "ct_combine_ct_id = '{$ct_delivery_combine_ct_id}',";
   } else {
@@ -116,6 +120,10 @@ foreach($ct_id_list as $ct_id) {
       ct_delivery_price = '{$ct_delivery_price}',
       ct_edi_result = '0',
       ct_is_direct_delivery = '{$ct_is_direct_delivery}',
+      ct_direct_delivery_partner = '{$ct_direct_delivery_partner}',
+      ct_direct_delivery_price = '{$ct_direct_delivery_price}',
+      was_combined = '$was_combined',
+      was_direct_delivery = '$was_direct_delivery',
       d_date = '{$data}'
   ";
   sql_query($sql);
