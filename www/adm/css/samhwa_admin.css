@@ -2358,3 +2358,13 @@ table.it_outsourcing td span {
     background-color: #f4f4f4 !important;
     color: #979797;
 }
+
+#btn_order_edit {
+    display: block;
+    background: #333;
+    color: #fff;
+    border-radius: 5px;
+    height: 29px;
+    padding: 0 13px;
+    float: right;
+}

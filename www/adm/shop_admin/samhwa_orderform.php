@@ -1141,6 +1141,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         </select>
                         <input type="button" value="변경하기" class="btn shbtn" id="change_cart_status">
                     </div>
+                    <button type="button" id="btn_order_edit">주문품목 변경</button>
 <!--                    <div class="change_discount2" >-->
 <!--                        <span>* 추가 배송비</span>-->
 <!--                        <input type="text" class="frm_input" name="od_send_cost2" id="od_send_cost2" value="--><?php //echo $od['od_send_cost2']; ?><!--" />-->
@@ -2479,6 +2480,53 @@ var od_id = '<?php echo $od['od_id']; ?>';
   <div></div>
 </div>
 
+<style>
+#popup_order_add {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.6);
+  display:none;
+}
+#popup_order_add > div {
+  width: 1000px;
+  max-width: 80%;
+  height: 80%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#popup_order_add > div iframe {
+  width:100%;
+  height:100%;
+  border: 0;
+  background-color: #FFF;
+}
+
+</style>
+<div id="popup_order_add">
+  <div>dd</div>
+</div>
+
+<script>
+$(function() {
+  
+  $(document).on("click", "#btn_order_edit", function (e) {
+    e.preventDefault();
+
+    $("#popup_order_add > div").html("<iframe src='./pop.order.edit.php?od_id=<?=$od_id?>'></iframe>");
+    $("#popup_order_add iframe").load(function(){
+      $("#popup_order_add").show();
+      $('#hd').css('z-index', 3);
+    });
+  });
+});
+</script>
+
 <script>
 
     //주문내역 숨김처리
@@ -2535,6 +2583,10 @@ $(document).ready(function() {
     className: "fixed"
   });
     */
+  // 주문품목 변경 버튼
+  $('#btn_order_edit').click(function() {
+    
+  });
 
   $(document).on("click", ".prodBarNumCntBtn", function(e){
     e.preventDefault();
