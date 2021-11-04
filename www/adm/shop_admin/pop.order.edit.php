@@ -7,6 +7,10 @@ auth_check($auth[$sub_menu], "w");
 
 $title = '주문서 수정';
 include_once('./pop.head.php');
+
+$od_id = get_search_string($_GET['od_id']);
+$carts = get_carts_by_od_id($od_id);
+
 ?>
 <style>
 .flexdatalist-results li {
@@ -81,6 +85,115 @@ include_once('./pop.head.php');
                 </tr>
             </thead>
             <tbody>
+                <?php
+                $index = 0;
+                $item_sale_obj = [];
+                foreach($carts as $cart) {
+                    $it = sql_fetch(" select * from g5_shop_item where it_id = '{$cart['it_id']}' ");
+
+                    $item_sale_obj[$it['it_id']] = [
+                        'it_sale_cnt' => [
+                            $it['it_sale_cnt'],
+                            $it['it_sale_cnt_02'],
+                            $it['it_sale_cnt_03'],
+                            $it['it_sale_cnt_04'],
+                            $it['it_sale_cnt_05'],
+                        ],
+                        'it_sale_percent' => [
+                            $it['it_sale_percent'],
+                            $it['it_sale_percent_02'],
+                            $it['it_sale_percent_03'],
+                            $it['it_sale_percent_04'],
+                            $it['it_sale_percent_05'],
+                        ],
+                        'it_sale_percent_great' => [
+                            $it['it_sale_percent_great'],
+                            $it['it_sale_percent_great_02'],
+                            $it['it_sale_percent_great_03'],
+                            $it['it_sale_percent_great_04'],
+                            $it['it_sale_percent_great_05']
+                        ],
+                    ];
+
+                    $option_sql = "SELECT *
+                    FROM
+                      {$g5['g5_shop_item_option_table']}
+                    WHERE
+                        it_id = '{$cart['it_id']}'
+                        and io_type = 0 -- 선택옵션
+                    ";
+
+                    $option_result = sql_query($option_sql);
+                    $options = [];
+                    while ($option_row = sql_fetch_array($option_result)) {
+                        $options[] = $option_row;
+                    }
+                    foreach($cart['options'] as $opt) {
+                        // 공급가액
+                        $opt["basic_price"] = $opt['ct_price_stotal'];
+                        // 부가세
+                        $opt["tax_price"] = 0;
+                        if($opt['it_taxInfo'] != "영세" ) {
+                            // 공급가액
+                            $opt["basic_price"] = round($opt['ct_price_stotal'] / 1.1);
+                            // 부가세
+                            $opt["tax_price"] = round($opt['ct_price_stotal'] / 11);
+                        }
+                        // 단가 역산
+                        $it_price = $opt["opt_price"] = $opt['ct_price_stotal'] ? @round($opt['ct_price_stotal'] / ($opt["ct_qty"] - $opt["ct_stock_qty"])) : 0;
+                ?>
+                <tr>
+                    <td class="no">
+                        <span class="index"><?= (++$index) ?></span>
+                        <input type="hidden" name="ct_id[]" value="<?=$opt['ct_id']?>">
+                        <input type="hidden" name="it_id[]" value="<?=$opt['it_id']?>">
+                        <input type="hidden" name="price[]" class="price" value="<?=$opt['opt_price']?>">
+                    </td>
+                    <td>
+                        <input type="hidden" name="it_name[]" class="frm_input" value="<?=$opt['it_name']?>">
+                        <?=$opt['it_name']?>
+                    </td>
+                    <td>
+                        <div class="it_option">
+                            <?php
+                            if($options) {
+                                echo '<select name="io_id[]">';
+                                foreach($options as $option) {
+                                    echo '<option data-price="' . $option['io_price'] . '" value="' . $option['io_id'] . '" ' . get_selected($opt['io_id'], $option['io_id']) . '>' . str_replace(chr(30), ' > ', $option['io_id']) . '</option>';
+                                }
+                                echo '</select>';
+                            } else {
+                                echo '
+                                    <input type="hidden" name="io_id[]" value="">
+                                    -
+                                ';
+                            }
+                            ?>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" name="qty[]" class="frm_input" value="<?=$opt['ct_qty']?>">
+                    </td>
+                    <td>
+                        <input type="text" name="it_price[]" class="frm_input" value="<?=$it_price?>">
+                    </td>
+                    <td class="basic_price">
+                        <?=number_format($opt["basic_price"])?>원
+                    </td>
+                    <td class="tax_price">
+                    <?=number_format($opt["tax_price"])?>원
+                    </td>
+                    <td>
+                        <input type="text" name="memo[]" class="frm_input" value="<?=$opt['prodMemo']?>">
+                    </td>
+                    <td>
+                        <input type="button" class="shbtn small delete_cart" value="삭제" />
+                    </td>
+                </tr>
+                <?php
+                    }
+                }
+                ?>
             </tbody>
         </table>
     </div>
@@ -90,6 +203,7 @@ include_once('./pop.head.php');
             <tr>
                 <td class="no">
                     <span class="index">1</span>
+                    <input type="hidden" name="ct_id[]">
                     <input type="hidden" name="it_id[]">
                     <input type="hidden" name="price[]" class="price">
                 </td>
@@ -141,7 +255,7 @@ var loading = false;
 
 // 기본 설정
 var mb_level = 3;
-var item_sale_obj = {};
+var item_sale_obj = <?php echo $item_sale_obj ? json_encode($item_sale_obj) : '{}' ?>;
 
 function formcheck(f) {
     var val, io_type, result = true;
