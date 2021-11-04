@@ -839,8 +839,8 @@ $(function() {
             <div>
               <b>매출증빙</b>
               <span><?php echo $typereceipt['name']; ?>
-            <?php echo $typereceipt['ot_btel'] ? '( ' . $typereceipt['ot_btel'] : ''; ?>
-            <?php echo $typereceipt['ot_btel'] ? ')': ''; ?></span>
+            <?php echo $typereceipt['ot_bnum'] ? '( ' . $typereceipt['ot_bnum'] : ''; ?>
+            <?php echo $typereceipt['ot_bnum'] ? ')': ''; ?></span>
             </div>
           </li>
           <?php } ?>
