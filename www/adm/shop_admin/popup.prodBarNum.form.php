@@ -920,7 +920,7 @@ if($od["od_b_tel"]) {
           }
         });
         <?php } ?>
-        // window.close();
+        window.close();
         <?php }?>
       }
     });
