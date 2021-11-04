@@ -94,6 +94,7 @@ function get_carts_by_od_id($od_id, $delivery_yn = null, $where = null, $order_b
 					a.ct_combine_ct_id,
 					b.it_delivery_cnt,
 					b.it_delivery_price,
+          b.it_delivery_company,
 					a.ct_delivery_cnt,
 					a.ct_delivery_price,
 					a.ct_is_direct_delivery
@@ -141,6 +142,7 @@ function get_carts_by_od_id($od_id, $delivery_yn = null, $where = null, $order_b
 						a.ct_combine_ct_id,
 						b.it_delivery_cnt,
 						b.it_delivery_price,
+            b.it_delivery_company,
 						a.ct_delivery_cnt,
 						a.ct_delivery_price,
 						a.it_name,

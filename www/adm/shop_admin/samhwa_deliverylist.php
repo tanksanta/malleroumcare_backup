@@ -110,6 +110,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
     <button id="delivery_edi_return_all">송장리턴</button>
     <button onclick="applyCombine();">합포적용</button>
+    <button onclick="lotte_delivery_excel_download();">롯데택배 엑셀다운로드</button>
   </div>
 </div>
 
@@ -766,6 +767,11 @@ function applyCombine() {
     var data = $xhr.responseJSON;
     alert(data && data.message);
   });
+}
+
+// 롯데택배 엑셀 다운로드
+function lotte_delivery_excel_download() {
+  alert('작업중입니다.');
 }
 
 </script>

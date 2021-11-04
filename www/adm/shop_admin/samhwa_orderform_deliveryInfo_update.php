@@ -35,6 +35,7 @@ foreach($ct_id_list as $ct_id) {
   $ct_it_name = $_POST["ct_it_name_{$ct_id}"];
   $ct_delivery_company = $_POST["ct_delivery_company_{$ct_id}"];
   $ct_delivery_num = $_POST["ct_delivery_num_{$ct_id}"];
+  $ct_delivery_num = implode('|', $ct_delivery_num);
   $ct_delivery_cnt = $_POST["ct_delivery_cnt_{$ct_id}"];
   $ct_delivery_price = $_POST["ct_delivery_price_{$ct_id}"];
   $ct_delivery_combine = $_POST["ct_combine_{$ct_id}"];
