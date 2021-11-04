@@ -572,7 +572,7 @@ if($od["od_b_tel"]) {
         if(length < 12 && length) {
           $cur.addClass("active");
         }
-        if(length == 12) {
+        if(length == 12 && /^-?\d+$/.test(barcode)) { //숫자만 입력되었는지 체크 로직 추가 211103
           $cur.parent().find("i").addClass("active");
           
           if(!dataTable[barcode])
@@ -710,6 +710,7 @@ if($od["od_b_tel"]) {
     $("#prodBarNumSaveBtn").click(function() {
       var barcode_arr = [];
       var error_arr = [];
+      var str_error_arr = [];
       var $ipt_error = null;
       var isDuplicated = false;
 
@@ -718,7 +719,12 @@ if($od["od_b_tel"]) {
           var temp_arr = [];
           $(this).find('.inputbox li input').each(function() {
               if ($(this).val() != "") {
+                if (/^-?\d+$/.test($(this).val())) {
                   temp_arr.push($(this).val())
+                }
+                else {
+                  str_error_arr.push($(this));
+                }
               } else {
                   if(!$ipt_error)
                     $ipt_error = $(this);
@@ -735,6 +741,13 @@ if($od["od_b_tel"]) {
                 $ipt_error = null;
           }
       });
+
+      //숫자만 입력되었는지 체크 로직 추가 211103
+      if (str_error_arr.length > 0) {
+        alert( '바코드는 숫자만 입력 가능합니다.' );
+        str_error_arr[0].focus();
+        return false;
+      }
 
       if(error_arr.length > 0) {
           alert( error_arr.join(', ') + ' 품목의 모든 바코드가 입력되지 않아 저장할 수 없습니다.' );

@@ -171,6 +171,7 @@ $partners = get_partner_members();
           $options = $carts[$i]["options"];
 
           for($k = 0; $k < count($options); $k++) {
+            $delivery_num_arr = explode('|', $options[$k]["ct_delivery_num"]);
         ?>
           <tr data-price="<?=$options[$k]["it_delivery_price"]?>" data-cnt="<?=$options[$k]["it_delivery_cnt"]?>">
             <td><?php echo get_custom_ct_status_text($options[$k]['ct_status']); ?></td>
@@ -192,15 +193,27 @@ $partners = get_partner_members();
               <span>원</span>
             </td>
             <td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
-              <select class="frm_input" name="ct_delivery_company_<?=$options[$k]["ct_id"]?>">
+              <select id="select_delivery_company" class="frm_input" name="ct_delivery_company_<?=$options[$k]["ct_id"]?>" data-ct-id="<?=$options[$k]["ct_id"]?>">
                 <option value="">선택하세요.</option>
               <?php foreach($delivery_companys as $data){ ?>
-                <option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+                <option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"] || $options[$k]["it_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
               <?php } ?>
               </select>
             </td>
-            <td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
-              <input type="text" value="<?=$options[$k]["ct_delivery_num"]?>" class="frm_input" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>">
+            <td id="td_delivery_num_<?=$options[$k]["ct_id"]?>" class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
+              <input type="text" value="<?=$delivery_num_arr[0]?>" class="frm_input" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>[]">
+              <?php
+                if ($options[$k]['it_delivery_company'] == 'lotteglogis' || $options[$k]['ct_delivery_company'] == 'lotteglogis') {
+                  $box_cnt = $options[$k]["ct_delivery_cnt"];
+                  for ($m=1; $m<$box_cnt; $m++) {
+                    $delivery_num = '';
+                    if ($delivery_num_arr[$m])
+                      $delivery_num = $delivery_num_arr[$m];
+                    $input_name = "ct_delivery_num_" . $options[$k]["ct_id"] . "[]";
+                    echo '<input type="text" value="' . $delivery_num . '" class="frm_input" name="' . $input_name . '">';
+                  }
+                }
+              ?>
             </td>
             <td class="combine combine_y <?php if($options[$k]['ct_combine_ct_id']) echo ' active ';?>" colspan="4">
               <select name="ct_combine_ct_id_<?php echo $options[$k]["ct_id"]; ?>" class="ct_combine_ct_id">
@@ -319,6 +332,26 @@ $partners = get_partner_members();
         }
         
         $(parent).find(".ct_delivery_price").val(tmpCnt * price);
+      }
+    });
+
+    // 택배사 변경 
+    $("select[id='select_delivery_company']").change(function() {
+      var ct_id = $(this).attr('data-ct-id');
+      if (this.value == 'lotteglogis') {
+        var box_cnt = $(`input[name=ct_delivery_cnt_${ct_id}`).val();
+        var html = '';
+        html += '<input type="text" value="" class="frm_input" name="">';
+
+        for (var i=1; i<box_cnt; i++) {
+          $(`#td_delivery_num_${ct_id}`).append(html);
+        }
+      }
+      else {
+        var children = $(`#td_delivery_num_${ct_id}`).children().length;
+        if (children > 1) {
+          $(`#td_delivery_num_${ct_id}`).children().not(':first').remove();
+        }
       }
     });
 
