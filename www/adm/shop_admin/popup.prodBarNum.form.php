@@ -640,19 +640,34 @@ if($od["od_b_tel"]) {
       }
     });
 
+    // 바코드 숫자만 입력되도록
+    $('.inputbox li input').on('change paste keyup', function() {
+      $(this).val($(this).val().replace(/[^0-9]/g,''));
+    });
+
     $("#prodBarNumSaveBtn").click(function() {
       var barcode_arr = [];
       var isDuplicated = false;
+      var isNotNumber = false;
 
       $('.imfomation_box .li_box').each(function(){
           var temp_arr = [];
           $(this).find('.inputbox li input').each(function(){
-              if ($(this).val() != "") {
+              var barcode = $(this).val();
+              if (barcode != "") {
                   temp_arr.push($(this).val())
+              }
+              if(isNaN(barcode)) {
+                isNotNumber = true;
               }
           });
           barcode_arr.push(temp_arr);
       });
+
+      if(isNotNumber) {
+        alert('입력하신 바코드 중 숫자가 아닌 값이 있습니다.');
+        return false;
+      }
 
       barcode_arr.forEach(function(arr) {
           if (isDuplicate(arr)) {
