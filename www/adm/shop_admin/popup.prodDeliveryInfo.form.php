@@ -342,7 +342,6 @@ $partners = get_partner_members();
         var box_cnt = $(`input[name=ct_delivery_cnt_${ct_id}`).val();
         var html = '';
         html += '<input type="text" value="" class="frm_input" name="">';
-        console.log(html);
 
         for (var i=1; i<box_cnt; i++) {
           $(`#td_delivery_num_${ct_id}`).append(html);
@@ -350,7 +349,6 @@ $partners = get_partner_members();
       }
       else {
         var children = $(`#td_delivery_num_${ct_id}`).children().length;
-        console.log(children);
         if (children > 1) {
           $(`#td_delivery_num_${ct_id}`).children().not(':first').remove();
         }
