@@ -9,8 +9,13 @@ $ms_pen_nm = clean_xss_tags($_POST['ms_pen_nm']);
 $ms_pro_yn = clean_xss_tags($_POST['ms_pro_yn']);
 $ms_pen_hp = clean_xss_tags($_POST['ms_pen_hp']);
 $ms_ent_tel = clean_xss_tags($_POST['ms_ent_tel']);
-$ms_rec_1 = clean_xss_tags($_POST['ms_rec_1']) ?: 0;
-$ms_rec_2 = clean_xss_tags($_POST['ms_rec_2']) ?: 0;
+$ms_rec = $_POST['ms_rec'];
+
+if(is_array($ms_rec)) {
+  $ms_rec = clean_xss_tags(implode(',', $ms_rec));
+} else {
+  $ms_rec = '';
+}
 
 if(!($ms_pen_nm && $ms_pro_yn && $ms_pen_hp))
   json_response(400, '수급자 정보를 입력해주세요.');
@@ -55,8 +60,7 @@ if($w == 'u') {
       ms_pen_nm = '{$ms_pen_nm}',
       ms_pen_hp = '{$ms_pen_hp}',
       ms_ent_tel = '{$ms_ent_tel}',
-      ms_rec_1 = '{$ms_rec_1}',
-      ms_rec_2 = '{$ms_rec_2}',
+      ms_rec = '{$ms_rec}',
       ms_updated_at = NOW()
     WHERE
       ms_id = '{$ms_id}' and
@@ -112,8 +116,7 @@ if($w == 'u') {
       ms_pen_nm = '{$ms_pen_nm}',
       ms_pen_hp = '{$ms_pen_hp}',
       ms_ent_tel = '{$ms_ent_tel}',
-      ms_rec_1 = '{$ms_rec_1}',
-      ms_rec_2 = '{$ms_rec_2}',
+      ms_rec = '{$ms_rec}',
       ms_url = '{$ms_url}',
       ms_created_at = NOW(),
       ms_updated_at = NOW()

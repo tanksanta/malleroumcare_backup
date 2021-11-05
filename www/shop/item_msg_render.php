@@ -15,6 +15,16 @@ foreach($items as $item) {
   $list[] = $it;
   $total += $it['it_cust_price'];
 }
+
+$rec_arr = explode(',', trim($ms['ms_rec']));
+$recs = [];
+foreach($rec_arr as $wr_id) {
+  if(trim($wr_id) == '') continue;
+  $sql = " select * from g5_write_info where wr_id = '$wr_id' ";
+  $rec = sql_fetch($sql);
+
+  $recs[] = $rec;
+}
 ?>
 <div class="im_wr">
   <div class="im_hd">
@@ -79,33 +89,25 @@ foreach($items as $item) {
       <button class="im_btn_more">상세정보 펼쳐보기 ▼</button>
     </div>
     <?php } ?>
-    <?php if($ms['ms_rec_1'] || $ms['ms_rec_2']) { ?>
+    <?php if($recs) { ?>
     <div class="im_tab_hd">추천정보</div>
-    <?php if($ms['ms_rec_1']) { ?>
-    <div class="im_wr_content">
-      <?php
-      $sql = " select wr_content from g5_write_info where wr_id = '1' ";
-      $content = sql_fetch($sql);
-      echo $content['wr_content'];
-      ?>
-    </div>
-    <?php } ?>
-    <?php if($ms['ms_rec_2']) { ?>
-    <div class="im_wr_content">
-      <?php
-      $sql = " select wr_content from g5_write_info where wr_id = '2' ";
-      $content = sql_fetch($sql);
-      echo $content['wr_content'];
-      ?>
-    </div>
-    <?php } ?>
+      <?php foreach($recs as $rec) { ?>
+      <div class="im_wr_content">
+        <div class="head"><?=$rec['wr_subject']?></div>
+        <?=$rec['wr_content']?>
+      </div>
+      <?php } ?>
     <?php } ?>
   </div>
 </div>
 
 <script>
-$('.im_btn_more').click(function() {
+$(document).on('click', '.im_btn_more', function() {
   $(this).closest('.im_item').addClass('active');
-  $(this).remove();
+  $(this).text('상세정보 접기 ▲').removeClass('im_btn_more').addClass('im_btn_less');
+});
+$(document).on('click', '.im_btn_less', function() {
+  $(this).closest('.im_item').removeClass('active');
+  $(this).text('상세정보 펼쳐보기 ▼').removeClass('im_btn_less').addClass('im_btn_more');
 });
 </script>
