@@ -70,6 +70,7 @@ $sql  = " select
            it_model,
            it_price,
            it_cust_price,
+           it_rental_price,
            a.ca_id,
            ca_name,
            it_img1 as it_img

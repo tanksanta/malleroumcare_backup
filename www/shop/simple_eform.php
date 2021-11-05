@@ -256,9 +256,13 @@ function select_item(obj) {
     .append(
       '<img class="it_img" src="/data/item/' + obj.it_img + '" onerror="this.src=\'/img/no_img.png\';">',
       '<p class="it_cate">' + obj.ca_name + '</p>',
-      '<p class="it_name">' + obj.it_name + ' (' + obj.gubun + ')' + '</p>',
-      '<p class="it_price">급여가 : ' + parseInt(obj.it_cust_price).toLocaleString('en-US') + '원</p>'
-      )
+      '<p class="it_name">' + obj.it_name + ' (' + obj.gubun + ')' + '</p>'
+      );
+  if(obj.gubun == '대여') {
+    $it_info.append('<p class="it_price">대여가 : ' + parseInt(obj.it_rental_price).toLocaleString('en-US') + '원</p>'); 
+  } else {
+    $it_info.append('<p class="it_price">급여가 : ' + parseInt(obj.it_cust_price).toLocaleString('en-US') + '원</p>'); 
+  }
   $li.append($it_info);
 
   $li.append('\
@@ -304,8 +308,8 @@ function select_item(obj) {
   $it_ipt.append('\
     <div class="flex">\
         <div class="it_ipt_hd">바코드</div>\
-        <div class="it_barcode_wr it_ipt">\
         <input type="hidden" name="it_barcode[]">\
+        <div class="it_barcode_wr it_ipt">\
         <input type="text" class="it_barcode">\
         </div>\
     </div>\
@@ -317,6 +321,8 @@ function select_item(obj) {
   } else {
     $('#buy_list').append($li);
   }
+
+  $('#ipt_se_sch').val('').next().focus();
 }
 
 // 계약서 저장
@@ -331,7 +337,7 @@ function save_eform() {
       it_barcode.push($(this).val());
     });
 
-    $(this).find('input[name="it_barcode[]"]').val(it_barcode.join(String.fromCharCode(30)));
+    $(this).parent().find('input[name="it_barcode[]"]').val(it_barcode.join(String.fromCharCode(30)));
   });
 
   // 대여제품 계약기간 값 적용
