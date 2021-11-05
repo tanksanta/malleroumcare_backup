@@ -554,8 +554,8 @@
           '1',
           $od['od_send_cost'], // 단가(vat포함)
           '',
-          (int)($od['od_send_cost'] / 1.1), //공급가액
-          ($od['od_send_cost'] - (int)($od['od_send_cost'] / 1.1)), //부가세
+          round($od['od_send_cost'] / 1.1), //공급가액
+          ($od['od_send_cost'] - round($od['od_send_cost'] / 1.1)), //부가세
           $barcode_string, // 바코드
           $delivery, // 로젠송장번호,
           $abstract, //적요
@@ -588,8 +588,8 @@
           '1',
           -($od['od_sales_discount']), // 단가(vat포함)
           '',
-          -((int)($od['od_sales_discount'] / 1.1)), //공급가액
-          -($od['od_sales_discount'] - (int)($od['od_sales_discount'] / 1.1)), //부가세
+          -(round($od['od_sales_discount'] / 1.1)), //공급가액
+          -($od['od_sales_discount'] - round($od['od_sales_discount'] / 1.1)), //부가세
           '', // 바코드
           '', // 로젠송장번호,
           $abstract, //적요
@@ -623,8 +623,8 @@
           '1',
           -($coupon_price), // 단가(vat포함)
           '',
-          -((int)($coupon_price / 1.1)), //공급가액
-          -($coupon_price - (int)($coupon_price / 1.1)), //부가세
+          -(round($coupon_price / 1.1)), //공급가액
+          -($coupon_price - round($coupon_price / 1.1)), //부가세
           '', // 바코드
           '', // 로젠송장번호,
           $abstract, //적요
@@ -657,8 +657,8 @@
           '1',
           -($od['od_receipt_point']), // 단가(vat포함)
           '',
-          -((int)($od['od_receipt_point'] / 1.1)), //공급가액
-          -($od['od_receipt_point'] - (int)($od['od_receipt_point'] / 1.1)), //부가세
+          -(round($od['od_receipt_point'] / 1.1)), //공급가액
+          -($od['od_receipt_point'] - round($od['od_receipt_point'] / 1.1)), //부가세
           '', // 바코드
           '', // 로젠송장번호,
           $abstract, //적요
