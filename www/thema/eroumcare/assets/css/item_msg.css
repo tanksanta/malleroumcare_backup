@@ -289,10 +289,10 @@
 .im_info .it_detail{ font-size: 12px; margin-top: 10px; }
 
 .it_explan { text-align: center; max-height: 150px; overflow: hidden; }
-.im_item.active .it_explan { max-height: unset; overflow: visible; }
+.im_item.active .it_explan { max-height: unset; overflow: visible; padding-bottom: 50px; }
 .it_explan iframe { width: 100%; }
 .it_explan img { max-width: 100%; }
-.im_btn_more {
+.im_btn_more, .im_btn_less {
   position: absolute;
   display: block;
   background: #fff;
@@ -488,7 +488,15 @@
 }
 
 .im_wr_content {
+  margin: 10px;
   padding: 10px;
+  border: 1px solid #ddd;
+}
+.im_wr_content .head {
+  margin-bottom:  10px;
+  padding-bottom: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
 }
 
 @media (max-width: 1020px) {
