@@ -95,7 +95,7 @@ add_javascript(G5_POSTCODE_JS, 0);
         
         <div class="no_item_info">
         	<img src="<?=THEMA_URL?>/assets/img/icon_box.png" alt=""><br>
-        	<p>주문하실 품목을 검색 후 추가하시면<br>추가된 모든 상품을 간편하게 주문하실 수 있습니다.</p>
+        	<p>주문하실 품목을 검색한 후 추가하시면<br>추가된 모든 품목은 간편하게 주문하실 수 있습니다.</p>
         	<p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p>
         </div>
 
