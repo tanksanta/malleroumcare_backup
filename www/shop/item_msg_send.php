@@ -1,8 +1,40 @@
 <?php
 include_once('./_common.php');
 
+if($member['mb_type'] !== 'default') 
+  json_response(400, '사업소 회원만 이용하실 수 있습니다.');
+
+// 승인여부
+$is_approved = false;
+$res = api_post_call(EROUMCARE_API_ENT_ACCOUNT, array(
+  'usrId' => $member['mb_id']
+));
+if($res['data']['entConfirmCd'] == '01' || $member['mb_level'] >= 5 ) {
+  $is_approved = true;
+}
+
+if(!$is_approved)
+  json_response(400, '승인된 회원만 이용하실 수 있습니다.');
+
+$sql = "
+  select
+    count(*) as cnt
+  from
+    recipient_item_msg_log l
+  left join
+    recipient_item_msg m ON l.ms_id = m.ms_id
+  where
+    m.mb_id = '{$member['mb_id']}' and
+    date(l.ml_sent_at) = curdate()
+";
+$today_count = sql_fetch($sql)['cnt'] ?: 0;
+
+if($today_count >= 5) {
+  json_response(400, '사용가능한 메시지가 전부 소진되었습니다.');
+}
+
 // 메세지 전송할 때 필요한 포인트
-$msg_point = 10; // 메세지 무료 이벤트
+$msg_point = 0; // 메세지 무료 이벤트
 
 $ms_id = get_search_string($_POST['ms_id']);
 

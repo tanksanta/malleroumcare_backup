@@ -7,6 +7,20 @@ if($member['mb_type'] !== 'default')
 $g5['title'] = '간편 제안서 작성';
 include_once("./_head.php");
 
+$sql = "
+  select
+    count(*) as cnt
+  from
+    recipient_item_msg_log l
+  left join
+    recipient_item_msg m ON l.ms_id = m.ms_id
+  where
+    m.mb_id = '{$member['mb_id']}' and
+    date(l.ml_sent_at) = curdate()
+";
+$today_count = sql_fetch($sql)['cnt'] ?: 0;
+$today_count = 5 - $today_count;
+
 $w = get_search_string($_GET['w']);
 $ms_id = get_search_string($_GET['ms_id']);
 
@@ -108,7 +122,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             </div>
           </div>
         </div>
-        <div class="im_send_wr im_desc_wr" style="border: none;">
+        <div class="im_send_wr im_desc_wr" style="border: none; <?php if($today_count <= 0) echo 'opacity: 10%;' ?>">
           <button type="submit" id="btn_im_send" class="btn_im_send">
             <img src="<?=THEMA_URL?>/assets/img/icon_kakao.png" alt="">
             알림 메시지 전달
@@ -116,7 +130,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           <div class="im_desc">
           	<p>
           	간편 제안서 무료발송 이벤트 진행중<br>
-          	오늘의 무료 5건 중 <span>1건 남음</span></p>
+          	오늘의 무료 5건 중 <span><?=($today_count)?>건 남음</span></p>
             <!-- <p>보유 <strong><?=number_format($member['mb_point']);?></strong>포인트, 1회 전송 시 <strong>10</strong>포인트 차감</p> -->
           </div>
         </div>
