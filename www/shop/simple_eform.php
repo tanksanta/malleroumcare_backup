@@ -493,7 +493,7 @@ $('.pen_id_flexdatalist').flexdatalist({
   url: 'ajax.get_pen_id.php',
   cache: true, // cache
   searchContain: true, // %검색어%
-  noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
+  noResultsText: '"{keyword}"으로 등록된 수급자가 없습니다. 수급자정보를 직접 입력 하시고 계약서 작성 시 자동으로 등록됩니다.',
   visibleProperties: ["penNm"],
   searchIn: ["penNm"],
   focusFirstResult: true,
