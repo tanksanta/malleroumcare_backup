@@ -3,6 +3,7 @@ include_once("./_common.php");
 
 $dc_id = get_search_string($_GET['dc_id']);
 $preview = get_search_string($_GET['preview']);
+$zoom = get_search_string($_GET['zoom']);
 if($dc_id) {
   if($preview) {
     $timestamp = time();
@@ -68,6 +69,7 @@ $is_gicho = $eform['penTypeCd'] == '04';
   <link rel="stylesheet" href="css/thk001.css">
   <link rel="stylesheet" href="css/thk002.css">
   <link rel="stylesheet" href="css/thk003.css">
+  <?php if($preview) echo "<script src='https://unpkg.com/panzoom@9.4.2/dist/panzoom.min.js'></script>"; ?>
   <script src="<?=G5_JS_URL?>/jquery-1.11.3.min.js"></script>
   <style>
     body.render-eform {
@@ -86,7 +88,7 @@ $is_gicho = $eform['penTypeCd'] == '04';
     }
   </style>
 </head>
-<body class="render-eform">
+<body class="render-eform" <?php if($preview) echo 'style="width: 1240px;"'; ?>>
   <div class="render-eform-body">
     <?php
     if($is_gicho) {
@@ -155,14 +157,14 @@ $is_gicho = $eform['penTypeCd'] == '04';
     };
 
     var state = {
-      chk_001_1: <?=$state['chk_001_1']?>,
+      chk_001_1: <?=$state['chk_001_1'] ?: 'false'?>,
       sign_001_1: '<?=htmlspecialchars($state['sign_001_1'])?>',
       seal_001_1: '<?=htmlspecialchars($state['seal_001_1'])?>',
       seal_002_1: '<?=htmlspecialchars($state['seal_002_1'])?>',
       sign_002_1: '<?=htmlspecialchars($state['sign_002_1'])?>',
-      chk_003_1: <?=$state['chk_003_1']?>,
-      chk_003_2: <?=$state['chk_003_2']?>,
-      chk_003_3: <?=$state['chk_003_3']?>,
+      chk_003_1: <?=$state['chk_003_1'] ?: 'false'?>,
+      chk_003_2: <?=$state['chk_003_2'] ?: 'false'?>,
+      chk_003_3: <?=$state['chk_003_3'] ?: 'false'?>,
       sign_003_1: '<?=htmlspecialchars($state['sign_003_1'])?>',
     };
     if(isGicho) {
@@ -237,6 +239,14 @@ $is_gicho = $eform['penTypeCd'] == '04';
     }
 
     repaint();
+
+    <?php if($preview) { ?>
+      panzoom(document.body, {
+        maxZoom: 1,
+        minZoom: 0.4,
+        initialZoom: 0.4
+      });
+    <?php } ?>
   });
   </script>
 </body>
