@@ -249,6 +249,26 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </div>
 
 <script>
+// 품목 없는지 체크
+function check_no_item() {
+  var total = 0;
+  $('.se_item_list').each(function() {
+    var selected = $(this).find('li').length;
+    if(selected == 0) {
+      $(this).prev('.se_item_hd').hide();
+    } else {
+      $(this).prev('.se_item_hd').show();
+    }
+    total += selected;
+  });
+
+  if(total == 0) {
+    $('.no_item_info').show();
+  } else {
+    $('.no_item_info').hide();
+  }
+}
+
 // 품목 선택
 function select_item(obj) {
 
@@ -330,6 +350,8 @@ function select_item(obj) {
   }
 
   $('#ipt_se_sch').val('').next().focus();
+
+  check_no_item();
 }
 
 // 계약서 저장
@@ -511,7 +533,10 @@ $(document).on('change paste keyup', 'input[name="it_qty[]"]', function() {
 // 품목 삭제
 $(document).on('click', '.btn_del_item', function() {
   $(this).closest('li').remove();
+  check_no_item();
 });
+
+check_no_item();
 </script>
 
 <?php include_once("./_tail.php"); ?>

@@ -233,6 +233,15 @@ function copy_to_clipboard(selector) {
   alert('복사되었습니다.');
 }
 
+// 품목 없는지 체크
+function check_no_item() {
+  if($('.im_write_list li').length == 0) {
+    $('.no_item_info').show();
+  } else {
+    $('.no_item_info').hide();
+  }
+}
+
 // 품목 선택
 function select_item(obj) {
   $('body').removeClass('modal-open');
@@ -253,6 +262,8 @@ function select_item(obj) {
   $li.append('<button type="button" class="btn_del_item">삭제</button>');
   $li.appendTo('#im_write_list');
   $('#ipt_im_sch').val('').next().focus();
+
+  check_no_item();
 }
 
 // 저장
@@ -396,6 +407,7 @@ $(function() {
 
   $(document).on('click', '.btn_del_item', function() {
     $(this).closest('li').remove();
+    check_no_item();
   });
 
   var sending = false;
