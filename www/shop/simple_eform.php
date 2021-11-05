@@ -32,7 +32,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
 <section class="wrap">
-  <div class="sub_section_tit">계약서 작성</div>
+  <div class="sub_section_tit">간편 계약서 작성</div>
   <div class="inner">
 
     <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
@@ -335,9 +335,10 @@ function select_item(obj) {
   $it_ipt.append('\
     <div class="flex">\
         <div class="it_ipt_hd">바코드</div>\
-        <input type="hidden" name="it_barcode[]">\
+        <input type="hidden" name="it_barcode[]" placeholder="12자리 숫자를 입력하세요.">\
         <div class="it_barcode_wr it_ipt">\
-        <input type="text" class="it_barcode">\
+        <input type="text" class="it_barcode"  placeholder="12자리 숫자를 입력하세요.">\
+        <p>바코드 미입력 시 계약서 작성 후 이로움에 주문이 가능합니다.</p>\
         </div>\
     </div>\
   ');
