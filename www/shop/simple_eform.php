@@ -286,7 +286,7 @@ function select_item(obj) {
       '<p class="it_name">' + obj.it_name + ' (' + obj.gubun + ')' + '</p>'
       );
   if(obj.gubun == '대여') {
-    $it_info.append('<p class="it_price">대여가 : ' + parseInt(obj.it_rental_price).toLocaleString('en-US') + '원</p>'); 
+    $it_info.append('<p class="it_price">월 대여가 : ' + parseInt(obj.it_rental_price).toLocaleString('en-US') + '원</p>'); 
   } else {
     $it_info.append('<p class="it_price">급여가 : ' + parseInt(obj.it_cust_price).toLocaleString('en-US') + '원</p>'); 
   }
@@ -318,15 +318,20 @@ function select_item(obj) {
         <div class="it_date_wr it_ipt">\
           <input type="hidden" name="it_date[]">\
           <input type="text" class="datepicker inline" data-range="from"> ~ <input type="text" class="datepicker inline" data-range="to">\
+          <button type="button" class="btn_rent_date" onclick="set_rent_date($(this).parent(), 6)">6개월</button>\
+          <button type="button" class="btn_rent_date" onclick="set_rent_date($(this).parent(), 12)">1년</button>\
+          <button type="button" class="btn_rent_date" onclick="set_rent_date($(this).parent(), 24)">2년</button>\
         </div>\
       </div>\
     ');
+
+    set_rent_date($it_ipt, 6);
   } else {
     $it_ipt.append('\
       <div class="flex">\
         <div class="it_ipt_hd">판매계약일</div>\
         <div class="it_ipt">\
-        <input type="text" name="it_date[]" class="datepicker inline">\
+        <input type="text" name="it_date[]" class="datepicker inline" value="' + format_date(new Date()) + '">\
         </div>\
       </div>\
     ');
@@ -335,9 +340,9 @@ function select_item(obj) {
   $it_ipt.append('\
     <div class="flex">\
         <div class="it_ipt_hd">바코드</div>\
-        <input type="hidden" name="it_barcode[]" placeholder="12자리 숫자를 입력하세요.">\
+        <input type="hidden" name="it_barcode[]">\
         <div class="it_barcode_wr it_ipt">\
-        <input type="text" class="it_barcode"  placeholder="12자리 숫자를 입력하세요.">\
+        <input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" placeholder="12자리 숫자를 입력하세요.">\
         <p>바코드 미입력 시 계약서 작성 후 이로움에 주문이 가능합니다.</p>\
         </div>\
     </div>\
@@ -353,6 +358,38 @@ function select_item(obj) {
   $('#ipt_se_sch').val('').next().focus();
 
   check_no_item();
+}
+
+// 바코드 최대길이 체크
+function max_length_check(object){
+  object.value = object.value.replace(/[^0-9]/g,'');
+  if (object.value.length > object.maxLength) {
+    object.value = object.value.slice(0, object.maxLength);
+  }
+}
+
+function format_date(date) {
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  var day = date.getDate();
+
+  month = (month < 10) ? "0" + month : month;
+  day = (day < 10) ? "0" + day : day;
+
+  return year + "-" + month + "-" + day;
+}
+
+function set_rent_date($parent, months) {
+  var date = new Date();
+  var from = format_date(date);
+
+  date.setMonth(date.getMonth() + months);
+  date.setDate(date.getDate() - 1);
+
+  var to = format_date(date);
+
+  $parent.find('input[data-range="from"]').val(from);
+  $parent.find('input[data-range="to"]').val(to);
 }
 
 // 계약서 저장
@@ -432,7 +469,7 @@ function update_barcode_field() {
       var $barcode_wr = $(this).find('.it_barcode_wr').empty();
       for(var i = 0; i < it_qty; i++) {
         var val = barcodes.shift() || '';
-        $barcode_wr.append('<input type="text" class="it_barcode" value="' + val + '">');
+        $barcode_wr.append('<input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" placeholder="12자리 숫자를 입력하세요." value="' + val + '">');
       }
     });
   });
