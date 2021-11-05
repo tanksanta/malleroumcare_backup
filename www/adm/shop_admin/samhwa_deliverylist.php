@@ -771,7 +771,61 @@ function applyCombine() {
 
 // 롯데택배 엑셀 다운로드
 function lotte_delivery_excel_download() {
-  alert('작업중입니다.');
+    var od_id = [];
+    var item = $("input[name='od_id[]']:checked");
+    for(var i = 0; i < item.length; i++) {
+      var ct_id = $(item[i]).val();
+      od_id.push(ct_id);
+    }
+
+    if(!od_id.length) {
+      return alert('선택한 주문이 없습니다.');
+    }  
+
+    var formdata = $.extend({}, {
+      click_status: od_status,
+      od_step: od_step,
+      page: page,
+      sub_menu: sub_menu,
+      last_step: last_step,
+      od_id: od_id
+    },$('#frmsamhwaorderlist').serializeObject());
+
+    // form object rename
+    formdata['od_settle_case'] = formdata['od_settle_case[]']; // Assign new key
+    delete formdata['od_settle_case[]']; // Delete old key
+
+    if (formdata['od_status[]'] != undefined) {
+      formdata['od_status'] = formdata['od_status[]']; // Assign new key
+      delete formdata['od_status[]']; // Delete old key
+    }
+
+    formdata['od_openmarket'] = formdata['od_openmarket[]']; // Assign new key
+    delete formdata['od_openmarket[]']; // Delete old key
+
+    formdata['add_admin'] = formdata['add_admin']; // Assign new key
+    // delete formdata['add_admin[]']; // Delete old key
+
+    formdata['od_important'] = formdata['od_important']; // Assign new key
+    // delete formdata['od_important[]']; // Delete old key
+
+    formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
+
+    var queryString = $.param(formdata);
+    var href = "./order.lotte.delivery.download.php";
+    // window.open(href);
+
+    $('#loading_excel').show();
+
+    excel_downloader = $.fileDownload(href, {
+      httpMethod: "POST",
+      data: queryString
+    })
+    .always(function() {
+      $('#loading_excel').hide();
+    });
+
+    return false;
 }
 
 </script>
