@@ -125,7 +125,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <div class="se_item_wr">
           <div class="se_sch_wr flex align-items">
             <div class="se_sch_hd">품목 목록</div>
-            <input type="text" id="ipt_se_sch" class="ipt_se_sch" placeholder="품목명">
+            <input type="text" id="ipt_se_sch" class="ipt_se_sch" placeholder="품목명 검색 후 추가하세요.">
             <button id="btn_se_sch" class="btn_se_sch">품목찾기</button>
           </div>
           <div class="se_item_hd">판매품목</div>

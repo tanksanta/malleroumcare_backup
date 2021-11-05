@@ -4,7 +4,7 @@ include_once("./_common.php");
 if($member['mb_type'] !== 'default')
   alert('접근할 수 없습니다.');
 
-$g5['title'] = '품목/정보 메시지 전달';
+$g5['title'] = '간편 견적서';
 include_once("./_head.php");
 
 $sql_common = "
@@ -85,10 +85,10 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
 ?>
 
 <section class="wrap">
-  <div class="sub_section_tit">품목/정보 메시지 전달</div>
+  <div class="sub_section_tit">간편 견적서</div>
   <div class="inner">
     <div class="im_desc_wr">
-      <a href="item_msg_write.php" class="btn_im_send">수급자에게 품목/정보 전달</a>
+      <a href="item_msg_write.php" class="btn_im_send">신규 견적서 작성</a>
       <div class="im_desc">
         <p>수급자에게 제공할 품목을 선택한 후 휴대폰 정보를 입력하면</p>
         <p>추천하는 품목목록이 수급자/보호자에게 메시지로 전달됩니다.</p>

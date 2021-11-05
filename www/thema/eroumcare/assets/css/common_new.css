@@ -269,6 +269,19 @@ pre{white-space: pre-wrap;}
 .paging_number a.active{background: #333;color:#fff;font-weight:bold;border:1px solid #333;}
 
 /* =================================================
+	* 간편 기능 
+================================================= */
+
+.no_item_info{text-align:center;background: #f8f7f5;border:1px solid #e8e0d7;padding:20px;border-radius: 5px;margin-top:20px;}
+.no_item_info img{margin-bottom:20px;}
+.no_item_info .txt_point{color:#ef8505;}
+
+@media only screen and (max-width:960px) {
+	 .so_sch_hd{font-size:14px;margin-right:5px;}
+	 .no_item_info p{font-size:12px;}
+}
+
+/* =================================================
 	* main new 
 ================================================= */
 

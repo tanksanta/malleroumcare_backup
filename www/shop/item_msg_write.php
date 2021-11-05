@@ -4,7 +4,7 @@ include_once("./_common.php");
 if($member['mb_type'] !== 'default')
   alert('접근할 수 없습니다.');
 
-$g5['title'] = '품목/정보 메시지 작성';
+$g5['title'] = '견편 견적서 작성';
 include_once("./_head.php");
 
 $w = get_search_string($_GET['w']);
@@ -55,7 +55,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 ?>
 
 <section class="wrap">
-  <div class="sub_section_tit">품목/정보 메시지 작성</div>
+  <div class="sub_section_tit">견편 견적서 작성</div>
   <div class="inner">
 
     <form id="form_item_msg" action="item_msg_update.php" method="POST" class="form-horizontal" onsubmit="return false;">
@@ -133,7 +133,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           </div>
           <div class="im_sch_wr">
             <div class="im_sch_hd">품목 목록</div>
-            <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="품목명">
+            <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="품목명 검색 후 추가하세요.">
             <button class="btn_im_sel">품목찾기</button>
           </div>
           <ul id="im_write_list" class="im_write_list">
