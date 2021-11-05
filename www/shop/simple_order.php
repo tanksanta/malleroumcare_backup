@@ -678,8 +678,17 @@ function select_item(obj, io_id, ct_qty) {
     } 
   }
 
-  $info.append($it_name)
-  .append($it_price)
+  var $prod_memo = $('<div class="flex">');
+  $prod_memo.append(
+    '<div class="prod_memo_hd">요청사항</div>',
+    '<input type="text" class="ipt_prod_memo" name="prodMemo[]" placeholder="상품관련 요청사항을 입력하세요.">'
+  );
+
+  $info.append(
+    $it_name,
+    $it_price,
+    $prod_memo
+    )
   .appendTo($info_wr);
   $li.append($info_wr);
 

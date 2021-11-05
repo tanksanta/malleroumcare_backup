@@ -152,7 +152,6 @@
 .so_sch_ipt .ipt_so_sch {
   display: block;
   width: 100%;
-  max-width: 250px;
   padding: 5px 10px;
   border: 1px solid #ddd;
   border-radius: 3px;
@@ -221,6 +220,24 @@
 .it_info_wr .it_info .it_price {
   color: #666;
 }
+.it_info_wr .it_info .prod_memo_hd {
+  font-weight: bold;
+  color: #666;
+  font-size: 12px;
+}
+.it_info_wr .it_info .ipt_prod_memo {
+  display: block;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex-grow: 1;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background-color: #fff;
+  padding: 4px 2px;
+  margin: 0 5px;
+  width: 100%;
+  font-size: 12px;
+}
 .it_qty_wr {
   width: 200px;
 }
@@ -274,6 +291,15 @@
   .it_info_wr .it_info .it_name select {
     display: block;
     margin: 10px 0 0 0;
+  }
+  .it_info_wr .it_info > .flex{
+    display: block;
+  }
+  .it_info_wr .it_info .prod_memo_hd {
+    display: none;
+  }
+  .it_info_wr .it_info .ipt_prod_memo {
+    margin: 0;
   }
   .it_qty_wr .it_qty_desc {
     width: unset;

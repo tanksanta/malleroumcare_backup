@@ -11,6 +11,7 @@ $tmp_cart_id = get_session('ss_cart_direct');
 $it_id_arr = $_POST['it_id'];
 $io_id_arr = $_POST['io_id'];
 $ct_qty_arr = $_POST['ct_qty'];
+$prodMemo_arr = $_POST['prodMemo'];
 
 if(!($it_id_arr && $io_id_arr && $ct_qty_arr)) {
     json_response(400, '주문할 상품을 선택해주세요.');
@@ -23,6 +24,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     $io_id = clean_xss_tags($io_id_arr[$i]);
     $io_id = preg_replace(G5_OPTION_ID_FILTER, '', $io_id);
     $ct_qty = clean_xss_tags($ct_qty_arr[$i]);
+    $prodMemo = clean_xss_tags($prodMemo_arr[$i]);
     $io_type = 0;
 
     if(!$it_id || $ct_qty < 1) continue;
@@ -250,7 +252,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
         '{$it['it_is_direct_delivery']}',
         '{$it['it_direct_delivery_partner']}',
         '{$it['it_direct_delivery_price']}',
-        '',
+        '$prodMemo',
         '{$it['prodSupYn']}'
     )
     ";

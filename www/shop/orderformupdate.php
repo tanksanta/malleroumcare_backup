@@ -93,11 +93,13 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   }
 
   # 요청사항 저장
-  sql_query("
-    UPDATE {$g5["g5_shop_cart_table"]} SET
-      prodMemo = '{$_POST["prodMemo_{$row["ct_id"]}"]}'
-    WHERE ct_id = '{$row["ct_id"]}'
-  ");
+  if($_POST["prodMemo_{$row["ct_id"]}"]) {
+    sql_query("
+      UPDATE {$g5["g5_shop_cart_table"]} SET
+        prodMemo = '{$_POST["prodMemo_{$row["ct_id"]}"]}'
+      WHERE ct_id = '{$row["ct_id"]}'
+    ");
+  }
 
   # 비유통상품 금액저장
   if($row["prodSupYn"] == "N") {
