@@ -136,6 +136,12 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="품목명 검색 후 추가하세요.">
             <button class="btn_im_sel">품목찾기</button>
           </div>
+          
+            <div class="no_item_info">
+	        	<img src="<?=THEMA_URL?>/assets/img/icon_box.png" alt=""><br>
+	        	<p>수급자에게 전달할 품목을 검색한 후 추가하시면<br>추가된 모든 품목은 수급자에게 전달됩니다.</p>
+	        	<p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p>
+	        </div>
           <ul id="im_write_list" class="im_write_list">
             <?php
             if(isset($items) && is_array($items)) {

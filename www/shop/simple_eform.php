@@ -128,6 +128,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <input type="text" id="ipt_se_sch" class="ipt_se_sch" placeholder="품목명 검색 후 추가하세요.">
             <button id="btn_se_sch" class="btn_se_sch">품목찾기</button>
           </div>
+          
+            <div class="no_item_info">
+	        	<img src="<?=THEMA_URL?>/assets/img/icon_box.png" alt=""><br>
+	        	<p>수급자 계약서에 필요한 품목을 검색한 후 추가하시면<br>추가된 품목으로 계약서가 생성됩니다.</p>
+	        	<p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p>
+	        </div>
+          
           <div class="se_item_hd">판매품목</div>
           <ul id="buy_list" class="se_item_list">
             <?php /* ?>
