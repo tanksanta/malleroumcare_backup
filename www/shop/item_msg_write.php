@@ -4,7 +4,7 @@ include_once("./_common.php");
 if($member['mb_type'] !== 'default')
   alert('접근할 수 없습니다.');
 
-$g5['title'] = '견편 견적서 작성';
+$g5['title'] = '간편 제안서 작성';
 include_once("./_head.php");
 
 $w = get_search_string($_GET['w']);
@@ -55,7 +55,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 ?>
 
 <section class="wrap">
-  <div class="sub_section_tit">견편 견적서 작성</div>
+  <div class="sub_section_tit">간편 제안서 작성</div>
   <div class="inner">
 
     <form id="form_item_msg" action="item_msg_update.php" method="POST" class="form-horizontal" onsubmit="return false;">
@@ -114,7 +114,10 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             알림 메시지 전달
           </button>
           <div class="im_desc">
-            <p>보유 <strong><?=number_format($member['mb_point']);?></strong>포인트, 1회 전송 시 <strong>10</strong>포인트 차감</p>
+          	<p>
+          	간편 제안서 무료발송 이벤트 진행중<br>
+          	오늘의 무료 5건 중 <span>1건 남음</span></p>
+            <!-- <p>보유 <strong><?=number_format($member['mb_point']);?></strong>포인트, 1회 전송 시 <strong>10</strong>포인트 차감</p> -->
           </div>
         </div>
       </div>
@@ -122,7 +125,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
       <div class="im_flex space-between">
         <div class="im_item_wr">
           <div class="im_tel_wr im_flex space-between">
-            <div class="im_sch_hd">전화번호 공개</div>
+            <div class="im_sch_hd">사업소 전화번호 공개</div>
             <input class="im_switch" id="ms_ent_tel" type="checkbox" name="ms_ent_tel" value="<?=get_text($member['mb_tel'])?>" <?=get_checked($ms['ms_ent_tel'], get_text($member['mb_tel']))?>>
             <label for="ms_ent_tel">
               <div class="im_switch_slider">

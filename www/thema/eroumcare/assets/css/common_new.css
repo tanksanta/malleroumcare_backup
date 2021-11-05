@@ -276,6 +276,8 @@ pre{white-space: pre-wrap;}
 .no_item_info img{margin-bottom:20px;display:inline-block;border:0;}
 .no_item_info .txt_point{color:#ef8505;}
 
+.input-group .form-control{text-align:center;}
+
 @media only screen and (max-width:960px) {
 	 .so_sch_hd{font-size:14px;margin-right:5px;}
 	 .no_item_info p{font-size:12px;}

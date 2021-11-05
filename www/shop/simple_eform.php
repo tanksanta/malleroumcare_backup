@@ -32,7 +32,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
 <section class="wrap">
-  <div class="sub_section_tit">계약서 작성</div>
+  <div class="sub_section_tit">간편 계약서 작성</div>
   <div class="inner">
 
     <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
@@ -342,7 +342,8 @@ function select_item(obj) {
         <div class="it_ipt_hd">바코드</div>\
         <input type="hidden" name="it_barcode[]">\
         <div class="it_barcode_wr it_ipt">\
-        <input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)">\
+        <input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" placeholder="12자리 숫자를 입력하세요.">\
+        <p>바코드 미입력 시 계약서 작성 후 이로움에 주문이 가능합니다.</p>\
         </div>\
     </div>\
   ');
@@ -468,7 +469,7 @@ function update_barcode_field() {
       var $barcode_wr = $(this).find('.it_barcode_wr').empty();
       for(var i = 0; i < it_qty; i++) {
         var val = barcodes.shift() || '';
-        $barcode_wr.append('<input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" value="' + val + '">');
+        $barcode_wr.append('<input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" placeholder="12자리 숫자를 입력하세요." value="' + val + '">');
       }
     });
   });
