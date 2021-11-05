@@ -396,9 +396,9 @@ if($is_main && !$is_member) {
 
           <?php if($member['mb_type'] == 'default' && $member['mb_id'] == 'hula1202') { ?>
           <div class="conv_area">
-            <a href="/shop/item_msg_list.php" class="pen_item_msg">수급자에게 품목/정보 전달</a>
-            <a href="/shop/simple_eform.php" class="simple_eform">수급자와 계약서 작성</a>
-            <a href="/shop/simple_order.php" class="simple_order">간편하게 주문신청</a>
+            <a href="/shop/item_msg_list.php" class="pen_item_msg">간편 견적서 생성</a>
+            <a href="/shop/simple_eform.php" class="simple_eform">간편 계약서 작성</a>
+            <a href="/shop/simple_order.php" class="simple_order">간편 주문서 신청</a>
           </div>
           <?php } ?>
 

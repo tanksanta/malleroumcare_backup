@@ -20,7 +20,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 ?>
 
 <section class="wrap">
-  <div class="sub_section_tit">주문신청</div>
+  <div class="sub_section_tit">간편 주문서 신청</div>
   <div class="inner">
     <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post" onsubmit="return form_submit(this);">
       <input type="hidden" name="org_od_price" value="0">
@@ -88,9 +88,15 @@ add_javascript(G5_POSTCODE_JS, 0);
         <div class="so_sch_wr flex space-between">
           <div class="so_sch_hd">품목 목록</div>
           <div class="so_sch_ipt">
-            <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="품목명">
+            <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="품목명 검색 후 추가하세요.">
           </div>
           <button type="button" class="btn_so_sch">품목찾기</button>
+        </div>
+        
+        <div class="no_item_info">
+        	<img src="<?=THEMA_URL?>/assets/img/icon_box.png" alt=""><br>
+        	<p>주문하실 품목을 검색한 후 추가하시면<br>추가된 모든 품목은 간편하게 주문하실 수 있습니다.</p>
+        	<p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p>
         </div>
 
         <ul id="so_item_list" class="so_item_list">
