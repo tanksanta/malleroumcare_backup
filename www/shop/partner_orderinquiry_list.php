@@ -17,6 +17,30 @@ if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_d
 if($sel_date && $fr_date && $to_date)
   $where[] = " ( {$sel_date} between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
+# 작업상태
+$incompleted = $_GET['incompleted'];
+if($incompleted && count($incompleted) == 1) {
+  foreach($incompleted as $ic) {
+    if($ic == '0') {
+      // 진행중인 작업
+      $where[] = "
+        ( ct_direct_delivery_date is not null or
+        ( ct_barcode_insert is not null and ct_barcode_insert <> 0 ) or
+        ct_status <> '출고준비' )
+      ";
+    }
+    else if($ic == '1') {
+      // 미 진행중인 작업
+      //$row['ct_direct_delivery_date'] || $row['ct_barcode_insert'] || $row['ct_status'] != '출고준비'
+      $where[] = "
+        ( ct_direct_delivery_date is null and
+        ( ct_barcode_insert is null or ct_barcode_insert = 0 ) and
+        ct_status = '출고준비' )
+      ";
+    }
+  }
+}
+
 # 주문상태
 $ct_status = $_GET['ct_status'];
 $ct_steps = ['출고준비', '배송', '완료', '취소', '주문무효'];
@@ -163,6 +187,11 @@ while($row = sql_fetch_array($result)) {
     $row['mb_entNm'] = $row['mb_name'];
   }
 
+  // 미완성주문
+  if(!( $row['ct_direct_delivery_date'] || $row['ct_barcode_insert'] || $row['ct_status'] != '출고준비' )) {
+    $row['incompleted'] = true;
+  }
+
   $orders[] = $row;
 }
 
@@ -170,6 +199,11 @@ $qstr = "?sel_date={$sel_date}&amp;fr_date={$fr_date}&amp;to_date={$to_date}&amp
 if($ct_status) {
   foreach($ct_status as $status) {
     $qstr .= "&amp;ct_status%5B%5D={$status}";
+  }
+}
+if($incompleted) {
+  foreach($incompleted as $ic) {
+    $qstr .= "&amp;incompleted%5B%5D={$ic}";
   }
 }
 
@@ -235,6 +269,11 @@ tr.hover { background-color: #fbf9f7 !important; }
       <label><input type="checkbox" name="ct_status[]" value="취소" <?=option_array_checked('취소', $ct_status)?>/> 주문취소</label> 
       <label><input type="checkbox" name="ct_status[]" value="주문무효" <?=option_array_checked('주문무효', $ct_status)?>/> 주문무효</label> 
       <br>
+      작업상태 :
+      <label><input type="checkbox" id="chk_incompleted_all"/> 전체</label> 
+      <label><input type="checkbox" name="incompleted[]" value="0" <?=option_array_checked('0', $incompleted)?>/> 진행중인 작업</label> 
+      <label><input type="checkbox" name="incompleted[]" value="1" <?=option_array_checked('1', $incompleted)?>/> 미 진행중인 작업</label> 
+      <br>
       
       <div class="search_date">
         <select name="sel_date">
@@ -298,6 +337,11 @@ tr.hover { background-color: #fbf9f7 !important; }
               <td class="td_od_info">
                 <p class="info_head">
                   <?=$row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " ({$row['ct_option']})" : '')?> (<?=$row['ct_qty']?>개)
+                  <?php 
+                  if($row['incompleted']) {
+                    echo '<span style="color: #ef7c00; font-size: 12px;"><i class="fa fa-circle" aria-hidden="true"></i></span>';
+                  }
+                  ?>
                 </p>
                 <p>
                   주문일시 : 
@@ -441,9 +485,26 @@ function checkCtStatusAll() {
   $("#chk_ct_status_all").prop('checked', total <= checkedTotal); 
 }
 
+function checkIncompletedAll() {
+  var total = $('input[name="incompleted[]"]').length;
+  var checkedTotal = $('input[name="incompleted[]"]:checked').length;
+  $("#chk_incompleted_all").prop('checked', total <= checkedTotal); 
+}
+
 $(function() {
   $("#popup_box").hide();
   $("#popup_box").css("opacity", 1);
+
+  checkIncompletedAll();
+  // 작업상태 전체 선택 체크박수
+  $('#chk_incompleted_all').click(function() {
+    var checked = $(this).is(':checked');
+    $('input[name="incompleted[]"]').prop('checked', checked);
+  });
+  // 작업상태 체크박스
+  $('input[name="incompleted[]"]').click(function() {
+    checkIncompletedAll();
+  });
 
   checkCtStatusAll();
   // 주문상태 전체 선택 체크박스
