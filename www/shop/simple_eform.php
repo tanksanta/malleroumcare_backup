@@ -226,6 +226,14 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             </li>
             <?php */ ?>
           </ul>
+          <div class="se_conacc">
+            <p>특약사항1</p>
+            <textarea name="entConAcc01"><?=$member['mb_entConAcc01']?></textarea>
+          </div>
+          <div class="se_conacc">
+            <p>특약사항2</p>
+            <textarea name="entConAcc02"><?=$member['mb_entConAcc02']?></textarea>
+          </div>
           <button type="button" id="btn_se_save" onclick="save_eform();">저장</button>
         </div>
         <div class="se_preview_wr">

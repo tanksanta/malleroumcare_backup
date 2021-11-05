@@ -22,6 +22,8 @@ if($penExpiStDtm && $penExpiEdDtm) {
     $penExpiDtm = $penExpiStDtm . ' ~ ' . $penExpiEdDtm;
 }
 $penJumin = clean_xss_tags($_POST['penJumin']) ?: '';
+$entConAcc01 = clean_xss_tags($_POST['entConAcc01']) ?: '';
+$entConAcc02 = clean_xss_tags($_POST['entConAcc02']) ?: '';
 
 if( !( $penNm && $penLtmNum && $penConNum && $penBirth && $penRecGraCd && $penTypeCd && $penExpiDtm ) )
     json_response(400, '수급자 정보를 입력해주세요.');
@@ -127,8 +129,8 @@ if($w == 'u') {
             entNum = '{$member["mb_ent_num"]}',
             entMail = '{$member["mb_email"]}',
             entCeoNm = '{$member["mb_giup_boss_name"]}',
-            entConAcc01 = '{$member["mb_entConAcc01"]}',
-            entConAcc02 = '{$member["mb_entConAcc02"]}',
+            entConAcc01 = '$entConAcc01',
+            entConAcc02 = '$entConAcc02',
             penId = '$penId',
             penNm = '$penNm',
             penBirth = '$penBirth',
@@ -173,8 +175,8 @@ if($w == 'u') {
             entNum = '{$member["mb_ent_num"]}',
             entMail = '{$member["mb_email"]}',
             entCeoNm = '{$member["mb_giup_boss_name"]}',
-            entConAcc01 = '{$member["mb_entConAcc01"]}',
-            entConAcc02 = '{$member["mb_entConAcc02"]}',
+            entConAcc01 = '$entConAcc01',
+            entConAcc02 = '$entConAcc02',
             penId = '$penId',
             penNm = '$penNm',
             penConNum = '$penConNum',
@@ -221,9 +223,7 @@ if($w == 'u') {
             `dc_subject` = '$subject',
             `dc_datetime` = '$datetime',
             `dc_ip` = '$ip',
-            `dc_signUrl` = '/data/eform/sign/$filename',
-            `entConAcc01` = '{$member['mb_entConAcc01']}',
-            `entConAcc02` = '{$member['mb_entConAcc02']}'
+            `dc_signUrl` = '/data/eform/sign/$filename'
         WHERE `dc_id` = UNHEX('$dc_id')
     ");
 

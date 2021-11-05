@@ -279,6 +279,21 @@
   width: 120px;
 }
 
+/* 특약사항 */
+.se_conacc {
+  margin: 10px 0;
+}
+.se_conacc p {
+  margin: 0;
+}
+.se_conacc textarea {
+  margin-top: 5px;
+  display: block;
+  width: 100%;
+  border: 1px solid #ddd;
+  height: 80px;
+}
+
 /* 계약서 미리보기 */
 .se_preview_wr {
   width: 48%;
