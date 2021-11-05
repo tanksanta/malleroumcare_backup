@@ -18,6 +18,7 @@ $sql = "
     it_price,
     it_price_dealer2,
     it_cust_price,
+    it_rental_price,
     REPLACE(a.it_name, ' ', '') as it_name_no_space,
     ca_id,
     ( select ca_name from g5_shop_category where ca_id = a.ca_id ) as ca_name,

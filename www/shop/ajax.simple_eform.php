@@ -46,10 +46,10 @@ function calc_rental_price($str_date, $end_date, $price) {
     $end_time = strtotime($end_date);
 
     $year1 = date('Y', $str_time);
-    $year2 = date('Y', $end_date);
+    $year2 = date('Y', $end_time);
 
     $month1 = date('m', $str_time);
-    $month2 = date('m', $end_date);
+    $month2 = date('m', $end_time);
 
     $diff = (($year2 - $year1) * 12) + ($month2 - $month1);
 
@@ -63,7 +63,7 @@ function calc_rental_price($str_date, $end_date, $price) {
         $price * (
             ( date('t', $str_time) - date('j', $str_time) + 1 )
             /
-            date('t', $str_time) * 10
+            ( date('t', $str_time) * 10 )
         )
     ) * 10;
 
@@ -73,7 +73,7 @@ function calc_rental_price($str_date, $end_date, $price) {
             $price * (
                 date('j', $end_time)
                 /
-                date('t', $end_time) * 10
+                ( date('t', $end_time) * 10 )
             )
         ) * 10;
     }
@@ -101,7 +101,7 @@ function calc_pen_price($penTypeCd, $price) {
     }
 
     $pen_price = (int) floor(
-        $price * ($rate / 100 * 10)
+        $price * $rate / (100 * 10)
     ) * 10;
 
     return $pen_price;
@@ -274,8 +274,8 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     }
 
     for($x = 0; $x < $it_qty; $x++) {
-        $it_price_pen = calc_pen_price($penTypeCd, $price);
-        $it_price_ent = $price - $it_price_pen;
+        $it_price_pen = calc_pen_price($penTypeCd, $it_price);
+        $it_price_ent = $it_price - $it_price_pen;
 
         $sql = "
             INSERT INTO eform_document_item SET
