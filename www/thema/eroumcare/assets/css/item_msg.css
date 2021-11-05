@@ -13,6 +13,10 @@
   color: #666;
   margin: 0; 
 }
+.im_desc p span{
+	color:#ef8505;
+	font-weight: bold;
+}
 
 .im_send_wr {
   margin: 0;

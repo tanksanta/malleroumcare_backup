@@ -587,8 +587,16 @@ function calculate_sendcost() {
   // do nothing;
 }
 
-// 품목 선택
+// 품목 없는지 체크
+function check_no_item() {
+  if($('#so_item_list li').length == 0) {
+    $('.no_item_info').show();
+  } else {
+    $('.no_item_info').hide();
+  }
+}
 
+// 품목 선택
 function select_items(obj, items) {
   $('body').removeClass('modal-open');
   $('#item_popup_box').hide();
@@ -714,6 +722,8 @@ function select_item(obj, io_id, ct_qty) {
 
   calculate_order_price();
   $('#ipt_so_sch').val('').next().focus();
+
+  check_no_item();
 }
 
 $(function() {
@@ -723,6 +733,7 @@ $(function() {
     $li.remove();
 
     calculate_order_price();
+    check_no_item();
   });
 
   // 품목 검색

@@ -32,7 +32,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
 <section class="wrap">
-  <div class="sub_section_tit">계약서 작성</div>
+  <div class="sub_section_tit">간편 계약서 작성</div>
   <div class="inner">
 
     <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
@@ -249,6 +249,26 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </div>
 
 <script>
+// 품목 없는지 체크
+function check_no_item() {
+  var total = 0;
+  $('.se_item_list').each(function() {
+    var selected = $(this).find('li').length;
+    if(selected == 0) {
+      $(this).prev('.se_item_hd').hide();
+    } else {
+      $(this).prev('.se_item_hd').show();
+    }
+    total += selected;
+  });
+
+  if(total == 0) {
+    $('.no_item_info').show();
+  } else {
+    $('.no_item_info').hide();
+  }
+}
+
 // 품목 선택
 function select_item(obj) {
 
@@ -315,9 +335,10 @@ function select_item(obj) {
   $it_ipt.append('\
     <div class="flex">\
         <div class="it_ipt_hd">바코드</div>\
-        <input type="hidden" name="it_barcode[]">\
+        <input type="hidden" name="it_barcode[]" placeholder="12자리 숫자를 입력하세요.">\
         <div class="it_barcode_wr it_ipt">\
-        <input type="text" class="it_barcode">\
+        <input type="text" class="it_barcode"  placeholder="12자리 숫자를 입력하세요.">\
+        <p>바코드 미입력 시 계약서 작성 후 이로움에 주문이 가능합니다.</p>\
         </div>\
     </div>\
   ');
@@ -330,6 +351,8 @@ function select_item(obj) {
   }
 
   $('#ipt_se_sch').val('').next().focus();
+
+  check_no_item();
 }
 
 // 계약서 저장
@@ -511,7 +534,10 @@ $(document).on('change paste keyup', 'input[name="it_qty[]"]', function() {
 // 품목 삭제
 $(document).on('click', '.btn_del_item', function() {
   $(this).closest('li').remove();
+  check_no_item();
 });
+
+check_no_item();
 </script>
 
 <?php include_once("./_tail.php"); ?>
