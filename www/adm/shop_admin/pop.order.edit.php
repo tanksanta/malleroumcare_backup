@@ -9,6 +9,9 @@ $title = '주문서 수정';
 include_once('./pop.head.php');
 
 $od_id = get_search_string($_GET['od_id']);
+$od = sql_fetch(" select * from g5_shop_order where od_id = '$od_id' ");
+if(!$od['od_id'])
+    alert('존재하지 않는 주문입니다.');
 $carts = get_carts_by_od_id($od_id);
 
 ?>
@@ -409,6 +412,11 @@ $(function() {
     $(document).on("click", ".delete_cart", function () {
         var parent = $(this).closest('tr');
         if(parent.find('input[name="ct_id[]"]').val() != '') {
+            <?php if($od['od_penId']) { ?>
+            var total = <?=($index ?: 0)?>;
+            if($('input[name="delete[]"][value="1"]').length >= total - 1)
+                return alert('주문의 모든 상품을 삭제할 수 없습니다.');
+            <?php } ?>
             parent.find('input[name="delete[]"]').val('1');
             parent.addClass('strikeout');
             parent.find('input[type="text"], select').prop('readonly', true).css({'pointer-events': 'none'});
