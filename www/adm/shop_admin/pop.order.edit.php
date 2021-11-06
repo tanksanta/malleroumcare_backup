@@ -29,8 +29,23 @@ $carts = get_carts_by_od_id($od_id);
 .flexdatalist-results li .item-it_price:after {
     content: '원';
 }
+td {
+    position: relative;
+}
+tr.strikeout {
+    background: #dcdcdc;
+}
+tr.strikeout td:before {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-bottom: 1px solid #333;
+    width: 100%;
+}
 </style>
 <form name="foption" class="form" role="form" method="post" action="./pop.order.edit_result.php" onsubmit="return formcheck(this);">
+<input type="hidden" name="od_id" value="<?=$od_id?>">
 <div id="pop_order_add" class="admin_popup admin_popup_padding">
     <h4 class="h4_header"><?php echo $title; ?></h4>
     <div class="pop_order_add_item">
@@ -140,23 +155,30 @@ $carts = get_carts_by_od_id($od_id);
                             $opt["tax_price"] = round($opt['ct_price_stotal'] / 11);
                         }
                         // 단가 역산
-                        $it_price = $opt["opt_price"] = $opt['ct_price_stotal'] ? @round($opt['ct_price_stotal'] / ($opt["ct_qty"] - $opt["ct_stock_qty"])) : 0;
+                        $it_price = $opt['ct_price_stotal'] ? @round($opt['ct_price_stotal'] / ($opt["ct_qty"] - $opt["ct_stock_qty"])) : 0;
                 ?>
                 <tr>
                     <td class="no">
                         <span class="index"><?= (++$index) ?></span>
+                        <input type="hidden" name="delete[]" value="0">
                         <input type="hidden" name="ct_id[]" value="<?=$opt['ct_id']?>">
                         <input type="hidden" name="it_id[]" value="<?=$opt['it_id']?>">
+                        <input type="hidden" name="io_type[]" value="<?=$opt['io_type']?>">
                         <input type="hidden" name="price[]" class="price" value="<?=$opt['opt_price']?>">
                     </td>
                     <td>
                         <input type="hidden" name="it_name[]" class="frm_input" value="<?=$opt['it_name']?>">
-                        <?=$opt['it_name']?>
+                        <?php
+                            if($opt['io_type'] == '1')
+                                echo '[추가옵션] '. $opt['ct_option'];
+                            else
+                                echo $opt['it_name'];
+                        ?>
                     </td>
                     <td>
                         <div class="it_option">
                             <?php
-                            if($options) {
+                            if($options && $opt['io_type'] != '1') {
                                 echo '<select name="io_id[]">';
                                 foreach($options as $option) {
                                     echo '<option data-price="' . $option['io_price'] . '" value="' . $option['io_id'] . '" ' . get_selected($opt['io_id'], $option['io_id']) . '>' . str_replace(chr(30), ' > ', $option['io_id']) . '</option>';
@@ -164,7 +186,7 @@ $carts = get_carts_by_od_id($od_id);
                                 echo '</select>';
                             } else {
                                 echo '
-                                    <input type="hidden" name="io_id[]" value="">
+                                    <input type="hidden" name="io_id[]" value="'. $opt['io_id'] . '">
                                     -
                                 ';
                             }
@@ -243,7 +265,7 @@ $carts = get_carts_by_od_id($od_id);
             <a href='#' class="order_add_close">
                 취소
             </a>
-            <input type="submit" value="생성 (F8)" />
+            <input type="submit" value="수정 (F8)" />
         </div>
     </div>
 </div>
@@ -286,7 +308,7 @@ function formcheck(f) {
     }
 
     if (loading) {
-        alert('주문서 생성중입니다.');
+        alert('주문서 수정중입니다.');
         return false;
     }
 
@@ -295,6 +317,9 @@ function formcheck(f) {
 }
 
 $(function() {
+    // 기본값 저장
+    var default_tbody = $('.pop_order_add_item_table tbody').html();
+
     function add_flexdatalist(node) {
         $(node).flexdatalist({
             minLength: 1,
@@ -382,11 +407,18 @@ $(function() {
     }
 
     $(document).on("click", ".delete_cart", function () {
-        var parent = $(this).closest('tr').remove();
-        
-        $('.pop_order_add_item_table tbody tr').each(function(index) {
-            $(this).find('.index').text(index + 1)
-        })
+        var parent = $(this).closest('tr');
+        if(parent.find('input[name="ct_id[]"]').val() != '') {
+            parent.find('input[name="delete[]"]').val('1');
+            parent.addClass('strikeout');
+            parent.find('input[type="text"], select').prop('readonly', true).css({'pointer-events': 'none'});
+            $(this).css('visibility', 'hidden');
+        } else {
+            parent.remove();
+            $('.pop_order_add_item_table tbody tr').each(function(index) {
+                $(this).find('.index').text(index + 1)
+            });
+        }
     });
     
     $(document).on("click", ".add_cart", function () {
@@ -405,10 +437,7 @@ $(function() {
     });
 
     $(document).on("click", ".clear_cart", function () {
-        $('.pop_order_add_item_table tbody').html('');
-
-        $('.add_cart').click();
-        $('.add_cart').click();
+        $('.pop_order_add_item_table tbody').html(default_tbody);
     });
 
     $(document).on("click", ".order_add_close", function (e) {
