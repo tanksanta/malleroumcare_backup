@@ -238,7 +238,7 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                         // 재고 주문
                         // 시스템 재고 삭제
                         $result = api_post_call(EROUMCARE_API_STOCK_DELETE_MULTI, [
-                            'stoId' => $sto_ids
+                            'stoId' => $prods
                         ]);
 
                         if($result['errorYN'] !== 'N')
