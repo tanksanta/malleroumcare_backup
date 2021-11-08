@@ -1019,10 +1019,12 @@ $(function() {
 
       $option_sql = "SELECT *
           FROM
-          {$g5['g5_shop_item_option_table']}
+              {$g5['g5_shop_item_option_table']}
           WHERE
               it_id = '{$data['it_id']}'
               and io_type = 0 -- 선택옵션
+          ORDER BY
+              io_no ASC
       ";
       $option_result = sql_query($option_sql);
 
