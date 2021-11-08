@@ -971,18 +971,78 @@ $(function() {
     $dc_id = get_search_string($_GET['dc_id']);
     $sql = "
       SELECT
-        it_id, count(*)
+        x.it_id,
+        x.it_name,
+        x.it_model,
+        x.it_price,
+        x.it_price_dealer2,
+        x.it_cust_price,
+        x.it_rental_price,
+        x.ca_id,
+        it_img1 as it_img,
+        it_delivery_cnt,
+        it_sc_type,
+        it_sale_cnt,
+        it_sale_cnt_02,
+        it_sale_cnt_03,
+        it_sale_cnt_04,
+        it_sale_cnt_05,
+        it_sale_percent,
+        it_sale_percent_02,
+        it_sale_percent_03,
+        it_sale_percent_04,
+        it_sale_percent_05,
+        it_sale_percent_great,
+        it_sale_percent_great_02,
+        it_sale_percent_great_03,
+        it_sale_percent_great_04,
+        it_sale_percent_great_05,
+        count(*) as qty
       FROM
         eform_document d
       LEFT JOIN
-        eform_document_item i ON dc.dc_id = i.dc_id
+        eform_document_item i ON d.dc_id = i.dc_id
+      LEFT JOIN
+        g5_shop_item x ON i.it_code = x.ProdPayCode and
+        (
+          ( i.gubun = '00' and x.ca_id like '10%' ) or
+          ( i.gubun = '01' and x.ca_id like '20%' )
+        )
       WHERE
         d.dc_id = UNHEX('$dc_id')
       GROUP BY
         i.it_code
     ";
+    $result = sql_query($sql, true);
+    while($row = sql_fetch_array($result)) {
+      $data = $row;
+
+      $option_sql = "SELECT *
+          FROM
+          {$g5['g5_shop_item_option_table']}
+          WHERE
+              it_id = '{$data['it_id']}'
+              and io_type = 0 -- 선택옵션
+      ";
+      $option_result = sql_query($option_sql);
+
+      $data['options'] = [];
+      while ($option_row = sql_fetch_array($option_result)) {
+          $data['options'][] = $option_row;
+      }
+
+      $gubun = $cate_gubun_table[substr($row['ca_id'], 0, 2)];
+      $gubun_text = '판매';
+      if($gubun == '01') $gubun_text = '대여';
+      else if($gubun == '02') $gubun_text = '비급여';
+
+      $data['gubun'] = $gubun_text;
+
+      $data = json_encode($data);
   ?>
+  select_item(<?=$data ?: '{}'?>, null, <?=$row['qty'] ?: 1?>);
   <?php
+    }
   }
   ?>
 });
