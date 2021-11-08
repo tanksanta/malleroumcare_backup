@@ -44,7 +44,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <label for="penNm" class="col-md-2 control-label">
               <strong>수급자명</strong>
             </label>
-            <div class="col-md-3">
+            <div class="col-md-3" style="max-width: unset;">
               <input type="hidden" name="penId" id="penId" value="">
               <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="" placeholder="수급자명">
             </div>
