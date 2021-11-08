@@ -13,7 +13,6 @@ $keyword = str_replace(' ', '', trim($keyword));
 $result = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
   'usrId' => $member['mb_id'],
   'entId' => $member['mb_entId'],
-  'appCd' => '01',
   'penNm' => $keyword
 ));
 
