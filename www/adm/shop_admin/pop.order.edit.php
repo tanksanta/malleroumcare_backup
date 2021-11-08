@@ -198,7 +198,7 @@ tr.strikeout td:before {
                         </div>
                     </td>
                     <td>
-                        <input type="text" name="qty[]" class="frm_input" value="<?=$opt['ct_qty']?>" readonly>
+                        <input type="text" name="qty[]" class="frm_input" value="<?=$opt['ct_qty']?>">
                     </td>
                     <td>
                         <input type="text" name="it_price[]" class="frm_input" value="<?=$it_price?>">
