@@ -141,6 +141,10 @@ add_javascript(G5_POSTCODE_JS, 0);
           </li>
           <?php */ ?>
         </ul>
+        <div class="total_price_wr">
+          총 결제 금액 : 
+          <span class="total_price">0원</div>
+        </div>
 
       </div>
 
@@ -542,7 +546,8 @@ function calculate_order_price() {
     }
 
     var ct_price = ( it_price + io_price ) * ct_qty;
-    $(this).find('.it_price_wr .it_price').text(number_format(ct_price) + '원');
+    $(this).find('.it_price_wr .it_price span').text(number_format(it_price + io_price) + '원');
+    $(this).find('.it_price_wr .ct_price').text(number_format(ct_price) + '원');
     $(this).find('input[name="ct_price[]"]').val(ct_price);
     order_price += ct_price;
   });
@@ -580,6 +585,7 @@ function calculate_order_price() {
 
   // 총 결제금액
   $('#total_price').text(number_format( order_price + delivery_price - cp_price - pt_price ));
+  $('.total_price_wr .total_price').text(number_format( order_price + delivery_price - cp_price - pt_price ) + '원');
 }
 
 // 배송비계산 (더미코드)
@@ -714,9 +720,13 @@ function select_item(obj, io_id, ct_qty) {
   $qty_wr.appendTo($li);
 
   var $price_wr = $('<div class="it_price_wr flex space-between">');
-  $price_wr.append('<p class="it_price">' + number_format(ct_price) + '원</p>')
-  .append('<input type="hidden" name="ct_price[]" value="' + ct_price + '">')
-  .append('<button type="button" class="btn_del_item">삭제</button>')
+  $price_wr
+  .append(
+    '<div><p class="it_price">단가 : <span>' + number_format(it_price) + '원</span></p>' +
+    '<p class="ct_price">' + number_format(ct_price) + '원</p></div>',
+    '<input type="hidden" name="ct_price[]" value="' + ct_price + '">',
+    '<button type="button" class="btn_del_item">삭제</button>'
+  )
   .appendTo($li);
 
   $('#so_item_list').append($li);
@@ -942,7 +952,7 @@ $(function() {
     return false;
   });
 
-    // 품목찾기 팝업
+  // 품목찾기 팝업
   $('#item_popup_box').click(function() {
     $('body').removeClass('modal-open');
     $('#item_popup_box').hide();
@@ -954,6 +964,27 @@ $(function() {
     $('body').addClass('modal-open');
     $('#item_popup_box').show();
   });
+
+
+  <?php
+  if($_GET['dc_id']) {
+    $dc_id = get_search_string($_GET['dc_id']);
+    $sql = "
+      SELECT
+        it_id, count(*)
+      FROM
+        eform_document d
+      LEFT JOIN
+        eform_document_item i ON dc.dc_id = i.dc_id
+      WHERE
+        d.dc_id = UNHEX('$dc_id')
+      GROUP BY
+        i.it_code
+    ";
+  ?>
+  <?php
+  }
+  ?>
 });
 </script>
 
