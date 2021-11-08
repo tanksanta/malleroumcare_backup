@@ -38,6 +38,7 @@ if($ps_run) {
         <th scope="col">통보수량</th>
         <th scope="col">사용여부</th>
         <th scope="col">품목코드</th>
+        <th scope="col">규격</th>
     </tr>
     </thead>
     <tbody>
@@ -56,6 +57,7 @@ if($ps_run) {
             $spl_noti_qty = $row['io_noti_qty'];
             $spl_use = $row['io_use'];
             $spl_thezone = $row['io_thezone'];
+            $spl_standard = $row['io_standard'];
     ?>
     <tr>
         <td class="td_chk">
@@ -91,6 +93,10 @@ if($ps_run) {
             <label for="spl_thezone_<?php echo $i; ?>" class="sound_only">더존코드</label>
             <input type="text" name="spl_thezone[]" value="<?php echo $spl_thezone; ?>" id="spl_thezone_<?php echo $i; ?>" class="frm_input" size="35">
         </td>
+        <td class="td_num">
+            <label for="spl_standard_<?php echo $i; ?>" class="sound_only">규격</label>
+            <input type="text" name="spl_standard[]" value="<?php echo $spl_standard; ?>" id="spl_standard_<?php echo $i; ?>" class="frm_input" size="5">
+        </td>
     </tr>
     <?php
         } // for
@@ -112,6 +118,7 @@ if($ps_run) {
                     $spl_noti_qty = 100;
                     $spl_use = 1;
                     $spl_thezone = '';
+                    $spl_standard = '';
 
                     // 기존에 설정된 값이 있는지 체크
                     if($_POST['w'] == 'u') {
@@ -163,6 +170,10 @@ if($ps_run) {
         <td class="td_num">
             <label for="spl_thezone_<?php echo $i; ?>" class="sound_only">더존코드</label>
             <input type="text" name="spl_thezone[]" value="<?php echo $spl_thezone; ?>" id="spl_thezone_<?php echo $i; ?>" class="frm_input" size="35">
+        </td>
+        <td class="td_num">
+            <label for="spl_standard_<?php echo $i; ?>" class="sound_only">규격</label>
+            <input type="text" name="spl_standard[]" value="<?php echo $spl_standard; ?>" id="spl_standard_<?php echo $i; ?>" class="frm_input" size="35">
         </td>
     </tr>
     <?php

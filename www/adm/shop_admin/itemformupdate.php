@@ -929,11 +929,11 @@ if($supply_count) {
   $comma = '';
   $sql = "
     INSERT INTO {$g5['g5_shop_item_option_table']}
-    ( `io_id`, `io_type`, `it_id`, `io_price`, `io_stock_qty`, `io_noti_qty`, `io_use`, `io_price_partner`, `io_price_dealer`, `io_price_dealer2`, `io_thezone` )
+    ( `io_id`, `io_type`, `it_id`, `io_price`, `io_stock_qty`, `io_noti_qty`, `io_use`, `io_price_partner`, `io_price_dealer`, `io_price_dealer2`, `io_thezone`, `io_standard` )
     VALUES
   ";
   for($i=0; $i<$supply_count; $i++) {
-    $sql .= $comma . " ( '{$_POST['spl_id'][$i]}', '1', '$it_id', '{$_POST['spl_price'][$i]}', '{$_POST['spl_stock_qty'][$i]}', '{$_POST['spl_noti_qty'][$i]}', '{$_POST['spl_use'][$i]}', '{$_POST['spl_price_partner'][$i]}', '{$_POST['spl_price_dealer'][$i]}', '{$_POST['spl_price_dealer2'][$i]}', '{$_POST['spl_thezone'][$i]}' )";
+    $sql .= $comma . " ( '{$_POST['spl_id'][$i]}', '1', '$it_id', '{$_POST['spl_price'][$i]}', '{$_POST['spl_stock_qty'][$i]}', '{$_POST['spl_noti_qty'][$i]}', '{$_POST['spl_use'][$i]}', '{$_POST['spl_price_partner'][$i]}', '{$_POST['spl_price_dealer'][$i]}', '{$_POST['spl_price_dealer2'][$i]}', '{$_POST['spl_thezone'][$i]}', '{$_POST['spl_standard'][$i]}' )";
     $comma = ' , ';
   }
 
