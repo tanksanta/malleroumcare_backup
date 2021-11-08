@@ -122,7 +122,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 <td>
   <?php
   if(!$row['penId']) {
-    echo "{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})<br>";
+    echo "{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})";
     $attrs = ['penNm', 'penLtmNum', 'penBirth', 'penRecGraCd', 'penTypeCd', 'penConNum', 'penJumin'];
 
     $q = '';
@@ -131,13 +131,20 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     }
     $penExpiDtm = explode(' ~ ', $row['penExpiDtm']);
     $q .= 'penExpiStDtm=' . urlencode($penExpiDtm[0]) . '&penExpiEdDtm=' . urlencode($penExpiDtm[1]);
-    echo '<a href="/shop/my_recipient_write.php?'.$q.'" class="btn_grey">미등록 수급자 신규추가</a>';
+    echo '<br><a href="/shop/my_recipient_write.php?'.$q.'" class="btn_grey">미등록 수급자 신규추가</a>';
   } else {
     echo '<a href="'.G5_SHOP_URL.'/my_recipient_view.php?id='.$row['penId'].'">'."{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})".'</a>';
   }
   ?>
 </td>
-<td><?=$row["it_name"]?><?php if($row['it_count'] > 1) { echo ' 외 ' . ($row['it_count'] - 1) . '건'; } ?></td>
+<td>
+  <?=$row["it_name"]?><?php if($row['it_count'] > 1) { echo ' 외 ' . ($row['it_count'] - 1) . '건'; } ?>
+  <?php
+  if(!$row['od_id']) {
+    echo '<br><a href="/shop/simple_order.php?dc_id='.$row["uuid"].'" class="btn_grey">상품 주문하기</a>';
+  }
+  ?>
+</td>
 <td>일반계약</td>
 <td class="text_c"><?=date('Y-m-d', strtotime($row['dc_sign_datetime']))?></td>
 <td class="text_c">

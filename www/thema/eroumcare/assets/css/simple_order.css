@@ -256,6 +256,11 @@
   width: 200px;
 }
 .it_price_wr .it_price {
+  font-size: 12px;
+  margin: 0 0 5px 0;
+  color: #666;
+}
+.it_price_wr .ct_price {
   font-size: 18px;
   font-weight: bold;
   margin: 0;
@@ -269,6 +274,16 @@
   height: 35px;
   text-align: center;
   line-height: 25px;
+}
+.total_price_wr {
+  margin: 10px;
+  text-align: right;
+  color: #666;
+  font-size: 18px;
+}
+.total_price_wr .total_price {
+  color: #333;
+  font-weight: bold;
 }
 @media (max-width: 960px) {
   .so_item_list > li.flex {
