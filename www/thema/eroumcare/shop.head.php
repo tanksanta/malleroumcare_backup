@@ -394,13 +394,13 @@ if($is_main && !$is_member) {
             </a>
           </div>
 
-          <?php if($member['mb_type'] == 'default' && $member['mb_id'] == 'hula1202') { ?>
           <div class="conv_area">
+            <?php if($member['mb_type'] == 'default' && $member['mb_id'] == 'hula1202') { ?>
             <a href="/shop/item_msg_list.php" class="pen_item_msg">간편 제안서 작성</a>
             <a href="/shop/simple_eform.php" class="simple_eform">간편 계약서 작성</a>
+            <?php } ?>
             <a href="/shop/simple_order.php" class="simple_order">간편 주문서 작성</a>
           </div>
-          <?php } ?>
 
           <?php
           if($member['mb_type'] == 'partner') {
