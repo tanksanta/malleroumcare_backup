@@ -170,12 +170,13 @@ tr.strikeout td:before {
                         <input type="hidden" name="price[]" class="price" value="<?=$opt['opt_price']?>">
                     </td>
                     <td>
-                        <input type="hidden" name="it_name[]" class="frm_input" value="<?=$opt['it_name']?>">
                         <?php
-                            if($opt['io_type'] == '1')
+                            if($opt['io_type'] == '1') {
+                                echo '<input type="hidden" name="it_name[]" class="frm_input" value="' . $opt['it_name'] . '">';
                                 echo '[추가옵션] '. $opt['ct_option'];
-                            else
-                                echo $opt['it_name'];
+                            } else {
+                                echo '<input type="text" name="it_name[]" class="frm_input item_flexdatalist" value="' . $opt['it_name'] . '">';
+                            }
                         ?>
                     </td>
                     <td>
@@ -197,7 +198,7 @@ tr.strikeout td:before {
                         </div>
                     </td>
                     <td>
-                        <input type="text" name="qty[]" class="frm_input" value="<?=$opt['ct_qty']?>">
+                        <input type="text" name="qty[]" class="frm_input" value="<?=$opt['ct_qty']?>" readonly>
                     </td>
                     <td>
                         <input type="text" name="it_price[]" class="frm_input" value="<?=$it_price?>">
@@ -565,6 +566,10 @@ $(function() {
         } else {
             $(this).val('');
         }
+    });
+
+    $('.pop_order_add_item_table .item_flexdatalist').each(function() {
+        add_flexdatalist($(this));
     });
 
 });

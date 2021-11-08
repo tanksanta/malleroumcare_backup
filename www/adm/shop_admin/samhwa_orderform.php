@@ -412,7 +412,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
             </h2>
             <div class="right">
                 <?php if($mb['mb_id'] && !$options[$k]['ct_stock_qty']) { ?>
-                <input type="button" value="상품추가" class="btn shbtn" id="add_item">
+                <!--<input type="button" value="상품추가" class="btn shbtn" id="add_item">-->
                 <?php } ?>
                 <!--<input type="button" value="바코드 정보 저장" class="btn shbtn" id="prodBarNumSaveBtn">-->
                 <!-- <?php 
@@ -893,7 +893,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                      </td>
 
                                     <td class="btncol">
-                                        <?php if($od['od_writer']!="openmarket"){ ?>
+                                        <?php if($od['od_writer']!="openmarket") { /* ?>
                                             <div class="more">
                                                 <?php
                                                 $temp_ct_step = get_step($options[$k]['ct_status']);
@@ -922,7 +922,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                                     </ul>
                                                 <?php } ?>
                                             </div>
-                                        <?php } ?>
+                                        <?php */ } ?>
                                     </td>
 
                                 </tr>
