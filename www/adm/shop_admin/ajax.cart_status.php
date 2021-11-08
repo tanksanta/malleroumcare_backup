@@ -34,6 +34,7 @@ if($_POST['ct_id'] && $_POST['step']) {
       a.it_id,
       a.it_name,
       a.ct_option,
+      a.ct_status,
       a.mb_id,
       a.stoId,
       b.mb_entId,
@@ -51,6 +52,11 @@ if($_POST['ct_id'] && $_POST['step']) {
     from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
+
+    if(in_array($result_ct_s['ct_status'], ['취소', '주문무효'])) {
+      echo '취소된 주문은 상태변경이 불가능합니다.';
+      exit;
+    }
     
     $content=$result_ct_s['it_name'];
     if($result_ct_s['it_name'] !== $result_ct_s['ct_option']){
