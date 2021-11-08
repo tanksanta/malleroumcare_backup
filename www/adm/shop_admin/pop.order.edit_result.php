@@ -109,7 +109,7 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                     ct_id = '$ct_id'
             ";
             sql_query($sql, true);
-
+            set_order_admin_log($od_id, "상품삭제: {$ct['it_name']}({$ct['ct_option']})");
         } else {
             // 수정
             if($io_type != '1') {
@@ -123,12 +123,13 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
             // 단가 역산
             $it_price_orig = $total_price_orig ? round($total_price_orig / ($ct["ct_qty"] - $ct["ct_stock_qty"])) : 0;
 
-            if( ( $ct['io_id'] == $io_id ) && ( $ct['ct_qty'] == $qty ) && ($it_price_orig == $it_price) ) {
+            if( ($ct['it_id'] == $it_id ) && ( $ct['io_id'] == $io_id ) && ( $ct['ct_qty'] == $qty ) && ($it_price_orig == $it_price) ) {
                 // 변경사항이 없으면 continue
                 if($ct['prodMemo'] != $memo) {
                     // 요청사항만 변경된경우 요청사항만 반영
                     $sql = " UPDATE g5_shop_cart SET prodMemo = '$memo' WHERE od_id = '$od_id' and ct_id = '$ct_id' ";
                     sql_query($sql, true);
+                    set_order_admin_log($od_id, "요청사항수정: {$ct['it_name']}({$ct['ct_option']}) - '{$ct['prodMemo']}' -> '{$memo}'");
                 }
                 continue;
             }
@@ -164,12 +165,14 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                     $prodOption = implode('|', $prodOptions);
                 }
             }
-            $io_value = $io_value ? $io_value : addslashes($ct['it_name']);
+            $io_value = $io_value ? $io_value : addslashes($it['it_name']);
 
             $sql = "
                 UPDATE
                     g5_shop_cart
                 SET
+                    it_id = '$it_id',
+                    it_name = '{$it['it_name']}',
                     io_id = '$io_id',
                     ct_option = '$io_value',
                     $price_sql
@@ -184,8 +187,8 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
 
             if($io_type != '1') {
 
-                // 옵션이 변한 경우 : 시스템 재고 옵션 변경해야함
-                if($ct['io_id'] != $io_id) {
+                // 상품 or 옵션이 변한 경우 : 시스템 재고 옵션 변경해야함
+                if( ($ct['it_id'] != $it_id ) || ($ct['io_id'] != $io_id) ) {
                     $prods = [];
                     foreach($sto_ids as $sto_id) {
                         $prods[] = [
@@ -202,6 +205,8 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                         'entId' => $mb['mb_entId'],
                         'prods' => $prods
                     ]);
+
+                    set_order_admin_log($od_id, "상품변경: {$ct['it_name']}({$ct['ct_option']}) -> {$it['it_name']}({$io_value})");
                 }
 
                 // 수량이 줄어든 경우 : 시스템 재고 삭제 해야함
@@ -252,6 +257,7 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                         WHERE ct_id = '$ct_id'
                     ";
                     sql_query($sql, true);
+                    set_order_admin_log($od_id, "상품수량변경: {$it['it_name']}($io_value) {$ct['ct_qty']}개 -> {$qty}개");
                 }
 
                 // 수량이 늘어난 경우 : 시스템 재고 추가 해야함
@@ -318,6 +324,7 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                         ";
                         sql_query($sql, true);
                     }
+                    set_order_admin_log($od_id, "상품수량변경: {$it['it_name']}($io_value) {$ct['ct_qty']}개 -> {$qty}개");
                 }
             }
         }
@@ -609,6 +616,8 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
             ";
             sql_query($sql, true);
         }
+
+        set_order_admin_log($od_id, "상품추가: {$it['it_name']}($io_value) {$qty}개");
     }
 }
 
