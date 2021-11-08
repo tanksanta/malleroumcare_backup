@@ -80,7 +80,7 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>주민등록번호(앞자리)</b>
         </label>
         <div class="col-sm-3">
-          <input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm">
+          <input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" value="<?=get_text($_GET['penJumin'])?>">
           <p style="margin:0; color:#ed9b43">
             * ‘기초0%’ 수급자만 필수 입력 사항입니다.
           </p>
@@ -178,7 +178,7 @@ input[type="number"]::-webkit-inner-spin-button {
         </label>
         <div class="col-sm-3">
           <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
-          <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);">
+          <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=preg_replace("/[^0-9]*/s", "", get_text($_GET['penLtmNum'])) ?: ''?>">
         </div>
       </div>
 
@@ -188,12 +188,12 @@ input[type="number"]::-webkit-inner-spin-button {
         </label>
         <div class="col-sm-3">
           <select class="form-control input-sm" name="penRecGraCd">
-            <option value="00">등급외</option>
-            <option value="01">1등급</option>
-            <option value="02">2등급</option>
-            <option value="03">3등급</option>
-            <option value="04">4등급</option>
-            <option value="05">5등급</option>
+            <option value="00" <?=get_selected($_GET['penRecGraCd'], '00')?>>등급외</option>
+            <option value="01" <?=get_selected($_GET['penRecGraCd'], '01')?>>1등급</option>
+            <option value="02" <?=get_selected($_GET['penRecGraCd'], '02')?>>2등급</option>
+            <option value="03" <?=get_selected($_GET['penRecGraCd'], '03')?>>3등급</option>
+            <option value="04" <?=get_selected($_GET['penRecGraCd'], '04')?>>4등급</option>
+            <option value="05" <?=get_selected($_GET['penRecGraCd'], '05')?>>5등급</option>
           </select>
         </div>
       </div>
@@ -204,11 +204,11 @@ input[type="number"]::-webkit-inner-spin-button {
         </label>
         <div class="col-sm-3">
           <select class="form-control input-sm" name="penTypeCd">
-            <option value="00">일반 15%</option>
-            <option value="01">감경 9%</option>
-            <option value="02">감경 6%</option>
-            <option value="03">의료 6%</option>
-            <option value="04">기초 0%</option>
+            <option value="00" <?=get_selected($_GET['penTypeCd'], '00')?>>일반 15%</option>
+            <option value="01" <?=get_selected($_GET['penTypeCd'], '01')?>>감경 9%</option>
+            <option value="02" <?=get_selected($_GET['penTypeCd'], '02')?>>감경 6%</option>
+            <option value="03" <?=get_selected($_GET['penTypeCd'], '03')?>>의료 6%</option>
+            <option value="04" <?=get_selected($_GET['penTypeCd'], '04')?>>기초 0%</option>
           </select>
         </div>
       </div>
@@ -218,8 +218,8 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>유효기간</b>
         </label>
         <div class="col-sm-3">
-          <input type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;"> ~
-          <input type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;">
+          <input type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=get_text($_GET['penExpiStDtm']) ?: ''?>"> ~
+          <input type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=get_text($_GET['penExpiEdDtm']) ?: ''?>">
         </div>
       </div>
     </div>
@@ -476,6 +476,18 @@ var penid="";
       
 $(document).ready(function () {
   setDateBox();
+  <?php if(get_text($_GET['penBirth'])) { ?>
+  //생년월일 세팅
+  var penBirth = "<?=get_text($_GET['penBirth'])?>".split('.');
+  var year = penBirth[0];
+  var month = penBirth[1];
+  var day = penBirth[2];
+
+  $(".register-form select[name='penBirth1']").val(year);
+  $(".register-form select[name='penBirth2']").val(month);
+  $(".register-form select[name='penBirth3']").val(day);
+
+  <?php } ?>
 
   $('.chk_sale_product').click(function() {
     var parent = $(this).closest('div');

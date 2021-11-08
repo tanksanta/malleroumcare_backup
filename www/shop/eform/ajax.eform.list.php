@@ -80,6 +80,18 @@ $sql_limit = " LIMIT {$from_record}, {$page_rows} ";
 
 $result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where . $sql_group . $sql_order . $sql_limit);
 ?>
+<style>
+  .btn_grey {
+    display: inline-block;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    color: #333;
+    line-height: 1;
+    padding: 6px;
+    margin-top: 5px;
+  }
+</style>
 <div class="table_box">
 <table id="table_list">
 <thead>
@@ -107,7 +119,24 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 ?>
 <tr>
 <td><?=$index?></td>
-<td><a href="<?=G5_SHOP_URL?>/my_recipient_view.php?id=<?=$row['penId']?>"><?="{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})"?></a></td>
+<td>
+  <?php
+  if(!$row['penId']) {
+    echo "{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})<br>";
+    $attrs = ['penNm', 'penLtmNum', 'penBirth', 'penRecGraCd', 'penTypeCd', 'penConNum', 'penJumin'];
+
+    $q = '';
+    foreach($attrs as $attr) {
+      $q .= $attr . '=' . urlencode($row[$attr]) . '&';
+    }
+    $penExpiDtm = explode(' ~ ', $row['penExpiDtm']);
+    $q .= 'penExpiStDtm=' . urlencode($penExpiDtm[0]) . '&penExpiEdDtm=' . urlencode($penExpiDtm[1]);
+    echo '<a href="/shop/my_recipient_write.php?'.$q.'" class="btn_grey">미등록 수급자 신규추가</a>';
+  } else {
+    echo '<a href="'.G5_SHOP_URL.'/my_recipient_view.php?id='.$row['penId'].'">'."{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})".'</a>';
+  }
+  ?>
+</td>
 <td><?=$row["it_name"]?><?php if($row['it_count'] > 1) { echo ' 외 ' . ($row['it_count'] - 1) . '건'; } ?></td>
 <td>일반계약</td>
 <td class="text_c"><?=date('Y-m-d', strtotime($row['dc_sign_datetime']))?></td>
