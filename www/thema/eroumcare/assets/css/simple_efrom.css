@@ -33,6 +33,9 @@
   width: 120px;
   border-radius: 3px !important;
 }
+.form-group .form-control.pen_id_flexdatalist {
+  width: 100%;
+}
 .form-group .control-label {
   max-width: 120px;
   padding-top: 0;
