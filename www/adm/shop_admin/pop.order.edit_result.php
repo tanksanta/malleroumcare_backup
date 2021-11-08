@@ -223,6 +223,8 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                         ];
                     }
 
+                    $sto_ids = array_slice($sto_ids, 0, count($sto_ids) - $del_num);
+
                     if($od['od_penId']) {
                         // 수급자 주문
                         $data = $send_data;
@@ -238,7 +240,7 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                         // 재고 주문
                         // 시스템 재고 삭제
                         $result = api_post_call(EROUMCARE_API_STOCK_DELETE_MULTI, [
-                            'stoId' => $prods
+                            'stoId' => $sto_ids
                         ]);
 
                         if($result['errorYN'] !== 'N')
@@ -246,7 +248,6 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                             //alert('시스템에서 재고 삭제를 실패했습니다.');
                     }
 
-                    $sto_ids = array_slice($sto_ids, 0, count($sto_ids) - $del_num);
                     $sto_id = '';
                     foreach($sto_ids as $stoId) {
                         $sto_id .= $stoId . '|';
