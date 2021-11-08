@@ -443,7 +443,7 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                 $prodOption = implode('|', $prodOptions);
             }
         }
-        $io_value = $io_value ? $io_value : addslashes($ct['it_name']);
+        $io_value = $io_value ? $io_value : addslashes($it['it_name']);
 
         $io_price = 0;
         $io_thezone = $opt_list[$io_type][$io_id]['io_thezone'];
