@@ -25,6 +25,8 @@ $option_sql = "SELECT *
   WHERE
     it_id = '$it_id'
     and io_type = 0 -- 선택옵션
+  ORDER BY
+    io_no ASC
 ";
 $option_result = sql_query($option_sql);
 

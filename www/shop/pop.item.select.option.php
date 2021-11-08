@@ -29,10 +29,12 @@ if($member['mb_level'] == 4 && $it['it_price_dealer2']) {
 $data['it_img'] = $it['it_img1'];
 $option_sql = "SELECT *
     FROM
-    {$g5['g5_shop_item_option_table']}
+        {$g5['g5_shop_item_option_table']}
     WHERE
         it_id = '$it_id'
         and io_type = 0 -- 선택옵션
+    ORDER BY
+        io_no ASC
 ";
 $option_result = sql_query($option_sql);
 
