@@ -16,6 +16,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_ord
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 add_javascript(G5_POSTCODE_JS, 0);
+add_javascript(G5_POSTCODE_JS, 0);
 
 ?>
 
@@ -26,6 +27,7 @@ add_javascript(G5_POSTCODE_JS, 0);
       <input type="hidden" name="org_od_price" value="0">
       <input type="hidden" name="od_price" value="0">
       <input type="hidden" name="od_settle_case" value="월 마감 정산">
+      <input type="hidden" name="od_send_cost2" value="0">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="form-group">
@@ -143,7 +145,7 @@ add_javascript(G5_POSTCODE_JS, 0);
         </ul>
         <div class="total_price_wr">
           총 결제 금액 : 
-          <span class="total_price">0원</div>
+          <span class="total_price">0원</span>
         </div>
 
       </div>
@@ -589,8 +591,33 @@ function calculate_order_price() {
 }
 
 // 배송비계산 (더미코드)
-function calculate_sendcost() {
-  // do nothing;
+function calculate_sendcost(code) {
+  /*var el_it_ids = $('#sod_list').find("input[name^=it_id]");
+
+  var it_ids = $.map(el_it_ids, function(el, i) {
+      return $(el).val();
+  });
+
+  $.post(
+      "./ordersendcost.php",
+      {
+          zipcode: code,
+          'it_ids[]': it_ids,
+      },
+      function(data) {
+          var od_delivery_type = $("select[name=od_delivery_type]").val();
+
+          if (od_delivery_type !== 'delivery1') {
+              data = 0;
+          }
+          $("input[name=od_send_cost2]").val(data);
+          $("#od_send_cost2").text(number_format(String(data)));
+
+          zipcode = code;
+
+          calculate_order_price();
+      }
+  );*/
 }
 
 // 품목 없는지 체크
