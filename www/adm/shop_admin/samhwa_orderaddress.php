@@ -114,7 +114,7 @@ if(isset($wset['ahead']) && $wset['ahead']) {
         <tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
           <td class="text-center"><?php echo $list[$i]['ad_subject']; ?></td>
           <td class="text-center"><?php echo $list[$i]['ad_name']; ?></td>
-          <td class="text-center"><?php echo $list[$i]['ad_tel']; ?><br><?php echo $list[$i]['ad_hp']; ?></td>
+          <td class="text-center"><?php echo $list[$i]['ad_tel']; ?><!--<br><?php echo $list[$i]['ad_hp']; ?>--></td>
           <td><?php echo $list[$i]['print_addr']; ?></td>
           <td class="text-center">
             <input type="hidden" value="<?php echo $list[$i]['addr']; ?>">
