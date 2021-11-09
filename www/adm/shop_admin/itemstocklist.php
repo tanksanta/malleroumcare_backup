@@ -27,7 +27,7 @@ if ($sel_ca_id != "") {
 }
 
 if ($wh_name != '') {
-  $sql_search .= " and ( select sum(ws_qty) from warehouse_stock s where i.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' ) > 0 ";
+  $sql_search .= " and ( select sum(ws_qty) from warehouse_stock s where i.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' ) <> 0 ";
 }
 
 if ($sel_field == "")  $sel_field = "it_name";
