@@ -217,6 +217,9 @@
   border-radius: 3px;
   background-color: #fff;
 }
+.it_info_wr .it_info .it_tag {
+  margin: 0;
+}
 .it_info_wr .it_info .it_price {
   color: #666;
 }
