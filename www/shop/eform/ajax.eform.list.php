@@ -8,7 +8,7 @@ $where = array();
 $penId = isset($_GET['penId']) ? get_search_string($_GET['penId']) : '';
 $search = isset($_GET['search']) ? get_search_string($_GET['search']) : '';
 $sel_field = isset($_GET['sel_field']) && in_array($_GET['sel_field'], array('penNm', 'it_name')) ? $_GET['sel_field'] : '';
-$sel_order = isset($_GET['sel_order']) && in_array($_GET['sel_order'], array('dc_sign_datetime', 'penNm')) ? $_GET['sel_order'] : '';
+$sel_order = isset($_GET['sel_order']) && in_array($_GET['sel_order'], array('dc_datetime', 'penNm')) ? $_GET['sel_order'] : '';
 
 if($member['mb_type'] === 'normal') {
   $penId = get_session('ss_pen_id');
@@ -38,13 +38,19 @@ switch($sel_order) {
     $sql_order .= 'E.penNm ' . $index_order;
     break;
   default:
-    $qstr .= 'sel_order=dc_sign_datetime';
+    $qstr .= 'sel_order=dc_datetime';
     $index_order = 'DESC';
-    $sql_order .= 'E.dc_sign_datetime ' . $index_order;
+    $sql_order .= 'E.dc_datetime ' . $index_order;
 }
 
-// 작성 완료된 계약서 & 마이그레이션 된 계약서만
-$where[] = " (dc_status = '2' OR dc_status = '3') ";
+//
+if($incompleted) {
+  $qstr .= '&amp;incompleted=1';
+  $where[] = " dc_status = '11' ";
+}
+
+// 작성 완료된 계약서 & 마이그레이션 된 계약서만 + 간편 계약서로 생성된 계약서
+$where[] = " (dc_status = '2' OR dc_status = '3' OR dc_status = '11') ";
 
 $select[] = ' I.it_name ';
 $select[] = ' COUNT(E.dc_id) as it_count ';
@@ -90,6 +96,9 @@ $result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where
     line-height: 1;
     padding: 6px;
     margin-top: 5px;
+  }
+  .text_c .btn_basic {
+    width: 112px;
   }
 </style>
 <div class="table_box">
@@ -145,20 +154,37 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
   }
   ?>
 </td>
-<td>일반계약</td>
-<td class="text_c"><?=date('Y-m-d', strtotime($row['dc_sign_datetime']))?></td>
+<td>
+  <?php
+  if($row['dc_status'] == '11') {
+    echo '<span style="color:#ef8505; font-weight: bold;">계약대기</span>';
+  } else {
+    echo '일반계약';
+  }
+  ?>
+</td>
+<td class="text_c">
+  <?=date('Y-m-d', strtotime($row['dc_datetime']))?>
+</td>
 <td class="text_c">
   <?php
-  if($row['dc_status'] == '3' && !$row['od_id']) {
-    echo '<a href="' . G5_SHOP_URL . '/eform/downloadEform.php?dc_id=' . $row["uuid"] . '" class="btn_basic">계약서 다운로드</a>';
+  if($row['dc_status'] == '11') {
+      echo '<a href="' . G5_SHOP_URL . '/eform/signEform.php?dc_id=' . $row["uuid"] . '" class="btn_basic" style="background: #6e9254; color: #fff;">계약서 작성</a>';
+      echo '<br>';
+      echo '<a href="' . G5_SHOP_URL . '/simple_eform.php?dc_id=' . $row["uuid"] . '" class="btn_basic" style="width: 53px;">수정</a>';
+      echo '<a href="javascript:void(0);" class="btn_basic btn_del_eform" data-id="' . $row["uuid"] . '" style="width: 53px;">삭제</a>';
   } else {
-    echo '<a href="' . G5_SHOP_URL . '/eform/downloadEform.php?od_id=' . $row["od_id"] . '" class="btn_basic">계약서 다운로드</a>';
+    if($row['dc_status'] == '3' && !$row['od_id']) {
+      echo '<a href="' . G5_SHOP_URL . '/eform/downloadEform.php?dc_id=' . $row["uuid"] . '" class="btn_basic">계약서 다운로드</a>';
+    } else {
+      echo '<a href="' . G5_SHOP_URL . '/eform/downloadEform.php?od_id=' . $row["od_id"] . '" class="btn_basic">계약서 다운로드</a>';
+    }
   }
   ?>
   <?php
-  if($row['dc_status'] != '3') { // 이전 계약서는 감사추적인증서가 없음
+  if($row['dc_status'] == '2') { // 이전 계약서는 감사추적인증서가 없음
     echo '<br><a href="' . G5_SHOP_URL . '/eform/downloadCert.php?od_id=' . $row["od_id"] . '" class="btn_basic">감사추적 인증서</a>';
-  } else if(!$row['od_id']) {
+  } else if($row['dc_status'] == '3' && !$row['od_id']) {
     echo '<br><a href="' . G5_SHOP_URL . '/eform/downloadCert.php?dc_id=' . $row["uuid"] . '" class="btn_basic">감사추적 인증서</a>';
   }
   ?>

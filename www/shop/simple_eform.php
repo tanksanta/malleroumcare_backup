@@ -7,6 +7,17 @@ if($member['mb_type'] !== 'default' || !$member['mb_entId'])
 $g5['title'] = '계약서 작성';
 include_once("./_head.php");
 
+$dc_id = clean_xss_tags($_GET['dc_id']);
+if($dc_id) {
+  $dc = sql_fetch("
+  SELECT HEX(`dc_id`) as uuid, e.*
+  FROM `eform_document` as e
+  WHERE dc_id = UNHEX('$dc_id') and entId = '{$member['mb_entId']}' and dc_status = '11' ");
+
+  if(!$dc['uuid'])
+    unset($dc);
+}
+
 // 이전에 저장했던 간편계약서 삭제
 $sql = "
   select hex(dc_id) as uuid
@@ -32,12 +43,17 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 
 <section class="wrap">
-  <div class="sub_section_tit">간편 계약서 작성</div>
+  <div class="sub_section_tit">
+    간편 계약서 작성
+    <div class="r_btn_area">
+        <a href="/shop/electronic_manage.php" class="btn eroumcare_btn2">계약서 목록보기</a>
+    </div>
+  </div>
   <div class="inner">
 
     <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
-      <input type="hidden" name="w" value="">
-      <input type="hidden" name="dc_id" value="">
+      <input type="hidden" name="w" value="<?php if($dc) echo 'u'; ?>">
+      <input type="hidden" name="dc_id" value="<?php if($dc) echo $dc['uuid']; ?>">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="form-group">
@@ -45,8 +61,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>수급자명</strong>
             </label>
             <div class="col-md-3" style="max-width: unset;">
-              <input type="hidden" name="penId" id="penId" value="">
-              <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="" placeholder="수급자명">
+              <input type="hidden" name="penId" id="penId" value="<?php if($dc) echo $dc['penId']; ?>">
+              <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명">
             </div>
           </div>
           <div class="form-group">
@@ -54,13 +70,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>요양인정번호</strong>
             </label>
             <div class="col-md-3">
-              <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="" placeholder="L**********">
+              <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="<?php if($dc) echo $dc['penLtmNum']; ?>" placeholder="L**********">
             </div>
             <label for="penGender" class="col-md-2 control-label">
               <strong>휴대폰번호</strong>
             </label>
             <div class="col-md-3">
-              <input type="text" name="penConNum" id="penConNum" class="form-control input-sm" value="">
+              <input type="text" name="penConNum" id="penConNum" class="form-control input-sm" value="<?php if($dc) echo $dc['penConNum']; ?>">
             </div>
           </div>
           <div class="form-group">
@@ -69,12 +85,12 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             </label>
             <div class="col-md-3">
               <select name="penRecGraCd" id="penRecGraCd" class="form-control input-sm">
-                <option value="00">등급외</option>
-                <option value="01">1등급</option>
-                <option value="02">2등급</option>
-                <option value="03">3등급</option>
-                <option value="04">4등급</option>
-                <option value="05">5등급</option>
+                <option value="00" <?php if($dc) echo get_selected($dc['penRecGraCd'], '00'); ?>>등급외</option>
+                <option value="01" <?php if($dc) echo get_selected($dc['penRecGraCd'], '01'); ?>>1등급</option>
+                <option value="02" <?php if($dc) echo get_selected($dc['penRecGraCd'], '02'); ?>>2등급</option>
+                <option value="03" <?php if($dc) echo get_selected($dc['penRecGraCd'], '03'); ?>>3등급</option>
+                <option value="04" <?php if($dc) echo get_selected($dc['penRecGraCd'], '04'); ?>>4등급</option>
+                <option value="05" <?php if($dc) echo get_selected($dc['penRecGraCd'], '05'); ?>>5등급</option>
               </select>
             </div>
             <label for="penTypeCd" class="col-md-2 control-label">
@@ -82,11 +98,11 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             </label>
             <div class="col-md-3">
               <select name="penTypeCd" id="penTypeCd" class="form-control input-sm">
-                <option value="00">일반 15%</option>
-                <option value="01">감경 9%</option>
-                <option value="02">감경 6%</option>
-                <option value="03">의료 6%</option>
-                <option value="04">기초 0%</option>
+                <option value="00" <?php if($dc) echo get_selected($dc['penTypeCd'], '00'); ?>>일반 15%</option>
+                <option value="01" <?php if($dc) echo get_selected($dc['penTypeCd'], '01'); ?>>감경 9%</option>
+                <option value="02" <?php if($dc) echo get_selected($dc['penTypeCd'], '02'); ?>>감경 6%</option>
+                <option value="03" <?php if($dc) echo get_selected($dc['penTypeCd'], '03'); ?>>의료 6%</option>
+                <option value="04 <?php if($dc) echo get_selected($dc['penTypeCd'], '04'); ?>">기초 0%</option>
               </select>
             </div>
           </div>
@@ -95,13 +111,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>생년월일</strong>
             </label>
             <div class="col-md-3">
-              <input type="text" name="penBirth" id="penBirth" class="birthpicker form-control input-sm" value="">
+              <input type="text" name="penBirth" id="penBirth" class="birthpicker form-control input-sm" value="<?php if($dc) echo $dc['penBirth']; ?>">
             </div>
             <label for="penExpiStDtm" class="col-md-2 control-label">
               <strong>유효기간</strong>
             </label>
             <div class="col-md-5">
-              <input type="text" name="penExpiStDtm" id="penExpiStDtm" class="datepicker form-control input-sm" value=""> ~ <input type="text" name="penExpiEdDtm" id="penExpiEdDtm" class="datepicker form-control input-sm" value="">
+              <input type="text" name="penExpiStDtm" id="penExpiStDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[0]; ?>"> ~ <input type="text" name="penExpiEdDtm" id="penExpiEdDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[1]; ?>">
             </div>
           </div>
           <div class="form-group">
@@ -109,14 +125,14 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>주민번호(앞자리)</strong>
             </label>
             <div class="col-md-3">
-              <input type="text" name="penJumin" id="penJumin" class="form-control input-sm" value="">
+              <input type="text" name="penJumin" id="penJumin" class="form-control input-sm" value="<?php if($dc) echo $dc['penJumin']; ?>">
             </div>
           </div>
         </div>
         <div class="se_btn_wr">
           <button type="submit" id="btn_se_submit" class="btn_se_submit">
             <img src="<?=THEMA_URL?>/assets/img/icon_contract.png" alt="">
-            계약서 작성
+            계약서 생성
           </button>
         </div>
       </div>
@@ -137,15 +153,59 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           
           <div class="se_item_hd">판매품목</div>
           <ul id="buy_list" class="se_item_list">
-            <?php /* ?>
+            <?php
+            if($dc) {
+              $sql = "
+                SELECT
+                 i.*,
+                 x.it_img1 as it_img,
+                 x.it_id as id,
+                 count(*) as qty
+                FROM
+                  eform_document_item i
+                LEFT JOIN
+                  g5_shop_item x ON i.it_code = x.ProdPayCode and
+                  (
+                    ( i.gubun = '00' and x.ca_id like '10%' ) or
+                    ( i.gubun = '01' and x.ca_id like '20%' )
+                  )
+                WHERE
+                  i.gubun = '00' and
+                  dc_id = UNHEX('$dc_id')
+                GROUP BY
+                  i.it_code
+                ORDER BY
+                  i.it_id ASC
+              ";
+
+              $result = sql_query($sql, true);
+
+              while($row = sql_fetch_array($result)) {
+                $sql = "
+                  SELECT it_barcode
+                  FROM eform_document_item
+                  WHERE
+                    gubun = '00' and
+                    dc_id = UNHEX('$dc_id') and
+                    it_code = '{$row['it_code']}'
+                  ORDER BY
+                    it_id ASC
+                ";
+
+                $result_barcode = sql_query($sql);
+                $barcodes = [];
+                while($barcode = sql_fetch_array($result_barcode)) {
+                  $barcodes[] = $barcode['it_barcode'];
+                }
+            ?>
             <li>
-              <input type="hidden" name="it_id[]" value="">
+              <input type="hidden" name="it_id[]" value="<?=$row['id']?>">
               <input type="hidden" name="it_gubun[]" value="판매">
               <div class="it_info">
-                <img class="it_img" src="/img/no_img.png" onerror="this.src='/img/no_img.png';">
-                <p class="it_cate">안전손잡이</p>
-                <p class="it_name">ASH-120 (설치) (판매)</p>
-                <p class="it_price">급여가 : 44,500원</p>
+                <img class="it_img" src="/data/item/<?=$row['it_img']?>" onerror="this.src='/img/no_img.png';">
+                <p class="it_cate"><?=$row['ca_name']?></p>
+                <p class="it_name"><?=$row['it_name']?> (판매)</p>
+                <p class="it_price">급여가 : <?=number_format($row['it_price'])?>원</p>
               </div>
               <div class="it_btn_wr flex align-items space-between">
                 <div class="it_qty">
@@ -153,7 +213,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                     <div class="input-group-btn">
                       <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>
                     </div>
-                    <input type="text" name="it_qty[]" value="1" class="form-control input-sm">
+                    <input type="text" name="it_qty[]" value="<?=$row['qty']?>" class="form-control input-sm">
                     <div class="input-group-btn">
                       <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>
                     </div>
@@ -165,32 +225,84 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 <div class="flex">
                   <div class="it_ipt_hd">판매계약일</div>
                   <div class="it_ipt">
-                    <input type="text" name="it_date[]" class="datepicker inline">
+                    <input type="text" name="it_date[]" class="datepicker inline" value="<?=$row['it_date']?>">
                   </div>
                 </div>
                 <div class="flex">
                   <div class="it_ipt_hd">바코드</div>
+                  <input type="hidden" name="it_barcode[]">
                   <div class="it_barcode_wr it_ipt">
-                    <input type="hidden" name="it_barcode[]">
-                    <input type="text" class="it_barcode">
-                    <input type="text" class="it_barcode">
+                    <?php
+                    for($x = 0; $x < $row['qty']; $x++) {
+                      $barcode = $barcodes[$x];
+                      echo '<input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" placeholder="12자리 숫자를 입력하세요." value="' . $barcode . '">';
+                    }
+                    ?>
                   </div>
                 </div>
               </div>
             </li>
-            <?php */ ?>
+            <?php
+              }
+            }
+            ?>
           </ul>
           <div class="se_item_hd">대여품목</div>
           <ul id="rent_list" class="se_item_list">
-            <?php /* ?>
+          <?php
+            if($dc) {
+              $sql = "
+                SELECT
+                 i.*,
+                 x.it_img1 as it_img,
+                 x.it_id as id,
+                 x.it_rental_price,
+                 count(*) as qty
+                FROM
+                  eform_document_item i
+                LEFT JOIN
+                  g5_shop_item x ON i.it_code = x.ProdPayCode and
+                  (
+                    ( i.gubun = '00' and x.ca_id like '10%' ) or
+                    ( i.gubun = '01' and x.ca_id like '20%' )
+                  )
+                WHERE
+                  i.gubun = '01' and
+                  dc_id = UNHEX('$dc_id')
+                GROUP BY
+                  i.it_code
+                ORDER BY
+                  i.it_id ASC
+              ";
+
+              $result = sql_query($sql, true);
+
+              while($row = sql_fetch_array($result)) {
+                $sql = "
+                  SELECT it_barcode
+                  FROM eform_document_item
+                  WHERE
+                    gubun = '01' and
+                    dc_id = UNHEX('$dc_id') and
+                    it_code = '{$row['it_code']}'
+                  ORDER BY
+                    it_id ASC
+                ";
+
+                $result_barcode = sql_query($sql);
+                $barcodes = [];
+                while($barcode = sql_fetch_array($result_barcode)) {
+                  $barcodes[] = $barcode['it_barcode'];
+                }
+            ?>
             <li>
-              <input type="hidden" name="it_id[]" value="">
+              <input type="hidden" name="it_id[]" value="<?=$row['id']?>">
               <input type="hidden" name="it_gubun[]" value="대여">
               <div class="it_info">
-                <img class="it_img" src="/img/no_img.png" onerror="this.src='/img/no_img.png';">
-                <p class="it_cate">안전손잡이</p>
-                <p class="it_name">ASH-120 (설치) (판매)</p>
-                <p class="it_price">급여가 : 44,500원</p>
+                <img class="it_img" src="/data/item/<?=$row['it_img']?>" onerror="this.src='/img/no_img.png';">
+                <p class="it_cate"><?=$row['ca_name']?></p>
+                <p class="it_name"><?=$row['it_name']?> (대여)</p>
+                <p class="it_price">월 대여가 : <?=number_format($row['it_rental_price'])?>원</p>
               </div>
               <div class="it_btn_wr flex align-items space-between">
                 <div class="it_qty">
@@ -198,7 +310,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                     <div class="input-group-btn">
                       <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>
                     </div>
-                    <input type="text" name="it_qty[]" value="1" class="form-control input-sm">
+                    <input type="text" name="it_qty[]" value="<?=$row['qty']?>" class="form-control input-sm">
                     <div class="input-group-btn">
                       <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>
                     </div>
@@ -209,30 +321,44 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <div class="it_ipt_wr">
                 <div class="flex">
                   <div class="it_ipt_hd">계약기간</div>
-                  <div class="it_ipt">
+                  <div class="it_date_wr it_ipt">
                     <input type="hidden" name="it_date[]">
-                    <input type="text" class="datepicker inline" data-range="from"> ~ <input type="text" class="datepicker inline" data-range="to">
+                    <?php
+                    $str_date = substr($row['it_date'], 0, 10);
+                    $end_date = substr($row['it_date'], 11, 10);
+                    ?>
+                    <input type="text" class="datepicker inline" data-range="from" value="<?=$str_date?>"> ~ <input type="text" class="datepicker inline" data-range="to" value="<?=$end_date?>">
+                    <button type="button" class="btn_rent_date" onclick="set_rent_date($(this).parent(), 6)">6개월</button>
+                    <button type="button" class="btn_rent_date" onclick="set_rent_date($(this).parent(), 12)">1년</button>
+                    <button type="button" class="btn_rent_date" onclick="set_rent_date($(this).parent(), 24)">2년</button>
                   </div>
                 </div>
                 <div class="flex">
                   <div class="it_ipt_hd">바코드</div>
-                  <div class="it_barcode_wr it_ipt">
                   <input type="hidden" name="it_barcode[]">
-                    <input type="text" class="it_barcode">
-                    <input type="text" class="it_barcode">
+                  <div class="it_barcode_wr it_ipt">
+                    <?php
+                    for($x = 0; $x < $row['qty']; $x++) {
+                      $barcode = $barcodes[$x];
+                      echo '<input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" placeholder="12자리 숫자를 입력하세요." value="' . $barcode . '">';
+                    }
+                    ?>
                   </div>
                 </div>
               </div>
             </li>
-            <?php */ ?>
+            <?php
+              }
+            }
+            ?>
           </ul>
           <div class="se_conacc">
             <p>특약사항1</p>
-            <textarea name="entConAcc01"><?=$member['mb_entConAcc01']?></textarea>
+            <textarea name="entConAcc01"><?php if($dc) echo $dc['entConAcc01']; else echo $member['mb_entConAcc01']; ?></textarea>
           </div>
           <div class="se_conacc">
             <p>특약사항2</p>
-            <textarea name="entConAcc02"><?=$member['mb_entConAcc02']?></textarea>
+            <textarea name="entConAcc02"><?php if($dc) echo $dc['entConAcc02']; else echo $member['mb_entConAcc02']; ?></textarea>
           </div>
           <button type="button" id="btn_se_save" onclick="save_eform();">저장</button>
         </div>
@@ -241,7 +367,11 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             수급자와 작성할 계약서 미리보기
           </div>
           <div id="se_preview" class="se_preview">
+            <?php if($dc) { ?>
+            <iframe src="/shop/eform/renderEform.php?preview=1&dc_id=<?=$dc['uuid']?>" frameborder="0"></iframe>
+            <?php } else { ?>
             <div class="empty">품목선택 후 저장 시 생성됩니다.</div>
+            <?php } ?>
           </div>
         </div>
       </div>
@@ -430,6 +560,11 @@ function save_eform() {
   $.post('ajax.simple_eform.php', $form.serialize(), 'json')
     .done(function(result) {
       var dc_id = result.data;
+
+      var w = $('input[name="w"]').val();
+      if(w === 'w')
+        window.location.href = '/shop/electronic_manage.php?dc_id=' + dc_id;
+
       $('input[name="w"]').val('u');
       $('input[name="dc_id"]').val(dc_id);
 
@@ -456,8 +591,9 @@ $('#btn_se_submit').on('click', function() {
 
   if(!dc_id)
       return alert('먼저 품목 선택 후 저장을 해주세요.');
-  
-  window.location.href = '/shop/eform/signEform.php?dc_id=' + dc_id;
+
+  $('input[name="w"]').val('w');
+  save_eform();
 });
 
 // 바코드 필드 개수 업데이트

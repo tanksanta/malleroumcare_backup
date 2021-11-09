@@ -12,7 +12,7 @@ if($dc_id) {
   $eform = sql_fetch("
     SELECT HEX(`dc_id`) as uuid, e.*
     FROM `eform_document` as e
-    WHERE dc_id = UNHEX('$dc_id') and entId = '{$entId}' and dc_status = '10' ");
+    WHERE dc_id = UNHEX('$dc_id') and entId = '{$entId}' and dc_status = '11' ");
   if(!$eform['uuid']) {
     die('계약서를 확인할 수 없습니다.');
   }
