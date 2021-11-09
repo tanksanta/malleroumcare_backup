@@ -81,9 +81,9 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
                 <td class="text-center">
                     <div class="item-img">
                         <img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';" style="width: 100px; height: 100px;">
-                        <div class="item-type">
+                        <!-- <div class="item-type">
                             <?php echo $item[$i]['pt_it']; ?>
-                        </div>
+                        </div> -->
                     </div>
                 </td>
                 <td>
