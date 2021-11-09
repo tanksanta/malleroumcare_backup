@@ -1219,8 +1219,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <td style="width:250px;"><input type="text" name="od_b_tel" value="<?php echo get_text($od['od_b_tel']); ?>" id="od_b_tel" required class="frm_input required"></td>
                     <!-- </tr>
                     <tr> -->
+                        <?php if(get_text($od['od_b_hp'])) { ?>
                         <th scope="row" style="width:100px;"><label for="od_b_hp"><span class="sound_only">받으시는 분 </span>핸드폰</label></th>
                         <td><input type="text" name="od_b_hp" value="<?php echo get_text($od['od_b_hp']); ?>" id="od_b_hp" class="frm_input required"></td>
+                        <?php } ?>
                     </tr>
                     <tr>
                         <th scope="row"><span class="sound_only">받으시는 분 </span>주소</th>
