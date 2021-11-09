@@ -681,6 +681,10 @@ function select_item(obj, io_id, ct_qty) {
 
   var $info = $('<div class="it_info">');
   var $it_name = $('<p class="it_name">');
+  // 재입고예정일
+  if(obj.it_expected_warehousing_date) {
+    $it_name.append('<span style="color: red; font-size:14px;">' + obj.it_expected_warehousing_date + '</span><br>');
+  }
   $it_name.append(obj.it_name + ' (' + obj.gubun + ')');
   var it_price = parseInt(obj.it_price);
   var ct_price = it_price;
@@ -698,6 +702,25 @@ function select_item(obj, io_id, ct_qty) {
     var option_html = "<input type=\"hidden\" name=\"io_id[]\" value=\"\">";
     $it_name.append(option_html);
   }
+
+  // 상품태그
+  var $it_tag = $('<p class="it_tag">');
+  if(obj.it_type1 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type1_color']?>;color:<?=$default['de_it_type1_color']?>"><?=$default['de_it_type1_name']?></span>');
+  }
+  if(obj.it_type2 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type2_color']?>;color:<?=$default['de_it_type2_color']?>"><?=$default['de_it_type2_name']?></span>');
+  }
+  if(obj.it_type3 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type3_color']?>;color:<?=$default['de_it_type3_color']?>"><?=$default['de_it_type3_name']?></span>');
+  }
+  if(obj.it_type4 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type4_color']?>;color:<?=$default['de_it_type4_color']?>"><?=$default['de_it_type4_name']?></span>');
+  }
+  if(obj.it_type5 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type5_color']?>;color:<?=$default['de_it_type5_color']?>"><?=$default['de_it_type5_name']?></span>');
+  }
+
   var $it_price = $('<p class="it_price">');
   $it_price.append('판매가 : ' + number_format(it_price));
 
@@ -719,6 +742,7 @@ function select_item(obj, io_id, ct_qty) {
 
   $info.append(
     $it_name,
+    $it_tag,
     $it_price,
     $prod_memo
     )
@@ -1024,6 +1048,12 @@ $(function() {
         it_sale_percent_great_03,
         it_sale_percent_great_04,
         it_sale_percent_great_05,
+        it_type1,
+        it_type2,
+        it_type3,
+        it_type4,
+        it_type5,
+        it_expected_warehousing_date,
         count(*) as qty
       FROM
         eform_document d

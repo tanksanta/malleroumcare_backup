@@ -39,7 +39,13 @@ $sql = "
     it_sale_percent_great_02,
     it_sale_percent_great_03,
     it_sale_percent_great_04,
-    it_sale_percent_great_05
+    it_sale_percent_great_05,
+    it_type1,
+    it_type2,
+    it_type3,
+    it_type4,
+    it_type5,
+    it_expected_warehousing_date
   FROM
     {$g5['g5_shop_item_table']} a
   WHERE
