@@ -10,7 +10,7 @@ if($dc_id) {
   $eform = sql_fetch("
     SELECT HEX(`dc_id`) as uuid, e.*
     FROM `eform_document` as e
-    WHERE dc_id = UNHEX('$dc_id') and entId = '{$member['mb_entId']}' and dc_status = '10' ");
+    WHERE dc_id = UNHEX('$dc_id') and entId = '{$member['mb_entId']}' and dc_status = '11' ");
   if(!$eform['uuid']) {
     die('계약서를 확인할 수 없습니다.');
   }
@@ -116,7 +116,11 @@ sql_query("INSERT INTO `eform_document_log` SET
   <script>
   $(function() {
     var isGicho = <?=($is_gicho ? 'true' : 'false')?>;
+    <?php if($dc_id) { ?>
+    var od_url = '/shop/electronic_manage.php';
+    <?php } else { ?>
     var od_url = '<?=G5_SHOP_URL?>/orderinquiryview.php?od_id=<?=$od_id?>&uid=<?=md5($od_id.$od['od_time'].$od['od_ip'])?>';
+    <?php } ?>
 
     var currentStage = 1;
     var totalStage = isGicho ? 5 : 3;
@@ -227,11 +231,7 @@ sql_query("INSERT INTO `eform_document_log` SET
         .done(function(data) {
           // 작성 완료
           alert('계약서 작성이 완료되었습니다.');
-          <?php if($dc_id) { ?>
-          location.href = '/shop/electronic_manage.php';
-          <?php } else { ?>
           location.href = od_url;
-          <?php } ?>
         })
         .fail(function($xhr) {
           $(this).text('완료');

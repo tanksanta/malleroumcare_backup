@@ -6,6 +6,24 @@ if($member['mb_type'] !== 'default')
 
 $w = $_POST['w'];
 
+if($w == 'd') {
+    // 삭제
+    $dc_id = clean_xss_tags($_POST['dc_id']);
+
+    $dc = sql_fetch(" select * from eform_document where dc_id = UNHEX('$dc_id') and dc_status = '11' ");
+    if(!$dc['entId'] || $dc['entId'] != $member['mb_entId'])
+        json_response(400, '유효하지 않은 요청입니다.');
+    
+    $sql = " DELETE FROM eform_document_item WHERE dc_id = UNHEX('$dc_id') ";
+    sql_query($sql);
+    $sql = " DELETE FROM eform_document_log WHERE dc_id = UNHEX('$dc_id') ";
+    sql_query($sql);
+    $sql = " DELETE FROM eform_document WHERE dc_id = UNHEX('$dc_id') ";
+    sql_query($sql);
+
+    json_response(200, 'OK');
+}
+
 $penId = clean_xss_tags($_POST['penId']) ?: '';
 $penNm = clean_xss_tags($_POST['penNm']);
 $penLtmNum = clean_xss_tags($_POST['penLtmNum']);
@@ -109,20 +127,25 @@ function calc_pen_price($penTypeCd, $price) {
     return $pen_price;
 }
 
-if($w == 'u') {
-    // 수정
+if($w == 'u' || $w == 'w') {
+    // 수정 or 생성
 
     $dc_id = clean_xss_tags($_POST['dc_id']);
 
-    $dc = sql_fetch(" select * from eform_document where dc_id = UNHEX('$dc_id') and dc_status = '10' ");
+    $dc = sql_fetch(" select * from eform_document where dc_id = UNHEX('$dc_id') and dc_status in ('10', '11') ");
     if(!$dc['entId'] || $dc['entId'] != $member['mb_entId'])
         json_response(400, '유효하지 않은 요청입니다.');
+    
+    if($w == 'w')
+        $dc_status = '11';
+    else
+        $dc_status = '10';
 
     $sql = "
         UPDATE
             eform_document
         SET
-            dc_status = '10',
+            dc_status = '$dc_status',
             od_id = '0',
             entNm = '{$member["mb_entNm"]}',
             entCrn = '{$member["mb_giup_bnum"]}',

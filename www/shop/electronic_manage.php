@@ -1,6 +1,17 @@
 <?php
 include_once('./_common.php');
 
+$dc_id = clean_xss_tags($_GET['dc_id']);
+if($dc_id) {
+  $eform = sql_fetch("
+  SELECT HEX(`dc_id`) as uuid, e.*
+  FROM `eform_document` as e
+  WHERE dc_id = UNHEX('$dc_id') and entId = '{$member['mb_entId']}' and dc_status = '11' ");
+
+  if(!$eform['uuid'])
+    unset($eform);
+}
+
 $t_document = get_tutorial('document');
 if ($t_document['t_state'] == '0') {
 	$t_sql = "SELECT e.dc_status, e.od_id FROM tutorial as t INNER JOIN eform_document as e ON t.t_data = e.od_id
@@ -113,6 +124,7 @@ $incompleted_eform_count = 0;
       <?php } else { ?>
       <?php if($member['mb_type'] !== 'normal') { ?>
       <div class="search_box">
+        <label><input type="checkbox" name="incompleted" value="1" <?=get_checked($incompleted, '1')?>/> 대기중인 계약만 보기</label><br>
         <select name="sel_field" id="sel_field">
           <option value="penNm"<?php if($sel_field == 'penNm' || $sel_field == 'all') echo ' selected'; ?>>수급자</option>
           <option value="it_name"<?php if($sel_field == 'it_name') echo ' selected'; ?>>상품명</option>
@@ -125,7 +137,7 @@ $incompleted_eform_count = 0;
       <?php } ?>
       <div class="r_btn_area">
         <select name="sel_order" id="sel_order" style="float: none;">
-          <option value="dc_sign_datetime"<?php if(!$sel_order || $sel_order == 'dc_sign_datetime') echo ' selected'; ?>>작성일정렬</option>
+          <option value="dc_datetime"<?php if(!$sel_order || $sel_order == 'dc_datetime') echo ' selected'; ?>>작성일정렬</option>
           <option value="penNm"<?php if($sel_order == 'penNm') echo ' selected'; ?>>수급자정렬</option>
         </select>
         <?php if($member['mb_type'] !== 'normal') { ?>
@@ -183,6 +195,30 @@ $(function() {
   $('#sel_order').change(function(e) {
     $('#form_search').submit();
   });
+
+  $(document).on('click', '.btn_del_eform', function(e) {
+    e.preventDefault();
+
+    if(!confirm('정말 삭제하시겠습니까?'))
+      return;
+
+    $.post('ajax.simple_eform.php', {
+      w: 'd',
+      dc_id: $(this).data('id')
+    }, 'json')
+    .done(function() {
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
+  <?php if($eform) { ?>
+  if(confirm('<?=$eform['penNm']?> 수급자와 계약서를 작성하시겠습니까?'))
+    window.location.href = '/shop/eform/signEform.php?dc_id=<?=$dc_id?>';
+  <?php } ?>
 });
 </script>
 
