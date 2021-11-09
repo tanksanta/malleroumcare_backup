@@ -171,6 +171,14 @@ include_once('./pop.head.php');
                     </td>
                 </tr>
                 <tr>
+                    <th>핸드폰</th>
+                    <td>
+                        <div>
+                            <input type="text" name="od_b_hp" value="" class="frm_input">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
                     <th>주소</th>
                     <td>
                         <div>
@@ -452,7 +460,7 @@ $(function() {
                 html += "<td class='ad_name'>" + (item.ad_name || '-') + "</td>";
                 html += "<td class='ad_tel'>" + (auto_phone_hypen(item.ad_tel)) /* + "<br>" + (item.ad_hp || '-') */ + "</td>";
                 html += "<td class='ad_addr'>" + ((item.ad_addr1 + " " + item.ad_addr2) || '-') + "</td>";
-                html += "<td><input type='button' class='shbtn small apply_address' value='선택' data-name='" + item.ad_name + "' data-tel='" + item.ad_tel + "' data-addr='" + (item.ad_addr1 + " " + item.ad_addr2) + "'></td>";
+                html += "<td><input type='button' class='shbtn small apply_address' value='선택' data-name='" + item.ad_name + "' data-tel='" + item.ad_tel + "' data-hp='" + item.ad_hp + "' data-addr='" + (item.ad_addr1 + " " + item.ad_addr2) + "'></td>";
                 html += "</tr>";
             });
 
@@ -477,10 +485,12 @@ $(function() {
 
         var name = $(this).data('name');
         var tel = $(this).data('tel');
+        var hp = $(this).data('hp');
         var addr = $(this).data('addr');
 
         $('input[name="od_b_name"]').val(name);
         $('input[name="od_b_tel"]').val(tel);
+        $('input[name="od_b_hp"]').val(hp);
         $('input[name="od_b_addr1"]').val(addr);
     });
 
