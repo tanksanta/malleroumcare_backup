@@ -125,6 +125,9 @@ add_javascript(G5_POSTCODE_JS, 0);
         <div class="col-sm-5">
           <input type="text" name="mb_email" value="<?php echo isset($member['mb_email'])?$member['mb_email']:''; ?>" id="reg_mb_email" required class="form-control input-sm email" maxlength="100">
         </div>
+        <div class="desc_txt">
+          <span id="email_keyup"></span>
+        </div>
       </div>
 
       <?php if($w == '') { ?>
@@ -247,13 +250,11 @@ add_javascript(G5_POSTCODE_JS, 0);
     <div class="panel-body panel-giup">
       <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
         <label class="col-sm-2 control-label" for="mb_giup_bnum"><b>사업자번호</b><strong class="sound_only">필수</strong></label>
-        <div class="col-sm-3">
+        <div class="col-sm-3" style="min-width: unset; max-width: 140px;">
           <label><input type="text" <?php echo $member['mb_giup_bnum'] ? 'readonly' : ''; ?> id="mb_giup_bnum" name="mb_giup_bnum" value="<?php echo get_text($member['mb_giup_bnum']) ?>" class="form-control input-sm" size="13" maxlength="12" ></label>
-          <label><button type="button" id="mb_giup_bnum_check" class="btn btn-black btn-sm" onclick="check_giup_bnum('click');">중복확인</button></label>
-          <div id="form-bnum-feed-text">
-            <span style="display: none; color: #558ED5;" class="available">*사용 가능한 사업자번호 입니다.</span>
-            <span style="display: none; color: #FF0000;" class="unavailable">*사용 불가능한 사업자번호 입니다. <br>종사업자가 있는 경우 <a style="text-decoration: underline; color: #0e5ea8; font-weight: bold" href="javascript:void(0);" onclick="enable_giup_sbnum()">여기</a>를 눌러주세요.</span>
-          </div>
+        </div>
+        <div class="desc_txt">
+          <span id="bnum_keyup"></span>
         </div>
       </div>
       
@@ -866,23 +867,72 @@ $(function() {
   });
 
   //아이디 체크
+  var mb_id_check_timer = null;
   $('#reg_mb_id').on('keyup', function() {
-    // alert($(this).val());
-    if($(this).val().length<3){
-      $('#id_keyup').html("아이디(은)는 3자 이상 입력하셔야합니다.");
-      $('#id_keyup').css( "color", "red" );
-      return false;
-    }
-    var msg = reg_mb_id_check();
-    if(msg){
-      $('#id_keyup').html("사용 불가능한 아이디 입니다.");
-      $('#id_keyup').css( "color", "red" );
-    }else{
-      $('#id_keyup').html("사용 가능한 아이디 입니다.");
-      $('#id_keyup').css( "color", "#54bbff" );
-    }
+
+    if(mb_id_check_timer)
+      clearTimeout(mb_id_check_timer);
+
+    var $this = $(this);
+    
+    mb_id_check_timer = setTimeout(function() {
+      if($this.val().length < 3) {
+        $('#id_keyup').html("아이디(은)는 3자 이상 입력하셔야합니다.");
+        $('#id_keyup').css( "color", "#d44747" );
+        return false;
+      }
+      var msg = reg_mb_id_check();
+      if(msg) {
+        $('#id_keyup').html("사용 불가능한 아이디 입니다.");
+        $('#id_keyup').css( "color", "#d44747" );
+      } else {
+        $('#id_keyup').html("사용 가능한 아이디 입니다.");
+        $('#id_keyup').css( "color", "#4788d4" );
+      }
+    }, 500);
   });
-    //전화번호 숫자만
+  //이메일 체크
+  var mb_email_check_timer = null;
+  $('#reg_mb_email').on('keyup', function() {
+
+    if(mb_email_check_timer)
+      clearTimeout(mb_email_check_timer);
+
+    var $this = $(this);
+    
+    mb_email_check_timer = setTimeout(function() {
+      var msg = reg_mb_email_check();
+      if(msg) {
+        $('#email_keyup').html(msg);
+        $('#email_keyup').css( "color", "#d44747" );
+      } else {
+        $('#email_keyup').html("사용 가능한 이메일 입니다.");
+        $('#email_keyup').css( "color", "#4788d4" );
+      }
+    }, 500);
+  });
+  //사업자번호 체크
+  var giup_bnum_check_timer = null;
+  $('#mb_giup_bnum').on('keyup', function() {
+
+    if(giup_bnum_check_timer)
+      clearTimeout(giup_bnum_check_timer);
+
+    var $this = $(this);
+    
+    giup_bnum_check_timer = setTimeout(function() {
+      var msg = reg_mb_giup_bnum_check();
+      if(msg) {
+        $('#bnum_keyup').html(msg);
+        $('#bnum_keyup').css( "color", "#d44747" );
+      } else {
+        $('#bnum_keyup').html("사용 가능한 사업자번호입니다.");
+        $('#bnum_keyup').css( "color", "#4788d4" );
+      }
+    }, 500);
+  });
+
+  //전화번호 숫자만
   $('#mb_hp1').on('keyup', function() {
     var num = $('#mb_hp1').val();
     num.trim();
@@ -1146,43 +1196,6 @@ function fregisterform_submit() {
     f.submit();
   }
   return false;
-}
-
-function check_giup_bnum(type) {
-  var msg = reg_mb_giup_bnum_check();
-
-  if (type == "click") {
-    if (msg === "") {
-      $('#form-bnum-feed-text > span').hide();
-      $('#form-bnum-feed-text > .available').show();
-      return true;
-    }
-        
-    if (msg === "이미 사용중인 사업자번호입니다.") {
-      $('#form-bnum-feed-text > span').hide();
-      $('#form-bnum-feed-text > .unavailable').show();
-      return false;
-    }
-    
-    if (msg === "사업자번호를 올바르게 입력해 주십시오.") {
-      $('#form-bnum-feed-text > span').hide();
-      alert("사업자번호를 올바르게 입력해 주십시오.")
-      return false;
-    }
-        
-    if (msg === "사업자번호를 입력해 주십시오.") {
-      $('#form-bnum-feed-text > span').hide();
-      alert("사업자번호를 입력해 주십시오.")
-      return false;
-    }
-  } else {
-    if (msg) {
-      alert(msg);
-      return false;
-    } else {
-      return true;
-    }
-  }
 }
 
 function check_giup_sbnum(type) {
