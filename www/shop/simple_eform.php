@@ -535,6 +535,9 @@ var loading = false;
 function save_eform() {
   if(loading) return;
 
+  if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
+    $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
+
   // 바코드 값 적용
   $('.it_barcode_wr').each(function() {
     var it_barcode = [];
