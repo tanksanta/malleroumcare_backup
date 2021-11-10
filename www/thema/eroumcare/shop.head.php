@@ -395,7 +395,7 @@ if($is_main && !$is_member) {
           </div>
 
           <div class="conv_area">
-            <?php if($member['mb_type'] == 'default' && $member['mb_id'] == 'hula1202') { ?>
+            <?php if($member['mb_type'] == 'default' && in_array($member['mb_id'], ['hula1202', 'joabokji'])) { ?>
             <a href="/shop/item_msg_list.php" class="pen_item_msg">간편 제안서 작성</a>
             <a href="/shop/simple_eform.php" class="simple_eform">간편 계약서 작성</a>
             <?php } ?>
