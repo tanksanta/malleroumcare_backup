@@ -36,7 +36,13 @@ foreach($ct_id_list as $ct_id) {
   $ct_delivery_company = $_POST["ct_delivery_company_{$ct_id}"];
   $ct_delivery_num = $_POST["ct_delivery_num_{$ct_id}"];
   if (is_array($ct_delivery_num)) {
-    $ct_delivery_num = implode('|', $ct_delivery_num);
+    $n_ct_delivery_num = array();
+    foreach($ct_delivery_num as $delivery_num) {
+      if (!empty($delivery_num)) {
+        array_push($n_ct_delivery_num, $delivery_num);
+      }
+    }
+    $ct_delivery_num = implode('|', $n_ct_delivery_num);
   }
   $ct_delivery_cnt = $_POST["ct_delivery_cnt_{$ct_id}"];
   $ct_delivery_price = $_POST["ct_delivery_price_{$ct_id}"];
