@@ -9,6 +9,7 @@ $sql = "SELECT
   it_name,
   it_model,
   it_price,
+  it_price_dealer2,
   REPLACE(a.it_name, ' ', '') as it_name_no_space,
   ca_id,
   it_sale_cnt,

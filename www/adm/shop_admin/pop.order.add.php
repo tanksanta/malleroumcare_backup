@@ -329,6 +329,10 @@ $(function() {
             // it_id
             $(parent).find('input[name="it_id[]"]').val(obj.id);
 
+            // 우수사업소 할인 가격 적용
+            if(mb_level == 4 && parseInt(obj.it_price_dealer2) > 0)
+                obj.it_price = obj.it_price_dealer2;
+
             // option
             var it_price = parseInt(obj.it_price);
             if (obj.options.length) {
@@ -545,7 +549,7 @@ $(function() {
                     if(temp <= qty){
                         if(it_sale_cnt < temp){
                             it_sale_cnt = temp;
-                            it_price = mb_level === 4 ? item_sale_obj[it_id]['it_sale_percent_great'][sale_cnt] : item_sale_obj[it_id]['it_sale_percent'][sale_cnt];
+                            it_price = mb_level == 4 ? item_sale_obj[it_id]['it_sale_percent_great'][sale_cnt] : item_sale_obj[it_id]['it_sale_percent'][sale_cnt];
                         }
                     }
                 }
