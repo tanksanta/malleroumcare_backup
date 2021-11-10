@@ -167,7 +167,6 @@ include_once('./pop.head.php');
                     <td>
                         <div>
                             <input type="text" name="od_b_tel" value="" class="frm_input">
-                            <input type="hidden" name="od_b_hp" value="">
                         </div>
                     </td>
                 </tr>
@@ -483,7 +482,6 @@ $(function() {
 
         $('input[name="od_b_name"]').val(name);
         $('input[name="od_b_tel"]').val(tel);
-        $('input[name="od_b_hp"]').val(hp);
         $('input[name="od_b_addr1"]').val(addr);
     });
 
