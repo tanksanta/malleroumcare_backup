@@ -28,8 +28,12 @@ $sql = "
     date(l.ml_sent_at) = curdate()
 ";
 $today_count = sql_fetch($sql)['cnt'] ?: 0;
+$today_count = 5 - $today_count;
+if(in_array($member['mb_id'], ['hula1202', 'joabokji'])) {
+  $today_count = 100 - $today_count;
+}
 
-if($today_count >= 5) {
+if($today_count <= 0) {
   json_response(400, '사용가능한 메시지가 전부 소진되었습니다.');
 }
 

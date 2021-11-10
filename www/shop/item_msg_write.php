@@ -20,6 +20,9 @@ $sql = "
 ";
 $today_count = sql_fetch($sql)['cnt'] ?: 0;
 $today_count = 5 - $today_count;
+if(in_array($member['mb_id'], ['hula1202', 'joabokji'])) {
+  $today_count = 100 - $today_count;
+}
 
 $w = get_search_string($_GET['w']);
 $ms_id = get_search_string($_GET['ms_id']);
