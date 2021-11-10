@@ -30,7 +30,7 @@ if($searchtype && $search) {
 }
 
 // 총 개수 구하기
-$total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ")['cnt'];
+$total_count = sql_fetch(" SELECT count(*) as cnt FROM ( select ms.ms_id {$sql_common} group by ms.ms_id ) u ")['cnt'];
 $page_rows = $config['cf_page_rows'];
 $total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
@@ -76,7 +76,7 @@ for($i = 0; $row = sql_fetch_array($msg_result); $i++) {
   $list[] = $row;
 }
 
-if(!$list && !($searchtype && $search)) {
+if(!$list && !($searchtype && $search) && $page <= 1) {
   // 목록이 비었다면 바로 작성페이지로 이동
   goto_url('item_msg_write.php');
 }
