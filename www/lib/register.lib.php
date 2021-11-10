@@ -129,10 +129,14 @@ function exist_mb_email($reg_mb_email, $reg_mb_id)
 {
     global $g5;
     $row = sql_fetch(" select count(*) as cnt from `{$g5['member_table']}` where mb_email = '$reg_mb_email' and mb_id <> '$reg_mb_id' ");
-    if ($row['cnt'])
+    if ($row['cnt']) {
+        $row = sql_fetch(" select count(*) as cnt from {$g5['member_table']} where mb_email = '$reg_mb_email' and mb_id <> '$reg_mb_id' and mb_temp = TRUE ");
+        if($row['cnt'] == 1) // 이메일 중복되는 회원이 임시회원일경우 가입되도록
+            return "";
         return aslang('alert', 'reg_email_exist'); //이미 사용중인 E-mail 주소입니다.
-    else
+    } else {
         return "";
+    }
 }
 
 function empty_mb_name($reg_mb_name)
