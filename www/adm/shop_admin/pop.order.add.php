@@ -167,14 +167,7 @@ include_once('./pop.head.php');
                     <td>
                         <div>
                             <input type="text" name="od_b_tel" value="" class="frm_input">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>핸드폰</th>
-                    <td>
-                        <div>
-                            <input type="text" name="od_b_hp" value="" class="frm_input">
+                            <input type="hidden" name="od_b_hp" value="">
                         </div>
                     </td>
                 </tr>
