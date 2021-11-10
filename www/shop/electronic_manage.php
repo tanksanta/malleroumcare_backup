@@ -216,7 +216,7 @@ $(function() {
   });
 
   <?php if($eform) { ?>
-  if(confirm('<?=$eform['penNm']?> 수급자와 계약서를 작성하시겠습니까?'))
+  if(confirm('계약서가 생성되었습니다.\n지금 바로 <?=$eform['penNm']?> 수급자에게 서명을 받으시겠습니까?'))
     window.location.href = '/shop/eform/signEform.php?dc_id=<?=$dc_id?>';
   <?php } ?>
 });
