@@ -291,6 +291,9 @@ var loading = false;
 function save_item_msg(no_items) {
   if(loading)
     return alert('저장 중입니다. 잠시만 기다려주세요.');
+  
+  if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
+    $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
 
   loading = true;
   $form = $('#form_item_msg');
