@@ -13,6 +13,7 @@ $od = sql_fetch(" select * from g5_shop_order where od_id = '$od_id' ");
 if(!$od['od_id'])
     alert('존재하지 않는 주문입니다.');
 $carts = get_carts_by_od_id($od_id);
+$mb = get_member($od['mb_id']);
 
 ?>
 <style>
@@ -282,7 +283,7 @@ tr.strikeout td:before {
 var loading = false;
 
 // 기본 설정
-var mb_level = 3;
+var mb_level = <?=($mb['mb_level'] ?: 3)?>;
 var item_sale_obj = <?php echo $item_sale_obj ? json_encode($item_sale_obj) : '{}' ?>;
 
 function formcheck(f) {
@@ -349,6 +350,10 @@ $(function() {
 
             // it_id
             $(parent).find('input[name="it_id[]"]').val(obj.id);
+
+            // 우수사업소 할인 가격 적용
+            if(mb_level == 4 && parseInt(obj.it_price_dealer2) > 0)
+                obj.it_price = obj.it_price_dealer2;
 
             // option
             var it_price = parseInt(obj.it_price);
@@ -481,7 +486,7 @@ $(function() {
                     if(temp <= qty){
                         if(it_sale_cnt < temp){
                             it_sale_cnt = temp;
-                            it_price = mb_level === 4 ? item_sale_obj[it_id]['it_sale_percent_great'][sale_cnt] : item_sale_obj[it_id]['it_sale_percent'][sale_cnt];
+                            it_price = mb_level == 4 ? item_sale_obj[it_id]['it_sale_percent_great'][sale_cnt] : item_sale_obj[it_id]['it_sale_percent'][sale_cnt];
                         }
                     }
                 }
