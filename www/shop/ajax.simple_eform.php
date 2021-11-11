@@ -273,7 +273,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     if(!$it_id) continue;
 
     $it = sql_fetch("
-        select i.*, ( select ca_name from g5_shop_category where ca_id = i.ca_id ) as ca_name
+        select i.*, ( select ca_name from g5_shop_category where ca_id = left(i.ca_id, 4) ) as ca_name
         from g5_shop_item i where it_id = '$it_id'
     ");
     if(!$it['it_id']) continue;
