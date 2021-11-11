@@ -20,6 +20,39 @@
   }
 }
 
+/* 직인 이미지 업로드 */
+.se_seal_wr {
+  border: 1px solid #ef8505;
+  border-radius: 3px;
+  text-align: center;
+  margin-bottom: 20px;
+  overflow: hidden;
+  animation: fadedown 1.5s;
+}
+.se_seal_desc {
+  margin: 20px 10px 10px 10px;
+  text-align: center;
+  color: #ef8505;
+}
+.btn_se_seal {
+  margin-bottom: 20px;
+  display: inline-block;
+  color: #fff;
+  background: #ef8505;
+  padding: 8px 16px;
+  border-radius: 3px;
+  font-size: 16px;
+  text-align: center;
+}
+@keyframes fadedown{
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 400px;
+  }
+}
+
 /* 상단 폼 */
 .panel-default {
   position: relative;
