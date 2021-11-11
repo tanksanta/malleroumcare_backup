@@ -88,7 +88,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 
       <div class="so_item_wr">
         <div class="so_sch_wr">
-          <div class="so_sch_hd">품목 목록</div>
+          <div class="so_sch_hd">상품정보</div>
           <div class="ipt_so_sch_wr">
             <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
             <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="여기에 추가할 상품명을 입력해주세요">
@@ -106,6 +106,7 @@ add_javascript(G5_POSTCODE_JS, 0);
         	<p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p>
         </div>
 
+        <div class="so_item_list_hd">추가 된 상품 목록</div>
         <ul id="so_item_list" class="so_item_list">
           <?php /* ?>
           <li class="flex">
@@ -629,8 +630,10 @@ function calculate_sendcost(code) {
 function check_no_item() {
   if($('#so_item_list li').length == 0) {
     $('.no_item_info').show();
+    $('.so_item_list_hd').hide();
   } else {
     $('.no_item_info').hide();
+    $('.so_item_list_hd').show();
   }
 }
 
@@ -1031,6 +1034,8 @@ $(function() {
 
     $('.so_sch_pop').hide();
   });
+
+  check_no_item();
     
   // 처음 팝업
   $('.so_sch_pop').show();
