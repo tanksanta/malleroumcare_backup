@@ -152,7 +152,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             </label>
           </div>
           <div class="im_sch_wr">
-            <div class="im_sch_hd">품목 목록</div>
+            <div class="im_sch_hd">상품정보</div>
             <div class="ipt_im_sch_wr">
               <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
               <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="여기에 추가할 상품명을 입력해주세요">
@@ -169,6 +169,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 	        	<p>수급자에게 전달할 품목을 검색한 후 추가하시면<br>추가된 모든 품목은 수급자에게 전달됩니다.</p>
 	        	<p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p>
 	        </div>
+          <div class="im_list_hd">추가 된 상품 목록</div>
           <ul id="im_write_list" class="im_write_list">
             <?php
             if(isset($items) && is_array($items)) {
@@ -264,8 +265,10 @@ function copy_to_clipboard(selector) {
 function check_no_item() {
   if($('.im_write_list li').length == 0) {
     $('.no_item_info').show();
+    $('.im_list_hd').hide();
   } else {
     $('.no_item_info').hide();
+    $('.im_list_hd').show();
   }
 }
 

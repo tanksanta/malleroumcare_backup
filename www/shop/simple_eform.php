@@ -140,7 +140,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <div class="flex space-between">
         <div class="se_item_wr">
           <div class="se_sch_wr">
-            <div class="se_sch_hd">품목 목록</div>
+            <div class="se_sch_hd">상품정보</div>
             <div class="ipt_se_sch_wr">
               <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
               <input type="text" id="ipt_se_sch" class="ipt_se_sch" placeholder="여기에 추가할 상품명을 입력해주세요">
