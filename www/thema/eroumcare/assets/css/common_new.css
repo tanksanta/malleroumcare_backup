@@ -844,13 +844,13 @@ pre{white-space: pre-wrap;}
 .side_menu_area .conv_area { margin: 10px 5px; padding: 10px; border: 1px solid #eee; }
 .side_menu_area .conv_area .conv_hd { font-size: 20px; color: #333; letter-spacing: -1px; padding-left: 5px; }
 .side_menu_area .conv_area .conv_hd img { display: inline-block; }
-.side_menu_area .conv_area > a { display: block; margin-top: 10px; padding: 18px 0; text-align: center; color: #fff; font-size: 18px; font-weight: bold; border: 2px solid transparent; border-radius: 20px; }
-.side_menu_area .conv_area > a.pen_item_msg { background: #daf3cb; color: #5c9e30; }
-.side_menu_area .conv_area > a.pen_item_msg:hover { background: #fff; border: 2px solid #5c9e30;  }
-.side_menu_area .conv_area > a.simple_eform { background: #b6e88f; color: #477f1f; }
-.side_menu_area .conv_area > a.simple_eform:hover { background: #fff; border: 2px solid #477f1f;  }
-.side_menu_area .conv_area > a.simple_order { background: #ffe6b6; color: #e17104; }
-.side_menu_area .conv_area > a.simple_order:hover { background: #fff; border: 2px solid #e17104;  }
+.side_menu_area .conv_area > a { display: block; margin-top: 10px; padding: 18px 0; text-align: center; color: #fff; font-size: 18px; font-weight: bold; line-height: 20px; height: 60px; border-radius: 20px; }
+.side_menu_area .conv_area > a.pen_item_msg { background: #daf3cb; color: #4e941c; border: 1px solid #b8d7a6; }
+.side_menu_area .conv_area > a.pen_item_msg:hover { background: #fff; border: 2px solid #4e941c; line-height: 18px; }
+.side_menu_area .conv_area > a.simple_eform { background: #b6e88f; color: #70a248; border: 1px solid #94c46f; }
+.side_menu_area .conv_area > a.simple_eform:hover { background: #fff; border: 2px solid #70a248; line-height: 18px; }
+.side_menu_area .conv_area > a.simple_order { background: #ffe6b6; color: #de6e00; border: 1px solid #e6c991; }
+.side_menu_area .conv_area > a.simple_order:hover { background: #fff; border: 2px solid #de6e00; line-height: 18px; }
 .side_menu_area .conv_area { padding: 10px; border: 1px solid #eee; }
 
 .side_menu_area .side_nav_area { padding: 20px; border-radius: 15px; border: 1px solid #e0ddd7; }
