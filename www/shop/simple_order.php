@@ -89,7 +89,10 @@ add_javascript(G5_POSTCODE_JS, 0);
       <div class="so_item_wr">
         <div class="so_sch_wr">
           <div class="so_sch_hd">품목 목록</div>
-          <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="품목명 검색 후 추가하세요.">
+          <div class="ipt_so_sch_wr">
+            <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
+            <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="여기에 추가할 상품명을 입력해주세요">
+          </div>
           <div class="so_sch_pop">
             <p>상품명을 입력 후 간편하게 추가할 수 있습니다. 상품명 일부만 입력해도 자동완성됩니다.</p>
             <p>상품명을 모르시면 '상품검색' 버튼을 눌러주세요.</p>

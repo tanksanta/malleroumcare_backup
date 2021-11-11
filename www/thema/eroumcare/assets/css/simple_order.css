@@ -144,9 +144,19 @@
   font-size: 18px;
   margin-right: 20px;
 }
+.ipt_so_sch_wr {
+  position: relative;
+}
+.ipt_so_sch_wr img {
+  position: absolute;
+  top: 20px;
+  left: 15px;
+  width: 16px;
+  height: 16px;
+}
 .ipt_so_sch {
   display: block;
-  padding: 10px 10px;
+  padding: 15px 10px 15px 40px;
   border: 1px solid #ef8505;
   margin-top: 10px;
   border-radius: 3px;
@@ -163,7 +173,7 @@
   background-color: #fff;
   width: 300px;
   left: 10px;
-  top: 85px;
+  top: 95px;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   z-index: 5;
 }

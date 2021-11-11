@@ -141,7 +141,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <div class="se_item_wr">
           <div class="se_sch_wr">
             <div class="se_sch_hd">품목 목록</div>
-            <input type="text" id="ipt_se_sch" class="ipt_se_sch" placeholder="여기에 추가할 상품명을 입력해주세요">
+            <div class="ipt_se_sch_wr">
+              <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
+              <input type="text" id="ipt_se_sch" class="ipt_se_sch" placeholder="여기에 추가할 상품명을 입력해주세요">
+            </div>
             <div class="se_sch_pop">
               <p>상품명을 입력 후 간편하게 추가할 수 있습니다. 상품명 일부만 입력해도 자동완성됩니다.</p>
               <p>상품명을 모르시면 '상품검색' 버튼을 눌러주세요.</p>
