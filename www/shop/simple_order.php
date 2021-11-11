@@ -94,16 +94,16 @@ add_javascript(G5_POSTCODE_JS, 0);
             <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="여기에 추가할 상품명을 입력해주세요">
           </div>
           <div class="so_sch_pop">
-            <p>상품명을 입력 후 간편하게 추가할 수 있습니다. 상품명 일부만 입력해도 자동완성됩니다.</p>
-            <p>상품명을 모르시면 '상품검색' 버튼을 눌러주세요.</p>
-            <p><button type="button" class="btn_so_sch">상품검색</button></p>
+            <p>상품명을 입력 후 간편하게 추가할 수 있습니다.<br> 상품명 일부만 입력해도 자동완성됩니다.</p>
+            <!-- <p>상품명을 모르시면 '상품검색' 버튼을 눌러주세요.</p>
+            <p><button type="button" class="btn_so_sch">상품검색</button></p> -->
           </div>
         </div>
         
         <div class="no_item_info">
         	<img src="<?=THEMA_URL?>/assets/img/icon_box.png" alt=""><br>
-        	<p>주문하실 품목을 검색한 후 추가하시면<br>추가된 모든 품목은 간편하게 주문하실 수 있습니다.</p>
-        	<p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p>
+        	<p>주문하실 상품을 검색한 후 추가하시면<br>추가된 모든 상품은 빠르고 간편하게 주문이 가능합니다.</p>
+        	<!-- <p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p> -->
         </div>
 
         <div class="so_item_list_hd">추가 된 상품 목록</div>
