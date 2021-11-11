@@ -153,8 +153,12 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           </div>
           <div class="im_sch_wr">
             <div class="im_sch_hd">품목 목록</div>
-            <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="품목명 검색 후 추가하세요.">
-            <button class="btn_im_sel">품목찾기</button>
+            <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="여기에 추가할 상품명을 입력해주세요">
+            <div class="im_sch_pop">
+              <p>상품명을 입력 후 간편하게 추가할 수 있습니다. 상품명 일부만 입력해도 자동완성됩니다.</p>
+              <p>상품명을 모르시면 '상품검색' 버튼을 눌러주세요.</p>
+              <p><button type="button" class="btn_im_sel">상품검색</button></p>
+            </div>
           </div>
           
             <div class="no_item_info">
@@ -488,7 +492,21 @@ $(function() {
     save_item_msg(true);
   });
 
+  // 상품검색 팝업
+  $(document).on('focus', '.ipt_im_sch', function() {
+    $('.im_sch_pop').show();
+  });
+  $(document).on('click', function(e) {
+    if($(e.target).closest('.im_sch_wr').length > 0) 
+      return;
+
+    $('.im_sch_pop').hide();
+  });
+
   check_no_item();
+  
+  // 처음 팝업
+  $('.im_sch_pop').show();
 });
 </script>
 
