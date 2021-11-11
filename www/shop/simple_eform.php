@@ -158,6 +158,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 	        	<p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p>
 	        </div>
           
+          <div class="se_item_list_hd">추가 된 상품 목록</div>
           <div class="se_item_hd">판매품목</div>
           <ul id="buy_list" class="se_item_list">
             <?php
@@ -409,8 +410,10 @@ function check_no_item() {
 
   if(total == 0) {
     $('.no_item_info').show();
+    $('.se_item_list_hd').hide();
   } else {
     $('.no_item_info').hide();
+    $('.se_item_list_hd').show();
   }
 }
 
