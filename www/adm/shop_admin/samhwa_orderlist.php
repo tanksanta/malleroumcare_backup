@@ -1258,7 +1258,9 @@ if( function_exists('pg_setting_check') ){
 <div class="btn_fixed_top">
   <a href="./samhwa_order_new.php" id="order_add" class="btn btn_01">주문서 추가</a>
   <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload('excel')" class="btn btn_02">
-  <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn btn_03">
+  <?php if($member['mb_id'] == 'admin') { ?>
+  <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn" style="background: #6e9254; color: #fff;">
+  <?php } ?>
   <input type="button" value="위탁 엑셀다운로드" onclick="orderListExcelDownload('partner')" class="btn btn_03">
 </div>
 
