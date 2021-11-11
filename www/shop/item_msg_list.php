@@ -72,6 +72,9 @@ for($i = 0; $row = sql_fetch_array($msg_result); $i++) {
   $last_log_result = sql_fetch($sql);
   if($last_log_result['ml_sent_at'])
     $row['last_sent_at'] = $last_log_result['ml_sent_at'];
+  
+  $row['ms_pen_nm'] = $row['ms_pen_nm'] ?: '???';
+  $row['ms_pen_hp'] = $row['ms_pen_hp'] ?: ' - ';
 
   $list[] = $row;
 }
