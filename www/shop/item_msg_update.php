@@ -17,8 +17,8 @@ if(is_array($ms_rec)) {
   $ms_rec = '';
 }
 
-if(!($ms_pen_nm && $ms_pro_yn && $ms_pen_hp))
-  json_response(400, '수급자 정보를 입력해주세요.');
+/* if(!($ms_pen_nm && $ms_pro_yn && $ms_pen_hp))
+  json_response(400, '수급자 정보를 입력해주세요.'); */
 
 // 휴대폰 번호 하이픈 처리
 $ms_pen_hp = hyphen_hp_number($ms_pen_hp);
@@ -27,8 +27,10 @@ $it_id_arr = $_POST['it_id'];
 $it_name_arr = $_POST['it_name'];
 $gubun_arr = $_POST['gubun'];
 
-if(!($it_id_arr && $it_name_arr && $gubun_arr))
-  json_response(400, '품목을 선택해주세요.');
+if(!($it_id_arr && $it_name_arr && $gubun_arr)) {
+  $it_id_arr = $it_name_arr = $gubun_arr = [];
+  // json_response(400, '품목을 선택해주세요.');
+}
 
 if($w == 'u') {
   // 수정

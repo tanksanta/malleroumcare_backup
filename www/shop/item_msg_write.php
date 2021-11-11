@@ -117,11 +117,11 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                 if($ms['ms_url']) {
                   echo 'https://eroumcare.com/shop/item_msg.php?url='.$ms['ms_url'];
                 } else {
-                  echo '품목선택 후 저장 시 생성됩니다.';
+                  echo '상품이 추가되면 자동 생성됩니다.';
                 }
                 ?>
               </span>
-              <button class="btn_im_copy" onclick="copy_to_clipboard('#ms_pen_url');">주소복사</button>
+              <button class="btn_im_copy" onclick="copy_to_clipboard('#ms_pen_url');" style="display: <?php if($ms['ms_url']) { echo 'inline-block;'; } else { echo 'none;'; } ?>">주소복사</button>
             </div>
           </div>
         </div>
@@ -191,7 +191,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             }
             ?>
           </ul>
-          <button type="button" id="btn_im_save" onclick="save_item_msg();">저장</button>
+          <!--<button type="button" id="btn_im_save" onclick="save_item_msg();">저장</button>-->
           <div class="im_rec_wr">
             <div class="im_rec_hd im_flex space-between">
               <div class="im_sch_hd">추천정보</div>
@@ -233,7 +233,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             <?php if($ms['ms_url']) { ?>
             <iframe src="item_msg.php?url=<?=$ms['ms_url']?>" frameborder="0"></iframe>
             <?php } else { ?>
-            <div class="empty">품목선택 후 저장 시 생성됩니다.</div>
+            <div class="empty">상품이 추가되면 자동 생성됩니다.</div>
             <?php } ?>
           </div>
         </div>
@@ -294,13 +294,14 @@ function select_item(obj) {
   $('#ipt_im_sch').val('').next().focus();
 
   check_no_item();
+  save_item_msg();
 }
 
 // 저장
 var loading = false;
 function save_item_msg(no_items) {
   if(loading)
-    return alert('저장 중입니다. 잠시만 기다려주세요.');
+    return;
   
   if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
     $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
@@ -317,6 +318,7 @@ function save_item_msg(no_items) {
     $('input[name="w"]').val('u');
     $('input[name="ms_id"]').val(data.ms_id);
     $('#ms_pen_url').text('https://eroumcare.com/shop/' + ms_url);
+    $('.btn_im_copy').show();
     $('#im_preview').empty().append($('<iframe>').attr('src', ms_url).attr('frameborder', 0));
   })
   .fail(function($xhr) {
@@ -441,6 +443,7 @@ $(function() {
   $(document).on('click', '.btn_del_item', function() {
     $(this).closest('li').remove();
     check_no_item();
+    save_item_msg();
   });
 
   var sending = false;
@@ -451,7 +454,7 @@ $(function() {
     var ms_id = $('input[name="ms_id"]').val();
 
     if(!ms_id)
-      return alert('먼저 품목 선택 후 저장을 해주세요.');
+      return alert('먼저 상품을 추가해주세요.');
 
     sending = true;
     $form = $('#form_item_msg');
@@ -491,7 +494,7 @@ $(function() {
     var ms_id = $('input[name="ms_id"]').val();
 
     if(!ms_id) {
-      alert('먼저 품목 선택 후 저장을 해주세요.');
+      alert('먼저 상품을 추가해주세요.');
       return false;
     }
 
