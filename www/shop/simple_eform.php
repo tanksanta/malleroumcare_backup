@@ -46,11 +46,22 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
   <div class="sub_section_tit">
     간편 계약서 작성
     <div class="r_btn_area">
-        <a href="/shop/electronic_manage.php" class="btn eroumcare_btn2">계약서 목록보기</a>
+      <a href="/shop/electronic_manage.php" class="btn eroumcare_btn2">계약서 목록보기</a>
     </div>
+    <div style="clear: both;"></div>
   </div>
   <div class="inner">
-
+    <?php if(!$member['sealFile']) { ?>
+    <div class="se_seal_wr">
+      <form action="ajax.member.seal_upload.php" method="POST" id="form_seal" onsubmit="return false;">
+        <div class="se_seal_desc">
+          등록된 사업소 직인이 없습니다.<br>
+          계약서 작성을 위해선 직인 이미지를 등록해주세요.
+        </div>
+        <button type="button" class="btn_se_seal">직인 이미지 업로드</button>
+      </form>
+    </div>
+    <?php } ?>
     <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
       <input type="hidden" name="w" value="<?php if($dc) echo 'u'; ?>">
       <input type="hidden" name="dc_id" value="<?php if($dc) echo $dc['uuid']; ?>">
@@ -740,6 +751,46 @@ $(document).on('click', function(e) {
     return;
 
   $('.se_sch_pop').hide();
+});
+
+// 직인 업로드
+var loading_seal = false;
+$('.btn_se_seal').click(function() {
+  var $form = $(this).closest('form');
+
+  $form.find('input[name="sealFile"]').remove();
+  $('<input type="file" name="sealFile" accept=".gif, .jpg, .png" style="width: 0; height: 0; overflow: hidden;">').appendTo($form).click();
+});
+$(document).on('change', 'input[name="sealFile"]', function(e) {
+  var $form = $(this).closest('form');
+
+  if(loading_seal)
+    return alert('직인 이미지를 업로드 중입니다.');
+  
+  loading_seal = true;
+
+  var formData = new FormData();
+  formData.append('sealFile', this.files[0]);
+
+  $.ajax({
+    type: 'POST',
+    url: $form.attr('action'),
+    processData: false,
+    contentType: false,
+    data: formData,
+    dataType: 'json'
+  })
+  .done(function() {
+    alert('직인 이미지를 업로드했습니다.');
+    $('.se_seal_wr').remove();
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  })
+  .always(function() {
+    loading_seal = false;
+  });
 });
 
 check_no_item();
