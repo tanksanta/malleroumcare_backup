@@ -47,12 +47,16 @@ $ms = sql_fetch($sql);
 if(!$ms['ms_id'])
   json_response(400, '존재하지 않는 메시지입니다.');
 
-if($msg_point > 0 && $member['mb_point'] < $msg_point)
-  json_response(400, '포인트가 부족합니다.');
+if(!($ms['ms_pen_nm'] && $ms['ms_pen_hp']))
+  json_response(400, '수급자 정보를 입력해주세요.');
 
-// 포인트 차감
-if($msg_point > 0)
+if($msg_point > 0) {
+  if($member['mb_point'] < $msg_point)
+    json_response(400, '포인트가 부족합니다.');
+
+  // 포인트 차감
   insert_point($member['mb_id'], (-1) * $msg_point, "{$ms['ms_pen_nm']} 수급자에게 품목/정보 메시지 전달");
+}
 
 // 전송 로그 작성
 $sql = "

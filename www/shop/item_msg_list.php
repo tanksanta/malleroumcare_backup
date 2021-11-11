@@ -39,7 +39,7 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 $sql_limit = " limit {$from_record}, {$page_rows} ";
 
 $msg_result = sql_query("
-  SELECT *
+  SELECT ms.*
   {$sql_common}
   GROUP BY ms.ms_id
   ORDER BY ms.ms_id desc
