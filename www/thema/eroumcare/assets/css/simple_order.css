@@ -137,33 +137,69 @@
 
 /* 품목 목록 - 검색 */
 .so_sch_wr {
-
+  position: relative;
 }
 .so_sch_hd {
   font-weight: bold;
   font-size: 18px;
   margin-right: 20px;
 }
-.so_sch_ipt {
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
-  flex-grow: 1; 
-}
-.so_sch_ipt .ipt_so_sch {
+.ipt_so_sch {
   display: block;
-  width: 100%;
-  padding: 5px 10px;
-  border: 1px solid #ddd;
+  padding: 10px 10px;
+  border: 1px solid #ef8505;
+  margin-top: 10px;
   border-radius: 3px;
   line-height: 1.5;
+  width: 100%;
+  font-size: 16px;
+}
+.so_sch_pop {
+  display: none;
+  position: absolute;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background-color: #fff;
+  width: 300px;
+  left: 10px;
+  top: 85px;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  z-index: 5;
+}
+.so_sch_pop:before {
+  border: 15px solid;
+  border-color: transparent transparent #ddd transparent;
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 30px;
+}
+.so_sch_pop:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  bottom: 100%;
+  left: 31px;
+  border: 14px solid;
+  border-color: transparent transparent #fff transparent;
+}
+.so_sch_pop p {
+  line-height: 1.25;
+  margin-bottom: 10px;
 }
 .btn_so_sch {
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  line-height: 1.5;
-  padding: 5px 15px;
-  margin-left: 10px;
-  text-align: center;
+  display: inline;
+  background: none;
+  color: #ef8505;
+  text-decoration: underline;
+}
+@media (max-width: 960px) {
+  .so_sch_pop {
+    width: 90%;
+    max-width: 300px;
+  }
 }
 
 /* 품목 목록 - 상품 리스트 */

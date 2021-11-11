@@ -87,12 +87,14 @@ add_javascript(G5_POSTCODE_JS, 0);
       </div>
 
       <div class="so_item_wr">
-        <div class="so_sch_wr flex space-between">
+        <div class="so_sch_wr">
           <div class="so_sch_hd">품목 목록</div>
-          <div class="so_sch_ipt">
-            <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="품목명 검색 후 추가하세요.">
+          <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="품목명 검색 후 추가하세요.">
+          <div class="so_sch_pop">
+            <p>상품명을 입력 후 간편하게 추가할 수 있습니다. 상품명 일부만 입력해도 자동완성됩니다.</p>
+            <p>상품명을 모르시면 '상품검색' 버튼을 눌러주세요.</p>
+            <p><button type="button" class="btn_so_sch">상품검색</button></p>
           </div>
-          <button type="button" class="btn_so_sch">품목찾기</button>
         </div>
         
         <div class="no_item_info">
@@ -1016,6 +1018,19 @@ $(function() {
     $('#item_popup_box').show();
   });
 
+  // 상품검색 팝업
+  $(document).on('focus', '.ipt_so_sch', function() {
+    $('.so_sch_pop').show();
+  });
+  $(document).on('click', function(e) {
+    if($(e.target).closest('.so_sch_wr').length > 0) 
+      return;
+
+    $('.so_sch_pop').hide();
+  });
+    
+  // 처음 팝업
+  $('.so_sch_pop').show();
 
   <?php
   if($_GET['dc_id']) {
