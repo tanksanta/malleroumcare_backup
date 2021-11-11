@@ -842,7 +842,7 @@ pre{white-space: pre-wrap;}
 .side_menu_area .catalog_area .catalog .btn_small { margin-left: 15px; font-weight: normal; vertical-align: middle; }
 
 .side_menu_area .conv_area { margin: 10px 5px; padding: 10px; border: 1px solid #eee; }
-.side_menu_area .conv_area .conv_hd { font-size: 20px; color: #333; }
+.side_menu_area .conv_area .conv_hd { font-size: 20px; color: #333; letter-spacing: -1px; padding-left: 5px; }
 .side_menu_area .conv_area .conv_hd img { display: inline-block; }
 .side_menu_area .conv_area > a { display: block; margin-top: 10px; padding: 18px 0; text-align: center; color: #fff; font-size: 18px; font-weight: bold; border: 2px solid transparent; border-radius: 20px; }
 .side_menu_area .conv_area > a.pen_item_msg { background: #daf3cb; color: #5c9e30; }
