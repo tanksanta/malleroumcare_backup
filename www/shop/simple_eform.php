@@ -67,6 +67,14 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <input type="hidden" name="dc_id" value="<?php if($dc) echo $dc['uuid']; ?>">
       <div class="panel panel-default">
         <div class="panel-body">
+          <div class="radio_wr" style="margin-top: -10px; margin-bottom: 10px; font-size: 14px;">
+            <label class="radio-inline">
+              <input type="radio" name="pen_type" id="pen_type_0" value="0" checked> 신규수급자 직접입력
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="pen_type" id="pen_type_1" value="1"> 수급자 선택 후 작성
+            </label>
+          </div>
           <div class="form-group">
             <label for="penNm" class="col-md-2 control-label">
               <strong>수급자명</strong>
@@ -648,46 +656,46 @@ $('.birthpicker').datepicker({ changeMonth: true, changeYear: true, yearRange: '
 $('.datepicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
 
 // 수급자 검색
-$('.pen_id_flexdatalist').flexdatalist({
-  minLength: 1,
-  url: 'ajax.get_pen_id.php',
-  cache: true, // cache
-  searchContain: true, // %검색어%
-  noResultsText: '"{keyword}"으로 등록된 수급자가 없습니다. 수급자정보를 직접 입력 하시고 계약서 작성 시 자동으로 등록됩니다.',
-  visibleCallback: function($li, item, options) {
-    var $item = {};
-    $item = $('<span>')
-      .html(item.penNm);
+function toggle_pen_id_flexdatalist(on) {
+  if(on) {
+    $('.pen_id_flexdatalist').flexdatalist({
+      minLength: 1,
+      url: 'ajax.get_pen_id.php',
+      cache: true, // cache
+      searchContain: true, // %검색어%
+      noResultsText: '"{keyword}"으로 등록된 수급자가 없습니다. 수급자정보를 직접 입력 하시고 계약서 작성 시 자동으로 등록됩니다.',
+      visibleCallback: function($li, item, options) {
+        var $item = {};
+        $item = $('<span>')
+          .html(item.penNm);
 
-    $item.appendTo($li);
+        $item.appendTo($li);
 
-    $item = $('<span>')
-      .html(" (" + ( item.penAge > 0 ? item.penAge + '/' : '' ) + ( item.penGender ? item.penGender + '/' : '' ) + ( item.penLtmNum ? item.penLtmNum : '' ) + ")");
+        $item = $('<span>')
+          .html(" (" + ( item.penAge > 0 ? item.penAge + '/' : '' ) + ( item.penGender ? item.penGender + '/' : '' ) + ( item.penLtmNum ? item.penLtmNum : '' ) + ")");
 
-    $item.appendTo($li);
+        $item.appendTo($li);
 
-    return $li;
-  },
-  searchIn: ["penNm"],
-  focusFirstResult: true,
-})
-.on('change:flexdatalist', function() {
-  // 이름 변경됨
-  $('#penId').val('');
-})
-.on("select:flexdatalist", function(event, obj, options) {
-  $('#penId').val(obj.penId);
-  $('#penLtmNum').val(obj.penLtmNum);
-  $('#penConNum').val(obj.penConNum);
-  if(obj.penRecGraCd)
-    $('#penRecGraCd').val(obj.penRecGraCd);
-  if(obj.penTypeCd)
-    $('#penTypeCd').val(obj.penTypeCd);
-  $('#penBirth').val(obj.penBirth);
-  $('#penExpiStDtm').val(obj.penExpiStDtm);
-  $('#penExpiEdDtm').val(obj.penExpiEdDtm);
-  $('#penJumin').val(obj.penJumin);
-});
+        return $li;
+      },
+      searchIn: ["penNm"],
+      focusFirstResult: true,
+    })
+    .on("select:flexdatalist", function(event, obj, options) {
+      $('#penId').val(obj.penId);
+      $('#penLtmNum').val(obj.penLtmNumRaw).prop('disabled', false);
+      $('#penConNum').val(obj.penConNum).prop('disabled', false);
+      $('#penRecGraCd').val(obj.penRecGraCd ? obj.penRecGraCd : '00').prop('disabled', false);
+      $('#penTypeCd').val(obj.penTypeCd ? obj.penTypeCd : '00').prop('disabled', false);
+      $('#penBirth').val(obj.penBirth).prop('disabled', false);
+      $('#penExpiStDtm').val(obj.penExpiStDtm).prop('disabled', false);
+      $('#penExpiEdDtm').val(obj.penExpiEdDtm).prop('disabled', false);
+      $('#penJumin').val(obj.penJumin).prop('disabled', false);
+    });
+  } else {
+    $('.pen_id_flexdatalist').flexdatalist('destroy');
+  }
+}
 
 // 품목찾기
 $('#popup_box').click(function() {
@@ -804,6 +812,39 @@ $(document).on('change', 'input[name="sealFile"]', function(e) {
   .always(function() {
     loading_seal = false;
   });
+});
+
+// 신규수급자 or 기존수급자 선택
+function check_pen_type() {
+  var pen_type = $('input[name="pen_type"]:checked').val();
+
+  if(pen_type == '1') {
+    // 기존수급자
+    $('#penLtmNum').val('').prop('disabled', true);
+    $('#penConNum').val('').prop('disabled', true);
+    $('#penRecGraCd').val('').prop('disabled', true);
+    $('#penTypeCd').val('').prop('disabled', true);
+    $('#penBirth').val('').prop('disabled', true);
+    $('#penExpiStDtm').val('').prop('disabled', true);
+    $('#penExpiEdDtm').val('').prop('disabled', true);
+    $('#penJumin').val('').prop('disabled', true);
+    toggle_pen_id_flexdatalist(true);
+  } else {
+    // 신규수급자
+    $('#penLtmNum').prop('disabled', false);
+    $('#penConNum').prop('disabled', false);
+    $('#penRecGraCd').prop('disabled', false);
+    $('#penTypeCd').prop('disabled', false);
+    $('#penBirth').prop('disabled', false);
+    $('#penExpiStDtm').prop('disabled', false);
+    $('#penExpiEdDtm').prop('disabled', false);
+    $('#penJumin').prop('disabled', false);
+    toggle_pen_id_flexdatalist(false);
+  }
+}
+$('input[name="pen_type"]').change(function() {
+  $('#penId').val('');
+  check_pen_type();
 });
 
 check_no_item();
