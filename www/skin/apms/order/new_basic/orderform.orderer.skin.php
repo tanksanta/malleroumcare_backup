@@ -391,7 +391,7 @@ $(function() {
             </label>
             <b>세금계산서</b>
           </span>
-          <span class="check">
+          <!--<span class="check">
             <input type="radio" id="typereceipt2" name="ot_typereceipt" value="31">
             <label for="typereceipt2">
               <span class="check_on"></span>
@@ -404,7 +404,7 @@ $(function() {
               <span class="check_on"></span>
             </label>
             <b>발급 안함</b>
-          </span>
+          </span>-->
         </div>
       </div>
       <div class="table-list3 table-list4" id="typereceipt1_view">
