@@ -293,6 +293,18 @@ $warehouse_list = get_warehouses();
             &nbsp;
             <input type="checkbox" name="it_type5" value="1" <?php echo ($it['it_type5'] ? "checked" : ""); ?> id="it_type5">
             <label for="it_type5"><span style="color:<?php echo $default['de_it_type5_color']; ?>"><?php echo $default['de_it_type5_name']; ?></span></label>
+            <?php
+            for($x = 6; $x <= 10; $x ++) {
+              $cur_it_type = 'it_type' . $x;
+              if($default['de_'. $cur_it_type .'_name']) {
+            ?>
+            &nbsp;
+            <input type="checkbox" name="<?=$cur_it_type?>" value="1" <?php echo ($it[$cur_it_type] ? "checked" : ""); ?> id="<?=$cur_it_type?>">
+            <label for="<?=$cur_it_type?>"><span style="color:<?php echo $default['de_' . $cur_it_type . '_color']; ?>"><?php echo $default['de_' . $cur_it_type . '_name']; ?></span></label>
+            <?php
+              }
+            }
+            ?>
             &nbsp;
             <input type="checkbox" name="pt_main" value="1" <?php echo ($it['pt_main'] ? "checked" : ""); ?> id="pt_main">
             <label for="pt_main">메인</label>

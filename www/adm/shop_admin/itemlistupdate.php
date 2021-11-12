@@ -57,6 +57,11 @@ if ($_POST['act_button'] == "선택수정") {
         $p_it_type3 = is_array($_POST['it_type3']) ? strip_tags($_POST['it_type3'][$k]) : '';
         $p_it_type4 = is_array($_POST['it_type4']) ? strip_tags($_POST['it_type4'][$k]) : '';
         $p_it_type5 = is_array($_POST['it_type5']) ? strip_tags($_POST['it_type5'][$k]) : '';
+        $p_it_type6 = is_array($_POST['it_type6']) ? strip_tags($_POST['it_type6'][$k]) : '';
+        $p_it_type7 = is_array($_POST['it_type7']) ? strip_tags($_POST['it_type7'][$k]) : '';
+        $p_it_type8 = is_array($_POST['it_type8']) ? strip_tags($_POST['it_type8'][$k]) : '';
+        $p_it_type9 = is_array($_POST['it_type9']) ? strip_tags($_POST['it_type9'][$k]) : '';
+        $p_it_type10 = is_array($_POST['it_type10']) ? strip_tags($_POST['it_type10'][$k]) : '';
 
         $it_model = is_array($_POST['it_model']) ? strip_tags($_POST['it_model'][$k]) : '';
         $it_expected_warehousing_date = is_array($_POST['it_expected_warehousing_date']) ? strip_tags($_POST['it_expected_warehousing_date'][$k]) : '';
@@ -114,6 +119,11 @@ if ($_POST['act_button'] == "선택수정") {
             it_type3       = '".sql_real_escape_string($p_it_type3)."',
             it_type4       = '".sql_real_escape_string($p_it_type4)."',
             it_type5       = '".sql_real_escape_string($p_it_type5)."',
+            it_type6       = '".sql_real_escape_string($p_it_type6)."',
+            it_type7       = '".sql_real_escape_string($p_it_type7)."',
+            it_type8       = '".sql_real_escape_string($p_it_type8)."',
+            it_type9       = '".sql_real_escape_string($p_it_type9)."',
+            it_type10       = '".sql_real_escape_string($p_it_type10)."',
             it_model       = '".sql_real_escape_string($it_model)."',
             it_expected_warehousing_date       = '".sql_real_escape_string($it_expected_warehousing_date)."',
             it_update_time = '".G5_TIME_YMDHIS."'

@@ -297,6 +297,11 @@ while($wish_row = sql_fetch_array($wish_result)) {
           <?php if($list[$i]['it_type3']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type3_color']?>; color:<?=$default['de_it_type3_color']?>;"><?=$default['de_it_type3_name']?></p><?php } ?>
           <?php if($list[$i]['it_type4']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type4_color']?>; color:<?=$default['de_it_type4_color']?>;"><?=$default['de_it_type4_name']?></p><?php } ?>
           <?php if($list[$i]['it_type5']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type5_color']?>; color:<?=$default['de_it_type5_color']?>;"><?=$default['de_it_type5_name']?></p><?php } ?>
+          <?php if($list[$i]['it_type6']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type6_color']?>; color:<?=$default['de_it_type6_color']?>;"><?=$default['de_it_type6_name']?></p><?php } ?>
+          <?php if($list[$i]['it_type7']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type7_color']?>; color:<?=$default['de_it_type7_color']?>;"><?=$default['de_it_type7_name']?></p><?php } ?>
+          <?php if($list[$i]['it_type8']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type8_color']?>; color:<?=$default['de_it_type8_color']?>;"><?=$default['de_it_type8_name']?></p><?php } ?>
+          <?php if($list[$i]['it_type9']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type9_color']?>; color:<?=$default['de_it_type9_color']?>;"><?=$default['de_it_type9_name']?></p><?php } ?>
+          <?php if($list[$i]['it_type10']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type10_color']?>; color:<?=$default['de_it_type10_color']?>;"><?=$default['de_it_type10_name']?></p><?php } ?>
         </div>
         <?php
         $tag_list = apms_get_text($list[$i]['pt_tag']);

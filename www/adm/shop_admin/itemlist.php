@@ -42,7 +42,7 @@ if ($stx != "") {
 
 // 상품태그
 $it_type_where = [];
-for($i = 1; $i <= 5; $i++) {
+for($i = 1; $i <= 10; $i++) {
   $it_type = 'it_type'.$i;
   if($_GET[$it_type]) {
     $it_type_where[] = " {$it_type} = 1 ";
@@ -168,6 +168,19 @@ $flist = apms_form(1,0);
         <input type="checkbox" name="it_type5" value="1" <?=get_checked($it_type5, 1)?>>
         <span style="display:inline-block; border:1px solid <?=$default['de_it_type5_color']?>;color:<?=$default['de_it_type5_color']?>"><?=$default['de_it_type5_name']?></span>
       </label>
+      <?php
+      for($i = 6; $i <= 10; $i++) {
+        $cur_it_type = 'it_type' . $i;
+        if($default['de_'. $cur_it_type .'_name']) {
+      ?>
+      <label>
+        <input type="checkbox" name="<?=$cur_it_type?>" value="1" <?=get_checked($$cur_it_type, 1)?>>
+        <span style="display:inline-block; border:1px solid <?=$default['de_'. $cur_it_type .'_color']?>;color:<?=$default['de_'. $cur_it_type .'_color']?>"><?=$default['de_'. $cur_it_type .'_name']?></span>
+      </label>
+      <?php
+        }
+      }
+      ?>
     </div>
   </div>
   <input type="hidden" name="save_stx" value="<?php echo $stx; ?>">
@@ -396,6 +409,18 @@ $flist = apms_form(1,0);
             <br/>
             <input type="checkbox" name="it_type5[<?php echo $i; ?>]" value="1" <?php echo ($row['it_type5'] ? "checked" : ""); ?> id="it_type5_<?php echo $i; ?>">
             <label for="it_type5_<?php echo $i; ?>"><span style="border:1px solid <?php echo $default['de_it_type5_color']; ?>;color:<?php echo $default['de_it_type5_color']; ?>"><?php echo $default['de_it_type5_name']; ?></span></label>
+            <?php
+            for($x = 6; $x <= 10; $x++) {
+              $cur_it_type = 'it_type' . $x;
+              if($default['de_'. $cur_it_type .'_name']) {
+            ?>
+            <br/>
+            <input type="checkbox" name="<?=$cur_it_type?>[<?php echo $i; ?>]" value="1" <?php echo ($row[$cur_it_type] ? "checked" : ""); ?> id="<?=$cur_it_type?>_<?php echo $i; ?>">
+            <label for="<?=$cur_it_type?>_<?php echo $i; ?>"><span style="border:1px solid <?php echo $default['de_' . $cur_it_type . '_color']; ?>;color:<?php echo $default['de_' . $cur_it_type . '_color']; ?>"><?php echo $default['de_' . $cur_it_type . '_name']; ?></span></label>
+            <?php
+              }
+            }
+            ?>
         </td>
         <td rowspan="3" class="td_mng td_mng_s">
             <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;fn=<?php echo $row['pt_form'];?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03"><span class="sound_only"><?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?> </span>수정</a>

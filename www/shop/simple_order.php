@@ -728,6 +728,21 @@ function select_item(obj, io_id, ct_qty) {
   if(obj.it_type5 == '1') {
     $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type5_color']?>;color:<?=$default['de_it_type5_color']?>"><?=$default['de_it_type5_name']?></span>');
   }
+  if(obj.it_type6 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type6_color']?>;color:<?=$default['de_it_type6_color']?>"><?=$default['de_it_type6_name']?></span>');
+  }
+  if(obj.it_type7 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type7_color']?>;color:<?=$default['de_it_type7_color']?>"><?=$default['de_it_type7_name']?></span>');
+  }
+  if(obj.it_type8 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type8_color']?>;color:<?=$default['de_it_type8_color']?>"><?=$default['de_it_type8_name']?></span>');
+  }
+  if(obj.it_type9 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type9_color']?>;color:<?=$default['de_it_type9_color']?>"><?=$default['de_it_type9_name']?></span>');
+  }
+  if(obj.it_type10 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type10_color']?>;color:<?=$default['de_it_type10_color']?>"><?=$default['de_it_type10_name']?></span>');
+  }
 
   var $it_price = $('<p class="it_price">');
   $it_price.append('판매가 : ' + number_format(it_price));
@@ -1076,6 +1091,11 @@ $(function() {
         it_type3,
         it_type4,
         it_type5,
+        it_type6,
+        it_type7,
+        it_type8,
+        it_type9,
+        it_type10,
         it_expected_warehousing_date,
         count(*) as qty
       FROM

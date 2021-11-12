@@ -1314,6 +1314,37 @@ if( function_exists('pg_setting_check') ){
                 &nbsp;&nbsp;&nbsp;
                 <label for="it_type5_color">Color:</label>
                 <input type="text" name="it_type5_color" value="<?php echo $default['de_it_type5_color']; ?>" id="it_type5_color" class="frm_input" size="20" placeholder="태그5 색상">
+                &nbsp;&nbsp;&nbsp;
+                <br/>
+                <label for="it_type6_name">Name:</label>
+                <input type="text" name="it_type6_name" value="<?php echo $default['de_it_type6_name']; ?>" id="it_type6_name" class="frm_input" size="20" placeholder="태그6 이름">
+                &nbsp;&nbsp;&nbsp;
+                <label for="it_type6_color">Color:</label>
+                <input type="text" name="it_type6_color" value="<?php echo $default['de_it_type6_color']; ?>" id="it_type6_color" class="frm_input" size="20" placeholder="태그6 색상">
+                <br/>
+                <label for="it_type7_name">Name:</label>
+                <input type="text" name="it_type7_name" value="<?php echo $default['de_it_type7_name']; ?>" id="it_type7_name" class="frm_input" size="20" placeholder="태그7 이름">
+                &nbsp;&nbsp;&nbsp;
+                <label for="it_type7_color">Color:</label>
+                <input type="text" name="it_type7_color" value="<?php echo $default['de_it_type7_color']; ?>" id="it_type7_color" class="frm_input" size="20" placeholder="태그7 색상">
+                <br/>
+                <label for="it_type8_name">Name:</label>
+                <input type="text" name="it_type8_name" value="<?php echo $default['de_it_type8_name']; ?>" id="it_type8_name" class="frm_input" size="20" placeholder="태그8 이름">
+                &nbsp;&nbsp;&nbsp;
+                <label for="it_type8_color">Color:</label>
+                <input type="text" name="it_type8_color" value="<?php echo $default['de_it_type8_color']; ?>" id="it_type8_color" class="frm_input" size="20" placeholder="태그8 색상">
+                <br/>
+                <label for="it_type9_name">Name:</label>
+                <input type="text" name="it_type9_name" value="<?php echo $default['de_it_type9_name']; ?>" id="it_type9_name" class="frm_input" size="20" placeholder="태그9 이름">
+                &nbsp;&nbsp;&nbsp;
+                <label for="it_type9_color">Color:</label>
+                <input type="text" name="it_type9_color" value="<?php echo $default['de_it_type9_color']; ?>" id="it_type9_color" class="frm_input" size="20" placeholder="태그9 색상">
+                <br/>
+                <label for="it_type10_name">Name:</label>
+                <input type="text" name="it_type10_name" value="<?php echo $default['de_it_type10_name']; ?>" id="it_type10_name" class="frm_input" size="20" placeholder="태그10 이름">
+                &nbsp;&nbsp;&nbsp;
+                <label for="it_type10_color">Color:</label>
+                <input type="text" name="it_type10_color" value="<?php echo $default['de_it_type10_color']; ?>" id="it_type10_color" class="frm_input" size="20" placeholder="태그10 색상">
             </td>
         </tr>
         <tr>
