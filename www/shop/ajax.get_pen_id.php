@@ -30,6 +30,7 @@ if($result['errorYN'] === 'N') {
       'penId' => $pen['penId'],
       'penNm' => $pen['penNm'],
       'penLtmNum' => substr($pen['penLtmNum'], 0, 6) . '*****',
+      'penLtmNumRaw' => $pen['penLtmNum'],
       'penRecGraCd' => $pen['penRecGraCd'],
       'penRecGraNm' => $pen['penRecGraNm'],
       'penTypeCd' => $pen['penTypeCd'],
