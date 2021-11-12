@@ -827,7 +827,7 @@ $(function() {
     visibleCallback: function($li, item, options) {
       var $item = {};
       $item = $('<span>')
-        .html("[" + item.gubun + "] " + item.it_name + " (" + item.it_cust_price + "원)");
+        .html("[" + item.gubun + "] " + item.it_name + " (" + number_format(item.it_price) + "원)");
 
       $item.appendTo($li);
       return $li;
