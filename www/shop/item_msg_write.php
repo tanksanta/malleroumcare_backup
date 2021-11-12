@@ -80,6 +80,14 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
       <input type="hidden" name="ms_id" value="<?=$ms_id?>">
       <div class="panel panel-default">
         <div class="panel-body">
+          <div class="radio_wr" style="margin-top: -10px; margin-bottom: 10px; font-size: 14px;">
+            <label class="radio-inline">
+              <input type="radio" name="pen_type" id="pen_type_0" value="0" checked> 직접입력
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="pen_type" id="pen_type_1" value="1"> 수급자 정보 검색
+            </label>
+          </div>
           <div class="form-group">
             <label for="ms_pen_nm" class="col-sm-2 control-label">
               <strong>수급자명</strong>
@@ -376,41 +384,63 @@ $(function() {
     $('#ms_pen_id').val(pen.penId);
   }
 
-  $('.pen_id_flexdatalist').flexdatalist({
-    minLength: 1,
-    url: 'ajax.get_pen_id.php',
-    cache: true, // cache
-    searchContain: true, // %검색어%
-    noResultsText: '"{keyword}"으로 등록된 수급자가 없습니다. 수급자정보를 직접 입력 하시고 제안서 작성 시 자동으로 등록됩니다.',
-    visibleCallback: function($li, item, options) {
-      var $item = {};
-      $item = $('<span>')
-        .html(item.penNm);
+  // 신규수급자 or 기존수급자 선택
+  function check_pen_type() {
+    var pen_type = $('input[name="pen_type"]:checked').val();
 
-      $item.appendTo($li);
-
-      $item = $('<span>')
-        .html(" (" + ( item.penAge > 0 ? item.penAge + '/' : '' ) + ( item.penGender ? item.penGender + '/' : '' ) + ( item.penLtmNum ? item.penLtmNum : '' ) + ")");
-
-      $item.appendTo($li);
-
-      return $li;
-    },
-    searchIn: ["penNm"],
-    focusFirstResult: true,
-  })
-  .on('change:flexdatalist', function() {
+    if(pen_type == '1') {
+      // 기존수급자
+      toggle_pen_id_flexdatalist(true);
+      $('input[name="ms_pro_yn"]').closest('.radio_wr').show();
+    } else {
+      // 신규수급자
+      toggle_pen_id_flexdatalist(false);
+      $('input[name="ms_pro_yn"]').closest('.radio_wr').hide();
+    }
+  }
+  $('input[name="pen_type"]').change(function() {
     pen = null;
     update_pen_info();
-  })
-  .on("select:flexdatalist", function(event, obj, options) {
-    pen = obj;
-
-    update_pen_info();
-    setPenHp('N');
-
-    $('#ipt_im_sch').next().focus();
+    check_pen_type();
   });
+
+  function toggle_pen_id_flexdatalist(on) {
+    if(on) {
+      $('.pen_id_flexdatalist').flexdatalist({
+        minLength: 1,
+        url: 'ajax.get_pen_id.php',
+        cache: true, // cache
+        searchContain: true, // %검색어%
+        noResultsText: '"{keyword}"으로 등록된 수급자가 없습니다. 수급자정보를 직접 입력 하시고 제안서 작성 시 자동으로 등록됩니다.',
+        visibleCallback: function($li, item, options) {
+          var $item = {};
+          $item = $('<span>')
+            .html(item.penNm);
+
+          $item.appendTo($li);
+
+          $item = $('<span>')
+            .html(" (" + ( item.penAge > 0 ? item.penAge + '/' : '' ) + ( item.penGender ? item.penGender + '/' : '' ) + ( item.penLtmNum ? item.penLtmNum : '' ) + ")");
+
+          $item.appendTo($li);
+
+          return $li;
+        },
+        searchIn: ["penNm"],
+        focusFirstResult: true,
+      })
+      .on("select:flexdatalist", function(event, obj, options) {
+        pen = obj;
+
+        update_pen_info();
+        setPenHp('N');
+
+        $('#ipt_im_sch').next().focus();
+      });
+    } else {
+      $('.pen_id_flexdatalist').flexdatalist('destroy');
+    }
+  }
 
   $('input[name="ms_pro_yn"]').click(function() {
     setPenHp($(this).val());
@@ -526,6 +556,7 @@ $(function() {
   });
 
   check_no_item();
+  check_pen_type();
   
   // 처음 팝업
   $('.im_sch_pop').show();

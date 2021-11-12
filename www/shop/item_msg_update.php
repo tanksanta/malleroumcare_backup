@@ -32,6 +32,14 @@ if(!($it_id_arr && $it_name_arr && $gubun_arr)) {
   // json_response(400, '품목을 선택해주세요.');
 }
 
+if($pen_type == '1') {
+  // 기존 수급자
+} else {
+  // 신규 수급자
+  $ms_pen_id = '';
+  $ms_pro_yn = 'N';
+}
+
 if($w == 'u') {
   // 수정
 
