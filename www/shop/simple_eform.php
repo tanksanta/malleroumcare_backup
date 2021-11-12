@@ -654,7 +654,20 @@ $('.pen_id_flexdatalist').flexdatalist({
   cache: true, // cache
   searchContain: true, // %검색어%
   noResultsText: '"{keyword}"으로 등록된 수급자가 없습니다. 수급자정보를 직접 입력 하시고 계약서 작성 시 자동으로 등록됩니다.',
-  visibleProperties: ["penNm"],
+  visibleCallback: function($li, item, options) {
+    var $item = {};
+    $item = $('<span>')
+      .html(item.penNm);
+
+    $item.appendTo($li);
+
+    $item = $('<span>')
+      .html(" (" + ( item.penAge > 0 ? item.penAge + '/' : '' ) + ( item.penGender ? item.penGender + '/' : '' ) + ( item.penLtmNum ? item.penLtmNum : '' ) + ")");
+
+    $item.appendTo($li);
+
+    return $li;
+  },
   searchIn: ["penNm"],
   focusFirstResult: true,
 })

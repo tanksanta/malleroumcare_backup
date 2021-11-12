@@ -20,6 +20,12 @@ $list = [];
 if($result['errorYN'] === 'N') {
   foreach($result['data'] as $pen) {
     $penExpiDtm = explode(' ~ ', $pen["penExpiDtm"]);
+
+    $penAge = intval(substr($pen['penBirth'], 0, 4)) ?: 0;
+    if($penAge) {
+      $penAge = intval(date('Y')) - $penAge + 1;
+    }
+
     $list[] = array(
       'penId' => $pen['penId'],
       'penNm' => $pen['penNm'],
@@ -29,6 +35,7 @@ if($result['errorYN'] === 'N') {
       'penTypeCd' => $pen['penTypeCd'],
       'penTypeNm' => $pen['penTypeNm'],
       'penBirth' => $pen['penBirth'],
+      'penAge' => $pen['penAge'],
       'penGender' => $pen['penGender'],
       'penConNum' => $pen['penConNum'],
       'penProConNum' => $pen['penProConNum'],
