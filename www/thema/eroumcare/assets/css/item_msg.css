@@ -2,11 +2,6 @@
  * 품목/정보 메시지 전달 스타일시트
  */
 
-.flexdatalist-results span:not(:first-child):not(.highlight) {
-  font-size: 12px;
-  color: #666;
-}
-
 .im_desc_wr {
   border: 1px solid #ddd;
   border-radius: 5px;
