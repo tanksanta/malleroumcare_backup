@@ -45,6 +45,11 @@ $sql = "
     it_type3,
     it_type4,
     it_type5,
+    it_type6,
+    it_type7,
+    it_type8,
+    it_type9,
+    it_type10,
     it_expected_warehousing_date
   FROM
     {$g5['g5_shop_item_table']} a

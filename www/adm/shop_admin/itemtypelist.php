@@ -70,6 +70,11 @@ $sql  = " select it_id,
                  it_type3,
                  it_type4,
                  it_type5,
+                 it_type6,
+                 it_type7,
+                 it_type8,
+                 it_type9,
+                 it_type10,
 				 ca_id,
 				 pt_it,
 				 pt_id
@@ -142,11 +147,19 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <tr>
         <th scope="col"><?php echo subject_sort_link("it_id", $qstr, 1); ?>상품코드</a></th>
         <th scope="col"><?php echo subject_sort_link("it_name"); ?>상품명</a></th>
-        <th scope="col"><?php echo subject_sort_link("it_type1", $qstr, 1); ?>히트<br>상품</a></th>
-        <th scope="col"><?php echo subject_sort_link("it_type2", $qstr, 1); ?>추천<br>상품</a></th>
-        <th scope="col"><?php echo subject_sort_link("it_type3", $qstr, 1); ?>신규<br>상품</a></th>
-        <th scope="col"><?php echo subject_sort_link("it_type4", $qstr, 1); ?>인기<br>상품</a></th>
-        <th scope="col"><?php echo subject_sort_link("it_type5", $qstr, 1); ?>할인<br>상품</a></th>
+        <th scope="col"><?php echo subject_sort_link("it_type1", $qstr, 1); ?><?=$default['de_it_type1_name']?></a></th>
+        <th scope="col"><?php echo subject_sort_link("it_type2", $qstr, 1); ?><?=$default['de_it_type2_name']?></a></th>
+        <th scope="col"><?php echo subject_sort_link("it_type3", $qstr, 1); ?><?=$default['de_it_type3_name']?></a></th>
+        <th scope="col"><?php echo subject_sort_link("it_type4", $qstr, 1); ?><?=$default['de_it_type4_name']?></a></th>
+        <th scope="col"><?php echo subject_sort_link("it_type5", $qstr, 1); ?><?=$default['de_it_type5_name']?></a></th>
+        <?php
+        for($x = 6; $x <= 10; $x++) {
+            $cur_it_type = 'it_type' . $x;
+            if($default['de_' . $cur_it_type . '_name']) {
+                echo '<th scope="col">' . subject_sort_link($cur_it_type, $qstr, 1) . $default['de_' . $cur_it_type . '_name'] . '</a></th>';
+            }
+        }
+        ?>
         <th scope="col">관리</th>
     </tr>
     </thead>
@@ -169,25 +182,36 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 		<!-- // -->
 		<td class="td_left"><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?><?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
         <td class="td_chk2">
-            <label for="type1_<?php echo $i; ?>" class="sound_only">히트상품</label>
+            <label for="type1_<?php echo $i; ?>" class="sound_only"><?=$default['de_it_type1_name']?></label>
             <input type="checkbox" name="it_type1[<?php echo $i; ?>]" value="1" id="type1_<?php echo $i; ?>" <?php echo ($row['it_type1'] ? 'checked' : ''); ?>>
         </td>
         <td class="td_chk2">
-            <label for="type2_<?php echo $i; ?>" class="sound_only">추천상품</label>
+            <label for="type2_<?php echo $i; ?>" class="sound_only"><?=$default['de_it_type2_name']?></label>
             <input type="checkbox" name="it_type2[<?php echo $i; ?>]" value="1" id="type2_<?php echo $i; ?>" <?php echo ($row['it_type2'] ? 'checked' : ''); ?>>
         </td>
         <td class="td_chk2">
-            <label for="type3_<?php echo $i; ?>" class="sound_only">신규상품</label>
+            <label for="type3_<?php echo $i; ?>" class="sound_only"><?=$default['de_it_type3_name']?></label>
             <input type="checkbox" name="it_type3[<?php echo $i; ?>]" value="1" id="type3_<?php echo $i; ?>" <?php echo ($row['it_type3'] ? 'checked' : ''); ?>>
         </td>
         <td class="td_chk2">
-            <label for="type4_<?php echo $i; ?>" class="sound_only">인기상품</label>
+            <label for="type4_<?php echo $i; ?>" class="sound_only"><?=$default['de_it_type4_name']?></label>
             <input type="checkbox" name="it_type4[<?php echo $i; ?>]" value="1" id="type4_<?php echo $i; ?>" <?php echo ($row['it_type4'] ? 'checked' : ''); ?>>
         </td>
         <td class="td_chk2">
-            <label for="type5_<?php echo $i; ?>" class="sound_only">할인상품</label>
+            <label for="type5_<?php echo $i; ?>" class="sound_only"><?=$default['de_it_type5_name']?></label>
             <input type="checkbox" name="it_type5[<?php echo $i; ?>]" value="1" id="type5_<?php echo $i; ?>" <?php echo ($row['it_type5'] ? 'checked' : ''); ?>>
         </td>
+        <?php
+        for($x = 6; $x <= 10; $x++) {
+            $cur_it_type = 'it_type' . $x;
+            if($default['de_' . $cur_it_type . '_name']) {
+                echo '<td class="td_chk2">';
+                echo '<label for="type' . $x . '_' . $i . '" class="sound_only">' . $default['de_' . $cur_it_type . '_name'] . '</label>';
+                echo '<input type="checkbox" name="' . $cur_it_type . '[' . $i . ']" value="1" id="type' . $x . '_' . $i . '" ' . ($row[$cur_it_type] ? 'checked' : '') . '>';
+                echo '</td>';
+            }
+        }
+        ?>
         <td class="td_mng td_mng_s">
             <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03"><span class="sound_only"><?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?> </span>수정</a>
          </td>

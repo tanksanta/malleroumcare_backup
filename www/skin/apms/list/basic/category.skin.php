@@ -188,10 +188,12 @@ $(function() {
 			<div class="cate_head">기타설정</div>
 			<div class="cate_body">
         <?php
-        for($i = 1; $i <= 5; $i++) {
-          echo '<a href="'.$ca_url.$ca_sub_url.$sort_url.$sup_url.$q_url.(in_array($i, $it_type) ? make_it_type_url(array_diff($it_type, [$i])) : '&it_type%5B%5D='.$i).'"'.(in_array($i, $it_type) ? ' class="active"' : '').'>';
-          echo $default['de_it_type'.$i.'_name'];
-          echo '</a>';
+        for($i = 1; $i <= 10; $i++) {
+          if($default['de_it_type'.$i.'_name']) {
+            echo '<a href="'.$ca_url.$ca_sub_url.$sort_url.$sup_url.$q_url.(in_array($i, $it_type) ? make_it_type_url(array_diff($it_type, [$i])) : '&it_type%5B%5D='.$i).'"'.(in_array($i, $it_type) ? ' class="active"' : '').'>';
+            echo $default['de_it_type'.$i.'_name'];
+            echo '</a>';
+          }
         }
         ?>
 			</div>
