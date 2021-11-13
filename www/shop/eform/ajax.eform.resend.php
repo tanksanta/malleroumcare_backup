@@ -58,7 +58,7 @@ if($dc['penMail']) {
 }
 
 // 알림톡 발송
-send_alim_talk('PEN_EFORM_'.$dc_id, $dc['penConNum'], 'pen_eform_result', "[이로움]\n\n{$dc['penNm']}님,\n{$dc['entNm']} 사업소와 전자계약이 체결되었습니다.", array(
+$result = send_alim_talk('PEN_EFORM_'.$dc_id, $dc['penConNum'], 'pen_eform_result', "[이로움]\n\n{$dc['penNm']}님,\n{$dc['entNm']} 사업소와 전자계약이 체결되었습니다.", array(
   'button' => [
     array(
       'name' => '문서확인',
@@ -68,4 +68,4 @@ send_alim_talk('PEN_EFORM_'.$dc_id, $dc['penConNum'], 'pen_eform_result', "[이�
   ]
 ));
 
-json_response(200, 'OK');
+json_response(200, 'OK', $result);
