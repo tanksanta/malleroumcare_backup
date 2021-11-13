@@ -156,7 +156,9 @@ mailer('이로움', 'no-reply@eroumcare.com', $eform['entMail'], "[이로움] {$
 $ent = sql_fetch(" SELECT * FROM g5_member WHERE mb_entId = '{$eform['entId']}' ");
 
 // 알림톡 발송
-send_alim_talk('PEN_EFORM_'.$uuid, $eform['penConNum'], 'pen_eform_result', "[이로움]\n\n{$eform['penNm']}님,\n{$eform['entNm']} 사업소와 전자계약이 체결되었습니다.", array(
+$dc_id_b64 = base64_encode($eform['dc_id']);
+$dc_id_b64 = str_replace(['+', '/', '='], ['-', '_', ''], $dc_id_b64);
+send_alim_talk('PEN_EF_'.$dc_id_b64, $eform['penConNum'], 'pen_eform_result', "[이로움]\n\n{$eform['penNm']}님,\n{$eform['entNm']} 사업소와 전자계약이 체결되었습니다.", array(
   'button' => [
     array(
       'name' => '문서확인',
