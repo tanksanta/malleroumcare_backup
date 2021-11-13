@@ -163,7 +163,7 @@ send_alim_talk('PEN_EF_'.$dc_id_b64, $eform['penConNum'], 'pen_eform_result', "[
     array(
       'name' => '문서확인',
       'type' => 'WL',
-      'url_mobile' => 'https://eroumcare.com/eform/eformInquiry.php?id='.$uuid
+      'url_mobile' => 'https://eroumcare.com/shop/eform/eformInquiry.php?id='.$uuid
     )
   ]
 ));
