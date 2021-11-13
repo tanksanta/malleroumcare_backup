@@ -3,6 +3,10 @@ include_once("./_common.php");
 
 if($is_admin != 'super') alert('접근 ㄴㄴ');
 
+$result = get_biztalk_result();
+print_r2($result);
+
+/*
 include_once(G5_LIB_PATH."/PHPExcel.php");
 $reader = PHPExcel_IOFactory::createReader('Excel5');
 $excel = $reader->load('./boxsize.xls');
@@ -29,5 +33,6 @@ for($i = 2; $i <= $num_rows; $i++) {
   sql_query(" UPDATE g5_shop_item SET it_box_size = '$it_box_size' WHERE it_id = '$it_id' ");
 }
 
-echo 'OK';
+echo 'OK';*/
+
 ?>
