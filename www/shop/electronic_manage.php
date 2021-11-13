@@ -215,6 +215,31 @@ $(function() {
     });
   });
 
+  // 계약서 재전송
+  $(document).on('click', '.btn_resend_eform', function(e) {
+    e.preventDefault();
+
+    var dc_id = $(this).data('id');
+    var name = $(this).data('name');
+    var hp = $(this).data('hp');
+    var mail = $(this).data('mail');
+
+    var confirm_msg = name + '(' + hp + (mail ? ' / ' + mail : '') + ') 수급자에게 계약서를 다시 전송하시겠습니까?';
+    if(!confirm(confirm_msg))
+      return;
+    
+    $.post('/shop/eform/ajax.eform.resend.php', {
+      dc_id: dc_id
+    }, 'json')
+    .done(function() {
+      alert('전송되었습니다.');
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  });
+
   <?php if($eform) { ?>
   if(confirm('계약서가 생성되었습니다.\n지금 바로 <?=$eform['penNm']?> 수급자에게 서명을 받으시겠습니까?'))
     window.location.href = '/shop/eform/signEform.php?dc_id=<?=$dc_id?>';
