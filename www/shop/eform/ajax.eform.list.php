@@ -112,6 +112,7 @@ $result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where
 <th>작성일</th>
 <th>전자문서</th>
 <th>거래영수증</th>
+<th>전송하기</th>
 </tr>
 </thead>
 <tbody>
@@ -194,6 +195,11 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
   if($row['od_id']) {
     echo '<a href="' . G5_SHOP_URL . '/eform/downloadReceipt.php?od_id=' . $row["od_id"] . '" class="btn_basic">거래영수증</a>';
   }
+  ?>
+</td>
+<td class="text_c">
+  <?php
+  echo '<a href="javascript:void(0);" class="btn_basic btn_resend_eform" data-id="' . $row["uuid"] . '" data-name="' . $row["penNm"] . '" data-hp="' . $row["penConNum"] . '" data-mail="' . $row["penMail"] . '">계약서 재전송</a>';
   ?>
 </td>
 </tr>
