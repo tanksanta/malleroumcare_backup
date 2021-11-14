@@ -435,7 +435,7 @@ if($is_main && !$is_member) {
             if(get_session('ss_pen_id')) { // 연결된 사업소가 있는 경우
           ?>
           <div class="side_nav_area">
-            <div class="div_title">수급자</div>
+          <div class="div_title">수급자</div>
             <ul>
               <li>
                 <a href="/shop/claim_manage.php">
@@ -452,6 +452,15 @@ if($is_main && !$is_member) {
               <li>
                 <a href="/shop/recipient_cart.php">
                   공급제품 보관함
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+            <div class="div_title">기타</div>
+            <ul>
+              <li>
+                <a href="/shop/check_my_ltcare_info.php">
+                  내 요양정보 확인
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>
