@@ -22,6 +22,9 @@ if($dc_id) {
   if(!$eform['uuid']) {
     die('계약서를 확인할 수 없습니다.');
   }
+
+  if($preview && !$eform['penNm'])
+    $eform['penNm'] = '이로움';
 } else {
   $timestamp = intval($_GET['timestamp']);
   $datetime = date('Y-m-d H:i:s', $timestamp);
