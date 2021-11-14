@@ -394,17 +394,19 @@ if($is_main && !$is_member) {
             </a>
           </div>
 
+          <?php if($member['mb_type'] == 'default') { ?>
           <div class="conv_area">
             <div class="conv_hd">
               <img src="<?php echo THEMA_URL; ?>/assets/img/icon_smart.png">
               이로움 스마트 서비스
             </div>
-            <?php if($member['mb_type'] == 'default' && in_array($member['mb_id'], ['hula1202', 'joabokji'])) { ?>
+            <?php if(in_array($member['mb_id'], ['hula1202', 'joabokji'])) { ?>
             <a href="/shop/item_msg_list.php" class="pen_item_msg">✓ 간편 제안서 작성</a>
             <a href="/shop/simple_eform.php" class="simple_eform">✓ 간편 계약서 작성</a>
             <?php } ?>
             <a href="/shop/simple_order.php" class="simple_order">✓ 간편 주문서 작성</a>
           </div>
+          <?php } ?>
 
           <?php
           if($member['mb_type'] == 'partner') {
