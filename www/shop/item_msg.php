@@ -13,6 +13,10 @@ $sql = "
 $ms = sql_fetch($sql);
 if(!$ms['ms_id']) exit;
 
+if($preview && !$ms['ms_pen_nm']) {
+  $ms['ms_pen_nm'] = '이로움';
+}
+
 $sql = " SELECT * FROM recipient_item_msg_item WHERE ms_id = '{$ms['ms_id']}' ORDER BY mi_id ASC ";
 $result = sql_query($sql);
 

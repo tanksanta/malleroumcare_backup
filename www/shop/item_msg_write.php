@@ -147,7 +147,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
         </div>
       </div>
 
-      <div class="im_flex space-between">
+      <div id="im_body_wr" class="im_flex space-between <?php if($ms['ms_url']) echo 'active preview'; ?>">
         <div class="im_item_wr">
           <div class="im_tel_wr im_flex space-between">
             <div class="im_sch_hd">사업소 전화번호 공개</div>
@@ -239,7 +239,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           </div>
           <div id="im_preview" class="im_preview">
             <?php if($ms['ms_url']) { ?>
-            <iframe src="item_msg.php?url=<?=$ms['ms_url']?>" frameborder="0"></iframe>
+            <iframe src="item_msg.php?preview=1&url=<?=$ms['ms_url']?>" frameborder="0"></iframe>
             <?php } else { ?>
             <div class="empty">상품이 추가되면 자동 생성됩니다.</div>
             <?php } ?>
@@ -274,9 +274,12 @@ function check_no_item() {
   if($('.im_write_list li').length == 0) {
     $('.no_item_info').show();
     $('.im_list_hd').hide();
+    $('#btn_im_send').removeClass('active');
   } else {
     $('.no_item_info').hide();
     $('.im_list_hd').show();
+    if($('#ms_pen_nm').val() && $('#ms_pen_hp').val())
+      $('#btn_im_send').addClass('active');
   }
 }
 
@@ -310,9 +313,14 @@ var loading = false;
 function save_item_msg(no_items) {
   if(loading)
     return;
+
+  var pen_type = $('input[name="pen_type"]:checked').val();
   
-  if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
-    $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
+  if(pen_type == '1') {
+    // 기존 수급자 검색일 경우
+    if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
+      $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
+  }
 
   loading = true;
   $form = $('#form_item_msg');
@@ -322,12 +330,13 @@ function save_item_msg(no_items) {
   $.post($form.attr('action'), query, 'json')
   .done(function(result) {
     var data = result.data;
-    var ms_url = 'item_msg.php?url=' + data.ms_url;
+    var ms_url = 'item_msg.php?preview=1&url=' + data.ms_url;
     $('input[name="w"]').val('u');
     $('input[name="ms_id"]').val(data.ms_id);
     $('#ms_pen_url').text('https://eroumcare.com/shop/' + ms_url);
     $('.btn_im_copy').show();
     $('#im_preview').empty().append($('<iframe>').attr('src', ms_url).attr('frameborder', 0));
+    $('#im_body_wr').addClass('preview');
   })
   .fail(function($xhr) {
     var data = $xhr.responseJSON;
@@ -345,6 +354,7 @@ $(function() {
   <?php } else { ?>
   var pen = null;
   <?php } ?>
+  var pen_id_flexdata = null;
 
   function update_pen_info() {
     if(!pen) {
@@ -392,10 +402,12 @@ $(function() {
       // 기존수급자
       toggle_pen_id_flexdatalist(true);
       $('input[name="ms_pro_yn"]').closest('.radio_wr').show();
+      $('#ms_pen_nm').next().focus();
     } else {
       // 신규수급자
       toggle_pen_id_flexdatalist(false);
       $('input[name="ms_pro_yn"]').closest('.radio_wr').hide();
+      $('#ms_pen_nm').focus();
     }
   }
   $('input[name="pen_type"]').change(function() {
@@ -406,7 +418,8 @@ $(function() {
 
   function toggle_pen_id_flexdatalist(on) {
     if(on) {
-      $('.pen_id_flexdatalist').flexdatalist({
+      if(pen_id_flexdata) return;
+      pen_id_flexdata = $('.pen_id_flexdatalist').flexdatalist({
         minLength: 1,
         url: 'ajax.get_pen_id.php',
         cache: true, // cache
@@ -435,10 +448,15 @@ $(function() {
         update_pen_info();
         setPenHp('N');
 
+        $('#im_body_wr').addClass('active');
+        // 처음 팝업
+        $('.im_sch_pop').show();
         $('#ipt_im_sch').next().focus();
       });
     } else {
-      $('.pen_id_flexdatalist').flexdatalist('destroy');
+      if(!pen_id_flexdata) return;
+      pen_id_flexdata.flexdatalist('destroy');
+      pen_id_flexdata = null;
     }
   }
 
@@ -555,11 +573,31 @@ $(function() {
     $('.im_sch_pop').hide();
   });
 
+  // 핸드폰 번호 입력 체크
+  var pen_hp_input_timer = null;
+  $('#ms_pen_hp').on('change paste keyup input', function() {
+    if(pen_hp_input_timer) clearTimeout(pen_hp_input_timer);
+
+    var $this = $(this);
+    var ms_pen_hp = $(this).val();
+
+    pen_hp_input_timer = setTimeout(function() {
+      var hp_pattern = /01[016789]-[^0][0-9]{2,3}-[0-9]{3,4}/;
+      ms_pen_hp = ms_pen_hp.replace( /(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, "$1-$2-$3" );
+      $this.val(ms_pen_hp);
+
+      if(hp_pattern.test(ms_pen_hp)) {
+        $('#im_body_wr').addClass('active');
+        // 처음 팝업
+        $('.im_sch_pop').show();
+        $('#ipt_im_sch').next().focus();
+        check_no_item();
+      }
+    }, 300);
+  });
+
   check_no_item();
   check_pen_type();
-  
-  // 처음 팝업
-  $('.im_sch_pop').show();
 });
 </script>
 

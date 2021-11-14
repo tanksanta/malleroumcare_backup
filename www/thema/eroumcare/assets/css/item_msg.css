@@ -36,6 +36,9 @@
   font-size: 18px;
   font-weight: bold;
   border-radius: 5px;
+  background: #e7e7e7;
+}
+.btn_im_send.active {
   background: #8abf63;
 }
 .btn_im_send:hover, .btn_im_send:focus {
@@ -209,14 +212,37 @@
   line-height: 25px;
 }
 
+#im_body_wr {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 1.5s cubic-bezier(0, 1, 0, 1), opacity 1.5s;
+}
+
+#im_body_wr.active {
+  opacity: 1;
+  max-height: 2000px;
+  transition: max-height 1.5s ease-in-out, opacity 1.5s;
+}
+
 .im_item_wr {
+  width: 100%;
+  transition: width 0.5s;
+}
+.preview .im_item_wr {
   width: 48%;
 }
 
 .im_preview_wr {
-  width: 48%;
+  display: none;
+  width: 0;
   border: 1px solid #f1efea;
   height: 732px;
+  transition: width 0.5s;
+}
+.preview .im_preview_wr {
+  display: block;
+  width: 48%;
 }
 
 .im_preview_hd {
@@ -313,6 +339,15 @@
 .im_item {
   position: relative;
   padding: 10px;
+}
+
+.im_item > .im_flex > img {
+  display: block;
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  height: 100px;
+  border: 1px solid #ddd;
 }
 
 .im_flex {
@@ -606,11 +641,11 @@
     display: block;
   }
 
-  .im_item_wr {
+  .im_item_wr, .preview .im_item_wr {
     width: 100%;
   }
 
-  .im_preview_wr {
+  .im_preview_wr, .preview .im_preview_wr {
     width: 100%;
     margin-bottom: 100px;
   }
