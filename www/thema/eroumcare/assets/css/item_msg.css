@@ -109,6 +109,17 @@
   width: 100%;
   font-size: 16px;
 }
+.active .ipt_im_sch {
+  animation: im_sch 2s;
+}
+@keyframes im_sch{
+  from {
+    width: 50%;
+  }
+  to {
+    width: 100%;
+  }
+}
 .im_sch_pop {
   display: none;
   position: absolute;

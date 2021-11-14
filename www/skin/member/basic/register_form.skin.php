@@ -110,13 +110,16 @@ add_javascript(G5_POSTCODE_JS, 0);
           <div class="h15 hidden-lg hidden-md hidden-sm"></div>
         </div>
         <div class="desc_txt">
-          <span>*영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.</span>
+          <span id="pw_keyup">*영문/숫자를 반드시 포함한 8자리 이상 12자리 이하로 입력해 주세요.</span>
         </div>
       </div>
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label" for="reg_mb_password_re"><b>비밀번호 확인</b><strong class="sound_only">필수</strong></label>
         <div class="col-sm-3">
           <input type="password" name="mb_password_re" id="reg_mb_password_re" <?php echo $required ?> class="form-control input-sm" minlength="3" maxlength="20">
+        </div>
+        <div class="desc_txt">
+          <span id="pw_re_keyup"></span>
         </div>
       </div>
 
@@ -868,7 +871,7 @@ $(function() {
 
   //아이디 체크
   var mb_id_check_timer = null;
-  $('#reg_mb_id').on('keyup', function() {
+  $('#reg_mb_id').on('keyup change input', function() {
 
     if(mb_id_check_timer)
       clearTimeout(mb_id_check_timer);
@@ -891,9 +894,47 @@ $(function() {
       }
     }, 500);
   });
+  //비밀번호 체크
+  var mb_pw_check_timer = null;
+  $('#reg_mb_password').on('keyup change input', function() {
+
+    if(mb_pw_check_timer)
+      clearTimeout(mb_pw_check_timer);
+    
+    var $this = $(this);
+
+    mb_pw_check_timer = setTimeout(function() {
+      var msg = check_pw($this.val());
+      if(msg) {
+        $('#pw_keyup').html(msg);
+        $('#pw_keyup').css( "color", "#d44747" );
+      } else {
+        $('#pw_keyup').html("등록 가능한 비밀번호입니다.");
+        $('#pw_keyup').css( "color", "#4788d4" );
+      }
+    }, 500);
+  });
+  //비밀번호 확인 체크
+  var mb_pw_re_check_timer = null;
+  $('#reg_mb_password_re').on('keyup change input', function() {
+
+    if(mb_pw_re_check_timer)
+      clearTimeout(mb_pw_re_check_timer);
+    
+    var $this = $(this);
+
+    mb_pw_re_check_timer = setTimeout(function() {
+      if($this.val() && $this.val() == $('#reg_mb_password').val()) {
+        $('#pw_re_keyup').html("동일하게 입력하셨습니다.");
+        $('#pw_re_keyup').css( "color", "#4788d4" );
+      } else {
+        $('#pw_re_keyup').html("");
+      }
+    }, 500);
+  });
   //이메일 체크
   var mb_email_check_timer = null;
-  $('#reg_mb_email').on('keyup', function() {
+  $('#reg_mb_email').on('keyup change input', function() {
 
     if(mb_email_check_timer)
       clearTimeout(mb_email_check_timer);
@@ -913,7 +954,7 @@ $(function() {
   });
   //사업자번호 체크
   var giup_bnum_check_timer = null;
-  $('#mb_giup_bnum').on('keyup', function() {
+  $('#mb_giup_bnum').on('keyup change input', function() {
 
     if(giup_bnum_check_timer)
       clearTimeout(giup_bnum_check_timer);
@@ -1264,23 +1305,20 @@ $(function () {
     $('#sbnum').show();
   }
 });
+<?php } ?>
 
-function chkPW(pw) {
+function check_pw(pw) {
   var pw = pw;
   var num = pw.search(/[0-9]/g);
   var eng = pw.search(/[a-z]/ig);
-  if(pw.length < 6 || pw.length > 12) {
-    alert("8자리 ~ 20자리 이내로 입력해주세요.");
-    return false;
+  if(pw.length < 8 || pw.length > 12) {
+    return "8자리 ~ 12자리 이내로 입력해주세요.";
   } else if(pw.search(/\s/) != -1) {
-    alert("비밀번호는 공백 없이 입력해주세요.");
-    return false;
+    return "비밀번호는 공백 없이 입력해주세요.";
   } else if(num < 0 || eng < 0 ) {
-    alert("영문,숫자를 혼합하여 입력해주세요.");
-    return false;
+    return "영문,숫자를 혼합하여 입력해주세요.";
   } else {
-    return true;
+    return false;
   }
 }
-<?php } ?>
 </script>
