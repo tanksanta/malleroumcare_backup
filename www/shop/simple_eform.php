@@ -156,7 +156,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         </div>
       </div>
 
-      <div class="flex space-between">
+      <div id="se_body_wr" class="flex space-between <?php if($dc) echo 'active preview' ;?>">
         <div class="se_item_wr">
           <div class="se_sch_wr">
             <div class="se_sch_hd">상품정보</div>
@@ -430,9 +430,11 @@ function check_no_item() {
   if(total == 0) {
     $('.no_item_info').show();
     $('.se_item_list_hd').hide();
+    $('.btn_se_submit').removeClass('active');
   } else {
     $('.no_item_info').hide();
     $('.se_item_list_hd').show();
+    $('.btn_se_submit').addClass('active');
   }
 }
 
@@ -602,6 +604,7 @@ function save_eform() {
 
       var preview_url = '/shop/eform/renderEform.php?preview=1&dc_id=' + dc_id;
       $('#se_preview').empty().append($('<iframe>').attr('src', preview_url).attr('frameborder', 0));
+      $('#se_body_wr').addClass('preview');
     })
     .fail(function ($xhr) {
       var data = $xhr.responseJSON;
@@ -691,6 +694,7 @@ function toggle_pen_id_flexdatalist(on) {
       $('#penExpiStDtm').val(obj.penExpiStDtm).prop('disabled', false);
       $('#penExpiEdDtm').val(obj.penExpiEdDtm).prop('disabled', false);
       $('#penJumin').val(obj.penJumin).prop('disabled', false);
+      $('#se_body_wr').addClass('active');
     });
   } else {
     $('.pen_id_flexdatalist').flexdatalist('destroy');
@@ -845,6 +849,29 @@ function check_pen_type() {
 $('input[name="pen_type"]').change(function() {
   $('#penId').val('');
   check_pen_type();
+});
+
+// 요양인정번호 입력
+var penLtmNum_timer = null;
+$('#penLtmNum').on('change paste keyup input', function() {
+  if(penLtmNum_timer) clearTimeout(penLtmNum_timer);
+
+  var $this = $(this);
+  var penLtmNum = $(this).val();
+
+  penLtmNum = penLtmNum.substring(0, 11);
+  $this.val(penLtmNum);
+
+  penLtmNum_timer = setTimeout(function() {
+    var pattern = /L[0-9]{10}/;
+
+    if(pattern.test(penLtmNum)) {
+      $('#se_body_wr').addClass('active');
+      // 처음 팝업
+      $('.se_sch_pop').show();
+      check_no_item();
+    }
+  }, 300);
 });
 
 check_no_item();
