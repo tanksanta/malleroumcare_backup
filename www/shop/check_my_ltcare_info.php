@@ -57,51 +57,60 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
     margin-bottom: 30px;
 }
 </style>
-<section class="wrap">
-  <div class="sub_section_tit" style="text-align:center;">
-    내 요양정보 확인
-    <div style="clear: both;"></div>
+<section class="ltcare_wrap">
+  <div class="ltcare_tit" >
+    <p>내 요양정보 확인</p>
+    <p>수급자명, 요양인정번호 입력 후 조회 하시면<br/>내 정보 확인이 가능합니다.</p>
   </div>
-  <p style="text-align: center;
-    color: #b6b6b6;
-    margin: 12px 0 32px 0;">수급자명, 요양인정번호 입력 후 조회 하시면<br/>
-        내 정보 확인이 가능합니다.
-    </p>
-  <div class="inner">
+  <div class="ltcare_search">
     <form id="form_simple_eform" class="form-horizontal" autocomplete="off" onsubmit="return false;">
-      <div class="panel panel-default">
-        <div class="panel-body">
-        <div class="form-group">
-            <label for="penNm" class="col-md-2 control-label">
-              <strong>수급자명</strong>
-            </label>
-            <div class="col-md-3" style="max-width: unset;">
-            <input type="hidden" name="penId" id="mb_id" value="<?php echo $member['mb_id']; ?>">
-            <input type="hidden" name="penId" id="waiting_cnt" value="<?php echo $result3['cnt']; ?>">
-              <input type="text" name="penNm" id="penName" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="penNm" class="col-md-2 control-label">
-              <strong>요양인정번호</strong>
-            </label>
-            <div class="col-md-3" style="max-width: unset;">
-              <input type="text" name="penNm" id="penNum" class="form-control input-sm pen_id_flexdatalist" value="L">
-            </div>
-          </div>
-          <button type="submit" class="btn_se_submit">
+        <div class="search_input">
+        	<p>
+        		<label>
+	        		<span>수급자명</span> 
+	        		<input type="hidden" name="penId" id="mb_id" value="<?php echo $member['mb_id']; ?>">
+		            <input type="hidden" name="penId" id="waiting_cnt" value="<?php echo $result3['cnt']; ?>">
+		              <input type="text" name="penNm" id="penName"   value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명">
+        		</label>
+        	</p><br>
+        	<p>
+        		<label>
+        			<span>요양인정번호</span>
+        			<input type="text" name="penNm" id="penNum"   value="L">
+        		</label>
+        	</p>
+        	</div>
+        	
+        	<!-- <div class="form-group">
+        	            <label for="penNm" class="col-md-2 control-label">
+        	              <strong>수급자명</strong>
+        	            </label>
+        	            <div class="col-md-3" style="max-width: unset;">
+        	            <input type="hidden" name="penId" id="mb_id" value="<?php echo $member['mb_id']; ?>">
+        	            <input type="hidden" name="penId" id="waiting_cnt" value="<?php echo $result3['cnt']; ?>">
+        	              <input type="text" name="penNm" id="penName" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명">
+        	            </div>
+        	          </div>
+        	          <div class="form-group">
+        	            <label for="penNm" class="col-md-2 control-label">
+        	              <strong></strong>
+        	            </label>
+        	            <div class="col-md-3" style="max-width: unset;">
+        	              <input type="text" name="penNm" id="penNum" class="form-control input-sm pen_id_flexdatalist" value="L">
+        	            </div>
+        	          </div> -->
+        
+          <button type="submit">
             조회요청
           </button>
-        </div>
-      </div>
     </form>
   </div>
 </section>
 <p style="text-align:right;">최근 업데이트 : <?=$result2['updated_at']?></p>
 <section>
     <div class="recent_info">
-        <p>수급자명</p>
-        <p>장기요양정보</p>
+        <p>· 수급자명</p>
+        <p>· 장기요양정보</p>
     </div>
 </section>
 <div id="list_wrap" class="list_box">
@@ -118,16 +127,27 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
             <?php
                 for ($i=0; $row=sql_fetch_array($result); $i++) {
                     $info = $row['recipient_name'] . "(L" . $row['recipient_num'] . ")";
-                    $status = $row['status'] == 'D' ? "처리완료" : "대기중";
+                    $status = $row['status'] == 'D' ? "처리완료" : "<span class='txt_point'>대기중</span>";
             ?>
             <tr>
                 <td class="text_c"><?=$i?></td>
-                <td class="text_c"><?=$info?></td>
+                <td ><?=$info?></td>
                 <td class="text_c"><?=$status?></td>
             </tr>
             <?php } ?>
             </tbody>
         </table>
+    </div>
+    <div class="list-paging">
+      <ul class="pagination ">
+        <li> </li>
+        <li><a href="#">&lt;</a></li>
+        <li class="active"><a href="#">1</a></li>
+        <!-- <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li> -->
+        <li><a href="#">&gt;</a></li>
+        <li></li>
+      </ul>
     </div>
 </div>
 <script>
