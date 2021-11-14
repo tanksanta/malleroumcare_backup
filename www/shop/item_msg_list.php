@@ -91,7 +91,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
   <div class="sub_section_tit">간편 제안서</div>
   <div class="inner">
     <div class="im_desc_wr">
-      <a href="item_msg_write.php" class="btn_im_send">상품 제안서 작성하기</a>
+      <a href="item_msg_write.php" class="btn_im_send active">상품 제안서 작성하기</a>
       <div class="im_desc">
         <p>상품을 선택하여 수급자에게 전달할 제안서를 만들어 보세요.</p>
         <p>직접 만든 제안서는 수급자/보호자에게 문자로 전달 할 수 있습니다.</p>
