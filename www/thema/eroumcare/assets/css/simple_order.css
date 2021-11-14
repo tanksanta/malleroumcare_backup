@@ -101,6 +101,9 @@
   font-size: 18px;
   font-weight: bold;
   border-radius: 5px;
+  background: #e7e7e7;
+}
+.btn_so_order.active {
   background: #ef8505;
 }
 .btn_so_order:hover, .btn_so_order:focus {
@@ -163,6 +166,15 @@
   line-height: 1.5;
   width: 100%;
   font-size: 16px;
+  animation: so_sch 1s;
+}
+@keyframes so_sch{
+  from {
+    width: 50%;
+  }
+  to {
+    width: 100%;
+  }
 }
 .so_sch_pop {
   display: none;

@@ -631,9 +631,13 @@ function check_no_item() {
   if($('#so_item_list li').length == 0) {
     $('.no_item_info').show();
     $('.so_item_list_hd').hide();
+    $('.btn_so_order').removeClass('active');
+    $('.order-info').hide();
   } else {
     $('.no_item_info').hide();
     $('.so_item_list_hd').show();
+    $('.btn_so_order').addClass('active');
+    $('.order-info').show();
   }
 }
 
@@ -1054,6 +1058,7 @@ $(function() {
     
   // 처음 팝업
   $('.so_sch_pop').show();
+  $('#ipt_so_sch').next().focus();
 
   <?php
   if($_GET['dc_id']) {
