@@ -544,6 +544,20 @@ label {
         </th>
     </tr>
     <tr>
+        <th scope="row">배송지명</th>
+        <td colspan="3">
+            <label for="mb_addr_name" class="sound_only">배송지명</label>
+            <input type="text" name="mb_addr_name" value="<?php echo $mb['mb_addr_name'] ?: $mb['mb_name']; ?>" id="mb_addr_name" class="frm_input" size="60">
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">연락처</th>
+        <td colspan="3">
+            <label for="mb_addr_tel" class="sound_only">연락처</label>
+            <input type="text" name="mb_addr_tel" value="<?php echo $mb['mb_addr_tel'] ?: $mb['mb_tel']; ?>" id="mb_addr_tel" class="frm_input" size="60">
+        </td>
+    </tr>
+    <tr>
         <th scope="row">주소</th>
         <td colspan="3" class="td_addr_line">
             <label for="mb_zip" class="sound_only">우편번호</label>
