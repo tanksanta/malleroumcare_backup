@@ -33,8 +33,19 @@ $where = " and ";
 $sql_search = "";
 if ($stx != "") {
     if ($sfl != "") {
-        $sql_search .= " $where $sfl like '%$stx%' ";
-        $where = " and ";
+        if($sfl == 'all') {
+            $attrs = ['it_thezone', 'it_name', 'it_model', 'it_id', 'it_maker', 'it_origin', 'it_expected_warehousing_date'];
+            $sql_search .= " $where ( 1 != 1 ";
+            $where = ' or ';
+            foreach($attrs as $attr) {
+                $sql_search .= " $where $attr like '%$stx%' ";
+            }
+            $sql_search .= ' ) ';
+            $where = ' and ';
+        } else {
+            $sql_search .= " $where $sfl like '%$stx%' ";
+            $where = " and ";
+        }
     }
     if ($save_stx != $stx)
         $page = 1;
@@ -72,7 +83,7 @@ if ($sca != "") {
         ";
 }
 
-if ($sfl == "")  $sfl = "it_name";
+if ($sfl == "")  $sfl = "all";
 
 $sql_common = " from {$g5['g5_shop_item_table']} a ,
                      {$g5['g5_shop_category_table']} b
@@ -119,7 +130,7 @@ $sql  = " select *
            $sql_common
            $sql_order
            limit $from_record, $rows ";
-$result = sql_query($sql);
+$result = sql_query($sql, true);
 
 //$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page;
 $qstr .= '&amp;sca='.$sca.'&amp;page='.$page.'&amp;page_rows='.$page_rows.'&amp;save_stx='.$stx."&amp;searchProdSupYN=".$_GET["searchProdSupYN"];
@@ -220,6 +231,7 @@ $flist = apms_form(1,0);
 
   <label for="sfl" class="sound_only">검색대상</label>
   <select name="sfl" id="sfl">
+    <option value="all" <?php echo get_selected($sfl, 'all'); ?>>전체</option>
     <option value="it_thezone" <?php echo get_selected($sfl, 'it_thezone'); ?>>분류코드</option>
     <option value="it_name" <?php echo get_selected($sfl, 'it_name'); ?>>상품명</option>
     <option value="it_model" <?php echo get_selected($sfl, 'it_model'); ?>>모델명</option>
@@ -230,6 +242,7 @@ $flist = apms_form(1,0);
     <!-- APMS - 2014.07.20 -->
     <option value="pt_id" <?php echo get_selected($sfl, 'pt_id'); ?>>파트너 아이디</option>
     <!-- // -->
+    <option value="it_expected_warehousing_date" <?php echo get_selected($sfl, 'it_expected_warehousing_date'); ?>>입고예정알림</option>
   </select>
 
   <label for="stx" class="sound_only">검색어</label>
