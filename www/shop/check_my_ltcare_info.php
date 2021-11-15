@@ -100,7 +100,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
         	            </div>
         	          </div> -->
         
-          <button type="submit">
+          <button type="submit" id="btn_submit">
             조회요청
           </button>
     </form>
@@ -111,6 +111,10 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
     <div class="recent_info">
         <p>· 수급자명 : <?=$result2['recipient_name']?></p>
         <p>· 장기요양정보 : L<?=$result2['recipient_num']?></p>
+        <p>· 생년월일 : <?=$result2['birth']?></p>
+        <p>· 인정등급 : <?=$result2['grade']?></p>
+        <p>· 대상자구분 : <?=$result2['type']?></p>
+        <p>· 본인부담율 : <?=$result2['percent']?></p>
     </div>
 </section>
 <div id="list_wrap" class="list_box">
@@ -152,7 +156,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
     </div>
 </div>
 <script>
-    $(".btn_se_submit").click(function() {
+    $("#btn_submit").click(function() {
         var name = $("#penName").val();
         var num = $("#penNum").val();
         if (name.length < 2) {
