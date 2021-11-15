@@ -540,7 +540,11 @@ $warehouse_list = get_warehouses();
     <tr>
       <th scope="row"><label for="it_price">판매가격</label></th>
       <td>
-        <input type="text" name="it_price" value="<?php echo $it['it_price']; ?>" id="it_price" class="frm_input importantBorder" size="8"> 원
+        <?php
+        echo help("사업소별 가격 지정시 해당 사업소는 묶음할인 적용이 불가능합니다.");
+        $entprice_count = sql_fetch(" select count(*) as cnt from g5_shop_item_entprice where it_id = '$it_id' and it_price > 0 ");
+        ?>
+        <input type="text" name="it_price" value="<?php echo $it['it_price']; ?>" id="it_price" class="frm_input importantBorder" size="8"> 원, <span id="entprice_count"><?=$entprice_count['cnt']?></span>개 사업소 가격 수정 <button type="button" id="btn_entprice" class="btn_frmline" data-id="<?=$it_id?>">사업소 가격 지정</button>
       </td>
     </tr>
     <?php if($is_auth) { // 관리자일 때만 출력 ?>
@@ -2192,6 +2196,40 @@ $warehouse_list = get_warehouses();
     </table>
   </div>
 </section>
+
+<style>
+#popup_box { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#popup_box > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+#popup_box iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+
+@media (max-width : 750px) {
+  #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+</style>
+<div id="popup_box">
+  <div></div>
+</div>
+<script>
+// 사업소별 가격 수정
+$("#popup_box").hide();
+$("#popup_box").css("opacity", 1);
+
+$('#btn_entprice').click(function(e) {
+  $('body').addClass('modal-open');
+
+  var it_id = $(this).data('id');
+  $("body").addClass('modal-open');
+  $("#popup_box > div").html('<iframe src="pop.item.entprice.php?it_id=' + it_id + '">');
+  $("#popup_box iframe").load(function() {
+    $("#popup_box").show();
+  });
+});
+
+$('#popup_box').click(function() {
+  $('body').removeClass('modal-open');
+  $('#popup_box').hide();
+});
+</script>
 
 <?php echo $frm_submit; ?>
 

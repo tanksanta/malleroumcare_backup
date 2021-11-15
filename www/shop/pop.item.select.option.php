@@ -28,6 +28,16 @@ if($member['mb_level'] == 4 && $it['it_price_dealer2']) {
 } else {
     $data['it_price'] = $it['it_price'];
 }
+// 사업소별 판매가
+$entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$it['it_id']}' and mb_id = '{$member['mb_id']}' ");
+if($entprice['it_price']) {
+    $data['it_sale_cnt'] = 0;
+    $data['it_sale_cnt_02'] = 0;
+    $data['it_sale_cnt_03'] = 0;
+    $data['it_sale_cnt_04'] = 0;
+    $data['it_sale_cnt_05'] = 0;
+    $data['it_price'] = $entprice['it_price'];
+}
 $data['it_img'] = $it['it_img1'];
 $option_sql = "SELECT *
     FROM

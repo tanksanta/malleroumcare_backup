@@ -263,6 +263,13 @@ for($i=0; $i<$count; $i++) {
         $it['it_price']=$result_i['it_price_dealer2'];
       }
 
+      // 사업소별 판매가
+      $entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$it['it_id']}' and mb_id = '{$member['mb_id']}' ");
+      $it['entprice'] = $entprice['it_price'];
+
+      if($it['entprice'] > 0)
+        $it['it_price'] = $it['entprice'];
+
       if($it['prodSupYn']=="N") {
         $it['it_price']=0;
       }
@@ -308,8 +315,8 @@ for($i=0; $i<$count; $i++) {
       //기존 + 신규주문 개수
       $ct_qty2=$row2['ct_qty']+$ct_qty;
 
-      //할인율 적용
-      if (!$io_type) {
+      //할인율 적용: 사업소별 가격이 지정되어있는경우는 묶음할인 미적용
+      if (!$io_type && !$it['entprice']) {
         for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++) {
           if($itSaleCntList[$saleCnt] <= $ct_sale_qty) {
             if($itSaleCnt < $itSaleCntList[$saleCnt]) {
@@ -378,6 +385,13 @@ for($i=0; $i<$count; $i++) {
       $it['it_price']=$result_i['it_price_dealer2'];
     }
 
+    // 사업소별 판매가
+    $entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$it['it_id']}' and mb_id = '{$member['mb_id']}' ");
+    $it['entprice'] = $entprice['it_price'];
+
+    if($it['entprice'] > 0)
+      $it['it_price'] = $it['entprice'];
+
     if($it['prodSupYn']=="N") {
       $it['it_price']=0;
     }
@@ -423,7 +437,8 @@ for($i=0; $i<$count; $i++) {
 
     $itSaleCnt = 0;
     $itSalePrice = 0;
-    if (!$io_type) {
+    // 사업소별 가격이 지정되어있는경우는 묶음할인 미적용
+    if (!$io_type && !$it['entprice']) {
       for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++){
         if($itSaleCntList[$saleCnt] <= $ct_sale_qty){
           if($itSaleCnt < $itSaleCntList[$saleCnt]) {

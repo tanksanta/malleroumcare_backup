@@ -241,10 +241,14 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 		array_push($thisOptionList, $subRow["io_id"]);
 	}
 
+	// 사업소별 판매가
+	$entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$row['it_id']}' and mb_id = '{$member['mb_id']}' ");
+
 	$list[$i] = $row;
 	$list[$i]['href'] = './item.php?it_id='.$row['it_id'].'&amp;ca_id='.$ca_id.$qstr.'&amp;page='.$page;
 	$list[$i]['num'] = $num;
 	$list[$i]["optionList"] = $thisOptionList;
+	$list[$i]['entprice'] = $entprice['it_price'];
 	$num--;
 }
 

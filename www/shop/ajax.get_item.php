@@ -106,6 +106,17 @@ while ( $row = sql_fetch_array($result) ) {
   }
   unset($row['it_price_dealer2']);
 
+  // 사업소별 판매가
+  $entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$row['it_id']}' and mb_id = '{$member['mb_id']}' ");
+  if($entprice['it_price']) {
+    $row['it_sale_cnt'] = 0;
+    $row['it_sale_cnt_02'] = 0;
+    $row['it_sale_cnt_03'] = 0;
+    $row['it_sale_cnt_04'] = 0;
+    $row['it_sale_cnt_05'] = 0;
+    $row['it_price'] = $entprice['it_price'];
+  }
+
   $rows[] = $row;
 }
 

@@ -246,7 +246,10 @@ $sendData["prods"] = $prodsSendData;
             if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
               echo number_format($it["it_cust_price"]);
             } else {
-              if($member["mb_level"] == "3") {
+              if($it['entprice']) {
+                // 사업소별 지정 가격
+                echo number_format($it["entprice"]);
+              }else if($member["mb_level"] == "3") {
                 //사업소 가격
                 echo number_format($it["it_price"]);
               } else if($member["mb_level"] == "4") {
@@ -262,7 +265,7 @@ $sendData["prods"] = $prodsSendData;
         <p class="price-won">원</p>
         <?php
         $sale_cnt_txt = [];
-        if($_COOKIE["viewType"] != "basic") {
+        if($_COOKIE["viewType"] != "basic" && !$it['entprice']) {
           if(($is_admin == "super" || $member['mb_level'] == "3")||!$it['it_sale_percent_great']) {
             if($it["it_sale_cnt"]) {
               $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
@@ -485,7 +488,10 @@ $sendData["prods"] = $prodsSendData;
             if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
               echo number_format($it["it_cust_price"]);
             } else {
-              if($member["mb_level"] == "3") {
+              if($it['entprice']) {
+                // 사업소별 지정 가격
+                echo number_format($it["entprice"]);
+              } else if($member["mb_level"] == "3") {
                 //사업소 가격
                 echo number_format($it["it_price"]);
               } else if($member["mb_level"] == "4") {
@@ -503,7 +509,7 @@ $sendData["prods"] = $prodsSendData;
         <?php
         $sale_cnt_txt = [];
         $sale_percent_input = "";
-        if($_COOKIE["viewType"] != "basic") {
+        if($_COOKIE["viewType"] != "basic" && !$it['entprice']) {
           if(($is_admin == "super" || $member['mb_level'] == "3")||!$it['it_sale_percent_great']) {
             if($it["it_sale_cnt"]) {
               $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
@@ -612,6 +618,7 @@ $sendData["prods"] = $prodsSendData;
         <input type="hidden" name="sw_direct">
         <input type="hidden" name="url">
         <input type="hidden" id="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
+        <input type="hidden" id="entprice" value="<?php echo $it['entprice']; ?>">
 
 
           <table class="table pc">
@@ -663,7 +670,10 @@ $sendData["prods"] = $prodsSendData;
                     if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
                       echo $it["it_cust_price"];
                     } else {
-                      if($member["mb_level"] == "3") {
+                      if($it['entprice']) {
+                        // 사업소별 지정 가격
+                        echo $it['entprice'];
+                      } else if($member["mb_level"] == "3") {
                         //사업소 가격
                         echo $it["it_price"];
                       }else if($member["mb_level"] == "4") {
@@ -867,6 +877,11 @@ $sendData["prods"] = $prodsSendData;
                     <div class="col-sm-7">
                       <label>
                         <span class="it_opt_subj"><?php echo $it['it_name']; ?></span>
+                        <?php
+                        if($it['entprice']) {
+                          echo '<span class="it_opt_prc_desc">사업소할인적용</span>';
+                        }
+                        ?>
                         <span class="it_opt_prc"><span class="sound_only">(+0원)</span></span>
                       </label>
                     </div>

@@ -128,6 +128,13 @@ for($i = 0; $i < count($it_id_arr); $i++) {
         $it_price = $it['it_price_dealer2'];
     }
 
+    // 사업소별 판매가
+    $entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$it['it_id']}' and mb_id = '{$member['mb_id']}' ");
+    $it['entprice'] = $entprice['it_price'];
+
+    if($it['entprice'] > 0)
+        $it_price = $it['entprice'];
+
     // 비유통상품 가격
     if($it['prodSupYn'] == 'N') {
         $it_price = 0;
@@ -151,7 +158,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     }
     $itSaleCnt = 0;
 
-    if (!$io_type) {
+    if (!$io_type && !$it['entprice']) {
         for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++) {
             if($itSaleCntList[$saleCnt] <= $ct_sale_qty) {
                 if($itSaleCnt < $itSaleCntList[$saleCnt]) {

@@ -837,7 +837,7 @@ $(function() {
   $('#ipt_so_sch').flexdatalist({
     minLength: 1,
     url: 'ajax.get_item.php',
-    cache: true, // cache
+    cache: false, // cache
     searchContain: true, // %검색어%
     noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
     selectionRequired: true,
@@ -1144,6 +1144,23 @@ $(function() {
       else if($gubun == '02') $gubun_text = '비급여';
 
       $data['gubun'] = $gubun_text;
+
+      // 우수사업소 가격
+      if($member['mb_level'] == 4 && $row['it_price_dealer2']) {
+        $data['it_price'] = $row['it_price_dealer2'];
+      }
+      unset($data['it_price_dealer2']);
+
+      // 사업소별 판매가
+      $entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$row['it_id']}' and mb_id = '{$member['mb_id']}' ");
+      if($entprice['it_price']) {
+        $data['it_sale_cnt'] = 0;
+        $data['it_sale_cnt_02'] = 0;
+        $data['it_sale_cnt_03'] = 0;
+        $data['it_sale_cnt_04'] = 0;
+        $data['it_sale_cnt_05'] = 0;
+        $data['it_price'] = $entprice['it_price'];
+      }
 
       $data = json_encode($data);
   ?>

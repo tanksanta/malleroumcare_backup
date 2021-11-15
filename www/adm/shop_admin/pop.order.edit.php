@@ -284,6 +284,7 @@ var loading = false;
 
 // 기본 설정
 var mb_level = <?=($mb['mb_level'] ?: 3)?>;
+var mb_id = '<?=$mb['mb_id']?>';
 var item_sale_obj = <?php echo $item_sale_obj ? json_encode($item_sale_obj) : '{}' ?>;
 
 function formcheck(f) {
@@ -330,8 +331,8 @@ $(function() {
     function add_flexdatalist(node) {
         $(node).flexdatalist({
             minLength: 1,
-            url: './ajax.get_item.php',
-            cache: true, // cache
+            url: './ajax.get_item.php?mb_id=' + mb_id,
+            cache: false, // cache
             searchContain: true, // %검색어%
             noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
             selectionRequired: true,
