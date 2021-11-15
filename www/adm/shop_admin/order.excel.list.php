@@ -382,9 +382,10 @@
       date("Y-m-d", strtotime($od["od_time"]))."-".($i),
       $it_name,
       $it["ct_qty"],
-              $it_name." / ".$it["ct_qty"].' EA',
+      $it_name." / ".$it["ct_qty"].' EA',
       $od["od_b_name"],
-              $sale_manager,
+      $od["od_name"],
+      $sale_manager,
       $addr,
       $od["od_b_tel"],
       $od["od_b_hp"],
@@ -396,10 +397,10 @@
     ];
   }
 
-  $headers = array("주문번호", "일자-No.", "품목명[규격]", "수량", "품목&수량","성함(상호명)", "영업담당자", "배송처", "연락처","휴대폰", "적요", "배송지요청사항", "카트ID", "택배사", "송장번호");
+  $headers = array("주문번호", "일자-No.", "품목명[규격]", "수량", "품목&수량", "배송지명", "주문회원", "영업담당자", "배송처", "연락처", "휴대폰", "적요", "배송지요청사항", "카트ID", "택배사", "송장번호");
   $data = array_merge(array($headers), $rows);
     
-  $widths  = array(20, 20, 50, 10, 30, 50, 30, 50, 20, 20, 10, 20, 10, 15, 20);
+  $widths  = array(20, 20, 50, 10, 30, 30, 30, 30, 50, 20, 20, 10, 20, 10, 15, 20);
   $header_bgcolor = 'FFABCDEF';
   $last_char = column_char(count($headers) - 1);
 
