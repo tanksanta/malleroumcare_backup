@@ -109,8 +109,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
 <p style="text-align:right;">최근 업데이트 : <?=$result2['updated_at']?></p>
 <section>
     <div class="recent_info">
-        <p>· 수급자명</p>
-        <p>· 장기요양정보</p>
+        <p>· 수급자명 : <?=$result2['recipient_name']?></p>
+        <p>· 장기요양정보 : L<?=$result2['recipient_num']?></p>
     </div>
 </section>
 <div id="list_wrap" class="list_box">
@@ -125,16 +125,17 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
             </thead>
             <tbody>
             <?php
+                $query_num = sql_num_rows($result);
                 for ($i=0; $row=sql_fetch_array($result); $i++) {
                     $info = $row['recipient_name'] . "(L" . $row['recipient_num'] . ")";
                     $status = $row['status'] == 'D' ? "처리완료" : "<span class='txt_point'>대기중</span>";
             ?>
             <tr>
-                <td class="text_c"><?=$i?></td>
+                <td class="text_c"><?=$query_num?></td>
                 <td ><?=$info?></td>
                 <td class="text_c"><?=$status?></td>
             </tr>
-            <?php } ?>
+            <?php $query_num--; } ?>
             </tbody>
         </table>
     </div>
