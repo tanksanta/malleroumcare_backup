@@ -18,12 +18,25 @@ $qstr = "it_id=$it_id";
 $sql_common = " FROM g5_member m WHERE mb_type = 'default' and mb_level in (3, 4) ";
 
 $where = [];
-$sel_field = in_array($sel_field, ['mb_name']) ? $sel_field : '';
+$sel_field = in_array($sel_field, ['mb_name', 'mb_manager', 'entprice']) ? $sel_field : '';
 $search = get_search_string($search);
 
+if($is_admin != 'super') {
+    // 최고관리자가 아닌 경우 본인 영업담당 사업소만 보이게
+    $where[] = " ( mb_manager = '{$member['mb_id']}' ) ";
+}
+
 if($sel_field && $search) {
-    $where[] = " $sel_field like '%$search%' ";
-    $qstr .= "&amp;$sel_field=".urlencode($search);
+    if($sel_field == 'mb_manager') {
+        $where[] = " ( $sel_field like '%$search%' or (select mb_name from g5_member where mb_id = m.mb_manager) like '%$search%' ) ";
+    }
+    else if($sel_field == 'entprice') {
+        $where[] = " (select it_price from g5_shop_item_entprice where mb_id = m.mb_id and it_id = '$it_id') = $search ";
+    }
+    else {
+        $where[] = " $sel_field like '%$search%' ";
+    }
+    $qstr .= "&amp;sel_field=$sel_field&amp;search=".urlencode($search);
 }
 
 $sql_where = $where ? ( ' and ' . implode(' and ', $where) ) : '';
@@ -39,7 +52,9 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 $sql_limit = " limit {$from_record}, {$page_rows} ";
 
 $result = sql_query("
-    SELECT m.*, (select mb_name from g5_member where mb_id = m.mb_manager) as mb_manager_name
+    SELECT m.*,
+    (select mb_name from g5_member where mb_id = m.mb_manager) as mb_manager_name,
+    (select it_price from g5_shop_item_entprice where mb_id = m.mb_id and it_id = '$it_id') as entprice
     $sql_common
     $sql_limit
 ", true);
@@ -65,8 +80,10 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
             <label for="sel_field" class="sound_only">검색대상</label>
             <select name="sel_field" id="sel_field">
                 <option value="mb_name" <?php echo get_selected($sel_field, 'mb_name'); ?>>사업소명</option>
+                <?php if($is_admin === 'super') { ?> <option value="mb_manager" <?php echo get_selected($sel_field, 'mb_manager'); ?>>영업담당자</option> <?php } ?>
+                <option value="entprice" <?php echo get_selected($sel_field, 'entprice'); ?>>판매가격</option>
             </select>
-            <input type="text" name="search" value=""class="frm_input">
+            <input type="text" name="search" value="<?=$search?>"class="frm_input">
             <input type="submit" class="shbtn small" value="검색">
         </form>
     </div>
@@ -107,10 +124,10 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
                 <td><?="{$row['mb_name']} ({$row['mb_id']})"?></td>
                 <td class="it_option"><?=$row['mb_manager_name']?></td>
                 <td>
-                    <input type="text" class="ipt_entprice">
+                    <input type="text" class="ipt_entprice" value="<?=$row['entprice'] ?: ''?>">
                 </td>
                 <td class="no">
-                    <button type="button" class="shbtn small lineblue btn_apply">적용</button>
+                    <button type="button" class="shbtn small lineblue btn_apply" data-id="<?=$row['mb_id']?>">적용</button>
                 </td>
             </tr>
             <?php } ?>
@@ -120,5 +137,40 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 
     <?php echo get_paging(5, $page, $total_page, '?'.$qstr.'&amp;page='); ?>
 </div>
+
+<script>
+$(function() {
+    var loading = false;
+    $('.btn_apply').click(function() {
+        if(loading) return alert('적용 중입니다. 잠시만 기다려주세요.');
+
+        var it_id = $('#it_id').val();
+        var mb_id = $(this).data('id');
+        var it_price = $(this).closest('tr').find('.ipt_entprice').val();
+
+        loading = true;
+        $.post('ajax.item.entprice.php', {
+            it_id: it_id,
+            mb_id: mb_id,
+            it_price: it_price
+        }, 'json')
+        .done(function(result) {
+            alert('완료되었습니다.');
+            try {
+                $('#entprice_count', window.parent.document).text(result.data ? result.data : 0);
+            } catch(ex) {
+                // do nothing
+            }
+        })
+        .fail(function($xhr) {
+            var data = $xhr.responseJSON;
+            alert(data && data.message);
+        })
+        .always(function() {
+            loading = false;
+        });
+    });
+});
+</script>
 
 <?php include_once('./pop.tail.php'); ?>

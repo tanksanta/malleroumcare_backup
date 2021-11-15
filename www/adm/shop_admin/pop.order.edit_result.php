@@ -46,7 +46,7 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
     $qty = clean_xss_tags($qty_arr[$i]);
     $qty = (int) preg_replace("/[^\d]/","", $qty);
     $it_price = clean_xss_tags($it_price_arr[$i]);
-    $it_price = $it_price = (int) preg_replace("/[^\d]/","", $it_price);
+    $it_price = (int) preg_replace("/[^\d]/","", $it_price);
     $memo = clean_xss_tags($memo_arr[$i]);
 
     if(!$it_id)

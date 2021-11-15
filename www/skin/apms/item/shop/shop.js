@@ -368,8 +368,9 @@ function add_sel_option(type, id, option, price, stock) {
   var it_msg1 = $("input[name='it_msg1[]']").val();
   var it_msg2 = $("input[name='it_msg2[]']").val();
   var it_msg3 = $("input[name='it_msg3[]']").val();
-  var product_price = Number($('#it_price').val());
-  var it_buy_inc_qty = Number($('#it_buy_inc_qty').val());
+  var product_price = parseInt($('#it_price').val());
+  var it_buy_inc_qty = parseInt($('#it_buy_inc_qty').val());
+  var entprice = parseInt($('#entprice').val());
   if (it_buy_inc_qty < 1) it_buy_inc_qty = 1;
 
   var opt = '';
@@ -410,6 +411,9 @@ function add_sel_option(type, id, option, price, stock) {
   opt += '<input type="hidden" class="io_stock" value="' + stock + '">';
   opt += '<div class="row"><div class="col-sm-7"><label>';
   opt += '<span class="it_opt_subj">' + option + '</span>';
+  if(entprice > 0) {
+    opt += '<span class="it_opt_prc_desc">사업소할인적용</span>';
+  }
   opt += '<span class="it_opt_prc">' + opt_prc + '</span>';
   opt += '</label></div><div class="col-sm-5">';
   opt += '<div class="input-group-btn-del">';

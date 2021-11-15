@@ -2135,6 +2135,13 @@
     color:#999;
     font-size: 20px;
 }
+#item_option .list-group-item .row .col-sm-7 .it_opt_prc_desc {
+    position: absolute;
+    right: 38px;
+    bottom: 0;
+    font-size: 14px;
+    color: #ef7c00;
+}
 #item_option .list-group-item .row .col-sm-7 .it_opt_prc {
     position: absolute;
     right: 38px;

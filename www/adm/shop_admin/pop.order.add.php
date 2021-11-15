@@ -241,6 +241,7 @@ var loading = false;
 
 // 기본 설정
 var mb_level = 3;
+var mb_id = '';
 var item_sale_obj = {};
 
 function formcheck(f) {
@@ -308,8 +309,8 @@ $(function() {
     function add_flexdatalist(node) {
         $(node).flexdatalist({
             minLength: 1,
-            url: './ajax.get_item.php',
-            cache: true, // cache
+            url: './ajax.get_item.php?mb_id=' + mb_id,
+            cache: false, // cache
             searchContain: true, // %검색어%
             noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
             selectionRequired: true,
@@ -432,7 +433,12 @@ $(function() {
         );
 
         mb_level = obj.mb_level;
-        
+        mb_id = obj.mb_id;
+
+        $('.pop_order_add_item_table tbody tr').each(function() {
+            $(this).find('.item_flexdatalist').flexdatalist('url', './ajax.get_item.php?mb_id=' + mb_id);
+        });
+
         // 수급자 정보
         var ajax = $.ajax({
             method: "GET",

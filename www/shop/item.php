@@ -34,6 +34,9 @@ $sql_ca = ($ca_id) ? "b.ca_id = '{$ca_id}'" : "a.ca_id = b.ca_id";
 $sql = " select a.*, b.ca_name, b.ca_use from {$g5['g5_shop_item_table']} a, {$g5['g5_shop_category_table']} b where a.it_id = '$it_id' and $sql_ca ";
 $it = sql_fetch($sql);
 
+if (!$it['it_id'])
+    alert('자료가 없습니다.');
+
 # 210131 옵션목록
 $thisOptionList = [];
 $thisOptionQuery = sql_query("SELECT * FROM g5_shop_item_option WHERE it_id = '{$it["it_id"]}' ORDER BY io_no ASC");
@@ -48,8 +51,9 @@ for($i = 0; $row = sql_fetch_array($thisOptionQuery); $i++){
 }
 $it["optionList"] = $thisOptionList;
 
-if (!$it['it_id'])
-    alert('자료가 없습니다.');
+// 사업소별 판매가
+$entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '$it_id' and mb_id = '{$member['mb_id']}' ");
+$it['entprice'] = $entprice['it_price'];
 
 // 멤버쉽 확인 ------------------------
 if (function_exists('apms_membership_item')) {

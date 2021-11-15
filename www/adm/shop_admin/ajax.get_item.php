@@ -3,6 +3,13 @@ include_once('./_common.php');
 
 $keyword = str_replace(' ', '', trim($keyword));
 
+$mb_id = str_replace(' ', '', trim($mb_id));
+if($mb_id) {
+  $mb = get_member($mb_id);
+  if(!$mb['mb_id'])
+    unset($mb);
+}
+
 $sql = "SELECT 
   it_id as id,
   it_id,
@@ -73,6 +80,19 @@ while ( $row = sql_fetch_array($result) ) {
   else if($gubun == '02') $gubun_text = '비급여';
 
   $row['gubun'] = $gubun_text;
+
+  // 사업소별 판매가
+  if($mb) {
+    $entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$row['it_id']}' and mb_id = '{$mb['mb_id']}' ");
+    if($entprice['it_price']) {
+      $row['it_sale_cnt'] = 0;
+      $row['it_sale_cnt_02'] = 0;
+      $row['it_sale_cnt_03'] = 0;
+      $row['it_sale_cnt_04'] = 0;
+      $row['it_sale_cnt_05'] = 0;
+      $row['it_price'] = $entprice['it_price'];
+    }
+  }
 
   $rows[] = $row;
 }
