@@ -50,13 +50,31 @@ if($ct_status) {
 $where[] = " ( ct_status = '".implode("' OR ct_status = '", $ct_steps)."' ) ";
 
 # 검색어
-$sel_field = in_array($sel_field, ['mb_entNm', 'it_name', 'c.od_id', 'od_b_name']) ? $sel_field : '';
+$attrs = ['all', 'mb_entNm', 'it_name', 'c.od_id', 'od_b_name', 'od_partner_manager'];
+$sel_field = in_array($sel_field, $attrs) ? $sel_field : '';
 $search = get_search_string($search);
 if($sel_field && $search) {
-  if($sel_field == 'mb_entNm')
-    $where[] = " ( {$sel_field} like '%{$search}%' or (mb_temp = TRUE and mb_name like '%{$search}%') ) ";
-  else
+  if($sel_field == 'all') {
+    $where_all = [];
+    foreach($attrs as $attr) {
+      if($attr != 'all') {
+        if($attr == 'mb_entNm') {
+          $where_all[] = " ( mb_entNm like '%{$search}%' or (mb_temp = TRUE and mb_name like '%{$search}%') ) ";
+        } else if($attr == 'od_partner_manager') {
+          $where_all[] = " ( ( select mb_name from g5_member where mb_id = o.od_partner_manager ) like '%{$search}%' ) ";
+        } else {
+          $where_all[] = " {$attr} like '%{$search}%' ";
+        }
+      }
+    }
+    $where[] = ' ( ' . implode(' OR ', $where_all) . ' ) ';
+  } else if($sel_field == 'mb_entNm') {
+    $where[] = " ( mb_entNm like '%{$search}%' or (mb_temp = TRUE and mb_name like '%{$search}%') ) ";
+  } else if($sel_field == 'od_partner_manager') {
+    $where[] = " ( ( select mb_name from g5_member where mb_id = o.od_partner_manager ) like '%{$search}%' ) ";
+  } else {
     $where[] = " {$sel_field} like '%{$search}%' ";
+  }
 }
 
 $sql_search = ' and '.implode(' and ', $where);
@@ -101,6 +119,7 @@ $result = sql_query("
     od_b_addr2,
     od_b_addr3,
     od_b_addr_jibeon,
+    od_partner_manager,
     it_name,
     ct_option,
     ct_qty,
@@ -207,6 +226,16 @@ if($incompleted) {
   }
 }
 
+// 담당자
+$manager_result = sql_query("
+  select * from g5_member
+  where mb_type = 'manager' and mb_manager = '{$member['mb_id']}'
+");
+$managers = [];
+while($manager = sql_fetch_array($manager_result)) {
+  $managers[] = $manager;
+}
+
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
@@ -240,6 +269,8 @@ tr.hover { background-color: #fbf9f7 !important; }
 .td_operation a.disabled {
   background-color:#ddd;
 }
+
+.sel_manager { display: block; margin: 0 auto 5px auto; border-radius: 3px; border: 1px solid #ddd; width: 100px; height: 25px; font-size: 12px; color: #555; }
 
 #change_wrap { display: none; }
 .popModal { font-size: 12px; line-height: 22px; padding: 10px; cursor: default; }
@@ -285,10 +316,12 @@ tr.hover { background-color: #fbf9f7 !important; }
         <a href="#" id="select_date_lastmonth">저번달</a>
       </div>
       <select name="sel_field">
+        <option value="all">전체</option>
         <option value="mb_entNm" <?=get_selected($sel_field, 'mb_entNm')?>>사업소명</option>
         <option value="it_name" <?=get_selected($sel_field, 'it_name')?>>품목명</option>
         <option value="c.od_id" <?=get_selected($sel_field, 'c.od_id')?>>주문번호</option>
         <option value="od_b_name" <?=get_selected($sel_field, 'od_b_name')?>>받는분</option>
+        <option value="od_partner_manager" <?=get_selected($sel_field, 'od_partner_manager')?>>담당자명</option>
       </select>
       <div class="input_search">
         <input name="search" value="<?=$_GET["search"]?>" type="text">
@@ -320,7 +353,7 @@ tr.hover { background-color: #fbf9f7 !important; }
               </th>
               <th>주문정보</th>
               <th>위탁정보</th>
-              <th>상태</th>
+              <th>담당자/상태</th>
               <th>수수료</th>
               <th>관리</th>
             </tr>
@@ -412,7 +445,13 @@ tr.hover { background-color: #fbf9f7 !important; }
                 </p>
                 <?php } ?>
               </td>
-              <td class="text_c">
+              <td class="td_status text_c">
+                <select class="sel_manager" data-id="<?=$row['od_id']?>">
+                  <option value="">미지정</option>
+                  <?php foreach($managers as $manager) { ?>
+                  <option value="<?=$manager['mb_id']?>" <?=get_selected($row['od_partner_manager'], $manager['mb_id'])?>><?=$manager['mb_name']?></option>
+                  <?php } ?>
+                </select>
                 <span style="<?php
                 if(in_array($row['ct_status'], ['주문취소', '주문무효']))
                   echo 'color: #ff0000;';
@@ -521,6 +560,9 @@ $(function() {
   $('tr.btn_link').click(function(e) {
     if($('.popModal').has(e.target).length)
       return;
+    
+    if($(e.target).closest('.td_status').length > 0)
+      return;
 
     var link = $(this).data('link');
     window.location.href = link;
@@ -604,7 +646,7 @@ $(function() {
     $('#fr_date').val(formatDate(today));
   });
 
-  // 설치결과보고서 작성 버튼
+  // 설치결과보고서 작성 버튼
   $('.btn_install_report').click(function(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -718,6 +760,34 @@ $(function() {
         ct_id: ct_id
       }
     });
+  });
+
+  // 담당자 선택
+  var loading_manager = false;
+  $('.sel_manager').change(function() {
+    if(loading_manager)
+      return alert('로딩중입니다. 잠시후 다시 시도해주세요.');
+    
+    var od_id = $(this).data('id');
+    var manager = $(this).val();
+    var manager_name = $(this).find('option:selected').text();
+    
+    loading_manager = true;
+    $.post('ajax.partner_manager.php', {
+      od_id: od_id,
+      manager: manager
+    }, 'json')
+    .done(function() {
+      $('.sel_manager[data-id="' + od_id + '"]').val(manager);
+      alert(manager_name + ' 담당자로 변경되었습니다.');
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    })
+    .always(function() {
+      loading_manager = false;
+    })
   });
 
 });
