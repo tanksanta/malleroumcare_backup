@@ -583,7 +583,7 @@ $(function() {
 
     pen_hp_input_timer = setTimeout(function() {
       var hp_pattern = /01[016789]-[^0][0-9]{2,3}-[0-9]{3,4}/;
-      ms_pen_hp = ms_pen_hp.replace( /(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, "$1-$2-$3" );
+      ms_pen_hp = ms_pen_hp.replace(/[^0-9]/g, '').replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, "$1-$2-$3");
       $this.val(ms_pen_hp);
 
       if(hp_pattern.test(ms_pen_hp)) {
