@@ -41,6 +41,11 @@ while($row = sql_fetch_array($result)) {
   <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/font.css">
 </head>
 <body>
+<style>
+.it_explan * {
+  font-size: 0 !important;
+}
+</style>
 <?php require_once('./item_msg_render.php'); ?>
 </body>
 
