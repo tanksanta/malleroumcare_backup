@@ -481,11 +481,27 @@ $(function() {
             var it_sale_cnt = 0;
 
             // 묶음 할인
+            var sale_qty = 0;
+            var targets = [];
+            $('.pop_order_add_item_table input[name="it_id[]"]').each(function() {
+                var this_parent = $(this).closest('tr');
+                var this_io_type = $(this_parent).find('input[name="io_type[]"]').val();
+                if($(this).val() == it_id && this_io_type != '1') {
+                    var this_qty = $(this_parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
+                    sale_qty += parseInt(this_qty);
+                    targets.push({
+                        it_price: $(this_parent).find('input[name="it_price[]"]'),
+                        qty: $(this_parent).find('input[name="qty[]"]'),
+                        basic_price: $(this_parent).find('.basic_price'),
+                        tax_price: $(this_parent).find('.tax_price'),
+                    });
+                }
+            });
             if (item_sale_obj[it_id]['it_sale_cnt']) {
                 for(var sale_cnt = 0; sale_cnt < item_sale_obj[it_id]['it_sale_cnt'].length; sale_cnt++){
                     var temp = parseInt(item_sale_obj[it_id]['it_sale_cnt'][sale_cnt])
-                    if(temp <= qty){
-                        if(it_sale_cnt < temp){
+                    if(temp <= sale_qty) {
+                        if(it_sale_cnt < temp) {
                             it_sale_cnt = temp;
                             it_price = mb_level == 4 ? item_sale_obj[it_id]['it_sale_percent_great'][sale_cnt] : item_sale_obj[it_id]['it_sale_percent'][sale_cnt];
                         }
@@ -493,10 +509,22 @@ $(function() {
                 }
             }
             
-            if (parseInt(it_price, 10) !== parseInt($(parent).find('input[name="it_price[]"]').val().replace(/[\D\s\._\-]+/g, ""), 10)) {
-                $(parent).find('input[name="it_price[]"]').animate({'opacity': 0} ,50 , function () {
-                    $(parent).find('input[name="it_price[]"]').animate({'opacity': 1}, 50);
-                });
+            for(var i = 0; i < targets.length; i++) {
+                var target = targets[i];
+                if (parseInt(it_price, 10) !== parseInt(target.it_price.val().replace(/[\D\s\._\-]+/g, ""), 10)) {
+                    (function(it_price) {
+                        it_price.animate({'opacity': 0} ,50 , function () {
+                            it_price.animate({'opacity': 1}, 50);
+                        });
+                    })(target.it_price);
+
+                    target.it_price.val(addComma(it_price || 0));
+
+                    // 공급가액, 부가세
+                    var target_qty = parseInt(target.qty.val().replace(/[\D\s\._\-]+/g, ""));
+                    target.basic_price.text(addComma(Math.round(it_price * target_qty / 1.1) || 0) + "원");
+                    target.tax_price.text(addComma(Math.round(it_price * target_qty / 11) || 0) + "원");
+                }
             }
         }
 
