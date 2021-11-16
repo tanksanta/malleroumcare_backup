@@ -19,9 +19,9 @@ $num_rows = $sheet->getHighestRow();
 
 for($i = 2; $i <= $num_rows; $i++) {
   $od_id = sql_real_escape_string(trim($sheet->getCell('A'.$i)->getValue()));
-  $ct_id = sql_real_escape_string(trim($sheet->getCell('M'.$i)->getValue()));
-  $ct_delivery_company = sql_real_escape_string(trim($sheet->getCell('N'.$i)->getValue()));
-  $ct_delivery_num = sql_real_escape_string(trim($sheet->getCell('O'.$i)->getValue()));
+  $ct_id = sql_real_escape_string(trim($sheet->getCell('N'.$i)->getValue()));
+  $ct_delivery_company = sql_real_escape_string(trim($sheet->getCell('O'.$i)->getValue()));
+  $ct_delivery_num = sql_real_escape_string(trim($sheet->getCell('P'.$i)->getValue()));
 
   // 택배사가 비어있으면 기본값 (로젠택배 세팅)
   if(!$ct_delivery_company) {
