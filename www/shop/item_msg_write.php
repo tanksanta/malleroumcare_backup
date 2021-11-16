@@ -66,6 +66,18 @@ if($w && $ms_id) {
   }
 }
 
+$notice_arr = sql_fetch(" select bo_notice from g5_board where bo_table = 'info' ");
+$notice_arr = explode(',', trim($notice_arr['bo_notice']));
+
+$recs = [];
+foreach($notice_arr as $wr_id) {
+  if(trim($wr_id) == '') continue;
+  $sql = " select * from g5_write_info where wr_id = '$wr_id' ";
+  $rec = sql_fetch($sql);
+
+  $recs[] = $rec;
+}
+
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
@@ -200,38 +212,30 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             ?>
           </ul>
           <!--<button type="button" id="btn_im_save" onclick="save_item_msg();">저장</button>-->
+          <?php if($recs) { ?>
           <div class="im_rec_wr">
             <div class="im_rec_hd im_flex space-between">
               <div class="im_sch_hd">추천정보</div>
               <div class="im_rec_desc">선택한 정보는 전송 시 함께 전달됩니다.</div>
             </div>
             <ul class="im_rec_list">
-              <?php
-              $notice_arr = sql_fetch(" select bo_notice from g5_board where bo_table = 'info' ");
-              $notice_arr = explode(',', trim($notice_arr['bo_notice']));
-
-              foreach($notice_arr as $wr_id) {
-                if(trim($wr_id) == '') continue;
-                $sql = " select * from g5_write_info where wr_id = '$wr_id' ";
-                $rec = sql_fetch($sql);
-              ?>
+              <?php foreach($recs as $rec) { ?>
               <li>
                 <div class="im_rec_desc">
                   <?=$rec['wr_subject']?>
                 </div>
-                <input class="im_switch" id="ms_rec_<?=$wr_id?>" type="checkbox" name="ms_rec[]" value="<?=$wr_id?>" <?=option_array_checked($wr_id, $ms['ms_rec'])?>>
-                <label for="ms_rec_<?=$wr_id?>">
+                <input class="im_switch" id="ms_rec_<?=$rec['wr_id']?>" type="checkbox" name="ms_rec[]" value="<?=$rec['wr_id']?>" <?=option_array_checked($rec['wr_id'], $ms['ms_rec'])?>>
+                <label for="ms_rec_<?=$rec['wr_id']?>">
                   <div class="im_switch_slider">
                     <span class="on">선택</span>
                     <span class="off">미선택</span>
                   </div>
                 </label>
               </li>
-              <?php
-              }
-              ?>
+              <?php } ?>
             </ul>
           </div>
+          <?php } ?>
         </div>
         <div class="im_preview_wr">
           <div class="im_preview_hd">
