@@ -117,6 +117,16 @@ function trans_ct_status_text($ct_status_text) {
   return $ct_status_text;
 }
 
+// 담당자
+$manager_result = sql_query("
+  select * from g5_member
+  where mb_type = 'manager' and mb_manager = '{$member['mb_id']}'
+");
+$managers = [];
+while($manager = sql_fetch_array($manager_result)) {
+  $managers[] = $manager;
+}
+
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_order.css?v=0827">', 0);
 ?>
 
@@ -260,6 +270,15 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
       <div class="row no-gutter">
         <a href="partner_orderinquiry_excel.php?od_id=<?=$od_id?>" class="instructor-btn">작업지시서 다운로드</a>
       </div>
+      <div class="delivery-status-title row no-gutter title justify-space-between">
+        <div>담당자</div>
+        <select class="sel_manager order-status-select" data-id="<?=$od_id?>" style="width: 150px;">
+          <option value="">미지정</option>
+          <?php foreach($managers as $manager) { ?>
+          <option value="<?=$manager['mb_id']?>" <?=get_selected($od['od_partner_manager'], $manager['mb_id'])?>><?=$manager['mb_name']?></option>
+          <?php } ?>
+        </select>
+      </div>
       <div class="delivery-status-title row no-gutter title">
         배송정보
       </div>
@@ -382,7 +401,7 @@ $(function() {
     });
   });
 
-  // 설치결과보고서 작성 버튼
+  // 설치결과보고서 작성 버튼
   $('.btn_install_report').click(function() {
     var ct_id = $(this).data('id');
     $("body").addClass('modal-open');
@@ -438,6 +457,33 @@ $(function() {
       var data = $xhr.responseJSON;
       alert(data && data.message);
     });
+  });
+
+  // 담당자 선택
+  var loading_manager = false;
+  $('.sel_manager').change(function() {
+    if(loading_manager)
+      return alert('로딩중입니다. 잠시후 다시 시도해주세요.');
+    
+    var od_id = $(this).data('id');
+    var manager = $(this).val();
+    var manager_name = $(this).find('option:selected').text();
+    
+    loading_manager = true;
+    $.post('ajax.partner_manager.php', {
+      od_id: od_id,
+      manager: manager
+    }, 'json')
+    .done(function() {
+      alert(manager_name + ' 담당자로 변경되었습니다.');
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    })
+    .always(function() {
+      loading_manager = false;
+    })
   });
 });
 </script>
