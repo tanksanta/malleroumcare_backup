@@ -199,7 +199,9 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 </td>
 <td class="text_c">
   <?php
-  echo '<a href="javascript:void(0);" class="btn_basic btn_resend_eform" data-id="' . $row["uuid"] . '" data-name="' . $row["penNm"] . '" data-hp="' . $row["penConNum"] . '" data-mail="' . $row["penMail"] . '">계약서 재전송</a>';
+  if($row['dc_status'] != '11') {
+    echo '<a href="javascript:void(0);" class="btn_basic btn_resend_eform" data-id="' . $row["uuid"] . '" data-name="' . $row["penNm"] . '" data-hp="' . $row["penConNum"] . '" data-mail="' . $row["penMail"] . '">계약서 재전송</a>';
+  }
   ?>
 </td>
 </tr>
