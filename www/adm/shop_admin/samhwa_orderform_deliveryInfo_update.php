@@ -85,6 +85,13 @@ foreach($ct_id_list as $ct_id) {
         ct_edi_result = 0
       WHERE ct_id = '{$ct_id}'
     ");
+
+    // 배송로그 작성을 위해 변수 할당
+    $ct_delivery_combine = $was_combined;
+    $ct_delivery_combine_ct_id = $ct['ct_combine_ct_id'];
+    $ct_is_direct_delivery = $ct['ct_is_direct_delivery'];
+    $ct_direct_delivery_partner = $ct['ct_direct_delivery_partner'];
+    $ct_direct_delivery_price = $ct['ct_direct_delivery_price'];
   } else {
     sql_query("
       UPDATE g5_shop_cart SET
