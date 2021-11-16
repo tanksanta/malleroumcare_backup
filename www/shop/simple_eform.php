@@ -173,7 +173,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           
             <div class="no_item_info">
 	        	<img src="<?=THEMA_URL?>/assets/img/icon_box.png" alt=""><br>
-        	<p>상품을 검색한 후 추가해주세요..</p>
+        	<p>상품을 검색한 후 추가해주세요.</p>
 	        	<!-- <p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p> -->
 	        </div>
           
