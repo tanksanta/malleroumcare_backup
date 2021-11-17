@@ -66,7 +66,8 @@
 }
 .emp_btn_wr .btn_schedule {
     display: block;
-    padding: 10px 25px;
+    min-width: 165px;
+    padding: 10px 20px;
     border: 1px solid #ddd;
     border-radius: 3px;
     color: #333;
