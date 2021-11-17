@@ -1,0 +1,85 @@
+/* common */
+.clear:after {
+    display: table;
+    content: ' ';
+    clear: both;
+}
+.flex {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.align-items {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.space-between {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+/* 직원관리 */
+.emp_hd {
+    line-height: 40px;
+    font-size: 16px;
+    float: left;
+}
+.emp_list {
+    margin-top: 10px;
+    border-top: 1px solid #ddd;
+}
+.emp_list > li {
+    position: relative;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+.emp_list > li .emp_info_wr > img {
+    display: block;
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+}
+.emp_list > li .emp_info_wr .emp_info {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex-grow: 1; 
+}
+.emp_list > li .emp_info_wr .emp_info p {
+    margin: 0;
+}
+.emp_list > li .emp_info_wr .emp_info p.name {
+    font-size: 18px;
+    font-weight: bold;
+}
+.emp_list > li .emp_info_wr .emp_info ul.detail {
+    margin-top: 10px;
+}
+.emp_list > li .emp_info_wr .emp_info ul.detail > li {
+}
+
+.emp_btn_wr {
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+}
+.emp_btn_wr .btn_schedule {
+    display: block;
+    min-width: 165px;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    color: #333;
+    margin-bottom: 5px;
+    text-align: center;
+}
+.emp_pay {
+    text-align: right;
+}
+@media (max-width: 960px) {
+    .emp_btn_wr {
+        position: static;
+        margin-top: 10px;
+    }
+}
