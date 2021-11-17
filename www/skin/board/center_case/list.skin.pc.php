@@ -19,6 +19,34 @@ $list_cnt = count($list);
 
 ?>
 
+<ul class="case_list">
+	<?php for ($i=0; $i < $list_cnt; $i++) { ?>
+	<li class="flex align-items">
+		<div class="idx">
+			<?php echo $list[$i]['num']; ?>
+		</div>
+		<div class="content">
+			<p class="title">
+				<a href="<?php echo $list[$i]['href'];?>">
+					<?php echo $list[$i]['icon_reply']; ?>
+					<?php echo $list[$i]['subject']; ?>
+					<?php if ($list[$i]['comment_cnt']) { ?>
+						<span class="sound_only">댓글</span><span class="count orangered">+<?php echo $list[$i]['comment_cnt']; ?></span><span class="sound_only">개</span>
+					<?php } ?>
+				</a>
+			</p>
+			<p class="provider">
+				<?php echo $list[$i]['wr_provider']; ?>
+			</p>
+		</div>
+		<div class="check">
+			12명 확인
+		</div>
+	</li>
+	<?php } ?>
+</ul>
+
+<?php /*
 <div class="table-responsive">
 	<table class="table div-table list-pc bg-white">
 	<thead>
@@ -134,3 +162,4 @@ $list_cnt = count($list);
 	</tbody>
 	</table>
 </div>
+*/ ?>

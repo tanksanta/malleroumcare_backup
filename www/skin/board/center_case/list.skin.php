@@ -3,7 +3,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" media="screen">', 0);
-
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css">', 0);
 ?>
 
 <?php if ($bo_table === 'event_board') { ?>
@@ -17,9 +17,34 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 <?php } ?>
 
 <section class="board-list<?php echo (G5_IS_MOBILE) ? ' font-14' : '';?>"> 
-<div class="sub_section_tit">
-	<?php echo $board['bo_subject'] ?>
-</div>
+	<div class="sub_section_tit">
+		<?php echo $board['bo_subject'] ?>
+	</div>
+	<form id="form_search" name="fsearch" method="get" role="form" class="form">
+		<input type="hidden" name="bo_table" value="<?php echo $bo_table ?>">
+		<input type="hidden" name="sca" value="<?php echo $sca ?>">
+		<input type="hidden" name="sop" value="and">
+		<div class="search_box">
+			<label for="sel_field" class="sound_only">검색대상</label>
+			<select name="sfl" id="sel_field">
+				<option value="wr_subject"<?php echo get_selected($sfl, 'wr_subject', true); ?>>제목</option>
+				<option value="wr_content"<?php echo get_selected($sfl, 'wr_content'); ?>>내용</option>
+				<option value="wr_subject||wr_content"<?php echo get_selected($sfl, 'wr_subject||wr_content'); ?>>제목+내용</option>
+				<option value="mb_id,1"<?php echo get_selected($sfl, 'mb_id,1'); ?>>회원아이디</option>
+				<option value="mb_id,0"<?php echo get_selected($sfl, 'mb_id,0'); ?>>회원아이디(코)</option>
+				<option value="wr_name,1"<?php echo get_selected($sfl, 'wr_name,1'); ?>>글쓴이</option>
+				<option value="wr_name,0"<?php echo get_selected($sfl, 'wr_name,0'); ?>>글쓴이(코)</option>
+			</select>
+			<div class="input_search">
+				<label for="search" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="text" name="stx" value="<?php echo stripslashes($stx) ?>" required id="search" maxlength="20" placeholder="검색어">
+				<button id="btn_search" type="submit"></button>
+			</div>
+		</div>
+	</form>
+	<div class="clear">
+		<div class="emp_hd">사례목록</div>
+	</div>
 	<?php if($is_category) include_once($board_skin_path.'/category.skin.php'); // 카테고리	?>
 
 	<div class="list-wrap">
@@ -64,7 +89,6 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 				<?php } ?>
 				<div class="form-group list-btn font-12">
 					<div class="btn-group">
-						<a href="#" class="btn btn-black btn-sm" data-toggle="modal" data-target="#searchModal" onclick="return false;"><i class="fa fa-search"></i></a>
 						<?php if ($rss_href) { ?>
 							<a href="<?php echo $rss_href; ?>" class="btn btn-color btn-sm"><i class="fa fa-rss"></i></a>
 						<?php } ?>
@@ -109,48 +133,6 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 			<p>자바스크립트를 사용하지 않는 경우<br>별도의 확인 절차 없이 바로 선택삭제 처리하므로 주의하시기 바랍니다.</p>
 			</noscript>
 		<?php } ?>
-
-		<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-sm">
-				<div class="modal-content">
-					<div class="modal-body">
-						<div class="text-center">
-							<h4 id="myModalLabel"><i class="fa fa-search fa-lg"></i> Search</h4>
-						</div>
-						<form name="fsearch" method="get" role="form" class="form" style="margin-top:20px;">
-							<input type="hidden" name="bo_table" value="<?php echo $bo_table ?>">
-							<input type="hidden" name="sca" value="<?php echo $sca ?>">
-							<input type="hidden" name="sop" value="and">
-							<div class="form-group">
-								<label for="sfl" class="sound_only">검색대상</label>
-								<select name="sfl" id="sfl" class="form-control input-sm">
-									<option value="wr_subject"<?php echo get_selected($sfl, 'wr_subject', true); ?>>제목</option>
-									<option value="wr_content"<?php echo get_selected($sfl, 'wr_content'); ?>>내용</option>
-									<option value="wr_subject||wr_content"<?php echo get_selected($sfl, 'wr_subject||wr_content'); ?>>제목+내용</option>
-									<option value="mb_id,1"<?php echo get_selected($sfl, 'mb_id,1'); ?>>회원아이디</option>
-									<option value="mb_id,0"<?php echo get_selected($sfl, 'mb_id,0'); ?>>회원아이디(코)</option>
-									<option value="wr_name,1"<?php echo get_selected($sfl, 'wr_name,1'); ?>>글쓴이</option>
-									<option value="wr_name,0"<?php echo get_selected($sfl, 'wr_name,0'); ?>>글쓴이(코)</option>
-								</select>
-							</div>
-							<div class="form-group">
-								<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-								<input type="text" name="stx" value="<?php echo stripslashes($stx) ?>" required id="stx" class="form-control input-sm" maxlength="20" placeholder="검색어">
-							</div>
-
-							<div class="btn-group btn-group-justified">
-								<div class="btn-group">
-									<button type="submit" class="btn btn-color"><i class="fa fa-check"></i></button>
-								</div>
-								<div class="btn-group">
-									<button type="button" class="btn btn-black" data-dismiss="modal"><i class="fa fa-times"></i></button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
 	</div>
 </section>
 <?php if ($is_checkbox) { ?>
