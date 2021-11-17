@@ -401,7 +401,7 @@ if($is_main && !$is_member) {
               이로움 스마트 서비스
             </div>
             <a href="/shop/item_msg_list.php" class="pen_item_msg">✓ 간편 제안서 작성</a>
-            <?php if(in_array($member['mb_id'], ['hula1202', 'joabokji'])) { ?>
+            <?php if(in_array($member['mb_id'], ['hula1202', 'joabokji', 'sk001', 'jhc'])) { ?>
             <a href="/shop/simple_eform.php" class="simple_eform">✓ 간편 계약서 작성</a>
             <?php } ?>
             <a href="/shop/simple_order.php" class="simple_order">✓ 간편 주문서 작성</a>
