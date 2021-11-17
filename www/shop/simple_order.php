@@ -1061,6 +1061,55 @@ $(function() {
   $('#ipt_so_sch').next().focus();
 
   <?php
+  function _select_item($row) {
+    global $g5, $member, $cate_gubun_table;
+
+    $data = $row;
+
+    $option_sql = "SELECT *
+        FROM
+            {$g5['g5_shop_item_option_table']}
+        WHERE
+            it_id = '{$data['it_id']}'
+            and io_type = 0 -- 선택옵션
+        ORDER BY
+            io_no ASC
+    ";
+    $option_result = sql_query($option_sql);
+
+    $data['options'] = [];
+    while ($option_row = sql_fetch_array($option_result)) {
+        $data['options'][] = $option_row;
+    }
+
+    $gubun = $cate_gubun_table[substr($row['ca_id'], 0, 2)];
+    $gubun_text = '판매';
+    if($gubun == '01') $gubun_text = '대여';
+    else if($gubun == '02') $gubun_text = '비급여';
+
+    $data['gubun'] = $gubun_text;
+
+    // 우수사업소 가격
+    if($member['mb_level'] == 4 && $row['it_price_dealer2']) {
+      $data['it_price'] = $row['it_price_dealer2'];
+    }
+    unset($data['it_price_dealer2']);
+
+    // 사업소별 판매가
+    $entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$row['it_id']}' and mb_id = '{$member['mb_id']}' ");
+    if($entprice['it_price']) {
+      $data['it_sale_cnt'] = 0;
+      $data['it_sale_cnt_02'] = 0;
+      $data['it_sale_cnt_03'] = 0;
+      $data['it_sale_cnt_04'] = 0;
+      $data['it_sale_cnt_05'] = 0;
+      $data['it_price'] = $entprice['it_price'];
+    }
+
+    $data = json_encode($data);
+
+    echo 'select_item(' . ($data ?: '{}') . ', null, ' . ($row['qty'] ?: 1) . ');';
+  }
   if($_GET['dc_id']) {
     $dc_id = get_search_string($_GET['dc_id']);
     $sql = "
@@ -1120,52 +1169,63 @@ $(function() {
     ";
     $result = sql_query($sql, true);
     while($row = sql_fetch_array($result)) {
-      $data = $row;
-
-      $option_sql = "SELECT *
-          FROM
-              {$g5['g5_shop_item_option_table']}
-          WHERE
-              it_id = '{$data['it_id']}'
-              and io_type = 0 -- 선택옵션
-          ORDER BY
-              io_no ASC
-      ";
-      $option_result = sql_query($option_sql);
-
-      $data['options'] = [];
-      while ($option_row = sql_fetch_array($option_result)) {
-          $data['options'][] = $option_row;
-      }
-
-      $gubun = $cate_gubun_table[substr($row['ca_id'], 0, 2)];
-      $gubun_text = '판매';
-      if($gubun == '01') $gubun_text = '대여';
-      else if($gubun == '02') $gubun_text = '비급여';
-
-      $data['gubun'] = $gubun_text;
-
-      // 우수사업소 가격
-      if($member['mb_level'] == 4 && $row['it_price_dealer2']) {
-        $data['it_price'] = $row['it_price_dealer2'];
-      }
-      unset($data['it_price_dealer2']);
-
-      // 사업소별 판매가
-      $entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$row['it_id']}' and mb_id = '{$member['mb_id']}' ");
-      if($entprice['it_price']) {
-        $data['it_sale_cnt'] = 0;
-        $data['it_sale_cnt_02'] = 0;
-        $data['it_sale_cnt_03'] = 0;
-        $data['it_sale_cnt_04'] = 0;
-        $data['it_sale_cnt_05'] = 0;
-        $data['it_price'] = $entprice['it_price'];
-      }
-
-      $data = json_encode($data);
-  ?>
-  select_item(<?=$data ?: '{}'?>, null, <?=$row['qty'] ?: 1?>);
-  <?php
+      _select_item($row);
+    }
+  } else if($_GET['od_id']) {
+    $od_id = get_search_string($_GET['od_id']);
+    $sql = "
+      SELECT
+        i.it_id,
+        i.it_name,
+        i.it_model,
+        i.it_price,
+        i.it_price_dealer2,
+        i.it_cust_price,
+        i.it_rental_price,
+        i.ca_id,
+        i.it_img1 as it_img,
+        i.it_delivery_cnt,
+        i.it_sc_type,
+        it_sale_cnt,
+        it_sale_cnt_02,
+        it_sale_cnt_03,
+        it_sale_cnt_04,
+        it_sale_cnt_05,
+        it_sale_percent,
+        it_sale_percent_02,
+        it_sale_percent_03,
+        it_sale_percent_04,
+        it_sale_percent_05,
+        it_sale_percent_great,
+        it_sale_percent_great_02,
+        it_sale_percent_great_03,
+        it_sale_percent_great_04,
+        it_sale_percent_great_05,
+        it_type1,
+        it_type2,
+        it_type3,
+        it_type4,
+        it_type5,
+        it_type6,
+        it_type7,
+        it_type8,
+        it_type9,
+        it_type10,
+        it_expected_warehousing_date,
+        ct_qty as qty
+      FROM
+        g5_shop_cart c
+      LEFT JOIN
+        g5_shop_item i ON c.it_id = i.it_id
+      WHERE
+        ct_status = '쇼핑' and
+        ct_select = '1' and
+        od_id = '$od_id' and
+        mb_id = '{$member['mb_id']}'
+    ";
+    $result = sql_query($sql, true);
+    while($row = sql_fetch_array($result)) {
+      _select_item($row);
     }
   }
   ?>
