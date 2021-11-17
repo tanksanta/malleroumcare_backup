@@ -115,7 +115,10 @@ if($act == "buy")
 
   // 그누테마 사용에 따라 비회원 로직 변경
   if ($is_member) { // 회원인 경우
-    goto_url(G5_SHOP_URL.'/orderform.php?only_recipient=' . $only_recipient);
+    if($member['mb_id'] == 'hula1202')
+      goto_url(G5_SHOP_URL.'/simple_order.php?od_id=' . $tmp_cart_id);
+    else
+      goto_url(G5_SHOP_URL.'/orderform.php?only_recipient=' . $only_recipient);
   } else if (USE_G5_THEME) {
     goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/orderform.php'));
   } else {
