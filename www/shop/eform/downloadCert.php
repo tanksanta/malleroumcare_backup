@@ -3,12 +3,11 @@ include_once("./_common.php");
 
 $dc_id = get_search_string($_GET['dc_id']);
 if($dc_id) {
-  if($penLtmNum && $penNm && $penBirth) {
+  if($penLtmNum && $penNm) {
     $sql = "select * from `eform_document` where
             dc_id = UNHEX('$dc_id') and
             penLtmNum = '$penLtmNum' and
             penNm = '$penNm' and
-            penBirth = '$penBirth' and
             dc_status = '2'";
 
     $eform = sql_fetch($sql);
