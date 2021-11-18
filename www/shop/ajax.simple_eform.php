@@ -28,7 +28,7 @@ $penId = clean_xss_tags($_POST['penId']) ?: '';
 $penNm = clean_xss_tags($_POST['penNm']);
 $penLtmNum = clean_xss_tags($_POST['penLtmNum']);
 $penConNum = clean_xss_tags($_POST['penConNum']);
-$penBirth = clean_xss_tags($_POST['penBirth']);
+$penBirth = '';
 $penRecGraCd = clean_xss_tags($_POST['penRecGraCd']);
 $penRecGraNm = $pen_rec_gra_cd[$penRecGraCd];
 $penTypeCd = clean_xss_tags($_POST['penTypeCd']);
@@ -43,8 +43,10 @@ $penJumin = clean_xss_tags($_POST['penJumin']) ?: '';
 $entConAcc01 = clean_xss_tags($_POST['entConAcc01']) ?: '';
 $entConAcc02 = clean_xss_tags($_POST['entConAcc02']) ?: '';
 
-if( !( $penNm && $penLtmNum && $penConNum && $penBirth && $penRecGraCd && $penTypeCd && $penExpiDtm ) )
+if( !( $penNm && $penLtmNum && $penConNum && $penRecGraCd && $penTypeCd && $penExpiDtm ) )
     json_response(400, '수급자 정보를 입력해주세요.');
+
+$penLtmNum = 'L' . $penLtmNum;
 
 if( $penTypeCd == '04' && !$penJumin )
     json_response(400, '기초수급자는 주민번호(앞자리)를 입력해주세요.');

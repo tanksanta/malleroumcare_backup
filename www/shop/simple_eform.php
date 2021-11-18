@@ -89,7 +89,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>요양인정번호</strong>
             </label>
             <div class="col-md-3">
-              <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="<?php if($dc) echo $dc['penLtmNum']; ?>" placeholder="L**********">
+              L <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="<?php if($dc) echo preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']); ?>" placeholder="10자리 입력">
             </div>
             <label for="penGender" class="col-md-2 control-label">
               <strong>휴대폰번호</strong>
@@ -121,17 +121,11 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 <option value="01" <?php if($dc) echo get_selected($dc['penTypeCd'], '01'); ?>>감경 9%</option>
                 <option value="02" <?php if($dc) echo get_selected($dc['penTypeCd'], '02'); ?>>감경 6%</option>
                 <option value="03" <?php if($dc) echo get_selected($dc['penTypeCd'], '03'); ?>>의료 6%</option>
-                <option value="04 <?php if($dc) echo get_selected($dc['penTypeCd'], '04'); ?>">기초 0%</option>
+                <option value="04" <?php if($dc) echo get_selected($dc['penTypeCd'], '04'); ?>>기초 0%</option>
               </select>
             </div>
           </div>
           <div class="form-group">
-            <label for="penBirth" class="col-md-2 control-label">
-              <strong>생년월일</strong>
-            </label>
-            <div class="col-md-3">
-              <input type="text" name="penBirth" id="penBirth" class="birthpicker form-control input-sm" value="<?php if($dc) echo $dc['penBirth']; ?>">
-            </div>
             <label for="penExpiStDtm" class="col-md-2 control-label">
               <strong>유효기간</strong>
             </label>
@@ -391,7 +385,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         </div>
         <div class="se_preview_wr">
           <div class="se_preview_hd">
-            수급자와 작성할 계약서 미리보기
+            공급계약서 미리보기
           </div>
           <div id="se_preview" class="se_preview">
             <?php if($dc) { ?>
@@ -655,7 +649,7 @@ function update_barcode_field() {
 }
 
 // datepicker
-$('.birthpicker').datepicker({ changeMonth: true, changeYear: true, yearRange: 'c-120:c+0', maxDate: '+0d', dateFormat: 'yy.mm.dd' });
+// $('.birthpicker').datepicker({ changeMonth: true, changeYear: true, yearRange: 'c-120:c+0', maxDate: '+0d', dateFormat: 'yy.mm.dd' });
 $('.datepicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
 
 // 수급자 검색
@@ -686,11 +680,11 @@ function toggle_pen_id_flexdatalist(on) {
     })
     .on("select:flexdatalist", function(event, obj, options) {
       $('#penId').val(obj.penId);
-      $('#penLtmNum').val(obj.penLtmNumRaw).prop('disabled', false);
+      $('#penLtmNum').val(obj.penLtmNumRaw.replace(/L([0-9]{10})/, '$1')).prop('disabled', false);
       $('#penConNum').val(obj.penConNum).prop('disabled', false);
       $('#penRecGraCd').val(obj.penRecGraCd ? obj.penRecGraCd : '00').prop('disabled', false);
-      $('#penTypeCd').val(obj.penTypeCd ? obj.penTypeCd : '00').prop('disabled', false);
-      $('#penBirth').val(obj.penBirth).prop('disabled', false);
+      $('#penTypeCd').val(obj.penTypeCd ? obj.penTypeCd : '00').prop('disabled', false).change();
+      //$('#penBirth').val(obj.penBirth).prop('disabled', false);
       $('#penExpiStDtm').val(obj.penExpiStDtm).prop('disabled', false);
       $('#penExpiEdDtm').val(obj.penExpiEdDtm).prop('disabled', false);
       $('#penJumin').val(obj.penJumin).prop('disabled', false);
@@ -827,8 +821,8 @@ function check_pen_type() {
     $('#penLtmNum').val('').prop('disabled', true);
     $('#penConNum').val('').prop('disabled', true);
     $('#penRecGraCd').val('').prop('disabled', true);
-    $('#penTypeCd').val('').prop('disabled', true);
-    $('#penBirth').val('').prop('disabled', true);
+    $('#penTypeCd').val('').prop('disabled', true).change();
+    //$('#penBirth').val('').prop('disabled', true);
     $('#penExpiStDtm').val('').prop('disabled', true);
     $('#penExpiEdDtm').val('').prop('disabled', true);
     $('#penJumin').val('').prop('disabled', true);
@@ -838,8 +832,8 @@ function check_pen_type() {
     $('#penLtmNum').prop('disabled', false);
     $('#penConNum').prop('disabled', false);
     $('#penRecGraCd').prop('disabled', false);
-    $('#penTypeCd').prop('disabled', false);
-    $('#penBirth').prop('disabled', false);
+    $('#penTypeCd').prop('disabled', false).change();
+    //$('#penBirth').prop('disabled', false);
     $('#penExpiStDtm').prop('disabled', false);
     $('#penExpiEdDtm').prop('disabled', false);
     $('#penJumin').prop('disabled', false);
@@ -859,11 +853,11 @@ $('#penLtmNum').on('change paste keyup input', function() {
   var $this = $(this);
   var penLtmNum = $(this).val();
 
-  penLtmNum = penLtmNum.substring(0, 11);
+  penLtmNum = penLtmNum.substring(0, 10);
   $this.val(penLtmNum);
 
   penLtmNum_timer = setTimeout(function() {
-    var pattern = /L[0-9]{10}/;
+    var pattern = /[0-9]{10}/;
 
     if(pattern.test(penLtmNum)) {
       $('#se_body_wr').addClass('active');
@@ -874,7 +868,21 @@ $('#penLtmNum').on('change paste keyup input', function() {
   }, 300);
 });
 
+// 본인부담금율 변경
+$('#penTypeCd').change(function() {
+  var penTypeCd = $(this).val();
+  var $pen_jumin = $('#penJumin').closest('.form-group');
+
+  if(penTypeCd == '04') {
+    // 기초 수급자면
+    $pen_jumin.show();
+  } else {
+    $pen_jumin.hide();
+  }
+});
+
 check_no_item();
+$('#penTypeCd').change();
   
 // 처음 팝업
 $('.se_sch_pop').show();
