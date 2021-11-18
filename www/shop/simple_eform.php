@@ -927,6 +927,20 @@ function check_recipient() {
   })
 }
 
+// 핸드폰 번호 입력 체크
+var pen_hp_input_timer = null;
+$('#penConNum').on('change paste keyup input', function() {
+  if(pen_hp_input_timer) clearTimeout(pen_hp_input_timer);
+
+  var $this = $(this);
+  var penConNum = $(this).val();
+
+  pen_hp_input_timer = setTimeout(function() {
+    penConNum = penConNum.replace(/[^0-9]/g, '').replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, "$1-$2-$3");
+    $this.val(penConNum);
+  }, 300);
+});
+
 check_no_item();
 $('#penTypeCd').change();
   
