@@ -242,15 +242,30 @@ $is_gicho = $eform['penTypeCd'] == '04';
     }
 
     repaint();
-
-    <?php if($preview) { ?>
-      panzoom(document.body, {
-        maxZoom: 1,
-        minZoom: 0.4,
-        initialZoom: 0.4
-      });
-    <?php } ?>
   });
+
+  <?php if($preview) { ?>
+  var zoomInstance = panzoom(document.body, {
+    maxZoom: 1,
+    minZoom: 0.4,
+    initialZoom: 0.4,
+    beforeWheel: function(e) {
+      // allow wheel-zoom only if altKey is down. Otherwise - ignore
+      var shouldIgnore = !e.altKey;
+      return shouldIgnore;
+    }
+  });
+
+  var zoomIn = false;
+  function toggleZoom() {
+    zoomIn = !zoomIn;
+    if(zoomIn) {
+      zoomInstance.smoothZoom(0, 0, 2.5);
+    } else {
+      zoomInstance.smoothZoom(0, 0, 0.4);
+    }
+  }
+  <?php } ?>
   </script>
 </body>
 </html>

@@ -384,8 +384,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <button type="button" id="btn_se_save" onclick="save_eform();">저장</button>
         </div>
         <div class="se_preview_wr">
-          <div class="se_preview_hd">
-            공급계약서 미리보기
+          <div class="se_preview_hd_wr">
+            <div class="se_preview_hd">공급계약서 미리보기</div>
+            <button type="button" id="btn_zoom">확대/축소</button>
           </div>
           <div id="se_preview" class="se_preview">
             <?php if($dc) { ?>
@@ -880,6 +881,16 @@ $('#penTypeCd').change(function() {
     $pen_jumin.hide();
   }
 });
+
+// 확대/축소
+$('#btn_zoom').click(function() {
+  try {
+    $('#se_preview').find('iframe')[0].contentWindow.toggleZoom();
+  } catch(ex) {
+    // do nothing;
+    console.log(ex);
+  }
+})
 
 check_no_item();
 $('#penTypeCd').change();
