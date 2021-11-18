@@ -127,7 +127,9 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
         <?php 
           $i = 1;
           foreach($images as $image) {
-        ?>  <a href="<?=$image?>" target="_blank" id="show_image" class="btn_se_submit">이미지<?=$i?></a>
+        ?>  <a href="<?=$image?>" target="_blank" id="show_image">
+          <img src="<?=$image?>" style="width:100px;height:100px;">
+          </a>
         <?php  
             $i++;
           }
