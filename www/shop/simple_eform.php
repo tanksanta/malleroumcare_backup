@@ -429,7 +429,9 @@ function check_no_item() {
   } else {
     $('.no_item_info').hide();
     $('.se_item_list_hd').show();
-    $('.btn_se_submit').addClass('active');
+    var dc_id = $('input[name="dc_id"]').val();
+    if(dc_id)
+      $('.btn_se_submit').addClass('active');
   }
 }
 
@@ -600,6 +602,7 @@ function save_eform() {
       var preview_url = '/shop/eform/renderEform.php?preview=1&dc_id=' + dc_id;
       $('#se_preview').empty().append($('<iframe>').attr('src', preview_url).attr('frameborder', 0));
       $('#se_body_wr').addClass('preview');
+      check_no_item();
     })
     .fail(function ($xhr) {
       var data = $xhr.responseJSON;
@@ -693,6 +696,7 @@ function toggle_pen_id_flexdatalist(on) {
 // 수급자 선택
 function select_recipient(obj) {
   $('#penId').val(obj.penId);
+  $('#penNm').val(obj.penNm);
   $('#penLtmNum').val(obj.penLtmNumRaw.replace(/L([0-9]{10})/, '$1')).prop('disabled', false);
   $('#penConNum').val(obj.penConNum).prop('disabled', false);
   $('#penRecGraCd').val(obj.penRecGraCd ? obj.penRecGraCd : '00').prop('disabled', false);
@@ -922,7 +926,7 @@ function check_recipient() {
     data['penExpiStDtm'] = penExpiDtm[0] ? penExpiDtm[0] : '';
     data['penExpiEdDtm'] = penExpiDtm[1] ? penExpiDtm[1] : '';
     alert(data['penNm'] + '(' + pen_ltm_num + ')로 등록된 수급자가 있습니다.');
-    $('#pen_type_1').prop('checked', true);
+    $('#pen_type_1').prop('checked', true).change();
     select_recipient(data);
   })
 }
