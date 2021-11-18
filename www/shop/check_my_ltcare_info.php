@@ -16,20 +16,34 @@ $sql = "
 $result = sql_query($sql);
 
 // 최근조회완료
-$sql2 = "
+$sql = "
   select *
   from macro_request
   where mb_id = '{$member['mb_id']}' AND status = 'D' ORDER BY updated_at DESC LIMIT 1
 ";
-$result2 = sql_fetch($sql2);
+$recent_result = sql_fetch($sql);
+
+// 최근조회 사진 가져오기
+$sql = "
+  select *
+  from macro_request_image
+  where id = '{$recent_result['id']}'
+";
+$recent_result_images = sql_query($sql);
+$query_num = sql_num_rows($recent_result_images);
+$images = [];
+for ($i=0; $row=sql_fetch_array($recent_result_images); $i++) {
+  $image = G5_URL . "/data/person/img/" . $row['image_url'];
+  array_push($images, $image);
+}
 
 // 대기중인 요청
-$sql3 = "
+$sql = "
   select count(*) as cnt
   from macro_request
   where mb_id = '{$member['mb_id']}' AND status = 'W'
 ";
-$result3 = sql_fetch($sql3);
+$result3 = sql_fetch($sql);
 
 add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datatables.min.css">', 13);
 ?>
@@ -37,19 +51,14 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
 <style>
 .btn_se_submit {
   display: inline-block;
-  padding: 10px;
-  width: 250px;
+  padding: 5px;
+  width: 100px;
   text-align: center;
-  color: #fff;
-  font-size: 16px;
+  color: #333;
+  font-size: 14px;
   border-radius: 5px;
-  background: #333333;
-}
-.btn_se_submit.active {
-  background: #6e9254;
-}
-.btn_se_submit:hover, .btn_se_submit:focus {
-  color: #fff;
+  border: 1px solid #ddd;
+  background: #fff;
 }
 .recent_info {
     border: 1px solid #ddd;
@@ -106,15 +115,24 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
     </form>
   </div>
 </section>
-<p style="text-align:right;">최근 업데이트 : <?=$result2['updated_at']?></p>
+<p style="text-align:right;">최근 업데이트 : <?=$recent_result['updated_at']?></p>
 <section>
     <div class="recent_info">
-        <p>· 수급자명 : <?=$result2['recipient_name']?></p>
-        <p>· 장기요양정보 : L<?=$result2['recipient_num']?></p>
-        <p>· 생년월일 : <?=$result2['birth']?></p>
-        <p>· 인정등급 : <?=$result2['grade']?></p>
-        <p>· 대상자구분 : <?=$result2['type']?></p>
-        <p>· 본인부담율 : <?=$result2['percent']?></p>
+        <p>· 수급자명 : <?=$recent_result['recipient_name']?></p>
+        <p>· 장기요양정보 : L<?=$recent_result['recipient_num']?></p>
+        <p>· 생년월일 : <?=$recent_result['birth']?></p>
+        <p>· 인정등급 : <?=$recent_result['grade']?></p>
+        <p>· 대상자구분 : <?=$recent_result['type']?></p>
+        <p>· 본인부담율 : <?=$recent_result['percent']?></p>
+        <?php 
+          $i = 0;
+          foreach($images as $image) {
+        ?>  <a href="<?=$image?>" target="_blank" id="show_image" class="btn_se_submit">이미지<?=$i?></a>
+        <?php  
+            $i++;
+          }
+        ?>
+        
     </div>
 </section>
 <div id="list_wrap" class="list_box">
