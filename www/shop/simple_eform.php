@@ -388,6 +388,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <div class="se_preview_hd_wr">
             <div class="se_preview_hd">공급계약서 미리보기</div>
             <button type="button" id="btn_zoom">확대/축소</button>
+            <button type="button" id="btn_refresh" onclick="save_eform();">새로고침</button>
           </div>
           <div id="se_preview" class="se_preview">
             <?php if($dc) { ?>
@@ -594,8 +595,9 @@ function save_eform() {
       var dc_id = result.data;
 
       var w = $('input[name="w"]').val();
-      if(w === 'w')
+      if(w === 'w') {
         window.location.href = '/shop/electronic_manage.php?dc_id=' + dc_id;
+      }
 
       $('input[name="w"]').val('u');
       $('input[name="dc_id"]').val(dc_id);
