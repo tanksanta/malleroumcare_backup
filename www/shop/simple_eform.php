@@ -40,6 +40,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_efr
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
+
 ?>
 
 <section class="wrap">
@@ -69,10 +70,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <div class="panel-body">
           <div class="radio_wr" style="margin-top: -10px; margin-bottom: 10px; font-size: 14px;">
             <label class="radio-inline">
-              <input type="radio" name="pen_type" id="pen_type_0" value="0" checked> 신규수급자 직접입력
+              <input type="radio" name="pen_type" id="pen_type_1" value="1" <?php if($dc['penId'] || !$dc) echo 'checked' ?>> 수급자 선택
             </label>
             <label class="radio-inline">
-              <input type="radio" name="pen_type" id="pen_type_1" value="1"> 수급자 선택 후 작성
+              <input type="radio" name="pen_type" id="pen_type_0" value="0" <?php if($dc && !$dc['penId']) echo 'checked' ?>> 수급자 등록
             </label>
           </div>
           <div class="form-group">
@@ -945,6 +946,9 @@ $('#penConNum').on('change paste keyup input', function() {
   }, 300);
 });
 
+if($('input[name="pen_type"]:checked').val() == 1) {
+  toggle_pen_id_flexdatalist(true);
+}
 check_no_item();
 $('#penTypeCd').change();
   
