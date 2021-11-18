@@ -654,9 +654,11 @@ function update_barcode_field() {
 $('.datepicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
 
 // 수급자 검색
+var pen_id_flexdata = null;
 function toggle_pen_id_flexdatalist(on) {
   if(on) {
-    $('.pen_id_flexdatalist').flexdatalist({
+    if(pen_id_flexdata) return;
+    pen_id_flexdata = $('.pen_id_flexdatalist').flexdatalist({
       minLength: 1,
       url: 'ajax.get_pen_id.php',
       cache: true, // cache
@@ -680,20 +682,26 @@ function toggle_pen_id_flexdatalist(on) {
       focusFirstResult: true,
     })
     .on("select:flexdatalist", function(event, obj, options) {
-      $('#penId').val(obj.penId);
-      $('#penLtmNum').val(obj.penLtmNumRaw.replace(/L([0-9]{10})/, '$1')).prop('disabled', false);
-      $('#penConNum').val(obj.penConNum).prop('disabled', false);
-      $('#penRecGraCd').val(obj.penRecGraCd ? obj.penRecGraCd : '00').prop('disabled', false);
-      $('#penTypeCd').val(obj.penTypeCd ? obj.penTypeCd : '00').prop('disabled', false).change();
-      //$('#penBirth').val(obj.penBirth).prop('disabled', false);
-      $('#penExpiStDtm').val(obj.penExpiStDtm).prop('disabled', false);
-      $('#penExpiEdDtm').val(obj.penExpiEdDtm).prop('disabled', false);
-      $('#penJumin').val(obj.penJumin).prop('disabled', false);
-      $('#se_body_wr').addClass('active');
+      select_recipient(obj);
     });
   } else {
+    if(!pen_id_flexdata) return;
     $('.pen_id_flexdatalist').flexdatalist('destroy');
+    pen_id_flexdata = null;
   }
+}
+// 수급자 선택
+function select_recipient(obj) {
+  $('#penId').val(obj.penId);
+  $('#penLtmNum').val(obj.penLtmNumRaw.replace(/L([0-9]{10})/, '$1')).prop('disabled', false);
+  $('#penConNum').val(obj.penConNum).prop('disabled', false);
+  $('#penRecGraCd').val(obj.penRecGraCd ? obj.penRecGraCd : '00').prop('disabled', false);
+  $('#penTypeCd').val(obj.penTypeCd ? obj.penTypeCd : '00').prop('disabled', false).change();
+  //$('#penBirth').val(obj.penBirth).prop('disabled', false);
+  $('#penExpiStDtm').val(obj.penExpiStDtm).prop('disabled', false);
+  $('#penExpiEdDtm').val(obj.penExpiEdDtm).prop('disabled', false);
+  $('#penJumin').val(obj.penJumin).prop('disabled', false);
+  $('#se_body_wr').addClass('active');
 }
 
 // 품목찾기
@@ -861,6 +869,7 @@ $('#penLtmNum').on('change paste keyup input', function() {
     var pattern = /[0-9]{10}/;
 
     if(pattern.test(penLtmNum)) {
+      check_recipient();
       $('#se_body_wr').addClass('active');
       // 처음 팝업
       $('.se_sch_pop').show();
@@ -890,7 +899,33 @@ $('#btn_zoom').click(function() {
     // do nothing;
     console.log(ex);
   }
-})
+});
+
+function check_recipient() {
+  var pen_type = $('input[name="pen_type"]:checked').val();
+  if(pen_type == '1') {
+    // 기존 수급자
+    return;
+  }
+
+  var pen_ltm_num = $('#penLtmNum').val();
+  if(pen_ltm_num)
+    pen_ltm_num = 'L' + pen_ltm_num;
+
+  $.post('ajax.get_recipient.php', {
+    pen_ltm_num: pen_ltm_num
+  }, 'json')
+  .done(function(result) {
+    var data = result.data;
+    var penExpiDtm = data['penExpiDtm'].split(' ~ ');
+    data['penLtmNumRaw'] = pen_ltm_num;
+    data['penExpiStDtm'] = penExpiDtm[0] ? penExpiDtm[0] : '';
+    data['penExpiEdDtm'] = penExpiDtm[1] ? penExpiDtm[1] : '';
+    alert(data['penNm'] + '(' + pen_ltm_num + ')로 등록된 수급자가 있습니다.');
+    $('#pen_type_1').prop('checked', true);
+    select_recipient(data);
+  })
+}
 
 check_no_item();
 $('#penTypeCd').change();

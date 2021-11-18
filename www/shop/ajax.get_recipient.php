@@ -7,7 +7,7 @@ if(!$is_member){
     exit;
 }
 
-if (!$pen_id) {
+if (!$pen_id && !$pen_ltm_num) {
     json_response(400, '잘못된 요청입니다.');
     exit;
 }
@@ -18,11 +18,14 @@ if(!$redirect)
 $send_data = [];
 $send_data['usrId'] = $member['mb_id'];
 $send_data['entId'] = $member['mb_entId'];
-$send_data['penId'] = $pen_id;
+if($pen_id)
+    $send_data['penId'] = $pen_id;
+if($pen_ltm_num)
+    $send_data['penLtmNum'] = $pen_ltm_num;
 
 $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
 
-if (!$pen_id || $res['errorYN'] === 'Y' || count($res['data']) < 1) {
+if ($res['errorYN'] === 'Y' || count($res['data']) < 1) {
     json_response(500, '존재하지 않는 수급자입니다.');
 }
 
