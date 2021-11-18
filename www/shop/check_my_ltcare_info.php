@@ -125,7 +125,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datata
         <p>· 대상자구분 : <?=$recent_result['type']?></p>
         <p>· 본인부담율 : <?=$recent_result['percent']?></p>
         <?php 
-          $i = 0;
+          $i = 1;
           foreach($images as $image) {
         ?>  <a href="<?=$image?>" target="_blank" id="show_image" class="btn_se_submit">이미지<?=$i?></a>
         <?php  
