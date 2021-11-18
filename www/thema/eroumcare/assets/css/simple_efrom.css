@@ -405,6 +405,10 @@
 .se_conacc {
   margin: 10px 0;
 }
+.se_conacc_hd {
+  margin: 20px 0 10px 0;
+  color: #666;
+}
 .se_conacc p {
   margin: 0;
 }
@@ -413,7 +417,10 @@
   display: block;
   width: 100%;
   border: 1px solid #ddd;
-  height: 80px;
+  height: 200px;
+}
+.ck-editor__editable_inline {
+  min-height: 200px;
 }
 
 /* 계약서 미리보기 */

@@ -241,13 +241,13 @@ while($item = sql_fetch_array($items)) {
         </div>
       </div>
       <div id="entConAcc01Row" class="row entConAcc">
-        <h3>특약사항1</h3>
+        <h3>특약사항</h3>
         <textarea name="entConAcc01" id="entConAcc01"></textarea>
       </div>
-      <div id="entConAcc02Row" class="row entConAcc">
+      <!--<div id="entConAcc02Row" class="row entConAcc">
         <h3>특약사항2</h3>
         <textarea name="entConAcc02" id="entConAcc02"></textarea>
-      </div>
+      </div>-->
     </div>
     <div class="popupFootWrap flex">
       <button id="btnSubmitEform">계약서 생성</button>

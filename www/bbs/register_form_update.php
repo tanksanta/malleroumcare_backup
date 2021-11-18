@@ -276,7 +276,7 @@ if ($w == '') { // 회원가입
     $sql_crnfile = " , crnFile = '{$crnFile_name}' ";
 
   $sendData['entConAcc01'] = $mb_entConAcc01;
-  $sendData['entConAcc02'] = $mb_entConAcc01;
+  $sendData['entConAcc02'] = $mb_entConAcc02;
   $sendData['entId'] = $member['mb_entId'];
   $sendData['entUsrId'] = $mb_id;
 
