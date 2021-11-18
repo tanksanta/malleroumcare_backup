@@ -169,7 +169,7 @@ if($w == 'u' || $w == 'w') {
     if(!$dc['entId'] || $dc['entId'] != $member['mb_entId'])
         json_response(400, '유효하지 않은 요청입니다.');
     
-    if($w == 'w')
+    if($w == 'w' || $dc['dc_status'] == '11')
         $dc_status = '11';
     else
         $dc_status = '10';

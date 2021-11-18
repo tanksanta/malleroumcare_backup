@@ -39,6 +39,7 @@ while($row = sql_fetch_array($result)) {
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_efrom.css">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
+add_javascript('<script src="'.G5_JS_URL.'/ckeditor/ckeditor.js"></script>');
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
 ?>
@@ -375,12 +376,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             ?>
           </ul>
           <div class="se_conacc">
-            <p>특약사항1</p>
-            <textarea name="entConAcc01"><?php if($dc) echo $dc['entConAcc01']; else echo $member['mb_entConAcc01']; ?></textarea>
-          </div>
-          <div class="se_conacc">
-            <p>특약사항2</p>
-            <textarea name="entConAcc02"><?php if($dc) echo $dc['entConAcc02']; else echo $member['mb_entConAcc02']; ?></textarea>
+            <div class="se_conacc_hd">계약서의 특약사항 내용</div>
+            <textarea name="entConAcc01" id="entConAcc01"><?php if($dc) echo $dc['entConAcc01']; else echo $member['mb_entConAcc01']; ?></textarea>
           </div>
           <button type="button" id="btn_se_save" onclick="save_eform();">저장</button>
         </div>
@@ -587,6 +584,10 @@ function save_eform() {
       $(this).find('input[name="it_date[]"]').val(from + '-' + to);
     }
   });
+
+  // 특약사항 값 적용
+  var data = CKEDITOR.instances.entConAcc01.getData();
+  $('#entConAcc01').val(data);
 
   loading = true;
   var $form = $('#form_simple_eform');
@@ -956,6 +957,10 @@ $('#penTypeCd').change();
   
 // 처음 팝업
 $('.se_sch_pop').show();
+
+CKEDITOR.replace( 'entConAcc01', {
+  removePlugins: 'link'
+});
 </script>
 
 <?php include_once("./_tail.php"); ?>
