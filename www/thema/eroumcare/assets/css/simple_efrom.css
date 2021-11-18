@@ -428,13 +428,29 @@
   display: block;
   width: 48%;
 }
+.se_preview_hd_wr {
+  position: relative;
+  background: #f1efea;
+  padding: 10px;
+  height: 54px;
+}
 .se_preview_hd {
   color: #666;
   font-weight: bold;
   text-align: center;
-  background: #f1efea;
-  padding: 5px;
-  height: 32px;
+  line-height: 34px;
+}
+#btn_zoom {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  height: 34px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-weight: bold;
+  background-color: #fff;
+  line-height: 22px;
 }
 .se_preview {
   height: 700px;
