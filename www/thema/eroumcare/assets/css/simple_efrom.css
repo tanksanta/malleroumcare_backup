@@ -67,7 +67,19 @@
   border-radius: 3px !important;
 }
 .form-group .form-control.pen_id_flexdatalist {
+  height: unset;
   width: 100%;
+  line-height: 22px;
+  padding: 5px 10px;
+}
+.form-group .form-control.pen_id_flexdatalist.active {
+  padding: 5px 10px 5px 30px;
+}
+.col-pen-nm img {
+  display: block;
+  position: absolute;
+  top: 8px;
+  left: 23px;
 }
 .form-group .control-label {
   max-width: 120px;
@@ -117,7 +129,6 @@
   border: 1px solid #ddd;
   border-radius: 3px;
   font-weight: bold;
-  margin-bottom: 10px;
 }
 @media (max-width: 960px) {
   .se_btn_wr {
