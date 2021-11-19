@@ -77,7 +77,7 @@ if($sheetData) {
             'usrAddrDetail' => $mb_giup_addr2 . $mb_giup_addr3,
 
             'thezone_code' => $thezone_code,
-            'entConAcco1' => "-본 계약은 국민건강보험 노인장기요양보험 급여상품의 공급계약을 체결함에 목적이 있다.\n-본 계약서에 명시되지 아니한 사항이나 의견이 상이할 때에는 상호 협의하에 해결하는 것을 원칙으로 한다.",
+            'entConAcco1' => "1. 본 계약은 국민건강보험 노인장기요양보험 급여상품의 공급계약을 체결함에 목적이 있다.\n2. 본 계약서에 명시되지 아니한 사항이나 의견이 상이할 때에는 상호 협의하에 해결하는 것을 원칙으로 한다.",
             'entConAcco2' => '본 계약서에 명시되지 아니한 사항이나 의견이 상이할 때에는 상호 협의하에 해결하는 것을 원칙으로 한다.',
             'mb_giup_addr1' => $mb_giup_addr1,
             'mb_giup_addr2' => $mb_giup_addr2,
