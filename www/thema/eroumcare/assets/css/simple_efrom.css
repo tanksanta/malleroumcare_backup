@@ -112,6 +112,12 @@
   display: inline-block;
   margin-right: 5px;
 }
+#btn_pen {
+  padding: 5px 20px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-weight: bold;
+}
 @media (max-width: 960px) {
   .se_btn_wr {
     position: fixed;
@@ -187,11 +193,8 @@
 
 /* 품목 목록 */
 .se_item_wr {
-  width: 100%;
-  transition: width 0.5s;
-}
-.preview .se_item_wr {
   width: 48%;
+  transition: width 0.5s;
 }
 .se_item_hd {
   background: #bbb;
@@ -212,7 +215,7 @@
   padding: 5px;
 }
 @media (max-width: 960px) {
-  .se_item_wr, .preview .se_item_wr {
+  .se_item_wr {
     width: 100%;
   }
 }
@@ -425,15 +428,10 @@
 
 /* 계약서 미리보기 */
 .se_preview_wr {
-  display: none;
-  width: 0;
-  border: 1px solid #f1efea;
-  height: 732px;
-  transition: width 0.5s;
-}
-.preview .se_preview_wr {
   display: block;
   width: 48%;
+  border: 1px solid #f1efea;
+  height: 732px;
 }
 .se_preview_hd_wr {
   position: relative;
@@ -479,7 +477,7 @@
   border: none;
 }
 @media (max-width: 960px) {
-  .se_preview_wr, .preview .se_preview_wr {
+  .se_preview_wr {
     width: 100%;
     margin-top: 20px;
     margin-bottom: 60px;
