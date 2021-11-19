@@ -18,7 +18,7 @@ if(!$eform['dc_id']) {
   json_response(500, '서명할 계약서를 찾을 수 없습니다.');
 }
 
-if($eform['dc_status'] == '10') {
+if($eform['dc_status'] == '11') {
   $is_simple_efrom = true;
 } else {
   $is_simple_efrom = false;
