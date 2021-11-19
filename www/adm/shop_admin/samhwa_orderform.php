@@ -3249,7 +3249,30 @@ $(document).ready(function() {
 
     //배송정보 수정
     $('#delivery_info_btn').click(function() {
-    var ordId = "<?=$od["ordId"]?>";
+        var od_delivery_type_data = $('#od_delivery_type').find(':selected').data('type');
+        var formdata = $.extend(
+            {},
+            $('#frmsamhwaorderdeliveryform').serializeObject(),
+            {
+            od_id: od_id,
+            od_delivery_type_data: od_delivery_type_data,
+            }
+        );
+
+        $.ajax({
+            method: "POST",
+            url: "./ajax.order.delivery.php",
+            data: formdata,
+        })
+        .done(function(data) {
+            if ( data.msg ) {
+                alert(data.msg);
+            }
+            if ( data.result === 'success' ) {
+                location.reload();
+            }
+        });
+    /*var ordId = "<?=$od["ordId"]?>";
         var od_delivery_type_data = $('#od_delivery_type').find(':selected').data('type');
         var formdata = $.extend(
             {},
@@ -3368,6 +3391,7 @@ $(document).ready(function() {
         }
       });
     }
+    */
     });
 
     // 배송 선택
