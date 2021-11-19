@@ -701,7 +701,6 @@ function toggle_pen_id_flexdatalist(on) {
 // 수급자 선택
 function select_recipient(obj) {
   $('.panel-body .form-group').show();
-  $('#btn_pen').hide();
   $('#penId').val(obj.penId);
   $('#penNm').val(obj.penNm);
   $('#penLtmNum').val(obj.penLtmNumRaw.replace(/L([0-9]{10})/, '$1')).prop('disabled', false).prop('readonly', true);
@@ -874,7 +873,7 @@ function check_pen_type() {
   if(pen_type == '1') {
     // 기존수급자
     $("#btn_pen").show();
-    $('.panel-body .form-group').hide();
+    //$('.panel-body .form-group').hide();
     $('#penLtmNum').val('').prop('disabled', true);
     $('#penConNum').val('').prop('disabled', true);
     $('#penRecGraCd').val('').prop('disabled', true);
@@ -1016,8 +1015,6 @@ $('.se_sch_pop').show();
 <?php
 if(!$dc) {
   echo 'check_pen_type();';
-} else {
-  echo '$("#btn_pen").hide();';
 }
 ?>
 
