@@ -5,7 +5,7 @@
       <ol class="thk001_article">
         <li>
           특약사항<br>
-          <?=(nl2br($eform['entConAcc01']) ?: '없음')?>
+          <?=(nl2br($eform['entConAcc01']) ?: '-없음')?>
         </li>
         <li>
           "을" 은 물품 등의 하자 · 채무불이행 등으로 인한 소비자의 피해에
