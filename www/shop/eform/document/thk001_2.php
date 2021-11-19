@@ -4,6 +4,7 @@
     <div class="thk001_article_div">
       <ol class="thk001_article">
         <li>
+          특약사항<br>
           <?=(nl2br($eform['entConAcc01']) ?: '없음')?>
         </li>
         <li>
