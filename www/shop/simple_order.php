@@ -51,10 +51,15 @@ add_javascript(G5_POSTCODE_JS, 0);
               <strong>쿠폰적용</strong>
             </label>
             <div class="col-sm-8">
-              <span id="od_cp_price">0</span>원
               <input type="hidden" name="od_cp_id" value="">
               <input type="hidden" name="od_cp_price" value="0">
+              <?php if($cp_count > 0) { ?>
+              <span id="od_cp_price">0</span>원
               <button type="button" id="od_coupon_btn" class="btn_so_coupon">쿠폰</button>
+              보유 : <?=$cp_count?>장
+              <?php } else { ?>
+              보유한 쿠폰이 없습니다.
+              <?php } ?>
             </div>
           </div>
           <div class="form-group">
