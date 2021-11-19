@@ -1,12 +1,12 @@
 <div id="thk001_2" class="a4">
   <div class="thk001">
+    <h3 class="thk001_h3">특약사항</h3>
+    <div class="thk001_article_div">
+      <?=(nl2br($eform['entConAcc01']) ?: '없음')?>
+    </div>
     <h3 class="thk001_h3">기타 협약사항</h3>
     <div class="thk001_article_div">
       <ol class="thk001_article">
-        <li>
-          특약사항<br>
-          <?=(nl2br($eform['entConAcc01']) ?: '-없음')?>
-        </li>
         <li>
           "을" 은 물품 등의 하자 · 채무불이행 등으로 인한 소비자의 피해에
           대하여는 소비자기본법의 '소비자분쟁해결기준' 에 따라 수리 · 교환 ·
