@@ -265,6 +265,18 @@ $is_gicho = $eform['penTypeCd'] == '04';
       zoomInstance.smoothZoom(0, 0, 0.4);
     }
   }
+
+  function zoomStep(step) {
+    switch(step) {
+      case 0:
+      case 1:
+        zoomInstance.smoothZoom(0, 0, 1.582);
+        break;
+      case 2:
+        zoomInstance.smoothZoom(0, 0, 0.4);
+        break;
+    }
+  }
   <?php } ?>
   </script>
 </body>

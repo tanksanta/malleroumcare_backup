@@ -385,7 +385,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <div class="se_preview_wr">
           <div class="se_preview_hd_wr">
             <div class="se_preview_hd">공급계약서 미리보기</div>
-            <button type="button" id="btn_zoom">확대/축소</button>
+            <button type="button" id="btn_zoom">확대 100%</button>
             <button type="button" id="btn_refresh" onclick="save_eform();">새로고침</button>
           </div>
           <div id="se_preview" class="se_preview">
@@ -942,9 +942,22 @@ $('#penTypeCd').change(function() {
 });
 
 // 확대/축소
+var zoom_step = 0;
 $('#btn_zoom').click(function() {
+  switch(zoom_step) {
+    case 0:
+      $('#btn_zoom').text('확대 150%');
+      break;
+    case 1:
+      $('#btn_zoom').text('확대 200%');
+      break;
+    case 2:
+      $('#btn_zoom').text('확대 100%');
+      break;
+  }
   try {
-    $('#se_preview').find('iframe')[0].contentWindow.toggleZoom();
+    $('#se_preview').find('iframe')[0].contentWindow.zoomStep(zoom_step);
+    zoom_step = (zoom_step + 1) % 3;
   } catch(ex) {
     // do nothing;
     console.log(ex);
