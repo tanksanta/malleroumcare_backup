@@ -556,7 +556,7 @@
           '',
           round($od['od_send_cost'] / 1.1), //공급가액
           ($od['od_send_cost'] - round($od['od_send_cost'] / 1.1)), //부가세
-          $barcode_string, // 바코드
+          '', // 바코드
           $delivery, // 로젠송장번호,
           $abstract, //적요
           '',
