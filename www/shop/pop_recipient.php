@@ -353,8 +353,15 @@ $(function() {
 
   $("#thisPopupCloseBtn").click(function(e){
     e.preventDefault();
-    $("#order_recipientBox", parent.document).hide();
-          parent.$('#mask').css({'width':'0px','height':'0px'});
+
+    try {
+      $("#order_recipientBox", parent.document).hide();
+      parent.$('#mask').css({'width':'0px','height':'0px'});
+      $('body', parent.document).removeClass('modal-open');
+      $('#popup_box', parent.document).hide();
+    } catch(ex) {
+      // do nothing
+    }
   });
 });
 </script>

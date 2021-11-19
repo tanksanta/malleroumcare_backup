@@ -77,6 +77,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <input type="radio" name="pen_type" id="pen_type_0" value="0" <?php if($dc && !$dc['penId']) echo 'checked' ?>> 수급자 등록
             </label>
           </div>
+          <button type="button" id="btn_pen">수급자 찾기</button>
           <div class="form-group">
             <label for="penNm" class="col-md-2 control-label">
               <strong>수급자명</strong>
@@ -91,7 +92,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>요양인정번호</strong>
             </label>
             <div class="col-md-3">
-              L <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="<?php if($dc) echo preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']); ?>" placeholder="10자리 입력">
+              L <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="<?php if($dc) echo preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']); ?>" placeholder="10자리 입력" readonly>
             </div>
             <label for="penGender" class="col-md-2 control-label">
               <strong>휴대폰번호</strong>
@@ -152,7 +153,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         </div>
       </div>
 
-      <div id="se_body_wr" class="flex space-between <?php if($dc) echo 'active preview' ;?>">
+      <div id="se_body_wr" class="flex space-between <?php if($dc) echo 'active' ;?>">
         <div class="se_item_wr">
           <div class="se_sch_wr">
             <div class="se_sch_hd">상품정보</div>
@@ -377,7 +378,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </ul>
           <div class="se_conacc">
             <div class="se_conacc_hd">계약서의 특약사항 내용</div>
-            <textarea name="entConAcc01" id="entConAcc01"><?php if($dc) echo $dc['entConAcc01']; else echo $member['mb_entConAcc01']; ?></textarea>
+            <textarea name="entConAcc01" id="entConAcc01"><?php if($dc) echo $dc['entConAcc01']; else echo nl2br($member['mb_entConAcc01']); ?></textarea>
           </div>
           <button type="button" id="btn_se_save" onclick="save_eform();">저장</button>
         </div>
@@ -605,7 +606,6 @@ function save_eform() {
 
       var preview_url = '/shop/eform/renderEform.php?preview=1&dc_id=' + dc_id;
       $('#se_preview').empty().append($('<iframe>').attr('src', preview_url).attr('frameborder', 0));
-      $('#se_body_wr').addClass('preview');
       check_no_item();
     })
     .fail(function ($xhr) {
@@ -699,9 +699,11 @@ function toggle_pen_id_flexdatalist(on) {
 }
 // 수급자 선택
 function select_recipient(obj) {
+  $('.panel-body .form-group').show();
+  $('#btn_pen').hide();
   $('#penId').val(obj.penId);
   $('#penNm').val(obj.penNm);
-  $('#penLtmNum').val(obj.penLtmNumRaw.replace(/L([0-9]{10})/, '$1')).prop('disabled', false);
+  $('#penLtmNum').val(obj.penLtmNumRaw.replace(/L([0-9]{10})/, '$1')).prop('disabled', false).prop('readonly', true);
   $('#penConNum').val(obj.penConNum).prop('disabled', false);
   $('#penRecGraCd').val(obj.penRecGraCd ? obj.penRecGraCd : '00').prop('disabled', false);
   $('#penTypeCd').val(obj.penTypeCd ? obj.penTypeCd : '00').prop('disabled', false).change();
@@ -710,6 +712,40 @@ function select_recipient(obj) {
   $('#penExpiEdDtm').val(obj.penExpiEdDtm).prop('disabled', false);
   $('#penJumin').val(obj.penJumin).prop('disabled', false);
   $('#se_body_wr').addClass('active');
+}
+
+// 수급자 찾기
+$('#btn_pen').click(function() {
+  var url = 'pop_recipient.php';
+
+  $('#popup_box iframe').attr('src', url);
+  $('body').addClass('modal-open');
+  $('#popup_box').show();
+});
+function selected_recipient(result) {
+
+  $('body').removeClass('modal-open');
+  $('#popup_box').hide();
+
+  result = result.split('|');
+
+  var penExpiDtm = result[11].split(' ~ ');
+  var penExpiStDtm = penExpiDtm[0] ? penExpiDtm[0] : '';
+  var penExpiEdDtm = penExpiDtm[1] ? penExpiDtm[1] : '';
+  
+  var pen = {
+    penId: result[1],
+    penNm: result[3],
+    penLtmNumRaw: result[4],
+    penConNum: result[20],
+    penRecGraCd: result[5],
+    penTypeCd: result[7],
+    penExpiStDtm: penExpiStDtm,
+    penExpiEdDtm: penExpiEdDtm,
+    penJumin: result[33]
+  };
+
+  select_recipient(pen);
 }
 
 // 품목찾기
@@ -835,6 +871,8 @@ function check_pen_type() {
 
   if(pen_type == '1') {
     // 기존수급자
+    $("#btn_pen").show();
+    $('.panel-body .form-group').hide();
     $('#penLtmNum').val('').prop('disabled', true);
     $('#penConNum').val('').prop('disabled', true);
     $('#penRecGraCd').val('').prop('disabled', true);
@@ -846,7 +884,9 @@ function check_pen_type() {
     toggle_pen_id_flexdatalist(true);
   } else {
     // 신규수급자
-    $('#penLtmNum').prop('disabled', false);
+    $("#btn_pen").hide();
+    $('.panel-body .form-group').show();
+    $('#penLtmNum').val('').prop('disabled', false).prop('readonly', false);
     $('#penConNum').prop('disabled', false);
     $('#penRecGraCd').prop('disabled', false);
     $('#penTypeCd').prop('disabled', false).change();
@@ -957,6 +997,14 @@ $('#penTypeCd').change();
   
 // 처음 팝업
 $('.se_sch_pop').show();
+
+<?php
+if(!$dc) {
+  echo 'check_pen_type();';
+} else {
+  echo '$("#btn_pen").hide();';
+}
+?>
 
 CKEDITOR.replace( 'entConAcc01', {
   removePlugins: 'link'
