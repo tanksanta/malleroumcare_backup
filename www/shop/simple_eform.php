@@ -77,15 +77,16 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <input type="radio" name="pen_type" id="pen_type_0" value="0" <?php if($dc && !$dc['penId']) echo 'checked' ?>> 수급자 등록
             </label>
           </div>
-          <button type="button" id="btn_pen">수급자 찾기</button>
           <div class="form-group">
             <label for="penNm" class="col-md-2 control-label">
               <strong>수급자명</strong>
             </label>
-            <div class="col-md-3" style="max-width: unset;">
+            <div class="col-md-3 col-pen-nm" style="max-width: unset;">
+              <img style="display: none;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
               <input type="hidden" name="penId" id="penId" value="<?php if($dc) echo $dc['penId']; ?>">
               <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명">
             </div>
+            <button type="button" id="btn_pen">수급자 목록</button>
           </div>
           <div class="form-group">
             <label for="penLtmNum" class="col-md-2 control-label">
@@ -714,7 +715,7 @@ function select_recipient(obj) {
   $('#se_body_wr').addClass('active');
 }
 
-// 수급자 찾기
+// 수급자 목록
 $('#btn_pen').click(function() {
   var url = 'pop_recipient.php';
 
@@ -872,6 +873,8 @@ function check_pen_type() {
 
   if(pen_type == '1') {
     // 기존수급자
+    $('.pen_id_flexdatalist').addClass('active').attr('placeholder', '수급자명 검색');
+    $('.col-pen-nm img').show();
     $("#btn_pen").show();
     //$('.panel-body .form-group').hide();
     $('#penLtmNum').val('').prop('disabled', true);
@@ -885,6 +888,8 @@ function check_pen_type() {
     toggle_pen_id_flexdatalist(true);
   } else {
     // 신규수급자
+    $('.pen_id_flexdatalist').removeClass('active').attr('placeholder', '수급자명');;
+    $('.col-pen-nm img').hide();
     $("#btn_pen").hide();
     $('.panel-body .form-group').show();
     $('#penLtmNum').val('').prop('disabled', false).prop('readonly', false);
@@ -1005,6 +1010,12 @@ $('#penConNum').on('change paste keyup input', function() {
 
 if($('input[name="pen_type"]:checked').val() == 1) {
   toggle_pen_id_flexdatalist(true);
+  $('.pen_id_flexdatalist').addClass('active').attr('placeholder', '수급자명 검색');
+  $('.col-pen-nm img').show();
+} else {
+  $('.pen_id_flexdatalist').removeClass('active').attr('placeholder', '수급자명');
+  $('.col-pen-nm img').hide();
+  $('#btn_pen').hide();
 }
 check_no_item();
 $('#penTypeCd').change();
