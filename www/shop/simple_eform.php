@@ -380,7 +380,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <div class="se_conacc_hd">계약서의 특약사항 내용</div>
             <textarea name="entConAcc01" id="entConAcc01"><?php if($dc) echo $dc['entConAcc01']; else echo nl2br($member['mb_entConAcc01']); ?></textarea>
           </div>
-          <button type="button" id="btn_se_save" onclick="save_eform();">저장</button>
+          <!--<button type="button" id="btn_se_save" onclick="save_eform();">저장</button>-->
         </div>
         <div class="se_preview_wr">
           <div class="se_preview_hd_wr">
@@ -392,7 +392,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <?php if($dc) { ?>
             <iframe src="/shop/eform/renderEform.php?preview=1&dc_id=<?=$dc['uuid']?>" frameborder="0"></iframe>
             <?php } else { ?>
-            <div class="empty">품목선택 후 저장 시 생성됩니다.</div>
+            <div class="empty">품목선택 시 생성됩니다.</div>
             <?php } ?>
           </div>
         </div>
@@ -524,6 +524,7 @@ function select_item(obj) {
   $('#ipt_se_sch').val('').next().focus();
 
   check_no_item();
+  save_eform();
 }
 
 // 바코드 최대길이 체크
@@ -812,6 +813,7 @@ $(document).on('change paste keyup', 'input[name="it_qty[]"]', function() {
 $(document).on('click', '.btn_del_item', function() {
   $(this).closest('li').remove();
   check_no_item();
+  save_eform();
 });
 
 // 상품검색 팝업
