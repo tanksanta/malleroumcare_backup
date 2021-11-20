@@ -27,7 +27,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
   <div class="clear">
     <div class="emp_hd">직원목록</div>
     <div style="float: right;">
-      <a href="#" class="btn eroumcare_btn2" title="직원 등록">직원 등록</a>
+      <a href="center_member_form.php" class="btn eroumcare_btn2" title="직원 등록">직원 등록</a>
     </div>
   </div>
 
