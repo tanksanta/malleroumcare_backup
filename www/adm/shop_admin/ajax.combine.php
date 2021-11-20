@@ -1,6 +1,6 @@
 <?php
 $sub_menu = '400400';
-include('./_common.php');
+include_once('./_common.php');
 
 $auth_check = auth_check($auth[$sub_menu], "w", true);
 if($auth_check)
