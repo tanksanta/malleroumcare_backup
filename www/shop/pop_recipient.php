@@ -213,7 +213,7 @@ $(function() {
   }
 
   $(window).scroll(function() {
-    if((window.innerHeight + window.scrollY) >= document.body.offsetHeight / 2) {
+    if( ( $(window).scrollTop() + ($(window).height() * 2) ) >= $(document).height() ) {
       load_recipient();
     }
   });
