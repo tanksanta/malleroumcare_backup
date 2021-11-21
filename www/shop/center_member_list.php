@@ -72,6 +72,11 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
   </div>
 
   <ul class="emp_list">
+    <?php if(!$list) { ?>
+    <li class="no_content">
+      자료가 없습니다.
+    </li>
+    <?php } ?>
     <?php foreach($list as $cm) { ?>
     <li>
       <div class="emp_info_wr flex">
