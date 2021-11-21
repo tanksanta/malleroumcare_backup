@@ -19,7 +19,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css">', 0);
 ?>
 
-<form class="form-horizontal" role="form" id="fcentermember" name="fcentermember" action="center_member_update.php" onsubmit="return fcentermember_submit();" method="post" enctype="multipart/form-data" autocomplete="off">
+<form class="form-horizontal" role="form" id="fcentermember" name="fcentermember" action="center_member_form_update.php" onsubmit="return fcentermember_submit();" method="post" enctype="multipart/form-data" autocomplete="off">
     <input type="hidden" name="w" value="<?php echo $w ?>">
 
     <div class="sub_section_tit">
@@ -47,6 +47,17 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
                 </div>
                 <div class="desc_txt">
                     <span id="code_keyup">* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.</span>
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label class="col-sm-2 control-label"><b>성별</b></label>
+                <div class="col-sm-3">
+                    <label class="checkbox-inline">
+                        <input type="radio" name="cm_sex" value="1" style="vertical-align: middle; margin: 0 5px 0 0;" <?=option_array_checked($cm['cm_sex'], '1')?>>남
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="radio" name="cm_sex" value="2" style="vertical-align: middle; margin: 0 5px 0 0;" <?=option_array_checked($cm['cm_sex'], '2')?>>여
+                    </label>
                 </div>
             </div>
             <div class="form-group has-feedback">

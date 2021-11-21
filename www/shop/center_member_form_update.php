@@ -3,6 +3,7 @@ include_once('./_common.php');
 
 $cm_name = clean_xss_tags($_POST['cm_name']);
 $cm_code = clean_xss_tags($_POST['cm_code']);
+$cm_sex = in_array($_POST['cm_sex'], ['1', '2']) ? $_POST['cm_sex'] : '0';
 $cm_birth = clean_xss_tags($_POST['cm_birth']);
 $cm_cont = in_array($_POST['cm_cont'], ['1', '2']) ? $_POST['cm_cont'] : '0';
 $cm_type = in_array($_POST['cm_type'], ['1', '2']) ? $_POST['cm_type'] : '0';
@@ -92,6 +93,7 @@ if($w == '') {
             mb_id = '{$member['mb_id']}',
             cm_code = '$cm_code',
             cm_name = '$cm_name',
+            cm_sex = '$cm_sex',
             cm_birth = '$cm_birth',
             cm_cont = '$cm_cont',
             cm_type = '$cm_type',
@@ -130,6 +132,7 @@ if($w == '') {
             center_member
         SET
             cm_name = '$cm_name',
+            cm_sex = '$cm_sex',
             cm_birth = '$cm_birth',
             cm_cont = '$cm_cont',
             cm_type = '$cm_type',
