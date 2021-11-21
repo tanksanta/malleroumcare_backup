@@ -5,7 +5,7 @@ $g5['title'] = "직원관리";
 include_once("./_head.php");
 
 if($w == 'u') {
-    $cm_code = clean_xss_tags($_POST['cm_code']);
+    $cm_code = clean_xss_tags($_GET['cm_code']);
     $cm = sql_fetch("
         SELECT * FROM center_member
         WHERE mb_id = '{$member['mb_id']}' and cm_code = '$cm_code'
@@ -20,7 +20,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
 ?>
 
 <form class="form-horizontal" role="form" id="fcentermember" name="fcentermember" action="center_member_form_update.php" onsubmit="return fcentermember_submit();" method="post" enctype="multipart/form-data" autocomplete="off">
-    <input type="hidden" name="w" value="<?php echo $w ?>">
+    <input type="hidden" name="w" value="<?php echo $w; ?>">
 
     <div class="sub_section_tit">
         <?php echo $w == '' ? '직원등록':'정보수정'; ?>
@@ -32,6 +32,9 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
                 <label class="col-sm-2 control-label" for="cm_img"><b>대표이미지</b></label>
                 <div class="col-sm-3">
                     <input type="file" name="cm_img" value="" id="cm_img" class="input-sm">
+                    <?php if($cm) { ?>
+                    <img src="<?php echo G5_DATA_URL.'/center/member/'.$cm['cm_img']; ?>" width="100" height="100" onerror="this.src='/img/no_img.png';">
+                    <?php } ?>
                 </div>
             </div>
             <div class="form-group has-feedback">
@@ -134,7 +137,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
     </div>
     <div class="text-center" style="margin:30px 0px;">
         <button type="submit" id="btn_submit" class="btn btn-color">작성완료</button>
-        <a href="center_member_list.php" class="btn btn-black" role="button">취소</a>
+        <a href="javascript:history.back();" class="btn btn-black" role="button">취소</a>
     </div>
 </form>
 
@@ -145,6 +148,7 @@ $('.datepicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: '
 
 function fcentermember_submit() {
     var $form = $('#fcentermember');
+    var w = $('input[name="w"]').val();
 
     // 이름 체크
     if($('#cm_name').val() == '') {
@@ -154,11 +158,13 @@ function fcentermember_submit() {
     }
 
     // 접속코드 체크
-    var code_msg = check_code();
-    if(code_msg) {
-        alert(code_msg);
-        $('#cm_code').focus();
-        return false;
+    if(w == '') {
+        var code_msg = check_code();
+        if(code_msg) {
+            alert(code_msg);
+            $('#cm_code').focus();
+            return false;
+        }
     }
 
     // 급여 체크

@@ -15,6 +15,7 @@ $cm_retiredate = clean_xss_tags($_POST['cm_retiredate']);
 $cm_hp = clean_xss_tags($_POST['cm_hp']);
 $cm_addr = clean_xss_tags($_POST['cm_addr']);
 $cm_zip = clean_xss_tags($_POST['cm_zip']) ?: '';
+$w = $_POST['w'];
 
 function upload_cm_img($file, $cm_code) {
     global $member;
@@ -52,7 +53,7 @@ function upload_cm_img($file, $cm_code) {
             break;
     }
 
-    $filename = hash('sha256', $member['mb_id'] . round(microtime(true)) . $cm_code) . $ext;
+    $filename = hash('sha256', $member['mb_id'] . round(microtime(true)) . $cm_code) . '.' . $ext;
 
     move_uploaded_file($file['tmp_name'], $dir . '/' . $filename);
 
@@ -70,12 +71,6 @@ if(!$cm_name)
 if(!$cm_code)
     alert('접속코드를 입력해주세요.');
 
-$sql = " select count(*) as cnt from center_member where mb_id = '{$member['mb_id']}' and cm_code = '$cm_code' ";
-$result = sql_fetch($sql);
-
-if($result['cnt'] > 0)
-    alert('중복된 접속코드 입니다.');
-
 if($cm_paytype == '0') {
     alert('급여를 입력해주세요.');
 } else if($cm_paytype == '1') {
@@ -85,6 +80,11 @@ if($cm_paytype == '0') {
 }
 
 if($w == '') {
+    $sql = " select count(*) as cnt from center_member where mb_id = '{$member['mb_id']}' and cm_code = '$cm_code' ";
+    $result = sql_fetch($sql);
+
+    if($result['cnt'] > 0)
+        alert('중복된 접속코드 입니다.');
 
     $sql = "
         INSERT INTO
@@ -162,4 +162,4 @@ if($w == '') {
     }
 }
 
-goto_url('center_member_list.php');
+goto_url('center_member_view.php?cm_code=' . $cm_code);

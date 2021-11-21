@@ -39,35 +39,7 @@ $result = sql_query("
 
 $list = [];
 while($cm = sql_fetch_array($result)) {
-  $info = [];
-  $temp = '';
-  if($cm['cm_sex'] == 1) {
-    $temp .= '남';
-  } else if($cm['cm_sex'] == 2) {
-    $temp .= '여';
-  }
-  if($cm['cm_birth']) {
-    $birth = new DateTime($cm['cm_birth']);
-    $now = new DateTime();
-    $interval = $now->diff($birth);
-    $temp .= '(만 ' . $interval->y . '세)';
-  }
-  if($temp)
-    $info[] = $temp;
-  
-  if($cm['cm_cont'] == 1) {
-    $info[] = '정규직';
-  } else if($cm['cm_cont'] == 2) {
-    $info[] = '계약직';
-  }
-
-  if($cm['cm_type'] == 1) {
-    $info[] = '일반직원';
-  } else if($cm['cm_type'] == 2) {
-    $info[] = '요양보호사';
-  }
-
-  $cm['info'] = implode(' / ', $info);
+  $cm['info'] = get_center_member_info_text($cm);
 
   $list[] = $cm;
 }
@@ -101,10 +73,18 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
     <?php foreach($list as $cm) { ?>
     <li>
       <div class="emp_info_wr flex">
-        <img src="/img/no_img.png" alt="">
+        <a href="center_member_view.php?cm_code=<?=$cm['cm_code']?>">
+          <img src="<?php echo G5_DATA_URL.'/center/member/'.$cm['cm_img']; ?>" class="emp_img" onerror="this.src='/img/no_img.png';">
+        </a>
         <div class="emp_info">
-          <p class="name"><?=$cm['cm_name']?></p>
-          <p class="info"><?=$cm['info']?></p>
+          <p class="name">
+            <a href="center_member_view.php?cm_code=<?=$cm['cm_code']?>">
+              <?=$cm['cm_name']?>
+            </a>
+          </p>
+          <p class="info">
+            <?=$cm['info']?>
+          </p>
           <ul class="detail">
             <li>
               · 근무 : <?php if($cm['cm_joindate']) { echo $cm['cm_joindate'] . '(입사) ~ '; if($cm['cm_retired']) { echo $cm['cm_retiredate'] . '(퇴사)'; } else { echo '활동중'; } } ?>
