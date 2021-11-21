@@ -19,6 +19,10 @@
     -ms-flex-pack: justify;
     justify-content: space-between;
 }
+.no_content {
+    text-align: center;
+    padding: 50px 0 !important;
+}
 
 /* 직원관리 */
 .emp_hd {
