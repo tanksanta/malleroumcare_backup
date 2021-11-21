@@ -8,8 +8,10 @@ $sel_field = in_array($_GET['sel_field'], ['cm_name', 'cm_hp', 'cm_addr']) ? $_G
 $search = get_search_string($_GET['search']);
 
 $where = [];
+$qstr = '';
 if($sel_field && $search) {
   $where[] = " $sel_field like '%$search%' ";
+  $qstr .= "$sel_field=$search&";
 }
 
 $sql_where = $where ? (' and ' . implode(' and ', $where) ) : '';
@@ -105,6 +107,12 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
     </li>
     <?php } ?>
   </ul>
+
+  <div class="list-paging">
+    <ul class="pagination pagination-sm en">  
+      <?php echo apms_paging(5, $page, $total_page, '?'.$qstr.'page='); ?>
+    </ul>
+  </div>
 </section>
 
 <?php
