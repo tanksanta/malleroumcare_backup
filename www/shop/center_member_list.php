@@ -4,10 +4,74 @@ include_once('./_common.php');
 $g5['title'] = "직원관리";
 include_once("./_head.php");
 
-include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
-add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
-add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
-add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
+$sel_field = in_array($_GET['sel_field'], ['cm_name', 'cm_hp', 'cm_addr']) ? $_GET['sel_field'] : '';
+$search = get_search_string($_GET['search']);
+
+$where = [];
+if($sel_field && $search) {
+  $where[] = " $sel_field like '%$search%' ";
+}
+
+$sql_where = $where ? (' and ' . implode(' and ', $where) ) : '';
+
+$sql_common = "
+  FROM
+    center_member
+  WHERE
+    1 = 1
+    $sql_where
+";
+
+// 총 개수 구하기
+$total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ", true)['cnt'];
+$page_rows = $config['cf_page_rows'];
+$total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
+
+$sql_limit = " limit {$from_record}, {$page_rows} ";
+
+$result = sql_query("
+  SELECT *
+  $sql_common
+  $sql_limit
+");
+
+$list = [];
+while($cm = sql_fetch_array($result)) {
+  $info = [];
+  $temp = '';
+  if($cm['cm_sex'] == 1) {
+    $temp .= '남';
+  } else if($cm['cm_sex'] == 2) {
+    $temp .= '여';
+  }
+  if($cm['cm_birth']) {
+    $birth = new DateTime($cm['cm_birth']);
+    $now = new DateTime();
+    $interval = $now->diff($birth);
+    $temp .= '(만 ' . $interval->y . '세)';
+  }
+  if($temp)
+    $info[] = $temp;
+  
+  if($cm['cm_cont'] == 1) {
+    $info[] = '정규직';
+  } else if($cm['cm_cont'] == 2) {
+    $info[] = '계약직';
+  }
+
+  if($cm['cm_type'] == 1) {
+    $info[] = '일반직원';
+  } else if($cm['cm_type'] == 2) {
+    $info[] = '요양보호사';
+  }
+
+  $cm['info'] = implode(' / ', $info);
+
+  $list[] = $cm;
+}
+
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css">', 0);
 ?>
 
@@ -16,10 +80,12 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
   <form id="form_search" method="get">
     <div class="search_box">
       <select name="sel_field" id="sel_field">
-        <option value="emp_name">직원명</option>
+        <option value="cm_name" <?=get_selected($sel_field, 'cm_name')?>>직원명</option>
+        <option value="cm_hp" <?=get_selected($sel_field, 'cm_hp')?>>연락처</option>
+        <option value="cm_addr" <?=get_selected($sel_field, 'cm_addr')?>>주소</option>
       </select>
       <div class="input_search">
-          <input name="search" id="search" value="" type="text">
+          <input name="search" id="search" value="<?=$search?>" type="text">
           <button id="btn_search" type="submit"></button>
       </div>
     </div>
@@ -32,29 +98,29 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
   </div>
 
   <ul class="emp_list">
-    <?php for($i = 0; $i < 3; $i++) { ?>
+    <?php foreach($list as $cm) { ?>
     <li>
       <div class="emp_info_wr flex">
         <img src="/img/no_img.png" alt="">
         <div class="emp_info">
-          <p class="name">김보호</p>
-          <p class="info">여(만 42세) / 계약직 / 요양보호사</p>
+          <p class="name"><?=$cm['cm_name']?></p>
+          <p class="info"><?=$cm['info']?></p>
           <ul class="detail">
             <li>
-              · 근무 : 2020-02-02(입사) ~ 활동중
+              · 근무 : <?php if($cm['cm_joindate']) { echo $cm['cm_joindate'] . '(입사) ~ '; if($cm['cm_retired']) { echo $cm['cm_retiredate'] . '(퇴사)'; } else { echo '활동중'; } } ?>
             </li>
             <li>
-              · 연락처 : 010-1111-2222
+              · 연락처 : <?=$cm['cm_hp']?>
             </li>
             <li>
-              · 주소 : 서울시 강남구 123
+              · 주소 : <?=$cm['cm_addr']?>
             </li>
           </ul>
         </div>
       </div>
       <div class="emp_btn_wr">
-        <a href="#" class="btn_schedule">방문일정 (예정 2건)</a>
-        <div class="emp_pay">2021년 11월 급여 (미지급)</div>
+        <a href="#" class="btn_schedule">방문일정</a>
+        <div class="emp_pay"><?=date('Y년 m월')?> 급여 (미지급)</div>
       </div>
     </li>
     <?php } ?>
