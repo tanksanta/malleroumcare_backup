@@ -35,7 +35,7 @@
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
 }
-.emp_list > li .emp_info_wr > img {
+.emp_list > li .emp_info_wr .emp_img {
     display: block;
     width: 100px;
     height: 100px;
@@ -82,6 +82,38 @@
         position: static;
         margin-top: 10px;
     }
+}
+
+/* 직원정보 */
+.btn_schedule.inline {
+    display: inline-block;
+    border: 1px solid #ef8505;
+    color: #ef8505;
+    margin-right: 5px;
+}
+.btn_etc {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    color: #333;
+    min-width: 100px;
+    text-align: center;
+}
+.mv_btn_row {
+    text-align: right;
+    margin-bottom: 10px;
+}
+.mv_section {
+    margin-top: 30px;
+}
+.mv_section_hd {
+    margin-bottom: 10px;
+}
+.mv_section_hd h3 {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 10px;
 }
 
 /* 사례관리 */
