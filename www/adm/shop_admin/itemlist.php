@@ -34,7 +34,7 @@ $sql_search = "";
 if ($stx != "") {
     if ($sfl != "") {
         if($sfl == 'all') {
-            $attrs = ['it_thezone', 'it_name', 'it_model', 'it_id', 'it_maker', 'it_origin', 'it_expected_warehousing_date'];
+            $attrs = ['it_thezone', 'it_name', 'it_model', 'it_id', 'it_maker', 'it_origin', 'it_expected_warehousing_date', 'it_default_warehouse'];
             $sql_search .= " $where ( 1 != 1 ";
             $where = ' or ';
             foreach($attrs as $attr) {
@@ -243,6 +243,7 @@ $flist = apms_form(1,0);
     <option value="pt_id" <?php echo get_selected($sfl, 'pt_id'); ?>>파트너 아이디</option>
     <!-- // -->
     <option value="it_expected_warehousing_date" <?php echo get_selected($sfl, 'it_expected_warehousing_date'); ?>>입고예정알림</option>
+    <option value="it_default_warehouse" <?php echo get_selected($sfl, 'it_default_warehouse'); ?>>출하창고</option>
   </select>
 
   <label for="stx" class="sound_only">검색어</label>
