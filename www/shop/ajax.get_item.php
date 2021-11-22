@@ -3,11 +3,6 @@ include_once('./_common.php');
 
 header('Content-type: application/json');
 
-if($member['mb_type'] !== 'default') {
-  echo json_encode([]);
-  exit;
-}
-
 $keyword = str_replace(' ', '', trim($keyword));
 
 $sql = "
