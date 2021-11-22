@@ -21,7 +21,8 @@ foreach($ct_id_arr as $ct_id) {
       o.od_b_addr3,
       o.od_b_addr_jibeon,
       o.od_b_hp,
-      o.od_b_tel
+      o.od_b_tel,
+      o.od_memo
     FROM
       g5_shop_cart c
     LEFT JOIN
@@ -34,6 +35,13 @@ foreach($ct_id_arr as $ct_id) {
     continue;
   
   $ct['it_name'] .= $ct['ct_option'] && $ct['ct_option'] != $ct['it_name'] ? " ({$ct['ct_option']})" : '';
+  if ($ct['prodMemo']) {
+    $memo = $ct['prodMemo'] . "\r\r[배송요청사항]\r" . $ct['od_memo'];
+  }
+  else {
+    $memo = "[배송요청사항]\r" . $ct['od_memo'];
+  }
+    
   
   $data[] = [
     $index,
@@ -42,7 +50,7 @@ foreach($ct_id_arr as $ct_id) {
     $ct['od_b_name'],
     print_address($ct['od_b_addr1'], $ct['od_b_addr2'], $ct['od_b_addr3'], $ct['od_b_addr_jibeon']),
     $ct['od_b_hp'] ?: $ct['od_b_tel'],
-    $ct['prodMemo']
+    $memo
   ];
 
   sql_query("
@@ -81,8 +89,9 @@ $sheet->getStyle('B11:H'.$last_row)->applyFromArray($styleArray);
 
 // 열 높이
 for($i = 11; $i <= $last_row; $i++) {
-  $sheet->getRowDimension($i)->setRowHeight(35);
+  $sheet->getRowDimension($i)->setRowHeight(-1);
 }
+$sheet->getStyle('H12:H'.$last_row)->getAlignment()->setWrapText(true);
 
 // 가운데 정렬
 $sheet->getStyle('B11:B'.$last_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
