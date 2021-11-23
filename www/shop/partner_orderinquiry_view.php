@@ -127,7 +127,7 @@ while($manager = sql_fetch_array($manager_result)) {
   $managers[] = $manager;
 }
 
-add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_order.css?v=0827">', 0);
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_order.css?v=1123">', 0);
 ?>
 
 <section id="partner-order" class="wrap">
@@ -225,6 +225,8 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
           </ul>
         </div>
       </form>
+
+      <a href="partner_orderinquiry_edit.php?od_id=<?=$od_id?>" class="btn_od_edit">주문상품 변경</a>
 
       <div class="row no-gutter">
         <div class="col title">배송정보</div>

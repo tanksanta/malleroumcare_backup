@@ -87,6 +87,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
   <div class="sub_section_tit">주문 수정</div>
   <div class="inner">
     <form id="simple_order" name="forderform" class="form-horizontal" action="partner_orderinquiry_edit_result.php" method="post" onsubmit="return form_submit(this);">
+      <input type="hidden" name="od_id" value="<?=$od_id?>">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="form-group">
@@ -150,7 +151,6 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                   } else {
                       echo '
                           <input type="hidden" name="io_id[]" value="'. $ct['io_id'] . '">
-                          -
                       ';
                   }
                   ?>
@@ -364,8 +364,14 @@ $(document).on('change paste keyup', 'input[name="ct_qty[]"]', function() {
 // 품목 삭제
 $(document).on('click', '.btn_del_item', function() {
   var $li = $(this).closest('li');
-  $li.find('input[name="deleted[]"]').val('1');
-  $li.hide();
+  if($li.find('input[name="ct_id[]"]').length > 0) {
+    // 기존 주문 상품이면
+    $li.find('input[name="deleted[]"]').val('1');
+    $li.hide();
+  } else {
+    // 신규 추가 상품이면
+    $li.remove();
+  }
 
   calculate_order_price();
 });
