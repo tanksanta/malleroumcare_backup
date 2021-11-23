@@ -31,7 +31,13 @@ $result = sql_query($sql);
 
 $rows = array();
 while ( $row = sql_fetch_array($result) ) {
-    $rows[] = $row;
+  $rows[] = $row;
+  // $resInfo = api_post_call(EROUMCARE_API_ENT_ACCOUNT, array(
+  //   'usrId' => $row['mb_id']
+  // ));
+  // if($resInfo['data']['entConfirmCd'] == "01") {
+  //   $rows[] = $row;
+  // }
 }
 
 header('Content-type: application/json');
