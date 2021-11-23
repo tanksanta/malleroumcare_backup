@@ -5,11 +5,6 @@ header('Content-type: application/json');
 
 $keyword = str_replace(' ', '', trim($keyword));
 
-$sql_extra = '';
-if($member['mb_type'] == 'partner') {
-  $sql_extra = " AND it_is_direct_delivery > 1 ";
-}
-
 $sql = "
   SELECT
     it_id,
@@ -71,7 +66,6 @@ $sql = "
     AND a.it_name NOT LIKE 'test%' -- 테스트상품 제외
     AND a.it_use = 1 -- 판매상품
     AND a.prodSupYn = 'Y'
-    $sql_extra
 ";
 
 $result = sql_query($sql);
