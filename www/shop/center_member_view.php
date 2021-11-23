@@ -13,6 +13,37 @@ if(!$cm['cm_id'])
     alert('해당 직원이 존재하지 않습니다.');
 $cm['info'] = get_center_member_info_text($cm);
 
+$qstr = "cm_code={$cm_code}";
+
+// 관리기록
+$sql_common = "
+    FROM
+        center_member_log
+    WHERE
+        mb_id = '{$member['mb_id']}' and
+        cm_code = '$cm_code'
+";
+$total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ", true)['cnt'];
+$page_rows = $config['cf_page_rows'];
+$total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
+
+$sql_limit = " limit {$from_record}, {$page_rows} ";
+$sql_order = "ORDER BY cl_id DESC";
+
+$result = sql_query("
+  SELECT *
+  $sql_common
+  $sql_limit
+");
+
+$logs = [];
+for($i = 0; $log = sql_fetch_array($result); $i++) {
+    $log['index'] = $total_count - (($page - 1) * $page_rows) - $i;
+    $logs[] = $log;
+}
+
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css">', 0);
 ?>
 
@@ -88,7 +119,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
     <div class="mv_section">
         <div class="mv_section_hd flex align-items space-between">
             <h3>관리기록</h3>
-            <a href="#" class="btn_etc">신규등록</a>
+            <a href="center_member_log_write.php?cm_code=<?=$cm['cm_code']?>" class="btn_etc">신규등록</a>
         </div>
         <div class="list_box">
             <table>
@@ -99,7 +130,29 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
                         <th>등록일</th>
                     </tr>
                 </thead>
+                <tbody>
+                    <?php foreach($logs as $log) { ?>
+                        <tr>
+                            <td>
+                                <?=$log['index']?>
+                            </td>
+                            <td>
+                                <a href="center_member_log_write.php?w=u&cl_id=<?=$log['cl_id']?>&cm_code=<?=$cm_code?>">
+                                    <?=get_text($log['cl_title'])?>
+                                </a>
+                            </td>
+                            <td class="td_date">
+                                <?=date('Y-m-d', strtotime($log['updated_at']))?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
             </table>
+        </div>
+        <div class="list-paging">
+            <ul class="pagination pagination-sm en">  
+            <?php echo apms_paging(5, $page, $total_page, '?'.$qstr.'page='); ?>
+            </ul>
         </div>
     </div>
 </section>

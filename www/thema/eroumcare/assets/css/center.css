@@ -24,6 +24,15 @@
     padding: 50px 0 !important;
 }
 
+/* table */
+.list_box table td {
+    border-right: none !important;
+}
+.list_box table td.td_date {
+    width: 150px;
+    text-align: center;
+}
+
 /* 직원관리 */
 .emp_hd {
     line-height: 40px;
