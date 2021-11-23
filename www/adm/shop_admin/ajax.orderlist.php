@@ -130,6 +130,10 @@ if ($partner_issue) {
   }
 }
 
+if ($od_partner_edit) {
+  $where[] = " od_partner_edit = 1 ";
+}
+
 if ( $od_pay_state && is_array($od_pay_state) ) {
   foreach($od_pay_state as $s) {
     $s = (int)$s;
@@ -707,6 +711,12 @@ foreach($orderlist as $order) {
     }
   }
 
+  // 파트너 상품수정 표시
+  $partner_edit_text = '';
+  if($order['od_partner_edit']) {
+    $partner_edit_text = '<div style="margin-top: 5px; color: #FF6600">*파트너 상품수정</div>';
+  }
+
   $ret['data'] .= "
     <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']} order_tr\" data-od-id=\"{$order['od_id']}\" data-href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">
       <td align=\"center\" class=\"check\">
@@ -724,6 +734,7 @@ foreach($orderlist as $order) {
               변경일시 : {$od_receipt_time}<br>
               <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">주문번호&nbsp;<span>({$order['od_id']})</span></a>
             </div>
+            {$partner_edit_text}
           </div>
 
           <div class=\"buttons\">
