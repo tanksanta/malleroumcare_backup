@@ -93,6 +93,19 @@
   margin-bottom: 40px;
 }
 
+#partner-order .btn_od_edit {
+  display: block;
+  border: 1px solid #ee8102;
+  border-radius: 3px;
+  background-color: #ffffff;
+  margin: -20px auto 20px auto;
+  padding: 15px;
+  max-width: 250px;
+  text-align: center;
+  color: #ee8102;
+  font-weight: bold;
+}
+
 #partner-order .item-list li {
   border-top: 1px solid #DDDDDD;
   padding: 15px 0;
