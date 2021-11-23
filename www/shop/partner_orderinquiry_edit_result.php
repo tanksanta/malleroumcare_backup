@@ -70,6 +70,8 @@ $io_id_arr = $_POST['io_id'];
 $ct_qty_arr = $_POST['ct_qty'];
 $prodMemo_arr = $_POST['prodMemo'];
 
+$delete_requests = [];
+
 for($i = 0; $i < count($it_id_arr); $i++) {
     $it_id = clean_xss_tags($it_id_arr[$i]);
     $io_id = clean_xss_tags($io_id_arr[$i]);
@@ -118,10 +120,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                 $data['penId'] = $od['od_penId'];
                 $data['prods'] = $prods;
 
-                $result = api_post_call(EROUMCARE_API_ORDER_EDIT, $data);
-
-                if($result['errorYN'] !== 'N')
-                    alert($result['message']);
+                $delete_requests[] = $data;
             } else {
                 // 재고주문이면
 
@@ -614,6 +613,14 @@ for($i = 0; $i < count($it_id_arr); $i++) {
 
         set_order_admin_log($od_id, "상품추가: {$it['it_name']}($io_value) {$ct_qty}개");
     }
+}
+
+// 수급자 주문은 삭제를 나중에하도록 수정 (추가할거 있으면 추가부터 하도록)
+foreach($delete_requests as $data) {
+    $result = api_post_call(EROUMCARE_API_ORDER_EDIT, $data);
+
+    if($result['errorYN'] !== 'N')
+        alert($result['message']);
 }
 
 // 상품수 수정
