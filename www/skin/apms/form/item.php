@@ -1236,11 +1236,11 @@ $warehouse_list = get_warehouses();
             <input type="checkbox" name="it_is_direct_delivery" value="1" <?php echo ($it['it_is_direct_delivery'] == 1) ? "checked" : ""; ?>> 직배송
           </label>
           <select name="it_direct_delivery_partner1">
+            <option value="">파트너선택</option>
             <?php
             $partners = get_partner_members();
             foreach($partners as $partner) {
             ?>
-            <option value="">파트너선택</option>
             <option value="<?=$partner['mb_id']?>"<?=get_selected($partner['mb_id'], $it['it_direct_delivery_partner'])?>><?=$partner['mb_name']?></option>
             <?php } ?>
           </select>
@@ -1250,11 +1250,11 @@ $warehouse_list = get_warehouses();
             <input type="checkbox" name="it_is_direct_delivery" value="2" <?php echo ($it['it_is_direct_delivery'] == 2) ? "checked" : ""; ?>> 설치
           </label>
           <select name="it_direct_delivery_partner2">
+            <option value="">파트너선택</option>
             <?php
             $partners = get_partner_members();
             foreach($partners as $partner) {
             ?>
-            <option value="">파트너선택</option>
             <option value="<?=$partner['mb_id']?>"<?=get_selected($partner['mb_id'], $it['it_direct_delivery_partner'])?>><?=$partner['mb_name']?></option>
             <?php } ?>
           </select>
