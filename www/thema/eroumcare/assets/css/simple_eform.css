@@ -152,14 +152,12 @@
 /* 입력 body */
 #se_body_wr {
   opacity: 0;
-  max-height: 0;
   overflow: hidden;
-  transition: max-height 1.5s cubic-bezier(0, 1, 0, 1), opacity 1.5s;
+  transition: opacity 1.5s cubic-bezier(0, 1, 0, 1);
 }
 #se_body_wr.active {
   opacity: 1;
-  max-height: 2000px;
-  transition: max-height 1.5s ease-in-out, opacity 1.5s;
+  transition: opacity 1.5s ease-in-out;
 }
 
 /* 품목찾기 팝업 */
