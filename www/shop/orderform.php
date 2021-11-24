@@ -183,7 +183,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   }
 
   $it_name = stripslashes($row['it_name']);
-  $it_options = print_item_options($row['it_id'], $s_cart_id, $row['pt_msg1'], $row['pt_msg2'], $row['pt_msg3']);
+  $it_options = print_item_options($row['it_id'], $s_cart_id, $row['pt_msg1'], $row['pt_msg2'], $row['pt_msg3'], '', '', $row['ct_id']);
 
   // 복합과세금액
   if($default['de_tax_flag_use']) {

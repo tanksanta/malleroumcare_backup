@@ -1283,17 +1283,21 @@ function get_item_supply($it_id, $subject, $is_div='', $sb = '')
 }
 
 
-function print_item_options($it_id, $cart_id, $pt_msg1='', $pt_msg2='', $pt_msg3='', $ct_status='', $ct_opt='')
+function print_item_options($it_id, $cart_id, $pt_msg1='', $pt_msg2='', $pt_msg3='', $ct_status='', $ct_opt='', $ct_id = '')
 {
     global $g5;
 
   
   $ct_status = ($ct_status) ? "and find_in_set(ct_status, '{$ct_status}')" : "";
 
+  $ct_id_sql = '';
+  if($ct_id)
+    $ct_id_sql = " and ct_id = '$ct_id' ";
+
   $display = "block";
   $list = [];
     $sql = " select it_name, ct_option, ct_qty, io_price, pt_msg1, pt_msg2, pt_msg3
-                from {$g5['g5_shop_cart_table']} where it_id = '$it_id' and od_id = '$cart_id' $ct_status order by io_type asc, ct_id asc ";
+                from {$g5['g5_shop_cart_table']} where it_id = '$it_id' and od_id = '$cart_id' $ct_status $ct_id_sql order by io_type asc, ct_id asc ";
     $result = sql_query($sql);
   for($i=0; $row=sql_fetch_array($result); $i++) {
     array_push($list, $row);
