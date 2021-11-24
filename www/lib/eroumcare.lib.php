@@ -813,6 +813,7 @@ function get_pen_category_limit($penLtmNum, $ca_id) {
     LEFT JOIN
       g5_shop_category y ON x.ca_id = y.ca_id
     WHERE
+      d.dc_status in ('2', '3') and
       d.entId = '{$member['mb_entId']}' and
       d.penLtmNum = '{$penLtmNum}' and
       y.ca_id = '{$ca_id}' and

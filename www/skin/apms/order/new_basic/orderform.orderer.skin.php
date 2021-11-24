@@ -1082,9 +1082,9 @@ function apply_recipient(list) {
       $(subDom).closest(".item").find(".recipientBox").remove();
       $(subDom).css("position", "relative");
       if(html){
-        $(subDom).closest(".item").find(".list-btm").prepend("<div id='renew_num_v' class='check-ac recipientBox' style='display: " + display + ";' data-code='" + subKey + "'><label><input type='radio' name='" + code + "Sup" + subKey + "' data-type='new'> 신규주문</label><label><input type='radio' name='" + code + "Sup" + subKey + "' data-type='use' checked> 재고소진 </label> <select>" + html + "</select></div>");
+        $(subDom).closest(".item").find(".list-btm").prepend("<div id='renew_num_v' class='check-ac recipientBox' style='display: " + display + ";' data-code='" + subKey + "'><label><input type='radio' name='" + code + key + subKey + "' data-type='new'> 신규주문</label><label><input type='radio' name='" + code + key + subKey + "' data-type='use' checked> 재고소진 </label> <select>" + html + "</select></div>");
       } else {
-        $(subDom).closest(".item").find(".list-btm").prepend("<div id='renew_num_v'class='check-ac recipientBox' style='display: none;' data-code='" + subKey + "'><input type='radio' name='" + code + "Sup" + subKey + "' data-type='new' checked> 신규주문</label></div>");
+        $(subDom).closest(".item").find(".list-btm").prepend("<div id='renew_num_v'class='check-ac recipientBox' style='display: none;' data-code='" + subKey + "'><input type='radio' name='" + code + key + subKey + "' data-type='new' checked> 신규주문</label></div>");
       }
 
       $(subDom).closest(".item").find(".list-btm").find(".recipientBox select").val(optionCnt);
