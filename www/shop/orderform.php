@@ -262,7 +262,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 
   # 210130 옵션목록
   $optionList = [];
-  $optionSQL = sql_query("SELECT io_id, ct_qty, ct_id FROM {$g5["g5_shop_cart_table"]} WHERE od_id = '{$s_cart_id}' AND it_id = '{$row["it_id"]}' AND io_type = 0 ORDER BY ct_id ASC");
+  $optionSQL = sql_query("SELECT io_id, ct_qty, ct_id FROM {$g5["g5_shop_cart_table"]} WHERE od_id = '{$s_cart_id}' AND it_id = '{$row["it_id"]}' AND io_type = 0 AND ct_id = '{$row['ct_id']}' ORDER BY ct_id ASC");
   for($iii = 0; $optionRow = sql_fetch_array($optionSQL); $iii++) {
     $prodColor = $prodSize = $prodOption = '';
     $prodOptions = [];
