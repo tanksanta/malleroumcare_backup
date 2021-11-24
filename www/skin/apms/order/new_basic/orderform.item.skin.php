@@ -81,8 +81,8 @@ if($member["mb_id"]) {
       array_push($thisOptionBarList, $thisOptionBarSubList);
     }
 
-    $optionCntList[$itemData["it_id"]] = $thisOptionCntList;
-    $optionBarList[$itemData["it_id"]] = $thisOptionBarList;
+    $optionCntList[$itemData["ct_id"]] = $thisOptionCntList;
+    $optionBarList[$itemData["ct_id"]] = $thisOptionBarList;
   }
 }
 
