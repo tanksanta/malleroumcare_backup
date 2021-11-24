@@ -316,6 +316,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     // 추가옵션
     $item[$i]['hidden_ct_price'] = $item[$i]['io_price'];
   }
+  $item[$i]['ct_id'] = $row['ct_id'];
   $item[$i]['it_name'] = $it_name;
   $item[$i]['it_options'] = $it_options;
   $item[$i]['it_optionList'] = $optionList;

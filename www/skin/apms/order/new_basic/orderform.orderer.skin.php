@@ -144,7 +144,7 @@ $(function() {
         for($i=0; $i < count($item); $i++) {
           if(($item[$i]["prodSupYn"] == "N")) $has_non_supply_item = true;
         ?>
-        <div class="list item" data-code="<?=$item[$i]["it_id"]?>" data-sup="<?=$item[$i]["prodSupYn"]?>" data-ca="<?=(substr($item[$i]["ca_id"], 0, 2))?>">
+        <div class="list item" data-ctid="<?=$item[$i]["ct_id"]?>" data-code="<?=$item[$i]["it_id"]?>" data-sup="<?=$item[$i]["prodSupYn"]?>" data-ca="<?=(substr($item[$i]["ca_id"], 0, 2))?>">
           <ul class="cb">
             <li class="pro">
               <div class="img"><img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';"></div>
@@ -225,7 +225,7 @@ $(function() {
                 for($ii = 0; $ii < count($item[$i]["it_optionList"]); $ii++) {
                   for($iii = 0; $iii < $item[$i]["it_optionList"][$ii]["qty"]; $iii++) {
               ?>
-              <?php if($optionCntList[$item[$i]["it_id"]][$ii] > $iii){ ?>
+              <?php if($optionCntList[$item[$i]["ct_id"]][$ii] > $iii){ ?>
               <input type="hidden" placeholder="바코드" maxlength="12" oninput="maxLengthCheck(this)" class="prodStockBarBox<?=$ii?> prodBarSelectBox prodBarSelectBox<?=$ii?>" style="margin-bottom: 5px;" data-code="<?=$ii?>" data-this-code="<?=$iii?>" data-name="<?=$postProdBarNumCnt?>" name="prodBarNum_<?=$postProdBarNumCnt?>">
               <?php } else { ?>
               <?php
@@ -964,6 +964,9 @@ $(function() {
 <!-- 수급자 정보 iframe창 -->
 
 <script>
+var optionCntList = <?=json_encode($optionCntList)?>;
+var optionBarList = <?=json_encode($optionBarList)?>;
+
 function selected_recipient($penId) {
   var pen_id = $penId.split("|")[1] || $penId;
   $.get('./ajax.get_recipient.php', {
@@ -1049,13 +1052,12 @@ function apply_recipient(list) {
   document.getElementById("od_coupon_btn").style.display="none";      //한도금액*/
   $("#od_cp_price").text(0);
 
-  var optionCntList = <?=json_encode($optionCntList)?>;
-  var optionBarList = <?=json_encode($optionBarList)?>;
   var prodItemList = $(".table-list2 .list.item");
 
   $('.open_input_barcode').remove();
 
   $.each(prodItemList, function(key, itemDom){
+    var ctid = $(itemDom).attr("data-ctid");
     var code = $(itemDom).attr("data-code");
     var itemList = $(itemDom).find(".pro > .pro-info > .text li");
     var discountCnt = 0;
@@ -1101,8 +1103,8 @@ function apply_recipient(list) {
         var dataName = $(item[i]).attr("data-name");
         //20210306 성훈수정(아래줄 id 추가)
         var html = '<select id="prodBarSelectBox_renew'+i+'" class="prodBarSelectBox prodBarSelectBox' + subKey + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
-        optionBarList[code][subKey].sort();
-        $.each(optionBarList[code][subKey], function(key, value){
+        optionBarList[ctid][subKey].sort();
+        $.each(optionBarList[ctid][subKey], function(key, value){
           html += '<option value="' + value + '">' + value + '</option>';
         });
         html += '</select>';
@@ -1114,8 +1116,8 @@ function apply_recipient(list) {
 
                   
       //20210306 성훈 추가
-      renew_array = optionBarList[code][subKey];
-      renew_array2 = optionBarList[code][subKey];
+      renew_array = optionBarList[ctid][subKey];
+      renew_array2 = optionBarList[ctid][subKey];
 
 
       discountCnt += optionCnt;
@@ -1242,8 +1244,6 @@ $(function() {
 
     $("#ad_sel_addr_recipient").hide();
 
-    var optionCntList = <?=json_encode($optionCntList)?>;
-    var optionBarList = <?=json_encode($optionBarList)?>;
     var prodItemList = $(".table-list2 .list.item");
 
     $.each(prodItemList, function(key, itemDom){
@@ -1258,6 +1258,7 @@ $(function() {
       var input_count = 0;
 
       $('.open_input_barcode').remove();
+      $('.barcode.barList').append('<span class="open_input_barcode">주문 후 자동입력</span>');
 
       $.each(itemList, function(subKey, subDom){
         var item = $(itemDom).find(".prodBarSelectBox" + subKey);  //셀력트박스 찾기
@@ -1591,16 +1592,14 @@ $(function(){
     $(this).closest(".list-day").find(".ordLendEndDtm").val(year + "-" + month + "-" + day);
   });
 
-
-  var optionCntList = <?=json_encode($optionCntList)?>; //아이템정보
-  var optionBarList = <?=json_encode($optionBarList)?>; //바코드저오
   var prodItemList = $(".table-list2 .list.item");      //아이템정보2
   $.each(prodItemList, function(key, itemDom){
+    var ctid = $(itemDom).attr("data-ctid");
     var code = $(itemDom).attr("data-code");
     var itemList = $(itemDom).find(".pro > .pro-info > .text li");
 
     $.each(itemList, function(subKey, subDom){
-      var html = optionCntList[code][subKey];
+      var html = optionCntList[ctid][subKey];
       $(subDom).attr("data-bar-cnt", $(itemDom).find(".prodStockBarBox" + subKey).length);
       $(subDom).attr("data-stock-cnt", html);
       if(html){
@@ -1732,6 +1731,7 @@ $(function(){
     var code = $(this).closest(".recipientBox").attr("data-code");
     var val = $(this).val();
     var item = $(this).closest(".list.item").find(".prodBarSelectBox" + code);
+    var ct_id = $(this).closest(".list.item").attr("data-ctid");
     var it_id = $(this).closest(".list.item").attr("data-code");
 
     var input_count = 0;
@@ -1749,8 +1749,8 @@ $(function(){
       if(i < val){
         select_count++;
         var html = '<select id="prodBarSelectBox_renew'+i+'" class="prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
-        optionBarList[it_id][code].sort();
-        $.each(optionBarList[it_id][code], function(key, value){
+        optionBarList[ct_id][code].sort();
+        $.each(optionBarList[ct_id][code], function(key, value){
           html += '<option value="' + value + '">' + value + '</option>';
         });
         html += '</select>';
@@ -1864,12 +1864,13 @@ $(function(){
     var parent = $(this).closest(".list.item");
     var type = $(this).attr("data-type");
     var item = $(parent).find(".prodBarSelectBox" + code);
+    var ct_id = $(parent).attr("data-ctid");
     var it_id = $(parent).attr("data-code");
 
     var input_count = 0;
     var change_discount=0;
 
-    $('.open_input_barcode').remove();
+    parent.find('.open_input_barcode').remove();
 
     var od_send_cost_org = $("input[name^=od_send_cost_org]")
     switch(type){
@@ -1900,8 +1901,8 @@ $(function(){
 
           //20210306 성훈수정(아래줄 id 추가)
           var html = '<select id="prodBarSelectBox_renew'+i+'" class="prodBarSelectBox prodBarSelectBox' + code + '" style="margin-bottom: 5px;" data-code="' + dataCode + '" data-this-code="' + dataThisCode + '" data-name="' + dataName + '" name="' + name + '"><option value="">재고 바코드</option>';
-          optionBarList[it_id][code].sort();
-          $.each(optionBarList[it_id][code], function(key, value){
+          optionBarList[ct_id][code].sort();
+          $.each(optionBarList[ct_id][code], function(key, value){
             html += '<option value="' + value + '">' + value + '</option>';
           });
           html += '</select>';
