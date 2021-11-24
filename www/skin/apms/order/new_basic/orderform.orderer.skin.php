@@ -1153,7 +1153,7 @@ function apply_recipient(list) {
     var it_id = $(itemDom).data('code');
 
     if (has_barcode_text && !has_barcode_button) {
-      $(itemDom).find('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
+      $(itemDom).find('.barcode.barList').append('<span class="open_input_barcode">주문 후 자동입력</span>');
     }
   });
 
@@ -1274,7 +1274,7 @@ $(function() {
           input_count++;
           
           if (i === item.length - 1 && input_count) {
-            $(item[i]).after('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + input_count + ')</a>');
+            $(item[i]).after('<span class="open_input_barcode">주문 후 자동입력</span>');
           }
           $(item[i]).remove();
         }
@@ -1354,10 +1354,11 @@ $(function() {
       
       // 보유재고 바코드          
       var has_barcode_text = $(itemDom).find('.barcode.barList').find('.barcode_input').length;
-      var has_barcode_button = $(itemDom).find('.barcode.barList').find('.open_input_barcode').length;
+      var has_barcode_button = $(itemDom).find('.barcode.barList').find('a.open_input_barcode').length;
       var it_id = $(itemDom).data('code');
 
       if (has_barcode_text && !has_barcode_button) {
+        $('.open_input_barcode').remove();
         $(itemDom).find('.barcode.barList').append('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + has_barcode_text + ')</a>');
       }
     });
@@ -1636,7 +1637,7 @@ $(function(){
   });
 
   //바코드입력 함수
-  $(document).on("click", ".open_input_barcode", function(){
+  $(document).on("click", "a.open_input_barcode", function(){
     var it_id = $(this).data('id');
     var barcode_nodes = $(this).closest('.barList').find('.barcode_input');
     var barcodes = [];
@@ -1759,7 +1760,7 @@ $(function(){
       }
 
       if (i === item.length - 1 && input_count) {
-        html += '<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + input_count + ')</a>';
+        html += '<span class="open_input_barcode">주문 후 자동입력</span>';
       }
       $(item[i]).after(html);
       $(item[i]).remove();
@@ -1883,7 +1884,7 @@ $(function(){
           input_count++;
 
           if (i === item.length - 1 && input_count) {
-            $(item[i]).after('<a class="prodBarNumCntBtn open_input_barcode" data-id="' + it_id + '">바코드 (0/' + input_count + ')</a>');
+            $(item[i]).after('<span class="open_input_barcode">주문 후 자동입력</span>');
           }
 
           $(item[i]).remove();
