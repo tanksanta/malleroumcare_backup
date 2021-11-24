@@ -932,19 +932,6 @@ $('#penLtmNum').on('change paste keyup input', function() {
   }, 300);
 });
 
-// 본인부담금율 변경
-$('#penTypeCd').change(function() {
-  var penTypeCd = $(this).val();
-  var $pen_jumin = $('#penJumin').closest('.form-group');
-
-  if(penTypeCd == '04') {
-    // 기초 수급자면
-    $pen_jumin.show();
-  } else {
-    $pen_jumin.hide();
-  }
-});
-
 // 확대/축소
 var zoom_step = 0;
 $('#btn_zoom').click(function() {
@@ -1018,7 +1005,6 @@ if($('input[name="pen_type"]:checked').val() == 1) {
   $('#btn_pen').hide();
 }
 check_no_item();
-$('#penTypeCd').change();
   
 // 처음 팝업
 $('.se_sch_pop').show();
