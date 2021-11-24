@@ -43,13 +43,17 @@ $penJumin = clean_xss_tags($_POST['penJumin']) ?: '';
 $entConAcc01 = clean_xss_tags($_POST['entConAcc01']) ?: '';
 $entConAcc02 = clean_xss_tags($_POST['entConAcc02']) ?: '';
 
-if( !( $penNm && $penLtmNum && $penConNum && $penRecGraCd && $penTypeCd && $penExpiDtm ) )
+if( !( $penNm && $penLtmNum && $penConNum && $penRecGraCd && $penTypeCd && $penExpiDtm && $penJumin ) )
     json_response(400, '수급자 정보를 입력해주세요.');
 
 $penLtmNum = 'L' . $penLtmNum;
 
+/*
 if( $penTypeCd == '04' && !$penJumin )
     json_response(400, '기초수급자는 주민번호(앞자리)를 입력해주세요.');
+*/
+$penBirth = DateTime::createFromFormat('ymd', $penJumin);
+$penBirth = $penBirth->format('Y.m.d');
 
 $it_id_arr = $_POST['it_id'];
 $it_gubun_arr = $_POST['it_gubun'];
