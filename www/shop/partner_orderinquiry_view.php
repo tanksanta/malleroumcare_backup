@@ -8,6 +8,8 @@ $g5['title'] = "파트너 주문상세";
 include_once("./_head.php");
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
+$manager_mb_id = get_session('ss_manager_mb_id');
+
 $od_id = get_search_string($_GET['od_id']);
 $od = sql_fetch("
   SELECT
@@ -274,7 +276,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
       </div>
       <div class="delivery-status-title row no-gutter title justify-space-between">
         <div>담당자</div>
-        <select class="sel_manager order-status-select" data-id="<?=$od_id?>" style="width: 150px;">
+        <select class="sel_manager order-status-select" data-id="<?=$od_id?>" style="width: 150px;" <?php if($manager_mb_id) echo 'disabled'; ?>>
           <option value="">미지정</option>
           <?php foreach($managers as $manager) { ?>
           <option value="<?=$manager['mb_id']?>" <?=get_selected($od['od_partner_manager'], $manager['mb_id'])?>><?=$manager['mb_name']?></option>

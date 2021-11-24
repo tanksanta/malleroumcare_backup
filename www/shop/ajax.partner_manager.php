@@ -4,6 +4,10 @@ include_once('./_common.php');
 if($member['mb_type'] !== 'partner')
     json_response('파트너 회원만 접근 가능합니다.');
 
+$manager_mb_id = get_session('ss_manager_mb_id');
+if($manager_mb_id)
+    json_response('담당자회원은 담당자를 변경할 수 없습니다.');
+
 $od_id = $_POST['od_id'];
 $manager = $_POST['manager'];
 
