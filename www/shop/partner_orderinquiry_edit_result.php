@@ -15,6 +15,13 @@ if(!$od['od_id'])
 
 $mb = get_member($od['mb_id']);
 
+$manager_mb_id = get_session('ss_manager_mb_id');
+$manager_log_text = '';
+if($manager_mb_id) {
+  $manager = get_member($manager_mb_id);
+  $manager_log_text = "({$manager['mb_name']}) ";
+}
+
 $send_data = [
     'usrId' => $mb['mb_id'],
     'entId' => $mb['mb_entId'],
@@ -141,7 +148,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     ct_id = '$ct_id'
             ";
             sql_query($sql, true);
-            set_order_admin_log($od_id, "상품삭제: {$ct['it_name']}({$ct['ct_option']})");
+            set_order_admin_log($od_id, "{$manager_log_text}상품삭제: {$ct['it_name']}({$ct['ct_option']})");
         } else {
             $prodColor = $prodSize = $prodOption = '';
             $prodOptions = [];
@@ -211,7 +218,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     'prods' => $prods
                 ]);
 
-                set_order_admin_log($od_id, "상품변경: {$ct['it_name']}({$ct['ct_option']}) -> {$it['it_name']}({$io_value})");
+                set_order_admin_log($od_id, "{$manager_log_text}상품변경: {$ct['it_name']}({$ct['ct_option']}) -> {$it['it_name']}({$io_value})");
             }
 
             // 수량이 줄어든 경우 : 시스템 재고 삭제 해야함
@@ -262,7 +269,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     WHERE ct_id = '$ct_id'
                 ";
                 sql_query($sql, true);
-                set_order_admin_log($od_id, "상품수량변경: {$it['it_name']}($io_value) {$ct['ct_qty']}개 -> {$ct_qty}개");
+                set_order_admin_log($od_id, "{$manager_log_text}상품수량변경: {$it['it_name']}($io_value) {$ct['ct_qty']}개 -> {$ct_qty}개");
             }
 
             // 수량이 늘어난 경우 : 시스템 재고 추가 해야함
@@ -327,7 +334,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     ";
                     sql_query($sql, true);
                 }
-                set_order_admin_log($od_id, "상품수량변경: {$it['it_name']}($io_value) {$ct['ct_qty']}개 -> {$ct_qty}개");
+                set_order_admin_log($od_id, "{$manager_log_text}상품수량변경: {$it['it_name']}($io_value) {$ct['ct_qty']}개 -> {$ct_qty}개");
             }
         }
     } else {
@@ -611,7 +618,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
             sql_query($sql, true);
         }
 
-        set_order_admin_log($od_id, "상품추가: {$it['it_name']}($io_value) {$ct_qty}개");
+        set_order_admin_log($od_id, "{$manager_log_text}상품추가: {$it['it_name']}($io_value) {$ct_qty}개");
     }
 }
 
