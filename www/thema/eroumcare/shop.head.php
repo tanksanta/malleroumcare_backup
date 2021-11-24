@@ -283,7 +283,17 @@ if($is_main && !$is_member) {
           <?php } ?>
           <div class="user_info_area">
             <a href="<?=$at_href['edit'];?>" class="btn_small btn_edit">정보수정</a>
-            <div class="user_name"><?=$member['mb_entNm'] ?: $member['mb_name']?></div>
+            <div class="user_name">
+              <?php
+              $manager_mb_id = get_session('ss_manager_mb_id');
+              if($manager_mb_id) {
+                $manager = get_member($manager_mb_id);
+                echo $manager['mb_name'];
+              } else {
+                echo $member['mb_entNm'] ?: $member['mb_name'];
+              }
+              ?>
+            </div>
             <div class="grade_info">
               <?php if($member['mb_type'] === 'normal') { ?>
               <select id="sel_pen_ent">

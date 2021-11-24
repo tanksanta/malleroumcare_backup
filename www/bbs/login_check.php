@@ -5,6 +5,7 @@ $g5['title'] = "로그인 검사";
 
 $check_member = get_member($_POST["mb_id"]);
 
+set_session('ss_manager_mb_id', '');
 if($check_member['mb_type'] === 'manager') {
   // 각 사업소의 담당자 회원일 경우 해당 아이디/비밀번호 일치시 해당 사업소로 로그인해야함
 
@@ -18,6 +19,8 @@ if($check_member['mb_type'] === 'manager') {
   if (!check_password($mb_password, $mb['mb_password'])) {
     alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
   }
+
+  set_session('ss_manager_mb_id', $mb_id);
 
   $mb_id = $_POST['mb_id'] = $mb['mb_manager'];
 
