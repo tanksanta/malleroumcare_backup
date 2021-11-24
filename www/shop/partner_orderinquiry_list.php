@@ -8,6 +8,8 @@ if(!$is_samhwa_partner && !($member['mb_type'] === 'supplier')) {
 $g5['title'] = "파트너 주문내역";
 include_once("./_head.php");
 
+$manager_mb_id = get_session('ss_manager_mb_id');
+
 $where = [];
 
 # 기간
@@ -39,6 +41,13 @@ if($incompleted && count($incompleted) == 1) {
       ";
     }
   }
+}
+
+# 내 주문만 보기
+if($mine_only) {
+  $where[] = "
+    o.od_partner_manager = '$manager_mb_id'
+  ";
 }
 
 # 주문상태
@@ -225,6 +234,9 @@ if($incompleted) {
     $qstr .= "&amp;incompleted%5B%5D={$ic}";
   }
 }
+if($mine_only) {
+  $qstr .= "&amp;mine_only=1";
+}
 
 // 담당자
 $manager_result = sql_query("
@@ -302,8 +314,11 @@ tr.hover { background-color: #fbf9f7 !important; }
       <br>
       작업상태 :
       <label><input type="checkbox" id="chk_incompleted_all"/> 전체</label> 
-      <label><input type="checkbox" name="incompleted[]" value="0" <?=option_array_checked('0', $incompleted)?>/> 진행중인 작업</label> 
-      <label><input type="checkbox" name="incompleted[]" value="1" <?=option_array_checked('1', $incompleted)?>/> 미 진행중인 작업</label> 
+      <label><input type="checkbox" name="incompleted[]" value="0" <?=option_array_checked('0', $incompleted)?>/> 진행중인 작업</label>
+      <label><input type="checkbox" name="incompleted[]" value="1" <?=option_array_checked('1', $incompleted)?>/> 미 진행중인 작업</label>
+      <?php if($manager_mb_id) { ?>
+      <label><input type="checkbox" name="mine_only" value="1" <?=option_array_checked('1', $mine_only)?>/> 내 주문만 보기</label>
+      <?php } ?>
       <br>
       
       <div class="search_date">
