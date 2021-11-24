@@ -461,7 +461,7 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <?php } ?>
               </td>
               <td class="td_status text_c">
-                <select class="sel_manager" data-id="<?=$row['od_id']?>">
+                <select class="sel_manager" data-id="<?=$row['od_id']?>" <?php if($manager_mb_id) echo 'disabled'; ?>>
                   <option value="">미지정</option>
                   <?php foreach($managers as $manager) { ?>
                   <option value="<?=$manager['mb_id']?>" <?=get_selected($row['od_partner_manager'], $manager['mb_id'])?>><?=$manager['mb_name']?></option>
