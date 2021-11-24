@@ -4,6 +4,11 @@ include_once('./_common.php');
 if(!$is_samhwa_partner)
   json_response(400, '파트너 회원만 접근가능합니다.');
 
+$manager_mb_id = get_session('ss_manager_mb_id');
+if($manager_mb_id) {
+  $manager = get_member($manager_mb_id);
+}
+
 $ct_status = in_array($_POST['ct_status'], ['준비', '출고준비', '배송']) ? $_POST['ct_status'] : '';
 $ct_id_arr = get_search_string($_POST['ct_id']);
 
@@ -59,7 +64,11 @@ foreach($ct_id_arr as $ct_id) {
     case '출고준비': $ct_status_text="출고준비"; break;
     case '배송': $ct_status_text="출고완료"; break;
   }
-  $log_content = "{$it_name}-{$ct_status_text} 변경";
+  $log_content = '';
+  if($manager) {
+    $log_content .= "({$manager['mb_name']}) ";
+  }
+  $log_content .= "{$it_name}-{$ct_status_text} 변경";
 
   $sql[] = "
     INSERT INTO
