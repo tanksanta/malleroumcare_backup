@@ -132,6 +132,18 @@
     font-size: 20px;
     margin-bottom: 10px;
 }
+.cp_won {
+    display: none;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 30px;
+    margin-left: -5px;
+}
+@media (min-width: 768px) {
+    .cp_won {
+        display: inline-block;
+    }
+}
 
 /* 사례관리 */
 .case_list {
