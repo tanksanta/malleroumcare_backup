@@ -66,6 +66,7 @@ $sql = "
     AND a.it_name NOT LIKE 'test%' -- 테스트상품 제외
     AND a.it_use = 1 -- 판매상품
     AND a.prodSupYn = 'Y'
+    AND a.it_show_partner_search = 1 -- 파트너 상품 검색 노출 된것만 
 ";
 
 $result = sql_query($sql);

@@ -249,6 +249,12 @@ $warehouse_list = get_warehouses();
           </td>
         </tr>
         <tr>
+          <th scope="row"><label for="it_show_partner_search">상품 추가 설정</label></th>
+          <td>
+            <input type="checkbox" name="it_show_partner_search" value="1" id="it_show_partner_search" <?php echo ($it['it_show_partner_search']) ? "checked" : ""; ?>> 파트너 상품 검색 노출
+          </td>
+        </tr>
+        <tr>
           <th scope="row"><label for="supId">공급자 아이디</label></th>
           <td>
               <input type="text" name="supId" value="<?php echo get_text($it['supId']); ?>" id="supId" class="frm_input sl">
