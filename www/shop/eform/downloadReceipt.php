@@ -17,7 +17,7 @@ $excel->getActiveSheet()->setCellValue('L5', $member['mb_giup_btel']);
 $excel->getActiveSheet()->setCellValue('A29', "{$member['mb_entNm']} 사업소 (인)");
 $seal_path = G5_DATA_PATH."/file/member/stamp/{$member['sealFile']}";
 $seal = new PHPExcel_Worksheet_Drawing();
-$seal->setName('직인');
+$seal->setName('직인');
 $seal->setDescription('직인 이미지');
 $seal->setPath($seal_path);
 $seal->setCoordinates('H29');
@@ -28,6 +28,7 @@ $seal->setResizeProportional(true);
 $seal->setWorksheet($excel->getActiveSheet());
 
 $od_id = get_search_string($_GET['od_id']);
+$dc_id = get_search_string($_GET['dc_id']);
 if($od_id) {
   # 수급자 정보
   $pen = sql_fetch("
@@ -98,6 +99,81 @@ if($od_id) {
       UNION ALL
       ({$sql_non_benefit})
     ) u
+    ORDER BY
+      gubun asc,
+      it_date asc,
+      ca_name asc,
+      it_name asc
+  ");
+
+  while($row = sql_fetch_array($sql_result)) {
+    $gubun = '구입';
+    if($row['gubun'] == '01') $gubun = '대여';
+    else if($row['gubun'] == '02') $gubun = '비급여';
+
+    $data[] = [
+      $gubun,
+      $row['ca_name'],
+      $row['it_name'],
+      '',
+      $row['it_price'],
+      $row['it_price_ent'],
+      ($gubun == '비급여' ? 0 : $row['it_price_pen']),
+      0,
+      0,
+      0,
+      ($gubun == '비급여' ? $row['it_price_pen'] : 0),
+      $row['it_price_pen'],
+      date('Y.m.d', strtotime($row['it_date']))
+    ];
+  }
+
+  // 데이터 입력
+  $excel->getActiveSheet()->fromArray($data,NULL,'B13');
+}
+
+else if($dc_id) {
+  # 수급자 정보
+  $pen = sql_fetch("
+    SELECT
+      penNm,
+      penBirth
+    FROM
+      eform_document
+    WHERE
+      dc_id = unhex('{$dc_id}')
+  ");
+
+  if(!$pen['penNm'])
+    alert('해당 주문이 존재하지 않습니다.');
+  
+  $pen_birth = str_replace('.', '-', $pen['penBirth']);
+  $pen_jumin = date('ymd', strtotime($pen_birth)).'-*******';
+  $excel->getActiveSheet()->setCellValue('E4', $pen['penNm']);
+  $excel->getActiveSheet()->setCellValue('L4', $pen_jumin);
+
+  $data = [];
+
+  # 계약서 품목
+  $sql_document = "
+    SELECT
+      gubun,
+      ca_name,
+      it_name,
+      it_price,
+      it_price_pen,
+      it_price_ent,
+      STR_TO_DATE(SUBSTRING_INDEX(`it_date`, '-', 3), '%Y-%m-%d') as it_date
+    FROM
+      eform_document d
+    LEFT JOIN
+      eform_document_item i ON d.dc_id = i.dc_id
+    WHERE
+      d.dc_id = unhex('{$dc_id}')
+  ";
+
+  $sql_result = sql_query("
+    {$sql_document}
     ORDER BY
       gubun asc,
       it_date asc,
