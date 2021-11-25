@@ -43,6 +43,9 @@ if($result['errorYN'] === 'N') {
       'penExpiStDtm' => $penExpiDtm[0] ?: '',
       'penExpiEdDtm' => $penExpiDtm[1] ?: '',
       'penJumin' => substr($pen["penJumin"], 0, 6),
+      'penZip' => $pen['penZip'],
+      'penAddr' => $pen['penAddr'],
+      'penAddrDtl' => $pen['penAddrDtl'],
     );
   }
 }

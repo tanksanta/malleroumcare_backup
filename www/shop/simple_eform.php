@@ -83,6 +83,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             </label>
             <div class="col-md-3 col-pen-nm" style="max-width: unset;">
               <img style="display: none;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
+              <input type="hidden" name="penZip" id="penZip" value="<?php if($dc) echo $dc['penZip']; ?>">
+              <input type="hidden" name="penAddr" id="penAddr" value="<?php if($dc) echo $dc['penAddr']; ?>">
+              <input type="hidden" name="penAddrDtl" id="penAddrDtl" value="<?php if($dc) echo $dc['penAddrDtl']; ?>">
               <input type="hidden" name="penId" id="penId" value="<?php if($dc) echo $dc['penId']; ?>">
               <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명">
             </div>
@@ -703,6 +706,9 @@ function toggle_pen_id_flexdatalist(on) {
 function select_recipient(obj) {
   $('.panel-body .form-group').show();
   $('#penId').val(obj.penId);
+  $('#penZip').val(obj.penZip);
+  $('#penAddr').val(obj.penAddr);
+  $('#penAddrDtl').val(obj.penAddrDtl);
   $('#penNm').val(obj.penNm);
   $('#penLtmNum').val(obj.penLtmNumRaw.replace(/L([0-9]{10})/, '$1')).prop('disabled', false).prop('readonly', true);
   $('#penConNum').val(obj.penConNum).prop('disabled', false);
@@ -733,7 +739,7 @@ function selected_recipient(result) {
   var penExpiDtm = result[11].split(' ~ ');
   var penExpiStDtm = penExpiDtm[0] ? penExpiDtm[0] : '';
   var penExpiEdDtm = penExpiDtm[1] ? penExpiDtm[1] : '';
-  
+
   var pen = {
     penId: result[1],
     penNm: result[3],
@@ -743,7 +749,10 @@ function selected_recipient(result) {
     penTypeCd: result[7],
     penExpiStDtm: penExpiStDtm,
     penExpiEdDtm: penExpiEdDtm,
-    penJumin: result[33]
+    penJumin: result[33],
+    penZip: '',
+    penAddr: result[18],
+    penAddrDtl: result[19],
   };
 
   select_recipient(pen);
@@ -905,6 +914,9 @@ function check_pen_type() {
 }
 $('input[name="pen_type"]').change(function() {
   $('#penId').val('');
+  $('#penZip').val('');
+  $('#penAddr').val('');
+  $('#penAddrDtl').val('');
   check_pen_type();
 });
 

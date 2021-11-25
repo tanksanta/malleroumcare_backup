@@ -40,6 +40,9 @@ if($penExpiStDtm && $penExpiEdDtm) {
     $penExpiDtm = $penExpiStDtm . ' ~ ' . $penExpiEdDtm;
 }
 $penJumin = clean_xss_tags($_POST['penJumin']) ?: '';
+$penZip = clean_xss_tags($_POST['penZip']) ?: '';
+$penAddr = clean_xss_tags($_POST['penAddr']) ?: '';
+$penAddrDtl = clean_xss_tags($_POST['penAddrDtl']) ?: '';
 $entConAcc01 = clean_xss_tags($_POST['entConAcc01']) ?: '';
 $entConAcc02 = clean_xss_tags($_POST['entConAcc02']) ?: '';
 
@@ -52,8 +55,12 @@ $penLtmNum = 'L' . $penLtmNum;
 if( $penTypeCd == '04' && !$penJumin )
     json_response(400, '기초수급자는 주민번호(앞자리)를 입력해주세요.');
 */
-$penBirth = DateTime::createFromFormat('Ymd', '19'.$penJumin);
-$penBirth = $penBirth->format('Y.m.d');
+try {
+    $penBirth = DateTime::createFromFormat('Ymd', '19'.$penJumin);
+    $penBirth = $penBirth->format('Y.m.d');
+} catch(Exception $e) {
+    json_response(400, '주민등록번호(앞자리)를 정확히 입력해주세요.');
+}
 
 $it_id_arr = $_POST['it_id'];
 $it_gubun_arr = $_POST['it_gubun'];
@@ -200,7 +207,10 @@ if($w == 'u' || $w == 'w') {
             penTypeCd = '$penTypeCd', # 본인부담금율
             penTypeNm = '$penTypeNm',
             penExpiDtm = '$penExpiDtm', # 수급자 이용기간
-            penJumin = '$penJumin'
+            penJumin = '$penJumin',
+            penZip = '$penZip',
+            penAddr = '$penAddr',
+            penAddrDtl = '$penAddrDtl'
         WHERE
             dc_id = UNHEX('$dc_id') and
             entId = '{$member["mb_entId"]}'
@@ -247,7 +257,10 @@ if($w == 'u' || $w == 'w') {
             penTypeCd = '$penTypeCd', # 본인부담금율
             penTypeNm = '$penTypeNm',
             penExpiDtm = '$penExpiDtm', # 수급자 이용기간
-            penJumin = '$penJumin'
+            penJumin = '$penJumin',
+            penZip = '$penZip',
+            penAddr = '$penAddr',
+            penAddrDtl = '$penAddrDtl'
     ";
     $result = sql_query($sql);
 
