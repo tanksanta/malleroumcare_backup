@@ -493,34 +493,37 @@
     }
 
     $rows[] = [
-      $date,  //날짜
-      $count_number,
-      $mb['mb_thezone'],
-      '',
-      $od_sales_manager['mb_name'],
-      $it['ct_warehouse'], // 출하창고
-      '',
-      '',
-      '',
-      $od["od_b_name"],
-      $addr,
-      '',
-      '',
-      $it['prodMemo'],
-      '',
-      '',
-      $thezone_code, // 품목코드
-      '',
-      $standard,
-      $it["ct_qty"],
-      $price_d ?: '0', // 단가(판매가)
-      '',
-      $price_d_p ?: '0', //공급가액
-      $price_d_s ?: '0', //부가세
-      $barcode_string, // 바코드
-      $delivery, // 로젠송장번호,
-      $abstract, //적요
-      '',
+      'od_id' => $od['od_id'],
+      'value' => [
+        $date,  //날짜
+        $count_number,
+        $mb['mb_thezone'],
+        '',
+        $od_sales_manager['mb_name'],
+        $it['ct_warehouse'], // 출하창고
+        '',
+        '',
+        '',
+        $od["od_b_name"],
+        $addr,
+        '',
+        '',
+        $it['prodMemo'],
+        '',
+        '',
+        $thezone_code, // 품목코드
+        '',
+        $standard,
+        $it["ct_qty"],
+        $price_d ?: '0', // 단가(판매가)
+        '',
+        $price_d_p ?: '0', //공급가액
+        $price_d_s ?: '0', //부가세
+        $barcode_string, // 바코드
+        $delivery, // 로젠송장번호,
+        $abstract, //적요
+        '',
+      ]
     ];
 
     $ct = sql_fetch("select *
@@ -532,68 +535,74 @@
       // 배송비
       if ($od['od_send_cost'] > 0) {
         $rows[] = [
-          $date,  //날짜
-          $count_number,
-          $mb['mb_thezone'],
-          '',
-          $od_sales_manager['mb_name'],
-          $it['ct_warehouse'], // 출하창고
-          '',
-          '',
-          '',
-          $od["od_b_name"],
-          $addr,
-          '',
-          '',
-          $it['prodMemo'],
-          '',
-          '',
-          '00043', // 품목코드(배송비)
-          '',
-          '',
-          '1',
-          $od['od_send_cost'], // 단가(vat포함)
-          '',
-          round($od['od_send_cost'] / 1.1), //공급가액
-          ($od['od_send_cost'] - round($od['od_send_cost'] / 1.1)), //부가세
-          '', // 바코드
-          $delivery, // 로젠송장번호,
-          $abstract, //적요
-          '',
+          'od_id' => $od['od_id'],
+          'value' => [
+            $date,  //날짜
+            $count_number,
+            $mb['mb_thezone'],
+            '',
+            $od_sales_manager['mb_name'],
+            $it['ct_warehouse'], // 출하창고
+            '',
+            '',
+            '',
+            $od["od_b_name"],
+            $addr,
+            '',
+            '',
+            $it['prodMemo'],
+            '',
+            '',
+            '00043', // 품목코드(배송비)
+            '',
+            '',
+            '1',
+            $od['od_send_cost'], // 단가(vat포함)
+            '',
+            round($od['od_send_cost'] / 1.1), //공급가액
+            ($od['od_send_cost'] - round($od['od_send_cost'] / 1.1)), //부가세
+            '', // 바코드
+            $delivery, // 로젠송장번호,
+            $abstract, //적요
+            '',
+          ]
         ];
       }
 
       // 매출할인
       if ($od['od_sales_discount'] > 0) {
         $rows[] = [
-          $date,  //날짜
-          $count_number,
-          $mb['mb_thezone'],
-          '',
-          $od_sales_manager['mb_name'],
-          '',
-          '',
-          '',
-          '',
-          $od["od_b_name"],
-          $addr,
-          '',
-          '',
-          $it['prodMemo'],
-          '',
-          '',
-          '03245', // 품목코드(매출할인)
-          '',
-          '',
-          '1',
-          -($od['od_sales_discount']), // 단가(vat포함)
-          '',
-          -(round($od['od_sales_discount'] / 1.1)), //공급가액
-          -($od['od_sales_discount'] - round($od['od_sales_discount'] / 1.1)), //부가세
-          '', // 바코드
-          '', // 로젠송장번호,
-          $abstract, //적요
-          '',
+          'od_id' => $od['od_id'],
+          'value' => [
+            $date,  //날짜
+            $count_number,
+            $mb['mb_thezone'],
+            '',
+            $od_sales_manager['mb_name'],
+            '',
+            '',
+            '',
+            '',
+            $od["od_b_name"],
+            $addr,
+            '',
+            '',
+            $it['prodMemo'],
+            '',
+            '',
+            '03245', // 품목코드(매출할인)
+            '',
+            '',
+            '1',
+            -($od['od_sales_discount']), // 단가(vat포함)
+            '',
+            -(round($od['od_sales_discount'] / 1.1)), //공급가액
+            -($od['od_sales_discount'] - round($od['od_sales_discount'] / 1.1)), //부가세
+            '', // 바코드
+            '', // 로젠송장번호,
+            $abstract, //적요
+            '',
+          ]
         ];
       }
       
@@ -601,68 +610,74 @@
       $coupon_price = $od['od_cart_coupon'] + $od['od_coupon'] + $od['od_send_coupon'];
       if ($coupon_price > 0) {
         $rows[] = [
-          $date,  //날짜
-          $count_number,
-          $mb['mb_thezone'],
-          '',
-          $od_sales_manager['mb_name'],
-          '',
-          '',
-          '',
-          '',
-          $od["od_b_name"],
-          $addr,
-          '',
-          '',
-          $it['prodMemo'],
-          '',
-          '',
-          '04378', // 품목코드(쿠폰할인)
-          '',
-          '',
-          '1',
-          -($coupon_price), // 단가(vat포함)
-          '',
-          -(round($coupon_price / 1.1)), //공급가액
-          -($coupon_price - round($coupon_price / 1.1)), //부가세
-          '', // 바코드
-          '', // 로젠송장번호,
-          $abstract, //적요
-          '',
+          'od_id' => $od['od_id'],
+          'value' => [
+            $date,  //날짜
+            $count_number,
+            $mb['mb_thezone'],
+            '',
+            $od_sales_manager['mb_name'],
+            '',
+            '',
+            '',
+            '',
+            $od["od_b_name"],
+            $addr,
+            '',
+            '',
+            $it['prodMemo'],
+            '',
+            '',
+            '04378', // 품목코드(쿠폰할인)
+            '',
+            '',
+            '1',
+            -($coupon_price), // 단가(vat포함)
+            '',
+            -(round($coupon_price / 1.1)), //공급가액
+            -($coupon_price - round($coupon_price / 1.1)), //부가세
+            '', // 바코드
+            '', // 로젠송장번호,
+            $abstract, //적요
+            '',
+          ]
         ];
       }
 
       // 포인트결제
       if ($od['od_receipt_point'] > 0) {
         $rows[] = [
-          $date,  //날짜
-          $count_number,
-          $mb['mb_thezone'],
-          '',
-          $od_sales_manager['mb_name'],
-          '',
-          '',
-          '',
-          '',
-          $od["od_b_name"],
-          $addr,
-          '',
-          '',
-          $it['prodMemo'],
-          '',
-          '',
-          '12345', // 품목코드(포인트결제)
-          '',
-          '',
-          '1',
-          -($od['od_receipt_point']), // 단가(vat포함)
-          '',
-          -(round($od['od_receipt_point'] / 1.1)), //공급가액
-          -($od['od_receipt_point'] - round($od['od_receipt_point'] / 1.1)), //부가세
-          '', // 바코드
-          '', // 로젠송장번호,
-          $abstract, //적요
-          '',
+          'od_id' => $od['od_id'],
+          'value' => [
+            $date,  //날짜
+            $count_number,
+            $mb['mb_thezone'],
+            '',
+            $od_sales_manager['mb_name'],
+            '',
+            '',
+            '',
+            '',
+            $od["od_b_name"],
+            $addr,
+            '',
+            '',
+            $it['prodMemo'],
+            '',
+            '',
+            '12345', // 품목코드(포인트결제)
+            '',
+            '',
+            '1',
+            -($od['od_receipt_point']), // 단가(vat포함)
+            '',
+            -(round($od['od_receipt_point'] / 1.1)), //공급가액
+            -($od['od_receipt_point'] - round($od['od_receipt_point'] / 1.1)), //부가세
+            '', // 바코드
+            '', // 로젠송장번호,
+            $abstract, //적요
+            '',
+          ]
         ];
       }
     }
@@ -676,6 +691,15 @@
     set_order_admin_log($od['od_id'], '이카운트 엑셀 다운로드 : ' . $it_name);
   }
   $headers = array("일자", "순서", "거래처코드", "거래처명","담당자", "출하창고", "거래유형","통화", "환율","성명(상호명)", "배송처", "전잔액", "후잔액", "특이사항", "참고사항", "부서", "품목코드", "품목명", "규격", "수량", "단가(vat포함)", "외화금액", "공급가액", "부가세", "바코드", "로젠 송장번호", "적요", "생산전표생성");
+
+  usort($rows, function($item1, $item2) {
+    return $item1['od_id'] <=> $item2['od_id'];
+  });
+
+  $rows = array_map(function($row) {
+    return $row['value'];
+  }, $rows);
+
   $data = array_merge(array($headers), $rows);
   
   $widths  = array(20, 50, 10, 30, 50, 30, 50);
