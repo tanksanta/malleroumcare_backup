@@ -692,6 +692,7 @@
   }
   $headers = array("일자", "순서", "거래처코드", "거래처명","담당자", "출하창고", "거래유형","통화", "환율","성명(상호명)", "배송처", "전잔액", "후잔액", "특이사항", "참고사항", "부서", "품목코드", "품목명", "규격", "수량", "단가(vat포함)", "외화금액", "공급가액", "부가세", "바코드", "로젠 송장번호", "적요", "생산전표생성");
 
+  /*
   usort($rows, function($item1, $item2) {
     return $item1['od_id'] <=> $item2['od_id'];
   });
@@ -711,6 +712,10 @@
     $value[1] = $i;
 
     return $value;
+  }, $rows);
+  */
+  $rows = array_map(function($row) {
+    return $row['value'];
   }, $rows);
 
   $data = array_merge(array($headers), $rows);
