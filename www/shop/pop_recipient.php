@@ -90,6 +90,12 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
     line-height: normal;
   }
 
+  .img_loading {
+    display: block;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
   #zipAddrPopupWrap { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 100; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
   #zipAddrPopupWrap > div { position: relative; width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
   #zipAddrPopupWrap > div > div { position: relative; width: 700px; height: 500px; background-color: #FFF; padding-top: 50px; left: 50%; margin-left: -350px; }
@@ -129,6 +135,7 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 <div class="pop_list">
   <ul id="recipient_list">
   </ul>
+  <img src="<?php echo G5_URL; ?>/shop/img/loading.gif" class="img_loading">
 </div>
 </body>
 </html>
