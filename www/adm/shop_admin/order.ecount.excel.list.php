@@ -696,8 +696,21 @@
     return $item1['od_id'] <=> $item2['od_id'];
   });
 
+  $i = 0;
+  $last_od_id;
   $rows = array_map(function($row) {
-    return $row['value'];
+    global $i, $last_od_id;
+
+    if($last_od_id != $row['od_id']) {
+      $i++;
+      $last_od_id = $row['od_id'];
+    }
+
+    $value = $row['value'];
+
+    $value[1] = $i;
+
+    return $value;
   }, $rows);
 
   $data = array_merge(array($headers), $rows);
