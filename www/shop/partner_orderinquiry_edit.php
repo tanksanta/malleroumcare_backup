@@ -284,7 +284,7 @@ function select_item(obj, io_id, ct_qty) {
 // 품목 검색
 $('#ipt_so_sch').flexdatalist({
     minLength: 1,
-    url: 'ajax.get_item.php',
+    url: 'ajax.get_item_partner.php',
     cache: false, // cache
     searchContain: true, // %검색어%
     noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',

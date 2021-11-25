@@ -478,6 +478,8 @@ $it_box_size = [
 ];
 $it_box_size = implode(chr(30), $it_box_size);
 
+$it_show_partner_search = ($_POST["it_show_partner_search"]) ? $_POST["it_show_partner_search"] : 0;
+
 $sql_common = "
   ca_id               = '$ca_id',
   ca_id2              = '$ca_id2',
@@ -681,7 +683,8 @@ $sql_common = "
   it_rental_persisting_year = '$it_rental_persisting_year',
   it_rental_persisting_price = '$it_rental_persisting_price',
   it_box_size = '$it_box_size',
-  it_standard = '$it_standard'
+  it_standard = '$it_standard',
+  it_show_partner_search = '$it_show_partner_search'
 "; // APMS : 2014.07.20
 
 if ($w == "")
@@ -989,6 +992,7 @@ if(is_checked('chk_ca_it_sell_email'))          $ca_fields .= " , it_sell_email 
 if(is_checked('chk_ca_it_tel_inq'))             $ca_fields .= " , it_tel_inq = '$it_tel_inq' ";
 if(is_checked('chk_ca_it_use'))                 $ca_fields .= " , it_use = '$it_use' ";
 if(is_checked('chk_ca_it_use_partner'))         $ca_fields .= " , it_use_partner = '$it_use_partner' ";
+if(is_checked('chk_ca_it_show_partner_search'))         $ca_fields .= " , it_show_partner_search = '$it_show_partner_search' ";
 if(is_checked('chk_ca_it_use_custom_order'))    $ca_fields .= " , it_use_custom_order = '$it_use_custom_order' ";
 if(is_checked('chk_ca_it_nocoupon'))            $ca_fields .= " , it_nocoupon = '$it_nocoupon' ";
 if(is_checked('chk_ca_it_soldout'))             $ca_fields .= " , it_soldout = '$it_soldout' ";
@@ -1059,6 +1063,7 @@ if(is_checked('chk_all_it_sell_email'))          $all_fields .= " , it_sell_emai
 if(is_checked('chk_all_it_tel_inq'))             $all_fields .= " , it_tel_inq = '$it_tel_inq' ";
 if(is_checked('chk_all_it_use'))                 $all_fields .= " , it_use = '$it_use' ";
 if(is_checked('chk_all_it_use_partner'))         $all_fields .= " , it_use_partner = '$it_use_partner' ";
+if(is_checked('chk_ca_it_show_partner_search'))         $all_fields .= " , it_show_partner_search = '$it_show_partner_search' ";
 if(is_checked('chk_all_it_use_custom_order'))    $all_fields .= " , it_use_custom_order = '$it_use_custom_order' ";
 if(is_checked('chk_all_it_nocoupon'))            $all_fields .= " , it_nocoupon = '$it_nocoupon' ";
 if(is_checked('chk_all_it_soldout'))             $all_fields .= " , it_soldout = '$it_soldout' ";
