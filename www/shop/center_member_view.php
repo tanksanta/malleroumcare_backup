@@ -35,7 +35,7 @@ $sql = "
 $result = sql_query($sql);
 
 $pays = [];
-while($cp = sql_fetch_array($sql)) {
+while($cp = sql_fetch_array($result)) {
     $pays[$cp['cp_month']] = $cp;
 }
 
@@ -151,25 +151,25 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
                             <?php echo $m . '월'; ?>
                         </td>
                         <td class="text_c">
-                            <?php echo $pay['cp_total'] ?: '-'; ?>
+                            <?php echo number_format($pay['cp_total']) ?: '-'; ?>
                         </td>
                         <td class="text_c">
-                            <?php echo $pay['cp_deduction'] ?: '-'; ?>
+                            <?php echo number_format($pay['cp_deduction']) ?: '-'; ?>
                         </td>
                         <td class="text_c">
-                            <?php echo $pay['cp_tax'] ?: '-'; ?>
+                            <?php echo number_format($pay['cp_tax']) ?: '-'; ?>
                         </td>
                         <td class="text_c">
-                            <?php echo $pay['cp_insurance'] ?: '-'; ?>
+                            <?php echo number_format($pay['cp_insurance']) ?: '-'; ?>
                         </td>
                         <td class="text_c">
-                            <?php echo $pay['cp_pay '] ?: '-'; ?>
+                            <?php echo number_format($pay['cp_pay']) ?: '-'; ?>
                         </td>
                         <td class="td_btn">
                             <?php
                             // 명세서
                             if($pay) {
-                                echo '<a href="#" class="btn_etc">다운로드</a>';
+                                echo '<a href="javascript:void(0);" class="btn_etc">다운로드</a>';
                             } else {
                                 echo '미등록';
                             }
