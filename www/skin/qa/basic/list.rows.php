@@ -42,9 +42,13 @@ if(isset($wset['hskin']) && $wset['hskin']) {
 			</div>
 			<div class="subj">
 				<a href="<?php echo $list[$i]['view_href']; ?>" class="ellipsis">
+				<?php if ($list[$i]['mb_id'] == $member['mb_id'] || !$list[$i]['qa_is_secret']) { ?>
 					<?php echo ($list[$i]['category']) ? '['.$list[$i]['category'].']' : ''; ?>
 					<?php echo $list[$i]['subject']; ?>
 					<?php echo $list[$i]['icon_file']; ?>
+				<?php } else { ?>
+					비밀글입니다.
+				<?php } ?>					
 				</a>
 				<div class="subj-item font-12 visible-xs">
 					<span class="xs-name"><i class="fa fa-user"></i> <?php echo $list[$i]['name']; ?></span>

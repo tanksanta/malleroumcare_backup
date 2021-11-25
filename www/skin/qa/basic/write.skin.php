@@ -30,6 +30,25 @@ if($header_skin)
     <input type="hidden" name="stx" value="<?php echo $stx ?>">
     <input type="hidden" name="page" value="<?php echo $page ?>">
 
+	<div class="form-group">
+		<label class="col-sm-2 control-label">비밀글</label>
+		<div class="col-sm-5">
+			<label style="font-weight:normal;">
+				<input type="checkbox" name="qa_is_secret" value="1" <?php if($write['qa_is_secret']) echo 'checked="checked"'; ?>> 체크하면 비밀글로 등록됩니다
+			</label>
+		</div>
+	</div>	
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label hidden-xs" for="qa_category">분류<strong class="sound_only">필수</strong></label>
+		<div class="col-sm-3">
+			<select name="qa_category" id="qa_category" required class="form-control input-sm">
+				<option value="">선택하세요</option>
+				<?php echo $category_option ?>
+			</select>
+		</div>
+	</div>
+
 	<?php if ($category_option) { ?>
 		<div class="form-group">
 			<label class="col-sm-2 control-label hidden-xs" for="qa_category">분류<strong class="sound_only">필수</strong></label>
