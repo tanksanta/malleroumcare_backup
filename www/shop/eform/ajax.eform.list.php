@@ -194,7 +194,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
   <?php
   if($row['od_id']) {
     echo '<a href="' . G5_SHOP_URL . '/eform/downloadReceipt.php?od_id=' . $row["od_id"] . '" class="btn_basic">거래영수증</a>';
-  } else if($row['dc_status'] != '11') {
+  } else {
     echo '<a href="' . G5_SHOP_URL . '/eform/downloadReceipt.php?dc_id=' . $row["uuid"] . '" class="btn_basic">거래영수증</a>';
   }
   ?>
