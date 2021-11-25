@@ -21,8 +21,11 @@ $ca_cnt = count($categories);
 					</a>
 				</li>
 			<?php } ?>
+			<div style="float:right;"><input type="checkbox" id="show_my_qa"> 내 글만 보기</div>
 		</ul>
+
 	</div>
+
 	<div class="dropdown visible-xs">
 		<a id="categoryLabel" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-color btn-block">
 			<?php echo ($sca) ? $sca : '전체';?>(<?php echo number_format($total_count);?>)

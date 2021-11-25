@@ -264,7 +264,8 @@ if($w == '' || $w == 'a' || $w == 'r') {
                     qa_2            = '$qa_2',
                     qa_3            = '$qa_3',
                     qa_4            = '$qa_4',
-                    qa_5            = '$qa_5' ";
+                    qa_5            = '$qa_5',
+                    qa_is_secret            = '$qa_is_secret' ";
     sql_query($sql);
 
     if($w == '' || $w == 'r') {
@@ -333,7 +334,8 @@ if($w == '' || $w == 'a' || $w == 'r') {
                     qa_2        = '$qa_2',
                     qa_3        = '$qa_3',
                     qa_4        = '$qa_4',
-                    qa_5        = '$qa_5' ";
+                    qa_5        = '$qa_5',
+                    qa_is_secret            = '$qa_is_secret' ";
     if($qa_sms_recv)
         $sql .= ", qa_sms_recv = '$qa_sms_recv' ";
     $sql .= " where qa_id = '$qa_id' ";

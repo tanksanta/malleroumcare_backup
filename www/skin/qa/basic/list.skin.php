@@ -37,7 +37,7 @@ $list_cnt = count($list);
 	</div>
 
 	<?php if($category_option) include_once($skin_path.'/category.skin.php'); // 카테고리	?>
-
+	
 	<div class="list-wrap">
 
 		<form name="fqalist" id="fqalist" action="./qadelete.php" onsubmit="return fqalist_submit(this);" method="post" role="form" class="form">
@@ -98,8 +98,25 @@ $list_cnt = count($list);
 	<div class="clearfix"></div>
 
 </section>
-<?php if ($is_checkbox) { ?>
 <script>
+
+$("#show_my_qa").change(function(){
+	if($("#show_my_qa").is(":checked")){
+		window.location.href = window.location.pathname+"?"+$.param({'type':'my'})
+	} else{
+		window.location.href = window.location.pathname
+	}
+});
+
+$(function() {
+	let searchParams = new URLSearchParams(window.location.search)
+	let param = searchParams.get('type')
+	if (param == "my") {
+		$("#show_my_qa").prop("checked", true)
+	}
+});
+
+<?php if ($is_checkbox) { ?>
 function all_checked(sw) {
     var f = document.fqalist;
 
@@ -129,5 +146,5 @@ function fqalist_submit(f) {
 
     return true;
 }
-</script>
 <?php } ?>
+</script>
