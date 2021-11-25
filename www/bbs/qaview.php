@@ -16,14 +16,17 @@ $skin_file = $qa_skin_path.'/view.skin.php';
 
 if(is_file($skin_file)) {
     $sql = " select * from {$g5['qa_content_table']} where qa_id = '$qa_id' ";
-    if(!$is_admin) {
-        $sql .= " and mb_id = '{$member['mb_id']}' ";
-    }
+    // if(!$is_admin) {
+    //     $sql .= " and mb_id = '{$member['mb_id']}' ";
+    // }
 
     $view = sql_fetch($sql);
 
     if(!$view['qa_id'])
         alert('게시글이 존재하지 않습니다.\\n삭제되었거나 자신의 글이 아닌 경우입니다.', G5_BBS_URL.'/qalist.php');
+    
+    if($view['qa_is_secret'] && $view['mb_id'] !== $member['mb_id'])
+        alert('비밀글은 작성자만 볼 수 있습니다.', G5_BBS_URL.'/qalist.php');
 
     $subject_len = G5_IS_MOBILE ? $qaconfig['qa_mobile_subject_len'] : $qaconfig['qa_subject_len'];
 

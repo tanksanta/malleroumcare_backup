@@ -43,9 +43,15 @@ if(is_file($skin_file)) {
 	        $sql_search .= " and mb_id = '{$qmb}' ";
 		}
 	} else {
-        $sql_search .= " and mb_id = '{$member['mb_id']}' ";
+        // $sql_search .= " and mb_id = '{$member['mb_id']}' ";
 	}
 
+    if (isset($_GET['type'])) {
+        $type = $_GET['type'];
+        if ($type == 'my')
+            $sql_search .= " and mb_id = '{$member['mb_id']}' ";
+    }
+    
     if($sca) {
         if (preg_match("/[a-zA-Z]/", $sca))
             $sql_search .= " and INSTR(LOWER(qa_category), LOWER('$sca')) > 0 ";
