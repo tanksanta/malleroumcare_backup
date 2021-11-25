@@ -15,6 +15,32 @@ $cm['info'] = get_center_member_info_text($cm);
 
 $qstr = "cm_code={$cm_code}";
 
+// 급여관리
+$this_year = date('Y');
+$year = preg_replace('/[^0-9]/', '', $_GET['year']);
+if(!$year) $year = $this_year;
+$max_month = 12;
+if($year == $this_year) {
+    $max_month = intval(date('n'));
+}
+$sql = "
+    SELECT * FROM center_member_pay
+    WHERE
+        mb_id = '{$member['mb_id']}' and
+        cm_code = '$cm_code' and
+        cp_year = '$year'
+    ORDER BY
+        cp_month ASC
+";
+$result = sql_query($sql);
+
+$pays = [];
+while($cp = sql_fetch_array($sql)) {
+    $pays[$cp['cp_month']] = $cp;
+}
+
+$qstr .= "year={$year}";
+
 // 관리기록
 $sql_common = "
     FROM
@@ -94,7 +120,9 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
             <h3>급여관리</h3>
             <div class="flex space-between">
                 <select class="btn_etc" id="sel_pay">
-                    <option value="2021">2021년</option>
+                    <?php for($y = 2021; $y <= $this_year; $y++) { ?>
+                        <option value="<?=$y?>" <?=get_selected($year, $y)?>><?=$y?>년</option>
+                    <?php } ?>
                 </select>
                 <a href="#" class="btn_etc">다운로드</a>
             </div>
@@ -113,6 +141,46 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
                         <th>지급관리</th>
                     </tr>
                 </thead>
+                <tbody>
+                    <?php
+                    for($m = $max_month; $m >= 1; $m--) {
+                        $pay = $pays[$m];
+                    ?>
+                    <tr>
+                        <td class="td_date">
+                            <?php echo $m . '월'; ?>
+                        </td>
+                        <td class="text_c">
+                            <?php echo $pay['cp_total'] ?: '-'; ?>
+                        </td>
+                        <td class="text_c">
+                            <?php echo $pay['cp_deduction'] ?: '-'; ?>
+                        </td>
+                        <td class="text_c">
+                            <?php echo $pay['cp_tax'] ?: '-'; ?>
+                        </td>
+                        <td class="text_c">
+                            <?php echo $pay['cp_insurance'] ?: '-'; ?>
+                        </td>
+                        <td class="text_c">
+                            <?php echo $pay['cp_pay '] ?: '-'; ?>
+                        </td>
+                        <td class="td_btn">
+                            <?php
+                            // 명세서
+                            if($pay) {
+                                echo '<a href="#" class="btn_etc">다운로드</a>';
+                            } else {
+                                echo '미등록';
+                            }
+                            ?>
+                        </td>
+                        <td class="td_btn">
+                            <a href="center_member_pay.php?<?php echo "cm_code={$cm_code}&year={$year}&month={$m}"; ?>" class="btn_etc">지급관리</a>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
             </table>
         </div>
     </div>
@@ -156,6 +224,13 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/center.css
         </div>
     </div>
 </section>
+
+<script>
+var cm_code = "<?=$cm_code?>";
+$('#sel_pay').change(function() {
+    window.location.href = '?cm_code=' + cm_code + '&year=' + $(this).val();
+});
+</script>
 
 <?php
 include_once('./_tail.php');

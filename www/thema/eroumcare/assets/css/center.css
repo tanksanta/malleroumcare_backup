@@ -29,7 +29,11 @@
     border-right: none !important;
 }
 .list_box table td.td_date {
-    width: 150px;
+    width: 150px !important;
+    text-align: center;
+}
+.list_box table td.td_btn {
+    width: 110px;
     text-align: center;
 }
 
