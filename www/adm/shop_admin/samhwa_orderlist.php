@@ -349,11 +349,24 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <input type="checkbox" name="partner_issue[]" id="partner_issue_3" value="3" title="" <?php echo option_array_checked('3', $partner_issue); ?>><label for="partner_issue_3">미설치</label>
             <input type="checkbox" name="od_partner_edit" id="od_partner_edit" value="1" title="" <?php echo option_array_checked('1', $od_partner_edit); ?>><label for="od_partner_edit">파트너 상품수정</label>
           </div>
-          <div class="linear">
+          <div style="display: inline-block; margin-left: 11px; margin-right:15px;">
             <span class="linear_span">이슈사항</span>
             <input type="checkbox" name="issue_1" id="issue_1" value="1" title="" <?php echo option_array_checked('1', $issue_1); ?>><label for="issue_1">출고준비 3일 경과</label>
             <input type="checkbox" name="issue_2" id="issue_2" value="1" title="" <?php echo option_array_checked('1', $issue_2); ?>><label for="issue_2">취소/반품 요청</label>
           </div>
+          <div class="linear">
+            <span class="linear_span">바코드</span>
+            <input type="radio" name="ct_barcode_saved" id="ct_barcode_all" value="" title="" <?php echo option_array_checked('', $ct_barcode_saved); ?>><label for="ct_barcode_all">전체</label>
+            <input type="radio" name="ct_barcode_saved" id="ct_barcode_saved" value="saved" title="" <?php echo option_array_checked('saved', $ct_barcode_saved); ?>><label for="ct_barcode_saved">입력완료</label>
+            <input type="radio" name="ct_barcode_saved" id="ct_barcode_none" value="none" title="" <?php echo option_array_checked('none', $ct_barcode_saved); ?>><label for="ct_barcode_none">미입력</label>
+          </div>
+          <div class="linear">
+            <span class="linear_span">배송정보</span>
+            <input type="radio" name="ct_delivery_saved" id="ct_delivery_all" value="" title="" <?php echo option_array_checked('', $ct_delivery_saved); ?>><label for="ct_delivery_all">전체</label>
+            <input type="radio" name="ct_delivery_saved" id="ct_delivery_saved" value="saved" title="" <?php echo option_array_checked('saved', $ct_delivery_saved); ?>><label for="ct_delivery_saved">입력완료</label>
+            <input type="radio" name="ct_delivery_saved" id="ct_delivery_none" value="none" title="" <?php echo option_array_checked('none', $ct_delivery_saved); ?>><label for="ct_delivery_none">미입력</label>
+          </div>
+          
         </td>
       </tr>
 
@@ -1143,6 +1156,9 @@ $( document ).ready(function() {
     <?php } ?>
 
     doSearch();
+  
+    $('#ct_barcode_all').prop('checked', true);
+    $('#ct_delivery_all').prop('checked', true);
   }, 700);
   <?php } else { ?>
   // doSearch();
@@ -1156,6 +1172,7 @@ $( document ).ready(function() {
       $('#search-btn').click();
     }
   });
+
 });
 
 function toggle_order_tab() {

@@ -97,6 +97,22 @@ if($issue_2) {
   $where[] = " ( select count(*) from g5_shop_order_cancel_request where approved = 0 and od_id = o.od_id ) > 0 ";
 }
 
+// 바코드 입력완료, 미입력
+if (gettype($ct_barcode_saved) == 'string' && $ct_barcode_saved !== '') {
+  if ($ct_barcode_saved == 'saved')
+    $where[] = " ( ct_barcode_insert > 0 ) ";
+  else if ($ct_barcode_saved == 'none')
+    $where[] = " ( ct_barcode_insert = 0 ) ";
+}
+
+// 배송정보 입력완료, 미입력
+if (gettype($ct_delivery_saved) == 'string' && $ct_delivery_saved !== '') {
+  if ($ct_delivery_saved == 'saved')
+    $where[] = " ( CHAR_LENGTH(ct_delivery_num) > 6 ) ";
+  else if ($ct_delivery_saved == 'none')
+    $where[] = " ( ct_delivery_num IS NULL OR ct_delivery_num = '' ) ";
+}
+
 if ( $od_sales_manager ) {
   $where_od_sales_manager = array();
   for($i=0;$i<count($od_sales_manager);$i++) {
