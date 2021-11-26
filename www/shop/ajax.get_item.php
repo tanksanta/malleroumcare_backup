@@ -5,6 +5,13 @@ header('Content-type: application/json');
 
 $keyword = str_replace(' ', '', trim($keyword));
 
+$eform = $_GET['eform'];
+$prodsupyn_sql = " AND a.prodSupYn = 'Y' ";
+if($eform) {
+  // 계약서의 경우 비유통 상품도 검색 가능
+  $prodsupyn_sql = '';
+}
+
 $sql = "
   SELECT
     it_id,
@@ -65,7 +72,7 @@ $sql = "
     AND a.it_id NOT IN ('PRO2021072200013', 'PRO2021072200012') -- 체험상품 제외
     AND a.it_name NOT LIKE 'test%' -- 테스트상품 제외
     AND a.it_use = 1 -- 판매상품
-    AND a.prodSupYn = 'Y'
+    {$prodsupyn_sql}
 ";
 
 $result = sql_query($sql);
