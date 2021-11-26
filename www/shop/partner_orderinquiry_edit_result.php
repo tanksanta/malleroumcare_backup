@@ -555,7 +555,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
           $sqlOrdLendEndDtm,
           '{$it['prodSupYn']}',
           $sql_ct_pen_id,
-          $ct_warehouse
+          '$ct_warehouse'
         )";
         sql_query($insert_sql, true);
         $ct_id = sql_insert_id();
