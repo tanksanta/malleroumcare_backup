@@ -305,14 +305,21 @@ if($_GET['co_id']=="possession_manage"){ ?>
 	$(function(){
     $('#btn_mo_menu').click(function() {
       $('html, body').addClass('modal-open');
-      $('.side_menu_area').show(10);
+      $('.side_menu_area').addClass('active')
+        .css({right: -322})
+        .stop(true, true)
+        .animate({right: 0}, 150);
       $('.mobile_menu_backdrop').show();
       $('.side_menu_area .scrollable_wrap').scrollTop(0);
     });
 
     $('.btn_close_side_menu, .mobile_menu_backdrop').click(function() {
       $('html, body').removeClass('modal-open');
-      $('.side_menu_area').hide(100);
+      $('.side_menu_area')
+        .stop(true, true)
+        .animate({right: -322}, 150, function() {
+          $(this).removeClass('active');
+        });
       $('.mobile_menu_backdrop').hide();
     });
 
