@@ -171,7 +171,8 @@ for($i=0; $i<count($it_ids); $i++) {
       ordLendStrDtm,
       ordLendEndDtm,
       prodSupYn,
-      ct_pen_id
+      ct_pen_id,
+      ct_warehouse
     )
   VALUES ";
 
@@ -295,8 +296,14 @@ for($i=0; $i<count($it_ids); $i++) {
 
     // 수급자 여부
     $sql_ct_pen_id = 'NULL';
-    if ($od['od_penId']) {
+    if($od['od_penId']) {
       $sql_ct_pen_id = "'{$od['od_penId']}'";
+    }
+
+    // 출하창고
+    $ct_warehouse = '청라창고';
+    if($it['it_default_warehouse']) {
+      $ct_warehouse = $it['it_default_warehouse'];
     }
 
     // 비유통상품 가격
@@ -352,7 +359,8 @@ for($i=0; $i<count($it_ids); $i++) {
       $sqlOrdLendStrDtm,
       $sqlOrdLendEndDtm,
       '{$it['prodSupYn']}',
-      $sql_ct_pen_id
+      $sql_ct_pen_id,
+      '$ct_warehouse'
     )";
 
     sql_query($insert_sql);
