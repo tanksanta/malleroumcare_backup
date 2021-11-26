@@ -450,8 +450,8 @@ table {border-collapse: collapse;}
   .order-list {padding-top: 60px;}
   .tti {font-size: 21px;} 
   .order-date {padding: 20px 4%;margin-bottom: 33px;}
-  .order-date .list-date {display: none;}
-  .order-date .list-tab {display: none;margin:0;}
+  /* .order-date .list-date {display: none;}
+  .order-date .list-tab {display: none;margin:0;} */
   .order-date .list-select {display: -webkit-box; display: -ms-flexbox; display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
   .order-date .list-select .select {width: 100%;font-size: 12px;}
   .order-date .list-text div span {font-size: 14px;border:none;}
