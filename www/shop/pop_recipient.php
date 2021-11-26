@@ -190,6 +190,7 @@ $(function() {
     }
 
     loading = true;
+    $('.img_loading').show();
     $.get('ajax.pop_recipient.php', {
       page: page,
       ca_id: ca_id,
@@ -208,10 +209,6 @@ $(function() {
         $('#recipient_list').append($html);
       }
 
-      if(is_last) {
-        $('.img_loading').remove();
-      }
-      
       page += 1;
     })
     .fail(function($xhr) {
@@ -220,6 +217,7 @@ $(function() {
     })
     .always(function() {
       loading = false;
+      $('.img_loading').hide();
     });
   }
 

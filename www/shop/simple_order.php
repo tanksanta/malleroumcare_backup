@@ -259,6 +259,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                 }
               }
               ?>
+              <li class="ad_sel_addr" id="pen_address">수급자 목록</li>
             </ul>
           </div>
         </div>
@@ -996,7 +997,7 @@ $(function() {
   });
   // 배송지선택
   $(".ad_sel_addr").on("click", function() {
-    if($(this).attr("id") == "order_address"){
+    if($(this).attr("id") == "order_address" || $(this).attr("id") == "pen_address") {
       return false;
     }
     var addr = $(this).attr("data-value").split(String.fromCharCode(30));
@@ -1031,6 +1032,13 @@ $(function() {
   // 배송지목록
   $("#order_address").on("click", function() {
     var url = "<?php echo G5_SHOP_URL;?>/orderaddress.php";
+    open_popup_box(url);
+    return false;
+  });
+
+  // 수급자 배송지목록
+  $("#pen_address").on("click", function() {
+    var url = "<?php echo G5_SHOP_URL;?>/pop.recipient_address.php";
     open_popup_box(url);
     return false;
   });
