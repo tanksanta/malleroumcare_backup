@@ -65,7 +65,6 @@
 }
 .form-group .form-control.pen_id_flexdatalist {
   width: 100%;
-  max-width: 300px;
 }
 .form-group .radio_wr {
   margin-bottom: 10px;
@@ -684,4 +683,43 @@
   border-radius: 3px;
   line-height: 50px;
   padding: 5px;
+}
+
+.form-group {
+  margin-bottom: 0;
+}
+.form-group > div {
+  margin-bottom: 10px;
+}
+.form-group .form-control.pen_id_flexdatalist {
+  height: unset;
+  width: 100%;
+  line-height: 22px;
+  padding: 5px 10px;
+}
+.form-group .form-control.pen_id_flexdatalist.active {
+  padding: 5px 10px 5px 30px;
+}
+.col-pen-nm img {
+  display: block;
+  position: absolute;
+  top: 8px;
+  left: 23px;
+}
+#btn_pen {
+  display: block;
+  width: 100%;
+  padding: 5px 20px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-weight: bold;
+}
+@media (min-width: 768px) {
+  .col-btn-pen {
+    padding: 0 !important;
+  }
+  #btn_pen {
+    display: inline-block;
+    width: unset;
+  }
 }
