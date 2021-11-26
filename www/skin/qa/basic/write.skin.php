@@ -34,7 +34,7 @@ if($header_skin)
 		<label class="col-sm-2 control-label">비밀글</label>
 		<div class="col-sm-5">
 			<label style="font-weight:normal;">
-				<input type="checkbox" name="qa_is_secret" value="1" <?php if($write['qa_is_secret']) echo 'checked="checked"'; ?>> 체크하면 비밀글로 등록됩니다
+				<input type="checkbox" name="qa_is_secret" value="1" <?php if($write['qa_is_secret'] || !isset($write['qa_is_secret'])) echo 'checked="checked"'; ?>> 체크하면 비밀글로 등록됩니다
 			</label>
 		</div>
 	</div>	
