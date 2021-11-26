@@ -207,6 +207,10 @@ $(function() {
       } else if(!is_last) {
         $('#recipient_list').append($html);
       }
+
+      if(is_last) {
+        $('.img_loading').remove();
+      }
       
       page += 1;
     })
