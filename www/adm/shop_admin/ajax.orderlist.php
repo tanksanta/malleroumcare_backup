@@ -547,7 +547,7 @@ foreach($orderlist as $order) {
 
   $ct_sub_status_text = '';
   if ($order['ct_is_ecount_excel_downloaded']) {
-    $ct_sub_status_text .= '<br><span class="excel_done" style="color:#77933c">이카운트 : 엑셀받기 완료</span>';
+    $ct_sub_status_text .= "<br><span id='ecount_excel_done' class='excel_done' data-ct-id='{$order['ct_id']}' style='color: #77933c'>이카운트 : 엑셀받기 완료</span>";
   }
   if ($order['refund_status']) {
     $ct_sub_status_text .= "<br><span style='color:red'>({$order['refund_status']})</span>";
@@ -713,7 +713,7 @@ foreach($orderlist as $order) {
     }
   }
   if($order['ct_is_delivery_excel_downloaded']) {
-    $direct_delivery_text .= '<br><span class="excel_done" style="color: #FF6600">엑셀 다운로드 완료</span>';
+    $direct_delivery_text .= "<br><span id='excel_done' class='excel_done' data-ct-id='{$order['ct_id']}' style='color: #FF6600'>엑셀 다운로드 완료</span>";
   }
 
   // 출고준비로 변경 후 3일 지난 주문 강조

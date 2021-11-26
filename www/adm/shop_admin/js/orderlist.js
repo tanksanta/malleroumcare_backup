@@ -768,6 +768,48 @@ $(function () {
     },
   );
 
+
+
+  //엑셀 다운로드 완료 리셋
+  $(document).on('click', '#excel_done', function() {
+    if (confirm("다운로드 기록을 삭제하시겠습니까?")) {
+      let span = $(this);
+      $.ajax({
+        method: 'POST',
+        url: './ajax.excel.download.reset.php',
+        data: {
+          ct_id: span.data('ct-id'),
+          type: 'excel',
+        },
+      }).done(function (data) {
+        if (data.msg) {
+          alert(data.msg);
+          if (data.result == 'success')
+            span.hide();
+        }
+      }); 
+    }
+  });
+  // 이카운트 엑셀 다운로드 완료 리셋
+  $(document).on('click', '#ecount_excel_done', function() {
+    if (confirm("다운로드 기록을 삭제하시겠습니까?")) {
+      let span = $(this);
+      $.ajax({
+        method: 'POST',
+        url: './ajax.excel.download.reset.php',
+        data: {
+          ct_id: span.data('ct-id'),
+          type: 'ecount',
+        },
+      }).done(function (data) {
+        if (data.msg) {
+          alert(data.msg);
+          if (data.result == 'success')
+            span.hide();
+        }
+      });
+    }
+  });
 });
 
 function changeDeliverySelect(x) {

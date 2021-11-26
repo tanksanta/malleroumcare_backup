@@ -349,6 +349,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <input type="checkbox" name="partner_issue[]" id="partner_issue_3" value="3" title="" <?php echo option_array_checked('3', $partner_issue); ?>><label for="partner_issue_3">미설치</label>
             <input type="checkbox" name="od_partner_edit" id="od_partner_edit" value="1" title="" <?php echo option_array_checked('1', $od_partner_edit); ?>><label for="od_partner_edit">파트너 상품수정</label>
           </div>
+          <br/>
           <div style="display: inline-block; margin-left: 11px; margin-right:15px;">
             <span class="linear_span">이슈사항</span>
             <input type="checkbox" name="issue_1" id="issue_1" value="1" title="" <?php echo option_array_checked('1', $issue_1); ?>><label for="issue_1">출고준비 3일 경과</label>
