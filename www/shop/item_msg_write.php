@@ -363,8 +363,12 @@ function save_item_msg(no_items) {
   $('#pen_type_1').prop('checked', true);
   <?php } else { ?>
   var pen = null;
+  <?php if(isset($ms)) { ?>
   $('#pen_type_0').prop('checked', true);
-  <?php } ?>
+  <?php
+    }
+  }
+  ?>
   var pen_id_flexdata = null;
 
   function update_pen_info() {
