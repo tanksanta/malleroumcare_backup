@@ -79,7 +79,7 @@ foreach($notice_arr as $wr_id) {
   $recs[] = $rec;
 }
 
-add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css">');
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css?v=211126">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 ?>
@@ -95,20 +95,24 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
         <div class="panel-body">
           <div class="radio_wr" style="margin-top: -10px; margin-bottom: 10px; font-size: 14px;">
             <label class="radio-inline">
-              <input type="radio" name="pen_type" id="pen_type_0" value="0" checked> 직접입력
+              <input type="radio" name="pen_type" id="pen_type_1" value="1" checked> 수급자 선택
             </label>
             <label class="radio-inline">
-              <input type="radio" name="pen_type" id="pen_type_1" value="1"> 수급자 정보 검색
+              <input type="radio" name="pen_type" id="pen_type_0" value="0"> 수급자 등록
             </label>
           </div>
           <div class="form-group">
             <label for="ms_pen_nm" class="col-sm-2 control-label">
               <strong>수급자명</strong>
             </label>
-            <div class="col-sm-8">
+            <div class="col-sm-3 col-pen-nm" style="max-width: unset;">
+              <img style="display: none;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
               <input type="hidden" name="ms_pen_id" id="ms_pen_id" value="<?=$ms['ms_pen_id'] ?: ''?>">
               <input type="text" name="ms_pen_nm" id="ms_pen_nm" class="form-control input-sm pen_id_flexdatalist" value="<?=$ms['ms_pen_nm'] ?: ''?>" placeholder="수급자명">
               <span id="pen_id_flexdatalist_result" class="form_desc"></span>
+            </div>
+            <div class="col-sm-3 col-btn-pen">
+              <button type="button" id="btn_pen">수급자 목록</button>
             </div>
           </div>
           <div class="form-group">
@@ -352,12 +356,14 @@ function save_item_msg(no_items) {
   });
 }
 
-$(function() {
+
   <?php if(isset($pen) && $pen) { ?>
   var pen = <?=json_encode($pen)?>;
   update_pen_info();
+  $('#pen_type_1').prop('checked', true);
   <?php } else { ?>
   var pen = null;
+  $('#pen_type_0').prop('checked', true);
   <?php } ?>
   var pen_id_flexdata = null;
 
@@ -397,6 +403,7 @@ $(function() {
     );
 
     $('#ms_pen_id').val(pen.penId);
+    $('#ms_pen_nm').val(pen.penNm);
   }
 
   // 신규수급자 or 기존수급자 선택
@@ -405,11 +412,17 @@ $(function() {
 
     if(pen_type == '1') {
       // 기존수급자
+      $('.pen_id_flexdatalist').addClass('active').attr('placeholder', '수급자명 검색');
+      $('.col-pen-nm img').show();
+      $("#btn_pen").show();
       toggle_pen_id_flexdatalist(true);
       $('input[name="ms_pro_yn"]').closest('.radio_wr').show();
       $('#ms_pen_nm').next().focus();
     } else {
       // 신규수급자
+      $('.pen_id_flexdatalist').removeClass('active').attr('placeholder', '수급자명');;
+      $('.col-pen-nm img').hide();
+      $("#btn_pen").hide();
       toggle_pen_id_flexdatalist(false);
       $('input[name="ms_pro_yn"]').closest('.radio_wr').hide();
       $('#ms_pen_nm').focus();
@@ -421,6 +434,47 @@ $(function() {
     check_pen_type();
   });
 
+  // 수급자 목록
+  $('#btn_pen').click(function() {
+    var url = 'pop_recipient.php';
+
+    $('#popup_box iframe').attr('src', url);
+    $('body').addClass('modal-open');
+    $('#popup_box').show();
+  });
+  function selected_recipient(result) {
+
+    $('body').removeClass('modal-open');
+    $('#popup_box').hide();
+
+    result = result.split('|');
+
+    var pen = {
+      penId: result[1],
+      penNm: result[3],
+      penLtmNum: result[4].substring(0, 6) + '*****',
+      penConNum: result[20],
+      penRecGraCd: result[5],
+      penRecGraNm: result[6],
+      penTypeCd: result[7],
+      penTypeNm: result[8],
+      penBirth: result[15],
+      penGender: result[13],
+    };
+
+    select_pen(pen);
+  }
+  function select_pen(obj) {
+    pen = obj;
+
+    update_pen_info();
+    setPenHp('N');
+
+    $('#im_body_wr').addClass('active');
+    // 처음 팝업
+    $('.im_sch_pop').show();
+    $('#ipt_im_sch').next().focus();
+  }
   function toggle_pen_id_flexdatalist(on) {
     if(on) {
       if(pen_id_flexdata) return;
@@ -448,15 +502,7 @@ $(function() {
         focusFirstResult: true,
       })
       .on("select:flexdatalist", function(event, obj, options) {
-        pen = obj;
-
-        update_pen_info();
-        setPenHp('N');
-
-        $('#im_body_wr').addClass('active');
-        // 처음 팝업
-        $('.im_sch_pop').show();
-        $('#ipt_im_sch').next().focus();
+        select_pen(obj);
       });
     } else {
       if(!pen_id_flexdata) return;
@@ -603,7 +649,7 @@ $(function() {
 
   check_no_item();
   check_pen_type();
-});
+
 </script>
 
 <?php include_once("./_tail.php"); ?>
