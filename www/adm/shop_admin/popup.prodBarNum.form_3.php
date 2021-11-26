@@ -368,20 +368,23 @@ if($od["od_b_tel"]) {
                 <img class="down" src="<?=G5_IMG_URL?>/img_down.png" alt="">
               </span>
               <?php } else { ?>
-                <span class="span3">
+                <span class="span3" style="font-size:1em;">
                   <?php echo $gubun == '02' ? '비급여' : '추가옵션'; ?> 상품 바코드 미입력&nbsp;
-                  <input 
-                    type="checkbox"
-                    name="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>"
-                    value="1"
-                    id="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>"
-                    <?php if ($carts[$i]['ct_qty'] == $carts[$i]['ct_barcode_insert']) { ?>
-                      checked="checked"
-                    <?php } ?>
-                    class="chk_pass_barcode"
-                    data-ct-id="<?php echo $carts[$i]['ct_id']; ?>"
-                  >
-                  <label for="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>">확인함</label>
+                  <span style="border: 1px solid #9b9b9b; border-radius: 3px; padding: 5px 30px;">
+                    <input 
+                      type="checkbox"
+                      name="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>"
+                      value="1"
+                      id="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>"
+                      <?php if ($carts[$i]['ct_qty'] == $carts[$i]['ct_barcode_insert']) { ?>
+                        checked="checked"
+                      <?php } ?>
+                      class="chk_pass_barcode"
+                      data-gubun="<?=$gubun?>"
+                      data-ct-id="<?php echo $carts[$i]['ct_id']; ?>"
+                    >
+                    <label for="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>">확인함</label>
+                  </span>
                 </span>
               <?php } ?>
             </p>
@@ -708,6 +711,15 @@ if($od["od_b_tel"]) {
     });
 
     $("#prodBarNumSaveBtn").click(function() {
+      if ($(".chk_pass_barcode").data('gubun') == "02" && $(".chk_pass_barcode").is(":checked") == false) {
+        if (confirm("비급여 상품 확인함을 선택하지 않으셨습니다. 선택하시겠습니까?")) {
+        }
+        else {
+          member_cancel();
+        }
+        return false;
+      }
+
       var barcode_arr = [];
       var error_arr = [];
       var str_error_arr = [];
