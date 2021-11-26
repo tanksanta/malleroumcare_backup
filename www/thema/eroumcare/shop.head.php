@@ -285,12 +285,11 @@ if($is_main && !$is_member) {
             <a href="<?=$at_href['edit'];?>" class="btn_small btn_edit">정보수정</a>
             <div class="user_name">
               <?php
+              echo $member['mb_entNm'] ?: $member['mb_name'];
               $manager_mb_id = get_session('ss_manager_mb_id');
               if($manager_mb_id) {
                 $manager = get_member($manager_mb_id);
-                echo $manager['mb_name'];
-              } else {
-                echo $member['mb_entNm'] ?: $member['mb_name'];
+                echo ' | ' . $manager['mb_name'];
               }
               ?>
             </div>
