@@ -43,8 +43,8 @@ if($incompleted && count($incompleted) == 1) {
   }
 }
 
-# 내 주문만 보기
-if($mine_only) {
+# 담당자는 본인으로 지정된 주문만 보기
+if($manager_mb_id) {
   $where[] = "
     o.od_partner_manager = '$manager_mb_id'
   ";
@@ -234,9 +234,6 @@ if($incompleted) {
     $qstr .= "&amp;incompleted%5B%5D={$ic}";
   }
 }
-if($mine_only) {
-  $qstr .= "&amp;mine_only=1";
-}
 
 // 담당자
 $manager_result = sql_query("
@@ -316,9 +313,6 @@ tr.hover { background-color: #fbf9f7 !important; }
       <label><input type="checkbox" id="chk_incompleted_all"/> 전체</label> 
       <label><input type="checkbox" name="incompleted[]" value="0" <?=option_array_checked('0', $incompleted)?>/> 진행중인 작업</label>
       <label><input type="checkbox" name="incompleted[]" value="1" <?=option_array_checked('1', $incompleted)?>/> 미 진행중인 작업</label>
-      <?php if($manager_mb_id) { ?>
-      <label><input type="checkbox" name="mine_only" value="1" <?=option_array_checked('1', $mine_only)?>/> 내 주문만 보기</label>
-      <?php } ?>
       <br>
       
       <div class="search_date">
@@ -461,12 +455,23 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <?php } ?>
               </td>
               <td class="td_status text_c">
-                <select class="sel_manager" data-id="<?=$row['od_id']?>" <?php if($manager_mb_id) echo 'disabled'; ?>>
+                <?php
+                if($manager_mb_id) {
+                  $manager_txt = '미지정';
+                  if($row['od_partner_manager']) {
+                    $manager = get_member($row['od_partner_manager']);
+                    $manager_txt = '[직원] ' . $manager['mb_name'];
+                  }
+                  echo "<div>{$manager_txt}</div>";
+                } else {
+                ?>
+                <select class="sel_manager" data-id="<?=$row['od_id']?>">
                   <option value="">미지정</option>
                   <?php foreach($managers as $manager) { ?>
-                  <option value="<?=$manager['mb_id']?>" <?=get_selected($row['od_partner_manager'], $manager['mb_id'])?>><?=$manager['mb_name']?></option>
+                  <option value="<?=$manager['mb_id']?>" <?=get_selected($row['od_partner_manager'], $manager['mb_id'])?>>[직원] <?=$manager['mb_name']?></option>
                   <?php } ?>
                 </select>
+                <?php } ?>
                 <span style="<?php
                 if(in_array($row['ct_status'], ['주문취소', '주문무효']))
                   echo 'color: #ff0000;';
