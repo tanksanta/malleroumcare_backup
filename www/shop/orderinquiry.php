@@ -107,7 +107,7 @@ if ($ct_status) {
 
 if ($where) {
 	$where_query = $sql_search ? ' and ' : ' where ';
-  $sql_search = $where_query.implode(' and ', $where);
+  $sql_search = $sql_search . $where_query . implode(' and ', $where);
 }
 
 
