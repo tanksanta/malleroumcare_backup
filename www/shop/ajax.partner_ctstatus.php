@@ -9,7 +9,7 @@ if($manager_mb_id) {
   $manager = get_member($manager_mb_id);
 }
 
-$ct_status = in_array($_POST['ct_status'], ['준비', '출고준비', '배송']) ? $_POST['ct_status'] : '';
+$ct_status = in_array($_POST['ct_status'], ['출고준비', '배송']) ? $_POST['ct_status'] : '';
 $ct_id_arr = get_search_string($_POST['ct_id']);
 
 if(!$ct_status || !$ct_id_arr || !is_array($ct_id_arr))
@@ -60,7 +60,6 @@ foreach($ct_id_arr as $ct_id) {
   $it_name = $cart['it_name'];
   if($cart['ct_option'] && $cart['ct_option'] != $cart['it_name']) $it_name .= "({$cart['ct_option']})";
   switch ($ct_status) {
-    case '준비': $ct_status_text="상품준비"; break;
     case '출고준비': $ct_status_text="출고준비"; break;
     case '배송': $ct_status_text="출고완료"; break;
   }
