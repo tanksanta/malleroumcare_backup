@@ -293,6 +293,20 @@ tr.hover { background-color: #fbf9f7 !important; }
 #popup_box > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
 #popup_box iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
 
+.ct_status_mode_wr {
+  display: inline-block;
+  margin: 0 !important;
+}
+.ct_status_mode_wr input[type="radio"] {
+  margin: 8px 0;
+  width: 14px;
+  height: 14px;
+}
+.ct_status_mode_wr label {
+  margin: 5px 10px 5px 0;
+  line-height: 20px;
+}
+
 @media (max-width : 750px) {
   #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 }
@@ -344,10 +358,21 @@ tr.hover { background-color: #fbf9f7 !important; }
       <div class="subtit">
         목록
         <div class="r_area">
-          <span>선택한 주문 상태 변경</span>
+          <span class="ct_status_mode_wr">
+            <input type="radio" name="ct_status_mode" value="ct_status" id="ct_status_mode" checked>
+            <label for="ct_status_mode">주문상태</label>
+            <input type="radio" name="ct_status_mode" value="manager" id="ct_status_mode2">
+            <label for="ct_status_mode2">담당자지정</label>
+          </span>
           <select name="ct_status">
             <option value="출고준비">출고준비</option>
             <option value="배송" selected>출고완료</option>
+          </select>
+          <select name="manager" style="display: none;">
+              <option value="">미지정</option>
+              <?php foreach($managers as $manager) { ?>
+              <option value="<?=$manager['mb_id']?>">[직원] <?=$manager['mb_name']?></option>
+              <?php } ?>
           </select>
           <button type="button" id="btn_ct_status" class="btn_blk">변경하기</button>
           <button type="button" id="btn_excel" class="btn_wht">엑셀다운로드</button>
@@ -752,15 +777,31 @@ $(function() {
   $('#form_ct_status').on('submit', function(e) {
     e.preventDefault();
 
-    $.post('ajax.partner_ctstatus.php', $(this).serialize(), 'json')
-    .done(function() {
-      alert('변경이 완료되었습니다.');
-      window.location.reload();
-    })
-    .fail(function($xhr) {
-      var data = $xhr.responseJSON;
-      alert(data && data.message);
-    });
+    var ct_status_mode = $('input[name="ct_status_mode"]:checked').val();
+
+    if(ct_status_mode == 'manager') {
+      // 담당자지정
+      $.post('ajax.partner_manager_bulk.php', $(this).serialize(), 'json')
+      .done(function() {
+        alert('담당자 지정이 완료되었습니다.');
+        window.location.reload();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    } else {
+      // 주문상태 변경
+      $.post('ajax.partner_ctstatus.php', $(this).serialize(), 'json')
+      .done(function() {
+        alert('주문상태 변경이 완료되었습니다.');
+        window.location.reload();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    }
   });
 
   // 엑셀 다운로드
@@ -809,6 +850,24 @@ $(function() {
       loading_manager = false;
     })
   });
+
+  function check_ct_status_mode() {
+    var ct_status_mode = $('input[name="ct_status_mode"]:checked').val();
+    if(ct_status_mode == 'manager') {
+      // 담당자 지정
+      $('select[name="ct_status"]').hide();
+      $('select[name="manager"]').show();
+    } else {
+      // 주문상태
+      $('select[name="ct_status"]').show();
+      $('select[name="manager"]').hide();
+    }
+  }
+  $('input[name="ct_status_mode"]').change(function() {
+    check_ct_status_mode();
+  });
+
+  check_ct_status_mode();
 
 });
 </script>

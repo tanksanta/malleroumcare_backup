@@ -8,8 +8,8 @@ $manager_mb_id = get_session('ss_manager_mb_id');
 if($manager_mb_id)
     json_response('담당자회원은 담당자를 변경할 수 없습니다.');
 
-$od_id = $_POST['od_id'];
-$manager = $_POST['manager'];
+$od_id = clean_xss_tags($_POST['od_id']);
+$manager = clean_xss_tags($_POST['manager']);
 
 if(!$od_id)
     json_response(400, '유효하지 않은 요청입니다.');
