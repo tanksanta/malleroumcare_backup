@@ -276,12 +276,23 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
       </div>
       <div class="delivery-status-title row no-gutter title justify-space-between">
         <div>담당자</div>
-        <select class="sel_manager order-status-select" data-id="<?=$od_id?>" style="width: 150px;" <?php if($manager_mb_id) echo 'disabled'; ?>>
+        <?php
+        if($manager_mb_id) {
+          $manager_txt = '미지정';
+          if($od['od_partner_manager']) {
+            $manager = get_member($od['od_partner_manager']);
+            $manager_txt = '[직원] ' . $manager['mb_name'];
+          }
+          echo "<div style=\"font-size: 16px;\">{$manager_txt}</div>";
+        } else {
+        ?>
+        <select class="sel_manager order-status-select" data-id="<?=$od_id?>" style="width: 150px;">
           <option value="">미지정</option>
           <?php foreach($managers as $manager) { ?>
-          <option value="<?=$manager['mb_id']?>" <?=get_selected($od['od_partner_manager'], $manager['mb_id'])?>><?=$manager['mb_name']?></option>
+          <option value="<?=$manager['mb_id']?>" <?=get_selected($od['od_partner_manager'], $manager['mb_id'])?>>[직원] <?=$manager['mb_name']?></option>
           <?php } ?>
         </select>
+        <?php } ?>
       </div>
       <div class="delivery-status-title row no-gutter title">
         배송정보
