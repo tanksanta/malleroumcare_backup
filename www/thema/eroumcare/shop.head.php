@@ -707,7 +707,7 @@ if($is_main && !$is_member) {
                 </a>
               </li>
               <?php 
-              $tutorials = get_tutorials(); 
+              /*$tutorials = get_tutorials(); 
               if ($tutorials['completed_count'] >= 4) {
               ?>
               <li>
@@ -717,14 +717,14 @@ if($is_main && !$is_member) {
               </li>
               <?php } ?>
               <?php 
-              if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials) { 
+              if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials) {
               ?>
               <li>
                 <a href="<?php echo G5_URL; ?>/shop/tutorial_start.php" >
                   서비스 체험 (튜토리얼)
                 </a>
               </li>
-              <?php } ?>
+              <?php }*/ ?>
               <li style="display: none;">
                 <a href="/bbs/board.php?bo_table=lab">
                   이로움 연구소
