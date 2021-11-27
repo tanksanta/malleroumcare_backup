@@ -1862,3 +1862,18 @@ pre{white-space: pre-wrap;}
 	content: '';
 	clear:both;
 }
+
+.mb_account_wr { 
+	margin-bottom: 10px;
+}
+.account_view_wr, .account_edit_wr {
+	display: inline-block;
+}
+.account_edit_wr input[type="text"] {
+	border: 1px solid #ddd;
+	line-height: 22px;
+	padding: 5px;
+	width: 180px;
+	border-radius: 3px;
+	margin-right: 5px;
+}

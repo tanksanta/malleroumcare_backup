@@ -21,6 +21,9 @@ $excel->getActiveSheet()->setCellValue('C6', sprintf(
 ));
 $excel->getActiveSheet()->setCellValue('M5', $member['mb_entNm']);
 $excel->getActiveSheet()->setCellValue('M6', $member['mb_giup_bnum']);
+if($member['mb_account']) {
+  $excel->getActiveSheet()->setCellValue('A28', "입금계좌 : {$member['mb_account']}");
+}
 
 # 직인
 $excel->getActiveSheet()->setCellValue('L28', date('Y년 m월 d일'));

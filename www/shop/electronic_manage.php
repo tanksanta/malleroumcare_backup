@@ -118,6 +118,22 @@ $incompleted_eform_count = 0;
         </div>
       </div>
     </div>
+    <form action="account_update.php" method="POST" autocomplete="off" onsubmit="return faccount_submit(this);">
+      <div class="mb_account_wr">
+        <span>내 계좌정보 : </span>
+        <div class="account_view_wr" <?php if(!$member['mb_account']) echo 'style="display: none;"'; ?>>
+          <?=$member['mb_account']?>
+          <button type="button" class="btn_acc_edit btn_basic">수정</button>
+        </div>
+        <div class="account_edit_wr" <?php if($member['mb_account']) echo 'style="display: none;"'; ?>>
+          <input type="text" name="mb_account" value="<?=get_text($member['mb_account']) ?: ''?>">
+          <button type="submit" class="btn_basic">저장</button>
+          <?php if($member['mb_account']) { ?>
+          <button type="button" class="btn_acc_cancel btn_basic">취소</button>
+          <?php } ?>
+        </div>
+      </div>
+    </form>
     <form id="form_search" method="get">
       <?php if($penId) { ?>
       <input type="hidden" name="penId" value="<?=$penId ? $penId : ''?>">
@@ -152,6 +168,11 @@ $incompleted_eform_count = 0;
 </section>
 
 <script>
+// 내 계좌정보 변경
+function faccount_submit(f) {
+  return true;
+}
+
 $(function() {
   search();
 
@@ -238,6 +259,16 @@ $(function() {
       var data = $xhr.responseJSON;
       alert(data && data.message);
     });
+  });
+
+  // 내 계좌정보 변경
+  $('.btn_acc_edit').click(function() {
+    $('.account_view_wr').hide();
+    $('.account_edit_wr').show();
+  });
+  $('.btn_acc_cancel').click(function() {
+    $('.account_view_wr').show();
+    $('.account_edit_wr').hide();
   });
 
   <?php if($eform) { ?>
