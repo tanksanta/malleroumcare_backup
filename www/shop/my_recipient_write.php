@@ -180,6 +180,7 @@ input[type="number"]::-webkit-inner-spin-button {
           <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
           <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=preg_replace("/[^0-9]*/s", "", get_text($_GET['penLtmNum'])) ?: ''?>">
         </div>
+        <p id="penLtmNumResult" style="padding-top: 7px;"></p>
       </div>
 
       <div class="form-group has-feedback">
@@ -664,6 +665,34 @@ $(function(){
     onPenSpareChange($(this));
   });
 
+  // 요양번호 중복 체크
+  $("#penLtmNum").on('keyup', function() {
+    $('#penLtmNumResult').hide();
+    var penLtmNum = $("#penLtmNum").val();
+    if (penLtmNum.length == 10) {
+      $.post('./ajax.my.recipient.num.check.php', {
+        penLtmNum : "L" + penLtmNum
+      }, 'json')
+      .done(function(result) {
+        var ent_pen = result.data.ent_pen;
+        if (ent_pen) {
+          $('#penLtmNumResult').text('이미 등록된 수급자 입니다.');
+          $('#penLtmNumResult').css('color', '#d44747');
+        }
+        else {
+          $('#penLtmNumResult').text('등록가능한 수급자 입니다.');
+          $('#penLtmNumResult').css('color', '#4788d4');
+        }
+        $('#penLtmNumResult').show();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    }
+  });
+
+  // 등록
   var loading = false;
   $("#btn_submit").click(function() {
 
