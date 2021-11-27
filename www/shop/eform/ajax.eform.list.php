@@ -111,7 +111,7 @@ $result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where
 <th>분류</th>
 <th>작성일</th>
 <th>전자문서</th>
-<th>거래영수증</th>
+<th>급여비용 명세서</th>
 <th>전송하기</th>
 </tr>
 </thead>
@@ -193,9 +193,9 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 <td class="text_c">
   <?php
   if($row['od_id']) {
-    echo '<a href="' . G5_SHOP_URL . '/eform/downloadReceipt.php?od_id=' . $row["od_id"] . '" class="btn_basic">거래영수증</a>';
+    echo '<a href="' . G5_SHOP_URL . '/eform/downloadReceipt.php?od_id=' . $row["od_id"] . '" class="btn_basic">급여비용 명세서</a>';
   } else {
-    echo '<a href="' . G5_SHOP_URL . '/eform/downloadReceipt.php?dc_id=' . $row["uuid"] . '" class="btn_basic">거래영수증</a>';
+    echo '<a href="' . G5_SHOP_URL . '/eform/downloadReceipt.php?dc_id=' . $row["uuid"] . '" class="btn_basic">급여비용 명세서</a>';
   }
   ?>
 </td>

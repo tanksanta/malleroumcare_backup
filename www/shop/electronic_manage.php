@@ -141,7 +141,7 @@ $incompleted_eform_count = 0;
           <option value="penNm"<?php if($sel_order == 'penNm') echo ' selected'; ?>>수급자정렬</option>
         </select>
         <?php if($member['mb_type'] !== 'normal') { ?>
-        <a href="<?=G5_SHOP_URL?>/eform/downloadReceipt.php">기본 거래영수증 다운로드</a>
+        <a href="<?=G5_SHOP_URL?>/eform/downloadReceipt.php">기본 급여비용 명세서 다운로드</a>
         <?php } ?>
       </div>
       <?php } ?>
