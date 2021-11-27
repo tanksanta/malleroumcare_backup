@@ -383,6 +383,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <div class="se_conacc">
             <div class="se_conacc_hd">계약서의 특약사항 내용</div>
             <textarea name="entConAcc01" id="entConAcc01"><?php if($dc) echo $dc['entConAcc01']; else echo nl2br($member['mb_entConAcc01']); ?></textarea>
+            <label class="se_save_conacc_wr" for="chk_save_conacc">
+              <input type="checkbox" name="save_conacc" id="chk_save_conacc" value="1">
+              작성 된 특약사항 내 정보에 저장하기
+            </label>
           </div>
           <!--<button type="button" id="btn_se_save" onclick="save_eform();">저장</button>-->
         </div>
