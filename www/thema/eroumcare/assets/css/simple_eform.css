@@ -435,6 +435,15 @@
 .ck-editor__editable_inline {
   min-height: 200px;
 }
+.se_save_conacc_wr {
+  color: #666;
+  line-height: 25px;
+}
+.se_save_conacc_wr input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  margin: 5px;
+}
 
 /* 계약서 미리보기 */
 .se_preview_wr {

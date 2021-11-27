@@ -72,6 +72,16 @@ if(!($it_id_arr && $it_gubun_arr && $it_qty_arr)) {
     json_response(400, '품목을 선택해주세요.');
 }
 
+// 특약사항 저장
+if($_POST['save_conacc'] == 1 && $w == 'w') {
+    $sql = "
+        UPDATE g5_member
+        SET mb_entConAcc01 = '$entConAcc01'
+        WHERE mb_id = '{$member['mb_id']}'
+    ";
+    $result = sql_query($sql);
+}
+
 if($pen_type == '1') {
     // 기존 수급자 선택한 경우 생성시 수급자 정보 업데이트\
     if($w == 'w') {
