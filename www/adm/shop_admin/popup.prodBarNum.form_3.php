@@ -190,6 +190,12 @@ if($od["od_b_tel"]) {
       font-size:0.8em;
       color:#9b9b9b;
     }
+    .imfomation_box a .li_box .li_box_line1 .p1 .span3 .outline {
+      border: 1px solid #9b9b9b; 
+      border-radius: 3px; 
+      padding: 5px 30px;
+      display: inline-block;
+    }
     .imfomation_box a .li_box .li_box_line1 .p1 .span3 label {
       color: #000;
     }
@@ -370,7 +376,7 @@ if($od["od_b_tel"]) {
               <?php } else { ?>
                 <span class="span3" style="font-size:1em;">
                   <?php echo $gubun == '02' ? '비급여' : '추가옵션'; ?> 상품 바코드 미입력&nbsp;
-                  <span style="border: 1px solid #9b9b9b; border-radius: 3px; padding: 5px 30px;">
+                  <span class="outline">
                     <input 
                       type="checkbox"
                       name="chk_pass_barcode_<?php echo $carts[$i]['ct_id']; ?>"
@@ -762,9 +768,13 @@ if($od["od_b_tel"]) {
       }
 
       if(error_arr.length > 0) {
-          alert( error_arr.join(', ') + ' 품목의 모든 바코드가 입력되지 않아 저장할 수 없습니다.' );
+        let empty_item = error_arr.join(', ');
+        if (confirm(empty_item + ' 상품 바코드가 비어있습니다. 계속 진행하시겠습니까?')) {
+        }
+        else {
           $ipt_error.focus();
           return false;
+        }
       }
 
       barcode_arr.forEach(function(arr) {
@@ -777,7 +787,7 @@ if($od["od_b_tel"]) {
           alert("입력하신 바코드 중 중복 값이 있습니다.");
           return false;
       }
-      
+
       need_reload = true;
 
       var ordId = "<?=$od["ordId"]?>";
