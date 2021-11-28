@@ -234,8 +234,9 @@ function board_move(href){
 $(function() {
 	const elem = document.getElementById('view-content')
 	const panzoom = Panzoom(elem, {
+		minScale: 1,
 		maxScale: 2,
-		disablePan: true
+		panOnlyWhenZoomed: true
 	})
 	panzoom.zoom(1, { animate: true })
 
