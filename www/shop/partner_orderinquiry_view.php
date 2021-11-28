@@ -284,12 +284,21 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
         <ul>
           <?php
             foreach($logs as $log) {
-                $log_mb = get_member($log['mb_id']);
-                $manager = ($log_mb['mb_name'] == '이로움관리자' ? $log_mb['mb_name'] : $log_mb['mb_name'] . ' 매니저');
-                echo '<li class="log"><div class="row">
-                        <div class="log_datetime">'.$log['ol_datetime'] . '</div>
-                        <div>(' . $manager . ' ) ' . $log['ol_content'] . '</div>
-                      </div></li>';
+              $log_mb = get_member($log['mb_id']);
+              if ($log_mb['mb_id'] == 'admin') {
+                $manager = '이로움관리자';
+              }
+              else if ($log_mb['mb_manager']) {
+                $manager_mb = get_member($log_mb['mb_manager']);
+                $manager = $manager_mb['mb_name'] . '>[직원]' . $log_mb['mb_name'];
+              }
+              else {
+                $manager = $log_mb['mb_name'] . '>[직원]' . $log_mb['mb_name'];
+              }
+              echo '<li class="log"><div class="row">
+                      <div class="log_datetime">'.$log['ol_datetime'] . '</div>
+                      <div>(' . $manager . ') ' . $log['ol_content'] . '</div>
+                    </div></li>';
             }
             if (!count($logs)) {
                 echo '기록이 없습니다.';
