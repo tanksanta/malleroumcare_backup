@@ -42,6 +42,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 <script src="<?php echo G5_JS_URL; ?>/viewimageresize.js"></script>
 <script src="https://unpkg.com/@panzoom/panzoom@4.4.3/dist/panzoom.min.js"></script>
 
+
 <div class="view-wrap<?php echo (G5_IS_MOBILE) ? ' view-mobile font-14' : '';?>">
 	<h1><?php if($view['photo']) { ?><img src="<?php echo $view['photo'];?>" class="photo" alt=""><?php } ?><?php echo cut_str(get_text($view['wr_subject']), 70); ?></h1>
 	<div class="panel panel-default view-head<?php echo ($attach_list) ? '' : ' no-attach';?>">
@@ -232,17 +233,13 @@ function board_move(href){
 	window.open(href, "boardmove", "left=50, top=50, width=500, height=550, scrollbars=1");
 }
 $(function() {
-	const elem = document.getElementById('view-content')
+	const elem = document.getElementById('view-content');
 	const panzoom = Panzoom(elem, {
 		minScale: 1,
 		maxScale: 2,
-		panOnlyWhenZoomed: true,
-		elem.addEventListener('panzoomchange', (event) => {
-			if (event.detail.scale == 1) {
-				elem.reset();
-			}
-		})
-	})
+		panOnlyWhenZoomed: true
+	});
+	panzoom.zoom(1, { animate: true });
 
 	$("a.view_image").click(function() {
 		window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
