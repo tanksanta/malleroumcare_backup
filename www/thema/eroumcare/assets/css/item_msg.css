@@ -516,6 +516,8 @@
 
 .im_rec_list > li .im_switch + label {
   margin-left: 30px;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
