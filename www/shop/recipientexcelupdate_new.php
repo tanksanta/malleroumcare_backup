@@ -73,81 +73,103 @@ if($sheetData) {
       $inputs[] = normalize_recipient_input($sendData);
     }
     
+    $exist_recipient = [];
     foreach($inputs as $input) {
-        $res = get_eroumcare(EROUMCARE_API_RECIPIENT_INSERT, $input);
-        if($res['errorYN'] != 'N') {
-            echo "{$input['penNm']} 수급자를 업로드 하는 도중 오류가 발생했습니다.<br>";
-            echo "{$input['penNm']} 수급자부터 다시 등록해주세요.<br><br>";
-            echo "오류 내용 : ";
-            var_dump($res);
-            exit;
+        $ent_pen = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+            'usrId' => $sendData['usrId'],
+            'entId' => $sendData['entId'],
+            'penLtmNum' => $penLtmNum,
+        ));
+        $ent_pen = $ent_pen['data'][0];
+        if ($ent_pen) {
+            array_push($exist_recipient, $input['penNm']);
         }
-
-        if ($input['penRecGraCd'] == '00') {
-            $penRecGraNm = '등급외';
-        } else {
-            $penRecGraNm = (int)$input['penRecGraCd'] . '등급';
+        else {
+            $res = get_eroumcare(EROUMCARE_API_RECIPIENT_INSERT, $input);
+            if($res['errorYN'] != 'N') {
+                echo "{$input['penNm']} 수급자를 업로드 하는 도중 오류가 발생했습니다.<br>";
+                echo "{$input['penNm']} 수급자부터 다시 등록해주세요.<br><br>";
+                echo "오류 내용 : ";
+                var_dump($res);
+                exit;
+            }
+    
+            if ($input['penRecGraCd'] == '00') {
+                $penRecGraNm = '등급외';
+            } else {
+                $penRecGraNm = (int)$input['penRecGraCd'] . '등급';
+            }
+    
+            $penTypeNm = '';
+            switch($input['penTypeCd']) {
+                case '00' :
+                    $penTypeNm = '일반 15%';
+                    break;
+                case '01' :
+                    $penTypeNm = '감경 9%';
+                    break;
+                case '02' :
+                    $penTypeNm = '감경 6%';
+                    break;
+                case '03' :
+                    $penTypeNm = '의료 6%';
+                    break;
+                case '04' :
+                    $penTypeNm = '기초 0%';
+                    break;
+            }
+    
+            // 적용기간 기준일
+            $penGraApplyMonth = explode('-', $input['penGraApplyDate'])[0];
+            $penGraApplyDay = explode('-', $input['penGraApplyDate'])[1];
+    
+            // 등급적용 시점
+            $pen_gra_edit_dtm = date('Y-m-d');
+            if($sendData['penExpiStDtm']) {
+              $pen_gra_edit_dtm = $sendData['penExpiStDtm'];
+            }
+    
+            $sql = "INSERT INTO
+                recipient_grade_log
+            SET
+                pen_id = '{$res['data']['penId']}',
+                pen_rec_gra_cd = '{$input['penRecGraCd']}',
+                pen_rec_gra_nm = '{$penRecGraNm}',
+                pen_type_cd = '{$input['penTypeCd']}',
+                pen_type_nm = '{$penTypeNm}',
+                pen_gra_edit_dtm = '{$pen_gra_edit_dtm}',
+                pen_gra_apply_month = '{$penGraApplyMonth}',
+                pen_gra_apply_day = '{$penGraApplyDay}',
+                created_by = '{$member['mb_id']}' ";
+            $row = sql_query($sql);
+    
+            // 취급상품 모두 등록
+            $setItemData = [];
+            $setItemData['penId'] = $res['data']['penId'];
+            $setItemData['itemList'] = [];
+            foreach(array_keys($sale_product_table) as $item) {
+                $setItemData['itemList'][] = $item;
+            }
+            foreach(array_keys($rental_product_table) as $item) {
+                $setItemData['itemList'][] = $item;
+            }
+    
+            get_eroumcare(EROUMCARE_API_RECIPIENT_ITEM_INSERT, $setItemData);
         }
-
-        $penTypeNm = '';
-        switch($input['penTypeCd']) {
-            case '00' :
-                $penTypeNm = '일반 15%';
-                break;
-            case '01' :
-                $penTypeNm = '감경 9%';
-                break;
-            case '02' :
-                $penTypeNm = '감경 6%';
-                break;
-            case '03' :
-                $penTypeNm = '의료 6%';
-                break;
-            case '04' :
-                $penTypeNm = '기초 0%';
-                break;
-        }
-
-        // 적용기간 기준일
-        $penGraApplyMonth = explode('-', $input['penGraApplyDate'])[0];
-        $penGraApplyDay = explode('-', $input['penGraApplyDate'])[1];
-
-        // 등급적용 시점
-        $pen_gra_edit_dtm = date('Y-m-d');
-        if($sendData['penExpiStDtm']) {
-          $pen_gra_edit_dtm = $sendData['penExpiStDtm'];
-        }
-
-        $sql = "INSERT INTO
-            recipient_grade_log
-        SET
-            pen_id = '{$res['data']['penId']}',
-            pen_rec_gra_cd = '{$input['penRecGraCd']}',
-            pen_rec_gra_nm = '{$penRecGraNm}',
-            pen_type_cd = '{$input['penTypeCd']}',
-            pen_type_nm = '{$penTypeNm}',
-            pen_gra_edit_dtm = '{$pen_gra_edit_dtm}',
-            pen_gra_apply_month = '{$penGraApplyMonth}',
-            pen_gra_apply_day = '{$penGraApplyDay}',
-            created_by = '{$member['mb_id']}' ";
-        $row = sql_query($sql);
-
-        // 취급상품 모두 등록
-        $setItemData = [];
-        $setItemData['penId'] = $res['data']['penId'];
-        $setItemData['itemList'] = [];
-        foreach(array_keys($sale_product_table) as $item) {
-            $setItemData['itemList'][] = $item;
-        }
-        foreach(array_keys($rental_product_table) as $item) {
-            $setItemData['itemList'][] = $item;
-        }
-
-        get_eroumcare(EROUMCARE_API_RECIPIENT_ITEM_INSERT, $setItemData);
     }
 
-    $total_count = count($inputs);
-    alert_close("{$total_count}명의 수급자가 등록되었습니다.", false, true);
+    if (count($exist_recipient) > 0) {
+        $exist_count = count($exist_recipient);
+        $total_count = count($inputs) - $exist_count;
+        // echo "중복미등록 : {$exist_count}건<br>";
+        // echo "오류 내용 : ";
+        // var_dump($exist_count);
+        alert_close("{$total_count}명의 수급자가 등록되었습니다.\\n중복미등록 : {$exist_count}건", false, true);
+    }
+    else {
+        $total_count = count($inputs);
+        alert_close("{$total_count}명의 수급자가 등록되었습니다.", false, true);
+    }
 } else {
     alert_close('파일을 읽을 수 없습니다.');
 }
