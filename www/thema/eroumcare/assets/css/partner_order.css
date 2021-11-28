@@ -232,6 +232,9 @@
 
 #partner-order .delivery-info-wrap li .log_datetime {
   width: 160px;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
 }
 
 #partner-order .delivery-info-wrap ul .log:not(:last-of-type) {

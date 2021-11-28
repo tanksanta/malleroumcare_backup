@@ -137,7 +137,7 @@ while($manager = sql_fetch_array($manager_result)) {
   $managers[] = $manager;
 }
 
-add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_order.css?v=1123">', 0);
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_order.css?v=1128">', 0);
 ?>
 
 <section id="partner-order" class="wrap">
@@ -285,15 +285,14 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
           <?php
             foreach($logs as $log) {
               $log_mb = get_member($log['mb_id']);
-              if ($log_mb['mb_id'] == 'admin') {
-                $manager = '이로움관리자';
+              if ($log_mb['mb_id'] == $member['mb_id']) {
+                $manager = $member['mb_name'];
               }
-              else if ($log_mb['mb_manager']) {
-                $manager_mb = get_member($log_mb['mb_manager']);
-                $manager = $manager_mb['mb_name'] . '>[직원]' . $log_mb['mb_name'];
+              else if ($log_mb['mb_type'] != 'manager') {
+                $manager = '이로움 관리자';
               }
               else {
-                $manager = $log_mb['mb_name'] . '>[직원]' . $log_mb['mb_name'];
+                $manager = $member['mb_name'] . '>[직원]' . $log_mb['mb_name'];
               }
               echo '<li class="log"><div class="row">
                       <div class="log_datetime">'.$log['ol_datetime'] . '</div>
