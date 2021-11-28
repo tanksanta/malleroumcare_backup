@@ -236,9 +236,13 @@ $(function() {
 	const panzoom = Panzoom(elem, {
 		minScale: 1,
 		maxScale: 2,
-		panOnlyWhenZoomed: true
+		panOnlyWhenZoomed: true,
+		elem.addEventListener('panzoomchange', (event) => {
+			if (event.detail.scale == 1) {
+				elem.reset();
+			}
+		})
 	})
-	panzoom.zoom(1, { animate: true })
 
 	$("a.view_image").click(function() {
 		window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
