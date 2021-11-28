@@ -15,6 +15,10 @@ $ct_id_arr = $_POST['ct_id'];
 if(!$ct_id_arr || !is_array($ct_id_arr))
   json_response(400, '담당자를 지정할 상품을 선택해주세요.');
 
+if($manager) {
+  $mb = get_member($manager);
+}
+
 $sql = [];
 $od_ids = [];
 
@@ -51,6 +55,11 @@ foreach($od_ids as $od_id) {
   $result = sql_query($sql);
   if(!$result)
     json_response(400, 'DB 오류가 발생하여 담당자를 지정하지 못했습니다.');
+
+  if($mb)
+    set_order_admin_log($od_id, "담당자 지정 : [직원] {$mb['mb_name']}");
+  else
+    set_order_admin_log($od_id, "담당자 해제");
 }
 
 json_response(200, 'OK');
