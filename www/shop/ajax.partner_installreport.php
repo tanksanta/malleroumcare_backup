@@ -12,6 +12,8 @@ $ct_id = get_search_string($_POST['ct_id']);
 if(!$ct_id)
   json_response(400, '유효하지 않은 요청입니다.');
 
+$ct = sql_fetch(" SELECT * FROM g5_shop_cart WHERE ct_id = '$ct_id' ");
+
 $report = sql_fetch("
   SELECT * FROM partner_install_report
   WHERE ct_id = '{$ct_id}' {$check_member}
@@ -38,6 +40,8 @@ $result = sql_query("
 ");
 if(!$result)
   json_response(500, 'DB 서버 오류 발생');
+
+set_order_admin_log($ct['od_id'], "설치결과보고서 작성 : {$ct['it_name']}({$ct['ct_option']})");
 
 json_response(200, 'OK');
 ?>
