@@ -14,6 +14,10 @@ $manager = clean_xss_tags($_POST['manager']);
 if(!$od_id)
     json_response(400, '유효하지 않은 요청입니다.');
 
+if($manager) {
+    $mb = get_member($manager);
+}
+
 $sql = "
     UPDATE
         g5_shop_order o
@@ -30,6 +34,11 @@ $sql = "
 $result = sql_query($sql);
 if(!$result)
     json_response(400, 'DB 오류가 발생하여 담당자를 지정하지 못했습니다.');
+
+if($mb)
+    set_order_admin_log($od_id, "담당자 지정 : [직원] {$mb['mb_name']}");
+else
+    set_order_admin_log($od_id, "담당자 해제");
 
 json_response(200, 'OK');
 ?>
