@@ -413,6 +413,11 @@
   display: inline-block;
   width: 120px;
 }
+.it_barcode_wr .prodBarNumCntBtn {
+  background: #fff;
+  width: 100%;
+  margin-bottom: 10px;
+}
 
 /* 특약사항 */
 .se_conacc {

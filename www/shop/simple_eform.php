@@ -36,7 +36,7 @@ while($row = sql_fetch_array($result)) {
   sql_query($sql);
 }
 
-add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_eform.css">');
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_eform.css?v=1128">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 add_javascript('<script src="'.G5_JS_URL.'/ckeditor/ckeditor.js"></script>');
@@ -226,7 +226,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                   $barcodes[] = $barcode['it_barcode'];
                 }
             ?>
-            <li>
+            <li class="list item" data-code="<?=$row['id']?>" data-uid="<?=$row['it_id']?>">
               <input type="hidden" name="it_id[]" value="<?=$row['id']?>">
               <input type="hidden" name="it_gubun[]" value="판매">
               <div class="it_info">
@@ -261,11 +261,15 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                   <input type="hidden" name="it_barcode[]">
                   <div class="it_barcode_wr it_ipt">
                     <?php
+                    $inserted_count = 0;
                     for($x = 0; $x < $row['qty']; $x++) {
                       $barcode = $barcodes[$x];
-                      echo '<input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" placeholder="12자리 숫자를 입력하세요." value="' . $barcode . '">';
+                      if($barcode) $inserted_count++;
+                      echo '<input type="hidden" class="it_barcode barcode_input" maxlength="12" value="' . $barcode . '">';
                     }
+                    echo '<a class="prodBarNumCntBtn open_input_barcode">바코드 ('.$inserted_count.'/'.$row['qty'].')</a>';
                     ?>
+                    <p>바코드 미입력 시 계약서 작성 후 이로움에 주문이 가능합니다.</p>
                   </div>
                 </div>
               </div>
@@ -323,7 +327,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                   $barcodes[] = $barcode['it_barcode'];
                 }
             ?>
-            <li>
+            <li class="list item" data-code="<?=$row['id']?>" data-uid="<?=$row['it_id']?>">
               <input type="hidden" name="it_id[]" value="<?=$row['id']?>">
               <input type="hidden" name="it_gubun[]" value="대여">
               <div class="it_info">
@@ -366,11 +370,15 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                   <input type="hidden" name="it_barcode[]">
                   <div class="it_barcode_wr it_ipt">
                     <?php
+                    $inserted_count = 0;
                     for($x = 0; $x < $row['qty']; $x++) {
                       $barcode = $barcodes[$x];
-                      echo '<input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" placeholder="12자리 숫자를 입력하세요." value="' . $barcode . '">';
+                      if($barcode) $inserted_count++;
+                      echo '<input type="hidden" class="it_barcode barcode_input" maxlength="12" value="' . $barcode . '">';
                     }
+                    echo '<a class="prodBarNumCntBtn open_input_barcode">바코드 ('.$inserted_count.'/'.$row['qty'].')</a>';
                     ?>
+                    <p>바코드 미입력 시 계약서 작성 후 이로움에 주문이 가능합니다.</p>
                   </div>
                 </div>
               </div>
@@ -416,6 +424,69 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     <iframe name="iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
 </div>
 
+<style>
+#barcode_popup_iframe {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    right: 0;
+    top: 0;
+    z-index:9999;
+}
+
+</style>
+<iframe name="barcode_popup_iframe" id="barcode_popup_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+<script>
+function sendBarcode(text){
+    $('#barcode_popup_iframe')[0].contentWindow.sendBarcode(text);
+}
+</script>
+<form name="barcode_popup_form" class="hidden" id="barcode_popup_form">
+	<input type=text name="it_id" value="">
+    <input type=text name="uid" value="">
+    <input type=text name="option_name" value="">
+	<input type=text name="barcodes" value="">
+	<input type="button" name="button1" value="전 송">
+</form>
+
+<script>
+//바코드입력 함수
+$(document).on("click", "a.open_input_barcode", function(){
+  var it_id = $(this).closest('.item').data('code');
+  var barcode_nodes = $(this).closest('.item').find('.barcode_input');
+  var barcodes = [];
+  var is_mobile = navigator.userAgent.indexOf("Android") > - 1 || navigator.userAgent.indexOf("iPhone") > - 1;
+
+  var uid = $(this).closest('.item').data('uid');
+  var option_name = '';
+
+  $(barcode_nodes).each(function(i, item) {
+    barcodes.push($(item).val());
+  });
+
+  window.name = "barcode_parent";
+  var url = "./popup.order_barcode_form.php";
+  var open_win;
+
+  if(is_mobile) {
+    $('#barcode_popup_iframe').show();
+  } else {
+    open_win = window.open("", "barcode_child", "width=683, height=800, resizable = no, scrollbars = no");
+  }
+
+  $('#barcode_popup_form').attr('target', is_mobile ? 'barcode_popup_iframe' : 'barcode_child');
+
+  $('#barcode_popup_form').attr('action', url);
+  $('#barcode_popup_form').attr('method', 'post');
+  $('#barcode_popup_form input[name="it_id"]').val(it_id);
+  $('#barcode_popup_form input[name="uid"]').val(uid);
+  $('#barcode_popup_form input[name="option_name"]').val(option_name);
+  $('#barcode_popup_form input[name="barcodes"]').val(barcodes.join('|'));
+  $('#barcode_popup_form').submit();
+});
+</script>
+
 <script>
 // 품목 없는지 체크
 function check_no_item() {
@@ -449,7 +520,7 @@ function select_item(obj) {
   $('body').removeClass('modal-open');
   $('#popup_box').hide();
 
-  var $li = $('<li>')
+  var $li = $('<li class="list item" data-code="' + obj.it_id + '" data-uid="' + Date.now().toString(36) + Math.random().toString(36).substr(2) + '">')
     .append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
     .append('<input type="hidden" name="it_gubun[]" value="' + obj.gubun + '">');
   
@@ -516,7 +587,8 @@ function select_item(obj) {
         <div class="it_ipt_hd">바코드</div>\
         <input type="hidden" name="it_barcode[]">\
         <div class="it_barcode_wr it_ipt">\
-        <input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" placeholder="12자리 숫자를 입력하세요.">\
+        <a class="prodBarNumCntBtn open_input_barcode">바코드 (0/1)</a>\
+        <input type="hidden" class="it_barcode barcode_input" maxlength="12">\
         <p>바코드 미입력 시 계약서 작성 후 이로움에 주문이 가능합니다.</p>\
         </div>\
     </div>\
@@ -656,11 +728,17 @@ function update_barcode_field() {
         barcodes.push($(this).val() || '');
       });
 
-      var $barcode_wr = $(this).find('.it_barcode_wr').empty();
+      var $barcode_wr = $(this).find('.it_barcode_wr');
+      $barcode_wr.find('.it_barcode').remove();
+      var inserted_count = 0;
       for(var i = 0; i < it_qty; i++) {
         var val = barcodes.shift() || '';
-        $barcode_wr.append('<input type="text" class="it_barcode" maxlength="12" oninput="max_length_check(this)" placeholder="12자리 숫자를 입력하세요." value="' + val + '">');
+        $barcode_wr.append('<input type="hidden" class="it_barcode barcode_input" maxlength="12" value="' + val + '">');
+        if(val != '') {
+          inserted_count++;
+        }
       }
+      $barcode_wr.find('.prodBarNumCntBtn').text('바코드 (' + inserted_count + '/' + it_qty + ')');
     });
   });
 }
