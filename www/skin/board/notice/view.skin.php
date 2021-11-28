@@ -232,7 +232,7 @@ function board_move(href){
 	window.open(href, "boardmove", "left=50, top=50, width=500, height=550, scrollbars=1");
 }
 $(function() {
-	const elem = document.getElementById('view-content');
+	const elem = $('#view-content img')[0];
 	const panzoom = Panzoom(elem, {
 		minScale: 1,
 		maxScale: 2,
