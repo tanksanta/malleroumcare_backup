@@ -271,20 +271,40 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
           <input type="text" name="search" value="<?php echo $search; ?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
           , 추가 검색어
           <select name="sel_field_add" id="sel_field_add">
-            <option value="od_id" <?php echo get_selected($sel_field, 'od_id'); ?>>주문번호</option>
-            <option value="it_name" <?php echo get_selected($sel_field, 'it_name'); ?>>상품명</option>
-            <option value="it_admin_memo" <?php echo get_selected($sel_field, 'it_admin_memo'); ?>>관리자메모</option>
-            <option value="mb_id" <?php echo get_selected($sel_field, 'mb_id'); ?>>회원 ID</option>
-            <option value="od_name" <?php echo get_selected($sel_field, 'od_name'); ?>>주문자</option>
-            <option value="od_tel" <?php echo get_selected($sel_field, 'od_tel'); ?>>주문자전화</option>
-            <option value="od_hp" <?php echo get_selected($sel_field, 'od_hp'); ?>>주문자핸드폰</option>
-            <option value="od_b_name" <?php echo get_selected($sel_field, 'od_b_name'); ?>>받는분</option>
-            <option value="od_b_tel" <?php echo get_selected($sel_field, 'od_b_tel'); ?>>받는분전화</option>
-            <option value="od_b_hp" <?php echo get_selected($sel_field, 'od_b_hp'); ?>>받는분핸드폰</option>
-            <option value="od_deposit_name" <?php echo get_selected($sel_field, 'od_deposit_name'); ?>>입금자</option>
-            <option value="ct_delivery_num" <?php echo get_selected($sel_field, 'ct_delivery_num'); ?>>운송장번호</option>
+            <option value="od_all" <?php echo $sel_field_add == 'od_all' ? 'selected="selected"' : ''; ?>>전체</option>
+            <option value="od_id" <?php echo get_selected($sel_field_add, 'od_id'); ?>>주문번호</option>
+            <option value="it_name" <?php echo get_selected($sel_field_add, 'it_name'); ?>>상품명</option>
+            <option value="it_admin_memo" <?php echo get_selected($sel_field_add, 'it_admin_memo'); ?>>관리자메모</option>
+            <option value="mb_id" <?php echo get_selected($sel_field_add, 'mb_id'); ?>>회원 ID</option>
+            <option value="od_name" <?php echo get_selected($sel_field_add, 'od_name'); ?>>주문자</option>
+            <option value="od_tel" <?php echo get_selected($sel_field_add, 'od_tel'); ?>>주문자전화</option>
+            <option value="od_hp" <?php echo get_selected($sel_field_add, 'od_hp'); ?>>주문자핸드폰</option>
+            <option value="od_b_name" <?php echo get_selected($sel_field_add, 'od_b_name'); ?>>받는분</option>
+            <option value="od_b_tel" <?php echo get_selected($sel_field_add, 'od_b_tel'); ?>>받는분전화</option>
+            <option value="od_b_hp" <?php echo get_selected($sel_field_add, 'od_b_hp'); ?>>받는분핸드폰</option>
+            <option value="od_deposit_name" <?php echo get_selected($sel_field_add, 'od_deposit_name'); ?>>입금자</option>
+            <option value="ct_delivery_num" <?php echo get_selected($sel_field_add, 'ct_delivery_num'); ?>>운송장번호</option>
+            <option value="barcode" <?php echo get_selected($sel_field_add, 'barcode'); ?>>바코드</option>
           </select>
           <input type="text" name="search_add" value="<?php echo $search_add; ?>" id="search_add" class="frm_input" autocomplete="off" style="width:200px;">
+          	, 추가 검색어
+          	<select name="sel_field_add_add" id="sel_field_add_add">
+            <option value="od_all" <?php echo $sel_field_add_add == 'od_all' ? 'selected="selected"' : ''; ?>>전체</option>
+            <option value="od_id" <?php echo get_selected($sel_field_add_add, 'od_id'); ?>>주문번호</option>
+            <option value="it_name" <?php echo get_selected($sel_field_add_add, 'it_name'); ?>>상품명</option>
+            <option value="it_admin_memo" <?php echo get_selected($sel_field_add_add, 'it_admin_memo'); ?>>관리자메모</option>
+            <option value="mb_id" <?php echo get_selected($sel_field_add_add, 'mb_id'); ?>>회원 ID</option>
+            <option value="od_name" <?php echo get_selected($sel_field_add_add, 'od_name'); ?>>주문자</option>
+            <option value="od_tel" <?php echo get_selected($sel_field_add_add, 'od_tel'); ?>>주문자전화</option>
+            <option value="od_hp" <?php echo get_selected($sel_field_add_add, 'od_hp'); ?>>주문자핸드폰</option>
+            <option value="od_b_name" <?php echo get_selected($sel_field_add_add, 'od_b_name'); ?>>받는분</option>
+            <option value="od_b_tel" <?php echo get_selected($sel_field_add_add, 'od_b_tel'); ?>>받는분전화</option>
+            <option value="od_b_hp" <?php echo get_selected($sel_field_add_add, 'od_b_hp'); ?>>받는분핸드폰</option>
+            <option value="od_deposit_name" <?php echo get_selected($sel_field_add_add, 'od_deposit_name'); ?>>입금자</option>
+            <option value="ct_delivery_num" <?php echo get_selected($sel_field_add_add, 'ct_delivery_num'); ?>>운송장번호</option>
+            <option value="barcode" <?php echo get_selected($sel_field_add_add, 'barcode'); ?>>바코드</option>
+          </select>
+          <input type="text" name="search_add_add" value="<?php echo $search_add_add; ?>" id="search_add_add" class="frm_input" autocomplete="off" style="width:200px;">
         </td>
       </tr>
 
