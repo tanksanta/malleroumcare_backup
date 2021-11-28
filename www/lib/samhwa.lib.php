@@ -665,10 +665,17 @@ function get_delivery_log($od_id) {
 }
 function set_order_admin_log($od_id, $content) {
     global $member;
+    
+    $mb_id = $member['mb_id'];
+
+    $manager_mb_id = get_session('ss_manager_mb_id');
+    if($manager_mb_id) {
+        $mb_id = $manager_mb_id;
+    }
 
     $sql = "INSERT INTO g5_shop_order_admin_log SET
                 od_id = '{$od_id}',
-                mb_id = '{$member['mb_id']}',
+                mb_id = '{$mb_id}',
                 ol_content = '{$content}',
                 ol_datetime = now()
                 ";
