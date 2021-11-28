@@ -40,7 +40,6 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 	<style>.view-wrap .apms-autowrap { max-width:<?php echo (G5_IS_MOBILE) ? '100%' : $boset['video'];?> !important;}</style>
 <?php } ?>
 <script src="<?php echo G5_JS_URL; ?>/viewimageresize.js"></script>
-<script src="https://unpkg.com/@panzoom/panzoom@4.4.3/dist/panzoom.min.js"></script>
 
 
 <div class="view-wrap<?php echo (G5_IS_MOBILE) ? ' view-mobile font-14' : '';?>">
@@ -233,13 +232,6 @@ function board_move(href){
 	window.open(href, "boardmove", "left=50, top=50, width=500, height=550, scrollbars=1");
 }
 $(function() {
-	const elem = $('#view-content img')[0];
-	const panzoom = Panzoom(elem, {
-		minScale: 1,
-		maxScale: 2,
-		panOnlyWhenZoomed: true
-	});
-	panzoom.zoom(1, { animate: true });
 
 	$("a.view_image").click(function() {
 		window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
