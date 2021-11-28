@@ -1176,7 +1176,8 @@ $(function() {
           ( i.gubun = '01' and x.ca_id like '20%' )
         )
       WHERE
-        d.dc_id = UNHEX('$dc_id')
+        d.dc_id = UNHEX('$dc_id') and
+        i.it_barcode = ''
       GROUP BY
         i.it_code
     ";
