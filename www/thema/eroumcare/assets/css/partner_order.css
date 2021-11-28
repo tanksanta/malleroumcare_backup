@@ -213,7 +213,7 @@
 }
 
 #partner-order .delivery-info-wrap li .left {
-  width: 90px;
+  width: 160px;
 }
 
 #partner-order .delivery-info-wrap li .left:before {
@@ -228,6 +228,14 @@
 #partner-order .delivery-info-wrap li .right:before {
   content: ':';
   margin-right: 5px;
+}
+
+#partner-order .delivery-info-wrap li .log_datetime {
+  width: 160px;
+}
+
+#partner-order .delivery-info-wrap ul .log:not(:last-of-type) {
+  margin-bottom: 5px;
 }
 
 #partner-order .instructor-btn {

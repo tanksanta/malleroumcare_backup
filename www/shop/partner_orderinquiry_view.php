@@ -27,6 +27,14 @@ $od = sql_fetch("
 if(!$od['od_id'])
   alert('존재하지 않는 주문입니다.');
 
+//주문 기록 
+$sql = "SELECT * FROM g5_shop_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
+$result = sql_query($sql);
+$logs = array();
+while($row = sql_fetch_array($result)) {
+    $logs[] = $row;
+}
+
 // 임시회원의경우 mb_entNm 대신 mb_name 출력
 if($od['mb_temp']) {
   $od['mb_entNm'] = $od['mb_name'];
@@ -266,6 +274,27 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
               </div>
             </div>
           </li>
+        </ul>
+      </div>
+
+      <div class="row no-gutter">
+        <div class="col title" style="margin-top:20px;">기록</div>
+      </div>
+      <div class="row no-gutter delivery-info-wrap">
+        <ul>
+          <?php
+            foreach($logs as $log) {
+                $log_mb = get_member($log['mb_id']);
+                $manager = ($log_mb['mb_name'] == '이로움관리자' ? $log_mb['mb_name'] : $log_mb['mb_name'] . ' 매니저');
+                echo '<li class="log"><div class="row">
+                        <div class="log_datetime">'.$log['ol_datetime'] . '</div>
+                        <div>(' . $manager . ' ) ' . $log['ol_content'] . '</div>
+                      </div></li>';
+            }
+            if (!count($logs)) {
+                echo '기록이 없습니다.';
+            }
+          ?>
         </ul>
       </div>
     </div>
