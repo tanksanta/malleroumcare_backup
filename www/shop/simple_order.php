@@ -287,7 +287,7 @@ add_javascript(G5_POSTCODE_JS, 0);
               <strong>주소</strong>
               <div>
                 <div>
-                  <input type="text" class="w-70" name="od_b_zip" id="od_b_zip" value="<?php echo $member['mb_zip1'].$member['mb_zip2'] ?>" required>
+                  <input type="text" class="w-70" name="od_b_zip" id="od_b_zip" value="<?php echo $member['mb_zip1'].$member['mb_zip2'] ?>">
                   <button type="button" onclick="win_zip('forderform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">우편번호</button>
                   <input type="hidden" name="od_b_addr_jibeon" value="<?=$member['mb_hp']?>">
                 </div>
@@ -295,7 +295,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                   <input type="text" name="od_b_addr1" id="od_b_addr1" value="<?php echo get_text($member['mb_addr1']) ?>" required  style="width: 100%;">
                   </div>
                   <div>
-                  <input type="text" name="od_b_addr2" id="od_b_addr2" required value="<?php echo get_text($member['mb_addr2']).get_text($member['mb_addr_jibeon']) ?>" style="width: 100%;">
+                  <input type="text" name="od_b_addr2" id="od_b_addr2" value="<?php echo get_text($member['mb_addr2']).get_text($member['mb_addr_jibeon']) ?>" style="width: 100%;">
                   </div>
               </div>
             </li>
