@@ -1170,10 +1170,16 @@ $(function() {
       LEFT JOIN
         eform_document_item i ON d.dc_id = i.dc_id
       LEFT JOIN
-        g5_shop_item x ON i.it_code = x.ProdPayCode and
-        (
-          ( i.gubun = '00' and x.ca_id like '10%' ) or
-          ( i.gubun = '01' and x.ca_id like '20%' )
+        g5_shop_item x ON x.it_id = (
+          select it_id
+          from g5_shop_item
+          where
+            ProdPayCode = i.it_code and
+            (
+              ( i.gubun = '00' and ca_id like '10%' ) or
+              ( i.gubun = '01' and ca_id like '20%' )
+            )
+          limit 1
         )
       WHERE
         d.dc_id = UNHEX('$dc_id') and
