@@ -515,7 +515,9 @@ function check_no_item() {
 }
 
 // 품목 선택
-function select_item(obj) {
+function select_item(obj, qty) {
+
+  if(!qty) qty = 1;
 
   $('body').removeClass('modal-open');
   $('#popup_box').hide();
@@ -582,13 +584,19 @@ function select_item(obj) {
     ');
   }
   $it_ipt.find('.datepicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
+
+  var barcode_html = '';
+  for(var i = 0; i < qty; i++) {
+    barcode_html += '<input type="hidden" class="it_barcode barcode_input" maxlength="12">';
+  }
+
   $it_ipt.append('\
     <div class="flex">\
         <div class="it_ipt_hd">바코드</div>\
         <input type="hidden" name="it_barcode[]">\
         <div class="it_barcode_wr it_ipt">\
-        <a class="prodBarNumCntBtn open_input_barcode">바코드 (0/1)</a>\
-        <input type="hidden" class="it_barcode barcode_input" maxlength="12">\
+        <a class="prodBarNumCntBtn open_input_barcode">바코드 (0/' + qty + ')</a>\
+        '+ barcode_html + '\
         <p>바코드 미입력 시 계약서 작성 후 이로움에 주문이 가능합니다.</p>\
         </div>\
     </div>\
@@ -1099,19 +1107,99 @@ if($('input[name="pen_type"]:checked').val() == 1) {
   $('#btn_pen').hide();
 }
 check_no_item();
-  
+
 // 처음 팝업
 $('.se_sch_pop').show();
+
+CKEDITOR.replace( 'entConAcc01', {
+  removePlugins: 'link'
+});
 
 <?php
 if(!$dc) {
   echo 'check_pen_type();';
 }
-?>
 
-CKEDITOR.replace( 'entConAcc01', {
-  removePlugins: 'link'
-});
+$ms_id = get_search_string($_GET['ms_id']);
+if($ms_id) {
+  $ms = sql_fetch(" select * from recipient_item_msg where ms_id = '$ms_id' ");
+  if($ms) {
+    if($ms['ms_pen_id']) {
+      $pen = get_recipient($ms['ms_pen_id']);
+      $pen['penLtmNumRaw'] = $pen['penLtmNum'];
+      $penExpiDtm = explode(' ~ ', $pen['penExpiDtm']);
+      $pen['penExpiStDtm'] = $penExpiDtm[0] ?: '';
+      $pen['penExpiEdDtm'] = $penExpiDtm[1] ?: '';
+      $pen['penJumin'] = substr($pen['penJumin'], 0, 6);
+
+      echo 'select_recipient(' . json_encode($pen) . ');'.PHP_EOL;
+    } else {
+      echo "$('#pen_type_0').prop('checked', true);".PHP_EOL;
+      echo 'check_pen_type();'.PHP_EOL;
+      echo "$('#penNm').val('{$ms['ms_pen_nm']}');".PHP_EOL;
+      echo "$('#penConNum').val('{$ms['ms_pen_hp']}');".PHP_EOL;
+    }
+
+    $result = sql_query(" select * from recipient_item_msg_item where ms_id = '$ms_id' ");
+    while($row = sql_fetch_array($result)) {
+      $it = sql_fetch("
+        SELECT
+          it_id,
+          it_name,
+          it_model,
+          it_price,
+          it_price_dealer2,
+          it_cust_price,
+          it_rental_price,
+          ca_id,
+          ( select ca_name from g5_shop_category where ca_id = left(a.ca_id, 4) ) as ca_name,
+          it_img1 as it_img,
+          it_delivery_cnt,
+          it_sc_type,
+          it_sale_cnt,
+          it_sale_cnt_02,
+          it_sale_cnt_03,
+          it_sale_cnt_04,
+          it_sale_cnt_05,
+          it_sale_percent,
+          it_sale_percent_02,
+          it_sale_percent_03,
+          it_sale_percent_04,
+          it_sale_percent_05,
+          it_sale_percent_great,
+          it_sale_percent_great_02,
+          it_sale_percent_great_03,
+          it_sale_percent_great_04,
+          it_sale_percent_great_05,
+          it_type1,
+          it_type2,
+          it_type3,
+          it_type4,
+          it_type5,
+          it_type6,
+          it_type7,
+          it_type8,
+          it_type9,
+          it_type10,
+          it_expected_warehousing_date
+        FROM
+          {$g5['g5_shop_item_table']} a
+        WHERE
+          a.it_id = '{$row['it_id']}'
+      ");
+
+      $gubun = $cate_gubun_table[substr($it["ca_id"], 0, 2)];
+      $gubun_text = '판매';
+      if($gubun == '01') $gubun_text = '대여';
+      else if($gubun == '02') $gubun_text = '비급여';
+    
+      $it['gubun'] = $gubun_text;
+
+      echo 'select_item(' . json_encode($it) . ');'.PHP_EOL;
+    }
+  }
+}
+?>
 </script>
 
 <?php include_once("./_tail.php"); ?>
