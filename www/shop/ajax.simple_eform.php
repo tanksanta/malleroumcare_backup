@@ -210,6 +210,7 @@ if($w == 'u' || $w == 'w') {
             entConAcc02 = '$entConAcc02',
             penId = '$penId',
             penNm = '$penNm',
+            penConNum = '$penConNum',
             penBirth = '$penBirth',
             penLtmNum = '$penLtmNum',
             penRecGraCd = '$penRecGraCd', # 장기요양등급
