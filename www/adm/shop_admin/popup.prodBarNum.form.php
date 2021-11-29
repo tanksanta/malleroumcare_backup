@@ -289,7 +289,7 @@ if($od["od_b_tel"]) {
               <?php } else { ?>
                 <span class="span3" style="font-size:1em;">
                   <?php echo $gubun == '02' ? '비급여' : '추가옵션'; ?> 상품 바코드 미입력&nbsp;
-                  <span style="border: 1px solid #9b9b9b; border-radius: 3px; padding: 5px 30px;">
+                  <span class="outline">
                     <input 
                       type="checkbox"
                       name="chk_pass_barcode_<?php echo $options[$k]['ct_id']; ?>"
@@ -608,6 +608,132 @@ if($od["od_b_tel"]) {
   function sendInvoiceNum(text){
     $(sendInvoiceTarget).val(text);
   }
+  
+  //바코드 저장
+  function barNumSave() {
+    var barcode_arr = [];
+    var isDuplicated = false;
+    var isNotNumber = false;
+
+    $('.imfomation_box .li_box').each(function(){
+        var temp_arr = [];
+        $(this).find('.inputbox li input').each(function(){
+            var barcode = $(this).val();
+            if (barcode != "") {
+                temp_arr.push($(this).val())
+            }
+            if(isNaN(barcode)) {
+              isNotNumber = true;
+            }
+        });
+        barcode_arr.push(temp_arr);
+    });
+
+    if(isNotNumber) {
+      alert('입력하신 바코드 중 숫자가 아닌 값이 있습니다.');
+      return false;
+    }
+
+    barcode_arr.forEach(function(arr) {
+        if (isDuplicate(arr)) {
+            isDuplicated = true;
+        }
+    });
+
+    if (isDuplicated) {
+        alert("입력하신 바코드 중 중복 값이 있습니다.");
+        return false;
+    }
+    
+    need_reload = true;
+
+    var ordId = "<?=$od["ordId"]?>";
+    var changeStatus = true;
+    var insertBarCnt = 0;
+
+    /* 210319 배송정보 저장 */
+    $.ajax({
+      url : "./samhwa_orderform_deliveryInfo_update.php",
+      type : "POST",
+      async : false,
+      data : $("#submitForm").serialize()
+    });
+
+    var prodsList = {};
+    var flag=false;
+    $.each(stoldList, function(key, value) {
+      if($("." + value.stoId).val()&&$("." + value.stoId).val().length !=12){ flag =true;}
+      prodsList[key] = {
+        stoId : value.stoId,
+        prodId : value.prodId,
+        prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
+      }
+      if($("." + value.stoId).val()){
+        insertBarCnt++;
+      }
+    });
+    if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false; }
+
+    var pass = {};
+    $.each($('.chk_pass_barcode'), function(index, value) {
+      pass[$(this).data('ct-id')] = $(this).is(":checked");
+    });
+
+    var sendData = {
+      usrId : "<?=$od["mb_id"]?>",
+      prods : prodsList,
+      entId : "<?=get_ent_id_by_od_id($od_id)?>",
+      pass: pass,
+    }
+
+    $.ajax({
+      url : "./samhwa_orderform_stock_update.php",
+      type : "POST",
+      async : false,
+      data : sendData,
+      success : function(result){
+        result = JSON.parse(result);
+        if(result.errorYN == "Y") {
+          alert(result.message);
+        } else {
+          alert("저장이 완료되었습니다.");
+          //cart 기준 barcode insert update
+          $.ajax({
+            url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
+            type : "POST",
+            async : false,
+            data : {
+              od_id : "<?=$od_id?>",
+            }
+          });
+          $.ajax({
+            url : "/shop/ajax.order.prodBarNum.cnt.php",
+            type : "POST",
+            async : false,
+            data : {
+              od_id : "<?=$od_id?>",
+              cnt : insertBarCnt
+            }
+          });
+          member_cancel();
+        }
+      }
+    });
+    var sendData_barcode = {
+      mb_id : "<?=$member["mb_id"]?>",
+      od_id : "<?=$_GET["od_id"]?>",
+      prods : prodsList
+    }
+    $.ajax({
+      url : "./ajax.barcode_log.php",
+      type : "POST",
+      async : false,
+      data : sendData_barcode,
+      success : function(result){
+        console.log(result);
+      }
+    });
+  }
 
   $(function() {
     <?php
@@ -653,133 +779,11 @@ if($od["od_b_tel"]) {
         if (confirm("비급여 상품 확인함을 선택하지 않으셨습니다. 선택하시겠습니까?")) {
         }
         else {
-          member_cancel();
+          // member_cancel();
+          barNumSave();
         }
         return false;
       }
-
-      var barcode_arr = [];
-      var isDuplicated = false;
-      var isNotNumber = false;
-
-      $('.imfomation_box .li_box').each(function(){
-          var temp_arr = [];
-          $(this).find('.inputbox li input').each(function(){
-              var barcode = $(this).val();
-              if (barcode != "") {
-                  temp_arr.push($(this).val())
-              }
-              if(isNaN(barcode)) {
-                isNotNumber = true;
-              }
-          });
-          barcode_arr.push(temp_arr);
-      });
-
-      if(isNotNumber) {
-        alert('입력하신 바코드 중 숫자가 아닌 값이 있습니다.');
-        return false;
-      }
-
-      barcode_arr.forEach(function(arr) {
-          if (isDuplicate(arr)) {
-              isDuplicated = true;
-          }
-      });
-
-      if (isDuplicated) {
-          alert("입력하신 바코드 중 중복 값이 있습니다.");
-          return false;
-      }
-      
-      need_reload = true;
-
-      var ordId = "<?=$od["ordId"]?>";
-      var changeStatus = true;
-      var insertBarCnt = 0;
-
-      /* 210319 배송정보 저장 */
-      $.ajax({
-        url : "./samhwa_orderform_deliveryInfo_update.php",
-        type : "POST",
-        async : false,
-        data : $("#submitForm").serialize()
-      });
-
-      var prodsList = {};
-      var flag=false;
-      $.each(stoldList, function(key, value) {
-        if($("." + value.stoId).val()&&$("." + value.stoId).val().length !=12){ flag =true;}
-        prodsList[key] = {
-          stoId : value.stoId,
-          prodId : value.prodId,
-          prodBarNum : ($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
-        }
-        if($("." + value.stoId).val()){
-          insertBarCnt++;
-        }
-      });
-      if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false; }
-
-      var pass = {};
-      $.each($('.chk_pass_barcode'), function(index, value) {
-        pass[$(this).data('ct-id')] = $(this).is(":checked");
-      });
-
-      var sendData = {
-        usrId : "<?=$od["mb_id"]?>",
-        prods : prodsList,
-        entId : "<?=get_ent_id_by_od_id($od_id)?>",
-        pass: pass,
-      }
-
-      $.ajax({
-        url : "./samhwa_orderform_stock_update.php",
-        type : "POST",
-        async : false,
-        data : sendData,
-        success : function(result){
-          result = JSON.parse(result);
-          if(result.errorYN == "Y") {
-            alert(result.message);
-          } else {
-            alert("저장이 완료되었습니다.");
-            //cart 기준 barcode insert update
-            $.ajax({
-              url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
-              type : "POST",
-              async : false,
-              data : {
-                od_id : "<?=$od_id?>",
-              }
-            });
-            $.ajax({
-              url : "/shop/ajax.order.prodBarNum.cnt.php",
-              type : "POST",
-              async : false,
-              data : {
-                od_id : "<?=$od_id?>",
-                cnt : insertBarCnt
-              }
-            });
-            member_cancel();
-          }
-        }
-      });
-      var sendData_barcode = {
-        mb_id : "<?=$member["mb_id"]?>",
-        od_id : "<?=$_GET["od_id"]?>",
-        prods : prodsList
-      }
-      $.ajax({
-        url : "./ajax.barcode_log.php",
-        type : "POST",
-        async : false,
-        data : sendData_barcode,
-        success : function(result){
-          console.log(result);
-        }
-      });
     });
 
 
