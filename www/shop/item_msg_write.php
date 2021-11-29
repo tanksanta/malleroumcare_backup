@@ -654,6 +654,9 @@ function save_item_msg(no_items) {
   check_no_item();
   check_pen_type();
 
+  $(document).on("keydown", "form", function(event) { 
+    return event.key != "Enter";
+  });
 </script>
 
 <?php include_once("./_tail.php"); ?>
