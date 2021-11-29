@@ -119,6 +119,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
               <th>No.</th>
               <th>수급자정보</th>
               <th>품목</th>
+              <th>계약서 작성</th>
               <th>전송일</th>
             </tr>
           </thead>
@@ -144,6 +145,9 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
                   echo '<br>';
                 }
                 ?>
+              </td>
+              <td style="width: 100px; text-align: center;">
+                <a href="simple_eform.php?ms_id=<?=$row['ms_id']?>" class="btn_basic">계약서 작성</a>
               </td>
               <td>
                 <?php
