@@ -34,7 +34,6 @@ for ($i=0; $i<count($view['file']); $i++) {
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" media="screen">', 0);
-add_javascript('<script src="'.G5_JS_URL.'/iscroll-zoom.min.js"></script>', 1);
 
 ?>
 <?php if($boset['video']) { ?>
@@ -233,7 +232,7 @@ function board_move(href){
 	window.open(href, "boardmove", "left=50, top=50, width=500, height=550, scrollbars=1");
 }
 $(function() {
-	var iscroll = new IScroll('#view-content');
+	$("meta[name=viewport]").attr("content", "initial-scale=1.0, maximum-scale=2.0, width=device-width, user-scalable=yes");
 
 	$("a.view_image").click(function() {
 		window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
