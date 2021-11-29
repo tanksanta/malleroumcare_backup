@@ -608,7 +608,7 @@ if($od["od_b_tel"]) {
   function sendInvoiceNum(text){
     $(sendInvoiceTarget).val(text);
   }
-  
+
   //바코드 저장
   function barNumSave() {
     var barcode_arr = [];
@@ -783,6 +783,9 @@ if($od["od_b_tel"]) {
           barNumSave();
         }
         return false;
+      }
+      else {
+        barNumSave();
       }
     });
 

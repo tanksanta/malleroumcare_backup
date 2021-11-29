@@ -879,6 +879,9 @@ if($od["od_b_tel"]) {
         }
         return false;
       }
+      else {
+        barNumSave();
+      }
     });
 
 
