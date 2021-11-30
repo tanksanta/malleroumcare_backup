@@ -232,7 +232,7 @@ function board_move(href){
 	window.open(href, "boardmove", "left=50, top=50, width=500, height=550, scrollbars=1");
 }
 $(function() {
-	$("meta[name=viewport]").attr("content", "initial-scale=1.0, maximum-scale=2.0, width=device-width, user-scalable=yes");
+	//$("meta[name=viewport]").attr("content", "initial-scale=1.0, maximum-scale=2.0, width=device-width, user-scalable=yes");
 	var myScroll = new IScroll('#view-content', {
 		eventPassthrough: true,
 		preventDefault: false,
@@ -242,6 +242,7 @@ $(function() {
 		zoom: true,
 		zoomMax: 3
 	});
+	document.addEventListener('touchmove', function(e) { e.preventDefault(); }, false);
 
 	$("a.view_image").click(function() {
 		window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
