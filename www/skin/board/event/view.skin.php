@@ -232,7 +232,7 @@ function board_move(href){
 	window.open(href, "boardmove", "left=50, top=50, width=500, height=550, scrollbars=1");
 }
 $(function() {
-	//$("meta[name=viewport]").attr("content", "initial-scale=1.0, maximum-scale=2.0, width=device-width, user-scalable=yes");
+	$("meta[name=viewport]").attr("content", "initial-scale=1.0, maximum-scale=2.0, width=device-width, user-scalable=yes");
 	var myScroll = new IScroll('#view-content', {
 		eventPassthrough: true,
 		preventDefault: false,
