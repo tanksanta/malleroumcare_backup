@@ -879,6 +879,8 @@ pre{white-space: pre-wrap;}
 .side_menu_area .conv_area > a.simple_eform:hover { background: #fff; border: 2px solid #70a248; line-height: 19px; }
 .side_menu_area .conv_area > a.simple_order { background: #ffe6b6; color: #de6e00; border: 1px solid #e6c991; }
 .side_menu_area .conv_area > a.simple_order:hover { background: #fff; border: 2px solid #de6e00; line-height: 19px; }
+.side_menu_area .conv_area > a.simple_stock { background: #ffdd9e; color: #dc6700; border: 1px solid #e7c790; }
+.side_menu_area .conv_area > a.simple_stock:hover { background: #fff; border: 2px solid #dc6700; line-height: 19px; }
 .side_menu_area .conv_area { padding: 10px; border: 1px solid #eee; }
 
 .side_menu_area .side_nav_area { padding: 20px; border-radius: 15px; border: 1px solid #e0ddd7; }

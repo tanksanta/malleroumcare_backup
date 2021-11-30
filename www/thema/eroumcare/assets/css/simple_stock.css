@@ -1,0 +1,336 @@
+/* common */
+.flex {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.space-between {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+/* 바코드 팝업 */
+#barcode_popup_iframe {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    right: 0;
+    top: 0;
+    z-index:9999;
+}
+
+/* 상단 폼 */
+.panel-default {
+    position: relative;
+    border-radius: 5px;
+}
+.form-group {
+    margin-bottom: 10px;
+}
+.form-group .form-control {
+    display: inline-block;
+    width: 150px;
+    margin-right: 10px;
+    border-radius: 3px !important;
+}
+.form-group .control-label {
+    max-width: 120px;
+    padding-top: 0;
+}
+.ss_desc_wr p {
+    margin-bottom: 0;
+}
+.ss_desc_wr p.accent {
+    margin: 10px 0 20px 0;
+    color: #ed7f04;
+}
+.ss_btn_wr {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+.btn_ss_submit {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px;
+    width: 250px;
+    text-align: center;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    background: #e7e7e7;
+}
+.btn_ss_submit.active {
+    background: #ef8505;
+}
+.btn_ss_submit:hover, .btn_ss_submit:focus {
+    color: #fff;
+}
+.btn_ss_submit img {
+    display: inline-block;
+    margin-right: 5px;
+}
+@media (max-width: 960px) {
+    .ss_btn_wr {
+      position: fixed;
+      top: unset;
+      right: unset;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      width: 100%;
+      z-index: 10;
+    }
+    .ss_btn_wr .btn_ss_submit {
+      margin: 0;
+      width: 100%;
+      padding: 20px 0;
+      border-radius: 0;
+    }
+  }
+
+/* 품목 목록 - 검색 */
+.ss_sch_wr {
+    position: relative;
+}
+.ss_sch_hd {
+    font-weight: bold;
+    font-size: 18px;
+    margin-right: 20px;
+}
+.ipt_ss_sch_wr {
+    position: relative;
+}
+.ipt_ss_sch_wr img {
+    position: absolute;
+    top: 20px;
+    left: 15px;
+    width: 16px;
+    height: 16px;
+}
+.ipt_ss_sch {
+    display: block;
+    padding: 15px 10px 15px 40px;
+    border: 1px solid #ef8505;
+    margin-top: 10px;
+    border-radius: 3px;
+    line-height: 1.5;
+    width: 100%;
+    font-size: 16px;
+    animation: ss_sch 1s;
+}
+@keyframes ss_sch{
+    from {
+        width: 50%;
+    }
+    to {
+        width: 100%;
+    }
+}
+.ss_sch_pop {
+    display: none;
+    position: absolute;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background-color: #fff;
+    width: 300px;
+    left: 10px;
+    top: 95px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    z-index: 5;
+}
+.ss_sch_pop:before {
+    border: 15px solid;
+    border-color: transparent transparent #ddd transparent;
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 30px;
+}
+.ss_sch_pop:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    bottom: 100%;
+    left: 31px;
+    border: 14px solid;
+    border-color: transparent transparent #fff transparent;
+}
+.ss_sch_pop p {
+    line-height: 1.25;
+    margin-bottom: 10px;
+}
+.btn_ss_sch {
+    display: inline;
+    background: none;
+    color: #ef8505;
+    text-decoration: underline;
+}
+@media (max-width: 960px) {
+    .ss_sch_pop {
+        width: 90%;
+        max-width: 300px;
+    }
+}
+
+/* 품목 목록 - 상품 리스트 */
+.ss_item_list_hd {
+    margin-top: 20px;
+    color: #666;
+}
+.ss_item_list {
+    margin-top: 10px;
+    background-color: #f5f5f5;
+}
+.ss_item_list > li {
+    margin: 0 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+}
+.ss_item_list > li:last-child {
+    border-bottom: none;
+}
+.it_info_wr {
+    position: relative;
+    padding-left: 110px;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex-grow: 1; 
+    min-height: 100px;
+}
+.it_info_wr .it_img {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    height: 100px;
+    border: 1px solid #ddd;
+}
+.it_info_wr .it_info > p {
+    margin: 10px 0;
+}
+.it_info_wr .it_info .it_name {
+    font-weight: bold;
+    font-size: 16px;
+}
+.it_info_wr .it_info .it_name select {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 140px;
+    padding: 4px;
+    margin-left: 4px;
+    font-size: 14px;
+    font-weight: normal;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background-color: #fff;
+} 
+.it_info_wr .it_info .it_price {
+    color: #666;
+}
+.it_info_wr .prodBarNumCntBtn {
+    margin-top: 10px;
+    display: block;
+    background: #fff;
+    width: 100%;
+}
+.it_qty_wr {
+    width: 200px;
+}
+.it_qty_wr .input-group {
+    width: 120px;
+    margin: 0 auto;
+}
+.it_qty_wr .it_qty_desc {
+    font-size: 12px;
+    line-height: 1.25;
+    color: #666;
+    width: 120px;
+    margin: 4px auto 0 auto;
+}
+.it_price_wr {
+    width: 200px;
+}
+.it_price_wr .it_price {
+    font-size: 12px;
+    margin: 0 0 5px 0;
+    color: #666;
+}
+.it_price_wr .ct_price {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+}
+.btn_del_item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 5px;
+    width: 55px;
+    height: 35px;
+    text-align: center;
+    line-height: 25px;
+}
+.total_count_wr {
+    margin: 10px;
+    text-align: right;
+    color: #666;
+    font-size: 18px;
+}
+.total_count_wr .total_count {
+    color: #333;
+    font-weight: bold;
+}
+@media (max-width: 960px) {
+    .ss_item_list > li.flex {
+        display: block;
+    }
+    .it_qty_wr {
+        width: unset;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+    .it_qty_wr .input-group {
+        -webkit-flex-shrink: 0;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+        margin: 0;
+    }
+    .it_info_wr .it_info .it_name select {
+        display: block;
+        margin: 10px 0 0 0;
+    }
+    .it_info_wr .it_info > .flex{
+        display: block;
+    }
+    .it_qty_wr .it_qty_desc {
+        width: unset;
+        -webkit-box-flex: 1;
+        -ms-flex: 1;
+        flex-grow: 1; 
+        margin-top: 0;
+        margin-left: 10px;
+    }
+    .it_price_wr {
+        width: unset;
+        margin-top: 10px;
+    }
+}
