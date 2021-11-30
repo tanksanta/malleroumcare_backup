@@ -16,7 +16,6 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_ord
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 add_javascript(G5_POSTCODE_JS, 0);
-add_javascript(G5_POSTCODE_JS, 0);
 
 ?>
 

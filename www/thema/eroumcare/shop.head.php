@@ -412,6 +412,7 @@ if($is_main && !$is_member) {
             <a href="/shop/item_msg_list.php" class="pen_item_msg">✓ 간편 제안서 작성</a>
             <a href="/shop/simple_eform.php" class="simple_eform">✓ 간편 계약서 작성</a>
             <a href="/shop/simple_order.php" class="simple_order">✓ 간편 주문서 작성</a>
+            <a href="/shop/simple_stock.php" class="simple_stock">✓ 간편 보유재고 등록</a>
           </div>
           <?php } ?>
 
