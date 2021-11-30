@@ -47,7 +47,12 @@ function mailer($fname, $fmail, $to, $subject, $content, $type=0, $file="", $cc=
     //print_r2($file); exit;
     if ($file != "") {
         foreach ($file as $f) {
-            $mail->addAttachment($f['path'], $f['name']);
+            if ($f['filetype'] == "base64") {
+                $mail->addStringAttachment($f['path'], $f['name']);
+            }
+            else {
+                $mail->addAttachment($f['path'], $f['name']);
+            }
         }
     }
     return $mail->send();
