@@ -9,7 +9,7 @@ if($manager_mb_id) {
   $manager = get_member($manager_mb_id);
 }
 
-$ct_status = in_array($_POST['ct_status'], ['출고준비', '배송']) ? $_POST['ct_status'] : '';
+$ct_status = in_array($_POST['ct_status'], ['출고준비', '배송', '취소']) ? $_POST['ct_status'] : '';
 $ct_id_arr = get_search_string($_POST['ct_id']);
 
 if(!$ct_status || !$ct_id_arr || !is_array($ct_id_arr))
@@ -44,6 +44,38 @@ foreach($ct_id_arr as $ct_id) {
   $set_sql = ' , ct_ex_date = NULL ';
   if($ct_status == '배송') {
     $set_sql = ' , ct_ex_date = CURDATE() ';
+
+    if($cart['io_type'] != 1) {
+      $ws_qty = $cart['ct_qty'] - $cart['ct_stock_qty'];
+      $sql[] = "
+        insert into
+          warehouse_stock
+        set
+          it_id = '{$cart['it_id']}',
+          io_id = '{$cart['io_id']}',
+          io_type = '{$cart['io_type']}',
+          it_name = '{$cart['it_name']}',
+          ws_option = '{$cart['ct_option']}',
+          ws_qty = '-{$ws_qty}',
+          mb_id = '{$cart['mb_id']}',
+          ws_memo = '주문 출고완료({$od_id})',
+          wh_name = '{$cart['ct_warehouse']}',
+          od_id = '$od_id',
+          ct_id = '$ct_id',
+          ws_created_at = NOW(),
+          ws_updated_at = NOW()
+      ";
+    }
+  }
+
+  if($ct_status == '취소') {
+    $sql[] = "
+      delete from
+        warehouse_stock
+      where
+        od_id = '$od_id' and
+        ct_id = '$ct_id'
+    ";
   }
 
   $sql[] = "
@@ -62,10 +94,12 @@ foreach($ct_id_arr as $ct_id) {
   switch ($ct_status) {
     case '출고준비': $ct_status_text="출고준비"; break;
     case '배송': $ct_status_text="출고완료"; break;
+    case '취소': $ct_status_text="주문취소"; break;
   }
   $log_content = '';
+  $mb_id = $member['mb_id'];
   if($manager) {
-    $log_content .= "({$manager['mb_name']}) ";
+    $mb_id = $manager_mb_id;
   }
   $log_content .= "{$it_name}-{$ct_status_text} 변경";
 
@@ -74,7 +108,7 @@ foreach($ct_id_arr as $ct_id) {
       g5_shop_order_admin_log
     SET
       od_id = '$od_id',
-      mb_id = '{$member['mb_id']}',
+      mb_id = '{$mb_id}',
       ol_content = '{$log_content}',
       ol_datetime = NOW()
   ";
