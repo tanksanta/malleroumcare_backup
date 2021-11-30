@@ -234,6 +234,10 @@ function board_move(href){
 $(function() {
 	//$("meta[name=viewport]").attr("content", "initial-scale=1.0, maximum-scale=2.0, width=device-width, user-scalable=yes");
 	var myScroll = new IScroll('#view-content', {
+		eventPassthrough: true,
+		preventDefault: false,
+		disablePointer: true,
+		disableMouse: false,
 		scrollbars: true,
 		zoom: true,
 		zoomMax: 3
