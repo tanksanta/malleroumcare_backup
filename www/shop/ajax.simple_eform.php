@@ -83,33 +83,7 @@ if($_POST['save_conacc'] == 1 && $w == 'w') {
     $result = sql_query($sql);
 }
 
-if($pen_type == '1') {
-    // 기존 수급자 선택한 경우 생성시 수급자 정보 업데이트\
-    if($w == 'w') {
-        $data = [
-            'entId' => $member["mb_entId"],
-            'usrId' => $member['mb_id'],
-            'delYn' => 'N',
-            'penId' => $penId,
-            'penNm' => $penNm,
-            'penLtmNum' => $penLtmNum,
-            'penConNum' => $penConNum,
-            'penBirth' => $penBirth,
-            'penRecGraCd' => $penRecGraCd,
-            'penTypeCd' => $penTypeCd,
-            'penExpiStDtm' => $penExpiStDtm,
-            'penExpiEdDtm' => $penExpiEdDtm,
-            'penJumin' => $penJumin
-        ];
-
-        $valid = valid_recipient_input($data, false);
-        if(!$valid) {
-            // 입력값 검증 통과된 경우에만 업데이트시킴
-            $data = normalize_recipient_input($data);
-            $res = api_post_call(EROUMCARE_API_RECIPIENT_UPDATE, $data);
-        }
-    }
-} else {
+if($pen_type != '1') {
     // 신규 수급자인 경우
     $penId = '';
 }

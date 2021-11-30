@@ -86,11 +86,11 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             </label>
             <div class="col-md-3 col-pen-nm" style="max-width: unset;">
               <img style="display: none;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
-              <input type="hidden" name="penZip" id="penZip" value="<?php if($dc) echo $dc['penZip']; ?>">
-              <input type="hidden" name="penAddr" id="penAddr" value="<?php if($dc) echo $dc['penAddr']; ?>">
-              <input type="hidden" name="penAddrDtl" id="penAddrDtl" value="<?php if($dc) echo $dc['penAddrDtl']; ?>">
-              <input type="hidden" name="penId" id="penId" value="<?php if($dc) echo $dc['penId']; ?>">
-              <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명">
+              <input type="hidden" name="penZip" id="penZip" value="<?php if($dc) echo $dc['penZip']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penZip']}\""; ?>>
+              <input type="hidden" name="penAddr" id="penAddr" value="<?php if($dc) echo $dc['penAddr']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penAddr']}\""; ?>>
+              <input type="hidden" name="penAddrDtl" id="penAddrDtl" value="<?php if($dc) echo $dc['penAddrDtl']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penAddrDtl']}\""; ?>>
+              <input type="hidden" name="penId" id="penId" value="<?php if($dc) echo $dc['penId']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penId']}\""; ?>>
+              <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명" <?php if($dc) echo "data-orig=\"{$dc['penNm']}\""; ?>>
             </div>
             <button type="button" id="btn_pen">수급자 목록</button>
           </div>
@@ -99,13 +99,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>요양인정번호</strong>
             </label>
             <div class="col-md-3">
-              L <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="<?php if($dc) echo preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']); ?>" placeholder="10자리 입력" readonly>
+              L <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="<?php if($dc) echo preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']); ?>" placeholder="10자리 입력" readonly <?php if($dc) echo "data-orig=\"" . preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']) . "\""; ?>>
             </div>
             <label for="penGender" class="col-md-2 control-label">
               <strong>휴대폰번호</strong>
             </label>
             <div class="col-md-3">
-              <input type="text" name="penConNum" id="penConNum" class="form-control input-sm" value="<?php if($dc) echo $dc['penConNum']; ?>">
+              <input type="text" name="penConNum" id="penConNum" class="form-control input-sm" value="<?php if($dc) echo $dc['penConNum']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penConNum']}\""; ?>>
             </div>
           </div>
           <div class="form-group">
@@ -113,7 +113,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>인정등급</strong>
             </label>
             <div class="col-md-3">
-              <select name="penRecGraCd" id="penRecGraCd" class="form-control input-sm">
+              <select name="penRecGraCd" id="penRecGraCd" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['penRecGraCd']}\""; ?>>
                 <option value="00" <?php if($dc) echo get_selected($dc['penRecGraCd'], '00'); ?>>등급외</option>
                 <option value="01" <?php if($dc) echo get_selected($dc['penRecGraCd'], '01'); ?>>1등급</option>
                 <option value="02" <?php if($dc) echo get_selected($dc['penRecGraCd'], '02'); ?>>2등급</option>
@@ -126,7 +126,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>본인부담금율</strong>
             </label>
             <div class="col-md-3">
-              <select name="penTypeCd" id="penTypeCd" class="form-control input-sm">
+              <select name="penTypeCd" id="penTypeCd" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['penTypeCd']}\""; ?>>
                 <option value="00" <?php if($dc) echo get_selected($dc['penTypeCd'], '00'); ?>>일반 15%</option>
                 <option value="01" <?php if($dc) echo get_selected($dc['penTypeCd'], '01'); ?>>감경 9%</option>
                 <option value="02" <?php if($dc) echo get_selected($dc['penTypeCd'], '02'); ?>>감경 6%</option>
@@ -140,7 +140,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>유효기간</strong>
             </label>
             <div class="col-md-5">
-              <input type="text" name="penExpiStDtm" id="penExpiStDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[0]; ?>"> ~ <input type="text" name="penExpiEdDtm" id="penExpiEdDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[1]; ?>">
+              <input type="text" name="penExpiStDtm" id="penExpiStDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[0]; ?>" <?php if($dc) echo "data-orig=\"" . explode(' ~ ', $dc['penExpiDtm'])[0] . "\""; ?>> ~ <input type="text" name="penExpiEdDtm" id="penExpiEdDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[1]; ?>" <?php if($dc) echo "data-orig=\"" . explode(' ~ ', $dc['penExpiDtm'])[1] . "\""; ?>>
             </div>
           </div>
           <div class="form-group">
@@ -148,7 +148,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>주민번호(앞자리)</strong>
             </label>
             <div class="col-md-3">
-              <input type="text" name="penJumin" id="penJumin" class="form-control input-sm" value="<?php if($dc) echo $dc['penJumin']; ?>">
+              <input type="text" name="penJumin" id="penJumin" class="form-control input-sm" value="<?php if($dc) echo $dc['penJumin']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penJumin']}\""; ?>>
             </div>
           </div>
         </div>
@@ -467,6 +467,7 @@ function sendBarcode(text){
 
 <script>
 var stock_table = [];
+var pen = null;
 
 //바코드입력 함수
 $(document).on("click", "a.open_input_barcode", function(){
@@ -739,13 +740,49 @@ $('#btn_se_submit').on('click', function() {
     return false;
   }
 
+  var pen_type = $('input[name="pen_type"]:checked').val();
   var dc_id = $('input[name="dc_id"]').val();
 
   if(!dc_id)
       return alert('먼저 품목 선택 후 저장을 해주세요.');
 
-  $('input[name="w"]').val('w');
-  save_eform();
+  if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
+    $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
+  
+  var changed = false;
+  if(pen_type == 1) {
+    $('.panel .form-group input, .panel .form-group select').each(function() {
+      if($(this).attr('id') != 'penNm-flexdatalist') {
+        if( $(this).val() != $(this).data('orig') && $(this).val() ) {
+          changed = true;
+        }
+      }
+    });
+  }
+
+  if(changed && confirm('변경된 수급자 정보가 있습니다. 변경된 정보로 수급자 정보를 변경하시겠습니까? ')) {
+    $.post('ajax.recipient.update.php', {
+      penId: $('#penId').val(),
+      penNm: $('#penNm').val(),
+      penConNum: $('#penConNum').val(),
+      penRecGraCd: $('#penRecGraCd').val(),
+      penTypeCd: $('#penTypeCd').val(),
+      penExpiStDtm: $('#penExpiStDtm').val(),
+      penExpiEdDtm: $('#penExpiEdDtm').val(),
+      penJumin: $('#penJumin').val()
+    }, 'json')
+    .done(function() {
+      $('input[name="w"]').val('w');
+      save_eform();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    })
+  } else {
+    $('input[name="w"]').val('w');
+    save_eform();
+  }
 });
 
 // 바코드 필드 개수 업데이트
@@ -862,7 +899,7 @@ function toggle_pen_id_flexdatalist(on) {
     pen_id_flexdata = $('.pen_id_flexdatalist').flexdatalist({
       minLength: 1,
       url: 'ajax.get_pen_id.php',
-      cache: true, // cache
+      cache: false, // cache
       searchContain: true, // %검색어%
       noResultsText: '"{keyword}"으로 등록된 수급자가 없습니다. 수급자정보를 직접 입력 하시고 계약서 작성 시 자동으로 등록됩니다.',
       visibleCallback: function($li, item, options) {
@@ -884,6 +921,7 @@ function toggle_pen_id_flexdatalist(on) {
     })
     .on("select:flexdatalist", function(event, obj, options) {
       select_recipient(obj);
+      $('#penNm-flexdatalist').change();
     });
   } else {
     if(!pen_id_flexdata) return;
@@ -893,21 +931,56 @@ function toggle_pen_id_flexdatalist(on) {
 }
 // 수급자 선택
 function select_recipient(obj) {
+  update_pen(obj);
+
   $('.panel-body .form-group').show();
-  $('#penId').val(obj.penId);
-  $('#penZip').val(obj.penZip);
-  $('#penAddr').val(obj.penAddr);
-  $('#penAddrDtl').val(obj.penAddrDtl);
-  $('#penNm').val(obj.penNm);
-  $('#penLtmNum').val(obj.penLtmNumRaw.replace(/L([0-9]{10})/, '$1')).prop('disabled', false).prop('readonly', true);
-  $('#penConNum').val(obj.penConNum).prop('disabled', false);
-  $('#penRecGraCd').val(obj.penRecGraCd ? obj.penRecGraCd : '00').prop('disabled', false);
-  $('#penTypeCd').val(obj.penTypeCd ? obj.penTypeCd : '00').prop('disabled', false).change();
+  $('#penLtmNum').prop('disabled', false).prop('readonly', true);
+  $('#penConNum').prop('disabled', false);
+  $('#penRecGraCd').prop('disabled', false);
+  $('#penTypeCd').prop('disabled', false);
   //$('#penBirth').val(obj.penBirth).prop('disabled', false);
-  $('#penExpiStDtm').val(obj.penExpiStDtm).prop('disabled', false);
-  $('#penExpiEdDtm').val(obj.penExpiEdDtm).prop('disabled', false);
-  $('#penJumin').val(obj.penJumin).prop('disabled', false);
+  $('#penExpiStDtm').prop('disabled', false);
+  $('#penExpiEdDtm').prop('disabled', false);
+  $('#penJumin').prop('disabled', false);
   $('#se_body_wr').addClass('active');
+}
+
+function update_pen(obj) {
+  obj = obj || null;
+  pen = obj;
+
+  if(pen == null) {
+    $('#penId').val('').data('orig', '').change();
+    $('#penZip').val('').data('orig', '').change();
+    $('#penAddr').val('').data('orig', '').change();
+    $('#penAddrDtl').val('').data('orig', '').change();
+    $('#penNm').val('').data('orig', '').change();
+    $('#penLtmNum').val('').data('orig', '').change();
+    $('#penConNum').val('').data('orig', '').change();
+    $('#penRecGraCd').val('').data('orig', '').change();
+    $('#penTypeCd').val('').data('orig', '').change();
+    //$('#penBirth').val(obj.penBirth).prop('disabled', false);
+    $('#penExpiStDtm').val('').data('orig', '').change();
+    $('#penExpiEdDtm').val('').data('orig', '').change();
+    $('#penJumin').val('').data('orig', '').change();
+  } else {
+    $('#penId').val(obj.penId).data('orig', obj.penId).change();
+    $('#penZip').val(obj.penZip).data('orig', obj.penZip).change();
+    $('#penAddr').val(obj.penAddr).data('orig', obj.penAddr).change();
+    $('#penAddrDtl').val(obj.penAddrDtl).data('orig', obj.penAddrDtl).change();
+    $('#penNm').val(obj.penNm).data('orig', obj.penNm).change();
+    var penLtmNum = obj.penLtmNumRaw.replace(/L([0-9]{10})/, '$1');
+    $('#penLtmNum').val(penLtmNum).data('orig', penLtmNum).change();
+    $('#penConNum').val(obj.penConNum).data('orig', obj.penConNum).change();
+    var penRecGraCd = obj.penRecGraCd ? obj.penRecGraCd : '00';
+    $('#penRecGraCd').val(penRecGraCd).data('orig', penRecGraCd).change();
+    var penTypeCd = obj.penTypeCd ? obj.penTypeCd : '00';
+    $('#penTypeCd').val(penTypeCd).data('orig', penTypeCd).change();
+    //$('#penBirth').val(obj.penBirth).prop('disabled', false);
+    $('#penExpiStDtm').val(obj.penExpiStDtm).data('orig', obj.penExpiStDtm).change();
+    $('#penExpiEdDtm').val(obj.penExpiEdDtm).data('orig', obj.penExpiEdDtm).change();
+    $('#penJumin').val(obj.penJumin).data('orig', obj.penJumin).change();
+  }
 }
 
 // 수급자 목록
@@ -1075,14 +1148,14 @@ function check_pen_type() {
     $('.col-pen-nm img').show();
     $("#btn_pen").show();
     //$('.panel-body .form-group').hide();
-    $('#penLtmNum').val('').prop('disabled', true);
-    $('#penConNum').val('').prop('disabled', true);
-    $('#penRecGraCd').val('').prop('disabled', true);
-    $('#penTypeCd').val('').prop('disabled', true).change();
+    $('#penLtmNum').prop('disabled', true);
+    $('#penConNum').prop('disabled', true);
+    $('#penRecGraCd').prop('disabled', true);
+    $('#penTypeCd').prop('disabled', true);
     //$('#penBirth').val('').prop('disabled', true);
-    $('#penExpiStDtm').val('').prop('disabled', true);
-    $('#penExpiEdDtm').val('').prop('disabled', true);
-    $('#penJumin').val('').prop('disabled', true);
+    $('#penExpiStDtm').prop('disabled', true);
+    $('#penExpiEdDtm').prop('disabled', true);
+    $('#penJumin').prop('disabled', true);
     toggle_pen_id_flexdatalist(true);
   } else {
     // 신규수급자
@@ -1102,10 +1175,7 @@ function check_pen_type() {
   }
 }
 $('input[name="pen_type"]').change(function() {
-  $('#penId').val('');
-  $('#penZip').val('');
-  $('#penAddr').val('');
-  $('#penAddrDtl').val('');
+  update_pen(null);
   check_pen_type();
 });
 
@@ -1214,8 +1284,27 @@ $('#penConNum').on('change paste keyup input', function() {
 
   pen_hp_input_timer = setTimeout(function() {
     penConNum = penConNum.replace(/[^0-9]/g, '').replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, "$1-$2-$3");
-    $this.val(penConNum);
+    $this.val(penConNum).change();
   }, 300);
+});
+
+// 수급자 정보 변경되었는지 체크
+$(document).on('input change keyup paste', '.panel .form-group input, .panel .form-group select', function() {
+  var pen_type = $('input[name="pen_type"]:checked').val();
+
+  if(pen_type == 1 && ( $(this).val() != $(this).data('orig') && $(this).val() )) {
+    $(this).css('border', '1px solid #ef8505');
+  } else {
+    $(this).css('border', '1px solid #ccc');
+  }
+
+  if($(this).attr('id') == 'penNm-flexdatalist') {
+    if($(this).val() != $('#penNm').data('orig') && $(this).val()) {
+      $(this).css('border', '1px solid #ef8505');
+    } else {
+      $(this).css('border', '1px solid #ccc');
+    }
+  }
 });
 
 if($('input[name="pen_type"]:checked').val() == 1) {
