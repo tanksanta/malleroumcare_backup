@@ -23,7 +23,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                 <div class="ss_desc_wr">
                     <p>현재 보유한 재고를 등록해주세요.</p>
                     <p>보유재고를 등록하시면 수급자 계약 시 활용이 가능합니다.</p>
-                    <p class="accent">* 실제 결제는 진행되지 않고, 재고만 등록됩니다.</p>
+                    <p class="accent">* 이로움에 주문은 접수되지 않으며, 재고가 등록됩니다.</p>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">
