@@ -367,6 +367,7 @@ tr.hover { background-color: #fbf9f7 !important; }
           <select name="ct_status">
             <option value="출고준비">출고준비</option>
             <option value="배송" selected>출고완료</option>
+            <option value="취소">주문취소</option>
           </select>
           <select name="manager" style="display: none;">
               <option value="">미지정</option>
@@ -792,6 +793,10 @@ $(function() {
       });
     } else {
       // 주문상태 변경
+      if($('select[name="ct_status"]').val() == '취소' && !confirm('주문취소 후 상태 변경은 불가능합니다. 취소하시겠습니까?')) {
+        return false;
+      }
+
       $.post('ajax.partner_ctstatus.php', $(this).serialize(), 'json')
       .done(function() {
         alert('주문상태 변경이 완료되었습니다.');

@@ -156,6 +156,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
             <select name="ct_status" class="order-status-select">
               <option value="출고준비">출고준비</option>
               <option value="배송" selected>출고완료</option>
+              <option value="취소">주문취소</option>
             </select>
             <button type="button" id="btn_ct_status" class="order-status-btn">저장</button>
           </div>
@@ -481,6 +482,11 @@ $(function() {
   });
   $('#form_ct_status').on('submit', function(e) {
     e.preventDefault();
+
+    // 주문상태 변경
+    if($('select[name="ct_status"]').val() == '취소' && !confirm('주문취소 후 상태 변경은 불가능합니다. 취소하시겠습니까?')) {
+      return false;
+    }
 
     $.post('ajax.partner_ctstatus.php', $(this).serialize(), 'json')
     .done(function() {
