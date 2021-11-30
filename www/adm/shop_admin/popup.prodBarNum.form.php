@@ -649,15 +649,114 @@ if($od["od_b_tel"]) {
     });
 
     $("#prodBarNumSaveBtn").click(function() {
-      // if ($(".chk_pass_barcode").data('gubun') == "02" && $(".chk_pass_barcode").is(":checked") == false) {
-      //   if (confirm("비급여 상품 확인함을 선택하지 않으셨습니다. 선택하시겠습니까?")) {
-      //   }
-      //   else {
-      //     member_cancel();
-      //   }
-      //   return false;
-      // }
+      if ($(".chk_pass_barcode").data('gubun') == "02" && $(".chk_pass_barcode").is(":checked") == false) {
+        if (confirm("비급여 상품 확인함을 선택하지 않으셨습니다. 선택하시겠습니까?")) {
+        }
+        else {
+          barNumSave();
+        }
+        return false;
+      }
+      else {
+        barNumSave();
+      }
+    });
 
+
+    //넘버 검사
+    $(".barNumCustomSubmitBtn").click(function() {
+      var val = $(this).closest(".folding_box").find(".all").val();
+      var target = $(this).closest(".folding_box").find(".notall");
+      var barList = [];
+
+      if(val.indexOf("^") == -1){
+        alert("내용을 입력해주시길 바랍니다.");
+        return false;
+      }
+
+      for(var i = 0; i < target.length; i++) {
+        if(i > 0) {
+          if($(target[i]).find("input").val()) {
+            if(!confirm("이미 등록된 바코드가 있습니다.\n무시하고 적용하시겠습니까?")) {
+              return false;
+            } else {
+              break;
+            }
+          }
+        }
+      }
+      if(val) {
+        val = val.split("^");
+        var first = val[0];
+        var secList = val[1].split(",");
+        for(var i = 0; i < secList.length; i++) {
+          if(secList[i].indexOf("-") == -1) {
+            barList.push(first + secList[i]);
+          } else {
+            var secData = secList[i].split("-");
+            var secData0Len = secData[0].length;
+            secData[0] = Number(secData[0]);
+            secData[1] = Number(secData[1]);
+
+            for(var ii = secData[0]; ii < (secData[1] + 1); ii++) {
+              var barData = ii;
+              if(String(barData).length < secData0Len){
+                var iiiCnt = secData0Len - String(barData).length;
+                for(var iii = 0; iii < iiiCnt; iii++){
+                  barData = "0" + barData;
+                }
+              }
+
+              barList.push(first + barData);
+            }
+          }
+        }
+
+        notallLengthCheck();
+        for(var i = 0; i < target.length; i++) {
+
+          $(target[i]).val(barList[i]);
+          if(barList[i].length!==12) {
+            alert('바코드는 12자리 입력이 되어야합니다.');
+            target[i].focus();
+            return false;
+          }
+        }
+      }
+
+      notallLengthCheck();
+    });
+
+    $(".barNumGuideBox .closeBtn").click(function(){
+      $(this).closest(".barNumGuideBox").hide();
+    });
+
+    $(".barNumGuideOpenBtn").click(function(){
+      $(this).next().toggle();
+    });
+
+    /* 210317 */
+    $(".nativePopupOpenBtn").click(function(e) {
+      var cnt = 0;
+      var frm_no = $(this).closest("li").find(".frm_input").attr("data-frm-no");
+      var item = $(this).closest("ul").find(".frm_input");
+      sendBarcodeTargetList = [];
+      
+      cur_ct_id = $(this).data('ct-id');
+      cur_it_id = $(this).data('it-id');
+
+      for(var i = 0; i < item.length; i++){
+        if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no) {
+          sendBarcodeTargetList.push($(item[i]).attr("data-frm-no"));
+          cnt++;
+        }
+      }
+
+      $('#scanner-count').val(cnt);
+      $('#barcode-selector').fadeIn();
+    });
+
+    function barNumSave() {
       var barcode_arr = [];
       var isDuplicated = false;
       var isNotNumber = false;
@@ -780,101 +879,7 @@ if($od["od_b_tel"]) {
           console.log(result);
         }
       });
-    });
-
-
-    //넘버 검사
-    $(".barNumCustomSubmitBtn").click(function() {
-      var val = $(this).closest(".folding_box").find(".all").val();
-      var target = $(this).closest(".folding_box").find(".notall");
-      var barList = [];
-
-      if(val.indexOf("^") == -1){
-        alert("내용을 입력해주시길 바랍니다.");
-        return false;
-      }
-
-      for(var i = 0; i < target.length; i++) {
-        if(i > 0) {
-          if($(target[i]).find("input").val()) {
-            if(!confirm("이미 등록된 바코드가 있습니다.\n무시하고 적용하시겠습니까?")) {
-              return false;
-            } else {
-              break;
-            }
-          }
-        }
-      }
-      if(val) {
-        val = val.split("^");
-        var first = val[0];
-        var secList = val[1].split(",");
-        for(var i = 0; i < secList.length; i++) {
-          if(secList[i].indexOf("-") == -1) {
-            barList.push(first + secList[i]);
-          } else {
-            var secData = secList[i].split("-");
-            var secData0Len = secData[0].length;
-            secData[0] = Number(secData[0]);
-            secData[1] = Number(secData[1]);
-
-            for(var ii = secData[0]; ii < (secData[1] + 1); ii++) {
-              var barData = ii;
-              if(String(barData).length < secData0Len){
-                var iiiCnt = secData0Len - String(barData).length;
-                for(var iii = 0; iii < iiiCnt; iii++){
-                  barData = "0" + barData;
-                }
-              }
-
-              barList.push(first + barData);
-            }
-          }
-        }
-
-        notallLengthCheck();
-        for(var i = 0; i < target.length; i++) {
-
-          $(target[i]).val(barList[i]);
-          if(barList[i].length!==12) {
-            alert('바코드는 12자리 입력이 되어야합니다.');
-            target[i].focus();
-            return false;
-          }
-        }
-      }
-
-      notallLengthCheck();
-    });
-
-    $(".barNumGuideBox .closeBtn").click(function(){
-      $(this).closest(".barNumGuideBox").hide();
-    });
-
-    $(".barNumGuideOpenBtn").click(function(){
-      $(this).next().toggle();
-    });
-
-    /* 210317 */
-    $(".nativePopupOpenBtn").click(function(e) {
-      var cnt = 0;
-      var frm_no = $(this).closest("li").find(".frm_input").attr("data-frm-no");
-      var item = $(this).closest("ul").find(".frm_input");
-      sendBarcodeTargetList = [];
-      
-      cur_ct_id = $(this).data('ct-id');
-      cur_it_id = $(this).data('it-id');
-
-      for(var i = 0; i < item.length; i++){
-        if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no) {
-          sendBarcodeTargetList.push($(item[i]).attr("data-frm-no"));
-          cnt++;
-        }
-      }
-
-      $('#scanner-count').val(cnt);
-      $('#barcode-selector').fadeIn();
-    });
+    }
   });
 
   //종료시 멤버 수정중없에기
