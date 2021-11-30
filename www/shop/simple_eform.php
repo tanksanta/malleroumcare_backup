@@ -53,6 +53,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     <div style="clear: both;"></div>
   </div>
   <div class="inner">
+  <!-- hula1202_1637198335.gif -->
     <?php if(!$member['sealFile']) { ?>
     <div class="se_seal_wr">
       <form action="ajax.member.seal_upload.php" method="POST" id="form_seal" onsubmit="return false;">
@@ -61,6 +62,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           계약서 작성을 위해선 직인 이미지를 등록해주세요.
         </div>
         <button type="button" class="btn_se_seal">직인 이미지 업로드</button>
+        <br>
+        <label><input type="checkbox" name="chk_se_seal_self" id="chk_se_seal_self" <?php echo $member['sealFile_self']?'checked':''; ?>> 직접날인</label>
       </form>
     </div>
     <?php } ?>
@@ -696,7 +699,14 @@ function save_eform() {
 
   loading = true;
   var $form = $('#form_simple_eform');
-  $.post('ajax.simple_eform.php', $form.serialize(), 'json')
+  var data = $form.serialize();
+  if ($('#chk_se_seal_self').is(":checked")) {
+    data = data + "&sealFile_self=true";
+  }
+  else {
+    data = data + "&sealFile_self=false";
+  }
+  $.post('ajax.simple_eform.php', data, 'json')
     .done(function(result) {
       var dc_id = result.data;
 
@@ -713,6 +723,7 @@ function save_eform() {
       check_no_item();
     })
     .fail(function ($xhr) {
+      console.log($xhr);
       var data = $xhr.responseJSON;
       alert(data && data.message);
     })

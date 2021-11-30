@@ -35,7 +35,7 @@
   color: #ef8505;
 }
 .btn_se_seal {
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   display: inline-block;
   color: #fff;
   background: #ef8505;
@@ -43,6 +43,17 @@
   border-radius: 3px;
   font-size: 16px;
   text-align: center;
+}
+.se_seal_wr label {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+.se_seal_wr input {
+  vertical-align: baseline;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: inline-block;
 }
 @keyframes fadedown{
   from {
