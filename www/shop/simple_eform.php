@@ -148,7 +148,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <strong>주민번호(앞자리)</strong>
             </label>
             <div class="col-md-3">
-              <input type="text" name="penJumin" id="penJumin" class="form-control input-sm" value="<?php if($dc) echo $dc['penJumin']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penJumin']}\""; ?>>
+              <input type="text" maxlength="6" oninput="max_length_check(this)"  name="penJumin" id="penJumin" class="form-control input-sm" value="<?php if($dc) echo $dc['penJumin']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penJumin']}\""; ?>>
             </div>
           </div>
         </div>
