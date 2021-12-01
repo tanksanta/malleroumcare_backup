@@ -107,22 +107,22 @@ function calc_rental_price($str_date, $end_date, $price) {
         $rental_price += ( $price * ($diff - 1) );
     }
 
-    // 첫째 달 계산
+    // 마지막 달 계산
     $rental_price += (int) floor(
         $price * (
-            ( date('t', $str_time) - date('j', $str_time) + 1 )
+            date('j', $end_time)
             /
-            ( date('t', $str_time) * 10 )
+            ( date('t', $end_time) * 10 )
         )
     ) * 10;
 
     if($diff > 0) {
-        // 마지막 달 계산
+        // 첫째 달 계산
         $rental_price += (int) floor(
             $price * (
-                date('j', $end_time)
+                ( date('t', $str_time) - date('j', $str_time) + 1 )
                 /
-                ( date('t', $end_time) * 10 )
+                ( date('t', $str_time) * 10 )
             )
         ) * 10;
     }
