@@ -478,6 +478,8 @@ var penid="";
       
 $(document).ready(function () {
   setDateBox();
+  recipientNumCheck($("#penLtmNum").val());
+
   <?php if(get_text($_GET['penBirth'])) { ?>
   //생년월일 세팅
   var penBirth = "<?=get_text($_GET['penBirth'])?>".split('.');
@@ -508,6 +510,32 @@ $(document).ready(function () {
     return;
   });
 });
+
+function recipientNumCheck(penLtmNum) {
+  if (penLtmNum.length == 10) {
+    $.post('./ajax.my.recipient.num.check.php', {
+      penLtmNum : "L" + penLtmNum
+    }, 'json')
+    .done(function(result) {
+      var ent_pen = result.data.ent_pen;
+      if (ent_pen) {
+        $('#penLtmNumResult').text('이미 등록된 수급자 입니다.');
+        $('#penLtmNumResult').css('color', '#d44747');
+      }
+      else {
+        $('#penLtmNumResult').text('등록가능한 수급자 입니다.');
+        $('#penLtmNumResult').css('color', '#4788d4');
+        $('#penLtmNumResultVal').val(1);
+      }
+      $('#penLtmNumResult').show();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  }
+}
+
 //생년월일
 function setDateBox() {
   var dt = new Date();
@@ -671,28 +699,7 @@ $(function(){
     $('#penLtmNumResult').hide();
     $('#penLtmNumResultVal').val(0);
     var penLtmNum = $("#penLtmNum").val();
-    if (penLtmNum.length == 10) {
-      $.post('./ajax.my.recipient.num.check.php', {
-        penLtmNum : "L" + penLtmNum
-      }, 'json')
-      .done(function(result) {
-        var ent_pen = result.data.ent_pen;
-        if (ent_pen) {
-          $('#penLtmNumResult').text('이미 등록된 수급자 입니다.');
-          $('#penLtmNumResult').css('color', '#d44747');
-        }
-        else {
-          $('#penLtmNumResult').text('등록가능한 수급자 입니다.');
-          $('#penLtmNumResult').css('color', '#4788d4');
-          $('#penLtmNumResultVal').val(1);
-        }
-        $('#penLtmNumResult').show();
-      })
-      .fail(function($xhr) {
-        var data = $xhr.responseJSON;
-        alert(data && data.message);
-      });
-    }
+    recipientNumCheck(penLtmNum);
   });
 
   // 등록
@@ -714,7 +721,7 @@ $(function(){
       }
     }
 
-    if (('#penLtmNumResultVal').val() == 0) {
+    if ($('#penLtmNumResultVal').val() == 0) {
       alert('이미 등록된 수급자 입니다.');  
       $(penLtmNum).focus(); 
       return false;
