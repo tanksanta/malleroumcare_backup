@@ -1289,6 +1289,7 @@ $('#penConNum').on('change paste keyup input', function() {
 });
 
 // 수급자 정보 변경되었는지 체크
+var first_completed = false;
 $(document).on('input change keyup paste', '.panel .form-group input, .panel .form-group select', function() {
   var pen_type = $('input[name="pen_type"]:checked').val();
 
@@ -1305,7 +1306,53 @@ $(document).on('input change keyup paste', '.panel .form-group input, .panel .fo
       $(this).css('border', '1px solid #ccc');
     }
   }
+
+  <?php if($ms_id && !$ms) { ?>
+    if(!first_completed && check_input_completed()) {
+      $('#btn_se_submit').addClass('active');
+      first_completed = true;
+      save_eform();
+    }
+  <?php } ?>
 });
+
+// 입력 필드 전부 입력되었는지 체크
+function check_input_completed() {
+
+  // 수급자명
+  if($('#penNm').val() == '')
+    return false;
+  
+  // 요양인정번호
+  if(!$('#penLtmNum').val().match(/^[0-9]{10}/))
+    return false;
+  
+  // 휴대폰번호
+  if(!$('#penConNum').val().match(/^[0-9]{3}-[0-9]{3,4}-[0-9]{4}/))
+    return false;
+  
+  // 인정등급
+  if(!$('#penRecGraCd').val().match(/^0[0-5]/))
+    return false;
+  
+  // 본인부담율
+  if(!$('#penTypeCd').val().match(/^0[0-4]/))
+    return false;
+  
+  // 유효기간 (시작일)
+  if(!$('#penExpiStDtm').val().match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}/))
+    return false;
+  
+  // 유효기간 (종료일)
+  if(!$('#penExpiEdDtm').val().match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}/))
+    return false;
+  
+  // 주민번호(앞자리)
+  if(!$('#penJumin').val().match(/^[0-9]{6}/))
+    return false;
+  
+  return true;
+}
 
 if($('input[name="pen_type"]:checked').val() == 1) {
   toggle_pen_id_flexdatalist(true);
