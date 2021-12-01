@@ -103,8 +103,8 @@ function calc_rental_price($str_date, $end_date, $price) {
     $diff = (($year2 - $year1) * 12) + ($month2 - $month1);
 
     // 중간달 계산
-    if($diff > 2) {
-        $rental_price += ( $price * ($diff - 2) );
+    if($diff > 1) {
+        $rental_price += ( $price * ($diff - 1) );
     }
 
     // 첫째 달 계산
