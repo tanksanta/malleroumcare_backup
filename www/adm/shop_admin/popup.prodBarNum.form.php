@@ -288,7 +288,7 @@ if($od["od_b_tel"]) {
               </span>
               <?php } else { ?>
                 <span class="span3" style="font-size:1em;">
-                  <?php echo $gubun == '02' ? '비급여' : '추가옵션'; ?> 상품 바코드 미입력&nbsp;
+                  <?php echo $gubun == '02' ? '비급여' : '추가옵션'; ?> 상품 바코드 미입력(<?=$options[$k]["ct_qty"]?>개)&nbsp;
                   <span class="outline">
                     <input 
                       type="checkbox"

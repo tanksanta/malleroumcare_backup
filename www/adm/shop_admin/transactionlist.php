@@ -443,7 +443,7 @@ $( document ).ready(function() {
   
   $(document).on("click", ".prodBarNumCntBtn", function(e){
     e.preventDefault();
-    var popupWidth = 700;
+    var popupWidth = 800;
     var popupHeight = 700;
     var popupX = (window.screen.width / 2) - (popupWidth / 2);
     var popupY= (window.screen.height / 2) - (popupHeight / 2);
