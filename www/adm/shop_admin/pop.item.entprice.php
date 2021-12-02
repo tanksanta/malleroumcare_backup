@@ -67,6 +67,12 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 }
 ?>
 
+<style>
+.admin_popup {
+    font-size: 14px;
+}
+</style>
+
 <div id="pop_entprice" class="admin_popup admin_popup_padding">
     <h4 class="h4_header"><?php echo $title; ?></h4>
     <div class="sch_wr" style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px;">
