@@ -377,10 +377,14 @@ wcs_do(); // wetoz : 2020-09-04
 
 <script>
 <?php if ($member['mb_id']) { ?>
-if (navigator.userAgent.indexOf("Android") > - 1) {
-	window.EroummallApp.requestToken("");
-} else if (navigator.userAgent.indexOf("iPhone") > - 1) {
-	window.webkit.messageHandlers.requestToken.postMessage("");
+try {
+  if (navigator.userAgent.indexOf("Android") > - 1) {
+    window.EroummallApp.requestToken("");
+  } else if (navigator.userAgent.indexOf("iPhone") > - 1) {
+    window.webkit.messageHandlers.requestToken.postMessage("");
+  }
+} catch(ex) {
+  // do nothing
 }
 <?php } ?>
 function pushKey(token) {
