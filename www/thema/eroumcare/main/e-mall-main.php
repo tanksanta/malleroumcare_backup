@@ -371,7 +371,7 @@ $tutorials = get_tutorials();
 ?>
 
 <?php 
-if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials && !$is_admin) { 
+/* if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials && !$is_admin) { 
 ?>
 	<script>
 		show_eroumcare_popup({
@@ -483,4 +483,4 @@ if ($member['mb_id'] && $member['mb_type'] === 'default' && $tutorials && !$is_a
 	</script>
 	<?php } 
 	?>
-<?php } ?>
+<?php } */ ?>

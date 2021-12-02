@@ -1564,6 +1564,8 @@ function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = fa
 function get_tutorials($all = false) {
 	global $g5, $member;
 	$completed = false;
+
+  return false;
 	
 	if (!$member['mb_id']) {
 		return false;
