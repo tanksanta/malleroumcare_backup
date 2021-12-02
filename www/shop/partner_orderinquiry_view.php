@@ -138,6 +138,8 @@ while($manager = sql_fetch_array($manager_result)) {
 }
 
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_order.css?v=1128">', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/magnific-popup.css">', 0);
+add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>', 0);
 ?>
 
 <section id="partner-order" class="wrap">
@@ -207,7 +209,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
               <div class="row report-img-wrap">
                 <div class="col">
                   <div class="report-img">
-                    <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$cart['report']['ir_cert_url']}"))?>" target="_blank" class="view_image">
+                    <a href="<?=G5_DATA_URL.'/partner/img/'.$cart['report']['ir_cert_url']?>" target="_blank" class="view_image">
                       <img src="<?=G5_DATA_URL.'/partner/img/'.$cart['report']['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
                     </a>
                   </div>
@@ -215,7 +217,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/partner_or
                 <?php foreach($cart['report']['photo'] as $photo) { ?>
                 <div class="col">
                   <div class="report-img">
-                    <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"))?>" target="_blank" class="view_image">
+                    <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
                       <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
                     </a>
                   </div>
@@ -542,6 +544,29 @@ $(function() {
     .always(function() {
       loading_manager = false;
     })
+  });
+});
+</script>
+
+<script>
+$(function() {
+  $('.report-img-wrap').magnificPopup({
+    delegate: 'a',
+    type: 'image',
+    image: {
+      titleSrc: function(item) {
+        console.log(item);
+        return $('<a class="link_download_img">이미지 다운로드</a>')
+          .attr('href', item.src)
+          .attr('download', '설치이미지_' + item.index + '.jpg')
+      },
+    },
+    gallery:{
+      enabled:true,
+      tPrev: '이전', // title for left button
+      tNext: '다음', // title for right button
+      tCounter: '<span class="mfp-counter">%curr% / %total%</span>'
+    },
   });
 });
 </script>

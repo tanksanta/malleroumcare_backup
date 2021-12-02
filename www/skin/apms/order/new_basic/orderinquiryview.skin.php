@@ -3,6 +3,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="screen">', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/magnific-popup.css">', 0);
+add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>', 0);
 
 // 목록헤드
 if(isset($wset['ivhead']) && $wset['ivhead']) {
@@ -533,7 +535,7 @@ $(function() {
               <div class="row report-img-wrap">
                 <div class="col">
                   <div class="report-img">
-                    <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$item[$i]['opt'][$k]['report']['ir_cert_url']}"))?>" target="_blank" class="view_image">
+                    <a href="<?=G5_DATA_URL.'/partner/img/'.$item[$i]['opt'][$k]['report']['ir_cert_url']?>" target="_blank" class="view_image">
                       <img src="<?=G5_DATA_URL.'/partner/img/'.$item[$i]['opt'][$k]['report']['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
                     </a>
                   </div>
@@ -541,7 +543,7 @@ $(function() {
                 <?php foreach($item[$i]['opt'][$k]['report']['photo'] as $photo) { ?>
                 <div class="col">
                   <div class="report-img">
-                    <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"))?>" target="_blank" class="view_image">
+                    <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
                       <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
                     </a>
                   </div>
@@ -1206,3 +1208,26 @@ $(function() {
 });
 </script>
 <!-- 210512 전자계약서 팝업 -->
+
+<script>
+$(function() {
+  $('.report-img-wrap').magnificPopup({
+    delegate: 'a',
+    type: 'image',
+    image: {
+      titleSrc: function(item) {
+        console.log(item);
+        return $('<a class="link_download_img">이미지 다운로드</a>')
+          .attr('href', item.src)
+          .attr('download', '설치이미지_' + item.index + '.jpg')
+      },
+    },
+    gallery:{
+      enabled:true,
+      tPrev: '이전', // title for left button
+      tNext: '다음', // title for right button
+      tCounter: '<span class="mfp-counter">%curr% / %total%</span>'
+    },
+  });
+});
+</script>
