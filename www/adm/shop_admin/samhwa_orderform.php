@@ -274,6 +274,8 @@ $prev_step = get_prev_step($od['od_status']);
 
 // add_javascript('js 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
+add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/magnific-popup.css">', 0);
+add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>', 0);
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php'); // datepicker js
 
 // 파트너
@@ -1301,13 +1303,13 @@ var od_id = '<?php echo $od['od_id']; ?>';
                             <div class="ir_issue"><?=nl2br($report['ir_issue'])?></div>
                             <div class="ir_img_wrap">
                               <?php if($report['ir_cert_url']) { ?>
-                              <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"))?>" target="_blank" class="view_image">
+                              <a href="<?=G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"?>" target="_blank" class="view_image">
                                 <img src="<?=G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"?>">
                               </a>
                               <?php } ?>
                               <?php if ($report['photo']) { ?>
                               <?php foreach($report['photo'] as $photo) { ?>
-                              <a href="<?=G5_BBS_URL?>/view_image.php?fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"))?>" target="_blank" class="view_image">
+                              <a href="<?=G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"?>" target="_blank" class="view_image">
                                 <img src="<?=G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"?>">
                               </a>
                               <?php } ?>
@@ -4268,6 +4270,30 @@ if(confirm('출고담당자를 변경하시겠습니까?')){
 
 
 </script>
+
+<script>
+$(function() {
+  $('.ir_img_wrap').magnificPopup({
+    delegate: 'a',
+    type: 'image',
+    image: {
+      titleSrc: function(item) {
+        console.log(item);
+        return $('<a class="link_download_img">이미지 다운로드</a>')
+          .attr('href', item.src)
+          .attr('download', '설치이미지_' + item.index + '.jpg')
+      },
+    },
+    gallery:{
+      enabled:true,
+      tPrev: '이전', // title for left button
+      tNext: '다음', // title for right button
+      tCounter: '<span class="mfp-counter">%curr% / %total%</span>'
+    },
+  });
+});
+</script>
+
 <?php
 include_once(G5_ADMIN_PATH.'/admin.tail.php');
 ?>
