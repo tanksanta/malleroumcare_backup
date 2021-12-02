@@ -69,7 +69,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 
 <style>
 .admin_popup {
-    font-size: 14px;
+    font-size: 12px;
 }
 </style>
 
