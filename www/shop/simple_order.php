@@ -1122,6 +1122,10 @@ $(function() {
 
     echo 'select_item(' . ($data ?: '{}') . ', \'' . $row['io_id'] . '\', ' . ($row['qty'] ?: 1) . ');';
   }
+
+  // 장바구니 주문 세션 초기화
+  set_session('ss_simple_od_id', '');
+
   if($_GET['dc_id']) {
     $dc_id = get_search_string($_GET['dc_id']);
     $sql = "
@@ -1243,7 +1247,12 @@ $(function() {
         od_id = '$od_id' and
         mb_id = '{$member['mb_id']}'
     ";
-    $result = sql_query($sql, true);
+    $result = sql_query($sql);
+    if($result) {
+      // 장바구니 주문 세션 입력
+      set_session('ss_simple_od_id', $od_id);
+    }
+
     while($row = sql_fetch_array($result)) {
       _select_item($row);
     }
