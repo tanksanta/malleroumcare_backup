@@ -1120,7 +1120,7 @@ $(function() {
 
     $data = json_encode($data);
 
-    echo 'select_item(' . ($data ?: '{}') . ', null, ' . ($row['qty'] ?: 1) . ');';
+    echo 'select_item(' . ($data ?: '{}') . ', \'' . $row['io_id'] . '\', ' . ($row['qty'] ?: 1) . ');';
   }
   if($_GET['dc_id']) {
     $dc_id = get_search_string($_GET['dc_id']);
@@ -1205,6 +1205,7 @@ $(function() {
         i.it_img1 as it_img,
         i.it_delivery_cnt,
         i.it_sc_type,
+        io_id,
         it_sale_cnt,
         it_sale_cnt_02,
         it_sale_cnt_03,
