@@ -1680,6 +1680,21 @@ set_session('ss_order_id', '');
 if (get_session('ss_direct'))
   set_session('ss_cart_direct', '');
 
+// 장바구니 주문시 선택한 장바구니 물품 삭제
+$ss_simple_od_id = get_session('ss_simple_od_id');
+if($ss_simple_od_id) {
+  sql_query("
+    DELETE FROM g5_shop_cart
+    WHERE
+      ct_status = '쇼핑' and
+      ct_select = '1' and
+      od_id = '$ss_simple_od_id' and
+      mb_id = '{$member['mb_id']}'
+  ");
+}
+// 장바구니 주문 세션 초기화
+set_session('ss_simple_od_id', '');
+
 // 배송지처리 - 받는사람이 있으면 처리
 if($is_member && $od_b_name) {
   $sql = " select * from {$g5['g5_shop_order_address_table']}
