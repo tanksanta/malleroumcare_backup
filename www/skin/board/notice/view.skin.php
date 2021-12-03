@@ -93,7 +93,7 @@ add_javascript('<script src="'.G5_JS_URL.'/iscroll-zoom.js"></script>', 0);
 		}*/
   ?>
 
-	<div class="view-zoom-desc">상세정보를 <strong>확대</strong>해서 볼 수 있습니다.</div>
+	<div class="view-zoom-desc"><img src="<?=THEMA_URL?>/assets/img/icon_zoom_mobile.png" alt="" /> 상세정보를 <strong>확대</strong>해서 볼 수 있습니다.</div>
 	<div id="view-content" class="view-content">
 		<div>
 			<?php echo $view['content']; ?>
