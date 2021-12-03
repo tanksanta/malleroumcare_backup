@@ -23,11 +23,14 @@ add_stylesheet('<link rel="stylesheet" href="css/eforminquiry.css">', 0);
 <div class="eform-inquiry-wrap">
   <div class="sub_section_tit">전자계약서 확인</div>
   <div class="panel panel-default">
-    <div class="panel-heading"><strong>조회하실 전자문서를 선택하세요.</strong></div>
+    <div class="panel-heading"><strong>전자문서를 선택하세요.</strong></div>
     <div class="panel-body" style="text-align: center; padding: 25px 0;">
-        <a href="<?=G5_SHOP_URL."/eform/downloadEform.php?dc_id=$dc_id&penLtmNum=$penLtmNum&penNm=$penNm"?>" class="btn btn-lg btn-warning primary">공급계약서</a>
+        <a href="<?=G5_SHOP_URL."/eform/downloadEform.php?dc_id=$dc_id&penLtmNum=$penLtmNum&penNm=$penNm"?>" class="btn btn-eform-download">공급계약서 다운로드</a>
+        <br>
+        <a href="<?=G5_SHOP_URL."/eform/downloadReceipt.php?dc_id=$dc_id&penLtmNum=$penLtmNum&penNm=$penNm"?>" class="btn btn-basic">급여비용 명세서</a>
         <?php if($eform['dc_status'] == '2') { ?>
-        <a href="<?=G5_SHOP_URL."/eform/downloadCert.php?dc_id=$dc_id&penLtmNum=$penLtmNum&penNm=$penNm"?>" class="btn btn-lg btn-info" style="margin-left: 10px;">감사추적인증서</a>
+          <br>
+          <a href="<?=G5_SHOP_URL."/eform/downloadCert.php?dc_id=$dc_id&penLtmNum=$penLtmNum&penNm=$penNm"?>" class="btn btn-info">감사추적인증서</a>
         <?php } ?>
       </div>
   </div>
