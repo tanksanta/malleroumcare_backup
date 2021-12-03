@@ -31,6 +31,7 @@ $sql_order = "
     o.od_time,
     o.od_id,
     m.mb_entNm,
+    c.ct_id,
     c.it_name,
     c.ct_option,
     (c.ct_qty - c.ct_stock_qty) as ct_qty,
@@ -109,6 +110,7 @@ $sql_send_cost = "
     o.od_time,
     o.od_id,
     m.mb_entNm,
+    c.ct_id,
     '^배송비' as it_name,
     '' as ct_option,
     1 as ct_qty,
@@ -135,6 +137,7 @@ $sql_sales_discount = "
     o.od_time,
     o.od_id,
     m.mb_entNm,
+    c.ct_id,
     '^매출할인' as it_name,
     '' as ct_option,
     1 as ct_qty,
@@ -163,6 +166,7 @@ $sql_sales_coupon = "
     o.od_time,
     o.od_id,
     m.mb_entNm,
+    c.ct_id,
     '^쿠폰할인' as it_name,
     '' as ct_option,
     1 as ct_qty,
@@ -189,6 +193,7 @@ $sql_sales_point = "
     o.od_time,
     o.od_id,
     m.mb_entNm,
+    c.ct_id,
     '^포인트결제' as it_name,
     '' as ct_option,
     1 as ct_qty,
@@ -216,6 +221,7 @@ $sql_ledger = "
     lc_created_at as od_time,
     '' as od_id,
     m.mb_entNm,
+    '' as ct_id,
     (
       CASE
         WHEN lc_type = 1
@@ -293,6 +299,88 @@ while($row = sql_fetch_array($result)) {
   $balance += ($row['price_d'] * $row['ct_qty']);
   $balance -= ($row['deposit']);
   $row['balance'] = $balance;
+  $ct_id = $row['ct_id'];
+  //급여코드(품목코드) 가져오기
+  $it = sql_fetch("
+    SELECT cart.*, item.it_thezone2, o.io_thezone as io_thezone2, item.ca_id, it_standard, io_standard
+    FROM g5_shop_cart as cart
+    INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
+    LEFT JOIN g5_shop_item_option o ON (cart.it_id = o.it_id and cart.io_id = o.io_id)
+    WHERE cart.ct_id = '{$ct_id}'
+    ORDER BY cart.ct_id ASC
+  ");
+  $thezone_code = $it['io_thezone2'] ?: $it['io_thezone'] ?: $it['it_thezone2'];
+  $row['thezone_code'] = $thezone_code;
+
+  #바코드
+  $stoIdDataList = explode('|',$it['stoId']);
+  $stoIdDataList=array_filter($stoIdDataList);
+  $stoIdData = implode("|", $stoIdDataList);
+
+  $barcode=[];
+  $sendData["stoId"] = $stoIdData;
+  $oCurl = curl_init();
+  $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+  $result_again = $res;
+  $result_again =$result_again['data'];
+
+  for($k=0; $k < count($result_again); $k++) {
+    if($result_again[$k]['prodBarNum']) {
+      array_push($barcode,$result_again[$k]['prodBarNum']);
+    }
+  }
+  asort($barcode);
+  $barcode2=[];
+  $y = 0;  
+  foreach($barcode as $key=>$val)  
+  {  
+    $new_key = $y;  
+    $barcode2[$new_key] = $val;  
+    $y++;  
+  }
+  $barcode_string="";
+  if (!is_benefit_item($it)) {
+    for ($y=0; $y<count($barcode2); $y++) {
+        #처음
+        if ($y==0) {
+            $barcode_string .= $barcode2[$y];
+            continue;
+        }
+        #현재 바코드 -1이 전바코드와 같지않음
+        if (intval($barcode2[$y])-1 !== intval($barcode2[$y-1])) {
+            $barcode_string .= ",".$barcode2[$y];
+        }
+        #현재 바코드 -1이 전바코드와 같음
+        if (intval($barcode2[$y])-1 == intval($barcode2[$y-1])) {
+            //다음번이 연속되지 않을 경우
+            if (intval($barcode2[$y])+1 !== intval($barcode2[$y+1])) {
+                $barcode_string .= "-".$barcode2[$y];
+            }
+        }
+    }
+    $barcode_string .= " ";
+  }
+  $row['barcode_string'] = $barcode_string;
+
+  //배송정보
+  $delivery = '';
+  if ($it['ct_delivery_company']) {
+    $delivery = '(' . get_delivery_company_step($it['ct_delivery_company'])['name'] . ') ';
+  }
+  if ($it['ct_delivery_num']) {
+    $delivery .= $it['ct_delivery_num'];
+  }
+  //합포 송장번호 출력
+  if ($it['ct_combine_ct_id']) {
+    $sql_ct ="select `ct_delivery_company`, `ct_delivery_num` from g5_shop_cart where `ct_id` = '".$it['ct_combine_ct_id']."'";
+    $result_ct = sql_fetch($sql_ct);
+    $delivery = '';
+    if($result_ct['ct_delivery_company'])
+      $delivery = '(' . get_delivery_company_step($result_ct['ct_delivery_company'])['name'] . ') ';
+    $delivery .= $result_ct['ct_delivery_num'];
+  }
+  $row['delivery'] = $delivery;
+
   $ledgers[] = $row;
 }
 
@@ -326,9 +414,9 @@ if(! function_exists('column_char')) {
 
 include_once(G5_LIB_PATH.'/PHPExcel.php');
 
-$headers = ['일자-주문번호', '품목명[규격]', '수량', '단가(Vat포함)', '공급가액', '부가세', '판매', '수금', '잔액', '수령인'];
-$widths = [25, 20, 6, 12, 12, 12, 12, 12, 12, 15];
-$heights = [50, 36, 36, 36, 36, 36, 36, 20, 20, 20, 20, 20, 20, 20, 20];
+$headers = ['일자-주문번호', '품목명[규격]', '수량', '급여코드', '바코드', '배송정보', '단가(Vat포함)', '공급가액', '부가세', '판매', '수금', '잔액', '수령인'];
+$widths = [25, 20, 6, 12, 25, 20, 12, 12, 12, 12, 12, 12, 15];
+$heights = [50, 36, 36, 36, 36, 36, 36, 20];
 $last_char = column_char(count($headers) - 1);
 
 $rows = [];
@@ -337,6 +425,9 @@ if($carried_balance && !($sel_field && $search) && !$price) {
   $rows[] = [
     '',
     '이월잔액',
+    '',
+    '',
+    '',
     '',
     '',
     '',
@@ -361,6 +452,9 @@ foreach($ledgers as $row) {
     date('y/m/d', strtotime($row['od_time'])).($row['od_id'] ? '-'.$row['od_id'] : ''),
     $row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " [{$row['ct_option']}]" : ''),
     $row['ct_qty'],
+    $row['thezone_code'],
+    $row['barcode_string'],
+    $row['delivery'],
     $row['price_d'],
     $row['price_d_p'],
     $row['price_d_s'],
@@ -382,6 +476,9 @@ $totals = [
   '누계',
   '',
   $total_qty,
+  '',
+  '',
+  '',
   $total_price_d,
   $total_price_d_p,
   $total_price_d_s,
@@ -411,19 +508,19 @@ $styleArray = array(
   )
 );
 $excel->getDefaultStyle()->applyFromArray($styleArray);
-$excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(20);
-
+$excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(-1);
+$excel->getActiveSheet()->getStyle('A10:M'.(count($rows) + 9))->getAlignment()->setWrapText(true);
 // 폰트&볼드 처리
 // $excel->getActiveSheet()->getStyle('A1:J2')->getFont()->setSize(11);
 
 // 볼드처리
 $excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
 $excel->getActiveSheet()->getStyle('A3:A7')->getFont()->setBold(true);
-$excel->getActiveSheet()->getStyle('D3:D5')->getFont()->setBold(true);
-$excel->getActiveSheet()->getStyle('A8:J8')->getFont()->setBold(true);
+$excel->getActiveSheet()->getStyle('F3:F5')->getFont()->setBold(true);
+$excel->getActiveSheet()->getStyle('A8:M8')->getFont()->setBold(true);
 
 // number format 처리
-$excel->getActiveSheet()->getStyle('C9:I'.(count($rows) + 9))->getNumberFormat()->setFormatCode('#,##0_-');
+$excel->getActiveSheet()->getStyle('G9:M'.(count($rows) + 9))->getNumberFormat()->setFormatCode('#,##0_-');
 
 // 테두리 처리
 $styleArray = array(
@@ -433,21 +530,21 @@ $styleArray = array(
     )
   )
 );
-$excel->getActiveSheet()->getStyle('A2:J'.(count($rows) + 9))->applyFromArray($styleArray);
+$excel->getActiveSheet()->getStyle('A2:M'.(count($rows) + 9))->applyFromArray($styleArray);
 
 foreach($widths as $i => $w) $excel->setActiveSheetIndex(0)->getColumnDimension( column_char($i) )->setWidth($w);
 for ($i=0; $i < count($heights); $i++) {
   $row = $i+1;
   $excel->getActiveSheet()->getRowDimension("{$row}")->setRowHeight($heights[$i]);  
 }
-$entNm = $ent['mb_entNm'] ?: $ent_mb['mb_giup_bname'] ?: $ent_mb['mb_name'];
+$entNm = $ent['mb_entNm'] ?: $ent['mb_giup_bname'] ?: $ent['mb_name'];
 $excel->getActiveSheet()->setCellValue("A1", "[{$entNm}] 거래원장");
-$excel->getActiveSheet()->mergeCells('A1:J1');
-$excel->getActiveSheet()->getStyle('A1:J1')->getFont()->setSize(18);
-$excel->getActiveSheet()->getStyle('A1:J1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+$excel->getActiveSheet()->mergeCells('A1:M1');
+$excel->getActiveSheet()->getStyle('A1:M1')->getFont()->setSize(18);
+$excel->getActiveSheet()->getStyle('A1:M1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
 //회사정보 영역 폰트 사이즈
-$excel->getActiveSheet()->getStyle('A2:J7')->getFont()->setSize(12);
+$excel->getActiveSheet()->getStyle('A2:M7')->getFont()->setSize(12);
 
 // 회사명/담당자
 $excel->getActiveSheet()->setCellValue("A2", "회사명 : (주)티에이치케이컴퍼니 / 담당 : {$mb_manager}");
@@ -455,26 +552,26 @@ $excel->getActiveSheet()->mergeCells('A2:G2');
 
 // 기간
 $excel->getActiveSheet()->setCellValue("H2", "{$fr_date} ~ {$to_date}");
-$excel->getActiveSheet()->mergeCells('H2:J2');
-$excel->getActiveSheet()->getStyle('H2:J2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+$excel->getActiveSheet()->mergeCells('H2:M2');
+$excel->getActiveSheet()->getStyle('H2:M2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
 //회사정보
-$excel->getActiveSheet()->mergeCells('B3:C3');
-$excel->getActiveSheet()->mergeCells('D3:E3');
-$excel->getActiveSheet()->mergeCells('B4:C4');
-$excel->getActiveSheet()->mergeCells('D4:E4');
-$excel->getActiveSheet()->mergeCells('B5:C5');
-$excel->getActiveSheet()->mergeCells('D5:E5');
-$excel->getActiveSheet()->mergeCells('B6:J6');
-$excel->getActiveSheet()->mergeCells('B7:J7');
-$excel->getActiveSheet()->mergeCells('F3:J3');
-$excel->getActiveSheet()->mergeCells('F4:J4');
-$excel->getActiveSheet()->mergeCells('F5:J5');
+$excel->getActiveSheet()->mergeCells('B3:E3');
+$excel->getActiveSheet()->mergeCells('F3:G3');
+$excel->getActiveSheet()->mergeCells('B4:E4');
+$excel->getActiveSheet()->mergeCells('F4:G4');
+$excel->getActiveSheet()->mergeCells('B5:E5');
+$excel->getActiveSheet()->mergeCells('F5:G5');
+$excel->getActiveSheet()->mergeCells('B6:M6');
+$excel->getActiveSheet()->mergeCells('B7:M7');
+$excel->getActiveSheet()->mergeCells('H3:M3');
+$excel->getActiveSheet()->mergeCells('H4:M4');
+$excel->getActiveSheet()->mergeCells('H5:M5');
 $excel->getActiveSheet()->getStyle('B4')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 
-$giup_info_title_cells = ['A3', 'D3', 'A4', 'D4', 'A5', 'D5', 'A6', 'A7'];
+$giup_info_title_cells = ['A3', 'F3', 'A4', 'F4', 'A5', 'F5', 'A6', 'A7'];
 $giup_info_titles = ['사업자번호', '대표자', '여신한도', '전화번호', 'E-mail', '팩스번호', '주소', '적요'];
-$giup_info_value_cells = ['B3', 'F3', 'B4', 'F4', 'B5', 'F5', 'B6', 'B7'];
+$giup_info_value_cells = ['B3', 'H3', 'B4', 'H4', 'B5', 'H5', 'B6', 'B7'];
 $giup_info_values = [$ent['mb_giup_bnum'], $ent['mb_giup_boss_name'], '0', $ent['mb_tel'], $ent['mb_email'], $ent['mb_fax'], $ent['mb_addr1'], ''];
 for ($i=0; $i < 8; $i++) { 
   $excel->getActiveSheet()->setCellValue($giup_info_title_cells[$i], $giup_info_titles[$i]);

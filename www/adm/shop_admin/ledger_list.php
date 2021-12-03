@@ -403,7 +403,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 <div class="tbl_head01 tbl_wrap">
   <div class="local_ov01" style="border:1px solid #e3e3e3;">
     <h1 style="border:0;padding:5px 0;margin:0;letter-spacing:0;">
-      [<?=$ent['mb_entNm']?>] 구매액 합계: <?=number_format($total_price)?>원 (공급가:<?=number_format($total_price_p)?>원, VAT:<?=number_format($total_price_s)?>원)
+      <?php $entNm = $ent['mb_entNm'] ?: $ent['mb_giup_bname'] ?: $ent['mb_name']; ?>
+      [<?=$entNm?>] 구매액 합계: <?=number_format($total_price)?>원 (공급가:<?=number_format($total_price_p)?>원, VAT:<?=number_format($total_price_s)?>원)
     </h1>
     <div class="right">
       <button id="btn_ledger_excel"><img src="<?=G5_ADMIN_URL?>/shop_admin/img/btn_img_ex.gif">엑셀다운로드</button>
