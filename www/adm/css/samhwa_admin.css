@@ -2368,3 +2368,31 @@ table.it_outsourcing td span {
     padding: 0 13px;
     float: right;
 }
+
+.fixed_table_wr {
+    padding: 0 0 10px 200px;
+    margin: 0 20px;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+.fixed_table_wr table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.fixed_table_wr td, th {
+    height: 40px;
+    margin: 0;
+    white-space: nowrap;
+    border-top-width: 0px;
+    min-width: 180px;
+}
+
+.fixed_table_wr .fixed {
+    position: absolute;
+    top: auto;
+    left: 20px;
+    width: 200px;
+    overflow: hidden;
+}
