@@ -128,7 +128,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                   <input type="radio" name="ms_pro_yn" id="ms_pro_yn_y" value="Y" <?=option_array_checked($ms['ms_pro_yn_n'], ['Y'])?>> 보호자
                 </label>
               </div>
-              <input type="text" name="ms_pen_hp" id="ms_pen_hp" class="form-control input-sm" value="<?=$ms['ms_pen_hp'] ?: ''?>" placeholder="휴대폰번호">
+              <input type="text" maxlength="11" oninput="max_length_check(this)" name="ms_pen_hp" id="ms_pen_hp" class="form-control input-sm" value="<?=$ms['ms_pen_hp'] ?: ''?>" placeholder="휴대폰번호">
               <span class="form_desc">* 입력된 휴대폰 번호로 메시지가 전송됩니다.</span>
             </div>
           </div>
@@ -315,6 +315,14 @@ function select_item(obj) {
 
   check_no_item();
   save_item_msg();
+}
+
+// 최대길이 체크
+function max_length_check(object){
+  object.value = object.value.replace(/[^0-9]/g,'');
+  if (object.value.length > object.maxLength) {
+    object.value = object.value.slice(0, object.maxLength);
+  }
 }
 
 // 저장

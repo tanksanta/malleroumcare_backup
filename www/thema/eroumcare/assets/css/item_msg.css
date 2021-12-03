@@ -638,9 +638,10 @@
   .im_send_wr .im_desc {
     position: absolute;
     left: 0;
-    bottom: 10px;
+    bottom: 2px;
     width: 100%;
     text-align: center;
+    line-height: 1.1;
   }
 
   .im_send_wr .im_desc p {
