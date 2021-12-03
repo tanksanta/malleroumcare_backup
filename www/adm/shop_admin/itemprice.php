@@ -77,7 +77,19 @@ while($item = sql_fetch_array($result)) {
     $items[] = $item;
 }
 
+add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
 ?>
+
+<style>
+#upload_wrap { display: none; }
+.popModal #upload_wrap { display: block; }
+.popModal .popModal_content { margin: 0 !important; }
+.popModal .form-group { margin-bottom: 15px; }
+.popModal label { display: inline-block; max-width: 100%; margin-bottom: 5px; font-weight: 700; }
+.popModal input[type=file] { display: block; }
+.popModal .help-block { padding: 0; display: block; margin-top: 5px; margin-bottom: 10px; color: #737373; }
+</style>
 
 <div class="local_ov01 local_ov">
     <p>상품가격을 입력하지 않은 경우 기본으로 설정된 가격으로 적용됩니다.</p>
@@ -100,6 +112,19 @@ while($item = sql_fetch_array($result)) {
         <button id="exceldownload">엑셀다운로드</button>
         <button id="excelupload">엑셀업로드</button>
     </div>
+</div>
+
+<div id="upload_wrap">
+  <form id="form_excel_upload" style="font-size: 14px;">
+    <div class="form-group">
+      <label for="datafile">엑셀 업로드</label>
+      <input type="file" name="datafile" id="datafile">
+      <p class="help-block">
+        다운로드 받으신 엑셀을 작성하신 후 업로드하시면 적용됩니다.
+      </p>
+    </div>
+    <button type="submit" class="btn btn-primary">업로드</button>
+  </form>
 </div>
 
 <form action="itempriceupdate.php" method="POST" autocomplete="off">
@@ -148,6 +173,37 @@ while($item = sql_fetch_array($result)) {
 <script>
 $("#exceldownload").click(function() {
     $(location).attr('href',"./itempriceexcel.php");
+});
+
+// 택배정보 일괄 업로드
+$('#excelupload').click(function() {
+  $(this).popModal({
+    html: $('#form_excel_upload'),
+    placement: 'bottomRight',
+    showCloseBut: false
+  });
+});
+$('#form_excel_upload').submit(function(e) {
+  e.preventDefault();
+
+  var fd = new FormData(document.getElementById("form_excel_upload"));
+  $.ajax({
+      url: 'ajax.itemprice.excel.upload.php',
+      type: 'POST',
+      data: fd,
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType: 'json'
+    })
+    .done(function() {
+      alert('업로드가 완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
 });
 </script>
 
