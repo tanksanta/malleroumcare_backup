@@ -151,6 +151,7 @@ $flist = apms_form(1,0);
     <?php echo $listall; ?>
     <span class="btn_ov01"><span class="ov_txt">등록된 상품</span><span class="ov_num"> <?php echo $total_count; ?>건</span></span>
     <div class="right">
+        <button id="itemprice">상품가격관리</button>
         <button id="itemexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">엑셀다운로드</button>
     </div>
 </div>
@@ -533,6 +534,10 @@ $it = sql_fetch($sql);
 
 $("#itemexcel").click(function() {
     $(location).attr('href',"./excel_item.php");
+});
+
+$('#itemprice').click(function() {
+    window.location.href = './itemprice.php';
 });
 
 <?php if ($api_it_id) { ?>
