@@ -17,3 +17,26 @@
   color: #fff;
   text-align: center;
 }
+
+.btn {
+  width: 190px;
+  padding: 8px 16px;
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.btn-eform-download {
+  background-color: #f0ad4e;
+  color:#fff
+}
+
+.btn-basic {
+  border: 1px solid #ddd;
+  display: inline-block;
+}
+
+.btn-info {
+  background-color: #5bc0de;
+  display: inline-block;
+  color:#fff
+}
