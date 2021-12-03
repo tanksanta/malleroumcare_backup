@@ -2381,7 +2381,7 @@ table.it_outsourcing td span {
     border-spacing: 0;
 }
 
-.fixed_table_wr td, th {
+.fixed_table_wr td, .fixed_table_wr th {
     height: 40px;
     margin: 0;
     white-space: nowrap;
