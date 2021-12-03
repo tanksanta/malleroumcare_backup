@@ -246,10 +246,10 @@ function form_check(act) {
   }
 
   if (requests.length > 0) {
-    $.when.apply($, requests).then(() => {
+    $.when.apply($, requests).then(function() {
       alert('완료되었습니다');
       window.location.reload();
-    }, error => {
+    }, function(error) {
       alert(error.message)
     });
     return true;
@@ -954,10 +954,13 @@ function excelPost(action, data) {
       
       strLength = originStr.length;
       
-      if(strLength < 3){
-        maskingStr = originStr.replace(/(?<=.{1})./gi, "*");
-      }else {
-        maskingStr = originStr.replace(/(?<=.{2})./gi, "*");
+      if(strLength < 2) {
+        maskingStr = originStr.substring(0, 1) + '*';
+      } else {
+        maskingStr = originStr.substring(0, 2);
+        for(var i = 0; i < strLength - 2; i++) {
+          maskingStr += '*';
+        }
       }
       
       return maskingStr;
@@ -977,7 +980,7 @@ function excelPost(action, data) {
       
       strLength = originStr.length;
 
-      maskingStr = originStr.replace(/(?<=.{6})./gi, "*");
+      maskingStr = originStr.substring(0, 6) + '*****';
 
       return maskingStr;
     }
