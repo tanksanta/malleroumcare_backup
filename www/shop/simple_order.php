@@ -1236,7 +1236,8 @@ $(function() {
         it_type9,
         it_type10,
         it_expected_warehousing_date,
-        ct_qty as qty
+        ct_qty as qty,
+        ct_pen_id
       FROM
         g5_shop_cart c
       LEFT JOIN
@@ -1253,8 +1254,25 @@ $(function() {
       set_session('ss_simple_od_id', $od_id);
     }
 
+    $ct_pen_id = '';
     while($row = sql_fetch_array($result)) {
+      $ct_pen_id = $row['ct_pen_id'];
       _select_item($row);
+    }
+
+    // 수급자 배송정보 입력
+    if($ct_pen_id) {
+      $pen = get_recipient($ct_pen_id);
+      echo "
+        var f = window.forderform;
+        f.od_b_name.value        = '" . get_text($pen['penNm']) . "';
+        f.od_b_tel.value         = '" . get_text($pen['penConPnum']) . "';
+        f.od_b_hp.value          = '" . get_text($pen['penConNum']) . "';
+        f.od_b_zip.value         = '" . get_text($pen['penZip']) . "';
+        f.od_b_addr1.value       = '" . get_text($pen['penAddr']) . "';
+        f.od_b_addr2.value       = '" . get_text($pen['penAddrDtl']) . "';
+        f.od_b_addr_jibeon.value = '';
+      ";
     }
   }
   ?>
