@@ -177,7 +177,10 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             </label>
           </div>
           <div class="im_sch_wr">
-            <div class="im_sch_hd">상품정보</div>
+            <div class="im_flex space-between align-items">
+              <div class="im_sch_hd">상품정보</div>
+              <button class="btn_im_sel">품목찾기</button>
+            </div>
             <div class="ipt_im_sch_wr">
               <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
               <input type="text" id="ipt_im_sch" class="ipt_im_sch" placeholder="여기에 추가할 상품명을 입력해주세요">

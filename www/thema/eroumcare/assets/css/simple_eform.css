@@ -183,7 +183,7 @@
   background: rgba(0, 0, 0, 0.8);
 }
 #popup_box iframe {
-  width:500px;
+  width:1000px;
   height:700px;
   max-height: 80%;
   position: absolute; 
@@ -317,10 +317,10 @@
   margin-bottom: 10px;
 }
 .btn_se_sch {
-  display: inline;
-  background: none;
-  color: #ef8505;
-  text-decoration: underline;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 5px 10px;
 }
 @media (max-width: 960px) {
   .se_sch_pop {

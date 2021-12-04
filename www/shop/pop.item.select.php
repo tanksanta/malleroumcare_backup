@@ -32,6 +32,11 @@ $sql_search .= " $where a.it_id NOT IN ('PRO2021072200013', 'PRO2021072200012') 
 $sql_search .= " $where a.it_name NOT LIKE 'test%' "; // 테스트 상품 제외
 $sql_search .= " $where a.it_use = 1 "; // 판매 상품
 
+$ca_id = get_search_string($ca_id);
+if($ca_id) {
+    $sql_search .= " $where a.ca_id LIKE '$ca_id%' ";
+}
+
 if ($sfl == "")  $sfl = "all";
 
 $sql_common = " from {$g5['g5_shop_item_table']} a
@@ -79,9 +84,59 @@ $sql  = " select
            limit $from_record, $rows ";
 $result = sql_query($sql);
 
-$qstr = "no_option={$no_option}&sfl={$sfl}&stx={$stx}&save_stx={$stx}&sca={$sca}";
+$qstr = "no_option={$no_option}&sfl={$sfl}&stx={$stx}&save_stx={$stx}&sca={$sca}&ca_id={$ca_id}";
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
+
+// 카테고리 가져오기
+$cate_10 = [];
+$cate_20 = [];
+$cate_70 = [];
+
+$sql = " select * from g5_shop_category where (ca_id LIKE '10%' OR ca_id LIKE '20%' OR ca_id LIKE '70%') and length(ca_id) = 4 order by ca_id asc ";
+$cate_result = sql_query($sql);
+
+$cate_text = '전체';
+if($ca_id) {
+    switch(substr($ca_id, 0, 2)) {
+        case '10':
+            $cate_text .= ' / 판매품목';
+            break;
+        case '20':
+            $cate_text .= ' / 대여품목';
+            break;
+        case '70':
+            $cate_text .= ' / 비급여품목';
+            break;
+    }
+}
+
+while($cate = sql_fetch_array($cate_result)) {
+    if($ca_id == $cate['ca_id']) {
+        $cate_text .= ' / ' . $cate['ca_name'];
+    }
+
+    switch(substr($cate['ca_id'], 0, 2)) {
+        case '10':
+            $cate_10[] = [
+                'ca_id' => $cate['ca_id'],
+                'ca_name' => $cate['ca_name']
+            ];
+            break;
+        case '20':
+            $cate_20[] = [
+                'ca_id' => $cate['ca_id'],
+                'ca_name' => $cate['ca_name']
+            ];
+            break;
+        case '70':
+            $cate_70[] = [
+                'ca_id' => $cate['ca_id'],
+                'ca_name' => $cate['ca_name']
+            ];
+            break;
+    }
+}
 
 ?>
 <html>
@@ -99,7 +154,93 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 .pg_page, .pg_current {
     padding: 0 8px;
 }
+#ca_id {
+    display: none;
+    margin: 0 auto;
+    width: calc(100% - 40px);
+    height: 40px;
+}
+.cate_text {
+    font-size: 16px;
+    padding: 20px;
+    padding-top: 10px;
+}
+
+#pop_add_item {
+    padding-left: 180px;
+}
+.cate_wr {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 180px;
+    border-right: 1px solid #ccc;
+    z-index: 10;
+}
+.cate_wr .cate {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.cate_wr .cate a {
+    display: block;
+    padding: 4px;
+    padding-left: 10px;
+    color: #333;
+    font-size: 14px;
+}
+.cate_wr .cate a:first-child {
+    font-size: 18px;
+    padding-left: 4px;
+}
+.cate_wr .cate a.active {
+    color: #fff;
+    background: #f08606;
+}
+
+@media (max-width: 960px) {
+    #ca_id {
+        display: block;
+    }
+    .cate_wr {
+        display: none;
+    }
+    #pop_add_item {
+        padding-left: 0;
+    }
+    .cate_text {
+        padding-top: 20px;
+    }
+}
 </style>
+<div class="cate_wr">
+    <div class="cate">
+        <a href="?<?php echo "no_option={$no_option}"; ?>" <?php if($ca_id == '') echo 'class="active"' ?>>전체</a>
+    </div>
+    <div class="cate">
+        <a href="?<?php echo "no_option={$no_option}"; ?>&ca_id=10" <?php if($ca_id == '10') echo 'class="active"' ?>>판매품목</a>
+        <?php
+        foreach($cate_10 as $cate) {
+            echo "<a href=\"?no_option={$no_option}&ca_id={$cate['ca_id']}\"" . ($ca_id == $cate['ca_id'] ? ' class="active"' : '') . ">{$cate['ca_name']}</a>";
+        }
+        ?>
+    </div>
+    <div class="cate">
+        <a href="?<?php echo "no_option={$no_option}"; ?>&ca_id=20" <?php if($ca_id == '20') echo 'class="active"' ?>>대여품목</a>
+        <?php
+        foreach($cate_20 as $cate) {
+            echo "<a href=\"?no_option={$no_option}&ca_id={$cate['ca_id']}\"" . ($ca_id == $cate['ca_id'] ? ' class="active"' : '') . ">{$cate['ca_name']}</a>";
+        }
+        ?>
+    </div>
+    <div class="cate">
+        <a href="?<?php echo "no_option={$no_option}"; ?>&ca_id=70" <?php if($ca_id == '70') echo 'class="active"' ?>>비급여품목</a>
+        <?php
+        foreach($cate_70 as $cate) {
+            echo "<a href=\"?no_option={$no_option}&ca_id={$cate['ca_id']}\"" . ($ca_id == $cate['ca_id'] ? ' class="active"' : '') . ">{$cate['ca_name']}</a>";
+        }
+        ?>
+    </div>
+</div>
 <div id="pop_add_item" class="admin_popup">
     <div class="header">
         <ul class="add_item_header">
@@ -111,10 +252,35 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <li class="">옵션선택</li>
             <?php } ?>
         </ul>
+        <select id="ca_id">
+            <option value="">전체</option>
+            <option value="10" <?=get_selected($ca_id, '10')?>>판매품목</option>
+            <?php
+            foreach($cate_10 as $cate) {
+                echo "<option value=\"{$cate['ca_id']}\"" . get_selected($ca_id, $cate['ca_id']) . ">&nbsp;&nbsp;&nbsp;{$cate['ca_name']}</option>";
+            }
+            ?>
+            <option value="20" <?=get_selected($ca_id, '20')?>>대여품목</option>
+            <?php
+            foreach($cate_20 as $cate) {
+                echo "<option value=\"{$cate['ca_id']}\"" . get_selected($ca_id, $cate['ca_id']) . ">&nbsp;&nbsp;&nbsp;{$cate['ca_name']}</option>";
+            }
+            ?>
+            <option value="70" <?=get_selected($ca_id, '70')?>>비급여품목</option>
+            <?php
+            foreach($cate_70 as $cate) {
+                echo "<option value=\"{$cate['ca_id']}\"" . get_selected($ca_id, $cate['ca_id']) . ">&nbsp;&nbsp;&nbsp;{$cate['ca_name']}</option>";
+            }
+            ?>
+        </select>
+        <div class="cate_text">
+            <?php echo $cate_text; ?>
+        </div>
     </div>
     <div class="content">
         <form class="form-horizontal popadditemsearch" role="form" name="popadditemsearch" action="<?=$action?>" onsubmit="return true;" method="get" autocomplete="off">
             <input type="hidden" name="no_option" value="<?=$no_option?>">
+            <input type="hidden" name="ca_id" value="<?=$ca_id?>">
             <label for="sca" class="sound_only">분류선택</label>
 
             <label for="sfl" class="sound_only">검색대상</label>
@@ -188,6 +354,16 @@ function select_item(target) {
 }
 </script>
 <?php } ?>
+
+<script>
+$(function() {
+    $('#ca_id').change(function() {
+        var ca_id = $(this).val();
+
+        window.location.href = "?<?php echo "no_option={$no_option}" ?>&ca_id=" + ca_id;
+    });
+});
+</script>
 
 </body>
 </html>

@@ -92,7 +92,10 @@ add_javascript(G5_POSTCODE_JS, 0);
 
       <div class="so_item_wr">
         <div class="so_sch_wr">
-          <div class="so_sch_hd">상품정보</div>
+          <div class="flex space-between">
+            <div class="so_sch_hd">상품정보</div>
+            <button type="button" class="btn_so_sch">상품검색</button>
+          </div>
           <div class="ipt_so_sch_wr">
             <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
             <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="여기에 추가할 상품명을 입력해주세요">
