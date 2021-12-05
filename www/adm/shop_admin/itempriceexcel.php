@@ -40,21 +40,7 @@ while($item = sql_fetch_array($result)) {
     $items[] = $item;
 }
 
-if(! function_exists('column_char')) {
-    function column_char($i) {
-        $div = intval($i / 26);
-        $char = chr( 65 + ($i % 26) );
-
-        if($div > 0) {
-            return column_char($div - 1) . $char;
-        } else {
-            return $char;
-        }
-    }
-}
-
 include_once(G5_LIB_PATH.'/PHPExcel.php');
-$headers = ['상품관리코드', '상품명', '급여가', '공급가'];
 
 $excel = new PHPExcel();
 $sheet = $excel->setActiveSheetIndex(0);
@@ -65,53 +51,48 @@ $styleArray = [
         'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
     ]
 ];
-//$excel->getDefaultStyle()->applyFromArray($styleArray);
-$sheet->getStyle('A1:D1')->applyFromArray($styleArray);
+$sheet->getStyle('A1:A4')->applyFromArray($styleArray);
 
 // 제목
-$sheet->mergeCells('A1:A2')->setCellValue('A1', '상품관리코드');;
-$sheet->mergeCells('B1:B2')->setCellValue('B1', '상품명');
-$sheet->mergeCells('C1:C2')->setCellValue('C1', '급여가');
-$sheet->mergeCells('D1:D2')->setCellValue('D1', '공급가');
+$sheet->mergeCells('A1:B1')->setCellValue('A1', '상품관리코드');
+$sheet->mergeCells('A2:B2')->setCellValue('A2', '상품명');
+$sheet->mergeCells('A3:B3')->setCellValue('A3', '급여가');
+$sheet->mergeCells('A4:B4')->setCellValue('A4', '공급가');
 
-// 행(사업소)
-$last_col_idx = 0;
+// 열(사업소)
+$sheet->getColumnDimension('A')->setWidth(10);
+$sheet->getColumnDimension('B')->setWidth(20);
 foreach($ents as $idx => $ent) {
-    $col = column_char($idx + 4);
-    $last_col_idx = $idx + 4;
+    $row = $idx + 5;
 
-    $sheet->setCellValue("{$col}1", $ent['mb_id']);
-    $sheet->getStyle("{$col}1")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-    $sheet->getStyle("{$col}1")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $sheet->setCellValue("A{$row}", $ent['mb_id']);
+    $sheet->getStyle("A{$row}")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    //$sheet->getStyle("A{$row}")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-    $sheet->setCellValue("{$col}2", $ent['mb_name']);
-    $sheet->getStyle("{$col}2")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-    $sheet->getStyle("{$col}2")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $sheet->setCellValue("B{$row}", $ent['mb_name']);
+    $sheet->getStyle("B{$row}")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 }
 
-// 행 너비
-for($i = 0; $i <= $last_col_idx; $i++) {
-    //if($i < 4) {
-        $sheet->getColumnDimension( column_char($i) )->setWidth(20);
-    //}
-}
-
+// 행(상품)
 foreach($items as $it_idx => $it) {
-    $row = $it_idx + 3;
+    $col = PHPExcel_Cell::stringFromColumnIndex($it_idx + 2);
+    $sheet->getColumnDimension($col)->setWidth(15);
 
-    $sheet->setCellValue("A{$row}", $it['it_id']);
-    $sheet->setCellValue("B{$row}", $it['it_name']);
-    $sheet->setCellValue("C{$row}", $it['it_cust_price']);
-    $sheet->getStyle("C{$row}")->getNumberFormat()->setFormatCode('#,##0');
-    $sheet->setCellValue("D{$row}", $it['it_price']);
-    $sheet->getStyle("D{$row}")->getNumberFormat()->setFormatCode('#,##0');
+    $sheet->setCellValue("{$col}1", $it['it_id']);
+    $sheet->setCellValue("{$col}2", $it['it_name']);
+    $sheet->setCellValue("{$col}3", $it['it_cust_price']);
+    $sheet->getStyle("{$col}3")->getNumberFormat()->setFormatCode('#,##0');
+    $sheet->setCellValue("{$col}4", $it['it_price']);
+    $sheet->getStyle("{$col}4")->getNumberFormat()->setFormatCode('#,##0');
 
     foreach($ents as $ent_idx => $ent) {
-        $col = column_char($ent_idx + 4);
+        $row = $ent_idx + 5;
         $sheet->setCellValue("{$col}{$row}", $it['entprice'][$ent['mb_id']]);
         $sheet->getStyle("{$col}{$row}")->getNumberFormat()->setFormatCode('#,##0');
     }
 }
+
+$sheet->freezePane('C5');
 
 header("Content-Type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"상품가격관리.xlsx\"");

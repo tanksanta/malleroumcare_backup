@@ -32,19 +32,19 @@ $last_col = $sheet->getHighestDataColumn();
 $num_cols = PHPExcel_Cell::columnIndexFromString($last_col);
 $num_rows = $sheet->getHighestDataRow();
 
-for($row = 3; $row <= $num_rows; $row++) {
-    $it_id = trim($sheet->getCell("A{$row}")->getValue());
-    $it_id = get_search_string($it_id);
-    for($idx = 4; $idx <= $num_cols; $idx++) {
-        $col = PHPExcel_Cell::stringFromColumnIndex($idx);
+for($idx = 2; $idx <= $num_cols; $idx++) {
+    $col = PHPExcel_Cell::stringFromColumnIndex($idx);
 
+    $it_id = trim($sheet->getCell("{$col}1")->getValue());
+    $it_id = get_search_string($it_id);
+    for($row = 5; $row <= $num_rows; $row++) {
         $it_price = preg_replace('/[^0-9]/', '', $sheet->getCell("{$col}{$row}")->getValue());
 
         // 가격이 없으면 continue
         if(!$it_price)
             continue;
 
-        $mb_id = trim($sheet->getCell("{$col}1")->getValue());
+        $mb_id = trim($sheet->getCell("A{$row}")->getValue());
         $mb_id = get_search_string($mb_id);
 
         // 담당 사업소가 아니면 continue
