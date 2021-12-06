@@ -8,19 +8,13 @@ $od = sql_fetch("
   FROM
     {$g5['g5_shop_order_table']} o
   WHERE
-    od_id = '{$od_id}'
+    od_id = '{$od_id}' and
+    mb_id = '{$member['mb_id']}'
 ");
 if(!$od['od_id'])
   alert('존재하지 않는 주문입니다.');
 
 $mb = get_member($od['mb_id']);
-
-$manager_mb_id = get_session('ss_manager_mb_id');
-$manager_log_text = '';
-if($manager_mb_id) {
-  $manager = get_member($manager_mb_id);
-  $manager_log_text = "({$manager['mb_name']}) ";
-}
 
 $send_data = [
     'usrId' => $mb['mb_id'],
@@ -42,39 +36,12 @@ $send_data = [
     'returnUrl' => 'NULL',
 ];
 
-/*
-$cart_result = sql_query("
-  SELECT
-    c.*,
-    i.ca_id,
-    i.it_img1,
-    i.it_cust_price
-  FROM
-    {$g5['g5_shop_cart_table']} c
-  LEFT JOIN
-    {$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
-  WHERE
-    od_id = '{$od_id}' and
-    ct_direct_delivery_partner = '{$member['mb_id']}' and
-    ct_status IN('출고준비', '배송', '완료', '취소', '주문무효')
-  ORDER BY
-    ct_id ASC
-");
-
-$carts = [];
-while($row = sql_fetch_array($cart_result)) {
-  $carts[] = $row;
-}
-
-if(!$carts)
-  alert('존재하지 않는 주문입니다.');
-*/
-
 $ct_id_arr = $_POST['ct_id'];
 $deleted_arr = $_POST['deleted'];
 $it_id_arr = $_POST['it_id'];
 $io_id_arr = $_POST['io_id'];
 $ct_qty_arr = $_POST['ct_qty'];
+$io_type_arr = $_POST['io_type'];
 $prodMemo_arr = $_POST['prodMemo'];
 
 $delete_requests = [];
@@ -84,6 +51,14 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     $io_id = clean_xss_tags($io_id_arr[$i]);
     $ct_qty = clean_xss_tags($ct_qty_arr[$i]);
     $prodMemo = clean_xss_tags($prodMemo_arr[$i]);
+    $ct_id = clean_xss_tags($ct_id_arr[$i]);
+    $io_type = 0;
+    if($ct_id) {
+        $ct = sql_fetch("SELECT * FROM g5_shop_cart WHERE ct_id = '$ct_id' and mb_id = '{$member['mb_id']}'");
+        $io_type = $ct['io_type'];
+    } else {
+        $ct = null;
+    }
 
     $it = sql_fetch(" SELECT * FROM g5_shop_item WHERE it_id = '$it_id' ");
     if(!$it)
@@ -101,9 +76,75 @@ for($i = 0; $i < count($it_id_arr); $i++) {
         $ct_price = $it['it_price_dealer2'];
     }
 
-    $ct_id = clean_xss_tags($ct_id_arr[$i]);
+    // 사업소별 판매가
+    $entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '{$it['it_id']}' and mb_id = '{$member['mb_id']}' ");
+    $it['entprice'] = $entprice['it_price'];
+
+    if($it['entprice'] > 0)
+        $ct_price = $it['entprice'];
+
+    // 묶음할인
+    $ct_discount = 0;
+    $ct_sale_qty = 0;
+
+    for($tmp_i = 0; $tmp_i < count($it_id_arr); $tmp_i++) {
+        if($deleted_arr[$i] == '1') continue;
+        if($it_id_arr[$tmp_i] !== $it_id) continue;
+        if($io_type_arr[$tmp_i] == '1') continue;
+
+        $ct_sale_qty += $ct_qty_arr[$tmp_i];
+    }
+
+    $itSaleCntList = [$it["it_sale_cnt"], $it["it_sale_cnt_02"], $it["it_sale_cnt_03"], $it["it_sale_cnt_04"], $it["it_sale_cnt_05"]];
+    $itSalePriceList = [$it["it_sale_percent"], $it["it_sale_percent_02"], $it["it_sale_percent_03"], $it["it_sale_percent_04"], $it["it_sale_percent_05"]];
+    //우수사업소고 우수사업소 할인가가 있으면 적용
+    if($member['mb_level']=="4" && $it['it_sale_percent_great']) {
+        $itSalePriceList = [$it["it_sale_percent_great"], $it["it_sale_percent_great_02"], $it["it_sale_percent_great_03"], $it["it_sale_percent_great_04"], $it["it_sale_percent_great_05"]];
+    }
+    $itSaleCnt = 0;
+
+    if (!$io_type && !$it['entprice']) {
+        for($saleCnt = 0; $saleCnt < count($itSaleCntList); $saleCnt++) {
+            if($itSaleCntList[$saleCnt] <= $ct_sale_qty) {
+                if($itSaleCnt < $itSaleCntList[$saleCnt]) {
+                    $ct_discount = $itSalePriceList[$saleCnt] * $ct_qty;
+                    $ct_discount = ($ct_price * $ct_qty) - $ct_discount;
+                    $itSaleCnt = $itSaleCntList[$saleCnt];
+                }
+            }
+        }
+    }
+
+    // 임시조치: 할인금액 마이너스면 0으로 초기화
+    if($ct_discount < 0) $ct_discount = 0;
+
+    if($it['it_delivery_min_cnt']) {
+        //박스 개수 큰것 +작은것 - >ceil
+        $ct_delivery_cnt = $it['it_delivery_cnt'] ? ceil($ct_qty / $it['it_delivery_cnt']) : 0;
+        //큰박스 floor 한 가격을 담음
+        $ct_delivery_bigbox = $it['it_delivery_cnt'] ? floor($ct_qty / $it['it_delivery_cnt']) : 0;
+        $ct_delivery_price = $it['it_delivery_cnt'] ? ($ct_delivery_bigbox * $it['it_delivery_price']) : 0;
+        //나머지
+        $remainder = $ct_qty % $it['it_delivery_cnt'];
+        //나머지가 있으면
+        if($remainder) {
+            //나머지가 최소수량보다 작으면
+            if($remainder <= $it['it_delivery_min_cnt']) {
+                //작은 박스 가격 더해줌
+                $ct_delivery_price = $ct_delivery_price + $it['it_delivery_min_price'];
+            } else {
+                //큰 박스 가격 더해줌
+                $ct_delivery_price = $ct_delivery_price + $it['it_delivery_price'];
+            }
+        }
+    } else {
+        //없으면 큰박스로만 진행
+        $ct_delivery_cnt = $it['it_delivery_cnt'] ? ceil($ct_qty / $it['it_delivery_cnt']) : 0;
+        $ct_delivery_price = $ct_delivery_cnt * $it['it_delivery_price'];
+    }
+    $ct_delivery_company = 'ilogen';
+
     if($ct_id) {
-        $ct = get_partner_cart_item($ct_id);
         if(!$ct)
             continue;
 
@@ -148,7 +189,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     ct_id = '$ct_id'
             ";
             sql_query($sql, true);
-            set_order_admin_log($od_id, "{$manager_log_text}상품삭제: {$ct['it_name']}({$ct['ct_option']})");
+            set_order_admin_log($od_id, "상품삭제: {$ct['it_name']}({$ct['ct_option']})");
         } else {
             $prodColor = $prodSize = $prodOption = '';
             $prodOptions = [];
@@ -190,8 +231,11 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     io_id = '$io_id',
                     ct_option = '$io_value',
                     ct_price = '$ct_price',
+                    ct_discount = '$ct_discount',
                     io_price =  '$io_price',
                     ct_qty = '$ct_qty',
+                    ct_delivery_cnt = '$ct_delivery_cnt',
+                    ct_delivery_price = '$ct_delivery_price',
                     prodMemo = '$prodMemo'
                 WHERE
                     od_id = '$od_id' and
@@ -218,7 +262,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     'prods' => $prods
                 ]);
 
-                set_order_admin_log($od_id, "{$manager_log_text}상품변경: {$ct['it_name']}({$ct['ct_option']}) -> {$it['it_name']}({$io_value})");
+                set_order_admin_log($od_id, "상품변경: {$ct['it_name']}({$ct['ct_option']}) -> {$it['it_name']}({$io_value})");
             }
 
             // 수량이 줄어든 경우 : 시스템 재고 삭제 해야함
@@ -269,7 +313,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     WHERE ct_id = '$ct_id'
                 ";
                 sql_query($sql, true);
-                set_order_admin_log($od_id, "{$manager_log_text}상품수량변경: {$it['it_name']}($io_value) {$ct['ct_qty']}개 -> {$ct_qty}개");
+                set_order_admin_log($od_id, "상품수량변경: {$it['it_name']}($io_value) {$ct['ct_qty']}개 -> {$ct_qty}개");
             }
 
             // 수량이 늘어난 경우 : 시스템 재고 추가 해야함
@@ -334,7 +378,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     ";
                     sql_query($sql, true);
                 }
-                set_order_admin_log($od_id, "{$manager_log_text}상품수량변경: {$it['it_name']}($io_value) {$ct['ct_qty']}개 -> {$ct_qty}개");
+                set_order_admin_log($od_id, "상품수량변경: {$it['it_name']}($io_value) {$ct['ct_qty']}개 -> {$ct_qty}개");
             }
         }
     } else {
@@ -456,34 +500,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
         $io_thezone = $opt_list[$io_type][$io_id]['io_thezone'];
         $io_value = sql_real_escape_string(strip_tags($io_value));
         $remote_addr = get_real_client_ip();
-        $ct_discount = 0;
         $point = 0;
-
-        if($it['it_delivery_min_cnt']) {
-          //박스 개수 큰것 +작은것 - >ceil
-          $ct_delivery_cnt = $it['it_delivery_cnt'] ? ceil($ct_qty / $it['it_delivery_cnt']) : 0;
-          //큰박스 floor 한 가격을 담음
-          $ct_delivery_bigbox = $it['it_delivery_cnt'] ? floor($ct_qty / $it['it_delivery_cnt']) : 0;
-          $ct_delivery_price = $it['it_delivery_cnt'] ? ($ct_delivery_bigbox * $it['it_delivery_price']) : 0;
-          //나머지
-          $remainder = $ct_qty % $it['it_delivery_cnt'];
-          //나머지가 있으면
-          if($remainder) {
-            //나머지가 최소수량보다 작으면
-            if($remainder <= $it['it_delivery_min_cnt']) {
-              //작은 박스 가격 더해줌
-              $ct_delivery_price = $ct_delivery_price + $it['it_delivery_min_price'];
-            } else {
-              //큰 박스 가격 더해줌
-              $ct_delivery_price = $ct_delivery_price + $it['it_delivery_price'];
-            }
-          }
-        } else {
-          //없으면 큰박스로만 진행
-          $ct_delivery_cnt = $it['it_delivery_cnt'] ? ceil($ct_qty / $it['it_delivery_cnt']) : 0;
-          $ct_delivery_price = $ct_delivery_cnt * $it['it_delivery_price'];
-        }
-        $ct_delivery_company = 'ilogen';
 
         // 대여기간
         $sqlOrdLendStrDtm = 'NULL';
@@ -547,8 +564,8 @@ for($i = 0; $i < count($it_id_arr); $i++) {
           '$ct_delivery_cnt',
           '$ct_delivery_price',
           '$ct_delivery_company',
-          '2',
-          '{$member['mb_id']}',
+          '{$it['it_is_direct_delivery']}',
+          '{$it['it_direct_delivery_partner']}',
           '{$it['it_direct_delivery_price']}',
           '$prodMemo',
           $sqlOrdLendStrDtm,
@@ -599,7 +616,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
 
             $sql = "
                 UPDATE g5_shop_cart
-                SET ct_status = '출고준비', stoId = '$sto_id'
+                SET ct_status = '준비', stoId = '$sto_id'
                 WHERE ct_id = '$ct_id'
             ";
             sql_query($sql, true);
@@ -620,13 +637,13 @@ for($i = 0; $i < count($it_id_arr); $i++) {
 
             $sql = "
                 UPDATE g5_shop_cart
-                SET ct_status = '출고준비', stoId = '$sto_id'
+                SET ct_status = '준비', stoId = '$sto_id'
                 WHERE ct_id = '$ct_id'
             ";
             sql_query($sql, true);
         }
 
-        set_order_admin_log($od_id, "{$manager_log_text}상품추가: {$it['it_name']}($io_value) {$ct_qty}개");
+        set_order_admin_log($od_id, "상품추가: {$it['it_name']}($io_value) {$ct_qty}개");
     }
 }
 
@@ -644,5 +661,34 @@ $sql = " select COUNT(distinct it_id, ct_uid) as cart_count, count(*) as deliver
 $row = sql_fetch($sql);
 sql_query("update {$g5['g5_shop_order_table']} set od_cart_count = '{$row['cart_count']}', od_delivery_total = '{$row['delivery_count']}' where od_id = '$od_id' ");
 
-set_partner_order_edit($od_id, 1);
-goto_url('partner_orderinquiry_view.php?od_id=' . $od_id);
+
+// 배송정보 수정
+$od_b_name = clean_xss_tags($_POST['od_b_name']);
+$od_b_tel = clean_xss_tags($_POST['od_b_tel']);
+$od_b_hp = clean_xss_tags($_POST['od_b_hp']);
+$od_b_zip = preg_replace('/[^0-9]/', '', $_POST['od_b_zip']);
+$od_b_zip1 = substr($od_b_zip, 0, 3);
+$od_b_zip2 = substr($od_b_zip, 3);
+$od_b_addr_jibeon = clean_xss_tags($_POST['od_b_addr_jibeon']);
+$od_b_addr1 = clean_xss_tags($_POST['od_b_addr1']);
+$od_b_addr2 = clean_xss_tags($_POST['od_b_addr2']);
+
+sql_query("
+    UPDATE
+        g5_shop_order
+    SET
+        od_b_name = '$od_b_name',
+        od_b_tel = '$od_b_tel',
+        od_b_zip1 = '$od_b_zip1',
+        od_b_zip2 = '$od_b_zip2',
+        od_b_addr_jibeon = '$od_b_addr_jibeon',
+        od_b_addr1 = '$od_b_addr1',
+        od_b_addr2 = '$od_b_addr2'
+    WHERE
+        od_id = '$od_id'
+");
+
+
+$uid = md5($od['od_id'].$od['od_time'].$od['od_ip']);
+set_session('ss_orderview_uid', $uid);
+goto_url(G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid);

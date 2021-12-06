@@ -8,8 +8,6 @@
   gtag('config', 'G-GQ74VFSWXV');
 </script>
 
-
-
 <script type="text/javascript">
 function gotosearch(){
   window.location.href = '<?=G5_SHOP_URL?>/search.php?qname=1';
@@ -33,6 +31,15 @@ document.addEventListener("message", function(e){
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가 
 include_once(THEMA_PATH.'/assets/thema.php');
+
+// 주문상품 변경 관리
+$ss_od_editing = get_session('ss_od_editing');
+if($ss_od_editing) {
+  $result = sql_query(" UPDATE g5_shop_order SET od_is_editing = 0 WHERE od_id = '$od_id' ");
+  if($result) {
+    set_session('ss_od_editing', '');
+  }
+}
 
 $is_approved = false;
 
