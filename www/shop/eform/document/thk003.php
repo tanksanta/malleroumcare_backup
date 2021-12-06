@@ -76,10 +76,12 @@
       <tr class="sign_row">
         <td colspan="4"></td>
         <td>
-          <label class="checkbox-container" id="chk_003_all_label">전체동의
-            <input class="chk-form" id="chk_003_all" type="checkbox">
-            <span class="checkmark"></span>
-          </label><br>
+          <?php if ($is_render !== 'Y') {?>
+            <label class="checkbox-container" id="chk_003_all_label">전체동의
+              <input class="chk-form" id="chk_003_all" type="checkbox">
+              <span class="checkmark"></span>
+            </label><br>
+          <?php } ?>
           <?=date('Y년 m월 d일', $timestamp)?>
         </td>
       </tr>
