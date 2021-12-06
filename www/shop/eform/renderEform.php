@@ -101,6 +101,7 @@ $is_gicho = $eform['penTypeCd'] == '04';
     include_once('./document/thk001_1.php');
     include_once('./document/thk001_2.php');
     include_once('./document/thk002.php');
+    $is_render = "Y";
     include_once('./document/thk003.php');
     ?>
   </div>
