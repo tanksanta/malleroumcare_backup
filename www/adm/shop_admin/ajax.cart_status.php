@@ -53,6 +53,12 @@ if($_POST['ct_id'] && $_POST['step']) {
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
 
+    $od = sql_fetch(" select * from g5_shop_order where od_id = '$od_id' ");
+    if($od['od_is_editing'] == 1) {
+      // 사업소가 주문상품 변경 중이면 무시
+      continue;
+    }
+
     if(in_array($result_ct_s['ct_status'], ['취소', '주문무효'])) {
       echo '취소된 주문은 상태변경이 불가능합니다.';
       exit;

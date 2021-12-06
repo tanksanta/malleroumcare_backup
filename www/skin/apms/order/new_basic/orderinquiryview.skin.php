@@ -367,6 +367,7 @@ $(function() {
           <?php
           $isReceiverEdit = true;
           $isDeliveryInfo = false;
+          $is_all_ready = true;
           for($i=0; $i < count($item); $i++) {
             $prodMemo = ""; $ordLendDtm = "";
             for($k=0; $k < count($item[$i]['opt']); $k++) {
@@ -565,7 +566,24 @@ $(function() {
         </div>
       </div>
 
+      <?php if($isReceiverEdit) { ?>
+      <a href="order_edit.php?od_id=<?=$od_id?>" class="btn_od_edit">주문상품 변경</a>
+      <?php } ?>
+
       <style>
+        .btn_od_edit {
+          display: block;
+          border: 1px solid #ee8102;
+          border-radius: 3px;
+          background-color: #ffffff;
+          margin: 20px auto 20px auto;
+          padding: 15px;
+          max-width: 250px;
+          text-align: center;
+          color: #ee8102 !important;
+          font-weight: bold;
+        }
+
         #frmorderinquiryviewdeliveryform .shbtn {
           border: 1px solid #cccccc;
           font-size: 12px;

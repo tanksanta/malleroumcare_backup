@@ -55,6 +55,12 @@ if($_POST['ct_id']&&$_POST['step']) {
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
 
+    $od = sql_fetch(" select * from g5_shop_order where od_id = '$od_id' ");
+    if($od['od_is_editing'] == 1) {
+      // 사업소가 주문상품 변경 중이면 무시
+      continue;
+    }
+
     // 배송되면 재고 상태 판매완료로 바꿈
     // 재고 주문 일시 배송대기(06) -> 판매가능(01)
     // 수급자 신규 주문 일시 배송대기(06) -> 판매완료(02)
