@@ -180,12 +180,12 @@
       <tr>
         <th scope="col" rowspan="2">수급자<br />또는<br />보호자</th>
         <td colspan="2" style="border-right: 0"></td>
-        <td style="border-left: 0;border-right: 0"><?=$eform['penNm']?></td>
+        <td style="border-left: 0;border-right: 0"><?php echo $eform['contract_sign_type'] == 0 ? $eform['penNm'] : $eform['contract_sign_name']; ?></td>
         <td class="sign-form" data-id="sign_002_1" style="border-left: 0;color: #999;font-size: 14px;text-align: right">( 서명 또는 인 )</td>
       </tr>
       <tr>
         <td colspan="4">
-          수급자와의 관계 : [ ✓ ]본인 [ &nbsp; ]가족 [ &nbsp; ]친족 [ &nbsp; ]기타( &nbsp; )
+          수급자와의 관계 : [ <?php echo $eform['contract_sign_type'] == 0 ? '✓' : '&nbsp;';?> ]본인 [ <?php echo $eform['contract_sign_type'] == 1 ? '✓' : '&nbsp;';?> ]가족 [ <?php echo $eform['contract_sign_type'] == 2 ? '✓' : '&nbsp;';?> ]친족 [ <?php echo $eform['contract_sign_type'] == 3 ? '✓' : '&nbsp;';?> ]기타 ( &nbsp; )
         </td>
       </tr>
       <tr>
