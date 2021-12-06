@@ -1102,7 +1102,7 @@ pre{white-space: pre-wrap;}
 .productListWrap > ul > li > a .img_wrap p.cnt { display: block; margin: 0; position: absolute; bottom: 10px; left: 10px;width: auto;border-radius: 5px;height: 30px;line-height: 30px;background-color: #F28D08;color: #fff;padding: 0 10px;font-size: 12px;}
 .productListWrap > ul > li > a .img_wrap .item-expected-warehousing-date {
   position: absolute;
-  top: 50%;
+  top: 80%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: #fff;
