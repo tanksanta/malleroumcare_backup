@@ -151,6 +151,27 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <input type="text" maxlength="6" oninput="max_length_check(this)"  name="penJumin" id="penJumin" class="form-control input-sm" value="<?php if($dc) echo $dc['penJumin']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penJumin']}\""; ?>>
             </div>
           </div>
+          <div class="form-group">
+            <label for="penJumin" class="col-md-2 control-label">
+              <strong>계약서 날인</strong>
+            </label>
+            <div class="col-md-5">
+              <div class="radio_wr">
+                <label class="radio-inline">
+                  <input type="radio" name="contract_sign_type" id="contract_sign_type" value="0" <?php if($dc['contract_sign_type'] == 0) echo 'checked' ?>> 수급자
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="contract_sign_type" id="contract_sign_type" value="1" <?php if($dc['contract_sign_type'] > 0) echo 'checked' ?>> 대리인
+                </label>
+                <input style="margin:0px 5px;" type="text" name="contract_sign_name" id="contract_sign_name" class="form-control input-sm" value="<?php if($dc['contract_sign_type'] > 0) echo $dc['contract_sign_name']; ?>" <?php if($dc['contract_sign_type'] == 0) echo 'disabled' ?> >
+                <select name="contract_sign_relation" id="contract_sign_relation" class="form-control input-sm" <?php if($dc['contract_sign_type'] == 0) echo 'disabled' ?>>
+                  <option value="1" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '1'); ?>>가족</option>
+                  <option value="2" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '2'); ?>>친족</option>
+                  <option value="3" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '3'); ?>>기타</option>
+              </select>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="se_btn_wr">
           <button type="submit" id="btn_se_submit" class="btn_se_submit">
@@ -749,6 +770,13 @@ $('#btn_se_submit').on('click', function() {
   if(!dc_id)
       return alert('먼저 품목 선택 후 저장을 해주세요.');
 
+  var contract_type = $('input[name="contract_sign_type"]:checked').val();
+  if (contract_type == 1) {
+    if ($('#contract_sign_name').val().length == 0) {
+      return alert('대리인 이름을 입력하세요.');
+    }
+  }
+  
   if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
     $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
   
@@ -1180,6 +1208,22 @@ function check_pen_type() {
 $('input[name="pen_type"]').change(function() {
   update_pen(null);
   check_pen_type();
+});
+
+//계약서 날인
+$('input[name="contract_sign_type"]').change(function() {
+  var type = $('input[name="contract_sign_type"]:checked').val();
+
+  if (type == 0) {
+    //수급자
+    $('#contract_sign_name').prop('disabled', true);
+    $('#contract_sign_relation').prop('disabled', true);
+  }
+  else {
+    //대리인
+    $('#contract_sign_name').prop('disabled', false);
+    $('#contract_sign_relation').prop('disabled', false);
+  }
 });
 
 // 요양인정번호 입력

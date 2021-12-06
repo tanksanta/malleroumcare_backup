@@ -85,10 +85,10 @@
           <th scope="col" class="right">(갑)</th>
           <th scope="col" class="right">수급자 :</th>
           <td class="center"><?=$eform['penNm']?></td>
-          <td class="sign-form center" data-id="sign_001_1" style="font-size: 14px;">(서명)</td>
+          <td class="<?php echo $eform['contract_sign_type'] == 0 ? 'sign-form' : '' ; ?> center" data-id="sign_001_1" style="font-size: 14px;">(서명)</td>
           <th scope="col" class="right">대리인 :</td>
-          <td class="center"></td>
-          <td class="center" style="font-size: 14px">(서명)</td>
+          <td class="center"><?php echo $eform['contract_sign_type'] > 0 ? $eform['contract_sign_name'] : '' ; ?></td>
+          <td class="<?php echo $eform['contract_sign_type'] > 0 ? 'sign-form' : '' ; ?> center" data-id="sign_001_1" style="font-size: 14px">(서명)</td>
         </tr>
         <tr>
           <th scope="col" class="right">(을)</th>
