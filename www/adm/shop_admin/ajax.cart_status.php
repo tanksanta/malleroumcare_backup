@@ -55,8 +55,8 @@ if($_POST['ct_id'] && $_POST['step']) {
 
     $od = sql_fetch(" select * from g5_shop_order where od_id = '$od_id' ");
     if($od['od_is_editing'] == 1) {
-      // 사업소가 주문상품 변경 중이면 무시
-      continue;
+      echo '해당 주문은 사업소에서 수정 중이므로 주문단계가 변경되지 않았습니다.';
+      exit;
     }
 
     if(in_array($result_ct_s['ct_status'], ['취소', '주문무효'])) {
