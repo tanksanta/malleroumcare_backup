@@ -117,10 +117,7 @@ while($ct = sql_fetch_array($result)) {
     $carts[] = $ct;
 }
 
-$result = sql_query(" UPDATE g5_shop_order SET od_is_editing = 1 WHERE od_id = '$od_id' ");
-if($result) {
-    set_session("ss_od_editing", $od_id);
-}
+sql_query(" UPDATE g5_shop_order SET od_is_editing = 1 WHERE od_id = '$od_id' ");
 
 $skin_row = array();
 $skin_row = apms_rows('order_'.MOBILE_.'skin, order_'.MOBILE_.'set');
