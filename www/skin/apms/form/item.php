@@ -255,6 +255,12 @@ $warehouse_list = get_warehouses();
           </td>
         </tr>
         <tr>
+          <th scope="row"><label for="it_use_short_barcode">바코드 입력방법</label></th>
+          <td>
+            <input type="checkbox" name="it_use_short_barcode" value="1" id="it_use_short_barcode" <?php echo ($it['it_use_short_barcode']) ? "checked" : ""; ?>> 바코드 8자리 사용(보장구)
+          </td>
+        </tr>
+        <tr>
           <th scope="row"><label for="supId">공급자 아이디</label></th>
           <td>
               <input type="text" name="supId" value="<?php echo get_text($it['supId']); ?>" id="supId" class="frm_input sl">

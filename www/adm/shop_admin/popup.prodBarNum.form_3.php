@@ -66,7 +66,8 @@ $sql = " select a.ct_id,
           a.io_type,
           a.stoId,
           ct_option,
-          ct_barcode_insert
+          ct_barcode_insert,
+          b.it_use_short_barcode
 			  from {$g5['g5_shop_cart_table']} a 
         left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
@@ -359,6 +360,9 @@ if($od["od_b_tel"]) {
                 <?php } ?>
                 <!-- 수량 -->
                 <?php echo " ({$carts[$i]["ct_qty"]}개)"; ?>
+                <label for="it_use_short_barcode" id="it_use_short_barcode_label">
+                <input style="margin-left:10px;" type="checkbox" name="it_use_short_barcode" value="1" id="it_use_short_barcode" data-it-id="<?php echo $carts[$i]['it_id']; ?>" <?php echo ($carts[$i]['it_use_short_barcode']) ? "checked" : ""; ?>> 바코드 8자리
+                </label>
               </span>
               <?php if ($gubun != '02' && $carts[$i]['io_type'] == 0) { ?>
               <span class="span2">
@@ -411,7 +415,7 @@ if($od["od_b_tel"]) {
             <ul class="inputbox">
               <?php for ($b = 0; $b< count($stoId_v); $b++) { ?>
               <li>
-                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>">
                 <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
@@ -534,8 +538,15 @@ if($od["od_b_tel"]) {
   var need_reload = false;
   //maxnum 지정
   function maxLengthCheck(object){
-    if (object.value.length > object.maxLength){
-      object.value = object.value.slice(0, object.maxLength);
+    var maxlength = object.maxLength;
+    var it_id = $(object).attr("data-it-id");
+    $("input[name='it_use_short_barcode']").each(function(item) {
+      if ($(this).attr("data-it-id") == it_id && $(this).is(":checked")) {
+        maxlength = 8;
+      }
+    });
+    if (object.value.length > maxlength){
+      object.value = object.value.slice(0, maxlength);
     }
   }
 
@@ -577,11 +588,18 @@ if($od["od_b_tel"]) {
       $item.each(function(i) {
         var $cur = $(this);
         var barcode = $cur.val();
+        var maxlength = parseInt($cur.attr("maxlength"));
+        var it_id = $cur.attr("data-it-id");
+        $("input[name='it_use_short_barcode']").each(function(item) {
+          if ($(this).attr("data-it-id") == it_id && $(this).is(":checked")) {
+            maxlength = 8;
+          }
+        });
         var length = barcode.length;
-        if(length < 12 && length) {
+        if(length < maxlength && length) {
           $cur.addClass("active");
         }
-        if(length == 12 && /^-?\d+$/.test(barcode)) { //숫자만 입력되었는지 체크 로직 추가 211103
+        if(length == maxlength && /^-?\d+$/.test(barcode)) { //숫자만 입력되었는지 체크 로직 추가 211103
           $cur.parent().find("i").addClass("active");
           
           if(!dataTable[barcode])
@@ -782,10 +800,17 @@ if($od["od_b_tel"]) {
 
         notallLengthCheck();
         for(var i = 0; i < target.length; i++) {
-
           $(target[i]).val(barList[i]);
-          if(barList[i].length!==12) {
-            alert('바코드는 12자리 입력이 되어야합니다.');
+
+          var maxlength = parseInt($(target[i]).attr("maxlength"));
+          var it_id = $(target[i]).attr("data-it-id");
+          $("input[name='it_use_short_barcode']").each(function(item) {
+            if ($(this).attr("data-it-id") == it_id && $(this).is(":checked")) {
+              maxlength = 8;
+            }
+          });
+          if(barList[i].length!==maxlength) {
+            alert(`바코드는 ${maxlength}자리 입력이 되어야합니다.`);
             target[i].focus();
             return false;
           }
@@ -801,6 +826,13 @@ if($od["od_b_tel"]) {
 
     $(".barNumGuideOpenBtn").click(function(){
       $(this).next().toggle();
+    });
+
+    $("#it_use_short_barcode_label").click(function(e) {
+      e.stopPropagation();
+    });
+    $("#it_use_short_barcode").click(function(e) {
+      e.stopPropagation();
     });
 
     /* 210317 */
@@ -1031,6 +1063,7 @@ if($od["od_b_tel"]) {
     });
   }
   function openCloseToc(click) {
+    
     if($(click).closest('li').children('.folding_box').css("display")=="none"){
       $(click).closest('li').children('.folding_box').css("display", "block");
       $(click).find('.p1 .span2 .up').css("display", "inline-block");
