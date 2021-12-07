@@ -480,7 +480,7 @@ function form_submit(form) {
 
     var $li = $('#so_item_list li');
     $li.each(function() {
-        if($(this).find('input[name="deleted[]"]').val() == '0')
+        if($(this).find('input[name="deleted[]"]').val() != '1')
             result = true;
     });
 
