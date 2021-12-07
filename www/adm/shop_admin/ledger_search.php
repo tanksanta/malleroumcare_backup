@@ -7,8 +7,13 @@ auth_check($auth[$sub_menu], "r");
 $g5['title'] = '거래처원장';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
+$type = in_array($type, ['default', 'partner']) ? $type : '';
+if(!$type) $type = 'default';
+
 $qstr = "";
 $where = [];
+
+$where[] = " mb_type = '$type' ";
 
 # 영업담당자
 if(!$mb_manager)
@@ -52,7 +57,7 @@ $sql_common = "
   FROM
     g5_member m
   WHERE
-    mb_level IN (3, 4)
+    mb_level >= 3 and mb_level < 9
     {$sql_search}
 ";
 
@@ -84,8 +89,13 @@ $ents = [];
 $index = $from_record;
 while($row = sql_fetch_array($ent_result)) {
   $row['index'] = ++$index;
-  $row['sales'] = get_outstanding_balance($row['mb_id'], null, true);
-  $row['balance'] = get_outstanding_balance($row['mb_id']);
+  if($type == 'default') {
+    $row['sales'] = get_outstanding_balance($row['mb_id'], null, true);
+    $row['balance'] = get_outstanding_balance($row['mb_id']);
+  } else if($type == 'partner') {
+    $row['sales'] = get_partner_outstanding_balance($row['mb_id'], null, true);
+    $row['balance'] = get_partner_outstanding_balance($row['mb_id']);
+  }
   $ents[] = $row;
 }
 
@@ -184,13 +194,34 @@ function get_ledger_history_recent($mb_id) {
   left:50%;
   transform: translate(-50%, -50%);
 }
+
+.ls_tab {
+  margin: 20px 0 -10px 20px;
+}
+.ls_tab a {
+  display: inline-block;
+  margin-right: 5px;
+  border-radius: 3px;
+  background: #dcdcdc;
+  color: #666;
+  padding: 10px 20px
+}
+.ls_tab a.active {
+  background: #333;
+  color: #fff;
+}
 </style>
 
+<div class="ls_tab">
+  <a href="?type=default" <?php if($type == 'default') echo 'class="active"'; ?>>사업소 거래처원장</a>
+  <a href="?type=partner" <?php if($type == 'partner') echo 'class="active"'; ?>>파트너 거래처원장</a>
+</div>
 <div class="new_form">
   <div class="ajax-loader">
     <img src="img/ajax-loading.gif" class="img-responsive" />
   </div>
   <form method="get">
+    <input type="hidden" name="type" value="<?=$type?>">
     <table class="new_form_table">
       <tbody>
         <tr>
@@ -233,8 +264,24 @@ function get_ledger_history_recent($mb_id) {
         <th>No.</th>
         <th>사업소명</th>
         <th>영업담당자</th>
-        <th>총 구매액</th>
-        <th>총 미수금</th>
+        <th>
+          <?php
+          if($type == 'default') {
+            echo '총 구매액';
+          } else if($type == 'partner') {
+            echo '총 판매액';
+          }
+          ?>
+        </th>
+        <th>
+          <?php
+          if($type == 'default') {
+            echo '총 미수금';
+          } else if($type == 'partner') {
+            echo '총 결제액';
+          }
+          ?>
+        </th>
         <th>저번달(<?php echo date('m월', strtotime('-1 month', time()));?>) 전송일시</th>
         <th>이번달(<?php echo date('m월');?>) 전송일시</th>
         <th>거래처 전송</th>
@@ -282,7 +329,13 @@ function get_ledger_history_recent($mb_id) {
           <button value="<?php echo $btn_value_str?>" onclick="send_fax(this)">웹팩스 전송</button>
           <!-- 팩스 -->
         </td>
-        <td class="td_mng_s td_center"><a href="<?=G5_ADMIN_URL?>/shop_admin/ledger_list.php?mb_id=<?=$ent['mb_id']?>" class="btn btn_03">선택</a></td>
+        <td class="td_mng_s td_center">
+          <?php if($type == 'default') { ?>
+          <a href="<?=G5_ADMIN_URL?>/shop_admin/ledger_list.php?mb_id=<?=$ent['mb_id']?>" class="btn btn_03">선택</a>
+          <?php } else if($type == 'partner') { ?>
+          <a href="<?=G5_ADMIN_URL?>/shop_admin/ledger_partner.php?mb_id=<?=$ent['mb_id']?>" class="btn btn_03">선택</a>
+          <?php } ?>
+        </td>
       </tr>
       <?php } ?>
     </tbody>

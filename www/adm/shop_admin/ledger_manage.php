@@ -15,18 +15,33 @@ $ent = get_member($mb_id);
 if(!$ent['mb_id'])
   alert('존재하지 않는 사업소입니다.');
 
+$type = $ent['mb_type'];
+
 $manager = get_member($ent['mb_manager']);
 
-// 총 미수금
-$total_price = get_outstanding_balance($mb_id);
+if($type == 'default') {
+  // 총 미수금
+  $total_price = get_outstanding_balance($mb_id);
 
-// 입/출금 내역
-$sql_common = "
-  FROM
-    ledger_content l
-  WHERE
-    mb_id = '$mb_id'
-";
+  // 입/출금 내역
+  $sql_common = "
+    FROM
+      ledger_content l
+    WHERE
+      mb_id = '$mb_id'
+  ";
+} else if($type == 'partner') {
+  // 총 미수금
+  $total_price = get_partner_outstanding_balance($mb_id);
+
+  // 입/출금 내역
+  $sql_common = "
+    FROM
+    partner_ledger l
+    WHERE
+      mb_id = '$mb_id'
+  ";
+}
 
 // 총 개수 구하기
 $total_count = sql_fetch(" SELECT count(*) as cnt {$sql_common} ")['cnt'];
@@ -37,25 +52,47 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
 $sql_limit = " limit {$from_record}, {$page_rows} ";
 
-$ledger_result = sql_query("
-  SELECT
-    l.*,
-    (
-      CASE
-        WHEN lc_type = 1
-        THEN '입금'
-        WHEN lc_type = 2
-        THEN '출금'
-      END
-    ) as lc_type_txt,
-    (
-      SELECT mb_name from g5_member WHERE mb_id = l.lc_created_by
-    ) as created_by
-  {$sql_common}
-  ORDER BY
-    lc_id DESC
-  {$sql_limit}
-");
+if($type == 'default') {
+  $ledger_result = sql_query("
+    SELECT
+      l.*,
+      (
+        CASE
+          WHEN lc_type = 1
+          THEN '입금'
+          WHEN lc_type = 2
+          THEN '출금'
+        END
+      ) as lc_type_txt,
+      (
+        SELECT mb_name from g5_member WHERE mb_id = l.lc_created_by
+      ) as created_by
+    {$sql_common}
+    ORDER BY
+      lc_id DESC
+    {$sql_limit}
+  ");
+} else if($type == 'partner') {
+  $ledger_result = sql_query("
+    SELECT
+      l.*,
+      (
+        CASE
+          WHEN pl_type = 1
+          THEN '결제'
+          WHEN pl_type = 2
+          THEN '회수'
+        END
+      ) as pl_type_txt,
+      (
+        SELECT mb_name from g5_member WHERE mb_id = l.pl_created_by
+      ) as created_by
+    {$sql_common}
+    ORDER BY
+      pl_id DESC
+    {$sql_limit}
+  ");
+}
 
 $ledger = [];
 for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
@@ -66,7 +103,15 @@ for($i = 0; $row = sql_fetch_array($ledger_result); $i++) {
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 <div class="local_ov01 local_ov fixed">
-  <h1 style="border:0;padding:5px 0;margin:0;">수금등록</h1>
+  <h1 style="border:0;padding:5px 0;margin:0;">
+    <?php
+    if($type == 'default') {
+      echo '수금등록';
+    } else if($type == 'partner') {
+      echo '결제등록';
+    }
+    ?>
+  </h1>
   <div class="right">
     <button id="btn_list">목록</button>
   </div>
@@ -82,8 +127,26 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <tr>
           <th>분류</th>
           <td>
-            <input type="radio" id="lc_type_1" name="lc_type" value="1" checked="checked"><label for="lc_type_1"> 입금</label>
-            <input type="radio" id="lc_type_2" name="lc_type" value="2"><label for="lc_type_2"> 출금</label>
+            <input type="radio" id="lc_type_1" name="lc_type" value="1" checked="checked">
+            <label for="lc_type_1">
+              <?php
+              if($type == 'default') {
+                echo '입금';
+              } else if($type == 'partner') {
+                echo '결제';
+              }
+              ?>
+            </label>
+            <input type="radio" id="lc_type_2" name="lc_type" value="2">
+            <label for="lc_type_2">
+              <?php
+              if($type == 'default') {
+                echo '출금';
+              } else if($type == 'partner') {
+                echo '회수';
+              }
+              ?>
+            </label>
           </td>
         </tr>
         <tr>
@@ -139,10 +202,42 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <?php foreach($ledger as $row) { ?>
       <tr>
         <td class="td_cntsmall"><?=$row['index']?></td>
-        <td class="td_datetime"><?=date('Y-m-d H:i', strtotime($row['lc_created_at']))?></td>
-        <td class="td_payby"><?=$row['lc_type_txt']?></td>
-        <td class="td_numsum td_itopt"><?=number_format($row['lc_amount'])?></td>
-        <td><?=get_text($row['lc_memo'])?></td>
+        <td class="td_datetime">
+          <?php
+          if($type == 'default') {
+            echo date('Y-m-d H:i', strtotime($row['lc_created_at']));
+          } else if($type == 'partner') {
+            echo date('Y-m-d H:i', strtotime($row['pl_created_at']));
+          }
+          ?>
+        </td>
+        <td class="td_payby">
+          <?php
+          if($type == 'default') {
+            echo $row['lc_type_txt'];
+          } else if($type == 'partner') {
+            echo $row['pl_type_txt'];
+          }
+          ?>
+        </td>
+        <td class="td_numsum td_itopt">
+          <?php
+          if($type == 'default') {
+            echo number_format($row['lc_amount']);
+          } else if($type == 'partner') {
+            echo number_format($row['pl_amount']);
+          }
+          ?>
+        </td>
+        <td>
+          <?php
+          if($type == 'default') {
+            echo get_text($row['lc_memo']);
+          } else if($type == 'partner') {
+            echo get_text($row['pl_memo']);
+          }
+          ?>
+        </td>
         <td class="td_payby"><?=$row['created_by']?></td>
       </tr>
       <?php } ?>
@@ -157,7 +252,7 @@ $(function() {
 
   // 목록 버튼
   $('#btn_list').click(function() {
-    location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_search.php";
+    location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_search.php?type=<?=$type?>";
   });
 
   // 금액 입력

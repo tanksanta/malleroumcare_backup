@@ -418,7 +418,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <th>주문번호</th>
         <th>사업소명</th>
         <th>영업담당자</th>
-        <th>품목명</th>
+        <th>품목명</th>
         <th>수량</th>
         <th>단가(VAT포함)</th>
         <th>공급가액</th>
@@ -519,18 +519,6 @@ $(function() {
     $('#to_date').val(formatDate(today));
     today.setDate(1); // 지난달 1일
     $('#fr_date').val(formatDate(today));
-  });
-
-  // 영업담당자 - 전체 버튼
-  $('#chk_mb_manager_all').change(function() {
-    var checked = $(this).is(":checked");
-    $(".chk_mb_manager").prop('checked', checked);
-  });
-  // 영업담당자 - 영업담당자 버튼
-  $('.chk_mb_manager').change(function() {
-    var total = $('.chk_mb_manager').length;
-    var checkedTotal = $('.chk_mb_manager:checked').length;
-    $("#chk_mb_manager_all").prop('checked', total <= checkedTotal); 
   });
 });
 </script>
