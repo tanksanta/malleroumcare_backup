@@ -640,14 +640,18 @@ function save_item_msg(no_items) {
   });
 
   // 핸드폰 번호 입력 체크
-  var pen_hp_input_timer = null;
-  $('#ms_pen_hp').on('change paste keyup input', function() {
-    if(pen_hp_input_timer) clearTimeout(pen_hp_input_timer);
-
+  $('#ms_pen_hp').on('change paste keyup input focus', function() {
     var $this = $(this);
     var ms_pen_hp = $(this).val();
+    $(this).val(ms_pen_hp.replace(/-/g, ''));
+  });
+  $('#ms_pen_hp').on('blur', function() {
+    var $this = $(this);
+    var ms_pen_hp = $(this).val();
+    $(this).val(ms_pen_hp.replace(/-/g, ''));
+    ms_pen_hp = $(this).val();
 
-    pen_hp_input_timer = setTimeout(function() {
+    if (ms_pen_hp.length > 9) {
       var hp_pattern = /01[016789]-[^0][0-9]{2,3}-[0-9]{3,4}/;
       ms_pen_hp = ms_pen_hp.replace(/[^0-9]/g, '').replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, "$1-$2-$3");
       $this.val(ms_pen_hp);
@@ -659,7 +663,7 @@ function save_item_msg(no_items) {
         $('#ipt_im_sch').next().focus();
         check_no_item();
       }
-    }, 300);
+    }
   });
 
   check_no_item();

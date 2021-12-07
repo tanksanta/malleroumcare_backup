@@ -47,6 +47,10 @@ $penAddrDtl = clean_xss_tags($_POST['penAddrDtl']) ?: '';
 $entConAcc01 = clean_xss_tags($_POST['entConAcc01']) ?: '';
 $entConAcc02 = clean_xss_tags($_POST['entConAcc02']) ?: '';
 
+$contract_sign_type = $_POST['contract_sign_type'];
+$contract_sign_name = clean_xss_tags($_POST['contract_sign_name']) ?: '';
+$contract_sign_relation = clean_xss_tags($_POST['contract_sign_relation']) ?: '0';
+
 if( !( $penNm && $penLtmNum && $penConNum && $penRecGraCd && $penTypeCd && $penExpiDtm && $penJumin ) )
     json_response(400, '수급자 정보를 입력해주세요.');
 
@@ -196,7 +200,10 @@ if($w == 'u' || $w == 'w') {
             penJumin = '$penJumin',
             penZip = '$penZip',
             penAddr = '$penAddr',
-            penAddrDtl = '$penAddrDtl'
+            penAddrDtl = '$penAddrDtl',
+            contract_sign_type = '$contract_sign_type',
+            contract_sign_name = '$contract_sign_name',
+            contract_sign_relation = '$contract_sign_relation'
         WHERE
             dc_id = UNHEX('$dc_id') and
             entId = '{$member["mb_entId"]}'
@@ -248,7 +255,10 @@ if($w == 'u' || $w == 'w') {
             penJumin = '$penJumin',
             penZip = '$penZip',
             penAddr = '$penAddr',
-            penAddrDtl = '$penAddrDtl'
+            penAddrDtl = '$penAddrDtl',
+            contract_sign_type = '$contract_sign_type',
+            contract_sign_name = '$contract_sign_name',
+            contract_sign_relation = '$contract_sign_relation'
     ";
     $result = sql_query($sql);
 

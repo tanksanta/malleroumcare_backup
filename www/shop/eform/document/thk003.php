@@ -74,20 +74,28 @@
           <span class="checkmark"></td>
       </tr>
       <tr class="sign_row">
-        <td colspan="3"></td>
-        <td colspan="2" style="text-align: center"><?=date('Y년 m월 d일', $timestamp)?></td>
+        <td colspan="4"></td>
+        <td>
+          <?php if ($is_render !== 'Y') {?>
+            <label class="checkbox-container" id="chk_003_all_label">전체동의
+              <input class="chk-form" id="chk_003_all" type="checkbox">
+              <span class="checkmark"></span>
+            </label><br>
+          <?php } ?>
+          <?=date('Y년 m월 d일', $timestamp)?>
+        </td>
       </tr>
       <tr class="sign_row">
         <td colspan="2"></td>
         <th scope="col" style="text-align: right">위 동의인 성명</th>
         <td><?=$eform['penNm']?></td>
-        <td class="sign-form" data-id="sign_003_1" style="text-align: center; color: #999; font-size: 14px;">(서명)</td>
+        <td class="<?php echo $eform['contract_sign_type'] == 0 ? 'sign-form' : '' ; ?>" data-id="sign_003_1" style="text-align: center; color: #999; font-size: 14px;">(서명)</td>
       </tr>
       <tr class="sign_row">
         <td colspan="2"></td>
         <th scope="col" style="text-align: right">대리인 성명</th>
-        <td></td>
-        <td style="text-align: center; color: #999; font-size: 14px;">(서명)</td>
+        <td><?php echo $eform['contract_sign_type'] > 0 ? $eform['contract_sign_name'] : ''; ?></td>
+        <td class="<?php echo $eform['contract_sign_type'] > 0 ? 'sign-form' : '' ; ?>" data-id="sign_003_1" style="text-align: center; color: #999; font-size: 14px;">(서명)</td>
       </tr>
     </table>
     <div class="desc">※대리인이 작성시 아래의 위임장을 작성</div>

@@ -295,14 +295,24 @@ sql_query("INSERT INTO `eform_document_log` SET
       //e.preventDefault();
 
       var id = $(this).attr('id').split('_');
-      var isN = id.pop() === 'n';
+      var tail = id.pop();
+      var isN = tail === 'n';
       id = id.join('_');
-
       if(isN) {
         state[id] = false;
       } else {
-        if($('#'+id+'_n').length > 0) state[id] = true;
-        else state[id] = !state[id];
+        if ($('#'+id+'_n').length > 0) {
+          console.log(tail);
+          state[id] = true;
+        }
+        else if (tail == 'all') {
+          state['chk_003_1'] = true;
+          state['chk_003_2'] = true;
+          state['chk_003_3'] = true;
+        }
+        else {
+          state[id] = !state[id];
+        }
       }
 
       repaint();
@@ -537,6 +547,15 @@ sql_query("INSERT INTO `eform_document_log` SET
 
         var $chk = $('#'+id+'_'+YorN);
         $chk.prop('checked', reverse ? !state[id] : state[id]);
+
+        if (state['chk_003_1'] && state['chk_003_2'] && state['chk_003_3']) {
+          $('#chk_003_all_label').hide();
+        }
+        else {
+          $('#chk_003_all_label').show();
+          $('#chk_003_all').prop('checked', false);
+        }
+
       });
 
       // 입력 상태
