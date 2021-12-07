@@ -471,7 +471,14 @@ function gumae2baesong() {
 }
 
 // 폼 전송
+var form_sent = false;
 function form_submit(form) {
+
+    if(form_sent)
+      return false;
+
+    form_sent = true;
+
     var result = false;
 
     var $li = $('#so_item_list li');
@@ -481,6 +488,7 @@ function form_submit(form) {
     });
 
     if(!result) {
+        form_sent = false;
         alert('상품을 하나 이상 선택해주세요.');
     }
 
