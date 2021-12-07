@@ -1707,6 +1707,12 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       ct_option,
       ct_qty,
       ct_direct_delivery_price as price_d,
+      ROUND (
+         ct_direct_delivery_price / 1.1
+      ) * ct_qty as price_d_p,
+      ROUND (
+        ct_direct_delivery_price / 1.1 / 10
+      ) * ct_qty as price_d_s,
       0 as deposit,
       od_b_name,
       ct_id
@@ -1747,6 +1753,8 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
           ELSE 0
         END
       ) as price_d,
+      0 as price_d_p,
+      0 as price_d_s,
       (
         CASE
           WHEN pl_type = 1
