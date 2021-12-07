@@ -24,6 +24,34 @@ if (!$ct['ct_id']) {
 }
 $carts = get_carts_by_od_id($od_id);
 
+function arr_sort( $array, $key, $sort ){
+  $keys = array();
+  $vals = array();
+  foreach( $array as $k=>$v ){
+    $i = $v[$key].'.'.$k;
+    $vals[$i] = $v;
+    array_push($keys, $k);
+  }
+  unset($array);
+
+  if( $sort=='asc' ){
+    ksort($vals);
+  }else{
+    krsort($vals);
+  }
+  
+  $ret = array_combine( $keys, $vals );
+
+  unset($keys);
+  unset($vals);
+  
+  return $ret;
+}
+
+if ($result_again) {
+  $result_again = arr_sort($result_again, 'prodBarNum', 'asc');
+}
+
 # 210317 추가정보
 $moreInfo = sql_fetch("
   SELECT
