@@ -492,7 +492,13 @@ function gumae2baesong() {
 }
 
 // 폼 전송
+var form_loading = false;
 function form_submit(form) {
+
+  if(form_loading)
+    return false;
+  
+  form_loading = true;
 
   var point = parseInt( $('#od_temp_point').val() || 0 );
   if(point > 0 && point < min_point) {
@@ -513,6 +519,7 @@ function form_submit(form) {
       result = true;
     },
     error: function($xhr) {
+      form_loading = false;
       var data = $xhr.responseJSON;
       alert(data && data.message);
     }
