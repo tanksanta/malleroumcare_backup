@@ -18,14 +18,16 @@ $sql = "SELECT
 FROM
   g5_member
 WHERE
-  (mb_id LIKE '%{$keyword}%') OR 
-  (mb_name LIKE '%{$keyword}%') OR 
-  (mb_nick LIKE '%{$keyword}%') OR 
-  (mb_email LIKE '%{$keyword}%') OR 
-  (mb_tel LIKE '%{$keyword}%') OR 
-  (mb_hp LIKE '%{$keyword}%') OR
-  (REPLACE(mb_name, ' ', '') LIKE '%{$keyword}%') OR
-  (REPLACE(mb_nick, ' ', '') LIKE '%{$keyword}%')
+  (mb_intercept_date = '') AND (
+    (mb_id LIKE '%{$keyword}%') OR 
+    (mb_name LIKE '%{$keyword}%') OR 
+    (mb_nick LIKE '%{$keyword}%') OR 
+    (mb_email LIKE '%{$keyword}%') OR 
+    (mb_tel LIKE '%{$keyword}%') OR 
+    (mb_hp LIKE '%{$keyword}%') OR
+    (REPLACE(mb_name, ' ', '') LIKE '%{$keyword}%') OR
+    (REPLACE(mb_nick, ' ', '') LIKE '%{$keyword}%')
+  )
 ";
 $result = sql_query($sql);
 
