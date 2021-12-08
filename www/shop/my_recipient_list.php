@@ -436,6 +436,15 @@ function form_check(act) {
               <?php if ($data['penProNm']) { ?>
                 보호자(<span class="data_name"><?php echo $data['penProNm']; ?></span><span class="data_phone"><?php echo $data['penProConNum'] ? '/' . $data['penProConNum'] : ''; ?></span>)
               <?php } ?>
+              <?php
+              $pros = get_pros_by_recipient($data['penId']);
+              foreach($pros as $pro) {
+                $pro_data = [];
+                if($pro['pro_name']) $pro_data[] = $pro['pro_name'];
+                if($pro['pro_hp']) $pro_data[] = $pro['pro_hp'];
+                echo '<br>보호자(' . implode('/', $pro_data) . ')';
+              }
+              ?>
             </a>
           </td>
           <td class="recipient_info">

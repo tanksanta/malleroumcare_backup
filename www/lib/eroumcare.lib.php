@@ -311,6 +311,30 @@ function get_recs_by_recipient($penId) {
 	return $res;
 }
 
+// 보호자 가져오기
+function get_pros_by_recipient($penId) {
+  global $member;
+
+  $penId = clean_xss_tags($penId);
+
+  $sql = "
+    SELECT * FROM
+      recipient_protector
+    WHERE
+      mb_id = '{$member['mb_id']}' and
+      penId = '$penId'
+  ";
+
+  $result = sql_query($sql);
+
+  $pros = [];
+  while($row = sql_fetch_array($result)) {
+    $pros[] = $row;
+  }
+
+  return $pros;
+}
+
 // 수급자별 취급 상품
 function get_items_by_recipient($penId) {
 	$result = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST, array(

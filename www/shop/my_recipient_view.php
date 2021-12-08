@@ -48,6 +48,9 @@ $memos = get_memos_by_recipient($pen['penId']);
 // 욕구사정기록지 가져오기
 $recs = get_recs_by_recipient($pen['penId']);
 
+// 보호자 가져오기
+$pros = get_pros_by_recipient($pen['penId']);
+
 // 적용기간 기준일
 $pen_gra_apply_txt = '없음';
 $pen_gra_apply_result = sql_fetch("
@@ -110,6 +113,12 @@ $pen_ent = get_pen_ent_by_pen_id($pen['penId']);
       <div class="col-sm-10">: <?php if($pen['penProTypeCd'] == '02') { echo '(요양보호사)'; } ?><?=check_and_print($pen_pro_rel_cd[$pen['penProRel']], '(', ')')?><?=$pen['penProNm']?><?=check_and_print(substr($pen['penProBirth'], 2, 2), ', ', '년생')?><?=check_and_print($pen['penProConNum'], ', ')?><?=check_and_print($pen['penProConPNum'], ', ')?><?=check_and_print($pen['penProAddr'], ', ')?><?=check_and_print($pen['penProAddrDtl'], ' ')?></div>
       <?php } ?>
     </div>
+    <?php foreach($pros as $pro) { ?>
+    <div class="row">
+      <div class="col-sm-2">· 보호자</div>
+      <div class="col-sm-10">: <?php if($pro['pro_type'] == '02') { echo '(요양보호사)'; } ?><?=check_and_print($pen_pro_rel_cd[$pro['pro_rel_type']], '(', ')')?><?=$pro['pro_name']?><?=check_and_print(substr($pro['pro_birth'], 2, 2), ', ', '년생')?><?=check_and_print($pro['pro_hp'], ', ')?><?=check_and_print($pro['pro_tel'], ', ')?><?=check_and_print($pro['pro_addr1'], ', ')?><?=check_and_print($pro['pro_addr2'], ' ')?></div>
+    </div>
+    <?php } ?>
     <div class="row">
       <div class="col-sm-2">· 장기요양기록지</div>
       <div class="col-sm-10">: 확인자(<?=$pen_cnm_type_cd[$pen['penCnmTypeCd']]?>), 수령방법(<?=$pen_rec_type_cd[$pen['penRecTypeCd']]?>) <?=$pen['penRecTypeTxt']?></div>
