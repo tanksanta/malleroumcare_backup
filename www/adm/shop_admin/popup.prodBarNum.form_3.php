@@ -360,9 +360,11 @@ if($od["od_b_tel"]) {
                 <?php } ?>
                 <!-- 수량 -->
                 <?php echo " ({$carts[$i]["ct_qty"]}개)"; ?>
-                <label for="it_use_short_barcode" id="it_use_short_barcode_label">
-                <input style="margin-left:10px;" type="checkbox" name="it_use_short_barcode" value="1" id="it_use_short_barcode" data-it-id="<?php echo $carts[$i]['it_id']; ?>" <?php echo ($carts[$i]['it_use_short_barcode']) ? "checked" : ""; ?>> 바코드 8자리
+                <?php if ($carts[$i]['it_use_short_barcode']) { ?>
+                  <label for="it_use_short_barcode" id="it_use_short_barcode_label">
+                  <input style="margin-left:10px;" type="checkbox" name="it_use_short_barcode" value="1" id="it_use_short_barcode" data-it-id="<?php echo $carts[$i]['it_id']; ?>" <?php echo ($carts[$i]['it_use_short_barcode']) ? "checked" : ""; ?>> 바코드 8자리
                 </label>
+                <?php } ?>
               </span>
               <?php if ($gubun != '02' && $carts[$i]['io_type'] == 0) { ?>
               <span class="span2">
