@@ -49,6 +49,26 @@ input[type="number"]::-webkit-inner-spin-button {
 .has-feedback .form-control {
   padding-right: 0px;
 }
+
+.panel_pro_add {
+  position: relative;
+  border-top: 1px solid #ddd;
+}
+
+.btn_pro_del {
+  position: absolute;
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  padding: 4px 20px;
+  top: 10px;
+  right: 10px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  z-index: 5;
+}
 </style>
 
 <div id="zipAddrPopupWrap">
@@ -156,6 +176,14 @@ input[type="number"]::-webkit-inner-spin-button {
           </div>
         </div>
       </div>
+      <div class="form-group has-feedback">
+        <label class="col-sm-2 control-label">
+          <b>담당직원정보</b>
+        </label>
+        <div class="col-sm-3">
+          <input type="text" name="entUsrId" class="form-control input-sm" value="<?=$member['mb_giup_boss_name']?>" placeholder="담당직원정보">
+        </div>
+      </div>
     </div>
   </div>
 
@@ -231,21 +259,27 @@ input[type="number"]::-webkit-inner-spin-button {
     <div class="panel-heading clear">
       <div class="l-heading-wrap"><strong>보호자정보</strong></div>
       <div class="r-heading-wrap">
-        <label class="checkbox-inline">
-          <input type="radio" class="radio_pro_type" name="penProTypeCd" value="01" style="vertical-align: middle; margin: 0 5px 0 0;" checked>일반보호자
-        </label>
-        <label class="checkbox-inline">
-          <input type="radio" class="radio_pro_type" name="penProTypeCd" value="02" style="vertical-align: middle; margin: 0 5px 0 0;">요양보호사
-        </label>
-        <label class="checkbox-inline">
-          <input type="radio" class="radio_pro_type" name="penProTypeCd" value="00" style="vertical-align: middle; margin: 0 5px 0 0;">없음
-        </label>
+        <button type="button" id="btn_pro_add" class="btn btn-color" style="padding: 4px 20px">추가</button>
       </div>
     </div>
     <div id="panel_pro" class="panel-body">
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
-          <b id="pro_rel_title">관계</b>
+          <b>분류</b>
+        </label>
+        <div class="col-sm-3">
+          <label class="checkbox-inline">
+            <input type="radio" class="radio_pro_type" name="penProTypeCd" value="01" style="vertical-align: middle; margin: 0 5px 0 0;" checked>일반보호자
+          </label>
+          <label class="checkbox-inline">
+            <input type="radio" class="radio_pro_type" name="penProTypeCd" value="02" style="vertical-align: middle; margin: 0 5px 0 0;">요양보호사
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group has-feedback">
+        <label class="col-sm-2 control-label">
+          <b class="pro_rel_title">관계</b>
         </label>
         <div class="col-sm-3">
           <select class="form-control input-sm penProRel" name="penProRel" style="margin-bottom: 5px;">
@@ -262,7 +296,7 @@ input[type="number"]::-webkit-inner-spin-button {
             <option value="10">부모</option>
             <option value="11">직접입력</option>
           </select>
-          <input type="text" name="penProRelEtc" class="form-control input-sm" readonly>
+          <input type="text" name="penProRelEtc" class="penProRelEtc form-control input-sm" readonly>
         </div>
       </div>
 
@@ -337,15 +371,6 @@ input[type="number"]::-webkit-inner-spin-button {
             <label class="sound_only">상세주소</label>
             <input type="text" name="penProAddrDtl" class="form-control input-sm" placeholder="상세주소">
           </div>
-        </div>
-      </div>
-
-      <div class="form-group has-feedback">
-        <label class="col-sm-2 control-label">
-          <b>담당직원정보</b>
-        </label>
-        <div class="col-sm-3">
-          <input type="text" name="entUsrId" class="form-control input-sm" value="<?=$member['mb_giup_boss_name']?>" placeholder="담당직원정보">
         </div>
       </div>
     </div>
@@ -472,6 +497,122 @@ input[type="number"]::-webkit-inner-spin-button {
     <a href="./my_recipient_list.php" class="btn btn-black" role="button">취소</a>
   </div>
 </form>
+
+<div id="panel_pro_template" class="panel-body" style="display: none;">
+  <button type="button" class="btn_pro_del">삭제</button>
+  <div class="form-group has-feedback">
+    <label class="col-sm-2 control-label">
+      <b>분류</b>
+    </label>
+    <div class="col-sm-3">
+      <label class="checkbox-inline">
+        <input type="radio" name="pro_type" value="01" style="vertical-align: middle; margin: 0 5px 0 0;" checked="checked">일반보호자
+      </label>
+
+      <label class="checkbox-inline">
+        <input type="radio" name="pro_type" value="02" style="vertical-align: middle; margin: 0 5px 0 0;">요양보호사
+      </label>
+    </div>
+  </div>
+
+  <div class="form-group has-feedback">
+    <label class="col-sm-2 control-label">
+      <b class="pro_rel_title">관계</b>
+    </label>
+    <div class="col-sm-3">
+      <select class="form-control input-sm penProRel" name="pro_rel_type" style="margin-bottom: 5px;">
+        <option value="00">처</option>
+        <option value="01">남편</option>
+        <option value="02">자</option>
+        <option value="03">자부</option>
+        <option value="04">사위</option>
+        <option value="05">형제</option>
+        <option value="06">자매</option>
+        <option value="07">손</option>
+        <option value="08">배우자 형제자매</option>
+        <option value="09">외손</option>
+        <option value="10">부모</option>
+        <option value="11">직접입력</option>
+      </select>
+      <input type="text" name="pro_rel" class="penProRelEtc form-control input-sm" readonly>
+    </div>
+  </div>
+
+  <div class="form-group has-feedback">
+    <label class="col-sm-2 control-label">
+      <b>보호자명</b>
+    </label>
+    <div class="col-sm-3">
+      <input type="text" name="pro_name" class="form-control input-sm">
+    </div>
+  </div>
+
+  <div class="form-group has-feedback">
+    <label class="col-sm-2 control-label">
+      <b>생년월일</b>
+    </label>
+    <div class="col-sm-3">
+      <select name="pro_birth1" title="년도" class="form-control input-sm year"  style="display:inline-block;width:32%;"></select>
+      <select name="pro_birth2" title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
+      <select name="pro_birth3" title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
+    </div>
+  </div>
+
+  <div class="form-group has-feedback">
+    <label class="col-sm-2 control-label">
+      <b>이메일</b>
+    </label>
+    <div class="col-sm-3">
+      <input type="text" name="pro_email" class="form-control input-sm">
+    </div>
+  </div>
+
+
+  <div class="form-group has-feedback">
+    <label class="col-sm-2 control-label">
+      <b>휴대폰</b>
+    </label>
+    <div class="col-sm-3">
+      <input type="text" name="pro_hp" value="" class="form-control input-sm">
+    </div>
+  </div>
+
+  <div class="form-group has-feedback">
+    <label class="col-sm-2 control-label">
+      <b>일반전화</b>
+    </label>
+    <div class="col-sm-3">
+      <input type="text" name="pro_tel" value="" class="form-control input-sm">
+    </div>
+  </div>
+
+  <div class="form-group has-feedback">
+    <label class="col-sm-2 control-label">
+      <b>주소</b>
+    </label>
+
+    <div class="col-sm-8">
+      <label for="reg_mb_zip" class="sound_only">우편번호</label>
+      <label>
+        <input type="text" name="pro_zip" class="penZip form-control input-sm" size="6" maxlength="6" readonly>
+      </label>
+      <label>
+        <button type="button" class="btn btn-black btn-sm" onclick="zipPopupOpen(this);" style="margin-top:0px;">주소 검색</button>
+      </label>
+
+      <div class="addr-line" style="margin-bottom: 5px;">
+        <label class="sound_only">기본주소</label>
+        <input type="text" name="pro_addr1" class="penAddr form-control input-sm" placeholder="기본주소" readonly>
+      </div>
+
+      <div class="addr-line">
+        <label class="sound_only">상세주소</label>
+        <input type="text" name="pro_addr2" class="form-control input-sm" placeholder="상세주소">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript">
 var zipPopupDom = document.getElementById("zipAddrPopupIframe");
 var penid="";
@@ -537,35 +678,40 @@ function recipientNumCheck(penLtmNum) {
 }
 
 //생년월일
-function setDateBox() {
+function setDateBox(parent_element) {
   var dt = new Date();
   var year = "";
   var com_year = dt.getFullYear();
 
+  var parent = $(document);
+  if(parent_element) {
+    parent = $(parent_element);
+  }
+
   // 발행 뿌려주기
-  $(".year").append("<option value=''>년도</option>");
+  parent.find(".year").append("<option value=''>년도</option>");
 
   // 올해 기준으로 -50년부터 +1년을 보여준다.
   for (var y = (com_year - 100); y <= (com_year); y++) {
-    $(".year").append("<option value='" + y + "'>" + y + "</option>");
+    parent.find(".year").append("<option value='" + y + "'>" + y + "</option>");
   }
 
   // 월 뿌려주기(1월부터 12월)
   var month;
-  $(".month").append("<option value=''>월</option>");
+  parent.find(".month").append("<option value=''>월</option>");
   for (var i = 1; i <= 12; i++) {
     var first_num="";
     if(i<10){ first_num = 0; }
-    $(".month").append("<option value='"+first_num + i + "'>"+first_num + i+"</option>");
+    parent.find(".month").append("<option value='"+first_num + i + "'>"+first_num + i+"</option>");
   }
 
   // 일 뿌려주기(1일부터 31일)
   var day;
-  $(".day").append("<option value=''>일</option>");
+  parent.find(".day").append("<option value=''>일</option>");
   for (var i = 1; i <= 31; i++) {
     var first_num="";
     if(i<10){ first_num = 0; }
-    $(".day").append("<option value='" +first_num+ i + "'>" + first_num+i + "</option>");
+    parent.find(".day").append("<option value='" +first_num+ i + "'>" + first_num+i + "</option>");
   }
 }
 //주민번호 체크
@@ -642,40 +788,42 @@ $(function(){
   $("#zipAddrPopupWrap").css("opacity", 1);
   $("#zipAddrPopupWrap").hide();
 
-  $(".register-form select[name='penProRel']").change(function(){
-    if($(this).val() == "11"){
-      $(".register-form input[name='penProRelEtc']").prop("readonly", false);
+  $(document).on('change', 'select.penProRel', function() {
+    var $parent = $(this).closest('.panel-body');
+
+    if($(this).val() == '11') {
+      $parent.find('.penProRelEtc').prop('readonly', false);
     } else {
-      $(".register-form input[name='penProRelEtc']").prop("readonly", true);
-      $(".register-form input[name='penProRelEtc']").val("");
+      $parent.find('.penProRelEtc').prop('readonly', true);
+      $parent.find('.penProRelEtc').val('');
     }
   });
 
   function onProTypeChange($this) {
     var val = $this.val();
 
-    if(val == '00') { // 없음
-      $('#panel_pro').hide();
+    var $parent = $this.closest('.panel-body');
+
+    if(val == '02') { // 요양보호사
+      $parent.find('.pro_rel_title').text('기관');
+      $parent.find('.penProRel').hide();
+      $parent.find('.penProRelEtc').prop('readonly', false);
     } else {
-      if(val == '02') { // 요양보호사
-        $('#pro_rel_title').text('기관');
-        $('.register-form .penProRel').hide();
-        $('.register-form input[name="penProRelEtc"]').prop('readonly', false);
+      $parent.find('.pro_rel_title').text('관계');
+      $parent.find('.penProRel').show();
+      if($parent.find('.penProRel').val() != '11') {
+        $parent.find('.penProRelEtc').prop("readonly", true);
+        $parent.find('.penProRelEtc').val('');
       } else {
-        $('#pro_rel_title').text('관계');
-        $('.register-form .penProRel').show();
-        if($('.register-form select[name="penProRel"]').val() != '11') {
-          $(".register-form input[name='penProRelEtc']").prop("readonly", true);
-          $(".register-form input[name='penProRelEtc']").val('');
-        } else {
-          $('.register-form input[name="penProRelEtc"]').prop('readonly', false);
-        }
+        $parent.find('.penProRelEtc').prop('readonly', false);
       }
-      $('#panel_pro').show();
     }
   }
   onProTypeChange($('.register-form input[name="penProTypeCd"]:checked'));
   $('.radio_pro_type').change(function() {
+    onProTypeChange($(this));
+  });
+  $(document).on('change', 'input[name^="pro_type"]', function() {
     onProTypeChange($(this));
   });
   
@@ -744,6 +892,26 @@ $(function(){
     if(penBirth.length !== 10){ penBirth = ''; }
     if(penProBirth.length !== 10){ penProBirth = ''; }
 
+    var pros = [];
+    $('.panel_pro_add').each(function() {
+      var pro_birth = [$(this).find('select[name^="pro_birth1"]').val(), $(this).find('select[name^="pro_birth2"]').val(), $(this).find('select[name^="pro_birth3"]').val()].join('-');
+      if(pro_birth.length != 10) pro_birth = '';
+
+      pros.push({
+        pro_type: $(this).find('input[name^="pro_type"]:checked').val(),
+        pro_rel_type: $(this).find('select[name^="pro_rel_type"]').val(),
+        pro_rel: $(this).find('input[name^="pro_rel"]').val(),
+        pro_name: $(this).find('input[name^="pro_name"]').val(),
+        pro_birth: pro_birth,
+        pro_email: $(this).find('input[name^="pro_email"]').val(),
+        pro_hp: $(this).find('input[name^="pro_hp"]').val(),
+        pro_tel: $(this).find('input[name^="pro_tel"]').val(),
+        pro_zip: $(this).find('input[name^="pro_zip"]').val(),
+        pro_addr1: $(this).find('input[name^="pro_addr1"]').val(),
+        pro_addr2: $(this).find('input[name^="pro_addr2"]').val()
+      });
+    });
+
     loading = true;
 
     $.post('./ajax.my.recipient.write.php', {
@@ -789,7 +957,8 @@ $(function(){
       penRemark : $(".register-form input[name='penRemark']").val(),
       entUsrId : $(".register-form input[name='entUsrId']").val(),
       caCenYn : $(".register-form input[name='caCenYn']:checked").val(),
-      penSpare: penSpare
+      penSpare: penSpare,
+      pros: pros
     }, 'json')
     .done(function(result) {
       var data = result.data;
@@ -836,6 +1005,26 @@ $(function(){
     });
   });
 
+  // 보호자 추가
+  var pro_index = 0;
+  $('#btn_pro_add').click(function() {
+    pro_index++;
+
+    var $panel = $('<div class="panel_pro_add panel-body">');
+    $panel.append($('#panel_pro_template').html());
+    $panel.find('input,select').each(function() {
+      var name = $(this).attr('name');
+
+      $(this).attr('name', name + '[' + pro_index + ']');
+    });
+
+    $('#panel_pro').closest('.panel').append($panel);
+  });
+
+  $(document).on('click', '.btn_pro_del', function() {
+    $(this).closest('.panel-body').remove();
+  });
+
   <?php if ($tutorial === 'true') { ?>
     show_eroumcare_popup({
 			title: '수급자 신규등록',
@@ -844,16 +1033,16 @@ $(function(){
 				text: '홍길동 수급자 자동입력',
         callback: function(e) {
           $(".register-form input[name='penNm']").val('홍길동');
-          $(".register-form input[name='penLtmNum']").val(1234567891);
+          $(".register-form input[name='penLtmNum']").val('1234567891');
           $(".register-form select[name='penRecGraCd']").val('00');
 
-          $(".register-form input[name='penJumin1']").val(581111);
+          $(".register-form input[name='penJumin1']").val('581111');
 
           var year=$(".register-form input[name='penJumin1']").val().substring(0,2);
           var month=$(".register-form input[name='penJumin1']").val().substring(2,4);
           var day=$(".register-form input[name='penJumin1']").val().substring(4,6);
           if( year < 21 ) { 
-              year='20'+year; 
+            year='20'+year; 
           } else {
             year='19'+year; 
           }
@@ -861,8 +1050,8 @@ $(function(){
           $(".register-form select[name='penBirth2']").val(month);
           $(".register-form select[name='penBirth3']").val(day);
 
-          $(".register-form input[name='penConNum']").val(01012345678);
-          $(".register-form input[name='penConPnum']").val(01012345678);
+          $(".register-form input[name='penConNum']").val('01012345678');
+          $(".register-form input[name='penConPnum']").val('01012345678');
 
           $(".register-form input[name='penZip']").val(12345);
           $(".register-form input[name='penAddr']").val('튜토리얼 수급자 주소');

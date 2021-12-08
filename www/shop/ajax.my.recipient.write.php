@@ -58,6 +58,39 @@ $sql = "INSERT INTO
 					created_by = '{$member['mb_id']}' ";
 sql_query($sql);
 
+// 보호자
+$pros = $_POST['pros'];
+foreach($pros as $pro) {
+	foreach($pro as $key => $val) {
+		$pro[$key] = clean_xss_tags($val);
+	}
+
+	if($pro['pro_type'] == '02') {
+		$pro['pro_rel_type'] == '11';
+	}
+
+	$sql = "
+		INSERT INTO
+			recipient_protector
+		SET
+			mb_id = '{$member['mb_id']}',
+			penId = '{$res['data']['penId']}',
+			pro_name = '{$pro['pro_name']}',
+			pro_type = '{$pro['pro_type']}',
+			pro_rel_type = '{$pro['pro_rel_type']}',
+			pro_rel = '{$pro['pro_rel']}',
+			pro_birth = '{$pro['pro_birth']}',
+			pro_email = '{$pro['pro_email']}',
+			pro_hp = '{$pro['pro_hp']}',
+			pro_tel = '{$pro['pro_tel']}',
+			pro_zip = '{$pro['pro_zip']}',
+			pro_addr1 = '{$pro['pro_addr1']}',
+			pro_addr2 = '{$pro['pro_addr2']}'
+	";
+
+	sql_query($sql);
+}
+
 // 튜토리얼 
 if ($tutorial) {
 	set_tutorial('recipient_add', 1, $res['data']['penId']);

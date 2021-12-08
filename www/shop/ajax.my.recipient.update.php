@@ -59,6 +59,76 @@ if($is_spare_current != $is_spare) {
 if(!$res || $res['errorYN'] != 'N')
   json_response(500, $res['message'] ?: '시스템서버가 응답하지 않습니다.');
 
+// 보호자
+$pros = $_POST['pros'];
+foreach($pros as $pro) {
+	foreach($pro as $key => $val) {
+		$pro[$key] = clean_xss_tags($val);
+	}
+
+	if($pro['pro_type'] == '02') {
+		$pro['pro_rel_type'] == '11';
+	}
+
+  if($pro['pro_id']) {
+    if($pro['deleted']) {
+      // 삭제
+      $sql = "
+        DELETE FROM
+          recipient_protector
+        WHERE
+          mb_id = '{$member['mb_id']}' and
+          pro_id = '{$pro['pro_id']}'
+      ";
+    } else {
+      // 수정
+      $sql = "
+        UPDATE
+          recipient_protector
+        SET
+          pro_name = '{$pro['pro_name']}',
+          pro_type = '{$pro['pro_type']}',
+          pro_rel_type = '{$pro['pro_rel_type']}',
+          pro_rel = '{$pro['pro_rel']}',
+          pro_birth = '{$pro['pro_birth']}',
+          pro_email = '{$pro['pro_email']}',
+          pro_hp = '{$pro['pro_hp']}',
+          pro_tel = '{$pro['pro_tel']}',
+          pro_zip = '{$pro['pro_zip']}',
+          pro_addr1 = '{$pro['pro_addr1']}',
+          pro_addr2 = '{$pro['pro_addr2']}'
+        WHERE
+          mb_id = '{$member['mb_id']}' and
+          pro_id = '{$pro['pro_id']}'
+      ";
+    }
+
+    sql_query($sql);
+  } else {
+    // 추가
+    $sql = "
+      INSERT INTO
+        recipient_protector
+      SET
+        mb_id = '{$member['mb_id']}',
+        penId = '{$data['penId']}',
+        pro_name = '{$pro['pro_name']}',
+        pro_type = '{$pro['pro_type']}',
+        pro_rel_type = '{$pro['pro_rel_type']}',
+        pro_rel = '{$pro['pro_rel']}',
+        pro_birth = '{$pro['pro_birth']}',
+        pro_email = '{$pro['pro_email']}',
+        pro_hp = '{$pro['pro_hp']}',
+        pro_tel = '{$pro['pro_tel']}',
+        pro_zip = '{$pro['pro_zip']}',
+        pro_addr1 = '{$pro['pro_addr1']}',
+        pro_addr2 = '{$pro['pro_addr2']}'
+    ";
+
+    sql_query($sql);
+  }
+}
+
 json_response(200, 'OK', array(
   'penId' => $data['penId'],
   'isSpare' => $is_spare
