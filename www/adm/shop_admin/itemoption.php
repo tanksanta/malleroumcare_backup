@@ -66,6 +66,7 @@ if($po_run) {
         <th scope="col">사용여부</th>
         <th scope="col">품목코드</th>
         <th scope="col">규격</th>
+        <th scope="col">바코드 8자리 사용(보장구)</th>
     </tr>
     </thead>
     <tbody>
@@ -88,6 +89,7 @@ if($po_run) {
             $opt_price_partner = $row['io_price_partner'];
             $opt_price_dealer = $row['io_price_dealer'];
             $opt_price_dealer2 = $row['io_price_dealer2'];
+            $opt_use_short_barcode = $row['io_use_short_barcode'];
     ?>
     <tr>
         <td class="td_chk">
@@ -125,6 +127,9 @@ if($po_run) {
         <td class="td_num">
             <label for="opt_standard_<?php echo $i; ?>" class="sound_only"></label>
             <input type="text" name="opt_standard[]" value="<?php echo $opt_standard; ?>" id="opt_standard_<?php echo $i; ?>" class="frm_input" size="5">
+        </td>
+        <td class="td_num_c3">
+            <input type="checkbox" name="opt_use_short_barcode[]" value="<?php echo $opt_use_short_barcode; ?>" id="opt_use_short_barcode_<?php echo $i; ?>" <?php echo ($opt_use_short_barcode) ? "checked" : ""; ?>>
         </td>
     </tr>
     <?php

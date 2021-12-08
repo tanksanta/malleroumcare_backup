@@ -67,7 +67,8 @@ $sql = " select a.ct_id,
           a.stoId,
           ct_option,
           ct_barcode_insert,
-          b.it_use_short_barcode
+          b.it_use_short_barcode,
+          (SELECT io_use_short_barcode FROM g5_shop_item_option AS o WHERE o.it_id = a.it_id AND o.io_id = a.io_id) as io_use_short_barcode
 			  from {$g5['g5_shop_cart_table']} a 
         left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
@@ -319,7 +320,16 @@ if($od["od_b_tel"]) {
     <ul class="imfomation_box" id="imfomation_box">
       <?php
       for($i = 0; $i < count($carts); $i++) {
-
+        #바코드 8자리 사용여부
+        $use_short_barcode = 'N';
+        if ($carts[$i]['io_use_short_barcode']) {
+          $use_short_barcode = 'Y';
+        } else {
+          if ($carts[$i]['it_use_short_barcode']) {
+            $use_short_barcode = 'Y';
+          }
+        }
+        
         # 요청사항
         $prodMemo = "";
 
@@ -360,9 +370,9 @@ if($od["od_b_tel"]) {
                 <?php } ?>
                 <!-- 수량 -->
                 <?php echo " ({$carts[$i]["ct_qty"]}개)"; ?>
-                <?php if ($carts[$i]['it_use_short_barcode']) { ?>
+                <?php if ($use_short_barcode == 'Y') { ?>
                   <label for="it_use_short_barcode" id="it_use_short_barcode_label">
-                  <input style="margin-left:10px;" type="checkbox" name="it_use_short_barcode" value="1" id="it_use_short_barcode" data-it-id="<?php echo $carts[$i]['it_id']; ?>" <?php echo ($carts[$i]['it_use_short_barcode']) ? "checked" : ""; ?>> 바코드 8자리
+                  <input style="margin-left:10px;" type="checkbox" name="it_use_short_barcode" value="1" id="it_use_short_barcode" data-it-id="<?php echo $carts[$i]['it_id']; ?>" <?php echo ($use_short_barcode == 'Y') ? "checked" : ""; ?>> 바코드 8자리
                 </label>
                 <?php } ?>
               </span>
