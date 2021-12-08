@@ -724,14 +724,15 @@ function save_eform() {
 
   loading = true;
   var $form = $('#form_simple_eform');
-  var data = $form.serialize();
+  var formdata = $form.serialize();
   if ($('#chk_se_seal_self').is(":checked")) {
-    data = data + "&sealFile_self=true";
+    formdata += "&sealFile_self=true";
   }
   else {
-    data = data + "&sealFile_self=false";
+    formdata += "&sealFile_self=false";
   }
-  $.post('ajax.simple_eform.php', data, 'json')
+
+  $.post('ajax.simple_eform.php', formdata, 'json')
     .done(function(result) {
       var dc_id = result.data;
 
@@ -748,7 +749,6 @@ function save_eform() {
       check_no_item();
     })
     .fail(function ($xhr) {
-      console.log($xhr);
       var data = $xhr.responseJSON;
       alert(data && data.message);
     })
@@ -1336,7 +1336,7 @@ $('#penConNum').on('change paste keyup input', function() {
 });
 
 // 수급자 정보 변경되었는지 체크
-var first_completed = false;
+var first_completed = true;
 $(document).on('input change keyup paste', '.panel .form-group input, .panel .form-group select', function() {
   var pen_type = $('input[name="pen_type"]:checked').val();
 
@@ -1501,6 +1501,8 @@ if($ms_id) {
 
       echo 'select_item(' . json_encode($it) . ');'.PHP_EOL;
     }
+
+    echo 'first_completed = false;'.PHP_EOL;
   }
 }
 ?>
