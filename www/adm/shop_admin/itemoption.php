@@ -160,6 +160,7 @@ if($po_run) {
                     $opt_price_partner = 0;
                     $opt_price_dealer = 0;
                     $opt_price_dealer2 = 0;
+                    $opt_use_short_barcode = 0;
 
                     // 기존에 설정된 값이 있는지 체크
                     if($_POST['w'] == 'u') {
@@ -210,6 +211,10 @@ if($po_run) {
         <td class="td_num">
             <label for="opt_thezone_<?php echo $i; ?>" class="sound_only"></label>
             <input type="text" name="opt_thezone[]" value="<?php echo $opt_thezone; ?>" id="opt_thezone_<?php echo $i; ?>" class="frm_input" size="35">
+        </td>
+        <td></td>
+        <td class="td_num_c3">
+            <input type="checkbox" name="opt_use_short_barcode[]" value="<?php echo $opt_use_short_barcode; ?>" id="opt_use_short_barcode_<?php echo $i; ?>">
         </td>
     </tr>
     <?php
