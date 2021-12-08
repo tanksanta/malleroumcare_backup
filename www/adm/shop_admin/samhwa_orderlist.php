@@ -403,7 +403,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <option value="prodMemo" <?php echo get_selected($sel_field_add, 'prodMemo'); ?>>상품요청사항</option>
             <option value="od_memo" <?php echo get_selected($sel_field_add, 'od_memo'); ?>>배송요청사항</option>
             <option value="it_name" <?php echo $sel_field_add == 'it_name' ? 'selected="selected"' : ''; ?>>상품명</option>
-            <option value="ct_option" <?php echo $sel_field == 'ct_option' ? 'selected="selected"' : ''; ?>>옵션</option>
+            <option value="ct_option" <?php echo $sel_field_add == 'ct_option' ? 'selected="selected"' : ''; ?>>옵션</option>
             <option value="it_admin_memo" <?php echo $sel_field_add == 'it_admin_memo' ? 'selected="selected"' : ''; ?>>관리자메모</option>
             <option value="it_maker" <?php echo $sel_field_add == 'it_maker' ? 'selected="selected"' : ''; ?>>제조사</option>
             <option value="od_id" <?php echo get_selected($sel_field_add, 'od_id'); ?>>주문번호</option>
@@ -425,7 +425,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <option value="prodMemo" <?php echo get_selected($sel_field_add_add, 'prodMemo'); ?>>상품요청사항</option>
             <option value="od_memo" <?php echo get_selected($sel_field_add_add, 'od_memo'); ?>>배송요청사항</option>
             <option value="it_name" <?php echo $sel_field_add_add == 'it_name' ? 'selected="selected"' : ''; ?>>상품명</option>
-            <option value="ct_option" <?php echo $sel_field == 'ct_option' ? 'selected="selected"' : ''; ?>>옵션</option>
+            <option value="ct_option" <?php echo $sel_field_add_add == 'ct_option' ? 'selected="selected"' : ''; ?>>옵션</option>
             <option value="it_admin_memo" <?php echo $sel_field_add_add == 'it_admin_memo' ? 'selected="selected"' : ''; ?>>관리자메모</option>
             <option value="it_maker" <?php echo $sel_field_add_add == 'it_maker' ? 'selected="selected"' : ''; ?>>제조사</option>
             <option value="od_id" <?php echo get_selected($sel_field_add_add, 'od_id'); ?>>주문번호</option>
