@@ -872,6 +872,15 @@ $warehouse_list = get_warehouses();
             $el.closest("tr").remove();
           });
 
+          // 바코드 8자리
+          $(document).on("click", "input[name='opt_use_short_barcode[]']", function() {
+            if($(this).is(":checked")) {
+              $(this).val(1);
+            } else {
+              $(this).val(0);
+            }
+          });
+
           // 일괄적용
                     $(document).on("click", "#opt_value_apply", function() {
             if($(".opt_com_chk:checked").size() < 1) {
