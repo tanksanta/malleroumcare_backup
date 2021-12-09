@@ -41,8 +41,7 @@ foreach($ct_id_arr as $ct_id) {
   else {
     $memo = "[배송요청사항]\r" . $ct['od_memo'];
   }
-    
-  
+
   $data[] = [
     $index,
     $ct['it_name'],
@@ -58,6 +57,7 @@ foreach($ct_id_arr as $ct_id) {
     SET ct_is_delivery_excel_downloaded = 1
     WHERE ct_id = '{$ct_id}'
   ");
+  set_order_admin_log($ct['od_id'], '위탁 엑셀 다운로드 : ' . $ct['it_name']);
 
   $index++;
 }
