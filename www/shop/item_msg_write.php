@@ -122,12 +122,13 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
             <div class="col-sm-8">
               <div class="radio_wr">
                 <label class="radio-inline">
-                  <input type="radio" name="ms_pro_yn" id="ms_pro_yn_n" value="N" <?=option_array_checked($ms['ms_pro_yn_n'], ['', 'N'])?>> 수급자
+                  <input type="radio" name="ms_pro_yn" id="ms_pro_yn_n" value="N" <?=option_array_checked($ms['ms_pro_yn'], ['', 'N'])?>> 수급자
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" name="ms_pro_yn" id="ms_pro_yn_y" value="Y" <?=option_array_checked($ms['ms_pro_yn_n'], ['Y'])?>> 보호자
+                  <input type="radio" name="ms_pro_yn" id="ms_pro_yn_y" value="Y" <?=option_array_checked($ms['ms_pro_yn'], ['Y'])?>> 보호자
                 </label>
               </div>
+              <select id="sel_pen_pro" style="display: none;"></select>
               <input type="text" maxlength="11" oninput="max_length_check(this)" name="ms_pen_hp" id="ms_pen_hp" class="form-control input-sm" value="<?=$ms['ms_pen_hp'] ?: ''?>" placeholder="휴대폰번호">
               <span class="form_desc">* 입력된 휴대폰 번호로 메시지가 전송됩니다.</span>
             </div>
@@ -383,6 +384,7 @@ function save_item_msg(no_items) {
   var pen_id_flexdata = null;
 
   function update_pen_info() {
+
     if(!pen) {
       $('#ms_pen_id').val('');
       $('#pen_id_flexdatalist_result').text('');
@@ -419,6 +421,30 @@ function save_item_msg(no_items) {
 
     $('#ms_pen_id').val(pen.penId);
     $('#ms_pen_nm').val(pen.penNm);
+
+    // 보호자 정보 가져오기
+    $.post('ajax.recipient.get_pros.php', {
+      penId: pen.penId
+    }, 'json')
+    .done(function(result) {
+      var data = result.data;
+      
+      $('#sel_pen_pro').empty();
+      $(data).each(function(idx, pro) {
+        var selected = '';
+        if(pro.pro_hp && $('#ms_pen_hp').val().replace(/[^0-9]/g, '') == pro.pro_hp.replace(/[^0-9]/g, '')) {
+         selected = 'selected="selected"'; 
+        }
+
+        $('#sel_pen_pro').append(          
+          '<option value="' + pro.pro_hp + '" ' + selected + '>' + pro.pro_name + '</option>'
+        );
+      });
+
+      if(data.length && $('input[name="ms_pro_yn"]:checked').val() == 'Y') {
+        $('#sel_pen_pro').show();
+      }
+    });
   }
 
   // 신규수급자 or 기존수급자 선택
@@ -531,12 +557,17 @@ function save_item_msg(no_items) {
   });
 
   function setPenHp(proYN) {
+    $('#sel_pen_pro').hide();
+
     if(proYN === 'Y') {
       $('#ms_pro_yn_y').prop('checked', true);
       $('#ms_pro_yn_n').prop('checked', false);
 
-      if(pen)
+      if(pen) {
         $('#ms_pen_hp').val(pen.penProConNum);
+        if($('#sel_pen_pro option').length > 0)
+          $('#sel_pen_pro').show();
+      }
     } else {
       $('#ms_pro_yn_y').prop('checked', false);
       $('#ms_pro_yn_n').prop('checked', true);
@@ -666,8 +697,15 @@ function save_item_msg(no_items) {
     }
   });
 
+  $('#sel_pen_pro').change(function() {
+    var hp = $(this).val();
+    
+    $('#ms_pen_hp').val(hp).change().blur();
+  });
+
   check_no_item();
   check_pen_type();
+  //setPenHp($('input[name="ms_pro_yn"]:checked').val());
 
   $(document).on("keydown", "form", function(event) { 
     return event.key != "Enter";
