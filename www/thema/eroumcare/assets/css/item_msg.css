@@ -732,3 +732,12 @@
     width: unset;
   }
 }
+
+#sel_pen_pro {
+  display: block;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 150px;
+  margin-bottom: 5px;
+}
