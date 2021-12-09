@@ -1117,6 +1117,7 @@ $sendData["prods"] = $prodsSendData;
           $(".cart-ok-close").click(function(e) {
             // $(this).closest('.cart-ok').hide("slide", { direction: "down" }, 500);
             hide_cart_ok($(this).closest('.cart-ok'));
+            window.location.reload();
             e.preventDefault();
           })
         });
