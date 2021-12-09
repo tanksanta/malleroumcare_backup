@@ -35,6 +35,7 @@ $sql_order = "
   SELECT
     o.od_time,
     o.od_id,
+    o.tr_date,
     m.mb_entNm,
     c.it_name,
     c.ct_option,
@@ -113,6 +114,7 @@ $sql_send_cost = "
   SELECT
     o.od_time,
     o.od_id,
+    o.tr_date,
     m.mb_entNm,
     '^배송비' as it_name,
     '' as ct_option,
@@ -139,6 +141,7 @@ $sql_sales_discount = "
   SELECT
     o.od_time,
     o.od_id,
+    o.tr_date,
     m.mb_entNm,
     '^매출할인' as it_name,
     '' as ct_option,
@@ -166,6 +169,7 @@ $sql_sales_coupon = "
   SELECT
     o.od_time,
     o.od_id,
+    o.tr_date,
     m.mb_entNm,
     '^쿠폰할인' as it_name,
     '' as ct_option,
@@ -192,6 +196,7 @@ $sql_sales_point = "
   SELECT
     o.od_time,
     o.od_id,
+    o.tr_date,
     m.mb_entNm,
     '^포인트결제' as it_name,
     '' as ct_option,
@@ -218,6 +223,7 @@ $sql_ledger = "
   SELECT
     lc_created_at as od_time,
     '' as od_id,
+    '' as tr_date,
     m.mb_entNm,
     (
       CASE
@@ -347,6 +353,17 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
 <style>
 .td_price { width: 100px; }
+
+.tr_date {
+  border: 1px solid #ddd;
+  background-color: white !important;
+  height: 33px;
+  width: 100px;
+  text-align: left;
+  font-size: 13px;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
 </style>
 
 <div class="new_form">
@@ -415,6 +432,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     <thead>
       <tr>
         <th>주문일</th>
+        <th>거래일</th>
         <th>주문번호</th>
         <th>사업소명</th>
         <th>영업담당자</th>
@@ -433,6 +451,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <?php if($page == 1 && $carried_balance && !($sel_field && $search) && !$price) { ?>
       <tr>
         <td class="td_date"><?=date('y-m-d', strtotime($fr_date))?></td>
+        <td class="td_num_c3"></td>
         <td class="td_odrnum2"></td>
         <td class="td_id"></td>
         <td class="td_payby"></td>
@@ -454,6 +473,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       ?>
       <tr>
         <td class="td_date"><?=date('y-m-d', strtotime($row['od_time']))?></td>
+        <td class="td_num_c3">
+          <input class="tr_date" type="text" id="tr_date" name="tr_date" value="<?=($row['tr_date'] ?: date('Y-m-d', strtotime($row['od_time'])))?>" size="10" maxlength="10" data-od-id="<?=$row['od_id']?>">
+        </td>
         <td class="td_odrnum2">
           <?php if($row['od_id']) { ?>
           <a href="<?=G5_ADMIN_URL?>/shop_admin/samhwa_orderform.php?od_id=<?=$row['od_id']?>"><?=$row['od_id']?></a>
@@ -485,6 +507,23 @@ function formatDate(date) {
   return '' + y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
 }
 
+function update_tr_date(od_id, tr_date) {
+  $.ajax({
+      method: "POST",
+      url: "ajax.order.change.tr_date.php",
+      data: {
+        'od_id': od_id,
+        'tr_date': tr_date
+      }
+  })
+  .done(function(data) {
+  })
+  .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+}
+
 $(function() {
   // 엑셀다운로드 버튼
   $('#btn_ledger_excel').click(function() {
@@ -503,6 +542,32 @@ $(function() {
     showButtonPanel: true,
     yearRange: "c-99:c+99",
     maxDate: "+0d"
+  });
+
+  //거래일
+  $('.tr_date').datepicker({
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: "yy-mm-dd",
+    showButtonPanel: true,
+    yearRange: "c-99:c+99"
+  });
+
+  $('.tr_date').on('focusin', function() {
+    $(this).data('pre-val', $(this).val());
+  });
+
+  $('.tr_date').on('change', function() {
+    var prev = $(this).data('pre-val');
+    var cur = $(this).val();
+    if (prev !== cur) {
+      if (confirm("거래일을 변경하시겠습니까?")) {
+        update_tr_date($(this).data('od-id'), cur);
+      }
+      else {
+        $(this).val(prev);
+      }
+    }
   });
 
   // 기간 - 이번달 버튼
