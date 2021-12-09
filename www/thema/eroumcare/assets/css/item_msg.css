@@ -208,6 +208,12 @@
   font-size: 16px;
 }
 
+.im_write_list .it_info .it_expected_warehousing_date {
+  font-size: 13px;
+  color: red;
+  display: none;
+}
+
 .im_write_list .btn_del_item {
   position: absolute;
   top: 47.5px;
@@ -386,6 +392,15 @@
 .im_info { margin-left: 10px; }
 
 .im_info p { margin: 0; }
+.im_info .it_expected_warehousing_date { 
+  font-size: 13px; 
+  background: red;
+  border: 1px solid red;
+  border-radius: 3px;
+  text-align: center;
+  color: white;
+  width: max-content;
+}
 .im_info .it_name { font-weight: bold; font-size: 16px; margin-bottom: 10px; }
 .im_info .it_price {  }
 .im_info .personal-price { font-size: 12px; }
