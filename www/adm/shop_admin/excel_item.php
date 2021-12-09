@@ -58,6 +58,7 @@
             case '2': $it_sc_type="조건부 무료배송"; break;
             case '3': $it_sc_type="유료배송"; break;
             case '4': $it_sc_type="수량별 부과"; break;
+            case '5': $it_sc_type="홀수/짝수 배송"; break;
             default:  $it_sc_type=""; break;
         }
 
