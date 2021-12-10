@@ -1928,8 +1928,9 @@ function get_sendcost_new($cart_id, $selected = 1) {
       {$g5['g5_shop_cart_table']}
     where
       od_id = '$cart_id' and
-      ct_status IN ( '쇼핑', '주문', '입금', '출고준비', '준비', '배송', '완료', '작성' ) and
-      ct_select = '$selected'
+      ct_status not in ( '취소', '주문무효' ) and
+      ct_select = '$selected' and
+      it_sc_type <> 5
   ";
   $result_send = sql_fetch($sql_send);
   $result_total = $result_send['price'] - $result_send['discount'];
@@ -1946,9 +1947,9 @@ function get_sendcost_new($cart_id, $selected = 1) {
       WHERE
         od_id = '$cart_id' and
         ct_send_cost = '0' and
-        ct_status IN ( '쇼핑', '주문', '입금', '출고준비', '준비', '배송', '완료', '작성' ) and
+        ct_status not in ( '취소', '주문무효' ) and
         ct_select = '$selected' and
-        it_sc_type <> 1
+        it_sc_type not in ( 1, 5 )
     ");
 
     if($check_result['it_id']) {
@@ -1957,6 +1958,43 @@ function get_sendcost_new($cart_id, $selected = 1) {
     } else {
       // 전부 무료배송 상품이면
       $od_send_cost = 0;
+    }
+  }
+
+  // 홀수/짝수 배송 체크
+  $check_result = sql_query("
+    SELECT
+      (
+        SUM(ct_qty - ct_stock_qty)
+      ) as ct_qty,
+      it_even_odd,
+      MAX(it_even_odd_price) as it_even_odd_price
+    FROM
+      {$g5['g5_shop_cart_table']} c
+    LEFT JOIN
+      {$g5['g5_shop_item_table']} i on c.it_id = i.it_id
+    WHERE
+      od_id = '$cart_id' and
+      ct_send_cost = '0' and
+      ct_status not in ( '취소', '주문무효' ) and
+      ct_select = '$selected' and
+      i.it_sc_type = 5
+    GROUP BY
+      it_even_odd
+  ", true);
+  while($row = sql_fetch_array($check_result)) {
+    if($row['it_even_odd'] == 0) {
+      // 홀수 배송비
+
+      if($row['ct_qty'] % 2 == 1) {
+        $od_send_cost += $row['it_even_odd_price'];
+      }
+    } else if($row['it_even_odd'] == 1) {
+      // 짝수 배송비
+
+      if($row['ct_qty'] % 2 == 0) {
+        $od_send_cost += $row['it_even_odd_price'];
+      }
     }
   }
 

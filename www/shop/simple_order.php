@@ -533,15 +533,22 @@ function calculate_order_price() {
   var $li = $('#so_item_list li');
 
   var order_price = 0;
+  var delivery_total = 0;
   var free_delivery = true;
+  var odd_qty = 0;
+  var odd_price = 0;
+  var even_qty = 0;
+  var even_price = 0;
   $li.each(function() {
     var it_id = $(this).find('input[name="it_id[]"]').val();
     var it_price = parseInt ( $(this).find('input[name="it_price[]"]').val() || 0 );
     var io_price = parseInt( $(this).find('select[name="io_id[]"] option:selected').data('price') || 0 );
     var ct_qty = parseInt( $(this).find('input[name="ct_qty[]"]').val() || 0 );
     var it_sc_type = parseInt( $(this).find('input[name="it_sc_type[]"]').val() || 0 );
+    var it_even_odd = parseInt( $(this).find('input[name="it_even_odd[]"]').val() || 0 );
+    var it_even_odd_price = parseInt( $(this).find('input[name="it_even_odd_price[]"]').val() || 0 );
 
-    if(it_sc_type !== 1) {
+    if(it_sc_type !== 1 && it_sc_type !== 5) {
       // 무료배송이 아닌 상품이 하나라도 있으면 유료배송
       free_delivery = false;
     }
@@ -573,12 +580,44 @@ function calculate_order_price() {
     $(this).find('.it_price_wr .ct_price').text(number_format(ct_price) + '원');
     $(this).find('input[name="ct_price[]"]').val(ct_price);
     order_price += ct_price;
+
+    // 홀수/짝수 배송
+    if(it_sc_type === 5) {
+      if(it_even_odd == 0) {
+        // 홀수 배송
+
+        // 홀수 배송중 가장 배송비가 높은 상품의 배송비를 홀수 배송비로 적용
+        if(odd_price < it_even_odd_price)
+          odd_price = it_even_odd_price;
+        
+        odd_qty += ct_qty;
+      } else if(it_even_odd == 1) {
+        // 짝수 배송
+
+        // 짝수 배송중 가장 배송비가 높은 상품의 배송비를 짝수 배송비로 적용
+        if(even_price < it_even_odd_price)
+          even_price = it_even_odd_price;
+        
+        even_qty += ct_qty;
+      }
+    } else {
+      delivery_total += ct_price;
+    }
   });
 
   var delivery_price = 0;
-  if(order_price < 100000 && !free_delivery) {
+  if(delivery_total < 100000 && !free_delivery) {
     // 주문금액 10만원 미만에 무료배송상품이 아닌 상품이 있는 경우 배송비
     delivery_price = 3300;
+  }
+
+  if(odd_qty > 0 && odd_qty % 2 === 1) {
+    // 홀수 배송비 적용
+    delivery_price += odd_price;
+  }
+  if(even_qty > 0 && even_qty % 2 === 0) {
+    // 짝수 배송비 적용
+    delivery_price += even_price;
   }
 
   // 주문금액
@@ -700,6 +739,8 @@ function select_item(obj, io_id, ct_qty) {
   $li.append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
   .append('<input type="hidden" name="it_price[]" value="' + obj.it_price + '">')
   .append('<input type="hidden" name="it_sc_type[]" value="' + obj.it_sc_type + '">')
+  .append('<input type="hidden" name="it_even_odd[]" value="' + obj.it_even_odd + '">')
+  .append('<input type="hidden" name="it_even_odd_price[]" value="' + obj.it_even_odd_price + '">')
   .append('<input type="hidden" name="cp_id[]" value="">')
   .append('<input type="hidden" name="cp_price[]" value="">');
 
@@ -1151,6 +1192,8 @@ $(function() {
         it_img1 as it_img,
         it_delivery_cnt,
         it_sc_type,
+        it_even_odd,
+        it_even_odd_price,
         it_sale_cnt,
         it_sale_cnt_02,
         it_sale_cnt_03,
@@ -1219,6 +1262,8 @@ $(function() {
         i.it_img1 as it_img,
         i.it_delivery_cnt,
         i.it_sc_type,
+        it_even_odd,
+        it_even_odd_price,
         io_id,
         it_sale_cnt,
         it_sale_cnt_02,
