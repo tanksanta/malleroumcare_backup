@@ -27,7 +27,7 @@ if(!$fr_date)
   $fr_date = date('Y-m-01');
 if(!$to_date)
   $to_date = date('Y-m-d');
-$where_order .= " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+$where_order .= " and (COALESCE(tr_date, od_time) between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 $where_ledger .= " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
 # 매출
@@ -517,6 +517,7 @@ function update_tr_date(od_id, tr_date) {
       }
   })
   .done(function(data) {
+    window.location.reload();
   })
   .fail(function($xhr) {
       var data = $xhr.responseJSON;
@@ -534,18 +535,8 @@ $(function() {
     location.href = "<?=G5_ADMIN_URL?>/shop_admin/ledger_manage.php?mb_id=<?=$mb_id?>";
   });
 
-  // 기간 - datepicker
-  $('.datepicker').datepicker({
-    changeMonth: true,
-    changeYear: true,
-    dateFormat: "yy-mm-dd",
-    showButtonPanel: true,
-    yearRange: "c-99:c+99",
-    maxDate: "+0d"
-  });
-
-  //거래일
-  $('.tr_date').datepicker({
+  //datepicker 설정
+  $('.datepicker, .tr_date').datepicker({
     changeMonth: true,
     changeYear: true,
     dateFormat: "yy-mm-dd",
@@ -553,6 +544,7 @@ $(function() {
     yearRange: "c-99:c+99"
   });
 
+  //거래일
   $('.tr_date').on('focusin', function() {
     $(this).data('pre-val', $(this).val());
   });
