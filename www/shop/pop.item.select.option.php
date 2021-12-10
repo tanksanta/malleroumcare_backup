@@ -11,7 +11,7 @@ $it = sql_fetch($sql);
 
 $attrs = [
     'it_id', 'it_name', 'it_model', 'it_cust_price',
-    'ca_id', 'it_delivery_cnt', 'it_sc_type',
+    'ca_id', 'it_delivery_cnt', 'it_sc_type', 'it_sc_price', 'it_even_odd', 'it_even_odd_price',
     'it_sale_cnt', 'it_sale_cnt_02', 'it_sale_cnt_03', 'it_sale_cnt_04', 'it_sale_cnt_05',
     'it_sale_percent', 'it_sale_percent_02', 'it_sale_percent_03', 'it_sale_percent_04', 'it_sale_percent_05',
     'it_sale_percent_great', 'it_sale_percent_great_02', 'it_sale_percent_great_03', 'it_sale_percent_great_04', 'it_sale_percent_great_05',

@@ -948,32 +948,8 @@ if($_POST["od_stock_insert_yn"]){
 }
 
 // 배송비 renew 210506
-$sql_send = " select 
-              SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * (ct_qty - ct_stock_qty)))) as price,
-              SUM(ct_discount) as discount
-              from {$g5['g5_shop_cart_table']}
-              where od_id = '{$tmp_cart_id}'";
-$result_send = sql_fetch($sql_send);
-$result_total = $result_send['price']-$result_send['discount'];
-
-$od_send_cost2=0;
-if($result_total >= 100000){
-  $od_send_cost=0;
-} else {
-  $flag = false;
-  for($k=0; $k < count($_POST['it_id']); $k++) {
-    $sql_it = "select `it_sc_type`,`it_sc_price` from `g5_shop_item` where `it_id` = '".$_POST['it_id'][$k]."'";
-    $result_it = sql_fetch($sql_it);
-    if($result_it['it_sc_type'] !== "1"){
-      $flag = true;
-    }
-  }
-  if($flag) {
-    $od_send_cost = 3300;
-  } else {
-    $od_send_cost = 0;
-  }
-}
+$od_send_cost = get_sendcost_new($tmp_cart_id, 1) ?: 0;
+$od_send_cost2 = 0;
 
 $od_time = G5_TIME_YMDHIS;
 

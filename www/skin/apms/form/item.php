@@ -1587,7 +1587,7 @@ $warehouse_list = get_warehouses();
           $("#sc_con_basic").hide();
           $("#sc_con_minimum").hide();
           $("#sc_con_qty").hide();
-          $("#sc_grp").attr("rowspan","1");
+          $("#sc_grp").attr("rowspan","4");
           $("#even_odd_wr").show();
           break;
         default:
@@ -2547,7 +2547,7 @@ function fitemformcheck(f)
     }
   }
 
-  if(parseInt(f.it_sc_type.value) > 1) {
+  if(parseInt(f.it_sc_type.value) > 1 && parseInt(f.it_sc_type.value) != 5) {
     if(!f.it_sc_price.value || f.it_sc_price.value == "0") {
       alert("기본배송비를 입력해 주십시오.");
       return false;
