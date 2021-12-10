@@ -1493,7 +1493,7 @@ $warehouse_list = get_warehouses();
         break;
       case 5:
         echo '$("#sc_con_method").hide();'.PHP_EOL;
-        echo '$("#sc_con_basic").hide();'.PHP_EOL;
+        echo '$("#sc_con_basic").show();'.PHP_EOL;
         echo '$("#sc_con_minimum").hide();'.PHP_EOL;
         echo '$("#sc_con_qty").hide();'.PHP_EOL;
         echo '$("#sc_grp").attr("rowspan","2");'.PHP_EOL;
@@ -1584,10 +1584,10 @@ $warehouse_list = get_warehouses();
           break;
         case "5":
           $("#sc_con_method").hide();
-          $("#sc_con_basic").hide();
+          $("#sc_con_basic").show();
           $("#sc_con_minimum").hide();
           $("#sc_con_qty").hide();
-          $("#sc_grp").attr("rowspan","1");
+          $("#sc_grp").attr("rowspan","4");
           $("#even_odd_wr").show();
           break;
         default:
