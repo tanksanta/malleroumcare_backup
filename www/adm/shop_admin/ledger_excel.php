@@ -22,7 +22,7 @@ if(!$fr_date)
   $fr_date = date('Y-m-01');
 if(!$to_date)
   $to_date = date('Y-m-d');
-$where_order .= " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+$where_order .= " and (COALESCE(tr_date, od_time) between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 $where_ledger .= " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
 # 매출
