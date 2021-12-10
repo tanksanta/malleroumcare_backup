@@ -386,7 +386,9 @@ $check_sanitize_keys = array(
   'it_box_size_width', // 박스 규격 (가로)
   'it_box_size_length', // 박스 규격 (세로)
   'it_box_size_height', // 박스 규격 (높이)
-  'it_standard' // 규격
+  'it_standard', // 규격
+  'it_even_odd',
+  'it_even_odd_price'
 );
 
 foreach( $check_sanitize_keys as $key ) {
@@ -686,7 +688,9 @@ $sql_common = "
   it_box_size = '$it_box_size',
   it_standard = '$it_standard',
   it_show_partner_search = '$it_show_partner_search',
-  it_use_short_barcode = '$it_use_short_barcode'
+  it_use_short_barcode = '$it_use_short_barcode',
+  it_even_odd = '$it_even_odd',
+  it_even_odd_price = '$it_even_odd_price'
 "; // APMS : 2014.07.20
 
 if ($w == "")
