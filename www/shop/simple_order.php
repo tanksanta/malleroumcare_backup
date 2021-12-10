@@ -171,7 +171,7 @@ add_javascript(G5_POSTCODE_JS, 0);
             <div class="form-group has-feedback">
               <label class="col-sm-2 control-label" for="od_name"><b>이름</b><strong class="sound_only">필수</strong></label>
               <div class="col-sm-3">
-                <input type="text" name="od_name" value="<?php echo get_text($member['mb_name']); ?>" id="od_name" required class="form-control input-sm" maxlength="20">
+                <input type="text" name="od_name" value="<?php echo get_text($member['mb_name']); ?>" id="od_name" required class="form-control input-sm">
                 <span class="fa fa-check form-control-feedback"></span>
               </div>
             </div>
@@ -336,7 +336,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                 <div class="list-con">
                   <strong>기업명</strong>
                   <div>
-                    <input type="text" name="typereceipt_bname" value="<?php echo $member['mb_entNm']; ?>" id="typereceipt_bname" maxlength="20">
+                    <input type="text" name="typereceipt_bname" value="<?php echo $member['mb_entNm']; ?>" id="typereceipt_bname">
                   </div>
                 </div>
                 <div class="list-con">
@@ -1182,7 +1182,7 @@ $(function() {
 
     $data = json_encode($data);
 
-    echo 'select_item(' . ($data ?: '{}') . ', \'' . $row['io_id'] . '\', ' . ($row['qty'] ?: 1) . ');';
+    echo 'select_item(' . ($data ?: '{}') . ', \'' . $row['io_id'] . '\', ' . ($row['qty'] ?: 1) . ');'.PHP_EOL;
   }
 
   // 장바구니 주문 세션 초기화
