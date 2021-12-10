@@ -307,7 +307,7 @@ label {
         <th scope="row"><label for="mb_fax">팩스번호</label></th>
         <td colspan="3">
         <?php $mb_fax =explode('-',$mb['mb_fax']); ?>
-        <input type="text" name="mb_fax1" value="<?php echo $mb_fax[0] ?>" id="mb_fax1" class="frm_input" size="15"  maxlength="3">
+        <input type="text" name="mb_fax1" value="<?php echo $mb_fax[0] ?>" id="mb_fax1" class="frm_input" size="15"  maxlength="4">
         <input type="text" name="mb_fax2" value="<?php echo $mb_fax[1] ?>" id="mb_fax2" class="frm_input" size="15"  maxlength="4">
         <input type="text" name="mb_fax3" value="<?php echo $mb_fax[2] ?>" id="mb_fax3" class="frm_input" size="15"  maxlength="4">
         </td>
