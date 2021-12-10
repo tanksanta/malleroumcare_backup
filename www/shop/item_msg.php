@@ -17,6 +17,8 @@ if($preview && !$ms['ms_pen_nm']) {
   $ms['ms_pen_nm'] = '이로움';
 }
 
+$show_expedted_label = $_GET['show_expected'];
+
 $sql = " SELECT * FROM recipient_item_msg_item WHERE ms_id = '{$ms['ms_id']}' ORDER BY mi_id ASC ";
 $result = sql_query($sql);
 

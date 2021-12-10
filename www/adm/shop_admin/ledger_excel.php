@@ -22,7 +22,7 @@ if(!$fr_date)
   $fr_date = date('Y-m-01');
 if(!$to_date)
   $to_date = date('Y-m-d');
-$where_order .= " and (od_time between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+$where_order .= " and (COALESCE(tr_date, od_time) between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 $where_ledger .= " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
 # 매출
@@ -30,6 +30,7 @@ $sql_order = "
   SELECT
     o.od_time,
     o.od_id,
+    o.tr_date,
     m.mb_entNm,
     c.ct_id,
     c.it_name,
@@ -109,6 +110,7 @@ $sql_send_cost = "
   SELECT
     o.od_time,
     o.od_id,
+    o.tr_date,
     m.mb_entNm,
     c.ct_id,
     '^배송비' as it_name,
@@ -136,6 +138,7 @@ $sql_sales_discount = "
   SELECT
     o.od_time,
     o.od_id,
+    o.tr_date,
     m.mb_entNm,
     c.ct_id,
     '^매출할인' as it_name,
@@ -165,6 +168,7 @@ $sql_sales_coupon = "
   SELECT
     o.od_time,
     o.od_id,
+    o.tr_date,
     m.mb_entNm,
     c.ct_id,
     '^쿠폰할인' as it_name,
@@ -192,6 +196,7 @@ $sql_sales_point = "
   SELECT
     o.od_time,
     o.od_id,
+    o.tr_date,
     m.mb_entNm,
     c.ct_id,
     '^포인트결제' as it_name,
@@ -220,6 +225,7 @@ $sql_ledger = "
   SELECT
     lc_created_at as od_time,
     '' as od_id,
+    '' as tr_date,
     m.mb_entNm,
     '' as ct_id,
     (
@@ -448,8 +454,9 @@ $total_sales = 0;
 $total_deposit = 0;
 
 foreach($ledgers as $row) {
+  $od_date = $row['tr_date'] ?: $row['od_time'];
   $rows[] = [
-    date('y/m/d', strtotime($row['od_time'])).($row['od_id'] ? '-'.$row['od_id'] : ''),
+    date('y/m/d', strtotime($od_date)).($row['od_id'] ? '-'.$row['od_id'] : ''),
     $row['it_name'].($row['ct_option'] && $row['ct_option'] != $row['it_name'] ? " [{$row['ct_option']}]" : ''),
     $row['ct_qty'],
     $row['thezone_code'],

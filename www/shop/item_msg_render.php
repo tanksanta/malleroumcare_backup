@@ -61,6 +61,9 @@ foreach($rec_arr as $wr_id) {
       <div class="im_flex">
         <img src="/data/item/<?=$it['it_img1']?>" alt="<?=$it['it_name']?>" onerror="this.src='/img/no_img.png';">
         <div class="im_info">
+          <?php if ($show_expedted_label === 'Y') { ?>
+            <p class="it_expected_warehousing_date"><?=$it['it_expected_warehousing_date']?></p>
+          <?php } ?>
           <p class="it_name">
             <?php echo "{$it['it_name']} ({$it['gubun']})"; ?>
           </p>
