@@ -1979,7 +1979,7 @@ function get_sendcost_new($cart_id, $selected = 1) {
       ct_status not in ( '취소', '주문무효' ) and
       ct_select = '$selected' and
       i.it_sc_type = 3
-  ", true);
+  ");
   if($check_result['send_cost']) {
     $od_send_cost += $check_result['send_cost'];
   }
