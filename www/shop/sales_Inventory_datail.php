@@ -274,14 +274,34 @@ $row = sql_fetch($sql);
             <span class="del"></span>
           </li>
           <?php
+          $sql_list = [];
+          $sql = "SELECT sum(ct_qty) as cnt FROM g5_shop_cart 
+              WHERE it_id = '{$_GET['prodId']}' AND mb_id = '{$member['mb_id']}' 
+              AND (ct_status = '주문' OR ct_status = '입금' OR ct_status = '준비' OR ct_status = '출고준비' OR ct_status = '배송');";
+          $sql_result = sql_fetch($sql);
+          if ($sql_result['cnt'] > 0) {
+            // $option = str_replace("색상:", "", $row['ct_option']);
+            // $option = str_replace("사이즈:", "", $option);
+            // $option = str_replace(" ", "", $option);
+            $data = array(
+              'prodColor' => $option,
+              'prodSize' => '',
+              'prodNm' => $row['it_name'],
+              'stoId' => '',
+              'prodBarNum' => '',
+              'regDtm' => '배송중 : ' . $sql_result['cnt'],
+              'isShippingCnt' => 'Y'
+            );
+            $sql_list[] = $data;
+          }
           //판매재고 리스트
-          $sendLength = 5;
           $sendData = [];
           $prodsSendData = [];
           $sendData["usrId"] = $member["mb_id"];
           $sendData["entId"] = $member["mb_entId"];
           $sendData["prodId"] = $_GET['prodId'];
           $sendData["pageNum"] = ($_GET["page2"]) ? $_GET["page2"] : 1;
+          $sendLength = 5;
           $sendData["pageSize"] = $sendLength;
           $sendData["stateCd"] =['01'];
           if($_GET['soption']=="1"){
@@ -302,13 +322,19 @@ $row = sql_fetch($sql);
           $res = curl_exec($oCurl);
           $res = json_decode($res, true);
           curl_close($oCurl);
+
           $list = [];
           if($res["data"]){
             $list = $res["data"];
           }
+
           # 페이징
           $totalCnt = $res["total"];
+          // $totalCnt = count($list);
           $pageNum = $sendData["pageNum"]; # 페이지 번호
+          if ($pageNum == 1) {
+            $list = array_merge($sql_list, $list);
+          }
           $listCnt = $sendLength; # 리스트 갯수 default 10
 
           $b_pageNum_listCnt = 5; # 한 블록에 보여줄 페이지 갯수 5개
@@ -330,6 +356,9 @@ $row = sql_fetch($sql);
           <div id="list_box1">
             <?php for($i=0;$i<count($list);$i++) {
             $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
+            if ($pageNum == 1 && count($sql_list) > 0) {
+              $number += 1;
+            }
             if($list[$i]['prodColor']&&$list[$i]['prodSize']){ $div="/";} else { $div=""; }
 
             //유통 / 비유통 구분
@@ -376,41 +405,63 @@ $row = sql_fetch($sql);
                 echo $name;
                 ?>
               </span>
-              <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+              <?php if ($list[$i]['isShippingCnt'] !== 'Y') { ?>
+                <span class="pro-num m_off <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+              <?php } else { ?>
+                <span class="pro-num m_off">미등록</span>
+              <?php } ?>
               <?php
-              //날짜 변환
-              $date1=$list[$i]['regDtm'];
-              $date2=date("Y-m-d H:i", strtotime($date1));
+                //날짜 변환
+                $date1=$list[$i]['regDtm'];
+                if ($list[$i]['isShippingCnt'] !== 'Y') {
+                  $date2=date("Y-m-d H:i", strtotime($date1));  
               ?>
-              <span class="date m_off"><?=$date2?></span>
+                <span class="date m_off"><?=$date2?></span>
+              <?php } else { ?>
+                <span class="date m_off" style="color:#f08606;"><?=$date1?></span>
+              <?php } ?>
               <!--<span class="order m_off">
                 <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodOption']?>','<?=$list[$i]['prodBarNum']?>')">수급자선택</a>
               </span>-->
-              <span class="del m_off">
-                <div class="state-btn2" onclick="open_list(this);">
-                  <b><img src="<?=G5_IMG_URL?>/icon_11.png" alt=""></b>
-                  <ul class="modalDialog">
-                    <li class="p-btn01"><a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">삭제</a></li>
-                    <li class="p-btn01"><a href="javascript:;" onclick="open_sell_popup(this)">판매완료처리</a></li>
-                  </ul>
-                </div>
-              </span>
+              <?php if ($list[$i]['isShippingCnt'] !== 'Y') { ?>
+                <span class="del m_off">
+                  <div class="state-btn2" onclick="open_list(this);">
+                    <b><img src="<?=G5_IMG_URL?>/icon_11.png" alt=""></b>
+                    <ul class="modalDialog">
+                      <li class="p-btn01"><a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">삭제</a></li>
+                      <li class="p-btn01"><a href="javascript:;" onclick="open_sell_popup(this)">판매완료처리</a></li>
+                    </ul>
+                  </div>
+                </span> 
+              <?php } ?>
+              
               <!--mobile용-->
               <div class="list-m">
                 <div class="info-m">
-                  <span class="product"><?=$list[$i]['prodNm']?>
+                  <span class="product">
+                    <!-- <?=$list[$i]['prodNm']?> -->
                     <?=$name?>
                   </span>
-                  <span class="pro-num <?=$prodBarNumCntBtn_2?>" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                  <?php if ($list[$i]['isShippingCnt'] !== 'Y') { ?>
+                    <span class="pro-num <?=$prodBarNumCntBtn_2?>" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
+                  <?php } else { ?>
+                    <span class="pro-num m_off">미등록</span>
+                  <?php } ?>
                 </div>
                 <div class="info-m">
-                  <span class="date"><?=$date2?></span>
+                  <?php if ($list[$i]['isShippingCnt'] !== 'Y') { ?>
+                    <span class="date"><?=$date2?></span>
+                  <?php } else { ?>
+                    <span class="date" style="color:#f08606;"><?=$date1?></span>
+                  <?php } ?>                  
                   <!--<span class="order">
                     <a href="javascript:;" onclick="popup_control('<?=$list[$i]['prodColor']?>','<?=$list[$i]['prodSize']?>','<?=$list[$i]['prodOption']?>','<?=$list[$i]['prodBarNum']?>')" >수급자선택</a>
                   </span>-->
-                  <span class="order2">
-                    <a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">삭제</a>
-                  </span>
+                  <?php if ($list[$i]['isShippingCnt'] !== 'Y') { ?>
+                    <span class="order2">
+                      <a href="javascript:;" onclick="del_stoId('<?=$list[$i]['stoId']?>')">삭제</a>
+                    </span>
+                  <?php } ?>
                 </div>
               </div>
 

@@ -86,7 +86,7 @@ $res = api_post_call(EROUMCARE_API_STOCK_LIST, array(
     'gubun' => '00',
 ));
 
-$sales_Inventory_total=$res['total'];//대여재고 토탈
+$sales_Inventory_total=$res['total'];//판매재고 토탈
 
 //대여재고 토탈
 $res = api_post_call(EROUMCARE_API_STOCK_LIST, array(
@@ -219,6 +219,10 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         $number = $totalCnt-(($pageNum-1)*$sendData["pageSize"])-$i;  //넘버링 토탈 -( (페이지-1) * 페이지사이즈) - $i
                         $sql = 'SELECT  `it_taxInfo`, `it_img1`, `it_cust_price` FROM `g5_shop_item` WHERE `it_id`="'.$list[$i]['prodId'].'"';
                         $row = sql_fetch($sql);
+                        $sql2 = "SELECT sum(ct_qty) as cnt FROM g5_shop_cart 
+                            WHERE it_id = '{$list[$i]['prodId']}' AND mb_id = '{$member['mb_id']}' 
+                            AND (ct_status = '주문' OR ct_status = '입금' OR ct_status = '준비' OR ct_status = '출고준비' OR ct_status = '배송');";
+                        $row2 = sql_fetch($sql2);
                     ?>
                     <!--반복-->
                     <a href="<?=G5_SHOP_URL?>/sales_Inventory_datail.php?prodId=<?=$list[$i]['prodId']?>&page=<?=$_GET['page']?>&searchtype=<?=$_GET['searchtype']?>&searchtypeText=<?=$_GET['searchtypeText']?>&prodSupYn=<?=$list[$i]['prodSupYn']?>">
@@ -244,7 +248,12 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                                     <!--mobile 용-->
                                     <div class="info-02">
                                         <span class="pro-num"><?=$list[$i]['prodPayCode']?></span><!--상품아이디-->
-                                        <span class="stock"><?=$list[$i]['quantity']?>개 남음</span><!--주문재고수량-->
+                                        <span class="stock">
+                                            <?php if ($row2['cnt'] > 0) { ?>
+                                                <p style="font-weight:normal; color:#f08606;">배송중 : <?=$row2['cnt']?>개</p><br>
+                                            <?php } ?>
+                                            <?=$list[$i]['quantity']?>개 남음
+                                        </span><!--주문재고수량-->
                                         <span class="order">판매완료 <?=$list[$i]['orderQuantity']?>개</span><!--판매완료 개수-->
                                         <span class="price"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                                     </div>
@@ -253,7 +262,12 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         </span>
                         <!--pc 용-->
                         <span class="pro-num m_off"><?=$list[$i]['prodPayCode']?></span>
-                        <span class="stock m_off"><?=$list[$i]['quantity']?>개</span><!--주문재고수량-->
+                        <span class="stock m_off">
+                            <?=$list[$i]['quantity']?>개
+                            <?php if ($row2['cnt'] > 0) { ?>
+                                <p style="font-weight:normal; color:#f08606;">배송중 : <?=$row2['cnt']?>개</p>
+                            <?php } ?>
+                        </span><!--주문재고수량-->
                         <span class="order m_off"><?=$list[$i]['orderQuantity']?>개</span><!--판매완료 개수-->
                         <span class="price m_off"><?=number_format($row['it_cust_price']);?>원</span><!--급여가-->
                     </li>
