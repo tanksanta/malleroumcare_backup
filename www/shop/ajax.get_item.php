@@ -27,6 +27,7 @@ $sql = "
     it_img1 as it_img,
     it_delivery_cnt,
     it_sc_type,
+    it_sc_price,
     it_even_odd,
     it_even_odd_price,
     it_sale_cnt,

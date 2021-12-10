@@ -539,16 +539,18 @@ function calculate_order_price() {
   var odd_price = 0;
   var even_qty = 0;
   var even_price = 0;
+  var charge_price = 0; // 유료배송비
   $li.each(function() {
     var it_id = $(this).find('input[name="it_id[]"]').val();
     var it_price = parseInt ( $(this).find('input[name="it_price[]"]').val() || 0 );
     var io_price = parseInt( $(this).find('select[name="io_id[]"] option:selected').data('price') || 0 );
     var ct_qty = parseInt( $(this).find('input[name="ct_qty[]"]').val() || 0 );
     var it_sc_type = parseInt( $(this).find('input[name="it_sc_type[]"]').val() || 0 );
+    var it_sc_price = parseInt( $(this).find('input[name="it_sc_price[]"]').val() || 0 );
     var it_even_odd = parseInt( $(this).find('input[name="it_even_odd[]"]').val() || 0 );
     var it_even_odd_price = parseInt( $(this).find('input[name="it_even_odd_price[]"]').val() || 0 );
 
-    if(it_sc_type !== 1 && it_sc_type !== 5) {
+    if(it_sc_type !== 1 && it_sc_type !== 5 && it_sc_type !== 3) {
       // 무료배송이 아닌 상품이 하나라도 있으면 유료배송
       free_delivery = false;
     }
@@ -581,6 +583,11 @@ function calculate_order_price() {
     $(this).find('input[name="ct_price[]"]').val(ct_price);
     order_price += ct_price;
 
+    // 유료 배송
+    if(it_sc_type === 3) {
+      charge_price += (it_sc_price * ct_qty);
+    }
+
     // 홀수/짝수 배송
     if(it_sc_type === 5) {
       if(it_even_odd == 0) {
@@ -610,6 +617,9 @@ function calculate_order_price() {
     // 주문금액 10만원 미만에 무료배송상품이 아닌 상품이 있는 경우 배송비
     delivery_price = 3300;
   }
+
+  // 유료 배송비 적용
+  delivery_price += charge_price;
 
   if(odd_qty > 0 && odd_qty % 2 === 1) {
     // 홀수 배송비 적용
@@ -739,6 +749,7 @@ function select_item(obj, io_id, ct_qty) {
   $li.append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
   .append('<input type="hidden" name="it_price[]" value="' + obj.it_price + '">')
   .append('<input type="hidden" name="it_sc_type[]" value="' + obj.it_sc_type + '">')
+  .append('<input type="hidden" name="it_sc_price[]" value="' + obj.it_sc_price + '">')
   .append('<input type="hidden" name="it_even_odd[]" value="' + obj.it_even_odd + '">')
   .append('<input type="hidden" name="it_even_odd_price[]" value="' + obj.it_even_odd_price + '">')
   .append('<input type="hidden" name="cp_id[]" value="">')
@@ -1192,6 +1203,7 @@ $(function() {
         it_img1 as it_img,
         it_delivery_cnt,
         it_sc_type,
+        it_sc_price,
         it_even_odd,
         it_even_odd_price,
         it_sale_cnt,
@@ -1262,6 +1274,7 @@ $(function() {
         i.it_img1 as it_img,
         i.it_delivery_cnt,
         i.it_sc_type,
+        i.it_sc_price,
         it_even_odd,
         it_even_odd_price,
         io_id,
