@@ -9,7 +9,7 @@ $w = $_GET['w'];
 if($w == 'u') {
     // 수정
     $al_id = get_search_string($_GET['al_id']);
-    $al = sql_fetch(" select * form g5_alimtalk where al_id = '$al_id' ");
+    $al = sql_fetch(" select * from g5_alimtalk where al_id = '$al_id' ", true);
     if(!$al)
         alert('존재하지 않는 알림톡입니다.');
     
@@ -22,7 +22,7 @@ if($w == 'u') {
         left join
             g5_member m on a.mb_id = m.mb_id
         where
-            al_id = '{$row['al_id']}'
+            al_id = '$al_id'
         order by
             a.mb_id asc
     ";
@@ -93,7 +93,20 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <label for="al_type_1">사업소선택</label>
             <input type="text" id="mb_id" class="frm_input" size="50">
             <div id="mb_id_list">
-
+                <?php
+                if($al['al_type'] == 1 && $al['member']) {
+                    foreach($al['member'] as $mb) {
+                ?>
+                <div class="mb">
+                    <input type="hidden" name="mb_id[]" value="<?=$mb['mb_id']?>">
+                    <input type="hidden" name="deleted[]" value="0">
+                    <?="{$mb['mb_name']}({$mb['mb_id']})"?>
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </div>
+                <?php
+                    }
+                }
+                ?>
             </div>
         </td>
     </tr>
@@ -126,6 +139,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </div>
 <div class="btn_fixed_top ">
     <input type="submit" class="btn_submit btn" accesskey="s" value="확인">
+    <a href="./alimtalk_list.php" class="btn btn_02">취소</a>
 </div>
 </form>
 
@@ -133,7 +147,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 $('.datepicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
 
 function falimtalkform_check(f) {
-    return false;
+    return true;
 }
 
 function select_mb_id(obj) {
@@ -148,7 +162,7 @@ function select_mb_id(obj) {
 }
 
 $(document).on('click', '#mb_id_list .mb', function() {
-    if($(this).find('input[name="al_id[]"]').val()) {
+    if($(this).find('input[name="deleted[]"]').length > 0) {
         $(this).find('input[name="deleted[]"]').val(1);
         $(this).hide();
     } else {
