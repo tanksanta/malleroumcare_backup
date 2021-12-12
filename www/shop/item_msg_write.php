@@ -206,16 +206,15 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                         align-items: center;">
               추가 된 상품 목록
             </span>
-            <span class="show_expected_switch">
-            <input class="im_switch " type="checkbox" name="show_expected_warehousing_date" id="show_expected_warehousing_date" <?php echo ($show_expected == 'Y' ? 'checked' : '')?>>입고예정일 알림표시
-            <label for="show_expected_warehousing_date">
-              <div class="im_switch_slider">
-                <span class="on">공개</span>
-                <span class="off">숨김</span>
-              </div>
-            </label>
+            <span class="show_expected_switch" style="display:<?php echo ($show_expected == 'Y' ? 'block;' : 'none;')?>">
+              <input class="im_switch " type="checkbox" name="show_expected_warehousing_date" id="show_expected_warehousing_date" <?php echo ($show_expected == 'Y' ? 'checked' : '')?>>입고예정일 알림표시
+              <label for="show_expected_warehousing_date">
+                <div class="im_switch_slider">
+                  <span class="on">공개</span>
+                  <span class="off">숨김</span>
+                </div>
+              </label>
             </span>
-
             <!-- <label style="text-align:right; width:78%; display:none;" for="show_expected_warehousing_date" id="show_expected_warehousing_date_label">
               <p>입고예정일 알림표시</p>
               <div class="im_switch_slider">
@@ -312,7 +311,8 @@ $(function(){
       $('.it_expected_warehousing_date').hide();
       url = url + "&show_expected=N";
     }
-    $('#im_preview iframe').attr('src', url);
+    // $('#im_preview iframe').attr('src', url);
+    save_item_msg();
   });
 });
 
@@ -347,7 +347,8 @@ function select_item(obj) {
   $('#popup_box').hide();
 
   if (obj.it_expected_warehousing_date) {
-    $('#show_expected_warehousing_date_label').show();
+    // window.location.href += "&show_expected=Y";
+    $('.show_expected_switch').show();
   }
 
   // it_id
@@ -386,7 +387,8 @@ function save_item_msg(no_items) {
     return;
 
   var pen_type = $('input[name="pen_type"]:checked').val();
-  
+  var show_expected = ($('#show_expected_warehousing_date').is(':checked') ? 'Y' : 'N');
+
   if(pen_type == '1') {
     // 기존 수급자 검색일 경우
     if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
@@ -396,12 +398,13 @@ function save_item_msg(no_items) {
   loading = true;
   $form = $('#form_item_msg');
   var query = $form.serialize();
+  query += `&show_expected=${show_expected}`;
   if(no_items)
     query += '&no_items=1';
   $.post($form.attr('action'), query, 'json')
   .done(function(result) {
     var data = result.data;
-    var ms_url = 'item_msg.php?preview=1&url=' + data.ms_url;
+    var ms_url = 'item_msg.php?preview=1&url=' + data.ms_url + '&show_expected=' + show_expected;
     $('input[name="w"]').val('u');
     $('input[name="ms_id"]').val(data.ms_id);
     $('#ms_pen_url').text('https://eroumcare.com/shop/' + ms_url);

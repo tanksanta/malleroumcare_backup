@@ -10,6 +10,7 @@ $ms_pro_yn = clean_xss_tags($_POST['ms_pro_yn']);
 $ms_pen_hp = clean_xss_tags($_POST['ms_pen_hp']);
 $ms_ent_tel = clean_xss_tags($_POST['ms_ent_tel']);
 $ms_rec = $_POST['ms_rec'];
+$show_expected = $_POST['show_expected'];
 
 if(is_array($ms_rec)) {
   $ms_rec = clean_xss_tags(implode(',', $ms_rec));
@@ -71,6 +72,7 @@ if($w == 'u') {
       ms_pen_hp = '{$ms_pen_hp}',
       ms_ent_tel = '{$ms_ent_tel}',
       ms_rec = '{$ms_rec}',
+      show_expected = '{$show_expected}',
       ms_updated_at = NOW()
     WHERE
       ms_id = '{$ms_id}' and
@@ -128,6 +130,7 @@ if($w == 'u') {
       ms_ent_tel = '{$ms_ent_tel}',
       ms_rec = '{$ms_rec}',
       ms_url = '{$ms_url}',
+      show_expected = '{$show_expected}',
       ms_created_at = NOW(),
       ms_updated_at = NOW()
   ";
