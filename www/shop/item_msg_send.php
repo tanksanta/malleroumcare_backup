@@ -41,6 +41,7 @@ if($today_count <= 0) {
 $msg_point = 0; // 메세지 무료 이벤트
 
 $ms_id = get_search_string($_POST['ms_id']);
+$show_expected = get_search_string($_POST['show_expected']);
 
 $sql = " select * from recipient_item_msg where ms_id = '$ms_id' and mb_id = '{$member['mb_id']}' ";
 $ms = sql_fetch($sql);
@@ -69,7 +70,7 @@ $sql = "
 sql_query($sql);
 
 // 알림톡 발송
-$msg_url = "eroumcare.com/shop/item_msg.php?url={$ms['ms_url']}";
+$msg_url = "eroumcare.com/shop/item_msg.php?url={$ms['ms_url']}&show_expected={$show_expected}";
 send_alim_talk('ITEM_MSG_'.$ms_id, $ms['ms_pen_hp'], 'pen_item_msg', "[이로움 장기요양기관 통합관리시스템]\n\n{$ms['ms_pen_nm']}님에게 {$member['mb_entNm']} 사업소에서 추천 품목이 전송되었습니다.\n전송된 품목을 확인해주세요.\n\n전송 링크 : https://{$msg_url}", array(
   'button' => [
     array(
