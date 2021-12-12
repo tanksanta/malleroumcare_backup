@@ -201,10 +201,29 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 	        	<!-- <p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p> -->
 	        </div>
           <div class="im_list_hd">
-            추가 된 상품 목록
-            <label style="text-align:right; width:78%; display:none;" for="show_expected_warehousing_date" id="show_expected_warehousing_date_label">
-              <input type="checkbox" name="show_expected_warehousing_date" id="show_expected_warehousing_date" <?php echo ($show_expected == 'Y' ? 'checked' : '')?>> 입고예정일 알림표시
+            <span style="display: inline-flex;
+                        min-height: 35px;
+                        align-items: center;">
+              추가 된 상품 목록
+            </span>
+            <span class="show_expected_switch">
+            <input class="im_switch " type="checkbox" name="show_expected_warehousing_date" id="show_expected_warehousing_date" <?php echo ($show_expected == 'Y' ? 'checked' : '')?>>입고예정일 알림표시
+            <label for="show_expected_warehousing_date">
+              <div class="im_switch_slider">
+                <span class="on">공개</span>
+                <span class="off">숨김</span>
+              </div>
             </label>
+            </span>
+
+            <!-- <label style="text-align:right; width:78%; display:none;" for="show_expected_warehousing_date" id="show_expected_warehousing_date_label">
+              <p>입고예정일 알림표시</p>
+              <div class="im_switch_slider">
+                <span class="on">공개</span>
+                <span class="off">숨김</span>
+              </div>
+              <input type="checkbox" name="show_expected_warehousing_date" id="show_expected_warehousing_date" <?php echo ($show_expected == 'Y' ? 'checked' : '')?>> 입고예정일 알림표시
+            </label> -->
           </div>
           <ul id="im_write_list" class="im_write_list">
             <?php
@@ -680,6 +699,7 @@ function save_item_msg(no_items) {
 
   // 스위치 변경시
   $('.im_switch').click(function(e) {
+    if (this.id == 'show_expected_warehousing_date') return;
     if(loading) return false;
 
     var ms_id = $('input[name="ms_id"]').val();
