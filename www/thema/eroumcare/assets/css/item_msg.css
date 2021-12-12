@@ -169,6 +169,7 @@
 }
 .im_list_hd .show_expected_switch {
   float:right;
+  display: none;
 }
 
 .im_write_list {
