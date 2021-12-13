@@ -131,7 +131,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <label for="al_itdate">입고예정일<strong class="sound_only">필수</strong></label>
         </th>
         <td>
-            <input type="text" name="al_itdate" value="<?php echo  get_sanitize_input($al['al_itdate']) ?>" id="al_itdate" required class="datepicker required frm_input" size="100">
+            <input type="text" name="al_itdate" value="<?php echo  get_sanitize_input($al['al_itdate']) ?>" id="al_itdate" required class="required frm_input" size="100">
         </td>
     </tr>
     </tbody>
@@ -144,8 +144,6 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </form>
 
 <script>
-$('.datepicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
-
 function falimtalkform_check(f) {
     return true;
 }
