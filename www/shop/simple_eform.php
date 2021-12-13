@@ -19,7 +19,7 @@ if($dc_id) {
 }
 
 // 이전에 저장했던 간편계약서 삭제
-$sql = "
+/*$sql = "
   select hex(dc_id) as uuid
   from eform_document
   where dc_status = '10' and entId = '{$member['mb_entId']}'
@@ -34,7 +34,7 @@ while($row = sql_fetch_array($result)) {
   sql_query($sql);
   $sql = " DELETE FROM eform_document WHERE dc_id = UNHEX('$dc_id') ";
   sql_query($sql);
-}
+}*/
 
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_eform.css?v=1128">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
