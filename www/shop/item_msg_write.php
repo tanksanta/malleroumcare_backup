@@ -27,6 +27,7 @@ if(in_array($member['mb_id'], ['hula1202', 'joabokji'])) {
 
 $w = get_search_string($_GET['w']);
 $ms_id = get_search_string($_GET['ms_id']);
+$show_expected = get_search_string($_GET['show_expected']);
 
 if($w && $ms_id) {
   $sql = " select * from recipient_item_msg where ms_id = '$ms_id' and mb_id = '{$member['mb_id']}' ";
@@ -50,7 +51,8 @@ if($w && $ms_id) {
     SELECT
       m.*,
       it_img1 as it_img,
-      it_cust_price
+      it_cust_price,
+      it_expected_warehousing_date
     FROM
       recipient_item_msg_item m
     LEFT JOIN
@@ -141,7 +143,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
               <span id="ms_pen_url">
                 <?php
                 if($ms['ms_url']) {
-                  echo 'https://eroumcare.com/shop/item_msg.php?url='.$ms['ms_url'];
+                  echo 'https://eroumcare.com/shop/item_msg.php?url='.$ms['ms_url'].'&show_expected='.$show_expected;
                 } else {
                   echo '상품이 추가되면 자동 생성됩니다.';
                 }
@@ -199,10 +201,28 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 	        	<!-- <p class="txt_point">품목명을 모르시면 “품목찾기”버튼을 클릭해주세요.</p> -->
 	        </div>
           <div class="im_list_hd">
-            추가 된 상품 목록
-            <label style="text-align:right; width:78%; display:none;" for="show_expected_warehousing_date" id="show_expected_warehousing_date_label">
-              <input type="checkbox" name="show_expected_warehousing_date" id="show_expected_warehousing_date" > 입고예정일 알림표시
-            </label>
+            <span style="display: inline-flex;
+                        min-height: 35px;
+                        align-items: center;">
+              추가 된 상품 목록
+            </span>
+            <span class="show_expected_switch" style="display:<?php echo ($show_expected == 'Y' ? 'block;' : 'none;')?>">
+              <input class="im_switch " type="checkbox" name="show_expected_warehousing_date" id="show_expected_warehousing_date" <?php echo ($show_expected == 'Y' ? 'checked' : '')?>>입고예정일 알림표시
+              <label for="show_expected_warehousing_date">
+                <div class="im_switch_slider">
+                  <span class="on">공개</span>
+                  <span class="off">숨김</span>
+                </div>
+              </label>
+            </span>
+            <!-- <label style="text-align:right; width:78%; display:none;" for="show_expected_warehousing_date" id="show_expected_warehousing_date_label">
+              <p>입고예정일 알림표시</p>
+              <div class="im_switch_slider">
+                <span class="on">공개</span>
+                <span class="off">숨김</span>
+              </div>
+              <input type="checkbox" name="show_expected_warehousing_date" id="show_expected_warehousing_date" <?php echo ($show_expected == 'Y' ? 'checked' : '')?>> 입고예정일 알림표시
+            </label> -->
           </div>
           <ul id="im_write_list" class="im_write_list">
             <?php
@@ -215,6 +235,9 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
               <input type="hidden" name="gubun[]" value="<?=$item['gubun']?>">
               <img class="it_img" src="/data/item/<?=$item['it_img']?>" onerror="this.src='/img/no_img.png';">
               <div class="it_info">
+                <?php if ($show_expected == 'Y') { ?>
+                  <p style="display:block;" class="it_expected_warehousing_date"><?=$item['it_expected_warehousing_date']?></p>
+                <?php } ?>
                 <p class="it_name"><?=get_text($item['it_name']) . " ({$item['gubun']})"?></p>
                 <p class="it_price">급여가 : <?=number_format($item['it_cust_price'])?>원</p>
               </div>
@@ -257,7 +280,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
           </div>
           <div id="im_preview" class="im_preview">
             <?php if($ms['ms_url']) { ?>
-            <iframe src="item_msg.php?preview=1&url=<?=$ms['ms_url']?>" frameborder="0" data-ms-url="<?=$ms['ms_url']?>"></iframe>
+            <iframe src="item_msg.php?preview=1&url=<?=$ms['ms_url']?>&show_expected=<?=$show_expected?>" frameborder="0" data-ms-url="<?=$ms['ms_url']?>"></iframe>
             <?php } else { ?>
             <div class="empty">상품이 추가되면 자동 생성됩니다.</div>
             <?php } ?>
@@ -288,7 +311,8 @@ $(function(){
       $('.it_expected_warehousing_date').hide();
       url = url + "&show_expected=N";
     }
-    $('#im_preview iframe').attr('src', url);
+    // $('#im_preview iframe').attr('src', url);
+    save_item_msg();
   });
 });
 
@@ -323,7 +347,8 @@ function select_item(obj) {
   $('#popup_box').hide();
 
   if (obj.it_expected_warehousing_date) {
-    $('#show_expected_warehousing_date_label').show();
+    // window.location.href += "&show_expected=Y";
+    $('.show_expected_switch').show();
   }
 
   // it_id
@@ -362,7 +387,8 @@ function save_item_msg(no_items) {
     return;
 
   var pen_type = $('input[name="pen_type"]:checked').val();
-  
+  var show_expected = ($('#show_expected_warehousing_date').is(':checked') ? 'Y' : 'N');
+
   if(pen_type == '1') {
     // 기존 수급자 검색일 경우
     if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
@@ -372,12 +398,13 @@ function save_item_msg(no_items) {
   loading = true;
   $form = $('#form_item_msg');
   var query = $form.serialize();
+  query += `&show_expected=${show_expected}`;
   if(no_items)
     query += '&no_items=1';
   $.post($form.attr('action'), query, 'json')
   .done(function(result) {
     var data = result.data;
-    var ms_url = 'item_msg.php?preview=1&url=' + data.ms_url;
+    var ms_url = 'item_msg.php?preview=1&url=' + data.ms_url + '&show_expected=' + show_expected;
     $('input[name="w"]').val('u');
     $('input[name="ms_id"]').val(data.ms_id);
     $('#ms_pen_url').text('https://eroumcare.com/shop/' + ms_url);
@@ -641,13 +668,15 @@ function save_item_msg(no_items) {
       return alert('먼저 상품을 추가해주세요.');
 
     sending = true;
+    var show_expected = ($('#show_expected_warehousing_date').is(':checked') ? 'Y' : 'N');
     $form = $('#form_item_msg');
     $.post('item_msg_send.php', {
-      ms_id: ms_id
+      ms_id: ms_id,
+      show_expected: show_expected
     }, 'json')
     .done(function(result) {
       alert('전송이 완료되었습니다.');
-      window.location.href = 'item_msg_write.php?w=u&ms_id=' + ms_id;
+      window.location.href = 'item_msg_write.php?w=u&ms_id=' + ms_id + '&show_expected=' + show_expected;
     })
     .fail(function($xhr) {
       var data = $xhr.responseJSON;
@@ -673,6 +702,7 @@ function save_item_msg(no_items) {
 
   // 스위치 변경시
   $('.im_switch').click(function(e) {
+    if (this.id == 'show_expected_warehousing_date') return;
     if(loading) return false;
 
     var ms_id = $('input[name="ms_id"]').val();

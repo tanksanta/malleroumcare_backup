@@ -133,7 +133,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
             <tr>
               <td><?=$row['index']?></td>
               <td>
-                <a href="item_msg_write.php?w=u&ms_id=<?=$row['ms_id']?>">
+                <a href="item_msg_write.php?w=u&ms_id=<?=$row['ms_id']?>&show_expected=<?=$row['show_expected']?>">
                   <?="{$row['ms_pen_nm']} ({$row['ms_pen_hp']})"?>
                 </a>
               </td>
