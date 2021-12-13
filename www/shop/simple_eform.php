@@ -1042,7 +1042,7 @@ function selected_recipient(result) {
     penTypeCd: result[7],
     penExpiStDtm: penExpiStDtm,
     penExpiEdDtm: penExpiEdDtm,
-    penJumin: result[33],
+    penJumin: result[33].substring(0, 6),
     penZip: '',
     penAddr: result[18],
     penAddrDtl: result[19],
