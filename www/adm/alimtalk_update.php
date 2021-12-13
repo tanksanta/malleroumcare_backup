@@ -15,6 +15,9 @@ $mb_id_arr = $_POST['mb_id'] ?: [];
 $deleted_arr = $_POST['deleted'] ?: [];
 
 if($w == 'd') {
+    if(!$al_id)
+        alert('유효하지 않은 요청입니다.');
+
     // 삭제
     $sql = "
         DELETE FROM
@@ -39,6 +42,9 @@ if($w == 'd') {
         alert('사업소를 선택해주세요.');
 
     if($w == 'u') {
+        if(!$al_id)
+            alert('유효하지 않은 요청입니다.');
+
         // 수정
         $sql = "
             UPDATE
@@ -54,6 +60,7 @@ if($w == 'd') {
                 al_id = '$al_id'
 
         ";
+        sql_query($sql, true);
     } else {
         // 등록
         $sql = "
