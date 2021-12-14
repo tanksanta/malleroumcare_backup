@@ -59,7 +59,7 @@ $sql = "INSERT INTO
 sql_query($sql);
 
 // 보호자
-$pros = $_POST['pros'];
+$pros = $_POST['pros'] ?: [];
 foreach($pros as $pro) {
 	foreach($pro as $key => $val) {
 		$pro[$key] = clean_xss_tags($val);
