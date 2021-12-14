@@ -27,7 +27,9 @@ if($test) {
         g5_member
       where
         mb_type = 'default' and
-        mb_level >= 3 and mb_level < 9
+        mb_level >= 3 and
+        mb_level < 9 and
+        mb_temp = 0
     ";
   } else {
     // 사업소 선택
