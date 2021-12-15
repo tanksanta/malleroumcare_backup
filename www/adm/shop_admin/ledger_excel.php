@@ -13,7 +13,6 @@ if(!$ent['mb_id'])
   alert('존재하지 않는 사업소입니다.');
 
 $mb_manager = sql_fetch("SELECT mb_name from g5_member WHERE mb_id = '{$ent['mb_manager']}'")['mb_name'];
-$where_order = $where_ledger = " and m.mb_id = '$mb_id' ";
 
 # 기간
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
@@ -22,44 +21,134 @@ if(!$fr_date)
   $fr_date = date('Y-m-01');
 if(!$to_date)
   $to_date = date('Y-m-d');
-$where_order .= " and (COALESCE(tr_date, od_time) between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
-$where_ledger .= " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 
-# 매출
-$sql_order = "
-  SELECT
-    o.od_time,
-    o.od_id,
-    o.tr_date,
-    m.mb_entNm,
-    c.ct_id,
-    c.it_name,
-    c.ct_option,
-    (c.ct_qty - c.ct_stock_qty) as ct_qty,
-    (
+if($ent['mb_type'] == 'partner') {
+  // 파트너 거래처원장
+  $ledger_result = get_partner_ledger($mb_id, $fr_date, $to_date, $sel_field, $search);
+  $ledgers = $ledger_result['ledger'];
+
+  for($i = 0; $i < count($ledgers); $i++) {
+    $row = $ledgers[$i];
+
+    $ct_id = $row['ct_id'];
+
+    //급여코드(품목코드) 가져오기
+    $it = sql_fetch("
+      SELECT cart.*, item.it_thezone2, o.io_thezone as io_thezone2, item.ca_id, it_standard, io_standard
+      FROM g5_shop_cart as cart
+      INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
+      LEFT JOIN g5_shop_item_option o ON (cart.it_id = o.it_id and cart.io_id = o.io_id)
+      WHERE cart.ct_id = '{$ct_id}'
+      ORDER BY cart.ct_id ASC
+    ");
+
+    $thezone_code = $it['io_thezone2'] ?: $it['io_thezone'] ?: $it['it_thezone2'];
+    $row['thezone_code'] = $thezone_code;
+
+    #바코드
+    $stoIdDataList = explode('|',$it['stoId']);
+    $stoIdDataList = array_filter($stoIdDataList);
+    $stoIdData = implode("|", $stoIdDataList);
+
+    $barcode=[];
+    $oCurl = curl_init();
+    $res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, [
+      'stoId' => $stoIdData
+    ], 443);
+    $result_again = $res;
+    $result_again = $result_again['data'];
+
+    for($k=0; $k < count($result_again); $k++) {
+      if($result_again[$k]['prodBarNum']) {
+        array_push($barcode, $result_again[$k]['prodBarNum']);
+      }
+    }
+    asort($barcode);
+    $barcode2 = [];
+    $y = 0;
+    foreach($barcode as $key=>$val)  
+    {  
+      $new_key = $y;  
+      $barcode2[$new_key] = $val;  
+      $y++;  
+    }
+    $barcode_string="";
+    if (!is_benefit_item($it)) {
+      for ($y = 0; $y < count($barcode2); $y++) {
+          #처음
+          if ($y==0) {
+              $barcode_string .= $barcode2[$y];
+              continue;
+          }
+          #현재 바코드 -1이 전바코드와 같지않음
+          if (intval($barcode2[$y])-1 !== intval($barcode2[$y-1])) {
+              $barcode_string .= ",".$barcode2[$y];
+          }
+          #현재 바코드 -1이 전바코드와 같음
+          if (intval($barcode2[$y])-1 == intval($barcode2[$y-1])) {
+              //다음번이 연속되지 않을 경우
+              if (intval($barcode2[$y])+1 !== intval($barcode2[$y+1])) {
+                  $barcode_string .= "-".$barcode2[$y];
+              }
+          }
+      }
+      $barcode_string .= " ";
+    }
+    $row['barcode_string'] = $barcode_string;
+
+    //배송정보
+    $delivery = '';
+    if ($it['ct_delivery_company']) {
+      $delivery = '(' . get_delivery_company_step($it['ct_delivery_company'])['name'] . ') ';
+    }
+    if ($it['ct_delivery_num']) {
+      $delivery .= $it['ct_delivery_num'];
+    }
+    //합포 송장번호 출력
+    if ($it['ct_combine_ct_id']) {
+      $sql_ct ="select `ct_delivery_company`, `ct_delivery_num` from g5_shop_cart where `ct_id` = '".$it['ct_combine_ct_id']."'";
+      $result_ct = sql_fetch($sql_ct);
+      $delivery = '';
+      if($result_ct['ct_delivery_company'])
+        $delivery = '(' . get_delivery_company_step($result_ct['ct_delivery_company'])['name'] . ') ';
+      $delivery .= $result_ct['ct_delivery_num'];
+    }
+    $row['delivery'] = $delivery;
+
+    $ledgers[$i] = $row;
+  }
+
+} else {
+  $where_order = $where_ledger = " and m.mb_id = '$mb_id' ";
+
+  $where_order .= " and (COALESCE(tr_date, od_time) between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+  $where_ledger .= " and (lc_created_at between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+
+  # 매출
+  $sql_order = "
+    SELECT
+      o.od_time,
+      o.od_id,
+      o.tr_date,
+      m.mb_entNm,
+      c.ct_id,
+      c.it_name,
+      c.ct_option,
+      (c.ct_qty - c.ct_stock_qty) as ct_qty,
       (
-        (c.ct_qty - c.ct_stock_qty) *
+        (
+          (c.ct_qty - c.ct_stock_qty) *
+          CASE
+            WHEN c.io_type = 0
+            THEN c.ct_price + c.io_price
+            ELSE c.io_price
+          END - c.ct_discount
+        ) / (c.ct_qty - c.ct_stock_qty)
+      ) as price_d,
+      (
         CASE
-          WHEN c.io_type = 0
-          THEN c.ct_price + c.io_price
-          ELSE c.io_price
-        END - c.ct_discount
-      ) / (c.ct_qty - c.ct_stock_qty)
-    ) as price_d,
-    (
-      CASE
-        WHEN i.it_taxInfo = '영세'
-        THEN
-          (
-            (c.ct_qty - c.ct_stock_qty) *
-            CASE
-              WHEN c.io_type = 0
-              THEN c.ct_price + c.io_price
-              ELSE c.io_price
-            END - c.ct_discount
-          )
-        ELSE
-          ROUND(
+          WHEN i.it_taxInfo = '영세'
+          THEN
             (
               (c.ct_qty - c.ct_stock_qty) *
               CASE
@@ -67,17 +156,9 @@ $sql_order = "
                 THEN c.ct_price + c.io_price
                 ELSE c.io_price
               END - c.ct_discount
-            ) / 1.1
-          )
-      END
-    ) as price_d_p,
-    (
-      CASE
-        WHEN i.it_taxInfo = '영세'
-        THEN 0
-        ELSE
-          ROUND (
-            (
+            )
+          ELSE
+            ROUND(
               (
                 (c.ct_qty - c.ct_stock_qty) *
                 CASE
@@ -85,331 +166,351 @@ $sql_order = "
                   THEN c.ct_price + c.io_price
                   ELSE c.io_price
                 END - c.ct_discount
-              )
-            ) / 1.1 / 10
-          )
-      END
-    ) as price_d_s,
-    0 as deposit,
-    o.od_b_name
+              ) / 1.1
+            )
+        END
+      ) as price_d_p,
+      (
+        CASE
+          WHEN i.it_taxInfo = '영세'
+          THEN 0
+          ELSE
+            ROUND (
+              (
+                (
+                  (c.ct_qty - c.ct_stock_qty) *
+                  CASE
+                    WHEN c.io_type = 0
+                    THEN c.ct_price + c.io_price
+                    ELSE c.io_price
+                  END - c.ct_discount
+                )
+              ) / 1.1 / 10
+            )
+        END
+      ) as price_d_s,
+      0 as deposit,
+      o.od_b_name
+    FROM
+      g5_shop_order o
+    LEFT JOIN
+      g5_shop_cart c ON o.od_id = c.od_id
+    LEFT JOIN
+      g5_member m ON o.mb_id = m.mb_id
+    LEFT JOIN
+      g5_shop_item i ON i.it_id = c.it_id
+    WHERE
+      c.ct_status = '완료' and
+      c.ct_qty - c.ct_stock_qty > 0
+  ";
+
+  # 배송비
+  $sql_send_cost = "
+    SELECT
+      o.od_time,
+      o.od_id,
+      o.tr_date,
+      m.mb_entNm,
+      c.ct_id,
+      '^배송비' as it_name,
+      '' as ct_option,
+      1 as ct_qty,
+      o.od_send_cost as price_d,
+      ROUND(o.od_send_cost / 1.1) as price_d_p,
+      ROUND(o.od_send_cost / 1.1 / 10) as price_d_s,
+      0 as deposit,
+      o.od_b_name
+    FROM
+      g5_shop_order o
+    LEFT JOIN
+      g5_shop_cart c ON o.od_id = c.od_id
+    LEFT JOIN
+      g5_member m ON o.mb_id = m.mb_id
+    WHERE
+      c.ct_status = '완료' and
+      c.ct_qty - c.ct_stock_qty > 0 and
+      o.od_send_cost > 0
+  ";
+
+  # 매출할인
+  $sql_sales_discount = "
+    SELECT
+      o.od_time,
+      o.od_id,
+      o.tr_date,
+      m.mb_entNm,
+      c.ct_id,
+      '^매출할인' as it_name,
+      '' as ct_option,
+      1 as ct_qty,
+      (-o.od_sales_discount) as price_d,
+      ROUND(-o.od_sales_discount / 1.1) as price_d_p,
+      ROUND(-o.od_sales_discount / 1.1 / 10) as price_d_s,
+      0 as deposit,
+      o.od_b_name
+    FROM
+      g5_shop_order o
+    LEFT JOIN
+      g5_shop_cart c ON o.od_id = c.od_id
+    LEFT JOIN
+      g5_member m ON o.mb_id = m.mb_id
+    WHERE
+      c.ct_status = '완료' and
+      c.ct_qty - c.ct_stock_qty > 0 and
+      o.od_sales_discount > 0
+  ";
+
+
+  # 쿠폰할인
+  $coupon_price = "(o.od_cart_coupon + o.od_coupon + o.od_send_coupon)";
+  $sql_sales_coupon = "
+    SELECT
+      o.od_time,
+      o.od_id,
+      o.tr_date,
+      m.mb_entNm,
+      c.ct_id,
+      '^쿠폰할인' as it_name,
+      '' as ct_option,
+      1 as ct_qty,
+      (-$coupon_price) as price_d,
+      ROUND(-$coupon_price / 1.1) as price_d_p,
+      ROUND(-$coupon_price / 1.1 / 10) as price_d_s,
+      0 as deposit,
+      o.od_b_name
+    FROM
+      g5_shop_order o
+    LEFT JOIN
+      g5_shop_cart c ON o.od_id = c.od_id
+    LEFT JOIN
+      g5_member m ON o.mb_id = m.mb_id
+    WHERE
+      c.ct_status = '완료' and
+      c.ct_qty - c.ct_stock_qty > 0 and
+      $coupon_price > 0
+  ";
+
+  # 포인트결제
+  $sql_sales_point = "
+    SELECT
+      o.od_time,
+      o.od_id,
+      o.tr_date,
+      m.mb_entNm,
+      c.ct_id,
+      '^포인트결제' as it_name,
+      '' as ct_option,
+      1 as ct_qty,
+      (-o.od_receipt_point) as price_d,
+      ROUND(-o.od_receipt_point / 1.1) as price_d_p,
+      ROUND(-o.od_receipt_point / 1.1 / 10) as price_d_s,
+      0 as deposit,
+      o.od_b_name
+    FROM
+      g5_shop_order o
+    LEFT JOIN
+      g5_shop_cart c ON o.od_id = c.od_id
+    LEFT JOIN
+      g5_member m ON o.mb_id = m.mb_id
+    WHERE
+      c.ct_status = '완료' and
+      c.ct_qty - c.ct_stock_qty > 0 and
+      o.od_receipt_point > 0
+  ";
+
+
+  # 입금/출금
+  $sql_ledger = "
+    SELECT
+      lc_created_at as od_time,
+      '' as od_id,
+      '' as tr_date,
+      m.mb_entNm,
+      '' as ct_id,
+      (
+        CASE
+          WHEN lc_type = 1
+          THEN '입금'
+          WHEN lc_type = 2
+          THEN '출금'
+        END
+      ) as it_name,
+      lc_memo as ct_option,
+      1 as ct_qty,
+      (
+        CASE
+          WHEN lc_type = 2
+          THEN lc_amount
+          ELSE 0
+        END
+      ) as price_d,
+      (
+        CASE
+          WHEN lc_type = 2
+          THEN lc_amount
+          ELSE 0
+        END
+      ) as price_d_p,
+      0 as price_d_s,
+      (
+        CASE
+          WHEN lc_type = 1
+          THEN lc_amount
+          ELSE 0
+        END
+      ) as deposit,
+      '' as od_b_name
+    FROM
+      ledger_content l
+    LEFT JOIN
+      g5_member m ON l.mb_id = m.mb_id
+    WHERE
+      1 = 1
+  ";
+
+
+  $sql_common = "
   FROM
-    g5_shop_order o
-  LEFT JOIN
-    g5_shop_cart c ON o.od_id = c.od_id
-  LEFT JOIN
-    g5_member m ON o.mb_id = m.mb_id
-  LEFT JOIN
-    g5_shop_item i ON i.it_id = c.it_id
-  WHERE
-    c.ct_status = '완료' and
-    c.ct_qty - c.ct_stock_qty > 0
-";
-
-# 배송비
-$sql_send_cost = "
-  SELECT
-    o.od_time,
-    o.od_id,
-    o.tr_date,
-    m.mb_entNm,
-    c.ct_id,
-    '^배송비' as it_name,
-    '' as ct_option,
-    1 as ct_qty,
-    o.od_send_cost as price_d,
-    ROUND(o.od_send_cost / 1.1) as price_d_p,
-    ROUND(o.od_send_cost / 1.1 / 10) as price_d_s,
-    0 as deposit,
-    o.od_b_name
-  FROM
-    g5_shop_order o
-  LEFT JOIN
-    g5_shop_cart c ON o.od_id = c.od_id
-  LEFT JOIN
-    g5_member m ON o.mb_id = m.mb_id
-  WHERE
-    c.ct_status = '완료' and
-    c.ct_qty - c.ct_stock_qty > 0 and
-    o.od_send_cost > 0
-";
-
-# 매출할인
-$sql_sales_discount = "
-  SELECT
-    o.od_time,
-    o.od_id,
-    o.tr_date,
-    m.mb_entNm,
-    c.ct_id,
-    '^매출할인' as it_name,
-    '' as ct_option,
-    1 as ct_qty,
-    (-o.od_sales_discount) as price_d,
-    ROUND(-o.od_sales_discount / 1.1) as price_d_p,
-    ROUND(-o.od_sales_discount / 1.1 / 10) as price_d_s,
-    0 as deposit,
-    o.od_b_name
-  FROM
-    g5_shop_order o
-  LEFT JOIN
-    g5_shop_cart c ON o.od_id = c.od_id
-  LEFT JOIN
-    g5_member m ON o.mb_id = m.mb_id
-  WHERE
-    c.ct_status = '완료' and
-    c.ct_qty - c.ct_stock_qty > 0 and
-    o.od_sales_discount > 0
-";
-
-
-# 쿠폰할인
-$coupon_price = "(o.od_cart_coupon + o.od_coupon + o.od_send_coupon)";
-$sql_sales_coupon = "
-  SELECT
-    o.od_time,
-    o.od_id,
-    o.tr_date,
-    m.mb_entNm,
-    c.ct_id,
-    '^쿠폰할인' as it_name,
-    '' as ct_option,
-    1 as ct_qty,
-    (-$coupon_price) as price_d,
-    ROUND(-$coupon_price / 1.1) as price_d_p,
-    ROUND(-$coupon_price / 1.1 / 10) as price_d_s,
-    0 as deposit,
-    o.od_b_name
-  FROM
-    g5_shop_order o
-  LEFT JOIN
-    g5_shop_cart c ON o.od_id = c.od_id
-  LEFT JOIN
-    g5_member m ON o.mb_id = m.mb_id
-  WHERE
-    c.ct_status = '완료' and
-    c.ct_qty - c.ct_stock_qty > 0 and
-    $coupon_price > 0
-";
-
-# 포인트결제
-$sql_sales_point = "
-  SELECT
-    o.od_time,
-    o.od_id,
-    o.tr_date,
-    m.mb_entNm,
-    c.ct_id,
-    '^포인트결제' as it_name,
-    '' as ct_option,
-    1 as ct_qty,
-    (-o.od_receipt_point) as price_d,
-    ROUND(-o.od_receipt_point / 1.1) as price_d_p,
-    ROUND(-o.od_receipt_point / 1.1 / 10) as price_d_s,
-    0 as deposit,
-    o.od_b_name
-  FROM
-    g5_shop_order o
-  LEFT JOIN
-    g5_shop_cart c ON o.od_id = c.od_id
-  LEFT JOIN
-    g5_member m ON o.mb_id = m.mb_id
-  WHERE
-    c.ct_status = '완료' and
-    c.ct_qty - c.ct_stock_qty > 0 and
-    o.od_receipt_point > 0
-";
-
-
-# 입금/출금
-$sql_ledger = "
-  SELECT
-    lc_created_at as od_time,
-    '' as od_id,
-    '' as tr_date,
-    m.mb_entNm,
-    '' as ct_id,
     (
-      CASE
-        WHEN lc_type = 1
-        THEN '입금'
-        WHEN lc_type = 2
-        THEN '출금'
-      END
-    ) as it_name,
-    lc_memo as ct_option,
-    1 as ct_qty,
-    (
-      CASE
-        WHEN lc_type = 2
-        THEN lc_amount
-        ELSE 0
-      END
-    ) as price_d,
-    (
-      CASE
-        WHEN lc_type = 2
-        THEN lc_amount
-        ELSE 0
-      END
-    ) as price_d_p,
-    0 as price_d_s,
-    (
-      CASE
-        WHEN lc_type = 1
-        THEN lc_amount
-        ELSE 0
-      END
-    ) as deposit,
-    '' as od_b_name
-  FROM
-    ledger_content l
-  LEFT JOIN
-    g5_member m ON l.mb_id = m.mb_id
-  WHERE
-    1 = 1
-";
+      ({$sql_order} {$where_order})
+      UNION ALL
+      ({$sql_send_cost} {$where_order} GROUP BY o.od_id)
+      UNION ALL
+      ({$sql_sales_discount} {$where_order} GROUP BY o.od_id)
+      UNION ALL
+      ({$sql_sales_coupon} {$where_order} GROUP BY o.od_id)
+      UNION ALL
+      ({$sql_sales_point} {$where_order} GROUP BY o.od_id)
+      UNION ALL
+      ({$sql_ledger} {$where_ledger})
+    ) u
+  ";
 
-
-$sql_common = "
-FROM
-  (
-    ({$sql_order} {$where_order})
-    UNION ALL
-    ({$sql_send_cost} {$where_order} GROUP BY o.od_id)
-    UNION ALL
-    ({$sql_sales_discount} {$where_order} GROUP BY o.od_id)
-    UNION ALL
-    ({$sql_sales_coupon} {$where_order} GROUP BY o.od_id)
-    UNION ALL
-    ({$sql_sales_point} {$where_order} GROUP BY o.od_id)
-    UNION ALL
-    ({$sql_ledger} {$where_ledger})
-  ) u
-";
-
-$result = sql_query("
-  SELECT
-    u.*,
-    (price_d * ct_qty) as sales
-  {$sql_common}
-  ORDER BY
-    od_time asc,
-    od_id asc
-");
-
-$ledgers = [];
-$carried_balance = get_outstanding_balance($mb_id, $fr_date);
-$balance = $carried_balance;
-
-while($row = sql_fetch_array($result)) {
-  $balance += ($row['price_d'] * $row['ct_qty']);
-  $balance -= ($row['deposit']);
-  $row['balance'] = $balance;
-  $ct_id = $row['ct_id'];
-  //급여코드(품목코드) 가져오기
-  $it = sql_fetch("
-    SELECT cart.*, item.it_thezone2, o.io_thezone as io_thezone2, item.ca_id, it_standard, io_standard
-    FROM g5_shop_cart as cart
-    INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
-    LEFT JOIN g5_shop_item_option o ON (cart.it_id = o.it_id and cart.io_id = o.io_id)
-    WHERE cart.ct_id = '{$ct_id}'
-    ORDER BY cart.ct_id ASC
+  $result = sql_query("
+    SELECT
+      u.*,
+      (price_d * ct_qty) as sales
+    {$sql_common}
+    ORDER BY
+      od_time asc,
+      od_id asc
   ");
-  $thezone_code = $it['io_thezone2'] ?: $it['io_thezone'] ?: $it['it_thezone2'];
-  $row['thezone_code'] = $thezone_code;
 
-  #바코드
-  $stoIdDataList = explode('|',$it['stoId']);
-  $stoIdDataList=array_filter($stoIdDataList);
-  $stoIdData = implode("|", $stoIdDataList);
+  $ledgers = [];
+  $carried_balance = get_outstanding_balance($mb_id, $fr_date);
+  $balance = $carried_balance;
 
-  $barcode=[];
-  $sendData["stoId"] = $stoIdData;
-  $oCurl = curl_init();
-  $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
-  $result_again = $res;
-  $result_again =$result_again['data'];
+  while($row = sql_fetch_array($result)) {
+    $balance += ($row['price_d'] * $row['ct_qty']);
+    $balance -= ($row['deposit']);
+    $row['balance'] = $balance;
+    $ct_id = $row['ct_id'];
+    //급여코드(품목코드) 가져오기
+    $it = sql_fetch("
+      SELECT cart.*, item.it_thezone2, o.io_thezone as io_thezone2, item.ca_id, it_standard, io_standard
+      FROM g5_shop_cart as cart
+      INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
+      LEFT JOIN g5_shop_item_option o ON (cart.it_id = o.it_id and cart.io_id = o.io_id)
+      WHERE cart.ct_id = '{$ct_id}'
+      ORDER BY cart.ct_id ASC
+    ");
+    $thezone_code = $it['io_thezone2'] ?: $it['io_thezone'] ?: $it['it_thezone2'];
+    $row['thezone_code'] = $thezone_code;
 
-  for($k=0; $k < count($result_again); $k++) {
-    if($result_again[$k]['prodBarNum']) {
-      array_push($barcode,$result_again[$k]['prodBarNum']);
+    #바코드
+    $stoIdDataList = explode('|',$it['stoId']);
+    $stoIdDataList=array_filter($stoIdDataList);
+    $stoIdData = implode("|", $stoIdDataList);
+
+    $barcode=[];
+    $sendData["stoId"] = $stoIdData;
+    $oCurl = curl_init();
+    $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+    $result_again = $res;
+    $result_again =$result_again['data'];
+
+    for($k=0; $k < count($result_again); $k++) {
+      if($result_again[$k]['prodBarNum']) {
+        array_push($barcode,$result_again[$k]['prodBarNum']);
+      }
     }
-  }
-  asort($barcode);
-  $barcode2=[];
-  $y = 0;  
-  foreach($barcode as $key=>$val)  
-  {  
-    $new_key = $y;  
-    $barcode2[$new_key] = $val;  
-    $y++;  
-  }
-  $barcode_string="";
-  if (!is_benefit_item($it)) {
-    for ($y=0; $y<count($barcode2); $y++) {
-        #처음
-        if ($y==0) {
-            $barcode_string .= $barcode2[$y];
-            continue;
-        }
-        #현재 바코드 -1이 전바코드와 같지않음
-        if (intval($barcode2[$y])-1 !== intval($barcode2[$y-1])) {
-            $barcode_string .= ",".$barcode2[$y];
-        }
-        #현재 바코드 -1이 전바코드와 같음
-        if (intval($barcode2[$y])-1 == intval($barcode2[$y-1])) {
-            //다음번이 연속되지 않을 경우
-            if (intval($barcode2[$y])+1 !== intval($barcode2[$y+1])) {
-                $barcode_string .= "-".$barcode2[$y];
-            }
-        }
+    asort($barcode);
+    $barcode2=[];
+    $y = 0;  
+    foreach($barcode as $key=>$val)  
+    {  
+      $new_key = $y;  
+      $barcode2[$new_key] = $val;  
+      $y++;  
     }
-    $barcode_string .= " ";
-  }
-  $row['barcode_string'] = $barcode_string;
+    $barcode_string="";
+    if (!is_benefit_item($it)) {
+      for ($y=0; $y<count($barcode2); $y++) {
+          #처음
+          if ($y==0) {
+              $barcode_string .= $barcode2[$y];
+              continue;
+          }
+          #현재 바코드 -1이 전바코드와 같지않음
+          if (intval($barcode2[$y])-1 !== intval($barcode2[$y-1])) {
+              $barcode_string .= ",".$barcode2[$y];
+          }
+          #현재 바코드 -1이 전바코드와 같음
+          if (intval($barcode2[$y])-1 == intval($barcode2[$y-1])) {
+              //다음번이 연속되지 않을 경우
+              if (intval($barcode2[$y])+1 !== intval($barcode2[$y+1])) {
+                  $barcode_string .= "-".$barcode2[$y];
+              }
+          }
+      }
+      $barcode_string .= " ";
+    }
+    $row['barcode_string'] = $barcode_string;
 
-  //배송정보
-  $delivery = '';
-  if ($it['ct_delivery_company']) {
-    $delivery = '(' . get_delivery_company_step($it['ct_delivery_company'])['name'] . ') ';
-  }
-  if ($it['ct_delivery_num']) {
-    $delivery .= $it['ct_delivery_num'];
-  }
-  //합포 송장번호 출력
-  if ($it['ct_combine_ct_id']) {
-    $sql_ct ="select `ct_delivery_company`, `ct_delivery_num` from g5_shop_cart where `ct_id` = '".$it['ct_combine_ct_id']."'";
-    $result_ct = sql_fetch($sql_ct);
+    //배송정보
     $delivery = '';
-    if($result_ct['ct_delivery_company'])
-      $delivery = '(' . get_delivery_company_step($result_ct['ct_delivery_company'])['name'] . ') ';
-    $delivery .= $result_ct['ct_delivery_num'];
+    if ($it['ct_delivery_company']) {
+      $delivery = '(' . get_delivery_company_step($it['ct_delivery_company'])['name'] . ') ';
+    }
+    if ($it['ct_delivery_num']) {
+      $delivery .= $it['ct_delivery_num'];
+    }
+    //합포 송장번호 출력
+    if ($it['ct_combine_ct_id']) {
+      $sql_ct ="select `ct_delivery_company`, `ct_delivery_num` from g5_shop_cart where `ct_id` = '".$it['ct_combine_ct_id']."'";
+      $result_ct = sql_fetch($sql_ct);
+      $delivery = '';
+      if($result_ct['ct_delivery_company'])
+        $delivery = '(' . get_delivery_company_step($result_ct['ct_delivery_company'])['name'] . ') ';
+      $delivery .= $result_ct['ct_delivery_num'];
+    }
+    $row['delivery'] = $delivery;
+
+    $ledgers[] = $row;
   }
-  $row['delivery'] = $delivery;
 
-  $ledgers[] = $row;
-}
+  # 금액
+  $sel_price_field = in_array($sel_price_field, ['price_d', 'price_d_p', 'price_d_s', 'sales']) ? $sel_price_field : '';
+  if($price && $sel_price_field && $price_s <= $price_e) {
+    $price_s = intval($price_s);
+    $price_e = intval($price_e);
+    // 검색결과 필터링
+    $ledgers = array_values(array_filter($ledgers, function($v) {
+      global $sel_price_field, $price_s, $price_e;
+      return $v[$sel_price_field] >= $price_s && $v[$sel_price_field] <= $price_e;
+    }));
+  }
 
-# 금액
-$sel_price_field = in_array($sel_price_field, ['price_d', 'price_d_p', 'price_d_s', 'sales']) ? $sel_price_field : '';
-if($price && $sel_price_field && $price_s <= $price_e) {
-  $price_s = intval($price_s);
-  $price_e = intval($price_e);
-  // 검색결과 필터링
-  $ledgers = array_values(array_filter($ledgers, function($v) {
-    global $sel_price_field, $price_s, $price_e;
-    return $v[$sel_price_field] >= $price_s && $v[$sel_price_field] <= $price_e;
-  }));
-}
+  # 검색어
+  if($sel_field && $search) {
+    // 검색결과 필터링
+    $ledgers = array_values(array_filter($ledgers, function($v) {
+      global $sel_field, $search;
+      $pattern = '/.*'.preg_quote($search).'.*/i';
+      return preg_match($pattern, $v[$sel_field]);
+    }));
+  }
 
-# 검색어
-if($sel_field && $search) {
-  // 검색결과 필터링
-  $ledgers = array_values(array_filter($ledgers, function($v) {
-    global $sel_field, $search;
-    $pattern = '/.*'.preg_quote($search).'.*/i';
-    return preg_match($pattern, $v[$sel_field]);
-  }));
 }
 
 if(! function_exists('column_char')) {
@@ -420,7 +521,8 @@ if(! function_exists('column_char')) {
 
 include_once(G5_LIB_PATH.'/PHPExcel.php');
 
-$headers = ['일자-주문번호', '품목명[규격]', '수량', '급여코드', '바코드', '배송정보', '단가(Vat포함)', '공급가액', '부가세', '판매', '수금', '잔액', '수령인'];
+$headers = ['일자-주문번호', '품목명[규격]', '수량', '급여코드', '바코드', '배송정보', '단가(Vat포함)', '공급가액', '부가세', '판매', '수금', '잔액', '수령인'];
+if($ent['mb_type'] === 'partner') $headers[10] = '결제';
 $widths = [25, 20, 6, 12, 25, 20, 12, 12, 12, 12, 12, 12, 15];
 $heights = [50, 36, 36, 36, 36, 36, 36, 20];
 $last_char = column_char(count($headers) - 1);
