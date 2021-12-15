@@ -254,6 +254,7 @@ $(function() {
     }, 'json')
     .done(function() {
       alert('전송되었습니다.');
+      window.location.reload();
     })
     .fail(function($xhr) {
       var data = $xhr.responseJSON;

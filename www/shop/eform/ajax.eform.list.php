@@ -205,6 +205,11 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 </td>
 <td class="text_c">
   <?php
+  if ($row['dc_send_kakao'] == 1) {
+    echo '수급자 휴대폰으로<br>' . '<span style="color:#6e9254; font-weight: bold;">계약서 전송완료</span><br>';
+  } else if ($row['dc_send_kakao'] == 2) {
+    echo '수급자 휴대폰으로<br>' . '<span style="color:#6e9254; font-weight: bold;">계약서 재 전송완료</span><br>';
+  }
   if($row['dc_status'] != '11') {
     echo '<a href="javascript:void(0);" class="btn_basic btn_resend_eform" data-id="' . $row["uuid"] . '" data-name="' . $row["penNm"] . '" data-hp="' . $row["penConNum"] . '" data-mail="' . $row["penMail"] . '">계약서 재전송</a>';
   }
