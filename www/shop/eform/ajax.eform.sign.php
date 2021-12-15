@@ -342,7 +342,7 @@ $ent = sql_fetch(" SELECT * FROM g5_member WHERE mb_entId = '{$eform['entId']}' 
 // 알림톡 발송
 $dc_id_b64 = base64_encode($eform['dc_id']);
 $dc_id_b64 = str_replace(['+', '/', '='], ['-', '_', ''], $dc_id_b64);
-send_alim_talk('PEN_EF_'.$dc_id_b64, $eform['penConNum'], 'pen_eform_result', "[이로움]\n\n{$eform['penNm']}님,\n{$eform['entNm']} 사업소와 전자계약이 체결되었습니다.", array(
+$alimtalk_result = send_alim_talk('PEN_EF_'.$dc_id_b64, $eform['penConNum'], 'pen_eform_result', "[이로움]\n\n{$eform['penNm']}님,\n{$eform['entNm']} 사업소와 전자계약이 체결되었습니다.", array(
   'button' => [
     array(
       'name' => '문서확인',
@@ -351,6 +351,13 @@ send_alim_talk('PEN_EF_'.$dc_id_b64, $eform['penConNum'], 'pen_eform_result', "[
     )
   ]
 ));
+
+//수급자 알림톡 전송 결과
+$dc_send_kakao = "0"; //실패
+if ($alimtalk_result['responseCode'] == "1000") {
+  $dc_send_kakao = "1"; //성공
+}
+
 send_alim_talk('ENT_EFORM_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.");
 
 $dc_status = '2';
@@ -539,7 +546,8 @@ sql_query("UPDATE `eform_document` SET
 `dc_pdf_file` = '$pdffile',
 `dc_cert_pdf_file` = '$certfile',
 `dc_send_sms` = $dc_send_sms,
-`dc_send_email` = TRUE
+`dc_send_email` = TRUE,
+`dc_send_kakao` = $dc_send_kakao
 WHERE `dc_id` = UNHEX('$uuid')
 ");
 
