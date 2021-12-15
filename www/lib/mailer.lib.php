@@ -68,9 +68,6 @@ function mailer_multiple($fname, $fmail, $datas)
     // 메일발송 사용을 하지 않는다면
     if (!$config['cf_email_use']) return;
 
-    if ($type != 1)
-        $content = nl2br($content);
-
     $mail = new PHPMailer(); // defaults to using php "mail()"
     if (defined('G5_SMTP') && G5_SMTP) {
         $mail->IsSMTP(); // telling the class to use SMTP
@@ -91,14 +88,23 @@ function mailer_multiple($fname, $fmail, $datas)
 
     $mail->CharSet = 'UTF-8';
     foreach($datas as $data) {
+        if ($data['type'] != 1)
+            $data['content'] = nl2br($data['content']);
+
         $mail->From = $fmail;
         $mail->FromName = $fname;
         $mail->Subject = $data['subject'];
         $mail->AltBody = ""; // optional, comment out and test
 
-        $mail->ClearAllRecipients();
+        $mail->clearAllRecipients();
+        $mail->clearAttachments();
         $mail->addAddress($data['receiver']);
         $mail->msgHTML($data['content']);
+
+        if($data['file']) {
+            $mail->addStringAttachment($data['file']['data'], $data['file']['name'], 'binary');
+        }
+
         $mail->send();
     }
     return true;

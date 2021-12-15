@@ -4,7 +4,8 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu], "r");
 
-$mb_id = $_GET['mb_id'];
+$mb_id = get_search_string($mb_id);
+
 if(!$mb_id)
   alert('유효하지 않은 요청입니다.');
 
