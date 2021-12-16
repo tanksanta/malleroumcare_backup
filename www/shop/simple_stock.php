@@ -190,7 +190,7 @@ function select_item(obj) {
 // 품목 검색
 $('#ipt_ss_sch').flexdatalist({
     minLength: 1,
-    url: 'ajax.get_item.php',
+    url: 'ajax.get_item.php?eform=1',
     cache: false, // cache
     searchContain: true, // %검색어%
     noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
