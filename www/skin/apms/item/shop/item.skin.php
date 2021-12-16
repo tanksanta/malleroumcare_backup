@@ -266,7 +266,7 @@ $sendData["prods"] = $prodsSendData;
         <?php
         $sale_cnt_txt = [];
         if($_COOKIE["viewType"] != "basic" && !$it['entprice']) {
-          if(($is_admin == "super" || $member['mb_level'] == "3")||!$it['it_sale_percent_great']) {
+          if(($is_admin == "super" || $member['mb_level'] == "3" || $member['mb_level'] == "9")||!$it['it_sale_percent_great']) {
             if($it["it_sale_cnt"]) {
               $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
             }
@@ -510,7 +510,7 @@ $sendData["prods"] = $prodsSendData;
         $sale_cnt_txt = [];
         $sale_percent_input = "";
         if($_COOKIE["viewType"] != "basic" && !$it['entprice']) {
-          if(($is_admin == "super" || $member['mb_level'] == "3")||!$it['it_sale_percent_great']) {
+          if(($is_admin == "super" || $member['mb_level'] == "3" || $member['mb_level'] == "9")||!$it['it_sale_percent_great']) {
             if($it["it_sale_cnt"]) {
               $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
               $sale_percent_input .= '<input type="hidden" id="it_sale_percent" value="' . $it["it_sale_percent"] . '" data-toggle="' . $it["it_sale_cnt"] . '" class="it_sale_percent">';
