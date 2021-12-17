@@ -4278,10 +4278,27 @@ $(function() {
     type: 'image',
     image: {
       titleSrc: function(item) {
-        console.log(item);
-        return $('<a class="link_download_img">이미지 다운로드</a>')
+        
+        var $div = $('<div>');
+
+        var path = item.src.split('/data/')[1];
+
+        var $link_download = $('<a class="link_download_img">이미지 다운로드</a>')
           .attr('href', item.src)
-          .attr('download', '설치이미지_' + item.index + '.jpg')
+          .attr('download', '설치이미지_' + item.index + '.jpg');
+        
+        var $link_rotate = $('<a href="javascript:void(0);" class="link_rotate_img">회전</a>')
+          .on('click', function() {
+              $.post('ajax.rotate_image.php', {
+                  path: path
+              })
+              .done(function() {
+                $(item.el).find('img').attr("src", item.src+"?timestamp=" + new Date().getTime());
+                $(item.img).attr("src", item.src+"?timestamp=" + new Date().getTime());
+              });
+          });
+
+        return $div.append($link_download, $link_rotate);
       },
     },
     gallery:{

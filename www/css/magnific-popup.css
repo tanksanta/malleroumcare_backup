@@ -302,6 +302,19 @@
     color: #fff;
     padding: 5px 15px;
   }
+
+  .mfp-title a.link_rotate_img {
+    margin-top: 5px;
+    margin-left: 10px;
+    display: inline-block;
+    background: #000;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    font-size: 16px;
+    color: #fff;
+    padding: 5px 15px;
+    cursor: pointer;
+  }
   
   .mfp-image-holder .mfp-content {
     max-width: 100%; }
