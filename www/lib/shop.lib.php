@@ -1916,6 +1916,39 @@ function get_item_point($it, $io_id='', $trunc=10)
     return $it_point;
 }
 
+function get_address_sendcost(string $address, array $it_ids) {
+  // 지역별 추가배송비 조회
+
+  if(!$address) return 0;
+
+  $sql = " select * from g5_shop_sendcost_new ";
+  $result = sql_query($sql);
+
+  $sc_price = 0;
+  while($row = sql_fetch_array($result)) {
+    if(strncmp($address, $row['sc_address'], strlen($row['sc_address'])) === 0) {
+      $sc_price = $row['sc_price'];
+      break;
+    }
+  }
+
+  if(!$sc_price || !$it_ids)
+    return $sc_price;
+  
+  $max_sc_price = 0;
+  foreach($it_ids as $it_id) {
+    $it_id = get_search_string($it_id);
+    $it = sql_fetch(" select it_sc_add_sendcost from g5_shop_item where it_id = '$it_id' ", true);
+
+    $it_sc_price = $it['it_sc_add_sendcost'] > 0 ? $it['it_sc_add_sendcost'] : $sc_price;
+
+    if($it_sc_price > $max_sc_price)
+      $max_sc_price = $it_sc_price;
+  }
+
+  return $max_sc_price;
+}
+
 function get_sendcost_new($cart_id, $selected = 1) {
   global $g5;
 

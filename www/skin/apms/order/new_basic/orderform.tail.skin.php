@@ -101,6 +101,7 @@ function sendBarcode(text){
 
 <script>
 var zipcode = "";
+var last_address = "";
 
 $(function() {
 	// BS3
@@ -343,7 +344,7 @@ $(function() {
     });
 
     $("#od_b_addr2").focus(function() {
-        var zip = $("#od_b_zip").val().replace(/[^0-9]/g, "");
+        /*var zip = $("#od_b_zip").val().replace(/[^0-9]/g, "");
         if(zip == "")
             return false;
 
@@ -352,6 +353,17 @@ $(function() {
         if(zipcode == code)
             return false;
 
+        zipcode = code;*/
+
+        var zip = $("#od_b_zip").val().replace(/[^0-9]/g, "");
+        var address = $('#od_b_addr1').val();
+
+        if(last_address == address)
+            return false;
+
+        var code = String(zip);
+        
+        last_address = address;
         zipcode = code;
 
         calculate_sendcost(code);
@@ -509,9 +521,7 @@ function calculate_order_price() {
             $("input[name=od_send_cost2]").val(send_cost2);
         }
     }
-    if ( send_cost || send_cost2 ) {
-        $('.delivery_cost_display').show();
-    }
+    $('.delivery_cost_display').text(number_format(send_cost + send_cost2) + '원').show();
     $('.delivery_cost_display_name').html(od_delivery_type_name);
     var tot_price = sell_price - sell_discount + send_cost + send_cost2 - send_coupon;
 
@@ -550,10 +560,12 @@ function calculate_sendcost(code) {
         return $(el).val();
     });
 
+    var address = $('input[name="od_b_addr1"]').val();
+
     $.post(
-        "./ordersendcost.php",
+        "./ordersendcost_new.php",
         {
-            zipcode: code,
+            address: address,
             'it_ids[]': it_ids,
         },
         function(data) {

@@ -608,8 +608,8 @@ if ( $od_delivery_type != 'delivery1' ) {
   $send_cost2 = 0;
 }
 
-if($send_cost2 !== $i_send_cost2)
-  die("관리자에게 문의하세요. Error...1: " . $send_cost2 . '/' . $i_send_cost2);
+/* if($send_cost2 !== $i_send_cost2)
+  die("관리자에게 문의하세요. Error...1: " . $send_cost2 . '/' . $i_send_cost2); */
 
 // 결제포인트가 상이함
 // 회원이면서 포인트사용이면
@@ -950,6 +950,9 @@ if($_POST["od_stock_insert_yn"]){
 // 배송비 renew 210506
 $od_send_cost = get_sendcost_new($tmp_cart_id, 1) ?: 0;
 $od_send_cost2 = 0;
+
+// 지역별 추가배송비 적용
+$od_send_cost += get_address_sendcost($od_b_addr1, $it_ids) ?: 0;
 
 $od_time = G5_TIME_YMDHIS;
 
