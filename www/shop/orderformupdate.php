@@ -1744,7 +1744,6 @@ if (count($partner01_tokens) > 0 && count($it_direct_delivery) > 0) {
   }  
 }
 
-
 // Push - 최고관리자에게 보냄 ---------------------------------------
 $mb_list = $config['cf_admin'].','.$config['as_admin'];
 $push = array(
@@ -1757,6 +1756,17 @@ $push = array(
   'od_memo'=>$od_memo);
 apms_push($mb_list, $od_id, $od_id, G5_URL, $push);
 // ------------------------------------------------------------------
+
+sql_query("
+  UPDATE
+    eform_document
+  SET 
+    od_id = '$od_id'
+  WHERE
+    dc_status = '11' and
+    od_id = '$tmp_cart_id' and
+    entId = '{$member['mb_entId']}'
+");
 
 goto_url($redirect_dest_url);
 ?>

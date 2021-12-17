@@ -1198,6 +1198,27 @@ $(function() {
   ?>
 
   <?php
+  $eform_check = sql_fetch("
+    SELECT
+      hex(dc_id) as uuid
+    FROM
+      eform_document
+    WHERE
+      od_id = '$od_id' and
+      dc_status = '11' and
+      entId = '{$member['mb_entId']}'
+  ");
+
+  if($eform_check['uuid']) {
+  ?>
+  if(confirm('수급자 계약서를 작성하시겠습니까?')) {
+    window.location.href = 'simple_eform.php?dc_id=<?=$eform_check['uuid']?>';
+  }
+  <?php
+  }
+  ?>
+
+  <?php
 
   // 튜토리얼 
   $t_sql = "SELECT * FROM tutorial

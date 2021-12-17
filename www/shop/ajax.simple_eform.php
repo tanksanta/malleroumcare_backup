@@ -160,6 +160,13 @@ function calc_pen_price($penTypeCd, $price) {
     return $pen_price;
 }
 
+if (!$sealFile_self) { //직인 직접날인이 아니면
+    $seal_file = $member['sealFile'];
+    if(!$seal_file) {
+        json_response(400, '회원정보에 직인 이미지를 등록해주세요.');
+    }
+}
+
 if($w == 'u' || $w == 'w') {
     // 수정 or 생성
 
@@ -168,6 +175,11 @@ if($w == 'u' || $w == 'w') {
     $dc = sql_fetch(" select * from eform_document where dc_id = UNHEX('$dc_id') and dc_status in ('10', '11') ");
     if(!$dc['entId'] || $dc['entId'] != $member['mb_entId'])
         json_response(400, '유효하지 않은 요청입니다.');
+    
+    // 직인 파일 삭제
+    if($dc['dc_signUrl']) {
+        @unlink(G5_PATH . $dc['dc_signUrl']);
+    }
     
     if($w == 'w' || $dc['dc_status'] == '11')
         $dc_status = '11';
@@ -179,7 +191,6 @@ if($w == 'u' || $w == 'w') {
             eform_document
         SET
             dc_status = '$dc_status',
-            od_id = '0',
             entNm = '{$member["mb_entNm"]}',
             entCrn = '{$member["mb_giup_bnum"]}',
             entNum = '{$member["mb_ent_num"]}',
@@ -218,12 +229,6 @@ if($w == 'u' || $w == 'w') {
     sql_query($sql);
 } else {
     // 작성
-    if (!$sealFile_self) { //직인 직접날인이 아니면
-        $seal_file = $member['sealFile'];
-        if(!$seal_file) {
-            json_response(400, '회원정보에 직인 이미지를 등록해주세요.');
-        }
-    }
 
     $dc_id = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
 
@@ -265,19 +270,6 @@ if($w == 'u' || $w == 'w') {
     if(!$result)
         json_response(500, 'DB 서버 오류로 계약서를 저장하지 못했습니다.');
 
-    if (!$sealFile_self) { //직인 직접날인이 아니면
-        // 직인 파일 사본 저장
-        $seal_dir = G5_DATA_PATH.'/file/member/stamp';
-        $seal_data = @file_get_contents($seal_dir.'/'.$seal_file);
-        $signdir = G5_DATA_PATH.'/eform/sign';
-        if(!is_dir($signdir)) {
-        @mkdir($signdir, G5_DIR_PERMISSION, true);
-        @chmod($signdir, G5_DIR_PERMISSION);
-        }
-        $filename = $dc_id."_".$member['mb_entId']."_".date("YmdHisw").".png";
-        file_put_contents("$signdir/$filename", $seal_data);
-    }
-
     $ip = $_SERVER['REMOTE_ADDR'];
     $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
     $timestamp = time();
@@ -290,18 +282,12 @@ if($w == 'u' || $w == 'w') {
     $subject_count_postfix = str_pad($subject_count_postfix + 1, 3, '0', STR_PAD_LEFT); // zerofill
     $subject .= $subject_count_postfix;
 
-    $dc_signUrl = '';
-    if (!$sealFile_self) { //직인 직접날인이 아니면
-        $dc_signUrl = '/data/eform/sign/$filename';
-    }
-
     // 계약서 정보 업데이트
     sql_query("
         UPDATE `eform_document` SET
             `dc_subject` = '$subject',
             `dc_datetime` = '$datetime',
-            `dc_ip` = '$ip',
-            `dc_signUrl` = '$dc_signUrl'
+            `dc_ip` = '$ip'
         WHERE `dc_id` = UNHEX('$dc_id')
     ");
 
@@ -315,11 +301,36 @@ if($w == 'u' || $w == 'w') {
         `dl_browser` = '$browser',
         `dl_datetime` = '$datetime'
     ");
-    sql_query("UPDATE `g5_member` SET
-        `sealFile_self` = '$sealFile_self'
-        WHERE mb_id = '{$member['mb_id']}'
-    ");
 }
+
+$dc_signUrl = '';
+if (!$sealFile_self) { //직인 직접날인이 아니면
+    // 직인 파일 사본 저장
+    $seal_dir = G5_DATA_PATH.'/file/member/stamp';
+    $seal_data = @file_get_contents($seal_dir.'/'.$seal_file);
+    $signdir = G5_DATA_PATH.'/eform/sign';
+    if(!is_dir($signdir)) {
+    @mkdir($signdir, G5_DIR_PERMISSION, true);
+    @chmod($signdir, G5_DIR_PERMISSION);
+    }
+    $filename = $dc_id."_".$member['mb_entId']."_".date("YmdHisw").".png";
+    file_put_contents("$signdir/$filename", $seal_data);
+
+    $dc_signUrl = "/data/eform/sign/$filename";
+}
+
+// 직인 업데이트
+sql_query("
+    UPDATE `eform_document` SET
+        `dc_signUrl` = '$dc_signUrl'
+    WHERE `dc_id` = UNHEX('$dc_id')
+");
+
+sql_query("UPDATE `g5_member` SET
+    `sealFile_self` = '$sealFile_self'
+    WHERE mb_id = '{$member['mb_id']}'
+");
+
 
 for($i = 0; $i < count($it_id_arr); $i++) {
     $it_id = clean_xss_tags($it_id_arr[$i]);

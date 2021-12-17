@@ -1043,7 +1043,7 @@ function selected_recipient(result) {
     penExpiStDtm: penExpiStDtm,
     penExpiEdDtm: penExpiEdDtm,
     penJumin: result[33].substring(0, 6),
-    penZip: '',
+    penZip: result[26],
     penAddr: result[18],
     penAddrDtl: result[19],
   };
