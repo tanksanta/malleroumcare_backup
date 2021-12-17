@@ -19,6 +19,116 @@ if(!($it_id_arr && $io_id_arr && $ct_qty_arr)) {
 
 sql_query(" delete from {$g5['g5_shop_cart_table']} where od_id = '$tmp_cart_id' and ct_direct = 1 ", false);
 
+$pen_type = $_POST['pen_type'];
+$penId = clean_xss_tags($_POST['penId']);
+
+function calc_pen_price($penTypeCd, $price) {
+    switch($penTypeCd) {
+        case '00':
+            $rate = 15;
+            break;
+        case '01':
+            $rate = 9;
+            break;
+        case '02':
+        case '03':
+            $rate = 6;
+            break;
+        case '04':
+            return 0;
+        default:
+            $rate = 15;
+            break;
+    }
+
+    $pen_price = (int) floor(
+        $price * $rate / (100 * 10)
+    ) * 10;
+
+    return $pen_price;
+}
+
+if($pen_type == 1) {
+    $pen_id = clean_xss_tags($_POST['pen_id']);
+    if(!$pen_id)
+        json_response(400, '수급자를 선택해주세요.');
+    
+    $pen = get_recipient($pen_id);
+
+    // 계약서 생성
+    $dc_id = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
+
+    $sql = "
+        INSERT INTO
+            eform_document
+        SET
+            dc_id = UNHEX('$dc_id'),
+            dc_status = '11',
+            od_id = '$tmp_cart_id',
+            entId = '{$member["mb_entId"]}',
+            entNm = '{$member["mb_entNm"]}',
+            entCrn = '{$member["mb_giup_bnum"]}',
+            entNum = '{$member["mb_ent_num"]}',
+            entMail = '{$member["mb_email"]}',
+            entCeoNm = '{$member["mb_giup_boss_name"]}',
+            entConAcc01 = '{$member['entConAcc01']}',
+            entConAcc02 = '{$member['entConAcc02']}',
+            penId = '{$pen['penId']}',
+            penNm = '{$pen['penNm']}',
+            penConNum = '{$pen['penConNum']}',
+            penBirth = '{$pen['penBirth']}',
+            penLtmNum = '{$pen['penLtmNum']}',
+            penRecGraCd = '{$pen['penRecGraCd']}', # 장기요양등급
+            penRecGraNm = '{$pen['penRecGraNm']}',
+            penTypeCd = '{$pen['penTypeCd']}', # 본인부담금율
+            penTypeNm = '{$pen['penTypeNm']}',
+            penExpiDtm = '{$pen['penExpiDtm']}', # 수급자 이용기간
+            penJumin = '{$pen['penJumin']}',
+            penZip = '{$pen['penZip']}',
+            penAddr = '{$pen['penAddr']}',
+            penAddrDtl = '{$pen['penAddrDtl']}',
+            contract_sign_type = '0',
+            contract_sign_name = '',
+            contract_sign_relation = '0'
+    ";
+    $result = sql_query($sql);
+
+    if(!$result)
+        json_response(500, 'DB 서버 오류로 계약서를 저장하지 못했습니다.');
+
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+    $timestamp = time();
+    $datetime = date('Y-m-d H:i:s', $timestamp);
+
+    // 문서 제목 생성
+    $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$dc_id')");
+    $subject = $eform["entNm"]."_".str_replace('-', '', $eform["entCrn"])."_".$eform["penNm"].substr($eform["penLtmNum"], 0, 6)."_".date("Ymd")."_";
+    $subject_count_postfix = sql_fetch("SELECT COUNT(`dc_id`) as cnt FROM `eform_document` WHERE `dc_subject` LIKE '{$subject}%'")["cnt"];
+    $subject_count_postfix = str_pad($subject_count_postfix + 1, 3, '0', STR_PAD_LEFT); // zerofill
+    $subject .= $subject_count_postfix;
+
+    // 계약서 정보 업데이트
+    sql_query("
+        UPDATE `eform_document` SET
+            `dc_subject` = '$subject',
+            `dc_datetime` = '$datetime',
+            `dc_ip` = '$ip'
+        WHERE `dc_id` = UNHEX('$dc_id')
+    ");
+
+    // 계약서 로그 작성
+    $log = '전자계약서를 생성했습니다.';
+
+    sql_query("INSERT INTO `eform_document_log` SET
+        `dc_id` = UNHEX('$dc_id'),
+        `dl_log` = '$log',
+        `dl_ip` = '$ip',
+        `dl_browser` = '$browser',
+        `dl_datetime` = '$datetime'
+    ");
+}
+
 for($i = 0; $i < count($it_id_arr); $i++) {
     $it_id = clean_xss_tags($it_id_arr[$i]);
     $io_id = clean_xss_tags($io_id_arr[$i]);
@@ -29,7 +139,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
 
     if(!$it_id || $ct_qty < 1) continue;
 
-    $it = sql_fetch(" select * from {$g5['g5_shop_item_table']} where it_id = '{$it_id}' ");
+    $it = sql_fetch(" select i.*, (select ca_name from g5_shop_category where ca_id = left(i.ca_id, 4) ) as ca_name from {$g5['g5_shop_item_table']} i where it_id = '{$it_id}' ", true);
     if(!$it['it_id']) continue;
 
     $io_value = '';
@@ -267,6 +377,39 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     $result = sql_query($insert_sql);
     if(!$result)
         json_response(500, 'DB 오류가 발생하여 주문을 완료하지 못했습니다.');
+    
+    if($pen_type == 1) {
+        $gubun = $cate_gubun_table[substr($it['ca_id'], 0, 2)];
+        if($gubun == '00') {
+            $it_price = $it['it_cust_price']; // 급여가
+            $it_date = date('Y-m-d');
+        } else if($gubun == '01') {
+            $it_price = $it['it_rental_price']; // 대여가
+            $it_date = date('Y-m-d') . '-' . date('Y-m-d');;
+        } else {
+            continue;
+        }
+        for($x = 0; $x < $ct_qty; $x++) {
+            $it_price_pen = calc_pen_price($pen['penTypeCd'], $it_price);
+            $it_price_ent = $it_price - $it_price_pen;
+    
+            $sql = "
+                INSERT INTO eform_document_item SET
+                    dc_id = UNHEX('$dc_id'),
+                    gubun = '$gubun',
+                    ca_name = '{$it['ca_name']}',
+                    it_name = '{$it['it_name']}',
+                    it_code = '{$it['ProdPayCode']}',
+                    it_barcode = '',
+                    it_qty = '1',
+                    it_date = '$it_date',
+                    it_price = '$it_price',
+                    it_price_pen = '$it_price_pen',
+                    it_price_ent = '$it_price_ent'
+            ";
+            sql_query($sql);
+        }
+    }
 }
 
 // 새로운 주문번호 생성

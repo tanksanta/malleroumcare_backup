@@ -1002,7 +1002,7 @@ var array_box=[];
 				"usrId":recipient[23],			//1000203000
 				"appCd":recipient[24],			//01
 				"appCdNm":recipient[25],		//등록완료
-				"caCenYn":recipient[26],		//N
+				"penZip":recipient[26],		
 				"regDtm":recipient[27],			//1609811513000
 				"regDt":recipient[28],			//2021.01.05
 				"ordLendEndDtm":recipient[29],

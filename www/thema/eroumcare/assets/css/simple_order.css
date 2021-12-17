@@ -114,6 +114,27 @@
   display: inline-block;
   margin-right: 5px;
 }
+#btn_pen {
+  padding: 5px 20px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-weight: bold;
+}
+.form-group .form-control.pen_id_flexdatalist {
+  height: unset;
+  width: 100%;
+  line-height: 22px;
+  padding: 5px 10px 5px 30px;
+}
+.col-pen-nm img {
+  display: block;
+  position: absolute;
+  top: 8px;
+  left: 23px;
+}
+.form-group .form_desc {
+  white-space: nowrap;
+}
 @media (max-width: 960px) {
   .so_btn_wr {
     position: fixed;

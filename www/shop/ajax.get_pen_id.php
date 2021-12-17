@@ -39,6 +39,7 @@ if($result['errorYN'] === 'N') {
       'penAge' => $pen['penAge'],
       'penGender' => $pen['penGender'],
       'penConNum' => $pen['penConNum'],
+      'penConPnum' => $pen['penConPnum'],
       'penProConNum' => $pen['penProConNum'],
       'penExpiStDtm' => $penExpiDtm[0] ?: '',
       'penExpiEdDtm' => $penExpiDtm[1] ?: '',

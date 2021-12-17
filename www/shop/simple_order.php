@@ -12,7 +12,7 @@ $skin_row = apms_rows('order_'.MOBILE_.'skin, order_'.MOBILE_.'set');
 $skin_name = $skin_row['order_'.MOBILE_.'skin'];
 $SKIN_URL = G5_SKIN_URL.'/apms/order/'.$skin_name;
 add_stylesheet('<link rel="stylesheet" href="'.$SKIN_URL.'/css/product_order_210324.css?v=210910">');
-add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_order.css">');
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_order.css?v=211217">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 add_javascript(G5_POSTCODE_JS, 0);
@@ -29,6 +29,28 @@ add_javascript(G5_POSTCODE_JS, 0);
       <input type="hidden" name="od_send_cost2" value="0">
       <div class="panel panel-default">
         <div class="panel-body">
+          <?php if(!$dc_id) { ?>
+          <div class="radio_wr" style="margin-top: -10px; margin-bottom: 10px; font-size: 14px;">
+            <label class="radio-inline">
+              <input type="radio" name="pen_type" id="pen_type_0" value="0" checked> 일반주문
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="pen_type" id="pen_type_1" value="1"> 수급자 선택 후 주문
+            </label>
+          </div>
+          <div id="form_pen" class="form-group">
+            <label for="pen_nm" class="col-md-2 control-label">
+              <strong>수급자</strong>
+            </label>
+            <div class="col-md-3 col-pen-nm" style="max-width: unset;">
+              <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
+              <input type="hidden" name="pen_id" id="pen_id" value="">
+              <input type="text" name="pen_nm" id="pen_nm" class="form-control input-sm pen_id_flexdatalist" value="" placeholder="수급자명">
+              <span id="pen_id_flexdatalist_result" class="form_desc"></span>
+            </div>
+            <button type="button" id="btn_pen">수급자 목록</button>
+          </div>
+          <?php } ?>
           <div class="form-group">
             <label class="col-sm-2 control-label">
               <strong>주문금액</strong>
@@ -477,6 +499,126 @@ var item_sale_obj = {};
 var zipcode = '';
 var mb_level = <?=$member['mb_level']?>;
 var min_point = <?=$default['de_settle_min_point']?>;
+var pen = null;
+
+// 분류 선택
+$('input[name="pen_type"]').change(update_pen_type);
+function update_pen_type() {
+  var pen_type = $('input[name="pen_type"]:checked').val();
+
+  if(pen_type == '1') {
+    $('#form_pen').show();
+  } else {
+    $('#form_pen').hide();
+  }
+}
+
+// 수급자 목록
+$('#btn_pen').click(function() {
+  var url = 'pop_recipient.php';
+
+  open_popup_box(url);
+});
+// 수급자 선택
+function selected_recipient(result) {
+
+  close_popup_box();
+
+  result = result.split('|');
+
+  var penExpiDtm = result[11].split(' ~ ');
+  var penExpiStDtm = penExpiDtm[0] ? penExpiDtm[0] : '';
+  var penExpiEdDtm = penExpiDtm[1] ? penExpiDtm[1] : '';
+
+  var pen = {
+    penId: result[1],
+    penNm: result[3],
+    penLtmNum: result[4].substring(0, 6) + '*****',
+    penConNum: result[20],
+    penConPnum: result[20],
+    penRecGraCd: result[5],
+    penRecGraNm: result[6],
+    penTypeCd: result[7],
+    penTypeNm: result[8],
+    penBirth: result[15],
+    penGender: result[13],
+    penZip: result[26],
+    penAddr: result[18],
+    penAddrDtl: result[19],
+  };
+
+  select_recipient(pen);
+}
+function select_recipient(obj) {
+  pen = obj;
+
+  $('#pen_id').val(pen.penId);
+  $('#pen_nm').val(pen.penNm);
+
+  var prefix = [];
+
+  if(pen.penBirth)
+    prefix.push( pen.penBirth.substring(2, 4) + '년생' );
+  if(pen.penGender)
+    prefix.push( pen.penGender );
+
+  if(prefix.length > 0)
+    prefix = '(' + prefix.join('/') + ') ';
+  else
+    prefix = '';
+
+  var postfix = [];
+
+  if(pen.penRecGraNm)
+    postfix.push( pen.penRecGraNm );
+  if(pen.penTypeNm)
+    postfix.push( pen.penTypeNm );
+
+  if(postfix.length > 0)
+    postfix = ' (' + postfix.join('/') + ')';
+  else
+    postfix = '';
+
+  $('#pen_id_flexdatalist_result').text(
+    prefix + pen.penLtmNum + postfix
+  );
+
+  var f = document.forderform;
+
+  f.od_b_name.value = pen.penNm;
+  f.od_b_tel.value  = pen.penConPnum;
+  f.od_b_hp.value   = pen.penConNum;
+  f.od_b_zip.value  = pen.penZip;
+  f.od_b_addr1.value = pen.penAddr;
+  f.od_b_addr2.value = pen.penAddrDtl;
+}
+$('.pen_id_flexdatalist').flexdatalist({
+  minLength: 1,
+  url: 'ajax.get_pen_id.php',
+  cache: false, // cache
+  searchContain: true, // %검색어%
+  noResultsText: '"{keyword}"으로 등록된 수급자가 없습니다. 수급자정보를 직접 입력 하시고 계약서 작성 시 자동으로 등록됩니다.',
+  visibleCallback: function($li, item, options) {
+    var $item = {};
+    $item = $('<span>')
+      .html(item.penNm);
+
+    $item.appendTo($li);
+
+    $item = $('<span>')
+      .html(" (" + ( item.penAge > 0 ? item.penAge + '/' : '' ) + ( item.penGender ? item.penGender + '/' : '' ) + ( item.penLtmNum ? item.penLtmNum : '' ) + ")");
+
+    $item.appendTo($li);
+
+    return $li;
+  },
+  searchIn: ["penNm"],
+  focusFirstResult: true,
+})
+.on("select:flexdatalist", function(event, obj, options) {
+  select_recipient(obj);
+  $('#penNm-flexdatalist').change();
+});
 
 // 구매자 정보와 동일합니다.
 function gumae2baesong() {
@@ -500,9 +642,18 @@ function form_submit(form) {
   
   form_loading = true;
 
+  var pen_type = $('input[name="pen_type"]:checked').val();
+  var pen_id = $('#pen_id').val();
+  if(pen_type == '1' && pen_id == '') {
+    alert('수급자를 선택해주세요.');
+    form_loading = false;
+    return false;
+  }
+
   var point = parseInt( $('#od_temp_point').val() || 0 );
   if(point > 0 && point < min_point) {
     alert('포인트는 최소 ' + min_point + 'P 이상이어야 사용할 수 있습니다.');
+    form_loading = false;
     return false;
   }
 
@@ -1129,6 +1280,7 @@ $(function() {
   });
 
   check_no_item();
+  update_pen_type();
     
   // 처음 팝업
   $('.so_sch_pop').show();
