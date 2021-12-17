@@ -787,7 +787,8 @@ function calculate_order_price() {
   $('#order_price').text(number_format(order_price));
 
   // 배송비
-  $('#delivery_price').text(number_format(delivery_price));
+  var od_send_cost2 = parseInt($('input[name=od_send_cost2]').val());
+  $('#delivery_price').text(number_format(delivery_price + od_send_cost2));
 
   // 쿠폰
   var cp_price = parseInt( $('input[name="od_cp_price"]').val() || 0 );
@@ -811,18 +812,29 @@ function calculate_order_price() {
   $('.total_price_wr .total_price').text(number_format( order_price + delivery_price - cp_price - pt_price ) + '원');
 }
 
+var addr1_timer = null;
+$('#od_b_addr1').on('keyup change input paste', function() {
+  if(addr1_timer)
+    clearTimeout(addr1_timer);
+  
+  addr1_timer = setTimeout(function() {
+    calculate_sendcost($('#od_b_zip').val());
+  }, 500);
+});
+
 // 배송비계산 (더미코드)
 function calculate_sendcost(code) {
-  /*var el_it_ids = $('#sod_list').find("input[name^=it_id]");
 
-  var it_ids = $.map(el_it_ids, function(el, i) {
+  var address = $('#od_b_addr1').val();
+
+  var it_ids = $.map($('input[name="it_id[]"]'), function(el, i) {
       return $(el).val();
   });
 
   $.post(
-      "./ordersendcost.php",
+      "./ordersendcost_new.php",
       {
-          zipcode: code,
+          address: address,
           'it_ids[]': it_ids,
       },
       function(data) {
@@ -832,13 +844,12 @@ function calculate_sendcost(code) {
               data = 0;
           }
           $("input[name=od_send_cost2]").val(data);
-          $("#od_send_cost2").text(number_format(String(data)));
 
           zipcode = code;
 
           calculate_order_price();
       }
-  );*/
+  );
 }
 
 // 품목 없는지 체크

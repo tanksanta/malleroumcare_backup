@@ -139,7 +139,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
 
     if(!$it_id || $ct_qty < 1) continue;
 
-    $it = sql_fetch(" select i.*, (select ca_name from g5_shop_category where ca_id = left(i.ca_id, 4) ) as ca_name from {$g5['g5_shop_item_table']} i where it_id = '{$it_id}' ", true);
+    $it = sql_fetch(" select i.*, (select ca_name from g5_shop_category where ca_id = left(i.ca_id, 4) ) as ca_name from {$g5['g5_shop_item_table']} i where it_id = '{$it_id}' ");
     if(!$it['it_id']) continue;
 
     $io_value = '';
