@@ -12,21 +12,24 @@ if(!$count)
 for($i=0; $i<$count; $i++) {
     $al_id = $_POST['chk'][$i];
 
-    $sql = "
-        DELETE FROM
-            g5_alimtalk
-        WHERE
-            al_id = '$al_id'
-    ";
-    sql_query($sql);
+    // 영업팀 입고예정일 알림 삭제 제외
+    if ($al_id !== '3') {
+        $sql = "
+            DELETE FROM
+                g5_alimtalk
+            WHERE
+                al_id = '$al_id'
+        ";
+        sql_query($sql);
 
-    $sql = "
-        DELETE FROM
-            g5_alimtalk_member
-        WHERE
-            al_id = '$al_id'
-    ";
-    sql_query($sql);
+        $sql = "
+            DELETE FROM
+                g5_alimtalk_member
+            WHERE
+                al_id = '$al_id'
+        ";
+        sql_query($sql);
+    }
 }
 
 goto_url('./alimtalk_list.php');
