@@ -22,6 +22,9 @@ if ($_POST['act_button'] == "선택수정") {
             alert("기본분류는 반드시 선택해야 합니다.");
         }
 
+        $sql = "select it_expected_warehousing_date from {$g5['g5_shop_item_table']} where it_id   = '".preg_replace('/[^a-z0-9_\-]/i', '', $_POST['it_id'][$k])."' ";
+        $o_it_expected_warehousing_date = sql_fetch($sql);
+
         $p_ca_id = is_array($_POST['ca_id']) ? strip_tags($_POST['ca_id'][$k]) : '';
         $p_ca_id2 = is_array($_POST['ca_id2']) ? strip_tags($_POST['ca_id2'][$k]) : '';
         $p_ca_id3 = is_array($_POST['ca_id3']) ? strip_tags($_POST['ca_id3'][$k]) : '';
@@ -129,6 +132,24 @@ if ($_POST['act_button'] == "선택수정") {
             it_update_time = '".G5_TIME_YMDHIS."'
         where it_id   = '".preg_replace('/[^a-z0-9_\-]/i', '', $_POST['it_id'][$k])."' "; // APMS - 2014.07.20
         sql_query($sql);
+
+        // 입고예정일 변경시 g5_alimtalk al_id=3 에 알림톡 보내기
+        if ($o_it_expected_warehousing_date !== $it_expected_warehousing_date) {
+            $sql = "select m.* 
+            from g5_alimtalk_member a 
+            left join g5_member m on a.mb_id = m.mb_id 
+            where al_id = '3' 
+            order by a.mb_id asc limit 1";
+
+            $mb_result = sql_query($sql, true);
+
+            while($mb = sql_fetch_array($mb_result)) {
+                $msg = "[이로움 긴급공지 안내]\n{$mb['mb_name']} 님,\n이로움 유통상품 중 현재 공급이 원활하지 않은 상품을 안내 드립니다.\n주문시 참고하여 주시기 바랍니다.\n\n■ 상품명 : {$p_it_name}\n■ 입고예정일 : {$it_expected_warehousing_date}";
+                $num = $mb['mb_hp'];
+                $num = '010-3114-6114';
+                send_alim_talk('ENT_STO_'.$mb['mb_id'], $num, 'ent_stock_date', $msg);
+            }
+        }
     }
 } else if ($_POST['act_button'] == "선택삭제") {
 
