@@ -139,14 +139,13 @@ if ($_POST['act_button'] == "선택수정") {
             from g5_alimtalk_member a 
             left join g5_member m on a.mb_id = m.mb_id 
             where al_id = '3' 
-            order by a.mb_id asc limit 1";
+            order by a.mb_id asc";
 
             $mb_result = sql_query($sql, true);
 
             while($mb = sql_fetch_array($mb_result)) {
                 $msg = "[이로움 긴급공지 안내]\n{$mb['mb_name']} 님,\n이로움 유통상품 중 현재 공급이 원활하지 않은 상품을 안내 드립니다.\n주문시 참고하여 주시기 바랍니다.\n\n■ 상품명 : {$p_it_name}\n■ 입고예정일 : {$it_expected_warehousing_date}";
                 $num = $mb['mb_hp'];
-                $num = '010-3114-6114';
                 send_alim_talk('ENT_STO_'.$mb['mb_id'], $num, 'ent_stock_date', $msg);
             }
         }
