@@ -23,7 +23,8 @@ if ($_POST['act_button'] == "선택수정") {
         }
 
         $sql = "select it_expected_warehousing_date from {$g5['g5_shop_item_table']} where it_id   = '".preg_replace('/[^a-z0-9_\-]/i', '', $_POST['it_id'][$k])."' ";
-        $o_it_expected_warehousing_date = sql_fetch($sql);
+        $rs = sql_fetch($sql);
+        $o_it_expected_warehousing_date = $rs['it_expected_warehousing_date'];
 
         $p_ca_id = is_array($_POST['ca_id']) ? strip_tags($_POST['ca_id'][$k]) : '';
         $p_ca_id2 = is_array($_POST['ca_id2']) ? strip_tags($_POST['ca_id2'][$k]) : '';
@@ -146,7 +147,7 @@ if ($_POST['act_button'] == "선택수정") {
             while($mb = sql_fetch_array($mb_result)) {
                 $msg = "[이로움 긴급공지 안내]\n{$mb['mb_name']} 님,\n이로움 유통상품 중 현재 공급이 원활하지 않은 상품을 안내 드립니다.\n주문시 참고하여 주시기 바랍니다.\n\n■ 상품명 : {$p_it_name}\n■ 입고예정일 : {$it_expected_warehousing_date}";
                 $num = $mb['mb_hp'];
-                // send_alim_talk('ENT_STO_'.$mb['mb_id'], $num, 'ent_stock_date', $msg);
+                send_alim_talk('ENT_STO_'.$mb['mb_id'], $num, 'ent_stock_date', $msg);
             }
         }
     }
@@ -173,5 +174,5 @@ if ($_POST['act_button'] == "선택수정") {
     }
 }
 $searchProdSupYN=$_POST['searchProdSupYN'];
-goto_url("./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN=$searchProdSupYN");
+// goto_url("./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN=$searchProdSupYN");
 ?>
