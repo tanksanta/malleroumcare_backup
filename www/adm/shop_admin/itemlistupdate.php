@@ -174,5 +174,5 @@ if ($_POST['act_button'] == "선택수정") {
     }
 }
 $searchProdSupYN=$_POST['searchProdSupYN'];
-// goto_url("./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN=$searchProdSupYN");
+goto_url("./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN=$searchProdSupYN");
 ?>
