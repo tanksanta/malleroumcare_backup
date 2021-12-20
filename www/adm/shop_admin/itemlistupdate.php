@@ -23,7 +23,8 @@ if ($_POST['act_button'] == "선택수정") {
         }
 
         $sql = "select it_expected_warehousing_date from {$g5['g5_shop_item_table']} where it_id   = '".preg_replace('/[^a-z0-9_\-]/i', '', $_POST['it_id'][$k])."' ";
-        $o_it_expected_warehousing_date = sql_fetch($sql);
+        $rs = sql_fetch($sql);
+        $o_it_expected_warehousing_date = $rs['it_expected_warehousing_date'];
 
         $p_ca_id = is_array($_POST['ca_id']) ? strip_tags($_POST['ca_id'][$k]) : '';
         $p_ca_id2 = is_array($_POST['ca_id2']) ? strip_tags($_POST['ca_id2'][$k]) : '';
