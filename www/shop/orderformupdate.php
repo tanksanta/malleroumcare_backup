@@ -952,7 +952,7 @@ $od_send_cost = get_sendcost_new($tmp_cart_id, 1) ?: 0;
 $od_send_cost2 = 0;
 
 // 지역별 추가배송비 적용
-$od_send_cost += get_address_sendcost($od_b_addr1, $it_ids) ?: 0;
+$od_send_cost2 = get_address_sendcost($od_b_addr1, $it_ids) ?: 0;
 
 $od_time = G5_TIME_YMDHIS;
 

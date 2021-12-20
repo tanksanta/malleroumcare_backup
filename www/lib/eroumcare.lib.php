@@ -1466,7 +1466,7 @@ function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = fa
   $sql_send_cost = "
     SELECT
       1 as ct_qty,
-      o.od_send_cost as price_d,
+      (o.od_send_cost + o.od_send_cost2) as price_d,
       0 as deposit
     FROM
       g5_shop_order o
@@ -1475,7 +1475,7 @@ function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = fa
     WHERE
       c.ct_status = '완료' and
       c.ct_qty - c.ct_stock_qty > 0 and
-      o.od_send_cost > 0
+      o.od_send_cost + o.od_send_cost2 > 0
   ";
 
   # 매출할인
