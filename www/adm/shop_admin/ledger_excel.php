@@ -216,9 +216,9 @@ if($ent['mb_type'] == 'partner') {
       '^배송비' as it_name,
       '' as ct_option,
       1 as ct_qty,
-      o.od_send_cost as price_d,
-      ROUND(o.od_send_cost / 1.1) as price_d_p,
-      ROUND(o.od_send_cost / 1.1 / 10) as price_d_s,
+      (o.od_send_cost + o.od_send_cost2) as price_d,
+      ROUND( (o.od_send_cost + o.od_send_cost2) / 1.1) as price_d_p,
+      ROUND( (o.od_send_cost + o.od_send_cost2) / 1.1 / 10) as price_d_s,
       0 as deposit,
       o.od_b_name
     FROM

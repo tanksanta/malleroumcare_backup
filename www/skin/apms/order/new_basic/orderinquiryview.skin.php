@@ -872,7 +872,7 @@ $(function() {
           <li>
             <div>
               <b>주문금액</b>
-              <span><?=number_format($tot_price - $od["od_send_cost"])?> 원</span>
+              <span><?=number_format($tot_price - $od["od_send_cost"] - $od['od_send_cost2'])?> 원</span>
             </div>
           </li>
           <?php if($od['od_coupon'] > 0) { ?>

@@ -2380,6 +2380,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <div class="right"><?php echo number_format($od['od_send_cost']); ?>원</div>
                     </li>
                     <li>
+                        <div class="left">추가배송비</div>
+                        <div class="right"><?php echo number_format($od['od_send_cost2']); ?>원</div>
+                    </li>                    
+                    <li>
                         <div class="left">할인</div>
                         <div class="right"><span class="red"> <?php echo number_format($tot_discount); ?>원</span></div>
                     </li>
