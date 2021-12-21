@@ -4282,23 +4282,46 @@ $(function() {
     type: 'image',
     image: {
       titleSrc: function(item) {
-        
+
         var $div = $('<div>');
 
-        var path = item.src.split('/data/')[1];
+        // 원본크기
+        var $btn_zoom_orig = $('<button type="button" class="btn-bottom btn-zoom-orig">원본크기</button>')
+          .click(function() {
+            $btn_zoom_orig.hide();
+            $btn_zoom_fit.show();
 
-        var $link_download = $('<a class="btn-bottom btn-download">다운로드</a>')
+            $(item.img).css('max-width', 'unset');
+          });
+
+        // 창맞추기
+        var $btn_zoom_fit = $('<button type="button" class="btn-bottom btn-zoom-fit">창맞추기</button>"')
+          .hide()
+          .click(function() {
+            $btn_zoom_orig.show();
+            $btn_zoom_fit.hide();
+
+            $(item.img).css('max-width', '100%');
+          });
+
+        // 다운로드
+        var $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
           .attr('href', item.src)
           .attr('download', '설치이미지_' + item.index + '.jpg');
         
+        // 회전
         var rotate_deg = 0;
-        var $link_rotate = $('<button type="button" class="btn-bottom btn-rotate">회전</a>')
-          .on('click', function() {
+        var $btn_rotate = $('<button type="button" class="btn-bottom btn-rotate">회전</button>')
+          .click(function() {
             rotate_deg = (rotate_deg + 90) % 360;
             $(item.img).css('transform', 'rotate(' + rotate_deg + 'deg)')
           });
 
-        return $div.append($link_download, $link_rotate);
+        return $div.append(
+          $btn_zoom_orig,
+          $btn_zoom_fit,
+          $btn_download,
+          $btn_rotate);
       },
     },
     gallery:{
