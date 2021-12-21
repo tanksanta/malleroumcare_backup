@@ -13,9 +13,11 @@
   
   .mfp-wrap {
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    left: 10%;
+    width: 80%;
+    height: calc(100% - 20px);
+    max-height: 740px;
+    top: 20px;
     z-index: 1043;
     position: fixed;
     outline: none !important;
@@ -26,9 +28,10 @@
     position: absolute;
     width: 100%;
     height: 100%;
+    background: #f5f5f5;
     left: 0;
     top: 0;
-    padding: 0 8px;
+    padding: 0;
     box-sizing: border-box; }
   
   .mfp-container:before {
@@ -42,6 +45,7 @@
   
   .mfp-content {
     position: relative;
+    height: 100%;
     display: inline-block;
     vertical-align: middle;
     margin: 0 auto;
@@ -157,11 +161,12 @@
   
   .mfp-counter {
     position: absolute;
-    top: 0;
-    right: 0;
-    color: #CCC;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #333;
     font-size: 12px;
-    line-height: 18px;
+    line-height: 24px;
     white-space: nowrap; }
   
   .mfp-arrow {
@@ -255,69 +260,65 @@
   
   /* The shadow behind the image */
   .mfp-figure {
+    height: 100%;
     line-height: 0; }
-    .mfp-figure:after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 40px;
-      bottom: 40px;
-      display: block;
-      right: 0;
-      width: auto;
-      height: auto;
-      z-index: -1;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-      background: #444; }
     .mfp-figure small {
       color: #BDBDBD;
       display: block;
       font-size: 12px;
       line-height: 14px; }
     .mfp-figure figure {
+      height: 100%;
+      overflow: auto;
       margin: 0; }
   
   .mfp-bottom-bar {
-    margin-top: -36px;
+    margin-top: -40px;
+    height: 40px;
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
+    background: #fff;
     cursor: auto; }
   
   .mfp-title {
     text-align: left;
     line-height: 18px;
     color: #F3F3F3;
-    word-wrap: break-word;
-    padding-right: 36px; }
+    word-wrap: break-word; }
 
-  .mfp-title a.link_download_img {
-    margin-top: 5px;
+  .mfp-title .btn-bottom {
     display: inline-block;
-    background: #000;
-    border: 1px solid #fff;
-    border-radius: 3px;
-    font-size: 16px;
-    color: #fff;
-    padding: 5px 15px;
-  }
-
-  .mfp-title a.link_rotate_img {
-    margin-top: 5px;
-    margin-left: 10px;
-    display: inline-block;
-    background: #000;
-    border: 1px solid #fff;
-    border-radius: 3px;
-    font-size: 16px;
-    color: #fff;
-    padding: 5px 15px;
+    color: #333;
+    line-height: 24px;
+    padding: 8px 15px;
+    height: 40px;
     cursor: pointer;
-  }
+    text-align: center; }
+    .btn-bottom.btn-download {
+      float: right; }
+      .btn-bottom.btn-download:before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        height: 24px;
+        width: 24px;
+        margin-right: 4px;
+        background-image: url('/img/mfp/pop_icon_down.png'); }
+    .btn-bottom.btn-rotate {
+      float: left; }
+      .btn-bottom.btn-rotate:before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        height: 24px;
+        width: 24px;
+        margin-right: 4px;
+        background-image: url('/img/mfp/pop_icon_rotate.png'); }
   
   .mfp-image-holder .mfp-content {
-    max-width: 100%; }
+    width: 100%; }
   
   .mfp-gallery .mfp-image-holder .mfp-figure {
     cursor: pointer; }
@@ -370,7 +371,4 @@
       transform-origin: 0; }
     .mfp-arrow-right {
       -webkit-transform-origin: 100%;
-      transform-origin: 100%; }
-    .mfp-container {
-      padding-left: 6px;
-      padding-right: 6px; } }
+      transform-origin: 100%; } }

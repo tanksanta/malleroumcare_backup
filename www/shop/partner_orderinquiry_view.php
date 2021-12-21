@@ -56,7 +56,7 @@ $cart_result = sql_query("
     ct_id ASC
 ");
 
-$total_price_p = 0; // 총 공급가 합계
+$total_price_p = 0; // 총 공급가 합계
 $total_price_s = 0; // 총 부가세 합계
 $count_delivery_inserted = 0; // 배송비 정보 입력된 숫자
 
@@ -555,17 +555,30 @@ $(function() {
     type: 'image',
     image: {
       titleSrc: function(item) {
-        console.log(item);
-        return $('<a class="link_download_img">이미지 다운로드</a>')
+        
+        var $div = $('<div>');
+
+        var path = item.src.split('/data/')[1];
+
+        var $link_download = $('<a class="btn-bottom btn-download">다운로드</a>')
           .attr('href', item.src)
-          .attr('download', '설치이미지_' + item.index + '.jpg')
+          .attr('download', '설치이미지_' + item.index + '.jpg');
+        
+        var rotate_deg = 0;
+        var $link_rotate = $('<button type="button" class="btn-bottom btn-rotate">회전</a>')
+          .on('click', function() {
+            rotate_deg = (rotate_deg + 90) % 360;
+            $(item.img).css('transform', 'rotate(' + rotate_deg + 'deg)')
+          });
+
+        return $div.append($link_download, $link_rotate);
       },
     },
     gallery:{
       enabled:true,
       tPrev: '이전', // title for left button
       tNext: '다음', // title for right button
-      tCounter: '<span class="mfp-counter">%curr% / %total%</span>'
+      tCounter: '%curr% / %total%'
     },
   });
 });
