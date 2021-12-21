@@ -221,7 +221,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         $row = sql_fetch($sql);
                         $sql2 = "SELECT sum(ct_qty) as cnt FROM g5_shop_cart 
                             WHERE it_id = '{$list[$i]['prodId']}' AND mb_id = '{$member['mb_id']}' 
-                            AND (ct_status = '주문' OR ct_status = '입금' OR ct_status = '준비' OR ct_status = '출고준비' OR ct_status = '배송');";
+                            AND (ct_status = '주문' OR ct_status = '입금' OR ct_status = '준비' OR ct_status = '출고준비');";
                         $row2 = sql_fetch($sql2);
                     ?>
                     <!--반복-->
