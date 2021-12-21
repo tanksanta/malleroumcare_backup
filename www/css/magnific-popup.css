@@ -296,6 +296,26 @@
     height: 40px;
     cursor: pointer;
     text-align: center; }
+    .btn-bottom.btn-zoom-orig {
+      float: left; }
+      .btn-bottom.btn-zoom-orig:before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        height: 24px;
+        width: 24px;
+        margin-right: 4px;
+        background-image: url('/img/mfp/pop_icon_zoom_1.png'); }
+    .btn-bottom.btn-zoom-fit {
+      float: left; }
+      .btn-bottom.btn-zoom-fit:before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        height: 24px;
+        width: 24px;
+        margin-right: 4px;
+        background-image: url('/img/mfp/pop_icon_zoom_2.png'); }
     .btn-bottom.btn-download {
       float: right; }
       .btn-bottom.btn-download:before {
