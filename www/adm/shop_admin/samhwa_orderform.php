@@ -4287,19 +4287,15 @@ $(function() {
 
         var path = item.src.split('/data/')[1];
 
-        var $link_download = $('<a class="link_download_img">이미지 다운로드</a>')
+        var $link_download = $('<a class="btn-bottom btn-download">다운로드</a>')
           .attr('href', item.src)
           .attr('download', '설치이미지_' + item.index + '.jpg');
         
-        var $link_rotate = $('<a href="javascript:void(0);" class="link_rotate_img">회전</a>')
+        var rotate_deg = 0;
+        var $link_rotate = $('<button type="button" class="btn-bottom btn-rotate">회전</a>')
           .on('click', function() {
-              $.post('ajax.rotate_image.php', {
-                  path: path
-              })
-              .done(function() {
-                $(item.el).find('img').attr("src", item.src+"?timestamp=" + new Date().getTime());
-                $(item.img).attr("src", item.src+"?timestamp=" + new Date().getTime());
-              });
+            rotate_deg = (rotate_deg + 90) % 360;
+            $(item.img).css('transform', 'rotate(' + rotate_deg + 'deg)')
           });
 
         return $div.append($link_download, $link_rotate);
@@ -4309,7 +4305,7 @@ $(function() {
       enabled:true,
       tPrev: '이전', // title for left button
       tNext: '다음', // title for right button
-      tCounter: '<span class="mfp-counter">%curr% / %total%</span>'
+      tCounter: '%curr% / %total%'
     },
   });
 });

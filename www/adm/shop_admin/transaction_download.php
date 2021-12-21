@@ -349,6 +349,7 @@ foreach($od_ids as $od_id) {
         }
     }
     // 배송비
+    $od['od_send_cost'] += $od['od_send_cost2'];
     if ($od['od_send_cost'] > 0) {
         $arr = array($date, "^배송비", '1', $od['od_send_cost'], (int)($od['od_send_cost'] / 1.1), ($od['od_send_cost'] - (int)($od['od_send_cost'] / 1.1)), $od['od_send_cost'], $mb['mb_name'], $od_id, "");
         array_push($rows, $arr);
