@@ -4292,6 +4292,7 @@ $(function() {
             $btn_zoom_fit.show();
 
             $(item.img).css('max-width', 'unset');
+            $(item.img).css('max-height', 'unset');
           });
 
         // 창맞추기
@@ -4302,6 +4303,7 @@ $(function() {
             $btn_zoom_fit.hide();
 
             $(item.img).css('max-width', '100%');
+            $(item.img).css('max-height', '100%');
           });
 
         // 다운로드
