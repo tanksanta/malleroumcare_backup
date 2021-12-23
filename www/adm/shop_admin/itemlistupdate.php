@@ -9,6 +9,10 @@ check_admin_token();
 if (!count($_POST['chk'])) {
     alert($_POST['act_button']." 하실 항목을 하나 이상 체크하세요.");
 }
+
+// 입고예정일 수정한 상품 목록
+$affected_it_ids = [];
+
 if ($_POST['act_button'] == "선택수정") {
 
     auth_check($auth[$sub_menu], 'w');
@@ -136,6 +140,8 @@ if ($_POST['act_button'] == "선택수정") {
 
         // 입고예정일 변경시 g5_alimtalk al_id=3 에 알림톡 보내기
         if ($o_it_expected_warehousing_date !== $it_expected_warehousing_date) {
+            $affected_it_ids[] = preg_replace('/[^a-z0-9_\-]/i', '', $_POST['it_id'][$k]);
+
             $sql = "select m.* 
             from g5_alimtalk_member a 
             left join g5_member m on a.mb_id = m.mb_id 
@@ -188,6 +194,12 @@ if ($_POST['act_button'] == "선택수정") {
         include ('./itemdelete.inc.php');
     }
 }
+
+$it_ids = '';
+foreach($affected_it_ids as $it_id) {
+    $it_ids .= '&it_id%5B%5D=' . $it_id;
+}
+
 $searchProdSupYN=$_POST['searchProdSupYN'];
-goto_url("./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN=$searchProdSupYN");
+goto_url("./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN={$searchProdSupYN}{$it_ids}");
 ?>
