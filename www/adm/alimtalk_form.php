@@ -38,10 +38,19 @@ include_once('./admin.head.php');
 
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">', -1);
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>', 0);
-include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
+add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
 ?>
 
 <style>
+#upload_wrap { display: none; }
+.popModal #upload_wrap { display: block; }
+.popModal .popModal_content { margin: 0 !important; }
+.popModal .form-group { margin-bottom: 15px; }
+.popModal label { display: inline-block; max-width: 100%; margin-bottom: 5px; font-weight: 700; }
+.popModal input[type=file] { display: block; }
+.popModal .help-block { padding: 0; display: block; margin-top: 5px; margin-bottom: 10px; color: #737373; }
+
 .flexdatalist-results li {
   font-size:12px;
 }
@@ -92,6 +101,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <input type="radio" name="al_type" value="1" id="al_type_1" <?=option_array_checked($al['al_type'], [1])?>>
             <label for="al_type_1">사업소선택</label>
             <input type="text" id="mb_id" class="frm_input" size="50">
+            <button type="button" id="excelupload" class="btn btn_03">엑셀업로드</button>
             <div id="mb_id_list">
                 <?php
                 if($al['al_type'] == 1 && $al['member']) {
@@ -143,6 +153,19 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </div>
 </form>
 
+<div id="upload_wrap">
+  <form id="form_excel_upload" style="font-size: 14px;">
+    <div class="form-group">
+      <label for="datafile">엑셀 업로드</label>
+      <input type="file" name="datafile" id="datafile">
+      <p class="help-block">
+        상품관리에서 다운로드받으신 사업소목록 엑셀을 업로드하시면 추가됩니다.
+      </p>
+    </div>
+    <button type="submit" class="btn btn-primary">업로드</button>
+  </form>
+</div>
+
 <script>
 function falimtalkform_check(f) {
     return true;
@@ -181,6 +204,44 @@ $('#mb_id').flexdatalist({
 }).on("select:flexdatalist",function(event, obj, options) {
     select_mb_id(obj);
     $('#mb_id').val('').next().focus();
+});
+
+// 사업소목록 엑셀 업로드
+$('#excelupload').click(function() {
+  $(this).popModal({
+    html: $('#form_excel_upload'),
+    placement: 'bottomRight',
+    showCloseBut: false
+  });
+});
+$('#form_excel_upload').submit(function(e) {
+  e.preventDefault();
+
+  var fd = new FormData(document.getElementById("form_excel_upload"));
+  $.ajax({
+      url: 'ajax.alimtalk_excel_upload.php',
+      type: 'POST',
+      data: fd,
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType: 'json'
+    })
+    .done(function(result) {
+      var data = result.data;
+      if(data.length && data.length > 0) {
+        for(var i = 0; i < data.length; i++) {
+            select_mb_id(data[i]);
+        }
+      }
+      alert('업로드하신 ' + data.length + '개 사업소가 선택되었습니다.');
+      $('#excelupload').popModal("hide");
+      $('#al_type_1').click();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
 });
 </script>
 
