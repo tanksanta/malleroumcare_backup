@@ -143,6 +143,8 @@ include_once(G5_ADMIN_PATH.'/apms_admin/apms.admin.lib.php');
 $flist = array();
 $flist = apms_form(1,0);
 
+// 입고예정일 수정한 상품 목록
+$affected_it_ids = $_GET['it_id'] ?: [];
 ?>
 
 <script src="<?php echo G5_ADMIN_URL;?>/apms_admin/apms.admin.js"></script>
@@ -516,6 +518,7 @@ $flist = apms_form(1,0);
     <a href="./itemexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn btn_02">상품일괄등록</a>
     <a href="./itemexcel2.php" onclick="return excelform(this.href);" target="_blank" class="btn btn_02">상품일괄수정</a>
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
+    <button type="button" class="btn btn_02" id="btn_orderent">주문 중인 사업소목록</button>
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
 </div>
 <!-- <div class="btn_confirm01 btn_confirm">
@@ -524,6 +527,75 @@ $flist = apms_form(1,0);
 </form>
 
 <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); ?>
+
+<!-- 팝업 박스 시작 -->
+<style>
+#popup_box { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
+#popup_box > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
+#popup_box iframe { position: relative; width: 700px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+
+@media (max-width : 750px) {
+  #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+</style>
+
+<div id="popup_box">
+  <div></div>
+</div>
+
+<script>
+var it_ids = <?=json_encode($affected_it_ids)?>;
+if(it_ids.length > 0)
+    open_order_ent(it_ids);
+
+$(function() {
+  $("#popup_box").hide();
+  $("#popup_box").css("opacity", 1);
+
+  $('#popup_box').click(function() {
+      close_popup_box();
+  });
+});
+
+function open_popup_box(url) {
+  $('html, body').addClass('modal-open');
+  $("#popup_box > div").html('<iframe src="' + url + '">');
+  $("#popup_box iframe").load(function() {
+    $("#popup_box").show();
+  });
+}
+
+function close_popup_box() {
+  $('html, body').removeClass('modal-open');
+  $('#popup_box').hide();
+  $('#popup_box').find('iframe').remove();
+}
+
+function open_order_ent(it_ids) {
+    var query = '';
+    for(var i = 0; i < it_ids.length; i++) {
+        query += 'it_id%5B%5D=' + it_ids[i] + '&';
+    }
+
+    open_popup_box('itemorderent.php?' + query);
+}
+
+$('#btn_orderent').click(function() {
+    var $chk = $('input[name="chk[]"]:checked');
+
+    var it_ids = [];
+    $chk.each(function() {
+        var chk = $(this).val();
+
+        var it_id = $('input[name="it_id[' + chk + ']"]').val();
+        if(it_id && !~it_ids.indexOf(it_id))
+            it_ids.push(it_id);
+    });
+
+    open_order_ent(it_ids);
+});
+</script>
+<!-- 팝업 박스 끝 -->
 
 <?php
 $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$api_it_id' ";
