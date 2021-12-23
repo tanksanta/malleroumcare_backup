@@ -139,7 +139,10 @@ $where .= " ) ";
 $where .= $sql_apms_where;
 
 // 기타설정(태그선택) - 일시품절, 일부옵션품절
-$where .= ' and ( it_type1 = 1 or it_type2 = 1 ) ';
+$where .= ' AND ( it_type1 = 1 OR it_type2 = 1 ) ';
+
+// 유통상품만
+$where .= " AND prodSupYn = 'Y'";
 
 // 튜토리얼 상품 안보이게 수정
 $where .= " AND it_id NOT IN ('PRO2021072200013', 'PRO2021072200012') ";
