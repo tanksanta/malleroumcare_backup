@@ -118,6 +118,21 @@ $partners = get_partner_members();
     display: table-row;
   }
 
+  .lotte_api_send {
+    height: 30px;
+    line-height: 30px !important;
+    padding: 0 13px;
+    vertical-align: top;
+    font-weight: bold;
+    letter-spacing: -1px;
+    background-color: white;
+    border: 1px solid #ff6600;
+    color:#ff6600 !important;
+  }
+  .lotte_api_send:disabled {
+    color:#ddd !important;
+	  border: 1px solid #b5b5b5;
+  }
 </style>
   
 <form id="prodBarNumFormWrap">
@@ -148,6 +163,7 @@ $partners = get_partner_members();
         <col width="20%">
         <col width="70px">
         <col width="70px">
+        <col width="70px">
         <col width="100px">
       </colgroup>
       
@@ -159,6 +175,7 @@ $partners = get_partner_members();
           <th>배송비</th>
           <th>분류</th>
           <th>송장번호</th>
+          <th></th>
           <th>합포</th>
           <th>위탁</th>
           <th>출하창고</th>
@@ -215,7 +232,16 @@ $partners = get_partner_members();
                 }
               ?>
             </td>
-            <td class="combine combine_y <?php if($options[$k]['ct_combine_ct_id']) echo ' active ';?>" colspan="4">
+            <td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
+              <?php
+                $show_btn = false;
+                if ($options[$k]['it_delivery_company'] == 'lotteglogis' || $options[$k]['ct_delivery_company'] == 'lotteglogis') { 
+                  $show_btn = true;
+                }
+              ?>
+              <button class="lotte_api_send" style="<?php echo $show_btn ? '' : 'display:none;'?>" data-ct-id="<?=$options[$k]["ct_id"]?>">전송</button>
+            </td>
+            <td class="combine combine_y <?php if($options[$k]['ct_combine_ct_id']) echo ' active ';?>" colspan="5">
               <select name="ct_combine_ct_id_<?php echo $options[$k]["ct_id"]; ?>" class="ct_combine_ct_id">
                 <?php
                 foreach($carts as $c) {
@@ -277,7 +303,7 @@ $partners = get_partner_members();
             class="tr_direct_delivery <?=($options[$k]['ct_is_direct_delivery'] ? 'active' : '')?>"
             style="background-color:#e3e3e3;"
           >
-            <td colspan="9">
+            <td colspan="10">
               위탁
               <select
                 name="ct_is_direct_delivery_sub_<?=$options[$k]["ct_id"]?>"
@@ -346,12 +372,15 @@ $partners = get_partner_members();
         for (var i=1; i<box_cnt; i++) {
           $(`#td_delivery_num_${ct_id}`).append(html);
         }
+
+        $('.lotte_api_send').show();
       }
       else {
         var children = $(`#td_delivery_num_${ct_id}`).children().length;
         if (children > 1) {
           $(`#td_delivery_num_${ct_id}`).children().not(':first').remove();
         }
+        $('.lotte_api_send').hide();
       }
     });
 
@@ -377,6 +406,24 @@ $partners = get_partner_members();
       } else {
         $('#tr_direct_delivery_'+ct_id).removeClass('active');
       }
+    });
+
+    // 롯데택배 전송
+    $(document).on("click", ".lotte_api_send", function(e){
+      e.preventDefault();
+      var ct_id = $(this).attr('data-ct-id');
+      $.ajax({
+        method: 'POST',
+        url: './ajax.order.delivery.lotte.php',
+        data: {
+          ct_id: ct_id,
+        }
+      }).done(function (data) {
+        // return false;
+        if (data.result === 'success') {
+          location.reload();
+        }
+      });
     });
 
     $("#prodBarNumSaveBtn").click(function() {

@@ -18,6 +18,18 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
   ", true);
 }
 
+$sql_lotte = "SELECT count(*) as cnt 
+  FROM {$g5['g5_shop_cart_table']} 
+  WHERE ct_status = '출고준비' 
+  AND ct_delivery_cnt > 0 -- 박스개수 1개 이상
+  AND ct_delivery_company = 'lotteglogis' 
+  AND ( ct_combine_ct_id IS NULL OR ct_combine_ct_id = '') -- 합포가 아닌것
+  AND ( ct_delivery_num IS NULL OR ct_delivery_num = '') -- 송장번호 없는것
+  AND ct_edi_result = 0 -- 아직 api 전송 하지 않은것
+  AND ct_is_direct_delivery = 0 -- 직배송 아닌것
+";
+$result_lotte = sql_fetch($sql_lotte);
+
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
@@ -108,6 +120,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
     <button id="delivery_edi_return_all">송장리턴</button>
+    <button class="lotte_btn" id="delivery_lotte_send" <?php echo ($result_lotte['cnt'] > 0) ? '' : 'disabled'?>><?php echo ($result_lotte['cnt'] > 0) ? '롯데택배 '.$result_lotte['cnt'].'건 전송 필요' : '롯데택배 전송완료'?></button>
     <!-- <button class="orderExcel" data-type="1"><img src="/adm/shop_admin/img/btn_img_ex.gif">주문 엑셀 다운로드</button> -->
     <!-- <button class="orderExcel" data-type="2"><img src="/adm/shop_admin/img/btn_img_ex.gif">출고 엑셀 다운로드</button> -->
   </div>
