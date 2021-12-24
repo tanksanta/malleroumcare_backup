@@ -661,6 +661,23 @@ $(function () {
     });
   });
 
+  // 롯데택배 일괄 전송
+  $(document).on('click', '#delivery_lotte_send', function () {
+
+    $.ajax({
+      method: 'POST',
+      url: './ajax.order.delivery.lotte.php',
+    }).done(function (data) {
+      // return false;
+      if (data.msg) {
+        alert(data.msg);
+      }
+      if (data.result === 'success') {
+        location.reload();
+      }
+    });
+  });
+
   $('.select_date').click(function () {
     var val = $(this).val();
     set_date(val);
