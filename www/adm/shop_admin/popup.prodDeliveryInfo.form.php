@@ -239,7 +239,7 @@ $partners = get_partner_members();
                   $show_btn = true;
                 }
               ?>
-              <button class="lotte_api_send" style="<?php echo $show_btn ? '' : 'display:none;'?>" data-ct-id="<?=$options[$k]["ct_id"]?>">전송</button>
+              <button class="lotte_api_send" style="<?php echo $show_btn ? '' : 'display:none;'?>" data-ct-id="<?=$options[$k]["ct_id"]?>" <?php echo ($options[$k]["ct_edi_result"] == 0) ? '' : 'disabled'?>>전송</button>
             </td>
             <td class="combine combine_y <?php if($options[$k]['ct_combine_ct_id']) echo ' active ';?>" colspan="5">
               <select name="ct_combine_ct_id_<?php echo $options[$k]["ct_id"]; ?>" class="ct_combine_ct_id">
@@ -412,18 +412,20 @@ $partners = get_partner_members();
     $(document).on("click", ".lotte_api_send", function(e){
       e.preventDefault();
       var ct_id = $(this).attr('data-ct-id');
-      $.ajax({
-        method: 'POST',
-        url: './ajax.order.delivery.lotte.php',
-        data: {
-          ct_id: ct_id,
-        }
-      }).done(function (data) {
-        // return false;
-        if (data.result === 'success') {
-          location.reload();
-        }
-      });
+      if (!$(this).prop('disabled')) {
+        $.ajax({
+          method: 'POST',
+          url: './ajax.order.delivery.lotte.php',
+          data: {
+            ct_id: ct_id,
+          }
+        }).done(function (data) {
+          // return false;
+          if (data.result === 'success') {
+            location.reload();
+          }
+        });
+      }
     });
 
     $("#prodBarNumSaveBtn").click(function() {

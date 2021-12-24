@@ -346,6 +346,7 @@ legend {position:absolute;width:0;height:0;font-size:0;line-height:0;text-indent
 }
 .local_ov01 .right .lotte_btn:disabled {
     color:#ddd !important;
+	border: 1px solid #b5b5b5;
 }
 .local_ov01.fixed {
     position: fixed;
