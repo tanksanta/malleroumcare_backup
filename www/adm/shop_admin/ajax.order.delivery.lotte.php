@@ -241,7 +241,6 @@ $res = curl_exec($ch);
 curl_close($ch);
 $result = json_decode($res, true);
 
-
 $result_msg = '';
 if (is_array($result) && array_key_exists('rtn_list', $result)) {
     foreach($result['rtn_list'] as $rtn) {
@@ -276,6 +275,22 @@ if (is_array($result) && array_key_exists('rtn_list', $result)) {
         ";
         sql_query($sql);        
     }
+
+    set_order_admin_log($cart['od_id'], $it_name . ' 롯데택배 API 전송');
+
+    if ($return_success) { 
+        $result = 'success';
+    }else{
+        $result = 'fail';
+    }
+
+    $ret = array(
+        'result' => $result,
+        'msg' => '롯데택배 API 전송이 '. $return_success . '개 완료되었습니다. (' . $return_failed .'개 실패)',
+        'return_success' => $return_success,
+        'return_failed' => $return_failed,
+    );
+    echo json_encode($ret);
 }
 else {
     $ret = array(
@@ -284,28 +299,9 @@ else {
     );
     echo json_encode($ret);
     exit;
+
+    echo $res;
 }
 
 
-set_order_admin_log($cart['od_id'], $it_name . ' 롯데택배 API 전송');
-
-// $ret = array(
-//     'result' => 'success',
-//     'msg' => 'EDI 전송이 완료되었습니다.',
-// );
-
-if ($return_success) { 
-    $result = 'success';
-}else{
-    $result = 'fail';
-}
-
-$ret = array(
-    'result' => $result,
-    'msg' => '롯데택배 API 전송이 '. $return_success . '개 완료되었습니다. (' . $return_failed .'개 실패)',
-    'return_success' => $return_success,
-    'return_failed' => $return_failed,
-);
-$json = json_encode($ret);
-echo $json;
 ?>
