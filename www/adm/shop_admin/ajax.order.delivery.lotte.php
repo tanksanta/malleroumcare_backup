@@ -240,7 +240,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_arr));
 $res = curl_exec($ch);
 curl_close($ch);
 $result = json_decode($res, true);
-echo $res;
+
 
 $result_msg = '';
 if (array_key_exists('rtn_list', $result)) {
