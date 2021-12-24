@@ -8,7 +8,7 @@ include_once('./_common.php');
 
 // 운영
 $jobCustCd = "234678";
-$apiUrl = 'https://apigw.llogis.com:10100';
+$apiHost = 'https://apigw.llogis.com:10100';
 $igtCode = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJDMDEyNTY1IiwiYXVkIjoiQzAxMjU2NSIsIm5hbWUiOiJ0aGtjMTMwMCIsInNjb3BlIjoiUlNfQUREUiIsImV4cCI6MTUzNTEzNTU5OTk5OSwiaWF0IjoxNjM5NTM0MDYwfQ.vdRf46jgtWCgGLfUsvGHVPR64iY6AAPHawCmnhHrSiY";
 
 $apiUrl = $apiHost . '/api/pid/cus/714a/apiSndOut';
@@ -65,7 +65,7 @@ function edi_info($cart) {
 
 function get_addr_zip($addr) {
     global $zipApiUrl, $headers;
-
+    
     $req['mode'] = "road";
     $req['scwd'] = $addr;
 
@@ -229,6 +229,8 @@ if (count($snd_list) == 0) {
 $post_arr = array(
     'snd_list' => $snd_list
 );
+
+
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $apiUrl);
 curl_setopt($ch, CURLOPT_POST, true);
@@ -240,7 +242,6 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_arr));
 $res = curl_exec($ch);
 curl_close($ch);
 $result = json_decode($res, true);
-echo $res;
 
 $result_msg = '';
 if (is_array($result) && array_key_exists('rtn_list', $result)) {
