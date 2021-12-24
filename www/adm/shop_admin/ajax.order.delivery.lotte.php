@@ -243,7 +243,7 @@ $result = json_decode($res, true);
 
 
 $result_msg = '';
-if (array_key_exists('rtn_list', $result)) {
+if (is_array($result) && array_key_exists('rtn_list', $result)) {
     foreach($result['rtn_list'] as $rtn) {
         $result_msg = $rtn['rtnMsg'];
         $ordNo = explode("_", $rtn['ordNo']);
@@ -276,6 +276,14 @@ if (array_key_exists('rtn_list', $result)) {
         ";
         sql_query($sql);        
     }
+}
+else {
+    $ret = array(
+        'result' => 'fail',
+        'msg' => '리턴값이 잘못되었습니다. 관리자에게 문의해 주세요.',
+    );
+    echo json_encode($ret);
+    exit;
 }
 
 
