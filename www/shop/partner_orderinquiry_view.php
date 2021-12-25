@@ -27,6 +27,32 @@ $od = sql_fetch("
 if(!$od['od_id'])
   alert('존재하지 않는 주문입니다.');
 
+// 설치결과보고서
+$report = sql_fetch("
+  SELECT *
+  FROM
+    partner_install_report
+  WHERE
+    od_id = '$od_id' and
+    mb_id = '{$member['mb_id']}'
+");
+$report['issue'] = [];
+if($report['ir_is_issue_1'])
+  $report['issue'][] = '상품변경';
+if($report['ir_is_issue_2'])
+  $report['issue'][] = '상품추가';
+if($report['ir_is_issue_3'])
+  $report['issue'][] = '미설치';
+$photo_result = sql_query("
+  SELECT * FROM partner_install_photo
+  WHERE od_id = '$od_id' and mb_id = '{$member['mb_id']}'
+  ORDER BY ip_id ASC
+", true);
+$report['photo'] = [];
+while($photo = sql_fetch_array($photo_result)) {
+  $report['photo'][] = $photo;
+}
+
 //주문 기록 
 $sql = "SELECT * FROM g5_shop_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
 $result = sql_query($sql);
@@ -61,26 +87,8 @@ $total_price_s = 0; // 총 부가세 합계
 $count_delivery_inserted = 0; // 배송비 정보 입력된 숫자
 
 $carts = [];
+$has_install = false; // 설치 상품 있는지 여부
 while($row = sql_fetch_array($cart_result)) {
-  $row['report'] = null;
-  if($row['ct_is_direct_delivery'] == 2) { // 배송+설치
-    $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$row['ct_id']}' ");
-    if($report['ct_id']) {
-      $photo_result = sql_query("
-        SELECT * FROM partner_install_photo
-        WHERE ct_id = '{$report['ct_id']}' and mb_id = '{$report['mb_id']}'
-        ORDER BY ip_id ASC
-      ");
-
-      $photos = [];
-      while($photo = sql_fetch_array($photo_result)) {
-        $photos[] = $photo;
-      }
-      $report['photo'] = $photos;
-      $row['report'] = $report;
-    }
-  }
-
   if($row['ct_delivery_num'])
     $count_delivery_inserted++;
 
@@ -89,6 +97,7 @@ while($row = sql_fetch_array($cart_result)) {
   $ct_direct_delivery_text = '배송';
   if($row['ct_is_direct_delivery'] == '2') {
     $ct_direct_delivery_text = '설치';
+    $has_install = true;
   }
   $row['ct_direct_delivery'] = $ct_direct_delivery_text;
 
@@ -149,6 +158,46 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
   <section class="row no-gutter justify-space-between container">
     <div class="left-wrap">
+      <?php if($has_install) { ?>
+      <div class="install-report">
+        <div class="top-wrap row no-gutter justify-space-between">
+          <span>설치결과보고서</span>
+          <button type="button" class="report-btn btn_install_report">결과보고서 작성</button>
+        </div>
+        <?php if($report && $report['ir_cert_url']) { ?>
+        <div class="mid-wrap">
+          <?php if($report['issue']) { ?>
+          <div class="issue">
+            이슈사항 (<?php echo implode(', ', $report['issue']); ?>)
+          </div>
+          <?php } ?>
+        </div>
+        <div class="row report-img-wrap">
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+              </a>
+            </div>
+          </div>
+          <?php foreach($report['photo'] as $photo) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+          <div class="col issue-wrap">
+            <p class="issue">
+              <?=nl2br($report['ir_issue'])?>
+            </p>
+          </div>
+        </div>
+        <?php } ?>
+      </div>
+      <?php } ?>
       <form id="form_ct_status">
         <div class="top row no-gutter justify-space-between align-center">
           <div class="col title">
@@ -198,41 +247,6 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
               </div>
             </li>
             <?php
-              if($cart['ct_is_direct_delivery'] == 2) {
-            ?>
-            <li class="install-report">
-              <div class="top-wrap row no-gutter justify-space-between">
-                <span>설치 결과 보고서</span>
-                <button type="button" class="report-btn btn_install_report" data-id="<?=$cart['ct_id']?>">결과보고서 작성</button>
-              </div>
-              <?php if($cart['report'] && $cart['report']['ir_cert_url']) { ?>
-              <div class="row report-img-wrap">
-                <div class="col">
-                  <div class="report-img">
-                    <a href="<?=G5_DATA_URL.'/partner/img/'.$cart['report']['ir_cert_url']?>" target="_blank" class="view_image">
-                      <img src="<?=G5_DATA_URL.'/partner/img/'.$cart['report']['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
-                    </a>
-                  </div>
-                </div>
-                <?php foreach($cart['report']['photo'] as $photo) { ?>
-                <div class="col">
-                  <div class="report-img">
-                    <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                      <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
-                    </a>
-                  </div>
-                </div>
-                <?php } ?>
-                <div class="col issue-wrap">
-                  <p class="issue">
-                    <?=nl2br($cart['report']['ir_issue'])?>
-                  </p>
-                </div>
-              </div>
-              <?php } ?>
-            </li>
-            <?php
-              }
             }
             ?>
           </ul>
@@ -458,9 +472,8 @@ $(function() {
 
   // 설치결과보고서 작성 버튼
   $('.btn_install_report').click(function() {
-    var ct_id = $(this).data('id');
     $("body").addClass('modal-open');
-    $("#popup_box > div").html('<iframe src="popup.partner_installreport.php?ct_id=' + ct_id + '">');
+    $("#popup_box > div").html('<iframe src="popup.partner_installreport.php?od_id=<?=$od_id?>">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });

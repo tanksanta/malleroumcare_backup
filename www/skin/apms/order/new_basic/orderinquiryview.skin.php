@@ -145,6 +145,39 @@ if($od["od_penId"]) {
     }
   }
 }
+
+# 설치결과보고서
+$reports = [];
+$report_result = sql_query("
+    SELECT * FROM partner_install_report
+    WHERE od_id = '$od_id'
+");
+while($report = sql_fetch_array($report_result)) {
+
+  $report_mb = get_member($report['mb_id']);
+  $report['member'] = $report_mb;
+
+  $report['issue'] = [];
+  if($report['ir_is_issue_1'])
+    $report['issue'][] = '상품변경';
+  if($report['ir_is_issue_2'])
+    $report['issue'][] = '상품추가';
+  if($report['ir_is_issue_3'])
+    $report['issue'][] = '미설치';
+
+  $photo_result = sql_query("
+      SELECT * FROM partner_install_photo
+      WHERE od_id = '$od_id' and mb_id = '{$report['mb_id']}'
+      ORDER BY ip_id ASC
+  ");
+
+  $report['photo'] = [];
+  while($photo = sql_fetch_array($photo_result)) {
+      $report['photo'][] = $photo;
+  }
+
+  $reports[] = $report;
+}
 ?>
 
 <script type="text/javascript">
@@ -350,6 +383,46 @@ $(function() {
         <?php } ?>
         </div>
       </div>
+      <?php foreach($reports as $report) { ?>
+      <div class="install-report">
+          <div class="top-wrap row justify-space-between">
+              <span>설치결과보고서</span>
+              <p><?=$report['member']['mb_name']?></p>
+          </div>
+          <?php if($report && $report['ir_cert_url']) { ?>
+          <div class="mid-wrap">
+          <?php if($report['issue']) { ?>
+          <div class="issue">
+              이슈사항 (<?php echo implode(', ', $report['issue']); ?>)
+          </div>
+          <?php } ?>
+          </div>
+          <div class="row report-img-wrap">
+          <div class="col">
+              <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                  <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+              </a>
+              </div>
+          </div>
+          <?php foreach($report['photo'] as $photo) { ?>
+          <div class="col">
+              <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                  <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+              </a>
+              </div>
+          </div>
+          <?php } ?>
+          <div class="col issue-wrap">
+              <p class="issue">
+              <?=nl2br($report['ir_issue'])?>
+              </p>
+          </div>
+          </div>
+          <?php } ?>
+      </div>
+      <?php } ?>
       <h4>상품 정보</h4>
       <div class="info-wrap">
         <div class="table-list2">
@@ -523,41 +596,6 @@ $(function() {
                 }
               }
               echo '<div style="background-color: #f3f3f3; color: #666; font-size: 14px;padding: 8px;">설치 예정일 : '.date('Y-m-d H시', strtotime($item[$i]['opt'][$k]['ct_direct_delivery_date'])).', 배송정보 : ['.$delivery_company_name.'] '.$item[$i]['opt'][$k]['ct_delivery_num'].'</div>';
-            }
-            ?>
-            <?php
-            if($item[$i]['opt'][$k]['report'] && $item[$i]['opt'][$k]['report']['ir_cert_url']) {
-            ?>
-            <div class="install-report">
-              <div class="top-wrap row no-gutter">
-                <div class="install-title">설치 정보</div>
-                <div class="install-date">출고예정일 : <?=date('Y-m-d (H시)', strtotime($item[$i]['opt'][$k]['ct_direct_delivery_date']))?></div>
-              </div>
-              <div class="row report-img-wrap">
-                <div class="col">
-                  <div class="report-img">
-                    <a href="<?=G5_DATA_URL.'/partner/img/'.$item[$i]['opt'][$k]['report']['ir_cert_url']?>" target="_blank" class="view_image">
-                      <img src="<?=G5_DATA_URL.'/partner/img/'.$item[$i]['opt'][$k]['report']['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
-                    </a>
-                  </div>
-                </div>
-                <?php foreach($item[$i]['opt'][$k]['report']['photo'] as $photo) { ?>
-                <div class="col">
-                  <div class="report-img">
-                    <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                      <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
-                    </a>
-                  </div>
-                </div>
-                <?php } ?>
-                <div class="col issue-wrap">
-                  <p class="issue">
-                    <?=nl2br($item[$i]['opt'][$k]['report']['ir_issue'])?>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <?php
             }
             ?>
           </div>

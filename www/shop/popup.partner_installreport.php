@@ -5,34 +5,40 @@ if(!$is_samhwa_partner && !$is_admin) {
   alert("파트너 회원만 접근 가능한 페이지입니다.");
 }
 
-$ct_id = get_search_string($_GET['ct_id']);
-if(!$ct_id) {
+$od_id = get_search_string($_GET['od_id']);
+if(!$od_id) {
   alert('정상적인 접근이 아닙니다.');
 }
 if (!$is_admin) {
   $check_member = "and ct_direct_delivery_partner = '{$member['mb_id']}'";
 }
 $check_result = sql_fetch("
-  SELECT ct_id, mb_id, ct_direct_delivery_partner, od_id, it_id FROM {$g5['g5_shop_cart_table']}
-  WHERE ct_id = '{$ct_id}' {$check_member}
+  SELECT
+    ct_id, o.mb_id, ct_direct_delivery_partner, o.od_id
+  FROM
+    {$g5['g5_shop_order_table']} o
+  LEFT JOIN
+    {$g5['g5_shop_cart_table']} c ON c.od_id = o.od_id
+  WHERE
+    o.od_id = '{$od_id}' {$check_member}
   LIMIT 1
-");
-// if(!$check_result['ct_id'])
-//   alert('존재하지 않는 주문입니다.');
+", true);
+if(!$check_result['ct_id'])
+  alert('존재하지 않는 주문입니다.');
 
 $report = sql_fetch("
   SELECT * FROM partner_install_report
-  WHERE ct_id = '{$ct_id}'
+  WHERE od_id = '{$od_id}'
 ");
 
 $photos = [];
-if($report && $report['ct_id']) {
+if($report && $report['od_id']) {
   // 이미 작성된 설치결과보고서가 있다면
 
   // 설치사진 가져오기
   $photo_result = sql_query("
     SELECT * FROM partner_install_photo
-    WHERE ct_id = '{$ct_id}'
+    WHERE od_id = '{$od_id}'
     ORDER BY ip_id ASC
   ");
   while($row = sql_fetch_array($photo_result)) {
@@ -43,9 +49,7 @@ if($report && $report['ct_id']) {
   $insert_result = sql_query("
     INSERT INTO partner_install_report
     SET
-      od_id = '{$check_result['od_id']}',
-      it_id = '{$check_result['it_id']}',
-      ct_id = '{$ct_id}',
+      od_id = '$od_id',
       mb_id = '{$check_result['ct_direct_delivery_partner']}',
       ir_issue = '',
       ir_created_at = NOW(),
@@ -109,11 +113,21 @@ if($report && $report['ct_id']) {
     label {
       margin-right: 10px;
     }
+
+    #table_ir .tbl_barcode { width: 100%; margin-top: 15px; }
+    #table_ir .tbl_barcode thead th { background: #eee; border-top: 1px solid #e3e3e3; padding: 5px 10px; text-align: center; }
+    #table_ir .tbl_barcode tbody td { background: #f5f5f5; border-top: 1px solid #e3e3e3; padding: 10px; }
+    #table_ir .tbl_barcode input[type="text"] { display: block; width: 100%; padding: 5px; background: #fff; border: 1px solid #eaeaea; }
+    #table_ir .tbl_barcode input[type="text"] + input[type="text"] { margin-top: 5px; }
+    .link_wr { display: -webkit-box; display: -ms-flexbox; display: flex; margin: 5px -5px 0 -5px; }
+    .link_wr a { display: block; border-radius: 3px; width: 100%; margin: 5px; padding: 10px; text-align: center;}
+    .link_wr a.btn_od_edit { background: #fff; border: 1px solid #8abf63; color: #8abf63; }
+    .link_wr a.btn_is_sign { background: #ef7c00; color: #fff; }
   </style>
 </head>
 <body>
   <div id="popupHeaderTopWrap">
-    <div class="title">설치결과등록 <?php echo !$check_result['ct_id'] ? '(미매칭)' : ''; ?></div>
+    <div class="title">설치결과등록</div>
     <div class="close">
       <a href="#" id="popupCloseBtn">
         &times;
@@ -126,6 +140,40 @@ if($report && $report['ct_id']) {
       <col>
     </colgroup>
     <tbody>
+      <!--<tr class="tr_head">
+        <th><div class="section_head">결과보고서</div></th>
+      </tr>
+      <tr class="tr_content">
+        <td colspan="2">
+          <table class="tbl_barcode">
+            <thead>
+              <tr>
+                <th>상품명 (수량)</th>
+                <th>바코드</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>설치상품명 (2개)</td>
+                <td>
+                  <input type="text" name="" placeholder="바코드 12자리 입력하세요." maxlength="12">
+                  <input type="text" name="" placeholder="바코드 12자리 입력하세요." maxlength="12">
+                </td>
+              </tr>
+              <tr>
+                <td>설치상품명 (1개)</td>
+                <td>
+                  <input type="text" name="" placeholder="바코드 12자리 입력하세요." maxlength="12">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="link_wr">
+            <a href="partner_orderinquiry_edit.php?od_id=<?=$od_id?>" class="btn_od_edit">설치상품 변경</a>
+            <a href="partner_orderinquiry_edit.php?od_id=<?=$od_id?>" class="btn_is_sign">결과보고서 작성</a>
+          </div>
+        </td>
+      </tr>-->
       <tr class="tr_content">
         <th>
           <div class="section_head" style="padding-top:15px;">이슈사항</div>
@@ -148,7 +196,7 @@ if($report && $report['ct_id']) {
         <td>
           <form id="form_file_cert">
             <input type="hidden" name="type" value="cert">
-            <input type="hidden" name="ct_id" value="<?=$ct_id?>">
+            <input type="hidden" name="od_id" value="<?=$od_id?>">
             <input type="hidden" name="m" value="u">
             <label for="file_cert" class="label_file">
               파일찾기
@@ -179,7 +227,7 @@ if($report && $report['ct_id']) {
         <td>
           <form id="form_file_photo">
             <input type="hidden" name="type" value="photo">
-            <input type="hidden" name="ct_id" value="<?=$ct_id?>">
+            <input type="hidden" name="od_id" value="<?=$od_id?>">
             <input type="hidden" name="m" value="u">
             <label for="file_photo" class="label_file">
               파일찾기
@@ -208,7 +256,7 @@ if($report && $report['ct_id']) {
     </tbody>
   </table>
   <form id="form_partner_installreport">
-    <input type="hidden" name="ct_id" value="<?=$ct_id?>">
+    <input type="hidden" name="od_id" value="<?=$od_id?>">
     <div class="issue_wrap">
       <div class="section_head">이슈사항 작성</div>
       <textarea name="ir_issue" id="txt_issue" rows="7"><?=$report['ir_issue']?></textarea>
@@ -357,7 +405,7 @@ if($report && $report['ct_id']) {
         if(type === 'cert') {
           // 설치확인서
           $.post('ajax.partner_installphoto.php', {
-            ct_id: '<?=$ct_id?>',
+            od_id: '<?=$od_id?>',
             type: 'cert',
             m: 'd'
           }, 'json')
@@ -376,7 +424,7 @@ if($report && $report['ct_id']) {
           // 설치사진
           var ip_id = $(this).data('id');
           $.post('ajax.partner_installphoto.php', {
-            ct_id: '<?=$ct_id?>',
+            od_id: '<?=$od_id?>',
             type: 'photo',
             m: 'd',
             ip_id: ip_id

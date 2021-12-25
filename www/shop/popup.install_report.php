@@ -5,13 +5,13 @@ if(!$is_member) {
   alert("먼저 로그인하세요.");
 }
 
-$ct_id = get_search_string($_GET['ct_id']);
-if(!$ct_id) {
+$od_id = get_search_string($_GET['od_id']);
+if(!$od_id) {
   alert('정상적인 접근이 아닙니다.');
 }
 $check_result = sql_fetch("
   SELECT ct_id FROM {$g5['g5_shop_cart_table']}
-  WHERE ct_id = '{$ct_id}' and mb_id = '{$member['mb_id']}'
+  WHERE od_id = '{$od_id}' and mb_id = '{$member['mb_id']}'
   LIMIT 1
 ");
 if(!$check_result['ct_id'])
@@ -19,17 +19,17 @@ if(!$check_result['ct_id'])
 
 $report = sql_fetch("
   SELECT * FROM partner_install_report
-  WHERE ct_id = '{$ct_id}'
+  WHERE od_id = '{$od_id}'
 ");
 
 $photos = [];
-if($report && $report['ct_id']) {
+if($report && $report['od_id']) {
   // 이미 작성된 설치결과보고서가 있다면
 
   // 설치사진 가져오기
   $photo_result = sql_query("
     SELECT * FROM partner_install_photo
-    WHERE ct_id = '{$ct_id}'
+    WHERE od_id = '{$od_id}'
     ORDER BY ip_id ASC
   ");
   while($row = sql_fetch_array($photo_result)) {

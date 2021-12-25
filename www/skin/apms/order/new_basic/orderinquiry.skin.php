@@ -134,9 +134,9 @@ $(function(){
 
   $(".btn_install_report").click(function(e){
     e.preventDefault();
-    var ct_id = $(this).data('id');
+    var od_id = $(this).data('id');
     $("body").addClass('modal-open');
-    $("#popup_box > div").html('<iframe src="/shop/popup.install_report.php?ct_id=' + ct_id + '">');
+    $("#popup_box > div").html('<iframe src="/shop/popup.install_report.php?od_id=' + od_id + '">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });
@@ -342,8 +342,8 @@ $(function(){
     for($ii = 0; $item = sql_fetch_array($itemSQL); $ii++){
       // 설치결과보고서
       $item['report'] = null;
-      $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$item['ct_id']}' ", true);
-      if($report['ct_id']) {
+      $report = sql_fetch(" SELECT * FROM partner_install_report WHERE od_id = '{$item['od_id']}' ", true);
+      if($report['od_id']) {
         $item['report'] = $report;
       }
       array_push($itemList, $item);
@@ -604,7 +604,7 @@ $(function(){
 
               <?php if($item['report'] && $item['report']['ir_cert_url']) { ?>
               <div style="margin-top: 6px;">
-                <a href="#" class="btn-01 btn-0 btn_install_report" style="font-size: 12px; color: #666" data-id="<?=$item["ct_id"]?>">설치결과보고서</a>
+                <a href="#" class="btn-01 btn-0 btn_install_report" style="font-size: 12px; color: #666" data-id="<?=$row["od_id"]?>">설치결과보고서</a>
               </div>
               <?php } ?>
             </li>

@@ -305,60 +305,37 @@ $deliveryCntBtnWord = "배송정보 ({$delivery_insert}/{$od["od_delivery_total"
 $deliveryCntBtnWord = ($delivery_insert >= $od["od_delivery_total"]) ? "입력완료" : $deliveryCntBtnWord;
 $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disable" : "";
 
-# 설치 결과 보고서
+# 설치결과보고서
 $reports = [];
-// $install_report_flag = false; // 현재 주문에 위탁: 설치/배송 상품이 있는지 여부
-$install_report_flag = true;
-foreach($carts as $cart_id => $cart) {
-  foreach($cart['options'] as $cart_key => $option) {
-    if($option['ct_is_direct_delivery'] != '2')
-      continue;
+$report_result = sql_query("
+    SELECT * FROM partner_install_report
+    WHERE od_id = '$od_id'
+");
+while($report = sql_fetch_array($report_result)) {
 
-    // $install_report_flag = true;
+    $report_mb = get_member($report['mb_id']);
+    $report['member'] = $report_mb;
 
-    $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$option['ct_id']}' ");
-    if($report['ct_id']) {
-      $report['it_name'] = $cart['it_name'];
-      if($option['ct_option'] != $cart['it_name'])
-        $report['it_name'] .= " ({$option['ct_option']})";
+    $report['issue'] = [];
+    if($report['ir_is_issue_1'])
+      $report['issue'][] = '상품변경';
+    if($report['ir_is_issue_2'])
+      $report['issue'][] = '상품추가';
+    if($report['ir_is_issue_3'])
+      $report['issue'][] = '미설치';
 
-      $photo_result = sql_query("
+    $photo_result = sql_query("
         SELECT * FROM partner_install_photo
-        WHERE ct_id = '{$report['ct_id']}' and mb_id = '{$report['mb_id']}'
+        WHERE od_id = '$od_id' and mb_id = '{$report['mb_id']}'
         ORDER BY ip_id ASC
-      ");
+    ");
 
-      $photos = [];
-      while($photo = sql_fetch_array($photo_result)) {
-        $photos[] = $photo;
-      }
-      $report['photo'] = $photos;
-
-      $reports[] = $report;
-    } else {
-        $report['it_name'] = $cart['it_name'];
-        if($option['ct_option'] != $cart['it_name'])
-          $report['it_name'] .= " ({$option['ct_option']})";
-        $report['ct_id'] = $option['ct_id'];
-
-        $reports[] = $report;
+    $report['photo'] = [];
+    while($photo = sql_fetch_array($photo_result)) {
+        $report['photo'][] = $photo;
     }
 
-    $carts[$cart_id]['options'][$cart_key]['report'] = $report;
-  }
-}
-
-$install_report_not_matches = [];
-$install_report_not_match_query = sql_query("SELECT pir.*, i.it_name FROM
-    partner_install_report pir
-    LEFT JOIN g5_shop_cart c ON pir.ct_id = c.ct_id
-    LEFT JOIN g5_shop_item i ON pir.it_id = i.it_id
-    WHERE
-        pir.od_id = '{$od_id}'
-        AND c.ct_id IS NULL
-");
-while($install_report_not_match_row = sql_fetch_array($install_report_not_match_query)) {
-    $install_report_not_matches[] = $install_report_not_match_row;
+    $reports[] = $report;
 }
 ?>
 <script>
@@ -380,9 +357,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
   .barNumGuideBox > p { width: 100%; padding: 0; }
 
   .prodBarNumCntBtn { height: 29px; line-height: 29px; font-size: 11px; }
-
-  .td_od_info .btn_change, .btn_install_report { display: inline-block; vertical-align: middle; font-size: 12px; line-height: 1; padding: 5px 8px; border-radius: 3px; border: 1px solid #e6e1d7; color: #666; background: #fff; }
-  .btn_install_report.done { background: #f3f3f3; }
 
   #popup_box { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
   #popup_box > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
@@ -1281,65 +1255,6 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <td><textarea name="od_send_admin_memo" rows="8" placeholder="관리자메모를 입력하세요." id="od_send_admin_memo"><?php echo get_text($od['od_send_admin_memo'], 1); ?></textarea></td>
                     </tr>
                     -->
-                    <?php if($install_report_flag) { ?>
-                    <tr>
-                      <th scope="row">설치 결과 보고</th>
-                      <td colspan="3">
-                        <ul id="list_ir">
-                          <?php foreach($reports as $report) { ?>
-                          <li>
-                            <div class="ir_title">
-                                <?=$report['it_name']?>
-                                <button type="button" class="report-btn btn_install_report" data-id="<?php echo $report['ct_id']; ?>">설치결과보고서</button>
-                                <?php
-                                if($report['ir_is_issue_1'])
-                                    echo '<span class="ir_issue_tag1">변경</span>';
-                                if($report['ir_is_issue_2'])
-                                    echo '<span class="ir_issue_tag2">추가</span>';
-                                if($report['ir_is_issue_3'])
-                                    echo '<span class="ir_issue_tag3">미설치</span>';
-                                ?>
-                            </div>
-                            <div class="ir_issue"><?=nl2br($report['ir_issue'])?></div>
-                            <div class="ir_img_wrap">
-                              <?php if($report['ir_cert_url']) { ?>
-                              <a href="<?=G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"?>" target="_blank" class="view_image">
-                                <img src="<?=G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"?>">
-                              </a>
-                              <?php } ?>
-                              <?php if ($report['photo']) { ?>
-                              <?php foreach($report['photo'] as $photo) { ?>
-                              <a href="<?=G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"?>" target="_blank" class="view_image">
-                                <img src="<?=G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"?>">
-                              </a>
-                              <?php } ?>
-                              <?php } ?>
-                            </div>
-                          </li>
-                          <?php } ?>
-                        </ul>
-                        <?php if (count($install_report_not_matches)) { ?>
-                            <ul style="border-top: 1px solid #ddd;padding-top:5px;margin-top:5px;">
-                                <?php foreach($install_report_not_matches as $not_match) { ?>
-                                    <li>
-                                        <span>미매칭</span> &nbsp;
-                                        <select name="after_ct_id" style="width: 200px;">
-                                            <?php foreach($carts as $cart) { ?>
-                                                <?php foreach($cart['options'] as $options) { ?>
-                                                    <?php if ($options['report']['od_id']) continue; ?>
-                                                    <option value="<?php echo $options['ct_id']; ?>"><?php echo $options['it_name']; ?> <?php echo $options['ct_option'] != $options['it_name'] ? "({$options['ct_option']})" : ''; ?></option>
-                                                <?php } ?>
-                                            <?php } ?>
-                                        </select>
-                                        <input type="button" value="매칭" class="btn shbtn install_report_match" data-ct-id="<?php echo $not_match['ct_id']; ?>">
-                                        <button type="button" class="report-btn btn_install_report btn shbtn" data-id="<?php echo $not_match['ct_id']; ?>">설치결과보고서</button>
-                                    </li>
-                                <?php } ?>
-                            </ul>
-                        <?php } ?>
-                      </td>
-                    </tr>
-                    <?php } ?>
                     <input type="hidden" name="od_send_admin_memo" value="<?php echo get_text($od['od_send_admin_memo'], 1); ?>" />
                     </tbody>
                     </table>
@@ -1348,6 +1263,50 @@ var od_id = '<?php echo $od['od_id']; ?>';
         </div>
         <button id="delivery_info_btn">주문정보 수정</button>
     </div>
+    <?php if($reports) { ?>
+    <div class="block">
+        <?php foreach($reports as $report) { ?>
+        <div class="install-report">
+            <div class="top-wrap row justify-space-between">
+                <span>설치결과보고서</span>
+                <p><?=$report['member']['mb_name']?></p>
+            </div>
+            <?php if($report && $report['ir_cert_url']) { ?>
+            <div class="mid-wrap">
+            <?php if($report['issue']) { ?>
+            <div class="issue">
+                이슈사항 (<?php echo implode(', ', $report['issue']); ?>)
+            </div>
+            <?php } ?>
+            </div>
+            <div class="row report-img-wrap">
+            <div class="col">
+                <div class="report-img">
+                <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                    <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                </a>
+                </div>
+            </div>
+            <?php foreach($report['photo'] as $photo) { ?>
+            <div class="col">
+                <div class="report-img">
+                <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                    <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                </a>
+                </div>
+            </div>
+            <?php } ?>
+            <div class="col issue-wrap">
+                <p class="issue">
+                <?=nl2br($report['ir_issue'])?>
+                </p>
+            </div>
+            </div>
+            <?php } ?>
+        </div>
+        <?php } ?>
+    </div>
+    <?php } ?>
     <div class="block">
         <div class="header">
             <h2>결제정보/매출증빙</h2>
@@ -4098,19 +4057,6 @@ $(document).ready(function() {
     $("#popup_box").hide();
     $("#popup_box").css("opacity", 1);
 
-    $('.btn_install_report').click(function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        $('#hd').css('z-index', 3);
-
-        var ct_id = $(this).data('id');
-        $("body").addClass('modal-open');
-        $("#popup_box > div").html('<iframe src="/shop/popup.partner_installreport.php?ct_id=' + ct_id + '">');
-        $("#popup_box iframe").load(function() {
-            $("#popup_box").show();
-        });
-    });
-
     // 미매칭
     $('.install_report_match').click(function(e) {
         var before_ct_id = $(this).data('ct-id');
@@ -4277,7 +4223,7 @@ if(confirm('출고담당자를 변경하시겠습니까?')){
 
 <script>
 $(function() {
-  $('.ir_img_wrap').magnificPopup({
+  $('.report-img-wrap').magnificPopup({
     delegate: 'a',
     type: 'image',
     image: {

@@ -318,7 +318,9 @@ table {border-collapse: collapse;}
 .install-report {
   border-top: none;
   padding: 18px;
-  background: #F5F5F5;
+  background: #fff;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
 }
 .install-report .row {
   margin-left: 0;
@@ -339,7 +341,19 @@ table {border-collapse: collapse;}
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
-
+}
+.install-report .top-wrap > span {
+  font-size: 16px;
+}
+.install-report .mid-wrap {
+  text-align: center;
+  margin-top: 10px;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+.install-report .mid-wrap .issue {
+  color: #ee8102;
 }
 .install-report .row.no-gutter {
   margin: 0
@@ -348,7 +362,7 @@ table {border-collapse: collapse;}
   -webkit-box-lines: multiple;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .install-report .report-img-wrap .col {
   padding: 5px;
@@ -358,6 +372,7 @@ table {border-collapse: collapse;}
   min-width: 100px;
   max-width: 100px;
   height: 100px;
+  border: 1px solid #ddd;
 }
 .install-report img {
   max-width: 100%;
@@ -365,7 +380,7 @@ table {border-collapse: collapse;}
 }
 .install-report .report-img-wrap .issue-wrap {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 
