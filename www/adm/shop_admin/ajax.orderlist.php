@@ -397,7 +397,7 @@ $sql_common = "
   LEFT JOIN
     {$g5['member_table']} m ON c.mb_id = m.mb_id
   LEFT JOIN
-    partner_install_report pir ON c.ct_id = pir.ct_id
+    partner_install_report pir ON c.od_id = pir.od_id
   LEFT JOIN
     g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id
 ";

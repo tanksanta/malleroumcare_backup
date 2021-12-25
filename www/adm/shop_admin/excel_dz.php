@@ -493,7 +493,7 @@ if ( $ret_od_id ) {
         LEFT JOIN g5_member_giup_manager as g ON g.mm_no = o.od_giup_manager 
         LEFT JOIN g5_shop_order_typereceipt as t ON o.od_id = t.od_id 
         LEFT JOIN g5_shop_item as i ON i.it_id = c.it_id 
-        LEFT JOIN partner_install_report pir ON c.ct_id = pir.ct_id 
+        LEFT JOIN partner_install_report pir ON c.od_id = pir.od_id 
         $sql_search
         ";
 
@@ -504,7 +504,7 @@ if ( $ret_od_id ) {
         LEFT JOIN g5_member_giup_manager as g ON g.mm_no = o.od_giup_manager 
         LEFT JOIN g5_shop_order_typereceipt as t ON o.od_id = t.od_id 
         LEFT JOIN g5_shop_item as i ON i.it_id = c.it_id 
-        LEFT JOIN partner_install_report pir ON c.ct_id = pir.ct_id 
+        LEFT JOIN partner_install_report pir ON c.od_id = pir.od_id 
         $sql_common
         ";
 

@@ -205,8 +205,8 @@ while($row = sql_fetch_array($result)) {
 
   // 설치결과보고서
   $row['report'] = null;
-  $report = sql_fetch(" SELECT * FROM partner_install_report WHERE ct_id = '{$row['ct_id']}' ");
-  if($report['ct_id']) {
+  $report = sql_fetch(" SELECT * FROM partner_install_report WHERE od_id = '{$row['od_id']}' ");
+  if($report['od_id']) {
     $row['report'] = $report;
   }
 
@@ -460,10 +460,12 @@ tr.hover { background-color: #fbf9f7 !important; }
                 </p>
                 <?php } ?>
                 <p style="margin-top: 5px;">
+                  <?php if($row['ct_is_direct_delivery'] == 2) { ?>
                   <?php if($row['report'] && $row['report']['ir_cert_url']) { ?>
-                  <button type="button" class="report-btn btn_install_report done" data-id="<?=$row['ct_id']?>">설치결과보고서 완료</button>
+                  <button type="button" class="report-btn btn_install_report done" data-id="<?=$row['od_id']?>">설치결과보고서 완료</button>
                   <?php } else { ?>
-                  <button type="button" class="report-btn btn_install_report" data-id="<?=$row['ct_id']?>">설치결과보고서 등록</button>
+                  <button type="button" class="report-btn btn_install_report" data-id="<?=$row['od_id']?>">설치결과보고서 등록</button>
+                  <?php } ?>
                   <?php } ?>
                   <?php
                   if($row['report']['ir_is_issue_1'])
@@ -697,9 +699,9 @@ $(function() {
     e.preventDefault();
     e.stopPropagation();
 
-    var ct_id = $(this).data('id');
+    var od_id = $(this).data('id');
     $("body").addClass('modal-open');
-    $("#popup_box > div").html('<iframe src="popup.partner_installreport.php?ct_id=' + ct_id + '">');
+    $("#popup_box > div").html('<iframe src="popup.partner_installreport.php?od_id=' + od_id + '">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });

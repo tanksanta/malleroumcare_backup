@@ -8,17 +8,17 @@ if (!$is_admin) {
   $check_member = "and mb_id = '{$member['mb_id']}'";
 }
 
-$ct_id = get_search_string($_POST['ct_id']);
-if(!$ct_id)
+$od_id = get_search_string($_POST['od_id']);
+if(!$od_id)
   json_response(400, '유효하지 않은 요청입니다.');
 
-$ct = sql_fetch(" SELECT * FROM g5_shop_cart WHERE ct_id = '$ct_id' ");
+$od = sql_fetch(" SELECT * FROM g5_shop_order WHERE od_id = '$od_id' ");
 
 $report = sql_fetch("
   SELECT * FROM partner_install_report
-  WHERE ct_id = '{$ct_id}' {$check_member}
+  WHERE od_id = '{$od_id}' {$check_member}
 ");
-if(!$report || !$report['ct_id'])
+if(!$report || !$report['od_id'])
   json_response(400, '설치보고서가 존재하지 않습니다.');
 
 // if(!$report['ir_cert_url'])
@@ -36,12 +36,12 @@ $result = sql_query("
     ir_is_issue_1 = '{$ir_is_issue_1}',
     ir_is_issue_2 = '{$ir_is_issue_2}',
     ir_is_issue_3 = '{$ir_is_issue_3}'
-  WHERE ct_id = {$ct_id} {$check_member}
+  WHERE od_id = {$od_id} {$check_member}
 ");
 if(!$result)
   json_response(500, 'DB 서버 오류 발생');
 
-set_order_admin_log($ct['od_id'], "설치결과보고서 작성 : {$ct['it_name']}({$ct['ct_option']})");
+set_order_admin_log($od_id, "설치결과보고서 작성");
 
 json_response(200, 'OK');
 ?>
