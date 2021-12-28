@@ -1,0 +1,40 @@
+.ir_wr {
+    padding: 0 128px;
+}
+
+.ir_h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #000;
+}
+.ir_date {
+    text-align: right;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+.ir_date > span {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.ir_wr table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 16px;
+}
+
+.ir_wr table th,
+.ir_wr table td {
+    padding: 6px;
+    border: 1px solid #000;
+    vertical-align: middle;
+}
+
+.ir_wr table th {
+    font-weight: bold;
+}
+.ir_wr table td {
+}
