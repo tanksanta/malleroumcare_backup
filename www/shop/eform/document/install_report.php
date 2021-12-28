@@ -1,7 +1,7 @@
 <div class="a4">
     <div class="ir_wr">
         <h1 class="ir_h1">이로움 설치확인서</h1>
-        <div class="ir_date">주문접수일: <span>2021년 12월 22일</span></div>
+        <div class="ir_date">주문접수일: <span><?=date('Y년 m월 d일', strtotime($od['od_time']))?></span></div>
         <table>
             <colgroup>
                 <col style="width: 20%" />
@@ -13,30 +13,30 @@
             <tbody>
                 <tr>
                     <th scope="row">사업소명<br>(원발주처)</th>
-                    <td colspan="2">{희동복지test}</td>
+                    <td colspan="2"><?=$od['mb_name']?></td>
                     <th scope="row">연락처</th>
-                    <td>{010-1234-5678}</td>
+                    <td><?=$od['mb_giup_btel']?></td>
                 </tr>
                 <tr>
                     <th scope="row" rowspan="4">수급자정보</th>
                     <th scope="row">수급자</th>
-                    <td>{수급자명}</td>
+                    <td><?=$od['od_b_name']?></td>
                     <th scope="row">연락처</th>
-                    <td>{010-0000-0000}</td>
+                    <td><?=$od['od_b_hp'] ?: $od['od_b_tel']?></td>
                 </tr>
                 <tr>
                     <th scope="row">보호자</th>
-                    <td>{보호자명}</td>
+                    <td>&nbsp;</td>
                     <th scope="row">연락처</th>
-                    <td>{010-0000-0000}</td>
+                    <td>&nbsp;</td>
                 </tr>
                 <tr>
                     <th scope="row">주소</th>
-                    <td colspan="3">{무슨시 무슨동 무슨구}</td>
+                    <td colspan="3"><?=sprintf("(%s%s)", $od['od_b_zip1'], $od['od_b_zip2']).' '.print_address($od['od_b_addr1'], $od['od_b_addr2'], $od['od_b_addr3'], $od['od_b_addr_jibeon'])?></td>
                 </tr>
                 <tr>
                     <th scope="row">배송요청사항</th>
-                    <td colspan="3">{배송요청사항}</td>
+                    <td colspan="3"><?=$od['od_memo']?></td>
                 </tr>
             </tbody>
         </table>
@@ -56,15 +56,17 @@
                 </tr>
             </thead>
             <tbody>
+                <?php foreach($carts as $ct) { ?>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td><?=$ct['it_name']?></td>
+                    <td><?=$ct['ct_qty']?></td>
+                    <td><?=implode(', ', $ct['barcode'])?></td>
+                    <td><?=$ct['prodMemo']?></td>
                 </tr>
+                <?php } ?>
                 <tr>
                     <th scope="row">총 설치 수량</th>
-                    <td colspan="3">{0개}</td>
+                    <td colspan="3"><?=$total_qty.'개'?></td>
                 </tr>
                 <tr>
                     <th scope="row">특기사항</th>
@@ -72,7 +74,7 @@
                 </tr>
                 <tr class="tr_sign">
                     <th scope="row">확인자 서명</th>
-                    <td colspan="2" style="border-right: 0">{2021년 12월 12일}</td>
+                    <td colspan="2" style="border-right: 0"><?=date('Y년 m월 d일')?></td>
                     <td class="td_sign" data-id="sign_ir_1" style="border-left: 0;">(서명)</td>
                 </tr>
             </tbody>
