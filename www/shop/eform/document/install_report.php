@@ -59,14 +59,14 @@
                 <?php foreach($carts as $ct) { ?>
                 <tr>
                     <td><?=$ct['it_name']?></td>
-                    <td><?=$ct['ct_qty']?></td>
+                    <td style="text-align: center;"><?=$ct['ct_qty']?></td>
                     <td><?=implode(', ', $ct['barcode'])?></td>
                     <td><?=$ct['prodMemo']?></td>
                 </tr>
                 <?php } ?>
                 <tr>
                     <th scope="row">총 설치 수량</th>
-                    <td colspan="3"><?=$total_qty.'개'?></td>
+                    <td colspan="3" style="text-align: center;"><?=$total_qty.'개'?></td>
                 </tr>
                 <tr>
                     <th scope="row">특기사항</th>
@@ -74,7 +74,7 @@
                 </tr>
                 <tr class="tr_sign">
                     <th scope="row">확인자 서명</th>
-                    <td colspan="2" style="border-right: 0"><?=date('Y년 m월 d일')?></td>
+                    <td colspan="2" style="border-right: 0; padding-left: 100px;"><?=date('Y년 m월 d일')?></td>
                     <td class="td_sign" data-id="sign_ir_1" style="border-left: 0;">(서명)</td>
                 </tr>
             </tbody>

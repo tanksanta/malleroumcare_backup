@@ -36,5 +36,14 @@
 .ir_wr table th {
     font-weight: bold;
 }
-.ir_wr table td {
+
+.ir_wr table .tr_sign th,
+.ir_wr table .tr_sign td {
+    padding: 20px 6px;
+}
+
+.ir_wr table td.td_sign {
+    position: relative;
+    font-size: 14px;
+    color: #999;
 }

@@ -98,7 +98,7 @@ function getExcelFile($member, $dc_id) {
     ");
   
     if(!$pen['penNm'])
-      alert('해당 주문이 존재하지 않습니다.');
+      json_response(400, '해당 주문이 존재하지 않습니다.');
     
     $excel->getActiveSheet()->setCellValue('A8', $pen['penNm']);
     $excel->getActiveSheet()->setCellValue('C8', $pen['penLtmNum']);
