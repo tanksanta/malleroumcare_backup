@@ -81,4 +81,29 @@ $result = sql_query($sql);
 if(!$result)
     json_response(500, 'DB 오류가 발생하여 서명에 실패하였습니다.');
 
+// PDF 파일 생성
+$pdfdir = G5_DATA_PATH.'/eform/pdf';
+if(!is_dir($pdfdir)) {
+    @mkdir($pdfdir, G5_DIR_PERMISSION, true);
+    @chmod($pdfdir, G5_DIR_PERMISSION);
+}
+$pdffile = $od_id.'_'.$member['mb_id'].'_'.date("YmdHisw").'.pdf';
+$pdfdir .= '/'.$pdffile;
+include_once('./lib/renderinstallreport.lib.php');
+
+$ir_file_url = "/data/eform/pdf/{$pdffile}";
+$ir_file_name = "{$od['mb_name']}_{$od_id}_설치결과보고서.pdf";
+
+$sql = "
+    UPDATE
+        partner_install_report
+    SET
+        ir_file_url = '$ir_file_url',
+        ir_file_name = '$ir_file_name'
+    WHERE
+        od_id = '$od_id' and
+        mb_id = '{$member['mb_id']}'
+";
+$result = sql_query($sql);
+
 json_response(200, 'OK');
