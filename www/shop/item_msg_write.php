@@ -86,6 +86,16 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 ?>
 
+<script>
+// 최대길이 체크
+function max_length_check(object){
+  object.value = object.value.replace(/[^0-9]/g,'');
+  if (object.value.length > object.maxLength) {
+    object.value = object.value.slice(0, object.maxLength);
+  }
+}
+</script>
+
 <section class="wrap">
   <div class="sub_section_tit">간편 제안서 작성</div>
   <div class="inner">
@@ -302,7 +312,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 $(function(){
   $('#show_expected_warehousing_date').on('change', function() {
     var ms_url = $('#im_preview iframe').attr('data-ms-url');
-    var url = `item_msg.php?preview=1&url=${ms_url}`;
+    var url = 'item_msg.php?preview=1&url=' + ms_url;
     if ($(this).is(':checked')) {
       $('.it_expected_warehousing_date').show();
       url = url + "&show_expected=Y";
@@ -372,14 +382,6 @@ function select_item(obj) {
   save_item_msg();
 }
 
-// 최대길이 체크
-function max_length_check(object){
-  object.value = object.value.replace(/[^0-9]/g,'');
-  if (object.value.length > object.maxLength) {
-    object.value = object.value.slice(0, object.maxLength);
-  }
-}
-
 // 저장
 var loading = false;
 function save_item_msg(no_items) {
@@ -398,7 +400,7 @@ function save_item_msg(no_items) {
   loading = true;
   $form = $('#form_item_msg');
   var query = $form.serialize();
-  query += `&show_expected=${show_expected}`;
+  query += '&show_expected=' + show_expected;
   if(no_items)
     query += '&no_items=1';
   $.post($form.attr('action'), query, 'json')
