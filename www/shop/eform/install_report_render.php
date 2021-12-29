@@ -90,8 +90,23 @@ $title = "{$od['mb_name']}_{$od_id}_설치결과보고서";
     <link rel="stylesheet" href="css/default.css">
     <link rel="stylesheet" href="css/signeform.css?v=06042032">
     <link rel="stylesheet" href="css/install_report.css">
-    <script src="<?=G5_JS_URL?>/signature_pad.umd.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <style>
+    body.render-eform {
+         background-color: #fff;
+    }
+
+    .render-eform-body .a4 {
+        width: 1240px;
+        margin: 0 auto;
+        background-color: #fff;
+        page-break-inside: avoid;
+    }
+
+    .render-eform-body .a4 + .a4 {
+         page-break-before: always;
+    }
+    </style>
 </head>
 <body class="render-eform">
 <div class="render-eform-body">
