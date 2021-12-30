@@ -60,6 +60,44 @@ if($report && $report['od_id']) {
     'ir_cert_url' => ''
   );
 }
+
+$sql = "
+    SELECT * FROM
+        g5_shop_cart
+    WHERE
+        od_id = '$od_id' and
+        ct_direct_delivery_partner = '{$member['mb_id']}' and
+        ct_status IN('준비', '출고준비', '배송', '완료')
+    ORDER BY
+        ct_id ASC
+";
+$result = sql_query($sql);
+$carts = [];
+while($ct = sql_fetch_array($result)) {
+    $ct['it_name'] .= $ct['ct_option'] && $ct['ct_option'] != $ct['it_name'] ? " ({$ct['ct_option']})" : '';
+
+    // 바코드 정보 가져오기
+    $sto_id = [];
+
+    foreach(array_filter(explode('|', $ct['stoId'])) as $id) {
+        $sto_id[] = $id;
+    }
+
+    $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
+        'stoId' => implode('|', $sto_id)
+    ), 443);
+
+    $barcodes = [];
+    if($stock_result['data']) {
+      foreach($stock_result['data'] as $data) {
+        $barcodes[$data['stoId']] = $data['prodBarNum'];
+      }
+    }
+
+    $ct['barcode'] = $barcodes;
+
+    $carts[] = $ct;
+}
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -119,10 +157,13 @@ if($report && $report['od_id']) {
     #table_ir .tbl_barcode tbody td { background: #f5f5f5; border-top: 1px solid #e3e3e3; padding: 10px; }
     #table_ir .tbl_barcode input[type="text"] { display: block; width: 100%; padding: 5px; background: #fff; border: 1px solid #eaeaea; }
     #table_ir .tbl_barcode input[type="text"] + input[type="text"] { margin-top: 5px; }
+    #table_ir .tbl_barcode input[type="text"]:read-only { background: #f0f0f0; }
     .link_wr { display: -webkit-box; display: -ms-flexbox; display: flex; margin: 5px -5px 0 -5px; }
-    .link_wr a { display: block; border-radius: 3px; width: 100%; margin: 5px; padding: 10px; text-align: center;}
+    .link_wr a { display: block; border-radius: 3px; width: 100%; margin: 5px; padding: 10px; text-align: center; font-weight: bold; }
     .link_wr a.btn_od_edit { background: #fff; border: 1px solid #8abf63; color: #8abf63; }
-    .link_wr a.btn_is_sign { background: #ef7c00; color: #fff; }
+    .link_wr a.btn_ir_sign { background: #ef7c00; color: #fff; }
+    .link_wr a.btn_ir_download { background: #fff; border: 1px solid #999; color: #333; }
+    .link_wr a.btn_ir_unsign { background: #fff; border: 1px solid #ef7c00; color: #ef7c00; }
   </style>
 </head>
 <body>
@@ -140,11 +181,13 @@ if($report && $report['od_id']) {
       <col>
     </colgroup>
     <tbody>
-      <!--<tr class="tr_head">
-        <th><div class="section_head">결과보고서</div></th>
+      <tr class="tr_head">
+        <th colspan="2"><div class="section_head">결과보고서</div></th>
       </tr>
       <tr class="tr_content">
         <td colspan="2">
+          <form id="form_barcode" onsubmit="return false;">
+          <input type="hidden" name="od_id" value="<?=$od_id?>">
           <table class="tbl_barcode">
             <thead>
               <tr>
@@ -153,27 +196,30 @@ if($report && $report['od_id']) {
               </tr>
             </thead>
             <tbody>
+              <?php foreach($carts as $ct) { ?>
               <tr>
-                <td>설치상품명 (2개)</td>
+                <td><?="{$ct['it_name']} ({$ct['ct_qty']}개)"?></td>
                 <td>
-                  <input type="text" name="" placeholder="바코드 12자리 입력하세요." maxlength="12">
-                  <input type="text" name="" placeholder="바코드 12자리 입력하세요." maxlength="12">
+                  <?php foreach($ct['barcode'] as $stoId => $barcode) { ?>
+                  <input type="text" name="barcode[<?=$stoId?>]" value="<?=$barcode?>" placeholder="바코드 12자리 입력하세요." maxlength="12" <?php if($report['ir_file_url'] || $report['ir_cert_url']) { echo 'readonly'; } ?>>
+                  <?php } ?>
                 </td>
               </tr>
-              <tr>
-                <td>설치상품명 (1개)</td>
-                <td>
-                  <input type="text" name="" placeholder="바코드 12자리 입력하세요." maxlength="12">
-                </td>
-              </tr>
+              <?php } ?>
             </tbody>
           </table>
+          </form>
           <div class="link_wr">
+            <?php if($report['ir_file_url']) { ?>
+            <a href="<?=G5_SHOP_URL?>/eform/install_report_download.php?od_id=<?=$od_id?>" class="btn_ir_download">결과보고서 다운로드</a>
+            <a href="<?=G5_SHOP_URL?>/eform/ajax.install_report.unsign.php?od_id=<?=$od_id?>" class="btn_ir_unsign">결과보고서 작성 취소</a>
+            <?php } else { ?>
             <a href="partner_orderinquiry_edit.php?od_id=<?=$od_id?>" class="btn_od_edit">설치상품 변경</a>
-            <a href="partner_orderinquiry_edit.php?od_id=<?=$od_id?>" class="btn_is_sign">결과보고서 작성</a>
+            <a href="<?=G5_SHOP_URL?>/eform/install_report_sign.php?od_id=<?=$od_id?>" class="btn_ir_sign">결과보고서 작성</a>
+            <?php } ?>
           </div>
         </td>
-      </tr>-->
+      </tr>
       <tr class="tr_content">
         <th>
           <div class="section_head" style="padding-top:15px;">이슈사항</div>
@@ -191,24 +237,13 @@ if($report && $report['od_id']) {
           </form>
         </td>
       </tr>
+      <?php if($report['ir_cert_url']) { ?>
       <tr class="tr_head">
-        <th><div class="section_head">설치 확인서 등록</div></th>
-        <td>
-          <form id="form_file_cert">
-            <input type="hidden" name="type" value="cert">
-            <input type="hidden" name="od_id" value="<?=$od_id?>">
-            <input type="hidden" name="m" value="u">
-            <label for="file_cert" class="label_file">
-              파일찾기
-              <input type="file" name="file_cert" id="file_cert" class="ipt_file" accept="image/*">
-            </label>
-          </form>
-        </td>
+        <th colspan="2"><div class="section_head">설치 확인서</div></th>
       </tr>
       <tr class="tr_content">
         <td colspan="2">
           <ul id="list_file_cert" class="list_file">
-            <?php if($report['ir_cert_url']) { ?>
             <li>
               <a href="<?=G5_BBS_URL?>/view_image.php?open_safari=1&fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"))?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
@@ -218,10 +253,10 @@ if($report && $report['od_id']) {
                 <i class="fa fa-times" aria-hidden="true"></i>
               </button>
             </li>
-            <?php } ?>
           </ul>
         </td>
       </tr>
+      <?php } ?>
       <tr class="tr_head">
         <th><div class="section_head">설치 사진 등록</div></th>
         <td>
@@ -289,19 +324,82 @@ if($report && $report['od_id']) {
         $('#form_partner_installreport').submit();
       });
 
+      // 설치상품 변경 버튼, 결과보고서 다운로드 버튼
+      $('.btn_od_edit, .btn_ir_download').click(function(e) {
+        e.preventDefault();
+
+        parent.location.href = $(this).attr('href');
+      });
+
+      // 결과보고서 작성 취소 버튼
+      $('.btn_ir_unsign').click(function(e) {
+        e.preventDefault();
+
+        if(!confirm('정말 작성된 결과보고서를 삭제하시겠습니까?'))
+          return;
+
+        var url = $(this).attr('href');
+        $.get(url, {}, 'json')
+        .done(function() {
+          window.location.reload();
+        })
+        .fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        });
+      });
+
+      // 결과보고서 작성 버튼
+      $('.btn_ir_sign').click(function(e) {
+        e.preventDefault();
+
+        var sign_url = $(this).attr('href');
+
+        // 바코드 전부 입력되었는지 체크
+        var is_barcode_completed = true;
+        $('input[name^="barcode"]').each(function() {
+          var barcode = $(this).val();
+
+          if(barcode.length != 12)
+            is_barcode_completed = false;
+        });
+        if(!is_barcode_completed)
+          return alert('설치한 바코드 정보를 정상적으로 모두 입력 후 결과보고서 작성이 가능합니다.');
+
+        // 바코드 부터 저장
+        $.post('ajax.partner_installbarcode.php', $('#form_barcode').serializeObject(), 'json')
+        .done(function() {
+          parent.location.href = sign_url;
+        })
+        .fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        });
+      });
+
       // 설치 결과 등록
       $('#form_partner_installreport').on('submit', function(e) {
         e.preventDefault();
 
-        var data = $.extend(
-          $('#form_partner_installreport2').serializeObject(), 
-          $(this).serializeObject(),
-        );
-
-        $.post('ajax.partner_installreport.php', data, 'json')
+        // 바코드 부터 저장
+        $.post('ajax.partner_installbarcode.php', $('#form_barcode').serializeObject(), 'json')
         .done(function() {
-          alert('저장이 완료되었습니다.');
-          parent.window.location.reload();
+
+          var data = $.extend(
+            $('#form_partner_installreport2').serializeObject(), 
+            $('#form_partner_installreport').serializeObject(),
+          );
+
+          $.post('ajax.partner_installreport.php', data, 'json')
+          .done(function() {
+            alert('저장이 완료되었습니다.');
+            parent.window.location.reload();
+          })
+          .fail(function($xhr) {
+            var data = $xhr.responseJSON;
+            alert(data && data.message);
+          });
+
         })
         .fail(function($xhr) {
           var data = $xhr.responseJSON;

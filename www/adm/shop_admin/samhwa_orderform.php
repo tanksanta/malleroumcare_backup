@@ -1271,36 +1271,41 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 <span>설치결과보고서</span>
                 <p><?=$report['member']['mb_name']?></p>
             </div>
-            <?php if($report && $report['ir_cert_url']) { ?>
+            <?php if($report) { ?>
             <div class="mid-wrap">
-            <?php if($report['issue']) { ?>
-            <div class="issue">
-                이슈사항 (<?php echo implode(', ', $report['issue']); ?>)
-            </div>
-            <?php } ?>
+                <?php if($report['ir_file_url']) { ?>
+                <a href="<?=G5_SHOP_URL."/eform/install_report_download.php?od_id={$od_id}"?>" class="btn_ir_download">결과보고서 다운로드</a>
+                <?php } ?>
+                <?php if($report['issue']) { ?>
+                <div class="issue">
+                    이슈사항 (<?php echo implode(', ', $report['issue']); ?>)
+                </div>
+                <?php } ?>
             </div>
             <div class="row report-img-wrap">
-            <div class="col">
-                <div class="report-img">
-                <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
-                    <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
-                </a>
+                <?php if($report['ir_cert_url']) { ?>
+                <div class="col">
+                    <div class="report-img">
+                    <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                        <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                    </a>
+                    </div>
                 </div>
-            </div>
-            <?php foreach($report['photo'] as $photo) { ?>
-            <div class="col">
-                <div class="report-img">
-                <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                    <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
-                </a>
+                <?php } ?>
+                <?php foreach($report['photo'] as $photo) { ?>
+                <div class="col">
+                    <div class="report-img">
+                    <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                        <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                    </a>
+                    </div>
                 </div>
-            </div>
-            <?php } ?>
-            <div class="col issue-wrap">
-                <p class="issue">
-                <?=nl2br($report['ir_issue'])?>
-                </p>
-            </div>
+                <?php } ?>
+                <div class="col issue-wrap">
+                    <p class="issue">
+                        <?=nl2br($report['ir_issue'])?>
+                    </p>
+                </div>
             </div>
             <?php } ?>
         </div>

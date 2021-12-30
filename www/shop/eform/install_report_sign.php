@@ -18,7 +18,7 @@ $report = sql_fetch($sql);
 if(!$report)
     alert('유효하지 않은 요청입니다.');
 
-if($report['ir_sign_url'])
+if($report['ir_file_url'])
     alert('이미 작성된 결과보고서입니다.');
 
 $sql = "
@@ -226,6 +226,11 @@ $(function() {
       minWidth: 4,
       maxWidth: 4
     });
+
+    function calcSize(size, a, b) {
+      var ratio = a / b;
+      return size / ratio;
+    }
 
     function resizeModal() {
       var margin = 20;

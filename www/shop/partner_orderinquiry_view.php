@@ -164,8 +164,11 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           <span>설치결과보고서</span>
           <button type="button" class="report-btn btn_install_report">결과보고서 작성</button>
         </div>
-        <?php if($report && $report['ir_cert_url']) { ?>
+        <?php if($report) { ?>
         <div class="mid-wrap">
+          <?php if($report['ir_file_url']) { ?>
+          <a href="<?=G5_SHOP_URL."/eform/install_report_download.php?od_id={$od_id}"?>" class="btn_ir_download">결과보고서 다운로드</a>
+          <?php } ?>
           <?php if($report['issue']) { ?>
           <div class="issue">
             이슈사항 (<?php echo implode(', ', $report['issue']); ?>)
@@ -173,6 +176,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           <?php } ?>
         </div>
         <div class="row report-img-wrap">
+          <?php if($report['ir_cert_url']) { ?>
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
@@ -180,6 +184,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
               </a>
             </div>
           </div>
+          <?php } ?>
           <?php foreach($report['photo'] as $photo) { ?>
           <div class="col">
             <div class="report-img">

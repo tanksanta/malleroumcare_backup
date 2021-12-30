@@ -86,7 +86,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 <section class="wrap">
   <div class="sub_section_tit">주문 수정</div>
   <div class="inner">
-    <form id="simple_order" name="forderform" class="form-horizontal" action="partner_orderinquiry_edit_result.php" method="post" onsubmit="return form_submit(this);">
+    <form id="simple_order" name="forderform" class="form-horizontal" action="partner_orderinquiry_edit_result.php" method="post">
       <input type="hidden" name="od_id" value="<?=$od_id?>">
       <div class="panel panel-default">
         <div class="panel-body">
