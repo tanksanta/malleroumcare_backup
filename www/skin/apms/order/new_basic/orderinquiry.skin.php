@@ -602,7 +602,7 @@ $(function(){
               </div>
               <?php } ?>
 
-              <?php if($item['report'] && $item['report']['ir_cert_url']) { ?>
+              <?php if($item['report'] && ($item['report']['ir_cert_url'] || $item['report']['ir_file_url'])) { ?>
               <div style="margin-top: 6px;">
                 <a href="#" class="btn-01 btn-0 btn_install_report" style="font-size: 12px; color: #666" data-id="<?=$row["od_id"]?>">설치결과보고서</a>
               </div>

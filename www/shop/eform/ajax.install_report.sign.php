@@ -22,7 +22,7 @@ $report = sql_fetch($sql);
 if(!$report)
     json_response(400, '서명할 결과보고서를 찾을 수 없습니다.');
 
-if($report['ir_sign_url'])
+if($report['ir_file_url'])
     json_response(400, '이미 작성된 결과보고서입니다.');
 
 $sql = "

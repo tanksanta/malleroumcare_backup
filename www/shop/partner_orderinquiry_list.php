@@ -461,7 +461,7 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <?php } ?>
                 <p style="margin-top: 5px;">
                   <?php if($row['ct_is_direct_delivery'] == 2) { ?>
-                  <?php if($row['report'] && $row['report']['ir_cert_url']) { ?>
+                  <?php if($row['report'] && ($row['report']['ir_cert_url'] || $row['report']['ir_file_url'])) { ?>
                   <button type="button" class="report-btn btn_install_report done" data-id="<?=$row['od_id']?>">설치결과보고서 완료</button>
                   <?php } else { ?>
                   <button type="button" class="report-btn btn_install_report" data-id="<?=$row['od_id']?>">설치결과보고서 등록</button>

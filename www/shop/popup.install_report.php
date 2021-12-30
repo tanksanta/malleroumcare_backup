@@ -17,24 +17,37 @@ $check_result = sql_fetch("
 if(!$check_result['ct_id'])
   alert('존재하지 않는 주문입니다.');
 
-$report = sql_fetch("
-  SELECT * FROM partner_install_report
-  WHERE od_id = '{$od_id}'
+# 설치결과보고서
+$reports = [];
+$report_result = sql_query("
+    SELECT * FROM partner_install_report
+    WHERE od_id = '$od_id'
 ");
+while($report = sql_fetch_array($report_result)) {
 
-$photos = [];
-if($report && $report['od_id']) {
-  // 이미 작성된 설치결과보고서가 있다면
+  $report_mb = get_member($report['mb_id']);
+  $report['member'] = $report_mb;
 
-  // 설치사진 가져오기
+  $report['issue'] = [];
+  if($report['ir_is_issue_1'])
+    $report['issue'][] = '상품변경';
+  if($report['ir_is_issue_2'])
+    $report['issue'][] = '상품추가';
+  if($report['ir_is_issue_3'])
+    $report['issue'][] = '미설치';
+
   $photo_result = sql_query("
-    SELECT * FROM partner_install_photo
-    WHERE od_id = '{$od_id}'
-    ORDER BY ip_id ASC
+      SELECT * FROM partner_install_photo
+      WHERE od_id = '$od_id' and mb_id = '{$report['mb_id']}'
+      ORDER BY ip_id ASC
   ");
-  while($row = sql_fetch_array($photo_result)) {
-    $photos[] = $row;
+
+  $report['photo'] = [];
+  while($photo = sql_fetch_array($photo_result)) {
+      $report['photo'][] = $photo;
   }
+
+  $reports[] = $report;
 }
 ?>
 <!DOCTYPE html>
@@ -48,7 +61,9 @@ if($report && $report['od_id']) {
   <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/font.css">
   <link rel="shortcut icon" href="<?php echo THEMA_URL; ?>/assets/img/top_logo_icon.ico">
   <link rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/magnific-popup.css">
   <script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>
+  <script src="<?php echo G5_JS_URL ?>/jquery.magnific-popup.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; position: relative; }
     html, body { width: 100%; min-width: 100%; float: left; margin: 0 !important; padding: 0; font-family: "Noto Sans KR", sans-serif; font-size: 13px; }
@@ -60,22 +75,82 @@ if($report && $report['od_id']) {
     #popupHeaderTopWrap > .close { float: right; }
     #popupHeaderTopWrap > .close > a { color: #FFF; font-size: 40px; top: -2px; }
 
-    #table_ir { width: 100%; }
-    #table_ir .ipt_file { display: none; }
-    #table_ir .label_file { display: inline-block; border: 1px solid #d7d7d7; color: #666; border-radius: 3px; padding: 10px 30px; cursor: pointer; }
-    #table_ir .tr_content { border-bottom: 1px solid #ccc; }
-    #table_ir .tr_head { border: none; }
-    #table_ir th, #table_ir td, .issue_wrap { padding: 15px; text-align: left; vertical-align: top; }
-    #table_ir .tr_head th, #table_ir .tr_head td { padding-bottom: 0; }
-    #table_ir .tr_content th, #table_ir .tr_content td { padding-top: 0; }
-    .section_head { font-weight: 700; padding: 5px 0 0 5px; }
-    #txt_issue { width: 100%; margin-top: 15px; border: 1px solid #d7d7d7; border-radius: 3px; padding: 6px; resize: vertical; }
-
-    .list_file { padding-top: 10px; }
-    .list_file li { padding: 5px; vertical-align: middle; }
-    .list_file li a.view_image { display: block; width: 100px; min-width: 100px; max-width: 100px; height: 100px; border: 1px solid #ddd; margin-bottom: 3px; }
-    .list_file li a.view_image img { width: 100%; height: 100%; }
-    .btn_remove { margin-left: 10px; width: 25px; height: 25px; background-color: #000; border-radius: 3px; color: #fff; font-size: 15px; }
+    .install-report {
+      border-top: none;
+      padding: 18px;
+      background: #fff;
+      margin-bottom: 18px;
+    }
+    .install-report .row {
+      margin-left: 0;
+      margin-right: 0;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+    }
+    .install-report .row:before,
+    .install-report .row:after {
+      display: none;
+      content: none;
+    }
+    .install-report .top-wrap {
+      -webkit-box-lines: multiple;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+    }
+    .install-report .top-wrap > span {
+      font-size: 16px;
+    }
+    .install-report .mid-wrap {
+      text-align: center;
+      padding: 20px 0;
+      margin-top: -18px;
+      border-bottom: 1px solid #ddd;
+    }
+    .install-report .mid-wrap .btn_ir_download {
+      display: inline-block;
+      border-radius: 3px;
+      margin: 5px;
+      padding: 10px 20px;
+      text-align: center;
+      font-weight: bold;
+      background: #fff;
+      border: 1px solid #999;
+      color: #333;
+    }
+    .install-report .mid-wrap .issue {
+      color: #ee8102;
+    }
+    .install-report .row.no-gutter {
+      margin: 0
+    }
+    .install-report .report-img-wrap {
+      -webkit-box-lines: multiple;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .install-report .report-img-wrap .col {
+      padding: 5px;
+    }
+    .install-report .report-img {
+      width: 100px;
+      min-width: 100px;
+      max-width: 100px;
+      height: 100px;
+      border: 1px solid #ddd;
+    }
+    .install-report img {
+      width: 100%;
+      height: 100%;
+    }
+    .install-report .report-img-wrap .issue-wrap {
+      width: 100%;
+      margin-top: 10px;
+    }
 
   </style>
 </head>
@@ -89,52 +164,47 @@ if($report && $report['od_id']) {
     </div>
   </div>
 
-  <table id="table_ir">
-    <colgroup>
-      <col style="width: 150px;">
-      <col>
-    </colgroup>
-    <tbody>
-      <tr class="tr_head">
-        <th colspan="2"><div class="section_head">설치 확인서</div></th>
-      </tr>
-      <tr class="tr_content">
-        <td colspan="2">
-          <ul id="list_file_cert" class="list_file">
-            <?php if($report['ir_cert_url']) { ?>
-            <li>
+  <?php foreach($reports as $report) { ?>
+  <div class="install-report">
+      <?php if($report) { ?>
+      <div class="mid-wrap">
+        <?php if($report['ir_file_url']) { ?>
+        <a href="<?=G5_SHOP_URL."/eform/install_report_download.php?od_id={$od_id}"?>" class="btn_ir_download">결과보고서 다운로드</a>
+        <?php } ?>
+        <?php if($report['issue']) { ?>
+        <div class="issue">
+          이슈사항 (<?php echo implode(', ', $report['issue']); ?>)
+        </div>
+        <?php } ?>
+      </div>
+      <div class="row report-img-wrap">
+        <?php if($report['ir_cert_url']) { ?>
+        <div class="col">
+            <div class="report-img">
               <a href="<?=G5_BBS_URL?>/view_image.php?open_safari=1&fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$report['ir_cert_url']}"))?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
+                  <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
               </a>
-              <?=$report['ir_cert_name']?>
-            </li>
-            <?php } ?>
-          </ul>
-        </td>
-      </tr>
-      <tr class="tr_head">
-        <th colspan="2"><div class="section_head">설치 사진</div></th>
-      </tr>
-      <tr class="tr_content">
-        <td colspan="2">
-          <ul id="list_file_photo" class="list_file">
-            <?php foreach($photos as $photo) { ?>
-            <li>
-              <a href="<?=G5_BBS_URL?>/view_image.php?open_safari=1&fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"))?>" target="_blank" class="view_image">
+            </div>
+        </div>
+        <?php } ?>
+        <?php foreach($report['photo'] as $photo) { ?>
+        <div class="col">
+            <div class="report-img">
+            <a href="<?=G5_BBS_URL?>/view_image.php?open_safari=1&fn=<?=urlencode(str_replace(G5_URL, "", G5_DATA_URL."/partner/img/{$photo['ip_photo_url']}"))?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
-              </a>
-              <?=$photo['ip_photo_name']?>
-            </li>
-            <?php } ?>
-          </ul>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="issue_wrap">
-    <div class="section_head">이슈사항</div>
-    <textarea name="ir_issue" id="txt_issue" rows="7" readonly><?=$report['ir_issue']?></textarea>
+            </a>
+            </div>
+        </div>
+        <?php } ?>
+        <div class="col issue-wrap">
+            <p class="issue">
+              <?=nl2br($report['ir_issue'])?>
+            </p>
+        </div>
+      </div>
+      <?php } ?>
   </div>
+  <?php } ?>
 
   <script type="text/javascript">
     // 팝업 닫기
