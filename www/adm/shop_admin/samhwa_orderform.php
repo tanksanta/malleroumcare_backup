@@ -2646,7 +2646,7 @@ $(document).ready(function() {
 
   var stoldList = [];
   var stoIdData = "<?=$stoIdData?>";
-  if(stoIdData){
+  /*if(stoIdData){
     var sendData = {
       stoId : stoIdData
     }
@@ -2667,7 +2667,7 @@ $(document).ready(function() {
         }
       }
     });
-  }
+  }*/
 
     var offset = $('#order_summarize').offset();
 

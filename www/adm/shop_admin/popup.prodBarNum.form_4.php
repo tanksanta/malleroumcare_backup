@@ -526,33 +526,24 @@ if($od["od_b_tel"]){
       notallLengthCheck();
     });
 
-    var stoldList = [];
+		<?php
+		$stock_list = [];
+		foreach($result_again as $stock) {
+			$stock_list[] = array(
+				'prodId' => $stock['prodId'],
+				'stoId' => $stock['stoId'],
+				'prodBarNum' => $stock['prodBarNum']
+			);
+		}
+		?>
+    var stoldList = <?=json_encode($stock_list)?>;
+		$.each(stoldList, function() {
+			$('.' + this.stoId).val(this.prodBarNum)
+		});
+
     var count=0;
     var stoIdData = "<?=$stoIdData?>";
-    if(stoIdData) {
-      var sendData = {
-        stoId : stoIdData
-      }
-      $.ajax({
-        url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
-        type : "POST",
-        dataType : "json",
-        contentType : "application/json; charset=utf-8;",
-        data : JSON.stringify(sendData),
-        success : function(res) {
-          $.each(res.data, function(key, value) {
-            $("." + value.stoId).val(value.prodBarNum);
-          });
-          if(res.data){
-            stoldList = res.data;
-          }
-        notallLengthCheck();
-        foldingBoxSetting();
-        }
-      });
-    } else {
-      foldingBoxSetting();
-    }
+    foldingBoxSetting();
 
     $("#prodBarNumSaveBtn").click(function() {
       var barcode_arr = [];
