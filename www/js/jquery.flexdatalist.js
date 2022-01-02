@@ -130,6 +130,7 @@ jQuery.fn.flexdatalist = function (_option, _value) {
         valuesSeparator: ',',
         debug: true,
         appendBy: 'body',
+        showResultsOnEnter: false,
     }, _option);
 
     return this.each(function (id) {
@@ -232,7 +233,7 @@ jQuery.fn.flexdatalist = function (_option, _value) {
                     options = _this.options.get();
 
                 clearTimeout(_searchTimeout);
-                if (!key || (key !== 13 && (key < 37 || key > 40))) {
+                if (!key || ((key !== 13 || (options.showResultsOnEnter && $('ul.flexdatalist-results').length === 0)) && (key < 37 || key > 40))) {
                     _searchTimeout = setTimeout(function () {
                         if ((options.minLength === 0 && length > 0) || (options.minLength > 0 && length >= options.minLength)) {
                             _this.data.load(function (data) {

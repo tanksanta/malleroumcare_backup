@@ -83,7 +83,7 @@ foreach($notice_arr as $wr_id) {
 
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css?v=211126">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
-add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
+add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js?v=220102"></script>');
 ?>
 
 <script>
@@ -310,6 +310,7 @@ function max_length_check(object){
 
 <script>
 $(function(){
+
   $('#show_expected_warehousing_date').on('change', function() {
     var ms_url = $('#im_preview iframe').attr('data-ms-url');
     var url = 'item_msg.php?preview=1&url=' + ms_url;
@@ -579,6 +580,7 @@ function save_item_msg(no_items) {
         url: 'ajax.get_pen_id.php',
         cache: true, // cache
         searchContain: true, // %검색어%
+        showResultsOnEnter: true,
         noResultsText: '"{keyword}"으로 등록된 수급자가 없습니다. 수급자정보를 직접 입력 하시고 제안서 작성 시 자동으로 등록됩니다.',
         visibleCallback: function($li, item, options) {
           var $item = {};
@@ -728,12 +730,26 @@ function save_item_msg(no_items) {
     $('.im_sch_pop').hide();
   });
 
-  // 핸드폰 번호 입력 체크
-  $('#ms_pen_hp').on('change paste keyup input focus', function() {
+  // 핸드폰 번호 입력창 선택시 - 지우기
+  $('#ms_pen_hp').on('focus', function() {
     var $this = $(this);
     var ms_pen_hp = $(this).val();
     $(this).val(ms_pen_hp.replace(/-/g, ''));
   });
+
+  // 핸드폰 번호 입력값체크 11자리 되면 번호에 - 넣고 상품입력창 보여주기
+  $('#ms_pen_hp').on('change paste keyup input', function() {
+    var $this = $(this);
+    var ms_pen_hp = $(this).val();
+    $(this).val(ms_pen_hp.replace(/-/g, ''));
+    ms_pen_hp = $(this).val();
+
+    if (ms_pen_hp.length > 10) {
+      check_pen_input(ms_pen_hp);
+    }
+  });
+
+  // 핸드폰 번호 입력창 포커스 아웃시 10자리 되면 번호에 - 넣고 상품입력창 보여주기
   $('#ms_pen_hp').on('blur', function() {
     var $this = $(this);
     var ms_pen_hp = $(this).val();
@@ -741,19 +757,24 @@ function save_item_msg(no_items) {
     ms_pen_hp = $(this).val();
 
     if (ms_pen_hp.length > 9) {
-      var hp_pattern = /01[016789]-[^0][0-9]{2,3}-[0-9]{3,4}/;
-      ms_pen_hp = ms_pen_hp.replace(/[^0-9]/g, '').replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, "$1-$2-$3");
-      $this.val(ms_pen_hp);
-
-      if(hp_pattern.test(ms_pen_hp)) {
-        $('#im_body_wr').addClass('active');
-        // 처음 팝업
-        $('.im_sch_pop').show();
-        $('#ipt_im_sch').next().focus();
-        check_no_item();
-      }
+      check_pen_input(ms_pen_hp);
     }
   });
+
+  function check_pen_input(ms_pen_hp) {
+    var hp_pattern = /01[016789]-[^0][0-9]{2,3}-[0-9]{3,4}/;
+    ms_pen_hp = ms_pen_hp.replace(/[^0-9]/g, '').replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, "$1-$2-$3");
+    $('#ms_pen_hp').val(ms_pen_hp);
+
+    if(hp_pattern.test(ms_pen_hp)) {
+      $('#im_body_wr').addClass('active');
+      // 처음 팝업
+      $('.im_sch_pop').show();
+      $('#ipt_im_sch').next().focus();
+      check_no_item();
+    }
+  }
+
 
   $('#sel_pen_pro').change(function() {
     var hp = $(this).val();
