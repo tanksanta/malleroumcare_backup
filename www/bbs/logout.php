@@ -1,6 +1,11 @@
 <?php
 include_once('./_common.php');
 
+// 주문서 수정중인 경우 상태값 처리
+if($member['mb_type'] === 'default') {
+    sql_query(" UPDATE g5_shop_order SET od_is_editing = 0 WHERE mb_id = '{$member['mb_id']}' and od_is_editing = 1 ");
+}
+  
 if(function_exists('social_provider_logout')){
     social_provider_logout();
 }
