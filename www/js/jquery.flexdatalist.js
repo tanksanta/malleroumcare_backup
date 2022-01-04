@@ -130,7 +130,7 @@ jQuery.fn.flexdatalist = function (_option, _value) {
         valuesSeparator: ',',
         debug: true,
         appendBy: 'body',
-        showResultsOnEnter: false,
+        showResultsOnEnter: true,
     }, _option);
 
     return this.each(function (id) {
