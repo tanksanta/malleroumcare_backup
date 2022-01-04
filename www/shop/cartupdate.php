@@ -576,7 +576,8 @@ if ($sw_direct) {
 
   // 그누테마 사용에 따라 비회원 로직 변경
   if ($is_member) {
-    goto_url($sw_url);
+    goto_url(G5_SHOP_URL.'/simple_order.php?od_id=' . $tmp_cart_id);
+    // goto_url($sw_url);
   } else if (USE_G5_THEME) {
     goto_url(G5_BBS_URL."/login.php?url=".urlencode($sw_url));
   } else {

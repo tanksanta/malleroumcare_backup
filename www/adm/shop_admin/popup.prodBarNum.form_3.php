@@ -335,14 +335,14 @@ if($od["od_b_tel"]) {
 
         $options = $carts[$i]["options"];
 
-          $stoId_v=[];
-          $stoId_v = explode('|',$carts[$i]['stoId']);
-          $stoId_v=array_filter($stoId_v);
+        $stoId_v=[];
+        $stoId_v = explode('|',$carts[$i]['stoId']);
+        $stoId_v=array_filter($stoId_v);
 
-          # 요청사항
-          $prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
-          # 카테고리 구분
-          $gubun = $cate_gubun_table[substr($carts[$i]['ca_id'], 0, 2)];
+        # 요청사항
+        $prodMemo = ($prodMemo) ? $prodMemo : $carts[$i]["prodMemo"];
+        # 카테고리 구분
+        $gubun = $cate_gubun_table[substr($carts[$i]['ca_id'], 0, 2)];
       ?>
       <?php if ($carts[$i]['ct_combine_ct_id']) { ?>
         <div style="margin:20px;margin-bottom:0px;background-color:#ff6105;color:white;text-align:center;border-radius:3px;padding:10px;font-size:13px;">
@@ -359,6 +359,9 @@ if($od["od_b_tel"]) {
               onclick="openCloseToc(this)"
             <?php } ?>
             >
+            <input type="hidden" id="it_name" value="<?=stripslashes($carts[$i]["it_name"])?>" data-it-id="<?=$carts[$i]["it_id"]?>">
+            <input type="hidden" id="ct_option" value="<?=$carts[$i]["ct_option"]?>" data-it-id="<?=$carts[$i]["it_id"]?>">
+            <input type="hidden" id="ct_qty" value="<?=$carts[$i]["ct_qty"]?>" data-it-id="<?=$carts[$i]["it_id"]?>">
             <p class="p1" data-qty="<?=$carts[$i]["ct_qty"]?>">
               <span class="span1">
                 <!-- 상품명 -->
@@ -747,16 +750,42 @@ if($od["od_b_tel"]) {
     });
 
     $("#prodBarNumSaveBtn").click(function() {
+      var options = [];
+      $("#it_name").each(function() {
+        var it_id = $(this).attr("data-it-id");
+        var it_name = $(this).val();
+        $("#ct_option").each(function() {
+          if ($(this).attr("data-it-id") == it_id) {
+            var ct_option = $(this).val();
+            if (it_name != ct_option) {
+              options.push(ct_option);
+            }
+          }
+        })
+      });
       if ($(".chk_pass_barcode").data('gubun') == "02" && $(".chk_pass_barcode").is(":checked") == false) {
         if (confirm("비급여 상품 확인함을 선택하지 않으셨습니다. 선택하시겠습니까?")) {
         }
         else {
-          barNumSave();
+          if (options.length > 0) {
+            if (confirm("옵션이 있는 상품이 포함되어 있습니다. 확인해 주세요.\n" + options.join("\n"))) {
+              barNumSave();
+            }
+          }
+          else {
+            barNumSave();
+          }
         }
-        return false;
       }
       else {
-        barNumSave();
+        if (options.length > 0) {
+          if (confirm("옵션이 있는 상품이 포함되어 있습니다. 확인해 주세요.\n" + options.join("\n"))) {
+            barNumSave();
+          }
+        }
+        else {
+          barNumSave();
+        }
       }
     });
 
