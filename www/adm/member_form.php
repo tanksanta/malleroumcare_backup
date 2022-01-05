@@ -1352,24 +1352,7 @@ function fmember_submit()
         return f.submit();
       }
 
-      $.ajax({
-        type: 'POST',
-        url : "<?=$api_url?>",
-        type : "POST",
-        async : false,
-        cache : false,
-        processData : false,
-        contentType : false,
-        data : sendData,
-      }).done(function (data) {
-        if(data.message == "SUCCESS") {
-          f.submit();
-          return false;
-        } else {
-          alert(data.message);
-          return false;
-        }
-      });
+      f.submit();
     }
     return false;
 
