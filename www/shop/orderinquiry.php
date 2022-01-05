@@ -243,7 +243,6 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	
 	$list[$i] = $row;
 	$list[$i]['od_href'] = G5_SHOP_URL.'/orderinquiryview.php?od_id='.$row['od_id'].'&amp;uid='.$uid;
-	$list[$i]['od_total_price'] = $row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2'];
 	$list[$i]['od_status'] = $od_status;
     
     $sql = "select *
@@ -255,6 +254,16 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     if ($cancel_request_row['od_id']) {
         $list[$i]['od_status'] = $cancel_request_row['request_status'];
     }
+
+	// 합계금액 계산
+	$sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * (ct_qty - ct_stock_qty)))) as price,
+					SUM(ct_qty) as qty,
+					SUM(ct_discount) as discount,
+					SUM(ct_send_cost) as sendcost
+				from {$g5['g5_shop_cart_table']}
+				where od_id = '{$row['od_id']}'";
+	$sum = sql_fetch($sql);
+	$list[$i]['od_total_price'] = $sum['price'] - $sum['discount'] + $row['od_send_cost'] + $row['od_send_cost2'];
 }
 
 $search_url = $_SERVER['SCRIPT_NAME'].'?'.$qstr."&amp;od_stock={$_GET["od_stock"]}&amp;od_status={$_GET["od_status"]}&amp;s_date={$_GET["s_date"]}&amp;e_date={$_GET["e_date"]}&amp;sel_field={$sel_field}&amp;search={$search}";
