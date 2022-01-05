@@ -673,6 +673,8 @@ $od_b_addr_jibeon = clean_xss_tags($_POST['od_b_addr_jibeon']);
 $od_b_addr1 = clean_xss_tags($_POST['od_b_addr1']);
 $od_b_addr2 = clean_xss_tags($_POST['od_b_addr2']);
 
+$od_send_cost = $_POST['od_send_cost'];
+
 sql_query("
     UPDATE
         g5_shop_order
@@ -683,7 +685,8 @@ sql_query("
         od_b_zip2 = '$od_b_zip2',
         od_b_addr_jibeon = '$od_b_addr_jibeon',
         od_b_addr1 = '$od_b_addr1',
-        od_b_addr2 = '$od_b_addr2'
+        od_b_addr2 = '$od_b_addr2',
+        od_send_cost = '$od_send_cost'
     WHERE
         od_id = '$od_id'
 ");
