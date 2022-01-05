@@ -142,6 +142,7 @@ add_javascript(G5_POSTCODE_JS, 0);
       <input type="hidden" name="od_price" value="0">
       <input type="hidden" name="od_settle_case" value="월 마감 정산">
       <input type="hidden" name="od_id" value="<?=$od_id?>">
+      <input type="hidden" name="od_send_cost" value="0">
       <input type="hidden" name="od_send_cost2" value="0">
       <div class="panel panel-default">
         <div class="panel-body">
@@ -508,6 +509,9 @@ function calculate_order_price() {
   var even_price = 0;
   var charge_price = 0; // 유료배송비
   $li.each(function() {
+    if ($(this).is(":hidden")) {
+      return true;
+    }
     var it_id = $(this).find('input[name="it_id[]"]').val();
     var it_price = parseInt ( $(this).find('input[name="it_price[]"]').val() || 0 );
     var io_price = parseInt( $(this).find('select[name="io_id[]"] option:selected').data('price') || 0 );
@@ -604,6 +608,7 @@ function calculate_order_price() {
 
   // 배송비
   $('#delivery_price').text(number_format(delivery_price));
+  $('input[name="od_send_cost"]').val(delivery_price);
 
   // 총 결제금액
   $('#total_price').text(number_format( order_price + delivery_price ));
