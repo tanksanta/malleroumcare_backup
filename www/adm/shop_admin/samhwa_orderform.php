@@ -2228,8 +2228,8 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 <h2>담당자</h2>
                 <ul>
                     <li>
-                        <span class="manager_name">- 영업담당자</span>
                         <div class="managers">
+                            <span class="manager_name">- 영업담당자</span>
                             <!--
                             <div class="on">
                                 <select name="od_sales_manager">
@@ -2258,12 +2258,26 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                 <?php } ?>
                             </div>
                             -->
-                            <?php
-                            $sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
-                            $result_manager = sql_fetch($sql_manager);
-                            $od_sales_manager = get_member($result_manager['mb_manager']);
-                            echo $od_sales_manager['mb_name'] ? $od_sales_manager['mb_name'] : '없음';
-                            ?>
+                            <select name="od_sales_manager">
+                                <option value="">없음</option>
+                                <?php
+                                    $od_sales_manager = $od['od_sales_manager'];
+                                    if (!$od_sales_manager || $od_sales_manager == '1202') {
+                                        $sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
+                                        $result_manager = sql_fetch($sql_manager);
+                                        $od_sales_manager = $result_manager['mb_manager'];
+                                    }
+                                    // echo $od_sales_manager['mb_name'] ? $od_sales_manager['mb_name'] : '없음';
+
+                                    $sql = " SELECT mb_name, mb_id FROM g5_member WHERE mb_level = 9 ORDER BY mb_name ASC ";
+                                    $auth_result = sql_query($sql);
+                                    while($a_row = sql_fetch_array($auth_result)) {
+                                        $a_mb = get_member($a_row['mb_id']);
+                                ?>
+                                <option value="<?php echo $a_mb['mb_id']; ?>" <?php echo $a_mb['mb_id'] == $od_sales_manager ? 'selected' : ''; ?>><?php echo $a_mb['mb_name']; ?></option>
+                                <?php } ?>
+                            </select>
+                            <a class="change_manager_on change_manager_submit" data-type="od_sales_manager">변경</a>
                         </div>
                     </li>
 
@@ -2703,14 +2717,14 @@ $(document).ready(function() {
         var type = $(this).data('type');
         var mb_id = $('select[name="' + type + '"]').val();
         $.ajax({
-                    method: "POST",
-                    url: "./ajax.order.manager.php",
-                    data: {
-                        type: type,
-                        mb_id: mb_id,
-                        od_id: od_id,
-                    },
-                })
+            method: "POST",
+            url: "./ajax.order.manager.php",
+            data: {
+                type: type,
+                mb_id: mb_id,
+                od_id: od_id,
+            },
+        })
         .done(function(data) {
             // console.log(data);
             if ( data.msg ) {
