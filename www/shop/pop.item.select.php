@@ -323,7 +323,7 @@ while($cate = sql_fetch_array($cate_result)) {
                     </td>
                     <td>
                         <?php if(!$no_option) { ?>
-                        <a href="./pop.item.select.option.php?it_id=<?php echo $row['it_id']; ?>" class="shbtn lineblue">선택</a>
+                        <a href="./pop.item.select.option.php?ref=select&it_id=<?php echo $row['it_id']; ?>" class="shbtn lineblue">선택</a>
                         <?php } else { ?>
                         <a href="javascript:void(0);" data-item="<?php echo get_text(json_encode($row)); ?>" class="shbtn lineblue" onclick="select_item(this);">선택</a>
                         <?php } ?>

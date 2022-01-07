@@ -284,7 +284,14 @@ $title = '보유재고 등록 > 옵션선택';
                 </div>
             </div>
             <div class="addoptionbuttons">
-                <a href="./pop.stock.item.add.php">
+                <?php
+                    $ref = $_GET['ref'];
+                    $b_url = './pop.stock.item.add.php';
+                    if ($ref == 'select') {
+                        $b_url = './pop.item.select.php';
+                    }
+                ?>
+                <a href="<?=$b_url?>">
                     <img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/icon_arrow_prev_w.png" />상품선택
                 </a>
                 <input type="submit" value="확인" />
