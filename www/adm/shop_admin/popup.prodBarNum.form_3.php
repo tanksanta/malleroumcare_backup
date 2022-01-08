@@ -637,6 +637,29 @@ if($od["od_b_tel"]) {
     });
   }
 
+  function check_option() {
+    var option_items = [];
+    $("#it_name").each(function() {
+      var it_id = $(this).attr("data-it-id");
+      var it_name = $(this).val();
+      var options = [];
+      $("#ct_option").each(function() {
+        if ($(this).attr("data-it-id") == it_id) {
+          var ct_option = $(this).val();
+          if (it_name != ct_option) {
+            options.push(ct_option);
+          }
+        }
+      });
+      if (options.length > 0) {
+        option_items.push(`상품명:${it_name}\n옵션:${options.join("\n")}`);
+      }
+    });
+    if (option_items.length > 0) {
+      alert("옵션이 있는 상품이 포함되어 있습니다. 확인해 주세요.\n" + option_items.join("\n"));
+    }
+  }
+
   var cur_ct_id = null;
   var cur_it_id = null;
 
@@ -685,6 +708,7 @@ if($od["od_b_tel"]) {
               var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
               $(sendBarcodeTarget).val(data.data.converted_barcode);
               sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
+              check_option();
             })
             .fail(function($xhr) {
               switch(device){
@@ -750,42 +774,16 @@ if($od["od_b_tel"]) {
     });
 
     $("#prodBarNumSaveBtn").click(function() {
-      var options = [];
-      $("#it_name").each(function() {
-        var it_id = $(this).attr("data-it-id");
-        var it_name = $(this).val();
-        $("#ct_option").each(function() {
-          if ($(this).attr("data-it-id") == it_id) {
-            var ct_option = $(this).val();
-            if (it_name != ct_option) {
-              options.push(ct_option);
-            }
-          }
-        })
-      });
+      
       if ($(".chk_pass_barcode").data('gubun') == "02" && $(".chk_pass_barcode").is(":checked") == false) {
         if (confirm("비급여 상품 확인함을 선택하지 않으셨습니다. 선택하시겠습니까?")) {
         }
         else {
-          if (options.length > 0) {
-            if (confirm("옵션이 있는 상품이 포함되어 있습니다. 확인해 주세요.\n" + options.join("\n"))) {
-              barNumSave();
-            }
-          }
-          else {
-            barNumSave();
-          }
+          barNumSave();
         }
       }
       else {
-        if (options.length > 0) {
-          if (confirm("옵션이 있는 상품이 포함되어 있습니다. 확인해 주세요.\n" + options.join("\n"))) {
-            barNumSave();
-          }
-        }
-        else {
-          barNumSave();
-        }
+        barNumSave();
       }
     });
 
