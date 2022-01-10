@@ -11,6 +11,13 @@ $prodListCnt = 0;
 $deliveryTotalCnt = 0;
 
 $carts = get_carts_by_od_id($od_id, 'Y');
+if ($_GET['show_release_ready_only']) {
+  $show_release_ready_only = $_GET['show_release_ready_only'];  
+}
+else {
+  $show_release_ready_only = 'Y';
+}
+// $carts = get_carts_by_od_id($od_id, 'Y', " AND ct_status = '출고준비' ", null);
 
 $delivery_cnt = 0; // 배송목록 카운트
 $delivery_input_cnt = 0; // 입력
@@ -143,6 +150,9 @@ $partners = get_partner_members();
     <span>
       <?php echo $deliveryCntBtnWord; ?>
     </span>
+    <label style="font-size:12px; margin-left:10px;">
+      <input type="checkbox" id="show_release_ready_only" <?php echo ($show_release_ready_only == 'Y' ? 'checked' : '')?>> 출고준비만 보기
+    </label>
     <button type="button" class="btn_boxpacker_apply" data-apply="1">합포 적용</button>
     <button type="button" class="btn_boxpacker">합포 자동계산</button>
   </div>
@@ -185,7 +195,15 @@ $partners = get_partner_members();
       <tbody>
         <?php
         for($i = 0; $i < count($carts); $i++) {
-          $options = $carts[$i]["options"];
+          $options = [];
+          if ($show_release_ready_only == 'Y') {
+            if ($carts[$i]['ct_status'] == "출고준비") {
+              $options = $carts[$i]["options"];
+            }
+          }
+          else {
+            $options = $carts[$i]["options"];
+          }
 
           for($k = 0; $k < count($options); $k++) {
             $delivery_num_arr = explode('|', $options[$k]["ct_delivery_num"]);
@@ -532,6 +550,28 @@ $partners = get_partner_members();
       .always(function() {
         $('.boxpacker_load').hide();
       });
+    });
+
+    // 출고준비만 보기
+    $("#show_release_ready_only").click(function() {
+      let searchParams = new URLSearchParams(window.location.search);
+      let param = searchParams.get('show_release_ready_only');
+      if ($(this).is(":checked")) {
+        if (param == 'N') {
+          window.location.search = window.location.search.replace('show_release_ready_only=N', 'show_release_ready_only=Y');
+        }
+        else {
+          window.location.search += '&show_release_ready_only=Y';
+        }
+      }
+      else {
+        if (param == 'Y') {
+          window.location.search = window.location.search.replace('show_release_ready_only=Y', 'show_release_ready_only=N');
+        }
+        else {
+          window.location.search += '&show_release_ready_only=N';
+        }
+      }
     });
   });
 </script>
