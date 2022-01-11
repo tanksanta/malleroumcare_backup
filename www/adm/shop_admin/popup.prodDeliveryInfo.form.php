@@ -213,6 +213,7 @@ $partners = get_partner_members();
             <td>
               <input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
               <input type="hidden" name="ct_it_name_<?=$options[$k]["ct_id"]?>" value="<?=$carts[$i]["it_name"]?>">
+              <input type="hidden" name="ct_status_<?=$options[$k]["ct_id"]?>" value="<?=$carts[$i]["ct_status"]?>">
               <?=stripslashes($carts[$i]["it_name"])?>
               <?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]) { ?>
                 (<?=$options[$k]["ct_option"]?>) (<?=$options[$k]["ct_qty"]?>개)
@@ -494,14 +495,25 @@ $partners = get_partner_members();
           $.each(boxes, function(index, box) {
             var greatest = 0, target = null;
 
-            // 먼저 가장 박스수량이 많은 상품을 찾아 합포 대상으로 설정
+            // 첫번째 출고준비 상품을 합포 대상으로 설정
             $.each(box.items, function(ct_id, item) {
-              var box_qty = parseInt($('input[name="ct_delivery_cnt_' + ct_id + '"]').val());
-              if(box_qty > greatest) {
-                greatest = box_qty;
+              var ct_status = parseInt($('input[name="ct_status_' + ct_id + '"]').val());
+              if(ct_status == '출고준비') {
                 target = ct_id;
+                return false;
               }
             });
+
+            // 출고준비 상태가 없다면 가장 박스수량이 많은 상품을 찾아 합포 대상으로 설정
+            if (!target) {
+              $.each(box.items, function(ct_id, item) {
+                var box_qty = parseInt($('input[name="ct_delivery_cnt_' + ct_id + '"]').val());
+                if(box_qty > greatest) {
+                  greatest = box_qty;
+                  target = ct_id;
+                }
+              });
+            }
 
             // 합포 대상에 합포 적용
             $.each(box.items, function(ct_id, item) {
