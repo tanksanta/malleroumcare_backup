@@ -257,6 +257,7 @@ function receiveBarcode(tempBarcode) {
         type: 'info'
       });
       notallLengthCheck();
+      check_option();
 
       if (!findEmptyBarcodeInput()) {
         closeWebBarcode();
