@@ -69,7 +69,7 @@ $where_partner_type = [];
 if (!$mb_partner_type_all && $mb_partner_type) {
   foreach ($mb_partner_type as $partner_type) {
     $qstr .= "mb_partner_type%5B%5D={$partner_type}&amp;";
-    $where_partner_type[] = " mb_partner_type = '$partner_type' ";
+    $where_partner_type[] = " mb_partner_type like '%$partner_type%' ";
   }
   $where[] = ' ( ' . implode(' or ', $where_partner_type) . ' ) ';
 }
