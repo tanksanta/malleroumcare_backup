@@ -155,7 +155,7 @@ else if ($type == 'contract_c') {
     $total_cnt = sql_fetch($sql);
 
     //각 일자별
-    $sql = "SELECT COUNT(*) as cnt, DATE(dl_datetime) as ms_date FROM eform_document_log WHERE dl_log like '%생성%' AND ml_sent_at BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
+    $sql = "SELECT COUNT(*) as cnt, DATE(dl_datetime) as ms_date FROM eform_document_log WHERE dl_log like '%생성%' AND dl_datetime BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
     $result = sql_query($sql);
     $arr = [];
     while($row=sql_fetch_array($result)) {
@@ -171,7 +171,7 @@ else if ($type == 'contract_s') {
     $total_cnt = sql_fetch($sql);
 
     //각 일자별
-    $sql = "SELECT COUNT(*) as cnt, DATE(dl_datetime) as ms_date FROM eform_document_log WHERE dl_log like '%서명%' AND ml_sent_at BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
+    $sql = "SELECT COUNT(*) as cnt, DATE(dl_datetime) as ms_date FROM eform_document_log WHERE dl_log like '%서명%' AND dl_datetime BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
     $result = sql_query($sql);
     $arr = [];
     while($row=sql_fetch_array($result)) {
