@@ -41,6 +41,22 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 .page_title {
   display:none;
 }
+
+.ajax-loader {
+  visibility: hidden;
+  background-color: rgba(255,255,255,0.7);
+  position: absolute;
+  z-index: +100 !important;
+  width: 100%;
+  height:100%;
+}
+
+.ajax-loader img {
+  position: relative;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+}
 #loading_excel {
   display: none;
   width: 100%;
@@ -530,6 +546,10 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
   ?>
 
   <div id="samhwa_order_list">
+  <div class="ajax-loader">
+    <img src="img/ajax-loading.gif" class="img-responsive" />
+  </div>
+
     <ul class="order_tab">
       <li class="" data-step="" data-status="">
         <a>전체</a>
@@ -651,7 +671,6 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 
 <script>
 $(function() {
-  
   $(document).on("click", "#order_add", function (e) {
     e.preventDefault();
 
@@ -665,6 +684,10 @@ $(function() {
   });
 });
 
+function show_all_order() {
+  doSearch('Y');
+}
+
 var od_status = '';
 var od_step = 0;
 var page = 1;
@@ -673,16 +696,20 @@ var end = false;
 var sub_menu = '<?php echo $sub_menu; ?>';
 var last_step = '';
 
-function doSearch() {
+function doSearch(show_all) {
   if ( loading === true ) return;
   if ( end === true ) return;
 
+  if (!show_all) {
+    show_all = 'N';
+  }
   var formdata = $.extend({}, {
     click_status: od_status,
     od_step: od_step,
     page: page,
     sub_menu: sub_menu,
     last_step: last_step,
+    show_all: show_all,
   },$('#frmsamhwaorderlist').serializeObject());
   loading = true;
 
@@ -710,8 +737,12 @@ function doSearch() {
     method: "POST",
     url: "./ajax.orderlist.php",
     data: formdata,
+    beforeSend : function() {
+        $('.ajax-loader').css("visibility", "visible");
+    },
   })
   .done(function(html) {
+    $('.ajax-loader').css("visibility", "hidden");
     if ( page === 1 ) {
       $('#samhwa_order_ajax_list_table').html(html.main);
     }
@@ -818,6 +849,13 @@ $( document ).ready(function() {
     end = false;
     last_step = '';
     doSearch();
+
+    if (od_status == "준비" || od_status == "출고준비") {
+      $('#show_all_order').show();
+    }
+    else {
+      $('#show_all_order').hide();
+    }
   });
 
   // $('#samhwa_order_list .order_tab li:eq(0)').click();
@@ -1314,6 +1352,7 @@ if( function_exists('pg_setting_check') ){
 ?>
 
 <div class="btn_fixed_top">
+  <input type="button" value="모든 주문보기" onclick="show_all_order()"id="show_all_order" class="btn btn_03" style="display:none;">
   <a href="./samhwa_order_new.php" id="order_add" class="btn btn_01">주문서 추가</a>
   <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload('excel')" class="btn btn_02">
   <?php if($member['mb_id'] == 'admin') { ?>
