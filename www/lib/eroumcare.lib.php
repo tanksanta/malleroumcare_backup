@@ -1712,7 +1712,7 @@ function get_partner_members() {
 }
 
 // 파트너 거래처원장
-function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '', $search = '') {
+function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '', $search = '', $sql_search = '') {
   $where_order = $where_ledger = '';
 
   # 기간
@@ -1727,6 +1727,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       od_time,
       c.od_id,
       mb_entNm,
+      mb_partner_type,
       it_name,
       ct_option,
       ct_qty,
@@ -1751,6 +1752,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       od_del_yn = 'N' and
       ct_is_direct_delivery IN(1, 2) and
       ct_direct_delivery_partner = '{$mb_id}'
+      {$sql_search}
       {$where_order}
   ";
 
@@ -1760,6 +1762,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       pl_created_at as od_time,
       '' as od_id,
       m.mb_entNm,
+      m.mb_partner_type,
       (
         CASE
           WHEN pl_type = 1
