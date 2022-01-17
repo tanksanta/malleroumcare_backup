@@ -34,8 +34,8 @@ if($ps_run) {
         <th scope="col">옵션명</th>
         <th scope="col">옵션항목</th>
         <th scope="col" style="width: 300px;">상품금액(일반,파트너,사업소,우수사업소)</th>
-        <th scope="col">재고수량</th>
-        <th scope="col">통보수량</th>
+        <th scope="col">재고</th>
+<!--        <th scope="col">통보수량</th>-->
         <th scope="col">사용여부</th>
         <th scope="col">품목코드</th>
         <th scope="col">규격</th>
@@ -77,11 +77,12 @@ if($ps_run) {
         <td class="td_num">
             <label for="spl_stock_qty_<?php echo $i; ?>" class="sound_only">재고수량</label>
             <input type="text" name="spl_stock_qty[]" value="<?php echo $spl_stock_qty; ?>" id="spl_stock_qty_<?php echo $i; ?>" class="frm_input" size="5">
+            <a class="btn_frmline" target="_blank" href="/adm/shop_admin/optionstocklist.php?sel_field=a.it_id&search=<?php echo $it['it_id'] ?>">관리</a>
         </td>
-        <td class="td_num">
-            <label for="spl_noti_qty_<?php echo $i; ?>" class="sound_only">통보수량</label>
-            <input type="text" name="spl_noti_qty[]" value="<?php echo $spl_noti_qty; ?>" id="spl_noti_qty_<?php echo $i; ?>" class="frm_input" size="5">
-        </td>
+<!--        <td class="td_num">-->
+<!--            <label for="spl_noti_qty_--><?php //echo $i; ?><!--" class="sound_only">통보수량</label>-->
+<!--            <input type="text" name="spl_noti_qty[]" value="--><?php //echo $spl_noti_qty; ?><!--" id="spl_noti_qty_--><?php //echo $i; ?><!--" class="frm_input" size="5">-->
+<!--        </td>-->
         <td class="td_mng">
             <label for="spl_use_<?php echo $i; ?>" class="sound_only">사용여부</label>
             <select name="spl_use[]" id="spl_use_<?php echo $i; ?>">
@@ -156,10 +157,10 @@ if($ps_run) {
             <label for="spl_stock_qty_<?php echo $i; ?>" class="sound_only">재고수량</label>
             <input type="text" name="spl_stock_qty[]" value="<?php echo $spl_stock_qty; ?>" id="spl_stock_qty_<?php echo $i; ?>" class="frm_input" size="5">
         </td>
-        <td class="td_num">
-            <label for="spl_noti_qty_<?php echo $i; ?>" class="sound_only">통보수량</label>
-            <input type="text" name="spl_noti_qty[]" value="<?php echo $spl_noti_qty; ?>" id="spl_noti_qty_<?php echo $i; ?>" class="frm_input" size="5">
-        </td>
+<!--        <td class="td_num">-->
+<!--            <label for="spl_noti_qty_--><?php //echo $i; ?><!--" class="sound_only">통보수량</label>-->
+<!--            <input type="text" name="spl_noti_qty[]" value="--><?php //echo $spl_noti_qty; ?><!--" id="spl_noti_qty_--><?php //echo $i; ?><!--" class="frm_input" size="5">-->
+<!--        </td>-->
         <td class="td_mng">
             <label for="spl_use_<?php echo $i; ?>" class="sound_only">사용여부</label>
             <select name="spl_use[]" id="spl_use_<?php echo $i; ?>">
@@ -198,9 +199,9 @@ if($ps_run) {
     <label for="spl_com_stock">재고수량</label>
     <label for="spl_com_stock_chk" class="sound_only">재고수량일괄수정</label><input type="checkbox" name="spl_com_stock_chk" value="1" id="spl_com_stock_chk" class="spl_com_chk">
     <input type="text" name="spl_com_stock" value="0" id="spl_com_stock" class="frm_input" size="5">
-    <label for="spl_com_noti">통보수량</label>
-    <label for="spl_com_noti_chk" class="sound_only">통보수량일괄수정</label><input type="checkbox" name="spl_com_noti_chk" value="1" id="spl_com_noti_chk" class="spl_com_chk">
-    <input type="text" name="spl_com_noti" value="0" id="spl_com_noti" class="frm_input" size="5">
+<!--    <label for="spl_com_noti">통보수량</label>-->
+<!--    <label for="spl_com_noti_chk" class="sound_only">통보수량일괄수정</label><input type="checkbox" name="spl_com_noti_chk" value="1" id="spl_com_noti_chk" class="spl_com_chk">-->
+<!--    <input type="text" name="spl_com_noti" value="0" id="spl_com_noti" class="frm_input" size="5">-->
     <label for="spl_com_use">사용여부</label>
     <label for="spl_com_use_chk" class="sound_only">사용여부일괄수정</label><input type="checkbox" name="spl_com_use_chk" value="1" id="spl_com_use_chk" class="spl_com_chk">
     <select name="spl_com_use" id="spl_com_use">

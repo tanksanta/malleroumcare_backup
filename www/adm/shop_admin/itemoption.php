@@ -61,8 +61,8 @@ if($po_run) {
         </th>
         <th scope="col">옵션</th>
         <th scope="col" style="width: 300px;">추가금액(일반,파트너,사업소,우수사업소)</th>
-        <th scope="col">재고수량</th>
-        <th scope="col">통보수량</th>
+        <th scope="col">재고</th>
+<!--        <th scope="col">통보수량</th>-->
         <th scope="col">사용여부</th>
         <th scope="col">품목코드</th>
         <th scope="col">규격</th>
@@ -107,12 +107,13 @@ if($po_run) {
         </td>
         <td class="td_num">
             <label for="opt_stock_qty_<?php echo $i; ?>" class="sound_only"></label>
-            <input type="text" name="opt_stock_qty[]" value="<?php echo $opt_stock_qty; ?>" id="op_stock_qty_<?php echo $i; ?>" class="frm_input" size="5">
+            <input type="text" name="opt_stock_qty[]" value="<?php echo $opt_stock_qty; ?>" id="op_stock_qty_<?php echo $i; ?>" class="frm_input" size="5" readonly>
+            <a class="btn_frmline" target="_blank" href="/adm/shop_admin/optionstocklist.php?sel_field=a.it_id&search=<?php echo $it['it_id'] ?>">관리</a>
         </td>
-        <td class="td_num">
-            <label for="opt_noti_qty_<?php echo $i; ?>" class="sound_only"></label>
-            <input type="text" name="opt_noti_qty[]" value="<?php echo $opt_noti_qty; ?>" id="opt_noti_qty_<?php echo $i; ?>" class="frm_input" size="5">
-        </td>
+<!--        <td class="td_num">-->
+<!--            <label for="opt_noti_qty_--><?php //echo $i; ?><!--" class="sound_only"></label>-->
+<!--            <input type="text" name="opt_noti_qty[]" value="--><?php //echo $opt_noti_qty; ?><!--" id="opt_noti_qty_--><?php //echo $i; ?><!--" class="frm_input" size="5">-->
+<!--        </td>-->
         <td class="td_mng">
             <label for="opt_use_<?php echo $i; ?>" class="sound_only"></label>
             <select name="opt_use[]" id="opt_use_<?php echo $i; ?>">
@@ -195,12 +196,12 @@ if($po_run) {
         </td>
         <td class="td_num">
             <label for="opt_stock_qty_<?php echo $i; ?>" class="sound_only"></label>
-            <input type="text" name="opt_stock_qty[]" value="<?php echo $opt_stock_qty; ?>" id="opt_stock_qty_<?php echo $i; ?>" class="frm_input" size="5">
+            <input type="text" name="opt_stock_qty[]" value="<?php echo $opt_stock_qty; ?>" id="opt_stock_qty_<?php echo $i; ?>" class="frm_input" size="5" readonly>
         </td>
-        <td class="td_num">
-            <label for="opt_noti_qty_<?php echo $i; ?>" class="sound_only"></label>
-            <input type="text" name="opt_noti_qty[]" value="<?php echo $opt_noti_qty; ?>" id="opt_noti_qty_<?php echo $i; ?>" class="frm_input" size="5">
-        </td>
+<!--        <td class="td_num">-->
+<!--            <label for="opt_noti_qty_--><?php //echo $i; ?><!--" class="sound_only"></label>-->
+<!--            <input type="text" name="opt_noti_qty[]" value="--><?php //echo $opt_noti_qty; ?><!--" id="opt_noti_qty_--><?php //echo $i; ?><!--" class="frm_input" size="5">-->
+<!--        </td>-->
         <td class="td_mng">
             <label for="opt_use_<?php echo $i; ?>" class="sound_only"></label>
             <select name="opt_use[]" id="opt_use_<?php echo $i; ?>">
@@ -243,9 +244,9 @@ if($po_run) {
     <label for="opt_com_stock">재고수량</label>
     <label for="opt_com_stock_chk" class="sound_only">재고수량일괄수정</label><input type="checkbox" name="opt_com_stock_chk" value="1" id="opt_com_stock_chk" class="opt_com_chk">
     <input type="text" name="opt_com_stock" value="0" id="opt_com_stock" class="frm_input" size="5">
-    <label for="opt_com_noti">통보수량</label>
-    <label for="opt_com_noti_chk" class="sound_only">통보수량일괄수정</label><input type="checkbox" name="opt_com_noti_chk" value="1" id="opt_com_noti_chk" class="opt_com_chk">
-    <input type="text" name="opt_com_noti" value="0" id="opt_com_noti" class="frm_input" size="5">
+<!--    <label for="opt_com_noti">통보수량</label>-->
+<!--    <label for="opt_com_noti_chk" class="sound_only">통보수량일괄수정</label><input type="checkbox" name="opt_com_noti_chk" value="1" id="opt_com_noti_chk" class="opt_com_chk">-->
+<!--    <input type="text" name="opt_com_noti" value="0" id="opt_com_noti" class="frm_input" size="5">-->
     <label for="opt_com_use">사용여부</label>
     <label for="opt_com_use_chk" class="sound_only">사용여부일괄수정</label><input type="checkbox" name="opt_com_use_chk" value="1" id="opt_com_use_chk" class="opt_com_chk">
     <select name="opt_com_use" id="opt_com_use">
