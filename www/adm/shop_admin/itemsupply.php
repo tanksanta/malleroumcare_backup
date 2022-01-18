@@ -138,7 +138,7 @@ if($ps_run) {
                         }
                     }
     ?>
-    <tr>
+    <tr class="new">
         <td class="td_chk">
             <input type="hidden" name="spl_id[]" value="<?php echo $spl_id; ?>">
             <label for="spl_chk_<?php echo $i; ?>" class="sound_only"><?php echo $spl_subject.' '.$spl; ?></label>

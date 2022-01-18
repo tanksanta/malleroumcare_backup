@@ -180,7 +180,7 @@ if($po_run) {
                         }
                     }
     ?>
-    <tr>
+    <tr class="new">
         <td class="td_chk">
             <input type="hidden" name="opt_id[]" value="<?php echo $opt_id; ?>">
             <label for="opt_chk_<?php echo $i; ?>" class="sound_only"></label>

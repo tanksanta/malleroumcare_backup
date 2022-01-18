@@ -884,7 +884,7 @@ $warehouse_list = get_warehouses();
             }
 
             $el.closest("tr").each(function(index, item) {
-              if ($(item).find('input[name="opt_stock_qty[]"]').val() > 0) {
+              if (!$(item).hasClass('new') && $(item).find('input[name="opt_stock_qty[]"]').val() > 0) {
                 var optionName = $(item).find('.opt-cell').text();
                 alert(optionName + '는 재고를 보유하고 있습니다. 삭제를 원하시면 재고를 0으로 소진 후 삭제해주세요.');
                 return false;
@@ -1139,7 +1139,7 @@ $warehouse_list = get_warehouses();
             }
 
             $el.closest("tr").each(function(index, item) {
-              if ($(item).find('input[name="spl_stock_qty[]"]').val() > 0) {
+              if (!$(item).hasClass('new') && $(item).find('input[name="spl_stock_qty[]"]').val() > 0) {
                 var supplyName = $(item).find('.spl-cell').text();
                 alert(supplyName + '는 재고를 보유하고 있습니다. 삭제를 원하시면 재고를 0으로 소진 후 삭제해주세요.');
                 return false;
