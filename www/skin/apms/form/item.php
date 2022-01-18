@@ -559,6 +559,20 @@ $warehouse_list = get_warehouses();
         <input type="text" name="it_price" value="<?php echo $it['it_price']; ?>" id="it_price" class="frm_input importantBorder" size="8"> 원, <span id="entprice_count"><?=$entprice_count['cnt']?></span>개 사업소 가격 수정 <button type="button" id="btn_entprice" class="btn_frmline" data-id="<?=$it_id?>">사업소 가격 지정</button>
       </td>
     </tr>
+    <tr>
+      <th scope="row"><label for="it_price_for_placing_order">구매가격</label></th>
+      <td>
+        <?php
+        $average_sales_qty = get_average_sales_qty($it_id, 3);
+        ?>
+        <input type="text" name="it_purchase_order_price" value="<?php echo $it['it_purchase_order_price']; ?>" id="it_price_for_placing_order" class="frm_input importantBorder" size="8"> 원
+        (안전재고:<input type="text" name="it_stock_manage_min_qty" value="<?php echo $it['it_stock_manage_min_qty']; ?>" placeholder="<?php echo (int)($average_sales_qty / 2) ?>" class="frm_input" size="8"> 개,
+        최대재고:<input type="text" name="it_stock_manage_max_qty" value="<?php echo $it['it_stock_manage_max_qty']; ?>" placeholder="<?php echo (int)($average_sales_qty * 1.5) ?>" class="frm_input" size="8"> 개)
+        <br>
+        <label for="it_purchase_order_min_qty">최소구매 주문수량</label>: <input type="text" name="it_purchase_order_min_qty" id="it_purchase_order_min_qty" value="<?php echo $it['it_purchase_order_min_qty']; ?>" class="frm_input importantBorder" size="8"> 개,
+        <label for="it_purchase_order_unit">주문단위</label> : <input type="text" name="it_purchase_order_unit" id="it_purchase_order_unit" value="<?php echo $it['it_purchase_order_unit']; ?>" class="frm_input importantBorder" size="8"> 개씩 구매
+      </td>
+    </tr>
     <?php if($is_auth) { // 관리자일 때만 출력 ?>
     <tr>
       <th scope="row"><label for="it_cust_price">급여가</label></th>

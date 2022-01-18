@@ -388,7 +388,12 @@ $check_sanitize_keys = array(
   'it_box_size_height', // 박스 규격 (높이)
   'it_standard', // 규격
   'it_even_odd',
-  'it_even_odd_price'
+  'it_even_odd_price',
+  'it_stock_manage_min_qty',
+  'it_stock_manage_max_qty',
+  'it_purchase_order_price',
+  'it_purchase_order_min_qty',
+  'it_purchase_order_unit'
 );
 
 foreach( $check_sanitize_keys as $key ) {
@@ -482,6 +487,17 @@ $it_box_size = implode(chr(30), $it_box_size);
 
 $it_show_partner_search = ($_POST["it_show_partner_search"]) ? $_POST["it_show_partner_search"] : 0;
 $it_use_short_barcode = ($_POST["it_use_short_barcode"]) ? $_POST["it_use_short_barcode"] : 0;
+
+// 안전재고, 최대재고
+$average_sales_qty = get_average_sales_qty($it_id, 3);
+
+if (!$it_stock_manage_min_qty) {
+  $it_stock_manage_min_qty= (int)($average_sales_qty / 2);
+}
+
+if (!$it_stock_manage_max_qty) {
+  $it_stock_manage_max_qty = (int)($average_sales_qty * 1.5);
+}
 
 $sql_common = "
   ca_id               = '$ca_id',
@@ -690,7 +706,13 @@ $sql_common = "
   it_show_partner_search = '$it_show_partner_search',
   it_use_short_barcode = '$it_use_short_barcode',
   it_even_odd = '$it_even_odd',
-  it_even_odd_price = '$it_even_odd_price'
+  it_even_odd_price = '$it_even_odd_price',
+  
+  it_stock_manage_min_qty = '$it_stock_manage_min_qty',
+  it_stock_manage_max_qty = '$it_stock_manage_max_qty',
+  it_purchase_order_price = '$it_purchase_order_price',
+  it_purchase_order_min_qty = '$it_purchase_order_min_qty',
+  it_purchase_order_unit = '$it_purchase_order_unit'
 "; // APMS : 2014.07.20
 
 if ($w == "")

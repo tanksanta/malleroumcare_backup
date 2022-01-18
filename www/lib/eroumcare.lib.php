@@ -2225,3 +2225,18 @@ function get_custom_ct_status_text($ct_status) {
 
   return $ct_status_text ?: $ct_status;
 }
+
+function get_average_sales_qty($it_id, $month = 3) {
+ $sql = "
+  SELECT SUM(ct_qty) as total_qty
+  FROM g5_shop_cart
+  WHERE 
+    it_id = '{$it_id}' AND
+    (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL {$month} MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+	  ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+	";
+
+ $result = sql_fetch($sql);
+
+ return (int) round($result['total_qty'] / $month);
+}
