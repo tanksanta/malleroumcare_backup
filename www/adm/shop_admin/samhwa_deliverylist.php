@@ -122,6 +122,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
     <button id="delivery_edi_return_all">송장리턴</button>
     <button onclick="applyCombine();">합포적용</button>
+    <button onclick="total_picking_excel_download();">토탈피킹 엑셀다운로드</button>
     <button onclick="lotte_delivery_excel_download();">롯데택배 엑셀다운로드</button>
     <button class="lotte_btn" id="delivery_lotte_send" <?php echo ($result_lotte['cnt'] > 0) ? '' : 'disabled'?>><?php echo ($result_lotte['cnt'] > 0) ? '롯데택배 '.$result_lotte['cnt'].'건 전송 필요' : '롯데택배 전송완료'?></button>
   </div>
@@ -800,6 +801,65 @@ function applyCombine() {
     var data = $xhr.responseJSON;
     alert(data && data.message);
   });
+}
+
+// 토탈피킹 엑셀 다운로드
+function total_picking_excel_download() {
+    var od_id = [];
+    var item = $("input[name='od_id[]']:checked");
+    for(var i = 0; i < item.length; i++) {
+      var ct_id = $(item[i]).val();
+      od_id.push(ct_id);
+    }
+
+    if(!od_id.length) {
+      return alert('선택한 주문이 없습니다.');
+    }  
+
+    var formdata = $.extend({}, {
+      click_status: od_status,
+      od_step: od_step,
+      page: page,
+      sub_menu: sub_menu,
+      last_step: last_step,
+      od_id: od_id
+    },$('#frmsamhwaorderlist').serializeObject());
+
+    // form object rename
+    formdata['od_settle_case'] = formdata['od_settle_case[]']; // Assign new key
+    delete formdata['od_settle_case[]']; // Delete old key
+
+    if (formdata['od_status[]'] != undefined) {
+      formdata['od_status'] = formdata['od_status[]']; // Assign new key
+      delete formdata['od_status[]']; // Delete old key
+    }
+
+    formdata['od_openmarket'] = formdata['od_openmarket[]']; // Assign new key
+    delete formdata['od_openmarket[]']; // Delete old key
+
+    formdata['add_admin'] = formdata['add_admin']; // Assign new key
+    // delete formdata['add_admin[]']; // Delete old key
+
+    formdata['od_important'] = formdata['od_important']; // Assign new key
+    // delete formdata['od_important[]']; // Delete old key
+
+    formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
+
+    var queryString = $.param(formdata);
+    var href = "./order.totalpicking.excel.download.php";
+    // window.open(href);
+
+    $('#loading_excel').show();
+
+    excel_downloader = $.fileDownload(href, {
+      httpMethod: "POST",
+      data: queryString
+    })
+    .always(function() {
+      $('#loading_excel').hide();
+    });
+
+    return false;
 }
 
 // 롯데택배 엑셀 다운로드
