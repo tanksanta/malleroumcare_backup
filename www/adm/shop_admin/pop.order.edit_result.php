@@ -636,7 +636,10 @@ $sql = " select COUNT(distinct it_id, ct_uid) as cart_count, count(*) as deliver
             from {$g5['g5_shop_cart_table']} where od_id = '$od_id'  ";
 $row = sql_fetch($sql);
 
-sql_query("update {$g5['g5_shop_order_table']} set od_cart_count = '{$row['cart_count']}', od_delivery_total = '{$row['delivery_count']}' where od_id = '$od_id' ");
+$od_send_cost = $_POST['od_send_cost'];
+sql_query("update {$g5['g5_shop_order_table']} set od_cart_count = '{$row['cart_count']}', od_delivery_total = '{$row['delivery_count']}', od_send_cost = '{$od_send_cost}' where od_id = '$od_id' ");
+
+
 ?>
 <html>
 <head>

@@ -50,6 +50,7 @@ tr.strikeout td:before {
 </style>
 <form name="foption" class="form" role="form" method="post" action="./pop.order.edit_result.php" onsubmit="return formcheck(this);">
 <input type="hidden" name="od_id" value="<?=$od_id?>">
+<input type="hidden" name="od_send_cost" value="<?=$od['od_send_cost']?>">
 <div id="pop_order_add" class="admin_popup admin_popup_padding">
     <h4 class="h4_header"><?php echo $title; ?></h4>
     <div class="pop_order_add_item">
@@ -171,6 +172,10 @@ tr.strikeout td:before {
                         <input type="hidden" name="it_id[]" value="<?=$opt['it_id']?>">
                         <input type="hidden" name="io_type[]" value="<?=$opt['io_type']?>">
                         <input type="hidden" name="price[]" class="price" value="<?=$opt['opt_price']?>">
+                        <input type="hidden" name="it_sc_type[]" value="<?=$it['it_sc_type']?>">
+                        <input type="hidden" name="it_sc_price[]" value="<?=$it['it_sc_price']?>">
+                        <input type="hidden" name="it_even_odd[]" value="<?=$it['it_even_odd']?>">
+                        <input type="hidden" name="it_even_odd_price[]" value="<?=$it['it_even_odd_price']?>">
                     </td>
                     <td>
                         <?php
@@ -280,6 +285,112 @@ tr.strikeout td:before {
 
 <script>
 
+
+// 주문금액계산
+function calculate_order_price() {
+  var $li = $('.pop_order_add_item_table tbody tr');
+
+  var order_price = 0;
+  var delivery_total = 0;
+  var free_delivery = true;
+  var odd_qty = 0;
+  var odd_price = 0;
+  var even_qty = 0;
+  var even_price = 0;
+  var charge_price = 0; // 유료배송비
+  $li.each(function() {
+    var it_id = $(this).find('input[name="it_id[]"]').val();
+    var it_price = parseInt ( $(this).find('input[name="price[]"]').val() || 0 );
+    var io_price = parseInt( $(this).find('select[name="io_id[]"] option:selected').data('price') || 0 );
+    var ct_qty = parseInt( $(this).find('input[name="qty[]"]').val() || 0 );
+    var it_sc_type = parseInt( $(this).find('input[name="it_sc_type[]"]').val() || 0 );
+    var it_sc_price = parseInt( $(this).find('input[name="it_sc_price[]"]').val() || 0 );
+    var it_even_odd = parseInt( $(this).find('input[name="it_even_odd[]"]').val() || 0 );
+    var it_even_odd_price = parseInt( $(this).find('input[name="it_even_odd_price[]"]').val() || 0 );
+
+    if(it_sc_type !== 1 && it_sc_type !== 5 && it_sc_type !== 3) {
+      // 무료배송이 아닌 상품이 하나라도 있으면 유료배송
+      free_delivery = false;
+    }
+
+    // 묶음할인 적용
+    var sale_qty = 0;
+    for(var i = 0; i < $li.length; i++) {
+      var this_it_id = $($li).eq(i).find('input[name="it_id[]"]').val();
+      if(this_it_id !== it_id) continue;
+
+      var this_qty = parseInt( $li.eq(i).find('input[name="ct_qty[]"]').val() );
+      if( this_qty > 0 ) {
+        sale_qty += this_qty;
+      }
+    }
+    var it_sale_cnt = 0;
+    if(item_sale_obj[it_id] && item_sale_obj[it_id].it_sale_cnt) {
+      for(var i = 0; i < item_sale_obj[it_id].it_sale_cnt.length; i++) {
+        var sale_cnt = parseInt(item_sale_obj[it_id].it_sale_cnt[i]);
+        if(sale_qty >= sale_cnt && sale_cnt > it_sale_cnt) {
+          it_sale_cnt = sale_cnt;
+          it_price = parseInt( mb_level === 4 ? item_sale_obj[it_id].it_sale_percent_great[i] : item_sale_obj[it_id].it_sale_percent[i] );
+        }
+      }
+    }
+
+    var ct_price = ( it_price + io_price ) * ct_qty;
+    order_price += ct_price;
+
+    // 유료 배송
+    if(it_sc_type === 3) {
+      charge_price += (it_sc_price * ct_qty);
+    }
+
+    // 홀수/짝수 배송
+    if(it_sc_type === 5) {
+      if(it_even_odd == 0) {
+        // 홀수 배송
+
+        // 홀수 배송중 가장 배송비가 높은 상품의 배송비를 홀수 배송비로 적용
+        if(odd_price < it_even_odd_price)
+          odd_price = it_even_odd_price;
+        
+        odd_qty += ct_qty;
+      } else if(it_even_odd == 1) {
+        // 짝수 배송
+
+        // 짝수 배송중 가장 배송비가 높은 상품의 배송비를 짝수 배송비로 적용
+        if(even_price < it_even_odd_price)
+          even_price = it_even_odd_price;
+        
+        even_qty += ct_qty;
+      }
+    } else {
+      delivery_total += ct_price;
+    }
+  });
+
+  var delivery_price = 0;
+  if(delivery_total < 100000 && !free_delivery) {
+    // 주문금액 10만원 미만에 무료배송상품이 아닌 상품이 있는 경우 배송비
+    delivery_price = 3300;
+  }
+
+  // 유료 배송비 적용
+  delivery_price += charge_price;
+
+  if(odd_qty > 0 && odd_qty % 2 === 1) {
+    // 홀수 배송비 적용
+    delivery_price += odd_price;
+  }
+  if(even_qty > 0 && even_qty % 2 === 0) {
+    // 짝수 배송비 적용
+    delivery_price += even_price;
+  }
+
+  // 배송비
+//   $('#delivery_price').text(number_format(delivery_price));
+  $('input[name="od_send_cost"]').val(delivery_price);
+//   console.log($('input[name="od_send_cost"]').val());
+}
+
 var loading = false;
 
 // 기본 설정
@@ -319,6 +430,8 @@ function formcheck(f) {
         alert('주문서 수정중입니다.');
         return false;
     }
+
+    calculate_order_price();
 
     loading = true;
     return true;
@@ -538,6 +651,8 @@ $(function() {
         // 공급가액, 부가세
         $(parent).find('.basic_price').text(addComma(Math.round(it_price * qty / 1.1) || 0) + "원");
         $(parent).find('.tax_price').text(addComma(Math.round(it_price * qty / 11) || 0) + "원");
+
+        calculate_order_price();
     });
 
     // 선택시 다음
