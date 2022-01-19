@@ -101,9 +101,9 @@ if ($is_admin || $is_author || $is_purchaser) {
 
 // 보안서버경로
 if (G5_HTTPS_DOMAIN)
-  $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/cartupdate.php';
+  $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/simple_eform.php';
 else
-  $action_url = './cartupdate.php';
+  $action_url = './simple_eform.php';
 
 // 상품품절체크
 if(G5_SOLDOUT_CHECK)
@@ -711,7 +711,8 @@ $row = sql_fetch($sql);
 </div>
 <!-- 수급자 선택시 변경되어 넘어갈 값 -->
 <form action="<?php echo $action_url; ?>"name="fitem" method="post" id="recipient_info" class="form item-form">
-  <input type="hidden" name="sw_direct" value="1">                                              <!-- 바로가기 -->
+<input type="hidden" name="sales_inventory" value="1">                                              <!-- 판매완료처리 -->
+<input type="hidden" name="sw_direct" value="1">                                              <!-- 바로가기 -->
   <input type="hidden" name="it_id[]" value="<?php echo $it_id; ?>" id="it_id_r">                   <!-- 상품아이디 -->
   <input type="hidden" name="io_type[<?php echo $it_id; ?>][]" value="0" it="io_type_r">            <!-- 옵션타입 -->
   <input type="hidden" name="io_id[<?php echo $it_id; ?>][]" value="" id="io_id_r">                 <!-- 옵션 값 -->
@@ -754,6 +755,7 @@ var cart_form = null;
 
 function CartForm() {
   this.data = [];
+  this.append('sales_inventory', '1');
   this.append('sw_direct', '1');
   this.append('it_id[]', '<?=get_text($it_id)?>');
   this.append('io_price', '0');
@@ -867,6 +869,7 @@ function popup_control(prodColor, prodSize, prodOptions, barcode_r) {
 }
 
 function selected_recipient(penId) {
+  // console.log(penId);
   if(is_multi_submit && cart_form) {
     cart_form.append('penId_r', penId);
     return cart_form.submit();
