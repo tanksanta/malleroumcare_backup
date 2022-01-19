@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
 include_once("./_common.php");
 
 $ct_id = $_POST['ct_id'];
@@ -9,7 +12,7 @@ $percent = $_POST['percent'];
 
 # 이미지 파일 경로
 $img_dir = G5_DATA_PATH.'/person/img';
-    if(!is_dir($img_dir)) {
+if(!is_dir($img_dir)) {
     @mkdir($img_dir, G5_DIR_PERMISSION, true);
     @chmod($img_dir, G5_DIR_PERMISSION);
 }
