@@ -2540,6 +2540,7 @@ var change_member_pop, add_item_pop, matching_item_pop, edit_item_pop, delivery_
     $("#excelForm").remove();
     if(number==1){
         var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
+        html += "<input type='hidden' name='ref' value='orderform'>";
         }else if(number==2){
         var html = "<form id='excelForm' method='post' action='./order.excel.list2.php'>";
         }

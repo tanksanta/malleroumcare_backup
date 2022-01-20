@@ -7,6 +7,15 @@
   function column_char($i) { return chr( 65 + $i ); }
 
   $ct_id = $od_id;
+  if ($_POST['ref'] == 'orderform') {
+    $ct_id = [];
+    $sql = "SELECT ct_id FROM g5_shop_cart WHERE od_id = '{$od_id[0]}' ";
+    $result = sql_query($sql);
+
+    while( $row = sql_fetch_array($result) ) {
+      $ct_id[] = $row['ct_id'];
+    }
+  }
 
   if(!$ct_id) {
     $ct_id = [];
