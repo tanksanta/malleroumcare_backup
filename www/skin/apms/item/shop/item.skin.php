@@ -409,8 +409,11 @@ $sendData["prods"] = $prodsSendData;
               <td>
                 <?php
                 $sc_price = 10;
-                if($it['it_sc_type'] != 4) {
+                if($it['it_sc_type'] < 4) {
                   $sc_price_info = number_format($sc_price).'만원 이상 무료배송<br>'.$sc_price_info;
+                }
+                if($it['it_sc_type'] == 5) {
+                  $sc_price_info = '짝수 주문시 무료배송<br>'.$sc_price_info;
                 }
                 if ($it['it_delivery_cnt'] > 0) {
                   $sc_price_info = "<span style=\"font-size:13px; color:#ef7c00;\">본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span><br>".$sc_price_info;
@@ -803,8 +806,11 @@ $sendData["prods"] = $prodsSendData;
           //if ($it['it_sc_minimum']) {
             //$sc_price = ((int)$it['it_sc_minimum'] / 10000);
             $sc_price = 10;
-            if($it['it_sc_type'] != 4) {
+            if($it['it_sc_type'] < 4) {
               $sc_price_info = number_format($sc_price).'만원 이상 무료배송<br>'.$sc_price_info;
+            }
+            if($it['it_sc_type'] == 5) {
+              $sc_price_info = '짝수 주문시 무료배송<br>'.$sc_price_info;
             }
           //}
           if ($it['it_delivery_cnt'] > 0) {
