@@ -181,7 +181,8 @@ function max_length_check(object){
         <div class="im_item_wr">
           <div class="im_tel_wr im_flex space-between">
             <div class="im_sch_hd">사업소 전화번호 공개</div>
-            <input class="im_switch" id="ms_ent_tel" type="checkbox" name="ms_ent_tel" value="<?=get_text($member['mb_tel'])?>" <?=get_checked($ms['ms_ent_tel'], get_text($member['mb_tel']))?>>
+            <input class="im_switch" id="ms_ent_tel" type="checkbox" name="ms_ent_tel" value="<?=get_text($member['mb_tel'])?>" checked="checked">
+            <!-- <input class="im_switch" id="ms_ent_tel" type="checkbox" name="ms_ent_tel" value="<?=get_text($member['mb_tel'])?>" <?=get_checked($ms['ms_ent_tel'], get_text($member['mb_tel']))?>> -->
             <label for="ms_ent_tel">
               <div class="im_switch_slider">
                 <span class="on">공개</span>
