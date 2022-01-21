@@ -26,7 +26,7 @@ include_once('./pop.head.php');
     content: '원';
 }
 </style>
-<form name="foption" class="form" role="form" method="post" action="./pop.order.add_result.php" onsubmit="return formcheck(this);">
+<form name="foption" class="form" role="form" method="post" action="./pop.order.add_result.php" onsubmit="return formcheck(this);" autocomplete="off">
 <div id="pop_order_add" class="admin_popup admin_popup_padding">
     <h4 class="h4_header"><?php echo $title; ?></h4>
     <div class="info">
@@ -306,6 +306,48 @@ function formcheck(f) {
 }
 
 $(function() {
+    var focusedElement;
+    $(document).on('focus', 'input', function () {
+        if (focusedElement == this) return; //already focused, return so user can now place cursor at specific point in input.
+        focusedElement = this;
+        setTimeout(function () { focusedElement.select(); }, 100); //select all text in any field on focus for easy re-entry. Delay sightly to allow focus to "stick" before selecting.
+    });
+
+    $(document).on('keydown','input',function (e) {
+        var input_names = ["flexdatalist-it_name[]", "qty[]", "it_price[]", "memo[]"];
+        var name = $(this).attr("name");
+        var index = input_names.indexOf(name);
+        if (e.which === 39) {
+            //right
+            index++;
+            if (index == 4) {
+                index = 0;
+                $(this).closest("tr").next("tr").find("input[name='"+input_names[index]+"']").focus();
+            }
+            else {
+                $(this).closest("tr").find("input[name='"+input_names[index]+"']").focus();
+            }
+        }
+        else if (e.which === 37) {
+            //left
+            index--;
+            if (index == -1) {
+                index = 3;
+                $(this).closest("tr").prev("tr").find("input[name='"+input_names[index]+"']").focus();
+            }
+            else {
+                $(this).closest("tr").find("input[name='"+input_names[index]+"']").focus();
+            }
+        }
+        else if (e.which === 38) {
+            //up
+            $(this).closest("tr").prev("tr").find("input[name='"+input_names[index]+"']").focus();
+        }
+        else if (e.which === 40) {
+            //down
+            $(this).closest("tr").next("tr").find("input[name='"+input_names[index]+"']").focus();
+        }
+    });
     function add_flexdatalist(node) {
         $(node).flexdatalist({
             minLength: 1,

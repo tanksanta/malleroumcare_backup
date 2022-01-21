@@ -3981,4 +3981,12 @@ function option_array_checked($option, $arr=array()){
 
     return $checked;
 }
+
+// 통계 데이터 입력
+function insert_statistics($type, $mb_id, $mb_level, $message = "", $ref_id = "")
+{
+    $sql = " INSERT INTO g5_statistics 
+            SET type = '{$type}', mb_id = '{$mb_id}', mb_level = '{$mb_level}', message = '{$message}', ref_id = '{$ref_id}' ";
+    sql_query($sql, FALSE);
+}
 ?>
