@@ -1771,6 +1771,9 @@ sql_query("
     entId = '{$member['mb_entId']}'
 ");
 
+// 통계등록
+insert_statistics("ORDER", $member['mb_id'], $member['mb_level'], "간편주문서 주문", $od_id);
+
 goto_url($redirect_dest_url);
 ?>
 
