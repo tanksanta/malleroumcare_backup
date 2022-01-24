@@ -341,11 +341,15 @@ $(function() {
         }
         else if (e.which === 38) {
             //up
-            $(this).closest("tr").prev("tr").find("input[name='"+input_names[index]+"']").focus();
+            if (index > 0) {
+                $(this).closest("tr").prev("tr").find("input[name='"+input_names[index]+"']").focus();
+            }
         }
         else if (e.which === 40) {
             //down
-            $(this).closest("tr").next("tr").find("input[name='"+input_names[index]+"']").focus();
+            if (index > 0) {
+                $(this).closest("tr").next("tr").find("input[name='"+input_names[index]+"']").focus();
+            }
         }
     });
     function add_flexdatalist(node) {
