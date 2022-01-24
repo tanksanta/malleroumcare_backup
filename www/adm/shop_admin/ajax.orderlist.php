@@ -452,8 +452,8 @@ $sql  = "
   $sql_common
   limit $from_record, $rows
 ";
-if ($click_status) {
-  if ($show_all == 'Y' && ($click_status == "준비" || $click_status == "출고준비")) {
+if ($click_status || $od_status) {
+  if ($show_all == 'Y' && ($click_status == "준비" || $click_status == "출고준비" || $od_status == '준비' || $od_status == '출고준비')) {
     $sql = preg_replace('/limit (.*)/i', '', $sql);
   }
 }

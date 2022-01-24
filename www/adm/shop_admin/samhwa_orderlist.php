@@ -750,6 +750,28 @@ function doSearch(show_all) {
     // $('#samhwa_order_list_table>div.table:first-child tbody').append(html.left);
     // $('#samhwa_order_list_table>div.table:last-child tbody').append(html.right);
 
+    var show_all_order_btn = false;
+    $('.step_before input[name="od_status[]"]').each(function (i, v) {
+      if ($(v).attr('id') == 'step_all0') {
+        if ($(v).is(":checked")) {
+          show_all_order_btn = false;
+          return false;
+        }
+      }
+      else {
+        if ($(v).attr('id').indexOf('준비')) {
+          if ($(v).is(":checked")) {
+            show_all_order_btn = true;
+          }
+        }
+      }
+    });
+    if (show_all_order_btn) {
+      $('#show_all_order').show();
+    }
+    console.log('show_all_order_btn');
+    console.log(show_all_order_btn);
+
     if ( !html.data ) {
       end = true;
     }
@@ -1232,7 +1254,6 @@ $( document ).ready(function() {
     <?php if ($search) { ?>
     $('#search').val('<?php echo htmlspecialchars($search); ?>');
     <?php } ?>
-
     doSearch();
   
     $('#ct_barcode_all').prop('checked', true);
