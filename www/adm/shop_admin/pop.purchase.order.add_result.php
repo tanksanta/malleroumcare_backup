@@ -170,7 +170,8 @@ try {
       ct_direct_delivery_price,
       prodMemo,
       prodSupYn,
-      ct_warehouse
+      ct_warehouse,
+      ct_supply_partner
     )
   VALUES ";
 
@@ -341,7 +342,8 @@ try {
       '{$it['it_direct_delivery_price']}',
       '$memo[$i]',
       '{$it['prodSupYn']}',
-      '$ct_warehouse'
+      '$ct_warehouse',
+      '{$od_member['mb_id']}'
     )";
 
       sql_query($insert_sql);
