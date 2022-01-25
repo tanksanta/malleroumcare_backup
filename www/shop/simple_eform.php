@@ -1321,19 +1321,41 @@ $(document).on('change', '.sel_barcode_wr input[type="radio"], .sel_barcode_wr .
   update_barcode_field();
 });
 
-// 핸드폰 번호 입력 체크
-var pen_hp_input_timer = null;
-$('#penConNum').on('change paste keyup input', function() {
-  if(pen_hp_input_timer) clearTimeout(pen_hp_input_timer);
+// 핸드폰 번호 입력창 선택시 - 지우기
+$('#penConNum').on('focus', function() {
+  var $this = $(this);
+  var ms_pen_hp = $(this).val();
+  $(this).val(ms_pen_hp.replace(/-/g, ''));
+});
 
+// 핸드폰 번호 입력창 포커스 아웃시 10자리 되면 번호에 - 넣고 상품입력창 보여주기
+$('#penConNum').on('blur', function() {
+  var $this = $(this);
+  var ms_pen_hp = $(this).val();
+  $(this).val(ms_pen_hp.replace(/-/g, ''));
+  ms_pen_hp = $(this).val();
+
+  if (ms_pen_hp.length > 9) {
+    check_pen_input(ms_pen_hp);
+  }
+});
+
+// 핸드폰 번호 입력 체크
+$('#penConNum').on('change paste keyup input', function() {
   var $this = $(this);
   var penConNum = $(this).val();
-
-  pen_hp_input_timer = setTimeout(function() {
-    penConNum = penConNum.replace(/[^0-9]/g, '').replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, "$1-$2-$3");
-    $this.val(penConNum).change();
-  }, 300);
+  $(this).val(penConNum.replace(/-/g, ''));
+  penConNum = $(this).val();
+  if (penConNum.length > 10) {
+    check_pen_input(penConNum);
+  }
 });
+
+function check_pen_input(penConNum) {
+  var hp_pattern = /01[016789]-[^0][0-9]{2,3}-[0-9]{3,4}/;
+  penConNum = penConNum.replace(/[^0-9]/g, '').replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, "$1-$2-$3");
+  $('#penConNum').val(penConNum);
+}
 
 // 수급자 정보 변경되었는지 체크
 var first_completed = true;
