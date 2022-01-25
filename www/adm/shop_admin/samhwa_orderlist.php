@@ -769,10 +769,8 @@ function doSearch(show_all) {
     if (show_all_order_btn) {
       $('#show_all_order').show();
     }
-    console.log('show_all_order_btn');
-    console.log(show_all_order_btn);
 
-    if ( !html.data ) {
+    if ( !html.data || show_all == 'Y') {
       end = true;
     }
     if (html.counts) {
