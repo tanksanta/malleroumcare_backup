@@ -42,7 +42,7 @@ if(!$fr_date)
 if(!$to_date)
   $to_date = date('Y-m-d');
 
-$ledger_result = get_partner_ledger($mb_id, $fr_date, $to_date, $sel_field, $search, $sql_search);
+$ledger_result = get_partner_ledger($mb_id, $fr_date, $to_date, $sel_field, $search, $sql_search, true);
 
 $total_price = $ledger_result['total_price'];
 $total_price_p = @round(($total_price ?: 0) / 1.1);
@@ -148,7 +148,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <tr>
         <td class="td_date"><?=date('y-m-d', strtotime($fr_date))?></td>
         <td class="td_odrnum2"></td>
-        <td><?php echo str_replace("|", ", ", $row['mb_partner_type']); ?></td>
+        <td></td>
         <td class="td_id"></td>
         <td class="td_payby"></td>
         <td>이월잔액</td>
@@ -177,7 +177,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <?php } ?>
         </td>
         <td><?php echo str_replace("|", ", ", $row['mb_partner_type']); ?></td>
-        <td class="td_id"><?=$row['mb_entNm']?></td>
+        <td class="td_id"><?=$row['table_type'] == 'purchase' ? '이로움' : $row['mb_entNm']?></td>
         <td class="td_payby"><?=$manager['mb_name']?></td>
         <td><?=$row['it_name']?><?=$row['ct_option'] && $row['ct_option'] != $row['it_name'] ? "({$row['ct_option']})" : ''?></td>
         <td class="td_numsmall"><?=$row['ct_qty']?></td>
@@ -187,7 +187,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <td class="td_price"><?=number_format($row['sales'])?></td>
         <td class="td_price"><?=number_format($row['deposit'])?></td>
         <td class="td_price"><?=number_format($row['balance'])?></td>
-        <td class="td_id"><?=$row['od_b_name']?></td>
+        <td class="td_id"><?=$row['table_type'] == 'purchase' ? $row['ct_warehouse'] : $row['od_b_name']?></td>
       </tr>
       <?php } ?>
     </tbody>

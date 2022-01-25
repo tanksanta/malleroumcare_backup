@@ -1712,7 +1712,7 @@ function get_partner_members() {
 }
 
 // 파트너 거래처원장
-function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '', $search = '', $sql_search = '') {
+function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '', $search = '', $sql_search = '', $contain_purchase = false) {
   $where_order = $where_ledger = '';
 
   # 기간
@@ -1724,6 +1724,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
   # 주문내역
   $sql_order = "
     SELECT
+     'g5_shop' as table_type,
       od_time,
       c.od_id,
       mb_entNm,
@@ -1740,7 +1741,8 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       ) * ct_qty as price_d_s,
       0 as deposit,
       od_b_name,
-      ct_id
+      ct_id,
+      ct_warehouse
     FROM
       g5_shop_cart c
     LEFT JOIN
@@ -1756,9 +1758,45 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       {$where_order}
   ";
 
+  $sql_purchase_order = "
+    SELECT
+      'purchase' as table_type,
+      od_time,
+      c.od_id,
+      mb_entNm,
+      mb_partner_type,
+      it_name,
+      ct_option,
+      ct_qty,
+      ct_direct_delivery_price as price_d,
+      ROUND (
+         ct_direct_delivery_price / 1.1
+      ) * ct_qty as price_d_p,
+      ROUND (
+        ct_direct_delivery_price / 1.1 / 10
+      ) * ct_qty as price_d_s,
+      0 as deposit,
+      od_b_name,
+      ct_id,
+      ct_warehouse
+    FROM
+      purchase_cart c
+    LEFT JOIN
+      purchase_order o ON c.od_id = o.od_id
+    LEFT JOIN
+      g5_member m ON c.mb_id = m.mb_id
+    WHERE
+      ct_status = '발주대기' and
+      od_del_yn = 'N' and
+      ct_supply_partner = '{$mb_id}'
+      {$sql_search}
+      {$where_order}
+  ";
+
   # 입금/출금
   $sql_ledger = "
     SELECT
+      'partner_ledger' as table_type,
       pl_created_at as od_time,
       '' as od_id,
       m.mb_entNm,
@@ -1790,7 +1828,8 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
         END
       ) as deposit,
       '' as od_b_name,
-      '' as ct_id
+      '' as ct_id,
+      '' as ct_warehouse
     FROM
       partner_ledger l
     LEFT JOIN
@@ -1808,6 +1847,19 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       ({$sql_ledger} {$where_ledger})
     ) u
   ";
+
+  if ($contain_purchase) {
+    $sql_common = "
+  FROM
+    (
+      ({$sql_order} {$where_order})
+      UNION ALL
+      ({$sql_purchase_order} {$where_order})
+      UNION ALL
+      ({$sql_ledger} {$where_ledger})
+    ) u
+  ";
+  }
 
   # 구매액 합계 계산
   $total_result = sql_fetch("SELECT sum(price_d * ct_qty) as total_price, count(*) as cnt {$sql_common}", true);
