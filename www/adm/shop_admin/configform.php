@@ -1402,7 +1402,9 @@ if( function_exists('pg_setting_check') ){
           <th scope="row">창고관리</th>
           <td>
             <div class="wh_new_wr">
-              <input type="text" id="ipt_wh_new" class="frm_input" size="15" placeholder="창고명 입력">
+              <input type="text" id="ipt_wh_new_name" class="frm_input" size="15" placeholder="창고명">
+              <input type="text" id="ipt_wh_new_address" class="frm_input" size="15" placeholder="창고주소">
+              <input type="text" id="ipt_wh_new_phone" class="frm_input" size="15" placeholder="창고연락처">
               <button type="button" id="btn_wh_new" class="btn_frmline">등록</button>
               <button type="button" id="btn_wh_edit" class="btn_frmline" style="margin-left: 20px; border: 1px solid #ddd; background: #fff; color: #333 !important;">창고명 수정</button>
             </div>
@@ -1410,6 +1412,8 @@ if( function_exists('pg_setting_check') ){
               <thead>
                 <tr>
                   <th>창고명</th>
+                  <th>창고주소</th>
+                  <th>창고연락처</th>
                   <th>보유재고수량</th>
                   <th>삭제</th>
                   <th>사용여부</th>
@@ -2161,7 +2165,9 @@ $(function() {
       // 작성
       data = {
         w: w,
-        wh_name: $('#ipt_wh_new').val()
+        wh_name: $('#ipt_wh_new_name').val(),
+        wh_address: $('#ipt_wh_new_address').val(),
+        wh_phone: $('#ipt_wh_new_phone').val(),
       };
     }
 
@@ -2170,6 +2176,8 @@ $(function() {
 
       var wh_id = [];
       var wh_name = [];
+      var wh_address = [];
+      var wh_phone = [];
       var wh_use_yn = [];
 
       $('input[name="wh_name[]"]').each(function() {
@@ -2178,10 +2186,20 @@ $(function() {
         wh_use_yn.push($('input[name="wh_use_yn_'+$(this).data('id')+'"]:checked').val());
       });
 
+      $('input[name="wh_address[]"]').each(function() {
+        wh_address.push($(this).val());
+      });
+
+      $('input[name="wh_phone[]"]').each(function() {
+        wh_phone.push($(this).val());
+      });
+
       data = {
         w: w,
         wh_id: wh_id,
         wh_name: wh_name,
+        wh_address: wh_address,
+        wh_phone: wh_phone,
         wh_use_yn: wh_use_yn
       };
     }

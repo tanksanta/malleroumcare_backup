@@ -3,6 +3,12 @@ include_once('./_common.php');
 
 $keyword = str_replace(' ', '', trim($keyword));
 
+$supply_partner_where = '';
+
+if ($only_supply_partner) {
+  $supply_partner_where = " (mb_partner_type like '%공급%') AND ";
+}
+
 $sql = "SELECT
   mb_no as id,
   mb_id,
@@ -18,7 +24,9 @@ $sql = "SELECT
 FROM
   g5_member
 WHERE
-  (mb_intercept_date = '') AND (
+  (mb_intercept_date = '') AND 
+  {$supply_partner_where}
+  (
     (mb_id LIKE '%{$keyword}%') OR 
     (mb_name LIKE '%{$keyword}%') OR 
     (mb_nick LIKE '%{$keyword}%') OR 

@@ -18,6 +18,22 @@ if(!$ent['mb_id'])
 # 영업담당자
 $manager = get_member($ent['mb_manager']);
 
+# 파트너 서비스
+if (!$mb_partner_type)
+  $mb_partner_type = [];
+$where_partner_type = [];
+if (!$mb_partner_type_all && $mb_partner_type) {
+  foreach ($mb_partner_type as $partner_type) {
+    $qstr .= "mb_partner_type%5B%5D={$partner_type}&amp;";
+    $where_partner_type[] = " mb_partner_type like '%$partner_type%' ";
+  }
+  $where[] = ' ( ' . implode(' or ', $where_partner_type) . ' ) ';
+}
+
+if ($where) {
+  $sql_search = ' and '.implode(' and ', $where);
+}
+
 # 기간
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
@@ -26,7 +42,7 @@ if(!$fr_date)
 if(!$to_date)
   $to_date = date('Y-m-d');
 
-$ledger_result = get_partner_ledger($mb_id, $fr_date, $to_date, $sel_field, $search);
+$ledger_result = get_partner_ledger($mb_id, $fr_date, $to_date, $sel_field, $search, $sql_search, true);
 
 $total_price = $ledger_result['total_price'];
 $total_price_p = @round(($total_price ?: 0) / 1.1);
@@ -67,6 +83,19 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </td>
         </tr>
         <tr>
+          <th>서비스</th>
+          <td>
+            <input type="checkbox" name="mb_partner_type_all" value="1" id="chk_mb_partner_type_all" <?php if(!array_diff(['직배송', '설치', '물품공급'], $mb_partner_type)) echo 'checked'; ?>>
+            <label for="chk_mb_partner_type_all">전체</label>
+            <input type="checkbox" name="mb_partner_type[]" value="직배송" id="partner_type_1" class="chk_mb_partner_type" <?php if(in_array('직배송', $mb_partner_type)) echo 'checked'; ?>>
+            <label for="partner_type_1">직배송</label>
+            <input type="checkbox" name="mb_partner_type[]" value="설치" id="partner_type_2" class="chk_mb_partner_type" <?php if(in_array('설치', $mb_partner_type)) echo 'checked'; ?>>
+            <label for="partner_type_2">설치</label>
+            <input type="checkbox" name="mb_partner_type[]" value="물품공급" id="partner_type_3" class="chk_mb_partner_type" <?php if(in_array('물품공급', $mb_partner_type)) echo 'checked'; ?>>
+            <label for="partner_type_3">물품공급</label>
+          </td>
+        </tr>
+        <tr>
           <th>검색어</th>
           <td>
             <select name="sel_field" id="sel_field">
@@ -100,7 +129,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <tr>
         <th>주문일</th>
         <th>주문번호</th>
-        <th>사업소명</th>
+        <th style="width: 115px;">서비스</th>
+        <th>주문자</th>
         <th>영업담당자</th>
         <th>품목명</th>
         <th>수량</th>
@@ -110,7 +140,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <th>판매</th>
         <th>결제</th>
         <th>잔액</th>
-        <th>수령인</th>
+        <th>배송지</th>
       </tr>
     </thead>
     <tbody>
@@ -118,6 +148,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <tr>
         <td class="td_date"><?=date('y-m-d', strtotime($fr_date))?></td>
         <td class="td_odrnum2"></td>
+        <td></td>
         <td class="td_id"></td>
         <td class="td_payby"></td>
         <td>이월잔액</td>
@@ -145,7 +176,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <a href="<?=G5_ADMIN_URL?>/shop_admin/samhwa_orderform.php?od_id=<?=$row['od_id']?>"><?=$row['od_id']?></a>
           <?php } ?>
         </td>
-        <td class="td_id"><?=$row['mb_entNm']?></td>
+        <td><?php echo str_replace("|", ", ", $row['mb_partner_type']); ?></td>
+        <td class="td_id"><?=$row['table_type'] == 'purchase' ? '이로움' : $row['mb_entNm']?></td>
         <td class="td_payby"><?=$manager['mb_name']?></td>
         <td><?=$row['it_name']?><?=$row['ct_option'] && $row['ct_option'] != $row['it_name'] ? "({$row['ct_option']})" : ''?></td>
         <td class="td_numsmall"><?=$row['ct_qty']?></td>
@@ -155,7 +187,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <td class="td_price"><?=number_format($row['sales'])?></td>
         <td class="td_price"><?=number_format($row['deposit'])?></td>
         <td class="td_price"><?=number_format($row['balance'])?></td>
-        <td class="td_id"><?=$row['od_b_name']?></td>
+        <td class="td_id"><?=$row['table_type'] == 'purchase' ? $row['ct_warehouse'] : $row['od_b_name']?></td>
       </tr>
       <?php } ?>
     </tbody>

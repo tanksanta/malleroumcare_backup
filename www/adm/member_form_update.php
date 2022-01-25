@@ -176,6 +176,13 @@ $mb_fax = $_POST['mb_fax1']."-".$_POST['mb_fax2']."-".$_POST['mb_fax3'];
 $mb_giup_btel = $_POST['mb_tel1']."-".$_POST['mb_tel2']."-".$_POST['mb_tel3'];
 $mb_tel = $_POST['mb_tel1']."-".$_POST['mb_tel2']."-".$_POST['mb_tel3'];
 
+// 파트너 유형 (직배송, 설치, 물품공급)
+
+$mb_partner_type_text = '';
+if ($_POST['mb_partner_type'] != null && $_POST['mb_type'] == 'partner') {
+    $mb_partner_type_text = implode('|', $_POST['mb_partner_type']);
+}
+
 $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_nick = '{$mb_nick}',
                  mb_email = '{$mb_email}',
@@ -231,6 +238,7 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_giup_tax_email = '{$mb_giup_tax_email}',
                  mb_giup_manager_name = '{$mb_giup_manager_name}',
                  mb_giup_manager_tel = '{$mb_giup_manager_tel}',
+                 mb_partner_type = '{$mb_partner_type_text}',
                  mb_partner_auth = '{$_POST['mb_partner_auth']}',
                  mb_partner_date = '{$_POST['mb_partner_date']}',
                  mb_partner_date_auto = '{$_POST['mb_partner_date_auto']}',

@@ -11,10 +11,13 @@ if($auth_check)
 if($w === 'w') {
   // 작성
   $wh_name = clean_xss_tags($_POST['wh_name']);
+  $wh_address = clean_xss_tags($_POST['wh_address']);
+  $wh_phone = clean_xss_tags($_POST['wh_phone']);
+
   if(!$wh_name)
     json_response(400, '창고이름을 입력해주세요.');
   
-  $sql = " insert into warehouse set wh_name = '{$wh_name}' ";
+  $sql = " insert into warehouse set wh_name = '{$wh_name}', wh_address = '{$wh_address}', wh_phone = '{$wh_phone}' ";
   $result = sql_query($sql);
 
   if(!$result)
@@ -25,6 +28,8 @@ else if($w === 'u') {
   // 수정
   $wh_id_arr = $_POST['wh_id'];
   $wh_name_arr = $_POST['wh_name'];
+  $wh_address_arr = $_POST['wh_address'];
+  $wh_phone_arr = $_POST['wh_phone'];
   $wh_use_yn_arr = $_POST['wh_use_yn'];
 
   if(!$wh_id_arr || !is_array($wh_id_arr))
@@ -33,6 +38,8 @@ else if($w === 'u') {
   for($i = 0; $i < count($wh_id_arr); $i++) {
     $wh_id = get_search_string($wh_id_arr[$i]);
     $wh_name = clean_xss_tags($wh_name_arr[$i]);
+    $wh_address = clean_xss_tags($wh_address_arr[$i]);
+    $wh_phone = clean_xss_tags($wh_phone_arr[$i]);
     $wh_use_yn = clean_xss_tags($wh_use_yn_arr[$i]);
 
     $sql = " select * from warehouse where wh_id = '$wh_id' ";
@@ -50,14 +57,17 @@ else if($w === 'u') {
 
     if(!$wh_id || !$wh_name) continue;
 
-    if($wh['wh_name'] !== $wh_name) {
+    if(($wh['wh_name'] !== $wh_name) || ($wh['wh_address'] !== $wh_address) || ($wh['wh_phone'] !== $wh_phone)) {
       $sql = "
         update
           warehouse w
         left join
           warehouse_stock s ON w.wh_name = s.wh_name
         set
-          wh_name = '$wh_name'
+          w.wh_name = '$wh_name',
+          s.wh_name = '$wh_name',
+          w.wh_address = '$wh_address',
+          w.wh_phone = '$wh_phone'
         where
           wh_id = '$wh_id'
       ";
@@ -100,6 +110,12 @@ while($row = sql_fetch_array($result)) {
     <tr>
       <td>
         <input type="text" name="wh_name[]" class="frm_input" value="'.$row['wh_name'].'" data-id="'.$row['wh_id'].'">
+      </td>
+      <td>
+        <input type="text" name="wh_address[]" class="frm_input" value="'.$row['wh_address'].'" data-id="'.$row['wh_id'].'">
+      </td>
+      <td>
+        <input type="text" name="wh_phone[]" class="frm_input" value="'.$row['wh_phone'].'" data-id="'.$row['wh_id'].'">
       </td>
       <td>
         '.($total['total'] ?? 0).'개

@@ -816,7 +816,8 @@ display: none;
     font-size:15px;
     font-weight:bold;
 }
-#popup_buttom input[type="submit"], 
+#popup_buttom input[type="submit"],
+#popup_buttom input.submitInput,
 #pop_add_item .content .addoptionbuttons input[type="submit"] {
     display:block;
     width:80%;

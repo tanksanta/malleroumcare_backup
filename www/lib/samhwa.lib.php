@@ -430,6 +430,85 @@ $order_steps = array(
     )
 );
 
+$purchase_order_steps = array(
+  '0' => array(
+    'name' => '발주대기',
+    'val' => '발주대기',
+    'next' => 1,
+    'orderlist' => true,
+    'step' => 5,
+    'chulgo' => '출고전',
+    'cart' => true,
+    'orderlist_complete' => false,
+    'cart_editable' => true,
+    'cart_deletable' => true,
+    'cancelable' => true,
+    "statusN" => "06",
+    "statusY" => "01",
+  ),
+  '1' => array(
+    'name' => '발주완료',
+    'val' => '발주완료',
+    'next' => 2,
+    'prev' => 0,
+    'orderlist' => true,
+    'step' => 10,
+    'chulgo' => '출고전',
+    'cart' => true,
+    'orderlist_complete' => false,
+    'cart_editable' => true,
+    'cart_deletable' => true,
+    'cancelable' => true,
+    "statusN" => "06",
+    "statusY" => "01",
+  ),
+  '2' => array(
+    'name' => '출고완료',
+    'val' => '출고완료',
+    'next' => 3,
+    'prev' => 1,
+    'orderlist' => true,
+    'step' => 15,
+    'chulgo' => '출고후',
+    'cart' => true,
+    'orderlist_complete' => false,
+    'cart_editable' => true,
+    'cart_deletable' => true,
+    'cancelable' => true,
+    "statusN" => "06",
+    "statusY" => "01",
+  ),
+  '3' => array(
+    'name' => '입고완료',
+    'val' => '입고완료',
+    'prev' => 2,
+    'orderlist' => true,
+    'step' => 20,
+    'chulgo' => '출고후',
+    'cart' => true,
+    'orderlist_complete' => false,
+    'deliverylist' => true,
+    'cart_editable' => true,
+    'cart_deletable' => true,
+    'direct_cancel' => true,
+    "statusN" => "06",
+    "statusY" => "01",
+  ),
+  '4' => array(
+    'name' => '취소',
+    'val' => '취소',
+    'orderlist' => true,
+    'step' => 70,
+    'chulgo' => '',
+    'cart' => false,
+    'orderlist_complete' => false,
+    "statusN" => "06",
+    "statusY" => "01",
+    'cart_editable' => false,
+    'cart_deletable' => false,
+  ),
+);
+
 $cancel_request_types = array(
         '0' => array(
                 'name' => '주문취소요청',
@@ -563,6 +642,27 @@ function get_step($od_status) {
     }
 }
 
+function get_purchase_step($od_status) {
+
+  global $purchase_order_steps;
+
+  $ret = array();
+
+  $k = -1;
+
+  for($i=0;$i<count($purchase_order_steps); $i++) {
+    if ( $od_status == $purchase_order_steps[$i]['val'] ) {
+      $k = $i;
+    }
+  }
+
+  if ( $k > -1 ) {
+    return $purchase_order_steps[$k];
+  }else{
+    return false;
+  }
+}
+
 function get_canel_request($reqeust_type) {
     global $cancel_request_types;
     
@@ -623,6 +723,48 @@ function get_prev_step($od_status) {
     }else{
         return false;
     }
+}
+
+// 다음 스탭 정보 가져오기
+function get_next_purchase_step($od_status) {
+  global $purchase_order_steps;
+
+  $ret = array();
+
+  $k = -1;
+
+  for($i=0;$i<count($purchase_order_steps); $i++) {
+    if ( $od_status == $purchase_order_steps[$i]['val'] ) {
+      $k = $i;
+    }
+  }
+
+  if ( $k > -1 && $purchase_order_steps[$k]['next'] !== NULL ) {
+    return $purchase_order_steps[$purchase_order_steps[$k]['next']];
+  }else{
+    return false;
+  }
+}
+
+// 이전 스탭 정보 가져오기
+function get_prev_purchase_step($od_status) {
+  global $purchase_order_steps;
+
+  $ret = array();
+
+  $k = -1;
+
+  for($i=0;$i<count($purchase_order_steps); $i++) {
+    if ( $od_status == $purchase_order_steps[$i]['val'] ) {
+      $k = $i;
+    }
+  }
+
+  if ( $k > -1 && $purchase_order_steps[$k]['prev'] !== NULL ) {
+    return $purchase_order_steps[$purchase_order_steps[$k]['prev']];
+  }else{
+    return false;
+  }
 }
 
 function get_order_admin_log($od_id) {
