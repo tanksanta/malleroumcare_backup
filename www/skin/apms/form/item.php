@@ -559,6 +559,20 @@ $warehouse_list = get_warehouses();
         <input type="text" name="it_price" value="<?php echo $it['it_price']; ?>" id="it_price" class="frm_input importantBorder" size="8"> 원, <span id="entprice_count"><?=$entprice_count['cnt']?></span>개 사업소 가격 수정 <button type="button" id="btn_entprice" class="btn_frmline" data-id="<?=$it_id?>">사업소 가격 지정</button>
       </td>
     </tr>
+    <tr>
+      <th scope="row"><label for="it_purchase_order_price">구매가격</label></th>
+      <td>
+        <?php
+        $average_sales_qty = get_average_sales_qty($it_id, 3);
+        ?>
+        <input type="text" name="it_purchase_order_price" value="<?php echo $it['it_purchase_order_price']; ?>" id="it_purchase_order_price" class="frm_input importantBorder" size="8"> 원
+        (안전재고:<input type="text" name="it_stock_manage_min_qty" value="<?php echo $it['it_stock_manage_min_qty']; ?>" placeholder="<?php echo (int)($average_sales_qty / 2) ?>" class="frm_input" size="8"> 개,
+        최대재고:<input type="text" name="it_stock_manage_max_qty" value="<?php echo $it['it_stock_manage_max_qty']; ?>" placeholder="<?php echo (int)($average_sales_qty * 1.5) ?>" class="frm_input" size="8"> 개)
+        <br>
+        <label for="it_purchase_order_min_qty">최소구매 주문수량</label>: <input type="text" name="it_purchase_order_min_qty" id="it_purchase_order_min_qty" value="<?php echo $it['it_purchase_order_min_qty']; ?>" class="frm_input importantBorder" size="8"> 개,
+        <label for="it_purchase_order_unit">주문단위</label> : <input type="text" name="it_purchase_order_unit" id="it_purchase_order_unit" value="<?php echo $it['it_purchase_order_unit']; ?>" class="frm_input importantBorder" size="8"> 개씩 구매
+      </td>
+    </tr>
     <?php if($is_auth) { // 관리자일 때만 출력 ?>
     <tr>
       <th scope="row"><label for="it_cust_price">급여가</label></th>
@@ -853,7 +867,7 @@ $warehouse_list = get_warehouses();
           });
 
           // 모두선택
-                    $(document).on("click", "input[name=opt_chk_all]", function() {
+          $(document).on("click", "input[name=opt_chk_all]", function() {
             if($(this).is(":checked")) {
               $("input[name='opt_chk[]']").attr("checked", true);
             } else {
@@ -862,14 +876,22 @@ $warehouse_list = get_warehouses();
           });
 
           // 선택삭제
-                    $(document).on("click", "#sel_option_delete", function() {
+          $(document).on("click", "#sel_option_delete", function() {
             var $el = $("input[name='opt_chk[]']:checked");
             if($el.size() < 1) {
               alert("삭제하려는 옵션을 하나 이상 선택해 주십시오.");
               return false;
             }
 
-            $el.closest("tr").remove();
+            $el.closest("tr").each(function(index, item) {
+              if (!$(item).hasClass('new') && $(item).find('input[name="opt_stock_qty[]"]').val() > 0) {
+                var optionName = $(item).find('.opt-cell').text();
+                alert(optionName + '는 재고를 보유하고 있습니다. 삭제를 원하시면 재고를 0으로 소진 후 삭제해주세요.');
+                return false;
+              } else {
+                $(item).remove();
+              }
+            });
           });
 
           // 바코드 8자리
@@ -1100,7 +1122,7 @@ $warehouse_list = get_warehouses();
           });
 
           // 모두선택
-                    $(document).on("click", "input[name=spl_chk_all]", function() {
+          $(document).on("click", "input[name=spl_chk_all]", function() {
             if($(this).is(":checked")) {
               $("input[name='spl_chk[]']").attr("checked", true);
             } else {
@@ -1109,18 +1131,26 @@ $warehouse_list = get_warehouses();
           });
 
           // 선택삭제
-                    $(document).on("click", "#sel_supply_delete", function() {
+          $(document).on("click", "#sel_supply_delete", function() {
             var $el = $("input[name='spl_chk[]']:checked");
             if($el.size() < 1) {
               alert("삭제하려는 옵션을 하나 이상 선택해 주십시오.");
               return false;
             }
 
-            $el.closest("tr").remove();
+            $el.closest("tr").each(function(index, item) {
+              if (!$(item).hasClass('new') && $(item).find('input[name="spl_stock_qty[]"]').val() > 0) {
+                var supplyName = $(item).find('.spl-cell').text();
+                alert(supplyName + '는 재고를 보유하고 있습니다. 삭제를 원하시면 재고를 0으로 소진 후 삭제해주세요.');
+                return false;
+              } else {
+                $(item).remove();
+              }
+            });
           });
 
           // 일괄적용
-                    $(document).on("click", "#spl_value_apply", function() {
+          $(document).on("click", "#spl_value_apply", function() {
             if($(".spl_com_chk:checked").size() < 1) {
               alert("일괄 수정할 항목을 하나이상 체크해 주십시오.");
               return false;

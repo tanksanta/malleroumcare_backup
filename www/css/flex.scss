@@ -1,0 +1,28 @@
+.flex-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+
+  &.justify-space-between {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+  }
+
+  &.align-center {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+
+  &.no-gutter {
+    margin: 0
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.text-center {
+  text-align: center;
+}

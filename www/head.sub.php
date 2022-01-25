@@ -114,6 +114,7 @@ if ( defined('THEMA_URL') ) {
 	echo '<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/samhwa.css?ver='.time().'">'.PHP_EOL;
 }
 ?>
+<link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/flex.css">
 <!--[if lte IE 8]>
 <script src="<?php echo G5_JS_URL ?>/html5.js"></script>
 <![endif]-->

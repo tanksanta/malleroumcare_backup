@@ -26,18 +26,32 @@ if(!$mb_manager_all && $mb_manager) {
   }
   $where[] = ' ( ' . implode(' or ', $where_manager) . ' ) ';
 }
-$manager_result = sql_query("
-  SELECT
-    a.mb_id,
-    m.mb_name
-  FROM
-    g5_auth a
-  LEFT JOIN
-    g5_member m ON a.mb_id = m.mb_id
-  WHERE
-    au_menu = '400400' and
-    au_auth LIKE '%w%'
-");
+if ($type != 'partner') {
+  $manager_result = sql_query("
+    SELECT
+      a.mb_id,
+      m.mb_name
+    FROM
+      g5_auth a
+    LEFT JOIN
+      g5_member m ON a.mb_id = m.mb_id
+    WHERE
+      au_menu = '400400' and
+      au_auth LIKE '%w%'
+  ");
+} else {
+  $manager_result = sql_query("  
+    SELECT DISTINCT 
+      m.mb_manager AS mb_id,
+      (SELECT mb_name from g5_member WHERE mb_id = m.mb_manager) as mb_name
+    FROM
+      g5_member m
+    WHERE
+      mb_level >= 3 AND mb_level < 9
+       AND  mb_type = 'partner'
+       AND mb_manager > ''
+   ");
+}
 $managers = [];
 while($manager = sql_fetch_array($manager_result)) {
   $managers[$manager['mb_id']] = $manager['mb_name'];
@@ -47,6 +61,18 @@ while($manager = sql_fetch_array($manager_result)) {
 $search = get_search_string($search);
 if($search)
   $where[] = " mb_entNm LIKE '%{$search}%' ";
+
+# 파트너 서비스
+if (!$mb_partner_type)
+  $mb_partner_type = [];
+$where_partner_type = [];
+if (!$mb_partner_type_all && $mb_partner_type) {
+  foreach ($mb_partner_type as $partner_type) {
+    $qstr .= "mb_partner_type%5B%5D={$partner_type}&amp;";
+    $where_partner_type[] = " mb_partner_type like '%$partner_type%' ";
+  }
+  $where[] = ' ( ' . implode(' or ', $where_partner_type) . ' ) ';
+}
 
 $sql_search = '';
 if($where) {
@@ -235,6 +261,21 @@ function get_ledger_history_recent($mb_id) {
             <?php } ?>
           </td>
         </tr>
+        <?php if ($type == 'partner') { ?>
+          <tr>
+            <th>서비스</th>
+            <td>
+              <input type="checkbox" name="mb_partner_type_all" value="1" id="chk_mb_partner_type_all" <?php if(!array_diff(['직배송', '설치', '물품공급'], $mb_partner_type)) echo 'checked'; ?>>
+              <label for="chk_mb_partner_type_all">전체</label>
+              <input type="checkbox" name="mb_partner_type[]" value="직배송" id="partner_type_1" class="chk_mb_partner_type" <?php if(in_array('직배송', $mb_partner_type)) echo 'checked'; ?>>
+              <label for="partner_type_1">직배송</label>
+              <input type="checkbox" name="mb_partner_type[]" value="설치" id="partner_type_2" class="chk_mb_partner_type" <?php if(in_array('설치', $mb_partner_type)) echo 'checked'; ?>>
+              <label for="partner_type_2">설치</label>
+              <input type="checkbox" name="mb_partner_type[]" value="물품공급" id="partner_type_3" class="chk_mb_partner_type" <?php if(in_array('물품공급', $mb_partner_type)) echo 'checked'; ?>>
+              <label for="partner_type_3">물품공급</label>
+            </td>
+          </tr>
+        <?php } ?>
         <tr>
           <th>사업소명</th>
           <td>
@@ -263,6 +304,9 @@ function get_ledger_history_recent($mb_id) {
         </th>
         <th>No.</th>
         <th>사업소명</th>
+        <?php if ($type == 'partner') { ?>
+        <th>서비스</th>
+        <?php } ?>
         <th>영업담당자</th>
         <th>
           <?php
@@ -306,6 +350,9 @@ function get_ledger_history_recent($mb_id) {
         </td>
         <td class="td_cntsmall"><?=$ent['index']?></td>
         <td><?php echo $ent['mb_entNm'] ?: $ent_mb['mb_giup_bname'] ?: $ent_mb['mb_name']; ?></td>
+        <?php if ($type == 'partner') { ?>
+          <td><?php echo str_replace("|", ", ", $ent_mb['mb_partner_type']); ?></td>
+        <?php } ?>
         <td class="td_payby"><?=$ent['mb_manager']?></td>
         <td class="td_numsum"><?=number_format($ent['sales'])?></td>
         <td class="td_numsum"><?=number_format($ent['balance'])?></td>
@@ -366,6 +413,19 @@ $(function() {
     var total = $('.chk_mb_manager').length;
     var checkedTotal = $('.chk_mb_manager:checked').length;
     $("#chk_mb_manager_all").prop('checked', total <= checkedTotal); 
+  });
+
+  // 파트너 서비스 - 전체 버튼
+  $('#chk_mb_partner_type_all').change(function() {
+    var checked = $(this).is(":checked");
+    $(".chk_mb_partner_type").prop('checked', checked);
+  });
+
+  // 파트너 서비스 - 파트너 서비스 버튼
+  $('.chk_mb_partner_type').change(function() {
+    var total = $('.chk_mb_partner_type').length;
+    var checkedTotal = $('.chk_mb_partner_type:checked').length;
+    $("#chk_mb_partner_type_all").prop('checked', total <= checkedTotal);
   });
 
   //거래처 전체선택

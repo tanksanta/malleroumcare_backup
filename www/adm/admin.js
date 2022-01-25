@@ -198,32 +198,57 @@ $.fn.serializeObject = function() {
 }
 
 function change_step(od_id, step, api) {
-
     console.log(od_id);
     console.log(step);
     console.log(api);
     $.ajax({
-                method: "POST",
-                url: "./ajax.order.step.php",
-                data: {
-                    'step': step,
-                    'od_id[]': od_id,
-						'api' : api
-                },
-            })
-    .done(function(data) {
+        method: "POST",
+        url: "./ajax.order.step.php",
+        data: {
+            'step': step,
+            'od_id[]': od_id,
+            'api': api
+        },
+    }).done(function (data) {
         console.log(data);
-        if ( data == 'success' ) {
+        if (data == 'success') {
             alert('상태가 변경되었습니다.');
-            if(step =="준비"){
+            if (step == "준비") {
                 location.reload();
-            }else{
-                $("#"+step).click();
+            } else {
+                $("#" + step).click();
             }
-        }else{
+        } else {
             alert(data);
         }
     });
+}
+
+function change_step_for_purchase_order(od_id, step, api) {
+  console.log(od_id);
+  console.log(step);
+  console.log(api);
+  $.ajax({
+    method: "POST",
+    url: "./ajax.purchase.order.step.php",
+    data: {
+      'step': step,
+      'od_id[]': od_id,
+      'api': api
+    },
+  }).done(function (data) {
+    console.log(data);
+    if (data == 'success') {
+      alert('상태가 변경되었습니다.');
+      if (step == "준비") {
+        location.reload();
+      } else {
+        $("#" + step).click();
+      }
+    } else {
+      alert(data);
+    }
+  });
 }
 
 function clear_form(obj) {

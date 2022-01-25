@@ -321,13 +321,19 @@ label {
     <tr>
         <th scope="row">회원유형</th>
         <td colspan="3">
-            <select class="frm_input" name="mb_type">
-                <option value="default" <?php echo $mb['mb_type'] == 'default' ? 'selected' : ''; ?>>일반사업소</option>
-                <option value="normal" <?php echo $mb['mb_type'] == 'normal' ? 'selected' : ''; ?>>일반회원</option>
-                <option value="partner" <?php echo $mb['mb_type'] == 'partner' ? 'selected' : ''; ?>>파트너(직배송, 설치, 소독)</option>
-                <option value="supplier" <?php echo $mb['mb_type'] == 'supplier' ? 'selected' : ''; ?>>물품공급업체</option>
-                <option value="center" <?php echo $mb['mb_type'] == 'center' ? 'selected' : ''; ?>>방문급여센터</option>
-            </select>
+            <div class="flex-row">
+                <select class="frm_input" name="mb_type" onchange="togglePartnerType(this)">
+                    <option value="default" <?php echo $mb['mb_type'] == 'default' ? 'selected' : ''; ?>>일반사업소</option>
+                    <option value="normal" <?php echo $mb['mb_type'] == 'normal' ? 'selected' : ''; ?>>일반회원</option>
+                    <option value="partner" <?php echo $mb['mb_type'] == 'partner' ? 'selected' : ''; ?>>파트너(직배송, 설치, 소독)</option>
+                    <option value="center" <?php echo $mb['mb_type'] == 'center' ? 'selected' : ''; ?>>방문급여센터</option>
+                </select>
+                <div class="partner-type-wrapper" style="margin-left: 10px; <?php echo $mb['mb_type'] != 'partner' ? 'display: none;' : '' ?>">
+                  <label><input type="checkbox" name="mb_partner_type[]" value="직배송" <?php echo strpos($mb['mb_partner_type'], '직배송') !== false ? 'checked' : '' ?>>직배송</label>
+                  <label><input type="checkbox" name="mb_partner_type[]" value="설치" <?php echo strpos($mb['mb_partner_type'], '설치') !== false ? 'checked' : '' ?>>설치</label>
+                  <label><input type="checkbox" name="mb_partner_type[]" value="물품공급" <?php echo strpos($mb['mb_partner_type'], '물품공급') !== false ? 'checked' : '' ?>>물품공급</label>
+                </div>
+            </div>
         </td>
     </tr>
     <tr>
@@ -1551,6 +1557,14 @@ function check_giup_sbnum() {
     } else {
         alert("사용 가능한 종사업자번호입니다.")
     }
+}
+
+function togglePartnerType(x) {
+  $('.partner-type-wrapper').hide();
+
+  if ($(x).val() === 'partner') {
+    $('.partner-type-wrapper').show();
+  }
 }
 
 </script>
