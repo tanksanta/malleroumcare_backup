@@ -259,6 +259,54 @@ $(function () {
       'width=1080, height=900, resizable = no, scrollbars = no'
     );
   });
+
+
+  /****** 발주 관련 함수 *******/
+
+  $(document).on('click', '#change_cancel_step_for_purchase_order', function () {
+    var next_step_val = '취소';
+    //var od_id = $('#samhwa_order_list_table>div.table td input[type=checkbox]:checked').serializeObject();
+    var od_id = $(get_selected(this)).serializeObject();
+    if (od_id['od_id[]'] === undefined) {
+      alert('선택해주세요.');
+      return;
+    }
+
+    change_step_for_purchase_order(od_id['od_id[]'], next_step_val, 'true');
+  });
+
+  $(document).on('click', '#change_next_step_for_purchase_order', function () {
+    var next_step_val = $(this).data('next-step-val');
+    //var od_id = $('#samhwa_order_list_table>div.table td input[type=checkbox]:checked').serializeObject();
+    var $selected_ods = get_selected(this);
+    for (var i = 0; i < $selected_ods.length; i++) {
+      var $selected_od = $selected_ods[i];
+      if ($($selected_od).closest('tr').hasClass('cancel_requested')) {
+        alert('취소요청이 있는 주문은 단계이동이 불가능합니다.');
+        return;
+      }
+    }
+    var od_id = $($selected_ods).serializeObject();
+    if (od_id['od_id[]'] === undefined) {
+      alert('선택해주세요.');
+      return;
+    }
+
+    change_step_for_purchase_order(od_id['od_id[]'], next_step_val, 'true');
+  });
+
+  $(document).on('click', '#change_prev_step_for_purchase_order', function () {
+    var prev_step_val = $(this).data('prev-step-val');
+    //var od_id = $('#samhwa_order_list_table>div.table td input[type=checkbox]:checked').serializeObject();
+    var od_id = $(get_selected(this)).serializeObject();
+
+    if (od_id['od_id[]'] === undefined) {
+      alert('선택해주세요.');
+      return;
+    }
+
+    change_step_for_purchase_order(od_id['od_id[]'], prev_step_val, 'true');
+  });
 });
 
 $(function () {

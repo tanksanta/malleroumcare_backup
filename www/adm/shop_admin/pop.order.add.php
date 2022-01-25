@@ -411,7 +411,7 @@ $(function() {
     $('.mb_id_flexdatalist').flexdatalist({
         minLength: 1,
         url: '/adm/ajax.get_mb_id.php',
-        cache: true, // cache
+        cache: false, // cache
         searchContain: true, // %검색어%
         noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
         visibleProperties: ["mb_name", "mb_nick"],
