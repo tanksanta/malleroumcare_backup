@@ -8,6 +8,7 @@ $w = $_POST['w'];
 $al_id = get_search_string($_POST['al_id']);
 $al_subject = clean_xss_tags($_POST['al_subject']);
 $al_type = clean_xss_tags($_POST['al_type']);
+$al_cate = clean_xss_tags($_POST['al_cate']);
 $al_itname = clean_xss_tags($_POST['al_itname']);
 $al_itdate = clean_xss_tags($_POST['al_itdate']);
 
@@ -51,6 +52,7 @@ if($w == 'd') {
                 g5_alimtalk
             SET
                 al_type = '$al_type',
+                al_cate = '$al_cate',
                 al_subject = '$al_subject',
                 al_itname = '$al_itname',
                 al_itdate = '$al_itdate',
@@ -68,6 +70,7 @@ if($w == 'd') {
                 g5_alimtalk
             SET
                 al_type = '$al_type',
+                al_cate = '$al_cate',
                 al_subject = '$al_subject',
                 al_itname = '$al_itname',
                 al_itdate = '$al_itdate',
