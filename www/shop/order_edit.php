@@ -832,7 +832,23 @@ function select_item(obj, io_id, ct_qty, ct_id, io_type) {
   $('#ipt_so_sch').val('').next().focus();
 }
 
+
 $(function() {
+  var idleTime = 0;
+  var idleInterval = setInterval(timerIncrement, 60*1000); // 1 minute
+
+  //일정시간 움직임이 있으면 초기화
+  $(this).mousemove(function (e) { idleTime = 0; });
+  $(this).keypress(function (e) { idleTime = 0; });
+
+  function timerIncrement() {
+    idleTime = idleTime + 1;
+    if (idleTime > 20) { // 20 minutes
+      window.location.href = './orderinquiry.php';
+      clearInterval(idleInterval);
+    }
+  }
+
   // 품목 삭제
   $(document).on('click', '.btn_del_item', function() {
     var $li = $(this).closest('li');
