@@ -1,6 +1,9 @@
 <?php
 include_once('./_common.php');
 
+if ($is_admin != "super")
+    alert("최고관리자만 접근 가능합니다.");
+
 // Page ID
 $pid = 'connect';
 $at = apms_page_thema($pid);
