@@ -49,9 +49,10 @@ if($test) {
 }
 $mb_result = sql_query($sql, true);
 
-$url = "https://eroumcare.com/shop/list_oos.php?ca_id=10&sort=custom";
 while($mb = sql_fetch_array($mb_result)) {
+  $num = $mb['mb_hp'];
   if ($al['al_cate'] == 0) {
+    $url = "https://eroumcare.com/shop/list_oos.php?ca_id=10&sort=custom";
     $msg = "[이로움 긴급공지 안내]\n{$mb['mb_name']} 님,\n이로움 유통상품 중 현재 공급이 원활하지 않은 상품을 안내 드립니다.\n주문시 참고하여 주시기 바랍니다.\n\n■ 상품명 : {$al['al_itname']}\n■ 입고예정일 : {$al['al_itdate']}";
     send_alim_talk('ENT_STO_'.$mb['mb_id'], $num, 'ent_stock_date_btn', $msg,
       [
@@ -67,10 +68,10 @@ while($mb = sql_fetch_array($mb_result)) {
     );
   }
   else if ($al['al_cate'] == 1) {
+    $url = '';
     $msg = "[이로움 긴급공지 안내]\n{$mb['mb_name']} 님,\주문하신 상품이 입고가 완료되어 아래와 같은 내용으로 출고예정입니다.\n\n■ 상품명 : {$al['al_itname']}\n■ 수량 : \n■ 출고예정일 : {$al['al_itdate']}";
     send_alim_talk('ENT_STO_'.$mb['mb_id'], $num, 'ent_order_release', $msg);
   }
-  $num = $mb['mb_hp'];
 
   // 푸시 발송
   add_notification(
