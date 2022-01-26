@@ -1,6 +1,14 @@
 <?php
 include_once('./_common.php');
 
+$od_id = get_search_string($_GET['od_id']);
+$dc_id = get_search_string($_GET['dc_id']);
+
+if(!$is_member && $_GET['dc_id']) {
+  $sql = "SELECT M.* FROM g5_member as M LEFT JOIN eform_document as E ON M.mb_entId = E.entId WHERE E.dc_id = unhex('{$dc_id}');";
+  $member = sql_fetch($sql);
+}
+
 if(!$member['mb_entNm'])
   alert('사업소 회원만 이용할 수 있습니다.');
 
@@ -47,8 +55,6 @@ if($member['sealFile']) {
   }
 }
 
-$od_id = get_search_string($_GET['od_id']);
-$dc_id = get_search_string($_GET['dc_id']);
 if($od_id) {
   # 수급자 정보
   $pen = sql_fetch("

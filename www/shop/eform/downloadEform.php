@@ -22,8 +22,9 @@ if($dc_id) {
       die('계약서를 확인할 수 없습니다.');
     }
 
-    $is_simple_eform = true;
+    // $is_simple_eform = true;
   }
+  $is_simple_eform = true;
 
 } else {
   if(!$is_member) {
