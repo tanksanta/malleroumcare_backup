@@ -231,7 +231,7 @@ sql_query("INSERT INTO `eform_document_log` SET
         .done(function(data) {
           // 작성 완료
           alert('계약서 작성이 완료되었습니다.');
-          location.href = od_url;
+          location.href = '/shop/electronic_manage.php';
         })
         .fail(function($xhr) {
           $(this).text('완료');
