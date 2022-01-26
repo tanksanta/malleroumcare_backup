@@ -69,7 +69,7 @@ while($mb = sql_fetch_array($mb_result)) {
   }
   else if ($al['al_cate'] == 1) {
     $url = '';
-    $msg = "[이로움 긴급공지 안내]\n{$mb['mb_name']} 님,\주문하신 상품이 입고가 완료되어 아래와 같은 내용으로 출고예정입니다.\n\n■ 상품명 : {$al['al_itname']}\n■ 수량 : \n■ 출고예정일 : {$al['al_itdate']}";
+    $msg = "[이로움 긴급공지 안내]\n{$mb['mb_name']} 님,\주문하신 상품이 입고가 완료되어 아래와 같은 내용으로 출고예정입니다.\n\n■ 상품명 : {$al['al_itname']}\n■ 수량 : 1\n■ 출고예정일 : {$al['al_itdate']}";
     send_alim_talk('ENT_STO_'.$mb['mb_id'], $num, 'ent_order_release', $msg);
   }
 
