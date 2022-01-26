@@ -947,15 +947,15 @@ if($od["od_b_tel"]) {
       }
 
       if(error_arr.length > 0) {
-        alert( error_arr.join(', ') + ' 품목의 모든 바코드가 입력되지 않아 저장할 수 없습니다.' );
-        return false;
-        // let empty_item = error_arr.join(', ');
-        // if (confirm(empty_item + ' 상품 바코드가 비어있습니다. 계속 진행하시겠습니까?')) {
-        // }
-        // else {
-        //   $ipt_error.focus();
-        //   return false;
-        // }
+        // alert( error_arr.join(', ') + ' 품목의 모든 바코드가 입력되지 않아 저장할 수 없습니다.' );
+        // return false;
+        let empty_item = error_arr.join(', ');
+        if (confirm(empty_item + ' 상품 바코드가 비어있습니다. 계속 진행하시겠습니까?')) {
+        }
+        else {
+          $ipt_error.focus();
+          return false;
+        }
       }
 
       barcode_arr.forEach(function(arr) {
