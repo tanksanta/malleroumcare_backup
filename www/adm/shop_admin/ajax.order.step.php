@@ -10,6 +10,7 @@ if($_POST['ct_id']&&$_POST['step']) {
   $state_cd_table = array();
   $flag = true;
   $stoIdList = array();
+  
   //상태값 치환
   switch ($_POST['step']) {
     case '보유재고등록': $ct_status_text="보유재고등록"; break;
@@ -29,7 +30,8 @@ if($_POST['ct_id']&&$_POST['step']) {
   $sql_stock = [];
   $combine_orders = []; // 자동 합포적용
   $alim_orders = []; // 알림톡 보낼 주문들
-  
+  $errors = [];
+
   for($i=0;$i<count($_POST['ct_id']); $i ++) {
     // $sql_ct_s = "select a.od_id, a.it_id, a.it_name, a.ct_option, a.mb_id, a.stoId, b.mb_entId from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $sql_ct_s = "select
@@ -58,6 +60,7 @@ if($_POST['ct_id']&&$_POST['step']) {
     $od = sql_fetch(" select * from g5_shop_order where od_id = '$od_id' ");
     if($od['od_is_editing'] == 1) {
       // 사업소가 주문상품 변경 중이면 무시
+      $errors[] = "주문번호 {$od_id}는 주문수정중 상태입니다.";
       continue;
     }
 
@@ -336,7 +339,12 @@ if($_POST['ct_id']&&$_POST['step']) {
 
       echo "success";
     } else {
-      echo "fail";
+      if (count($errors)) {
+        echo $errors[0];
+      }
+      else {
+        echo "fail";
+      }
     }
   }
 } else {
