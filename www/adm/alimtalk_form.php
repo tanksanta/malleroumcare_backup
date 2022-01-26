@@ -125,7 +125,10 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <label>분류</label>
         </th>
         <td>
-            입고예정일 알림
+            <input type="radio" name="al_cate" value="0" id="al_cate_0" <?=option_array_checked($al['al_cate'], [0, ''])?>>
+            <label for="al_cate_0">입고예정일 알림</label>
+            <input type="radio" name="al_cate" value="1" id="al_cate_1" <?=option_array_checked($al['al_cate'], [1])?>>
+            <label for="al_cate_1">출고예정일 알림</label>
         </td>
     </tr>
     <tr>
@@ -138,7 +141,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     </tr>
     <tr>
         <th scope="row">
-            <label for="al_itdate">입고예정일<strong class="sound_only">필수</strong></label>
+            <label for="al_itdate">날짜<strong class="sound_only">필수</strong></label>
         </th>
         <td>
             <input type="text" name="al_itdate" value="<?php echo  get_sanitize_input($al['al_itdate']) ?>" id="al_itdate" required class="required frm_input" size="100">
