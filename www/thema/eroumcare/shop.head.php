@@ -284,6 +284,9 @@ if($is_main && !$is_member) {
           <?php if($member['mb_level'] >= 9) { ?>
           <a href="/shop/release_orderlist.php" class="btn_orderlist">관리자 주문내역 관리</a>
           <?php } ?>
+          <?php if(check_auth($member['mb_id'], '400480', 'w')) { ?>
+            <a href="/shop/release_purchaseorderlist.php" class="btn_orderlist purchaseorderlist">관리자 구매발주 관리</a>
+          <?php } ?>
           <div class="user_info_area">
             <a href="<?=$at_href['edit'];?>" class="btn_small btn_edit">정보수정</a>
             <div class="user_name">
@@ -426,6 +429,12 @@ if($is_main && !$is_member) {
               <li>
                 <a href="/shop/partner_orderinquiry_list.php">
                   주문내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop/partner_purchaseorderinquiry_list.php">
+                  발주내역
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>

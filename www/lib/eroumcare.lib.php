@@ -2292,3 +2292,23 @@ function get_average_sales_qty($it_id, $month = 3) {
 
  return (int) round($result['total_qty'] / $month);
 }
+
+function check_auth($mb_id, $menu, $auth) {
+  global $is_admin;
+
+  if ($is_admin == 'super') {
+    return true;
+  }
+
+  $sql = "
+    SELECT * FROM g5_auth WHERE mb_id = '{$mb_id}' AND au_menu = '{$menu}' AND au_auth LIKE '%{$auth}%'
+  ";
+
+  $row = sql_fetch($sql);
+
+  if ($row) {
+    return true;
+  } else {
+    return false;
+  }
+}

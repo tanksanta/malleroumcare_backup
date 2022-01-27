@@ -569,8 +569,8 @@ $warehouse_list = get_warehouses();
         (안전재고:<input type="text" name="it_stock_manage_min_qty" value="<?php echo $it['it_stock_manage_min_qty']; ?>" placeholder="<?php echo (int)($average_sales_qty / 2) ?>" class="frm_input" size="8"> 개,
         최대재고:<input type="text" name="it_stock_manage_max_qty" value="<?php echo $it['it_stock_manage_max_qty']; ?>" placeholder="<?php echo (int)($average_sales_qty * 1.5) ?>" class="frm_input" size="8"> 개)
         <br>
-        <label for="it_purchase_order_min_qty">최소구매 주문수량</label>: <input type="text" name="it_purchase_order_min_qty" id="it_purchase_order_min_qty" value="<?php echo $it['it_purchase_order_min_qty']; ?>" class="frm_input importantBorder" size="8"> 개,
-        <label for="it_purchase_order_unit">주문단위</label> : <input type="text" name="it_purchase_order_unit" id="it_purchase_order_unit" value="<?php echo $it['it_purchase_order_unit']; ?>" class="frm_input importantBorder" size="8"> 개씩 구매
+        <label for="it_purchase_order_min_qty">최소구매 주문수량</label>: <input type="text" name="it_purchase_order_min_qty" id="it_purchase_order_min_qty" value="<?php echo $it['it_purchase_order_min_qty']; ?>" class="frm_input" size="8"> 개,
+        <label for="it_purchase_order_unit">주문단위</label> : <input type="text" name="it_purchase_order_unit" id="it_purchase_order_unit" value="<?php echo $it['it_purchase_order_unit']; ?>" class="frm_input" size="8"> 개씩 구매
       </td>
     </tr>
     <?php if($is_auth) { // 관리자일 때만 출력 ?>
