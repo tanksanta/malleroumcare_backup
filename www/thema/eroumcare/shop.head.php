@@ -421,33 +421,60 @@ if($is_main && !$is_member) {
 
           <?php
           if($member['mb_type'] == 'partner') {
-            if($show_partner_menu) {
           ?>
           <div class="side_nav_area">
             <div class="div_title">파트너</div>
             <ul>
+              <?php
+              if($show_partner_menu) {
+              ?>
               <li>
                 <a href="/shop/partner_orderinquiry_list.php">
                   주문내역
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>
+              <?php
+              }
+              $supply_noti_result = sql_fetch("
+                SELECT count(*) as cnt
+                FROM purchase_cart
+                WHERE
+                  ct_supply_partner = '{$member['mb_id']}' AND
+                  ( ct_direct_delivery_date IS NULL OR
+                  ct_status IN ('발주완료') )
+              ");
+              ?>
               <li>
                 <a href="/shop/partner_purchaseorderinquiry_list.php">
                   발주내역
+                  <?php
+                  if ($supply_noti_result['cnt'] > 0) {
+                  ?>
+                    <span style="min-width:24px;background: #ff5c01;color: #fff;display: inline-block;padding: 2px;text-align: center;border-radius: 100px;font-size:15px">
+                      <?php echo $supply_noti_result['cnt'] ?>
+                    </span>
+                  <?php
+                  }
+                  ?>
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>
+              <?php
+              if($show_partner_menu) {
+              ?>
               <li>
                 <a href="/shop/partner_ledger_list.php">
                   거래처원장
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>
+              <?php
+              }
+              ?>
             </ul>
           </div>
           <?php
-            }
           } else if($member['mb_type'] === 'normal') {
             if(get_session('ss_pen_id')) { // 연결된 사업소가 있는 경우
           ?>

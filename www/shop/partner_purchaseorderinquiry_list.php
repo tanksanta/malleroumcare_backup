@@ -196,8 +196,8 @@ while($row = sql_fetch_array($result)) {
     $row['mb_entNm'] = $row['mb_name'];
   }
 
-  // 미완성주문
-  if(!( $row['ct_direct_delivery_date'] || $row['ct_barcode_insert'] || $row['ct_status'] != '출고준비' )) {
+  // 미진행중인 작업
+  if(!$row['ct_direct_delivery_date'] || in_array($row['ct_status'], ['발주완료'])) {
     $row['incompleted'] = true;
   }
 
@@ -342,9 +342,9 @@ tr.hover { background-color: #fbf9f7 !important; }
             <label for="ct_status_mode2">담당자지정</label>
           </span>
           <select name="ct_status">
-            <option value="출고준비">출고준비</option>
-            <option value="배송" selected>출고완료</option>
-            <option value="취소">주문취소</option>
+            <option value="출고완료">출고완료</option>
+            <option value="입고완료" selected>입고완료</option>
+            <option value="취소">취소</option>
           </select>
           <select name="manager" style="display: none;">
               <option value="">미지정</option>
@@ -364,7 +364,7 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <input type="checkbox" id="chk_all">
               </th>
               <th>주문정보</th>
-              <th>배송정보</th>
+              <th>입고완료정보</th>
               <th>담당자/상태</th>
               <th>발주금액</th>
               <th>관리</th>
@@ -375,7 +375,7 @@ tr.hover { background-color: #fbf9f7 !important; }
             if(!$orders) echo '<tr><td colspan="6" class="empty_table">내역이 없습니다.</td></tr>';
             foreach($orders as $row) { 
             ?>
-            <tr data-link="partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_link" data-id="<?=$row['od_id']?>">
+            <tr data-link="partner_purchaseorderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_link" data-id="<?=$row['od_id']?>">
               <td class="td_chk">
                 <input type="checkbox" name="ct_id[]" value="<?=$row['ct_id']?>">
               </td>

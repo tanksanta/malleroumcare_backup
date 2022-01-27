@@ -31,7 +31,7 @@ foreach($ct_id_arr as $ct_id) {
   if(!$cart || !$cart['ct_id'])
     json_response(400, '해당 상품의 주문상태를 변경할 수 있는 권한이 없습니다.');
   
-  if(!in_array($cart['ct_status'], ['발주완료']))
+  if(!in_array($cart['ct_status'], ['발주완료', '출고완료', '입고완료']))
     json_response(400, '해당 상품의 주문상태를 변경할 수 없습니다.');
 
   $od_id = $cart['od_id'];
@@ -114,47 +114,6 @@ foreach($ct_id_arr as $ct_id) {
     $sto_id_od_id_table[$id] = $od_id;
   }
 }
-
-//// 바코드 정보 조회
-//if($sto_id) {
-//  $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
-//    'stoId' => implode('|', $sto_id)
-//  ), 443);
-//  if(!$stock_result['data'])
-//    json_response(500, '시스템 서버 오류', $stock_result);
-//
-//  $prods = array_map(function($data) {
-//    global $ct_status, $sto_id_od_id_table;
-//
-//    $stateCd = '06'; // 재고대기
-//    if($ct_status == '배송')
-//      $stateCd = is_pen_order($sto_id_od_id_table[$data['stoId']]) ? "02" : "01";
-//
-//    return array(
-//      'stoId' => $data['stoId'],
-//      'prodBarNum' => $data['prodBarNum'],
-//      'prodId' => $data['prodId'],
-//      'stateCd' => $stateCd
-//    );
-//  }, $stock_result['data']);
-//
-//  if($ct_status == '배송') {
-//    foreach($prods as $prod) {
-//      $prodSupYn = sql_fetch(" SELECT prodSupYn FROM g5_shop_item WHERE it_id = '{$prod['prodId']}' ")['prodSupYn'];
-//      if($prodSupYn == 'Y' && !$prod['prodBarNum'])
-//        json_response(400, '모든 유통상품의 바코드 정보가 입력되어야 출고가 가능합니다.');
-//    }
-//  }
-//
-//  $api_result = api_post_call(EROUMCARE_API_STOCK_UPDATE, array(
-//    'usrId' => $member['mb_id'],
-//    'entId' => $member['mb_entId'],
-//    'prods' => $prods
-//  ));
-//
-//  if($api_result['errorYN'] != 'N')
-//    json_response(500, $api_result['message']);
-//}
 
 foreach($sql as $query) {
   $result = sql_query($query);
