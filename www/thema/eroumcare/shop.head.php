@@ -433,6 +433,12 @@ if($is_main && !$is_member) {
                 </a>
               </li>
               <li>
+                <a href="/shop/partner_purchaseorderinquiry_list.php">
+                  발주내역
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
                 <a href="/shop/partner_ledger_list.php">
                   거래처원장
                   <i class="fa fa-angle-right" aria-hidden="true"></i>

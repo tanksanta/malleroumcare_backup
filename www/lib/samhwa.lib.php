@@ -780,6 +780,19 @@ function get_order_admin_log($od_id) {
     return $ret;
 }
 
+function get_purchase_order_admin_log($od_id) {
+
+  $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
+  $result = sql_query($sql);
+
+  $ret = array();
+  while($row = sql_fetch_array($result)) {
+    $ret[] = $row;
+  }
+
+  return $ret;
+}
+
 function get_barcode_log($od_id) {
 
     $sql = "SELECT * FROM g5_barcode_log WHERE od_id = '{$od_id}' ORDER BY b_date DESC, stoId ASC;";
@@ -824,6 +837,27 @@ function set_order_admin_log($od_id, $content) {
 
     return sql_query($sql);
 }
+
+function set_purchase_order_admin_log($od_id, $content) {
+  global $member;
+
+  $mb_id = $member['mb_id'];
+
+  $manager_mb_id = get_session('ss_manager_mb_id');
+  if($manager_mb_id) {
+    $mb_id = $manager_mb_id;
+  }
+
+  $sql = "INSERT INTO purchase_order_admin_log SET
+                od_id = '{$od_id}',
+                mb_id = '{$mb_id}',
+                ol_content = '{$content}',
+                ol_datetime = now()
+                ";
+
+  return sql_query($sql);
+}
+
 function set_send_ledger_log($mb_id, $send_type, $receiver = "") {
 
     $sql = "INSERT INTO g5_send_ledger_history SET
