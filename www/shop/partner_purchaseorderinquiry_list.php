@@ -27,28 +27,26 @@ if($incompleted && count($incompleted) == 1) {
       // 진행중인 작업
       $where[] = "
         ( ct_direct_delivery_date is not null or
-        ( ct_barcode_insert is not null and ct_barcode_insert <> 0 ) or
-        ct_status <> '출고준비' )
+        ct_status in ('출고완료', '입고완료', '취소') )
       ";
     }
     else if($ic == '1') {
       // 미 진행중인 작업
-      //$row['ct_direct_delivery_date'] || $row['ct_barcode_insert'] || $row['ct_status'] != '출고준비'
+      //$row['ct_direct_delivery_date'] || $row['ct_barcode_insert'] || $row['ct_status'] != '발주완료'
       $where[] = "
         ( ct_direct_delivery_date is null and
-        ( ct_barcode_insert is null or ct_barcode_insert = 0 ) and
-        ct_status = '출고준비' )
+        ct_status = '발주완료' )
       ";
     }
   }
 }
 
 # 담당자는 본인으로 지정된 주문만 보기
-//if($manager_mb_id) {
-//  $where[] = "
-//    o.od_partner_manager = '$manager_mb_id'
-//  ";
-//}
+if($manager_mb_id) {
+  $where[] = "
+    o.od_partner_manager = '$manager_mb_id'
+  ";
+}
 
 # 주문상태
 $ct_status = $_GET['ct_status'];
