@@ -97,7 +97,7 @@ foreach($ct_id_arr as $ct_id) {
   if($manager) {
     $mb_id = $manager_mb_id;
   }
-  $log_content .= "{$it_name}-{$ct_status_text} 변경";
+  $log_content .= "{$it_name}-{$ct_status} 변경";
 
   $sql[] = "
     INSERT INTO

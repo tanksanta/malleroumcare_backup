@@ -183,7 +183,7 @@ while($row = sql_fetch_array($result)) {
         e.preventDefault();
 
         var params = $(this).serialize();
-        $.post('ajax.partner_deliveryinfo.php', params, 'json')
+        $.post('ajax.supply_partner_deliveryinfo.php', params, 'json')
         .done(function() {
           alert('배송정보가 저장되었습니다.');
           parent.window.location.reload();
