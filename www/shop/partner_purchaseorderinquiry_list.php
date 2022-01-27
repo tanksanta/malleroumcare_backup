@@ -133,6 +133,7 @@ $result = sql_query("
     prodMemo,
     c.stoId,
     ct_is_direct_delivery,
+    ct_price,
     ct_direct_delivery_price,
     ct_direct_delivery_date,
     ct_rdy_date,
@@ -159,7 +160,7 @@ while($row = sql_fetch_array($result)) {
   }
   $row['ct_direct_delivery'] = $ct_direct_delivery_text;
 
-  $price = intval($row['ct_direct_delivery_price']) * intval($row['ct_qty']);
+  $price = intval($row['ct_price']) * intval($row['ct_qty']);
   // 공급가액
   $price_p = @round(($price ?: 0) / 1.1);
   // 부가세
