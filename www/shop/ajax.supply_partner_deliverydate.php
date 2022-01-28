@@ -38,9 +38,9 @@ foreach($ct_id_arr as $ct_id) {
     json_response(500, 'DB 서버 오류 발생');
 
   $it_name = $cart['it_name'];
-  if($cart['ct_option'] && $cart['ct_option'] != $cart_it_name)
+  if($cart['ct_option'] && $cart['ct_option'] != $it_name)
     $it_name .= "({$cart['ct_option']})";
-  set_purchase_order_admin_log($od_id, "{$it_name}-출고예정일 변경 : $ct_direct_delivery_date");
+  set_purchase_order_admin_log($od_id, "{$it_name}-입고예정일 변경 : $ct_direct_delivery_date");
 }
 
 json_response(200, 'OK');

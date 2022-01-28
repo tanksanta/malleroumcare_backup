@@ -27,28 +27,26 @@ if($incompleted && count($incompleted) == 1) {
       // 진행중인 작업
       $where[] = "
         ( ct_direct_delivery_date is not null or
-        ( ct_barcode_insert is not null and ct_barcode_insert <> 0 ) or
-        ct_status <> '출고준비' )
+        ct_status in ('출고완료', '입고완료', '취소') )
       ";
     }
     else if($ic == '1') {
       // 미 진행중인 작업
-      //$row['ct_direct_delivery_date'] || $row['ct_barcode_insert'] || $row['ct_status'] != '출고준비'
+      //$row['ct_direct_delivery_date'] || $row['ct_barcode_insert'] || $row['ct_status'] != '발주완료'
       $where[] = "
         ( ct_direct_delivery_date is null and
-        ( ct_barcode_insert is null or ct_barcode_insert = 0 ) and
-        ct_status = '출고준비' )
+        ct_status = '발주완료' )
       ";
     }
   }
 }
 
 # 담당자는 본인으로 지정된 주문만 보기
-//if($manager_mb_id) {
-//  $where[] = "
-//    o.od_partner_manager = '$manager_mb_id'
-//  ";
-//}
+if($manager_mb_id) {
+  $where[] = "
+    o.od_partner_manager = '$manager_mb_id'
+  ";
+}
 
 # 주문상태
 $ct_status = $_GET['ct_status'];
@@ -135,6 +133,7 @@ $result = sql_query("
     prodMemo,
     c.stoId,
     ct_is_direct_delivery,
+    ct_price,
     ct_direct_delivery_price,
     ct_direct_delivery_date,
     ct_rdy_date,
@@ -161,7 +160,7 @@ while($row = sql_fetch_array($result)) {
   }
   $row['ct_direct_delivery'] = $ct_direct_delivery_text;
 
-  $price = intval($row['ct_direct_delivery_price']) * intval($row['ct_qty']);
+  $price = intval($row['ct_price']) * intval($row['ct_qty']);
   // 공급가액
   $price_p = @round(($price ?: 0) / 1.1);
   // 부가세
@@ -198,8 +197,8 @@ while($row = sql_fetch_array($result)) {
     $row['mb_entNm'] = $row['mb_name'];
   }
 
-  // 미완성주문
-  if(!( $row['ct_direct_delivery_date'] || $row['ct_barcode_insert'] || $row['ct_status'] != '출고준비' )) {
+  // 미진행중인 작업
+  if(!$row['ct_direct_delivery_date'] || in_array($row['ct_status'], ['발주완료'])) {
     $row['incompleted'] = true;
   }
 
@@ -344,9 +343,9 @@ tr.hover { background-color: #fbf9f7 !important; }
             <label for="ct_status_mode2">담당자지정</label>
           </span>
           <select name="ct_status">
-            <option value="출고준비">출고준비</option>
-            <option value="배송" selected>출고완료</option>
-            <option value="취소">주문취소</option>
+            <option value="출고완료">출고완료</option>
+            <option value="입고완료" selected>입고완료</option>
+            <option value="취소">취소</option>
           </select>
           <select name="manager" style="display: none;">
               <option value="">미지정</option>
@@ -366,7 +365,7 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <input type="checkbox" id="chk_all">
               </th>
               <th>주문정보</th>
-              <th>배송정보</th>
+              <th>입고완료정보</th>
               <th>담당자/상태</th>
               <th>발주금액</th>
               <th>관리</th>
@@ -377,7 +376,7 @@ tr.hover { background-color: #fbf9f7 !important; }
             if(!$orders) echo '<tr><td colspan="6" class="empty_table">내역이 없습니다.</td></tr>';
             foreach($orders as $row) { 
             ?>
-            <tr data-link="partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_link" data-id="<?=$row['od_id']?>">
+            <tr data-link="partner_purchaseorderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_link" data-id="<?=$row['od_id']?>">
               <td class="td_chk">
                 <input type="checkbox" name="ct_id[]" value="<?=$row['ct_id']?>">
               </td>

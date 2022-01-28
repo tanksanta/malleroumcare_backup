@@ -334,7 +334,7 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
   });
 
   //바코드 버튼 클릭
-  $(document).on("click", ".barcode_box", function(e) {
+  $(document).on("click", ".barInfo", function(e) {
     e.preventDefault();
     var id = $(this).attr("data-id");
     var ct_id = $(this).attr("data-ct-id");
@@ -346,7 +346,7 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
     var search_params = $("form[name='release_search_form']").serialize();
 
     $.ajax({
-      url : "/shop/ajax.release_orderview.check.php",
+      url : "/shop/ajax.release_purchaseorderview.check.php",
       type : "POST",
       data : {
         ct_id : ct_id
@@ -354,10 +354,10 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
       success : function(result) {
         if(result.error == "Y") {
           if(confirm("작업중입니다. 무시하고 진행 시 이전 작업자는 작업이 종료됩니다. 무시하시겠습니까?")) {
-            location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&ct_id="+ct_id + "&" + search_params;
+            location.href="<?php echo G5_URL?>/adm/shop_admin/popup.release_purchaseorder_view.php?od_id="+ id+"&ct_id="+ct_id + "&" + search_params;
           }
         } else {
-          location.href="<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_3.php?od_id="+ id+"&ct_id="+ct_id + "&" + search_params;
+          location.href="<?php echo G5_URL?>/adm/shop_admin/popup.release_purchaseorder_view.php?od_id="+ id+"&ct_id="+ct_id + "&" + search_params;
         }
       }
     });
