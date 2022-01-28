@@ -27,7 +27,7 @@ $od = sql_fetch("
 if(!$od['od_id'])
   alert('존재하지 않는 주문입니다.');
 
-//주문 기록 
+//발주 기록
 $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
 $result = sql_query($sql);
 $logs = array();
