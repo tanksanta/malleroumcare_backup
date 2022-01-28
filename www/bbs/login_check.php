@@ -342,5 +342,8 @@ recipient_link_clean();
 // 로그인시 구매모드로 설정
 @setcookie('viewType', 'adm', time() + 86400 * 3650, "/");
 
+// 통계등록
+insert_statistics("LOGIN", $member['mb_id'], $member['mb_level'], "로그인", $_SERVER['REMOTE_ADDR']);
+
 goto_url(G5_URL);
 ?>
