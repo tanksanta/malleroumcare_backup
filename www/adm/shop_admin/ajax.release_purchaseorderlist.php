@@ -128,7 +128,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date, ct_manager, ct_qty, io_type, ct_price, io_price, ct_sendcost, ct_discount, ct_delivery_num, ct_warehouse from purchase_cart) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date, ct_manager, ct_qty, ct_delivered_qty, io_type, ct_price, io_price, ct_sendcost, ct_discount, ct_delivery_num, ct_warehouse from purchase_cart) B
                 inner join purchase_order A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -180,7 +180,7 @@ if ( $where2 || $where ) {
   }
 }
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_manager, ct_qty, ct_delivery_num, ct_warehouse from purchase_cart) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_manager, ct_qty, ct_delivered_qty, ct_delivery_num, ct_warehouse from purchase_cart) B
         inner join purchase_order A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
@@ -265,6 +265,14 @@ foreach($orderlist as $order) {
     foreach($order['cart'] as $cart) {
       $od_cart_count += $cart['ct_qty'];
     }
+
+    if (!$result_ct['ct_delivered_qty']) {
+      $result_ct['ct_delivered_qty'] = 0;
+    }
+    $prodBarNumCntBtnWord = "입고관리 " . $result_ct['ct_delivered_qty'] . "/" . $result_ct['ct_qty'];
+    if ($result_ct['ct_delivered_qty'] >= $result_ct['ct_qty']) {
+      $prodBarNumCntBtnWord = "입고완료";
+    }
   }
 
   $ct_status = get_purchase_step($order['ct_status']);
@@ -312,14 +320,14 @@ foreach($orderlist as $order) {
     $class_type1 = "type5";
   }
 
-//  if(strpos($prodBarNumCntBtnWord, "입력완료") !== false) {
-//    $complate_flag="cf";
-//    if($_POST['cf']==true) {
-//      $complate_flag2="type1";
-//    } else {
-//      $complate_flag2="type2";
-//    }
-//  }
+  if(strpos($prodBarNumCntBtnWord, "입력완료") !== false) {
+    $complate_flag="cf";
+    if($_POST['cf']==true) {
+      $complate_flag2="type1";
+    } else {
+      $complate_flag2="type2";
+    }
+  }
 
   # 210317 추가정보
   $moreInfo = sql_fetch("
@@ -339,11 +347,7 @@ foreach($orderlist as $order) {
   # 210318 추출 데이터 배열
   $ret["data"][$foreach_i]["od_id"] = $order["od_id"];
   $ret["data"][$foreach_i]["od_b_name"] = $order["od_b_name"];
-
-  $ret["data"][$foreach_i]["it_name"] = ($ct_status_text == "재고소진") ? "재고" : "주문";
-
-  $ret["data"][$foreach_i]["it_name"] = "[{$ret["data"][$foreach_i]["it_name"]}] ";
-  $ret["data"][$foreach_i]["it_name"] .= $ct_it_name;
+  $ret["data"][$foreach_i]["it_name"] = $ct_it_name;
 
   $ret["data"][$foreach_i]["delivery_cnt"] = $od_cart_count;
   $ret["data"][$foreach_i]["cnt_detail"] = $ct_qty;
@@ -366,6 +370,7 @@ foreach($orderlist as $order) {
   $ret["data"][$foreach_i]["od_status_name"] = $od_status_name;
   $ret["data"][$foreach_i]["od_status_class"] = $class_type1;
   $ret["data"][$foreach_i]["od_barcode_class"] = $class_type2;
+  $ret["data"][$foreach_i]["od_barcode_name"] = $prodBarNumCntBtnWord;
   $ret["data"][$foreach_i]["edit_status"] = $edit_working;
   $ret["data"][$foreach_i]["complate_flag"] = $complate_flag;
   $ret["data"][$foreach_i]["complate_flag2"] = $complate_flag2;

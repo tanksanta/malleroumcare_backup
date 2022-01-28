@@ -73,6 +73,13 @@ foreach($ct_id as $id) {
       ct_is_direct_delivery = '{$ct['ct_is_direct_delivery']}',
       d_date = NOW()
   ");
+
+  $it_name = $ct['it_name'];
+  if($ct['ct_option'] && $ct['ct_option'] != $it_name)
+    $it_name .= "({$ct['ct_option']})";
+  $delivery_company_name = get_delivery_company_step($ct_delivery_company)['name'];
+
+  set_purchase_order_admin_log($od_id, "$it_name-배송정보 변경 : $delivery_company_name $ct_delivery_num");
 }
 
 // 배송정보 입력 개수 업데이트
@@ -94,7 +101,7 @@ sql_query("
   UPDATE
     purchase_order
   SET
-    od_delivery_insert = '{$od_delivery_insert}'    
+    od_delivery_insert = '{$od_delivery_insert}'
   WHERE
     od_id = {$od_id}
 ");
