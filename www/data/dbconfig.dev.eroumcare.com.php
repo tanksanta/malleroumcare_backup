@@ -1,18 +1,16 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
 define('G5_MYSQL_HOST', '175.125.94.165');
-define('G5_MYSQL_USER', 'malleroumcare');
+define('G5_MYSQL_USER', 'malleroumcare_dev');
 define('G5_MYSQL_PASSWORD', 'malleroumcareghjdsafkjDSFFASJFKD@!DS!123');
-define('G5_MYSQL_DB', 'malleroumcare');
+define('G5_MYSQL_DB', 'malleroumcare_dev');
 define('G5_MYSQL_SET_MODE', true);
 
-define('SYS_MYSQL_HOST', '61.106.19.167');
+define('SYS_MYSQL_HOST', '175.125.94.165');
 define('SYS_MYSQL_USER', 'WMDSDB');
 define('SYS_MYSQL_PASSWORD', 'WMDSDB');
 define('SYS_MYSQL_DB', 'wmdsdb');
 define('SYS_MYSQL_SET_MODE', true);
-
-define('IS_TEST_ENVIRONMENT', true);
 
 define('G5_TABLE_PREFIX', 'g5_');
 
@@ -96,6 +94,6 @@ define('NAVER_WCS_WA', '');
 define('DAUM_HPT_INFO_ACCOUNT', '');
 define('DAUM_CONVERSION_ACCOUNT_ID', '');
 
-$is_production = false;
-$is_development = true;
+$is_production = true;
+$is_development = false;
 ?>
