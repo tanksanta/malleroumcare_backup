@@ -100,10 +100,11 @@ if($_POST['ct_id']&&$_POST['step']) {
             ws_option = '{$result_ct_s['ct_option']}',
             ws_qty = '-{$ws_qty}',
             mb_id = '{$result_ct_s['mb_id']}',
-            ws_memo = '주문 출고완료({$od_id})',
+            ws_memo = '주문 입고완료({$od_id})',
             wh_name = '{$result_ct_s['ct_warehouse']}',
             od_id = '$od_id',
             ct_id = '{$_POST['ct_id'][$i]}',
+            insert_from = 'purchase_cart',
             ws_created_at = NOW(),
             ws_updated_at = NOW()
         ";
