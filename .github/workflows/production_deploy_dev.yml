@@ -20,4 +20,4 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /home/malleroumcare_dev
-            git pull
+            git pull origin dev
