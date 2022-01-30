@@ -204,7 +204,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     <tbody>
       <?php
       if(!$list) {
-        echo '<tr><td colspan="8" class="empty_table">자료가 없습니다.</td></tr>';
+        echo '<tr><td colspan="10" class="empty_table">자료가 없습니다.</td></tr>';
       }
       ?>
       <?php foreach($list as $row) { ?>
