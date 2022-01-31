@@ -101,11 +101,12 @@ if ($is_purchase_end == '1') {
 
   set_purchase_order_admin_log($od_id, '발주 종료 취소', $ct_id);
 
+  $ws_scheduled_qty = $ct_row['ct_qty_for_rollback'] - $ct_row['ct_delivered_qty'];
   $sql = "
       UPDATE warehouse_stock
       SET
         ws_qty = '{$ct_row['ct_qty_for_rollback']}',
-        ws_scheduled_qty = '{$ct_row['ct_qty_for_rollback'] - $ct_row['ct_delivered_qty']}'
+        ws_scheduled_qty = '{$ws_scheduled_qty}'
       WHERE
         od_id = '{$od_id}' AND
         ct_id = '{$ct_id}' AND
