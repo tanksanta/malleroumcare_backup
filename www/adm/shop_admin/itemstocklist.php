@@ -166,11 +166,24 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
   <?php } ?>
 </div>
 
+<?php
+$count_warn1 = get_manage_stock_count(1);
+$count_warn2 = get_manage_stock_count(2);
+$count_warn3 = get_manage_stock_count(3);
+?>
 
 <div class="quick_link_area" style="padding-bottom: 20px">
-  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_min_stock=true' ?>"><img src="/img/warn1.png" style="margin-right: 8px">안전재고 이하 상품 (<?php echo get_manage_stock_count(1) ?>개)</a>
-  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_max_stock=true' ?>"><img src="/img/warn2.png" style="margin-right: 8px">최대재고 이상 상품 (<?php echo get_manage_stock_count(2) ?>개)</a>
-  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_malignity_stock=true' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (준비중)</a>
+  <?php if ($count_warn1 > 0) { ?>
+  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_min_stock=true' ?>"><img src="/img/warn1.png" style="margin-right: 8px">안전재고 이하 상품 (<?php echo $count_warn1 ?>개)</a>
+  <?php } ?>
+
+  <?php if ($count_warn2 > 0) { ?>
+  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_max_stock=true' ?>"><img src="/img/warn2.png" style="margin-right: 8px">최대재고 이상 상품 (<?php echo $count_warn2 ?>개)</a>
+  <?php } ?>
+
+  <?php if ($count_warn3 > 0) { ?>
+  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_malignity_stock=true' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (<?php echo $count_warn3 ?>개)</a>
+  <?php } ?>
 </div>
 
 <label for="sel_ca_id" class="sound_only">분류선택</label>
@@ -311,10 +324,16 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             }
           }
         }
-        if ($current_ws_qty > $safe_max_qty) {
+        if (($current_ws_qty > $safe_min_qty) && ($current_ws_qty <= $safe_max_qty)) {
           $img_src = '/img/warn2.png';
           $alt_txt = "최대재고 ({$safe_max_qty}개)";
         }
+
+        if ($current_ws_qty > $safe_max_qty) {
+          $img_src = '/img/warn3.png';
+          $alt_txt = "최대재고 ({$safe_max_qty}개)";
+        }
+
         if ($current_ws_qty == 0 && $safe_min_qty == 0 && $safe_max_qty == 0) {
           $img_src = '';
           $alt_txt = '';
