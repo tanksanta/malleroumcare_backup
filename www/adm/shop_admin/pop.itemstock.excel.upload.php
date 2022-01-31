@@ -151,7 +151,7 @@ function submitForm(e) {
   .fail(function($xhr) {
     var data = $xhr.responseJSON;
     alert(data && data.message);
-  });
+  })
   .always(function() {
     LOADING = false;
   });
