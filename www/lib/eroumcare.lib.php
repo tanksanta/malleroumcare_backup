@@ -2388,3 +2388,14 @@ function get_purchase_order_by_it_id($it_id, $ct_status = '발주완료') {
 
   return $array;
 }
+
+function count_item_option($it_id) {
+  $sql = "
+    SELECT count(*) AS cnt
+    FROM g5_shop_item it
+    LEFT JOIN g5_shop_item_option io ON it.it_id = io.it_id
+    WHERE it.it_id = '{$it_id}' AND io.io_type = 0
+  ";
+
+  return sql_fetch($sql)['cnt'];
+}

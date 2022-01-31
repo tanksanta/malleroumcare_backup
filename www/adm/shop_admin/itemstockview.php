@@ -181,7 +181,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     <h1 style="border:0;padding:5px 0;margin:0;letter-spacing:0;">
       상품명 : <?=$it['it_name']?> (<?=$gubun_text?>)
     </h1>
-    <a href="#" style="display: inline-block;line-height: 35px;border: 1px solid #E3E3E3;background: #383838;color: #fff;padding: 0 15px;">
+    <a href="/adm/shop_admin/itemstockedit.php?it_id=<?=$it_id?>" style="display: inline-block;line-height: 35px;border: 1px solid #E3E3E3;background: #383838;color: #fff;padding: 0 15px;">
       입/출고 관리자 권한 수정
     </a>
   </div>
@@ -222,8 +222,11 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
           if ($row['inserted_from'] == 'purchase_cart') {
             echo '발주';
           }
-          if ($row['inserted_from'] == 'warehouse_stock') {
+          if ($row['inserted_from'] == 'stock_move') {
             echo '창고이동';
+          }
+          if ($row['inserted_from'] == 'stock_edit') {
+            echo '입출관리';
           }
           ?>
         </td>
@@ -231,7 +234,6 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
         <td><?=$row['ws_option'] ?: $row['it_name']?></td>
         <td class="td_datetime"><?=date('Y-m-d (H:i)', strtotime($row['ws_created_at']))?></td>
         <td class="td_numsum"> <!-- 입고 -->
-          <?=($row['ws_qty'] > 0 ? number_format($row['ws_qty']) : '')?>
           <?php
           if ($row['ws_scheduled_qty'] > 0) {
             echo '대기(' . number_format($row['ws_scheduled_qty']) . ')';
