@@ -5,7 +5,7 @@ include_once(G5_ADMIN_PATH.'/apms_admin/apms.admin.lib.php');
 
 // auth_check($auth[$sub_menu], "w");
 
-$title = '발주 주문서 생성';
+$title = '발주서 생성';
 include_once('./pop.head.php');
 ?>
 <style>
@@ -46,8 +46,8 @@ include_once('./pop.head.php');
             <th>입고예정일</th>
             <td>
               <div style="position:relative;">
-                <input type="text" name="od_datetime_date" value="" class="frm_input datepicker" style="min-width: 100px;width: 100px;">
-                <input type="text" name="od_datetime_time" value="" class="frm_input timepicker" style="min-width: 35px;width: 35px;"> 시
+                <input type="text" name="od_datetime_date" value="" class="frm_input datepicker" style="min-width: 100px;width: 100px;" autocomplete="off">
+                <input type="text" name="od_datetime_time" value="" class="frm_input timepicker" style="min-width: 35px;width: 35px;" autocomplete="off"> 시
                 <input type="button" class="shbtn remove_form_section" value="삭제" style="position: absolute;right: 0;line-height: 17px;"/>
               </div>
             </td>
@@ -240,7 +240,7 @@ include_once('./pop.head.php');
           <input type="text" name="memo[]" class="frm_input">
         </td>
         <td>
-          <select name="it_warehousing_warehouse" id="it_warehousing_warehouse">
+          <select name="it_warehousing_warehouse" id="it_warehousing_warehouse" name="wh_name">
             <option value="">창고선택</option>
             <?php
             $warehouse_list = get_warehouses();
