@@ -12,26 +12,7 @@ if (!$od_id || !$ct_id) {
 }
 
 // 카트 정보
-$sql = "select
-      a.od_id,
-      a.it_id,
-      a.it_name,
-      a.ct_option,
-      a.mb_id,
-      a.stoId,
-      b.mb_entId,
-      a.io_id,
-      a.io_type,
-      a.ct_price,
-      a.io_price,
-      a.ct_qty,
-      a.ct_discount,
-      a.prodSupYn,
-      a.ct_stock_qty,
-      a.ct_id,
-      a.ct_combine_ct_id,
-      a.ct_warehouse
-    from purchase_cart a left join g5_member b on a.mb_id = b.mb_id where ct_id = '{$ct_id}'";
+$sql = "select * from purchase_cart where ct_id = '{$ct_id}'";
 $ct_row = sql_fetch($sql);
 
 if (!$ct_row) {
@@ -123,8 +104,8 @@ if ($is_purchase_end == '1') {
   $sql = "
       UPDATE warehouse_stock
       SET
-        ws_qty = '0',
-        ws_scheduled_qty = '{$ct_row['ct_qty_for_rollback']}'
+        ws_qty = '{$ct_row['ct_qty_for_rollback']}',
+        ws_scheduled_qty = '{$ct_row['ct_qty_for_rollback'] - $ct_row['ct_delivered_qty']}'
       WHERE
         od_id = '{$od_id}' AND
         ct_id = '{$ct_id}' AND
