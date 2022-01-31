@@ -1,6 +1,8 @@
 <?php
+$sub_menu = '400480';
 
 include_once("./_common.php");
+auth_check($auth[$sub_menu], "r");
 
 $g5["title"] = "주문 내역 바코드 수정";
 // include_once(G5_ADMIN_PATH."/admin.head.php");
@@ -176,6 +178,12 @@ $ct = sql_fetch($sql);
       border-radius: 0;
       border: 1px solid #000;
       text-align: center;
+    }
+
+    #itInfoWrap .deliveredQty .qty input[type="number"]::-webkit-outer-spin-button,
+    #itInfoWrap .deliveredQty .qty input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     #itInfoWrap .deliveredQty > button {
@@ -735,6 +743,7 @@ $ct = sql_fetch($sql);
     <input class="full-width" type="text" name="barcode_memo" placeholder="내용을 입력하세요.">
   </div>
 
+  <?php if (check_auth($member['mb_id'], '400480', 'w')) { ?>
   <div class="purchaseOrderEndBtn flex-row align-center justify-space-between">
     <p>입고예정 수량 미 입고 상태에서 발주 종료 시<br/>전체 발주 수량에서 차감된 후 발주가 종료 됩니다.</p>
     <?php
@@ -745,12 +754,13 @@ $ct = sql_fetch($sql);
     }
     ?>
   </div>
+  <?php } ?>
 </div>
 
 
 <?php
 //발주 기록
-$sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
+$sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' AND ct_id = '{$ct_id}' ORDER BY ol_no DESC";
 $result = sql_query($sql);
 $logs = array();
 while($row = sql_fetch_array($result)) {
@@ -865,7 +875,17 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
         od_id: '<?=$od_id?>',
         ct_id: '<?=$ct_id?>',
         is_purchase_end : command === 'doEnd' ? '1' : '0',
-      }
+      },
+      dataType: 'json',
+    })
+    .done(function() {
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    })
+    .always(function() {
+
     });
 
     location.reload();
