@@ -4,6 +4,8 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu], "r");
 
+add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
+
 $doc = strip_tags($doc);
 $sort1 = in_array($sort1, array('it_id', 'it_name', 'it_stock_qty', 'it_use', 'it_soldout', 'it_stock_sms', 'sum_ws_qty')) ? $sort1 : '';
 $sort2 = in_array($sort2, array('desc', 'asc')) ? $sort2 : 'desc';
@@ -142,6 +144,43 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 
 <script src="<?php echo G5_ADMIN_URL;?>/apms_admin/apms.admin.js"></script>
 
+<style>
+  #loading_excel {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  #loading_excel .loading_modal {
+    position: absolute;
+    width: 400px;
+    padding: 30px 20px;
+    background: #fff;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  #loading_excel .loading_modal p {
+    padding: 0;
+    font-size: 16px;
+  }
+  #loading_excel .loading_modal img {
+    display: block;
+    margin: 20px auto;
+  }
+  #loading_excel .loading_modal button {
+    padding: 10px 30px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+</style>
+
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
     <span class="btn_ov01"><span class="ov_txt">전체 상품</span><span class="ov_num">  <?php echo $total_count; ?>개</span></span>
@@ -166,11 +205,24 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
   <?php } ?>
 </div>
 
+<?php
+$count_warn1 = get_manage_stock_count(1);
+$count_warn2 = get_manage_stock_count(2);
+$count_warn3 = get_manage_stock_count(3);
+?>
 
 <div class="quick_link_area" style="padding-bottom: 20px">
-  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_min_stock=true' ?>"><img src="/img/warn1.png" style="margin-right: 8px">안전재고 이하 상품 (<?php echo get_manage_stock_count(1) ?>개)</a>
-  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_max_stock=true' ?>"><img src="/img/warn2.png" style="margin-right: 8px">최대재고 이상 상품 (<?php echo get_manage_stock_count(2) ?>개)</a>
-  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_malignity_stock=true' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (준비중)</a>
+  <?php if ($count_warn1 > 0) { ?>
+  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_min_stock=true' ?>"><img src="/img/warn1.png" style="margin-right: 8px">안전재고 이하 상품 (<?php echo $count_warn1 ?>개)</a>
+  <?php } ?>
+
+  <?php if ($count_warn2 > 0) { ?>
+  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_max_stock=true' ?>"><img src="/img/warn2.png" style="margin-right: 8px">최대재고 이상 상품 (<?php echo $count_warn2 ?>개)</a>
+  <?php } ?>
+
+  <?php if ($count_warn3 > 0) { ?>
+  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_malignity_stock=true' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (<?php echo $count_warn3 ?>개)</a>
+  <?php } ?>
 </div>
 
 <label for="sel_ca_id" class="sound_only">분류선택</label>
@@ -206,8 +258,12 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 
 </form>
 
-<div class="local_desc01 local_desc">
-    <p>재고수정의 수치를 수정하시면 창고재고의 수치가 변경됩니다.</p>
+<div class="local_desc01 local_desc flex-row justify-space-between align-center">
+    <p style="padding: 0">재고수정의 수치를 수정하시면 창고재고의 수치가 변경됩니다.</p>
+    <div class="flex-row justify-space-between align-center">
+      <button style="border: 0px;background: #383838;color: #fff;padding: 5px 10px;margin-right: 10px;" onclick="downloadExcel();">엑셀 다운로드</button>
+      <button style="border: 0px;background: #383838;color: #fff;padding: 5px 10px;" onclick="excelUploadPopUp();">재고 엑셀 일괄 업로드</button>
+    </div>
 </div>
 
 <form name="fitemstocklist" action="./itemstocklistupdate.php" method="post">
@@ -311,10 +367,16 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             }
           }
         }
-        if ($current_ws_qty > $safe_max_qty) {
+        if (($current_ws_qty > $safe_min_qty) && ($current_ws_qty <= $safe_max_qty)) {
           $img_src = '/img/warn2.png';
           $alt_txt = "최대재고 ({$safe_max_qty}개)";
         }
+
+        if ($current_ws_qty > $safe_max_qty) {
+          $img_src = '/img/warn3.png';
+          $alt_txt = "최대재고 ({$safe_max_qty}개)";
+        }
+
         if ($current_ws_qty == 0 && $safe_min_qty == 0 && $safe_max_qty == 0) {
           $img_src = '';
           $alt_txt = '';
@@ -379,10 +441,19 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 </div>
 </form>
 
+<div id="loading_excel">
+  <div class="loading_modal">
+    <p>엑셀파일 다운로드 중입니다.</p>
+    <p>잠시만 기다려주세요.</p>
+    <img src="/shop/img/loading.gif" alt="loading">
+    <button onclick="cancelExcelDownload();" class="btn_cancel_excel">취소</button>
+  </div>
+</div>
+
 <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); ?>
 
 <style>
-#popup_order_add {
+.popup_iframe {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -392,7 +463,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
   background-color: rgba(0, 0, 0, 0.6);
   display:none;
 }
-#popup_order_add > div {
+.popup_iframe > div {
   width: 1000px;
   max-width: 80%;
   height: 80%;
@@ -401,30 +472,78 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
   top: 50%;
   transform: translate(-50%, -50%);
 }
-#popup_order_add > div iframe {
+.popup_iframe > div iframe {
   width:100%;
   height:100%;
   border: 0;
   background-color: #FFF;
 }
 </style>
-<div id="popup_order_add">
+<div id="popup_order_add" class="popup_iframe">
   <div></div>
 </div>
 
+<div id="popup_excel_upload" class="popup_iframe">
+  <div style="width: 500px;height: 50%;"></div>
+</div>
+
 <script>
-$(function() {
-    $('#btn_stock_add').click(function(e) {
-        e.preventDefault();
+var EXCEL_DOWNLOADER = null;
 
-        $("#popup_order_add > div").html("<iframe src='./pop.stock.add.php'></iframe>");
-        $("#popup_order_add iframe").load(function(){
-            $("#popup_order_add").show();
-            $('#hd').css('z-index', 3);
-        });
+$(function () {
+  $('#btn_stock_add').click(function (e) {
+    e.preventDefault();
 
+    $("#popup_order_add > div").html("<iframe src='./pop.stock.add.php'></iframe>");
+    $("#popup_order_add iframe").load(function () {
+      $("#popup_order_add").show();
+      $('#hd').css('z-index', 3);
     });
+
+  });
+
+  $(document).on("click", "#order_add", function (e) {
+    e.preventDefault();
+
+    $("#popup_order_add > div").html("<iframe src='./pop.purchase.order.add.php'></iframe>");
+    $("#popup_order_add iframe").load(function(){
+      $("#popup_order_add").show();
+      $('#hd').css('z-index', 3);
+      $('#popup_order_add iframe').contents().find('.mb_id_flexdatalist').focus();
+    });
+
+  });
 });
+
+function downloadExcel() {
+  var href = './itemstock.excel.download.php';
+
+  $('#loading_excel').show();
+  EXCEL_DOWNLOADER = $.fileDownload(href, {
+    httpMethod: "POST",
+    data: {}
+  })
+  .always(function() {
+    $('#loading_excel').hide();
+  });
+}
+
+function excelUploadPopUp() {
+  $("#popup_excel_upload > div").html("<iframe src='./pop.itemstock.excel.upload.php'></iframe>");
+  $("#popup_excel_upload iframe").load(function(){
+    $("#popup_excel_upload").show();
+    $('#hd').css('z-index', 3);
+  });
+}
+
+
+function cancelExcelDownload() {
+  if (EXCEL_DOWNLOADER != null) {
+    EXCEL_DOWNLOADER.abort();
+  }
+  $('#loading_excel').hide();
+}
+
 </script>
 
 <?php

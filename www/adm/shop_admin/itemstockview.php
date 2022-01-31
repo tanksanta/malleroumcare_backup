@@ -228,6 +228,9 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
           if ($row['inserted_from'] == 'stock_edit') {
             echo '입출관리';
           }
+          if ($row['inserted_from'] == 'stock_edit_excel') {
+            echo '입출관리(엑셀)';
+          }
           ?>
         </td>
         <td class="td_center td_mng_m"><?=$row['wh_name']?></td>
