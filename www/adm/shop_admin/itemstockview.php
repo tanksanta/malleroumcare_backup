@@ -50,7 +50,7 @@ $warehouse_list = get_warehouses();
 
 $sql_common = "
   FROM
-    warehouse_stock
+    warehouse_stock ws
   WHERE
     it_id = '$it_id' and
     ws_del_yn = 'N'
@@ -109,7 +109,9 @@ if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이�
 $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
 $sql = "
-  select *
+  select
+    *,
+	  (SELECT ct_is_direct_delivery FROM g5_shop_cart WHERE ct_id = ws.ct_id) AS ct_is_direct_delivery
   {$sql_common}
   {$sql_search}
   order by ws_id desc
@@ -175,40 +177,80 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 </div>
 
 <div class="tbl_head01 tbl_wrap">
-  <div class="local_ov01" style="border:1px solid #e3e3e3;">
+  <div class="local_ov01 flex-row justify-space-between" style="border:1px solid #e3e3e3;">
     <h1 style="border:0;padding:5px 0;margin:0;letter-spacing:0;">
       상품명 : <?=$it['it_name']?> (<?=$gubun_text?>)
     </h1>
+    <a href="/adm/shop_admin/itemstockedit.php?it_id=<?=$it_id?>" style="display: inline-block;line-height: 35px;border: 1px solid #E3E3E3;background: #383838;color: #fff;padding: 0 15px;">
+      입/출고 관리자 권한 수정
+    </a>
   </div>
 
   <table>
     <thead>
       <tr>
         <th>번호</th>
+        <th>분류</th>
+        <th>창고</th>
         <th>옵션명</th>
         <th>등록일시</th>
         <th>입고</th>
         <th>출고</th>
         <th>메모</th>
-        <th>창고</th>
+        <th>비고</th>
         <th>삭제여부</th>
       </tr>
     </thead>
     <tbody>
       <?php
       if(!$list) {
-        echo '<tr><td colspan="8" class="empty_table">자료가 없습니다.</td></tr>';
+        echo '<tr><td colspan="10" class="empty_table">자료가 없습니다.</td></tr>';
       }
       ?>
       <?php foreach($list as $row) { ?>
       <tr>
         <td class="td_cntsmall"><?=$row['index']?></td>
+        <td class="td_center td_mng_m">
+          <?php
+          if ($row['inserted_from'] == 'shop_cart') {
+//            if ($row['ct_is_direct_delivery'] == '1') {
+//              echo '직배송';
+//            } else {
+              echo '주문';
+//            }
+          }
+          if ($row['inserted_from'] == 'purchase_cart') {
+            echo '발주';
+          }
+          if ($row['inserted_from'] == 'stock_move') {
+            echo '창고이동';
+          }
+          if ($row['inserted_from'] == 'stock_edit') {
+            echo '입출관리';
+          }
+          ?>
+        </td>
+        <td class="td_center td_mng_m"><?=$row['wh_name']?></td>
         <td><?=$row['ws_option'] ?: $row['it_name']?></td>
         <td class="td_datetime"><?=date('Y-m-d (H:i)', strtotime($row['ws_created_at']))?></td>
-        <td class="td_numsum"><?=($row['ws_qty'] > 0 ? number_format($row['ws_qty']) : '')?></td>
-        <td class="td_numsum"><?=($row['ws_qty'] < 0 ? number_format(abs($row['ws_qty'])) : '')?></td>
+        <td class="td_numsum"> <!-- 입고 -->
+          <?php
+          if ($row['ws_scheduled_qty'] > 0) {
+            echo '대기(' . number_format($row['ws_scheduled_qty']) . ')';
+          } else {
+            echo $row['ws_qty'] > 0 ? number_format($row['ws_qty']) : '';
+          }
+          ?>
+        </td>
+        <td class="td_numsum"><?=($row['ws_qty'] < 0 ? number_format(abs($row['ws_qty'])) : '')?></td> <!-- 출고 -->
         <td><?=get_text($row['ws_memo'])?></td>
-        <td class="td_center td_mng_m"><?=$row['wh_name']?></td>
+        <td class="td_center td_mng_m"> <!-- 비고 -->
+          <?php
+          if ($row['inserted_from'] == 'purchase_cart') { // 발주 파트너명
+            echo sql_fetch("select od_name from purchase_order where od_id = {$row['od_id']}")['od_name'];
+          }
+          ?>
+        </td>
         <td class="td_center td_mng_l">
           <?php
           if($row['ct_id']) {

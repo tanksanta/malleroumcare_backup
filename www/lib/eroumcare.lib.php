@@ -2312,3 +2312,90 @@ function check_auth($mb_id, $menu, $auth) {
     return false;
   }
 }
+
+
+function get_manage_stock_count($type) {
+  $common_ct_status = "('주문', '입금', '준비', '출고준비', '배송', '완료')";
+
+  if ($type == 1) {
+    $where = " AND sum_ws_qty <= safe_min_stock_qty AND sum_ws_qty != 0 AND safe_min_stock_qty != 0 ";
+  }
+
+  if ($type == 2) {
+    $where = " AND sum_ws_qty > safe_max_stock_qty AND sum_ws_qty != 0 AND safe_max_stock_qty != 0 ";
+  }
+
+  if ($type == 3) {
+    $where = " AND sum_ws_qty <= safe_min_stock_qty AND sum_ws_qty != 0 AND safe_min_stock_qty != 0 ";
+  }
+
+  // 1 안전재고, 2 최대재고, 3 악성재고
+  $sql = "
+  SELECT COUNT(*) AS cnt
+  FROM (
+    SELECT ws.it_id, ws.it_name, sum(ws.ws_qty) AS sum_ws_qty, sum_ct_qty, safe_min_stock_qty, safe_max_stock_qty, last_ct_time
+    FROM warehouse_stock ws
+    LEFT JOIN 
+      (SELECT ct.it_id, ct.it_name, sum(ct.ct_qty) AS sum_ct_qty, max(ct_time) AS last_ct_time
+      FROM g5_shop_cart ct
+      WHERE (ct.ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+            ct.ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+          AND ct.ct_status IN {$common_ct_status}
+      GROUP BY it_id) ct ON ws.it_id = ct.it_id
+    LEFT JOIN
+      (SELECT 
+        it.it_id, 
+          IFNULL(IF(it.it_stock_manage_min_qty IS NOT NULL, 
+          it.it_stock_manage_min_qty, 
+          ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+            WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+              ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+            AND ct_status IN {$common_ct_status}
+            AND it_id = it.it_id) / 3 * 0.5)
+          ), 0) AS safe_min_stock_qty,
+          IFNULL(IF(it_stock_manage_max_qty IS NOT NULL, 
+          it_stock_manage_max_qty, 
+          ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+            WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+              ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+            AND ct_status IN {$common_ct_status}
+            AND it_id = it.it_id) / 3 * 1.5)
+          ), 0) AS safe_max_stock_qty
+      FROM g5_shop_item it) it ON ws.it_id = it.it_id
+      WHERE ws.ws_del_yn = 'N'
+      GROUP BY ws.it_id
+      ) AS T
+  WHERE 1 {$where}
+  ";
+
+  return sql_fetch($sql)['cnt'];
+}
+
+function get_purchase_order_by_it_id($it_id, $ct_status = '발주완료') {
+  $sql = "
+    SELECT *
+    FROM purchase_cart
+    WHERE it_id = '{$it_id}' AND ct_status = '{$ct_status}'
+  ";
+
+  $result = sql_query($sql);
+
+  $array = [];
+
+  while ($row = sql_fetch_array($result)) {
+    $array[] = $row;
+  }
+
+  return $array;
+}
+
+function count_item_option($it_id) {
+  $sql = "
+    SELECT count(*) AS cnt
+    FROM g5_shop_item it
+    LEFT JOIN g5_shop_item_option io ON it.it_id = io.it_id
+    WHERE it.it_id = '{$it_id}' AND io.io_type = 0
+  ";
+
+  return sql_fetch($sql)['cnt'];
+}

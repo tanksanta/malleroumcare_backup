@@ -5,7 +5,7 @@ include_once('./_common.php');
 auth_check($auth[$sub_menu], "r");
 
 $doc = strip_tags($doc);
-$sort1 = in_array($sort1, array('it_id', 'it_name', 'it_stock_qty', 'it_use', 'it_soldout', 'it_stock_sms')) ? $sort1 : '';
+$sort1 = in_array($sort1, array('it_id', 'it_name', 'it_stock_qty', 'it_use', 'it_soldout', 'it_stock_sms', 'sum_ws_qty')) ? $sort1 : '';
 $sort2 = in_array($sort2, array('desc', 'asc')) ? $sort2 : 'desc';
 $sel_ca_id = get_search_string($sel_ca_id);
 $sel_field = get_search_string($sel_field);
@@ -27,29 +27,32 @@ if ($sel_ca_id != "") {
 }
 
 if ($wh_name != '') {
-  $sql_search .= " and ( select sum(ws_qty) from warehouse_stock s where i.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' ) <> 0 ";
+  $sql_search .= " and ( select sum(ws_qty) from warehouse_stock s where T.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' ) <> 0 ";
+}
+
+// 안전재고 상품
+if ($search_safe_min_stock == 'true') {
+  $sql_search .= " and sum_ws_qty <= safe_min_stock_qty and sum_ws_qty != 0 and safe_min_stock_qty != 0 ";
+}
+
+// 최대재고 상품
+if ($search_safe_max_stock == 'true') {
+  $sql_search .= " and sum_ws_qty > safe_max_stock_qty and sum_ws_qty != 0 and safe_max_stock_qty != 0 ";
+}
+
+// 악성재고 상품
+if ($search_malignity_stock == 'true') {
+  $sql_search .= "";
 }
 
 if ($sel_field == "")  $sel_field = "it_name";
 if ($sort1 == "") $sort1 = "it_stock_qty";
 if ($sort2 == "") $sort2 = "asc";
 
-$sql_common = "  from {$g5['g5_shop_item_table']} i ";
-$sql_common .= $sql_search;
-
-// 테이블의 전체 레코드수만 얻음
-$sql = " select count(*) as cnt " . $sql_common;
-$row = sql_fetch($sql);
-$total_count = $row['cnt'];
-
-$rows = $config['cf_page_rows'];
-$total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
-if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
-$from_record = ($page - 1) * $rows; // 시작 열을 구함
-
-// APMS - 2014.07.20
-$sql  = "
-  select
+$common_ct_status = "('주문', '입금', '준비', '출고준비', '배송', '완료')";
+$sql_common = "
+from 
+  (select
     it_id,
     it_name,
     it_use,
@@ -60,8 +63,55 @@ $sql  = "
     ca_id,
     pt_it,
     pt_id,
-    it_expected_warehousing_date
-  $sql_common
+    it_expected_warehousing_date,
+    IFNULL(IF(it_stock_manage_min_qty IS NOT NULL, 
+      it_stock_manage_min_qty, 
+      ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+        AND ct_status IN {$common_ct_status}
+        AND it_id = i.it_id) / 3 * 0.5)
+      ), 0) AS safe_min_stock_qty,
+    IFNULL(IF(it_stock_manage_max_qty IS NOT NULL, 
+      it_stock_manage_max_qty, 
+      ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+        AND ct_status IN {$common_ct_status}
+        AND it_id = i.it_id) / 3 * 1.5)
+      ), 0) AS safe_max_stock_qty,
+    (SELECT IFNULL(sum(ws_qty), 0) FROM warehouse_stock WHERE it_id = i.it_id AND ws_del_yn = 'N') AS sum_ws_qty,
+    (SELECT sum(ct_qty) FROM g5_shop_cart 
+        WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 31 DAY), '%Y-%m-%d 00:00:00') AND
+              ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
+            AND ct_status IN {$common_ct_status}
+            AND it_id = i.it_id) AS sum_ct_qty_1month,
+    (SELECT sum(ct_qty) FROM g5_shop_cart 
+        WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 2 DAY), '%Y-%m-%d 00:00:00') AND
+              ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
+            AND ct_status IN {$common_ct_status}
+            AND it_id = i.it_id) AS sum_ct_qty_1day,
+    (SELECT max(ct_time) FROM g5_shop_cart 
+        WHERE ct_status IN {$common_ct_status}
+        AND it_id = i.it_id) AS last_ct_time
+  from {$g5['g5_shop_item_table']} i) AS T
+";
+
+// 테이블의 전체 레코드수만 얻음
+$sql = " select count(*) as cnt " . $sql_common . $sql_search;
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+
+$rows = $config['cf_page_rows'];
+$total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $rows; // 시작 열을 구함
+
+// APMS - 2014.07.20
+$sql  = "
+  select *
+  {$sql_common}
+  {$sql_search}
   order by $sort1 $sort2
   limit $from_record, $rows
 ";
@@ -97,18 +147,31 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <span class="btn_ov01"><span class="ov_txt">전체 상품</span><span class="ov_num">  <?php echo $total_count; ?>개</span></span>
 </div>
 
+<div style="padding: 5px 20px">
+  <ul>
+    <li>안전재고 : 월 평균 판매 수량의 50%를 보유해야 안전합니다.</li>
+    <li>최대재고 : 월 평균 판매 수량의 3배 이상 보유한 경우 과재고입니다.</li>
+  </ul>
+</div>
+
 <form name="flist" class="local_sch01 local_sch">
 <input type="hidden" name="doc" value="<?php echo $doc; ?>">
 <input type="hidden" name="sort1" value="<?php echo $sort1; ?>">
 <input type="hidden" name="sort2" value="<?php echo $sort2; ?>">
 <input type="hidden" name="page" value="<?php echo $page; ?>">
 
-<div class="quick_link_area">
+<div class="quick_link_area" style="padding-bottom: 20px">
   <?php foreach($warehouse_list as $warehouse) { ?>
     <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?wh_name='.$warehouse['name']; ?>"><?php echo $warehouse['name']; ?>(<?php echo $warehouse['total']; ?>개)</a>
   <?php } ?>
 </div>
 
+
+<div class="quick_link_area" style="padding-bottom: 20px">
+  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_min_stock=true' ?>"><img src="/img/warn1.png" style="margin-right: 8px">안전재고 이하 상품 (<?php echo get_manage_stock_count(1) ?>개)</a>
+  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_max_stock=true' ?>"><img src="/img/warn2.png" style="margin-right: 8px">최대재고 이상 상품 (<?php echo get_manage_stock_count(2) ?>개)</a>
+  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_malignity_stock=true' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (준비중)</a>
+</div>
 
 <label for="sel_ca_id" class="sound_only">분류선택</label>
 <select name="sel_ca_id" id="sel_ca_id">
@@ -162,7 +225,8 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <tr>
         <th scope="col"><a href="<?php echo title_sort("it_id") . "&amp;$qstr1"; ?>">상품코드</a></th>
         <th scope="col"><a href="<?php echo title_sort("it_name") . "&amp;$qstr1"; ?>">상품명</a></th>
-        <th scope="col"><a href="<?php echo title_sort("it_stock_qty") . "&amp;$qstr1"; ?>">창고재고</a></th>
+        <th scope="col">재고경고</th>
+        <th scope="col"><a href="<?php echo title_sort("sum_ws_qty") . "&amp;$qstr1"; ?>">창고재고</a></th>
         <?php foreach($warehouse_list as $warehouse) { ?>
         <th scope="col"><?=$warehouse['name']?></th>
         <?php } ?>
@@ -176,6 +240,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         <th scope="col"><a href="<?php echo title_sort("it_stock_sms") . "&amp;$qstr1"; ?>">재입고알림</a></th>
         <th scope="col">입/출고관리</th>
         <th scope="col">상품관리</th>
+        <th scope="col">실시간 평균 판매</th>
     </tr>
     </thead>
     <tbody>
@@ -224,7 +289,40 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         </td>
 		<!-- // -->
         <td class="td_left"><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
-        <td class="td_num<?php echo $it_stock_qty_st; ?>"><?php echo $it_stock_qty; ?></td>
+<!--        <td class="td_num--><?php //echo $it_stock_qty_st; ?><!--">--><?php //echo $it_stock_qty; ?><!--</td>-->
+
+        <?php
+        $img_src = '';
+        $alt_txt = '';
+        $current_ws_qty = $row['sum_ws_qty'] ?: 0;
+        $safe_min_qty = $row['safe_min_stock_qty'] ?: 0;
+        $safe_max_qty = $row['safe_max_stock_qty'] ?: 0;
+
+        if ($current_ws_qty <= $safe_min_qty) {
+          $img_src = '/img/warn1.png';
+          $alt_txt = "안전재고 ({$safe_min_qty}개)";
+
+          $purchase_list = get_purchase_order_by_it_id($row['it_id'], '발주완료');
+          if (count($purchase_list) > 0) {
+            $img_src = '/img/warn4.png';
+            for ($i = 0; $i < count($purchase_list); $i++) {
+              $alt_txt .= '&#10;';
+              $alt_txt .= "발주완료 ({$purchase_list[$i]['ct_qty']}개) {$purchase_list[$i]['ct_time']}";;
+            }
+          }
+        }
+        if ($current_ws_qty > $safe_max_qty) {
+          $img_src = '/img/warn2.png';
+          $alt_txt = "최대재고 ({$safe_max_qty}개)";
+        }
+        if ($current_ws_qty == 0 && $safe_min_qty == 0 && $safe_max_qty == 0) {
+          $img_src = '';
+          $alt_txt = '';
+        }
+
+        ?>
+        <td class="td_num"><?php echo $img_src ? '<img src="' . $img_src . '" title="' . $alt_txt . '">' : '' ?></td>
+        <td class="td_num"><?php echo number_format($current_ws_qty) ?></td>
         <?php
         foreach($warehouse_list as $warehouse) {
           $sql = " select sum(ws_qty) as stock from warehouse_stock where it_id = '{$row['it_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' ";
@@ -257,6 +355,11 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         </td>
         <td class="td_mng td_mng_s"><a href="./itemstockview.php?it_id=<?php echo $row['it_id']; ?>" class="btn btn_03">상세관리</a></td>
         <td class="td_mng td_mng_s"><a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03">수정</a></td>
+        <?php
+        $sum_ct_qty_1month = $row['sum_ct_qty_1month'] ?: 0;
+        $sum_ct_qty_1day =  $row['sum_ct_qty_1day'] ?: 0;
+        ?>
+        <td class="td_mng"><?php echo "월 {$sum_ct_qty_1month}개 / 일 {$sum_ct_qty_1day}개" ?></td>
     </tr>
     <?php
     }
