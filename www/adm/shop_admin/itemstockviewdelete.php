@@ -15,6 +15,8 @@ $sql = "
         ws_del_yn = 'Y',
         ws_del_by = '{$member['mb_id']}',
         ws_updated_at = NOW()
+    where
+        ws_id = {$ws_id}
 ";
 
 $result = sql_query($sql);
