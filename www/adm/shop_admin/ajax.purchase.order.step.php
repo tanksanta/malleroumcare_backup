@@ -111,7 +111,7 @@ if($_POST['ct_id']&&$_POST['step']) {
             io_type = '{$result_ct_s['io_type']}',
             it_name = '{$result_ct_s['it_name']}',
             ws_option = '{$result_ct_s['ct_option']}',
-            ws_qty = '{$ws_qty}',
+            ws_qty = '0',
             ws_scheduled_qty = '{$ws_qty}',
             mb_id = '{$result_ct_s['mb_id']}',
             ws_memo = '주문 발주완료({$od_id})',
@@ -128,11 +128,16 @@ if($_POST['ct_id']&&$_POST['step']) {
           update
             warehouse_stock
           set
-            ws_qty = '{$ws_qty}',
+            ws_qty = '0',
             ws_scheduled_qty = '{$ws_qty}',
             mb_id = '{$result_ct_s['mb_id']}',
             ws_memo = '주문 발주완료({$od_id})',
             ws_updated_at = NOW()
+          where
+            od_id = '$od_id' AND
+            ct_id = '{$_POST['ct_id'][$i]}' AND
+            it_id = '{$result_ct_s['it_id']}' AND
+            io_id = '{$result_ct_s['io_id']}'
         ";
       }
     }
@@ -148,6 +153,11 @@ if($_POST['ct_id']&&$_POST['step']) {
             mb_id = '{$result_ct_s['mb_id']}',
             ws_memo = '주문 입고완료({$od_id})',
             ws_updated_at = NOW()
+          where
+            od_id = '$od_id' AND
+            ct_id = '{$_POST['ct_id'][$i]}' AND
+            it_id = '{$result_ct_s['it_id']}' AND
+            io_id = '{$result_ct_s['io_id']}'
         ";
       }
     }

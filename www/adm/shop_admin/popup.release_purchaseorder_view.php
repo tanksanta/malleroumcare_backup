@@ -1,6 +1,8 @@
 <?php
+$sub_menu = '400480';
 
 include_once("./_common.php");
+auth_check($auth[$sub_menu], "r");
 
 $g5["title"] = "주문 내역 바코드 수정";
 // include_once(G5_ADMIN_PATH."/admin.head.php");
@@ -176,6 +178,12 @@ $ct = sql_fetch($sql);
       border-radius: 0;
       border: 1px solid #000;
       text-align: center;
+    }
+
+    #itInfoWrap .deliveredQty .qty input[type="number"]::-webkit-outer-spin-button,
+    #itInfoWrap .deliveredQty .qty input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     #itInfoWrap .deliveredQty > button {
@@ -727,14 +735,15 @@ $ct = sql_fetch($sql);
     <div class="flex-row align-center qty" style="margin-left: 5px">
       <button onclick="setNumberDeliveredQty('minus')">-</button><input type="number" id="delivered_qty" name="" value="<?= $ct["ct_delivered_qty"] ?>"><button onclick="setNumberDeliveredQty('plus')">+</button>
     </div>
-    <button onclick="setNumberDeliveredQty('<?= $ct["ct_qty"] - $ct["ct_delivered_qty"] ?>')" style="margin-left: 10px">전체입고</button>
+    <button onclick="setNumberDeliveredQty('<?= $ct["ct_qty"] ?>')" style="margin-left: 10px">전체입고</button>
   </div>
 
   <div class="barcodeMemo">
     <p>바코드 메모</p>
-    <input class="full-width" type="text" name="barcode_memo" placeholder="내용을 입력하세요.">
+    <input class="full-width" type="text" name="barcode_memo" placeholder="내용을 입력하세요." value="<?= $ct["ct_barcode_memo"] ?>">
   </div>
 
+  <?php if (check_auth($member['mb_id'], '400480', 'w')) { ?>
   <div class="purchaseOrderEndBtn flex-row align-center justify-space-between">
     <p>입고예정 수량 미 입고 상태에서 발주 종료 시<br/>전체 발주 수량에서 차감된 후 발주가 종료 됩니다.</p>
     <?php
@@ -745,12 +754,13 @@ $ct = sql_fetch($sql);
     }
     ?>
   </div>
+  <?php } ?>
 </div>
 
 
 <?php
 //발주 기록
-$sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
+$sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' AND ct_id = '{$ct_id}' ORDER BY ol_no DESC";
 $result = sql_query($sql);
 $logs = array();
 while($row = sql_fetch_array($result)) {
@@ -784,7 +794,7 @@ while($row = sql_fetch_array($result)) {
 
 <!-- 고정 하단 -->
 <div id="popupFooterBtnWrap">
-  <button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
+  <button type="button" class="savebtn" onclick="saveData();">저장</button>
   <button type="button" class="cancelbtn" onclick="member_cancel();">취소</button>
 </div>
 
@@ -798,6 +808,8 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
 ?>
 
 <script>
+  var CT_QTY = Number('<?= $ct["ct_qty"] ?>');
+
   function getUrlParams() {
     var params = {};
 
@@ -848,9 +860,9 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     var text;
 
     if (command === 'doEnd') {
-      text = '발주 종료 시 입고예정 수량이 발주수량에서 차감됩니다.\n종료하시겠습니까?'
+      text = '발주 종료 시 입고예정 수량이 발주수량에서 차감됩니다.\n종료하시겠습니까?';
     } else {
-      text = '발주 종료내역을 취소하시겠습니까?'
+      text = '발주 종료내역을 취소하시겠습니까?';
     }
 
     if (!confirm(text)) {
@@ -864,11 +876,50 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
       data: {
         od_id: '<?=$od_id?>',
         ct_id: '<?=$ct_id?>',
-        is_purchase_end : command === 'doEnd' ? '1' : '0',
-      }
+      },
+      dataType: 'json',
+    })
+    .done(function() {
+      location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
     });
+  }
 
-    location.reload();
+  function saveData() {
+    var delivered_qty = Number($('#delivered_qty').val());
+    var barcode_memo = $('input[name="barcode_memo"]').val();
+
+    if (delivered_qty > CT_QTY || delivered_qty === 0) {
+      alert('입고수량은 1 이상, 발주 수량 이하 값이어야 합니다.');
+      return;
+    }
+
+    if (!confirm('저장하시겠습니까?')) {
+      return;
+    }
+
+    $.ajax({
+      url: '/shop/ajax.update_purchase_cart.php',
+      type: 'POST',
+      async: false,
+      data: {
+        od_id: '<?=$od_id?>',
+        ct_id: '<?=$ct_id?>',
+        delivered_qty: delivered_qty,
+        barcode_memo: barcode_memo,
+      },
+      dataType: 'json',
+    })
+    .done(function() {
+      location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
   }
 </script>
 </body>

@@ -124,24 +124,24 @@ for ($j = 0; $j < count($upload_data_map); $j++) {
 
   if ( $ws_qty != 0 && (intval($upload_data_map[$j]['ws_qty']) != intval($origin_data_map[$j]['ws_qty'])) ) {
     $sql = "
-    INSERT INTO warehouse_stock
-    SET
-      it_id = '{$it_id}',
-      io_id = '{$io_id}',
-      io_type = '0',
-      it_name = '{$it_name}',
-      ws_option = '{$io_value}',
-      ws_qty = '{$ws_qty}',
-      ws_scheduled_qty = '0',
-      mb_id = '{$member['mb_id']}',
-      ws_memo = '{$ws_memo}',
-      wh_name = '{$wh_name}',
-      od_id = '0',
-      ct_id = '0',
-      inserted_from = 'stock_edit_excel',
-      ws_created_at = NOW(),
-      ws_updated_at = NOW()
-  ";
+      INSERT INTO warehouse_stock
+      SET
+        it_id = '{$it_id}',
+        io_id = '{$io_id}',
+        io_type = '0',
+        it_name = '{$it_name}',
+        ws_option = '{$io_value}',
+        ws_qty = '{$ws_qty}',
+        ws_scheduled_qty = '0',
+        mb_id = '{$member['mb_id']}',
+        ws_memo = '{$ws_memo}',
+        wh_name = '{$wh_name}',
+        od_id = '0',
+        ct_id = '0',
+        inserted_from = 'stock_edit_excel',
+        ws_created_at = NOW(),
+        ws_updated_at = NOW()
+    ";
     sql_query($sql);
   }
 }
