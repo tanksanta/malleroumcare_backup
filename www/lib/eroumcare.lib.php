@@ -2317,16 +2317,19 @@ function check_auth($mb_id, $menu, $auth) {
 function get_manage_stock_count($type) {
   $common_ct_status = "('주문', '입금', '준비', '출고준비', '배송', '완료')";
 
+  // 안전재고
   if ($type == 1) {
-    $where = " AND sum_ws_qty <= safe_min_stock_qty AND sum_ws_qty != 0 AND safe_min_stock_qty != 0 ";
+    $where = " AND (sum_ws_qty <= safe_min_stock_qty) AND sum_ws_qty != 0 AND safe_min_stock_qty != 0 ";
   }
 
+  // 최대재고
   if ($type == 2) {
-    $where = " AND sum_ws_qty > safe_max_stock_qty AND sum_ws_qty != 0 AND safe_max_stock_qty != 0 ";
+    $where = " AND (sum_ws_qty > safe_min_stock_qty AND sum_ws_qty <= safe_max_stock_qty) AND sum_ws_qty != 0 AND safe_min_stock_qty != 0 ";
   }
 
+  // 악성재고
   if ($type == 3) {
-    $where = " AND sum_ws_qty <= safe_min_stock_qty AND sum_ws_qty != 0 AND safe_min_stock_qty != 0 ";
+    $where = " AND (sum_ws_qty > safe_min_stock_qty) AND sum_ws_qty != 0 AND safe_min_stock_qty != 0 ";
   }
 
   // 1 안전재고, 2 최대재고, 3 악성재고
