@@ -319,6 +319,9 @@ $(function() {
         var index = input_names.indexOf(name);
         if (e.which === 39) {
             //right
+            if (index == 3) {
+                return false;
+            }
             index++;
             if (index == 4) {
                 index = 0;
@@ -330,6 +333,9 @@ $(function() {
         }
         else if (e.which === 37) {
             //left
+            if (index == 3) {
+                return false;
+            }
             index--;
             if (index == -1) {
                 index = 3;
@@ -352,6 +358,13 @@ $(function() {
             }
         }
     });
+
+    $(document).on('keydown','select[name="io_id[]"]', function(e) {
+        if (e.which === 40) {
+            $(this).click();
+        }
+    });
+
     function add_flexdatalist(node) {
         $(node).flexdatalist({
             minLength: 1,
