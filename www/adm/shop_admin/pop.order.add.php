@@ -319,30 +319,28 @@ $(function() {
         var index = input_names.indexOf(name);
         if (e.which === 39) {
             //right
-            if (index == 3) {
-                return false;
-            }
-            index++;
-            if (index == 4) {
-                index = 0;
-                $(this).closest("tr").next("tr").find("input[name='"+input_names[index]+"']").focus();
-            }
-            else {
-                $(this).closest("tr").find("input[name='"+input_names[index]+"']").focus();
+            if (index > 3) {
+                index++;
+                if (index == 4) {
+                    index = 0;
+                    $(this).closest("tr").next("tr").find("input[name='"+input_names[index]+"']").focus();
+                }
+                else {
+                    $(this).closest("tr").find("input[name='"+input_names[index]+"']").focus();
+                }
             }
         }
         else if (e.which === 37) {
             //left
-            if (index == 3) {
-                return false;
-            }
-            index--;
-            if (index == -1) {
-                index = 3;
-                $(this).closest("tr").prev("tr").find("input[name='"+input_names[index]+"']").focus();
-            }
-            else {
-                $(this).closest("tr").find("input[name='"+input_names[index]+"']").focus();
+            if (index > 3) {
+                index--;
+                if (index == -1) {
+                    index = 3;
+                    $(this).closest("tr").prev("tr").find("input[name='"+input_names[index]+"']").focus();
+                }
+                else {
+                    $(this).closest("tr").find("input[name='"+input_names[index]+"']").focus();
+                }
             }
         }
         else if (e.which === 38) {
