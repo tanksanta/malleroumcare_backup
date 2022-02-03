@@ -34,6 +34,7 @@ $query_string = $qstr ? $qstr : '';
     <li><a href="./user_statistics.php?type=contract_c&<?php echo $query_string ?>">계약서 생성</a></li>
     <li><a href="./user_statistics.php?type=contract_s&<?php echo $query_string ?>">계약서 서명</a></li>
     <li><a href="./user_statistics.php?type=order_c&<?php echo $query_string ?>">주문서 생성</a></li>
+    <li><a href="./user_statistics.php?type=login&<?php echo $query_string ?>">로그인</a></li>
     <li><a href="./user_statistics.php?type=recipient&<?php echo $query_string ?>">등록한 수급자</a></li>
 </ul>
 

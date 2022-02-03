@@ -15,6 +15,8 @@ include_once('./user_statistics.sub.php');
 $startTime = strtotime($fr_date);
 $endTime = strtotime($to_date);
 
+$to_date = "{$to_date} 23:59:59";
+
 $results = [];
 if ($type == 'user') {
     // 회원등급
@@ -181,13 +183,33 @@ else if ($type == 'contract_s') {
     // var_dump($results);
     $colspan = 2;
 }
+else if ($type == 'login') {
+    //누적
+    $sql = "SELECT COUNT(*) as cnt, mb_id FROM g5_statistics WHERE type = 'LOGIN' GROUP BY mb_id;";
+    $result = sql_query($sql);
+    $total_arr = [];
+    while($row=sql_fetch_array($result)) {
+        $total_arr[] = $row;
+        
+        //각 지역 일자별
+        $sub_sql = "SELECT DATE(regdt) as mb_date, COUNT(*) as cnt, mb_id FROM g5_statistics WHERE type = 'LOGIN' AND mb_id = '{$row['mb_id']}' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_id, mb_date;";
+        $sub_result = sql_query($sub_sql);
+        $arr = [];
+        while($sub_row=sql_fetch_array($sub_result)) {
+            $arr[$sub_row['mb_date']] = $sub_row['cnt'];
+        }
+        $results[$row['mb_id']] = $arr;
+    }
+    // var_dump($results);
+    $colspan = count($total_arr) + 1;
+}
 else if ($type == 'order_c') {
     //누적
     $sql = "SELECT COUNT(*) as cnt FROM g5_shop_order";
     $total_cnt = sql_fetch($sql);
 
     //각 일자별
-    $sql = "SELECT COUNT(*) as cnt, DATE(od_time) as ms_date FROM g5_shop_order WHERE od_time BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
+    $sql = "SELECT COUNT(*) as cnt, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
     $result = sql_query($sql);
     $arr = [];
     while($row=sql_fetch_array($result)) {
@@ -199,6 +221,41 @@ else if ($type == 'order_c') {
 }
 ?>
 
+<style>
+table {
+  table-layout: fixed; 
+  width: 100%;
+  *margin-left: -100px; /*ie7*/
+}
+td, th {
+  vertical-align: top;
+  border-top: 1px solid #ccc;
+  padding: 10px;
+  width: 50px;
+}
+.fix {
+  position: absolute;
+  *position: relative; /*ie7*/
+  margin-left: -100px;
+  width: 100px;
+}
+.outer {
+  position: relative;
+}
+.tbl_wrap {
+  overflow-x: scroll;
+  overflow-y: visible;
+  width: 100%; 
+}
+.tbl_head01 thead th {
+    border-color: #555;
+    background: #383838;
+    color: #fff;
+    letter-spacing:0;
+}
+</style>
+
+<div class="outer">
 <div class="tbl_head01 tbl_wrap">
     <table>
     <caption><?php echo $g5['title']; ?> 목록</caption>
@@ -217,6 +274,12 @@ else if ($type == 'order_c') {
             foreach($total_arr as $row) { 
                 $region = $row['sido']; ?>
                 <th scope="col"><?=$region?></th>
+            <?php } ?>
+        <?php } else if ($type == 'login') { ?>
+        <?php 
+            foreach($total_arr as $row) { 
+                $mb_id = $row['mb_id']; ?>
+                <th scope="col"><?=$mb_id?></th>
             <?php } ?>
         <?php } else if ($type == 'amount') { ?>
             <th scope="col">매출액</th>
@@ -248,6 +311,11 @@ else if ($type == 'order_c') {
             foreach($total_arr as $row) { ?>
                 <td><?php echo $row['cnt'] ?></td>
             <?php } ?>
+        <?php } else if ($type == 'login') { ?>
+        <?php 
+            foreach($total_arr as $row) { ?>
+                <td><?php echo $row['cnt'] ?></td>
+            <?php } ?>
         <?php } else if ($type == 'amount') { ?>
             <td><?php echo number_format($total_amount['amount']) ?></td>
         <?php } else if ($type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'order_c') { ?>
@@ -268,6 +336,11 @@ else if ($type == 'order_c') {
             array_push($datas, $results['partner_cnt'][$thisDate] ?: 0);
             array_push($datas, $results['level9_cnt'][$thisDate] ?: 0);
         } else if ($type == 'region') {
+            $arr_keys = array_keys($results);
+            foreach($arr_keys as $key) { 
+                array_push($datas, $results[$key][$thisDate] ?: 0);
+            }
+        } else if ($type == 'login') {
             $arr_keys = array_keys($results);
             foreach($arr_keys as $key) { 
                 array_push($datas, $results[$key][$thisDate] ?: 0);
@@ -300,6 +373,7 @@ else if ($type == 'order_c') {
     ?>
     </tbody>
     </table>
+</div>
 </div>
 
 <?php
