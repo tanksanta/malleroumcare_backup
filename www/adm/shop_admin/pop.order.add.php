@@ -319,7 +319,7 @@ $(function() {
         var index = input_names.indexOf(name);
         if (e.which === 39) {
             //right
-            if (index > 3) {
+            if (index != 3) {
                 index++;
                 if (index == 4) {
                     index = 0;
@@ -332,7 +332,7 @@ $(function() {
         }
         else if (e.which === 37) {
             //left
-            if (index > 3) {
+            if (index != 3) {
                 index--;
                 if (index == -1) {
                     index = 3;
