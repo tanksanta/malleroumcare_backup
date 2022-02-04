@@ -147,6 +147,14 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <input type="text" name="al_itdate" value="<?php echo  get_sanitize_input($al['al_itdate']) ?>" id="al_itdate" required class="required frm_input" size="100">
         </td>
     </tr>
+    <tr id="num_tr" style="<?php echo ($al['al_cate'] == 1 ? '' : 'display:none')?>">
+        <th scope="row">
+            <label for="al_itcount">수량</label>
+        </th>
+        <td>
+            <input type="text" name="al_itcount" value="<?php echo  get_sanitize_input($al['al_itcount']) ?>" id="al_itcount" required class="frm_input" size="10">
+        </td>
+    </tr>
     </tbody>
     </table>
 </div>
@@ -208,6 +216,15 @@ $('#mb_id').flexdatalist({
     select_mb_id(obj);
     $('#mb_id').val('').next().focus();
 });
+
+$('input[name="al_cate"]:radio').change(function() {
+    if (this.value == 0) {
+        $('#num_tr').hide();
+    }
+    else {
+        $('#num_tr').show();
+    }
+})
 
 // 사업소목록 엑셀 업로드
 $('#excelupload').click(function() {
