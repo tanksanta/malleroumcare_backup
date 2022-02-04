@@ -22,8 +22,9 @@ if (!$od['od_id']) {
 $sql = " update 
             {$g5['g5_shop_order_table']} 
         set 
-            od_send_cost = '$od_send_cost',
-            od_sales_discount = '$od_sales_discount'
+        od_send_cost = '$od_send_cost',
+        od_send_cost2 = '$od_send_cost2',
+        od_sales_discount = '$od_sales_discount'
         where 
             od_id = '$od_id' ";
 sql_query($sql);
@@ -34,6 +35,7 @@ $ret = array(
 );
 
 set_order_admin_log($od_id, '배송비 '. $od_send_cost .'원 변경');
+set_order_admin_log($od_id, '추가배송비 '. $od_send_cost2 .'원 변경');
 set_order_admin_log($od_id, '매출할인 '. $od_sales_discount .'원 변경');
 
 echo json_encode($ret);

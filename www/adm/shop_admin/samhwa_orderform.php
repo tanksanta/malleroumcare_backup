@@ -2331,6 +2331,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         <li>
                             <span>매출할인</span><input class="od_sales_discount" type="number" value="<?=$od['od_sales_discount']?>">원
                         </li>
+                        <li>
+                            <span>추가배송비</span><input class="od_send_cost2" type="number" value="<?=$od['od_send_cost2']?>">원
+                        </li>
                         <button id="change_send_cost_sales_discount" type="button">적용</button>
                     </ul>
                 </form>
@@ -3840,6 +3843,7 @@ $(document).ready(function() {
 
     $('#change_send_cost_sales_discount').click(function () {
         var od_send_cost = parseInt($('.send_cost_sales_discount_wrapper .od_send_cost').val());
+        var od_send_cost2 = parseInt($('.send_cost_sales_discount_wrapper .od_send_cost2').val());
         var od_sales_discount = parseInt($('.send_cost_sales_discount_wrapper .od_sales_discount').val());
 
         $.ajax({
@@ -3848,6 +3852,7 @@ $(document).ready(function() {
             data: {
                 od_id: od_id,
                 od_send_cost: od_send_cost,
+                od_send_cost2: od_send_cost2,
                 od_sales_discount: od_sales_discount,
             },
         })
