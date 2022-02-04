@@ -11,6 +11,7 @@ $al_type = clean_xss_tags($_POST['al_type']);
 $al_cate = clean_xss_tags($_POST['al_cate']);
 $al_itname = clean_xss_tags($_POST['al_itname']);
 $al_itdate = clean_xss_tags($_POST['al_itdate']);
+$al_itcount = clean_xss_tags($_POST['al_itcount']);
 
 $mb_id_arr = $_POST['mb_id'] ?: [];
 $deleted_arr = $_POST['deleted'] ?: [];
@@ -56,6 +57,7 @@ if($w == 'd') {
                 al_subject = '$al_subject',
                 al_itname = '$al_itname',
                 al_itdate = '$al_itdate',
+                al_itcount = '$al_itcount',
                 updated_at = NOW(),
                 updated_by = '{$member['mb_id']}'
             WHERE
@@ -74,6 +76,7 @@ if($w == 'd') {
                 al_subject = '$al_subject',
                 al_itname = '$al_itname',
                 al_itdate = '$al_itdate',
+                al_itcount = '$al_itcount',
                 created_at = NOW(),
                 created_by = '{$member['mb_id']}',
                 updated_at = NOW(),
