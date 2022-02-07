@@ -433,28 +433,6 @@ tr.hover { background-color: #fbf9f7 !important; }
                   </span>
                 </p>
                 <?php } ?>
-                <p style="margin-top: 5px;">
-                  <?php if($row['ct_is_direct_delivery'] == 2) { ?>
-                  <?php if($row['report'] && ($row['report']['ir_cert_url'] || $row['report']['ir_file_url'])) { ?>
-                  <button type="button" class="report-btn btn_install_report done" data-id="<?=$row['od_id']?>">설치결과보고서 완료</button>
-                  <?php } else { ?>
-                  <button type="button" class="report-btn btn_install_report" data-id="<?=$row['od_id']?>">설치결과보고서 등록</button>
-                  <?php } ?>
-                  <?php } ?>
-                  <?php
-                  if($row['report']['ir_is_issue_1'])
-                    echo '<span class="ir_issue_tag1">변경</span>';
-                  if($row['report']['ir_is_issue_2'])
-                    echo '<span class="ir_issue_tag2">추가</span>';
-                  if($row['report']['ir_is_issue_3'])
-                    echo '<span class="ir_issue_tag3">미설치</span>';
-                  ?>
-                </p>
-                <?php if($row['report'] && $row['report']['ir_issue']) { ?>
-                <p style="width: 80%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;margin-top: 3px;">
-                  <?php echo htmlspecialchars($row['report']['ir_issue']); ?>
-                </p>
-                <?php } ?>
               </td>
               <td class="td_status text_c">
                 <?php
