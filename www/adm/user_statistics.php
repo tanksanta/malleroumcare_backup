@@ -109,12 +109,15 @@ else if ($type == 'amount') {
     $total_amount = sql_fetch($sql);
 
     //각 일자별
-    $sql = "SELECT SUM(ct_price * ct_qty) as amount, DATE(ct_time) as ct_time FROM g5_shop_cart WHERE (ct_status = '배송' OR ct_status = '완료') AND ct_time BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ct_time; ";
+    $sql = "SELECT SUM(ct_price * ct_qty) as amount, DATE(ct_time) as ct_date FROM g5_shop_cart WHERE (ct_status = '배송' OR ct_status = '완료') AND ct_time BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ct_date; ";
     $result = sql_query($sql);
     $arr = [];
+    $sum = 0;
     while($row=sql_fetch_array($result)) {
-        $arr[$row['ct_time']] = $row['amount'];
+        $arr[$row['ct_date']] = $row['amount'];
+        $sum += $row['amount'];
     }
+    $sum = number_format($sum);
     $results['amount'] = $arr;
     // var_dump($results);
     $colspan = 2;
@@ -128,8 +131,10 @@ else if ($type == 'proposal_c') {
     $sql = "SELECT COUNT(*) as cnt, DATE(ms_created_at) as ms_date FROM recipient_item_msg WHERE ms_created_at BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
     $result = sql_query($sql);
     $arr = [];
+    $sum = 0;
     while($row=sql_fetch_array($result)) {
         $arr[$row['ms_date']] = $row['cnt'];
+        $sum += $row['cnt'];
     }
     $results['proposal_c'] = $arr;
     // var_dump($results);
@@ -144,8 +149,10 @@ else if ($type == 'proposal_s') {
     $sql = "SELECT COUNT(*) as cnt, DATE(ml_sent_at) as ms_date FROM recipient_item_msg_log WHERE ml_sent_at BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
     $result = sql_query($sql);
     $arr = [];
+    $sum = 0;
     while($row=sql_fetch_array($result)) {
         $arr[$row['ms_date']] = $row['cnt'];
+        $sum += $row['cnt'];
     }
     $results['proposal_s'] = $arr;
     // var_dump($results);
@@ -160,8 +167,10 @@ else if ($type == 'contract_c') {
     $sql = "SELECT COUNT(*) as cnt, DATE(dl_datetime) as ms_date FROM eform_document_log WHERE dl_log like '%생성%' AND dl_datetime BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
     $result = sql_query($sql);
     $arr = [];
+    $sum = 0;
     while($row=sql_fetch_array($result)) {
         $arr[$row['ms_date']] = $row['cnt'];
+        $sum += $row['cnt'];
     }
     $results['contract_c'] = $arr;
     // var_dump($results);
@@ -176,8 +185,10 @@ else if ($type == 'contract_s') {
     $sql = "SELECT COUNT(*) as cnt, DATE(dl_datetime) as ms_date FROM eform_document_log WHERE dl_log like '%서명%' AND dl_datetime BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
     $result = sql_query($sql);
     $arr = [];
+    $sum = 0;
     while($row=sql_fetch_array($result)) {
         $arr[$row['ms_date']] = $row['cnt'];
+        $sum += $row['cnt'];
     }
     $results['contract_s'] = $arr;
     // var_dump($results);
@@ -231,8 +242,10 @@ else if ($type == 'order_c') {
     $sql = "SELECT COUNT(*) as cnt, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
     $result = sql_query($sql);
     $arr = [];
+    $sum_user = 0;
     while($row=sql_fetch_array($result)) {
         $arr[$row['ms_date']] = $row['cnt'];
+        $sum_user += $row['cnt'];
     }
     $results['order_c_user'] = $arr;
 
@@ -241,10 +254,13 @@ else if ($type == 'order_c') {
     $result = sql_query($sql);
     $arr = [];
     $admin_arr = [];
+    $sum_all = 0;
     while($row=sql_fetch_array($result)) {
         $arr[$row['ms_date']] = $row['cnt'];
+        $sum_all += $row['cnt'];
         $admin_arr[$row['ms_date']] = $row['cnt'] - ($results['order_c_user'][$row['ms_date']] ?: 0);
     }
+    $sum_admin = $sum_all - $sum_user;
     $results['order_c_all'] = $arr;
     $results['order_c_admin'] = $admin_arr;
 
@@ -408,8 +424,11 @@ else if ($type == 'order_c') {
     <?php
     }
 
-    if ($type == 'login_daily' || $type == 'login_user') {
+    if ($type == 'amount' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'login_daily' || $type == 'login_user') {
         echo "<tr class='bg0'><td>소계</td><td>{$sum}</td></tr>";
+    }
+    else if ($type == 'order_c') {
+        echo "<tr class='bg0'><td>소계</td><td>{$sum_all}</td><td>{$sum_admin}</td><td>{$sum_user}</td></tr>";
     }
     if ($i == 0)
         echo '<tr><td colspan="'.$colspan.'" class="empty_table">자료가 없거나 관리자에 의해 삭제되었습니다.</td></tr>';
