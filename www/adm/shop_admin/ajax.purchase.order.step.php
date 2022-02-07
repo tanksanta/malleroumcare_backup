@@ -87,7 +87,7 @@ if($_POST['ct_id']&&$_POST['step']) {
 
     // 재고관리 변경
     if($_POST['step'] == '발주완료') {
-      $sql = "
+      $wh_row = sql_fetch("
         select *
         from warehouse_stock
         where
@@ -95,9 +95,7 @@ if($_POST['ct_id']&&$_POST['step']) {
           ct_id = '{$_POST['ct_id'][$i]}' AND
           it_id = '{$result_ct_s['it_id']}' AND
           io_id = '{$result_ct_s['io_id']}'
-      ";
-
-      $wh_row = sql_fetch($sql);
+      ");
       $ws_qty = $result_ct_s['ct_qty'];
 
       if (!$wh_row) {
