@@ -1402,6 +1402,22 @@ display: none;
     padding:5px 3px;
 }
 
+.purchase_order .pop_order_add_item_table tbody td {
+    padding-bottom: 18px;
+    position: relative;
+}
+
+.purchase_order .pop_order_add_item_table .qty_info {
+    margin: 0;
+    position: absolute;
+    top: 38px;
+    left: 10px;
+}
+
+.purchase_order .pop_order_add_item_table input:focus-visible {
+  outline: none;
+}
+
 .pop_order_add_item_table tbody td.no {
     text-align: center;
 }
