@@ -51,8 +51,8 @@ $pdffile = $eform['dc_pdf_file'];
 
 if($eform['dc_status'] == '3' && !$is_simple_eform) {
   // 마이그레이션한 이전 계약서
-  $pdfdir = G5_DATA_PATH.'/eform/legacy';
-  $pdffile .= '/ALL.pdf';
+  // $pdfdir = G5_DATA_PATH.'/eform/legacy';
+  // $pdffile .= '/ALL.pdf';
 }
 
 header("Content-type: application/pdf");
