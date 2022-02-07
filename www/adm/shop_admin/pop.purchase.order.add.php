@@ -240,7 +240,7 @@ include_once('./pop.head.php');
           <input type="text" name="memo[]" class="frm_input">
         </td>
         <td>
-          <select name="it_warehousing_warehouse" id="it_warehousing_warehouse" name="wh_name">
+          <select name="wh_name[]" id="it_warehousing_warehouse" name="wh_name">
             <option value="">창고선택</option>
             <?php
             $warehouse_list = get_warehouses();
