@@ -4,7 +4,7 @@ include_once('./_common.php');
 if(!$is_samhwa_partner)
   alert('파트너 회원만 접근가능합니다.');
 
-$g5['title'] = "파트너 주문상세";
+$g5['title'] = "파트너 발주상세";
 include_once("./_head.php");
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
@@ -110,7 +110,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
 <section id="partner-order" class="wrap">
   <h2 class="title row no-gutter">
-    주문상세
+    발주상세
   </h2>
 
   <section class="row no-gutter justify-space-between container">
@@ -122,8 +122,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           </div>
           <div class="col">
             <select name="ct_status" class="order-status-select">
-              <option value="출고완료">출고완료</option>
-              <option value="입고완료" selected>입고완료</option>
+              <option value="출고완료" selected>출고완료</option>
               <option value="취소">취소</option>
             </select>
             <button type="button" id="btn_ct_status" class="order-status-btn">저장</button>
