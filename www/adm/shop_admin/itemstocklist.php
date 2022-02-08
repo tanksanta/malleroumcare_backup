@@ -54,54 +54,66 @@ if ($sort2 == "") $sort2 = "asc";
 $common_ct_status = "('주문', '입금', '준비', '출고준비', '배송', '완료')";
 $sql_common = "
 from 
-  (select
-    it_id,
-    it_name,
-    it_use,
-    it_stock_qty,
-    it_stock_sms,
-    it_noti_qty,
-    it_soldout,
-    ca_id,
-    pt_it,
-    pt_id,
-    it_expected_warehousing_date,
-    IFNULL(IF(it_stock_manage_min_qty IS NOT NULL, 
-      it_stock_manage_min_qty, 
-      ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
-        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
-          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
-        AND ct_status IN {$common_ct_status}
-        AND it_id = i.it_id) / 3 * 0.5)
-      ), 0) AS safe_min_stock_qty,
-    IFNULL(IF(it_stock_manage_max_qty IS NOT NULL, 
-      it_stock_manage_max_qty, 
-      ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
-        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
-          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
-        AND ct_status IN {$common_ct_status}
-        AND it_id = i.it_id) / 3 * 1.5)
-      ), 0) AS safe_max_stock_qty,
-    (SELECT IFNULL(sum(ws_qty), 0) FROM warehouse_stock WHERE it_id = i.it_id AND ws_del_yn = 'N') AS sum_ws_qty,
-    ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
-        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
-          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
-        AND ct_status IN {$common_ct_status}
-        AND it_id = i.it_id) / 3) AS sum_ct_qty_3month,
-    (SELECT sum(ct_qty) FROM g5_shop_cart 
-        WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 31 DAY), '%Y-%m-%d 00:00:00') AND
-              ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
-            AND ct_status IN {$common_ct_status}
-            AND it_id = i.it_id) AS sum_ct_qty_1month,
-    (SELECT sum(ct_qty) FROM g5_shop_cart 
-        WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 2 DAY), '%Y-%m-%d 00:00:00') AND
-              ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
-            AND ct_status IN {$common_ct_status}
-            AND it_id = i.it_id) AS sum_ct_qty_1day,
-    (SELECT max(ct_time) FROM g5_shop_cart 
-        WHERE ct_status IN {$common_ct_status}
-        AND it_id = i.it_id) AS last_ct_time
-  from {$g5['g5_shop_item_table']} i) AS T
+	(SELECT 
+		b.io_id,
+		b.io_type,
+		b.io_stock_qty,
+		b.io_noti_qty,
+		a.*,
+		IFNULL(IF(it_stock_manage_min_qty IS NOT NULL, 
+	        it_stock_manage_min_qty, 
+	        ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+	          WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+	            ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+	          AND ct_status IN {$common_ct_status}
+	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 0.5)
+	        ), 0) AS safe_min_stock_qty,
+	      IFNULL(IF(it_stock_manage_max_qty IS NOT NULL, 
+	        it_stock_manage_max_qty, 
+	        ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+	          WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+	            ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+	          AND ct_status IN {$common_ct_status}
+	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 1.5)
+	        ), 0) AS safe_max_stock_qty,
+	      (SELECT IFNULL(sum(ws_qty), 0) FROM warehouse_stock WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
+	      ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+	          WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+	            ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+	          AND ct_status IN {$common_ct_status}
+	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3) AS sum_ct_qty_3month,
+	      (SELECT sum(ct_qty) FROM g5_shop_cart 
+	          WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 31 DAY), '%Y-%m-%d 00:00:00') AND
+	                ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
+	              AND ct_status IN {$common_ct_status}
+	              AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS sum_ct_qty_1month,
+	      (SELECT sum(ct_qty) FROM g5_shop_cart 
+	          WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 2 DAY), '%Y-%m-%d 00:00:00') AND
+	                ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
+	              AND ct_status IN {$common_ct_status}
+	              AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS sum_ct_qty_1day,
+	      (SELECT max(ct_time) FROM g5_shop_cart 
+	          WHERE ct_status IN {$common_ct_status}
+	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS last_ct_time
+	FROM 
+	  (select
+	      it_id,
+	      it_name,
+	      it_use,
+	      it_stock_qty,
+	      it_stock_sms,
+	      it_noti_qty,
+	      it_soldout,
+	      ca_id,
+	      pt_it,
+	      pt_id,
+	      it_expected_warehousing_date,
+	      it_option_subject,
+	      it_stock_manage_min_qty,
+	      it_stock_manage_max_qty
+    	from g5_shop_item i) AS a
+		LEFT JOIN (SELECT * from g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)
+	) AS t
 ";
 
 // 테이블의 전체 레코드수만 얻음
@@ -293,6 +305,7 @@ $count_warn3 = get_manage_stock_count(3);
     <tr>
         <th scope="col"><a href="<?php echo title_sort("it_id") . "&amp;$qstr1"; ?>">상품코드</a></th>
         <th scope="col"><a href="<?php echo title_sort("it_name") . "&amp;$qstr1"; ?>">상품명</a></th>
+        <th scope="col">옵션항목</th>
         <th scope="col">재고경고</th>
         <th scope="col"><a href="<?php echo title_sort("sum_ws_qty") . "&amp;$qstr1"; ?>">창고재고</a></th>
         <th scope="col">평균출고</th>
@@ -360,7 +373,28 @@ $count_warn3 = get_manage_stock_count(3);
 		<!-- // -->
         <td class="td_left"><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
 <!--        <td class="td_num--><?php //echo $it_stock_qty_st; ?><!--">--><?php //echo $it_stock_qty; ?><!--</td>-->
+        <td class="td_left">
+        <?php
+        $option = '';
+        $option_br = '';
+        if ($row['io_type']) {
+          $opt = explode(chr(30), $row['io_id']);
+          if ($opt[0] && $opt[1])
+            $option .= $opt[0] . ' : ' . $opt[1];
+        } else {
+          $subj = explode(',', $row['it_option_subject']);
+          $opt = explode(chr(30), $row['io_id']);
+          for ($k = 0; $k < count($subj); $k++) {
+            if ($subj[$k] && $opt[$k]) {
+              $option .= $option_br . $subj[$k] . ' : ' . $opt[$k];
+              $option_br = '<br>';
+            }
+          }
+        }
 
+        echo $option
+        ?>
+        </td>
         <?php
         $img_src = '';
         $alt_txt = '';
@@ -402,12 +436,12 @@ $count_warn3 = get_manage_stock_count(3);
 
         ?>
         <td class="td_num"><?php echo $img_src ? '<img src="' . $img_src . '" title="' . $alt_txt . '">' : '' ?></td>
-        <td class="td_num"><?php echo number_format($current_ws_qty) ?></td>
+        <td class="td_num"><?php echo number_format($row['sum_ws_qty']) ?></td>
         <td class="td_num"><?php echo number_format($row['sum_ct_qty_3month']) ?></td>
         <td class="td_num"><?php echo number_format($row['safe_min_stock_qty']) ?></td>
         <?php
         foreach($warehouse_list as $warehouse) {
-          $sql = " select sum(ws_qty) as stock from warehouse_stock where it_id = '{$row['it_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' ";
+          $sql = " select sum(ws_qty) as stock from warehouse_stock where it_id = '{$row['it_id']}' and io_id = '{$row['io_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' ";
           $stock = sql_fetch($sql)['stock'] ?: 0;
           echo '<td class="td_num">'.number_format($stock).'</td>';
         }
