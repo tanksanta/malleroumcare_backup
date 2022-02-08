@@ -69,6 +69,14 @@ add_javascript(G5_POSTCODE_JS, 0);
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">
+              <strong>추가배송비</strong>
+            </label>
+            <div class="col-sm-8">
+              <span id="add_delivery_price" class="form_desc">0</span>원
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">
               <strong>쿠폰적용</strong>
             </label>
             <div class="col-sm-8">
@@ -813,7 +821,7 @@ function calculate_order_price() {
 }
 
 var addr1_timer = null;
-$('#od_b_addr1').on('keyup change input paste', function() {
+$('#od_b_addr2').on('keyup change input paste', function() {
   if(addr1_timer)
     clearTimeout(addr1_timer);
   
@@ -824,13 +832,21 @@ $('#od_b_addr1').on('keyup change input paste', function() {
 
 // 배송비계산 (더미코드)
 function calculate_sendcost(code) {
-
+  console.log(code);
   var address = $('#od_b_addr1').val();
+  var it_ids = [];
+  $('input[name="ct_qty[]"]').each(function() {
+    var it_id = $(this).data("it-id");
+    it_ids.push(it_id);
 
-  var it_ids = $.map($('input[name="it_id[]"]'), function(el, i) {
-      return $(el).val();
+    var qty = $(this).val();
+    if (qty > 1) {
+      for (var i=1; i<qty; i++) {
+        it_ids.push(it_id);
+      }
+    }
   });
-
+  
   $.post(
       "./ordersendcost_new.php",
       {
@@ -844,6 +860,7 @@ function calculate_sendcost(code) {
               data = 0;
           }
           $("input[name=od_send_cost2]").val(data);
+          $('#add_delivery_price').text(number_format(data));
 
           zipcode = code;
 
@@ -1011,7 +1028,7 @@ function select_item(obj, io_id, ct_qty) {
       <div class="input-group-btn">\
           <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>\
       </div>\
-      <input type="text" name="ct_qty[]" value="1" class="form-control input-sm">\
+      <input type="text" name="ct_qty[]" value="1" class="form-control input-sm" data-it-id="' + obj.it_id + '">\
       <div class="input-group-btn">\
           <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>\
       </div>\
