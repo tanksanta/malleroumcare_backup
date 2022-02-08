@@ -374,10 +374,14 @@ $count_warn3 = get_manage_stock_count(3);
 
           $purchase_list = get_purchase_order_by_it_id($row['it_id'], '발주완료');
           if (count($purchase_list) > 0) {
-            $img_src = '/img/warn4.png';
+            $total_purchase_qty = 0;
             for ($i = 0; $i < count($purchase_list); $i++) {
               $alt_txt .= '&#10;';
               $alt_txt .= "발주완료 ({$purchase_list[$i]['ct_qty']}개) {$purchase_list[$i]['ct_time']}";;
+              $total_purchase_qty += $purchase_list[$i]['ct_qty'];
+            }
+            if ($safe_min_qty < ($current_ws_qty + $total_purchase_qty)) {
+              $img_src = '/img/warn4.png';
             }
           }
         }
