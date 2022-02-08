@@ -83,6 +83,11 @@ from
         AND it_id = i.it_id) / 3 * 1.5)
       ), 0) AS safe_max_stock_qty,
     (SELECT IFNULL(sum(ws_qty), 0) FROM warehouse_stock WHERE it_id = i.it_id AND ws_del_yn = 'N') AS sum_ws_qty,
+    ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+        AND ct_status IN {$common_ct_status}
+        AND it_id = i.it_id) / 3) AS sum_ct_qty_3month,
     (SELECT sum(ct_qty) FROM g5_shop_cart 
         WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 31 DAY), '%Y-%m-%d 00:00:00') AND
               ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
@@ -283,6 +288,8 @@ $count_warn3 = get_manage_stock_count(3);
         <th scope="col"><a href="<?php echo title_sort("it_name") . "&amp;$qstr1"; ?>">상품명</a></th>
         <th scope="col">재고경고</th>
         <th scope="col"><a href="<?php echo title_sort("sum_ws_qty") . "&amp;$qstr1"; ?>">창고재고</a></th>
+        <th scope="col">평균출고</th>
+        <th scope="col">안전재고</th>
         <?php foreach($warehouse_list as $warehouse) { ?>
         <th scope="col"><?=$warehouse['name']?></th>
         <?php } ?>
@@ -385,6 +392,8 @@ $count_warn3 = get_manage_stock_count(3);
         ?>
         <td class="td_num"><?php echo $img_src ? '<img src="' . $img_src . '" title="' . $alt_txt . '">' : '' ?></td>
         <td class="td_num"><?php echo number_format($current_ws_qty) ?></td>
+        <td class="td_num"><?php echo number_format($row['sum_ct_qty_3month']) ?></td>
+        <td class="td_num"><?php echo number_format($row['safe_min_stock_qty']) ?></td>
         <?php
         foreach($warehouse_list as $warehouse) {
           $sql = " select sum(ws_qty) as stock from warehouse_stock where it_id = '{$row['it_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' ";
