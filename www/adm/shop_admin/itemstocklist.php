@@ -33,18 +33,18 @@ if ($wh_name != '') {
 }
 
 // 안전재고 상품
-if ($search_safe_min_stock == 'true') {
-  $sql_search .= " and sum_ws_qty <= safe_min_stock_qty and sum_ws_qty != 0 and safe_min_stock_qty != 0 ";
+if ($stock_type == 'safe_min') {
+  $sql_search .= " and (sum_ws_qty <= safe_min_stock_qty) and sum_ws_qty != 0 and safe_min_stock_qty != 0 ";
 }
 
 // 최대재고 상품
-if ($search_safe_max_stock == 'true') {
-  $sql_search .= " and sum_ws_qty > safe_max_stock_qty and sum_ws_qty != 0 and safe_max_stock_qty != 0 ";
+if ($stock_type == 'safe_max') {
+  $sql_search .= " and (sum_ws_qty > safe_min_stock_qty and sum_ws_qty <= safe_max_stock_qty) and sum_ws_qty != 0 and safe_min_stock_qty != 0 ";
 }
 
 // 악성재고 상품
-if ($search_malignity_stock == 'true') {
-  $sql_search .= "";
+if ($stock_type == 'malignity') {
+  $sql_search .= " and (sum_ws_qty > safe_max_stock_qty) and sum_ws_qty != 0 and safe_min_stock_qty != 0 ";
 }
 
 if ($sel_field == "")  $sel_field = "it_name";
@@ -126,6 +126,7 @@ $result = sql_query($sql);
 
 $colspan = 11;
 
+$warehouse_total_qty = 0;
 $warehouse_list = get_warehouses();
 foreach($warehouse_list as &$warehouse) {
   $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '$warehouse' and ws_del_yn = 'N' ";
@@ -136,11 +137,12 @@ foreach($warehouse_list as &$warehouse) {
     'total' => $result_total['total'] ?: 0
   ];
 
+  $warehouse_total_qty += $result_total['total'] ?: 0;
   $colspan++;
 }
 unset($warehouse);
 
-$qstr1 = 'sel_ca_id='.$sel_ca_id.'&amp;sel_field='.$sel_field.'&amp;search='.$search.'&amp;wh_name='.$wh_name;
+$qstr1 = 'sel_ca_id='.$sel_ca_id.'&amp;sel_field='.$sel_field.'&amp;search='.$search.'&amp;wh_name='.$wh_name.'&amp;stock_type='.$stock_type;
 $qstr = $qstr1.'&amp;sort1='.$sort1.'&amp;sort2='.$sort2.'&amp;page='.$page;
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
@@ -184,6 +186,10 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     border: 1px solid #ddd;
     border-radius: 5px;
   }
+
+  .quick_link_area a.active {
+    border: 1px solid #f00;
+  }
 </style>
 
 <div class="local_ov01 local_ov">
@@ -205,8 +211,9 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <input type="hidden" name="page" value="<?php echo $page; ?>">
 
 <div class="quick_link_area" style="padding-bottom: 20px">
+  <a class="<?php echo $wh_name == '' ? 'active' : '' ?>" href="<?php echo $_SERVER['SCRIPT_NAME']."?wh_name=" ?>">전체(<?php echo $warehouse_total_qty; ?>개)</a>
   <?php foreach($warehouse_list as $warehouse) { ?>
-    <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?wh_name='.$warehouse['name']; ?>"><?php echo $warehouse['name']; ?>(<?php echo $warehouse['total']; ?>개)</a>
+    <a class="<?php echo $wh_name == $warehouse['name'] ? 'active' : '' ?>" href="<?php echo $_SERVER['SCRIPT_NAME'].'?wh_name='.$warehouse['name']; ?>"><?php echo $warehouse['name']; ?>(<?php echo $warehouse['total']; ?>개)</a>
   <?php } ?>
 </div>
 
@@ -218,15 +225,15 @@ $count_warn3 = get_manage_stock_count(3);
 
 <div class="quick_link_area" style="padding-bottom: 20px">
   <?php if ($count_warn1 > 0) { ?>
-  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_min_stock=true' ?>"><img src="/img/warn1.png" style="margin-right: 8px">안전재고 이하 상품 (<?php echo $count_warn1 ?>개)</a>
+  <a class="<?php echo $stock_type == 'safe_min' ? 'active' : '' ?>" href="<?php echo $stock_type == 'safe_min' ? $_SERVER['SCRIPT_NAME'] . '?stock_type=' :  $_SERVER['SCRIPT_NAME'].'?stock_type=safe_min' ?>"><img src="/img/warn1.png" style="margin-right: 8px">안전재고 이하 상품 (<?php echo $count_warn1 ?>개)</a>
   <?php } ?>
 
   <?php if ($count_warn2 > 0) { ?>
-  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_safe_max_stock=true' ?>"><img src="/img/warn2.png" style="margin-right: 8px">최대재고 이상 상품 (<?php echo $count_warn2 ?>개)</a>
+  <a class="<?php echo $stock_type == 'safe_max' ? 'active' : '' ?>" href="<?php echo $stock_type == 'safe_max' ? $_SERVER['SCRIPT_NAME'] . '?stock_type=' :  $_SERVER['SCRIPT_NAME'].'?stock_type=safe_max' ?>"><img src="/img/warn2.png" style="margin-right: 8px">최대재고 이상 상품 (<?php echo $count_warn2 ?>개)</a>
   <?php } ?>
 
   <?php if ($count_warn3 > 0) { ?>
-  <a href="<?php echo $_SERVER['SCRIPT_NAME'].'?search_malignity_stock=true' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (<?php echo $count_warn3 ?>개)</a>
+  <a class="<?php echo $stock_type == 'malignity' ? 'active' : '' ?>" href="<?php echo $stock_type == 'malignity' ?$_SERVER['SCRIPT_NAME'] .  '?stock_type=' : $_SERVER['SCRIPT_NAME'].'?stock_type=malignity' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (<?php echo $count_warn3 ?>개)</a>
   <?php } ?>
 </div>
 
