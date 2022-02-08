@@ -2402,3 +2402,13 @@ function count_item_option($it_id) {
 
   return sql_fetch($sql)['cnt'];
 }
+
+function replace_querystring($qstr, $key, $value) {
+  $qstr_arr = [];
+
+  $qstr_conv = str_replace('&amp;' , '&', $qstr);
+  parse_str($qstr_conv, $qstr_arr);
+  $qstr_arr[$key] = $value;
+
+  return http_build_query($qstr_arr);
+}
