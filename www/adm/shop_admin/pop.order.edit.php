@@ -48,7 +48,7 @@ tr.strikeout td:before {
     width: 100%;
 }
 </style>
-<form name="foption" class="form" role="form" method="post" action="./pop.order.edit_result.php" onsubmit="return formcheck(this);">
+<form name="foption" class="form" role="form" method="post" action="./pop.order.edit_result.php" onsubmit="return formcheck(this);" autocomplete="off">
 <input type="hidden" name="od_id" value="<?=$od_id?>">
 <input type="hidden" name="od_send_cost" value="<?=$od['od_send_cost']?>">
 <div id="pop_order_add" class="admin_popup admin_popup_padding">
@@ -702,6 +702,50 @@ $(function() {
     $(document).keydown(function(e) {
         if((e.which || e.keyCode) == 119) { // F8
             $('#popup_buttom input[type="submit"]').click();
+        }
+    });
+
+    $(document).on('keydown','input',function (e) {
+        var input_names = ["flexdatalist-it_name[]", "qty[]", "it_price[]", "memo[]"];
+        var name = $(this).attr("name");
+        var index = input_names.indexOf(name);
+        if (e.which === 39) {
+            //right
+            if (index != 3) {
+                index++;
+                if (index == 4) {
+                    index = 0;
+                    $(this).closest("tr").next("tr").find("input[name='"+input_names[index]+"']").focus();
+                }
+                else {
+                    $(this).closest("tr").find("input[name='"+input_names[index]+"']").focus();
+                }
+            }
+        }
+        else if (e.which === 37) {
+            //left
+            if (index != 3) {
+                index--;
+                if (index == -1) {
+                    index = 3;
+                    $(this).closest("tr").prev("tr").find("input[name='"+input_names[index]+"']").focus();
+                }
+                else {
+                    $(this).closest("tr").find("input[name='"+input_names[index]+"']").focus();
+                }
+            }
+        }
+        else if (e.which === 38) {
+            //up
+            if (index > 0) {
+                $(this).closest("tr").prev("tr").find("input[name='"+input_names[index]+"']").focus();
+            }
+        }
+        else if (e.which === 40) {
+            //down
+            if (index > 0) {
+                $(this).closest("tr").next("tr").find("input[name='"+input_names[index]+"']").focus();
+            }
         }
     });
 
