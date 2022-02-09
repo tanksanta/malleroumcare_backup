@@ -703,6 +703,9 @@ function doSearch(show_all) {
   if (!show_all) {
     show_all = 'N';
   }
+  else {
+    page = 1;
+  }
   var formdata = $.extend({}, {
     click_status: od_status,
     od_step: od_step,
