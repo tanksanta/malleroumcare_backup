@@ -86,7 +86,7 @@ foreach($ct_items as $it) {
         $od["od_b_tel"],
         "",
         $it["ct_delivery_cnt"], //박스수량
-        $od["od_send_cost"],
+        $od["od_send_cost"] + $od["od_send_cost2"],
         "선불",
         $it['it_name'],
         "",
