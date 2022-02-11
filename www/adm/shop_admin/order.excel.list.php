@@ -395,7 +395,7 @@
 
     $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
     $result_manager = sql_fetch($sql_manager);
-    $sale_manager=$result_manager['mb_name'];
+    $it['sale_manager'] = $result_manager['mb_name'];
 
     $it_name = $it["it_name"];
     
@@ -407,7 +407,8 @@
 
     $addr="";
     if($od_b_zip1){$addr= "(".$od_b_zip1.$od_b_zip2.")";}
-    $addr = $addr.$od["od_b_addr1"].' '.$od["od_b_addr2"].' '.$od["od_b_addr3"];
+    $it['addr'] = $addr.$od["od_b_addr1"].' '.$od["od_b_addr2"].' '.$od["od_b_addr3"];
+
     $ct_delivery_company = $it['ct_delivery_company'];
 		foreach($delivery_companys as $companyInfo) {
 			if($companyInfo["val"] == $ct_delivery_company){
@@ -455,8 +456,8 @@
         $it['it_name_qty'],
         $od["od_b_name"],
         $od["od_name"],
-        $sale_manager,
-        $addr,
+        $it['sale_manager'],
+        $it['addr'],
         $od["od_b_tel"],
         $od["od_b_hp"],
         $it["prodMemo"],
