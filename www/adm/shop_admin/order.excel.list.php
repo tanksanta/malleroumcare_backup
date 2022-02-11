@@ -392,6 +392,9 @@
     //영업담당자
     $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
     $result_manager = sql_fetch($sql_manager);
+    if (!$result_manager['mb_manager']) {
+      $result_manager['mb_manager'] = $od['od_sales_manager'];
+    }
 
     $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
     $result_manager = sql_fetch($sql_manager);

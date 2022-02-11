@@ -460,6 +460,9 @@
     // $od_sales_manager = get_member($od['od_sales_manager']);
     $sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
     $result_manager = sql_fetch($sql_manager);
+    if (!$result_manager['mb_manager']) {
+      $result_manager['mb_manager'] = $od['od_sales_manager'];
+    }
     $od_sales_manager = get_member($result_manager['mb_manager']);
 
     $thezone_code = $it['io_thezone2'] ?: $it['io_thezone'] ?: $it['it_thezone2'];
