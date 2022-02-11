@@ -843,7 +843,7 @@ $(function() {
 
   function timerIncrement() {
     idleTime = idleTime + 1;
-    if (idleTime > 20) { // 20 minutes
+    if (idleTime >= 10) { // 10 minutes
       window.location.href = './orderinquiry.php';
       clearInterval(idleInterval);
     }
