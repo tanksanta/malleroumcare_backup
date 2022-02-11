@@ -593,7 +593,10 @@ foreach($orderlist as $order) {
     $mb_entNm = $order['od_name'];
   }
 
-  $sale_manager = $sales_manager_table[$order['od_sales_manager']];
+  $sale_manager = $sales_manager_table[$order['mb_manager']];
+  if (!$sale_manager) {
+    $sale_manager = $sales_manager_table[$order['od_sales_manager']];
+  }
 
 
   switch ($ct_status_text) {
