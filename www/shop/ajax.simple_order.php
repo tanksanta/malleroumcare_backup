@@ -323,7 +323,8 @@ for($i = 0; $i < count($it_id_arr); $i++) {
         ct_direct_delivery_partner,
         ct_direct_delivery_price,
         prodMemo,
-        prodSupYn
+        prodSupYn,
+        ct_warehouse
         )
     VALUES ";
 
@@ -370,7 +371,8 @@ for($i = 0; $i < count($it_id_arr); $i++) {
         '{$it['it_direct_delivery_partner']}',
         '{$it['it_direct_delivery_price']}',
         '$prodMemo',
-        '{$it['prodSupYn']}'
+        '{$it['prodSupYn']}',
+        '{$it['it_default_warehouse']}'
     )
     ";
 

@@ -9,7 +9,8 @@ if($manager_mb_id) {
   $manager = get_member($manager_mb_id);
 }
 
-$ct_status = in_array($_POST['ct_status'], ['발주완료', '출고완료', '입고완료', '취소']) ? $_POST['ct_status'] : '';
+// '발주완료', '출고완료', '입고완료', '취소' 중 파트너는 출고완료 취소만 가능
+$ct_status = in_array($_POST['ct_status'], ['출고완료', '취소']) ? $_POST['ct_status'] : '';
 $ct_id_arr = get_search_string($_POST['ct_id']);
 
 if(!$ct_status || !$ct_id_arr || !is_array($ct_id_arr))

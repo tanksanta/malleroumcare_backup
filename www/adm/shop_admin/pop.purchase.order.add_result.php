@@ -142,6 +142,7 @@ try {
       ct_stock_use,
       ct_option,
       ct_qty,
+      ct_qty_for_rollback,
       ct_notax,
       io_id,
       io_type,
@@ -171,7 +172,10 @@ try {
       prodMemo,
       prodSupYn,
       ct_warehouse,
-      ct_supply_partner
+      ct_warehouse_address,
+      ct_warehouse_phone,
+      ct_supply_partner,
+      ct_delivery_expect_date
     )
   VALUES ";
 
@@ -285,16 +289,20 @@ try {
       $ct_admin_new_v = GenerateString(15);
       array_push($ct_admin_new,$ct_admin_new_v);
 
-      // 출하창고
-      $ct_warehouse = '청라창고';
-      if($it['it_default_warehouse']) {
-        $ct_warehouse = $it['it_default_warehouse'];
-      }
+      // 입고창고
+      $warehouse_name = $_POST['wh_name'][$i];
+      $wh_row = sql_fetch(" select * from warehouse where wh_name = '{$warehouse_name}' ");
+      $ct_warehouse = $wh_row['wh_name'];
+      $ct_warehouse_address = $wh_row['wh_address'];
+      $ct_warehouse_phone = $wh_row['wh_phone'];
 
       // 비유통상품 가격
       if($it['prodSupYn'] == 'N') {
         $it_price = 0;
       }
+
+      // 입고예정일 (2022-01-25 08:26:21)
+      $ct_delivery_expect_date = "{$od_datetime_date} {$od_datetime_time}:00:00";
 
       $insert_sql = $sql . "
     (
@@ -313,6 +321,7 @@ try {
       '0',
       '0',
       '$io_value',
+      '$ct_qty',
       '$ct_qty',
       '{$it['it_notax']}',
       '$io_id',
@@ -343,7 +352,10 @@ try {
       '$memo[$i]',
       '{$it['prodSupYn']}',
       '$ct_warehouse',
-      '{$od_member['mb_id']}'
+      '$ct_warehouse_address',
+      '$ct_warehouse_phone',
+      '{$od_member['mb_id']}',
+      '{$ct_delivery_expect_date}'
     )";
 
       sql_query($insert_sql);

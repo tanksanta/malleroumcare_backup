@@ -154,6 +154,7 @@ $affected_it_ids = $_GET['it_id'] ?: [];
     <span class="btn_ov01"><span class="ov_txt">등록된 상품</span><span class="ov_num"> <?php echo $total_count; ?>건</span></span>
     <div class="right">
         <button id="itemprice">상품가격관리</button>
+        <button id="itemexcel_all"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">엑셀전체다운로드</button>
         <button id="itemexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">엑셀다운로드</button>
     </div>
 </div>
@@ -358,7 +359,7 @@ $affected_it_ids = $_GET['it_id'] ?: [];
 		<!-- APMS - 2014.07.20 -->
 		<td rowspan="3" class="td_num" style="white-space:nowrap; position: relative;">
        		<b style="position: absolute; width: 40px; height: 20px; line-height: 20px; top: 5px; right: 5px; border-radius: 5px; color: #FFF; background-color: #<?=($row["prodSupYn"] == "Y") ? "3366CC" : "DC3333"?>; font-size: 11px; text-align: center;"><?=($row["prodSupYn"] == "Y") ? "유통" : "비유통"?></b>
-            <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
+            <input type="hidden" id="it_id" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
 			<?php if($row['pt_it']) { ?>
 				<div style="font-size:11px; letter-spacing:-1px;"><?php echo apms_pt_it($row['pt_it'],1);?></div>
 			<?php } ?>
@@ -605,7 +606,33 @@ $it = sql_fetch($sql);
 <script>
 
 $("#itemexcel").click(function() {
-    $(location).attr('href',"./excel_item.php");
+    var it_ids = [];
+    $('input[id="it_id"]').each(function() {
+        it_ids.push("'"+$(this).val()+"'");
+    });
+    
+    it_ids = it_ids.join(", ");
+    $.ajax({
+        url: './excel_item.php',
+        type: 'POST',
+        data: {'it_id': it_ids},
+        dataType: 'json',
+        async: false,
+        success: function() {
+        }
+    });
+    // $(location).attr('href',"./excel_item.php");
+});
+
+$("#itemexcel_all").click(function() {
+    $.ajax({
+        url: './excel_item.php',
+        type: 'POST',
+        async: false,
+        success: function() {
+        }
+    });
+    // $(location).attr('href',"./excel_item.php");
 });
 
 $('#itemprice').click(function() {

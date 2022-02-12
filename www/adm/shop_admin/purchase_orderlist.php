@@ -1008,7 +1008,7 @@ if( function_exists('pg_setting_check') ){
 <!--</div>-->
 
 <div class="btn_fixed_top2" style="bottom: 0;">
-  <a href="./purchase_order_new.php" id="order_add" class="btn btn_01">주문서 추가</a>
+  <a href="./purchase_order_new.php" id="order_add" class="btn btn_01">발주서 추가</a>
   <input type="button" value="더보기" onclick="doSearch()" class="btn btn_02">
 </div>
 

@@ -565,7 +565,7 @@ $warehouse_list = get_warehouses();
         <?php
         $average_sales_qty = get_average_sales_qty($it_id, 3);
         ?>
-        <input type="text" name="it_purchase_order_price" value="<?php echo $it['it_purchase_order_price']; ?>" id="it_purchase_order_price" class="frm_input importantBorder" size="8"> 원
+        <input type="text" name="it_purchase_order_price" value="<?php echo $it['it_purchase_order_price']; ?>" id="it_purchase_order_price" class="frm_input" size="8"> 원
         (안전재고:<input type="text" name="it_stock_manage_min_qty" value="<?php echo $it['it_stock_manage_min_qty']; ?>" placeholder="<?php echo (int)($average_sales_qty / 2) ?>" class="frm_input" size="8"> 개,
         최대재고:<input type="text" name="it_stock_manage_max_qty" value="<?php echo $it['it_stock_manage_max_qty']; ?>" placeholder="<?php echo (int)($average_sales_qty * 1.5) ?>" class="frm_input" size="8"> 개)
         <br>

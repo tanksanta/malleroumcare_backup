@@ -2312,3 +2312,98 @@ function check_auth($mb_id, $menu, $auth) {
     return false;
   }
 }
+
+
+function get_manage_stock_count($type) {
+  $common_ct_status = "('주문', '입금', '준비', '출고준비', '배송', '완료')";
+
+  // 안전재고
+  if ($type == 1) {
+    $where = " AND (sum_ws_qty <= safe_min_stock_qty) AND sum_ws_qty != 0 AND safe_min_stock_qty != 0 ";
+  }
+
+  // 최대재고
+  if ($type == 2) {
+    $where = " AND (sum_ws_qty > safe_min_stock_qty AND sum_ws_qty <= safe_max_stock_qty) AND sum_ws_qty != 0 AND safe_min_stock_qty != 0 ";
+  }
+
+  // 악성재고
+  if ($type == 3) {
+    $where = " AND (sum_ws_qty > safe_min_stock_qty) AND sum_ws_qty != 0 AND safe_min_stock_qty != 0 ";
+  }
+
+  // 1 안전재고, 2 최대재고, 3 악성재고
+  $sql = "
+  SELECT count(*) AS cnt
+  FROM 
+    (SELECT
+      it.it_id,
+      it.it_name,
+      io.io_id, 
+      ws.ws_option, 
+      IFNULL(sum(ws.ws_qty), '0') AS sum_ws_qty,
+      IFNULL(IF(it.it_stock_manage_min_qty IS NOT NULL, 
+              it.it_stock_manage_min_qty, 
+              ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+                WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+                  ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+                AND ct_status IN {$common_ct_status}
+                AND it_id = it.it_id AND io_id = IFNULL(io.io_id, '')) / 3 * 0.5)
+              ), 0) AS safe_min_stock_qty,
+              IFNULL(IF(it_stock_manage_max_qty IS NOT NULL, 
+              it_stock_manage_max_qty, 
+              ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+                WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+                  ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+                AND ct_status IN {$common_ct_status}
+                AND it_id = it.it_id AND io_id = IFNULL(io.io_id, '')) / 3 * 1.5)
+              ), 0) AS safe_max_stock_qty
+    FROM 
+      g5_shop_item it
+      LEFT JOIN (SELECT * FROM g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS io ON it.it_id = io.it_id
+      LEFT JOIN (SELECT * FROM warehouse_stock WHERE ws_del_yn = 'N') AS ws ON (it.it_id = ws.it_id AND IFNULL(io.io_id, '')= ws.io_id)
+    GROUP BY it.it_id, io.io_id) AS t
+  WHERE 1 {$where}
+  ";
+
+  return sql_fetch($sql)['cnt'];
+}
+
+function get_purchase_order_by_it_id($it_id, $ct_status = '발주완료') {
+  $sql = "
+    SELECT *
+    FROM purchase_cart
+    WHERE it_id = '{$it_id}' AND ct_status = '{$ct_status}'
+  ";
+
+  $result = sql_query($sql);
+
+  $array = [];
+
+  while ($row = sql_fetch_array($result)) {
+    $array[] = $row;
+  }
+
+  return $array;
+}
+
+function count_item_option($it_id) {
+  $sql = "
+    SELECT count(*) AS cnt
+    FROM g5_shop_item it
+    LEFT JOIN g5_shop_item_option io ON it.it_id = io.it_id
+    WHERE it.it_id = '{$it_id}' AND io.io_type = 0
+  ";
+
+  return sql_fetch($sql)['cnt'];
+}
+
+function replace_querystring($qstr, $key, $value) {
+  $qstr_arr = [];
+
+  $qstr_conv = str_replace('&amp;' , '&', $qstr);
+  parse_str($qstr_conv, $qstr_arr);
+  $qstr_arr[$key] = $value;
+
+  return http_build_query($qstr_arr);
+}

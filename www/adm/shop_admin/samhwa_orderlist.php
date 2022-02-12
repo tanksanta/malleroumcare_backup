@@ -685,6 +685,9 @@ $(function() {
 });
 
 function show_all_order() {
+  page = 1;
+  end = false;
+  last_step = '';
   doSearch('Y');
 }
 
@@ -1371,7 +1374,6 @@ if( function_exists('pg_setting_check') ){
 ?>
 
 <div class="btn_fixed_top">
-  <input type="button" value="모든 주문보기" onclick="show_all_order()"id="show_all_order" class="btn btn_03" style="display:none;">
   <a href="./samhwa_order_new.php" id="order_add" class="btn btn_01">주문서 추가</a>
   <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload('excel')" class="btn btn_02">
   <?php if($member['mb_id'] == 'admin') { ?>
@@ -1382,6 +1384,7 @@ if( function_exists('pg_setting_check') ){
 
 <div class="btn_fixed_top2">
   <input type="button" value="더보기" onclick="doSearch()" class="btn btn_02">
+  <input type="button" value="모든 주문보기" onclick="show_all_order()"id="show_all_order" class="btn btn_03" style="display:none;">
 </div>
 
 <iframe src="about:blank" name="process" id="process" width="0" height="0" style="display:none"></iframe>

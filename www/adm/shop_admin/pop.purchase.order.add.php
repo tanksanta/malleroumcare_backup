@@ -5,7 +5,7 @@ include_once(G5_ADMIN_PATH.'/apms_admin/apms.admin.lib.php');
 
 // auth_check($auth[$sub_menu], "w");
 
-$title = '발주 주문서 생성';
+$title = '발주서 생성';
 include_once('./pop.head.php');
 ?>
 <style>
@@ -36,8 +36,9 @@ include_once('./pop.head.php');
   }
 </style>
 <div style="padding-bottom: 60px">
-  <div id="pop_order_add" class="admin_popup admin_popup_padding">
+  <div id="pop_order_add" class="admin_popup admin_popup_padding purchase_order">
     <h4 class="h4_header"><?php echo $title; ?></h4>
+    <p style="position: absolute;left: 436px;top: 20px;font-size: 14px;font-weight: 800;">총 발주 금액 : <span class="total_price_span">0</span>원</p>
     <input type="button" class="shbtn lineblue add_form_section" value="파트너 추가" style="position: absolute;right: 20px;top: 13px;">
     <form class="form_section active">
       <div class="info">
@@ -46,8 +47,8 @@ include_once('./pop.head.php');
             <th>입고예정일</th>
             <td>
               <div style="position:relative;">
-                <input type="text" name="od_datetime_date" value="" class="frm_input datepicker" style="min-width: 100px;width: 100px;">
-                <input type="text" name="od_datetime_time" value="" class="frm_input timepicker" style="min-width: 35px;width: 35px;"> 시
+                <input type="text" name="od_datetime_date" value="" class="frm_input datepicker" style="min-width: 100px;width: 100px;" autocomplete="off">
+                <input type="text" name="od_datetime_time" value="" class="frm_input timepicker" style="min-width: 35px;width: 35px;" autocomplete="off"> 시
                 <input type="button" class="shbtn remove_form_section" value="삭제" style="position: absolute;right: 0;line-height: 17px;"/>
               </div>
             </td>
@@ -217,6 +218,7 @@ include_once('./pop.head.php');
         </td>
         <td>
           <input type="text" name="it_name[]" class="frm_input item_flexdatalist">
+          <p class="qty_info"></p>
         </td>
         <td>
           <div class="it_option">
@@ -240,7 +242,7 @@ include_once('./pop.head.php');
           <input type="text" name="memo[]" class="frm_input">
         </td>
         <td>
-          <select name="it_warehousing_warehouse" id="it_warehousing_warehouse">
+          <select name="wh_name[]" id="it_warehousing_warehouse" name="wh_name">
             <option value="">창고선택</option>
             <?php
             $warehouse_list = get_warehouses();
@@ -427,6 +429,7 @@ include_once('./pop.head.php');
           return $li;
         },
       }).on("select:flexdatalist",function(event, obj, options){
+        console.log(obj)
         var parent = $(this).closest('tr');
 
         // it_id
@@ -463,20 +466,33 @@ include_once('./pop.head.php');
         }
 
         // 발주 최소 수량 데이터 저장
-        var it_purchase_order_min_qty = 'null'
+        var it_purchase_order_min_qty = 0
         if (obj.it_purchase_order_min_qty) {
           it_purchase_order_min_qty = Number(obj.it_purchase_order_min_qty);
         }
         $(parent).find('input[name="qty[]"]').data('it_purchase_order_min_qty', it_purchase_order_min_qty);
 
         // 발주 최소 단위 데이터 저장
-        var it_purchase_order_unit = 'null'
+        var it_purchase_order_unit = 0
         if (obj.it_purchase_order_unit) {
           it_purchase_order_unit = Number(obj.it_purchase_order_unit);
         }
         $(parent).find('input[name="qty[]"]').data('it_purchase_order_unit', it_purchase_order_unit);
 
-        $(parent).find('input[name="qty[]"]').val(1);
+        // 수량 info 반영
+        var infoArr = [];
+        if (it_purchase_order_min_qty > 0) {
+          infoArr.push('최소 : ' + addComma(it_purchase_order_min_qty) + '개');
+        }
+        if (it_purchase_order_unit > 0) {
+          infoArr.push('단위 : ' + addComma(it_purchase_order_unit) + '개');
+        }
+
+        if (infoArr.length > 0) {
+          $(parent).find('.qty_info').text(infoArr.join(', '));
+        }
+
+        $(parent).find('input[name="qty[]"]').val(it_purchase_order_min_qty === 0 ? 1 : it_purchase_order_min_qty);
         $(parent).find('input[name="it_price[]"]').val(addComma(it_price));
 
         // 공급가액, 부가세
@@ -484,36 +500,39 @@ include_once('./pop.head.php');
         $(parent).find('.tax_price').text(addComma(Math.round(it_price / 11)) + "원");
 
         // 기본가격 저장
-        $(parent).find('.price').val(obj.it_price);
+        // $(parent).find('.price').val(obj.it_price);
+        $(parent).find('.price').val(it_price);
 
-        // 묶음 할인 저장
-        item_sale_obj[obj.id] = {
-          it_sale_cnt: [
-            obj.it_sale_cnt,
-            obj.it_sale_cnt_02,
-            obj.it_sale_cnt_03,
-            obj.it_sale_cnt_04,
-            obj.it_sale_cnt_05,
-          ],
-          it_sale_percent: [
-            obj.it_sale_percent,
-            obj.it_sale_percent_02,
-            obj.it_sale_percent_03,
-            obj.it_sale_percent_04,
-            obj.it_sale_percent_05,
-          ],
-          it_sale_percent_great: [
-            obj.it_sale_percent_great,
-            obj.it_sale_percent_great_02,
-            obj.it_sale_percent_great_03,
-            obj.it_sale_percent_great_04,
-            obj.it_sale_percent_great_05
-          ],
-        }
+        // // 묶음 할인 저장
+        // item_sale_obj[obj.id] = {
+        //   it_sale_cnt: [
+        //     obj.it_sale_cnt,
+        //     obj.it_sale_cnt_02,
+        //     obj.it_sale_cnt_03,
+        //     obj.it_sale_cnt_04,
+        //     obj.it_sale_cnt_05,
+        //   ],
+        //   it_sale_percent: [
+        //     obj.it_sale_percent,
+        //     obj.it_sale_percent_02,
+        //     obj.it_sale_percent_03,
+        //     obj.it_sale_percent_04,
+        //     obj.it_sale_percent_05,
+        //   ],
+        //   it_sale_percent_great: [
+        //     obj.it_sale_percent_great,
+        //     obj.it_sale_percent_great_02,
+        //     obj.it_sale_percent_great_03,
+        //     obj.it_sale_percent_great_04,
+        //     obj.it_sale_percent_great_05
+        //   ],
+        // }
 
         if ($(parent).index() + 1 >= $('.pop_order_add_item_table tbody tr').length) {
           $('.add_cart').click();
         }
+
+        $('input[name="qty[]"]').trigger('change');
       });
     }
 
@@ -584,49 +603,74 @@ include_once('./pop.head.php');
         var it_sale_cnt = 0;
 
         // 묶음 할인
-        var sale_qty = 0;
-        var targets = [];
-        $('.pop_order_add_item_table input[name="it_id[]"]').each(function() {
-          var this_parent = $(this).closest('tr');
-          if($(this).val() == it_id) {
-            var this_qty = $(this_parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
-            sale_qty += parseInt(this_qty);
-            targets.push({
-              it_price: $(this_parent).find('input[name="it_price[]"]'),
-              qty: $(this_parent).find('input[name="qty[]"]'),
-              basic_price: $(this_parent).find('.basic_price'),
-              tax_price: $(this_parent).find('.tax_price'),
-            });
-          }
-        });
-        if (item_sale_obj[it_id]['it_sale_cnt']) {
-          for(var sale_cnt = 0; sale_cnt < item_sale_obj[it_id]['it_sale_cnt'].length; sale_cnt++){
-            var temp = parseInt(item_sale_obj[it_id]['it_sale_cnt'][sale_cnt])
-            if(temp <= sale_qty) {
-              if(it_sale_cnt < temp) {
-                it_sale_cnt = temp;
-                it_price = mb_level == 4 ? item_sale_obj[it_id]['it_sale_percent_great'][sale_cnt] : item_sale_obj[it_id]['it_sale_percent'][sale_cnt];
-              }
-            }
+        // var sale_qty = 0;
+        // var targets = [];
+        // $('.pop_order_add_item_table input[name="it_id[]"]').each(function() {
+        //   var this_parent = $(this).closest('tr');
+        //   if($(this).val() == it_id) {
+        //     var this_qty = $(this_parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
+        //     sale_qty += parseInt(this_qty);
+        //     targets.push({
+        //       it_price: $(this_parent).find('input[name="it_price[]"]'),
+        //       qty: $(this_parent).find('input[name="qty[]"]'),
+        //       basic_price: $(this_parent).find('.basic_price'),
+        //       tax_price: $(this_parent).find('.tax_price'),
+        //     });
+        //   }
+        // });
+        // if (item_sale_obj[it_id]['it_sale_cnt']) {
+        //   for(var sale_cnt = 0; sale_cnt < item_sale_obj[it_id]['it_sale_cnt'].length; sale_cnt++){
+        //     var temp = parseInt(item_sale_obj[it_id]['it_sale_cnt'][sale_cnt])
+        //     if(temp <= sale_qty) {
+        //       if(it_sale_cnt < temp) {
+        //         it_sale_cnt = temp;
+        //         it_price = mb_level == 4 ? item_sale_obj[it_id]['it_sale_percent_great'][sale_cnt] : item_sale_obj[it_id]['it_sale_percent'][sale_cnt];
+        //       }
+        //     }
+        //   }
+        // }
+
+        // for(var i = 0; i < targets.length; i++) {
+        //   var target = targets[i];
+        //   if (parseInt(it_price, 10) !== parseInt(target.it_price.val().replace(/[\D\s\._\-]+/g, ""), 10)) {
+        //     (function(it_price) {
+        //       it_price.animate({'opacity': 0} ,50 , function () {
+        //         it_price.animate({'opacity': 1}, 50);
+        //       });
+        //     })(target.it_price);
+        //
+        //     target.it_price.val(addComma(it_price || 0));
+        //
+        //     // 공급가액, 부가세
+        //     var target_qty = parseInt(target.qty.val().replace(/[\D\s\._\-]+/g, ""));
+        //     target.basic_price.text(addComma(Math.round(it_price * target_qty / 1.1) || 0) + "원");
+        //     target.tax_price.text(addComma(Math.round(it_price * target_qty / 11) || 0) + "원");
+        //   }
+        // }
+      }
+
+      // 최수 수량, 최소 단위 강조 표시
+      if ($(this).attr('name') === 'qty[]') {
+        var currentQty = Number($(this).val());
+        var warnFlag = false;
+        // 최소 수량
+        if (Number($(this).data('it_purchase_order_min_qty')) > 0) {
+          if (currentQty < Number($(this).data('it_purchase_order_min_qty'))) {
+            warnFlag = true;
           }
         }
 
-        for(var i = 0; i < targets.length; i++) {
-          var target = targets[i];
-          if (parseInt(it_price, 10) !== parseInt(target.it_price.val().replace(/[\D\s\._\-]+/g, ""), 10)) {
-            (function(it_price) {
-              it_price.animate({'opacity': 0} ,50 , function () {
-                it_price.animate({'opacity': 1}, 50);
-              });
-            })(target.it_price);
-
-            target.it_price.val(addComma(it_price || 0));
-
-            // 공급가액, 부가세
-            var target_qty = parseInt(target.qty.val().replace(/[\D\s\._\-]+/g, ""));
-            target.basic_price.text(addComma(Math.round(it_price * target_qty / 1.1) || 0) + "원");
-            target.tax_price.text(addComma(Math.round(it_price * target_qty / 11) || 0) + "원");
+        // 최소 단위
+        if (Number($(this).data('it_purchase_order_unit')) > 0) {
+          if (currentQty % Number($(this).data('it_purchase_order_unit')) !== 0) {
+            warnFlag = true;
           }
+        }
+
+        if (warnFlag) {
+          $(this).css('border', '1px solid red');
+        } else {
+          $(this).removeAttr("style");
         }
       }
 
@@ -635,11 +679,23 @@ include_once('./pop.head.php');
         it_price = $(parent).find('input[name="it_price[]"]').val().replace(/[\D\s\._\-]+/g, "");
         it_price = it_price ? parseInt( it_price, 10 ) : 0;
       }
+
       $(parent).find('input[name="it_price[]"]').val(addComma(it_price || 0));
 
       // 공급가액, 부가세
       $(parent).find('.basic_price').text(addComma(Math.round(it_price * qty / 1.1) || 0) + "원");
       $(parent).find('.tax_price').text(addComma(Math.round(it_price * qty / 11) || 0) + "원");
+
+      // 총 발주 금액
+      var totalPrice = 0;
+      $('input[name="qty[]"]').each(function() {
+        var _qty = $(this).val().replace(/[^0-9]/g, "");
+        var _price = $(this).closest('tr').find('input[name="it_price[]"]').val().replace(/[^0-9]/g, "");
+
+        totalPrice += (Number(_qty) * Number(_price));
+      })
+
+      $('.total_price_span').text(addComma(totalPrice));
     });
 
     // 선택시 다음

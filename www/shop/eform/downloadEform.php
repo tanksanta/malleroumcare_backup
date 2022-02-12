@@ -17,7 +17,7 @@ if($dc_id) {
     $eform = sql_fetch("
     SELECT HEX(`dc_id`) as uuid, e.*
     FROM `eform_document` as e
-    WHERE dc_id = UNHEX('$dc_id') and entId = '{$member['mb_entId']}' and dc_status = '3' ");
+    WHERE dc_id = UNHEX('$dc_id') and dc_status = '3' "); //로그인 안되어도 볼수있게 하기위해 and entId = '{$member['mb_entId']}' 삭제 22.02.07
     if(!$eform['uuid']) {
       die('계약서를 확인할 수 없습니다.');
     }
@@ -51,8 +51,8 @@ $pdffile = $eform['dc_pdf_file'];
 
 if($eform['dc_status'] == '3' && !$is_simple_eform) {
   // 마이그레이션한 이전 계약서
-  $pdfdir = G5_DATA_PATH.'/eform/legacy';
-  $pdffile .= '/ALL.pdf';
+  // $pdfdir = G5_DATA_PATH.'/eform/legacy';
+  // $pdffile .= '/ALL.pdf';
 }
 
 header("Content-type: application/pdf");

@@ -26,16 +26,17 @@ if($incompleted && count($incompleted) == 1) {
     if($ic == '0') {
       // 진행중인 작업
       $where[] = "
-        ( ct_direct_delivery_date is not null or
-        ct_status in ('출고완료', '입고완료', '취소') )
+        ( (ct_delivery_num is not null and ct_delivery_num != '')
+        or (o.od_partner_manager is not null and o.od_partner_manager != '')
+        or ct_status in ('출고완료', '입고완료', '취소') )
       ";
     }
     else if($ic == '1') {
       // 미 진행중인 작업
-      //$row['ct_direct_delivery_date'] || $row['ct_barcode_insert'] || $row['ct_status'] != '발주완료'
       $where[] = "
-        ( ct_direct_delivery_date is null and
-        ct_status = '발주완료' )
+        ( (ct_delivery_num is null or ct_delivery_num = '') 
+        and (o.od_partner_manager is null or o.od_partner_manager = '')
+        and ct_status = '발주완료' )
       ";
     }
   }
@@ -132,6 +133,7 @@ $result = sql_query("
     ct_status,
     prodMemo,
     c.stoId,
+    ct_delivery_num,
     ct_is_direct_delivery,
     ct_price,
     ct_direct_delivery_price,
@@ -198,7 +200,7 @@ while($row = sql_fetch_array($result)) {
   }
 
   // 미진행중인 작업
-  if(!$row['ct_direct_delivery_date'] || in_array($row['ct_status'], ['발주완료'])) {
+  if (!$row['ct_delivery_num'] && !$row['od_partner_manager'] && in_array($row['ct_status'], ['발주완료'])) {
     $row['incompleted'] = true;
   }
 
@@ -431,28 +433,6 @@ tr.hover { background-color: #fbf9f7 !important; }
                   <span class="info_delivery">
                     <?=$row['prodMemo']?>
                   </span>
-                </p>
-                <?php } ?>
-                <p style="margin-top: 5px;">
-                  <?php if($row['ct_is_direct_delivery'] == 2) { ?>
-                  <?php if($row['report'] && ($row['report']['ir_cert_url'] || $row['report']['ir_file_url'])) { ?>
-                  <button type="button" class="report-btn btn_install_report done" data-id="<?=$row['od_id']?>">설치결과보고서 완료</button>
-                  <?php } else { ?>
-                  <button type="button" class="report-btn btn_install_report" data-id="<?=$row['od_id']?>">설치결과보고서 등록</button>
-                  <?php } ?>
-                  <?php } ?>
-                  <?php
-                  if($row['report']['ir_is_issue_1'])
-                    echo '<span class="ir_issue_tag1">변경</span>';
-                  if($row['report']['ir_is_issue_2'])
-                    echo '<span class="ir_issue_tag2">추가</span>';
-                  if($row['report']['ir_is_issue_3'])
-                    echo '<span class="ir_issue_tag3">미설치</span>';
-                  ?>
-                </p>
-                <?php if($row['report'] && $row['report']['ir_issue']) { ?>
-                <p style="width: 80%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;margin-top: 3px;">
-                  <?php echo htmlspecialchars($row['report']['ir_issue']); ?>
                 </p>
                 <?php } ?>
               </td>

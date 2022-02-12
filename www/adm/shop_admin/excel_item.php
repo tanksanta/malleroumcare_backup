@@ -3,7 +3,14 @@
 	include_once("./_common.php");
 	include_once(G5_LIB_PATH."/PHPExcel.php");
 
-    $sql ="select *, b.ca_name from `g5_shop_item` a left outer join `g5_shop_category` b on a.ca_id =b.ca_id order by `it_id` desc";
+    if ($_POST['it_id']) {
+        $it_ids = stripslashes($_POST['it_id']);
+        $sql ="select *, b.ca_name from `g5_shop_item` a left outer join `g5_shop_category` b on a.ca_id =b.ca_id where a.it_id IN ({$it_ids}) order by `it_id` desc";
+    }
+    else {
+        $sql ="select *, b.ca_name from `g5_shop_item` a left outer join `g5_shop_category` b on a.ca_id =b.ca_id order by `it_id` desc";
+    }
+
     $result = sql_query($sql);
 
 
@@ -136,6 +143,6 @@
 
     $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
     $writer->save('php://output');
-    $prevPage = $_SERVER['HTTP_REFERER'];
+    // $prevPage = $_SERVER['HTTP_REFERER'];
     function column_char($i) { return chr( 65 + $i ); }
 ?>

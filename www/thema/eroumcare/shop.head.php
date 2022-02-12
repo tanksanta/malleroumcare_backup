@@ -438,12 +438,11 @@ if($is_main && !$is_member) {
               }
               $supply_noti_result = sql_fetch("
                 SELECT count(*) as cnt
-                FROM purchase_cart
+                FROM purchase_cart ct
+                LEFT JOIN purchase_order od ON ct.od_id = od.od_id 
                 WHERE
-                  ct_supply_partner = '{$member['mb_id']}' AND
-                  ( ct_direct_delivery_date IS NULL OR
-                  ct_status IN ('발주완료') )
-              ");
+                  ct.ct_supply_partner = '{$member['mb_id']}'
+                  AND ( (ct.ct_delivery_num IS NULL OR ct.ct_delivery_num = '') AND (od.od_partner_manager IS NULL OR od.od_partner_manager = '') AND ct.ct_status IN ('발주완료') )");
               ?>
               <li>
                 <a href="/shop/partner_purchaseorderinquiry_list.php">

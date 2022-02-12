@@ -86,10 +86,21 @@ if($_POST['ct_id']&&$_POST['step']) {
     $sql_ct[$i] = "update purchase_cart set `ct_status` = '".$_POST['step']."'".$add_sql.", `ct_move_date`= NOW() where `ct_id` = '".$_POST['ct_id'][$i]."'";
 
     // 재고관리 변경
-    if($_POST['step'] == '입고완료') {
-      $ws_qty = $result_ct_s['ct_qty'] - $result_ct_s['ct_stock_qty'];
-      if($result_ct_s['io_type'] != 1) {
-        $sql_stock[] = "
+    if($_POST['step'] == '발주완료') {
+      $wh_row = sql_fetch("
+        select *
+        from warehouse_stock
+        where
+          od_id = '$od_id' AND
+          ct_id = '{$_POST['ct_id'][$i]}' AND
+          it_id = '{$result_ct_s['it_id']}' AND
+          io_id = '{$result_ct_s['io_id']}'
+      ");
+      $ws_qty = $result_ct_s['ct_qty'];
+
+      if (!$wh_row) {
+        if($result_ct_s['io_type'] != 1) {
+          $sql_stock[] = "
           insert into
             warehouse_stock
           set
@@ -98,17 +109,58 @@ if($_POST['ct_id']&&$_POST['step']) {
             io_type = '{$result_ct_s['io_type']}',
             it_name = '{$result_ct_s['it_name']}',
             ws_option = '{$result_ct_s['ct_option']}',
-            ws_qty = '-{$ws_qty}',
+            ws_qty = '0',
+            ws_scheduled_qty = '{$ws_qty}',
             mb_id = '{$result_ct_s['mb_id']}',
-            ws_memo = '주문 출고완료({$od_id})',
+            ws_memo = '주문 발주완료({$od_id})',
             wh_name = '{$result_ct_s['ct_warehouse']}',
             od_id = '$od_id',
             ct_id = '{$_POST['ct_id'][$i]}',
+            inserted_from = 'purchase_cart',
             ws_created_at = NOW(),
             ws_updated_at = NOW()
+          ";
+        }
+      } else {
+        $sql_stock[] = "
+          update
+            warehouse_stock
+          set
+            ws_qty = '0',
+            ws_scheduled_qty = '{$ws_qty}',
+            mb_id = '{$result_ct_s['mb_id']}',
+            ws_memo = '주문 발주완료({$od_id})',
+            ws_updated_at = NOW()
+          where
+            od_id = '$od_id' AND
+            ct_id = '{$_POST['ct_id'][$i]}' AND
+            it_id = '{$result_ct_s['it_id']}' AND
+            io_id = '{$result_ct_s['io_id']}'
         ";
       }
     }
+
+    if($_POST['step'] == '입고완료') {
+      if($result_ct_s['io_type'] != 1) {
+        $sql_stock[] = "
+          update
+            warehouse_stock
+          set
+            ws_qty = '{$ws_qty}',
+            ws_scheduled_qty = 0,
+            mb_id = '{$result_ct_s['mb_id']}',
+            ws_memo = '주문 입고완료({$od_id})',
+            ws_updated_at = NOW()
+          where
+            od_id = '$od_id' AND
+            ct_id = '{$_POST['ct_id'][$i]}' AND
+            it_id = '{$result_ct_s['it_id']}' AND
+            io_id = '{$result_ct_s['io_id']}'
+        ";
+      }
+    }
+
+
     if($_POST['step'] == '취소') {
       $sql_stock[] = "
         delete from

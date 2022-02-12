@@ -118,8 +118,8 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
   <ul>
 <!--    <li class="total_price_wrap">총 주문금액: <span id="total_price"></span></li>-->
     <?php
-    $sql1 = "SELECT count(*) AS cnt FROM purchase_cart WHERE ct_status = '입고대기'";
-    $sql2 = "SELECT ifnull(sum(ct_qty), 0) AS cnt FROM purchase_cart WHERE ct_status = '입고대기'";
+    $sql1 = "SELECT count(*) AS cnt FROM purchase_cart WHERE ct_status IN ('발주완료', '출고완료')";
+    $sql2 = "SELECT ifnull(sum(ct_qty), 0) AS cnt FROM purchase_cart WHERE ct_status IN ('발주완료', '출고완료')";
     ?>
     <li class="total_price_wrap">입고대기: <?php echo sql_fetch($sql1)['cnt'] ?>건 주문 / <?php echo sql_fetch($sql2)['cnt'] ?>개 상품</li>
   </ul>
@@ -331,6 +331,8 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
         doSearch();
       }
     });
+
+    $("#searchSubmitBtn").trigger('click');
   });
 
   //바코드 버튼 클릭
