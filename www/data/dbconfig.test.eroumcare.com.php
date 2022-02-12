@@ -1,12 +1,12 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
-define('G5_MYSQL_HOST', '175.125.94.165');
-define('G5_MYSQL_USER', 'malleroumcare_dev');
+define('G5_MYSQL_HOST', '116.122.157.159');
+define('G5_MYSQL_USER', 'malleroumcare');
 define('G5_MYSQL_PASSWORD', 'malleroumcareghjdsafkjDSFFASJFKD@!DS!123');
-define('G5_MYSQL_DB', 'malleroumcare_dev');
+define('G5_MYSQL_DB', 'malleroumcare');
 define('G5_MYSQL_SET_MODE', true);
 
-define('SYS_MYSQL_HOST', '175.125.94.165');
+define('SYS_MYSQL_HOST', '116.122.157.159');
 define('SYS_MYSQL_USER', 'WMDSDB');
 define('SYS_MYSQL_PASSWORD', 'WMDSDB');
 define('SYS_MYSQL_DB', 'wmdsdb');
