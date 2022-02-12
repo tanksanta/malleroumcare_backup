@@ -30,7 +30,7 @@ if($header_skin)
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_POST, 0);
-    curl_setopt($ch, CURLOPT_URL, "https://system.eroumcare.com/api/pen/pen5000/pen5000/selectPen5000.do?ordId={$od["ordId"]}&uuid={$od["uuid"]}");
+    curl_setopt($ch, CURLOPT_URL, "https://test.eroumcare.com/api/pen/pen5000/pen5000/selectPen5000.do?ordId={$od["ordId"]}&uuid={$od["uuid"]}");
     $res = curl_exec($ch);
     $result = json_decode($res, true);
     $result = $result["data"];
