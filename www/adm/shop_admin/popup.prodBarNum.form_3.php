@@ -637,22 +637,24 @@ if($od["od_b_tel"]) {
     });
   }
 
-  function check_option() {
+  function check_option(cur_it_id) {
     var option_items = [];
     $("#it_name").each(function() {
-      var it_id = $(this).attr("data-it-id");
       var it_name = $(this).val();
-      var options = [];
-      $("#ct_option").each(function() {
-        if ($(this).attr("data-it-id") == it_id) {
-          var ct_option = $(this).val();
-          if (it_name != ct_option) {
-            options.push(ct_option);
+      var it_id = $(this).attr("data-it-id");
+      if (it_id == cur_it_id) {
+        var options = [];
+        $("#ct_option").each(function() {
+          if ($(this).attr("data-it-id") == it_id) {
+            var ct_option = $(this).val();
+            if (it_name != ct_option) {
+              options.push(ct_option);
+            }
           }
+        });
+        if (options.length > 0) {
+          option_items.push(`상품명:${it_name}\n옵션:${options.join("\n")}`);
         }
-      });
-      if (options.length > 0) {
-        option_items.push(`상품명:${it_name}\n옵션:${options.join("\n")}`);
       }
     });
     if (option_items.length > 0) {
@@ -708,7 +710,7 @@ if($od["od_b_tel"]) {
               var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
               $(sendBarcodeTarget).val(data.data.converted_barcode);
               sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
-              check_option();
+              check_option(cur_it_id);
             })
             .fail(function($xhr) {
               switch(device){
@@ -947,15 +949,15 @@ if($od["od_b_tel"]) {
       }
 
       if(error_arr.length > 0) {
-        // alert( error_arr.join(', ') + ' 품목의 모든 바코드가 입력되지 않아 저장할 수 없습니다.' );
-        // return false;
-        let empty_item = error_arr.join(', ');
-        if (confirm(empty_item + ' 상품 바코드가 비어있습니다. 계속 진행하시겠습니까?')) {
-        }
-        else {
-          $ipt_error.focus();
-          return false;
-        }
+        alert( error_arr.join(', ') + ' 품목의 모든 바코드가 입력되지 않아 저장할 수 없습니다.' );
+        return false;
+        // let empty_item = error_arr.join(', ');
+        // if (confirm(empty_item + ' 상품 바코드가 비어있습니다. 계속 진행하시겠습니까?')) {
+        // }
+        // else {
+        //   $ipt_error.focus();
+        //   return false;
+        // }
       }
 
       barcode_arr.forEach(function(arr) {
