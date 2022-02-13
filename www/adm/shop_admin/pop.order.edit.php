@@ -240,6 +240,7 @@ tr.strikeout td:before {
                     <input type="hidden" name="ct_id[]">
                     <input type="hidden" name="it_id[]">
                     <input type="hidden" name="price[]" class="price">
+                    <input type="hidden" name="it_sc_type[]">
                 </td>
                 <td>
                     <input type="text" name="it_name[]" class="frm_input item_flexdatalist">
@@ -300,6 +301,7 @@ function calculate_order_price() {
   var charge_price = 0; // 유료배송비
   $li.each(function() {
     var it_id = $(this).find('input[name="it_id[]"]').val();
+    if (!it_id) { return; }
     var it_price = parseInt ( $(this).find('input[name="price[]"]').val() || 0 );
     var io_price = parseInt( $(this).find('select[name="io_id[]"] option:selected').data('price') || 0 );
     var ct_qty = parseInt( $(this).find('input[name="qty[]"]').val() || 0 );
@@ -366,7 +368,6 @@ function calculate_order_price() {
       delivery_total += ct_price;
     }
   });
-
   var delivery_price = 0;
   if(delivery_total < 100000 && !free_delivery) {
     // 주문금액 10만원 미만에 무료배송상품이 아닌 상품이 있는 경우 배송비
@@ -375,7 +376,6 @@ function calculate_order_price() {
 
   // 유료 배송비 적용
   delivery_price += charge_price;
-
   if(odd_qty > 0 && odd_qty % 2 === 1) {
     // 홀수 배송비 적용
     delivery_price += odd_price;
@@ -388,7 +388,6 @@ function calculate_order_price() {
   // 배송비
 //   $('#delivery_price').text(number_format(delivery_price));
   $('input[name="od_send_cost"]').val(delivery_price);
-//   console.log($('input[name="od_send_cost"]').val());
 }
 
 var loading = false;
@@ -464,6 +463,7 @@ $(function() {
 
             // it_id
             $(parent).find('input[name="it_id[]"]').val(obj.id);
+            $(parent).find('input[name="it_sc_type[]"]').val(obj.it_sc_type);
 
             // 우수사업소 할인 가격 적용
             if(mb_level == 4 && parseInt(obj.it_price_dealer2) > 0)
