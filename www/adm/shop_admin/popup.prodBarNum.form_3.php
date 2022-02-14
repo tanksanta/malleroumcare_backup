@@ -932,7 +932,7 @@ if($od["od_b_tel"]) {
           });
           barcode_arr.push(temp_arr);
           
-          if(temp_arr.length !== 0 && empty_count !== 0) {
+          if(empty_count !== 0) {
               // 바코드가 일부만 입력되어있는 경우
               error_arr.push($(this).find('.p1 .span1').text().replace(/(\\n|\s\s)/g, ''));
           } else {
@@ -959,7 +959,7 @@ if($od["od_b_tel"]) {
         //   return false;
         // }
       }
-
+      
       barcode_arr.forEach(function(arr) {
           if (isDuplicate(arr)) {
               isDuplicated = true;
