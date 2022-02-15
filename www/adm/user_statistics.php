@@ -23,7 +23,7 @@ if ($type == 'user') {
 
     // 누적
     $sql = "SELECT
-            (SELECT COUNT(*) FROM g5_member WHERE mb_type = 'default') as default_cnt,
+            (SELECT COUNT(*) FROM g5_member WHERE mb_type = 'default' AND mb_temp = 0 AND mb_manager != '') as default_cnt,
             (SELECT COUNT(*) FROM g5_member WHERE mb_level = '4') as level4_cnt,
             (SELECT COUNT(*) FROM g5_member WHERE mb_temp = '1') as temp_cnt,
             (SELECT COUNT(*) FROM g5_member WHERE mb_type = 'normal') as normal_cnt,
@@ -305,8 +305,11 @@ else if ($type == 'order_c') {
 
 <div class="outer">
 <div class="tbl_head01 tbl_wrap">
+    <input type="hidden" id="type" value="<?php echo $type ?>"/>
+    <input type="hidden" id="fr_date" value="<?php echo $fr_date ?>"/>
+    <input type="hidden" id="to_date" value="<?php echo $to_date ?>"/>
+    <!-- <caption><?php echo $g5['title']; ?> 목록</caption> -->
     <table class="statistics_table">
-    <caption><?php echo $g5['title']; ?> 목록</caption>
     <thead>
     <tr>
         <th scope="col" style="width:8%;"></th>
@@ -438,6 +441,37 @@ else if ($type == 'order_c') {
 </div>
 </div>
 
+<script>
+$(function() {
+    $('#download_excel').click(function(e) {
+        var body = encodeURIComponent(document.getElementsByTagName('table')[0].innerHTML);
+        body = body.replace(/\s+/g,"");
+        var type = $('#type').val();
+        // var url = 'user_statistics_excel_download.php?body=' + body;
+        // window.location.href = url;
+
+        var form = document.createElement('form');
+        form.method = 'post';
+        form.action = 'user_statistics_excel_download.php';
+        form.target='_blank';
+
+        var hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = 'table_body';
+        hiddenField.value = body;
+        form.appendChild(hiddenField);
+
+        var hiddenField2 = document.createElement('input');
+        hiddenField2.type = 'hidden';
+        hiddenField2.name = 'type';
+        hiddenField2.value = type;
+        form.appendChild(hiddenField2);
+
+        document.body.appendChild(form);
+        form.submit();
+    });
+});
+</script>
 <?php
 include_once('./admin.tail.php');
 ?>
