@@ -22,6 +22,7 @@ $query_string = $qstr ? $qstr : '';
     <input type="text" name="to_date" value="<?php echo $to_date ?>" id="to_date" class="frm_input" size="11" maxlength="10">
     <label for="to_date" class="sound_only">종료일</label>
     <input type="submit" value="검색" class="btn_submit">
+    <button id="download_excel">엑셀다운로드</button>
 </div>
 </form>
 
