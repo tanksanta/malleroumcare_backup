@@ -876,6 +876,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
       data: {
         od_id: '<?=$od_id?>',
         ct_id: '<?=$ct_id?>',
+        is_purchase_end : command === 'doEnd' ? '1' : '0',
       },
       dataType: 'json',
     })
