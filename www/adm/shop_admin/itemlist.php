@@ -620,31 +620,17 @@ $it = sql_fetch($sql);
 $("#itemexcel").click(function() {
     var it_ids = [];
     $('input[id="it_id"]').each(function() {
-        it_ids.push("'"+$(this).val()+"'");
-    });
-    
-    it_ids = it_ids.join(", ");
-    $.ajax({
-        url: './excel_item.php',
-        type: 'POST',
-        data: {'it_id': it_ids},
-        dataType: 'json',
-        async: false,
-        success: function() {
+        if ($(this).prop('checked', true)) {
+            it_ids.push("'"+$(this).val()+"'");
         }
     });
-    // $(location).attr('href',"./excel_item.php");
+    it_ids = it_ids.join(",");
+    $(location).attr('href',"./excel_item.php?it_ids="+it_ids);
+    
 });
 
 $("#itemexcel_all").click(function() {
-    $.ajax({
-        url: './excel_item.php',
-        type: 'POST',
-        async: false,
-        success: function() {
-        }
-    });
-    // $(location).attr('href',"./excel_item.php");
+    $(location).attr('href',"./excel_item.php");
 });
 
 $('#itemprice').click(function() {
