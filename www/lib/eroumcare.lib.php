@@ -1786,7 +1786,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
     LEFT JOIN
       g5_member m ON c.mb_id = m.mb_id
     WHERE
-      ct_status = '발주대기' and
+      ct_status = '입고완료' and
       od_del_yn = 'N' and
       ct_supply_partner = '{$mb_id}'
       {$sql_search}
