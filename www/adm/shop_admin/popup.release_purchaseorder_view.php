@@ -223,6 +223,7 @@ $ct = sql_fetch($sql);
       padding: 4px 10px;
       font-size: 15px;
       background: #fff;
+      white-space: nowrap;
     }
 
     #itInfoWrap .purchaseOrderEndBtn button.red {
@@ -733,9 +734,9 @@ $ct = sql_fetch($sql);
   <div class="deliveredQty flex-row align-center">
     <span>입고수량</span> :
     <div class="flex-row align-center qty" style="margin-left: 5px">
-      <button onclick="setNumberDeliveredQty('minus')">-</button><input type="number" id="delivered_qty" name="" value="<?= $ct["ct_delivered_qty"] ?>"><button onclick="setNumberDeliveredQty('plus')">+</button>
+      <button onclick="setNumberDeliveredQty('minus')">-</button><input type="number" id="delivered_qty" name="" value="0"><button onclick="setNumberDeliveredQty('plus')">+</button>
     </div>
-    <button onclick="setNumberDeliveredQty('<?= $ct["ct_qty"] ?>')" style="margin-left: 10px">전체입고</button>
+    <button onclick="setNumberDeliveredQty('<?= $ct["ct_qty"] - $ct["ct_delivered_qty"] ?>')" style="margin-left: 10px">전체입고</button>
   </div>
 
   <div class="barcodeMemo">
@@ -849,8 +850,8 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
       if (currentVal < maxVal)
         targetNode.val(++currentVal);
     } else if (param === 'minus') {
-      if (currentVal >= 1)
-        targetNode.val(--currentVal);
+      // if (currentVal >= 1)
+      targetNode.val(--currentVal);
     } else { // 숫자 입력
       targetNode.val(param);
     }
@@ -893,8 +894,13 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     var delivered_qty = Number($('#delivered_qty').val());
     var barcode_memo = $('input[name="barcode_memo"]').val();
 
+    <?php if ($ct['is_purchase_end']) { ?>
+    alert('발주 종료 상태입니다.');
+    return;
+    <?php } ?>
+
     if (delivered_qty > CT_QTY || delivered_qty === 0) {
-      alert('입고수량은 1 이상, 발주 수량 이하 값이어야 합니다.');
+      alert('입고수량은 0이 아니어야 하며, 발주 수량 이하 값이어야 합니다.');
       return;
     }
 

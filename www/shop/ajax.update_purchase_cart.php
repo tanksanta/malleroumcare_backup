@@ -29,20 +29,27 @@ if (!$ct_row) {
   json_response(400, '카트 정보가 없습니다.');
 }
 
+if ($ct_row['is_purchase_end'] == '1') {
+  json_response(400, '발주 종료 상태입니다.');
+}
+
 if ($delivered_qty > $ct_row['ct_qty'] || $delivered_qty == '0') {
-  json_response(400, '입고수량은 1 이상, 발주 수량 이하 값이어야 합니다.');
+  json_response(400, '입고수량은 0이 아니어야 하며, 발주 수량 이하 값이어야 합니다.');
 }
 
 $barcode_memo = clean_xss_tags($barcode_memo);
 
-if ($delivered_qty == $ct_row['ct_delivered_qty'] && $ct_row['ct_barcode_memo'] == $barcode_memo) {
-  json_response(400, '수정된 값이 없습니다.');
-}
+//if ($delivered_qty == $ct_row['ct_delivered_qty'] && $ct_row['ct_barcode_memo'] == $barcode_memo) {
+//  json_response(400, '수정된 값이 없습니다.');
+//}
+
+$prev_delivered_qty = $ct_row['ct_delivered_qty'];
+$new_delivered_qty = $prev_delivered_qty + $delivered_qty;
 
 $sql = "
   update purchase_cart
   set 
-    ct_delivered_qty = '{$delivered_qty}',
+    ct_delivered_qty = '{$new_delivered_qty}',
     ct_barcode_memo = '{$barcode_memo}'
   where od_id = '{$od_id}' and ct_id = '{$ct_id}'
 ";
@@ -79,7 +86,7 @@ if (!$wh_row) {
         ws_updated_at = NOW()
     ";
 } else {
-  $ws_scheduled_qty = $ct_row['ct_qty_for_rollback'] - $delivered_qty;
+  $ws_scheduled_qty = $ct_row['ct_qty_for_rollback'] - $new_delivered_qty;
   $sql = "
       UPDATE warehouse_stock
       SET
@@ -93,9 +100,12 @@ if (!$wh_row) {
 }
 sql_query($sql);
 
+// 새 카트 정보
+$sql = "select * from purchase_cart where ct_id = '{$ct_id}'";
+$ct_row = sql_fetch($sql);
 
-// 입고 수량이 발주 수량과 같다면
-if ($delivered_qty == $ct_row['ct_qty']) {
+// 입고 수량이 발주 수량 초과
+if (($ct_row['ct_qty'] <= $ct_row['ct_delivered_qty']) && $ct_row['ct_status'] != '입고완료') {
   $sql = "
     update purchase_cart
     set 
