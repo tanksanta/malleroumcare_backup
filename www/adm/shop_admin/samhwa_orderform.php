@@ -2162,6 +2162,10 @@ var od_id = '<?php echo $od['od_id']; ?>';
             echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' 송장번호['. $log['ct_delivery_num'].'] '.$direct_delivery.'<br/>';
           }
 
+          if ($log['set_warehouse']) {
+            echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) '.$log['d_content'].' 저장<br/>';
+          }
+
           $last_log[$log['ct_id']] = $log;
         }
         if (!count($logs)) {

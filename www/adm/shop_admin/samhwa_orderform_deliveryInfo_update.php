@@ -119,9 +119,11 @@ foreach($ct_id_list as $ct_id) {
     $combine_where2 = "ct_combine_ct_id = '',";
   }
 
+  $set_warehouse = 0;
   $d_content = '';
   if($ct_warehouse) {
     $d_content = "출하창고: {$ct_warehouse}";
+    $set_warehouse = 1;
   }
 
   $sql = " insert into `g5_delivery_log`
@@ -140,6 +142,7 @@ foreach($ct_id_list as $ct_id) {
       ct_direct_delivery_price = '{$ct_direct_delivery_price}',
       was_combined = '$was_combined',
       was_direct_delivery = '$was_direct_delivery',
+      set_warehouse = '$set_warehouse',
       d_date = '{$data}'
   ";
   sql_query($sql);
