@@ -1123,6 +1123,7 @@ function get_warehouses() {
   $result = sql_query($sql);
 
   $list = [];
+  $list[] = '미지정';
   while($row = sql_fetch_array($result)) {
     $list[] = $row['wh_name'];
   }

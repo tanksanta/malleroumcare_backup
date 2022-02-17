@@ -685,6 +685,9 @@ $(function() {
 });
 
 function show_all_order() {
+  page = 1;
+  end = false;
+  last_step = '';
   doSearch('Y');
 }
 
@@ -703,9 +706,6 @@ function doSearch(show_all) {
   if (!show_all) {
     show_all = 'N';
   }
-  // else {
-  //   page = 1;
-  // }
   var formdata = $.extend({}, {
     click_status: od_status,
     od_step: od_step,

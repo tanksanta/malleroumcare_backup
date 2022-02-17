@@ -23,7 +23,7 @@ if ($type == 'user') {
 
     // 누적
     $sql = "SELECT
-            (SELECT COUNT(*) FROM g5_member WHERE mb_type = 'default') as default_cnt,
+            (SELECT COUNT(*) FROM g5_member WHERE mb_type = 'default' AND mb_temp = 0 AND mb_manager != '') as default_cnt,
             (SELECT COUNT(*) FROM g5_member WHERE mb_level = '4') as level4_cnt,
             (SELECT COUNT(*) FROM g5_member WHERE mb_temp = '1') as temp_cnt,
             (SELECT COUNT(*) FROM g5_member WHERE mb_type = 'normal') as normal_cnt,
@@ -33,7 +33,7 @@ if ($type == 'user') {
     $total_cnt = sql_fetch($sql);
     
     // 일자별
-    $sql = "SELECT DATE(mb_datetime) as mb_date, COUNT(*) as cnt FROM g5_member WHERE mb_type = 'default' AND mb_datetime BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_date;";
+    $sql = "SELECT DATE(mb_datetime) as mb_date, COUNT(*) as cnt FROM g5_member WHERE mb_type = 'default' AND mb_temp = 0 AND mb_manager != '' AND mb_datetime BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_date;";
     $result = sql_query($sql);
     $arr = [];
     while($row=sql_fetch_array($result)) {
@@ -219,7 +219,7 @@ else if ($type == 'login_user') {
     $total_cnt = sql_fetch($sql);
     
     //각 사업소별
-    $sql = "SELECT COUNT(S.id) as cnt, S.mb_id, M.mb_name FROM g5_statistics as S LEFT JOIN g5_member as M ON M.mb_id = S.mb_id  WHERE S.type = 'LOGIN' AND S.regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY S.mb_id ORDER BY m.mb_name ASC;";
+    $sql = "SELECT COUNT(S.id) as cnt, S.mb_id, M.mb_name FROM g5_statistics as S LEFT JOIN g5_member as M ON M.mb_id = S.mb_id  WHERE (M.mb_type = 'default' OR M.mb_level = '4') AND S.type = 'LOGIN' AND S.regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY S.mb_id ORDER BY m.mb_name ASC;";
     $sub_result = sql_query($sql);
     $arr = [];
     $sum = 0;
@@ -305,8 +305,11 @@ else if ($type == 'order_c') {
 
 <div class="outer">
 <div class="tbl_head01 tbl_wrap">
+    <input type="hidden" id="type" value="<?php echo $type ?>"/>
+    <input type="hidden" id="fr_date" value="<?php echo $fr_date ?>"/>
+    <input type="hidden" id="to_date" value="<?php echo $to_date ?>"/>
+    <!-- <caption><?php echo $g5['title']; ?> 목록</caption> -->
     <table class="statistics_table">
-    <caption><?php echo $g5['title']; ?> 목록</caption>
     <thead>
     <tr>
         <th scope="col" style="width:8%;"></th>
@@ -438,6 +441,37 @@ else if ($type == 'order_c') {
 </div>
 </div>
 
+<script>
+$(function() {
+    $('#download_excel').click(function(e) {
+        var body = encodeURIComponent(document.getElementsByTagName('table')[0].innerHTML);
+        body = body.replace(/\s+/g,"");
+        var type = $('#type').val();
+        // var url = 'user_statistics_excel_download.php?body=' + body;
+        // window.location.href = url;
+
+        var form = document.createElement('form');
+        form.method = 'post';
+        form.action = 'user_statistics_excel_download.php';
+        form.target='_blank';
+
+        var hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = 'table_body';
+        hiddenField.value = body;
+        form.appendChild(hiddenField);
+
+        var hiddenField2 = document.createElement('input');
+        hiddenField2.type = 'hidden';
+        hiddenField2.name = 'type';
+        hiddenField2.value = type;
+        form.appendChild(hiddenField2);
+
+        document.body.appendChild(form);
+        form.submit();
+    });
+});
+</script>
 <?php
 include_once('./admin.tail.php');
 ?>

@@ -37,3 +37,4 @@ www/data/partner
 www/data/partner/*
 www/data/center
 www/data/center/*
+.history/*

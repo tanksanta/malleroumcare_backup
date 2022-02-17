@@ -43,12 +43,23 @@ if ($stx != "") {
             $sql_search .= ' ) ';
             $where = ' and ';
         } else {
-            $sql_search .= " $where $sfl like '%$stx%' ";
+            if ($sfl == 'it_default_warehouse_empty') {
+                $sql_search .= " $where it_default_warehouse = '' ";    
+            }
+            else {
+                $sql_search .= " $where $sfl like '%$stx%' ";
+            }
             $where = " and ";
         }
     }
     if ($save_stx != $stx)
         $page = 1;
+}
+else {
+    if ($sfl == 'it_default_warehouse_empty') {
+        // 출하창고 미지정 검색인 경우
+        $sql_search .=" AND it_default_warehouse = '' ";  
+    }
 }
 
 // 상품태그
@@ -129,7 +140,7 @@ $sql_order = "order by $pth $sst $sod $ptt";
 $sql  = " select *
            $sql_common
            $sql_order
-           limit $from_record, $rows ";
+           limit $from_record, $rows "; 
 $result = sql_query($sql, true);
 
 //$qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page;
@@ -248,6 +259,7 @@ $affected_it_ids = $_GET['it_id'] ?: [];
     <!-- // -->
     <option value="it_expected_warehousing_date" <?php echo get_selected($sfl, 'it_expected_warehousing_date'); ?>>입고예정알림</option>
     <option value="it_default_warehouse" <?php echo get_selected($sfl, 'it_default_warehouse'); ?>>출하창고</option>
+    <option value="it_default_warehouse_empty" <?php echo get_selected($sfl, 'it_default_warehouse_empty'); ?>>출하창고 미지정</option>
   </select>
 
   <label for="stx" class="sound_only">검색어</label>
@@ -608,31 +620,17 @@ $it = sql_fetch($sql);
 $("#itemexcel").click(function() {
     var it_ids = [];
     $('input[id="it_id"]').each(function() {
-        it_ids.push("'"+$(this).val()+"'");
-    });
-    
-    it_ids = it_ids.join(", ");
-    $.ajax({
-        url: './excel_item.php',
-        type: 'POST',
-        data: {'it_id': it_ids},
-        dataType: 'json',
-        async: false,
-        success: function() {
+        if ($(this).prop('checked', true)) {
+            it_ids.push("'"+$(this).val()+"'");
         }
     });
-    // $(location).attr('href',"./excel_item.php");
+    it_ids = it_ids.join(",");
+    $(location).attr('href',"./excel_item.php?it_ids="+it_ids);
+    
 });
 
 $("#itemexcel_all").click(function() {
-    $.ajax({
-        url: './excel_item.php',
-        type: 'POST',
-        async: false,
-        success: function() {
-        }
-    });
-    // $(location).attr('href',"./excel_item.php");
+    $(location).attr('href',"./excel_item.php");
 });
 
 $('#itemprice').click(function() {

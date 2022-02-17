@@ -6,19 +6,42 @@
   include_once(G5_LIB_PATH."/PHPExcel.php");
   function column_char($i) { return chr( 65 + $i ); }
 
-  $ct_id = $od_id;
+  $ct_ids = $od_id;
+  // 합포 상품들 검색
+  $combine_ct_items = [];
+  foreach($ct_ids as $ct_id) {
+      $it = sql_fetch("
+        SELECT cart.*
+        FROM g5_shop_cart as cart
+        WHERE cart.ct_id = '{$ct_id}'
+      ");
+      if ($it['ct_combine_ct_id']) {
+          array_push($combine_ct_items, $it['ct_combine_ct_id']);
+          $result = sql_query("
+              SELECT cart.* 
+              FROM g5_shop_cart as cart 
+              WHERE cart.ct_combine_ct_id = '{$it['ct_combine_ct_id']}'
+          ");
+          while($row = sql_fetch_array($result)) {
+              array_push($combine_ct_items, $row['ct_id']);
+          }
+      }
+  }
+  $ct_ids = array_merge($ct_ids, $combine_ct_items);
+  $ct_ids = array_values(array_unique($ct_ids));
+
   if ($_POST['ref'] == 'orderform') {
-    $ct_id = [];
+    $ct_ids = [];
     $sql = "SELECT ct_id FROM g5_shop_cart WHERE od_id = '{$od_id[0]}' ";
     $result = sql_query($sql);
 
     while( $row = sql_fetch_array($result) ) {
-      $ct_id[] = $row['ct_id'];
+      $ct_ids[] = $row['ct_id'];
     }
   }
 
-  if(!$ct_id) {
-    $ct_id = [];
+  if(!$ct_ids) {
+    $ct_ids = [];
     $where = [];
 
     $sel_field = get_search_string($sel_field);
@@ -344,66 +367,109 @@
     $result = sql_query($sql);
 
     while( $row = sql_fetch_array($result) ) {
-      $ct_id[] = $row['ct_id'];
+      $ct_ids[] = $row['ct_id'];
     }
   }
 
-  $rows = [];
-  for($ii = 0; $ii < count($ct_id); $ii++) {
+
+  $ct_items = [];
+  $combine_ct_items = [];
+  for($ii = 0; $ii < count($ct_ids); $ii++) {
 
     $it = sql_fetch("
       SELECT cart.*, item.it_thezone2
       FROM g5_shop_cart as cart
       INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
-      WHERE cart.ct_id = '{$ct_id[$ii]}'
+      WHERE cart.ct_id = '{$ct_ids[$ii]}'
       ORDER BY cart.ct_id ASC
     ");
 
     $od = sql_fetch(" 
       SELECT * FROM g5_shop_order WHERE od_id = '".$it['od_id']."'
     ");
-
+    $it['od_info'] = $od;
       
     //영업담당자
     $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
     $result_manager = sql_fetch($sql_manager);
+    if (!$result_manager['mb_manager']) {
+      $result_manager['mb_manager'] = $od['od_sales_manager'];
+    }
 
     $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
     $result_manager = sql_fetch($sql_manager);
-    $sale_manager=$result_manager['mb_name'];
+    $it['sale_manager'] = $result_manager['mb_name'];
 
     $it_name = $it["it_name"];
     
     if($it_name != $it["ct_option"]){
       $it_name .= " [{$it["ct_option"]}]";
     }
+    $it["it_name"] = $it_name;
+    $it["it_name_qty"] = $it_name . "*" . $it["ct_qty"] . "개";
+
     $addr="";
     if($od_b_zip1){$addr= "(".$od_b_zip1.$od_b_zip2.")";}
-    $addr = $addr.$od["od_b_addr1"].' '.$od["od_b_addr2"].' '.$od["od_b_addr3"];
+    $it['addr'] = $addr.$od["od_b_addr1"].' '.$od["od_b_addr2"].' '.$od["od_b_addr3"];
+
     $ct_delivery_company = $it['ct_delivery_company'];
 		foreach($delivery_companys as $companyInfo) {
 			if($companyInfo["val"] == $ct_delivery_company){
 				$ct_delivery_company = $companyInfo["name"];
 			}
 		}
-    $rows[] = [ 
-      ' '.$it['od_id'],
-      date("Y-m-d", strtotime($od["od_time"]))."-".($i),
-      $it_name,
-      $it["ct_qty"],
-      $it_name." / ".$it["ct_qty"].' EA',
-      $od["od_b_name"],
-      $od["od_name"],
-      $sale_manager,
-      $addr,
-      $od["od_b_tel"],
-      $od["od_b_hp"],
-      $it["prodMemo"],
-      $od["od_memo"],
-      $it['ct_id'],
-      $ct_delivery_company,
-      $it['ct_delivery_num']
-    ];
+
+    if ($it['ct_combine_ct_id'] == NULL) {
+        array_push($ct_items, $it);
+    }
+    else {
+        array_push($combine_ct_items, $it);
+    }
+  }
+
+  if (count($combine_ct_items) > 0) {
+      foreach($combine_ct_items as $combine_item) {
+          foreach($ct_items as $key => $item) {
+              if ($combine_item['ct_combine_ct_id'] == $item['ct_id']) {     
+                $it_name = $item['it_name'] . " / " . $combine_item['it_name'];
+                $ct_items[$key]['it_name'] = $it_name;
+
+                $it_name_qty = $item['it_name_qty'] . " / " . $combine_item['it_name_qty'];
+                $ct_items[$key]['it_name_qty'] = $it_name_qty;
+
+                $ct_qty = intval($item['ct_qty']);
+                $ct_items[$key]['ct_qty'] = $ct_qty + intval($combine_item['ct_qty']);
+
+                $box_cnt = intval($item['ct_delivery_cnt']);
+                $ct_items[$key]['ct_delivery_cnt'] = $box_cnt + intval($combine_item['ct_delivery_cnt']);
+              }
+          }
+      }
+  }
+
+  $i = 1;
+  $rows = [];
+  foreach($ct_items as $it) {
+      $od = $it['od_info'];
+      $rows[] = [ 
+        ' '.$od['od_id'],
+        date("Y-m-d", strtotime($od["od_time"]))."-".($i),
+        $it['it_name'],
+        $it["ct_delivery_cnt"], //박스수량
+        $it['it_name_qty'],
+        $od["od_b_name"],
+        $od["od_name"],
+        $it['sale_manager'],
+        $it['addr'],
+        $od["od_b_tel"],
+        $od["od_b_hp"],
+        $it["prodMemo"],
+        $od["od_memo"],
+        $it['ct_id'],
+        $ct_delivery_company,
+        $it['ct_delivery_num']
+      ];    
+      $i++;
   }
 
   $headers = array("주문번호", "일자-No.", "품목명[규격]", "수량", "품목&수량", "배송지명", "주문회원", "영업담당자", "배송처", "연락처", "휴대폰", "적요", "배송지요청사항", "카트ID", "택배사", "송장번호");

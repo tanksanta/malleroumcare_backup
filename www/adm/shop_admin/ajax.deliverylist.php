@@ -390,7 +390,8 @@ while( $row = sql_fetch_array($result) ) {
   $cate_counts[$row['ct_status']] = $row['cnt'];
 }
 
-$rows = $config['cf_page_rows'];
+// $rows = $config['cf_page_rows'];
+$rows = 50;
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -399,6 +400,12 @@ $sql  = " select *,
             (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
            $sql_common
            limit $from_record, $rows ";
+if ($od_status) {
+  if ($show_all == 'Y' && $od_status == '출고준비') {
+    $sql = preg_replace('/limit (.*)/i', '', $sql);
+  }
+}
+
 $result = sql_query($sql);
 
 $orderlist = array();
