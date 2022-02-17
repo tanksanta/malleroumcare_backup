@@ -9,7 +9,7 @@ if(!$fr_date)
 if(!$to_date)
   $to_date = date('Y-m-d');
 
-$ledger_result = get_partner_ledger($member['mb_id'], $fr_date, $to_date, $sel_field, $search);
+$ledger_result = get_partner_ledger($member['mb_id'], $fr_date, $to_date, $sel_field, $search, '', false);
 $total_price = $ledger_result['total_price'];
 $total_price_p = @round(($total_price ?: 0) / 1.1);
 $total_price_s = @round(($total_price ?: 0) / 1.1 / 10);

@@ -1712,7 +1712,7 @@ function get_partner_members() {
 }
 
 // 파트너 거래처원장
-function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '', $search = '', $sql_search = '', $contain_purchase = false) {
+function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '', $search = '', $sql_search = '', $contain_purchase = true) {
   $where_order = $where_ledger = '';
 
   # 기간
@@ -1909,7 +1909,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
 // 파트너 거래처원장 - 미수금 합계
 // fr_date 값이 있을 경우 해당 일 까지의 이월잔액
 // total_price_only: true - 총 구매액, false - 총 미수금
-function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false, $current_month_only = false, $contain_purchase = false) {
+function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false, $current_month_only = false, $contain_purchase = true) {
   global $g5;
 
   $where_date = '';
@@ -1941,7 +1941,7 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
       ct_direct_delivery_partner = '{$mb_id}'
   ";
 
-  # 주문내역
+  # 발주내역
   $sql_purchase_order = "
     SELECT
       ct_qty,
