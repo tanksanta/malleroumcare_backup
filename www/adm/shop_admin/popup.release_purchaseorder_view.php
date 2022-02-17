@@ -845,13 +845,14 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     var targetNode = $('#delivered_qty');
     var currentVal = Number(targetNode.val());
     var maxVal = Number('<?= $ct["ct_qty"] - $ct["ct_delivered_qty"] ?>');
+    var minVal = Number('<?= $ct["ct_delivered_qty"] ?>')
 
     if (param === 'plus') {
       if (currentVal < maxVal)
         targetNode.val(++currentVal);
     } else if (param === 'minus') {
-      // if (currentVal >= 1)
-      targetNode.val(--currentVal);
+      if (currentVal > -minVal)
+        targetNode.val(--currentVal);
     } else { // 숫자 입력
       targetNode.val(param);
     }
