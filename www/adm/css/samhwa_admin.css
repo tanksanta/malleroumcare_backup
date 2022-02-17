@@ -1710,8 +1710,17 @@ table.list-table-style .drop_multi_sub a:after {
 #samhwa_order_list_table>div.table.wide-table .od_receipt_time {
     width:7%;
 }
-#samhwa_order_list_table>div.table.wide-table .od_price {
+#samhwa_order_list_table>div.table.wide-table .od_memo {
+  width:7%;
+}
+#samhwa_order_list_table>div.table.wide-table .od_expect_date {
+  width:7%;
+}
+#samhwa_order_list_table>div.table.wide-table .od_warehouse {
     width:7%;
+}
+#samhwa_order_list_table>div.table.wide-table .od_price {
+  width:7%;
 }
 #samhwa_order_list_table>div.table.wide-table .delivery_info,
 #samhwa_order_list_table>div.table.wide-table .od_delivery_info {

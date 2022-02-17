@@ -1768,12 +1768,12 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       it_name,
       ct_option,
       ct_qty,
-      ct_direct_delivery_price as price_d,
+      IF(io_type = 1, io_price, (ct_price + io_price)) AS price_d,
       ROUND (
-         ct_direct_delivery_price / 1.1
+         IF(io_type = 1, io_price, (ct_price + io_price)) / 1.1
       ) * ct_qty as price_d_p,
       ROUND (
-        ct_direct_delivery_price / 1.1 / 10
+        IF(io_type = 1, io_price, (ct_price + io_price)) / 1.1 / 10
       ) * ct_qty as price_d_s,
       0 as deposit,
       od_b_name,
@@ -1786,7 +1786,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
     LEFT JOIN
       g5_member m ON c.mb_id = m.mb_id
     WHERE
-      ct_status = '발주대기' and
+      ct_status = '입고완료' and
       od_del_yn = 'N' and
       ct_supply_partner = '{$mb_id}'
       {$sql_search}
@@ -1876,7 +1876,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
   ");
 
   # 이월잔액
-  $carried_balance = get_partner_outstanding_balance($mb_id, $fr_date);
+  $carried_balance = get_partner_outstanding_balance($mb_id, $fr_date, false, false, $contain_purchase);
 
   $ledger = [];
   $balance = $carried_balance;
@@ -1909,7 +1909,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
 // 파트너 거래처원장 - 미수금 합계
 // fr_date 값이 있을 경우 해당 일 까지의 이월잔액
 // total_price_only: true - 총 구매액, false - 총 미수금
-function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false, $current_month_only = false) {
+function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false, $current_month_only = false, $contain_purchase = false) {
   global $g5;
 
   $where_date = '';
@@ -1939,6 +1939,22 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
       od_del_yn = 'N' and
       ct_is_direct_delivery IN(1, 2) and
       ct_direct_delivery_partner = '{$mb_id}'
+  ";
+
+  # 주문내역
+  $sql_purchase_order = "
+    SELECT
+      ct_qty,
+      IF(io_type = 1, io_price, (ct_price + io_price)) as price_d,
+      0 as deposit
+    FROM
+      purchase_cart c
+    LEFT JOIN
+      purchase_order o ON c.od_id = o.od_id
+    WHERE
+      ct_status = '입고완료' and
+      od_del_yn = 'N' and
+      ct_supply_partner = '{$mb_id}'
   ";
 
   # 입금/출금
@@ -1976,6 +1992,22 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
       ({$sql_ledger} {$where_ledger_date})
     ) u
   ";
+
+  if ($contain_purchase) {
+    $sql = "
+    SELECT
+      sum(ct_qty * price_d) as total_price,
+      sum(deposit) as total_deposit
+    FROM
+    (
+      ({$sql_order} {$where_date})
+      UNION ALL
+      ({$sql_purchase_order} {$where_date})  
+      UNION ALL
+      ({$sql_ledger} {$where_ledger_date})
+    ) u
+  ";
+  }
 
   $result = sql_fetch($sql);
 

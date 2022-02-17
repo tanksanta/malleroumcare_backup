@@ -490,6 +490,9 @@ $ret['main'] = "
             <th class=\"check\">선택</th>
             <th class=\"od_info\" style='width:20%'>주문정보</th>
             <th class=\"od_name\">물품공급파트너</th>
+            <th class=\"od_memo\">요청사항</th>
+            <th class=\"od_expect_date\">입고예정일</th>
+            <th class=\"od_warehouse\">배송지창고</th>
             <th class=\"od_price\">결제금액</th>
             <th class=\"od_step\">주문상태</th>
           </tr>
@@ -564,6 +567,8 @@ foreach($orderlist as $order) {
   $ct_ex_date = $order['ct_ex_date']; //출고완료일
   $ct_manager = $order['ct_manager']; //출고 담당자 아이디
   $prodMemo = $order['prodMemo'];
+  $ct_delivery_expect_date = date('Y-m-d (H시)', strtotime($order['ct_delivery_expect_date']));
+  $ct_warehouse = $order['ct_warehouse'];
     
   //출고담당자 select
   $od_release_select="";
@@ -694,7 +699,7 @@ foreach($orderlist as $order) {
         <td colspan=\"2\" class=\"ltr-bg-step-{$ct_status_info['step']}\">
           {$show_ct_status}
         </td>
-        <td colspan=\"3\" class=\"ltr-bg-step-{$ct_status_info['step']}\" style=\"text-align:right;\">
+        <td colspan=\"6\" class=\"ltr-bg-step-{$ct_status_info['step']}\" style=\"text-align:right;\">
           {$status_info} 
         </td>
       </tr>
@@ -834,6 +839,15 @@ foreach($orderlist as $order) {
           <br/>
           {$mb_shorten_info}{$mb_entNm}
         </a>
+      </td>
+      <td align=\"center\" class=\"od_memo\">
+        <b>{$prodMemo}</b>
+      </td>
+      <td align=\"center\" class=\"od_expect_date\">
+        <b>{$ct_delivery_expect_date}</b>
+      </td>
+      <td align=\"center\" class=\"od_warehouse\">
+        <b>{$ct_warehouse}</b>
       </td>
       <td align=\"center\" class=\"od_price\">
         <b>{$ct_price}</b>
