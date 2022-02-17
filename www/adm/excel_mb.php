@@ -3,7 +3,7 @@
 	include_once("./_common.php");
 	include_once(G5_LIB_PATH."/PHPExcel.php");
 
-    $sql ="select * from `g5_member` where `mb_level` ='3' or `mb_level` ='4' order by `mb_datetime` desc";
+    $sql ="select * from `g5_member` where (`mb_level` ='3' or `mb_level` ='4') and mb_type != 'manager' order by `mb_datetime` desc";
     $result = sql_query($sql);
     while ($row=sql_fetch_array($result)) {
         //영업담당자
