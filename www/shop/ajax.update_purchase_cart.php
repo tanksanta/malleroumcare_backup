@@ -37,6 +37,10 @@ if ($delivered_qty > $ct_row['ct_qty'] || $delivered_qty == '0') {
   json_response(400, '입고수량은 0이 아니어야 하며, 발주 수량 이하 값이어야 합니다.');
 }
 
+if (intval($delivered_qty) < 0 && $delivered_qty < (-$ct_row['ct_delivered_qty'])) {
+  json_response(400, '입고 취소 수량이 현재 입고 수량보다 많습니다.');
+}
+
 $barcode_memo = clean_xss_tags($barcode_memo);
 
 //if ($delivered_qty == $ct_row['ct_delivered_qty'] && $ct_row['ct_barcode_memo'] == $barcode_memo) {
