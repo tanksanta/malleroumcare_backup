@@ -219,7 +219,7 @@ else if ($type == 'login_user') {
     $total_cnt = sql_fetch($sql);
     
     //각 사업소별
-    $sql = "SELECT COUNT(S.id) as cnt, S.mb_id, M.mb_name FROM g5_statistics as S LEFT JOIN g5_member as M ON M.mb_id = S.mb_id  WHERE (M.mb_type = 'default' OR M.mb_level = '4') AND S.type = 'LOGIN' AND S.regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY S.mb_id ORDER BY m.mb_name ASC;";
+    $sql = "SELECT COUNT(S.id) as cnt, S.mb_id, M.mb_name FROM g5_statistics as S LEFT JOIN g5_member as M ON M.mb_id = S.mb_id  WHERE ((M.mb_type = 'default' AND M.mb_temp = 0 AND M.mb_manager != '') OR M.mb_level = '4') AND S.type = 'LOGIN' AND S.regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY S.mb_id ORDER BY m.mb_name ASC;";
     $sub_result = sql_query($sql);
     $arr = [];
     $sum = 0;
