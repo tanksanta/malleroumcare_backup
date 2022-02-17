@@ -699,7 +699,12 @@ if($od["od_b_tel"]) {
               window.webkit.messageHandlers.closeBarcode.postMessage("");
               break;
           }
-          window.location.href = "/shop/release_orderlist.php";
+          var params = getUrlParams();
+          delete params.od_id;
+          delete params.ct_id;
+          var query_string = decodeURI($.param(params));
+          window.location.href = "<?=G5_SHOP_URL?>/release_orderlist.php?" + query_string;
+          // window.location.href = "/shop/release_orderlist.php";
         } else {
           if(sendBarcodeTargetList[0]) {
             $.post('/shop/ajax.check_barcode.php', {
