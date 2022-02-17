@@ -1768,12 +1768,12 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       it_name,
       ct_option,
       ct_qty,
-      ct_direct_delivery_price as price_d,
+      IF(io_type = 1, io_price, (ct_price + io_price)) AS price_d,
       ROUND (
-         ct_direct_delivery_price / 1.1
+         IF(io_type = 1, io_price, (ct_price + io_price)) / 1.1
       ) * ct_qty as price_d_p,
       ROUND (
-        ct_direct_delivery_price / 1.1 / 10
+        IF(io_type = 1, io_price, (ct_price + io_price)) / 1.1 / 10
       ) * ct_qty as price_d_s,
       0 as deposit,
       od_b_name,
