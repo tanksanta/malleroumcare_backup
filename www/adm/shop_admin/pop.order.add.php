@@ -313,6 +313,24 @@ $(function() {
         setTimeout(function () { focusedElement.select(); }, 100); //select all text in any field on focus for easy re-entry. Delay sightly to allow focus to "stick" before selecting.
     });
 
+    var interval = null;
+    $(document).on('blur', '.flexdatalist-alias', function () {
+        if (interval) {
+            clearInterval(interval);
+        }
+        interval = setInterval(() => {
+            if ($('.flexdatalist-results').length) {
+                $('.flexdatalist-results').remove();
+                clearInterval(interval);
+            }
+        }, 100);
+        setTimeout(function () { 
+            if (interval) {
+                clearInterval(interval);
+            }
+        }, 1000);
+    });
+
     $(document).on('keydown','input',function (e) {
         var input_names = ["flexdatalist-it_name[]", "qty[]", "it_price[]", "memo[]"];
         var name = $(this).attr("name");
