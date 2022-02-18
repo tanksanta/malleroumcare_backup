@@ -229,7 +229,9 @@ if($od["od_b_tel"]) {
         <span><?=$od["od_b_addr1"]?> <?=$od["od_b_addr2"]?></span>
       </p>
     </div>
-  <a href="./popup.prodBarNum.form.excel.php?od_id=<?=$od_id?>" class="excel_btn">엑셀다운로드</a>
+    <?php if (!$_GET['partner']) { ?>
+      <a href="./popup.prodBarNum.form.excel.php?od_id=<?=$od_id?>" class="excel_btn">엑셀다운로드</a>
+    <?php } ?>
 
   </div>
 
@@ -256,7 +258,7 @@ if($od["od_b_tel"]) {
           # 카테고리 구분
           $gubun = $cate_gubun_table[substr($options[$k]['ca_id'], 0, 2)];
       ?>
-      <a href="javascript:void(0)" class="<?= $options[$k]['ct_status'] !== "취소" && $options[$k]['ct_status'] !== "주문무효" ? "" : "hide_area" ?> ">
+      <a href="javascript:void(0)" class="<?= ($options[$k]['ct_status'] !== "취소" && $options[$k]['ct_status'] !== "주문무효") || $_GET['partner'] ? "" : "hide_area" ?> ">
         <li class="li_box">
           <div class="li_box_line1"
             <?php if ($gubun != '02' && $options[$k]['io_type'] == 0) { ?>
@@ -335,7 +337,7 @@ if($od["od_b_tel"]) {
           </div>
           <?php } ?>
 
-          <div class="deliveryInfoWrap">
+          <div class="deliveryInfoWrap <?php echo $_GET['partner'] ? 'hide_area' : ''; ?>">
             <?php if ($options[$k]['ct_combine_ct_id']) { ?>
             <?php
             // 합포 상품 찾기
@@ -612,12 +614,14 @@ if($od["od_b_tel"]) {
   $(function() {
     <?php
     $stock_list = [];
-    foreach($result_again as $stock) {
-      $stock_list[] = array(
-        'prodId' => $stock['prodId'],
-        'stoId' => $stock['stoId'],
-        'prodBarNum' => $stock['prodBarNum']
-      );
+    if ($result_again && count($result_again)) {
+      foreach ($result_again as $stock) {
+        $stock_list[] = array(
+          'prodId' => $stock['prodId'],
+          'stoId' => $stock['stoId'],
+          'prodBarNum' => $stock['prodBarNum']
+        );
+      }
     }
     ?>
     var stoldList = <?=json_encode($stock_list)?>;
@@ -907,8 +911,14 @@ if($od["od_b_tel"]) {
         history.back();
         <?php } else { ?>
         <?php if ($no_refresh != 1) { ?>
-        if(need_reload)
-          opener.location.reload();
+        if (need_reload) {
+          try {
+            $("body", parent.document).reload();
+          } catch(e) {}
+          try {
+            opener.location.reload();
+          } catch(e) {}
+        }
         <?php } ?>
         <?php if ($orderlist) { ?>
         foldingBoxSetting();
@@ -938,6 +948,12 @@ if($od["od_b_tel"]) {
         });
         <?php } ?>
         window.close();
+        try {
+          $("body", parent.document).removeClass('modal-open');
+          $("#popup_box", parent.document).hide();
+          $("#popup_box", parent.document).find("iframe").remove();
+        } catch (e) {
+        }
         <?php }?>
       }
     });
