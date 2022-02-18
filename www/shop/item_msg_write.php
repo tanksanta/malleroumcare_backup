@@ -81,7 +81,7 @@ foreach($notice_arr as $wr_id) {
   $recs[] = $rec;
 }
 
-add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css?v=211126">');
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css?v=211125">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js?v=220102"></script>');
 ?>
@@ -179,7 +179,7 @@ function max_length_check(object){
 
       <div id="im_body_wr" class="im_flex space-between <?php if($ms['ms_url']) echo 'active preview'; ?>">
         <div class="im_item_wr">
-          <div class="im_tel_wr im_flex space-between">
+        <div class="im_tel_wr im_flex space-between">
             <div class="im_sch_hd">사업소 전화번호 공개</div>
             <input class="im_switch" id="ms_ent_tel" type="checkbox" name="ms_ent_tel" value="<?=get_text($member['mb_tel'])?>" checked="checked">
             <!-- <input class="im_switch" id="ms_ent_tel" type="checkbox" name="ms_ent_tel" value="<?=get_text($member['mb_tel'])?>" <?=get_checked($ms['ms_ent_tel'], get_text($member['mb_tel']))?>> -->
@@ -189,6 +189,26 @@ function max_length_check(object){
                 <span class="off">숨김</span>
               </div>
             </label>
+          </div>
+          <div class="im_tel_wr">
+            <div class="im_sch_hd">사업소 전화번호 선택</div>
+            <input type="hidden" name="mb_tel" value="<?=get_text($member['mb_tel'])?>">
+            <input type="hidden" name="mb_hp" value="<?=get_text($member['mb_hp'])?>">
+            <input type="hidden" name="ms_ent_tel_new" value="<?=get_text($member['mb_tel'])?>">
+            <div class="radio_wr">
+              <label class="radio-inline">
+                <input type="radio" name="im_tel_select_radio" id="im_tel_select_radio" value="0" checked="checked"> 일반전화
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="im_tel_select_radio" id="im_tel_select_radio" value="1" > 휴대폰
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="im_tel_select_radio" id="im_tel_select_radio" value="2" > 직접입력
+              </label>
+              <label class="radio-inline">
+                <input type="text" maxlength="11" oninput="max_length_check(this)" name="ms_ent_tel_input" id="ms_ent_tel_input" class="form-control input-sm" value="" disabled>
+              </label>
+            </div>
           </div>
           <div class="im_sch_wr">
             <div class="im_flex space-between align-items">
@@ -635,6 +655,31 @@ function save_item_msg(no_items) {
     }
   }
 
+  $('input[name="im_tel_select_radio"]').click(function() {
+    if(loading) return false;
+
+    var ms_id = $('input[name="ms_id"]').val();
+
+    if(!ms_id) {
+      alert('먼저 상품을 추가해주세요.');
+      return false;
+    }
+
+    $('input[name="ms_ent_tel_input"]').prop('disabled', true);
+    if ($(this).val() == 0) {
+      $('input[name="ms_ent_tel_new"]').val($('input[name="mb_tel"]').val());
+    }
+    else if ($(this).val() == 1) {
+      $('input[name="ms_ent_tel_new"]').val($('input[name="mb_hp"]').val());
+    }
+    else if ($(this).val() == 2) {
+      $('input[name="ms_ent_tel_input"]').prop('disabled', false);
+      $('input[name="ms_ent_tel_new"]').val($('#ms_ent_tel_input').val());
+    }
+    save_item_msg(true);
+
+  });
+
   $('#ipt_im_sch').flexdatalist({
     minLength: 1,
     url: 'ajax.get_item.php',
@@ -760,6 +805,14 @@ function save_item_msg(no_items) {
     if (ms_pen_hp.length > 9) {
       check_pen_input(ms_pen_hp);
     }
+  });
+
+  $('#ms_ent_tel_input').on('blur', function() {
+    var num = $(this).val();
+    $('input[name="ms_ent_tel_new"]').val(num);
+    
+    if (num.length > 8)
+      save_item_msg(true);
   });
 
   function check_pen_input(ms_pen_hp) {
