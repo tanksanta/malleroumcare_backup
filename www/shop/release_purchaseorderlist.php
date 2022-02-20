@@ -122,6 +122,12 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
     $sql2 = "SELECT ifnull(sum(ct_qty), 0) AS cnt FROM purchase_cart WHERE ct_status IN ('발주완료', '출고완료')";
     ?>
     <li class="total_price_wrap">입고대기: <?php echo sql_fetch($sql1)['cnt'] ?>건 주문 / <?php echo sql_fetch($sql2)['cnt'] ?>개 상품</li>
+    <li>
+      <a href="javascript:void(0);" class="nativeDeliveryPopupOpenBtn">
+        주문찾기
+        <img src="<?=G5_IMG_URL?>/bacod_img.png">
+      </a>
+    </li>
   </ul>
   <ul>
       <li>
@@ -135,8 +141,9 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
     <ul>
       <li>
         <select name="search_option" id="search_option">
-          <option value="od_b_name,it_name,od_name,ct_delivery_num" <?php echo !$search_option ? "selected" : ''; ?>>전체</option>
+          <option value="it_name,ProdPayCode,od_name,od_id,ct_warehouse" <?php echo !$search_option ? "selected" : ''; ?>>전체</option>
           <option value="it_name" <?php echo $search_option == 'it_name' ? 'selected' : ''; ?>>상품명</option>
+          <option value="ProdPayCode" <?php echo $search_option == 'ProdPayCode' ? 'selected' : ''; ?>>제품코드</option>
           <option value="od_name" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>공급업체</option>
           <option value="od_id" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>발주번호</option>
           <option value="ct_warehouse" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>배송지명</option>
@@ -366,8 +373,9 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
   });
 
   function sendInvoiceNum(text){
+    text = text.slice(0, 12);
     $('#search_text').val(text);
-    $('#search_option').val('ct_delivery_num');
+    $('#search_option').val('ProdPayCode');
     $("#page").val(1);
     $("#listDataWrap").html("");
     page2 = 1;
