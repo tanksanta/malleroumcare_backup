@@ -68,7 +68,7 @@ if($_POST['ct_id']&&$_POST['step']) {
     if($result_ct_s['it_name'] !== $result_ct_s['ct_option']){
       $content = $content."(".$result_ct_s['ct_option'].")";
     }
-    $content = $content."-".$ct_status_text." 변경";
+    $content = $content . " - " . clean_xss_tags($_POST['step']) . " 변경";
 
     //로그 insert
     $sql[$i]= "INSERT INTO purchase_order_admin_log SET
