@@ -139,8 +139,8 @@ define('KAKAO_DEVELOPERS_REST_API_KEY', '7a991b6e94ba43c5d266d9aa4a2edca1');
 // 테스트서버 : http://1.255.199.16/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL
 // define('G5_EDI_URL',        'http://1.255.199.16/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
 define('G5_EDI_URL',        'https://ilogen.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
-define('G5_EDI_USERID',     '32551129');
-define('G5_EDI_PASSWORD',   'daon12345');
+define('G5_EDI_USERID',     '32551369');
+define('G5_EDI_PASSWORD',   '!121200a');
 
 // 인스타그램 API 연동
 define('G5_INSTAGRAM_TOKEN', 'IGQVJXQU4xdFVsand1d1g1UGo4OUU3MWw3Q1NGdUh1ZA29LSlNETDF3Xy04RmFfZAzVLQnNoRmFPY3J3ZAHVYa1JUdXd1S1NLdU1FbVVOYTFrYWZA4UDdvTGJrMnlzUzNsTHRWRDg5SFBMcWI0M3ZARNnBPaAZDZD');
