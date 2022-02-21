@@ -65,7 +65,8 @@ try {
                 od_cash_info      = '',
                 od_writer         = '{$member['mb_id']}',
                 od_add_admin      = '1',
-                so_nb             = '{$so_nb}'
+                so_nb             = '{$so_nb}',
+                od_purchase_manager  = '{$member['mb_id']}',
                 ";
   sql_query($sql);
 

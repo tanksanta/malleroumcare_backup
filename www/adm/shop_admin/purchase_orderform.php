@@ -104,7 +104,10 @@ $sql = "
     a.prodSupYn,
     a.ct_qty,
     a.ct_stock_qty,
-    b.it_img1
+    b.it_img1,
+    a.ct_warehouse,
+    a.ct_warehouse_address,
+    a.ct_warehouse_phone
   from
     purchase_cart a
   left join
@@ -519,19 +522,19 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
               <tr>
                 <td colspan="12" style="text-align: left">
                   <select class="" name="warehouse" style="width: 89%; margin-left: 11%;">
+                    <?php if ($options[$k]['ct_warehouse']) { ?>
+                    <option value="" selected><?php echo "배송주소 : [{$options[$k]['ct_warehouse']}] / {$options[$k]['ct_warehouse_phone']} / {$options[$k]['ct_warehouse_address']}" ?></option>
+                    <?php } else { ?>
+                    <option value="" selected>배송주소를 지정해주세요</option>
+                    <?php } ?>
                     <?php
                     foreach ($warehouse_list as $warehouse) {
-                      $default_option = "<option value='{$warehouse['wh_id']}'>배송주소 : [{$warehouse['wh_name']}] / {$warehouse['wh_phone']} / {$warehouse['wh_address']}</option>";
-                      if ($options[$k]['ct_warehouse'] == $warehouse['wh_name']) { // 이름이 같다면
-                        // 주소 연락처 같은지 체크
-                        if ($options[$k]['ct_warehouse_address'] == $warehouse['wh_address'] &&  $options[$k]['ct_warehouse_phone'] == $warehouse['wh_phone']) {
-                          echo "<option value='{$warehouse['wh_id']}' selected>배송주소 : [{$warehouse['wh_name']}] / {$warehouse['wh_phone']} / {$warehouse['wh_address']}</option>";
-                        } else { // 다르면
-                          echo "<option value='current' selected>배송주소 : [{$options[$k]['ct_warehouse_name']}] / {$options[$k]['ct_warehouse_phone']} / {$options[$k]['ct_warehouse_address']}</option>";
-                          echo $default_option;
-                        }
+                      if ($options[$k]['ct_warehouse'] == $warehouse['wh_name']
+                        && $options[$k]['ct_warehouse_address'] == $warehouse['wh_address']
+                        && $options[$k]['ct_warehouse_phone'] == $warehouse['wh_phone']) {
+                        continue;
                       } else {
-                        echo $default_option;
+                        echo "<option value='{$warehouse['wh_id']}'>배송주소 : [{$warehouse['wh_name']}] / {$warehouse['wh_phone']} / {$warehouse['wh_address']}</option>";
                       }
                     }
                     ?>
@@ -546,154 +549,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
             $prodOptNum = implode('^', $option_array);
             $prodBarNum = implode('^', $barcode_array);
 
-            if ($carts[$i]['it_outsourcing_use']) {
-              if ($carts[$i]['it_outsourcing_option']) {
-                $outsourcing_options = explode(',', $carts[$i]['it_outsourcing_option']);
-              }
-              if ($carts[$i]['it_outsourcing_option2']) {
-                $outsourcing_options2 = explode(',', $carts[$i]['it_outsourcing_option2']);
-              }
-              if ($carts[$i]['it_outsourcing_option3']) {
-                $outsourcing_options3 = explode(',', $carts[$i]['it_outsourcing_option3']);
-              }
-              if ($carts[$i]['it_outsourcing_option4']) {
-                $outsourcing_options4 = explode(',', $carts[$i]['it_outsourcing_option4']);
-              }
-              if ($carts[$i]['it_outsourcing_option5']) {
-                $outsourcing_options5 = explode(',', $carts[$i]['it_outsourcing_option5']);
-              }
-              ?>
-              <tr>
-                <td colspan="2"></td>
-                <?php
-                // $outsourcing = sql_fetch("SELECT * FROM g5_shop_order_outsourcing WHERE od_id = '{$od_id}' AND it_id = '{$carts[$i]['it_id']}' AND oo_state = '0' ORDER BY oo_id DESC");
-                $outsourcing = sql_fetch("SELECT * FROM g5_shop_order_outsourcing WHERE od_id = '{$od_id}' AND it_id = '{$carts[$i]['it_id']}' AND oo_uid = '{$carts[$i]['ct_uid']}' AND oo_state = '0' ORDER BY oo_id DESC");
-                if ($outsourcing['oo_id']) {
-                  ?>
-                  <td colspan="9" class="item_outsourcing" data-id="<?php echo $carts[$i]['it_id']; ?>"
-                      data-uid="<?php echo $carts[$i]['ct_uid']; ?>">
-                    외부발주 : <?php echo $outsourcing['oo_outsourcing_option']; ?>,
-                    <?php echo $outsourcing['oo_outsourcing_option2'] ? $outsourcing['oo_outsourcing_option2'] . ', ' : ''; ?>
-                    <?php echo $outsourcing['oo_outsourcing_option3'] ? $outsourcing['oo_outsourcing_option3'] . ', ' : ''; ?>
-                    <?php echo $outsourcing['oo_outsourcing_option4'] ? $outsourcing['oo_outsourcing_option4'] . ', ' : ''; ?>
-                    <?php echo $outsourcing['oo_outsourcing_option5'] ? $outsourcing['oo_outsourcing_option5'] . ', ' : ''; ?>
-
-                    <div id="it_outsourcing_option_file_<?php echo $i; ?>" class="it_outsourcing_option_file"
-                         data-id="<?php echo $i; ?>">
-                      첨부파일:
-                      <ul class="upload_files upload_files_outsourcing_option_apply upload_files_outsourcing_option_apply_<?php echo $carts[$i]['it_id']; ?> upload_files_outsourcing_option_apply_<?php echo $carts[$i]['ct_uid']; ?>">
-                        <?php
-                        // $sql = "SELECT ctf_no as no, ctf_name as file_name, ctf_real_name as real_name FROM g5_shop_order_cart_file WHERE od_id = '{$od_id}' AND ctf_type = 'order_outsourcing' AND it_id = '{$carts[$i]['it_id']}'";
-                        $sql = "SELECT ctf_no as no, ctf_name as file_name, ctf_real_name as real_name FROM g5_shop_order_cart_file WHERE od_id = '{$od_id}' AND ctf_type = 'order_outsourcing' AND ctf_uid = '{$carts[$i]['ct_uid']}'";
-                        $result = sql_query($sql);
-                        $outsourcing_files = 0;
-                        while ($row = sql_fetch_array($result)) {
-                          $outsourcing_files++;
-                          ?>
-                          <li>
-                            <a href='<?php echo G5_URL; ?>/data/order_cart/<?php echo $row['file_name']; ?>'
-                               class="filelink" target="_blank"><?php echo $row['real_name']; ?></a>
-                          </li>
-                        <?php } ?>
-                        <?php if (!$outsourcing_files) echo "없음&nbsp;&nbsp;&nbsp;"; ?>
-                      </ul>
-                    </div>
-                    <input type="button" value="취소" class="blue shbtn btn item_outsourcing_cancel"
-                           data-id="<?php echo $outsourcing['oo_id']; ?>">
-                    <span style="margin-left:15px;"><?php echo $outsourcing['oo_created_at']; ?></span>
-                  </td>
-                <?php } else { ?>
-                  <td colspan="9" class="item_outsourcing" data-id="<?php echo $carts[$i]['it_id']; ?>"
-                      data-uid="<?php echo $carts[$i]['ct_uid']; ?>">
-                    외부발주 :
-
-                    <select name="sales_manager">
-                      <option value="">담당자 선택</option>
-                      <?php
-                      $sql = "SELECT * FROM g5_auth WHERE au_menu = '400480' AND au_auth LIKE '%w%'";
-                      $auth_result = sql_query($sql);
-                      while ($a_row = sql_fetch_array($auth_result)) {
-                        $a_mb = get_member($a_row['mb_id']);
-                        ?>
-                        <option
-                            value="<?php echo $a_mb['mb_id']; ?>" <?php echo $a_mb['mb_id'] == $od['od_sales_manager'] ? 'selected' : ''; ?>><?php echo $a_mb['mb_name']; ?></option>
-                      <?php } ?>
-                    </select>
-
-                    <?php if ($carts[$i]['it_outsourcing_option']) { ?>
-                      <select name="it_outsourcing_option">
-                        <option value="">옵션1</option>
-                        <?php foreach ($outsourcing_options as $opt) { ?>
-                          <option value="<?php echo $opt; ?>"><?php echo $opt; ?></option>
-                        <?php } ?>
-                      </select>
-                    <?php } ?>
-                    <?php if ($carts[$i]['it_outsourcing_option2']) { ?>
-                      <select name="it_outsourcing_option2">
-                        <option value="">옵션2</option>
-                        <?php foreach ($outsourcing_options2 as $opt) { ?>
-                          <option value="<?php echo $opt; ?>"><?php echo $opt; ?></option>
-                        <?php } ?>
-                      </select>
-                    <?php } ?>
-                    <?php if ($carts[$i]['it_outsourcing_option3']) { ?>
-                      <select name="it_outsourcing_option3">
-                        <option value="">옵션3</option>
-                        <?php foreach ($outsourcing_options3 as $opt) { ?>
-                          <option value="<?php echo $opt; ?>"><?php echo $opt; ?></option>
-                        <?php } ?>
-                      </select>
-                    <?php } ?>
-                    <?php if ($carts[$i]['it_outsourcing_option4']) { ?>
-                      <select name="it_outsourcing_option4">
-                        <option value="">옵션4</option>
-                        <?php foreach ($outsourcing_options4 as $opt) { ?>
-                          <option value="<?php echo $opt; ?>"><?php echo $opt; ?></option>
-                        <?php } ?>
-                      </select>
-                    <?php } ?>
-                    <?php if ($carts[$i]['it_outsourcing_option5']) { ?>
-                      <select name="it_outsourcing_option5">
-                        <option value="">옵션5</option>
-                        <?php foreach ($outsourcing_options5 as $opt) { ?>
-                          <option value="<?php echo $opt; ?>"><?php echo $opt; ?></option>
-                        <?php } ?>
-                      </select>
-                    <?php } ?>
-                    <div id="it_outsourcing_option_file_<?php echo $i; ?>" class="it_outsourcing_option_file"
-                         data-id="<?php echo $i; ?>" data-uid="<?php echo $carts[$i]['ct_uid']; ?>">
-                      <button type="button" class="shbtn uploadbtn">찾아보기</button>
-                      <ul class="upload_files upload_files_outsourcing_option_apply upload_files_outsourcing_option_apply_<?php echo $carts[$i]['it_id']; ?> upload_files_outsourcing_option_apply_<?php echo $carts[$i]['ct_uid']; ?>">
-                        <?php
-                        // $sql = "SELECT ctf_no as no, ctf_name as file_name, ctf_real_name as real_name FROM g5_shop_order_cart_file WHERE od_id = '{$od_id}' AND ctf_type = 'order_outsourcing' AND it_id = '{$carts[$i]['it_id']}'";
-                        $sql = "SELECT ctf_no as no, ctf_name as file_name, ctf_real_name as real_name FROM g5_shop_order_cart_file WHERE od_id = '{$od_id}' AND ctf_type = 'order_outsourcing' AND ctf_uid = '{$carts[$i]['ct_uid']}'";
-                        $result = sql_query($sql);
-                        while ($row = sql_fetch_array($result)) {
-                          ?>
-                          <li>
-                            <a href='<?php echo G5_URL; ?>/data/order_cart/<?php echo $row['file_name']; ?>'
-                               class="filelink" target="_blank"><?php echo $row['real_name']; ?></a>
-                            <a href='#' class="remove" data-no="<?php echo $row['no']; ?>"><img
-                                  src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_del_s.png"/></a>
-                          </li>
-                        <?php } ?>
-                      </ul>
-                    </div>
-                    <input type="button" value="전송" class="blue shbtn btn item_outsourcing_submit">
-                  </td>
-                <?php } ?>
-              </tr>
-            <?php } ?>
-            <?php if (substr($carts[$i]["ca_id"], 0, 2) == 20 && $ct_status_text == "재고소진") { ?>
-              <tr>
-                <td></td>
-                <td colspan="10" style="text-align: left;">
-                  <b>대여기간 : </b>
-                  <?= $ordLendDtm ?>
-                </td>
-              </tr>
-            <?php } ?>
-            <?php if ($prodMemo) { ?>
+            if ($prodMemo) { ?>
               <tr>
                 <td></td>
                 <td colspan="10" style="text-align: left;">
@@ -884,14 +740,14 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
           <li>
             <div class="managers">
               <span class="manager_name">- 영업담당자</span>
-              <select name="od_sales_manager">
+              <select name="od_purchase_manager">
                 <option value="">없음</option>
                 <?php
-                $od_sales_manager = $od['od_sales_manager'];
-                if (!$od_sales_manager || $od_sales_manager == '1202') {
+                $od_purchase_manager = $od['od_purchase_manager'];
+                if (!$od_purchase_manager || $od_purchase_manager == '1202') {
                   $sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='" . $od['mb_id'] . "'";
                   $result_manager = sql_fetch($sql_manager);
-                  $od_sales_manager = $result_manager['mb_manager'];
+                  $od_purchase_manager = $result_manager['mb_manager'];
                 }
 
                 $sql = " SELECT mb_name, mb_id FROM g5_member WHERE mb_level = 9 ORDER BY mb_name ASC ";
@@ -900,10 +756,10 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
                   $a_mb = get_member($a_row['mb_id']);
                   ?>
                   <option
-                      value="<?php echo $a_mb['mb_id']; ?>" <?php echo $a_mb['mb_id'] == $od_sales_manager ? 'selected' : ''; ?>><?php echo $a_mb['mb_name']; ?></option>
+                      value="<?php echo $a_mb['mb_id']; ?>" <?php echo $a_mb['mb_id'] == $od_purchase_manager ? 'selected' : ''; ?>><?php echo $a_mb['mb_name']; ?></option>
                 <?php } ?>
               </select>
-              <a class="change_manager_on change_manager_submit" data-type="od_sales_manager">변경</a>
+              <a class="change_manager_on change_manager_submit" data-type="od_purchase_manager">변경</a>
             </div>
           </li>
         </ul>
@@ -1008,11 +864,8 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
     send_estimate_pop, order_prints_pop;
 
   function orderListExcelDownload() {
-    alert('TODO');
-    return;
-
     $("#excelForm").remove();
-    var html = "<form id='excelForm' method='post' action='./order.excel.list.php'>";
+    var html = "<form id='excelForm' method='post' action='./purchase_order.excel.list.php'>";
     html += "<input type='hidden' name='ref' value='orderform'>";
 
     var od_id = [];
@@ -1131,6 +984,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
       $(off).hide();
       $(on).show();
     });
+
     $('.change_manager_cancel').click(function () {
       var on = $(this).closest('.on');
       var off = $(this).closest('.managers').find('.off');
@@ -1138,36 +992,28 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
       $(on).hide();
       $(off).show();
     });
-    $('.change_manager_submit').click(function () {
-      alert('TODO');
-      return;
 
+    $('.change_manager_submit').click(function () {
       var type = $(this).data('type');
       var mb_id = $('select[name="' + type + '"]').val();
       $.ajax({
         method: "POST",
-        url: "./ajax.order.manager.php",
+        url: "./ajax.purchase_order.manager.php",
         data: {
           type: type,
           mb_id: mb_id,
           od_id: od_id,
         },
       })
-        .done(function (data) {
-          // console.log(data);
-          if (data.msg) {
-            alert(data.msg);
-          }
-          if (data.result === 'success') {
-            location.reload();
-          }
-
-        })
-    });
-
-    $('#order_prev_step').click(function () {
-      var prev_step_val = $(this).data('prev-step-val');
-      change_step(od_id, prev_step_val);
+      .done(function (data) {
+        // console.log(data);
+        if (data.msg) {
+          alert(data.msg);
+        }
+        if (data.result === 'success') {
+          location.reload();
+        }
+      })
     });
 
     $('#memo_submit').click(function () {
@@ -1217,8 +1063,6 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
     });
 
     $('#change_cart_status').click(function () {
-      alert('TODO');
-      return;
       var step = document.getElementById('step');
       var it_sel = document.getElementsByName("it_sel[]");
       var formdata = $.extend(
@@ -1257,7 +1101,45 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
     });
 
     $('#change_warehouse').click(function() {
-      alert('TODO');
+      var ct_ids = [];
+      var wh_ids = [];
+      var checked_it = $('input[name="it_sel[]"]:checked');
+
+      if (checked_it.length === 0) {
+        alert('상품을 체크해주세요.');
+        return;
+      }
+
+      if (!confirm('배송지를 수정하시겠습니까?')) {
+        return;
+      }
+
+      checked_it.each(function(i, v) {
+        ct_ids.push($(this).val());
+        wh_ids.push($(this).closest('tr').next().find('select[name="warehouse"]').val());
+      });
+
+      console.log(ct_ids);
+      console.log(wh_ids);
+
+      $.ajax({
+        method: "POST",
+        url: "./ajax.purchase_cart_warehouse.php",
+        data: {
+          od_id: od_id,
+          ct_ids: ct_ids,
+          wh_ids: wh_ids,
+        },
+      })
+      .done(function (result) {
+        alert('완료되었습니다.');
+        window.location.reload();
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+
       return;
     });
 
@@ -1414,8 +1296,6 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
 
     // 작업 지시서
     $('.order_prints').click(function (e) {
-      alert('TODO');
-      return;
       var it_id = "";
       var checkbox = $("input[name='it_sel[]']:checked");
       for (var i = 0; i < checkbox.length; i++) {
@@ -1423,7 +1303,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
         it_id += it_id;
       }
 
-      order_prints_pop = window.open('./pop.order.prints.php?od_id=' + od_id + '|', "order_prints_pop", "width=850, height=800, resizable = no, scrollbars = yes");
+      order_prints_pop = window.open('./pop.purchase_order.prints.php?od_id=' + od_id + '|', "order_prints_pop", "width=850, height=800, resizable = no, scrollbars = yes");
     });
 
 
@@ -1752,77 +1632,6 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
 
         if (data.result === 'success') {
           $(obj).closest('li').remove();
-        }
-      });
-    });
-
-    // 외부 발주 요청
-    $('.item_outsourcing_submit').click(function () {
-
-      var parent = $(this).closest('td');
-      var it_id = $(parent).data('id');
-      var uid = $(parent).data('uid');
-      var it_outsourcing_option = $(parent).find('select[name="it_outsourcing_option"]').val();
-      var it_outsourcing_option2 = $(parent).find('select[name="it_outsourcing_option2"]').val();
-      var it_outsourcing_option3 = $(parent).find('select[name="it_outsourcing_option3"]').val();
-      var it_outsourcing_option4 = $(parent).find('select[name="it_outsourcing_option4"]').val();
-      var it_outsourcing_option5 = $(parent).find('select[name="it_outsourcing_option5"]').val();
-      var sales_manager = $(parent).find('select[name="sales_manager"]').val();
-
-      if (!it_id) {
-        alert('알수없는 오류입니다.');
-        return false;
-      }
-
-      $.ajax({
-        method: "POST",
-        url: "./ajax.order.outsourcing.php",
-        data: {
-          od_id: od_id,
-          it_id: it_id,
-          uid: uid,
-          it_outsourcing_option: it_outsourcing_option,
-          it_outsourcing_option2: it_outsourcing_option2,
-          it_outsourcing_option3: it_outsourcing_option3,
-          it_outsourcing_option4: it_outsourcing_option4,
-          it_outsourcing_option5: it_outsourcing_option5,
-          sales_manager: sales_manager,
-        },
-      })
-      .done(function (data) {
-        if (data.msg) {
-          alert(data.msg);
-        }
-        if (data.result === 'success') {
-          location.reload();
-        }
-      });
-    });
-
-    // 외부 발주 취소
-    $('.item_outsourcing_cancel').click(function () {
-
-      var oo_id = $(this).data('id');
-
-      if (!oo_id) {
-        alert('알수없는 오류입니다.');
-        return false;
-      }
-
-      $.ajax({
-        method: "POST",
-        url: "./ajax.order.outsourcing.cancel.php",
-        data: {
-          od_id: od_id,
-          oo_id: oo_id,
-        },
-      })
-      .done(function (data) {
-        if (data.msg) {
-          alert(data.msg);
-        }
-        if (data.result === 'success') {
-          location.reload();
         }
       });
     });
