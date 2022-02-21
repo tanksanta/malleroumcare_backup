@@ -780,9 +780,17 @@ function get_order_admin_log($od_id) {
     return $ret;
 }
 
-function get_purchase_order_admin_log($od_id) {
+function get_purchase_order_admin_log($od_id, $ct_id = null) {
+  $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' AND (ct_id IS NULL OR ct_id = '') ORDER BY ol_no DESC";
 
-  $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
+  if ($ct_id) {
+    $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' AND ct_id = '{$ct_id}' ORDER BY ol_no DESC";
+  }
+
+  if ($ct_id == 'not_null') {
+    $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' AND (ct_id IS NOT NULL OR ct_id != '') ORDER BY ol_no DESC";
+  }
+
   $result = sql_query($sql);
 
   $ret = array();

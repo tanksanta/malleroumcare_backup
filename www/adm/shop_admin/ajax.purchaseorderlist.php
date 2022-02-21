@@ -798,7 +798,7 @@ foreach($orderlist as $order) {
   }
 
   $ret['data'] .= "
-    <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']} order_tr\" data-od-id=\"{$order['od_id']}\" data-href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">
+    <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']} order_tr\" data-od-id=\"{$order['od_id']}\" data-href=\"./purchase_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">
       <td align=\"center\" class=\"check\">
         <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['ct_id']}\" value=\"{$order['ct_id']}\" accumul_mark=\"Y\">
         <label for=\"check_{$order['ct_id']}\">&nbsp;</label>
@@ -812,7 +812,7 @@ foreach($orderlist as $order) {
             <div class=\"order_num\">
               발주일시 : {$od_time}<br>
               변경일시 : {$od_receipt_time}<br>
-              <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">주문번호&nbsp;<span>({$order['od_id']})</span></a>
+              <a href=\"./purchase_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">주문번호&nbsp;<span>({$order['od_id']})</span></a>
             </div>
             {$partner_edit_text}
           </div>
@@ -823,13 +823,11 @@ foreach($orderlist as $order) {
             </div>
             <!--
             <a href=\"javascript:printOrderView('{$order['od_id']}')\"><img src=\"/adm/shop_admin/img/printer.png\" align=\"absmiddle\"></a>
-            <a href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\" target=\"_blank\"><span><img src=\"/adm/shop_admin/img/window.png\" align=\"absmiddle\"></span></a>
+            <a href=\"./purchase_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\" target=\"_blank\"><span><img src=\"/adm/shop_admin/img/window.png\" align=\"absmiddle\"></span></a>
             -->
             <span class=\"btn-direct-open\" onclick=\"btn_direct_open(this);\"></span>
           </div>
-          <!--
           <img src=\"/thema/eroumcare/assets/img/icon_link_orderlist.png\" class=\"icon_link\">
-          -->
         </div>
       </td>
 
