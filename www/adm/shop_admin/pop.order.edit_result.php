@@ -496,7 +496,7 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
         }
 
         // 출하창고
-        $ct_warehouse = '청라창고';
+        $ct_warehouse = '검단창고';
         if($it['it_default_warehouse']) {
             $ct_warehouse = $it['it_default_warehouse'];
         }
