@@ -124,7 +124,7 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
     <li class="total_price_wrap">입고대기: <?php echo sql_fetch($sql1)['cnt'] ?>건 주문 / <?php echo sql_fetch($sql2)['cnt'] ?>개 상품</li>
     <li>
       <a href="javascript:void(0);" class="nativeDeliveryPopupOpenBtn">
-        주문찾기
+        발주서찾기
         <img src="<?=G5_IMG_URL?>/bacod_img.png">
       </a>
     </li>
