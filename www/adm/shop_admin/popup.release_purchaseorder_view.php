@@ -23,7 +23,6 @@ $sql = "
   select * from purchase_cart where od_id = {$od_id} and ct_id = {$ct_id}
 ";
 $ct = sql_fetch($sql);
-
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -69,6 +68,7 @@ $ct = sql_fetch($sql);
     button {
       border: 0;
       font-family: "Noto Sans KR", sans-serif;
+      cursor: pointer;
     }
 
     input {
@@ -692,6 +692,24 @@ $ct = sql_fetch($sql);
       line-height: 50px;
     }
   </style>
+
+  <?php if ($isPop) { ?>
+  <style>
+    #popupHeaderTopWrap {
+      background-color: #fff;
+    }
+
+    #popupHeaderTopWrap .title {
+      color: #000;
+      width: 100%;
+      border-bottom: 1px solid #000;
+    }
+
+    #popupHeaderTopWrap .close {
+      display: none;
+    }
+  </style>
+  <?php } ?>
 </head>
 
 <body>
@@ -810,6 +828,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
 
 <script>
   var CT_QTY = Number('<?= $ct["ct_qty"] ?>');
+  var IS_POP = <?=$isPop ? 'true' : 'false'?>;
 
   function getUrlParams() {
     var params = {};
@@ -838,7 +857,12 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     delete params.od_id;
     delete params.ct_id;
     var query_string = decodeURI($.param(params));
-    location.href = "<?=G5_SHOP_URL?>/release_purchaseorderlist.php?" + query_string;
+
+    if (IS_POP) {
+      window.close();
+    } else {
+      location.href = "<?=G5_SHOP_URL?>/release_purchaseorderlist.php?" + query_string;
+    }
   }
 
   function setNumberDeliveredQty(param) {
@@ -923,6 +947,9 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     })
     .done(function() {
       location.reload();
+      if (IS_POP) {
+        opener.location.reload();
+      }
     })
     .fail(function($xhr) {
       var data = $xhr.responseJSON;

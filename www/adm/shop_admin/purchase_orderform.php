@@ -4,7 +4,7 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu], "w");
 
-$g5['title'] = "주문 내역 수정";
+$g5['title'] = "발주 내역 수정";
 include_once(G5_ADMIN_PATH . '/admin.head.php');
 
 //------------------------------------------------------------------------------
@@ -361,13 +361,9 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
 <div id="samhwa_order_form">
   <div class="block">
     <div class="header">
-      <h2>주문정보<span>(주문일시:<?php echo $od['od_time']; ?>)</span>
+      <h2>발주정보<span>(발주일시:<?php echo $od['od_time']; ?>)</span>
         <span class='box_orange'>구매발주</span>
       </h2>
-      <div class="right">
-<!--        <a href="#" class="prodBarNumCntBtn--><?//= $prodBarNumCntBtnStatus ?><!--">--><?//= $prodBarNumCntBtnWord ?><!--</a>-->
-        <a href="javascript:alert('TODO')" class="prodBarNumCntBtn">입고관리 (n/n)</a>
-      </div>
     </div>
     <div class="item_list">
       <form name="frmsamhwaorderform" method="post" id="frmsamhwaorderform">
@@ -389,6 +385,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
             <th class="item_memo">요청사항</th>
             <th class="item_memo">입고예정일</th>
             <th class="item_memo">입고완료일</th>
+            <th class="item_memo">입고관리</th>
             <th class="btncol"></th>
           </tr>
           </thead>
@@ -518,9 +515,12 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
                   <?php echo $options[$k]['ct_delivery_complete_date'] ? date('Y-m-d H시', strtotime($options[$k]['ct_delivery_complete_date'])) : ''; ?>
                   <!-- 입고완료일 -->
                 </td>
+                <td class="btncol">
+                  <a href="javascript:void();" data-ct-id="<?=$options[$k]['ct_id']?>" class="prodBarNumCntBtn purchaseOrderViewBtn">입고관리 (<?=$options[$k]['ct_delivered_qty']?>/<?=$options[$k]['ct_qty']?>)</a>
+                </td>
               </tr>
               <tr>
-                <td colspan="12" style="text-align: left">
+                <td colspan="13" style="text-align: left">
                   <select class="" name="warehouse" style="width: 89%; margin-left: 11%;">
                     <?php if ($options[$k]['ct_warehouse']) { ?>
                     <option value="" selected><?php echo "배송주소 : [{$options[$k]['ct_warehouse']}] / {$options[$k]['ct_warehouse_phone']} / {$options[$k]['ct_warehouse_address']}" ?></option>
@@ -581,6 +581,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
             <td class="item_status">
             </td>
             <td class="item_memo"></td>
+            <td class="btncol"></td>
             <td class="btncol"></td>
             <td class="btncol"></td>
           </tr>
@@ -781,7 +782,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
 <div class="btn_fixed_top">
   <a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/purchase_orderlist.php" class="btn btn_02">목록</a>
   <a href="#" class="btn btn_01 order_prints">작업지시서 출력</a>
-  <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload()" class="btn btn_02">
+  <input type="button" value="발주내역 엑셀다운로드" onclick="orderListExcelDownload()" class="btn btn_02">
 </div>
 
 <div id="popup_box">
@@ -861,7 +862,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
   }
 
   var change_member_pop, add_item_pop, matching_item_pop, edit_item_pop, delivery_print_pop, edit_payment_pop,
-    send_estimate_pop, order_prints_pop;
+    send_estimate_pop, order_prints_pop, release_purchaseorderview_pop;
 
   function orderListExcelDownload() {
     $("#excelForm").remove();
@@ -895,6 +896,20 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
       var popupY = (window.screen.height / 2) - (popupHeight / 2);
 
       window.open("./popup.prodDeliveryInfo.form.php?od_id=<?=$od["od_id"]?>", "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX);
+    });
+
+    $(document).on("click", ".purchaseOrderViewBtn", function (e) {
+      e.preventDefault();
+
+      var popupWidth = 600;
+      var popupHeight = 700;
+
+      var popupX = (window.screen.width / 2) - (popupWidth / 2);
+      var popupY = (window.screen.height / 2) - (popupHeight / 2);
+
+      var ct_id = $(this).data('ct-id');
+
+      release_purchaseorderview_pop = window.open("./popup.release_purchaseorder_view.php?isPop=true&od_id=<?=$od["od_id"]?>&ct_id=" + ct_id, "배송정보", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX);
     });
 
     $(".barNumCustomSubmitBtn").click(function () {
