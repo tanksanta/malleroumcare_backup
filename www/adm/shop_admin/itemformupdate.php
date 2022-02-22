@@ -458,6 +458,12 @@ $_POST["it_delivery_price"] = ($_POST["it_delivery_price"]) ? $_POST["it_deliver
 $_POST["it_delivery_min_cnt"] = ($_POST["it_delivery_min_cnt"]) ? $_POST["it_delivery_min_cnt"] : 0;
 $_POST["it_delivery_min_price"] = ($_POST["it_delivery_min_price"]) ? $_POST["it_delivery_min_price"] : 0;
 
+$_POST["it_delivery_cnt2"] = ($_POST["it_delivery_cnt2"]) ? $_POST["it_delivery_cnt2"] : 0;
+$_POST["it_delivery_price2"] = ($_POST["it_delivery_price2"]) ? $_POST["it_delivery_price2"] : 0;
+
+$_POST["it_delivery_min_cnt2"] = ($_POST["it_delivery_min_cnt2"]) ? $_POST["it_delivery_min_cnt2"] : 0;
+$_POST["it_delivery_min_price2"] = ($_POST["it_delivery_min_price2"]) ? $_POST["it_delivery_min_price2"] : 0;
+
 $it_rental_price = ($_POST["it_rental_price"]) ? $_POST["it_rental_price"] : 0;
 
 $it_is_direct_delivery = (int)$it_is_direct_delivery ?: 0;
@@ -691,6 +697,13 @@ $sql_common = "
   it_delivery_price = '{$_POST["it_delivery_price"]}',
   it_delivery_min_cnt = '{$_POST["it_delivery_min_cnt"]}',
   it_delivery_min_price = '{$_POST["it_delivery_min_price"]}',
+  it_delivery_company = '{$_POST["it_delivery_company"]}',
+
+  it_delivery_cnt2 = '{$_POST["it_delivery_cnt2"]}',
+  it_delivery_price2 = '{$_POST["it_delivery_price2"]}',
+  it_delivery_min_cnt2 = '{$_POST["it_delivery_min_cnt2"]}',
+  it_delivery_min_price2 = '{$_POST["it_delivery_min_price2"]}',
+  it_delivery_company2 = '{$_POST["it_delivery_company2"]}',
 
   it_is_direct_delivery = '$it_is_direct_delivery',
   it_direct_delivery_partner = '$it_direct_delivery_partner',
