@@ -28,7 +28,7 @@ foreach($rec_arr as $wr_id) {
 ?>
 <div class="im_wr">
   <div class="im_hd">
-    <img src="<?=THEMA_URL?>/assets/img/hd_logo.png">
+    <img src="<?=THEMA_URL?>/assets/img/footer_logo.png">
   </div>
   <div class="im_msg_wr">
     <p class="pen_nm"><?php echo $ms['ms_pen_nm']; ?>님</p>
@@ -44,7 +44,12 @@ foreach($rec_arr as $wr_id) {
     <div class="im_tab_hd">요약정보</div>
     <?php foreach($list as $it) { ?>
     <div class="im_sum_row im_flex">
-      <div class="im_sum_name"><?="{$it['it_name']} ({$it['gubun']})"?></div>
+      <div>
+      <p class="im_sum_name"><?="{$it['it_name']} ({$it['gubun']})"?></p>
+      <p class="personal-price">
+        ※ 본인부담금 <span>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원)</span>, <span>9%(<?=number_format($it["it_cust_price"] * 0.09)?>원)</span>, <span>6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</span>
+      </p>
+      </div>
       <div class="im_sum_price"><?=number_format($it['it_cust_price'])?>원</div>
     </div>
     <?php } ?>
