@@ -267,6 +267,24 @@ else if ($type == 'order_c') {
     // var_dump($results);
     $colspan = 4;
 }
+else if ($type == 'order_user') {
+    //누적
+    $sql = "SELECT COUNT(*) as cnt FROM g5_shop_order";
+    $total_cnt = sql_fetch($sql);
+
+    //각 일자별
+    //사업소
+    $sql = "SELECT mb_id, COUNT(*) as cnt, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_id, ms_date; ";
+    $result = sql_query($sql);
+    $arr = [];
+    $sum_user = 0;
+    while($row=sql_fetch_array($result)) {
+        $arr[$row['ms_date']] = $row['cnt'];
+        $results[$row['mb_id']] = $arr;
+        $sum_user += $row['cnt'];
+    }
+    $colspan = count($results) + 1;
+}
 ?>
 
 <style>
@@ -312,7 +330,7 @@ else if ($type == 'order_c') {
     <table class="statistics_table">
     <thead>
     <tr>
-        <th scope="col" style="width:8%;"></th>
+        <th scope="col"></th>
         <?php if ($type == 'user') { ?>
             <th scope="col">일반사업소</th>
             <th scope="col">우수사업소</th>
@@ -344,6 +362,10 @@ else if ($type == 'order_c') {
             <th scope="col">전체 생성</th>
             <th scope="col">관리자 생성</th>
             <th scope="col">사용자 생성</th>
+        <?php } else if ($type == 'order_user') { 
+            foreach(array_keys($results) as $name) {  ?>
+                <th scope="col"><?=$name?></th>
+            <?php } ?>
         <?php } ?>
     </tr>
     </thead>
@@ -364,7 +386,7 @@ else if ($type == 'order_c') {
             <?php } ?>
         <?php } else if ($type == 'amount') { ?>
             <td><?php echo number_format($total_amount['amount']) ?></td>
-        <?php } else if ($type == 'login_daily' || $type == 'login_user' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'order_c') { ?>
+        <?php } else if ($type == 'login_daily' || $type == 'login_user' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'order_c' || $type == 'order_user') { ?>
             <td><?php echo $total_cnt['cnt'] ?></td>
         <?php } ?>
     </tr>
@@ -404,7 +426,12 @@ else if ($type == 'order_c') {
                 array_push($datas, $results['order_c_all'][$thisDate] ?: 0);
                 array_push($datas, $results['order_c_admin'][$thisDate] ?: 0);
                 array_push($datas, $results['order_c_user'][$thisDate] ?: 0);
-            }
+            } else if ($type == 'order_user') {
+                $arr_keys = array_keys($results);
+                foreach($arr_keys as $key) { 
+                    array_push($datas, $results[$key][$thisDate] ?: 0);
+                }
+            } 
         ?>
         <tr class="bg0">
             <?php foreach($datas as $data) { ?>
