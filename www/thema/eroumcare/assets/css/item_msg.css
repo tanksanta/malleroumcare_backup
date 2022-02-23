@@ -295,7 +295,7 @@
 .im_wr { max-width: 900px; margin: 0 auto; font-family:'Noto Sans KR', sans-serif;font-size:14px;color:#333; }
 
 .im_hd { padding: 15px; text-align: right; }
-.im_hd img { width: 195px; height: 60px; }
+.im_hd img { width: 100px; height: 30px; }
 
 .im_msg_wr { padding: 0 20px 20px 20px; color: #666; }
 .im_msg_wr p { margin:0; font-size: 16px; line-height: 1.5; }
@@ -409,7 +409,7 @@
 }
 .im_info .it_name { font-weight: bold; font-size: 16px; margin-bottom: 10px; }
 .im_info .it_price {  }
-.im_info .personal-price { font-size: 12px; }
+.personal-price { font-size: 12px; }
 .im_info ul { list-style: none; padding: 0; margin: 0; }
 .im_info .it_detail{ font-size: 12px; margin-top: 10px; }
 
