@@ -61,7 +61,9 @@ if($po_run) {
         </th>
         <th scope="col">옵션</th>
         <th scope="col" style="width: 300px;">추가금액(일반,파트너,사업소,우수사업소)</th>
-        <th scope="col">재고</th>
+        <th scope="col">재고수량</th>
+        <th scope="col">안전재고</th>
+        <th scope="col">최대재고</th>
 <!--        <th scope="col">통보수량</th>-->
         <th scope="col">사용여부</th>
         <th scope="col">품목코드</th>
@@ -90,6 +92,8 @@ if($po_run) {
             $opt_price_dealer = $row['io_price_dealer'];
             $opt_price_dealer2 = $row['io_price_dealer2'];
             $opt_use_short_barcode = $row['io_use_short_barcode'];
+            $opt_stock_manage_min_qty = $row['io_stock_manage_min_qty'];
+            $opt_stock_manage_max_qty = $row['io_stock_manage_max_qty'];
     ?>
     <tr>
         <td class="td_chk">
@@ -107,8 +111,16 @@ if($po_run) {
         </td>
         <td class="td_num">
             <label for="opt_stock_qty_<?php echo $i; ?>" class="sound_only"></label>
-            <input type="text" name="opt_stock_qty[]" value="<?php echo $opt_stock_qty; ?>" id="op_stock_qty_<?php echo $i; ?>" class="frm_input" size="5" readonly>
+            <input type="text" name="opt_stock_qty[]" value="<?php echo $opt_stock_qty; ?>" id="opt_stock_qty_<?php echo $i; ?>" class="frm_input" size="5" readonly>
             <a class="btn_frmline" target="_blank" href="/adm/shop_admin/itemstocklist.php?&sel_field=it_id&search=<?php echo $it['it_id'] ?>">관리</a>
+        </td>
+        <td class="td_num">
+          <label for="opt_stock_manage_min_qty_<?php echo $i; ?>" class="sound_only"></label>
+          <input type="text" name="opt_stock_manage_min_qty[]" value="<?php echo $opt_stock_manage_min_qty; ?>" id="opt_stock_manage_min_qty_<?php echo $i; ?>" class="frm_input" size="5">
+        </td>
+        <td class="td_num">
+          <label for="opt_stock_manage_max_qty_<?php echo $i; ?>" class="sound_only"></label>
+          <input type="text" name="opt_stock_manage_max_qty[]" value="<?php echo $opt_stock_manage_max_qty; ?>" id="opt_stock_manage_max_qty_<?php echo $i; ?>" class="frm_input" size="5">
         </td>
 <!--        <td class="td_num">-->
 <!--            <label for="opt_noti_qty_--><?php //echo $i; ?><!--" class="sound_only"></label>-->
@@ -197,6 +209,14 @@ if($po_run) {
         <td class="td_num">
             <label for="opt_stock_qty_<?php echo $i; ?>" class="sound_only"></label>
             <input type="text" name="opt_stock_qty[]" value="<?php echo $opt_stock_qty; ?>" id="opt_stock_qty_<?php echo $i; ?>" class="frm_input" size="5" readonly>
+        </td>
+        <td class="td_num">
+          <label for="opt_stock_manage_min_qty_<?php echo $i; ?>" class="sound_only"></label>
+          <input type="text" name="opt_stock_manage_min_qty[]" value="<?php echo $opt_stock_manage_min_qty; ?>" id="opt_stock_manage_min_qty_<?php echo $i; ?>" class="frm_input" size="5">
+        </td>
+        <td class="td_num">
+          <label for="opt_stock_manage_max_qty_<?php echo $i; ?>" class="sound_only"></label>
+          <input type="text" name="opt_stock_manage_max_qty[]" value="<?php echo $opt_stock_manage_max_qty; ?>" id="opt_stock_manage_max_qty_<?php echo $i; ?>" class="frm_input" size="5">
         </td>
 <!--        <td class="td_num">-->
 <!--            <label for="opt_noti_qty_--><?php //echo $i; ?><!--" class="sound_only"></label>-->
