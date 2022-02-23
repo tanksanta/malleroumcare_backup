@@ -108,7 +108,7 @@ if($po_run) {
         <td class="td_num">
             <label for="opt_stock_qty_<?php echo $i; ?>" class="sound_only"></label>
             <input type="text" name="opt_stock_qty[]" value="<?php echo $opt_stock_qty; ?>" id="op_stock_qty_<?php echo $i; ?>" class="frm_input" size="5" readonly>
-            <a class="btn_frmline" target="_blank" href="/adm/shop_admin/optionstocklist.php?sel_field=a.it_id&search=<?php echo $it['it_id'] ?>">관리</a>
+            <a class="btn_frmline" target="_blank" href="/adm/shop_admin/itemstocklist.php?&sel_field=it_id&search=<?php echo $it['it_id'] ?>">관리</a>
         </td>
 <!--        <td class="td_num">-->
 <!--            <label for="opt_noti_qty_--><?php //echo $i; ?><!--" class="sound_only"></label>-->
