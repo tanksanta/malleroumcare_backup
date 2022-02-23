@@ -830,6 +830,12 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
   var CT_QTY = Number('<?= $ct["ct_qty"] ?>');
   var IS_POP = <?=$isPop ? 'true' : 'false'?>;
 
+  $(function() {
+    window.addEventListener('beforeunload', function(event) {
+      member_cancel();
+    });
+  })
+
   function getUrlParams() {
     var params = {};
 
