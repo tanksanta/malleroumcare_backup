@@ -224,7 +224,8 @@ else if ($type == 'login_user') {
     $arr = [];
     $sum = 0;
     while($row=sql_fetch_array($sub_result)) {
-        $arr['name'] = $row['mb_name'] . "(" . $row['mb_id'] . ")";
+        $arr['mb_id'] = $row['mb_id'];
+        $arr['name'] = $row['mb_name'];
         $arr['cnt'] = $row['cnt'];
         $sum += $row['cnt'];
         $results['login_user'][] = $arr;
@@ -344,9 +345,14 @@ else if ($type == 'order_user') {
                 $region = $row['sido']; ?>
                 <th scope="col"><?=$region?></th>
             <?php } ?>
-        <?php } else if ($type == 'login_daily' || $type == 'login_user') { 
+        <?php } else if ($type == 'login_daily') { 
             $to_date_str = date('Y-m-d',$endTime);
             ?>
+            <th scope="col"><?=$fr_date.'~'.$to_date_str?></th>
+        <?php } else if ($type == 'login_user') { 
+            $to_date_str = date('Y-m-d',$endTime);
+            ?>
+            <th scope="col"></th>
             <th scope="col"><?=$fr_date.'~'.$to_date_str?></th>
         <?php } else if ($type == 'amount') { ?>
             <th scope="col">매출액</th>
@@ -446,7 +452,8 @@ else if ($type == 'order_user') {
         
         <?php foreach($results['login_user'] as $data) { ?>
             <tr class="bg0">
-                <td><?php echo $data['name'] ?></td>
+            <td><?php echo $data['mb_id'] ?></td>
+            <td><?php echo $data['name'] ?></td>
                 <td><?php echo $data['cnt'] ?></td>
             </tr>
         <?php } ?>
