@@ -224,7 +224,7 @@ else if ($type == 'login_user') {
     $arr = [];
     $sum = 0;
     while($row=sql_fetch_array($sub_result)) {
-        $arr['name'] = $row['mb_name'];
+        $arr['name'] = $row['mb_name'] . "(" . $row['mb_id'] . ")";
         $arr['cnt'] = $row['cnt'];
         $sum += $row['cnt'];
         $results['login_user'][] = $arr;
