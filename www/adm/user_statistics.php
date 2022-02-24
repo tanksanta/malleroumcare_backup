@@ -275,14 +275,19 @@ else if ($type == 'order_user') {
 
     //각 일자별
     //사업소
-    $sql = "SELECT mb_id, COUNT(*) as cnt, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_id, ms_date; ";
+    $sql = "SELECT mb_id, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_id; ";
     $result = sql_query($sql);
-    $arr = [];
     $sum_user = 0;
-    while($row=sql_fetch_array($result)) {
-        $arr[$row['ms_date']] = $row['cnt'];
-        $results[$row['mb_id']] = $arr;
-        $sum_user += $row['cnt'];
+    while($row = sql_fetch_array($result)) {
+        $mb_id = $row['mb_id'];
+        $arr = [];
+        $sql = "SELECT COUNT(*) as cnt, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND mb_id = '{$mb_id}' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
+        $result2 = sql_query($sql);
+        while($row2 = sql_fetch_array($result2)) {
+            $arr[$row2['ms_date']] = $row2['cnt'];
+            $results[$mb_id] = $arr;
+            $sum_user += $row['cnt'];    
+        }
     }
     $colspan = count($results) + 1;
 }
