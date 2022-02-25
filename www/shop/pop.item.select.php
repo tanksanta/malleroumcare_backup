@@ -300,7 +300,7 @@ while($cate = sql_fetch_array($cate_result)) {
             <thead>
                 <tr>
                     <th>상품명</th>
-                    <th>선택</th>
+                    <th style="width:80px">선택</th>
                 </tr>
             </thead>
             <tbody>
@@ -318,7 +318,7 @@ while($cate = sql_fetch_array($cate_result)) {
                         <a href="./item.php?it_id=<?php echo $row['it_id']; ?>" target="_blank">
                             <?php echo get_it_image($row['it_id'], 50, 50); ?>
                             <?php echo "[{$row['gubun']}] "; ?>
-                            <?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?>
+                            <span><?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?></span>
                         </a>
                     </td>
                     <td>
