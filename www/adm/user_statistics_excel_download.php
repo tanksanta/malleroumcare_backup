@@ -25,6 +25,8 @@ if (!$type || $type == 'user') {
     $filename = "계약서서명";
 } else if ($type == 'order_c') {
     $filename = "주문서생성";
+} else if ($type == 'order_user') {
+    $filename = "주문서생성(사업소별)";
 } else if ($type == 'login_daily') {
     $filename = "방문자집계(일자별)";
 } else if ($type == 'login_user') {

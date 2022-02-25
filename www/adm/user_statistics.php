@@ -224,6 +224,7 @@ else if ($type == 'login_user') {
     $arr = [];
     $sum = 0;
     while($row=sql_fetch_array($sub_result)) {
+        $arr['mb_id'] = $row['mb_id'];
         $arr['name'] = $row['mb_name'];
         $arr['cnt'] = $row['cnt'];
         $sum += $row['cnt'];
@@ -274,14 +275,19 @@ else if ($type == 'order_user') {
 
     //각 일자별
     //사업소
-    $sql = "SELECT mb_id, COUNT(*) as cnt, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_id, ms_date; ";
+    $sql = "SELECT mb_id, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_id; ";
     $result = sql_query($sql);
-    $arr = [];
     $sum_user = 0;
-    while($row=sql_fetch_array($result)) {
-        $arr[$row['ms_date']] = $row['cnt'];
-        $results[$row['mb_id']] = $arr;
-        $sum_user += $row['cnt'];
+    while($row = sql_fetch_array($result)) {
+        $mb_id = $row['mb_id'];
+        $arr = [];
+        $sql = "SELECT COUNT(*) as cnt, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND mb_id = '{$mb_id}' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
+        $result2 = sql_query($sql);
+        while($row2 = sql_fetch_array($result2)) {
+            $arr[$row2['ms_date']] = $row2['cnt'];
+            $results[$mb_id] = $arr;
+            $sum_user += $row['cnt'];    
+        }
     }
     $colspan = count($results) + 1;
 }
@@ -344,9 +350,14 @@ else if ($type == 'order_user') {
                 $region = $row['sido']; ?>
                 <th scope="col"><?=$region?></th>
             <?php } ?>
-        <?php } else if ($type == 'login_daily' || $type == 'login_user') { 
+        <?php } else if ($type == 'login_daily') { 
             $to_date_str = date('Y-m-d',$endTime);
             ?>
+            <th scope="col"><?=$fr_date.'~'.$to_date_str?></th>
+        <?php } else if ($type == 'login_user') { 
+            $to_date_str = date('Y-m-d',$endTime);
+            ?>
+            <th scope="col"></th>
             <th scope="col"><?=$fr_date.'~'.$to_date_str?></th>
         <?php } else if ($type == 'amount') { ?>
             <th scope="col">매출액</th>
@@ -446,7 +457,8 @@ else if ($type == 'order_user') {
         
         <?php foreach($results['login_user'] as $data) { ?>
             <tr class="bg0">
-                <td><?php echo $data['name'] ?></td>
+            <td><?php echo $data['mb_id'] ?></td>
+            <td><?php echo $data['name'] ?></td>
                 <td><?php echo $data['cnt'] ?></td>
             </tr>
         <?php } ?>

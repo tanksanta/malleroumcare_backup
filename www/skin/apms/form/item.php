@@ -1342,7 +1342,7 @@ $warehouse_list = get_warehouses();
           </select>
           <br>
           1박스 기준 <input type="text" name="it_delivery_cnt2" value="<?php echo $it['it_delivery_cnt2']; ?>" id="it_delivery_cnt2" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price2" value="<?php echo $it['it_delivery_price2']; ?>" id="it_delivery_price2" class="frm_input" size="8">원 부과,
-          최소수량 <input type="text" name="it_delivery_min_cn2t" value="<?php echo $it['it_delivery_min_cnt2']; ?>" id="it_delivery_min_cnt2" class="frm_input" size="8">개 이하 <input type="text" name="it_delivery_min_price2" value="<?php echo $it['it_delivery_min_price2']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
+          최소수량 <input type="text" name="it_delivery_min_cnt2" value="<?php echo $it['it_delivery_min_cnt2']; ?>" id="it_delivery_min_cnt2" class="frm_input" size="8">개 이하 <input type="text" name="it_delivery_min_price2" value="<?php echo $it['it_delivery_min_price2']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
           &nbsp;&nbsp;&nbsp;
           택배사 : <select name="it_delivery_company2" id="it_delivery_company2">
             <option value="ilogen"<?php echo get_selected('ilogen', $it['it_delivery_company2']); ?>>로젠택배</option>
