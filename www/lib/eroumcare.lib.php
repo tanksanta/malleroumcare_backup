@@ -2374,22 +2374,30 @@ function get_manage_stock_count($type) {
       io.io_id, 
       ws.ws_option, 
       IFNULL(sum(ws.ws_qty), '0') AS sum_ws_qty,
-      IFNULL(IF(it.it_stock_manage_min_qty IS NOT NULL, 
-              it.it_stock_manage_min_qty, 
-              ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+      CASE
+        WHEN io.io_stock_manage_min_qty IS NOT NULL AND io.io_stock_manage_min_qty > 0
+          THEN io.io_stock_manage_min_qty 
+        WHEN it.it_stock_manage_min_qty IS NOT NULL AND it.it_stock_manage_min_qty > 0
+          THEN it.it_stock_manage_min_qty
+        ELSE
+          IFNULL(ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
                 WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
                   ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
                 AND ct_status IN {$common_ct_status}
-                AND it_id = it.it_id AND io_id = IFNULL(io.io_id, '')) / 3 * 0.5)
-              ), 0) AS safe_min_stock_qty,
-              IFNULL(IF(it_stock_manage_max_qty IS NOT NULL, 
-              it_stock_manage_max_qty, 
-              ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+                AND it_id = it.it_id AND io_id = IFNULL(io.io_id, '')) / 3 * 0.5), 0)
+      END AS safe_min_stock_qty,
+      CASE
+        WHEN io.io_stock_manage_max_qty IS NOT NULL AND io.io_stock_manage_max_qty > 0
+          THEN io.io_stock_manage_max_qty 
+        WHEN it.it_stock_manage_max_qty IS NOT NULL AND it.it_stock_manage_max_qty > 0
+          THEN it.it_stock_manage_max_qty
+        ELSE
+          IFNULL(ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
                 WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
                   ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
                 AND ct_status IN {$common_ct_status}
-                AND it_id = it.it_id AND io_id = IFNULL(io.io_id, '')) / 3 * 1.5)
-              ), 0) AS safe_max_stock_qty
+                AND it_id = it.it_id AND io_id = IFNULL(io.io_id, '')) / 3 * 1.5), 0)
+      END AS safe_max_stock_qty
     FROM 
       g5_shop_item it
       LEFT JOIN (SELECT * FROM g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS io ON it.it_id = io.it_id

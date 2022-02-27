@@ -60,41 +60,49 @@ from
 		b.io_stock_qty,
 		b.io_noti_qty,
 		a.*,
-		IFNULL(IF(it_stock_manage_min_qty IS NOT NULL, 
-	        it_stock_manage_min_qty, 
-	        ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
-	          WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
-	            ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
-	          AND ct_status IN {$common_ct_status}
-	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 0.5)
-	        ), 0) AS safe_min_stock_qty,
-	      IFNULL(IF(it_stock_manage_max_qty IS NOT NULL, 
-	        it_stock_manage_max_qty, 
-	        ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
-	          WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
-	            ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
-	          AND ct_status IN {$common_ct_status}
-	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 1.5)
-	        ), 0) AS safe_max_stock_qty,
-	      (SELECT IFNULL(sum(ws_qty), 0) FROM warehouse_stock WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
-	      ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
-	          WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
-	            ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
-	          AND ct_status IN {$common_ct_status}
-	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3) AS sum_ct_qty_3month,
-	      (SELECT sum(ct_qty) FROM g5_shop_cart 
-	          WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 31 DAY), '%Y-%m-%d 00:00:00') AND
-	                ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
-	              AND ct_status IN {$common_ct_status}
-	              AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS sum_ct_qty_1month,
-	      (SELECT sum(ct_qty) FROM g5_shop_cart 
-	          WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 2 DAY), '%Y-%m-%d 00:00:00') AND
-	                ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
-	              AND ct_status IN {$common_ct_status}
-	              AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS sum_ct_qty_1day,
-	      (SELECT max(ct_time) FROM g5_shop_cart 
-	          WHERE ct_status IN {$common_ct_status}
-	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS last_ct_time
+    CASE
+      WHEN io_stock_manage_min_qty IS NOT NULL AND io_stock_manage_min_qty > 0
+        THEN io_stock_manage_min_qty 
+      WHEN it_stock_manage_min_qty IS NOT NULL AND it_stock_manage_min_qty > 0
+        THEN it_stock_manage_min_qty
+      ELSE
+        IFNULL(ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+        AND ct_status IN {$common_ct_status}
+        AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 0.5), 0)
+    END AS safe_min_stock_qty,    
+    CASE
+      WHEN io_stock_manage_max_qty IS NOT NULL AND io_stock_manage_max_qty > 0
+        THEN io_stock_manage_max_qty 
+      WHEN it_stock_manage_max_qty IS NOT NULL AND it_stock_manage_max_qty > 0
+        THEN it_stock_manage_max_qty
+      ELSE
+        IFNULL(ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+        AND ct_status IN {$common_ct_status}
+        AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 1.5), 0)
+    END AS safe_max_stock_qty, 
+    (SELECT IFNULL(sum(ws_qty), 0) FROM warehouse_stock WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
+    ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+        AND ct_status IN {$common_ct_status}
+        AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3) AS sum_ct_qty_3month,
+    (SELECT sum(ct_qty) FROM g5_shop_cart 
+        WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 31 DAY), '%Y-%m-%d 00:00:00') AND
+              ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
+            AND ct_status IN {$common_ct_status}
+            AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS sum_ct_qty_1month,
+    (SELECT sum(ct_qty) FROM g5_shop_cart 
+        WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 2 DAY), '%Y-%m-%d 00:00:00') AND
+              ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
+            AND ct_status IN {$common_ct_status}
+            AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS sum_ct_qty_1day,
+    (SELECT max(ct_time) FROM g5_shop_cart 
+        WHERE ct_status IN {$common_ct_status}
+        AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS last_ct_time
 	FROM 
 	  (select
 	      it_id,
