@@ -75,12 +75,12 @@ if($_GET['co_id']=="possession_manage"){ ?>
                 <span class="value" ><?=$manager_hp?></span>
                 <?php } else { ?>
                 <span class="Label">주문안내</span>
-                <span class="value">032-562-6608</span>
+                <span class="value">02-830-1312</span>
                 <?php } ?>
               </p>
               <p>
                 <span class="Label">시스템안내</span>
-                <span class="value">02-830-1301~2</span>
+                <span class="value">02-830-1301</span>
               </p>
             </li>
             <li class="etc">
