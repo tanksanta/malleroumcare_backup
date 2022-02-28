@@ -112,6 +112,8 @@ $mb_dealer_n         = !$mb['mb_dealer']       ? 'checked="checked"' : '';
 // 거래명세서 전송방법
 $mb_transaction_e        =  $mb['send_transaction'] == 'A' || $mb['send_transaction'] == 'E'       ? 'checked="checked"' : '';
 $mb_transaction_f         = $mb['send_transaction'] == 'A' || $mb['send_transaction'] == 'F'       ? 'checked="checked"' : '';
+$send_transaction_e     = $mb['send_transaction_e'] ?: $mb['mb_email'];
+$send_transaction_f     = $mb['send_transaction_f'] ?: $mb['mb_fax'];
 
 // 파트너 자동 계약 갱신 여부
 $mb_partner_date_auto_y         =  $mb['mb_partner_date_auto']       ? 'checked="checked"' : '';
@@ -512,9 +514,9 @@ label {
         <th scope="row">거래내역 전송방법</th>
         <td colspan="3">
             <input type="checkbox" name="mb_transaction_e" value="mb_transaction_e" id="mb_transaction_e" <?php echo $mb_transaction_e; ?>>
-            <label for="mb_transaction_e">이메일(<?=$mb['mb_email']?>)</label>
+            이메일 <input type="text" name="send_transaction_e" value="<?php echo $send_transaction_e ?>" id="send_transaction_e" class="frm_input" size="30" maxlength="50">
             <input type="checkbox" name="mb_transaction_f" value="mb_transaction_f" id="mb_transaction_f" <?php echo $mb_transaction_f; ?>>
-            <label for="mb_transaction_f">팩스(<?=$mb['mb_fax']?>)</label>
+            팩스 <input type="text" name="send_transaction_f" value="<?php echo $send_transaction_f ?>" id="send_transaction_f" class="frm_input" size="30" maxlength="50">
         </td>
     </tr>
      <tr>

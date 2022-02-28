@@ -159,6 +159,9 @@ else {
     $send_transaction = "N";
 }
 
+$send_transaction_e = $_POST["send_transaction_e"];
+$send_transaction_f = $_POST["send_transaction_f"];
+
 $mb_thezone = isset($_POST['mb_thezone'])             ? trim($_POST['mb_thezone'])           : "";
 if ($w == '') {
     // $mb_thezone = get_uniqid_member();
@@ -258,7 +261,9 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_update_date = now(),
                  mb_ent_num = '{$mb_ent_num}',
                  mb_temp = '{$mb_temp}',
-                 send_transaction = '{$send_transaction}'
+                 send_transaction = '{$send_transaction}',
+                 send_transaction_e = '{$send_transaction_e}',
+                 send_transaction_f = '{$send_transaction_f}'
                   ";
 
 $sendData = array(
