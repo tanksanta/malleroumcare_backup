@@ -69,8 +69,10 @@ else if ($send_type == 'F') {
     ));
 }
 else {
-
+    $sql .= " , ct_send_direct_delivery_email='', ct_send_direct_delivery_fax='' ";
 }
+
+header('Content-Type: application/json');
 
 if (count($send_mail_arr) > 0) {
     // echo 'console.log("' . var_dump($send_mail_arr) . '")';
@@ -99,8 +101,6 @@ $ret = array(
     'result' => 'success',
     'msg' => '발송하였습니다.',
 );
-
-header('Content-Type: application/json');
 
 echo json_encode($ret);
 

@@ -32,6 +32,10 @@ function sendFax($send_fax_arr) {
 
     // 팝빌 회원 사업자번호
     $testCorpNum = '6178614330';
+    $balance = $FaxService -> GetBalance($testCorpNum);
+    if ($balance < 100) {
+      return '팩스 잔액이 부족합니다.';
+    }
 
     // 팝빌 회원 아이디
     $testUserID = 'thkc1300';
@@ -78,9 +82,9 @@ function sendFax($send_fax_arr) {
       $FileData[] = array('fileName' => 'ledger.xls', 'fileData' => $data['excel']);
       $Receiver[] = array('rcv' => $data['rcv'], 'rcvnm' => $data['rcvnm']);
 
-      $receiptNum = $FaxService->SendFAXBinary($testCorpNum, $Sender, $Receiver, $FileData, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requestNum);
-      $result = $FaxService->GetFaxDetail($testCorpNum, $receiptNum);
-      return $result;
+      $FaxService->SendFAXBinary($testCorpNum, $Sender, $Receiver, $FileData, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requestNum);
+      // $result = $FaxService->GetFaxDetail($testCorpNum, $receiptNum);
+      // return $result;
     }
 
     // $receiptNum = $FaxService->SendFAXBinary($testCorpNum, $Sender, $Receivers, $FileDatas, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requestNum);
