@@ -102,7 +102,13 @@ function mailer_multiple($fname, $fmail, $datas)
         $mail->msgHTML($data['content']);
 
         if($data['file']) {
-            $mail->addStringAttachment($data['file']['data'], $data['file']['name'], 'binary');
+            if ($data['file']['encoding'] == 'remove') {
+                $mail->addStringAttachment($data['file']['data'], $data['file']['name']);
+            }
+            else {
+                $mail->addStringAttachment($data['file']['data'], $data['file']['name'], 'binary');
+            }
+            
         }
 
         $mail->send();

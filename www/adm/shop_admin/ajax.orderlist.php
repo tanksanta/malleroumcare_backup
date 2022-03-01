@@ -752,7 +752,7 @@ foreach($orderlist as $order) {
 
   $od_release_out = '-';
 
-  $direct_delivery_partner_text = $order['ct_direct_delivery_partner'] ? " ({$order['ct_direct_delivery_partner']})" : '';
+  $direct_delivery_partner_text = $order['ct_direct_delivery_partner'] ? " ({$order['ct_direct_delivery_partner']})" : '(미지정)';
   switch($order['ct_is_direct_delivery']) {
     case 1:
       $direct_delivery_text = '배송'.$direct_delivery_partner_text;
