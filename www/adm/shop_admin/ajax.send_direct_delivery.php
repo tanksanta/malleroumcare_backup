@@ -75,13 +75,13 @@ else {
 if (count($send_mail_arr) > 0) {
     // echo 'console.log("' . var_dump($send_mail_arr) . '")';
     include_once(G5_LIB_PATH.'/mailer.lib.php');
-    // mailer_multiple($config['cf_admin_email_name'], $config['cf_admin_email'], $send_mail_arr);
+    mailer_multiple($config['cf_admin_email_name'], $config['cf_admin_email'], $send_mail_arr);
 }
 
 if (count($send_fax_arr) > 0) {
     // echo 'console.log("' . var_dump($send_mail_arr) . '")';
     include_once(G5_LIB_PATH.'/fax.lib.php');
-    // $response = sendFax($send_fax_arr);
+    $response = sendFax($send_fax_arr);
     if ($response) {
         $ret = array(
             'result' => 'fail',
