@@ -97,7 +97,10 @@ function get_carts_by_od_id($od_id, $delivery_yn = null, $where = null, $order_b
           b.it_delivery_company,
 					a.ct_delivery_cnt,
 					a.ct_delivery_price,
-					a.ct_is_direct_delivery
+					a.ct_is_direct_delivery,
+          a.ct_send_direct_delivery,
+          a.ct_send_direct_delivery_fax,
+          a.ct_send_direct_delivery_email
 			  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
 			  $delivery_where

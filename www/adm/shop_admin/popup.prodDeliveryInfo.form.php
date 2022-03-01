@@ -98,7 +98,14 @@ $partners = get_partner_members();
   #prodBarNumFormWrap > .tableWrap > table thead > tr > th { border-top: 1px solid #3366CC; border-bottom: 1px solid #3366CC; padding: 10px 0; font-weight: bold; font-size: 13px; }
   #prodBarNumFormWrap > .tableWrap > table tbody > tr > td { border-left: 0; border-right: 0; padding: 10px; vertical-align: top; }
   #prodBarNumFormWrap > .tableWrap > table tbody > tr:last-of-type > td { border-bottom: 0; }
-  
+  .btn_send_direct_delivery { 
+    width: 100px; 
+    height: 25px;
+    background-color: #3366CC; 
+    margin-left: 10px;
+    color: white;
+  }
+
   #prodBarNumBtnWrap { width: 100%; height: 60px; float: left; background-color: #F1F1F1; padding: 10px; }
   #prodBarNumBtnWrap > button { width: 100px; height: 40px; line-height: 28px; float: left; font-size: 13px; font-weight: bold; color: #FFF; background-color: #333; margin-left: 5px; }
   #prodBarNumBtnWrap > button:first-of-type { margin-left: 0; }
@@ -336,6 +343,7 @@ $partners = get_partner_members();
                 name="ct_direct_delivery_partner_<?=$options[$k]["ct_id"]?>"
                 class="frm_input"
                 style="width: 100px"
+                data-ct-id="<?=$options[$k]["ct_id"]?>"
               >
                 <option value="">파트너선택</option>
                 <?php foreach($partners as $partner) { ?>
@@ -343,6 +351,23 @@ $partners = get_partner_members();
                 <?php } ?>
               </select>
               1개당 <input type="text" value="<?=$options[$k]['ct_direct_delivery_price']?>" class="frm_input" name="ct_direct_delivery_price_<?=$options[$k]["ct_id"]?>" style="width: 80px;"> 원 (VAT 포함)
+              <button type="button" class="btn_send_direct_delivery" id="btn_send_direct_delivery" data-ct-id="<?=$options[$k]["ct_id"]?>">직배송 전송</button>
+              <?php $display = ($carts[$i]['ct_send_direct_delivery'] ? "display=''" : "display='none'") ?>
+              <?php 
+                $text = '';
+                if ($carts[$i]['ct_send_direct_delivery']) {
+                  if (!$carts[$i]['ct_send_direct_delivery_fax'] && !$carts[$i]['ct_send_direct_delivery_email']) {
+                    $text = '발주전송(지정된 전송방법이 없어 전송 실패)';
+                  } else if ($carts[$i]['ct_send_direct_delivery_fax'] && !$carts[$i]['ct_send_direct_delivery_email']) {
+                    $text = "발주전송(Fax : {$carts[$i]['ct_send_direct_delivery_fax']})";
+                  } else if (!$carts[$i]['ct_send_direct_delivery_fax'] && $carts[$i]['ct_send_direct_delivery_email']) {
+                    $text = "발주전송(Email : {$carts[$i]['ct_send_direct_delivery_email']})";
+                  } else {
+                    $text = "발주전송(Fax : {$carts[$i]['ct_send_direct_delivery_fax']}, Email : {$carts[$i]['ct_send_direct_delivery_email']})";
+                  }
+                }
+              ?>
+              <span id="send_direct_delivery_result" style="<?=$display?>;"><?=$text?></span>
             </td>
           </tr>
         <?php
@@ -445,6 +470,39 @@ $partners = get_partner_members();
           }
         });
       }
+    });
+
+    //직배송 전송
+    $("#btn_send_direct_delivery").click(function() {
+      // console.log($(this).data('ct-id'));
+      var ct_id = $(this).data('ct-id');
+      var partner_id = $(`select[name=ct_direct_delivery_partner_${ct_id}] option:selected`).val();
+      if (!partner_id) {
+        alert('파트너를 선택하세요');
+        return false;
+      }
+      // window.open(`ajax.send_direct_delivery.php?ct_id=${ct_id}&partner_id=${partner_id}`);
+      // return;
+      $.ajax({
+          method: "POST",
+          url: "ajax.send_direct_delivery.php",
+          data: {
+            'ct_id': ct_id,
+            'partner_id': partner_id
+          },
+      })
+      .done(function(data) {
+        if ( data.msg ) {
+            alert(data.msg);
+        }
+        if ( data.result === 'success' ) {
+            location.reload();
+        }
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      })
     });
 
     $("#prodBarNumSaveBtn").click(function() {
