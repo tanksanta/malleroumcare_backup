@@ -213,11 +213,15 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
         <td class="td_center td_mng_m">
           <?php
           if ($row['inserted_from'] == 'shop_cart') {
-//            if ($row['ct_is_direct_delivery'] == '1') {
-//              echo '직배송';
-//            } else {
+            if ($row['ct_is_direct_delivery'] == '0') {
               echo '주문';
-//            }
+            } else if ($row['ct_is_direct_delivery'] == '1') {
+              echo '직배송';
+            } else if ($row['ct_is_direct_delivery'] == '2') {
+              echo '설치';
+            } else {
+              echo "ERROR {$row['ct_is_direct_delivery']}";
+            }
           }
           if ($row['inserted_from'] == 'purchase_cart') {
             echo '발주';
@@ -240,6 +244,8 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
           <?php
           if ($row['ws_scheduled_qty'] > 0) {
             echo '대기(' . number_format($row['ws_scheduled_qty']) . ')';
+          } else if ($row['ws_scheduled_qty'] < 0) { // 직배송, 설치
+            echo number_format(abs($row['ws_scheduled_qty']));
           } else {
             echo $row['ws_qty'] > 0 ? number_format($row['ws_qty']) : '';
           }
