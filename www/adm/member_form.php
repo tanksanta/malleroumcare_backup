@@ -105,6 +105,10 @@ $mb_giup_type_2         = $mb['mb_giup_type'] == '2'       ? 'checked="checked"'
 $mb_partner_auth_y        =  $mb['mb_partner_auth']       ? 'checked="checked"' : '';
 $mb_partner_auth_n         = !$mb['mb_partner_auth']       ? 'checked="checked"' : '';
 
+// 주문가능 여부
+$mb_order_approve_y        =  $mb['mb_order_approve'] == 1       ? 'checked="checked"' : '';
+$mb_order_approve_n         = $mb['mb_order_approve'] == 0       ? 'checked="checked"' : '';
+
 // 딜러 여부
 $mb_dealer_y        =  $mb['mb_dealer']       ? 'checked="checked"' : '';
 $mb_dealer_n         = !$mb['mb_dealer']       ? 'checked="checked"' : '';
@@ -336,6 +340,15 @@ label {
                   <label><input type="checkbox" name="mb_partner_type[]" value="물품공급" <?php echo strpos($mb['mb_partner_type'], '물품공급') !== false ? 'checked' : '' ?>>물품공급</label>
                 </div>
             </div>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">주문</th>
+        <td colspan="3">
+            <input type="radio" name="mb_order_approve" value="0" id="mb_order_approve_n" <?php echo $mb_order_approve_n; ?>>
+            <label for="mb_order_approve_n">주문정지</label>
+            <input type="radio" name="mb_order_approve" value="1" id="mb_order_approve_y" <?php echo $mb_order_approve_y; ?>>
+            <label for="mb_order_approve_y">주문가능</label>
         </td>
     </tr>
     <tr>
