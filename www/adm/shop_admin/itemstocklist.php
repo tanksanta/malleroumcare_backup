@@ -167,6 +167,10 @@ $qstr = $qstr1.'&amp;sort1='.$sort1.'&amp;sort2='.$sort2.'&amp;page='.$page;
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 
+$count_warn1 = get_manage_stock_count(1);
+$count_warn2 = get_manage_stock_count(2);
+$count_warn3 = get_manage_stock_count(3);
+
 ?>
 
 <script src="<?php echo G5_ADMIN_URL;?>/apms_admin/apms.admin.js"></script>
@@ -210,12 +214,27 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
   .quick_link_area a.active {
     border: 1px solid #f00;
   }
+
+  .smart_btn {
+    float: right;
+    background: #ff5c01;
+    color: #fff;
+    padding: 8px 18px;
+    font-size: 13px;
+    top: -2px;
+    position: relative;
+  }
 </style>
 
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
     <span class="btn_ov01"><span class="ov_txt">전체 상품</span><span class="ov_num">  <?php echo $total_count; ?>개</span></span>
+    <button class="smart_btn" onclick="openPopSmartPuchase()">스마트 발주 (<?php echo $count_warn1 ?>개 대기)</button>
 </div>
+
+<form id="smartForm" action="/adm/shop_admin/purchase_orderlist.php" method="POST">
+  <input type="hidden" name="smart_purchase_data" value="">
+</form>
 
 <div style="padding: 5px 20px">
   <ul>
@@ -236,12 +255,6 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <a class="<?php echo $wh_name == $warehouse['name'] ? 'active' : '' ?>" href="<?php echo $_SERVER['SCRIPT_NAME'].'?wh_name='.$warehouse['name']; ?>"><?php echo $warehouse['name']; ?>(<?php echo $warehouse['total']; ?>개)</a>
   <?php } ?>
 </div>
-
-<?php
-$count_warn1 = get_manage_stock_count(1);
-$count_warn2 = get_manage_stock_count(2);
-$count_warn3 = get_manage_stock_count(3);
-?>
 
 <div class="quick_link_area" style="padding-bottom: 20px">
   <?php if ($count_warn1 > 0) { ?>
@@ -604,6 +617,16 @@ function cancelExcelDownload() {
     EXCEL_DOWNLOADER.abort();
   }
   $('#loading_excel').hide();
+}
+
+function openPopSmartPuchase() {
+  var popupWidth = 1100;
+  var popupHeight = 700;
+
+  var popupX = (window.screen.width / 2) - (popupWidth / 2);
+  var popupY = (window.screen.height / 2) - (popupHeight / 2);;
+
+  release_purchaseorderview_pop = window.open("./popup.smart_purchaseorder.php", "스마트 발주", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX);
 }
 
 </script>
