@@ -28,7 +28,7 @@ if($_POST['ct_id'] && $_POST['step']) {
   $sql_stock = [];
   $combine_orders = []; // 자동 합포적용
 
-  for($i=0; $i<count($_POST['ct_id']); $i++) {
+  for ($i = 0; $i < count($_POST['ct_id']); $i++) {
     $sql_ct_s = "select
       a.od_id,
       a.it_id,
@@ -48,7 +48,8 @@ if($_POST['ct_id'] && $_POST['step']) {
       a.ct_stock_qty,
       a.ct_id,
       a.ct_combine_ct_id,
-      a.ct_warehouse
+      a.ct_warehouse,
+      a.ct_is_direct_delivery
     from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
@@ -85,9 +86,13 @@ if($_POST['ct_id'] && $_POST['step']) {
     $sql_ct[$i] = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql.", `ct_move_date`= NOW() where `ct_id` = '".$_POST['ct_id'][$i]."'";
 
     // 재고관리 변경
-    if($_POST['step'] == '배송') {
+    if ($_POST['step'] == '배송') {
       $ws_qty = $result_ct_s['ct_qty'] - $result_ct_s['ct_stock_qty'];
-      if($result_ct_s['io_type'] != 1) {
+      if ($result_ct_s['ct_qty'] != '0') { // 직배송, 설치
+        $ws_scheduled_qty_sql = "ws_scheduled_qty = '-{$ws_qty}', ";
+      }
+
+      if ($result_ct_s['io_type'] != 1) {
         $sql_stock[] = "
           insert into
             warehouse_stock

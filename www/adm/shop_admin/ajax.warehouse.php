@@ -85,7 +85,7 @@ else if($w === 'd') {
   if(!$wh_name)
     json_response(400, '유효하지 않은 요청입니다.');
   
-  $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '$wh_name' and ws_del_yn = 'N' ";
+  $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty)) as total from warehouse_stock where wh_name = '$wh_name' and ws_del_yn = 'N' ";
   $result = sql_fetch($sql);
 
   if($result['total'] > 0)
@@ -103,7 +103,7 @@ $result = sql_query($sql);
 
 $ret = '';
 while($row = sql_fetch_array($result)) {
-  $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '{$row['wh_name']}' and ws_del_yn = 'N' ";
+  $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty)) as total from warehouse_stock where wh_name = '{$row['wh_name']}' and ws_del_yn = 'N' ";
   $total = sql_fetch($sql);
 
   $ret .= '
