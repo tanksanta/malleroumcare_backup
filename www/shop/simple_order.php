@@ -27,6 +27,7 @@ add_javascript(G5_POSTCODE_JS, 0);
       <input type="hidden" name="od_price" value="0">
       <input type="hidden" name="od_settle_case" value="월 마감 정산">
       <input type="hidden" name="od_send_cost2" value="0">
+      <input type="hidden" name="mb_order_approve" value="<?=$member['mb_order_approve']?>">
       <div class="panel panel-default">
         <div class="panel-body">
           <?php if(!$dc_id) { ?>
@@ -644,6 +645,12 @@ function gumae2baesong() {
 // 폼 전송
 var form_loading = false;
 function form_submit(form) {
+
+  var mb_order_approve = $('input[name="mb_order_approve"]').val();
+  if (mb_order_approve == 0) {
+    alert('주문정지 상태입니다. 관리자에게 문의해 주세요.');
+    return false;
+  }
 
   if(form_loading)
     return false;

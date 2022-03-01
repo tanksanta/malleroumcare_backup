@@ -168,6 +168,7 @@ if ($w == '') {
 }
 $mb_partner_date_pay_date = isset($_POST['mb_partner_date_pay_date'])             ? trim($_POST['mb_partner_date_pay_date'])           : "";
 
+$_POST['mb_order_approve'] = isset($_POST['mb_order_approve']) ? (int)$_POST['mb_order_approve'] : 1;
 $_POST['mb_dealer'] = $_POST['mb_dealer'] ? (int)$_POST['mb_dealer'] : 0;
 
 if ($msg = valid_mb_nick($mb_nick))     alert($msg, "", true, true);
@@ -213,6 +214,7 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_profile = '{$_POST['mb_profile']}',
                  mb_level = '{$_POST['mb_level']}',
                  mb_grade = '{$_POST['mb_grade']}',
+                 mb_order_approve = '{$_POST['mb_order_approve']}',
                  mb_1 = '{$_POST['mb_1']}',
                  mb_2 = '{$_POST['mb_2']}',
                  mb_3 = '{$_POST['mb_3']}',

@@ -55,6 +55,7 @@ if(isset($wset['ahead']) && $wset['ahead']) {
                         <input type="checkbox" name="chk[]" value="<?php echo $i;?>" id="chk_<?php echo $i;?>">
                     </td>
                     <td class="td_ad_info">
+                        <input type="hidden" value="<?php echo $list[$i]['addr']; ?>">
                         <p class="info">
                             <?php if($list[$i]['ad_default']) echo '[대표]'; ?>
                             <?php echo $list[$i]['ad_name']; ?>
@@ -113,7 +114,7 @@ $(function() {
         close_popup();
     });
 
-    $(".sel_address").on("click", function() {
+    $(".sel_address, .info, .address").on("click", function() {
         var addr = $(this).siblings("input").val().split(String.fromCharCode(30));
 
         var parent = window.parent ? window.parent : window.opener;
