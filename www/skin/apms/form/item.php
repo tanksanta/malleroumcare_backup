@@ -1316,6 +1316,14 @@ $warehouse_list = get_warehouses();
           </label>
         </td>
       </tr>
+
+      <tr>
+        <th scope="row"><label for="it_is_direct_delivery">위탁</label></th>
+        <td>
+
+        </td>
+      </tr>
+
       <tr>
         <th scope="row"><label for="it_default_warehouse">출하창고</label></th>
         <td>
