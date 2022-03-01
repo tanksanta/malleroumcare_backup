@@ -1688,7 +1688,13 @@ function set_tutorial($type = 'recipient_add', $state = 0, $data = null) {
 }
 
 // 파트너 회원 목록 가져오기
-function get_partner_members() {
+function get_partner_members($partner_type = null) {
+  $partner_type_where = '';
+
+  if ($partner_type) {
+    $partner_type_where = " and mb_partner_type like '%{$partner_type}%'";
+  }
+
   $sql = "
     SELECT
       *
@@ -1698,6 +1704,7 @@ function get_partner_members() {
       mb_type = 'partner' and
       mb_partner_auth = 1 and
       mb_partner_date >= NOW()
+      {$partner_type_where}
   ";
 
   $result = sql_query($sql);

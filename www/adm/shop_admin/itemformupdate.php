@@ -725,7 +725,8 @@ $sql_common = "
   it_stock_manage_max_qty = '$it_stock_manage_max_qty',
   it_purchase_order_price = '$it_purchase_order_price',
   it_purchase_order_min_qty = '$it_purchase_order_min_qty',
-  it_purchase_order_unit = '$it_purchase_order_unit'
+  it_purchase_order_unit = '$it_purchase_order_unit',
+  it_purchase_order_partner = '$it_purchase_order_partner'
 "; // APMS : 2014.07.20
 
 if ($w == "")

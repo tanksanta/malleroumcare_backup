@@ -1318,9 +1318,17 @@ $warehouse_list = get_warehouses();
       </tr>
 
       <tr>
-        <th scope="row"><label for="it_is_direct_delivery">위탁</label></th>
+        <th scope="row"><label for="it_purchase_order_partner">발주업체</label></th>
         <td>
-
+          <select name="it_purchase_order_partner">
+            <option value="">파트너선택</option>
+            <?php
+            $partners = get_partner_members('물품공급');
+            foreach ($partners as $partner) {
+            ?>
+              <option value="<?=$partner['mb_id']?>"<?=get_selected($partner['mb_id'], $it['it_purchase_order_partner'])?>><?=$partner['mb_name']?></option>
+            <?php } ?>
+          </select>
         </td>
       </tr>
 
