@@ -782,6 +782,19 @@ foreach($orderlist as $order) {
   if($order['ct_is_delivery_excel_downloaded']) {
     $direct_delivery_text .= "<br><span id='excel_done' class='excel_done' data-ct-id='{$order['ct_id']}' style='color: #FF6600'>엑셀 다운로드 완료</span>";
   }
+  if($order['ct_send_direct_delivery']) {
+    $send_direct_delivery = '발주전송';
+    if ($order['ct_send_direct_delivery_fax'] && $order['ct_send_direct_delivery_email']) {
+      $send_direct_delivery .= '(Fax,Email)';
+    }
+    else if ($order['ct_send_direct_delivery_fax'] && !$order['ct_send_direct_delivery_email']) {
+      $send_direct_delivery .= '(Fax)';
+    }
+    else if (!$order['ct_send_direct_delivery_fax'] && $order['ct_send_direct_delivery_email']) {
+      $send_direct_delivery .= '(Email)';
+    }
+    $direct_delivery_text .= "<br><span id='send_direct_delivery_done' class='send_direct_delivery_done' data-ct-id='{$order['ct_id']}' style='color: #FF6600'>{$send_direct_delivery}</span>";
+  }
 
   // 출고준비로 변경 후 3일 지난 주문 강조
   if($order['ct_status'] === '출고준비') {
