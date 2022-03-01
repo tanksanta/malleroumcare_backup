@@ -35,7 +35,7 @@ $email_arr = array(
     'content' => $mail_contents,
     'receiver' => $partner['send_transaction_e'],
     'file' => [
-        'name' => '구매발주서.xlsx',
+        'name' => 'purchaseorder.xlsx',
         'data' => $excelData,
         'encoding' => 'remove'
     ],
