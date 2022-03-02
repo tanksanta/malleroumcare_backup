@@ -105,8 +105,10 @@ if ($q) {
         // if ($search_all || $pttag)
         //     $concat[] = "a.pt_tag";
 
-        if ($search_all || $qname)
+        if ($search_all || $qname) {
             $concat[] = "REPLACE(a.it_name, ' ', '')";
+            $concat[] = "REPLACE(a.ProdPayCode, ' ', '')";
+        }
         if ($search_all || $qexplan)
             $concat[] = "REPLACE(a.it_explan2, ' ', '')";
         if ($search_all || $qid)
