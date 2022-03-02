@@ -273,6 +273,7 @@ $partners = get_partner_members();
                 foreach($carts as $c) {
                   foreach($c['options'] as $o) {
                     if ($o['ct_id'] === $options[$k]['ct_id']) continue;
+                    if ($o['ct_status'] !== '출고준비') continue;
                 ?>
                 <option value="<?php echo $o['ct_id']; ?>" <?php echo ($options[$k]['ct_combine_ct_id'] === $o['ct_id']) ? ' selected ' : '' ; ?>>
                   <?php
