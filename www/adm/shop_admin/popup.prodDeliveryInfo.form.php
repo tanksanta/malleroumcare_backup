@@ -19,6 +19,8 @@ else {
 }
 // $carts = get_carts_by_od_id($od_id, 'Y', " AND ct_status = '출고준비' ", null);
 
+$show_direct_delivery_only = $_COOKIE['show_direct_delivery_only'];
+
 $delivery_cnt = 0; // 배송목록 카운트
 $delivery_input_cnt = 0; // 입력
 $edi_success_cnt = 0; // 전송
@@ -153,12 +155,15 @@ $partners = get_partner_members();
   <input type="hidden" name="od_id" value="<?=$od["od_id"]?>">
   
   <div class="titleWrap">
-    배송정보입력
+    배송정보입력 
     <span>
       <?php echo $deliveryCntBtnWord; ?>
     </span>
     <label style="font-size:12px; margin-left:10px;">
       <input type="checkbox" id="show_release_ready_only" <?php echo ($show_release_ready_only == 'Y' ? 'checked' : '')?>> 출고준비만 보기
+    </label>
+    <label style="font-size:12px; margin-left:10px;">
+      <input type="checkbox" id="show_direct_delivery_only" <?php echo ($show_direct_delivery_only == 'Y' ? 'checked' : '')?>> 물류출고만 보기
     </label>
     <button type="button" class="btn_boxpacker_apply" data-apply="1">합포 적용</button>
     <button type="button" class="btn_boxpacker">합포 자동계산</button>
@@ -213,6 +218,9 @@ $partners = get_partner_members();
           }
 
           for($k = 0; $k < count($options); $k++) {
+            if ($show_direct_delivery_only == 'Y') {
+              if ($options[$k]['ct_is_direct_delivery']) continue;
+            }
             $delivery_num_arr = explode('|', $options[$k]["ct_delivery_num"]);
         ?>
           <tr data-price="<?=$options[$k]["it_delivery_price"]?>" data-cnt="<?=$options[$k]["it_delivery_cnt"]?>">
@@ -643,6 +651,17 @@ $partners = get_partner_members();
           window.location.search += '&show_release_ready_only=N';
         }
       }
+    });
+
+    // 물류출고만(위탁체크안됨만) 보기
+    $("#show_direct_delivery_only").click(function() {
+      if ($(this).is(":checked")) {
+        $.cookie('show_direct_delivery_only', 'Y', { expires: 365 })
+      }
+      else {
+        $.cookie('show_direct_delivery_only', 'N', { expires: 365 })
+      }
+      location.reload();
     });
   });
 </script>
