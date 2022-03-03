@@ -90,6 +90,7 @@ foreach($send_data as $data) {
 
         array_push($send_fax_arr, array(
             'excel' => $excelData,
+            'filename' => 'ledger.xls',
             'rcvnm' => $ent_name,
             'rcv' => $receive_number
         ));
