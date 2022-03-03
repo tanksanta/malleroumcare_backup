@@ -60,6 +60,10 @@ if(!$res || $res['errorYN'] != 'N')
   json_response(500, $res['message'] ?: '시스템서버가 응답하지 않습니다.');
 
 // 보호자
+if (!$_POST['pros']) {
+  json_response(400, '보호자 정보가 없습니다.');
+}
+
 $pros = $_POST['pros'];
 foreach($pros as $pro) {
 	foreach($pro as $key => $val) {
@@ -128,7 +132,6 @@ foreach($pros as $pro) {
     sql_query($sql);
   }
 }
-
 json_response(200, 'OK', array(
   'penId' => $data['penId'],
   'isSpare' => $is_spare
