@@ -156,6 +156,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
                 else
                   echo '';
                 ?>
+                <a href="item_msg.php?url=<?=$row['ms_url']?>" class="btn_basic" target="_blank">제안서 보기</a>
               </td>
             </tr>
             <?php } ?>
