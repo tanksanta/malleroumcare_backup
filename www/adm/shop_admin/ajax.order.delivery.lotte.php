@@ -40,7 +40,12 @@ function edi_info($cart) {
     $edi['acperTel']		= $cart['od_b_tel'] ? $cart['od_b_tel'] : $cart['od_b_hp'];
     $edi['acperCpno']		= $cart['od_b_hp'] ? $cart['od_b_hp'] : $cart['od_b_tel'];
     $edi['acperAdr']	    = $cart['od_b_addr1'] . ' ' . $cart['od_b_addr2'];
-    $edi['acperZipcd']      = $cart['od_b_zip1'] . $cart['od_b_zip2'];
+    if ($cart['od_b_zip1'] && $cart['od_b_zip2']) {
+        $edi['acperZipcd']      = $cart['od_b_zip1'] . $cart['od_b_zip2'];
+    }
+    else if ($cart['od_zip1'] && $cart['od_zip2']) {
+        $edi['acperZipcd']      = $cart['od_zip1'] . $cart['od_zip2'];
+    }
     if (strlen($edi['acperZipcd']) < 5) {
         $zip = get_addr_zip($edi['acperAdr']);
         $edi['acperZipcd'] = $zip;
@@ -112,6 +117,8 @@ $sql = "SELECT
     o.od_id,
     o.od_b_zip1,
     o.od_b_zip2,
+    o.od_zip1,
+    o.od_zip2,
     o.od_memo
 FROM 
     g5_shop_cart as c 
@@ -191,6 +198,8 @@ foreach($carts as $cart) {
         o.od_id,
         o.od_b_zip1,
         o.od_b_zip2,
+        o.od_zip1,
+        o.od_zip2,
         o.od_memo 
     FROM  g5_shop_cart as c 
     LEFT JOIN g5_shop_order as o ON c.od_id = o.od_id
