@@ -64,6 +64,7 @@ else if ($send_type == 'F') {
     $sql .= " , ct_send_direct_delivery_fax='{$partner['send_transaction_f']}' ";
     array_push($send_fax_arr, array(
         'excel' => $excelData,
+        'filename' => 'purchaseorder.xlsx',
         'rcvnm' => $partner['mb_name'],
         'rcv' => $partner['send_transaction_f']
     ));
