@@ -32,10 +32,10 @@ function sendFax($send_fax_arr) {
 
     // 팝빌 회원 사업자번호
     $testCorpNum = '6178614330';
-    $balance = $FaxService -> GetBalance($testCorpNum);
-    if ($balance < 100) {
-      return '팩스 잔액이 부족합니다.';
-    }
+    // $balance = $FaxService -> GetBalance($testCorpNum);
+    // if ($balance < 100) {
+    //   return "팩스 잔액({$balance})이 부족합니다.";
+    // }
 
     // 팝빌 회원 아이디
     $testUserID = 'thkc1300';
