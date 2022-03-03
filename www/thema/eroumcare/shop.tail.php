@@ -123,7 +123,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
             <br>
             사무소 :  서울시 금천구 서부샛길 606 대성디폴리스 B동 1401호 
             <br>
-            물류센터 : 주소지 : 인천광역시 서구 이든1로 21
+            물류센터 : 인천광역시 서구 이든1로 21
 					</p>
 					<div class="desc">
 						본, 쇼핑몰의 모든 정보, 콘텐츠 및 UI, 저작물 등의 저작권은 <span class="mo_br"></span><?php echo $default['de_admin_company_name']; ?>에 있으며, 어떠한 이유에서도<br>
