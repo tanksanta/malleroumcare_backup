@@ -82,7 +82,7 @@ function sendFax($send_fax_arr) {
       $FileData[] = array('fileName' => 'fax.xls', 'fileData' => $data['excel']);
       $Receiver[] = array('rcv' => $data['rcv'], 'rcvnm' => $data['rcvnm']);
 
-      $FaxService->SendFAXBinary($testCorpNum, $Sender, $Receiver, $FileData, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requestNum);
+      $receiptNum = $FaxService->SendFAXBinary($testCorpNum, $Sender, $Receiver, $FileData, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requestNum);
       $result = $FaxService->GetFaxDetail($testCorpNum, $receiptNum);
       return $result;
     }
