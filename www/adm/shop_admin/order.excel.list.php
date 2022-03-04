@@ -402,7 +402,7 @@
       $od["od_b_name"],
       $od["od_name"],
       $it['sale_manager'],
-      $addr,
+      $it['addr'],
       $od["od_b_tel"],
       $od["od_b_hp"],
       $it["prodMemo"],
