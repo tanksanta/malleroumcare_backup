@@ -1358,6 +1358,12 @@ function ct_warehouse_update($ct_id, $ct_warehouse){
     sql_query($sql_ct);
 }
 
+function update_ct_status_to_delivery($ct_id){
+
+    $sql_ct = "UPDATE `g5_shop_cart` SET `ct_status`='배송' where `ct_id` = '".$ct_id."'";
+    sql_query($sql_ct);
+}
+
 function get_recipient_grade($pen_id) {
 	if (!$pen_id) {
 		return false;

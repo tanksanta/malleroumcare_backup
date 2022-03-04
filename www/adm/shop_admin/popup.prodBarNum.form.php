@@ -274,6 +274,9 @@ if($od["od_b_tel"]) {
                 <?php if($carts[$i]["it_name"] != $options[$k]["ct_option"]){ ?>
                 (<?=$options[$k]["ct_option"]?>)
                 <?php } ?>
+                <label style="font-size:12px; margin-left:10px;">
+                  <input type="checkbox" id="update_ct_status_to_delivery" name="update_ct_status_to_delivery" value="0" data-ct-id="<?php echo $carts[$i]["ct_id"]?>" > 출고완료단계로 변경
+                </label>
               </span>
               <?php if ($gubun != '02' && $options[$k]['io_type'] == 0) { ?>
               <span class="span2">
@@ -760,6 +763,14 @@ if($od["od_b_tel"]) {
       $('#barcode-selector').fadeIn();
     });
 
+    $('#update_ct_status_to_delivery').change(function() {
+      $(this).val(0);
+      var checked = $(this).is(":checked");
+      if (checked) {
+        $(this).val(1);
+      }
+    });
+
     function barNumSave() {
       var barcode_arr = [];
       var isDuplicated = false;
@@ -865,7 +876,27 @@ if($od["od_b_tel"]) {
                 cnt : insertBarCnt
               }
             });
-            member_cancel();
+
+            //출고완료 단계로 설정
+            var ct_ids = [];
+            $('#update_ct_status_to_delivery').each(function() {
+              var checked = $(this).is(":checked");
+              if (checked) {
+                ct_ids.push($(this).data('ct-id'));
+              }
+            });
+            if (ct_ids.length > 0) {
+              $.ajax({
+                url : "./ajax.update_ct_status_delivery.php",
+                type : "POST",
+                async : false,
+                data : {
+                  ct_ids : ct_ids
+                }
+              });
+            }
+
+            // member_cancel();
           }
         }
       });
