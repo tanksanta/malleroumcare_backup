@@ -181,6 +181,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         </div>
       </div>
 
+      <div id="list_wrap" class="list_box"></div>
       <div id="se_body_wr" class="flex space-between <?php if($dc) echo 'active' ;?>">
         <div class="se_item_wr">
           <div class="se_sch_wr">
@@ -974,6 +975,8 @@ function select_recipient(obj) {
   $('#penExpiEdDtm').prop('disabled', false);
   $('#penJumin').prop('disabled', false);
   $('#se_body_wr').addClass('active');
+
+  $('#list_wrap').hide();
 }
 
 function update_pen(obj) {
@@ -1615,6 +1618,38 @@ if($_POST['penId_r']){
 $('input[name="it_id[]"]').each(function() {
   get_stock_data($(this).val());
 });
+
+$(function() {
+  search();
+
+  function search(queryString) {
+    if(!queryString) queryString = '';
+    var params = $('#form_search').serialize();
+    var $listWrap = $('#list_wrap');
+
+    $.ajax({
+      method: 'GET',
+      url: '<?=G5_SHOP_URL?>/eform/ajax.eform.list.php?' + queryString,
+      data: params,
+      beforeSend: function() {
+        $listWrap.html('<div style="text-align:center;"><img src="<?=G5_URL?>/img/loading-modal.gif"></div>');
+      }
+    })
+    .done(function(data) {
+      $listWrap.html(data);
+      // 페이지네이션 처리
+      $('#list_wrap .pagination a').on('click', function(e) {
+        e.preventDefault();
+        var params = $(this).attr('href').replace('?', '');
+        search(params);
+      });
+    })
+    .fail(function() {
+      $listWrap.html('');
+    });
+  }
+})
+
 </script>
 
 <?php include_once("./_tail.php"); ?>
