@@ -1349,6 +1349,15 @@ function ct_manager_update($ct_id,$ct_manager){
     sql_query($sql_ct);
 }
 
+function ct_warehouse_update($ct_id, $ct_warehouse){
+
+    $sql = "SELECT * FROM `g5_shop_cart` WHERE ct_id = '{$ct_id}'";
+    $cart = sql_fetch($sql);
+
+    $sql_ct = "UPDATE `g5_shop_cart` SET `ct_warehouse`='".$ct_warehouse."' where `ct_id` = '".$ct_id."'";
+    sql_query($sql_ct);
+}
+
 function get_recipient_grade($pen_id) {
 	if (!$pen_id) {
 		return false;
