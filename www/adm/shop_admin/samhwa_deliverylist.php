@@ -760,7 +760,7 @@ $( document ).ready(function() {
     formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
 
     var queryString = $.param(formdata);
-    var href = "./order.excel.list.php";
+    var href = "./delivery.excel.list.php";
     
     $('#loading_excel').show();
 
