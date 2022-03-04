@@ -30,6 +30,8 @@ $sql_lotte = "SELECT count(*) as cnt
 ";
 $result_lotte = sql_fetch($sql_lotte);
 
+$warehouse_list = get_warehouses();
+
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
@@ -132,6 +134,18 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     ?>
     </select>
     <button id="ct_manager_send_all">출고담당자 선택변경</button>
+
+    <select class="sb1" name="it_default_warehouse" id="ct_warehouse_sb">
+      <?php
+        $default_warehouse_select="";
+        $default_warehouse_select .= '<option value="">선택</option>';
+        foreach($warehouse_list as $warehouse) {
+          $default_warehouse_select .='<option value="'.$warehouse.'" >'.$warehouse.'</option>';
+        }
+        echo $default_warehouse_select;
+      ?>
+    </select>
+    <button id="ct_warehouse_all">출하창고 선택변경</button>
     
     <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
