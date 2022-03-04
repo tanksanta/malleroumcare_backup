@@ -401,7 +401,7 @@
       $it_name." / ".$it["ct_qty"].' EA',
       $od["od_b_name"],
       $od["od_name"],
-      $sale_manager,
+      $it['sale_manager'],
       $addr,
       $od["od_b_tel"],
       $od["od_b_hp"],
