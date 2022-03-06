@@ -1113,7 +1113,7 @@ function add_fcmtoken($fcm_token) {
   $mb_fcm = sql_fetch($sql);
 
   if ($mb_fcm['fcm_id'] && $member['mb_id']) {
-		$sql = "UPDATE g5_firebase SET mb_id = '{$member['mb_id']}', updated_at = now() WHERE fcm_token = '{$fcm_token}'";
+		$sql = "UPDATE g5_firebase SET mb_id = '{$member['mb_id']}', login_yn = 1, updated_at = now() WHERE fcm_token = '{$fcm_token}'";
 		return sql_query($sql);
   }
 
@@ -1179,7 +1179,7 @@ function get_token_by_id($mb_id) {
 
   if (!$mb_id) return array();
 
-  $sql = "SELECT fcm_token FROM g5_firebase WHERE mb_id = '{$mb_id}'";
+  $sql = "SELECT fcm_token FROM g5_firebase WHERE mb_id = '{$mb_id}' AND login_yn = 1";
   $result = sql_query($sql);
 
   $tokens = array();
