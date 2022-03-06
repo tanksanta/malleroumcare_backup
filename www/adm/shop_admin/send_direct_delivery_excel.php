@@ -55,13 +55,6 @@ foreach($ct_id_arr as $ct_id) {
     $memo
   ];
 
-  sql_query("
-    UPDATE g5_shop_cart
-    SET ct_is_delivery_excel_downloaded = 1
-    WHERE ct_id = '{$ct_id}'
-  ");
-  set_order_admin_log($ct['od_id'], '위탁 엑셀 다운로드 : ' . $ct['it_name']);
-
   $index++;
 }
 
@@ -138,9 +131,6 @@ header("Cache-Control: max-age=0");
 header('Set-Cookie: fileDownload=true; path=/');
 
 $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-ob_start();
 $writer->save('php://output');
-$excelOutput = ob_get_clean();
-return $excelOutput;
 
 ?>

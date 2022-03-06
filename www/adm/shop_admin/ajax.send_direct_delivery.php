@@ -28,7 +28,10 @@ $mail_contents = '
 
 $mb_id = $ent_id;
 
-$excelData = include('send_direct_delivery_excel.php');
+ob_start();
+include('send_direct_delivery_excel.php');
+$excelData = ob_get_contents();
+ob_end_clean();
 
 $email_arr = array(
     'subject' => '[이로움 장기요양기관 통합관리플랫폼] 구매발주서 송부드립니다.',
@@ -52,16 +55,17 @@ if ($send_type == 'A') {
 
     array_push($send_fax_arr, array(
         'excel' => $excelData,
+        'filename' => 'purchaseorder.xlsx',
         'rcvnm' => $partner['mb_name'],
         'rcv' => $partner['send_transaction_f']
     ));
 }
 else if ($send_type == 'E') {
-    $sql .= " , ct_send_direct_delivery_email='{$partner['send_transaction_e']}' ";
+    $sql .= " , ct_send_direct_delivery_email='{$partner['send_transaction_e']}', ct_send_direct_delivery_fax='' ";
     array_push($send_mail_arr, $email_arr);
 }
 else if ($send_type == 'F') {
-    $sql .= " , ct_send_direct_delivery_fax='{$partner['send_transaction_f']}' ";
+    $sql .= " , ct_send_direct_delivery_email='', ct_send_direct_delivery_fax='{$partner['send_transaction_f']}' ";
     array_push($send_fax_arr, array(
         'excel' => $excelData,
         'filename' => 'purchaseorder.xlsx',

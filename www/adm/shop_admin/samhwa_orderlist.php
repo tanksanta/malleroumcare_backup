@@ -1394,6 +1394,7 @@ if( function_exists('pg_setting_check') ){
   <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn" style="background: #6e9254; color: #fff;">
   <?php } ?>
   <input type="button" value="위탁 엑셀다운로드" onclick="orderListExcelDownload('partner')" class="btn btn_03">
+  <input type="button" value="직배송 일괄전송" onclick="sendDirectDelivery()" class="btn btn_03">
 </div>
 
 <div class="btn_fixed_top2">
@@ -1419,7 +1420,6 @@ if( function_exists('pg_setting_check') ){
 
 <script>
 var excel_downloader = null;
-
 function orderListExcelDownload(type) {
   var od_id = [];
   var item = $("input[name='od_id[]']:checked");
@@ -1521,6 +1521,48 @@ function cancelExcelDownload() {
     excel_downloader.abort();
   }
   $('#loading_excel').hide();
+}
+
+function sendDirectDelivery() {
+  var od_id = [];
+  var item = $("input[name='od_id[]']:checked");
+  for(var i = 0; i < item.length; i++) {
+    od_id.push($(item[i]).val());
+  }
+
+  if(!od_id.length) {
+    alert('선택한 주문이 없습니다.');
+    return false;
+  }
+
+  var sendAllAgain = false;
+  if (confirm('이미 발송된 상품은 제외하고 전송하겠습니까?')) {
+    sendAllAgain = true;
+  }
+
+  console.log(od_id);
+
+  $.ajax({
+    method: "POST",
+    url: "./ajax.send_direct_delivery_by_item.php",
+    data: {
+      'ct_ids': od_id,
+      'sendAllAgain': sendAllAgain ? 'Y' : 'N',
+    },
+    beforeSend : function() {
+        $('.ajax-loader').css("visibility", "visible");
+    },
+  })
+  .done(function(data) {
+    console.log(data);
+    $('.ajax-loader').css("visibility", "hidden");
+    if(data.result=="success"){
+      alert('전송 완료');
+      window.location.reload(); 
+    } else {
+      alert('전송실패');
+    }
+  });
 }
 
 //출고담당자
