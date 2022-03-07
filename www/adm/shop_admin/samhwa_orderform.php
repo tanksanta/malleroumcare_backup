@@ -2589,7 +2589,7 @@ $(document).ready(function() {
     var popupX = (window.screen.width / 2) - (popupWidth / 2);
     var popupY= (window.screen.height / 2) - (popupHeight / 2);
 
-    window.open("./popup.prodBarNum.form.php?od_id=<?=$od["od_id"]?>", "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+    window.open("./popup.prodBarNum.form.php?od_id=<?=$od["od_id"]?>&is_pop=true", "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
   });
 
   $(document).on("click", ".deliveryCntBtn", function(e){
