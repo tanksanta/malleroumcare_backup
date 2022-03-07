@@ -247,14 +247,14 @@ $partners = get_partner_members();
               <select id="select_delivery_company" class="frm_input" name="ct_delivery_company_<?=$options[$k]["ct_id"]?>" data-ct-id="<?=$options[$k]["ct_id"]?>">
                 <option value="">선택하세요.</option>
               <?php foreach($delivery_companys as $data){ ?>
-                <option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"] || $options[$k]["it_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+                <option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
               <?php } ?>
               </select>
             </td>
             <td id="td_delivery_num_<?=$options[$k]["ct_id"]?>" class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
               <input type="text" value="<?=$delivery_num_arr[0]?>" class="frm_input" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>[]">
               <?php
-                if ($options[$k]['it_delivery_company'] == 'lotteglogis' || $options[$k]['ct_delivery_company'] == 'lotteglogis') {
+                if ($options[$k]['ct_delivery_company'] == 'lotteglogis') {
                   $box_cnt = $options[$k]["ct_delivery_cnt"];
                   for ($m=1; $m<$box_cnt; $m++) {
                     $delivery_num = '';
@@ -269,7 +269,7 @@ $partners = get_partner_members();
             <td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
               <?php
                 $show_btn = false;
-                if ($options[$k]['it_delivery_company'] == 'lotteglogis' || $options[$k]['ct_delivery_company'] == 'lotteglogis') { 
+                if ($options[$k]['ct_delivery_company'] == 'lotteglogis') { 
                   $show_btn = true;
                 }
               ?>
