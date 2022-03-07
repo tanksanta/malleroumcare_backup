@@ -646,34 +646,36 @@ if (isset($_SESSION['smart_purchase_data'])) {
   });
 
   function formcheck(f) {
-    var val, result = true;
+    var it_id, qty, it_price, result = true;
 
-    $('.form_section').each(function (index) {
+    $('.form_section').each(function (formIndex) {
       if (!$(this).find("input[name^=mb_id]").val()) {
-        alert((index + 1) + "번째 주문서의 물품공급파트너를 입력하세요.");
+        alert((formIndex + 1) + "번째 주문서의 물품공급파트너를 입력하세요.");
         result = false;
         return false;
       }
 
-      $(this).find("input[name^=qty]").each(function (index) {
-        val = $(this).val();
+      $(this).find('.pop_order_add_item_table tbody tr').each(function (trIndex) {
+        it_id = $(this).find("input[name^=it_id]").val();
+        qty = $(this).find("input[name^=qty]").val();
+        it_price = $(this).find("input[name^=it_price]").val();
 
-        if (parseInt(val.replace(/[^0-9]/g, "")) < 1) {
-          alert((index + 1) + "번째 주문서 아이템의 수량을 1이상으로 입력하세요.");
+        if (it_id === '') {
+          return true;
+        }
+
+        if (parseInt(qty.replace(/[^0-9]/g, "")) < 1) {
+          alert((formIndex + 1) + "번째 주문서의 " + (trIndex + 1 )+ "번째 아이템의 수량을 1이상으로 입력하세요.");
           result = false;
           return false;
         }
-      });
 
-
-      $(this).find("input[name^=it_price]").each(function (index) {
-        val = $(this).val();
-
-        if (parseInt(val.replace(/[^0-9]/g, "")) <= 0) {
-          alert((index + 1) + "번째 주문서 아이템의 구매가를 1이상으로 입력하세요.");
+        if (parseInt(it_price.replace(/[^0-9]/g, "")) < 1) {
+          alert((formIndex + 1) + "번째 주문서의 " + (trIndex + 1 )+ "번째 아이템의 구매가를 1이상으로 입력하세요.");
           result = false;
           return false;
         }
+
       });
 
       if (!result) {
