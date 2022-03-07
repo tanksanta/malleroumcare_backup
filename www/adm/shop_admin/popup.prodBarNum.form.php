@@ -419,6 +419,7 @@ if($od["od_b_tel"]) {
     $(".hide_area").hide();
 
     var keyupTimer;
+    var IS_POP = <?php echo $is_pop ? 'true' : 'false'?>;
     
     $(".notall").keyup(function() {
       var last_index = $(this).closest('ul').find('li').last().index();
@@ -857,7 +858,6 @@ if($od["od_b_tel"]) {
           if(result.errorYN == "Y") {
             alert(result.message);
           } else {
-            alert("저장이 완료되었습니다.");
             //cart 기준 barcode insert update
             $.ajax({
               url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
@@ -896,6 +896,11 @@ if($od["od_b_tel"]) {
               });
             }
 
+            alert("저장이 완료되었습니다.");
+
+            if (window.opener != null && IS_POP) {
+              window.close();
+            }
             // member_cancel();
           }
         }
