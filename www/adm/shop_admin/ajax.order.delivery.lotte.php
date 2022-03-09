@@ -32,8 +32,8 @@ function edi_info($cart) {
     // 송하인
     $edi['snperNm'] 		= '이로움';
     $edi['snperTel']		= '032-562-6608';
-    $edi['snperZipcd']		= '22850';
-    $edi['snperAdr']    	= '인천 서구 정서진 8로 5 403동';
+    $edi['snperZipcd']		= '22667';
+    $edi['snperAdr']    	= '인천광역시 서구 이든1로 21 이로움';
     
     // 수취인
     $edi['acperNm']	    	= $cart['od_b_name'];
