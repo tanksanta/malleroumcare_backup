@@ -463,7 +463,7 @@ $excel->getActiveSheet()->mergeCells('I4:K4');
 $excel->getActiveSheet()->setCellValue("I4", "이로움(THKC)");
 $excel->getActiveSheet()->setCellValue("H5", "주소");
 $excel->getActiveSheet()->mergeCells('I5:K5');
-$excel->getActiveSheet()->setCellValue("I5", "인천 서구 정서진8로5, 403동");
+$excel->getActiveSheet()->setCellValue("I5", "인천광역시 서구 이든1로 21 이로움");
 $excel->getActiveSheet()->mergeCells('B7:K7');
 $price_num = number_format($total_ct_price_stotal);
 $price_kor = price_kor($total_ct_price_stotal);
