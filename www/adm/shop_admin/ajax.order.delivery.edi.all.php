@@ -129,8 +129,8 @@ foreach($carts as $cart) {
     // $edi['sndTelNo']		= $cart['od_tel'] ? $cart['od_tel'] : $cart['od_hp'];
     // $edi['sndHandNo']		= $cart['od_hp'] ? $cart['od_hp'] : $cart['od_tel'];
     $edi['sndCustNm']		= '이로움';
-    $edi['sndCustAddr1']	= '인천 서구 정서진 8로 5 ';
-    $edi['sndCustAddr2']	= '403동';
+    $edi['sndCustAddr1']	= '인천광역시 서구 이든1로 21';
+    $edi['sndCustAddr2']	= '이로움';
     $edi['sndTelNo']		= '032-562-6608';
     $edi['sndHandNo']		= '032-562-6608';
     
