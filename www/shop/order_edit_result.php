@@ -233,7 +233,6 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     ct_price = '$ct_price',
                     ct_discount = '$ct_discount',
                     io_price =  '$io_price',
-                    ct_qty = '$ct_qty',
                     ct_delivery_cnt = '$ct_delivery_cnt',
                     ct_delivery_price = '$ct_delivery_price',
                     prodMemo = '$prodMemo'
@@ -309,7 +308,9 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                 }
                 $sql = "
                     UPDATE g5_shop_cart
-                    SET stoId = '$sto_id'
+                    SET 
+                        stoId = '$sto_id',
+                        ct_qty = '$ct_qty' 
                     WHERE ct_id = '$ct_id'
                 ";
                 sql_query($sql, true);
@@ -373,7 +374,9 @@ for($i = 0; $i < count($it_id_arr); $i++) {
 
                     $sql = "
                         UPDATE g5_shop_cart
-                        SET stoId = CONCAT(stoId,'$sto_id')
+                        SET 
+                            stoId = CONCAT(stoId,'$sto_id'),
+                            ct_qty = '$ct_qty'
                         WHERE ct_id = '$ct_id'
                     ";
                     sql_query($sql, true);
