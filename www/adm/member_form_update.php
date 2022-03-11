@@ -155,7 +155,7 @@ if ($send_transaction_e == "E" && $send_transaction_f == "") {
 else if ($send_transaction_e == "" && $send_transaction_f == "F") {
     $send_transaction = "F";
 }
-else {
+else if ($send_transaction_e == "" && $send_transaction_f == "") {
     $send_transaction = "N";
 }
 
