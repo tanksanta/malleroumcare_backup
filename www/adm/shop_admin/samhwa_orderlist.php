@@ -857,7 +857,7 @@ $( document ).ready(function() {
     var stock = $(this).attr("data-stock");
     var option = encodeURIComponent($(this).attr("data-option"));
     //popup.prodBarNum.form_3.php 으로하면 cart 기준으로 바뀜 (상품하나씩)
-    window.open("./popup.prodBarNum.form.php?no_refresh=1&orderlist=1&prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+    window.open("./popup.prodBarNum.form.php?is_pop=true&no_refresh=1&orderlist=1&prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
   });
 
   var submitAction = function(e) {
