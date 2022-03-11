@@ -885,13 +885,17 @@ if($od["od_b_tel"]) {
                 ct_ids.push($(this).data('ct-id'));
               }
             });
-            if (ct_ids.length > 0) {
+
+            for (var i = 0; i < ct_ids.length; i++) {
+              var ct_id = ct_ids[i];
+
               $.ajax({
-                url : "./ajax.update_ct_status_delivery.php",
-                type : "POST",
-                async : false,
-                data : {
-                  ct_ids : ct_ids
+                url: "./ajax.cart_status.php",
+                type: "POST",
+                async: false,
+                data: {
+                  ct_id: ct_id,
+                  step: '배송',
                 }
               });
             }
