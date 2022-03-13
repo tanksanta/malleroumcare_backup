@@ -167,7 +167,7 @@ foreach($carts as $cart) {
     $gprice					= 0;
 
     // 박스 갯수만큼 송장 생성
-    for($i = 0; $i < $cart['ct_delivery_cnt']; $i++) {
+    for ($i = 0; $i < $cart['ct_delivery_cnt']; $i++) {
         $edi = edi_info($cart);
 
         $invoice_sql = "SELECT invoice FROM lotteglogis_invoice_num WHERE use_yn = '0' ORDER BY invoice ASC LIMIT 1;";
@@ -207,21 +207,26 @@ foreach($carts as $cart) {
     $combine_result = sql_query($sql);
     $j = 2;
     $combine_list = [];
+
+    $snd_last_idx = count($snd_list) - 1;
+
     while ($combine_row = sql_fetch_array($combine_result)) {
-        $edi['bdpkSctCd'] = 'Y'; //본상품 합포장 여부를 Y 로 변경
-        $edi['bdpkKey'] = $edi['invNo']; //본상품 합포장 KEY를 송장번호로 설정
-        $edi['bdpkRpnSeq'] = 1; //본상품 합포장 순번 1로 설정
-    
         $combine_edi = edi_info($combine_row);
-        $combine_edi['bdpkSctCd'] = 'Y'; //합포장 여부
-        $combine_edi['bdpkKey'] = $edi['invNo']; //합포장 KEY
-        $combine_edi['bdpkRpnSeq'] = $j; //합포장 순번
+        $combine_edi['bdpkSctCd'] = 'Y'; // 합포장 여부
+        $combine_edi['bdpkKey'] = $snd_list[$snd_last_idx]['invNo']; // 합포장 KEY
+        $combine_edi['bdpkRpnSeq'] = $j; // 합포장 순번
         $j++;
 
         array_push($combine_list, $combine_edi);
     }
 
     if (count($combine_list) > 0) {
+        // 본상품 합포장 처리
+        // $snd_list중 동일 카트(박스 여러개일 경우)의 마지막 카트를 메인 합포장으로 설정
+        $snd_list[$snd_last_idx]['bdpkSctCd'] = 'Y'; // 본상품 합포장 여부를 Y로 변경
+        $snd_list[$snd_last_idx]['bdpkKey'] = $snd_list[$snd_last_idx]['invNo']; // 본상품 합포장 KEY를 송장번호로 설정
+        $snd_list[$snd_last_idx]['bdpkRpnSeq'] = 1; // 본상품 합포장 순번 1 로 설정
+
         $snd_list = array_merge($snd_list, $combine_list);
     }
 }
