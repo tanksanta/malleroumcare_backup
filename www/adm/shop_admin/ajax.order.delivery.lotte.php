@@ -287,7 +287,24 @@ if (is_array($result) && array_key_exists('rtn_list', $result)) {
         sql_query($sql);        
     }
 
-    set_order_admin_log($cart['od_id'], $it_name . ' 롯데택배 API 전송');
+    // 로그 저장
+    $logged_ct_id_arr = []; // 상품 박스가 많을 경우 중복 로그 방지
+    for ($i = 0; $i < count($snd_list); $i++) {
+      $ordNo = explode("_", $snd_list[$i]['ordNo']);
+      $od_id = $ordNo[0];
+      $ct_id = $ordNo[1];
+
+      $ct_row = sql_fetch(" select * from g5_shop_cart where ct_id = '{$ct_id}' ");
+      if ($ct_row && !in_array($ct_id, $logged_ct_id_arr)) {
+        if (!$ct_row['ct_combine_ct_id']) { // 본상품
+          set_order_admin_log($ct_row['od_id'], "롯데택배 API 전송 : {$ct_row['it_name']}");
+        } else { // 합포
+          $main_ct_row = sql_fetch(" select * from g5_shop_cart where ct_id = '{$ct_row['ct_combine_ct_id']}' ");
+          set_order_admin_log($ct_row['od_id'], "롯데택배 API 전송 : {$ct_row['it_name']} (합포장:{$main_ct_row['it_name']}, {$main_ct_row['ct_id']})");
+        }
+        $logged_ct_id_arr[] = $ct_id;
+      }
+    }
 
     if ($return_success) { 
         $result = 'success';
