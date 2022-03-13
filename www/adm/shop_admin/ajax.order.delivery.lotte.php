@@ -167,7 +167,7 @@ foreach($carts as $cart) {
     $gprice					= 0;
 
     // 박스 갯수만큼 송장 생성
-    for($i = 0; $i < $cart['ct_delivery_cnt']; $i++) {
+    for ($i = 0; $i < $cart['ct_delivery_cnt']; $i++) {
         $edi = edi_info($cart);
 
         $invoice_sql = "SELECT invoice FROM lotteglogis_invoice_num WHERE use_yn = '0' ORDER BY invoice ASC LIMIT 1;";
@@ -207,21 +207,26 @@ foreach($carts as $cart) {
     $combine_result = sql_query($sql);
     $j = 2;
     $combine_list = [];
+
+    $snd_last_idx = count($snd_list) - 1;
+
     while ($combine_row = sql_fetch_array($combine_result)) {
-        $edi['bdpkSctCd'] = 'Y'; //본상품 합포장 여부를 Y 로 변경
-        $edi['bdpkKey'] = $edi['invNo']; //본상품 합포장 KEY를 송장번호로 설정
-        $edi['bdpkRpnSeq'] = 1; //본상품 합포장 순번 1로 설정
-    
         $combine_edi = edi_info($combine_row);
-        $combine_edi['bdpkSctCd'] = 'Y'; //합포장 여부
-        $combine_edi['bdpkKey'] = $edi['invNo']; //합포장 KEY
-        $combine_edi['bdpkRpnSeq'] = $j; //합포장 순번
+        $combine_edi['bdpkSctCd'] = 'Y'; // 합포장 여부
+        $combine_edi['bdpkKey'] = $snd_list[$snd_last_idx]['invNo']; // 합포장 KEY
+        $combine_edi['bdpkRpnSeq'] = $j; // 합포장 순번
         $j++;
 
         array_push($combine_list, $combine_edi);
     }
 
     if (count($combine_list) > 0) {
+        // 본상품 합포장 처리
+        // $snd_list중 동일 카트(박스 여러개일 경우)의 마지막 카트를 메인 합포장으로 설정
+        $snd_list[$snd_last_idx]['bdpkSctCd'] = 'Y'; // 본상품 합포장 여부를 Y로 변경
+        $snd_list[$snd_last_idx]['bdpkKey'] = $snd_list[$snd_last_idx]['invNo']; // 본상품 합포장 KEY를 송장번호로 설정
+        $snd_list[$snd_last_idx]['bdpkRpnSeq'] = 1; // 본상품 합포장 순번 1 로 설정
+
         $snd_list = array_merge($snd_list, $combine_list);
     }
 }
@@ -287,7 +292,24 @@ if (is_array($result) && array_key_exists('rtn_list', $result)) {
         sql_query($sql);        
     }
 
-    set_order_admin_log($cart['od_id'], $it_name . ' 롯데택배 API 전송');
+    // 로그 저장
+    $logged_ct_id_arr = []; // 상품 박스가 많을 경우 중복 로그 방지
+    for ($i = 0; $i < count($snd_list); $i++) {
+      $ordNo = explode("_", $snd_list[$i]['ordNo']);
+      $od_id = $ordNo[0];
+      $ct_id = $ordNo[1];
+
+      $ct_row = sql_fetch(" select * from g5_shop_cart where ct_id = '{$ct_id}' ");
+      if ($ct_row && !in_array($ct_id, $logged_ct_id_arr)) {
+        if (!$ct_row['ct_combine_ct_id']) { // 본상품
+          set_order_admin_log($ct_row['od_id'], "롯데택배 API 전송 : {$ct_row['it_name']}");
+        } else { // 합포
+          $main_ct_row = sql_fetch(" select * from g5_shop_cart where ct_id = '{$ct_row['ct_combine_ct_id']}' ");
+          set_order_admin_log($ct_row['od_id'], "롯데택배 API 전송 : {$ct_row['it_name']} (합포장:{$main_ct_row['it_name']}, {$main_ct_row['ct_id']})");
+        }
+        $logged_ct_id_arr[] = $ct_id;
+      }
+    }
 
     if ($return_success) { 
         $result = 'success';
