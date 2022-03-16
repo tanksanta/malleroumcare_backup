@@ -643,8 +643,15 @@ $(function () {
         alert(data.msg);
       }
       if (data.result === 'success') {
-        alert('출고담당자가 지정되었습니다. ');
-        location.reload();
+        alert('출고담당자가 지정되었습니다.');
+        var arr = $('.ct_manager[data-ct-id="' + ct_id + '"]');
+        if (arr.length === 0) {
+          location.reload();
+          return;
+        }
+        $.each(arr, function (index, el) {
+          $(el).val(sb1).prop("selected", true);
+        });
       }
     });
   });
@@ -684,7 +691,7 @@ $(function () {
       }
       if (data.result === 'success') {
         alert('출하창고가 지정되었습니다.');
-        location.reload();
+        // location.reload();
       }
     });
   });

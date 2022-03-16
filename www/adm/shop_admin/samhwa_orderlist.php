@@ -124,7 +124,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         $od_release_select="";
         $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '400001'";
         $result_m = sql_query($sql_m);
-        $od_release_select .= '<option value="">선택</option>';
+        $od_release_select .= '<option value="">출고 담당자 선택</option>';
         $od_release_select .= '<option value="미지정">미지정</option>';
         for ($q=0; $row_m=sql_fetch_array($result_m); $q++){
             $selected="";
@@ -138,7 +138,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <select class="sb1" name="it_default_warehouse" id="ct_warehouse_sb">
       <?php
         $default_warehouse_select="";
-        $default_warehouse_select .= '<option value="">선택</option>';
+        $default_warehouse_select .= '<option value="">출하창고 선택</option>';
         foreach($warehouse_list as $warehouse) {
           $default_warehouse_select .='<option value="'.$warehouse.'" >'.$warehouse.'</option>';
         }
