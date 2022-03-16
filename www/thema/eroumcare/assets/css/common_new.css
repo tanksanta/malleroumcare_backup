@@ -842,6 +842,7 @@ pre{white-space: pre-wrap;}
 .side_menu_area .btn_orderlist { display: block; padding: 15px; font-size: 16px; font-weight: 600; text-align: center; margin: 10px 0; color: #fff; background-color: #f08606; border-radius: 5px; }
 
 .side_menu_area .btn_orderlist.purchaseorderlist {background-color: #bed61f}
+.side_menu_area .btn_orderlist.stocklist {background-color: #f2f2f2; border: 1px solid #7f7f7f; color: #7f7f7f;}
 
 .side_menu_area .user_info_area { position: relative; padding: 10px 5px; }
 .side_menu_area .user_info_area .flex { display: -webkit-box; display: -ms-flexbox; display: flex; }
