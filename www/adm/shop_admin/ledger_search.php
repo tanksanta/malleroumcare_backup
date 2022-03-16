@@ -387,7 +387,7 @@ function get_ledger_history_recent($mb_id) {
       <?php } ?>
     </tbody>
   </table>
-  <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+  <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;type='.$type.'&amp;page='); ?>
 </div>
 <div class="l_btn_area" style="margin: 20px;">
   <a href="./downloadledgerexcel.php" style="padding: 8px 12px 8px 12px;">수금등록 일괄 업로드 양식 다운로드</a>
