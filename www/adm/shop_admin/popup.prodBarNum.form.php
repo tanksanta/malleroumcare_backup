@@ -885,20 +885,16 @@ if($od["od_b_tel"]) {
                 ct_ids.push($(this).data('ct-id'));
               }
             });
-
-            for (var i = 0; i < ct_ids.length; i++) {
-              var ct_id = ct_ids[i];
-
-              $.ajax({
-                url: "./ajax.cart_status.php",
-                type: "POST",
-                async: false,
-                data: {
-                  ct_id: ct_id,
-                  step: '배송',
-                }
-              });
-            }
+            
+            $.ajax({
+              url: "./ajax.cart_status.php",
+              type: "POST",
+              async: false,
+              data: {
+                ct_id: ct_ids,
+                step: '배송',
+              }
+            });
 
             alert("저장이 완료되었습니다.");
 
