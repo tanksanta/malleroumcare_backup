@@ -60,7 +60,7 @@ while($manager = sql_fetch_array($manager_result)) {
 # 검색어
 $search = get_search_string($search);
 if($search)
-  $where[] = " mb_entNm LIKE '%{$search}%' ";
+  $where[] = " (mb_entNm LIKE '%{$search}%' OR mb_giup_bname LIKE '%{$search}%') ";
 
 # 파트너 서비스
 if (!$mb_partner_type)
@@ -335,7 +335,7 @@ function get_ledger_history_recent($mb_id) {
     <tbody>
       <?php if(!$ents) { ?>
       <tr>
-        <td colspan="5" class="empty_table">자료가 없습니다.</td>
+        <td colspan="11" class="empty_table">자료가 없습니다.</td>
       </tr>
       <?php } ?>
       <?php foreach($ents as $ent) { ?>
@@ -387,7 +387,7 @@ function get_ledger_history_recent($mb_id) {
       <?php } ?>
     </tbody>
   </table>
-  <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+  <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;type='.$type.'&amp;page='); ?>
 </div>
 <div class="l_btn_area" style="margin: 20px;">
   <a href="./downloadledgerexcel.php" style="padding: 8px 12px 8px 12px;">수금등록 일괄 업로드 양식 다운로드</a>
