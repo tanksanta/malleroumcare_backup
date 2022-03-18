@@ -927,8 +927,8 @@ $ct = sql_fetch($sql);
           <img class="barcode_icon type3" src="/img/barcode_icon_2.png" alt="등록가능 (관리자 삭제)">
           <img class="barcode_icon type4" src="/img/barcode_icon_3.png" alt="등록불가 (보유재고)">
           <span class="overlap">중복</span>
-          <img src="/img/bacod_img.png" class="nativePopupOpenBtn btn_bacod" onclick="openNativeBarcodeScan(this)" data-type="native" data-code="<?=$i?>" data-ct-id="<?php echo $carts['ct_id']; ?>" data-it-id="<?php echo $carts['it_id']; ?>">
-          <img src="/img/btn_pda.png" class="nativePopupOpenBtn btn_pda" onclick="openNativeBarcodeScan(this)" data-type="pda" data-code="<?=$i?>" data-ct-id="<?php echo $carts['ct_id']; ?>" data-it-id="<?php echo $carts['it_id']; ?>">
+          <img src="/img/bacod_img.png" class="nativePopupOpenBtn btn_bacod" onclick="openNativeBarcodeScan(this)" data-type="native" data-code="<?=$i?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
+          <img src="/img/btn_pda.png" class="nativePopupOpenBtn btn_pda" onclick="openNativeBarcodeScan(this)" data-type="pda" data-code="<?=$i?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
         </li>
         <?php
         $prodListCnt++;
@@ -1501,8 +1501,8 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     cur_ct_id = $(_this).data('ct-id');
     cur_it_id = $(_this).data('it-id');
 
-    for(var i = 0; i < item.length; i++) {
-      if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no) {
+    for (var i = 0; i < item.length; i++) {
+      if (!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no) {
         sendBarcodeTargetList.push($(item[i]).attr("data-frm-no"));
         cnt++;
       }

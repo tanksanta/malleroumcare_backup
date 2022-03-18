@@ -299,7 +299,7 @@ $(function(){
     }, 500);
   });
 
-  $(document).on('touchstart, click', '#barcode-scanner-opener', function(e) {
+  $(document).on('touchstart, click', '#barcode-scanner-opener', function (e) {
     var cnt = $('#scanner-count').val();
     $('#barcode-selector').hide();
     try {
@@ -316,8 +316,8 @@ $(function(){
           throw new Error();
           break;
       }
-    }catch(e) {
-      alert('오류가 발생하였습니다.');
+    } catch (e) {
+      alert('오류가 발생하였습니다.\n' + e);
     }
   });
 
