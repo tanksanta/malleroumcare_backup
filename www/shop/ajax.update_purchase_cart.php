@@ -33,6 +33,12 @@ if ($ct_row['is_purchase_end'] == '1') {
   json_response(400, '발주 종료 상태입니다.');
 }
 
+if (!$barcodeArr) {
+  json_response(400, '입력된 바코드 정보가 없습니다.');
+}
+
+$delivered_qty = is_array($barcodeArr) ? count($barcodeArr) : 0;
+
 if ($delivered_qty > $ct_row['ct_qty'] || $delivered_qty == '0') {
   json_response(400, '입고수량은 0이 아니어야 하며, 발주 수량 이하 값이어야 합니다.');
 }
@@ -67,6 +73,23 @@ if ($barcode_memo) {
 }
 set_purchase_order_admin_log($od_id, $log_text, $ct_id);
 
+// 재고(입고) 바코드 입력
+for ($i = 0; $i < count($barcodeArr); $i++) {
+  $sql = "
+    insert into g5_cart_barcode
+    set
+      pc_id = '{$ct_id}',
+      it_id = '{$ct_row['it_id']}',
+      io_id = '{$ct_row['io_id']}',
+      bc_barcode = '{$barcodeArr[$i]['barcode']}',
+      bc_status = '{$barcodeArr[$i]['barcodeStatus']}',
+      created_by = '{$member['mb_id']}',
+      created_at = NOW()
+  ";
+
+  sql_query($sql);
+}
+
 // 재고 입력/수정
 if (!$wh_row) {
   $sql = "
@@ -94,7 +117,8 @@ if (!$wh_row) {
   $sql = "
       UPDATE warehouse_stock
       SET
-        ws_scheduled_qty = '{$ws_scheduled_qty}'
+        ws_scheduled_qty = '{$ws_scheduled_qty}',
+        ws_updated_at = NOW()
       WHERE
         od_id = '{$od_id}' AND
         ct_id = '{$ct_id}' AND

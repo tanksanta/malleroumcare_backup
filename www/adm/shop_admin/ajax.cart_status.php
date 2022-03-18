@@ -93,24 +93,28 @@ if($_POST['ct_id'] && $_POST['step']) {
       }
 
       if ($result_ct_s['io_type'] != 1) {
-        $sql_stock[] = "
-          insert into
-            warehouse_stock
-          set
-            it_id = '{$result_ct_s['it_id']}',
-            io_id = '{$result_ct_s['io_id']}',
-            io_type = '{$result_ct_s['io_type']}',
-            it_name = '{$result_ct_s['it_name']}',
-            ws_option = '{$result_ct_s['ct_option']}',
-            ws_qty = '-{$ws_qty}',
-            mb_id = '{$result_ct_s['mb_id']}',
-            ws_memo = '주문 출고완료({$od_id})',
-            wh_name = '{$result_ct_s['ct_warehouse']}',
-            od_id = '$od_id',
-            ct_id = '{$_POST['ct_id'][$i]}',
-            ws_created_at = NOW(),
-            ws_updated_at = NOW()
-        ";
+        $stock_count = sql_fetch("select count(*) as cnt from warehouse_stock where od_id = '{$od_id}' and ct_id = '{$_POST['ct_id'][$i]}}' ")['cnt'];
+
+        if ($stock_count == 0) {
+          $sql_stock[] = "
+            insert into
+              warehouse_stock
+            set
+              it_id = '{$result_ct_s['it_id']}',
+              io_id = '{$result_ct_s['io_id']}',
+              io_type = '{$result_ct_s['io_type']}',
+              it_name = '{$result_ct_s['it_name']}',
+              ws_option = '{$result_ct_s['ct_option']}',
+              ws_qty = '-{$ws_qty}',
+              mb_id = '{$result_ct_s['mb_id']}',
+              ws_memo = '주문 출고완료({$od_id})',
+              wh_name = '{$result_ct_s['ct_warehouse']}',
+              od_id = '$od_id',
+              ct_id = '{$_POST['ct_id'][$i]}',
+              ws_created_at = NOW(),
+              ws_updated_at = NOW()
+          ";
+        }
       }
     }
     if($_POST['step'] == '취소' || $_POST['step'] == '주문무효') {

@@ -156,6 +156,20 @@ include_once('./_common.php');
 var isOpenWebBarcode = false;
 var barcodeInputFocusInterval;
 
+/* 기종체크 */
+var deviceUserAgent = navigator.userAgent.toLowerCase();
+var device;
+
+if(deviceUserAgent.indexOf("android") > -1){
+  /* android */
+  device = "android";
+}
+
+if(deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1){
+  /* ios */
+  device = "ios";
+}
+
 function barcodeInputFocus() {
   if (!isOpenWebBarcode) {
     clearInterval(barcodeInputFocusInterval);
@@ -299,7 +313,7 @@ $(function(){
     }, 500);
   });
 
-  $(document).on('touchstart, click', '#barcode-scanner-opener', function(e) {
+  $(document).on('touchstart, click', '#barcode-scanner-opener', function (e) {
     var cnt = $('#scanner-count').val();
     $('#barcode-selector').hide();
     try {
@@ -316,8 +330,8 @@ $(function(){
           throw new Error();
           break;
       }
-    }catch(e) {
-      alert('오류가 발생하였습니다.');
+    } catch (e) {
+      alert('오류가 발생하였습니다.\n' + e);
     }
   });
 
