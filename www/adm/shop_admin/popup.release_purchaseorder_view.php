@@ -1228,7 +1228,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     }
 
     // 바코드 길이 검증
-    $('.barcodeList.incomplete .inputbox li').each(function() {
+    $('.barcodeList.incomplete .inputbox .frm_input').each(function() {
       if ($(this).val().length > 0 && $(this).val().length != 12) {
         errorMsg = '12자리가 아닌 바코드가 존재합니다. 확인해주세요.';
         return false;
