@@ -4,7 +4,7 @@ include_once('../common.php');
 
 // 상품이 많을 경우 대비 설정변경
 set_time_limit ( 0 );
-ini_set('memory_limit', '50M');
+ini_set('memory_limit','-1');
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
