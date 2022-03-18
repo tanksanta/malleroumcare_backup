@@ -927,8 +927,8 @@ $ct = sql_fetch($sql);
           <img class="barcode_icon type3" src="/img/barcode_icon_2.png" alt="등록가능 (관리자 삭제)">
           <img class="barcode_icon type4" src="/img/barcode_icon_3.png" alt="등록불가 (보유재고)">
           <span class="overlap">중복</span>
-          <img src="/img/bacod_img.png" class="nativePopupOpenBtn btn_bacod" data-type="native" data-code="<?=$i?>" data-ct-id="<?php echo $carts['ct_id']; ?>" data-it-id="<?php echo $carts['it_id']; ?>">
-          <img src="/img/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" data-code="<?=$i?>" data-ct-id="<?php echo $carts['ct_id']; ?>" data-it-id="<?php echo $carts['it_id']; ?>">
+          <img src="/img/bacod_img.png" class="nativePopupOpenBtn btn_bacod" onclick="openNativeBarcodeScan(this)" data-type="native" data-code="<?=$i?>" data-ct-id="<?php echo $carts['ct_id']; ?>" data-it-id="<?php echo $carts['it_id']; ?>">
+          <img src="/img/btn_pda.png" class="nativePopupOpenBtn btn_pda" onclick="openNativeBarcodeScan(this)" data-type="pda" data-code="<?=$i?>" data-ct-id="<?php echo $carts['ct_id']; ?>" data-it-id="<?php echo $carts['it_id']; ?>">
         </li>
         <?php
         $prodListCnt++;
@@ -1037,6 +1037,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
   var CT_QTY = Number('<?= $ct["ct_qty"] ?>');
   var IS_POP = <?=$isPop ? 'true' : 'false'?>;
   var KEYUP_TIMER;
+  var sendBarcodeTargetList; // 바코드 스캔용 전역변수 : open_barcode.php에서도 사용
 
   $(function() {
     window.addEventListener('beforeunload', function(event) {
@@ -1490,5 +1491,36 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     const wakeUpTime = Date.now() + ms;
     while (Date.now() < wakeUpTime) {}
   }
+
+  function openNativeBarcodeScan(_this) {
+    var cnt = 0;
+    var frm_no = $(_this).closest("li").find(".frm_input").attr("data-frm-no");
+    var item = $(_this).closest("ul").find(".frm_input");
+    sendBarcodeTargetList = [];
+
+    cur_ct_id = $(_this).data('ct-id');
+    cur_it_id = $(_this).data('it-id');
+
+    for(var i = 0; i < item.length; i++) {
+      if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no) {
+        sendBarcodeTargetList.push($(item[i]).attr("data-frm-no"));
+        cnt++;
+      }
+    }
+
+    $('#scanner-count').val(cnt);
+    var type = $(_this).data('type');
+    if (!type) {
+      $('#barcode-selector').fadeIn();
+      return;
+    }
+    if (type === 'native') {
+      $('#barcode-scanner-opener').click();
+    } else if (type === 'pda') {
+      $('#pda-scanner-opener').click();
+    }
+  }
 </script>
+
+<?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
 </body>
