@@ -1209,6 +1209,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
   function saveData() {
     var delivered_qty = Number($('#delivered_qty').val());
     var barcode_memo = $('input[name="barcode_memo"]').val();
+    var errorMsg = '';
 
     <?php if ($ct['is_purchase_end']) { ?>
     alert('발주 종료 상태입니다.');
@@ -1226,11 +1227,24 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
       return;
     }
 
-    // 바코드 검증
+    // 바코드 길이 검증
+    $('.barcodeList.incomplete .inputbox li').each(function() {
+      if ($(this).val().length > 0 && $(this).val().length != 12) {
+        errorMsg = '12자리가 아닌 바코드가 존재합니다. 확인해주세요.';
+        return false;
+      }
+    });
+
+    if (errorMsg.length > 0) {
+      alert(errorMsg);
+      showLoading(false);
+      return;
+    }
+
+    // 바코드 상태 검증
     notallLengthCheck(true);
 
-    // 바코드 검증 결과 체크
-    var errorMsg = '';
+    // 바코드 상태 검증 결과 체크
     $('.barcodeList.incomplete .inputbox li').each(function() {
 
       if ($(this).find('.barcode_icon.type4').hasClass('active')) {
