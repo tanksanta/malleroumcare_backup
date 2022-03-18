@@ -920,7 +920,7 @@ $ct = sql_fetch($sql);
       for ($i = 0; $i < $incomplete_count; $i++) {
         ?>
         <li>
-          <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="" class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+          <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="" class="notall frm_input frm_input_<?=$prodListCnt?> required" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
           <img src="/img/bacod_add_img.png" class="barcode_add">
           <img class="barcode_icon type1" src="/img/barcode_icon_1.png" alt="정상">
           <img class="barcode_icon type2" src="/img/barcode_icon_2.png" alt="등록가능 (이미 출고)">
@@ -1037,7 +1037,11 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
   var CT_QTY = Number('<?= $ct["ct_qty"] ?>');
   var IS_POP = <?=$isPop ? 'true' : 'false'?>;
   var KEYUP_TIMER;
-  var sendBarcodeTargetList; // 바코드 스캔용 전역변수 : open_barcode.php에서도 사용
+
+  // 바코드 스캔용 전역변수
+  var sendBarcodeTargetList;
+  var cur_ct_id = null;
+  var cur_it_id = null;
 
   $(function() {
     window.addEventListener('beforeunload', function(event) {
@@ -1519,6 +1523,80 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     } else if (type === 'pda') {
       $('#pda-scanner-opener').click();
     }
+  }
+
+  function sendBarcode(text) {
+    /* 기종체크 */
+    var deviceUserAgent = navigator.userAgent.toLowerCase();
+    var device;
+
+    if (deviceUserAgent.indexOf("android") > -1) {
+      /* android */
+      device = "android";
+    }
+
+    if (deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1) {
+      /* ios */
+      device = "ios";
+    }
+
+    $.ajax({
+      url: "/shop/ajax.release_purchaseorderview.check.php",
+      type: "POST",
+      data: {
+        od_id: "<?=$od_id?>"
+      },
+      success: function (result) {
+        if (result.error == "Y") {
+          switch (device) {
+            case "android" :
+              /* android */
+              window.EroummallApp.closeBarcode("");
+              break;
+            case "ios" :
+              /* ios */
+              window.webkit.messageHandlers.closeBarcode.postMessage("");
+              break;
+          }
+          var params = getUrlParams();
+          delete params.od_id;
+          delete params.ct_id;
+          var query_string = decodeURI($.param(params));
+          window.location.href = "<?=G5_SHOP_URL?>/release_purchaseorderlist.php?" + query_string;
+        } else {
+          if (sendBarcodeTargetList[0]) {
+            $.post('/shop/ajax.check_barcode.php', {
+              it_id: cur_it_id,
+              barcode: text,
+            }, 'json')
+              .done(function (data) {
+                var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
+                $(sendBarcodeTarget).val(data.data.converted_barcode);
+                sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
+                check_option(cur_it_id);
+              })
+              .fail(function ($xhr) {
+                switch (device) {
+                  case "android" :
+                    /* android */
+                    window.EroummallApp.closeBarcode("");
+                    break;
+                  case "ios" :
+                    /* ios */
+                    window.webkit.messageHandlers.closeBarcode.postMessage("");
+                    break;
+                }
+                var data = $xhr.responseJSON;
+                setTimeout(function () {
+                  alert(data && data.message);
+                }, 500);
+              });
+          }
+        }
+
+        notallLengthCheck(false);
+      }
+    });
   }
 </script>
 
