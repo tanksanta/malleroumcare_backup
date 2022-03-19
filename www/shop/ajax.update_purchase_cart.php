@@ -91,6 +91,7 @@ for ($i = 0; $i < count($barcodeArr); $i++) {
 }
 
 // 재고 입력/수정
+$ws_scheduled_qty = $ct_row['ct_qty_for_rollback'] - $new_delivered_qty;
 if (!$wh_row) {
   $sql = "
       insert into
@@ -101,8 +102,8 @@ if (!$wh_row) {
         io_type = '{$ct_row['io_type']}',
         it_name = '{$ct_row['it_name']}',
         ws_option = '{$ct_row['ct_option']}',
-        ws_qty = '{$ct_row['ct_delivered_qty']}',
-        ws_scheduled_qty = '0',
+        ws_qty = '{$new_delivered_qty}',
+        ws_scheduled_qty = '{$ws_scheduled_qty}',
         mb_id = '{$ct_row['mb_id']}',
         ws_memo = '주문 발주완료({$od_id})',
         wh_name = '{$ct_row['ct_warehouse']}',
@@ -113,7 +114,6 @@ if (!$wh_row) {
         ws_updated_at = NOW()
     ";
 } else {
-  $ws_scheduled_qty = $ct_row['ct_qty_for_rollback'] - $new_delivered_qty;
   $sql = "
       UPDATE warehouse_stock
       SET
