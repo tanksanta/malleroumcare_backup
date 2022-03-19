@@ -180,7 +180,10 @@ if ( $where2 || $where ) {
   }
 }
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_id, it_name, ct_status, ct_manager, ct_qty, ct_delivered_qty, ct_delivery_num, ct_warehouse from purchase_cart) B
+$sql = "select 
+          count(od_id) as cnt, 
+          ct_status, 
+        from (select ct_id as cart_ct_id, od_id as cart_od_id, it_id, it_name, ct_status, ct_manager, ct_qty, ct_delivered_qty, ct_delivery_num, ct_warehouse from purchase_cart) B
         inner join purchase_order A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C on A.mb_id = C.mb_id_temp
         left join (select it_id as it_id_temp, ProdPayCode from g5_shop_item) D ON B.it_id = D.it_id_temp
@@ -206,7 +209,14 @@ $result = sql_query($sql, true);
 
 $orderlist = array();
 while( $row = sql_fetch_array($result) ) {
-  $sql = "SELECT c.*, i.it_model FROM purchase_cart as c LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id WHERE c.od_id = '{$row['od_id']}'";
+  $sql = "
+    SELECT 
+       c.*, 
+       i.it_model
+    FROM purchase_cart as c 
+    LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id 
+    WHERE c.od_id = '{$row['od_id']}'
+  ";
   $cart_result = sql_query($sql);
   $row['cart'] = array();
   while ( $row2 = sql_fetch_array($cart_result) ) {
@@ -234,7 +244,13 @@ $now_step = $last_step ? $last_step : '';
 $foreach_i = 0;
 foreach($orderlist as $order) {
   // cart_table  기준 정렬
-  $sql_ct = "select * from `purchase_cart` where `ct_id` ='".$order['cart_ct_id']."'";
+  $sql_ct = "
+    SELECT
+    c.*,
+    (SELECT count(*) FROM g5_cart_barcode cb WHERE cb.pc_id = c.ct_id AND bc_status IN ('이미출고', '관리자삭제')) AS bc_warning_count
+    FROM purchase_cart c 
+    WHERE c.ct_id = '{$order['cart_ct_id']}'
+  ";
   $result_ct = sql_fetch($sql_ct);
 
 
@@ -382,6 +398,8 @@ foreach($orderlist as $order) {
   $ret["data"][$foreach_i]["ct_id"] = $order['cart_ct_id'];
 
   $ret["data"][$foreach_i]["ct_warehouse"] = $order['ct_warehouse'];
+
+  $ret["data"][$foreach_i]["bc_warning_count"] = $result_ct['bc_warning_count'];
   
   $foreach_i++;
 }
