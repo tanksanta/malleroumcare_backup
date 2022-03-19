@@ -78,7 +78,7 @@ for ($i = 0; $i < count($barcodeArr); $i++) {
   $sql = "
     insert into g5_cart_barcode
     set
-      pc_id = '{$ct_id}',
+      pct_id = '{$ct_id}',
       it_id = '{$ct_row['it_id']}',
       io_id = '{$ct_row['io_id']}',
       bc_barcode = '{$barcodeArr[$i]['barcode']}',

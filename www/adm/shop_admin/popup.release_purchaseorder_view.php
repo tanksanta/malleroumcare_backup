@@ -850,7 +850,7 @@ $ct = sql_fetch($sql);
 
   <!-- 바코드 영역 (등록 완료) -->
   <?php
-  $sql = "select * from g5_cart_barcode where bc_del_yn = 'N' and pc_id = '{$ct['ct_id']}' order by bc_id asc ";
+  $sql = "select * from g5_cart_barcode where bc_del_yn = 'N' and pct_id = '{$ct['ct_id']}' order by bc_id asc ";
   $result = sql_query($sql);
   $complete_count = sql_num_rows($result);
   ?>

@@ -247,7 +247,7 @@ foreach($orderlist as $order) {
   $sql_ct = "
     SELECT
     c.*,
-    (SELECT count(*) FROM g5_cart_barcode cb WHERE cb.pc_id = c.ct_id AND bc_status IN ('이미출고', '관리자삭제')) AS bc_warning_count
+    (SELECT count(*) FROM g5_cart_barcode cb WHERE cb.pct_id = c.ct_id AND bc_status IN ('이미출고', '관리자삭제')) AS bc_warning_count
     FROM purchase_cart c 
     WHERE c.ct_id = '{$order['cart_ct_id']}'
   ";
