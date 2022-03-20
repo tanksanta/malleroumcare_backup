@@ -78,6 +78,20 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
     #listDataWrap > ul > li.barInfo { height: 50px; line-height: 48px; border: 1px solid #DEDEDE; border-radius: 5px; text-align: center; margin-top: 15px; cursor: pointer; }
     #listDataWrap > ul > li.barInfo > .cnt { color: #666; font-weight: bold; font-size: 16px; }
     #listDataWrap > ul > li.barInfo > .label { position: absolute; height: 100%; right: 15px; top: 0; font-size: 12px; color: #FF690F; font-weight: bold; }
+    #listDataWrap > ul > li.barInfo > .bc_warning {
+      position: absolute;
+      left: 15px;
+      top: 9px;
+      width: 31px;
+      height: 31px;
+      font-size: 20px;
+      line-height: 30px;
+      color: red;
+      background: #ffff42;
+      font-weight: bold;
+      border: 1px solid red;
+      border-radius: 100%;
+    }
     #listDataWrap > ul > li.barInfo.active { border-color: #FF690F; }
     #listDataWrap > ul > li.barInfo.active > .cnt { color: #FF690F; }
     #listDataWrap > ul > li.barInfo.disable { border-color: #B8B8B8; background-color: #B8B8B8; }
@@ -272,8 +286,11 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
           html += '</li>';
           // html += '<li class="barInfo barcode_box ' + row.od_barcode_class + '" data-id="' + row.od_id + '" data-stock="2" data-it="'+row.ct_it_id+'"  data-option="'+row.ct_option+'" >';
           html += '<li class="barInfo ' + row.od_barcode_class + '" data-id="' + row.od_id + '" data-ct-id="'+row.ct_id + '" >';
+          if (Number(row.bc_warning_count) > 0) {
+            html += '<span class="bc_warning">!</span>';
+          }
           html += '<span class="cnt">' + row.od_barcode_name + '</span>';
-          if(row.edit_status) {
+          if (row.edit_status) {
             html += '<span class="label">작업중</span>';
           }
           html += '</li>';

@@ -455,6 +455,10 @@ $ct = sql_fetch($sql);
       border-color: #FF5858;
     }
 
+    .folding_box > .inputbox > li > .frm_input.select {
+      background: #E4E4E4;
+    }
+
     .folding_box > .inputbox > li > .frm_input::placeholder {
       font-size: 16px;
       color: #AAA;
@@ -733,6 +737,7 @@ $ct = sql_fetch($sql);
 
     .barcodeList .top-area {
       margin-bottom: 20px;
+      min-height: 30px;
     }
 
     .barcodeList .top-area .arrow-wrap {
@@ -742,11 +747,6 @@ $ct = sql_fetch($sql);
 
     .barcodeList .top-area .arrow-wrap img {
       width: 13px;
-    }
-
-    .barcodeList.complete .frm_input.start,
-    .barcodeList.complete .frm_input.end {
-      background: #f2f2f2;
     }
 
     #loading {
@@ -850,7 +850,7 @@ $ct = sql_fetch($sql);
 
   <!-- 바코드 영역 (등록 완료) -->
   <?php
-  $sql = "select * from g5_cart_barcode where bc_del_yn = 'N' and pc_id = '{$ct['ct_id']}' order by bc_id asc ";
+  $sql = "select * from g5_cart_barcode where bc_del_yn = 'N' and pct_id = '{$ct['ct_id']}' order by bc_id asc ";
   $result = sql_query($sql);
   $complete_count = sql_num_rows($result);
   ?>
@@ -858,7 +858,7 @@ $ct = sql_fetch($sql);
     <div class="top-area flex-row justify-space-between full-width">
       <div class="flex-row align-center">
         <p>등록완료 (<?php echo $complete_count ?>)</p>
-        <button class="input_btn type1" onclick="alert('TODO')">선택 바코드 등록 취소</button>
+        <button id="cancelSelectBarcodeBtn" class="input_btn type1" onclick="cancelBarcodeBulk(event)" style="display: none">선택 바코드 등록 취소</button>
       </div>
       <div class="flex-row align-center">
         <div class="arrow-wrap">
@@ -874,9 +874,9 @@ $ct = sql_fetch($sql);
           $img_active = ($row['bc_status'] == '이미출고' || $row['bc_status'] == '관리자삭제') ? 'active' : '';
         ?>
           <li>
-            <input type="text" value="<?php echo $row['bc_barcode'] ?>" class="notall frm_input" maxlength="12" readonly>
+            <input type="text" data-id="<?php echo $row['bc_id'] ?>" value="<?php echo $row['bc_barcode'] ?>" class="notall frm_input" maxlength="12" readonly>
             <img class="barcode_icon type2 <?php echo $img_active?>" src="/img/barcode_icon_2.png" alt="등록가능 (이미 출고, 관리자 삭제)">
-            <button class="input_btn type2" onclick="alert('TODO')">등록 취소</button>
+            <button class="input_btn type2" onclick="cancelBarcode(this)">등록 취소</button>
           </li>
           <?php
         }
@@ -1111,7 +1111,100 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
         $(this).closest('.barcodeList').find('.barcode-area').hide();
       }
     })
+
+    // 바코드 선택 삭제
+    $('.folding_box.complete .frm_input').on('click', function() {
+      var allBarcodes = $('.folding_box.complete .frm_input');
+      var start = $('.folding_box.complete .frm_input.start').length;
+      var end = $('.folding_box.complete .frm_input.end').length;
+      var startNode = $('.folding_box.complete .frm_input.start');
+      var endNode = $('.folding_box.complete .frm_input.end');
+      var thisNode = $(this);
+      var startIndex = start ? allBarcodes.index(startNode) : -1;
+      var endIndex = end ? allBarcodes.index(endNode) : -1;
+      var thisIndex = allBarcodes.index($(this));
+
+      // 시작과 끝이 있는 경우
+      if (start && end) {
+        // 시작보다 낮은 바코드를 눌렀을 경우
+        if (thisIndex < startIndex) {
+          startNode.removeClass('start');
+          thisNode.addClass('start');
+        }
+
+        // 시작보다 높고 끝보다 낮은 바코드를 눌럿을 경우
+        if (startIndex < thisIndex && thisIndex < endIndex) {
+          endNode.removeClass('end');
+          thisNode.addClass('end');
+        }
+
+        // 끝보다 높은 바코드를 눌렀을 경우
+        if (endIndex < thisIndex) {
+          endNode.removeClass('end');
+          thisNode.addClass('end');
+        }
+
+        // 시작과 끝 바코드를 눌렀다면 모두 취소
+        if (thisIndex === startIndex || thisIndex === endIndex) {
+          startNode.removeClass('start');
+          endNode.removeClass('end');
+        }
+      }
+
+      // 시작만 있는 경우
+      if (start && !end) {
+        // 시작보다 낮은 바코드를 눌렀을 경우
+        if (thisIndex < startIndex) {
+          startNode.removeClass('start');
+          thisNode.addClass('start');
+          startNode.addClass('end');
+        }
+
+        // 시작보다 높은 바코드를 눌렀을 경우
+        if (thisIndex > startIndex) {
+          $(this).addClass('end');
+        }
+      }
+
+      // 아무것도 없는 경우
+      if (!start && !end) {
+        $(this).addClass('start');
+      }
+
+      addSelectClassBarcode();
+    });
   })
+
+  function addSelectClassBarcode() {
+    var allBarcodes = $('.folding_box.complete .frm_input');
+    var start = $('.folding_box.complete .frm_input.start').length;
+    var end = $('.folding_box.complete .frm_input.end').length;
+    var startNode = $('.folding_box.complete .frm_input.start');
+    var endNode = $('.folding_box.complete .frm_input.end');
+    var startIndex = start ? allBarcodes.index(startNode) : -1;
+    var endIndex = end ? allBarcodes.index(endNode) : -1;
+
+    allBarcodes.removeClass('select');
+
+    if (start && end) {
+      allBarcodes.each(function(key, val) {
+        if (startIndex <= allBarcodes.index($(this))
+          && allBarcodes.index($(this)) <= endIndex ) {
+          $(this).addClass('select');
+        }
+      });
+    }
+
+    if (start && !end) {
+      startNode.addClass('select');
+    }
+
+    if ($('.folding_box.complete .frm_input.select').length > 0) {
+      $('#cancelSelectBarcodeBtn').show();
+    } else {
+      $('#cancelSelectBarcodeBtn').hide();
+    }
+  }
 
   function getUrlParams() {
     var params = {};
@@ -1199,6 +1292,10 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
   }
 
   function submit() {
+    if (!confirm('저장하시겠습니까?')) {
+      return;
+    }
+
     showLoading(true);
 
     setTimeout(function() {
@@ -1219,11 +1316,6 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
 
     if (delivered_qty > CT_QTY || delivered_qty === 0) {
       alert('입고수량은 0이 아니어야 하며, 발주 수량 이하 값이어야 합니다.');
-      return;
-    }
-
-    if (!confirm('저장하시겠습니까?')) {
-      showLoading(false);
       return;
     }
 
@@ -1610,6 +1702,63 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
 
         notallLengthCheck(false);
       }
+    });
+  }
+
+  function cancelBarcodeBulk(e) {
+    e.stopPropagation();
+
+    if (!confirm('선택한 바코드를 모두 등록 취소하시겠습니까?')) {
+      return;
+    }
+
+    var cancelBarcodeList = [];
+    $('.folding_box.complete .frm_input.select').each(function() {
+      cancelBarcodeList.push($(this).data('id'));
+    })
+
+    $.ajax({
+      url: './ajax.barcode_cancel.php',
+      type: 'POST',
+      async: false,
+      data: {
+        pod_id: '<?=$od_id?>',
+        pct_id: '<?=$ct_id?>',
+        bc_id: cancelBarcodeList,
+      },
+      dataType: 'json',
+    })
+    .done(function() {
+      location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+  }
+
+  function cancelBarcode(_this) {
+    if (!confirm('해당 바코드를 등록 취소하시겠습니까?')) {
+      return;
+    }
+
+    $.ajax({
+      url: './ajax.barcode_cancel.php',
+      type: 'POST',
+      async: false,
+      data: {
+        pod_id: '<?=$od_id?>',
+        pct_id: '<?=$ct_id?>',
+        bc_id: $(_this).closest('li').find('.frm_input').data('id'),
+      },
+      dataType: 'json',
+    })
+    .done(function() {
+      location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
     });
   }
 </script>
