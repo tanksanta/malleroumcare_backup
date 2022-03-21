@@ -777,6 +777,76 @@ $ct = sql_fetch($sql);
       position: relative;
       top: -25px;
     }
+
+    #barcodeHistory {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+    }
+
+    #barcodeHistory .mask {
+      background: rgba(0, 0, 0, 0.7);
+      width: 100%;
+      height: 100%;
+      position: absolute;
+    }
+
+    #barcodeHistory .historyContent {
+      position: absolute;
+      width: 100%;
+      height: 40%;
+      bottom: 0;
+      left: 0;
+      background: #fff;
+      padding: 50px 20px 10px;
+    }
+
+    #barcodeHistory .historyContent .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px 20px;
+      border-bottom: 1px solid #d9d9d9;
+    }
+
+    #barcodeHistory .historyContent .barcode {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    #barcodeHistory .historyContent .close {
+      font-size: 37px;
+      width: 33px;
+      height: 33px;
+      line-height: 33px;
+      background: none;
+      position: relative;
+      top: -3px;
+    }
+
+    #barcodeHistory .historyContent .content {
+      margin-top: 5px;
+      height: 100%;
+      overflow-y: scroll;
+    }
+
+    #barcodeHistory .historyContent li {
+      border-bottom: 1px solid #d9d9d9;
+      padding: 10px 0;
+    }
+
+    #barcodeHistory .historyContent li .subtitle {
+      font-size: 13px;
+    }
+
+    #barcodeHistory .historyContent li .title {
+      font-size: 17px;
+    }
   </style>
 
   <?php if ($isPop) { ?>
@@ -1024,6 +1094,32 @@ while($row = sql_fetch_array($result)) {
   </div>
 </div>
 
+<div id="barcodeHistory">
+  <div class="mask"></div>
+  <div class="historyContent">
+    <div class="header flex-row justify-space-between align-center">
+      <div class="barcode">barcode</div>
+      <button class="close" onclick="closeBarcodeHistory()">×</button>
+    </div>
+    <div class="content">
+      <ul>
+        <li>
+          <p class="subtitle">2022-01-01 13:11 홍길동 담당자</p>
+          <p class="title">상품 출고 (NO 222222)</p>
+        </li>
+        <li>
+          <p class="subtitle">2022-01-01 13:11 홍길동 담당자</p>
+          <p class="title">상품 출고 (NO 222222)</p>
+        </li>
+        <li>
+          <p class="subtitle">2022-01-01 13:11 홍길동 담당자</p>
+          <p class="title">상품 출고 (NO 222222)</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
 <?php
 
 if (!$member['mb_id']) {
@@ -1172,6 +1268,12 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
       }
 
       addSelectClassBarcode();
+    });
+
+    $('.barcode_icon.type2, .barcode_icon.type3').on('click', function() {
+      var barcode = $(this).closest('li').find('.frm_input').val();
+
+      showBarcodeHistory(barcode);
     });
   })
 
@@ -1760,6 +1862,62 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
       var data = $xhr.responseJSON;
       alert(data && data.message);
     });
+  }
+
+  function showBarcodeHistory(barcode) {
+    var data = null;
+
+    $('#barcodeHistory .header .barcode').empty();
+    $('#barcodeHistory .content ul').empty();
+
+    $.ajax({
+      url: './ajax.barcode_history.php',
+      type: 'POST',
+      async: false,
+      data: {
+        barcode: barcode,
+      },
+      dataType: 'json',
+    })
+    .done(function(result) {
+      data = result.data;
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+
+    $('#barcodeHistory').show();
+    $('#barcodeHistory .header .barcode').text(barcode);
+
+    if (data.length > 0) {
+      var subtitle = '';
+      var title = '';
+      var html = '';
+
+      $('body').css('overflow', 'hidden');
+
+      data.forEach(function (obj) {
+        html = '';
+        subtitle = obj.created_at + ' ' + obj.mb_name + ' 담당자';
+        title = obj.bch_content;
+
+        html += '<li>'
+        html += '<p class="subtitle">' + subtitle + '</p>'
+        html += '<p class="title">' + title + '</p>'
+        html += '</li>'
+      });
+
+    } else {
+      html = '<li>내역이 없습니다.</li>';
+    }
+
+    $('#barcodeHistory .content ul').append(html);
+  }
+
+  function closeBarcodeHistory() {
+    $('body').css('overflow', 'auto');
+    $('#barcodeHistory').hide();
   }
 </script>
 
