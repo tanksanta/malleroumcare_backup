@@ -288,7 +288,7 @@ if($is_main && !$is_member) {
             <a href="/shop/release_purchaseorderlist.php" class="btn_orderlist purchaseorderlist">관리자 구매발주 관리</a>
           <?php } ?>
           <?php if(check_auth($member['mb_id'], '400480', 'w')) { ?>
-            <a href="#" class="btn_orderlist stocklist" onclick="alert('TODO');">보유재고 관리</a>
+            <a href="/shop/release_stocklist.php" class="btn_orderlist stocklist">보유재고 관리</a>
           <?php } ?>
           <div class="user_info_area">
             <a href="<?=$at_href['edit'];?>" class="btn_small btn_edit">정보수정</a>
