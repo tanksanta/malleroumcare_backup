@@ -4,7 +4,44 @@
 include_once("./_common.php");
 //auth_check($auth[$sub_menu], "r");
 
-$g5["title"] = "재고관리";
+$g5["title"] = "재고확인";
+
+if (!$it_id) {
+  alert('올바른 접근이 아닙니다');
+}
+
+$where = "WHERE it_id = '${it_id}' ";
+
+if ($io_id) {
+  $where .= " AND io_id = '{$io_id}' ";
+}
+
+$sql = "
+  SELECT
+   T.*
+  FROM
+  (SELECT
+    (SELECT 
+      IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) 
+    FROM warehouse_stock 
+    WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
+    (SELECT count(*)
+      FROM g5_cart_barcode
+      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty,
+    a.*,
+    b.io_type,
+    b.io_id
+  FROM
+    (SELECT
+      it_id,
+      it_name,
+      it_use,
+      it_option_subject
+    FROM g5_shop_item i) AS a
+  LEFT JOIN (SELECT * from g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)) AS T 
+  {$where}
+";
+$row = sql_fetch($sql);
 
 ?>
 <!DOCTYPE html>
@@ -13,7 +50,7 @@ $g5["title"] = "재고관리";
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>재고관리</title>
+  <title><?php echo $g5["title"] ?></title>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <script src="/js/barcode_utils.js"></script>
   <link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
@@ -37,7 +74,7 @@ $g5["title"] = "재고관리";
 
     body {
       padding-top: 60px;
-      padding-bottom: 70px;
+      padding-bottom: 200px;
     }
 
     a {
@@ -156,17 +193,6 @@ $g5["title"] = "재고관리";
       opacity: 0;
     }
 
-    #popupBody #searchForm input[type="checkbox"]:checked + label .icon i {
-      opacity: 1;
-    }
-
-    #popupBody #searchForm span.label {
-      display: inline-block;
-      font-size: 14px;
-      color: #666;
-      margin-right: 10px;
-    }
-
     #popupBody .searchFormTop .barcodeSearch {
       display: inline-block;
       font-weight: bold;
@@ -179,10 +205,6 @@ $g5["title"] = "재고관리";
       height: 30px;
       vertical-align: middle;
       float: right;
-    }
-
-    #popupBody #searchOption {
-      margin-right: 10px;
     }
 
     #popupBody #searchSubmitBtn {
@@ -202,76 +224,103 @@ $g5["title"] = "재고관리";
       padding: 20px;
     }
 
-    #popupBody .warning_icon {
-      font-size: 15px;
-      width: 21px;
-      height: 21px;
-      background: yellow;
-      display: inline-block;
-      vertical-align: top;
-      border-radius: 100%;
-      border: 1px solid red;
-      text-align: center;
-      color: red;
-      margin-left: 4px;
-    }
-
-    #popupBody #content .name {
-      width: 60%;
-    }
-
-    #popupBody #content .stockQty {
-      width: 20%;
-      text-align: center;
-    }
-
-    #popupBody #content .barcodeQty {
-      width: 20%;
-      text-align: center;
-    }
-
-    #popupBody #content li {
+    #popupBody .listContent li {
       border-bottom: 1px solid #dfdfdf;
       padding: 13px 0;
       font-size: 14px;
     }
 
-    #popupBody #content .listHeader li:first-of-type {
+    #popupBody .listContent li:first-of-type {
       border-top: 1px solid #dfdfdf;
-      padding: 8px 0;
     }
 
-    #popupBody .listContent li {
-      cursor: pointer;
+    #popupBody .listContent .barcode {
+      width: 70%;
     }
 
-    #loading {
-      display: none;
-      background-color: rgba(0,0,0,0.7);
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: +100 !important;
-      width: 100%;
-      height: 100%;
-    }
-
-    #loading > div {
-      position: relative;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+    #popupBody .listContent .check_status {
+      width: 20%;
       text-align: center;
     }
 
-    #loading img {
-      width: 40%;
+    #popupBody .listContent .more {
+      width: 10%;
+      text-align: center;
+      font-size: 26px;
     }
 
-    #loading p {
+    #popupBody .listContent .more .select {
+      position: absolute;
+      top: 38px;
+      right: 0;
+      width: 100px;
+      color: #95b3d7;
+      display: none;
+      z-index: 1;
+    }
+
+    #popupBody .listContent .more .select li {
+      padding: 8px 0;
+      border: 1px solid #95b3d7;
+      border-bottom: 0;
+      background: #fff;
+    }
+
+    #popupBody .listContent .more .select li:last-of-type {
+      border-bottom: 1px solid #95b3d7;
+    }
+
+    #popupBody .listContent li.removed .barcode {
+      color: #bfbfbf;
+    }
+
+    #popupBody .listContent li.removed .check_status span {
+      color: #f00;
+    }
+
+    #popupBody .listContent li.newAdd .check_status span {
+      border: 1px solid #95b3d7;
+      background: #dce6f2;
+      color: #95b3d7;
+      padding: 2px 8px;
+    }
+
+    #popupBody .listContent li.unchecked .check_status span {
+      color: #bfbfbf;
+    }
+
+    /* 고정 하단 */
+    #popupFooterBtnWrap {
+      position: fixed;
+      width: 100%;
+      background-color: #000;
+      bottom: 0px;
+      z-index: 10;
+      padding: 10px 20px;
       color: #fff;
-      position: relative;
-      top: -25px;
+    }
+
+    #popupFooterBtnWrap button {
+      font-size: 15px;
+      font-weight: 700;
+      width: 100px;
+      padding: 5px 0;
+    }
+
+    #popupFooterBtnWrap > .checkBtn {
+      float: left;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      color: #FFF;
+    }
+
+    #popupFooterBtnWrap > .cancelbtn {
+      float: right;
+      width: 25%;
+      height: 100%;
+      color: #666;
+      background-color: #DDD;
     }
 
   </style>
@@ -281,107 +330,126 @@ $g5["title"] = "재고관리";
 
 <!-- 고정 상단 -->
 <div id="popupHeaderTopWrap">
-  <div class="title">재고관리</div>
+  <div class="title"><?php echo $g5["title"] ?></div>
   <div class="close">
-    <a href="javascript:history.back();">
+    <a href="javascript:window.close();">
       &times;
     </a>
   </div>
 </div>
 
 <?php
-$sql = "
-  SELECT
-    count(*) AS cnt
-  FROM
-    (SELECT
-        it_id,
-        it_name,
-        it_use
-      FROM g5_shop_item i) AS a
-  LEFT JOIN (SELECT * FROM g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)
-";
-$item_count = sql_fetch($sql)['cnt'];
+$option = '';
+$option_br = '';
+if ($row['io_type']) {
+  $opt = explode(chr(30), $row['io_id']);
+  if ($opt[0] && $opt[1])
+    $option .= $opt[0] . ' : ' . $opt[1];
+} else {
+  $subj = explode(',', $row['it_option_subject']);
+  $opt = explode(chr(30), $row['io_id']);
+  for ($k = 0; $k < count($subj); $k++) {
+    if ($subj[$k] && $opt[$k]) {
+      $option .= $option_br . $subj[$k] . ' : ' . $opt[$k];
+      $option_br = ' / ';
+    }
+  }
+}
 
-$sql = "
-  SELECT
-    (SUM(ws_qty) - SUM(ws_scheduled_qty)) AS ws_qty
-  FROM
-    warehouse_stock
-  WHERE
-    ws_del_yn = 'N'
-";
-$stock_count = sql_fetch($sql)['ws_qty'];
+$full_it_name = $row['it_name'];
+if ($option) {
+  $full_it_name .= " ({$option})";
+}
 
-$sql = "
-  SELECT count(*) AS cnt
-  FROM g5_cart_barcode
-  WHERE bc_del_yn = 'N'
-";
-$barcode_count = sql_fetch($sql)['cnt'];
 ?>
 
 <div id="popupBody">
   <div id="searchForm">
     <div class="searchFormTop flex-row justify-space-between">
-      <div style="width: 70%">
-        상품 : <?php echo $item_count ?>개<br/>보유 : <?php echo $stock_count ?>개 (바코드 <?php echo $barcode_count ?>개)
+      <div style="width: 100%">
+        <?php echo $full_it_name ?><br/>
+        <span style="font-size: 13px">재고수량 : 200 / 바코드 : 201<br/> 마지막 확인 일시 : 2022-02-02 13:00</span>
       </div>
-      <a href="javascript:alert('TODO');" class="barcodeSearch nativeDeliveryPopupOpenBtn" style="width: 30%">
-        주문찾기
-        <img src="/img/bacod_img.png">
-      </a>
     </div>
 
     <div class="flex-row" style="margin-top: 20px">
-      <select name="search_option" id="searchOption">
-        <!-- <option value="">선택하세요</option> -->
-        <option value="all" <?php echo !$search_option ? "selected" : ''; ?>>전체</option>
-        <option value="it_name" <?php echo $search_option == 'od_b_name' ? 'selected' : ''; ?>>상품명</option>
-        <option value="io_id" <?php echo $search_option == 'it_name' ? 'selected' : ''; ?>>옵션명</option>
-        <option value="it_id" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>상품코드</option>
+      <select name="sort_option" id="sortOption" style="width: 100%">
+        <option>미 확인 바코드가 위로 정렬</option>
+        <option>신규 바코드가 위로 정렬</option>
+        <option>삭제된 바코드가 위로 정렬</option>
+        <option>바코드 내림차순 정렬</option>
+        <option>바코드 오름차순 정렬</option>
       </select>
-      <input type="text" name="search_text" id="search_text" placeholder="검색명 입력" value="<?php echo $search_text; ?>">
-      <button type="button" id="searchSubmitBtn" onclick="search()">검색</button>
-    </div>
-    <div style="margin-top: 20px">
-      <input type="checkbox" id="cf_flag" value="true">
-      <label for="cf_flag">
-        <span class="icon">
-          <i class="fa fa-check"></i>
-        </span>
-        <span class="label">보유 재고와 바코드 수량이 상이한 상품만 보기</span>
-      </label>
     </div>
   </div>
 
   <div id="content">
-    <ul class="listHeader">
-      <li class="flex-row align-center">
-        <div class="name">상품명(옵션명)</div>
-        <div class="stockQty">보유재고</div>
-        <div class="barcodeQty">바코드</div>
-      </li>
-    </ul>
     <ul class="listContent">
-      <li class="flex-row align-center">
-        <div class="name">아이템 <span class="warning_icon">!</span></div>
-        <div class="stockQty">100</div>
-        <div class="barcodeQty">101</div>
+      <li class="flex-row align-center checked" data-bc_id="1">
+        <div class="barcode">바코드</div>
+        <div class="check_status">
+          <img src="/img/barcode_icon_1.png" />
+        </div>
+        <div class="more">
+          <span>⋮</span>
+          <ul class="select">
+            <li class="check">확인함</li>
+            <li class="delete">삭제함</li>
+          </ul>
+        </div>
       </li>
-      <li class="flex-row align-center">
-        <div class="name">아이템</div>
-        <div class="stockQty">100</div>
-        <div class="barcodeQty">100</div>
+      <li class="flex-row align-center removed" data-bc_id="2">
+        <div class="barcode">바코드</div>
+        <div class="check_status">
+          <span>삭제됨</span>
+        </div>
+        <div class="more">
+          <span>⋮</span>
+          <ul class="select">
+            <li class="check">확인함</li>
+            <li class="delete">삭제함</li>
+          </ul>
+        </div>
+      </li>
+      <li class="flex-row align-center newAdd" data-bc_id="3">
+        <div class="barcode">바코드</div>
+        <div class="check_status">
+          <span>신규</span>
+        </div>
+        <div class="more">
+          <span>⋮</span>
+          <ul class="select">
+            <li class="check">확인함</li>
+            <li class="delete">삭제함</li>
+          </ul>
+        </div>
+      </li>
+      <li class="flex-row align-center unchecked" data-bc_id="4">
+        <div class="barcode">바코드</div>
+        <div class="check_status">
+          <span>미확인</span>
+        </div>
+        <div class="more">
+          <span>⋮</span>
+          <ul class="select">
+            <li class="check">확인함</li>
+            <li class="delete">삭제함</li>
+          </ul>
+        </div>
       </li>
     </ul>
   </div>
 </div>
 
-<div id="loading" style="display: none">
-  <div>
-    <img src="../adm/shop_admin/img/ajax-loading.gif" class="img-responsive">
-    <p>잠시만 기다려주세요...</p>
+<!-- 고정 하단 -->
+<div id="popupFooterBtnWrap">
+  <div class="flex-row justify-space-between align-center" style="margin-bottom: 20px">
+    <p>확인중 (0/200)</p>
+    <button>완료</button>
+  </div>
+  <div class="flex-row justify-space-between" style="padding: 0 30px">
+    <button>PDA</button>
+    <button>APP</button>
   </div>
 </div>
 
@@ -402,20 +470,17 @@ if (!$member['mb_id']) {
   var cur_it_id = null;
 
   $(function() {
-    getData();
+    // getData();
 
     // 인피니티 스크롤
     $(window).scroll(function () {
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9) {
-        getData();
+        // getData();
       }
     });
 
-    $(document).on('click', '.listContent li', function () {
-      var it_id = $(this).data('it_id');
-      var io_id = $(this).data('io_id');
-
-      window.open('./release_stockview.php?it_id=' + it_id + '&io_id=' + io_id, '_blank');
+    $(document).on('click', '.listContent .more', function () {
+      $(this).find('.select').toggle();
     });
   });
 
@@ -494,6 +559,10 @@ if (!$member['mb_id']) {
     } else if (type === 'pda') {
       $('#pda-scanner-opener').click();
     }
+  }
+
+  function gotoStockCheck() {
+
   }
 
   function sendBarcode(text) {

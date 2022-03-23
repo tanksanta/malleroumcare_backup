@@ -103,7 +103,7 @@ while ($row = sql_fetch_array($result)) {
     $warning_icon = '<span class="warning_icon">!</span>';
   }
 ?>
-  <li class="flex-row align-center">
+  <li class="flex-row align-center" data-it_id="<?php echo $row['it_id'] ?>" data-io_id="<?php echo $row['io_id'] ?>">
     <div class="name"><?php echo $row['it_name'] ?> <?php echo $option ? "({$option})" : '' ?> <?php echo $warning_icon ?></div>
     <div class="stockQty"><?php echo $row['sum_ws_qty'] ?></div>
     <div class="barcodeQty"><?php echo $row['sum_barcode_qty'] ?></div>
