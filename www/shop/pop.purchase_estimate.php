@@ -615,7 +615,7 @@ function go_send() {
 
     $.ajax({
         method: "POST",
-        url: "/adm/shop_admin/ajax.estimate.send.php",
+        url: "/adm/shop_admin/ajax.purchase_estimate.send.php",
         data: {
             od_id: od_id,
             email_chk: email_chk,

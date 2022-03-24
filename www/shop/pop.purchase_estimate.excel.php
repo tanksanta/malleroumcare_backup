@@ -191,7 +191,7 @@ td  {mso-number-format:\@;}
 </tr>
 <tr>
 	<td colspan="5"></td>
-	<td colspan="7" align="center"><span style="font-size:26px;font-weight:bold;color:#000;"><?php echo $est['est_title'] ? $est['est_title'] : '구&nbsp;&nbsp;&nbsp;&nbsp;매&nbsp;&nbsp;&nbsp;&nbsp;발&nbsp;&nbsp;&nbsp;&nbsp;주&nbsp;&nbsp;&nbsp;&nbsp;서'; ?></span></td>
+	<td colspan="7" align="center"><span style="font-size:26px;font-weight:bold;color:#000;"><?php echo $est['est_title'] ? $est['est_title'] : '구&nbsp;&nbsp;&nbsp;매&nbsp;&nbsp;&nbsp;발&nbsp;&nbsp;&nbsp;주&nbsp;&nbsp;&nbsp;서'; ?></span></td>
 	<td colspan="5"></td>
 </tr>
 <tr height="1">
