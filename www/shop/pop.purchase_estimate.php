@@ -124,7 +124,7 @@ if ( !$od['od_name'] ) {
 
 
 
-// 견적서 정보
+// 발주서 정보
 $sql = " select * from g5_shop_order_estimate where od_id = '$od_id' ";
 $est = sql_fetch($sql);
 
@@ -265,7 +265,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
             <label for="hp_chk" style="width:70px;display:inline-block;font-size:12px;">문자 전송</label>
             <input type="text" placeholder="핸드폰번호" name="u_hp" value="<?php echo $od['od_hp']; ?>" style="vertical-align:middle;border: 1px solid #cccccc;font-size: 12px;padding: 4px 8px;height: auto;color: #656565;background-color: white;vertical-align: middle;" />
 
-	        <input type="button" style="vertical-align:middle;border: 1px solid #cccccc;font-size: 12px;cursor: pointer;padding: 4px 8px;height: auto;color: #656565;background-color: black;color:white;" value="견적서 발송" onclick="go_send();"> &nbsp; 
+	        <input type="button" style="vertical-align:middle;border: 1px solid #cccccc;font-size: 12px;cursor: pointer;padding: 4px 8px;height: auto;color: #656565;background-color: black;color:white;" value="발주서 발송" onclick="go_send();"> &nbsp;
         </div>
         <?php } ?>
         <div style="display:inline-block">
@@ -288,10 +288,10 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 	<table width="300" cellpadding="0" cellspacing="0" border="0">
 	<tr>
         <?php if ( $w == 'u') { ?>
-            <td><input type="text" name="title" value="<?php echo $est['est_title'] ? $est['est_title'] : '견&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;적&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;서'; ?>" style="border:0px; font-weight:bold; font-size:12px; width:300px;font-size:26px;font-weight:bold;color:#000;text-align: center;"></td>
+            <td><input type="text" name="title" value="<?php echo $est['est_title'] ? $est['est_title'] : '구&nbsp;&nbsp;&nbsp;&nbsp;매&nbsp;&nbsp;&nbsp;&nbsp;발&nbsp;&nbsp;&nbsp;&nbsp;주&nbsp;&nbsp;&nbsp;&nbsp;서'; ?>" style="border:0px; font-weight:bold; font-size:12px; width:300px;font-size:26px;font-weight:bold;color:#000;text-align: center;"></td>
         <?php }else{ ?>
             <td style="border:0px; font-weight:bold; font-size:12px; width:300px;font-size:26px;font-weight:bold;color:#000;text-align: center;">
-                <?php echo $est['est_title'] ? $est['est_title'] : '견&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;적&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;서'; ?>
+                <?php echo $est['est_title'] ? $est['est_title'] : '구&nbsp;&nbsp;&nbsp;&nbsp;매&nbsp;&nbsp;&nbsp;&nbsp;발&nbsp;&nbsp;&nbsp;&nbsp;주&nbsp;&nbsp;&nbsp;&nbsp;서'; ?>
             </td>
         <?php } ?>
 	</tr>
@@ -322,7 +322,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 		<tr><td height="1" bgcolor="000000"></td></tr>
 		<tr><td height="30"></td></tr>
 		<tr>
-			<td colspan="2"><span style="font-size:16px;letter-spacing:0px;">아래와 같이 견적합니다.</span></td>
+			<td colspan="2"><span style="font-size:16px;letter-spacing:0px;">아래와 같이 발주합니다.</span></td>
 		</tr>
 		</table>
 

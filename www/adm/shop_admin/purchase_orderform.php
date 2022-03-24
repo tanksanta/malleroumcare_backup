@@ -732,7 +732,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
         고객코드: <?php echo $customer_code; ?> (<?php echo $customer_code_step; ?>)
         <br/><br/>
         <a class="shbtn send_estimate">
-          견적서 전송
+          구매발주서 전송
         </a>
       </div>
       <div class="block">

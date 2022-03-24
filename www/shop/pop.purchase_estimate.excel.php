@@ -103,7 +103,7 @@ $amount['cancel'] = $od['od_cancel_price'];
 
 
 
-// 견적서 정보
+// 발주서 정보
 $sql = " select * from g5_shop_order_estimate where od_id = '$od_id' ";
 $est = sql_fetch($sql);
 
@@ -191,7 +191,7 @@ td  {mso-number-format:\@;}
 </tr>
 <tr>
 	<td colspan="5"></td>
-	<td colspan="7" align="center"><span style="font-size:26px;font-weight:bold;color:#000;"><?php echo $est['est_title'] ? $est['est_title'] : '견&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;적&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;서'; ?></span></td>
+	<td colspan="7" align="center"><span style="font-size:26px;font-weight:bold;color:#000;"><?php echo $est['est_title'] ? $est['est_title'] : '구&nbsp;&nbsp;&nbsp;&nbsp;매&nbsp;&nbsp;&nbsp;&nbsp;발&nbsp;&nbsp;&nbsp;&nbsp;주&nbsp;&nbsp;&nbsp;&nbsp;서'; ?></span></td>
 	<td colspan="5"></td>
 </tr>
 <tr height="1">
@@ -239,7 +239,7 @@ td  {mso-number-format:\@;}
 	<td colspan="2"  style="border:1px solid #000;padding: 5px;">간판 및 광고물외</td>
 </tr>
 <tr height="25">
-	<td colspan="5" align="left"><span style="font-size:16px;letter-spacing:3px;">아래와 같이 견적합니다.</span></td>
+	<td colspan="5" align="left"><span style="font-size:16px;letter-spacing:3px;">아래와 같이 발주합니다.</span></td>
 	<td colspan="4"></td>
 	<td colspan="2" align="center" style="border:1px solid #000;">TEL</td>
 	<td colspan="2"   style="border:1px solid #000;padding: 5px;"><?php echo $default['de_admin_company_tel']; ?></td>
@@ -344,7 +344,7 @@ td  {mso-number-format:\@;}
 <tr><td colspan="17" height="10"></td></tr>
 <tr height="25">
     <td colspan="17" style="border:1px solid #000;">
-        <?php echo $est['est_content'] ? nl2br($est['est_content']) : '-특기사항<br/><br/>*사업자등록증 팩스로 첨부요망(전자세금계산서 수신용 이메일 기입요망)<br/><br/>*규격품은 입금 후 당일 출고 가능<br/><br/>*주문제작시 입금 후 제작되며, 기간은 담당자와 상담후 결정<br/><br/>*데이터는 일러스트.ai 또는 .eps용 / 견적 유효기간-1개월<br/><br/>*운임: 규격품 10만원 이상구매시 택배무료, 설치비는 별도.'; ?>	
+        <?php echo $est['est_content'] ? nl2br($est['est_content']) : '-특기사항<br/><br/>*사업자등록증 팩스로 첨부요망(전자세금계산서 수신용 이메일 기입요망)<br/><br/>*규격품은 입금 후 당일 출고 가능<br/><br/>*주문제작시 입금 후 제작되며, 기간은 담당자와 상담후 결정<br/><br/>*데이터는 일러스트.ai 또는 .eps용 / 발주 유효기간-1개월<br/><br/>*운임: 규격품 10만원 이상구매시 택배무료, 설치비는 별도.'; ?>
 	</td>
 </tr>
 <tr><td colspan="17" height="10"></td></tr>
