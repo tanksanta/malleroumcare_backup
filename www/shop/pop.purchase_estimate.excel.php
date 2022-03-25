@@ -85,12 +85,28 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $sum = sql_fetch($sql);
 
     $row['sum'] = $sum;
+    $amount['order'] += $sum['price'] - $sum['discount'];
+
+    $sql_taxInfo = 'select `it_taxInfo` from `g5_shop_item` where `it_id` = "' . $options[$k]['it_id'] . '"';
+    $it_taxInfo = sql_fetch($sql_taxInfo);
+    if ($it_taxInfo['it_taxInfo'] == "과세") {
+      $money1 += $sum['price'] - $sum['discount'];
+    } else {
+      $money2 += $sum['price'] - $sum['discount'];
+    }
+
+
+    if (!$od['od_send_cost']) {
+      $od['od_send_cost'] += $sum['ct_send_cost'];
+    }
 
     $carts[] = $row;
 }
 
 // 주문금액 = 상품구입금액 + 배송비 + 추가배송비 - 할인금액 - 추가할인금액
-$amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'] - $od['od_sales_discount'];
+if ( $od['od_cart_price'] ) {
+    $amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'] - $od['od_sales_discount'];
+}
 
 // 입금액 = 결제금액 + 포인트
 $amount['receipt'] = $od['od_receipt_price'] + $od['od_receipt_point'];
@@ -270,25 +286,46 @@ td  {mso-number-format:\@;}
 </tr>
 
 <?php
-    for($i=0; $i<count($carts); $i++) { 
-    $options = $carts[$i]['options'];
+    $supplyValue = 0;
+    $valueAddedTax = 0;
+    for ($i = 0; $i < count($carts); $i++) {
+      $options = $carts[$i]['options'];
 ?>
-    <?php for($k=0; $k<count($options); $k++) { ?>
+    <?php for ($k = 0; $k < count($options); $k++) { ?>
         <tr height="28">
             <td align="center" colspan="4" style="border:1px solid #000;"><div class="goods_name"><?php echo $carts[$i]['it_name']; ?></div></td>
             <td align="center" colspan="3" style="border:1px solid #000;">
-			<?php echo $options[$k]['ct_option'] != $options[$k]['it_name'] ? '옵션: ' . $options[$k]['ct_option'] : ''; ?>
+			        <?php echo $options[$k]['ct_option'] != $options[$k]['it_name'] ? '옵션: ' . $options[$k]['ct_option'] : ''; ?>
             </td>
+            <?php
+            $sql_taxInfo = 'select `it_taxInfo` from `g5_shop_item` where `it_id` = "' . $options[$k]['it_id'] . '"';
+            $it_taxInfo = sql_fetch($sql_taxInfo);
+            if ($it_taxInfo['it_taxInfo'] == "영세") {
+              $supplyValue += (int) $options[$k]['opt_price'] * $options[$k]['ct_qty'];
+              $valueAddedTax += 0;
+            ?>
+            <td align="center" colspan="2" style="border:1px solid #000;"><?php echo $options[$k]['ct_qty']; ?></td>
+            <td align="center" colspan="3" style="border:1px solid #000;"><?php echo number_format($options[$k]['opt_price']); ?></td>
+            <td align="center" colspan="3" style="border:1px solid #000;"><?php echo number_format($options[$k]['opt_price'] * $options[$k]['ct_qty']); ?></td>
+            <td align="center" colspan="2" style="border:1px solid #000;">0</td>
+            <?php } else {
+              $supplyValue += (int) $options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty'];
+              $valueAddedTax += (int) $options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty'];
+            ?>
             <td align="center" colspan="2" style="border:1px solid #000;"><?php echo $options[$k]['ct_qty']; ?></td>
             <td align="center" colspan="3" style="border:1px solid #000;"><?php echo number_format($options[$k]['opt_price'] / 1.1); ?></td><!-- (.tot_price) 수정 : 단가이므로--> 
             <td align="center" colspan="3" style="border:1px solid #000;"><?php echo number_format($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']); ?></td>
             <td align="center" colspan="2" style="border:1px solid #000;"><?php echo number_format($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty']); ?></td>
+            <?php } ?>
         </tr>
     <?php } ?>
 <?php } ?>
 
 
-<?php if ( $od['od_send_cost'] ) { ?>
+<?php if ( $od['od_send_cost'] ) {
+  $supplyValue += (int) $od['od_send_cost'] / 1.1;
+  $valueAddedTax += (int) $od['od_send_cost'] / 1.1 / 10;
+?>
 <tr height="28">
 	<td align="center" colspan="4" style="border:1px solid #000;">배송비</td>
 	<td align="center" colspan="3" style="border:1px solid #000;"></td>
@@ -300,7 +337,10 @@ td  {mso-number-format:\@;}
 <?php } ?>
 
 
-<?php if ( $od['od_send_cost2'] ) { ?>
+<?php if ( $od['od_send_cost2'] ) {
+  $supplyValue += (int) $od['od_send_cost2'] / 1.1;
+  $valueAddedTax += (int) $od['od_send_cost2'] / 1.1 / 10;
+?>
 <tr height="28">
 	<td align="center" colspan="4" style="border:1px solid #000;">배송비</td>
 	<td align="center" colspan="3" style="border:1px solid #000;"></td>
@@ -311,7 +351,10 @@ td  {mso-number-format:\@;}
 </tr>
 <?php } ?>
 
-<?php if ( $od['od_cart_discount'] ) { ?>
+<?php if ( $od['od_cart_discount'] ) {
+  $supplyValue += (int) -1 * $od['od_cart_discount'] / 1.1;
+  $valueAddedTax += (int) -1 * $od['od_cart_discount'] / 1.1 / 10;
+?>
 <tr height="28">
 	<td align="center" colspan="4" style="border:1px solid #000;">할인</td>
 	<td align="center" colspan="3" style="border:1px solid #000;"></td>
@@ -322,7 +365,10 @@ td  {mso-number-format:\@;}
 </tr>
 <?php } ?>
 
-<?php if ( $od['od_cart_discount2'] ) { ?>
+<?php if ( $od['od_cart_discount2'] ) {
+  $supplyValue += (int) -1 * $od['od_cart_discount2'] / 1.1;
+  $valueAddedTax += (int) -1 * $od['od_cart_discount2'] / 1.1 / 10;
+?>
 <tr height="28">
 	<td align="center" colspan="4" style="border:1px solid #000;">추가할인</td>
 	<td align="center" colspan="3" style="border:1px solid #000;"></td>
@@ -338,8 +384,8 @@ td  {mso-number-format:\@;}
 	<td align="center" colspan="3" style="border:1px solid #000;"></td>
 	<td align="center" colspan="2" style="border:1px solid #000;"></td>
 	<td align="center" colspan="3" style="border:1px solid #000;"></td>
-	<td align="center" colspan="3" style="border:1px solid #000;"><?php echo number_format($amount['order'] / 1.1); ?></td>
-	<td align="center" colspan="2" style="border:1px solid #000;"><?php echo number_format($amount['order'] / 1.1 / 10); ?></td>
+	<td align="center" colspan="3" style="border:1px solid #000;"><?php echo number_format($supplyValue); ?></td>
+	<td align="center" colspan="2" style="border:1px solid #000;"><?php echo number_format($valueAddedTax); ?></td>
 </tr>
 <tr><td colspan="17" height="10"></td></tr>
 <tr height="25">
