@@ -501,7 +501,7 @@ $(function() {
             
             // 주문정지기업 검색은 되나 선택은 안되도록
             if(item.mb_order_approve != 1) {
-                $li.addClass('group').attr('role', '');
+                $li.removeClass('item').addClass('group').removeAttr('role').removeAttr('tabindex');
                 $('<span style="float: right">주문정지 기업</span>').appendTo($item);
             }
 
