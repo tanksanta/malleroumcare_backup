@@ -353,6 +353,11 @@ $(function(){
 
     receiveBarcode();
   });
+
+  // 앱이 아닌 경우 바코드버튼 숨김
+  if(!window.EroummallApp && !(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openBarcode )) {
+    $('.nativePopupOpenBtn').hide();
+  }
 });
 
 </script>
