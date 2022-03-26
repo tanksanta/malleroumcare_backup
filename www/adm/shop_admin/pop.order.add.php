@@ -498,6 +498,12 @@ $(function() {
             var $item = {};
             $item = $('<span>')
                 .html(item.mb_name + " (" + item.mb_nick + ")");
+            
+            // 주문정지기업 검색은 되나 선택은 안되도록
+            if(item.mb_order_approve != 1) {
+                $li.addClass('group').attr('role', '');
+                $('<span style="float: right">주문정지 기업</span>').appendTo($item);
+            }
 
             $item.appendTo($li);
             return $li;
