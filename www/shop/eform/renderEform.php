@@ -5,7 +5,7 @@ $dc_id = get_search_string($_GET['dc_id']);
 $preview = get_search_string($_GET['preview']);
 $zoom = get_search_string($_GET['zoom']);
 if($dc_id) {
-  if($preview) {
+  if($preview || $download) {
     $timestamp = time();
     $entId = $member['mb_entId'];
   } else {
@@ -75,6 +75,18 @@ $is_gicho = $eform['penTypeCd'] == '04';
   <?php if($preview) echo "<script src='https://unpkg.com/panzoom@9.4.2/dist/panzoom.min.js'></script>"; ?>
   <script src="<?=G5_JS_URL?>/jquery-1.11.3.min.js"></script>
   <style>
+    <?php if($download) { ?>
+    @page {
+      size:210mm 297mm;
+      margin: 0;
+    }
+    @media print {
+      html, body {
+        margin: 15mm 0;
+        padding: 0;
+      }
+    }
+    <?php } ?>
     body.render-eform {
       background-color: #fff;
     }
@@ -229,6 +241,9 @@ $is_gicho = $eform['penTypeCd'] == '04';
       });
 
       // 체크박스
+      <?php if($download) { ?>
+      $('.chk-form').prop('disabled', true).addClass('done');
+      <?php } else { ?>
       $('.chk-form').each(function() {
         var id = $(this).attr('id').split('_');
         var YorN = id.pop();
@@ -240,6 +255,7 @@ $is_gicho = $eform['penTypeCd'] == '04';
         $chk.prop('disabled', true);
         $chk.addClass('done');
       });
+      <?php } ?>
     }
 
     repaint();
