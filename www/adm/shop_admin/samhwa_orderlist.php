@@ -117,6 +117,20 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <!-- <button id="dzexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">더존엑셀</button> -->
     <!-- <button id="handsabang" onClick="sanbang_order_send()">사방넷수동가져오기</button> -->
     <!-- <button id="list_matching_cancel">매칭데이터취소</button> -->
+    <select class="sb1" name="" id="ct_direct_delivery_partner_sb">
+    <?php
+        //출고담당자 select
+        $ct_direct_delivery_partner_select="";
+        $partners = get_partner_members();
+        $ct_direct_delivery_partner_select .= '<option value="">위탁(직배송) 선택</option>';
+        $ct_direct_delivery_partner_select .= '<option value="미지정">미지정</option>';
+        foreach($partners as $partner) {
+            $ct_direct_delivery_partner_select .='<option value="'.$partner['mb_id'].'">'.$partner['mb_name'].'</option>';
+        }
+        echo $ct_direct_delivery_partner_select;
+    ?>
+    </select>
+    <button id="ct_direct_delivery_partner_all">위탁 선택적용</button>
     <button id="delivery_excel_upload">택배정보 일괄 업로드</button>
     <select class="sb1" name="" id="ct_manager_sb">
     <?php
@@ -162,7 +176,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
       <label for="datafile">택배정보 일괄 업로드</label>
       <input type="file" name="datafile" id="datafile">
       <p class="help-block">
-        주문내역 엑셀에 택배정보를 작성해서 업로드해주세요.<br>
+        주문내역 엑셀에 택배정보를 작성해서 업로드해주세요.<br>
         택배회사 목록 : <?php foreach($delivery_companys as $company) { echo $company['name'].', '; } ?>
       </p>
     </div>
@@ -1622,6 +1636,39 @@ $('#form_delivery_excel_upload').submit(function(e) {
       var data = $xhr.responseJSON;
       alert(data && data.message);
     });
+});
+
+// 위탁 선택적용
+$('#ct_direct_delivery_partner_all').click(function() {
+  var ct_id = [];
+  var item = $("input[name='od_id[]']:checked");
+
+  var sb1 = $('#ct_direct_delivery_partner_sb').val();
+    if(!sb1){
+      alert('위탁 파트너를 선택하신 후 변경을 눌러주세요. ');
+      return false;
+  }
+
+  for (var i = 0; i < item.length; i++) {
+    ct_id.push($(item[i]).val());
+  }
+
+  if (!ct_id.length) {
+    alert('적용하실 주문을 선택해주세요.');
+    return;
+  }
+
+  $.post('./ajax.ct_direct_delivery_partner.php', {
+    ct_id: ct_id,
+    ct_direct_delivery_partner: sb1
+  }, 'json')
+  .done(function() {
+    alert('위탁(직배송) 적용이 완료되었습니다.');
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
 });
 </script>
 
