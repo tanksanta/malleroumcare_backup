@@ -215,7 +215,8 @@ $is_gicho = $eform['penTypeCd'] == '04';
         }
 
         var imageURL = state[id];
-        $wrap.html('<img src="'+imageURL+'" alt="사업소 직인">');
+        if(imageURL)
+          $wrap.html('<img src="'+imageURL+'" alt="사업소 직인">');
       });
 
       // 서명
