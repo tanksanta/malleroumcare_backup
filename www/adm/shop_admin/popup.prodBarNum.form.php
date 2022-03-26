@@ -772,6 +772,7 @@ if($od["od_b_tel"]) {
       }
     });
 
+    var loading_barnumsave = false;
     function barNumSave() {
       var barcode_arr = [];
       var isDuplicated = false;
@@ -813,6 +814,9 @@ if($od["od_b_tel"]) {
       var changeStatus = true;
       var insertBarCnt = 0;
 
+      if(loading_barnumsave) return;
+      loading_barnumsave = true;
+
       /* 210319 배송정보 저장 */
       $.ajax({
         url : "./samhwa_orderform_deliveryInfo_update.php",
@@ -834,7 +838,7 @@ if($od["od_b_tel"]) {
           insertBarCnt++;
         }
       });
-      if(flag){ alert('바코드는 12자리를 입력해주세요.'); return false; }
+      if(flag){ alert('바코드는 12자리를 입력해주세요.'); loading_barnumsave = false; return false; }
 
       var pass = {};
       $.each($('.chk_pass_barcode'), function(index, value) {
@@ -896,13 +900,21 @@ if($od["od_b_tel"]) {
               }
             });
 
+            loading_barnumsave = false;
+
             alert("저장이 완료되었습니다.");
 
             if (window.opener != null && IS_POP) {
               window.close();
             }
+            <?php if($no_refresh == 'partner') { ?>
+            member_cancel();
+            <?php } ?>
             // member_cancel();
           }
+        },
+        error: function() {
+          loading_barnumsave = false;
         }
       });
       var sendData_barcode = {
@@ -911,7 +923,7 @@ if($od["od_b_tel"]) {
         prods : prodsList
       }
       $.ajax({
-        url : "./ajax.barcode_log.php",
+        url : "./ajaxb.arcode_log.php",
         type : "POST",
         async : false,
         data : sendData_barcode,
@@ -943,8 +955,40 @@ if($od["od_b_tel"]) {
         cancel : "y"
       },
       success : function(result) {
-        <?php if($_GET['new']){ ?>
+        <?php if($_GET['new']) { ?>
         history.back();
+        <?php } else if($no_refresh == 'partner') { ?>
+        foldingBoxSetting();
+        $('.folding_box').each(function() {
+          var ct_id = $(this).data('id');
+          var cnt_txt = $(this).parent().find('.p1 .span2').text().trim().split('/');
+          var $barcode = $(parent.document).find('.btn_barcode_info[data-id="'+ct_id+'"]');
+          if(cnt_txt[0] !== cnt_txt[1]) {
+            var txt = cnt_txt.join('/');
+            if (txt) {
+              $barcode.removeClass('disabled');
+              $barcode.find('span').text(cnt_txt.join('/'));
+            } else { // 상품바코드 미입력 체크일때
+              if ($(this).parent().find('.p1 .chk_pass_barcode').is(":checked") == true) {
+                $barcode.addClass('disabled');
+                $barcode.find('span').text('입력완료');
+              } else {
+                $barcode.removeClass('disabled');
+                $barcode.find('span').text(
+                  "0/" + $(this).parent().find('.p1').data('qty')
+                );
+              }
+            }
+          } else {
+            // 입력완료
+            $barcode.addClass('disabled');
+            $barcode.find('span').text('입력완료');
+          }
+        });
+        $("body", parent.document).removeClass('modal-open');
+        $("#popup_box", parent.document).hide();
+        $("#popup_box", parent.document).find("iframe").remove();
+        return;
         <?php } else { ?>
         <?php if ($no_refresh != 1) { ?>
         if (need_reload) {
