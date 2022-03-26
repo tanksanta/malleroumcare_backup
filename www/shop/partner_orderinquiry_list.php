@@ -718,7 +718,7 @@ $(function() {
 
     var od_id = $(this).data('id');
     $("body").addClass('modal-open');
-    $("#popup_box > div").html('<iframe src="popup.partner_deliveryinfo.php?od_id=' + od_id + '">');
+    $("#popup_box > div").html('<iframe src="popup.partner_deliveryinfo.php?no_refresh=1&od_id=' + od_id + '">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });
