@@ -99,5 +99,27 @@ sql_query("
     od_id = {$od_id}
 ");
 
-json_response(200, 'OK');
+
+$total_cnt_result = sql_fetch("
+  SELECT count(*) as cnt
+  FROM {$g5['g5_shop_cart_table']}
+  WHERE
+  od_id = '{$od_id}' and
+  ct_direct_delivery_partner = '{$member['mb_id']}'
+");
+
+$inserted_cnt_result = sql_fetch("
+  SELECT count(*) as cnt
+  FROM {$g5['g5_shop_cart_table']}
+  WHERE
+  od_id = '{$od_id}' and
+  ct_direct_delivery_partner = '{$member['mb_id']}' and
+  ct_delivery_num <> '' and ct_delivery_num is not null
+");
+
+
+json_response(200, 'OK', [
+  'total_cnt' => $total_cnt_result['cnt'] ?: 0,
+  'inserted_cnt' => $inserted_cnt_result['cnt'] ?: 0
+]);
 ?>
