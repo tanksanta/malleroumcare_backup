@@ -513,12 +513,11 @@ tr.hover { background-color: #fbf9f7 !important; }
               <td class="td_operation">
                 <a href="partner_orderinquiry_excel.php?od_id=<?=$row['od_id']?>" class="btn_instructor">작업지시서 다운로드</a>
                 <a href="javascript:void(0);" class="btn_delivery_info <?php echo $row['total_cnt'] === $row['inserted_cnt'] ? 'disabled' : ''; ?>" data-id="<?=$row['od_id']?>">
-                  배송정보
-                  <?php echo $row['inserted_cnt'] < $row['total_cnt'] ? "({$row['inserted_cnt']}/{$row['total_cnt']})" : '입력완료'; ?>
+                  배송정보 <span><?php echo $row['inserted_cnt'] < $row['total_cnt'] ? "({$row['inserted_cnt']}/{$row['total_cnt']})" : '입력완료'; ?></span>
                 </a>
                 <a href="javascript:void(0);" class="btn_barcode_info <?php echo $row['ct_barcode_insert'] === $row['ct_qty'] ? 'disabled' : ''; ?>" data-id="<?=$row['ct_id']?>" data-od-id="<?=$row['od_id']?>" data-option="<?=$row['ct_option']?>" data-cancel="<?php echo in_array($row['ct_status'], ['주문취소', '주문무효']); ?>">
                   <img src="/skin/apms/order/new_basic/image/icon_02.png" alt="">
-                  바코드 <?php echo $row['ct_barcode_insert'] < $row['ct_qty'] ? "({$row['ct_barcode_insert']}/{$row['ct_qty']})" : '입력완료'; ?>
+                  바코드 <span><?php echo $row['ct_barcode_insert'] < $row['ct_qty'] ? "({$row['ct_barcode_insert']}/{$row['ct_qty']})" : '입력완료'; ?></span>
                 </a>
               </td>
             </tr>
@@ -757,7 +756,7 @@ $(function() {
     $("body").addClass('modal-open');
     // $("#popup_box > div").html('<iframe src="popup.partner_barcodeinfo.php?ct_id=' + ct_id + '">');
     // "./popup.prodBarNum.form.php?no_refresh=1&orderlist=1&prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option
-    $("#popup_box > div").html('<iframe src="/adm/shop_admin/popup.prodBarNum.form.php?no_refresh=0&orderlist=0&od_id=' + od_id + '&stock_insert=' + stock + '&option=' + option + '&partner=1">');
+    $("#popup_box > div").html('<iframe src="/adm/shop_admin/popup.prodBarNum.form.php?no_refresh=partner&orderlist=0&od_id=' + od_id + '&stock_insert=' + stock + '&option=' + option + '&partner=1">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });
