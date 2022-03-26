@@ -923,7 +923,7 @@ if($od["od_b_tel"]) {
         prods : prodsList
       }
       $.ajax({
-        url : "./ajaxb.arcode_log.php",
+        url : "./ajax.barcode_log.php",
         type : "POST",
         async : false,
         data : sendData_barcode,
