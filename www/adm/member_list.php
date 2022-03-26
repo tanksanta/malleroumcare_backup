@@ -88,14 +88,17 @@ if ($button_type) {
       break;
   }
   $sql_search .= " ) ";
+  $qstr .= "&amp;button_type=$button_type";
 }
 
 if ($fr_datetime && $to_datetime) {
   $sql_search .= " and ( mb_datetime between '$fr_datetime 00:00:00' and '$to_datetime 23:59:59' )";
+  $qstr .= "&amp;fr_datetime=$fr_datetime&amp;to_datetime=$to_datetime";
 }
 
 if ($fr_updatedatetime && $to_updatedatetime) {
   $sql_search .= " and ( mb_update_date between '$fr_updatedatetime 00:00:00' and '$to_updatedatetime 23:59:59' )";
+  $qstr .= "&amp;fr_updatedatetime=$fr_updatedatetime&amp;to_updatedatetime=$to_updatedatetime";
 }
 
 if ($_GET['mb_level']) {
@@ -106,6 +109,7 @@ if ($_GET['mb_level']) {
   $sql_search .= " (mb_level like '%{$mb_level}') ";
 
   $sql_search .= " ) ";
+  $qstr .= "&amp;mb_level=$mb_level";
 }
 
 if ($is_admin != 'super')
