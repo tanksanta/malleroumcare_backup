@@ -6,14 +6,16 @@ $total = 0;
 foreach($items as $item) {
   $it = sql_fetch(" SELECT * FROM g5_shop_item WHERE it_id = '{$item['it_id']}' ");
   $gubun = $cate_gubun_table[substr($it["ca_id"], 0, 2)];
-  $gubun = '판매';
   if($gubun == '01') $gubun = '대여';
   else if($gubun == '02') $gubun = '비급여';
+  else $gubun = '판매';
 
   $it['gubun'] = $gubun;
 
   $list[] = $it;
-  $total += $it['it_cust_price'];
+
+  if($gubun != '비급여')
+    $total += $it['it_cust_price'];
 }
 
 $rec_arr = explode(',', trim($ms['ms_rec']));
@@ -46,18 +48,22 @@ foreach($rec_arr as $wr_id) {
     <div class="im_sum_row im_flex">
       <div>
       <p class="im_sum_name"><?="{$it['it_name']} ({$it['gubun']})"?></p>
+      <?php if($it['gubun'] != '비급여') { ?>
       <p class="personal-price">
         ※ 본인부담금 <span>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원)</span>, <span>9%(<?=number_format($it["it_cust_price"] * 0.09)?>원)</span>, <span>6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</span>
       </p>
+      <?php } ?>
       </div>
       <div class="im_sum_price"><?=number_format($it['it_cust_price'])?>원</div>
     </div>
     <?php } ?>
     <div class="im_sum_total">
       <p class="total_price"><?=number_format($total)?>원</p>
+      <?php if($total > 0) { ?>
       <p class="personal_price">
         ※ 본인부담금 <span>15%(<?=number_format($total * 0.15)?>원)</span>, <span>9%(<?=number_format($total * 0.09)?>원)</span>, <span>6%(<?=number_format($total * 0.06)?>원)</span>
-    </p>
+      </p>
+      <?php } ?>
     </div>
 
     <div class="im_tab_hd">품목정보</div>
@@ -75,9 +81,11 @@ foreach($rec_arr as $wr_id) {
           <p class="it_price">
             급여가 : <?php echo number_format($it["it_cust_price"]); ?>원
           </p>
+          <?php if($it['gubun'] != '비급여') { ?>
           <p class="personal-price">
             ※ 본인부담금 <span>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원)</span>, <span>9%(<?=number_format($it["it_cust_price"] * 0.09)?>원)</span>, <span>6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</span>
           </p>
+          <?php } ?>
           <ul class="it_detail">
             <?php if(trim($it["prodSym"])) { ?>
             <li>- 재질 : <?=$it["prodSym"]?></li>
