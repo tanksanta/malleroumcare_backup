@@ -337,9 +337,9 @@ $barcode_count = sql_fetch($sql)['cnt'];
       <select name="search_option" id="searchOption">
         <!-- <option value="">선택하세요</option> -->
         <option value="all" <?php echo !$search_option ? "selected" : ''; ?>>전체</option>
-        <option value="it_name" <?php echo $search_option == 'od_b_name' ? 'selected' : ''; ?>>상품명</option>
-        <option value="io_id" <?php echo $search_option == 'it_name' ? 'selected' : ''; ?>>옵션명</option>
-        <option value="it_id" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>상품코드</option>
+        <option value="it_name" <?php echo $search_option == 'it_name' ? 'selected' : ''; ?>>상품명</option>
+        <option value="io_id" <?php echo $search_option == 'io_id' ? 'selected' : ''; ?>>옵션명</option>
+        <option value="ProdPayCode" <?php echo $search_option == 'ProdPayCode' ? 'selected' : ''; ?>>상품코드</option>
       </select>
       <input type="text" name="search_text" id="search_text" placeholder="검색명 입력" value="<?php echo $search_text; ?>">
       <button type="button" id="searchSubmitBtn" onclick="search()">검색</button>
@@ -395,11 +395,6 @@ if (!$member['mb_id']) {
   var KEYUP_TIMER;
   var PAGE = 1;
   var LOADING = false;
-
-  // 바코드 스캔용 전역변수
-  var sendBarcodeTargetList;
-  var cur_ct_id = null;
-  var cur_it_id = null;
 
   $(function() {
     getData();
@@ -467,107 +462,38 @@ if (!$member['mb_id']) {
     }
   }
 
-  function openNativeBarcodeScan(_this) {
-    var cnt = 0;
-    var frm_no = $(_this).closest("li").find(".frm_input").attr("data-frm-no");
-    var item = $(_this).closest("ul").find(".frm_input");
-    sendBarcodeTargetList = [];
-
-    cur_ct_id = $(_this).data('ct-id');
-    cur_it_id = $(_this).data('it-id');
-
-    for (var i = 0; i < item.length; i++) {
-      if (!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no) {
-        sendBarcodeTargetList.push($(item[i]).attr("data-frm-no"));
-        cnt++;
-      }
-    }
-
-    $('#scanner-count').val(cnt);
-    var type = $(_this).data('type');
-    if (!type) {
-      $('#barcode-selector').fadeIn();
-      return;
-    }
-    if (type === 'native') {
-      $('#barcode-scanner-opener').click();
-    } else if (type === 'pda') {
-      $('#pda-scanner-opener').click();
-    }
+  function sendInvoiceNum(text) {
+    text = text.slice(0, 12);
+    $('#search_text').val(text);
+    $('#search_option').val('ProdPayCode');
+    search();
   }
 
-  function sendBarcode(text) {
+  function open_invoice_scan() {
     /* 기종체크 */
     var deviceUserAgent = navigator.userAgent.toLowerCase();
     var device;
 
-    if (deviceUserAgent.indexOf("android") > -1) {
+    if(deviceUserAgent.indexOf("android") > -1) {
       /* android */
       device = "android";
     }
 
-    if (deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1) {
+    if(deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1) {
       /* ios */
       device = "ios";
     }
 
-    $.ajax({
-      url: "/shop/ajax.release_purchaseorderview.check.php",
-      type: "POST",
-      data: {
-        od_id: "<?=$od_id?>"
-      },
-      success: function (result) {
-        if (result.error == "Y") {
-          switch (device) {
-            case "android" :
-              /* android */
-              window.EroummallApp.closeBarcode("");
-              break;
-            case "ios" :
-              /* ios */
-              window.webkit.messageHandlers.closeBarcode.postMessage("");
-              break;
-          }
-          var params = getUrlParams();
-          delete params.od_id;
-          delete params.ct_id;
-          var query_string = decodeURI($.param(params));
-          window.location.href = "<?=G5_SHOP_URL?>/release_purchaseorderlist.php?" + query_string;
-        } else {
-          if (sendBarcodeTargetList[0]) {
-            $.post('/shop/ajax.check_barcode.php', {
-              it_id: cur_it_id,
-              barcode: text,
-            }, 'json')
-              .done(function (data) {
-                var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
-                $(sendBarcodeTarget).val(data.data.converted_barcode);
-                sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
-                check_option(cur_it_id);
-              })
-              .fail(function ($xhr) {
-                switch (device) {
-                  case "android" :
-                    /* android */
-                    window.EroummallApp.closeBarcode("");
-                    break;
-                  case "ios" :
-                    /* ios */
-                    window.webkit.messageHandlers.closeBarcode.postMessage("");
-                    break;
-                }
-                var data = $xhr.responseJSON;
-                setTimeout(function () {
-                  alert(data && data.message);
-                }, 500);
-              });
-          }
-        }
-
-        notallLengthCheck(false);
-      }
-    });
+    switch(device) {
+      case "android" :
+        /* android */
+        window.EroummallApp.openInvoiceNum("");
+        break;
+      case "ios" :
+        /* ios */
+        window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
+        break;
+    }
   }
 </script>
 
