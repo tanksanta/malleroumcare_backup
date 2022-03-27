@@ -869,17 +869,18 @@ $(function(){
       }
     }
 
-    if ($('#penLtmNumResultVal').val() == 0) {
-      alert('이미 등록된 수급자 입니다.');  
-      $(penLtmNum).focus(); 
-      return false;
-    }
-
     var penJumin =  document.getElementById('penJumin1').value;
     var penLtmNum =  document.getElementById('penLtmNum');
+
     var penSpare = $(".register-form input[name='penSpare']:checked").val();
     if(penSpare != '1') {
       if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penLtmNum).focus(); return false; }
+
+      if ($('#penLtmNumResultVal').val() == 0) {
+        alert('이미 등록된 수급자 입니다.');  
+        $(penLtmNum).focus(); 
+        return false;
+      }
     }
     var penBirth = $(".register-form select[name='penBirth1']").val()+'-'
     + $(".register-form select[name='penBirth2']").val()+'-'
