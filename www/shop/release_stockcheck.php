@@ -464,7 +464,7 @@ if ($option) {
   </div>
   <div class="flex-row justify-space-between" style="padding: 0 30px">
     <button onclick="alert('TODO');">PDA</button>
-    <button>APP</button>
+    <button onclick="open_invoice_scan();">APP</button>
   </div>
 </div>
 
@@ -782,10 +782,6 @@ if (!$member['mb_id']) {
       $('body').css('overflow-y', 'scroll')
       $('#loading').hide();
     }
-  }
-
-  function gotoStockCheck() {
-
   }
 
   function sendInvoiceNum(text) {
