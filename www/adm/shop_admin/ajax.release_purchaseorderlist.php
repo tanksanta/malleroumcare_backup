@@ -128,7 +128,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_id, it_name, ct_status, ct_move_date, ct_manager, ct_qty, ct_delivered_qty, io_type, ct_price, io_price, ct_sendcost, ct_discount, ct_delivery_num, ct_warehouse from purchase_cart) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_id, it_name, ct_status, ct_move_date, ct_manager, ct_qty, ct_delivered_qty, io_type, ct_price, io_price, ct_sendcost, ct_discount, ct_delivery_num, ct_warehouse, ct_direct_delivery_date from purchase_cart) B
                 inner join purchase_order A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C on A.mb_id = C.mb_id_temp
                 left join (select it_id as it_id_temp, ProdPayCode from g5_shop_item) D ON B.it_id = D.it_id_temp
@@ -400,6 +400,8 @@ foreach($orderlist as $order) {
   $ret["data"][$foreach_i]["ct_warehouse"] = $order['ct_warehouse'];
 
   $ret["data"][$foreach_i]["bc_warning_count"] = $result_ct['bc_warning_count'];
+
+  $ret["data"][$foreach_i]["ct_direct_delivery_date"] = $result_ct['ct_direct_delivery_date'];
   
   $foreach_i++;
 }

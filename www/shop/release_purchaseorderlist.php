@@ -111,6 +111,22 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
 
     .samhwa_order_list_table_no_item { padding: 50px 0; }
     .samhwa_order_list_table_no_item h1 { font-size: 16px; font-weight: normal; color: #666; text-align: center;  }
+
+    .date_button {
+      height: 40px;
+      line-height: 38px;
+      border: 1px solid #DEDEDE;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+      background: transparent;
+      padding: 0 20px;
+      color: #666;
+      font-weight: bold;
+    }
+    .date_button:hover {
+      background-color:#f4f4f4;
+    }
 	</style>
 </head>
  
@@ -163,6 +179,22 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
           <option value="ct_warehouse" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>배송지명</option>
         </select>
         <input type="text" name="search_text" id="search_text" placeholder="검색명입력" value="<?php echo $search_text; ?>">
+      </li>
+    </ul>
+    <ul>
+      <li style="text-align:left">
+        <span style="color:#666">
+          <input type="radio" class="sel_date_time" name="sel_date_time" value="od_time" id="od_time" checked>
+          <label for="od_time">발주일</label>
+        </span>
+        <span style="color:#666; margin-left: 10px;">
+          <input type="radio" class="sel_date_time" name="sel_date_time" value="ct_direct_delivery_date" id="ct_direct_delivery_date">
+          <label for="ct_direct_delivery_date">입고예정일</label>
+        </span>
+      </li>
+      <li style="text-align:right">
+        <input type="button" data-value="<?php echo date('Y-m-d', time()); ?>" class="date_button" value="오늘" />
+        <input type="button" data-value="<?php echo date("Y-m-d", strtotime("+1 day", strtotime(date('Y-m-d', time())))); ?>" class="date_button" value="내일" />
       </li>
     </ul>
     <ul>
@@ -274,9 +306,12 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
           }
           html += '</p>';
           html += '<p class="cnt">'+row.od_id+'</p>';
-          html += '<p class="date">' + row.date;
+          html += '<p class="date">발주: ' + row.date;
           if(row.od_b_name){
             html += " / " + row.od_b_name;
+          }
+          if(row.ct_direct_delivery_date) {
+            html += '<span>, 입고예정: ' + row.ct_direct_delivery_date.substr(0, 10) + '</span>'
           }
           html += '</p>';
           html += '<p class="cnt"> 공급업체 : ' + row.od_name + '</p>';
@@ -430,6 +465,21 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
     e.preventDefault();
 
     open_invoice_scan();
+  });
+
+  $(".date_button").click(function(e) {
+    e.preventDefault();
+
+    var value = $(this).data('value');
+
+    $('#search_fr_date').val(value);
+    $('#search_to_date').val(value);
+  });
+
+
+  $(".sel_date_time").change(function(e) {
+    sel_date_field = e.target.value;
+    formdata['sel_date_field'] = e.target.value;
   });
   </script>
 </body>
