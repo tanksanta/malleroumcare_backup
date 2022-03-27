@@ -334,7 +334,7 @@ $barcode_count = sql_fetch($sql)['cnt'];
     </div>
 
     <div class="flex-row" style="margin-top: 20px">
-      <select name="search_option" id="searchOption">
+      <select name="sel_field" id="search_option">
         <!-- <option value="">선택하세요</option> -->
         <option value="all" <?php echo !$search_option ? "selected" : ''; ?>>전체</option>
         <option value="it_name" <?php echo $search_option == 'it_name' ? 'selected' : ''; ?>>상품명</option>
@@ -433,7 +433,7 @@ if (!$member['mb_id']) {
       type: 'GET',
       data: {
         page: PAGE,
-        sel_field: $('#searchOption').val(),
+        sel_field: $('#search_option').val(),
         search_text : $('#search_text').val(),
         only_diff_qty : $('#cf_flag').is(':checked') ? true : false,
       },
