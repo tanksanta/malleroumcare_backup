@@ -475,7 +475,6 @@ if (!$member['mb_id']) {
   });
 
   function sendInvoiceNum(text) {
-    alert(text);
     text = text.slice(0, 12);
     $('#search_text').val(text);
     renderData();
