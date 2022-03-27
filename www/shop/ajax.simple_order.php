@@ -80,6 +80,8 @@ if($pen_type == 1) {
             penLtmNum = '{$pen['penLtmNum']}',
             penRecGraCd = '{$pen['penRecGraCd']}', # 장기요양등급
             penRecGraNm = '{$pen['penRecGraNm']}',
+            penRecTypeCd = '{$pen['penRecTypeCd']}', # 수령방법
+            penRecTypeTxt = '{$pen['penRecTypeTxt']}',
             penTypeCd = '{$pen['penTypeCd']}', # 본인부담금율
             penTypeNm = '{$pen['penTypeNm']}',
             penExpiDtm = '{$pen['penExpiDtm']}', # 수급자 이용기간
