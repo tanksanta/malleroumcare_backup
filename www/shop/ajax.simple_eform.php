@@ -32,6 +32,8 @@ $penConNum = clean_xss_tags($_POST['penConNum']);
 $penBirth = '';
 $penRecGraCd = clean_xss_tags($_POST['penRecGraCd']);
 $penRecGraNm = $pen_rec_gra_cd[$penRecGraCd];
+$penRecTypeCd = clean_xss_tags($_POST['penRecTypeCd']);
+$penRecTypeTxt = clean_xss_tags($_POST['penRecTypeTxt']);
 $penTypeCd = clean_xss_tags($_POST['penTypeCd']);
 $penTypeNm = $pen_type_cd[$penTypeCd];
 $penExpiStDtm = clean_xss_tags($_POST['penExpiStDtm']);
@@ -205,6 +207,8 @@ if($w == 'u' || $w == 'w') {
             penLtmNum = '$penLtmNum',
             penRecGraCd = '$penRecGraCd', # 장기요양등급
             penRecGraNm = '$penRecGraNm',
+            penRecTypeCd = '$penRecTypeCd', # 수령방법
+            penRecTypeTxt = '$penRecTypeTxt',
             penTypeCd = '$penTypeCd', # 본인부담금율
             penTypeNm = '$penTypeNm',
             penExpiDtm = '$penExpiDtm', # 수급자 이용기간
@@ -254,6 +258,8 @@ if($w == 'u' || $w == 'w') {
             penLtmNum = '$penLtmNum',
             penRecGraCd = '$penRecGraCd', # 장기요양등급
             penRecGraNm = '$penRecGraNm',
+            penRecTypeCd = '$penRecTypeCd', # 수령방법
+            penRecTypeTxt = '$penRecTypeTxt',
             penTypeCd = '$penTypeCd', # 본인부담금율
             penTypeNm = '$penTypeNm',
             penExpiDtm = '$penExpiDtm', # 수급자 이용기간

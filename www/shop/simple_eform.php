@@ -70,6 +70,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
       <input type="hidden" name="w" value="<?php if($dc) echo 'u'; ?>">
       <input type="hidden" name="dc_id" value="<?php if($dc) echo $dc['uuid']; ?>">
+      <input type="hidden" name="penRecTypeCd" id="penRecTypeCd" value="<?php if($dc) echo $dc['penRecTypeCd']; ?>">
+      <input type="hidden" name="penRecTypeTxt" id="penRecTypeTxt" value="<?php if($dc) echo $dc['penRecTypeTxt']; ?>">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="radio_wr" style="margin-top: -10px; margin-bottom: 10px; font-size: 14px;">
@@ -997,6 +999,9 @@ function update_pen(obj) {
     $('#penExpiStDtm').val('').data('orig', '').change();
     $('#penExpiEdDtm').val('').data('orig', '').change();
     $('#penJumin').val('').data('orig', '').change();
+    $('#penExpiEdDtm').val('').data('orig', '').change();
+    $('#penRecTypeCd').val('');
+    $('#penRecTypeTxt').val('');
   } else {
     $('#penId').val(obj.penId).data('orig', obj.penId).change();
     $('#penZip').val(obj.penZip).data('orig', obj.penZip).change();
@@ -1014,6 +1019,8 @@ function update_pen(obj) {
     $('#penExpiStDtm').val(obj.penExpiStDtm).data('orig', obj.penExpiStDtm).change();
     $('#penExpiEdDtm').val(obj.penExpiEdDtm).data('orig', obj.penExpiEdDtm).change();
     $('#penJumin').val(obj.penJumin).data('orig', obj.penJumin).change();
+    if(obj.penRecTypeCd) $('#penRecTypeCd').val(obj.penRecTypeCd);
+    if(obj.penRecTypeTxt) $('#penRecTypeTxt').val(obj.penRecTypeTxt);
   }
 }
 
@@ -1049,6 +1056,8 @@ function selected_recipient(result) {
     penZip: result[26],
     penAddr: result[18],
     penAddrDtl: result[19],
+    penRecTypeCd: result[34],
+    penRecTypeTxt: result[35],
   };
 
   select_recipient(pen);
