@@ -96,10 +96,10 @@ if($sheetData) {
         $ent_pen = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
             'usrId' => $sendData['usrId'],
             'entId' => $sendData['entId'],
-            'penLtmNum' => $penLtmNum,
+            'penLtmNum' => $input['penLtmNum'],
         ));
-        $ent_pen = $ent_pen['data'][0];
-        if ($ent_pen) {
+        // array_search($input['penLtmNum'], array_column($ent_pen['data'], 'penLtmNum'))
+        if ($ent_pen['data'][0]) {
             array_push($exist_recipient, $input['penNm']);
         }
         else {

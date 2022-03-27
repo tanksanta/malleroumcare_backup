@@ -185,9 +185,22 @@ while($row = sql_fetch_array($result)) {
 
         var params = $(this).serialize();
         $.post('ajax.partner_deliveryinfo.php', params, 'json')
-        .done(function() {
+        .done(function(result) {
           alert('배송정보가 저장되었습니다.');
+          <?php if($no_refresh == 1) { ?>
+          var data = result.data;
+          var $btn = $(parent.document).find('.btn_delivery_info[data-id="<?php echo $od_id; ?>"]');
+          if(data.total_cnt == data.inserted_cnt) {
+            $btn.addClass('disabled');
+            $btn.find('span').text('입력완료');
+          } else {
+            $btn.removeClass('disabled');
+            $btn.find('span').text('(' + data.inserted_cnt + '/' + data.total_cnt + ')' );
+          }
+          closePopup();
+          <?php } else { ?>
           parent.window.location.reload();
+          <?php } ?>
         })
         .fail(function($xhr) {
           var data = $xhr.responseJSON;
