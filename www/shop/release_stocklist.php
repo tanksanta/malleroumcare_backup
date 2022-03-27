@@ -327,7 +327,7 @@ $barcode_count = sql_fetch($sql)['cnt'];
       <div style="width: 70%">
         상품 : <?php echo $item_count ?>개<br/>보유 : <?php echo $stock_count ?>개 (바코드 <?php echo $barcode_count ?>개)
       </div>
-      <a href="javascript:alert('TODO');" class="barcodeSearch nativeDeliveryPopupOpenBtn" style="width: 30%">
+      <a href="javascript:open_invoice_scan();" class="barcodeSearch nativeDeliveryPopupOpenBtn" style="width: 30%">
         주문찾기
         <img src="/img/bacod_img.png">
       </a>
