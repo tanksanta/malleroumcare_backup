@@ -43,6 +43,14 @@ $sql = "
 ";
 $row = sql_fetch($sql);
 
+$sql = "
+  SELECT IFNULL(MAX(created_at), '미확인') AS last_checked_at
+  FROM stock_barcode_check_log
+  {$where}
+";
+
+$last_checked_at = sql_fetch($sql)['last_checked_at'];
+
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -193,10 +201,17 @@ $row = sql_fetch($sql);
       opacity: 0;
     }
 
+    #popupBody .searchFormTop {
+      padding-top: 25px;
+    }
+
     #popupBody .searchFormTop .barcodeSearch {
+      position: absolute;
       display: inline-block;
       font-weight: bold;
       text-align: right;
+      top: -5px;
+      right: 0px;
     }
 
     #popupBody .searchFormTop .barcodeSearch img {
@@ -224,22 +239,56 @@ $row = sql_fetch($sql);
       padding: 20px;
     }
 
-    #popupBody #content .barcode {
-      width: 60%;
+    #popupBody .listContent .barcode {
+      width: 55%;
+      font-weight: bold;
+      font-size: 20px;
     }
 
-    #popupBody #content .check_status {
-      width: 40%;
+    #popupBody .listContent .check_status {
+      width: 35%;
       text-align: center;
     }
 
-    #popupBody #content li {
+    #popupBody .listContent .more {
+      width: 10%;
+      text-align: center;
+    }
+
+    #popupBody .listContent .more {
+      width: 10%;
+      text-align: center;
+      font-size: 26px;
+    }
+
+    #popupBody .listContent .more .select {
+      position: absolute;
+      top: 38px;
+      right: 0;
+      width: 100px;
+      color: #376092;
+      display: none;
+      z-index: 1;
+    }
+
+    #popupBody .listContent .more .select li {
+      padding: 8px 0;
+      border: 1px solid #95b3d7;
+      border-bottom: 0;
+      background: #fff;
+    }
+
+    #popupBody .listContent .more .select li:last-of-type {
+      border-bottom: 1px solid #95b3d7;
+    }
+
+    #popupBody .listContent li {
       border-bottom: 1px solid #dfdfdf;
       padding: 13px 0;
       font-size: 14px;
     }
 
-    #popupBody #content li:first-of-type {
+    #popupBody .listContent li:first-of-type {
       border-top: 1px solid #dfdfdf;
     }
 
@@ -308,16 +357,6 @@ $row = sql_fetch($sql);
 
 <body>
 
-<!-- 고정 상단 -->
-<div id="popupHeaderTopWrap">
-  <div class="title"><?php echo $g5["title"] ?></div>
-  <div class="close">
-    <a href="javascript:window.close();">
-      &times;
-    </a>
-  </div>
-</div>
-
 <?php
 $option = '';
 $option_br = '';
@@ -343,11 +382,22 @@ if ($option) {
 
 ?>
 
+<!-- 고정 상단 -->
+<div id="popupHeaderTopWrap">
+  <div class="title"><?php echo $g5["title"] ?></div>
+  <div class="close">
+    <a href="javascript:window.close();">
+      &times;
+    </a>
+  </div>
+</div>
+
 <div id="popupBody">
   <div id="searchForm">
     <div class="searchFormTop flex-row justify-space-between">
-      <div style="width: 65%">
-        <?php echo $full_it_name ?>
+      <div style="width: 100%">
+        <?php echo $full_it_name ?><br/>
+        <span style="font-size: 13px">재고수량 : <?= $row['sum_ws_qty'] ?> / 바코드 : <?= $row['sum_barcode_qty'] ?><br/> 마지막 확인 일시 : <?= $last_checked_at ?></span>
       </div>
       <a href="javascript:alert('TODO');" class="barcodeSearch nativeDeliveryPopupOpenBtn" style="width: 35%">
         바코드찾기
@@ -364,12 +414,28 @@ if ($option) {
   <div id="content">
     <ul class="listContent">
       <li class="flex-row align-center">
-        <div class="barcode">바코드</div>
+        <div class="barcode">1111111111111</div>
         <div class="check_status">확인 완료 (02/22)</div>
+        <div class="more">
+          <span>⋮</span>
+          <ul class="select">
+            <li class="rental">대여함</li>
+            <li class="release">출고함</li>
+            <li class="change_option">옵션이동</li>
+          </ul>
+        </div>
       </li>
       <li class="flex-row align-center">
-        <div class="barcode">바코드</div>
+        <div class="barcode">1111111111112</div>
         <div class="check_status">확인 완료 (02/22)</div>
+        <div class="more">
+          <span>⋮</span>
+          <ul class="select">
+            <li class="rental">대여함</li>
+            <li class="release">출고함</li>
+            <li class="change_option">옵션이동</li>
+          </ul>
+        </div>
       </li>
     </ul>
   </div>
@@ -393,9 +459,6 @@ if (!$member['mb_id']) {
 }
 ?>
 <script>
-  var IS_POP = <?=$isPop ? 'true' : 'false'?>;
-  var KEYUP_TIMER;
-  var PAGE = 1;
   var LOADING = false;
 
   // 바코드 스캔용 전역변수
@@ -404,43 +467,47 @@ if (!$member['mb_id']) {
   var cur_it_id = null;
 
   $(function() {
-    // getData();
+    renderData();
 
-    // 인피니티 스크롤
-    $(window).scroll(function () {
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9) {
-        // getData();
-      }
+    $(document).on('click', '.listContent .more', function () {
+      $(this).find('.select').toggle();
     });
   });
 
-  function search() {
-    PAGE = 1;
-    getData();
+  function sendInvoiceNum(text){
+    text = text.slice(0, 12);
+    $('#search_text').val(text);
+    renderData();
   }
 
-  function getData(isSearch) {
+  function search() {
+    renderData();
+  }
+
+  function getData() {
+    var data = [];
+
     if (LOADING) {
       return;
     }
 
     LOADING = true;
-    if (PAGE === 1) {
-      $('.listContent').empty()
-    }
+
     $.ajax({
-      url: '/adm/shop_admin/ajax.release_stocklist.php',
+      url: '/adm/shop_admin/ajax.release_stock_barcode_list.php',
       type: 'GET',
       data: {
-        page: PAGE,
-        sel_field: $('#searchOption').val(),
-        search_text : $('#search_text').val(),
-        only_diff_qty : $('#cf_flag').is(':checked') ? true : false,
+        it_id: '<?php echo $it_id ?>',
+        io_id: '<?php echo $io_id ?>',
+        sel_field: 'bc_barcode',
+        search_text: $('#search_text').val(),
+        only_not_deleted_barcode: 'true',
       },
-      // dataType: 'json'
+      dataType: 'json',
+      async: false,
     })
     .done(function(result) {
-      $('.listContent').append(result)
+      data = result.data;
     })
     .fail(function($xhr) {
       var data = $xhr.responseJSON;
@@ -448,8 +515,42 @@ if (!$member['mb_id']) {
     })
     .always(function() {
       LOADING = false;
-      PAGE++;
     });
+
+    return data;
+  }
+
+  function renderData() {
+    var data;
+    var html;
+
+    $('.listContent').empty();
+
+    data = getData();
+
+    if (data.length > 0) {
+      var check_status;
+
+      for (var i = 0; i < data.length; i++) {
+        check_status = data[i].checked_at ? '확인 완료 (' + data[i].checked_at +')' : '미확인';
+
+        html = '<li class="flex-row align-center" data-bc_id="' + data[i].bc_id + '">';
+        html += '  <div class="barcode">' + data[i].bc_barcode + '</div>';
+        html += '  <div class="check_status">' + check_status + '</div>';
+        html += '  <div class="more">';
+        html += '    <span>⋮</span>';
+        html += '    <ul class="select">';
+        html += '      <li class="rental">대여함</li>';
+        html += '      <li class="release">출고함</li>';
+        html += '      <li class="change_option">옵션이동</li>';
+        html += '    </ul>';
+        html += '  </div>';
+        html += '</li>';
+        $('.listContent').append(html)
+      }
+    } else {
+      $('.listContent').append('<li>등록된 바코드가 없습니다.</li>')
+    }
   }
 
   function showLoading(flag) {
@@ -498,80 +599,31 @@ if (!$member['mb_id']) {
     window.open('./release_stockcheck.php?it_id=' + it_id + '&io_id=' + io_id, '_blank');
   }
 
-  function sendBarcode(text) {
+  function open_invoice_scan() {
     /* 기종체크 */
     var deviceUserAgent = navigator.userAgent.toLowerCase();
     var device;
 
-    if (deviceUserAgent.indexOf("android") > -1) {
+    if(deviceUserAgent.indexOf("android") > -1) {
       /* android */
       device = "android";
     }
 
-    if (deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1) {
+    if(deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1) {
       /* ios */
       device = "ios";
     }
 
-    $.ajax({
-      url: "/shop/ajax.release_purchaseorderview.check.php",
-      type: "POST",
-      data: {
-        od_id: "<?=$od_id?>"
-      },
-      success: function (result) {
-        if (result.error == "Y") {
-          switch (device) {
-            case "android" :
-              /* android */
-              window.EroummallApp.closeBarcode("");
-              break;
-            case "ios" :
-              /* ios */
-              window.webkit.messageHandlers.closeBarcode.postMessage("");
-              break;
-          }
-          var params = getUrlParams();
-          delete params.od_id;
-          delete params.ct_id;
-          var query_string = decodeURI($.param(params));
-          window.location.href = "<?=G5_SHOP_URL?>/release_purchaseorderlist.php?" + query_string;
-        } else {
-          if (sendBarcodeTargetList[0]) {
-            $.post('/shop/ajax.check_barcode.php', {
-              it_id: cur_it_id,
-              barcode: text,
-            }, 'json')
-              .done(function (data) {
-                var sendBarcodeTarget = $(".frm_input_" + sendBarcodeTargetList[0]);
-                $(sendBarcodeTarget).val(data.data.converted_barcode);
-                sendBarcodeTargetList = sendBarcodeTargetList.slice(1);
-                check_option(cur_it_id);
-              })
-              .fail(function ($xhr) {
-                switch (device) {
-                  case "android" :
-                    /* android */
-                    window.EroummallApp.closeBarcode("");
-                    break;
-                  case "ios" :
-                    /* ios */
-                    window.webkit.messageHandlers.closeBarcode.postMessage("");
-                    break;
-                }
-                var data = $xhr.responseJSON;
-                setTimeout(function () {
-                  alert(data && data.message);
-                }, 500);
-              });
-          }
-        }
-
-        notallLengthCheck(false);
-      }
-    });
+    switch(device) {
+      case "android" :
+        /* android */
+        window.EroummallApp.openInvoiceNum("");
+        break;
+      case "ios" :
+        /* ios */
+        window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
+        break;
+    }
   }
 </script>
-
-<?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
 </body>
