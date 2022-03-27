@@ -23,7 +23,7 @@ if ($count == 1) {
   $bc_row = sql_fetch($sql);
 
   if ($bc_row['ct_id']) {
-    json_response(200, '이미출고');
+    json_response(200, '출고');
   } else {
     json_response(200, '보유재고');
   }
