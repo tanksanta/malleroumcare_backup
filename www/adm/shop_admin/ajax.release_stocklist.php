@@ -7,7 +7,7 @@ $where = array();
 $where_sql = '';
 
 $sel_field = get_search_string($sel_field);
-$sel_field_arr = array('it_name', 'io_id', 'it_id');
+$sel_field_arr = array('it_name', 'io_id', 'ProdPayCode');
 if (!in_array($sel_field, $sel_field_arr) && $sel_field != 'all') { // 검색할 필드 대상이 아니면 값을 제거
   $sel_field = '';
 }
@@ -70,7 +70,8 @@ $sql = "
       it_id,
       it_name,
       it_use,
-      it_option_subject
+      it_option_subject,
+      ProdPayCode
     FROM g5_shop_item i) AS a
   LEFT JOIN (SELECT * from g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)) AS T
   WHERE 1 = 1 {$where_sql}
