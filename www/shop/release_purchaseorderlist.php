@@ -425,7 +425,6 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
   });
 
   function sendInvoiceNum(text){
-    alert(text);
     text = text.slice(0, 12);
     $('#search_text').val(text);
     $('#search_option').val('ProdPayCode');

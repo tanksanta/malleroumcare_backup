@@ -410,7 +410,7 @@ if (!$member['mb_id']) {
       var it_id = $(this).data('it_id');
       var io_id = $(this).data('io_id');
 
-      window.open('./release_stockview.php?it_id=' + it_id + '&io_id=' + io_id, '_blank');
+      location.href = './release_stockview.php?it_id=' + it_id + '&io_id=' + io_id;
     });
   });
 

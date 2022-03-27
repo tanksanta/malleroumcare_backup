@@ -941,7 +941,7 @@ $ct = sql_fetch($sql);
       <?php
       if ($complete_count > 0) {
         while ($row = sql_fetch_array($result)) {
-          $img_active = ($row['bc_status'] == '이미출고' || $row['bc_status'] == '관리자삭제') ? 'active' : '';
+          $img_active = ($row['bc_status'] == '출고' || $row['bc_status'] == '관리자삭제') ? 'active' : '';
         ?>
           <li>
             <input type="text" data-id="<?php echo $row['bc_id'] ?>" value="<?php echo $row['bc_barcode'] ?>" class="notall frm_input" maxlength="12" readonly>
@@ -1476,7 +1476,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
         barcodeStatus = '정상'
       }
       if ($(this).find('.barcode_icon.type2').hasClass('active')) {
-        barcodeStatus = '이미출고'
+        barcodeStatus = '출고'
       }
       if ($(this).find('.barcode_icon.type3').hasClass('active')) {
         barcodeStatus = '관리자삭제'
@@ -1627,7 +1627,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
             if (checkBarcodeResult === 'OK') {
               $cur.parent().find(".barcode_icon.type1").addClass("active");
             }
-            if (checkBarcodeResult === '이미출고') {
+            if (checkBarcodeResult === '출고') {
               $cur.parent().find(".barcode_icon.type2").addClass("active");
             }
             if (checkBarcodeResult === '관리자삭제') {
