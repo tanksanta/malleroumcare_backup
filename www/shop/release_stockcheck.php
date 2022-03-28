@@ -387,13 +387,13 @@ if ($option) {
       </div>
     </div>
 
-    <div class="flex-row" style="margin-top: 20px; display: none">
-      <select name="sort_option" id="sortOption" style="width: 100%">
-        <option>미 확인 바코드가 위로 정렬</option>
-        <option>신규 바코드가 위로 정렬</option>
-        <option>삭제된 바코드가 위로 정렬</option>
-        <option>바코드 내림차순 정렬</option>
-        <option>바코드 오름차순 정렬</option>
+    <div class="flex-row" style="margin-top: 20px;">
+      <select name="sort_option" id="sortOption" style="width: 100%" onchange="sortList()">
+        <option value="unchecked">미 확인 바코드가 위로 정렬</option>
+        <option value="newAdd">신규 바코드가 위로 정렬</option>
+        <option value="deleted">삭제된 바코드가 위로 정렬</option>
+        <option value="barcodeDesc">바코드 내림차순 정렬</option>
+        <option value="barcodeAsc">바코드 오름차순 정렬</option>
       </select>
     </div>
   </div>
@@ -691,6 +691,28 @@ if (!$member['mb_id']) {
     }
   }
 
+  function sortList() {
+    var sortBy = $('#sortOption').val();
+
+    if (sortBy === 'unchecked') {
+      DATA.sort(dynamicSortMultiple('bc_is_check_yn', 'bc_barcode'));
+      ORIGIN_DATA.sort(dynamicSortMultiple('bc_is_check_yn', 'bc_barcode'));
+    } else if (sortBy === 'newAdd') {
+      DATA.sort(dynamicSortMultiple('bc_id', 'bc_barcode'));
+      ORIGIN_DATA.sort(dynamicSortMultiple('bc_id', 'bc_barcode'));
+    } else if (sortBy === 'deleted') {
+      DATA.sort(dynamicSortMultiple('-bc_del_yn', 'bc_barcode'));
+      ORIGIN_DATA.sort(dynamicSortMultiple('-bc_del_yn', 'bc_barcode'));
+    } else if (sortBy === 'barcodeDesc') {
+      DATA.sort(dynamicSort('-bc_barcode'));
+      ORIGIN_DATA.sort(dynamicSort('-bc_barcode'));
+    } else if (sortBy === 'barcodeAsc') {
+      DATA.sort(dynamicSort('bc_barcode'));
+      ORIGIN_DATA.sort(dynamicSort('bc_barcode'));
+    }
+
+    renderData(false);
+  }
 
   /*
   * https://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value
@@ -700,15 +722,20 @@ if (!$member['mb_id']) {
   */
   function dynamicSort(property) {
     var sortOrder = 1;
-    if(property[0] === "-") {
+    if (property[0] === "-") {
       sortOrder = -1;
       property = property.substr(1);
     }
-    return function (a,b) {
+    return function (a, b) {
       /* next line works with strings and numbers,
        * and you may want to customize it to your needs
        */
-      var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+      var result;
+      if (!isNaN(a[property]) && !isNaN(b[property])) {
+        result = (Number(a[property]) < Number(b[property])) ? -1 : (Number(a[property]) > Number(b[property])) ? 1 : 0;
+      } else {
+        result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+      }
       return result * sortOrder;
     }
   }
