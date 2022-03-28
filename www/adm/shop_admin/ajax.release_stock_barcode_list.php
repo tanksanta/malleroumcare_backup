@@ -66,6 +66,7 @@ $sql = "
 		bc_id, 
 		bc_barcode, 
 		bc_status,
+    bc_is_check_yn,
 		bc_del_yn,
 		checked_by,
 		DATE_FORMAT(checked_at, '%m/%d') AS checked_at,
