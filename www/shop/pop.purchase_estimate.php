@@ -529,15 +529,15 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 		<td align="center" colspan="2">영업2팀(주문제작)</td>
 		<td align="center">T. 02) 2268-2868<br>F. 02) 2268-2070</td>
 	</tr> -->
-	<tr height="30">
+	<!-- <tr height="30">
 		<td align="center">입금계좌안내</td>
 		<td align="center"><?php echo $banks[0][0]; ?> <?php echo $banks[0][1]; ?> <?php echo $banks[1][0]; ?> <?php echo $banks[1][1]; ?>  <?php echo $banks[2][0]; ?> <?php echo $banks[2][1]; ?> </td>
-		<!-- <td align="center" colspan="2"><?php echo $banks[0][1]; ?></td>
+		<td align="center" colspan="2"><?php echo $banks[0][1]; ?></td>
 		<td align="center"><?php echo $banks[1][0]; ?></td>
-		<td align="center" colspan="2"><?php echo $banks[1][1]; ?></td> -->
+		<td align="center" colspan="2"><?php echo $banks[1][1]; ?></td>
 		<td align="center">예금주</td>
 		<td align="center"><?php echo $default['de_admin_company_name']; ?></td>
-	</tr>
+	</tr> -->
 	</table>
 
 	</td>
