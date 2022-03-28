@@ -69,12 +69,16 @@ $sql = "
     bc_is_check_yn,
 		bc_del_yn,
 		checked_by,
+		bc_memo,
 		DATE_FORMAT(checked_at, '%m/%d') AS checked_at,
+		DATE_FORMAT(rentaled_at, '%m/%d') AS rentaled_at,
+		DATE_FORMAT(released_at, '%m/%d') AS released_at,
 		checked_at AS checked_at_full
   FROM g5_cart_barcode
   WHERE 
     it_id = '{$it_id}'
     AND io_id = '{$io_id}'
+    AND bc_status != '출고'
     {$where_sql}
   -- LIMIT , 
   ORDER BY
