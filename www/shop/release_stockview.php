@@ -50,7 +50,6 @@ $sql = "
 ";
 
 $last_checked_at = sql_fetch($sql)['last_checked_at'];
-
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -402,6 +401,10 @@ $last_checked_at = sql_fetch($sql)['last_checked_at'];
       margin-bottom: 10px;
     }
 
+    #actPop .body li.hide {
+      display: none;
+    }
+
     #actPop .body li .type {
       width: 70px;
     }
@@ -410,7 +413,8 @@ $last_checked_at = sql_fetch($sql)['last_checked_at'];
       width: calc(100% - 70px);
     }
 
-    #actPop .body li .content input {
+    #actPop .body li .content input,
+    #actPop .body li .content select {
       width: 99%;
       height: 30px;
       font-size: 16px;
@@ -419,6 +423,10 @@ $last_checked_at = sql_fetch($sql)['last_checked_at'];
     #actPop .body li .content input.barcode {
       border: 0;
       font-size: 20px;
+    }
+
+    #actPop .body li .content select {
+      font-size: 13px;
     }
 
     #actPop .footer {
@@ -553,10 +561,45 @@ if ($option) {
         <div class="type">바코드</div>
         <div class="content"><input type="text" class="barcode" readonly value="바코드"/></div>
       </li>
-      <li class="flex-row align-center">
+      <li class="flex-row align-center memoWrap">
         <div class="type">메모</div>
         <div class="content">
           <input type="text" class="memo" />
+        </div>
+      </li>
+      <li class="flex-row align-center optionWrap">
+        <div class="type">옵션</div>
+        <div class="content">
+          <select id="item_option">
+            <?php
+            if ($io_id) {
+              $sql = "select io_id from g5_shop_item_option where it_id = '{$it_id}' and io_type = '0' and io_use = '1' ";
+              $result = sql_query($sql);
+
+              $option = '';
+              $option_br = '';
+              while ($io_row = sql_fetch_array($result)) {
+                if ($io_id == $io_row['io_id']) { // 같은 옵션이면 건너띄우기
+                  continue;
+                }
+
+                $subj = explode(',', $row['it_option_subject']);
+                $opt = explode(chr(30), $io_row['io_id']);
+                for ($k = 0; $k < count($subj); $k++) {
+                  if ($subj[$k] && $opt[$k]) {
+                    $option .= $option_br . $subj[$k] . ' : ' . $opt[$k];
+                    $option_br = ' / ';
+                  }
+                }
+            ?>
+            <option value="<?php echo $io_row['io_id'] ?>"><?php echo $option ?></option>
+            <?php
+                $option = '';
+                $option_br = '';
+              }
+            }
+            ?>
+          </select>
         </div>
       </li>
     </ul>
@@ -587,6 +630,7 @@ if (!$member['mb_id']) {
     renderData();
 
     $(document).on('click', '.listContent .more', function () {
+      $('.listContent .more').not(this).find('.select').hide();
       $(this).find('.select').toggle();
     });
 
@@ -601,15 +645,25 @@ if (!$member['mb_id']) {
   });
 
   function showActPop(act, barcode, bc_id) {
+    $('#actPop li.memoWrap').addClass('hide');
+    $('#actPop li.optionWrap').addClass('hide');
+
     // rental, release, change_option
     if (act === 'rental') {
       $('#actPop .header p').text('대여 기록');
-
+      $('#actPop li.memoWrap').removeClass('hide');
 
     } else if (act === 'release') {
       $('#actPop .header p').text('출고 기록');
+      $('#actPop li.memoWrap').removeClass('hide');
 
     } else if (act === 'change_option') {
+      $('#actPop .header p').text('옵션 이동');
+      $('#actPop li.optionWrap').removeClass('hide');
+
+    } else {
+      alert('매개변수 오류! 관리자 문의');
+      return;
     }
 
     $('#actPop .hiddenValWrap input[name="act"]').val(act);
@@ -654,6 +708,7 @@ if (!$member['mb_id']) {
         act: act,
         bc_id: bc_id,
         memo: memo,
+        change_io_id: act === 'change_option' ? $('#item_option').val() : '',
       },
       dataType: 'json',
       async: false,
