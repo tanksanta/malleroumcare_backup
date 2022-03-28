@@ -474,16 +474,9 @@ if (!$member['mb_id']) {
 }
 ?>
 <script>
-  var FIRST_RENDER = true;
-  var ORIGIN_DATA = [];
   var DATA = [];
   var CHNAGED_DATA = [];
   var LOADING = false;
-
-  // 바코드 스캔용 전역변수
-  var sendBarcodeTargetList;
-  var cur_ct_id = null;
-  var cur_it_id = null;
 
   $(function() {
     renderData(true);
@@ -499,41 +492,12 @@ if (!$member['mb_id']) {
       var dataIndex = liNode.data('index');
       var changedObj;
 
-      /*
-      liNode.removeClass('checked');
-      liNode.removeClass('deleted');
-      liNode.removeClass('newAdd');
-      liNode.removeClass('unchecked');
-      liNode.find('.check_status').empty();
-
-      if (act === 'check') {
-        liNode.addClass('checked');
-        liNode.find('.check_status').append('<img src="/img/barcode_icon_1.png"/>');
-        // DATA[dataIndex]['checked_at'] = 'currentDate'
-        // DATA[dataIndex]['changed'] = 'true'
-      }
-
-      if (act === 'delete') {
-        liNode.addClass('deleted');
-        liNode.find('.check_status').append('<span>삭제됨</span>');
-        // DATA[dataIndex]['checked_at'] = null
-        // DATA[dataIndex]['bc_del_yn'] = 'Y'
-        // DATA[dataIndex]['changed'] = 'true'
-      }
-      */
-
-      // if (ORIGIN_DATA[dataIndex]['bc_del_yn'] === 'Y') {
-      //   alert('기존 삭제 상태의 바코드는 변경할 수 없습니다.');
-      //   return
-      // }
-
       if (act === 'check') {
         if (liNode.hasClass('checked')) {
           alert('이미 확인 상태입니다.');
           return;
         }
 
-        // 원래 데이터 확인
         DATA[dataIndex]['checked_at'] = 'currentDate'
         DATA[dataIndex]['bc_del_yn'] = 'N'
       }
@@ -546,7 +510,6 @@ if (!$member['mb_id']) {
 
         if (DATA[dataIndex]['bc_id'] === '0')  { // 신규 바코드라면 DATA에서 직접 삭제
           DATA.splice(dataIndex, 1);
-          ORIGIN_DATA.splice(dataIndex, 1);
 
           var findAddedItem = CHNAGED_DATA.find(function (item) {
             return (item.bc_barcode === barcode && item.bc_id === '0')
@@ -628,12 +591,6 @@ if (!$member['mb_id']) {
 
     if (pullData) {
       DATA = getData();
-
-      if (FIRST_RENDER) {
-        // deep copy
-        ORIGIN_DATA = $.extend(true, [], DATA);
-        FIRST_RENDER = false;
-      }
     }
 
     console.log(DATA);
@@ -648,6 +605,9 @@ if (!$member['mb_id']) {
         if (DATA[i].bc_del_yn === 'Y') {
           check_status = '<span>삭제됨</span>';
           status_class = 'deleted'
+          if (DATA[i].origin_del_yn === 'Y') {
+            status_class = 'deleted originDeleted'
+          }
           allBarcodeCnt--;
 
         } else if (DATA[i].bc_id === '0') {
@@ -669,7 +629,7 @@ if (!$member['mb_id']) {
         html += '  <div class="barcode">' + DATA[i].bc_barcode + '</div>';
         html += '  <div class="check_status">' + check_status + '</div>';
         html += '  <div class="more">';
-        if (ORIGIN_DATA[i].bc_del_yn !== 'Y') {
+        if (DATA[i].origin_del_yn !== 'Y') {
           html += '    <span>⋮</span>';
           html += '    <ul class="select">';
           html += '      <li class="check">확인함</li>';
@@ -696,19 +656,14 @@ if (!$member['mb_id']) {
 
     if (sortBy === 'unchecked') {
       DATA.sort(dynamicSortMultiple('bc_is_check_yn', 'bc_barcode'));
-      ORIGIN_DATA.sort(dynamicSortMultiple('bc_is_check_yn', 'bc_barcode'));
     } else if (sortBy === 'newAdd') {
       DATA.sort(dynamicSortMultiple('bc_id', 'bc_barcode'));
-      ORIGIN_DATA.sort(dynamicSortMultiple('bc_id', 'bc_barcode'));
     } else if (sortBy === 'deleted') {
       DATA.sort(dynamicSortMultiple('-bc_del_yn', 'bc_barcode'));
-      ORIGIN_DATA.sort(dynamicSortMultiple('-bc_del_yn', 'bc_barcode'));
     } else if (sortBy === 'barcodeDesc') {
       DATA.sort(dynamicSort('-bc_barcode'));
-      ORIGIN_DATA.sort(dynamicSort('-bc_barcode'));
     } else if (sortBy === 'barcodeAsc') {
       DATA.sort(dynamicSort('bc_barcode'));
-      ORIGIN_DATA.sort(dynamicSort('bc_barcode'));
     }
 
     renderData(false);
@@ -860,9 +815,6 @@ if (!$member['mb_id']) {
       DATA.splice(findItemIndex, 0, newOjb);
       DATA.sort(dynamicSort('bc_barcode'));
 
-      // ORIGIN_DATA 재생성
-      ORIGIN_DATA = [];
-      ORIGIN_DATA = $.extend(true, [], DATA);
 
       CHNAGED_DATA.push(newOjb);
     }
