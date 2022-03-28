@@ -31,7 +31,7 @@ if ($bc_row['bc_status'] == '대여') {
   json_response(400, '대여 상태에서는 변경이 불가능합니다.');
 }
 
-if ($act == 'rental') {
+if ($act == 'rental') { // 대여
   $sql = "
     update g5_cart_barcode
     set
@@ -45,11 +45,12 @@ if ($act == 'rental') {
   sql_query($sql);
   $bch_content = '재고관리 - 대여처리';
 
-} else if ($act == 'release') {
+} else if ($act == 'release') { // 출고
   $sql = "
     update g5_cart_barcode
     set
       bc_status = '출고',
+      bc_del_yn = 'Y', -- 출고이므로 삭제 처리
       bc_memo = '{$memo}',
       released_by = '{$member['mb_id']}',
       released_at = NOW()
@@ -59,7 +60,7 @@ if ($act == 'rental') {
   sql_query($sql);
   $bch_content = '재고관리 - 출고처리';
 
-} else if ($act == 'change_option') {
+} else if ($act == 'change_option') { // 옵션 변경
   $sql = "
     update g5_cart_barcode
     set
