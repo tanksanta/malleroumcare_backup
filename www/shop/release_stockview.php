@@ -352,6 +352,88 @@ $last_checked_at = sql_fetch($sql)['last_checked_at'];
       background-color: #DDD;
     }
 
+    #actPopMask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 10;
+      display: none;
+    }
+
+    #actPop {
+      position: fixed;
+      top: 35%;
+      left: 10%;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid black;
+      width: 80%;
+      z-index: 11;
+      display: none;
+    }
+
+    #actPop .header {
+      padding-bottom: 10px;
+      border-bottom: 1px solid #dfdfdf;
+    }
+
+    #actPop .header p {
+      font-size: 23px;
+      font-weight: bold;
+    }
+
+    #actPop .header button {
+      background: none;
+      font-size: 38px;
+      position: absolute;
+      top: -12px;
+      right: 0;
+    }
+
+    #actPop .body {
+      padding-top: 10px;
+    }
+
+    #actPop .body li {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    #actPop .body li .type {
+      width: 70px;
+    }
+
+    #actPop .body li .content {
+      width: calc(100% - 70px);
+    }
+
+    #actPop .body li .content input {
+      width: 99%;
+      height: 30px;
+      font-size: 16px;
+    }
+
+    #actPop .body li .content input.barcode {
+      border: 0;
+      font-size: 20px;
+    }
+
+    #actPop .footer {
+      margin-top: 25px;
+    }
+
+    #actPop .footer button {
+      width: 49%;
+      font-size: 20px;
+      padding: 5px 0;
+      border: 1px solid #7f7f7f;
+      background: #a6a6a6;
+      color: #fff;
+    }
+
   </style>
 </head>
 
@@ -413,7 +495,7 @@ if ($option) {
 
   <div id="content">
     <ul class="listContent">
-      <li class="flex-row align-center">
+      <li class="item flex-row align-center">
         <div class="barcode">1111111111111</div>
         <div class="check_status">확인 완료 (02/22)</div>
         <div class="more">
@@ -425,7 +507,7 @@ if ($option) {
           </ul>
         </div>
       </li>
-      <li class="flex-row align-center">
+      <li class="item flex-row align-center">
         <div class="barcode">1111111111112</div>
         <div class="check_status">확인 완료 (02/22)</div>
         <div class="more">
@@ -453,6 +535,39 @@ if ($option) {
   </div>
 </div>
 
+<div id="actPopMask"></div>
+<div id="actPop">
+  <div class="hiddenValWrap" style="display: none">
+    <input type="hidden" name="act" value="">
+    <input type="hidden" name="bc_id" value="">
+  </div>
+
+  <div class="header flex-row justify-space-between align-center">
+    <p>타이틀</p>
+    <button onclick="closeActPop();">&times;</button>
+  </div>
+
+  <div class="body">
+    <ul>
+      <li class="flex-row align-center">
+        <div class="type">바코드</div>
+        <div class="content"><input type="text" class="barcode" readonly value="바코드"/></div>
+      </li>
+      <li class="flex-row align-center">
+        <div class="type">메모</div>
+        <div class="content">
+          <input type="text" class="memo" />
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="footer flex-row justify-space-between align-center">
+    <button onclick="saveActPop();">저장</button>
+    <button onclick="closeActPop();">취소</button>
+  </div>
+</div>
+
 <?php
 if (!$member['mb_id']) {
   alert('접근이 불가합니다.');
@@ -460,6 +575,8 @@ if (!$member['mb_id']) {
 ?>
 <script>
   var LOADING = false;
+  var IT_ID = '<?php echo $it_id ?>';
+  var IO_ID = '<?php echo $io_id ?>';
 
   // 바코드 스캔용 전역변수
   var sendBarcodeTargetList;
@@ -472,7 +589,87 @@ if (!$member['mb_id']) {
     $(document).on('click', '.listContent .more', function () {
       $(this).find('.select').toggle();
     });
+
+    $(document).on('click', '.listContent .more .select li', function () {
+      var act = $(this).attr('class'); // rental, release, change_option
+      var liNode = $(this).closest('.item');
+      var barcode = liNode.find('.barcode').text();
+      var bc_id = liNode.data('bc_id');
+
+      showActPop(act, barcode, bc_id)
+    });
   });
+
+  function showActPop(act, barcode, bc_id) {
+    // rental, release, change_option
+    if (act === 'rental') {
+      $('#actPop .header p').text('대여 기록');
+
+
+    } else if (act === 'release') {
+      $('#actPop .header p').text('출고 기록');
+
+    } else if (act === 'change_option') {
+    }
+
+    $('#actPop .hiddenValWrap input[name="act"]').val(act);
+    $('#actPop .hiddenValWrap input[name="bc_id"]').val(bc_id);
+    $('#actPop .body input.barcode').val(barcode);
+
+    $('#actPopMask').show();
+    $('#actPop').show();
+  }
+
+  function closeActPop() {
+    // 초기화
+    $('#actPop .header p').text('');
+    $('#actPop input').val('');
+    
+    // 숨기기
+    $('#actPopMask').hide();
+    $('#actPop').hide();
+  }
+
+  function saveActPop() {
+    var act = $('#actPop .hiddenValWrap input[name="act"]').val();
+    var bc_id = $('#actPop .hiddenValWrap input[name="bc_id"]').val();
+    var memo = $('#actPop .body input.memo').val();
+
+    if (!confirm('저장하시겠습니까?')) {
+      return;
+    }
+
+    if (LOADING) {
+      return;
+    }
+
+    LOADING = true;
+
+    $.ajax({
+      url: '/adm/shop_admin/ajax.release_stock_barcode_view_update.php',
+      type: 'POST',
+      data: {
+        it_id: '<?php echo $it_id ?>',
+        io_id: '<?php echo $io_id ?>',
+        act: act,
+        bc_id: bc_id,
+        memo: memo,
+      },
+      dataType: 'json',
+      async: false,
+    })
+    .done(function(result) {
+      alert(result.message);
+      location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    })
+    .always(function() {
+      LOADING = false;
+    });
+  }
 
   function sendInvoiceNum(text) {
     text = text.slice(0, 12);
@@ -527,14 +724,32 @@ if (!$member['mb_id']) {
     $('.listContent').empty();
 
     data = getData();
+    console.log(data);
 
     if (data.length > 0) {
       var check_status;
 
       for (var i = 0; i < data.length; i++) {
-        check_status = data[i].checked_at ? '확인 완료 (' + data[i].checked_at +')' : '미확인';
+        if (data[i].bc_status === '대여') {
+          check_status = '대여 중 (' + data[i].rentaled_at +')';
+          if (data[i].bc_memo) {
+            check_status += '<br/>' + data[i].bc_memo;
+          }
+          
+        } else if (data[i].bc_status  === '출고') {
+          check_status = '출고 중 (' + data[i].released_at +')';
+          if (data[i].bc_memo) {
+            check_status += '<br/>' + data[i].bc_memo;
+          }
+          
+        } else if (data[i].checked_at) {
+          check_status = '확인 완료 (' + data[i].checked_at +')';
+          
+        } else {
+          check_status = '미확인';
+        }
 
-        html = '<li class="flex-row align-center" data-bc_id="' + data[i].bc_id + '">';
+        html = '<li class="item flex-row align-center" data-bc_id="' + data[i].bc_id + '">';
         html += '  <div class="barcode">' + data[i].bc_barcode + '</div>';
         html += '  <div class="check_status">' + check_status + '</div>';
         html += '  <div class="more">';
@@ -542,7 +757,9 @@ if (!$member['mb_id']) {
         html += '    <ul class="select">';
         html += '      <li class="rental">대여함</li>';
         html += '      <li class="release">출고함</li>';
-        html += '      <li class="change_option">옵션이동</li>';
+        if (IO_ID) {
+          html += '    <li class="change_option">옵션이동</li>';
+        }
         html += '    </ul>';
         html += '  </div>';
         html += '</li>';
