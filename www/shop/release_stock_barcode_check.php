@@ -235,12 +235,19 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
 
     #popupBody .listContent li {
       border-bottom: 1px solid #dfdfdf;
-      padding: 13px 0;
       font-size: 14px;
     }
 
     #popupBody .listContent li:first-of-type {
       border-top: 1px solid #dfdfdf;
+    }
+
+    #popupBody .listContent li.select {
+      background: #E4E4E4;
+    }
+
+    #popupBody .listContent li > div {
+      padding: 13px 0;
     }
 
     #popupBody .listContent .barcode {
@@ -258,6 +265,11 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
       width: 10%;
       text-align: center;
       font-size: 26px;
+    }
+
+    #popupBody .listContent .more span {
+      position: relative;
+      top: -2px;
     }
 
     #popupBody .listContent .more .select {
@@ -336,6 +348,30 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
       height: 100%;
       color: #666;
       background-color: #DDD;
+    }
+
+    #selectActWrap {
+      position: fixed;
+      bottom: 104px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      display: none;
+    }
+
+    #selectActWrap button {
+      border: 0;
+      border-top: 1px solid #000;
+      font-size: 15px;
+    }
+
+    #selectActWrap .check {
+      width: 65%;
+      border-right: 1px solid #000;
+    }
+
+    #selectActWrap .delete {
+      width: 35%;
     }
 
   </style>
@@ -456,6 +492,13 @@ if ($option) {
   </div>
 </div>
 
+<div id="selectActWrap">
+  <div class="flex-row" style="height: 100%;">
+    <button onclick="actSelectedItems('check')" class="check">선택 재고 확인함</button>
+    <button onclick="actSelectedItems('delete')" class="delete">선택 삭제함</button>
+  </div>
+</div>
+
 <!-- 고정 하단 -->
 <div id="popupFooterBtnWrap">
   <div class="flex-row justify-space-between align-center" style="margin-bottom: 20px">
@@ -475,13 +518,14 @@ if (!$member['mb_id']) {
 ?>
 <script>
   var DATA = [];
-  var CHNAGED_DATA = [];
+  var CHANGED_DATA = [];
   var LOADING = false;
 
   $(function() {
     renderData(true);
 
     $(document).on('click', '.listContent .more', function () {
+      $('.listContent .more').not(this).find('.select').hide();
       $(this).find('.select').toggle();
     });
 
@@ -489,8 +533,7 @@ if (!$member['mb_id']) {
       var act = $(this).attr('class');
       var liNode = $(this).closest('.item');
       var barcode = liNode.find('.barcode').text();
-      var dataIndex = liNode.data('index');
-      var changedObj;
+      var dataIndex = Number(liNode.data('index'));
 
       if (act === 'check') {
         if (liNode.hasClass('checked')) {
@@ -511,11 +554,11 @@ if (!$member['mb_id']) {
         if (DATA[dataIndex]['bc_id'] === '0')  { // 신규 바코드라면 DATA에서 직접 삭제
           DATA.splice(dataIndex, 1);
 
-          var findAddedItem = CHNAGED_DATA.find(function (item) {
+          var findAddedItem = CHANGED_DATA.find(function (item) {
             return (item.bc_barcode === barcode && item.bc_id === '0')
           });
-          var findAddedItemIndex = DATA.indexOf(findAddedItem);
-          CHNAGED_DATA.splice(findAddedItemIndex, 1);
+          var findAddedItemIndex = CHANGED_DATA.indexOf(findAddedItem);
+          CHANGED_DATA.splice(findAddedItemIndex, 1);
 
           renderData(false);
           return;
@@ -527,25 +570,230 @@ if (!$member['mb_id']) {
       }
 
       // deep copy
-      changedObj = JSON.parse(JSON.stringify(DATA[dataIndex]));
+      var changedObj = JSON.parse(JSON.stringify(DATA[dataIndex]));
 
       // 중복 검색
-      var findItem = CHNAGED_DATA.find(function (item) {
+      var findItem = CHANGED_DATA.find(function (item) {
         return item.bc_id === changedObj.bc_id
       });
 
-      var findItemIndex = CHNAGED_DATA.indexOf(findItem);
+      var findItemIndex = CHANGED_DATA.indexOf(findItem);
 
       if (findItemIndex !== -1) { // 중복이 있다면 삭제
-        CHNAGED_DATA.splice(findItemIndex, 1);
+        CHANGED_DATA.splice(findItemIndex, 1);
       }
 
-      CHNAGED_DATA.push(changedObj)
+      CHANGED_DATA.push(changedObj)
 
+      sortDataAndRender();
+    });
 
-      renderData(false);
+    // 바코드 선택 삭제
+    $(document).on('click', '.listContent li .barcode', function() {
+      var allBarcodes = $('.listContent .item');
+      var start = $('.listContent .item.start').length;
+      var end = $('.listContent .item.end').length;
+      var startNode = $('.listContent .item.start');
+      var endNode = $('.listContent .item.end');
+      var thisNode = $(this).closest('.item');
+      var startIndex = start ? allBarcodes.index(startNode) : -1;
+      var endIndex = end ? allBarcodes.index(endNode) : -1;
+      var thisIndex = allBarcodes.index(thisNode);
+
+      // 시작과 끝이 있는 경우
+      if (start && end) {
+        // 시작보다 낮은 바코드를 눌렀을 경우
+        if (thisIndex < startIndex) {
+          startNode.removeClass('start');
+          thisNode.addClass('start');
+        }
+
+        // 시작보다 높고 끝보다 낮은 바코드를 눌럿을 경우
+        if (startIndex < thisIndex && thisIndex < endIndex) {
+          endNode.removeClass('end');
+          thisNode.addClass('end');
+        }
+
+        // 끝보다 높은 바코드를 눌렀을 경우
+        if (endIndex < thisIndex) {
+          endNode.removeClass('end');
+          thisNode.addClass('end');
+        }
+
+        // 시작과 끝 바코드를 눌렀다면 모두 취소
+        if (thisIndex === startIndex || thisIndex === endIndex) {
+          startNode.removeClass('start');
+          endNode.removeClass('end');
+        }
+      }
+
+      // 시작만 있는 경우
+      if (start && !end) {
+        // 시작보다 낮은 바코드를 눌렀을 경우
+        if (thisIndex < startIndex) {
+          startNode.removeClass('start');
+          thisNode.addClass('start');
+          startNode.addClass('end');
+        }
+
+        // 시작보다 높은 바코드를 눌렀을 경우
+        if (thisIndex > startIndex) {
+          thisNode.addClass('end');
+        }
+
+        if (thisIndex === startIndex) {
+          thisNode.removeClass('start');
+        }
+      }
+
+      // 아무것도 없는 경우
+      if (!start && !end) {
+        thisNode.addClass('start');
+      }
+
+      addSelectClassBarcode();
     });
   });
+
+  function addSelectClassBarcode() {
+    var allBarcodes = $('.listContent .item');
+    var start = $('.listContent .item.start').length;
+    var end = $('.listContent .item.end').length;
+    var startNode = $('.listContent .item.start');
+    var endNode = $('.listContent .item.end');
+    var startIndex = start ? allBarcodes.index(startNode) : -1;
+    var endIndex = end ? allBarcodes.index(endNode) : -1;
+
+    allBarcodes.removeClass('select');
+
+    if (start && end) {
+      allBarcodes.each(function(key, val) {
+        if (startIndex <= allBarcodes.index($(this))
+          && allBarcodes.index($(this)) <= endIndex ) {
+          $(this).addClass('select');
+        }
+      });
+    }
+
+    if (start && !end) {
+      startNode.addClass('select');
+    }
+
+    if ($('.listContent li.select').length > 0) {
+      $('#selectActWrap').show();
+    } else {
+      $('#selectActWrap').hide();
+    }
+  }
+
+  function actSelectedItems(act) {
+    var totalLength = $('.listContent .item.select').length;
+    var liNode;
+    var barcode;
+    var dataIndex;
+    var changedObj;
+    var findAddedItem;
+    var findAddedItemIndex;
+    var findItem;
+    var findItemIndex;
+
+    var toDeleteObjects = [];
+    // var toDeleteDataIndexArr = [];
+    // var toDeleteChangedDataIndexArr = [];
+
+    $('.listContent .item.select').each(function() {
+      liNode = $(this);
+      barcode = liNode.find('.barcode').text();
+      dataIndex = Number(liNode.data('index'));
+
+      if (act === 'check') {
+        if ( liNode.hasClass('originDeleted')
+          || liNode.hasClass('checked')
+          || liNode.hasClass('newAdd') ) {
+          return true; // continue
+        }
+
+        DATA[dataIndex]['checked_at'] = 'currentDate'
+        DATA[dataIndex]['bc_del_yn'] = 'N'
+      }
+
+      if (act === 'delete') {
+        if ( liNode.hasClass('originDeleted')
+          || liNode.hasClass('deleted')) {
+          return true; // continue
+        }
+
+        if (DATA[dataIndex]['bc_id'] === '0') { // 신규 바코드라면 따로 모아서 삭제
+          toDeleteObjects.push(DATA[dataIndex]);
+          return true;
+
+          /*
+          DATA.splice(dataIndex, 1);
+          // toDeleteDataIndexArr.push(dataIndex); // 바로 삭제 하지 말고 dataIndex 모아서 랜더 전에 삭제
+
+          findAddedItem = CHANGED_DATA.find(function (item) {
+            return (item.bc_barcode === barcode && item.bc_id === '0')
+          });
+          findAddedItemIndex = CHANGED_DATA.indexOf(findAddedItem);
+          CHANGED_DATA.splice(findAddedItemIndex, 1);
+          // toDeleteChangedDataIndexArr.push(findAddedItemIndex);
+
+          if (dataIndex + 1 === totalLength)  { // 마지막 항목 처리중이라면 브레이크
+            return false; // break
+          } else {
+            return true; // continue
+          }
+           */
+
+        } else {
+          DATA[dataIndex]['checked_at'] = null
+          DATA[dataIndex]['bc_del_yn'] = 'Y'
+        }
+      }
+
+      // deep copy
+      changedObj = JSON.parse(JSON.stringify(DATA[dataIndex]));
+
+      // 중복 검색
+      findItem = CHANGED_DATA.find(function (item) {
+        return item.bc_id === changedObj.bc_id
+      });
+
+      findItemIndex = CHANGED_DATA.indexOf(findItem);
+
+      if (findItemIndex !== -1) { // 중복이 있다면 삭제
+        CHANGED_DATA.splice(findItemIndex, 1);
+        // toDeleteChangedDataIndexArr.push(findItemIndex);
+      }
+
+      CHANGED_DATA.push(changedObj)
+    });
+
+    // 신규 바코드 삭제
+    for (var i = 0; i < toDeleteObjects.length; i++) {
+      findAddedItem = DATA.find(function (item) {
+        return (item.bc_barcode === toDeleteObjects[i].bc_barcode && item.bc_id === '0')
+      });
+      findAddedItemIndex = DATA.indexOf(findAddedItem);
+      DATA.splice(findAddedItemIndex, 1);
+
+      findAddedItem = CHANGED_DATA.find(function (item) {
+        return (item.bc_barcode === toDeleteObjects[i].bc_barcode && item.bc_id === '0')
+      });
+      findAddedItemIndex = CHANGED_DATA.indexOf(findAddedItem);
+      CHANGED_DATA.splice(findAddedItemIndex, 1);
+    }
+
+    if (CHANGED_DATA.length > 0 || toDeleteObjects.length > 0) {
+      sortDataAndRender();
+    }
+
+    // item select 초기화
+    $('.listContent .item.select').removeClass('select');
+    $('.listContent .item.start').removeClass('start');
+    $('.listContent .item.end').removeClass('end');
+  }
+
 
   function getData() {
     var data = [];
@@ -649,6 +897,9 @@ if (!$member['mb_id']) {
     } else {
       $('.listContent').append('<li>등록된 바코드가 없습니다.</li>')
     }
+
+    $('#selectActWrap').hide();
+  }
   }
 
   function sortList() {
@@ -720,7 +971,7 @@ if (!$member['mb_id']) {
       return;
     }
 
-    if (CHNAGED_DATA.length == 0) {
+    if (CHANGED_DATA.length == 0) {
       alert('변경한 내역이 없습니다');
       return;
     }
@@ -737,7 +988,7 @@ if (!$member['mb_id']) {
       data: {
         it_id: '<?php echo $it_id ?>',
         io_id: '<?php echo $io_id ?>',
-        data: CHNAGED_DATA,
+        data: CHANGED_DATA,
       },
       dataType: 'json',
       async: false,
@@ -758,10 +1009,10 @@ if (!$member['mb_id']) {
 
   function showLoading(flag) {
     if (flag) {
-      $('body').css('overflow-y', 'hidden')
+      $('body').css('overflow-y', 'hidden');
       $('#loading').show();
     } else {
-      $('body').css('overflow-y', 'scroll')
+      $('body').css('overflow-y', 'scroll');
       $('#loading').hide();
     }
   }
@@ -812,14 +1063,14 @@ if (!$member['mb_id']) {
         checked_by: null,
       };
 
+      // 데이터 삽입
       DATA.splice(findItemIndex, 0, newOjb);
       DATA.sort(dynamicSort('bc_barcode'));
 
-
-      CHNAGED_DATA.push(newOjb);
+      CHANGED_DATA.push(newOjb);
     }
 
-    renderData(false);
+    sortDataAndRender();
   }
 
   function open_invoice_scan() {
