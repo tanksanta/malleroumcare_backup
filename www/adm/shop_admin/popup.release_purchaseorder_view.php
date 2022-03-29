@@ -1260,6 +1260,10 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
         if (thisIndex > startIndex) {
           $(this).addClass('end');
         }
+
+        if (thisIndex === startIndex) {
+          $(this).removeClass('start');
+        }
       }
 
       // 아무것도 없는 경우

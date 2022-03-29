@@ -868,7 +868,7 @@ if (!$member['mb_id']) {
     var it_id = '<?php echo $it_id ?>';
     var io_id = '<?php echo $io_id ?>';
 
-    location.href = './release_stockcheck.php?it_id=' + it_id + '&io_id=' + io_id;
+    location.href = './release_stock_barcode_check.php?it_id=' + it_id + '&io_id=' + io_id;
   }
 
   function open_invoice_scan() {
