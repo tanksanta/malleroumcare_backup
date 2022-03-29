@@ -424,7 +424,7 @@ if ($option) {
     </div>
 
     <div class="flex-row" style="margin-top: 20px;">
-      <select name="sort_option" id="sortOption" style="width: 100%" onchange="sortList()">
+      <select name="sort_option" id="sortOption" style="width: 100%" onchange="sortDataAndRender()">
         <option value="unchecked">미 확인 바코드가 위로 정렬</option>
         <option value="newAdd">신규 바코드가 위로 정렬</option>
         <option value="deleted">삭제된 바코드가 위로 정렬</option>
@@ -560,7 +560,7 @@ if (!$member['mb_id']) {
           var findAddedItemIndex = CHANGED_DATA.indexOf(findAddedItem);
           CHANGED_DATA.splice(findAddedItemIndex, 1);
 
-          renderData(false);
+          sortDataAndRender();
           return;
 
         } else {
@@ -839,9 +839,8 @@ if (!$member['mb_id']) {
 
     if (pullData) {
       DATA = getData();
+      sortData();
     }
-
-    console.log(DATA);
 
     if (DATA.length > 0) {
       var check_status = '';
@@ -900,9 +899,13 @@ if (!$member['mb_id']) {
 
     $('#selectActWrap').hide();
   }
+
+  function sortDataAndRender() {
+    sortData();
+    renderData(false);
   }
 
-  function sortList() {
+  function sortData() {
     var sortBy = $('#sortOption').val();
 
     if (sortBy === 'unchecked') {
@@ -916,8 +919,6 @@ if (!$member['mb_id']) {
     } else if (sortBy === 'barcodeAsc') {
       DATA.sort(dynamicSort('bc_barcode'));
     }
-
-    renderData(false);
   }
 
   /*
