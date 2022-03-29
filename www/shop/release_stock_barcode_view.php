@@ -50,6 +50,8 @@ $sql = "
 ";
 
 $last_checked_at = sql_fetch($sql)['last_checked_at'];
+
+$prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'")['ProdPayCode'];
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -727,8 +729,26 @@ if (!$member['mb_id']) {
   }
 
   function sendInvoiceNum(text) {
-    text = text.slice(0, 12);
-    $('#search_text').val(text);
+    var prodPayCode = '<?php echo $prod_pay_code ?>'
+    var barcodeProdCode = text.slice(0, 12);
+    var barcode = text.slice(12, 24);
+
+    if (text.length !== 24) {
+      alert('유효하지 않은 바코드입니다. 다시 스캔해주세요. (12자리 아님)');
+      return;
+    }
+
+    if (barcodeProdCode !== prodPayCode) {
+      alert('상품을 잘못 스캔하셨습니다. 상품을 다시 확인해주세요.');
+      return;
+    }
+
+    if (isNaN(barcode)) {
+      alert('바코드에 숫자 이외의 문자가 포함되어있습니다. 다시 스캔해주세요.')
+      return;
+    }
+
+    $('#search_text').val(barcode);
     renderData();
   }
 
