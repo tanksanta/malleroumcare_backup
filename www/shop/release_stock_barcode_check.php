@@ -529,6 +529,12 @@ if (!$member['mb_id']) {
       $(this).find('.select').toggle();
     });
 
+    $(document).on('click', function(e) {
+      if ($(e.target).closest(".more").length === 0) {
+        $('.listContent .more .select').hide();
+      }
+    });
+
     $(document).on('click', '.listContent .more .select li', function () {
       var act = $(this).attr('class');
       var liNode = $(this).closest('.item');
