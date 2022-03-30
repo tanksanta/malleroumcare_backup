@@ -4,7 +4,7 @@ include_once('./_common.php');
 
 // auth_check($auth[$sub_menu], "r");
 
-if (!$data || !is_array($data) || !$it_id || !$io_id) {
+if (!$data || !is_array($data) || !$it_id) {
   json_response(400, '유효하지 않은 요청입니다.');
 }
 
