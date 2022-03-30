@@ -478,7 +478,7 @@ if ($option) {
 <div id="popupHeaderTopWrap">
   <div class="title"><?php echo $g5["title"] ?></div>
   <div class="close">
-    <a href="javascript:window.close();">
+    <a href="javascript:history.back();">
       &times;
     </a>
   </div>

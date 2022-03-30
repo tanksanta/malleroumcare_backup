@@ -383,7 +383,7 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
 <div id="popupHeaderTopWrap">
   <div class="title"><?php echo $g5["title"] ?></div>
   <div class="close">
-    <a href="javascript:window.close();">
+    <a href="javascript:history.back();">
       &times;
     </a>
   </div>
