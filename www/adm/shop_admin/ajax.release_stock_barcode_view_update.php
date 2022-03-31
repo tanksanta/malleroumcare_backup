@@ -45,7 +45,7 @@ if ($act == 'rental') { // 대여
   sql_query($sql);
   $bch_content = '재고관리 - 대여처리';
 
-} else if ($act == 'release') { // 출고
+} else if ($act == 'release') { // 임의 출고 (ct_id 없음)
   $sql = "
     update g5_cart_barcode
     set
