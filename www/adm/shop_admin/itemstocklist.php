@@ -47,6 +47,11 @@ if ($stock_type == 'malignity') {
   $sql_search .= " and (sum_ws_qty > safe_max_stock_qty) and sum_ws_qty != 0 and safe_min_stock_qty != 0 ";
 }
 
+// 재고와 바코드 상이한 제품
+if ($stock_type == 'notMatchBarcodeQty') {
+  $sql_search .= " and (sum_ws_qty != sum_barcode_qty) and sum_ws_qty != 0";
+}
+
 if ($sel_field == "")  $sel_field = "it_name";
 if ($sort1 == "") $sort1 = "it_stock_qty";
 if ($sort2 == "") $sort2 = "asc";
@@ -85,6 +90,7 @@ from
         AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 1.5), 0)
     END AS safe_max_stock_qty, 
     (SELECT IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) FROM warehouse_stock WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
+    (SELECT count(*) FROM g5_cart_barcode WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty,
     ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
         WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
           ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
@@ -171,6 +177,26 @@ $count_warn1 = get_manage_stock_count(1);
 $count_warn2 = get_manage_stock_count(2);
 $count_warn3 = get_manage_stock_count(3);
 
+$sql = "
+  SELECT
+      COUNT(*) AS cnt
+    FROM
+    (SELECT
+      (SELECT 
+        IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) 
+      FROM warehouse_stock 
+      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
+      (SELECT count(*)
+        FROM g5_cart_barcode
+        WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty
+    FROM
+      g5_shop_item AS a
+      LEFT JOIN (SELECT * from g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)) AS T
+  WHERE sum_ws_qty != sum_barcode_qty 
+";
+
+$count_warn4 = sql_fetch($sql)['cnt'];
+
 ?>
 
 <script src="<?php echo G5_ADMIN_URL;?>/apms_admin/apms.admin.js"></script>
@@ -224,6 +250,10 @@ $count_warn3 = get_manage_stock_count(3);
     top: -2px;
     position: relative;
   }
+
+  tr.warn {
+    background: #ffe6ea;
+  }
 </style>
 
 <div class="local_ov01 local_ov">
@@ -267,6 +297,10 @@ $count_warn3 = get_manage_stock_count(3);
 
   <?php if ($count_warn3 > 0) { ?>
   <a class="<?php echo $stock_type == 'malignity' ? 'active' : '' ?>" href="<?php echo $stock_type == 'malignity' ?$_SERVER['SCRIPT_NAME'] .  '?stock_type=' : $_SERVER['SCRIPT_NAME'].'?stock_type=malignity' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (<?php echo $count_warn3 ?>개)</a>
+  <?php } ?>
+
+  <?php if ($count_warn4 > 0) { ?>
+  <a class="<?php echo $stock_type == 'notMatchBarcodeQty' ? 'active' : '' ?>" href="<?php echo $stock_type == 'notMatchBarcodeQty' ?$_SERVER['SCRIPT_NAME'] .  '?stock_type=' : $_SERVER['SCRIPT_NAME'].'?stock_type=notMatchBarcodeQty' ?>"><img src="/img/warn5.png" style="margin-right: 8px">재고와 바코드 상이한 상품 (<?php echo $count_warn4 ?>개)</a>
   <?php } ?>
 </div>
 
@@ -329,6 +363,7 @@ $count_warn3 = get_manage_stock_count(3);
         <th scope="col">옵션항목</th>
         <th scope="col">재고경고</th>
         <th scope="col"><a href="<?php echo title_sort("sum_ws_qty") . "&amp;$qstr1"; ?>">창고재고</a></th>
+        <th scope="col">바코드</th>
         <th scope="col">평균출고</th>
         <th scope="col">안전재고</th>
         <?php foreach($warehouse_list as $warehouse) { ?>
@@ -379,9 +414,12 @@ $count_warn3 = get_manage_stock_count(3);
         }
 
         $bg = 'bg'.($i%2);
-
+        $bg_warn = '';
+        if ($row['sum_ws_qty'] != $row['sum_barcode_qty']) {
+          $bg_warn = 'warn';
+        }
     ?>
-    <tr class="<?php echo $bg; ?>">
+    <tr class="<?php echo $bg; ?> <?php echo $bg_warn; ?>">
 		<!-- APMS - 2014.07.20 -->
         <td class="td_code" style="white-space:nowrap">
             <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
@@ -458,6 +496,7 @@ $count_warn3 = get_manage_stock_count(3);
         ?>
         <td class="td_num"><?php echo $img_src ? '<img src="' . $img_src . '" title="' . $alt_txt . '">' : '' ?></td>
         <td class="td_num"><?php echo number_format($row['sum_ws_qty']) ?></td>
+        <td class="td_num"><?php echo number_format($row['sum_barcode_qty']) ?></td>
         <td class="td_num"><?php echo number_format($row['sum_ct_qty_3month']) ?></td>
         <td class="td_num"><?php echo number_format($row['safe_min_stock_qty']) ?></td>
         <?php
