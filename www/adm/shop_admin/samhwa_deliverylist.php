@@ -283,11 +283,15 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         <th>작업상태</th>
         <td>
           <div class="list">
+            <?php
+            $not_approved_count = sql_fetch("select count(*) as cnt from g5_cart_barcode_approve_request where status = '승인요청' and del_yn = 'N'")['cnt'];
+            ?>
             <input type="checkbox" id="complete1" name="complete1" value="1" <?php echo option_array_checked('1', $complete1); ?>><label for="complete1"> 바코드 미완료 내역만 보기</label>
             <input type="checkbox" id="complete2" name="complete2" value="1" <?php echo option_array_checked('1', $complete2); ?>><label for="complete2"> 배송정보 미입력 내역만 보기</label>
             <input type="checkbox" id="not_complete1" name="not_complete1" value="1" <?php echo option_array_checked('1', $not_complete1); ?>><label for="not_complete1"> 바코드 완료 내역만 보기</label>
             <input type="checkbox" id="not_complete2" name="not_complete2" value="1" <?php echo option_array_checked('1', $not_complete2); ?>><label for="not_complete2"> 배송정보 입력완료 내역만 보기</label>
             <input type="checkbox" id="not_complete3" name="not_complete3" value="1" <?php echo option_array_checked('1', $not_complete3); ?>><label for="not_complete3"> 합포 미적용 내역만 보기</label>
+            <input type="checkbox" id="not_approved" name="not_approved" value="1" <?php echo option_array_checked('1', $not_approved); ?>><label for="not_approved"> 미재고 바코드 입력(<?php echo $not_approved_count ?>)</label>
           </div>
         </td>
       </tr>
