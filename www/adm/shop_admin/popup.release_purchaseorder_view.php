@@ -1880,6 +1880,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
       async: false,
       data: {
         barcode: barcode,
+        ct_id: '<?=$ct_id?>',
       },
       dataType: 'json',
     })
