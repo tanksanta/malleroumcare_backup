@@ -147,13 +147,18 @@ if ($sel_field_add_add == 'od_all' && $search_add_add != "") {
 }
 
 // 출고준비 3일경과만 보기
-if($issue_1) {
+if ($issue_1) {
   $where[] = " ( ct_status = '출고준비' and DATE(ct_move_date) <= (CURDATE() - INTERVAL 3 DAY ) ) ";
 }
 
 // 취소/반품요청 있는 주문만 보기
-if($issue_2) {
+if ($issue_2) {
   $where[] = " ( select count(*) from g5_shop_order_cancel_request where approved = 0 and od_id = o.od_id ) > 0 ";
+}
+
+// 미재고 바코드 입력만 보기
+if ($issue_3) {
+  $where[] = " ( ct_barcode_insert_not_approved > 0 ) ";
 }
 
 // 바코드 입력완료, 미입력
@@ -667,7 +672,10 @@ foreach($orderlist as $order) {
   }
   $prodBarNumCntBtnStatus = '';
   $prodBarNumCntBtnWord = $order['ct_barcode_insert']."/".$order['ct_qty'];
-  if($order['ct_barcode_insert'] >= $order['ct_qty']) {
+
+  if ($order['ct_barcode_insert_not_approved'] > 0) {
+    $prodBarNumCntBtnStatus = " approveRequired";
+  } else if ($order['ct_barcode_insert'] >= $order['ct_qty']) {
     $prodBarNumCntBtnWord = '입력완료';
     $prodBarNumCntBtnStatus = " disable";
   }

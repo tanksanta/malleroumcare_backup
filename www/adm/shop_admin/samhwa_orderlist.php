@@ -408,9 +408,13 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
           </div>
           <br/>
           <div style="display: inline-block; margin-left: 11px; margin-right:15px;">
+            <?php
+            $not_approved_count = sql_fetch("select count(*) as cnt from g5_cart_barcode_approve_request where status = '승인요청' and del_yn = 'N'")['cnt'];
+            ?>
             <span class="linear_span">이슈사항</span>
             <input type="checkbox" name="issue_1" id="issue_1" value="1" title="" <?php echo option_array_checked('1', $issue_1); ?>><label for="issue_1">출고준비 3일 경과</label>
             <input type="checkbox" name="issue_2" id="issue_2" value="1" title="" <?php echo option_array_checked('1', $issue_2); ?>><label for="issue_2">취소/반품 요청</label>
+            <input type="checkbox" name="issue_3" id="issue_3" value="1" title="" <?php echo option_array_checked('1', $issue_3); ?>><label for="issue_3">미재고 바코드 입력(<?php echo $not_approved_count ?>)</label>
           </div>
           <div class="linear">
             <span class="linear_span">바코드</span>
