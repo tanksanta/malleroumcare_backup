@@ -802,7 +802,7 @@ if($od["od_b_tel"]) {
       // msgResult = 'error'
       var data = $xhr.responseJSON;
       console.error(data && data.message);
-      alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
+      // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
     })
   }
 
