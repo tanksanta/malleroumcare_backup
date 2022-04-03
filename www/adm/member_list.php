@@ -835,39 +835,7 @@ $( document ).ready(function() {
   });
 
   $("#mbexcel").click(function(){
-
-    var checked = $('.tbl_mblist td input[type=checkbox]:checked');
-
-    var mb_ids = [];
-
-    $.map(checked, function(v, i) {
-      var mb_id = $(v).closest('td').find('.mb_id_input').val();
-      mb_ids.push(mb_id);
-    });
-
-    if (!mb_ids.length) {
-      $('#fsearch').attr("action", "./excel_mb.php");
-      // use_excel = true;
-      $('#fsearch').submit();
-      return;
-    }
-
-    var form = document.createElement('form');
-    form.method = 'post';
-    form.action = 'excel_mb.php';
-
-    if (mb_ids.length) {
-      for (var i=0; i<mb_ids.length; i++) {
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'mb_ids[]';
-        input.value = mb_ids[i];
-        document.body.appendChild(input);
-        form.appendChild(input);
-      }
-    }
-    document.body.appendChild(form);
-    form.submit();
+    window.location.href="./excel_mb.php" + window.location.search;
   });
 
   $(".temp_accept").click(function() {
