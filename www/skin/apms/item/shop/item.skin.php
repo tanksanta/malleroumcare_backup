@@ -810,7 +810,7 @@ $sendData["prods"] = $prodsSendData;
           //if ($it['it_sc_minimum']) {
             //$sc_price = ((int)$it['it_sc_minimum'] / 10000);
             $sc_price = 10;
-            if($it['it_sc_type'] < 4) {
+            if($it['it_sc_type'] < 4 && $it['it_sc_type'] != 1) {
               $sc_price_info = number_format($sc_price).'만원 이상 무료배송<br>'.$sc_price_info;
             }
             if($it['it_sc_type'] == 5) {
