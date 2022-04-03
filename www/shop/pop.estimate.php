@@ -618,6 +618,10 @@ function go_send() {
     var hp_chk      = !!$("input[name='hp_chk']").is(":checked") == true;
     var u_hp        = $("input[name='u_hp']").val();
 
+    if (!email_chk && !hp_chk) {
+        alert('전송방법을 선택해주세요.');
+        return;
+    }
 
     $.ajax({
         method: "POST",
