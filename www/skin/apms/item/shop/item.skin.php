@@ -781,7 +781,11 @@ $sendData["prods"] = $prodsSendData;
                 if ($it['it_sc_type'] != 1) {
                     $number_cost=number_format($it['it_sc_price']);
                     // $sc_price_info = "배송비 {$number_cost}원{$sc_price_info_spliter}도서산간지역은 ".number_format($it['it_sc_price'] + 2000)."원 추가됩니다.";
-                    $sc_price_info = "배송비 {$number_cost}원";
+                    if ($number_cost > 0) {
+                      $sc_price_info = "배송비 {$number_cost}원";
+                    } else {
+                      $sc_price_info = "무료배송";
+                    }
                 }
 
                 if ($it['it_sc_type'] == 0) { // 쇼핑몰 디폴트 셋팅 시
