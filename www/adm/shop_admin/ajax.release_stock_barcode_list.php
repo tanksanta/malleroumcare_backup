@@ -56,7 +56,6 @@ $sql = "
 //    a.it_id = '{$it_id}'
 //    AND a.io_id = '{$io_id}'
 //    {$where_sql}
-//  -- LIMIT ,
 //  ORDER BY
 //      bc_barcode ASC
 //";
@@ -81,7 +80,6 @@ $sql = "
     AND io_id = '{$io_id}'
     AND bc_status != '출고'
     {$where_sql}
-  -- LIMIT , 
   ORDER BY
     bc_barcode ASC
 ";

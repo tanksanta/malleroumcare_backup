@@ -259,7 +259,7 @@ $count_warn4 = sql_fetch($sql)['cnt'];
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
     <span class="btn_ov01"><span class="ov_txt">전체 상품</span><span class="ov_num">  <?php echo $total_count; ?>개</span></span>
-    <button class="smart_btn" onclick="openPopSmartPuchase()">스마트 발주 (<?php echo $count_warn1 ?>개 대기)</button>
+    <button class="smart_btn" onclick="openPopSmartPurchase()">스마트 발주 (<?php echo $count_warn1 ?>개 대기)</button>
 </div>
 
 <form id="smartForm" action="/adm/shop_admin/purchase_orderlist.php" method="POST">
@@ -296,7 +296,7 @@ $count_warn4 = sql_fetch($sql)['cnt'];
   <?php } ?>
 
   <?php if ($count_warn3 > 0) { ?>
-  <a class="<?php echo $stock_type == 'malignity' ? 'active' : '' ?>" href="<?php echo $stock_type == 'malignity' ?$_SERVER['SCRIPT_NAME'] .  '?stock_type=' : $_SERVER['SCRIPT_NAME'].'?stock_type=malignity' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (<?php echo $count_warn3 ?>개)</a>
+  <a class="<?php echo $stock_type == 'malignity' ? 'active' : '' ?>" href="<?php echo $stock_type == 'malignity' ? $_SERVER['SCRIPT_NAME'] . '?stock_type=' : $_SERVER['SCRIPT_NAME'].'?stock_type=malignity' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (<?php echo $count_warn3 ?>개)</a>
   <?php } ?>
 
   <?php if ($count_warn4 > 0) { ?>
@@ -496,7 +496,11 @@ $count_warn4 = sql_fetch($sql)['cnt'];
         ?>
         <td class="td_num"><?php echo $img_src ? '<img src="' . $img_src . '" title="' . $alt_txt . '">' : '' ?></td>
         <td class="td_num"><?php echo number_format($row['sum_ws_qty']) ?></td>
-        <td class="td_num"><?php echo number_format($row['sum_barcode_qty']) ?></td>
+        <td class="td_num">
+          <a href="./itemstockbarcodelist.php?it_id=<?=$row['it_id']?>&io_id=<?=$row['io_id']?>&type=hold" style="text-decoration: underline !important;">
+            <?php echo number_format($row['sum_barcode_qty']) ?>
+          </a>
+        </td>
         <td class="td_num"><?php echo number_format($row['sum_ct_qty_3month']) ?></td>
         <td class="td_num"><?php echo number_format($row['safe_min_stock_qty']) ?></td>
         <?php
@@ -658,7 +662,7 @@ function cancelExcelDownload() {
   $('#loading_excel').hide();
 }
 
-function openPopSmartPuchase() {
+function openPopSmartPurchase() {
   var popupWidth = 1100;
   var popupHeight = 700;
 

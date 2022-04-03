@@ -48,16 +48,16 @@ sql_query($sql);
 $pct_row = sql_fetch("select * from purchase_cart where ct_id = '{$pct_id}' ");
 $ws_scheduled_qty = $pct_row['ct_qty_for_rollback'] - $pct_row['ct_delivered_qty'];
 $sql = "
-      update warehouse_stock
-      set
-        ws_qty = '{$pct_row['ct_qty_for_rollback']}',
-        ws_scheduled_qty = '{$ws_scheduled_qty}'
-      where
-        od_id = '{$pct_row['od_id']}' and
-        ct_id = '{$pct_row['ct_id']}' and
-        it_id = '{$pct_row['it_id']}' and
-        io_id = '{$pct_row['io_id']}'
-    ";
+  update warehouse_stock
+  set
+    ws_qty = '{$pct_row['ct_qty_for_rollback']}',
+    ws_scheduled_qty = '{$ws_scheduled_qty}'
+  where
+    od_id = '{$pct_row['od_id']}' and
+    ct_id = '{$pct_row['ct_id']}' and
+    it_id = '{$pct_row['it_id']}' and
+    io_id = '{$pct_row['io_id']}'
+";
 sql_query($sql);
 
 json_response(200, 'OK');
