@@ -20,6 +20,7 @@ for ($i = 0; $i < count($toApproveBarcodeArr); $i++) {
       update g5_cart_barcode_approve_request
       set
         del_yn = 'Y',
+        status = '삭제',
         deleted_by = '{$member['mb_id']}', 
         deleted_at = NOW()
       where
