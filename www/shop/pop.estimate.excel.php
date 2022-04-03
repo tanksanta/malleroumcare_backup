@@ -137,6 +137,9 @@ header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
 header("Pragma: public");
 header("Content-charset=utf-8");
 
+/* <div style="position:absolute;margin-top:-30px;margin-right: -10px;"><img src="<?php echo $config['cf_4'] ?>" width="80"></div> */
+/* <img src="<?php echo $config['cf_3'] ?>"> */
+
 ?>
 <html xmlns:v='urn:schemas-microsoft-com:vml'
 xmlns:o='urn:schemas-microsoft-com:office:office'
@@ -212,7 +215,7 @@ td  {mso-number-format:\@;}
 	<td colspan="5"></td>
 </tr>
 <tr><td colspan="15" height="25"></td>
-	<td colspan="2" style="text-align:right;"><div style="position:absolute;margin-top:-30px;margin-right: -10px;"><img src="<?php echo $config['cf_4'] ?>" width="80"></div></td></tr>
+	<td colspan="2" style="text-align:right;"></td></tr>
 <tr height="25">
 	<td colspan="5" align="left"><span style="font-size:16px;letter-spacing:3px;"><u><?php echo date('Y년 m월 d일', time()); ?></u></span></td>
 	<td colspan="4"></td>
@@ -365,7 +368,7 @@ td  {mso-number-format:\@;}
 </tr>
 <tr><td colspan="17" height="10"></td></tr>
 <tr height="25">
-	<td colspan="3"><img src="<?php echo $config['cf_3'] ?>"></td>
+	<td colspan="3"></td>
 	<td><?php echo get_samhwa_content('footer_info'); ?></td>
 </tr>
 </tr>
