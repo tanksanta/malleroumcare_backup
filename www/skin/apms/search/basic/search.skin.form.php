@@ -19,7 +19,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 					<label class="checkbox-inline"><input type="checkbox" name="qid" id="ssch_qid" value="1" <?php echo $qid_check?'checked="checked"':'';?>> 상품코드</label>
 					<!-- <label class="checkbox-inline"><input type="checkbox" name="qtag" id="ssch_qtag" value="1" <?php echo $qtag_check?'checked="checked"':'';?>> 상품태그</label> -->
 					<label class="checkbox-inline"><input type="checkbox" name="qbasic" id="ssch_qbasic" value="1" <?php echo $qbasic_check?'checked="checked"':'';?>> 기본설명</label>
-					<label class="checkbox-inline"><input type="checkbox" name="pttag" id="ssch_pttag" value="1" <?php echo $pttag_check?'checked="checked"':'';?>> 태그</label>
+					<label class="checkbox-inline" style="min-width:55px;"><input type="checkbox" name="pttag" id="ssch_pttag" value="1" <?php echo $pttag_check?'checked="checked"':'';?>> 태그</label>
+					<label class="checkbox-inline"><input type="checkbox" name="itmaker" id="ssch_itmaker" value="1" <?php echo $itmaker_check?'checked="checked"':'';?>> 제조업체</label>
 					<!-- <label class="checkbox-inline"><input type="checkbox" name="itmodel" id="ssch_itmodel" value="1" <?php echo $itmodel_check?'checked="checked"':'';?>> 모델명</label> -->
 				</div>
 			</div>
