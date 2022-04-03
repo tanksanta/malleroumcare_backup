@@ -1,24 +1,41 @@
 <?php
 include_once('./_common.php');
 
-if (!$barcode || !$ct_id)
+if (!$barcode)
   json_response(400, '잘못된 요청입니다.');
 
-$ct_row = sql_fetch("select * from g5_shop_cart where ct_id = '{$ct_id}'");
+if ($ct_id && !it_id) {
+  $ct_row = sql_fetch("select * from g5_shop_cart where ct_id = '{$ct_id}'");
 
-if (!$ct_row)
-  json_response(400, '존재하지 않는 카트입니다. 관리자에게 문의하세요.');
+  if (!$ct_row)
+    json_response(400, '존재하지 않는 카트입니다. 관리자에게 문의하세요.');
 
-$sql = "
-  select cbl.*, m.mb_name
-  from g5_cart_barcode_log cbl
-  left join g5_member m on cbl.created_by = m.mb_id
-  where 
-    bch_barcode = '{$barcode}'
-    and it_id = '{$ct_row['it_id']}'
-    and io_id = '{$ct_row['it_id']}'
-  order by bcl_id desc
-";
+  $sql = "
+    select cbl.*, m.mb_name
+    from g5_cart_barcode_log cbl
+    left join g5_member m on cbl.created_by = m.mb_id
+    where 
+      bch_barcode = '{$barcode}'
+      and it_id = '{$ct_row['it_id']}'
+      and io_id = '{$ct_row['it_id']}'
+    order by bcl_id desc
+  ";
+
+} else if (!$ct_id && $it_id) {
+  $sql = "
+    select cbl.*, m.mb_name
+    from g5_cart_barcode_log cbl
+    left join g5_member m on cbl.created_by = m.mb_id
+    where 
+      bch_barcode = '{$barcode}'
+      and it_id = '{$it_id}'
+      and io_id = '{$io_id}'
+    order by bcl_id desc
+  ";
+
+} else {
+  json_response(400, '잘못된 요청입니다.');
+}
 
 $result = sql_query($sql);
 

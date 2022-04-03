@@ -1903,7 +1903,6 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
       $('body').css('overflow', 'hidden');
 
       data.forEach(function (obj) {
-        html = '';
         subtitle = obj.created_at + ' ' + obj.mb_name + ' 담당자';
         title = obj.bch_content;
 
