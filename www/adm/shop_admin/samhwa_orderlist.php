@@ -1451,7 +1451,7 @@ if( function_exists('pg_setting_check') ){
   <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn" style="background: #6e9254; color: #fff;">
   <?php } ?>
   <input type="button" value="위탁 엑셀다운로드" onclick="orderListExcelDownload('partner')" class="btn btn_03">
-  <input type="button" value="직배송 일괄전송" onclick="directDeliveryPopup()" class="btn btn_03">
+  <input type="button" value="직배송 일괄전송" onclick="directDeliveryPopup(true)" class="btn btn_03">
 </div>
 
 <div class="btn_fixed_top2">
@@ -1582,7 +1582,7 @@ function cancelExcelDownload() {
 
 function directDeliveryPopup(status) {
   if (!status) {
-    $("#popup_direct_delivery").hide(3);
+    $("#popup_direct_delivery").hide();
     $('#hd').css('z-index', 10);
     return;
   }
@@ -1598,7 +1598,7 @@ function directDeliveryPopup(status) {
     return false;
   }
 
-  $("#popup_direct_delivery").show(3);
+  $("#popup_direct_delivery").show();
   $('#hd').css('z-index', 3);
 }
 
