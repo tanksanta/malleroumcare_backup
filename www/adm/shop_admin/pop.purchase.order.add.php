@@ -455,7 +455,8 @@ if (isset($_SESSION['smart_purchase_data'])) {
       // var io_price = $(this).find('option:selected').data('price');
       var io_price = $(parent).find('.it_option option:selected').data('price');
       var price = $(parent).find('.price').val();
-      var it_price = parseInt(price || 0) + parseInt(io_price || 0);
+      var it_price = parseInt($(parent).find('input[name="it_price[]"]').val().replace(/[\D\s\._\-]+/g, "")) || 0;
+      // var it_price = parseInt(price || 0) + parseInt(io_price || 0);
       it_price = it_price ? parseInt(it_price, 10) : 0;
       var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
       qty = qty ? parseInt(qty, 10) : 0;

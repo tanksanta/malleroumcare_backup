@@ -1395,7 +1395,6 @@ if($od["od_b_tel"]) {
       $('body').css('overflow', 'hidden');
 
       data.forEach(function (obj) {
-        html = '';
         subtitle = obj.created_at + ' ' + obj.mb_name + ' 담당자';
         title = obj.bch_content;
 
