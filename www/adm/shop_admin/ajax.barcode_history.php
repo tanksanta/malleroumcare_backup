@@ -4,7 +4,7 @@ include_once('./_common.php');
 if (!$barcode)
   json_response(400, '잘못된 요청입니다.');
 
-if ($ct_id && !it_id) {
+if ($ct_id && !$it_id) {
   $ct_row = sql_fetch("select * from g5_shop_cart where ct_id = '{$ct_id}'");
 
   if (!$ct_row)
