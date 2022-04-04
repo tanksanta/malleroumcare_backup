@@ -37,6 +37,7 @@ $sql = "
     io_id = '{$request_row['io_id']}',
     bc_barcode = '{$request_row['barcode']}',
     bc_status = '관리자승인완료',
+    bc_is_check_yn = 'Y',
     created_by = '{$member['mb_id']}',
     created_at = NOW(),
     approved_by = '{$member['mb_id']}',

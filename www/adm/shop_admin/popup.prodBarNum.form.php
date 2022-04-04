@@ -201,6 +201,7 @@ if($od["od_b_tel"]) {
       color: #f00;
       font-size: 14px;
       display: none;
+      cursor: auto;
     }
 
     .barcode_approve_wrapper > div {
@@ -214,6 +215,7 @@ if($od["od_b_tel"]) {
       border-radius: 5px;
       color: #f00;
       margin-left: 10px;
+      cursor: pointer;
     }
   </style>
 

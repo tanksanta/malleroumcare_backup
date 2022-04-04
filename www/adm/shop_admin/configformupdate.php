@@ -526,7 +526,8 @@ $sql = " update {$g5['g5_shop_default_table']}
                 de_it_grade2_discount                       = '{$it_grade2_discount}',
                 de_it_grade3_name                           = '{$it_grade3_name}',
                 de_it_grade3_discount                       = '{$it_grade3_discount}',
-                $sql_de_box_size
+                $sql_de_box_size,
+                de_barcode_approve_type                     = '{$de_barcode_approve_type}'
         ";
 sql_query($sql);
 
