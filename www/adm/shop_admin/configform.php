@@ -1283,6 +1283,25 @@ if( function_exists('pg_setting_check') ){
         </colgroup>
         <tbody>
         <tr>
+            <th scope="row">바코드 출고 설정</th>
+            <td>
+                <label>
+                  <input type="radio" name="de_barcode_approve_type" value="full_auto" <?php echo $default['de_barcode_approve_type'] == 'full_auto' ? 'checked' : '' ?> >
+                  미 재고 바코드 출고 시 자동 승인
+                </label>
+                <br/>
+                <label>
+                  <input type="radio" name="de_barcode_approve_type" value="part_auto" <?php echo $default['de_barcode_approve_type'] == 'part_auto' ? 'checked' : '' ?> >
+                  재고 관리 한 상품 만 관리자 승인 후 출고 승인
+                </label>
+                <br/>
+                <label>
+                  <input type="radio" name="de_barcode_approve_type" value="no_auto" <?php echo $default['de_barcode_approve_type'] == 'no_auto' ? 'checked' : '' ?> >
+                  모든 상품 관리자 승인 후 출고 가능
+                </label>
+            </td>
+        </tr>
+        <tr>
             <th scope="row">태그 설정</th>
             <td>
                 <label for="it_type1_name">Name:</label>

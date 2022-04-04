@@ -194,7 +194,38 @@ if($od["od_b_tel"]) {
       text-align: center;
       line-height: 50px;
     }
+
+    .barcode_approve_wrapper {
+      text-align: left;
+      margin-bottom: 12px;
+      color: #f00;
+      font-size: 14px;
+      display: none;
+      cursor: auto;
+    }
+
+    .barcode_approve_wrapper > div {
+      display: none;
+    }
+
+    .barcode_approve_wrapper button {
+      border: 1px solid #f00;
+      padding: 3px 7px;
+      background: #fff;
+      border-radius: 5px;
+      color: #f00;
+      margin-left: 10px;
+      cursor: pointer;
+    }
   </style>
+
+  <?php if ($is_admin != 'super') { ?>
+  <style>
+    .barcode_approve_wrapper button {
+      display: none;
+    }
+  </style>
+  <?php } ?>
 </head>
 
 <body>
@@ -318,7 +349,7 @@ if($od["od_b_tel"]) {
           </div>
 
           <?php if ($gubun != '02') { ?>
-          <div class="folding_box" data-id="<?php echo $options[$k]['ct_id']; ?>">
+          <div class="folding_box id_<?php echo $options[$k]['ct_id']; ?>" data-id="<?php echo $options[$k]['ct_id']; ?>">
             <?php if ($options[$k]["ct_qty"] >= 2) { ?>
             <span>
             <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
@@ -334,6 +365,14 @@ if($od["od_b_tel"]) {
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
                 <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
+                <div class="barcode_approve_wrapper">
+                  <div class="type1">
+                    └ 미재고 바코드 입력 <button type="button" onclick="approveBarcode(this)" data-request_id="0">관리자 권한으로 출고 승인</button>
+                  </div>
+                  <div class="type2">
+                    └ 미 재고 바코드 관리자 권한으로 승인됨
+                  </div>
+                </div>
               </li>
               <?php $prodListCnt++; } ?>
             </ul>
@@ -534,7 +573,86 @@ if($od["od_b_tel"]) {
           }
         }
       }
+
+      var ct_id = $(this).data('id');
+      checkApprovedBarcodeBulk(ct_id);
     });
+  }
+
+  function checkApprovedBarcodeBulk(ct_id) {
+    $('.barcode_approve_wrapper').hide();
+    $('.barcode_approve_wrapper > div').hide();
+
+    var barcodeArr = [];
+
+    $('.folding_box.id_' + ct_id + ' li').each(function () {
+      if ($(this).find('.frm_input').val().length === 12) {
+        barcodeArr.push({
+          ct_id: ct_id,
+          index: $(this).index(),
+          barcode: $(this).find('.frm_input').val(),
+        });
+      }
+    })
+
+    $.ajax({
+      url: './ajax.check_approved_barcode_bulk.php',
+      type: 'GET',
+      data: {
+        ct_id: ct_id,
+        barcodeArr: barcodeArr,
+      },
+      // dataType: 'json',
+      async: false,
+    })
+    .done(function(result) {
+      console.log(result.data);
+      var target = $('.folding_box.id_' + ct_id + ' li');
+      result.data.barcodeArr.forEach(function (_this) {
+        if (_this.status === '승인요청') {
+          target.eq(_this.index).find('.barcode_approve_wrapper').show();
+          target.eq(_this.index).find('.barcode_approve_wrapper .type1').show();
+          target.eq(_this.index).find('.barcode_approve_wrapper .type1 button').attr('data-request_id', _this.request_id)
+        }
+
+        if (_this.status === '승인') {
+          target.eq(_this.index).find('.barcode_approve_wrapper').show();
+          target.eq(_this.index).find('.barcode_approve_wrapper .type2').show();
+        }
+      });
+    })
+    .fail(function($xhr) {
+      // msgResult = 'error'
+      var data = $xhr.responseJSON;
+      console.warn(data && data.message);
+      // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
+    })
+  }
+
+  function approveBarcode(_this) {
+    if (!confirm('출고 승인 시 입력한 바코드는 재고로 등록 된 후 출고됩니다. 승인하시겠습니까?')) {
+      return;
+    }
+
+    var requestId = $(_this).data('request_id');
+
+    $.ajax({
+      url: './ajax.approve_barcode.php',
+      type: 'POST',
+      data: {
+        request_id: requestId,
+      },
+      dataType: 'json',
+      async: false,
+    })
+    .done(function(result) {
+      alert(result.message);
+      location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    })
   }
 
   var cur_ct_id = null;

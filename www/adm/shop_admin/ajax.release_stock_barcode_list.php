@@ -78,7 +78,7 @@ $sql = "
   WHERE 
     it_id = '{$it_id}'
     AND io_id = '{$io_id}'
-    AND bc_status != '출고'
+    AND bc_status NOT IN ('출고', '관리자승인대기', '관리자승인완료')
     {$where_sql}
   ORDER BY
     bc_barcode ASC

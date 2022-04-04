@@ -768,7 +768,7 @@ if($od["od_b_tel"]) {
     var barcodeArr = [];
 
     $('.folding_box.id_' + ct_id + ' li').each(function () {
-      if ($(this).find('input').val().length === 12) {
+      if ($(this).find('.frm_input').val().length === 12) {
         barcodeArr.push({
           ct_id: ct_id,
           index: $(this).index(),
@@ -801,7 +801,7 @@ if($od["od_b_tel"]) {
     .fail(function($xhr) {
       // msgResult = 'error'
       var data = $xhr.responseJSON;
-      console.error(data && data.message);
+      console.warn(data && data.message);
       // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
     })
   }
