@@ -236,9 +236,9 @@ if($_POST['ct_id'] && $_POST['step']) {
     );
   }, $result_again);
 
-  if($stateCd == "01") {
-    for($k=0;$k<count($new_sto_ids);$k++) {
-      $result_confirm = sql_fetch("select `prodSupYn` from `g5_shop_item` where `it_id` ='".$new_sto_ids[$k]['prodId']."'");
+  if ($stateCd == "01") {
+    for ($k = 0; $k < count($new_sto_ids); $k++) {
+      $result_confirm = sql_fetch("select `prodSupYn` from `g5_shop_item` where `it_id` ='" . $new_sto_ids[$k]['prodId'] . "'");
 
       // 비급여 바코드 미입력 체크된 경우 패스
       $ct_result = sql_fetch("SELECT * FROM g5_shop_cart WHERE ct_id = '{$stoIdList[$new_sto_ids[$k]['stoId']]}'");
@@ -246,8 +246,14 @@ if($_POST['ct_id'] && $_POST['step']) {
         continue;
       }
 
-      if($result_confirm['prodSupYn'] == "Y" && !$new_sto_ids[$k]['prodBarNum']) {
+      if ($result_confirm['prodSupYn'] == "Y" && !$new_sto_ids[$k]['prodBarNum']) {
         echo "유통상품의 모든 바코드가 입력되어야 출고가 가능합니다";
+        $flag = false;
+        return false;
+      }
+
+      if ($ct_result['ct_barcode_insert_not_approved'] != 0) {
+        echo "미승인된 미재고 바코드가 존재합니다. 모두 승인되어야 출고가 가능합니다.";
         $flag = false;
         return false;
       }
