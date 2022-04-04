@@ -58,7 +58,8 @@ for ($i = 0; $i < count($barcodeArr); $i++) {
     WHERE 
       it_id = '{$it_id}' 
       AND io_id = '{$io_id}'
-      AND ct_id = '0'
+      AND pct_id > 0
+      AND ct_id = 0
       AND bc_status = '정상'
       AND bc_barcode = '{$barcodeArr[$i]['barcode']}' 
       AND bc_del_yn = 'N' 
@@ -69,7 +70,7 @@ for ($i = 0; $i < count($barcodeArr); $i++) {
   if ($bc_row) {
     $data['barcodeArr'][$i] = array(
       'index' => $barcodeArr[$i]['index'],
-      'status' => $barcodeArr[$i][$bc_row['bc_status']],
+      'status' => $bc_row['bc_status'],
     );
   } else {
     $data['barcodeArr'][$i] = array(
