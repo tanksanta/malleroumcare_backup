@@ -57,8 +57,10 @@ for ($i = 0; $i < count($barcodeArr); $i++) {
     SELECT * FROM g5_cart_barcode 
     WHERE 
       it_id = '{$it_id}' 
-      AND io_id = '{$io_id}' 
-      AND bc_barcode = '{$barcode}' 
+      AND io_id = '{$io_id}'
+      AND ct_id = '0'
+      AND bc_status = '정상'
+      AND bc_barcode = '{$barcodeArr[$i]['barcode']}' 
       AND bc_del_yn = 'N' 
     ORDER BY bc_id DESC LIMIT 1
   ";

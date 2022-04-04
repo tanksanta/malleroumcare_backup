@@ -66,6 +66,7 @@ if($od["od_b_tel"]) {
   <script src="/js/barcode_utils.js"></script>
   <link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
   <link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/flex.css">
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); outline: none; }
@@ -180,6 +181,19 @@ if($od["od_b_tel"]) {
       display:none;
     }
 
+    .imfomation_box a .li_box .folding_box > .inputbox > li .barcode_icon.type5 {
+      position: absolute;
+      width: 20px;
+      right: 55px;
+      top: 17px;
+      z-index: 2;
+      opacity: 0;
+    }
+
+    .imfomation_box a .li_box .folding_box > .inputbox > li .barcode_icon.type5.active {
+      opacity: 1;
+    }
+
     .excel_btn {
       display: inline-block;
       margin-top: 10px;
@@ -193,6 +207,83 @@ if($od["od_b_tel"]) {
       font-weight: bold;
       text-align: center;
       line-height: 50px;
+    }
+
+    .barcode_warning {
+      display: none;
+      font-size: 14px;
+      text-align: left;
+      padding: 10px 5px;
+    }
+
+    #barcodeHistory {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+    }
+
+    #barcodeHistory .mask {
+      background: rgba(0, 0, 0, 0.7);
+      width: 100%;
+      height: 100%;
+      position: absolute;
+    }
+
+    #barcodeHistory .historyContent {
+      position: absolute;
+      width: 100%;
+      height: 40%;
+      bottom: 0;
+      left: 0;
+      background: #fff;
+      padding: 50px 20px 10px;
+    }
+
+    #barcodeHistory .historyContent .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px 20px;
+      border-bottom: 1px solid #d9d9d9;
+    }
+
+    #barcodeHistory .historyContent .barcode {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    #barcodeHistory .historyContent .close {
+      font-size: 37px;
+      width: 33px;
+      height: 33px;
+      line-height: 33px;
+      background: none;
+      position: relative;
+      top: -3px;
+    }
+
+    #barcodeHistory .historyContent .content {
+      margin-top: 5px;
+      height: 100%;
+      overflow-y: scroll;
+    }
+
+    #barcodeHistory .historyContent li {
+      border-bottom: 1px solid #d9d9d9;
+      padding: 10px 0;
+    }
+
+    #barcodeHistory .historyContent li .subtitle {
+      font-size: 13px;
+    }
+
+    #barcodeHistory .historyContent li .title {
+      font-size: 17px;
     }
 
     .barcode_approve_wrapper {
@@ -364,6 +455,8 @@ if($od["od_b_tel"]) {
                 <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
+                <img class="barcode_icon type5" src="/img/barcode_icon_3.png" alt="등록불가 (미보유재고)">
+
                 <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn" data-code="<?=$b?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
                 <div class="barcode_approve_wrapper">
                   <div class="type1">
@@ -376,6 +469,10 @@ if($od["od_b_tel"]) {
               </li>
               <?php $prodListCnt++; } ?>
             </ul>
+
+            <p class="barcode_warning">
+              <span style="color: red">(주의)</span> 재고가 없는 바코드가 있습니다. 관리자 승인 시 정상 등록 됩니다.
+            </p>
           </div>
           <?php } ?>
 
@@ -445,6 +542,32 @@ if($od["od_b_tel"]) {
   <div id="popupFooterBtnWrap">
     <button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
     <button type="button" class="cancelbtn" onclick="member_cancel();">취소</button>
+  </div>
+
+  <div id="barcodeHistory">
+    <div class="mask"></div>
+    <div class="historyContent">
+      <div class="header flex-row justify-space-between align-center">
+        <div class="barcode">barcode</div>
+        <button class="close" onclick="closeBarcodeHistory()">×</button>
+      </div>
+      <div class="content">
+        <ul>
+          <li>
+            <p class="subtitle">2022-01-01 13:11 홍길동 담당자</p>
+            <p class="title">상품 출고 (NO 222222)</p>
+          </li>
+          <li>
+            <p class="subtitle">2022-01-01 13:11 홍길동 담당자</p>
+            <p class="title">상품 출고 (NO 222222)</p>
+          </li>
+          <li>
+            <p class="subtitle">2022-01-01 13:11 홍길동 담당자</p>
+            <p class="title">상품 출고 (NO 222222)</p>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <?php
@@ -575,9 +698,52 @@ if($od["od_b_tel"]) {
       }
 
       var ct_id = $(this).data('id');
+      validateBarcodeBulk(ct_id);
       checkApprovedBarcodeBulk(ct_id);
     });
   }
+
+    function validateBarcodeBulk(ct_id) {
+      var barcodeArr = [];
+
+      $('.folding_box.id_' + ct_id + ' li').each(function () {
+        if ($(this).find('.frm_input').val().length === 12) {
+          barcodeArr.push({
+            ct_id: ct_id,
+            index: $(this).index(),
+            barcode: $(this).find('.frm_input').val(),
+          });
+        }
+      })
+
+      $.ajax({
+        url: './ajax.barcode_validate_bulk.php',
+        type: 'GET',
+        data: {
+          ct_id: ct_id,
+          barcodeArr: barcodeArr,
+        },
+        dataType: 'json',
+        async: false,
+      })
+      .done(function(result) {
+        console.log(result.data);
+        var target = $('.folding_box.id_' + ct_id + ' li');
+        result.data.barcodeArr.forEach(function (_this) {
+          if (_this.status === '미보유재고') {
+            target.eq(_this.index).find('.fa-check').removeClass('active');
+            target.eq(_this.index).find('.barcode_icon.type5').addClass('active');
+            $('.folding_box.id_' + ct_id + ' .barcode_warning').show();
+          }
+        });
+      })
+      .fail(function($xhr) {
+        // msgResult = 'error'
+        var data = $xhr.responseJSON;
+        console.warn(data && data.message);
+        // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
+      })
+    }
 
   function checkApprovedBarcodeBulk(ct_id) {
     $('.barcode_approve_wrapper').hide();
@@ -606,7 +772,7 @@ if($od["od_b_tel"]) {
       async: false,
     })
     .done(function(result) {
-      console.log(result.data);
+      // console.log(result.data);
       var target = $('.folding_box.id_' + ct_id + ' li');
       result.data.barcodeArr.forEach(function (_this) {
         if (_this.status === '승인요청') {
@@ -1049,7 +1215,42 @@ if($od["od_b_tel"]) {
           console.log(result);
         }
       });
+
+      // 미재고 바코드 처리
+      var toApproveBarcodeArr = [];
+      $('.folding_box').each(function () {
+        $(this).find('li').find('img.barcode_icon.type5.active').each(function () {
+          toApproveBarcodeArr.push({
+            ct_id: $(this).closest('.folding_box').data('id'),
+            barcode: $(this).closest('li').find('.frm_input').val(),
+          });
+        })
+      });
+
+      $.ajax({
+        url: '/shop/ajax.ct_barcode_insert_not_approved.php',
+        type: 'POST',
+        data: {
+          toApproveBarcodeArr: toApproveBarcodeArr
+        },
+        dataType: 'json',
+        async: false
+      })
+      .done(function(result) {
+      })
+      .fail(function($xhr) {
+        debugger;
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      })
     }
+
+    $(document).on('click', '.barcode_icon.type5.active', function() {
+      var barcode = $(this).closest('li').find('.frm_input').val();
+      var ct_id = $(this).closest('.folding_box').data('id');
+
+      showBarcodeHistory(barcode, ct_id);
+    });
   });
 
   //종료시 멤버 수정중없에기
@@ -1185,6 +1386,62 @@ if($od["od_b_tel"]) {
   function closePopup() {
     const popup = document.querySelector('#popup');
     popup.classList.add('hide');
+  }
+
+  function showBarcodeHistory(barcode, ct_id) {
+    var data = null;
+
+    $('#barcodeHistory .header .barcode').empty();
+    $('#barcodeHistory .content ul').empty();
+
+    $.ajax({
+      url: './ajax.barcode_history.php',
+      type: 'POST',
+      async: false,
+      data: {
+        barcode: barcode,
+        ct_id: ct_id,
+      },
+      dataType: 'json',
+    })
+    .done(function(result) {
+      data = result.data;
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+
+    $('#barcodeHistory').show();
+    $('#barcodeHistory .header .barcode').text(barcode);
+
+    if (data.length > 0) {
+      var subtitle = '';
+      var title = '';
+      var html = '';
+
+      $('body').css('overflow', 'hidden');
+
+      data.forEach(function (obj) {
+        subtitle = obj.created_at + ' ' + obj.mb_name + ' 담당자';
+        title = obj.bch_content;
+
+        html += '<li>'
+        html += '<p class="subtitle">' + subtitle + '</p>'
+        html += '<p class="title">' + title + '</p>'
+        html += '</li>'
+      });
+
+    } else {
+      html = '<li>내역이 없습니다.</li>';
+    }
+
+    $('#barcodeHistory .content ul').append(html);
+  }
+
+  function closeBarcodeHistory() {
+    $('body').css('overflow', 'auto');
+    $('#barcodeHistory').hide();
   }
 </script>
 <?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
