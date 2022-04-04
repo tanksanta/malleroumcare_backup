@@ -670,7 +670,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 </div>
 
 <style>
-#popup_order_add {
+.modal-popup {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -680,7 +680,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
   background-color: rgba(0, 0, 0, 0.6);
   display:none;
 }
-#popup_order_add > div {
+.modal-popup > div {
   width: 1000px;
   max-width: 80%;
   height: 80%;
@@ -689,16 +689,55 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
   top: 50%;
   transform: translate(-50%, -50%);
 }
-#popup_order_add > div iframe {
+.modal-popup > div iframe {
   width:100%;
   height:100%;
   border: 0;
   background-color: #FFF;
 }
 
+#popup_direct_delivery > div {
+  background: white;
+  width: 320px;
+  height: 220px;
+  position:relative;
+  overflow: hidden;
+}
+#popup_direct_delivery > div h1 {
+  padding-top: 15px;
+  padding-bottom: 10px;
+  margin-bottom: 35px;
+}
+#popup_direct_delivery > div p {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+}
+#popup_direct_delivery-close {
+	position:absolute;
+	top: 15px;
+	right: 15px;
+	color: #b0b0b0;
+	font-size: 1.5em;
+  cursor: pointer;
+}
+
 </style>
-<div id="popup_order_add">
+<div id="popup_order_add" class="modal-popup">
   <div>dd</div>
+</div>
+
+<div id="popup_direct_delivery" class="modal-popup">
+  <div>
+    <h1>직배송 일괄전송</h1>
+    <i class="fa fa-close fa-lg" id="popup_direct_delivery-close" onclick="directDeliveryPopup(false)"></i>
+    <p>이미 발송된 상품 제외 후 전송하시겠습니까?</p>
+    <div style="text-align:center;">
+      <input type="button" value="전체전송" onclick="sendDirectDelivery(true)" class="btn btn_03">
+      &nbsp;&nbsp;
+      <input type="button" value="제외전송" onclick="sendDirectDelivery(false)" class="btn btn_02">
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1412,7 +1451,7 @@ if( function_exists('pg_setting_check') ){
   <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn" style="background: #6e9254; color: #fff;">
   <?php } ?>
   <input type="button" value="위탁 엑셀다운로드" onclick="orderListExcelDownload('partner')" class="btn btn_03">
-  <input type="button" value="직배송 일괄전송" onclick="sendDirectDelivery()" class="btn btn_03">
+  <input type="button" value="직배송 일괄전송" onclick="directDeliveryPopup(true)" class="btn btn_03">
 </div>
 
 <div class="btn_fixed_top2">
@@ -1541,7 +1580,13 @@ function cancelExcelDownload() {
   $('#loading_excel').hide();
 }
 
-function sendDirectDelivery() {
+function directDeliveryPopup(status) {
+  if (!status) {
+    $("#popup_direct_delivery").hide();
+    $('#hd').css('z-index', 10);
+    return;
+  }
+  
   var od_id = [];
   var item = $("input[name='od_id[]']:checked");
   for(var i = 0; i < item.length; i++) {
@@ -1553,12 +1598,21 @@ function sendDirectDelivery() {
     return false;
   }
 
-  var sendAllAgain = false;
-  if (confirm('이미 발송된 상품은 제외하고 전송하겠습니까?')) {
-    sendAllAgain = true;
+  $("#popup_direct_delivery").show();
+  $('#hd').css('z-index', 3);
+}
+
+function sendDirectDelivery(sendAllAgain) {
+  var od_id = [];
+  var item = $("input[name='od_id[]']:checked");
+  for(var i = 0; i < item.length; i++) {
+    od_id.push($(item[i]).val());
   }
 
-  console.log(od_id);
+  if(!od_id.length) {
+    alert('선택한 주문이 없습니다.');
+    return false;
+  }
 
   $.ajax({
     method: "POST",
