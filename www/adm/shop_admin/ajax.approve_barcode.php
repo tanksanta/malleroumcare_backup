@@ -62,6 +62,21 @@ $sql = "
 ";
 sql_query($sql);
 
-// TODO : ct_barcode_insert_not_approved 수정 해야함
+// 승인 요청 바코드 갯수 업데이트
+$sql = "
+    select count(*) as cnt from g5_cart_barcode_approve_request 
+    where 
+      ct_id = '{$request_row['ct_id']}' 
+      and del_yn = 'N' 
+      and status = '승인요청' 
+  ";
+$count = sql_fetch($sql)['cnt'];
+
+$sql = "
+    update g5_shop_cart 
+    set ct_barcode_insert_not_approved = '{$count}'
+    where ct_id = '{$request_row['ct_id']}'
+  ";
+sql_query($sql);
 
 json_response(200, '완료되었습니다.');
