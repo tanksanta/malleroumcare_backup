@@ -1227,22 +1227,23 @@ if($od["od_b_tel"]) {
         })
       });
 
-      $.ajax({
-        url: '/shop/ajax.ct_barcode_insert_not_approved.php',
-        type: 'POST',
-        data: {
-          toApproveBarcodeArr: toApproveBarcodeArr
-        },
-        dataType: 'json',
-        async: false
-      })
-      .done(function(result) {
-      })
-      .fail(function($xhr) {
-        debugger;
-        var data = $xhr.responseJSON;
-        alert(data && data.message);
-      })
+      if (toApproveBarcodeArr.length > 0) {
+        $.ajax({
+          url: '/shop/ajax.ct_barcode_insert_not_approved.php',
+          type: 'POST',
+          data: {
+            toApproveBarcodeArr: toApproveBarcodeArr
+          },
+          dataType: 'json',
+          async: false
+        })
+        .done(function(result) {
+        })
+        .fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        })
+      }
     }
 
     $(document).on('click', '.barcode_icon.type5.active', function() {
