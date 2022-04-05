@@ -777,33 +777,35 @@ if($od["od_b_tel"]) {
       }
     })
 
-    $.ajax({
-      url: './ajax.barcode_validate_bulk.php',
-      type: 'GET',
-      data: {
-        ct_id: ct_id,
-        barcodeArr: barcodeArr,
-      },
-      dataType: 'json',
-      async: false,
-    })
-    .done(function(result) {
-      // console.log(result.data);
-      var target = $('.folding_box.id_' + ct_id + ' li');
-      result.data.barcodeArr.forEach(function (_this) {
-        if (_this.status === '미보유재고') {
-          target.eq(_this.index).find('.fa-check').removeClass('active');
-          target.eq(_this.index).find('.barcode_icon.type5').addClass('active');
-          $('.folding_box.id_' + ct_id + ' .barcode_warning').show();
-        }
-      });
-    })
-    .fail(function($xhr) {
-      // msgResult = 'error'
-      var data = $xhr.responseJSON;
-      console.warn(data && data.message);
-      // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
-    })
+    if (barcodeArr.length > 0) {
+      $.ajax({
+        url: './ajax.barcode_validate_bulk.php',
+        type: 'GET',
+        data: {
+          ct_id: ct_id,
+          barcodeArr: barcodeArr,
+        },
+        dataType: 'json',
+        async: false,
+      })
+      .done(function(result) {
+        // console.log(result.data);
+        var target = $('.folding_box.id_' + ct_id + ' li');
+        result.data.barcodeArr.forEach(function (_this) {
+          if (_this.status === '미보유재고') {
+            target.eq(_this.index).find('.fa-check').removeClass('active');
+            target.eq(_this.index).find('.barcode_icon.type5').addClass('active');
+            $('.folding_box.id_' + ct_id + ' .barcode_warning').show();
+          }
+        });
+      })
+      .fail(function($xhr) {
+        // msgResult = 'error'
+        var data = $xhr.responseJSON;
+        console.warn(data && data.message);
+        // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
+      })
+    }
   }
 
   function check_option(cur_it_id) {
@@ -1255,22 +1257,23 @@ if($od["od_b_tel"]) {
         })
       });
 
-      $.ajax({
-        url: '/shop/ajax.ct_barcode_insert_not_approved.php',
-        type: 'POST',
-        data: {
-          toApproveBarcodeArr: toApproveBarcodeArr
-        },
-        dataType: 'json',
-        async: false
-      })
-      .done(function(result) {
-      })
-      .fail(function($xhr) {
-        debugger;
-        var data = $xhr.responseJSON;
-        alert(data && data.message);
-      })
+      if (toApproveBarcodeArr.length > 0) {
+        $.ajax({
+          url: '/shop/ajax.ct_barcode_insert_not_approved.php',
+          type: 'POST',
+          data: {
+            toApproveBarcodeArr: toApproveBarcodeArr
+          },
+          dataType: 'json',
+          async: false
+        })
+        .done(function(result) {
+        })
+        .fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        })
+      }
 
       member_cancel();
     }
