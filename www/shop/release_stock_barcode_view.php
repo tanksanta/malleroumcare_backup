@@ -669,6 +669,10 @@ if (!$member['mb_id']) {
       $('#actPop .header p').text('옵션 이동');
       $('#actPop li.optionWrap').removeClass('hide');
 
+    } else if (act === 'receive') {
+      $('#actPop .header p').text('입고 기록');
+      $('#actPop li.memoWrap').removeClass('hide');
+
     } else {
       alert('매개변수 오류! 관리자 문의');
       return;
@@ -836,7 +840,11 @@ if (!$member['mb_id']) {
         html += '  <div class="more">';
         html += '    <span>⋮</span>';
         html += '    <ul class="select">';
-        html += '      <li class="rental">대여함</li>';
+        if (data[i].bc_status === '대여') {
+          html += '    <li class="receive">입고함</li>';
+        } else {
+          html += '    <li class="rental">대여함</li>';
+        }
         html += '      <li class="release">출고함</li>';
         if (IO_ID) {
           html += '    <li class="change_option">옵션이동</li>';
