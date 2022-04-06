@@ -8,11 +8,11 @@ if (!$act || !$bc_id || !$it_id) {
   json_response(400, '유효하지 않은 요청입니다. CODE-1');
 }
 
-if(!in_array($act, array('rental', 'release', 'change_option'))) {
+if(!in_array($act, array('rental', 'release', 'change_option', 'receive'))) {
   json_response(400, '유효하지 않은 요청입니다. CODE-2');
 }
 
-$sql = "select * from g5_cart_barcode where bc_id = {$bc_id} and it_id = '{$it_id}' and io_id = '{$io_id}'";
+$sql = "select * from g5_cart_barcode where bc_id = '{$bc_id}' and it_id = '{$it_id}' and io_id = '{$io_id}'";
 $bc_row = sql_fetch($sql);
 
 if (!$bc_row) {
@@ -24,11 +24,15 @@ if (!$bc_row['checked_at']) {
 }
 
 if ($act == 'rental' && $bc_row['bc_status'] == '대여') {
-  json_response(400, '이미 대여 중입니다.');
+  json_response(400, '이미 대여 상태 입니다.');
 }
 
-if ($bc_row['bc_status'] == '대여') {
-  json_response(400, '대여 상태에서는 변경이 불가능합니다.');
+if ($act == 'release' && $bc_row['bc_status'] == '출고') {
+  json_response(400, '이미 출고 상태 입니다.');
+}
+
+if ($act == 'receive' && $bc_row['bc_status'] == '정상') {
+  json_response(400, '이미 입고 상태 입니다.');
 }
 
 if ($act == 'rental') { // 대여
@@ -71,7 +75,26 @@ if ($act == 'rental') { // 대여
   ";
   sql_query($sql);
   $bch_content = "재고관리 - 옵션변경 ({$io_id} -> {$change_io_id})";
+
+} else if ($act == 'receive') { // 입고
+  $sql = "
+    update g5_cart_barcode
+    set
+      bc_status = '정상',
+      ct_id = 0,
+      bc_del_yn = 'N',
+      bc_memo = '{$memo}',
+      received_by = '{$member['mb_id']}',
+      received_at = NOW()
+    where
+      bc_id = '{$bc_id}'
+  ";
+  sql_query($sql);
+  $bch_content = '재고관리 - 입고처리';
 }
+
+$sql = "select * from g5_cart_barcode where bc_id = '{$bc_id}' and it_id = '{$it_id}' and io_id = '{$io_id}'";
+$bc_row = sql_fetch($sql);
 
 // 로그
 $sql = "
