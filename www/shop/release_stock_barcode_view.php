@@ -478,7 +478,7 @@ if ($option) {
 <div id="popupHeaderTopWrap">
   <div class="title"><?php echo $g5["title"] ?></div>
   <div class="close">
-    <a href="javascript:history.back();">
+    <a href="javascript:void(0);" onclick="goBack()">
       &times;
     </a>
   </div>
@@ -930,6 +930,10 @@ if (!$member['mb_id']) {
         window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
         break;
     }
+  }
+
+  function goBack() {
+    location.href = '/shop/release_stocklist.php';
   }
 </script>
 </body>
