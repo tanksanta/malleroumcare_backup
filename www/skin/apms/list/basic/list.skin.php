@@ -268,7 +268,9 @@ while($wish_row = sql_fetch_array($wish_result)) {
         <p class="price">
           <?php
           if($member["mb_id"]) {
-            if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
+            if($member['mb_type'] == 'partner') {
+                // do nothing;
+            } else if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
               echo number_format($list[$i]["it_cust_price"])."원 <span class='txt_color_green'>급여가</span>";
             } else {
               if($list[$i]["entprice"]) {
