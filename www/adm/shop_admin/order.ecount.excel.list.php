@@ -572,6 +572,43 @@
         ];
       }
 
+      // 추가배송비
+      if ($od['od_send_cost2'] > 0) {
+        $rows[] = [
+          'od_id' => $od['od_id'],
+          'value' => [
+            $date,  //날짜
+            $count_number,
+            $mb['mb_thezone'],
+            '',
+            $od_sales_manager['mb_name'],
+            $it['ct_warehouse'], // 출하창고
+            '',
+            '',
+            '',
+            $od["od_b_name"],
+            $addr,
+            '',
+            '',
+            $it['prodMemo'],
+            '',
+            '10000', //부서
+            '00043', // 품목코드(배송비)
+            '',
+            '',
+            '1',
+            $od['od_send_cost2'], // 단가(vat포함)
+            '',
+            round($od['od_send_cost2'] / 1.1), //공급가액
+            ($od['od_send_cost2'] - round($od['od_send_cost2'] / 1.1)), //부가세
+            '', // 바코드
+            $delivery, // 로젠송장번호,
+            $abstract, //적요
+            '',
+          ]
+        ];
+      }
+
       // 매출할인
       if ($od['od_sales_discount'] > 0) {
         $rows[] = [
