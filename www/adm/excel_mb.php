@@ -87,7 +87,7 @@ if ($button_type) {
       $sql_search .= " (mb_type = 'normal') ";
       break;
     case 'block' :
-      $sql_search .= " (mb_order_approve = 1) ";
+      $sql_search .= " (mb_order_approve = 0) ";
       break;
   }
   $sql_search .= " ) ";
