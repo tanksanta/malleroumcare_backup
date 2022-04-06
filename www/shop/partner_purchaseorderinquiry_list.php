@@ -145,7 +145,8 @@ $result = sql_query("
     m.mb_hp,
     ct_warehouse,
     ct_warehouse_address,
-    ct_warehouse_phone
+    ct_warehouse_phone,
+    ct_delivery_expect_date
   {$sql_common}
   {$sql_order}
   {$sql_limit}
@@ -403,8 +404,8 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <?php } ?>
                 <p>
                   입고예상 :
-                  <?=$row['ct_direct_delivery_date'] ? date('Y-m-d H시', strtotime($row['ct_direct_delivery_date'])) : ''?>
-                  <button type="button" class="btn_change" data-date="<?=date('Y-m-d', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>" data-time="<?=date('H', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>" data-odid="<?=$row['od_id']?>" data-ctid="<?=$row['ct_id']?>">변경</button>
+                  <?=$row['ct_delivery_expect_date'] ? date('Y-m-d H시', strtotime($row['ct_delivery_expect_date'])) : ''?>
+                  <button type="button" class="btn_change" data-date="<?=date('Y-m-d', strtotime($row['ct_delivery_expect_date'] ?: 'now'))?>" data-time="<?=date('H', strtotime($row['ct_delivery_expect_date'] ?: 'now'))?>" data-odid="<?=$row['od_id']?>" data-ctid="<?=$row['ct_id']?>">변경</button>
                 </p>
                 <?php if($row['ct_ex_date']) { ?>
                 <p>
@@ -490,8 +491,8 @@ tr.hover { background-color: #fbf9f7 !important; }
     <div class="title">입고예상일시</div>
     <input type="hidden" name="od_id">
     <input type="hidden" name="ct_id">
-    <input type="text" name="ct_direct_delivery_date" class="change_datepicker">
-    <select name="ct_direct_delivery_time">
+    <input type="text" name="ct_delivery_expect_date" class="change_datepicker">
+    <select name="ct_delivery_expect_time">
       <?php
       for($i = 0; $i < 24; $i++) {
         $time = str_pad($i, 2, '0', STR_PAD_LEFT);
@@ -581,8 +582,8 @@ $(function() {
     $form = $('#form_change_date');
     $form.find('input[name="od_id"]').val($(this).data('odid'));
     $form.find('input[name="ct_id"]').val($(this).data('ctid'));
-    $form.find('input[name="ct_direct_delivery_date"]').val($(this).data('date'));
-    $form.find('select[name="ct_direct_delivery_time"]').val($(this).data('time')).change();
+    $form.find('input[name="ct_delivery_expect_date"]').val($(this).data('date'));
+    $form.find('select[name="ct_delivery_expect_time"]').val($(this).data('time')).change();
 
     $(this).popModal({
       html: $form,
@@ -599,8 +600,8 @@ $(function() {
     var send_data = {};
     send_data['od_id'] = od_id;
     send_data['ct_id'] = [ ct_id ];
-    send_data['ct_direct_delivery_date_' + ct_id] = $(this).find('input[name="ct_direct_delivery_date"]').val();
-    send_data['ct_direct_delivery_time_' + ct_id] = $(this).find('select[name="ct_direct_delivery_time"]').val();
+    send_data['ct_delivery_expect_date_' + ct_id] = $(this).find('input[name="ct_delivery_expect_date"]').val();
+    send_data['ct_delivery_expect_time_' + ct_id] = $(this).find('select[name="ct_delivery_expect_time"]').val();
 
     $.post('ajax.supply_partner_deliverydate.php', send_data, 'json')
     .done(function() {

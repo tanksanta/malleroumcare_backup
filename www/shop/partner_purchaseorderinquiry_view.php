@@ -244,14 +244,14 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                 <div class="col left">입고 예정일</div>
                 <div class="col right">
                   <input type="hidden" name="ct_id[]" value="<?=$cart['ct_id']?>">
-                  <input type="text" class="datepicker" name="ct_direct_delivery_date_<?=$cart['ct_id']?>" value="<?=$cart['ct_direct_delivery_date'] ? date('Y-m-d', strtotime($cart['ct_direct_delivery_date'])) : ''?>">
-                  <select name="ct_direct_delivery_time_<?=$cart['ct_id']?>">
+                  <input type="text" class="datepicker" name="ct_delivery_expect_date_<?=$cart['ct_id']?>" value="<?=$cart['ct_delivery_expect_date'] ? date('Y-m-d', strtotime($cart['ct_delivery_expect_date'])) : ''?>">
+                  <select name="ct_delivery_expect_time_<?=$cart['ct_id']?>">
                     <?php
-                    $ct_direct_delivery_time = $cart['ct_direct_delivery_date'] ? date('H', strtotime($cart['ct_direct_delivery_date'])) : '';
+                    $ct_delivery_expect_time = $cart['ct_delivery_expect_date'] ? date('H', strtotime($cart['ct_delivery_expect_date'])) : '';
                     for($i = 0; $i < 24; $i++) {
                       $time = str_pad($i, 2, '0', STR_PAD_LEFT); 
                     ?>
-                    <option value="<?=$time?>" <?=get_selected($ct_direct_delivery_time, $time)?>><?=$time?>시</option>
+                    <option value="<?=$time?>" <?=get_selected($ct_delivery_expect_time, $time)?>><?=$time?>시</option>
                     <?php } ?>
                   </select>
                 </div>
