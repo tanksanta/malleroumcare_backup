@@ -542,10 +542,10 @@ if (!$member['mb_id']) {
       var dataIndex = Number(liNode.data('index'));
 
       if (act === 'check') {
-        if (liNode.hasClass('checked')) {
-          alert('이미 확인 상태입니다.');
-          return;
-        }
+        // if (liNode.hasClass('checked')) {
+        //   alert('이미 확인 상태입니다.');
+        //   return;
+        // }
 
         DATA[dataIndex]['checked_at'] = 'currentDate'
         DATA[dataIndex]['bc_del_yn'] = 'N'
@@ -978,7 +978,7 @@ if (!$member['mb_id']) {
       return;
     }
 
-    if (CHANGED_DATA.length == 0) {
+    if (CHANGED_DATA.length === 0) {
       alert('변경한 내역이 없습니다');
       return;
     }

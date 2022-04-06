@@ -717,6 +717,9 @@ if($od["od_b_tel"]) {
       })
 
       if (barcodeArr.length > 0) {
+        $('.folding_box.id_' + ct_id + ' .barcode_icon.type5').removeClass('active');
+        $('.folding_box.id_' + ct_id + ' .barcode_warning').hide();
+
         $.ajax({
           url: './ajax.barcode_validate_bulk.php',
           type: 'GET',
@@ -728,15 +731,21 @@ if($od["od_b_tel"]) {
           async: false,
         })
         .done(function(result) {
-          console.log(result.data);
+          // console.log(result.data);
           var target = $('.folding_box.id_' + ct_id + ' li');
+          var activeCount = 0;
+
           result.data.barcodeArr.forEach(function (_this) {
             if (_this.status === '미보유재고') {
               target.eq(_this.index).find('.fa-check').removeClass('active');
               target.eq(_this.index).find('.barcode_icon.type5').addClass('active');
-              $('.folding_box.id_' + ct_id + ' .barcode_warning').show();
+              activeCount++;
             }
           });
+
+          if (activeCount > 0) {
+            $('.folding_box.id_' + ct_id + ' .barcode_warning').show();
+          }
         })
         .fail(function($xhr) {
           // msgResult = 'error'
