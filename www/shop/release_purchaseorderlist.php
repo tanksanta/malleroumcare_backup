@@ -162,7 +162,7 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
   <ul>
       <li>
         <select name="ct_status_option" id="ct_status_option" style="margin-left: 0; width: 100%">
-          <option value="발주완료,입고완료" <?php echo !$ct_status_option ? 'selected' : ''; ?>>발주완료/입고완료</option>
+          <option value="발주완료,출고완료,입고완료" <?php echo !$ct_status_option ? 'selected' : ''; ?>>발주완료~입고완료</option>
           <option value="발주대기,발주완료,출고완료,입고완료" <?php echo $ct_status_option == '준비,출고준비,배송,완료' ? 'selected' : ''; ?>>전체</option>
           <option value="발주대기" <?php echo $ct_status_option == '준비' ? 'selected' : ''; ?>>발주대기</option>
         </select>
@@ -182,7 +182,7 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
       </li>
     </ul>
     <ul>
-      <li style="text-align:left">
+      <li style="text-align: left">
         <span style="color:#666">
           <input type="radio" class="sel_date_time" name="sel_date_time" value="od_time" id="od_time" checked>
           <label for="od_time">발주일</label>
@@ -192,7 +192,10 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
           <label for="ct_direct_delivery_date">입고예정일</label>
         </span>
       </li>
-      <li style="text-align:right">
+    </ul>
+    <ul>
+      <li style="text-align: left">
+        <input type="button" data-value="" class="date_button" value="전체" />
         <input type="button" data-value="<?php echo date('Y-m-d', time()); ?>" class="date_button" value="오늘" />
         <input type="button" data-value="<?php echo date("Y-m-d", strtotime("+1 day", strtotime(date('Y-m-d', time())))); ?>" class="date_button" value="내일" />
       </li>
