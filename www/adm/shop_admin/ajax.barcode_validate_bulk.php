@@ -58,7 +58,6 @@ for ($i = 0; $i < count($barcodeArr); $i++) {
     WHERE 
       it_id = '{$it_id}' 
       AND io_id = '{$io_id}'
-      AND pct_id > 0
       AND ct_id = 0
       AND bc_status = '정상'
       AND bc_barcode = '{$barcodeArr[$i]['barcode']}' 
