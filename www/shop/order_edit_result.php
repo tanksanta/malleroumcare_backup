@@ -14,6 +14,20 @@ $od = sql_fetch("
 if(!$od['od_id'])
   alert('존재하지 않는 주문입니다.');
 
+$sql = "
+  SELECT
+    count(*) as cnt
+  FROM
+      g5_shop_cart
+  WHERE
+      od_id = '$od_id' and
+      mb_id = '{$member['mb_id']}' and
+      ct_status not in ('취소', '주문무효', '준비')
+";
+$row = sql_fetch($sql);
+if($row['cnt'] > 0)
+    alert('상품준비 단계가 아닌 상품이 있어서 주문서 수정이 불가능합니다.');
+
 $mb = get_member($od['mb_id']);
 
 $send_data = [
