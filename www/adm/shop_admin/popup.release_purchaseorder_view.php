@@ -972,8 +972,8 @@ $ct = sql_fetch($sql);
       </div>
       <div class="flex-row align-center">
         <div class="arrow-wrap">
-          <img class="up" src="/img/img_up.png" style="display: none">
-          <img class="down" src="/img/img_down.png">
+          <img class="up" src="/img/img_up.png" style="display: <?php echo $incomplete_count > 0 ? 'inline' : 'none' ?>">
+          <img class="down" src="/img/img_down.png" style="display: <?php echo $incomplete_count < 0 ? 'inline' : 'none' ?>">
         </div>
       </div>
     </div>
@@ -984,7 +984,7 @@ $ct = sql_fetch($sql);
         <img src="/img/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
         </span>
     <?php } ?>
-    <ul class="inputbox barcode-area" style="display: none">
+    <ul class="inputbox barcode-area" style="display: <?php echo $incomplete_count > 0 ? 'block' : 'none' ?>">
       <?php
       $prodListCnt = 0;
       for ($i = 0; $i < $incomplete_count; $i++) {
