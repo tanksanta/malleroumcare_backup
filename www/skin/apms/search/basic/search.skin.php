@@ -173,7 +173,9 @@ include_once($skin_path.'/search.skin.form.php');
             <p class="price">
                     <?php
                     if($member["mb_id"]){
-                        if($_COOKIE["viewType"] == "basic"){
+                        if($member['mb_type'] == 'partner') {
+                            // do nothing;
+                        } else if($_COOKIE["viewType"] == "basic"){
                                 echo number_format($list[$i]["it_cust_price"])."원";
                         }else{
 							if($list[$i]["entprice"]) {
