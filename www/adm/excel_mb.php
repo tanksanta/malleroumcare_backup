@@ -86,6 +86,9 @@ if ($button_type) {
     case 'normal' :
       $sql_search .= " (mb_type = 'normal') ";
       break;
+    case 'block' :
+      $sql_search .= " (mb_order_approve = 1) ";
+      break;
   }
   $sql_search .= " ) ";
   $qstr .= "&amp;button_type=$button_type";
@@ -188,6 +191,13 @@ $sql = " select count(*) as cnt {$sql_common} WHERE (
 )";
 $row = sql_fetch($sql);
 $normal_count = $row['cnt'];
+
+// 주문정지 회원 수
+$sql = " select count(*) as cnt {$sql_common} WHERE (
+  mb_order_approve = 0
+)";
+$row = sql_fetch($sql);
+$block_count = $row['cnt'];
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 

@@ -86,6 +86,9 @@ if ($button_type) {
     case 'normal' :
       $sql_search .= " (mb_type = 'normal') ";
       break;
+    case 'block' :
+      $sql_search .= " (mb_order_approve = 0) ";
+      break;
   }
   $sql_search .= " ) ";
   $qstr .= "&amp;button_type=$button_type";
@@ -194,6 +197,13 @@ $sql = " select count(*) as cnt {$sql_common} WHERE (
 $row = sql_fetch($sql);
 $normal_count = $row['cnt'];
 
+// 주문정지 회원 수
+$sql = " select count(*) as cnt {$sql_common} WHERE (
+  mb_order_approve = 0
+)";
+$row = sql_fetch($sql);
+$block_count = $row['cnt'];
+
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 
 $g5['title'] = '회원관리';
@@ -244,6 +254,7 @@ $stx=$stx2;
   <button type="button" class="mb_button <?php echo $button_type === 'default' ? 'active' : ''; ?>" data-value="default">사업소 (<?php echo $default_count; ?>)</button>
   <button type="button" class="mb_button <?php echo $button_type === 'vip' ? 'active' : ''; ?>" data-value="vip">VIP사업소 (<?php echo $vip_count; ?>)</button>
   <button type="button" class="mb_button <?php echo $button_type === 'normal' ? 'active' : ''; ?>" data-value="normal">일반회원 (<?php echo $normal_count; ?>)</button>
+  <button type="button" class="mb_button <?php echo $button_type === 'block' ? 'active' : ''; ?>" data-value="block">주문정지 회원 (<?php echo $block_count; ?>)</button>
 </div>
 
 <div class="local_sch03 local_sch">
