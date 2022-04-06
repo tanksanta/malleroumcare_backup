@@ -413,7 +413,7 @@ $sendData["prods"] = $prodsSendData;
                   $sc_price_info = number_format($sc_price).'만원 이상 무료배송<br>'.$sc_price_info;
                 }
                 if($it['it_sc_type'] == 5) {
-                  $sc_price_info = '짝수 주문시 무료배송<br>'.$sc_price_info;
+                  $sc_price_info = '짝수 주문시 무료배송<br>기본배송비 3,300원';
                 }
                 if ($it['it_delivery_cnt'] > 0) {
                   $sc_price_info = "<span style=\"font-size:13px; color:#ef7c00;\">본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span><br>".$sc_price_info;
@@ -814,7 +814,7 @@ $sendData["prods"] = $prodsSendData;
               $sc_price_info = number_format($sc_price).'만원 이상 무료배송<br>'.$sc_price_info;
             }
             if($it['it_sc_type'] == 5) {
-              $sc_price_info = '짝수 주문시 무료배송<br>'.$sc_price_info;
+              $sc_price_info = '짝수 주문시 무료배송<br>기본배송비 3,300원';
             }
           //}
           if ($it['it_delivery_cnt'] > 0) {
