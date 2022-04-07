@@ -1091,6 +1091,7 @@ if (!$member['mb_id']) {
         it_id: '<?php echo $it_id ?>',
         io_id: '<?php echo $io_id ?>',
         data: CHANGED_DATA,
+        barcode_qty_prev: '<?= $row['sum_barcode_qty'] ?>',
       },
       dataType: 'json',
       async: false,
