@@ -913,6 +913,7 @@ if (!$member['mb_id']) {
         io_id: '<?php echo $io_id ?>',
         sel_field: 'bc_barcode',
         search_text: $('#search_text').val(),
+        only_not_deleted_barcode: 'true',
       },
       dataType: 'json',
       async: false,
@@ -963,12 +964,25 @@ if (!$member['mb_id']) {
           status_class = 'newAdd'
           checkedBarcodeCnt++;
 
+        /*
         } else if (DATA[i].checked_at) {
           check_status = '<img src="/img/barcode_icon_1.png"/>';
           status_class = 'checked'
           checkedBarcodeCnt++;
 
         } else if (!DATA[i].checked_at) {
+          check_status = '<span>미확인</span>';
+          status_class = 'unchecked'
+        }
+        */
+
+        // 페이지 진입 시 무조건 미확인으로 표기
+        } else if (DATA[i].checked_at === 'currentDate') {
+          check_status = '<img src="/img/barcode_icon_1.png"/>';
+          status_class = 'checked'
+          checkedBarcodeCnt++;
+
+        } else {
           check_status = '<span>미확인</span>';
           status_class = 'unchecked'
         }
@@ -1008,9 +1022,10 @@ if (!$member['mb_id']) {
 
   function sortData() {
     var sortBy = $('#sortOption').val();
+    console.log('sort - ' + sortBy);
 
     if (sortBy === 'unchecked') {
-      DATA.sort(dynamicSortMultiple('bc_is_check_yn', 'bc_barcode'));
+      DATA.sort(dynamicSortMultiple('-checked_at', 'bc_barcode'));
     } else if (sortBy === 'newAdd') {
       DATA.sort(dynamicSortMultiple('bc_id', 'bc_barcode'));
     } else if (sortBy === 'deleted') {
@@ -1039,10 +1054,20 @@ if (!$member['mb_id']) {
        * and you may want to customize it to your needs
        */
       var result;
-      if (!isNaN(a[property]) && !isNaN(b[property])) {
-        result = (Number(a[property]) < Number(b[property])) ? -1 : (Number(a[property]) > Number(b[property])) ? 1 : 0;
+      if (property === 'checked_at') {
+        if (a[property] === 'currentDate' && b[property] === 'currentDate') {
+          result = 0;
+        } else if (a[property] === 'currentDate' && b[property] !== 'currentDate') {
+          result = -1;
+        } else if (a[property] !== 'currentDate' && b[property] === 'currentDate') {
+          result = 1;
+        }
       } else {
-        result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        if (!isNaN(a[property]) && !isNaN(b[property])) {
+          result = (Number(a[property]) < Number(b[property])) ? -1 : (Number(a[property]) > Number(b[property])) ? 1 : 0;
+        } else {
+          result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        }
       }
       return result * sortOrder;
     }
