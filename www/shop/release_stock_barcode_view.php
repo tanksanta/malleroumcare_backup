@@ -16,32 +16,7 @@ if ($io_id) {
   $where .= " AND io_id = '{$io_id}' ";
 }
 
-$sql = "
-  SELECT
-   T.*
-  FROM
-  (SELECT
-    (SELECT 
-      IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) 
-    FROM warehouse_stock 
-    WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
-    (SELECT count(*)
-      FROM g5_cart_barcode
-      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty,
-    a.*,
-    b.io_type,
-    b.io_id
-  FROM
-    (SELECT
-      it_id,
-      it_name,
-      it_use,
-      it_option_subject
-    FROM g5_shop_item i) AS a
-  LEFT JOIN (SELECT * from g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)) AS T 
-  {$where}
-";
-$row = sql_fetch($sql);
+$row = get_stock_item_info($it_id, $io_id);
 
 $sql = "
   SELECT IFNULL(MAX(created_at), '미확인') AS last_checked_at

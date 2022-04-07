@@ -2514,7 +2514,8 @@ function get_stock_item_info($it_id, $io_id) {
         it_id,
         it_name,
         it_use,
-        it_option_subject
+        it_option_subject,
+        ProdPayCode
       FROM g5_shop_item i) AS a
     LEFT JOIN (SELECT * from g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)) AS T 
     {$where}
