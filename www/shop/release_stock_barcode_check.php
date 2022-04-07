@@ -374,6 +374,57 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
       width: 35%;
     }
 
+    #web-barcode {
+      display: none;
+      position: fixed;
+      background-color: rgba(0, 0, 0, 0.5);
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+    }
+
+    #web-barcode-input {
+      width:1px;
+      height:1px;
+      border:none;
+    }
+
+    #web-barcode-close {
+      position: absolute;
+      color: white;
+      top: 15px;
+      left: 20px;
+      font-size: 40px;
+      cursor: pointer;
+    }
+
+    .web-barcode-content {
+      margin: auto;
+      color: white;
+      text-align: center;
+    }
+
+
+    #web-barcode-loading {
+      display: block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: web-barcode-loading-spin 1s ease-in-out infinite;
+      -webkit-animation: web-barcode-loading-spin 1s ease-in-out infinite;
+      margin:0 auto 10px auto;
+    }
+
+    @keyframes web-barcode-loading-spin {
+      to { -webkit-transform: rotate(360deg); }
+    }
+    @-webkit-keyframes web-barcode-loading-spin {
+      to { -webkit-transform: rotate(360deg); }
+    }
   </style>
 </head>
 
@@ -506,8 +557,19 @@ if ($option) {
     <button onclick="saveData()">완료</button>
   </div>
   <div class="flex-row justify-space-between" style="padding: 0 30px">
-    <button onclick="alert('TODO');">PDA</button>
+    <button onclick="openWebBarcode();">PDA</button>
     <button onclick="open_invoice_scan();">APP</button>
+  </div>
+</div>
+
+<div id="web-barcode">
+  <i id="web-barcode-close" class="fa fa-times"></i>
+  <div class="web-barcode-content">
+    <div id="web-barcode-loading"></div>
+    <div>
+      바코드 스캔 대기중..<br />
+    </div>
+    <input type="text" id="web-barcode-input" />
   </div>
 </div>
 
@@ -520,6 +582,8 @@ if (!$member['mb_id']) {
   var DATA = [];
   var CHANGED_DATA = [];
   var LOADING = false;
+  var IS_OPEN_WEB_BARCODE = false;
+  var BARCODE_INPUT_FOCUS_INTERVAL;
 
   $(function() {
     renderData(true);
@@ -658,6 +722,26 @@ if (!$member['mb_id']) {
       }
 
       addSelectClassBarcode();
+    });
+
+    // pda 스캔
+    $(document).on('keydown', '#web-barcode-input', function (e) {
+      var isScanner = e.key === 'Unidentified' || e.key === 'TVNetwork';
+
+      if (e.key) {
+        e.preventDefault();
+      }
+
+      if (!isScanner) {
+        return;
+      }
+
+      receiveBarcode();
+    });
+
+    $(document).on('touchstart, click', '#web-barcode-close', function (e) {
+      alert('바코드스캔을 종료합니다');
+      closeWebBarcode();
     });
   });
 
@@ -1026,25 +1110,73 @@ if (!$member['mb_id']) {
 
   function sendInvoiceNum(text) {
     var prodPayCode = '<?php echo $prod_pay_code ?>'
+    var scannedBarcode = text;
     var barcodeProdCode = text.slice(0, 12);
     var barcode = text.slice(12, 24);
 
-    if (text.length !== 24) {
-      alert('유효하지 않은 바코드입니다. 다시 스캔해주세요. (12자리 아님)');
-      return;
-    }
+    // 바코드 정상 여부 체크
+    $.post('/shop/ajax.check_barcode.php', {
+      it_id: '<?php echo $it_id ?>',
+      barcode: scannedBarcode,
+    }, 'json')
+    .done(function (data) {
+      var barcode = String(data.data.converted_barcode);
 
-    if (barcodeProdCode !== prodPayCode) {
-      alert('상품을 잘못 스캔하셨습니다. 상품을 다시 확인해주세요.');
-      return;
-    }
+      if (barcode.length !== 12) {
+        $.toast('\'' + barcode + '\'는 잘못된 바코드입니다. <br/> (12글자 아님)', {
+          duration: 3000,
+          type: 'danger'
+        });
+        return;
+      }
 
-    if (isNaN(barcode)) {
-      alert('바코드에 숫자 이외의 문자가 포함되어있습니다. 다시 스캔해주세요.')
-      return;
-    }
+      if (isDuplicateBarcode(barcode)) {
+        $.toast('\'' + barcode + '\'는 중복된 바코드입니다. <br/> 다시스캔해주세요.', {
+          duration: 3000,
+          type: 'danger'
+        });
+        return;
+      }
 
-    upsertBarcode(barcode);
+      if (isNaN(barcode)) {
+        $.toast('\'' + barcode + '\'는 숫자 이외의 문자가 포함되어있습니다. <br/> 다시스캔해주세요.', {
+          duration: 3000,
+          type: 'danger'
+        });
+        return;
+      }
+
+      upsertBarcode(barcode);
+
+      $.toast('\'' + barcode + '\'가 등록되었습니다.', {
+        duration: 2000,
+        type: 'info'
+      });
+    })
+    .fail(function ($xhr) {
+      var data = $xhr.responseJSON;
+      $.toast(data && data.message, {
+        duration: 3000,
+        type: 'danger'
+      });
+    });
+
+    // if (text.length !== 24) {
+    //   alert('유효하지 않은 바코드입니다. 다시 스캔해주세요. (12자리 아님)');
+    //   return;
+    // }
+    //
+    // if (barcodeProdCode !== prodPayCode) {
+    //   alert('상품을 잘못 스캔하셨습니다. 상품을 다시 확인해주세요.');
+    //   return;
+    // }
+    //
+    // if (isNaN(barcode)) {
+    //   alert('바코드에 숫자 이외의 문자가 포함되어있습니다. 다시 스캔해주세요.')
+    //   return;
+    // }
+    //
+    // upsertBarcode(barcode);
   }
 
   function upsertBarcode(barcode) {
@@ -1107,10 +1239,94 @@ if (!$member['mb_id']) {
     }
   }
 
+  function barcodeInputFocus() {
+    if (!IS_OPEN_WEB_BARCODE) {
+      clearInterval(BARCODE_INPUT_FOCUS_INTERVAL);
+      return;
+    }
+    $('#web-barcode-input').focus();
+    $('#web-barcode-input').click();
+  }
+
+  function openWebBarcode() {
+    $('#web-barcode').css('display', 'flex');
+    $('#web-barcode-input').focus();
+    IS_OPEN_WEB_BARCODE = true;
+    $('#web-barcode-input').val('');
+    BARCODE_INPUT_FOCUS_INTERVAL = setInterval(barcodeInputFocus, 1000);
+  }
+
+  function closeWebBarcode() {
+    IS_OPEN_WEB_BARCODE = false;
+    clearInterval(BARCODE_INPUT_FOCUS_INTERVAL)
+    $('#web-barcode').hide();
+    $('#web-barcode-input').val('');
+  }
+
+  function receiveBarcode(tempBarcode) {
+    setTimeout(function() {
+      var scannedBarcode = tempBarcode || $('#web-barcode-input').val();
+      $('#web-barcode-input').val('');
+
+      if (!scannedBarcode) return;
+      if (String(scannedBarcode).length < 3) {
+        alert('키보드 사용은 불가능합니다.');
+        return;
+      }
+
+      // 바코드 정상 여부 체크
+      $.post('/shop/ajax.check_barcode.php', {
+        it_id: '<?php echo $it_id ?>',
+        barcode: scannedBarcode,
+      }, 'json')
+      .done(function (data) {
+        var barcode = String(data.data.converted_barcode);
+
+        if (barcode.length !== 12) {
+          $.toast('\'' + barcode + '\'는 잘못된 바코드입니다. <br/> (12글자 아님)', {
+            duration: 3000,
+            type: 'danger'
+          });
+          return;
+        }
+
+        if (isDuplicateBarcode(barcode)) {
+          $.toast('\'' + barcode + '\'는 중복된 바코드입니다. <br/> 다시스캔해주세요.', {
+            duration: 3000,
+            type: 'danger'
+          });
+          return;
+        }
+
+        if (isNaN(barcode)) {
+          $.toast('\'' + barcode + '\'는 숫자 이외의 문자가 포함되어있습니다. <br/> 다시스캔해주세요.', {
+            duration: 3000,
+            type: 'danger'
+          });
+          return;
+        }
+
+        upsertBarcode(barcode);
+
+        $.toast('\'' + barcode + '\'가 등록되었습니다.', {
+          duration: 2000,
+          type: 'info'
+        });
+      })
+      .fail(function ($xhr) {
+        var data = $xhr.responseJSON;
+        $.toast(data && data.message, {
+          duration: 3000,
+          type: 'danger'
+        });
+      });
+
+    }, 100);
+  }
+
+
   function goBack() {
     location.href = '/shop/release_stock_barcode_view.php?it_id=<?php echo $it_id ?>&io_id=<?php echo $io_id ?>';
   }
 </script>
-
-<?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
 </body>
