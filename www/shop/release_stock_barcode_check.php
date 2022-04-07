@@ -374,6 +374,15 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
       width: 35%;
     }
 
+    .toast {
+      width: 98% !important;
+      left: 0 !important;
+      margin: 5px auto 0 auto !important;
+      right: 0;
+      text-align:center;
+      font-weight:bold;
+    }
+
     #web-barcode {
       display: none;
       position: fixed;
@@ -405,7 +414,6 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
       color: white;
       text-align: center;
     }
-
 
     #web-barcode-loading {
       display: block;
