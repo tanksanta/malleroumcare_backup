@@ -426,6 +426,9 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
       to { -webkit-transform: rotate(360deg); }
     }
   </style>
+
+  <link rel="stylesheet" type="text/css" href="<?php echo G5_URL; ?>/css/jquery.toast.min.css" />
+  <script type="text/javascript" src="<?php echo G5_URL; ?>/js/jquery.toast.min.js"></script>
 </head>
 
 <body>
