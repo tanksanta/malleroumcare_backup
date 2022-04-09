@@ -580,6 +580,7 @@ if($od["od_b_tel"]) {
   <script type="text/javascript">
     $(".hide_area").hide();
 
+    var LOADING = false;
     var keyupTimer;
     var IS_POP = <?php echo $is_pop ? 'true' : 'false'?>;
     
@@ -952,17 +953,28 @@ if($od["od_b_tel"]) {
     });
 
     $("#prodBarNumSaveBtn").click(function() {
-      if ($(".chk_pass_barcode").data('gubun') == "02" && $(".chk_pass_barcode").is(":checked") == false) {
-        if (confirm("비급여 상품 확인함을 선택하지 않으셨습니다. 선택하시겠습니까?")) {
-        }
-        else {
+      if (LOADING) {
+        console.log('is loading now...');
+        return;
+      }
+
+      LOADING = true;
+      $('#prodBarNumSaveBtn').text('저장중...');
+
+      setTimeout(function() {
+        if ($(".chk_pass_barcode").data('gubun') == "02" && $(".chk_pass_barcode").is(":checked") == false) {
+          if (confirm("비급여 상품 확인함을 선택하지 않으셨습니다. 선택하시겠습니까?")) {
+          } else {
+            barNumSave();
+          }
+          return false;
+        } else {
           barNumSave();
         }
-        return false;
-      }
-      else {
-        barNumSave();
-      }
+
+        LOADING = false;
+        $('#prodBarNumSaveBtn').text('저장');
+      }, 300);
     });
 
 

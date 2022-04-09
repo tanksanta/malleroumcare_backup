@@ -83,7 +83,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     #search_option, #add_search_option{ width: 80px; height: 50px; float: left;  border-radius: 5px; border: 1px solid #E0E0E0; font-size: 14px; text-align:center;}
     #search_text, #add_search_text{width:calc(100% - 90px) !important;margin-left:10px;}
 
-    #manager_option, #ct_status_option{ width: 150px; height: 50px; float: left;  border-radius: 5px; border: 1px solid #E0E0E0; font-size: 14px; text-align:center;}
+    #manager_option, #ct_status_option, #od_addr1_option { width: 150px; height: 50px; float: left;  border-radius: 5px; border: 1px solid #E0E0E0; font-size: 14px; text-align:center;}
     #ct_status_option{width: calc(100% - 160px);margin-left:10px;}
 
     .total_price_wrap { text-align: left !important; font-weight: bold; }
@@ -112,16 +112,40 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
 	<form name="release_search_form">
 	<!-- 검색 -->
 	<div id="listSearchWrap">
-  <ul>
-    <li class="total_price_wrap">총 주문금액: <span id="total_price"></span></li>
-    <li>
-      <a href="javascript:void(0);" class="nativeDeliveryPopupOpenBtn">
-        주문찾기
-        <img src="<?=G5_IMG_URL?>/bacod_img.png">
-      </a>
-    </li>
-  </ul>
-  <ul>
+    <ul>
+      <li class="total_price_wrap">총 주문금액: <span id="total_price"></span></li>
+      <li>
+        <a href="javascript:void(0);" class="nativeDeliveryPopupOpenBtn">
+          주문찾기
+          <img src="<?=G5_IMG_URL?>/bacod_img.png">
+        </a>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <select name="od_addr1_option" id="od_addr1_option" style="width: 100%;">
+          <option value="" <?php echo $od_addr1_option == '' ? 'selected' : ''; ?>>전국배송지역</option>
+          <option value="서울" <?php echo $od_addr1_option == '서울' ? 'selected' : ''; ?>>서울</option>
+          <option value="부산" <?php echo $od_addr1_option == '부산' ? 'selected' : ''; ?>>부산</option>
+          <option value="대구" <?php echo $od_addr1_option == '대구' ? 'selected' : ''; ?>>대구</option>
+          <option value="인천" <?php echo $od_addr1_option == '인천' ? 'selected' : ''; ?>>인천</option>
+          <option value="광주" <?php echo $od_addr1_option == '광주' ? 'selected' : ''; ?>>광주</option>
+          <option value="대전" <?php echo $od_addr1_option == '대전' ? 'selected' : ''; ?>>대전</option>
+          <option value="울산" <?php echo $od_addr1_option == '울산' ? 'selected' : ''; ?>>울산</option>
+          <option value="세종" <?php echo $od_addr1_option == '세종' ? 'selected' : ''; ?>>세종</option>
+          <option value="경기" <?php echo $od_addr1_option == '경기' ? 'selected' : ''; ?>>경기</option>
+          <option value="강원" <?php echo $od_addr1_option == '강원' ? 'selected' : ''; ?>>강원</option>
+          <option value="충북" <?php echo $od_addr1_option == '충북' ? 'selected' : ''; ?>>충북</option>
+          <option value="충남" <?php echo $od_addr1_option == '충남' ? 'selected' : ''; ?>>충남</option>
+          <option value="전북" <?php echo $od_addr1_option == '전북' ? 'selected' : ''; ?>>전북</option>
+          <option value="전남" <?php echo $od_addr1_option == '전남' ? 'selected' : ''; ?>>전남</option>
+          <option value="경북" <?php echo $od_addr1_option == '경북' ? 'selected' : ''; ?>>경북</option>
+          <option value="경남" <?php echo $od_addr1_option == '경남' ? 'selected' : ''; ?>>경남</option>
+          <option value="제주" <?php echo $od_addr1_option == '제주' ? 'selected' : ''; ?>>제주</option>
+        </select>
+      </li>
+    </ul>
+    <ul>
       <li>
         <select name="manager_option" id="manager_option">
           <option value="" selected>영업사원 전체</option>
@@ -165,18 +189,18 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
       </li>
     </ul>
     <ul>
-    	<li>
+      <li>
         <input type="text" id="search_fr_date" name="search_fr_date" placeholder="시작일자" dateonly value="<?php echo $search_fr_date; ?>">
-    	</li>
-    	<li style="width: 25px;">
+      </li>
+      <li style="width: 25px;">
         <span>~</span>
-    	</li>
-    	<li>
+      </li>
+      <li>
         <input type="text" id="search_to_date" name="search_to_date" placeholder="종료일자" dateonly value="<?php echo $search_to_date; ?>">
-    	</li>
-    	<li style="width: 90px; padding-left: 20px;">
+      </li>
+      <li style="width: 90px; padding-left: 20px;">
         <button type="button" id="searchSubmitBtn">검색</button>
-    	</li>
+      </li>
     </ul>
 	</div>
     
@@ -263,6 +287,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
   function doSearch(is_invoice_scan) {
     if(loading) return;
 
+    formdata["od_addr1_option"] = $("#od_addr1_option").val();
     formdata["fr_date"] = $("#search_fr_date").val();
     formdata["to_date"] = $("#search_to_date").val();
     formdata["manager_option"] = $("#manager_option").val();
