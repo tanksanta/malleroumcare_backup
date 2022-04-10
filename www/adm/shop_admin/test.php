@@ -60,7 +60,7 @@ foreach ($ct_ids as $ct_id) {
 
     $talk_result =  send_alim_talk('OD_RESULT_'.$result['od_id'], '010-5134-3622', 'ent_order_result2', $talk_msg);
     if ($talk_result) {
-      echo $talk_result;
+      print_r2($talk_result);
     } else {
       echo 'return null';
     }
