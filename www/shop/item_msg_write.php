@@ -164,9 +164,13 @@ function max_length_check(object){
           </div>
         </div>
         <div class="im_send_wr im_desc_wr" style="border: none; <?php if($today_count <= 0) echo 'opacity: 10%;' ?>">
-          <button type="submit" id="btn_im_send" class="btn_im_send">
+          <button type="submit" id="btn_im_send_alim" class="btn_im_send" style="display: block;">
             <img src="<?=THEMA_URL?>/assets/img/icon_kakao.png" alt="">
             알림 메시지 전달
+          </button>
+          <button type="submit" id="btn_im_send_sms" class="btn_im_send" style="display: block;">
+            <img src="<?=THEMA_URL?>/assets/img/icon_email.png" width="40" height="40" alt="">
+            문자 메시지 전달
           </button>
           <div class="im_desc">
           	<p>
@@ -364,12 +368,12 @@ function check_no_item() {
   if($('.im_write_list li').length == 0) {
     $('.no_item_info').show();
     $('.im_list_hd').hide();
-    $('#btn_im_send').removeClass('active');
+    $('.btn_im_send').removeClass('active');
   } else {
     $('.no_item_info').hide();
     $('.im_list_hd').show();
     if($('#ms_pen_nm').val() && $('#ms_pen_hp').val())
-      $('#btn_im_send').addClass('active');
+      $('.btn_im_send').addClass('active');
   }
 }
 
@@ -708,7 +712,7 @@ function save_item_msg(no_items) {
   });
 
   var sending = false;
-  $('#btn_im_send').on('click', function() {
+  $('#btn_im_send_alim').on('click', function() {
     if(sending)
       return alert('전송 중입니다. 잠시만 기다려주세요.');
     
@@ -721,6 +725,36 @@ function save_item_msg(no_items) {
     var show_expected = ($('#show_expected_warehousing_date').is(':checked') ? 'Y' : 'N');
     $form = $('#form_item_msg');
     $.post('item_msg_send.php', {
+      mode: 'alim',
+      ms_id: ms_id,
+      show_expected: show_expected
+    }, 'json')
+    .done(function(result) {
+      alert('전송이 완료되었습니다.');
+      window.location.href = 'item_msg_write.php?w=u&ms_id=' + ms_id + '&show_expected=' + show_expected;
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    })
+    .always(function() {
+      sending = false;
+    });
+  });
+  $('#btn_im_send_sms').on('click', function() {
+    if(sending)
+      return alert('전송 중입니다. 잠시만 기다려주세요.');
+    
+    var ms_id = $('input[name="ms_id"]').val();
+
+    if(!ms_id)
+      return alert('먼저 상품을 추가해주세요.');
+
+    sending = true;
+    var show_expected = ($('#show_expected_warehousing_date').is(':checked') ? 'Y' : 'N');
+    $form = $('#form_item_msg');
+    $.post('item_msg_send.php', {
+      mode: 'sms',
       ms_id: ms_id,
       show_expected: show_expected
     }, 'json')
