@@ -1483,7 +1483,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                 <td>
                                     <select name="ot_typereceipt_cate" class="type_select">
                                     <?php foreach($typereceipt_cates as $c) { ?>
-                                        <option value="<?php echo $c['val']; ?>" <?php echo $typereceipt['ot_typereceipt_cate'] == $c['val'] ? 'selected' : ''; ?>><?php echo $c['name']; ?> <?php echo $c['val']; ?></option>
+                                        <option value="<?php echo $c['val']; ?>" <?php echo ($typereceipt['ot_typereceipt_cate'] == $c['val']) || ($typereceipt['ot_typereceipt_cate'] == null && $c['name'] == '세금계산서')  ? 'selected' : ''; ?>><?php echo $c['name']; ?> <?php echo $c['val']; ?></option>
                                     <?php } ?>
                                     </select>
                                     <span class="tax_info" style="padding:5px 10px">*과세분류 (0)</span>
@@ -1508,7 +1508,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     <div style="display: inline-block;width:90%;">
                                         <input type="radio" name="ot_typereceipt" id="typereceipt0" value="0" <?php echo $typereceipt['ot_typereceipt'] == '0' ? 'checked="checked"' : ''; ?>> <label for="typereceipt0">발급안함</label>
                                         <input type="radio" name="ot_typereceipt" id="typereceipt2" value="31" <?php echo $typereceipt['ot_typereceipt'] == '31' ? 'checked="checked"' : ''; ?>> <label for="typereceipt2">현금영수증 </label>
-                                        <input type="radio" name="ot_typereceipt" id="typereceipt1" value="11" <?php echo $typereceipt['ot_typereceipt'] == '11' ? 'checked="checked"' : ''; ?>> <label for="typereceipt1">세금계산서 </label>
+                                        <input type="radio" name="ot_typereceipt" id="typereceipt1" value="11" <?php echo ($typereceipt['ot_typereceipt'] == '11') || ($typereceipt['ot_typereceipt'] == null) ? 'checked="checked"' : ''; ?>> <label for="typereceipt1">세금계산서 </label>
                                         <div id="typereceipt2_view">
                                             <ul id="cash_container" class="typereceiptlay">
                                                 <li>

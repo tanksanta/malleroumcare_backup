@@ -525,7 +525,7 @@ function get_typereceipt_step($od_id) {
     
     $sql = "SELECT * FROM g5_shop_order_typereceipt WHERE od_id = '{$od_id}'";
     $result = sql_fetch($sql);
-    if ( !$result ) return $typereceipt_types[0];
+    if ( !$result ) return $typereceipt_types[1];
 
     $type = $result['ot_typereceipt'];
 
@@ -557,7 +557,7 @@ function get_typereceipt_cate($od_id) {
     
     $sql = "SELECT * FROM g5_shop_order_typereceipt WHERE od_id = '{$od_id}'";
     $result = sql_fetch($sql);
-    if ( !$result ) return $typereceipt_cates[0];
+    if ( !$result ) return $typereceipt_cates[1];
 
     $type = $result['ot_typereceipt_cate'];
 
