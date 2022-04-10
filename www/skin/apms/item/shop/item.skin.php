@@ -229,7 +229,7 @@ $sendData["prods"] = $prodsSendData;
         <!-- <p class="help-block">* 주문가능 수량 : <?=number_format(get_it_stock_qty($it_id))?>개</p> -->
         <h1 class="item-head-title" style="font-size: 42px;"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
-          <?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) { ?>
+          <?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['normal'])) { ?>
               급여가
           <?php } else { ?>
             <?php if($member["mb_level"] == "4") { ?>
@@ -243,7 +243,7 @@ $sendData["prods"] = $prodsSendData;
         <p class="price-num">
           <?php
           if($member["mb_id"]) {
-            if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
+            if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['normal'])) {
               echo number_format($it["it_cust_price"]);
             } else {
               if($it['entprice']) {
@@ -474,7 +474,7 @@ $sendData["prods"] = $prodsSendData;
 
         <h1 class="item-head-title pc"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
-          <?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) { ?>
+          <?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['normal'])) { ?>
               급여가
             <?php } else { ?>
             <?php if($member["mb_level"] == "4") { ?>
@@ -488,7 +488,7 @@ $sendData["prods"] = $prodsSendData;
         <p class="price-num">
           <?php
           if($member["mb_id"]) {
-            if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
+            if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['normal'])) {
               echo number_format($it["it_cust_price"]);
             } else {
               if($it['entprice']) {
@@ -670,7 +670,7 @@ $sendData["prods"] = $prodsSendData;
                 <?=$sale_percent_input?>
                 <input type="hidden" id="it_price" value="<?php
                   if($member["mb_id"]) {
-                    if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
+                    if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['normal'])) {
                       echo $it["it_cust_price"];
                     } else {
                       if($it['entprice']) {

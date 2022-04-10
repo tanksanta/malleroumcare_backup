@@ -165,7 +165,7 @@ include_once($skin_path.'/search.skin.form.php');
 			<?php } ?>
 
 
-            <?php if($_COOKIE["viewType"] !== "basic" && !in_array($member['mb_type'], ['partner', 'normal'])){ ?>
+            <?php if($_COOKIE["viewType"] !== "basic" && !in_array($member['mb_type'], ['normal'])){ ?>
                 <p class="discount">
                     <?=number_format($list[$i]["it_cust_price"])?>원
                 </p>
@@ -173,7 +173,7 @@ include_once($skin_path.'/search.skin.form.php');
             <p class="price">
                     <?php
                     if($member["mb_id"]){
-                        if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])){
+                        if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['normal'])){
                             echo number_format($list[$i]["it_cust_price"])."원";
                         }else{
 							if($list[$i]["entprice"]) {
