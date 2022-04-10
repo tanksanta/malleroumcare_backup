@@ -57,7 +57,14 @@ foreach ($ct_ids as $ct_id) {
     $talk_msg .= "■ 배송주소 : {$order_row['od_b_addr1']} {$order_row['od_b_addr2']} {$order_row['od_b_addr3']} {$order_row['od_b_addr_jibeon']}\n";
     $talk_msg .= "■ 배송지연락처 : {$order_row['od_b_tel']} ({$order_row['od_b_hp']})\n";
     $talk_msg .= "■ 배송요청사항 : {$order_row['od_memo']}";
-    send_alim_talk('OD_RESULT_'.$result['od_id'], '010-5134-3622', 'ent_order_result2', $talk_msg);
+
+    $talk_result =  send_alim_talk('OD_RESULT_'.$result['od_id'], '010-5134-3622', 'ent_order_result2', $talk_msg);
+    if ($talk_result) {
+      echo $talk_result;
+    } else {
+      echo 'return null';
+    }
+
     $sent_od_id_arr[] = $result['od_id'];
   }
 }
