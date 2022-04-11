@@ -283,7 +283,7 @@ $g5["title"] = "재고관리";
 <div id="popupHeaderTopWrap">
   <div class="title">재고관리</div>
   <div class="close">
-    <a href="javascript:history.back();">
+    <a href="/">
       &times;
     </a>
   </div>
