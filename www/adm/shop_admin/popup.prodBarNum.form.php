@@ -397,7 +397,7 @@ if($od["od_b_tel"]) {
                 (<?=$options[$k]["ct_option"]?>)
                 <?php } ?>
                 <label style="font-size:12px; margin-left:10px;">
-                  <input type="checkbox" id="update_ct_status_to_delivery" name="update_ct_status_to_delivery" value="0" data-ct-id="<?php echo $carts[$i]["ct_id"]?>" > 출고완료단계로 변경
+                  <input type="checkbox" class="update_ct_status_to_delivery" name="update_ct_status_to_delivery" value="0" data-ct-id="<?php echo $carts[$i]["ct_id"]?>" data-ct-status="<?php echo $carts[$i]["ct_status"]?>" > 출고완료단계로 변경
                 </label>
               </span>
               <?php if ($gubun != '02' && $options[$k]['io_type'] == 0) { ?>
@@ -1072,7 +1072,16 @@ if($od["od_b_tel"]) {
       $('#barcode-selector').fadeIn();
     });
 
-    $('#update_ct_status_to_delivery').change(function() {
+    $('.update_ct_status_to_delivery').change(function() {
+      var status = $(this).data('ct-status');
+
+      if (status === '배송' || status === '완료') {
+        alert('이미 출고완료 상태 입니다.');
+        $(this).val(0);
+        $(this).prop('checked', false);
+        return;
+      }
+      
       $(this).val(0);
       var checked = $(this).is(":checked");
       if (checked) {
@@ -1134,7 +1143,7 @@ if($od["od_b_tel"]) {
       });
 
       var prodsList = {};
-      var flag=false;
+      var flag = false;
       $.each(stoldList, function(key, value) {
         if($("." + value.stoId).val()&&$("." + value.stoId).val().length !=12){ flag =true;}
         prodsList[key] = {
@@ -1146,7 +1155,11 @@ if($od["od_b_tel"]) {
           insertBarCnt++;
         }
       });
-      if(flag){ alert('바코드는 12자리를 입력해주세요.'); loading_barnumsave = false; return false; }
+      if (flag) {
+        alert('바코드는 12자리를 입력해주세요.');
+        loading_barnumsave = false;
+        return false;
+      }
 
       var pass = {};
       $.each($('.chk_pass_barcode'), function(index, value) {
@@ -1189,25 +1202,6 @@ if($od["od_b_tel"]) {
               }
             });
 
-            //출고완료 단계로 설정
-            var ct_ids = [];
-            $('#update_ct_status_to_delivery').each(function() {
-              var checked = $(this).is(":checked");
-              if (checked) {
-                ct_ids.push($(this).data('ct-id'));
-              }
-            });
-            
-            $.ajax({
-              url: "./ajax.cart_status.php",
-              type: "POST",
-              async: false,
-              data: {
-                ct_id: ct_ids,
-                step: '배송',
-              }
-            });
-
             loading_barnumsave = false;
 
             alert("저장이 완료되었습니다.");
@@ -1225,6 +1219,7 @@ if($od["od_b_tel"]) {
           loading_barnumsave = false;
         }
       });
+
       var sendData_barcode = {
         mb_id : "<?=$member["mb_id"]?>",
         od_id : "<?=$_GET["od_id"]?>",
@@ -1267,6 +1262,31 @@ if($od["od_b_tel"]) {
           var data = $xhr.responseJSON;
           alert(data && data.message);
         })
+      }
+
+      // 출고완료 단계로 설정
+      var ct_ids = [];
+      $('.update_ct_status_to_delivery').each(function() {
+        var status = $(this).data('ct-status');
+        var checked = $(this).is(":checked");
+
+        if ((status !== '배송' && status !== '완료')) {
+          if (checked) {
+            ct_ids.push($(this).data('ct-id'));
+          }
+        }
+      });
+
+      if (ct_ids.length > 0) {
+        $.ajax({
+          url: "./ajax.cart_status.php",
+          type: "POST",
+          async: false,
+          data: {
+            ct_id: ct_ids,
+            step: '배송',
+          }
+        });
       }
     }
 
