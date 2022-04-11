@@ -706,12 +706,23 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 #popup_direct_delivery > div h1 {
   padding-top: 15px;
   padding-bottom: 10px;
-  margin-bottom: 35px;
+  margin-bottom: 16px;
 }
 #popup_direct_delivery > div p {
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   font-size: 1.2em;
+}
+#popup_direct_delivery .check_wrapper {
+  font-size: 14px;
+  padding: 0 40px;
+  margin-bottom: 15px;
+}
+#popup_direct_delivery input[type='button'] {
+  cursor: pointer;
+}
+#popup_direct_delivery input[type='checkbox'] {
+  margin-right: 3px;
 }
 #popup_direct_delivery-close {
 	position:absolute;
@@ -731,11 +742,22 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
   <div>
     <h1>직배송 일괄전송</h1>
     <i class="fa fa-close fa-lg" id="popup_direct_delivery-close" onclick="directDeliveryPopup(false)"></i>
+
+    <div class="check_wrapper flex-row justify-space-between">
+      <span>전송 방법 : </span>
+      <label><input type="checkbox" id="direct_delivery_check_email" value="1" checked />이메일,</label>
+      <label><input type="checkbox" id="direct_delivery_check_fax" value="1" checked />팩스,</label>
+      <label><input type="checkbox" id="direct_delivery_check_talk" value="1" />알림톡</label>
+    </div>
+
     <p>이미 발송된 상품 제외 후 전송하시겠습니까?</p>
     <div style="text-align:center;">
       <input type="button" value="전체전송" onclick="sendDirectDelivery(true)" class="btn btn_03">
       &nbsp;&nbsp;
       <input type="button" value="제외전송" onclick="sendDirectDelivery(false)" class="btn btn_02">
+    </div>
+    <div class="flex-row justify-center" style="margin-top: 10px;">
+      <input type="button" value="취소" onclick="directDeliveryPopup(false)" class="btn btn_04">
     </div>
   </div>
 </div>
@@ -1620,19 +1642,22 @@ function sendDirectDelivery(sendAllAgain) {
     data: {
       'ct_ids': od_id,
       'sendAllAgain': sendAllAgain ? 'Y' : 'N',
+      'sendEmail': $('#direct_delivery_check_email').is(':checked') ? 1 : 0,
+      'sendFax': $('#direct_delivery_check_fax').is(':checked') ? 1 : 0,
+      'sendTalk': $('#direct_delivery_check_talk').is(':checked') ? 1 : 0,
     },
-    beforeSend : function() {
-        $('.ajax-loader').css("visibility", "visible");
+    beforeSend: function () {
+      $('.ajax-loader').css("visibility", "visible");
     },
   })
-  .done(function(data) {
+  .done(function (data) {
     console.log(data);
     $('.ajax-loader').css("visibility", "hidden");
-    if(data.result=="success"){
+    if (data.result == "success") {
       alert('전송 완료');
-      window.location.reload(); 
+      window.location.reload();
     } else {
-      alert('전송실패');
+      alert('전송 실패');
     }
   });
 }
