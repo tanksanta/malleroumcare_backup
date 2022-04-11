@@ -732,7 +732,7 @@ if($od["od_b_tel"]) {
           async: false,
         })
         .done(function(result) {
-          // console.log(result.data);
+          //console.log(result.data);
           var target = $('.folding_box.id_' + ct_id + ' li');
           var activeCount = 0;
 
@@ -758,8 +758,8 @@ if($od["od_b_tel"]) {
     }
 
   function checkApprovedBarcodeBulk(ct_id) {
-    $('.barcode_approve_wrapper').hide();
-    $('.barcode_approve_wrapper > div').hide();
+    $('.folding_box.id_' + ct_id + ' .barcode_approve_wrapper').hide();
+    $('.folding_box.id_' + ct_id + ' .barcode_approve_wrapper > div').hide();
 
     var barcodeArr = [];
 
@@ -773,38 +773,39 @@ if($od["od_b_tel"]) {
       }
     })
 
-    $.ajax({
-      url: './ajax.check_approved_barcode_bulk.php',
-      type: 'GET',
-      data: {
-        ct_id: ct_id,
-        barcodeArr: barcodeArr,
-      },
-      // dataType: 'json',
-      async: false,
-    })
-    .done(function(result) {
-      // console.log(result.data);
-      var target = $('.folding_box.id_' + ct_id + ' li');
-      result.data.barcodeArr.forEach(function (_this) {
-        if (_this.status === '승인요청') {
-          target.eq(_this.index).find('.barcode_approve_wrapper').show();
-          target.eq(_this.index).find('.barcode_approve_wrapper .type1').show();
-          target.eq(_this.index).find('.barcode_approve_wrapper .type1 button').attr('data-request_id', _this.request_id)
-        }
+    if (barcodeArr.length > 0) {
+      $.ajax({
+        url: './ajax.check_approved_barcode_bulk.php',
+        type: 'GET',
+        data: {
+          ct_id: ct_id,
+          barcodeArr: barcodeArr,
+        },
+        // dataType: 'json',
+        async: false,
+      })
+      .done(function(result) {
+        //console.log(result.data);
+        var target = $('.folding_box.id_' + ct_id + ' li');
+        result.data.barcodeArr.forEach(function (_this) {
+          if (_this.status === '승인요청') {
+            target.eq(_this.index).find('.barcode_approve_wrapper').show();
+            target.eq(_this.index).find('.barcode_approve_wrapper .type1').show();
+            target.eq(_this.index).find('.barcode_approve_wrapper .type1 button').attr('data-request_id', _this.request_id)
+          }
 
-        if (_this.status === '승인') {
-          target.eq(_this.index).find('.barcode_approve_wrapper').show();
-          target.eq(_this.index).find('.barcode_approve_wrapper .type2').show();
-        }
-      });
-    })
-    .fail(function($xhr) {
-      // msgResult = 'error'
-      var data = $xhr.responseJSON;
-      console.warn(data && data.message);
-      // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
-    })
+          if (_this.status === '승인') {
+            target.eq(_this.index).find('.barcode_approve_wrapper').show();
+            target.eq(_this.index).find('.barcode_approve_wrapper .type2').show();
+          }
+        });
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        console.warn(data && data.message);
+        // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
+      })
+    }
   }
 
   function approveBarcode(_this) {

@@ -58,11 +58,12 @@ for ($i = 0; $i < count($barcodeArr); $i++) {
     WHERE 
       it_id = '{$it_id}' 
       AND io_id = '{$io_id}'
-      AND ct_id = 0
-      AND bc_status = '정상'
+      -- AND ct_id = 0
+      AND (bc_status = '정상' OR bc_status = '관리자승인완료')
       AND bc_barcode = '{$barcodeArr[$i]['barcode']}' 
       AND bc_del_yn = 'N' 
-    ORDER BY bc_id DESC LIMIT 1
+    ORDER BY bc_id DESC 
+    LIMIT 1
   ";
   $bc_row = sql_fetch($sql);
 
