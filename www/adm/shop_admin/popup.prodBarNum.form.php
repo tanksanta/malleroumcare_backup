@@ -129,7 +129,7 @@ if($od["od_b_tel"]) {
     }
     .imfomation_box a .li_box .li_box_line1 .cartProdMemo { width: 100%; font-size: 13px; margin-top: 2px; text-align: left; color: #FF690F; }
     /* display:none; */
-    .imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle; width:100%; padding-top: 20px; display:none; box-sizing: border-box; }
+    .imfomation_box a .li_box .folding_box{position: relative; text-align: center; vertical-align:middle; width:100%; padding-top: 20px; display:none; box-sizing: border-box; }
     .imfomation_box a .li_box .folding_box > span { display: block; width: 100%; }
     .imfomation_box a .li_box .folding_box > span:after { display: block; content: ''; clear: both; }
     .imfomation_box a .li_box .folding_box > .inputbox { width: 100%; position: relative; padding: 0; }
@@ -214,6 +214,25 @@ if($od["od_b_tel"]) {
       font-size: 14px;
       text-align: left;
       padding: 10px 5px;
+    }
+
+    .barcode_block {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      z-index: 10;
+      cursor: default;
+    }
+
+    .barcode_block.active {
+      display: block;
     }
 
     #barcodeHistory {
@@ -473,6 +492,12 @@ if($od["od_b_tel"]) {
             <p class="barcode_warning">
               <span style="color: red">(주의)</span> 재고가 없는 바코드가 있습니다. 관리자 승인 시 정상 등록 됩니다.
             </p>
+
+            <div class="barcode_block <?php echo in_array($options[$k]['ct_status'], ['배송', '완료']) ? 'active' : '' ?>">
+              <div class="flex-row justify-center align-center" style="width: 100%; height: 100%">
+                <p>출고완료 상태에서는 바코드 변경이 불가능합니다.</p>
+              </div>
+            </div>
           </div>
           <?php } ?>
 
