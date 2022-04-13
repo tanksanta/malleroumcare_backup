@@ -248,10 +248,7 @@ $sendData["prods"] = $prodsSendData;
           <?php
           if($member["mb_id"]) {
             if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
-                if(is_benefit_item($it))
-                    echo number_format($it["it_price"]);
-                else
-                    echo number_format($it["it_cust_price"]);
+                echo number_format($it["it_cust_price"]);
             } else {
               if($it['entprice']) {
                 // 사업소별 지정 가격
@@ -500,10 +497,7 @@ $sendData["prods"] = $prodsSendData;
           <?php
           if($member["mb_id"]) {
             if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
-                if(is_benefit_item($it))
-                    echo number_format($it["it_price"]);
-                else
-                    echo number_format($it["it_cust_price"]);
+                echo number_format($it["it_cust_price"]);
             } else {
               if($it['entprice']) {
                 // 사업소별 지정 가격
@@ -685,10 +679,7 @@ $sendData["prods"] = $prodsSendData;
                 <input type="hidden" id="it_price" value="<?php
                   if($member["mb_id"]) {
                     if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
-                        if(is_benefit_item($it))
-                            echo $it["it_price"];
-                        else
-                            echo $it["it_cust_price"];
+                        echo $it["it_cust_price"];
                     } else {
                       if($it['entprice']) {
                         // 사업소별 지정 가격
