@@ -230,7 +230,11 @@ $sendData["prods"] = $prodsSendData;
         <h1 class="item-head-title" style="font-size: 42px;"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
           <?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) { ?>
-              급여가
+                <?php if(is_benefit_item($it)) { ?>
+                판매가
+                <?php } else { ?>
+                급여가
+                <?php } ?>
           <?php } else { ?>
             <?php if($member["mb_level"] == "4") { ?>
               VIP판매가
@@ -478,7 +482,11 @@ $sendData["prods"] = $prodsSendData;
         <h1 class="item-head-title pc"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
           <?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) { ?>
-              급여가
+                <?php if(is_benefit_item($it)) { ?>
+                판매가
+                <?php } else { ?>
+                급여가
+                <?php } ?>
             <?php } else { ?>
             <?php if($member["mb_level"] == "4") { ?>
               VIP판매가
