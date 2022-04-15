@@ -501,7 +501,7 @@ if($od["od_b_tel"]) {
           </div>
           <?php } ?>
 
-          <div class="deliveryInfoWrap <?php echo $_GET['partner'] ? 'hide_area' : ''; ?>">
+          <div class="deliveryInfoWrap">
             <?php if ($options[$k]['ct_combine_ct_id']) { ?>
             <?php
             // 합포 상품 찾기
@@ -519,13 +519,19 @@ if($od["od_b_tel"]) {
             ?>
             <?php } else { ?>
             <input type="hidden" name="ct_id[]" value="<?=$options[$k]["ct_id"]?>">
-            <select name="ct_delivery_company_<?=$options[$k]["ct_id"]?>">
+            <select name="ct_delivery_company_<?=$options[$k]["ct_id"]?>" class="ct_delivery_company">
               <?php foreach($delivery_companys as $data){ ?>
               <option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
               <?php } ?>
             </select>
-            <input type="text" value="<?=$options[$k]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>" placeholder="송장번호 입력">
-            <img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
+              <?php if (!$_GET['partner']) { ?>
+                <input type="text" value="<?=$options[$k]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>" placeholder="송장번호 입력">
+                <img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
+              <?php } ?>
+              <?php if ($_GET['partner']) { ?>
+                <input type="text" value="<?=$options[$k]['ct_delivery_num_name']?>" name="ct_delivery_num_name_<?=$options[$k]['ct_id']?>" class="ct_delivery_num_name" placeholder="담당자명" style="width: 25%">
+                <input type="text" value="<?=$options[$k]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>" class="ct_delivery_num" placeholder="송장번호/연락처 입력">
+              <?php } ?>
             <?php } ?>
           </div>
         </li>
@@ -938,6 +944,14 @@ if($od["od_b_tel"]) {
   }
 
   $(function() {
+    $('.ct_delivery_company').each(function() {
+      changeDeliveryCompany.call(this);
+    });
+
+    $('.ct_delivery_company').change(function() {
+      changeDeliveryCompany.call(this);
+    });
+
     <?php
     $stock_list = [];
     if ($result_again && count($result_again)) {
@@ -1160,12 +1174,26 @@ if($od["od_b_tel"]) {
       loading_barnumsave = true;
 
       /* 210319 배송정보 저장 */
+      // 어드민 배송정보
+      <?php if (!$_GET['partner']) { ?>
       $.ajax({
         url : "./samhwa_orderform_deliveryInfo_update.php",
         type : "POST",
         async : false,
         data : $("#submitForm").serialize()
       });
+      <?php } ?>
+
+      // 파트너 배송정보
+      <?php if ($_GET['partner']) { ?>
+      $.ajax({
+        url : "/shop/ajax.partner_deliveryinfo.php",
+        type : "POST",
+        async : false,
+        data : $("#submitForm").serialize(),
+        dataType: 'json',
+      });
+      <?php } ?>
 
       var prodsList = {};
       var flag = false;
@@ -1513,6 +1541,22 @@ if($od["od_b_tel"]) {
     $('body').css('overflow', 'auto');
     $('#barcodeHistory').hide();
   }
+
+    function changeDeliveryCompany() {
+      var $li = $(this).closest('.deliveryInfoWrap');
+      var $ct_delivery_num_name = $li.find('.ct_delivery_num_name');
+      var $ct_delivery_num = $li.find('.ct_delivery_num');
+      // 설치배송 선택시
+      if($(this).val() === 'install') {
+        $ct_delivery_num_name.show();
+        $ct_delivery_num.addClass('install');
+        $ct_delivery_num.attr('placeholder', '연락처 입력');
+      } else {
+        $ct_delivery_num_name.hide();
+        $ct_delivery_num.removeClass('install');
+        $ct_delivery_num.attr('placeholder', '송장번호 입력');
+      }
+    }
 </script>
 <?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
 </body>
