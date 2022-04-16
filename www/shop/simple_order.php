@@ -710,6 +710,8 @@ function calculate_order_price() {
     var it_id = $(this).find('input[name="it_id[]"]').val();
     var it_price = parseInt ( $(this).find('input[name="it_price[]"]').val() || 0 );
     var io_price = parseInt( $(this).find('select[name="io_id[]"] option:selected').data('price') || 0 );
+    var io_type = $(this).find('input[name="io_type[]"]').val() || '0';
+    var supply_price = parseInt( $(this).find('input[name="io_price[]"]').val() || 0 );
     var ct_qty = parseInt( $(this).find('input[name="ct_qty[]"]').val() || 0 );
     var it_sc_type = parseInt( $(this).find('input[name="it_sc_type[]"]').val() || 0 );
     var it_sc_price = parseInt( $(this).find('input[name="it_sc_price[]"]').val() || 0 );
@@ -743,8 +745,16 @@ function calculate_order_price() {
       }
     }
 
-    var ct_price = ( it_price + io_price ) * ct_qty;
-    $(this).find('.it_price_wr .it_price span').text(number_format(it_price + io_price) + '원');
+    var ct_price;
+
+    if (io_type === '0') {
+      ct_price = ( it_price + io_price ) * ct_qty
+      $(this).find('.it_price_wr .it_price span').text(number_format(it_price + io_price) + '원');
+    } else if (io_type === '1') {
+      ct_price = supply_price * ct_qty
+      $(this).find('.it_price_wr .it_price span').text(number_format(supply_price) + '원');
+    }
+
     $(this).find('.it_price_wr .ct_price').text(number_format(ct_price) + '원');
     $(this).find('input[name="ct_price[]"]').val(ct_price);
     order_price += ct_price;
@@ -938,6 +948,8 @@ function select_item(obj, io_id, ct_qty) {
   .append('<input type="hidden" name="it_sc_price[]" value="' + obj.it_sc_price + '">')
   .append('<input type="hidden" name="it_even_odd[]" value="' + obj.it_even_odd + '">')
   .append('<input type="hidden" name="it_even_odd_price[]" value="' + obj.it_even_odd_price + '">')
+  .append('<input type="hidden" name="io_type[]" value="' + obj.io_type + '">')
+  .append('<input type="hidden" name="io_price[]" value="' + obj.io_price + '">')
   .append('<input type="hidden" name="cp_id[]" value="">')
   .append('<input type="hidden" name="cp_price[]" value="">');
 
@@ -950,22 +962,38 @@ function select_item(obj, io_id, ct_qty) {
   if(obj.it_expected_warehousing_date) {
     $it_name.append('<span style="color: red; font-size:14px;">' + obj.it_expected_warehousing_date + '</span><br>');
   }
-  $it_name.append(obj.it_name + ' (' + obj.gubun + ')');
-  var it_price = parseInt(obj.it_price);
-  var ct_price = it_price;
-  if (obj.options.length) {
-    var option_html = "<select name=\"io_id[]\">";
-    for(var i = 0; i < obj.options.length; i++) {
-      if (i === 0) {
-        ct_price += parseInt(obj.options[i]['io_price']);
+  if (obj.io_type === '0') {
+    $it_name.append(obj.it_name + ' (' + obj.gubun + ')');
+  } else if (obj.io_type === '1') {
+    $it_name.append('추가옵션 - ' + obj.io_id.split('')[1]);
+  }
+  name
+
+  var it_price;
+  var ct_price;
+
+  if (obj.io_type === '0') {
+    it_price = parseInt(obj.it_price);
+    ct_price = it_price;
+
+    if (obj.options.length) {
+      var option_html = "<select name=\"io_id[]\">";
+      for(var i = 0; i < obj.options.length; i++) {
+        if (i === 0) {
+          ct_price += parseInt(obj.options[i]['io_price']);
+        }
+        option_html += "<option data\-price=\"" + obj.options[i]['io_price'] + "\" value=\"" + obj.options[i]['io_id'] + "\">" + obj.options[i]['io_id'].replace(//gi, " > ") + "</option>";
       }
-      option_html += "<option data\-price=\"" + obj.options[i]['io_price'] + "\" value=\"" + obj.options[i]['io_id'] + "\">" + obj.options[i]['io_id'].replace(//gi, " > ") + "</option>";
+      option_html += "</select>";
+      $it_name.append(option_html);
+    } else {
+      var option_html = "<input type=\"hidden\" name=\"io_id[]\" value=\"\">";
+      $it_name.append(option_html);
     }
-    option_html += "</select>";
-    $it_name.append(option_html);
-  } else {
-    var option_html = "<input type=\"hidden\" name=\"io_id[]\" value=\"\">";
-    $it_name.append(option_html);
+  } else if (obj.io_type === '1') {
+    $it_name.append("<input type='hidden' name='io_id[]' value='" + obj.io_id + "'>");
+    it_price = parseInt(obj.io_price);
+    ct_price = it_price;
   }
 
   // 상품태그
@@ -1004,14 +1032,16 @@ function select_item(obj, io_id, ct_qty) {
   var $it_price = $('<p class="it_price">');
   $it_price.append('판매가 : ' + number_format(it_price));
 
-  if(item_sale_obj[obj.it_id].it_sale_cnt && item_sale_obj[obj.it_id].it_sale_cnt.length) {
-    for(var i = 0; i <= item_sale_obj[obj.it_id].it_sale_cnt.length; i++) {
-      var it_sale_cnt = parseInt(item_sale_obj[obj.it_id].it_sale_cnt[i]);
-      if(it_sale_cnt) {
-        var it_sale_price = mb_level === 4 ? item_sale_obj[obj.it_id].it_sale_percent_great[i] : item_sale_obj[obj.it_id].it_sale_percent[i];
-        $it_price.append('<br>└' + it_sale_cnt + '개  이상 구매 시 ' + number_format(it_sale_price) + '원');
+  if (obj.io_type === '0') {
+    if (item_sale_obj[obj.it_id].it_sale_cnt && item_sale_obj[obj.it_id].it_sale_cnt.length) {
+      for (var i = 0; i <= item_sale_obj[obj.it_id].it_sale_cnt.length; i++) {
+        var it_sale_cnt = parseInt(item_sale_obj[obj.it_id].it_sale_cnt[i]);
+        if (it_sale_cnt) {
+          var it_sale_price = mb_level === 4 ? item_sale_obj[obj.it_id].it_sale_percent_great[i] : item_sale_obj[obj.it_id].it_sale_percent[i];
+          $it_price.append('<br>└' + it_sale_cnt + '개  이상 구매 시 ' + number_format(it_sale_price) + '원');
+        }
       }
-    } 
+    }
   }
 
   var $prod_memo = $('<div class="flex">');
@@ -1041,7 +1071,7 @@ function select_item(obj, io_id, ct_qty) {
       </div>\
   </div>\
   ');
-  if(parseInt(obj.it_delivery_cnt)) {
+  if(parseInt(obj.it_delivery_cnt) && obj.io_type === '0') {
     $qty_wr.append('\
       <div class="it_qty_desc">\
         본 상품은 ' + obj.it_delivery_cnt + '개 주문 시 한 박스로 포장됩니다.\
@@ -1450,6 +1480,7 @@ $(function() {
     $od_id = get_search_string($_GET['od_id']);
     $sql = "
       SELECT
+        ct_id,
         i.it_id,
         i.it_name,
         i.it_model,
@@ -1465,6 +1496,8 @@ $(function() {
         it_even_odd,
         it_even_odd_price,
         io_id,
+        io_type,
+        io_price,
         it_sale_cnt,
         it_sale_cnt_02,
         it_sale_cnt_03,
@@ -1502,6 +1535,8 @@ $(function() {
         ct_select = '1' and
         od_id = '$od_id' and
         mb_id = '{$member['mb_id']}'
+      ORDER BY 
+        io_type ASC
     ";
     $result = sql_query($sql);
     if($result) {

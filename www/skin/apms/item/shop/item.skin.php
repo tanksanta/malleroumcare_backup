@@ -88,6 +88,13 @@ if($it["optionList"]) {
 }
 
 $sendData["prods"] = $prodsSendData;
+
+$main_ca = '';
+$it_list_url = '';
+if ($it['ca_id']) {
+  $main_ca = substr($it['ca_id'], 0, 2);
+  $it_list_url = "/shop/list.php?ca_id={$main_ca}";
+}
 ?>
 
 
@@ -1135,7 +1142,8 @@ $sendData["prods"] = $prodsSendData;
           $(".cart-ok-close").click(function(e) {
             // $(this).closest('.cart-ok').hide("slide", { direction: "down" }, 500);
             hide_cart_ok($(this).closest('.cart-ok'));
-            window.location.reload();
+            // window.location.reload();
+            window.location = '<?= $it_list_url ?>';
             e.preventDefault();
           })
         });
