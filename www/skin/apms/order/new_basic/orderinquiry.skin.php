@@ -204,14 +204,16 @@ $(function(){
         </div>
         <div class="list-select">
           <input type="hidden" name="ct_status" value="<?=$_GET["ct_status"]?>">
+          <input type="hidden" name="od_stock" value="<?=$_GET["od_stock"]?>">
+          <input type="hidden" name="ct_release" value="<?=$_GET["ct_release"]?>">
           <div class="select">
-            <input type="hidden" name="od_stock" value="<?=$_GET["od_stock"]?>">
             <p><?=$search_od_stock?></p>
             <ul>
               <li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="">주문+재고</a></li>
-            <?php for($i = 0; $i < count($order_stocks); $i++){ ?>
-              <li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="<?=$order_stocks[$i]["val"]?>"><?=$order_stocks[$i]["name"]?></a></li>
-            <?php } ?>
+              <?php for ($i = 0; $i < count($order_stocks); $i++) { ?>
+                <li><a href="javscript:;" class="hiddenChange" data-target="od_stock" data-val="<?= $order_stocks[$i]["val"] ?>"><?= $order_stocks[$i]["name"] ?></a></li>
+              <?php } ?>
+              <li><a href="javscript:;" class="hiddenChange" data-target="ct_release" data-val="true">출고</a></li>
             </ul>
           </div>
           <?php /*
@@ -400,7 +402,10 @@ $(function(){
           <a href="<?php echo $row['od_href']; ?>"><?php echo $row["od_id"]; ?></a>
         </span>
         <span><?php echo display_price($row["od_total_price"]); ?></span>
-        <span><?php echo date('n월.j일 (H:i)', strtotime($row['od_time'])); ?></span>
+        <span><?php echo '주문 : ' . date('n월 j일 (H:i)', strtotime($row['od_time'])); ?></span>
+        <?php if ($row['ct_ex_date']) { ?>
+          <span><?php echo '출고 : ' . date('n월 j일 (H:i)', strtotime($row['ct_ex_date'])); ?></span>
+        <?php } ?>
         <?php if ($row['od_b_name']) { ?>
         <span>배송 : <?php echo $row['od_b_name']; ?></span>
         <?php } ?>
@@ -687,6 +692,10 @@ $(function() {
     var val = $(this).attr("data-val");
     
     $(this).closest("form").find("input[name='" + target + "']").val(val);
+
+    if (target === 'od_stock') {
+      $(this).closest("form").find('input[name="ct_release"]').val('');
+    }
   });
 
   $('.delivery_ok').click(function(e) {

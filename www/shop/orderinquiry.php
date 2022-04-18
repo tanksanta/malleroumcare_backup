@@ -78,6 +78,12 @@ if($_GET["od_stock"]){
 	}
 }
 
+if ($_GET["ct_release"] == 'true') {
+  $order_by = 'order by c.ct_ex_date desc, o.od_id asc';
+} else {
+  $order_by = 'order by o.od_id desc';
+}
+
 // 검색
 if ($sel_field && $search) {
 	if ($sel_field === 'all') {
@@ -191,7 +197,7 @@ while($row = sql_fetch_array($count_result)) {
 
 
 $limit = " limit $from_record, $rows ";
-$sql = " select o.*, i.it_model, i.it_name
+$sql = " select o.*, i.it_model, i.it_name, c.ct_id, c.ct_status, c.ct_ex_date
 		   from {$g5['g5_shop_order_table']} as o 
   		  LEFT JOIN g5_shop_cart as c ON o.od_id = c.od_id
 		  LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
@@ -199,7 +205,7 @@ $sql = " select o.*, i.it_model, i.it_name
 		  AND o.od_del_yn = 'N'
 		  {$sql_search}
 		  GROUP BY o.od_id
-		  order by o.od_id desc
+		  {$order_by}
 		  $limit ";
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++) {
@@ -266,7 +272,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	$list[$i]['od_total_price'] = $sum['price'] - $sum['discount'] + $row['od_send_cost'] + $row['od_send_cost2'];
 }
 
-$search_url = $_SERVER['SCRIPT_NAME'].'?'.$qstr."&amp;od_stock={$_GET["od_stock"]}&amp;od_status={$_GET["od_status"]}&amp;s_date={$_GET["s_date"]}&amp;e_date={$_GET["e_date"]}&amp;sel_field={$sel_field}&amp;search={$search}";
+$search_url = $_SERVER['SCRIPT_NAME'].'?'.$qstr."&amp;od_stock={$_GET["od_stock"]}&ct_release={$_GET["ct_release"]}&amp;od_status={$_GET["od_status"]}&amp;s_date={$_GET["s_date"]}&amp;e_date={$_GET["e_date"]}&amp;sel_field={$sel_field}&amp;search={$search}";
 $write_pages = G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'];
 $list_page = "{$search_url}&amp;ct_status={$_GET["ct_status"]}&amp;page=";
 
