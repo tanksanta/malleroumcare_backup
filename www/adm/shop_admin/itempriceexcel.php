@@ -13,7 +13,7 @@ $sql = "
 if ($is_admin == 'super') {
   $sql = "
     SELECT * FROM g5_member
-    WHERE mb_level = 9
+    WHERE mb_entId != '' AND mb_type in ('default', 'partner')
     ORDER BY mb_id ASC
   ";
 }
