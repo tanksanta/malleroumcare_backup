@@ -916,6 +916,10 @@ function select_items(obj, items) {
 }
 
 function select_item(obj, io_id, ct_qty) {
+  if (!obj.io_type) {
+    obj.io_type = '0';
+  }
+
   // 묶음 할인 저장
   item_sale_obj[obj.it_id] = {
     it_sale_cnt: [
@@ -967,7 +971,6 @@ function select_item(obj, io_id, ct_qty) {
   } else if (obj.io_type === '1') {
     $it_name.append('추가옵션 - ' + obj.io_id.split('')[1]);
   }
-  name
 
   var it_price;
   var ct_price;
