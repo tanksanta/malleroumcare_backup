@@ -70,7 +70,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
       <input type="hidden" name="w" value="<?php if($dc) echo 'u'; ?>">
       <input type="hidden" name="dc_id" value="<?php if($dc) echo $dc['uuid']; ?>">
-      <input type="hidden" name="penRecTypeCd" id="penRecTypeCd" value="<?php if($dc) echo $dc['penRecTypeCd']; ?>">
+      <input type="hidden" name="penRecTypeCd" id="penRecTypeCd" value="<?php if(!$dc) echo '02'; if($dc) echo $dc['penRecTypeCd']; ?>">
       <input type="hidden" name="penRecTypeTxt" id="penRecTypeTxt" value="<?php if($dc) echo $dc['penRecTypeTxt']; ?>">
       <div class="panel panel-default">
         <div class="panel-body">
@@ -171,6 +171,21 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                   <option value="2" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '2'); ?>>친족</option>
                   <option value="3" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '3'); ?>>기타</option>
               </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="penJumin" class="col-md-2 control-label">
+              <strong>확인 방법</strong>
+            </label>
+            <div class="col-md-5">
+              <div class="radio_wr">
+                <label class="radio-inline">
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if(!$dc || $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 방문
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if($dc['penRecTypeCd'] == '01') echo 'checked' ?>> 유선
+                </label>
               </div>
             </div>
           </div>
@@ -529,6 +544,31 @@ $(document).on("click", "a.open_input_barcode", function(){
   $('#barcode_popup_form input[name="option_name"]').val(option_name);
   $('#barcode_popup_form input[name="barcodes"]').val(barcodes.join('|'));
   $('#barcode_popup_form').submit();
+});
+
+$(document).on('change, click', '.penRecTypeCd_radio', function() {
+  var val = $(this).val();
+
+  $('#penRecTypeCd').val(val).change();
+});
+
+$(document).on('click', '.btn_del_eform', function(e) {
+  e.preventDefault();
+
+  if(!confirm('정말 삭제하시겠습니까?'))
+    return;
+
+  $.post('ajax.simple_eform.php', {
+    w: 'd',
+    dc_id: $(this).data('id')
+  }, 'json')
+  .done(function() {
+    window.location.reload();
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
 });
 </script>
 
@@ -1000,7 +1040,7 @@ function update_pen(obj) {
     $('#penExpiEdDtm').val('').data('orig', '').change();
     $('#penJumin').val('').data('orig', '').change();
     $('#penExpiEdDtm').val('').data('orig', '').change();
-    $('#penRecTypeCd').val('');
+    $('#penRecTypeCd').val('02').data('orig', '02').change();
     $('#penRecTypeTxt').val('');
   } else {
     $('#penId').val(obj.penId).data('orig', obj.penId).change();
@@ -1019,7 +1059,7 @@ function update_pen(obj) {
     $('#penExpiStDtm').val(obj.penExpiStDtm).data('orig', obj.penExpiStDtm).change();
     $('#penExpiEdDtm').val(obj.penExpiEdDtm).data('orig', obj.penExpiEdDtm).change();
     $('#penJumin').val(obj.penJumin).data('orig', obj.penJumin).change();
-    if(obj.penRecTypeCd) $('#penRecTypeCd').val(obj.penRecTypeCd);
+    $('#penRecTypeCd').val(obj.penRecTypeCd).data('orig', obj.penRecTypeCd).change();
     if(obj.penRecTypeTxt) $('#penRecTypeTxt').val(obj.penRecTypeTxt);
   }
 }
