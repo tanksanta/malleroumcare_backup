@@ -624,7 +624,7 @@ if($od["od_b_tel"]) {
           $(this).closest('li').find('.barcode_add').show();
 
       if(keyupTimer) clearTimeout(keyupTimer);
-      keyupTimer = setTimeout(notallLengthCheck, 200);
+      keyupTimer = setTimeout(notallLengthCheck, 300);
     });
 
     $('.notall').focus(function(){

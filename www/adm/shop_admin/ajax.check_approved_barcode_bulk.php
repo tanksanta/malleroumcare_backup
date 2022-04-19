@@ -33,7 +33,7 @@ for ($i = 0; $i < count($barcodeArr); $i++) {
   $row = sql_fetch($sql);
 
   if ($row) {
-    $data['barcodeArr'][$i] = array(
+    $data['barcodeArr'][] = array(
       'request_id' => $row['id'],
       'index' => $barcodeArr[$i]['index'],
       'status' => $row['status'],
