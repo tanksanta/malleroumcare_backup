@@ -86,7 +86,7 @@ $sheet->setCellValue('AE7', $od['mb_giup_btel']);
 
 $sheet->setCellValue('L8', $od['od_b_name']);
 $sheet->setCellValue('AE9', $od['od_b_hp'] ?: $od['od_b_tel']);
-$sheet->setCellValue('L9', sprintf("(%s%s)", $od['od_b_zip1'], $od['od_b_zip2']).' '.print_address($od['od_b_addr1'], $od['od_b_addr2'], $od['od_b_addr3'], $od['od_b_addr_jibeon']));
+$sheet->setCellValue('L10', sprintf("(%s%s)", $od['od_b_zip1'], $od['od_b_zip2']).' '.print_address($od['od_b_addr1'], $od['od_b_addr2'], $od['od_b_addr3'], $od['od_b_addr_jibeon']));
 
 $total_qty = 0;
 $data_index = 0;
