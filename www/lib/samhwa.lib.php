@@ -135,7 +135,7 @@ function partner_daegi() {
     if ( $member['mb_type'] == 'partner' ) {
         $partner_daegi = true;
         if ( $member['mb_partner_auth'] == 1 ) {
-            if ( strtotime(G5_TIME_YMDHIS) < strtotime($member['mb_partner_date']) ) {
+            if ( strtotime(G5_TIME_YMDHIS) <= strtotime($member['mb_partner_date'] . " 23:59:59") ) {
                 $partner_daegi = false;
             } else {
                 /* 자동연장 삭제 (2022-04-20)
