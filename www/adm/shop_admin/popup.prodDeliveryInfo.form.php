@@ -251,18 +251,28 @@ $partners = get_partner_members();
               <?php } ?>
               </select>
             </td>
-            <td id="td_delivery_num_<?=$options[$k]["ct_id"]?>" class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
+            <td id="td_delivery_num_<?=$options[$k]["ct_id"]?>" class="td_delivery_num combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>" data-ct_id="<?=$options[$k]["ct_id"]?>" data-box_type="<?=$options[$k]["ct_delivery_box_type"]?>">
               <input type="text" value="<?=$delivery_num_arr[0]?>" class="frm_input" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>[]">
               <?php
                 if ($options[$k]['ct_delivery_company'] == 'lotteglogis') {
                   $box_cnt = $options[$k]["ct_delivery_cnt"];
-                  for ($m=1; $m<$box_cnt; $m++) {
+                  for ($m = 1; $m < $box_cnt; $m++) {
                     $delivery_num = '';
                     if ($delivery_num_arr[$m])
                       $delivery_num = $delivery_num_arr[$m];
                     $input_name = "ct_delivery_num_" . $options[$k]["ct_id"] . "[]";
                     echo '<input type="text" value="' . $delivery_num . '" class="frm_input" name="' . $input_name . '">';
                   }
+              ?>
+                <select class="box_size_option" name="box_size_option" style="width: 100%">
+                  <option value="A" <?php echo $options[$k]["ct_delivery_box_type"] == 'A' ? 'selected' : ''  ?> >A(~100cm ~10kg)</option>
+                  <option value="B" <?php echo $options[$k]["ct_delivery_box_type"] == 'B' ? 'selected' : ''  ?> >B(~120cm ~15kg)</option>
+                  <option value="C" <?php echo $options[$k]["ct_delivery_box_type"] == 'C' ? 'selected' : '' ?> >C(~140cm ~20kg)</option>
+                  <option value="D" <?php echo $options[$k]["ct_delivery_box_type"] == 'D' ? 'selected' : '' ?> >D(~160cm ~25kg)</option>
+                  <option value="E" <?php echo $options[$k]["ct_delivery_box_type"] == 'E' ? 'selected' : '' ?> >E(~180cm ~28kg)</option>
+                  <option value="F" <?php echo $options[$k]["ct_delivery_box_type"] == 'F' ? 'selected' : '' ?> >F(~200cm ~30kg)</option>
+                </select>
+              <?php
                 }
               ?>
             </td>
@@ -417,21 +427,38 @@ $partners = get_partner_members();
     // 택배사 변경 
     $("select[id='select_delivery_company']").change(function() {
       var ct_id = $(this).attr('data-ct-id');
-      if (this.value == 'lotteglogis') {
-        var box_cnt = $(`input[name=ct_delivery_cnt_${ct_id}`).val();
+      if (this.value === 'lotteglogis') {
+        var box_cnt = $('input[name=ct_delivery_cnt_' + ct_id + ']').val();
         var html = '';
         html += '<input type="text" value="" class="frm_input" name="">';
 
-        for (var i=1; i<box_cnt; i++) {
-          $(`#td_delivery_num_${ct_id}`).append(html);
+        for (var i = 1; i < box_cnt; i++) {
+          $('#td_delivery_num_' + ct_id).append(html);
+          //$('#td_delivery_num_' + ct_id + ' .box_size_option').before(html);
+        }
+
+        var boxSizeSelectHtml = '';
+        boxSizeSelectHtml += '<select class="box_size_option" name="box_size_option" style="width: 100%">';
+        boxSizeSelectHtml += '  <option value="A">A(~100cm ~10kg)</option>';
+        boxSizeSelectHtml += '  <option value="B">B(~120cm ~15kg)</option>';
+        boxSizeSelectHtml += '  <option value="C">C(~140cm ~20kg)</option>';
+        boxSizeSelectHtml += '  <option value="D">D(~160cm ~25kg)</option>';
+        boxSizeSelectHtml += '  <option value="E">E(~180cm ~28kg)</option>';
+        boxSizeSelectHtml += '  <option value="F">F(~200cm ~30kg)</option>';
+        boxSizeSelectHtml += '</select>';
+
+        $('#td_delivery_num_' + ct_id).append(boxSizeSelectHtml);
+
+        var boxType = $(this).closest('tr').find('.td_delivery_num').data('box_type');
+        if (boxType) {
+          $(this).closest('tr').find('.box_size_option').val(boxType);
         }
 
         $('.lotte_api_send').show();
-      }
-      else {
-        var children = $(`#td_delivery_num_${ct_id}`).children().length;
+      } else {
+        var children = $('#td_delivery_num_' + ct_id).children().length;
         if (children > 1) {
-          $(`#td_delivery_num_${ct_id}`).children().not(':first').remove();
+          $('#td_delivery_num_' + ct_id).children().not(':first').remove();
         }
         $('.lotte_api_send').hide();
       }
@@ -465,12 +492,18 @@ $partners = get_partner_members();
     $(document).on("click", ".lotte_api_send", function(e){
       e.preventDefault();
       var ct_id = $(this).attr('data-ct-id');
+      var box_size = $(this).closest('tr').find('.box_size_option').val();
+
+      console.log(box_size);
+      return;
+
       if (!$(this).prop('disabled')) {
         $.ajax({
           method: 'POST',
           url: './ajax.order.delivery.lotte.php',
           data: {
             ct_id: ct_id,
+            box_size: box_size,
           }
         }).done(function (data) {
           // return false;
@@ -485,7 +518,7 @@ $partners = get_partner_members();
     $("#btn_send_direct_delivery").click(function() {
       // console.log($(this).data('ct-id'));
       var ct_id = $(this).data('ct-id');
-      var partner_id = $(`select[name=ct_direct_delivery_partner_${ct_id}] option:selected`).val();
+      var partner_id = $('select[name=ct_direct_delivery_partner_' + ct_id + '] option:selected').val();
       if (!partner_id) {
         alert('파트너를 선택하세요');
         return false;

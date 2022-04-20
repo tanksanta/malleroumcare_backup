@@ -25,7 +25,7 @@ function edi_info($cart) {
     $edi['jobCustCd']       = $jobCustCd; //거래처코드(고정)
     $edi['ustRtgSctCd']		= "01"; //(01:출고 02:반품)
     $edi['ordSct']	    	= "1"; //오더구분 (1:일반 2:교환 3:AS)
-    $edi['fareSctCd']		= "01"; //운임구분(01:현불,02:착불,03:신용)
+    $edi['fareSctCd']		= "03"; //운임구분(01:현불,02:착불,03:신용)
     $take_no                = $cart['od_id'] . '_' . $cart['ct_id'];
     $edi['ordNo']	    	= $take_no; //주문번호
 
@@ -139,7 +139,7 @@ LIMIT 200
 
 $cart_result = sql_query($sql);
 $carts = array();
-while ( $row2 = sql_fetch_array($cart_result) ) {
+while ($row2 = sql_fetch_array($cart_result)) {
     $carts[] = $row2;
 }
 
@@ -149,7 +149,7 @@ while ( $row2 = sql_fetch_array($cart_result) ) {
 // echo $json;
 // return false;
 $snd_list = array();
-foreach($carts as $cart) {
+foreach ($carts as $cart) {
 
     // 추가 금액
     // $extraAmt				= 0;
@@ -169,12 +169,29 @@ foreach($carts as $cart) {
     // 박스 갯수만큼 송장 생성
     for ($i = 0; $i < $cart['ct_delivery_cnt']; $i++) {
         $edi = edi_info($cart);
+        if ($box_size) {
+          $edi['boxTypCd'] = $box_size;
+        }
 
-        $invoice_sql = "SELECT invoice FROM lotteglogis_invoice_num WHERE use_yn = '0' ORDER BY invoice ASC LIMIT 1;";
+        $invoice_sql = "
+            SELECT invoice
+            FROM lotteglogis_invoice_num 
+            WHERE use_yn = '0' 
+            ORDER BY invoice ASC 
+            LIMIT 1;
+        ";
         $invoice_result = sql_fetch($invoice_sql);
         $invoice = $invoice_result['invoice'];
     
-        $invoice_sql = "UPDATE lotteglogis_invoice_num SET use_yn = '1', use_dt = now() WHERE invoice = '{$invoice}' LIMIT 1;";
+        $invoice_sql = "
+            UPDATE lotteglogis_invoice_num 
+            SET 
+                use_yn = '1', 
+                use_dt = now(),
+                boxTypCd = {$edi['boxTypCd']}
+            WHERE invoice = '{$invoice}' 
+            LIMIT 1;
+        ";
         sql_query($invoice_sql);
     
         $mod = (int)$invoice % 7;
@@ -215,6 +232,9 @@ foreach($carts as $cart) {
         $combine_edi['bdpkSctCd'] = 'Y'; // 합포장 여부
         $combine_edi['bdpkKey'] = $snd_list[$snd_last_idx]['invNo']; // 합포장 KEY
         $combine_edi['bdpkRpnSeq'] = $j; // 합포장 순번
+        if ($box_size) {
+          $edi['boxTypCd'] = $box_size;
+        }
         $j++;
 
         array_push($combine_list, $combine_edi);
@@ -267,7 +287,7 @@ if (is_array($result) && array_key_exists('rtn_list', $result)) {
         if ($rtn['rtnCd'] == 'S') {
             $return_success++;    
             $update_invoice_query = " I.use_dt = now(), I.result = 'S', I.ordNo = '{$rtn['ordNo']}' ";
-            $update_cart_query = " C.ct_edi_date = now(), C.ct_edi_result = '1' ";
+            $update_cart_query = " C.ct_edi_date = now(), C.ct_edi_result = '1', C.ct_delivery_box_type = '{$box_size}' ";
             if ($rtn['invNo']) {
                 $update_cart_query .= " , C.ct_delivery_num = IF(C.ct_delivery_num='', '{$rtn['invNo']}', CONCAT(C.ct_delivery_num, '|{$rtn['invNo']}')) ";
             }
@@ -277,7 +297,7 @@ if (is_array($result) && array_key_exists('rtn_list', $result)) {
             $update_invoice_query = " I.use_dt = now(), I.result = 'E', I.ordNo = '{$rtn['ordNo']}', I.rtnMsg = '{$rtn['rtnMsg']}' ";
             $update_cart_query = "C.ct_edi_date = now(), C.ct_edi_msg = '{$rtn['rtnMsg']}' ";
         }
-        $invNo = substr($rtn['invNo'], 0, strlen($string)-1);
+        $invNo = substr($rtn['invNo'], 0, strlen($rtn['invNo'])-1);
         $sql = "UPDATE lotteglogis_invoice_num as I
             SET {$update_invoice_query}
             WHERE I.invoice = '{$invNo}'
