@@ -79,6 +79,7 @@ if($_GET["od_stock"]){
 }
 
 if ($_GET["ct_release"] == 'true') {
+  $search_od_stock = "출고";
   $order_by = 'order by c.ct_ex_date desc, o.od_id asc';
 } else {
   $order_by = 'order by o.od_id desc';

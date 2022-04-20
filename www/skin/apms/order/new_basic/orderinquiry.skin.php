@@ -695,6 +695,8 @@ $(function() {
 
     if (target === 'od_stock') {
       $(this).closest("form").find('input[name="ct_release"]').val('');
+    } else {
+      $(this).closest("form").find('input[name="od_stock"]').val('');
     }
   });
 
