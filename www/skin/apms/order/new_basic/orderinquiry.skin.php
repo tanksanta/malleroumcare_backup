@@ -403,8 +403,8 @@ $(function(){
         </span>
         <span><?php echo display_price($row["od_total_price"]); ?></span>
         <span><?php echo '주문 : ' . date('n월 j일 (H:i)', strtotime($row['od_time'])); ?></span>
-        <?php if ($row['ct_ex_date']) { ?>
-          <span><?php echo '출고 : ' . date('n월 j일 (H:i)', strtotime($row['ct_ex_date'])); ?></span>
+        <?php if ($row['ct_direct_delivery_date']) { ?>
+          <span><?php echo '출고예정 : ' . date('n월 j일 (H:i)', strtotime($row['ct_direct_delivery_date'])); ?></span>
         <?php } ?>
         <?php if ($row['od_b_name']) { ?>
         <span>배송 : <?php echo $row['od_b_name']; ?></span>

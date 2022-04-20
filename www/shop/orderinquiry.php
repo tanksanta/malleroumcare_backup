@@ -197,7 +197,7 @@ while($row = sql_fetch_array($count_result)) {
 
 
 $limit = " limit $from_record, $rows ";
-$sql = " select o.*, i.it_model, i.it_name, c.ct_id, c.ct_status, c.ct_ex_date
+$sql = " select o.*, i.it_model, i.it_name, c.ct_id, c.ct_status, c.ct_ex_date, c.ct_direct_delivery_date
 		   from {$g5['g5_shop_order_table']} as o 
   		  LEFT JOIN g5_shop_cart as c ON o.od_id = c.od_id
 		  LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
