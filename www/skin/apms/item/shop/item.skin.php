@@ -276,8 +276,8 @@ if ($it['ca_id']) {
         <p class="price-won">원</p>
         <?php
         $sale_cnt_txt = [];
-        if($_COOKIE["viewType"] != "basic" && !$it['entprice']) {
-          if(($is_admin == "super" || $member['mb_level'] == "3" || $member['mb_level'] == "9")||!$it['it_sale_percent_great']) {
+        if ($_COOKIE["viewType"] != "basic" && !$it['entprice'] && $member['mb_type'] != 'partner') {
+          if (($is_admin == "super" || $member['mb_level'] == "3" || $member['mb_level'] == "9") || !$it['it_sale_percent_great']) {
             if($it["it_sale_cnt"]) {
               $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
             }
@@ -527,7 +527,7 @@ if ($it['ca_id']) {
         <?php
         $sale_cnt_txt = [];
         $sale_percent_input = "";
-        if($_COOKIE["viewType"] != "basic" && !$it['entprice']) {
+        if ($_COOKIE["viewType"] != "basic" && !$it['entprice'] && $member['mb_type'] != 'partner') {
           if(($is_admin == "super" || $member['mb_level'] == "3" || $member['mb_level'] == "9")||!$it['it_sale_percent_great']) {
             if($it["it_sale_cnt"]) {
               $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
