@@ -137,8 +137,8 @@ function partner_daegi() {
         if ( $member['mb_partner_auth'] == 1 ) {
             if ( strtotime(G5_TIME_YMDHIS) < strtotime($member['mb_partner_date']) ) {
                 $partner_daegi = false;
-            }else{
-
+            } else {
+                /* 자동연장 삭제 (2022-04-20)
                 // 자동연장인지 확인하기
                 if ( $member['mb_partner_date_auto'] == 1 ) {
                     $sql = "SELECT count(*) as cnt, SUM(od_cart_price + od_send_cost) as price FROM g5_shop_order WHERE mb_id = '{$member['mb_id']}'";
@@ -152,6 +152,8 @@ function partner_daegi() {
                         }
                     }
                 }
+                */
+                $partner_daegi = true;
             }
         }
     }
