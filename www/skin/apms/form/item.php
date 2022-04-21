@@ -214,9 +214,9 @@ $warehouse_list = get_warehouses();
           </td>
         </tr>
         <tr>
-          <th scope="row"><label for="pt_tag">상품태그</label></th>
+          <th scope="row"><label for="pt_tag">검색태그</label></th>
           <td>
-            <?php echo help("등록할 상품태그를 콤마(,)로 구분해서 입력합니다."); ?>
+            <?php echo help("등록할 검색태그를 콤마(,)로 구분해서 입력합니다."); ?>
             <input type="text" name="pt_tag" value="<?php echo get_text($it['pt_tag']); ?>" id="pt_tag" class="frm_input sl">
           </td>
         </tr>
