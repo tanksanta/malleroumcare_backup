@@ -797,7 +797,7 @@ function get_member($mb_id, $fields='*')
 
     if(!$mb_id) return;
 
-    return sql_fetch(" select $fields from {$g5['member_table']} where mb_id = TRIM('$mb_id') ");
+    return sql_fetch(" select $fields from {$g5['member_table']} where 1=1 and mb_id = TRIM('$mb_id') ");
 }
 
 // 날짜, 조회수의 경우 높은 순서대로 보여져야 하므로 $flag 를 추가
