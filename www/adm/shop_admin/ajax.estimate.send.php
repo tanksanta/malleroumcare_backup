@@ -210,7 +210,7 @@ if ( $hp_chk == 'true' ) {
         $url = $new_url;
     }
 
-    $sms_contents = '[삼화] {이름}님 견적서가 도착했습니다. '. $url;
+    $sms_contents = '[이로움] {이름}님 견적서가 도착했습니다. '. $url;
     $sms_contents = str_replace("{이름}", $od['od_name'], $sms_contents);
     $sms_contents = str_replace("{회원아이디}", $od['mb_id'], $sms_contents);
     $sms_contents = str_replace("{회사명}", $default['de_admin_company_name'], $sms_contents);
