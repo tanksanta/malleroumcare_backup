@@ -138,6 +138,8 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
             $prodOptions = [];
             $io_value = '';
             if ($io_id) {
+                $io_row = sql_fetch("select * from g5_shop_item_option where it_id = '{$it_id}' and io_id = '{$io_id}'");
+
                 $it_option_subjects = explode(',', $it['it_option_subject']);
                 $io_ids = explode(chr(30), $io_id);
                 for($g = 0; $g< count($io_ids); $g++) {
@@ -178,7 +180,8 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
                     $price_sql
                     ct_discount = '0',
                     ct_qty = '$qty',
-                    prodMemo = '$memo'
+                    prodMemo = '$memo',
+                    io_thezone = '{$io_row['io_thezone']}'
                 WHERE
                     od_id = '$od_id' and
                     ct_id = '$ct_id'
