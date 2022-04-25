@@ -803,7 +803,7 @@ if($is_main && !$is_member) {
               <img src="<?=THEMA_URL?>/assets/img/mainCallIcon.png">
               <div class="call">
                 <p>주문안내 : <span>02-830-1312</span></p>
-                <p>시스템안내 : <span>02-830-1301</span></p>
+                <p>시스템안내 : <span><?php echo $default['de_admin_company_tel']; ?></span></p>
               </div>
             </div>
             <ul>
@@ -817,7 +817,7 @@ if($is_main && !$is_member) {
               </li>
               <li>
                 <div>· Fax</div>
-                <div>02-861-9084</div>
+                <div><?php echo $default['de_admin_company_fax']; ?></div>
               </li>
             </ul>
           </div>

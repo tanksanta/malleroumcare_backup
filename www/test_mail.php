@@ -6,7 +6,7 @@ $mail_contents = '
 <div style="padding-bottom:30px;border-bottom:1px solid #cfcfcf;">
     <div style="color:#333333;position:relative;width:70%;float:left;">
         <p style="font-size:42px;padding:0;margin:0;"><b style="font-size:52px;">' . $it['it_outsourcing_company'] . '  ' . $it['it_outsourcing_manager'] . '님</b><br/>주문이 접수되었습니다.</p>
-        <p>삼화에스앤디를 이용해주셔서 감사합니다.</p>
+        <p>이로움을 이용해주셔서 감사합니다.</p>
     </div>
     <div style="width:30%;float:right;" >
         <img src="'. G5_IMG_URL. '/logo_big.png" style="width:100%;" />
@@ -108,7 +108,7 @@ echo $mail_contents;
 <div style="background-color:#f9f9f9;width:100%;max-width:800px;padding:30px;">
         <div style="color:#333333;padding-bottom:30px;border-bottom:1px solid #cfcfcf;position:relative;">
             <p style="font-size:42px;padding:0;margin:0;"><b style="font-size:52px;">최고관리자님</b><br/>견적서가 도착하였습니다.</p>
-            <p>삼화에스앤디를 이용해주셔서 감사합니다.</p>
+            <p>이로움을 이용해주셔서 감사합니다.</p>
             <img src="<?php echo G5_IMG_URL; ?>/logo_big.png" style="width:120px;position:absolute;top:0;right:0;" />
         </div>
         <div style="margin-top:50px;border-bottom:1px solid #cfcfcf;padding-bottom:20px;">
