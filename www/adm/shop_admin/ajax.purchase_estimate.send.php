@@ -189,7 +189,7 @@ if ( $email_chk == 'true' ) {
     ';
 
     include_once(G5_LIB_PATH.'/mailer.lib.php');
-    mailer($config['cf_admin_email_name'], $config['cf_admin_email'], trim($u_email), '[삼화] ' . $od['od_name'] . '님 구매발주서', $mail_contents, 1);
+    mailer($config['cf_admin_email_name'], $config['cf_admin_email'], trim($u_email), '[이로움] ' . $od['od_name'] . '님 구매발주서', $mail_contents, 1);
 
 }
 
