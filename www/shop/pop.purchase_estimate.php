@@ -507,7 +507,7 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 <tr>
     <div style="padding:10px;">
         <?php if ( $w == 'u') { ?>
-            <td><textarea name="content" style="border:0px; font-size:12px; width:600px;min-height:150px;"><?php echo $est['est_content'] ? $est['est_content'] : get_samhwa_content('estimate_info') ?></textarea></td>
+            <td><textarea name="content" style="border:1px solid #ddd; font-size:12px; width:700px;min-height:150px; padding: 7px"><?php echo $est['est_content'] ? $est['est_content'] : '' ?></textarea></td>
         <?php }else{ ?>
             <td style="">
                 <?php echo $est['est_content'] ? nl2br($est['est_content']) : get_samhwa_content('estimate_info'); ?>
