@@ -151,10 +151,9 @@ if ( $email_chk == 'true' ) {
         <div style="padding-bottom:30px;border-bottom:1px solid #cfcfcf;">
             <div style="color:#333333;position:relative;width:70%;float:left;">
                 <p style="font-size:42px;padding:0;margin:0;"><b style="font-size:52px;">' . $od['od_name'] . '님</b><br/>구매발주서가 도착하였습니다.</p>
-                <p>삼화에스앤디를 이용해주셔서 감사합니다.</p>
+                <p>이로움을 이용해주셔서 감사합니다.</p>
             </div>
             <div style="width:30%;float:right;" >
-                <img src="'. G5_IMG_URL. '/logo_big.png" style="width:100%;" />
             </div>
             <div style="clear:both;"></div>
         </div>
