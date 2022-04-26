@@ -365,6 +365,28 @@ if($od["od_b_tel"]) {
     #barcodeHistory .historyContent li .title {
       font-size: 17px;
     }
+
+    #order_log {
+      padding: 20px;
+    }
+
+    #order_log .title {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    #order_log .logs {
+      font-size: 14px;
+    }
+
+    #order_log .logs .row {
+      margin-bottom: 7px;
+      display: inline-block;
+    }
+
+    #order_log .logs .log_datetime {
+      margin-right: 10px;
+    }
   </style>
 </head>
 
@@ -559,6 +581,31 @@ if($od["od_b_tel"]) {
     </ul>
   </form>
 
+  <div id="order_log">
+    <p class="title">기록</p>
+    <?php
+    $sql = "SELECT * FROM g5_shop_order_admin_log WHERE od_id = '{$od_id}' AND ol_content NOT LIKE '이카운트 엑셀%' ORDER BY ol_no DESC";
+    $result = sql_query($sql);
+
+    $logs = array();
+    while($row = sql_fetch_array($result)) {
+      $logs[] = $row;
+    }
+
+    ?>
+    <div class="logs">
+      <?php
+      foreach($logs as $log) {
+        $log_mb = get_member($log['mb_id']);
+        echo '<span class="row"><span class="log_datetime">'.$log['ol_datetime'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) ' . $log['ol_content'] . '</span><br/>';
+      }
+      if (!count($logs)) {
+        echo '기록이 없습니다.';
+      }
+      ?>
+    </div>
+  </div>
+
   <!-- 팝업 -->
   <div id="popup" class="hide">
     <div class="content">
@@ -640,7 +687,7 @@ if($od["od_b_tel"]) {
           $(this).closest('li').find('.barcode_add').show();
 
       if(keyupTimer) clearTimeout(keyupTimer);
-      keyupTimer = setTimeout(notallLengthCheck, 200);
+      keyupTimer = setTimeout(notallLengthCheck, 300);
     });
 
     $('.notall').focus(function(){

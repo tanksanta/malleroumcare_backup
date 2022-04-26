@@ -4,6 +4,8 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu], "r");
 
+add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
+
 $g5['title'] = '상품재고관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
@@ -135,15 +137,21 @@ if ($option) {
       <p class="title"><?php echo $full_it_name ?></p>
       <span style="font-size: 13px">재고수량 : <?= $row['sum_ws_qty'] ?> / 바코드 : <?= $row['sum_barcode_qty'] ?>, 마지막 확인 일시 : <?= $last_checked_at ?></span>
     </div>
-    <form class="search_wrap" method="get">
-      <input type="hidden" name="sfl" value="bc_barcode">
-      <input type="hidden" name="it_id" value="<?php echo $it_id ?>">
-      <input type="hidden" name="io_id" value="<?php echo $io_id ?>">
-      <input type="hidden" name="type" value="<?php echo $type ?>">
+    <div class="header-row flex-row justify-space-between align-center">
+      <form class="search_wrap" method="get">
+        <input type="hidden" name="sfl" value="bc_barcode">
+        <input type="hidden" name="it_id" value="<?php echo $it_id ?>">
+        <input type="hidden" name="io_id" value="<?php echo $io_id ?>">
+        <input type="hidden" name="type" value="<?php echo $type ?>">
 
-      <input type="text" name="stx" class="search_text" placeholder="바코드 입력" value="<?php echo $stx; ?>">
-      <button type="submit" class="search_submit_btn">검색</button>
-    </form>
+        <input type="text" name="stx" class="search_text" placeholder="바코드 입력" value="<?php echo $stx; ?>">
+        <button type="submit" class="search_submit_btn">검색</button>
+      </form>
+      <div>
+        <button class="excel_down_btn" onclick="downloadExcel()">엑셀 다운로드</button>
+      </div>
+    </div>
+
   </div>
 
   <div class="body">
@@ -309,5 +317,17 @@ include_once (G5_ADMIN_PATH.'/admin.tail.php');
   function closeBarcodeHistory() {
     // $('body').css('overflow', 'auto');
     $('#barcodeHistory').hide();
+  }
+
+  function downloadExcel() {
+    var href = './itemstock.barcode.excel.download.php';
+
+    $.fileDownload(href, {
+      httpMethod: "POST",
+      data: {
+        it_id: '<?=$it_id?>',
+        io_id: '<?=$io_id?>',
+      }
+    })
   }
 </script>

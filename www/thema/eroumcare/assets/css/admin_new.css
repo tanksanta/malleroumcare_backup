@@ -6,8 +6,17 @@
   font-size: 19px;
   font-weight: bold;
 }
-#item_stock_barcode_list .header .search_wrap {
+#item_stock_barcode_list .header .header-row {
   margin-top: 20px;
+}
+#item_stock_barcode_list .header .header-row .excel_down_btn {
+  height: 30px;
+  border-radius: 2px;
+  font-size: 13px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+  padding: 0 15px;
 }
 #item_stock_barcode_list .header .search_wrap .search_text {
   width: 250px;
