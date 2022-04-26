@@ -9,9 +9,21 @@
       font-weight: bold;
     }
 
-    .search_wrap {
+    .header-row {
       margin-top: 20px;
 
+      .excel_down_btn {
+        height: 30px;
+        border-radius: 2px;
+        font-size: 13px;
+        background-color: #333;
+        color: #fff;
+        cursor: pointer;
+        padding: 0 15px;
+      }
+    }
+
+    .search_wrap {
       .search_text {
         width: 250px;
         height: 30px;
