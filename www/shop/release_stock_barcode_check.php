@@ -204,6 +204,16 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
       cursor: pointer;
     }
 
+    #popupBody #searchForm .add_barcode_btn {
+      width: 100%;
+      padding: 15px 0;
+      font-size: 14px;
+      margin-top: 20px;
+      border: 1px solid #95b3d7;
+      background: #dce6f2;
+      color: #95b3d7;
+    }
+
     #popupBody #content {
       padding: 20px;
     }
@@ -408,6 +418,165 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
     @-webkit-keyframes web-barcode-loading-spin {
       to { -webkit-transform: rotate(360deg); }
     }
+
+    #add_barcode_pop {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    #add_barcode_pop .dim {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    #add_barcode_pop .pop {
+      position: absolute;
+      width: 80%;
+      height: 60%;
+      left: 10%;
+      top: 20%;
+      background: #fff;
+      padding: 20px 20px 70px;
+    }
+
+    #add_barcode_pop .pop .head p {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    #add_barcode_pop .pop .head span {
+      font-size: 30px;
+      position: relative;
+      top: -11px;
+      cursor: pointer;
+    }
+
+    #add_barcode_pop .pop .barcode_qty button {
+      width: 28px;
+      font-size: 16px;
+      font-weight: bold;
+      border: 1px solid #bfbfbf;
+      background: #f2f2f2;
+      color: #000;
+    }
+
+    #add_barcode_pop .pop .barcode_qty input {
+      width: 40px;
+      height: 25px;
+      font-size: 14px;
+      border-radius: 0;
+      border: 1px solid #bfbfbf;
+      border-right: 0;
+      border-left: 0;
+      text-align: center;
+    }
+
+    #add_barcode_pop .pop .content {
+      width: 100%;
+      height: calc(100% - 42px);
+    }
+
+    #add_barcode_pop .pop .content p {
+      font-size: 17px;
+    }
+
+    #add_barcode_pop .barcode_input_list {
+      width: 100%;
+      height: calc(100% - 25px);
+      overflow: scroll;
+    }
+
+    #add_barcode_pop .barcode_input_list li {
+      width: 100%;
+      position: relative;
+    }
+
+    #add_barcode_pop .barcode_input_list li .frm_input {
+      width: 100%;
+      height: 40px;
+      box-sizing: border-box;
+      padding-left: 15px;
+      font-size: 15px;
+      border: 1px solid #E4E4E4;
+      margin-bottom: 5px;
+    }
+
+    #add_barcode_pop .barcode_input_list li .frm_input.active {
+      border-color: #FF5858;
+    }
+
+    #add_barcode_pop .barcode_input_list li img.barcode_add {
+      width: 28px;
+      height: 28px;
+      position: absolute;
+      top: 7px;
+      right: 38px;
+      display: none;
+    }
+
+    #add_barcode_pop .barcode_input_list li img.barcode_icon {
+      position: absolute;
+      right: 76px;
+      top: 11px;
+      z-index: 2;
+      font-size: 19px;
+      opacity: 0;
+    }
+
+    #add_barcode_pop .barcode_input_list li img.barcode_icon.active {
+      opacity: 1;
+    }
+
+    #add_barcode_pop .barcode_input_list li .overlap {
+      position: absolute;
+      right: 71px;
+      top: 9px;
+      z-index: 2;
+      font-size: 14px;
+      color: #DC3333;
+      opacity: 0;
+      font-weight: bold;
+    }
+
+    #add_barcode_pop .barcode_input_list li .overlap.active {
+      opacity: 1;
+    }
+
+    #add_barcode_pop .barcode_input_list li .btn_pda {
+      position: absolute;
+      width: 30px;
+      right: 5px;
+      top: 5px;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    #add_barcode_pop .footer {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+    }
+
+    #add_barcode_pop .footer .btn_wrap {
+      width: 100%;
+      height: 100%;
+    }
+
+    #add_barcode_pop .footer .btn_wrap .save {
+      background: #000;
+      color: #fff;
+    }
   </style>
 
   <link rel="stylesheet" type="text/css" href="<?php echo G5_URL; ?>/css/jquery.toast.min.css" />
@@ -468,6 +637,10 @@ if ($option) {
         <option value="barcodeDesc">바코드 내림차순 정렬</option>
         <option value="barcodeAsc">바코드 오름차순 정렬</option>
       </select>
+    </div>
+
+    <div>
+      <button class="add_barcode_btn" onclick="showPopBarcodeList(true)">바코드 재고 추가</button>
     </div>
   </div>
 
@@ -559,6 +732,54 @@ if ($option) {
   </div>
 </div>
 
+<div id="add_barcode_pop">
+  <div class="dim"></div>
+  <div class="pop">
+    <div class="head">
+      <div class="flex-row justify-space-between">
+        <p>바코드 재고 추가</p>
+        <span onclick="showPopBarcodeList(false)">&times;</span>
+      </div>
+    </div>
+    <div class="content">
+      <div class="flex-row barcode_qty" style="margin-bottom: 15px">
+        <p style="margin-right: 20px">수량</p>
+        <button onclick="setQtyNumber(this, 'minus')">-</button><input type="number" class="qty_input" name="qty_input" value="1" readonly><button onclick="setQtyNumber(this, 'plus')">+</button>
+      </div>
+      <div style="height: calc(100% - 23px);">
+        <p style="margin-bottom: 5px">바코드</p>
+        <ul class="barcode_input_list">
+          <li>
+            <input type="text" maxlength="12" class="notall frm_input required" placeholder="바코드를 입력하세요.">
+            <img src="/img/bacod_add_img.png" class="barcode_add" onclick="addAutoBarcode(this)">
+            <img class="barcode_icon type1" src="/img/barcode_icon_1.png" alt="등록가능">
+            <span class="overlap">중복</span>
+            <img class="barcode_icon type2" src="/img/barcode_icon_3.png" alt="등록불가 (이미존재)">
+            <img src="/img/btn_pda.png" class="btn_pda" data-type="pda" onclick="openWebBarcode(this)">
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="flex-row btn_wrap">
+        <button style="width: 60%" class="save" onclick="savePopBarcodeList()">저장</button>
+        <button style="width: 40%" class="cancel" onclick="showPopBarcodeList(false)">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: none" id="mockup">
+    <li>
+      <input type="text" maxlength="12" class="notall frm_input required" placeholder="바코드를 입력하세요.">
+      <img src="/img/bacod_add_img.png" class="barcode_add" onclick="addAutoBarcode(this)">
+      <img class="barcode_icon type1" src="/img/barcode_icon_1.png" alt="등록가능">
+      <span class="overlap">중복</span>
+      <img class="barcode_icon type5" src="/img/barcode_icon_3.png" alt="등록불가 (이미존재)">
+      <img src="/img/btn_pda.png" class="btn_pda" data-type="pda" onclick="openWebBarcode(this)">
+    </li>
+  </div>
+</div>
+
 <?php
 if (!$member['mb_id']) {
   alert('접근이 불가합니다.');
@@ -570,9 +791,34 @@ if (!$member['mb_id']) {
   var LOADING = false;
   var IS_OPEN_WEB_BARCODE = false;
   var BARCODE_INPUT_FOCUS_INTERVAL;
+  var POP_BARCODE_INPUT_TARGET = null;
+  var KEYUP_TIMER;
 
   $(function() {
     renderData(true);
+
+    $(document).on('keyup, keydown', '.notall', function () {
+      var last_index = $(this).closest('ul').find('li').last().index();
+      var this_index = $(this).closest('li').index();
+
+      $(this).closest('ul').find('.barcode_add').hide();
+      if (last_index !== this_index && $(this).val().length === 12) {
+        $(this).closest('li').find('.barcode_add').show();
+      }
+
+      if (KEYUP_TIMER) clearTimeout(KEYUP_TIMER);
+      KEYUP_TIMER = setTimeout(notallLengthCheck, 300);
+    });
+
+    $(document).on('focus', '.notall', function () {
+      var last_index = $(this).closest('ul').find('li').last().index();
+      var this_index = $(this).closest('li').index();
+
+      $(this).closest('ul').find('.barcode_add').hide();
+      if (last_index !== this_index && $(this).val().length === 12) {
+        $(this).closest('li').find('.barcode_add').show();
+      }
+    });
 
     $(document).on('click', '.listContent .more', function () {
       $('.listContent .more').not(this).find('.select').hide();
@@ -722,7 +968,11 @@ if (!$member['mb_id']) {
         return;
       }
 
-      receiveBarcode();
+      if (POP_BARCODE_INPUT_TARGET) {
+        receiveBarcodeOnPop();
+      } else {
+        receiveBarcode();
+      }
     });
 
     $(document).on('touchstart, click', '#web-barcode-close', function (e) {
@@ -1142,14 +1392,6 @@ if (!$member['mb_id']) {
         return;
       }
 
-      if (isDuplicateBarcode(barcode)) {
-        $.toast('\'' + barcode + '\'는 중복된 바코드입니다. <br/> 다시스캔해주세요.', {
-          duration: 3000,
-          type: 'danger'
-        });
-        return;
-      }
-
       if (isNaN(barcode)) {
         $.toast('\'' + barcode + '\'는 숫자 이외의 문자가 포함되어있습니다. <br/> 다시스캔해주세요.', {
           duration: 3000,
@@ -1260,7 +1502,11 @@ if (!$member['mb_id']) {
     $('#web-barcode-input').click();
   }
 
-  function openWebBarcode() {
+  function openWebBarcode(target) {
+    if (target) {
+      POP_BARCODE_INPUT_TARGET = $(target).closest('li').find('.frm_input');
+    }
+
     $('#web-barcode').css('display', 'flex');
     $('#web-barcode-input').focus();
     IS_OPEN_WEB_BARCODE = true;
@@ -1270,6 +1516,8 @@ if (!$member['mb_id']) {
 
   function closeWebBarcode() {
     IS_OPEN_WEB_BARCODE = false;
+    POP_BARCODE_INPUT_TARGET = null;
+
     clearInterval(BARCODE_INPUT_FOCUS_INTERVAL)
     $('#web-barcode').hide();
     $('#web-barcode-input').val('');
@@ -1302,14 +1550,6 @@ if (!$member['mb_id']) {
           return;
         }
 
-        if (isDuplicateBarcode(barcode)) {
-          $.toast('\'' + barcode + '\'는 중복된 바코드입니다. <br/> 다시스캔해주세요.', {
-            duration: 3000,
-            type: 'danger'
-          });
-          return;
-        }
-
         if (isNaN(barcode)) {
           $.toast('\'' + barcode + '\'는 숫자 이외의 문자가 포함되어있습니다. <br/> 다시스캔해주세요.', {
             duration: 3000,
@@ -1324,6 +1564,8 @@ if (!$member['mb_id']) {
           duration: 2000,
           type: 'info'
         });
+
+        closeWebBarcode();
       })
       .fail(function ($xhr) {
         var data = $xhr.responseJSON;
@@ -1336,9 +1578,181 @@ if (!$member['mb_id']) {
     }, 100);
   }
 
+  function receiveBarcodeOnPop(tempBarcode) {
+    setTimeout(function() {
+      var scannedBarcode = tempBarcode || $('#web-barcode-input').val();
+      $('#web-barcode-input').val('');
+
+      if (!scannedBarcode) return;
+      if (String(scannedBarcode).length < 3) {
+        alert('키보드 사용은 불가능합니다.');
+        return;
+      }
+
+      // 바코드 정상 여부 체크
+      $.post('/shop/ajax.check_barcode.php', {
+        it_id: '<?php echo $it_id ?>',
+        barcode: scannedBarcode,
+      }, 'json')
+      .done(function (data) {
+        var barcode = String(data.data.converted_barcode);
+
+        if (barcode.length !== 12) {
+          $.toast('\'' + barcode + '\'는 잘못된 바코드입니다. <br/> (12글자 아님)', {
+            duration: 3000,
+            type: 'danger'
+          });
+          return;
+        }
+
+        if (isNaN(barcode)) {
+          $.toast('\'' + barcode + '\'는 숫자 이외의 문자가 포함되어있습니다. <br/> 다시스캔해주세요.', {
+            duration: 3000,
+            type: 'danger'
+          });
+          return;
+        }
+
+        $(POP_BARCODE_INPUT_TARGET).val(barcode);
+
+        $.toast('\'' + barcode + '\'가 등록되었습니다.', {
+          duration: 2000,
+          type: 'info'
+        });
+
+        closeWebBarcode();
+      })
+      .fail(function ($xhr) {
+        var data = $xhr.responseJSON;
+        $.toast(data && data.message, {
+          duration: 3000,
+          type: 'danger'
+        });
+      });
+
+    }, 100);
+  }
 
   function goBack() {
     location.href = '/shop/release_stock_barcode_view.php?it_id=<?php echo $it_id ?>&io_id=<?php echo $io_id ?>';
   }
+
+  function showPopBarcodeList(flag) {
+    if (flag) {
+      $('#add_barcode_pop').show();
+    } else {
+      $('#add_barcode_pop').hide();
+      clearPopBarcodeList();
+    }
+  }
+
+  function setQtyNumber(x, param) {
+    var targetNode = $(x).parent().find('.qty_input');
+    var currentVal = Number(targetNode.val());
+    var maxVal = 99999;
+    var minVal = 1;
+
+    if (param === 'plus') {
+      if (currentVal < maxVal) {
+        targetNode.val(++currentVal);
+        $('#add_barcode_pop .barcode_input_list').append($('#mockup').html());
+      }
+    } else if (param === 'minus') {
+      if (currentVal > minVal) {
+        targetNode.val(--currentVal);
+        $('#add_barcode_pop .barcode_input_list').find('li').last().remove();
+      }
+    } else { // 숫자 입력
+      targetNode.val(param);
+    }
+  }
+
+  function addAutoBarcode(_this) {
+    var ul = $(_this).closest('ul');
+    var li_num = $(_this).closest('li').index();
+    var li_val = $(_this).closest('li').find('.notall').val();
+    var li_last = $(ul).find('li').last().index();
+    var p_num = 0;
+
+    if (li_val.length !== 12) {
+      alert('바코드 12자리를 입력해주세요.');
+      return false;
+    }
+
+    for (var i = li_num + 1; i <= li_last; i++) {
+      p_num++;
+      $(ul).find('li').eq(i).find('.notall').val((parseInt(li_val) + p_num));
+    }
+
+    notallLengthCheck();
+  }
+
+  function notallLengthCheck() {
+    var result = true;
+
+    $('#add_barcode_pop .barcode_input_list img.barcode_icon.type1').removeClass('active');
+    $('#add_barcode_pop .barcode_input_list .overlap').removeClass('active');
+
+    var $item = $('#add_barcode_pop .barcode_input_list').find('.notall');
+    $item.removeClass('active');
+
+    var dataTable = {};
+    $item.each(function (i, val) {
+      var $cur = $(this);
+      var barcode = $cur.val();
+      var maxlength = parseInt($cur.attr('maxlength'));
+      var length = barcode.length;
+      if (length < maxlength && length) {
+        $cur.addClass('active');
+        result = false;
+      }
+      if (length === maxlength && /^-?\d+$/.test(barcode)) { // 숫자만 입력되었는지 체크
+        $cur.parent().find('img.barcode_icon.type1').addClass('active');
+
+        if (!dataTable[barcode])
+          dataTable[barcode] = [];
+        dataTable[barcode].push(i);
+      }
+    });
+
+    var keys = Object.keys(dataTable);
+    for (var i = 0; i < keys.length; i++) {
+      var val = dataTable[keys[i]];
+      if (val.length > 1) {
+        for (var j = 0; j < val.length; j++) {
+          var idx = val[j];
+          $($item[idx]).parent().find('img.barcode_icon.type1').removeClass('active');
+          $($item[idx]).parent().find('.overlap').addClass('active');
+          result = false;
+        }
+      }
+    }
+
+    return result;
+  }
+
+  function savePopBarcodeList() {
+    var $item = $('#add_barcode_pop .barcode_input_list').find('.notall');
+
+    if (notallLengthCheck()) {
+      $item.each(function() {
+        if ($(this).val().length === 12) {
+          upsertBarcode($(this).val());
+        }
+      });
+
+      showPopBarcodeList(false);
+    } else {
+      alert('바코드 길이가 맞지 않거나, 중복 바코드가 존재합니다.');
+    }
+  }
+
+  function clearPopBarcodeList() {
+    $('.qty_input').val('1');
+    $('.barcode_input_list').empty();
+    $('#add_barcode_pop .barcode_input_list').append($('#mockup').html());
+  }
 </script>
+
+<?php //include_once( G5_PATH . '/shop/open_barcode.php'); ?>
 </body>
