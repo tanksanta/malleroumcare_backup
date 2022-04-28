@@ -50,7 +50,7 @@ if ($stock_type == 'malignity') {
 
 // 재고와 바코드 상이한 제품
 if ($stock_type == 'notMatchBarcodeQty') {
-  $sql_search .= " and (sum_ws_qty != sum_barcode_qty) and sum_ws_qty != 0";
+  $sql_search .= " and (sum_ws_qty != sum_checked_barcode_qty) and sum_ws_qty != 0";
 }
 
 if ($sel_field == "")  $sel_field = "it_name";
@@ -91,7 +91,7 @@ from
         AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 1.5), 0)
     END AS safe_max_stock_qty, 
     (SELECT IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) FROM warehouse_stock WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' {$use_warehouse_where_sql}) AS sum_ws_qty,
-    (SELECT count(*) FROM g5_cart_barcode WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty,
+    (SELECT count(*) FROM g5_cart_barcode WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N' AND ct_id = '0' AND checked_at IS NOT NULL) AS sum_checked_barcode_qty,
     ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
         WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
           ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
@@ -189,11 +189,14 @@ $sql = "
       WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' {$use_warehouse_where_sql}) AS sum_ws_qty,
       (SELECT count(*)
         FROM g5_cart_barcode
-        WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty
+        WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_checked_barcode_qty,
+      (SELECT count(*)
+        FROM g5_cart_barcode
+        WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N' AND ct_id = '0' AND checked_at IS NOT NULL) AS sum_checked_barcode_qty
     FROM
       g5_shop_item AS a
       LEFT JOIN (SELECT * from g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)) AS T
-  WHERE sum_ws_qty != sum_barcode_qty 
+  WHERE sum_ws_qty != sum_checked_barcode_qty 
 ";
 
 $count_warn4 = sql_fetch($sql)['cnt'];
@@ -416,7 +419,7 @@ $count_warn4 = sql_fetch($sql)['cnt'];
 
         $bg = 'bg'.($i%2);
         $bg_warn = '';
-        if ($row['sum_ws_qty'] != $row['sum_barcode_qty']) {
+        if ($row['sum_ws_qty'] != $row['sum_checked_barcode_qty']) {
           $bg_warn = 'warn';
         }
     ?>
@@ -499,7 +502,7 @@ $count_warn4 = sql_fetch($sql)['cnt'];
         <td class="td_num"><?php echo number_format($row['sum_ws_qty']) ?></td>
         <td class="td_num">
           <a href="./itemstockbarcodelist.php?it_id=<?=$row['it_id']?>&io_id=<?=$row['io_id']?>&type=hold" style="text-decoration: underline !important;">
-            <?php echo number_format($row['sum_barcode_qty']) ?>
+            <?php echo number_format($row['sum_checked_barcode_qty']) ?>
           </a>
         </td>
         <td class="td_num"><?php echo number_format($row['sum_ct_qty_3month']) ?></td>

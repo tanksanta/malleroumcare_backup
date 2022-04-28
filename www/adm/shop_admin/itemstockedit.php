@@ -12,7 +12,8 @@ $it_id = get_search_string($_GET['it_id']);
 $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
 $it = sql_fetch($sql);
 
-$option_sql = "SELECT *
+$option_sql = "
+  SELECT *
   FROM
     {$g5['g5_shop_item_option_table']}
   WHERE
@@ -44,6 +45,19 @@ if(!$it['it_id']) alert('존재하지 않는 상품입니다.');
 $warehouse_list = get_warehouses();
 $count_item_option = count_item_option($it_id);
 $use_warehouse_where_sql = get_use_warehouse_where_sql();
+$use_warehouse_list = [];
+$stock_add_placeholder_flag = false;
+
+// 재고 확인 추가
+if ($count_item_option == 0) {
+  $stock_info_row = get_stock_item_info($it_id, '');
+  $diff_ws_and_barcode = $stock_info_row['sum_checked_barcode_qty'] - $stock_info_row['sum_ws_qty'];
+
+  if ($diff_ws_and_barcode > 0) {
+    $stock_add_placeholder_flag = true;
+  }
+}
+
 ?>
 
 <style>
@@ -173,7 +187,7 @@ $use_warehouse_where_sql = get_use_warehouse_where_sql();
         <label style="margin-right: 10px"><input type="radio" name="stock_abs" value="plus" checked/>입고(+)</label>
         <label><input type="radio" name="stock_abs" value="minus"/>출고(-)</label>
         <span style="margin: 0 15px">/</span>
-        <input type="number" name="stock_qty" style="width: 70px;" min="1">
+        <input type="number" name="stock_qty" style="width: 70px;" min="1" value="<?php if ($stock_add_placeholder_flag) echo $diff_ws_and_barcode ?>">
         <span>개</span>
       </div>
     </li>
@@ -240,7 +254,7 @@ $use_warehouse_where_sql = get_use_warehouse_where_sql();
 
     <li>
       <div class="title">내용</div>
-      <input type="text" name="ws_memo" style="width: 225px;">
+      <input type="text" name="ws_memo" style="width: 225px;" value="<?php if ($stock_add_placeholder_flag) echo '재고 확인 추가' ?>">
     </li>
   </ul>
 
@@ -260,7 +274,7 @@ $use_warehouse_where_sql = get_use_warehouse_where_sql();
       var value = $(this).val();
 
       if (value) {
-        var returnValue = getItemStockByOption(IT_ID, value.split('|')[1]);
+        var returnValue = getItemStockByOption(IT_ID, value.split('|')[0]);
         var selectHtml = '';
 
         // 보유재고
@@ -277,6 +291,19 @@ $use_warehouse_where_sql = get_use_warehouse_where_sql();
         }
         $('select[name="wh_name_from"]').html(selectHtml);
         $('select[name="wh_name_from"]').trigger('change');
+
+        if (returnValue.stock_info) {
+          var sum_checked_barcode_qty = Number(returnValue.stock_info.sum_checked_barcode_qty);
+          var sum_ws_qty = Number(returnValue.stock_info.sum_ws_qty);
+
+          if (sum_checked_barcode_qty > sum_ws_qty) {
+            $('input[name="stock_qty"]').val(sum_checked_barcode_qty - sum_ws_qty);
+            $('input[name="ws_memo"]').val('재고 확인 추가');
+          } else {
+            $('input[name="stock_qty"]').val('');
+            $('input[name="ws_memo"]').val('');
+          }
+        }
       } else {
         // 보유재고
         $('#stock_explain').text('상품 옵션을 선택해주세요.');
@@ -429,20 +456,21 @@ $use_warehouse_where_sql = get_use_warehouse_where_sql();
     }
   }
 
-  function getItemStockByOption(it_id, ws_option) {
+  function getItemStockByOption(it_id, io_id) {
     var returnValue = [];
     $.ajax({
       url: 'ajax.itemstock.by.option.php',
       type: 'GET',
       data: {
         it_id: it_id,
-        ws_option: ws_option,
+        io_id: io_id,
       },
       dataType: 'json',
       async: false,
     })
     .done(function(result) {
       var data = result.data;
+      console.log(data);
       returnValue = data;
     })
     .fail(function($xhr) {
