@@ -50,6 +50,7 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
+$use_warehouse_where_sql = get_use_warehouse_where_sql();
 $sql = "
   SELECT
    T.*
@@ -58,7 +59,7 @@ $sql = "
     (SELECT 
       IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) 
     FROM warehouse_stock 
-    WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
+    WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' {$use_warehouse_where_sql}) AS sum_ws_qty,
     (SELECT count(*)
       FROM g5_cart_barcode
       WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty,

@@ -7,13 +7,14 @@ auth_check($auth[$sub_menu], 'w');
 if(!$it_id || !$ws_option)
   json_response(400, '잘못된 요청입니다.');
 
+$use_warehouse_where_sql = get_use_warehouse_where_sql();
 $sql = "
   SELECT
 	  wh_name, ws_option, (SUM(ws_qty) - SUM(ws_scheduled_qty)) AS ws_qty
   FROM
     warehouse_stock ws
   WHERE
-    it_id = '{$it_id}' AND ws_option = '{$ws_option}' AND ws_del_yn = 'N'
+    it_id = '{$it_id}' AND ws_option = '{$ws_option}' AND ws_del_yn = 'N' {$use_warehouse_where_sql}
   GROUP BY wh_name, ws_option
 ";
 

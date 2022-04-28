@@ -2496,6 +2496,7 @@ function get_stock_item_info($it_id, $io_id) {
     $where .= " AND io_id = '{$io_id}' ";
   }
 
+  $use_warehouse_where_sql = get_use_warehouse_where_sql();
   $sql = "
     SELECT
      T.*
@@ -2504,7 +2505,7 @@ function get_stock_item_info($it_id, $io_id) {
       (SELECT 
         IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) 
       FROM warehouse_stock 
-      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
+      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' AND {$use_warehouse_where_sql}) AS sum_ws_qty,
       (SELECT count(*)
         FROM g5_cart_barcode
         WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty,
@@ -2524,4 +2525,34 @@ function get_stock_item_info($it_id, $io_id) {
   ";
 
   return sql_fetch($sql);
+}
+
+function get_use_warehouse_where_sql($use_and = true) {
+  $sql = "SELECT * FROM warehouse WHERE wh_use_yn = 'Y'";
+  $result = sql_query($sql);
+  $wh_name_list = [];
+  $where = ' ';
+
+  if ($use_and) {
+    $where = ' AND';
+  }
+
+  while ($row = sql_fetch_array($result)) {
+    $wh_name_list[] = $row['wh_name'];
+  }
+
+  if (count($wh_name_list) > 0) {
+    $where .= " wh_name in (";
+
+    for ($i = 0; $i < count($wh_name_list); $i++) {
+      $where .= "'{$wh_name_list[$i]}'";
+      if ($i + 1 != count($wh_name_list)) {
+        $where .= ", ";
+      }
+    }
+
+    $where .= ") ";
+  }
+
+  return $where;
 }

@@ -83,13 +83,14 @@ if ($edit_type == 'stock') {
     $group = ', ws_option';
   }
 
+  $use_warehouse_where_sql = get_use_warehouse_where_sql();
   $sql = "
     SELECT
       wh_name, ws_option, (sum(ws_qty) - sum(ws_scheduled_qty)) AS ws_qty
     FROM
       warehouse_stock ws
     WHERE
-      it_id = '{$it_id}' AND ws_del_yn = 'N' AND wh_name = '{$wh_name_from}' {$where}
+      it_id = '{$it_id}' AND ws_del_yn = 'N' AND wh_name = '{$wh_name_from}' {$use_warehouse_where_sql} {$where}
     GROUP BY wh_name {$group}
   ";
 

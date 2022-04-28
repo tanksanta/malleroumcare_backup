@@ -303,13 +303,14 @@ $sql = "
 ";
 $item_count = sql_fetch($sql)['cnt'];
 
+$use_warehouse_where_sql = get_use_warehouse_where_sql();
 $sql = "
   SELECT
     (SUM(ws_qty) - SUM(ws_scheduled_qty)) AS ws_qty
   FROM
     warehouse_stock
   WHERE
-    ws_del_yn = 'N'
+    ws_del_yn = 'N' {$use_warehouse_where_sql}
 ";
 $stock_count = sql_fetch($sql)['ws_qty'];
 
