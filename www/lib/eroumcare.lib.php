@@ -2421,9 +2421,11 @@ function get_manage_stock_count($type) {
       END AS safe_max_stock_qty
     FROM 
       g5_shop_item it
-      LEFT JOIN (SELECT * FROM g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS io ON it.it_id = io.it_id
-      LEFT JOIN (SELECT * FROM warehouse_stock WHERE ws_del_yn = 'N') AS ws ON (it.it_id = ws.it_id AND IFNULL(io.io_id, '')= ws.io_id)
-    GROUP BY it.it_id, io.io_id) AS t
+      LEFT JOIN g5_shop_item_option AS io ON it.it_id = io.it_id AND (io.io_type = '0' AND io.io_use = '1')
+      LEFT JOIN warehouse_stock AS ws ON (it.it_id = ws.it_id AND IFNULL(io.io_id, '') = ws.io_id) AND (ws.ws_del_yn = 'N')
+    GROUP BY it.it_id, io.io_id
+    ORDER BY NULL
+    ) AS t
   WHERE 1 {$where}
   ";
 
