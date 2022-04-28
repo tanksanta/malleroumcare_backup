@@ -2505,7 +2505,7 @@ function get_stock_item_info($it_id, $io_id) {
       (SELECT 
         IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) 
       FROM warehouse_stock 
-      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' AND {$use_warehouse_where_sql}) AS sum_ws_qty,
+      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' {$use_warehouse_where_sql}) AS sum_ws_qty,
       (SELECT count(*)
         FROM g5_cart_barcode
         WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty,
