@@ -27,7 +27,7 @@ if ($sel_field && $search_text) {
 }
 
 if ($only_diff_qty == 'true') {
-  $where_sql .= " AND sum_ws_qty != sum_barcode_qty ";
+  $where_sql .= " AND sum_ws_qty != sum_checked_barcode_qty ";
 }
 
 
@@ -62,7 +62,7 @@ $sql = "
     WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' {$use_warehouse_where_sql}) AS sum_ws_qty,
     (SELECT count(*)
       FROM g5_cart_barcode
-      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty,
+      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N' AND ct_id = '0' AND checked_at IS NOT NULL) AS sum_checked_barcode_qty,
     a.*,
     b.io_type,
     b.io_id
@@ -101,14 +101,14 @@ while ($row = sql_fetch_array($result)) {
 
   $warning_icon = '';
 
-  if ($row['sum_ws_qty'] != $row['sum_barcode_qty']) {
+  if ($row['sum_ws_qty'] != $row['sum_checked_barcode_qty']) {
     $warning_icon = '<span class="warning_icon">!</span>';
   }
 ?>
   <li class="flex-row align-center" data-it_id="<?php echo $row['it_id'] ?>" data-io_id="<?php echo $row['io_id'] ?>">
     <div class="name"><?php echo $row['it_name'] ?> <?php echo $option ? "({$option})" : '' ?> <?php echo $warning_icon ?></div>
     <div class="stockQty"><?php echo $row['sum_ws_qty'] ?></div>
-    <div class="barcodeQty"><?php echo $row['sum_barcode_qty'] ?></div>
+    <div class="barcodeQty"><?php echo $row['sum_checked_barcode_qty'] ?></div>
   </li>
 <?php
 }

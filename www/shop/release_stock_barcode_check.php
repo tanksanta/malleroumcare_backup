@@ -625,7 +625,7 @@ if ($option) {
     <div class="searchFormTop flex-row justify-space-between">
       <div style="width: 100%">
         <?php echo $full_it_name ?><br/>
-        <span style="font-size: 13px">재고수량 : <?= $row['sum_ws_qty'] ?> / 바코드 : <?= $row['sum_barcode_qty'] ?><br/> 마지막 확인 일시 : <?= $last_checked_at ?></span>
+        <span style="font-size: 13px">재고수량 : <?= $row['sum_ws_qty'] ?> / 바코드 : <?= $row['sum_checked_barcode_qty'] ?><br/> 마지막 확인 일시 : <?= $last_checked_at ?></span>
       </div>
     </div>
 
@@ -712,7 +712,7 @@ if ($option) {
 <!-- 고정 하단 -->
 <div id="popupFooterBtnWrap">
   <div class="flex-row justify-space-between align-center" style="margin-bottom: 20px">
-    <p>확인중 (<span id="checkedBarcodeCnt">0</span>/<span id="allBarcodeCnt"><?= $row['sum_barcode_qty'] ?></span>)</p>
+    <p>확인중 (<span id="checkedBarcodeCnt">0</span>/<span id="allBarcodeCnt"><?= $row['sum_checked_barcode_qty'] ?></span>)</p>
     <button onclick="saveData()">완료</button>
   </div>
   <div class="flex-row justify-space-between" style="padding: 0 30px">
@@ -1341,7 +1341,7 @@ if (!$member['mb_id']) {
         it_id: '<?php echo $it_id ?>',
         io_id: '<?php echo $io_id ?>',
         data: CHANGED_DATA,
-        barcode_qty_prev: '<?= $row['sum_barcode_qty'] ?>',
+        barcode_qty_prev: '<?= $row['sum_checked_barcode_qty'] ?>',
       },
       dataType: 'json',
       async: false,
