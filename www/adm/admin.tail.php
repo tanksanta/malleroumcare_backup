@@ -37,6 +37,9 @@ function set_date(today)
     } else if (today == "일주일") {
         document.getElementById("fr_date").value = "<?php echo date('Y-m-d', strtotime('-7 days', G5_SERVER_TIME)); ?>";
         document.getElementById("to_date").value = "<?php echo date('Y-m-d', G5_SERVER_TIME); ?>";
+    } else if (today == "3개월") {
+      document.getElementById("fr_date").value = "<?php echo date('Y-m-d', strtotime('-3 month', G5_SERVER_TIME)); ?>";
+      document.getElementById("to_date").value = "<?php echo date('Y-m-d', G5_SERVER_TIME); ?>";
     }
 }
 

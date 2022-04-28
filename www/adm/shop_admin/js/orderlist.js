@@ -563,19 +563,21 @@ $(function () {
         menu_id: sub_menu,
       },
     }).done(function (data) {
-      clear_form('#search_detail_table');
+      if (data.data) {
+        clear_form('#search_detail_table');
 
-      var obj = data.data;
-      var keys = Object.keys(obj);
-      var form = $('#search_detail_table');
+        var obj = data.data;
+        var keys = Object.keys(obj);
+        var form = $('#search_detail_table');
 
-      for (_key in obj) {
-        if (Array.isArray(obj[_key])) {
-          $(obj[_key]).each(function (index, item) {
-            set_input_val(form, _key, item);
-          });
-        } else {
-          set_input_val(form, _key, obj[_key]);
+        for (_key in obj) {
+          if (Array.isArray(obj[_key])) {
+            $(obj[_key]).each(function (index, item) {
+              set_input_val(form, _key, item);
+            });
+          } else {
+            set_input_val(form, _key, obj[_key]);
+          }
         }
       }
     });
