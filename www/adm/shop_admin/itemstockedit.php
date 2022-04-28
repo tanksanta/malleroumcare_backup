@@ -43,6 +43,7 @@ if(!$it['it_id']) alert('존재하지 않는 상품입니다.');
 
 $warehouse_list = get_warehouses();
 $count_item_option = count_item_option($it_id);
+$use_warehouse_where_sql = get_use_warehouse_where_sql();
 ?>
 
 <style>
@@ -140,11 +141,14 @@ $count_item_option = count_item_option($it_id);
             FROM
               warehouse_stock ws
             WHERE
-              it_id = '{$it_id}' AND ws_del_yn = 'N'
+              it_id = '{$it_id}' AND ws_del_yn = 'N' {$use_warehouse_where_sql}
             GROUP BY wh_name
+            ORDER BY NULL
           ";
-          $row = sql_fetch($sql);
-          echo "{$row['wh_name']} ({$row['ws_qty']}개)";
+          $result = sql_query($sql);
+          while ($row = sql_fetch_array($result)) {
+            echo "<span style='margin-right: 10px;'>{$row['wh_name']} ({$row['ws_qty']}개)</span>";
+          }
         }
         ?>
       </div>
