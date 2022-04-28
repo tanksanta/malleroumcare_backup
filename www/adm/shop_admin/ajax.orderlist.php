@@ -17,8 +17,8 @@ if( !in_array($sel_field, array('od_all', 'it_name', 'ct_option', 'it_admin_memo
 }
 
 $replace_table = array(
-  'od_id' => 'o.od_id',
-  'it_name' => 'i.it_name',
+  'od_id' => 'c.od_id',
+  'it_name' => 'c.it_name',
   'mb_id' => 'c.mb_id'
 );
 $sel_field = $replace_table[$sel_field] ?: $sel_field;
@@ -70,76 +70,24 @@ if ($search_add_add != "") {
 
 // 전체 검색
 if ($sel_field == 'od_all' && $search != "") {
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
+  $sel_arr = array('c.it_name', 'c.ct_option', 'c.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', /*'barcode',*/ 'prodMemo', 'od_memo');
 
   foreach ($sel_arr as $key => $value) {
-    if($value=="barcode") {
-      $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search."'";
+    if ($value == "barcode") {
+      $sql_barcode_search = "select `stoId` from `g5_barcode_log` where `barcode` = '" . $search . "'";
       $result_barcode_search = sql_query($sql_barcode_search);
       $or = "";
-      while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
-        $bacode_search .= $or." `o.stoId` like '%".$row_barcode['stoId']."%' ";
+      while ($row_barcode = sql_fetch_array($result_barcode_search)) {
+        $bacode_search .= $or . " `o.stoId` like '%" . $row_barcode['stoId'] . "%' ";
         $or = "or";
       }
-      if($bacode_search) {
+      if ($bacode_search) {
         $sel_arr[$key] = $bacode_search;
       } else {
         $sel_arr[$key] = "o.stoId like '%$search%'";
       }
     } else {
       $sel_arr[$key] = "$value like '%$search%'";
-    }
-  }
-
-  $where[] = "(".implode(' or ', $sel_arr).")";
-}
-
-// 전체 검색2
-if ($sel_field_add == 'od_all' && $search_add != "") {
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
-
-  foreach ($sel_arr as $key => $value) {
-    if($value=="barcode") {
-      $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search_add."'";
-      $result_barcode_search = sql_query($sql_barcode_search);
-      $or = "";
-      while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
-        $bacode_search .= $or." `o.stoId` like '%".$row_barcode['stoId']."%' ";
-        $or = "or";
-      }
-      if($bacode_search) {
-        $sel_arr[$key] = $bacode_search;
-      } else {
-        $sel_arr[$key] = "o.stoId like '%$search_add%'";
-      }
-    } else {
-      $sel_arr[$key] = "$value like '%$search_add%'";
-    }
-  }
-
-  $where[] = "(".implode(' or ', $sel_arr).")";
-}
-
-// 전체 검색3
-if ($sel_field_add_add == 'od_all' && $search_add_add != "") {
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
-
-  foreach ($sel_arr as $key => $value) {
-    if($value=="barcode") {
-      $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search_add_add."'";
-      $result_barcode_search = sql_query($sql_barcode_search);
-      $or = "";
-      while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
-        $bacode_search .= $or." `o.stoId` like '%".$row_barcode['stoId']."%' ";
-        $or = "or";
-      }
-      if($bacode_search) {
-        $sel_arr[$key] = $bacode_search;
-      } else {
-        $sel_arr[$key] = "o.stoId like '%$search_add_add%'";
-      }
-    } else {
-      $sel_arr[$key] = "$value like '%$search_add_add%'";
     }
   }
 
@@ -439,7 +387,8 @@ $sql_common .= $sql_search;
 $sql = " select count(*) as cnt " . $sql_common;
 $row = sql_fetch($sql, true);
 $total_count = $row['cnt'];
-$rows = $config['cf_page_rows'];
+//$rows = $config['cf_page_rows'];
+$rows = 75;
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함

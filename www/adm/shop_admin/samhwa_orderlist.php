@@ -32,6 +32,12 @@ $result_lotte = sql_fetch($sql_lotte);
 
 $warehouse_list = get_warehouses();
 
+// 초기 3개월 범위 적용
+if (!$fr_date && !$to_date) {
+  $fr_date = date("Y-m-d", strtotime("-3 month"));
+  $to_date = date("Y-m-d");
+}
+
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
@@ -200,7 +206,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         <th>날짜</th>
         <td class="date">
           <select name="sel_date_field" id="sel_date_field">
-            <option value="od_time" <?php echo get_selected($sel_date_field, 'od_time'); ?>>주문일</option>
+            <option value="ct_time" <?php echo get_selected($sel_date_field, 'ct_time'); ?>>주문일</option>
             <option value="od_receipt_time" <?php echo get_selected($sel_date_field, 'od_receipt_time'); ?>>입금일</option>
             <option value="od_ex_date" <?php echo get_selected($sel_date_field, 'od_ex_date'); ?>>희망출고일</option>
             <option value="ct_ex_date" <?php echo get_selected($sel_date_field, 'ct_ex_date'); ?>>출고완료일</option>
@@ -210,6 +216,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <input type="button" value="어제" id="select_date_yesterday" name="select_date" class="select_date newbutton" />
             <input type="button" value="일주일" id="select_date_sevendays" name="select_date" class="select_date newbutton" />
             <input type="button" value="지난달" id="select_date_lastmonth" name="select_date" class="select_date newbutton" />
+            <input type="button" value="3개월" id="select_date_3month" name="select_date" class="select_date newbutton" />
             <input type="button" value="전체" id="select_date_all" name="select_date" class="select_date newbutton" />
             <input type="text" id="fr_date" class="date" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off"> ~
             <input type="text" id="to_date" class="date" name="to_date" value="<?php echo $to_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off">
@@ -453,53 +460,9 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <option value="od_b_hp" <?php echo get_selected($sel_field, 'od_b_hp'); ?>>받는분핸드폰</option>
             <option value="od_deposit_name" <?php echo get_selected($sel_field, 'od_deposit_name'); ?>>입금자</option>
             <option value="ct_delivery_num" <?php echo get_selected($sel_field, 'ct_delivery_num'); ?>>운송장번호</option>
-            <option value="barcode" <?php echo get_selected($sel_field, 'barcode'); ?>>바코드</option>
+<!--            <option value="barcode" --><?php //echo get_selected($sel_field, 'barcode'); ?><!-->바코드</option>-->
           </select>
           <input type="text" name="search" value="<?php echo $search; ?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
-          	, 추가 검색어
-          	<select name="sel_field_add" id="sel_field_add">
-            <option value="od_all" <?php echo $sel_field_add == 'od_all' ? 'selected="selected"' : ''; ?>>전체</option>
-            <option value="od_name" <?php echo get_selected($sel_field_add, 'od_name'); ?>>주문자</option>
-            <option value="od_b_name" <?php echo get_selected($sel_field_add, 'od_b_name'); ?>>받는분</option>
-            <option value="prodMemo" <?php echo get_selected($sel_field_add, 'prodMemo'); ?>>상품요청사항</option>
-            <option value="od_memo" <?php echo get_selected($sel_field_add, 'od_memo'); ?>>배송요청사항</option>
-            <option value="it_name" <?php echo $sel_field_add == 'it_name' ? 'selected="selected"' : ''; ?>>상품명</option>
-            <option value="ct_option" <?php echo $sel_field_add == 'ct_option' ? 'selected="selected"' : ''; ?>>옵션</option>
-            <option value="it_admin_memo" <?php echo $sel_field_add == 'it_admin_memo' ? 'selected="selected"' : ''; ?>>관리자메모</option>
-            <option value="it_maker" <?php echo $sel_field_add == 'it_maker' ? 'selected="selected"' : ''; ?>>제조사</option>
-            <option value="od_id" <?php echo get_selected($sel_field_add, 'od_id'); ?>>주문번호</option>
-            <option value="mb_id" <?php echo get_selected($sel_field_add, 'mb_id'); ?>>회원 ID</option>
-            <option value="od_tel" <?php echo get_selected($sel_field_add, 'od_tel'); ?>>주문자전화</option>
-            <option value="od_hp" <?php echo get_selected($sel_field_add, 'od_hp'); ?>>주문자핸드폰</option>
-            <option value="od_b_tel" <?php echo get_selected($sel_field_add, 'od_b_tel'); ?>>받는분전화</option>
-            <option value="od_b_hp" <?php echo get_selected($sel_field_add, 'od_b_hp'); ?>>받는분핸드폰</option>
-            <option value="od_deposit_name" <?php echo get_selected($sel_field_add, 'od_deposit_name'); ?>>입금자</option>
-            <option value="ct_delivery_num" <?php echo get_selected($sel_field_add, 'ct_delivery_num'); ?>>운송장번호</option>
-            <option value="barcode" <?php echo get_selected($sel_field_add, 'barcode'); ?>>바코드</option>
-          </select>
-          <input type="text" name="search_add" value="<?php echo $search_add; ?>" id="search_add" class="frm_input" autocomplete="off" style="width:200px;">
-          	, 추가 검색어
-          	<select name="sel_field_add_add" id="sel_field_add_add">
-            <option value="od_all" <?php echo $sel_field_add_add == 'od_all' ? 'selected="selected"' : ''; ?>>전체</option>
-            <option value="od_name" <?php echo get_selected($sel_field_add_add, 'od_name'); ?>>주문자</option>
-            <option value="od_b_name" <?php echo get_selected($sel_field_add_add, 'od_b_name'); ?>>받는분</option>
-            <option value="prodMemo" <?php echo get_selected($sel_field_add_add, 'prodMemo'); ?>>상품요청사항</option>
-            <option value="od_memo" <?php echo get_selected($sel_field_add_add, 'od_memo'); ?>>배송요청사항</option>
-            <option value="it_name" <?php echo $sel_field_add_add == 'it_name' ? 'selected="selected"' : ''; ?>>상품명</option>
-            <option value="ct_option" <?php echo $sel_field_add_add == 'ct_option' ? 'selected="selected"' : ''; ?>>옵션</option>
-            <option value="it_admin_memo" <?php echo $sel_field_add_add == 'it_admin_memo' ? 'selected="selected"' : ''; ?>>관리자메모</option>
-            <option value="it_maker" <?php echo $sel_field_add_add == 'it_maker' ? 'selected="selected"' : ''; ?>>제조사</option>
-            <option value="od_id" <?php echo get_selected($sel_field_add_add, 'od_id'); ?>>주문번호</option>
-            <option value="mb_id" <?php echo get_selected($sel_field_add_add, 'mb_id'); ?>>회원 ID</option>
-            <option value="od_tel" <?php echo get_selected($sel_field_add_add, 'od_tel'); ?>>주문자전화</option>
-            <option value="od_hp" <?php echo get_selected($sel_field_add_add, 'od_hp'); ?>>주문자핸드폰</option>
-            <option value="od_b_tel" <?php echo get_selected($sel_field_add_add, 'od_b_tel'); ?>>받는분전화</option>
-            <option value="od_b_hp" <?php echo get_selected($sel_field_add_add, 'od_b_hp'); ?>>받는분핸드폰</option>
-            <option value="od_deposit_name" <?php echo get_selected($sel_field_add_add, 'od_deposit_name'); ?>>입금자</option>
-            <option value="ct_delivery_num" <?php echo get_selected($sel_field_add_add, 'ct_delivery_num'); ?>>운송장번호</option>
-            <option value="barcode" <?php echo get_selected($sel_field_add_add, 'barcode'); ?>>바코드</option>
-          </select>
-          <input type="text" name="search_add_add" value="<?php echo $search_add_add; ?>" id="search_add_add" class="frm_input" autocomplete="off" style="width:200px;">
         </td>
       </tr>
 
