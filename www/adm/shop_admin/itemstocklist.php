@@ -13,6 +13,7 @@ $sel_ca_id = get_search_string($sel_ca_id);
 $sel_field = get_search_string($sel_field);
 $search = get_search_string($search);
 $wh_name = get_search_string($wh_name);
+$use_warehouse_where_sql = get_use_warehouse_where_sql();
 
 $g5['title'] = '상품재고관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
@@ -29,7 +30,7 @@ if ($sel_ca_id != "") {
 }
 
 if ($wh_name != '') {
-  $sql_search .= " and ( select (sum(ws_qty) - sum(ws_scheduled_qty)) from warehouse_stock s where T.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' ) <> 0 ";
+  $sql_search .= " and ( select (sum(ws_qty) - sum(ws_scheduled_qty)) from warehouse_stock s where T.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' {$use_warehouse_where_sql} ) <> 0 ";
 }
 
 // 안전재고 상품
@@ -89,7 +90,7 @@ from
         AND ct_status IN {$common_ct_status}
         AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 1.5), 0)
     END AS safe_max_stock_qty, 
-    (SELECT IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) FROM warehouse_stock WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
+    (SELECT IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) FROM warehouse_stock WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' {$use_warehouse_where_sql}) AS sum_ws_qty,
     (SELECT count(*) FROM g5_cart_barcode WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty,
     ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
         WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
@@ -155,7 +156,7 @@ $colspan = 11;
 $warehouse_total_qty = 0;
 $warehouse_list = get_warehouses();
 foreach($warehouse_list as &$warehouse) {
-  $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty))  as total from warehouse_stock where wh_name = '$warehouse' and ws_del_yn = 'N' ";
+  $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty))  as total from warehouse_stock where wh_name = '$warehouse' and ws_del_yn = 'N' {$use_warehouse_where_sql} ";
   $result_total = sql_fetch($sql);
 
   $warehouse = [
@@ -185,7 +186,7 @@ $sql = "
       (SELECT 
         IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) 
       FROM warehouse_stock 
-      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
+      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' {$use_warehouse_where_sql}) AS sum_ws_qty,
       (SELECT count(*)
         FROM g5_cart_barcode
         WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_barcode_qty
@@ -505,7 +506,7 @@ $count_warn4 = sql_fetch($sql)['cnt'];
         <td class="td_num"><?php echo number_format($row['safe_min_stock_qty']) ?></td>
         <?php
         foreach($warehouse_list as $warehouse) {
-          $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty)) as stock from warehouse_stock where it_id = '{$row['it_id']}' and io_id = '{$row['io_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' ";
+          $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty)) as stock from warehouse_stock where it_id = '{$row['it_id']}' and io_id = '{$row['io_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' {$use_warehouse_where_sql} ";
           $stock = sql_fetch($sql)['stock'] ?: 0;
           echo '<td class="td_num">'.number_format($stock).'</td>';
         }

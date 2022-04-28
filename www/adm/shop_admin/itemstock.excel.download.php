@@ -7,11 +7,12 @@ auth_check($auth[$sub_menu], "r");
 // 데이터 처리
 $data = [];
 
+$use_warehouse_where_sql = get_use_warehouse_where_sql(false);
 $sql = "
   SELECT it.it_id, it.it_name, io.io_id, io.io_standard, it.it_option_subject, ws.ws_option, IFNULL(ws.ws_qty, '0') AS ws_qty
   FROM g5_shop_item it
   LEFT JOIN (SELECT * FROM g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS io ON it.it_id = io.it_id
-  LEFT JOIN (SELECT it_id, io_id, ws_option, (SUM(ws_qty) - SUM(ws_scheduled_qty)) AS ws_qty FROM warehouse_stock GROUP BY it_id, io_id) AS ws ON (io.it_id = ws.it_id AND io.io_id = ws.io_id)
+  LEFT JOIN (SELECT it_id, io_id, ws_option, (SUM(ws_qty) - SUM(ws_scheduled_qty)) AS ws_qty FROM warehouse_stock WHERE {$use_warehouse_where_sql} GROUP BY it_id, io_id) AS ws ON (io.it_id = ws.it_id AND io.io_id = ws.io_id)
   ORDER BY it.it_name ASC
 ";
 
