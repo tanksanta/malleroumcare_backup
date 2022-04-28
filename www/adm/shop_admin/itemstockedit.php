@@ -147,7 +147,12 @@ $use_warehouse_where_sql = get_use_warehouse_where_sql();
           ";
           $result = sql_query($sql);
           while ($row = sql_fetch_array($result)) {
-            echo "<span style='margin-right: 10px;'>{$row['wh_name']} ({$row['ws_qty']}개)</span>";
+            $wh_name = $row['wh_name'] ?: '미지정';
+            echo "<span style='margin-right: 10px;'>{$wh_name} ({$row['ws_qty']}개)</span>";
+
+            if ($row['ws_qty'] > 0) {
+              $use_warehouse_list[] = $wh_name;
+            }
           }
         }
         ?>
@@ -197,14 +202,16 @@ $use_warehouse_where_sql = get_use_warehouse_where_sql();
       <div class="content">
         <select name="wh_name_from">
           <?php
-//          foreach ($warehouse_list as $warehouse) {
-//            echo "<option value='{$warehouse}'>{$warehouse}</option>";
-//          }
-
           if ($count_item_option > 0) {
             echo '<option value="" selected>상품옵션을 선택해주세요</option>';
           } else {
-            echo "<option value='{$row['wh_name']}' selected>{$row['wh_name']}</option>";
+            if (count($use_warehouse_list) > 0) {
+              foreach ($use_warehouse_list as $warehouse) {
+                echo "<option value='{$warehouse}'>{$warehouse}</option>";
+              }  
+            } else {
+              echo "<option value='재고없음'>재고없음</option>";
+            }
           }
           ?>
 
@@ -358,6 +365,11 @@ $use_warehouse_where_sql = get_use_warehouse_where_sql();
     } else if (edit_type === 'move') {
       if (move_qty <= 0) {
         alert('창고이동 수량은 1이상 값으로 입력해주세요.');
+        return;
+      }
+      
+      if (wh_name_from == '재고없음') {
+        alert('이동할 재고가 없습니다.');
         return;
       }
 
