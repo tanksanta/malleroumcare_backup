@@ -234,11 +234,12 @@ if (isset($_SESSION['smart_purchase_data'])) {
               <input type="text" name="memo[]" class="frm_input">
             </td>
             <td>
-              <select name="wh_name[]" id="it_warehousing_warehouse" name="wh_name">
+              <select name="wh_name[]" class="it_warehousing_warehouse" name="wh_name">
                 <option value="">창고선택</option>
                 <?php
                 $warehouse_list = get_warehouses();
-                foreach($warehouse_list as $warehouse) {
+                foreach ($warehouse_list as $warehouse) {
+                  if ($warehouse == '미지정') continue;
                   echo '<option value="'.$warehouse.'" '.get_selected($it['it_warehousing_warehouse'], $warehouse).'>'.$warehouse.'</option>';
                 }
                 ?>
@@ -358,11 +359,12 @@ if (isset($_SESSION['smart_purchase_data'])) {
           <input type="text" name="memo[]" class="frm_input">
         </td>
         <td>
-          <select name="wh_name[]" id="it_warehousing_warehouse" name="wh_name">
+          <select name="wh_name[]" class="it_warehousing_warehouse" name="wh_name">
             <option value="">창고선택</option>
             <?php
             $warehouse_list = get_warehouses();
             foreach($warehouse_list as $warehouse) {
+              if ($warehouse == '미지정') continue;
               echo '<option value="'.$warehouse.'" '.get_selected($it['it_warehousing_warehouse'], $warehouse).'>'.$warehouse.'</option>';
             }
             ?>
@@ -647,7 +649,7 @@ if (isset($_SESSION['smart_purchase_data'])) {
   });
 
   function formcheck(f) {
-    var it_id, qty, it_price, result = true;
+    var it_id, qty, it_price, wh_name, result = true;
 
     $('.form_section').each(function (formIndex) {
       if (!$(this).find("input[name^=mb_id]").val()) {
@@ -660,6 +662,7 @@ if (isset($_SESSION['smart_purchase_data'])) {
         it_id = $(this).find("input[name^=it_id]").val();
         qty = $(this).find("input[name^=qty]").val();
         it_price = $(this).find("input[name^=it_price]").val();
+        wh_name = $(this).find("select[name^=wh_name]").val();
 
         if (it_id === '') {
           return true;
@@ -677,6 +680,11 @@ if (isset($_SESSION['smart_purchase_data'])) {
           return false;
         }
 
+        if (!wh_name) {
+          alert((formIndex + 1) + "번째 주문서의 " + (trIndex + 1 )+ "번째 아이템의 배송 창고를 선택해주세요.");
+          result = false;
+          return false;
+        }
       });
 
       if (!result) {

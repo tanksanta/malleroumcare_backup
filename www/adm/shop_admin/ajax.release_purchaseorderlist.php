@@ -128,7 +128,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_id, it_name, ct_status, ct_move_date, ct_manager, ct_qty, ct_delivered_qty, io_type, ct_price, io_price, ct_sendcost, ct_discount, ct_delivery_num, ct_warehouse, ct_direct_delivery_date from purchase_cart) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_id, it_name, ct_status, ct_move_date, ct_manager, ct_qty, ct_delivered_qty, io_type, ct_price, io_price, ct_sendcost, ct_discount, ct_delivery_num, ct_warehouse, ct_delivery_expect_date from purchase_cart) B
                 inner join purchase_order A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C on A.mb_id = C.mb_id_temp
                 left join (select it_id as it_id_temp, ProdPayCode from g5_shop_item) D ON B.it_id = D.it_id_temp
@@ -267,11 +267,12 @@ foreach($orderlist as $order) {
   $ct_ex_date = $result_ct['ct_ex_date'];
   $stock_insert = 1;
 
-  $od_time = substr($order['od_time'],2,8) . '<br>' . '('. substr($order['od_time'],11,5) .')';
-  $od_time2 = substr($order['od_time'],2,8)  . '('. substr($order['od_time'],11,5) .')';
+  $od_time = substr($order['od_time'],2,8) . '<br>' . ' ('. substr($order['od_time'],11,5) .')';
+  $od_time2 = substr($order['od_time'],2,8)  . ' ('. substr($order['od_time'],11,5) .')';
+  $delivery_expect_date = substr($result_ct['ct_delivery_expect_date'],2,8)  . ' ('. substr($result_ct['ct_delivery_expect_date'],11,5) .')';
 
   if($order['od_receipt_time'] != '0000-00-00 00:00:00') {
-      $od_receipt_time = substr($order['od_receipt_time'],2,8) . '<br>' . '('. substr($order['od_receipt_time'],11,5) .')';
+      $od_receipt_time = substr($order['od_receipt_time'],2,8) . '<br>' . ' ('. substr($order['od_receipt_time'],11,5) .')';
   } else {
       $od_receipt_time = '';
   }
@@ -401,7 +402,7 @@ foreach($orderlist as $order) {
 
   $ret["data"][$foreach_i]["bc_warning_count"] = $result_ct['bc_warning_count'];
 
-  $ret["data"][$foreach_i]["ct_direct_delivery_date"] = $result_ct['ct_direct_delivery_date'];
+  $ret["data"][$foreach_i]["ct_delivery_expect_date"] = $delivery_expect_date;
   
   $foreach_i++;
 }

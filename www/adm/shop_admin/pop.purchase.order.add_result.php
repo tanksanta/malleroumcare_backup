@@ -259,7 +259,10 @@ try {
       array_push($ct_admin_new, $ct_admin_new_v);
 
       // 입고창고
-      $warehouse_name = $_POST['wh_name'][$i];
+      $warehouse_name = '검단창고';
+      if ($_POST['wh_name'][$i]) {
+        $warehouse_name = $_POST['wh_name'][$i];
+      }
       $wh_row = sql_fetch(" select * from warehouse where wh_name = '{$warehouse_name}' ");
       $ct_warehouse = $wh_row['wh_name'];
       $ct_warehouse_address = $wh_row['wh_address'];
