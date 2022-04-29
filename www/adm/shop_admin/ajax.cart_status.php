@@ -260,6 +260,27 @@ if($_POST['ct_id'] && $_POST['step']) {
     }
   }
 
+  // 출고 시 바코드 상태 출고 상태로 변경
+  for ($i = 0; $i < count($_POST['ct_id']); $i++) {
+    if ($_POST['step'] == '배송') {
+      if ($ct_result['ct_barcode_insert'] > 0 &&
+        $ct_result['ct_barcode_insert'] === $ct_result['ct_qty'] &&
+        $ct_result['ct_barcode_insert_not_approved'] == 0) {
+
+        $barcode_status_sql = "
+          update g5_cart_barcode
+          set 
+            bc_status = '출고',
+            released_by = '{$member['mb_id']}',
+            released_at = NOW()
+          where
+            ct_id = '{$_POST['ct_id'][$i]}'
+        ";
+        sql_query($barcode_status_sql);
+      }
+    }
+  }
+
   if($flag) {
 
     for($i=0; $i<count($sql); $i++) {
