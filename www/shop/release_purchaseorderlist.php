@@ -188,8 +188,8 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
           <label for="od_time">발주일</label>
         </span>
         <span style="color:#666; margin-left: 10px;">
-          <input type="radio" class="sel_date_time" name="sel_date_time" value="ct_direct_delivery_date" id="ct_direct_delivery_date">
-          <label for="ct_direct_delivery_date">입고예정일</label>
+          <input type="radio" class="sel_date_time" name="sel_date_time" value="ct_delivery_expect_date" id="ct_delivery_expect_date">
+          <label for="ct_delivery_expect_date">입고예정일</label>
         </span>
       </li>
     </ul>
@@ -313,8 +313,8 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
           if(row.od_b_name){
             html += " / " + row.od_b_name;
           }
-          if(row.ct_direct_delivery_date) {
-            html += '<span>, 입고예정: ' + row.ct_direct_delivery_date.substr(0, 10) + '</span>'
+          if(row.ct_delivery_expect_date.length > 10) {
+            html += '<br/><span>입고예정: ' + row.ct_delivery_expect_date + '</span>'
           }
           html += '</p>';
           html += '<p class="cnt"> 공급업체 : ' + row.od_name + '</p>';
