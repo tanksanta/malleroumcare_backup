@@ -70,7 +70,7 @@ if ($search_add_add != "") {
 
 // 전체 검색
 if ($sel_field == 'od_all' && $search != "") {
-  $sel_arr = array('c.it_name', 'c.ct_option', 'c.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', /*'barcode',*/ 'prodMemo', 'od_memo');
+  $sel_arr = array('c.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'c.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', /*'barcode',*/ 'prodMemo', 'od_memo');
 
   foreach ($sel_arr as $key => $value) {
     if ($value == "barcode") {
@@ -88,6 +88,32 @@ if ($sel_field == 'od_all' && $search != "") {
       }
     } else {
       $sel_arr[$key] = "$value like '%$search%'";
+    }
+  }
+
+  $where[] = "(".implode(' or ', $sel_arr).")";
+}
+
+// 전체 검색2
+if ($sel_field_add == 'od_all' && $search_add != "") {
+  $sel_arr = array('c.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'c.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', /*'barcode',*/ 'prodMemo', 'od_memo');
+
+  foreach ($sel_arr as $key => $value) {
+    if($value=="barcode") {
+      $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search_add."'";
+      $result_barcode_search = sql_query($sql_barcode_search);
+      $or = "";
+      while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
+        $bacode_search .= $or." `o.stoId` like '%".$row_barcode['stoId']."%' ";
+        $or = "or";
+      }
+      if($bacode_search) {
+        $sel_arr[$key] = $bacode_search;
+      } else {
+        $sel_arr[$key] = "o.stoId like '%$search_add%'";
+      }
+    } else {
+      $sel_arr[$key] = "$value like '%$search_add%'";
     }
   }
 
