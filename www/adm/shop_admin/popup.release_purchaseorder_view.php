@@ -1672,7 +1672,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
 
     $.ajax({
       url: './ajax.barcode_validate.php',
-      type: 'GET',
+      type: 'POST',
       data: {
         barcode: barcode,
       },

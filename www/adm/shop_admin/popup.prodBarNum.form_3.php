@@ -830,7 +830,7 @@ if($od["od_b_tel"]) {
 
       $.ajax({
         url: './ajax.barcode_validate_bulk.php',
-        type: 'GET',
+        type: 'POST',
         data: {
           ct_id: ct_id,
           barcodeArr: barcodeArr,

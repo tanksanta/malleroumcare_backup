@@ -1338,7 +1338,7 @@ if (!$member['mb_id']) {
 
     $.ajax({
       url: '/adm/shop_admin/ajax.release_stock_barcode_check_update.php',
-      type: 'GET',
+      type: 'POST',
       data: {
         it_id: '<?php echo $it_id ?>',
         io_id: '<?php echo $io_id ?>',
