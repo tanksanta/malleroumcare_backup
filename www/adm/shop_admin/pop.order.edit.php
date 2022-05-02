@@ -172,6 +172,8 @@ tr.strikeout td:before {
                         <input type="hidden" name="it_id[]" value="<?=$opt['it_id']?>">
                         <input type="hidden" name="io_type[]" value="<?=$opt['io_type']?>">
                         <input type="hidden" name="price[]" class="price" value="<?=$opt['opt_price']?>">
+                        <input type="hidden" name="it_price_origin[]" value="<?=$opt['it_price']?>">
+                        <input type="hidden" name="ct_price_origin[]" value="<?=$opt['ct_price']?>">
                         <input type="hidden" name="it_sc_type[]" value="<?=$it['it_sc_type']?>">
                         <input type="hidden" name="it_sc_price[]" value="<?=$it['it_sc_price']?>">
                         <input type="hidden" name="it_even_odd[]" value="<?=$it['it_even_odd']?>">
@@ -302,7 +304,9 @@ function calculate_order_price() {
   $li.each(function() {
     var it_id = $(this).find('input[name="it_id[]"]').val();
     if (!it_id) { return; }
-    var it_price = parseInt ( $(this).find('input[name="price[]"]').val() || 0 );
+    var it_price_origin = parseInt ( $(this).find('input[name="it_price_origin[]"]').val() || 0 );
+    var ct_price_origin = parseInt ( $(this).find('input[name="ct_price_origin[]"]').val() || 0 );
+    var it_price = parseInt ( $(this).find('input[name="it_price[]"]').val().replace(/[^0-9]/g, '') || 0 );
     var io_price = parseInt( $(this).find('select[name="io_id[]"] option:selected').data('price') || 0 );
     var ct_qty = parseInt( $(this).find('input[name="qty[]"]').val() || 0 );
     var it_sc_type = parseInt( $(this).find('input[name="it_sc_type[]"]').val() || 0 );
@@ -315,24 +319,26 @@ function calculate_order_price() {
       free_delivery = false;
     }
 
-    // 묶음할인 적용
-    var sale_qty = 0;
-    for(var i = 0; i < $li.length; i++) {
-      var this_it_id = $($li).eq(i).find('input[name="it_id[]"]').val();
-      if(this_it_id !== it_id) continue;
+    // 묶음할인 적용 (가격 수정 없을 경우에만)
+    if (it_price_origin === ct_price_origin) {
+      var sale_qty = 0;
+      for(var i = 0; i < $li.length; i++) {
+        var this_it_id = $($li).eq(i).find('input[name="it_id[]"]').val();
+        if(this_it_id !== it_id) continue;
 
-      var this_qty = parseInt( $li.eq(i).find('input[name="ct_qty[]"]').val() );
-      if( this_qty > 0 ) {
-        sale_qty += this_qty;
+        var this_qty = parseInt( $li.eq(i).find('input[name="ct_qty[]"]').val() );
+        if( this_qty > 0 ) {
+          sale_qty += this_qty;
+        }
       }
-    }
-    var it_sale_cnt = 0;
-    if(item_sale_obj[it_id] && item_sale_obj[it_id].it_sale_cnt) {
-      for(var i = 0; i < item_sale_obj[it_id].it_sale_cnt.length; i++) {
-        var sale_cnt = parseInt(item_sale_obj[it_id].it_sale_cnt[i]);
-        if(sale_qty >= sale_cnt && sale_cnt > it_sale_cnt) {
-          it_sale_cnt = sale_cnt;
-          it_price = parseInt( mb_level === 4 ? item_sale_obj[it_id].it_sale_percent_great[i] : item_sale_obj[it_id].it_sale_percent[i] );
+      var it_sale_cnt = 0;
+      if(item_sale_obj[it_id] && item_sale_obj[it_id].it_sale_cnt) {
+        for(var i = 0; i < item_sale_obj[it_id].it_sale_cnt.length; i++) {
+          var sale_cnt = parseInt(item_sale_obj[it_id].it_sale_cnt[i]);
+          if(sale_qty >= sale_cnt && sale_cnt > it_sale_cnt) {
+            it_sale_cnt = sale_cnt;
+            it_price = parseInt( mb_level === 4 ? item_sale_obj[it_id].it_sale_percent_great[i] : item_sale_obj[it_id].it_sale_percent[i] );
+          }
         }
       }
     }
