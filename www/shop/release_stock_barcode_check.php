@@ -646,6 +646,7 @@ if ($option) {
 
   <div id="content">
     <ul class="listContent">
+      <!--
       <li class="flex-row align-center checked" data-bc_id="1">
         <div class="barcode">바코드</div>
         <div class="check_status">
@@ -698,6 +699,7 @@ if ($option) {
           </ul>
         </div>
       </li>
+      -->
     </ul>
   </div>
 </div>
@@ -1234,7 +1236,7 @@ if (!$member['mb_id']) {
       $('#checkedBarcodeCnt').text(checkedBarcodeCnt);
       $('#allBarcodeCnt').text(allBarcodeCnt);
     } else {
-      $('.listContent').append('<li>등록된 바코드가 없습니다.</li>')
+      $('.listContent').append('<li style="padding: 13px 0;">등록된 바코드가 없습니다.</li>')
     }
 
     $('#selectActWrap').hide();
