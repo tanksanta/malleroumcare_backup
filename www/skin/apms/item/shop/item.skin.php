@@ -395,6 +395,9 @@ if ($it['ca_id']) {
               }
             } else { // 파트너 유저 아닐 시
               $sc_price_info = "";
+              if($it['it_sc_type'] == 1) {
+                $sc_price_info = "무료배송";
+              }
               if ($it['it_sc_type'] != 1) {
                 $number_cost=number_format($it['it_sc_price']);
                 // $sc_price_info = "배송비 {$number_cost}원{$sc_price_info_spliter}도서산간지역은 ".number_format($it['it_sc_price'] + 2000)."원 추가됩니다.";
@@ -420,7 +423,7 @@ if ($it['ca_id']) {
               <td>
                 <?php
                 $sc_price = 10;
-                if($it['it_sc_type'] < 4) {
+                if($it['it_sc_type'] < 4 && $it['it_sc_type'] != 1) {
                   $sc_price_info = number_format($sc_price).'만원 이상 무료배송<br>'.$sc_price_info;
                 }
                 if($it['it_sc_type'] == 5) {
