@@ -42,12 +42,30 @@ if( function_exists('pg_setting_check') ){
   pg_setting_check(true);
 }
 
+$warehouse_list = get_warehouses();
+
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
 ?>
 
 <style>
+
+.ajax-loader {
+  visibility: hidden;
+  background-color: rgba(255,255,255,0.7);
+  position: absolute;
+  z-index: +100 !important;
+  width: 100%;
+  height:100%;
+}
+
+.ajax-loader img {
+  position: relative;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+}
 #loading_excel {
   display: none;
   width: 100%;
@@ -107,7 +125,6 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '400001'";
         $result_m = sql_query($sql_m);
         $od_release_select .= '<option value="">선택</option>';
-        $od_release_select .= '<option value="미지정">미지정</option>';
         for ($q=0; $row_m=sql_fetch_array($result_m); $q++){
             $selected="";
             $od_release_select .='<option value="'.$row_m['mb_id'].'" '.$selected.'>'.$row_m['mb_name'].'('.$row_m['mb_id'].')</option>';
@@ -116,7 +133,19 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     ?>
     </select>
     <button id="ct_manager_send_all">출고담당자 선택변경</button>
-    
+
+    <select class="sb1" name="it_default_warehouse" id="ct_warehouse_sb">
+      <?php
+        $default_warehouse_select="";
+        $default_warehouse_select .= '<option value="">선택</option>';
+        foreach($warehouse_list as $warehouse) {
+          $default_warehouse_select .='<option value="'.$warehouse.'" >'.$warehouse.'</option>';
+        }
+        echo $default_warehouse_select;
+      ?>
+    </select>
+    <button id="ct_warehouse_all">출하창고 선택변경</button>
+
     <button id="deliveryExcelDownloadBtn">주문다운로드</button>
     <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
@@ -254,11 +283,15 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         <th>작업상태</th>
         <td>
           <div class="list">
+            <?php
+            $not_approved_count = sql_fetch("select count(*) as cnt from g5_cart_barcode_approve_request where status = '승인요청' and del_yn = 'N'")['cnt'];
+            ?>
             <input type="checkbox" id="complete1" name="complete1" value="1" <?php echo option_array_checked('1', $complete1); ?>><label for="complete1"> 바코드 미완료 내역만 보기</label>
             <input type="checkbox" id="complete2" name="complete2" value="1" <?php echo option_array_checked('1', $complete2); ?>><label for="complete2"> 배송정보 미입력 내역만 보기</label>
             <input type="checkbox" id="not_complete1" name="not_complete1" value="1" <?php echo option_array_checked('1', $not_complete1); ?>><label for="not_complete1"> 바코드 완료 내역만 보기</label>
             <input type="checkbox" id="not_complete2" name="not_complete2" value="1" <?php echo option_array_checked('1', $not_complete2); ?>><label for="not_complete2"> 배송정보 입력완료 내역만 보기</label>
             <input type="checkbox" id="not_complete3" name="not_complete3" value="1" <?php echo option_array_checked('1', $not_complete3); ?>><label for="not_complete3"> 합포 미적용 내역만 보기</label>
+            <input type="checkbox" id="not_approved" name="not_approved" value="1" <?php echo option_array_checked('1', $not_approved); ?>><label for="not_approved"> 미재고 바코드 입력(<?php echo $not_approved_count ?>)</label>
           </div>
         </td>
       </tr>
@@ -337,6 +370,10 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
   <input type="hidden" name="search_od_status" value="<?php echo $od_status; ?>">
 
   <div id="samhwa_order_list">
+  <div class="ajax-loader">
+    <img src="img/ajax-loading.gif" class="img-responsive" />
+  </div>  
+
     <ul class="order_tab">
       <?php
       foreach($order_steps as $order_step) { 
@@ -388,8 +425,16 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 
 <div class="btn_fixed_top3">
   <input type="button" value="더보기" onclick="doSearch()" class="btn btn_02">
+  <!-- <input type="button" value="모든 주문보기" onclick="show_all_order()" id="show_all_order" class="btn btn_03"> -->
 </div>
 <script>
+
+function show_all_order() {
+  page = 1;
+  end = false;
+  last_step = '';
+  doSearch('Y');
+}
 
 var od_status = '주문';
 var od_step = 0;
@@ -399,27 +444,35 @@ var end = false;
 var sub_menu = '<?php echo $sub_menu; ?>';
 var last_step = '';
 
-function doSearch() {
+function doSearch(show_all) {
   // alert(od_status);
   if ( loading === true ) return;
   if ( end === true ) return;
 
+  if (!show_all) {
+    show_all = 'N';
+  }
   var formdata = $.extend({}, $('#frmsamhwaorderlist').serializeObject(), { 
     od_status: od_status, 
     od_step: od_step, 
     page: page, 
     sub_menu: sub_menu,
     last_step: last_step, 
+    show_all: show_all,
   });
 
   loading = true;
-  console.log(formdata);
+  // console.log(formdata);
   var ajax = $.ajax({
     method: "POST",
     url: "./ajax.deliverylist.php",
     data: formdata,
+    beforeSend : function() {
+        $('.ajax-loader').css("visibility", "visible");
+    },
   })
   .done(function(html) {
+    $('.ajax-loader').css("visibility", "hidden");
     if ( page === 1 ) {
       $('#samhwa_order_ajax_list_table').html(html.main);
     }
@@ -585,6 +638,13 @@ $( document ).ready(function() {
     end = false;
     last_step = '';
     doSearch();
+
+    if (od_status == "출고준비") {
+      $('#show_all_order').show();
+    }
+    else {
+      $('#show_all_order').hide();
+    }
   });
 
   // 출고리스트 접속시 기본검색 적용 자동으로 눌러주기
@@ -704,7 +764,7 @@ $( document ).ready(function() {
     formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
 
     var queryString = $.param(formdata);
-    var href = "./order.excel.list.php";
+    var href = "./delivery.excel.list.php";
     
     $('#loading_excel').show();
 

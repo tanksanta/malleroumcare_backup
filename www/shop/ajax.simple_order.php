@@ -10,6 +10,7 @@ $tmp_cart_id = get_session('ss_cart_direct');
 
 $it_id_arr = $_POST['it_id'];
 $io_id_arr = $_POST['io_id'];
+$io_type_arr = $_POST['io_type'];
 $ct_qty_arr = $_POST['ct_qty'];
 $prodMemo_arr = $_POST['prodMemo'];
 
@@ -48,7 +49,7 @@ function calc_pen_price($penTypeCd, $price) {
     return $pen_price;
 }
 
-if($pen_type == 1) {
+if ($pen_type == 1) {
     $pen_id = clean_xss_tags($_POST['pen_id']);
     if(!$pen_id)
         json_response(400, '수급자를 선택해주세요.');
@@ -80,6 +81,8 @@ if($pen_type == 1) {
             penLtmNum = '{$pen['penLtmNum']}',
             penRecGraCd = '{$pen['penRecGraCd']}', # 장기요양등급
             penRecGraNm = '{$pen['penRecGraNm']}',
+            penRecTypeCd = '{$pen['penRecTypeCd']}', # 수령방법
+            penRecTypeTxt = '{$pen['penRecTypeTxt']}',
             penTypeCd = '{$pen['penTypeCd']}', # 본인부담금율
             penTypeNm = '{$pen['penTypeNm']}',
             penExpiDtm = '{$pen['penExpiDtm']}', # 수급자 이용기간
@@ -129,13 +132,13 @@ if($pen_type == 1) {
     ");
 }
 
-for($i = 0; $i < count($it_id_arr); $i++) {
+for ($i = 0; $i < count($it_id_arr); $i++) {
     $it_id = clean_xss_tags($it_id_arr[$i]);
     $io_id = clean_xss_tags($io_id_arr[$i]);
+    $io_type = clean_xss_tags($io_type_arr[$i]);
     $io_id = preg_replace(G5_OPTION_ID_FILTER, '', $io_id);
     $ct_qty = clean_xss_tags($ct_qty_arr[$i]);
     $prodMemo = clean_xss_tags($prodMemo_arr[$i]);
-    $io_type = 0;
 
     if(!$it_id || $ct_qty < 1) continue;
 
@@ -144,7 +147,11 @@ for($i = 0; $i < count($it_id_arr); $i++) {
 
     $io_value = '';
     if ($io_id) {
-      $it_option_subjects = explode(',', $it['it_option_subject']);
+      if ($io_type == '0') {
+        $it_option_subjects = explode(',', $it['it_option_subject']);
+      } else {
+        $it_option_subjects = explode(',', $it['it_supply_subject']);
+      }
       $io_ids = explode(chr(30), $io_id);
       for($g = 0; $g< count($io_ids); $g++) {
         if ($g > 0) {
@@ -154,9 +161,9 @@ for($i = 0; $i < count($it_id_arr); $i++) {
       }
     }
 
-    if($it['it_sc_type'] == 1)
+    if ($it['it_sc_type'] == 1)
         $ct_send_cost = 2; // 무료
-    else if($it['it_sc_type'] > 1 && $it['it_sc_method'] == 1)
+    else if ($it['it_sc_type'] > 1 && $it['it_sc_method'] == 1)
         $ct_send_cost = 1; // 착불
     else
         $ct_send_cost = 0;
@@ -166,7 +173,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     $sql = " select * from {$g5['g5_shop_item_option_table']} where it_id = '$it_id' and io_use = 1 order by io_no asc ";
     $result = sql_query($sql);
     $lst_count = 0;
-    for($k=0; $row=sql_fetch_array($result); $k++) {
+    for ($k = 0; $row = sql_fetch_array($result); $k++) {
         $opt_list[$row['io_type']][$row['io_id']]['id'] = $row['io_id'];
         $opt_list[$row['io_type']][$row['io_id']]['use'] = $row['io_use'];
         $opt_list[$row['io_type']][$row['io_id']]['price'] = $row['io_price'];
@@ -182,29 +189,29 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     }
 
     // 선택옵션정보가 존재하는데 선택된 옵션이 없으면 건너뜀
-    if($lst_count && $io_id == '')
+    if ($lst_count && $io_id == '')
         continue;
-  
+
     // 구매할 수 없는 옵션은 건너뜀
-    if($io_id && !$opt_list[$io_type][$io_id]['use'])
+    if ($io_id && !$opt_list[$io_type][$io_id]['use'])
         continue;
     
     $io_price = samhwa_opt_price($opt_list[$io_type][$io_id], THEMA_KEY);
     $io_thezone = $opt_list[$io_type][$io_id]['io_thezone'];
 
     // 구매가격이 음수인지 체크
-    if($io_type) {
-    if((int)$io_price < 0)
+    if ($io_type) { // 추가옵션
+      if ((int)$io_price < 0)
         json_response(400, '구매금액이 음수인 상품은 구매할 수 없습니다.');
     } else {
-    if((int)$it['it_price'] + (int)$io_price < 0)
+      if ((int)$it['it_price'] + (int)$io_price < 0)
         json_response(400, '구매금액이 음수인 상품은 구매할 수 없습니다.');
     }
 
     $io_value = sql_real_escape_string(strip_tags($io_value));
     $remote_addr = get_real_client_ip();
 
-    if($it['it_delivery_min_cnt']) {
+    if ($it['it_delivery_min_cnt']) {
         //박스 개수 큰것 +작은것 - >ceil
         $ct_delivery_cnt = $it['it_delivery_cnt'] ? ceil($ct_qty / $it['it_delivery_cnt']) : 0;
         //큰박스 floor 한 가격을 담음
@@ -254,8 +261,8 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     $ct_discount = 0;
     $ct_sale_qty = 0;
 
-    for($tmp_i = 0; $tmp_i < count($it_id_arr); $tmp_i++) {
-        if($it_id_arr[$tmp_i] !== $it_id) continue;
+    for ($tmp_i = 0; $tmp_i < count($it_id_arr); $tmp_i++) {
+        if ($it_id_arr[$tmp_i] !== $it_id) continue;
 
         $ct_sale_qty += $ct_qty_arr[$tmp_i];
     }
@@ -281,7 +288,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     }
 
     // 임시조치: 할인금액 마이너스면 0으로 초기화
-    if($ct_discount < 0) $ct_discount = 0;
+    if ($ct_discount < 0) $ct_discount = 0;
 
 
     $sql = " INSERT INTO {$g5['g5_shop_cart_table']}

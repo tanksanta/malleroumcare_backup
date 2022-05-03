@@ -214,9 +214,9 @@ $warehouse_list = get_warehouses();
           </td>
         </tr>
         <tr>
-          <th scope="row"><label for="pt_tag">상품태그</label></th>
+          <th scope="row"><label for="pt_tag">검색태그</label></th>
           <td>
-            <?php echo help("등록할 상품태그를 콤마(,)로 구분해서 입력합니다."); ?>
+            <?php echo help("등록할 검색태그를 콤마(,)로 구분해서 입력합니다."); ?>
             <input type="text" name="pt_tag" value="<?php echo get_text($it['pt_tag']); ?>" id="pt_tag" class="frm_input sl">
           </td>
         </tr>
@@ -1316,6 +1316,22 @@ $warehouse_list = get_warehouses();
           </label>
         </td>
       </tr>
+
+      <tr>
+        <th scope="row"><label for="it_purchase_order_partner">발주업체</label></th>
+        <td>
+          <select name="it_purchase_order_partner">
+            <option value="">파트너선택</option>
+            <?php
+            $partners = get_partner_members('물품공급');
+            foreach ($partners as $partner) {
+            ?>
+              <option value="<?=$partner['mb_id']?>"<?=get_selected($partner['mb_id'], $it['it_purchase_order_partner'])?>><?=$partner['mb_name']?></option>
+            <?php } ?>
+          </select>
+        </td>
+      </tr>
+
       <tr>
         <th scope="row"><label for="it_default_warehouse">출하창고</label></th>
         <td>
@@ -1339,6 +1355,14 @@ $warehouse_list = get_warehouses();
           택배사 : <select name="it_delivery_company" id="it_delivery_company">
             <option value="ilogen"<?php echo get_selected('ilogen', $it['it_delivery_company']); ?>>로젠택배</option>
             <option value="lotteglogis"<?php echo get_selected('lotteglogis', $it['it_delivery_company']); ?>>롯데택배</option>
+          </select>
+          <br>
+          1박스 기준 <input type="text" name="it_delivery_cnt2" value="<?php echo $it['it_delivery_cnt2']; ?>" id="it_delivery_cnt2" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price2" value="<?php echo $it['it_delivery_price2']; ?>" id="it_delivery_price2" class="frm_input" size="8">원 부과,
+          최소수량 <input type="text" name="it_delivery_min_cnt2" value="<?php echo $it['it_delivery_min_cnt2']; ?>" id="it_delivery_min_cnt2" class="frm_input" size="8">개 이하 <input type="text" name="it_delivery_min_price2" value="<?php echo $it['it_delivery_min_price2']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
+          &nbsp;&nbsp;&nbsp;
+          택배사 : <select name="it_delivery_company2" id="it_delivery_company2">
+            <option value="ilogen"<?php echo get_selected('ilogen', $it['it_delivery_company2']); ?>>로젠택배</option>
+            <option value="lotteglogis"<?php echo get_selected('lotteglogis', $it['it_delivery_company2']); ?>>롯데택배</option>
           </select>
         </td>
       </tr>

@@ -8,7 +8,7 @@ $ms_pen_id = trim(clean_xss_tags($_POST['ms_pen_id']));
 $ms_pen_nm = clean_xss_tags($_POST['ms_pen_nm']);
 $ms_pro_yn = clean_xss_tags($_POST['ms_pro_yn']);
 $ms_pen_hp = clean_xss_tags($_POST['ms_pen_hp']);
-$ms_ent_tel = clean_xss_tags($_POST['ms_ent_tel']);
+$ms_ent_tel = clean_xss_tags($_POST['ms_ent_tel_new']);
 $ms_rec = $_POST['ms_rec'];
 $show_expected = $_POST['show_expected'];
 

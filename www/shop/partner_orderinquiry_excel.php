@@ -10,6 +10,7 @@ $od = sql_fetch("
     o.*,
     m.mb_temp,
     m.mb_name,
+    m.mb_manager,
     mb_entNm,
     mb_giup_btel
   FROM
@@ -26,6 +27,9 @@ if(!$od['od_id'])
 if($od['mb_temp']) {
   $od['mb_entNm'] = $od['mb_name'];
 }
+
+// 담당자
+$manager = get_member($od['mb_manager']);
 
 $cart_result = sql_query("
   SELECT
@@ -74,12 +78,15 @@ $sheet = $excel->getActiveSheet();
 
 $sheet->setCellValue('U4', '주문접수일 : '.date('   Y년   m월   d일', strtotime($od['od_time'])));
 
-$sheet->setCellValue('G6', $od['mb_entNm']);
-$sheet->setCellValue('AE6', $od['mb_giup_btel']);
+$sheet->setCellValue('G6', $manager ? $manager['mb_name'] . ' 담당자' : '없음');
+$sheet->setCellValue('AE6', $manager['mb_hp']);
 
-$sheet->setCellValue('L7', $od['od_b_name']);
-$sheet->setCellValue('AE7', $od['od_b_hp'] ?: $od['od_b_tel']);
-$sheet->setCellValue('L9', sprintf("(%s%s)", $od['od_b_zip1'], $od['od_b_zip2']).' '.print_address($od['od_b_addr1'], $od['od_b_addr2'], $od['od_b_addr3'], $od['od_b_addr_jibeon']));
+$sheet->setCellValue('G7', $od['mb_entNm']);
+$sheet->setCellValue('AE7', $od['mb_giup_btel']);
+
+$sheet->setCellValue('L8', $od['od_b_name']);
+$sheet->setCellValue('AE9', $od['od_b_hp'] ?: $od['od_b_tel']);
+$sheet->setCellValue('L10', sprintf("(%s%s)", $od['od_b_zip1'], $od['od_b_zip2']).' '.print_address($od['od_b_addr1'], $od['od_b_addr2'], $od['od_b_addr3'], $od['od_b_addr_jibeon']));
 
 $total_qty = 0;
 $data_index = 0;
@@ -87,16 +94,16 @@ foreach($carts as $cart) {
   if($data_index > 5) break;
 
   // 데이터 입력
-  $sheet->setCellValue('A'.(13 + $data_index), $cart['it_name']);
-  $sheet->setCellValue('G'.(13 + $data_index), $cart['ct_qty']);
-  $sheet->setCellValue('L'.(13 + $data_index), ' '.implode(', ', $cart['barcode']));
-  $sheet->setCellValue('AK'.(13 + $data_index), $cart['prodMemo']);
+  $sheet->setCellValue('A'.(14 + $data_index), $cart['it_name']);
+  $sheet->setCellValue('G'.(14 + $data_index), $cart['ct_qty']);
+  $sheet->setCellValue('L'.(14 + $data_index), ' '.implode(', ', $cart['barcode']));
+  $sheet->setCellValue('AK'.(14 + $data_index), $cart['prodMemo']);
 
   $total_qty += $cart['ct_qty'];
   $data_index++;
 }
-$sheet->setCellValue('L10', $od['od_memo']);
-$sheet->setCellValue('G19', $total_qty.'개');
+$sheet->setCellValue('L11', $od['od_memo']);
+$sheet->setCellValue('G20', $total_qty.'개');
 
 header("Content-Type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"설치확인서.xlsx\"");

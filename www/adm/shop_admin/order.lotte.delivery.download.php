@@ -34,6 +34,7 @@ $ct_ids = array_values(array_unique($ct_ids));
 
 $ct_items = [];
 $combine_ct_items = [];
+$ct_delivery_price = 0;
 for($i = 0; $i < count($ct_ids); $i++) {
     $it = sql_fetch("
       SELECT cart.*, item.it_thezone2
@@ -60,6 +61,8 @@ for($i = 0; $i < count($ct_ids); $i++) {
     else {
         array_push($combine_ct_items, $it);
     }
+
+    $ct_delivery_price += $it['ct_delivery_price'];
 }
 
 if (count($combine_ct_items) > 0) {
@@ -86,7 +89,7 @@ foreach($ct_items as $it) {
         $od["od_b_tel"],
         "",
         $it["ct_delivery_cnt"], //박스수량
-        $od["od_send_cost"] + $od["od_send_cost2"],
+        $ct_delivery_price,
         "선불",
         $it['it_name'],
         "",

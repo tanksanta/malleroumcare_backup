@@ -12,7 +12,8 @@ $it_id = get_search_string($_GET['it_id']);
 $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
 $it = sql_fetch($sql);
 
-$option_sql = "SELECT *
+$option_sql = "
+  SELECT *
   FROM
     {$g5['g5_shop_item_option_table']}
   WHERE
@@ -43,6 +44,20 @@ if(!$it['it_id']) alert('존재하지 않는 상품입니다.');
 
 $warehouse_list = get_warehouses();
 $count_item_option = count_item_option($it_id);
+$use_warehouse_where_sql = get_use_warehouse_where_sql();
+$use_warehouse_list = [];
+$stock_add_placeholder_flag = false;
+
+// 재고 확인 추가
+if ($count_item_option == 0) {
+  $stock_info_row = get_stock_item_info($it_id, '');
+  $diff_ws_and_barcode = $stock_info_row['sum_checked_barcode_qty'] - $stock_info_row['sum_ws_qty'];
+
+  if ($diff_ws_and_barcode > 0) {
+    $stock_add_placeholder_flag = true;
+  }
+}
+
 ?>
 
 <style>
@@ -140,11 +155,19 @@ $count_item_option = count_item_option($it_id);
             FROM
               warehouse_stock ws
             WHERE
-              it_id = '{$it_id}' AND ws_del_yn = 'N'
+              it_id = '{$it_id}' AND ws_del_yn = 'N' {$use_warehouse_where_sql}
             GROUP BY wh_name
+            ORDER BY NULL
           ";
-          $row = sql_fetch($sql);
-          echo "{$row['wh_name']} ({$row['ws_qty']}개)";
+          $result = sql_query($sql);
+          while ($row = sql_fetch_array($result)) {
+            $wh_name = $row['wh_name'] ?: '미지정';
+            echo "<span style='margin-right: 10px;'>{$wh_name} ({$row['ws_qty']}개)</span>";
+
+            if ($row['ws_qty'] > 0) {
+              $use_warehouse_list[] = $wh_name;
+            }
+          }
         }
         ?>
       </div>
@@ -164,7 +187,7 @@ $count_item_option = count_item_option($it_id);
         <label style="margin-right: 10px"><input type="radio" name="stock_abs" value="plus" checked/>입고(+)</label>
         <label><input type="radio" name="stock_abs" value="minus"/>출고(-)</label>
         <span style="margin: 0 15px">/</span>
-        <input type="number" name="stock_qty" style="width: 70px;" min="1">
+        <input type="number" name="stock_qty" style="width: 70px;" min="1" value="<?php if ($stock_add_placeholder_flag) echo $diff_ws_and_barcode ?>">
         <span>개</span>
       </div>
     </li>
@@ -193,14 +216,16 @@ $count_item_option = count_item_option($it_id);
       <div class="content">
         <select name="wh_name_from">
           <?php
-//          foreach ($warehouse_list as $warehouse) {
-//            echo "<option value='{$warehouse}'>{$warehouse}</option>";
-//          }
-
           if ($count_item_option > 0) {
             echo '<option value="" selected>상품옵션을 선택해주세요</option>';
           } else {
-            echo "<option value='{$row['wh_name']}' selected>{$row['wh_name']}</option>";
+            if (count($use_warehouse_list) > 0) {
+              foreach ($use_warehouse_list as $warehouse) {
+                echo "<option value='{$warehouse}'>{$warehouse}</option>";
+              }  
+            } else {
+              echo "<option value='재고없음'>재고없음</option>";
+            }
           }
           ?>
 
@@ -229,7 +254,7 @@ $count_item_option = count_item_option($it_id);
 
     <li>
       <div class="title">내용</div>
-      <input type="text" name="ws_memo" style="width: 225px;">
+      <input type="text" name="ws_memo" style="width: 225px;" value="<?php if ($stock_add_placeholder_flag) echo '재고 확인 추가' ?>">
     </li>
   </ul>
 
@@ -249,7 +274,7 @@ $count_item_option = count_item_option($it_id);
       var value = $(this).val();
 
       if (value) {
-        var returnValue = getItemStockByOption(IT_ID, value.split('|')[1]);
+        var returnValue = getItemStockByOption(IT_ID, value.split('|')[0]);
         var selectHtml = '';
 
         // 보유재고
@@ -266,6 +291,19 @@ $count_item_option = count_item_option($it_id);
         }
         $('select[name="wh_name_from"]').html(selectHtml);
         $('select[name="wh_name_from"]').trigger('change');
+
+        if (returnValue.stock_info) {
+          var sum_checked_barcode_qty = Number(returnValue.stock_info.sum_checked_barcode_qty);
+          var sum_ws_qty = Number(returnValue.stock_info.sum_ws_qty);
+
+          if (sum_checked_barcode_qty > sum_ws_qty) {
+            $('input[name="stock_qty"]').val(sum_checked_barcode_qty - sum_ws_qty);
+            $('input[name="ws_memo"]').val('재고 확인 추가');
+          } else {
+            $('input[name="stock_qty"]').val('');
+            $('input[name="ws_memo"]').val('');
+          }
+        }
       } else {
         // 보유재고
         $('#stock_explain').text('상품 옵션을 선택해주세요.');
@@ -356,6 +394,11 @@ $count_item_option = count_item_option($it_id);
         alert('창고이동 수량은 1이상 값으로 입력해주세요.');
         return;
       }
+      
+      if (wh_name_from == '재고없음') {
+        alert('이동할 재고가 없습니다.');
+        return;
+      }
 
       if (!wh_name_from) {
         alert('출고창고를 선택해주세요.');
@@ -413,20 +456,21 @@ $count_item_option = count_item_option($it_id);
     }
   }
 
-  function getItemStockByOption(it_id, ws_option) {
+  function getItemStockByOption(it_id, io_id) {
     var returnValue = [];
     $.ajax({
       url: 'ajax.itemstock.by.option.php',
       type: 'GET',
       data: {
         it_id: it_id,
-        ws_option: ws_option,
+        io_id: io_id,
       },
       dataType: 'json',
       async: false,
     })
     .done(function(result) {
       var data = result.data;
+      console.log(data);
       returnValue = data;
     })
     .fail(function($xhr) {

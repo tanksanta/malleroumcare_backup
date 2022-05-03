@@ -78,6 +78,20 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
     #listDataWrap > ul > li.barInfo { height: 50px; line-height: 48px; border: 1px solid #DEDEDE; border-radius: 5px; text-align: center; margin-top: 15px; cursor: pointer; }
     #listDataWrap > ul > li.barInfo > .cnt { color: #666; font-weight: bold; font-size: 16px; }
     #listDataWrap > ul > li.barInfo > .label { position: absolute; height: 100%; right: 15px; top: 0; font-size: 12px; color: #FF690F; font-weight: bold; }
+    #listDataWrap > ul > li.barInfo > .bc_warning {
+      position: absolute;
+      left: 15px;
+      top: 9px;
+      width: 31px;
+      height: 31px;
+      font-size: 20px;
+      line-height: 30px;
+      color: red;
+      background: #ffff42;
+      font-weight: bold;
+      border: 1px solid red;
+      border-radius: 100%;
+    }
     #listDataWrap > ul > li.barInfo.active { border-color: #FF690F; }
     #listDataWrap > ul > li.barInfo.active > .cnt { color: #FF690F; }
     #listDataWrap > ul > li.barInfo.disable { border-color: #B8B8B8; background-color: #B8B8B8; }
@@ -97,6 +111,22 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
 
     .samhwa_order_list_table_no_item { padding: 50px 0; }
     .samhwa_order_list_table_no_item h1 { font-size: 16px; font-weight: normal; color: #666; text-align: center;  }
+
+    .date_button {
+      height: 40px;
+      line-height: 38px;
+      border: 1px solid #DEDEDE;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+      background: transparent;
+      padding: 0 20px;
+      color: #666;
+      font-weight: bold;
+    }
+    .date_button:hover {
+      background-color:#f4f4f4;
+    }
 	</style>
 </head>
  
@@ -122,11 +152,17 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
     $sql2 = "SELECT ifnull(sum(ct_qty), 0) AS cnt FROM purchase_cart WHERE ct_status IN ('발주완료', '출고완료')";
     ?>
     <li class="total_price_wrap">입고대기: <?php echo sql_fetch($sql1)['cnt'] ?>건 주문 / <?php echo sql_fetch($sql2)['cnt'] ?>개 상품</li>
+    <li>
+      <a href="javascript:void(0);" class="nativeDeliveryPopupOpenBtn">
+        발주서찾기
+        <img src="<?=G5_IMG_URL?>/bacod_img.png">
+      </a>
+    </li>
   </ul>
   <ul>
       <li>
         <select name="ct_status_option" id="ct_status_option" style="margin-left: 0; width: 100%">
-          <option value="발주완료,입고완료" <?php echo !$ct_status_option ? 'selected' : ''; ?>>발주완료/입고완료</option>
+          <option value="발주완료,출고완료,입고완료" <?php echo !$ct_status_option ? 'selected' : ''; ?>>발주완료~입고완료</option>
           <option value="발주대기,발주완료,출고완료,입고완료" <?php echo $ct_status_option == '준비,출고준비,배송,완료' ? 'selected' : ''; ?>>전체</option>
           <option value="발주대기" <?php echo $ct_status_option == '준비' ? 'selected' : ''; ?>>발주대기</option>
         </select>
@@ -135,13 +171,33 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
     <ul>
       <li>
         <select name="search_option" id="search_option">
-          <option value="od_b_name,it_name,od_name,ct_delivery_num" <?php echo !$search_option ? "selected" : ''; ?>>전체</option>
+          <option value="it_name,ProdPayCode,od_name,od_id,ct_warehouse" <?php echo !$search_option ? "selected" : ''; ?>>전체</option>
           <option value="it_name" <?php echo $search_option == 'it_name' ? 'selected' : ''; ?>>상품명</option>
+          <option value="ProdPayCode" <?php echo $search_option == 'ProdPayCode' ? 'selected' : ''; ?>>제품코드</option>
           <option value="od_name" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>공급업체</option>
           <option value="od_id" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>발주번호</option>
           <option value="ct_warehouse" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>배송지명</option>
         </select>
         <input type="text" name="search_text" id="search_text" placeholder="검색명입력" value="<?php echo $search_text; ?>">
+      </li>
+    </ul>
+    <ul>
+      <li style="text-align: left">
+        <span style="color:#666">
+          <input type="radio" class="sel_date_time" name="sel_date_time" value="od_time" id="od_time" checked>
+          <label for="od_time">발주일</label>
+        </span>
+        <span style="color:#666; margin-left: 10px;">
+          <input type="radio" class="sel_date_time" name="sel_date_time" value="ct_delivery_expect_date" id="ct_delivery_expect_date">
+          <label for="ct_delivery_expect_date">입고예정일</label>
+        </span>
+      </li>
+    </ul>
+    <ul>
+      <li style="text-align: left">
+        <input type="button" data-value="" class="date_button" value="전체" />
+        <input type="button" data-value="<?php echo date('Y-m-d', time()); ?>" class="date_button" value="오늘" />
+        <input type="button" data-value="<?php echo date("Y-m-d", strtotime("+1 day", strtotime(date('Y-m-d', time())))); ?>" class="date_button" value="내일" />
       </li>
     </ul>
     <ul>
@@ -253,9 +309,12 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
           }
           html += '</p>';
           html += '<p class="cnt">'+row.od_id+'</p>';
-          html += '<p class="date">' + row.date;
+          html += '<p class="date">발주: ' + row.date;
           if(row.od_b_name){
             html += " / " + row.od_b_name;
+          }
+          if(row.ct_delivery_expect_date.length > 10) {
+            html += '<br/><span>입고예정: ' + row.ct_delivery_expect_date + '</span>'
           }
           html += '</p>';
           html += '<p class="cnt"> 공급업체 : ' + row.od_name + '</p>';
@@ -265,8 +324,11 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
           html += '</li>';
           // html += '<li class="barInfo barcode_box ' + row.od_barcode_class + '" data-id="' + row.od_id + '" data-stock="2" data-it="'+row.ct_it_id+'"  data-option="'+row.ct_option+'" >';
           html += '<li class="barInfo ' + row.od_barcode_class + '" data-id="' + row.od_id + '" data-ct-id="'+row.ct_id + '" >';
+          if (Number(row.bc_warning_count) > 0) {
+            html += '<span class="bc_warning">!</span>';
+          }
           html += '<span class="cnt">' + row.od_barcode_name + '</span>';
-          if(row.edit_status) {
+          if (row.edit_status) {
             html += '<span class="label">작업중</span>';
           }
           html += '</li>';
@@ -366,8 +428,9 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
   });
 
   function sendInvoiceNum(text){
+    text = text.slice(0, 12);
     $('#search_text').val(text);
-    $('#search_option').val('ct_delivery_num');
+    $('#search_option').val('ProdPayCode');
     $("#page").val(1);
     $("#listDataWrap").html("");
     page2 = 1;
@@ -405,6 +468,21 @@ if (!check_auth($member['mb_id'], '400480', 'w')) {
     e.preventDefault();
 
     open_invoice_scan();
+  });
+
+  $(".date_button").click(function(e) {
+    e.preventDefault();
+
+    var value = $(this).data('value');
+
+    $('#search_fr_date').val(value);
+    $('#search_to_date').val(value);
+  });
+
+
+  $(".sel_date_time").change(function(e) {
+    sel_date_field = e.target.value;
+    formdata['sel_date_field'] = e.target.value;
   });
   </script>
 </body>

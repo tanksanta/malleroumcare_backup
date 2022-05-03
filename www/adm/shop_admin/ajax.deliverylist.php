@@ -64,25 +64,28 @@ if ($search_add_add != "") {
 }
 
 // 작업상태 검색
-if($complete1) {
+if ($complete1) {
   // 바코드 미완료만 검색
   $where[] = " ( ct_barcode_insert < ct_qty and io_type = '0' ) ";
 }
-else if($not_complete1) {
+else if ($not_complete1) {
   // 바코드 완료만 검색
   $where[] = " ( ct_barcode_insert >= ct_qty or io_type = '1' ) ";
 }
-if($complete2) {
+if ($complete2) {
   // 배송정보 미완료만 검색
   $where[] = " ( ( ct_delivery_num is null or ct_delivery_num = '' ) and ct_is_direct_delivery = 0 and ( ct_combine_ct_id is null or ct_combine_ct_id = 0 ) ) ";
 }
-else if($not_complete2) {
+else if ($not_complete2) {
   // 배송정보 완료만 검색
   $where[] = " ( ( ct_delivery_num is not null and ct_delivery_num <> '' ) or ct_is_direct_delivery > 0 or ( ct_combine_ct_id is not null and ct_combine_ct_id <> 0 ) ) ";
 }
-if($not_complete3) {
+if ($not_complete3) {
   // 합포 미적용 내역만 보기
   $where[] = " ( ct_is_auto_combined = 0 ) ";
+}
+if ($not_approved) {
+  $where[] = " ( ct_barcode_insert_not_approved > 0 ) ";
 }
 
 // 전체 검색
@@ -346,7 +349,7 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, ct_status, ct_move_date, ct_delivery_num, ct_manager, ct_is_direct_delivery, ct_direct_delivery_partner, ct_barcode_insert, ct_qty, io_type, ct_combine_ct_id, ct_is_auto_combined from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, ct_status, ct_move_date, ct_delivery_num, ct_manager, ct_is_direct_delivery, ct_direct_delivery_partner, ct_barcode_insert, ct_barcode_insert_not_approved, ct_qty, io_type, ct_combine_ct_id, ct_is_auto_combined from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_nick, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -379,7 +382,7 @@ if ( $where2 || $where ) {
 }
 $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, X.it_name, it_admin_memo, ct_status, ct_manager, ct_is_direct_delivery, ct_direct_delivery_partner, ct_barcode_insert, ct_qty, io_type, ct_combine_ct_id, ct_is_auto_combined from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
+$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, X.it_name, it_admin_memo, ct_status, ct_manager, ct_is_direct_delivery, ct_direct_delivery_partner, ct_barcode_insert, ct_barcode_insert_not_approved, ct_qty, io_type, ct_combine_ct_id, ct_is_auto_combined from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_nick, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
@@ -390,7 +393,8 @@ while( $row = sql_fetch_array($result) ) {
   $cate_counts[$row['ct_status']] = $row['cnt'];
 }
 
-$rows = $config['cf_page_rows'];
+// $rows = $config['cf_page_rows'];
+$rows = 50;
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -399,6 +403,12 @@ $sql  = " select *,
             (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
            $sql_common
            limit $from_record, $rows ";
+if ($od_status) {
+  if ($show_all == 'Y' && $od_status == '출고준비') {
+    $sql = preg_replace('/limit (.*)/i', '', $sql);
+  }
+}
+
 $result = sql_query($sql);
 
 $orderlist = array();
@@ -629,7 +639,9 @@ foreach($orderlist as $order) {
 
     $class_c1 = $prodBarNumCntBtnStatus = '';
     $prodBarNumCntBtnWord = $result_ct['ct_barcode_insert']."/".$result_ct['ct_qty'];
-    if($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) {
+    if ($result_ct['ct_barcode_insert_not_approved'] > 0) {
+      $prodBarNumCntBtnStatus = " approveRequired";
+    } else if ($result_ct['ct_barcode_insert'] >= $result_ct['ct_qty']) {
       $prodBarNumCntBtnWord = "입력완료";
       $class_c1 = 'complete1';
       $prodBarNumCntBtnStatus = 'disable';

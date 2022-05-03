@@ -19,6 +19,8 @@ else {
 }
 // $carts = get_carts_by_od_id($od_id, 'Y', " AND ct_status = '출고준비' ", null);
 
+$show_direct_delivery_only = $_COOKIE['show_direct_delivery_only'];
+
 $delivery_cnt = 0; // 배송목록 카운트
 $delivery_input_cnt = 0; // 입력
 $edi_success_cnt = 0; // 전송
@@ -98,7 +100,14 @@ $partners = get_partner_members();
   #prodBarNumFormWrap > .tableWrap > table thead > tr > th { border-top: 1px solid #3366CC; border-bottom: 1px solid #3366CC; padding: 10px 0; font-weight: bold; font-size: 13px; }
   #prodBarNumFormWrap > .tableWrap > table tbody > tr > td { border-left: 0; border-right: 0; padding: 10px; vertical-align: top; }
   #prodBarNumFormWrap > .tableWrap > table tbody > tr:last-of-type > td { border-bottom: 0; }
-  
+  .btn_send_direct_delivery { 
+    width: 100px; 
+    height: 25px;
+    background-color: #3366CC; 
+    margin-left: 10px;
+    color: white;
+  }
+
   #prodBarNumBtnWrap { width: 100%; height: 60px; float: left; background-color: #F1F1F1; padding: 10px; }
   #prodBarNumBtnWrap > button { width: 100px; height: 40px; line-height: 28px; float: left; font-size: 13px; font-weight: bold; color: #FFF; background-color: #333; margin-left: 5px; }
   #prodBarNumBtnWrap > button:first-of-type { margin-left: 0; }
@@ -146,12 +155,15 @@ $partners = get_partner_members();
   <input type="hidden" name="od_id" value="<?=$od["od_id"]?>">
   
   <div class="titleWrap">
-    배송정보입력
+    배송정보입력 
     <span>
       <?php echo $deliveryCntBtnWord; ?>
     </span>
     <label style="font-size:12px; margin-left:10px;">
       <input type="checkbox" id="show_release_ready_only" <?php echo ($show_release_ready_only == 'Y' ? 'checked' : '')?>> 출고준비만 보기
+    </label>
+    <label style="font-size:12px; margin-left:10px;">
+      <input type="checkbox" id="show_direct_delivery_only" <?php echo ($show_direct_delivery_only == 'Y' ? 'checked' : '')?>> 물류출고만 보기
     </label>
     <button type="button" class="btn_boxpacker_apply" data-apply="1">합포 적용</button>
     <button type="button" class="btn_boxpacker">합포 자동계산</button>
@@ -206,6 +218,9 @@ $partners = get_partner_members();
           }
 
           for($k = 0; $k < count($options); $k++) {
+            if ($show_direct_delivery_only == 'Y') {
+              if ($options[$k]['ct_is_direct_delivery']) continue;
+            }
             $delivery_num_arr = explode('|', $options[$k]["ct_delivery_num"]);
         ?>
           <tr data-price="<?=$options[$k]["it_delivery_price"]?>" data-cnt="<?=$options[$k]["it_delivery_cnt"]?>">
@@ -232,29 +247,39 @@ $partners = get_partner_members();
               <select id="select_delivery_company" class="frm_input" name="ct_delivery_company_<?=$options[$k]["ct_id"]?>" data-ct-id="<?=$options[$k]["ct_id"]?>">
                 <option value="">선택하세요.</option>
               <?php foreach($delivery_companys as $data){ ?>
-                <option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"] || $options[$k]["it_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
+                <option value="<?=$data["val"]?>" <?=($options[$k]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
               <?php } ?>
               </select>
             </td>
-            <td id="td_delivery_num_<?=$options[$k]["ct_id"]?>" class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
+            <td id="td_delivery_num_<?=$options[$k]["ct_id"]?>" class="td_delivery_num combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>" data-ct_id="<?=$options[$k]["ct_id"]?>" data-box_type="<?=$options[$k]["ct_delivery_box_type"]?>">
               <input type="text" value="<?=$delivery_num_arr[0]?>" class="frm_input" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>[]">
               <?php
-                if ($options[$k]['it_delivery_company'] == 'lotteglogis' || $options[$k]['ct_delivery_company'] == 'lotteglogis') {
+                if ($options[$k]['ct_delivery_company'] == 'lotteglogis') {
                   $box_cnt = $options[$k]["ct_delivery_cnt"];
-                  for ($m=1; $m<$box_cnt; $m++) {
+                  for ($m = 1; $m < $box_cnt; $m++) {
                     $delivery_num = '';
                     if ($delivery_num_arr[$m])
                       $delivery_num = $delivery_num_arr[$m];
                     $input_name = "ct_delivery_num_" . $options[$k]["ct_id"] . "[]";
                     echo '<input type="text" value="' . $delivery_num . '" class="frm_input" name="' . $input_name . '">';
                   }
+              ?>
+                <select class="box_size_option" name="box_size_option" style="width: 100%">
+                  <option value="A" <?php echo $options[$k]["ct_delivery_box_type"] == 'A' ? 'selected' : ''  ?> >A(~100cm ~10kg)</option>
+                  <option value="B" <?php echo $options[$k]["ct_delivery_box_type"] == 'B' ? 'selected' : ''  ?> >B(~120cm ~15kg)</option>
+                  <option value="C" <?php echo $options[$k]["ct_delivery_box_type"] == 'C' ? 'selected' : '' ?> >C(~140cm ~20kg)</option>
+                  <option value="D" <?php echo $options[$k]["ct_delivery_box_type"] == 'D' ? 'selected' : '' ?> >D(~160cm ~25kg)</option>
+                  <option value="E" <?php echo $options[$k]["ct_delivery_box_type"] == 'E' ? 'selected' : '' ?> >E(~180cm ~28kg)</option>
+                  <option value="F" <?php echo $options[$k]["ct_delivery_box_type"] == 'F' ? 'selected' : '' ?> >F(~200cm ~30kg)</option>
+                </select>
+              <?php
                 }
               ?>
             </td>
             <td class="combine combine_n <?php if(!$options[$k]['ct_combine_ct_id']) echo ' active ';?>">
               <?php
                 $show_btn = false;
-                if ($options[$k]['it_delivery_company'] == 'lotteglogis' || $options[$k]['ct_delivery_company'] == 'lotteglogis') { 
+                if ($options[$k]['ct_delivery_company'] == 'lotteglogis') { 
                   $show_btn = true;
                 }
               ?>
@@ -266,6 +291,7 @@ $partners = get_partner_members();
                 foreach($carts as $c) {
                   foreach($c['options'] as $o) {
                     if ($o['ct_id'] === $options[$k]['ct_id']) continue;
+                    if ($o['ct_status'] !== '출고준비') continue;
                 ?>
                 <option value="<?php echo $o['ct_id']; ?>" <?php echo ($options[$k]['ct_combine_ct_id'] === $o['ct_id']) ? ' selected ' : '' ; ?>>
                   <?php
@@ -336,6 +362,7 @@ $partners = get_partner_members();
                 name="ct_direct_delivery_partner_<?=$options[$k]["ct_id"]?>"
                 class="frm_input"
                 style="width: 100px"
+                data-ct-id="<?=$options[$k]["ct_id"]?>"
               >
                 <option value="">파트너선택</option>
                 <?php foreach($partners as $partner) { ?>
@@ -343,6 +370,23 @@ $partners = get_partner_members();
                 <?php } ?>
               </select>
               1개당 <input type="text" value="<?=$options[$k]['ct_direct_delivery_price']?>" class="frm_input" name="ct_direct_delivery_price_<?=$options[$k]["ct_id"]?>" style="width: 80px;"> 원 (VAT 포함)
+              <button type="button" class="btn_send_direct_delivery" id="btn_send_direct_delivery" data-ct-id="<?=$options[$k]["ct_id"]?>">직배송 전송</button>
+              <?php $display = ($carts[$i]['ct_send_direct_delivery'] ? "display=''" : "display='none'") ?>
+              <?php 
+                $text = '';
+                if ($carts[$i]['ct_send_direct_delivery']) {
+                  if (!$carts[$i]['ct_send_direct_delivery_fax'] && !$carts[$i]['ct_send_direct_delivery_email']) {
+                    $text = '발주전송(지정된 전송방법이 없어 전송 실패)';
+                  } else if ($carts[$i]['ct_send_direct_delivery_fax'] && !$carts[$i]['ct_send_direct_delivery_email']) {
+                    $text = "발주전송(Fax : {$carts[$i]['ct_send_direct_delivery_fax']})";
+                  } else if (!$carts[$i]['ct_send_direct_delivery_fax'] && $carts[$i]['ct_send_direct_delivery_email']) {
+                    $text = "발주전송(Email : {$carts[$i]['ct_send_direct_delivery_email']})";
+                  } else {
+                    $text = "발주전송(Fax : {$carts[$i]['ct_send_direct_delivery_fax']}, Email : {$carts[$i]['ct_send_direct_delivery_email']})";
+                  }
+                }
+              ?>
+              <span id="send_direct_delivery_result" style="<?=$display?>;"><?=$text?></span>
             </td>
           </tr>
         <?php
@@ -383,21 +427,38 @@ $partners = get_partner_members();
     // 택배사 변경 
     $("select[id='select_delivery_company']").change(function() {
       var ct_id = $(this).attr('data-ct-id');
-      if (this.value == 'lotteglogis') {
-        var box_cnt = $(`input[name=ct_delivery_cnt_${ct_id}`).val();
+      if (this.value === 'lotteglogis') {
+        var box_cnt = $('input[name=ct_delivery_cnt_' + ct_id + ']').val();
         var html = '';
         html += '<input type="text" value="" class="frm_input" name="">';
 
-        for (var i=1; i<box_cnt; i++) {
-          $(`#td_delivery_num_${ct_id}`).append(html);
+        for (var i = 1; i < box_cnt; i++) {
+          $('#td_delivery_num_' + ct_id).append(html);
+          //$('#td_delivery_num_' + ct_id + ' .box_size_option').before(html);
+        }
+
+        var boxSizeSelectHtml = '';
+        boxSizeSelectHtml += '<select class="box_size_option" name="box_size_option" style="width: 100%">';
+        boxSizeSelectHtml += '  <option value="A">A(~100cm ~10kg)</option>';
+        boxSizeSelectHtml += '  <option value="B">B(~120cm ~15kg)</option>';
+        boxSizeSelectHtml += '  <option value="C">C(~140cm ~20kg)</option>';
+        boxSizeSelectHtml += '  <option value="D">D(~160cm ~25kg)</option>';
+        boxSizeSelectHtml += '  <option value="E">E(~180cm ~28kg)</option>';
+        boxSizeSelectHtml += '  <option value="F">F(~200cm ~30kg)</option>';
+        boxSizeSelectHtml += '</select>';
+
+        $('#td_delivery_num_' + ct_id).append(boxSizeSelectHtml);
+
+        var boxType = $(this).closest('tr').find('.td_delivery_num').data('box_type');
+        if (boxType) {
+          $(this).closest('tr').find('.box_size_option').val(boxType);
         }
 
         $('.lotte_api_send').show();
-      }
-      else {
-        var children = $(`#td_delivery_num_${ct_id}`).children().length;
+      } else {
+        var children = $('#td_delivery_num_' + ct_id).children().length;
         if (children > 1) {
-          $(`#td_delivery_num_${ct_id}`).children().not(':first').remove();
+          $('#td_delivery_num_' + ct_id).children().not(':first').remove();
         }
         $('.lotte_api_send').hide();
       }
@@ -431,12 +492,18 @@ $partners = get_partner_members();
     $(document).on("click", ".lotte_api_send", function(e){
       e.preventDefault();
       var ct_id = $(this).attr('data-ct-id');
+      var box_size = $(this).closest('tr').find('.box_size_option').val();
+
+      console.log(box_size);
+      return;
+
       if (!$(this).prop('disabled')) {
         $.ajax({
           method: 'POST',
           url: './ajax.order.delivery.lotte.php',
           data: {
             ct_id: ct_id,
+            box_size: box_size,
           }
         }).done(function (data) {
           // return false;
@@ -445,6 +512,39 @@ $partners = get_partner_members();
           }
         });
       }
+    });
+
+    //직배송 전송
+    $("#btn_send_direct_delivery").click(function() {
+      // console.log($(this).data('ct-id'));
+      var ct_id = $(this).data('ct-id');
+      var partner_id = $('select[name=ct_direct_delivery_partner_' + ct_id + '] option:selected').val();
+      if (!partner_id) {
+        alert('파트너를 선택하세요');
+        return false;
+      }
+      // window.open(`ajax.send_direct_delivery.php?ct_id=${ct_id}&partner_id=${partner_id}`);
+      // return;
+      $.ajax({
+          method: "POST",
+          url: "ajax.send_direct_delivery.php",
+          data: {
+            'ct_id': ct_id,
+            'partner_id': partner_id
+          },
+      })
+      .done(function(data) {
+        if ( data.msg ) {
+            alert(data.msg);
+        }
+        if ( data.result === 'success' ) {
+            location.reload();
+        }
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      })
     });
 
     $("#prodBarNumSaveBtn").click(function() {
@@ -584,6 +684,17 @@ $partners = get_partner_members();
           window.location.search += '&show_release_ready_only=N';
         }
       }
+    });
+
+    // 물류출고만(위탁체크안됨만) 보기
+    $("#show_direct_delivery_only").click(function() {
+      if ($(this).is(":checked")) {
+        $.cookie('show_direct_delivery_only', 'Y', { expires: 365 })
+      }
+      else {
+        $.cookie('show_direct_delivery_only', 'N', { expires: 365 })
+      }
+      location.reload();
     });
   });
 </script>

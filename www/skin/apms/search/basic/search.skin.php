@@ -148,11 +148,16 @@ include_once($skin_path.'/search.skin.form.php');
 			<?php if($list[$i]["prodSupYn"] == "N"){ ?>
 				<p class="sup">비유통 상품</p>
 			<?php } ?>
-				<p class="img">
-				<?php if($img["src"]){ ?>
-					<img src="<?=$img["src"]?>" alt="<?=$list[$i]["it_name"]?>_상품이미지">
-				<?php } ?>
-				</p>
+				<div class="img_wrap">
+					<p class="img">
+					<?php if($img["src"]){ ?>
+						<img src="<?=$img["src"]?>" alt="<?=$list[$i]["it_name"]?>_상품이미지">
+					<?php } ?>
+					</p>
+					<?php if($list[$i]["it_expected_warehousing_date"] !== ""){ ?>
+						<div class="item-expected-warehousing-date"><?php echo $list[$i]["it_expected_warehousing_date"];?></div> 
+					<?php } ?>
+				</div>
 				<p class="name">
           <?=$list[$i]["it_name"]?> <?="({$gubun_text})"?></p>
 			<?php if($list[$i]["it_model"]){ ?>
@@ -160,7 +165,7 @@ include_once($skin_path.'/search.skin.form.php');
 			<?php } ?>
 
 
-            <?php if($_COOKIE["viewType"] !== "basic"){ ?>
+            <?php if($_COOKIE["viewType"] !== "basic" && !in_array($member['mb_type'], ['partner', 'normal'])){ ?>
                 <p class="discount">
                     <?=number_format($list[$i]["it_cust_price"])?>원
                 </p>
@@ -168,8 +173,8 @@ include_once($skin_path.'/search.skin.form.php');
             <p class="price">
                     <?php
                     if($member["mb_id"]){
-                        if($_COOKIE["viewType"] == "basic"){
-                                echo number_format($list[$i]["it_cust_price"])."원";
+                        if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])){
+                            echo number_format($list[$i]["it_cust_price"])."원";
                         }else{
 							if($list[$i]["entprice"]) {
 								echo number_format($list[$i]["entprice"]).'원';
@@ -188,8 +193,6 @@ include_once($skin_path.'/search.skin.form.php');
                     }
                 ?>
             </p>
-
-
 			</a>
 			<div class="it_type_box">
         <?php if($list[$i]['it_type1']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type1_color']?>; color:<?=$default['de_it_type1_color']?>;"><?=$default['de_it_type1_name']?></p><?php } ?>

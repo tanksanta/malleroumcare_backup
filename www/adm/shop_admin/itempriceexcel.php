@@ -10,6 +10,14 @@ $sql = "
     WHERE mb_manager = '{$member['mb_id']}'
     ORDER BY mb_id ASC
 ";
+if ($is_admin == 'super') {
+  $sql = "
+    SELECT * FROM g5_member
+    WHERE mb_entId != '' AND mb_type in ('default', 'partner')
+    ORDER BY mb_id ASC
+  ";
+}
+
 $result = sql_query($sql);
 
 $ents = [];

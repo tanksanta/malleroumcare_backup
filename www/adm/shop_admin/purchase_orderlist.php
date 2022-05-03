@@ -11,6 +11,9 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
+
+// 스마트 발주
+$_SESSION['smart_purchase_data'] = json_decode(html_entity_decode(stripslashes($smart_purchase_data)));
 ?>
 <style>
 #text_size {
@@ -334,20 +337,9 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 
 <script>
 $(function() {
-  
-  $(document).on("click", "#order_add", function (e) {
-    e.preventDefault();
-
-    $("#popup_order_add > div").html("<iframe src='./pop.purchase.order.add.php'></iframe>");
-    $("#popup_order_add iframe").load(function(){
-      $("#popup_order_add").show();
-      $('#hd').css('z-index', 3);
-      $('#popup_order_add iframe').contents().find('.mb_id_flexdatalist').focus();
-    });
-    
-  });
-
-  // $('#order_add').click();
+  <?php if (isset($_SESSION['smart_purchase_data'])) { ?>
+    $('#order_add').click();
+  <?php } ?>
 });
 
 var od_status = '';
@@ -1008,7 +1000,7 @@ if( function_exists('pg_setting_check') ){
 <!--</div>-->
 
 <div class="btn_fixed_top2" style="bottom: 0;">
-  <a href="./purchase_order_new.php" id="order_add" class="btn btn_01">발주서 추가</a>
+  <a href="javascript:void(0);" id="order_add" onclick="popAddOrder()" class="btn btn_01">발주서 추가</a>
   <input type="button" value="더보기" onclick="doSearch()" class="btn btn_02">
 </div>
 
@@ -1192,6 +1184,15 @@ $('#form_delivery_excel_upload').submit(function(e) {
       alert(data && data.message);
     });
 });
+
+function popAddOrder() {
+  $("#popup_order_add > div").html("<iframe src='./pop.purchase.order.add.php'></iframe>");
+  $("#popup_order_add iframe").load(function(){
+    $("#popup_order_add").show();
+    $('#hd').css('z-index', 3);
+    $('#popup_order_add iframe').contents().find('.mb_id_flexdatalist').focus();
+  });
+}
 </script>
 
 <?php

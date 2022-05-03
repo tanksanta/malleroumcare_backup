@@ -17,8 +17,8 @@ if( !in_array($sel_field, array('od_all', 'it_name', 'ct_option', 'it_admin_memo
 }
 
 $replace_table = array(
-  'od_id' => 'o.od_id',
-  'it_name' => 'i.it_name',
+  'od_id' => 'c.od_id',
+  'it_name' => 'c.it_name',
   'mb_id' => 'c.mb_id'
 );
 $sel_field = $replace_table[$sel_field] ?: $sel_field;
@@ -70,18 +70,18 @@ if ($search_add_add != "") {
 
 // 전체 검색
 if ($sel_field == 'od_all' && $search != "") {
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
+  $sel_arr = array('c.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'c.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', /*'barcode',*/ 'prodMemo', 'od_memo');
 
   foreach ($sel_arr as $key => $value) {
-    if($value=="barcode") {
-      $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search."'";
+    if ($value == "barcode") {
+      $sql_barcode_search = "select `stoId` from `g5_barcode_log` where `barcode` = '" . $search . "'";
       $result_barcode_search = sql_query($sql_barcode_search);
       $or = "";
-      while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
-        $bacode_search .= $or." `o.stoId` like '%".$row_barcode['stoId']."%' ";
+      while ($row_barcode = sql_fetch_array($result_barcode_search)) {
+        $bacode_search .= $or . " `o.stoId` like '%" . $row_barcode['stoId'] . "%' ";
         $or = "or";
       }
-      if($bacode_search) {
+      if ($bacode_search) {
         $sel_arr[$key] = $bacode_search;
       } else {
         $sel_arr[$key] = "o.stoId like '%$search%'";
@@ -96,7 +96,7 @@ if ($sel_field == 'od_all' && $search != "") {
 
 // 전체 검색2
 if ($sel_field_add == 'od_all' && $search_add != "") {
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
+  $sel_arr = array('c.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'c.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', /*'barcode',*/ 'prodMemo', 'od_memo');
 
   foreach ($sel_arr as $key => $value) {
     if($value=="barcode") {
@@ -120,40 +120,19 @@ if ($sel_field_add == 'od_all' && $search_add != "") {
   $where[] = "(".implode(' or ', $sel_arr).")";
 }
 
-// 전체 검색3
-if ($sel_field_add_add == 'od_all' && $search_add_add != "") {
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
-
-  foreach ($sel_arr as $key => $value) {
-    if($value=="barcode") {
-      $sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search_add_add."'";
-      $result_barcode_search = sql_query($sql_barcode_search);
-      $or = "";
-      while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
-        $bacode_search .= $or." `o.stoId` like '%".$row_barcode['stoId']."%' ";
-        $or = "or";
-      }
-      if($bacode_search) {
-        $sel_arr[$key] = $bacode_search;
-      } else {
-        $sel_arr[$key] = "o.stoId like '%$search_add_add%'";
-      }
-    } else {
-      $sel_arr[$key] = "$value like '%$search_add_add%'";
-    }
-  }
-
-  $where[] = "(".implode(' or ', $sel_arr).")";
-}
-
 // 출고준비 3일경과만 보기
-if($issue_1) {
+if ($issue_1) {
   $where[] = " ( ct_status = '출고준비' and DATE(ct_move_date) <= (CURDATE() - INTERVAL 3 DAY ) ) ";
 }
 
 // 취소/반품요청 있는 주문만 보기
-if($issue_2) {
+if ($issue_2) {
   $where[] = " ( select count(*) from g5_shop_order_cancel_request where approved = 0 and od_id = o.od_id ) > 0 ";
+}
+
+// 미재고 바코드 입력만 보기
+if ($issue_3) {
+  $where[] = " ( ct_barcode_insert_not_approved > 0 ) ";
 }
 
 // 바코드 입력완료, 미입력
@@ -434,7 +413,8 @@ $sql_common .= $sql_search;
 $sql = " select count(*) as cnt " . $sql_common;
 $row = sql_fetch($sql, true);
 $total_count = $row['cnt'];
-$rows = $config['cf_page_rows'];
+//$rows = $config['cf_page_rows'];
+$rows = 75;
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -667,7 +647,10 @@ foreach($orderlist as $order) {
   }
   $prodBarNumCntBtnStatus = '';
   $prodBarNumCntBtnWord = $order['ct_barcode_insert']."/".$order['ct_qty'];
-  if($order['ct_barcode_insert'] >= $order['ct_qty']) {
+
+  if ($order['ct_barcode_insert_not_approved'] > 0) {
+    $prodBarNumCntBtnStatus = " approveRequired";
+  } else if ($order['ct_barcode_insert'] >= $order['ct_qty']) {
     $prodBarNumCntBtnWord = '입력완료';
     $prodBarNumCntBtnStatus = " disable";
   }
@@ -752,7 +735,7 @@ foreach($orderlist as $order) {
 
   $od_release_out = '-';
 
-  $direct_delivery_partner_text = $order['ct_direct_delivery_partner'] ? " ({$order['ct_direct_delivery_partner']})" : '';
+  $direct_delivery_partner_text = $order['ct_direct_delivery_partner'] ? " ({$order['ct_direct_delivery_partner']})" : '(미지정)';
   switch($order['ct_is_direct_delivery']) {
     case 1:
       $direct_delivery_text = '배송'.$direct_delivery_partner_text;
@@ -781,6 +764,19 @@ foreach($orderlist as $order) {
   }
   if($order['ct_is_delivery_excel_downloaded']) {
     $direct_delivery_text .= "<br><span id='excel_done' class='excel_done' data-ct-id='{$order['ct_id']}' style='color: #FF6600'>엑셀 다운로드 완료</span>";
+  }
+  if($order['ct_send_direct_delivery']) {
+    $send_direct_delivery = '발주전송';
+    if ($order['ct_send_direct_delivery_fax'] && $order['ct_send_direct_delivery_email']) {
+      $send_direct_delivery .= '(Fax,Email)';
+    }
+    else if ($order['ct_send_direct_delivery_fax'] && !$order['ct_send_direct_delivery_email']) {
+      $send_direct_delivery .= '(Fax)';
+    }
+    else if (!$order['ct_send_direct_delivery_fax'] && $order['ct_send_direct_delivery_email']) {
+      $send_direct_delivery .= '(Email)';
+    }
+    $direct_delivery_text .= "<br><span id='send_direct_delivery_done' class='send_direct_delivery_done' data-ct-id='{$order['ct_id']}' style='color: #FF6600'>{$send_direct_delivery}</span>";
   }
 
   // 출고준비로 변경 후 3일 지난 주문 강조

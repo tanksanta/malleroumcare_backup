@@ -86,16 +86,22 @@ if ($button_type) {
     case 'normal' :
       $sql_search .= " (mb_type = 'normal') ";
       break;
+    case 'block' :
+      $sql_search .= " (mb_order_approve = 0) ";
+      break;
   }
   $sql_search .= " ) ";
+  $qstr .= "&amp;button_type=$button_type";
 }
 
 if ($fr_datetime && $to_datetime) {
   $sql_search .= " and ( mb_datetime between '$fr_datetime 00:00:00' and '$to_datetime 23:59:59' )";
+  $qstr .= "&amp;fr_datetime=$fr_datetime&amp;to_datetime=$to_datetime";
 }
 
 if ($fr_updatedatetime && $to_updatedatetime) {
   $sql_search .= " and ( mb_update_date between '$fr_updatedatetime 00:00:00' and '$to_updatedatetime 23:59:59' )";
+  $qstr .= "&amp;fr_updatedatetime=$fr_updatedatetime&amp;to_updatedatetime=$to_updatedatetime";
 }
 
 if ($_GET['mb_level']) {
@@ -106,6 +112,7 @@ if ($_GET['mb_level']) {
   $sql_search .= " (mb_level like '%{$mb_level}') ";
 
   $sql_search .= " ) ";
+  $qstr .= "&amp;mb_level=$mb_level";
 }
 
 if ($is_admin != 'super')
@@ -190,6 +197,13 @@ $sql = " select count(*) as cnt {$sql_common} WHERE (
 $row = sql_fetch($sql);
 $normal_count = $row['cnt'];
 
+// 주문정지 회원 수
+$sql = " select count(*) as cnt {$sql_common} WHERE (
+  mb_order_approve = 0
+)";
+$row = sql_fetch($sql);
+$block_count = $row['cnt'];
+
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 
 $g5['title'] = '회원관리';
@@ -240,6 +254,7 @@ $stx=$stx2;
   <button type="button" class="mb_button <?php echo $button_type === 'default' ? 'active' : ''; ?>" data-value="default">사업소 (<?php echo $default_count; ?>)</button>
   <button type="button" class="mb_button <?php echo $button_type === 'vip' ? 'active' : ''; ?>" data-value="vip">VIP사업소 (<?php echo $vip_count; ?>)</button>
   <button type="button" class="mb_button <?php echo $button_type === 'normal' ? 'active' : ''; ?>" data-value="normal">일반회원 (<?php echo $normal_count; ?>)</button>
+  <button type="button" class="mb_button <?php echo $button_type === 'block' ? 'active' : ''; ?>" data-value="block">주문정지 회원 (<?php echo $block_count; ?>)</button>
 </div>
 
 <div class="local_sch03 local_sch">
@@ -831,39 +846,7 @@ $( document ).ready(function() {
   });
 
   $("#mbexcel").click(function(){
-
-    var checked = $('.tbl_mblist td input[type=checkbox]:checked');
-
-    var mb_ids = [];
-
-    $.map(checked, function(v, i) {
-      var mb_id = $(v).closest('td').find('.mb_id_input').val();
-      mb_ids.push(mb_id);
-    });
-
-    if (!mb_ids.length) {
-      $('#fsearch').attr("action", "./excel_mb.php");
-      // use_excel = true;
-      $('#fsearch').submit();
-      return;
-    }
-
-    var form = document.createElement('form');
-    form.method = 'post';
-    form.action = 'excel_mb.php';
-
-    if (mb_ids.length) {
-      for (var i=0; i<mb_ids.length; i++) {
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'mb_ids[]';
-        input.value = mb_ids[i];
-        document.body.appendChild(input);
-        form.appendChild(input);
-      }
-    }
-    document.body.appendChild(form);
-    form.submit();
+    window.location.href="./excel_mb.php" + window.location.search;
   });
 
   $(".temp_accept").click(function() {

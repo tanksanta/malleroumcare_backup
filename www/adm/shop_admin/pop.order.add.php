@@ -313,6 +313,24 @@ $(function() {
         setTimeout(function () { focusedElement.select(); }, 100); //select all text in any field on focus for easy re-entry. Delay sightly to allow focus to "stick" before selecting.
     });
 
+    var interval = null;
+    $(document).on('blur', '.flexdatalist-alias', function () {
+        if (interval) {
+            clearInterval(interval);
+        }
+        interval = setInterval(() => {
+            if ($('.flexdatalist-results').length) {
+                $('.flexdatalist-results').remove();
+                clearInterval(interval);
+            }
+        }, 100);
+        setTimeout(function () { 
+            if (interval) {
+                clearInterval(interval);
+            }
+        }, 1000);
+    });
+
     $(document).on('keydown','input',function (e) {
         var input_names = ["flexdatalist-it_name[]", "qty[]", "it_price[]", "memo[]"];
         var name = $(this).attr("name");
@@ -480,6 +498,12 @@ $(function() {
             var $item = {};
             $item = $('<span>')
                 .html(item.mb_name + " (" + item.mb_nick + ")");
+            
+            // 주문정지기업 검색은 되나 선택은 안되도록
+            if(item.mb_order_approve != 1) {
+                $li.removeClass('item').addClass('group').removeAttr('role').removeAttr('tabindex');
+                $('<span style="float: right">주문정지 기업</span>').appendTo($item);
+            }
 
             $item.appendTo($li);
             return $li;
@@ -595,7 +619,9 @@ $(function() {
         // var io_price = $(this).find('option:selected').data('price');
         var io_price = $(parent).find('.it_option option:selected').data('price');
         var price = $(parent).find('.price').val();
-        var it_price = parseInt(price || 0) + parseInt(io_price || 0);
+
+        var it_price = parseInt($(parent).find('input[name="it_price[]"]').val().replace(/[\D\s\._\-]+/g, "")) || 0;
+        // var it_price = parseInt(price || 0) + parseInt(io_price || 0);
         it_price = it_price ? parseInt( it_price, 10 ) : 0;
         var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
         qty = qty ? parseInt( qty, 10 ) : 0;

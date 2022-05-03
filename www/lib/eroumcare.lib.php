@@ -96,8 +96,12 @@ function get_carts_by_od_id($od_id, $delivery_yn = null, $where = null, $order_b
 					b.it_delivery_price,
           b.it_delivery_company,
 					a.ct_delivery_cnt,
+					a.ct_delivery_box_type,
 					a.ct_delivery_price,
-					a.ct_is_direct_delivery
+					a.ct_is_direct_delivery,
+          a.ct_send_direct_delivery,
+          a.ct_send_direct_delivery_fax,
+          a.ct_send_direct_delivery_email
 			  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
 			  $delivery_where
@@ -145,6 +149,7 @@ function get_carts_by_od_id($od_id, $delivery_yn = null, $where = null, $order_b
 						b.it_delivery_price,
             b.it_delivery_company,
 						a.ct_delivery_cnt,
+						a.ct_delivery_box_type,
 						a.ct_delivery_price,
 						a.it_name,
 						a.ct_delivery_company,
@@ -158,7 +163,8 @@ function get_carts_by_od_id($od_id, $delivery_yn = null, $where = null, $order_b
             b.it_taxInfo,
 						prodMemo,
             b.ca_id,
-            a.ct_barcode_insert
+            a.ct_barcode_insert,
+            b.it_price
 					from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 					where a.od_id = '{$od_id}'
 						and a.it_id = '{$row['it_id']}'
@@ -1110,7 +1116,7 @@ function add_fcmtoken($fcm_token) {
   $mb_fcm = sql_fetch($sql);
 
   if ($mb_fcm['fcm_id'] && $member['mb_id']) {
-		$sql = "UPDATE g5_firebase SET mb_id = '{$member['mb_id']}', updated_at = now() WHERE fcm_token = '{$fcm_token}'";
+		$sql = "UPDATE g5_firebase SET mb_id = '{$member['mb_id']}', login_yn = 1, updated_at = now() WHERE fcm_token = '{$fcm_token}'";
 		return sql_query($sql);
   }
 
@@ -1176,7 +1182,7 @@ function get_token_by_id($mb_id) {
 
   if (!$mb_id) return array();
 
-  $sql = "SELECT fcm_token FROM g5_firebase WHERE mb_id = '{$mb_id}'";
+  $sql = "SELECT fcm_token FROM g5_firebase WHERE mb_id = '{$mb_id}' AND login_yn = 1";
   $result = sql_query($sql);
 
   $tokens = array();
@@ -1343,6 +1349,15 @@ function ct_manager_update($ct_id,$ct_manager){
     // );
 
     $sql_ct = "UPDATE `g5_shop_cart` SET `ct_manager`='".$ct_manager."' where `ct_id` = '".$ct_id."'";
+    sql_query($sql_ct);
+}
+
+function ct_warehouse_update($ct_id, $ct_warehouse){
+
+    $sql = "SELECT * FROM `g5_shop_cart` WHERE ct_id = '{$ct_id}'";
+    $cart = sql_fetch($sql);
+
+    $sql_ct = "UPDATE `g5_shop_cart` SET `ct_warehouse`='".$ct_warehouse."' where `ct_id` = '".$ct_id."'";
     sql_query($sql_ct);
 }
 
@@ -1685,7 +1700,13 @@ function set_tutorial($type = 'recipient_add', $state = 0, $data = null) {
 }
 
 // 파트너 회원 목록 가져오기
-function get_partner_members() {
+function get_partner_members($partner_type = null) {
+  $partner_type_where = '';
+
+  if ($partner_type) {
+    $partner_type_where = " and mb_partner_type like '%{$partner_type}%'";
+  }
+
   $sql = "
     SELECT
       *
@@ -1695,6 +1716,7 @@ function get_partner_members() {
       mb_type = 'partner' and
       mb_partner_auth = 1 and
       mb_partner_date >= NOW()
+      {$partner_type_where}
   ";
 
   $result = sql_query($sql);
@@ -1712,7 +1734,7 @@ function get_partner_members() {
 }
 
 // 파트너 거래처원장
-function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '', $search = '', $sql_search = '', $contain_purchase = false) {
+function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '', $search = '', $sql_search = '', $contain_purchase = true) {
   $where_order = $where_ledger = '';
 
   # 기간
@@ -1768,12 +1790,12 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
       it_name,
       ct_option,
       ct_qty,
-      ct_direct_delivery_price as price_d,
+      IF(io_type = 1, io_price, (ct_price + io_price)) AS price_d,
       ROUND (
-         ct_direct_delivery_price / 1.1
+         IF(io_type = 1, io_price, (ct_price + io_price)) / 1.1
       ) * ct_qty as price_d_p,
       ROUND (
-        ct_direct_delivery_price / 1.1 / 10
+        IF(io_type = 1, io_price, (ct_price + io_price)) / 1.1 / 10
       ) * ct_qty as price_d_s,
       0 as deposit,
       od_b_name,
@@ -1786,7 +1808,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
     LEFT JOIN
       g5_member m ON c.mb_id = m.mb_id
     WHERE
-      ct_status = '발주대기' and
+      ct_status = '입고완료' and
       od_del_yn = 'N' and
       ct_supply_partner = '{$mb_id}'
       {$sql_search}
@@ -1876,7 +1898,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
   ");
 
   # 이월잔액
-  $carried_balance = get_partner_outstanding_balance($mb_id, $fr_date);
+  $carried_balance = get_partner_outstanding_balance($mb_id, $fr_date, false, false, $contain_purchase);
 
   $ledger = [];
   $balance = $carried_balance;
@@ -1909,7 +1931,7 @@ function get_partner_ledger($mb_id, $fr_date = '', $to_date = '', $sel_field = '
 // 파트너 거래처원장 - 미수금 합계
 // fr_date 값이 있을 경우 해당 일 까지의 이월잔액
 // total_price_only: true - 총 구매액, false - 총 미수금
-function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false, $current_month_only = false) {
+function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_only = false, $current_month_only = false, $contain_purchase = true) {
   global $g5;
 
   $where_date = '';
@@ -1939,6 +1961,22 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
       od_del_yn = 'N' and
       ct_is_direct_delivery IN(1, 2) and
       ct_direct_delivery_partner = '{$mb_id}'
+  ";
+
+  # 발주내역
+  $sql_purchase_order = "
+    SELECT
+      ct_qty,
+      IF(io_type = 1, io_price, (ct_price + io_price)) as price_d,
+      0 as deposit
+    FROM
+      purchase_cart c
+    LEFT JOIN
+      purchase_order o ON c.od_id = o.od_id
+    WHERE
+      ct_status = '입고완료' and
+      od_del_yn = 'N' and
+      ct_supply_partner = '{$mb_id}'
   ";
 
   # 입금/출금
@@ -1976,6 +2014,22 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
       ({$sql_ledger} {$where_ledger_date})
     ) u
   ";
+
+  if ($contain_purchase) {
+    $sql = "
+    SELECT
+      sum(ct_qty * price_d) as total_price,
+      sum(deposit) as total_deposit
+    FROM
+    (
+      ({$sql_order} {$where_date})
+      UNION ALL
+      ({$sql_purchase_order} {$where_date})  
+      UNION ALL
+      ({$sql_ledger} {$where_ledger_date})
+    ) u
+  ";
+  }
 
   $result = sql_fetch($sql);
 
@@ -2342,27 +2396,37 @@ function get_manage_stock_count($type) {
       io.io_id, 
       ws.ws_option, 
       IFNULL(sum(ws.ws_qty), '0') AS sum_ws_qty,
-      IFNULL(IF(it.it_stock_manage_min_qty IS NOT NULL, 
-              it.it_stock_manage_min_qty, 
-              ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+      CASE
+        WHEN io.io_stock_manage_min_qty IS NOT NULL AND io.io_stock_manage_min_qty > 0
+          THEN io.io_stock_manage_min_qty 
+        WHEN it.it_stock_manage_min_qty IS NOT NULL AND it.it_stock_manage_min_qty > 0
+          THEN it.it_stock_manage_min_qty
+        ELSE
+          IFNULL(ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
                 WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
                   ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
                 AND ct_status IN {$common_ct_status}
-                AND it_id = it.it_id AND io_id = IFNULL(io.io_id, '')) / 3 * 0.5)
-              ), 0) AS safe_min_stock_qty,
-              IFNULL(IF(it_stock_manage_max_qty IS NOT NULL, 
-              it_stock_manage_max_qty, 
-              ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+                AND it_id = it.it_id AND io_id = IFNULL(io.io_id, '')) / 3 * 0.5), 0)
+      END AS safe_min_stock_qty,
+      CASE
+        WHEN io.io_stock_manage_max_qty IS NOT NULL AND io.io_stock_manage_max_qty > 0
+          THEN io.io_stock_manage_max_qty 
+        WHEN it.it_stock_manage_max_qty IS NOT NULL AND it.it_stock_manage_max_qty > 0
+          THEN it.it_stock_manage_max_qty
+        ELSE
+          IFNULL(ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
                 WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
                   ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
                 AND ct_status IN {$common_ct_status}
-                AND it_id = it.it_id AND io_id = IFNULL(io.io_id, '')) / 3 * 1.5)
-              ), 0) AS safe_max_stock_qty
+                AND it_id = it.it_id AND io_id = IFNULL(io.io_id, '')) / 3 * 1.5), 0)
+      END AS safe_max_stock_qty
     FROM 
       g5_shop_item it
-      LEFT JOIN (SELECT * FROM g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS io ON it.it_id = io.it_id
-      LEFT JOIN (SELECT * FROM warehouse_stock WHERE ws_del_yn = 'N') AS ws ON (it.it_id = ws.it_id AND IFNULL(io.io_id, '')= ws.io_id)
-    GROUP BY it.it_id, io.io_id) AS t
+      LEFT JOIN g5_shop_item_option AS io ON it.it_id = io.it_id AND (io.io_type = '0' AND io.io_use = '1')
+      LEFT JOIN warehouse_stock AS ws ON (it.it_id = ws.it_id AND IFNULL(io.io_id, '') = ws.io_id) AND (ws.ws_del_yn = 'N')
+    GROUP BY it.it_id, io.io_id
+    ORDER BY NULL
+    ) AS t
   WHERE 1 {$where}
   ";
 
@@ -2406,4 +2470,95 @@ function replace_querystring($qstr, $key, $value) {
   $qstr_arr[$key] = $value;
 
   return http_build_query($qstr_arr);
+}
+
+function convert_item_option_to_text($it_option_subject, $io_id) {
+  if (!$io_id) {
+    return '';
+  }
+
+  $io_value = '';
+
+  $it_option_subjects = explode(',', $it_option_subject);
+  $io_ids = explode(chr(30), $io_id);
+
+  for ($g = 0; $g < count($io_ids); $g++) {
+    if ($g > 0) {
+      $io_value .= ' / ';
+    }
+    $io_value .= $it_option_subjects[$g] . ':' . $io_ids[$g];
+  }
+
+  return sql_real_escape_string(strip_tags($io_value));
+}
+
+function get_stock_item_info($it_id, $io_id) {
+  $where = "WHERE it_id = '{$it_id}' ";
+
+  if ($io_id) {
+    $where .= " AND io_id = '{$io_id}' ";
+  }
+
+  $use_warehouse_where_sql = get_use_warehouse_where_sql();
+  $sql = "
+    SELECT
+     T.*
+    FROM
+    (SELECT
+      (SELECT 
+        IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) 
+      FROM warehouse_stock 
+      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' {$use_warehouse_where_sql}) AS sum_ws_qty,
+      (SELECT count(*)
+        FROM g5_cart_barcode
+        WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N' AND ct_id = '0') AS sum_barcode_qty,
+      (SELECT count(*)
+        FROM g5_cart_barcode
+        WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N' AND ct_id = '0' AND checked_at IS NOT NULL) AS sum_checked_barcode_qty,
+      a.*,
+      b.io_type,
+      b.io_id
+    FROM
+      (SELECT
+        it_id,
+        it_name,
+        it_use,
+        it_option_subject,
+        ProdPayCode
+      FROM g5_shop_item i) AS a
+    LEFT JOIN (SELECT * from g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)) AS T 
+    {$where}
+  ";
+
+  return sql_fetch($sql);
+}
+
+function get_use_warehouse_where_sql($use_and = true) {
+  $sql = "SELECT * FROM warehouse WHERE wh_use_yn = 'Y'";
+  $result = sql_query($sql);
+  $wh_name_list = [];
+  $where = ' ';
+
+  if ($use_and) {
+    $where = ' AND';
+  }
+
+  while ($row = sql_fetch_array($result)) {
+    $wh_name_list[] = $row['wh_name'];
+  }
+
+  if (count($wh_name_list) > 0) {
+    $where .= " wh_name in (";
+
+    for ($i = 0; $i < count($wh_name_list); $i++) {
+      $where .= "'{$wh_name_list[$i]}'";
+      if ($i + 1 != count($wh_name_list)) {
+        $where .= ", ";
+      }
+    }
+
+    $where .= ") ";
+  }
+
+  return $where;
 }

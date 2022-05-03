@@ -63,6 +63,7 @@ foreach($ct_id_arr as $ct_id) {
           wh_name = '{$cart['ct_warehouse']}',
           od_id = '$od_id',
           ct_id = '$ct_id',
+          inserted_from = 'purchase_cart',
           ws_created_at = NOW(),
           ws_updated_at = NOW()
       ";

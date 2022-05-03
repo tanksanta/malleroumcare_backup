@@ -176,6 +176,8 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
   if($row['dc_status'] == '11') {
       echo '<a href="' . G5_SHOP_URL . '/eform/signEform.php?dc_id=' . $row["uuid"] . '" class="btn_basic" style="background: #6e9254; color: #fff;">계약서 서명</a>';
       echo '<br>';
+      echo '<a href="' . G5_SHOP_URL . '/eform/renderEform.php?download=1&dc_id=' . $row["uuid"] . '" class="btn_basic">계약서 다운로드</a>';
+      echo '<br>';
       echo '<a href="' . G5_SHOP_URL . '/simple_eform.php?dc_id=' . $row["uuid"] . '" class="btn_basic" style="width: 53px;">수정</a>';
       echo '<a href="javascript:void(0);" class="btn_basic btn_del_eform" data-id="' . $row["uuid"] . '" style="width: 53px;">삭제</a>';
   } else {

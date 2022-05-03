@@ -563,19 +563,21 @@ $(function () {
         menu_id: sub_menu,
       },
     }).done(function (data) {
-      clear_form('#search_detail_table');
+      if (data.data) {
+        clear_form('#search_detail_table');
 
-      var obj = data.data;
-      var keys = Object.keys(obj);
-      var form = $('#search_detail_table');
+        var obj = data.data;
+        var keys = Object.keys(obj);
+        var form = $('#search_detail_table');
 
-      for (_key in obj) {
-        if (Array.isArray(obj[_key])) {
-          $(obj[_key]).each(function (index, item) {
-            set_input_val(form, _key, item);
-          });
-        } else {
-          set_input_val(form, _key, obj[_key]);
+        for (_key in obj) {
+          if (Array.isArray(obj[_key])) {
+            $(obj[_key]).each(function (index, item) {
+              set_input_val(form, _key, item);
+            });
+          } else {
+            set_input_val(form, _key, obj[_key]);
+          }
         }
       }
     });
@@ -609,46 +611,92 @@ $(function () {
     });
   });
 
+  // 일괄 출고담당자 변경
+  $(document).on('click', '#ct_manager_send_all', function () {
+    var ct_id = [];
+    var item = $("input[name='od_id[]']:checked");
+    var type = $(this).data('type');
+    
+    var sb1 = $('#ct_manager_sb').val();
+    if(!sb1){
+        alert('출고담당자를 선택하신 후 변경을 눌러주세요. ');
+        return false;
+    }
 
-    // 일괄 출고담당자 변경
-    $(document).on('click', '#ct_manager_send_all', function () {
-      var ct_id = [];
-      var item = $("input[name='od_id[]']:checked");
-      var type = $(this).data('type');
-      
-      var sb1 = $('#ct_manager_sb').val();
-      if(!sb1){
-          alert('출고담당자를 선택하신 후 변경을 눌러주세요. ');
-          return false;
-      }
+    for (var i = 0; i < item.length; i++) {
+      ct_id.push($(item[i]).val());
+    }
 
-      for (var i = 0; i < item.length; i++) {
-        ct_id.push($(item[i]).val());
+    if (!ct_id.length) {
+      alert('변경하실 주문을 선택해주세요.');
+      return;
+    }
+
+    $.ajax({
+      method: 'POST',
+      url: './ajax.ct_manager.php',
+      data: {
+        ct_id: ct_id,
+        ct_manager: sb1,
+      },
+    }).done(function (data) {
+      // return false;
+      if (data.msg) {
+        alert(data.msg);
       }
-  
-      if (!ct_id.length) {
-        alert('변경하실 주문을 선택해주세요.');
-        return;
-      }
-  
-      $.ajax({
-        method: 'POST',
-        url: './ajax.ct_manager.php',
-        data: {
-          ct_id: ct_id,
-          ct_manager: sb1,
-        },
-      }).done(function (data) {
-        // return false;
-        if (data.msg) {
-          alert(data.msg);
-        }
-        if (data.result === 'success') {
-          alert('출고담당자가 지정되었습니다. ');
+      if (data.result === 'success') {
+        alert('출고담당자가 지정되었습니다.');
+        var arr = $('.ct_manager[data-ct-id="' + ct_id + '"]');
+        if (arr.length === 0) {
           location.reload();
+          return;
         }
-      });
+        $.each(arr, function (index, el) {
+          $(el).val(sb1).prop("selected", true);
+        });
+      }
     });
+  });
+
+  // 일괄 출하창고 변경
+  $(document).on('click', '#ct_warehouse_all', function () {
+    var ct_id = [];
+    var item = $("input[name='od_id[]']:checked");
+    var type = $(this).data('type');
+    
+    var sb1 = $('#ct_warehouse_sb').val();
+    if(!sb1){
+        alert('출하창고를 선택하신 후 변경을 눌러주세요. ');
+        return false;
+    }
+
+    for (var i = 0; i < item.length; i++) {
+      ct_id.push($(item[i]).val());
+    }
+
+    if (!ct_id.length) {
+      alert('변경하실 주문을 선택해주세요.');
+      return;
+    }
+
+    $.ajax({
+      method: 'POST',
+      url: './ajax.ct_warehouse_update.php',
+      data: {
+        ct_id: ct_id,
+        ct_warehouse: sb1,
+      },
+    }).done(function (data) {
+      // return false;
+      if (data.msg) {
+        alert(data.msg);
+      }
+      if (data.result === 'success') {
+        alert('출하창고가 지정되었습니다.');
+        // location.reload();
+      }
+    });
+  });
 
   // 일괄 전송
   $(document).on('click', '#delivery_edi_send_all', function () {

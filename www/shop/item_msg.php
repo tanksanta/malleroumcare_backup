@@ -34,7 +34,7 @@ while($row = sql_fetch_array($result)) {
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>이로움 : 추천품목</title>
-  <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/item_msg.css">
+  <link rel="stylesheet" href="<?php echo THEMA_URL; ?>/assets/css/item_msg.css?v=220221">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <link rel="stylesheet" href="<?php echo G5_JS_URL ?>/font-awesome/css/font-awesome.min.css">
   <?php

@@ -271,7 +271,10 @@ while($wish_row = sql_fetch_array($wish_result)) {
           <?php
           if($member["mb_id"]) {
             if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
-              echo number_format($list[$i]["it_cust_price"])."원 <span class='txt_color_green'>급여가</span>";
+                if (is_benefit_item($list[$i]))
+                    echo number_format($list[$i]["it_cust_price"])."원";
+                else
+                    echo number_format($list[$i]["it_cust_price"])."원 <span class='txt_color_green'>급여가</span>";
             } else {
               if($list[$i]["entprice"]) {
                 echo number_format($list[$i]["entprice"])."원";

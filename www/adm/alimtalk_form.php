@@ -152,7 +152,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <label for="al_itcount">수량</label>
         </th>
         <td>
-            <input type="text" name="al_itcount" value="<?php echo  get_sanitize_input($al['al_itcount']) ?>" id="al_itcount" required class="frm_input" size="10">
+            <input type="text" name="al_itcount" value="<?php echo  get_sanitize_input($al['al_itcount']) ?>" id="al_itcount" <?php echo ($al && $al['al_cate'] == 1) ? 'required' : '' ?> class="frm_input" size="10">
         </td>
     </tr>
     </tbody>
@@ -220,9 +220,11 @@ $('#mb_id').flexdatalist({
 $('input[name="al_cate"]:radio').change(function() {
     if (this.value == 0) {
         $('#num_tr').hide();
+        $('#al_itcount').attr('required', false);
     }
     else {
         $('#num_tr').show();
+        $('#al_itcount').attr('required', true);
     }
 })
 

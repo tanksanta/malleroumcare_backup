@@ -83,7 +83,7 @@ if(isset($type) && $type) {
 if(isset($q) && $q) {
 	$q = get_search_string($q);
 	$trimmed_q = preg_replace("/\s+/", "", $q);
-	$where .= " and (REPLACE(`it_name`, ' ', '') like '%$trimmed_q%' or REPLACE(`pt_tag`, ' ', '') like '%$trimmed_q%') ";
+	$where .= " and (REPLACE(`it_name`, ' ', '') like '%$trimmed_q%' or REPLACE(`ProdPayCode`, ' ', '') like '%$trimmed_q%' or REPLACE(`pt_tag`, ' ', '') like '%$trimmed_q%') ";
 }
 // $where .= " and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%')";
 $ca_sub_orderby = '';

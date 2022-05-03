@@ -14,6 +14,20 @@ $od = sql_fetch("
 if(!$od['od_id'])
   alert('존재하지 않는 주문입니다.');
 
+$sql = "
+  SELECT
+    count(*) as cnt
+  FROM
+      g5_shop_cart
+  WHERE
+      od_id = '$od_id' and
+      mb_id = '{$member['mb_id']}' and
+      ct_status not in ('취소', '주문무효', '준비')
+";
+$row = sql_fetch($sql);
+if($row['cnt'] > 0)
+    alert('상품준비 단계가 아닌 상품이 있어서 주문서 수정이 불가능합니다.');
+
 $mb = get_member($od['mb_id']);
 
 $send_data = [
@@ -233,7 +247,6 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                     ct_price = '$ct_price',
                     ct_discount = '$ct_discount',
                     io_price =  '$io_price',
-                    ct_qty = '$ct_qty',
                     ct_delivery_cnt = '$ct_delivery_cnt',
                     ct_delivery_price = '$ct_delivery_price',
                     prodMemo = '$prodMemo'
@@ -309,7 +322,9 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                 }
                 $sql = "
                     UPDATE g5_shop_cart
-                    SET stoId = '$sto_id'
+                    SET 
+                        stoId = '$sto_id',
+                        ct_qty = '$ct_qty' 
                     WHERE ct_id = '$ct_id'
                 ";
                 sql_query($sql, true);
@@ -373,7 +388,9 @@ for($i = 0; $i < count($it_id_arr); $i++) {
 
                     $sql = "
                         UPDATE g5_shop_cart
-                        SET stoId = CONCAT(stoId,'$sto_id')
+                        SET 
+                            stoId = CONCAT(stoId,'$sto_id'),
+                            ct_qty = '$ct_qty'
                         WHERE ct_id = '$ct_id'
                     ";
                     sql_query($sql, true);
@@ -517,7 +534,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
         }
 
         // 출하창고
-        $ct_warehouse = '청라창고';
+        $ct_warehouse = '검단창고';
         if($it['it_default_warehouse']) {
             $ct_warehouse = $it['it_default_warehouse'];
         }

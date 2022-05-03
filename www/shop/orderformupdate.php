@@ -69,7 +69,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   $prodColor = $prodSize = $prodOption = '';
   $prodOptions = [];
 
-  if($row["io_id"]) { // 옵션값이 있으면
+  if ($row["io_id"]) { // 옵션값이 있으면
     $io_subjects = explode(',', $row['it_option_subject']);
     $io_ids = explode(chr(30), $row["io_id"]);
 
@@ -338,7 +338,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   if (!in_array($row['it_id'], $it_ids)) {
     $it_ids[] = $row['it_id'];
   }
-}
+} // for문 끝
 
 
 

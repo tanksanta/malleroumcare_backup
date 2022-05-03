@@ -135,10 +135,10 @@ function partner_daegi() {
     if ( $member['mb_type'] == 'partner' ) {
         $partner_daegi = true;
         if ( $member['mb_partner_auth'] == 1 ) {
-            if ( strtotime(G5_TIME_YMDHIS) < strtotime($member['mb_partner_date']) ) {
+            if ( strtotime(G5_TIME_YMDHIS) <= strtotime($member['mb_partner_date'] . " 23:59:59") ) {
                 $partner_daegi = false;
-            }else{
-
+            } else {
+                /* 자동연장 삭제 (2022-04-20)
                 // 자동연장인지 확인하기
                 if ( $member['mb_partner_date_auto'] == 1 ) {
                     $sql = "SELECT count(*) as cnt, SUM(od_cart_price + od_send_cost) as price FROM g5_shop_order WHERE mb_id = '{$member['mb_id']}'";
@@ -152,6 +152,8 @@ function partner_daegi() {
                         }
                     }
                 }
+                */
+                $partner_daegi = true;
             }
         }
     }
@@ -525,7 +527,7 @@ function get_typereceipt_step($od_id) {
     
     $sql = "SELECT * FROM g5_shop_order_typereceipt WHERE od_id = '{$od_id}'";
     $result = sql_fetch($sql);
-    if ( !$result ) return $typereceipt_types[0];
+    if ( !$result ) return $typereceipt_types[1];
 
     $type = $result['ot_typereceipt'];
 
@@ -557,7 +559,7 @@ function get_typereceipt_cate($od_id) {
     
     $sql = "SELECT * FROM g5_shop_order_typereceipt WHERE od_id = '{$od_id}'";
     $result = sql_fetch($sql);
-    if ( !$result ) return $typereceipt_cates[0];
+    if ( !$result ) return $typereceipt_cates[1];
 
     $type = $result['ot_typereceipt_cate'];
 
@@ -780,9 +782,17 @@ function get_order_admin_log($od_id) {
     return $ret;
 }
 
-function get_purchase_order_admin_log($od_id) {
+function get_purchase_order_admin_log($od_id, $ct_id = null) {
+  $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' AND (ct_id IS NULL OR ct_id = '') ORDER BY ol_no DESC";
 
-  $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
+  if ($ct_id) {
+    $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' AND ct_id = '{$ct_id}' ORDER BY ol_no DESC";
+  }
+
+  if ($ct_id == 'not_null') {
+    $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od_id}' AND (ct_id IS NOT NULL OR ct_id != '') ORDER BY ol_no DESC";
+  }
+
   $result = sql_query($sql);
 
   $ret = array();
@@ -1123,6 +1133,7 @@ function get_warehouses() {
   $result = sql_query($sql);
 
   $list = [];
+  $list[] = '미지정';
   while($row = sql_fetch_array($result)) {
     $list[] = $row['wh_name'];
   }

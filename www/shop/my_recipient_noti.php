@@ -76,28 +76,36 @@ for($i = 0; $row = sql_fetch_array($noti_result); $i++) {
             </tr>
           </thead>
           <tbody>
-            <?php if(!$noti) { ?>
-            <tr>
-              <td colspan="5" class="empty_table">알림이 없습니다.</td>
-            </tr>
-            <?php } ?>
             <?php
-            foreach($noti as $row) {
+            if (!$noti) {
+            ?>
+              <tr>
+                <td colspan="5" class="empty_table">알림이 없습니다.</td>
+              </tr>
+            <?php
+            }
+            ?>
+
+            <?php
+            foreach ($noti as $row) {
               $limit = get_pen_category_limit($row['penLtmNum'], $row['ca_id']);
-              if($limit) {
+              if ($limit) {
                 $cur = intval($limit['num']) - intval($limit['current']);
-                if($cur < 0) $cur = 0;
+                if ($cur < 0) $cur = 0;
               } else {
                 $cur = 0;
               }
             ?>
-            <tr <?=($row['rn_checked_yn'] == 'Y' ? 'class="text_c"' : '')?>>\
-              <td class="text_c"><?=date('Y-m-d', strtotime($row['rn_created_at']))?></td>
-              <td class="text_c text_<?=(substr($row['ca_id'], 0, 2) == '10' ? 'orange' : 'green')?>"><?=(substr($row['ca_id'], 0, 2) == '10' ? '판매' : '대여')?></td>
-              <td>‘<?=$row['ca_name']?>’ 품목 <?=$row['qty']?>개 사용가능햇수가 <?=date('m월 d일', strtotime($row['end_date']))?> 만료됩니다. 만료 후 해당 품목 <?=$cur?>개 주문이 가능합니다.</td>
-              <td class="text_c"><a href="#" class="btn_gray_box btn_<?=($row['rn_checked_yn'] == 'Y' ? 'cancel' : 'check')?>" data-id="<?=$row['rn_id']?>"><?=($row['rn_checked_yn'] == 'Y' ? '확인취소' : '확인')?></a></td>
-            </tr>
-            <?php } ?>
+              <tr <?=($row['rn_checked_yn'] == 'Y' ? 'class="text_c"' : '')?>>
+                <td class="text_c"><?=date('Y-m-d', strtotime($row['rn_created_at']))?></td>
+                <td class="text_c"><?php echo "{$row['penNm']}({$row['penLtmNum']})" ?></td>
+                <td class="text_c text_<?=(substr($row['ca_id'], 0, 2) == '10' ? 'orange' : 'green')?>"><?=(substr($row['ca_id'], 0, 2) == '10' ? '판매' : '대여')?></td>
+                <td>‘<?=$row['ca_name']?>’ 품목 <?=$row['qty']?>개 사용가능햇수가 <?=date('m월 d일', strtotime($row['end_date']))?> 만료됩니다. 만료 후 해당 품목 <?=$cur?>개 주문이 가능합니다.</td>
+                <td class="text_c"><a href="#" class="btn_gray_box btn_noti_<?=($row['rn_checked_yn'] == 'Y' ? 'cancel' : 'check')?>" data-id="<?=$row['rn_id']?>"><?=($row['rn_checked_yn'] == 'Y' ? '확인취소' : '확인')?></a></td>
+              </tr>
+            <?php
+            }
+            ?>
             <!--<tr>
               <td class="text_c">2021-02-02</td>
               <td class="text_c">홍길동(L11111*****)</td>
@@ -130,7 +138,7 @@ $(function() {
   // 모두확인 버튼
   $('#btn_check_all').click(function(e) {
     e.preventDefault();
-    $.post('my_recipient_noti.php', {
+    $.post('ajax.my_recipient_noti.php', {
       m: 'a'
     }, 'json')
     .done(function() {
@@ -143,12 +151,12 @@ $(function() {
   });
 
   // 확인 버튼
-  $('.btn_check').click(function(e) {
+  $('.btn_noti_check').click(function(e) {
     e.preventDefault();
 
     var rn_id = $(this).data('id');
 
-    $.post('my_recipient_noti.php', {
+    $.post('ajax.my_recipient_noti.php', {
       rn_id: rn_id
     }, 'json')
     .done(function() {
@@ -161,12 +169,12 @@ $(function() {
   });
 
   // 확인취소 버튼
-  $('.btn_cancel').click(function(e) {
+  $('.btn_noti_cancel').click(function(e) {
     e.preventDefault();
 
     var rn_id = $(this).data('id');
 
-    $.post('my_recipient_noti.php', {
+    $.post('ajax.my_recipient_noti.php', {
       m: 'd',
       rn_id: rn_id
     }, 'json')

@@ -128,10 +128,10 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_move_date, ct_manager, ct_qty, ct_delivered_qty, io_type, ct_price, io_price, ct_sendcost, ct_discount, ct_delivery_num, ct_warehouse from purchase_cart) B
+$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, it_id, it_name, ct_status, ct_move_date, ct_manager, ct_qty, ct_delivered_qty, io_type, ct_price, io_price, ct_sendcost, ct_discount, ct_delivery_num, ct_warehouse, ct_delivery_expect_date from purchase_cart) B
                 inner join purchase_order A ON B.cart_od_id = A.od_id
-                left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
-                on A.mb_id = C.mb_id_temp
+                left join (select mb_id as mb_id_temp, mb_level, mb_manager, mb_type from {$g5['member_table']}) C on A.mb_id = C.mb_id_temp
+                left join (select it_id as it_id_temp, ProdPayCode from g5_shop_item) D ON B.it_id = D.it_id_temp
                 $sql_search
                 group by cart_ct_id ";
 
@@ -180,10 +180,13 @@ if ( $where2 || $where ) {
   }
 }
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, it_name, ct_status, ct_manager, ct_qty, ct_delivered_qty, ct_delivery_num, ct_warehouse from purchase_cart) B
+$sql = "select 
+          count(od_id) as cnt, 
+          ct_status, 
+        from (select ct_id as cart_ct_id, od_id as cart_od_id, it_id, it_name, ct_status, ct_manager, ct_qty, ct_delivered_qty, ct_delivery_num, ct_warehouse from purchase_cart) B
         inner join purchase_order A ON B.cart_od_id = A.od_id
-        left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C
-        on A.mb_id = C.mb_id_temp
+        left join (select mb_id as mb_id_temp, mb_level, mb_type from {$g5['member_table']}) C on A.mb_id = C.mb_id_temp
+        left join (select it_id as it_id_temp, ProdPayCode from g5_shop_item) D ON B.it_id = D.it_id_temp
         $sql_search2
         group by ct_status ";
 
@@ -202,11 +205,18 @@ $sql  = " select *,
             (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
            $sql_common
            limit $from_record, $rows ";
-$result = sql_query($sql);
+$result = sql_query($sql, true);
 
 $orderlist = array();
 while( $row = sql_fetch_array($result) ) {
-  $sql = "SELECT c.*, i.it_model FROM purchase_cart as c LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id WHERE c.od_id = '{$row['od_id']}'";
+  $sql = "
+    SELECT 
+       c.*, 
+       i.it_model
+    FROM purchase_cart as c 
+    LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id 
+    WHERE c.od_id = '{$row['od_id']}'
+  ";
   $cart_result = sql_query($sql);
   $row['cart'] = array();
   while ( $row2 = sql_fetch_array($cart_result) ) {
@@ -234,7 +244,13 @@ $now_step = $last_step ? $last_step : '';
 $foreach_i = 0;
 foreach($orderlist as $order) {
   // cart_table  기준 정렬
-  $sql_ct = "select * from `purchase_cart` where `ct_id` ='".$order['cart_ct_id']."'";
+  $sql_ct = "
+    SELECT
+    c.*,
+    (SELECT count(*) FROM g5_cart_barcode cb WHERE cb.pct_id = c.ct_id AND bc_status IN ('출고', '관리자삭제')) AS bc_warning_count
+    FROM purchase_cart c 
+    WHERE c.ct_id = '{$order['cart_ct_id']}'
+  ";
   $result_ct = sql_fetch($sql_ct);
 
 
@@ -251,11 +267,12 @@ foreach($orderlist as $order) {
   $ct_ex_date = $result_ct['ct_ex_date'];
   $stock_insert = 1;
 
-  $od_time = substr($order['od_time'],2,8) . '<br>' . '('. substr($order['od_time'],11,5) .')';
-  $od_time2 = substr($order['od_time'],2,8)  . '('. substr($order['od_time'],11,5) .')';
+  $od_time = substr($order['od_time'],2,8) . '<br>' . ' ('. substr($order['od_time'],11,5) .')';
+  $od_time2 = substr($order['od_time'],2,8)  . ' ('. substr($order['od_time'],11,5) .')';
+  $delivery_expect_date = substr($result_ct['ct_delivery_expect_date'],2,8)  . ' ('. substr($result_ct['ct_delivery_expect_date'],11,5) .')';
 
   if($order['od_receipt_time'] != '0000-00-00 00:00:00') {
-      $od_receipt_time = substr($order['od_receipt_time'],2,8) . '<br>' . '('. substr($order['od_receipt_time'],11,5) .')';
+      $od_receipt_time = substr($order['od_receipt_time'],2,8) . '<br>' . ' ('. substr($order['od_receipt_time'],11,5) .')';
   } else {
       $od_receipt_time = '';
   }
@@ -382,6 +399,10 @@ foreach($orderlist as $order) {
   $ret["data"][$foreach_i]["ct_id"] = $order['cart_ct_id'];
 
   $ret["data"][$foreach_i]["ct_warehouse"] = $order['ct_warehouse'];
+
+  $ret["data"][$foreach_i]["bc_warning_count"] = $result_ct['bc_warning_count'];
+
+  $ret["data"][$foreach_i]["ct_delivery_expect_date"] = $delivery_expect_date;
   
   $foreach_i++;
 }

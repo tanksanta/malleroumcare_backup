@@ -1005,6 +1005,23 @@ $(function() {
       echo "select_item($obj, '{$ct['io_id']}', {$ct['ct_qty']}, '{$ct['ct_id']}', '{$ct['io_type']}')".PHP_EOL;
   }
   ?>
+
+  // 페이지 종료시 주문수정 중 취소
+  var _was_page_cleaned_up = false;
+  $(window).on('unload beforeunload', function() {
+    if(_was_page_cleaned_up) return;
+    _was_page_cleaned_up = true;
+
+    if(navigator && navigator.sendBeacon) {
+      navigator.sendBeacon('ajax.od_is_editing.update.php');
+    } else {
+      $.ajax({
+        type: 'GET',
+        async: false,
+        url: 'ajax.od_is_editing.update.php'
+      });
+    }
+  });
 });
 </script>
 

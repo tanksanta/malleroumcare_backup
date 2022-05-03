@@ -458,6 +458,12 @@ $_POST["it_delivery_price"] = ($_POST["it_delivery_price"]) ? $_POST["it_deliver
 $_POST["it_delivery_min_cnt"] = ($_POST["it_delivery_min_cnt"]) ? $_POST["it_delivery_min_cnt"] : 0;
 $_POST["it_delivery_min_price"] = ($_POST["it_delivery_min_price"]) ? $_POST["it_delivery_min_price"] : 0;
 
+$_POST["it_delivery_cnt2"] = ($_POST["it_delivery_cnt2"]) ? $_POST["it_delivery_cnt2"] : 0;
+$_POST["it_delivery_price2"] = ($_POST["it_delivery_price2"]) ? $_POST["it_delivery_price2"] : 0;
+
+$_POST["it_delivery_min_cnt2"] = ($_POST["it_delivery_min_cnt2"]) ? $_POST["it_delivery_min_cnt2"] : 0;
+$_POST["it_delivery_min_price2"] = ($_POST["it_delivery_min_price2"]) ? $_POST["it_delivery_min_price2"] : 0;
+
 $it_rental_price = ($_POST["it_rental_price"]) ? $_POST["it_rental_price"] : 0;
 
 $it_is_direct_delivery = (int)$it_is_direct_delivery ?: 0;
@@ -691,6 +697,13 @@ $sql_common = "
   it_delivery_price = '{$_POST["it_delivery_price"]}',
   it_delivery_min_cnt = '{$_POST["it_delivery_min_cnt"]}',
   it_delivery_min_price = '{$_POST["it_delivery_min_price"]}',
+  it_delivery_company = '{$_POST["it_delivery_company"]}',
+
+  it_delivery_cnt2 = '{$_POST["it_delivery_cnt2"]}',
+  it_delivery_price2 = '{$_POST["it_delivery_price2"]}',
+  it_delivery_min_cnt2 = '{$_POST["it_delivery_min_cnt2"]}',
+  it_delivery_min_price2 = '{$_POST["it_delivery_min_price2"]}',
+  it_delivery_company2 = '{$_POST["it_delivery_company2"]}',
 
   it_is_direct_delivery = '$it_is_direct_delivery',
   it_direct_delivery_partner = '$it_direct_delivery_partner',
@@ -712,7 +725,8 @@ $sql_common = "
   it_stock_manage_max_qty = '$it_stock_manage_max_qty',
   it_purchase_order_price = '$it_purchase_order_price',
   it_purchase_order_min_qty = '$it_purchase_order_min_qty',
-  it_purchase_order_unit = '$it_purchase_order_unit'
+  it_purchase_order_unit = '$it_purchase_order_unit',
+  it_purchase_order_partner = '$it_purchase_order_partner'
 "; // APMS : 2014.07.20
 
 if ($w == "")
@@ -949,11 +963,11 @@ if($option_count) {
   $comma = '';
   $sql = "
     INSERT INTO {$g5['g5_shop_item_option_table']}
-    ( `io_id`, `io_type`, `it_id`, `io_price`, `io_stock_qty`, `io_noti_qty`, `io_use`, `io_price_partner`, `io_price_dealer`, `io_price_dealer2`, `io_thezone`, `io_standard`, `io_use_short_barcode` )
+    ( `io_id`, `io_type`, `it_id`, `io_price`, `io_stock_qty`, `io_noti_qty`, `io_use`, `io_price_partner`, `io_price_dealer`, `io_price_dealer2`, `io_thezone`, `io_standard`, `io_use_short_barcode`, `io_stock_manage_min_qty`, `io_stock_manage_max_qty` )
     VALUES
   ";
   for($i=0; $i<$option_count; $i++) {
-    $sql .= $comma . " ( '{$_POST['opt_id'][$i]}', '0', '$it_id', '{$_POST['opt_price'][$i]}', '{$_POST['opt_stock_qty'][$i]}', '{$_POST['opt_noti_qty'][$i]}', '{$_POST['opt_use'][$i]}', '{$_POST['opt_price_partner'][$i]}', '{$_POST['opt_price_dealer'][$i]}', '{$_POST['opt_price_dealer2'][$i]}', '{$_POST['opt_thezone'][$i]}', '{$_POST['opt_standard'][$i]}', '{$_POST['opt_use_short_barcode'][$i]}' )";
+    $sql .= $comma . " ( '{$_POST['opt_id'][$i]}', '0', '$it_id', '{$_POST['opt_price'][$i]}', '{$_POST['opt_stock_qty'][$i]}', '{$_POST['opt_noti_qty'][$i]}', '{$_POST['opt_use'][$i]}', '{$_POST['opt_price_partner'][$i]}', '{$_POST['opt_price_dealer'][$i]}', '{$_POST['opt_price_dealer2'][$i]}', '{$_POST['opt_thezone'][$i]}', '{$_POST['opt_standard'][$i]}', '{$_POST['opt_use_short_barcode'][$i]}', '{$_POST['opt_stock_manage_min_qty'][$i]}', '{$_POST['opt_stock_manage_max_qty'][$i]}' )";
     $comma = ' , ';
   }
 

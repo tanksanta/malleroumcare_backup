@@ -28,7 +28,7 @@ if($_POST['ct_id'] && $_POST['step']) {
   $sql_stock = [];
   $combine_orders = []; // 자동 합포적용
 
-  for($i=0; $i<count($_POST['ct_id']); $i++) {
+  for ($i = 0; $i < count($_POST['ct_id']); $i++) {
     $sql_ct_s = "select
       a.od_id,
       a.it_id,
@@ -48,7 +48,8 @@ if($_POST['ct_id'] && $_POST['step']) {
       a.ct_stock_qty,
       a.ct_id,
       a.ct_combine_ct_id,
-      a.ct_warehouse
+      a.ct_warehouse,
+      a.ct_is_direct_delivery
     from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
@@ -85,27 +86,35 @@ if($_POST['ct_id'] && $_POST['step']) {
     $sql_ct[$i] = "update `g5_shop_cart` set `ct_status` = '".$_POST['step']."'".$add_sql.", `ct_move_date`= NOW() where `ct_id` = '".$_POST['ct_id'][$i]."'";
 
     // 재고관리 변경
-    if($_POST['step'] == '배송') {
+    if ($_POST['step'] == '배송') {
       $ws_qty = $result_ct_s['ct_qty'] - $result_ct_s['ct_stock_qty'];
-      if($result_ct_s['io_type'] != 1) {
-        $sql_stock[] = "
-          insert into
-            warehouse_stock
-          set
-            it_id = '{$result_ct_s['it_id']}',
-            io_id = '{$result_ct_s['io_id']}',
-            io_type = '{$result_ct_s['io_type']}',
-            it_name = '{$result_ct_s['it_name']}',
-            ws_option = '{$result_ct_s['ct_option']}',
-            ws_qty = '-{$ws_qty}',
-            mb_id = '{$result_ct_s['mb_id']}',
-            ws_memo = '주문 출고완료({$od_id})',
-            wh_name = '{$result_ct_s['ct_warehouse']}',
-            od_id = '$od_id',
-            ct_id = '{$_POST['ct_id'][$i]}',
-            ws_created_at = NOW(),
-            ws_updated_at = NOW()
-        ";
+      if ($result_ct_s['ct_qty'] != '0') { // 직배송, 설치
+        $ws_scheduled_qty_sql = "ws_scheduled_qty = '-{$ws_qty}', ";
+      }
+
+      if ($result_ct_s['io_type'] != 1) {
+        $stock_count = sql_fetch("select count(*) as cnt from warehouse_stock where od_id = '{$od_id}' and ct_id = '{$_POST['ct_id'][$i]}}' ")['cnt'];
+
+        if ($stock_count == 0) {
+          $sql_stock[] = "
+            insert into
+              warehouse_stock
+            set
+              it_id = '{$result_ct_s['it_id']}',
+              io_id = '{$result_ct_s['io_id']}',
+              io_type = '{$result_ct_s['io_type']}',
+              it_name = '{$result_ct_s['it_name']}',
+              ws_option = '{$result_ct_s['ct_option']}',
+              ws_qty = '-{$ws_qty}',
+              mb_id = '{$result_ct_s['mb_id']}',
+              ws_memo = '주문 출고완료({$od_id})',
+              wh_name = '{$result_ct_s['ct_warehouse']}',
+              od_id = '$od_id',
+              ct_id = '{$_POST['ct_id'][$i]}',
+              ws_created_at = NOW(),
+              ws_updated_at = NOW()
+          ";
+        }
       }
     }
     if($_POST['step'] == '취소' || $_POST['step'] == '주문무효') {
@@ -227,9 +236,9 @@ if($_POST['ct_id'] && $_POST['step']) {
     );
   }, $result_again);
 
-  if($stateCd == "01") {
-    for($k=0;$k<count($new_sto_ids);$k++) {
-      $result_confirm = sql_fetch("select `prodSupYn` from `g5_shop_item` where `it_id` ='".$new_sto_ids[$k]['prodId']."'");
+  if ($stateCd == "01") {
+    for ($k = 0; $k < count($new_sto_ids); $k++) {
+      $result_confirm = sql_fetch("select `prodSupYn` from `g5_shop_item` where `it_id` ='" . $new_sto_ids[$k]['prodId'] . "'");
 
       // 비급여 바코드 미입력 체크된 경우 패스
       $ct_result = sql_fetch("SELECT * FROM g5_shop_cart WHERE ct_id = '{$stoIdList[$new_sto_ids[$k]['stoId']]}'");
@@ -237,10 +246,37 @@ if($_POST['ct_id'] && $_POST['step']) {
         continue;
       }
 
-      if($result_confirm['prodSupYn'] == "Y" && !$new_sto_ids[$k]['prodBarNum']) {
+      if ($result_confirm['prodSupYn'] == "Y" && !$new_sto_ids[$k]['prodBarNum']) {
         echo "유통상품의 모든 바코드가 입력되어야 출고가 가능합니다";
         $flag = false;
         return false;
+      }
+
+      if ($ct_result['ct_barcode_insert_not_approved'] != 0) {
+        echo "미승인된 미재고 바코드가 존재합니다. 모두 승인되어야 출고가 가능합니다.";
+        $flag = false;
+        return false;
+      }
+    }
+  }
+
+  // 출고 시 바코드 상태 출고 상태로 변경
+  for ($i = 0; $i < count($_POST['ct_id']); $i++) {
+    if ($_POST['step'] == '배송') {
+      if ($ct_result['ct_barcode_insert'] > 0 &&
+        $ct_result['ct_barcode_insert'] === $ct_result['ct_qty'] &&
+        $ct_result['ct_barcode_insert_not_approved'] == 0) {
+
+        $barcode_status_sql = "
+          update g5_cart_barcode
+          set 
+            bc_status = '출고',
+            released_by = '{$member['mb_id']}',
+            released_at = NOW()
+          where
+            ct_id = '{$_POST['ct_id'][$i]}'
+        ";
+        sql_query($barcode_status_sql);
       }
     }
   }

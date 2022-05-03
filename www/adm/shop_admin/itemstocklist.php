@@ -13,6 +13,7 @@ $sel_ca_id = get_search_string($sel_ca_id);
 $sel_field = get_search_string($sel_field);
 $search = get_search_string($search);
 $wh_name = get_search_string($wh_name);
+$use_warehouse_where_sql = get_use_warehouse_where_sql();
 
 $g5['title'] = '상품재고관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
@@ -29,7 +30,7 @@ if ($sel_ca_id != "") {
 }
 
 if ($wh_name != '') {
-  $sql_search .= " and ( select sum(ws_qty) from warehouse_stock s where T.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' ) <> 0 ";
+  $sql_search .= " and ( select (sum(ws_qty) - sum(ws_scheduled_qty)) from warehouse_stock s where T.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' {$use_warehouse_where_sql} ) <> 0 ";
 }
 
 // 안전재고 상품
@@ -47,6 +48,11 @@ if ($stock_type == 'malignity') {
   $sql_search .= " and (sum_ws_qty > safe_max_stock_qty) and sum_ws_qty != 0 and safe_min_stock_qty != 0 ";
 }
 
+// 재고와 바코드 상이한 제품
+if ($stock_type == 'notMatchBarcodeQty') {
+  $sql_search .= " and (sum_ws_qty != sum_checked_barcode_qty) and sum_ws_qty != 0";
+}
+
 if ($sel_field == "")  $sel_field = "it_name";
 if ($sort1 == "") $sort1 = "it_stock_qty";
 if ($sort2 == "") $sort2 = "asc";
@@ -60,41 +66,50 @@ from
 		b.io_stock_qty,
 		b.io_noti_qty,
 		a.*,
-		IFNULL(IF(it_stock_manage_min_qty IS NOT NULL, 
-	        it_stock_manage_min_qty, 
-	        ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
-	          WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
-	            ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
-	          AND ct_status IN {$common_ct_status}
-	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 0.5)
-	        ), 0) AS safe_min_stock_qty,
-	      IFNULL(IF(it_stock_manage_max_qty IS NOT NULL, 
-	        it_stock_manage_max_qty, 
-	        ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
-	          WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
-	            ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
-	          AND ct_status IN {$common_ct_status}
-	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 1.5)
-	        ), 0) AS safe_max_stock_qty,
-	      (SELECT IFNULL(sum(ws_qty), 0) FROM warehouse_stock WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N') AS sum_ws_qty,
-	      ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
-	          WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
-	            ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
-	          AND ct_status IN {$common_ct_status}
-	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3) AS sum_ct_qty_3month,
-	      (SELECT sum(ct_qty) FROM g5_shop_cart 
-	          WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 31 DAY), '%Y-%m-%d 00:00:00') AND
-	                ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
-	              AND ct_status IN {$common_ct_status}
-	              AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS sum_ct_qty_1month,
-	      (SELECT sum(ct_qty) FROM g5_shop_cart 
-	          WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 2 DAY), '%Y-%m-%d 00:00:00') AND
-	                ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
-	              AND ct_status IN {$common_ct_status}
-	              AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS sum_ct_qty_1day,
-	      (SELECT max(ct_time) FROM g5_shop_cart 
-	          WHERE ct_status IN {$common_ct_status}
-	          AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS last_ct_time
+    CASE
+      WHEN io_stock_manage_min_qty IS NOT NULL AND io_stock_manage_min_qty > 0
+        THEN io_stock_manage_min_qty 
+      WHEN it_stock_manage_min_qty IS NOT NULL AND it_stock_manage_min_qty > 0
+        THEN it_stock_manage_min_qty
+      ELSE
+        IFNULL(ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+        AND ct_status IN {$common_ct_status}
+        AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 0.5), 0)
+    END AS safe_min_stock_qty,    
+    CASE
+      WHEN io_stock_manage_max_qty IS NOT NULL AND io_stock_manage_max_qty > 0
+        THEN io_stock_manage_max_qty 
+      WHEN it_stock_manage_max_qty IS NOT NULL AND it_stock_manage_max_qty > 0
+        THEN it_stock_manage_max_qty
+      ELSE
+        IFNULL(ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+        AND ct_status IN {$common_ct_status}
+        AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3 * 1.5), 0)
+    END AS safe_max_stock_qty, 
+    (SELECT IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) FROM warehouse_stock WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' {$use_warehouse_where_sql}) AS sum_ws_qty,
+    (SELECT count(*) FROM g5_cart_barcode WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N' AND ct_id = '0' AND checked_at IS NOT NULL) AS sum_checked_barcode_qty,
+    ROUND((SELECT sum(ct_qty) FROM g5_shop_cart
+        WHERE (ct_time >= DATE_FORMAT(CONCAT(SUBSTR(NOW() - INTERVAL 3 MONTH, 1 ,8), '01'), '%Y-%m-%d 00:00:00') AND
+          ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), '%Y-%m-%d 23:59:59'))
+        AND ct_status IN {$common_ct_status}
+        AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) / 3) AS sum_ct_qty_3month,
+    (SELECT sum(ct_qty) FROM g5_shop_cart 
+        WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 31 DAY), '%Y-%m-%d 00:00:00') AND
+              ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
+            AND ct_status IN {$common_ct_status}
+            AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS sum_ct_qty_1month,
+    (SELECT sum(ct_qty) FROM g5_shop_cart 
+        WHERE (ct_time >= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 2 DAY), '%Y-%m-%d 00:00:00') AND
+              ct_time <= DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 DAY), '%Y-%m-%d 23:59:59'))
+            AND ct_status IN {$common_ct_status}
+            AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS sum_ct_qty_1day,
+    (SELECT max(ct_time) FROM g5_shop_cart 
+        WHERE ct_status IN {$common_ct_status}
+        AND it_id = a.it_id AND io_id = IFNULL(b.io_id, '')) AS last_ct_time
 	FROM 
 	  (select
 	      it_id,
@@ -141,7 +156,7 @@ $colspan = 11;
 $warehouse_total_qty = 0;
 $warehouse_list = get_warehouses();
 foreach($warehouse_list as &$warehouse) {
-  $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '$warehouse' and ws_del_yn = 'N' ";
+  $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty))  as total from warehouse_stock where wh_name = '$warehouse' and ws_del_yn = 'N' {$use_warehouse_where_sql} ";
   $result_total = sql_fetch($sql);
 
   $warehouse = [
@@ -158,6 +173,33 @@ $qstr1 = 'sel_ca_id='.$sel_ca_id.'&amp;sel_field='.$sel_field.'&amp;search='.$se
 $qstr = $qstr1.'&amp;sort1='.$sort1.'&amp;sort2='.$sort2.'&amp;page='.$page;
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
+
+$count_warn1 = get_manage_stock_count(1);
+$count_warn2 = get_manage_stock_count(2);
+$count_warn3 = get_manage_stock_count(3);
+
+$sql = "
+  SELECT
+      COUNT(*) AS cnt
+    FROM
+    (SELECT
+      (SELECT 
+        IFNULL(sum(ws_qty) - sum(ws_scheduled_qty), 0) 
+      FROM warehouse_stock 
+      WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND ws_del_yn = 'N' {$use_warehouse_where_sql}) AS sum_ws_qty,
+      (SELECT count(*)
+        FROM g5_cart_barcode
+        WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N') AS sum_checked_barcode_qty,
+      (SELECT count(*)
+        FROM g5_cart_barcode
+        WHERE it_id = a.it_id AND io_id = IFNULL(b.io_id, '') AND bc_del_yn = 'N' AND ct_id = '0' AND checked_at IS NOT NULL) AS sum_checked_barcode_qty
+    FROM
+      g5_shop_item AS a
+      LEFT JOIN (SELECT * from g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)) AS T
+  WHERE sum_ws_qty != sum_checked_barcode_qty 
+";
+
+$count_warn4 = sql_fetch($sql)['cnt'];
 
 ?>
 
@@ -202,12 +244,31 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
   .quick_link_area a.active {
     border: 1px solid #f00;
   }
+
+  .smart_btn {
+    float: right;
+    background: #ff5c01;
+    color: #fff;
+    padding: 8px 18px;
+    font-size: 13px;
+    top: -2px;
+    position: relative;
+  }
+
+  tr.warn {
+    background: #ffe6ea;
+  }
 </style>
 
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
     <span class="btn_ov01"><span class="ov_txt">전체 상품</span><span class="ov_num">  <?php echo $total_count; ?>개</span></span>
+    <button class="smart_btn" onclick="openPopSmartPurchase()">스마트 발주 (<?php echo $count_warn1 ?>개 대기)</button>
 </div>
+
+<form id="smartForm" action="/adm/shop_admin/purchase_orderlist.php" method="POST">
+  <input type="hidden" name="smart_purchase_data" value="">
+</form>
 
 <div style="padding: 5px 20px">
   <ul>
@@ -229,12 +290,6 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
   <?php } ?>
 </div>
 
-<?php
-$count_warn1 = get_manage_stock_count(1);
-$count_warn2 = get_manage_stock_count(2);
-$count_warn3 = get_manage_stock_count(3);
-?>
-
 <div class="quick_link_area" style="padding-bottom: 20px">
   <?php if ($count_warn1 > 0) { ?>
   <a class="<?php echo $stock_type == 'safe_min' ? 'active' : '' ?>" href="<?php echo $stock_type == 'safe_min' ? $_SERVER['SCRIPT_NAME'] . '?stock_type=' :  $_SERVER['SCRIPT_NAME'].'?stock_type=safe_min' ?>"><img src="/img/warn1.png" style="margin-right: 8px">안전재고 이하 상품 (<?php echo $count_warn1 ?>개)</a>
@@ -245,7 +300,11 @@ $count_warn3 = get_manage_stock_count(3);
   <?php } ?>
 
   <?php if ($count_warn3 > 0) { ?>
-  <a class="<?php echo $stock_type == 'malignity' ? 'active' : '' ?>" href="<?php echo $stock_type == 'malignity' ?$_SERVER['SCRIPT_NAME'] .  '?stock_type=' : $_SERVER['SCRIPT_NAME'].'?stock_type=malignity' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (<?php echo $count_warn3 ?>개)</a>
+  <a class="<?php echo $stock_type == 'malignity' ? 'active' : '' ?>" href="<?php echo $stock_type == 'malignity' ? $_SERVER['SCRIPT_NAME'] . '?stock_type=' : $_SERVER['SCRIPT_NAME'].'?stock_type=malignity' ?>"><img src="/img/warn3.png" style="margin-right: 8px">악성재고 상품 (<?php echo $count_warn3 ?>개)</a>
+  <?php } ?>
+
+  <?php if ($count_warn4 > 0) { ?>
+  <a class="<?php echo $stock_type == 'notMatchBarcodeQty' ? 'active' : '' ?>" href="<?php echo $stock_type == 'notMatchBarcodeQty' ?$_SERVER['SCRIPT_NAME'] .  '?stock_type=' : $_SERVER['SCRIPT_NAME'].'?stock_type=notMatchBarcodeQty' ?>"><img src="/img/warn5.png" style="margin-right: 8px">재고와 바코드 상이한 상품 (<?php echo $count_warn4 ?>개)</a>
   <?php } ?>
 </div>
 
@@ -308,6 +367,7 @@ $count_warn3 = get_manage_stock_count(3);
         <th scope="col">옵션항목</th>
         <th scope="col">재고경고</th>
         <th scope="col"><a href="<?php echo title_sort("sum_ws_qty") . "&amp;$qstr1"; ?>">창고재고</a></th>
+        <th scope="col">바코드</th>
         <th scope="col">평균출고</th>
         <th scope="col">안전재고</th>
         <?php foreach($warehouse_list as $warehouse) { ?>
@@ -358,9 +418,12 @@ $count_warn3 = get_manage_stock_count(3);
         }
 
         $bg = 'bg'.($i%2);
-
+        $bg_warn = '';
+        if ($row['sum_ws_qty'] != $row['sum_checked_barcode_qty']) {
+          $bg_warn = 'warn';
+        }
     ?>
-    <tr class="<?php echo $bg; ?>">
+    <tr class="<?php echo $bg; ?> <?php echo $bg_warn; ?>">
 		<!-- APMS - 2014.07.20 -->
         <td class="td_code" style="white-space:nowrap">
             <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
@@ -437,11 +500,16 @@ $count_warn3 = get_manage_stock_count(3);
         ?>
         <td class="td_num"><?php echo $img_src ? '<img src="' . $img_src . '" title="' . $alt_txt . '">' : '' ?></td>
         <td class="td_num"><?php echo number_format($row['sum_ws_qty']) ?></td>
+        <td class="td_num">
+          <a href="./itemstockbarcodelist.php?it_id=<?=$row['it_id']?>&io_id=<?=$row['io_id']?>&type=hold" style="text-decoration: underline !important;">
+            <?php echo number_format($row['sum_checked_barcode_qty']) ?>
+          </a>
+        </td>
         <td class="td_num"><?php echo number_format($row['sum_ct_qty_3month']) ?></td>
         <td class="td_num"><?php echo number_format($row['safe_min_stock_qty']) ?></td>
         <?php
         foreach($warehouse_list as $warehouse) {
-          $sql = " select sum(ws_qty) as stock from warehouse_stock where it_id = '{$row['it_id']}' and io_id = '{$row['io_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' ";
+          $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty)) as stock from warehouse_stock where it_id = '{$row['it_id']}' and io_id = '{$row['io_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' {$use_warehouse_where_sql} ";
           $stock = sql_fetch($sql)['stock'] ?: 0;
           echo '<td class="td_num">'.number_format($stock).'</td>';
         }
@@ -596,6 +664,16 @@ function cancelExcelDownload() {
     EXCEL_DOWNLOADER.abort();
   }
   $('#loading_excel').hide();
+}
+
+function openPopSmartPurchase() {
+  var popupWidth = 1100;
+  var popupHeight = 700;
+
+  var popupX = (window.screen.width / 2) - (popupWidth / 2);
+  var popupY = (window.screen.height / 2) - (popupHeight / 2);;
+
+  release_purchaseorderview_pop = window.open("./popup.smart_purchaseorder.php", "스마트 발주", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX);
 }
 
 </script>

@@ -287,6 +287,9 @@ if($is_main && !$is_member) {
           <?php if(check_auth($member['mb_id'], '400480', 'w')) { ?>
             <a href="/shop/release_purchaseorderlist.php" class="btn_orderlist purchaseorderlist">관리자 구매발주 관리</a>
           <?php } ?>
+          <?php if(check_auth($member['mb_id'], '400480', 'w')) { ?>
+            <a href="/shop/release_stocklist.php" class="btn_orderlist stocklist">보유재고 관리</a>
+          <?php } ?>
           <div class="user_info_area">
             <a href="<?=$at_href['edit'];?>" class="btn_small btn_edit">정보수정</a>
             <div class="user_name">
@@ -399,7 +402,7 @@ if($is_main && !$is_member) {
           <?php } ?>
 
           <div class="catalog_area">
-            <a href="/thema/eroumcare/assets/eroum_catalog_2021_3_4.pdf" class="catalog" target="_blank">
+            <a href="/thema/eroumcare/assets/eroum_catalog_2022_3.pdf" class="catalog" target="_blank">
               <img src="<?php echo THEMA_URL; ?>/assets/img/icon_catalog.png">
               이달의 카달로그
               <div class="btn_small">다운로드</div>
@@ -799,8 +802,8 @@ if($is_main && !$is_member) {
             <div class="info">
               <img src="<?=THEMA_URL?>/assets/img/mainCallIcon.png">
               <div class="call">
-                <p>주문안내 : <span>032-562-6608</span></p>
-                <p>시스템안내 : <span>02-830-1301~2</span></p>
+                <p>주문안내 : <span>02-830-1312</span></p>
+                <p>시스템안내 : <span><?php echo $default['de_admin_company_tel']; ?></span></p>
               </div>
             </div>
             <ul>
@@ -814,7 +817,7 @@ if($is_main && !$is_member) {
               </li>
               <li>
                 <div>· Fax</div>
-                <div>02-830-1308</div>
+                <div><?php echo $default['de_admin_company_fax']; ?></div>
               </li>
             </ul>
           </div>

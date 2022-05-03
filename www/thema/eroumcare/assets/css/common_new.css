@@ -632,9 +632,11 @@ pre{white-space: pre-wrap;}
 .list_box .table_box .btn_link{cursor: pointer;}
 .list_box .table_box .btn_link:hover{background: #f5f5f5;}
 .list_box .table_box .number_area{width:50px;text-align:center;}
-.list_box table{width:100%; white-space:nowrap;border-collapse:collapse;}
+.list_box table{width:100%;border-collapse:collapse;}
 .list_box table th{background: #f5f5f5;text-align: center;border-top:1px solid #ddd;border-bottom:1px solid #ddd;padding: 5px;}
 .list_box table td:first-child{width:50px;text-align:center;}
+.list_box table td:nth-child(2) {width:300px !important;}
+.list_box table td:nth-child(3) {width:300px !important;}
 .list_box table td{padding: 10px;border-right:1px solid #ddd;border-bottom:1px solid #ddd;}
 .list_box table td:last-child{border-right:0;}
 .list_box table .text_c{text-align: center;}
@@ -677,6 +679,8 @@ pre{white-space: pre-wrap;}
 }
 
 @media only screen and (max-width:960px) {
+	
+	.list_box table{white-space:nowrap;}
 	
 	.search_box .search_date {width:100%;margin-bottom:10px;}
 	.search_box .search_date select{width:100%;margin-bottom:5px;}
@@ -842,6 +846,7 @@ pre{white-space: pre-wrap;}
 .side_menu_area .btn_orderlist { display: block; padding: 15px; font-size: 16px; font-weight: 600; text-align: center; margin: 10px 0; color: #fff; background-color: #f08606; border-radius: 5px; }
 
 .side_menu_area .btn_orderlist.purchaseorderlist {background-color: #bed61f}
+.side_menu_area .btn_orderlist.stocklist {background-color: #333;}
 
 .side_menu_area .user_info_area { position: relative; padding: 10px 5px; }
 .side_menu_area .user_info_area .flex { display: -webkit-box; display: -ms-flexbox; display: flex; }
@@ -1373,6 +1378,7 @@ pre{white-space: pre-wrap;}
 /* 210221 바코드카운팅 */
 .prodBarNumCntBtn { display: inline-block; width: 100px; height: 35px; line-height: 35px; border-radius: 5px; border: 1px solid #FF6600; font-size: 12px; color: #FF6600; text-align: center; }
 .prodBarNumCntBtn.disable { color: #FFF; border-color: #A6A6A6; background-color: #A6A6A6; }
+.prodBarNumCntBtn.approveRequired { background-color: #ffe9e7; }
 
 /*주문내역 표시*/
 .orderHide { display: inline-block; width: 100px; height: 35px; line-height: 35px; border-radius: 5px; border: 1px solid #FF6600; font-size: 12px; color: #FF6600; text-align: center; }

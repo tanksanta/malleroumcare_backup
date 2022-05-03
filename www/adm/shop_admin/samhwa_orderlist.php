@@ -30,6 +30,14 @@ $sql_lotte = "SELECT count(*) as cnt
 ";
 $result_lotte = sql_fetch($sql_lotte);
 
+$warehouse_list = get_warehouses();
+
+// 초기 3개월 범위 적용
+if (!$fr_date && !$to_date) {
+  $fr_date = date("Y-m-d", strtotime("-3 month"));
+  $to_date = date("Y-m-d");
+}
+
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
@@ -115,6 +123,20 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <!-- <button id="dzexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">더존엑셀</button> -->
     <!-- <button id="handsabang" onClick="sanbang_order_send()">사방넷수동가져오기</button> -->
     <!-- <button id="list_matching_cancel">매칭데이터취소</button> -->
+    <select class="sb1" name="" id="ct_direct_delivery_partner_sb">
+    <?php
+        //출고담당자 select
+        $ct_direct_delivery_partner_select="";
+        $partners = get_partner_members();
+        $ct_direct_delivery_partner_select .= '<option value="">위탁(직배송) 선택</option>';
+        $ct_direct_delivery_partner_select .= '<option value="미지정">미지정</option>';
+        foreach($partners as $partner) {
+            $ct_direct_delivery_partner_select .='<option value="'.$partner['mb_id'].'">'.$partner['mb_name'].'</option>';
+        }
+        echo $ct_direct_delivery_partner_select;
+    ?>
+    </select>
+    <button id="ct_direct_delivery_partner_all">위탁 선택적용</button>
     <button id="delivery_excel_upload">택배정보 일괄 업로드</button>
     <select class="sb1" name="" id="ct_manager_sb">
     <?php
@@ -122,7 +144,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         $od_release_select="";
         $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '400001'";
         $result_m = sql_query($sql_m);
-        $od_release_select .= '<option value="">선택</option>';
+        $od_release_select .= '<option value="">출고 담당자 선택</option>';
         $od_release_select .= '<option value="미지정">미지정</option>';
         for ($q=0; $row_m=sql_fetch_array($result_m); $q++){
             $selected="";
@@ -132,6 +154,18 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     ?>
     </select>
     <button id="ct_manager_send_all">출고담당자 선택변경</button>
+
+    <select class="sb1" name="it_default_warehouse" id="ct_warehouse_sb">
+      <?php
+        $default_warehouse_select="";
+        $default_warehouse_select .= '<option value="">출하창고 선택</option>';
+        foreach($warehouse_list as $warehouse) {
+          $default_warehouse_select .='<option value="'.$warehouse.'" >'.$warehouse.'</option>';
+        }
+        echo $default_warehouse_select;
+      ?>
+    </select>
+    <button id="ct_warehouse_all">출하창고 선택변경</button>
     
     <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
@@ -148,7 +182,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
       <label for="datafile">택배정보 일괄 업로드</label>
       <input type="file" name="datafile" id="datafile">
       <p class="help-block">
-        주문내역 엑셀에 택배정보를 작성해서 업로드해주세요.<br>
+        주문내역 엑셀에 택배정보를 작성해서 업로드해주세요.<br>
         택배회사 목록 : <?php foreach($delivery_companys as $company) { echo $company['name'].', '; } ?>
       </p>
     </div>
@@ -172,7 +206,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         <th>날짜</th>
         <td class="date">
           <select name="sel_date_field" id="sel_date_field">
-            <option value="od_time" <?php echo get_selected($sel_date_field, 'od_time'); ?>>주문일</option>
+            <option value="ct_time" <?php echo get_selected($sel_date_field, 'ct_time'); ?>>주문일</option>
             <option value="od_receipt_time" <?php echo get_selected($sel_date_field, 'od_receipt_time'); ?>>입금일</option>
             <option value="od_ex_date" <?php echo get_selected($sel_date_field, 'od_ex_date'); ?>>희망출고일</option>
             <option value="ct_ex_date" <?php echo get_selected($sel_date_field, 'ct_ex_date'); ?>>출고완료일</option>
@@ -182,9 +216,10 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <input type="button" value="어제" id="select_date_yesterday" name="select_date" class="select_date newbutton" />
             <input type="button" value="일주일" id="select_date_sevendays" name="select_date" class="select_date newbutton" />
             <input type="button" value="지난달" id="select_date_lastmonth" name="select_date" class="select_date newbutton" />
+            <input type="button" value="3개월" id="select_date_3month" name="select_date" class="select_date newbutton" />
             <input type="button" value="전체" id="select_date_all" name="select_date" class="select_date newbutton" />
-            <input type="text" id="fr_date" class="date" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10"> ~
-            <input type="text" id="to_date" class="date" name="to_date" value="<?php echo $to_date; ?>" class="frm_input" size="10" maxlength="10">
+            <input type="text" id="fr_date" class="date" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off"> ~
+            <input type="text" id="to_date" class="date" name="to_date" value="<?php echo $to_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off">
           </div>
         </td>
       </tr>
@@ -380,9 +415,13 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
           </div>
           <br/>
           <div style="display: inline-block; margin-left: 11px; margin-right:15px;">
+            <?php
+            $not_approved_count = sql_fetch("select count(*) as cnt from g5_cart_barcode_approve_request where status = '승인요청' and del_yn = 'N'")['cnt'];
+            ?>
             <span class="linear_span">이슈사항</span>
             <input type="checkbox" name="issue_1" id="issue_1" value="1" title="" <?php echo option_array_checked('1', $issue_1); ?>><label for="issue_1">출고준비 3일 경과</label>
             <input type="checkbox" name="issue_2" id="issue_2" value="1" title="" <?php echo option_array_checked('1', $issue_2); ?>><label for="issue_2">취소/반품 요청</label>
+            <input type="checkbox" name="issue_3" id="issue_3" value="1" title="" <?php echo option_array_checked('1', $issue_3); ?>><label for="issue_3">미재고 바코드 입력(<?php echo $not_approved_count ?>)</label>
           </div>
           <div class="linear">
             <span class="linear_span">바코드</span>
@@ -421,11 +460,11 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <option value="od_b_hp" <?php echo get_selected($sel_field, 'od_b_hp'); ?>>받는분핸드폰</option>
             <option value="od_deposit_name" <?php echo get_selected($sel_field, 'od_deposit_name'); ?>>입금자</option>
             <option value="ct_delivery_num" <?php echo get_selected($sel_field, 'ct_delivery_num'); ?>>운송장번호</option>
-            <option value="barcode" <?php echo get_selected($sel_field, 'barcode'); ?>>바코드</option>
+            <!--<option value="barcode" <?php //echo get_selected($sel_field, 'barcode'); ?>바코드</option>-->
           </select>
           <input type="text" name="search" value="<?php echo $search; ?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
-          	, 추가 검색어
-          	<select name="sel_field_add" id="sel_field_add">
+          , 추가 검색어
+          <select name="sel_field_add" id="sel_field_add">
             <option value="od_all" <?php echo $sel_field_add == 'od_all' ? 'selected="selected"' : ''; ?>>전체</option>
             <option value="od_name" <?php echo get_selected($sel_field_add, 'od_name'); ?>>주문자</option>
             <option value="od_b_name" <?php echo get_selected($sel_field_add, 'od_b_name'); ?>>받는분</option>
@@ -446,28 +485,6 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <option value="barcode" <?php echo get_selected($sel_field_add, 'barcode'); ?>>바코드</option>
           </select>
           <input type="text" name="search_add" value="<?php echo $search_add; ?>" id="search_add" class="frm_input" autocomplete="off" style="width:200px;">
-          	, 추가 검색어
-          	<select name="sel_field_add_add" id="sel_field_add_add">
-            <option value="od_all" <?php echo $sel_field_add_add == 'od_all' ? 'selected="selected"' : ''; ?>>전체</option>
-            <option value="od_name" <?php echo get_selected($sel_field_add_add, 'od_name'); ?>>주문자</option>
-            <option value="od_b_name" <?php echo get_selected($sel_field_add_add, 'od_b_name'); ?>>받는분</option>
-            <option value="prodMemo" <?php echo get_selected($sel_field_add_add, 'prodMemo'); ?>>상품요청사항</option>
-            <option value="od_memo" <?php echo get_selected($sel_field_add_add, 'od_memo'); ?>>배송요청사항</option>
-            <option value="it_name" <?php echo $sel_field_add_add == 'it_name' ? 'selected="selected"' : ''; ?>>상품명</option>
-            <option value="ct_option" <?php echo $sel_field_add_add == 'ct_option' ? 'selected="selected"' : ''; ?>>옵션</option>
-            <option value="it_admin_memo" <?php echo $sel_field_add_add == 'it_admin_memo' ? 'selected="selected"' : ''; ?>>관리자메모</option>
-            <option value="it_maker" <?php echo $sel_field_add_add == 'it_maker' ? 'selected="selected"' : ''; ?>>제조사</option>
-            <option value="od_id" <?php echo get_selected($sel_field_add_add, 'od_id'); ?>>주문번호</option>
-            <option value="mb_id" <?php echo get_selected($sel_field_add_add, 'mb_id'); ?>>회원 ID</option>
-            <option value="od_tel" <?php echo get_selected($sel_field_add_add, 'od_tel'); ?>>주문자전화</option>
-            <option value="od_hp" <?php echo get_selected($sel_field_add_add, 'od_hp'); ?>>주문자핸드폰</option>
-            <option value="od_b_tel" <?php echo get_selected($sel_field_add_add, 'od_b_tel'); ?>>받는분전화</option>
-            <option value="od_b_hp" <?php echo get_selected($sel_field_add_add, 'od_b_hp'); ?>>받는분핸드폰</option>
-            <option value="od_deposit_name" <?php echo get_selected($sel_field_add_add, 'od_deposit_name'); ?>>입금자</option>
-            <option value="ct_delivery_num" <?php echo get_selected($sel_field_add_add, 'ct_delivery_num'); ?>>운송장번호</option>
-            <option value="barcode" <?php echo get_selected($sel_field_add_add, 'barcode'); ?>>바코드</option>
-          </select>
-          <input type="text" name="search_add_add" value="<?php echo $search_add_add; ?>" id="search_add_add" class="frm_input" autocomplete="off" style="width:200px;">
         </td>
       </tr>
 
@@ -638,7 +655,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 </div>
 
 <style>
-#popup_order_add {
+.modal-popup {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -648,7 +665,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
   background-color: rgba(0, 0, 0, 0.6);
   display:none;
 }
-#popup_order_add > div {
+.modal-popup > div {
   width: 1000px;
   max-width: 80%;
   height: 80%;
@@ -657,16 +674,77 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
   top: 50%;
   transform: translate(-50%, -50%);
 }
-#popup_order_add > div iframe {
+.modal-popup > div iframe {
   width:100%;
   height:100%;
   border: 0;
   background-color: #FFF;
 }
 
+#popup_direct_delivery > div {
+  background: white;
+  width: 320px;
+  height: 220px;
+  position:relative;
+  overflow: hidden;
+}
+#popup_direct_delivery > div h1 {
+  padding-top: 15px;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+#popup_direct_delivery > div p {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+#popup_direct_delivery .check_wrapper {
+  font-size: 14px;
+  padding: 0 40px;
+  margin-bottom: 15px;
+}
+#popup_direct_delivery input[type='button'] {
+  cursor: pointer;
+}
+#popup_direct_delivery input[type='checkbox'] {
+  margin-right: 3px;
+}
+#popup_direct_delivery-close {
+	position:absolute;
+	top: 15px;
+	right: 15px;
+	color: #b0b0b0;
+	font-size: 1.5em;
+  cursor: pointer;
+}
+
 </style>
-<div id="popup_order_add">
+<div id="popup_order_add" class="modal-popup">
   <div>dd</div>
+</div>
+
+<div id="popup_direct_delivery" class="modal-popup">
+  <div>
+    <h1>직배송 일괄전송</h1>
+    <i class="fa fa-close fa-lg" id="popup_direct_delivery-close" onclick="directDeliveryPopup(false)"></i>
+
+    <div class="check_wrapper flex-row justify-space-between">
+      <span>전송 방법 : </span>
+      <label><input type="checkbox" id="direct_delivery_check_email" value="1" checked />이메일,</label>
+      <label><input type="checkbox" id="direct_delivery_check_fax" value="1" checked />팩스,</label>
+      <label><input type="checkbox" id="direct_delivery_check_talk" value="1" />알림톡</label>
+    </div>
+
+    <p>이미 발송된 상품 제외 후 전송하시겠습니까?</p>
+    <div style="text-align:center;">
+      <input type="button" value="전체전송" onclick="sendDirectDelivery(true)" class="btn btn_03">
+      &nbsp;&nbsp;
+      <input type="button" value="제외전송" onclick="sendDirectDelivery(false)" class="btn btn_02">
+    </div>
+    <div class="flex-row justify-center" style="margin-top: 10px;">
+      <input type="button" value="취소" onclick="directDeliveryPopup(false)" class="btn btn_04">
+    </div>
+  </div>
 </div>
 
 <script>
@@ -843,7 +921,7 @@ $( document ).ready(function() {
     var stock = $(this).attr("data-stock");
     var option = encodeURIComponent($(this).attr("data-option"));
     //popup.prodBarNum.form_3.php 으로하면 cart 기준으로 바뀜 (상품하나씩)
-    window.open("./popup.prodBarNum.form.php?no_refresh=1&orderlist=1&prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
+    window.open("./popup.prodBarNum.form.php?is_pop=true&no_refresh=1&orderlist=1&prodId=" + it + "&od_id=" + od + "&stock_insert=" + stock + "&option=" + option, "바코드 저장", "width=" + popupWidth + ", height=" + popupHeight + ", scrollbars=yes, resizable=no, top=" + popupY + ", left=" + popupX );
   });
 
   var submitAction = function(e) {
@@ -1380,6 +1458,7 @@ if( function_exists('pg_setting_check') ){
   <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn" style="background: #6e9254; color: #fff;">
   <?php } ?>
   <input type="button" value="위탁 엑셀다운로드" onclick="orderListExcelDownload('partner')" class="btn btn_03">
+  <input type="button" value="직배송 일괄전송" onclick="directDeliveryPopup(true)" class="btn btn_03">
 </div>
 
 <div class="btn_fixed_top2">
@@ -1405,7 +1484,6 @@ if( function_exists('pg_setting_check') ){
 
 <script>
 var excel_downloader = null;
-
 function orderListExcelDownload(type) {
   var od_id = [];
   var item = $("input[name='od_id[]']:checked");
@@ -1509,6 +1587,66 @@ function cancelExcelDownload() {
   $('#loading_excel').hide();
 }
 
+function directDeliveryPopup(status) {
+  if (!status) {
+    $("#popup_direct_delivery").hide();
+    $('#hd').css('z-index', 10);
+    return;
+  }
+  
+  var od_id = [];
+  var item = $("input[name='od_id[]']:checked");
+  for(var i = 0; i < item.length; i++) {
+    od_id.push($(item[i]).val());
+  }
+
+  if(!od_id.length) {
+    alert('선택한 주문이 없습니다.');
+    return false;
+  }
+
+  $("#popup_direct_delivery").show();
+  $('#hd').css('z-index', 3);
+}
+
+function sendDirectDelivery(sendAllAgain) {
+  var od_id = [];
+  var item = $("input[name='od_id[]']:checked");
+  for(var i = 0; i < item.length; i++) {
+    od_id.push($(item[i]).val());
+  }
+
+  if(!od_id.length) {
+    alert('선택한 주문이 없습니다.');
+    return false;
+  }
+
+  $.ajax({
+    method: "POST",
+    url: "./ajax.send_direct_delivery_by_item.php",
+    data: {
+      'ct_ids': od_id,
+      'sendAllAgain': sendAllAgain ? 'Y' : 'N',
+      'sendEmail': $('#direct_delivery_check_email').is(':checked') ? 1 : 0,
+      'sendFax': $('#direct_delivery_check_fax').is(':checked') ? 1 : 0,
+      'sendTalk': $('#direct_delivery_check_talk').is(':checked') ? 1 : 0,
+    },
+    beforeSend: function () {
+      $('.ajax-loader').css("visibility", "visible");
+    },
+  })
+  .done(function (data) {
+    console.log(data);
+    $('.ajax-loader').css("visibility", "hidden");
+    if (data.result == "success") {
+      alert('전송 완료');
+      window.location.reload();
+    } else {
+      alert('전송 실패');
+    }
+  });
+}
+
 //출고담당자
 $(document).on("change", ".ct_manager", function(e){
   // if(confirm('출고담당자를 변경하시겠습니까?')) {
@@ -1566,6 +1704,39 @@ $('#form_delivery_excel_upload').submit(function(e) {
       var data = $xhr.responseJSON;
       alert(data && data.message);
     });
+});
+
+// 위탁 선택적용
+$('#ct_direct_delivery_partner_all').click(function() {
+  var ct_id = [];
+  var item = $("input[name='od_id[]']:checked");
+
+  var sb1 = $('#ct_direct_delivery_partner_sb').val();
+    if(!sb1){
+      alert('위탁 파트너를 선택하신 후 변경을 눌러주세요. ');
+      return false;
+  }
+
+  for (var i = 0; i < item.length; i++) {
+    ct_id.push($(item[i]).val());
+  }
+
+  if (!ct_id.length) {
+    alert('적용하실 주문을 선택해주세요.');
+    return;
+  }
+
+  $.post('./ajax.ct_direct_delivery_partner.php', {
+    ct_id: ct_id,
+    ct_direct_delivery_partner: sb1
+  }, 'json')
+  .done(function() {
+    alert('위탁(직배송) 적용이 완료되었습니다.');
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
 });
 </script>
 

@@ -109,6 +109,8 @@ if($od["od_penId"]) {
       `penLtmNum` = '{$penData["penLtmNum"]}',
       `penRecGraCd` = '{$penData["penRecGraCd"]}', # 장기요양등급
       `penRecGraNm` = '{$penData["penRecGraNm"]}',
+      `penRecTypeCd` = '{$penData["penRecTypeCd"]}', # 수령방법
+      `penRecTypeTxt` = '{$penData["penRecTypeTxt"]}',
       `penTypeCd` = '{$penData["penTypeCd"]}', # 본인부담금율
       `penTypeNm` = '{$penData["penTypeNm"]}',
       `penExpiDtm` = '{$penData["penExpiDtm"]}', # 수급자 이용기간

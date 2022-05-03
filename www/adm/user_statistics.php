@@ -23,7 +23,7 @@ if ($type == 'user') {
 
     // 누적
     $sql = "SELECT
-            (SELECT COUNT(*) FROM g5_member WHERE mb_type = 'default') as default_cnt,
+            (SELECT COUNT(*) FROM g5_member WHERE mb_type = 'default' AND mb_temp = 0 AND mb_manager != '') as default_cnt,
             (SELECT COUNT(*) FROM g5_member WHERE mb_level = '4') as level4_cnt,
             (SELECT COUNT(*) FROM g5_member WHERE mb_temp = '1') as temp_cnt,
             (SELECT COUNT(*) FROM g5_member WHERE mb_type = 'normal') as normal_cnt,
@@ -33,7 +33,7 @@ if ($type == 'user') {
     $total_cnt = sql_fetch($sql);
     
     // 일자별
-    $sql = "SELECT DATE(mb_datetime) as mb_date, COUNT(*) as cnt FROM g5_member WHERE mb_type = 'default' AND mb_datetime BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_date;";
+    $sql = "SELECT DATE(mb_datetime) as mb_date, COUNT(*) as cnt FROM g5_member WHERE mb_type = 'default' AND mb_temp = 0 AND mb_manager != '' AND mb_datetime BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_date;";
     $result = sql_query($sql);
     $arr = [];
     while($row=sql_fetch_array($result)) {
@@ -219,11 +219,12 @@ else if ($type == 'login_user') {
     $total_cnt = sql_fetch($sql);
     
     //각 사업소별
-    $sql = "SELECT COUNT(S.id) as cnt, S.mb_id, M.mb_name FROM g5_statistics as S LEFT JOIN g5_member as M ON M.mb_id = S.mb_id  WHERE S.type = 'LOGIN' AND S.regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY S.mb_id ORDER BY m.mb_name ASC;";
+    $sql = "SELECT COUNT(S.id) as cnt, S.mb_id, M.mb_name FROM g5_statistics as S LEFT JOIN g5_member as M ON M.mb_id = S.mb_id  WHERE ((M.mb_type = 'default' AND M.mb_temp = 0 AND M.mb_manager != '') OR M.mb_level = '4') AND S.type = 'LOGIN' AND S.regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY S.mb_id ORDER BY m.mb_name ASC;";
     $sub_result = sql_query($sql);
     $arr = [];
     $sum = 0;
     while($row=sql_fetch_array($sub_result)) {
+        $arr['mb_id'] = $row['mb_id'];
         $arr['name'] = $row['mb_name'];
         $arr['cnt'] = $row['cnt'];
         $sum += $row['cnt'];
@@ -267,6 +268,29 @@ else if ($type == 'order_c') {
     // var_dump($results);
     $colspan = 4;
 }
+else if ($type == 'order_user') {
+    //누적
+    $sql = "SELECT COUNT(*) as cnt FROM g5_shop_order";
+    $total_cnt = sql_fetch($sql);
+
+    //각 일자별
+    //사업소
+    $sql = "SELECT mb_id, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY mb_id; ";
+    $result = sql_query($sql);
+    $sum_user = 0;
+    while($row = sql_fetch_array($result)) {
+        $mb_id = $row['mb_id'];
+        $arr = [];
+        $sql = "SELECT COUNT(*) as cnt, DATE(regdt) as ms_date FROM g5_statistics WHERE type = 'ORDER' AND mb_id = '{$mb_id}' AND regdt BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
+        $result2 = sql_query($sql);
+        while($row2 = sql_fetch_array($result2)) {
+            $arr[$row2['ms_date']] = $row2['cnt'];
+            $results[$mb_id] = $arr;
+            $sum_user += $row['cnt'];    
+        }
+    }
+    $colspan = count($results) + 1;
+}
 ?>
 
 <style>
@@ -305,11 +329,14 @@ else if ($type == 'order_c') {
 
 <div class="outer">
 <div class="tbl_head01 tbl_wrap">
+    <input type="hidden" id="type" value="<?php echo $type ?>"/>
+    <input type="hidden" id="fr_date" value="<?php echo $fr_date ?>"/>
+    <input type="hidden" id="to_date" value="<?php echo $to_date ?>"/>
+    <!-- <caption><?php echo $g5['title']; ?> 목록</caption> -->
     <table class="statistics_table">
-    <caption><?php echo $g5['title']; ?> 목록</caption>
     <thead>
     <tr>
-        <th scope="col" style="width:8%;"></th>
+        <th scope="col"></th>
         <?php if ($type == 'user') { ?>
             <th scope="col">일반사업소</th>
             <th scope="col">우수사업소</th>
@@ -323,9 +350,14 @@ else if ($type == 'order_c') {
                 $region = $row['sido']; ?>
                 <th scope="col"><?=$region?></th>
             <?php } ?>
-        <?php } else if ($type == 'login_daily' || $type == 'login_user') { 
+        <?php } else if ($type == 'login_daily') { 
             $to_date_str = date('Y-m-d',$endTime);
             ?>
+            <th scope="col"><?=$fr_date.'~'.$to_date_str?></th>
+        <?php } else if ($type == 'login_user') { 
+            $to_date_str = date('Y-m-d',$endTime);
+            ?>
+            <th scope="col"></th>
             <th scope="col"><?=$fr_date.'~'.$to_date_str?></th>
         <?php } else if ($type == 'amount') { ?>
             <th scope="col">매출액</th>
@@ -341,6 +373,10 @@ else if ($type == 'order_c') {
             <th scope="col">전체 생성</th>
             <th scope="col">관리자 생성</th>
             <th scope="col">사용자 생성</th>
+        <?php } else if ($type == 'order_user') { 
+            foreach(array_keys($results) as $name) {  ?>
+                <th scope="col"><?=$name?></th>
+            <?php } ?>
         <?php } ?>
     </tr>
     </thead>
@@ -361,7 +397,7 @@ else if ($type == 'order_c') {
             <?php } ?>
         <?php } else if ($type == 'amount') { ?>
             <td><?php echo number_format($total_amount['amount']) ?></td>
-        <?php } else if ($type == 'login_daily' || $type == 'login_user' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'order_c') { ?>
+        <?php } else if ($type == 'login_daily' || $type == 'login_user' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'order_c' || $type == 'order_user') { ?>
             <td><?php echo $total_cnt['cnt'] ?></td>
         <?php } ?>
     </tr>
@@ -401,7 +437,12 @@ else if ($type == 'order_c') {
                 array_push($datas, $results['order_c_all'][$thisDate] ?: 0);
                 array_push($datas, $results['order_c_admin'][$thisDate] ?: 0);
                 array_push($datas, $results['order_c_user'][$thisDate] ?: 0);
-            }
+            } else if ($type == 'order_user') {
+                $arr_keys = array_keys($results);
+                foreach($arr_keys as $key) { 
+                    array_push($datas, $results[$key][$thisDate] ?: 0);
+                }
+            } 
         ?>
         <tr class="bg0">
             <?php foreach($datas as $data) { ?>
@@ -416,7 +457,8 @@ else if ($type == 'order_c') {
         
         <?php foreach($results['login_user'] as $data) { ?>
             <tr class="bg0">
-                <td><?php echo $data['name'] ?></td>
+            <td><?php echo $data['mb_id'] ?></td>
+            <td><?php echo $data['name'] ?></td>
                 <td><?php echo $data['cnt'] ?></td>
             </tr>
         <?php } ?>
@@ -438,6 +480,37 @@ else if ($type == 'order_c') {
 </div>
 </div>
 
+<script>
+$(function() {
+    $('#download_excel').click(function(e) {
+        var body = encodeURIComponent(document.getElementsByTagName('table')[0].innerHTML);
+        body = body.replace(/\s+/g,"");
+        var type = $('#type').val();
+        // var url = 'user_statistics_excel_download.php?body=' + body;
+        // window.location.href = url;
+
+        var form = document.createElement('form');
+        form.method = 'post';
+        form.action = 'user_statistics_excel_download.php';
+        form.target='_blank';
+
+        var hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = 'table_body';
+        hiddenField.value = body;
+        form.appendChild(hiddenField);
+
+        var hiddenField2 = document.createElement('input');
+        hiddenField2.type = 'hidden';
+        hiddenField2.name = 'type';
+        hiddenField2.value = type;
+        form.appendChild(hiddenField2);
+
+        document.body.appendChild(form);
+        form.submit();
+    });
+});
+</script>
 <?php
 include_once('./admin.tail.php');
 ?>

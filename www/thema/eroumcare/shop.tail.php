@@ -75,12 +75,12 @@ if($_GET['co_id']=="possession_manage"){ ?>
                 <span class="value" ><?=$manager_hp?></span>
                 <?php } else { ?>
                 <span class="Label">주문안내</span>
-                <span class="value">032-562-6608</span>
+                <span class="value">02-830-1312</span>
                 <?php } ?>
               </p>
               <p>
                 <span class="Label">시스템안내</span>
-                <span class="value">02-830-1301~2</span>
+                <span class="value">02-830-1301</span>
               </p>
             </li>
             <li class="etc">
@@ -120,6 +120,10 @@ if($_GET['co_id']=="possession_manage"){ ?>
 					<p>
 						<?php echo $default['de_admin_company_name']; ?> <span class="pc_only"> ㅣ </span> <span class="mo_br"></span> 대표 : <?php echo $default['de_admin_company_owner']; ?> ㅣ 사업자등록번호 : <?php echo $default['de_admin_company_saupja_no']; ?> <a href="javascript:;" onclick="window.open('https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6178614330','communicationViewPopup','width=750,height=700,scrollbars=yes')">[사업자정보확인]</a> <span class="pc_only"> ㅣ </span> <span class="mo_br"></span> 통신판매신고번호 : <?php echo $default['de_admin_tongsin_no']; ?> | 개인정보보호관리자 : <?php echo $default['de_admin_info_name']; ?><br>
 						주소 : <?php echo $default['de_admin_company_addr']; ?><!-- <a href="http://naver.me/F4in5mn2" class="btn_map" target="_blank">지도보기 <img src="<?php echo THEMA_URL; ?>/assets/img/icon_pin.png" alt="" /></a> -->
+            <br>
+            사무소 :  서울시 금천구 서부샛길 606 대성디폴리스 B동 1401호 
+            <br>
+            물류센터 : 인천광역시 서구 이든1로 21
 					</p>
 					<div class="desc">
 						본, 쇼핑몰의 모든 정보, 콘텐츠 및 UI, 저작물 등의 저작권은 <span class="mo_br"></span><?php echo $default['de_admin_company_name']; ?>에 있으며, 어떠한 이유에서도<br>

@@ -4,9 +4,12 @@ include_once('./_common.php');
 $keyword = str_replace(' ', '', trim($keyword));
 
 $supply_partner_where = '';
+$add_where = '';
 
 if ($only_supply_partner) {
   $supply_partner_where = " (mb_partner_type like '%공급%') AND ";
+} else {
+  //$add_where = " (mb_order_approve = '1') AND ";
 }
 
 $sql = "SELECT
@@ -20,12 +23,14 @@ $sql = "SELECT
   CONCAT(mb_giup_addr1, mb_giup_addr2) as mb_giup_addr,
   REPLACE(mb_name, ' ', '') as mb_name_no_space,
   REPLACE(mb_nick, ' ', '') as mb_nick_no_space,
-  mb_level
+  mb_level,
+  mb_order_approve
 FROM
   g5_member
 WHERE
   (mb_intercept_date = '') AND 
   {$supply_partner_where}
+  {$add_where}
   (
     (mb_id LIKE '%{$keyword}%') OR 
     (mb_name LIKE '%{$keyword}%') OR 

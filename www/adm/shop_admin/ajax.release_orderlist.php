@@ -137,16 +137,25 @@ if ($od_escrow) {
   $where[] = " od_escrow = 1 ";
 }
 
-if($manager_option) {
+if ($manager_option) {
   $where[] = " mb_manager = '{$manager_option}' ";
 }
 
-if($ct_status_option) {
+if ($ct_status_option) {
   $ct_status = explode(',', $ct_status_option);
 }
 
 if ($fr_date && $to_date) {
   $where[] = " {$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
+}
+
+if($od_addr1_option
+  && in_array($od_addr1_option,
+    ['서울', '부산', '대구', '인천',
+    '광주', '대전', '울산', '세종',
+    '경기', '강원', '충북', '충남',
+    '전북', '전남', '경북', '경남', '제주'])) {
+  $where[] = " od_addr1 like '%{$od_addr1_option}%' ";
 }
 
 if($search_text) {

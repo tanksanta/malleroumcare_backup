@@ -105,6 +105,10 @@ $mb_giup_type_2         = $mb['mb_giup_type'] == '2'       ? 'checked="checked"'
 $mb_partner_auth_y        =  $mb['mb_partner_auth']       ? 'checked="checked"' : '';
 $mb_partner_auth_n         = !$mb['mb_partner_auth']       ? 'checked="checked"' : '';
 
+// 주문가능 여부
+$mb_order_approve_y        =  $mb['mb_order_approve'] == 1       ? 'checked="checked"' : '';
+$mb_order_approve_n         = $mb['mb_order_approve'] == 0       ? 'checked="checked"' : '';
+
 // 딜러 여부
 $mb_dealer_y        =  $mb['mb_dealer']       ? 'checked="checked"' : '';
 $mb_dealer_n         = !$mb['mb_dealer']       ? 'checked="checked"' : '';
@@ -112,6 +116,8 @@ $mb_dealer_n         = !$mb['mb_dealer']       ? 'checked="checked"' : '';
 // 거래명세서 전송방법
 $mb_transaction_e        =  $mb['send_transaction'] == 'A' || $mb['send_transaction'] == 'E'       ? 'checked="checked"' : '';
 $mb_transaction_f         = $mb['send_transaction'] == 'A' || $mb['send_transaction'] == 'F'       ? 'checked="checked"' : '';
+$send_transaction_e     = $mb['send_transaction_e'] ?: $mb['mb_email'];
+$send_transaction_f     = $mb['send_transaction_f'] ?: $mb['mb_fax'];
 
 // 파트너 자동 계약 갱신 여부
 $mb_partner_date_auto_y         =  $mb['mb_partner_date_auto']       ? 'checked="checked"' : '';
@@ -337,6 +343,15 @@ label {
         </td>
     </tr>
     <tr>
+        <th scope="row">주문</th>
+        <td colspan="3">
+            <input type="radio" name="mb_order_approve" value="0" id="mb_order_approve_n" <?php echo $mb_order_approve_n; ?>>
+            <label for="mb_order_approve_n">주문정지</label>
+            <input type="radio" name="mb_order_approve" value="1" id="mb_order_approve_y" <?php echo $mb_order_approve_y; ?>>
+            <label for="mb_order_approve_y">주문가능</label>
+        </td>
+    </tr>
+    <tr>
         <th colspan="4">
             <div style="padding: 20px 20px;background-color: #f1f1f1;">
                 <h2 style="margin:0;padding:0;">사업자 정보</h2>
@@ -512,9 +527,9 @@ label {
         <th scope="row">거래내역 전송방법</th>
         <td colspan="3">
             <input type="checkbox" name="mb_transaction_e" value="mb_transaction_e" id="mb_transaction_e" <?php echo $mb_transaction_e; ?>>
-            <label for="mb_transaction_e">이메일(<?=$mb['mb_email']?>)</label>
+            이메일 <input type="text" name="send_transaction_e" value="<?php echo $send_transaction_e ?>" id="send_transaction_e" class="frm_input" size="30" maxlength="50">
             <input type="checkbox" name="mb_transaction_f" value="mb_transaction_f" id="mb_transaction_f" <?php echo $mb_transaction_f; ?>>
-            <label for="mb_transaction_f">팩스(<?=$mb['mb_fax']?>)</label>
+            팩스 <input type="text" name="send_transaction_f" value="<?php echo $send_transaction_f ?>" id="send_transaction_f" class="frm_input" size="30" maxlength="50">
         </td>
     </tr>
      <tr>
@@ -892,20 +907,20 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
             <label for="mb_partner_auth_y">승인</label>
         </td>
     </tr>
-    <tr>
+<!--    <tr>
         <th scope="row">파트너결제 결제기간</th>
         <td colspan="3">
             <select name="mb_partner_date_pay_date">
                 <option value="0">선택해주세요</option>
-                <option value="1" <?php echo $mb['mb_partner_date_pay_date'] == '1' ? 'selected' : ''; ?>>1개월</option>
-                <option value="2" <?php echo $mb['mb_partner_date_pay_date'] == '2' ? 'selected' : ''; ?>>2개월</option>
-                <option value="3" <?php echo $mb['mb_partner_date_pay_date'] == '3' ? 'selected' : ''; ?>>3개월</option>
-                <option value="4" <?php echo $mb['mb_partner_date_pay_date'] == '4' ? 'selected' : ''; ?>>4개월</option>
-                <option value="5" <?php echo $mb['mb_partner_date_pay_date'] == '5' ? 'selected' : ''; ?>>5개월</option>
-                <option value="6" <?php echo $mb['mb_partner_date_pay_date'] == '6' ? 'selected' : ''; ?>>6개월</option>
+                <option value="1" <?php /*echo $mb['mb_partner_date_pay_date'] == '1' ? 'selected' : ''; */?>>1개월</option>
+                <option value="2" <?php /*echo $mb['mb_partner_date_pay_date'] == '2' ? 'selected' : ''; */?>>2개월</option>
+                <option value="3" <?php /*echo $mb['mb_partner_date_pay_date'] == '3' ? 'selected' : ''; */?>>3개월</option>
+                <option value="4" <?php /*echo $mb['mb_partner_date_pay_date'] == '4' ? 'selected' : ''; */?>>4개월</option>
+                <option value="5" <?php /*echo $mb['mb_partner_date_pay_date'] == '5' ? 'selected' : ''; */?>>5개월</option>
+                <option value="6" <?php /*echo $mb['mb_partner_date_pay_date'] == '6' ? 'selected' : ''; */?>>6개월</option>
             </select>
         </td>
-    </tr>
+    </tr>-->
     <tr>
         <th scope="row">
             <label for="mb_partner_date">계약 종료일</label>
@@ -914,57 +929,57 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
             <input type="text" name="mb_partner_date" value="<?php echo $mb['mb_partner_date'] ?>" id="mb_partner_date" class="frm_input datepicker" size="30" maxlength="20">
         </td>
     </tr>
-    <tr>
+<!--    <tr>
         <th scope="row">파트너 자동계약갱신 여부</th>
         <td colspan="3">
-            <input type="radio" name="mb_partner_date_auto" value="0" id="mb_partner_date_auto_n" <?php echo $mb_partner_date_auto_n; ?>>
+            <input type="radio" name="mb_partner_date_auto" value="0" id="mb_partner_date_auto_n" <?php /*echo $mb_partner_date_auto_n; */?>>
             <label for="mb_partner_date_auto_n">미사용</label>
-            <input type="radio" name="mb_partner_date_auto" value="1" id="mb_partner_date_auto_y" <?php echo $mb_partner_date_auto_y; ?>>
+            <input type="radio" name="mb_partner_date_auto" value="1" id="mb_partner_date_auto_y" <?php /*echo $mb_partner_date_auto_y; */?>>
             <label for="mb_partner_date_auto_y">사용</label>
 
             <select name="mb_partner_date_auto_extend_date">
                 <option value="0">선택해주세요</option>
-                <option value="3" <?php echo $mb['mb_partner_date_auto_extend_date'] == '3' ? 'selected' : ''; ?>>3개월</option>
-                <option value="6" <?php echo $mb['mb_partner_date_auto_extend_date'] == '6' ? 'selected' : ''; ?>>6개월</option>
-                <option value="12" <?php echo $mb['mb_partner_date_auto_extend_date'] == '12' ? 'selected' : ''; ?>>1년</option>
-                <option value="24" <?php echo $mb['mb_partner_date_auto_extend_date'] == '24' ? 'selected' : ''; ?>>2년</option>
-                <option value="36" <?php echo $mb['mb_partner_date_auto_extend_date'] == '36' ? 'selected' : ''; ?>>3년</option>
+                <option value="3" <?php /*echo $mb['mb_partner_date_auto_extend_date'] == '3' ? 'selected' : ''; */?>>3개월</option>
+                <option value="6" <?php /*echo $mb['mb_partner_date_auto_extend_date'] == '6' ? 'selected' : ''; */?>>6개월</option>
+                <option value="12" <?php /*echo $mb['mb_partner_date_auto_extend_date'] == '12' ? 'selected' : ''; */?>>1년</option>
+                <option value="24" <?php /*echo $mb['mb_partner_date_auto_extend_date'] == '24' ? 'selected' : ''; */?>>2년</option>
+                <option value="36" <?php /*echo $mb['mb_partner_date_auto_extend_date'] == '36' ? 'selected' : ''; */?>>3년</option>
             </select>
         </td>
-    </tr>
-    <tr>
+    </tr>-->
+<!--    <tr>
         <th scope="row">
             <label for="mb_partner_date_auto_buy_price">자동계약갱신 구매금액</label>
         </th>
         <td>
-            <input type="text" name="mb_partner_date_auto_buy_price" value="<?php echo $mb['mb_partner_date_auto_buy_price'] ?>" id="mb_partner_date_auto_buy_price" class="frm_input" size="20" maxlength="20">원
+            <input type="text" name="mb_partner_date_auto_buy_price" value="<?php /*echo $mb['mb_partner_date_auto_buy_price'] */?>" id="mb_partner_date_auto_buy_price" class="frm_input" size="20" maxlength="20">원
         </td>
         <th scope="row">
             <label for="mb_partner_date_auto_buy_cnt">자동계약갱신 구매횟수</label>
         </th>
         <td>
-            <input type="text" name="mb_partner_date_auto_buy_cnt" value="<?php echo $mb['mb_partner_date_auto_buy_cnt'] ?>" id="mb_partner_date_auto_buy_cnt" class="frm_input" size="20" maxlength="20">번
+            <input type="text" name="mb_partner_date_auto_buy_cnt" value="<?php /*echo $mb['mb_partner_date_auto_buy_cnt'] */?>" id="mb_partner_date_auto_buy_cnt" class="frm_input" size="20" maxlength="20">번
         </td>
-    </tr>
-    <tr>
+    </tr>-->
+<!--    <tr>
         <th scope="row">
             <label for="mb_partner_pay_type">결제방법</label>
         </th>
         <td colspan="3">
-            <input type="radio" name="mb_partner_pay_type" value="0" id="mb_partner_pay_type_0" <?php echo $mb['mb_partner_pay_type'] == 0 ? ' checked ' : ''; ?>>
+            <input type="radio" name="mb_partner_pay_type" value="0" id="mb_partner_pay_type_0" <?php /*echo $mb['mb_partner_pay_type'] == 0 ? ' checked ' : ''; */?>>
             <label for="mb_partner_pay_type_0">수시</label>
-            <input type="radio" name="mb_partner_pay_type" value="1" id="mb_partner_pay_type_1" <?php echo $mb['mb_partner_pay_type'] == 1 ? ' checked ' : ''; ?>>
+            <input type="radio" name="mb_partner_pay_type" value="1" id="mb_partner_pay_type_1" <?php /*echo $mb['mb_partner_pay_type'] == 1 ? ' checked ' : ''; */?>>
             <label for="mb_partner_pay_type_1">일주일</label>
-            <input type="radio" name="mb_partner_pay_type" value="2" id="mb_partner_pay_type_2" <?php echo $mb['mb_partner_pay_type'] == 2 ? ' checked ' : ''; ?>>
+            <input type="radio" name="mb_partner_pay_type" value="2" id="mb_partner_pay_type_2" <?php /*echo $mb['mb_partner_pay_type'] == 2 ? ' checked ' : ''; */?>>
             <label for="mb_partner_pay_type_2">월말</label>
-            <input type="radio" name="mb_partner_pay_type" value="3" id="mb_partner_pay_type_3" <?php echo $mb['mb_partner_pay_type'] == 3 ? ' checked ' : ''; ?>>
+            <input type="radio" name="mb_partner_pay_type" value="3" id="mb_partner_pay_type_3" <?php /*echo $mb['mb_partner_pay_type'] == 3 ? ' checked ' : ''; */?>>
             <label for="mb_partner_pay_type_3">익월10일</label>
-            <input type="radio" name="mb_partner_pay_type" value="4" id="mb_partner_pay_type_4" <?php echo $mb['mb_partner_pay_type'] == 4 ? ' checked ' : ''; ?>>
+            <input type="radio" name="mb_partner_pay_type" value="4" id="mb_partner_pay_type_4" <?php /*echo $mb['mb_partner_pay_type'] == 4 ? ' checked ' : ''; */?>>
             <label for="mb_partner_pay_type_4">익월말</label>
-            <input type="radio" name="mb_partner_pay_type" value="5" id="mb_partner_pay_type_5" <?php echo $mb['mb_partner_pay_type'] == 5 ? ' checked ' : ''; ?>>
+            <input type="radio" name="mb_partner_pay_type" value="5" id="mb_partner_pay_type_5" <?php /*echo $mb['mb_partner_pay_type'] == 5 ? ' checked ' : ''; */?>>
             <label for="mb_partner_pay_type_5">익월말</label>
         </td>
-    </tr>
+    </tr>-->
     <tr>
         <th scope="row"><label for="mb_partner_remark">비고</label></th>
         <td colspan="3"><textarea  name="mb_partner_remark" id="mb_partner_remark"><?php echo get_text($mb['mb_partner_remark']); ?></textarea></td>

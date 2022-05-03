@@ -8,6 +8,8 @@ $auth_check = auth_check($auth[$sub_menu], $w ? 'w' : 'r', true);
 if($auth_check)
   json_response(400, $auth_check);
 
+$use_warehouse_where_sql = get_use_warehouse_where_sql();
+
 if($w === 'w') {
   // 작성
   $wh_name = clean_xss_tags($_POST['wh_name']);
@@ -85,7 +87,7 @@ else if($w === 'd') {
   if(!$wh_name)
     json_response(400, '유효하지 않은 요청입니다.');
   
-  $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '$wh_name' and ws_del_yn = 'N' ";
+  $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty)) as total from warehouse_stock where wh_name = '$wh_name' and ws_del_yn = 'N' {$use_warehouse_where_sql} ";
   $result = sql_fetch($sql);
 
   if($result['total'] > 0)
@@ -103,7 +105,7 @@ $result = sql_query($sql);
 
 $ret = '';
 while($row = sql_fetch_array($result)) {
-  $sql = " select sum(ws_qty) as total from warehouse_stock where wh_name = '{$row['wh_name']}' and ws_del_yn = 'N' ";
+  $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty)) as total from warehouse_stock where wh_name = '{$row['wh_name']}' and ws_del_yn = 'N' {$use_warehouse_where_sql} ";
   $total = sql_fetch($sql);
 
   $ret .= '

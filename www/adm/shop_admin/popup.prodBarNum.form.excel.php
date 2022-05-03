@@ -24,9 +24,11 @@
 
             }
             //정렬
+            $sort = [];
             foreach ((array) $result_again as $key => $value) {
                 $sort[$key] = $value['prodBarNum'];
             }
+
             array_multisort($sort, SORT_ASC, $result_again);
 
             for($i=0;$i<count($result_again);$i++){

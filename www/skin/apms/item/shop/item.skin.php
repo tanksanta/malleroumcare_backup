@@ -88,6 +88,13 @@ if($it["optionList"]) {
 }
 
 $sendData["prods"] = $prodsSendData;
+
+$main_ca = '';
+$it_list_url = '';
+if ($it['ca_id']) {
+  $main_ca = substr($it['ca_id'], 0, 2);
+  $it_list_url = "/shop/list.php?ca_id={$main_ca}";
+}
 ?>
 
 
@@ -230,7 +237,11 @@ $sendData["prods"] = $prodsSendData;
         <h1 class="item-head-title" style="font-size: 42px;"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
           <?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) { ?>
-              급여가
+                <?php if(is_benefit_item($it)) { ?>
+                판매가
+                <?php } else { ?>
+                급여가
+                <?php } ?>
           <?php } else { ?>
             <?php if($member["mb_level"] == "4") { ?>
               VIP판매가
@@ -244,7 +255,7 @@ $sendData["prods"] = $prodsSendData;
           <?php
           if($member["mb_id"]) {
             if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
-              echo number_format($it["it_cust_price"]);
+                echo number_format($it["it_cust_price"]);
             } else {
               if($it['entprice']) {
                 // 사업소별 지정 가격
@@ -265,8 +276,8 @@ $sendData["prods"] = $prodsSendData;
         <p class="price-won">원</p>
         <?php
         $sale_cnt_txt = [];
-        if($_COOKIE["viewType"] != "basic" && !$it['entprice']) {
-          if(($is_admin == "super" || $member['mb_level'] == "3" || $member['mb_level'] == "9")||!$it['it_sale_percent_great']) {
+        if ($_COOKIE["viewType"] != "basic" && !$it['entprice'] && $member['mb_type'] != 'partner') {
+          if (($is_admin == "super" || $member['mb_level'] == "3" || $member['mb_level'] == "9") || !$it['it_sale_percent_great']) {
             if($it["it_sale_cnt"]) {
               $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
             }
@@ -384,6 +395,9 @@ $sendData["prods"] = $prodsSendData;
               }
             } else { // 파트너 유저 아닐 시
               $sc_price_info = "";
+              if($it['it_sc_type'] == 1) {
+                $sc_price_info = "무료배송";
+              }
               if ($it['it_sc_type'] != 1) {
                 $number_cost=number_format($it['it_sc_price']);
                 // $sc_price_info = "배송비 {$number_cost}원{$sc_price_info_spliter}도서산간지역은 ".number_format($it['it_sc_price'] + 2000)."원 추가됩니다.";
@@ -409,11 +423,11 @@ $sendData["prods"] = $prodsSendData;
               <td>
                 <?php
                 $sc_price = 10;
-                if($it['it_sc_type'] < 4) {
+                if($it['it_sc_type'] < 4 && $it['it_sc_type'] != 1) {
                   $sc_price_info = number_format($sc_price).'만원 이상 무료배송<br>'.$sc_price_info;
                 }
                 if($it['it_sc_type'] == 5) {
-                  $sc_price_info = '짝수 주문시 무료배송<br>'.$sc_price_info;
+                  $sc_price_info = '짝수 주문시 무료배송<br>기본배송비 3,300원';
                 }
                 if ($it['it_delivery_cnt'] > 0) {
                   $sc_price_info = "<span style=\"font-size:13px; color:#ef7c00;\">본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span><br>".$sc_price_info;
@@ -475,7 +489,11 @@ $sendData["prods"] = $prodsSendData;
         <h1 class="item-head-title pc"><?php echo stripslashes($it['it_name']); // 상품명 ?></h1>
         <p class="price-type">
           <?php if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) { ?>
-              급여가
+                <?php if(is_benefit_item($it)) { ?>
+                판매가
+                <?php } else { ?>
+                급여가
+                <?php } ?>
             <?php } else { ?>
             <?php if($member["mb_level"] == "4") { ?>
               VIP판매가
@@ -489,7 +507,7 @@ $sendData["prods"] = $prodsSendData;
           <?php
           if($member["mb_id"]) {
             if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
-              echo number_format($it["it_cust_price"]);
+                echo number_format($it["it_cust_price"]);
             } else {
               if($it['entprice']) {
                 // 사업소별 지정 가격
@@ -512,7 +530,7 @@ $sendData["prods"] = $prodsSendData;
         <?php
         $sale_cnt_txt = [];
         $sale_percent_input = "";
-        if($_COOKIE["viewType"] != "basic" && !$it['entprice']) {
+        if ($_COOKIE["viewType"] != "basic" && !$it['entprice'] && $member['mb_type'] != 'partner') {
           if(($is_admin == "super" || $member['mb_level'] == "3" || $member['mb_level'] == "9")||!$it['it_sale_percent_great']) {
             if($it["it_sale_cnt"]) {
               $sale_cnt_txt[] = $it["it_sale_cnt"] . '개 이상 구매 시 ' . number_format($it["it_sale_percent"]) . '원';
@@ -671,7 +689,7 @@ $sendData["prods"] = $prodsSendData;
                 <input type="hidden" id="it_price" value="<?php
                   if($member["mb_id"]) {
                     if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
-                      echo $it["it_cust_price"];
+                        echo $it["it_cust_price"];
                     } else {
                       if($it['entprice']) {
                         // 사업소별 지정 가격
@@ -781,7 +799,11 @@ $sendData["prods"] = $prodsSendData;
                 if ($it['it_sc_type'] != 1) {
                     $number_cost=number_format($it['it_sc_price']);
                     // $sc_price_info = "배송비 {$number_cost}원{$sc_price_info_spliter}도서산간지역은 ".number_format($it['it_sc_price'] + 2000)."원 추가됩니다.";
-                    $sc_price_info = "배송비 {$number_cost}원";
+                    if ($number_cost > 0) {
+                      $sc_price_info = "배송비 {$number_cost}원";
+                    } else {
+                      $sc_price_info = "무료배송";
+                    }
                 }
 
                 if ($it['it_sc_type'] == 0) { // 쇼핑몰 디폴트 셋팅 시
@@ -806,11 +828,11 @@ $sendData["prods"] = $prodsSendData;
           //if ($it['it_sc_minimum']) {
             //$sc_price = ((int)$it['it_sc_minimum'] / 10000);
             $sc_price = 10;
-            if($it['it_sc_type'] < 4) {
+            if($it['it_sc_type'] < 4 && $it['it_sc_type'] != 1) {
               $sc_price_info = number_format($sc_price).'만원 이상 무료배송<br>'.$sc_price_info;
             }
             if($it['it_sc_type'] == 5) {
-              $sc_price_info = '짝수 주문시 무료배송<br>'.$sc_price_info;
+              $sc_price_info = '짝수 주문시 무료배송<br>기본배송비 3,300원';
             }
           //}
           if ($it['it_delivery_cnt'] > 0) {
@@ -1123,7 +1145,8 @@ $sendData["prods"] = $prodsSendData;
           $(".cart-ok-close").click(function(e) {
             // $(this).closest('.cart-ok').hide("slide", { direction: "down" }, 500);
             hide_cart_ok($(this).closest('.cart-ok'));
-            window.location.reload();
+            // window.location.reload();
+            window.location = '<?= $it_list_url ?>';
             e.preventDefault();
           })
         });

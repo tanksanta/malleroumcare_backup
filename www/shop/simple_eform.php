@@ -70,6 +70,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
       <input type="hidden" name="w" value="<?php if($dc) echo 'u'; ?>">
       <input type="hidden" name="dc_id" value="<?php if($dc) echo $dc['uuid']; ?>">
+      <input type="hidden" name="penRecTypeCd" id="penRecTypeCd" value="<?php if(!$dc) echo '02'; if($dc) echo $dc['penRecTypeCd']; ?>">
+      <input type="hidden" name="penRecTypeTxt" id="penRecTypeTxt" value="<?php if($dc) echo $dc['penRecTypeTxt']; ?>">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="radio_wr" style="margin-top: -10px; margin-bottom: 10px; font-size: 14px;">
@@ -172,6 +174,21 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               </div>
             </div>
           </div>
+          <div class="form-group">
+            <label for="penJumin" class="col-md-2 control-label">
+              <strong>확인 방법</strong>
+            </label>
+            <div class="col-md-5">
+              <div class="radio_wr">
+                <label class="radio-inline">
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if(!$dc || $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 방문
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if($dc['penRecTypeCd'] == '01') echo 'checked' ?>> 유선
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="se_btn_wr">
           <button type="submit" id="btn_se_submit" class="btn_se_submit">
@@ -181,6 +198,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         </div>
       </div>
 
+      <div id="list_wrap" class="list_box"></div>
       <div id="se_body_wr" class="flex space-between <?php if($dc) echo 'active' ;?>">
         <div class="se_item_wr">
           <div class="se_sch_wr">
@@ -526,6 +544,31 @@ $(document).on("click", "a.open_input_barcode", function(){
   $('#barcode_popup_form input[name="option_name"]').val(option_name);
   $('#barcode_popup_form input[name="barcodes"]').val(barcodes.join('|'));
   $('#barcode_popup_form').submit();
+});
+
+$(document).on('change, click', '.penRecTypeCd_radio', function() {
+  var val = $(this).val();
+
+  $('#penRecTypeCd').val(val).change();
+});
+
+$(document).on('click', '.btn_del_eform', function(e) {
+  e.preventDefault();
+
+  if(!confirm('정말 삭제하시겠습니까?'))
+    return;
+
+  $.post('ajax.simple_eform.php', {
+    w: 'd',
+    dc_id: $(this).data('id')
+  }, 'json')
+  .done(function() {
+    window.location.reload();
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+  });
 });
 </script>
 
@@ -974,6 +1017,8 @@ function select_recipient(obj) {
   $('#penExpiEdDtm').prop('disabled', false);
   $('#penJumin').prop('disabled', false);
   $('#se_body_wr').addClass('active');
+
+  $('#list_wrap').hide();
 }
 
 function update_pen(obj) {
@@ -994,6 +1039,9 @@ function update_pen(obj) {
     $('#penExpiStDtm').val('').data('orig', '').change();
     $('#penExpiEdDtm').val('').data('orig', '').change();
     $('#penJumin').val('').data('orig', '').change();
+    $('#penExpiEdDtm').val('').data('orig', '').change();
+    $('#penRecTypeCd').val('02').data('orig', '02').change();
+    $('#penRecTypeTxt').val('');
   } else {
     $('#penId').val(obj.penId).data('orig', obj.penId).change();
     $('#penZip').val(obj.penZip).data('orig', obj.penZip).change();
@@ -1011,6 +1059,8 @@ function update_pen(obj) {
     $('#penExpiStDtm').val(obj.penExpiStDtm).data('orig', obj.penExpiStDtm).change();
     $('#penExpiEdDtm').val(obj.penExpiEdDtm).data('orig', obj.penExpiEdDtm).change();
     $('#penJumin').val(obj.penJumin).data('orig', obj.penJumin).change();
+    $('#penRecTypeCd').val(obj.penRecTypeCd).data('orig', obj.penRecTypeCd).change();
+    if(obj.penRecTypeTxt) $('#penRecTypeTxt').val(obj.penRecTypeTxt);
   }
 }
 
@@ -1046,6 +1096,8 @@ function selected_recipient(result) {
     penZip: result[26],
     penAddr: result[18],
     penAddrDtl: result[19],
+    penRecTypeCd: result[34],
+    penRecTypeTxt: result[35],
   };
 
   select_recipient(pen);
@@ -1615,6 +1667,38 @@ if($_POST['penId_r']){
 $('input[name="it_id[]"]').each(function() {
   get_stock_data($(this).val());
 });
+
+$(function() {
+  search();
+
+  function search(queryString) {
+    if(!queryString) queryString = '';
+    var params = $('#form_search').serialize();
+    var $listWrap = $('#list_wrap');
+
+    $.ajax({
+      method: 'GET',
+      url: '<?=G5_SHOP_URL?>/eform/ajax.eform.list.php?' + queryString,
+      data: params,
+      beforeSend: function() {
+        $listWrap.html('<div style="text-align:center;"><img src="<?=G5_URL?>/img/loading-modal.gif"></div>');
+      }
+    })
+    .done(function(data) {
+      $listWrap.html(data);
+      // 페이지네이션 처리
+      $('#list_wrap .pagination a').on('click', function(e) {
+        e.preventDefault();
+        var params = $(this).attr('href').replace('?', '');
+        search(params);
+      });
+    })
+    .fail(function() {
+      $listWrap.html('');
+    });
+  }
+})
+
 </script>
 
 <?php include_once("./_tail.php"); ?>

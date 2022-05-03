@@ -190,9 +190,13 @@
       </tr>
       <tr>
         <th scope="col" colspan="2">확인일시</th>
-        <td><?=date('Y년 m월 d일', $timestamp)?></td>
+        <td><?=date('Y년 m월 d일', $timestamp)?></td>
         <th scope="col">확인방법</th>
+        <?php if($eform['penRecTypeCd'] == '01') { ?>
+        <td colspan="2">[ &nbsp; ]방문 [ ✓ ]유선 <?php echo $eform['penRecTypeTxt']; ?></td>
+        <?php } else { ?>
         <td colspan="2">[ ✓ ]방문 [ &nbsp; ]유선</td>
+        <?php } ?>
       </tr>
     </table>
     <div class="notice_div">유의사항</div>
