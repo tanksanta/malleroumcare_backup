@@ -338,7 +338,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 				}
 
 				$.ajax({
-					url : "<?php echo EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP ?>",
+					url : "https://system.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do",
 					type : "POST",
 					dataType : "json",
 					contentType : "application/json; charset=utf-8;",
