@@ -2895,7 +2895,7 @@ $(document).ready(function() {
 
       }else{
 
-        url = 'https://system.eroumcare.com/api/pro/pro2000/pro2000/insertPro2000ProdInfoAjaxByShop.do';
+        url = '<?php echo EROUMCARE_API_INSERT_PROD_INFO_AJAX_BY_SHOP ?>';
         var dataList = {
           'prodId' : '',                  //제품 아이디
           'prodColor' : '',                //색상
