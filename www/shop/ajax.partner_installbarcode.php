@@ -35,7 +35,7 @@ while($ct = sql_fetch_array($result)) {
     $barcodes_orig = [];
     $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, [
         'stoId' => implode('|', array_filter(explode('|', $ct['stoId'])))
-    ], 443);
+    ]);
     foreach($stock_result['data'] as $stock) {
         $barcodes_orig[$stock['stoId']] = $stock['prodBarNum'];
     }

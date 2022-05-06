@@ -81,7 +81,7 @@ define('EROUMCARE_API_STOCK_UPDATE',                             'https://test.e
 // 재고 벌크 삭제
 define('EROUMCARE_API_STOCK_DELETE_MULTI',                       'https://test.eroumcare.com/api/stock/deleteMulti');
 // 장바구니 정보
-define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://test.eroumcare.com/api/pro/pro2000/pro2000/selectPro2000ProdInfoAjaxByShop.do');
+define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://test.eroumcare.com/api/prod/selectPro2000ProdInfoAjaxByShop.do');
 // 상품 등록
 define('EROUMCARE_API_PROD_INSERT',                              'https://test.eroumcare.com/api/prod/insert');
 // 상품 업데이트

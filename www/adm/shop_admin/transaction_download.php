@@ -266,7 +266,7 @@ foreach($od_ids as $od_id) {
         $barcode=[];
         $sendData["stoId"] = $stoIdData;
         $oCurl = curl_init();
-        $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+        $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
         $result_again = $res;
         $result_again =$result_again['data'];
     

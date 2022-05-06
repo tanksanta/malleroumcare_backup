@@ -531,7 +531,7 @@ $(function(){
                                     $stoId_arr = array(
                                             'stoId' => $item['stoId']
                                     );
-                                    $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $stoId_arr);
+                                    $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $stoId_arr);
                                     
                                     $prodBarNum_arr = [];
                                     for ($j = 0; $j < count($res['data']); $j++) {
