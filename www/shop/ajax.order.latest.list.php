@@ -64,7 +64,7 @@ while($row = sql_fetch_array($result)) {
   // 바코드 정보
   $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
     'stoId' => $row['stoId']
-  ), 443);
+  ));
   $row['barcode'] = [];
   if($stock_result['data']) {
     foreach($stock_result['data'] as $stock) {

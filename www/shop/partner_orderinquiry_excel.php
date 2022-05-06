@@ -57,7 +57,7 @@ while($row = sql_fetch_array($cart_result)) {
 
   $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
     'stoId' => implode('|', $sto_id)
-  ), 443);
+  ));
   
   $barcodes = [];
   if($stock_result['data']) {

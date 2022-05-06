@@ -101,7 +101,7 @@ $stoIdDataList = array_filter($stoIdDataList);
 $stoIdData = implode("|", $stoIdDataList);
 $res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
   'stoId' => $stoIdData
-), 443);
+));
 $result_again = $res['data'];
 
 # 210317 추가정보
