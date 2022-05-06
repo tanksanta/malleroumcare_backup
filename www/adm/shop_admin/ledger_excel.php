@@ -55,7 +55,7 @@ if($ent['mb_type'] == 'partner') {
     $oCurl = curl_init();
     $res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, [
       'stoId' => $stoIdData
-    ], 443);
+    ]);
     $result_again = $res;
     $result_again = $result_again['data'];
 
@@ -426,7 +426,7 @@ if($ent['mb_type'] == 'partner') {
     $barcode=[];
     $sendData["stoId"] = $stoIdData;
     $oCurl = curl_init();
-    $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+    $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
     $result_again = $res;
     $result_again =$result_again['data'];
 

@@ -637,7 +637,7 @@ if($_GET["result"] == "writeEform" && $_SESSION["productList{$_GET["od_id"]}"]) 
     $stoIdDataList=array_filter($stoIdDataList);
     $stoIdData = implode("|", $stoIdDataList);
     $sendData["stoId"] = $stoIdData;
-    $res = get_eroumcare2(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+    $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
     $result_again =$res['data'];
     for($i = 0; $i < count($result_again); $i++){
       $productList2[$i]["stoId"] = $result_again[$i]["stoId"];
