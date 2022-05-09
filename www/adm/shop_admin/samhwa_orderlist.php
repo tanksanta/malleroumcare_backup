@@ -217,7 +217,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <input type="button" value="일주일" id="select_date_sevendays" name="select_date" class="select_date newbutton" />
             <input type="button" value="지난달" id="select_date_lastmonth" name="select_date" class="select_date newbutton" />
             <input type="button" value="3개월" id="select_date_3month" name="select_date" class="select_date newbutton" />
-            <input type="button" value="전체" id="select_date_all" name="select_date" class="select_date newbutton" />
+            <button type="button" value="전체" id="select_date_all" name="select_date" class="select_date newbutton">직접입력</button>
             <input type="text" id="fr_date" class="date" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off"> ~
             <input type="text" id="to_date" class="date" name="to_date" value="<?php echo $to_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off">
           </div>

@@ -1362,9 +1362,9 @@ function fmember_submit()
 
     <?php
     if(!$w) {
-      $api_url = "https://system.eroumcare.com:9901/api/ent/insert";
+      $api_url = "https://test.eroumcare.com:9901/api/ent/insert";
     } else {
-      $api_url = "https://system.eroumcare.com:9901/api/ent/update";
+      $api_url = "https://test.eroumcare.com:9901/api/ent/update";
     }
     ?>
     var info = "<?php echo $w==''?'회원가입 하시겠습니까?':'수정 하시겠습니까?'; ?>";

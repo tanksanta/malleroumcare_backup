@@ -260,6 +260,8 @@ form.clear:after { display: table; content: ' '; clear: both; }
 .r_area .btn_wht { background: #fff; border: 1px solid #ddd; color: #666; width: 100px; padding: 4px 0; height: 30px; border-radius: 3px; font-size: 12px; }
 
 .list_box table td:first-child { padding: 0; width: 40px; }
+.list_box table td:nth-child(2) {width:300px !important; min-width:300px !important;}
+.list_box table td:nth-child(3) {width:300px !important; min-width:300px !important;}
 
 .td_od_info { width: unset !important; text-align: left !important; position: relative; }
 .td_od_info p { margin: 0; font-size: 12px; color: #666; line-height: 1.25; }

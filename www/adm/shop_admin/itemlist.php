@@ -682,7 +682,7 @@ function fitemformcheck(f)
 
 	if (f.prodId.value && $('#api_edit_use').is(":checked")) {
 		var error = message = "";
-		var url = 'https://system.eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
+		var url = 'https://test.eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
 		/*
 		var dataList = {
 			'prodId' : '제품아이디',
@@ -845,7 +845,7 @@ $(function() {
 
 	$('#itemformupdate').click(function() {
 
-		var url = 'https://system.eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
+		var url = 'https://test.eroumcare.com/api/adm/adm3000/adm3200/updateAdm3200ProdInfoAjax.do';
 		var dataList = {
 			'prodId' : '제품 아이디',	// prodId = it_id
 			'prodNm' : '제품명',			//	it_name
