@@ -614,17 +614,18 @@ if($od["od_b_tel"]) {
     var LOADING = false;
     var keyupTimer;
     var IS_POP = <?php echo $is_pop ? 'true' : 'false'?>;
-    
-    $(".notall").keyup(function() {
+
+    $(document).on('keyup, keydown', '.notall', function () {
       var last_index = $(this).closest('ul').find('li').last().index();
       var this_index = $(this).closest('li').index();
 
       $(this).closest('ul').find('.barcode_add').hide();
       if(last_index !== this_index && $(this).val().length == 12)
-          $(this).closest('li').find('.barcode_add').show();
+        $(this).closest('li').find('.barcode_add').show();
 
       if(keyupTimer) clearTimeout(keyupTimer);
-      keyupTimer = setTimeout(notallLengthCheck, 300);
+      keyupTimer = setTimeout(notallLengthCheck, 350);
+
     });
 
     $('.notall').focus(function(){

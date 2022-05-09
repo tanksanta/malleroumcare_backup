@@ -261,7 +261,7 @@ var uid = '<?php echo $uid; ?>';
 
 var keyupTimer;
 
-$(".notall").keyup(function() {
+$(document).on('keyup, keydown', '.notall', function () {
   var last_index = $(this).closest('ul').find('li').last().index();
   var this_index = $(this).closest('li').index();
 
@@ -270,7 +270,7 @@ $(".notall").keyup(function() {
     $(this).closest('li').find('.barcode_add').show();
 
   if(keyupTimer) clearTimeout(keyupTimer);
-  keyupTimer = setTimeout(notallLengthCheck, 200);
+  keyupTimer = setTimeout(notallLengthCheck, 350);
 });
 
 $('.notall').focus(function() {
