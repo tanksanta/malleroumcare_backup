@@ -30,18 +30,8 @@
         $stoIdData = implode("|", $stoIdDataList);
         $sendData = [];
         $sendData["stoId"] = $stoIdData;
-        $oCurl = curl_init();
-  
-        curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP);
-        curl_setopt($oCurl, CURLOPT_POST, 1);
-        curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-        curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-        $res = curl_exec($oCurl);
-        curl_close($oCurl);
-        $result_again = json_decode($res, true);
-        $result_again = $result_again["data"];
+        $res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+        $result_again = $res["data"];
 	}
 	// 상품목록
 	$sql = " select a.ct_id,
