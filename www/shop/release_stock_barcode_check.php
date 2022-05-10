@@ -577,6 +577,18 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
       background: #000;
       color: #fff;
     }
+
+    /* Chrome, Safari, Edge, Opera */
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
   </style>
 
   <link rel="stylesheet" type="text/css" href="<?php echo G5_URL; ?>/css/jquery.toast.min.css" />
@@ -746,7 +758,7 @@ if ($option) {
     <div class="content">
       <div class="flex-row barcode_qty" style="margin-bottom: 15px">
         <p style="margin-right: 20px">수량</p>
-        <button onclick="setQtyNumber(this, 'minus')">-</button><input type="number" class="qty_input" name="qty_input" value="1" readonly><button onclick="setQtyNumber(this, 'plus')">+</button>
+        <button onclick="setQtyNumber(this, 'minus')">-</button><input type="number" class="qty_input" name="qty_input" value="1" onkeyup="setBarcodeInput(this);"><button onclick="setQtyNumber(this, 'plus')">+</button>
       </div>
       <div style="height: calc(100% - 23px);">
         <p style="margin-bottom: 5px">바코드</p>
@@ -1666,6 +1678,27 @@ if (!$member['mb_id']) {
       }
     } else { // 숫자 입력
       targetNode.val(param);
+    }
+  }
+
+  function setBarcodeInput(x) {
+    var currentVal = Number($(x).val());
+    var barcodeInputLength = $('#add_barcode_pop .barcode_input_list').find('li').length;
+
+    if (currentVal < 0) {
+      $(x).val('1');
+      currentVal = 1;
+    }
+
+    if (currentVal > barcodeInputLength) {
+      for (var i = 0; i < currentVal - barcodeInputLength; i++) {
+        $('#add_barcode_pop .barcode_input_list').append($('#mockup').html());
+      }
+
+    } else if (currentVal < barcodeInputLength) {
+      for (var i = 0; i < barcodeInputLength - currentVal; i++) {
+        $('#add_barcode_pop .barcode_input_list').find('li').last().remove();
+      }
     }
   }
 
