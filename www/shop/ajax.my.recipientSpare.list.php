@@ -2,7 +2,7 @@
 
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);
-	curl_setopt($oCurl, CURLOPT_URL, "https://test.eroumcare.com/api/recipient/selectSpareList");
+	curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_SPARE_RECIPIENT_SELECTLIST);
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($_POST, JSON_UNESCAPED_UNICODE));

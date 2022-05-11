@@ -25,7 +25,7 @@ sql_query(" ALTER TABLE `{$g5['g5_shop_order_table']}`
 
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);
-	curl_setopt($oCurl, CURLOPT_URL, "https://test.eroumcare.com/api/recipient/selectList");
+	curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_RECIPIENT_SELECTLIST);
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -389,7 +389,7 @@ var array_box=[];
 
 					$oCurl = curl_init();
 					curl_setopt($oCurl, CURLOPT_PORT, 9901);
-					curl_setopt($oCurl, CURLOPT_URL, "https://test.eroumcare.com/api/ent/account");
+					curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_ENT_ACCOUNT);
 					curl_setopt($oCurl, CURLOPT_POST, 1);
 					curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 					curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData_entInfo, JSON_UNESCAPED_UNICODE));

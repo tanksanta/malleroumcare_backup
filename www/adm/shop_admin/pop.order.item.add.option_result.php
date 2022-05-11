@@ -62,7 +62,7 @@ for($i=0; $i<count($it_ids); $i++) {
       $sendData_stoId['stoId'] = $arr_d1;
       $oCurl = curl_init();
       curl_setopt($oCurl, CURLOPT_PORT, 9901);
-      curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/deleteMulti");
+      curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_STOCK_DELETE_MULTI);
       curl_setopt($oCurl, CURLOPT_POST, 1);
       curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData_stoId, JSON_UNESCAPED_UNICODE));
@@ -562,7 +562,7 @@ $title = $w ? '상품 수정 > 옵션선택' : '상품 추가 > 옵션선택';
     } else {
       $oCurl = curl_init();
       curl_setopt($oCurl, CURLOPT_PORT, 9901);
-      curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/insert");
+      curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_STOCK_INSERT);
       curl_setopt($oCurl, CURLOPT_POST, 1);
       curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
