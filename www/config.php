@@ -139,8 +139,6 @@ define('EROUMCARE_API_DELETE_PPC',                              EROUMCARE_API_HO
 define('EROUMCARE_API_SELECT_PPC_LIST',                         EROUMCARE_API_HOST . '/api/prod/selectPpcList');
 define('EROUMCARE_API_STOCK_SELECT_BARNUM_LIST',                EROUMCARE_API_HOST . '/api/stock/selectBarNumList');
 
->>>>>>> dev
-
 // 비즈톡 API 연동
 define('BIZTALK_API_HOST', 'https://www.biztalk-api.com');
 define('BIZTALK_API_BS_ID', 'thkc1300');
