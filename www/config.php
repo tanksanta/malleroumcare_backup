@@ -71,66 +71,6 @@ if ($_SERVER["HTTP_HOST"] == 'test.eroumcare.com' || $subdomain == 'test') {
 // 이로움 API PORT
 define('EROUMCARE_API_PORT',                                     9901);
 // 주문 추가
-<<<<<<< HEAD
-define('EROUMCARE_API_ORDER_INSERT',                             'https://system.eroumcare.com/api/order/insert');
-// 주문 수정
-define('EROUMCARE_API_ORDER_UPDATE',                             'https://system.eroumcare.com/api/order/update');
-// 주문 수정
-define('EROUMCARE_API_ORDER_EDIT',                               'https://system.eroumcare.com/api/order/editOrder');
-// 주문 삭제
-define('EROUMCARE_API_ORDER_DELETE',                             'https://system.eroumcare.com/api/order/delete');
-// 재고 상세 목록
-define('EROUMCARE_API_STOCK_SELECT_DETAIL_LIST',                 'https://system.eroumcare.com/api/stock/selectDetailList');
-// 재고 등록
-define('EROUMCARE_API_STOCK_INSERT',                             'https://system.eroumcare.com/api/stock/insert');
-// 재고 수정
-define('EROUMCARE_API_STOCK_UPDATE',                             'https://system.eroumcare.com/api/stock/update');
-// 재고 벌크 삭제
-define('EROUMCARE_API_STOCK_DELETE_MULTI',                       'https://system.eroumcare.com/api/stock/deleteMulti');
-// 장바구니 정보
-define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://system.eroumcare.com/api/prod/selectPro2000ProdInfoAjaxByShop.do');
-// 상품 등록
-define('EROUMCARE_API_PROD_INSERT',                              'https://system.eroumcare.com/api/prod/insert');
-// 상품 업데이트
-define('EROUMCARE_API_PROD_UPDATE',                              'https://system.eroumcare.com/api/prod/update');
-// 예비수급자 등록
-define('EROUMCARE_API_SPARE_RECIPIENT_INSERT',                   'https://system.eroumcare.com/api/recipient/insertSpare');
-// 예비수급자 업데이트
-define('EROUMCARE_API_SPARE_RECIPIENT_UPDATE',                   'https://system.eroumcare.com/api/recipient/updateSpare');
-// 예비수급자 조회
-define('EROUMCARE_API_SPARE_RECIPIENT_SELECTLIST',               'https://system.eroumcare.com/api/recipient/selectSpareList');
-// 수급자 등록
-define('EROUMCARE_API_RECIPIENT_INSERT',                         'https://system.eroumcare.com/api/recipient/insert');
-// 수급자 업데이트
-define('EROUMCARE_API_RECIPIENT_UPDATE',                         'https://system.eroumcare.com/api/recipient/update');
-// 수급자 조회
-define('EROUMCARE_API_RECIPIENT_SELECTLIST',                     'https://system.eroumcare.com/api/recipient/selectList');
-// 수급자별 품목 조회
-define('EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST',               'https://system.eroumcare.com/api/recipient/selectItemList');
-// 수급자별 욕구사정기록지 조회
-define('EROUMCARE_API_RECIPIENT_SELECT_REC_LIST',                'https://system.eroumcare.com/api/recipient/selectRecList');
-// 수급자별 욕구사정기록지 작성
-define('EROUMCARE_API_RECIPIENT_INSERT_REC',                     'https://system.eroumcare.com/api/recipient/insertRec');
-// 수급자별 욕구사정기록지 업데이트
-define('EROUMCARE_API_RECIPIENT_UPDATE_REC',                     'https://system.eroumcare.com/api/recipient/updateRec');
-// 수급자별 욕구사정기록지 삭제
-define('EROUMCARE_API_RECIPIENT_DELETE_REC',                     'https://system.eroumcare.com/api/recipient/deleteRec');
-// 계약서 초기값 가져오기 (품목 별 본인부담률 계산한 값들 포함)
-define('EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST',          'https://system.eroumcare.com/api/eform/selectEform001');
-// 수급자 취급상품 등록
-define('EROUMCARE_API_RECIPIENT_ITEM_INSERT',                    'https://system.eroumcare.com/api/recipient/setItem');
-
-define('EROUMCARE_API_ENT_ACCOUNT',                              'https://system.eroumcare.com/api/ent/account');
-define('EROUMCARE_API_ENT_INSERT',                               'https://system.eroumcare.com/api/ent/insert');
-define('EROUMCARE_API_ENT_UPDATE',                               'https://system.eroumcare.com/api/ent/update');
-define('EROUMCARE_API_ENT_UPDATE_USRID',                         'https://system.eroumcare.com/api/ent/updateUsrId');
-// 회원조회2
-define('EROUMCARE_API_ACCOUNT_ENT_LOGIN',                        'https://system.eroumcare.com/api/account/entLogin');
-define('EROUMCARE_API_ACCOUNT_ENT_UPDATE',                       'https://system.eroumcare.com/api/account/entUpdate');
-
-// 재고
-define('EROUMCARE_API_STOCK_LIST',                       'https://system.eroumcare.com/api/stock/selectNotEmptyListForEnt');
-=======
 define('EROUMCARE_API_ORDER_INSERT',                            EROUMCARE_API_HOST . '/api/order/insert');
 // 주문 수정
 define('EROUMCARE_API_ORDER_UPDATE',                            EROUMCARE_API_HOST . '/api/order/update');
