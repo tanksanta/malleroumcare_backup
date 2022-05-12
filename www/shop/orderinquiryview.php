@@ -563,11 +563,7 @@ if($_GET["result"] == "writeEform" && $_SESSION["productList{$_GET["od_id"]}"]) 
   $sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
   $oCurl = curl_init();
   curl_setopt($oCurl, CURLOPT_PORT, 9901);
-<<<<<<< HEAD
-  curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/order/selectList");
-=======
   curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_ORDER_SELECT_LIST);
->>>>>>> dev
   curl_setopt($oCurl, CURLOPT_POST, 1);
   curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
