@@ -82,9 +82,12 @@ for ($i = 0; $i < count($barcodeArr); $i++) {
       it_id = '{$ct_row['it_id']}',
       io_id = '{$ct_row['io_id']}',
       bc_barcode = '{$barcodeArr[$i]['barcode']}',
-      bc_status = '{$barcodeArr[$i]['barcodeStatus']}',
+      -- bc_status = '{$barcodeArr[$i]['barcodeStatus']}',
+      bc_status = '정상',
       created_by = '{$member['mb_id']}',
-      created_at = NOW()
+      created_at = NOW(),
+      checked_by = '{$member['mb_id']}',
+      checked_at = NOW()
   ";
 
   sql_query($sql);

@@ -677,8 +677,8 @@ if($od["od_b_tel"]) {
     $(".hide_area").hide();
 
     var keyupTimer;
-    
-    $(".notall").keyup(function() {
+
+    $(document).on('keyup, keydown', '.notall', function () {
       var last_index = $(this).closest('ul').find('li').last().index();
       var this_index = $(this).closest('li').index();
 
@@ -687,7 +687,7 @@ if($od["od_b_tel"]) {
           $(this).closest('li').find('.barcode_add').show();
 
       if(keyupTimer) clearTimeout(keyupTimer);
-      keyupTimer = setTimeout(notallLengthCheck, 300);
+      keyupTimer = setTimeout(notallLengthCheck, 350);
     });
 
     $('.notall').focus(function(){

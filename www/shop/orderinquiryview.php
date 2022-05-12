@@ -563,7 +563,11 @@ if($_GET["result"] == "writeEform" && $_SESSION["productList{$_GET["od_id"]}"]) 
   $sendData2["penOrdId"] = $_SESSION["penOrdId{$_GET["od_id"]}"];
   $oCurl = curl_init();
   curl_setopt($oCurl, CURLOPT_PORT, 9901);
+<<<<<<< HEAD
   curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/order/selectList");
+=======
+  curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_ORDER_SELECT_LIST);
+>>>>>>> dev
   curl_setopt($oCurl, CURLOPT_POST, 1);
   curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData2, JSON_UNESCAPED_UNICODE));
@@ -584,7 +588,11 @@ if($_GET["result"] == "writeEform" && $_SESSION["productList{$_GET["od_id"]}"]) 
 
     $oCurl = curl_init();
     curl_setopt($oCurl, CURLOPT_PORT, 9901);
+<<<<<<< HEAD
     curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
+=======
+    curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_RECIPIENT_SELECTLIST);
+>>>>>>> dev
     curl_setopt($oCurl, CURLOPT_POST, 1);
     curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData3, JSON_UNESCAPED_UNICODE));
@@ -663,7 +671,11 @@ if($_GET["result"] == "writeEform" && $_SESSION["productList{$_GET["od_id"]}"]) 
     $sendData_order["staOrdCd"] = "02";
     $sendData_order["lgsStoId"] = "";
     $sendData_order["prods"] = $productList2;
+<<<<<<< HEAD
     $api_result1 = get_eroumcare("https://system.eroumcare.com/api/order/update", $sendData_order);
+=======
+    $api_result1 = get_eroumcare(EROUMCARE_API_ORDER_UPDATE, $sendData_order);
+>>>>>>> dev
 
     //누실된 바코드가 있을 수 있으로 stock_update 다시 진행
     $sendData = [];

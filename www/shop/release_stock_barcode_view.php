@@ -464,7 +464,7 @@ if ($option) {
     <div class="searchFormTop flex-row justify-space-between">
       <div style="width: 100%">
         <?php echo $full_it_name ?><br/>
-        <span style="font-size: 13px">재고수량 : <?= $row['sum_ws_qty'] ?> / 바코드 : <?= $row['sum_checked_barcode_qty'] ?><br/> 마지막 확인 일시 : <?= $last_checked_at ?></span>
+        <span style="font-size: 13px">재고수량 : <?= $row['sum_ws_qty'] ?> / 바코드 (확인완료 <?= $row['sum_checked_barcode_qty'] ?> / 총 <?= $row['sum_barcode_qty'] ?>)<br/> 마지막 확인 일시 : <?= $last_checked_at ?></span>
       </div>
       <a href="javascript:open_invoice_scan();" class="barcodeSearch nativeDeliveryPopupOpenBtn" style="width: 35%">
         바코드찾기

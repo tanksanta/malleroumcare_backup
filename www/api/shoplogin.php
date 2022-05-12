@@ -100,7 +100,11 @@
 			$sendData["usrId"] = $resInfo["usrId"];
 			$oCurl = curl_init();
 			curl_setopt($oCurl, CURLOPT_PORT, 9901);
+<<<<<<< HEAD
 			curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/ent/account");
+=======
+			curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_ENT_ACCOUNT);
+>>>>>>> dev
 			curl_setopt($oCurl, CURLOPT_POST, 1);
 			curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));

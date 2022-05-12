@@ -29,7 +29,7 @@
 	$sendData["stateCd"] =['01','02','08','09'];
 	$oCurl = curl_init();
 	curl_setopt($oCurl, CURLOPT_PORT, 9901);
-	curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/stock/selectDetailList");
+	curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_STOCK_SELECT_DETAIL_LIST);
 	curl_setopt($oCurl, CURLOPT_POST, 1);
 	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));

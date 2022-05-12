@@ -8,7 +8,11 @@ $sendData["penId"] = $id;
 
 $oCurl = curl_init();
 curl_setopt($oCurl, CURLOPT_PORT, 9901);
+<<<<<<< HEAD
 curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/selectList");
+=======
+curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_RECIPIENT_SELECTLIST);
+>>>>>>> dev
 curl_setopt($oCurl, CURLOPT_POST, 1);
 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
@@ -48,7 +52,11 @@ $sendData["delYn"] = "Y";
 
 $oCurl = curl_init();
 curl_setopt($oCurl, CURLOPT_PORT, 9901);
+<<<<<<< HEAD
 curl_setopt($oCurl, CURLOPT_URL, "https://system.eroumcare.com/api/recipient/update");
+=======
+curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_RECIPIENT_UPDATE);
+>>>>>>> dev
 curl_setopt($oCurl, CURLOPT_POST, 1);
 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
