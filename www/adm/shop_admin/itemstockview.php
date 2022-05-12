@@ -181,9 +181,14 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     <h1 style="border:0;padding:5px 0;margin:0;letter-spacing:0;">
       상품명 : <?=$it['it_name']?> (<?=$gubun_text?>)
     </h1>
-    <a href="/adm/shop_admin/itemstockedit.php?it_id=<?=$it_id?>" style="display: inline-block;line-height: 35px;border: 1px solid #E3E3E3;background: #383838;color: #fff;padding: 0 15px;">
-      입/출고 관리자 권한 수정
-    </a>
+    <div>
+      <a href="/adm/shop_admin/itemstocklist.php" style="display: inline-block;line-height: 35px;border: 1px solid #E3E3E3;background: #383838;color: #fff;padding: 0 15px;">
+        상품재고관리 목록으로 이동
+      </a>
+      <a href="/adm/shop_admin/itemstockedit.php?it_id=<?=$it_id?>" style="display: inline-block;line-height: 35px;border: 1px solid #E3E3E3;background: #383838;color: #fff;padding: 0 15px;">
+        입/출고 관리자 권한 수정
+      </a>
+    </div>
   </div>
 
   <table>

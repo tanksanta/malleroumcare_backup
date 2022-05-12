@@ -62,67 +62,84 @@ define('G5_THEME_DIR',      'theme');
 // 구글 파이어베이스 API
 define('GOOGLE_API_KEY', 'AAAAx6iZn-E:APA91bF0R-XCX6x5f9t7jBsuzDi7QqQ20L9ky1r-occvv8FdI47D8xD1oeVOt_AQmK1Axfp3H_-yTD4DzmxX5fFVlizXr1TT6fqERpAiEzwXHBnkMvVd6pX3XYHWYriKQGdWN5vbpOB4');
 
-// 이로움 API 
+// 이로움 API HOST
+define('EROUMCARE_API_HOST',                                     'https://system.eroumcare.com');
+$subdomain = explode('.', $_SERVER['HTTP_HOST'])[0];
+if ($_SERVER["HTTP_HOST"] == 'test.eroumcare.com' || $subdomain == 'test') {
+  define('EROUMCARE_API_HOST',                                   'https://test.eroumcare.com');
+}
+// 이로움 API PORT
 define('EROUMCARE_API_PORT',                                     9901);
 // 주문 추가
-define('EROUMCARE_API_ORDER_INSERT',                             'https://system.eroumcare.com/api/order/insert');
+define('EROUMCARE_API_ORDER_INSERT',                            EROUMCARE_API_HOST . '/api/order/insert');
 // 주문 수정
-define('EROUMCARE_API_ORDER_UPDATE',                             'https://system.eroumcare.com/api/order/update');
+define('EROUMCARE_API_ORDER_UPDATE',                            EROUMCARE_API_HOST . '/api/order/update');
 // 주문 수정
-define('EROUMCARE_API_ORDER_EDIT',                               'https://system.eroumcare.com/api/order/editOrder');
+define('EROUMCARE_API_ORDER_EDIT',                              EROUMCARE_API_HOST . '/api/order/editOrder');
 // 주문 삭제
-define('EROUMCARE_API_ORDER_DELETE',                             'https://system.eroumcare.com/api/order/delete');
+define('EROUMCARE_API_ORDER_DELETE',                            EROUMCARE_API_HOST . '/api/order/delete');
 // 재고 상세 목록
-define('EROUMCARE_API_STOCK_SELECT_DETAIL_LIST',                 'https://system.eroumcare.com/api/stock/selectDetailList');
+define('EROUMCARE_API_STOCK_SELECT_DETAIL_LIST',                EROUMCARE_API_HOST . '/api/stock/selectDetailList');
 // 재고 등록
-define('EROUMCARE_API_STOCK_INSERT',                             'https://system.eroumcare.com/api/stock/insert');
+define('EROUMCARE_API_STOCK_INSERT',                            EROUMCARE_API_HOST . '/api/stock/insert');
 // 재고 수정
-define('EROUMCARE_API_STOCK_UPDATE',                             'https://system.eroumcare.com/api/stock/update');
+define('EROUMCARE_API_STOCK_UPDATE',                            EROUMCARE_API_HOST . '/api/stock/update');
 // 재고 벌크 삭제
-define('EROUMCARE_API_STOCK_DELETE_MULTI',                       'https://system.eroumcare.com/api/stock/deleteMulti');
+define('EROUMCARE_API_STOCK_DELETE_MULTI',                      EROUMCARE_API_HOST . '/api/stock/deleteMulti');
 // 장바구니 정보
-define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',            'https://system.eroumcare.com/api/prod/selectPro2000ProdInfoAjaxByShop.do');
+define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',           EROUMCARE_API_HOST . '/api/prod/selectPro2000ProdInfoAjaxByShop.do');
 // 상품 등록
-define('EROUMCARE_API_PROD_INSERT',                              'https://system.eroumcare.com/api/prod/insert');
+define('EROUMCARE_API_PROD_INSERT',                             EROUMCARE_API_HOST . '/api/prod/insert');
 // 상품 업데이트
-define('EROUMCARE_API_PROD_UPDATE',                              'https://system.eroumcare.com/api/prod/update');
+define('EROUMCARE_API_PROD_UPDATE',                             EROUMCARE_API_HOST . '/api/prod/update');
 // 예비수급자 등록
-define('EROUMCARE_API_SPARE_RECIPIENT_INSERT',                   'https://system.eroumcare.com/api/recipient/insertSpare');
+define('EROUMCARE_API_SPARE_RECIPIENT_INSERT',                  EROUMCARE_API_HOST . '/api/recipient/insertSpare');
 // 예비수급자 업데이트
-define('EROUMCARE_API_SPARE_RECIPIENT_UPDATE',                   'https://system.eroumcare.com/api/recipient/updateSpare');
+define('EROUMCARE_API_SPARE_RECIPIENT_UPDATE',                  EROUMCARE_API_HOST . '/api/recipient/updateSpare');
 // 예비수급자 조회
-define('EROUMCARE_API_SPARE_RECIPIENT_SELECTLIST',               'https://system.eroumcare.com/api/recipient/selectSpareList');
+define('EROUMCARE_API_SPARE_RECIPIENT_SELECTLIST',              EROUMCARE_API_HOST . '/api/recipient/selectSpareList');
 // 수급자 등록
-define('EROUMCARE_API_RECIPIENT_INSERT',                         'https://system.eroumcare.com/api/recipient/insert');
+define('EROUMCARE_API_RECIPIENT_INSERT',                        EROUMCARE_API_HOST . '/api/recipient/insert');
 // 수급자 업데이트
-define('EROUMCARE_API_RECIPIENT_UPDATE',                         'https://system.eroumcare.com/api/recipient/update');
+define('EROUMCARE_API_RECIPIENT_UPDATE',                        EROUMCARE_API_HOST . '/api/recipient/update');
 // 수급자 조회
-define('EROUMCARE_API_RECIPIENT_SELECTLIST',                     'https://system.eroumcare.com/api/recipient/selectList');
+define('EROUMCARE_API_RECIPIENT_SELECTLIST',                    EROUMCARE_API_HOST . '/api/recipient/selectList');
 // 수급자별 품목 조회
-define('EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST',               'https://system.eroumcare.com/api/recipient/selectItemList');
+define('EROUMCARE_API_RECIPIENT_SELECT_ITEM_LIST',              EROUMCARE_API_HOST . '/api/recipient/selectItemList');
 // 수급자별 욕구사정기록지 조회
-define('EROUMCARE_API_RECIPIENT_SELECT_REC_LIST',                'https://system.eroumcare.com/api/recipient/selectRecList');
+define('EROUMCARE_API_RECIPIENT_SELECT_REC_LIST',               EROUMCARE_API_HOST . '/api/recipient/selectRecList');
 // 수급자별 욕구사정기록지 작성
-define('EROUMCARE_API_RECIPIENT_INSERT_REC',                     'https://system.eroumcare.com/api/recipient/insertRec');
+define('EROUMCARE_API_RECIPIENT_INSERT_REC',                    EROUMCARE_API_HOST . '/api/recipient/insertRec');
 // 수급자별 욕구사정기록지 업데이트
-define('EROUMCARE_API_RECIPIENT_UPDATE_REC',                     'https://system.eroumcare.com/api/recipient/updateRec');
+define('EROUMCARE_API_RECIPIENT_UPDATE_REC',                    EROUMCARE_API_HOST . '/api/recipient/updateRec');
 // 수급자별 욕구사정기록지 삭제
-define('EROUMCARE_API_RECIPIENT_DELETE_REC',                     'https://system.eroumcare.com/api/recipient/deleteRec');
+define('EROUMCARE_API_RECIPIENT_DELETE_REC',                    EROUMCARE_API_HOST . '/api/recipient/deleteRec');
 // 계약서 초기값 가져오기 (품목 별 본인부담률 계산한 값들 포함)
-define('EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST',          'https://system.eroumcare.com/api/eform/selectEform001');
+define('EROUMCARE_API_EFORM_SELECT_INITIAL_STATE_LIST',         EROUMCARE_API_HOST . '/api/eform/selectEform001');
 // 수급자 취급상품 등록
-define('EROUMCARE_API_RECIPIENT_ITEM_INSERT',                    'https://system.eroumcare.com/api/recipient/setItem');
+define('EROUMCARE_API_RECIPIENT_ITEM_INSERT',                   EROUMCARE_API_HOST . '/api/recipient/setItem');
 
-define('EROUMCARE_API_ENT_ACCOUNT',                              'https://system.eroumcare.com/api/ent/account');
-define('EROUMCARE_API_ENT_INSERT',                               'https://system.eroumcare.com/api/ent/insert');
-define('EROUMCARE_API_ENT_UPDATE',                               'https://system.eroumcare.com/api/ent/update');
-define('EROUMCARE_API_ENT_UPDATE_USRID',                         'https://system.eroumcare.com/api/ent/updateUsrId');
+define('EROUMCARE_API_ENT_ACCOUNT',                             EROUMCARE_API_HOST . '/api/ent/account');
+define('EROUMCARE_API_ENT_INSERT',                              EROUMCARE_API_HOST . '/api/ent/insert');
+define('EROUMCARE_API_ENT_UPDATE',                              EROUMCARE_API_HOST . '/api/ent/update');
+define('EROUMCARE_API_ENT_UPDATE_USRID',                        EROUMCARE_API_HOST . '/api/ent/updateUsrId');
 // 회원조회2
-define('EROUMCARE_API_ACCOUNT_ENT_LOGIN',                        'https://system.eroumcare.com/api/account/entLogin');
-define('EROUMCARE_API_ACCOUNT_ENT_UPDATE',                       'https://system.eroumcare.com/api/account/entUpdate');
+define('EROUMCARE_API_ACCOUNT_ENT_LOGIN',                       EROUMCARE_API_HOST . '/api/account/entLogin');
+define('EROUMCARE_API_ACCOUNT_ENT_UPDATE',                      EROUMCARE_API_HOST . '/api/account/entUpdate');
 
 // 재고
-define('EROUMCARE_API_STOCK_LIST',                       'https://system.eroumcare.com/api/stock/selectNotEmptyListForEnt');
+define('EROUMCARE_API_STOCK_LIST',                              EROUMCARE_API_HOST . '/api/stock/selectNotEmptyListForEnt');
+
+
+define('EROUMCARE_API_ENT_INFO',                                EROUMCARE_API_HOST . '/api/account/entInfo');
+define('EROUMCARE_API_ORDER_SELECT_LIST',                       EROUMCARE_API_HOST . '/api/order/selectList');
+define('EROUMCARE_API_STOCK_SELECT_LIST',                       EROUMCARE_API_HOST . '/api/stock/selectList');
+define('EROUMCARE_API_INSERT_PPC',                              EROUMCARE_API_HOST . '/api/prod/insertPpc');
+define('EROUMCARE_API_DELETE_PPC',                              EROUMCARE_API_HOST . '/api/prod/deletePpc');
+define('EROUMCARE_API_SELECT_PPC_LIST',                         EROUMCARE_API_HOST . '/api/prod/selectPpcList');
+define('EROUMCARE_API_STOCK_SELECT_BARNUM_LIST',                EROUMCARE_API_HOST . '/api/stock/selectBarNumList');
+
+>>>>>>> dev
 
 // 비즈톡 API 연동
 define('BIZTALK_API_HOST', 'https://www.biztalk-api.com');

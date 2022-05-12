@@ -30,10 +30,10 @@ if($member["mb_id"]) {
         $sendData["prods"] = $prodsSendData;
 
         # 재고조회
-        $stockCntList = api_post_call('https://system.eroumcare.com/api/stock/selectList', $sendData);
+        $stockCntList = api_post_call(EROUMCARE_API_STOCK_SELECT_LIST, $sendData);
 
         # 바코드조회
-        $stockBarList = api_post_call('https://system.eroumcare.com/api/stock/selectBarNumList', $sendData);
+        $stockBarList = api_post_call(EROUMCARE_API_STOCK_SELECT_BARNUM_LIST, $sendData);
 
         # 재고목록
         $thisOptionBarSubList = [];
@@ -62,10 +62,17 @@ if($member["mb_id"]) {
       $sendData["prods"] = $prodsSendData;
 
       # 재고조회
+<<<<<<< HEAD
       $stockCntList = api_post_call('https://system.eroumcare.com/api/stock/selectList', $sendData);
 
       # 바코드조회
       $stockBarList = api_post_call('https://system.eroumcare.com/api/stock/selectBarNumList', $sendData);
+=======
+      $stockCntList = api_post_call(EROUMCARE_API_STOCK_SELECT_LIST, $sendData);
+
+      # 바코드조회
+      $stockBarList = api_post_call(EROUMCARE_API_STOCK_SELECT_BARNUM_LIST, $sendData);
+>>>>>>> dev
 
       # 재고목록
       $thisOptionBarSubList = [];

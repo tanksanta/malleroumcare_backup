@@ -259,8 +259,8 @@ if ($count_item_option == 0) {
   </ul>
 
   <div class="button_wrap flex-row justify-space-between">
-    <button type="button" onclick="submitForm()" class="submit">등록</button>
-    <button type="button" onclick="window.history.go(-1); return false;">취소</button>
+    <button type="button" onclick="submitForm();" class="submit">등록</button>
+    <button type="button" onclick="goBack();">취소</button>
   </div>
 </form>
 
@@ -479,6 +479,12 @@ if ($count_item_option == 0) {
     });
 
     return returnValue;
+  }
+
+  function goBack() {
+    if (confirm('취소 하시겠습니까?')) {
+      location.href = '/adm/shop_admin/itemstockview.php?it_id=<?= $it_id ?>';
+    }
   }
 </script>
 
