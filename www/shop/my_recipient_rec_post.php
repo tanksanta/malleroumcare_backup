@@ -41,6 +41,13 @@ $rec_regex = array(
 );
 foreach($rec_regex as $key => $val) {
   $matches = [];
+
+  if($key == 'helper_type' && $_POST['helper_yn'] == 'N') {
+      // 주수발자가 '무' 인 경우 주수발자 관계 체크 continue
+      $_POST[$key] = '';
+      continue;
+  }
+
   if(!preg_match($rec_regex[$key], $_POST[$key], $matches)) {
     json_response(400, '입력값을 확인해주세요.'.PHP_EOL.'오류: '.$rec_key_cd[$key]);
   }
