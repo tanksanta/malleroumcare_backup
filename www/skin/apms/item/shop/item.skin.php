@@ -1600,7 +1600,7 @@ $(function() {
   <?php if($member["mb_id"] && $_COOKIE['SHOW_MY_STOCK'] !== 'OFF'){ ?>
     var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
-    $.ajax({
+    /*$.ajax({
       url : "/apiEroum/stock/selectListMore.php",
       type : "POST",
       async : false,
@@ -1623,7 +1623,7 @@ $(function() {
           $(".optionStockCntList").append(html);
         });
       }
-    });
+    });*/
   <?php } ?>
 
   $("a.view_image").click(function() {

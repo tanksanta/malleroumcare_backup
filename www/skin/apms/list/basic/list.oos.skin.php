@@ -405,7 +405,7 @@ function apms_wishlist(it_id, $this) {
   <?php if($member["mb_id"] && $_COOKIE["viewType"] != "basic" && $_COOKIE['SHOW_MY_STOCK'] !== 'OFF'){ ?>
     var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
-    $.ajax({
+    /*$.ajax({
       url : "/apiEroum/stock/selectList.php",
       type : "POST",
       async : false,
@@ -421,7 +421,7 @@ function apms_wishlist(it_id, $this) {
           $("." + it_id).find(".it_link .img_wrap").append('<p class="cnt"><span>' + label + ' : ' + cnt + '개</span></p>');
         });
       }
-    });
+    });*/
   <?php } ?>
 
   })
