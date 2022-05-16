@@ -620,8 +620,8 @@ $(function() {
         var io_price = $(parent).find('.it_option option:selected').data('price');
         var price = $(parent).find('.price').val();
 
-        var it_price = parseInt($(parent).find('input[name="it_price[]"]').val().replace(/[\D\s\._\-]+/g, "")) || 0;
-        // var it_price = parseInt(price || 0) + parseInt(io_price || 0);
+        // var it_price = parseInt($(parent).find('input[name="it_price[]"]').val().replace(/[\D\s\._\-]+/g, "")) || 0;
+        var it_price = parseInt(price || 0) + parseInt(io_price || 0);
         it_price = it_price ? parseInt( it_price, 10 ) : 0;
         var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
         qty = qty ? parseInt( qty, 10 ) : 0;
@@ -634,7 +634,7 @@ $(function() {
             // 묶음 할인
             var sale_qty = 0;
             var targets = [];
-            $('.pop_order_add_item_table input[name="it_id[]"]').each(function() {
+            $('.pop_order_add_item_table span[class="index"]').each(function() {
                 var this_parent = $(this).closest('tr');
                 if($(this).val() == it_id) {
                     var this_qty = $(this_parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");

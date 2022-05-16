@@ -223,7 +223,8 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
               from {$g5['g5_shop_cart_table']}
               where it_id = '{$row['it_id']}'
                   and od_id = '{$od['od_id']}'
-                  and ct_uid = '{$row['ct_uid']}'";
+                  and ct_uid = '{$row['ct_uid']}'
+                  and not (ct_status = '취소' or ct_status = '주문무효')";
   $sum = sql_fetch($sql);
 
   $row['sum'] = $sum;
@@ -468,6 +469,13 @@ var od_id = '<?php echo $od['od_id']; ?>';
                         // $tot_discount += $carts[$i]['sum']['discount'];
                         $tot_sendcost += $carts[$i]['sum']['sendcost'];
                         $tot_total += ($carts[$i]["prodSupYn"] == "Y") ? $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'] : 0;
+
+                        // 아직 배송비 정책이 완성되지 않아 높은 확률로(무조건) 바뀔예정.
+                        // 220512(황현지) 주문 무효 혹은 취소로 인해 실제 결제되는 금액이 없는 경우 배송비도 제외시킨다.
+                        if ($tot_price == 0) {
+                            $od['od_send_cost'] = 0;
+                            $od['od_send_cost2'] = 0;
+                        }
 
                         $prodBarNum = $prodOptNum = '';
                         $option_array = array();
