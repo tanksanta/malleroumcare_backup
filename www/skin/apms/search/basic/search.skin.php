@@ -217,7 +217,7 @@ include_once($skin_path.'/search.skin.form.php');
 	<?php if($member["mb_id"]){ ?>
 		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
-		/*$.ajax({
+		$.ajax({
 			url : "/apiEroum/stock/selectList.php",
 			type : "POST",
 			async : false,
@@ -232,7 +232,7 @@ include_once($skin_path.'/search.skin.form.php');
 					$("." + it_id).find("a").append('<p class="cnt"><span>' + label + '</span><span class="right">' + cnt + '개</span></p>');
 				});
 			}
-		});*/
+		});
 	<?php } ?>
 
 	})
