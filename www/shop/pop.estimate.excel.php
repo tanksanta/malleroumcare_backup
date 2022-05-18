@@ -10,6 +10,9 @@ if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 }
 
+$amount = array();
+$amount['order'] = 0;
+
 // 상품목록
 $sql = " select a.it_id,
 				a.it_name,
@@ -29,7 +32,7 @@ $sql = " select a.it_id,
                 b.it_model,
                 a.ct_uid
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
-		  where a.od_id = '$od_id'
+		  where a.od_id = '$od_id' and a.ct_status not in ('취소', '주문무효')
 		  group by a.it_id, a.ct_uid
 		  order by a.ct_id ";
 
@@ -85,6 +88,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
                 where it_id = '{$row['it_id']}'
                     and od_id = '{$od['od_id']}' ";
     $sum = sql_fetch($sql);
+    $amount['order'] += $sum['price'] - $sum['discount'];
 
     $row['sum'] = $sum;
 
@@ -92,7 +96,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 }
 
 // 주문금액 = 상품구입금액 + 배송비 + 추가배송비 - 할인금액 - 추가할인금액
-$amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'] - $od['od_sales_discount'];
+$amount['order'] = $amount['order'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_sales_discount'];
 
 // 입금액 = 결제금액 + 포인트
 $amount['receipt'] = $od['od_receipt_price'] + $od['od_receipt_point'];
@@ -339,6 +343,17 @@ td  {mso-number-format:\@;}
 	<td align="center" colspan="3" style="border:1px solid #000;">-<?php echo number_format($od['od_cart_discount2'] / 1.1); ?></td>
 	<td align="center" colspan="3" style="border:1px solid #000;">-<?php echo number_format($od['od_cart_discount2'] / 1.1); ?></td>
 	<td align="center" colspan="2" style="border:1px solid #000;">-<?php echo number_format($od['od_cart_discount2'] / 1.1 / 10); ?></td>
+</tr>
+<?php } ?>
+
+<?php if ( $od['od_sales_discount'] ) { ?>
+<tr height="28">
+	<td align="center" colspan="4" style="border:1px solid #000;">매출할인</td>
+	<td align="center" colspan="3" style="border:1px solid #000;"></td>
+	<td align="center" colspan="2" style="border:1px solid #000;"></td>
+	<td align="center" colspan="3" style="border:1px solid #000;">-<?php echo number_format($od['od_sales_discount'] / 1.1); ?></td>
+	<td align="center" colspan="3" style="border:1px solid #000;">-<?php echo number_format($od['od_sales_discount'] / 1.1); ?></td>
+	<td align="center" colspan="2" style="border:1px solid #000;">-<?php echo number_format($od['od_sales_discount'] / 1.1 / 10); ?></td>
 </tr>
 <?php } ?>
 
