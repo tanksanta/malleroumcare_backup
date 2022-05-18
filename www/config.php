@@ -63,11 +63,13 @@ define('G5_THEME_DIR',      'theme');
 define('GOOGLE_API_KEY', 'AAAAx6iZn-E:APA91bF0R-XCX6x5f9t7jBsuzDi7QqQ20L9ky1r-occvv8FdI47D8xD1oeVOt_AQmK1Axfp3H_-yTD4DzmxX5fFVlizXr1TT6fqERpAiEzwXHBnkMvVd6pX3XYHWYriKQGdWN5vbpOB4');
 
 // 이로움 API HOST
-define('EROUMCARE_API_HOST',                                     'https://system.eroumcare.com');
 $subdomain = explode('.', $_SERVER['HTTP_HOST'])[0];
 if ($_SERVER["HTTP_HOST"] == 'test.eroumcare.com' || $subdomain == 'test') {
-  define('EROUMCARE_API_HOST',                                   'https://test.eroumcare.com');
+    define('EROUMCARE_API_HOST',                                   'https://test.eroumcare.com');
+} else {
+    define('EROUMCARE_API_HOST',                                     'https://system.eroumcare.com');
 }
+
 // 이로움 API PORT
 define('EROUMCARE_API_PORT',                                     9901);
 // 주문 추가
