@@ -296,6 +296,18 @@ if($_POST['ct_id'] && $_POST['step']) {
       sql_query($sql);
     }
 
+    $od_send_cost = get_sendcost_new($od_id, 1);
+
+    $sql = "
+        update
+            g5_shop_order
+        set
+            od_send_cost = '$od_send_cost'
+        where
+            od_id = '$od_id'
+    ";
+    sql_query($sql);
+
     $api_data = array(
       'usrId' => $usrId,
       'entId' => $entId,
