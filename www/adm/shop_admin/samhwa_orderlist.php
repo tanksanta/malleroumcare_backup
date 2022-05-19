@@ -207,7 +207,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         <td class="date">
           <select name="sel_date_field" id="sel_date_field">
             <option value="ct_time" <?php echo get_selected($sel_date_field, 'ct_time'); ?>>주문일</option>
-            <option value="od_receipt_time" <?php echo get_selected($sel_date_field, 'od_receipt_time'); ?>>입금일</option>
+              <option value="ct_move_date" <?php echo get_selected($sel_date_field, 'ct_move_date'); ?>>변경일</option>
+              <option value="od_receipt_time" <?php echo get_selected($sel_date_field, 'od_receipt_time'); ?>>입금일</option>
             <option value="od_ex_date" <?php echo get_selected($sel_date_field, 'od_ex_date'); ?>>희망출고일</option>
             <option value="ct_ex_date" <?php echo get_selected($sel_date_field, 'ct_ex_date'); ?>>출고완료일</option>
           </select>
