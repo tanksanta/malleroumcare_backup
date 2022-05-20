@@ -189,7 +189,7 @@ if($_POST['ct_id'] && $_POST['step']) {
     }
 
     //시스템 상태값 변경
-    $stoId = $stoId.$result_ct_s['stoId'];
+    $stoId = $result_ct_s['stoId'];
     $usrId = $result_ct_s['mb_id'];
     $entId = $result_ct_s['mb_entId'];
 
