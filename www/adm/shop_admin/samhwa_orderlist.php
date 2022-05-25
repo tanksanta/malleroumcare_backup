@@ -1845,7 +1845,7 @@ if( function_exists('pg_setting_check') ){
             ct_direct_delivery_partner: sb1
         }, 'json')
             .done(function() {
-                alert('위탁(직배송) 적용이 완료되었습니다.');
+                alert('위탁(직배송) 적용이 완료되었습니다. ');
             })
             .fail(function($xhr) {
                 var data = $xhr.responseJSON;
