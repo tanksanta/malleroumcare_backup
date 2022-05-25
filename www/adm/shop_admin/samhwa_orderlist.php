@@ -357,7 +357,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
                                 <div class="list">
                                     <ul>
                                         <?php
-                                        $sql = "SELECT * FROM g5_auth WHERE au_menu = '400400' AND au_auth LIKE '%w%'";
+                                        $sql = "SELECT au.*, mb.mb_name FROM g5_auth au, g5_member mb where mb.mb_id = au.mb_id AND au_menu = '400400' AND au_auth LIKE '%w%' order by mb_name";
                                         $auth_result = sql_query($sql);
                                         while($a_row = sql_fetch_array($auth_result)) {
                                             $a_mb = get_member($a_row['mb_id']);
@@ -380,7 +380,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
                                         <li><input type="checkbox" name="od_release_manager[]" id="no_release" value="no_release" title="no_release" <?php echo option_array_checked('no_release', $od_release_manager); ?>><label for="no_release">출고대기</label></li>
                                         <li><input type="checkbox" name="od_release_manager[]" id="out_release" value="-" title="out_release" <?php echo option_array_checked('-', $od_release_manager); ?>><label for="out_release">외부출고</label></li>
                                         <?php
-                                        $sql = "SELECT * FROM g5_auth WHERE au_menu = '400001' AND au_auth LIKE '%w%'";
+                                        $sql = "SELECT au.*, mb.mb_name FROM g5_auth au, g5_member mb where mb.mb_id = au.mb_id AND au_menu = '400001' AND au_auth LIKE '%w%' order by mb_name";
                                         $auth_result = sql_query($sql);
                                         while($a_row = sql_fetch_array($auth_result)) {
                                             $a_mb = get_member($a_row['mb_id']);
@@ -1845,7 +1845,7 @@ if( function_exists('pg_setting_check') ){
             ct_direct_delivery_partner: sb1
         }, 'json')
             .done(function() {
-                alert('위탁(직배송) 적용이 완료되었습니다. ');
+                alert('위탁(직배송) 적용이 완료되었습니다.');
             })
             .fail(function($xhr) {
                 var data = $xhr.responseJSON;
