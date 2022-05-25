@@ -63,13 +63,11 @@ define('G5_THEME_DIR',      'theme');
 define('GOOGLE_API_KEY', 'AAAAx6iZn-E:APA91bF0R-XCX6x5f9t7jBsuzDi7QqQ20L9ky1r-occvv8FdI47D8xD1oeVOt_AQmK1Axfp3H_-yTD4DzmxX5fFVlizXr1TT6fqERpAiEzwXHBnkMvVd6pX3XYHWYriKQGdWN5vbpOB4');
 
 // 이로움 API HOST
+define('EROUMCARE_API_HOST',                                     'https://system.eroumcare.com');
 $subdomain = explode('.', $_SERVER['HTTP_HOST'])[0];
 if ($_SERVER["HTTP_HOST"] == 'test.eroumcare.com' || $subdomain == 'test') {
-    define('EROUMCARE_API_HOST',                                   'https://test.eroumcare.com');
-} else {
-    define('EROUMCARE_API_HOST',                                     'https://system.eroumcare.com');
+  define('EROUMCARE_API_HOST',                                   'https://test.eroumcare.com');
 }
-
 // 이로움 API PORT
 define('EROUMCARE_API_PORT',                                     9901);
 // 주문 추가
@@ -152,10 +150,10 @@ define('KAKAO_DEVELOPERS_REST_API_KEY', '7a991b6e94ba43c5d266d9aa4a2edca1');
 
 // 로젠택배 EDI 연동 
 // dbconfig 파일에 작성하도록 수정
-// 실주소 : https://ediweb.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL
+// 실주소 : https://ilogen.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL
 // 테스트서버 : http://1.255.199.16/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL
 // define('G5_EDI_URL',        'http://1.255.199.16/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
-define('G5_EDI_URL',        'https://ediweb.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
+define('G5_EDI_URL',        'https://ilogen.ilogen.com/iLOGEN.EDI.WebService/W_PHPServer.asmx?WSDL');
 define('G5_EDI_USERID',     '32551369');
 define('G5_EDI_PASSWORD',   '!121200a');
 

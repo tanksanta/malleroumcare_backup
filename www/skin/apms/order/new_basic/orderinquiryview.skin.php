@@ -971,18 +971,10 @@ $(function() {
               <span><?php echo number_format($od['od_send_cost']); ?> 원</span>
             </div>
           </li>
-        <?php if($od['od_sales_discount']) { ?>
-        <li>
-            <div>
-              <b>매출할인</b>
-              <span>- <?php echo number_format($od['od_sales_discount']); ?> 원</span>
-            </div>
-          </li>
-        <?php } ?>
         </ul>
         <?php 
         // $total_price = $tot_price - $od['od_cart_discount'] - $od['od_cart_discount2'] ;
-        $total_price = $tot_price - $od['od_cart_discount2'] - $od['od_sales_discount'];
+        $total_price = $tot_price - $od['od_cart_discount2'] ;
         ?>
         <div class="all-info-price">
           <b>합계금액</b>
