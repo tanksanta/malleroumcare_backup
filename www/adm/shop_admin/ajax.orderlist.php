@@ -205,10 +205,6 @@ if (gettype($od_important) == 'string' && $od_important !== '') {
   $where[] = " od_important = '$od_important' ";
 }
 
-if ($ct_is_ecount_excel_downloaded !== "none"){
-  $where[] = " ct_is_ecount_excel_downloaded = '$ct_is_ecount_excel_downloaded' ";
-}
-
 if (gettype($ct_is_direct_delivery) == 'string' && $ct_is_direct_delivery !== '') {
   $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
 }
@@ -558,7 +554,7 @@ foreach($orderlist as $order) {
   $ct_ex_date = $order['ct_ex_date']; //출고완료일
   $ct_manager = $order['ct_manager']; //출고 담당자 아이디
   $prodMemo = $order['prodMemo'];
-
+    
   //출고담당자 select
   $od_release_select="";
   $od_release_select = '<select class="ct_manager" data-ct-id="'.$order['ct_id'].'" style="width:70px">';
@@ -604,10 +600,10 @@ foreach($orderlist as $order) {
     $ct_sub_status_text .= "<br><span style='color:red'>({$order['refund_status']})</span>";
   }
   $stock_insert=1;
-
+    
 
   //보유재고등록 - > 보유재고로 표시
-
+  
 
   // 취소 요청 체크
   $is_order_cancel_requested = "";
@@ -630,7 +626,7 @@ foreach($orderlist as $order) {
   $od_receipt_name .= '(' . $order['od_settle_case'] . ')' . substr($order['od_bank_account'],0,12);
 
   $important_class = $order['od_important'] ? 'on' : '';
-
+  
   $prodStockqty = 0;
   $prodDelivery = 0;
 
@@ -638,14 +634,14 @@ foreach($orderlist as $order) {
     $prodStockqty = $order["ct_stock_qty"];
     $prodDelivery = $order["ct_qty"] - $order["ct_stock_qty"];
   }
-
+  
   if($order["od_delivery_yn"] == "N"){
     $prodDelivery = 0;
   }
-
+  
   $prodDeliveryMemo = ($prodDelivery) ? "(배송 : {$prodDelivery}개)" : "<span style='color: #DC3333;'>(배송 없음)</span>";
   $prodStockqtyMemo = ($prodStockqty) ? " (재고소진 {$prodStockqty})" : "";
-
+  
   if(!$order['ct_barcode_insert']) {
     $order['ct_barcode_insert'] = 0;
   }
