@@ -170,7 +170,6 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
     <button id="delivery_edi_return_all">송장리턴</button>
-    <button id="show_done_download_order" onclick="show_all_order('ecount')">이카운트 엑셀 필터링</button>
     <!-- <button class="lotte_btn" id="delivery_lotte_send" <?php echo ($result_lotte['cnt'] > 0) ? '' : 'disabled'?>><?php echo ($result_lotte['cnt'] > 0) ? '롯데택배 '.$result_lotte['cnt'].'건 전송 필요' : '롯데택배 전송완료'?></button> -->
     <!-- <button class="orderExcel" data-type="1"><img src="/adm/shop_admin/img/btn_img_ex.gif">주문 엑셀 다운로드</button> -->
     <!-- <button class="orderExcel" data-type="2"><img src="/adm/shop_admin/img/btn_img_ex.gif">출고 엑셀 다운로드</button> -->
@@ -764,17 +763,11 @@ $(function() {
   });
 });
 
-var scrollType = "none";
-function show_all_order(type = "none") {
-    page = 1;
-    end = false;
-    last_step = '';
-    scrollType = type;
-    if(type == "ecount"){
-        doSearch('N', 'ecount');
-    } else{
-        doSearch('Y');
-    }
+function show_all_order() {
+  page = 1;
+  end = false;
+  last_step = '';
+  doSearch('Y');
 }
 
 var od_status = '';
@@ -821,8 +814,6 @@ function doSearch(show_all) {
   // delete formdata['od_important[]']; // Delete old key
 
   formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
-
-  formdata["ct_is_ecount_excel_downloaded"] = is_download == "ecount" ? "0" : "none";
 
   var ajax = $.ajax({
     method: "POST",
@@ -973,12 +964,11 @@ $( document ).ready(function() {
 
   // $('.new_form .submit button[type="submit"]').click();
 
-  $(window).scroll(function () {
+  $(window).scroll(function() {
     if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-        doSearch('N', scrollType);
+      doSearch();
     }
   });
-
   /*
   if ( $('#samhwa_order_list') ) {
     if ( $('#samhwa_order_list').width() % 2 ) {
