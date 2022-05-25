@@ -242,7 +242,8 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $item[$i]['opt'][$k]['opt_price'] = $opt_price;
     $item[$i]['opt'][$k]['sell_price'] = $sell_price;
     $item[$i]['opt'][$k]['point'] = $point;
-    $tot_price += ($opt["prodSupYn"] == "Y") ? $sell_price : 0;
+    if(!in_array($opt['ct_status'], ['취소', '주문무효']))
+        $tot_price += ($opt["prodSupYn"] == "Y") ? $sell_price : 0;
 
     $item[$i]['opt'][$k]['basic_price'] = $basic_price;
     $item[$i]['opt'][$k]['tax_price'] = $tax_price;
