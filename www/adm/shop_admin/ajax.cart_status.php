@@ -189,7 +189,7 @@ if($_POST['ct_id'] && $_POST['step']) {
     }
 
     //시스템 상태값 변경
-    $stoId = $stoId.$result_ct_s['stoId'];
+    $stoId = $result_ct_s['stoId'];
     $usrId = $result_ct_s['mb_id'];
     $entId = $result_ct_s['mb_entId'];
 
@@ -295,6 +295,18 @@ if($_POST['ct_id'] && $_POST['step']) {
     foreach($sql_cp as $sql) {
       sql_query($sql);
     }
+
+    $od_send_cost = get_sendcost_new($od_id, 1);
+
+    $sql = "
+        update
+            g5_shop_order
+        set
+            od_send_cost = '$od_send_cost'
+        where
+            od_id = '$od_id'
+    ";
+    sql_query($sql);
 
     $api_data = array(
       'usrId' => $usrId,

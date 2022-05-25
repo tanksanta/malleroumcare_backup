@@ -463,11 +463,13 @@ var od_id = '<?php echo $od['od_id']; ?>';
 
                         $chk_first = 0;
 
-                        $tot_price += $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'];
                         $tot_qty += $carts[$i]['sum']['qty'];
-                        // $tot_discount += $carts[$i]['sum']['discount'];
-                        $tot_sendcost += $carts[$i]['sum']['sendcost'];
-                        $tot_total += ($carts[$i]["prodSupYn"] == "Y") ? $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'] : 0;
+                        if(!in_array($carts[$i]['ct_status'], ['취소', '주문무효'])) {
+                            $tot_price += $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'];
+                            // $tot_discount += $carts[$i]['sum']['discount'];
+                            $tot_sendcost += $carts[$i]['sum']['sendcost'];
+                            $tot_total += ($carts[$i]["prodSupYn"] == "Y") ? $carts[$i]['sum']['price'] - $carts[$i]['sum']['discount'] : 0;
+                        }
 
                         $prodBarNum = $prodOptNum = '';
                         $option_array = array();
