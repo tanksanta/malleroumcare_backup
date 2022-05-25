@@ -602,7 +602,7 @@ $(function() {
             // 묶음 할인
             var sale_qty = 0;
             var targets = [];
-            $('.pop_order_add_item_table input[name="it_id[]"]').each(function() {
+            $('.pop_order_add_item_table span[class="index"]').each(function() {
                 var this_parent = $(this).closest('tr');
                 var this_io_type = $(this_parent).find('input[name="io_type[]"]').val();
                 if($(this).val() == it_id && this_io_type != '1') {
