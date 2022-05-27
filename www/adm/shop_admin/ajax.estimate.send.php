@@ -26,6 +26,9 @@ if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 }
 
+$amount = array();
+$amount['order'] = 0;
+
 $it_names = array();
 
 // 상품목록
@@ -53,7 +56,7 @@ $sql = " select a.it_id,
                 a.ct_status,
                 b.it_model
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
-		  where a.od_id = '$od_id'
+		  where a.od_id = '$od_id' and a.ct_status not in ('취소', '주문무효')
 		  group by a.it_id
 		  order by a.ct_id ";
 
@@ -106,6 +109,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
                 where it_id = '{$row['it_id']}'
                     and od_id = '{$od['od_id']}' ";
     $sum = sql_fetch($sql);
+    $amount['order'] += $sum['price'] - $sum['discount'];
 
     $row['sum'] = $sum;
 
@@ -113,7 +117,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 }
 
 // 주문금액 = 상품구입금액 + 배송비 + 추가배송비 - 할인금액
-$amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_sales_discount'];
+$amount['order'] = $amount['order'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_sales_discount'];
 
 // 입금액 = 결제금액 + 포인트
 $amount['receipt'] = $od['od_receipt_price'] + $od['od_receipt_point'];

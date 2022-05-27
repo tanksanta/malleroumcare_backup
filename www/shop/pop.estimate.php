@@ -6,7 +6,7 @@ include_once('./_common.php');
 $sql = " select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ";
 $od = sql_fetch($sql);
 
-$od['od_send_cost'] = $send_cost ? $send_cost : $od['od_send_cost'];
+$send_cost = $od['od_send_cost'] + $od['od_send_cost2'];
 
 // 상품목록
 $sql = " select a.it_id,
@@ -27,7 +27,7 @@ $sql = " select a.it_id,
                 b.it_model,
                 a.ct_uid
 		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
-		  where a.od_id = '$od_id'
+		  where a.od_id = '$od_id' and a.ct_status not in ('취소', '주문무효')
 		  group by a.it_id, a.ct_uid
 		  order by a.ct_id ";
 
@@ -104,11 +104,15 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 
 // 주문금액 = 상품구입금액 + 배송비 + 추가배송비 - 할인금액 - 추가할인금액
 if ( $od['od_cart_price'] ) {
-    $amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'];
+    //$amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'];
 }
 if ( $send_cost ) {
     $amount['order'] += $send_cost;
-    $money1+= $send_cost;
+    $money1 += $send_cost;
+}
+if($od['od_sales_discount']) {
+    $amount['order'] -= $od['od_sales_discount'];
+    $money1 -= $od['od_sales_discount'];
 }
 
 // 입금액 = 결제금액 + 포인트
@@ -488,7 +492,19 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
         </tr>
         <?php $a++; ?>
     <?php } ?>
-	
+
+    <?php if ( $od['od_sales_discount'] ) { ?>
+        <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
+            <td align="left" style="padding-left:5px;"><div class="goods_name">매출할인</div></td>
+            <td align="left" style="padding-left:5px;"></td>
+            <td align="center"></td>
+            <td align="center">- <?php echo number_format($od['od_sales_discount'] / 1.1); ?></td>
+            <td align="center">- <?php echo number_format($od['od_sales_discount'] / 1.1); ?></td>
+            <td align="center">- <?php echo number_format($od['od_sales_discount'] / 1.1 / 10); ?></td>
+            <td align="center">- <?php echo number_format($od['od_sales_discount'] / 1.1 + $od['od_sales_discount'] / 1.1 / 10); ?></td>
+        </tr>
+        <?php $a++; ?>
+    <?php } ?>
 
 
 	<tr height="28">
