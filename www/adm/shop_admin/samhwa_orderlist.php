@@ -170,7 +170,6 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
         <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
         <button id="delivery_edi_return_all">송장리턴</button>
-        <button id="show_done_download_order" onclick="show_all_order('ecount')">이카운트 엑셀 필터링</button>
         <!-- <button class="lotte_btn" id="delivery_lotte_send" <?php echo ($result_lotte['cnt'] > 0) ? '' : 'disabled'?>><?php echo ($result_lotte['cnt'] > 0) ? '롯데택배 '.$result_lotte['cnt'].'건 전송 필요' : '롯데택배 전송완료'?></button> -->
         <!-- <button class="orderExcel" data-type="1"><img src="/adm/shop_admin/img/btn_img_ex.gif">주문 엑셀 다운로드</button> -->
         <!-- <button class="orderExcel" data-type="2"><img src="/adm/shop_admin/img/btn_img_ex.gif">출고 엑셀 다운로드</button> -->
@@ -436,6 +435,12 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
                         <input type="radio" name="ct_delivery_saved" id="ct_delivery_all" value="" title="" <?php echo option_array_checked('', $ct_delivery_saved); ?>><label for="ct_delivery_all">전체</label>
                         <input type="radio" name="ct_delivery_saved" id="ct_delivery_saved" value="saved" title="" <?php echo option_array_checked('saved', $ct_delivery_saved); ?>><label for="ct_delivery_saved">입력완료</label>
                         <input type="radio" name="ct_delivery_saved" id="ct_delivery_none" value="none" title="" <?php echo option_array_checked('none', $ct_delivery_saved); ?>><label for="ct_delivery_none">미입력</label>
+                    </div>
+                    <div class="linear">
+                        <span class="linear_span">이카운트 엑셀 필터링</span>
+                        <input type="radio" name="ct_is_ecount_excel_downloaded_saved" id="ct_is_ecount_excel_downloaded_all" value="" title="" <?php echo option_array_checked('', $ct_is_ecount_excel_downloaded_saved); ?>><label for="ct_is_ecount_excel_downloaded_all">전체</label>
+                        <input type="radio" name="ct_is_ecount_excel_downloaded_saved" id="ct_is_ecount_excel_downloaded_saved" value="saved" title="" <?php echo option_array_checked('saved', $ct_is_ecount_excel_downloaded_saved); ?>><label for="ct_is_ecount_excel_downloaded_saved">엑셀받기 완료</label>
+                        <input type="radio" name="ct_is_ecount_excel_downloaded_saved" id="ct_is_ecount_excel_downloaded_none" value="none" title="" <?php echo option_array_checked('none', $ct_is_ecount_excel_downloaded_saved); ?>><label for="ct_is_ecount_excel_downloaded_none">엑셀받기 미완료</label>
                     </div>
 
                 </td>
@@ -764,18 +769,12 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         });
     });
 
-    var scrollType = "none";
-    function show_all_order(type = "none") {
+    function show_all_order() {
         page = 1;
         end = false;
         last_step = '';
 
-        scrollType = type;
-        if(type == "ecount"){
-            doSearch('N', 'ecount');
-        } else{
-            doSearch('Y');
-        }
+        doSearch('Y');
     }
 
 
@@ -787,7 +786,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     var sub_menu = '<?php echo $sub_menu; ?>';
     var last_step = '';
 
-    function doSearch(show_all, is_download = 'none') {
+    function doSearch(show_all) {
         if ( loading === true ) return;
         if ( end === true ) return;
 
@@ -823,8 +822,6 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         // delete formdata['od_important[]']; // Delete old key
 
         formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
-
-        formdata["ct_is_ecount_excel_downloaded"] = is_download == "ecount" ? "0" : "none";
 
 
         var ajax = $.ajax({
@@ -1079,7 +1076,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 
         $(window).scroll(function () {
             if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-                doSearch('N', scrollType);
+                doSearch();
             }
         });
         /*
@@ -1451,6 +1448,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 
             $('#ct_barcode_all').prop('checked', true);
             $('#ct_delivery_all').prop('checked', true);
+            $('#ct_is_ecount_excel_downloaded_all').prop('checked', true);
         }, 700);
         <?php } else { ?>
         // doSearch();
