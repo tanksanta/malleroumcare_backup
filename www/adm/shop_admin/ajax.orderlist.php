@@ -17,9 +17,9 @@ if( !in_array($sel_field, array('od_all', 'it_name', 'ct_option', 'it_admin_memo
 }
 
 $replace_table = array(
-  'od_id' => 'c.od_id',
-  'it_name' => 'c.it_name',
-  'mb_id' => 'c.mb_id'
+    'od_id' => 'c.od_id',
+    'it_name' => 'c.it_name',
+    'mb_id' => 'c.mb_id'
 );
 $sel_field = $replace_table[$sel_field] ?: $sel_field;
 $sel_field_add = $replace_table[$sel_field_add] ?: $sel_field_add;
@@ -203,6 +203,15 @@ if (gettype($add_admin) == 'string' && $add_admin !== '') {
 if (gettype($od_important) == 'string' && $od_important !== '') {
   $od_important = $od_important;
   $where[] = " od_important = '$od_important' ";
+}
+
+// 이카운트 엑셀 필터링
+if (gettype($ct_is_ecount_excel_downloaded_saved) == 'string' && $ct_is_ecount_excel_downloaded_saved !== '') {
+  if ($ct_is_ecount_excel_downloaded_saved == 'saved') {
+    $where[] = " ct_is_ecount_excel_downloaded = '1' ";
+  } else if ($ct_is_ecount_excel_downloaded_saved == 'none') {
+    $where[] = " ct_is_ecount_excel_downloaded = '0' ";
+  }
 }
 
 if ($ct_is_ecount_excel_downloaded !== "none"){
