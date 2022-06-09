@@ -214,10 +214,6 @@ if (gettype($ct_is_ecount_excel_downloaded_saved) == 'string' && $ct_is_ecount_e
   }
 }
 
-if ($ct_is_ecount_excel_downloaded !== "none"){
-  $where[] = " ct_is_ecount_excel_downloaded = '$ct_is_ecount_excel_downloaded' ";
-}
-
 if (gettype($ct_is_direct_delivery) == 'string' && $ct_is_direct_delivery !== '') {
   $where[] = " ct_is_direct_delivery = '$ct_is_direct_delivery' ";
 }
