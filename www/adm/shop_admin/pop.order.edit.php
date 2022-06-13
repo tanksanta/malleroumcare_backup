@@ -408,25 +408,27 @@ $mb = get_member($od['mb_id']);
 
     function formcheck(f) {
         var val, io_type, result = true;
-
         $("input[name^=qty]").each(function(index) {
-            val = $(this).val();
-
-            if(parseInt(val.replace(/[^0-9]/g, "")) < 1) {
-                alert("수량은 1이상 입력해 주십시오.");
-                result = false;
-                return false;
+            if($(this).closest('tr').attr("class") != "strikeout"){ // 삭제되지 않은 주문에 대하여
+                val = $(this).val();
+                if(parseInt(val.replace(/[^0-9]/g, "")) < 1) {
+                    alert("수량은 1이상 입력해 주십시오.");
+                    result = false;
+                    return false;
+                }
             }
         });
 
 
         $("input[name^=it_price]").each(function(index) {
-            val = $(this).val();
+            if($(this).closest('tr').attr("class") != "strikeout"){ // 삭제되지 않은 주문에 대하여
+                val = $(this).val();
 
-            if(parseInt(val.replace(/[^0-9]/g, "")) < 0) {
-                alert("단가는 0이상 입력해 주십시오.");
-                result = false;
-                return false;
+                if(parseInt(val.replace(/[^0-9]/g, "")) < 0) {
+                    alert("단가는 0이상 입력해 주십시오.");
+                    result = false;
+                    return false;
+                }
             }
         });
 
@@ -717,6 +719,7 @@ $mb = get_member($od['mb_id']);
                 var it_index = $(parent).find('span[class="index"]').text();
                 var it_sale_cnt = 0;
 
+                var def_price = $(parent).find('input[name="it_price[]"]').val().replace(/[\D\s\._\-]+/g, "");
                 price = item_sale_obj[it_id]['regular_price'];
                 it_price = parseInt(price || 0) + parseInt(io_price || 0);
                 it_price = it_price ? parseInt( it_price, 10 ) : 0;
@@ -743,36 +746,37 @@ $mb = get_member($od['mb_id']);
                         sale_qty += parseInt(this_qty);
                     }
                 });
-
-                if (item_sale_obj[it_id]['it_sale_cnt']) {
-                    for(var sale_cnt = 0; sale_cnt < item_sale_obj[it_id]['it_sale_cnt'].length; sale_cnt++){
-                        var temp = parseInt(item_sale_obj[it_id]['it_sale_cnt'][sale_cnt]);
-
-                        if(temp ==0)
-                            break;
-                        else if(sale_cnt == 0 && temp > sale_qty){
-                            $('.pop_order_add_item_table input[name="it_id[]"]').each(function() {
-                                var this_parent = $(this).closest('tr');
-                                if($(this).val() == it_id ) {
+                // 개별 사업소 단가인 경우
+                $('.pop_order_add_item_table input[name="it_id[]"]').each(function() {
+                    var this_parent = $(this).closest('tr');
+                    // 정상가와 할인 단가 배열에서 현재 금액을 찾을 수 없는 경우
+                    if(![...item_sale_obj[it_id]['it_sale_percent'], ...item_sale_obj[it_id]['regular_price']].includes(def_price)){
+                        it_price = def_price;
+                    } else if (mb_level == 4){ // 우수사업소
+                        it_price = item_sale_obj[it_id]['it_sale_percent_great'][sale_cnt];
+                    } else { // 묶음할인
+                        if (item_sale_obj[it_id]['it_sale_cnt']) {
+                            for(var sale_cnt = 0; sale_cnt < item_sale_obj[it_id]['it_sale_cnt'].length; sale_cnt++){
+                                var temp = parseInt(item_sale_obj[it_id]['it_sale_cnt'][sale_cnt]);
+                                if(temp ==0)
+                                    break;
+                                else if(sale_cnt == 0 && temp > sale_qty){
                                     it_price = item_sale_obj[it_id]['regular_price'];
-                                    $(this_parent).find('input[name="it_price[]"]').val(it_price);
-                                }
-                            });
-                            break;
-                        } else if(temp <= sale_qty) {
-                            if (it_sale_cnt < temp) {
-                                it_sale_cnt = temp;
-                                $('.pop_order_add_item_table input[name="it_id[]"]').each(function() {
-                                    var this_parent = $(this).closest('tr');
-                                    if($(this).val() == it_id ) {
-                                        it_price = mb_level == 4 ? item_sale_obj[it_id]['it_sale_percent_great'][sale_cnt] : item_sale_obj[it_id]['it_sale_percent'][sale_cnt];
-                                        $(this_parent).find('input[name="it_price[]"]').val(it_price);
+                                    break;
+                                } else if(temp <= sale_qty) {
+                                    if (it_sale_cnt < temp) {
+                                        it_sale_cnt = temp;
+                                        it_price = item_sale_obj[it_id]['it_sale_percent'][sale_cnt];
                                     }
-                                });
+                                }
                             }
                         }
                     }
-                }
+                    // 금액 적용
+                    if($(this).val() == it_id )
+                        $(this_parent).find('input[name="it_price[]"]').val(it_price);
+
+                });
 
                 for(var i = 0; i < targets.length; i++) {
                     var target = targets[i];

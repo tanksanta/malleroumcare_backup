@@ -472,8 +472,8 @@ include_once('./pop.head.php');
                 var io_price = $(parent).find('.it_option option:selected').data('price');
                 var price = $(parent).find('.price').val();
 
-                var it_price = parseInt(io_price)+parseInt(price) || 0;
-                // var it_price = parseInt(price || 0) + parseInt(io_price || 0);
+                // var it_price = parseInt(io_price)+parseInt(price) || 0;
+                var it_price = parseInt(price || 0) + parseInt(io_price || 0);
                 it_price = it_price ? parseInt( it_price, 10 ) : 0;
                 var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
                 qty = qty ? parseInt( qty, 10 ) : 0;
@@ -641,8 +641,8 @@ include_once('./pop.head.php');
             var io_price = $(parent).find('.it_option option:selected').data('price');
             var price = $(parent).find('.price').val();
 
-            var it_price = parseInt(io_price)+parseInt(price) || 0;
-            // var it_price = parseInt(price || 0) + parseInt(io_price || 0);
+            // var it_price = parseInt(io_price)+parseInt(price) || 0;
+            var it_price = parseInt(price || 0) + parseInt(io_price || 0);
             it_price = it_price ? parseInt( it_price, 10 ) : 0;
             var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
             qty = qty ? parseInt( qty, 10 ) : 0;
@@ -729,8 +729,8 @@ include_once('./pop.head.php');
             var io_price = $(parent).find('.it_option option:selected').data('price');
             var price = $(parent).find('.price').val();
 
-            var it_price = parseInt(io_price)+parseInt(price) || 0;
-            // var it_price = parseInt(price || 0) + parseInt(io_price || 0);
+            // var it_price = parseInt(io_price)+parseInt(price) || 0;
+            var it_price = parseInt(price || 0) + parseInt(io_price || 0);
             it_price = it_price ? parseInt( it_price, 10 ) : 0;
             var qty = $(parent).find('input[name="qty[]"]').val().replace(/[\D\s\._\-]+/g, "");
             qty = qty ? parseInt( qty, 10 ) : 0;
