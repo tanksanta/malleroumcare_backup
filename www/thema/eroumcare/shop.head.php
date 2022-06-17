@@ -29,7 +29,7 @@ document.addEventListener("message", function(e){
 </script>
 
 <?php
-if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가 
+if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 include_once(THEMA_PATH.'/assets/thema.php');
 
 // 주문상품 변경 관리
@@ -54,7 +54,7 @@ if($member['mb_id']) {
   // 쿠폰
   $cp_count = 0;
   $sql = "
-    select cp_id
+    select cp_id, cp_method, cp_minimum
     from {$g5['g5_shop_coupon_table']} c
     left join g5_shop_coupon_member m on c.cp_no = m.cp_no
     where
@@ -67,15 +67,19 @@ if($member['mb_id']) {
     group by c.cp_no
   ";
   $res = sql_query($sql, true);
+  $cp_info=array();
   for($k=0; $cp=sql_fetch_array($res); $k++) {
-    if(!is_used_coupon($member['mb_id'], $cp['cp_id']))
-    $cp_count++;
+    if(!is_used_coupon($member['mb_id'], $cp['cp_id'])) {
+        $cp_count++;
+        $cp_info[$cp['cp_id']]['cp_method'] = $cp['cp_method'];
+        $cp_info[$cp['cp_id']]['cp_minimum'] = $cp['cp_minimum'];
+    }
   }
 
   // 미수금
   if($member['mb_type'] == 'partner') $balance = get_partner_outstanding_balance($member['mb_id'], null, false, true);
   else $balance = get_outstanding_balance($member['mb_id'], null, false, true);
-  
+
   // 주문건수
   if($member['mb_type'] == 'partner') {
     $result = sql_fetch("
@@ -123,7 +127,7 @@ if($member['mb_id']) {
   }
 }
 
-$banks = explode(PHP_EOL, $default['de_bank_account']); 
+$banks = explode(PHP_EOL, $default['de_bank_account']);
 
 $is_index = '';
 if(defined('_INDEX_') && !defined('_MAIN_')) { // index에서만 실행
@@ -145,7 +149,7 @@ scrollToTop();
     .top_mode_area{font-size:10px;display:none;}
   }
 </style>
-<div id="mask" style="position:absolute; left:0;top:0; background-color:#000; z-index:300"></div> 
+<div id="mask" style="position:absolute; left:0;top:0; background-color:#000; z-index:300"></div>
 
 <style>
 .btn_top_scroll {
@@ -171,7 +175,7 @@ scrollToTop();
   <a onclick="scrollToBack()" class="scroll_btn">
     <span>◀</span>
     Back
-  </a> 
+  </a>
   <a onclick="scrollToTop()" class="scroll_btn">
     <span>▲</span>
     Top
@@ -745,8 +749,8 @@ if($is_main && !$is_member) {
                   제안하기
                 </a>
               </li>
-              <?php 
-              /*$tutorials = get_tutorials(); 
+              <?php
+              /*$tutorials = get_tutorials();
               if ($tutorials['completed_count'] >= 4) {
               ?>
               <li>
@@ -755,7 +759,7 @@ if($is_main && !$is_member) {
                 </a>
               </li>
               <?php } ?>
-              <?php 
+              <?php
               if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials) {
               ?>
               <li>
@@ -837,7 +841,7 @@ if($is_main && !$is_member) {
       <div class="at-container">
         <?php if($col_name == "two") { ?>
           <div class="row at-row">
-            <div class="col-md-<?php echo $col_content;?><?php echo ($at_set['side']) ? ' pull-right' : '';?> at-col at-main">    
+            <div class="col-md-<?php echo $col_content;?><?php echo ($at_set['side']) ? ' pull-right' : '';?> at-col at-main">
         <?php } else { ?>
           <div class="at-content">
             <?php
@@ -861,7 +865,7 @@ if($is_main && !$is_member) {
                 </div>
               </div>
               <ul class="head_tutorial_step">
-                <?php 
+                <?php
                 $t_recipient_add_idx = array_search('recipient_add', array_column($tutorials['step'], 't_type'));
                 $t_recipient_add_class = $t_recipient_add_idx !== false ? ($tutorials['step'][$t_recipient_add_idx]['t_state'] ? 'complete' : 'active') : '';
                 ?>
@@ -871,7 +875,7 @@ if($is_main && !$is_member) {
                   </a>
                 </li>
                 <li class="next">></li>
-                <?php 
+                <?php
                 $t_recipient_order_idx = array_search('recipient_order', array_column($tutorials['step'], 't_type'));
                 $t_recipient_order_class = $t_recipient_order_idx !== false ? ($tutorials['step'][$t_recipient_order_idx]['t_state'] ? 'complete' : 'active') : '';
                 ?>
@@ -881,7 +885,7 @@ if($is_main && !$is_member) {
                   </a>
                 </li>
                 <li class="next">></li>
-                <?php 
+                <?php
                 $t_document_idx = array_search('document', array_column($tutorials['step'], 't_type'));
                 $t_document_class = $t_document_idx !== false ? ($tutorials['step'][$t_document_idx]['t_state'] ? 'complete' : 'active') : '';
                 ?>
@@ -891,7 +895,7 @@ if($is_main && !$is_member) {
                   </a>
                 </li>
                 <li class="next">></li>
-                <?php 
+                <?php
                 $t_claim_idx = array_search('claim', array_column($tutorials['step'], 't_type'));
                 $t_claim_class = $t_claim_idx !== false ? ($tutorials['step'][$t_claim_idx]['t_state'] ? 'complete' : 'active') : '';
                 ?>
