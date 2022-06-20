@@ -1115,7 +1115,7 @@ function hide_control(od_id) {
   })
   .done(function(data) {
     if(data=="S") {
-      alert('삭제가 완료되었습니다.');
+      alert('해당 주문 건이 숨김 처리되었습니다.');
       location.href="<?=G5_URL?>/shop/orderinquiry.php"; 
     }
 });
