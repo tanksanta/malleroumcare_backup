@@ -131,8 +131,8 @@ foreach($carts as $cart) {
     $edi['sndCustNm']		= '이로움';
     $edi['sndCustAddr1']	= '인천광역시 서구 이든1로 21';
     $edi['sndCustAddr2']	= '이로움';
-    $edi['sndTelNo']		= '032-562-6608';
-    $edi['sndHandNo']		= '032-562-6608';
+    $edi['sndTelNo']		= '02-830-1301';
+    $edi['sndHandNo']		= '02-830-1301';
     
     // 수취인
     $edi['rcvCustNm']		= $cart['od_b_name'];
