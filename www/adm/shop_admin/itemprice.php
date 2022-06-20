@@ -202,7 +202,11 @@ $('#form_excel_upload').submit(function(e) {
     })
     .fail(function($xhr) {
       var data = $xhr.responseJSON;
-      alert(data && data.message);
+      if($xhr.status == '200'){
+          alert('업로드가 완료되었습니다.');
+      } else {
+          alert('업로드 실패');
+      }
     });
 });
 </script>
