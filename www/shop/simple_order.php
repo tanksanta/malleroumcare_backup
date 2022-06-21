@@ -1222,8 +1222,10 @@ $(function() {
       }
     );
   });
+
+  var cp_id = '';
   $(document).on("click", ".od_cp_apply", function() {
-		var $el = $(this).closest("tr");
+	var $el = $(this).closest("tr");
     var cp_id = $el.find("input[name='o_cp_id[]']").val();
     var price = parseInt($el.find("input[name='o_cp_prc[]']").val());
     var subj = $el.find("input[name='o_cp_subj[]']").val();
@@ -1569,6 +1571,39 @@ $(function() {
     }
   }
   ?>
+
+  let od_coupon_btn_text = "";
+  let checkSum = true;
+  let cp_method = 0;
+  let cp_minimum = 0;
+  $('#order_price').on('DOMSubtreeModified', function() {
+       let order_pr = parseInt($('#order_price').text().replace(/[\D\s\._\-]+/g, ""));
+      $.each(cp_info, function(index, item){
+          if(index == cp_id){
+              cp_method = item['cp_method'];
+              cp_minimum = item['cp_minimum'];
+              return false;
+          }
+      });
+       if ((order_pr >= 100000 && cp_method == 3) || (cp_minimum != 0 && order_pr < cp_minimum && order_pr != 0)){
+          var alert_text = (order_pr >= 100000 && cp_method == 3) ? "배송비 쿠폰은 유료배송 주문(10만원 미만)시에만 사용하실 수 있습니다." : (cp_minimum != 0 && order_pr < cp_minimum) ? "최소 주문금액("+cp_minimum+"원) 이상 주문 시, 쿠폰을 사용하실 수 있습니다." : "undefine";
+          if (checkSum && od_coupon_btn_text == "") {
+              od_coupon_btn_text = $('#od_coupon_btn').text();
+          }
+          if (od_coupon_btn_text  == "쿠폰변경"){
+              od_coupon_btn_text = "쿠폰";
+              $("#od_coupon_cancel").trigger("click");
+              cp_method = cp_minimum = cp_id = 0;
+              checkSum = false;
+              alert(alert_text);
+          }
+      } else {
+          if ($('#od_coupon_btn').text() == "쿠폰") {
+              od_coupon_btn_text = ""
+              checkSum = true;
+          }
+      }
+  });
 });
 </script>
 

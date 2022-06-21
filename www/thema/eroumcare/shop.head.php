@@ -54,7 +54,7 @@ if($member['mb_id']) {
   // 쿠폰
   $cp_count = 0;
   $sql = "
-    select cp_id
+    select cp_id, cp_method, cp_minimum
     from {$g5['g5_shop_coupon_table']} c
     left join g5_shop_coupon_member m on c.cp_no = m.cp_no
     where
@@ -67,9 +67,13 @@ if($member['mb_id']) {
     group by c.cp_no
   ";
   $res = sql_query($sql, true);
-  for($k=0; $cp=sql_fetch_array($res); $k++) {
-    if(!is_used_coupon($member['mb_id'], $cp['cp_id']))
-    $cp_count++;
+    $cp_info=array();
+    for($k=0; $cp=sql_fetch_array($res); $k++) {
+      if(!is_used_coupon($member['mb_id'], $cp['cp_id'])) {
+          $cp_count++;
+          $cp_info[$cp['cp_id']]['cp_method'] = $cp['cp_method'];
+          $cp_info[$cp['cp_id']]['cp_minimum'] = $cp['cp_minimum'];
+      }
   }
 
   // 미수금

@@ -39,6 +39,8 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 	// 사용한 쿠폰인지 체크
 	if(is_used_coupon($member['mb_id'], $row['cp_id']))
 		continue;
+    else if($price >= 100000 && $row['cp_method'] == 3) // 10만원 이상 주문시 배송비 쿠폰은 사용 불가
+        continue;
 
 	$list[$z] = $row;
 
