@@ -131,7 +131,7 @@ if($_POST['ct_id']&&$_POST['step']) {
             it_name = '{$result_ct_s['it_name']}',
             ws_option = '{$result_ct_s['ct_option']}',
             ws_qty = '-{$ws_qty}',
-            {$ws_scheduled_qty_sql}
+            ws_scheduled_qty = {$ws_scheduled_qty_sql}
             mb_id = '{$result_ct_s['mb_id']}',
             ws_memo = '주문 출고완료({$od_id})',
             wh_name = '{$result_ct_s['ct_warehouse']}',
