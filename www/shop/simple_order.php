@@ -1226,7 +1226,7 @@ $(function() {
   var cp_id = '';
   $(document).on("click", ".od_cp_apply", function() {
 	var $el = $(this).closest("tr");
-    var cp_id = $el.find("input[name='o_cp_id[]']").val();
+    cp_id = $el.find("input[name='o_cp_id[]']").val();
     var price = parseInt($el.find("input[name='o_cp_prc[]']").val());
     var subj = $el.find("input[name='o_cp_subj[]']").val();
     var od_price = parseInt($("input[name=org_od_price]").val());
