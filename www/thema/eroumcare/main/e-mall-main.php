@@ -82,113 +82,206 @@ $(function(){
 
 <!-- 메인 베스트 상품소개 -->
 <div class="best_item_wrap">
-  <div class="flex">
-    <h3 class="grow">베스트 상품소개</h3>
-    <div class="link_wrap">
-      <a href="/shop/list.php?ca_id=10" class="btn_default">전체상품 보기</a>
-    </div>
-  </div>
-  <div class="nav_container swiper-container">
-    <div class="best_item_nav swiper-wrapper">
-        <div class="swiper-slide">
-          <span>이동변기(APT-101)</span>
-        </div>
-        <div class="swiper-slide">
-          <span>목욕의자(PN-L41621DK 뉴클리어)</span>
-        </div>
-        <div class="swiper-slide">
-          <span>요실금팬티(LP-021 보나수 50cc)</span>
+    <div class="flex">
+        <h3 class="grow">베스트 상품소개</h3>
+        <div class="link_wrap">
+            <a href="/shop/list.php?ca_id=10" class="btn_default">전체상품 보기</a>
         </div>
     </div>
-    <div class="btn_nav_next">▶</div>
-    <div class="btn_nav_prev">◀</div>
-  </div>
-  <div class="best_item_content">
-    <div class="best_item_list" style="display: block;">
-      <div class="flex">
-        <div class="video_wrap">
-          <iframe width="100%" src="https://www.youtube.com/embed/6-0W0oPmo70" data-src="https://www.youtube.com/embed/6-0W0oPmo70" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
-        </div>
-        <div class="info_wrap">
-          <div class="flex">
-            <img class="img_product" src="/data/item/PRO2021022500111/7I2464Sk7J28_APT101.jpg">
-            <div class="grow">
-              <p class="name">APT-101</p>
-              <p class="code">급여코드 : T03030060001</p>
-              <p class="size">
-                - 재질 : 목재,우레탄,PP
-                <br>
-                - 사이즈 : 47(폭)X55(길이)X85/88/91(높이)㎝
-                <br>
-                - 중량 : 16.2kg
-                <br>
-              </p>
+    <div class="nav_container swiper-container">
+        <div class="best_item_nav swiper-wrapper">
+            <div class="swiper-slide">
+                <span>이동변기(APT-101)</span>
             </div>
-          </div>
-          <div class="btn_wrap">
-            <a href="/shop/item.php?it_id=PRO2021022500111">상품 자세히보기</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="best_item_list">
-      <div class="flex">
-        <div class="video_wrap">
-          <iframe width="100%" src="https://www.youtube.com/embed/8_7jTlvt2g8" data-src="https://www.youtube.com/embed/8_7jTlvt2g8" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
-        </div>
-        <div class="info_wrap">
-          <div class="flex">
-            <img class="img_product" src="/data/item/PRO2021022500256/7I2464Sk7J28_PNL41621DK_1.jpg">
-            <div class="grow">
-              <p class="name">PN-L41621DK 뉴클리어</p>
-              <p class="code">급여코드 : B03180081602</p>
-              <p class="size">
-                - 재질 : 알루미늄,EVA
-                <br>
-                - 사이즈 : 50.5(폭)X50~58.5(길이)X68~78(높이)㎝
-                <br>
-                - 중량 : 4.7kg
-                <br>
-              </p>
+            <div class="swiper-slide">
+                <span>요실금팬티(LP-021 보나수 50cc)</span>
             </div>
-          </div>
-          <div class="btn_wrap">
-            <a href="/shop/item.php?it_id=PRO2021022500256">상품 자세히보기</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="best_item_list">
-      <div class="flex">
-        <div class="video_wrap">
-          <iframe width="100%" src="https://www.youtube.com/embed/Fje8iKlvCaQ" data-src="https://www.youtube.com/embed/Fje8iKlvCaQ" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
-        </div>
-        <div class="info_wrap">
-          <div class="flex">
-            <img class="img_product" src="/data/item/PRO2021022500716/7I2464Sk7J28_LP02167O064KY7IiY50cc_1.jpg">
-            <div class="grow">
-              <p class="name">LP-021 보나수 50cc</p>
-              <p class="code">급여코드 : T09061123101</p>
-              <p class="size">
-                - 재질 : 면
-                <br>
-                - 사이즈 : M,L,XL,XXL
-                <br>
-                - 중량 : 0.056kg
-                <br>
-              </p>
+            <div class="swiper-slide">
+                <span>안전손잡이(라이팅핸들1)</span>
             </div>
-          </div>
-          <div class="btn_wrap">
-            <a href="/shop/item.php?it_id=PRO2021022500716">상품 자세히보기</a>
-          </div>
+            <div class="swiper-slide">
+                <span>자세변환용구(MPG-06)</span>
+            </div>
+            <div class="swiper-slide">
+                <span>욕창예방방석(트리니티쿠션)</span>
+            </div>
+            <div class="swiper-slide">
+                <span>실내경사로(TRA-H20)</span>
+            </div>
         </div>
-      </div>
+        <div class="btn_nav_next">▶</div>
+        <div class="btn_nav_prev">◀</div>
     </div>
+    <div class="best_item_content">
+        <div class="best_item_list" style="display: block;">
+            <div class="flex">
+                <div class="video_wrap">
+                    <iframe width="100%" src="https://www.youtube.com/embed/6-0W0oPmo70" data-src="https://www.youtube.com/embed/6-0W0oPmo70" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+                </div>
+                <div class="info_wrap">
+                    <div class="flex">
+                        <img class="img_product" src="/data/item/PRO2021022500111/7I2464Sk7J28_APT101.jpg">
+                        <div class="grow">
+                            <p class="name">APT-101</p>
+                            <p class="code">급여코드 : T03030060001</p>
+                            <p class="size">
+                                - 재질 : 목재,우레탄,PP
+                                <br>
+                                - 사이즈 : 47(폭)X55(길이)X85/88/91(높이)㎝
+                                <br>
+                                - 중량 : 16.2kg
+                                <br>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="btn_wrap">
+                        <a href="/shop/item.php?it_id=PRO2021022500111">상품 자세히보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  </div>
+        <div class="best_item_list">
+            <div class="flex">
+                <div class="video_wrap">
+                    <iframe width="100%" src="https://www.youtube.com/embed/Fje8iKlvCaQ" data-src="https://www.youtube.com/embed/Fje8iKlvCaQ" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+                </div>
+                <div class="info_wrap">
+                    <div class="flex">
+                        <img class="img_product" src="/data/item/PRO2021022500716/LP021_7I2464Sk7J28.jpg">
+                        <div class="grow">
+                            <p class="name">LP-021 보나수 50cc</p>
+                            <p class="code">급여코드 : T09061123101</p>
+                            <p class="size">
+                                - 재질 : 면
+                                <br>
+                                - 사이즈 : M,L,XL,XXL
+                                <br>
+                                - 중량 : 0.056kg
+                                <br>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="btn_wrap">
+                        <a href="/shop/item.php?it_id=PRO2021022500716">상품 자세히보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="best_item_list">
+            <div class="flex">
+                <div class="video_wrap">
+                    <iframe width="100%" src="https://www.youtube.com/embed/EZmeyQIBgN4" data-src="https://www.youtube.com/embed/EZmeyQIBgN4" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+                </div>
+                <div class="info_wrap">
+                    <div class="flex">
+                        <img class="img_product" src="/data/item/PRO2021022500661/7I2464Sk7J28_65287J207YyF7ZW465Ok167Cw7Iah.jpg">
+                        <div class="grow">
+                            <p class="name">라이팅핸들1</p>
+                            <p class="code">급여코드 : F18031068106</p>
+                            <p class="size">
+                                - 재질 : 원목, 아연합금
+                                <br>
+                                - 사이즈 : 40cm, 손잡이둘레 35㎝
+                                <br>
+                                - 중량 : 0.7kg
+                                <br>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="btn_wrap">
+                        <a href="/shop/item.php?it_id=PRO2021022500661">상품 자세히보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="best_item_list">
+            <div class="flex">
+                <div class="video_wrap">
+                    <iframe width="100%" src="https://www.youtube.com/embed/XfVS_ThJXrA" data-src="https://www.youtube.com/embed/XfVS_ThJXrA" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+                </div>
+                <div class="info_wrap">
+                    <div class="flex">
+                        <img class="img_product" src="/data/item/PRO2021022500229/7I2464Sk7J28_MPG06.jpg">
+                        <div class="grow">
+                            <p class="name">MPG-06</p>
+                            <p class="code">급여코드 : M30030078105</p>
+                            <p class="size">
+                                - 재질 : 메쉬(외피), 폴리우레탄폼(내장재)
+                                <br>
+                                - 사이즈 : 40(폭)x104(길이)x2.5/11.5(높이)㎝
+                                <br>
+                                - 중량 : 2.3kg
+                                <br>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="btn_wrap">
+                        <a href="/shop/item.php?it_id=PRO2021022500229">상품 자세히보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="best_item_list">
+            <div class="flex">
+                <div class="video_wrap">
+                    <iframe width="100%" src="https://www.youtube.com/embed/a9VcoklA2MU" data-src="https://www.youtube.com/embed/a9VcoklA2MU" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+                </div>
+                <div class="info_wrap">
+                    <div class="flex">
+                        <img class="img_product" src="/data/item/PRO2021022500306/7I2464Sk7J28_7Yq466as64uI7Yuw7Lg7IWY.jpg">
+                        <div class="grow">
+                            <p class="name">트리니티쿠션</p>
+                            <p class="code">급여코드 : H12030130105</p>
+                            <p class="size">
+                                - 재질 : TPU
+                                <br>
+                                - 사이즈 : 40(폭)x46(길이)x7(높이)㎝
+                                <br>
+                                - 중량 : 1.75kg
+                                <br>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="btn_wrap">
+                        <a href="/shop/item.php?it_id=PRO2021022500306">상품 자세히보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="best_item_list">
+            <div class="flex">
+                <div class="video_wrap">
+                    <iframe width="100%" src="https://www.youtube.com/embed/sCE2B5q-wKg" data-src="https://www.youtube.com/embed/sCE2B5q-wKg" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
+                </div>
+                <div class="info_wrap">
+                    <div class="flex">
+                        <img class="img_product" src="/data/item/PRO2021022500722/7I2464Sk7J28_TRAH20.jpg">
+                        <div class="grow">
+                            <p class="name">TRA-H20</p>
+                            <p class="code">급여코드 : F24011052102</p>
+                            <p class="size">
+                                - 재질 : 우레탄
+                                <br>
+                                - 사이즈 : 77.5(폭)x9.5(깊이)x2(높이)cm
+                                <br>
+                                - 중량 : 0.82kg
+                                <br>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="btn_wrap">
+                        <a href="/shop/item.php?it_id=PRO2021022500722">상품 자세히보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <script>
