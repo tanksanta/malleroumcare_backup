@@ -1206,6 +1206,8 @@ $(function() {
   });
 
   // 쿠폰
+  let cp_info = <?php echo json_encode($cp_info); ?>;
+
   $("#od_coupon_btn").click(function() {
     var $this = $(this);
     var price = parseInt($("input[name=org_od_price]").val());
