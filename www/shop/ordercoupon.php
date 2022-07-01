@@ -26,7 +26,6 @@ $sql = "
       c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or
       m.mb_id = '{$member['mb_id']}'
     )
-    and cp_method = '2'
     and cp_start <= '".G5_TIME_YMD."'
     and cp_end >= '".G5_TIME_YMD."'
     and cp_minimum <= '$price'
