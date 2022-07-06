@@ -758,7 +758,7 @@ if ($option) {
     <div class="content">
       <div class="flex-row barcode_qty" style="margin-bottom: 15px">
         <p style="margin-right: 20px">수량</p>
-        <button onclick="setQtyNumber(this, 'minus')">-</button><input type="number" class="qty_input" name="qty_input" value="1" onkeyup="setBarcodeInput(this);"><button onclick="setQtyNumber(this, 'plus')">+</button>
+        <button id='btn_minus' onclick="setQtyNumber(this, 'minus')">-</button><input type="number" class="qty_input" name="qty_input" value="1" onkeyup="setBarcodeInput(this);"><button id='btn_plus' onclick="setQtyNumber(this, 'plus')">+</button>
       </div>
       <div style="height: calc(100% - 23px);">
         <p style="margin-bottom: 5px">바코드</p>
@@ -968,6 +968,41 @@ if (!$member['mb_id']) {
       }
 
       addSelectClassBarcode();
+    });
+
+    $(document).on("keyup", '#add_barcode_pop', function() {
+        $item = $('#add_barcode_pop .barcode_input_list').find('.notall');
+        $shift_input = 0;
+        $moreInput = 0;
+        $currentFocus = 0;
+        $arrLength = $item.length;
+
+        console.log("Hello this is " );
+        console.log("item count = %d", $item.length );
+
+        $item.each(function(i,val) {
+            $currentFocus++ ;
+            $currentInput = $(this);
+            $barcode = $currentInput.val();
+            console.log("input barcode = ", $barcode);
+            if ($barcode.length === 12)
+                $shift_input = 1;
+            if ($barcode.length === 0 && $shift_input === 1) {
+                $currentInput.focus();
+                $shift_input = 0;
+            }else if ( $barcode.length > 0 && $barcode.length < 12) {
+                    $shift_input = 0;
+            }
+            if ( ($arrLength === $currentFocus) && $barcode.length ==12) {
+                $moreInput = 1;
+            }
+
+        });
+        if ($moreInput === 1) {
+            $moreInput = 0;
+            $('#btn_plus').trigger('click');
+        }
+
     });
 
     // pda 스캔
@@ -1679,6 +1714,16 @@ if (!$member['mb_id']) {
     } else { // 숫자 입력
       targetNode.val(param);
     }
+    $('.frm_input').keyup(function() {
+        var _id = this.id;
+        $selObj = $("#"+_id);
+        var maxLen = $("#"+_id).prop("maxlength");
+        var txtLen = $(this).val().length;
+        if (maxLen == txtLen) {
+            var curIndex = Number(_id.substring(4));
+            $("#list" + (curIndex + 2)).focus();
+        }
+    });
   }
 
   function setBarcodeInput(x) {
@@ -1768,19 +1813,49 @@ if (!$member['mb_id']) {
 
   function savePopBarcodeList() {
     var $item = $('#add_barcode_pop .barcode_input_list').find('.notall');
+    var $item_count = 0;
+    var $confirmed_count = 0;
+    var $index =0;
+    var $overlapBarcode = [];
+
+    $item.each(function(i,val) {
+        console.log("overlap check", $($item[$index]).parent().find('.overlap'));
+        $itemOverlap = $($item[$index]).parent().find('.overlap');
+        if ($itemOverlap){
+
+            if ($itemOverlap.hasClass('active')) {
+                $overlapBarcode.push($(this).val()+'\n');
+                $item_count++;
+                console.log("overlap found"+$overlapBarcode.length+" : "+$overlapBarcode[0]);
+            }
+        }
+        $index++;
+    });
 
     if (notallLengthCheck()) {
       $item.each(function() {
         if ($(this).val().length === 12) {
           upsertBarcode($(this).val());
+          $confirmed_count++;
         }
       });
 
+      alert($confirmed_count+'개의 바코드 재고가 추가 되었습니다');
       showPopBarcodeList(false);
     } else {
-      alert('바코드 길이가 맞지 않거나, 중복 바코드가 존재합니다.');
+      if ($item_count > 0) {
+
+        alert($item_count+' 개의 중복 바코드가 존재합니다.\n'+$overlapBarcode);
+      } else {
+        alert('바코드 길이가 맞지 않습니다');
+
+      }
+
     }
+
+
   }
+
 
   function clearPopBarcodeList() {
     $('.qty_input').val('1');
