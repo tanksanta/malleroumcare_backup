@@ -367,9 +367,11 @@ $count_warn4 = sql_fetch($sql)['cnt'];
         <th scope="col">바코드</th>
         <th scope="col">평균출고</th>
         <th scope="col">안전재고</th>
-        <?php foreach($warehouse_list as $warehouse) { ?>
-          <th scope="col"><?=$warehouse['name']?></th>
-        <?php } ?>
+        <?php foreach($warehouse_list as $warehouse) {
+             if ((strcmp($wh_name,'') == 0) || (strcmp($warehouse['name'],$wh_name) == 0)) { ?>
+            <th scope="col" style="color:yellow"><?=$warehouse['name']?></th>
+        <?php }
+        } ?>
         <th scope="col">주문대기</th>
         <th scope="col">가재고</th>
         <th scope="col">입고예정일알림</th>
@@ -506,9 +508,11 @@ $count_warn4 = sql_fetch($sql)['cnt'];
           <td class="td_num"><?php echo number_format($row['safe_min_stock_qty']) ?></td>
           <?php
           foreach($warehouse_list as $warehouse) {
+             if ((strcmp($wh_name,'') == 0) || (strcmp($warehouse['name'],$wh_name) == 0)) {
             $sql = " select (sum(ws_qty) - sum(ws_scheduled_qty)) as stock from warehouse_stock where it_id = '{$row['it_id']}' and io_id = '{$row['io_id']}' and wh_name = '{$warehouse['name']}' and ws_del_yn = 'N' {$use_warehouse_where_sql} ";
             $stock = sql_fetch($sql)['stock'] ?: 0;
-            echo '<td class="td_num">'.number_format($stock).'</td>';
+            echo '<td class="td_num" style="color:red">'.number_format($stock).'</td>';
+            }
           }
           ?>
           <td class="td_num"><?php echo number_format($wait_qty); ?></td>
