@@ -6,16 +6,11 @@ header('Content-type: application/json');
 $keyword = str_replace(' ', '', trim($keyword));
 
 $eform = $_GET['eform'];
-
-/*
 $prodsupyn_sql = " AND a.prodSupYn = 'Y' ";
 if($eform) {
   // 계약서의 경우 비유통 상품도 검색 가능
   $prodsupyn_sql = '';
 }
-*/
-$nonReimbursement = $eform!=1 ?" OR a.ca_id LIKE '70%'":"";
-$prodsupyn_sql = $eform!=1 ?" AND a.prodSupYn = 'Y' ":"";
 
 $sql = "
   SELECT
@@ -74,8 +69,8 @@ $sql = "
     AND
     (
       a.ca_id LIKE '10%' OR
-      a.ca_id LIKE '20%'
-      {$nonReimbursement}
+      a.ca_id LIKE '20%' OR
+      a.ca_id LIKE '70%'
     )
     AND a.it_id NOT IN ('PRO2021072200013', 'PRO2021072200012') -- 체험상품 제외
     AND a.it_name NOT LIKE 'test%' -- 테스트상품 제외

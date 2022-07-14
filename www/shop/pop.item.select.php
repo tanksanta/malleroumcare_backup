@@ -10,18 +10,6 @@ $no_option = $_GET['no_option'] ?: '';
 
 $where = " and ";
 $sql_search = "";
-
-// 유통/비유통/비급여 제품 검색
-if($no_option == 'nonReimbursement'){ // 간편 계약서에서 검색 시 : 유통+비유통+급여
-    $sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%') ";
-}else { // 이외의 검색(간편 주문서 + 주문 변경 + 간편제안서) : 유통+급여+비급여
-    $sql_search .= " $where prodSupYn = 'Y' ";
-    $where = " and ";
-    $sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%' OR a.ca_id LIKE '70%') ";
-}
-
-$where = " and ";
-
 if ($stx != "") {
     if ($sfl != "" && $sfl != 'all') {
         $sql_search .= " $where $sfl like '%$stx%' ";
@@ -105,10 +93,7 @@ $cate_10 = [];
 $cate_20 = [];
 $cate_70 = [];
 
-// 간편 계약서 검색시 비급여 카테고리 숨기기
-$sql = $no_option != 'nonReimbursement'
-    ?" select * from g5_shop_category where (ca_id LIKE '10%' OR ca_id LIKE '20%' OR ca_id LIKE '70%') and length(ca_id) = 4 order by ca_id asc "
-    :" select * from g5_shop_category where (ca_id LIKE '10%' OR ca_id LIKE '20%') and length(ca_id) = 4 order by ca_id asc ";
+$sql = " select * from g5_shop_category where (ca_id LIKE '10%' OR ca_id LIKE '20%' OR ca_id LIKE '70%') and length(ca_id) = 4 order by ca_id asc ";
 $cate_result = sql_query($sql);
 
 $cate_text = '전체';
@@ -247,18 +232,14 @@ while($cate = sql_fetch_array($cate_result)) {
         }
         ?>
     </div>
-    <?php
-    // 간편 계약서 검색시 비급여 카테고리 숨기기
-    if($no_option != 'nonReimbursement') {
-        echo '<div class="cate">';
-        $class = $ca_id == '70' ? 'class="active"' : '';
-        echo '<a href="?no_option={$no_option}&ca_id=70"' . $class . '>비급여품목</a>';
-        foreach ($cate_70 as $cate) {
+    <div class="cate">
+        <a href="?<?php echo "no_option={$no_option}"; ?>&ca_id=70" <?php if($ca_id == '70') echo 'class="active"' ?>>비급여품목</a>
+        <?php
+        foreach($cate_70 as $cate) {
             echo "<a href=\"?no_option={$no_option}&ca_id={$cate['ca_id']}\"" . ($ca_id == $cate['ca_id'] ? ' class="active"' : '') . ">{$cate['ca_name']}</a>";
         }
-        echo '</div>';
-    }
-    ?>
+        ?>
+    </div>
 </div>
 <div id="pop_add_item" class="admin_popup">
     <div class="header">
