@@ -198,13 +198,17 @@ $(function () {
     var next_step_val = $(this).data('next-step-val');
     //var od_id = $('#samhwa_order_list_table>div.table td input[type=checkbox]:checked').serializeObject();
     var $selected_ods = get_selected(this);
+
+    let selected_od_ids = [];
     for (var i = 0; i < $selected_ods.length; i++) {
       var $selected_od = $selected_ods[i];
       if ($($selected_od).closest('tr').hasClass('cancel_requested')) {
         alert('취소요청이 있는 주문은 단계이동이 불가능합니다.');
         return;
       }
+      selected_od_ids.push($($selected_od).val());
     }
+
     var od_id = $($selected_ods).serializeObject();
     if (od_id['od_id[]'] === undefined) {
       alert('선택해주세요.');
