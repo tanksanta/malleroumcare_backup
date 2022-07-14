@@ -289,7 +289,7 @@ define('G5_SMTP',      'smtp.daum.net');
 define('G5_SMTP_PORT', '465');
 
 define('G5_SMTP_USERNAME', 'thkc1301');
-define('G5_SMTP_PASSWORD', 'thonline13@@');
+define('G5_SMTP_PASSWORD', 'thdeckc01@!');
 
 define('G5_SMTP_SSL', true);
 
