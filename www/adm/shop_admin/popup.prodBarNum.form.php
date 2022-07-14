@@ -1244,24 +1244,7 @@ if($od["od_b_tel"]) {
               async : false,
               data : {
                 od_id : "<?=$od_id?>",
-              },
-              success : function(){
-                  var sendData_barcode = {
-                      mb_id : "<?=$member["mb_id"]?>",
-                      od_id : "<?=$_GET["od_id"]?>",
-                      type : "<?=$_GET['partner']?>",
-                      prods : prodsList
-                  }
-                  $.ajax({
-                      url : "./ajax.barcode_log.php",
-                      type : "POST",
-                      async : false,
-                      data : sendData_barcode,
-                      success : function(result){
-                          console.log(result);
-                      }
-                  });
-                }
+              }
             });
             $.ajax({
               url : "/shop/ajax.order.prodBarNum.cnt.php",
@@ -1291,7 +1274,6 @@ if($od["od_b_tel"]) {
         }
       });
 
-      /*
       var sendData_barcode = {
         mb_id : "<?=$member["mb_id"]?>",
         od_id : "<?=$_GET["od_id"]?>",
@@ -1306,7 +1288,6 @@ if($od["od_b_tel"]) {
           console.log(result);
         }
       });
-      */
 
       // 미재고 바코드 처리
       var toApproveBarcodeArr = [];
