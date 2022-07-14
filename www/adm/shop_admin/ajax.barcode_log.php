@@ -14,10 +14,10 @@ for($i=0; $i<count($_POST['prods']); $i++) {
 
     if($last_barcode['barcode'] != $_POST['prods'][$i]['prodBarNum']) {
         if($_POST['prods'][$i]['prodBarNum']) {
-            $content = "바코드입력 : ".$result_it['it_name'].$option."[ ".$_POST['prods'][$i]['prodBarNum']." ]";
+            $content = $_POST['type']?"파트너 바코드입력 : ".$result_it['it_name'].$option."[ ".$_POST['prods'][$i]['prodBarNum']." ]":"바코드입력 : ".$result_it['it_name'].$option."[ ".$_POST['prods'][$i]['prodBarNum']." ]";
             sql_query('INSERT INTO `g5_barcode_log`(`od_id`, `mb_id`, `stoId`, `barcode`, `b_content`, `b_date`) VALUES ("'.$_POST['od_id'].'","'.$_POST['mb_id'].'","'.$_POST['prods'][$i]['stoId'].'","'.$_POST['prods'][$i]['prodBarNum'].'","'.$content.'","'.$data.'")');
         } else {
-            $content = "바코드제거 : ".$result_it['it_name'].$option."[ ".$last_barcode['barcode']." ]";
+            $content = $_POST['type']?"파트너 바코드제거 : ".$result_it['it_name'].$option."[ ".$last_barcode['barcode']." ]":"바코드제거 : ".$result_it['it_name'].$option."[ ".$last_barcode['barcode']." ]";
             sql_query('INSERT INTO `g5_barcode_log`(`od_id`, `mb_id`, `stoId`, `barcode`, `b_content`, `b_date`) VALUES ("'.$_POST['od_id'].'","'.$_POST['mb_id'].'","'.$_POST['prods'][$i]['stoId'].'","'.$_POST['prods'][$i]['prodBarNum'].'","'.$content.'","'.$data.'")');
         }
     }
