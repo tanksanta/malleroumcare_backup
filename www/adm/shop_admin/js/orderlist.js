@@ -211,6 +211,25 @@ $(function () {
       return;
     }
 
+    var is_soldout = false;
+    if(next_step_val == '출고준비' || next_step_val == '배송'){
+      $.ajax({ //
+        method: 'POST',
+        url: './ajax.soldout.php',
+        data: {ct_id: selected_od_ids},
+        async: false,
+      }).done(function (data) {
+        let result = jQuery.parseJSON(data);
+        if (result['result'] == 'soldout') {
+          alert("선택하신 주문 중, 품절된 상품이 있습니다.");
+          is_soldout = true;
+        }
+      });
+    }
+
+    if(is_soldout)
+      return;
+
     change_step(od_id['od_id[]'], next_step_val, 'true');
   });
 
