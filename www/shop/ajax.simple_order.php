@@ -18,6 +18,22 @@ if(!($it_id_arr && $io_id_arr && $ct_qty_arr)) {
     json_response(400, '주문할 상품을 선택해주세요.');
 }
 
+$where_it_id = "where it_id ='";
+if( is_array($_POST['it_id']) ){
+    $where_it_id .= implode("' or it_id = '", $_POST['it_id']);
+} else {
+    $where_it_id = $_POST['it_id'];
+}
+
+$where_it_id .= "'";
+
+$sql_soldout = "select sum(it_type1 + it_type2 + it_type10) as is_soldout from g5_shop_item ".$where_it_id;
+$result = sql_fetch($sql_soldout);
+
+if ($result['is_soldout'] > (int)0 ) {
+    json_response(400, '선택하신 주문 중, 품절된 상품이 있습니다.');
+}
+
 sql_query(" delete from {$g5['g5_shop_cart_table']} where od_id = '$tmp_cart_id' and ct_direct = 1 ", false);
 
 $pen_type = $_POST['pen_type'];
