@@ -84,6 +84,27 @@ $ct_admin_new=[];
 for($i=0; $i<count($it_ids); $i++) {
   $it_id = $it_ids[$i];
 
+  $where_it_id = "where it_id ='";
+  $arr_it_ids = array();
+  if( is_array($it_ids) ){
+      foreach($it_ids as $it_id) {
+          if ($it_id != '')
+              array_push($arr_it_ids, $it_id);
+      }
+      $where_it_id .= implode("' or it_id = '", $arr_it_ids);
+  } else {
+      $where_it_id = $it_ids;
+  }
+
+  $where_it_id .= "'";
+
+  $sql_soldout = "select sum(it_type1 + it_type2 + it_type10) as is_soldout from g5_shop_item ".$where_it_id;
+  $result = sql_fetch($sql_soldout);
+
+  if ($result['is_soldout'] > (int)0 ) {
+      alert('선택하신 주문 중, 품절된 상품이 있습니다.');
+      return;
+  }
   if (!$it_id) {
     continue;
   }
