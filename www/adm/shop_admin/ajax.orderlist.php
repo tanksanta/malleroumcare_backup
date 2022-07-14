@@ -555,7 +555,7 @@ foreach($orderlist as $order) {
   $ct_price = number_format($opt_price*$order['ct_qty']+$order['ct_sendcost']-$order['ct_discount']); //가격
   if(in_array($order['ct_status'], ['보유재고등록', '재고소진'])){ $ct_price = $order['ct_status'];}
   $ct_it_name = $order['it_name']; //상품이름
-  $ct_option = (str_replace(' ', '', $order["ct_option"]) == str_replace(' ', '', $order['it_name'])) ? "" : "(".$order['ct_option'].")"; //옵션
+  $ct_option = ($order["ct_option"] == $order['it_name']) ? "" : "(".$order['ct_option'].")"; //옵션
   $ct_it_name = $ct_it_name.$ct_option; //상품이름 + 옵션
   $ct_qty = $order['ct_qty']; //개수
   $ct_status_text = $order['ct_status']; //상태

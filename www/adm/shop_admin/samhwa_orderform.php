@@ -2071,7 +2071,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 
           //아이템 이름
           $it_name = $result_ct['it_name'];
-          if(str_replace(' ', '', $result_ct['ct_option']) != str_replace(' ', '', $result_ct['it_name'])) { $it_name .="(".$result_ct['ct_option'].")"; }
+          if($result_ct['ct_option']) { $it_name .="(".$result_ct['ct_option'].")"; }
 
           //택배사
           $delivery_company="";
