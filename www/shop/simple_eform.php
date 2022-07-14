@@ -1109,7 +1109,7 @@ $('#popup_box').click(function() {
   $('#popup_box').hide();
 });
 $('#btn_se_sch').click(function() {
-  var url = 'pop.item.select.php?no_option=1';
+  var url = 'pop.item.select.php?no_option=nonReimbursement';
 
   $('#popup_box iframe').attr('src', url);
   $('body').addClass('modal-open');
