@@ -78,9 +78,9 @@ var order_prints_pop;
 
 function printOrderView(odid) {
   order_prints_pop = window.open(
-    './pop.order.prints.php?od_id=' + odid + '|',
-    'order_prints_pop',
-    'width=850, height=800, resizable = no, scrollbars = no'
+      './pop.order.prints.php?od_id=' + odid + '|',
+      'order_prints_pop',
+      'width=850, height=800, resizable = no, scrollbars = no'
   );
 }
 
@@ -107,14 +107,14 @@ $(function () {
   });
 
   $(document).on(
-    'click',
-    '.custom-select-box-multi li, .drop_multi_main',
-    function () {
-      list_select(this);
-      if ($(this).prop('tagName') === 'LI') {
-        $(this).closest('ul').toggle();
+      'click',
+      '.custom-select-box-multi li, .drop_multi_main',
+      function () {
+        list_select(this);
+        if ($(this).prop('tagName') === 'LI') {
+          $(this).closest('ul').toggle();
+        }
       }
-    }
   );
 
   $(document).on('click', '.important-25', function () {
@@ -158,8 +158,8 @@ $(function () {
       }
 
       if (
-        $(item).attr('class') === 'step' ||
-        $(item).attr('class') === 'btns'
+          $(item).attr('class') === 'step' ||
+          $(item).attr('class') === 'btns'
       ) {
         break;
       }
@@ -211,6 +211,25 @@ $(function () {
       return;
     }
 
+    var is_soldout = false;
+    if(next_step_val == '출고준비' || next_step_val == '배송'){
+      $.ajax({ //
+        method: 'POST',
+        url: './ajax.soldout.php',
+        data: {ct_id: selected_od_ids},
+        async: false,
+      }).done(function (data) {
+        let result = jQuery.parseJSON(data);
+        if (result['result'] == 'soldout') {
+          alert("선택하신 주문 중, 품절된 상품이 있습니다.");
+          is_soldout = true;
+        }
+      });
+    }
+
+    if(is_soldout)
+      return;
+
     change_step(od_id['od_id[]'], next_step_val, 'true');
   });
 
@@ -245,18 +264,18 @@ $(function () {
     }
 
     var list_order_prints_pop = window.open(
-      './pop.order.prints.php?od_id=' + ret_od_id,
-      'order_prints_pop',
-      'width=850, height=800, resizable = no, scrollbars = yes'
+        './pop.order.prints.php?od_id=' + ret_od_id,
+        'order_prints_pop',
+        'width=850, height=800, resizable = no, scrollbars = yes'
     );
   });
 
   // 상품 매칭 취소
   $(document).on('click', '#list_matching_cancel', function () {
     var matching_cancel_pop = window.open(
-      './pop.openmarket.item.list.php',
-      'matching_cancel_pop',
-      'width=1080, height=900, resizable = no, scrollbars = no'
+        './pop.openmarket.item.list.php',
+        'matching_cancel_pop',
+        'width=1080, height=900, resizable = no, scrollbars = no'
     );
   });
 
@@ -331,10 +350,10 @@ $(function () {
     $.post('./ajax.orderitem.php', { od_id: od_id }, function (data) {
       $this.after('<div id="orderitemlist"><div class="itemlist"></div></div>');
       $('#orderitemlist .itemlist')
-        .html(data)
-        .append(
-          '<div id="orderitemlist_close"><button type="button" id="orderitemlist-x" class="btn_frmline">닫기</button></div>'
-        );
+          .html(data)
+          .append(
+              '<div id="orderitemlist_close"><button type="button" id="orderitemlist-x" class="btn_frmline">닫기</button></div>'
+          );
     });
 
     return false;
@@ -365,11 +384,11 @@ $(function () {
     var obj;
     if ($(parent_node).find('input[name="' + key + '"]').length) {
       obj = $(parent_node).find(
-        'input[name="' + key + '"], select[name="' + key + '"]'
+          'input[name="' + key + '"], select[name="' + key + '"]'
       );
     } else {
       obj = $(parent_node).find(
-        'input[name="' + key + '[]"], select[name="' + key + '"]'
+          'input[name="' + key + '[]"], select[name="' + key + '"]'
       );
     }
 
@@ -378,25 +397,25 @@ $(function () {
 
       if ($(obj).attr('type') == 'radio') {
         $(parent_node)
-          .find('input:radio[name="' + key + '"]:radio[value="' + value + '"]')
-          .prop('checked', true);
+            .find('input:radio[name="' + key + '"]:radio[value="' + value + '"]')
+            .prop('checked', true);
       }
 
       if ($(obj).attr('type') == 'checkbox') {
         $(parent_node)
-          .find(
-            'input:checkbox[name="' + key + '"]:checkbox[value="' + value + '"]'
-          )
-          .prop('checked', true); /* by NAME */
+            .find(
+                'input:checkbox[name="' + key + '"]:checkbox[value="' + value + '"]'
+            )
+            .prop('checked', true); /* by NAME */
         $(parent_node)
-          .find(
-            'input:checkbox[name="' +
-              key +
-              '[]"]:checkbox[value="' +
-              value +
-              '"]'
-          )
-          .prop('checked', true); /* by NAME */
+            .find(
+                'input:checkbox[name="' +
+                key +
+                '[]"]:checkbox[value="' +
+                value +
+                '"]'
+            )
+            .prop('checked', true); /* by NAME */
       }
 
       if ($(obj).attr('type') == 'text') {
@@ -406,8 +425,8 @@ $(function () {
       if ($(obj).attr('type') == 'button') {
         setTimeout(function () {
           $(parent_node)
-            .find('input:button[value="' + value + '"]')
-            .click();
+              .find('input:button[value="' + value + '"]')
+              .click();
         }, 100);
       }
     }
@@ -419,139 +438,139 @@ $(function () {
   function open_default_setting_form() {
     var ret = '';
     $('#search_detail_table tr')
-      .each(function (index, item) {
-        var title = $(item).find('th').html();
-        var content = $(item).find('td');
+        .each(function (index, item) {
+          var title = $(item).find('th').html();
+          var content = $(item).find('td');
 
-        var content_ret = '';
-        $(content)
-          .find('input, select, h2, span.linear_span')
-          .each(function (index2, item2) {
-            if ($(this).is('input')) {
-              var temp_id = $(item2).attr('id') || $(item2).attr('name');
-              if ($(item2).attr('type') == 'button') {
-                content_ret +=
-                  '<input type="radio" name="' +
-                  $(item2).attr('name') +
-                  '" value="' +
-                  $(item2).val() +
-                  '" id="default_' +
-                  temp_id +
-                  '" />';
-                var labelText = $(item2).val();
-                content_ret +=
-                  '<label for="default_' +
-                  temp_id +
-                  '">' +
-                  labelText +
-                  '</label>';
-              } else {
-                content_ret +=
-                  '<input type="' +
-                  $(item2).attr('type') +
-                  '" name="' +
-                  $(item2).attr('name') +
-                  '" value="' +
-                  $(item2).val() +
-                  '" id="default_' +
-                  temp_id +
-                  '" />';
-                if ($(item2).attr('name') == 'price_s') {
-                  content_ret += '원 ~ ';
+          var content_ret = '';
+          $(content)
+              .find('input, select, h2, span.linear_span')
+              .each(function (index2, item2) {
+                if ($(this).is('input')) {
+                  var temp_id = $(item2).attr('id') || $(item2).attr('name');
+                  if ($(item2).attr('type') == 'button') {
+                    content_ret +=
+                        '<input type="radio" name="' +
+                        $(item2).attr('name') +
+                        '" value="' +
+                        $(item2).val() +
+                        '" id="default_' +
+                        temp_id +
+                        '" />';
+                    var labelText = $(item2).val();
+                    content_ret +=
+                        '<label for="default_' +
+                        temp_id +
+                        '">' +
+                        labelText +
+                        '</label>';
+                  } else {
+                    content_ret +=
+                        '<input type="' +
+                        $(item2).attr('type') +
+                        '" name="' +
+                        $(item2).attr('name') +
+                        '" value="' +
+                        $(item2).val() +
+                        '" id="default_' +
+                        temp_id +
+                        '" />';
+                    if ($(item2).attr('name') == 'price_s') {
+                      content_ret += '원 ~ ';
+                    }
+                    if ($(item2).attr('name') == 'price_e') {
+                      content_ret += '원';
+                    }
+                    if (
+                        $(item2).attr('type') == 'radio' ||
+                        $(item2).attr('type') == 'checkbox'
+                    ) {
+                      var labelText = $(
+                          'label[for=' + $(item2).attr('id') + ']'
+                      ).text();
+                      // if (labelText !== '전체') {
+                      content_ret +=
+                          '<label for="default_' +
+                          $(item2).attr('id') +
+                          '">' +
+                          labelText +
+                          '</label>';
+                      // }
+                    }
+                  }
                 }
-                if ($(item2).attr('name') == 'price_e') {
-                  content_ret += '원';
-                }
-                if (
-                  $(item2).attr('type') == 'radio' ||
-                  $(item2).attr('type') == 'checkbox'
-                ) {
-                  var labelText = $(
-                    'label[for=' + $(item2).attr('id') + ']'
-                  ).text();
-                  // if (labelText !== '전체') {
-                  content_ret +=
-                    '<label for="default_' +
-                    $(item2).attr('id') +
-                    '">' +
-                    labelText +
-                    '</label>';
-                  // }
-                }
-              }
-            }
-            if ($(this).is('select')) {
-              content_ret += '<select name="' + $(item2).attr('name') + '">';
+                if ($(this).is('select')) {
+                  content_ret += '<select name="' + $(item2).attr('name') + '">';
 
-              $(item2)
-                .find('option')
-                .each(function (index3, item3) {
-                  content_ret +=
-                    '<option value="' +
-                    $(item3).val() +
-                    '">' +
-                    $(item3).text() +
-                    '</option>';
-                });
+                  $(item2)
+                      .find('option')
+                      .each(function (index3, item3) {
+                        content_ret +=
+                            '<option value="' +
+                            $(item3).val() +
+                            '">' +
+                            $(item3).text() +
+                            '</option>';
+                      });
 
-              content_ret += '</select>';
-            }
-            if ($(this).is('h2')) {
-              content_ret += '<b>' + $(item2).text() + '</b>';
-            }
-            if ($(this).is('span')) {
-              content_ret += '<b>' + $(item2).text() + '</b>';
-            }
-            /*
-                if ( $(this).is('button') ) {
-                    console.log($(this));
-                    var temp_id = $(item2).attr("id") || $(item2).attr("name");
-                    content_ret += '<input type="' + $(item2).attr("type") + '" name="' + $(item2).attr("onclick") + '" value="' + $(item2).val() + '" id="default_' + temp_id + '" />';
+                  content_ret += '</select>';
                 }
-                */
+                if ($(this).is('h2')) {
+                  content_ret += '<b>' + $(item2).text() + '</b>';
+                }
+                if ($(this).is('span')) {
+                  content_ret += '<b>' + $(item2).text() + '</b>';
+                }
+                /*
+                    if ( $(this).is('button') ) {
+                        console.log($(this));
+                        var temp_id = $(item2).attr("id") || $(item2).attr("name");
+                        content_ret += '<input type="' + $(item2).attr("type") + '" name="' + $(item2).attr("onclick") + '" value="' + $(item2).val() + '" id="default_' + temp_id + '" />';
+                    }
+                    */
+              });
+
+          ret += '<tr>';
+          ret += '<th>' + title + '</th>';
+          ret += '<td>' + content_ret + '</td>';
+          ret += '</tr>';
+        })
+        .promise()
+        .done(function () {
+          $('#fdefaultsettingform_form tbody').html(ret);
+          $('#default_fr_date, #default_to_date').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'yy-mm-dd',
+            showButtonPanel: true,
+            yearRange: 'c-99:c+99',
+            maxDate: '+0d',
           });
 
-        ret += '<tr>';
-        ret += '<th>' + title + '</th>';
-        ret += '<td>' + content_ret + '</td>';
-        ret += '</tr>';
-      })
-      .promise()
-      .done(function () {
-        $('#fdefaultsettingform_form tbody').html(ret);
-        $('#default_fr_date, #default_to_date').datepicker({
-          changeMonth: true,
-          changeYear: true,
-          dateFormat: 'yy-mm-dd',
-          showButtonPanel: true,
-          yearRange: 'c-99:c+99',
-          maxDate: '+0d',
-        });
+          $.ajax({
+            method: 'POST',
+            url: './ajax.orderlist.defaultsetting.get.php',
+            data: {
+              menu_id: sub_menu,
+            },
+          }).done(function (data) {
+            // clear_form("#fdefaultsettingform_form");
 
-        $.ajax({
-          method: 'POST',
-          url: './ajax.orderlist.defaultsetting.get.php',
-          data: {
-            menu_id: sub_menu,
-          },
-        }).done(function (data) {
-          // clear_form("#fdefaultsettingform_form");
+            var obj = data.data;
+            var keys = Object.keys(obj);
+            var form = $('#fdefaultsettingform');
 
-          var obj = data.data;
-          var keys = Object.keys(obj);
-          var form = $('#fdefaultsettingform');
-
-          for (_key in obj) {
-            if (Array.isArray(obj[_key])) {
-              $(obj[_key]).each(function (index, item) {
-                set_input_val(form, _key, item);
-              });
-            } else {
-              set_input_val(form, _key, obj[_key]);
+            for (_key in obj) {
+              if (Array.isArray(obj[_key])) {
+                $(obj[_key]).each(function (index, item) {
+                  set_input_val(form, _key, item);
+                });
+              } else {
+                set_input_val(form, _key, obj[_key]);
+              }
             }
-          }
+          });
         });
-      });
   }
 
   // 기본검색적용
@@ -592,9 +611,9 @@ $(function () {
   // 기본검색설정 저장
   $('#fdefaultsettingform_submit').click(function () {
     var formdata = $.extend(
-      {},
-      $('#fdefaultsettingform_form').serializeObject(),
-      {}
+        {},
+        $('#fdefaultsettingform_form').serializeObject(),
+        {}
     );
 
     $.ajax({
@@ -616,11 +635,11 @@ $(function () {
     var ct_id = [];
     var item = $("input[name='od_id[]']:checked");
     var type = $(this).data('type');
-    
+
     var sb1 = $('#ct_manager_sb').val();
     if(!sb1){
-        alert('출고담당자를 선택하신 후 변경을 눌러주세요. ');
-        return false;
+      alert('출고담당자를 선택하신 후 변경을 눌러주세요. ');
+      return false;
     }
 
     for (var i = 0; i < item.length; i++) {
@@ -663,11 +682,11 @@ $(function () {
     var ct_id = [];
     var item = $("input[name='od_id[]']:checked");
     var type = $(this).data('type');
-    
+
     var sb1 = $('#ct_warehouse_sb').val();
     if(!sb1){
-        alert('출하창고를 선택하신 후 변경을 눌러주세요. ');
-        return false;
+      alert('출하창고를 선택하신 후 변경을 눌러주세요. ');
+      return false;
     }
 
     for (var i = 0; i < item.length; i++) {
@@ -791,10 +810,10 @@ $(function () {
     }
 
     window.open(
-      g5_admin_url +
+        g5_admin_url +
         '/member_form.php?sst=&sod=&sfl=&stx=&page=&w=u&mb_id=' +
         mb_id,
-      '_blank'
+        '_blank'
     );
   });
 
@@ -802,16 +821,16 @@ $(function () {
   $(document).on('click', '#select_important', function () {
     var has_selected = false;
     $.map(
-      $('#samhwa_order_list_table>div.table td input[type=checkbox]:checked'),
-      function (obj, i) {
-        has_selected = true;
+        $('#samhwa_order_list_table>div.table td input[type=checkbox]:checked'),
+        function (obj, i) {
+          has_selected = true;
 
-        var star = $(obj).closest('tr').find('.list-important');
+          var star = $(obj).closest('tr').find('.list-important');
 
-        if (!star.hasClass('on')) {
-          star.click();
+          if (!star.hasClass('on')) {
+            star.click();
+          }
         }
-      }
     );
 
     if (!has_selected) {
@@ -824,16 +843,16 @@ $(function () {
   $(document).on('click', '#deselect_important', function () {
     var has_selected = false;
     $.map(
-      $('#samhwa_order_list_table>div.table td input[type=checkbox]:checked'),
-      function (obj, i) {
-        has_selected = true;
+        $('#samhwa_order_list_table>div.table td input[type=checkbox]:checked'),
+        function (obj, i) {
+          has_selected = true;
 
-        var star = $(obj).closest('tr').find('.list-important');
+          var star = $(obj).closest('tr').find('.list-important');
 
-        if (star.hasClass('on')) {
-          star.click();
+          if (star.hasClass('on')) {
+            star.click();
+          }
         }
-      }
     );
 
     if (!has_selected) {
@@ -849,36 +868,36 @@ $(function () {
 
   // 기본검색 설정 전체 버튼 추가
   $(document).on(
-    'click',
-    '#fdefaultsettingform_form input[type="checkbox"]',
-    function () {
-      var val = $(this).val();
-      if (!val || val === 'all' || val === 'all2') {
-        $(this)
-          .nextUntil('b')
-          .each(function (index, item) {
-            if ($(item).attr('type') === 'checkbox') {
-              $(item).click();
-            }
-          });
+      'click',
+      '#fdefaultsettingform_form input[type="checkbox"]',
+      function () {
+        var val = $(this).val();
+        if (!val || val === 'all' || val === 'all2') {
+          $(this)
+              .nextUntil('b')
+              .each(function (index, item) {
+                if ($(item).attr('type') === 'checkbox') {
+                  $(item).click();
+                }
+              });
+        }
       }
-    }
   );
 
   // 주문리스트, 출고리스트 마우스 오버시 같은 주문 강조
   $(document).on('mouseenter', 'tr.order_tr',
-    function() {
-      var od_id = $(this).data('od-id');
-      var $tr = $('tr.order_tr[data-od-id="' + od_id + '"]');
-      if($tr.length >= 1)
-        $tr.addClass('hover');
-    },
+      function() {
+        var od_id = $(this).data('od-id');
+        var $tr = $('tr.order_tr[data-od-id="' + od_id + '"]');
+        if($tr.length >= 1)
+          $tr.addClass('hover');
+      },
   );
   $(document).on('mouseleave', 'tr.order_tr',
-    function() {
-      var od_id = $(this).data('od-id');
-      $('tr.order_tr[data-od-id="' + od_id + '"]').removeClass('hover');
-    },
+      function() {
+        var od_id = $(this).data('od-id');
+        $('tr.order_tr[data-od-id="' + od_id + '"]').removeClass('hover');
+      },
   );
 
 
@@ -900,7 +919,7 @@ $(function () {
           if (data.result == 'success')
             span.hide();
         }
-      }); 
+      });
     }
   });
   // 이카운트 엑셀 다운로드 완료 리셋
@@ -936,8 +955,8 @@ function changeDeliverySelect(x) {
 
 function changeDeliveryInfo(od_id, x) {
   var od_delivery_company = $(x)
-    .siblings('select[name=od_delivery_company]')
-    .val();
+      .siblings('select[name=od_delivery_company]')
+      .val();
   var od_delivery_text = $(x).siblings('input[name=od_delivery_text]').val();
 
   $.ajax({
