@@ -198,18 +198,41 @@ $(function () {
     var next_step_val = $(this).data('next-step-val');
     //var od_id = $('#samhwa_order_list_table>div.table td input[type=checkbox]:checked').serializeObject();
     var $selected_ods = get_selected(this);
+
+    let selected_od_ids = [];
     for (var i = 0; i < $selected_ods.length; i++) {
       var $selected_od = $selected_ods[i];
       if ($($selected_od).closest('tr').hasClass('cancel_requested')) {
         alert('취소요청이 있는 주문은 단계이동이 불가능합니다.');
         return;
       }
+      selected_od_ids.push($($selected_od).val());
     }
+
     var od_id = $($selected_ods).serializeObject();
     if (od_id['od_id[]'] === undefined) {
       alert('선택해주세요.');
       return;
     }
+    var is_soldout = false;
+    if(next_step_val == '출고준비' || next_step_val == '배송'){
+      $.ajax({ //
+        method: 'POST',
+        url: './ajax.soldout.php',
+        data: {ct_id: selected_od_ids},
+        async: false,
+      }).done(function (data) {
+        let result = jQuery.parseJSON(data);
+        if (result['result'] == 'soldout') {
+          alert("선택하신 주문 중, 품절된 상품이 있습니다.");
+          is_soldout = true;
+        }
+      });
+    }
+
+    if(is_soldout)
+      return;
+
 
     change_step(od_id['od_id[]'], next_step_val, 'true');
   });

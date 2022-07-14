@@ -13,6 +13,28 @@ $qty_arr = $_POST['qty'];
 $it_price_arr = $_POST['it_price'];
 $memo_arr = $_POST['memo'];
 
+$where_it_id = "where it_id ='";
+$arr_it_ids = array();
+if( is_array($it_id_arr) ){
+    foreach($it_id_arr as $it_id) {
+        if ($it_id != '')
+            array_push($arr_it_ids, $it_id);
+    }
+    $where_it_id .= implode("' or it_id = '", $arr_it_ids);
+} else {
+    $where_it_id = $it_id_arr;
+}
+
+$where_it_id .= "'";
+
+$sql_soldout = "select sum(it_type1 + it_type2 + it_type10) as is_soldout from g5_shop_item ".$where_it_id;
+$result = sql_fetch($sql_soldout);
+
+if ($result['is_soldout'] > (int)0 ) {
+    alert('선택하신 주문 중, 품절된 상품이 있습니다.');
+    return;
+}
+
 $od = sql_fetch(" select * from g5_shop_order where od_id = '$od_id' ");
 if(!$od['od_id'])
     alert('존재하지 않는 주문입니다.');
