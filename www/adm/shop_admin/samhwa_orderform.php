@@ -2810,6 +2810,7 @@ $(document).ready(function() {
     });
 
     $('#change_cart_status').click(function() {
+        let sendcost = parseInt($('.send_cost_sales_discount_wrapper .od_send_cost').val());
 
         var step = document.getElementById('step');
         var it_sel = document.getElementsByName("it_sel[]");
@@ -2833,6 +2834,7 @@ $(document).ready(function() {
         var sendData={};
         sendData['ct_id']=ct_id;
         sendData['step']=step.value;
+        sendData['sendcost']=sendcost;
         $.ajax({
             type : "post",
             url : "./ajax.cart_status.php",
