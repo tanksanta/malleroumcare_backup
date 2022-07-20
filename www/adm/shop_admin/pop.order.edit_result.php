@@ -76,6 +76,7 @@ for($i = 0; $i < count($ct_id_arr); $i++) {
 
     $it = sql_fetch(" SELECT * FROM g5_shop_item WHERE it_id = '$it_id' ");
 
+    $io_type = 0;
     if($ct_id) {
         // 수정 or 삭제
         $ct = sql_fetch(" select * from g5_shop_cart where od_id = '$od_id' and ct_id = '$ct_id' ");
