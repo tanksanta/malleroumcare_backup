@@ -838,11 +838,14 @@ if($is_main && !$is_member) {
       </div>
       <?php } ?>
       <?php if($col_name) { ?>
-      <div class="at-container">
         <?php if($col_name == "two") { ?>
-          <div class="row at-row">
-            <div class="col-md-<?php echo $col_content;?><?php echo ($at_set['side']) ? ' pull-right' : '';?> at-col at-main">    
+          <div class="at-container">
+              <div class="row at-row">
+                <div class="col-md-<?php echo $col_content;?><?php echo ($at_set['side']) ? ' pull-right' : '';?> at-col at-main">
+        <?php } else if ($member['mb_id'] == '') {?>
+            <div class="at-container_main" style="width: 100%;">
         <?php } else { ?>
+          <div class="at-container">
           <div class="at-content">
             <?php
             $tutorials = get_tutorials();
