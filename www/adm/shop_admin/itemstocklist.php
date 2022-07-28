@@ -30,7 +30,7 @@ if ($sel_ca_id != "") {
 }
 
 if ($wh_name != '') {
-  $sql_search .= " and ( select (sum(ws_qty) - sum(ws_scheduled_qty)) from warehouse_stock s where T.it_id = s.it_id and wh_name = '$wh_name' and ws_del_yn = 'N' {$use_warehouse_where_sql} ) <> 0 ";
+  $sql_search .= " and ( select (sum(ws_qty) - sum(ws_scheduled_qty)) from warehouse_stock s where T.it_id = s.it_id and T.it_warehousing_warehouse = '$wh_name' and ws_del_yn = 'N' {$use_warehouse_where_sql} ) <> 0 ";
 }
 
 // 안전재고 상품
@@ -125,7 +125,8 @@ from
 	      it_expected_warehousing_date,
 	      it_option_subject,
 	      it_stock_manage_min_qty,
-	      it_stock_manage_max_qty
+	      it_stock_manage_max_qty,
+	      it_warehousing_warehouse
     	from g5_shop_item i) AS a
 		LEFT JOIN (SELECT * from g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)
 	) AS t
@@ -281,9 +282,9 @@ $count_warn4 = sql_fetch($sql)['cnt'];
   <input type="hidden" name="page" value="<?php echo $page; ?>">
 
   <div class="quick_link_area" style="padding-bottom: 20px">
-    <a class="<?php echo $wh_name == '' ? 'active' : '' ?>" href="<?php echo $_SERVER['SCRIPT_NAME']."?wh_name=" ?>">전체(<?php echo $warehouse_total_qty; ?>개)</a>
+    <a class="<?php echo $wh_name == '' ? 'active' : '' ?>" href="<?php echo $_SERVER['SCRIPT_NAME']."?wh_name=" ?>">전체 상품 </a>
     <?php foreach($warehouse_list as $warehouse) { ?>
-      <a class="<?php echo $wh_name == $warehouse['name'] ? 'active' : '' ?>" href="<?php echo $_SERVER['SCRIPT_NAME'].'?wh_name='.$warehouse['name']; ?>"><?php echo $warehouse['name']; ?>(<?php echo $warehouse['total']; ?>개)</a>
+      <a class="<?php echo $wh_name == $warehouse['name'] ? 'active' : '' ?>" href="<?php echo $_SERVER['SCRIPT_NAME'].'?wh_name='.$warehouse['name']; ?>"><?php echo $warehouse['name']; ?>(<?php // echo $warehouse['total']; ?>개)</a>
     <?php } ?>
   </div>
 
@@ -421,6 +422,9 @@ $count_warn4 = sql_fetch($sql)['cnt'];
         if ($row['sum_ws_qty'] != $row['sum_barcode_qty']) {
           $bg_warn = 'warn';
         }
+        if ( (strcmp($wh_name,'') == 0) ||
+                (strcmp($row['it_warehousing_warehouse'],$wh_name) == 0)) {
+
         ?>
         <tr class="<?php echo $bg; ?> <?php echo $bg_warn; ?>">
           <!-- APMS - 2014.07.20 -->
@@ -547,6 +551,7 @@ $count_warn4 = sql_fetch($sql)['cnt'];
           <td class="td_mng"><?php echo "월 {$sum_ct_qty_1month}개 / 일 {$sum_ct_qty_1day}개" ?></td>
         </tr>
         <?php
+        } // if warehouse selected
       }
       if (!$i)
         echo '<tr><td colspan="'.$colspan.'" class="empty_table"><span>자료가 없습니다.</span></td></tr>';
