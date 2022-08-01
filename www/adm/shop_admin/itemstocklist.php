@@ -284,7 +284,7 @@ $count_warn4 = sql_fetch($sql)['cnt'];
   <div class="quick_link_area" style="padding-bottom: 20px">
     <a class="<?php echo $wh_name == '' ? 'active' : '' ?>" href="<?php echo $_SERVER['SCRIPT_NAME']."?wh_name=" ?>">전체 상품 </a>
     <?php foreach($warehouse_list as $warehouse) { ?>
-      <a class="<?php echo $wh_name == $warehouse['name'] ? 'active' : '' ?>" href="<?php echo $_SERVER['SCRIPT_NAME'].'?wh_name='.$warehouse['name']; ?>"><?php echo $warehouse['name']; ?>(<?php // echo $warehouse['total']; ?>)</a>
+      <a class="<?php echo $wh_name == $warehouse['name'] ? 'active' : '' ?>" href="<?php echo $_SERVER['SCRIPT_NAME'].'?wh_name='.$warehouse['name']; ?>"><?php echo $warehouse['name']; ?><?php // echo $warehouse['total']; ?></a>
     <?php } ?>
   </div>
 
