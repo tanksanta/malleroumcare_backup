@@ -92,7 +92,8 @@ $sendData["prods"] = $prodsSendData;
 $main_ca = '';
 $it_list_url = '';
 if ($it['ca_id']) {
-  $main_ca = substr($it['ca_id'], 0, 2);
+  //$main_ca = substr($it['ca_id'], 0, 2);
+  $main_ca = $it['ca_id']);
   $it_list_url = "/shop/list.php?ca_id={$main_ca}";
 }
 ?>
@@ -1146,6 +1147,17 @@ if ($it['ca_id']) {
             // $(this).closest('.cart-ok').hide("slide", { direction: "down" }, 500);
             hide_cart_ok($(this).closest('.cart-ok'));
             // window.location.reload();
+
+            <?php
+            if (strlen($main_ca) > 2 ){
+                $sub_ca = substr($main_ca,2,2);
+                $main_ca = substr($main_ca,0,2);
+                $it_list_url = "/shop/list.php?ca_id={$main_ca}&ca_sub%5B%5D={$sub_ca}&sort=custom&prodSubYn=Y";
+              }else {
+                $it_list_url = "/shop/list.php?ca_id={$main_ca}";
+            };
+            ?>
+
             window.location = '<?= $it_list_url ?>';
             e.preventDefault();
           })
