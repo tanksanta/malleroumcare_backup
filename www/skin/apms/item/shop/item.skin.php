@@ -93,7 +93,7 @@ $main_ca = '';
 $it_list_url = '';
 if ($it['ca_id']) {
   //$main_ca = substr($it['ca_id'], 0, 2);
-  $main_ca = $it['ca_id']);
+  $main_ca = $it['ca_id'];
   $it_list_url = "/shop/list.php?ca_id={$main_ca}";
 }
 ?>
