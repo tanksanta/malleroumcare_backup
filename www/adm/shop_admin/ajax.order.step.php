@@ -31,6 +31,7 @@ if($_POST['ct_id']&&$_POST['step']) {
   $combine_orders = []; // 자동 합포적용
   $alim_orders = []; // 알림톡 보낼 주문들
   $errors = [];
+  $allStoId = '';
 
   for($i=0;$i<count($_POST['ct_id']); $i ++) {
     // $sql_ct_s = "select a.od_id, a.it_id, a.it_name, a.ct_option, a.mb_id, a.stoId, b.mb_entId from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
@@ -154,6 +155,7 @@ if($_POST['ct_id']&&$_POST['step']) {
 
     //시스템 상태값 변경
     $stoId = $result_ct_s['stoId'];
+    $allStoId .= $stoId;
     $usrId = $result_ct_s['mb_id'];
     $entId = $result_ct_s['mb_entId'];
     foreach( explode('|', $result_ct_s['stoId']) as $temp_sto_id) {
@@ -208,9 +210,15 @@ if($_POST['ct_id']&&$_POST['step']) {
     }
   }
   
-  $stoIdDataList = explode('|',$stoId);
-  $stoIdDataList = array_filter($stoIdDataList);
+  /* Before. changed by Jake*/
+  //$stoIdDataList = explode('|',$stoId);
+  //$stoIdDataList = array_filter($stoIdDataList);
+  //$stoIdData = implode("|", $stoIdDataList);
+  /* after */
+  $stoIdDataList = explode('|',$allStoId);
+  $stoIdDataList = array_unique($stoIdDataList);
   $stoIdData = implode("|", $stoIdDataList);
+
   $sendData["stoId"] = $stoIdData;
   $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
   $result_again = $res['data'];
