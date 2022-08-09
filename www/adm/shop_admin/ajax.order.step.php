@@ -208,9 +208,15 @@ if($_POST['ct_id']&&$_POST['step']) {
     }
   }
   
-  $stoIdDataList = explode('|',$stoId);
-  $stoIdDataList = array_filter($stoIdDataList);
+  /* Before. changed by Jake*/
+  //$stoIdDataList = explode('|',$stoId);
+  //$stoIdDataList = array_filter($stoIdDataList);
+  //$stoIdData = implode("|", $stoIdDataList);
+  /* after */
+  $stoIdDataList = explode('|',$allStoId);
+  $stoIdDataList = array_unique($stoIdDataList);
   $stoIdData = implode("|", $stoIdDataList);
+
   $sendData["stoId"] = $stoIdData;
   $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
   $result_again = $res['data'];
