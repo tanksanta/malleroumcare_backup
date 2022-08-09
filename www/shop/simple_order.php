@@ -799,11 +799,19 @@ function calculate_order_price() {
 
   if(odd_qty > 0 && odd_qty % 2 === 1) {
     // 홀수 배송비 적용
-    delivery_price += odd_price;
+    if(delivery_price < 100000){
+        delivery_price = odd_price>0?3300:0;
+    } else {
+        delivery_price += odd_price;
+    }
   }
   if(even_qty > 0 && even_qty % 2 === 0) {
     // 짝수 배송비 적용
-    delivery_price += even_price;
+    if(delivery_price < 100000){
+        delivery_price = even_price>0?3300:0;
+    } else {
+        delivery_price += even_price;
+    }
   }
 
   // 주문금액
