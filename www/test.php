@@ -2,6 +2,8 @@
 echo "work!!";
 phpinfo();
 
+// git 연결 테스트
+
 // $pass= "admin";
 
 //echo hash('sha256',md5($pass));
