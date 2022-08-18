@@ -37,3 +37,7 @@ www/data/partner/*
 www/data/center
 www/data/center/*
 .history/*
+
+## 서원 : 22.08.18 - git 제외 추가
+www/thema/eroumcare/assets/img/*
+www/data/dbconfig.t.eroumcare.com.php
