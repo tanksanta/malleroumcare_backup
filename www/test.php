@@ -3,6 +3,7 @@ echo "work!!";
 phpinfo();
 
 // git 연결 테스트
+// 22.08.19 서원 - git 테스트
 
 // $pass= "admin";
 
