@@ -1554,6 +1554,13 @@ if (!$member['mb_id']) {
   function openWebBarcode(target) {
     if (target) {
       POP_BARCODE_INPUT_TARGET = $(target).closest('li').find('.frm_input');
+      <?php
+        # 서원 : 22.08.23 - PDA입력 시 기존 input 재입력 필요시 기존 데이터 초기화
+        # 추가 : if($(POP_BARCODE_INPUT_TARGET).val()) { $(POP_BARCODE_INPUT_TARGET).val(''); }
+      ?>      
+      if($(POP_BARCODE_INPUT_TARGET).val()) {
+        $(POP_BARCODE_INPUT_TARGET).val('');
+      }
     }
 
     $('#web-barcode').css('display', 'flex');
@@ -1666,7 +1673,7 @@ if (!$member['mb_id']) {
           # 해당 주석은 html코드상 보이지 않음.
           # 서원 : 22.08.22 - PDA 바코드 연속 스캔시 입력된 데이터 검증 및 비어있는 input박스에 데이터 입력.
           # 삭제 : $(POP_BARCODE_INPUT_TARGET).val(barcode);
-        ?> 
+        ?>
         $item = $('#add_barcode_pop .barcode_input_list').find('.notall');
         $item.each(function (i, val) {
           if($(this).val()==""){
@@ -1674,7 +1681,7 @@ if (!$member['mb_id']) {
             notallLengthCheck();
             return false;
           }
-        });        
+        });
 
         $.toast('\'' + barcode + '\'가 등록되었습니다.', {
           duration: 2000,
@@ -1683,12 +1690,12 @@ if (!$member['mb_id']) {
 
         <?php
           # 해당 주석은 html코드상 보이지 않음.
-          # 서원 : 22.08.22 - PDA 바코드 연속 스캔시 하위 팝업(바코드 개고추가 팝업) 부분에 barcode_input_list 필드 추가
+          # 서원 : 22.08.22 - PDA 바코드 연속 스캔시 하위 팝업(바코드 재고추가 팝업) 부분에 barcode_input_list 필드 추가
           # 삭제 : closeWebBarcode();
         ?>
         if($item.last().val()) {
           $('#btn_plus').trigger('click');
-        }        
+        }
 
       })
       .fail(function ($xhr) {
