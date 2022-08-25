@@ -1554,6 +1554,13 @@ if (!$member['mb_id']) {
   function openWebBarcode(target) {
     if (target) {
       POP_BARCODE_INPUT_TARGET = $(target).closest('li').find('.frm_input');
+      <?php
+        # 서원 : 22.08.23 - PDA입력 시 기존 input 재입력 필요시 기존 데이터 초기화
+        # 추가 : if($(POP_BARCODE_INPUT_TARGET).val()) { $(POP_BARCODE_INPUT_TARGET).val(''); }
+      ?>
+      if($(POP_BARCODE_INPUT_TARGET).val()) {
+        $(POP_BARCODE_INPUT_TARGET).val('');
+      }
     }
 
     $('#web-barcode').css('display', 'flex');
