@@ -264,7 +264,7 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
       width: 100px;
       color: #376092;
       display: none;
-      z-index: 1;
+      z-index: 99; /* 마지막 리스트에서 하단 고정 부분뒤로 가려져 클릭할 수 없던 부분 수정 */
     }
 
     #popupBody .listContent .more .select li {
