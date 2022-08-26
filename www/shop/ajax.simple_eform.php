@@ -54,7 +54,8 @@ $contract_sign_name = clean_xss_tags($_POST['contract_sign_name']) ?: '';
 $contract_sign_relation = clean_xss_tags($_POST['contract_sign_relation']) ?: '0';
 
 if( !( $penNm && $penLtmNum && $penConNum && $penRecGraCd && $penTypeCd && $penExpiDtm && $penJumin ) )
-    json_response(400, '수급자 정보를 입력해주세요.');
+    /* 서원 : 22.08.26 - 수급자 정보 오류 alert 멘트 구체화 */
+    json_response(400, '수급자의 [연락처,주소]등 모든 정보가 입력 되어있는지 확인해주세요.');
 
 $penLtmNum = 'L' . $penLtmNum;
 
