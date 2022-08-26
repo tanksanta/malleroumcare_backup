@@ -1390,6 +1390,7 @@ $('#penConNum').on('blur', function() {
   if (ms_pen_hp.length > 9) {
     check_pen_input(ms_pen_hp);
   }
+  save_eform(); /* 수급자 연락처 미입력으로 인한 사후 연락처입력 후 포커스 아웃 시 계약서 새로고침 */
 });
 
 // 핸드폰 번호 입력 체크
