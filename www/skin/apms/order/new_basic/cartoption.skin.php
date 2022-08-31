@@ -15,6 +15,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 		<input type="hidden" id="it_price" value="<?php echo $option['ct_price']; ?>">
 		<input type="hidden" name="ct_send_cost" value="<?php echo $option['ct_send_cost']; ?>">
 		<input type="hidden" name="sw_direct">
+		<input type="hidden" name="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
 		<?php if($option_1) { ?>
 			<p>&nbsp; <b><i class="fa fa-check-square-o fa-lg"></i> 선택옵션</b></p>
 			<table class="opt-tbl">
@@ -43,19 +44,21 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 						<input type="hidden" class="io_price" value="<?php echo $io[$i]['io_price']; ?>">
 						<input type="hidden" class="io_stock" value="<?php echo $io[$i]['it_stock_qty']; ?>">
 						<div class="row">
-							<div class="col-sm-7">
+							<div class="col-sm-8">
 								<label>
 									<span class="it_opt_subj"><?php echo $io[$i]['ct_option']; ?></span>
 									<span class="it_opt_prc"><?php echo $io[$i]['io_display_price']; ?></span>
 								</label>
 							</div>
-							<div class="col-sm-5">
+							<div class="col-sm-4">
 								<div class="input-group">
+									<div class="input-group-btn">
+										<button type="button" class="it_qty_minus btn btn-black btn-sm"><i class="fa fa-minus-circle fa-lg"></i><span class="sound_only">감소</span></button>
+									</div>
 									<label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
-									<input type="text" name="ct_qty[<?php echo $it['it_id']; ?>][]" value="<?php echo $io[$i]['ct_qty']; ?>" id="ct_qty_<?php echo $i; ?>" class="form-control input-sm" size="5">
+									<input type="text" name="ct_qty[<?php echo $it['it_id']; ?>][]" value="<?php echo $io[$i]['ct_qty']; ?>" id="ct_qty_<?php echo $i; ?>" class="form-control input-sm">
 									<div class="input-group-btn">
 										<button type="button" class="it_qty_plus btn btn-black btn-sm"><i class="fa fa-plus-circle fa-lg"></i><span class="sound_only">증가</span></button>
-										<button type="button" class="it_qty_minus btn btn-black btn-sm"><i class="fa fa-minus-circle fa-lg"></i><span class="sound_only">감소</span></button>
 										<button type="button" class="it_opt_del btn btn-black btn-sm"><i class="fa fa-times-circle fa-lg"></i><span class="sound_only">삭제</span></button>
 									</div>
 								</div>

@@ -173,9 +173,13 @@ $(function() {
         var $el_qty = $(this).closest("li").find("input[name^=ct_qty]");
         var stock = parseInt($(this).closest("li").find("input.io_stock").val());
 
+        var it_buy_inc_qty = $(this).closest('form').find('input[name^=it_buy_inc_qty]').val();
+        if (parseInt(it_buy_inc_qty) < 1) it_buy_inc_qty = 1;
+        if (parseInt(it_buy_inc_qty) > min_qty) min_qty = it_buy_inc_qty;
+
         switch(mode) {
             case "증가":
-                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) + 1;
+                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) + parseInt(it_buy_inc_qty);
                 if(this_qty > stock) {
                     alert("재고수량 보다 많은 수량을 구매할 수 없습니다.");
                     this_qty = stock;
@@ -191,7 +195,7 @@ $(function() {
                 break;
 
             case "감소":
-                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - 1;
+                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - parseInt(it_buy_inc_qty);
                 if(this_qty < min_qty) {
                     this_qty = min_qty;
                     alert("최소 구매수량은 "+number_format(String(min_qty))+" 입니다.");
@@ -231,23 +235,29 @@ $(function() {
 
     // 수량직접입력
     $(document).on("keyup", "input[name^=ct_qty]", function() {
+        var it_buy_inc_qty = $(this).closest('form').find('input[name^=it_buy_inc_qty]').val();
+        if (it_buy_inc_qty < 1) it_buy_inc_qty = 1;
+
 		var val= $(this).val();
 
         if(val != "") {
             if(val.replace(/[0-9]/g, "").length > 0) {
                 alert("수량은 숫자만 입력해 주십시오.");
-                $(this).val(1);
+                $(this).val( parseInt(it_buy_inc_qty) );
             } else {
                 var d_val = parseInt(val);
                 if(d_val < 1 || d_val > 9999) {
                     alert("수량은 1에서 9999 사이의 값으로 입력해 주십시오.");
-                    $(this).val(1);
+                    $(this).val( parseInt(it_buy_inc_qty) );
                 } else {
                     var stock = parseInt($(this).closest("li").find("input.io_stock").val());
                     if(d_val > stock) {
                         alert("재고수량 보다 많은 수량을 구매할 수 없습니다.");
                         $(this).val(stock);
-                    }
+                    } else {
+                        if( !!(parseInt($(this).val()) % parseInt(it_buy_inc_qty)) )
+                            $(this).val( parseInt(it_buy_inc_qty) );
+                     }
                 }
             }
 
