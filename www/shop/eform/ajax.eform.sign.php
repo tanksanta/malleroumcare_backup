@@ -274,15 +274,21 @@ $certfile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_cert_'.date("YmdHisw
 $certdir .= '/'.$certfile;
 include_once('./lib/rendercertpdf.lib.php');
 
+/*
+// 서원 : 22.09.01 - 현재 사용하지 않는 프로세스(excel파일을 생성 하지 않음/관련 lib파일도 없음).
+// 설명 : 해당 소스에 $certfile 변수가 중복 사용되면서 파일변이 변경되어 실제 파일명과 DB저장 파일명에 미세한(마이크로초) 변경됨.
+//         동일 변수 변경 처리하고, 사용하지 않는 프로세스 코드 주석 처리
+
 // 급여제공명세서 엑셀 파일 생성
 $exceldir = G5_DATA_PATH.'/eform/excel';
 if(!is_dir($exceldir)) {
   @mkdir($exceldir, G5_DIR_PERMISSION, true);
   @chmod($exceldir, G5_DIR_PERMISSION);
 }
-$certfile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_cert_'.date("YmdHisw").'.pdf';
-$exceldir .= '/'.$certfile;
+$excelfile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_excel_'.date("YmdHisw").'.pdf';
+$exceldir .= '/'.$excelfile;
 include_once('./lib/rendercertpdf.lib.php');
+*/
 
 // 문자 발송
 $send_hp = '02-830-1301';
