@@ -75,11 +75,26 @@ if($sheetData) {
     
     $exist_recipient = [];
     foreach($inputs as $input) {
+
+        // 시작 -->
+        // 서원 : 22.09.02 - [공통] 사업소 : 수급자관리→수급자일괄등록 불가 오류
+        // 설명 : 변수 오기입
+        $ent_pen = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+            'usrId' => $input['usrId'],
+            'entId' => $input['entId'],
+            'penLtmNum' => $input['penLtmNum']
+        ));
+        /*
         $ent_pen = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
             'usrId' => $sendData['usrId'],
             'entId' => $sendData['entId'],
             'penLtmNum' => $penLtmNum,
         ));
+        */
+
+        //
+        // 종료 -->
+
         $ent_pen = $ent_pen['data'][0];
         if ($ent_pen) {
             array_push($exist_recipient, $input['penNm']);
