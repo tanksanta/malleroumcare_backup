@@ -22,7 +22,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 <section class="wrap">
   <div class="sub_section_tit">간편 주문서 신청</div>
   <div class="inner">
-    <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post" onsubmit="return form_submit(this);">
+  <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post" onsubmit="return form_submit(this);">
       <input type="hidden" name="org_od_price" value="0">
       <input type="hidden" name="od_price" value="0">
       <input type="hidden" name="od_settle_case" value="월 마감 정산">
@@ -114,7 +114,7 @@ add_javascript(G5_POSTCODE_JS, 0);
           </div>
         </div>
         <div class="so_btn_wr">
-          <button type="submit" class="btn_so_order">
+        <button type="submit" class="btn_so_order">
             <img src="<?=THEMA_URL?>/assets/img/icon_order.png" alt="">
             주문하기
           </button>
@@ -485,6 +485,7 @@ $(function() {
   $('#popup_box').click(function() {
       close_popup_box();
   });
+
 });
 
 function open_popup_box(url) {
@@ -651,6 +652,36 @@ function form_submit(form) {
     alert('주문정지 상태입니다. 관리자에게 문의해 주세요.');
     return false;
   }
+
+  var _item = [];
+  var _check = true;
+  $("#so_item_list li").each(function(index) {    
+    if( parseInt( $(this).find("input[name='it_buy_max_qty[]']").val() ) > 1 ) {
+
+      var array_nm = $(this).find("input[name='it_id[]']").val();
+
+      if( ! _item[ array_nm + '_max_qty' ] ) { _item[ array_nm + '_max_qty' ] = parseInt( $(this).find("input[name='it_buy_max_qty[]']").val() ); }
+      if( ! _item[ array_nm + '_sum_qty' ] ) { _item[ array_nm + '_sum_qty' ] = 0; }
+      if( ! _item[ array_nm + '_item_nm' ] ) { _item[ array_nm + '_item_nm' ] = $(this).find("p.it_name").contents().get(0).nodeValue; }
+
+      _item[ array_nm + '_sum_qty' ] +=  parseInt( $(this).find("input[name='ct_qty[]']").val() );
+
+      if( _item[ array_nm + '_sum_qty' ] > _item[ array_nm + '_max_qty' ] ) {
+
+        var _txt = "";
+        _txt += "선택옵션 개수 총합 "+number_format(String( _item[ array_nm + '_max_qty' ] ))+"개 이하로 주문해 주십시오. \n\n";
+        _txt += "제품명: " + _item[ array_nm + '_item_nm' ] + " \n";
+        _txt += "최대 구매수량: " + _item[ array_nm + '_max_qty' ] + "개 ( " + (_item[ array_nm + '_sum_qty' ]-_item[ array_nm + '_max_qty' ]) + "개 초과 )";
+        alert( _txt );
+
+        _check = false;
+        return false;
+      }
+
+    }
+  });
+  if( ! _check ) { return false; }
+
 
   if(form_loading)
     return false;
@@ -960,7 +991,9 @@ function select_item(obj, io_id, ct_qty) {
 
   var $li = $('<li class="flex">');
   $li.append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
-  .append('<input type="hidden" name="it_price[]" value="' + obj.it_price + '">')  
+  .append('<input type="hidden" name="it_price[]" value="' + obj.it_price + '">')
+  .append('<input type="hidden" name="it_buy_min_qty[]" value="' + obj.it_buy_min_qty + '">')
+  .append('<input type="hidden" name="it_buy_max_qty[]" value="' + obj.it_buy_max_qty + '">')
   .append('<input type="hidden" name="it_buy_inc_qty[]" value="' + obj.it_buy_inc_qty + '">')
   .append('<input type="hidden" name="it_sc_type[]" value="' + obj.it_sc_type + '">')
   .append('<input type="hidden" name="it_sc_price[]" value="' + obj.it_sc_price + '">')
@@ -1127,6 +1160,7 @@ function select_item(obj, io_id, ct_qty) {
   $('#ipt_so_sch').val('').next().focus();
 
   check_no_item();
+  $('input[type="text"]').keydown(function() { if (event.keyCode === 13) { event.preventDefault(); } }); 
 }
 
 $(function() {
@@ -1201,55 +1235,102 @@ $(function() {
   // 상품수량변경
   $(document).on('click', '.it_qty_wr button', function() {
     var mode = $(this).text();
-    var this_qty;
-    var $ct_qty = $(this).closest('.it_qty_wr').find('input[name^=ct_qty]');
-    <?php
-      // 해당 주석은 html코드상 보이지 않음.
-      // 서원 : 22.08.30 - 간편 주문서 신청 묶음단위 수량 계산 오류
-      // 추가 : 아래 2줄
-    ?>
-    var it_buy_inc_qty = $(this).closest('li').find('input[name^=it_buy_inc_qty]').val();
-    if(parseInt(it_buy_inc_qty) < 1) it_buy_inc_qty = 1;
-    
-    <?php
-      // 해당 주석은 html코드상 보이지 않음.
-      // 서원 : 22.08.30 - 간편 주문서 신청 묶음단위 수량 계산 오류
-      // 변경 : '1'로 고정되어있던 부분을 parseInt(it_buy_inc_qty)로 변경
-    ?>  
+
+    var val = parseInt($(this).val()),
+      this_qty = 0,
+      min_qty = parseInt( $(this).closest('li').find('input[name^=it_buy_min_qty]').val() ),
+      max_qty = parseInt( $(this).closest('li').find('input[name^=it_buy_max_qty]').val() ),
+      buy_inc_qty = parseInt( $(this).closest('li').find('input[name^=it_buy_inc_qty]').val() ),
+      stock = parseInt( $(this).closest("li").find("input.io_stock").val());
+
+    var $el_qty = $(this).closest('.it_qty_wr').find('input[name^=ct_qty]');
+
+    if(buy_inc_qty < 1) buy_inc_qty = 1;
+    if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
+
     switch(mode) {
       case '증가':
-        this_qty = parseInt($ct_qty.val().replace(/[^0-9]/, "")) + parseInt(it_buy_inc_qty);
-        $ct_qty.val(this_qty);
+        this_qty = parseInt($el_qty.val().replace(/[^0-9]/, '')) + buy_inc_qty;
+
+        if (this_qty > stock) {
+          alert('재고수량 보다 많은 수량을 구매할 수 없습니다.');
+          this_qty = stock;
+        }
+
+        if ( (max_qty) && (this_qty > max_qty) ) {
+          alert('최대 구매수량은 ' + number_format(max_qty) + ' 입니다.');
+          this_qty = max_qty;
+        }
+
+        $el_qty.val(this_qty);
+        calculate_order_price();
         break;
+
       case '감소':
-        this_qty = parseInt($ct_qty.val().replace(/[^0-9]/, "")) - parseInt(it_buy_inc_qty);
-        if(this_qty < parseInt(it_buy_inc_qty)) this_qty = parseInt(it_buy_inc_qty);
-        $ct_qty.val(this_qty);
+        this_qty = parseInt($el_qty.val().replace(/[^0-9]/, '')) - buy_inc_qty;
+
+        if (this_qty < min_qty) {
+          alert('최소 구매수량은 ' + number_format(String(min_qty)) + ' 입니다.');
+          this_qty = min_qty;
+        }
+        
+        $el_qty.val(this_qty);
+        calculate_order_price();
         break;
     }
 
-    calculate_order_price();
   });
-  $(document).on('change paste keyup', 'input[name="ct_qty[]"]', function() {
-    <?php
-      // 해당 주석은 html코드상 보이지 않음.
-      // 서원 : 22.08.30 - 간편 주문서 신청 묶음단위 수량 계산 오류
-      // 추가 : 아래 2줄
-    ?>
-    var it_buy_inc_qty = $(this).closest('li').find('input[name^=it_buy_inc_qty]').val();
-    if(parseInt(it_buy_inc_qty) < 1) it_buy_inc_qty = 1;
-    <?php
-      // 해당 주석은 html코드상 보이지 않음.
-      // 서원 : 22.08.30 - 간편 주문서 신청 묶음단위 수량 계산 오류
-      // 변경 : '1'로 고정되어있던 부분을 parseInt(it_buy_inc_qty)로 변경
-    ?>
-    if( $(this).val() < parseInt(it_buy_inc_qty) )
-      $(this).val( parseInt(it_buy_inc_qty) );
 
-    if( (parseInt($(this).val()) % parseInt(it_buy_inc_qty)) )
-      $(this).val( parseInt(it_buy_inc_qty) );
+  $(document).on('blur', 'input[name="ct_qty[]"]', function() {
+
+    var val = parseInt($(this).val()),
+      min_qty = parseInt( $(this).closest('li').find('input[name^=it_buy_min_qty]').val() ),
+      max_qty = parseInt( $(this).closest('li').find('input[name^=it_buy_max_qty]').val() ),
+      buy_inc_qty = parseInt( $(this).closest('li').find('input[name^=it_buy_inc_qty]').val() ),
+      stock = parseInt( $(this).closest('li').find('input.io_stock').val() );
+
+    if(min_qty < 1) min_qty = 1;
+    if(max_qty < 1) max_qty = 9999;
+    if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
+
+    if( isNaN(val) == false ) {
+
+      if( val < min_qty ) {
+        alert('최소 구매수량은 ' + number_format(min_qty) + ' 입니다.');
+        $(this).val( min_qty );
+      }
+      else if( (max_qty) && (val > max_qty) ) {
+        alert('최대 구매수량은 ' + number_format(max_qty) + ' 입니다.');
+        $(this).val( max_qty );
+      }
+      else if((val < min_qty) || (val > max_qty) ) {
+        alert('수량은 ' + number_format(min_qty) + '에서 ' + number_format(max_qty) + ' 사이의 값으로 입력해 주십시오.');
+        $(this).val( buy_inc_qty );
+      }
+      else if ( val > stock ) {       
+        alert('재고수량 보다 많은 수량을 구매할 수 없습니다.');
+        $(this).val(stock);
+      }
+      else if( !!(val % buy_inc_qty) ) {
+        alert('수량은 ' + number_format(buy_inc_qty) + '개 단위로 구매 가능 합니다.');
+        $(this).val( min_qty );
+      }
+      
+    } else {
+
+      if ( $(this).val().replace(/[0-9]/g, '').length > 0 ) {
+        alert('수량은 숫자만 입력해 주십시오.');
+        $(this).val( min_qty );
+      }
+      else {
+        alert('수량이 입력되지 않았습니다.');
+        $(this).val( min_qty );
+      }
+
+    }
 
     calculate_order_price();
+
   });
 
   // 쿠폰
@@ -1579,6 +1660,8 @@ $(function() {
         it_type9,
         it_type10,
         it_expected_warehousing_date,
+        it_buy_min_qty,
+        it_buy_max_qty,
         it_buy_inc_qty,
         ct_qty as qty,
         ct_pen_id

@@ -10,7 +10,7 @@ $sql  = " select * from {$g5['g5_shop_item_table']} where it_id = '{$it_id}' ";
 $it = sql_fetch($sql);
 
 $attrs = [
-    'it_id', 'it_name', 'it_model', 'it_cust_price', 'it_buy_inc_qty',
+    'it_id', 'it_name', 'it_model', 'it_cust_price', 'it_buy_min_qty', 'it_buy_max_qty', 'it_buy_inc_qty',
     'ca_id', 'it_delivery_cnt', 'it_sc_type', 'it_sc_price', 'it_even_odd', 'it_even_odd_price',
     'it_sale_cnt', 'it_sale_cnt_02', 'it_sale_cnt_03', 'it_sale_cnt_04', 'it_sale_cnt_05',
     'it_sale_percent', 'it_sale_percent_02', 'it_sale_percent_03', 'it_sale_percent_04', 'it_sale_percent_05',
@@ -92,8 +92,16 @@ if ( !$option_cnt['cnt'] ) {
 
         $cls = 'opt';
 
+
+        $_ct_qty = 0;
+        if( $data['it_buy_min_qty'] < 1 ) $_ct_qty = 1;
+        if( $data['it_buy_inc_qty'] > $data['it_buy_min_qty']  ) $_ct_qty = $data['it_buy_inc_qty'];
+
         $io[$i] = $row;
-        $io[$i]['ct_qty'] = ( ($data['it_buy_inc_qty']>1)?($data['it_buy_inc_qty']):(1) ); /* 서원 : 22.08.30 - 기본 증가 수량 만큼 기본 셋팅 */
+        $io[$i]['ct_qty'] = $_ct_qty;
+        $io[$i]['min_qty'] = $data['it_buy_min_qty'];
+        $io[$i]['max_qty'] = $data['it_buy_max_qty'];
+        $io[$i]['buy_inc_qty'] = $data['it_buy_inc_qty'];
         $io[$i]['cls'] = $cls;
         $io[$i]['it_stock_qty'] = $it_stock_qty;
         $io[$i]['io_price'] = $row[$i]['it_price'];
@@ -182,6 +190,8 @@ $title = '보유재고 등록 > 옵션선택';
                         <input type="hidden" name="it_msg1[]" value="<?php echo $it['pt_msg1']; ?>">
                         <input type="hidden" name="it_msg2[]" value="<?php echo $it['pt_msg2']; ?>">
                         <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
+                        <input type="hidden" name="it_buy_min_qty" value="<?php echo $it['it_buy_min_qty']; ?>">
+                        <input type="hidden" name="it_buy_max_qty" value="<?php echo $it['it_buy_max_qty']; ?>">
                         <input type="hidden" name="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
                         <input type="hidden" name="it_price_custom" id="it_price" value="<?php echo $it['it_price'] ? $it['it_price'] : 0; ?>">
                         <input type="hidden" id="it_price_origin" value="<?php echo $it['it_price']; ?>">
