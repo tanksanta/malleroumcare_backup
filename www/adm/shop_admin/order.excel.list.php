@@ -361,26 +361,39 @@
       ORDER BY cart.ct_id ASC
     ");
 
-    $od = sql_fetch(" 
+    $od = sql_fetch("
       SELECT * FROM g5_shop_order WHERE od_id = '".$it['od_id']."'
     ");
       
-    //영업담당자
-    $sql_manager = "SELECT `mb_manager`,`mb_entNm` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
-    $result_manager = sql_fetch($sql_manager);
-    if (!$result_manager['mb_manager']) {
-      $result_manager['mb_manager'] = $od['od_sales_manager'];
-    }
+    // 시작 -->
+    // 22.09.13 : 서원 - 엑셀파일 다운로드 내용에 사업자코드 필드 추가를 위한 기존 코드 수정
+    //            기존 무조건 2번의 sql 검색 부분을 1회로 join 처리
+    //
+    $_manager = "";
+    $_thezone = "";
 
-    $sql_manager = "SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$result_manager['mb_manager']."'";
-    $result_manager = sql_fetch($sql_manager);
-    $it['sale_manager'] = $result_manager['mb_name'];
+    $result_g5_member = sql_fetch("    
+      SELECT Da1.mb_manager, Da1.mb_entNm, Da1.mb_thezone, Da2.mb_name 
+      FROM g5_member AS Da1, g5_member AS Da2
+      WHERE Da1.mb_id ='" . $od['mb_id'] . "' AND Da2.mb_id = Da1.mb_manager    
+    ");
 
-    $it_name = $it["it_name"];
+    // 영업담당자 체크 (없을 경우 order주문서 영업담당자로 재검색)
+    if ( !$result_g5_member['mb_manager'] ) {
+      $result = sql_fetch("SELECT `mb_name` FROM `g5_member` WHERE `mb_id` ='".$od['od_sales_manager']."'");
+      $_manager = $result['mb_name'];
+    } else { $_manager = $result_g5_member['mb_name']; }
+
+    // 사업자코드 추가용 변수
+    $_thezone = $result_g5_member['mb_thezone'];
+    $it['sale_manager'] = $_manager;
     
-    if($it_name != $it["ct_option"]){
-      $it_name .= " [{$it["ct_option"]}]";
-    }
+    //
+    // 아래 소스에 필드 추가 부분 수정 필요.     [' '.$_thezone, ] / ["사업자코드", ]
+    // 종료 -->
+
+    $it_name = $it["it_name"];    
+    if($it_name != $it["ct_option"]){ $it_name .= " [{$it["ct_option"]}]";}
 
     $addr="";
     if($od_b_zip1){$addr= "(".$od_b_zip1.$od_b_zip2.")";}
@@ -400,6 +413,7 @@
       $it["ct_qty"],
       $it_name." / ".$it["ct_qty"].' EA',
       $od["od_b_name"],
+      ' '.$_thezone,
       $od["od_name"],
       $it['sale_manager'],
       $it['addr'],
@@ -414,7 +428,7 @@
   }
 
 
-  $headers = array("주문번호", "일자-No.", "품목명[규격]", "수량", "품목&수량", "배송지명", "주문회원", "영업담당자", "배송처", "연락처", "휴대폰", "적요", "배송지요청사항", "카트ID", "택배사", "송장번호");
+  $headers = array("주문번호", "일자-No.", "품목명[규격]", "수량", "품목&수량", "배송지명", "사업자코드", "주문회원", "영업담당자", "배송처", "연락처", "휴대폰", "적요", "배송지요청사항", "카트ID", "택배사", "송장번호");
   $data = array_merge(array($headers), $rows);
     
   $widths  = array(20, 20, 50, 10, 30, 30, 30, 30, 50, 20, 20, 10, 20, 10, 15, 20);
