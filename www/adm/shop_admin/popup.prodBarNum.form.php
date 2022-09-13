@@ -1263,6 +1263,7 @@ if($od["od_b_tel"]) {
                   });
                 }
             });
+
             $.ajax({
               url : "/shop/ajax.order.prodBarNum.cnt.php",
               type : "POST",
@@ -1275,14 +1276,6 @@ if($od["od_b_tel"]) {
 
             loading_barnumsave = false;
 
-            alert("저장이 완료되었습니다.");
-
-            if (window.opener != null && IS_POP) {
-              window.close();
-            }
-            <?php if($no_refresh == 'partner') { ?>
-            member_cancel();
-            <?php } ?>
             // member_cancel();
           }
         },
@@ -1361,6 +1354,17 @@ if($od["od_b_tel"]) {
           }
         });
       }
+
+      alert("저장이 완료되었습니다.");
+
+      if (window.opener != null && IS_POP) {
+        window.close();
+      }
+      
+      <?php if($no_refresh == 'partner') { ?>
+      member_cancel();
+      <?php } ?>
+
     }
 
     $(document).on('click', '.barcode_icon.type5.active', function() {
@@ -1369,6 +1373,7 @@ if($od["od_b_tel"]) {
 
       showBarcodeHistory(barcode, ct_id);
     });
+    
   });
 
   //종료시 멤버 수정중없에기
@@ -1393,28 +1398,32 @@ if($od["od_b_tel"]) {
       },
       success : function(result) {
         <?php if($_GET['new']) { ?>
-        history.back();
+        history.back();        
         <?php } else if($no_refresh == 'partner') { ?>
         foldingBoxSetting();
+
         $('.folding_box').each(function() {
+
           var ct_id = $(this).data('id');
           var cnt_txt = $(this).parent().find('.p1 .span2').text().trim().split('/');
           var $barcode = $(parent.document).find('.btn_barcode_info[data-id="'+ct_id+'"]');
+
           if(cnt_txt[0] !== cnt_txt[1]) {
             var txt = cnt_txt.join('/');
+
             if (txt) {
               $barcode.removeClass('disabled');
               $barcode.find('span').text(cnt_txt.join('/'));
             } else { // 상품바코드 미입력 체크일때
+
               if ($(this).parent().find('.p1 .chk_pass_barcode').is(":checked") == true) {
                 $barcode.addClass('disabled');
                 $barcode.find('span').text('입력완료');
               } else {
                 $barcode.removeClass('disabled');
-                $barcode.find('span').text(
-                  "0/" + $(this).parent().find('.p1').data('qty')
-                );
+                $barcode.find('span').text( "0/" + $(this).parent().find('.p1').data('qty') );
               }
+
             }
           } else {
             // 입력완료
@@ -1422,55 +1431,65 @@ if($od["od_b_tel"]) {
             $barcode.find('span').text('입력완료');
           }
         });
+
         $("body", parent.document).removeClass('modal-open');
         $("#popup_box", parent.document).hide();
-        $("#popup_box", parent.document).find("iframe").remove();
+        if( typeof(opener) != "undefined" ) { parent.document.location.reload(); }
+        //$("#popup_box", parent.document).find("iframe").remove();
         return;
-        <?php } else { ?>
-        <?php if ($no_refresh != 1) { ?>
-        if (need_reload) {
-          try {
-            $("body", parent.document).reload();
-          } catch(e) {}
-          try {
-            opener.location.reload();
-          } catch(e) {}
-        }
-        <?php } ?>
-        <?php if ($orderlist) { ?>
-        foldingBoxSetting();
-        $('.folding_box').each(function() {
-          var ct_id = $(this).data('id');
-          var cnt_txt = $(this).parent().find('.p1 .span2').text().trim().split('/');
-          var $chk = $(opener.document).find('#check_' + ct_id);
-          var $barcode = $chk.closest('tr').find('.prodBarNumCntBtn');
 
-          if(cnt_txt[0] !== cnt_txt[1]) {
-            var txt = cnt_txt.join('/');
-            if (txt) {
-              $barcode.removeClass('disable').text(cnt_txt.join('/'));
-            } else { // 상품바코드 미입력 체크일때
-              if ($(this).parent().find('.p1 .chk_pass_barcode').is(":checked") == true) {
-                $barcode.addClass('disable').text('입력완료');
-              } else {
-                $barcode.removeClass('disable').text(
-                  "0/" + $(this).parent().find('.p1').data('qty')
-                );
-              }
-            }
-          } else {
-            // 입력완료
-            $barcode.addClass('disable').text('입력완료');
+        <?php } else { ?>
+
+          <?php if ($no_refresh != 1) { ?>
+          if (need_reload) {
+            try {
+              $("body", parent.document).reload();
+            } catch(e) {}
+            try {
+              opener.location.reload();
+            } catch(e) {}
           }
-        });
-        <?php } ?>
-        window.close();
-        try {
-          $("body", parent.document).removeClass('modal-open');
-          $("#popup_box", parent.document).hide();
-          $("#popup_box", parent.document).find("iframe").remove();
-        } catch (e) {
-        }
+          <?php } ?>
+
+          <?php if ($orderlist) { ?>
+          foldingBoxSetting();
+
+          $('.folding_box').each(function() {
+            var ct_id = $(this).data('id');
+            var cnt_txt = $(this).parent().find('.p1 .span2').text().trim().split('/');
+            var $chk = $(opener.document).find('#check_' + ct_id);
+            var $barcode = $chk.closest('tr').find('.prodBarNumCntBtn');
+
+            if(cnt_txt[0] !== cnt_txt[1]) {
+              var txt = cnt_txt.join('/');
+
+              if (txt) {
+                $barcode.removeClass('disable').text(cnt_txt.join('/'));
+              } else { // 상품바코드 미입력 체크일때
+                if ($(this).parent().find('.p1 .chk_pass_barcode').is(":checked") == true) {
+                  $barcode.addClass('disable').text('입력완료');
+                } else {
+                  $barcode.removeClass('disable').text( "0/" + $(this).parent().find('.p1').data('qty') );
+                }
+              }
+            } else {
+              // 입력완료
+              $barcode.addClass('disable').text('입력완료');
+            }
+          });
+          <?php } ?>
+
+          window.close();
+
+          try {
+            $("body", parent.document).removeClass('modal-open');
+            $("#popup_box", parent.document).hide();
+            
+            if( typeof(opener) != "undefined" ) { parent.document.location.reload(); }
+            //$("#popup_box", parent.document).find("iframe").remove();
+
+          } catch (e) { }
+
         <?php }?>
       }
     });

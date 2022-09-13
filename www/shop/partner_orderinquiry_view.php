@@ -57,9 +57,7 @@ while($photo = sql_fetch_array($photo_result)) {
 $sql = "SELECT * FROM g5_shop_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
 $result = sql_query($sql);
 $logs = array();
-while($row = sql_fetch_array($result)) {
-    $logs[] = $row;
-}
+while($row = sql_fetch_array($result)) { $logs[] = $row; } 
 
 // 임시회원의경우 mb_entNm 대신 mb_name 출력
 if($od['mb_temp']) {
@@ -299,34 +297,182 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
         </ul>
       </div>
 
-      <div class="row no-gutter">
-        <div class="col title" style="margin-top:20px;">기록</div>
+      <div class="block_list">
+      <div class="block">
+        <div class="row no-gutter"><div class="col title" style="margin-top:20px;">기록</div></div>
+        <div class="row no-gutter delivery-info-wrap">
+          <ul>
+            <?php
+              foreach($logs as $log) {
+                $log_mb = get_member($log['mb_id']);
+                if ($log_mb['mb_id'] == $member['mb_id']) { $manager = $member['mb_name']; }
+                else if ($log_mb['mb_type'] != 'manager') { $manager = '이로움 관리자'; }
+                else { $manager = $member['mb_name'] . '>[직원]' . $log_mb['mb_name']; }
+
+                echo ('
+                  <li class="log"><div class="row">
+                    <div class="log_datetime">'.$log['ol_datetime'] . '</div>
+                    <div>(' . $manager . ') ' . $log['ol_content'] . '</div>
+                  </div></li>
+                ');
+              }
+
+              if (!count($logs)) { echo '기록이 없습니다.'; }
+            ?>
+          </ul>
+        </div>
       </div>
+    </div>
+
+    <div class="block">
+      <div class="row no-gutter"><div class="col title" style="margin-top:20px;">바코드 기록</div></div>
       <div class="row no-gutter delivery-info-wrap">
-        <ul>
-          <?php
-            foreach($logs as $log) {
-              $log_mb = get_member($log['mb_id']);
-              if ($log_mb['mb_id'] == $member['mb_id']) {
-                $manager = $member['mb_name'];
+          <ul>
+            <?php
+              $logs = get_barcode_log($od['od_id']);
+              foreach($logs as $log) {
+                  $log_mb = get_member($log['mb_id']);
+                  echo ('
+                    <li class="log"><div class="row">
+                      <div class="log_datetime">'.$log['b_date'] . '</div>
+                      <div>(' . $log_mb['mb_name'] . ' 매니저) ' . $log['b_content'] . '</div>
+                    </div></li>
+                  ');
               }
-              else if ($log_mb['mb_type'] != 'manager') {
-                $manager = '이로움 관리자';
-              }
-              else {
-                $manager = $member['mb_name'] . '>[직원]' . $log_mb['mb_name'];
-              }
-              echo '<li class="log"><div class="row">
-                      <div class="log_datetime">'.$log['ol_datetime'] . '</div>
-                      <div>(' . $manager . ') ' . $log['ol_content'] . '</div>
-                    </div></li>';
-            }
-            if (!count($logs)) {
-                echo '기록이 없습니다.';
-            }
-          ?>
-        </ul>
+
+              if (!count($logs)) { echo '기록이 없습니다.'; }
+            ?>
+          </ul>
       </div>
+    </div>
+    
+    <div class="block">
+      <div class="row no-gutter"><div class="col title" style="margin-top:20px;">배송 기록</div></div>
+      <div class="row no-gutter delivery-info-wrap">
+          <ul class="block-box">
+            <?php
+              $logs = get_delivery_log($od['od_id']);
+              $last_log = [];
+
+              foreach($logs as $log) {
+                $log_mb = get_member($log['mb_id']);
+
+                //아이템 검색
+                $sql_ct = "select * from g5_shop_cart where ct_id = '".$log['ct_id']."'";
+                $result_ct = sql_fetch($sql_ct);
+
+                //아이템 이름
+                $it_name = $result_ct['it_name'];
+                if(str_replace(' ', '', $result_ct['ct_option']) != str_replace(' ', '', $result_ct['it_name'])) { $it_name .="(".$result_ct['ct_option'].")"; }
+
+                //택배사
+                $delivery_company="";
+                foreach($delivery_companys as $data){ 
+                  if($log["ct_delivery_company"] == $data["val"] ) { $delivery_company = "(".$data["name"].")"; }
+                }
+
+                //직배송
+                $direct_delivery = "";
+                if($log["ct_is_direct_delivery"] == "1") { $direct_delivery = "[위탁:배송]"; }
+                else if($log["ct_is_direct_delivery"] == "2") { $direct_delivery = "[위탁:설치]"; }
+
+                //합포
+                $combine="";
+                if($log["ct_combine_ct_id"]) {
+
+                  //합포 검색
+                  $sql_ct_p = "select * from g5_shop_cart where ct_id = '".$log['ct_combine_ct_id']."'";
+                  $result_ct_p = sql_fetch($sql_ct_p);
+
+                  //합포 아이템 이름
+                  $it_name_p = $result_ct_p['it_name'];
+                  if($result_ct_p['ct_option']){ $it_name_p .= "(".$result_ct_p['ct_option'].")"; }
+
+                  $combine="합포 - ".$it_name_p."";
+                }
+
+                // 비교할 이전 로그가 없으면 자체 정보로 비교
+                if(!$log['was_combined'] && $log['ct_combine_ct_id']) {
+
+                  // 합포적용
+                  echo ('
+                    <li class="log"><div class="row">
+                      <div class="log_datetime">' . $log['d_date'] . '</div>
+                      <div>(' . $log_mb['mb_name'] . ' 매니저) 합포정보 입력 : ' . $it_name . ' 상품을 ' . $it_name_p . ' 상품에 합포적용했습니다.</div>
+                    </div></li>
+                  ');
+
+                } else if($log['was_combined'] && !$log['ct_combine_ct_id']) {
+
+                  // 합포해지
+                  echo ('
+                    <li class="log"><div class="row">
+                      <div class="log_datetime">' . $log['d_date'] . '</div>
+                      <div>(' . $log_mb['mb_name'] . ' 매니저) 합포정보 입력 : ' . $it_name . ' 상품을 합포해지했습니다.</div>
+                    </div></li>
+                  ');
+
+                }
+        
+                if(!$log['was_direct_delivery'] && $log['ct_is_direct_delivery']) {
+                  // 위탁적용
+                  $direct_delivery_type = '';
+
+                  if($log["ct_is_direct_delivery"] == "1") { $direct_delivery_type = '배송'; }
+                  else if($log["ct_is_direct_delivery"] == "2") { $direct_delivery_type = '설치'; }
+
+                  echo ('
+                    <li class="log"><div class="row">
+                      <div class="log_datetime">' . $log['d_date'] . '</div>
+                      <div>(' . $log_mb['mb_name'] . ' 매니저) 위탁정보 입력 : ' . $it_name . ' 상품을 위탁 적용했습니다. (' . $direct_delivery_type . '/' . $log['ct_direct_delivery_partner'] . '/1개당 ' . ($log['ct_direct_delivery_price']) . '원)</div>
+                    </div></li>
+                  ');
+            
+                } else if($log['was_direct_delivery'] && !$log['ct_is_direct_delivery']) {
+                  // 위탁해지
+                  echo ('
+                    <li class="log"><div class="row">
+                      <div class="log_datetime">' . $log['d_date'] . '</div>
+                      <div>(' . $log_mb['mb_name'] . ' 매니저) 위탁정보 입력 : ' . $it_name . ' 상품을 위탁 해지했습니다.</div>
+                    </div></li>
+                  ');
+                }
+
+                if($log['ct_combine_ct_id']) {
+                  echo ('
+                    <li class="log"><div class="row">
+                      <div class="log_datetime">' . $log['d_date'] . '</div>
+                      <div>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : ' . $delivery_company . ' ' . $it_name . ' [' . $combine . '] ' . $direct_delivery . '</div>
+                    </div></li>
+                  ');
+                } else {
+                  echo ('
+                    <li class="log"><div class="row">
+                      <div class="log_datetime">' . $log['d_date'] . '</div>
+                      <div>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : ' . $delivery_company . ' ' . $it_name . ' 송장번호[' . $log['ct_delivery_num'] . '] ' . $direct_delivery . '</div>
+                    </div></li>
+                  ');
+                }
+
+                if ($log['set_warehouse']) { 
+                  echo ('
+                    <li class="log"><div class="row">
+                      <div class="log_datetime">' . $log['d_date'] . '</div>
+                      <div>(' . $log_mb['mb_name'] . ' 매니저) ' . $log['d_content'] . ' 저장</div>
+                    </div></li>
+                  ');
+                }
+
+                $last_log[$log['ct_id']] = $log;
+
+              }
+
+              if (!count($logs)) { echo '기록이 없습니다.'; }
+            ?>
+          </ul>
+      </div>
+    </div>
+
     </div>
 
     <div class="right-wrap">
@@ -444,6 +590,11 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
 @media (max-width : 750px) {
   #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+}
+
+.block-box {
+  max-height: 300px;
+  overflow-y: scroll;
 }
 </style>
 

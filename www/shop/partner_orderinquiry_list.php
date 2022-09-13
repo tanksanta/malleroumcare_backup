@@ -312,6 +312,12 @@ tr.hover { background-color: #fbf9f7 !important; }
 @media (max-width : 750px) {
   #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 }
+
+.table_box .step td {  
+  font-weight: normal;
+  height: 44px;
+  color: white;
+}
 </style>
 
 <section class="wrap">
@@ -398,7 +404,34 @@ tr.hover { background-color: #fbf9f7 !important; }
           <tbody>
             <?php
             if(!$orders) echo '<tr><td colspan="5" class="empty_table">내역이 없습니다.</td></tr>';
-            foreach($orders as $row) { 
+              // 시작 -->
+              // 서원 : 22.09.13 - 기능개선( [기능개선] 파트너_발주내역_dev_v.0.1.pptx )
+              //
+               
+              $_check_ct_status = "";
+              foreach($orders as $row) {
+
+                if( $_check_ct_status != $row['ct_status']){
+                  $_txt = $_check_ct_status = $row['ct_status'];
+                 
+                  switch ($_check_ct_status) {
+                    case '출고준비': $_bg_color = "#00b0f0"; $_txt = $_txt."(출고전)"; break;
+                    case '출고완료': $_bg_color = "#28759c"; $_txt = $_txt."(출고후)"; break;
+                    case '배송완료': $_bg_color = "#002060"; $_txt = $_txt."(출고후)"; break;
+                    case '주문취소': $_bg_color = "#7f7f7f"; break;
+                    case '주문무효': $_bg_color = "#7f7f7f"; break;
+                    default: break;
+                  }
+                  echo ('
+                    <tr class="step">
+                      <td colspan="6" style="text-align:left; padding-left: 15px; background-color:'.$_bg_color.';"> ' . $_txt .' </td>
+                    </tr>
+                  ');
+                  
+                }
+
+                //
+                // 종료 -->
             ?>
             <tr data-link="partner_orderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_link" data-id="<?=$row['od_id']?>">
               <td class="td_chk">
