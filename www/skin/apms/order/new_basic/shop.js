@@ -173,24 +173,25 @@ $(function() {
         var this_qty = 0,
             min_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_min_qty]').val() ),
             max_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_max_qty]').val() ),
-            it_buy_inc_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_inc_qty]').val() ),
+            buy_inc_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_inc_qty]').val() ),
             stock = parseInt( $(this).closest("li").find("input.io_stock").val());
         
         var $el_qty = $(this).closest("li").find("input[name^=ct_qty]");
 
-        if (it_buy_inc_qty < 1) it_buy_inc_qty = 1;
-        if (it_buy_inc_qty > min_qty) min_qty = it_buy_inc_qty;
+        if(min_qty < 1) min_qty = 1;
+        if(max_qty < 1) max_qty = 9999;
+        if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
 
         switch(mode) {
             case "증가":
-                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) + it_buy_inc_qty;
+                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) + buy_inc_qty;
 
                 if(this_qty > stock) {
                     alert("재고수량 보다 많은 수량을 구매할 수 없습니다.");
                     this_qty = stock;
                 }
 
-                if(this_qty > max_qty) {
+                if( (max_qty) && (this_qty > max_qty) ) {
                     alert("최대 구매수량은 "+number_format(String(max_qty))+" 입니다.");
                     this_qty = max_qty;
                 }
@@ -200,7 +201,7 @@ $(function() {
                 break;
 
             case "감소":
-                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - it_buy_inc_qty;
+                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - buy_inc_qty;
 
                 if(this_qty < min_qty) {
                     alert("최소 구매수량은 "+number_format(String(min_qty))+" 입니다.");                    
@@ -241,7 +242,7 @@ $(function() {
     });
 
     // 수량직접입력
-    $(document).on("blur", "input[name^=ct_qty]", function() {
+    $(document).on("blur change paste", "input[name^=ct_qty]", function() {
 
         var val = parseInt( $(this).val() ),
             min_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_min_qty]').val() ),
@@ -388,6 +389,14 @@ function sel_supply_process($el, add_exec)
 // 선택된 옵션 출력
 function add_sel_option(type, id, option, price, stock)
 {
+    var min_qty = parseInt($("input[name='it_buy_min_qty']").val()),
+        max_qty = parseInt($("input[name='it_buy_max_qty']").val()),
+        buy_inc_qty = parseInt($("input[name='it_buy_inc_qty']").val());
+
+    if(min_qty < 1) min_qty = 1;
+    if(max_qty < 1) max_qty = 9999;
+    if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
+
     var item_code = $("input[name='it_id[]']").val();
     var it_msg1 = $("input[name='it_msg1[]']").val();
     var it_msg2 = $("input[name='it_msg2[]']").val();
@@ -410,14 +419,17 @@ function add_sel_option(type, id, option, price, stock)
     opt += "<input type=\"hidden\" name=\"io_value["+item_code+"][]\" value=\""+option+"\">";
     opt += "<input type=\"hidden\" class=\"io_price\" value=\""+price+"\">";
     opt += "<input type=\"hidden\" class=\"io_stock\" value=\""+stock+"\">";
-    opt += "<div class=\"row\"><div class=\"col-sm-7\"><label>";
+    opt += "<div class=\"row\"><div class=\"col-sm-8\"><label>";
 	opt += "<span class=\"it_opt_subj\">"+option+"</span>";
     opt += "<span class=\"it_opt_prc\">"+opt_prc+"</span>";
-    opt += "</label></div><div class=\"col-sm-5\">";
-	opt += "<div class=\"input-group\"><input type=\"text\" name=\"ct_qty["+item_code+"][]\" value=\"1\" class=\"form-control input-sm\" size=\"5\">";
+    opt += "</label></div><div class=\"col-sm-4\">";
+	opt += "<div class=\"input-group\">";
+    opt += "<div class=\"input-group-btn\">";
+    opt += "<button type=\"button\" class=\"it_qty_minus btn btn-sm btn-lightgray\"><i class=\"fa fa-minus-circle fa-lg\"></i><span class=\"sound_only\">감소</span></button>";
+    opt += "</div>";
+    opt += "<input type=\"text\" name=\"ct_qty["+item_code+"][]\" value=\""+min_qty+"\" class=\"form-control input-sm\" size=\"5\">";
     opt += "<div class=\"input-group-btn\">";
 	opt += "<button type=\"button\" class=\"it_qty_plus btn btn-sm btn-lightgray\"><i class=\"fa fa-plus-circle fa-lg\"></i><span class=\"sound_only\">증가</span></button>";
-    opt += "<button type=\"button\" class=\"it_qty_minus btn btn-sm btn-lightgray\"><i class=\"fa fa-minus-circle fa-lg\"></i><span class=\"sound_only\">감소</span></button>";
     opt += "<button type=\"button\" class=\"it_opt_del btn btn-sm btn-lightgray\"><i class=\"fa fa-times-circle fa-lg\"></i><span class=\"sound_only\">삭제</span></button>";
     opt += "</div></div></div></div>";
 	if(!type) {

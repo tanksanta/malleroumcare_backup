@@ -178,8 +178,9 @@ $(function () {
 
     var $el_qty = $(this).closest('li').find('input[name^=ct_qty]');
     
-    if (min_qty < 1) min_qty = 1;
-    if (buy_inc_qty > min_qty) min_qty = buy_inc_qty;
+    if(min_qty < 1) min_qty = 1;
+    if(max_qty < 1) max_qty = 9999;
+    if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
 
     switch (mode) {
       case '증가':
@@ -240,7 +241,7 @@ $(function () {
   });
 
   // 수량직접입력
-  $(document).on('blur', 'input[name^=ct_qty]', function () {
+  $(document).on('blur change paste', 'input[name^=ct_qty]', function () {
 
     var val = parseInt($(this).val()),
       min_qty = parseInt($('#it_buy_min_qty').val()),

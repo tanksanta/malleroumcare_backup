@@ -1157,10 +1157,29 @@ $(document).on('click', '.it_qty button', function() {
   }
   update_barcode_field();
 });
+
 $(document).on('change paste keyup', 'input[name="it_qty[]"]', function() {
-  if($(this).val() < 1)
-    $(this).val(1);
-  update_barcode_field();
+  var val = parseInt($(this).val());
+  if( isNaN(val) == false ) {
+
+    if( val < 1 )
+      $(this).val(1);
+      
+    update_barcode_field();
+
+  } else {
+
+      if ( $(this).val().replace(/[0-9]/g, '').length > 0 ) {
+          alert('수량은 숫자만 입력해 주십시오.');
+          $(this).val( 1 );
+      }
+      else {
+          alert('수량이 입력되지 않았습니다.');
+          $(this).val( 1 );
+      }
+  }
+
+
 });
 
 // 품목 삭제

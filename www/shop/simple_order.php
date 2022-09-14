@@ -1245,7 +1245,8 @@ $(function() {
 
     var $el_qty = $(this).closest('.it_qty_wr').find('input[name^=ct_qty]');
 
-    if(buy_inc_qty < 1) buy_inc_qty = 1;
+    if(min_qty < 1) min_qty = 1;
+    if(max_qty < 1) max_qty = 9999;
     if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
 
     switch(mode) {
@@ -1497,7 +1498,8 @@ $(function() {
             {$g5['g5_shop_item_option_table']}
         WHERE
             it_id = '{$data['it_id']}'
-            and io_type = 0 -- 선택옵션
+            AND io_type = 0 -- 선택옵션
+            AND io_use = 1 -- 사용중 옵션
         ORDER BY
             io_no ASC
     ";
@@ -1584,6 +1586,8 @@ $(function() {
         it_type9,
         it_type10,
         it_expected_warehousing_date,
+        it_buy_min_qty,
+        it_buy_max_qty,
         it_buy_inc_qty,
         count(*) as qty
       FROM

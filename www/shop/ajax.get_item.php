@@ -95,7 +95,8 @@ while ( $row = sql_fetch_array($result) ) {
       {$g5['g5_shop_item_option_table']}
     WHERE
       it_id = '{$row['it_id']}'
-      and io_type = 0 -- 선택옵션
+      AND io_type = 0 -- 선택 옵션
+      AND io_use = 1 -- 사용중 옵션
     ORDER BY
       io_no ASC
   ";

@@ -177,8 +177,9 @@ $(function() {
         var max_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_max_qty]').val() );
         var buy_inc_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_inc_qty]').val() );
 
-        if (min_qty < 1) min_qty = 1;
-        if (buy_inc_qty > min_qty) min_qty = buy_inc_qty;
+        if(min_qty < 1) min_qty = 1;
+        if(max_qty < 1) max_qty = 9999;
+        if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
 
         switch(mode) {
             case "증가":
@@ -189,7 +190,7 @@ $(function() {
                     this_qty = stock;
                 }
 
-                if(this_qty > max_qty) {
+                if( (max_qty) && (this_qty > max_qty) ) {
                     alert("최대 구매수량은 "+number_format(String(max_qty))+" 입니다.");                    
                     this_qty = max_qty;
                 }
@@ -252,7 +253,7 @@ $(function() {
     });
 
     // 수량직접입력
-    $(document).on("blur", "input[name^=ct_qty]", function() {
+    $(document).on("blur change paste", "input[name^=ct_qty]", function() {
 
         var val = parseInt($(this).val()),
             min_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_min_qty]').val() ),
@@ -263,6 +264,7 @@ $(function() {
         if(min_qty < 1) min_qty = 1;
         if(max_qty < 1) max_qty = 9999;
         if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
+        
         if( isNaN(val) == false ) {
 
             if( val < min_qty ) {
