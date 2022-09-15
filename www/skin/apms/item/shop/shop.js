@@ -258,8 +258,7 @@ $(function () {
           $(this).val( parseInt(it_buy_inc_qty) );
         } else {
           var stock = parseInt( $(this).closest('li').find('input.io_stock').val() );
-            $(this).closest('li').find('input.io_stock').val()
-          );
+            $(this).closest('li').find('input.io_stock').val();
           if (d_val > stock) {
             alert('재고수량 보다 많은 수량을 구매할 수 없습니다.');
             $(this).val(stock);
