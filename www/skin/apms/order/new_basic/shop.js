@@ -195,7 +195,6 @@ $(function() {
                 break;
 
             case "감소":
-
                 this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - parseInt(it_buy_inc_qty);
                 if(this_qty < min_qty) {
                     this_qty = min_qty;
@@ -236,23 +235,29 @@ $(function() {
 
     // 수량직접입력
     $(document).on("keyup", "input[name^=ct_qty]", function() {
+        var it_buy_inc_qty = $(this).closest('form').find('input[name^=it_buy_inc_qty]').val();
+        if (it_buy_inc_qty < 1) it_buy_inc_qty = 1;
+
 		var val= $(this).val();
 
         if(val != "") {
             if(val.replace(/[0-9]/g, "").length > 0) {
                 alert("수량은 숫자만 입력해 주십시오.");
-                $(this).val(1);
+                $(this).val( parseInt(it_buy_inc_qty) );
             } else {
                 var d_val = parseInt(val);
                 if(d_val < 1 || d_val > 9999) {
                     alert("수량은 1에서 9999 사이의 값으로 입력해 주십시오.");
-                    $(this).val(1);
+                    $(this).val( parseInt(it_buy_inc_qty) );
                 } else {
                     var stock = parseInt($(this).closest("li").find("input.io_stock").val());
                     if(d_val > stock) {
                         alert("재고수량 보다 많은 수량을 구매할 수 없습니다.");
                         $(this).val(stock);
-                    }
+                    } else {
+                        if( !!(parseInt($(this).val()) % parseInt(it_buy_inc_qty)) )
+                            $(this).val( parseInt(it_buy_inc_qty) );
+                     }
                 }
             }
 
@@ -355,18 +360,10 @@ function sel_supply_process($el, add_exec)
 // 선택된 옵션 출력
 function add_sel_option(type, id, option, price, stock)
 {
-    if (price === undefined) {
-        price = 0;
-    }
     var item_code = $("input[name='it_id[]']").val();
     var it_msg1 = $("input[name='it_msg1[]']").val();
     var it_msg2 = $("input[name='it_msg2[]']").val();
     var it_msg3 = $("input[name='it_msg3[]']").val();
-    var it_buy_inc_qty = $("input[name='it_buy_inc_qty']").val();
-
-    price_partner = price_partner || price;
-    price_dealer = price_dealer || price;
-    price_dealer2 = price_dealer2 || price;
 
     var opt = "";
     var li_class = "it_opt_list";
@@ -383,50 +380,17 @@ function add_sel_option(type, id, option, price, stock)
     opt += "<input type=\"hidden\" name=\"io_type["+item_code+"][]\" value=\""+type+"\">";
     opt += "<input type=\"hidden\" name=\"io_id["+item_code+"][]\" value=\""+id+"\">";
     opt += "<input type=\"hidden\" name=\"io_value["+item_code+"][]\" value=\""+option+"\">";
-    opt += "<input type=\"hidden\" class=\"io_price\" name=\"io_price["+item_code+"][]\" value=\""+price+"\">";
-    opt += "<input type=\"hidden\" class=\"io_price_origin\" value=\""+price+"\">";
-    opt += "<input type=\"hidden\" class=\"io_price_before_custom\" value=\""+price+"\">";
-    opt += "<input type=\"hidden\" class=\"io_price_partner\" value=\""+price_partner+"\">";
-    opt += "<input type=\"hidden\" class=\"io_price_dealer\" value=\""+price_dealer+"\">";
-    opt += "<input type=\"hidden\" class=\"io_price_dealer2\" value=\""+price_dealer2+"\">";
+    opt += "<input type=\"hidden\" class=\"io_price\" value=\""+price+"\">";
     opt += "<input type=\"hidden\" class=\"io_stock\" value=\""+stock+"\">";
     opt += "<div class=\"row\"><div class=\"col-sm-7\"><label>";
 	opt += "<span class=\"it_opt_subj\">"+option+"</span>";
     opt += "<span class=\"it_opt_prc\">"+opt_prc+"</span>";
-    opt += "</label></div><div class=\"col-sm-5 itm-option-group\">";
-    opt += "<div class=\"option-price-wrapper\">";
-
-    var opt_price;
-    var itemPrice = parseInt($("input#it_price").val());
-
-    if (type == 0) {
-        opt_price = parseInt(price) + parseInt(itemPrice);
-    } else {
-        opt_price = parseInt(price);
-    }
-
-    var is_chk_custom_price = false;
-    if ($('#chk_custom_price').is(":checked")) {
-        is_chk_custom_price = true;
-    }
-
-    var _qty = 1;
-    if(it_buy_inc_qty){
-        _qty = it_buy_inc_qty;
-    }
-
-    opt += "<input class=\"option-price\" type=\"text\" value=\""+number_format(opt_price)+"\" data-price=\""+opt_price+"\" onkeyup=\"_editOptionPrice(this)\""+ (is_chk_custom_price ? "" : "readonly") +"/>";
-    opt += "</div>";
-    opt += "<div class=\"input-group\">";
+    opt += "</label></div><div class=\"col-sm-5\">";
+	opt += "<div class=\"input-group\"><input type=\"text\" name=\"ct_qty["+item_code+"][]\" value=\"1\" class=\"form-control input-sm\" size=\"5\">";
     opt += "<div class=\"input-group-btn\">";
+	opt += "<button type=\"button\" class=\"it_qty_plus btn btn-sm btn-lightgray\"><i class=\"fa fa-plus-circle fa-lg\"></i><span class=\"sound_only\">증가</span></button>";
     opt += "<button type=\"button\" class=\"it_qty_minus btn btn-sm btn-lightgray\"><i class=\"fa fa-minus-circle fa-lg\"></i><span class=\"sound_only\">감소</span></button>";
-    opt += "</div>";
-    opt += "<input type=\"text\" name=\"ct_qty["+item_code+"][]\" value=\"" + _qty + "\" class=\"form-control input-sm\" size=\"5\">";
-    opt += "<div class=\"input-group-btn-del\">";
     opt += "<button type=\"button\" class=\"it_opt_del btn btn-sm btn-lightgray\"><i class=\"fa fa-times-circle fa-lg\"></i><span class=\"sound_only\">삭제</span></button>";
-    opt += "</div>";
-    opt += "<div class=\"input-group-btn\">";
-    opt += "<button type=\"button\" class=\"it_qty_plus btn btn-sm btn-lightgray\"><i class=\"fa fa-plus-circle fa-lg\"></i><span class=\"sound_only\">증가</span></button>";
     opt += "</div></div></div></div>";
 	if(!type) {
 		if(it_msg1) {
@@ -439,13 +403,6 @@ function add_sel_option(type, id, option, price, stock)
 			opt += "<div style=\"margin-top:10px;\"><input type=\"text\" name=\"pt_msg3["+item_code+"][]\" class=\"form-control input-sm\" placeholder=\""+it_msg3+"\"></div>";
 		}
 	}
-
-    opt += "<div class=\"option-barcode barcode list item\" data-code=\""+item_code+"\" data-uid=\""+ item_code + "_" + Math.round(new Date().getTime() + (Math.random() * 100)) +"\">";
-    opt += "<div class=\"barList stockBarList\">";
-    opt += '<input type="number" placeholder="바코드" maxlength="12" class="barcode_input prodStockBarBox0" value="" data-code="0" data-this-code="0" data-name="0" name="barcode['+item_code+'][]">';
-    opt += '</div>';
-    opt += '<a class="prodBarNumCntBtn open_input_barcode" data-id="'+item_code+'">바코드 (0/1)</a>';
-    opt += '</div>';
 	opt += "</li>";
 
     if($("#it_sel_option > ul").size() < 1) {
