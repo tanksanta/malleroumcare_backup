@@ -197,11 +197,11 @@ $(function() {
             case "감소":
 
                 this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - parseInt(it_buy_inc_qty);
-
-                if(this_qty < min_qty) { this_qty = min_qty; }
-
+                if(this_qty < min_qty) {
+                    this_qty = min_qty;
+                    alert("최소 구매수량은 "+number_format(String(min_qty))+" 입니다.");
+                }
                 $el_qty.val(this_qty);
-                qty_calculate($(this), this_qty);
                 price_calculate();
                 break;
 
