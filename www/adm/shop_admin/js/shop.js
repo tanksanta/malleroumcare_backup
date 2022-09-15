@@ -173,9 +173,13 @@ $(function() {
         var $el_qty = $(this).closest("li").find("input[name^=ct_qty]");
         var stock = parseInt($(this).closest("li").find("input.io_stock").val());
 
+        var it_buy_inc_qty = $(this).closest('form').find('input[name^=it_buy_inc_qty]').val();
+        if (parseInt(it_buy_inc_qty) < 1) it_buy_inc_qty = 1;
+        if (parseInt(it_buy_inc_qty) > min_qty) min_qty = it_buy_inc_qty;
+
         switch(mode) {
             case "증가":
-                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) + 1;
+                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) + parseInt(it_buy_inc_qty);
                 /*
                 if(this_qty > stock) {
                     alert("재고수량 보다 많은 수량을 구매할 수 없습니다.") ;
@@ -194,17 +198,15 @@ $(function() {
                 break;
 
             case "감소":
-                
-                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - 1;
-                /*
-                if(this_qty < min_qty) {
-                    this_qty = min_qty;
-                    alert("최소 구매수량은 "+number_format(String(min_qty))+" 입니다.");
-                }
-                */
+
+                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - parseInt(it_buy_inc_qty);
+
+                if(this_qty < min_qty) { this_qty = min_qty; }
+
                 $el_qty.val(this_qty);
                 qty_calculate($(this), this_qty);
                 price_calculate();
+
                 break;
 
             case "삭제":
@@ -380,6 +382,7 @@ function add_sel_option(type, id, option, price, stock, price_partner, price_dea
     var it_msg1 = $("input[name='it_msg1[]']").val();
     var it_msg2 = $("input[name='it_msg2[]']").val();
     var it_msg3 = $("input[name='it_msg3[]']").val();
+    var it_buy_inc_qty = $("input[name='it_buy_inc_qty']").val();
 
     price_partner = price_partner || price;
     price_dealer = price_dealer || price;
@@ -427,20 +430,23 @@ function add_sel_option(type, id, option, price, stock, price_partner, price_dea
         is_chk_custom_price = true;
     }
 
+    var _qty = 1;
+    if(it_buy_inc_qty){
+        _qty = it_buy_inc_qty;
+    }
+
     opt += "<input class=\"option-price\" type=\"text\" value=\""+number_format(opt_price)+"\" data-price=\""+opt_price+"\" onkeyup=\"_editOptionPrice(this)\""+ (is_chk_custom_price ? "" : "readonly") +"/>";
     opt += "</div>";
     opt += "<div class=\"input-group\">";
     opt += "<div class=\"input-group-btn\">";
-    opt += "<button type=\"button\" class=\"it_qty_plus btn btn-sm btn-lightgray\"><i class=\"fa fa-plus-circle fa-lg\"></i><span class=\"sound_only\">증가</span></button>";
+    opt += "<button type=\"button\" class=\"it_qty_minus btn btn-sm btn-lightgray\"><i class=\"fa fa-minus-circle fa-lg\"></i><span class=\"sound_only\">감소</span></button>";
     opt += "</div>";
-    opt += "<input type=\"text\" name=\"ct_qty["+item_code+"][]\" value=\"1\" class=\"form-control input-sm\" size=\"5\">";
+    opt += "<input type=\"text\" name=\"ct_qty["+item_code+"][]\" value=\"" + _qty + "\" class=\"form-control input-sm\" size=\"5\">";
     opt += "<div class=\"input-group-btn-del\">";
     opt += "<button type=\"button\" class=\"it_opt_del btn btn-sm btn-lightgray\"><i class=\"fa fa-times-circle fa-lg\"></i><span class=\"sound_only\">삭제</span></button>";
     opt += "</div>";
     opt += "<div class=\"input-group-btn\">";
-	//opt += "<button type=\"button\" class=\"it_qty_plus btn btn-sm btn-lightgray\"><i class=\"fa fa-plus-circle fa-lg\"></i><span class=\"sound_only\">증가</span></button>";
-    opt += "<button type=\"button\" class=\"it_qty_minus btn btn-sm btn-lightgray\"><i class=\"fa fa-minus-circle fa-lg\"></i><span class=\"sound_only\">감소</span></button>";
-    //opt += "<button type=\"button\" class=\"it_opt_del btn btn-sm btn-lightgray\"><i class=\"fa fa-times-circle fa-lg\"></i><span class=\"sound_only\">삭제</span></button>";
+    opt += "<button type=\"button\" class=\"it_qty_plus btn btn-sm btn-lightgray\"><i class=\"fa fa-plus-circle fa-lg\"></i><span class=\"sound_only\">증가</span></button>";
     opt += "</div></div></div></div>";
 	if(!type) {
 		if(it_msg1) {

@@ -31,6 +31,7 @@ $sql = "
     ( select ca_name from g5_shop_category where ca_id = left(a.ca_id, 4) ) as ca_name,
     it_img1 as it_img,
     it_delivery_cnt,
+    it_buy_inc_qty,
     it_sc_type,
     it_sc_price,
     it_even_odd,

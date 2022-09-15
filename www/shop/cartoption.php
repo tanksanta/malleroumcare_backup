@@ -62,6 +62,7 @@ $option = array();
 $option['it_id'] = $it['it_id'];
 $option['ct_price'] = $row2['ct_price'];
 $option['ct_send_cost'] = $row2['ct_send_cost'];
+$option['it_buy_inc_qty'] = $it['it_buy_inc_qty'];
 
 for($i=0; $row=sql_fetch_array($result); $i++) {
 	if(!$row['io_id'])

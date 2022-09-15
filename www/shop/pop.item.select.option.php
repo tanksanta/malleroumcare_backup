@@ -10,7 +10,7 @@ $sql  = " select * from {$g5['g5_shop_item_table']} where it_id = '{$it_id}' ";
 $it = sql_fetch($sql);
 
 $attrs = [
-    'it_id', 'it_name', 'it_model', 'it_cust_price',
+    'it_id', 'it_name', 'it_model', 'it_cust_price', 'it_buy_inc_qty',
     'ca_id', 'it_delivery_cnt', 'it_sc_type', 'it_sc_price', 'it_even_odd', 'it_even_odd_price',
     'it_sale_cnt', 'it_sale_cnt_02', 'it_sale_cnt_03', 'it_sale_cnt_04', 'it_sale_cnt_05',
     'it_sale_percent', 'it_sale_percent_02', 'it_sale_percent_03', 'it_sale_percent_04', 'it_sale_percent_05',
@@ -93,7 +93,7 @@ if ( !$option_cnt['cnt'] ) {
         $cls = 'opt';
 
         $io[$i] = $row;
-        $io[$i]['ct_qty'] = 1;
+        $io[$i]['ct_qty'] = ( ($data['it_buy_inc_qty']>1)?($data['it_buy_inc_qty']):(1) ); /* 서원 : 22.08.30 - 기본 증가 수량 만큼 기본 셋팅 */
         $io[$i]['cls'] = $cls;
         $io[$i]['it_stock_qty'] = $it_stock_qty;
         $io[$i]['io_price'] = $row[$i]['it_price'];
@@ -182,6 +182,7 @@ $title = '보유재고 등록 > 옵션선택';
                         <input type="hidden" name="it_msg1[]" value="<?php echo $it['pt_msg1']; ?>">
                         <input type="hidden" name="it_msg2[]" value="<?php echo $it['pt_msg2']; ?>">
                         <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
+                        <input type="hidden" name="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
                         <input type="hidden" name="it_price_custom" id="it_price" value="<?php echo $it['it_price'] ? $it['it_price'] : 0; ?>">
                         <input type="hidden" id="it_price_origin" value="<?php echo $it['it_price']; ?>">
                         <input type="hidden" id="it_price_partner" value="<?php echo $it['it_price_partner'] ? $it['it_price_partner'] : $it['it_price']; ?>">
@@ -247,9 +248,7 @@ $title = '보유재고 등록 > 옵션선택';
                                                 </div>
                                                 <div class="input-group">
                                                     <label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
-                                                    <div class="input-group-btn">
-                                                        <button type="button" class="it_qty_plus btn btn-black btn-sm"><i class="fa fa-plus-circle fa-lg"></i><span class="sound_only">증가</span></button>
-                                                    </div>
+                                                    <div class="input-group-btn"><button type="button" class="it_qty_minus btn btn-black btn-sm"><i class="fa fa-minus-circle fa-lg"></i><span class="sound_only">감소</span></button></div>
                                                     <input type="text" name="ct_qty[<?php echo $it['it_id']; ?>][]" value="<?php echo $io[$i]['ct_qty']; ?>" id="ct_qty_<?php echo $i; ?>" class="form-control input-sm" size="5">
                                                     <div class="input-group-btn-del"><button type="button" class="it_opt_del btn btn-sm btn-lightgray"><i class="fa fa-times-circle fa-lg"></i><span class="sound_only">삭제</span></button></div>
                                                     <div class="input-group-btn">
