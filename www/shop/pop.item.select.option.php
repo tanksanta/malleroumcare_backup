@@ -194,6 +194,8 @@ $title = '보유재고 등록 > 옵션선택';
                         <input type="hidden" name="it_msg1[]" value="<?php echo $it['pt_msg1']; ?>">
                         <input type="hidden" name="it_msg2[]" value="<?php echo $it['pt_msg2']; ?>">
                         <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
+                        <input type="hidden" name="it_buy_min_qty" value="<?php echo $it['it_buy_min_qty']; ?>">
+                        <input type="hidden" name="it_buy_max_qty" value="<?php echo $it['it_buy_max_qty']; ?>">
                         <input type="hidden" name="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
                         <input type="hidden" name="it_price_custom" id="it_price" value="<?php echo $it['it_price'] ? $it['it_price'] : 0; ?>">
                         <input type="hidden" id="it_price_origin" value="<?php echo $it['it_price']; ?>">
