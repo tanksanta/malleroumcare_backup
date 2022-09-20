@@ -93,10 +93,6 @@ if ( !$option_cnt['cnt'] ) {
 
         $cls = 'opt';
 
-        $_ct_qty = 0;
-        if( $data['it_buy_min_qty'] < 1 ) $_ct_qty = 1;
-        if( $data['it_buy_inc_qty'] > $data['it_buy_min_qty']  ) $_ct_qty = $data['it_buy_inc_qty'];
-
         $_ct_qty = 1;
         if( $data['it_buy_min_qty'] > $_ct_qty ) $_ct_qty = $data['it_buy_min_qty'];
         if( $data['it_buy_inc_qty'] > $data['it_buy_min_qty']  ) $_ct_qty = $data['it_buy_inc_qty'];
