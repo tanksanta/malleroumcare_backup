@@ -264,9 +264,7 @@ $title = '보유재고 등록 > 옵션선택';
                                                     <input type="text" name="ct_qty[<?php echo $it['it_id']; ?>][]" value="<?php echo $io[$i]['ct_qty']; ?>" id="ct_qty_<?php echo $i; ?>" class="form-control input-sm" size="5">
                                                     <div class="input-group-btn-del"><button type="button" class="it_opt_del btn btn-sm btn-lightgray"><i class="fa fa-times-circle fa-lg"></i><span class="sound_only">삭제</span></button></div>
                                                     <div class="input-group-btn">
-                                                        <!--<button type="button" class="it_qty_plus btn btn-black btn-sm"><i class="fa fa-plus-circle fa-lg"></i><span class="sound_only">증가</span></button>-->
-                                                        <button type="button" class="it_qty_minus btn btn-black btn-sm"><i class="fa fa-minus-circle fa-lg"></i><span class="sound_only">감소</span></button>
-                                                        <!--<button type="button" class="it_opt_del btn btn-black btn-sm"><i class="fa fa-times-circle fa-lg"></i><span class="sound_only">삭제</span></button>-->
+                                                        <button type="button" class="it_qty_plus btn btn-black btn-sm"><i class="fa fa-plus-circle fa-lg"></i><span class="sound_only">증가</span></button>
                                                     </div>
                                                 </div>
                                             </div>
