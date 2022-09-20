@@ -173,28 +173,26 @@ $(function() {
         var $el_qty = $(this).closest("li").find("input[name^=ct_qty]");
         var stock = parseInt($(this).closest("li").find("input.io_stock").val());
 
-        var it_buy_inc_qty = $(this).closest('form').find('input[name^=it_buy_inc_qty]').val();
-        if (parseInt(it_buy_inc_qty) < 1) it_buy_inc_qty = 1;
-        if (parseInt(it_buy_inc_qty) > min_qty) min_qty = it_buy_inc_qty;
+        var min_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_min_qty]').val() );
+        var max_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_max_qty]').val() );
+        var buy_inc_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_inc_qty]').val() );
 
-        if(min_qty < 1) min_qty = 1;
-        if(max_qty < 1) max_qty = 9999;
-        if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
+        if (min_qty < 1) min_qty = 1;
+        if (buy_inc_qty > min_qty) min_qty = buy_inc_qty;
 
         switch(mode) {
             case "증가":
-                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) + parseInt(it_buy_inc_qty);
+                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) + buy_inc_qty;
 
                 if(this_qty > stock) {
                     alert("재고수량 보다 많은 수량을 구매할 수 없습니다.") ;
                     this_qty = stock;
                 }
 
-                if( (max_qty) && (this_qty > max_qty) ) {
-                    this_qty = max_qty;
+                if(this_qty > max_qty) {
                     alert("최대 구매수량은 "+number_format(String(max_qty))+" 입니다.");
+                    this_qty = max_qty;
                 }
-
 
                 $el_qty.val(this_qty);
                 qty_calculate($(this), this_qty);
@@ -202,15 +200,16 @@ $(function() {
                 break;
 
             case "감소":
+                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, '')) - buy_inc_qty;
 
-                this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - parseInt(it_buy_inc_qty);
-
-                if(this_qty < min_qty) { this_qty = min_qty; }
+                if (this_qty < min_qty) {
+                  alert('최소 구매수량은 ' + number_format(String(min_qty)) + ' 입니다.');
+                  this_qty = min_qty;
+                }
 
                 $el_qty.val(this_qty);
                 qty_calculate($(this), this_qty);
                 price_calculate();
-
                 break;
 
             case "삭제":
@@ -253,7 +252,7 @@ $(function() {
     });
 
     // 수량직접입력
-    $(document).on("blur change paste", "input[name^=ct_qty]", function() {
+    $(document).on("blur", "input[name^=ct_qty]", function() {
 
         var val = parseInt($(this).val()),
             min_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_min_qty]').val() ),
@@ -264,7 +263,6 @@ $(function() {
         if(min_qty < 1) min_qty = 1;
         if(max_qty < 1) max_qty = 9999;
         if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
-
         if( isNaN(val) == false ) {
 
             if( val < min_qty ) {
