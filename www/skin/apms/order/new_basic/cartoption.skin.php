@@ -15,6 +15,8 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 		<input type="hidden" id="it_price" value="<?php echo $option['ct_price']; ?>">
 		<input type="hidden" name="ct_send_cost" value="<?php echo $option['ct_send_cost']; ?>">
 		<input type="hidden" name="sw_direct">
+        <input type="hidden" name="it_buy_min_qty" value="<?php echo $it['it_buy_min_qty']; ?>">
+        <input type="hidden" name="it_buy_max_qty" value="<?php echo $it['it_buy_max_qty']; ?>">
 		<input type="hidden" name="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
 		<?php if($option_1) { ?>
 			<p>&nbsp; <b><i class="fa fa-check-square-o fa-lg"></i> 선택옵션</b></p>

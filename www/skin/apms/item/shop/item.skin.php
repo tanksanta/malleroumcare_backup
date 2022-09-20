@@ -639,6 +639,8 @@ if ($it['ca_id']) {
         <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
         <input type="hidden" name="sw_direct">
         <input type="hidden" name="url">
+        <input type="hidden" id="it_buy_min_qty" value="<?php echo $it['it_buy_min_qty']; ?>">
+        <input type="hidden" id="it_buy_max_qty" value="<?php echo $it['it_buy_max_qty']; ?>">
         <input type="hidden" id="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
         <input type="hidden" id="entprice" value="<?php echo $it['entprice']; ?>">
 
