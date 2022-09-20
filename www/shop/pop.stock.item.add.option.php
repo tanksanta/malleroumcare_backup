@@ -195,6 +195,9 @@ $title = '보유재고 등록 > 옵션선택';
                         <input type="hidden" name="it_msg1[]" value="<?php echo $it['pt_msg1']; ?>">
                         <input type="hidden" name="it_msg2[]" value="<?php echo $it['pt_msg2']; ?>">
                         <input type="hidden" name="it_msg3[]" value="<?php echo $it['pt_msg3']; ?>">
+                        <input type="hidden" name="it_buy_min_qty" value="<?php echo $it['it_buy_min_qty']; ?>">
+                        <input type="hidden" name="it_buy_max_qty" value="<?php echo $it['it_buy_max_qty']; ?>">
+                        <input type="hidden" name="it_buy_inc_qty" value="<?php echo $it['it_buy_inc_qty']; ?>">
                         <input type="hidden" name="it_price_custom" id="it_price" value="<?php echo $it['it_price'] ? $it['it_price'] : 0; ?>">
                         <input type="hidden" id="it_price_origin" value="<?php echo $it['it_price']; ?>">
                         <input type="hidden" id="it_price_partner" value="<?php echo $it['it_price_partner'] ? $it['it_price_partner'] : $it['it_price']; ?>">
@@ -261,14 +264,12 @@ $title = '보유재고 등록 > 옵션선택';
                                                 <div class="input-group">
                                                     <label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
                                                     <div class="input-group-btn">
-                                                        <button type="button" class="it_qty_plus btn btn-black btn-sm"><i class="fa fa-plus-circle fa-lg"></i><span class="sound_only">증가</span></button>
+                                                        <button type="button" class="it_qty_minus btn btn-black btn-sm"><i class="fa fa-minus-circle fa-lg"></i><span class="sound_only">감소</span></button>
                                                     </div>
                                                     <input type="text" name="ct_qty[<?php echo $it['it_id']; ?>][]" value="<?php echo $io[$i]['ct_qty']; ?>" id="ct_qty_<?php echo $i; ?>" class="form-control input-sm" size="5">
                                                     <div class="input-group-btn-del"><button type="button" class="it_opt_del btn btn-sm btn-lightgray"><i class="fa fa-times-circle fa-lg"></i><span class="sound_only">삭제</span></button></div>
                                                     <div class="input-group-btn">
-                                                        <!--<button type="button" class="it_qty_plus btn btn-black btn-sm"><i class="fa fa-plus-circle fa-lg"></i><span class="sound_only">증가</span></button>-->
-                                                        <button type="button" class="it_qty_minus btn btn-black btn-sm"><i class="fa fa-minus-circle fa-lg"></i><span class="sound_only">감소</span></button>
-                                                        <!--<button type="button" class="it_opt_del btn btn-black btn-sm"><i class="fa fa-times-circle fa-lg"></i><span class="sound_only">삭제</span></button>-->
+                                                        <button type="button" class="it_qty_plus btn btn-black btn-sm"><i class="fa fa-plus-circle fa-lg"></i><span class="sound_only">증가</span></button>
                                                     </div>
                                                 </div>
                                             </div>

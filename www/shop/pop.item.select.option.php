@@ -44,7 +44,8 @@ $option_sql = "SELECT *
         {$g5['g5_shop_item_option_table']}
     WHERE
         it_id = '$it_id'
-        and io_type = 0 -- 선택옵션
+        AND io_type = 0 -- 선택옵션
+        AND io_use = 1 -- 사용중 옵션
     ORDER BY
         io_no ASC
 ";
@@ -91,6 +92,10 @@ if ( !$option_cnt['cnt'] ) {
             $io_price = '(+'.number_format($row[$i]['it_price']).'원)';
 
         $cls = 'opt';
+
+        $_ct_qty = 1;
+        if( $data['it_buy_min_qty'] > $_ct_qty ) $_ct_qty = $data['it_buy_min_qty'];
+        if( $data['it_buy_inc_qty'] > $data['it_buy_min_qty']  ) $_ct_qty = $data['it_buy_inc_qty'];
 
         $io[$i] = $row;
         $io[$i]['ct_qty'] = ( ($data['it_buy_inc_qty']>1)?($data['it_buy_inc_qty']):(1) ); /* 서원 : 22.08.30 - 기본 증가 수량 만큼 기본 셋팅 */
