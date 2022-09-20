@@ -177,8 +177,9 @@ $(function() {
         var max_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_max_qty]').val() );
         var buy_inc_qty = parseInt( $(this).closest('form').find('input[name^=it_buy_inc_qty]').val() );
 
-        if (min_qty < 1) min_qty = 1;
-        if (buy_inc_qty > min_qty) min_qty = buy_inc_qty;
+        if(min_qty < 1) min_qty = 1;
+        if(max_qty < 1) max_qty = 9999;
+        if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
 
         switch(mode) {
             case "증가":
