@@ -1449,8 +1449,8 @@ function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = fa
   }
 
   if($current_month_only) {
-    $where_date = ' and MONTH(od_time) = MONTH(CURRENT_DATE()) ';
-  	$where_ledger_date = ' and MONTH(lc_created_at) = MONTH(CURRENT_DATE()) ';
+    $where_date = ' AND YEAR(od_time) = YEAR(CURRENT_DATE()) AND MONTH(od_time) = MONTH(CURRENT_DATE()) ';
+  	$where_ledger_date = ' AND YEAR(lc_created_at) = YEAR(CURRENT_DATE()) AND MONTH(lc_created_at) = MONTH(CURRENT_DATE()) ';
   }
 
   # 매출
@@ -1942,8 +1942,8 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
   }
 
   if($current_month_only) {
-    $where_date = ' and MONTH(od_time) = MONTH(CURRENT_DATE()) ';
-  	$where_ledger_date = ' and MONTH(pl_created_at) = MONTH(CURRENT_DATE()) ';
+    $where_date = ' AND YEAR(od_time) = YEAR(CURRENT_DATE()) AND MONTH(od_time) = MONTH(CURRENT_DATE()) ';
+  	$where_ledger_date = ' AND YEAR(pl_created_at) = YEAR(CURRENT_DATE()) AND MONTH(pl_created_at) = MONTH(CURRENT_DATE()) ';
   }
 
   # 주문내역
