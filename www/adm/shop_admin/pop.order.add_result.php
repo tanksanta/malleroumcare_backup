@@ -87,9 +87,12 @@ for($i=0; $i<count($it_ids); $i++) {
   $where_it_id = "where it_id ='";
   $arr_it_ids = array();
   if( is_array($it_ids) ){
-      foreach($it_ids as $it_id) {
-          if ($it_id != '')
-              array_push($arr_it_ids, $it_id);
+    
+      // 22.09 : 서원 - "( 1bf27e9 )품절 제품에 대한 경고 메세지 요청사항-영업"
+      //         상위 선언된 변수명 동일로 내부로직 오작동/ 변수명 변경 ( 기존: $it_id -> 변경 $t_it_id)
+      foreach($it_ids as $t_it_id) {
+          if ($t_it_id != '')
+              array_push($arr_it_ids, $t_it_id);
       }
       $where_it_id .= implode("' or it_id = '", $arr_it_ids);
   } else {
