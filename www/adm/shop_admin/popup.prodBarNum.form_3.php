@@ -569,7 +569,7 @@ if($od["od_b_tel"]) {
               <option value="<?=$data["val"]?>" <?=($carts[$i]["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
               <?php } ?>
             </select>
-            <input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>" placeholder="송장번호 입력" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+            <input type="text" value="<?=$carts[$i]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$carts[$i]["ct_id"]?>" placeholder="송장번호 입력" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
             <img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
           </div>
           <?php } ?>

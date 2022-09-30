@@ -163,10 +163,22 @@ if($search_text) {
     $search_options = explode(',', $search_option);
     $s_where = [];
     foreach($search_options as $s_option) {
+      // 시작 -->
+      // 22.09.30 : 서원 - 송장번호 Oney 숫자 처리로 인한 검색 오류
+      if( $s_option == "ct_delivery_num" ) { 
+        $search_text = preg_replace("/[^0-9]*/s", "", $search_text); // 검색 데이터의 숫자만 추출하여 변수에 재저장
+      }
+      // 종료 -->
       $s_where[] = " $s_option like '%{$search_text}%' ";
     }
     $where[] = " ( " . implode(' OR ', $s_where) . " ) ";
-  } else if ($search_option) {
+  } else {
+    // 시작 -->
+    // 22.09.30 : 서원 - 송장번호 Oney 숫자 처리로 인한 검색 오류
+    if( $search_option == "ct_delivery_num" ) { 
+      $search_text = preg_replace("/[^0-9]*/s", "", $search_text); // 검색 데이터의 숫자만 추출하여 변수에 재저장
+    }
+    // 종료 -->
     $where[] = " {$search_option} LIKE '%{$search_text}%' ";
   }
 }
