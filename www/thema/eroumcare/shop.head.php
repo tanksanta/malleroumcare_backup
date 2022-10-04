@@ -363,7 +363,7 @@ if($is_main && !$is_member) {
               <?php } ?>
             </div>
             <div class="manager_info">
-              시스템문의 : 02-830-1301 (월~금 09:00~18:00)
+              시스템문의 : 02-830-1301 (월~금 08:30~17:30)
             </div>
             <?php if($show_partner_menu) { ?>
             <div class="balance_info flex-justify">
@@ -813,7 +813,7 @@ if($is_main && !$is_member) {
             <ul>
               <li>
                 <div>· 운영시간</div>
-                <div>월~금 09:00~18:00 (점심시간 12시~13시)</div>
+                <div>월~금 08:30~17:30 (점심시간 12시~13시)</div>
               </li>
               <li>
                 <div>· Email</div>
