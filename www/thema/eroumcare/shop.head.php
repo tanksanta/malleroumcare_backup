@@ -1,22 +1,7 @@
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GQ74VFSWXV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-GQ74VFSWXV');
-</script>
-
 <script type="text/javascript">
 function gotosearch(){
   window.location.href = '<?=G5_SHOP_URL?>/search.php?qname=1';
 }
-
-// wetoz : 2020-09-04
-if(!wcs_add) var wcs_add = {};
-wcs_add["wa"] = "s_4372b22f12c2";
-wcs.inflow("samhwasnd.com");
 
 /* 210115 */
 document.addEventListener("message", function(e){

@@ -287,12 +287,6 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 
 <?php if($is_designer || $is_demo) include_once(THEMA_PATH.'/assets/switcher.php'); //Style Switcher ?>
 
-
-
-<script type="text/javascript">
-wcs_do(); // wetoz : 2020-09-04
-</script> 
-
 <script>
 <?php if ($member['mb_id']) { ?>
 try {
