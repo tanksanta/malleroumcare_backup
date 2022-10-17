@@ -699,7 +699,7 @@ if($is_main && !$is_member) {
               </li> -->
               <li>
                 <a href="/shop/check_my_ltcare_info.php">
-                  요양정보 간편조회
+                  수급자 요양정보 조회 
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>
