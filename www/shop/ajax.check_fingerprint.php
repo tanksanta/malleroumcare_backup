@@ -61,8 +61,15 @@ else if ($type == 'regist')
           }
           else
           {
-            sql_query("UPDATE device_security SET status = 'W', updated_at = CURRENT_TIMESTAMP WHERE id = '{$row['id']}' LIMIT 1;");
-            json_response(200, 'OK', array('type' => 'update', 'insert_id' => $row['id']));
+            if (strcmp($row['status'], 'W') == 0 || strcmp($row['status'], 'A') == 0)
+            {
+            	sql_query("UPDATE device_security SET status = 'A', updated_at = CURRENT_TIMESTAMP WHERE id = '{$row['id']}' LIMIT 1;");
+            	json_response(200, 'OK', array('type' => 'update', 'insert_id' => $row['id']));
+            }
+            else {
+            	sql_query("UPDATE device_security SET status = 'W', updated_at = CURRENT_TIMESTAMP WHERE id = '{$row['id']}' LIMIT 1;");
+            	json_response(200, 'OK', array('type' => 'update', 'insert_id' => $row['id']));
+            }
           }
         }
         else{
