@@ -291,6 +291,28 @@ else if ($type == 'order_user') {
     }
     $colspan = count($results) + 1;
 }
+else if ($type == 'inquire_data') {
+    if ($_GET['page'] == 'all') {
+        // 전체 사업소 집계
+        $sql = 'select ent_id, ent_nm, count(*) as cnt from rep_inquiry_log group by ent_id order by ent_nm;';
+        $result = sql_query($sql);
+        $list_head = ['No', '사업소명', '조회 횟수'];
+    } else if ($_GET['page'] == 'ent') {
+        // 각 사업소 집계
+        $sql = 'select ent_id, ent_nm, pen_id, pen_nm, count(*) as cnt from rep_inquiry_log group by pen_id order by ent_nm, pen_nm;';
+        $result = sql_query($sql);
+        $list_head = ['No', '사업소명', '수급자 id', '수급자명', '조회 횟수'];
+    } else {
+        // 일자별 집계
+        $sql = 'select ent_id, ent_nm, pen_id, pen_nm, occur_date, count(*) as cnt from rep_inquiry_log group by occur_date, pen_id order by occur_date, ent_nm;';
+        $result = sql_query($sql);
+        $list_head = ['No', '조회 일자', '사업소명', '수급자명', '조회 횟수'];
+    }
+    $arr_inquiry = [];
+    while($row_inquiry = sql_fetch_array($result)) {
+        $arr_inquiry[] =  $row_inquiry;   
+    }
+}
 ?>
 
 <style>
@@ -336,73 +358,99 @@ else if ($type == 'order_user') {
     <table class="statistics_table">
     <thead>
     <tr>
-        <th scope="col"></th>
-        <?php if ($type == 'user') { ?>
-            <th scope="col">일반사업소</th>
-            <th scope="col">우수사업소</th>
-            <th scope="col">임시회원</th>
-            <th scope="col">개인회원</th>
-            <th scope="col">파트너사</th>
-            <th scope="col">직원(9)</th>
-        <?php } else if ($type == 'region') { ?>
-        <?php 
-            foreach($total_arr as $row) { 
-                $region = $row['sido']; ?>
-                <th scope="col"><?=$region?></th>
-            <?php } ?>
-        <?php } else if ($type == 'login_daily') { 
-            $to_date_str = date('Y-m-d',$endTime);
-            ?>
-            <th scope="col"><?=$fr_date.'~'.$to_date_str?></th>
-        <?php } else if ($type == 'login_user') { 
-            $to_date_str = date('Y-m-d',$endTime);
-            ?>
-            <th scope="col"></th>
-            <th scope="col"><?=$fr_date.'~'.$to_date_str?></th>
-        <?php } else if ($type == 'amount') { ?>
-            <th scope="col">매출액</th>
-        <?php } else if ($type == 'proposal_c') { ?>
-            <th scope="col">제안서 생성</th>
-        <?php } else if ($type == 'proposal_s') { ?>
-            <th scope="col">제안서 발송</th>
-        <?php } else if ($type == 'contract_c') { ?>
-            <th scope="col">계약서 생성</th>
-        <?php } else if ($type == 'contract_s') { ?>
-            <th scope="col">계약서 서명</th>
-        <?php } else if ($type == 'order_c') { ?>
-            <th scope="col">전체 생성</th>
-            <th scope="col">관리자 생성</th>
-            <th scope="col">사용자 생성</th>
-        <?php } else if ($type == 'order_user') { 
-            foreach(array_keys($results) as $name) {  ?>
+        <?php if ($type == 'inquire_data') {
+            foreach($list_head as $name) {  ?>
                 <th scope="col"><?=$name?></th>
-            <?php } ?>
-        <?php } ?>
+            <?php }
+        } else { ?>
+            <th scope="col"></th>
+            <?php if ($type == 'user') { ?>
+                <th scope="col">일반사업소</th>
+                <th scope="col">우수사업소</th>
+                <th scope="col">임시회원</th>
+                <th scope="col">개인회원</th>
+                <th scope="col">파트너사</th>
+                <th scope="col">직원(9)</th>
+            <?php } else if ($type == 'region') { 
+                foreach($total_arr as $row) { 
+                    $region = $row['sido']; ?>
+                    <th scope="col"><?=$region?></th>
+                <?php }
+            } else if ($type == 'login_daily') { 
+                $to_date_str = date('Y-m-d',$endTime); ?>
+                <th scope="col"><?=$fr_date.'~'.$to_date_str?></th>
+            <?php } else if ($type == 'login_user') { 
+                $to_date_str = date('Y-m-d',$endTime); ?>
+                <th scope="col"></th>
+                <th scope="col"><?=$fr_date.'~'.$to_date_str?></th>    
+            <?php } else if ($type == 'amount') { ?>
+                <th scope="col">매출액</th>
+            <?php } else if ($type == 'proposal_c') { ?>
+                <th scope="col">제안서 생성</th>
+            <?php } else if ($type == 'proposal_s') { ?>
+                <th scope="col">제안서 발송</th>
+            <?php } else if ($type == 'contract_c') { ?>
+                <th scope="col">계약서 생성</th>
+            <?php } else if ($type == 'contract_s') { ?>
+                <th scope="col">계약서 서명</th>
+            <?php } else if ($type == 'order_c') { ?>
+                <th scope="col">전체 생성</th>
+                <th scope="col">관리자 생성</th>
+                <th scope="col">사용자 생성</th>
+            <?php } else if ($type == 'order_user') { 
+                foreach(array_keys($results) as $name) {  ?>
+                    <th scope="col"><?=$name?></th>
+                <?php } 
+            } 
+        } ?>
+
+
     </tr>
     </thead>
     <tbody>
-    <tr class="bg0">
-        <td>누적</td>
-        <?php if ($type == 'user') { ?>
-            <td><?php echo $total_cnt['default_cnt'] ?></td>
-            <td><?php echo $total_cnt['level4_cnt'] ?></td>
-            <td><?php echo $total_cnt['temp_cnt'] ?></td>
-            <td><?php echo $total_cnt['normal_cnt'] ?></td>
-            <td><?php echo $total_cnt['partner_cnt'] ?></td>
-            <td><?php echo $total_cnt['level9_cnt'] ?></td>
-        <?php } else if ($type == 'region') { ?>
-        <?php 
-            foreach($total_arr as $row) { ?>
-                <td><?php echo $row['cnt'] ?></td>
+    <?php if ($type != 'inquire_data') { ?>
+        <tr class="bg0">
+            <td>누적</td>
+            <?php if ($type == 'user') { ?>
+                <td><?php echo $total_cnt['default_cnt'] ?></td>
+                <td><?php echo $total_cnt['level4_cnt'] ?></td>
+                <td><?php echo $total_cnt['temp_cnt'] ?></td>
+                <td><?php echo $total_cnt['normal_cnt'] ?></td>
+                <td><?php echo $total_cnt['partner_cnt'] ?></td>
+                <td><?php echo $total_cnt['level9_cnt'] ?></td>
+            <?php } else if ($type == 'region') { ?>
+            <?php 
+                foreach($total_arr as $row) { ?>
+                    <td><?php echo $row['cnt'] ?></td>
+                <?php } ?>
+            <?php } else if ($type == 'amount') { ?>
+                <td><?php echo number_format($total_amount['amount']) ?></td>
+            <?php } else if ($type == 'login_daily' || $type == 'login_user' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'order_c' || $type == 'order_user') { ?>
+                <td><?php echo $total_cnt['cnt'] ?></td>
             <?php } ?>
-        <?php } else if ($type == 'amount') { ?>
-            <td><?php echo number_format($total_amount['amount']) ?></td>
-        <?php } else if ($type == 'login_daily' || $type == 'login_user' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'order_c' || $type == 'order_user') { ?>
-            <td><?php echo $total_cnt['cnt'] ?></td>
-        <?php } ?>
-    </tr>
-    <?php
-    // echo "1<br>";
+        </tr>
+    <?php } else { 
+        for ($ind = 0; $ind < count($arr_inquiry); $ind++) {?>        
+        <tr class="bg0">
+            <?php if ($_GET['page'] == 'all') { ?>
+                <td><?=$ind+1;?></td>
+                <td><?=$arr_inquiry[$ind]['ent_nm'];?></td>
+                <td><?=$arr_inquiry[$ind]['cnt'];?></td>
+            <?php } else if ($_GET['page'] == 'ent') { ?>
+                <td><?=$ind+1;?></td>
+                <td><?=$arr_inquiry[$ind]['ent_nm'];?></td>
+                <td><?=$arr_inquiry[$ind]['pen_id'];?></td>
+                <td><?=$arr_inquiry[$ind]['pen_nm'];?></td>
+                <td><?=$arr_inquiry[$ind]['cnt'];?></td>
+            <?php } else { ?>
+                <td><?=$ind+1;?></td>
+                <td><?=explode(' ', $arr_inquiry[$ind]['occur_date'])[0];?></td>
+                <td><?=$arr_inquiry[$ind]['ent_nm'];?></td>
+                <td><?=$arr_inquiry[$ind]['pen_nm'];?></td>
+                <td><?=$arr_inquiry[$ind]['cnt'];?></td>
+            <?php } ?>
+        </tr>
+    <?php } }
     if ($type != 'login_user') {
         for ( $i = $startTime; $i <= $endTime; $i = $i + 86400 ) {
             $thisDate = date( 'Y-m-d', $i );
@@ -443,18 +491,15 @@ else if ($type == 'order_user') {
                     array_push($datas, $results[$key][$thisDate] ?: 0);
                 }
             } 
-        ?>
+        if($type != 'inquire_data') {?>
         <tr class="bg0">
             <?php foreach($datas as $data) { ?>
                 <td><?php echo $data ?></td>
             <?php } ?>
         </tr>
-    <?php
+    <?php }
         }
-    }
-    else {
-    ?>
-        
+    } else { ?>        
         <?php foreach($results['login_user'] as $data) { ?>
             <tr class="bg0">
             <td><?php echo $data['mb_id'] ?></td>
