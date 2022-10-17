@@ -1,22 +1,7 @@
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GQ74VFSWXV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-GQ74VFSWXV');
-</script>
-
 <script type="text/javascript">
 function gotosearch(){
   window.location.href = '<?=G5_SHOP_URL?>/search.php?qname=1';
 }
-
-// wetoz : 2020-09-04
-if(!wcs_add) var wcs_add = {};
-wcs_add["wa"] = "s_4372b22f12c2";
-wcs.inflow("samhwasnd.com");
 
 /* 210115 */
 document.addEventListener("message", function(e){
@@ -363,7 +348,7 @@ if($is_main && !$is_member) {
               <?php } ?>
             </div>
             <div class="manager_info">
-              시스템문의 : 02-830-1301 (월~금 09:00~18:00)
+              시스템문의 : 02-830-1301 (월~금 08:30~17:30)
             </div>
             <?php if($show_partner_menu) { ?>
             <div class="balance_info flex-justify">
@@ -674,7 +659,7 @@ if($is_main && !$is_member) {
               </li>
               <li>
                 <a href="/shop/cart.php">
-                  장바구니
+                  사업소 장바구니
                   <?php if (get_boxcart_datas_count() > 0) { ?>
                   <span class="value">상품 (<?php echo get_boxcart_datas_count(); ?>)</span>
                   <?php } ?>
@@ -701,7 +686,20 @@ if($is_main && !$is_member) {
                   수급자관리
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
-                <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
+              <!-- <li>
+                <a href="/shop/my_recipient_list_test.jake.php">
+                <a href="/shop/pop_recipient.php">
+                  요양정보 간편조회 
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li> -->
+              <li>
+                <a href="/shop/check_my_ltcare_info.php">
+                  요양정보 간편조회
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+                <?php /**if($noti_count = get_recipient_noti_count() > 0) { ?>
                 <a class="noti_pen" href="/shop/my_recipient_noti.php">
                   수급자 알림이 있습니다.
                   <span class="value"><?=$noti_count?>건</span>
@@ -709,9 +707,10 @@ if($is_main && !$is_member) {
                 <?php } ?>
                 <?php if($pen_links = get_recipient_links($member['mb_id'])) { ?>
                 <a class="noti_pen link" href="/shop/my_recipient_list.php">
-                  ‘<?=$pen_links[0]['rl_pen_name']?>’ <?php $pen_links_count = count($pen_links); if($pen_links_count > 1) { echo '외 '.($pen_links_count - 1).'명 '; } ?>수급자 추천이 있습니다.
+                  ‘<?=$pen_links[0]['rl_pen_name']?>’ <?php $pen_links_count = count($pen_links); if($pen_links_count > 1) { echo '외 '.($pen_links_count - 1).'명 '; } ?>수급자 추천이 있습니
+다.
                 </a>
-                <?php } ?>
+                <?php } **/?>
               </li>
               <li>
                 <a href="/shop/sales_Inventory.php">
@@ -813,7 +812,7 @@ if($is_main && !$is_member) {
             <ul>
               <li>
                 <div>· 운영시간</div>
-                <div>월~금 09:00~18:00 (점심시간 12시~13시)</div>
+                <div>월~금 08:30~17:30 (점심시간 12시~13시)</div>
               </li>
               <li>
                 <div>· Email</div>
