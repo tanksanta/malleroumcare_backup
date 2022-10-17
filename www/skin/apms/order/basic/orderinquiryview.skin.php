@@ -25,23 +25,6 @@ if($header_skin)
 <script type="text/javascript">
 // 주문 완료인경우
 if (document.referrer.indexOf("shop/orderform.php") >= 0) {
-
-	// 네이버
-	if (!wcs_add) var wcs_add={};
-	wcs_add["wa"] = "<?php echo NAVER_WCS_WA; ?>";
-	if (!_nasa) var _nasa={};
-	_nasa["cnv"] = wcs.cnv("1","<?php echo $tot_price; ?>"); 
-	wcs_do(_nasa);	
-
-	// 다음
-	//<![CDATA[ 
-	var DaumConversionDctSv="type=P,orderID=<?php echo $od_id; ?>,amount=<?php echo $tot_price; ?>"; 
-	var DaumConversionAccountID="<?php echo DAUM_CONVERSION_ACCOUNT_ID; ?>"; 
-	if(typeof DaumConversionScriptLoaded=="undefined"&&location.protocol!="file:"){ 
-		var DaumConversionScriptLoaded=true; 
-		document.write(unescape("%3Cscript%20type%3D%22text/javas"+"cript%22%20src%3D%22"+(location.protocol=="https:"?"https":"http")+"%3A//t1.daumcdn.net/cssjs/common/cts/vr200/dcts.js%22%3E%3C/script%3E")); 
-	} 
-	//]]> 
 	
 }
 </script>
