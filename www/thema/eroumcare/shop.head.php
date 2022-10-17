@@ -17,6 +17,10 @@ document.addEventListener("message", function(e){
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가 
 include_once(THEMA_PATH.'/assets/thema.php');
 
+//수급자 장바구니 해제->사업소 장바구니 카운트 복귀 위해 추가 ================
+set_cart_id($sw_direct, $_SESSION['recipient']['penId'] ?? null);
+//================================================================
+
 // 주문상품 변경 관리
 if($member['mb_type'] === 'default') {
   sql_query(" UPDATE g5_shop_order SET od_is_editing = 0 WHERE mb_id = '{$member['mb_id']}' and od_is_editing = 1 ");
@@ -659,7 +663,7 @@ if($is_main && !$is_member) {
               </li>
               <li>
                 <a href="/shop/cart.php">
-                  사업소 장바구니
+                  <?=($_SESSION['recipient']['penId']=="")?"사업소":$_SESSION['recipient']['penNm']."님";?> 장바구니
                   <?php if (get_boxcart_datas_count() > 0) { ?>
                   <span class="value">상품 (<?php echo get_boxcart_datas_count(); ?>)</span>
                   <?php } ?>
