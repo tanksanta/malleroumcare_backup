@@ -285,11 +285,14 @@ define('G5_MOBILE_AGENT',   'phone|samsung|lgtel|mobile|[^A]skt|nokia|blackberry
 
 // SMTP
 // lib/mailer.lib.php 에서 사용
-define('G5_SMTP',      'smtp.daum.net');
+//define('G5_SMTP',      'smtp.daum.net');
+define('G5_SMTP',      'smtp.naver.com');
 define('G5_SMTP_PORT', '465');
 
-define('G5_SMTP_USERNAME', 'thkc1301');
-define('G5_SMTP_PASSWORD', 'thdeckc01@!');
+//define('G5_SMTP_USERNAME', 'thkc1301'); // daum mail	
+//define('G5_SMTP_PASSWORD', 'thdeckc01@!'); // daum pw
+define('G5_SMTP_USERNAME', 'thkc1300');
+define('G5_SMTP_PASSWORD', '6thgkfossmkc!');
 
 define('G5_SMTP_SSL', true);
 
@@ -345,7 +348,8 @@ define('G5_VISIT_BROWSCAP_USE', false);
 define('G5_IP_DISPLAY', '\\1.♡.\\3.\\4');
 
 if((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') OR $httpsonoff == 'https://' ) {   //https 통신일때 daum 주소 js
-    define('G5_POSTCODE_JS', '<script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>');
+    //define('G5_POSTCODE_JS', '<script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>');	
+	define('G5_POSTCODE_JS', '<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>');
 } else {  //http 통신일때 daum 주소 js
     define('G5_POSTCODE_JS', '<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>');
 }
