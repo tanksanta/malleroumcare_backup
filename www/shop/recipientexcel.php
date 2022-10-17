@@ -19,7 +19,8 @@ include_once('../common.php');
         </p>
 
         <p>
-            <a href="<?php echo G5_SHOP_URL; ?>/recipientExcel_new.xlsx" class="excelBtn">수급자등록용 엑셀파일 다운로드</a>
+            <!--<a href="<?php echo G5_SHOP_URL; ?>/recipientExcel_new.xlsx" class="excelBtn">수급자등록용 엑셀파일 다운로드</a>-->
+            <a href="<?php echo G5_SHOP_URL; ?>/수급자일괄등록 샘플양식.xlsx" class="excelBtn">수급자등록용 엑셀파일 다운로드</a>
         </p>
     </div>
 

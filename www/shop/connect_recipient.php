@@ -33,6 +33,7 @@ if (strtotime(date("Y-m-d")) > strtotime($expired_dtm)) {
 
 $pen = $res['data'][0];
 
+// 2022.10.05 blocked by JAKE for the mean time by 10.12~
 set_session('recipient', $pen);
 
 goto_url($redirect);

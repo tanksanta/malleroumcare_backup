@@ -10,13 +10,15 @@ $result = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
   'entId' => $member['mb_entId']
 ));
 
+$rem_amount = [];
+if($_POST){    
+  $rem_amount = $_POST;
+}
+
+
 $data = [];
 if($result['data']) {
   foreach($result['data'] as $pen) {
-    $penExpiDtm = explode(" ~ ", $pen["penExpiDtm"]);
-    $penExpiStDtm = $pen["penExpiDtm"] ? $penExpiDtm[0] : '';
-    $penExpiEdDtm = $pen["penExpiDtm"] ? $penExpiDtm[1] : '';
-
     $penProRel = $penCnmType = $penRecType = '';
 
     if($pen['penProRel'] != '11') {
@@ -35,9 +37,29 @@ if($result['data']) {
     else if($pen['penRecTypeCd'] == '01')
       $penRecType = '유선';
 
+    $modifyDtm = substr($pen['modifyDtm'], 0, 4)."-".substr($pen['modifyDtm'], 4, 2)."-".substr($pen['modifyDtm'], 6, 2);
+    $penAppEdDtm = substr($pen['penAppEdDtm'], 0, 4)."-".substr($pen['penAppEdDtm'], 4, 2)."-".substr($pen['penAppEdDtm'], 6, 2);
+    $penAppStDtm = date('Y-m-d', strtotime($penAppEdDtm." -1 years +1 days"));
+    $nonused_amount = $rem_amount[$pen['penNm']];
+    $used_amount = 1600000-$nonused_amount;
+    if($nonused_amount == 0){
+      $nonused_amount = "0";
+    }
+    if($used_amount == 0){
+      $used_amount = "0";
+    }
+
+
     $data[] = [
       $pen['penNm'],
-      $pen['penJumin'],
+      $pen['penLtmNum'],
+      $pen['penRecGraNm'],
+      $pen['penTypeNm'],
+      $pen['penExpiDtm'], 
+      $penAppStDtm." ~ ".$penAppEdDtm,
+      $nonused_amount, 
+      $used_amount,
+      $modifyDtm,
       $pen['penBirth'],
       $pen['penGender'],
       $pen['penConNum'],
@@ -45,12 +67,6 @@ if($result['data']) {
       $pen['penZip'],
       $pen['penAddr'],
       $pen['penAddrDtl'],
-      $pen['penLtmNum'],
-      $pen['penRecGraNm'],
-      $pen['penTypeNm'],
-      $penExpiStDtm,
-      $penExpiEdDtm,
-      $pen['penGraApplyDate'],
       $penProRel,
       $pen['penProNm'],
       $pen['penProBirth'],
@@ -90,8 +106,11 @@ $sheet->getStyle('A3:AA'.$last_row)->applyFromArray($styleArray);
 
 $sheet->fromArray($data,NULL,'A3');
 
+$today = date("Y-m-d");
+
 header("Content-Type: application/octet-stream");
-header("Content-Disposition: attachment; filename=\"이로움_수급자목록.xlsx\"");
+
+header("Content-Disposition: attachment; filename=\"이로움_수급자관리_".$today.".xlsx\"");
 header("Cache-Control: max-age=0");
 header('Set-Cookie: fileDownload=true; path=/');
 

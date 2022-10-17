@@ -10,6 +10,12 @@ function get_eroumcare($api_url, $data) {
 	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
 	$res = curl_exec($oCurl);
 	$res = json_decode($res, true);
+   
+	//var_dump($res);
+	//alert(print_r(curl_getinfo($oCurl)));
+	//console.log(curl_errno($oCurl));
+	//echo curl_error($oCurl);
+    
 	curl_close($oCurl);
     
 	return $res;
@@ -1449,8 +1455,8 @@ function get_outstanding_balance($mb_id, $fr_date = null, $total_price_only = fa
   }
 
   if($current_month_only) {
-    $where_date = ' and MONTH(od_time) = MONTH(CURRENT_DATE()) ';
-  	$where_ledger_date = ' and MONTH(lc_created_at) = MONTH(CURRENT_DATE()) ';
+    $where_date = ' AND YEAR(od_time) = YEAR(CURRENT_DATE()) AND MONTH(od_time) = MONTH(CURRENT_DATE()) ';
+  	$where_ledger_date = ' AND YEAR(lc_created_at) = YEAR(CURRENT_DATE()) AND MONTH(lc_created_at) = MONTH(CURRENT_DATE()) ';
   }
 
   # 매출
@@ -1942,8 +1948,8 @@ function get_partner_outstanding_balance($mb_id, $fr_date = null, $total_price_o
   }
 
   if($current_month_only) {
-    $where_date = ' and MONTH(od_time) = MONTH(CURRENT_DATE()) ';
-  	$where_ledger_date = ' and MONTH(pl_created_at) = MONTH(CURRENT_DATE()) ';
+    $where_date = ' AND YEAR(od_time) = YEAR(CURRENT_DATE()) AND MONTH(od_time) = MONTH(CURRENT_DATE()) ';
+  	$where_ledger_date = ' AND YEAR(pl_created_at) = YEAR(CURRENT_DATE()) AND MONTH(pl_created_at) = MONTH(CURRENT_DATE()) ';
   }
 
   # 주문내역
@@ -2562,3 +2568,198 @@ function get_use_warehouse_where_sql($use_and = true) {
 
   return $where;
 }
+// 공단에서 받아온 데이터
+// 20220926 황현지 수정
+function get_rentalitem_deadline2($entId) {
+	$sql = "SELECT * FROM PEN_PURCHASE_HIST WHERE ent_id='{$entId}' AND ord_status='대여';";
+	$result = sql_query($sql);
+	
+	$list_rental_dealine = array();
+	$list_LTM = array();
+	$timetoday = date('y-m-d');
+	$today = new DateTime($timetoday);
+  $list_Ltn_Num = array();
+
+	while ($row = sql_fetch_array($result)) {
+
+		$thatday = new DateTime(substr($row['ORD_END_DTM'],0,10));
+
+    $date_dif = date_diff($today,$thatday)->days;
+    if($today > $thatday) { $date_dif = $date_dif*(-1);} // 오늘을 기준으로 전후 30일을 모두 계산해오는 것을 막음
+		if ($date_dif < 30 && $date_dif > 0){
+      if(count($list_LTM) > 0){
+        if(array_search($row['PEN_LTM_NUM'], $list_Ltn_Num) === false){
+          $count_on_deadline++;
+          $list_LTM[] = array('penLtmNum'=>$row['PEN_LTM_NUM'], 'total_price'=>$row['TOTAL_PRICE']); 
+          $list_Ltn_Num[] = $row['PEN_LTM_NUM'];
+        } else {
+          $temp_index = count($list_LTM) - array_search($row['PEN_LTM_NUM'], $list_Ltn_Num);
+          $list_LTM[$temp_index]['total_price'] = $list_LTM[$temp_index]['total_price']+$row['TOTAL_PRICE']; 
+        }
+      } else{
+        $count_on_deadline++;
+        $list_LTM[] = array('penLtmNum'=>$row['PEN_LTM_NUM'], 'total_price'=>$row['TOTAL_PRICE']); 
+        $list_Ltn_Num[] = $row['PEN_LTM_NUM'];
+      }
+		}
+		$thatday = null;
+	}
+	//print_r($list_LTM);
+
+	return $list_LTM;
+}
+
+// 기존 데이터 오류 발생
+function get_rentalitem_deadline($entId) {
+	$sql = "SELECT * FROM PEN_PURCHASE_HIST WHERE ent_id='{$entId}' AND ord_status='대여';";
+	$result = sql_query($sql);
+	
+	$list_rental_dealine = array();
+	$list_LTM = array();
+	$timetoday = date('y-m-d');
+	$today = new DateTime($timetoday);
+
+	while ($row = sql_fetch_array($result)) {
+
+		$thatday = new DateTime(substr($row['ORD_END_DTM'],0,10));
+		if (date_diff($today,$thatday)->days < 30)
+		{
+			$count_on_deadline++;
+			$list_LTM[] = array('penLtmNum'=>$row['PEN_LTM_NUM'], 'total_price'=>$row['TOTAL_PRICE']);
+		}
+		$thatday = null;
+	}
+	//print_r($list_LTM);
+
+	return $list_LTM;
+}
+
+
+// 우리샵에서 판매/대여한 상품 
+function get_contract_info($entId, $recipient_pl)
+{
+	//echo $entId;
+	$sql = "
+		SELECT 
+			d.dc_id,
+			d.dc_subject,
+			d.dc_status,
+			d.od_id,
+			d.penNm,
+			d.penLtmNum,
+			d.penExpiDtm,
+			d.dc_datetime,
+			d.dc_sign_datetime,
+			i.it_id,
+			i.ca_name,
+			i.it_name,
+			i.it_code,
+			i.it_barcode,
+			i.it_qty,
+			i.it_price 
+		FROM 
+			eform_document d 
+		LEFT JOIN 
+			eform_document_item i 
+			ON d.dc_id = i.dc_id
+    	WHERE
+      		d.entId = '{$entId}'"; 
+
+	$result = sql_query($sql);
+	
+	//$tmp = explode("-",$timeAppdate);
+
+	$recipient_list = array();
+	$idx = 0;
+	$timetoday = date('y-m-d');
+	$today = new DateTime($timetoday);
+	while ($row = sql_fetch_array($result)) {
+	  echo $row['penExpiDtm']."<br/>";
+	  $timeExp = substr($row['penExpiDtm'],13,10);
+	  $tmp = explode("-",$timeExp);
+	  if (checkdate($tmp[1],$tmp[2],$tmp[0]) == false)
+		continue;
+	  $to = new DateTime($timeExp);
+	  $timeAppdate= $tmp[0].$tmp[1].$tmp[2];
+	
+	  $timeBuy= substr($row['dc_datetime'],0,10);
+	  $tmp = explode("-",$timeBuy);
+	  if (checkdate($tmp[1],$tmp[2],$tmp[0]) == false)
+		continue;
+	  $from = new DateTime($timeBuy);
+	  $timePurchase= $tmp[0].$tmp[1].$tmp[2];
+
+	  //echo (int)$timeAppdate." : ".(int)$timePurchase."<br/>";
+
+	  //echo date_diff($to,$from)->days."<br/>";
+	  if (((int)$timePurchase < (int)$timeAppdate) && fmod((date_diff($to,$from)->days),365) < 365)  
+	  {
+		$recipient_pl[$row['penLtmNum']]["contract"]++;;
+		$recipient_pl[$row['penLtmNum']]["transaction_amt"] += (int)$row["it_price"];
+		if ((strcmp( $row['ca_name'], '수동휠체어') == 0) ||
+			(strcmp( $row['ca_name'], '전동침대') == 0) ||
+			(strcmp( $row['ca_name'], '수동침대') == 0) ||
+			(strcmp( $row['ca_name'], '욕창예방 매트리스') == 0) ||
+			(strcmp( $row['ca_name'], '이동욕조') == 0) ||
+			(strcmp( $row['ca_name'], '목욕리프트') == 0) ||
+			(strcmp( $row['ca_name'], '배회감지기') == 0) ||
+			(strcmp( $row['ca_name'], '경사로(실외용)') == 0) )
+		{
+				$recipient_pl[$row['penLtmNum']]["rental"]++;;
+
+		}
+		else
+		{
+			$recipient_pl[$row['penLtmNum']]["purchase"]++;;
+		}
+
+	  }
+	  $from = null;
+	  $to = null;
+
+	}
+	//print_r($recipient_list);
+	print_r($recipient_pl);
+
+	return $recipient_pl;
+
+}
+
+
+function get_totalamt_pention($ltmNum) {
+
+
+	//$sql = "SELECT * FROM PEN_PURCHASE_HIST WHERE pen_ltm_num='{$ltmNum}' AND PEN_EXPI_ED_DTM >= CURDATE();";
+	$sql = "SELECT * FROM PEN_PURCHASE_HIST WHERE pen_ltm_num='{$ltmNum}' AND (CURDATE() between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM);";
+	$result = sql_query($sql);
+
+	//if($result->num_rows == 0);
+	//	return -1; // no purchase history within the period
+
+	$row = sql_fetch_array($result);
+		
+//	if ($row['PEN_BUDGET'] == null )
+//		echo "<br/> pen Budget = ".$row['PEN_BUDGET'];
+
+
+	return $row;
+}
+
+function get_updated_date_recipient($ltmNum) {
+
+	//$sql = "SELECT * FROM PEN_PURCHASE_HIST WHERE pen_ltm_num='{$ltmNum}' AND PEN_EXPI_ED_DTM >= CURDATE();";
+	$sql = "SELECT * FROM PEN_PURCHASE_HIST WHERE pen_ltm_num='{$ltmNum}' AND (CURDATE() between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM);";
+	$result = sql_query($sql);
+
+	//if($result->num_rows == 0);
+	//	return -1; // no purchase history within the period
+
+	$row = sql_fetch_array($result);
+		
+//	if ($row['PEN_BUDGET'] == null )
+//		echo "<br/> pen Budget = ".$row['PEN_BUDGET'];
+
+	return $row['MODIFY_DTM'];
+}
+
+

@@ -21,6 +21,7 @@ if(!$it_type) $it_type = [];
 
 $sql = " select * from {$g5['g5_shop_category_table']} where ca_id = '$ca_id' and ca_use = '1'  ";
 $ca = sql_fetch($sql);
+
 if (!$ca['ca_id'])
     alert('등록된 분류가 없습니다.');
 
@@ -182,7 +183,6 @@ if ($ca_id_len > 2) {
 }
 
 $g5['title'] = $ca['ca_name'].' 리스트';
-
 if ($ca['ca_include_head'] && is_include_path_check($ca['ca_include_head']))
     @include_once($ca['ca_include_head']);
 else
@@ -209,6 +209,19 @@ $from_record = ($page - 1) * $item_rows;
 
 // 전체 페이지 계산
 $row2 = sql_fetch(" select count(*) as cnt from `{$g5['g5_shop_item_table']}` where $where ");
+
+// if selected count is 0 then it means it has searched from the subcategory
+// which is dedicated from previous selection 2022.08.03 by Jake
+if ( strlen($ca_id) > 2 && $row2['cnt'] == 0 ) {
+	alert("현재 선택된 품목은 [$ca[ca_name]] 입니다.\\n전체 항목에서 검색 하시려면 [판매품목]을 클릭 하세요.");
+//<script>	
+//	location.href = './list.php?ca_id='.substr($ca_id,0,$len1).$qstr;
+//</script>	
+	$ca_sub=substr($ca_id,3,4);
+	$ca_id=substr($ca_id,0,2);
+	goto_url("./list.php?ca_id=$ca_id&ca_sub%5B%5D=$ca_sub");
+	}
+
 $total_count = $row2['cnt'];
 $total_page  = ceil($total_count / $item_rows);
 

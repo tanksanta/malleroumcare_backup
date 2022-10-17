@@ -56,6 +56,12 @@ curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
 curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
 $res = curl_exec($oCurl);
 curl_close($oCurl);
+ 
+$delete_macro = "DELETE FROM macro_request WHERE mb_id = '".$member['mb_id']."' AND recipient_num = '".str_replace('L', '', $data['penLtmNum'])."';";
+$delete_hist = "DELETE FROM pen_purchase_hist WHERE ENT_ID = '".$member['mb_entId']."' AND PEN_LTM_NUM = '".$data['penLtmNum']."';";
+
+sql_query($delete_macro);
+sql_query($delete_hist);
 
 json_response(200, 'OK');
 

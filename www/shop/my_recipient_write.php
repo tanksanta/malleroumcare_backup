@@ -1,3 +1,4 @@
+
 <?php
 include_once("./_common.php");
 define('_RECIPIENT_', true);
@@ -14,6 +15,68 @@ if(!$member["mb_id"]){
 $t_recipient_add = get_tutorial('recipient_add');
 if ($t_recipient_add['t_state'] == '1' && $tutorial == 'true') {
   alert('이미 완료한 튜토리얼입니다.\r\n다음단계를 진행하세요.', '/');
+}
+
+$sql_check = "
+  show columns from macro_request where field in ('rem_amount','penExpiDtm','penApplyDtm','bathingChair','safetyHandGrip','sliveryPreventSocks','safetyPreventSlivery','simpleToilet','cane','cushionPreventMatriss','postureChangeTool','bedsorePreventMatriss','adultWalker','runway','movingToilet','incontinencePanty','mWheelChair','eBed','mBed','lendBedsorePreventionMatriss','portableBath','bathLift','loiteringDetection','lendRunway');
+";
+$res_check = sql_query($sql_check);
+if(sql_num_rows($res_check) == 0){
+  $append_col = "alter table macro_request ".
+                "add column bathingChair varchar(10) default '1' after percent,".
+                "add column safetyHandGrip varchar(10) default '10' after percent,".
+                "add column sliveryPreventSocks varchar(10) default '6' after percent,".
+                "add column safetyPreventSlivery varchar(10) default '5' after percent,".
+                "add column simpleToilet varchar(10) default '2' after percent,".
+                "add column cane varchar(10) default '1' after percent,".
+                "add column cushionPreventMatriss varchar(10) default '1' after percent,".
+                "add column postureChangeTool varchar(10) default '5' after percent,".
+                "add column bedsorePreventMatriss varchar(10) default '1' after percent,".
+                "add column adultWalker varchar(10) default '2' after percent,".
+                "add column runway varchar(10) default '6' after percent,".
+                "add column movingToilet varchar(10) default '1' after percent,".
+                "add column incontinencePanty varchar(10) default '4' after percent,".
+                "add column mWheelChair varchar(10) default '1' after percent,".
+                "add column eBed varchar(10) default '1' after percent,".
+                "add column mBed varchar(10) default '1' after percent,".
+                "add column lendBedsorePreventionMatriss varchar(10) default '1' after percent,".
+                "add column portableBath varchar(10) default '1' after percent,".
+                "add column bathLift varchar(10) default '1' after percent,".
+                "add column loiteringDetection varchar(10) default '1' after percent,".
+                "add column lendRunway varchar(10) default '1' after percent,".
+                "add column rem_amount varchar(30) default '1600000' after percent, ".
+                "add column penExpiDtm varchar(30) default null after percent, ".
+                "add column penApplyDtm varchar(30) default null after percent";
+  sql_query($append_col);
+}
+
+$eng_name = ['이동변기01'=>'movingToilet','목욕의자01'=>'bathingChair','안전손잡이01'=>'safetyHandGrip',
+'미끄럼방지용품(양말)01'=>'sliveryPreventSocks','경사로(실외용)00'=>'lendRunway','수동침대00'=>'mBed',
+'요실금팬티01'=>'incontinencePanty','간이변기01'=>'simpleToilet','전동침대00'=>'eBed','지팡이01'=>'cane',
+'욕창예방매트리스00'=>'lendBedsorePreventionMatriss','욕창예방매트리스01'=>'bedsorePreventMatriss',
+'이동욕조00'=>'portableBath','목욕리프트00'=>'bathLift','미끄럼방지용품(매트)01'=>'safetyPreventSlivery',
+'자세변환용구01'=>'postureChangeTool','성인용보행기01'=>'adultWalker','배회감지기00'=>'loiteringDetection',
+'욕창예방방석01'=>'cushionPreventMatriss','경사로(실내용)01'=>'runway','수동휠체어00'=>'mWheelChair'];
+
+$item_code = ['ITM2020092200001'=>'movingToilet','ITM2020092200002'=>'bathingChair','ITM2020092200014'=>'mBed',
+'ITM2020092200004'=>'safetyHandGrip','ITM2020092200005'=>'sliveryPreventSocks','ITM2020092200018'=>'lendRunway',
+'ITM2020092200011'=>'incontinencePanty','ITM2020092200007'=>'simpleToilet','ITM2020092200008'=>'cane',
+'ITM2020092200019'=>'lendBedsorePreventionMatriss','ITM2020092200013'=>'eBed','ITM2020092200012'=>'mWheelChair',
+'ITM2020092200015'=>'portableBath','ITM2020092200016'=>'bathLift','ITM2020092200006'=>'safetyPreventSlivery',
+'ITM2020092200010'=>'postureChangeTool','ITM2020092200003'=>'adultWalker','ITM2020092200017'=>'loiteringDetection',
+'ITM2020092200009'=>'cushionPreventMatriss','ITM2020092200020'=>'bedsorePreventMatriss','ITM2021010800001'=>'runway'];
+
+// macro_request 불러오기
+$item_sql = "select * from macro_request where recipient_num = '".$_POST['recipient_num']."';";
+$item_res = sql_query($item_sql);
+
+$item_arr = [];
+$macro_req = [];
+for ($j=0; $row=sql_fetch_array($item_res); $j++){
+  $macro_req = $row;
+  for ($i=0; $i < sizeof($item_code); $i++){
+    $item_arr[array_keys($item_code)[$i]] = $macro_req[array_values($item_code)[$i]];
+  }
 }
 
 ?>
@@ -69,6 +132,20 @@ input[type="number"]::-webkit-inner-spin-button {
   cursor: pointer;
   z-index: 5;
 }
+
+.head_title {
+  margin : 30px 0px;
+  font-size : 30px;
+  font-weight : bold;
+}
+
+.req_input {
+  float: right;
+}
+
+#asterisk {
+  color: #f00;
+}
 </style>
 
 <div id="zipAddrPopupWrap">
@@ -79,48 +156,116 @@ input[type="number"]::-webkit-inner-spin-button {
     </div>
   </div>
 </div>
-
+<p class = "head_title"> 수급자 등록</p>
 <form class="form-horizontal register-form">
   <input type="hidden" maxlength="6" name="tutorial" class="form-control input-sm" value="<?php echo $tutorial ? 1 : 0; ?>">
   <div class="panel panel-default">
-    <div class="panel-heading"><strong>기본정보</strong></div>
+    <div class="panel-heading"><strong>기본정보</strong><strong class="req_input">필수입력</strong><strong class="req_input" id="asterisk">*</strong></div>
     <div class="panel-body">
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
-          <b>수급자명</b>
+          <b>수급자명</b><strong id="asterisk">*</strong>
         </label>
         <div class="col-sm-3">
           <input type="text" name="penNm" value="<?=get_text($_GET['penNm']) ?: ''?>" class="form-control input-sm">
           <i class="fa fa-check form-control-feedback"></i>
         </div>
-      </div>
-
-      <div class="form-group has-feedback">
-        <label class="col-sm-2 control-label">
-          <b>주민등록번호(앞자리)</b>
-        </label>
-        <div class="col-sm-3">
-          <input type="number" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" value="<?=get_text($_GET['penJumin'])?>">
-          <p style="margin:0; color:#ed9b43">
-            * ‘기초0%’ 수급자만 필수 입력 사항입니다.
-          </p>
+        <div class="col-sm-3" style="display: flex">
+          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px; padding: 5px 0px;">
+            <!-- 예비수급자 체크버튼 -->
+            <!-- <input disabled type="checkbox" class="chk_rep_spare" name="penSpare" value="0" >예비수급자 -->
+          </label>
         </div>
       </div>
 
-      <div class="form-group has-feedback">
-        <label class="col-sm-2 control-label">
-          <b>생년월일</b>
-        </label>
-        <div class="col-sm-3">
-          <select name="penBirth1" id="year" title="년도" class="form-control input-sm year" style="display:inline-block;width:32%;"></select>
-          <select name="penBirth2" id="month" title="월" class="form-control input-sm month" style="display:inline-block;width:32%;"></select>
-          <select name="penBirth3" id="day" title="일"  class="form-control input-sm day" style="display:inline-block;width:32%;"></select>
-        </div>
+      <div id="panel_ltm">
+          <div class="form-group has-feedback">
+            <label class="col-sm-2 control-label">
+              <b>장기요양인정번호</b><strong id="asterisk">*</strong>
+            </label>
+            <div class="col-sm-4"  style="display: flex">
+              <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
+
+              <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=preg_replace("/[^0-9]*/s", "", get_text($_GET['penLtmNum'])) ?: ''?>">
+
+              <button type="button" id="btn_pen_update" class="btn btn-color btn-sm" style="margin-left: 15px;">요양정보 조회</button>
+            </div>
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="col-sm-2 control-label">
+              <b>인정등급</b>
+            </label>
+            <div class="col-sm-3">
+
+              <input readonly type="text" name="penRecGraCd" value="<?=get_text($_GET['penRecGraCd']) ?: ''?>" class="form-control input-sm">
+
+            </div>
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="col-sm-2 control-label">
+              <b>대상자구분</b>
+            </label>
+            <div class="col-sm-3">
+
+              <input readonly type="text" name="penTypeCd" value="<?=get_text($_GET['penTypeCd']) ?: ''?>" class="form-control input-sm">
+              <input type="hidden" id="SbaCd" name="SbaCd" value="<?=get_text($_GET['SbaCd']) ?: ''?>">
+            </div>
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="col-sm-2 control-label">
+              <b>본인부담률</b>
+            </label>
+            <div class="col-sm-3">
+
+              <input readonly type="text" name="penPayRate" value="<?=get_text($_GET['penPayRate']) ?: ''?>" class="form-control input-sm">
+
+            </div>
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="col-sm-2 control-label">
+              <b>유효기간</b>
+            </label>
+            <div class="col-sm-4">
+
+              <input readonly type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=get_text($_GET['penExpiStDtm']) ?: ''?>"> ~
+              <input readonly type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=get_text($_GET['penExpiEdDtm']) ?: ''?>">
+
+            </div>
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="col-sm-2 control-label">
+              <b>적용기간</b>
+            </label>
+            <div class="col-sm-4">
+
+              <input readonly type="text" name="penApplyStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=get_text($_GET['penExpiStDtm']) ?: ''?>"> ~
+              <input readonly type="text" name="penApplyEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=get_text($_GET['penExpiEdDtm']) ?: ''?>">
+
+            </div>
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="col-sm-2 control-label">
+              <b>생년월일</b>
+            </label>
+            <div class="col-sm-3">
+
+              <input readonly type="number" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0"  class="form-control input-sm" value="<?=get_text($_GET['penJumin'])?>">
+              <input type="hidden" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" value="<?=get_text($_GET['penJumin'])?>">
+              <input type="hidden" id="BDay" name="BDay" value="<?=get_text($_GET['penJumin']) ?: ''?>">
+
+            </div>
+          </div>
       </div>
 
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
-          <b>성별</b>
+          <b>성별</b><strong id="asterisk">*</strong>
         </label>
         <div class="col-sm-3">
           <label class="checkbox-inline">
@@ -135,7 +280,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
-          <b>휴대폰</b>
+          <b>휴대폰</b><strong id="asterisk">*</strong>
         </label>
         <div class="col-sm-3">
           <input type="text" name="penConNum" value="<?=get_text($_GET['penConNum']) ?: ''?>" class="form-control input-sm">
@@ -176,80 +321,13 @@ input[type="number"]::-webkit-inner-spin-button {
           </div>
         </div>
       </div>
+
       <div class="form-group has-feedback">
         <label class="col-sm-2 control-label">
           <b>담당직원정보</b>
         </label>
         <div class="col-sm-3">
           <input type="text" name="entUsrId" class="form-control input-sm" value="<?=$member['mb_giup_boss_name']?>" placeholder="담당직원정보">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading clear">
-      <div class="l-heading-wrap"><strong>장기요양정보</strong></div>
-      <div class="r-heading-wrap">
-        <label class="checkbox-inline">
-          <input type="radio" class="radio_pen_spare" name="penSpare" value="0" style="vertical-align: middle; margin: 0 5px 0 0;" checked>일반수급자
-        </label>
-        <label class="checkbox-inline">
-          <input type="radio" class="radio_pen_spare" name="penSpare" value="1" style="vertical-align: middle; margin: 0 5px 0 0;">예비수급자
-        </label>
-      </div>
-    </div>
-    <div id="panel_ltm" class="panel-body">
-      <div class="form-group has-feedback">
-        <label class="col-sm-2 control-label">
-          <b>장기요양인정번호</b>
-        </label>
-        <div class="col-sm-3">
-          <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
-          <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=preg_replace("/[^0-9]*/s", "", get_text($_GET['penLtmNum'])) ?: ''?>">
-        </div>
-        <p id="penLtmNumResult" style="padding-top: 7px;"></p>
-        <input type="hidden" id="penLtmNumResultVal" value="0">
-      </div>
-
-      <div class="form-group has-feedback">
-        <label class="col-sm-2 control-label">
-          <b>인정등급</b>
-        </label>
-        <div class="col-sm-3">
-          <select class="form-control input-sm" name="penRecGraCd">
-            <option value="00" <?=get_selected($_GET['penRecGraCd'], '00')?>>등급외</option>
-            <option value="01" <?=get_selected($_GET['penRecGraCd'], '01')?>>1등급</option>
-            <option value="02" <?=get_selected($_GET['penRecGraCd'], '02')?>>2등급</option>
-            <option value="03" <?=get_selected($_GET['penRecGraCd'], '03')?>>3등급</option>
-            <option value="04" <?=get_selected($_GET['penRecGraCd'], '04')?>>4등급</option>
-            <option value="05" <?=get_selected($_GET['penRecGraCd'], '05')?>>5등급</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group has-feedback">
-        <label class="col-sm-2 control-label">
-          <b>본인부담금율</b>
-        </label>
-        <div class="col-sm-3">
-          <select class="form-control input-sm" name="penTypeCd">
-            <option value="00" <?=get_selected($_GET['penTypeCd'], '00')?>>일반 15%</option>
-            <option value="01" <?=get_selected($_GET['penTypeCd'], '01')?>>감경 9%</option>
-            <option value="02" <?=get_selected($_GET['penTypeCd'], '02')?>>감경 6%</option>
-            <option value="03" <?=get_selected($_GET['penTypeCd'], '03')?>>의료 6%</option>
-            <option value="04" <?=get_selected($_GET['penTypeCd'], '04')?>>기초 0%</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group has-feedback">
-        <label class="col-sm-2 control-label">
-          <b>유효기간</b>
-        </label>
-        <div class="col-sm-3">
-          <input type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=get_text($_GET['penExpiStDtm']) ?: ''?>"> ~
-          <input type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=get_text($_GET['penExpiEdDtm']) ?: ''?>">
         </div>
       </div>
     </div>
@@ -425,6 +503,7 @@ input[type="number"]::-webkit-inner-spin-button {
   .col-dealing{ width:80%; text-align: left;}
   .dealing{  margin-left: 0px;}
   </style>
+  <?php $sale_ids = array(); $rent_ids = array();?>
 
   <div id="panel_product" class="panel panel-default">
     <div class="panel-heading"><strong>취급가능 품목</strong></div>
@@ -434,10 +513,6 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>판매품목</b>
         </label>
         <div class="col-sm-3 col-dealing">
-          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input type="checkbox" class="chk_sale_product chk_sale_product_all" data-isall="1">전체
-          </label>
-          <br/>
           <?php
           // $sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
           $sale_product_name1="경사로(실내용)"; $sale_product_id1="ITM2021010800001";
@@ -454,9 +529,10 @@ input[type="number"]::-webkit-inner-spin-button {
           $sale_product_name12="목욕의자"; $sale_product_id12="ITM2020092200002";
           $sale_product_name13="이동변기"; $sale_product_id13="ITM2020092200001";
           for($i=1; $i<14; $i++) {
+              $sale_ids[${'sale_product_name'. $i}] = ${'sale_product_id'.$i};
           ?>
-          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
+          <label class="checkbox-inline dealing" id="sale" style="margin-left: 0px; width:146px;">
+            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
           </label>
           <?php } ?>
         </div>
@@ -468,10 +544,6 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>대여품목</b>
         </label>
         <div class="col-sm-3 col-dealing">
-          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input type="checkbox" class="chk_sale_product chk_sale_product_all" data-isall="1">전체
-          </label>
-          <br/>
           <?php
           $rental_product_name0="욕창예방매트리스"; $rental_product_id0="ITM2020092200019";
           $rental_product_name1="경사로(실외용)"; $rental_product_id1="ITM2020092200018";
@@ -482,9 +554,10 @@ input[type="number"]::-webkit-inner-spin-button {
           $rental_product_name6="전동침대"; $rental_product_id6="ITM2020092200013";
           $rental_product_name7="수동휠체어"; $rental_product_id7="ITM2020092200012";
           for($i=0; $i<8; $i++) {
+              $rent_ids[${'rental_product_name'. $i}] = ${'rental_product_id'.$i};
           ?>
-          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
+          <label class="checkbox-inline dealing" id="rental" style="margin-left: 0px; width:146px;">
+            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
           </label>
         <?php } ?>
         </div>
@@ -614,6 +687,23 @@ input[type="number"]::-webkit-inner-spin-button {
 </div>
 
 <script type="text/javascript">
+let post_data = <?=json_encode($_POST);?>;
+if(Object.keys(post_data).length > 0){
+  $(".register-form input[name='penNm']").val(post_data['recipient_name']);
+  $(".register-form input[name='penLtmNum']").val(post_data['recipient_num']);
+  $(".register-form input[name='SbaCd']").val(post_data['type']+' '+post_data['percent']);
+  $(".register-form input[name='penRecGraCd']").val(post_data['grade']);
+  $(".register-form input[name='penTypeCd']").val(post_data['type']);
+  $(".register-form input[name='penPayRate']").val(post_data['percent']);
+  $(".register-form input[name='penExpiStDtm']").val(post_data['penExpiDtm'].split(' ~ ')[0]);
+  $(".register-form input[name='penExpiEdDtm']").val(post_data['penExpiDtm'].split(' ~ ')[1]);
+  $(".register-form input[name='penApplyStDtm']").val(post_data['penApplyDtm'].split(' ~ ')[0]);
+  $(".register-form input[name='penApplyEdDtm']").val(post_data['penApplyDtm'].split(' ~ ')[1]);
+  $(".register-form input[name='penBirth']").val(post_data['birth'].replaceAll('-', ''));
+  $(".register-form input[name='penJumin1']").val(post_data['birth'].replaceAll('-', '').substr(2,6));
+  $(".register-form input[name='BDay']").val(post_data['birth'].replaceAll('-', ''));
+}
+
 var zipPopupDom = document.getElementById("zipAddrPopupIframe");
 var penid="";
       
@@ -633,26 +723,20 @@ $(document).ready(function () {
   $(".register-form select[name='penBirth3']").val(day);
 
   <?php } ?>
-
-  $('.chk_sale_product').click(function() {
-    var parent = $(this).closest('div');
-
-    if ($(this).data('isall')) {
-      var checked = $(this).is(":checked");
-      $(parent).find(".chk_sale_product").prop('checked', checked);
-      return;
-    }
-
-    var total = $(parent).find('.chk_sale_product_child').length;
-    var checkedTotal = $(parent).find('.chk_sale_product_child:checked').length;
-
-    $(parent).find('.chk_sale_product_all').prop('checked', total <= checkedTotal); 
-
-    return;
-  });
 });
 
+
+// macro_request에 들어있는 판매/대여 아이템들의 값이 -1이면 판매/대여 불가
+let item_arr = <?=json_encode($item_arr)?>;
+for(var i = 0; i < Object.keys(item_arr).length; i++){
+  if(Object.values(item_arr)[i] > -1){
+    $("input[name='"+Object.keys(item_arr)[i]+"']").prop("checked", true);
+  }
+}
+
+
 function recipientNumCheck(penLtmNum) {
+  var checking = true;
   if (penLtmNum.length == 10) {
     $.post('./ajax.my.recipient.num.check.php', {
       penLtmNum : "L" + penLtmNum
@@ -660,21 +744,20 @@ function recipientNumCheck(penLtmNum) {
     .done(function(result) {
       var ent_pen = result.data.ent_pen;
       if (ent_pen) {
-        $('#penLtmNumResult').text('이미 등록된 수급자 입니다.');
-        $('#penLtmNumResult').css('color', '#d44747');
+        alert('이미 등록된 수급자 입니다.');
+        checking = false;
+        return window.location.href = "./my_recipient_view.php?id="+ent_pen['penId'];
       }
-      else {
-        $('#penLtmNumResult').text('등록가능한 수급자 입니다.');
-        $('#penLtmNumResult').css('color', '#4788d4');
-        $('#penLtmNumResultVal').val(1);
-      }
-      $('#penLtmNumResult').show();
     })
     .fail(function($xhr) {
       var data = $xhr.responseJSON;
       alert(data && data.message);
+      checking = false;
+      return false;
     });
+    return checking;
   }
+  return !checking;
 }
 
 //생년월일
@@ -826,33 +909,27 @@ $(function(){
   $(document).on('change', 'input[name^="pro_type"]', function() {
     onProTypeChange($(this));
   });
-  
-  function onPenSpareChange($this) {
-    var val = $this.val();
 
-    if(val == '1') { // 예비수급자
+  // 예비수급자 체크박스 클릭 여부에 따라 장기요양정보 칸 숨김
+  $(document).on('change', '.chk_rep_spare', function() {
+    if($('.chk_rep_spare').is(":checked")){
       $('#panel_ltm').hide();
       $('#panel_product').hide();
     } else {
       $('#panel_ltm').show();
       $('#panel_product').show();
     }
-  }
-  $('.radio_pen_spare').change(function() {
-    onPenSpareChange($(this));
-  });
-
-  // 요양번호 중복 체크
-  $("#penLtmNum").on('keyup', function() {
-    $('#penLtmNumResult').hide();
-    $('#penLtmNumResultVal').val(0);
-    var penLtmNum = $("#penLtmNum").val();
-    recipientNumCheck(penLtmNum);
   });
 
   // 등록
   var loading = false;
   $("#btn_submit").click(function() {
+    var penLtmNum = $("#penLtmNum").val();
+
+    if(!recipientNumCheck(penLtmNum)){
+      return false;
+    }
+    
 
     if(loading) {
       alert('등록 중입니다. 잠시만 기다려주세요.');
@@ -869,8 +946,27 @@ $(function(){
       }
     }
 
-    var penJumin =  document.getElementById('penJumin1').value;
+    var penJumin =  $(".register-form input[name='BDay']").val().substr(2, 6);
+    
+    var penBirth = $(".register-form input[name='BDay']").val().substr(0,4)+'-'+$(".register-form input[name='BDay']").val().substr(4,2)+'-'+$(".register-form input[name='BDay']").val().substr(6,2);
     var penLtmNum =  document.getElementById('penLtmNum');
+
+    var pentype = $(".register-form input[name='SbaCd']").val();
+    var penTypeCd = ''; //코드 일반15:00/감경9:01/감경6:02/의료6:03/기초0:04;
+    var penTypeNm = ''; //형식 일반 15%, 감경 9%, 기초 0%
+    if(pentype.substr(0, 2) == '일반' || pentype.substr(0, 2) == '의료' || pentype.substr(0, 2) == '기초'){ //일반의료기초
+      var percnt = pentype.substr(0, 2) == '일반'? ' 15%' : pentype.substr(0, 2) == '의료'? ' 6%' : ' 0%';
+
+      penTypeNm = pentype.substr(0, 2) + percnt;
+      penTypeCd = pentype.substr(0, 2) == '일반'? '00' : pentype.substr(0, 2) == '의료'? '03' : '04';
+    } else { //감경
+      penTypeNm = pentype.replace('(',' ').replace(')','');
+      penTypeCd = pentype.substr(3, 1) == '6'? '02' : '01';
+    }
+
+    var recgrd = $(".register-form input[name='penRecGraCd']").val().replace(/[^0-9]/g, '') == '' ? '0' : $(".register-form input[name='penRecGraCd']").val().replace(/[^0-9]/g, '');
+    var penRecGraNm = $(".register-form input[name='penRecGraCd']").val();
+    var penRecGraCd = '0'+recgrd;
 
     var penSpare = $(".register-form input[name='penSpare']:checked").val();
     if(penSpare != '1') {
@@ -882,9 +978,6 @@ $(function(){
         return false;
       }
     }
-    var penBirth = $(".register-form select[name='penBirth1']").val()+'-'
-    + $(".register-form select[name='penBirth2']").val()+'-'
-    + $(".register-form select[name='penBirth3']").val();
 
     var penProBirth = $(".register-form select[name='penProBirth1']").val()+'-'
     + $(".register-form select[name='penProBirth2']").val()+'-'
@@ -919,23 +1012,23 @@ $(function(){
       tutorial : $(".register-form input[name='tutorial']").val(),
       penNm : $(".register-form input[name='penNm']").val(),
       penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
-      penRecGraCd: $(".register-form select[name='penRecGraCd']").val(),
-      penRecGraNm: $(".register-form select[name='penRecGraCd'] option:selected").text(),
+      penRecGraCd: penRecGraCd,
+      penRecGraNm: penRecGraNm,
       penGender : $(".register-form input[name='penGender']:checked").val(),
       penBirth : penBirth,
       penJumin : penJumin,
-      penTypeCd : $(".register-form select[name='penTypeCd']").val(),
-      penTypeNm: $(".register-form select[name='penTypeCd'] option:selected").text(),
+      penTypeCd : penTypeCd,
+      penTypeNm: penTypeNm,
       penConNum : $(".register-form input[name='penConNum']").val(),
       penConPnum : $(".register-form input[name='penConPnum']").val(),
       penExpiStDtm : $(".register-form input[name='penExpiStDtm']").val(),
       penExpiEdDtm : $(".register-form input[name='penExpiEdDtm']").val(),
-      penAppStDtm1 : $(".register-form input[name='penExpiStDtm']").val(),
-      penAppEdDtm1 : $(".register-form input[name='penExpiEdDtm']").val(),
-      penAppStDtm2 : $(".register-form input[name='penExpiStDtm']").val(),
-      penAppEdDtm2 : $(".register-form input[name='penExpiEdDtm']").val(),
-      penAppStDtm3 : $(".register-form input[name='penExpiStDtm']").val(),
-      penAppEdDtm3 : $(".register-form input[name='penExpiEdDtm']").val(),
+      penAppStDtm1 : $(".register-form input[name='penApplyStDtm']").val(),
+      penAppEdDtm1 : $(".register-form input[name='penApplyEdDtm']").val(),
+      penAppStDtm2 : $(".register-form input[name='penApplyStDtm']").val(),
+      penAppEdDtm2 : $(".register-form input[name='penApplyEdDtm']").val(),
+      penAppStDtm3 : $(".register-form input[name='penApplyStDtm']").val(),
+      penAppEdDtm3 : $(".register-form input[name='penApplyEdDtm']").val(),
       penRecDtm : "0000-00-00",
       penAppDtm : "0000-00-00",
       penZip : $(".register-form input[name='penZip']").val(),
@@ -961,7 +1054,60 @@ $(function(){
       penSpare: penSpare,
       pros: pros
     }, 'json')
-    .done(function(result) {
+    .done(function(result) {      
+      // macro_request 상태 업데이트
+      $.post('./ajax.macro_update.php', {
+        mb_id : "<?=$member['mb_id']?>",
+        recipient_name : $(".register-form input[name='penNm']").val(),
+        recipient_num : $(".register-form input[name='penLtmNum']").val()
+      }, 'json')
+      .done(function(result) {
+        console.log(result);
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        if(data['message'] == "no data"){
+          $.ajax({
+              type: 'POST',
+              url: './ajax.macro_request.php',
+              data: {
+                  mb_id: "<?=$member['mb_id']?>",
+                  name: $(".register-form input[name='penNm']").val(),
+                  num: $(".register-form input[name='penLtmNum']").val(),
+                  birth: penBirth,
+                  grade: $(".register-form input[name='penRecGraCd']").val(),
+                  type: $(".register-form input[name='penTypeCd']").val(),
+                  percent: $(".register-form input[name='penPayRate']").val(),
+                  penApplyDtm: $(".register-form input[name='penApplyStDtm']").val()+' ~ '+$(".register-form input[name='penApplyEdDtm']").val(),
+                  penExpiDtm: $(".register-form input[name='penExpiStDtm']").val()+' ~ '+$(".register-form input[name='penExpiEdDtm']").val(),
+                  rem_amount: rep_info['LIMIT_AMT'],
+                  item_data:  JSON.parse(rep_raw['recipientPurchaseRecord'])
+              },
+              dataType: 'json'
+          })
+          .done(function(result) {
+            // 이로움 DB에 계약정보 insert
+            $.post('./ajax.my.recipient.hist.php', {
+              data: rep_raw,
+              status: true,
+              penLtmNum: "<?=$_GET['penLtmNum']?>"
+            }, 'json')
+            .fail(function($xhr) {
+              var data = $xhr.responseJSON;
+              alert("계약정보 업데이트에 실패했습니다!");
+            })
+            .always(function() {
+              loading = false;
+            });
+          });
+        } else {
+          alert("상태 업데이트에 실패했습니다!");
+        }
+      })
+      .always(function() {
+        loading = false;
+      });
+
       var data = result.data;
 
       if(data.isSpare)
@@ -998,6 +1144,7 @@ $(function(){
       .always(function() {
         loading = false;
       });
+
     })
     .fail(function($xhr) {
       loading = false;
@@ -1005,6 +1152,119 @@ $(function(){
       alert(data && data.message);
     });
   });
+
+
+  let rep_raw;
+  let rep_info;
+  // 데이터 업데이트(장기요양정보 관련 입력 필드)
+  $('#btn_pen_update').click(function() {
+      var str_rn = $("input[name='penNm']")[0].value;
+      var str_id = $("input[name='penLtmNum']")[0].value;
+      var btn_update = document.getElementById('btn_pen_update');
+      btn_update.disabled = true;
+
+      $.ajax('ajax.recipient.inquiry.php', {
+          type: 'POST',  // http method
+          data: { id : str_id,rn : str_rn },  // data to submit
+          success: function (data, status, xhr) {              
+              recipientNumCheck($("#penLtmNum").val());
+
+              alert(data['message']);
+              let sale_ll = [];
+              let rent_ll = [];
+              rep_raw = data['data'];
+              let rep_list = data['data']['recipientContractDetail']['Result'];
+              
+              rep_info = rep_list['ds_welToolTgtList'][0];
+              let applydtm = '';
+              for(var ind = 0; ind < rep_list['ds_toolPayLmtList'].length; ind++){
+                var appst = new Date(rep_list['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(6,2));
+                var apped = new Date(rep_list['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(6,2));
+                var today = new Date();
+                if(today < apped && today > appst){
+                  applydtm = appst.toISOString().split('T')[0]+' ~ '+apped.toISOString().split('T')[0];
+                  break;
+                }
+                if(ind == rep_list['ds_toolPayLmtList'].length-1){
+                  applydtm = rep_list['ds_toolPayLmtList'][0]['APDT_FR_DT']+' ~ '+rep_list['ds_toolPayLmtList'][0]['APDT_TO_DT'];
+                }
+              }
+
+              let penPayRate = rep_info['REDUCE_NM'] == '일반' ? '15%': rep_info['REDUCE_NM'] == '기초' ? '0%': rep_info['REDUCE_NM'] == '의료급여' ? '6%':
+              (rep_info['SBA_CD'].split('(')[1].substr(0, rep_info['SBA_CD'].split('(')[1].length-1));
+
+              $("input[name='penRecGraCd']")[0].value = rep_info['LTC_RCGT_GRADE_CD']+"등급";
+
+              $("input[name='penTypeCd']")[0].value = rep_info['REDUCE_NM'];
+              $("input[name='SbaCd']")[0].value = rep_info['SBA_CD'];
+              $("input[name='penPayRate']")[0].value = penPayRate;
+
+              $("input[name='penExpiStDtm']")[0].value = rep_info['RCGT_EDA_FR_DT'].substr(0,4)+'-'+rep_info['RCGT_EDA_FR_DT'].substr(4,2)+'-'+rep_info['RCGT_EDA_FR_DT'].substr(6,2);
+              $("input[name='penExpiEdDtm']")[0].value = rep_info['RCGT_EDA_TO_DT'].substr(0,4)+'-'+rep_info['RCGT_EDA_TO_DT'].substr(4,2)+'-'+rep_info['RCGT_EDA_TO_DT'].substr(6,2);
+              $("input[name='penApplyStDtm']")[0].value = applydtm.split(' ~ ')[0];
+              $("input[name='penApplyEdDtm']")[0].value = applydtm.split(' ~ ')[1];
+              $("input[name='penBirth']")[0].value = rep_info['BDAY'];
+              $("input[name='penJumin1']")[0].value = rep_info['BDAY'].substr(2, 6);
+              $("input[name='BDay']")[0].value = rep_info['BDAY'];
+              
+              let pd_list = JSON.parse(data['data']['recipientToolList'])['Result'];
+
+              let pd_keys = ['ds_payPsblLnd1','ds_payPsblLnd2','ds_payPsbl1','ds_payPsbl2'];
+                            
+              for(var i = 0; i < Object.keys(pd_list).length; i++){
+                let pd_type = pd_keys[i].substr(0, pd_keys[i].length-1) == 'ds_payPsbl'?'sale':'rent';             
+                for(var ind = 0; ind < pd_list[pd_keys[i]].length; ind++){
+                    let pd_name = pd_list[pd_keys[i]][ind]['WIM_ITM_CD'].replace(' ','');
+                    eval(pd_type + '_ll')[pd_name] = pd_keys[i].substr(pd_keys[i].length-1, 1) == '2'?0:1;   
+                }
+              }
+              
+              var sale_ids = <?= json_encode($sale_ids);?>              
+              var rent_ids = <?= json_encode($rent_ids);?>
+
+              for(var ind = 0; ind < Object.keys(sale_ll).length; ind++){
+                  if(Object.keys(sale_ll)[ind] == '미끄럼방지용품'){
+                      $("input[name='"+sale_ids['미끄럼방지용품(양말)']+"']")[0].checked = Object.values(sale_ll)[ind];
+                      $("input[name='"+sale_ids['미끄럼방지용품(매트)']+"']")[0].checked = Object.values(sale_ll)[ind];
+                  } else {
+                      $("input[name='"+sale_ids[Object.keys(sale_ll)[ind]]+"']")[0].checked = Object.values(sale_ll)[ind];
+                  }
+              }
+
+              for(var idx = 0; idx < Object.keys(rent_ll).length; idx++){
+                  $("input[name='"+rent_ids[Object.keys(rent_ll)[idx]]+"']")[0].checked = Object.values(rent_ll)[idx];
+              }
+
+              /** Insert for saving PEN purchase history record by Jake**/
+                    let pen_purchase_hist = rep_list['ds_ctrHistTotalList'];
+                    /*
+              for ( idx = 0; idx < pen_purchase_hist.length ; idx++)
+              {
+                console.log( idx, " : ", pen_purchase_hist[idx] );
+
+              }
+              */
+             
+              $.post('./ajax.inquiry_log.php', {
+                data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : str_id,pen_nm : str_rn,resultMsg : status,occur_page : "my_recipient_write.php" }
+              }, 'json')
+              .fail(function($xhr) {
+                var data = $xhr.responseJSON;
+                alert("로그 저장에 실패했습니다!");
+              });
+
+              btn_update.disabled = false;
+          },
+          error: function (jqXhr, textStatus, errorMessage) {
+              var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
+              alert(errMSG);
+              btn_update.disabled = false;
+              return false;
+          }                    
+          
+      });
+
+    });
 
   // 보호자 추가
   var pro_index = 0;

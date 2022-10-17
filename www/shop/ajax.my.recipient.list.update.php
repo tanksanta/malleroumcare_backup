@@ -20,5 +20,13 @@ if ($data['isSpare'] == 'Y')
 if(!$res || $res['errorYN'] != 'N')
   json_response(500, $res['message'] ?: '시스템서버가 응답하지 않습니다.');
 
+if($data['penLtmNum'] != null || $data['penLtmNum'] != ''){
+  $delete_macro = "DELETE FROM macro_request WHERE mb_id = '".$member['mb_id']."' AND recipient_num = '".str_replace('L', '', $data['penLtmNum'])."';";
+  $delete_hist = "DELETE FROM pen_purchase_hist WHERE ENT_ID = '".$member['mb_entId']."' AND PEN_LTM_NUM = '".$data['penLtmNum']."';";
+  
+  sql_query($delete_macro);
+  sql_query($delete_hist);
+}
+
 json_response(200, 'OK', $res);
 ?>

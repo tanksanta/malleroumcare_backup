@@ -18,10 +18,13 @@ recipient_link_clean();
 $write_pages = 5;
 $page_rows = $_COOKIE["recipient_page_rows"] ? $_COOKIE["recipient_page_rows"] : 10;
 $page = $_GET["page"] ?? 1;
+$page_option = $_GET['option'] ?? 'none'; // none : expire : rental
 
 $send_data = [];
 $send_data["usrId"] = $member["mb_id"];
 $send_data["entId"] = $member["mb_entId"];
+$res_tot = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
+
 $send_data["pageNum"] = $page;
 $send_data["pageSize"] = $page_rows;
 if ($sel_field === 'penNm') {
@@ -35,7 +38,113 @@ if ($sel_field === 'penProNm') {
 }
 $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
 
+if ( $page_option === 'expire' || $page_option === 'rental')
+{
+	$res['data']=null;
+}
+
+echo "<script>console.log('page :  ".$page."');</script>"; // 정상
+
 $list = [];
+// count on meeting with expire date within one month
+$list_reipient_on_dealine = [];
+$timetoday = date('y-m-d');
+$today = new DateTime($timetoday);
+
+$count_on_deadline = 0;
+$total_amt_pention_in_list = 0;
+$penDefaultAmt = 1600000; 
+$remainAmt = 0;
+$exp_idx = 0;
+$remainAmtList = [];
+$day_diff = 0;
+$arr_item_pl = array(); // 수급자별 우리샵 판매/계약/대역 내역 구하기
+$arr_rental = array();
+$arr_expire = array();
+
+//print_r($jjjres);
+//echo "<br/>===================================================<br/>";
+//print_r($res['data']);
+
+// 수급자 수가 페이지 최대 수보다 많을때(페이징 필요할 때)
+/*
+if ($res["total"] > $page_rows) 	{
+  $send_data["pageNum"] = $page;
+  $send_data["pageSize"] = $res['total'];
+}   
+$res_tot = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
+*/
+
+// echo "<script>console.log('res_tot :  ".json_encode($res_tot)."');</script>"; // 정상
+// echo "<script>console.log('res_tot count :  ".count($res_tot['data'])."');</script>"; // 정상
+// echo "<script>console.log('res :  ".json_encode($res)."');</script>"; // 정상
+// echo "<script>console.log('res count :  ".count($res['data'])."');</script>"; // 정상
+
+// 남은 적용기간이 30일 이내인 수급자 찾기(전체목록에서는 카운트만 사용)
+for ($idx = 0 ; $idx < $res_tot['total'] ; $idx++){
+  $thatday = new DateTime(substr($res_tot['data'][$idx]['penAppEdDtm'],0,8)); // 각 수급자의 적용기간 끝나는 시점
+  if (strtotime($timetoday) < strtotime(substr($res_tot['data'][$idx]['penAppEdDtm'],0,8))) { // 오늘보다 적용기간 끝나는 날짜가 뒤여야 한다
+    $day_diff = fmod(date_diff($thatday,$today)->days,365); // 날짜 차이 계산(365로 나눈 나머지를 구하는 이유는 모름)
+
+    if ($day_diff< 30) { // 30일 아래로 차이나면
+				$count_on_deadline++; // 상단에 올라갈 카운트 계산
+        $arr_expire[] = $res_tot['data'][$idx];
+			}
+
+    if (date_diff($thatday,$today)->days > 0) { // 적용구간 남아있는 수급자 
+      $tmp_row = get_totalamt_pention($res_tot['data'][$idx]['penLtmNum']); // PEN_PURCHASE_HIST 기록 가져오기
+      $remainAmt = $tmp_row['PEN_BUDGET']; 
+      $tmpLtmNum =$res_tot['data'][$idx]['penLtmNum']; 
+      $remainAmtList[$tmpLtmNum]["remainAmt"] = $remainAmt> 0?$remainAmt:$penDefaultAmt;
+      //$remainAmtList[$tmpLtmNum]["updatedDate"] = $tmp_row['MODIFY_DTM'];
+      $remainAmtList[$tmpLtmNum]["updatedDate"] =
+        substr($res_tot['data'][$idx]['modifyDtm'],0,4).'-'.substr($res_tot['data'][$idx]['modifyDtm'],4,2).'-'.substr($res_tot['data'][$idx]['modifyDtm'],6,2);
+
+      if ($remainAmt  > 0) {
+        $total_amt_pention_in_list += $remainAmt;
+      } else {
+        $total_amt_pention_in_list += $penDefaultAmt;
+      }
+    } 
+
+  }
+
+  $thatday = null;
+} 
+echo "<script>console.log('remainAmtList :  ".json_encode($remainAmtList)."');</script>"; // 정상
+
+// 적용기간 종료 명수를 클릭해서 들어온 경우
+if ( $page_option === 'expire' ){
+  // $res['data'] = $arr_expire;
+  $page_start = $page - 1;
+  $res['data'] = array_slice($arr_expire, $page_start*$page_rows, $page_rows, true);
+  $res['total'] = count($arr_expire);
+}
+
+$rental_list_within_period = []; 
+$rental_list_within_period = get_rentalitem_deadline2($member["mb_entId"]);
+$total_rental_price = 0;
+for ($idx = 0 ; $idx < count($rental_list_within_period); $idx++){
+  for($idx_i = 0; $idx_i < $res_tot['total']; $idx_i++) {
+    if (strcmp($res_tot['data'][$idx_i]['penLtmNum'], $rental_list_within_period[$idx]['penLtmNum']) == 0) {
+      $arr_rental[] = $res_tot['data'][$idx_i];
+      $total_rental_price += $rental_list_within_period[$idx]['total_price'];
+    }
+  }
+}
+
+// 대여기간 종료 명수를 클릭해서 들어온 경우
+if ( $page_option === 'rental' ){
+  // $res['data'] = $arr_rental;
+  $page_start = $page - 1;
+  $res['data'] = array_slice($arr_rental, $page_start*$page_rows, $page_rows, true);
+  $res['total'] = count($arr_rental);
+}
+
+echo "<script>console.log('arr_rental :  ".json_encode($arr_rental)."');</script>"; // 정상
+echo "<script>console.log('arr_rental :  ".count($arr_rental)."');</script>"; // 정상
+
+
 if($res["data"]) {
   foreach($res['data'] as $data) {
     // 수급자 필수정보 입력 체크
@@ -78,6 +187,8 @@ if($res["data"]) {
     $list[] = $data;
   }
 }
+// 수급자별 우리샵 구매내역
+//$res_arr = get_contract_info($member["mb_entId"], $arr_item_pl);
 
 # 페이징
 $total_count = $res["total"];
@@ -118,12 +229,20 @@ if($res["data"]) {
 $total_count_spare = $res["total"];
 $total_page_spare = ceil( $total_count_spare / $rows_spare ); # 총 페이지
 
-
+/*
+$ctr_cnt_sql = "select ENT_ID, PEN_NM, PEN_LTM_NUM, ORD_STATUS,count(*) as cnt from pen_purchase_hist where ent_id = '{$member["mb_entId"]}' and (curdate() between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) group by pen_ltm_num, ord_status;";
+$ctr_cnt_res = sql_query($ctr_cnt_sql);
+$arr_crt_cnt = [];
+while ($res_item = sql_fetch_array($ctr_cnt_res)) { 
+  $arr_crt_cnt[$res_item['PEN_LTM_NUM']][$res_item['ORD_STATUS']] = $res_item['cnt'];
+}
+*/
 // 수급자 연결
 $links = get_recipient_links($member['mb_id']);
 ?>
 <script src="<?php echo G5_JS_URL; ?>/client.min.js"></script>
 <script src="<?php echo G5_JS_URL; ?>/recipient_device_security.js"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.0/iconify-icon.min.js"></script>
 <script>
 function get_fingerprint() {
   var client = new ClientJS(); // Create A New Client Object
@@ -133,7 +252,7 @@ function get_fingerprint() {
 	var canvasPrint = client.getCanvasPrint();
   var fingerprint = client.getCustomFingerprint(ua, canvasPrint);
 
-  console.log( fingerprint );
+   console.log( fingerprint );
   return fingerprint;
 }
 
@@ -149,9 +268,9 @@ $(function() {
     });
 });
 
-$(document.body).on('change','#page_rows',function(){
+$(document.body).on('change','#page_rows',function(){ // 10/15/20/.../개씩 보기 변경 시
   var recipient_page_rows = $("#page_rows option:selected").val();
-  console.log(recipient_page_rows);
+  // console.log(recipient_page_rows);
   $.cookie('recipient_page_rows', recipient_page_rows, { expires: 365 })
   window.location.reload();
 })
@@ -182,10 +301,12 @@ function form_check(act) {
       return false;
     }
 
-    $("input[name^=chk]:checked").each(function() {
+    $("input[name^=chk]:checked").each(function(i) {
       var chk_value = this.value.split("|");
       var penId = chk_value[0];
       var sell_count = chk_value[1];
+      var data_penNum = $("input[name^=chk]:checked").parent().parent().eq(i).children().find("span[class='data_penNum']").text();
+
       if (sell_count > 0) {
         alert("선택한 수급자 중 주문이 있는 수급자는 일괄삭제가 불가능합니다. 삭제를 원하시면 상세화면에서 삭제해주시기 바랍니다.");
         requests = [];
@@ -195,7 +316,7 @@ function form_check(act) {
         $.ajax({
           type: 'POST',
           url: './ajax.my.recipient.list.update.php',
-          data: {penId : penId, delYn : 'Y'}
+          data: {penId : penId, delYn : 'Y', penLtmNum : data_penNum}
         })
       );
     });
@@ -244,6 +365,10 @@ function form_check(act) {
       );
     });
   }
+  else if (act == "show_list_all")
+  {
+	location.href = './my_recipient_list.php';
+  }
 
   if (requests.length > 0) {
     $.when.apply($, requests).then(function() {
@@ -287,6 +412,121 @@ function form_check(act) {
   margin: 20px;
   color: #666;
 }
+
+.rep_update {
+  position: relative;
+  width: 100%;
+  height: 225px;
+  padding-top: 10px;
+}
+
+.rep_update .btn_update {
+  float: right;
+  position: relative;
+  display: inline-block;
+  color: #333;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  height: 30px;
+  padding: 5px 20px;
+  border-radius: 3px;
+  vertical-align: middle;
+  background-color: #ee8102;
+  color: #fff;
+  border: none;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+.rep_update .final_update {
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 1;
+  width: fit-content;
+  height:fit-content;
+  float: left;
+  position: relative;
+  bottom: 0;
+  margin:10px 0px 0px 0px;
+  vertical-align: bottom
+}
+.rep_update table {
+  border-collapse: collapse;
+  border: #D4D4D4 1px solid;
+  width: 100%;
+  border-radius: 5px;
+  border-style: hidden;
+  box-shadow: 0 0 0 1px #D4D4D4;
+  margin-top: 5px;
+}
+.rep_update table th{
+  border: #D4D4D4 1px solid;
+  text-align: center;
+  padding: 30px 0px 20px 0px;
+  width: 33.3%;
+}
+
+.chk_mobile input[type="checkbox"] {
+    width: 3em;
+    height: 3em;
+    background: url('./img/none_check.png') no-repeat center center / contain;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 50%;
+    vertical-align: middle;
+    outline: none;
+    cursor: pointer;
+}
+
+.chk_mobile input[type="checkbox"]:checked {
+  background: url('./img/check.png') no-repeat center center / contain;
+}
+.rep_update .con_top{ font-weight: normal; font-size: 20px; line-height: 1; }
+.rep_update .con_mid{ font-weight: 800; font-size: 30px; line-height: 2; }
+.rep_update .con_bot{ font-weight: normal; font-size: 15px; line-height: 1; }
+@media (max-width: 960px) {
+  .rep_update table th{ padding: 15px 0px 10px 0px; }
+  .rep_update .con_top{ font-size: 16px; }
+  .rep_update .con_mid{ font-size: 24px; }
+  .rep_update .con_bot{ font-size: 12px; }
+  .rep_update { height: 180px; }
+  #mobile_rep_list .chk_mobile { width: 10%; }
+  #mobile_rep_list .info { width: 75%; }
+  #mobile_rep_list .li_box_right_btn { width: 15rem; }
+}
+@media (max-width: 720px) {
+  .rep_update table th{ padding: 15px 0px 10px 0px; }
+  .rep_update .con_top{ font-size: 12px; }
+  .rep_update .con_mid{ font-size: 18px; }
+  .rep_update .con_bot{ font-size: 9px; }
+  .chk_mobile input[type="checkbox"] { margin-right: 15rem; }
+  .rep_update { height: 170px; }
+}
+@media (max-width: 480px) {
+  .rep_update table th{ padding: 15px 0px 10px 0px; }
+  .rep_update .con_top{ font-size: 8px; }
+  .rep_update .con_mid{ font-size: 12px; }
+  .rep_update .con_bot{ font-size: 5px; }
+  .rep_update { height: 160px; }
+  .rep_update .final_update { font-size: 12px; }
+  .chk_mobile input[type="checkbox"] { width: 2em; height: 2em; margin-right: 10rem; }
+  #mobile_rep_list .li_box_right_btn { width: 10rem; }
+}
+@media (max-width: 430px) {
+  .chk_mobile input[type="checkbox"] { width: 1.5em; height: 1.5em; }
+}
+@media (max-width: 380px) {
+  .rep_update .con_mid{ font-size: 10px; }
+  .rep_update .con_bot{ font-size: 4px; }
+  .rep_update .btn_update { font-size: 12px; padding: 3px 15px; }
+}
+@media (max-width: 300px) {
+  .rep_update .con_mid{ font-size: 10px; }
+  .rep_update .con_bot{ font-size: 4px; }
+  .rep_update .btn_update { font-size: 12px; padding: 3px 15px; }
+  #mobile_rep_list .info { width: 65%; }
+  #mobile_rep_list .li_box_right_btn { width: 8rem; }
+}
 </style>
 
 <!-- 210204 수급자목록 -->
@@ -315,6 +555,58 @@ function form_check(act) {
     </div>
   </div>
 
+  <div class="rep_update">
+        <!--- <a class = "btn_update" href="./my_recipient_update.php?id=<?=$pen['penId']?>" >변경내역 업데이트</a> -->
+        <!-- <p class="final_update">최종 업데이트 YYYY-MM-DD</p> -->
+      <table >
+          <th>
+            <div>
+              <p class="con_top">계약 가능 금액</p>
+              <p class="con_mid" style="color: #ee0000;"><?php echo number_format($total_amt_pention_in_list); ?></p>
+              <p class="con_bot">* 등록된 전체 수급자의 잔여금액 합계</p>
+              <p class="con_bot">(유효 적용기간 기준)</p>
+            </div>
+          </th>
+          <th>
+              <p class="con_top">적용구간 종료 30일 이내</p>
+      		  <p class="con_mid"><a href="my_recipient_list.php?option=expire"><?php echo $count_on_deadline ?>명</a></p>
+              <p class="con_bot">* 조회일이 포함된 적용구간 기준</p>
+          </th>
+          <th>
+              <p class="con_top">대여기간 종료 30일 이내</p>
+              <!-- <p class="con_mid"><a href="my_recipient_list.php?option=rental"><?php echo count($rental_list_within_period)?>명</p> -->
+              <p class="con_mid"><a href="my_recipient_list.php?option=rental"><?php echo count($arr_rental)?>명</p>
+              <p class="con_bot">* 재계약 가능 금액 : <?php echo number_format($total_rental_price)?>원</p>
+          </th>
+      </table>
+  </div>
+<!--
+  <div style="position: relative; width: 100%; height: 250px; padding-top: 30px; margin-bottom: 30px;">
+      <div>
+          <p style="font-weight: normal; font-size: 20px">최종 업데이트 YYYY-MM-DD</p>
+      </div>
+      <div style="position: relative;">
+          <div style="width: 33.3%; height: 80%; float: left; text-align: center;
+          border: #0c0c0c 1px solid; padding: 35px 5px 20px 5px; border-radius: 10px 0px 0px 10px;">
+              <p style="font-weight: normal; font-size: 20px; line-height: 1;">계약 가능 금액</p>
+              <p style="font-weight: 800; font-size: 30px; line-height: 2;">0,000,000,000원</p>
+              <p style="font-weight: normal; font-size: 15px; line-height: 1;">* 기초등급 1,600,000원 기준</p>
+          </div>
+          <div style="width: 33.3%; height: 80%; float: left;  text-align: center;
+          border: #0c0c0c 1px solid; border-left-style:none; border-right-style: none; padding: 35px 5px 20px 5px;">
+              <p style="font-weight: normal; font-size: 20px; line-height: 1;">적용구간 내 미계약</p>
+              <p style="font-weight: 800; font-size: 30px; line-height: 2;">00명</p>
+              <p style="font-weight: normal; font-size: 15px; line-height: 1;">* 조회일이 포함된 적용구간 기준</p>
+          </div>
+          <div style="width: 33.3%; height: 80%; float: left;  text-align: center;
+          border: #0c0c0c 1px solid; padding: 35px 5px 20px 5px; border-radius: 0px 10px 10px 0px;">
+              <p style="font-weight: normal; font-size: 20px; line-height: 1;">대여종료일 N개월 미만</p>
+              <p style="font-weight: 800; font-size: 30px; line-height: 2;">00명</p>
+              <p style="font-weight: normal; font-size: 15px; line-height: 1;">* 재계약 가능 금액 : 000,000원</p>
+          </div>
+      </div>
+  </div>
+-->
   <div class="recipient_security">
     <input type="hidden" value="N" class="device_security">
     <div>
@@ -357,7 +649,7 @@ function form_check(act) {
       <a href="javascript::" class="btn eroumcare_btn2" id="recipient_excel_download" title="수급자 엑셀 다운로드">수급자 엑셀 다운로드</a>
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
       <a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
-      <div class="tooltip_btn">
+      <?php /*<div class="tooltip_btn">
         <a href="./recipientexcel_b.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="B사 엑셀 일괄등록">
           B사 엑셀 일괄등록
           <span class="question">?</span>
@@ -373,6 +665,8 @@ function form_check(act) {
 
         </div>
       </div>
+	  */ ?>
+
     </div>
     <div class="r_btn_area mobile">
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
@@ -398,7 +692,7 @@ function form_check(act) {
   <div class="list_box pc">
     <form name="fmemberlist" id="fmemberlist" action="#" onsubmit="return fmemberlist_submit(this);" method="post">
     <div class="table_box" style="display:none;">  
-      <table>
+      <table class = "rep_list">
         <tr>
           <th id="mb_list_chk">
             <label for="chkall" class="sound_only">수급자 전체</label>
@@ -407,11 +701,18 @@ function form_check(act) {
           <th>No.</th>
           <th>수급자 정보</th>
           <th>장기요양정보</th>
-          <th>1년사용</th>
+          <!--<th>관리내역</th> -->
+          <th>급여내역</th>
           <th>장바구니</th>
-          <th>비고</th>
+          <th>욕구사정기록지</th>
         </tr>
         <?php $i = -1; ?>
+
+        <script>
+        var list__ = <?=json_encode($list)?>;
+        console.log("list__ : ", list__);
+        </script>
+        
         <?php foreach($list as $data) { ?>
         <?php $i++; ?>
         <tr>
@@ -434,6 +735,8 @@ function form_check(act) {
               <br/>
               <?php if ($data['penProNm']) { ?>
                 보호자(<span class="data_name"><?php echo $data['penProNm']; ?></span><span class="data_phone"><?php echo $data['penProConNum'] ? '/' . $data['penProConNum'] : ''; ?></span>)
+              <?php } else { ?>
+                보호자(<span>미등록</span>)
               <?php } ?>
               <?php
               $pros = get_pros_by_recipient($data['penId']);
@@ -451,29 +754,53 @@ function form_check(act) {
               <span class="data_penNum"><?php echo $data["penLtmNum"]; ?></span>
               (<?php echo $data["penRecGraNm"]; ?><?php echo $pen_type_cd[$data['penTypeCd']] ? '/' . $pen_type_cd[$data['penTypeCd']] : ''; ?>)
               <br/>
-              <?php echo $data['penExpiDtm']; ?>
+			  적용구간 : 
+              <?php 
+                $apped = substr($data['penAppEdDtm'], 0, 4).'-'.substr($data['penAppEdDtm'], 4, 2).'-'.substr($data['penAppEdDtm'], 6, 2); 
+                $appst = date('Y-m-d', strtotime("-1 years +1 days",strtotime($apped))); 
+                while($appst > date('Y-m-d')){
+                  $apped = date('Y-m-d', strtotime("-1 years",strtotime($apped))); 
+                  $appst = date('Y-m-d', strtotime("-1 years",strtotime($appst))); 
+                }
+                echo $appst.' ~ '.$apped;?>
+              <br/>
+              최근 조회일 : <?php echo substr($remainAmtList[$data["penLtmNum"]]["updatedDate"],0,10); ?>
             <?php }else{ ?>
               예비수급자
             <?php } ?>
           </td>
           <td style="text-align:center;">
-            <span class="<?php echo $data['per_year']['sum_price'] > 1400000 ? 'red' : ''; ?>"><?php echo number_format($data['per_year']['sum_price']); ?>원</span>
+            <span class="Pention_Amount"> 잔액 :  <?php echo number_format($remainAmtList[$data["penLtmNum"]]["remainAmt"]); ?>원 </span>
+			</br>
+            <span class="Pention_Amount"> 사용 : <?php echo number_format(1600000-$remainAmtList[$data["penLtmNum"]]["remainAmt"]); ?>원 </span>
+
+            <!--<span class="<?php echo $data['per_year']['sum_price'] > 1400000 ? 'red' : ''; ?>"><?php echo number_format($res_arr[$data['penLtmNum']]['transaction_amt']); ?>원</span>
             <br/>
-            계약 <?php echo $data['per_year']['count']; ?>건, 판매 <?php echo $data['per_year']['sell_count']; ?>건, 대여 <?php echo $data['per_year']['borrow_count']; ?>건
+            계약 <?php echo $res_arr[$data['penLtmNum']]['contract']; ?>건, 판매 <?php echo $res_arr[$data['penLtmNum']]['purchase']?>건, 대여 <?php echo $res_arr[$data['penLtmNum']]['rental'] ?>건
+			-->
           </td>
           <td style="text-align:center;">
-            <?php
-              echo $data['carts'] . '개';
-            ?>
+			<style>
+				a:link { color : black; }
+				a:visited { color : black; }
+				a:hover { color : red; }
+				a:active { color : green }
+			</style>
+			<a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$data['penId'].'&redirect='.urlencode('/shop/cart.php')?>"><?php echo $data['carts'] . '개'; ?></a>
+
             <br/>
             <?php if ($data["penLtmNum"]) { ?>
-            <a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2 small" title="추가하기">추가하기</a>
+
+			<a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$data['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>" class="btn eroumcare_btn2 small" title="추가하기">추가하기</a> 
             <?php } ?>
           </td>
           <td style="text-align:center;">
             <?php if ($data['recYn'] === 'N') { ?>
-              욕구사정기록지 미작성<br/>
+              미작성<br/>
               <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2 small" title="작성하기">작성하기</a>
+            <?php } else { ?>
+              작성완료<br/>
+              <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2 small" title="작성하기">추가작성</a>
             <?php } ?>
           </td>
         </tr>
@@ -489,12 +816,18 @@ function form_check(act) {
     내용이 없습니다
   </div>
   <?php } ?>
-
   <?php if($list) { ?>
   <div class="list_box mobile">
-    <ul class="li_box">
-      <?php foreach ($list as $data) { ?>
+    <ul class="li_box" id="mobile_rep_list">
+      <?php $temp_ind = 0; foreach ($list as $data) { 
+        $contract_sell = get_recipient_contract_sell($data['penId']);?>
       <li>
+        <div class="chk_mobile">
+          <label for="chk_<?php echo $temp_ind; ?>">
+            <input type="checkbox" name="chk[]" value="<?php echo $data['penId'] . '|' . $contract_sell['sell_count'] ?>" id="chk_<?php echo $temp_ind; $temp_ind++; ?>" class="mobile_chk">
+            <i class="circle"></i>
+          </label>
+        </div>
         <div class="info">
         <a onclick='return check_device_security_val()' href='<?php echo G5_URL; ?>/shop/my_recipient_view.php?id=<?php echo $data['penId'];?>'>
             <b>
@@ -505,6 +838,10 @@ function form_check(act) {
             <span class="li_box_protector">
               * 보호자(<?php echo $data['penProNm']; ?><?php echo $data['penProTypeCd'] == '00' ? '/없음' : ''; ?><?php echo $data['penProTypeCd'] == '01' ? '/일반보호자' : ''; ?><?php echo $data['penProTypeCd'] == '02' ? '/요양보호사' : ''; ?>)
             </span>
+            <?php } else { ?>
+                <span class="li_box_protector">
+                  * 보호자(미등록)
+                </span>
             <?php } ?>
             <p>
               <?php if ($data["penLtmNum"]) { ?>
@@ -515,20 +852,14 @@ function form_check(act) {
               <?php } else { ?>
               예비수급자
               <?php } ?>
-            </p>
-            <p>
-            <br/>
-              <b>
-                1년사용: 
-                <span class="<?php echo $data['per_year']['sum_price'] > 1400000 ? 'red' : ''; ?>"><?php echo number_format($data['per_year']['sum_price']); ?>원</span>
-              </b>
-              <span style="font-size:0.9em;">
-                계약 <?php echo $data['per_year']['count']; ?>건, 판매 <?php echo $data['per_year']['sell_count']; ?>건, 대여 <?php echo $data['per_year']['borrow_count']; ?>건
-              </span>
+              <?php echo "<br/>급여 잔액 : ".number_format($remainAmtList[$data["penLtmNum"]]["remainAmt"])."원"; ?>
+              <?php echo "<br/>사용 금액 : ".number_format(1600000-$remainAmtList[$data["penLtmNum"]]["remainAmt"])."원"; ?>
             </p>
           </a>
           <?php if ($data['recYn'] === 'N') { ?>
-          <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 작성</a>
+            <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 신규작성</a>
+          <?php } else { ?>
+            <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 추가작성</a>
           <?php } ?>
         </div>
         <?php if ($data["penLtmNum"]) { ?>
@@ -543,14 +874,22 @@ function form_check(act) {
     </ul>
   </div>
   <?php } ?>
+  <!-- <button type="button" class="btn eroumcare_btn2" onclick="return form_check('seldelete');">선택삭제</button> -->
+  <button type="button" class="btn eroumcare_btn2" style ="float : right;" onclick="return form_check('show_list_all');">전체목록</button>
 
-  <div class="list-paging">
+  <div class="list-paging"; >
     <ul class="pagination pagination-sm en">
-      <?php echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page="); ?>
+      <?php 
+      if($page_option == 'none'){
+        echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page=");
+      } else {
+        echo apms_paging($write_pages, $page, $total_page, "?option={$page_option}&sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page=");
+      }?>
     </ul>
   </div>
 
-  <div class="l_btn_area pc" style="margin-bottom:10px;">
+
+  <div class="l_btn_area pc" style="margin-bottom:10px; display:none">
     <button type="button" class="btn eroumcare_btn2" onclick="return form_check('seldelete');">선택삭제</button>
     &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 일괄수정 : &nbsp;&nbsp;&nbsp;
     <select name="sel_grade" id="sel_grade">
@@ -575,11 +914,12 @@ function form_check(act) {
   </div>
   <br/><br/><br/>
 
-  <div class="titleWrap" style="margin-bottom:10px;">
+  <!-- 예비수급자 관리 숨기기-->
+  <div class="titleWrap" style="margin-bottom:10px; display:none;">
     예비수급자관리
   </div>
 
-  <div class="list_box pc">
+  <div class="list_box pc" style="display:none;">
     <form name="fsparememberlist" id="fsparememberlist" action="#" method="post">
     <div class="table_box">  
       <table>
@@ -627,13 +967,13 @@ function form_check(act) {
   </div>
 
   <?php if(!$list_spare) { ?>
-  <div class="no_content">
+  <div class="no_content"  style="display:none;">
     내용이 없습니다
   </div>
   <?php } ?>
 
   <?php if($list_spare) { ?>
-  <div class="list_box mobile">
+  <div class="list_box mobile"  style="display: none !important; ">
     <ul class="li_box">
       <?php foreach ($list_spare as $data) { ?>
       <li>
@@ -657,13 +997,13 @@ function form_check(act) {
     </ul>
   </div>
   <?php } ?>
-  <div class="list-paging">
+  <div class="list-paging"  style="display:none;">
     <ul class="pagination pagination-sm en">
       <?php echo apms_paging($write_pages, $page_spare, $total_page_spare, "?sel_field={$sel_field}&search={$search}&page={$page}&page_spare="); ?>
     </ul>
   </div>
-  <div class="l_btn_area pc" style="margin-bottom: 30px;">
-    <button type="button" class="btn eroumcare_btn2" onclick="return form_check('spare_seldelete');">선택삭제</a>
+  <div class="l_btn_area pc" style="margin-bottom: 30px;display:none;"  >
+    <button type="button" class="btn eroumcare_btn2" onclick="return form_check('spare_seldelete');"  style="display:none;">선택삭제</button>
   </div>
 
   <?php
@@ -998,9 +1338,32 @@ function excelPost(action, data) {
     $("#popup_recipient").hide();
     $("#popup_recipient").css("opacity", 1);
 
+    <?php
+    $tttttt = api_post_call(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
+      'usrId' => $member['mb_id'],
+      'entId' => $member['mb_entId']
+    ));
+    ?>
+    var ttt = <?=json_encode($tttttt)?>;
+    console.log("ttt : ", ttt);
+
+
     $('#recipient_excel_download').click(function(e) {
       if (check_device_security_val() == true) {
-        window.location.href="./my_recipient_excel.php";
+        var link ='my_recipient_excel.php';
+        var write_data = [];
+        var cnt = 0;
+        $('.rep_list tr').each(function() {
+          if(cnt == 0){
+            cnt++;
+          } else {
+            var key = $(this).find("td").eq(2).find("span").eq(0).text();
+            var value = $(this).find("td").eq(4).find("span").eq(0).text().split(" : ")[1].replace("원", "").replaceAll(',','');
+            write_data[key] = value;
+          }
+        });
+        
+        $.redirectPost(link, write_data);
       }
     });
 
@@ -1012,15 +1375,15 @@ function excelPost(action, data) {
         data: {fingerprint : fingerprint, type : 'check'}
       })
       .done(function(result) {
-        console.log("done");
+        // console.log("done");
         $('.recipient_security_check img').show();
         $('.recipient_security_authorized').show();
         $('.device_security').val("A");
         $(".table_box").show();
       })
       .fail(function(result) {
-        console.log("fail");
-        console.log(result.responseJSON);
+        // console.log("fail");
+        // console.log(result.responseJSON);
         $('.recipient_security_not_authorized').show();
         $('.device_security').val(result.responseJSON.data);
         $(".data_name").each(function() {
@@ -1041,6 +1404,32 @@ function excelPost(action, data) {
         $(".table_box").show();
       });
     });
+  });
+
+  $.extend({
+      redirectPost: function (location, args) {
+          var form = $('<form></form>');
+          form.attr("method", "post");
+          form.attr("action", location);
+          
+          var key_list = Object.keys(args);
+          var value_list = Object.values(args);
+
+          
+          for(var i = 0; i < key_list.length; i++){
+              var field = $('<input></input>');
+              field.attr("type", "hidden");
+              field.attr("name", key_list[i]);
+              field.attr("value", value_list[i].replaceAll(' ', ''));
+
+              form.append(field);
+          }
+
+          console.log("form : ", form);
+
+          // 위에서 생성된 폼을 제출 한다
+          $(form).appendTo('body').submit();
+      }
   });
 </script>
 <?php include_once("./_tail.php"); ?>
