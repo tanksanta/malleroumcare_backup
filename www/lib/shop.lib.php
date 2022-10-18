@@ -2043,13 +2043,21 @@ function get_sendcost_new($cart_id, $selected = 1) {
       // 홀수 배송비
 
       if($row['ct_qty'] % 2 == 1) {
-        $od_send_cost += $row['it_even_odd_price'];
+        if($result_total < 100000){
+            $od_send_cost = $row['it_even_odd_price']>0?3300:0;
+        } else {
+            $od_send_cost += $row['it_even_odd_price'];
+        }
       }
     } else if($row['it_even_odd'] == 1) {
       // 짝수 배송비
 
       if($row['ct_qty'] % 2 == 0) {
-        $od_send_cost += $row['it_even_odd_price'];
+        if($result_total < 100000){
+            $od_send_cost = $row['it_even_odd_price']>0?3300:0;
+        } else {
+            $od_send_cost += $row['it_even_odd_price'];
+        }
       }
     }
   }
