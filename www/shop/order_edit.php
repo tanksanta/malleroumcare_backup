@@ -961,7 +961,7 @@ $(function() {
 
     if(min_qty < 1) min_qty = 1;
     if(max_qty < 1) max_qty = 9999;
-    if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
+    if(buy_inc_qty < 1) buy_inc_qty = 1;
 
     switch(mode) {
         case "증가":
@@ -984,9 +984,9 @@ $(function() {
         case "감소":
             this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - buy_inc_qty;
 
-            if(this_qty < min_qty) {
-                alert("최소 구매수량은 "+number_format(String(min_qty))+" 입니다.");                    
-                this_qty = min_qty;
+            if(this_qty < buy_inc_qty) {
+                alert("최소 구매수량은 "+number_format(String(buy_inc_qty))+" 입니다.");                    
+                this_qty = buy_inc_qty;
             }
 
             $el_qty.val(this_qty);
@@ -1008,13 +1008,13 @@ $(function() {
 
     if(min_qty < 1) min_qty = 1;
     if(max_qty < 1) max_qty = 9999;
-    if(buy_inc_qty > min_qty) min_qty = buy_inc_qty;
+    if(buy_inc_qty < 1) buy_inc_qty = 1;
 
     if( isNaN(val) == false ) {
 
-        if( val < min_qty ) {
-            alert('최소 구매수량은 ' + number_format(min_qty) + ' 입니다.');
-            $(this).val( min_qty );
+        if( val < buy_inc_qty ) {
+            alert('최소 구매수량은 ' + number_format(buy_inc_qty) + ' 입니다.');
+            $(this).val( buy_inc_qty );
         }
         else if( (max_qty) && (val > max_qty) ) {
             alert('최대 구매수량은 ' + number_format(max_qty) + ' 입니다.');
