@@ -41,3 +41,7 @@ www/data/center/*
 ## 서원 : 22.08.18 - git 제외 추가
 www/thema/eroumcare/assets/img/*
 www/data/dbconfig.t.eroumcare.com.php
+
+
+## 정한진 : 22.10.18 - git 제외 추가
+www/data/dbconfig.tt.eroumcare.com.php
