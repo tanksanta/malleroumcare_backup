@@ -14,8 +14,12 @@ document.addEventListener("message", function(e){
 </script>
 
 <?php
-if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
+if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가 
 include_once(THEMA_PATH.'/assets/thema.php');
+
+//수급자 장바구니 해제->사업소 장바구니 카운트 복귀 위해 추가 ================
+set_cart_id($sw_direct, $_SESSION['recipient']['penId'] ?? null);
+//================================================================
 
 // 주문상품 변경 관리
 if($member['mb_type'] === 'default') {
@@ -52,19 +56,19 @@ if($member['mb_id']) {
     group by c.cp_no
   ";
   $res = sql_query($sql, true);
-  $cp_info=array();
-  for($k=0; $cp=sql_fetch_array($res); $k++) {
-    if(!is_used_coupon($member['mb_id'], $cp['cp_id'])) {
-        $cp_count++;
-        $cp_info[$cp['cp_id']]['cp_method'] = $cp['cp_method'];
-        $cp_info[$cp['cp_id']]['cp_minimum'] = $cp['cp_minimum'];
-    }
+    $cp_info=array();
+    for($k=0; $cp=sql_fetch_array($res); $k++) {
+      if(!is_used_coupon($member['mb_id'], $cp['cp_id'])) {
+          $cp_count++;
+          $cp_info[$cp['cp_id']]['cp_method'] = $cp['cp_method'];
+          $cp_info[$cp['cp_id']]['cp_minimum'] = $cp['cp_minimum'];
+      }
   }
 
   // 미수금
   if($member['mb_type'] == 'partner') $balance = get_partner_outstanding_balance($member['mb_id'], null, false, true);
   else $balance = get_outstanding_balance($member['mb_id'], null, false, true);
-
+  
   // 주문건수
   if($member['mb_type'] == 'partner') {
     $result = sql_fetch("
@@ -112,7 +116,7 @@ if($member['mb_id']) {
   }
 }
 
-$banks = explode(PHP_EOL, $default['de_bank_account']);
+$banks = explode(PHP_EOL, $default['de_bank_account']); 
 
 $is_index = '';
 if(defined('_INDEX_') && !defined('_MAIN_')) { // index에서만 실행
@@ -134,7 +138,7 @@ scrollToTop();
     .top_mode_area{font-size:10px;display:none;}
   }
 </style>
-<div id="mask" style="position:absolute; left:0;top:0; background-color:#000; z-index:300"></div>
+<div id="mask" style="position:absolute; left:0;top:0; background-color:#000; z-index:300"></div> 
 
 <style>
 .btn_top_scroll {
@@ -160,7 +164,7 @@ scrollToTop();
   <a onclick="scrollToBack()" class="scroll_btn">
     <span>◀</span>
     Back
-  </a>
+  </a> 
   <a onclick="scrollToTop()" class="scroll_btn">
     <span>▲</span>
     Top
@@ -659,7 +663,7 @@ if($is_main && !$is_member) {
               </li>
               <li>
                 <a href="/shop/cart.php">
-                  장바구니
+                  <?=($_SESSION['recipient']['penId']=="")?"사업소":$_SESSION['recipient']['penNm']."님";?> 장바구니
                   <?php if (get_boxcart_datas_count() > 0) { ?>
                   <span class="value">상품 (<?php echo get_boxcart_datas_count(); ?>)</span>
                   <?php } ?>
@@ -686,7 +690,20 @@ if($is_main && !$is_member) {
                   수급자관리
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
-                <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
+              <!-- <li>
+                <a href="/shop/my_recipient_list_test.jake.php">
+                <a href="/shop/pop_recipient.php">
+                  요양정보 간편조회 
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li> -->
+              <li>
+                <a href="/shop/check_my_ltcare_info.php">
+                  수급자 요양정보 조회 
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+              </li>
+                <?php /**if($noti_count = get_recipient_noti_count() > 0) { ?>
                 <a class="noti_pen" href="/shop/my_recipient_noti.php">
                   수급자 알림이 있습니다.
                   <span class="value"><?=$noti_count?>건</span>
@@ -694,9 +711,10 @@ if($is_main && !$is_member) {
                 <?php } ?>
                 <?php if($pen_links = get_recipient_links($member['mb_id'])) { ?>
                 <a class="noti_pen link" href="/shop/my_recipient_list.php">
-                  ‘<?=$pen_links[0]['rl_pen_name']?>’ <?php $pen_links_count = count($pen_links); if($pen_links_count > 1) { echo '외 '.($pen_links_count - 1).'명 '; } ?>수급자 추천이 있습니다.
+                  ‘<?=$pen_links[0]['rl_pen_name']?>’ <?php $pen_links_count = count($pen_links); if($pen_links_count > 1) { echo '외 '.($pen_links_count - 1).'명 '; } ?>수급자 추천이 있습니
+다.
                 </a>
-                <?php } ?>
+                <?php } **/?>
               </li>
               <li>
                 <a href="/shop/sales_Inventory.php">
@@ -734,8 +752,8 @@ if($is_main && !$is_member) {
                   제안하기
                 </a>
               </li>
-              <?php
-              /*$tutorials = get_tutorials();
+              <?php 
+              /*$tutorials = get_tutorials(); 
               if ($tutorials['completed_count'] >= 4) {
               ?>
               <li>
@@ -744,7 +762,7 @@ if($is_main && !$is_member) {
                 </a>
               </li>
               <?php } ?>
-              <?php
+              <?php 
               if ($member['mb_id'] && $member['mb_type'] === 'default' && !$tutorials) {
               ?>
               <li>
@@ -853,7 +871,7 @@ if($is_main && !$is_member) {
                 </div>
               </div>
               <ul class="head_tutorial_step">
-                <?php
+                <?php 
                 $t_recipient_add_idx = array_search('recipient_add', array_column($tutorials['step'], 't_type'));
                 $t_recipient_add_class = $t_recipient_add_idx !== false ? ($tutorials['step'][$t_recipient_add_idx]['t_state'] ? 'complete' : 'active') : '';
                 ?>
@@ -863,7 +881,7 @@ if($is_main && !$is_member) {
                   </a>
                 </li>
                 <li class="next">></li>
-                <?php
+                <?php 
                 $t_recipient_order_idx = array_search('recipient_order', array_column($tutorials['step'], 't_type'));
                 $t_recipient_order_class = $t_recipient_order_idx !== false ? ($tutorials['step'][$t_recipient_order_idx]['t_state'] ? 'complete' : 'active') : '';
                 ?>
@@ -873,7 +891,7 @@ if($is_main && !$is_member) {
                   </a>
                 </li>
                 <li class="next">></li>
-                <?php
+                <?php 
                 $t_document_idx = array_search('document', array_column($tutorials['step'], 't_type'));
                 $t_document_class = $t_document_idx !== false ? ($tutorials['step'][$t_document_idx]['t_state'] ? 'complete' : 'active') : '';
                 ?>
@@ -883,7 +901,7 @@ if($is_main && !$is_member) {
                   </a>
                 </li>
                 <li class="next">></li>
-                <?php
+                <?php 
                 $t_claim_idx = array_search('claim', array_column($tutorials['step'], 't_type'));
                 $t_claim_class = $t_claim_idx !== false ? ($tutorials['step'][$t_claim_idx]['t_state'] ? 'complete' : 'active') : '';
                 ?>

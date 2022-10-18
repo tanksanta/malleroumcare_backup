@@ -48,6 +48,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
 <form name="frmcartlist" id="sod_bsk_list" method="post" action="<?php echo $action_url; ?>" class="form" role="form">
     <input type="hidden" name="only_recipient" value="0" />
     <div class="table-responsive">
+		<div class="sub_section_tit"><?=($_SESSION['recipient']['penId']=="")?($member['mb_entNm'] ?: $member['mb_name']):$_SESSION['recipient']['penNm']."님";?> 장바구니</div>
         <table class="div-table table bsk-tbl bg-white">
         <tbody>
         <tr class="<?php echo $head_class;?>">
