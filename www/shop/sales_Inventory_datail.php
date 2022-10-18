@@ -101,9 +101,9 @@ if ($is_admin || $is_author || $is_purchaser) {
 
 // 보안서버경로
 if (G5_HTTPS_DOMAIN)
-  $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/simple_eform.php';
+  $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/cartupdate.php';
 else
-  $action_url = './simple_eform.php';
+  $action_url = './cartupdate.php';
 
 // 상품품절체크
 if(G5_SOLDOUT_CHECK)
@@ -322,7 +322,7 @@ $row = sql_fetch($sql);
           $res = curl_exec($oCurl);
           $res = json_decode($res, true);
           curl_close($oCurl);
-
+		  //print_r($res);
           $list = [];
           if($res["data"]){
             $list = $res["data"];
