@@ -14,6 +14,7 @@ $sql_common = " from {$g5['member_table']} ";
 
 //영업담당자 추가
 $flag_m=false;
+$stx2=$stx;
 if($sfl=="mb_manager"){
   $sql_cm = "select `mb_id` from `g5_member` where `mb_name`= '".$stx."'";
   $result_cm= sql_fetch($sql_cm);
@@ -30,6 +31,7 @@ if ($stx) {
       $sql_search .= " ({$sfl} >= '{$stx}') ";
       break;
     case 'mb_level' :
+	case 'mb_thezone' :
       $sql_search .= " ({$sfl} = '{$stx}') ";
       break;
     case 'mb_tel' :
@@ -50,7 +52,8 @@ if ($stx) {
         mb_recommend like '%{$stx}%' OR
         mb_1 like '%{$stx}%' OR
         mb_giup_bname like '%{$stx}%' OR
-        mb_manager like '%{$stx}%'
+        mb_manager in (select `mb_id` from `g5_member` where `mb_name` like '%{$stx}%') OR
+		mb_thezone like '{$stx}'
       ";
       break;
     default :
@@ -58,6 +61,8 @@ if ($stx) {
       break;
   }
   $sql_search .= " ) ";
+}elseif($sfl=="mb_manager" && $stx2 != ""){
+	$sql_search .= " and 1=2 ";
 }
 
 if ($button_type) {
@@ -224,7 +229,7 @@ $colspan = ($is_membership) ? 21 : 20;
 
 <?php
 //영업담당자 이름표시
-$original_stx = $stx;
+$original_stx = $stx2;
 $stx=$stx2;
 ?>
 <div class="local_ov01 local_ov">
@@ -314,6 +319,7 @@ $stx=$stx2;
   <option value="mb_1"<?php echo get_selected($_GET['sfl'], "mb_1"); ?>>여분필드1</option>
   <option value="mb_giup_bname"<?php echo get_selected($_GET['sfl'], "mb_giup_bname"); ?>>기업명</option>
   <option value="mb_manager"<?php echo get_selected($_GET['sfl'], "mb_manager"); ?>>영업담당자</option>
+  <option value="mb_thezone"<?php echo get_selected($_GET['sfl'], "mb_thezone"); ?>>고객(거래처)코드</option>
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $original_stx ?? $stx ?>" id="stx" class="frm_input">
