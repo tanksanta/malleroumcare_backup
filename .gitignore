@@ -1,39 +1,21 @@
+## == == == == == == == == == == == == == == == == == == == == == == == ==
+## eroumcare( 이로움 1.0 ) / gitignore 파일 사용방법
+## == == == == == == == == == == == == == == == == == == == == == == == ==
+## 보안상으로 위험성이 있는 파일
+## 프로젝트와 관계없는 파일
+## 용량이 너무 커서 제외해야되는 파일
+
+
 .DS_Store
 .idea/*
-www/eroumcare/tmp
-www/data/session/*
-www/data/session/sess*
-www/data/cache
-www/data/session/sess_8m0b17a17lp4qa2akqlnvdg80t
-www/data/cache/*
-www/data/item/*
-www/data/editor*
-www/data/editor/*
-www/data/category/*
-www/data/banner/2
-www/data/category/10
-www/data/category
-www/data/banner
-www/data/member_partner/*
-www/data/member_image/*
-www/data/member/ka/*
-www/data/banner/*
-www/data/order_cart/*
-www/skin/board/gallery/img/thumb-*.jpg
-www/skin/board/*/img/thumb-*.jpg
-www/data/file/*
-www/data/npayorderlog/*
-www/data/lp
-www/data/lp/*
-www/data/lp*
-www/data/om
-backup/*
-www/eroumcarepma/tmp/*
-www/eroumcarepma/tmp/twig/*/*.php
-www/data/eform
-www/data/eform/*
-www/data/partner
-www/data/partner/*
-www/data/center
-www/data/center/*
 .history/*
+
+
+## 서원 : 22.10.19 - 운영용 파일에 대한 git파일 등록 제한 및 기존 gitignore 정리
+
+## 프로젝트와 관계없는 운영용 파일 업로드 전용 폴더
+www/data/*
+
+## 현재 기준 첫 페이지 렌딩 이미지 업로드 차단
+www/thema/eroumcare/assets/img/*
+
