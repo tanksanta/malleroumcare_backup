@@ -312,12 +312,13 @@ $(function() {
             penTypeCd = rep_info['SBA_CD'].substr(3, 1) == '6'? '02' : '01';
           }
           
+          var pen_gender = "<?=$pen['penGender']?>" == "" ?"-" :"<?=$pen['penGender']?>";
 		      var sendData = {
 		        penId : "<?=$pen['penId'] ?>",
 		        penNm : "<?=$pen['penNm']?>",
 		        penLtmNum : "<?=$pen['penLtmNum'] ?>",
 		        penRecGraCd : '0'+rep_info['LTC_RCGT_GRADE_CD'],
-		        penGender : "<?=$pen['penGender']?>",
+		        penGender : pen_gender,
 		        penBirth : rep_info['BDAY'].substr(0,4)+'-'+rep_info['BDAY'].substr(4,2)+'-'+rep_info['BDAY'].substr(6,2),
 		        penJumin : rep_info['BDAY'].substr(2,6),
 		        penTypeCd : penTypeCd,
