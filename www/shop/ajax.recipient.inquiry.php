@@ -85,8 +85,9 @@ function getPublicKey($apiKey) {
         CURLOPT_RETURNTRANSFER  => true,
         CURLOPT_CUSTOMREQUEST   => "GET",
         CURLOPT_SSL_VERIFYHOST  => 0,
-        CURLOPT_SSL_VERIFYPEER  => 0
-    )); 
+        CURLOPT_SSL_VERIFYPEER  => 0,
+        CURLOPT_TIMEOUT => 5
+    ));
 
     $response   = curl_exec($curl);
 
@@ -177,7 +178,8 @@ curl_setopt_array($curl, array(
     CURLOPT_HTTPHEADER      => $headers,
     CURLOPT_VERBOSE         => false,
     CURLOPT_SSL_VERIFYHOST  => 0,
-    CURLOPT_SSL_VERIFYPEER  => 0
+    CURLOPT_SSL_VERIFYPEER  => 0,
+    CURLOPT_TIMEOUT => 5
 ));
 
 $response   = curl_exec($curl);
@@ -212,7 +214,8 @@ curl_setopt_array($curl, array(
     CURLOPT_HTTPHEADER      => $headers,
     CURLOPT_VERBOSE         => false,
     CURLOPT_SSL_VERIFYHOST  => 0,
-    CURLOPT_SSL_VERIFYPEER  => 0
+    CURLOPT_SSL_VERIFYPEER  => 0,
+    CURLOPT_TIMEOUT => 5
 ));
 
 $response   = curl_exec($curl);
@@ -370,7 +373,8 @@ curl_setopt_array($curl, array(
     CURLOPT_HTTPHEADER      => $headers,
     CURLOPT_VERBOSE         => false,
     CURLOPT_SSL_VERIFYHOST  => 0,
-    CURLOPT_SSL_VERIFYPEER  => 0
+    CURLOPT_SSL_VERIFYPEER  => 0,
+    CURLOPT_TIMEOUT => 5
 ));
 
 $response   = curl_exec($curl);
