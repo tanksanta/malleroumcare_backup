@@ -79,6 +79,13 @@ if(substr($_GET['penLtmNum'],0,2)=='LL'){
     $_GET['penLtmNum'] = substr($_GET['penLtmNum'], 1);
 }
 
+$arr_hist = [];
+$sql_hist = "select * from pen_purchase_hist where ent_id = '{$member['mb_entId']}' and PEN_LTM_NUM = '{$_GET['penLtmNum']}';";
+$res_hist = sql_query($sql_hist);
+while ($hist_result = sql_fetch_array($res_hist)) {
+    $arr_hist[] = $hist_result;
+}
+
 $arr_period = [];
 $sql_period = "
 (select PEN_NM, PROD_PAY_CODE, replace(ITEM_NM,' ','') as ITEM_NM, PROD_BAR_NUM, PROD_NM, ORD_DTM, PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM from pen_purchase_hist where ent_id = '{$member['mb_entId']}' and PEN_LTM_NUM = '{$_GET['penLtmNum']}' 
@@ -293,8 +300,8 @@ while ($res_cate = sql_fetch_array($cate_result)) {
           <p><span class="line"> </span> </p>
         </div>
 
-        <p class="sub_title"> 계약 상세 내역</p>
-        <table style="width: 100%; height: fit-content; margin-bottom: 5%;">
+        <p class="sub_title" id = "table_contract_subtitle"> 계약 상세 내역</p>
+        <table style="width: 100%; height: fit-content; margin-bottom: 5%;" id = "table_contract_main">
             <colgroup>
               <col width="10%"/>
               <col width="30%"/>
@@ -326,6 +333,9 @@ while ($res_cate = sql_fetch_array($cate_result)) {
 <script src="http://cdn.jquerytools.org/1.2.5/jquery.tools.min.js"></script>
 <script>
     $(function () {
+        $('#table_contract_subtitle').hide();
+        $('#table_contract_main').hide();
+
         loading();
 
         let prod_period = <?=json_encode($arr_period);?>;
@@ -345,6 +355,11 @@ while ($res_cate = sql_fetch_array($cate_result)) {
         let penLtmNum_parent;
         let penNm_parent;
         let page_type = "<?=$page_type?>";
+
+        var hist_arr = <?=json_encode($arr_hist);?>;
+        // console.log("hist_arr : ", hist_arr);
+        var used_period = <?=json_encode($used_period);?>;
+        // console.log("used_period : ", used_period);
         // 요양정보 간편조회 페이지에서 호출한 경우 => 직접 api에서 데이터 받아와서 뿌림
         if(page_type == 'search'){ 
             var head_title = `<span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span>`;
@@ -361,6 +376,7 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                 status: "search"
             }, 'json');
             
+            var add_contract_list = [];
             $.ajax('ajax.recipient.inquiry.php', {
                 type: 'POST',  // http method
                 data: { id : penLtmNum_parent,rn : penNm_parent },  // data to submit
@@ -402,16 +418,13 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                     $(".penExpiDtm").text(rep_info_api['RCGT_EDA_DT']);
                     $(".penAppDtm").text(applydtm);
 
-                    var contract_list = data['data']['recipientContractHistory']['Result']['ds_result'];
+                    var contract_list = data['data']['recipientContractHistory']['Result']['ds_result'] == null ?[] :data['data']['recipientContractHistory']['Result']['ds_result'];
                     var contract_cnt = [];
 
-                    if(contract_list == null){
-                        buildTable_api([]);
+                    if(contract_list == null || contract_list == []){
                         $(".rem_amount").text(makeComma('1600000')+'원');
                         $(".used_amount").text('사용 금액 : 0원');
                     } else {
-                        $('#table_contract').empty();
-                        buildTable_api(contract_list);
                         for(var idx = 0; idx < rep_list_api['ds_toolPayLmtList'].length; idx++){
                             if((rep_list_api['ds_toolPayLmtList'][idx]['APDT_FR_DT'].replace(' ','') == applydtm.split('~')[0].replaceAll('-','').replace(' ','')) && (rep_list_api['ds_toolPayLmtList'][idx]['APDT_TO_DT'].replace(' ','') == applydtm.split('~')[1].replace(/-/gi, "").replace(' ',''))){
                                 $(".rem_amount").text(makeComma(rep_list_api['ds_toolPayLmtList'][idx]['REMN_AMT'])+'원');
@@ -451,22 +464,39 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                                     </tr>`;
                             
                         } else {  
+                            var used_item = used_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01'] == null ?0:Number(used_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
+                            // console.log("cnt_period : ", cnt_period); //[성인용보행기01: 1, 목욕의자01: 1, 욕창예방방석01: 1]
                             var item_period = cnt_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01'] == null ?0:Number(cnt_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
-                            var cnt = 0;
-                            if(contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] != null) { 
-                                cnt = contract_cnt[sale_y[i]['WIM_ITM_CD']+'01']; 
-                                item_period = item_period==0?0:item_period-cnt;
-                                var Sellable = Number(tool_list_cnt[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
-                                
-                                if(sale_y[i]['WIM_ITM_CD'].replace(' ', '') == '미끄럼방지용품')
-                                    Sellable = Number(tool_list_cnt['미끄럼방지용품(매트)01'])+Number(tool_list_cnt['미끄럼방지용품(양말)01']);
+                            var cnt = contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] == null ?0 : Number(contract_cnt[sale_y[i]['WIM_ITM_CD']+'01']);
+                            item_period = item_period==0?0:item_period-cnt;
+                            var Sellable = sale_y[i]['WIM_ITM_CD'].replace(' ', '') == '미끄럼방지용품'? 11 :Number(tool_list_cnt[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
+                            var gumae_cnt = Sellable-cnt-item_period;
+                            cnt = cnt + item_period;
+                            // console.log(sale_y[i]['WIM_ITM_CD']+" "+gumae_cnt+" : ", Sellable+'/'+cnt+'/'+item_period);
 
-                                
+                            var hist_ctr_arr = [];
+                            if(used_item && item_period) {
+                                for(var ii = 0; ii < hist_arr.length; ii++) {
+                                    if(hist_arr[ii]['ITEM_NM'].replace(' ', '') == sale_y[i]['WIM_ITM_CD'].replace(' ', '')){
+                                        var prev_date = new Date(hist_arr[ii]['ORD_DTM']);
+                                        var cal_date = new Date(prev_date.setFullYear(prev_date.getFullYear() + Number(used_item)));
+                                        var now = new Date();
+                                        // console.log("now/cal_date : ", now+"/"+cal_date);
+                                        if(cal_date > now){
+                                            hist_ctr_arr.push(hist_arr[ii]);
+                                        }
+                                    }
+                                }
+                                // console.log("hist_ctr_arr : ", hist_ctr_arr);
+                                contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] = contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] == null ?item_period+'+' :contract_cnt[sale_y[i]['WIM_ITM_CD']+'01']+item_period+'+';
+                            }
+
+                            if(contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] != null) { 
                                 var row = `<tr id="${'gumae'+index}" class="normal-row">
                                                 <td colspan="1">${i+1}</td>
                                                 <td colspan="5">${sale_y[i]['WIM_ITM_CD'].replace(' ', '')}</td>
                                                 <td colspan="3"><a href="#" class="gumae-toggler" data-prod-contract-gumae=${index}>${cnt}개 ▼</a></td>
-                                                <td colspan="1">${Sellable-cnt-item_period}개</td>
+                                                <td colspan="1">${gumae_cnt}개</td>
                                             </tr>
                                             <tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
                                                 <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
@@ -484,16 +514,25 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                                                 <td colspan="1">${makeComma(contract_list[ind]['TOT_AMT'])}</td>
                                             </tr>`;
                                 }
-                            } else {
-                                var Sellable = Number(tool_list_cnt[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
-                                if(sale_y[i]['WIM_ITM_CD'].replace(' ', '') == '미끄럼방지용품')
-                                    Sellable = Number(tool_list_cnt['미끄럼방지용품(매트)01'])+Number(tool_list_cnt['미끄럼방지용품(양말)01']);
 
+                                if(hist_ctr_arr != []){
+                                    for(var ind = 0; ind < hist_ctr_arr.length; ind++){
+                                        if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != sale_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;
+                                        row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
+                                                    <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
+                                                    <td colspan="5">${hist_ctr_arr[ind]['PROD_NM']}</td>
+                                                    <td colspan="3">${hist_ctr_arr[ind]['ORD_DTM']}</td>
+                                                    <td colspan="1">${makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])}</td>
+                                                </tr>`;
+                                        add_contract_list.push(hist_ctr_arr[ind]);
+                                    }  
+                                }
+                            } else {
                                 var row = `<tr id="${'gumae'+index}">
                                         <td colspan="1">${i+1}</td>
                                         <td colspan="5">${sale_y[i]['WIM_ITM_CD'].replace(' ', '')}</td>
                                         <td colspan="3">${cnt}개</td>
-                                        <td colspan="1">${Sellable-cnt-item_period}개</td>
+                                        <td colspan="1">${gumae_cnt}개</td>
                                     </tr>`;
                             }                            
                         }   
@@ -553,7 +592,10 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                         $("#table_rental").append(row);                     
                     }
 
-                    
+                    $('#table_contract').empty();
+                    buildTable_api(contract_list);
+                    buildTable_api(add_contract_list, 'add');
+                                        
                     $.post('./ajax.inquiry_log.php', {
                         data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : penLtmNum_parent,pen_nm : penNm_parent,resultMsg : status,occur_page : "pop.recipient_info.php" }
                     }, 'json')
@@ -628,11 +670,6 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                 $(".rem_amount").text(makeComma('1600000')+'원');
                 $(".used_amount").text('사용 금액 : 0원');
             }
-
-            if(ct_list){
-                $('#table_contract').empty();
-                buildTable(ct_list);
-            }
             
             $('#table_sale').empty();
             $('#table_rental').empty();
@@ -646,10 +683,13 @@ while ($res_cate = sql_fetch_array($cate_result)) {
             let arr_category = <?=json_encode($arr_category)?>;
             let cate_href = "";
 
+            var add_ct_list = [];
+
             for(var i = 0; i < Object.keys(penToolRefCnt).length; i++){
                 cate_href = "<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$_GET['id'].'&redirect='?>";
                 if(Object.keys(penToolRefCnt)[i] == '미끄럼방지용품(매트)01') {continue;}
                 var item_nm = Object.keys(penToolRefCnt)[i] == '미끄럼방지용품(양말)01'?'미끄럼방지용품01':Object.keys(penToolRefCnt)[i];
+                // console.log("cnt_period : ", cnt_period);
                 var item_period = cnt_period[Object.keys(penToolRefCnt)[i]] == null ?0:Number(cnt_period[Object.keys(penToolRefCnt)[i]]);
                 var cnt = ct_count[item_nm] == null ?0 :Number(ct_count[item_nm]);
                 item_period = item_period==0?0:item_period-cnt;
@@ -664,7 +704,7 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                     // cate_href = '/shop/connect_recipient.php?pen_id=<?=$_GET['id']?>&redirect='+encodeURI('/shop/list.php?ca_id='+arr_category[item_nm.substr(0, item_nm.length-2)].substr(0,2)+'&ca_sub%5B%5D='+arr_category[item_nm.substr(0, item_nm.length-2)].substr(2,2));
                     cate_href = "<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$_GET['id'].'&redirect='?>"+encodeURIComponent('/shop/list.php?ca_id='+arr_category[item_nm.substr(0, item_nm.length-2)].substr(0,2)+'&ca_sub%5B%5D='+arr_category[item_nm.substr(0, item_nm.length-2)].substr(2,2));
                 }
-                console.log("cate_href : ", cate_href);
+                // console.log("cate_href : ", cate_href);
 
                 if(Object.keys(penToolRefCnt)[i].substr(-2,2) == '00'){ //대여
                     if(Object.values(penToolRefCnt)[i] == -1){ //사용불가 제품일 경우
@@ -738,6 +778,8 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                     rent_index++;
                     $("#table_rental").append(row);
                 } else { //판매
+                    var used_item = used_period[Object.keys(penToolRefCnt)[i]] == null ?0:Number(used_period[Object.keys(penToolRefCnt)[i]]);
+
                     if(Object.values(penToolRefCnt)[i] == -1){ //사용불가 제품일 경우
                         var row = `<tr id="${'gumae'+sale_index}">
                                 <td colspan="1">${sale_index}</td>
@@ -746,16 +788,38 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                                 <td colspan="1" style = "background-color: #f5f5f5;">해당없음</td>
                             </tr>`;
                     } else {
+                        var gumae_cnt = Sellable-cnt-item_period;
+                        var hist_ctr_arr = [];
+                        if(used_item && item_period) {
+                            for(var ii = 0; ii < hist_arr.length; ii++) {
+                                if(hist_arr[ii]['ITEM_NM'].replace(' ', '') == item_nm.substr(0,item_nm.length-2)){
+                                    var prev_date = new Date(hist_arr[ii]['ORD_DTM']);
+                                    var cal_date = new Date(prev_date.setFullYear(prev_date.getFullYear() + Number(used_item)));
+                                    var now = new Date();
+                                    console.log("now/cal_date : ", now+"/"+cal_date);
+                                    if(cal_date > now){
+                                        hist_ctr_arr.push(hist_arr[ii]);
+                                    }
+                                }
+                            }
+                            console.log("hist_ctr_arr : ", hist_ctr_arr);
+                            console.log("test succ : ", Object.keys(penToolRefCnt)[i]+' : '+used_item+' : '+item_period);
+                            ct_count[item_nm] = ct_count[item_nm] == null ?item_period+'+' :ct_count[item_nm]+item_period+'+';
+                            cnt = cnt + item_period;
+                        }
+
+                        // console.log("ct_count[item_nm] : ", ct_count[item_nm]);
+
                         if(ct_count[item_nm] == null) { // 해당 적용기간 내 계약이 없는 경우
-                            // 대여 가능이 클릭 가능한 코드
+                            // 구매 가능이 클릭 가능한 코드
                             var row = `<tr id="${'gumae'+sale_index}">
                                         <td colspan="1">${sale_index}</td>
                                         <td colspan="5">${item_nm.substr(0,item_nm.length-2)}</td>
                                         <td colspan="3">${cnt}개</td>
-                                        <td colspan="1" ><a href="#" class = "test" id="${cate_href}">${Sellable-cnt-item_period}개</a></td>
+                                        <td colspan="1" ><a href="#" class = "test" id="${cate_href}">${gumae_cnt}개</a></td>
                                     </tr>`;
                                     
-                            // 대여 가능이 클릭 불가한 코드
+                            // 구매 가능이 클릭 불가한 코드
                             /*
                             var row = `<tr id="${'gumae'+sale_index}">
                                         <td colspan="1">${sale_index}</td>
@@ -765,12 +829,12 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                                     </tr>`;
                             */
                         } else { // 해당 적용기간 내 계약이 있는 경우
-                            // 대여 가능이 클릭 가능한 코드
+                            // 구매 가능이 클릭 가능한 코드
                             var row = `<tr id="${'gumae'+sale_index}" class="normal-row">
                                         <td colspan="1">${sale_index}</td>
                                         <td colspan="5">${item_nm.substr(0,item_nm.length-2)}</td>
                                         <td colspan="3"><a href="#" class="gumae-toggler" data-prod-contract-gumae=${sale_index}>${cnt}개 ▼</a></td>
-                                        <td colspan="1" ><a href="#" class = "test" id="${cate_href}">${Sellable-cnt-item_period}개</a></td>
+                                        <td colspan="1" ><a href="#" class = "test" id="${cate_href}">${gumae_cnt}개</a></td>
                                     </tr>
                                     <tr id="${'gumae'+sale_index}" class="${'contract-gumae'+sale_index}" style="display:none;">
                                         <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
@@ -779,7 +843,7 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                                         <td colspan="1"><span>급여가</span></td>
                                     </tr>`;
                             
-                            // 대여 가능이 클릭 불가한 코드
+                            // 구매 가능이 클릭 불가한 코드
                             /*
                             var row = `<tr id="${'gumae'+sale_index}" class="normal-row">
                                         <td colspan="1">${sale_index}</td>
@@ -796,7 +860,7 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                             */
 
                             for(var ind = 0; ind < ct_list.length; ind++){
-                                if(ct_list[ind]['ITEM_NM'] != item_nm.substr(0,item_nm.length-2)) continue;
+                                if(ct_list[ind]['ITEM_NM'].replace(' ', '') != item_nm.substr(0,item_nm.length-2)) continue;
                                 row += `<tr id="${'gumae'+sale_index}" class="${'contract-gumae'+sale_index}" style="display:none;">
                                             <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
                                             <td colspan="5">${ct_list[ind]['PROD_NM']}</td>
@@ -804,11 +868,30 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                                             <td colspan="1">${makeComma(ct_list[ind]['TOTAL_PRICE'])}</td>
                                         </tr>`;
                             }
+
+                            if(hist_ctr_arr != []){
+                                for(var ind = 0; ind < hist_ctr_arr.length; ind++){
+                                    if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != item_nm.substr(0,item_nm.length-2)) continue;
+                                    row += `<tr id="${'gumae'+sale_index}" class="${'contract-gumae'+sale_index}" style="display:none;">
+                                                <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
+                                                <td colspan="5">${hist_ctr_arr[ind]['PROD_NM']}</td>
+                                                <td colspan="3">${hist_ctr_arr[ind]['ORD_DTM']}</td>
+                                                <td colspan="1">${makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])}</td>
+                                            </tr>`;
+                                    add_ct_list.push(hist_ctr_arr[ind]);
+                                }  
+                            }
                         }
                     }
                     sale_index++;
                     $("#table_sale").append(row);
                 }
+            }            
+
+            if(ct_list){
+                $('#table_contract').empty();
+                buildTable(ct_list);
+                buildTable(add_ct_list, 'add');
             }
         }
         
@@ -872,7 +955,7 @@ while ($res_cate = sql_fetch_array($cate_result)) {
         parent.redirect_item($(this).prop("id"));
     });
 
-    function buildTable(data) {        
+    function buildTable(data, option='', index = '') {        
         var table = document.getElementById('table_contract');
         if(data.length == 0){
             var row = `<tr>
@@ -883,9 +966,10 @@ while ($res_cate = sql_fetch_array($cate_result)) {
             table.innerHTML += row;
         } else {
             for (var i=0; i < data.length; i++) {
+                var index = option == 'add' ?'-' :i+1;
                 var dtm = data[i]['ORD_STATUS'] == '판매'? data[i]['ORD_STR_DTM']: data[i]['ORD_STR_DTM']+'~</br>'+data[i]['ORD_END_DTM'];
                 var row = `<tr>
-                            <td colspan="1">${i+1}</td>
+                            <td colspan="1">${index}</td>
                             <td colspan="1">${data[i]['ITEM_NM']}</td>
                             <td colspan="1">${data[i]['PROD_NM']}</td>
                             <td colspan="1">${dtm}</td>
@@ -896,8 +980,7 @@ while ($res_cate = sql_fetch_array($cate_result)) {
         }        
     }
 
-    function buildTable_api(data) {
-        $('#table_contract').empty();
+    function buildTable_api(data, option='', index = '') {
         var table = document.getElementById('table_contract');
         if(data.length == 0){
             var row = `<tr>
@@ -908,19 +991,31 @@ while ($res_cate = sql_fetch_array($cate_result)) {
             table.innerHTML += row;
         } else {
             for (var i=0; i < data.length; i++) {
+                var index = option == 'add' ?'-' :i+1;
                 var dtm = '';
-                if(data[i]['WLR_MTHD_CD'] == '판매'){
-                    dtm = `<td colspan="1">${data[i]['POF_FR_DT'].split('~')[0]}`;
+                if(option == 'add') {
+                    var row = `<tr>
+                            <td colspan="1">${index}</td>
+                            <td colspan="1">${data[i]['ITEM_NM'].replace(' ', '')}</td>
+                            <td colspan="1">${data[i]['PROD_NM']}</td>
+                            <td colspan="1">${data[i]['ORD_DTM']}
+                            <td colspan="1" style="border-right-style:none;">${makeComma(data[i]['TOTAL_PRICE'])}</td>
+                        </tr>`;
                 } else {
-                    dtm = `<td colspan="1">${data[i]['POF_FR_DT'].split('~')[0]}</br>~${data[i]['POF_FR_DT'].split('~')[1]}</td>`;
-                }
-                var row = `<tr>
-                            <td colspan="1">${i+1}</td>
+                    if(data[i]['WLR_MTHD_CD'] == '판매'){
+                        dtm = `<td colspan="1">${data[i]['POF_FR_DT'].split('~')[0]}`;
+                    } else {
+                        dtm = `<td colspan="1">${data[i]['POF_FR_DT'].split('~')[0]}</br>~${data[i]['POF_FR_DT'].split('~')[1]}</td>`;
+                    }
+                    var row = `<tr>
+                            <td colspan="1">${index}</td>
                             <td colspan="1">${data[i]['PROD_NM']}</td>
                             <td colspan="1">${data[i]['MGDS_NM']}</td>`+
                             dtm
                             +`<td colspan="1" style="border-right-style:none;">${makeComma(data[i]['TOT_AMT'])}</td>
                         </tr>`;
+                }
+                
                 table.innerHTML += row;
             }
         }        

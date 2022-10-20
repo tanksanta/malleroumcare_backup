@@ -863,7 +863,7 @@ function form_check(act) {
           <?php } ?>
         </div>
         <?php if ($data["penLtmNum"]) { ?>
-        <a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>" class="li_box_right_btn" title="추가하기">
+        <a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>&redirect=<?=urlencode('/shop/cart.php')?>" class="li_box_right_btn" title="추가하기">
           장바구니
           <br/>
           <b><?php echo $data['carts'] . '개'; ?></b>
