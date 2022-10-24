@@ -36,27 +36,29 @@
     <table class="item_table">
       <colgroup>
         <col style="width: 16%" />
-        <col style="width: 12%" />
-        <col style="width: 24%" />
-        <col style="width: 18%" />
+        <col style="width: 25%" />
+        <col style="width: 15%" />
         <col style="width: 10%" />
         <col style="width: 10%" />
-        <col style="width: 10%" />
+        <col style="width: 8%" />
+        <col style="width: 8%" />
+        <col style="width: 8%" />
       </colgroup>
       <thead>
         <tr>
-          <th class="head" colspan="7">[ ✓ ]구입 [ &nbsp; ]대여</th>
+          <th class="head" colspan="8">[ ✓ ]구입 [ &nbsp; ]대여</th>
         </tr>
         <tr>
           <th scope="row" rowspan="2">품목명</th>
           <th scope="row" rowspan="2">제품명</th>
-          <th scope="row" rowspan="2">제품코드</th>
-          <th scope="row" rowspan="2">제공일자</th>
+          <th scope="row" rowspan="2">복지용구 표준코드</th>
+          <th scope="row" rowspan="2">급여비용</th>
+          <th scope="row" rowspan="2">판매일</th>
           <th scope="row" colspan="3">급여비 내역(원)</th>
         </tr>
         <tr>
           <th scope="row">총액</th>
-          <th scope="row">수급자<br>부담액</th>
+          <th scope="row">본인<br>부담금</th>
           <th scope="row">공단<br>부담액</th>
         </tr>
       </thead>
@@ -69,6 +71,7 @@
           <td><?=$item['ca_name']?></td>
           <td><?=$item['it_name']?></td>
           <td><?=$item['it_code']?><?php if($item['it_barcode']) echo "- {$item['it_barcode']}"; ?></td>
+          <td class="right"><?=number_format($item['it_price'])?></td>
           <td><?=$item['it_date']?></td>
           <td class="right"><?=number_format($item['it_price'])?></td>
           <td class="right"><?=number_format($item['it_price_pen'])?></td>
@@ -86,6 +89,7 @@
           <td></td>
           <td></td>
           <td></td>
+          <td></td>
           <td class="right"></td>
           <td class="right"></td>
           <td class="right"></td>
@@ -98,27 +102,29 @@
     <table class="item_table">
       <colgroup>
         <col style="width: 16%" />
-        <col style="width: 12%" />
-        <col style="width: 24%" />
-        <col style="width: 18%" />
+        <col style="width: 25%" />
+        <col style="width: 15%" />
         <col style="width: 10%" />
         <col style="width: 10%" />
-        <col style="width: 10%" />
+        <col style="width: 8%" />
+        <col style="width: 8%" />
+        <col style="width: 8%" />
       </colgroup>
       <thead>
         <tr>
-          <th class="head" colspan="7">[ &nbsp; ]구입 [ ✓ ]대여</th>
+          <th class="head" colspan="8">[ &nbsp; ]구입 [ ✓ ]대여</th>
         </tr>
         <tr>
           <th scope="row" rowspan="2">품목명</th>
           <th scope="row" rowspan="2">제품명</th>
-          <th scope="row" rowspan="2">제품코드</th>
+          <th scope="row" rowspan="2">복지용구 표준코드</th>
+          <th scope="row" rowspan="2">급여비용</th>
           <th scope="row" rowspan="2">대여기간</th>
           <th scope="row" colspan="3">급여비 내역(원)</th>
         </tr>
         <tr>
           <th scope="row">총액</th>
-          <th scope="row">수급자<br>부담액</th>
+          <th scope="row">본인<br>부담금</th>
           <th scope="row">공단<br>부담액</th>
         </tr>
       </thead>
@@ -131,6 +137,7 @@
           <td><?=$item['ca_name']?></td>
           <td><?=$item['it_name']?></td>
           <td><?=$item['it_code']?><?php if($item['it_barcode']) echo "- {$item['it_barcode']}"; ?></td>
+          <td class="right"><?=number_format($item['it_price'])?></td>
           <td><?=$item['it_date']?></td>
           <td class="right"><?=number_format($item['it_price'])?></td>
           <td class="right"><?=number_format($item['it_price_pen'])?></td>
@@ -144,6 +151,7 @@
         for($i = $count; $i < 5; $i++) {
         ?>
           <tr>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
