@@ -33,13 +33,14 @@ for ($i=0; $i<count($view['file']); $i++) {
 }
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
-add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" media="screen">', 0);
-
+add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css?v=1202" media="screen">', 0);
+add_javascript('<script src="'.G5_JS_URL.'/iscroll-zoom.js"></script>', 0);
 ?>
 <?php if($boset['video']) { ?>
 	<style>.view-wrap .apms-autowrap { max-width:<?php echo (G5_IS_MOBILE) ? '100%' : $boset['video'];?> !important;}</style>
 <?php } ?>
 <script src="<?php echo G5_JS_URL; ?>/viewimageresize.js"></script>
+
 
 <div class="view-wrap<?php echo (G5_IS_MOBILE) ? ' view-mobile font-14' : '';?>">
 	<h1><?php if($view['photo']) { ?><img src="<?php echo $view['photo'];?>" class="photo" alt=""><?php } ?><?php echo cut_str(get_text($view['wr_subject']), 70); ?></h1>
@@ -66,7 +67,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 
 				<span class="pull-right">
 					<i class="fa fa-clock-o"></i>
-                    <?php echo apms_date_YmdHi($view['date']); //시간 ?>
+					<?php echo apms_date_YmdHi($view['date']); //시간 ?>
 				</span>
 			</div>
 		</div>
@@ -81,7 +82,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 
 	<?php
 		// 이미지 상단 출력
-		$v_img_count = count($view['file']);
+		/*$v_img_count = count($view['file']);
 		if($v_img_count && $is_img_head) {
 			echo '<div class="view-img">'.PHP_EOL;
 			for ($i=0; $i<=count($view['file']); $i++) {
@@ -90,11 +91,14 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 				}
 			}
 			echo '</div>'.PHP_EOL;
-		}
-	 ?>
+		}*/
+  ?>
 
-	<div class="view-content">
-		<?php echo get_view_thumbnail($view['content']); ?>
+	<div class="view-zoom-desc"><img src="<?=THEMA_URL?>/assets/img/icon_zoom_mobile.png" alt="" /> 상세정보를 <strong>확대</strong>해서 볼 수 있습니다.</div>
+	<div id="view-content" class="view-content">
+		<div>
+			<?php echo $view['content']; ?>
+		</div>
 	</div>
 
 	<?php
@@ -102,7 +106,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 		if($v_img_count && $is_img_tail) {
 			echo '<div class="view-img">'.PHP_EOL;
 			for ($i=0; $i<=count($view['file']); $i++) {
-				if ($view['file'][$i]['view']) {
+				if ($view['file'][$i]['view']) {  
 					echo get_view_thumbnail($view['file'][$i]['view']);
 				}
 			}
@@ -231,6 +235,14 @@ function board_move(href){
 	window.open(href, "boardmove", "left=50, top=50, width=500, height=550, scrollbars=1");
 }
 $(function() {
+	var img_count = $("#view-content img").length;
+	if (img_count > 0) {
+		new ZoomContent('#view-content');
+	}
+	else {
+		$(".view-zoom-desc").hide();
+	}
+
 	$("a.view_image").click(function() {
 		window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
 		return false;

@@ -3,6 +3,11 @@ include_once('./_common.php');
 $data=date("Y-m-d H:i:s");
 
 for($i=0; $i<count($_POST['prods']); $i++) {
+    // 주문무효 또는 주문취소 상품에 대해서는 더이상 바코드 로그를 생성하지 않음
+    $sql_find = "SELECT ct_status FROM g5_shop_cart WHERE LOCATE('".$_POST['prods'][$i]['stoId']."', stoId) > 0 ;"; // 주문 상태 확인
+    $result_find = sql_fetch($sql_find);
+    if($result_find['ct_status'] == '주문무효' || $result_find['ct_status'] == '취소'){continue;}
+
     $sql_it = "select * from g5_shop_item where it_id ='".$_POST['prods'][$i]['prodId']."'";
     $result_it = sql_fetch($sql_it);
     $option = "";
