@@ -655,6 +655,7 @@ $row = sql_fetch($sql);
 					$rows2 = sql_fetch($sql);
 					$list[$i]['penId'] = $rows2['penId'];
                     $list[$i]['penNm'] = $rows2['penNm'];
+                                        $list[$i]['penNm'] = $rows2['penNm'];
 				  }
                 }
 
