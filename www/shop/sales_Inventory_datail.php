@@ -650,7 +650,12 @@ $row = sql_fetch($sql);
                         $list[$i]['penNm'] = $pen_result['penNm'];
                       }
                     }
-                  }
+                  }else{//추가
+					$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3'";
+					$rows2 = sql_fetch($sql);
+					$list[$i]['penId'] = $rows2['penId'];
+                    $list[$i]['penNm'] = $rows2['penNm'];
+				  }
                 }
 
                 if($list[$i]['penId']) {
