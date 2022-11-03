@@ -54,8 +54,8 @@ while($ct = sql_fetch_array($contents)) {
   $state[$id] = $val;
 }
 
-// 기초수급자 체크
-$is_gicho = $eform['penTypeCd'] == '04';
+// 기초수급자,의료수급자 체크
+$is_gicho = ($eform['penTypeCd'] == '04' || $eform['penTypeCd'] == '03')? true:false;
 
 ?>
 <!DOCTYPE html>

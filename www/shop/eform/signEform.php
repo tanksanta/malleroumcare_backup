@@ -39,8 +39,8 @@ while($item = sql_fetch_array($items)) {
   else if ($item['gubun'] == '01') array_push($rent, $item); // 대여 재고
 }
 
-// 기초수급자 체크
-$is_gicho = $eform['penTypeCd'] == '04';
+// 기초수급자,의료수급자 체크
+$is_gicho = ($eform['penTypeCd'] == '04' || $eform['penTypeCd'] == '03')? true:false;
 
 // 계약서 로그 작성
 $log = '전자계약서의 내용을 확인했습니다.';
