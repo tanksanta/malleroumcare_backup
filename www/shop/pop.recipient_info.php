@@ -957,7 +957,7 @@ while ($res_cate = sql_fetch_array($cate_result)) {
 
     function buildTable(data, option='', index = '') {        
         var table = document.getElementById('table_contract');
-        if(data.length == 0){
+        if(data.length == 0 && option != 'add'){
             var row = `<tr>
                             <td  colspan="10" style="padding: 8% 0%; border-left-style:none; border-right-style:none;">
                             조회된 계약 정보가 없습니다.
@@ -982,7 +982,7 @@ while ($res_cate = sql_fetch_array($cate_result)) {
 
     function buildTable_api(data, option='', index = '') {
         var table = document.getElementById('table_contract');
-        if(data.length == 0){
+        if(data.length == 0 && option != 'add'){
             var row = `<tr>
                             <td  colspan="10" style="padding: 8% 0%; border-left-style:none; border-right-style:none;">
                             조회된 계약 정보가 없습니다.
