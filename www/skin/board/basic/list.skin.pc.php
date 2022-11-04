@@ -118,7 +118,7 @@ $list_cnt = count($list);
 			</a>
 		</td>
 		<td><b><?php echo $list[$i]['name'] ?></b></td>
-		<td class="text-center en font-11"><?php echo apms_date($list[$i]['date'], 'orangered', 'H:i', 'm.d', 'Y.m.d'); ?></td>
+		<td class="text-center en font-11"><?php echo apms_date_YmdHi($list[$i]['date'], '', 'Y-m-d'); ?></td>
 		<td class="text-center en font-11"><?php echo $list[$i]['wr_hit'] ?></td>
 		<?php if ($is_good) { ?>
 			<td class="text-center en font-11"><?php echo $list[$i]['wr_good'] ?></td>

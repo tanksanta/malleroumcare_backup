@@ -626,6 +626,11 @@ if($is_main && !$is_member) {
                   고객센터(1:1문의)
                 </a>
               </li>
+i              <li>
+                <a href="/bbs/board.php?bo_table=sample">
+                  무료샘플 신청
+                </a>
+              </li>
               <li>
                 <a href="/bbs/board.php?bo_table=event">
                   이벤트
@@ -738,6 +743,12 @@ if($is_main && !$is_member) {
                 </a>
               </li>
               <li>
+                <a href="/bbs/board.php?bo_table=sample">
+                  무료샘플 신청
+                </a>
+              </li>
+
+              <li>
                 <a href="/bbs/board.php?bo_table=event">
                   이벤트
                 </a>
@@ -782,11 +793,14 @@ if($is_main && !$is_member) {
 
           <?php if ($member['mb_type'] !== 'normal') { ?>
           <div class="btn_info_area">
+            <a href="/bbs/board.php?bo_table=sample">
+              <img src="<?=THEMA_URL?>/assets/img/btn_free_sample.jpg" alt="무료샘플 신청 게시판 안내" />
+            </a>
             <a href="/bbs/board.php?bo_table=notice&wr_id=30">
-              <img src="<?=THEMA_URL?>/assets/img/btn_businesshour.png" alt="이로움 주문마감 안내 확인" />
+			  <img src="<?=THEMA_URL?>/assets/img/btn_businesshour.jpg" alt="이로움 주문마감 안내 확인" />
             </a>
             <a href="/bbs/board.php?bo_table=faq&wr_id=6" >
-              <img src="<?=THEMA_URL?>/assets/img/btn_installinfo.png" alt="안전손잡이 설치 안내" />
+              <img src="<?=THEMA_URL?>/assets/img/btn_installinfo.jpg" alt="안전손잡이 설치 안내" /> 
             </a>
           </div>
 

@@ -5500,6 +5500,18 @@ function apms_date($date, $class='', $day='H:i', $month='m.d H:i', $year='Y.m.d 
 	return $time;
 }
 
+// New Date Y.m.d H:i
+function apms_date_YmdHi($date, $class='', $format = 'm.d H:i') {
+
+	$time = ($day == 'before') ? apms_datetime($date) : date($format, $date);
+
+	if($class) {
+		$time = '<span class="'.$class.'">'.$time.'</span>';
+	}
+
+	return $time;
+}
+
 // 동영상 이미지 삭제
 function apms_video_thumbnail($url, $opt='') {
     if(!$url || $url == "1")
