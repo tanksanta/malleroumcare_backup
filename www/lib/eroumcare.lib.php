@@ -2932,54 +2932,6 @@ function update_partner_install_schedule_status_by_ob_id_and_ct_id($od_id, $ct_i
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-03
- * 설명 : 설치파트너 매니저 설치 일정 수령자 연락처 수정
- * @param integer $od_id
- * @param integer $ct_id
- * @param string $phone_number
- * @return boolean 
- */
-function update_partner_install_schedule_phone_number_by_ob_id_and_ct_id($od_id, $ct_id, $phone_number) {
-  $sql = "UPDATE `partner_inst_sts` SET od_b_hp = '$phone_number' WHERE od_id = $od_id AND ct_id = $ct_id";
-  return sql_query($sql);
-}
-
-/**
- * 작성자 : 임근석
- * 작성일자 : 2022-11-02
- * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-03
- * 설명 : 설치파트너 매니저 설치 일정 수령자 주소 수정
- * @param integer $od_id
- * @param integer $ct_id
- * @param string $address
- * @return boolean 
- */
-function update_partner_install_schedule_address_by_ob_id_and_ct_id($od_id, $ct_id, $address) {
-  $sql = "UPDATE `partner_inst_sts` SET od_b_addr1 = '$address' WHERE od_id = $od_id AND ct_id = $ct_id";
-  return sql_query($sql);
-}
-
-/**
- * 작성자 : 임근석
- * 작성일자 : 2022-11-02
- * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-03
- * 설명 : 설치파트너 매니저 설치 일정 수령자 요청 사항 수정
- * @param integer $od_id
- * @param integer $ct_id
- * @param string $memo
- * @return boolean 
- */
-function update_partner_install_schedule_memo_by_ob_id_and_ct_id($od_id, $ct_id, $memo) {
-  $sql = "UPDATE `partner_inst_sts` SET od_memo = '$memo' WHERE od_id = $od_id AND ct_id = $ct_id";
-  return sql_query($sql);
-}
-
-/**
- * 작성자 : 임근석
- * 작성일자 : 2022-11-02
- * 마지막 수정자 : 임근석
  * 마지막 수정일자 : 2022-11-07
  * 설명 : 설치파트너 매니저 일정 조회
  * @param string $partner_mb_id
