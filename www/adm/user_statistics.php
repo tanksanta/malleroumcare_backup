@@ -477,7 +477,7 @@ else if ($type == 'inquire_data') {
                 </tr>
             <?php } else { 
                 $cnt_date++;
-                $cnt_date_detail = $cnt_date + $arr_inquiry[$ind]['cnt'];?>                
+                $cnt_date_detail = $cnt_date_detail + $arr_inquiry[$ind]['cnt'];?>
                 <tr class="bg0" id="detail<?=$ind+1?>">
                 <td><?=$ind+1;?></td>
                 <td><?=explode(' ', $arr_inquiry[$ind]['occur_date'])[0];?></td>
