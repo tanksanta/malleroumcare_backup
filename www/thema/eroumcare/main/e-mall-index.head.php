@@ -12,6 +12,7 @@
 
 <style>
 .service_top {
+  display:block;
   width: 100%;
   height: 937px;
   min-height: 200px;
@@ -20,6 +21,7 @@
   background-size: cover;
   position: relative;
 }
+
 .half_patition {
   width: 60%;
   height: 100%;
@@ -28,6 +30,7 @@
   text-align: right;
   padding-right: 10%;
 }
+
 .hd_logo{
     width: 12%;
     height: 12%;
@@ -67,5 +70,11 @@
     .half_patition p:nth-child(5) span{color: #e86b19; font-weight:1000;}
     .half_patition p:nth-child(6) {margin-top: 1%; font-size: 10px; background-color: #F5F5F5; font-weight:550; display: inline-block; padding: 2px 4px 2px 4px; border: 1px solid #0c0c0c; margin-left: 3%; color: #0c0c0c;}
     .half_patition p:nth-child(6) span{font-weight:1000;}
+}
+
+@media (max-width: 420px) {
+    .service_top{
+        display:none;
+    }
 }
 </style>
