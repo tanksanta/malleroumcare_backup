@@ -2923,7 +2923,7 @@ function update_partner_install_schedule_status_by_ob_id_and_ct_id($od_id, $ct_i
  * @return boolean 
  */
 function update_partner_install_schedule_delivery_date_and_delivery_datetime_by_ob_id_and_ct_id($od_id, $ct_id, $delivery_date, $delivery_datetime) {
-  $sql = "UPDATE `partner_inst_sts` SET delivery_date = '$delivery_date' AND delivery_datetime = '$delivery_datetime' WHERE od_id = $od_id AND ct_id = $ct_id";
+  $sql = "UPDATE `partner_inst_sts` SET delivery_date = '$delivery_date', delivery_datetime = '$delivery_datetime' WHERE od_id = $od_id AND ct_id = $ct_id";
   return sql_query($sql);
 }
 
