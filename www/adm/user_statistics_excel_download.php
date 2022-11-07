@@ -1,7 +1,7 @@
 <?php
 include_once("./_common.php");
 ini_set("display_errors", 0);
-if ($is_admin != 'super') {
+if ($is_admin != 'super' && $member["mb_level"] < "9") {
   alert('최고관리자만 접근 가능합니다.');
   exit;
 }
