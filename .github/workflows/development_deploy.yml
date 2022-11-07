@@ -15,8 +15,8 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_USERNAME }}
-          password: ${{ secrets.DEV_PASSWORD }}
+          username: ${{ secrets.USERNAME_DEV }}
+          password: ${{ secrets.PASSWORD_DEV }}
           port: ${{ secrets.PORT }}
           script: |
             cd /home/malleroumcare
