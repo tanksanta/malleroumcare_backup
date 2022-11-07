@@ -151,6 +151,10 @@ $(function(){
   <div class="r_btn_area">
     <a href="javascript:void(0)" id="btn_hidden_order" class="btn eroumcare_btn2" title="숨김처리한 주문">숨김처리한 주문</a>
   </div>
+  <div class="r_btn_area2">
+    <a href="./schedule/index.php" class="btn eroumcare_btn2" onclick="return showSchdule(this.href);"
+        target="_blank" title="일정 보기">일정 보기</a>
+  </div>
   <div id="hidden_order">
     <div class="hidden_order_title">숨김처리한 주문</div>
     <ul>
