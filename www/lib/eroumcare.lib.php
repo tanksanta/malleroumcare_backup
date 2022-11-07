@@ -2823,6 +2823,21 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id, $par
 
 /**
  * 작성자 : 임근석
+ * 작성일자 : 2022-11-07
+ * 마지막 수정자 : 임근석
+ * 마지막 수정일자 : 2022-11-07
+ * 설명 : 설치파트너 매니저 설치 일정 생성 여부 확인
+ * @param integer $od_id
+ * @return boolean 
+ */
+function exit_partner_install_schedule($od_id) {
+  $sql = "SELECT id FROM partner_inst_sts WHERE od_id = $od_id;";
+  $result = sql_query($sql);
+  return mysqli_num_rows($result) > 0;
+}
+
+/**
+ * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
  * 마지막 수정일자 : 2022-11-03
