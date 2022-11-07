@@ -2923,10 +2923,12 @@ function update_partner_install_schedule_status_by_ob_id_and_ct_id($od_id, $ct_i
  * @return boolean 
  */
 function update_partner_install_schedule_delivery_date_and_delivery_datetime_by_ob_id_and_ct_id($od_id, $ct_id, $delivery_date, $delivery_datetime) {
+  if (strlen($delivery_datetime) <= 2) {
+    $delivery_datetime .= ":00";
+  }
   $sql = "UPDATE `partner_inst_sts` SET delivery_date = '$delivery_date', delivery_datetime = '$delivery_datetime' WHERE od_id = $od_id AND ct_id = $ct_id";
   return sql_query($sql);
 }
-
 /**
  * 작성자 : 임근석
  * 작성일자 : 2022-11-07
