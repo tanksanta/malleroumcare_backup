@@ -2969,7 +2969,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id) {
     od_b_hp, 
     od_b_addr1, 
     od_memo
-  FROM `partner_inst_sts` WHERE partner_mb_id = '$partner_mb_id' AND delivery_date != null && delivery_datetime != null;";
+  FROM `partner_inst_sts` WHERE partner_mb_id = '$partner_mb_id' AND delivery_date != '' AND delivery_datetime != ''";
   $result = sql_query($sql);
   $return_list = [];
   while ($res_item = sql_fetch_array($result)) {
