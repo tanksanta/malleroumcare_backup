@@ -351,7 +351,15 @@ expired_rental_item_clean($_GET['prodId']);
             //상태 메뉴
             $state_menu_all="";
             $state_menu1='<li><a class="state-btn4" onclick="open_retal_period(this)" href="javascript:;">대여기간 수정</a></li>';
-            $state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id'].'">계약서 확인</a></li>';
+            if($result_stock['od_id']){
+				$state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id'].'">계약서 확인</a></li>';
+			}else{
+				$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3' order by a.dc_datetime DESC limit 1";
+				$rows2 = sql_fetch($sql);
+				if($rows2['UUID']) {
+					$state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?dc_id='.$rows2['UUID'].'">계약서 확인</a></li>';
+				}
+			}
             $state_menu3='<li class="p-btn01"><a href="javascript:;" onclick="open_designate_disinfection(this)">소독신청</a></li>';
             $state_menu4='<li><a href="javascript:;" onclick="retal_state_change2(\''.$list[$i]['stoId'].'\',\'01\',\'변경되었습니다.\')" >대여 가능상태</a></li>';
             $state_menu5='<li class="p-btn02" onclick="open_designate_result(this)"><a href="javascript:;">소독확인 신청</a></li>';
@@ -505,7 +513,7 @@ expired_rental_item_clean($_GET['prodId']);
                     <?=$state_menu_all; ?>
                   </ul>
                 </div>
-                <a class="state-btn3" href="javascript:;" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                <a class="state-btn3" href="javascript:;" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
               </span>
 
               <!--mobile용-->
@@ -532,7 +540,7 @@ expired_rental_item_clean($_GET['prodId']);
                         <?=$state_menu_all; ?>
                       </ul>
                     </div>
-                    <a class="state-btn3" href="javascript:;"  onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')" ><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                    <a class="state-btn3" href="javascript:;"  onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')" ><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
                   </span>
                 </div>
               </div>
@@ -702,25 +710,28 @@ expired_rental_item_clean($_GET['prodId']);
               </div>
 
               <!-- 대여기록 -->
-              <div class="popup01 popup3">
+              <div class="popup01 popup3" style="width:470px;">
                 <div class="p-inner">
                   <h2>대여 기록</h2>
                   <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
-                  <div class="table-box">
+                 <?php //수정?>
+				  <div class="table-box" style="max-width:450px; padding: 0 10px;">
                     <div class="tti">
                       <h4><?=$name?></h4>
                       <span><?=$list[$i]['prodBarNum']?></span>
                     </div>
-                    <table>
+                    <table style="width:408px;">
                       <colgroup>
                         <col width="10%">
-                        <col width="30%">
-                        <col width="30%">
-                        <col width="30%">
+                        <col width="20%">
+                        <col width="10%">
+						<col width="35%">
+                        <col width="25%">
                       </colgroup>
                       <thead>
                         <th style="text-align: center;">No.</th>
                         <th style="text-align: center;">내용</th>
+						<th style="text-align: center;">구분</th>
                         <th style="text-align: center;">기간</th>
                         <th style="text-align: center;">문서</th>
                       </thead>
@@ -728,6 +739,7 @@ expired_rental_item_clean($_GET['prodId']);
                       </tbody>
                     </table>
                   </div>
+				  <?php //수정끝?>
                   <div class="pg-wrap">
                     <!-- 페이지 넣는곳 -->
                     <div id="page_<?=$list[$i]['stoId']?>"></div>
@@ -932,7 +944,7 @@ expired_rental_item_clean($_GET['prodId']);
               ?>
               <span class="date m_off"><?=$date2?></span>
 
-              <span class="none m_off" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')">
+              <span class="none m_off" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')">
                 <a href="javascript:;" class="state-btn1" onclick="retal_state_change2('<?=$list[$i]['stoId'] ?>','01','변경되었습니다.')" >대여가능</a>
                 <a class="state-btn3" href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
               </span>
@@ -943,7 +955,7 @@ expired_rental_item_clean($_GET['prodId']);
                   <span class="product"><?=$name;?></span>
                   <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                   <a href="javascript:;" style="margin-right:7px;" class="state-btn1" onclick="retal_state_change2('<?=$list[$i]['stoId'] ?>','01','변경되었습니다.')" >대여가능</a>
-                  <a class="state-btn3" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1')"  href="javascript:; "><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                  <a class="state-btn3" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')"  href="javascript:; "><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
                 </div>
                 <div class="info-m">
                   <span class="none">
@@ -963,13 +975,15 @@ expired_rental_item_clean($_GET['prodId']);
                     <table>
                       <colgroup>
                         <col width="10%">
-                        <col width="30%">
-                        <col width="30%">
-                        <col width="30%">
+                        <col width="20%">
+                        <col width="10%">
+						<col width="35%">
+                        <col width="25%">
                       </colgroup>
                       <thead>
                         <th style="text-align: center;">No.</th>
                         <th style="text-align: center;">내용</th>
+						<th style="text-align: center;">구분</th>
                         <th style="text-align: center;">기간</th>
                         <th style="text-align: center;">문서</th>
                       </thead>
@@ -1276,7 +1290,7 @@ function open_retal_period(e) {
 }
 
 //대여기록 팝업
-function open_log(e ,stoId,logid,page,pageid,num) {
+function open_log(e ,stoId,logid,page,pageid,num,barcode) {
   var logid_object= document.getElementById(logid);
   var pageid_object= document.getElementById(pageid);
 
@@ -1284,7 +1298,8 @@ function open_log(e ,stoId,logid,page,pageid,num) {
     stoId:stoId,
     logid:page,
     page:page,
-    pageid:page
+    pageid:page,
+	barcode:barcode
   }
 
   $.ajax({//리스트

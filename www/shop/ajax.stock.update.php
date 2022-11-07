@@ -5,7 +5,27 @@ $prods = $_POST['prods'];
 if(is_array($prods)) {
   foreach($prods as $prod) {
     if($prod['stateCd'] == '09') { // 대여종료
-      sql_query("
+       $sql = "SELECT * FROM `g5_rental_log` WHERE stoId='{$prod['stoId']}'
+        ORDER BY dis_total_date DESC LIMIT 1 ";
+	   $row = sql_fetch($sql);
+		$now = date("Y-m-d");
+		$dis_total_date=G5_TIME_YMDHIS;
+	   if(strtotime($now)<strtotime($row["enddate"])){//중도 해지 로그 생성
+		   $rental_log_Id="rental_log".round(microtime(true)).rand();
+		   $sql = " insert into `g5_rental_log` set
+				  `rental_log_Id` = '$rental_log_Id',
+				  `stoId` = '{$prod['stoId']}',
+				  `ordId` = '{$row['ordId']}',
+				  `strdate` = '{$row['strdate']}',
+				  `enddate` = '{$row['enddate']}',
+				  `dis_total_date` = '$dis_total_date',
+				  `ren_person` = '종료<br>(".$now.")',
+				  `ren_eformUrl` = 'cancel',
+				  `rental_log_division` = '2' ";
+		  sql_query($sql);
+	   }
+	  //추가
+	  sql_query("
         UPDATE
           stock_custom_order
         SET
