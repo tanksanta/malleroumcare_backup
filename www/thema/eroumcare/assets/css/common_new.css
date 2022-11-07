@@ -1865,6 +1865,10 @@ pre{white-space: pre-wrap;}
 	.cate_wrap .form_cate .input_search { max-width: calc(100% - 80px); }
 }
 
+@media (max-width: 420px){
+	.is-pc .at-body{padding:0}
+}
+
 #form_search:after {
 	display: table;
 	content: '';
