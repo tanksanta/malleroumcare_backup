@@ -2980,7 +2980,7 @@ function update_partner_install_schedule_memo_by_ob_id_and_ct_id($od_id, $ct_id,
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-02
+ * 마지막 수정일자 : 2022-11-07
  * 설명 : 설치파트너 매니저 일정 조회
  * @param string $partner_mb_id
  * @return mixed 
@@ -2998,7 +2998,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id) {
     od_b_hp, 
     od_b_addr1, 
     od_memo
-  FROM `partner_inst_sts` WHERE partner_mb_id = '$partner_mb_id';";
+  FROM `partner_inst_sts` WHERE partner_mb_id = '$partner_mb_id' AND delivery_date != null && delivery_datetime != null;";
   $result = sql_query($sql);
   $return_list = [];
   while ($res_item = sql_fetch_array($result)) {
