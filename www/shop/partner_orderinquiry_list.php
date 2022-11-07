@@ -312,10 +312,51 @@ tr.hover { background-color: #fbf9f7 !important; }
 @media (max-width : 750px) {
   #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 }
+
+.sub_sction_tit2 {
+    display: flex;
+    flex-direction: row;
+}
+
+.sub_sction_tit_control {
+    width: 100%;
+    flex: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+a.btn_schedule {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 1;
+    padding: 6px 8px;
+    border-radius: 3px;
+    border: 1px solid #e6e1d7;
+    color: #666;
+    background: #fff;
+}
 </style>
 
+<script src="/js/detectmobilebrowser.js">
+</script>
+
 <section class="wrap">
-  <div class="sub_section_tit">주문내역</div>
+  <div class="sub_section_tit sub_sction_tit2">주문내역
+    <div class="sub_sction_tit_control">
+      <a href="./schedule/index.php" class="btn_schedule" onclick="return showSchdule(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">일정 보기</a>
+    </div>
+  </div>
   <form method="get" class="clear">
     <div class="search_box">
       <label><input type="checkbox" id="chk_ct_status_all"/> 전체</label> 
@@ -592,6 +633,17 @@ function checkIncompletedAll() {
   var total = $('input[name="incompleted[]"]').length;
   var checkedTotal = $('input[name="incompleted[]"]:checked').length;
   $("#chk_incompleted_all").prop('checked', total <= checkedTotal); 
+}
+
+function showSchdule(url) {
+  let opt = "width=1360,height=780,left=0,top=10";
+  let _url = url;
+  if (jQuery.browser.mobile) {
+    opt = "";
+    _url = _url.replace("index.php", "m_index.php");
+  }
+  window.open(_url, "win_schedule", opt);
+  return false;
 }
 
 $(function() {
