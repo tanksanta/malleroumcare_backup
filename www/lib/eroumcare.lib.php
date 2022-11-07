@@ -2930,6 +2930,26 @@ function update_partner_install_schedule_status_by_ob_id_and_ct_id($od_id, $ct_i
 
 /**
  * 작성자 : 임근석
+ * 작성일자 : 2022-11-07
+ * 마지막 수정자 : 임근석
+ * 마지막 수정일자 : 2022-11-07
+ * 설명 : 설치파트너 매니저 일정 담당자 지정
+ * @param integer $od_id
+ * @param integer $ct_id
+ * @param string $partner_manager_mb_id
+ * @return boolean 
+ */
+function update_partner_install_schedule_partner_by_ob_id_and_ct_id($od_id, $ct_id, $partner_manager_mb_id) {
+  $sql = "SELECT mb_id, mb_name, mb_manager FROM g5_member WHERE mb_id = '$partner_manager_mb_id';";
+  $partner = sql_fetch($sql);
+  if ($partner == null) return false;
+  
+  $sql = "UPDATE `partner_inst_sts` SET partner_mb_id = '".$partner["mb_manager"]."', partner_manager_mb_id = '".$partner["mb_id"]."', partner_manager_mb_name = '".$partner["mb_name"]."' WHERE od_id = $od_id AND ct_id = $ct_id";
+  return sql_query($sql);
+}
+
+/**
+ * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
  * 마지막 수정일자 : 2022-11-07
