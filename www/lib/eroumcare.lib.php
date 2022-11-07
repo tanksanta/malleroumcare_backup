@@ -2840,16 +2840,13 @@ function exit_partner_install_schedule($od_id) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-03
+ * 마지막 수정일자 : 2022-11-07
  * 설명 : 설치파트너 매니저 설치 일정 생성
  * @param string $status 신규|진행중|불가|완료|취소
- * @param string $delivery_date 포맷 : YYYY-MM-DD
- * @param string $delivery_datetime 포맷 : hh:mm
- * @param string $partner_manager_mb_id
  * @param integer $od_id
  * @return boolean 
  */
-function create_partner_install_schedule($status, $delivery_date, $delivery_datetime, $partner_manager_mb_id, $od_id) {
+function create_partner_install_schedule($status, $od_id) {
   $sql = "SELECT
     ct.ct_id,
     ct.it_name,
@@ -2871,20 +2868,10 @@ function create_partner_install_schedule($status, $delivery_date, $delivery_date
     $delivery_datetime .= ":00";
   }
 
-  $sql = "SELECT mb_id, mb_name, mb_manager FROM g5_member WHERE mb_id = '$partner_manager_mb_id';";
-  $partner = sql_fetch($sql);
-  if ($partner == null) return false;
-
   $sql = "INSERT INTO `partner_inst_sts` 
   (
     status, 
-    delivery_date, 
-    delivery_datetime, 
-    ct_id, 
     it_name, 
-    partner_mb_id, 
-    partner_manager_mb_id, 
-    partner_manager_mb_name, 
     od_id, 
     od_mb_ent_name, 
     od_b_name, 
@@ -2894,13 +2881,8 @@ function create_partner_install_schedule($status, $delivery_date, $delivery_date
   ) VALUES ";
   while ($cart = sql_fetch_array($cart_result)) {
     $sql = $sql."('".$status."',"
-    ."'".$delivery_date."',"
-    ."'".$delivery_datetime."',"
     ."'".$cart["ct_id"]."',"
     ."'".$cart["it_name"]."',"
-    ."'".$partner["mb_manager"]."',"
-    ."'".$partner["mb_id"]."',"
-    ."'".$partner["mb_name"]."',"
     ."'".$cart["od_id"]."',"
     ."'".$cart["mb_entNm"]."',"
     ."'".$cart["od_b_name"]."',"
