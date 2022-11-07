@@ -2933,6 +2933,23 @@ function update_partner_install_schedule_status_by_ob_id_and_ct_id($od_id, $ct_i
  * 작성일자 : 2022-11-07
  * 마지막 수정자 : 임근석
  * 마지막 수정일자 : 2022-11-07
+ * 설명 : 설치파트너 매니저 설치 일정 날짜 수정
+ * @param integer $od_id
+ * @param integer $ct_id
+ * @param string $delivery_date 포맷 : YYYY-MM-DD
+ * @param string $delivery_datetime 포맷 : hh:mm
+ * @return boolean 
+ */
+function update_partner_install_schedule_delivery_date_and_delivery_datetime_by_ob_id_and_ct_id($od_id, $ct_id, $delivery_date, $delivery_datetime) {
+  $sql = "UPDATE `partner_inst_sts` SET delivery_date = '$delivery_date' AND delivery_datetime = '$delivery_datetime' WHERE od_id = $od_id AND ct_id = $ct_id";
+  return sql_query($sql);
+}
+
+/**
+ * 작성자 : 임근석
+ * 작성일자 : 2022-11-07
+ * 마지막 수정자 : 임근석
+ * 마지막 수정일자 : 2022-11-07
  * 설명 : 설치파트너 매니저 일정 담당자 지정
  * @param integer $od_id
  * @param integer $ct_id
