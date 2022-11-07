@@ -1,7 +1,7 @@
 <?php
 $sub_menu = "200830";
 include_once('./_common.php');
-
+ini_set("display_errors", 0);
 auth_check($auth[$sub_menu], 'r');
 
 $g5['title'] = '사용자 통계분석';

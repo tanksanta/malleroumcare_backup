@@ -828,6 +828,22 @@ function get_delivery_log($od_id) {
 
     return $ret;
 }
+
+function get_delivery_log_re($od_id) { // 아예 같은 내용인
+
+    $sql = "SELECT * FROM g5_delivery_log WHERE od_id = '{$od_id}'
+    group by ct_id, d_content, ct_combine_ct_id, ct_delivery_company, ct_delivery_num,
+    ct_edi_result, ct_is_direct_delivery, ct_direct_delivery_partner, was_combined, was_direct_delivery, set_warehouse ORDER BY d_date DESC;";
+    $result = sql_query($sql);
+
+    $ret = array();
+    while($row = sql_fetch_array($result)) {
+        $ret[] = $row;
+    }
+
+    return $ret;
+}
+
 function set_order_admin_log($od_id, $content) {
     global $member;
     
