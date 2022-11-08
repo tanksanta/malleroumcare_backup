@@ -1059,8 +1059,15 @@ function update_pen(obj) {
     $('#penExpiStDtm').val(obj.penExpiStDtm).data('orig', obj.penExpiStDtm).change();
     $('#penExpiEdDtm').val(obj.penExpiEdDtm).data('orig', obj.penExpiEdDtm).change();
     $('#penJumin').val(obj.penJumin).data('orig', obj.penJumin).change();
-    $('#penRecTypeCd').val(obj.penRecTypeCd).data('orig', obj.penRecTypeCd).change();
-    if(obj.penRecTypeTxt) $('#penRecTypeTxt').val(obj.penRecTypeTxt);
+    $('#penRecTypeCd').val(obj.penRecTypeCd).data('orig', obj.penRecTypeCd).change(); // 값을 들고오지 않음 -> ajax.get_pen_id.php 에서 추가
+    if(obj.penRecTypeCd == '01') {
+      $('input[name="penRecTypeCd_radio"]').val(1).prop('checked', true);
+      $('input[name="penRecTypeCd_radio"]').val(1).prop('checked', false);
+    } else {
+      $('input[name="penRecTypeCd_radio"]').val(1).prop('checked', false);
+      $('input[name="penRecTypeCd_radio"]').val(1).prop('checked', true);
+    }
+    if(obj.penRecTypeTxt) $('#penRecTypeTxt').val(obj.penRecTypeTxt); // 값을 들고오지 않음 -> ajax.get_pen_id.php 에서 추가
   }
 }
 
