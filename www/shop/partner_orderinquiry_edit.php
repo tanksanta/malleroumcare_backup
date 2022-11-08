@@ -180,7 +180,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                 <p class="it_price">단가 : <span><?=number_format($ct['it_cust_price'])?>원</span></p>
                 <p class="ct_price">0원</p>
               </div>
-              <button type="button" class="btn_del_item">삭제</button>
+              <!--button type="button" class="btn_del_item">삭제</button-->
             </div>
           </li>
           <?php } ?>
