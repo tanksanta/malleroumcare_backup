@@ -2961,7 +2961,7 @@ function update_partner_install_schedule_partner_by_ob_id($od_id, $partner_manag
  * @return boolean 
  */
 function delete_partner_install_schedule($od_id, $ct_id) {
-  $sql = "DELETE `partner_inst_sts` WHERE od_id = $od_id AND ct_id = $ct_id";
+  $sql = "DELETE FROM `partner_inst_sts` WHERE od_id = $od_id AND ct_id = $ct_id";
   return sql_query($sql);
 }
 
@@ -2987,11 +2987,12 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id) {
     od_b_hp, 
     od_b_addr1, 
     od_memo
-  FROM `partner_inst_sts` WHERE partner_mb_id = '$partner_mb_id' AND delivery_date != '' AND delivery_datetime != ''";
+  FROM `partner_inst_sts` WHERE partner_mb_id = '$partner_mb_id' AND delivery_date != '' AND delivery_datetime != '' AND status != '취소'";
   $result = sql_query($sql);
   $return_list = [];
   while ($res_item = sql_fetch_array($result)) {
     array_push($return_list, array(
+      'status' => $res_item['status'],
       'delivery_date' => $res_item['delivery_date'],
       'delivery_datetime' => $res_item['delivery_datetime'],
       'it_name' => $res_item['it_name'],
@@ -3015,6 +3016,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id) {
   $result = sql_query($sql);
   while ($res_item = sql_fetch_array($result)) {
     array_push($return_list, array(
+      'status' => '',
       'delivery_date' => $res_item['deny_date'],
       'delivery_datetime' => '',
       'it_name' => '',
