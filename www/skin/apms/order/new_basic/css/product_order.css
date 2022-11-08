@@ -44,7 +44,6 @@ table {border-collapse: collapse;}
     right: calc(20px + 120px);
     top: 20px;
 }
-
 .pc_none,.info_pc_none {display: none !important;}
 .m_barcode {display: none;}
 
