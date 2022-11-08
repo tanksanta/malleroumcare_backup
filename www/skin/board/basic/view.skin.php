@@ -66,7 +66,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 
 				<span class="pull-right">
 					<i class="fa fa-clock-o"></i>
-					<?php echo apms_date($view['date'], 'orangered'); //시간 ?>
+                    <?php echo apms_date_YmdHi($view['date']); //시간 ?>
 				</span>
 			</div>
 		</div>

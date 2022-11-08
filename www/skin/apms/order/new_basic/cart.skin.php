@@ -250,7 +250,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         수급자 계약서 작성만 가능합니다.
         </p>
         <button type="button" class="btn btn-block btn-lg sub_n_btn">비유통 품목 제외 후 상품주문</button>
-        <a href="#" class="btn recipient_btn" onclick="return form_check('sup_recipient');">수급자 계약서 작성하기</a>
+        <?php /* <a href="#" class="btn recipient_btn" onclick="return form_check('sup_recipient');">수급자 계약서 작성하기</a> */?>
     </div>
 
 </form>

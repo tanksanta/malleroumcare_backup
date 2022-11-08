@@ -2061,7 +2061,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
       </div>
       <div class="block-box gray logs">
         <?php
-        $logs = get_delivery_log($od['od_id']);
+        $cnt_delivery_log = 0; // 배송 기록이 몇개나 출력되었는지 확인하는 카운터
+        // $logs = get_delivery_log($od['od_id']);
+        $logs = get_delivery_log_re($od['od_id']); // 중복 없이 배송 기록(로그)를 가져오는 함수로 변경
         $last_log = [];
         foreach($logs as $log) {
           $log_mb = get_member($log['mb_id']);
@@ -2138,9 +2140,11 @@ var od_id = '<?php echo $od['od_id']; ?>';
             if(!$log['was_combined'] && $log['ct_combine_ct_id']) {
               // 합포적용
               echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 합포정보 입력 : {$it_name} 상품을 {$it_name_p} 상품에 합포적용했습니다.<br/>";
+              $cnt_delivery_log++; // 배송 기록이 몇개나 출력되었는지 확인하는 카운터
             } else if($log['was_combined'] && !$log['ct_combine_ct_id']) {
               // 합포해지
               echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 합포정보 입력 : {$it_name} 상품을 합포해지했습니다.<br/>";
+              $cnt_delivery_log++; // 배송 기록이 몇개나 출력되었는지 확인하는 카운터
             }
   
             if(!$log['was_direct_delivery'] && $log['ct_is_direct_delivery']) {
@@ -2152,25 +2156,34 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 $direct_delivery_type = '설치';
               }
               echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 위탁정보 입력 : {$it_name} 상품을 위탁 적용했습니다. ({$direct_delivery_type}/{$log['ct_direct_delivery_partner']}/1개당 {$log['ct_direct_delivery_price']}원)<br/>";
+              $cnt_delivery_log++; // 배송 기록이 몇개나 출력되었는지 확인하는 카운터
             } else if($log['was_direct_delivery'] && !$log['ct_is_direct_delivery']) {
               // 위탁해지
               echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 위탁정보 입력 : {$it_name} 상품을 위탁 해지했습니다.<br/>";
+              $cnt_delivery_log++; // 배송 기록이 몇개나 출력되었는지 확인하는 카운터
             }
           /*}*/
 
           if($log['ct_combine_ct_id']) {
             echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' ['. $combine.'] '.$direct_delivery.'<br/>';
+            $cnt_delivery_log++; // 배송 기록이 몇개나 출력되었는지 확인하는 카운터
           } else {
-            echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' 송장번호['. $log['ct_delivery_num'].'] '.$direct_delivery.'<br/>';
+            if($log['ct_delivery_num']){ // 빈 송장번호가 넘어오면 배송기록을 출력하지 못하게 한다.
+                echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) 배송정보 입력 : '.$delivery_company.' '.$it_name.' 송장번호['. $log['ct_delivery_num'].'] '.$direct_delivery.'<br/>';
+                $cnt_delivery_log++; // 배송 기록이 몇개나 출력되었는지 확인하는 카운터
+            }
           }
 
           if ($log['set_warehouse']) {
             echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) '.$log['d_content'].' 저장<br/>';
+            $cnt_delivery_log++; // 배송 기록이 몇개나 출력되었는지 확인하는 카운터
           }
 
           $last_log[$log['ct_id']] = $log;
         }
-        if (!count($logs)) {
+        if (!count($logs) || $cnt_delivery_log == 0) {
+          // 조회된 배송 로그 수가 0이거나
+          // 출력된 배송 로그 수가 0이면
           echo '기록이 없습니다.';
         }
         ?>

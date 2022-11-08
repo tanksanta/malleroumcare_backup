@@ -1,7 +1,7 @@
 <?php
 include_once("./_common.php");
-
-if ($is_admin != 'super') {
+ini_set("display_errors", 0);
+if ($is_admin != 'super' && $member["mb_level"] < "9") {
   alert('최고관리자만 접근 가능합니다.');
   exit;
 }
@@ -33,9 +33,17 @@ if (!$type || $type == 'user') {
     $filename = "방문자집계(사업소별)";
 } else if ($type == 'recipient') {
     $filename = "등록한수급자";
+} else if ($type == 'inquire_data') {
+    if($page == 'all'){
+        $filename = "요양정보 조회 집계(전체사업소) ".$todate;
+    } else if ($page == 'ent') {
+        $filename = "요양정보 조회 집계(사업소별)";
+    } else {
+        $filename = "요양정보 조회 집계(일자별)";
+    }
 } 
 include_once(G5_LIB_PATH."/PHPExcel.php");
-
+$filename = $filename."(".date("YmdHis").")";
 // save $table inside temporary file that will be deleted later
 $tmpfile = tempnam(sys_get_temp_dir(), 'html');
 file_put_contents($tmpfile, $body);
