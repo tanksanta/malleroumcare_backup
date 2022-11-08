@@ -2960,7 +2960,7 @@ function update_partner_install_schedule_partner_by_ob_id($od_id, $partner_manag
  * @param integer $ct_id
  * @return boolean 
  */
-function delete_partner_install_schedule_by_ob_id_and_ct_id($od_id, $ct_id) {
+function delete_partner_install_schedule($od_id, $ct_id) {
   $sql = "DELETE `partner_inst_sts` WHERE od_id = $od_id AND ct_id = $ct_id";
   return sql_query($sql);
 }
