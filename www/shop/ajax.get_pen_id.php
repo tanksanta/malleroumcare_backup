@@ -47,6 +47,8 @@ if($result['errorYN'] === 'N') {
       'penZip' => $pen['penZip'],
       'penAddr' => $pen['penAddr'],
       'penAddrDtl' => $pen['penAddrDtl'],
+      'penRecTypeCd' => $pen['penRecTypeCd'],
+      'penRecTypeTxt' => $pen['penRecTypeTxt'],
     );
   }
 }
