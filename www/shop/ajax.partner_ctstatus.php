@@ -76,6 +76,8 @@ foreach($ct_id_arr as $ct_id) {
         od_id = '$od_id' and
         ct_id = '$ct_id'
     ";
+    // STR 2022.11.08 cancel the installation scheduling. by jake
+    delete_partner_install_schedule
   }
 
   $sql[] = "
