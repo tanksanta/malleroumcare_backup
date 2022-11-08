@@ -24,7 +24,7 @@ if($header_skin)
 <link rel="stylesheet" href="<?=$SKIN_URL?>/css/jquery-ui.min.css">
 <link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order.css?v=20210923">
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-   
+
 <script>
   $( function() {
     //캘린더
@@ -78,7 +78,7 @@ if($header_skin)
     });
   } );
 </script>
-  
+
 <style>
 .listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
 .listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
@@ -95,7 +95,7 @@ if($header_skin)
   </div>
 </div>
 <!-- 210326 재고조회팝업 -->
-  
+
 <!-- 210326 배송정보팝업 -->
 <div id="popupProdDeliveryInfoBox" class="listPopupBoxWrap">
   <div>
@@ -111,17 +111,17 @@ $(function(){
 
   $(".listPopupBoxWrap").hide();
   $(".listPopupBoxWrap").css("opacity", 1);
-  
+
   $(".popupDeliveryInfoBtn").click(function(e){
     e.preventDefault();
-    
+
     var od = $(this).attr("data-od");
     $("#popupProdDeliveryInfoBox > div").append("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od + "'>");
     $("#popupProdDeliveryInfoBox iframe").load(function(){
       $("#popupProdDeliveryInfoBox").show();
     });
   });
-  
+
   $(".popupProdBarNumInfoBtn").click(function(e){
     e.preventDefault();
     var od_id = $(this).attr("data-id");
@@ -141,15 +141,19 @@ $(function(){
       $("#popup_box").show();
     });
   });
-  
+
 });
 </script>
 <!-- 210326 배송정보팝업 -->
-    
+
 <section id="pro-order" class="wrap order-list">
   <div class="sub_section_tit">주문내역</div>
   <div class="r_btn_area">
     <a href="javascript:void(0)" id="btn_hidden_order" class="btn eroumcare_btn2" title="숨김처리한 주문">숨김처리한 주문</a>
+  </div>
+  <div class="r_btn_area2">
+    <a href="./schedule/index.php" class="btn eroumcare_btn2" onclick="return showSchdule(this.href);"
+            target="_blank" title="일정 보기">일정 보기</a>
   </div>
   <div id="hidden_order">
     <div class="hidden_order_title">숨김처리한 주문</div>
@@ -193,9 +197,9 @@ $(function(){
       </div>
       <div class="date-box" style="width: 100%;" method="get">
         <div class="list-date">
-          <input type="text" name="s_date" value="<?=$_GET["s_date"]?>" id="date1" /> 
-          ~ 
-          <input type="text" name="e_date" value="<?=$_GET["e_date"]?>" id="date2" /> 
+          <input type="text" name="s_date" value="<?=$_GET["s_date"]?>" id="date1" />
+          ~
+          <input type="text" name="e_date" value="<?=$_GET["e_date"]?>" id="date2" />
         </div>
         <div class="list-tab">
           <a href="javascript:;" onclick="searchDateSetting('1week');">일주일</a>
@@ -279,9 +283,9 @@ $(function(){
   </div>
   <script>
 
-    
+
   $(function() {
-      
+
     $(document).on('click', '.list_tab li', function() {
       tab = parseInt($(this).data('tab'));
       if (tab === 0) {
@@ -320,14 +324,14 @@ $(function(){
     $ct_where[] = " od_id = '{$row["od_id"]}' ";
     // if ($ct_status) {
     //   if ( $ct_status === '주문무효') {
-    //     $where[] = " a.ct_status IN ('주문무효', '취소') ";  
+    //     $where[] = " a.ct_status IN ('주문무효', '취소') ";
     //   } else {
     //     $where[] = " a.ct_status = '{$ct_status}' ";
     //   }
     // } else {
     //   // $ct_where[] = " a.ct_status IN ('준비', '출고준비', '배송', '완료') ";
     // }
-    
+
     if ($ct_where) {
       $ct_where_query = $ct_sql_search ? ' and ' : ' where ';
       $ct_sql_search = $ct_where_query.implode(' and ', $ct_where);
@@ -340,7 +344,7 @@ $(function(){
       FROM {$g5["g5_shop_cart_table"]} a
       {$ct_sql_search}
     ");
-                        
+
     for($ii = 0; $item = sql_fetch_array($itemSQL); $ii++){
       // 설치결과보고서
       $item['report'] = null;
@@ -359,7 +363,7 @@ $(function(){
         <span class="m_none"> <?=date("Y.m.d(H:i)", strtotime($row["od_time"]))?></span>
       <?php if($row["recipient_yn"] == "Y"){ ?>
         <span class="btn-pro"> <img src="<?=$SKIN_URL?>/image/icon_15.png" alt=""> 수급자 주문 </span>
-      <?php }else if($row["od_stock_insert_yn"] == "Y"){ 
+      <?php }else if($row["od_stock_insert_yn"] == "Y"){
                 $stock_insert ="2";
             ?>
         <span class="btn-pro on"> 보유재고등록 </span>
@@ -382,7 +386,7 @@ $(function(){
       </div>
       -->
       <?php
-      
+
       // 수급자 정보
       if($row['recipient_yn'] == 'Y') {
         echo '
@@ -410,7 +414,7 @@ $(function(){
         <span>배송 : <?php echo $row['od_b_name']; ?></span>
         <?php } ?>
       </div>
-      
+
       <?php foreach($itemList as $item){
                 // //바코드 개수 구하기
                 // $sendData2=[];
@@ -430,7 +434,7 @@ $(function(){
                 // $res = json_decode($res, true);
                 // curl_close($oCurl);
                 // // print_r($res["data"][0]['prodBarNum']);
-                // $barcode_c=0;    
+                // $barcode_c=0;
                 // for($k=0;$k<count($res["data"]); $k++){
                 //     if($res["data"][$k]['prodBarNum']) $barcode_c++;
                 // }
@@ -532,7 +536,7 @@ $(function(){
                                             'stoId' => $item['stoId']
                                     );
                                     $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $stoId_arr);
-                                    
+
                                     $prodBarNum_arr = [];
                                     for ($j = 0; $j < count($res['data']); $j++) {
                                         if (!empty($res['data'][$j]['prodBarNum'])) {
@@ -540,7 +544,7 @@ $(function(){
                                         }
                                     }
                                     sort($prodBarNum_arr); // 오름차순 정렬
-                                    
+
                                     $limit = count($prodBarNum_arr) > 5 ? 5 : count($prodBarNum_arr);
                                     for ($j = 0; $j < $limit; $j++) {
                                         echo "<li>{$prodBarNum_arr[$j]}</li>";
@@ -554,7 +558,7 @@ $(function(){
                                 $sendData["penOrdId"] = $item["ordId"];
                                 $sendData["uuid"] = $item["uuid"];
                                 $sendData["it_id"] = $item["it_id"];
-                                
+
                                 $oCurl = curl_init();
                                 curl_setopt($oCurl, CURLOPT_PORT, 9901);
 
@@ -566,7 +570,7 @@ $(function(){
                                 curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
                                 $res = curl_exec($oCurl);
                                 curl_close($oCurl);
-                    
+
                                 $result = json_decode($res, true);
                                 $result = $result["data"];
                                 // print_r($item);
@@ -574,17 +578,17 @@ $(function(){
                                 <?php if($item["prodSupYn"] == "N"){ ?>
 
                 <!-- <li class="barInfo barcode_box  disable" data-id="2021052417305437" data-ct-id="48984"><span class="cnt">입력완료</span></li> -->
-                <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"> 
+                <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>">
                 바코드 확인
                 </a>
-                <?php } else { 
-                  if($limit>0){  
+                <?php } else {
+                  if($limit>0){
                 ?>
-                  <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 
+                  <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt="">
                   바코드
                   </a>
                 <?php   }
-                } 
+                }
                 ?>
               <?php if(($item['ct_status'] == '배송' || $item['ct_status'] == '완료') && ($item["prodSupYn"] == "Y")){ ?>
                 <a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
@@ -602,7 +606,7 @@ $(function(){
                 <a href="<?php echo G5_SHOP_URL; ?>/<?=$path?>?prodId=<?=$item["it_id"]?>&page=&searchtype=&searchtypeText=" class="btn-02 btn-0">재고확인</a>
               <?php } ?>
               <?php if($ct_status_text == "출고완료"){ ?>
-                <!-- 이카운트 등록오류 가능할 수 있어 임시로 삭제 
+                <!-- 이카운트 등록오류 가능할 수 있어 임시로 삭제
                   <a href="#" class="btn-04 btn-0 delivery_ok" data-ct-id="<?php echo $item['ct_id']; ?>" data-od-id="<?php echo $row["od_id"]; ?>">배송완료</a> -->
               <?php } ?>
               </div>
@@ -639,6 +643,11 @@ $(function(){
 <?php } ?>
 
 <script type="text/javascript">
+function showSchdule(url) {
+    let opt = "width=1360,height=780,left=0,top=10";
+    window.open(url, "win_schedule", opt);
+    return false;
+}
 
 function searchDateSetting(type){
   switch(type){
@@ -691,7 +700,7 @@ $(function() {
   $(".hiddenChange").click(function(){
     var target = $(this).attr("data-target");
     var val = $(this).attr("data-val");
-    
+
     $(this).closest("form").find("input[name='" + target + "']").val(val);
 
     if (target === 'od_stock') {
@@ -726,6 +735,6 @@ $(function() {
       }
     })
   })
-  
+
 });
 </script>
