@@ -2871,6 +2871,7 @@ function create_partner_install_schedule($status, $od_id) {
   $sql = "INSERT INTO `partner_inst_sts` 
   (
     status, 
+    ct_id, 
     it_name, 
     od_id, 
     od_mb_ent_name, 
@@ -3036,4 +3037,3 @@ function bulk_partner_deny_schedule($partner_mb_id, $partner_manager_mb_id, $sch
     return false;
   }
 }
-
