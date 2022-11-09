@@ -323,7 +323,8 @@ input[type="number"]::-webkit-inner-spin-button {
       $('body').removeClass('modal-open');
       $('#item_popup_box').hide();
     });
-    $('.search_rep_info').click(function(e) {      
+
+    $('#table_result').on('click', '.search_rep_info', function(){
       var checkBtn = $(this);
       var tr = checkBtn.parent().parent();
       var td = tr.children('input');
@@ -388,6 +389,14 @@ input[type="number"]::-webkit-inner-spin-button {
                 break;
               }
             }
+
+            // 이미 등록이 완료된 수급자 정보를 검색한 경우
+            if(search_result[0]['status'] == 'R'){
+              alert("이미 등록된 수급자입니다.\n 운영관리>수급자 관리 메뉴에서 확인하실 수 있습니다.");
+              location.href = './my_recipient_list.php';
+              return false;
+            }
+
             $("#rep_cnt").text('조회결과 '+search_result.length+'명');
             buildTable(search_result);
 
@@ -438,6 +447,7 @@ input[type="number"]::-webkit-inner-spin-button {
                     type: 'POST',
                     url: './ajax.macro_request.php',
                     data: {
+                        status: "U",
                         mb_id: "<?=$member['mb_id']?>",
                         name: name,
                         num: num,
