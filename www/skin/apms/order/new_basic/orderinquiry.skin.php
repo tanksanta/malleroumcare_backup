@@ -12,6 +12,9 @@ if(isset($wset['ihead']) && $wset['ihead']) {
   $head_class = (isset($wset['icolor']) && $wset['icolor']) ? 'tr-head border-'.$wset['icolor'] : 'tr-head border-black';
 }
 
+$delivery_company = array('chunilps' => 'kr.chunilps', 'cjlogistics' => 'kr.cjlogistics', 'ds3211' => 'kr.daesin', 'hanjin' => 'kr.hanjin', 'hdexp' => 'kr.hdexp',
+'ilogen' => 'kr.logen', 'ilyanglogis' => 'kr.ilyanglogis', 'kdexp' => 'kr.kdexp', 'kunyoung' => 'kr.kunyoung', 'lotteglogis' => 'kr.lotte');
+
 // 헤더 출력
 if($header_skin)
   include_once('./header.php');
@@ -140,6 +143,11 @@ $(function(){
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });
+  });
+
+  $(".btn_delivery_tracking_n").click(function(e){
+    e.preventDefault();
+    alert("택배 회사를 다시 확인해주세요.");
   });
 
 });
@@ -616,6 +624,16 @@ $(function(){
               <div style="margin-top: 6px;">
                 <a href="#" class="btn-01 btn-0 btn_install_report" style="font-size: 12px; color: #666" data-id="<?=$row["od_id"]?>">설치결과보고서</a>
               </div>
+              <?php } ?>
+
+              <?php if($row["ct_delivery_num"] != null) { ?>
+                <div style="margin-top: 6px;">
+                <?php if($delivery_company[$row["ct_delivery_company"]]){ ?>
+                  <a href="https://tracker.delivery/#/<?=$delivery_company[$row["ct_delivery_company"]]?>/<?=$row["ct_delivery_num"]?>" class="btn-01 btn-0 btn_delivery_tracking_y" style="font-size: 12px; color: #666" target="_blank">배송조회</a>
+                <?php } else {?>
+                  <a href="/#/" class="btn-01 btn-0 btn_delivery_tracking_n" style="font-size: 12px; color: #666">배송조회</a>
+                <?php }?>
+                </div>
               <?php } ?>
             </li>
           </ul>
