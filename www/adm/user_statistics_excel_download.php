@@ -1,7 +1,7 @@
 <?php
 include_once("./_common.php");
 ini_set("display_errors", 0);
-if ($is_admin != 'super') {
+if ($is_admin != 'super' && $member["mb_level"] < "9") {
   alert('최고관리자만 접근 가능합니다.');
   exit;
 }
@@ -41,7 +41,7 @@ if (!$type || $type == 'user') {
     } else {
         $filename = "요양정보 조회 집계(일자별)";
     }
-}
+} 
 include_once(G5_LIB_PATH."/PHPExcel.php");
 $filename = $filename."(".date("YmdHis").")";
 // save $table inside temporary file that will be deleted later
