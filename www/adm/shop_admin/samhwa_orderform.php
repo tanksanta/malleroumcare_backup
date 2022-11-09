@@ -2077,7 +2077,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
 
           //택배사
           $delivery_company="";
-          foreach($delivery_companys as $data){
+          foreach($delivery_companys as $data){ 
             if($log["ct_delivery_company"] == $data["val"] ) {
               $delivery_company = "(".$data["name"].")";
             }
@@ -2146,7 +2146,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
               echo '<span class="log_datetime">'.$log['d_date'] . '</span>(' . $log_mb['mb_name'] . " 매니저) 합포정보 입력 : {$it_name} 상품을 합포해지했습니다.<br/>";
               $cnt_delivery_log++; // 배송 기록이 몇개나 출력되었는지 확인하는 카운터
             }
-
+  
             if(!$log['was_direct_delivery'] && $log['ct_is_direct_delivery']) {
               // 위탁적용
               $direct_delivery_type = '';
