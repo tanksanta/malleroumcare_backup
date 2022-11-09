@@ -714,37 +714,37 @@ $(function() {
 
     var od_id = $(this).find('input[name="od_id"]').val();
     var ct_id = $(this).find('input[name="ct_id"]').val();
+    var manager = $(".sel_manager").val();
 
     var send_data = {};
+
     send_data['od_id'] = od_id;
-    send_data['ct_id'] = [ ct_id ];
+    send_data['ct_id'] = [ct_id];
     send_data['ct_direct_delivery_date_' + ct_id] = $(this).find('input[name="ct_direct_delivery_date"]').val();
-    send_data['ct_direct_delivery_time_' + ct_id] = $(this).find('select[name="ct_direct_delivery_time"]').val();
+    send_data['ct_direct_delivery_time_' + ct_id] = $(this).find(select[name="ct_direct_delivery_time"]').val();
 
-   const send_data2 = {};
-        send_data2['od_id'] = od_id;
-        send_data2['ct_id'] = ct_id;
-        send_data2['delivery_date'] = $(this).find(
-            'input[name="ct_direct_delivery_date"]').val();
-        send_data2['delivery_datetime'] = $(this).find(
-            'select[name="ct_direct_delivery_time"]').val() + ":00";
+    const send_data2 = {};
+    send_data2['od_id'] = od_id;
+    send_data2['ct_id'] = ct_id;
+    send_data2['delivery_date'] = $(this).find('input[name="ct_direct_delivery_date"]').val();
+    send_data2['delivery_datetime'] = $(this).find('select[name="ct_direct_delivery_time"]').val() + ":00";
+    send_data2['partner_manager_mb_id'] = manager;
 
-        $.post('ajax.partner_deliverydate.php', send_data, 'json')
-            .done(function() {
-                $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
-                    alert('변경이 완료되었습니다.');
-                    window.location.reload();
-                }).fail(function(
-                    $xhr) {
-                    var data = $xhr.responseJSON;
-                    alert(data && data.message);
-                })
-            })
-            .fail(function($xhr) {
-                var data = $xhr.responseJSON;
-                alert(data && data.message);
-            });
-  });
+    $.post('ajax.partner_deliverydate.php', send_data, 'json')
+      .done(function() {
+        $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
+          alert('변경이 완료되었습니다.');
+          window.location.reload();
+        }).fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        })
+      })
+      .fail(function($xhr) {
+        var data = $xhr.responseJSON;
+        alert(data && data.message);
+      });
+    });
 
   // 기간 - datepicker
   $('.datepicker').datepicker({
@@ -947,9 +947,18 @@ $(function() {
         var manager = $(this).val();
         var manager_name = $(this).find('option:selected').text();
 
-
         const send_data2 = {};
-        var ct_id = $(this).find('input[name="ct_id"]').val();
+        const delivery = $(this).parent().parent().find('.td_od_info').not(
+            '.td_delivery_info').find('p');
+        const ct_id = delivery.find("button").attr("data-ctid")
+        if (delivery.length === 5) {
+            const text = $(delivery[3]).text().trim().replace(/\n/g, "").replace(/  /g, "").replace(
+                "출고예정 :",
+                "").replace("변경", "")
+            send_data2['delivery_date'] = text.split(" ")[0];
+            send_data2['delivery_datetime'] = text.split(" ")[1].replace("시", "") + ":00";
+        }
+        send_data2['ct_id'] = ct_id;
         send_data2['od_id'] = od_id;
         send_data2['partner_manager_mb_id'] = manager;
 
