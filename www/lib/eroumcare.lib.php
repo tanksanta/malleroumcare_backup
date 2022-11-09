@@ -2840,6 +2840,23 @@ function exit_partner_install_schedule($od_id) {
 
 /**
  * 작성자 : 임근석
+ * 작성일자 : 2022-11-09
+ * 마지막 수정자 : 임근석
+ * 마지막 수정일자 : 2022-11-09
+ * 설명 : 설치파트너 매니저 설치 일정 중복 확인
+ * @param string $partner_manager_mb_id
+ * @param string $delivery_date 포맷 : YYYY-MM-DD
+ * @param string $delivery_datetime 포맷 : hh:mm
+ * @return boolean 
+ */
+function duplicate_partner_install_schedule($partner_manager_mb_id, $delivery_date, $delivery_datetime) {
+  $sql = "SELECT id FROM partner_inst_sts WHERE partner_manager_mb_id = '$partner_manager_mb_id' AND delivery_date = '$delivery_date' AND delivery_datetime = '$delivery_datetime';";
+  $result = sql_query($sql);
+  return mysqli_num_rows($result) == 0;
+}
+
+/**
+ * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
  * 마지막 수정일자 : 2022-11-09

@@ -7,6 +7,8 @@ if(!$member['mb_id'])
 if(!$_POST['od_id'] && !$_POST['ct_id'])
   json_response(400, '유효하지않은 요청입니다.');
 
+$check_sum_duplicate = duplicate_partner_install_schedule($_POST['partner_manager_mb_id'], $_POST['delivery_date'], $_POST['delivery_datetime']);
+if (!$check_sum_duplicate) json_response(400, '설치파트너 매니저 일정을 확인해주세요.');
 $check_sum = exit_partner_install_schedule($_POST['od_id']);
 $code = 201;
 
