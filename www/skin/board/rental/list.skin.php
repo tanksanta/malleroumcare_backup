@@ -4,40 +4,45 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" media="screen">', 0);
 
+// 이미지 비율
+$thumb_w = $board['bo_'.MOBILE_.'gallery_width'];
+$thumb_h = $board['bo_'.MOBILE_.'gallery_height'];
+$img_h = apms_img_height($thumb_w, $thumb_h); // 이미지 높이
+
+// 너비
+// $item_w = apms_img_width($board['bo_gallery_cols']);
+$item_w = apms_img_width(0);
+
+// 간격
+$gap_right = ($boset['gap_r'] == "") ? 15 : $boset['gap_r'];
+$gap_bottom = ($boset['gap_b'] == "") ? 30 : $boset['gap_b'];
+
+$ellipsis = (G5_IS_MOBILE) ? '' : ' class="ellipsis"';
+$ellipsis = ($thumb_h > 0) ? $ellipsis : '';
+
+$list_cnt = count($list);
 ?>
+<style>
 
-<?php if ($bo_table === 'event_board') { ?>
-<section class="event-category">
+</style>
+<section class="rental-category">
 	<ul>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event" class="<?php echo $bo_table === 'event' ? 'active' : ''; ?>">진행중인 이벤트</a></li>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event_ended" class="<?php echo $bo_table === 'event_ended' ? 'active' : ''; ?>">종료된 이벤트</a></li>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event_board" class="<?php echo $bo_table === 'event_board' ? 'active' : ''; ?>">이벤트 공지</a></li>
+		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental" class="<?php echo $bo_table === 'rental' ? 'active' : ''; ?>">진행중인 렌탈</a></li>
+		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental_ended" class="<?php echo $bo_table === 'rental_ended' ? 'active' : ''; ?>">종료된 렌탈</a></li>
+		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental_board" class="<?php echo $bo_table === 'rental_board' ? 'active' : ''; ?>">이로운 렌탈 공지</a></li>
 	</ul>
 </section>
-<?php } else if ($bo_table === 'sample_board') { ?>
-<section class="event-category">
-	<ul>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=sample" class="<?php echo $bo_table === 'sample' ? 'active' : ''; ?>">진행중인 샘플신청</a></li>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=sample_ended" class="<?php echo $bo_table === 'sample_ended' ? 'active' : ''; ?>">종료된 샘플신청</a></li>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=sample_board" class="<?php echo $bo_table === 'sample_board' ? 'active' : ''; ?>">샘플신청 공지</a></li>
-	</ul>
-</section>
-<?php } else if ($bo_table === 'rental_board') { ?>
-<section class="event-category">
-	<ul>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental" class="<?php echo $bo_table === 'rental' ? 'active' : ''; ?>">진행중인 샘플신청</a></li>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental_ended" class="<?php echo $bo_table === 'rental_ended' ? 'active' : ''; ?>">종료된 샘플신청</a></li>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental_board" class="<?php echo $bo_table === 'rental_board' ? 'active' : ''; ?>">샘플신청 공지</a></li>
-	</ul>
-</section>
-<?php } ?>
 
-<section class="board-list<?php echo (G5_IS_MOBILE) ? ' font-14' : '';?>"> 
-<div class="sub_section_tit">
-	<?php echo $board['bo_subject'] ?>
-</div>
+<section class="board-list<?php echo (G5_IS_MOBILE) ? ' font-14' : '';?>">
+
+	<?php if($notice_count > 0) include_once($board_skin_path.'/notice.skin.php'); // 공지사항	?>
 	<?php if($is_category) include_once($board_skin_path.'/category.skin.php'); // 카테고리	?>
 
+	<style>
+		.list-wrap .list-container { overflow:hidden; margin-right:<?php echo ($gap_right > 0) ? '-'.$gap_right : 0;?>px; margin-bottom:<?php echo ($gap_bottom > 15) ? 0 : 15;?>px; }
+		.list-wrap .list-row { float:left; width:<?php echo $item_w;?>%; }
+		.list-wrap .list-item { margin-right:<?php echo $gap_right;?>px; margin-bottom:<?php echo $gap_bottom;?>px; }
+	</style>
 	<div class="list-wrap">
 		<form name="fboardlist" id="fboardlist" action="./board_list_update.php" onsubmit="return fboardlist_submit(this);" method="post" role="form" class="form">
 			<input type="hidden" name="bo_table" value="<?php echo $bo_table ?>">
@@ -49,10 +54,110 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 			<input type="hidden" name="sod" value="<?php echo $sod ?>">
 			<input type="hidden" name="page" value="<?php echo $page ?>">
 			<input type="hidden" name="sw" value="">
+
+			<div class="list-container">
 			<?php 
-				$list_skin_file = (G5_IS_MOBILE) ? 'list.skin.mobile.php' : 'list.skin.pc.php';
-				include_once($board_skin_path.'/'.$list_skin_file);
+				$k = 0;
+				for ($i=0; $i < $list_cnt; $i++) { 
+
+					if($list[$i]['is_notice']) continue;		
+
+					//아이콘 체크
+					$is_lock = false;
+					$wr_icon = $wr_label = '';
+					if ($list[$i]['icon_secret'] || $list[$i]['is_lock']) {
+						$wr_icon = '<span class="wr-icon wr-secret"></span>';
+						$wr_label = '<div class="label-cap bg-black">Lock</div>';
+						$is_lock = true;
+					} else if ($list[$i]['icon_hot']) {
+						$wr_icon = '<span class="wr-icon wr-hot"></span>';
+						$wr_label = '<div class="label-cap bg-red">Hot</div>';
+					} else if ($list[$i]['icon_new']) {
+						$wr_icon = '<span class="wr-icon wr-new"></span>';
+						$wr_label = '<div class="label-cap bg-blue">New</div>';
+					}
+
+					if($wr_id && $list[$i]['wr_id'] == $wr_id) {
+						$wr_label = '<div class="label-cap bg-green">Now</div>';
+					}
+
+					// 썸네일
+					$list[$i]['no_img'] = $board_skin_url.'/img/no-img.jpg'; // No-Image
+					$img = apms_wr_thumbnail($bo_table, $list[$i], $thumb_w, $thumb_h, false, true);
+
 			?>
+				<?php if($k > 0 && $k%$board['bo_gallery_cols'] == 0) { ?>
+					<div class="clearfix"></div>
+				<?php } ?>
+				<div class="list-row">
+					<div class="list-item">
+						<?php if($thumb_h > 0) { ?>
+							<div class="imgframe">
+								<div class="img-wrap" style="position:relative; padding-bottom:<?php echo $img_h;?>% !important;">
+									<div class="img-item">
+										<?php echo $wr_label;?>
+										<?php if ($is_checkbox) { ?>
+											<div class="label-tack">
+												<input type="checkbox" name="chk_wr_id[]" value="<?php echo $list[$i]['wr_id'] ?>" id="chk_wr_id_<?php echo $i ?>">
+											</div>	
+										<?php } ?>
+										<a href="<?php echo $list[$i]['href'];?>">
+											<img src="<?php echo $img['src'];?>" alt="<?php echo $img['alt'];?>">
+										</a>
+									</div>
+								</div>
+							</div>
+						<?php } else { ?>
+							<div class="list-img">
+								<?php echo $wr_label;?>
+								<?php if ($is_checkbox) { ?>
+									<div class="label-tack">
+										<input type="checkbox" name="chk_wr_id[]" value="<?php echo $list[$i]['wr_id'] ?>" id="chk_wr_id_<?php echo $i ?>">
+									</div>	
+								<?php } ?>
+								<a href="<?php echo $list[$i]['href'];?>">
+									<img src="<?php echo $img['src'];?>" alt="<?php echo $img['alt'];?>">
+								</a>
+							</div>
+						<?php } ?>
+						<?php if($boset['shadow']) echo apms_shadow($boset['shadow']); //그림자 ?>
+
+						<p class="title">
+							<a href="<?php echo $list[$i]['href'];?>"<?php echo $ellipsis;?>>
+								<?php if($wr_id && $list[$i]['wr_id'] == $wr_id) {?>
+									<span class="crimson"><?php echo $list[$i]['subject'];?></span>
+								<?php } else { ?>
+									<?php echo $list[$i]['subject'];?>
+								<?php } ?>
+							</a>
+						</p>
+
+						<div class="list-details font-12 text-muted">
+							<!--
+							<span class="pull-left">
+								<?php echo $list[$i]['name'];?>
+							</span>
+							<span class="pull-right en font-13">
+								<i class="fa fa-comment"></i>
+								<?php echo ($list[$i]['wr_comment']) ? '<span class="red">'.number_format($list[$i]['wr_comment']).'</span>' : 0;?>
+							</span>
+							<div class="clearfix"></div>
+							-->
+							<p>
+								<?php echo get_text($list[$i]['wr_1']); ?>
+								&nbsp;
+							</p>
+						</div>
+					</div>
+				</div>
+			<?php $k++; } ?>
+				<div class="clearfix"></div>
+			</div>
+
+			<?php if (!$is_list) { ?>
+				<div class="text-center text-muted list-none">게시물이 없습니다.</div>
+			<?php } ?>
+
 			<div class="list-btn-box">
 				<?php if ($list_href || $write_href) { ?>
 					<div class="form-group pull-right list-btn">
