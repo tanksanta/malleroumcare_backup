@@ -15,7 +15,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 	</ul>
 </section>
 <?php } else if ($bo_table === 'sample_board') { ?>
-<section class="event-category">
+<section class="sample-category">
 	<ul>
 		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=sample" class="<?php echo $bo_table === 'sample' ? 'active' : ''; ?>">진행중인 샘플신청</a></li>
 		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=sample_ended" class="<?php echo $bo_table === 'sample_ended' ? 'active' : ''; ?>">종료된 샘플신청</a></li>
@@ -23,11 +23,11 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 	</ul>
 </section>
 <?php } else if ($bo_table === 'rental_board') { ?>
-<section class="event-category">
+<section class="rental-category">
 	<ul>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental" class="<?php echo $bo_table === 'rental' ? 'active' : ''; ?>">진행중인 샘플신청</a></li>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental_ended" class="<?php echo $bo_table === 'rental_ended' ? 'active' : ''; ?>">종료된 샘플신청</a></li>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental_board" class="<?php echo $bo_table === 'rental_board' ? 'active' : ''; ?>">샘플신청 공지</a></li>
+		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental" class="<?php echo $bo_table === 'rental' ? 'active' : ''; ?>">진행중인 렌탈</a></li>
+		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental_ended" class="<?php echo $bo_table === 'rental_ended' ? 'active' : ''; ?>">종료된 렌탈</a></li>
+		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=rental_board" class="<?php echo $bo_table === 'rental_board' ? 'active' : ''; ?>">이로운 렌탈 공지</a></li>
 	</ul>
 </section>
 <?php } ?>

@@ -754,7 +754,7 @@ if($is_main && !$is_member) {
               </li>
               <li>
                 <a href="/bbs/board.php?bo_table=rental">
-                  이로운렌탈
+                  이로운 렌탈
                 </a>
               </li>
               <li>
