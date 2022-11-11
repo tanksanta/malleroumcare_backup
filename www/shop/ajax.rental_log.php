@@ -15,7 +15,7 @@ $sql = "
   where
     stoId = '{$stoId}'
   order by
-    enddate DESC,dis_total_date DESC
+    strdate DESC,dis_total_date DESC
   limit
     {$load}, 5
 ";

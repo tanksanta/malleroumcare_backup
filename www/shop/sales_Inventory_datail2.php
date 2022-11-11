@@ -329,10 +329,13 @@ expired_rental_item_clean($_GET['prodId']);
             $rental_btn=''; //대여 버튼
             $rental_btn2=''; //대여 버튼
             $water="";//소독중 표시
-
+			$ordLendStrDtm_date= "";//대여기간 시작
+			$ordLendEndDtm_date= "";//대여기간 종료
+			$result_stock = array();
+			$rows2 = array();
             //유통 / 비유통 구분
             $sql_stock ="SELECT `od_id`, `od_stock_insert_yn` FROM `g5_shop_order` WHERE `stoId` LIKE '%".$list[$i]['stoId']."%' order by od_id desc limit 1";
-            $result_stock = sql_fetch($sql_stock);
+			$result_stock = sql_fetch($sql_stock);
             $stock_insert="1";
             if($result_stock['od_stock_insert_yn']=="Y") {
               $style_prodSupYn='style="border-color:#ddd;background-color: #fff;"';
@@ -347,19 +350,43 @@ expired_rental_item_clean($_GET['prodId']);
                 $prodBarNumCntBtn_2="";
               }
             }
+			//대여 날짜 변환
+            $rental_date="";
+            if($list[$i]['ordLendStrDtm'] && $list[$i]['ordLendEndDtm']) {
+              $ordLendStrDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendStrDtm']));
+              $ordLendEndDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendEndDtm']));
+            } else {
+				$result = sql_fetch("SELECT * FROM g5_rental_log WHERE stoId = '{$list[$i]['stoId']}' and rental_log_division = '2' and ren_person not like '%종료%' order by strdate DESC limit 1");//로그로 확인
+				if($result){
+					$ordLendStrDtm_date = $result['strdate'];
+					$ordLendEndDtm_date = $result['enddate'];
+				}else{
+				  // 대여기간정보가 없는 경우 대여완료처리 테이블 조회-수급자 지정 없이 대여완료 시
+				  $custom_order_result = sql_fetch("SELECT * FROM stock_custom_order WHERE sc_stoId = '{$list[$i]['stoId']}' and sc_rent_state = 'rent' ");
+				  if($custom_order_result['sc_sale_date']) {
+					$ordLendStrDtm_date = $custom_order_result['sc_sale_date'];
+					$ordLendEndDtm_date = $custom_order_result['sc_rent_date'];
+				  }
+				}
+            }
 
+			$date2 = $ordLendStrDtm_date."-".$ordLendEndDtm_date;
+			$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3' AND b.it_date='".$date2."' order by a.dc_datetime DESC limit 1";
+				$rows2 = sql_fetch($sql);
             //상태 메뉴
             $state_menu_all="";
-            $state_menu1='<li><a class="state-btn4" onclick="open_retal_period(this)" href="javascript:;">대여기간 수정</a></li>';
-            if($result_stock['od_id']){
-				$state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id'].'">계약서 확인</a></li>';
+            if($rows2['UUID'] == "") {
+				$state_menu1='<li><a class="state-btn4" onclick="open_retal_period(this)" href="javascript:;">대여기간 수정</a></li>';
+				$state_menu2='';
 			}else{
-				$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3' order by a.dc_datetime DESC limit 1";
-				$rows2 = sql_fetch($sql);
-				if($rows2['UUID']) {
-					$state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?dc_id='.$rows2['UUID'].'">계약서 확인</a></li>';
-				}
+				$state_menu1='';
+				$state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?dc_id='.$rows2['UUID'].'">계약서 확인</a></li>';
 			}
+            //if($result_stock['od_id']){
+			//	$state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id'].'">계약서 확인</a></li>';
+			//}else{
+
+			//}
             $state_menu3='<li class="p-btn01"><a href="javascript:;" onclick="open_designate_disinfection(this)">소독신청</a></li>';
             $state_menu4='<li><a href="javascript:;" onclick="retal_state_change2(\''.$list[$i]['stoId'].'\',\'01\',\'변경되었습니다.\')" >대여 가능상태</a></li>';
             $state_menu5='<li class="p-btn02" onclick="open_designate_result(this)"><a href="javascript:;">소독확인 신청</a></li>';
@@ -368,19 +395,8 @@ expired_rental_item_clean($_GET['prodId']);
             $state_menu8='<li><a href="javascript:;" onclick="retal_state_change2(\''.$list[$i]['stoId'].'\',\'05\',\'불용재고로 등록되었습니다.\')" >불용재고등록</a></li>';
             $state_menu9='<li><a href="javascript:;" onclick="retal_state_change(\''.$list[$i]['stoId'].'\',\'09\')">대여종료</a></li>';
             $state_menu_del='<li><a href="javascript:;" onclick="del_stoId(\''.$list[$i]['stoId'].'\')">삭제</a></li>';
-            //대여 날짜 변환
-            $rental_date="";
-            if($list[$i]['ordLendStrDtm'] && $list[$i]['ordLendEndDtm']) {
-              $ordLendStrDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendStrDtm']));
-              $ordLendEndDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendEndDtm']));
-            } else {
-              // 대여기간정보가 없는 경우 대여완료처리 테이블 조회
-              $custom_order_result = sql_fetch(" SELECT * FROM stock_custom_order WHERE sc_stoId = '{$list[$i]['stoId']}' and sc_rent_state = 'rent' ");
-              if($custom_order_result['sc_sale_date']) {
-                $ordLendStrDtm_date = $custom_order_result['sc_sale_date'];
-                $ordLendEndDtm_date = $custom_order_result['sc_rent_date'];
-              }
-            }
+            
+
             //메뉴 선택  01: 재고(대여가능) 02: 재고소진(대여중) 08: 소독중 09: 대여종료
             switch ($list[$i]['stateCd']) {
               case '01':
@@ -756,8 +772,8 @@ expired_rental_item_clean($_GET['prodId']);
                     <ul>
                       <?php
                       //날짜 변환
-                      $ordLendStrDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendStrDtm']));
-                      $ordLendEndDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendEndDtm']));
+                      //$ordLendStrDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendStrDtm']));
+                      //$ordLendEndDtm_date=date("Y-m-d", strtotime($list[$i]['ordLendEndDtm']));
                       ?>
                       <li>
                         <b>대여시작일</b>
