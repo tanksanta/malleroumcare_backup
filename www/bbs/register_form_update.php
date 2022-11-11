@@ -83,7 +83,7 @@ $mb_zip2        = preg_replace('/[^0-9]/', '', $mb_zip2);
 $mb_addr1       = clean_xss_tags($mb_addr1);
 $mb_addr2       = clean_xss_tags($mb_addr2);
 $mb_addr3       = clean_xss_tags($mb_addr3);
-$mb_addr_jibeon = preg_match("/^(N|R)$/", $mb_addr_jibeon) ? $mb_addr_jibeon : '';
+$mb_addr_jibeon = preg_match("/^(N|R)$/", $mb_addr_jibeon) ? '' : $mb_addr_jibeon;
 
 $crnFile_name = '';
 $sealFile_name = '';
@@ -304,6 +304,7 @@ if ($w == '') { // 회원가입
       mb_addr1 = '{$mb_addr1}',
       mb_addr2 = '{$mb_addr2}',
       mb_addr3 = '{$mb_addr3}',
+	  mb_addr_jibeon = '{$mb_addr_jibeon}',
       mb_giup_zip1 = '{$mb_giup_zip1}',
       mb_giup_zip2 = '{$mb_giup_zip2}',
       mb_giup_addr1 = '{$mb_giup_addr1}',
