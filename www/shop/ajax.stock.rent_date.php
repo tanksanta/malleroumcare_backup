@@ -38,7 +38,7 @@ if(!$stock || $stock['stoId'] != $stoId)
 $penOrdId = $stock['penOrdId'];
 
 if(!$penOrdId)
-  json_response(400, '대여기간을 변경할 수 없는 재고입니다. 대여기간을 수동으로 종료해주세요.');
+  //json_response(400, '대여기간을 변경할 수 없는 재고입니다. 대여기간을 수동으로 종료해주세요.');
 
 if($penOrdId) {
   # 시스템 주문 변경
@@ -65,21 +65,55 @@ if($penOrdId) {
 
   if(!$result)
     json_response(500, 'DB 서버 오류 발생');
+
+	# 대여 로그 변경
+	$result = sql_query("
+	  UPDATE
+		g5_rental_log
+	  SET
+		strdate = '{$start_date}',
+		enddate	= '{$end_date}'
+	  WHERE
+		stoId = '{$stoId}' and
+		ordId = '{$penOrdId}'
+	");
+	if(!$result)
+	  json_response(500, 'DB 서버 오류 발생');
+}else{
+	# 대여 로그 변경
+	$row = sql_fetch("select dis_total_date from g5_rental_log where stoId = '{$stoId}' and
+	rental_log_division ='2' order by rental_log_Id DESC limit 1");
+	
+	$result = sql_query("
+	  UPDATE
+		g5_rental_log
+	  SET
+		strdate = '{$start_date}',
+		enddate	= '{$end_date}'
+	  WHERE
+		stoId = '{$stoId}' and
+		dis_total_date = '".$row["dis_total_date"]."'
+	");
+	if(!$result)
+	  json_response(500, 'DB 서버 오류 발생');
+
+	$result = sql_query("
+	  update
+		stock_custom_order
+	  SET
+		sc_sale_date = '{$start_date}',
+		sc_rent_date = '{$end_date}',
+		sc_updated_at = NOW()
+	  where sc_stoId = '{$stoId}' and 
+		sc_rent_state = 'rent' and
+		sc_gubun = '01'
+	");
+
+	if(!$result)
+		 json_response(500, 'DB 서버 오류 발생');
+
 }
 
-# 대여 로그 변경
-$result = sql_query("
-  UPDATE
-    g5_rental_log
-  SET
-    strdate = '{$start_date}',
-    enddate	= '{$end_date}'
-  WHERE
-    stoId = '{$stoId}' and
-    ordId = '{$penOrdId}'
-");
-if(!$result)
-  json_response(500, 'DB 서버 오류 발생');
 
 json_response(200, 'OK');
 ?>
