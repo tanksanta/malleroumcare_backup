@@ -197,9 +197,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </button>
         </div>
       </div>
-
-      <div id="list_wrap" class="list_box"></div>
-      <div id="se_body_wr" class="flex space-between <?php if($dc) echo 'active' ;?>">
+      <div id="se_body_wr" class="flex space-between <?php if($dc) echo 'active' ;?>" >
         <div class="se_item_wr">
           <div class="se_sch_wr">
             <div class="flex space-between align-items">
@@ -470,6 +468,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </div>
         </div>
       </div>
+	  <div id="list_wrap" class="list_box"></div>
     </form>
   </div>
 </section>
@@ -1016,6 +1015,7 @@ function select_recipient(obj) {
   $('#penExpiStDtm').prop('disabled', false);
   $('#penExpiEdDtm').prop('disabled', false);
   $('#penJumin').prop('disabled', false);
+  $('#se_body_wr').show();
   $('#se_body_wr').addClass('active');
 
   $('#list_wrap').hide();
@@ -1320,7 +1320,8 @@ $('#penLtmNum').on('change paste keyup input', function() {
 
     if(pattern.test(penLtmNum)) {
       check_recipient();
-      $('#se_body_wr').addClass('active');
+      $('#se_body_wr').show();
+	  $('#se_body_wr').addClass('active');
       // 처음 팝업
       $('.se_sch_pop').show();
       check_no_item();
@@ -1696,7 +1697,11 @@ $('input[name="it_id[]"]').each(function() {
 });
 
 $(function() {
-  search();
+  <?php if($dc_id == ""){?>
+  $('#se_body_wr').hide();
+  <?php }?>
+  var dc_id = 'dc_id=<?=$dc_id?>';
+  search(dc_id);
 
   function search(queryString) {
     if(!queryString) queryString = '';

@@ -108,7 +108,7 @@ $is_gicho = ($eform['penTypeCd'] == '04' || $eform['penTypeCd'] == '03')? true:f
   </style>
 </head>
 <body class="render-eform" <?php if($preview) echo 'style="width: 1240px;"'; ?>>
-<div id="" style="width:100%;text-align:center;padding:10px;position:fixed;top:0px;left:0px;z-index:99999999;">
+<div id="pdf_save_bt" style="width:100%;text-align:center;padding:10px;position:fixed;top:0px;left:0px;z-index:99999999;">
 	<input type="button" value="PDF저장" id="savePdf" style="margin-left:1200px;cursor:pointer;">
 </div>
   <div class="render-eform-body wrap" id="content">
@@ -134,7 +134,11 @@ $is_gicho = ($eform['penTypeCd'] == '04' || $eform['penTypeCd'] == '03')? true:f
   </div>
   <script>
   $(function() {
-    var isGicho = <?=($is_gicho ? 'true' : 'false')?>;
+    if ( self !== top ) {
+		$("#pdf_save_bt").css("display","none");
+	}
+	
+	var isGicho = <?=($is_gicho ? 'true' : 'false')?>;
 
     var pos = {
       sign_101_1: {
