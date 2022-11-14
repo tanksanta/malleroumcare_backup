@@ -84,8 +84,7 @@ include_once("./_common.php");
                                         x-for="(row, i) in Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())">
                                         <template x-for="(event, j) in events[row]">
                                             <div class="border-4 rounded-full"
-                                                :class="{'hidden': filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0 }"
-                                                :class="{'border-yellow-400': j % 3 === 0 && event.type === 'schedule', 'border-blue-400': j % 3 === 1 && event.type === 'schedule', 'border-purple-600': j % 3 === 2 && event.type === 'schedule', 'border-red-600': event.type === 'deny_schedule'}">
+                                                :class="{'hidden': filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0, 'border-yellow-400': j % 3 === 0 && event.type === 'schedule', 'border-blue-400': j % 3 === 1 && event.type === 'schedule', 'border-purple-600': j % 3 === 2 && event.type === 'schedule', 'border-red-600': event.type === 'deny_schedule' }">
                                             </div>
                                         </template>
                                     </template>
