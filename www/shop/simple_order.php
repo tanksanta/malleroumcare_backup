@@ -479,6 +479,12 @@ add_javascript(G5_POSTCODE_JS, 0);
 
 <script>
 $(function() {
+  <?php if(empty($member['mb_zip1'])||empty($member['mb_addr1'])||empty($member['mb_giup_zip1'])||empty($member['mb_giup_addr1'])){?>
+      alert("사업소 정보를 모두 등록하신 후 주문 가능합니다.\n정보수정 페이지로 이동합니다.");
+      $(location).attr('href', '<?=$G5_URL?>/bbs/member_confirm.php?url=register_form.php');
+      return false;
+  <?php } ?>
+
   $("#popup_box").hide();
   $("#popup_box").css("opacity", 1);
 
