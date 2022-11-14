@@ -107,15 +107,26 @@ include_once("./_common.php");
                         <p class="text-xs leading-3 text-gray-500 dark:text-gray-300"
                             x-text="item.type === 'schedule' ? tConvert(item.delivery_datetime) + ' - ' + item.partner_manager_mb_name : item.partner_manager_mb_name">
                         </p>
-                        <a tabindex="0"
-                            class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2"
-                            x-text="item.type === 'schedule' ? item.it_name : '설치 매니저 설치 불가'"></a>
+                        <div class="flex flex-row">
+                            <div class="flex-1 flex align-center justify-start">
+                                <a tabindex="0"
+                                    class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2"
+                                    x-text="item.type === 'schedule' ? (item.status === '완료' ? '[설치 완료]' : '[설치 예정]') + item.it_name : '[설치 불가 일정]'"></a>
+                            </div>
+                            <div class="flex-1 flex align-center justify-end"
+                                :class="{'hidden': item.type === 'deny_schedule' || mb_type !== 'manager'}">
+                                <button type="button"
+                                    class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
+                                    @click="goToUrl(item.od_id)" x-text="'설치결과보고서 등록'">
+                                </button>
+                            </div>
+                        </div>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'수령인 : ' + item.od_b_name"></p>
+                            x-text="'수령인 : ' + item.od_b_name" :class="{'hidden' : item.type === 'deny_schedule'}"></p>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'배송지 : ' + item.od_b_addr1"></p>
+                            x-text="'배송지 : ' + item.od_b_addr1" :class="{'hidden' : item.type === 'deny_schedule'}"></p>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'요청사항 : ' + item.od_memo"></p>
+                            x-text="'요청사항 : ' + item.od_memo" :class="{'hidden' : item.type === 'deny_schedule'}"></p>
                     </div>
 
                 </template>
@@ -272,6 +283,10 @@ include_once("./_common.php");
             time[0] = +time[0] % 12 || 12;
         }
         return time.join('');
+    }
+
+    function goToUrl(od_id) {
+        location.href = '/shop/partner_orderinquiry_view.php?od_id=' + od_id;
     }
     </script>
 

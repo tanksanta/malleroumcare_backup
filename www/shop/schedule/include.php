@@ -8,6 +8,7 @@
     echo '<script src="https://unpkg.com/alpinejs@3.10.4/dist/cdn.min.js" defer></script>';
     echo '<script src="https://hammerjs.github.io/dist/hammer.js"></script>';
     echo '<script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>';
+    echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js" integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>';
 ?>
 <?php
     echo "<script>
@@ -83,6 +84,7 @@ sql_query("CREATE TABLE IF NOT EXISTS `partner_inst_sts` (
   `partner_manager_mb_id` VARCHAR(255) NULL COMMENT '설치 파트너 매니저 mb_id',
   `partner_manager_mb_name` VARCHAR(255) NULL COMMENT '설치 파트너 매니저 이름',
   `od_id` BIGINT(20) NOT NULL COMMENT '주문 id',
+  `od_mb_id` VARCHAR(255) NOT NULL COMMENT '사업소 mb_id',
   `od_mb_ent_name` VARCHAR(30) NOT NULL COMMENT '사업소 이름',
   `od_b_name` VARCHAR(30) NOT NULL COMMENT '수령자 이름',
   `od_b_hp` VARCHAR(20) NULL DEFAULT '' COMMENT '수령자 연락처',

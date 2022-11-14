@@ -8,7 +8,12 @@ if(!$member['mb_id'])
 if(!$_POST['partner_mb_id'])
   json_response(400, '유효하지않은 요청입니다.');
   
-$res = get_partner_schedule_by_partner_mb_id($_POST['partner_mb_id']);
+if ($member['mb_type'] === 'default' && $member['mb_level'] < 9) {
+  $res = get_partner_schedule_by_mb_id($_POST['partner_mb_id']);
+} else {
+  $res = get_partner_schedule_by_partner_mb_id($_POST['partner_mb_id'], $member["mb_level"]);
+}
+
 if (count($res) > 0)
   $res = order_by($res, ['type', 'delivery_datetime'], ['asc', 'asc'], 'delivery_date');
 else

@@ -8,12 +8,6 @@ include_once("./_common.php");
 }
 </style>
 
-<script>
-/*
-<?php print_r($member) ?>
- */
-</script>
-
 <div class="antialiased sans-serif bg-gray-100 max-h-screen" x-data="{ 'showModal': false }">
     <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak class="px-4 py-2">
         <div x-data="select({ value: 'all', valueInModal: '' })" x-init="init()"
@@ -190,23 +184,11 @@ include_once("./_common.php");
                                                 x-for="event in Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())">
                                                 <div class="rounded-lg mt-1 overflow-hidden"
                                                     :class="{'hidden': filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0 }">
-                                                    <p x-text="filter_mb_id == '' ? 
-                                                        events[event].filter(e => e.type === 'schedule').length > 1 ? 
-                                                                events[event].filter(e => e.type === 'schedule')[0].it_name + ' 외 '+ (events[event].filter(e => e.type === 'schedule').length - 1) +' 건' : 
-                                                                    events[event].filter(e => e.type === 'schedule')[0].it_name : 
-                                                                events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length > 1 ? 
-                                                            events[event].filter(e => e.type === 'schedule')[0].it_name + ' 외 '+ (events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length - 1) +' 건' : 
-                                                        events[event].filter(e => e.type === 'schedule')[0].it_name"
-                                                        class="text-sm line-clamp-1 leading-tight">
+                                                    <p x-text="aggregation(events[event].filter(e => e.type === 'schedule'))"
+                                                        class="text-sm font-bold">
                                                     </p>
-                                                    <p x-text="'설치예정(' + events[event].filter(e => e.type === 'schedule')[0].delivery_datetime + ')'"
-                                                        class="text-sm line-clamp-1 leading-tight">
-                                                    </p>
-                                                    <p x-text="'담당자: ' + events[event].filter(e => e.type === 'schedule')[0].partner_manager_mb_name"
-                                                        class="text-sm line-clamp-1 leading-tight">
-                                                    </p>
-                                                    <p x-text="'수령인: ' + events[event].filter(e => e.type === 'schedule')[0].od_b_name"
-                                                        class="text-sm line-clamp-1 leading-tight">
+                                                    <p x-text="calculation(events[event].filter(e => e.type === 'schedule'))"
+                                                        class="text-sm line-clamp-3 leading-tight">
                                                     </p>
                                                 </div>
                                             </template>
@@ -235,7 +217,7 @@ include_once("./_common.php");
                             <li class="min-h-64 flex flex-col mb-4 px-4">
                                 <div class="basis-12 flex flex-col align-center px-4">
                                     <p class="flex-1 inline-flex items-center text-lg font-bold"
-                                        x-text="item.type === 'schedule' ? '설치예정 : ' + item.delivery_datetime : '설치 매니저 설치 불가'" />
+                                        x-text="item.type === 'schedule' ? item.status === '완료' ? '설치완료' : '설치예정 : ' + item.delivery_datetime : '설치 불가 일정'" />
                                 </div>
 
                                 <div class="flex-1 flex flex-col border">
@@ -440,6 +422,32 @@ include_once("./_common.php");
             </div>
         </div>
     </div>
+
+    <script>
+    function aggregation(arr) {
+        if (arr.length !== 0) {
+            const items = _.groupBy(arr, "status");
+            return "총 " + arr.length + "건" + (Object.keys(items).includes("완료") ? ("(완료 " + items["완료"].length + "건)") :
+                "");
+        } else {
+            return "";
+        }
+    }
+
+    function calculation(arr) {
+        if (arr.length !== 0) {
+            const items = _.groupBy(arr, "it_name");
+            let return_str = "";
+            for (key in Object.keys(items)) {
+                return_str += Object.keys(items)[key] + " " + items[Object.keys(items)[key]].length + "개,\n";
+            }
+            if (return_str.endsWith(",\n")) return_str = return_str.substr(0, return_str.length - 2);
+            return return_str;
+        } else {
+            return "";
+        }
+    }
+    </script>
 
     <script>
     function req(list, mb_type, valueInModal) {
