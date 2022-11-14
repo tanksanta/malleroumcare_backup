@@ -3055,7 +3055,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-02
+ * 마지막 수정일자 : 2022-11-14
  * 설명 : 설치파트너 매니저 설치 불가 일정
  * @param string $partner_mb_id : 설치파트너 mb_id
  * @param string $partner_manager_mb_id : 설치파트너 매니저 mb_id
@@ -3064,12 +3064,29 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id) {
  */
 function bulk_partner_deny_schedule($partner_mb_id, $partner_manager_mb_id, $schedules) {
   if (count($schedules) > 0) {
-    $sql = "INSERT INTO `partner_manager_deny_schedule` (partner_mb_id, partner_manager_mb_id, deny_date) VALUES ";
+    $result_schedules = $schedules;
     foreach($schedules as $schedule) {
-      $sql = $sql."('$partner_mb_id', '$partner_manager_mb_id', '$schedule'),";
+      global $t_schedule;
+      $t_schedule = $schedule;
+      $sql = "SELECT deny_date FROM `partner_manager_deny_schedule` WHERE partner_manager_mb_id = '$partner_manager_mb_id' AND deny_date = '$schedule';";
+      $count = mysqli_num_rows(sql_query($sql));
+      if ($count != 0) {
+        $result_schedules = array_filter($schedules, function($value) {
+          global $t_schedule;
+          return $value != $t_schedule;
+        });
+      }
     }
-    $sql = substr($sql, 0, -1).";";
-    return sql_query($sql);
+    if (count($result_schedules) > 0) {
+      $sql = "INSERT INTO `partner_manager_deny_schedule` (partner_mb_id, partner_manager_mb_id, deny_date) VALUES ";
+      foreach($result_schedules as $schedule) {
+        $sql = $sql."('$partner_mb_id', '$partner_manager_mb_id', '$schedule'),";
+      }
+      $sql = substr($sql, 0, -1).";";
+      return sql_query($sql);
+    } else {
+      return false;
+    }
   } else {
     return false;
   }
