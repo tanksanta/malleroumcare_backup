@@ -10,7 +10,8 @@ include_once("./_common.php");
 
 <div class="antialiased sans-serif flex items-center justify-center" x-data="{ 'showModal': false }">
     <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak>
-        <div x-data="select({ value: 'all' })" x-init="init()" class="max-w-sm h-screen w-full shadow-lg flex flex-col">
+        <div x-data="select({ value: 'all', valueInModal: '' })" x-init="init()"
+            class="max-w-sm h-screen w-full shadow-lg flex flex-col">
             <!-- 상단 컨트롤 영역 -->
             <div class="basis-104 py-5 dark:bg-gray-800 bg-white"
                 x-init="new Hammer($el).on('swipeleft swiperight', function(ev) {$dispatch(ev.type)})"
@@ -44,10 +45,12 @@ include_once("./_common.php");
                     </div>
 
                     <!-- 일정표 관리 버튼 -->
-                    <div class="basis-32 flex justify-center items-center" :class="{'hidden': mb_type !== 'manager'}">
+                    <div class="basis-32 flex justify-center items-center"
+                        :class="{'hidden': mb_type !== 'manager' && mb_type !== 'partner'}">
                         <button
                             class="border rounded-lg px-2 py-1 flex justify-center items-center text-lg hover:bg-blue-100 transition-colors duration-300"
-                            type="button" @click="showModal = mb_type === 'manager'" x-text="'일정표 관리'"></button>
+                            type="button" @click="showModal = mb_type === 'manager' || mb_type === 'partner'"
+                            x-text="'일정표 관리'"></button>
                     </div>
                 </section>
 
@@ -81,8 +84,7 @@ include_once("./_common.php");
                                         x-for="(row, i) in Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())">
                                         <template x-for="(event, j) in events[row]">
                                             <div class="border-4 rounded-full"
-                                                :class="{'hidden': filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0 }"
-                                                :class="{'border-yellow-400': j % 3 === 0 && event.type === 'schedule', 'border-blue-400': j % 3 === 1 && event.type === 'schedule', 'border-purple-600': j % 3 === 2 && event.type === 'schedule', 'border-red-600': event.type === 'deny_schedule'}">
+                                                :class="{'hidden': filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0, 'border-yellow-400': j % 3 === 0 && event.type === 'schedule', 'border-blue-400': j % 3 === 1 && event.type === 'schedule', 'border-purple-600': j % 3 === 2 && event.type === 'schedule', 'border-red-600': event.type === 'deny_schedule' }">
                                             </div>
                                         </template>
                                     </template>
@@ -146,6 +148,77 @@ include_once("./_common.php");
                             <input type="checkbox" x-model="check">
                         </label>
                     </div>
+                    <div class="h-24 flex flex-col mt-4" :class="{'hidden': mb_type !== 'partner'}">
+                        <div class="basis-8 flex items-center font-bold text-xl">설치파트너 지정</div>
+                        <div class="pt-4 flex-1 flex flex-row">
+                            <div @click.away="closeListInModalbox()" @keydown.escape="closeListInModalbox()"
+                                class="relative w-full">
+                                <span class="inline-block w-full rounded-md shadow-sm">
+                                    <button x-ref="button" @click="toggleListboxInModalVisibility()"
+                                        :aria-expanded="openInModal" aria-haspopup="listbox2"
+                                        class="relative z-0 w-full py-2 pl-3 pr-10 text-left transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5">
+                                        <span id="select_manager" x-show="!openInModal"
+                                            x-text="valueInModal in optionsInModal ? optionsInModal[valueInModal] : placeholder"
+                                            :class="{ 'text-gray-500': ! (valueInModal in optionsInModal) }"
+                                            class="block truncate"></span>
+
+                                        <input x-ref="searchInModal" x-show="openInModal" x-model="searchInModal"
+                                            @keydown.enter.stop.prevent="selectOptionInModal()"
+                                            @keydown.arrow-up.prevent="focusPreviousOptionInModal()"
+                                            @keydown.arrow-down.prevent="focusNextOptionInModal()" type="search"
+                                            class="w-full h-full p-0 form-control focus:outline-none" />
+
+                                        <span
+                                            class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                            <svg class="w-5 h-5 text-gray-400" viewBox="0 0 20 20" fill="none"
+                                                stroke="currentColor">
+                                                <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </span>
+
+                                <div x-show="openInModal" x-transition:leave="transition ease-in duration-100"
+                                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" x-cloak
+                                    class="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg">
+                                    <ul x-ref="listbox2" @keydown.enter.stop.prevent="selectOptionInModal()"
+                                        @keydown.arrow-up.prevent="focusPreviousOptionInModal()"
+                                        @keydown.arrow-down.prevent="focusNextOptionInModal()" role="listbox2"
+                                        :aria-activedescendant="focusedOptionInModalIndex ? name + 'Option' + focusedOptionInModalIndex : null"
+                                        tabindex="-1"
+                                        class="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5">
+                                        <template x-for="(key, index) in Object.keys(optionsInModal)" :key="index">
+                                            <li :id="name + 'Option' + key + focusedOptionInModalIndex"
+                                                @click="selectOptionInModal()"
+                                                @mouseenter="focusedOptionInModalIndex = index"
+                                                @mouseleave="focusedOptionInModalIndex = null" role="option"
+                                                :aria-selected="focusedOptionInModalIndex === index"
+                                                :class="{ 'text-white bg-blue-600': index === focusedOptionInModalIndex, 'text-gray-900': index !== focusedOptionInModalIndex }"
+                                                class="relative py-2 pl-3 text-gray-900 cursor-default select-none pr-9">
+                                                <span x-text="Object.values(optionsInModal)[index]"
+                                                    :class="{ 'font-semibold': index === focusedOptionInModalIndex, 'font-normal': index !== focusedOptionInModalIndex }"
+                                                    class="block font-normal truncate"></span>
+
+                                                <span x-show="key === valueInModal"
+                                                    :class="{ 'text-white': index === focusedOptionInModalIndex, 'text-blue-600': index !== focusedOptionInModalIndex }"
+                                                    class="absolute inset-y-0 right-0 flex items-center pr-4 text-blue-600">
+                                                    <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </span>
+                                            </li>
+                                        </template>
+
+                                        <div x-show="! Object.keys(optionsInModal).length" x-text="emptyOptionsMessage"
+                                            class="px-3 py-2 text-gray-900 cursor-default select-none"></div>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="h-32 flex flex-col mt-4">
                         <div class="basis-8 flex items-center font-bold text-xl">
                             설치(출고) 불가능 요일 설정
@@ -182,7 +255,7 @@ include_once("./_common.php");
                         <button
                             class="border rounded-lg px-8 py-1 flex justify-center items-center text-lg bg-blue-500 text-white font-bold transition-colors duration-300"
                             type="button"
-                            @click="reload = req(calcDaysByMonth()); refetch(); showModal = false; scheduleInit();"
+                            @click="reload = req(calcDaysByMonth(), mb_type, valueInModal); refetch(); valueInModal = ''; showModal = false; scheduleInit();"
                             x-text="'등록'"></button>
                     </div>
                 </div>
@@ -203,33 +276,36 @@ include_once("./_common.php");
     </script>
 
     <script>
-    function req(list) {
+    function req(list, mb_type, valueInModal) {
         const data = {
             partner_mb_id: '<?php echo $member['mb_id']; ?>',
-            partner_manager_mb_id: '<?php echo $_SESSION['ss_mb_id']; ?>',
+            partner_manager_mb_id: mb_type === 'partner' ? valueInModal : '<?php echo $_SESSION['ss_mb_id']; ?>',
             schedules: JSON.parse(JSON.stringify([...new Set(list)])),
         };
         let showModal = true;
-        $.ajax('ajax.deny_schedule.php', {
-            type: 'POST',
-            cache: false,
-            async: false,
-            data,
-            dataType: 'json',
-            success: function(result) {
-                if (result.data) checkSum = false;
-            },
-            error: function($xhr) {
-                var message = $xhr.responseJSON.message;
-                if (message) {
-                    $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                    ret = message;
-                } else {
-                    $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css('color',
-                        '#333333');
+        if (mb_type === 'partner' && valueInModal !== '') {
+            $.ajax('ajax.deny_schedule.php', {
+                type: 'POST',
+                cache: false,
+                async: false,
+                data,
+                dataType: 'json',
+                success: function(result) {
+                    if (result.data) showModal = false;
+                },
+                error: function($xhr) {
+                    showModal = true;
+                    var message = $xhr.responseJSON.message;
+                    if (message) {
+                        $('#code_keyup').text('* ' + message).css('color', '#d44747');
+                        ret = message;
+                    } else {
+                        $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css('color',
+                            '#333333');
+                    }
                 }
-            }
-        });
+            });
+        }
         return showModal;
     }
     </script>
@@ -237,7 +313,7 @@ include_once("./_common.php");
     <script>
     function select(config) {
         let res;
-        let mb_type;
+        let resInModal;
         $.ajax('ajax.members.php', {
             type: 'POST',
             cache: false,
@@ -248,7 +324,8 @@ include_once("./_common.php");
             dataType: 'json',
             success: function(result) {
                 res = result.data.members;
-                mb_type = result.data.mb_type;
+                resInModal = Object.fromEntries(Object.entries(result.data.members).filter((i) => i[0] !==
+                    'all'));
             },
             error: function($xhr) {
                 var message = $xhr.responseJSON.message;
@@ -263,20 +340,30 @@ include_once("./_common.php");
         });
         return {
             data: res,
+            dataInModal: resInModal,
             emptyOptionsMessage: config.emptyOptionsMessage ?? '검색한 담당자가 존재하지 않습니다.',
             focusedOptionIndex: null,
+            focusedOptionInModalIndex: null,
             name: config.name,
             open: false,
+            openInModal: false,
             options: {},
-            mb_type,
+            optionsInModal: {},
             placeholder: config.placeholder ?? '담당자 선택',
             search: '',
+            searchInModal: '',
             value: config.value,
+            valueInModal: config.valueInModal,
             filter_mb_id: '',
             closeListbox: function() {
                 this.open = false
                 this.focusedOptionIndex = null
                 this.search = ''
+            },
+            closeListInModalbox: function() {
+                this.openInModal = false;
+                this.focusedOptionInModalIndex = null;
+                this.searchInModal = '';
             },
             focusNextOption: function() {
                 if (this.focusedOptionIndex === null) return this.focusedOptionIndex = Object.keys(this
@@ -296,9 +383,32 @@ include_once("./_common.php");
                     block: "center",
                 })
             },
+            focusNextOptionInModal: function() {
+                if (this.focusedOptionInModalIndex === null) return this.focusedOptionInModalIndex = Object.keys(
+                        this
+                        .optionsInModal).filter((i) => i !==
+                        'all')
+                    .length - 1
+                if (this.focusedOptionInModalIndex + 1 >= Object.keys(this.optionsInModal).filter((i) => i !==
+                        'all').length) return
+                this.focusedOptionInModalIndex++
+                this.$refs.listbox2.children[this.focusedOptionInModalIndex].scrollIntoView({
+                    block: "center",
+                })
+            },
+            focusPreviousOptionInModal: function() {
+                if (this.focusedOptionInModalIndex === null) return this.focusedOptionInModalIndex = 0
+                if (this.focusedOptionInModalIndex <= 0) return
+                this.focusedOptionInModalIndex--
+                this.$refs.listbox2.children[this.focusedOptionInModalIndex].scrollIntoView({
+                    block: "center",
+                })
+            },
             init: function() {
-                this.options = this.data
+                this.options = this.data;
+                this.optionsInModal = this.dataInModal;
                 if (!(this.value in this.options)) this.value = null
+                if (!(this.valueInModal in this.optionsInModal)) this.valueInModal = null
                 this.$watch('search', ((value) => {
                     if (!this.open || !value) return this.options = this.data
                     this.options = Object.keys(this.data)
@@ -308,7 +418,17 @@ include_once("./_common.php");
                             options[key] = this.data[key]
                             return options
                         }, {})
-                }))
+                }));
+                this.$watch('searchInModal', ((value) => {
+                    if (!this.openInModal || !value) return this.optionsInModal = this.dataInModal;
+                    this.optionsInModal = Object.keys(this.dataInModal)
+                        .filter((key) => this.data[key].toLowerCase().includes(value
+                            .toLowerCase()))
+                        .reduce((options, key) => {
+                            optionsInModal[key] = this.data[key]
+                            return optionsInModal
+                        }, {})
+                }));
             },
             selectOption: function() {
                 if (!this.open) return this.toggleListboxVisibility()
@@ -326,6 +446,40 @@ include_once("./_common.php");
                 this.$nextTick(() => {
                     this.$refs.search.focus()
                     this.$refs.listbox.children[this.focusedOptionIndex].scrollIntoView({
+                        block: "nearest"
+                    })
+                });
+                this.$watch('searchInModal', ((value) => {
+                    if (!this.openInModal || !value) return this.optionsInModal = this.dataInModal;
+                    this.optionsInModal = Object.keys(this.dataInModal)
+                        .filter((key) => this.data[key].toLowerCase().includes(value
+                            .toLowerCase()))
+                        .reduce((options, key) => {
+                            optionsInModal[key] = this.data[key]
+                            return optionsInModal
+                        }, {})
+                }));
+            },
+            selectOptionInModal: function() {
+                if (!this.openInModal) return this.toggleListboxInModalVisibility()
+                this.filter_mb_id = Object.keys(this.optionsInModal)[this
+                        .focusedOptionInModalIndex] == 'all' ? '' :
+                    Object
+                    .keys(
+                        this.optionsInModal)[this.focusedOptionInModalIndex];
+                this.valueInModal = Object.keys(this.optionsInModal)[this
+                    .focusedOptionInModalIndex]
+                this.closeListInModalbox()
+            },
+            toggleListboxInModalVisibility: function() {
+                if (this.openInModal) return this.closeListInModalbox()
+                this.focusedOptionInModalIndex = Object.keys(this.optionsInModal)
+                    .indexOf(this.valueInModal)
+                if (this.focusedOptionInModalIndex < 0) this.focusedOptionInModalIndex = 0
+                this.openInModal = true
+                this.$nextTick(() => {
+                    this.$refs.searchInModal.focus()
+                    this.$refs.listbox2.children[this.focusedOptionInModalIndex].scrollIntoView({
                         block: "nearest"
                     })
                 })
@@ -374,6 +528,7 @@ include_once("./_common.php");
             events: res,
             select_date: new Date(),
             schedules: [],
+            mb_type: '<?php echo $member["mb_type"]; ?>',
             initDate: function() {
                 const today = new Date();
                 this.month = today.getMonth();
