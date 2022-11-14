@@ -10,7 +10,7 @@ if(!$_POST['partner_mb_id'])
   
 $res = get_partner_schedule_by_partner_mb_id($_POST['partner_mb_id']);
 if (count($res) > 0)
-  $res = order_by($res, ['type', 'delivery_datetime'], ['asc', 'desc'], 'delivery_date');
+  $res = order_by($res, ['type', 'delivery_datetime'], ['asc', 'asc'], 'delivery_date');
 else
   $res =(object) array();
 
