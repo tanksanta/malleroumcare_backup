@@ -238,7 +238,8 @@ $pen_rec_gra_cd = array(
   '02' => '2등급',
   '03' => '3등급',
   '04' => '4등급',
-  '05' => '5등급'
+  '05' => '5등급',
+  '06' => '6등급'
 );
 
 function get_carts_by_recipient($recipient) {
