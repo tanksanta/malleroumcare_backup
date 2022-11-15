@@ -103,6 +103,8 @@ if($list) {
     if($res['data'])
       $data2 = $res["data"];
 
+    // 아직 6등급은 penRecGraNm이 따로 저장되지 않음
+    $penRecGraNm = $data["penRecGraNm"]==""? str_replace('0' , '', $data["penRecGraCd"])."등급": $data["penRecGraNm"];
     $ret .= '
     <li>
       <form class="form_recipient" autocomplete="off">
@@ -127,7 +129,7 @@ if($list) {
           </tr>
           <tr>
             <td>인정등급</td>
-            <td>'.$data["penRecGraNm"].'</td>
+            <td>'.$penRecGraNm.'</td>
           </tr>
           <tr>
             <td>본인부담금율</td>
@@ -229,6 +231,7 @@ if($list) {
                 <option value="03" '.get_selected($data['penRecGraCd'], '03').'>3등급</option>
                 <option value="04" '.get_selected($data['penRecGraCd'], '04').'>4등급</option>
                 <option value="05" '.get_selected($data['penRecGraCd'], '05').'>5등급</option>
+                <option value="06" '.get_selected($data['penRecGraCd'], '06').'>6등급</option>
               </select>
             </td>
           </tr>

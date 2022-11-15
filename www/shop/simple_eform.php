@@ -122,6 +122,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 <option value="03" <?php if($dc) echo get_selected($dc['penRecGraCd'], '03'); ?>>3등급</option>
                 <option value="04" <?php if($dc) echo get_selected($dc['penRecGraCd'], '04'); ?>>4등급</option>
                 <option value="05" <?php if($dc) echo get_selected($dc['penRecGraCd'], '05'); ?>>5등급</option>
+                <option value="06" <?php if($dc) echo get_selected($dc['penRecGraCd'], '06'); ?>>6등급</option>
               </select>
             </div>
             <label for="penTypeCd" class="col-md-2 control-label">
