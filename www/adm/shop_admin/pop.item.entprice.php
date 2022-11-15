@@ -26,7 +26,7 @@ if($is_admin != 'super') {
     $where[] = " ( mb_manager = '{$member['mb_id']}' ) ";
 }
 
-if($sel_field && $search) {
+if($sel_field && strlen($search) ) {
     if($sel_field == 'mb_manager') {
         $where[] = " ( $sel_field like '%$search%' or (select mb_name from g5_member where mb_id = m.mb_manager) like '%$search%' ) ";
     }
@@ -44,6 +44,7 @@ if($sel_field && $search) {
 // 22.11.14 : 서원 - 판매가격이 있는 사업소만 검색하고자 옵션을 걸때.
 if( $_GET['entprice_on'] && ($_GET['entprice_on']=="on") ){
     $where[] = " (select it_price from g5_shop_item_entprice where mb_id = m.mb_id and it_id = '$it_id') > 0";
+    $qstr .= "&amp;entprice_on=".$_GET['entprice_on'];
 }
 
 $sql_where = $where ? ( ' and ' . implode(' and ', $where) ) : '';
