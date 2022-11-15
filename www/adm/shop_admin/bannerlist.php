@@ -106,7 +106,8 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
           limit $from_record, $rows  ";
     $result = sql_query($sql);
     for ($i=0; $row=sql_fetch_array($result); $i++) {
-        // 테두리 있는지
+        $bn_img = "";
+		// 테두리 있는지
         $bn_border  = $row['bn_border'];
         // 새창 띄우기인지
         $bn_new_win = ($row['bn_new_win']) ? 'target="_blank"' : '';
@@ -117,11 +118,9 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
             if($size[0] && $size[0] > 800)
                 $width = 800;
             else
-                $width = $size[0];
-
-            $bn_img = "";
+                $width = $size[0];            
            
-            $bn_img .= '<img src="'.G5_DATA_URL.'/banner/'.$row['bn_id'].'" width="'.$width.'" alt="'.get_text($row['bn_alt']).'">';
+            $bn_img = '<img src="'.G5_DATA_URL.'/banner/'.$row['bn_id'].'" width="'.$width.'" alt="'.get_text($row['bn_alt']).'">';
         }
 
         switch($row['bn_device']) {
