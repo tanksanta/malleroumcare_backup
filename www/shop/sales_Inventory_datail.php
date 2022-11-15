@@ -101,9 +101,9 @@ if ($is_admin || $is_author || $is_purchaser) {
 
 // 보안서버경로
 if (G5_HTTPS_DOMAIN)
-  $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/cartupdate.php';
+  $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/simple_eform.php';
 else
-  $action_url = './cartupdate.php';
+  $action_url = './simple_eform.php';
 
 // 상품품절체크
 if(G5_SOLDOUT_CHECK)
