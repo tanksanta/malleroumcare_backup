@@ -357,9 +357,7 @@ while ($res_cate = sql_fetch_array($cate_result)) {
         let page_type = "<?=$page_type?>";
 
         var hist_arr = <?=json_encode($arr_hist);?>;
-        // console.log("hist_arr : ", hist_arr);
         var used_period = <?=json_encode($used_period);?>;
-        // console.log("used_period : ", used_period);
         // 요양정보 간편조회 페이지에서 호출한 경우 => 직접 api에서 데이터 받아와서 뿌림
         if(page_type == 'search'){ 
             var head_title = `<span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span>`;
@@ -381,8 +379,7 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                 type: 'POST',  // http method
                 data: { id : penLtmNum_parent,rn : penNm_parent },  // data to submit
                 success: function (data, status, xhr) {
-                    console.log("data : ", data);
-                    
+
                     let rep_list_api = data['data']['recipientContractDetail']['Result'];                
                     let rep_info_api = rep_list_api['ds_welToolTgtList'][0];
                     if(rep_info_api['REDUCE_NM'] == '감경'){ //REDUCE_NM가 대상자 구분, 감경은 SBA_CD를 이용하여 본인부담율을 가져오기
@@ -465,14 +462,12 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                             
                         } else {  
                             var used_item = used_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01'] == null ?0:Number(used_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
-                            // console.log("cnt_period : ", cnt_period); //[성인용보행기01: 1, 목욕의자01: 1, 욕창예방방석01: 1]
                             var item_period = cnt_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01'] == null ?0:Number(cnt_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
                             var cnt = contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] == null ?0 : Number(contract_cnt[sale_y[i]['WIM_ITM_CD']+'01']);
                             item_period = item_period==0?0:item_period-cnt;
                             var Sellable = sale_y[i]['WIM_ITM_CD'].replace(' ', '') == '미끄럼방지용품'? 11 :Number(tool_list_cnt[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
                             var gumae_cnt = Sellable-cnt-item_period;
                             cnt = cnt + item_period;
-                            // console.log(sale_y[i]['WIM_ITM_CD']+" "+gumae_cnt+" : ", Sellable+'/'+cnt+'/'+item_period);
 
                             var hist_ctr_arr = [];
                             if(used_item && item_period) {
@@ -481,13 +476,11 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                                         var prev_date = new Date(hist_arr[ii]['ORD_DTM']);
                                         var cal_date = new Date(prev_date.setFullYear(prev_date.getFullYear() + Number(used_item)));
                                         var now = new Date();
-                                        // console.log("now/cal_date : ", now+"/"+cal_date);
                                         if(cal_date > now){
                                             hist_ctr_arr.push(hist_arr[ii]);
                                         }
                                     }
                                 }
-                                // console.log("hist_ctr_arr : ", hist_ctr_arr);
                                 contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] = contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] == null ?item_period+'+' :contract_cnt[sale_y[i]['WIM_ITM_CD']+'01']+item_period+'+';
                             }
 
@@ -614,9 +607,6 @@ while ($res_cate = sql_fetch_array($cate_result)) {
             penLtmNum_parent = parent.document.all["penLtmNum_parent"].value;
             penNm_parent = parent.document.all["penNm_parent"].value;
 
-            console.log("penLtmNum_parent : ", penLtmNum_parent);
-            console.log("penNm_parent : ", penNm_parent);
-
             let rep_list = <?=json_encode($res);?>;
             let rep_detail = [];
             let contract = [];
@@ -626,21 +616,23 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                     break;
                 }
             }
-            
-            console.log("rep_list : ", rep_list);
-            console.log("rep_detail : ", rep_detail);
-            console.log("contract : ", contract);
 
             $(".rep_common").text(penNm_parent+"("+penLtmNum_parent+")");
-            $(".penRecGraNm").text(rep_detail['penRecGraNm']);
+            if(rep_detail['penRecGraNm'] == null){
+                if(rep_detail['penRecGraCd'] == '06') {
+                    $(".penRecGraNm").text("6등급");
+                } else {
+                    $(".penRecGraNm").text("-");
+                }
+            } else {
+                $(".penRecGraNm").text(rep_detail['penRecGraNm']);
+            }
             $(".penTypeNm").text(rep_detail['penTypeNm']);
             $(".penExpiDtm").text(rep_detail['penExpiDtm']);
             var penAppEdDtm = rep_detail['penAppEdDtm'];
-            console.log("rep_detail['penAppEdDtm'] : ", rep_detail['penAppEdDtm']);
 
             if(rep_detail['penAppEdDtm'] != null){
                 var appED = new Date(penAppEdDtm.substr(0,4)+'-'+penAppEdDtm.substr(4,2)+'-'+penAppEdDtm.substr(6,2));
-                console.log("appED : ", appED);
                 var appST = new Date(appED);
                 appST.setDate(appST.getDate() + 1);
                 appST.setFullYear(appST.getFullYear() - 1);
@@ -662,7 +654,6 @@ while ($res_cate = sql_fetch_array($cate_result)) {
             
             let ct_list = <?=json_encode($ct_list)?>;
             
-            console.log("ct_list : ", ct_list);
             if(ct_list.length > 0){
                 $(".rem_amount").text(makeComma(ct_list[0]['PEN_BUDGET'])+'원');
                 $(".used_amount").text('사용 금액 : '+makeComma(1600000-ct_list[0]['PEN_BUDGET'])+'원');
@@ -689,7 +680,6 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                 cate_href = "<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$_GET['id'].'&redirect='?>";
                 if(Object.keys(penToolRefCnt)[i] == '미끄럼방지용품(매트)01') {continue;}
                 var item_nm = Object.keys(penToolRefCnt)[i] == '미끄럼방지용품(양말)01'?'미끄럼방지용품01':Object.keys(penToolRefCnt)[i];
-                // console.log("cnt_period : ", cnt_period);
                 var item_period = cnt_period[Object.keys(penToolRefCnt)[i]] == null ?0:Number(cnt_period[Object.keys(penToolRefCnt)[i]]);
                 var cnt = ct_count[item_nm] == null ?0 :Number(ct_count[item_nm]);
                 item_period = item_period==0?0:item_period-cnt;
@@ -704,7 +694,6 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                     // cate_href = '/shop/connect_recipient.php?pen_id=<?=$_GET['id']?>&redirect='+encodeURI('/shop/list.php?ca_id='+arr_category[item_nm.substr(0, item_nm.length-2)].substr(0,2)+'&ca_sub%5B%5D='+arr_category[item_nm.substr(0, item_nm.length-2)].substr(2,2));
                     cate_href = "<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$_GET['id'].'&redirect='?>"+encodeURIComponent('/shop/list.php?ca_id='+arr_category[item_nm.substr(0, item_nm.length-2)].substr(0,2)+'&ca_sub%5B%5D='+arr_category[item_nm.substr(0, item_nm.length-2)].substr(2,2));
                 }
-                // console.log("cate_href : ", cate_href);
 
                 if(Object.keys(penToolRefCnt)[i].substr(-2,2) == '00'){ //대여
                     if(Object.values(penToolRefCnt)[i] == -1){ //사용불가 제품일 경우
@@ -796,19 +785,14 @@ while ($res_cate = sql_fetch_array($cate_result)) {
                                     var prev_date = new Date(hist_arr[ii]['ORD_DTM']);
                                     var cal_date = new Date(prev_date.setFullYear(prev_date.getFullYear() + Number(used_item)));
                                     var now = new Date();
-                                    console.log("now/cal_date : ", now+"/"+cal_date);
                                     if(cal_date > now){
                                         hist_ctr_arr.push(hist_arr[ii]);
                                     }
                                 }
                             }
-                            console.log("hist_ctr_arr : ", hist_ctr_arr);
-                            console.log("test succ : ", Object.keys(penToolRefCnt)[i]+' : '+used_item+' : '+item_period);
                             ct_count[item_nm] = ct_count[item_nm] == null ?item_period+'+' :ct_count[item_nm]+item_period+'+';
                             cnt = cnt + item_period;
                         }
-
-                        // console.log("ct_count[item_nm] : ", ct_count[item_nm]);
 
                         if(ct_count[item_nm] == null) { // 해당 적용기간 내 계약이 없는 경우
                             // 구매 가능이 클릭 가능한 코드
