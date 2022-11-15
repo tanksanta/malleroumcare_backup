@@ -374,7 +374,7 @@ else if ($type == 'inquire_data') {
             <?php } else if ($type == 'region') { 
                 foreach($total_arr as $row) { 
                     $region = $row['sido']; ?>
-                    <th scope="col"><?=$region?></th>
+                    <th scope="col"><?=($region)?$region:"주소없음"?></th>
                 <?php }
             } else if ($type == 'login_daily') { 
                 $to_date_str = date('Y-m-d',$endTime); ?>
