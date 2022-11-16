@@ -488,6 +488,9 @@ function save_item_msg(no_items) {
 
     if(pen.penRecGraNm)
       postfix.push( pen.penRecGraNm );
+    else if(pen.penRecGraNm == '')
+      postfix.push( (pen.penRecGraCd).replace('0','')+"등급" ); // 아직 6등급은 penRecGraNm이 따로 저장되지 않음
+
     if(pen.penTypeNm)
       postfix.push( pen.penTypeNm );
     

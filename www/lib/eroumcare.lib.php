@@ -238,7 +238,8 @@ $pen_rec_gra_cd = array(
   '02' => '2등급',
   '03' => '3등급',
   '04' => '4등급',
-  '05' => '5등급'
+  '05' => '5등급',
+  '06' => '6등급'
 );
 
 function get_carts_by_recipient($recipient) {
@@ -2799,14 +2800,14 @@ function get_partner_member_list_by_partner_mb_id($partner_mb_id, $mb_type) {
  * 작성일자 : 2022-11-14
  * 마지막 수정자 : 임근석
  * 마지막 수정일자 : 2022-11-14
- * 설명 : 설치파트너 목록 조회
+ * 설명 : 사업소 목록 조회
  * @param string $mb_type
  * @return mixed 
  */
 function get_partner_list($mb_type) {
   $sql = "SELECT DISTINCT g5_member.mb_id, g5_member.mb_name
   FROM partner_inst_sts
-  JOIN g5_member ON partner_inst_sts.od_mb_ent_name = g5_member.mb_name
+  JOIN g5_member ON partner_inst_sts.od_mb_id = g5_member.mb_id
   WHERE (g5_member.mb_level = 3 OR g5_member.mb_level = 4);";
 
   $result = sql_query($sql);
@@ -2830,7 +2831,6 @@ function get_partner_list($mb_type) {
  * 설명 : 특정 사업소의 수급자 목록 조회(주문 일정이 있는 수급자에 한정하여)
  * @param string $ent_md_id : 사업소 mb_id
  * @param string $mb_type
- * @param string $partner_mb_id : 조회 대상 설치파트너 mb_id
  * @return mixed
  */
 function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id, $mb_type) {
@@ -3120,6 +3120,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       it_name, 
       partner_manager_mb_id, 
       partner_manager_mb_name, 
+      od_mb_id, 
       od_mb_ent_name, 
       od_b_name, 
       od_b_hp, 
@@ -3139,6 +3140,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       partner_manager_mb_id, 
       partner_manager_mb_name, 
       od_mb_id, 
+      od_mb_ent_name, 
       od_b_name, 
       od_b_hp, 
       od_b_addr1, 

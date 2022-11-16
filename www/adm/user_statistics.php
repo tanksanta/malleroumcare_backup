@@ -17,6 +17,10 @@ $endTime = strtotime($to_date);
 
 $to_date = "{$to_date} 23:59:59";
 
+$page = $_GET['page']==null ?'' :$_GET['page'];
+
+$all_cnt = 0;
+
 $results = [];
 if ($type == 'user') {
     // 회원등급
@@ -294,25 +298,66 @@ else if ($type == 'order_user') {
 else if ($type == 'inquire_data') {
     if ($_GET['page'] == 'all') {
         // 전체 사업소 집계
-        $sql = 'select ent_id, ent_nm, count(*) as cnt from rep_inquiry_log group by ent_id order by ent_nm;';
-        $result = sql_query($sql);
+        $sql = 'select ent_id, ent_nm, count(*) as cnt from rep_inquiry_log';
+        $where_sql = ' WHERE DATE(occur_date) BETWEEN "'.date("Y-m-d", $startTime).'" AND "'.date("Y-m-d", $endTime).'"';
+        $group_order_sql = ' group by ent_id order by ent_nm;';
+        $result = sql_query($sql.$where_sql.$group_order_sql);
         $list_head = ['No', '사업소명', '조회 횟수'];
     } else if ($_GET['page'] == 'ent') {
         // 각 사업소 집계
-        $sql = 'select ent_id, ent_nm, pen_id, pen_nm, count(*) as cnt from rep_inquiry_log group by pen_id order by ent_nm, pen_nm;';
-        $result = sql_query($sql);
+        $sql = 'select ent_id, ent_nm, pen_id, pen_nm, count(*) as cnt from rep_inquiry_log';
+        $where_sql = ' WHERE DATE(occur_date) BETWEEN "'.date("Y-m-d", $startTime).'" AND "'.date("Y-m-d", $endTime).'"';
+        $group_order_sql = ' group by pen_id order by ent_nm, pen_nm;';
+        $result = sql_query($sql.$where_sql.$group_order_sql);
         $list_head = ['No', '사업소명', '수급자 id', '수급자명', '조회 횟수'];
     } else {
-        // 일자별 집계
-        $sql = 'select ent_id, ent_nm, pen_id, pen_nm, occur_date, count(*) as cnt from rep_inquiry_log group by occur_date, pen_id order by occur_date, ent_nm;';
-        $result = sql_query($sql);
-        $list_head = ['No', '조회 일자', '사업소명', '수급자명', '조회 횟수'];
+        // 일자별 집계        
+        // $sql = 'select ent_id, ent_nm, pen_id, pen_nm, occur_date, count(*) as cnt from rep_inquiry_log';
+        $sql = 'select ent_id, ent_nm, occur_date, count(*) as cnt from rep_inquiry_log';
+        $where_sql = ' WHERE DATE(occur_date) BETWEEN "'.date("Y-m-d", $startTime).'" AND "'.date("Y-m-d", $endTime).'"';
+        // $group_order_sql = ' group by occur_date, pen_id order by occur_date, ent_nm;';
+        $group_order_sql = ' group by occur_date, ent_nm order by occur_date, ent_nm;';
+        $result = sql_query($sql.$where_sql.$group_order_sql);
+        // $list_head = ['No', '조회 일자', '사업소명', '수급자명', '조회 횟수'];
+        $list_head = ['No', '조회 일자', '사업소명', '조회 횟수'];
+        
+        $sql_detail = 'select ent_id, ent_nm, pen_nm, occur_date from rep_inquiry_log';
+        $result_detail = sql_query($sql_detail.$where_sql);
+        $arr_detail = [];
+        while($row_detail = sql_fetch_array($result_detail)) {
+            $arr_detail[] =  $row_detail;   
+        }
+        // echo "<script>console.log('".json_encode($arr_detail)."');</script>";
     }
     $arr_inquiry = [];
     while($row_inquiry = sql_fetch_array($result)) {
         $arr_inquiry[] =  $row_inquiry;   
     }
 }
+else if ($type == 'recipient') {
+    // 시작 --> 
+    // 22.11.15 : 서원 - 등록한수급자 메뉴의 통계기능이 빠져있어 해당 기능 추가.
+
+    //누적
+    $sql = "SELECT COUNT(*) as cnt FROM recipient_grade_log";
+    $total_cnt = sql_fetch($sql);
+    
+    // 일별 데이터 조회
+    $sql = "SELECT COUNT(*) as cnt, DATE(created_at) as _date FROM recipient_grade_log WHERE created_at BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY _date; ";
+    $result = sql_query($sql);
+ 
+    $arr = [];
+    while($row=sql_fetch_array($result)) {
+        $arr[$row['_date']] = $row['cnt'];
+    }
+    
+    $results['recipient'] = $arr;
+
+    // 종료 -->
+}
+
+
+
 ?>
 
 <style>
@@ -347,6 +392,10 @@ else if ($type == 'inquire_data') {
     color: #fff;
     letter-spacing:0;
 }
+
+#stat td {
+    background: #f5f5f5;
+}
 </style>
 
 <div class="outer">
@@ -374,7 +423,7 @@ else if ($type == 'inquire_data') {
             <?php } else if ($type == 'region') { 
                 foreach($total_arr as $row) { 
                     $region = $row['sido']; ?>
-                    <th scope="col"><?=$region?></th>
+                    <th scope="col"><?=($region)?$region:"주소없음"?></th>
                 <?php }
             } else if ($type == 'login_daily') { 
                 $to_date_str = date('Y-m-d',$endTime); ?>
@@ -393,6 +442,8 @@ else if ($type == 'inquire_data') {
                 <th scope="col">계약서 생성</th>
             <?php } else if ($type == 'contract_s') { ?>
                 <th scope="col">계약서 서명</th>
+            <?php } else if ($type == 'recipient') { ?>
+                <th scope="col">등록한 수급자</th>
             <?php } else if ($type == 'order_c') { ?>
                 <th scope="col">전체 생성</th>
                 <th scope="col">관리자 생성</th>
@@ -407,8 +458,8 @@ else if ($type == 'inquire_data') {
 
     </tr>
     </thead>
-    <tbody>
-    <?php if ($type != 'inquire_data') { ?>
+    <tbody id = "table_static">
+    <?php if ($type != 'inquire_data' ) { ?>
         <tr class="bg0">
             <td>누적</td>
             <?php if ($type == 'user') { ?>
@@ -427,30 +478,78 @@ else if ($type == 'inquire_data') {
                 <td><?php echo number_format($total_amount['amount']) ?></td>
             <?php } else if ($type == 'login_daily' || $type == 'login_user' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'order_c' || $type == 'order_user') { ?>
                 <td><?php echo $total_cnt['cnt'] ?></td>
+            <?php } else if ($type == 'recipient') { ?>
+                <td><?php echo $total_cnt['cnt'] ?></td>
             <?php } ?>
         </tr>
     <?php } else { 
-        for ($ind = 0; $ind < count($arr_inquiry); $ind++) {?>        
-        <tr class="bg0">
+        $st_date = $arr_inquiry[0]['occur_date'] != null ?explode(' ', $arr_inquiry[0]['occur_date'])[0] :''; // 날짜 바뀌는 것을 체크
+        $cnt_date = 0;
+        $cnt_date_detail = 0;
+        // echo "<script>console.log('".$st_date."');</script>";
+        for ($ind = 0; $ind < count($arr_inquiry); $ind++) {
+            $all_cnt = $all_cnt + $arr_inquiry[$ind]['cnt'];?>
             <?php if ($_GET['page'] == 'all') { ?>
+                <tr class="bg0">
                 <td><?=$ind+1;?></td>
                 <td><?=$arr_inquiry[$ind]['ent_nm'];?></td>
                 <td><?=$arr_inquiry[$ind]['cnt'];?></td>
+                </tr>
             <?php } else if ($_GET['page'] == 'ent') { ?>
+                <tr class="bg0">
                 <td><?=$ind+1;?></td>
                 <td><?=$arr_inquiry[$ind]['ent_nm'];?></td>
                 <td><?=$arr_inquiry[$ind]['pen_id'];?></td>
                 <td><?=$arr_inquiry[$ind]['pen_nm'];?></td>
                 <td><?=$arr_inquiry[$ind]['cnt'];?></td>
-            <?php } else { ?>
+                </tr>
+            <?php } else { 
+                $cnt_date++;
+                $cnt_date_detail = $cnt_date_detail + $arr_inquiry[$ind]['cnt'];?>
+                <tr class="bg0" id="detail<?=$ind+1?>">
                 <td><?=$ind+1;?></td>
                 <td><?=explode(' ', $arr_inquiry[$ind]['occur_date'])[0];?></td>
                 <td><?=$arr_inquiry[$ind]['ent_nm'];?></td>
-                <td><?=$arr_inquiry[$ind]['pen_nm'];?></td>
-                <td><?=$arr_inquiry[$ind]['cnt'];?></td>
-            <?php } ?>
-        </tr>
-    <?php } }
+                <td><a href="#" class="detail-toggler" data-prod-log-detail="<?=$ind+1?>"><?=$arr_inquiry[$ind]['cnt'];?></a></td>
+                </tr>
+                <tr id="detail<?=$ind+1?>" class="log-detail<?=$ind+1?>"  style="display:none;">
+                <td></td>
+                <td>조회 시간</td>
+                <td>사업소명</td>
+                <td>수급자명</td>
+                </tr>
+                <?php for($idx = 0; $idx < count($arr_detail); $idx++) { 
+                    if($arr_detail[$idx]['ent_nm'] != $arr_inquiry[$ind]['ent_nm'] || $arr_detail[$idx]['occur_date'] != $arr_inquiry[$ind]['occur_date']) continue;?>
+                    <tr id="detail<?=$ind+1?>" class="log-detail<?=$ind+1?>"  style="display:none;">
+                    <td></td>
+                    <td><?=$arr_detail[$idx]['occur_date'];?></td>
+                    <td><?=$arr_detail[$idx]['ent_nm'];?></td>
+                    <td><?=$arr_detail[$idx]['pen_nm'];?></td>
+                    </tr>
+            <?php }
+                // (일자별로 모았을때 해당일의 마지막 아이템)이거나 (리스트 전체의 가장 마지막 아이템)이면 집계한 값을 출력한다.
+                if(($ind != count($arr_inquiry)-1 && $st_date!=explode(' ', $arr_inquiry[$ind+1]['occur_date'])[0])||$ind == count($arr_inquiry)-1){ ?>
+                    <tr class="bg0" id="stat">
+                        <td></td>
+                        <td><?=explode(' ', $arr_inquiry[$ind]['occur_date'])[0];?></td>
+                        <td><?=$cnt_date;?>개 사업소</td>
+                        <td><?=$cnt_date_detail;?></td>
+                    </tr>
+                <?php $cnt_date = $cnt_date_detail = 0; $st_date = $ind+1 != count($arr_inquiry) ?explode(' ', $arr_inquiry[$ind+1]['occur_date'])[0] :'';}
+            } ?>
+        <?php } 
+        if($page == '') {?>
+            <tr class="bg0" id="stat">
+                <td colspan="3">누적</td>
+                <td><?=$all_cnt;?></td>
+            </tr>
+        <?php } else if ($page == 'all'){?>
+            <tr class="bg0" id="stat">
+                <td>누계</td>
+                <td><?=count($arr_inquiry);?>개 사업소</td>
+                <td><?=$all_cnt;?></td>
+            </tr>
+        <?php }  }
     if ($type != 'login_user') {
         for ( $i = $startTime; $i <= $endTime; $i = $i + 86400 ) {
             $thisDate = date( 'Y-m-d', $i );
@@ -481,6 +580,8 @@ else if ($type == 'inquire_data') {
                 array_push($datas, $results['contract_c'][$thisDate] ?: 0);
             } else if ($type == 'contract_s') {
                 array_push($datas, $results['contract_s'][$thisDate] ?: 0);
+            } else if ($type == 'recipient') {
+                array_push($datas, $results['recipient'][$thisDate] ?: 0);
             } else if ($type == 'order_c') {
                 array_push($datas, $results['order_c_all'][$thisDate] ?: 0);
                 array_push($datas, $results['order_c_admin'][$thisDate] ?: 0);
@@ -527,6 +628,33 @@ else if ($type == 'inquire_data') {
 
 <script>
 $(function() {
+    // 요양정보조회 전체 사업소 카운트 클릭이벤트
+    $('#table_static').on('click', '.detail-toggler', function(e){
+        e.preventDefault();
+        // console.log("click!s : ", e.target.parentElement.parentElement.id); // detail{n}
+        // if ($('#'+e.target.parentElement.parentElement.id).hasClass('detail-open')) {
+        //     $('#'+e.target.parentElement.parentElement.id).attr('style', 'border: none;');
+        // } else {
+        //     $('#'+e.target.parentElement.parentElement.id).attr('style', 'border: 2px solid #000;');
+        // }
+        $('#'+e.target.parentElement.parentElement.id).toggleClass("detail-open");
+        $('.log-detail'+$(this).attr('data-prod-log-detail')).map((idx, child) => {
+            if ($(child).hasClass('detail-open')) {
+                $(child).toggleClass("detail-open");
+                $(child).attr('style', 'border: none;display:none;');
+            } else {
+                $(child).toggleClass("detail-open");
+                if (idx != $('.log-detail'+$(this).attr('data-prod-log-detail')).length-1) {
+                    //$(child).attr('style', 'border: 2px solid #000;border-bottom:none;border-top:none;display:table-row;');
+                    $(child).attr('style', 'display:table-row;');
+                } else {
+                    //$(child).attr('style', 'border: 2px solid #000;border-top:none;display:table-row;');
+                    $(child).attr('style', 'display:table-row;');
+                }
+            }
+        });
+    });
+
     $('#download_excel').click(function(e) {
         var body = encodeURIComponent(document.getElementsByTagName('table')[0].innerHTML);
         body = body.replace(/\s+/g,"");
@@ -550,6 +678,20 @@ $(function() {
         hiddenField2.name = 'type';
         hiddenField2.value = type;
         form.appendChild(hiddenField2);
+
+        if(type == 'inquire_data'){
+            var hiddenField3 = document.createElement('input');
+            hiddenField3.type = 'hidden';
+            hiddenField3.name = 'page';
+            hiddenField3.value = '<?=$page?>';
+            form.appendChild(hiddenField3);
+            
+            var hiddenField4 = document.createElement('input');
+            hiddenField4.type = 'hidden';
+            hiddenField4.name = 'todate';
+            hiddenField4.value = '<?=date("Y-m-d", $startTime);?>';
+            form.appendChild(hiddenField4);
+        }
 
         document.body.appendChild(form);
         form.submit();
