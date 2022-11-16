@@ -101,9 +101,9 @@ if ($is_admin || $is_author || $is_purchaser) {
 
 // 보안서버경로
 if (G5_HTTPS_DOMAIN)
-  $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/cartupdate.php';
+  $action_url = G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR.'/simple_eform.php';
 else
-  $action_url = './cartupdate.php';
+  $action_url = './simple_eform.php';
 
 // 상품품절체크
 if(G5_SOLDOUT_CHECK)
@@ -655,7 +655,6 @@ $row = sql_fetch($sql);
 					$rows2 = sql_fetch($sql);
 					$list[$i]['penId'] = $rows2['penId'];
                     $list[$i]['penNm'] = $rows2['penNm'];
-                                        $list[$i]['penNm'] = $rows2['penNm'];
 				  }
                 }
 
@@ -686,8 +685,11 @@ $row = sql_fetch($sql);
                 </div>
               </div>
               <span class="check">
-                <?php if($result_stock['od_id']) { ?>
+                <?php /*if($result_stock['od_id']) { ?>
                 <a href="<?=G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id']?>">확인</a>
+                <?php } */?>
+				<?php if($rows2['UUID']) { ?>
+                <a href="<?=G5_SHOP_URL.'/eform/downloadEform.php?dc_id='.$rows2['UUID']?>">확인</a>
                 <?php } ?>
               </span>
             </li>

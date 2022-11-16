@@ -122,6 +122,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 <option value="03" <?php if($dc) echo get_selected($dc['penRecGraCd'], '03'); ?>>3등급</option>
                 <option value="04" <?php if($dc) echo get_selected($dc['penRecGraCd'], '04'); ?>>4등급</option>
                 <option value="05" <?php if($dc) echo get_selected($dc['penRecGraCd'], '05'); ?>>5등급</option>
+                <option value="06" <?php if($dc) echo get_selected($dc['penRecGraCd'], '06'); ?>>6등급</option>
               </select>
             </div>
             <label for="penTypeCd" class="col-md-2 control-label">
@@ -197,9 +198,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </button>
         </div>
       </div>
-
-      <div id="list_wrap" class="list_box"></div>
-      <div id="se_body_wr" class="flex space-between <?php if($dc) echo 'active' ;?>">
+      <div id="se_body_wr" class="flex space-between <?php if($dc) echo 'active' ;?>" >
         <div class="se_item_wr">
           <div class="se_sch_wr">
             <div class="flex space-between align-items">
@@ -470,6 +469,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </div>
         </div>
       </div>
+	  <div id="list_wrap" class="list_box"></div>
     </form>
   </div>
 </section>
@@ -1016,6 +1016,7 @@ function select_recipient(obj) {
   $('#penExpiStDtm').prop('disabled', false);
   $('#penExpiEdDtm').prop('disabled', false);
   $('#penJumin').prop('disabled', false);
+  $('#se_body_wr').show();
   $('#se_body_wr').addClass('active');
 
   $('#list_wrap').hide();
@@ -1320,7 +1321,8 @@ $('#penLtmNum').on('change paste keyup input', function() {
 
     if(pattern.test(penLtmNum)) {
       check_recipient();
-      $('#se_body_wr').addClass('active');
+      $('#se_body_wr').show();
+	  $('#se_body_wr').addClass('active');
       // 처음 팝업
       $('.se_sch_pop').show();
       check_no_item();
@@ -1504,9 +1506,11 @@ function check_input_completed() {
 
 // 보유재고관리에서 넘어온 경우 상품 바코드 선택
 function select_barcode(barcode) {
-  $('input[name="barcode_0_type"]').val(1).prop('checked', true);
-  $('.it_barcode').val(barcode).prop("selected", true);
-  update_barcode_field();
+  setTimeout(function() {
+	  $('input:radio[name="barcode_0_type"]:radio[value="1"]').prop('checked', true);
+	  $('.it_barcode').val(barcode).prop("selected", true);
+	  update_barcode_field();
+  }, 2000);
 }
 
 if($('input[name="pen_type"]:checked').val() == 1) {
@@ -1696,7 +1700,11 @@ $('input[name="it_id[]"]').each(function() {
 });
 
 $(function() {
-  search();
+  <?php if($dc_id == ""){?>
+  $('#se_body_wr').hide();
+  <?php }?>
+  var dc_id = 'dc_id=<?=$dc_id?>';
+  search(dc_id);
 
   function search(queryString) {
     if(!queryString) queryString = '';
