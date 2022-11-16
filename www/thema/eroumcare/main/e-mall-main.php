@@ -102,9 +102,9 @@ $(function(){
             <div class="swiper-slide">
                 <span>자세변환용구(MPG-06)</span>
             </div>
-            <div class="swiper-slide">
+            <!-- div class="swiper-slide">
                 <span>욕창예방방석(트리니티쿠션)</span>
-            </div>
+            </div -->
             <div class="swiper-slide">
                 <span>실내경사로(TRA-H20)</span>
             </div>
@@ -225,7 +225,7 @@ $(function(){
             </div>
         </div>
 
-        <div class="best_item_list">
+        <!--div class="best_item_list">
             <div class="flex">
                 <div class="video_wrap">
                     <iframe width="100%" src="https://www.youtube.com/embed/a9VcoklA2MU" data-src="https://www.youtube.com/embed/a9VcoklA2MU" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
@@ -251,7 +251,7 @@ $(function(){
                     </div>
                 </div>
             </div>
-        </div>
+        </div-->
 
         <div class="best_item_list">
             <div class="flex">
