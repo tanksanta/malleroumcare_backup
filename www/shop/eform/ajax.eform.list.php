@@ -127,7 +127,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     $index = $total_count - $from_record - $i;
   }
 ?>
-<tr>
+<tr <?=($_REQUEST["dc_id"] == $row["uuid"])?"bgcolor='#efefef'": "" ;?>>
 <td><?=$index?></td>
 <td>
   <?php
