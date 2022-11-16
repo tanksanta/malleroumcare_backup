@@ -752,7 +752,7 @@ function form_check(act) {
           <td class="recipient_info">
             <?php if ($data["penLtmNum"]) { ?>
               <span class="data_penNum"><?php echo $data["penLtmNum"]; ?></span>
-              (<?php echo $data["penRecGraNm"]; ?><?php echo $pen_type_cd[$data['penTypeCd']] ? '/' . $pen_type_cd[$data['penTypeCd']] : ''; ?>)
+              (<?php if($data["penRecGraNm"]==''){echo str_replace('0','',$data["penRecGraCd"])."등급";} else {echo $data["penRecGraNm"];} ?><?php echo $pen_type_cd[$data['penTypeCd']] ? '/' . $pen_type_cd[$data['penTypeCd']] : ''; ?>)
               <br/>
 			  적용구간 : 
               <?php 
@@ -899,7 +899,8 @@ function form_check(act) {
         <option value="02">2등급</option>
         <option value="03">3등급</option>
         <option value="04">4등급</option>
-        <option value="05">5등급</option>     
+        <option value="05">5등급</option>
+        <option value="06">6등급</option>
     </select>
     <select name="sel_type_cd" id="sel_type_cd">
         <option value="">본인부담금</option>

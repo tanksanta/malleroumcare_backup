@@ -115,7 +115,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
         </h5>
         <p>
           <?php echo $_SESSION['recipient']["penLtmNum"]; ?>
-          (<?php echo $_SESSION['recipient']["penRecGraNm"]; ?><?php echo $pen_type_cd[$_SESSION['recipient']['penTypeCd']] ? '/' . $pen_type_cd[$_SESSION['recipient']['penTypeCd']] : ''; ?>)
+          (<?php if($_SESSION['recipient']["penRecGraNm"]==''){echo str_replace('0','',$_SESSION['recipient']["penRecGraCd"])."등급";} else {echo $_SESSION['recipient']["penRecGraNm"];} ?><?php echo $pen_type_cd[$_SESSION['recipient']['penTypeCd']] ? '/' . $pen_type_cd[$_SESSION['recipient']['penTypeCd']] : ''; ?>)
         </p>
       </a>
     </div>
