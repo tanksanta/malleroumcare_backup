@@ -141,7 +141,7 @@ $(function(){
             </div>
         </div>
 
-        <div class="best_item_list">
+        <!-- div class="best_item_list">
             <div class="flex">
                 <div class="video_wrap">
                     <iframe width="100%" src="https://www.youtube.com/embed/Fje8iKlvCaQ" data-src="https://www.youtube.com/embed/Fje8iKlvCaQ" title="YouTube video player" frameborder="0" allowfullscreen=""></iframe>
@@ -195,7 +195,7 @@ $(function(){
                     </div>
                 </div>
             </div>
-        </div>
+        </div -->
 
         <div class="best_item_list">
             <div class="flex">
