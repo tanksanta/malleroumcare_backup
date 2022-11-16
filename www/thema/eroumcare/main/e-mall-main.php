@@ -93,12 +93,12 @@ $(function(){
             <div class="swiper-slide">
                 <span>이동변기(APT-101)</span>
             </div>
-            <div class="swiper-slide">
+            <!-- div class="swiper-slide">
                 <span>요실금팬티(LP-021 보나수 50cc)</span>
             </div>
             <div class="swiper-slide">
                 <span>안전손잡이(라이팅핸들1)</span>
-            </div>
+            </div -->
             <div class="swiper-slide">
                 <span>자세변환용구(MPG-06)</span>
             </div>
