@@ -10,7 +10,7 @@ include_once("./_common.php");
 
 <div class="antialiased sans-serif flex items-center justify-center" x-data="{ 'showModal': false }">
     <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak>
-        <div x-data="select({ value: 'all', valueInModal: '' })" x-init="init()"
+        <div x-data="select({ value: 'all', valueInModal: '', placeholder: '담당자' })" x-init="init()"
             class="max-w-sm h-screen w-full shadow-lg flex flex-col">
             <!-- 상단 컨트롤 영역 -->
             <div class="basis-104 py-5 dark:bg-gray-800 bg-white"
@@ -84,7 +84,7 @@ include_once("./_common.php");
                                         x-for="(row, i) in Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())">
                                         <template x-for="(event, j) in events[row]">
                                             <div class="border-4 rounded-full"
-                                                :class="{'hidden': filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0, 'border-yellow-400': j % 3 === 0 && event.type === 'schedule', 'border-blue-400': j % 3 === 1 && event.type === 'schedule', 'border-purple-600': j % 3 === 2 && event.type === 'schedule', 'border-red-600': event.type === 'deny_schedule' }">
+                                                :class="{'hidden': filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0, 'border-yellow-400': j % 3 === 0 && event.type === 'schedule', 'border-blue-400': j % 3 === 1 && event.type === 'schedule', 'border-purple-600': j % 3 === 2 && event.type === 'schedule', 'border-red-600': event.type === 'deny_schedule' }">
                                             </div>
                                         </template>
                                     </template>
@@ -101,7 +101,7 @@ include_once("./_common.php");
                     x-text="$moment(select_date).format('DD. dd')">
                 </div>
                 <template
-                    x-for="(item, index) in filter_mb_id == '' ? schedules : schedules.filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id)"
+                    x-for="(item, index) in filter_mb_id == '' ? schedules : schedules.filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id == filter_mb_id)"
                     :key="index">
                     <div class="border-b py-2 border-gray-400 border-dashed">
                         <p class="text-xs leading-3 text-gray-500 dark:text-gray-300"
