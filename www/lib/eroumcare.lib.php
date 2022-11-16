@@ -2807,7 +2807,7 @@ function get_partner_member_list_by_partner_mb_id($partner_mb_id, $mb_type) {
 function get_partner_list($mb_type) {
   $sql = "SELECT DISTINCT g5_member.mb_id, g5_member.mb_name
   FROM partner_inst_sts
-  JOIN g5_member ON partner_inst_sts.od_mb_ent_name = g5_member.mb_name
+  JOIN g5_member ON partner_inst_sts.od_mb_id = g5_member.mb_id
   WHERE (g5_member.mb_level = 3 OR g5_member.mb_level = 4);";
 
   $result = sql_query($sql);
@@ -3120,6 +3120,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       it_name, 
       partner_manager_mb_id, 
       partner_manager_mb_name, 
+      od_mb_id, 
       od_mb_ent_name, 
       od_b_name, 
       od_b_hp, 
@@ -3139,6 +3140,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       partner_manager_mb_id, 
       partner_manager_mb_name, 
       od_mb_id, 
+      od_mb_ent_name, 
       od_b_name, 
       od_b_hp, 
       od_b_addr1, 

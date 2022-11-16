@@ -17,7 +17,13 @@ include_once("./_common.php");
                 <!-- 담당자 선택 -->
                 <div class="basis-60 flex flex-row">
                     <div class="basis-24 flex justify-center items-center text-lg font-bold">
-                        담당자 선택
+                        <?php
+                        if ($member["mb_type"] == "partner" || $member["mb_type"] == "manager") {
+                            echo '담당자 선택';
+                        } else {
+                            echo '사업소 선택';
+                        }
+                        ?>
                     </div>
                     <div class="flex-1 flex">
                         <div @click.away="closeListbox()" @keydown.escape="closeListbox()" class="relative w-full">
@@ -183,7 +189,7 @@ include_once("./_common.php");
                                             <template
                                                 x-for="event in Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())">
                                                 <div class="rounded-lg mt-1 overflow-hidden"
-                                                    :class="{'hidden': filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0 }">
+                                                    :class="{'hidden': filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0 }">
                                                     <p x-text="aggregation(events[event].filter(e => e.type === 'schedule'))"
                                                         class="text-sm font-bold">
                                                     </p>
@@ -205,14 +211,14 @@ include_once("./_common.php");
                     <!-- 상세 정보 요약 영역 -->
                     <div class="basis-24 flex flex-col justify-center px-4 pt-4 border-b">
                         <h3 x-text="$moment(select_date).format('YYYY-MM-DD dddd')" class="text-xl font-bold" />
-                        <h4 x-text="filter_mb_id == '' ? '총 ' + schedules.length + '건의 일정이 있습니다.' : '총 ' + schedules.filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length + '건의 일정이 있습니다.'"
-                            class="text-xl font-bold" />
+                        <h4 x-text="filter_mb_id == '' ? '총 ' + schedules.length + '건의 일정이 있습니다.' : '총 ' + schedules.filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length + '건의 일정이 있습니다.'"
+                            class="text-xl font-bold" @click="console.log(mb_type, filter_mb_id);" />
                     </div>
 
                     <!-- 상세 정보 스크롤 뷰 영역 -->
                     <ul class="flex-1 overflow-y-auto">
                         <template
-                            x-for="(item, index) in filter_mb_id == '' ? schedules : schedules.filter(e => mb_type === 'default' ? e.od_b_name == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)"
+                            x-for="(item, index) in filter_mb_id == '' ? schedules : schedules.filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)"
                             :key="index">
                             <li class="min-h-64 flex flex-col mb-4 px-4">
                                 <div class="basis-12 flex flex-col align-center px-4">
@@ -609,6 +615,7 @@ include_once("./_common.php");
                 this.filter_mb_id = Object.keys(this.options)[this.focusedOptionIndex] == 'all' ? '' : Object
                     .keys(
                         this.options)[this.focusedOptionIndex];
+                console.log(this.filter_mb_id, this.options);
                 this.value = Object.keys(this.options)[this.focusedOptionIndex]
                 this.closeListbox()
             },
@@ -631,6 +638,7 @@ include_once("./_common.php");
                     Object
                     .keys(
                         this.optionsInModal)[this.focusedOptionInModalIndex];
+                console.log(this.filter_mb_id);
                 this.valueInModal = Object.keys(this.optionsInModal)[this
                     .focusedOptionInModalIndex]
                 this.closeListInModalbox()
