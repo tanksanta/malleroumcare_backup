@@ -16,11 +16,18 @@ if (!$od['od_id']) {
   alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 } else {
   $sto_imsi="";
-  $sql_ct = " select `stoId` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
+  $_ct_barcode = [];
+
+  $sql_ct = " select `ct_id`, `stoId`, `ct_barcode` from {$g5['g5_shop_cart_table']} where od_id = '$od_id' ";
   $result_ct = sql_query($sql_ct);
+
   while($row_ct = sql_fetch_array($result_ct)) {
-      $sto_imsi .=$row_ct['stoId'];
+    $sto_imsi .= $row_ct['stoId'];
+    
+    if( $row_ct['ct_barcode'] ) 
+      $_ct_barcode[ $row_ct['ct_id'] ] = json_decode( $row_ct['ct_barcode'], true);
   }
+
   $stoIdDataList = explode('|',$sto_imsi);
   $stoIdDataList = array_filter($stoIdDataList);
   $stoIdData = implode("|", $stoIdDataList);
@@ -317,6 +324,19 @@ if($od["od_b_tel"]) {
     .barcode_approve_wrapper > div {
       display: none;
     }
+    
+    .barcode_approve_wrapper_del > div {
+      display: none;
+    }
+
+    .barcode_approve_wrapper_del {
+      text-align: left;
+      margin-bottom: 12px;
+      color: #f00;
+      font-size: 14px;
+      display: none;
+      cursor: auto;
+    }
 
     .barcode_approve_wrapper button {
       border: 1px solid #f00;
@@ -468,9 +488,10 @@ if($od["od_b_tel"]) {
             </span>
             <?php } ?>
             <ul class="inputbox">
-              <?php for ($b = 0; $b< count($stoId_v); $b++) { ?>
+
+            <?php for ($b = 0; $b< count($stoId_v); $b++) { ?>
               <li>
-                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" maxlength="12">
+                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>" class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" data-delete="" maxlength="12">
                 <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
@@ -484,6 +505,9 @@ if($od["od_b_tel"]) {
                   <div class="type2">
                     └ 미 재고 바코드 관리자 권한으로 승인됨
                   </div>
+                </div>
+                <div class="barcode_approve_wrapper_del">
+                  └ 출고된 바코드 사업소에서 !!삭제!! 처리됨
                 </div>
               </li>
               <?php $prodListCnt++; } ?>
@@ -954,6 +978,12 @@ if($od["od_b_tel"]) {
     });
 
     <?php
+
+    $_barcode_list =[];
+    if( $_ct_barcode ) {
+      foreach ($_ct_barcode as $key => $val) { foreach ($val as $key2 => $val2) { $_barcode_list[ $key2 ] = $val2; } }
+    }
+
     $stock_list = [];
     if ($result_again && count($result_again)) {
       foreach ($result_again as $stock) {
@@ -962,12 +992,33 @@ if($od["od_b_tel"]) {
           'stoId' => $stock['stoId'],
           'prodBarNum' => $stock['prodBarNum']
         );
+
+        if( $_barcode_list[ $stock['stoId'] ] == $stock['prodBarNum'] )
+          unset($_barcode_list[ $stock['stoId'] ]);
+        
       }
+
+      //print_r( $_barcode_list );
+
+      if ($result_again && count($result_again)) {
+        foreach ($_barcode_list as $key => $val) {
+          $stock_list[] = array(
+            'stoId' => $key,
+            'prodBarNum' => $val,
+            'del'=>'Y'
+          );
+        }
+      }
+      
     }
     ?>
     var stoldList = <?=json_encode($stock_list)?>;
     $.each(stoldList, function() {
-      $('.' + this.stoId).val(this.prodBarNum)
+      $('.' + this.stoId).val(this.prodBarNum);
+      if( this.del && this.del=="Y" ) {
+        //alert( this.prodBarNum );
+        $('.' + this.stoId).parent().find('.barcode_approve_wrapper_del').show()
+      }
     });
 
     notallLengthCheck();
