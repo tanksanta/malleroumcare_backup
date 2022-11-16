@@ -2800,7 +2800,7 @@ function get_partner_member_list_by_partner_mb_id($partner_mb_id, $mb_type) {
  * 작성일자 : 2022-11-14
  * 마지막 수정자 : 임근석
  * 마지막 수정일자 : 2022-11-14
- * 설명 : 설치파트너 목록 조회
+ * 설명 : 사업소 목록 조회
  * @param string $mb_type
  * @return mixed 
  */
@@ -2831,7 +2831,6 @@ function get_partner_list($mb_type) {
  * 설명 : 특정 사업소의 수급자 목록 조회(주문 일정이 있는 수급자에 한정하여)
  * @param string $ent_md_id : 사업소 mb_id
  * @param string $mb_type
- * @param string $partner_mb_id : 조회 대상 설치파트너 mb_id
  * @return mixed
  */
 function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id, $mb_type) {
