@@ -1,12 +1,17 @@
 <?php
 include_once('./_common.php');
+
+
 if($_POST['ct_id'] && $_POST['step']) {
+
   //변수지정
   $stoId = "";
+  $stoId_total = "";
   $usrId = "";
   $entId = "";
   $flag = true;
   $stoIdList = array();
+
   //상태값 치환
   switch ($_POST['step']) {
     case '보유재고등록': $ct_status_text="보유재고등록"; break;
@@ -78,6 +83,7 @@ if($_POST['ct_id'] && $_POST['step']) {
       ol_content = '{$content}',
       ol_datetime = now()
     ";
+
     //상태 update
     $add_sql = '';
     if($_POST['step'] == "배송") { $add_sql .= ", `ct_ex_date` = CURDATE()"; }
@@ -193,6 +199,9 @@ if($_POST['ct_id'] && $_POST['step']) {
     $usrId = $result_ct_s['mb_id'];
     $entId = $result_ct_s['mb_entId'];
 
+    // 22.11.15 : 서원 - 주문서 전체 stoid 연속 저장
+    $stoId_total .= $result_ct_s['stoId'];
+
     foreach( explode('|', $result_ct_s['stoId']) as $temp_sto_id) {
       if ($temp_sto_id) {
         $stoIdList[$temp_sto_id] = $result_ct_s['ct_id'];
@@ -220,10 +229,16 @@ if($_POST['ct_id'] && $_POST['step']) {
           $stateCd = is_pen_order($od_id) ? "02" : "01";
           break;
   }
-  $stoIdDataList = explode('|',$stoId);
+
+
+  //$stoIdDataList = explode('|',$stoId);
+  // 22.11.15 : 서원 - 변수 변경
+  $stoIdDataList = explode('|',$stoId_total);
   $stoIdDataList = array_filter($stoIdDataList);
   $stoIdData = implode("|", $stoIdDataList);
   $sendData["stoId"] = $stoIdData;
+
+
   $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
   $result_again = $res['data'];
   $new_sto_ids = array_map(function($data) {
@@ -320,7 +335,7 @@ if($_POST['ct_id'] && $_POST['step']) {
         where
             od_id = '$od_id'
     ";
-    sql_query($sql);
+    //sql_query($sql);
 
     $api_data = array(
       'usrId' => $usrId,
