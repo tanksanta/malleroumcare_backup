@@ -137,7 +137,14 @@ include_once($skin_path.'/search.skin.form.php');
   if(!$img["src"]) {
     $img["src"] = G5_URL."/shop/img/no_image.gif";
   }
-
+//예약상품 품절표시 
+  $soldout_ck = false;
+  if($list[$i]["pt_end"] > 0){
+	$sql2 = "SELECT COUNT(a.od_id) as buy_count FROM `g5_shop_order` AS a 
+	INNER JOIN `g5_shop_cart` AS b ON a.od_id = b.od_id AND b.it_id='".$list[$i]["it_id"]."' AND b.ct_status NOT IN ('주문무효','취소')";
+	$row2 = sql_fetch($sql2);
+	$soldout_ck = ($list[$i]["it_stock_qty"] > $row2["buy_count"])? false : true;
+  }
   $gubun = $cate_gubun_table[substr($list[$i]["ca_id"], 0, 2)];
   $gubun_text = '판매';
   if($gubun == '01') $gubun_text = '대여';
@@ -156,6 +163,9 @@ include_once($skin_path.'/search.skin.form.php');
 					</p>
 					<?php if($list[$i]["it_expected_warehousing_date"] !== ""){ ?>
 						<div class="item-expected-warehousing-date"><?php echo $list[$i]["it_expected_warehousing_date"];?></div> 
+					<?php } ?>
+					<?php if($list[$i]["it_expected_warehousing_date"] == "" && $soldout_ck){ ?>
+						<div class="item-expected-warehousing-date">재고 소진으로 판매 종료</div> 
 					<?php } ?>
 				</div>
 				<p class="name">
@@ -204,7 +214,7 @@ include_once($skin_path.'/search.skin.form.php');
         <?php if($list[$i]['it_type7']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type7_color']?>; color:<?=$default['de_it_type7_color']?>;"><?=$default['de_it_type7_name']?></p><?php } ?>
         <?php if($list[$i]['it_type8']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type8_color']?>; color:<?=$default['de_it_type8_color']?>;"><?=$default['de_it_type8_name']?></p><?php } ?>
         <?php if($list[$i]['it_type9']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type9_color']?>; color:<?=$default['de_it_type9_color']?>;"><?=$default['de_it_type9_name']?></p><?php } ?>
-        <?php if($list[$i]['it_type10']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type10_color']?>; color:<?=$default['de_it_type10_color']?>;"><?=$default['de_it_type10_name']?></p><?php } ?>
+        <?php if($list[$i]['it_type10'] || $soldout_ck){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type10_color']?>; color:<?=$default['de_it_type10_color']?>;"><?=$default['de_it_type10_name']?></p><?php } ?>
 			</div>
 		</li>
 	<?php } ?>

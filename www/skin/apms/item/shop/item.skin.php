@@ -1034,7 +1034,10 @@ if ($it['ca_id']) {
 
         // 상품주문, 장바구니 폼 전송
         function fitem_submit(f) {
-
+		<?php if($is_buy){?>
+			alert("이미 구매한 상품으로 주문이 제한되었습니다.");
+			return false;
+		<?php }?>
           f.action = "<?php echo $action_url; ?>";
           f.target = "";
 
