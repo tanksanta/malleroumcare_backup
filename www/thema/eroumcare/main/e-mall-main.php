@@ -7,14 +7,14 @@ if(!$is_approved) {
 
 // 메인 배너가져오기
 $banner_result = sql_query("
-  SELECT * FROM {$g5['g5_shop_banner_table']}
+  SELECT * FROM {$g5['g5_shop_banner_table']} where (bn_begin_time<=now() and bn_end_time>=now()) or (bn_end_time = '' or bn_end_time = '0000-00-00 00:00:00')
   ORDER BY bn_order, bn_id DESC
 ");
 
 $banners = [];
 while($row = sql_fetch_array($banner_result)) {
-  //$row['img'] = G5_DATA_URL.'/banner/'.$row['bn_id'];
-  $row['img'] = 'https://eroumcare.com/data/banner/'.$row['bn_id'];
+  $row['img'] = G5_DATA_URL.'/banner/'.$row['bn_id'];
+  //$row['img'] = 'https://eroumcare.com/data/banner/'.$row['bn_id'];
 
   $banners[] = $row;
 }
