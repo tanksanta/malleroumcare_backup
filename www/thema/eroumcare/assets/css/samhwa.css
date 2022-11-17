@@ -2480,6 +2480,37 @@ ul.wait-partner-btns:after {
 	border-bottom: 3px solid #f27935;
 }
 
+.rental-category {
+	width: 100%;
+	margin-bottom:20px;
+}
+.rental-category ul {
+	width: 100%;
+	display: flex;
+}
+.rental-category li {
+	width:33%;
+	box-sizing: border-box;
+	border-left: 1px solid #ddd;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}
+.rental-category li:last-child {
+	width:34%;
+	border-right: 1px solid #ddd;
+}
+.rental-category li a {
+	width:100%;
+	display:block;
+	text-align: center;
+	height: 60px;
+	line-height:60px;
+	box-sizing: border-box;
+}
+.rental-category li a.active {
+	border-bottom: 3px solid #f27935;
+}
+
 
 @media (max-width: 991px) {
     #wait_partner .content {
