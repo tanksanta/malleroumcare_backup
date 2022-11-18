@@ -132,15 +132,26 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 <td>
   <?php
   if(!$row['penId']) {
+    // 01,02,03,04,05,06 : penRecGraCd : n등급
+    $penTypeCd_list = array('00'=>'일반 15%', '01'=>'감경 9%', '02'=>'감경 6%', '03'=>'의료 6%', '04'=>'기초 0%');
+
     echo "{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})";
+
+    $row['penRecGraCd'] = $row['penRecGraCd'] == '00' ?"등급외" :str_replace('0','',$row['penRecGraCd'])."등급";
+    $row['penTypeCd'] = $penTypeCd_list[$row['penTypeCd']];
+
     $attrs = ['penNm', 'penLtmNum', 'penBirth', 'penRecGraCd', 'penTypeCd', 'penConNum', 'penJumin'];
 
     $q = '';
     foreach($attrs as $attr) {
-      $q .= $attr . '=' . urlencode($row[$attr]) . '&';
+      if($attr == 'penTypeCd') { $q .= 'penTypeCd=' . urlencode(explode(' ', $row[$attr])[0]) . '&penPayRate=' . urlencode(explode(' ', $row[$attr])[1]) . '&SbaCd=' . urlencode($row[$attr]) . '&' ;}
+      else { $q .= $attr . '=' . urlencode($row[$attr]) . '&'; }
     }
+
     $penExpiDtm = explode(' ~ ', $row['penExpiDtm']);
-    $q .= 'penExpiStDtm=' . urlencode($penExpiDtm[0]) . '&penExpiEdDtm=' . urlencode($penExpiDtm[1]);
+    $q .= 'penExpiStDtm=' . urlencode($penExpiDtm[0]) . '&penExpiEdDtm=' . urlencode($penExpiDtm[1]) . '&';
+    $q .= 'page=' . urlencode("eform") . '&uuid=' . urlencode($row['uuid']);
+
     echo '<br><a href="/shop/my_recipient_write.php?'.$q.'" class="btn_grey">미등록 수급자 신규추가</a>';
   } else {
     echo '<a href="'.G5_SHOP_URL.'/my_recipient_view.php?id='.$row['penId'].'">'."{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})".'</a>';

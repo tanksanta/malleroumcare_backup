@@ -97,6 +97,13 @@ if ($tutorial) {
 	set_tutorial('recipient_order', 0);
 }
 
+//  간편계약서 작성 리스트에서 신규 미등록 수급자 등록시 penId 업데이트
+if ($_POST['page'] == "eform") {
+	$sql_eform= "update eform_document set penId = '{$res['data']['penId']}' where HEX(dc_id) = '{$_POST['uuid']}';";
+
+	sql_query($sql_eform);
+}
+
 json_response(200, 'OK', array(
   'penId' => $res['data']['penId'],
   'isSpare' => $is_spare
