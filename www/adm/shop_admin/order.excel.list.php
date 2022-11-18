@@ -410,12 +410,16 @@
 				$ct_delivery_company = $companyInfo["name"];
 			}
 		}
-    
+
+    /* 22.11.18 : 서원 - 주문내역 다운로드용 엑셀 양식 수정( date 없을 경우 '1970-01-01' 나오는 문제 처리 ) */
+    $_ct_direct_delivery_date = ($it["ct_direct_delivery_date"])?mb_substr($it["ct_direct_delivery_date"],0,10):" ";
+    $_ct_ex_date = ($it["ct_ex_date"])?mb_substr($it["ct_ex_date"],0,10):" ";
+
     $rows[] = [ 
       ' '.$it['od_id'],
       date("Y-m-d", strtotime($od["od_time"]))."-".($i),
-      mb_substr($it["ct_direct_delivery_date"],0,10), /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
-      date("Y-m-d", strtotime($it["ct_ex_date"])), /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
+      $_ct_direct_delivery_date, /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
+      $_ct_ex_date, /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
       $it_name,
       $it["ct_qty"],
       $it_name." / ".$it["ct_qty"].' EA',
