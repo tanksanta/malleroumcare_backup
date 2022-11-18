@@ -2827,20 +2827,19 @@ function get_partner_list($mb_type) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-14
+ * 마지막 수정일자 : 2022-11-16
  * 설명 : 특정 사업소의 수급자 목록 조회(주문 일정이 있는 수급자에 한정하여)
  * @param string $ent_md_id : 사업소 mb_id
- * @param string $mb_type
  * @return mixed
  */
-function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id, $mb_type) {
+function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
   $sql = "SELECT * FROM g5_member WHERE mb_id = '$ent_md_id';";
   $result = sql_fetch($sql);
   $mb_type = $result['mb_type'];
   
   $manager_str = '{"members":{"all":"전체",';
 
-  $sql = "SELECT DISTINCT od_mb_ent_name, od_b_name FROM partner_inst_sts WHERE partner_mb_id = '$partner_mb_id';";
+  $sql = "SELECT DISTINCT od_b_name, od_b_hp FROM partner_inst_sts WHERE od_mb_id = '$ent_md_id';";
   $result = sql_query($sql);
   while ($res_item = sql_fetch_array($result)) {
     $manager_str.= '"'.$res_item['od_b_name'].'":"'.$res_item['od_b_name'].'",';

@@ -10,7 +10,7 @@ if ($member['mb_type'] === 'partner' || $member['mb_type'] === 'manager') {
   if ($member['mb_level'] >= 9) {
     $res = get_partner_list($member['mb_type']);
   } else {
-    $res = get_partner_member_list_by_ent_mb_id_and_partner_mb_id($member['mb_id'], $member['mb_type']);
+    $res = get_partner_member_list_by_ent_mb_id_and_partner_mb_id($member['mb_id']);
   }
 } else {
   json_response(400, '유효하지않은 요청입니다.');
