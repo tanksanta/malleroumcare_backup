@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - dev01
+      - origin/dev01
 
 jobs:
   deploy:
