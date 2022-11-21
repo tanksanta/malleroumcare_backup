@@ -425,7 +425,7 @@ expired_rental_item_clean($_GET['prodId']);
                 break;
               case '09':
                 $state="대여종료";
-                $state_menu_all = $state_menu3.$state_menu4.$state_menu1;
+                $state_menu_all = $state_menu3.$state_menu4;
                 break;
               default:
                 $state="";
