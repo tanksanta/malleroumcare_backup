@@ -4,7 +4,10 @@ $data=date("Y-m-d H:i:s");
 
 for($i=0; $i<count($_POST['prods']); $i++) {
     // 주문무효 또는 주문취소 상품에 대해서는 더이상 바코드 로그를 생성하지 않음
-    $sql_find = "SELECT ct_status FROM g5_shop_cart WHERE LOCATE('".$_POST['prods'][$i]['stoId']."', stoId) > 0 ;"; // 주문 상태 확인
+    //$sql_find = "SELECT ct_status FROM g5_shop_cart WHERE LOCATE('".$_POST['prods'][$i]['stoId']."', stoId) > 0 ;"; // 주문 상태 확인
+
+    // 22.11.16 : 서원 - SQL 데이터 전체 검색에 대한 조건 추가
+    $sql_find = "SELECT ct_status FROM g5_shop_cart WHERE od_id = '{$_POST['od_id']}' and LOCATE('".$_POST['prods'][$i]['stoId']."', stoId) > 0 ;"; // 주문 상태 확인
     $result_find = sql_fetch($sql_find);
     if($result_find['ct_status'] == '주문무효' || $result_find['ct_status'] == '취소'){continue;}
 
