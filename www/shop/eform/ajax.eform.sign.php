@@ -290,10 +290,6 @@ $exceldir .= '/'.$excelfile;
 include_once('./lib/rendercertpdf.lib.php');
 */
 
-$certfile = $uuid.'_'.$eform['penId'].'_'.$eform['entId'].'_cert_'.date("YmdHisw").'.pdf';
-$exceldir .= '/'.$certfile;
-include_once('./lib/rendercertpdf.lib.php');
-
 // 문자 발송
 $send_hp = '02-830-1301';
 $recv_hp = $eform['penConNum'];
