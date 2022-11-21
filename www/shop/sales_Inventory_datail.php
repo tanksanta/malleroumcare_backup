@@ -625,7 +625,10 @@ $row = sql_fetch($sql);
               <span class="pro-num m_off" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
               <span class="name m_off">
                 <?php
-                if(!$list[$i]['penId']) {
+                 //날짜 변환
+				  $date1=$list[$i]['modifyDtm'];
+				  $date2=date("Y-m-d H:i", strtotime($date1));
+				if(!$list[$i]['penId']) {
                   // 재고에 수급자 주문 정보가 없으면 공단자료업로드 DB에서 매칭된 수급자 정보를 찾아봄
                   $my_data_result = sql_fetch("
                     SELECT
@@ -656,7 +659,14 @@ $row = sql_fetch($sql);
 					$list[$i]['penId'] = $rows2['penId'];
                     $list[$i]['penNm'] = $rows2['penNm'];
 				  }
-                }
+                }else{//추가
+					$rows2 = array();
+					$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3' AND a.penId !='' 
+					AND LEFT(a.dc_sign_datetime,10) = '".substr($date2,0,10)."' ORDER BY a.dc_sign_datetime DESC LIMIT 1";
+					$rows2 = sql_fetch($sql);
+					$list[$i]['penId'] = $rows2['penId'];
+                    $list[$i]['penNm'] = $rows2['penNm'];
+				}
 
                 if($list[$i]['penId']) {
                   echo '<a href="'.G5_SHOP_URL.'/my_recipient_update.php?id='.$list[$i]['penId'].'">'.$list[$i]['penNm'].'</a>';
@@ -667,11 +677,7 @@ $row = sql_fetch($sql);
                 }
                 ?>
               </span>
-              <?php
-              //날짜 변환
-              $date1=$list[$i]['modifyDtm'];
-              $date2=date("Y-m-d H:i", strtotime($date1));
-              ?>
+
               <span class="date m_off"><?=$date2?></span>
               <!--mobile용-->
               <div class="list-m">
