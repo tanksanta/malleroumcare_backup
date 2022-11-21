@@ -1,12 +1,17 @@
 <?php
 include_once('./_common.php');
+
+
 if($_POST['ct_id'] && $_POST['step']) {
+
   //변수지정
   $stoId = "";
+  $stoId_total = "";
   $usrId = "";
   $entId = "";
   $flag = true;
   $stoIdList = array();
+
   //상태값 치환
   switch ($_POST['step']) {
     case '보유재고등록': $ct_status_text="보유재고등록"; break;
@@ -78,6 +83,7 @@ if($_POST['ct_id'] && $_POST['step']) {
       ol_content = '{$content}',
       ol_datetime = now()
     ";
+
     //상태 update
     $add_sql = '';
     if($_POST['step'] == "배송") { $add_sql .= ", `ct_ex_date` = CURDATE()"; }
@@ -193,6 +199,9 @@ if($_POST['ct_id'] && $_POST['step']) {
     $usrId = $result_ct_s['mb_id'];
     $entId = $result_ct_s['mb_entId'];
 
+    // 22.11.15 : 서원 - 주문서 전체 stoid 연속 저장
+    $stoId_total .= $result_ct_s['stoId'];
+
     foreach( explode('|', $result_ct_s['stoId']) as $temp_sto_id) {
       if ($temp_sto_id) {
         $stoIdList[$temp_sto_id] = $result_ct_s['ct_id'];
@@ -220,10 +229,16 @@ if($_POST['ct_id'] && $_POST['step']) {
           $stateCd = is_pen_order($od_id) ? "02" : "01";
           break;
   }
-  $stoIdDataList = explode('|',$stoId);
+
+
+  //$stoIdDataList = explode('|',$stoId);
+  // 22.11.15 : 서원 - 변수 변경
+  $stoIdDataList = explode('|',$stoId_total);
   $stoIdDataList = array_filter($stoIdDataList);
   $stoIdData = implode("|", $stoIdDataList);
   $sendData["stoId"] = $stoIdData;
+
+
   $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
   $result_again = $res['data'];
   $new_sto_ids = array_map(function($data) {
@@ -235,6 +250,92 @@ if($_POST['ct_id'] && $_POST['step']) {
       'stateCd' => $stateCd
     );
   }, $result_again);
+
+
+  // 시작  -->
+  // story.sw : 22.08.24 - BarCode 데이터 수동 출고 처리에 따른 불편함 해소 요청건
+  //        "[관리자_물류팀]출고처리시 상품재고관리 바코드 재고 차감 요청"
+  //
+  // 설명 : 주문내역상 상품의 상태 값이 '출고완료' 또는 '배송완료' 처리 될 경우 해당 상품에 입력되어 있던 바코드 정보를 찾아 
+  //        g5_cart_barcode 테이블에서 해당 바코드 데이터를 출고 처리하고, 이와 관련된 바코드 처리내역을 g5_cart_barcode_log테이블에 저장 한다.
+  //        또한, '출고완료'또는 '배송완료' 이후 상품이 회수되어 '주문취소'나 '주문무효' 처리될 경우 해당 상품의 바코드 정보의 상태가 복원 된다.
+  //
+  // 의견 : 추후 mall DB쪽에도 주문상품에 입력된 바코드 값이 같이 저장 되어야할 것 같음.
+  //         어떠한 의미에서 출고 입력된 바코드 정보를 API를 통해서 WMDSDB에서만 관리 하는지 확인 불가.
+  //
+  // 기타 : 파일(ajax.cart_status.php)이 수정되면 다른 파일(ajax.order.step.php)도 수정또는 동일 적용검토 필요.
+  //        ajax.cart_status.php : 주문번호를 통한 주문내역(상세)에서 상태값을 변경 할 경우 사용.
+  //        ajax.order.step.php : 주문내역(리스트)에서 상태값을 변경 할 경우 사용.
+  //
+  // 시작  -->
+
+  // 주문정보에 적용된 바코드 정보는 mall DB에 저장되지 않아 API를 이용하여 WMDSDB를 조회함.
+  $sendData["stoId"] = str_replace (",", "|", $od['stoId']);
+  $tmpData = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+
+  $_barCode_Sql = [];
+  if($_POST['step'] == '배송' || $_POST['step'] == '완료' || $_POST['step'] == '취소' || $_POST['step'] == '주문무효' ) {
+    if( is_array($tmpData) && $tmpData['errorYN']=="N" ) {
+      
+      // story.sw : 22.08.25 - API에서 받아온 data 수량 만큼 데이터 체크
+      foreach ($tmpData['data'] as $key => $val) {
+        if( !$val['prodBarNum'] ) {continue;}
+
+        $bch_content = "";
+      
+        if($_POST['step'] == '배송' || $_POST['step'] == '완료') {   // 바코드 정상 처리
+          $bch_content = "재고관리 - 출고처리(" . $_POST['step'] . ")";
+          $_where = "AND `bc_del_yn`='N'";
+        }        
+        else if($_POST['step'] == '취소' || $_POST['step'] == '주문무효') { // 완료 처리 이후 주문취소 또는 무효이벤트 발생시 해당 바코드 복원
+          $bch_content = "재고관리 - 상태복원(" . $_POST['step'] . ")";
+          $_where = "AND `bc_del_yn`='Y' AND `ct_id`='" . $stoIdList[$val['stoId']] . "'";
+        }
+
+        // story.sw : 22.08.25 - 기존 g5_cart_barcode 테이블에 해당 제품의 바코드 유뮤 확인(검색).
+        $_result = sql_fetch("select * from `g5_cart_barcode` where `it_id` ='" . $val['prodId'] . "' AND `bc_barcode`='" . $val['prodBarNum'] . "' " . $_where );
+
+        // story.sw : 22.08.24 - 바코드 출고되지 않은 바코드데이터가 존재하는 경우.
+        if( is_array($_result) ) {
+          // story.sw : 22.08.24 - 바코드 로그 삽입
+          $_barCode_Sql[] = "
+            insert into g5_cart_barcode_log
+            set
+              bc_id = '{$_result['bc_id']}',
+              ct_id = '{$stoIdList[$val['stoId']]}',
+              it_id = '{$_result['it_id']}',
+              io_id = '{$_result['io_id']}',
+              bch_status = '" . ( ($_result['bc_del_yn']=="N")?("출고"):("정상") ) . "',
+              bch_barcode = '{$_result['bc_barcode']}',
+              bch_content = '{$bch_content}',
+              created_by = '{$member['mb_id']}',
+              created_at = NOW()
+          "; 
+
+          // story.sw : 22.08.24 - 바코드 데이터 업데이트(출고처리)
+          $_barCode_Sql[] = "
+            update g5_cart_barcode
+            set
+              ct_id = '" . ( ($_result['bc_del_yn']=="N")?($stoIdList[$val['stoId']]):(0) ) . "',
+              bc_del_yn = '" . ( ($_result['bc_del_yn']=="N")?("Y"):("N") ) . "',
+              bc_status = '" . ( ($_result['bc_del_yn']=="N")?("출고"):("정상") ) . "',
+              released_by = '{$member['mb_id']}',
+              released_at = NOW()
+              where `it_id` ='" . $val['prodId'] . "' AND `bc_barcode`='" . $val['prodBarNum'] . "' AND `bc_del_yn`='" . $_result['bc_del_yn'] . "'
+          "; 
+        }
+
+      }
+
+    }
+
+  }
+
+  // 종료  --> 
+  // story.sw : 22.08.24 - BarCode 데이터 수동 출고 처리에 따른 불편함 해소 요청건
+  //        "[관리자_물류팀]출고처리시 상품재고관리 바코드 재고 차감 요청"
+  // 종료  --> 
+  
 
   if ($stateCd == "01") {
     for ($k = 0; $k < count($new_sto_ids); $k++) {
@@ -296,6 +397,11 @@ if($_POST['ct_id'] && $_POST['step']) {
       sql_query($sql);
     }
 
+    // story.sw : 22.08.25 - 바코드 SQL 일괄 실행.
+    foreach($_barCode_Sql as $sql) {
+      sql_query($sql);
+    }
+
     /*
     if($_POST['sendcost'] != 0){
       $od_send_cost = get_sendcost_new($od_id, 1);
@@ -320,7 +426,7 @@ if($_POST['ct_id'] && $_POST['step']) {
         where
             od_id = '$od_id'
     ";
-    sql_query($sql);
+    //sql_query($sql);
 
     $api_data = array(
       'usrId' => $usrId,
