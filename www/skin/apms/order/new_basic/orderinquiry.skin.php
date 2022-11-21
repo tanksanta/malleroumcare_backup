@@ -415,9 +415,9 @@ $(function(){
         </span>
         <span><?php echo display_price($row["od_total_price"]); ?></span>
         <span><?php echo '주문 : ' . date('n월 j일 (H:i)', strtotime($row['od_time'])); ?></span>
-        <?php if ($row['ct_direct_delivery_date']) { ?>
+        <?php /* if ($row['ct_direct_delivery_date']) { ?>
           <span><?php echo '출고예정 : ' . date('n월 j일 (H:i)', strtotime($row['ct_direct_delivery_date'])); ?></span>
-        <?php } ?>
+        <?php } */ ?>
         <?php if ($row['od_b_name']) { ?>
         <span>배송 : <?php echo $row['od_b_name']; ?></span>
         <?php } ?>
@@ -474,6 +474,9 @@ $(function(){
                   <?=$item["it_name"]?> <?=($item["ct_option"] && $item["ct_option"] != $item["it_name"]) ? "({$item["ct_option"]})" : ""?>
                   <?=($item["prodSupYn"] == "N") ? "<b>비유통</b>" : ""?>
                   </a>
+                  <?php if( $item['ct_direct_delivery_date'] ) { ?>
+                    <span style="padding-left:50px; font-size:11px;"><?php echo '출고예정 : ' . date('n월 j일 (H:i)', strtotime($item['ct_direct_delivery_date'])); ?></span>
+                  <?php } ?>
                 </div>
                 <div>
                   <em>수량 : <?=$item["ct_qty"]?></em>
