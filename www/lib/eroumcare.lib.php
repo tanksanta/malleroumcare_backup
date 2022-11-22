@@ -2982,7 +2982,21 @@ function create_partner_install_schedule($status, $od_id) {
  */
 function update_partner_install_schedule_status_by_ct_id($ct_id, $status) {
   $sql = "UPDATE `partner_inst_sts` SET status = '$status' WHERE ct_id = $ct_id";
-  print_r($sql);
+  return sql_query($sql);
+}
+
+/**
+ * 작성자 : 임근석
+ * 작성일자 : 2022-11-21
+ * 마지막 수정자 : 임근석
+ * 마지막 수정일자 : 2022-11-21
+ * 설명 : 설치파트너 매니저 설치 일정 상태 수정
+ * @param integer[] $ct_id
+ * @param string $status 출고준비|출고완료|취소|주문무효
+ * @return boolean 
+ */
+function update_partner_install_schedule_status_by_ct_id_array($ct_id, $status) {
+  $sql = "UPDATE `partner_inst_sts` SET status = '$status' WHERE ct_id IN (".join(",", $ct_id).");";
   return sql_query($sql);
 }
 

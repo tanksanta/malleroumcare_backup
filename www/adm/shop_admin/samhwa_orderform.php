@@ -2849,19 +2849,30 @@ $(document).ready(function() {
         sendData['step']=step.value;
         sendData['sendcost']=sendcost;
         $.ajax({
-            type : "post",
-            url : "./ajax.cart_status.php",
-            data: sendData,
-            success : function(data){
-                if ( data === 'success' ) {
-                    alert('변경되었습니다.');
-                    location.reload();
-                }else{
-                    alert(data);
-                }
-            }
+            method: 'POST',
+            url: '/shop/schedule/ajax.update_schedule_status.php',
+            data: {
+                ct_id: sendData['ct_id'],
+                status: sendData['step'],
+            },
+        }).done(function () {
+          $.ajax({
+              type : "post",
+              url : "./ajax.cart_status.php",
+              data: sendData,
+              success : function(data){
+                  if ( data === 'success' ) {
+                      alert('변경되었습니다.');
+                      location.reload();
+                  }else{
+                      alert(data);
+                  }
+              }
+          });
+        }).fail(function () {
+            alert('알 수 없는 문제 발생');
+            return;
         });
-
         return false;
     });
 
