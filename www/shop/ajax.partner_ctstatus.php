@@ -24,6 +24,8 @@ foreach($ct_id_arr as $ct_id) {
     SELECT * FROM {$g5['g5_shop_cart_table']}
     WHERE ct_id = '{$ct_id}' and ct_direct_delivery_partner = '{$member['mb_id']}'
   ");
+  
+  update_partner_install_schedule_status_by_ct_id($ct_id, $ct_status);
 
   if($cart['ct_status'] == $ct_status) // 변경하려는 상태가 기존 상태랑 똑같은경우
     continue;
