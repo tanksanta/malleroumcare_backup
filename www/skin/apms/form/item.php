@@ -2164,7 +2164,7 @@ $warehouse_list = get_warehouses();
                   if($is_reserve) {
                     echo help("현재 ".$default['pt_reserve_day']."일 이내 등록상품을 대상으로 ".$default['pt_reserve_cache']."분 간격으로 예약상품을 체크하고 있습니다.");
                   } else {
-                    echo help("판매예약은 파트너관리 > 기본설정에서 예약가능일, 예약체크, 예약대상을 모두 설정해 주셔야 작동합니다.");
+                    echo help("판매예약은 테마관리 > 기본설정 > 쇼핑몰 기본 설정에서 예약가능일, 예약체크, 예약대상을 모두 설정해 주셔야 작동합니다. <input type=\"button\" value=\"예약설정하기\"  class=\"btn_frmline\" style=\"cursor:pointer;\" onclick=\"javascript:window.open('/adm/apms_admin/apms.admin.php?ap=thema','pt_reserve','top=10, left=10, width=1300, height=900');\">"); 
                   }
                 } else {
                   echo help("등록 후 {$default['pt_reserve_none']}시간이 지나면 예약 설정을 할 수 없습니다.");
@@ -2184,10 +2184,8 @@ $warehouse_list = get_warehouses();
               </select>
               &nbsp;
               <select name="pt_reserve_minute" id="pt_reserve_minute">
-                <option value="00"<?php echo get_selected('00', $pt_rminute); ?>>00분</option>
-                <option value="05"<?php echo get_selected('05', $pt_rminute); ?>>05분</option>
-                <?php for($i=2; $i < 12; $i++) { $im = $i * 5; ?>
-                  <option value="<?php echo $im;?>"<?php echo get_selected($im, $pt_rminute); ?>><?php echo $im;?>분</option>
+                <?php for($i=0; $i < 60; $i++) { $im = ($i<10)? "0".$i:$i; ?>
+                  <option value="<?php echo $im;?>"<?php echo get_selected((string)$im, (string)$pt_rminute); ?>><?php echo $im;?>분</option>
                 <?php } ?>
               </select>
               &nbsp;
@@ -2199,7 +2197,7 @@ $warehouse_list = get_warehouses();
         <tr>
           <th scope="row"><label for="pt_end">판매종료</label></th>
           <td>
-            <?php if($is_reserve_none) echo help("판매종료는 파트너관리 > 기본설정에서 예약체크가 설정되어 있어야 작동합니다."); ?>
+            <?php if($is_reserve_none) echo help("판매종료는 테마관리 > 기본설정 > 쇼핑몰 기본 설정에서 예약체크가 설정되어 있어야 작동합니다."); ?>
             <input type="text" id="pt_end_date"  name="pt_end_date" value="<?php echo $pt_edate; ?>" class="frm_input" size="10" maxlength="10" readonly>
             <script>
               $(function(){
@@ -2214,10 +2212,8 @@ $warehouse_list = get_warehouses();
             </select>
             &nbsp;
             <select name="pt_end_minute" id="pt_end_minute">
-              <option value="00"<?php echo get_selected('00', $pt_eminute); ?>>00분</option>
-              <option value="05"<?php echo get_selected('05', $pt_eminute); ?>>05분</option>
-              <?php for($i=2; $i < 12; $i++) { $im = $i * 5; ?>
-              <option value="<?php echo $im;?>"<?php echo get_selected($im, $pt_eminute); ?>><?php echo $im;?>분</option>
+              <?php for($i=0; $i < 60; $i++) { $im = ($i<10)? "0".$i:$i; ?>
+              <option value="<?php echo $im;?>"<?php echo get_selected((string)$im, (string)$pt_eminute); ?>><?php echo $im;?>분</option>
               <?php } ?>
             </select>
             &nbsp;

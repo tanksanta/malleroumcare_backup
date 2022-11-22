@@ -51,6 +51,26 @@ for($i = 0; $row = sql_fetch_array($thisOptionQuery); $i++){
 }
 $it["optionList"] = $thisOptionList;
 
+//예약 설정이 있을 경우
+$is_buy = false;
+$soldout_ck = false;
+if($it["pt_end"] > 0){
+	$sql = "SELECT COUNT(a.od_id) as buy_count FROM `g5_shop_order` AS a 
+	INNER JOIN `g5_shop_cart` AS b ON a.od_id = b.od_id AND b.it_id='".$it["it_id"]."' AND b.ct_status NOT IN ('주문무효','취소')
+	WHERE a.mb_id = '".$member['mb_id']."'";
+	$row = sql_fetch($sql);
+	if($row["buy_count"] >0 ){// 구매이력 있음
+		$is_buy = true; 
+	}
+
+	$sql2 = "SELECT COUNT(a.od_id) as buy_count FROM `g5_shop_order` AS a 
+	INNER JOIN `g5_shop_cart` AS b ON a.od_id = b.od_id AND b.it_id='".$it["it_id"]."' AND b.ct_status NOT IN ('주문무효','취소')";
+	$row2 = sql_fetch($sql2);
+	// 상품정보
+	$sql = " select it_stock_qty from {$g5['g5_shop_item_table']} where it_id = '".$it["it_id"]."' ";
+	$it_stock = sql_fetch($sql);
+	$soldout_ck = ($it_stock["it_stock_qty"] > $row2["buy_count"])? false : true;
+}
 // 사업소별 판매가
 $entprice = sql_fetch(" select it_price from g5_shop_item_entprice where it_id = '$it_id' and mb_id = '{$member['mb_id']}' ");
 $it['entprice'] = $entprice['it_price'];
@@ -325,6 +345,9 @@ $sns_url  = G5_SHOP_URL.'/item.php?it_id='.$it['it_id'];
 if(G5_SOLDOUT_CHECK)
     $is_soldout = is_soldout($it['it_id']);
 
+if($soldout_ck == true){//예약설정이 있을때는 상품정보의 재고수량을 참고한다.
+	$is_soldout = true;
+}
 // 주문가능체크
 $is_orderable = true;
 if ( THEMA_KEY == 'partner') {
