@@ -101,28 +101,41 @@ include_once("./_common.php");
 
             <!-- 일정목록 -->
             <div class="flex-1 px-5 dark:bg-gray-700 bg-gray-50 overflow-y-auto" id="table">
-                <div class="flex align-center font-bold text-lg md:py-8 py-5"
+                <div class="flex items-center font-bold text-lg md:py-8 py-5"
                     x-text="$moment(select_date).format('DD. dd')">
                 </div>
+                <div
+                    :class="{ 'hidden' : filter_mb_id == '' ? schedules.filter(e => e.type === 'deny_schedule').length === 0 : schedules.filter(e => e.type === 'deny_schedule').filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length === 0}">
+                    <a tabindex="0"
+                        class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2 cursor"
+                        x-text="'[설치 불가 담당자]'"></a>
+                </div>
                 <template
-                    x-for="(item, index) in filter_mb_id == '' ? schedules : schedules.filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id == filter_mb_id)"
+                    x-for="(item, index) in filter_mb_id == '' ? schedules.filter(e => e.type === 'deny_schedule') : schedules.filter(e => e.type === 'deny_schedule').filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id == filter_mb_id)"
                     :key="index">
-                    <div class="border-b py-2 border-gray-400 border-dashed item" :id="index"
+                    <div class="flex border border-gray-400 justify-center items-center h-8 text-sm leading-3 item"
+                        :class="{ 'border-t-0': index !== 0 }" :id="index"
                         :data-partner-mb-id="item.type === 'deny_schedule' && item.partner_mb_id"
                         :data-partner-manager-mb-id="item.type === 'deny_schedule' && item.partner_manager_mb_id"
-                        @touchstart.prevent="doubleClick" @touchend.prevent="doubleClick">
+                        @touchstart.prevent="doubleClick" @touchend.prevent="doubleClick"
+                        x-text="item.type === 'schedule' ? tConvert(item.delivery_datetime) + ' - ' + item.partner_manager_mb_name : item.partner_manager_mb_name">
+                    </div>
+                </template>
+                <template
+                    x-for="(item, index) in filter_mb_id == '' ? schedules.filter(e => e.type === 'schedule') : schedules.filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id == filter_mb_id)"
+                    :key="index">
+                    <div class="border-b py-2 border-gray-400 border-dashed item">
                         <p class="text-xs leading-3 text-gray-500 dark:text-gray-300"
                             x-text="item.type === 'schedule' ? tConvert(item.delivery_datetime) + ' - ' + item.partner_manager_mb_name : item.partner_manager_mb_name">
                         </p>
                         <div class="flex flex-row">
-                            <div class="flex-1 flex align-center justify-start">
+                            <div class="flex-1 flex items-center justify-start">
                                 <a tabindex="0"
                                     class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2"
-                                    :class="{ 'cursor': item.type === 'deny_schedule' }"
-                                    x-text="item.type === 'schedule' ? (item.status === '출고완료' ? '[설치 완료]' : '[설치 예정]') + item.it_name : '[설치 불가 일정]'"></a>
+                                    x-text="(item.status === '출고완료' ? '[설치 완료]' : '[설치 예정]') + item.it_name"></a>
                             </div>
-                            <div class="flex-1 flex align-center justify-end"
-                                :class="{'hidden': item.type === 'deny_schedule' || mb_type !== 'manager'}">
+                            <div class="flex-1 flex items-center justify-end"
+                                :class="{'hidden':  || mb_type !== 'manager'}">
                                 <button type="button"
                                     class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
                                     @click="goToUrl(item.od_id)" x-text="'설치결과보고서 등록'">
@@ -130,13 +143,12 @@ include_once("./_common.php");
                             </div>
                         </div>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'수령인 : ' + item.od_b_name" :class="{'hidden' : item.type === 'deny_schedule'}"></p>
+                            x-text="'수령인 : ' + item.od_b_name"></p>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'배송지 : ' + item.od_b_addr1" :class="{'hidden' : item.type === 'deny_schedule'}"></p>
+                            x-text="'배송지 : ' + item.od_b_addr1"></p>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'요청사항 : ' + item.od_memo" :class="{'hidden' : item.type === 'deny_schedule'}"></p>
+                            x-text="'요청사항 : ' + item.od_memo"></p>
                     </div>
-
                 </template>
             </div>
 
