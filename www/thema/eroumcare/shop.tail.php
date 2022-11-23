@@ -35,7 +35,7 @@ if($_GET['co_id']=="possession_manage"){ ?>
 						<?php echo $default['de_admin_company_name']; ?> <span class="pc_only"> ㅣ </span> <span class="mo_br"></span> 대표 : <?php echo $default['de_admin_company_owner']; ?> ㅣ 사업자등록번호 : <?php echo $default['de_admin_company_saupja_no']; ?> <a href="javascript:;" onclick="window.open('https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6178614330','communicationViewPopup','width=750,height=700,scrollbars=yes')">[사업자정보확인]</a> <span class="pc_only"> ㅣ </span> <span class="mo_br"></span> 통신판매신고번호 : <?php echo $default['de_admin_tongsin_no']; ?> | 개인정보보호관리자 : <?php echo $default['de_admin_info_name']; ?><br>
 						주소 : <?php echo $default['de_admin_company_addr']; ?><!-- <a href="http://naver.me/F4in5mn2" class="btn_map" target="_blank">지도보기 <img src="<?php echo THEMA_URL; ?>/assets/img/icon_pin.png" alt="" /></a> -->
             <br>
-            사무소 :  서울시 금천구 서부샛길 606 대성디폴리스 B동 1401호 
+            사무소 :  서울시 금천구 서부샛길 606 대성디폴리스 B동 1401호 이메일: eroum@thkc.co.kr
             <br>
             물류센터 : 인천광역시 서구 이든1로 21
 					</p>
