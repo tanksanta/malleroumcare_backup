@@ -1249,7 +1249,28 @@ $(function() {
         send_data2['partner_manager_mb_id'] = manager;
 
         loading_manager = true;
-        $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
+        if (send_data2['delivery_date']) {
+            $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
+                $.post('ajax.partner_manager.php', {
+                        od_id: od_id,
+                        manager: manager
+                    }, 'json')
+                    .done(function() {
+                        $('.sel_manager[data-id="' + od_id + '"]').val(manager);
+                        alert(manager_name + ' 담당자로 변경되었습니다.');
+                    })
+                    .fail(function($xhr) {
+                        var data = $xhr.responseJSON;
+                        alert(data && data.message);
+                    })
+                    .always(function() {
+                        loading_manager = false;
+                    });
+            }).fail(function($xhr) {
+                var data = $xhr.responseJSON;
+                alert(data && data.message);
+            });
+        } else {
             $.post('ajax.partner_manager.php', {
                     od_id: od_id,
                     manager: manager
@@ -1264,11 +1285,8 @@ $(function() {
                 })
                 .always(function() {
                     loading_manager = false;
-                })
-        }).fail(function($xhr) {
-            var data = $xhr.responseJSON;
-            alert(data && data.message);
-        })
+                });
+        }
     });
 
     function check_ct_status_mode() {

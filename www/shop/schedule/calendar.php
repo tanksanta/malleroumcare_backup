@@ -22,7 +22,7 @@ include_once("./_common.php");
                             echo '담당자';
                         } else {
                             if ($member["mb_level"] >= 9) {
-                                echo '사업소';
+                                echo '설치파트너';
                             } else {
                                 echo '수급자';
                             }
@@ -320,7 +320,7 @@ include_once("./_common.php");
                     <div class="flex items-center justify-between">
                         <h5 class="mr-3 font-bold text-xl max-w-none">설치불가일 등록</h5>
                         <button type="button" class="z-50 cursor-pointer"
-                            @click="showModal = false; check = false; schedule_deny_weeks = []; schedule_deny_days = ''; valueInModal = ''; scheduleInit();">
+                            @click="showModal = false; check = true; schedule_deny_weeks = []; schedule_deny_days = ''; valueInModal = ''; scheduleInit();">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -443,7 +443,7 @@ include_once("./_common.php");
                         <button
                             class="border rounded-lg px-8 py-1 flex justify-center items-center text-lg bg-blue-500 text-white font-bold transition-colors duration-300"
                             type="button"
-                            @click="reload = req(calcDaysByMonth(), mb_type, valueInModal); refetch(); valueInModal = ''; showModal = false;"
+                            @click="if (valueInModal === '') { alter('담당자를 선택해주세요.'); } else { reload = req(calcDaysByMonth(), mb_type, valueInModal); refetch(); valueInModal = ''; showModal = false; }"
                             x-text="'등록'"></button>
                     </div>
                 </div>
@@ -987,7 +987,7 @@ include_once("./_common.php");
             scheduleInit: function() {
                 this.schedule_deny_weeks = [];
                 this.schedule_deny_days = ""; // 사용자가 직접 입력한 설치 불가능 요일
-                this.check = false;
+                this.check = true;
             },
             refetch: function() {
                 $.ajax('ajax.index.php', {
@@ -1002,7 +1002,7 @@ include_once("./_common.php");
                         this.events = result.data;
                         this.schedule_deny_weeks = [];
                         this.schedule_deny_days = ""; // 사용자가 직접 입력한 설치 불가능 요일
-                        this.check = false;
+                        this.check = true;
                     },
                     error: ($xhr) => {
                         var message = $xhr.responseJSON.message;

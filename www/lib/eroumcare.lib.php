@@ -2799,16 +2799,16 @@ function get_partner_member_list_by_partner_mb_id($partner_mb_id, $mb_type) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-14
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-14
- * 설명 : 사업소 목록 조회
+ * 마지막 수정일자 : 2022-11-23
+ * 설명 : 설치파트너 목록 조회
  * @param string $mb_type
  * @return mixed 
  */
 function get_partner_list($mb_type) {
   $sql = "SELECT DISTINCT g5_member.mb_id, g5_member.mb_name
   FROM partner_inst_sts
-  JOIN g5_member ON partner_inst_sts.od_mb_id = g5_member.mb_id
-  WHERE (g5_member.mb_level = 3 OR g5_member.mb_level = 4);";
+  JOIN g5_member ON partner_inst_sts.partner_mb_id = g5_member.mb_id
+  WHERE g5_member.mb_type = 'partner';";
 
   $result = sql_query($sql);
   $members_str = '{"members":{"all":"전체",';
@@ -2839,7 +2839,7 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
   
   $manager_str = '{"members":{"all":"전체",';
 
-  $sql = "SELECT DISTINCT od_b_name, od_b_hp FROM partner_inst_sts WHERE od_mb_id = '$ent_md_id';";
+  $sql = "SELECT DISTINCT od_b_name, od_b_hp FROM partner_inst_sts WHERE od_mb_id = '$ent_md_id' AND status != '취소' AND status != '주문무효';";
   $result = sql_query($sql);
   while ($res_item = sql_fetch_array($result)) {
     $manager_str.= '"'.$res_item['od_b_name'].'":"'.$res_item['od_b_name'].'",';
@@ -2893,7 +2893,7 @@ function duplicate_partner_install_schedule($partner_manager_mb_id, $delivery_da
  * 작성자 : 임근석
  * 작성일자 : 2022-11-21
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-21
+ * 마지막 수정일자 : 2022-11-23
  * 설명 : 설치파트너 매니저 설치 불가일 중복 확인
  * @param string $partner_manager_mb_id
  * @param string $delivery_date 포맷 : YYYY-MM-DD
@@ -2906,6 +2906,7 @@ function duplicate_partner_deny_schedule($partner_manager_mb_id, $delivery_date)
   WHERE partner_manager_mb_id = '$partner_manager_mb_id' 
   AND deny_date = '$delivery_date';";
   $result = sql_query($sql);
+  return mysqli_num_rows($result) == 0;
 }
 
 /**
