@@ -36,6 +36,21 @@ while($row = sql_fetch_array($result)) {
   sql_query($sql);
 }*/
 
+/**
+* 기존에 있던  eform_document 테이블을 재사용하기 위한 작업
+* 새로이 필요한 컬럼(applicantCd)이 존재하는지 확인 후, 없으면 새로 추가하는 작업 진행
+*/
+$sql_check = "
+  show columns from eform_document where field in ('applicantCd');
+";
+$res_check = sql_query($sql_check);
+if(sql_num_rows($res_check) == 0){
+
+  $append_col = "alter table eform_document ".
+                "add column applicantCd varchar(255) after penAddrDtl";
+  sql_query($append_col);
+}
+
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/simple_eform.css?v=1128">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
@@ -135,6 +150,16 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 <option value="02" <?php if($dc) echo get_selected($dc['penTypeCd'], '02'); ?>>감경 6%</option>
                 <option value="03" <?php if($dc) echo get_selected($dc['penTypeCd'], '03'); ?>>의료 6%</option>
                 <option value="04" <?php if($dc) echo get_selected($dc['penTypeCd'], '04'); ?>>기초 0%</option>
+              </select>
+            </div>
+            <label for="applicantCd" class="col-md-4 control-label">
+              <strong id="applicantCd_subj"  <?php if(!$dc['applicantCd']) echo 'style="display: none"'; ?>>장기요양입소이용신청서 신청인</strong>
+            </label>
+            <div class="col-md-3" id="select_applicantCd" >
+              <select name="applicantCd" id="applicantCd" class="form-control input-sm" <?php if(!$dc['applicantCd']) echo 'style="display: none"'; ?>>
+                <option value="00" <?php if($dc) echo get_selected($dc['applicantCd'], '00'); ?>>본인</option>
+                <option value="01" <?php if($dc) echo get_selected($dc['applicantCd'], '01'); ?>>보호자</option>
+                <option value="02" <?php if($dc) echo get_selected($dc['applicantCd'], '02'); ?>>공란</option>
               </select>
             </div>
           </div>
@@ -800,8 +825,22 @@ function save_eform() {
     });
 }
 
+let pen_info = [];
 // 계약서 작성
 $('#btn_se_submit').on('click', function() {
+  if(!!pen_info){
+      if(!(!!pen_info['penZip'])&&!(!!pen_info['penAddr'])) {
+        if(confirm("수급자 정보가 완전하지 않습니다.\n수급자 정보 수정을 진행하시겠습니까?") == true){ // 등록되지 않은 수급자이기 때문에 보호자 정보 없음
+          window.location.href = './my_recipient_update.php?id='+pen_info['penId'];
+          return false;
+        } else {
+          alert("수급자 선택을 초기화합니다.");
+          window.location.href = './simple_eform.php';
+          return false;
+        }
+      }
+  }
+
   if(loading) {
     alert('계약서 저장 중입니다. 잠시 기다려주세요.');
     return false;
@@ -1005,7 +1044,68 @@ function toggle_pen_id_flexdatalist(on) {
 }
 // 수급자 선택
 function select_recipient(obj) {
+  pen_info = obj;
   update_pen(obj);
+
+  // 본인부담금율이 '기초0%' 혹은 '의료6%'인 경우
+  if($('#penTypeCd').val() == '03' || $('#penTypeCd').val() == '04'){
+
+    // 보호자 정보를 가져와서 장기요양입소이용신청서 신청인을 선택 할 수 있도록 한다.
+    $.post('ajax.recipient.get_pros.php', {
+        penId: obj['penId'],
+        page: "eform"
+      }, 'json')
+      .done(function(result) {
+        $('#select_applicantCd').empty();
+        var prosArr = result.data;
+        var select = document.getElementById('select_applicantCd');
+        if(prosArr.length == 0){
+            var row = `<select name="applicantCd" id="applicantCd" class="form-control input-sm">
+                        <option value="00" <?php if($dc) echo get_selected($dc['applicantCd'], '00'); ?>>본인</option>
+                        <option value="02" <?php if($dc) echo get_selected($dc['applicantCd'], '02'); ?>>공란</option>
+                      </select>`;
+            select.innerHTML += row;
+        } else {
+            var row = `<select name="applicantCd" id="applicantCd" class="form-control input-sm">
+                        <option value="00" <?php if($dc) echo get_selected($dc['applicantCd'], '00'); ?>>본인</option>`;
+            for(var i =0; i < prosArr.length; i++){
+                //전체 보호자를 불러와서 가장 첫번째 보호자 출력(모든 정보가 입력되어 있지 않으면 다음 보호자 출력, 모든 보호자의 정보가 완전하지 않으면 출력하지 않음)
+                if(!!prosArr[i]['pro_name']&&!!prosArr[i]['pro_hp']&&!!prosArr[i]['pro_addr1']&&!!prosArr[i]['pro_zip']&&!!prosArr[i]['pro_birth']&&!!prosArr[i]['pro_name']){
+                    if(prosArr[i]['pro_type']!='02'){ //요양보호사는 건너뛴다다
+                       console.log("protype : ", prosArr[i]['pro_type']);
+                        row += `
+                            <option value="01" <?php if($dc) echo get_selected($dc['applicantCd'], '01'); ?>>보호자(${prosArr[i]['pro_name']})</option>`;
+                        break;
+                    }
+                }
+            }
+            row += `
+                        <option value="02" <?php if($dc) echo get_selected($dc['applicantCd'], '02'); ?>>공란</option>
+                    </select>`;
+            select.innerHTML += row;
+        }
+        console.log("result_pros : ",result.data);
+      })
+      .fail(function ($xhr) {
+				//등록되지 않은 신규 수급자이면 진행여부를 한번 더 묻는다
+        if(confirm("등록되지 않은 수급자입니다. 계속 진행하시겠습니까?") == true){ // 등록되지 않은 수급자이기 때문에 보호자 정보 없음
+            var row = `<select name="applicantCd" id="applicantCd" class="form-control input-sm">
+                        <option value="00" <?php if($dc) echo get_selected($dc['applicantCd'], '00'); ?>>본인</option>
+                        <option value="02" <?php if($dc) echo get_selected($dc['applicantCd'], '02'); ?>>공란</option>
+                      </select>`;
+            select.innerHTML += row;
+        }
+        else{
+           alert("수급자 관리 페이지로 이동합니다.");
+           window.location.href = './my_recipient_list.php';
+        }
+      });
+
+      $('#applicantCd').show();
+      $('#applicantCd_subj').show();
+  }
+
+  obj['applicantCd'] = $('#applicantCd').val();
 
   $('.panel-body .form-group').show();
   $('#penLtmNum').prop('disabled', false).prop('readonly', true);
@@ -1036,6 +1136,7 @@ function update_pen(obj) {
     $('#penConNum').val('').data('orig', '').change();
     $('#penRecGraCd').val('').data('orig', '').change();
     $('#penTypeCd').val('').data('orig', '').change();
+    $('#applicantCd').val('').data('orig', '').change(); // 장기요양입소이용신청서를 위해 추가
     //$('#penBirth').val(obj.penBirth).prop('disabled', false);
     $('#penExpiStDtm').val('').data('orig', '').change();
     $('#penExpiEdDtm').val('').data('orig', '').change();
@@ -1056,6 +1157,8 @@ function update_pen(obj) {
     $('#penRecGraCd').val(penRecGraCd).data('orig', penRecGraCd).change();
     var penTypeCd = obj.penTypeCd ? obj.penTypeCd : '00';
     $('#penTypeCd').val(penTypeCd).data('orig', penTypeCd).change();
+    var applicantCd = obj.applicantCd ? obj.applicantCd : '00'; // 장기요양입소이용신청서를 위해 추가
+    $('#applicantCd').val(applicantCd).data('orig', applicantCd).change(); // 장기요양입소이용신청서를 위해 추가
     //$('#penBirth').val(obj.penBirth).prop('disabled', false);
     $('#penExpiStDtm').val(obj.penExpiStDtm).data('orig', obj.penExpiStDtm).change();
     $('#penExpiEdDtm').val(obj.penExpiEdDtm).data('orig', obj.penExpiEdDtm).change();
