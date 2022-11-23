@@ -299,7 +299,7 @@ include_once("./_common.php");
                                             <span class="font-bold" x-text="'요청사항'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
-                                            <span x-text="item.od_memo" />
+                                            <span x-text="item.prodMemo" />
                                         </div>
                                     </div>
                                 </div>
