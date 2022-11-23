@@ -491,8 +491,9 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
 
     #add_barcode_pop .barcode_input_list {
       width: 100%;
-      height: calc(100% - 25px);
+      height: calc(100% - 85px);
       overflow: scroll;
+	  overflow-x: hidden;
     }
 
     #add_barcode_pop .barcode_input_list li {
@@ -576,6 +577,100 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
     #add_barcode_pop .footer .btn_wrap .save {
       background: #000;
       color: #fff;
+    }
+	/* 팝업 */
+    #popup {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, .7);
+      z-index: 50;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    #popup.hide {
+      display: none;
+    }
+
+    #popup.multiple-filter {
+      backdrop-filter: blur(4px) grayscale(90%);
+      -webkit-backdrop-filter: blur(4px) grayscale(90%);
+    }
+
+    #popup .content {
+      padding: 20px;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 1px 1px 3px rgba(0, 0, 0, .3);
+      max-width: 90%;
+    }
+
+    #popup .content {
+      max-width: 90%;
+      font-size: 14px;
+    }
+
+    #popup .closepop {
+      width: 100%;
+      height: 40px;
+      cursor: pointer;
+      color: #fff;
+      background-color: #000;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+	.content .span {
+      margin-left: 20px;
+      width: 90%;
+	  float: left;
+    }
+
+    .content .all {
+      margin-bottom: 5px;
+      padding-left: 20px;
+      font-size: 17px;
+      text-align: left;
+      float: left;
+      height: 50px;
+      width: 55%;
+      border-radius: 6px;
+      background-color: #c0c0c0;
+      color: #fff;
+      border: 0px;
+      box-sizing: border-box;
+    }
+
+    .content .all::placeholder {
+      color: #fff;
+    }
+
+    .content .barNumCustomSubmitBtn {
+      float: left;
+      margin-left: 10px;
+      color: #fff;
+      font-size: 17px;
+      background-color: #494949;
+      border: 0px;
+      border-radius: 6px;
+      width: 18%;
+      height: 50px;
+      font-weight: bold;
+    }
+
+    .content .barNumGuideOpenBtn {
+      float: left;
+      position: relative;
+      margin-left: 10px;
+      width: 35px;
+      cursor: pointer;
+      top: 8px;
     }
 
     /* Chrome, Safari, Edge, Opera */
@@ -745,7 +840,24 @@ if ($option) {
     <input type="text" id="web-barcode-input" />
   </div>
 </div>
+<!-- 팝업 -->
+<div id="popup" class="hide" style="z-index:99999999;">
+  <div class="content">
+    <p>
+      바코드 일괄등록<br><br>
+      1. 공동된 숫자 이후 꺽쇠(^)를 입력하세요<br>
+      2. 하이픈(-)을 이용해 연속한 숫자를 입력할 수 있습니다.<br>
+      3. 콤마(,)를 이용해 연속하지 않은 숫자를 입력할 수 있습니다.<br><br>
 
+      예시1) 20120000000^1-3 입력시 <br>
+      201200000001, 201200000002, 201200000003이 일괄등록 됩니다.<br><br>
+
+      예시2) 20120000000^1,3,5 입력시<br>
+      201200000001, 201200000003, 201200000005가 일괄등록 됩니다.<br><br>
+    </p>
+    <button class="closepop" onclick="closePopup()">닫기</button>
+  </div>
+</div>
 <div id="add_barcode_pop">
   <div class="dim"></div>
   <div class="pop">
@@ -754,15 +866,23 @@ if ($option) {
         <p>바코드 재고 추가</p>
         <span onclick="showPopBarcodeList(false)">&times;</span>
       </div>
-    </div>
+    </div>     
+    
     <div class="content">
-      <div class="flex-row barcode_qty" style="margin-bottom: 15px">
+      
+	  <div class="flex-row barcode_qty" style="margin-bottom: 15px">
         <p style="margin-right: 20px">수량</p>
         <button id='btn_minus' onclick="setQtyNumber(this, 'minus')">-</button><input type="number" class="qty_input" name="qty_input" value="1" onkeyup="setBarcodeInput(this);"><button id='btn_plus' onclick="setQtyNumber(this, 'plus')">+</button>
       </div>
-      <div style="height: calc(100% - 23px);">
+	  <span class="barcode-area" style="display: block">
+        <input type="text" class="all" placeholder="일괄 등록수식 입력">
+        <button type="button" class="barNumCustomSubmitBtn" onclick="inputRegexBarcode(this)">등록</button>
+        <img src="/img/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
+      </span>
+      <div style="height: calc(100% - 23px);margin-top:70px;">
         <p style="margin-bottom: 5px">바코드</p>
-        <ul class="barcode_input_list">
+        
+		<ul class="barcode_input_list">
           <li>
             <input type="text" maxlength="12" class="notall frm_input required" placeholder="바코드를 입력하세요.">
             <img src="/img/bacod_add_img.png" class="barcode_add" onclick="addAutoBarcode(this)">
@@ -970,7 +1090,7 @@ if (!$member['mb_id']) {
       addSelectClassBarcode();
     });
 
-    $(document).on("keyup", '#add_barcode_pop', function() {
+    $(document).on("keyup", '.barcode_input_list', function() {
         $item = $('#add_barcode_pop .barcode_input_list').find('.notall');
         $shift_input = 0;
         $moreInput = 0;
@@ -1005,6 +1125,9 @@ if (!$member['mb_id']) {
 
     });
 
+
+
+
     // pda 스캔
     $(document).on('keydown', '#web-barcode-input', function (e) {
       var isScanner = e.key === 'Unidentified' || e.key === 'TVNetwork';
@@ -1029,7 +1152,93 @@ if (!$member['mb_id']) {
       closeWebBarcode();
     });
   });
+//추가 시작
+  function inputRegexBarcode(x) {
+    var val = $(x).closest(".barcode-area").find(".all").val();
+	var target2 = $(".barcode_input_list").find(".notall");
+	
+    var barList = [];
 
+    if (val.indexOf("^") == -1) {
+      alert("내용을 입력해주시길 바랍니다.");
+      return false;
+    }
+	
+    if (val) {
+      val = val.split("^");
+      var first = val[0];
+      var secList = val[1].split(",");
+      for (var i = 0; i < secList.length; i++) {
+        if (secList[i].indexOf("-") == -1) {
+          barList.push(first + secList[i]);
+        } else {
+          var secData = secList[i].split("-");
+          var secData0Len = secData[0].length;
+          secData[0] = Number(secData[0]);
+          secData[1] = Number(secData[1]);
+
+          for (var ii = secData[0]; ii < (secData[1] + 1); ii++) {
+            var barData = ii;
+            if (String(barData).length < secData0Len) {
+              var iiiCnt = secData0Len - String(barData).length;
+              for (var iii = 0; iii < iiiCnt; iii++) {
+                barData = "0" + barData;
+              }
+            }
+
+            barList.push(first + barData);
+          }
+        }
+      }	  
+		for (var i = 0; i < target2.length; i++) {
+		  if (i > 0) {
+			if ($(target2[i]).val() != "") {
+			  if (!confirm("이미 등록된 바코드가 있습니다.\n무시하고 적용하시겠습니까?")) {
+				return false;
+			  } else {
+				break;
+			  }
+			}
+		  }
+		}
+		if(target2.length > 1){
+			for(var k=1;k<target2.length;k++){
+			$("#btn_minus").trigger("click");
+		  }
+		}
+		for(var j=1;j<barList.length;j++){
+			$("#btn_plus").trigger("click");
+		}
+		var target = $(".barcode_input_list").find(".notall");
+      for (var i = 0; i < target.length; i++) {
+        $(target[i]).val(barList[i]);
+        if (barList[i] && barList[i].length !== 12) {
+          alert('바코드는 12자리 입력이 되어야합니다.');
+          target[i].focus();
+          return false;
+        }
+      }
+
+    }
+
+    notallLengthCheck(false);
+  }
+  // 팝업열기
+  function showPopup(multipleFilter) {
+    if (multipleFilter) {
+      $('#popup').addClass('multiple-filter');
+    } else {
+      $('#popup').removeClass('multiple-filter');
+    }
+
+    $('#popup').removeClass('hide');
+  }
+
+  // 팝업닫기
+  function closePopup() {
+    $('#popup').addClass('hide');
+  }
+  //추가 끝
   function addSelectClassBarcode() {
     var allBarcodes = $('.listContent .item');
     var start = $('.listContent .item.start').length;
@@ -1885,7 +2094,8 @@ if (!$member['mb_id']) {
 
 
   function clearPopBarcodeList() {
-    $('.qty_input').val('1');
+    $('.all').val('');
+	$('.qty_input').val('1');
     $('.barcode_input_list').empty();
     $('#add_barcode_pop .barcode_input_list').append($('#mockup').html());
   }
