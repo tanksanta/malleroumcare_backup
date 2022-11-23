@@ -14,7 +14,7 @@ if (!count($_POST['chk'])) {
 $affected_it_ids = [];
 
 if ($_POST['act_button'] == "선택수정") {
-
+	$tex = "수정";
     auth_check($auth[$sub_menu], 'w');
 
     for ($i=0; $i<count($_POST['chk']); $i++) {
@@ -173,7 +173,7 @@ if ($_POST['act_button'] == "선택수정") {
         }
     }
 } else if ($_POST['act_button'] == "선택삭제") {
-
+	$tex = "삭제";
     // if ($is_admin != 'super')
     //     alert('상품 삭제는 최고관리자만 가능합니다.');
 
@@ -201,5 +201,6 @@ foreach($affected_it_ids as $it_id) {
 }
 
 $searchProdSupYN=$_POST['searchProdSupYN'];
-goto_url("./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN={$searchProdSupYN}{$it_ids}");
+alert("선택 상품이 정상적으로 ".$tex." 되었습니다.","./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN={$searchProdSupYN}{$it_ids}");
+//goto_url("./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN={$searchProdSupYN}{$it_ids}");
 ?>

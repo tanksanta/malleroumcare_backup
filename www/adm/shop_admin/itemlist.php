@@ -155,7 +155,7 @@ $flist = array();
 $flist = apms_form(1,0);
 
 // 입고예정일 수정한 상품 목록
-$affected_it_ids = $_GET['it_id'] ?: [];
+//$affected_it_ids = $_GET['it_id'] ?: [];
 ?>
 
 <script src="<?php echo G5_ADMIN_URL;?>/apms_admin/apms.admin.js"></script>
@@ -557,9 +557,9 @@ $affected_it_ids = $_GET['it_id'] ?: [];
 </div>
 
 <script>
-var it_ids = <?=json_encode($affected_it_ids)?>;
-if(it_ids.length > 0)
-    open_order_ent(it_ids);
+//var it_ids = <?=json_encode($affected_it_ids)?>;
+//if(it_ids.length > 0)
+//    open_order_ent(it_ids);
 
 $(function() {
   $("#popup_box").hide();
