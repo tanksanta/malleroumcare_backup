@@ -75,7 +75,7 @@
 // 설치 파트너 매니저 설치 일정 테이블 유무 확인 후 생성
 sql_query("CREATE TABLE IF NOT EXISTS `partner_inst_sts` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `status` CHAR(9) NOT NULL COMMENT '설치 일정 상태(신규|진행중|불가|완료|취소)',
+  `status` CHAR(12) NOT NULL COMMENT '설치 일정 상태(출고준비|출고완료|취소|주문무효)',
   `delivery_date` DATE NULL COMMENT '설치(출고) 날짜',
   `delivery_datetime` CHAR(5) NULL COMMENT '설치(출고) 시간(포맷: HH:MM)',
   `ct_id` INT(11) NOT NULL COMMENT '카트 id',
@@ -89,7 +89,7 @@ sql_query("CREATE TABLE IF NOT EXISTS `partner_inst_sts` (
   `od_b_name` VARCHAR(30) NOT NULL COMMENT '수령자 이름',
   `od_b_hp` VARCHAR(20) NULL DEFAULT '' COMMENT '수령자 연락처',
   `od_b_addr1` VARCHAR(100) NULL DEFAULT '' COMMENT '수령자 주소',
-  `od_memo` LONGTEXT NULL DEFAULT '' COMMENT '수령자 요청사항'
+  `prodMemo` LONGTEXT NULL DEFAULT '' COMMENT '수령자 요청사항'
 );");
 // 설치 파트너 설치 불가 날짜 테이블 유무 확인 후 생성
 sql_query("CREATE TABLE IF NOT EXISTS `partner_manager_deny_schedule` (

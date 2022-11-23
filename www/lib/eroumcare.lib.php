@@ -2923,11 +2923,11 @@ function create_partner_install_schedule($status, $od_id) {
   $sql = "SELECT
     ct.ct_id,
     ct.it_name,
+    ct.prodMemo, 
     od.od_id, 
     od.od_b_hp, 
     od.od_b_name,
     od.od_b_addr1, 
-    od.od_memo, 
     mb.mb_id, 
     mb.mb_entNm
   FROM
@@ -2953,7 +2953,7 @@ function create_partner_install_schedule($status, $od_id) {
     od_b_name, 
     od_b_hp, 
     od_b_addr1, 
-    od_memo
+    prodMemo
   ) VALUES ";
   while ($cart = sql_fetch_array($cart_result)) {
     $sql = $sql."('".$status."',"
@@ -2965,7 +2965,7 @@ function create_partner_install_schedule($status, $od_id) {
     ."'".$cart["od_b_name"]."',"
     ."'".$cart["od_b_hp"]."',"
     ."'".$cart["od_b_addr1"]."',"
-    ."'".$cart["od_memo"]."'),";
+    ."'".$cart["prodMemo"]."'),";
   }
   $sql = substr($sql, 0, -1).";";
   return sql_query($sql);
@@ -3079,7 +3079,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
     od_b_name, 
     od_b_hp, 
     od_b_addr1, 
-    od_memo
+    prodMemo
   FROM `partner_inst_sts` 
   WHERE od_mb_id = '$od_mb_id' 
   AND delivery_date != '' 
@@ -3103,7 +3103,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
       'od_b_name' => $res_item['od_b_name'],
       'od_b_hp' => $res_item['od_b_hp'],
       'od_b_addr1' => $res_item['od_b_addr1'],
-      'od_memo' => $res_item['od_memo'],
+      'prodMemo' => $res_item['prodMemo'],
       'type' => 'schedule',
   ));
   }
@@ -3130,7 +3130,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
       'od_b_name' => '',
       'od_b_hp' => '',
       'od_b_addr1' => '',
-      'od_memo' => '',
+      'prodMemo' => '',
       'type' => 'deny_schedule',
   ));
   }
@@ -3162,7 +3162,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       od_b_name, 
       od_b_hp, 
       od_b_addr1, 
-      od_memo
+      prodMemo
     FROM `partner_inst_sts` 
     WHERE delivery_date != '' 
     AND delivery_datetime != '' 
@@ -3182,7 +3182,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       od_b_name, 
       od_b_hp, 
       od_b_addr1, 
-      od_memo
+      prodMemo
     FROM `partner_inst_sts` 
     WHERE partner_mb_id = '$partner_mb_id' 
     AND delivery_date != '' 
@@ -3206,7 +3206,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       'od_b_name' => $res_item['od_b_name'],
       'od_b_hp' => $res_item['od_b_hp'],
       'od_b_addr1' => $res_item['od_b_addr1'],
-      'od_memo' => $res_item['od_memo'],
+      'prodMemo' => $res_item['prodMemo'],
       'type' => 'schedule',
    ));
   }
@@ -3233,7 +3233,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       'od_b_name' => '',
       'od_b_hp' => '',
       'od_b_addr1' => '',
-      'od_memo' => '',
+      'prodMemo' => '',
       'type' => 'deny_schedule',
    ));
   }

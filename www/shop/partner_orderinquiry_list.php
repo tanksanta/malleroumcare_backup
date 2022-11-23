@@ -1236,19 +1236,22 @@ $(function() {
         const send_data2 = {};
         const delivery = $(this).parent().parent().find('.td_od_info').not(
             '.td_delivery_info').find('p');
-        const ct_id = delivery.find("button").attr("data-ctid")
+        const ct_id = delivery.find("button").attr("data-ctid");
         if (delivery.length === 5) {
-            const text = $(delivery[3]).text().trim().replace(/\n/g, "").replace(/  /g, "").replace(
-                "출고예정 :",
-                "").replace("변경", "")
-            send_data2['delivery_date'] = text.split(" ")[0];
-            send_data2['delivery_datetime'] = text.split(" ")[1].replace("시", "") + ":00";
+            if ($(delivery[3]).text().trim().replace(/\n/g, "").replace(/  /g, "").length !== 8) {
+                const text = $(delivery[3]).text().trim().replace(/\n/g, "").replace(/  /g, "").replace(
+                    "출고예정 :", "").replace("변경", "")
+                if (text !== '') {
+                    send_data2['delivery_date'] = text.split(" ")[0];
+                    send_data2['delivery_datetime'] = text.split(" ")[1].replace("시", "") + ":00";
+                }
+            }
         }
         send_data2['ct_id'] = ct_id;
         send_data2['od_id'] = od_id;
         send_data2['partner_manager_mb_id'] = manager;
-
         loading_manager = true;
+
         if (send_data2['delivery_date']) {
             $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
                 $.post('ajax.partner_manager.php', {
@@ -1257,7 +1260,8 @@ $(function() {
                     }, 'json')
                     .done(function() {
                         $('.sel_manager[data-id="' + od_id + '"]').val(manager);
-                        alert(manager_name + ' 담당자로 변경되었습니다.');
+                        alert(manager_name.replace(/\n/g, "").replace(/  /g, "") +
+                            ' 담당자로 변경되었습니다.');
                     })
                     .fail(function($xhr) {
                         var data = $xhr.responseJSON;
@@ -1269,6 +1273,8 @@ $(function() {
             }).fail(function($xhr) {
                 var data = $xhr.responseJSON;
                 alert(data && data.message);
+            }).always(function() {
+                loading_manager = false;
             });
         } else {
             $.post('ajax.partner_manager.php', {
@@ -1277,7 +1283,7 @@ $(function() {
                 }, 'json')
                 .done(function() {
                     $('.sel_manager[data-id="' + od_id + '"]').val(manager);
-                    alert(manager_name + ' 담당자로 변경되었습니다.');
+                    alert(manager_name.replace(/\n/g, "").replace(/  /g, "") + ' 담당자로 변경되었습니다.');
                 })
                 .fail(function($xhr) {
                     var data = $xhr.responseJSON;
