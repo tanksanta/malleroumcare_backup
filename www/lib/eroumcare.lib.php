@@ -2799,16 +2799,16 @@ function get_partner_member_list_by_partner_mb_id($partner_mb_id, $mb_type) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-14
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-14
- * 설명 : 사업소 목록 조회
+ * 마지막 수정일자 : 2022-11-23
+ * 설명 : 설치파트너 목록 조회
  * @param string $mb_type
  * @return mixed 
  */
 function get_partner_list($mb_type) {
   $sql = "SELECT DISTINCT g5_member.mb_id, g5_member.mb_name
   FROM partner_inst_sts
-  JOIN g5_member ON partner_inst_sts.od_mb_id = g5_member.mb_id
-  WHERE (g5_member.mb_level = 3 OR g5_member.mb_level = 4);";
+  JOIN g5_member ON partner_inst_sts.partner_mb_id = g5_member.mb_id
+  WHERE g5_member.mb_type = 'partner';";
 
   $result = sql_query($sql);
   $members_str = '{"members":{"all":"전체",';
@@ -2839,7 +2839,7 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
   
   $manager_str = '{"members":{"all":"전체",';
 
-  $sql = "SELECT DISTINCT od_b_name, od_b_hp FROM partner_inst_sts WHERE od_mb_id = '$ent_md_id';";
+  $sql = "SELECT DISTINCT od_b_name, od_b_hp FROM partner_inst_sts WHERE od_mb_id = '$ent_md_id' AND status != '취소' AND status != '주문무효';";
   $result = sql_query($sql);
   while ($res_item = sql_fetch_array($result)) {
     $manager_str.= '"'.$res_item['od_b_name'].'":"'.$res_item['od_b_name'].'",';
@@ -2854,7 +2854,7 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-07
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-09
+ * 마지막 수정일자 : 2022-11-21
  * 설명 : 설치파트너 매니저 설치 일정 생성 여부 확인
  * @param integer $od_id
  * @return boolean 
@@ -2862,7 +2862,7 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
 function exit_partner_install_schedule($od_id) {
   $sql = "SELECT id FROM partner_inst_sts WHERE od_id = $od_id;";
   $result = sql_query($sql);
-  $sql = "SELECT ct_id FROM g5_shop_cart WHERE od_id = $od_id AND ct_status != '취소';";
+  $sql = "SELECT ct_id FROM g5_shop_cart WHERE od_id = $od_id AND ct_status != '취소' AND ct_status != '주문무효';";
   $result_cart = sql_query($sql);
   return mysqli_num_rows($result) == mysqli_num_rows($result_cart) && mysqli_num_rows($result) > 0;
 }
@@ -2881,7 +2881,7 @@ function exit_partner_install_schedule($od_id) {
 function duplicate_partner_install_schedule($partner_manager_mb_id, $delivery_date, $delivery_datetime) {
   $sql = "SELECT 
   id 
-  FROM partner_inst_sts 
+  FROM `partner_inst_sts` 
   WHERE partner_manager_mb_id = '$partner_manager_mb_id' 
   AND delivery_date = '$delivery_date' 
   AND delivery_datetime = '$delivery_datetime';";
@@ -2891,11 +2891,31 @@ function duplicate_partner_install_schedule($partner_manager_mb_id, $delivery_da
 
 /**
  * 작성자 : 임근석
+ * 작성일자 : 2022-11-21
+ * 마지막 수정자 : 임근석
+ * 마지막 수정일자 : 2022-11-23
+ * 설명 : 설치파트너 매니저 설치 불가일 중복 확인
+ * @param string $partner_manager_mb_id
+ * @param string $delivery_date 포맷 : YYYY-MM-DD
+ * @return boolean 
+ */
+function duplicate_partner_deny_schedule($partner_manager_mb_id, $delivery_date) {
+  $sql = "SELECT 
+  id 
+  FROM `partner_manager_deny_schedule` 
+  WHERE partner_manager_mb_id = '$partner_manager_mb_id' 
+  AND deny_date = '$delivery_date';";
+  $result = sql_query($sql);
+  return mysqli_num_rows($result) == 0;
+}
+
+/**
+ * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-14
+ * 마지막 수정일자 : 2022-11-21
  * 설명 : 설치파트너 매니저 설치 일정 생성
- * @param string $status 신규|진행중|불가|완료|취소
+ * @param string $status 출고준비|출고완료|취소|주문무효
  * @param integer $od_id
  * @return boolean 
  */
@@ -2914,7 +2934,7 @@ function create_partner_install_schedule($status, $od_id) {
   g5_shop_cart AS ct
   LEFT JOIN g5_shop_order AS od ON ct.od_id = od.od_id
   LEFT JOIN g5_member AS mb ON mb.mb_id = od.mb_id
-  WHERE od.od_id = $od_id AND ct_status != '취소';";
+  WHERE od.od_id = $od_id AND ct_status != '취소' AND ct_status != '주문무효';";
   $cart_result = sql_query($sql);
   if (mysqli_num_rows($cart_result) < 1) return false;
 
@@ -2955,15 +2975,29 @@ function create_partner_install_schedule($status, $od_id) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-03
+ * 마지막 수정일자 : 2022-11-21
  * 설명 : 설치파트너 매니저 설치 일정 상태 수정
- * @param integer $od_id
  * @param integer $ct_id
- * @param string $status 신규|진행중|불가|완료|취소
+ * @param string $status 출고준비|출고완료|취소|주문무효
  * @return boolean 
  */
-function update_partner_install_schedule_status_by_ob_id_and_ct_id($od_id, $ct_id, $status) {
-  $sql = "UPDATE `partner_inst_sts` SET status = '$status' WHERE od_id = $od_id AND ct_id = $ct_id";
+function update_partner_install_schedule_status_by_ct_id($ct_id, $status) {
+  $sql = "UPDATE `partner_inst_sts` SET status = '$status' WHERE ct_id = $ct_id";
+  return sql_query($sql);
+}
+
+/**
+ * 작성자 : 임근석
+ * 작성일자 : 2022-11-21
+ * 마지막 수정자 : 임근석
+ * 마지막 수정일자 : 2022-11-21
+ * 설명 : 설치파트너 매니저 설치 일정 상태 수정
+ * @param integer[] $ct_id
+ * @param string $status 출고준비|출고완료|취소|주문무효
+ * @return boolean 
+ */
+function update_partner_install_schedule_status_by_ct_id_array($ct_id, $status) {
+  $sql = "UPDATE `partner_inst_sts` SET status = '$status' WHERE ct_id IN (".join(",", $ct_id).");";
   return sql_query($sql);
 }
 
@@ -2979,13 +3013,13 @@ function update_partner_install_schedule_status_by_ob_id_and_ct_id($od_id, $ct_i
  * @param string $delivery_datetime 포맷 : hh:mm
  * @return boolean 
  */
-function update_partner_install_schedule_delivery_date_and_delivery_datetime_by_ob_id_and_ct_id($od_id, $ct_id, $delivery_date, $delivery_datetime) {
+function update_partner_install_schedule_delivery_date_and_delivery_datetime_by_ct_id($ct_id, $delivery_date, $delivery_datetime) {
   if (strlen($delivery_datetime) <= 2) {
     $delivery_datetime .= ":00";
   }
   $sql = "UPDATE `partner_inst_sts` 
   SET delivery_date = '$delivery_date', delivery_datetime = '$delivery_datetime' 
-  WHERE od_id = $od_id AND ct_id = $ct_id";
+  WHERE ct_id = $ct_id";
   return sql_query($sql);
 }
 
@@ -2999,12 +3033,12 @@ function update_partner_install_schedule_delivery_date_and_delivery_datetime_by_
  * @param string $partner_manager_mb_id
  * @return boolean 
  */
-function update_partner_install_schedule_partner_by_ob_id($od_id, $partner_manager_mb_id) {
+function update_partner_install_schedule_partner_by_ct_id($ct_id, $partner_manager_mb_id) {
   $sql = "SELECT mb_id, mb_name, mb_manager FROM g5_member WHERE mb_id = '$partner_manager_mb_id';";
   $partner = sql_fetch($sql);
   if ($partner == null) return false;
   
-  $sql = "UPDATE `partner_inst_sts` SET partner_mb_id = '".$partner["mb_manager"]."', partner_manager_mb_id = '".$partner["mb_id"]."', partner_manager_mb_name = '".$partner["mb_name"]."' WHERE od_id = $od_id;";
+  $sql = "UPDATE `partner_inst_sts` SET partner_mb_id = '".$partner["mb_manager"]."', partner_manager_mb_id = '".$partner["mb_id"]."', partner_manager_mb_name = '".$partner["mb_name"]."' WHERE ct_id = $ct_id;";
   return sql_query($sql);
 }
 
@@ -3027,7 +3061,7 @@ function delete_partner_install_schedule_by_ob_id_and_ct_id($od_id, $ct_id) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-14
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-14
+ * 마지막 수정일자 : 2022-11-21
  * 설명 : 사업소 기준으로 설치파트너 매니저 일정 
  * @param string $od_mb_id
  * @return mixed 
@@ -3050,7 +3084,8 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
   WHERE od_mb_id = '$od_mb_id' 
   AND delivery_date != '' 
   AND delivery_datetime != '' 
-  AND status != '취소'";
+  AND status != '취소'
+  AND status != '주문무효'";
 
   $result = sql_query($sql);
   $return_list = [];
@@ -3061,6 +3096,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
       'delivery_datetime' => $res_item['delivery_datetime'],
       'od_id' => $res_item['od_id'],
       'it_name' => $res_item['it_name'],
+      'partner_mb_id' => '',
       'partner_manager_mb_id' => $res_item['partner_manager_mb_id'],
       'partner_manager_mb_name' => $res_item['partner_manager_mb_name'],
       'od_mb_id' => $res_item['od_mb_id'],
@@ -3072,8 +3108,9 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
   ));
   }
   $sql = "SELECT 
-    ds.deny_date,
-    m.mb_id,
+    ds.deny_date, 
+    ds.partner_mb_id, 
+    m.mb_id, 
     m.mb_name
   FROM `partner_manager_deny_schedule` AS ds
   LEFT JOIN g5_member AS m ON m.mb_id = ds.partner_manager_mb_id
@@ -3086,6 +3123,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
       'delivery_datetime' => '',
       'od_id' => '',
       'it_name' => '',
+      'partner_mb_id' => $res_item['partner_mb_id'],
       'partner_manager_mb_id' => $res_item['mb_id'],
       'partner_manager_mb_name' => $res_item['mb_name'],
       'od_mb_id' => '',
@@ -3103,7 +3141,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-14
+ * 마지막 수정일자 : 2022-11-21
  * 설명 : 설치파트너 매니저 일정 조회
  * @param string $partner_mb_id
  * @param integer $mb_level
@@ -3128,7 +3166,8 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
     FROM `partner_inst_sts` 
     WHERE delivery_date != '' 
     AND delivery_datetime != '' 
-    AND status != '취소'";
+    AND status != '취소'
+    AND status != '주문무효'";
   } else {
     $sql = "SELECT 
       status, 
@@ -3148,7 +3187,8 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
     WHERE partner_mb_id = '$partner_mb_id' 
     AND delivery_date != '' 
     AND delivery_datetime != '' 
-    AND status != '취소'";
+    AND status != '취소'
+    AND status != '주문무효'";
   }
   $result = sql_query($sql);
   $return_list = [];
@@ -3159,6 +3199,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       'delivery_datetime' => $res_item['delivery_datetime'],
       'od_id' => $res_item['od_id'],
       'it_name' => $res_item['it_name'],
+      'partner_mb_id' => '',
       'partner_manager_mb_id' => $res_item['partner_manager_mb_id'],
       'partner_manager_mb_name' => $res_item['partner_manager_mb_name'],
       'od_mb_id' => $res_item['od_mb_id'],
@@ -3171,6 +3212,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
   }
   $sql = "SELECT 
     ds.deny_date,
+    ds.partner_mb_id, 
     m.mb_id,
     m.mb_name
   FROM `partner_manager_deny_schedule` AS ds
@@ -3184,6 +3226,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       'delivery_datetime' => '',
       'od_id' => '',
       'it_name' => '',
+      'partner_mb_id' => $res_item['partner_mb_id'],
       'partner_manager_mb_id' => $res_item['mb_id'],
       'partner_manager_mb_name' => $res_item['mb_name'],
       'od_mb_id' => '',
@@ -3201,8 +3244,8 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-14
- * 설명 : 설치파트너 매니저 설치 불가 일정
+ * 마지막 수정일자 : 2022-11-21
+ * 설명 : 설치파트너 매니저 설치 불가 일정 일괄 생성
  * @param string $partner_mb_id : 설치파트너 mb_id
  * @param string $partner_manager_mb_id : 설치파트너 매니저 mb_id
  * @param string[] $schedules : 설치 불가 일정 array 예시: ["2022-10-01", "2022-10-23"]
@@ -3217,7 +3260,7 @@ function bulk_partner_deny_schedule($partner_mb_id, $partner_manager_mb_id, $sch
       $sql = "SELECT deny_date FROM `partner_manager_deny_schedule` WHERE partner_manager_mb_id = '$partner_manager_mb_id' AND deny_date = '$schedule';";
       $count = mysqli_num_rows(sql_query($sql));
       if ($count != 0) {
-        $result_schedules = array_filter($schedules, function($value) {
+        $result_schedules = array_filter($result_schedules, function($value) {
           global $t_schedule;
           return $value != $t_schedule;
         });
@@ -3233,6 +3276,28 @@ function bulk_partner_deny_schedule($partner_mb_id, $partner_manager_mb_id, $sch
     } else {
       return false;
     }
+  } else {
+    return false;
+  }
+}
+
+/**
+ * 작성자 : 임근석
+ * 작성일자 : 2022-11-21
+ * 마지막 수정자 : 임근석
+ * 마지막 수정일자 : 2022-11-21
+ * 설명 : 설치파트너 매니저 설치 불가 일정 삭제
+ * @param string $partner_mb_id : 설치파트너 mb_id
+ * @param string $partner_manager_mb_id : 설치파트너 매니저 mb_id
+ * @param string $deny_date : 설치 불가 일정
+ * @return boolean 
+ */
+function delete_partner_deny_schedule($partner_mb_id, $partner_manager_mb_id, $deny_date) {
+  $sql = "SELECT id FROM `partner_manager_deny_schedule` WHERE partner_mb_id = '$partner_mb_id' AND partner_manager_mb_id = '$partner_manager_mb_id' AND deny_date = '$deny_date';";
+  $count = mysqli_num_rows(sql_query($sql));
+  if ($count > 0) {
+    $sql = "DELETE FROM `partner_manager_deny_schedule` WHERE partner_mb_id = '$partner_mb_id' AND partner_manager_mb_id = '$partner_manager_mb_id' AND deny_date = '$deny_date';";
+    return sql_query($sql);
   } else {
     return false;
   }

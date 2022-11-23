@@ -649,7 +649,7 @@ $count_warn4 = sql_fetch($sql)['cnt'];
     $('#loading_excel').show();
     EXCEL_DOWNLOADER = $.fileDownload(href, {
       httpMethod: "POST",
-      data: {}
+      data: {wh_name:"<?=$_REQUEST['wh_name']?>"}
     })
       .always(function() {
         $('#loading_excel').hide();

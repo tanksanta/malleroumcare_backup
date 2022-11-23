@@ -190,8 +190,19 @@ $(function () {
       alert('선택해주세요.');
       return;
     }
-
-    change_step(od_id['od_id[]'], next_step_val, 'true');
+    $.ajax({
+      method: 'POST',
+      url: '/shop/schedule/ajax.update_schedule_status.php',
+      data: {
+        ct_id: od_id['od_id[]'],
+        status: next_step_val,
+      },
+    }).done(function () {
+      change_step(od_id['od_id[]'], next_step_val, 'true');
+    }).fail(function () {
+      alert('알 수 없는 문제 발생');
+      return;
+    });
   });
 
   $(document).on('click', '#change_next_step', function () {

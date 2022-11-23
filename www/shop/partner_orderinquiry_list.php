@@ -989,39 +989,42 @@ $(function() {
 
         var od_id = $(this).find('input[name="od_id"]').val();
         var ct_id = $(this).find('input[name="ct_id"]').val();
-        var manager = $(".sel_manager").val();
+        var manager = $('.sel_manager[data-id="' + od_id + '"]').val();
+        if (manager === '') {
+            alert("먼저 담당자를 지정해주세요.");
+        } else {
+            var send_data = {};
 
-        var send_data = {};
+            send_data['od_id'] = od_id;
+            send_data['ct_id'] = [ct_id];
+            send_data['ct_direct_delivery_date_' + ct_id] = $(this).find(
+                'input[name="ct_direct_delivery_date"]').val();
+            send_data['ct_direct_delivery_time_' + ct_id] = $(this).find(
+                'select[name="ct_direct_delivery_time"]').val();
 
-        send_data['od_id'] = od_id;
-        send_data['ct_id'] = [ct_id];
-        send_data['ct_direct_delivery_date_' + ct_id] = $(this).find(
-            'input[name="ct_direct_delivery_date"]').val();
-        send_data['ct_direct_delivery_time_' + ct_id] = $(this).find(
-            'select[name="ct_direct_delivery_time"]').val();
-
-        const send_data2 = {};
-        send_data2['od_id'] = od_id;
-        send_data2['ct_id'] = ct_id;
-        send_data2['delivery_date'] = $(this).find(
-            'input[name="ct_direct_delivery_date"]').val();
-        send_data2['delivery_datetime'] = $(this).find(
-            'select[name="ct_direct_delivery_time"]').val() + ":00";
-        send_data2['partner_manager_mb_id'] = manager;
-        $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
-            $.post('ajax.partner_deliverydate.php', send_data, 'json')
-                .done(function() {
-                    alert('변경이 완료되었습니다.');
-                    window.location.reload();
-                })
-                .fail(function($xhr) {
-                    var data = $xhr.responseJSON;
-                    alert(data && data.message);
-                });
-        }).fail(function($xhr) {
-            var data = $xhr.responseJSON;
-            alert(data && data.message);
-        })
+            const send_data2 = {};
+            send_data2['od_id'] = od_id;
+            send_data2['ct_id'] = ct_id;
+            send_data2['delivery_date'] = $(this).find(
+                'input[name="ct_direct_delivery_date"]').val();
+            send_data2['delivery_datetime'] = $(this).find(
+                'select[name="ct_direct_delivery_time"]').val() + ":00";
+            send_data2['partner_manager_mb_id'] = manager;
+            $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
+                $.post('ajax.partner_deliverydate.php', send_data, 'json')
+                    .done(function() {
+                        alert('변경이 완료되었습니다.');
+                        window.location.reload();
+                    })
+                    .fail(function($xhr) {
+                        var data = $xhr.responseJSON;
+                        alert(data && data.message);
+                    });
+            }).fail(function($xhr) {
+                var data = $xhr.responseJSON;
+                alert(data && data.message);
+            })
+        }
     });
 
     // 기간 - datepicker
@@ -1246,7 +1249,28 @@ $(function() {
         send_data2['partner_manager_mb_id'] = manager;
 
         loading_manager = true;
-        $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
+        if (send_data2['delivery_date']) {
+            $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
+                $.post('ajax.partner_manager.php', {
+                        od_id: od_id,
+                        manager: manager
+                    }, 'json')
+                    .done(function() {
+                        $('.sel_manager[data-id="' + od_id + '"]').val(manager);
+                        alert(manager_name + ' 담당자로 변경되었습니다.');
+                    })
+                    .fail(function($xhr) {
+                        var data = $xhr.responseJSON;
+                        alert(data && data.message);
+                    })
+                    .always(function() {
+                        loading_manager = false;
+                    });
+            }).fail(function($xhr) {
+                var data = $xhr.responseJSON;
+                alert(data && data.message);
+            });
+        } else {
             $.post('ajax.partner_manager.php', {
                     od_id: od_id,
                     manager: manager
@@ -1261,11 +1285,8 @@ $(function() {
                 })
                 .always(function() {
                     loading_manager = false;
-                })
-        }).fail(function($xhr) {
-            var data = $xhr.responseJSON;
-            alert(data && data.message);
-        })
+                });
+        }
     });
 
     function check_ct_status_mode() {

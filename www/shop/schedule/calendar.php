@@ -8,20 +8,24 @@ include_once("./_common.php");
 }
 </style>
 
-<div class="antialiased sans-serif bg-gray-100 max-h-screen" x-data="{ 'showModal': false }">
+<div class="antialiased sans-serif bg-gray-100 max-h-screen" x-data="global()">
     <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak class="px-4 py-2">
         <div x-data="select({ value: 'all', valueInModal: '' })" x-init="init()"
             class="flex flex-col bg-white rounded-lg shadow overflow-hidden">
             <!-- 상단 컨트롤 영역 -->
             <div class="flex items-center justify-between py-2 px-6">
                 <!-- 담당자 선택 -->
-                <div class="basis-60 flex flex-row">
-                    <div class="basis-24 flex justify-center items-center text-lg font-bold">
+                <div class="basis-72 flex flex-row">
+                    <div class="basis-36 flex justify-center items-center text-lg font-bold">
                         <?php
                         if ($member["mb_type"] == "partner" || $member["mb_type"] == "manager") {
-                            echo '담당자 선택';
+                            echo '담당자';
                         } else {
-                            echo '사업소 선택';
+                            if ($member["mb_level"] >= 9) {
+                                echo '설치파트너';
+                            } else {
+                                echo '수급자';
+                            }
                         }
                         ?>
                     </div>
@@ -117,7 +121,7 @@ include_once("./_common.php");
                 </div>
 
                 <!-- 일정표 관리 버튼 -->
-                <div class="basis-32 flex justify-center items-center">
+                <div class="basis-36 flex justify-center items-center">
                     <button
                         class="border rounded-lg px-4 py-1 flex justify-center items-center text-lg hover:bg-blue-100 transition-colors duration-300"
                         type="button" x-show="mb_type === 'manager' || mb_type === 'partner'"
@@ -164,40 +168,47 @@ include_once("./_common.php");
                             </template>
                             <template x-for="(date, dateIndex) in no_of_days" :key="dateIndex">
                                 <div style="width: 14.28%; height: 112px"
-                                    class="px-2 pt-1 border-r border-b relative flex flex-col">
+                                    class="px-2 pt-1 border-r border-b relative flex flex-col"
+                                    :class="{'bg-gray-100': moment([year, month, date]).diff(moment(), 'days') < 0}">
                                     <div class="basis-6 flex flex-row">
                                         <div @click="showEventModal(date)" x-text="date"
                                             class="basis-6 inline-flex w-6 h-6 items-center justify-center cursor-pointer text-center leading-none rounded-full transition ease-in-out duration-100"
                                             :class="{'bg-blue-500 text-white': isToday(date) == true, 'text-gray-700 hover:bg-blue-200': isToday(date) == false }">
                                         </div>
-                                        <div class="flex-1 flex flex-row overflow-x-auto">
-                                            <div class="flex flex-col justify-center w-full max-h-6 overflow-y-auto">
-                                                <template
-                                                    x-for="item in events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]]">
-                                                    <div class="h-4 flex items-center flex-row"
-                                                        :class="{'hidden' : item.type == 'schedule'}">
-                                                        <div class="h-2 border-4 rounded-full border-red-600"></div>
-                                                        <span class="ml-1 text-xs"
-                                                            x-text="item.partner_manager_mb_name"></span>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </div>
+
                                     </div>
                                     <div class="flex-1">
                                         <div style="height: 80px" class="overflow-y-auto">
-                                            <template
-                                                x-for="event in Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())">
-                                                <div class="rounded-lg mt-1 overflow-hidden"
-                                                    :class="{'hidden': filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0 }">
-                                                    <p x-text="aggregation(events[event].filter(e => e.type === 'schedule'))"
-                                                        class="text-sm font-bold">
-                                                    </p>
-                                                    <p x-text="calculation(events[event].filter(e => e.type === 'schedule'))"
-                                                        class="text-sm line-clamp-3 leading-tight">
-                                                    </p>
+                                            <!--  설치 불가 일정  -->
+                                            <div class="flex-1 flex flex-row"
+                                                :class="{'hidden' : Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length === 0 || events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule').length === 0}">
+                                                <div class="flex flex-col justify-center w-full max-h-6">
+                                                    <div class="h-4 flex items-center flex-row">
+                                                        <div class="h-2 border-4 rounded-full border-red-600"></div>
+                                                        <span class="ml-1 text-xs line-clamp-1" x-text="
+                                                            Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length !== 0 ?
+                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule').length > 1 ?
+                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule')[0]?.partner_manager_mb_name + ' 외 ' + (events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule').length - 1) + '건' :
+                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule')[0]?.partner_manager_mb_name : 
+                                                            ''"></span>
+                                                    </div>
                                                 </div>
-                                            </template>
+                                            </div>
+                                            <!--  설치 일정  -->
+                                            <div class="flex-1 flex flex-row"
+                                                :class="{'hidden': Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length === 0 || events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').length === 0 || (filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.od_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0) }">
+                                                <div class="flex flex-col justify-center w-full max-h-6">
+                                                    <div class="h-4 flex items-center flex-row">
+                                                        <div class="h-2 border-4 rounded-full border-blue-600"></div>
+                                                        <span class="ml-1 text-xs line-clamp-1" x-text="
+                                                            Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length !== 0 ?
+                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').length > 1 ?
+                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule')[0]?.it_name.slice(0, 6) + '... 외 ' + (events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule').length - 1) + '건' :
+                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule')[0]?.it_name.slice(0, 6) + '...' : 
+                                                            ''"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -210,25 +221,40 @@ include_once("./_common.php");
                 <section class="basis-80 bg-white border-l flex flex-col h-172">
                     <!-- 상세 정보 요약 영역 -->
                     <div class="basis-24 flex flex-col justify-center px-4 pt-4 border-b">
-                        <h3 x-text="$moment(select_date).format('YYYY-MM-DD dddd')" class="text-xl font-bold" />
-                        <h4 x-text="filter_mb_id == '' ? '총 ' + schedules.length + '건의 일정이 있습니다.' : '총 ' + schedules.filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length + '건의 일정이 있습니다.'"
-                            class="text-xl font-bold" @click="console.log(mb_type, filter_mb_id);" />
+                        <h3 x-text="$moment(select_date).format('YYYY-MM-DD (dd)')" class="text-xl font-bold" />
                     </div>
 
                     <!-- 상세 정보 스크롤 뷰 영역 -->
-                    <ul class="flex-1 overflow-y-auto">
+                    <ul class="flex-1 overflow-y-auto" id="table">
                         <template
-                            x-for="(item, index) in filter_mb_id == '' ? schedules : schedules.filter(e => mb_type === 'default' ? e.od_mb_id == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)"
+                            x-for="(item, index) in filter_mb_id == '' ? schedules.filter(e => e.type == 'deny_schedule') : schedules.filter(e => e.type == 'deny_schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.od_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)"
+                            :key="index">
+                            <li class="min-h-64 flex flex-col px-4">
+                                <div class=" basis-12 flex flex-col align-center px-4"
+                                    :class="{'hidden' : index !== 0}">
+                                    <p class="flex-1 inline-flex items-center text-lg font-bold" x-text="'설치 불가 담당자'" />
+                                </div>
+                                <div class="flex-1 flex flex-col border" :id="index"
+                                    :data-partner-mb-id="item.partner_mb_id"
+                                    :data-partner-manager-mb-id="item.partner_manager_mb_id"
+                                    @click.prevent="doubleClick">
+                                    <div class="flex-1 flex flex-row items-center justify-center">
+                                        <span x-text="item.partner_manager_mb_name" />
+                                    </div>
+                                </div>
+                            </li>
+                        </template>
+                        <template
+                            x-for="(item, index) in filter_mb_id == '' ? schedules.filter(e => e.type == 'schedule') : schedules.filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.od_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)"
                             :key="index">
                             <li class="min-h-64 flex flex-col mb-4 px-4">
                                 <div class="basis-12 flex flex-col align-center px-4">
                                     <p class="flex-1 inline-flex items-center text-lg font-bold"
-                                        x-text="item.type === 'schedule' ? item.status === '완료' ? '설치완료' : '설치예정 : ' + item.delivery_datetime : '설치 불가 일정'" />
+                                        x-text="item.status === '출고완료' ? '설치완료' : '설치예정 : ' + item.delivery_datetime" />
                                 </div>
 
                                 <div class="flex-1 flex flex-col border">
-                                    <div class="flex-1 flex flex-row border-b"
-                                        :class="{ 'hidden': item.type === 'deny_schedule' }">
+                                    <div class="flex-1 flex flex-row border-b">
                                         <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'상품명'" />
                                         </div>
@@ -238,14 +264,13 @@ include_once("./_common.php");
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
                                         <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
-                                            <span class="font-bold" x-text="'담당자'" />
+                                            <span class=" font-bold" x-text="'담당자'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
                                             <span x-text="item.partner_manager_mb_name" />
                                         </div>
                                     </div>
-                                    <div class="flex-1 flex flex-row border-b"
-                                        :class="{ 'hidden': item.type === 'deny_schedule' }">
+                                    <div class="flex-1 flex flex-row border-b">
                                         <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'수령인'" />
                                         </div>
@@ -253,8 +278,7 @@ include_once("./_common.php");
                                             <span x-text="item.od_b_name" />
                                         </div>
                                     </div>
-                                    <div class="flex-1 flex flex-row border-b"
-                                        :class="{ 'hidden': item.type === 'deny_schedule' }">
+                                    <div class="flex-1 flex flex-row border-b">
                                         <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'연락처'" />
                                         </div>
@@ -262,8 +286,7 @@ include_once("./_common.php");
                                             <span x-text="item.od_b_hp" />
                                         </div>
                                     </div>
-                                    <div class="flex-1 flex flex-row border-b"
-                                        :class="{ 'hidden': item.type === 'deny_schedule' }">
+                                    <div class="flex-1 flex flex-row border-b">
                                         <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'배송주소'" />
                                         </div>
@@ -271,8 +294,7 @@ include_once("./_common.php");
                                             <span x-text="item.od_b_addr1" />
                                         </div>
                                     </div>
-                                    <div class="flex-1 flex flex-row border-b"
-                                        :class="{ 'hidden': item.type === 'deny_schedule' }">
+                                    <div class="flex-1 flex flex-row border-b">
                                         <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'요청사항'" />
                                         </div>
@@ -296,9 +318,9 @@ include_once("./_common.php");
                 <div class="max-w-3xl px-6 py-4 mx-auto text-left bg-white rounded shadow-lg">
                     <!-- 모달 상단 -->
                     <div class="flex items-center justify-between">
-                        <h5 class="mr-3 font-bold text-xl max-w-none">일정표 관리</h5>
+                        <h5 class="mr-3 font-bold text-xl max-w-none">설치불가일 등록</h5>
                         <button type="button" class="z-50 cursor-pointer"
-                            @click="showModal = false; check = false; schedule_deny_weeks = []; schedule_deny_days = ''; valueInModal = ''; scheduleInit();">
+                            @click="showModal = false; check = true; schedule_deny_weeks = []; schedule_deny_days = ''; valueInModal = ''; scheduleInit();">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -421,8 +443,48 @@ include_once("./_common.php");
                         <button
                             class="border rounded-lg px-8 py-1 flex justify-center items-center text-lg bg-blue-500 text-white font-bold transition-colors duration-300"
                             type="button"
-                            @click="reload = req(calcDaysByMonth(), mb_type, valueInModal); refetch(); valueInModal = ''; showModal = false;"
+                            @click="if (valueInModal === '' || valueInModal === null) { alert('담당자를 선택해주세요.'); } else { reload = req(calcDaysByMonth(), mb_type, valueInModal); refetch(); valueInModal = ''; showModal = false; }"
                             x-text="'등록'"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 일정 취소 모달 -->
+            <div x-show="showCancelModal"
+                class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-50"
+                x-transition:enter="motion-safe:ease-out duration-300" x-transition:enter-start="opacity-0 scale-90"
+                x-transition:enter-end="opacity-100 scale-100" x-transition:leave="motion-safe:ease-out duration-300"
+                x-transition:leave-start="opacity-100 scale-90" x-transition:leave-end="opacity-0 scale-90">
+                <div class="max-w-3xl px-6 py-4 mx-auto text-left bg-white rounded shadow-lg">
+                    <!-- 모달 상단 -->
+                    <div class="flex items-center justify-between">
+                        <h5 class="mr-3 font-bold text-xl max-w-none">일정 삭제</h5>
+                        <button type="button" class="z-50 cursor-pointer"
+                            @click="showCancelModal = false; selectPartnerMbId = ''; selectPartnerManageMbId = '';">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- 모달 설명 -->
+                    <div class="flex items-center justify-between">
+                        일정을 정말 삭제하시겠습니까?
+                    </div>
+
+                    <!-- 모달 컨트롤바 -->
+                    <div class="h-16 flex justify-center items-center">
+                        <button
+                            class="border rounded-lg px-8 py-1 flex justify-center items-center text-lg bg-blue-500 text-white font-bold transition-colors duration-300"
+                            type="button"
+                            @click="removeDenySchedule(selectPartnerMbId, selectPartnerManageMbId, moment(select_date).format('YYYY-MM-DD'));"
+                            x-text="'삭제'"></button>
+                        <button
+                            class="border rounded-lg px-8 py-1 flex justify-center items-center text-lg bg-gray-300 text-white font-bold transition-colors duration-300"
+                            type="button"
+                            @click="showCancelModal = false; selectPartnerMbId = ''; selectPartnerManageMbId = '';"
+                            x-text="'취소'"></button>
                     </div>
                 </div>
             </div>
@@ -430,27 +492,81 @@ include_once("./_common.php");
     </div>
 
     <script>
-    function aggregation(arr) {
-        if (arr.length !== 0) {
-            const items = _.groupBy(arr, "status");
-            return "총 " + arr.length + "건" + (Object.keys(items).includes("완료") ? ("(완료 " + items["완료"].length + "건)") :
-                "");
-        } else {
-            return "";
-        }
-    }
+    window.touchtime = 0;
 
-    function calculation(arr) {
-        if (arr.length !== 0) {
-            const items = _.groupBy(arr, "it_name");
-            let return_str = "";
-            for (key in Object.keys(items)) {
-                return_str += Object.keys(items)[key] + " " + items[Object.keys(items)[key]].length + "개,\n";
+    function global() {
+        return {
+            showModal: false,
+            showCancelModal: false,
+            selectPartnerMbId: '',
+            selectPartnerManageMbId: '',
+            doubleClick: function(e) {
+                e.preventDefault();
+                if (window.touchtime == 0) {
+                    window.touchtime = new Date().getTime();
+                } else {
+                    if (((new Date().getTime()) - window.touchtime) < 500) {
+                        let target = null;
+                        if (e.target.id !== "") {
+                            target = e.target;
+                        } else {
+                            if (e.target.parentElement.id !== "") {
+                                target = e.target.parentElement;
+                            } else {
+                                if (e.target.parentElement.parentElement.id !== "") {
+                                    target = e.target.parentElement.parentElement;
+                                } else {
+                                    target = e.target.parentElement.parentElement.parentElement;
+                                }
+                            }
+                        }
+                        if ($(target).attr("data-partner-manager-mb-id") && $(target).attr(
+                                "data-partner-mb-id")) {
+                            this.selectPartnerMbId = $(target).attr("data-partner-mb-id");
+                            this.selectPartnerManageMbId = $(target).attr("data-partner-manager-mb-id");
+                            this.showCancelModal = true;
+                        }
+                        window.touchtime = 0;
+                    } else {
+                        window.touchtime = new Date().getTime();
+                    }
+                }
+            },
+            removeDenySchedule: function(selectPartnerMbId, selectPartnerManageMbId, denyDate) {
+                const data = {
+                    partner_mb_id: selectPartnerMbId,
+                    partner_manager_mb_id: selectPartnerManageMbId,
+                    deny_date: denyDate
+                }
+                let checkSum = true;
+                $.ajax('ajax.delete_deny_schedule.php', {
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data,
+                    dataType: 'json',
+                    success: function(result) {
+                        window.location.reload();
+                    },
+                    error: function($xhr) {
+                        checkSum = false;
+                        var message = $xhr.responseJSON.message;
+                        if (message) {
+                            $('#code_keyup').text('* ' + message).css('color', '#d44747');
+                            ret = message;
+                        } else {
+                            $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css(
+                                'color',
+                                '#333333');
+                        }
+                    }
+                });
+                if (checkSum) {
+                    this.selectPartnerMbId = '';
+                    this.selectPartnerManageMbId = '';
+                    this.showCancelModal = false;
+                }
             }
-            if (return_str.endsWith(",\n")) return_str = return_str.substr(0, return_str.length - 2);
-            return return_str;
-        } else {
-            return "";
         }
     }
     </script>
@@ -615,7 +731,6 @@ include_once("./_common.php");
                 this.filter_mb_id = Object.keys(this.options)[this.focusedOptionIndex] == 'all' ? '' : Object
                     .keys(
                         this.options)[this.focusedOptionIndex];
-                console.log(this.filter_mb_id, this.options);
                 this.value = Object.keys(this.options)[this.focusedOptionIndex]
                 this.closeListbox()
             },
@@ -638,7 +753,6 @@ include_once("./_common.php");
                     Object
                     .keys(
                         this.optionsInModal)[this.focusedOptionInModalIndex];
-                console.log(this.filter_mb_id);
                 this.valueInModal = Object.keys(this.optionsInModal)[this
                     .focusedOptionInModalIndex]
                 this.closeListInModalbox()
@@ -873,7 +987,7 @@ include_once("./_common.php");
             scheduleInit: function() {
                 this.schedule_deny_weeks = [];
                 this.schedule_deny_days = ""; // 사용자가 직접 입력한 설치 불가능 요일
-                this.check = false;
+                this.check = true;
             },
             refetch: function() {
                 $.ajax('ajax.index.php', {
@@ -888,7 +1002,7 @@ include_once("./_common.php");
                         this.events = result.data;
                         this.schedule_deny_weeks = [];
                         this.schedule_deny_days = ""; // 사용자가 직접 입력한 설치 불가능 요일
-                        this.check = false;
+                        this.check = true;
                     },
                     error: ($xhr) => {
                         var message = $xhr.responseJSON.message;
