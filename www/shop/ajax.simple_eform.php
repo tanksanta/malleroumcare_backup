@@ -4,6 +4,21 @@ include_once('./_common.php');
 if($member['mb_type'] !== 'default')
     json_response(400, '먼저 로그인하세요.');
 
+/**
+* 기존에 있던  eform_document 테이블을 재사용하기 위한 작업
+* 새로이 필요한 컬럼(applicantCd)이 존재하는지 확인 후, 없으면 새로 추가하는 작업 진행
+*/
+$sql_check = "
+  show columns from eform_document where field in ('applicantCd');
+";
+$res_check = sql_query($sql_check);
+if(sql_num_rows($res_check) == 0){
+
+  $append_col = "alter table eform_document ".
+                "add column applicantCd varchar(255) after penAddrDtl";
+  sql_query($append_col);
+}
+
 $w = $_POST['w'];
 $sealFile_self = $_POST['sealFile_self'] == "true" ? true : false; //직인 직접날인 여부 
 
@@ -35,6 +50,7 @@ $penRecGraNm = $pen_rec_gra_cd[$penRecGraCd];
 $penRecTypeCd = clean_xss_tags($_POST['penRecTypeCd']);
 $penRecTypeTxt = clean_xss_tags($_POST['penRecTypeTxt']);
 $penTypeCd = clean_xss_tags($_POST['penTypeCd']);
+$applicantCd = $_POST['applicantCd']? clean_xss_tags($_POST['applicantCd']) :"";
 $penTypeNm = $pen_type_cd[$penTypeCd];
 $penExpiStDtm = clean_xss_tags($_POST['penExpiStDtm']);
 $penExpiEdDtm = clean_xss_tags($_POST['penExpiEdDtm']);
@@ -211,6 +227,7 @@ if($w == 'u' || $w == 'w') {
             penRecTypeCd = '$penRecTypeCd', # 수령방법
             penRecTypeTxt = '$penRecTypeTxt',
             penTypeCd = '$penTypeCd', # 본인부담금율
+            applicantCd = '$applicantCd', # 장기요양입소이용신청서 신청인
             penTypeNm = '$penTypeNm',
             penExpiDtm = '$penExpiDtm', # 수급자 이용기간
             penJumin = '$penJumin',
@@ -262,6 +279,7 @@ if($w == 'u' || $w == 'w') {
             penRecTypeCd = '$penRecTypeCd', # 수령방법
             penRecTypeTxt = '$penRecTypeTxt',
             penTypeCd = '$penTypeCd', # 본인부담금율
+            applicantCd = '$applicantCd', # 장기요양입소이용신청서 신청인
             penTypeNm = '$penTypeNm',
             penExpiDtm = '$penExpiDtm', # 수급자 이용기간
             penJumin = '$penJumin',
