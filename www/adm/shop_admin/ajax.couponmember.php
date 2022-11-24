@@ -8,9 +8,9 @@ if($auth_check)
 
 $sql_common = " from {$g5['member_table']} ";
 $sql_where = " where mb_id <> '{$config['cf_admin']}' and mb_leave_date = '' and mb_intercept_date ='' ";
-if($mb_name) {
-  $mb_name = preg_replace('/\!\?\*$#<>()\[\]\{\}/i', '', strip_tags($mb_name));
-  $sql_where .= " and mb_name like '%".sql_real_escape_string($mb_name)."%' ";
+if($keyword) { // $mb_name => $keyword로 변경
+  $keyword = preg_replace('/\!\?\*$#<>()\[\]\{\}/i', '', strip_tags($keyword));
+  $sql_where .= " and (mb_name like '%".sql_real_escape_string($keyword)."%' or mb_id like '%".sql_real_escape_string($keyword)."%' )"; // mb_id와 mb_name 동시 검색
 }
 
 // 테이블의 전체 레코드수만 얻음
@@ -30,7 +30,7 @@ $sql = " select mb_id, mb_name
             limit $from_record, $rows ";
 $result = sql_query($sql);
 
-$qstr1 = 'mb_name='.urlencode($mb_name);
+$qstr1 = 'mb_name='.urlencode($keyword);
 
 $html = '';
 for($i=0; $row=sql_fetch_array($result); $i++) {

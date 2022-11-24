@@ -296,7 +296,7 @@ include_once("./_common.php");
                         <button
                             class="border rounded-lg px-8 py-1 flex justify-center items-center text-lg bg-blue-500 text-white font-bold transition-colors duration-300"
                             type="button"
-                            @click="if (valueInModal === '' || valueInModal === null) { alert('담당자를 선택해주세요.'); } else { reload = req(calcDaysByMonth(), mb_type, valueInModal); window.location.reload(); valueInModal = ''; showModal = false; scheduleInit(); }"
+                            @click="if (valueInModal === '' || valueInModal === null) { alert('담당자를 선택해주세요.'); } else { req(calcDaysByMonth(), mb_type, valueInModal); }"
                             x-text="'등록'"></button>
                     </div>
                 </div>
@@ -440,7 +440,8 @@ include_once("./_common.php");
         const data = {
             partner_mb_id: '<?php echo $member['mb_id']; ?>',
             partner_manager_mb_id: mb_type === 'partner' ? valueInModal : '<?php echo $_SESSION['ss_mb_id']; ?>',
-            schedules: JSON.parse(JSON.stringify([...new Set(list)])),
+            schedules: JSON.parse(JSON.stringify([...new Set(list.filter(e => moment().diff(moment(e), 'days') <=
+                0))])),
         };
         let showModal = true;
         if (mb_type === 'partner' && valueInModal !== '') {
@@ -451,7 +452,7 @@ include_once("./_common.php");
                 data,
                 dataType: 'json',
                 success: function(result) {
-                    if (result.data) showModal = false;
+                    window.location.reload();
                 },
                 error: function($xhr) {
                     showModal = true;
