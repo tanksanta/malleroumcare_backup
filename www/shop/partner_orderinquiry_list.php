@@ -526,15 +526,7 @@ tr.hover {
 }
 
 .sub_sction_tit_control {
-    width: 100%;
-    flex: 1;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
+    display: inline-block;
 }
 
 a.btn_schedule {
@@ -559,12 +551,7 @@ a.btn_schedule {
 </script>
 
 <section class="wrap">
-    <div class="sub_section_tit sub_sction_tit2">주문내역
-        <div class="sub_sction_tit_control">
-            <a href="./schedule/index.php" class="btn_schedule" onclick="return showSchdule(this.href);" target="_blank"
-                class="btn eroumcare_btn2" title="수급자일괄등록">일정 보기</a>
-        </div>
-    </div>
+    <div class="sub_section_tit sub_sction_tit2">주문내역</div>
     <form method="get" class="clear">
         <div class="search_box">
             <label><input type="checkbox" id="chk_ct_status_all" /> 전체</label>
@@ -608,6 +595,10 @@ a.btn_schedule {
             <div class="input_search">
                 <input name="search" value="<?=$_GET["search"]?>" type="text">
                 <button type="submit"></button>
+            </div>
+            <div class="sub_sction_tit_control">
+                <a href="./schedule/index.php" class="btn_schedule" onclick="return showSchdule(this.href);"
+                    target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">일정 보기</a>
             </div>
         </div>
     </form>

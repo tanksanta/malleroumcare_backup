@@ -145,8 +145,8 @@ include_once("./_common.php");
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
                             x-text="'수령인 : ' + item.od_b_name"></p>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'배송지 : ' + item.od_b_addr1"></p>
-                        <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
+                            x-text="'배송지 : ' + item.od_b_addr1 + item.od_b_addr2 ? item.od_b_addr2 :''"></p>
+                        <p class=" text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
                             x-text="'요청사항 : ' + item.prodMemo"></p>
                     </div>
                 </template>
