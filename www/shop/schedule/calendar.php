@@ -179,7 +179,7 @@ include_once("./_common.php");
                                     </div>
                                     <div class="flex-1">
                                         <div style="height: 80px" class="overflow-y-auto">
-                                            <!--  설치 불가 일정  -->
+                                            <!-- 설치 불가 일정 -->
                                             <div class="flex-1 flex flex-row"
                                                 :class="{'hidden' : Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length === 0 || events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule').length === 0}">
                                                 <div class="flex flex-col justify-center w-full max-h-6">
@@ -196,15 +196,20 @@ include_once("./_common.php");
                                             </div>
                                             <!--  설치 일정  -->
                                             <div class="flex-1 flex flex-row"
-                                                :class="{'hidden': Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length === 0 || events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').length === 0 || (filter_mb_id != '' && events[event].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.od_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id == filter_mb_id).length == 0) }">
+                                                :class="{'hidden': Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length === 0 ? true : filter_mb_id !== '' && events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id).length === 0}">
                                                 <div class="flex flex-col justify-center w-full max-h-6">
                                                     <div class="h-4 flex items-center flex-row">
                                                         <div class="h-2 border-4 rounded-full border-blue-600"></div>
-                                                        <span class="ml-1 text-xs line-clamp-1" x-text="
+                                                        <span class="ml-1 text-xs line-clamp-1" x-text="filter_mb_id == '' ? 
                                                             Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length !== 0 ?
                                                             events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').length > 1 ?
-                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule')[0]?.it_name.slice(0, 6) + '... 외 ' + (events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule').length - 1) + '건' :
+                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule')[0]?.it_name.slice(0, 6) + '... 외 ' + (events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').length - 1) + '건' :
                                                             events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule')[0]?.it_name.slice(0, 6) + '...' : 
+                                                            '' : 
+                                                            Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length !== 0 ? 
+                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').length > 1 && events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id).length > 1 ?
+                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)[0]?.it_name.slice(0, 6) + '... 외 ' + (events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id).length - 1) + '건' :
+                                                            events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)[0]?.it_name.slice(0, 6) + '...' :
                                                             ''"></span>
                                                     </div>
                                                 </div>
@@ -227,7 +232,7 @@ include_once("./_common.php");
                     <!-- 상세 정보 스크롤 뷰 영역 -->
                     <ul class="flex-1 overflow-y-auto" id="table">
                         <template
-                            x-for="(item, index) in filter_mb_id == '' ? schedules.filter(e => e.type == 'deny_schedule') : schedules.filter(e => e.type == 'deny_schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.od_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)"
+                            x-for="(item, index) in filter_mb_id == '' ? schedules.filter(e => e.type == 'deny_schedule') : schedules.filter(e => e.type == 'deny_schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)"
                             :key="index">
                             <li class="min-h-64 flex flex-col px-4">
                                 <div class=" basis-12 flex flex-col align-center px-4"
@@ -245,7 +250,7 @@ include_once("./_common.php");
                             </li>
                         </template>
                         <template
-                            x-for="(item, index) in filter_mb_id == '' ? schedules.filter(e => e.type == 'schedule') : schedules.filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.od_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)"
+                            x-for="(item, index) in filter_mb_id == '' ? schedules.filter(e => e.type == 'schedule') : schedules.filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)"
                             :key="index">
                             <li class="min-h-64 flex flex-col mb-4 px-4">
                                 <div class="basis-12 flex flex-col align-center px-4">
@@ -291,7 +296,7 @@ include_once("./_common.php");
                                             <span class="font-bold" x-text="'배송주소'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
-                                            <span x-text="item.od_b_addr1" />
+                                            <span x-text="item.od_b_addr1 + item.od_b_addr2 ? item.od_b_addr2 :''" />
                                         </div>
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">

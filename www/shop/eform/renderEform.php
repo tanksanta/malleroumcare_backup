@@ -3,11 +3,12 @@ include_once("./_common.php");
 
 $dc_id = get_search_string($_GET['dc_id']);
 $preview = get_search_string($_GET['preview']);
+$download = get_search_string($_GET['download']);
 $zoom = get_search_string($_GET['zoom']);
 if($dc_id) {
   if($preview || $download) {
     $timestamp = time();
-    $entId = $member['mb_entId'];
+    $entId = ($member['mb_entId'])?$member['mb_entId']: get_search_string($_GET['entId']);
   } else {
     $timestamp = intval($_GET['timestamp']);
   }
@@ -73,9 +74,6 @@ $is_gicho = ($eform['penTypeCd'] == '04' || $eform['penTypeCd'] == '03')? true:f
   <link rel="stylesheet" href="css/thk002.css">
   <link rel="stylesheet" href="css/thk003.css">
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.7.2/bluebird.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
-    <script src="https://unpkg.com/html2canvas@1.0.0-rc.5/dist/html2canvas.js"></script>
   <?php if($preview) echo "<script src='https://unpkg.com/panzoom@9.4.2/dist/panzoom.min.js'></script>"; ?>
   <script src="<?=G5_JS_URL?>/jquery-1.11.3.min.js"></script>
   <style>
@@ -108,28 +106,25 @@ $is_gicho = ($eform['penTypeCd'] == '04' || $eform['penTypeCd'] == '03')? true:f
   </style>
 </head>
 <body class="render-eform" <?php if($preview) echo 'style="width: 1240px;"'; ?>>
+<?php if($_GET['entId'] == ""){?>
 <div id="pdf_save_bt" style="width:100%;text-align:center;padding:10px;position:fixed;top:0px;left:0px;z-index:99999999;">
-	<input type="button" value="PDF저장" id="savePdf" style="margin-left:1200px;cursor:pointer;">
+	<form name="WkhtmlPdfForm" id="WkhtmlPdfForm" action="./pdf_down.php" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
+		<input type="hidden" name="uuid" value="<?=$dc_id?>">
+		<input type="submit" value="PDF저장" style="margin-left:1200px;cursor:pointer;">
+	</form>	
 </div>
+<?php }?>
   <div class="render-eform-body wrap" id="content">
     <?php
     if($is_gicho) {
-		echo "<div class='pdf_page'>";
       include_once('./document/thk101.php');
-		echo "</div><div class='pdf_page'>";
       include_once('./document/thk102.php');
-		echo "</div>";
     }
-	echo "<div class='pdf_page'>";
     include_once('./document/thk001_1.php');
-	echo "</div><div class='pdf_page'>";
     include_once('./document/thk001_2.php');
-	echo "</div><div class='pdf_page'>";
     include_once('./document/thk002.php');
-	echo "</div><div class='pdf_page'>";
     $is_render = "Y";
     include_once('./document/thk003.php');
-	echo "</div>";
     ?>
   </div>
   <script>
@@ -279,20 +274,6 @@ $is_gicho = ($eform['penTypeCd'] == '04' || $eform['penTypeCd'] == '03')? true:f
     }
 
     repaint();
-
-	$("#savePdf").click(function() { // pdf저장 button id
-		
-    // setTImeout을 하는 이유는 html2canvas를 불러오는게 너무 빨라서 앞의 js가 먹혀도 반영되지 않은 것처럼 보임
-    // 따라서 0.1 초 지연 발생 시킴
-      setTimeout(function() {
-		$(".thk101").css("padding","200px 0");
-		$(".thk102").css("padding","200px 0");
-		$(".thk001").css("padding","200px 0");
-		$(".thk002").css("padding","200px 0");
-		$(".thk003").css("padding","200px 0");
-		createPdf();
-      }, 100);
-  });
   });
 
   <?php if($preview) { ?>
@@ -330,73 +311,7 @@ $is_gicho = ($eform['penTypeCd'] == '04' || $eform['penTypeCd'] == '03')? true:f
   }
   <?php } ?>
   </script>
-<script language = "javascript">
 
-var renderedImg = new Array;
-
-var contWidth = 240, // 너비(mm) (a4에 맞춤)
-    padding = -15; //상하좌우 여백(mm)
-
-function createPdf() { //이미지를 pdf로 만들기
-
-
-  var lists = document.querySelectorAll(".pdf_page"),
-      deferreds = [],
-      doc = new jsPDF("p", "mm", "a4"),
-      listsLeng = lists.length;
-
-  for (var i = 0; i < listsLeng; i++) { // pdf_page 적용된 태그 개수만큼 이미지 생성
-    var deferred = $.Deferred();
-    deferreds.push(deferred.promise());
-    generateCanvas(i, doc, deferred, lists[i]);
-  }
-
-  $.when.apply($, deferreds).then(function () { // 이미지 렌더링이 끝난 후
-    var sorted = renderedImg.sort(function(a,b){return a.num < b.num ? -1 : 1;}), // 순서대로 정렬
-        curHeight = padding, //위 여백 (이미지가 들어가기 시작할 y축)
-        sortedLeng = sorted.length;
-
-    for (var i = 0; i < sortedLeng; i++) {
-      var sortedHeight = sorted[i].height, //이미지 높이
-          sortedImage = sorted[i].image; //이미지
-
-      if( curHeight + sortedHeight > 297 - padding * 2 ){ // a4 높이에 맞게 남은 공간이 이미지높이보다 작을 경우 페이지 추가
-        doc.addPage(); // 페이지를 추가함
-        curHeight = padding; // 이미지가 들어갈 y축을 초기 여백값으로 초기화
-        doc.addImage(sortedImage, 'jpeg', padding , curHeight, contWidth, sortedHeight); //이미지 넣기
-        curHeight += sortedHeight; // y축 = 여백 + 새로 들어간 이미지 높이
-      } else { // 페이지에 남은 공간보다 이미지가 작으면 페이지 추가하지 않음
-        doc.addImage(sortedImage, 'jpeg', padding , curHeight, contWidth, sortedHeight); //이미지 넣기
-        curHeight += sortedHeight; // y축 = 기존y축 + 새로들어간 이미지 높이
-      }
-    }
-    doc.save('<?php echo $eform['dc_subject'];?>.pdf'); //pdf 저장
-
-    curHeight = padding; //y축 초기화
-    renderedImg = new Array; //이미지 배열 초기화
-
-  });	
-        $(".thk101").css("padding","0 128px");
-		$(".thk102").css("padding","0 128px");
-		$(".thk001").css("padding","0 128px");
-		$(".thk002").css("padding","0 128px");
-		$(".thk003").css("padding","0 128px");
-}
-
-function generateCanvas(i, doc, deferred, curList){ //페이지를 이미지로 만들기
-  var pdfWidth = $(curList).outerWidth() * 0.2645, //px -> mm로 변환
-      pdfHeight = $(curList).outerHeight() * 0.2645,
-      heightCalc = contWidth * pdfHeight / pdfWidth; //비율에 맞게 높이 조절
-  html2canvas( curList ).then(
-    function (canvas) {
-      var img = canvas.toDataURL('image/jpeg', 1.0); //이미지 형식 지정
-      renderedImg.push({num:i, image:img, height:heightCalc}); //renderedImg 배열에 이미지 데이터 저장(뒤죽박죽 방지)     
-      deferred.resolve(); //결과 보내기
-    }
-  );
-}
- 
-</script>
 
 </body>
 </html>
