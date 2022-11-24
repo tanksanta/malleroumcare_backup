@@ -77,8 +77,8 @@ body {
 
   <form id="form_member" name="fmember" method="get">
   <div id="scp_list_find">
-    <label for="mb_name">회원이름</label>
-    <input type="text" name="mb_name" id="mb_name" value="<?php echo get_text($mb_name); ?>" class="frm_input" size="20">
+    <label for="keyword" style="margin-right: 10px">검색</label>
+    <input type="text" name="keyword" id="keyword" value="<?php echo get_text($mb_name); ?>" class="frm_input" size="30" placeholder="회원이름 또는 회원아이디로 검색">
     <input type="submit" value="검색" class="btn_frmline">
   </div>
   <div id="tbl_member" class="tbl_head01 tbl_wrap new_win_con">
@@ -166,8 +166,9 @@ $(function() {
   $('#form_member').on('submit', function(e) {
     e.preventDefault();
 
+    // 회원 검색시
     get_members({
-      mb_name: $('#mb_name').val()
+      keyword: $('#keyword').val()
     });
   });
 
