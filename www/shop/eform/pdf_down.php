@@ -61,6 +61,7 @@ $sFilePath = $pdfdir;
 $sFileName = $pdffile2;
 
 header("Content-Disposition: attachment; filename=\"".$sFileName."\"");
+header('Content-type: application/pdf');
 header("Content-Transfer-Encoding: binary");
 header("Content-Length: ".strval(filesize($sFilePath)));
 header("Cache-Control: cache, must-revalidate");
