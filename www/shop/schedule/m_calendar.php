@@ -440,7 +440,8 @@ include_once("./_common.php");
         const data = {
             partner_mb_id: '<?php echo $member['mb_id']; ?>',
             partner_manager_mb_id: mb_type === 'partner' ? valueInModal : '<?php echo $_SESSION['ss_mb_id']; ?>',
-            schedules: JSON.parse(JSON.stringify([...new Set(list)])),
+            schedules: JSON.parse(JSON.stringify([...new Set(list.filter(e => moment().diff(moment(e), 'days') <=
+                0))])),
         };
         let showModal = true;
         if (mb_type === 'partner' && valueInModal !== '') {

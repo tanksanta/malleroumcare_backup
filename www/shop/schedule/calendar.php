@@ -180,8 +180,12 @@ include_once("./_common.php");
                                     <div class="flex-1">
                                         <div style="height: 80px" class="overflow-y-auto">
                                             <!-- 설치 불가 일정 -->
-                                            <div class="flex-1 flex flex-row"
-                                                :class="{'hidden' : Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length === 0 || events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule').length === 0}">
+                                            <div class="flex-1 flex flex-row" :class="{'hidden': Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length === 0 ? true : 
+                                                    events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule').length === 0 ? true : 
+                                                    (
+                                                        (filter_mb_id !== '' && events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule').length === 0) ||
+                                                        (filter_mb_id !== '' && events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'deny_schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id).length === 0)
+                                                    )}">
                                                 <div class="flex flex-col justify-center w-full max-h-6">
                                                     <div class="h-4 flex items-center flex-row">
                                                         <div class="h-2 border-4 rounded-full border-red-600"></div>
@@ -195,8 +199,12 @@ include_once("./_common.php");
                                                 </div>
                                             </div>
                                             <!--  설치 일정  -->
-                                            <div class="flex-1 flex flex-row"
-                                                :class="{'hidden': Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length === 0 ? true : filter_mb_id !== '' && events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id).length === 0}">
+                                            <div class="flex-1 flex flex-row" :class="{'hidden': Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length === 0 ? true : 
+                                                    events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').length === 0 ? true : 
+                                                    (
+                                                        (filter_mb_id !== '' && events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').length === 0) ||
+                                                        (filter_mb_id !== '' && events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id).length === 0)
+                                                    )}">
                                                 <div class="flex flex-col justify-center w-full max-h-6">
                                                     <div class="h-4 flex items-center flex-row">
                                                         <div class="h-2 border-4 rounded-full border-blue-600"></div>
@@ -448,7 +456,7 @@ include_once("./_common.php");
                         <button
                             class="border rounded-lg px-8 py-1 flex justify-center items-center text-lg bg-blue-500 text-white font-bold transition-colors duration-300"
                             type="button"
-                            @click="if (valueInModal === '' || valueInModal === null) { alert('담당자를 선택해주세요.'); } else { reload = req(calcDaysByMonth(), mb_type, valueInModal); refetch(); valueInModal = ''; showModal = false; }"
+                            @click="if (valueInModal === '' || valueInModal === null) { alert('담당자를 선택해주세요.'); } else { reload = req(calcDaysByMonth(), mb_type, valueInModal); }"
                             x-text="'등록'"></button>
                     </div>
                 </div>
@@ -506,35 +514,25 @@ include_once("./_common.php");
             selectPartnerMbId: '',
             selectPartnerManageMbId: '',
             doubleClick: function(e) {
-                e.preventDefault();
-                if (window.touchtime == 0) {
-                    window.touchtime = new Date().getTime();
+                let target = null;
+                if (e.target.id !== "") {
+                    target = e.target;
                 } else {
-                    if (((new Date().getTime()) - window.touchtime) < 500) {
-                        let target = null;
-                        if (e.target.id !== "") {
-                            target = e.target;
-                        } else {
-                            if (e.target.parentElement.id !== "") {
-                                target = e.target.parentElement;
-                            } else {
-                                if (e.target.parentElement.parentElement.id !== "") {
-                                    target = e.target.parentElement.parentElement;
-                                } else {
-                                    target = e.target.parentElement.parentElement.parentElement;
-                                }
-                            }
-                        }
-                        if ($(target).attr("data-partner-manager-mb-id") && $(target).attr(
-                                "data-partner-mb-id")) {
-                            this.selectPartnerMbId = $(target).attr("data-partner-mb-id");
-                            this.selectPartnerManageMbId = $(target).attr("data-partner-manager-mb-id");
-                            this.showCancelModal = true;
-                        }
-                        window.touchtime = 0;
+                    if (e.target.parentElement.id !== "") {
+                        target = e.target.parentElement;
                     } else {
-                        window.touchtime = new Date().getTime();
+                        if (e.target.parentElement.parentElement.id !== "") {
+                            target = e.target.parentElement.parentElement;
+                        } else {
+                            target = e.target.parentElement.parentElement.parentElement;
+                        }
                     }
+                }
+                if ($(target).attr("data-partner-manager-mb-id") && $(target).attr(
+                        "data-partner-mb-id")) {
+                    this.selectPartnerMbId = $(target).attr("data-partner-mb-id");
+                    this.selectPartnerManageMbId = $(target).attr("data-partner-manager-mb-id");
+                    this.showCancelModal = true;
                 }
             },
             removeDenySchedule: function(selectPartnerMbId, selectPartnerManageMbId, denyDate) {
@@ -581,7 +579,8 @@ include_once("./_common.php");
         const data = {
             partner_mb_id: '<?php echo $member['mb_id']; ?>',
             partner_manager_mb_id: mb_type === 'partner' ? valueInModal : '<?php echo $_SESSION['ss_mb_id']; ?>',
-            schedules: JSON.parse(JSON.stringify([...new Set(list)])),
+            schedules: JSON.parse(JSON.stringify([...new Set(list.filter(e => moment().diff(moment(e), 'days') <=
+                0))])),
         };
         let showModal = true;
         if (mb_type === 'partner' && valueInModal !== '') {
@@ -592,7 +591,7 @@ include_once("./_common.php");
                 data,
                 dataType: 'json',
                 success: function(result) {
-                    if (result.data) showModal = false;
+                    window.location.reload();
                 },
                 error: function($xhr) {
                     showModal = true;
@@ -818,7 +817,7 @@ include_once("./_common.php");
             events: res,
             select_date: new Date(),
             schedules: [],
-            mb_type: '<?php echo $member["mb_type"]; ?>', // TODO: member 변수가 mb_type이 없으면 권한에 따른 처리가 제대로 이뤄지지 않음으로 관련 코드가 수정되면 반드시 로직 수정이 되어야 함.
+            mb_type: '<?php echo $member["mb_type"]; ?>',
             initDate: function() {
                 const today = new Date();
                 this.month = today.getMonth();
