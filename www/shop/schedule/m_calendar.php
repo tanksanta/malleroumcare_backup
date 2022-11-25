@@ -145,9 +145,11 @@ include_once("./_common.php");
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
                             x-text="'수령인 : ' + item.od_b_name"></p>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'배송지 : ' + item.od_b_addr1 + item.od_b_addr2 ? item.od_b_addr2 :''"></p>
+                            x-text="'연락처 : ' + item.od_b_hp"></p>
+                        <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
+                            x-text="'배송지 : ' + item.od_b_addr1 + (item.od_b_addr2 ? item.od_b_addr2 :'')"></p>
                         <p class=" text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'요청사항 : ' + item.prodMemo"></p>
+                            x-text="'요청사항 : ' + (item.prodMemo ? item.prodMemo : '')"></p>
                     </div>
                 </template>
             </div>
@@ -452,6 +454,7 @@ include_once("./_common.php");
                 data,
                 dataType: 'json',
                 success: function(result) {
+                    // TODO: 새로고침이 아닌 방식으로 수정할 계획
                     window.location.reload();
                 },
                 error: function($xhr) {

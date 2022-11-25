@@ -3047,21 +3047,6 @@ function update_partner_install_schedule_partner_by_ct_id($ct_id, $partner_manag
 
 /**
  * 작성자 : 임근석
- * 작성일자 : 2022-11-07
- * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-07
- * 설명 : 설치파트너 매니저 일정 삭제
- * @param integer $od_id
- * @param integer $ct_id
- * @return boolean 
- */
-function delete_partner_install_schedule_by_ob_id_and_ct_id($od_id, $ct_id) {
-  $sql = "DELETE FROM `partner_inst_sts` WHERE od_id = $od_id AND ct_id = $ct_id;";
-  return sql_query($sql);
-}
-
-/**
- * 작성자 : 임근석
  * 작성일자 : 2022-11-14
  * 마지막 수정자 : 임근석
  * 마지막 수정일자 : 2022-11-21

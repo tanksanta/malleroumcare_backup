@@ -304,7 +304,7 @@ include_once("./_common.php");
                                             <span class="font-bold" x-text="'배송주소'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
-                                            <span x-text="item.od_b_addr1 + item.od_b_addr2 ? item.od_b_addr2 :''" />
+                                            <span x-text="item.od_b_addr1 + (item.od_b_addr2 ? item.od_b_addr2 :'')" />
                                         </div>
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
@@ -549,6 +549,7 @@ include_once("./_common.php");
                     data,
                     dataType: 'json',
                     success: function(result) {
+                        // TODO: 새로고침이 아닌 방식으로 수정할 계획
                         window.location.reload();
                     },
                     error: function($xhr) {
@@ -591,6 +592,7 @@ include_once("./_common.php");
                 data,
                 dataType: 'json',
                 success: function(result) {
+                    // TODO: 새로고침이 아닌 방식으로 수정할 계획
                     window.location.reload();
                 },
                 error: function($xhr) {
