@@ -583,6 +583,12 @@ if ($res["errorYN"] == "N") {
     sql_query($sql_ct);
   }
 } else {
+
+  // 22.11.21 : 서원 - 상품 정보가 WMDS에 등록되어 있지 않을 경우 에러 처리
+  //                   [관리자]잘못된 상품DB로 주문서 생성 시 에러발생
+  if( !is_array($res['data']) )
+    alert("잘못된 상품정보입니다.", './pop.order.add.php');
+
   //실패시 ct_id 삭제
   for ($k=0; $k<count($res['data']);$k++) {
     //실패하면 ct_id 삭제
