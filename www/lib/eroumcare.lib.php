@@ -2827,7 +2827,7 @@ function get_partner_list($mb_type) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-16
+ * 마지막 수정일자 : 2022-11-28
  * 설명 : 특정 사업소의 수급자 목록 조회(주문 일정이 있는 수급자에 한정하여)
  * @param string $ent_md_id : 사업소 mb_id
  * @return mixed
@@ -2839,7 +2839,7 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
   
   $manager_str = '{"members":{"all":"전체",';
 
-  $sql = "SELECT DISTINCT od_b_name, od_b_hp FROM partner_inst_sts WHERE od_mb_id = '$ent_md_id' AND status != '취소' AND status != '주문무효';";
+  $sql = "SELECT DISTINCT od_b_name, od_b_hp FROM partner_inst_sts WHERE od_mb_id = '$ent_md_id' AND status != '주문' AND status != '주문무효';";
   $result = sql_query($sql);
   while ($res_item = sql_fetch_array($result)) {
     $manager_str.= '"'.$res_item['od_b_name'].'":"'.$res_item['od_b_name'].'",';
@@ -2854,7 +2854,7 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-07
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-21
+ * 마지막 수정일자 : 2022-11-28
  * 설명 : 설치파트너 매니저 설치 일정 생성 여부 확인
  * @param integer $od_id
  * @return boolean 
@@ -2862,7 +2862,7 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
 function exit_partner_install_schedule($od_id) {
   $sql = "SELECT id FROM partner_inst_sts WHERE od_id = $od_id;";
   $result = sql_query($sql);
-  $sql = "SELECT ct_id FROM g5_shop_cart WHERE od_id = $od_id AND ct_status != '취소' AND ct_status != '주문무효';";
+  $sql = "SELECT ct_id FROM g5_shop_cart WHERE od_id = $od_id AND (ct_status = '출고준비' OR ct_status = '완료');";
   $result_cart = sql_query($sql);
   return mysqli_num_rows($result) == mysqli_num_rows($result_cart) && mysqli_num_rows($result) > 0;
 }
@@ -2913,14 +2913,14 @@ function duplicate_partner_deny_schedule($partner_manager_mb_id, $delivery_date)
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-21
+ * 마지막 수정일자 : 2022-11-28
  * 설명 : 설치파트너 매니저 설치 일정 생성
- * @param string $status 출고준비|출고완료|취소|주문무효
  * @param integer $od_id
  * @return boolean 
  */
-function create_partner_install_schedule($status, $od_id) {
+function create_partner_install_schedule($od_id) {
   $sql = "SELECT
+    ct.ct_status, 
     ct.ct_id,
     ct.it_name,
     ct.prodMemo, 
@@ -2928,14 +2928,14 @@ function create_partner_install_schedule($status, $od_id) {
     od.od_b_hp, 
     od.od_b_name,
     od.od_b_addr1, 
-    od.od_addr2, 
+    od.od_b_addr2, 
     mb.mb_id, 
     mb.mb_entNm
   FROM
   g5_shop_cart AS ct
   LEFT JOIN g5_shop_order AS od ON ct.od_id = od.od_id
   LEFT JOIN g5_member AS mb ON mb.mb_id = od.mb_id
-  WHERE od.od_id = $od_id AND ct_status != '취소' AND ct_status != '주문무효';";
+  WHERE od.od_id = $od_id AND (ct.ct_status = '출고준비' OR ct.ct_status = '완료');";
   $cart_result = sql_query($sql);
   if (mysqli_num_rows($cart_result) < 1) return false;
 
@@ -2958,7 +2958,7 @@ function create_partner_install_schedule($status, $od_id) {
     prodMemo
   ) VALUES ";
   while ($cart = sql_fetch_array($cart_result)) {
-    $sql = $sql."('".$status."',"
+    $sql = $sql."('".$cart["ct_status"]."',"
     ."'".$cart["ct_id"]."',"
     ."'".$cart["it_name"]."',"
     ."'".$cart["od_id"]."',"
@@ -3047,6 +3047,268 @@ function update_partner_install_schedule_partner_by_ct_id($ct_id, $partner_manag
 
 /**
  * 작성자 : 임근석
+ * 작성일자 : 2022-11-28
+ * 마지막 수정자 : 임근석
+ * 마지막 수정일자 : 2022-11-28
+ * 설명 : 일정 수정 사항 및 삭제 내역 체크
+ * @param string $mb_id
+ * @param string $member
+ * @return mixed 
+ */
+function validate_schedule($mb_id, $member) {
+  # 개수 체크
+  $sql = "SELECT DISTINCT od_id FROM `partner_inst_sts`;";
+  $result = sql_query($sql);
+  while ($item = sql_fetch_array($result)) {
+    $sql = "SELECT 
+    s.od_id, 
+    group_concat(s.ct_id ORDER BY s.ct_id ASC) AS `ct_concat` 
+    FROM `partner_inst_sts` AS `s` 
+    JOIN `g5_shop_cart` AS `ct` ON ct.od_id = s.od_id 
+    WHERE s.od_id = '".$item['od_id']."' 
+    GROUP BY od_id;";
+    $compare_a = sql_fetch($sql);
+  
+    $sql = "SELECT 
+    ct.od_id, 
+    group_concat(ct.ct_id ORDER BY ct.ct_id ASC) AS `ct_concat` 
+    FROM `g5_shop_cart` AS ct
+    WHERE ct.od_id = '".$item['od_id']."' 
+    GROUP BY od_id;";
+    $compare_b = sql_fetch($sql);
+    if ($compare_a['ct_concat'] != $compare_b['ct_concat']) {
+      $sql = "DELETE FROM `partner_inst_sts` WHERE od_id = ".$item['od_id'].";";
+      sql_query($sql);
+      this.create_partner_install_schedule($item['od_id']);
+    }
+  }
+  
+  # 관리자 계정
+  if ($member['mb_type'] === 'default' && $member['mb_level'] >= 9) {
+    $sql = "SELECT 
+    `s`.id AS `s_id`, 
+    
+    `s`.status AS `s_status`, 
+    `s`.delivery_date AS `s_delivery_date`, 
+    `s`.delivery_datetime AS `s_delivery_datetime`, 
+    `s`.prodMemo AS `s_prodMemo`, 
+    `s`.ct_id AS `s_ct_id`, 
+    `s`.it_name AS `s_it_name`, 
+
+    `s`.od_id AS `s_od_id`, 
+    `s`.od_mb_id AS `s_od_mb_id`, 
+    `s`.od_mb_ent_name AS `s_od_mb_ent_name`, 
+    `s`.od_b_name AS `s_od_b_name`, 
+    `s`.od_b_hp AS `s_od_b_hp`, 
+    `s`.od_b_addr1 AS `s_od_b_addr1`, 
+    `s`.od_b_addr2 AS `s_od_b_addr2`, 
+
+    `s`.partner_mb_id AS `s_partner_mb_id`, 
+    
+    `s`.partner_manager_mb_id AS `s_partner_manager_mb_id`, 
+    `s`.partner_manager_mb_name AS `s_partner_manager_mb_name`, 
+
+    `ct`.ct_status AS `ct_status`, 
+    DATE_FORMAT(`ct`.ct_direct_delivery_date, '%Y-%m-%d') AS `ct_delivery_date`, 
+    DATE_FORMAT(`ct`.ct_direct_delivery_date, '%H:%i') AS `ct_delivery_datetime`, 
+    `ct`.prodMemo AS `ct_prodMemo`, 
+    `ct`.ct_id AS `ct_ct_id`, 
+    `ct`.it_name AS `ct_it_name`, 
+    
+    `od`.od_id AS `od_od_id`, 
+    `od_mb`.mb_id AS `od_od_mb_id`, 
+    `od_mb`.mb_entNm AS `od_od_mb_ent_name`, 
+    `od`.od_b_hp AS `od_od_b_hp`, 
+    `od`.od_b_name AS `od_od_b_name`, 
+    `od`.od_b_addr1 AS `od_od_b_addr1`, 
+    `od`.od_b_addr2 AS `od_od_b_addr2`, 
+
+    `p_mb`.mb_id AS `p_mb_partner_mb_id`, 
+
+    `m_mb`.mb_id AS `m_mb_partner_manager_mb_id`, 
+    `m_mb`.mb_name AS `m_mb_partner_manager_mb_name` 
+    FROM `partner_inst_sts` AS `s` 
+    LEFT JOIN `g5_shop_cart` AS `ct` ON ct.ct_id = s.ct_id
+    LEFT JOIN `g5_shop_order` AS `od` ON od.od_id = s.od_id
+    LEFT JOIN `g5_member` AS `od_mb` ON od_mb.mb_id = od.mb_id
+    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = ct.ct_direct_delivery_partner
+    LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = m_mb.mb_id;";
+  }
+  # 사업소 계정
+  else if ($member['mb_type'] === 'default' && $member['mb_level'] < 9) {
+    $sql = "SELECT 
+    `s`.id AS `s_id`, 
+    
+    `s`.status AS `s_status`, 
+    `s`.delivery_date AS `s_delivery_date`, 
+    `s`.delivery_datetime AS `s_delivery_datetime`, 
+    `s`.prodMemo AS `s_prodMemo`, 
+    `s`.ct_id AS `s_ct_id`, 
+    `s`.it_name AS `s_it_name`, 
+
+    `s`.od_id AS `s_od_id`, 
+    `s`.od_mb_id AS `s_od_mb_id`, 
+    `s`.od_mb_ent_name AS `s_od_mb_ent_name`, 
+    `s`.od_b_name AS `s_od_b_name`, 
+    `s`.od_b_hp AS `s_od_b_hp`, 
+    `s`.od_b_addr1 AS `s_od_b_addr1`, 
+    `s`.od_b_addr2 AS `s_od_b_addr2`, 
+
+    `s`.partner_mb_id AS `s_partner_mb_id`, 
+    
+    `s`.partner_manager_mb_id AS `s_partner_manager_mb_id`, 
+    `s`.partner_manager_mb_name AS `s_partner_manager_mb_name`, 
+
+    `ct`.ct_status AS `ct_status`, 
+    DATE_FORMAT(`ct`.ct_direct_delivery_date, '%Y-%m-%d') AS `ct_delivery_date`, 
+    DATE_FORMAT(`ct`.ct_direct_delivery_date, '%H:%i') AS `ct_delivery_datetime`, 
+    `ct`.prodMemo AS `ct_prodMemo`, 
+    `ct`.ct_id AS `ct_ct_id`, 
+    `ct`.it_name AS `ct_it_name`, 
+    
+    `od`.od_id AS `od_od_id`, 
+    `od_mb`.mb_id AS `od_od_mb_id`, 
+    `od_mb`.mb_entNm AS `od_od_mb_ent_name`, 
+    `od`.od_b_hp AS `od_od_b_hp`, 
+    `od`.od_b_name AS `od_od_b_name`, 
+    `od`.od_b_addr1 AS `od_od_b_addr1`, 
+    `od`.od_b_addr2 AS `od_od_b_addr2`, 
+
+    `p_mb`.mb_id AS `p_mb_partner_mb_id`, 
+
+    `m_mb`.mb_id AS `m_mb_partner_manager_mb_id`, 
+    `m_mb`.mb_name AS `m_mb_partner_manager_mb_name` 
+    FROM `partner_inst_sts` AS `s` 
+    LEFT JOIN `g5_shop_cart` AS `ct` ON ct.ct_id = s.ct_id
+    LEFT JOIN `g5_shop_order` AS `od` ON od.od_id = s.od_id
+    LEFT JOIN `g5_member` AS `od_mb` ON od_mb.mb_id = od.mb_id
+    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = ct.ct_direct_delivery_partner
+    LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = m_mb.mb_id
+    WHERE `s`.od_mb_id = '$mb_id';";
+  }
+  # 설치파트너 계정 && 설치파트너 매니저 계정
+  else {
+    $sql = "SELECT 
+    `s`.id AS `s_id`, 
+    
+    `s`.status AS `s_status`, 
+    `s`.delivery_date AS `s_delivery_date`, 
+    `s`.delivery_datetime AS `s_delivery_datetime`, 
+    `s`.prodMemo AS `s_prodMemo`, 
+    `s`.ct_id AS `s_ct_id`, 
+    `s`.it_name AS `s_it_name`, 
+
+    `s`.od_id AS `s_od_id`, 
+    `s`.od_mb_id AS `s_od_mb_id`, 
+    `s`.od_mb_ent_name AS `s_od_mb_ent_name`, 
+    `s`.od_b_name AS `s_od_b_name`, 
+    `s`.od_b_hp AS `s_od_b_hp`, 
+    `s`.od_b_addr1 AS `s_od_b_addr1`, 
+    `s`.od_b_addr2 AS `s_od_b_addr2`, 
+
+    `s`.partner_mb_id AS `s_partner_mb_id`, 
+    
+    `s`.partner_manager_mb_id AS `s_partner_manager_mb_id`, 
+    `s`.partner_manager_mb_name AS `s_partner_manager_mb_name`, 
+
+    `ct`.ct_status AS `ct_status`, 
+    DATE_FORMAT(`ct`.ct_direct_delivery_date, '%Y-%m-%d') AS `ct_delivery_date`, 
+    DATE_FORMAT(`ct`.ct_direct_delivery_date, '%H:%i') AS `ct_delivery_datetime`, 
+    `ct`.prodMemo AS `ct_prodMemo`, 
+    `ct`.ct_id AS `ct_ct_id`, 
+    `ct`.it_name AS `ct_it_name`, 
+    
+    `od`.od_id AS `od_od_id`, 
+    `od_mb`.mb_id AS `od_od_mb_id`, 
+    `od_mb`.mb_entNm AS `od_od_mb_ent_name`, 
+    `od`.od_b_hp AS `od_od_b_hp`, 
+    `od`.od_b_name AS `od_od_b_name`, 
+    `od`.od_b_addr1 AS `od_od_b_addr1`, 
+    `od`.od_b_addr2 AS `od_od_b_addr2`, 
+
+    `p_mb`.mb_id AS `p_mb_partner_mb_id`, 
+
+    `m_mb`.mb_id AS `m_mb_partner_manager_mb_id`, 
+    `m_mb`.mb_name AS `m_mb_partner_manager_mb_name` 
+    FROM `partner_inst_sts` AS `s` 
+    LEFT JOIN `g5_shop_cart` AS `ct` ON ct.ct_id = s.ct_id
+    LEFT JOIN `g5_shop_order` AS `od` ON od.od_id = s.od_id
+    LEFT JOIN `g5_member` AS `od_mb` ON od_mb.mb_id = od.mb_id
+    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = ct.ct_direct_delivery_partner
+    LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = m_mb.mb_id
+    WHERE `s`.partner_mb_id = '$mb_id';";
+  }
+  $result = sql_query($sql);
+  while ($item = sql_fetch_array($result)) {
+    if ($item["s_status"] != $item["ct_status"]) {
+      $sql = "UPDATE `partner_inst_sts` SET status = '".$item['ct_status']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_delivery_date"] != $item["ct_delivery_date"]) {
+      $sql = "UPDATE `partner_inst_sts` SET delivery_date = '".$item['ct_delivery_date']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_delivery_datetime"] != $item["ct_delivery_datetime"]) {
+      $sql = "UPDATE `partner_inst_sts` SET delivery_datetime = '".$item['ct_delivery_datetime']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_prodMemo"] != $item["ct_prodMemo"]) {
+      $sql = "UPDATE `partner_inst_sts` SET prodMemo = '".$item['ct_prodMemo']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_ct_id"] != $item["ct_ct_id"]) {
+      $sql = "UPDATE `partner_inst_sts` SET ct_id = '".$item['ct_ct_id']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_it_name"] != $item["ct_it_name"]) {
+      $sql = "UPDATE `partner_inst_sts` SET it_name = '".$item['ct_it_name']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_od_id"] != $item["od_od_id"]) {
+      $sql = "UPDATE `partner_inst_sts` SET od_id = '".$item['od_od_id']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_od_mb_id"] != $item["od_od_mb_id"]) {
+      $sql = "UPDATE `partner_inst_sts` SET od_mb_id = '".$item['od_od_mb_id']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_od_mb_ent_name"] != $item["od_od_mb_ent_name"]) {
+      $sql = "UPDATE `partner_inst_sts` SET od_mb_ent_name = '".$item['od_od_mb_ent_name']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_od_b_hp"] != $item["od_od_b_hp"]) {
+      $sql = "UPDATE `partner_inst_sts` SET od_b_hp = '".$item['od_od_b_hp']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_od_b_name"] != $item["od_od_b_name"]) {
+      $sql = "UPDATE `partner_inst_sts` SET od_b_name = '".$item['od_od_b_name']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_od_b_addr1"] != $item["od_od_b_addr1"]) {
+      $sql = "UPDATE `partner_inst_sts` SET od_b_addr1 = '".$item['od_od_b_addr1']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_od_b_addr2"] != $item["od_od_b_addr2"]) {
+      $sql = "UPDATE `partner_inst_sts` SET od_b_addr2 = '".$item['od_od_b_addr2']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_partner_mb_id"] != $item["p_mb_partner_mb_id"]) {
+      $sql = "UPDATE `partner_inst_sts` SET partner_mb_id = '".$item['p_mb_partner_mb_id']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_partner_manager_mb_id"] != $item["m_mb_partner_manager_mb_id"]) {
+      $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_id = '".$item['m_mb_partner_manager_mb_id']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+    if ($item["s_partner_manager_mb_name"] != $item["m_mb_partner_manager_mb_name"]) {
+      $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_name = '".$item['m_mb_partner_manager_mb_name']."' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    }
+  }
+}
+
+/**
+ * 작성자 : 임근석
  * 작성일자 : 2022-11-14
  * 마지막 수정자 : 임근석
  * 마지막 수정일자 : 2022-11-21
@@ -3056,25 +3318,26 @@ function update_partner_install_schedule_partner_by_ct_id($ct_id, $partner_manag
  */
 function get_partner_schedule_by_mb_id($od_mb_id) {
   $sql = "SELECT 
-    status, 
-    delivery_date, 
-    delivery_datetime, 
-    od_id, 
-    it_name, 
-    partner_manager_mb_id, 
-    partner_manager_mb_name, 
-    od_mb_id, 
-    od_b_name, 
-    od_b_hp, 
-    od_b_addr1, 
-    od_b_addr2, 
-    prodMemo
-  FROM `partner_inst_sts` 
+    s.status, 
+    s.delivery_date, 
+    s.delivery_datetime, 
+    s.od_id, 
+    ct.ct_qty, 
+    s.it_name, 
+    s.partner_manager_mb_id, 
+    s.partner_manager_mb_name, 
+    s.od_mb_id, 
+    s.od_b_name, 
+    s.od_b_hp, 
+    s.od_b_addr1, 
+    s.od_b_addr2, 
+    s.prodMemo
+  FROM `partner_inst_sts` AS s
+  LEFT JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
   WHERE od_mb_id = '$od_mb_id' 
   AND delivery_date != '' 
   AND delivery_datetime != '' 
-  AND status != '취소'
-  AND status != '주문무효'";
+  AND (status = '출고준비' OR status = '완료');";
 
   $result = sql_query($sql);
   $return_list = [];
@@ -3084,6 +3347,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
       'delivery_date' => $res_item['delivery_date'],
       'delivery_datetime' => $res_item['delivery_datetime'],
       'od_id' => $res_item['od_id'],
+      'ct_qty' => $res_item['ct_qty'],
       'it_name' => $res_item['it_name'],
       'partner_mb_id' => '',
       'partner_manager_mb_id' => $res_item['partner_manager_mb_id'],
@@ -3132,19 +3396,20 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-21
+ * 마지막 수정일자 : 2022-11-28
  * 설명 : 설치파트너 매니저 일정 조회
  * @param string $partner_mb_id
- * @param integer $mb_level
+ * @param string $member
  * @return mixed 
  */
-function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
-  if ($mb_level >= 9) {
+function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
+  if ($member['mb_level'] >= 9) {
     $sql = "SELECT 
       status, 
       s.delivery_date, 
       s.delivery_datetime, 
       s.od_id, 
+      ct.ct_qty, 
       s.it_name, 
       m.mb_manager AS 'partner_mb_id', 
       s.partner_manager_mb_id, 
@@ -3156,18 +3421,19 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       s.od_b_addr1, 
       s.od_b_addr2, 
       s.prodMemo
-    FROM `partner_inst_sts` as s
+    FROM `partner_inst_sts` AS s
     LEFT JOIN `g5_member` AS m ON m.mb_id = s.partner_manager_mb_id
+    INNER JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
     WHERE delivery_date != '' 
     AND delivery_datetime != '' 
-    AND status != '취소'
-    AND status != '주문무효'";
+    AND (status = '출고준비' OR status = '완료');";
   } else {
     $sql = "SELECT 
       status, 
       s.delivery_date, 
       s.delivery_datetime, 
       s.od_id, 
+      ct.ct_qty, 
       s.it_name, 
       m.mb_manager AS 'partner_mb_id', 
       s.partner_manager_mb_id, 
@@ -3181,11 +3447,11 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       s.prodMemo
     FROM `partner_inst_sts` as s
     LEFT JOIN `g5_member` AS m ON m.mb_id = s.partner_manager_mb_id
+    INNER JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
     WHERE partner_mb_id = '$partner_mb_id' 
     AND delivery_date != '' 
     AND delivery_datetime != '' 
-    AND status != '취소'
-    AND status != '주문무효'";
+    AND (status = '출고준비' OR status = '완료');";
   }
   $result = sql_query($sql);
   $return_list = [];
@@ -3195,6 +3461,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       'delivery_date' => $res_item['delivery_date'],
       'delivery_datetime' => $res_item['delivery_datetime'],
       'od_id' => $res_item['od_id'],
+      'ct_qty' => $res_item['ct_qty'],
       'it_name' => $res_item['it_name'],
       'partner_mb_id' => $res_item['partner_mb_id'],
       'partner_manager_mb_id' => $res_item['partner_manager_mb_id'],
@@ -3223,6 +3490,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $mb_level) {
       'delivery_date' => $res_item['deny_date'],
       'delivery_datetime' => '',
       'od_id' => '',
+      'ct_qty' => '',
       'it_name' => '',
       'partner_mb_id' => $res_item['partner_mb_id'],
       'partner_manager_mb_id' => $res_item['mb_id'],

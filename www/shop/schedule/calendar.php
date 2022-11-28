@@ -271,8 +271,11 @@ include_once("./_common.php");
                                         <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'상품명'" />
                                         </div>
-                                        <div class="flex-1 flex items-center px-4 py-2">
+                                        <div class="flex-1 flex items-center px-4 py-2 border-r">
                                             <span x-text="item.it_name" />
+                                        </div>
+                                        <div class="basis-6 flex justify-center items-center">
+                                            <span x-text="(item.ct_qty ? item.ct_qty : 0) + '개'" />
                                         </div>
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
