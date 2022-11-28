@@ -364,7 +364,12 @@
     $od = sql_fetch("
       SELECT * FROM g5_shop_order WHERE od_id = '".$it['od_id']."'
     ");
-      
+
+    // 시작 -->
+    // 22.11.15 : 서원 - 설치 리포트 TXT 내용 엑셀 '메모'항목에 추가하기 위해 해당 내용검색
+    $report = sql_fetch(" SELECT * FROM partner_install_report WHERE od_id = '{$it['od_id']}' ");
+    // 종료 -->
+
     // 시작 -->
     // 22.09.13 : 서원 - 엑셀파일 다운로드 내용에 사업자코드 필드 추가를 위한 기존 코드 수정
     //            기존 무조건 2번의 sql 검색 부분을 1회로 join 처리
@@ -405,10 +410,16 @@
 				$ct_delivery_company = $companyInfo["name"];
 			}
 		}
-    
+
+    /* 22.11.18 : 서원 - 주문내역 다운로드용 엑셀 양식 수정( date 없을 경우 '1970-01-01' 나오는 문제 처리 ) */
+    $_ct_direct_delivery_date = ($it["ct_direct_delivery_date"])?mb_substr($it["ct_direct_delivery_date"],0,10):" ";
+    $_ct_ex_date = ($it["ct_ex_date"])?mb_substr($it["ct_ex_date"],0,10):" ";
+
     $rows[] = [ 
       ' '.$it['od_id'],
       date("Y-m-d", strtotime($od["od_time"]))."-".($i),
+      $_ct_direct_delivery_date, /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
+      $_ct_ex_date, /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
       $it_name,
       $it["ct_qty"],
       $it_name." / ".$it["ct_qty"].' EA',
@@ -421,6 +432,7 @@
       $od["od_b_hp"],
       $it["prodMemo"],
       $od["od_memo"],
+      $report['ir_issue'], /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
       $it['ct_id'],
       $ct_delivery_company,
       $it['ct_delivery_num']
@@ -428,10 +440,10 @@
   }
 
 
-  $headers = array("주문번호", "일자-No.", "품목명[규격]", "수량", "품목&수량", "배송지명", "사업자코드", "주문회원", "영업담당자", "배송처", "연락처", "휴대폰", "적요", "배송지요청사항", "카트ID", "택배사", "송장번호");
+  $headers = array("주문번호", "일자-No.", "출고예정일", "출고완료일", "품목명[규격]", "수량", "품목&수량", "배송지명", "사업자코드", "주문회원", "영업담당자", "배송처", "연락처", "휴대폰", "적요", "배송지요청사항", "메모", "카트ID", "택배사", "송장번호");
   $data = array_merge(array($headers), $rows);
     
-  $widths  = array(20, 20, 50, 10, 30, 30, 30, 30, 50, 20, 20, 10, 20, 10, 15, 20);
+  $widths  = array(20, 20, 20, 20, 50, 10, 30, 30, 30, 30, 50, 20, 20, 10, 20, 20, 10, 15, 20);
   $header_bgcolor = 'FFABCDEF';
   $last_char = column_char(count($headers) - 1);
 
