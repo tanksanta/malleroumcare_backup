@@ -3064,7 +3064,7 @@ function validate_schedule($mb_id, $member) {
     s.od_id, 
     group_concat(s.ct_id ORDER BY s.ct_id ASC) AS `ct_concat` 
     FROM `partner_inst_sts` AS `s` 
-    JOIN `g5_shop_cart` AS `ct` ON ct.od_id = s.od_id 
+    LEFT JOIN `g5_shop_cart` AS `ct` ON ct.od_id = s.od_id 
     WHERE s.od_id = '".$item['od_id']."' 
     GROUP BY od_id;";
     $compare_a = sql_fetch($sql);
@@ -3079,7 +3079,7 @@ function validate_schedule($mb_id, $member) {
     if ($compare_a['ct_concat'] != $compare_b['ct_concat']) {
       $sql = "DELETE FROM `partner_inst_sts` WHERE od_id = ".$item['od_id'].";";
       sql_query($sql);
-      this.create_partner_install_schedule($item['od_id']);
+      create_partner_install_schedule($item['od_id']);
     }
   }
   
