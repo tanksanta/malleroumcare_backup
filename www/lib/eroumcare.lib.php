@@ -3131,8 +3131,8 @@ function validate_schedule($mb_id, $member) {
     LEFT JOIN `g5_shop_cart` AS `ct` ON ct.ct_id = s.ct_id
     LEFT JOIN `g5_shop_order` AS `od` ON od.od_id = s.od_id
     LEFT JOIN `g5_member` AS `od_mb` ON od_mb.mb_id = od.mb_id
-    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = ct.ct_direct_delivery_partner
-    LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = m_mb.mb_id;";
+    LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = ct.ct_direct_delivery_partner
+    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = od.od_partner_manager;";
   }
   # 사업소 계정
   else if ($member['mb_type'] === 'default' && $member['mb_level'] < 9) {
@@ -3182,9 +3182,9 @@ function validate_schedule($mb_id, $member) {
     LEFT JOIN `g5_shop_cart` AS `ct` ON ct.ct_id = s.ct_id
     LEFT JOIN `g5_shop_order` AS `od` ON od.od_id = s.od_id
     LEFT JOIN `g5_member` AS `od_mb` ON od_mb.mb_id = od.mb_id
-    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = ct.ct_direct_delivery_partner
-    LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = m_mb.mb_id
-    WHERE `s`.od_mb_id = '$mb_id';";
+    LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = ct.ct_direct_delivery_partner
+    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = od.od_partner_manager
+    WHERE `od_mb`.mb_id = '$mb_id';";
   }
   # 설치파트너 계정 && 설치파트너 매니저 계정
   else {
@@ -3234,9 +3234,9 @@ function validate_schedule($mb_id, $member) {
     LEFT JOIN `g5_shop_cart` AS `ct` ON ct.ct_id = s.ct_id
     LEFT JOIN `g5_shop_order` AS `od` ON od.od_id = s.od_id
     LEFT JOIN `g5_member` AS `od_mb` ON od_mb.mb_id = od.mb_id
-    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = ct.ct_direct_delivery_partner
-    LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = m_mb.mb_id
-    WHERE `s`.partner_mb_id = '$mb_id';";
+    LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = ct.ct_direct_delivery_partner
+    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = od.od_partner_manager
+    WHERE `p_mb`.mb_id = '$mb_id';";
   }
   $result = sql_query($sql);
   while ($item = sql_fetch_array($result)) {
@@ -3292,15 +3292,15 @@ function validate_schedule($mb_id, $member) {
       $sql = "UPDATE `partner_inst_sts` SET od_b_addr2 = '".$item['od_od_b_addr2']."' WHERE id = ".$item['s_id'].";";
       sql_query($sql);
     }
-    if ($item["s_partner_mb_id"] != $item["p_mb_partner_mb_id"]) {
+    if ($item["s_partner_mb_id"] != $item["p_mb_partner_mb_id"] || $item["s_partner_mb_id"] == null) {
       $sql = "UPDATE `partner_inst_sts` SET partner_mb_id = '".$item['p_mb_partner_mb_id']."' WHERE id = ".$item['s_id'].";";
       sql_query($sql);
     }
-    if ($item["s_partner_manager_mb_id"] != $item["m_mb_partner_manager_mb_id"]) {
+    if ($item["s_partner_manager_mb_id"] != $item["m_mb_partner_manager_mb_id"] || $item["s_partner_manager_mb_id"] == null) {
       $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_id = '".$item['m_mb_partner_manager_mb_id']."' WHERE id = ".$item['s_id'].";";
       sql_query($sql);
     }
-    if ($item["s_partner_manager_mb_name"] != $item["m_mb_partner_manager_mb_name"]) {
+    if ($item["s_partner_manager_mb_name"] != $item["m_mb_partner_manager_mb_name"] || $item["s_partner_manager_mb_name"] == null) {
       $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_name = '".$item['m_mb_partner_manager_mb_name']."' WHERE id = ".$item['s_id'].";";
       sql_query($sql);
     }
