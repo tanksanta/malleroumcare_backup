@@ -13,6 +13,15 @@ if($keyword) { // $mb_name => $keyword로 변경
   $sql_where .= " and (mb_name like '%".sql_real_escape_string($keyword)."%' or mb_id like '%".sql_real_escape_string($keyword)."%' )"; // mb_id와 mb_name 동시 검색
 }
 
+if($page = "batchReg" && count($mbIdList)){
+  $sql_where .= " and ("; // mb_id 검색(일괄등록)
+  foreach ($mbIdList as $index => $mbId){
+    $sql_where .= "mb_id = '".sql_real_escape_string($mbId)."' "; // mb_id 검색(일괄등록)
+    if ($index != array_key_last($mbIdList)) { $sql_where .= "or "; }
+  }
+  $sql_where .= ")"; // mb_id 검색(일괄등록)
+}
+
 // 테이블의 전체 레코드수만 얻음
 $sql = " select count(*) as cnt " . $sql_common . $sql_where;
 $row = sql_fetch($sql);
@@ -29,6 +38,20 @@ $sql = " select mb_id, mb_name
             order by mb_id
             limit $from_record, $rows ";
 $result = sql_query($sql);
+
+$check = [];
+$uncheck = [];
+if($page = "batchReg" && count($mbIdList)){
+  for($i=0; $row=sql_fetch_array($result); $i++) {
+    if(in_array($row['mb_id'], $mbIdList)){
+      $check[] = $row['mb_id'];
+    }
+  }
+
+  json_response(200, 'OK', array(
+    'check' => $check
+  ));
+}
 
 $qstr1 = 'mb_name='.urlencode($keyword);
 
