@@ -117,7 +117,7 @@ include_once("./_common.php");
                         :class="{ 'border-t-0': index !== 0 }" :id="index"
                         :data-partner-mb-id="item.type === 'deny_schedule' && item.partner_mb_id"
                         :data-partner-manager-mb-id="item.type === 'deny_schedule' && item.partner_manager_mb_id"
-                        @touchstart.prevent="doubleClick" @touchend.prevent="doubleClick"
+                        @touchstart.prevent="longClick" @touchend.prevent="longClick"
                         x-text="item.type === 'schedule' ? tConvert(item.delivery_datetime) + ' - ' + item.partner_manager_mb_name : item.partner_manager_mb_name">
                     </div>
                 </template>
@@ -146,6 +146,13 @@ include_once("./_common.php");
                             x-text="'수령인 : ' + item.od_b_name"></p>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
                             x-text="'연락처 : ' + item.od_b_hp"></p>
+                        <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
+                            :class="{'hidden': <?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'false'; else echo 'true'; ?>}"
+                            x-text="'담당업체 : ' + (item.partner_manager_mb_name ? item.partner_manager_mb_name : '미정')">
+                        </p>
+                        <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
+                            :class="{'hidden': <?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'false'; else echo 'true'; ?>}"
+                            x-text="'업체연락처 : ' + (item.partner_hp ? item.partner_hp : '없음')"></p>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
                             x-text="'배송지 : ' + item.od_b_addr1 + (item.od_b_addr2 ? item.od_b_addr2 :'')"></p>
                         <p class=" text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
@@ -369,7 +376,7 @@ include_once("./_common.php");
             showCancelModal: false,
             selectPartnerMbId: '',
             selectPartnerManageMbId: '',
-            doubleClick: function(e) {
+            longClick: function(e) {
                 e.preventDefault();
                 if (window.touchtime == 0) {
                     window.touchtime = new Date().getTime();

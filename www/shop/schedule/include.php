@@ -14,6 +14,9 @@
     echo "<script>
     tailwind.config = {
       theme: {
+        minWidth: {
+          '20': '5rem',
+        },
         extend: {
           spacing: {
             '68': '17rem',
