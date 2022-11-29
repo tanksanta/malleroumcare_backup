@@ -121,9 +121,9 @@ include_once("./_common.php");
                 </div>
 
                 <!-- 설치불가일 관리 버튼 -->
-                <div class="basis-36 flex justify-center items-center">
+                <div class="basis-40 flex justify-center items-center">
                     <button
-                        class="border rounded-lg px-4 py-1 flex justify-center items-center text-lg hover:bg-blue-100 transition-colors duration-300"
+                        class="border rounded-lg px-4 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
                         type="button" x-show="mb_type === 'manager' || mb_type === 'partner'"
                         @click="showModal = mb_type === 'manager' || mb_type === 'partner'"
                         x-text="'설치불가일 관리'"></button>
@@ -270,7 +270,7 @@ include_once("./_common.php");
                                 <div class="flex-1 flex flex-col border">
                                     <div class="flex-1 flex flex-row border-b">
                                         <div
-                                            class="basis-20 min-w-20 flex justify-center items-center border-r bg-gray-100">
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'상품명'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2 border-r">
@@ -282,7 +282,7 @@ include_once("./_common.php");
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
                                         <div
-                                            class="basis-20 min-w-20 flex justify-center items-center border-r bg-gray-100">
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class=" font-bold"
                                                 x-text="<?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'true'; else echo 'false'; ?> ? '담당업체' : '담당자'" />
                                         </div>
@@ -293,7 +293,7 @@ include_once("./_common.php");
                                     <div class="flex-1 flex flex-row border-b"
                                         :class="{'hidden': <?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'false'; else echo 'true'; ?>">
                                         <div
-                                            class="basis-20 min-w-20 flex justify-center items-center border-r bg-gray-100">
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'업체연락처'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
@@ -302,7 +302,7 @@ include_once("./_common.php");
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
                                         <div
-                                            class="basis-20 min-w-20 flex justify-center items-center border-r bg-gray-100">
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'수령인'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
@@ -311,7 +311,7 @@ include_once("./_common.php");
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
                                         <div
-                                            class="basis-20 min-w-20 flex justify-center items-center border-r bg-gray-100">
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'연락처'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
@@ -320,7 +320,7 @@ include_once("./_common.php");
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
                                         <div
-                                            class="basis-20 min-w-20 flex justify-center items-center border-r bg-gray-100">
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'배송주소'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
@@ -329,7 +329,7 @@ include_once("./_common.php");
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
                                         <div
-                                            class="basis-20 min-w-20 flex justify-center items-center border-r bg-gray-100">
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'요청사항'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">

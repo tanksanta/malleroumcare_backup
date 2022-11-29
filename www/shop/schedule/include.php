@@ -16,6 +16,7 @@
       theme: {
         minWidth: {
           '20': '5rem',
+          '24': '6rem',
         },
         extend: {
           spacing: {

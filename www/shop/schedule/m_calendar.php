@@ -45,7 +45,7 @@ include_once("./_common.php");
                     </div>
 
                     <!-- 설치불가일 관리 버튼 -->
-                    <div class="basis-32 flex justify-center items-center"
+                    <div class="basis-40 flex justify-center items-center"
                         :class="{'hidden': mb_type !== 'manager' && mb_type !== 'partner'}">
                         <button
                             class="border rounded-lg px-2 py-1 flex justify-center items-center text-lg hover:bg-blue-100 transition-colors duration-300"
