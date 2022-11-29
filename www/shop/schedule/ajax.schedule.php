@@ -32,7 +32,7 @@ if ($check_sum) {
 } else {
     // 생성 된 일정이 없는 경우
     
-    $res = create_partner_install_schedule('출고준비', $_POST['od_id']);
+    $res = create_partner_install_schedule($_POST['od_id']);
     if (!$res) json_response(400, '에러');
     
     if($_POST['partner_manager_mb_id']) {

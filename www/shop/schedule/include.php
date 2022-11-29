@@ -90,7 +90,6 @@ sql_query("CREATE TABLE IF NOT EXISTS `partner_inst_sts` (
   `od_b_hp` VARCHAR(20) NULL DEFAULT '' COMMENT '수령자 연락처',
   `od_b_addr1` VARCHAR(100) NULL DEFAULT '' COMMENT '수령자 주소',
   `od_b_addr2` VARCHAR(100) NULL DEFAULT '' COMMENT '수령자 상세주소',
-  `od_memo` LONGTEXT NULL DEFAULT '' COMMENT '수령자 요청사항',
   `prodMemo` LONGTEXT NULL DEFAULT '' COMMENT '수령자 요청사항'
 );");
 // 설치 파트너 설치 불가 날짜 테이블 유무 확인 후 생성

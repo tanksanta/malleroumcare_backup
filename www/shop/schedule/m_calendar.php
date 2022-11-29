@@ -132,13 +132,13 @@ include_once("./_common.php");
                             <div class="flex-1 flex items-center justify-start">
                                 <a tabindex="0"
                                     class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2"
-                                    x-text="(item.status === '출고완료' ? '[설치 완료]' : '[설치 예정]') + item.it_name"></a>
+                                    x-text="(item.status === '출고완료' ? '[설치 완료]' : '[설치 예정]') + item.it_name + ' ' + item.ct_qty + '개'"></a>
                             </div>
-                            <div class="flex-1 flex items-center justify-end"
+                            <div class="basis-30 flex items-center justify-end"
                                 :class="{'hidden':  || mb_type !== 'manager'}">
                                 <button type="button"
                                     class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
-                                    @click="goToUrl(item.od_id)" x-text="'설치결과보고서 등록'">
+                                    @click="goToUrl(item.od_id)" x-text="'설치결과 보고서등록'">
                                 </button>
                             </div>
                         </div>
