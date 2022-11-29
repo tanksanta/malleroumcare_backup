@@ -125,7 +125,7 @@ include_once("./_common.php");
                     <button
                         class="border rounded-lg px-4 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
                         type="button" x-show="mb_type === 'manager' || mb_type === 'partner'"
-                        @click="showModal = mb_type === 'manager' || mb_type === 'partner'"
+                        @click="showModal = (mb_type === 'manager' || mb_type === 'partner')"
                         x-text="'설치불가일 관리'"></button>
                 </div>
 
@@ -575,15 +575,7 @@ include_once("./_common.php");
                     },
                     error: function($xhr) {
                         checkSum = false;
-                        var message = $xhr.responseJSON.message;
-                        if (message) {
-                            $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                            ret = message;
-                        } else {
-                            $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css(
-                                'color',
-                                '#333333');
-                        }
+                        alert("서버 통신 에러");
                     }
                 });
                 if (checkSum) {
@@ -619,14 +611,7 @@ include_once("./_common.php");
                 },
                 error: function($xhr) {
                     showModal = true;
-                    var message = $xhr.responseJSON.message;
-                    if (message) {
-                        $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                        ret = message;
-                    } else {
-                        $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css('color',
-                            '#333333');
-                    }
+                    alert("설치 가능한 요일이 없습니다.");
                 }
             });
         }
@@ -654,17 +639,9 @@ include_once("./_common.php");
                     'all'));
             },
             error: function($xhr) {
-                var message = $xhr.responseJSON.message;
-                if (message) {
-                    $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                    ret = message;
-                } else {
-                    $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css('color',
-                        '#333333');
-                }
+                alert("서버 통신 에러");
             }
         });
-        console.log(mb_type);
         return {
             data: res,
             dataInModal: resInModal,

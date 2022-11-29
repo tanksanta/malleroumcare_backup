@@ -46,10 +46,10 @@ include_once("./_common.php");
 
                     <!-- 설치불가일 관리 버튼 -->
                     <div class="basis-40 flex justify-center items-center"
-                        :class="{'hidden': mb_type !== 'manager' && mb_type !== 'partner'}">
+                        :class="{'hidden': !(mb_type === 'manager' || mb_type === 'partner')}">
                         <button
                             class="border rounded-lg px-2 py-1 flex justify-center items-center text-lg hover:bg-blue-100 transition-colors duration-300"
-                            type="button" @click="showModal = mb_type === 'manager' || mb_type === 'partner'"
+                            type="button" @click="showModal = (mb_type === 'manager' || mb_type === 'partner')"
                             x-text="'설치불가일 관리'"></button>
                     </div>
                 </section>
@@ -423,15 +423,7 @@ include_once("./_common.php");
                     },
                     error: function($xhr) {
                         checkSum = false;
-                        var message = $xhr.responseJSON.message;
-                        if (message) {
-                            $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                            ret = message;
-                        } else {
-                            $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css(
-                                'color',
-                                '#333333');
-                        }
+                        alert("설치 가능한 요일이 없습니다.");
                     }
                 });
                 if (checkSum) {
@@ -467,14 +459,7 @@ include_once("./_common.php");
                 },
                 error: function($xhr) {
                     showModal = true;
-                    var message = $xhr.responseJSON.message;
-                    if (message) {
-                        $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                        ret = message;
-                    } else {
-                        $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css('color',
-                            '#333333');
-                    }
+                    alert("설치 가능한 요일이 없습니다.");
                 }
             });
         }
@@ -492,7 +477,7 @@ include_once("./_common.php");
             cache: false,
             async: false,
             data: {
-                partner_mb_id: '<?php echo $_SESSION['ss_manager_mb_id']; ?>'
+                partner_mb_id: '<?php echo $_SESSION['ss_mb_id']; ?>'
             },
             dataType: 'json',
             success: function(result) {
@@ -502,14 +487,7 @@ include_once("./_common.php");
                     'all'));
             },
             error: function($xhr) {
-                var message = $xhr.responseJSON.message;
-                if (message) {
-                    $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                    ret = message;
-                } else {
-                    $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css('color',
-                        '#333333');
-                }
+                alert("서버 통신 에러");
             }
         });
         return {
@@ -683,14 +661,7 @@ include_once("./_common.php");
                 res = result.data;
             },
             error: function($xhr) {
-                var message = $xhr.responseJSON.message;
-                if (message) {
-                    $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                    ret = message;
-                } else {
-                    $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css('color',
-                        '#333333');
-                }
+                alert("서버 통신 에러");
             }
         });
 
