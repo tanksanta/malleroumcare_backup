@@ -666,7 +666,12 @@ $(function(){
 <script type="text/javascript">
 function showSchdule(url) {
     let opt = "width=1360,height=780,left=0,top=10";
-    window.open(url, "win_schedule", opt);
+    let _url = url;
+    if (jQuery.browser.mobile) {
+        opt = "";
+        _url = _url.replace("index.php", "m_index.php");
+    }
+    window.open(_url, "win_schedule", opt);
     return false;
 }
 

@@ -44,13 +44,13 @@ include_once("./_common.php");
                         </button>
                     </div>
 
-                    <!-- 일정표 관리 버튼 -->
+                    <!-- 설치불가일 관리 버튼 -->
                     <div class="basis-32 flex justify-center items-center"
                         :class="{'hidden': mb_type !== 'manager' && mb_type !== 'partner'}">
                         <button
                             class="border rounded-lg px-2 py-1 flex justify-center items-center text-lg hover:bg-blue-100 transition-colors duration-300"
                             type="button" @click="showModal = mb_type === 'manager' || mb_type === 'partner'"
-                            x-text="'일정표 관리'"></button>
+                            x-text="'설치불가일 관리'"></button>
                     </div>
                 </section>
 
@@ -117,7 +117,7 @@ include_once("./_common.php");
                         :class="{ 'border-t-0': index !== 0 }" :id="index"
                         :data-partner-mb-id="item.type === 'deny_schedule' && item.partner_mb_id"
                         :data-partner-manager-mb-id="item.type === 'deny_schedule' && item.partner_manager_mb_id"
-                        @touchstart.prevent="doubleClick" @touchend.prevent="doubleClick"
+                        @touchstart.prevent="longClick" @touchend.prevent="longClick"
                         x-text="item.type === 'schedule' ? tConvert(item.delivery_datetime) + ' - ' + item.partner_manager_mb_name : item.partner_manager_mb_name">
                     </div>
                 </template>
@@ -132,27 +132,36 @@ include_once("./_common.php");
                             <div class="flex-1 flex items-center justify-start">
                                 <a tabindex="0"
                                     class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2"
-                                    x-text="(item.status === '출고완료' ? '[설치 완료]' : '[설치 예정]') + item.it_name"></a>
+                                    x-text="(item.status === '출고완료' ? '[설치 완료]' : '[설치 예정]') + item.it_name + ' ' + item.ct_qty + '개'"></a>
                             </div>
-                            <div class="flex-1 flex items-center justify-end"
-                                :class="{'hidden':  || mb_type !== 'manager'}">
+                            <div class="basis-30 flex items-center justify-end"
+                                :class="{'hidden': mb_type !== 'manager'}">
                                 <button type="button"
                                     class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
-                                    @click="goToUrl(item.od_id)" x-text="'설치결과보고서 등록'">
+                                    @click="goToUrl(item.od_id)" x-text="'설치결과 보고서등록'">
                                 </button>
                             </div>
                         </div>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
                             x-text="'수령인 : ' + item.od_b_name"></p>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'배송지 : ' + item.od_b_addr1"></p>
+                            x-text="'연락처 : ' + item.od_b_hp"></p>
                         <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
-                            x-text="'요청사항 : ' + item.prodMemo"></p>
+                            :class="{'hidden': <?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'false'; else echo 'true'; ?>}"
+                            x-text="'담당업체 : ' + (item.partner_manager_mb_name ? item.partner_manager_mb_name : '미정')">
+                        </p>
+                        <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
+                            :class="{'hidden': <?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'false'; else echo 'true'; ?>}"
+                            x-text="'업체연락처 : ' + (item.partner_hp ? item.partner_hp : '없음')"></p>
+                        <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
+                            x-text="'배송지 : ' + item.od_b_addr1 + (item.od_b_addr2 ? item.od_b_addr2 :'')"></p>
+                        <p class=" text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
+                            x-text="'요청사항 : ' + (item.prodMemo ? item.prodMemo : '')"></p>
                     </div>
                 </template>
             </div>
 
-            <!-- 일정표 관리 모달 -->
+            <!-- 설치불가일 관리 모달 -->
             <div x-show="showModal" x-data="scheduleManager()" x-init="scheduleInit()"
                 class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-50"
                 x-transition:enter="motion-safe:ease-out duration-300" x-transition:enter-start="opacity-0 scale-90"
@@ -296,7 +305,7 @@ include_once("./_common.php");
                         <button
                             class="border rounded-lg px-8 py-1 flex justify-center items-center text-lg bg-blue-500 text-white font-bold transition-colors duration-300"
                             type="button"
-                            @click="if (valueInModal === '' || valueInModal === null) { alert('담당자를 선택해주세요.'); } else { reload = req(calcDaysByMonth(), mb_type, valueInModal); window.location.reload(); valueInModal = ''; showModal = false; scheduleInit(); }"
+                            @click="if (valueInModal === '' || valueInModal === null) { alert('담당자를 선택해주세요.'); } else { req(calcDaysByMonth(), mb_type, valueInModal); }"
                             x-text="'등록'"></button>
                     </div>
                 </div>
@@ -367,7 +376,7 @@ include_once("./_common.php");
             showCancelModal: false,
             selectPartnerMbId: '',
             selectPartnerManageMbId: '',
-            doubleClick: function(e) {
+            longClick: function(e) {
                 e.preventDefault();
                 if (window.touchtime == 0) {
                     window.touchtime = new Date().getTime();
@@ -439,8 +448,10 @@ include_once("./_common.php");
     function req(list, mb_type, valueInModal) {
         const data = {
             partner_mb_id: '<?php echo $member['mb_id']; ?>',
-            partner_manager_mb_id: mb_type === 'partner' ? valueInModal : '<?php echo $_SESSION['ss_mb_id']; ?>',
-            schedules: JSON.parse(JSON.stringify([...new Set(list)])),
+            partner_manager_mb_id: mb_type === 'partner' ? valueInModal :
+                '<?php echo $_SESSION['ss_manager_mb_id']; ?>',
+            schedules: JSON.parse(JSON.stringify([...new Set(list.filter(e => moment().diff(moment(e), 'days') <=
+                0))])),
         };
         let showModal = true;
         if (mb_type === 'partner' && valueInModal !== '') {
@@ -451,7 +462,8 @@ include_once("./_common.php");
                 data,
                 dataType: 'json',
                 success: function(result) {
-                    if (result.data) showModal = false;
+                    // TODO: 새로고침이 아닌 방식으로 수정할 계획
+                    window.location.reload();
                 },
                 error: function($xhr) {
                     showModal = true;
@@ -473,17 +485,19 @@ include_once("./_common.php");
     <script>
     function select(config) {
         let res;
+        let mb_type;
         let resInModal;
         $.ajax('ajax.members.php', {
             type: 'POST',
             cache: false,
             async: false,
             data: {
-                partner_mb_id: '<?php echo $_SESSION['ss_mb_id']; ?>'
+                partner_mb_id: '<?php echo $_SESSION['ss_manager_mb_id']; ?>'
             },
             dataType: 'json',
             success: function(result) {
                 res = result.data.members;
+                mb_type = result.data.mb_type;
                 resInModal = Object.fromEntries(Object.entries(result.data.members).filter((i) => i[0] !==
                     'all'));
             },
@@ -515,6 +529,7 @@ include_once("./_common.php");
             value: config.value,
             valueInModal: config.valueInModal,
             filter_mb_id: '',
+            mb_type,
             closeListbox: function() {
                 this.open = false
                 this.focusedOptionIndex = null
@@ -661,7 +676,7 @@ include_once("./_common.php");
             cache: false,
             async: false,
             data: {
-                partner_mb_id: '<?php echo $_SESSION['ss_mb_id']; ?>'
+                partner_mb_id: '<?php if ($_SESSION['ss_manager_mb_id']) echo $_SESSION['ss_manager_mb_id']; else echo $_SESSION['ss_mb_id']; ?>'
             },
             dataType: 'json',
             success: function(result) {
@@ -688,7 +703,6 @@ include_once("./_common.php");
             events: res,
             select_date: new Date(),
             schedules: [],
-            mb_type: '<?php echo $member["mb_type"]; ?>',
             initDate: function() {
                 const today = new Date();
                 this.month = today.getMonth();

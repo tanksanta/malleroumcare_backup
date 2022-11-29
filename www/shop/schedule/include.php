@@ -14,6 +14,9 @@
     echo "<script>
     tailwind.config = {
       theme: {
+        minWidth: {
+          '20': '5rem',
+        },
         extend: {
           spacing: {
             '68': '17rem',
@@ -70,6 +73,13 @@
     }
   </script>"
 ?>
+<?php
+if ($_SESSION['ss_manager_mb_id']) {
+  $member = get_member($_SESSION['ss_manager_mb_id']);
+} else {
+  $member = get_member($_SESSION['ss_mb_id']);
+}
+?>
 
 <?php
 // 설치 파트너 매니저 설치 일정 테이블 유무 확인 후 생성
@@ -89,6 +99,7 @@ sql_query("CREATE TABLE IF NOT EXISTS `partner_inst_sts` (
   `od_b_name` VARCHAR(30) NOT NULL COMMENT '수령자 이름',
   `od_b_hp` VARCHAR(20) NULL DEFAULT '' COMMENT '수령자 연락처',
   `od_b_addr1` VARCHAR(100) NULL DEFAULT '' COMMENT '수령자 주소',
+  `od_b_addr2` VARCHAR(100) NULL DEFAULT '' COMMENT '수령자 상세주소',
   `prodMemo` LONGTEXT NULL DEFAULT '' COMMENT '수령자 요청사항'
 );");
 // 설치 파트너 설치 불가 날짜 테이블 유무 확인 후 생성
