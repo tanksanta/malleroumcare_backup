@@ -120,12 +120,13 @@ include_once("./_common.php");
                     </button>
                 </div>
 
-                <!-- 일정표 관리 버튼 -->
+                <!-- 설치불가일 관리 버튼 -->
                 <div class="basis-36 flex justify-center items-center">
                     <button
                         class="border rounded-lg px-4 py-1 flex justify-center items-center text-lg hover:bg-blue-100 transition-colors duration-300"
                         type="button" x-show="mb_type === 'manager' || mb_type === 'partner'"
-                        @click="showModal = mb_type === 'manager' || mb_type === 'partner'" x-text="'일정표 관리'"></button>
+                        @click="showModal = mb_type === 'manager' || mb_type === 'partner'"
+                        x-text="'설치불가일 관리'"></button>
                 </div>
 
                 <!-- 창 닫기 버튼 -->
@@ -342,7 +343,7 @@ include_once("./_common.php");
                 </section>
             </div>
 
-            <!-- 일정표 관리 모달 -->
+            <!-- 설치불가일 관리 모달 -->
             <div x-show="showModal" x-data="scheduleManager()" x-init="scheduleInit()"
                 class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-50"
                 x-transition:enter="motion-safe:ease-out duration-300" x-transition:enter-start="opacity-0 scale-90"
@@ -598,8 +599,9 @@ include_once("./_common.php");
     <script>
     function req(list, mb_type, valueInModal) {
         const data = {
-            partner_mb_id: '<?php echo $member['mb_id']; ?>',
-            partner_manager_mb_id: mb_type === 'partner' ? valueInModal : '<?php echo $_SESSION['ss_mb_id']; ?>',
+            partner_mb_id: '<?php echo $_SESSION['ss_mb_id']; ?>',
+            partner_manager_mb_id: mb_type === 'partner' ? valueInModal :
+                '<?php echo $_SESSION['ss_manager_mb_id']; ?>',
             schedules: JSON.parse(JSON.stringify([...new Set(list.filter(e => moment().diff(moment(e), 'days') <=
                 0))])),
         };
@@ -635,6 +637,7 @@ include_once("./_common.php");
     <script>
     function select(config) {
         let res;
+        let mb_type;
         let resInModal;
         $.ajax('ajax.members.php', {
             type: 'POST',
@@ -646,6 +649,7 @@ include_once("./_common.php");
             dataType: 'json',
             success: function(result) {
                 res = result.data.members;
+                mb_type = result.data.mb_type;
                 resInModal = Object.fromEntries(Object.entries(result.data.members).filter((i) => i[0] !==
                     'all'));
             },
@@ -660,6 +664,7 @@ include_once("./_common.php");
                 }
             }
         });
+        console.log(mb_type);
         return {
             data: res,
             dataInModal: resInModal,
@@ -677,6 +682,7 @@ include_once("./_common.php");
             value: config.value,
             valueInModal: config.valueInModal,
             filter_mb_id: '',
+            mb_type,
             closeListbox: function() {
                 this.open = false;
                 this.focusedOptionIndex = null;
@@ -813,7 +819,7 @@ include_once("./_common.php");
             cache: false,
             async: false,
             data: {
-                partner_mb_id: '<?php echo $_SESSION['ss_mb_id']; ?>'
+                partner_mb_id: '<?php if ($_SESSION['ss_manager_mb_id']) echo $_SESSION['ss_manager_mb_id']; else echo $_SESSION['ss_mb_id']; ?>'
             },
             dataType: 'json',
             success: (result) => {
@@ -839,7 +845,7 @@ include_once("./_common.php");
             events: res,
             select_date: new Date(),
             schedules: [],
-            mb_type: '<?php echo $member["mb_type"]; ?>',
+            // mb_type: '<?php echo $member["mb_type"]; ?>',
             initDate: function() {
                 const today = new Date();
                 this.month = today.getMonth();
@@ -1021,7 +1027,7 @@ include_once("./_common.php");
                     cache: false,
                     async: false,
                     data: {
-                        partner_mb_id: '<?php echo $_SESSION['ss_mb_id']; ?>'
+                        partner_mb_id: '<?php echo $_SESSION['ss_manager_mb_id']; ?>'
                     },
                     dataType: 'json',
                     success: (result) => {

@@ -73,6 +73,13 @@
     }
   </script>"
 ?>
+<?php
+if ($_SESSION['ss_manager_mb_id']) {
+  $member = get_member($_SESSION['ss_manager_mb_id']);
+} else {
+  $member = get_member($_SESSION['ss_mb_id']);
+}
+?>
 
 <?php
 // 설치 파트너 매니저 설치 일정 테이블 유무 확인 후 생성
