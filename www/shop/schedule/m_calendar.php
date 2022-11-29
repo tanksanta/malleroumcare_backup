@@ -135,7 +135,7 @@ include_once("./_common.php");
                                     x-text="(item.status === '출고완료' ? '[설치 완료]' : '[설치 예정]') + item.it_name + ' ' + item.ct_qty + '개'"></a>
                             </div>
                             <div class="basis-30 flex items-center justify-end"
-                                :class="{'hidden':  || mb_type !== 'manager'}">
+                                :class="{'hidden': mb_type !== 'manager'}">
                                 <button type="button"
                                     class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
                                     @click="goToUrl(item.od_id)" x-text="'설치결과 보고서등록'">
