@@ -579,7 +579,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
           '$uid',
           '$io_thezone',
           '$ct_delivery_cnt',
-          '$ct_delivery_price',
+          '{$_POST['it_delivery_price'][$i]}',
           '$ct_delivery_company',
           '{$it['it_is_direct_delivery']}',
           '{$it['it_direct_delivery_partner']}',
@@ -690,7 +690,14 @@ $od_b_addr_jibeon = clean_xss_tags($_POST['od_b_addr_jibeon']);
 $od_b_addr1 = clean_xss_tags($_POST['od_b_addr1']);
 $od_b_addr2 = clean_xss_tags($_POST['od_b_addr2']);
 
-$od_send_cost = $_POST['od_send_cost'];
+// 배송비
+$_tmp_delivery_price = 0;
+if( is_array($_POST['it_delivery_price']) && COUNT($_POST['it_delivery_price']) ) {
+  foreach($_POST['it_delivery_price'] as $key => $val) {
+    $_tmp_delivery_price += $val;
+  }
+}
+$od_send_cost = $_tmp_delivery_price;
 
 sql_query("
     UPDATE
