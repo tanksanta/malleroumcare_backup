@@ -828,18 +828,18 @@ function save_eform() {
 let pen_info = [];
 // 계약서 작성
 $('#btn_se_submit').on('click', function() {
-  if(!!pen_info){
-      if(!(!!pen_info['penZip'])&&!(!!pen_info['penAddr'])) {
-        if(confirm("수급자 정보가 완전하지 않습니다.\n수급자 정보 수정을 진행하시겠습니까?") == true){ // 등록되지 않은 수급자이기 때문에 보호자 정보 없음
-          window.location.href = './my_recipient_update.php?id='+pen_info['penId'];
-          return false;
-        } else {
-          alert("수급자 선택을 초기화합니다.");
-          window.location.href = './simple_eform.php';
-          return false;
-        }
-      }
-  }
+  // if(!!pen_info){
+  //     if(!(!!pen_info['penZip'])&&!(!!pen_info['penAddr'])) {
+  //       if(confirm("수급자 정보가 완전하지 않습니다.\n수급자 정보 수정을 진행하시겠습니까?") == true){ // 등록되지 않은 수급자이기 때문에 보호자 정보 없음
+  //         window.location.href = './my_recipient_update.php?id='+pen_info['penId'];
+  //         return false;
+  //       } else {
+  //         alert("수급자 선택을 초기화합니다.");
+  //         window.location.href = './simple_eform.php';
+  //         return false;
+  //       }
+  //     }
+  // }
 
   if(loading) {
     alert('계약서 저장 중입니다. 잠시 기다려주세요.');
