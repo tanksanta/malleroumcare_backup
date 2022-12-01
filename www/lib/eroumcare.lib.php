@@ -3314,7 +3314,7 @@ function validate_schedule($mb_id, $member) {
  * 마지막 수정일자 : 2022-11-21
  * 설명 : 사업소 기준으로 설치파트너 매니저 일정 
  * @param string $od_mb_id
- * @return mixed 
+ * @return mixed
  */
 function get_partner_schedule_by_mb_id($od_mb_id) {
   $sql = "SELECT 
@@ -3326,14 +3326,16 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
     s.it_name, 
     s.partner_manager_mb_id, 
     s.partner_manager_mb_name, 
+    mb.mb_hp, 
     s.od_mb_id, 
     s.od_b_name, 
     s.od_b_hp, 
     s.od_b_addr1, 
     s.od_b_addr2, 
     s.prodMemo
-  FROM `partner_inst_sts` AS s
+  FROM `partner_inst_sts` AS s 
   LEFT JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
+  LEFT JOIN `g5_member` AS mb ON mb.mb_id = s.partner_mb_id 
   WHERE od_mb_id = '$od_mb_id' 
   AND delivery_date != '' 
   AND delivery_datetime != '' 
@@ -3350,6 +3352,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
       'ct_qty' => $res_item['ct_qty'],
       'it_name' => $res_item['it_name'],
       'partner_mb_id' => '',
+      'partner_hp' => $res_item['mb_hp'],
       'partner_manager_mb_id' => $res_item['partner_manager_mb_id'],
       'partner_manager_mb_name' => $res_item['partner_manager_mb_name'],
       'od_mb_id' => $res_item['od_mb_id'],
@@ -3378,6 +3381,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
       'od_id' => '',
       'it_name' => '',
       'partner_mb_id' => $res_item['partner_mb_id'],
+      'partner_hp' => '',
       'partner_manager_mb_id' => $res_item['mb_id'],
       'partner_manager_mb_name' => $res_item['mb_name'],
       'od_mb_id' => '',
@@ -3400,7 +3404,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
  * 설명 : 설치파트너 매니저 일정 조회
  * @param string $partner_mb_id
  * @param string $member
- * @return mixed 
+ * @return mixed
  */
 function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
   if ($member['mb_level'] >= 9) {
@@ -3414,6 +3418,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
       m.mb_manager AS 'partner_mb_id', 
       s.partner_manager_mb_id, 
       s.partner_manager_mb_name, 
+      mb.mb_hp, 
       s.od_mb_id, 
       s.od_mb_ent_name, 
       s.od_b_name, 
@@ -3424,6 +3429,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
     FROM `partner_inst_sts` AS s
     LEFT JOIN `g5_member` AS m ON m.mb_id = s.partner_manager_mb_id
     INNER JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
+    LEFT JOIN `g5_member` AS mb ON mb.mb_id = s.partner_mb_id 
     WHERE delivery_date != '' 
     AND delivery_datetime != '' 
     AND (status = '출고준비' OR status = '완료');";
@@ -3438,6 +3444,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
       m.mb_manager AS 'partner_mb_id', 
       s.partner_manager_mb_id, 
       s.partner_manager_mb_name, 
+      mb.mb_hp, 
       s.od_mb_id, 
       s.od_mb_ent_name, 
       s.od_b_name, 
@@ -3448,6 +3455,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
     FROM `partner_inst_sts` as s
     LEFT JOIN `g5_member` AS m ON m.mb_id = s.partner_manager_mb_id
     INNER JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
+    LEFT JOIN `g5_member` AS mb ON mb.mb_id = s.partner_mb_id 
     WHERE partner_mb_id = '$partner_mb_id' 
     AND delivery_date != '' 
     AND delivery_datetime != '' 
@@ -3464,6 +3472,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
       'ct_qty' => $res_item['ct_qty'],
       'it_name' => $res_item['it_name'],
       'partner_mb_id' => $res_item['partner_mb_id'],
+      'partner_hp' => $res_item['mb_hp'],
       'partner_manager_mb_id' => $res_item['partner_manager_mb_id'],
       'partner_manager_mb_name' => $res_item['partner_manager_mb_name'],
       'od_mb_id' => $res_item['od_mb_id'],
@@ -3493,6 +3502,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
       'ct_qty' => '',
       'it_name' => '',
       'partner_mb_id' => $res_item['partner_mb_id'],
+      'partner_mb_hp' => '', 
       'partner_manager_mb_id' => $res_item['mb_id'],
       'partner_manager_mb_name' => $res_item['mb_name'],
       'od_mb_id' => '',

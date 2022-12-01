@@ -120,12 +120,13 @@ include_once("./_common.php");
                     </button>
                 </div>
 
-                <!-- 일정표 관리 버튼 -->
-                <div class="basis-36 flex justify-center items-center">
+                <!-- 설치불가일 관리 버튼 -->
+                <div class="basis-40 flex justify-center items-center">
                     <button
-                        class="border rounded-lg px-4 py-1 flex justify-center items-center text-lg hover:bg-blue-100 transition-colors duration-300"
+                        class="border rounded-lg px-4 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
                         type="button" x-show="mb_type === 'manager' || mb_type === 'partner'"
-                        @click="showModal = mb_type === 'manager' || mb_type === 'partner'" x-text="'일정표 관리'"></button>
+                        @click="showModal = (mb_type === 'manager' || mb_type === 'partner')"
+                        x-text="'설치불가일 관리'"></button>
                 </div>
 
                 <!-- 창 닫기 버튼 -->
@@ -268,26 +269,40 @@ include_once("./_common.php");
 
                                 <div class="flex-1 flex flex-col border">
                                     <div class="flex-1 flex flex-row border-b">
-                                        <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
+                                        <div
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'상품명'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2 border-r">
                                             <span x-text="item.it_name" />
                                         </div>
-                                        <div class="basis-6 flex justify-center items-center">
+                                        <div class="basis-10 flex justify-center items-center">
                                             <span x-text="(item.ct_qty ? item.ct_qty : 0) + '개'" />
                                         </div>
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
-                                        <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
-                                            <span class=" font-bold" x-text="'담당자'" />
+                                        <div
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
+                                            <span class=" font-bold"
+                                                x-text="<?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'true'; else echo 'false'; ?> ? '담당업체' : '담당자'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
                                             <span x-text="item.partner_manager_mb_name" />
                                         </div>
                                     </div>
+                                    <div class="flex-1 flex flex-row border-b"
+                                        :class="{'hidden': <?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'false'; else echo 'true'; ?>">
+                                        <div
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
+                                            <span class="font-bold" x-text="'업체연락처'" />
+                                        </div>
+                                        <div class="flex-1 flex items-center px-4 py-2">
+                                            <span x-text="item.partner_hp ? item.partner_hp : '없음'" />
+                                        </div>
+                                    </div>
                                     <div class="flex-1 flex flex-row border-b">
-                                        <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
+                                        <div
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'수령인'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
@@ -295,7 +310,8 @@ include_once("./_common.php");
                                         </div>
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
-                                        <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
+                                        <div
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'연락처'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
@@ -303,7 +319,8 @@ include_once("./_common.php");
                                         </div>
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
-                                        <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
+                                        <div
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'배송주소'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
@@ -311,7 +328,8 @@ include_once("./_common.php");
                                         </div>
                                     </div>
                                     <div class="flex-1 flex flex-row border-b">
-                                        <div class="basis-24 flex justify-center items-center border-r bg-gray-100">
+                                        <div
+                                            class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                                             <span class="font-bold" x-text="'요청사항'" />
                                         </div>
                                         <div class="flex-1 flex items-center px-4 py-2">
@@ -325,7 +343,7 @@ include_once("./_common.php");
                 </section>
             </div>
 
-            <!-- 일정표 관리 모달 -->
+            <!-- 설치불가일 관리 모달 -->
             <div x-show="showModal" x-data="scheduleManager()" x-init="scheduleInit()"
                 class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-50"
                 x-transition:enter="motion-safe:ease-out duration-300" x-transition:enter-start="opacity-0 scale-90"
@@ -557,15 +575,7 @@ include_once("./_common.php");
                     },
                     error: function($xhr) {
                         checkSum = false;
-                        var message = $xhr.responseJSON.message;
-                        if (message) {
-                            $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                            ret = message;
-                        } else {
-                            $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css(
-                                'color',
-                                '#333333');
-                        }
+                        alert("서버 통신 에러");
                     }
                 });
                 if (checkSum) {
@@ -581,8 +591,9 @@ include_once("./_common.php");
     <script>
     function req(list, mb_type, valueInModal) {
         const data = {
-            partner_mb_id: '<?php echo $member['mb_id']; ?>',
-            partner_manager_mb_id: mb_type === 'partner' ? valueInModal : '<?php echo $_SESSION['ss_mb_id']; ?>',
+            partner_mb_id: '<?php echo $_SESSION['ss_mb_id']; ?>',
+            partner_manager_mb_id: mb_type === 'partner' ? valueInModal :
+                '<?php echo $_SESSION['ss_manager_mb_id']; ?>',
             schedules: JSON.parse(JSON.stringify([...new Set(list.filter(e => moment().diff(moment(e), 'days') <=
                 0))])),
         };
@@ -600,14 +611,7 @@ include_once("./_common.php");
                 },
                 error: function($xhr) {
                     showModal = true;
-                    var message = $xhr.responseJSON.message;
-                    if (message) {
-                        $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                        ret = message;
-                    } else {
-                        $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css('color',
-                            '#333333');
-                    }
+                    alert("설치 가능한 요일이 없습니다.");
                 }
             });
         }
@@ -618,6 +622,7 @@ include_once("./_common.php");
     <script>
     function select(config) {
         let res;
+        let mb_type;
         let resInModal;
         $.ajax('ajax.members.php', {
             type: 'POST',
@@ -629,18 +634,12 @@ include_once("./_common.php");
             dataType: 'json',
             success: function(result) {
                 res = result.data.members;
+                mb_type = result.data.mb_type;
                 resInModal = Object.fromEntries(Object.entries(result.data.members).filter((i) => i[0] !==
                     'all'));
             },
             error: function($xhr) {
-                var message = $xhr.responseJSON.message;
-                if (message) {
-                    $('#code_keyup').text('* ' + message).css('color', '#d44747');
-                    ret = message;
-                } else {
-                    $('#code_keyup').text('* 방문기록, 교육정보 열람 시 본인 확인을 위해 필요한 접속코드 입니다.').css('color',
-                        '#333333');
-                }
+                alert("서버 통신 에러");
             }
         });
         return {
@@ -660,6 +659,7 @@ include_once("./_common.php");
             value: config.value,
             valueInModal: config.valueInModal,
             filter_mb_id: '',
+            mb_type,
             closeListbox: function() {
                 this.open = false;
                 this.focusedOptionIndex = null;
@@ -796,7 +796,7 @@ include_once("./_common.php");
             cache: false,
             async: false,
             data: {
-                partner_mb_id: '<?php echo $_SESSION['ss_mb_id']; ?>'
+                partner_mb_id: '<?php if ($_SESSION['ss_manager_mb_id']) echo $_SESSION['ss_manager_mb_id']; else echo $_SESSION['ss_mb_id']; ?>'
             },
             dataType: 'json',
             success: (result) => {
@@ -822,7 +822,7 @@ include_once("./_common.php");
             events: res,
             select_date: new Date(),
             schedules: [],
-            mb_type: '<?php echo $member["mb_type"]; ?>',
+            // mb_type: '<?php echo $member["mb_type"]; ?>',
             initDate: function() {
                 const today = new Date();
                 this.month = today.getMonth();
@@ -1004,7 +1004,7 @@ include_once("./_common.php");
                     cache: false,
                     async: false,
                     data: {
-                        partner_mb_id: '<?php echo $_SESSION['ss_mb_id']; ?>'
+                        partner_mb_id: '<?php echo $_SESSION['ss_manager_mb_id']; ?>'
                     },
                     dataType: 'json',
                     success: (result) => {

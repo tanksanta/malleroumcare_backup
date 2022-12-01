@@ -14,6 +14,10 @@
     echo "<script>
     tailwind.config = {
       theme: {
+        minWidth: {
+          '20': '5rem',
+          '24': '6rem',
+        },
         extend: {
           spacing: {
             '68': '17rem',
@@ -69,6 +73,13 @@
       }
     }
   </script>"
+?>
+<?php
+if ($_SESSION['ss_manager_mb_id']) {
+  $member = get_member($_SESSION['ss_manager_mb_id']);
+} else {
+  $member = get_member($_SESSION['ss_mb_id']);
+}
 ?>
 
 <?php

@@ -828,18 +828,18 @@ function save_eform() {
 let pen_info = [];
 // 계약서 작성
 $('#btn_se_submit').on('click', function() {
-  if(!!pen_info){
-      if(!(!!pen_info['penZip'])&&!(!!pen_info['penAddr'])) {
-        if(confirm("수급자 정보가 완전하지 않습니다.\n수급자 정보 수정을 진행하시겠습니까?") == true){ // 등록되지 않은 수급자이기 때문에 보호자 정보 없음
-          window.location.href = './my_recipient_update.php?id='+pen_info['penId'];
-          return false;
-        } else {
-          alert("수급자 선택을 초기화합니다.");
-          window.location.href = './simple_eform.php';
-          return false;
-        }
-      }
-  }
+  // if(!!pen_info){
+  //     if(!(!!pen_info['penZip'])&&!(!!pen_info['penAddr'])) {
+  //       if(confirm("수급자 정보가 완전하지 않습니다.\n수급자 정보 수정을 진행하시겠습니까?") == true){ // 등록되지 않은 수급자이기 때문에 보호자 정보 없음
+  //         window.location.href = './my_recipient_update.php?id='+pen_info['penId'];
+  //         return false;
+  //       } else {
+  //         alert("수급자 선택을 초기화합니다.");
+  //         window.location.href = './simple_eform.php';
+  //         return false;
+  //       }
+  //     }
+  // }
 
   if(loading) {
     alert('계약서 저장 중입니다. 잠시 기다려주세요.');
@@ -900,7 +900,7 @@ $('#btn_se_submit').on('click', function() {
 
 // 바코드 필드 개수 업데이트
 function update_barcode_field() {
-  $('.se_item_list').each(function() {
+  $('#buy_list').each(function() {
     $(this).find('li').each(function(key) {
       var it_id = $(this).find('input[name="it_id[]"]').val();
 
@@ -935,6 +935,104 @@ function update_barcode_field() {
           </label>\
           <label class="radio-inline">\
             <input type="radio" name="barcode_' + key + '_type" value="1"' + (sel_type == '1' ? ' checked' : '') + '> 보유재고선택\
+          </label>\
+        ');
+        var $sel_stock_count = $('<select class="sel_stock_count">');
+        for(var i = 1; i <= (it_qty > stock.length ? stock.length : it_qty); i++) {
+          $sel_stock_count.append('<option value="' + i + '"' + (i == sel_count ? ' selected' : '') + '>' + i + '개</option>');
+        }
+        $sel_barcode_wr.append($sel_stock_count);
+      }
+
+      // 먼저 기존에 입력된 바코드값 저장
+      var barcodes = [];
+      var $barcode = $(this).find('.it_barcode');
+      $barcode.each(function() {
+        barcodes.push($(this).val() || '');
+      });
+
+      var $barcode_wr = $(this).find('.it_barcode_wr');
+      $barcode_wr.find('.it_barcode').remove();
+      var inserted_count = 0;
+      var barcode_count = sel_type == '1' ? it_qty - sel_count : it_qty;
+
+      if(barcode_count == 0)
+        $barcode_wr.find('.prodBarNumCntBtn').hide();
+      else
+        $barcode_wr.find('.prodBarNumCntBtn').show();
+      
+      if(sel_type == '1') {
+        for(var i = 0; i < sel_count; i++) {
+          var selected = '';
+          for(var x = 0; x < barcodes.length; x++) {
+            var barcode = '';
+            for(var y = 0; y < stock.length; y++) {
+              if(stock[y]['prodBarNum'] == barcodes[x]) {
+                barcode = barcodes[x];
+                break;
+              }
+            }
+            if(barcode != '') {
+              barcodes.splice(x, 1);
+              selected = barcode;
+              break;
+            }
+          }
+
+          var $sel_barcode = $('<select class="it_barcode">');
+          $sel_barcode.append('<option value="">바코드 선택</option>');
+          for(var s = 0; s < stock.length; s++) {
+            $sel_barcode.append('<option value="' + stock[s]['prodBarNum'] + '"' + (selected == stock[s]['prodBarNum'] ? ' selected' : '') + '>' + stock[s]['prodBarNum'] + '</option>')
+          }
+          $barcode_wr.find('.prodBarNumCntBtn').before($sel_barcode);
+        }
+      }
+
+      for(var i = 0; i < barcode_count; i++) {
+        var val = barcodes.shift() || '';
+        $barcode_wr.append('<input type="hidden" class="it_barcode barcode_input" maxlength="12" value="' + val + '">');
+        if(val != '') {
+          inserted_count++;
+        }
+      }
+      $barcode_wr.find('.prodBarNumCntBtn').text('바코드 (' + inserted_count + '/' + barcode_count + ')');
+    });
+  });
+  $('#rent_list').each(function() {
+    $(this).find('li').each(function(key) {
+      var it_id = $(this).find('input[name="it_id[]"]').val();
+
+      // 상품 개수
+      var it_qty = parseInt($(this).find('input[name="it_qty[]"]').val());
+
+      // 재고 정보
+      var stock = stock_table[it_id];
+      var sel_type = '0';
+      var sel_count = 1;
+      
+      if(stock && stock.length > 0) {
+        if($(this).find('.sel_barcode_wr').length == 0) {
+          $('<div class="sel_barcode_wr">').insertBefore($(this).find('.prodBarNumCntBtn'));
+        }
+        var $sel_barcode_wr = $(this).find('.sel_barcode_wr');
+
+        if($sel_barcode_wr.find('input[type="radio"]:checked').val() > 0) {
+          sel_type = $sel_barcode_wr.find('input[type="radio"]:checked').val();
+        }
+
+        if($sel_barcode_wr.find('.sel_stock_count').val() > 1) {
+          sel_count = parseInt($sel_barcode_wr.find('.sel_stock_count').val());
+        }
+        if(sel_count > it_qty)
+          sel_count = it_qty;
+
+        $sel_barcode_wr.html('<p>해당 상품은 보유재고가 ' + stock.length + '개 있습니다.</p>');
+        $sel_barcode_wr.append('\
+          <label class="radio-inline">\
+            <input type="radio" name="barcode_' + key + '000' + '_type" value="0"' + (sel_type == '0' ? ' checked' : '') + '> 직접입력\
+          </label>\
+          <label class="radio-inline">\
+            <input type="radio" name="barcode_' + key + '000' + '_type" value="1"' + (sel_type == '1' ? ' checked' : '') + '> 보유재고선택\
           </label>\
         ');
         var $sel_stock_count = $('<select class="sel_stock_count">');
