@@ -365,11 +365,24 @@ if($is_main && !$is_member) {
             </div>
             <?php } ?>
             <?php if($event_count) { ?>
-            <a class="event_noti" href="/bbs/board.php?bo_table=event">
-              2022 연말 감사제 <!= 진행중인 이벤트 ==>
-              <span class="value"><?=$event_count?>건</span>
-              <i class="fa fa-angle-right" aria-hidden="true"></i>
-            </a>
+
+            <!--  TODO: 2022 연말감사제용 코드 22-12-31 이후 코드 수정할 것  / 자동으로 변경되도록 임시 설정-->
+            <?php $timenow = date("Y-m-d H:i:s");  $end_yearend = "2022-12-31 23:59:59"; $now_target = strtotime($timenow); $end_target = strtotime($end_yearend);
+            if($now_target < $end_target) { ?>
+                <a class="event_noti" href="/bbs/board.php?bo_table=event">
+                  2022 연말감사제
+                  <span class="value"><?=$event_count?>건</span>
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            <?php } else { ?>
+                <a class="event_noti" href="/bbs/board.php?bo_table=event">
+                  진행중인 이벤트
+                  <span class="value"><?=$event_count?>건</span>
+                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            <?php } ?>
+            <!--  TODO: 2022 연말감사제용 코드 22-12-31 이후 코드 수정할 것  / 자동으로 변경되도록 임시 설정-->
+
             <?php
               }
             }
