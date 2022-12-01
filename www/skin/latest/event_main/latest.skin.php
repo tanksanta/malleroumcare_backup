@@ -7,16 +7,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$latest_skin_url.'/event.main.css
 <?php if(count($list) > 0) { // 진행중인 이벤트가 없으면 숨김 ?>
 <div class="event_main_wrap">
   <div class="flex">
-
-    <!--  TODO: 2022 연말감사제용 코드 22-12-31 이후 코드 수정할 것 / 자동으로 변경되도록 임시 설정 -->
-    <?php $timenow = date("Y-m-d H:i:s");  $end_yearend = "2022-12-31 23:59:59"; $now_target = strtotime($timenow); $end_target = strtotime($end_yearend);
-    if($now_target < $end_target) { ?>
-        <h3 class="grow">2022 연말감사제</h3>
-    <?php } else { ?>
-        <h3 class="grow">진행중인 이벤트</h3>
-    <?php } ?>
-    <!--  TODO: 2022 연말감사제용 코드 22-12-31 이후 코드 수정할 것 / 자동으로 변경되도록 임시 설정 -->
-
+    <h3 class="grow">2022 연말 감사제 <!= 진행중인 이벤트 ==></h3>
     <div class="link_wrap">
       <a href="/bbs/board.php?bo_table=event" class="btn_default">이벤트 전체보기</a>
     </div>

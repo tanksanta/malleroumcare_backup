@@ -8,17 +8,11 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" medi
 
 <?php if ($bo_table === 'event_board') { ?>
 <section class="event-category">
-
-    <!--  TODO: 2022 연말감사제용 코드 22-12-31 이후 코드 수정할 것 / 자동으로 변경되도록 임시 설정 -->
-    <ul>
-		<?php $timenow = date("Y-m-d H:i:s");  $end_yearend = "2022-12-31 23:59:59"; $now_target = strtotime($timenow); $end_target = strtotime($end_yearend);
-        if($now_target < $end_target) { ?><li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event" class="<?php echo $bo_table === 'event' ? 'active' : ''; ?>">2022 연말감사제</a></li><?php } else { ?>
-		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event" class="<?php echo $bo_table === 'event' ? 'active' : ''; ?>">진행중인 이벤트</a></li><?php } ?>
+	<ul>
+		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event" class="<?php echo $bo_table === 'event' ? 'active' : ''; ?>">진행중인 이벤트</a></li>
 		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event_ended" class="<?php echo $bo_table === 'event_ended' ? 'active' : ''; ?>">종료된 이벤트</a></li>
 		<li><a href="<?php echo G5_BBS_URL; ?>/board.php?bo_table=event_board" class="<?php echo $bo_table === 'event_board' ? 'active' : ''; ?>">이벤트 공지</a></li>
 	</ul>
-    <!--  TODO: 2022 연말감사제용 코드 22-12-31 이후 코드 수정할 것 / 자동으로 변경되도록 임시 설정 -->
-
 </section>
 <?php } else if ($bo_table === 'sample_board') { ?>
 <section class="sample-category">
