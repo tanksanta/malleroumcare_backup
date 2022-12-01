@@ -366,7 +366,7 @@ if($is_main && !$is_member) {
             <?php } ?>
             <?php if($event_count) { ?>
             <a class="event_noti" href="/bbs/board.php?bo_table=event">
-              진행중인 이벤트
+              2022 연말 감사제 <!= 진행중인 이벤트 ==>
               <span class="value"><?=$event_count?>건</span>
               <i class="fa fa-angle-right" aria-hidden="true"></i>
             </a>
