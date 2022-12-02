@@ -11,6 +11,7 @@ $mb_id = get_search_string($_POST['mb_id']);
 $mm_id = get_search_string($_POST['mm_id']);
 $mm_pw = trim($_POST['mm_pw']);
 $mm_name = get_search_string($_POST['mm_name']);
+$mm_tel = get_search_string($_POST['mm_tel']);
 $mm_email = sql_real_escape_string($_POST['mm_email']);
 $mm_memo = sql_real_escape_string($_POST['mm_memo']);
 
@@ -36,6 +37,8 @@ if(!$w) {
 
   if(!$mm_name)
     json_response(400, '이름을 입력해주세요.');
+  if(!$mm_tel)
+    json_response(400, '연락처를 입력해주세요.');
 
   $sql = "
     INSERT INTO
@@ -47,6 +50,7 @@ if(!$w) {
       mb_type = 'manager',
       mb_name = '{$mm_name}',
       mb_nick = '{$mm_name}',
+	  mb_tel = '{$mm_tel}',
       mb_email = '{$mm_email}',
       mb_memo = '{$mm_memo}',
       mb_manager = '{$mb_id}',
@@ -70,6 +74,7 @@ else if($w === 'u') {
     SET
       mb_name = '{$mm_name}',
       mb_nick = '{$mm_name}',
+	  mb_tel = '{$mm_tel}',
       mb_email = '{$mm_email}',
       mb_memo = '{$mm_memo}'
       {$sql_password}

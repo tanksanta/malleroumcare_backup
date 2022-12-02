@@ -842,6 +842,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
                 <input type="text" id="mm_id" class="frm_input" size="20" maxlength="20" placeholder="아이디">
                 <input type="password" id="mm_pw" class="frm_input" size="20" maxlength="20" placeholder="비밀번호">
                 <input type="text" id="mm_name" class="frm_input" size="20" maxlength="20" placeholder="이름">
+				<input type="text" id="mm_tel" class="frm_input" size="20" maxlength="20" placeholder="연락처">
                 <input type="text" id="mm_email" class="frm_input" size="30" maxlength="50" placeholder="이메일주소">
                 <input type="text" id="mm_memo" class="frm_input" size="30" maxlength="50" placeholder="메모">
                 <button type="button" id="add_manager" class="btn_submit btn">담당자 추가</button>
@@ -853,6 +854,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
                     <th scope="col">아이디</th>
                     <th scope="col">비밀번호</th>
                     <th scope="col">이름</th>
+					<th scope="col">연락처</th>
                     <th scope="col">이메일주소</th>
                     <th scope="col">메모</th>
                     <th scope="col" style="width: 100px;">정보수정</th>
@@ -879,6 +881,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
                     </td>
                     <td><input type="password" class="frm_input mm_pw" placeholder="비밀번호"></td>
                     <td><input type="text" class="frm_input mm_name" placeholder="이름" value="<?=$mm['mb_name']?>"></td>
+					<td><input type="text" class="frm_input mm_tel" placeholder="연락처" value="<?=$mm['mb_tel']?>"></td>
                     <td><input type="text" class="frm_input mm_email" placeholder="이메일" value="<?=$mm['mb_email']?>"></td>
                     <td><input type="text" class="frm_input mm_memo" placeholder="메모" value="<?=$mm['mb_memo']?>"></td>
                     <td class="td_center"><button type="button" class="btn_submit btn btn_mm_edit" data-id="<?=$mm['mb_id']?>">수정하기</button></td>
@@ -1458,6 +1461,7 @@ $(function() {
         mm_id: $('#mm_id').val(),
         mm_pw: $('#mm_pw').val(),
         mm_name: $('#mm_name').val(),
+		mm_tel: $('#mm_tel').val(),
         mm_email: $('#mm_email').val(),
         mm_memo: $('#mm_memo').val()
       }, 'json')
@@ -1479,6 +1483,7 @@ $(function() {
         mm_id: $tr.find('.mm_id').val(),
         mm_pw: $tr.find('.mm_pw').val(),
         mm_name: $tr.find('.mm_name').val(),
+		mm_tel: $tr.find('.mm_tel').val(),
         mm_email: $tr.find('.mm_email').val(),
         mm_memo: $tr.find('.mm_memo').val()
       }, 'json')
