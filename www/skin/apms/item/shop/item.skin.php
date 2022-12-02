@@ -1034,8 +1034,14 @@ if ($it['ca_id']) {
 
         // 상품주문, 장바구니 폼 전송
         function fitem_submit(f) {
+		<?php if($it["pt_end"] != "" && $it["it_price"] =="100"){?>
+			if (document.pressed == "장바구니") {
+				alert("이벤트 진행 상품으로 상품구매만 가능합니다.");
+				return false;
+			}
+		<?php }?>
 		<?php if($is_buy){?>
-			alert("이미 구매한 상품으로 주문이 제한되었습니다.");
+			alert("이미 구매한 이벤트 상품으로 주문이 제한되었습니다.");
 			return false;
 		<?php }?>
           f.action = "<?php echo $action_url; ?>";

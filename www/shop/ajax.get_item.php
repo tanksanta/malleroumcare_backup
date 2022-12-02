@@ -3,6 +3,19 @@ include_once('./_common.php');
 
 header('Content-type: application/json');
 
+if($_POST["it_id"] != ""){//이벤트 상품 구매 조회
+	$is_buy = 0;
+	$sql = "SELECT COUNT(a.od_id) as buy_count FROM `g5_shop_order` AS a 
+	INNER JOIN `g5_shop_cart` AS b ON a.od_id = b.od_id AND b.it_id='".$_POST["it_id"]."' AND b.ct_status NOT IN ('주문무효','취소')
+	WHERE a.mb_id = '".$member['mb_id']."'";
+	$row = sql_fetch($sql);
+	if($row["buy_count"] >0 ){// 구매이력 있음
+		$is_buy = 1; 
+	}
+	echo json_encode($is_buy);
+	exit;
+}
+
 $keyword = str_replace(' ', '', trim($keyword));
 
 $eform = $_GET['eform'];

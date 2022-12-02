@@ -1232,7 +1232,25 @@ $(function() {
     },
   })
   .on("select:flexdatalist", function(event, obj, options) {
-    select_item(obj);
+    $.ajax({
+      url: "./ajax.get_item.php",
+      type: "POST",
+      data: {
+        "it_id": obj.it_id
+      },
+      dataType: "json",
+      async: false,
+      cache: false,
+      success: function(data, textStatus) {
+        if(data == 1){
+			alert("이미 구매한 이벤트 상품으로 주문이 제한되었습니다.");	
+			$('#ipt_so_sch').val("");
+			return false;
+		}else{
+			select_item(obj);
+		}
+      }
+    });	
   });
 
   // 포인트 전액 사용
