@@ -153,6 +153,8 @@ $(function(){
 });
 </script>
 <!-- 210326 배송정보팝업 -->
+<script src="/js/detectmobilebrowser.js">
+</script>
 
 <section id="pro-order" class="wrap order-list">
   <div class="sub_section_tit">주문내역</div>
