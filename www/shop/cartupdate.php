@@ -66,7 +66,9 @@ if($act == "buy")
         if($msg)
           alert($msg, G5_SHOP_URL);
       }
-
+	// 상품정보
+    $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
+    $it = sql_fetch($sql);
       // 주문 상품의 재고체크
       $sql = " select ct_qty, it_name, ct_option, io_id, io_type
                 from {$g5['g5_shop_cart_table']}
@@ -86,14 +88,14 @@ if($act == "buy")
 
           $sum = sql_fetch($sql);
           $sum_qty = $sum['cnt'];
-
+		
           // 재고 구함
           $ct_qty = $row['ct_qty'];
           if(!$row['io_id'])
             $it_stock_qty = get_it_stock_qty($it_id);
           else
             $it_stock_qty = get_option_stock_qty($it_id, $row['io_id'], $row['io_type']);
-
+		if($it["pt_end"] == "" || $it["it_price"] !="100"){
           if ($ct_qty + $sum_qty > $it_stock_qty)
           {
             $item_option = $row['it_name'];
@@ -102,6 +104,7 @@ if($act == "buy")
 
             alert($item_option." 의 재고수량이 부족합니다.\\n\\n현재 재고수량 : " . number_format($it_stock_qty - $sum_qty) . " 개");
           }
+		}
       }
 
       $sql = " update {$g5['g5_shop_cart_table']}
@@ -267,10 +270,12 @@ else // 장바구니에 담기
         else
           $it_stock_qty = get_option_stock_qty($it_id, $io_id, $io_type);
 
-        if ($ct_qty + $sum_qty > $it_stock_qty)
+        if($it["pt_end"] == "" || $it["it_price"] !="100"){
+		if ($ct_qty + $sum_qty > $it_stock_qty)
         {
           alert($io_value." 의 재고수량이 부족합니다.\\n\\n현재 재고수량 : " . number_format($it_stock_qty - $sum_qty) . " 개");
         }
+		}
       }
     }
     //--------------------------------------------------------

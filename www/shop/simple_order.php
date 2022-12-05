@@ -20,6 +20,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 ?>
 
 <section class="wrap">
+<input type="hidden" name="checkUnload" id="checkUnload" value="0">
   <div class="sub_section_tit">간편 주문서 신청</div>
   <div class="inner">
   <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post" onsubmit="return form_submit(this);">
@@ -478,7 +479,15 @@ add_javascript(G5_POSTCODE_JS, 0);
 </div>
 
 <script>
+
 $(function() {
+  window.addEventListener("keydown",function(event){
+	if(event.keyCode == "116"){
+		$("#checkUnload").val("1");
+	}
+  },true);
+  
+  
   <?php if(empty($member['mb_zip1'])||empty($member['mb_addr1'])||empty($member['mb_giup_zip1'])||empty($member['mb_giup_addr1'])){?>
       alert("사업소 정보를 모두 등록하신 후 주문 가능합니다.\n정보수정 페이지로 이동합니다.");
       $(location).attr('href', '<?=$G5_URL?>/bbs/member_confirm.php?url=register_form.php');
@@ -491,9 +500,28 @@ $(function() {
   $('#popup_box').click(function() {
       close_popup_box();
   });
+	window.addEventListener('beforeunload', call_unload);
+  });
+function call_unload(){
+	if($("#checkUnload").val() == "0"){
+		$.ajax({
+				url: 'ajax.simple_order.php',
+				//async: false,
+				method: 'POST',
+				cache: false,
+				data: {"clean":"ok"},
+				dataType: 'json',
+				success: function(data) {
 
-});
-
+				},
+				error: function($xhr) {
+				  form_loading = false;
+				  var data = $xhr.responseJSON;
+				  alert(data && data.message);
+				}
+			  });
+	}
+}
 function open_popup_box(url) {
   $('html, body').addClass('modal-open');
   $("#popup_box > div").html('<iframe src="' + url + '">');
@@ -713,7 +741,7 @@ function form_submit(form) {
   }
 
   var result = false;
-
+	
   $.ajax({
     url: 'ajax.simple_order.php',
     async: false,
@@ -722,7 +750,8 @@ function form_submit(form) {
     data: $(form).serialize(),
     dataType: 'json',
     success: function() {
-      result = true;
+      $("#checkUnload").val("1");
+	  result = true;	  
     },
     error: function($xhr) {
       form_loading = false;
