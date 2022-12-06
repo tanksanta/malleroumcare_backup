@@ -255,9 +255,9 @@ input[type="number"]::-webkit-inner-spin-button {
             </label>
             <div class="col-sm-3">
 
-              <input readonly type="number" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0"  class="form-control input-sm" value="<?=get_text($_GET['penJumin'])?>">
+              <input readonly type="number" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0"  class="form-control input-sm" value="<?=get_text(str_replace('.','',$_GET['penBirth']))?>">
               <input type="hidden" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" value="<?=get_text($_GET['penJumin'])?>">
-              <input type="hidden" id="BDay" name="BDay" value="<?=get_text($_GET['penJumin']) ?: ''?>">
+              <input type="hidden" id="BDay" name="BDay" value="<?=get_text(str_replace('.','',$_GET['penBirth'])) ?: ''?>">
 
             </div>
           </div>
@@ -1052,7 +1052,9 @@ $(function(){
       entUsrId : $(".register-form input[name='entUsrId']").val(),
       caCenYn : $(".register-form input[name='caCenYn']:checked").val(),
       penSpare: penSpare,
-      pros: pros
+      pros: pros,
+      page: "<?=get_text($_GET['page'])?>",
+      uuid: "<?=get_text($_GET['uuid'])?>"
     }, 'json')
     .done(function(result) {      
       // macro_request 상태 업데이트
