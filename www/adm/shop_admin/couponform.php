@@ -95,6 +95,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <td>
             <input type="text" name="mb_id" value="<?php echo stripslashes($cp['mb_id']); ?>" id="mb_id" class="frm_input">
             <button type="button" id="sch_member" class="btn_frmline">회원검색</button>
+            <button type="button" id="batch_reg_member" class="btn_frmline">회원일괄등록</button>
             <input type="checkbox" name="chk_all_mb" id="chk_all_mb" value="1">
             <label for="chk_all_mb">전체회원</label>
         </td>
@@ -216,6 +217,17 @@ $(function() {
 
         var opt = "left=50,top=50,width=520,height=600,scrollbars=1";
         var url = "./couponmember.php";
+        window.open(url, "win_member", opt);
+    });
+
+    $("#batch_reg_member").click(function() {
+        if($("#chk_all_mb").is(":checked")) {
+            alert("전체회원 체크를 해제 후 이용해 주십시오.");
+            return false;
+        }
+
+        var opt = "left=50,top=50,width=520,height=660,scrollbars=1";
+        var url = "./couponbatchregist.php";
         window.open(url, "win_member", opt);
     });
 
