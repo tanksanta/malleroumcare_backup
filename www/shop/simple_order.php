@@ -775,14 +775,6 @@ function calculate_order_price() {
   var even_qty = 0;
   var even_price = 0;
   var charge_price = 0; // 유료배송비
-
-  var send_cost_limit = "<?=$default['de_send_cost_limit']; ?>";
-  var send_cost_list = "<?=$default['de_send_cost_list']; ?>";    
-  send_cost_limit = send_cost_limit.split(";");
-  send_cost_list = send_cost_list.split(";");
-
-  var item_delivery_price = [];
-
   $li.each(function() {
     var it_id = $(this).find('input[name="it_id[]"]').val();
     var it_price = parseInt ( $(this).find('input[name="it_price[]"]').val() || 0 );
@@ -791,18 +783,15 @@ function calculate_order_price() {
     var supply_price = parseInt( $(this).find('input[name="io_price[]"]').val() || 0 );
     var ct_qty = parseInt( $(this).find('input[name="ct_qty[]"]').val() || 0 );
     var it_sc_type = parseInt( $(this).find('input[name="it_sc_type[]"]').val() || 0 );
-    var it_sc_qty = parseInt( $(this).find('input[name="it_sc_qty[]"]').val() || 0 );    
     var it_sc_price = parseInt( $(this).find('input[name="it_sc_price[]"]').val() || 0 );
-    var it_sc_minimum = parseInt( $(this).find('input[name="it_sc_minimum[]"]').val() || 0 );    
     var it_even_odd = parseInt( $(this).find('input[name="it_even_odd[]"]').val() || 0 );
     var it_even_odd_price = parseInt( $(this).find('input[name="it_even_odd_price[]"]').val() || 0 );
-    var it_delivery_price = parseInt( $(this).find('input[name="it_delivery_price[]"]').val() || 0 );
 
     if(it_sc_type !== 1 && it_sc_type !== 5 && it_sc_type !== 3) {
       // 무료배송이 아닌 상품이 하나라도 있으면 유료배송
       free_delivery = false;
     }
-    
+
     // 묶음할인 적용
     var sale_qty = 0;
     for(var i = 0; i < $li.length; i++) {
@@ -825,7 +814,8 @@ function calculate_order_price() {
       }
     }
 
-    var ct_price=0;
+    var ct_price;
+
     if (io_type === '0') {
       ct_price = ( it_price + io_price ) * ct_qty
       $(this).find('.it_price_wr .it_price span').text(number_format(it_price + io_price) + '원');
@@ -834,84 +824,73 @@ function calculate_order_price() {
       $(this).find('.it_price_wr .it_price span').text(number_format(supply_price) + '원');
     }
 
-    $(this).find('.it_price_wr .ct_price').text(number_format(ct_price) + '원');   
+    $(this).find('.it_price_wr .ct_price').text(number_format(ct_price) + '원');
     $(this).find('input[name="ct_price[]"]').val(ct_price);
     order_price += ct_price;
-    
-    // 변수에 선언 값이 없을 경우 '0' 처리
-    if( isNaN(item_delivery_price[it_id]) ) { 
-      item_delivery_price[it_id] = parseInt( 0 );       
+
+    // 유료 배송
+    if(it_sc_type === 3) {
+      charge_price += (it_sc_price * ct_qty);
     }
-    var delivery_price = 0;
-    //console.log("============================================================");
-    if(it_sc_type === 1) {
-      // 상품관리 > 배송비 유형 > 무료배송
-      // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =      //console.log("it_sc_type1: " + it_sc_type);
-      delivery_price = 0;
 
-    } else if(it_sc_type === 2) {
-      // 상품관리 > 배송비 유형 > 조건부 무료배송
-      // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =     // console.log("it_sc_type2: " + it_sc_type);
-      if( parseInt(ct_price) < parseInt(it_sc_minimum) ) {
-        delivery_price = parseInt(it_sc_price);
-      } else { 
-        delivery_price = 0;
+    // 홀수/짝수 배송
+    if(it_sc_type === 5) {
+      if(it_even_odd == 0) {
+        // 홀수 배송
+
+        // 홀수 배송중 가장 배송비가 높은 상품의 배송비를 홀수 배송비로 적용
+        if(odd_price < it_even_odd_price)
+          odd_price = it_even_odd_price;
+        
+        odd_qty += ct_qty;
+      } else if(it_even_odd == 1) {
+        // 짝수 배송
+
+        // 짝수 배송중 가장 배송비가 높은 상품의 배송비를 짝수 배송비로 적용
+        if(even_price < it_even_odd_price)
+          even_price = it_even_odd_price;
+        
+        even_qty += ct_qty;
       }
-      
-    } else if(it_sc_type === 3) {
-      // 상품관리 > 배송비 유형 > 유료배송
-      // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =      //console.log("it_sc_type3: " + it_sc_type);
-      delivery_price = parseInt(it_sc_price);
-      
-    } else if(it_sc_type === 4) {
-      // 상품관리 > 배송비 유형 > 수량별 부과
-      // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =      //console.log("it_sc_type4: " + it_sc_type);
-      delivery_price = parseInt( it_sc_price * Math.ceil(ct_qty / it_sc_qty) ) ;
-
-    } else if(it_sc_type === 5) {
-      // 상품관리 > 배송비 유형 > 홀수/짝수 배송
-      // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =      //console.log("it_sc_type5: " + it_sc_type);
-
-      if( (it_even_odd === 0) && (ct_qty > 0) && ((ct_qty % 2) === 1) ) {
-        // 홀수
-        delivery_price = it_even_odd_price;
-      } else if( (it_even_odd === 1) && (ct_qty > 0) && ((ct_qty % 2) === 0) ) {
-        // 짝수
-        delivery_price = it_even_odd_price;
-      }
-
     } else {
-      // 시스템 기본 배송 적용
-      // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =      //console.log("it_sc_type0: " + it_sc_type);
-      for (let ii=0; ii < send_cost_limit.length; ii++) {
-        if(ct_price < send_cost_limit[ii]) { delivery_price = send_cost_list[ii]; break; }
-      }
+      delivery_total += ct_price;
     }
-    //console.log( parseInt(delivery_price) );
-    $(this).find('input[name="it_delivery_price[]"]').val( parseInt(delivery_price) );
-  });   
-  
+  });
+
+  var delivery_price = 0;
+  if(delivery_total < 100000 && !free_delivery) {
+    // 주문금액 10만원 미만에 무료배송상품이 아닌 상품이 있는 경우 배송비
+    delivery_price = 3300;
+  }
+
+  // 유료 배송비 적용
+  delivery_price += charge_price;
+
+  if(odd_qty > 0 && odd_qty % 2 === 1) {
+    // 홀수 배송비 적용
+    if(delivery_price < 100000){
+        delivery_price = odd_price>0?3300:0;
+    } else {
+        delivery_price += odd_price;
+    }
+  }
+  if(even_qty > 0 && even_qty % 2 === 0) {
+    // 짝수 배송비 적용
+    if(delivery_price < 100000){
+        delivery_price = even_price>0?3300:0;
+    } else {
+        delivery_price += even_price;
+    }
+  }
 
   // 주문금액
   $('input[name="org_od_price"]').val(order_price);
   $('input[name="od_price"]').val(order_price);
   $('#order_price').text(number_format(order_price));
 
-
   // 배송비
-  //var od_send_cost2 = parseInt($('input[name=od_send_cost2]').val());
-  //$('#delivery_price').text(number_format(delivery_price + od_send_cost2));
-  var tmp_delivery_price = 0;
-  $li.each(function() {
-    var _price = $(this).find('input[name="it_delivery_price[]"]').val();
-    tmp_delivery_price += parseInt( _price );
-    $(this).find('.ct_delivery_price').text( "배송비: " + ((_price>0)?number_format(_price)+"원":"무료") );
-    //console.log( "배송비: " + ((_price>0)?number_format(_price)+"원":"무료") );
-  });
-  delivery_price = tmp_delivery_price;
-  $('#delivery_price').text(number_format(tmp_delivery_price));
-  //console.log( tmp_delivery_price );
-
+  var od_send_cost2 = parseInt($('input[name=od_send_cost2]').val());
+  $('#delivery_price').text(number_format(delivery_price + od_send_cost2));
 
   // 쿠폰
   var cp_price = parseInt( $('input[name="od_cp_price"]').val() || 0 );
@@ -920,7 +899,6 @@ function calculate_order_price() {
     $('#od_coupon_cancel').click();
     return;
   }
-
 
   // 포인트
   var pt_price = parseInt( $('input[name="od_temp_point"]').val() || 0 );
@@ -934,7 +912,6 @@ function calculate_order_price() {
   // 총 결제금액
   $('#total_price').text(number_format( order_price + delivery_price - cp_price - pt_price ));
   $('.total_price_wr .total_price').text(number_format( order_price + delivery_price - cp_price - pt_price ) + '원');
-
 }
 
 var addr1_timer = null;
@@ -1058,16 +1035,13 @@ function select_item(obj, io_id, ct_qty) {
   .append('<input type="hidden" name="it_buy_inc_qty[]" value="' + obj.it_buy_inc_qty + '">')
   .append('<input type="hidden" name="it_price[]" value="' + obj.it_price + '">')
   .append('<input type="hidden" name="it_sc_type[]" value="' + obj.it_sc_type + '">')
-  .append('<input type="hidden" name="it_sc_qty[]" value="' + obj.it_sc_qty + '">')
   .append('<input type="hidden" name="it_sc_price[]" value="' + obj.it_sc_price + '">')
-  .append('<input type="hidden" name="it_sc_minimum[]" value="' + obj.it_sc_minimum + '">')
   .append('<input type="hidden" name="it_even_odd[]" value="' + obj.it_even_odd + '">')
   .append('<input type="hidden" name="it_even_odd_price[]" value="' + obj.it_even_odd_price + '">')
   .append('<input type="hidden" name="io_type[]" value="' + obj.io_type + '">')
   .append('<input type="hidden" name="io_price[]" value="' + obj.io_price + '">')
   .append('<input type="hidden" name="cp_id[]" value="">')
-  .append('<input type="hidden" name="cp_price[]" value="">')
-  .append('<input type="hidden" name="it_delivery_price[]" value="">');
+  .append('<input type="hidden" name="cp_price[]" value="">');
 
   var $info_wr = $('<div class="it_info_wr">');
   $info_wr.append('<img class="it_img" src="/data/item/' + obj.it_img + '" onerror="this.src=\'/img/no_img.png\';">');
@@ -1198,11 +1172,8 @@ function select_item(obj, io_id, ct_qty) {
   var $price_wr = $('<div class="it_price_wr flex space-between">');
   $price_wr
   .append(
-    '<div>'+
-    '<p class="it_price">단가 : <span>' + number_format(it_price) + '원</span></p>' +
-    '<p class="ct_price">' + number_format(ct_price) + '원</p>'+
-    '<p class="ct_delivery_price" style="font-size:10px;"></p>' +
-    '</div>',
+    '<div><p class="it_price">단가 : <span>' + number_format(it_price) + '원</span></p>' +
+    '<p class="ct_price">' + number_format(ct_price) + '원</p></div>',
     '<input type="hidden" name="ct_price[]" value="' + ct_price + '">',
     '<button type="button" class="btn_del_item">삭제</button>'
   )
@@ -1647,9 +1618,7 @@ $(function() {
         it_img1 as it_img,
         it_delivery_cnt,
         it_sc_type,
-        it_sc_qty,
         it_sc_price,
-        it_sc_minimum,
         it_even_odd,
         it_even_odd_price,
         it_sale_cnt,
@@ -1724,9 +1693,7 @@ $(function() {
         i.it_img1 as it_img,
         i.it_delivery_cnt,
         i.it_sc_type,
-        i.it_sc_qty,
         i.it_sc_price,
-        i.it_sc_minimum,
         it_even_odd,
         it_even_odd_price,
         io_id,
