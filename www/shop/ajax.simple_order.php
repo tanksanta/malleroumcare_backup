@@ -7,12 +7,6 @@ if($member['mb_type'] !== 'default')
 set_cart_id(1);
 set_session("ss_direct", 1);
 $tmp_cart_id = get_session('ss_cart_direct');
-$clean = $_POST['clean'];
-if($clean == "ok"){//불필요한 "쇼핑" 데이터 제거
-	sql_query(" delete from {$g5['g5_shop_cart_table']} where od_id = '$tmp_cart_id' and ct_direct = 1 and ct_status = '쇼핑'", false);
-	json_response(200, 'OK', $tmp_cart_id);
-	exit;
-}
 
 $it_id_arr = $_POST['it_id'];
 $io_id_arr = $_POST['io_id'];
@@ -378,7 +372,7 @@ for ($i = 0; $i < count($it_id_arr); $i++) {
         '$uid',
         '$io_thezone',
         '$ct_delivery_cnt',
-        '{$_POST['it_delivery_price'][$i]}',
+        '$ct_delivery_price',
         '$ct_delivery_company',
         '{$it['it_is_direct_delivery']}',
         '{$it['it_direct_delivery_partner']}',

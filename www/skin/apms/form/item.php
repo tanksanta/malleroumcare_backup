@@ -1346,44 +1346,24 @@ $warehouse_list = get_warehouses();
         </td>
       </tr>
       <tr>
-        <!-- <th scope="row"><label for="it_delivery_cnt">배송비 상세조건</label></th> -->
-        <th scope="row"><label for="it_delivery_cnt">박스당 개수(쇼핑몰 안내)</label></th>
+        <th scope="row"><label for="it_delivery_cnt">배송비 상세조건</label></th>
         <td>
-          본 상품은<input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 주문 시 한 박스로 포장됩니다.
-
-          <input type="hidden" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price">
-          <input type="hidden" name="it_delivery_min_cnt" value="<?php echo $it['it_delivery_min_cnt']; ?>" id="it_delivery_min_cnt">
-          <input type="hidden" name="it_delivery_min_price" value="<?php echo $it['it_delivery_min_price']; ?>" id="it_delivery_min_price">
-          <input type="hidden" name="it_delivery_company" value="<?php echo $it['it_delivery_company']; ?>" id="it_delivery_company">
-          
-          <input type="hidden" name="it_delivery_cnt2" value="<?php echo $it['it_delivery_cnt2']; ?>" id="it_delivery_cnt2">
-          <input type="hidden" name="it_delivery_price2" value="<?php echo $it['it_delivery_price2']; ?>" id="it_delivery_price2">
-          <input type="hidden" name="it_delivery_min_cnt2" value="<?php echo $it['it_delivery_min_cnt2']; ?>" id="it_delivery_min_cnt2">
-          <input type="hidden" name="it_delivery_min_price2" value="<?php echo $it['it_delivery_min_price2']; ?>" id="it_delivery_min_price2">
-          <input type="hidden" name="it_delivery_company2" value="<?php echo $it['it_delivery_company2']; ?>" id="it_delivery_company2">
-
-          <!--
           <?php echo help("상품의 박스 수량에 따라 배송비가 부과됩니다."); ?>
-          1박스 기준 <input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 마다 배송비 
-          <input type="text" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price" class="frm_input" size="8">원 부과,
-          최소수량 <input type="text" name="it_delivery_min_cnt" value="<?php echo $it['it_delivery_min_cnt']; ?>" id="it_delivery_min_cnt" class="frm_input" size="8">개 이하 
-          <input type="text" name="it_delivery_min_price" value="<?php echo $it['it_delivery_min_price']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
+          1박스 기준 <input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price" class="frm_input" size="8">원 부과,
+          최소수량 <input type="text" name="it_delivery_min_cnt" value="<?php echo $it['it_delivery_min_cnt']; ?>" id="it_delivery_min_cnt" class="frm_input" size="8">개 이하 <input type="text" name="it_delivery_min_price" value="<?php echo $it['it_delivery_min_price']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
           &nbsp;&nbsp;&nbsp;
           택배사 : <select name="it_delivery_company" id="it_delivery_company">
             <option value="ilogen"<?php echo get_selected('ilogen', $it['it_delivery_company']); ?>>로젠택배</option>
             <option value="lotteglogis"<?php echo get_selected('lotteglogis', $it['it_delivery_company']); ?>>롯데택배</option>
           </select>
           <br>
-          1박스 기준 <input type="text" name="it_delivery_cnt2" value="<?php echo $it['it_delivery_cnt2']; ?>" id="it_delivery_cnt2" class="frm_input" size="8">개 마다 배송비 
-          <input type="text" name="it_delivery_price2" value="<?php echo $it['it_delivery_price2']; ?>" id="it_delivery_price2" class="frm_input" size="8">원 부과,
-          최소수량 <input type="text" name="it_delivery_min_cnt2" value="<?php echo $it['it_delivery_min_cnt2']; ?>" id="it_delivery_min_cnt2" class="frm_input" size="8">개 이하 
-          <input type="text" name="it_delivery_min_price2" value="<?php echo $it['it_delivery_min_price2']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
+          1박스 기준 <input type="text" name="it_delivery_cnt2" value="<?php echo $it['it_delivery_cnt2']; ?>" id="it_delivery_cnt2" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price2" value="<?php echo $it['it_delivery_price2']; ?>" id="it_delivery_price2" class="frm_input" size="8">원 부과,
+          최소수량 <input type="text" name="it_delivery_min_cnt2" value="<?php echo $it['it_delivery_min_cnt2']; ?>" id="it_delivery_min_cnt2" class="frm_input" size="8">개 이하 <input type="text" name="it_delivery_min_price2" value="<?php echo $it['it_delivery_min_price2']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
           &nbsp;&nbsp;&nbsp;
           택배사 : <select name="it_delivery_company2" id="it_delivery_company2">
             <option value="ilogen"<?php echo get_selected('ilogen', $it['it_delivery_company2']); ?>>로젠택배</option>
             <option value="lotteglogis"<?php echo get_selected('lotteglogis', $it['it_delivery_company2']); ?>>롯데택배</option>
           </select>
-          -->
         </td>
       </tr>
       <tr>
