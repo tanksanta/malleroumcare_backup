@@ -602,10 +602,10 @@ if (!$member['mb_id']) {
   var sendBarcodeTargetList;
   var cur_ct_id = null;
   var cur_it_id = null;
-
+  var page = 1;
   $(function() {
     renderData();
-
+	
     $(document).on('click', '.listContent .more', function () {
       $('.listContent .more').not(this).find('.select').hide();
       $(this).find('.select').toggle();
@@ -624,6 +624,13 @@ if (!$member['mb_id']) {
       var bc_id = liNode.data('bc_id');
 
       showActPop(act, barcode, bc_id)
+    });
+	
+	// 인피니티 스크롤
+    $(window).scroll(function () {
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.9) {
+		renderData(1);
+      }
     });
   });
 
@@ -741,7 +748,7 @@ if (!$member['mb_id']) {
     renderData();
   }
 
-  function getData() {
+  function getData(a) {
     var data = [];
 
     if (LOADING) {
@@ -759,6 +766,7 @@ if (!$member['mb_id']) {
         sel_field: 'bc_barcode',
         search_text: $('#search_text').val(),
         only_not_deleted_barcode: 'true',
+		page:a,
       },
       dataType: 'json',
       async: false,
@@ -777,13 +785,17 @@ if (!$member['mb_id']) {
     return data;
   }
 
-  function renderData() {
+  function renderData(a) {
     var data;
     var html;
+	if(a != 1){
+		$('.listContent').empty();
+		page = 1;
+	}else{
+		page = page+1;
+	}
 
-    $('.listContent').empty();
-
-    data = getData();
+    data = getData(page);
     console.log(data);
 
     if (data.length > 0) {

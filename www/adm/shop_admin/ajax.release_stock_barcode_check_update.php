@@ -3,14 +3,99 @@
 include_once('./_common.php');
 
 // auth_check($auth[$sub_menu], "r");
-
-if (!$data || !is_array($data) || !$it_id || !is_numeric($barcode_qty_prev)) {
+if(!$data2){
+if ((!$data || !is_array($data) || !$it_id || !is_numeric($barcode_qty_prev))) {
   json_response(400, '유효하지 않은 요청입니다.');
 }
-
+}
 $check_qty = 0;
 $add_qty = 0;
 $delete_qty = 0;
+$bc_barcode = array();
+$barList = array();
+if($data2 != ""){//일괄 업로드 시
+	$sql = "
+		SELECT 
+			bc_barcode			
+	  FROM g5_cart_barcode
+	  WHERE 
+		it_id = '{$it_id}'
+		AND io_id = '{$io_id}'
+		AND bc_status NOT IN ('출고', '관리자승인대기', '관리자승인완료')
+		AND bc_del_yn = 'N' 
+	  ORDER BY
+		bc_barcode ASC
+	";
+
+	$result = sql_query($sql);
+	while ($row = sql_fetch_array($result)) {
+	  $bc_barcode[] = $row["bc_barcode"];
+	}
+     $val = explode("^",$data2);
+      $first = $val[0];
+      $secList = explode(",",$val[1]);
+     for ($j = 0; $j < count($secList); $j++) {
+        if (strpos($secList[$j],"-") === false) {
+          array_push($barList, $first.$secList[$j]);
+	
+        } else {
+          $secData = explode("-",$secList[$j]);
+          $secData0Len = mb_strlen($secData[0]);
+          $secData[0] = (int)$secData[0];
+          $secData[1] = (int)$secData[1];
+
+          for ($ii = $secData[0]; $ii < ($secData[1] + 1); $ii++) {
+           $barData = $ii;
+             if (mb_strlen((string)$barData) < $secData0Len) {
+              $iiiCnt = $secData0Len - mb_strlen((string)$barData);
+              for ($iii = 0; $iii < $iiiCnt; $iii++) {
+                $barData = "0".$barData;
+              }
+            }
+			array_push($barList, $first.$barData);
+          }
+        }
+      }	 
+
+	for($i = 0; $i < count($barList); $i++){
+		if(in_array($barList[$i],$bc_barcode)){//기존 데이터 중복 제거
+			
+		}else{//일괄업로드
+			$sql = "
+			  insert into g5_cart_barcode
+			  set
+				it_id = '{$it_id}',
+				io_id = '{$io_id}',
+				bc_barcode = '{$barList[$i]}',
+				bc_status = '정상',
+				bc_is_check_yn = 'Y',
+				created_by = '{$member['mb_id']}',
+				created_at = NOW(),
+				checked_by = '{$member['mb_id']}',
+				checked_at = NOW()
+			";
+			sql_query($sql);
+			$bc_id = sql_insert_id();
+			$bch_content = '재고확인 - 신규 바코드 추가';
+			$add_qty++;
+
+			// 로그
+			$sql = "
+				insert into g5_cart_barcode_log
+				set
+				  bc_id = '{$bc_id}',
+				  it_id = '{$it_id}',
+				  io_id = '{$io_id}',
+				  bch_barcode = '{$barList[$i]}',
+				  bch_content = '{$bch_content}',
+				  created_by = '{$member['mb_id']}',
+				  created_at = NOW()
+			  ";
+			sql_query($sql);
+		}
+	}
+	
+}else{
 
 for ($i = 0; $i < count($data); $i++) {
   // 신규 바코드 처리 g5_cart_barcode
@@ -84,7 +169,7 @@ for ($i = 0; $i < count($data); $i++) {
   ";
   sql_query($sql);
 }
-
+}
 $stock_info_row = get_stock_item_info($it_id, $io_id);
 $option_text = convert_item_option_to_text($stock_info_row['it_option_subject'], $io_id);
 

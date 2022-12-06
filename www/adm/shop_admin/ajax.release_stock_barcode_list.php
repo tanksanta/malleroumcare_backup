@@ -83,7 +83,10 @@ $sql = "
   ORDER BY
     bc_barcode ASC
 ";
-
+if($page != ""){
+	$page = ($page != "")?$page: 1;
+	$sql .= " limit ".(($page-1)*1000).",1000";
+}
 $result = sql_query($sql);
 
 $data = [];
