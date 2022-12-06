@@ -506,6 +506,12 @@ add_javascript(G5_POSTCODE_JS, 0);
           <input type="text" id="mm_name" name="mm_name" value="" class="form-control input-sm" size="10">
         </div>
       </div>
+	  <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
+        <label class="col-sm-2 control-label" for="mm_tel"><b>연락처</b></label>
+        <div class="col-sm-3">
+          <input type="text" id="mm_tel" name="mm_tel" value="" class="form-control input-sm" size="10">
+        </div>
+      </div>
       <div class="form-group has-feedback<?php echo ($config['cf_cert_use']) ? ' text-gap' : '';?>">
         <label class="col-sm-2 control-label" for="mm_email"><b>이메일</b></label>
         <div class="col-sm-3">
@@ -543,6 +549,7 @@ add_javascript(G5_POSTCODE_JS, 0);
               <th scope="col">아이디</th>
               <th scope="col">비밀번호</th>
               <th scope="col">이름</th>
+			  <th scope="col">연락처</th>
               <th scope="col">이메일주소</th>
               <th scope="col">메모</th>
               <th scope="col" style="width: 100px;">설정</th>
@@ -568,6 +575,7 @@ add_javascript(G5_POSTCODE_JS, 0);
               </td>
               <td><input type="password" class="frm_input mm_pw" placeholder="비밀번호"></td>
               <td><input type="text" class="frm_input mm_name" placeholder="이름" value="<?=$mm['mb_name']?>"></td>
+			  <td><input type="text" class="frm_input mm_tel" placeholder="연락처" value="<?=$mm['mb_tel']?>"></td>
               <td><input type="text" class="frm_input mm_email" placeholder="이메일" value="<?=$mm['mb_email']?>"></td>
               <td><input type="text" class="frm_input mm_memo" placeholder="메모" value="<?=$mm['mb_memo']?>"></td>
               <td class="td_center">
@@ -600,6 +608,7 @@ $(function() {
       mm_id: $('#mm_id').val(),
       mm_pw: $('#mm_pw').val(),
       mm_name: $('#mm_name').val(),
+	  mm_tel: $('#mm_tel').val(),
       mm_email: $('#mm_email').val(),
       mm_memo: $('#mm_memo').val()
     }, 'json')
@@ -620,6 +629,7 @@ $(function() {
       mm_id: $tr.find('.mm_id').val(),
       mm_pw: $tr.find('.mm_pw').val(),
       mm_name: $tr.find('.mm_name').val(),
+	  mm_tel: $tr.find('.mm_tel').val(),
       mm_email: $tr.find('.mm_email').val(),
       mm_memo: $tr.find('.mm_memo').val()
     }, 'json')
