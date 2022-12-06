@@ -6,20 +6,26 @@ header('Content-type: application/json');
 if($_POST["it_id"] != ""){//이벤트 상품 구매 조회
 	$is_buy = 0;
 	$soldout_ck = 0;
-	$sql = "SELECT COUNT(a.od_id) as buy_count FROM `g5_shop_order` AS a 
-	INNER JOIN `g5_shop_cart` AS b ON a.od_id = b.od_id AND b.it_id='".$_POST["it_id"]."' AND b.ct_status NOT IN ('주문무효','취소')
-	WHERE a.mb_id = '".$member['mb_id']."'";
+	$is_buy = 0;
+	$soldout_ck = 0;
+	$sql = "select pt_end from g5_shop_item where it_id='".$_POST["it_id"]."'";
 	$row = sql_fetch($sql);
-	if($row["buy_count"] >0 ){// 구매이력 있음
-		$is_buy = 1; 
+	if($row["pt_end"] > 0){	
+		$sql = "SELECT COUNT(a.od_id) as buy_count FROM `g5_shop_order` AS a 
+		INNER JOIN `g5_shop_cart` AS b ON a.od_id = b.od_id AND b.it_id='".$_POST["it_id"]."' AND b.ct_status NOT IN ('주문무효','취소')
+		WHERE a.mb_id = '".$member['mb_id']."'";
+		$row = sql_fetch($sql);
+		if($row["buy_count"] >0 ){// 구매이력 있음
+			$is_buy = 1; 
+		}
+		$sql2 = "SELECT COUNT(a.od_id) as buy_count FROM `g5_shop_order` AS a 
+		INNER JOIN `g5_shop_cart` AS b ON a.od_id = b.od_id AND b.it_id='".$_POST["it_id"]."' AND b.ct_status NOT IN ('주문무효','취소')";
+		$row2 = sql_fetch($sql2);
+		// 상품정보
+		$sql = " select it_stock_qty from {$g5['g5_shop_item_table']} where it_id = '".$_POST["it_id"]."' ";
+		$it_stock = sql_fetch($sql);
+		$soldout_ck = ($it_stock["it_stock_qty"] > $row2["buy_count"])? false : true;
 	}
-	$sql2 = "SELECT COUNT(a.od_id) as buy_count FROM `g5_shop_order` AS a 
-	INNER JOIN `g5_shop_cart` AS b ON a.od_id = b.od_id AND b.it_id='".$_POST["it_id"]."' AND b.ct_status NOT IN ('주문무효','취소')";
-	$row2 = sql_fetch($sql2);
-	// 상품정보
-	$sql = " select it_stock_qty from {$g5['g5_shop_item_table']} where it_id = '".$_POST["it_id"]."' ";
-	$it_stock = sql_fetch($sql);
-	$soldout_ck = ($it_stock["it_stock_qty"] > $row2["buy_count"])? false : true;
 	$data["is_buy"] = $is_buy;
 	$data["soldout_ck"] = $soldout_ck;
 

@@ -982,19 +982,40 @@ function check_no_item() {
 function select_items(obj, items) {
   $('body').removeClass('modal-open');
   $('#item_popup_box').hide();
+	$.ajax({
+      url: "./ajax.get_item.php",
+      type: "POST",
+      data: {
+        "it_id": obj.it_id
+      },
+      dataType: "json",
+      async: false,
+      cache: false,
+      success: function(data, textStatus) {
+        if(data["is_buy"] == 1){
+			alert("이미 구매한 이벤트 상품으로 주문이 제한되었습니다.");	
+			//$('#ipt_so_sch').val("");
+			return false;
+		}else if(data["soldout_ck"] == 1){
+			alert("품절 상품으로 주문이 제한되었습니다.");	
+			//$('#ipt_so_sch').val("");
+			return false;
+		}else{
+			if(items.length) {
+				for(var i = 0; i < items.length; i++) {
+				  var item = items[i];
 
-  if(items.length) {
-    for(var i = 0; i < items.length; i++) {
-      var item = items[i];
+				  var _qty = "";
+				  if( parseInt(obj.it_buy_inc_qty) < parseInt(item.ct_qty) ) {
+					_qty = item.ct_qty;
+				  } else { _qty = ( (obj.it_buy_inc_qty)?(obj.it_buy_inc_qty):("1") ); }
 
-      var _qty = "";
-      if( parseInt(obj.it_buy_inc_qty) < parseInt(item.ct_qty) ) {
-        _qty = item.ct_qty;
-      } else { _qty = ( (obj.it_buy_inc_qty)?(obj.it_buy_inc_qty):("1") ); }
-
-      select_item(obj, item.io_id, _qty);
-    }
-  }
+				  select_item(obj, item.io_id, _qty);
+				}
+			  }
+		}
+      }
+    });	 
 }
 
 function select_item(obj, io_id, ct_qty) {
