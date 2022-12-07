@@ -16,6 +16,9 @@ function set_date(today)
     if (today == "오늘") {
         document.getElementById("fr_date").value = "<?php echo G5_TIME_YMD; ?>";
         document.getElementById("to_date").value = "<?php echo G5_TIME_YMD; ?>";
+    } else if (today == "내일") {
+        document.getElementById("fr_date").value = "<?php echo date('Y-m-d', G5_SERVER_TIME + 86400); ?>";
+        document.getElementById("to_date").value = "<?php echo date('Y-m-d', G5_SERVER_TIME + 86400); ?>";
     } else if (today == "어제") {
         document.getElementById("fr_date").value = "<?php echo date('Y-m-d', G5_SERVER_TIME - 86400); ?>";
         document.getElementById("to_date").value = "<?php echo date('Y-m-d', G5_SERVER_TIME - 86400); ?>";
