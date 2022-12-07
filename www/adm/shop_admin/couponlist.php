@@ -50,7 +50,7 @@ if($type == "group"){
 $sql_search = ' where (1) ';
 
 // 기간만료된 쿠폰은 제외
-$cp_expiration = $cp_expiration?$cp_expiration:'1';
+$cp_expiration = $search_yn?($cp_expiration?$cp_expiration:'0'):'1';
 if($cp_expiration){
     $sql_search .= $cp_expiration == '1'?' and (c.cp_end >= DATE_FORMAT(NOW(),"%Y-%m-%d")) ':'';
 }
@@ -160,7 +160,7 @@ $sql = "
 $result = sql_query($sql, true);
 
 // 초기 3개월 범위 적용
-if (!$fr_date && !$to_date) {
+if (!$fr_date && !$to_date&&!$search_yn) {
     $fr_date = date("Y-m-d", strtotime("-3 month"));
     $to_date = date("Y-m-d");
 }
@@ -169,7 +169,7 @@ if (!$fr_date && !$to_date) {
 if(!$date_searching_option) $date_searching_option = '0';
 
 // 페이징 되는 주소 파라미터
-$qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel_cp_method}&amp;sel_field={$sel_field}&amp;search={$search}&amp;fr_date={$fr_date}&amp;to_date={$to_date}&amp;date_searching_option={$date_searching_option}&amp;sel_field_used={$sel_field_used}&amp;sst={$sst}&amp;sod={$sod}";
+$qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel_cp_method}&amp;sel_field={$sel_field}&amp;search={$search}&amp;fr_date={$fr_date}&amp;to_date={$to_date}&amp;date_searching_option={$date_searching_option}&amp;sel_field_used={$sel_field_used}&amp;sst={$sst}&amp;sod={$sod}&amp;search_yn=searching";
 
 ?>
 <style>
