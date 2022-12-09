@@ -11,6 +11,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 auth_check($auth[$sub_menu], "r");
 
 $type = $_GET['type']? $_GET['type'] : "group";
+$couponlist_page_rows = $page_rows?$page_rows:$_COOKIE['couponlist_page_rows'];
 
 if($type == "group"){
     $sql_common = "
@@ -75,16 +76,36 @@ if ($sel_cp_method) {
 
 // 검색어 검색
 if ($sel_field) {
-  switch ($sel_field) {
-    case 'cp_all' :
-      $sql_search .= " and ( c.mb_id like '%{$search}%' or m.mb_id like '%{$search}%' ) ";
-      break;
-    case 'mb_id' :
-      $sql_search .= " and ( c.mb_id like '%{$search}%' ) ";
-      break;
-    case 'mb_name' :
-      $sql_search .= " and ( m.mb_id like '%{$search}%' ) ";
-      break;
+  if($type == "group") {
+      switch ($sel_field) {
+        case 'cp_all' :
+          $sql_search .= " and ( c.cp_id like '%{$search}%' or c.cp_subject like '%{$search}%' ) ";
+          break;
+        case 'cp_id' :
+          $sql_search .= " and ( c.cp_id like '%{$search}%' ) ";
+          break;
+        case 'cp_name' :
+          $sql_search .= " and ( c.cp_subject like '%{$search}%' ) ";
+          break;
+      }
+  } else {
+      switch ($sel_field) {
+        case 'cp_all' :
+          $sql_search .= " and ( m.mb_id like '%{$search}%' or m.mb_name like '%{$search}%' or c.cp_id like '%{$search}%' or c.cp_subject like '%{$search}%' ) ";
+          break;
+        case 'mb_id' :
+          $sql_search .= " and ( m.mb_id like '%{$search}%' ) ";
+          break;
+        case 'mb_name' :
+          $sql_search .= " and ( m.mb_name like '%{$search}%' ) ";
+          break;
+        case 'cp_id' :
+          $sql_search .= " and ( c.cp_id like '%{$search}%' ) ";
+          break;
+        case 'cp_name' :
+          $sql_search .= " and ( c.cp_subject like '%{$search}%' ) ";
+          break;
+      }
   }
 }
 
@@ -144,7 +165,7 @@ $sql = "
 $row = sql_fetch($sql, true);
 $total_count = $row['cnt'];
 
-$rows = $config['cf_page_rows'];
+$rows = $couponlist_page_rows?$couponlist_page_rows:10;
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -212,7 +233,7 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
                         <option value="cp_method_del" <?php echo get_selected($sel_cp_method, 'cp_method_del'); ?>>배송비할인</option>
                     </select>
                     <?php if($type=="user"){ ?>
-                        <span style="margin: 0.5em 0;"></br>쿠폰 사용여부</span>
+                        <span style="margin: 0.5em 0;">쿠폰 사용여부</span>
                         <select name="sel_field_used" id="sel_field_used" style="margin: 0.5em 1.5em;">
                             <option value="cp_used_all" <?php echo $sel_field_used == 'cp_used_all' ? 'selected="selected"' : ''; ?>>전체</option>
                             <option value="cp_used_use" <?php echo get_selected($sel_field_used, 'cp_used_use'); ?>>사용</option>
@@ -242,7 +263,6 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
                         <input type="button" value="어제" id="select_date_yesterday" name="select_date" class="select_date newbutton" />
                         <input type="button" value="일주일" id="select_date_sevendays" name="select_date" class="select_date newbutton" />
                         <input type="button" value="이번달" id="select_date_lastmonth" name="select_date" class="select_date newbutton" />
-                        <button type="button" value="직접입력" id="select_date_all" name="select_date" class="select_date newbutton">직접입력</button>
                         <input type="text" id="fr_date" class="date" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off"> ~
                         <input type="text" id="to_date" class="date" name="to_date" value="<?php echo $to_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off">
                     </div>
@@ -251,11 +271,21 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
             <tr>
                 <th>검색어</th>
                 <td>
-                    <select name="sel_field" id="sel_field">
-                        <option value="cp_all" <?php echo $sel_field == 'cp_all' ? 'selected="selected"' : ''; ?>>전체</option>
-                        <option value="mb_id" <?php echo get_selected($sel_field, 'mb_id'); ?>>회원 ID</option>
-                        <option value="mb_name" <?php echo get_selected($sel_field, 'mb_name'); ?>>회원 이름</option>
-                    </select>
+                    <?php if($type == "group"){ ?>
+                        <select name="sel_field" id="sel_field">
+                            <option value="cp_all" <?php echo $sel_field == 'cp_all' ? 'selected="selected"' : ''; ?>>전체</option>
+                            <option value="cp_id" <?php echo get_selected($sel_field, 'cp_id'); ?>>쿠폰 번호</option>
+                            <option value="cp_name" <?php echo get_selected($sel_field, 'cp_name'); ?>>쿠폰 이름</option>
+                        </select>
+                    <?php } else { ?>
+                        <select name="sel_field" id="sel_field">
+                            <option value="cp_all" <?php echo $sel_field == 'cp_all' ? 'selected="selected"' : ''; ?>>전체</option>
+                            <option value="cp_id" <?php echo get_selected($sel_field, 'cp_id'); ?>>쿠폰 번호</option>
+                            <option value="cp_name" <?php echo get_selected($sel_field, 'cp_name'); ?>>쿠폰 이름</option>
+                            <option value="mb_id" <?php echo get_selected($sel_field, 'mb_id'); ?>>회원 ID</option>
+                            <option value="mb_name" <?php echo get_selected($sel_field, 'mb_name'); ?>>회원 이름</option>
+                        </select>
+                    <?php } ?>
                     <input type="text" name="search" value="<?php echo $search; ?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
                     <input type="hidden" id="search_yn" name="search_yn" value="searching">
                     <button class="newbutton" type="submit" id="search-btn"><span>검색</span></button>
@@ -270,6 +300,13 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
 
 <div class="local_ov">
     <span class="ov_txt">검색 개수 : </span><span class="ov_num"> <?php echo number_format($total_count) ?> 건</span>
+
+    <select name="page_rows" id="page_rows" style="float: right; width: fit-content; padding: 0px 10px;">
+        <option value="10" <?php echo $couponlist_page_rows == '10' ? 'selected="selected"' : ''; ?>>10개씩보기</option>
+        <option value="30" <?php echo $couponlist_page_rows == '30' ? 'selected="selected"' : ''; ?>>30개씩보기</option>
+        <option value="50" <?php echo $couponlist_page_rows == '50' ? 'selected="selected"' : ''; ?>>50개씩보기</option>
+        <option value="100" <?php echo $couponlist_page_rows == '100' ? 'selected="selected"' : ''; ?>>100개씩보기</option>
+    </select>
 </div>
 
 <form name="fcouponlist" id="fcouponlist" method="post" action="./couponlist_delete.php" onsubmit="return fcouponlist_submit(this);">
@@ -339,9 +376,9 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
             switch($row['cp_type']) { //할인금액(정액할인/정률할인)
                 case '0':
                     $cp_type = "정액할인";
-                    $cp_price = $row['cp_price'];
-                    $total_cp_price = $row['cp_price']*$total_count;
-                    $total_used_price = $row['cp_price']*$used_count;
+                    $cp_price = number_format($row['cp_price']);
+                    $total_cp_price = number_format($row['cp_price']*$total_count);
+                    $total_used_price = number_format($row['cp_price']*$used_count);
                     break;
                 case '1':
                     $cp_type = "정률할인";
@@ -368,15 +405,15 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
                 <input type="hidden" id="cp_id_<?php echo $i; ?>" name="cp_id[<?php echo $i; ?>]" value="<?php echo $row['cp_id']; ?>">
                 <input type="checkbox" id="chk_<?php echo $i; ?>" name="chk[]" value="<?php echo $i; ?>" title="내역선택" <?php if($used_count != 0){ echo "disabled";} ?>>
             </td>
-            <td class="td_category1"><?php echo $row['cp_id']; ?></td> <!-- 쿠폰번호 -->
+            <td class="td_category1"><a href="couponlist.php?type=user&sel_field=cp_id&search=<?php echo $row['cp_id']; ?>"><?php echo $row['cp_id']; ?></a></td> <!-- 쿠폰번호 -->
             <td class="td_mng_l td_center"><?php echo $row['cp_subject']; ?></td> <!-- 쿠폰이름 -->
             <td class="td_category3"><?php echo $cp_method; ?></td> <!-- 쿠폰종류 -->
-            <td class="td_cntsmall"><?=$cp_price?></td> <!-- 쿠폰금액 -->
+            <td class="td_cntsmall td_price"><?=$cp_price?></td> <!-- 쿠폰금액 -->
             <td class="td_cntsmall"><?=$total_count?></td> <!-- 발행인원 -->
-            <td class="td_cntsmall"><?=$total_cp_price?></td> <!-- 총발행금액 -->
+            <td class="td_cntsmall td_price"><?=$total_cp_price?></td> <!-- 총발행금액 -->
             <td class="td_cntsmall"><?=$used_count?></td> <!-- 시용인원 -->
-            <td class="td_cntsmall"><?=$total_used_price?></td> <!-- 총 사용금액 -->
-            <td class="td_cntsmall"><?php if($interval=='기간만료'){ echo $interval; } else{ echo ($interval->days+1).'일';} ?></td> <!-- 남은기간 -->
+            <td class="td_cntsmall td_price"><?=$total_used_price?></td> <!-- 총 사용금액 -->
+            <td class="td_cntsmall td_price"><?php if($interval=='기간만료'){ echo $interval; } else{ echo ($interval->days+1).'일';} ?></td> <!-- 남은기간 -->
             <td class="td_datetime"><?php echo $row['cp_start']; ?> ~ <?php echo $row['cp_end']; ?></td> <!-- 시용가능일자 -->
             <td class="td_date"><?php echo date("Y-m-d H:m:i", strtotime($row['cp_datetime'])); ?></td> <!-- 생성일자 -->
             <td class="td_mng td_mng_s">
@@ -450,7 +487,7 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
             switch($row['cp_type']) { //할인금액(정액할인/정률할인)
                 case '0':
                     $cp_type = "정액할인";
-                    $cp_price = $row['cp_price'];
+                    $cp_price = number_format($row['cp_price']);
                     break;
                 case '1':
                     $cp_type = "정률할인";
@@ -479,8 +516,8 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
             <td class="cp_user_name td_type td_center"><?php echo $row['coupon_user_name']; ?></td> <!-- 쿠폰받은 회원 이름 -->
             <td class="cp_subject td_mng_l td_center"><?php echo $row['cp_subject']; ?></td> <!-- 쿠폰이름 -->
             <td class="cp_method td_category3"><?php echo $cp_method; ?></td> <!-- 쿠폰종류 -->
-            <td class="cp_price td_cntsmall"><?php echo $cp_price; ?></td> <!-- 쿠폰금액 -->
-            <td class="cp_interval td_cntsmall"><?php if($interval=='기간만료'){ echo $interval; } else{ echo ($interval->days+1).'일';} ?></td> <!-- 남은기간 -->
+            <td class="cp_price td_cntsmall td_price"><?php echo $cp_price; ?></td> <!-- 쿠폰금액 -->
+            <td class="cp_interval td_cntsmall td_price"><?php if($interval=='기간만료'){ echo $interval; } else{ echo ($interval->days+1).'일';} ?></td> <!-- 남은기간 -->
             <td class="cp_using_date td_datetime"><?php echo $row['cp_start']; ?> ~ <?php echo $row['cp_end']; ?></td> <!-- 사용가능일자 -->
             <td class="cp_datetime td_delicom td_center"><?php echo date("Y-m-d H:m:i", strtotime($row['cp_datetime'])); ?></td> <!-- 생성일자 -->
             <td class="cp_used_datetime td_delicom td_center"><?php if($used_date){ echo date("Y-m-d H:m:i", strtotime($used_date)); } ?></td> <!-- 사용일자 -->
@@ -525,6 +562,14 @@ $(function () {
       var val = $(this).val();
       set_date(val);
     });
+});
+
+$(document).on('change','#page_rows',function(){ // 10/15/20/.../개씩 보기 변경 시
+  var couponlist_page_rows = $("#page_rows option:selected").val();
+  console.log($("#page_rows option:selected").val());
+  // console.log(recipient_page_rows);
+  $.cookie('couponlist_page_rows', couponlist_page_rows);
+  window.location.reload();
 });
 
 function fcouponlist_submit(f)
