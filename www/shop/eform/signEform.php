@@ -113,7 +113,33 @@ sql_query("INSERT INTO `eform_document_log` SET
       </div>
     </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
   <script>
+	var confirmYN = function (param){
+		return new Promise(function(resolve, reject) {
+			setTimeout(function() {
+				Swal.fire({
+		  			title: "수급자께 계약서 작성 메시지를 보내시겠습니까?",
+					//text: "삭제하시면 다시 복구시킬 수 없습니다.",
+		  			//icon: 'warning',
+		  			showCancelButton: true,
+		 			confirmButtonColor: '#3085d6',
+		  			cancelButtonColor: '#d33',
+		  			confirmButtonText: '보내기',
+		  			cancelButtonText: '안보내기'
+				}).then((result) => {
+		  			if (result.value) {
+         			   //"보내기" 버튼을 눌렀을 때  
+		 			 	resolve(true);
+					}
+		 			else
+					  	resolve(false);
+				}) 
+			}, 100);
+		});
+	}
   $(function() {
     var isGicho = <?=($is_gicho ? 'true' : 'false')?>;
     <?php if($dc_id) { ?>
@@ -211,6 +237,7 @@ sql_query("INSERT INTO `eform_document_log` SET
       e.preventDefault();
 
       var todos = getTodos();
+	  var smsFlag = true;
       if(todos.current < todos.total) {
         return alert('현재 단계에서 모든 입력을 완료해주세요.');
       }
@@ -221,24 +248,34 @@ sql_query("INSERT INTO `eform_document_log` SET
         scrollToTop();
       } else {
         // 마지막 단계 작성완료
-        if(!confirm('계약서 작성을 완료하시겠습니까?')) return;
-        $(this).text('진행 중...');
-        $(this).prop('disabled', true);
-        $.post('./ajax.eform.sign.php', {
-          state: JSON.stringify(state),
-          uuid: '<?=$eform["uuid"]?>'}, 'json'
-        )
-        .done(function(data) {
-          // 작성 완료
-          alert('계약서 작성이 완료되었습니다.');
-          location.href = '/shop/electronic_manage.php';
-        })
-        .fail(function($xhr) {
-          $(this).text('완료');
-          $(this).prop('disabled', false);
-          var data = $xhr.responseJSON;
-          alert(data && data.message);
-        });
+		console.log(smsFlag);
+		confirmYN().then(function(text){
+			smsFlag = text;	
+       		if(!confirm('계약서 작성을 완료하시겠습니까?')) return;
+		
+			$(this).text('진행 중...');
+     	    $(this).prop('disabled', true);
+				
+        	$.post('./ajax.eform.sign.php', {
+      	    state: JSON.stringify(state),
+      	    uuid: '<?=$eform["uuid"]?>',
+			sms:smsFlag, }, 'json'
+        	)
+        	.done(function(data) {
+          		// 작성 완료
+          		alert('계약서 작성이 완료되었습니다.');
+          		location.href = '/shop/electronic_manage.php';
+        	})
+        	.fail(function($xhr) {
+          		$(this).text('완료');
+          		$(this).prop('disabled', false);
+          		var data = $xhr.responseJSON;
+          		alert(data && data.message);
+        	});
+		  }, function (error) {
+			console.error(error)
+          	alert(error);
+		});
       }
     });
 
